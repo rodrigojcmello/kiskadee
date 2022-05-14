@@ -69,9 +69,7 @@ module.exports = {
         'plugin:jest-dom/recommended',
 
         // TypeScript
-        'eslint:recommended',
         'plugin:@typescript-eslint/all',
-        // 'plugin:@typescript-eslint/recommended-requiring-type-checking',
         'plugin:import/typescript',
 
         // Prettier
@@ -132,7 +130,11 @@ module.exports = {
             cases: {
               kebabCase: true,
             },
-            ignore: ['^(?:[A-Z][a-z]+)+.tsx$'],
+            ignore: [
+              '^(?:[A-Z][a-z]+)+.tsx$',
+              'setupTests.ts',
+              'reportWebVitals.ts',
+            ],
           },
         ],
 
@@ -152,28 +154,34 @@ module.exports = {
           },
         ],
 
+        // /**
+        //  * These PropTypes related rules are disabled in favor of using TypeScript
+        //  * @see {@link https://reactjs.org/docs/static-type-checking.html}
+        //  * @see {@link https://reactjs.org/docs/typechecking-with-proptypes.html#gatsby-focus-wrapper}
+        //  * @see {@link https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/prop-types.md}
+        //  */
+        // 'react/prop-types': 'off',
+        // 'react/require-default-props': 'off',
+
         /**
-         * These PropTypes related rules are disabled in favor of using TypeScript
-         * @see {@link https://reactjs.org/docs/static-type-checking.html}
-         * @see {@link https://reactjs.org/docs/typechecking-with-proptypes.html#gatsby-focus-wrapper}
-         * @see {@link https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/prop-types.md}
+         * We enabled all TypeScript rules, but there are rules that encourage or not the use of Non-null assertion
+         * operator, we chose to disable the only rule that discourages
          */
-        'react/prop-types': 'off',
-        'react/require-default-props': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off',
 
         //----------------------------------------------------------------------
         // React
         //----------------------------------------------------------------------
 
-        /**
-         * In the EcmaScript context this rule makes a lot of sense, since you
-         * are not sure what exists in props, however with TypeScript this is
-         * different, you know exactly the type of that props helping the code
-         * readability
-         * @see {@link https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-props-no-spreading.md}
-         * @see {@link https://www.typescriptlang.org/docs/handbook/interfaces.html}
-         */
-        'react/jsx-props-no-spreading': 'off',
+        // /**
+        //  * In the EcmaScript context this rule makes a lot of sense, since you
+        //  * are not sure what exists in props, however with TypeScript this is
+        //  * different, you know exactly the type of that props helping the code
+        //  * readability
+        //  * @see {@link https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-props-no-spreading.md}
+        //  * @see {@link https://www.typescriptlang.org/docs/handbook/interfaces.html}
+        //  */
+        // 'react/jsx-props-no-spreading': 'off',
 
         /**
          * With version 17 of React, importing it is optional
@@ -181,11 +189,11 @@ module.exports = {
          */
         'react/react-in-jsx-scope': 'off',
 
-        /**
-         * this rule never worked well for me, it ends up more disturbing than
-         * helping, so it is disabled.
-         */
-        'react-hooks/exhaustive-deps': 'off',
+        // /**
+        //  * this rule never worked well for me, it ends up more disturbing than
+        //  * helping, so it is disabled.
+        //  */
+        // 'react-hooks/exhaustive-deps': 'off',
 
         //----------------------------------------------------------------------
 
