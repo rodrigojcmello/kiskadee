@@ -1,5 +1,8 @@
 /* eslint-disable unicorn/prefer-module */
 module.exports = {
+  //----------------------------------------------------------------------------
+  // JavaScript / Node
+  //----------------------------------------------------------------------------
   env: {
     node: true,
     jest: true,
@@ -41,6 +44,9 @@ module.exports = {
     //  */
     // 'func-names': ['error', 'as-needed'],
   },
+  //----------------------------------------------------------------------------
+  // TypeScript
+  //----------------------------------------------------------------------------
   overrides: [
     {
       files: ['**/*.ts', '**/*.tsx'],
@@ -131,7 +137,7 @@ module.exports = {
               kebabCase: true,
             },
             ignore: [
-              '^(?:[A-Z][a-z]+)+(.test)?.tsx$',
+              '^(?:[A-Z][a-z]+)+(\\.(test|spec))?\\.tsx$',
               'setupTests.ts',
               'reportWebVitals.ts',
             ],
@@ -170,39 +176,15 @@ module.exports = {
         '@typescript-eslint/no-non-null-assertion': 'off',
 
         //----------------------------------------------------------------------
-        // React
+        // Jest
         //----------------------------------------------------------------------
 
-        // /**
-        //  * In the EcmaScript context this rule makes a lot of sense, since you
-        //  * are not sure what exists in props, however with TypeScript this is
-        //  * different, you know exactly the type of that props helping the code
-        //  * readability
-        //  * @see {@link https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-props-no-spreading.md}
-        //  * @see {@link https://www.typescriptlang.org/docs/handbook/interfaces.html}
-        //  */
-        // 'react/jsx-props-no-spreading': 'off',
-
-        /**
-         * With version 17 of React, importing it is optional
-         * @see {@link https://reactjs.org/blog/2020/10/20/react-v17.html#new-jsx-transform}
-         */
-        'react/react-in-jsx-scope': 'off',
-
-        // /**
-        //  * this rule never worked well for me, it ends up more disturbing than
-        //  * helping, so it is disabled.
-        //  */
-        // 'react-hooks/exhaustive-deps': 'off',
-
-        //----------------------------------------------------------------------
-
-        // 'import/no-extraneous-dependencies': [
-        //   'error',
-        //   {
-        //     devDependencies: ['**/*.test.tsx', '**/setupTests.ts'],
-        //   },
-        // ],
+        'import/no-extraneous-dependencies': [
+          'error',
+          {
+            devDependencies: ['**/*.test.tsx', '**/setupTests.ts'],
+          },
+        ],
 
         // '@typescript-eslint/no-var-requires': 'off',
         // 'unicorn/no-useless-undefined': 'off',
@@ -227,6 +209,9 @@ module.exports = {
         // 'no-plusplus': 'off',
       },
     },
+    //--------------------------------------------------------------------------
+    // React
+    //--------------------------------------------------------------------------
     {
       files: ['**/*.tsx'],
       rules: {
@@ -238,6 +223,28 @@ module.exports = {
             unnamedComponents: 'function-expression',
           },
         ],
+
+        // /**
+        //  * In the EcmaScript context this rule makes a lot of sense, since you
+        //  * are not sure what exists in props, however with TypeScript this is
+        //  * different, you know exactly the type of that props helping the code
+        //  * readability
+        //  * @see {@link https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-props-no-spreading.md}
+        //  * @see {@link https://www.typescriptlang.org/docs/handbook/interfaces.html}
+        //  */
+        // 'react/jsx-props-no-spreading': 'off',
+
+        /**
+         * With version 17 of React, importing it is optional
+         * @see {@link https://reactjs.org/blog/2020/10/20/react-v17.html#new-jsx-transform}
+         */
+        'react/react-in-jsx-scope': 'off',
+
+        // /**
+        //  * this rule never worked well for me, it ends up more disturbing than
+        //  * helping, so it is disabled.
+        //  */
+        // 'react-hooks/exhaustive-deps': 'off',
       },
     },
   ],

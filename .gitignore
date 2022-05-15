@@ -1,15 +1,15 @@
-# dependencies
-/node_modules
+# Node
+node_modules
 package-lock.json
 
-# testing
-/coverage
+# Jest
+coverage
 
-# production
-/build
+# Production
+build
 
-# misc
+# MacOS
 .DS_Store
 
 # WebStorm
-.idea/
+.idea
