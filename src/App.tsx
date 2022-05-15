@@ -1,9 +1,9 @@
-import React from 'react';
+import type { FC } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Button from './components/Button/Button';
 
-const App = (): JSX.Element => {
+const App: FC = () => {
   return (
     <div className="App">
       <header className="App-header">

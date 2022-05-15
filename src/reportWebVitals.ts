@@ -1,7 +1,8 @@
-import { ReportHandler } from 'web-vitals';
+import type { ReportHandler } from 'web-vitals';
 
-const reportWebVitals = (onPerfEntry?: ReportHandler) => {
-  if (onPerfEntry && onPerfEntry instanceof Function) {
+const reportWebVitals = (onPerfEntry?: ReportHandler): void => {
+  if (onPerfEntry instanceof Function) {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises,@typescript-eslint/prefer-readonly-parameter-types
     import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
       getCLS(onPerfEntry);
       getFID(onPerfEntry);

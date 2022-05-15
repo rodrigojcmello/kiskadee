@@ -131,7 +131,7 @@ module.exports = {
               kebabCase: true,
             },
             ignore: [
-              '^(?:[A-Z][a-z]+)+.tsx$',
+              '^(?:[A-Z][a-z]+)+(.test)?.tsx$',
               'setupTests.ts',
               'reportWebVitals.ts',
             ],
