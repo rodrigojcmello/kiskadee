@@ -1,87 +1,27 @@
+import styled from '@emotion/styled';
 import type { FC } from 'react';
-import { styled } from '@stitches/react';
-import type { ButtonProps } from './types';
-
-const materialTheme = {
-  container: {
-    rest: {
-      backgroundColor: '#6750A4',
-      padding: '10px 24px',
-      border: 'none',
-      borderRadius: '100px',
-    },
-    hover: {
-      backgroundColor: '#735EAB',
-      boxShadow:
-        '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
-    },
-  },
-  text: {
-    rest: {
-      fontSize: '0.875rem',
-      color: '#FFFFFF',
-      height: '20px',
-      lineHeight: '20px',
-      fontWeight: 500,
-      fontFamily: 'Roboto',
-      fontStyle: 'normal',
-    },
-    hover: {
-      color: '#FFFFFF',
-    },
-  },
-};
-
-const fluentTheme = {
-  container: {
-    rest: {
-      backgroundColor: '#005FB8',
-      padding: '6px 20px',
-      border: 'none',
-      borderRadius: '4px',
-    },
-    hover: {
-      backgroundColor: '#106EBE',
-      boxShadow:
-        '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
-    },
-  },
-  text: {
-    rest: {
-      fontSize: '0.875rem',
-      color: '#FFFFFF',
-      height: '20px',
-      lineHeight: '20px',
-      fontWeight: 600,
-      fontFamily: 'Segoe UI',
-      fontStyle: 'normal',
-    },
-    hover: {
-      color: '#FFFFFF',
-    },
-  },
-};
+import { useContext } from 'react';
+import type { ButtonProps, ButtonStyle } from './Button.types';
+import { KiskadeeContext } from '../../context';
 
 const timingFunction = 'ease';
 const duration = '0.2s';
 
-const currentTheme = fluentTheme;
-
-const Container = styled('button', {
+const Container = styled.button<{ theme?: ButtonStyle }>(({ theme }) => ({
   //----------------------------------------------------------------------------
   // Container
   //----------------------------------------------------------------------------
 
   // REST
 
-  ...currentTheme.container.rest,
+  ...theme.container?.rest,
 
   // HOVER
 
-  '&:hover': {
-    ...currentTheme.container.hover,
+  '&:hover, &.hover': {
+    ...theme.container?.hover,
     '& .text': {
-      ...currentTheme.text.hover,
+      ...theme.text?.hover,
     },
   },
 
@@ -100,7 +40,7 @@ const Container = styled('button', {
   // REST
 
   '& .text': {
-    ...currentTheme.text.rest,
+    ...theme.text?.rest,
     transitionProperty: 'color',
     transitionDuration: duration,
     transitionTimingFunction: timingFunction,
@@ -108,21 +48,28 @@ const Container = styled('button', {
 
   // HOVER
 
-  '&:hover .text': {
-    ...currentTheme.text.hover,
+  '&:hover .text, .hover .text': {
+    ...theme.text?.hover,
   },
-});
+}));
 
 const Button: FC<ButtonProps> = ({
   text,
-  type = 'button',
+  typeHTML = 'button',
   // icon,
   onClick,
   // variant,
   disabled,
 }) => {
+  const theme = useContext(KiskadeeContext);
+
   return (
-    <Container type={type} onClick={onClick} disabled={disabled}>
+    <Container
+      theme={theme.component.button}
+      type={typeHTML}
+      onClick={onClick}
+      disabled={disabled}
+    >
       {/* <span>+</span> */}
       <span className="text">{text}</span>
     </Container>

@@ -1,3 +1,22 @@
+const commonRules = {
+  'import/no-default-export': 'error',
+  'import/prefer-default-export': 'off',
+
+  //----------------------------------------------------------------------------
+  // UNUSED IMPORTS
+  //----------------------------------------------------------------------------
+  'unused-imports/no-unused-imports': 'error',
+  'unused-imports/no-unused-vars': [
+    'warn',
+    {
+      vars: 'all',
+      varsIgnorePattern: '^_',
+      args: 'after-used',
+      argsIgnorePattern: '^_',
+    },
+  ],
+};
+
 /* eslint-disable unicorn/prefer-module */
 module.exports = {
   //----------------------------------------------------------------------------
@@ -43,7 +62,21 @@ module.exports = {
     //  * @see {@link https://www.typescriptlang.org/docs/handbook/functions.html#functions}
     //  */
     // 'func-names': ['error', 'as-needed'],
+
+    //--------------------------------------------------------------------------
+    // UNUSED IMPORTS
+    //--------------------------------------------------------------------------
+
+    'no-unused-vars': 'off',
+
+    //--------------------------------------------------------------------------
+    // COMMONS
+    //--------------------------------------------------------------------------
+
+    ...commonRules,
   },
+  plugins: ['unused-imports'],
+
   //----------------------------------------------------------------------------
   // TypeScript
   //----------------------------------------------------------------------------
@@ -81,6 +114,8 @@ module.exports = {
         // Prettier
         'plugin:prettier/recommended',
       ],
+
+      plugins: ['unused-imports'],
 
       rules: {
         //----------------------------------------------------------------------
@@ -137,7 +172,7 @@ module.exports = {
               kebabCase: true,
             },
             ignore: [
-              '^(?:[A-Z][a-z]+)+(\\.(test|spec))?\\.tsx$',
+              '^(?:[A-Z][a-z]+)+(\\.[a-z]+)?\\.ts(x)?$',
               'setupTests.ts',
               'reportWebVitals.ts',
             ],
@@ -170,8 +205,9 @@ module.exports = {
         // 'react/require-default-props': 'off',
 
         /**
-         * We enabled all TypeScript rules, but there are rules that encourage or not the use of Non-null assertion
-         * operator, we chose to disable the only rule that discourages
+         * We enabled all TypeScript rules, but there are rules that encourage
+         * or not the use of Non-null assertion operator, we chose to disable
+         * the only rule that discourages
          */
         '@typescript-eslint/no-non-null-assertion': 'off',
 
@@ -186,11 +222,31 @@ module.exports = {
           },
         ],
 
+        //----------------------------------------------------------------------
+        // TypeScript
+        //----------------------------------------------------------------------
+
+        /**
+         * This rule is disabled because of the "no-param-reassign" rule that
+         * deals with the same issue.
+         */
+        '@typescript-eslint/prefer-readonly-parameter-types': 'off',
+
         // '@typescript-eslint/no-var-requires': 'off',
         // 'unicorn/no-useless-undefined': 'off',
 
         //----------------------------------------------------------------------
         // RECOMMENDATIONS
+        //----------------------------------------------------------------------
+
+        ...commonRules,
+
+        //----------------------------------------------------------------------
+        // UNUSED IMPORTS
+        //----------------------------------------------------------------------
+
+        '@typescript-eslint/no-unused-vars': 'off',
+
         //----------------------------------------------------------------------
 
         // /**
