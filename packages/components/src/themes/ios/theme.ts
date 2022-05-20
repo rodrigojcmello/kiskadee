@@ -23,7 +23,7 @@ export const iosTheme: KiskadeeSchema = {
           height: '22px',
           lineHeight: '22px',
           fontWeight: 500,
-          fontFamily: 'Roboto',
+          fontFamily: 'SF Pro',
           fontStyle: 'normal',
         },
         hover: {
