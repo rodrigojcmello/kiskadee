@@ -10,6 +10,7 @@ export interface ButtonProps {
   width?: 'auto' | 'block' | 'min-width';
   separateIcon?: boolean;
   type?: 'default' | 'outline' | 'text';
+  hover?: boolean;
 }
 
 export interface ButtonStyle {

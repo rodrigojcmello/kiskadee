@@ -28,7 +28,7 @@ const Container = styled.button<{ theme?: ButtonStyle }>(({ theme }) => ({
   // DEFAULT
 
   cursor: 'pointer',
-  transitionProperty: 'background, box-shadow',
+  transitionProperty: 'background, box-shadow, border-radius, padding',
   transitionDuration: duration,
   transitionTimingFunction: timingFunction,
   fontSize: '16px',
@@ -53,9 +53,10 @@ const Container = styled.button<{ theme?: ButtonStyle }>(({ theme }) => ({
   },
 }));
 
-const Button: FC<ButtonProps> = ({
+export const Button: FC<ButtonProps> = ({
   text,
   typeHTML = 'button',
+  hover,
   // icon,
   onClick,
   // variant,
@@ -69,11 +70,10 @@ const Button: FC<ButtonProps> = ({
       type={typeHTML}
       onClick={onClick}
       disabled={disabled}
+      className={hover ? 'hover' : ''}
     >
       {/* <span>+</span> */}
       <span className="text">{text}</span>
     </Container>
   );
 };
-
-export default Button;

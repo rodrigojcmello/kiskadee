@@ -233,6 +233,7 @@ module.exports = {
         '@typescript-eslint/prefer-readonly-parameter-types': 'off',
 
         '@typescript-eslint/no-type-alias': 'off',
+        '@typescript-eslint/strict-boolean-expressions': 'off',
 
         // '@typescript-eslint/no-var-requires': 'off',
         // 'unicorn/no-useless-undefined': 'off',
@@ -302,7 +303,7 @@ module.exports = {
         //  * this rule never worked well for me, it ends up more disturbing than
         //  * helping, so it is disabled.
         //  */
-        // 'react-hooks/exhaustive-deps': 'off',
+        'react-hooks/exhaustive-deps': 'off',
       },
     },
   ],
