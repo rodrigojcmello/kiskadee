@@ -13,15 +13,26 @@ export interface ButtonProps {
   hover?: boolean;
 }
 
+interface ButtonRest {
+  // Style
+  backgroundColor?: string;
+  border?: string;
+  borderRadius?: string;
+
+  // Sizing
+  padding?: string;
+
+  // Elevation
+  boxShadow?: string;
+}
+
 export interface ButtonStyle {
   container?: {
-    rest?: {
-      border?: string;
-      padding?: string;
-      backgroundColor?: string;
-      borderRadius?: string;
-    };
-    hover?: { boxShadow?: string; backgroundColor?: string };
+    rest?: ButtonRest;
+    hover?: ButtonRest;
+    focused?: ButtonRest;
+    visited?: ButtonRest;
+    pressed?: ButtonRest;
   };
   text?: {
     rest?: {

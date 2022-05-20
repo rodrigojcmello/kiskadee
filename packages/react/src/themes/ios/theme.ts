@@ -10,24 +10,16 @@ export const iosTheme: KiskadeeSchema = {
           border: 'none',
           borderRadius: '10px',
         },
-        hover: {
-          backgroundColor: '#735EAB',
-          boxShadow:
-            '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
-        },
       },
       text: {
         rest: {
-          fontSize: '0.875rem',
+          fontSize: '1.0625rem', // 17px
           color: '#FFFFFF',
           height: '22px',
           lineHeight: '22px',
-          fontWeight: 500,
-          fontFamily: 'SF Pro',
+          fontWeight: 600,
+          fontFamily: 'SF Pro Text',
           fontStyle: 'normal',
-        },
-        hover: {
-          color: '#FFFFFF',
         },
       },
     },
