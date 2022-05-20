@@ -2,14 +2,5 @@
 node_modules
 package-lock.json
 
-# Jest
-coverage
-
-# Production
-build
-
-# MacOS
-.DS_Store
-
 # WebStorm
 .idea
