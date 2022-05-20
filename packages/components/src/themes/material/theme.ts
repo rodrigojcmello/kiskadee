@@ -1,6 +1,6 @@
 import type { KiskadeeSchema } from '../theme.types';
 
-export const materialtheme: KiskadeeSchema = {
+export const materialTheme: KiskadeeSchema = {
   component: {
     button: {
       container: {

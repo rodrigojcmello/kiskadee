@@ -232,6 +232,8 @@ module.exports = {
          */
         '@typescript-eslint/prefer-readonly-parameter-types': 'off',
 
+        '@typescript-eslint/no-type-alias': 'off',
+
         // '@typescript-eslint/no-var-requires': 'off',
         // 'unicorn/no-useless-undefined': 'off',
 

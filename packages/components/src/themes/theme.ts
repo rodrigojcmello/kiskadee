@@ -1,4 +1,4 @@
 import type { KiskadeeSchema } from './theme.types';
-import { materialtheme } from './material/theme';
+import { materialTheme } from './material/theme';
 
-export const theme: KiskadeeSchema = materialtheme;
+export const theme: KiskadeeSchema = materialTheme;

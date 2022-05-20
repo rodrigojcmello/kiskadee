@@ -61,7 +61,7 @@ const Button: FC<ButtonProps> = ({
   // variant,
   disabled,
 }) => {
-  const theme = useContext(KiskadeeContext);
+  const [theme] = useContext(KiskadeeContext);
 
   return (
     <Container
