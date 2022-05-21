@@ -1,51 +1,33 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import type { FC } from 'react';
-import { useContext } from 'react';
 import { Button } from '../../../components/Button/Button';
-import { KiskadeeContext } from '../../../context';
+import { Box } from '../../components/Box/Box';
+import { Container } from '../../components/Container/Container';
 
-export const ButtonDocument: FC = () => {
-  const [theme] = useContext(KiskadeeContext);
-  const { button } = theme.component;
-
+export const ButtonDocumentation: FC = () => {
   return (
-    <div style={{ padding: '30px', display: 'flex', gap: 32 }}>
-      <div>
-        <span>Rest</span>
-        <Button text="Rest" onClick={(): void => {}} />
-      </div>
+    <Container>
+      <Box>
+        <div>
+          <Button text="Text" width="block" onClick={(): void => {}} />
+        </div>
 
-      <div>
-        {button?.container?.hover ? (
-          <Button text="Hover" hover onClick={(): void => {}} />
-        ) : (
-          <span className="material-symbols-outlined">question_mark</span>
-        )}
-      </div>
+        <div>
+          <Button text="Text" width="block" hover onClick={(): void => {}} />
+        </div>
 
-      <div>
-        {button?.container?.focused ? (
-          <Button text="Focused" onClick={(): void => {}} />
-        ) : (
-          <span className="material-symbols-outlined">question_mark</span>
-        )}
-      </div>
+        <div>
+          <Button text="Text" width="block" focus onClick={(): void => {}} />
+        </div>
 
-      <div>
-        {button?.container?.pressed ? (
-          <Button text="Pressed" onClick={(): void => {}} />
-        ) : (
-          <span className="material-symbols-outlined">question_mark</span>
-        )}
-      </div>
+        <div>
+          <Button text="Text" width="block" pressed onClick={(): void => {}} />
+        </div>
 
-      <div>
-        {button?.container?.visited ? (
-          <Button text="Visited" onClick={(): void => {}} />
-        ) : (
-          <span className="material-symbols-outlined">question_mark</span>
-        )}
-      </div>
-    </div>
+        <div>
+          <Button text="Text" width="block" visited onClick={(): void => {}} />
+        </div>
+      </Box>
+    </Container>
   );
 };

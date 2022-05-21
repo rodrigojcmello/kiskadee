@@ -1,68 +1,124 @@
 import styled from '@emotion/styled';
 import type { FC } from 'react';
 import { useContext } from 'react';
-import type { ButtonProps, ButtonStyle } from './Button.types';
+import type { ButtonStyle, ButtonProps } from './Button.types';
 import { KiskadeeContext } from '../../context';
 
 const timingFunction = 'ease';
 const duration = '0.2s';
 
-const Container = styled.button<{ theme?: ButtonStyle }>(({ theme }) => ({
-  //----------------------------------------------------------------------------
-  // Container
-  //----------------------------------------------------------------------------
+const Container = styled.button<
+  Pick<ButtonProps, 'width'> & { theme?: ButtonStyle }
+>(({ theme, width }) => {
+  const borderColor = theme.container?.rest?.borderColor;
+  const borderWidth = theme.container?.rest?.borderWidth;
+  const containerRest = { ...theme.container?.rest };
+  delete containerRest.borderColor;
+  delete containerRest.borderWidth;
 
-  // REST
+  return {
+    //----------------------------------------------------------------------------
+    // Container
+    //----------------------------------------------------------------------------
 
-  ...theme.container?.rest,
+    // REST
+    ...containerRest,
 
-  // HOVER
-
-  '&:hover, &.hover': {
-    ...theme.container?.hover,
-    '& .text': {
-      ...theme.text?.hover,
+    position: 'relative',
+    '&::before': borderColor && {
+      content: '""',
+      position: 'absolute',
+      inset: 0,
+      padding: borderWidth,
+      background: borderColor,
+      borderRadius: 'inherit',
+      mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+      '-webkit-mask-composite': 'xor',
+      maskComposite: 'exclude',
     },
-  },
 
-  // DEFAULT
+    // WIDTH
+    ...(width === 'block' ? { width: '100%' } : {}),
 
-  cursor: 'pointer',
-  transitionProperty: 'background, box-shadow, border-radius, padding',
-  transitionDuration: duration,
-  transitionTimingFunction: timingFunction,
-  fontSize: '16px',
+    // HOVER
+    '&:hover, &.hover': {
+      ...theme.container?.hover,
+      '& .text': {
+        ...theme.text?.hover,
+      },
+    },
 
-  //----------------------------------------------------------------------------
-  // Text
-  //----------------------------------------------------------------------------
+    // FOCUS
+    '&:focus, &.focus': {
+      ...theme.container?.focus,
+      '& .text': {
+        ...theme.text?.focus,
+      },
+    },
 
-  // REST
+    // PRESSED
+    '&.pressed': {
+      ...theme.container?.pressed,
+      '& .text': {
+        ...theme.text?.pressed,
+      },
+    },
 
-  '& .text': {
-    ...theme.text?.rest,
-    transitionProperty: 'color',
+    // VISITED
+    '&:visited, &.visited': {
+      ...theme.container?.visited,
+      '& .text': {
+        ...theme.text?.visited,
+      },
+    },
+
+    // DEFAULT
+    cursor: 'pointer',
+    border: 'none',
+    transitionProperty: 'background, box-shadow, border-radius, padding',
     transitionDuration: duration,
     transitionTimingFunction: timingFunction,
-  },
+    fontSize: '16px',
 
-  // HOVER
+    //----------------------------------------------------------------------------
+    // Text
+    //----------------------------------------------------------------------------
 
-  '&:hover .text, .hover .text': {
-    ...theme.text?.hover,
-  },
-}));
+    // REST
+    '& .text': {
+      ...theme.text?.rest,
+      transitionProperty: 'color, font-size',
+      transitionDuration: duration,
+      transitionTimingFunction: timingFunction,
+    },
+
+    // HOVER
+    '&:hover .text, .hover .text': {
+      ...theme.text?.hover,
+    },
+  };
+});
 
 export const Button: FC<ButtonProps> = ({
   text,
   typeHTML = 'button',
   hover,
+  focus,
+  pressed,
+  visited,
   // icon,
   onClick,
+  width = 'auto',
   // variant,
   disabled,
 }) => {
   const [theme] = useContext(KiskadeeContext);
+
+  const className: string[] = [];
+  if (hover) className.push('hover');
+  if (focus) className.push('focus');
+  if (pressed) className.push('pressed');
+  if (visited) className.push('visited');
 
   return (
     <Container
@@ -70,7 +126,8 @@ export const Button: FC<ButtonProps> = ({
       type={typeHTML}
       onClick={onClick}
       disabled={disabled}
-      className={hover ? 'hover' : ''}
+      className={className.join(' ')}
+      width={width}
     >
       {/* <span>+</span> */}
       <span className="text">{text}</span>

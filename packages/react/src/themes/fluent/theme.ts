@@ -6,14 +6,14 @@ export const fluentTheme: KiskadeeSchema = {
       container: {
         rest: {
           backgroundColor: '#005FB8',
-          padding: '6px 20px',
-          border: 'none',
+          padding: '5px 12px 7px 12px',
           borderRadius: '4px',
+          borderColor:
+            'linear-gradient(180deg, hsl(0deg 0% 100% / 8%) 90%, hsl(0deg 0% 0% / 40%) 100%)',
+          borderWidth: '1px',
         },
         hover: {
-          backgroundColor: '#106EBE',
-          boxShadow:
-            '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+          backgroundColor: '#1A6FBF',
         },
       },
       text: {

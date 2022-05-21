@@ -11,13 +11,17 @@ export interface ButtonProps {
   separateIcon?: boolean;
   type?: 'default' | 'outline' | 'text';
   hover?: boolean;
+  focus?: boolean;
+  pressed?: boolean;
+  visited?: boolean;
 }
 
 interface ButtonRest {
   // Style
   backgroundColor?: string;
-  border?: string;
   borderRadius?: string;
+  borderColor?: string;
+  borderWidth?: string;
 
   // Sizing
   padding?: string;
@@ -30,7 +34,7 @@ export interface ButtonStyle {
   container?: {
     rest?: ButtonRest;
     hover?: ButtonRest;
-    focused?: ButtonRest;
+    focus?: ButtonRest;
     visited?: ButtonRest;
     pressed?: ButtonRest;
   };
@@ -45,5 +49,8 @@ export interface ButtonStyle {
       height?: string;
     };
     hover?: { color?: string };
+    focus?: { color?: string };
+    pressed?: { color?: string };
+    visited?: { color?: string };
   };
 }

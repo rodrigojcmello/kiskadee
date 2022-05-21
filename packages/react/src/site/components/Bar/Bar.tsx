@@ -34,15 +34,16 @@ export const Bar: FC = () => {
   };
 
   useEffect(() => {
-    setTheme(themes.ios);
+    setTheme(themes.material);
   }, []);
 
   return (
     <BarStyled>
       <SelectTheme onChange={handleChange}>
-        <option value="ios">iOS 15 by Apple</option>
-        <option value="material">Material 3 by Google</option>
-        <option value="fluent">Fluent 2 by Microsoft</option>
+        <option value="material">Material v3.0 by Google</option>
+        <option value="ios">iOS v15 by Apple</option>
+        <option value="ios">iOS v15 by Kiskadee</option>
+        <option value="fluent">Fluent by Microsoft</option>
       </SelectTheme>
     </BarStyled>
   );
