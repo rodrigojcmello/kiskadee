@@ -3,28 +3,34 @@ import type { FC } from 'react';
 import { Button } from '../../../components/Button/Button';
 import { Box } from '../../components/Box/Box';
 import { Container } from '../../components/Container/Container';
+import { BoxTitle } from '../../components/BoxTitle/BoxTitle';
 
 export const ButtonDocumentation: FC = () => {
   return (
     <Container>
       <Box>
         <div>
+          <BoxTitle>Rest</BoxTitle>
           <Button text="Text" width="block" onClick={(): void => {}} />
         </div>
 
         <div>
+          <BoxTitle>Hover</BoxTitle>
           <Button text="Text" width="block" hover onClick={(): void => {}} />
         </div>
 
         <div>
+          <BoxTitle>Focus</BoxTitle>
           <Button text="Text" width="block" focus onClick={(): void => {}} />
         </div>
 
         <div>
+          <BoxTitle>Pressed</BoxTitle>
           <Button text="Text" width="block" pressed onClick={(): void => {}} />
         </div>
 
         <div>
+          <BoxTitle>Visited</BoxTitle>
           <Button text="Text" width="block" visited onClick={(): void => {}} />
         </div>
       </Box>
