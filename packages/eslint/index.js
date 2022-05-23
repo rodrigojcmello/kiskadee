@@ -108,7 +108,7 @@ module.exports = {
         'plugin:jest-dom/recommended',
 
         // TypeScript
-        'plugin:@typescript-eslint/all',
+        'plugin:@typescript-eslint/recommended',
         'plugin:import/typescript',
 
         // Prettier
@@ -226,14 +226,15 @@ module.exports = {
         // TypeScript
         //----------------------------------------------------------------------
 
-        /**
-         * This rule is disabled because of the "no-param-reassign" rule that
-         * deals with the same issue.
-         */
-        '@typescript-eslint/prefer-readonly-parameter-types': 'off',
+        // /**
+        //  * This rule is disabled because of the "no-param-reassign" rule that
+        //  * deals with the same issue.
+        //  */
+        // '@typescript-eslint/prefer-readonly-parameter-types': 'off',
 
-        '@typescript-eslint/no-type-alias': 'off',
-        '@typescript-eslint/strict-boolean-expressions': 'off',
+        // '@typescript-eslint/no-type-alias': 'off',
+        // '@typescript-eslint/strict-boolean-expressions': 'off',
+        // '@typescript-eslint/init-declarations': 'off',
 
         // '@typescript-eslint/no-var-requires': 'off',
         // 'unicorn/no-useless-undefined': 'off',
@@ -299,10 +300,9 @@ module.exports = {
          */
         'react/react-in-jsx-scope': 'off',
 
-        // /**
-        //  * this rule never worked well for me, it ends up more disturbing than
-        //  * helping, so it is disabled.
-        //  */
+        /**
+         * More hinders than helps
+         */
         'react-hooks/exhaustive-deps': 'off',
       },
     },

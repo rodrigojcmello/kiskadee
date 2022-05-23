@@ -1,3 +1,7 @@
+import { CSSProperties } from 'react';
+
+export type Interaction = 'rest' | 'hover' | 'focus' | 'pressed' | 'visited';
+
 export interface ButtonProps {
   icon?: string;
   text: string;
@@ -9,44 +13,42 @@ export interface ButtonProps {
   // STYLE
   width?: 'auto' | 'block' | 'min-width';
   separateIcon?: boolean;
-  type?: 'default' | 'outline' | 'text';
-  hover?: boolean;
-  focus?: boolean;
-  pressed?: boolean;
-  visited?: boolean;
+  type?: 'default' | 'flat' | 'outline';
+  interaction?: Interaction;
 }
 
-interface ButtonRest {
+interface ButtonContainer {
   // Style
-  backgroundColor?: string;
-  borderRadius?: string;
-  borderColor?: string;
-  borderWidth?: string;
+  backgroundColor?: CSSProperties['backgroundColor'];
+  borderRadius?: CSSProperties['borderRadius'];
+  borderWidth?: CSSProperties['borderWidth'];
+  borderStyle?: CSSProperties['borderStyle'];
 
   // Sizing
-  padding?: string;
+  padding?: CSSProperties['padding'];
 
   // Elevation
-  boxShadow?: string;
+  boxShadow?: CSSProperties['boxShadow'];
 }
 
-export interface ButtonStyle {
-  container?: {
-    rest?: ButtonRest;
-    hover?: ButtonRest;
-    focus?: ButtonRest;
-    visited?: ButtonRest;
-    pressed?: ButtonRest;
-  };
+interface ButtonFocus {
+  outline?: string;
+  outlineOffset?: string;
+}
+
+export interface ButtonSchema {
+  container?: Partial<
+    Record<Exclude<Interaction, 'focus'>, ButtonContainer>
+  > & { focus?: ButtonContainer & ButtonFocus };
   text?: {
     rest?: {
-      fontFamily?: string;
-      color?: string;
-      fontSize?: string;
-      lineHeight?: string;
-      fontStyle?: string;
-      fontWeight?: number;
-      height?: string;
+      fontFamily?: CSSProperties['fontFamily'];
+      color?: CSSProperties['color'];
+      fontSize?: CSSProperties['fontSize'];
+      lineHeight?: CSSProperties['lineHeight'];
+      fontStyle?: CSSProperties['fontStyle'];
+      fontWeight?: CSSProperties['fontWeight'];
+      height?: CSSProperties['height'];
     };
     hover?: { color?: string };
     focus?: { color?: string };

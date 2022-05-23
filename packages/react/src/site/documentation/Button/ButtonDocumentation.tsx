@@ -16,22 +16,42 @@ export const ButtonDocumentation: FC = () => {
 
         <div>
           <BoxTitle>Hover</BoxTitle>
-          <Button text="Text" width="block" hover onClick={(): void => {}} />
+          <Button
+            text="Text"
+            width="block"
+            interaction="hover"
+            onClick={(): void => {}}
+          />
         </div>
 
         <div>
           <BoxTitle>Focus</BoxTitle>
-          <Button text="Text" width="block" focus onClick={(): void => {}} />
+          <Button
+            text="Text"
+            width="block"
+            interaction="focus"
+            onClick={(): void => {}}
+          />
         </div>
 
         <div>
           <BoxTitle>Pressed</BoxTitle>
-          <Button text="Text" width="block" pressed onClick={(): void => {}} />
+          <Button
+            text="Text"
+            width="block"
+            interaction="pressed"
+            onClick={(): void => {}}
+          />
         </div>
 
         <div>
           <BoxTitle>Visited</BoxTitle>
-          <Button text="Text" width="block" visited onClick={(): void => {}} />
+          <Button
+            text="Text"
+            width="block"
+            interaction="visited"
+            onClick={(): void => {}}
+          />
         </div>
       </Box>
     </Container>

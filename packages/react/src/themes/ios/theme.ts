@@ -1,13 +1,15 @@
 import type { KiskadeeSchema } from '../theme.types';
 
 export const iosTheme: KiskadeeSchema = {
+  name: 'iOs',
+  version: '15.0',
+  kiskadeeVersion: '0.0.1',
   component: {
     button: {
       container: {
         rest: {
           backgroundColor: '#007AFF',
           padding: '13px 20px',
-          border: 'none',
           borderRadius: '10px',
         },
       },

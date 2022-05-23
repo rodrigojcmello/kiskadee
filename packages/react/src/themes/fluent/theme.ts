@@ -1,19 +1,28 @@
 import type { KiskadeeSchema } from '../theme.types';
 
 export const fluentTheme: KiskadeeSchema = {
+  name: 'Fluent',
+  version: '2.0',
+  kiskadeeVersion: '0.0.1',
   component: {
     button: {
       container: {
         rest: {
-          backgroundColor: '#005FB8',
-          padding: '5px 12px 7px 12px',
           borderRadius: '4px',
-          borderColor:
-            'linear-gradient(180deg, hsl(0deg 0% 100% / 8%) 90%, hsl(0deg 0% 0% / 40%) 100%)',
           borderWidth: '1px',
+          borderStyle: 'solid',
+          backgroundColor: '#005FB8',
+          padding: '4px 11px 6px 11px',
         },
         hover: {
           backgroundColor: '#1A6FBF',
+        },
+        pressed: {
+          backgroundColor: '#327EC5',
+        },
+        focus: {
+          outline: '2px solid #000',
+          outlineOffset: '1px',
         },
       },
       text: {
@@ -28,6 +37,9 @@ export const fluentTheme: KiskadeeSchema = {
         },
         hover: {
           color: '#FFFFFF',
+        },
+        pressed: {
+          color: 'rgba(255, 255, 255, 0.7)',
         },
       },
     },

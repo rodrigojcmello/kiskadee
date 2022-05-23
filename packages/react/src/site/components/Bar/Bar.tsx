@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import type { ChangeEvent, FC } from 'react';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { KiskadeeContext } from '../../../context';
 import { materialTheme } from '../../../themes/material/theme';
 import { fluentTheme } from '../../../themes/fluent/theme';
@@ -21,29 +21,30 @@ const SelectTheme = styled.select(() => ({
 }));
 
 const themes: Record<string, KiskadeeSchema> = {
-  material: materialTheme,
-  fluent: fluentTheme,
-  ios: iosTheme,
+  Material: materialTheme,
+  Fluent: fluentTheme,
+  iOS: iosTheme,
 };
 
 export const Bar: FC = () => {
   const [, setTheme] = useContext(KiskadeeContext);
+  const [themeSelected, setThemeSelected] = useState('Fluent');
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>): void => {
-    setTheme(themes[event.target.value]);
+    setThemeSelected(event.target.value);
   };
 
   useEffect(() => {
-    setTheme(themes.material);
-  }, []);
+    setTheme(themes[themeSelected]);
+  }, [themeSelected]);
 
   return (
     <BarStyled>
-      <SelectTheme onChange={handleChange}>
-        <option value="material">Material v3.0 by Google</option>
-        <option value="ios">iOS v15 by Apple</option>
-        <option value="ios">iOS v15 by Kiskadee</option>
-        <option value="fluent">Fluent by Microsoft</option>
+      <SelectTheme value={themeSelected} onChange={handleChange}>
+        <option value="Material">Material 3 by Google</option>
+        <option value="iOS">iOS 15 by Apple</option>
+        <option value="Fluent">Fluent by Microsoft</option>
+        {/* <option value="Carbon">Carbon by IBM</option> */}
       </SelectTheme>
     </BarStyled>
   );

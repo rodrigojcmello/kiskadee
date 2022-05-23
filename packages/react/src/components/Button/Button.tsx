@@ -1,91 +1,58 @@
 import styled from '@emotion/styled';
 import type { FC } from 'react';
 import { useContext } from 'react';
-import type { ButtonStyle, ButtonProps } from './Button.types';
+import type { ButtonSchema, ButtonProps } from './Button.types';
 import { KiskadeeContext } from '../../context';
 
 const timingFunction = 'ease';
 const duration = '0.2s';
 
-const Container = styled.button<
-  Pick<ButtonProps, 'width'> & { theme?: ButtonStyle }
+const ButtonStyle = styled.button<
+  Pick<ButtonProps, 'width'> & {
+    theme?: ButtonSchema;
+  }
 >(({ theme, width }) => {
-  const borderColor = theme.container?.rest?.borderColor;
-  const borderWidth = theme.container?.rest?.borderWidth;
-  const containerRest = { ...theme.container?.rest };
-  delete containerRest.borderColor;
-  delete containerRest.borderWidth;
-
   return {
-    //----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Container
-    //----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     // REST
-    ...containerRest,
-
-    position: 'relative',
-    '&::before': borderColor && {
-      content: '""',
-      position: 'absolute',
-      inset: 0,
-      padding: borderWidth,
-      background: borderColor,
-      borderRadius: 'inherit',
-      mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-      '-webkit-mask-composite': 'xor',
-      maskComposite: 'exclude',
+    '&.button': {
+      ...theme.container?.rest,
+      cursor: 'pointer',
+      border: 'none',
+      fontSize: '16px',
+      transitionProperty: 'box-shadow, border, background, padding',
+      transitionDuration: duration,
+      transitionTimingFunction: timingFunction,
     },
 
-    // WIDTH
+    // OPTION - WIDTH
     ...(width === 'block' ? { width: '100%' } : {}),
 
-    // HOVER
-    '&:hover, &.hover': {
-      ...theme.container?.hover,
-      '& .text': {
-        ...theme.text?.hover,
-      },
-    },
+    //--------------------------------------------------------------------------
+    // Interaction
+    //--------------------------------------------------------------------------
 
-    // FOCUS
-    '&:focus, &.focus': {
-      ...theme.container?.focus,
-      '& .text': {
-        ...theme.text?.focus,
-      },
-    },
+    // HOVER
+    '&:hover, &.--hover': theme.container?.hover as never,
 
     // PRESSED
-    '&.pressed': {
-      ...theme.container?.pressed,
-      '& .text': {
-        ...theme.text?.pressed,
-      },
-    },
+    '&:active, &.--pressed': theme.container?.pressed as never,
+
+    // FOCUS
+    '&:focus, &.--focus': theme.container?.focus as never,
 
     // VISITED
-    '&:visited, &.visited': {
-      ...theme.container?.visited,
-      '& .text': {
-        ...theme.text?.visited,
-      },
-    },
+    '&:visited, &.--visited': theme.container?.visited as never,
 
-    // DEFAULT
-    cursor: 'pointer',
-    border: 'none',
-    transitionProperty: 'background, box-shadow, border-radius, padding',
-    transitionDuration: duration,
-    transitionTimingFunction: timingFunction,
-    fontSize: '16px',
-
-    //----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Text
-    //----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     // REST
-    '& .text': {
+    '& .button__text': {
       ...theme.text?.rest,
       transitionProperty: 'color, font-size',
       transitionDuration: duration,
@@ -93,19 +60,26 @@ const Container = styled.button<
     },
 
     // HOVER
-    '&:hover .text, .hover .text': {
-      ...theme.text?.hover,
-    },
+    '&:hover .button__text, .--hover .button__text': theme.text?.hover as never,
+
+    // PRESSED
+    '&:active .button__text, &.--pressed .button__text': theme.text
+      ?.pressed as never,
+
+    // FOCUS
+    '&:focus .button__text, &.--focus .button__text': theme.text
+      ?.focus as never,
+
+    // VISITED
+    '&:visited .button__text, &.--visited .button__text': theme.text
+      ?.visited as never,
   };
 });
 
 export const Button: FC<ButtonProps> = ({
   text,
   typeHTML = 'button',
-  hover,
-  focus,
-  pressed,
-  visited,
+  interaction,
   // icon,
   onClick,
   width = 'auto',
@@ -114,23 +88,19 @@ export const Button: FC<ButtonProps> = ({
 }) => {
   const [theme] = useContext(KiskadeeContext);
 
-  const className: string[] = [];
-  if (hover) className.push('hover');
-  if (focus) className.push('focus');
-  if (pressed) className.push('pressed');
-  if (visited) className.push('visited');
-
   return (
-    <Container
-      theme={theme.component.button}
+    <ButtonStyle
       type={typeHTML}
       onClick={onClick}
-      disabled={disabled}
-      className={className.join(' ')}
+      theme={theme.component.button}
+      className={['button', interaction ? `--${interaction}` : '']
+        .join(' ')
+        .trim()}
+      // Options
       width={width}
+      disabled={disabled}
     >
-      {/* <span>+</span> */}
-      <span className="text">{text}</span>
-    </Container>
+      <span className="button__text">{text}</span>
+    </ButtonStyle>
   );
 };

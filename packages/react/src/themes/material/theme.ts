@@ -1,13 +1,15 @@
 import type { KiskadeeSchema } from '../theme.types';
 
 export const materialTheme: KiskadeeSchema = {
+  name: 'Material',
+  version: '3.0',
+  kiskadeeVersion: '0.0.1',
   component: {
     button: {
       container: {
         rest: {
           backgroundColor: '#6750A4',
           padding: '10px 24px',
-          border: 'none',
           borderRadius: '100px',
         },
         hover: {

@@ -1,7 +1,10 @@
-import type { ButtonStyle } from '../components/Button/Button.types';
+import type { ButtonSchema } from '../components/Button/Button.types';
 
 export interface KiskadeeSchema {
+  name: string;
+  version: string;
+  kiskadeeVersion: string;
   component: {
-    button?: ButtonStyle;
+    button?: ButtonSchema;
   };
 }
