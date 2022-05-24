@@ -56,16 +56,26 @@ export const ButtonDocumentation: FC = () => {
       </Box>
       <Box>
         <div>
-          <BoxTitle>Success</BoxTitle>
+          <BoxTitle>Primary</BoxTitle>
           <Button text="Text" width="block" onClick={(): void => {}} />
         </div>
 
         <div>
-          <BoxTitle>Warn</BoxTitle>
+          <BoxTitle>Success</BoxTitle>
           <Button
             text="Text"
             width="block"
-            interaction="hover"
+            validation="success"
+            onClick={(): void => {}}
+          />
+        </div>
+
+        <div>
+          <BoxTitle>Warning</BoxTitle>
+          <Button
+            text="Text"
+            width="block"
+            validation="warning"
             onClick={(): void => {}}
           />
         </div>
@@ -75,7 +85,7 @@ export const ButtonDocumentation: FC = () => {
           <Button
             text="Text"
             width="block"
-            interaction="focus"
+            validation="danger"
             onClick={(): void => {}}
           />
         </div>
@@ -85,7 +95,7 @@ export const ButtonDocumentation: FC = () => {
           <Button
             text="Text"
             width="block"
-            interaction="pressed"
+            validation="disabled"
             onClick={(): void => {}}
           />
         </div>

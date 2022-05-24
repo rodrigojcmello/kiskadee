@@ -73,11 +73,27 @@ const ButtonStyle = styled.button<
     // VALIDATION
     //--------------------------------------------------------------------------
 
-    // // DISABLED
-    // '&:disabled': {
-    //   ...theme.container?.disabled,
-    //   '.button__text': theme.text?.disabled,
-    // },
+    // DISABLED
+    '&:disabled': {
+      ...theme.container?.disabled,
+      cursor: 'not-allowed',
+      '.button__text': theme.text?.disabled,
+    },
+
+    // SUCCESS
+    '&.--success': {
+      ...theme.container?.success,
+    },
+
+    // WARNING
+    '&.--warning': {
+      ...theme.container?.warning,
+    },
+
+    // DANGER
+    '&.--danger': {
+      ...theme.container?.danger,
+    },
   };
 });
 
@@ -85,11 +101,11 @@ export const Button: FC<ButtonProps> = ({
   text,
   typeHTML = 'button',
   interaction,
+  validation,
   // icon,
   onClick,
   width = 'auto',
   // variant,
-  disabled,
 }) => {
   const [theme] = useContext(KiskadeeContext);
 
@@ -98,12 +114,16 @@ export const Button: FC<ButtonProps> = ({
       type={typeHTML}
       onClick={onClick}
       theme={theme.component.button}
-      className={['button', interaction ? `--${interaction}` : '']
+      className={[
+        'button',
+        interaction ? `--${interaction}` : '',
+        validation ? `--${validation}` : '',
+      ]
         .join(' ')
         .trim()}
       // Options
       width={width}
-      disabled={disabled}
+      disabled={validation === 'disabled'}
     >
       <span className="button__text">{text}</span>
     </ButtonStyle>

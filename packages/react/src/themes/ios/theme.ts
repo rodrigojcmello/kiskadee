@@ -2,6 +2,7 @@ import type { KiskadeeSchema } from '../theme.types';
 
 export const iosTheme: KiskadeeSchema = {
   name: 'iOs',
+  author: 'Apple',
   version: '15.0',
   kiskadeeVersion: '0.0.1',
   component: {

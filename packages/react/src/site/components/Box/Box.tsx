@@ -5,4 +5,5 @@ export const Box = styled.div(() => ({
   gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr',
   gap: 32,
   width: '100%',
+  marginTop: 48,
 }));

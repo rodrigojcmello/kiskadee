@@ -2,6 +2,7 @@ import type { KiskadeeSchema } from '../theme.types';
 
 export const fluentTheme: KiskadeeSchema = {
   name: 'Fluent',
+  author: 'Microsoft',
   version: '2.0',
   kiskadeeVersion: '0.0.1',
   component: {
@@ -23,6 +24,9 @@ export const fluentTheme: KiskadeeSchema = {
         focus: {
           outline: '2px solid #000',
           outlineOffset: '1px',
+        },
+        disabled: {
+          backgroundColor: '#C8C8C8',
         },
       },
       text: {

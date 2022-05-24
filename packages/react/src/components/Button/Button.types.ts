@@ -1,12 +1,21 @@
 import { CSSProperties } from 'react';
 
-export type Interaction = 'rest' | 'hover' | 'focus' | 'pressed' | 'visited';
+export type InteractionState =
+  | 'rest'
+  | 'hover'
+  | 'focus'
+  | 'pressed'
+  | 'visited';
+
+type ValidationState = 'disabled' | 'success' | 'warning' | 'danger';
+
+type ButtonState = InteractionState | ValidationState;
 
 export interface ButtonProps {
   icon?: string;
   text: string;
   onClick: () => void;
-  disabled?: boolean;
+  // disabled?: boolean;
   variant?: string;
   typeHTML?: 'button' | 'reset' | 'submit';
 
@@ -14,7 +23,8 @@ export interface ButtonProps {
   width?: 'auto' | 'block' | 'min-width';
   separateIcon?: boolean;
   type?: 'default' | 'flat' | 'outline';
-  interaction?: Interaction;
+  interaction?: InteractionState;
+  validation?: ValidationState;
 }
 
 interface ButtonContainer {
@@ -38,7 +48,7 @@ interface ButtonFocus {
 
 export interface ButtonSchema {
   container?: Partial<
-    Record<Exclude<Interaction, 'focus'>, ButtonContainer>
+    Record<Exclude<ButtonState, 'focus'>, ButtonContainer>
   > & { focus?: ButtonContainer & ButtonFocus };
   text?: {
     rest?: {
@@ -54,5 +64,6 @@ export interface ButtonSchema {
     focus?: { color?: string };
     pressed?: { color?: string };
     visited?: { color?: string };
+    disabled?: { color?: string };
   };
 }
