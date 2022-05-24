@@ -68,6 +68,16 @@ const ButtonStyle = styled.button<
       ...theme.container?.visited,
       '.button__text': theme.text?.visited,
     },
+
+    //--------------------------------------------------------------------------
+    // VALIDATION
+    //--------------------------------------------------------------------------
+
+    // // DISABLED
+    // '&:disabled': {
+    //   ...theme.container?.disabled,
+    //   '.button__text': theme.text?.disabled,
+    // },
   };
 });
 

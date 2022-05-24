@@ -54,6 +54,42 @@ export const ButtonDocumentation: FC = () => {
           />
         </div>
       </Box>
+      <Box>
+        <div>
+          <BoxTitle>Success</BoxTitle>
+          <Button text="Text" width="block" onClick={(): void => {}} />
+        </div>
+
+        <div>
+          <BoxTitle>Warn</BoxTitle>
+          <Button
+            text="Text"
+            width="block"
+            interaction="hover"
+            onClick={(): void => {}}
+          />
+        </div>
+
+        <div>
+          <BoxTitle>Danger</BoxTitle>
+          <Button
+            text="Text"
+            width="block"
+            interaction="focus"
+            onClick={(): void => {}}
+          />
+        </div>
+
+        <div>
+          <BoxTitle>Disabled</BoxTitle>
+          <Button
+            text="Text"
+            width="block"
+            interaction="pressed"
+            onClick={(): void => {}}
+          />
+        </div>
+      </Box>
     </Container>
   );
 };
