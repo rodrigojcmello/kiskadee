@@ -39,7 +39,10 @@ const ButtonStyle = styled.button<
     '&:hover, &.--hover': theme.container?.hover as never,
 
     // PRESSED
-    '&:active, &.--pressed': theme.container?.pressed as never,
+    '&:active, &.--pressed': {
+      ...theme.container?.pressed,
+      outline: 'none !important',
+    },
 
     // FOCUS
     '&:focus, &.--focus': theme.container?.focus as never,
@@ -91,7 +94,10 @@ export const Button: FC<ButtonProps> = ({
   return (
     <ButtonStyle
       type={typeHTML}
-      onClick={onClick}
+      onClick={(event) => {
+        event.currentTarget.blur();
+        onClick();
+      }}
       theme={theme.component.button}
       className={['button', interaction ? `--${interaction}` : '']
         .join(' ')
