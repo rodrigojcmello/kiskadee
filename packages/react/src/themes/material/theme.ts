@@ -22,6 +22,7 @@ export const materialTheme: KiskadeeSchema = {
         },
         pressed: {
           backgroundColor: '#7965AF',
+          boxShadow: 'none',
         },
       },
       text: {

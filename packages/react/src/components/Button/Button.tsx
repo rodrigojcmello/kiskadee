@@ -17,7 +17,6 @@ const ButtonStyle = styled.button<
     // Container
     //--------------------------------------------------------------------------
 
-    // REST
     '&.button': {
       ...theme.container?.rest,
       cursor: 'pointer',
@@ -32,29 +31,9 @@ const ButtonStyle = styled.button<
     ...(width === 'block' ? { width: '100%' } : {}),
 
     //--------------------------------------------------------------------------
-    // Interaction
-    //--------------------------------------------------------------------------
-
-    // HOVER
-    '&:hover, &.--hover': theme.container?.hover as never,
-
-    // PRESSED
-    '&:active, &.--pressed': {
-      ...theme.container?.pressed,
-      outline: 'none !important',
-    },
-
-    // FOCUS
-    '&:focus, &.--focus': theme.container?.focus as never,
-
-    // VISITED
-    '&:visited, &.--visited': theme.container?.visited as never,
-
-    //--------------------------------------------------------------------------
     // Text
     //--------------------------------------------------------------------------
 
-    // REST
     '& .button__text': {
       ...theme.text?.rest,
       transitionProperty: 'color, font-size',
@@ -62,20 +41,33 @@ const ButtonStyle = styled.button<
       transitionTimingFunction: timingFunction,
     },
 
+    //--------------------------------------------------------------------------
+    // INTERACTION
+    //--------------------------------------------------------------------------
+
     // HOVER
-    '&:hover .button__text, .--hover .button__text': theme.text?.hover as never,
+    '&:hover, &.--hover': {
+      ...theme.container?.hover,
+      '.button__text': theme.text?.hover,
+    },
 
     // PRESSED
-    '&:active .button__text, &.--pressed .button__text': theme.text
-      ?.pressed as never,
+    '&:active, &.--pressed': {
+      ...theme.container?.pressed,
+      '.button__text': theme.text?.pressed,
+    },
 
     // FOCUS
-    '&:focus .button__text, &.--focus .button__text': theme.text
-      ?.focus as never,
+    '&:focus-visible, &.--focus': {
+      ...theme.container?.focus,
+      '.button__text': theme.text?.focus,
+    },
 
     // VISITED
-    '&:visited .button__text, &.--visited .button__text': theme.text
-      ?.visited as never,
+    '&:visited, &.--visited': {
+      ...theme.container?.visited,
+      '.button__text': theme.text?.visited,
+    },
   };
 });
 
@@ -94,10 +86,7 @@ export const Button: FC<ButtonProps> = ({
   return (
     <ButtonStyle
       type={typeHTML}
-      onClick={(event) => {
-        event.currentTarget.blur();
-        onClick();
-      }}
+      onClick={onClick}
       theme={theme.component.button}
       className={['button', interaction ? `--${interaction}` : '']
         .join(' ')
