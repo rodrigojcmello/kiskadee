@@ -109,18 +109,16 @@ export const Button: FC<ButtonProps> = ({
 }) => {
   const [theme] = useContext(KiskadeeContext);
 
+  const classeName = ['button'];
+  if (interaction) classeName.push(`--${interaction}`);
+  if (validation) classeName.push(`--${validation}`);
+
   return (
     <ButtonStyle
       type={typeHTML}
       onClick={onClick}
       theme={theme.component.button}
-      className={[
-        'button',
-        interaction ? `--${interaction}` : '',
-        validation ? `--${validation}` : '',
-      ]
-        .join(' ')
-        .trim()}
+      className={classeName.join(' ').trim()}
       // Options
       width={width}
       disabled={validation === 'disabled'}
