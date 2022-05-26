@@ -11,7 +11,13 @@ export const ButtonDocumentation: FC = () => {
       <Box>
         <div>
           <BoxTitle>Rest</BoxTitle>
-          <Button text="Text" width="block" onClick={(): void => {}} />
+          <Button
+            text="Text"
+            width="block"
+            type="contained"
+            variant="primary"
+            onClick={(): void => {}}
+          />
         </div>
 
         <div>
@@ -19,6 +25,8 @@ export const ButtonDocumentation: FC = () => {
           <Button
             text="Text"
             width="block"
+            type="contained"
+            variant="primary"
             interaction="hover"
             onClick={(): void => {}}
           />
@@ -29,6 +37,8 @@ export const ButtonDocumentation: FC = () => {
           <Button
             text="Text"
             width="block"
+            type="contained"
+            variant="primary"
             interaction="focus"
             onClick={(): void => {}}
           />
@@ -39,6 +49,8 @@ export const ButtonDocumentation: FC = () => {
           <Button
             text="Text"
             width="block"
+            type="contained"
+            variant="primary"
             interaction="pressed"
             onClick={(): void => {}}
           />
@@ -49,6 +61,8 @@ export const ButtonDocumentation: FC = () => {
           <Button
             text="Text"
             width="block"
+            type="contained"
+            variant="primary"
             interaction="visited"
             onClick={(): void => {}}
           />
@@ -56,16 +70,12 @@ export const ButtonDocumentation: FC = () => {
       </Box>
       <Box>
         <div>
-          <BoxTitle>Primary</BoxTitle>
-          <Button text="Text" width="block" onClick={(): void => {}} />
-        </div>
-
-        <div>
           <BoxTitle>Success</BoxTitle>
           <Button
             text="Text"
             width="block"
-            validation="success"
+            type="contained"
+            variant="success"
             onClick={(): void => {}}
           />
         </div>
@@ -75,7 +85,8 @@ export const ButtonDocumentation: FC = () => {
           <Button
             text="Text"
             width="block"
-            validation="warning"
+            type="contained"
+            variant="warning"
             onClick={(): void => {}}
           />
         </div>
@@ -85,17 +96,8 @@ export const ButtonDocumentation: FC = () => {
           <Button
             text="Text"
             width="block"
-            validation="danger"
-            onClick={(): void => {}}
-          />
-        </div>
-
-        <div>
-          <BoxTitle>Disabled</BoxTitle>
-          <Button
-            text="Text"
-            width="block"
-            validation="disabled"
+            type="contained"
+            variant="danger"
             onClick={(): void => {}}
           />
         </div>

@@ -8,17 +8,17 @@ const timingFunction = 'ease';
 const duration = '0.2s';
 
 const ButtonStyle = styled.button<
-  Pick<ButtonProps, 'width'> & {
+  Pick<ButtonProps, 'width' | 'variant'> & {
     theme?: ButtonSchema;
+    typeStyle: ButtonProps['type'];
   }
->(({ theme, width }) => {
+>(({ theme, width, typeStyle, variant }) => {
   return {
     //--------------------------------------------------------------------------
     // Container
     //--------------------------------------------------------------------------
-
     '&.button': {
-      ...theme.container?.rest,
+      ...theme.container?.[typeStyle]?.[variant]?.rest,
       cursor: 'pointer',
       border: 'none',
       fontSize: '16px',
@@ -35,7 +35,7 @@ const ButtonStyle = styled.button<
     //--------------------------------------------------------------------------
 
     '& .button__text': {
-      ...theme.text?.rest,
+      ...theme.text?.[typeStyle]?.[variant]?.rest,
       transitionProperty: 'color, font-size',
       transitionDuration: duration,
       transitionTimingFunction: timingFunction,
@@ -47,52 +47,33 @@ const ButtonStyle = styled.button<
 
     // HOVER
     '&:hover, &.--hover': {
-      ...theme.container?.hover,
-      '.button__text': theme.text?.hover,
+      ...theme.container?.[typeStyle]?.[variant]?.hover,
+      '.button__text': theme.text?.[typeStyle]?.[variant]?.hover,
     },
 
     // PRESSED
     '&:active, &.--pressed': {
-      ...theme.container?.pressed,
-      '.button__text': theme.text?.pressed,
+      ...theme.container?.[typeStyle]?.[variant]?.pressed,
+      '.button__text': theme.text?.[typeStyle]?.[variant]?.pressed,
     },
 
     // FOCUS
     '&:focus-visible, &.--focus': {
-      ...theme.container?.focus,
-      '.button__text': theme.text?.focus,
+      ...theme.container?.[typeStyle]?.[variant]?.focus,
+      '.button__text': theme.text?.[typeStyle]?.[variant]?.focus,
     },
 
     // VISITED
     '&:visited, &.--visited': {
-      ...theme.container?.visited,
-      '.button__text': theme.text?.visited,
+      ...theme.container?.[typeStyle]?.[variant]?.visited,
+      '.button__text': theme.text?.[typeStyle]?.[variant]?.visited,
     },
-
-    //--------------------------------------------------------------------------
-    // VALIDATION
-    //--------------------------------------------------------------------------
 
     // DISABLED
     '&:disabled': {
-      ...theme.container?.disabled,
+      ...theme.container?.[typeStyle]?.[variant]?.disabled,
       cursor: 'not-allowed',
-      '.button__text': theme.text?.disabled,
-    },
-
-    // SUCCESS
-    '&.--success': {
-      ...theme.container?.success,
-    },
-
-    // WARNING
-    '&.--warning': {
-      ...theme.container?.warning,
-    },
-
-    // DANGER
-    '&.--danger': {
-      ...theme.container?.danger,
+      '.button__text': theme.text?.[typeStyle]?.[variant]?.disabled,
     },
   };
 });
@@ -102,6 +83,8 @@ export const Button: FC<ButtonProps> = ({
   typeHTML = 'button',
   interaction,
   validation,
+  type,
+  variant,
   // icon,
   onClick,
   width = 'auto',
@@ -113,6 +96,8 @@ export const Button: FC<ButtonProps> = ({
   if (interaction) classeName.push(`--${interaction}`);
   if (validation) classeName.push(`--${validation}`);
 
+  // theme.component.button?.container?.contained?.primary?.rest?.backgroundColor;
+
   return (
     <ButtonStyle
       type={typeHTML}
@@ -121,7 +106,9 @@ export const Button: FC<ButtonProps> = ({
       className={classeName.join(' ').trim()}
       // Options
       width={width}
-      disabled={validation === 'disabled'}
+      variant={variant}
+      typeStyle={type}
+      // disabled={validation === 'disabled'}
     >
       <span className="button__text">{text}</span>
     </ButtonStyle>
