@@ -38,28 +38,36 @@ export interface ButtonProps {
 // Elements
 //------------------------------------------------------------------------------
 
-interface ButtonElementContainer {
+interface ButtonElementContainerRequired {
+  backgroundColor: CSSProperties['backgroundColor'];
+  textAlign: CSSProperties['textAlign'];
+
+  // Sizing
+  padding: CSSProperties['padding'];
+}
+
+interface ButtonElementContainerOptional {
   // Style
   backgroundColor?: CSSProperties['backgroundColor'];
   borderRadius?: CSSProperties['borderRadius'];
   borderWidth?: CSSProperties['borderWidth'];
   borderStyle?: CSSProperties['borderStyle'];
 
-  // Sizing
-  padding?: CSSProperties['padding'];
-
   // Elevation
   boxShadow?: CSSProperties['boxShadow'];
 }
 
+type ButtonElementContainer = ButtonElementContainerRequired &
+  ButtonElementContainerOptional;
+
 interface ButtonElementText {
-  fontFamily?: CSSProperties['fontFamily'];
-  color?: CSSProperties['color'];
-  fontSize?: CSSProperties['fontSize'];
-  lineHeight?: CSSProperties['lineHeight'];
-  fontStyle?: CSSProperties['fontStyle'];
-  fontWeight?: CSSProperties['fontWeight'];
-  height?: CSSProperties['height'];
+  fontFamily: CSSProperties['fontFamily'];
+  color: CSSProperties['color'];
+  fontSize: CSSProperties['fontSize'];
+  lineHeight: CSSProperties['lineHeight'];
+  fontStyle: CSSProperties['fontStyle'];
+  fontWeight: CSSProperties['fontWeight'];
+  height: CSSProperties['height'];
 }
 
 //------------------------------------------------------------------------------
@@ -73,11 +81,11 @@ interface ButtonElementContainerFocus {
 
 type ButtonElementContainerVariantModifier = {
   rest: ButtonElementContainer;
-  hover?: ButtonElementContainer;
-  focus?: ButtonElementContainer & ButtonElementContainerFocus;
-  pressed?: ButtonElementContainer;
-  visited?: ButtonElementContainer;
-  disabled?: ButtonElementContainer;
+  hover?: ButtonElementContainerOptional;
+  focus?: ButtonElementContainerOptional & ButtonElementContainerFocus;
+  pressed?: ButtonElementContainerOptional;
+  visited?: ButtonElementContainerOptional;
+  disabled?: ButtonElementContainerOptional;
 };
 
 type ButtonElementTextVariantModifier = {

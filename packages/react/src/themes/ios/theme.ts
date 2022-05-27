@@ -12,6 +12,7 @@ export const iosTheme: KiskadeeSchema = {
           primary: {
             rest: {
               backgroundColor: '#007AFF',
+              textAlign: 'center',
               padding: '14px 20px',
               borderRadius: '10px',
             },
@@ -24,6 +25,7 @@ export const iosTheme: KiskadeeSchema = {
               backgroundColor: '#E1EBFE',
               padding: '14px 20px',
               borderRadius: '10px',
+              textAlign: 'center',
             },
             disabled: {
               backgroundColor: '#74748114',
@@ -34,6 +36,7 @@ export const iosTheme: KiskadeeSchema = {
               backgroundColor: '#E9E9EA',
               padding: '14px 20px',
               borderRadius: '10px',
+              textAlign: 'center',
             },
             disabled: {
               backgroundColor: '#74748114',

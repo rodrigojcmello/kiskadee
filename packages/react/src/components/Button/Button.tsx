@@ -22,7 +22,7 @@ const ButtonStyle = styled.button<
       cursor: 'pointer',
       border: 'none',
       fontSize: '16px',
-      transitionProperty: 'box-shadow, border, background, padding',
+      transitionProperty: 'box-shadow, border, background, padding, text-align',
       transitionDuration: duration,
       transitionTimingFunction: timingFunction,
     },

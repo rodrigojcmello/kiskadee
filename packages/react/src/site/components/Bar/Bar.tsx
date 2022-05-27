@@ -7,6 +7,7 @@ import { fluentTheme } from '../../../themes/fluent/theme';
 import { iosTheme } from '../../../themes/ios/theme';
 import { materialKiskadeeTheme } from '../../../themes/materialKiskadee/theme';
 import type { KiskadeeSchema } from '../../../themes/theme.types';
+import { carbonTheme } from '../../../themes/carbon/theme';
 
 const BarStyled = styled.div(() => ({
   padding: 8,
@@ -26,11 +27,12 @@ const themes: Record<string, KiskadeeSchema> = {
   MaterialKiskadee: materialKiskadeeTheme,
   Fluent: fluentTheme,
   iOS: iosTheme,
+  Carbon: carbonTheme,
 };
 
 export const Bar: FC = () => {
   const [, setTheme] = useContext(KiskadeeContext);
-  const [themeSelected, setThemeSelected] = useState('Fluent');
+  const [themeSelected, setThemeSelected] = useState('Material');
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>): void => {
     setThemeSelected(event.target.value);
@@ -44,9 +46,9 @@ export const Bar: FC = () => {
     <BarStyled>
       <SelectTheme value={themeSelected} onChange={handleChange}>
         <option value="Material">Material 3 by Google</option>
-        <option value="MaterialKiskadee">Kiskadee by Rodrigo Mello</option>
-        <option value="iOS">iOS 15 by Apple</option>
-        <option value="Fluent">Fluent by Microsoft</option>
+        <option value="MaterialKiskadee">Capybara by Kiskadee</option>
+        <option value="iOS">iOS 15.2 by Apple</option>
+        <option value="Fluent">Windows UI 2.7 by Microsoft</option>
         <option value="Carbon">Carbon by IBM</option>
       </SelectTheme>
     </BarStyled>
