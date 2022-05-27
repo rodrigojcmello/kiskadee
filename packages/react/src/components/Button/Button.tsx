@@ -82,21 +82,18 @@ export const Button: FC<ButtonProps> = ({
   text,
   typeHTML = 'button',
   interaction,
-  validation,
   type,
   variant,
   // icon,
   onClick,
   width = 'auto',
+  disabled,
   // variant,
 }) => {
   const [theme] = useContext(KiskadeeContext);
 
   const classeName = ['button'];
   if (interaction) classeName.push(`--${interaction}`);
-  if (validation) classeName.push(`--${validation}`);
-
-  // theme.component.button?.container?.contained?.primary?.rest?.backgroundColor;
 
   return (
     <ButtonStyle
@@ -108,7 +105,7 @@ export const Button: FC<ButtonProps> = ({
       width={width}
       variant={variant}
       typeStyle={type}
-      // disabled={validation === 'disabled'}
+      disabled={disabled}
     >
       <span className="button__text">{text}</span>
     </ButtonStyle>

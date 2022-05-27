@@ -8,21 +8,83 @@ export const iosTheme: KiskadeeSchema = {
   component: {
     button: {
       container: {
-        rest: {
-          backgroundColor: '#007AFF',
-          padding: '13px 20px',
-          borderRadius: '10px',
+        contained: {
+          primary: {
+            rest: {
+              backgroundColor: '#007AFF',
+              padding: '14px 20px',
+              borderRadius: '10px',
+            },
+            disabled: {
+              backgroundColor: '#74748114',
+            },
+          },
+          secondary: {
+            rest: {
+              backgroundColor: '#E1EBFE',
+              padding: '14px 20px',
+              borderRadius: '10px',
+            },
+            disabled: {
+              backgroundColor: '#74748114',
+            },
+          },
+          tertiary: {
+            rest: {
+              backgroundColor: '#E9E9EA',
+              padding: '14px 20px',
+              borderRadius: '10px',
+            },
+            disabled: {
+              backgroundColor: '#74748114',
+            },
+          },
         },
       },
       text: {
-        rest: {
-          fontSize: '1.0625rem', // 17px
-          color: '#FFFFFF',
-          height: '22px',
-          lineHeight: '22px',
-          fontWeight: 600,
-          fontFamily: 'SF Pro Text',
-          fontStyle: 'normal',
+        contained: {
+          primary: {
+            rest: {
+              fontSize: '1.0625rem',
+              color: '#FFFFFF',
+              height: '22px',
+              lineHeight: '22px',
+              fontWeight: 600,
+              fontFamily: 'SF Pro Text',
+              fontStyle: 'normal',
+            },
+            disabled: {
+              color: '#3c3c444d',
+            },
+          },
+          secondary: {
+            rest: {
+              fontSize: '1.0625rem',
+              color: '#307DF6',
+              height: '22px',
+              lineHeight: '22px',
+              fontWeight: 600,
+              fontFamily: 'SF Pro Text',
+              fontStyle: 'normal',
+            },
+            disabled: {
+              color: '#3c3c444d',
+            },
+          },
+          tertiary: {
+            rest: {
+              fontSize: '1.0625rem',
+              color: '#307DF6',
+              height: '22px',
+              lineHeight: '22px',
+              fontWeight: 600,
+              fontFamily: 'SF Pro Text',
+              fontStyle: 'normal',
+            },
+            disabled: {
+              color: '#3c3c444d',
+            },
+          },
         },
       },
     },

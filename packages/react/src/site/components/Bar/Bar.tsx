@@ -44,12 +44,10 @@ export const Bar: FC = () => {
     <BarStyled>
       <SelectTheme value={themeSelected} onChange={handleChange}>
         <option value="Material">Material 3 by Google</option>
-        <option value="MaterialKiskadee">
-          Material 3 (modified) by Kiskadee
-        </option>
+        <option value="MaterialKiskadee">Kiskadee by Rodrigo Mello</option>
         <option value="iOS">iOS 15 by Apple</option>
         <option value="Fluent">Fluent by Microsoft</option>
-        {/* <option value="Carbon">Carbon by IBM</option> */}
+        <option value="Carbon">Carbon by IBM</option>
       </SelectTheme>
     </BarStyled>
   );

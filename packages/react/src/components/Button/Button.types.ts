@@ -2,7 +2,13 @@ import { CSSProperties } from 'react';
 
 type ButtonType = 'contained' | 'outline' | 'flat';
 
-type ButtonVariant = 'primary' | 'success' | 'warning' | 'danger';
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'success'
+  | 'warning'
+  | 'danger';
 
 export type InteractionState =
   | 'rest'
@@ -25,7 +31,7 @@ export interface ButtonProps {
   variant: ButtonVariant;
   type: ButtonType;
   interaction?: InteractionState;
-  validation?: ButtonVariant;
+  disabled?: boolean;
 }
 
 //------------------------------------------------------------------------------

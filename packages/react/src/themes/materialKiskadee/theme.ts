@@ -13,6 +13,33 @@ export const materialKiskadeeTheme: KiskadeeSchema = {
             rest: {
               backgroundColor: '#007AFF',
               padding: '10px 24px',
+              borderRadius: 10,
+            },
+            hover: {
+              backgroundColor: '#008fff',
+              boxShadow:
+                '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+            },
+            focus: {
+              backgroundColor: '#1269ec',
+              outline: '2px solid #1269ec',
+              outlineOffset: '1px',
+            },
+            pressed: {
+              backgroundColor: '#1269ec',
+              boxShadow: 'none',
+            },
+            visited: {
+              backgroundColor: '#7828c8',
+            },
+            disabled: {
+              backgroundColor: '#d9d9d9',
+            },
+          },
+          secondary: {
+            rest: {
+              backgroundColor: '#4d4d4d',
+              padding: '10px 24px',
               borderRadius: '100px',
             },
             hover: {
@@ -43,17 +70,17 @@ export const materialKiskadeeTheme: KiskadeeSchema = {
               borderRadius: '100px',
             },
             hover: {
-              backgroundColor: '#008fff',
+              backgroundColor: '#49ba72',
               boxShadow:
                 '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
             },
             focus: {
-              backgroundColor: '#1269ec',
+              backgroundColor: '#19AE59',
               outline: '2px solid #1269ec',
               outlineOffset: '1px',
             },
             pressed: {
-              backgroundColor: '#1269ec',
+              backgroundColor: '#19AE59',
               boxShadow: 'none',
             },
             visited: {
@@ -131,8 +158,61 @@ export const materialKiskadeeTheme: KiskadeeSchema = {
               fontFamily: 'Roboto',
               fontStyle: 'normal',
             },
-            hover: {
+            disabled: {
+              color: '#999999',
+            },
+          },
+          secondary: {
+            rest: {
+              fontSize: '0.875rem',
               color: '#FFFFFF',
+              height: '20px',
+              lineHeight: '20px',
+              fontWeight: 500,
+              fontFamily: 'Roboto',
+              fontStyle: 'normal',
+            },
+            disabled: {
+              color: '#999999',
+            },
+          },
+          success: {
+            rest: {
+              fontSize: '0.875rem',
+              color: '#FFFFFF',
+              height: '20px',
+              lineHeight: '20px',
+              fontWeight: 500,
+              fontFamily: 'Roboto',
+              fontStyle: 'normal',
+            },
+            disabled: {
+              color: '#999999',
+            },
+          },
+          warning: {
+            rest: {
+              fontSize: '0.875rem',
+              color: '#FFFFFF',
+              height: '20px',
+              lineHeight: '20px',
+              fontWeight: 500,
+              fontFamily: 'Roboto',
+              fontStyle: 'normal',
+            },
+            disabled: {
+              color: '#999999',
+            },
+          },
+          danger: {
+            rest: {
+              fontSize: '0.875rem',
+              color: '#FFFFFF',
+              height: '20px',
+              lineHeight: '20px',
+              fontWeight: 500,
+              fontFamily: 'Roboto',
+              fontStyle: 'normal',
             },
             disabled: {
               color: '#999999',
