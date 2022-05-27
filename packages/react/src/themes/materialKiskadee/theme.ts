@@ -12,6 +12,7 @@ export const materialKiskadeeTheme: KiskadeeSchema = {
           primary: {
             rest: {
               backgroundColor: '#007AFF',
+              textAlign: 'center',
               padding: '10px 24px',
               borderRadius: 10,
             },
@@ -39,6 +40,7 @@ export const materialKiskadeeTheme: KiskadeeSchema = {
           secondary: {
             rest: {
               backgroundColor: '#4d4d4d',
+              textAlign: 'center',
               padding: '10px 24px',
               borderRadius: '100px',
             },
@@ -66,6 +68,7 @@ export const materialKiskadeeTheme: KiskadeeSchema = {
           success: {
             rest: {
               backgroundColor: '#19ae59',
+              textAlign: 'center',
               padding: '10px 24px',
               borderRadius: '100px',
             },
@@ -93,6 +96,7 @@ export const materialKiskadeeTheme: KiskadeeSchema = {
           warning: {
             rest: {
               backgroundColor: '#f5a425',
+              textAlign: 'center',
               padding: '10px 24px',
               borderRadius: '100px',
             },
@@ -120,6 +124,7 @@ export const materialKiskadeeTheme: KiskadeeSchema = {
           danger: {
             rest: {
               backgroundColor: '#f31260',
+              textAlign: 'center',
               padding: '10px 24px',
               borderRadius: '100px',
             },
@@ -157,7 +162,6 @@ export const materialKiskadeeTheme: KiskadeeSchema = {
               fontWeight: 500,
               fontFamily: 'Roboto',
               fontStyle: 'normal',
-              textAlign: 'center',
             },
             disabled: {
               color: '#999999',
@@ -172,7 +176,6 @@ export const materialKiskadeeTheme: KiskadeeSchema = {
               fontWeight: 500,
               fontFamily: 'Roboto',
               fontStyle: 'normal',
-              textAlign: 'center',
             },
             disabled: {
               color: '#999999',
@@ -187,7 +190,6 @@ export const materialKiskadeeTheme: KiskadeeSchema = {
               fontWeight: 500,
               fontFamily: 'Roboto',
               fontStyle: 'normal',
-              textAlign: 'center',
             },
             disabled: {
               color: '#999999',
@@ -202,7 +204,6 @@ export const materialKiskadeeTheme: KiskadeeSchema = {
               fontWeight: 500,
               fontFamily: 'Roboto',
               fontStyle: 'normal',
-              textAlign: 'center',
             },
             disabled: {
               color: '#999999',
@@ -217,7 +218,6 @@ export const materialKiskadeeTheme: KiskadeeSchema = {
               fontWeight: 500,
               fontFamily: 'Roboto',
               fontStyle: 'normal',
-              textAlign: 'center',
             },
             disabled: {
               color: '#999999',
