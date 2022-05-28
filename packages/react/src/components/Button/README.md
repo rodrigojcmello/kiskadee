@@ -1,7 +1,13 @@
 Limitations
 
-- **Gradient border** - is rare in design systems, with Microsoft's Fluent as the main adept, but neither the Web and Android versions of Fluent use this feature, which should indicate an equal understanding of the limitations of each platform, being applied only on Windows 11, and for that reason we chose not to support gradient borders. If the gradient border becomes popular or the native features of each platform allow it more easily, we can review this feature in the future.
-- **Transitions** - between states are not customizable. We may review this in the future.
+- **Gradient border** is rare in design systems, with Microsoft's Fluent being one of the big adherents, but neither 
+  the Web and Android versions of Fluent use this feature, which should indicate an equal understanding of the 
+  limitations  of each platform, being applied only on Windows 11, and for that reason we chose not to support 
+  gradient borders. If the gradient border becomes popular or the native features of each platform allow it more 
+  easily, we may review this feature in the future.
+- **Focus** in Carbon Design System would need an extra layer to support its blue border for focus state, we 
+  chose not to support this feature for simplicity and performance reasons.
+- **Transitions** between states are not customizable. We may review this in the future.
 
 Experience
 
@@ -17,4 +23,6 @@ Experience
 
 Legacy
 
-- **Visited** - This state is definitely not used as much anymore, especially in recent projects, but as in the button we have the flat state that supports link, and we decided to keep the visited state to cover the widest possible variety of states.
+- **Visited** - This state is definitely not used as much anymore, especially in recent projects, but as in the 
+  button we have the flat state that supports link, and we decided to keep the visited state to cover the widest 
+  possible variety of states.

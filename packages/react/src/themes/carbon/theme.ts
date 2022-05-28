@@ -11,24 +11,21 @@ export const carbonTheme: KiskadeeSchema = {
         contained: {
           primary: {
             rest: {
-              backgroundColor: '#0f62fe',
-              padding: '11px 15px',
+              backgroundColor: '#0F62FE',
               textAlign: 'left',
+              padding: '13px 64px 13px 16px',
             },
             hover: {
-              backgroundColor: '#735EAB',
-              boxShadow:
-                '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+              backgroundColor: '#0353E9 ',
             },
             focus: {
-              backgroundColor: '#7965AF',
+              outline: '1px solid #ffffff',
+              outlineOffset: '-3px',
             },
             pressed: {
-              backgroundColor: '#7965AF',
-              boxShadow: 'none',
+              backgroundColor: '#002D9C',
             },
             disabled: {
-              boxShadow: 'none',
               backgroundColor: '#E4E4E4',
             },
           },
@@ -36,22 +33,19 @@ export const carbonTheme: KiskadeeSchema = {
             rest: {
               backgroundColor: '#393939',
               textAlign: 'left',
-              padding: '11px 15px',
+              padding: '13px 64px 13px 16px',
             },
             hover: {
-              backgroundColor: '#735EAB',
-              boxShadow:
-                '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+              backgroundColor: '#474747',
             },
             focus: {
-              backgroundColor: '#7965AF',
+              outline: '1px solid #ffffff',
+              outlineOffset: '-3px',
             },
             pressed: {
-              backgroundColor: '#7965AF',
-              boxShadow: 'none',
+              backgroundColor: '#6f6f6f',
             },
             disabled: {
-              boxShadow: 'none',
               backgroundColor: '#E4E4E4',
             },
           },
@@ -59,23 +53,20 @@ export const carbonTheme: KiskadeeSchema = {
             rest: {
               backgroundColor: '#da1e28',
               textAlign: 'left',
-              padding: '11px 15px',
+              padding: '13px 64px 13px 16px',
             },
             hover: {
-              backgroundColor: '#735EAB',
-              boxShadow:
-                '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+              backgroundColor: '#b81922',
             },
             focus: {
-              backgroundColor: '#7965AF',
+              outline: '1px solid #ffffff',
+              outlineOffset: '-3px',
             },
             pressed: {
-              backgroundColor: '#7965AF',
-              boxShadow: 'none',
+              backgroundColor: '#750e13',
             },
             disabled: {
-              boxShadow: 'none',
-              backgroundColor: '#c6c6c6',
+              backgroundColor: '#E4E4E4',
             },
           },
         },
@@ -84,16 +75,13 @@ export const carbonTheme: KiskadeeSchema = {
         contained: {
           primary: {
             rest: {
-              fontSize: '0.875rem',
+              fontSize: '1rem',
               color: '#FFFFFF',
-              height: '20px',
-              lineHeight: '20px',
-              fontWeight: 500,
-              fontFamily: 'Roboto',
+              height: '1.375rem',
+              lineHeight: '1.375rem',
+              fontWeight: 400,
+              fontFamily: 'IBM Plex Sans',
               fontStyle: 'normal',
-            },
-            hover: {
-              color: '#FFFFFF',
             },
             disabled: {
               color: '#8d8d8d',
@@ -101,30 +89,30 @@ export const carbonTheme: KiskadeeSchema = {
           },
           secondary: {
             rest: {
-              fontSize: '0.875rem',
+              fontSize: '1rem',
               color: '#FFFFFF',
-              height: '20px',
-              lineHeight: '20px',
-              fontWeight: 500,
-              fontFamily: 'Roboto',
+              height: '1.375rem',
+              lineHeight: '1.375rem',
+              fontWeight: 400,
+              fontFamily: 'IBM Plex Sans',
               fontStyle: 'normal',
             },
-            hover: {
-              color: '#FFFFFF',
+            disabled: {
+              color: '#8d8d8d',
             },
           },
           danger: {
             rest: {
-              fontSize: '0.875rem',
+              fontSize: '1rem',
               color: '#FFFFFF',
-              height: '20px',
-              lineHeight: '20px',
-              fontWeight: 500,
-              fontFamily: 'Roboto',
+              height: '1.375rem',
+              lineHeight: '1.375rem',
+              fontWeight: 400,
+              fontFamily: 'IBM Plex Sans',
               fontStyle: 'normal',
             },
-            hover: {
-              color: '#FFFFFF',
+            disabled: {
+              color: '#8d8d8d',
             },
           },
         },

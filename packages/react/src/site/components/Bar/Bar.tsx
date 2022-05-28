@@ -32,13 +32,15 @@ const themes: Record<string, KiskadeeSchema> = {
 
 export const Bar: FC = () => {
   const [, setTheme] = useContext(KiskadeeContext);
-  const [themeSelected, setThemeSelected] = useState('Material');
+  const theme = localStorage.getItem('theme') || 'Material';
+  const [themeSelected, setThemeSelected] = useState(theme);
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>): void => {
     setThemeSelected(event.target.value);
   };
 
   useEffect(() => {
+    localStorage.setItem('theme', themeSelected);
     setTheme(themes[themeSelected]);
   }, [themeSelected]);
 
