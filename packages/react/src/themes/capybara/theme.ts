@@ -1,9 +1,9 @@
 import type { KiskadeeSchema } from '../theme.types';
 
-export const materialKiskadeeTheme: KiskadeeSchema = {
-  name: 'Material',
+export const capybaraTheme: KiskadeeSchema = {
+  name: 'Capybara',
   author: 'Kiskadee',
-  version: '3.0',
+  version: '1.0',
   kiskadeeVersion: '0.0.1',
   component: {
     button: {
