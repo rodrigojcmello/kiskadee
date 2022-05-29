@@ -40,12 +40,14 @@ export const ButtonDocumentation: FC = () => {
   const [theme] = useContext(KiskadeeContext);
   const [variant, setVariant] = useState<ButtonVariant>('primary');
 
+  const buttonVariant = theme.component.button?.container?.contained?.variant;
+
   return (
     <Container>
       <Box>
         <div>
           <BoxTitle>Primary</BoxTitle>
-          {theme.component.button?.container?.contained?.variant?.primary ? (
+          {buttonVariant?.primary ? (
             <Applicable>
               <Button
                 text="Text"
@@ -64,7 +66,7 @@ export const ButtonDocumentation: FC = () => {
 
         <div>
           <BoxTitle>Secondary</BoxTitle>
-          {theme.component.button?.container?.contained?.variant?.secondary ? (
+          {buttonVariant?.secondary ? (
             <Applicable>
               <Button
                 text="Text"
@@ -82,7 +84,7 @@ export const ButtonDocumentation: FC = () => {
         </div>
         <div>
           <BoxTitle>Tertiary</BoxTitle>
-          {theme.component.button?.container?.contained?.variant?.tertiary ? (
+          {buttonVariant?.tertiary ? (
             <Applicable>
               <Button
                 text="Text"
@@ -103,7 +105,7 @@ export const ButtonDocumentation: FC = () => {
       <Box>
         <div>
           <BoxTitle>Success</BoxTitle>
-          {theme.component.button?.container?.contained?.variant?.success ? (
+          {buttonVariant?.success ? (
             <Applicable>
               <Button
                 text="Text"
@@ -122,7 +124,7 @@ export const ButtonDocumentation: FC = () => {
 
         <div>
           <BoxTitle>Warning</BoxTitle>
-          {theme.component.button?.container?.contained?.variant?.warning ? (
+          {buttonVariant?.warning ? (
             <Applicable>
               <Button
                 text="Text"
@@ -142,7 +144,7 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>Danger</BoxTitle>
 
-          {theme.component.button?.container?.contained?.variant?.danger ? (
+          {buttonVariant?.danger ? (
             <Applicable>
               <Button
                 text="Text"
@@ -162,8 +164,7 @@ export const ButtonDocumentation: FC = () => {
       <Box>
         <div>
           <BoxTitle>Hover</BoxTitle>
-          {theme.component.button?.container?.contained?.variant[variant]
-            ?.hover ? (
+          {buttonVariant?.[variant]?.hover ? (
             <Applicable>
               <Button
                 text="Text"
@@ -181,8 +182,7 @@ export const ButtonDocumentation: FC = () => {
 
         <div>
           <BoxTitle>Focus</BoxTitle>
-          {theme.component.button?.container?.contained?.variant[variant]
-            ?.focus ? (
+          {buttonVariant?.[variant]?.focus ? (
             <Applicable>
               <Button
                 text="Text"
@@ -200,8 +200,7 @@ export const ButtonDocumentation: FC = () => {
 
         <div>
           <BoxTitle>Pressed</BoxTitle>
-          {theme.component.button?.container?.contained?.variant[variant]
-            ?.pressed ? (
+          {buttonVariant?.[variant]?.pressed ? (
             <Applicable>
               <Button
                 text="Text"
@@ -219,8 +218,7 @@ export const ButtonDocumentation: FC = () => {
 
         <div>
           <BoxTitle>Visited</BoxTitle>
-          {theme.component.button?.container?.contained?.variant[variant]
-            ?.visited ? (
+          {buttonVariant?.[variant]?.visited ? (
             <Applicable>
               <Button
                 text="Text"
@@ -238,8 +236,7 @@ export const ButtonDocumentation: FC = () => {
 
         <div>
           <BoxTitle>Disabled</BoxTitle>
-          {theme.component.button?.container?.contained?.variant[variant]
-            ?.disabled ? (
+          {buttonVariant?.[variant]?.disabled ? (
             <Applicable>
               <Button
                 text="Text"

@@ -41,18 +41,13 @@ export const materialTheme: KiskadeeSchema = {
       },
       text: {
         contained: {
-          primary: {
-            rest: {
-              fontSize: '0.875rem',
-              color: '#FFFFFF',
-              lineHeight: '20px',
-              fontWeight: 500,
-              fontFamily: 'Roboto',
-              fontStyle: 'normal',
-            },
-            hover: {
-              color: '#FFFFFF',
-            },
+          base: {
+            fontSize: '0.875rem',
+            lineHeight: '20px',
+            fontWeight: 500,
+            fontFamily: 'Roboto',
+            fontStyle: 'normal',
+            color: '#FFFFFF',
           },
         },
       },

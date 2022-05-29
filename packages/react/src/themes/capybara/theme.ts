@@ -145,69 +145,53 @@ export const capybaraTheme: KiskadeeSchema = {
       },
       text: {
         contained: {
-          primary: {
-            rest: {
-              fontSize: '0.875rem',
-              color: '#FFFFFF',
-              lineHeight: '20px',
-              fontWeight: 500,
-              fontFamily: 'Roboto',
-              fontStyle: 'normal',
-            },
-            disabled: {
-              color: '#999999',
-            },
+          base: {
+            fontSize: '0.875rem',
+            lineHeight: '20px',
+            fontWeight: 500,
+            fontFamily: 'Roboto',
+            fontStyle: 'normal',
           },
-          secondary: {
-            rest: {
-              fontSize: '0.875rem',
-              color: '#FFFFFF',
-              lineHeight: '20px',
-              fontWeight: 500,
-              fontFamily: 'Roboto',
-              fontStyle: 'normal',
+          variant: {
+            primary: {
+              rest: {
+                color: '#FFFFFF',
+              },
+              disabled: {
+                color: '#999999',
+              },
             },
-            disabled: {
-              color: '#999999',
+            secondary: {
+              rest: {
+                color: '#FFFFFF',
+              },
+              disabled: {
+                color: '#999999',
+              },
             },
-          },
-          success: {
-            rest: {
-              fontSize: '0.875rem',
-              color: '#FFFFFF',
-              lineHeight: '20px',
-              fontWeight: 500,
-              fontFamily: 'Roboto',
-              fontStyle: 'normal',
+            success: {
+              rest: {
+                color: '#FFFFFF',
+              },
+              disabled: {
+                color: '#999999',
+              },
             },
-            disabled: {
-              color: '#999999',
+            warning: {
+              rest: {
+                color: '#FFFFFF',
+              },
+              disabled: {
+                color: '#999999',
+              },
             },
-          },
-          warning: {
-            rest: {
-              fontSize: '0.875rem',
-              color: '#FFFFFF',
-              lineHeight: '20px',
-              fontWeight: 500,
-              fontFamily: 'Roboto',
-              fontStyle: 'normal',
-            },
-            disabled: {
-              color: '#999999',
-            },
-          },
-          danger: {
-            rest: {
-              fontSize: '0.875rem',
-              color: '#FFFFFF',
-              lineHeight: '20px',
-              fontWeight: 500,
-              fontFamily: 'Roboto',
-              fontStyle: 'normal',
-            },
-            disabled: {
-              color: '#999999',
+            danger: {
+              rest: {
+                color: '#FFFFFF',
+              },
+              disabled: {
+                color: '#999999',
+              },
             },
           },
         },

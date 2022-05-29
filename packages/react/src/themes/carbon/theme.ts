@@ -73,43 +73,37 @@ export const carbonTheme: KiskadeeSchema = {
       },
       text: {
         contained: {
-          primary: {
-            rest: {
-              fontSize: '1rem',
-              color: '#FFFFFF',
-              lineHeight: '1.375rem',
-              fontWeight: 400,
-              fontFamily: 'IBM Plex Sans',
-              fontStyle: 'normal',
-            },
-            disabled: {
-              color: '#8d8d8d',
-            },
+          base: {
+            fontSize: '1rem',
+            lineHeight: '1.375rem',
+            fontWeight: 400,
+            fontFamily: 'IBM Plex Sans',
+            fontStyle: 'normal',
           },
-          secondary: {
-            rest: {
-              fontSize: '1rem',
-              color: '#FFFFFF',
-              lineHeight: '1.375rem',
-              fontWeight: 400,
-              fontFamily: 'IBM Plex Sans',
-              fontStyle: 'normal',
+          variant: {
+            primary: {
+              rest: {
+                color: '#FFFFFF',
+              },
+              disabled: {
+                color: '#8d8d8d',
+              },
             },
-            disabled: {
-              color: '#8d8d8d',
+            secondary: {
+              rest: {
+                color: '#FFFFFF',
+              },
+              disabled: {
+                color: '#8d8d8d',
+              },
             },
-          },
-          danger: {
-            rest: {
-              fontSize: '1rem',
-              color: '#FFFFFF',
-              lineHeight: '1.375rem',
-              fontWeight: 400,
-              fontFamily: 'IBM Plex Sans',
-              fontStyle: 'normal',
-            },
-            disabled: {
-              color: '#8d8d8d',
+            danger: {
+              rest: {
+                color: '#FFFFFF',
+              },
+              disabled: {
+                color: '#8d8d8d',
+              },
             },
           },
         },

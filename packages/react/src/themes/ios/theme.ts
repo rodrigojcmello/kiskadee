@@ -44,43 +44,37 @@ export const iosTheme: KiskadeeSchema = {
       },
       text: {
         contained: {
-          primary: {
-            rest: {
-              fontSize: '1.0625rem',
-              color: '#FFFFFF',
-              lineHeight: '22px',
-              fontWeight: 600,
-              fontFamily: 'SF Pro Text',
-              fontStyle: 'normal',
-            },
-            disabled: {
-              color: '#3c3c444d',
-            },
+          base: {
+            fontSize: '1.0625rem',
+            lineHeight: '22px',
+            fontWeight: 600,
+            fontFamily: 'SF Pro Text',
+            fontStyle: 'normal',
           },
-          secondary: {
-            rest: {
-              fontSize: '1.0625rem',
-              color: '#307DF6',
-              lineHeight: '22px',
-              fontWeight: 600,
-              fontFamily: 'SF Pro Text',
-              fontStyle: 'normal',
+          variant: {
+            primary: {
+              rest: {
+                color: '#FFFFFF',
+              },
+              disabled: {
+                color: '#3c3c444d',
+              },
             },
-            disabled: {
-              color: '#3c3c444d',
+            secondary: {
+              rest: {
+                color: '#307DF6',
+              },
+              disabled: {
+                color: '#3c3c444d',
+              },
             },
-          },
-          tertiary: {
-            rest: {
-              fontSize: '1.0625rem',
-              color: '#307DF6',
-              lineHeight: '22px',
-              fontWeight: 600,
-              fontFamily: 'SF Pro Text',
-              fontStyle: 'normal',
-            },
-            disabled: {
-              color: '#3c3c444d',
+            tertiary: {
+              rest: {
+                color: '#307DF6',
+              },
+              disabled: {
+                color: '#3c3c444d',
+              },
             },
           },
         },

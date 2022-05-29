@@ -40,20 +40,24 @@ export const fluentTheme: KiskadeeSchema = {
       },
       text: {
         contained: {
-          primary: {
-            rest: {
-              fontSize: '0.875rem',
-              color: '#FFFFFF',
-              lineHeight: '20px',
-              fontWeight: 600,
-              fontFamily: 'Segoe UI',
-              fontStyle: 'normal',
-            },
-            hover: {
-              color: '#FFFFFF',
-            },
-            pressed: {
-              color: 'rgba(255, 255, 255, 0.7)',
+          base: {
+            fontSize: '0.875rem',
+            lineHeight: '20px',
+            fontWeight: 600,
+            fontFamily: 'Segoe UI',
+            fontStyle: 'normal',
+          },
+          variant: {
+            primary: {
+              rest: {
+                color: '#FFFFFF',
+              },
+              hover: {
+                color: '#FFFFFF',
+              },
+              pressed: {
+                color: '#ffffffb3',
+              },
             },
           },
         },

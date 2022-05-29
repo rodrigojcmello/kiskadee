@@ -20,7 +20,7 @@ const ButtonStyle = styled.button<
 
     '&.button': {
       ...theme.container?.contained?.base,
-      ...theme.container?.contained?.variant[variant]?.rest,
+      ...theme.container?.contained?.variant?.[variant]?.rest,
       cursor: 'pointer',
       border: 'none',
       fontSize: '16px',
@@ -37,7 +37,7 @@ const ButtonStyle = styled.button<
     //--------------------------------------------------------------------------
 
     '& .button__text': {
-      ...theme.text?.[typeStyle]?.[variant]?.rest,
+      ...theme.text?.[typeStyle]?.variant?.[variant]?.rest,
       transitionProperty: 'color, font-size',
       transitionDuration: duration,
       transitionTimingFunction: timingFunction,
@@ -49,33 +49,33 @@ const ButtonStyle = styled.button<
 
     // HOVER
     '&:hover, &.--hover': {
-      ...theme.container?.[typeStyle]?.variant[variant]?.hover,
-      '.button__text': theme.text?.[typeStyle]?.[variant]?.hover,
+      ...theme.container?.[typeStyle]?.variant?.[variant]?.hover,
+      '.button__text': theme.text?.[typeStyle]?.variant?.[variant]?.hover,
     },
 
     // PRESSED
     '&:active, &.--pressed': {
-      ...theme.container?.[typeStyle]?.variant[variant]?.pressed,
-      '.button__text': theme.text?.[typeStyle]?.[variant]?.pressed,
+      ...theme.container?.[typeStyle]?.variant?.[variant]?.pressed,
+      '.button__text': theme.text?.[typeStyle]?.variant?.[variant]?.pressed,
     },
 
     // FOCUS
     '&:focus-visible, &.--focus': {
-      ...theme.container?.[typeStyle]?.variant[variant]?.focus,
-      '.button__text': theme.text?.[typeStyle]?.[variant]?.focus,
+      ...theme.container?.[typeStyle]?.variant?.[variant]?.focus,
+      '.button__text': theme.text?.[typeStyle]?.variant?.[variant]?.focus,
     },
 
     // VISITED
     '&:visited, &.--visited': {
-      ...theme.container?.[typeStyle]?.variant[variant]?.visited,
-      '.button__text': theme.text?.[typeStyle]?.[variant]?.visited,
+      ...theme.container?.[typeStyle]?.variant?.[variant]?.visited,
+      '.button__text': theme.text?.[typeStyle]?.variant?.[variant]?.visited,
     },
 
     // DISABLED
     '&:disabled': {
-      ...theme.container?.[typeStyle]?.variant[variant]?.disabled,
+      ...theme.container?.[typeStyle]?.variant?.[variant]?.disabled,
       cursor: 'not-allowed',
-      '.button__text': theme.text?.[typeStyle]?.[variant]?.disabled,
+      '.button__text': theme.text?.[typeStyle]?.variant?.[variant]?.disabled,
     },
   };
 });
