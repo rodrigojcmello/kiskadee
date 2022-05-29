@@ -9,28 +9,32 @@ export const materialTheme: KiskadeeSchema = {
     button: {
       container: {
         contained: {
-          primary: {
-            rest: {
-              backgroundColor: '#6750A4',
-              padding: '10px 24px',
-              borderRadius: '20px',
-              textAlign: 'center',
-            },
-            hover: {
-              backgroundColor: '#735EAB',
-              boxShadow:
-                '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
-            },
-            focus: {
-              backgroundColor: '#7965AF',
-            },
-            pressed: {
-              backgroundColor: '#7965AF',
-              boxShadow: 'none',
-            },
-            disabled: {
-              boxShadow: 'none',
-              backgroundColor: '#E4E4E4',
+          base: {
+            padding: '10px 24px',
+            borderRadius: '20px',
+            textAlign: 'center',
+          },
+          variant: {
+            primary: {
+              rest: {
+                backgroundColor: '#6750A4',
+              },
+              hover: {
+                backgroundColor: '#735EAB',
+                boxShadow:
+                  '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+              },
+              focus: {
+                backgroundColor: '#7965AF',
+              },
+              pressed: {
+                backgroundColor: '#7965AF',
+                boxShadow: 'none',
+              },
+              disabled: {
+                boxShadow: 'none',
+                backgroundColor: '#E4E4E4',
+              },
             },
           },
         },
@@ -41,7 +45,6 @@ export const materialTheme: KiskadeeSchema = {
             rest: {
               fontSize: '0.875rem',
               color: '#FFFFFF',
-              height: '20px',
               lineHeight: '20px',
               fontWeight: 500,
               fontFamily: 'Roboto',

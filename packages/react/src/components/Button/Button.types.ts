@@ -38,27 +38,27 @@ export interface ButtonProps {
 // Elements
 //------------------------------------------------------------------------------
 
-interface ButtonElementContainerRequired {
-  backgroundColor: CSSProperties['backgroundColor'];
-  textAlign: CSSProperties['textAlign'];
+// Container
 
-  // Sizing
+interface ButtonElementContainerRequired {
+  textAlign: CSSProperties['textAlign'];
   padding: CSSProperties['padding'];
 }
 
 interface ButtonElementContainerOptional {
-  // Style
   backgroundColor?: CSSProperties['backgroundColor'];
-  borderRadius?: CSSProperties['borderRadius'];
-  borderWidth?: CSSProperties['borderWidth'];
   borderStyle?: CSSProperties['borderStyle'];
-
-  // Elevation
+  borderColor?: CSSProperties['borderColor'];
   boxShadow?: CSSProperties['boxShadow'];
 }
 
-type ButtonElementContainer = ButtonElementContainerRequired &
-  ButtonElementContainerOptional;
+type ButtonElementContainerBase = ButtonElementContainerRequired &
+  ButtonElementContainerOptional & {
+    borderWidth?: CSSProperties['borderWidth'];
+    borderRadius?: CSSProperties['borderRadius'];
+  };
+
+// Text
 
 interface ButtonElementText {
   fontFamily: CSSProperties['fontFamily'];
@@ -67,7 +67,6 @@ interface ButtonElementText {
   lineHeight: CSSProperties['lineHeight'];
   fontStyle: CSSProperties['fontStyle'];
   fontWeight: CSSProperties['fontWeight'];
-  height: CSSProperties['height'];
 }
 
 //------------------------------------------------------------------------------
@@ -80,7 +79,7 @@ interface ButtonElementContainerFocus {
 }
 
 type ButtonElementContainerVariantModifier = {
-  rest: ButtonElementContainer;
+  rest: ButtonElementContainerOptional;
   hover?: ButtonElementContainerOptional;
   focus?: ButtonElementContainerOptional & ButtonElementContainerFocus;
   pressed?: ButtonElementContainerOptional;
@@ -103,7 +102,12 @@ export interface ButtonSchema {
   container?: Partial<
     Record<
       ButtonType,
-      Partial<Record<ButtonVariant, ButtonElementContainerVariantModifier>>
+      {
+        base: ButtonElementContainerBase;
+        variant: Partial<
+          Record<ButtonVariant, ButtonElementContainerVariantModifier>
+        >;
+      }
     >
   >;
   text?: Partial<

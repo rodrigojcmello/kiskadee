@@ -9,27 +9,31 @@ export const fluentTheme: KiskadeeSchema = {
     button: {
       container: {
         contained: {
-          primary: {
-            rest: {
-              borderRadius: '4px',
-              borderWidth: '1px',
-              borderStyle: 'solid',
-              backgroundColor: '#005FB8',
-              padding: '4px 11px 6px 11px',
-              textAlign: 'center',
-            },
-            hover: {
-              backgroundColor: '#1A6FBF',
-            },
-            pressed: {
-              backgroundColor: '#327EC5',
-            },
-            focus: {
-              outline: '2px solid #000',
-              outlineOffset: '1px',
-            },
-            disabled: {
-              backgroundColor: '#C8C8C8',
+          base: {
+            padding: '4px 11px 6px 11px',
+            textAlign: 'center',
+            borderRadius: '4px',
+            // borderWidth: '1px',
+            // borderStyle: 'solid',
+          },
+          variant: {
+            primary: {
+              rest: {
+                backgroundColor: '#005FB8',
+              },
+              hover: {
+                backgroundColor: '#1A6FBF',
+              },
+              pressed: {
+                backgroundColor: '#327EC5',
+              },
+              focus: {
+                outline: '2px solid #000',
+                outlineOffset: '1px',
+              },
+              disabled: {
+                backgroundColor: '#C8C8C8',
+              },
             },
           },
         },
@@ -40,7 +44,6 @@ export const fluentTheme: KiskadeeSchema = {
             rest: {
               fontSize: '0.875rem',
               color: '#FFFFFF',
-              height: '20px',
               lineHeight: '20px',
               fontWeight: 600,
               fontFamily: 'Segoe UI',
