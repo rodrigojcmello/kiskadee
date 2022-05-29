@@ -16,6 +16,9 @@ export const fluentTheme: KiskadeeSchema = {
             // borderWidth: '1px',
             // borderStyle: 'solid',
           },
+          option: {
+            widthMin: '100px',
+          },
           variant: {
             primary: {
               rest: {

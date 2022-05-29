@@ -109,6 +109,10 @@ export interface ButtonSchema {
       ButtonType,
       {
         base: ButtonElementContainerBase;
+        option: {
+          widthMin: CSSProperties['minWidth'];
+          // border: 'rounded' | 'square' | 'circle';
+        };
         variant?: Partial<Record<ButtonVariant, ButtonElementContainerVariant>>;
       }
     >

@@ -14,6 +14,9 @@ export const capybaraTheme: KiskadeeSchema = {
             padding: '10px 24px',
             borderRadius: 10,
           },
+          option: {
+            widthMin: '100px',
+          },
           variant: {
             primary: {
               rest: {

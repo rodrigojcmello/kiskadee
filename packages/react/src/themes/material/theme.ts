@@ -14,10 +14,13 @@ export const materialTheme: KiskadeeSchema = {
             borderRadius: '20px',
             textAlign: 'center',
           },
+          option: {
+            widthMin: '100px',
+          },
           variant: {
             primary: {
               rest: {
-                backgroundColor: '#6750A4',
+                backgroundColor: '#3574E1',
               },
               hover: {
                 backgroundColor: '#735EAB',

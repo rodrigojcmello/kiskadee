@@ -13,6 +13,9 @@ export const carbonTheme: KiskadeeSchema = {
             textAlign: 'left',
             padding: '13px 64px 13px 16px',
           },
+          option: {
+            widthMin: '100px',
+          },
           variant: {
             primary: {
               rest: {

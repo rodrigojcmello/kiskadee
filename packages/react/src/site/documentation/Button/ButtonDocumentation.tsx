@@ -14,10 +14,8 @@ const Applicable: FC<PropsWithChildren<Record<string, unknown>>> = ({
 }) => {
   return (
     <div className={style.applicable}>
-      <div className={style['applicable-outer']}>
-        <div className={style['applicable-middle']}>
-          <div className={style['applicable-inner']}>{children}</div>
-        </div>
+      <div className={style['applicable-table']}>
+        <div className={style['applicable-cell']}>{children}</div>
       </div>
     </div>
   );
@@ -252,6 +250,35 @@ export const ButtonDocumentation: FC = () => {
           )}
         </div>
       </Box>
+      <div className={style.width}>
+        <div>
+          <Button
+            text="Text"
+            width="block"
+            type="contained"
+            variant={variant}
+            onClick={(): void => {}}
+          />
+        </div>
+        <div>
+          <Button
+            text="Text text text text text text"
+            width="auto"
+            type="contained"
+            variant={variant}
+            onClick={(): void => {}}
+          />
+        </div>
+        <div>
+          <Button
+            text="Text"
+            width="min-width"
+            type="contained"
+            variant={variant}
+            onClick={(): void => {}}
+          />
+        </div>
+      </div>
     </Container>
   );
 };

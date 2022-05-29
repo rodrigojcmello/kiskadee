@@ -14,6 +14,9 @@ export const iosTheme: KiskadeeSchema = {
             padding: '14px 20px',
             borderRadius: '10px',
           },
+          option: {
+            widthMin: '100px',
+          },
           variant: {
             primary: {
               rest: {
