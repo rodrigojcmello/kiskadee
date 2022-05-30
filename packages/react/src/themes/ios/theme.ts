@@ -8,75 +8,71 @@ export const iosTheme: KiskadeeSchema = {
   component: {
     button: {
       container: {
-        contained: {
-          base: {
+        base: {
+          rest: {
             textAlign: 'center',
             padding: '14px 20px',
             borderRadius: '10px',
           },
-          option: {
-            widthMin: '100px',
+          disabled: {
+            backgroundColor: '#74748114',
           },
-          variant: {
-            primary: {
-              rest: {
-                backgroundColor: '#007AFF',
+        },
+        option: {
+          widthMin: '100px',
+        },
+        type: {
+          contained: {
+            variant: {
+              primary: {
+                rest: {
+                  backgroundColor: '#007AFF',
+                },
               },
-              disabled: {
-                backgroundColor: '#74748114',
+              secondary: {
+                rest: {
+                  backgroundColor: '#E1EBFE',
+                },
               },
-            },
-            secondary: {
-              rest: {
-                backgroundColor: '#E1EBFE',
-              },
-              disabled: {
-                backgroundColor: '#74748114',
-              },
-            },
-            tertiary: {
-              rest: {
-                backgroundColor: '#E9E9EA',
-              },
-              disabled: {
-                backgroundColor: '#74748114',
+              tertiary: {
+                rest: {
+                  backgroundColor: '#E9E9EA',
+                },
               },
             },
           },
         },
       },
       text: {
-        contained: {
-          base: {
+        base: {
+          rest: {
             fontSize: '1.0625rem',
             lineHeight: '22px',
             fontWeight: 600,
             fontFamily: 'SF Pro Text',
             fontStyle: 'normal',
           },
-          variant: {
-            primary: {
-              rest: {
-                color: '#FFFFFF',
+          disabled: {
+            color: '#3c3c444d',
+          },
+        },
+        type: {
+          contained: {
+            variant: {
+              primary: {
+                rest: {
+                  color: '#FFFFFF',
+                },
               },
-              disabled: {
-                color: '#3c3c444d',
+              secondary: {
+                rest: {
+                  color: '#307DF6',
+                },
               },
-            },
-            secondary: {
-              rest: {
-                color: '#307DF6',
-              },
-              disabled: {
-                color: '#3c3c444d',
-              },
-            },
-            tertiary: {
-              rest: {
-                color: '#307DF6',
-              },
-              disabled: {
-                color: '#3c3c444d',
+              tertiary: {
+                rest: {
+                  color: '#307DF6',
+                },
               },
             },
           },

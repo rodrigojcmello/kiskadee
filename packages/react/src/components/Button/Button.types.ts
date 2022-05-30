@@ -105,7 +105,7 @@ type ButtonElementTextVariant = {
 
 export interface ButtonSchema {
   container?: {
-    base: ButtonElementContainerVariant & { rest: ButtonElementContainerBase };
+    base?: ButtonElementContainerVariant & { rest: ButtonElementContainerBase };
     option: {
       widthMin: CSSProperties['minWidth'];
       // border: 'rounded' | 'square' | 'circle';
@@ -128,7 +128,7 @@ export interface ButtonSchema {
       Record<
         ButtonType,
         {
-          base: Partial<ButtonElementTextBase>;
+          base?: Partial<ButtonElementTextBase>;
           variant?: Partial<Record<ButtonVariant, ButtonElementTextVariant>>;
         }
       >
