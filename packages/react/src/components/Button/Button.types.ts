@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
 export type ButtonType = 'contained' | 'outline' | 'flat';
 
@@ -84,7 +84,7 @@ interface ButtonElementContainerFocus {
 }
 
 type ButtonElementContainerVariant = {
-  rest: ButtonElementContainerOptional;
+  rest?: ButtonElementContainerOptional;
   hover?: ButtonElementContainerOptional;
   focus?: ButtonElementContainerOptional & ButtonElementContainerFocus;
   pressed?: ButtonElementContainerOptional;
@@ -93,7 +93,7 @@ type ButtonElementContainerVariant = {
 };
 
 type ButtonElementTextVariant = {
-  rest: { color?: CSSProperties['color'] };
+  rest?: { color?: CSSProperties['color'] };
   hover?: { color?: CSSProperties['color'] };
   focus?: { color?: CSSProperties['color'] };
   pressed?: { color?: CSSProperties['color'] };

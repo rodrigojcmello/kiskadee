@@ -29,6 +29,7 @@ export const materialTheme: KiskadeeSchema = {
               },
               focus: {
                 backgroundColor: '#7965AF',
+                outline: 'none',
               },
               pressed: {
                 backgroundColor: '#7965AF',
@@ -64,6 +65,7 @@ export const materialTheme: KiskadeeSchema = {
               focus: {
                 backgroundColor: '#ECEAF4',
                 borderColor: '#6750A4',
+                outline: 'none',
               },
               pressed: {
                 backgroundColor: '#ECEAF4',
@@ -72,6 +74,7 @@ export const materialTheme: KiskadeeSchema = {
               disabled: {
                 boxShadow: 'none',
                 backgroundColor: '#FFFFFF',
+                borderColor: '#1f1f1f1f',
               },
             },
           },
@@ -95,6 +98,7 @@ export const materialTheme: KiskadeeSchema = {
               },
               focus: {
                 backgroundColor: '#ECEAF4',
+                outline: 'none',
               },
               pressed: {
                 backgroundColor: '#ECEAF4',
@@ -118,6 +122,13 @@ export const materialTheme: KiskadeeSchema = {
             fontStyle: 'normal',
             color: '#FFFFFF',
           },
+          variant: {
+            primary: {
+              disabled: {
+                color: '#1b1a1e61',
+              },
+            },
+          },
         },
         outline: {
           base: {
@@ -128,6 +139,13 @@ export const materialTheme: KiskadeeSchema = {
             fontFamily: 'Roboto',
             fontStyle: 'normal',
           },
+          variant: {
+            primary: {
+              disabled: {
+                color: '#1b1a1e61',
+              },
+            },
+          },
         },
         flat: {
           base: {
@@ -137,6 +155,13 @@ export const materialTheme: KiskadeeSchema = {
             fontWeight: 500,
             fontFamily: 'Roboto',
             fontStyle: 'normal',
+          },
+          variant: {
+            primary: {
+              disabled: {
+                color: '#1b1a1e61',
+              },
+            },
           },
         },
       },
