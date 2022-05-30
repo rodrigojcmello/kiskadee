@@ -6,7 +6,8 @@ Limitations
   gradient borders. If the gradient border becomes popular or the native features of each platform allow it more 
   easily, we may review this feature in the future.
 - **Focus** in Carbon Design System would need an extra layer to support its blue border for focus state, we 
-  chose not to support this feature for simplicity and performance reasons.
+  chose not to support this feature for simplicity and performance reasons. And its official web library is used border 
+  property, but we disagreed with this approach, boarders shouldn't be used for focus state.
 - **Transitions** between states are not customizable. We may review this in the future.
 
 Experience
@@ -19,3 +20,5 @@ Experience
 - **Secondary / Help / Info** are states that can be found in some UI kits or Design Systems, but in general they are 
   even less used than the warning state, for these cases it is recommended to create a new theme and override it in 
   scope  of the button. If any of these states become popular, we will review their adoption in the standard states.
+- **Minimum width** - not all design systems specifies a minimum width for buttons, in this case we chose to keep 
+  the minimum width as 100px.
