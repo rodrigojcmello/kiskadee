@@ -12,9 +12,6 @@ Limitations
 
 Experience
 
-- **Focus** - Design systems created for mobile devices usually don't care about focus (like Material and iOS), in 
-  these cases instead  of just removing this feature, we chose to keep at least the native experience of each 
-  platform. The complete removal of this feature to strictly adhere to its design system may be reviewed in the future.
 - **Warning** - It is not a consensus to have a warning button in most design systems, but it appears with some  
   frequency, for now the warning state will remain, but it will be reviewed in the future.
 - **Secondary / Help / Info** are states that can be found in some UI kits or Design Systems, but in general they are 
@@ -22,3 +19,10 @@ Experience
   scope  of the button. If any of these states become popular, we will review their adoption in the standard states.
 - **Minimum width** - not all design systems specifies a minimum width for buttons, in this case we chose to keep 
   the minimum width as 100px.
+
+Themes
+
+- **Native focus** - Design systems created for mobile devices usually don't care about focus (like iOS 15), in 
+  these cases instead  of just removing this feature, we chose to keep at least the native experience of each 
+  platform. The complete removal of this feature to strictly adhere to its design system may be reviewed in the future.
+
