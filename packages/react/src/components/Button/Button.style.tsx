@@ -16,10 +16,10 @@ export const ButtonStyled = styled.button<
     //--------------------------------------------------------------------------
 
     '&.button': {
-      ...container?.contained?.base,
-      ...container?.contained?.variant?.[variant]?.rest,
-      cursor: 'pointer',
       border: 'none',
+      ...container?.[typeStyle]?.base,
+      ...container?.[typeStyle]?.variant?.[variant]?.rest,
+      cursor: 'pointer',
       fontSize: '16px',
       transitionProperty: 'box-shadow, border, background, padding, min-width',
       transitionDuration: duration,
@@ -29,7 +29,7 @@ export const ButtonStyled = styled.button<
     // OPTION - WIDTH
     width: width === 'block' ? '100%' : 'auto',
     minWidth:
-      width === 'min-width' ? container?.contained?.option.widthMin : '0px',
+      width === 'min-width' ? container?.[typeStyle]?.option.widthMin : '0px',
 
     //--------------------------------------------------------------------------
     // Text

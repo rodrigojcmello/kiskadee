@@ -17,13 +17,20 @@
   vertical-align: middle;
 }
 
+.no-transition * {
+  transition: none !important;
+}
+
+.width-container {
+  margin-top: 48px;
+  width: 100%;
+}
+
 .width {
   //display: flex;
   display: grid;
   grid-template-columns: 2fr auto auto;
-  align-items: center;
   gap: 32px;
-  margin-top: 48px;
-  width: 100%;
+  align-items: center;
   height: 50px;
 }

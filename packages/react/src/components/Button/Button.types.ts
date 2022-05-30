@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react';
 
-type ButtonType = 'contained' | 'outline' | 'flat';
+export type ButtonType = 'contained' | 'outline' | 'flat';
 
 export type ButtonVariant =
   | 'primary'

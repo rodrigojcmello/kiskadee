@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import type { FC, PropsWithChildren } from 'react';
-import { useContext, useState } from 'react';
+import { useContext, useLayoutEffect, useState } from 'react';
 import { Button } from '../../../components/Button/Button';
 import { Box } from '../../components/Box/Box';
 import { Container } from '../../components/Container/Container';
 import { BoxTitle } from '../../components/BoxTitle/BoxTitle';
-import { ButtonVariant } from '../../../components/Button/Button.types';
+import {
+  ButtonType,
+  ButtonVariant,
+} from '../../../components/Button/Button.types';
 import { KiskadeeContext } from '../../../context';
 import style from './ButtonDocumentation.module.scss';
 
@@ -37,18 +40,88 @@ const NotApplicable: FC = () => {
 export const ButtonDocumentation: FC = () => {
   const [theme] = useContext(KiskadeeContext);
   const [variant, setVariant] = useState<ButtonVariant>('primary');
+  const [type, setType] = useState<ButtonType>('contained');
+  const [pageLoad, setPageLoad] = useState(false);
 
-  const buttonVariant = theme.component.button?.container?.contained?.variant;
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      setPageLoad(true);
+    }, 50);
+  }, []);
+
+  const buttonContainer = theme.component.button?.container;
+  const buttonVariant = theme.component.button?.container?.[type]?.variant;
 
   return (
-    <Container>
+    <Container className={!pageLoad ? style['no-transition'] : undefined}>
+      <Box>
+        <div>
+          <BoxTitle>Contained</BoxTitle>
+          {buttonContainer?.contained ? (
+            <Applicable>
+              <Button
+                text="Click me"
+                width="block"
+                type="contained"
+                variant="primary"
+                onClick={(): void => {
+                  setType('contained');
+                  setVariant('primary');
+                }}
+              />
+            </Applicable>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+
+        <div>
+          <BoxTitle>Outline</BoxTitle>
+          {buttonContainer?.outline ? (
+            <Applicable>
+              <Button
+                text="Click me"
+                width="block"
+                type="outline"
+                variant="primary"
+                onClick={(): void => {
+                  setType('outline');
+                  setVariant('primary');
+                }}
+              />
+            </Applicable>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+        <div>
+          <BoxTitle>Flat</BoxTitle>
+          {buttonContainer?.flat ? (
+            <Applicable>
+              <Button
+                text="Click me"
+                width="block"
+                type="outline"
+                variant="primary"
+                onClick={(): void => {
+                  setType('flat');
+                  setVariant('primary');
+                }}
+              />
+            </Applicable>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+      </Box>
+
       <Box>
         <div>
           <BoxTitle>Primary</BoxTitle>
           {buttonVariant?.primary ? (
             <Applicable>
               <Button
-                text="Text"
+                text="Click me"
                 width="block"
                 type="contained"
                 variant="primary"
@@ -67,7 +140,7 @@ export const ButtonDocumentation: FC = () => {
           {buttonVariant?.secondary ? (
             <Applicable>
               <Button
-                text="Text"
+                text="Click me"
                 width="block"
                 type="contained"
                 variant="secondary"
@@ -85,7 +158,7 @@ export const ButtonDocumentation: FC = () => {
           {buttonVariant?.tertiary ? (
             <Applicable>
               <Button
-                text="Text"
+                text="Click me"
                 width="block"
                 type="contained"
                 variant="tertiary"
@@ -106,7 +179,7 @@ export const ButtonDocumentation: FC = () => {
           {buttonVariant?.success ? (
             <Applicable>
               <Button
-                text="Text"
+                text="Click me"
                 width="block"
                 type="contained"
                 variant="success"
@@ -125,7 +198,7 @@ export const ButtonDocumentation: FC = () => {
           {buttonVariant?.warning ? (
             <Applicable>
               <Button
-                text="Text"
+                text="Click me"
                 width="block"
                 type="contained"
                 variant="warning"
@@ -141,11 +214,10 @@ export const ButtonDocumentation: FC = () => {
 
         <div>
           <BoxTitle>Danger</BoxTitle>
-
           {buttonVariant?.danger ? (
             <Applicable>
               <Button
-                text="Text"
+                text="Click me"
                 width="block"
                 type="contained"
                 variant="danger"
@@ -250,33 +322,36 @@ export const ButtonDocumentation: FC = () => {
           )}
         </div>
       </Box>
-      <div className={style.width}>
-        <div>
-          <Button
-            text="Text"
-            width="block"
-            type="contained"
-            variant={variant}
-            onClick={(): void => {}}
-          />
-        </div>
-        <div>
-          <Button
-            text="Text text text text text text"
-            width="auto"
-            type="contained"
-            variant={variant}
-            onClick={(): void => {}}
-          />
-        </div>
-        <div>
-          <Button
-            text="Text"
-            width="min-width"
-            type="contained"
-            variant={variant}
-            onClick={(): void => {}}
-          />
+      <div className={style['width-container']}>
+        <BoxTitle>Width options</BoxTitle>
+        <div className={style.width}>
+          <div>
+            <Button
+              text="Text"
+              width="block"
+              type="contained"
+              variant={variant}
+              onClick={(): void => {}}
+            />
+          </div>
+          <div>
+            <Button
+              text="Text text text text text text"
+              width="auto"
+              type="contained"
+              variant={variant}
+              onClick={(): void => {}}
+            />
+          </div>
+          <div>
+            <Button
+              text="Text"
+              width="min-width"
+              type="contained"
+              variant={variant}
+              onClick={(): void => {}}
+            />
+          </div>
         </div>
       </div>
     </Container>
