@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import type { FC, PropsWithChildren } from 'react';
-import { useContext, useLayoutEffect, useState } from 'react';
+import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { Button } from '../../../components/Button';
 import { Box } from '../../components/Box/Box';
 import { Container } from '../../components/Container/Container';
@@ -45,6 +45,11 @@ export const ButtonDocumentation: FC = () => {
       setPageLoad(true);
     }, 50);
   }, []);
+
+  useEffect(() => {
+    setType('contained');
+    setVariant('primary');
+  }, [theme.name, theme.author, theme.version]);
 
   const buttonContainer = theme.component.button?.container;
   const buttonVariant = theme.component.button?.container?.[type]?.variant;
@@ -98,7 +103,7 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 text="Click me"
                 width="block"
-                type="outline"
+                type="flat"
                 variant="primary"
                 onClick={(): void => {
                   setType('flat');
@@ -120,7 +125,7 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 text="Click me"
                 width="block"
-                type="contained"
+                type={type}
                 variant="primary"
                 onClick={(): void => {
                   setVariant('primary');

@@ -20,7 +20,7 @@ export const materialTheme: KiskadeeSchema = {
           variant: {
             primary: {
               rest: {
-                backgroundColor: '#3574E1',
+                backgroundColor: '#6750A4',
               },
               hover: {
                 backgroundColor: '#735EAB',
@@ -43,12 +43,45 @@ export const materialTheme: KiskadeeSchema = {
         },
         outline: {
           base: {
-            padding: '10px 24px',
+            padding: '9px 23px',
             borderRadius: '20px',
             textAlign: 'center',
             borderWidth: '1px',
             borderStyle: 'solid',
-            borderColor: '#3574E1',
+            borderColor: '#79747E',
+          },
+          option: {
+            widthMin: '100px',
+          },
+          variant: {
+            primary: {
+              rest: {
+                backgroundColor: '#FFFFFF',
+              },
+              hover: {
+                backgroundColor: '#735EAB',
+                boxShadow:
+                  '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+              },
+              focus: {
+                backgroundColor: '#7965AF',
+              },
+              pressed: {
+                backgroundColor: '#7965AF',
+                boxShadow: 'none',
+              },
+              disabled: {
+                boxShadow: 'none',
+                backgroundColor: '#E4E4E4',
+              },
+            },
+          },
+        },
+        flat: {
+          base: {
+            padding: '10px 24px',
+            borderRadius: '20px',
+            textAlign: 'center',
           },
           option: {
             widthMin: '100px',
@@ -87,6 +120,26 @@ export const materialTheme: KiskadeeSchema = {
             fontFamily: 'Roboto',
             fontStyle: 'normal',
             color: '#FFFFFF',
+          },
+        },
+        outline: {
+          base: {
+            color: '#6750A4',
+            fontSize: '0.875rem',
+            lineHeight: '20px',
+            fontWeight: 500,
+            fontFamily: 'Roboto',
+            fontStyle: 'normal',
+          },
+        },
+        flat: {
+          base: {
+            color: '#6750A4',
+            fontSize: '0.875rem',
+            lineHeight: '20px',
+            fontWeight: 500,
+            fontFamily: 'Roboto',
+            fontStyle: 'normal',
           },
         },
       },

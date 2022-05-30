@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { ButtonProps, ButtonSchema } from './Button.types';
+import type { ButtonProps, ButtonSchema } from './Button.types';
 
 const timingFunction = 'ease';
 const duration = '0.2s';
@@ -21,7 +21,8 @@ export const ButtonStyled = styled.button<
       ...container?.[typeStyle]?.variant?.[variant]?.rest,
       cursor: 'pointer',
       fontSize: '16px',
-      transitionProperty: 'box-shadow, border, background, padding, min-width',
+      transitionProperty:
+        'box-shadow, border-color, background, padding, min-width',
       transitionDuration: duration,
       transitionTimingFunction: timingFunction,
     },
