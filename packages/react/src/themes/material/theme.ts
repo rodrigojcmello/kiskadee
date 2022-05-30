@@ -60,11 +60,10 @@ export const materialTheme: KiskadeeSchema = {
               },
               hover: {
                 backgroundColor: '#F3F1F8',
-                boxShadow:
-                  '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
               },
               focus: {
                 backgroundColor: '#ECEAF4',
+                borderColor: '#6750A4',
               },
               pressed: {
                 backgroundColor: '#ECEAF4',
@@ -93,8 +92,6 @@ export const materialTheme: KiskadeeSchema = {
               },
               hover: {
                 backgroundColor: '#F3F1F8',
-                boxShadow:
-                  '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
               },
               focus: {
                 backgroundColor: '#ECEAF4',
