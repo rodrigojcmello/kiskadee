@@ -241,7 +241,7 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 text="Text"
                 width="block"
-                type="contained"
+                type={type}
                 variant={variant}
                 interaction="hover"
                 onClick={(): void => {}}
@@ -259,7 +259,7 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 text="Text"
                 width="block"
-                type="contained"
+                type={type}
                 variant={variant}
                 interaction="focus"
                 onClick={(): void => {}}
@@ -277,7 +277,7 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 text="Text"
                 width="block"
-                type="contained"
+                type={type}
                 variant={variant}
                 interaction="pressed"
                 onClick={(): void => {}}
@@ -295,7 +295,7 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 text="Text"
                 width="block"
-                type="contained"
+                type={type}
                 variant={variant}
                 interaction="visited"
                 onClick={(): void => {}}
@@ -313,7 +313,7 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 text="Text"
                 width="block"
-                type="contained"
+                type={type}
                 variant={variant}
                 disabled
                 onClick={(): void => {}}
@@ -331,7 +331,7 @@ export const ButtonDocumentation: FC = () => {
             <Button
               text="Text"
               width="block"
-              type="contained"
+              type={type}
               variant={variant}
               onClick={(): void => {}}
             />
@@ -340,7 +340,7 @@ export const ButtonDocumentation: FC = () => {
             <Button
               text="Text text text text text text"
               width="auto"
-              type="contained"
+              type={type}
               variant={variant}
               onClick={(): void => {}}
             />
@@ -349,7 +349,7 @@ export const ButtonDocumentation: FC = () => {
             <Button
               text="Text"
               width="min-width"
-              type="contained"
+              type={type}
               variant={variant}
               onClick={(): void => {}}
             />
