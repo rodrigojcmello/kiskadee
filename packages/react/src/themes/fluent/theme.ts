@@ -13,8 +13,6 @@ export const fluentTheme: KiskadeeSchema = {
             padding: '4px 11px 6px 11px',
             textAlign: 'center',
             borderRadius: '4px',
-            // borderWidth: '1px',
-            // borderStyle: 'solid',
           },
           option: {
             widthMin: '100px',

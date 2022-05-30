@@ -59,20 +59,20 @@ export const materialTheme: KiskadeeSchema = {
                 backgroundColor: '#FFFFFF',
               },
               hover: {
-                backgroundColor: '#735EAB',
+                backgroundColor: '#F3F1F8',
                 boxShadow:
                   '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
               },
               focus: {
-                backgroundColor: '#7965AF',
+                backgroundColor: '#ECEAF4',
               },
               pressed: {
-                backgroundColor: '#7965AF',
+                backgroundColor: '#ECEAF4',
                 boxShadow: 'none',
               },
               disabled: {
                 boxShadow: 'none',
-                backgroundColor: '#E4E4E4',
+                backgroundColor: '#FFFFFF',
               },
             },
           },
@@ -92,20 +92,20 @@ export const materialTheme: KiskadeeSchema = {
                 backgroundColor: '#FFFFFF',
               },
               hover: {
-                backgroundColor: '#735EAB',
+                backgroundColor: '#F3F1F8',
                 boxShadow:
                   '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
               },
               focus: {
-                backgroundColor: '#7965AF',
+                backgroundColor: '#ECEAF4',
               },
               pressed: {
-                backgroundColor: '#7965AF',
+                backgroundColor: '#ECEAF4',
                 boxShadow: 'none',
               },
               disabled: {
                 boxShadow: 'none',
-                backgroundColor: '#E4E4E4',
+                backgroundColor: '#FFFFFF',
               },
             },
           },
