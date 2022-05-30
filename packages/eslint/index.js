@@ -226,6 +226,8 @@ module.exports = {
         // TypeScript
         //----------------------------------------------------------------------
 
+        '@typescript-eslint/consistent-type-imports': 'error',
+
         // /**
         //  * This rule is disabled because of the "no-param-reassign" rule that
         //  * deals with the same issue.

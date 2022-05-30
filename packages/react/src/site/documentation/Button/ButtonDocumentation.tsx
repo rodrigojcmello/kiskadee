@@ -1,14 +1,11 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import type { FC, PropsWithChildren } from 'react';
 import { useContext, useLayoutEffect, useState } from 'react';
-import { Button } from '../../../components/Button/Button';
+import { Button } from '../../../components/Button';
 import { Box } from '../../components/Box/Box';
 import { Container } from '../../components/Container/Container';
 import { BoxTitle } from '../../components/BoxTitle/BoxTitle';
-import {
-  ButtonType,
-  ButtonVariant,
-} from '../../../components/Button/Button.types';
+import type { ButtonType, ButtonVariant } from '../../../components/Button';
 import { KiskadeeContext } from '../../../context';
 import style from './ButtonDocumentation.module.scss';
 

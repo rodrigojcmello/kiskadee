@@ -19,9 +19,3 @@ Experience
 - **Secondary / Help / Info** are states that can be found in some UI kits or Design Systems, but in general they are 
   even less used than the warning state, for these cases it is recommended to create a new theme and override it in 
   scope  of the button. If any of these states become popular, we will review their adoption in the standard states.
-
-Legacy
-
-- **Visited** - This state is definitely not used as much anymore, especially in recent projects, but as in the 
-  button we have the flat state that supports link, and we decided to keep the visited state to cover the widest 
-  possible variety of states.
