@@ -51,8 +51,9 @@ export const ButtonDocumentation: FC = () => {
     setVariant('primary');
   }, [theme.name, theme.author, theme.version]);
 
-  const buttonContainer = theme.component.button?.container;
-  const buttonVariant = theme.component.button?.container?.[type]?.variant;
+  const buttonContainer = theme.component.button?.container?.type;
+  const buttonVariant =
+    theme.component.button?.container?.type?.[type]?.variant;
 
   return (
     <Container className={!pageLoad ? style['no-transition'] : undefined}>

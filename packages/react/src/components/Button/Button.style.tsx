@@ -17,8 +17,9 @@ export const ButtonStyled = styled.button<
 
     '&.button': {
       border: 'none',
-      ...container?.[typeStyle]?.base,
-      ...container?.[typeStyle]?.variant?.[variant]?.rest,
+      ...container?.base.rest,
+      ...container?.type?.[typeStyle]?.base,
+      ...container?.type?.[typeStyle]?.variant?.[variant]?.rest,
       cursor: 'pointer',
       fontSize: '16px',
       transitionProperty:
@@ -29,16 +30,16 @@ export const ButtonStyled = styled.button<
 
     // OPTION - WIDTH
     width: width === 'block' ? '100%' : 'auto',
-    minWidth:
-      width === 'min-width' ? container?.[typeStyle]?.option.widthMin : '0px',
+    minWidth: width === 'min-width' ? container?.option.widthMin : '0px',
 
     //--------------------------------------------------------------------------
     // Text
     //--------------------------------------------------------------------------
 
     '& .button__text': {
-      ...text?.[typeStyle]?.base,
-      ...text?.[typeStyle]?.variant?.[variant]?.rest,
+      ...text?.base?.rest,
+      ...text?.type?.[typeStyle]?.base,
+      ...text?.type?.[typeStyle]?.variant?.[variant]?.rest,
       whiteSpace: 'nowrap',
       transitionProperty: 'color, font-size',
       transitionDuration: duration,
@@ -51,33 +52,53 @@ export const ButtonStyled = styled.button<
 
     // HOVER
     '&:hover, &.--hover': {
-      ...container?.[typeStyle]?.variant?.[variant]?.hover,
-      '.button__text': text?.[typeStyle]?.variant?.[variant]?.hover,
+      ...container?.base.hover,
+      ...container?.type?.[typeStyle]?.variant?.[variant]?.hover,
+      '.button__text': {
+        ...text?.base?.hover,
+        ...text?.type?.[typeStyle]?.variant?.[variant]?.hover,
+      },
     },
 
     // PRESSED
     '&:active, &.--pressed': {
-      ...container?.[typeStyle]?.variant?.[variant]?.pressed,
-      '.button__text': text?.[typeStyle]?.variant?.[variant]?.pressed,
+      ...container?.base.pressed,
+      ...container?.type?.[typeStyle]?.variant?.[variant]?.pressed,
+      '.button__text': {
+        ...text?.base?.pressed,
+        ...text?.type?.[typeStyle]?.variant?.[variant]?.pressed,
+      },
     },
 
     // FOCUS
     '&:focus-visible, &.--focus': {
-      ...container?.[typeStyle]?.variant?.[variant]?.focus,
-      '.button__text': text?.[typeStyle]?.variant?.[variant]?.focus,
+      ...container?.base.focus,
+      ...container?.type?.[typeStyle]?.variant?.[variant]?.focus,
+      '.button__text': {
+        ...text?.base?.focus,
+        ...text?.type?.[typeStyle]?.variant?.[variant]?.focus,
+      },
     },
 
     // VISITED
     '&:visited, &.--visited': {
-      ...container?.[typeStyle]?.variant?.[variant]?.visited,
-      '.button__text': text?.[typeStyle]?.variant?.[variant]?.visited,
+      ...container?.base.visited,
+      ...container?.type?.[typeStyle]?.variant?.[variant]?.visited,
+      '.button__text': {
+        ...text?.base?.visited,
+        ...text?.type?.[typeStyle]?.variant?.[variant]?.visited,
+      },
     },
 
     // DISABLED
     '&:disabled': {
-      ...container?.[typeStyle]?.variant?.[variant]?.disabled,
+      ...container?.base.disabled,
+      ...container?.type?.[typeStyle]?.variant?.[variant]?.disabled,
       cursor: 'not-allowed',
-      '.button__text': text?.[typeStyle]?.variant?.[variant]?.disabled,
+      '.button__text': {
+        ...text?.base?.disabled,
+        ...text?.type?.[typeStyle]?.variant?.[variant]?.disabled,
+      },
     },
   };
 });

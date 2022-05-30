@@ -8,158 +8,143 @@ export const materialTheme: KiskadeeSchema = {
   component: {
     button: {
       container: {
-        contained: {
-          base: {
-            padding: '10px 24px',
+        base: {
+          rest: {
             borderRadius: '20px',
             textAlign: 'center',
+            padding: '10px 24px',
           },
-          option: {
-            widthMin: '100px',
+          focus: {
+            outline: 'none',
           },
-          variant: {
-            primary: {
-              rest: {
-                backgroundColor: '#6750A4',
-              },
-              hover: {
-                backgroundColor: '#735EAB',
-                boxShadow:
-                  '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
-              },
-              focus: {
-                backgroundColor: '#7965AF',
-                outline: 'none',
-              },
-              pressed: {
-                backgroundColor: '#7965AF',
-                boxShadow: 'none',
-              },
-              disabled: {
-                boxShadow: 'none',
-                backgroundColor: '#E4E4E4',
+          pressed: {
+            boxShadow: 'none',
+          },
+        },
+        option: {
+          widthMin: '100px',
+        },
+        type: {
+          contained: {
+            variant: {
+              primary: {
+                rest: {
+                  backgroundColor: '#6750A4',
+                },
+                hover: {
+                  backgroundColor: '#735EAB',
+                  boxShadow:
+                    '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                },
+                focus: {
+                  backgroundColor: '#7965AF',
+                },
+                pressed: {
+                  backgroundColor: '#7965AF',
+                },
+                disabled: {
+                  boxShadow: 'none',
+                  backgroundColor: '#E4E4E4',
+                },
               },
             },
           },
-        },
-        outline: {
-          base: {
-            padding: '9px 23px',
-            borderRadius: '20px',
-            textAlign: 'center',
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: '#79747E',
-          },
-          option: {
-            widthMin: '100px',
-          },
-          variant: {
-            primary: {
-              rest: {
-                backgroundColor: '#FFFFFF',
-              },
-              hover: {
-                backgroundColor: '#F3F1F8',
-              },
-              focus: {
-                backgroundColor: '#ECEAF4',
-                borderColor: '#6750A4',
-                outline: 'none',
-              },
-              pressed: {
-                backgroundColor: '#ECEAF4',
-                boxShadow: 'none',
-              },
-              disabled: {
-                boxShadow: 'none',
-                backgroundColor: '#FFFFFF',
-                borderColor: '#1f1f1f1f',
+          outline: {
+            base: {
+              padding: '9px 23px',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              borderColor: '#79747E',
+            },
+            variant: {
+              primary: {
+                rest: {
+                  backgroundColor: '#FFFFFF',
+                },
+                hover: {
+                  backgroundColor: '#F3F1F8',
+                },
+                focus: {
+                  backgroundColor: '#ECEAF4',
+                  borderColor: '#6750A4',
+                },
+                pressed: {
+                  backgroundColor: '#ECEAF4',
+                },
+                disabled: {
+                  backgroundColor: '#FFFFFF',
+                  borderColor: '#1f1f1f1f',
+                },
               },
             },
           },
-        },
-        flat: {
-          base: {
-            padding: '10px 24px',
-            borderRadius: '20px',
-            textAlign: 'center',
-          },
-          option: {
-            widthMin: '100px',
-          },
-          variant: {
-            primary: {
-              rest: {
-                backgroundColor: '#FFFFFF',
-              },
-              hover: {
-                backgroundColor: '#F3F1F8',
-              },
-              focus: {
-                backgroundColor: '#ECEAF4',
-                outline: 'none',
-              },
-              pressed: {
-                backgroundColor: '#ECEAF4',
-                boxShadow: 'none',
-              },
-              disabled: {
-                boxShadow: 'none',
-                backgroundColor: '#FFFFFF',
+          flat: {
+            variant: {
+              primary: {
+                rest: {
+                  backgroundColor: '#FFFFFF',
+                },
+                hover: {
+                  backgroundColor: '#F3F1F8',
+                },
+                focus: {
+                  backgroundColor: '#ECEAF4',
+                },
+                pressed: {
+                  backgroundColor: '#ECEAF4',
+                },
+                disabled: {
+                  backgroundColor: '#FFFFFF',
+                },
               },
             },
           },
         },
       },
       text: {
-        contained: {
-          base: {
+        base: {
+          rest: {
             fontSize: '0.875rem',
             lineHeight: '20px',
             fontWeight: 500,
             fontFamily: 'Roboto',
             fontStyle: 'normal',
-            color: '#FFFFFF',
           },
-          variant: {
-            primary: {
-              disabled: {
-                color: '#1b1a1e61',
+        },
+        type: {
+          contained: {
+            base: {
+              color: '#FFFFFF',
+            },
+            variant: {
+              primary: {
+                disabled: {
+                  color: '#1b1a1e61',
+                },
               },
             },
           },
-        },
-        outline: {
-          base: {
-            color: '#6750A4',
-            fontSize: '0.875rem',
-            lineHeight: '20px',
-            fontWeight: 500,
-            fontFamily: 'Roboto',
-            fontStyle: 'normal',
-          },
-          variant: {
-            primary: {
-              disabled: {
-                color: '#1b1a1e61',
+          outline: {
+            base: {
+              color: '#6750A4',
+            },
+            variant: {
+              primary: {
+                disabled: {
+                  color: '#1b1a1e61',
+                },
               },
             },
           },
-        },
-        flat: {
-          base: {
-            color: '#6750A4',
-            fontSize: '0.875rem',
-            lineHeight: '20px',
-            fontWeight: 500,
-            fontFamily: 'Roboto',
-            fontStyle: 'normal',
-          },
-          variant: {
-            primary: {
-              disabled: {
-                color: '#1b1a1e61',
+          flat: {
+            base: {
+              color: '#6750A4',
+            },
+            variant: {
+              primary: {
+                disabled: {
+                  color: '#1b1a1e61',
+                },
               },
             },
           },
