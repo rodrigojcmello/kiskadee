@@ -17,7 +17,7 @@ export const ButtonStyled = styled.button<
 
     '&.button': {
       border: 'none',
-      ...container?.base.rest,
+      ...container?.base?.rest,
       ...container?.type?.[typeStyle]?.base,
       ...container?.type?.[typeStyle]?.variant?.[variant]?.rest,
       cursor: 'pointer',
@@ -52,7 +52,7 @@ export const ButtonStyled = styled.button<
 
     // HOVER
     '&:hover, &.--hover': {
-      ...container?.base.hover,
+      ...container?.base?.hover,
       ...container?.type?.[typeStyle]?.variant?.[variant]?.hover,
       '.button__text': {
         ...text?.base?.hover,
@@ -62,7 +62,7 @@ export const ButtonStyled = styled.button<
 
     // PRESSED
     '&:active, &.--pressed': {
-      ...container?.base.pressed,
+      ...container?.base?.pressed,
       ...container?.type?.[typeStyle]?.variant?.[variant]?.pressed,
       '.button__text': {
         ...text?.base?.pressed,
@@ -72,7 +72,7 @@ export const ButtonStyled = styled.button<
 
     // FOCUS
     '&:focus-visible, &.--focus': {
-      ...container?.base.focus,
+      ...container?.base?.focus,
       ...container?.type?.[typeStyle]?.variant?.[variant]?.focus,
       '.button__text': {
         ...text?.base?.focus,
@@ -82,7 +82,7 @@ export const ButtonStyled = styled.button<
 
     // VISITED
     '&:visited, &.--visited': {
-      ...container?.base.visited,
+      ...container?.base?.visited,
       ...container?.type?.[typeStyle]?.variant?.[variant]?.visited,
       '.button__text': {
         ...text?.base?.visited,
@@ -92,7 +92,7 @@ export const ButtonStyled = styled.button<
 
     // DISABLED
     '&:disabled': {
-      ...container?.base.disabled,
+      ...container?.base?.disabled,
       ...container?.type?.[typeStyle]?.variant?.[variant]?.disabled,
       cursor: 'not-allowed',
       '.button__text': {

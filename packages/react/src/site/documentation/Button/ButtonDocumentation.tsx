@@ -51,7 +51,7 @@ export const ButtonDocumentation: FC = () => {
     setVariant('primary');
   }, [theme.name, theme.author, theme.version]);
 
-  const buttonContainer = theme.component.button?.container?.type;
+  const buttonContainer = theme.component.button?.container;
   const buttonVariant =
     theme.component.button?.container?.type?.[type]?.variant;
 
@@ -60,7 +60,7 @@ export const ButtonDocumentation: FC = () => {
       <Box>
         <div>
           <BoxTitle>Contained</BoxTitle>
-          {buttonContainer?.contained ? (
+          {buttonContainer?.type?.contained ? (
             <Applicable>
               <Button
                 text="Click me"
@@ -80,7 +80,7 @@ export const ButtonDocumentation: FC = () => {
 
         <div>
           <BoxTitle>Outline</BoxTitle>
-          {buttonContainer?.outline ? (
+          {buttonContainer?.type?.outline ? (
             <Applicable>
               <Button
                 text="Click me"
@@ -99,7 +99,7 @@ export const ButtonDocumentation: FC = () => {
         </div>
         <div>
           <BoxTitle>Flat</BoxTitle>
-          {buttonContainer?.flat ? (
+          {buttonContainer?.type?.flat ? (
             <Applicable>
               <Button
                 text="Click me"
@@ -237,7 +237,7 @@ export const ButtonDocumentation: FC = () => {
       <Box>
         <div>
           <BoxTitle>Hover</BoxTitle>
-          {buttonVariant?.[variant]?.hover ? (
+          {buttonContainer?.base?.hover || buttonVariant?.[variant]?.hover ? (
             <Applicable>
               <Button
                 text="Text"
@@ -255,7 +255,7 @@ export const ButtonDocumentation: FC = () => {
 
         <div>
           <BoxTitle>Focus</BoxTitle>
-          {buttonVariant?.[variant]?.focus ? (
+          {buttonContainer?.base?.focus || buttonVariant?.[variant]?.focus ? (
             <Applicable>
               <Button
                 text="Text"
@@ -273,7 +273,8 @@ export const ButtonDocumentation: FC = () => {
 
         <div>
           <BoxTitle>Pressed</BoxTitle>
-          {buttonVariant?.[variant]?.pressed ? (
+          {buttonContainer?.base?.pressed ||
+          buttonVariant?.[variant]?.pressed ? (
             <Applicable>
               <Button
                 text="Text"
@@ -291,7 +292,8 @@ export const ButtonDocumentation: FC = () => {
 
         <div>
           <BoxTitle>Visited</BoxTitle>
-          {buttonVariant?.[variant]?.visited ? (
+          {buttonContainer?.base?.visited ||
+          buttonVariant?.[variant]?.visited ? (
             <Applicable>
               <Button
                 text="Text"
@@ -309,7 +311,8 @@ export const ButtonDocumentation: FC = () => {
 
         <div>
           <BoxTitle>Disabled</BoxTitle>
-          {buttonVariant?.[variant]?.disabled ? (
+          {buttonContainer?.base?.disabled ||
+          buttonVariant?.[variant]?.disabled ? (
             <Applicable>
               <Button
                 text="Text"
