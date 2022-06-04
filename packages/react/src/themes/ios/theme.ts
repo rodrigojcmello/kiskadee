@@ -43,7 +43,27 @@ export const iosTheme: KiskadeeSchema = {
               },
               tertiary: {
                 rest: {
-                  backgroundColor: '#E9E9EA',
+                  backgroundColor: '#76767F1E',
+                },
+              },
+            },
+          },
+          flat: {
+            variant: {
+              primary: {
+                rest: {
+                  background: 'none',
+                },
+                disabled: {
+                  background: 'none',
+                },
+              },
+              danger: {
+                rest: {
+                  background: 'none',
+                },
+                disabled: {
+                  background: 'none',
                 },
               },
             },
@@ -79,6 +99,26 @@ export const iosTheme: KiskadeeSchema = {
               tertiary: {
                 rest: {
                   color: '#307DF6',
+                },
+              },
+            },
+          },
+          flat: {
+            variant: {
+              primary: {
+                rest: {
+                  color: '#307DF6',
+                },
+                disabled: {
+                  color: '#0000004d',
+                },
+              },
+              danger: {
+                rest: {
+                  color: '#EB4C3B',
+                },
+                disabled: {
+                  color: '#0000004d',
                 },
               },
             },

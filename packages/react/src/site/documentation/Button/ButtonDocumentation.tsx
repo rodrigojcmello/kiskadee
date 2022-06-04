@@ -222,7 +222,7 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 text="Click me"
                 width="block"
-                type="contained"
+                type={type}
                 variant="danger"
                 onClick={(): void => {
                   setVariant('danger');
@@ -234,6 +234,7 @@ export const ButtonDocumentation: FC = () => {
           )}
         </div>
       </Box>
+
       <Box>
         <div>
           <BoxTitle>Hover</BoxTitle>
@@ -364,43 +365,67 @@ export const ButtonDocumentation: FC = () => {
         <BoxTitle>Border options</BoxTitle>
         <Box>
           <div>
-            <Button
-              text="Default"
-              width="block"
-              type={type}
-              variant={variant}
-              onClick={(): void => {}}
-            />
+            {buttonContainer?.option.borderRadius?.default ? (
+              <Applicable>
+                <Button
+                  text="Default"
+                  width="block"
+                  type={type}
+                  variant={variant}
+                  onClick={(): void => {}}
+                />
+              </Applicable>
+            ) : (
+              <NotApplicable />
+            )}
           </div>
           <div>
-            <Button
-              text="Rounded"
-              width="block"
-              borderRadius="rounded"
-              type={type}
-              variant={variant}
-              onClick={(): void => {}}
-            />
+            {buttonContainer?.option.borderRadius?.rounded ? (
+              <Applicable>
+                <Button
+                  text="Rounded"
+                  width="block"
+                  borderRadius="rounded"
+                  type={type}
+                  variant={variant}
+                  onClick={(): void => {}}
+                />
+              </Applicable>
+            ) : (
+              <NotApplicable />
+            )}
           </div>
           <div>
-            <Button
-              text="Circle"
-              width="block"
-              borderRadius="full"
-              type={type}
-              variant={variant}
-              onClick={(): void => {}}
-            />
+            {buttonContainer?.option.borderRadius?.full ? (
+              <Applicable>
+                <Button
+                  text="Full"
+                  width="block"
+                  borderRadius="full"
+                  type={type}
+                  variant={variant}
+                  onClick={(): void => {}}
+                />
+              </Applicable>
+            ) : (
+              <NotApplicable />
+            )}
           </div>
           <div>
-            <Button
-              text="Square"
-              width="block"
-              borderRadius="none"
-              type={type}
-              variant={variant}
-              onClick={(): void => {}}
-            />
+            {buttonContainer?.option.borderRadius?.none ? (
+              <Applicable>
+                <Button
+                  text="Square"
+                  width="block"
+                  borderRadius="none"
+                  type={type}
+                  variant={variant}
+                  onClick={(): void => {}}
+                />
+              </Applicable>
+            ) : (
+              <NotApplicable />
+            )}
           </div>
         </Box>
       </div>

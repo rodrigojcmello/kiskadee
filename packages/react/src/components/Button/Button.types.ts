@@ -53,6 +53,7 @@ interface ButtonElementContainerRequired {
 
 interface ButtonElementContainerOptional {
   backgroundColor?: CSSProperties['backgroundColor'];
+  background?: 'none';
   borderStyle?: CSSProperties['borderStyle'];
   borderColor?: CSSProperties['borderColor'];
   boxShadow?: CSSProperties['boxShadow'];
