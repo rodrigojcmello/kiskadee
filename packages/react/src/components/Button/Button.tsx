@@ -10,6 +10,7 @@ export const Button: FC<ButtonProps> = ({
   interaction,
   type,
   variant,
+  borderRadius = 'default',
   // icon,
   onClick,
   width = 'auto',
@@ -28,6 +29,7 @@ export const Button: FC<ButtonProps> = ({
       theme={theme.component.button}
       className={classeName.join(' ').trim()}
       // Options
+      borderRadius={borderRadius}
       width={width}
       variant={variant}
       typeStyle={type}

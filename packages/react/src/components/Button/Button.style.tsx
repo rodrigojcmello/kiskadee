@@ -8,8 +8,9 @@ export const ButtonStyled = styled.button<
   Pick<ButtonProps, 'width' | 'variant'> & {
     theme?: ButtonSchema;
     typeStyle: ButtonProps['type'];
+    borderRadius: Exclude<ButtonProps['borderRadius'], undefined>;
   }
->(({ theme: { text, container }, width, typeStyle, variant }) => {
+>(({ theme: { text, container }, width, typeStyle, variant, borderRadius }) => {
   return {
     //--------------------------------------------------------------------------
     // Container
@@ -26,11 +27,14 @@ export const ButtonStyled = styled.button<
         'box-shadow, border-color, background, padding, min-width',
       transitionDuration: duration,
       transitionTimingFunction: timingFunction,
-    },
 
-    // OPTION - WIDTH
-    width: width === 'block' ? '100%' : 'auto',
-    minWidth: width === 'min-width' ? container?.option.widthMin : '0px',
+      // OPTION - WIDTH
+      width: width === 'block' ? '100%' : 'auto',
+      minWidth: width === 'min-width' ? container?.option.widthMin : '0px',
+
+      // OPTION - BORDER RADIUS
+      borderRadius: container?.option.borderRadius?.[borderRadius] || 0,
+    },
 
     //--------------------------------------------------------------------------
     // Text

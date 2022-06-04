@@ -31,6 +31,7 @@ export interface ButtonProps {
   variant: ButtonVariant;
   type: ButtonType;
   interaction?: InteractionState;
+  borderRadius?: 'none' | 'full' | 'rounded' | 'default';
   disabled?: boolean;
 }
 
@@ -44,7 +45,10 @@ interface ButtonElementContainerRequired {
   textAlign: CSSProperties['textAlign'];
 
   // Sizing
-  padding: CSSProperties['padding'];
+  paddingTop: number;
+  paddingRight: number;
+  paddingBottom: number;
+  paddingLeft: number;
 }
 
 interface ButtonElementContainerOptional {
@@ -57,7 +61,6 @@ interface ButtonElementContainerOptional {
 type ButtonElementContainerBase = ButtonElementContainerRequired &
   ButtonElementContainerOptional & {
     borderWidth?: CSSProperties['borderWidth'];
-    borderRadius?: CSSProperties['borderRadius'];
   };
 
 // Text
@@ -79,8 +82,11 @@ interface ButtonElementTextBase {
 //------------------------------------------------------------------------------
 
 interface ButtonElementContainerFocus {
-  outline?: string;
-  outlineOffset?: string;
+  outlineOffset?: CSSProperties['outlineOffset'];
+  outlineColor?: CSSProperties['outlineColor'];
+  outlineStyle?: CSSProperties['outlineStyle'];
+  outlineWidth?: CSSProperties['outlineWidth'];
+  outline?: 'none';
 }
 
 type ButtonElementContainerVariant = {
@@ -108,7 +114,12 @@ export interface ButtonSchema {
     base?: ButtonElementContainerVariant & { rest: ButtonElementContainerBase };
     option: {
       widthMin: CSSProperties['minWidth'];
-      // border: 'rounded' | 'square' | 'circle';
+      borderRadius?: {
+        default?: number;
+        full?: number;
+        rounded?: number;
+        none?: 0;
+      };
     };
     type?: Partial<
       Record<

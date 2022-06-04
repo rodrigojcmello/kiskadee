@@ -8,11 +8,22 @@ export const materialTheme: KiskadeeSchema = {
   component: {
     button: {
       container: {
+        option: {
+          widthMin: '100px',
+          borderRadius: {
+            default: 20,
+            rounded: 16,
+            full: 20,
+            none: 0,
+          },
+        },
         base: {
           rest: {
-            borderRadius: '20px',
             textAlign: 'center',
-            padding: '10px 24px',
+            paddingTop: 10,
+            paddingBottom: 10,
+            paddingLeft: 24,
+            paddingRight: 24,
           },
           focus: {
             outline: 'none',
@@ -20,9 +31,6 @@ export const materialTheme: KiskadeeSchema = {
           pressed: {
             boxShadow: 'none',
           },
-        },
-        option: {
-          widthMin: '100px',
         },
         type: {
           contained: {
@@ -47,11 +55,60 @@ export const materialTheme: KiskadeeSchema = {
                   backgroundColor: '#E4E4E4',
                 },
               },
+              secondary: {
+                rest: {
+                  backgroundColor: '#E8DEF8',
+                },
+                hover: {
+                  backgroundColor: '#D8CEE8',
+                  boxShadow:
+                    '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                },
+                focus: {
+                  backgroundColor: '#D0C6DF',
+                },
+                pressed: {
+                  backgroundColor: '#D0C6DF',
+                },
+                disabled: {
+                  boxShadow: 'none',
+                  backgroundColor: '#E4E4E4',
+                },
+              },
+              tertiary: {
+                rest: {
+                  backgroundColor: '#F7F2FA',
+                  boxShadow:
+                    '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                },
+                hover: {
+                  backgroundColor: '#E8E0F0',
+                  boxShadow:
+                    '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15)',
+                },
+                focus: {
+                  backgroundColor: '#E6DFF0',
+                  boxShadow:
+                    '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                },
+                pressed: {
+                  backgroundColor: '#E6DFF0',
+                  boxShadow:
+                    '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                },
+                disabled: {
+                  backgroundColor: '#E4E4E4',
+                  boxShadow: 'none',
+                },
+              },
             },
           },
           outline: {
             base: {
-              padding: '9px 23px',
+              paddingTop: 9,
+              paddingBottom: 9,
+              paddingLeft: 23,
+              paddingRight: 23,
               borderWidth: '1px',
               borderStyle: 'solid',
               borderColor: '#79747E',
@@ -113,11 +170,27 @@ export const materialTheme: KiskadeeSchema = {
         },
         type: {
           contained: {
-            base: {
-              color: '#FFFFFF',
-            },
             variant: {
               primary: {
+                rest: {
+                  color: '#FFFFFF',
+                },
+                disabled: {
+                  color: '#1b1a1e61',
+                },
+              },
+              secondary: {
+                rest: {
+                  color: '#1D192B',
+                },
+                disabled: {
+                  color: '#1b1a1e61',
+                },
+              },
+              tertiary: {
+                rest: {
+                  color: '#6750A4',
+                },
                 disabled: {
                   color: '#1b1a1e61',
                 },

@@ -8,18 +8,25 @@ export const iosTheme: KiskadeeSchema = {
   component: {
     button: {
       container: {
+        option: {
+          borderRadius: {
+            default: 10,
+            rounded: 10,
+            none: 0,
+          },
+          widthMin: 100,
+        },
         base: {
           rest: {
             textAlign: 'center',
-            padding: '14px 20px',
-            borderRadius: '10px',
+            paddingTop: 14,
+            paddingBottom: 14,
+            paddingLeft: 20,
+            paddingRight: 20,
           },
           disabled: {
             backgroundColor: '#74748114',
           },
-        },
-        option: {
-          widthMin: '100px',
         },
         type: {
           contained: {

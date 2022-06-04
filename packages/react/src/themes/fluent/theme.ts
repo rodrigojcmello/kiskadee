@@ -9,14 +9,17 @@ export const fluentTheme: KiskadeeSchema = {
     button: {
       container: {
         option: {
-          widthMin: '100px',
+          widthMin: 100,
         },
         type: {
           contained: {
             base: {
-              padding: '4px 11px 6px 11px',
+              paddingTop: 4,
+              paddingBottom: 6,
+              paddingLeft: 11,
+              paddingRight: 11,
               textAlign: 'center',
-              borderRadius: '4px',
+              borderRadius: 4,
             },
             variant: {
               primary: {
@@ -30,8 +33,10 @@ export const fluentTheme: KiskadeeSchema = {
                   backgroundColor: '#327EC5',
                 },
                 focus: {
-                  outline: '2px solid #000',
-                  outlineOffset: '1px',
+                  outlineWidth: 2,
+                  outlineStyle: 'solid',
+                  outlineColor: '#000',
+                  outlineOffset: 1,
                 },
                 disabled: {
                   backgroundColor: '#C8C8C8',

@@ -360,6 +360,50 @@ export const ButtonDocumentation: FC = () => {
           </div>
         </div>
       </div>
+      <div>
+        <BoxTitle>Border options</BoxTitle>
+        <Box>
+          <div>
+            <Button
+              text="Default"
+              width="block"
+              type={type}
+              variant={variant}
+              onClick={(): void => {}}
+            />
+          </div>
+          <div>
+            <Button
+              text="Rounded"
+              width="block"
+              borderRadius="rounded"
+              type={type}
+              variant={variant}
+              onClick={(): void => {}}
+            />
+          </div>
+          <div>
+            <Button
+              text="Circle"
+              width="block"
+              borderRadius="full"
+              type={type}
+              variant={variant}
+              onClick={(): void => {}}
+            />
+          </div>
+          <div>
+            <Button
+              text="Square"
+              width="block"
+              borderRadius="none"
+              type={type}
+              variant={variant}
+              onClick={(): void => {}}
+            />
+          </div>
+        </Box>
+      </div>
     </Container>
   );
 };

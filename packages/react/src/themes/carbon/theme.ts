@@ -14,7 +14,10 @@ export const carbonTheme: KiskadeeSchema = {
         base: {
           rest: {
             textAlign: 'left',
-            padding: '13px 64px 13px 16px',
+            paddingTop: 13,
+            paddingBottom: 13,
+            paddingLeft: 16,
+            paddingRight: 64,
           },
         },
         type: {
@@ -28,8 +31,10 @@ export const carbonTheme: KiskadeeSchema = {
                   backgroundColor: '#0353E9 ',
                 },
                 focus: {
-                  outline: '1px solid #ffffff',
-                  outlineOffset: '-3px',
+                  outlineWidth: 1,
+                  outlineColor: '#ffffff',
+                  outlineStyle: 'solid',
+                  outlineOffset: -3,
                 },
                 pressed: {
                   backgroundColor: '#002D9C',
@@ -46,8 +51,10 @@ export const carbonTheme: KiskadeeSchema = {
                   backgroundColor: '#474747',
                 },
                 focus: {
-                  outline: '1px solid #ffffff',
-                  outlineOffset: '-3px',
+                  outlineWidth: 1,
+                  outlineColor: '#ffffff',
+                  outlineStyle: 'solid',
+                  outlineOffset: -3,
                 },
                 pressed: {
                   backgroundColor: '#6f6f6f',
@@ -64,8 +71,10 @@ export const carbonTheme: KiskadeeSchema = {
                   backgroundColor: '#b81922',
                 },
                 focus: {
-                  outline: '1px solid #ffffff',
-                  outlineOffset: '-3px',
+                  outlineWidth: 1,
+                  outlineColor: '#ffffff',
+                  outlineStyle: 'solid',
+                  outlineOffset: -3,
                 },
                 pressed: {
                   backgroundColor: '#750e13',
@@ -78,9 +87,12 @@ export const carbonTheme: KiskadeeSchema = {
           },
           outline: {
             base: {
-              borderWidth: '1px',
+              borderWidth: 1,
               borderStyle: 'solid',
-              padding: '12px 63px 12px 15px',
+              paddingTop: 12,
+              paddingBottom: 12,
+              paddingLeft: 15,
+              paddingRight: 63,
             },
             variant: {
               primary: {
