@@ -16,10 +16,13 @@ export const materialTheme: KiskadeeSchema = {
             full: 20,
             none: 0,
           },
+          textAlign: {
+            default: 'center',
+            center: true,
+          },
         },
         base: {
           rest: {
-            textAlign: 'center',
             paddingTop: 10,
             paddingBottom: 10,
             paddingLeft: 24,

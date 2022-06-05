@@ -353,7 +353,7 @@ export const ButtonDocumentation: FC = () => {
           <div>
             <Button
               text="Text"
-              width="min-width"
+              width="min"
               type={type}
               variant={variant}
               onClick={(): void => {}}
@@ -365,24 +365,8 @@ export const ButtonDocumentation: FC = () => {
         <BoxTitle>Radius Options</BoxTitle>
         <Box>
           <div>
-            <BoxTitle>Default</BoxTitle>
-            {buttonContainer?.option.borderRadius?.default !== undefined ? (
-              <Applicable>
-                <Button
-                  text="Default"
-                  width="block"
-                  type={type}
-                  variant={variant}
-                  onClick={(): void => {}}
-                />
-              </Applicable>
-            ) : (
-              <NotApplicable />
-            )}
-          </div>
-          <div>
             <BoxTitle>Rounded</BoxTitle>
-            {buttonContainer?.option.borderRadius?.rounded !== undefined ? (
+            {buttonContainer?.option?.borderRadius?.rounded !== undefined ? (
               <Applicable>
                 <Button
                   text="Rounded"
@@ -399,7 +383,7 @@ export const ButtonDocumentation: FC = () => {
           </div>
           <div>
             <BoxTitle>Full</BoxTitle>
-            {buttonContainer?.option.borderRadius?.full !== undefined ? (
+            {buttonContainer?.option?.borderRadius?.full !== undefined ? (
               <Applicable>
                 <Button
                   text="Full"
@@ -416,12 +400,65 @@ export const ButtonDocumentation: FC = () => {
           </div>
           <div>
             <BoxTitle>None</BoxTitle>
-            {buttonContainer?.option.borderRadius?.none !== undefined ? (
+            {buttonContainer?.option?.borderRadius?.none !== undefined ? (
               <Applicable>
                 <Button
                   text="Text"
                   width="block"
                   borderRadius="none"
+                  type={type}
+                  variant={variant}
+                  onClick={(): void => {}}
+                />
+              </Applicable>
+            ) : (
+              <NotApplicable />
+            )}
+          </div>
+        </Box>
+        <Box>
+          <div>
+            <BoxTitle>Left</BoxTitle>
+            {buttonContainer?.option?.textAlign?.left ? (
+              <Applicable>
+                <Button
+                  text="Text"
+                  width="block"
+                  textAlign="left"
+                  type={type}
+                  variant={variant}
+                  onClick={(): void => {}}
+                />
+              </Applicable>
+            ) : (
+              <NotApplicable />
+            )}
+          </div>
+          <div>
+            <BoxTitle>Center</BoxTitle>
+            {buttonContainer?.option?.textAlign?.center ? (
+              <Applicable>
+                <Button
+                  text="Text"
+                  width="block"
+                  textAlign="center"
+                  type={type}
+                  variant={variant}
+                  onClick={(): void => {}}
+                />
+              </Applicable>
+            ) : (
+              <NotApplicable />
+            )}
+          </div>
+          <div>
+            <BoxTitle>Right</BoxTitle>
+            {buttonContainer?.option?.textAlign?.right ? (
+              <Applicable>
+                <Button
+                  text="Text"
+                  width="block"
+                  textAlign="right"
                   type={type}
                   variant={variant}
                   onClick={(): void => {}}

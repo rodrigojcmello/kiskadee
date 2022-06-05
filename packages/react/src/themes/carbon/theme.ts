@@ -14,10 +14,13 @@ export const carbonTheme: KiskadeeSchema = {
             default: 0,
             none: 0,
           },
+          textAlign: {
+            default: 'left',
+            left: true,
+          },
         },
         base: {
           rest: {
-            textAlign: 'left',
             paddingTop: 13,
             paddingBottom: 13,
             paddingLeft: 16,

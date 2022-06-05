@@ -12,6 +12,11 @@ import { capybaraTheme } from '../../../themes/capybara/theme';
 const BarStyled = styled.div(() => ({
   padding: 8,
   borderBottom: '1px solid #ccc',
+  position: 'fixed',
+  width: '100%',
+  top: 0,
+  zIndex: 1,
+  backgroundColor: '#FFF',
 }));
 
 const SelectTheme = styled.select(() => ({

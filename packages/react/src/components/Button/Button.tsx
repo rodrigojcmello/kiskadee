@@ -11,6 +11,7 @@ export const Button: FC<ButtonProps> = ({
   type,
   variant,
   borderRadius = 'default',
+  textAlign,
   // icon,
   onClick,
   width = 'auto',
@@ -30,6 +31,7 @@ export const Button: FC<ButtonProps> = ({
       className={classeName.join(' ').trim()}
       // Options
       borderRadius={borderRadius}
+      textAlign={textAlign}
       width={width}
       variant={variant}
       typeStyle={type}

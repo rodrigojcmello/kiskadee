@@ -15,10 +15,13 @@ export const iosTheme: KiskadeeSchema = {
             none: 0,
           },
           widthMin: 100,
+          textAlign: {
+            default: 'center',
+            center: true,
+          },
         },
         base: {
           rest: {
-            textAlign: 'center',
             paddingTop: 14,
             paddingBottom: 14,
             paddingLeft: 20,

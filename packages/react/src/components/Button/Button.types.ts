@@ -22,16 +22,16 @@ export interface ButtonProps {
   icon?: string;
   text: string;
   onClick: () => void;
-  // disabled?: boolean;
   typeHTML?: 'button' | 'reset' | 'submit';
 
   // STYLE
-  width?: 'auto' | 'block' | 'min-width';
+  width?: 'auto' | 'block' | 'min';
   separateIcon?: boolean;
   variant: ButtonVariant;
   type: ButtonType;
   interaction?: InteractionState;
   borderRadius?: 'none' | 'full' | 'rounded' | 'default';
+  textAlign?: 'left' | 'center' | 'right';
   disabled?: boolean;
 }
 
@@ -49,7 +49,6 @@ type ButtonElementContainer = {
   paddingLeft?: number;
 
   // Style
-  textAlign?: CSSProperties['textAlign'];
   background?: 'none';
   backgroundColor?: CSSProperties['backgroundColor'];
   borderWidth?: CSSProperties['borderWidth'];
@@ -98,13 +97,19 @@ type ButtonElementTextVariant = Partial<
 export interface ButtonSchema {
   container?: {
     base?: ButtonElementContainerVariant;
-    option: {
-      widthMin: CSSProperties['minWidth'];
+    option?: {
+      widthMin?: CSSProperties['minWidth'];
       borderRadius?: {
         default?: number;
         full?: number;
         rounded?: number;
         none?: 0;
+      };
+      textAlign?: {
+        default?: 'left' | 'center' | 'right';
+        left?: true;
+        center?: true;
+        right?: true;
       };
     };
     type?: Partial<

@@ -14,6 +14,11 @@ export const fluentTheme: KiskadeeSchema = {
             default: 4,
             rounded: 4,
           },
+          textAlign: {
+            default: 'center',
+            center: true,
+            left: true,
+          },
         },
         base: {
           focus: {
@@ -30,7 +35,6 @@ export const fluentTheme: KiskadeeSchema = {
               paddingBottom: 6,
               paddingLeft: 11,
               paddingRight: 11,
-              textAlign: 'center',
             },
             variant: {
               primary: {
