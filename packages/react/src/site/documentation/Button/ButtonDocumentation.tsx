@@ -362,10 +362,11 @@ export const ButtonDocumentation: FC = () => {
         </div>
       </div>
       <div>
-        <BoxTitle>Border options</BoxTitle>
+        <BoxTitle>Radius Options</BoxTitle>
         <Box>
           <div>
-            {buttonContainer?.option.borderRadius?.default ? (
+            <BoxTitle>Default</BoxTitle>
+            {buttonContainer?.option.borderRadius?.default !== undefined ? (
               <Applicable>
                 <Button
                   text="Default"
@@ -380,7 +381,8 @@ export const ButtonDocumentation: FC = () => {
             )}
           </div>
           <div>
-            {buttonContainer?.option.borderRadius?.rounded ? (
+            <BoxTitle>Rounded</BoxTitle>
+            {buttonContainer?.option.borderRadius?.rounded !== undefined ? (
               <Applicable>
                 <Button
                   text="Rounded"
@@ -396,7 +398,8 @@ export const ButtonDocumentation: FC = () => {
             )}
           </div>
           <div>
-            {buttonContainer?.option.borderRadius?.full ? (
+            <BoxTitle>Full</BoxTitle>
+            {buttonContainer?.option.borderRadius?.full !== undefined ? (
               <Applicable>
                 <Button
                   text="Full"
@@ -412,10 +415,11 @@ export const ButtonDocumentation: FC = () => {
             )}
           </div>
           <div>
-            {buttonContainer?.option.borderRadius?.none ? (
+            <BoxTitle>None</BoxTitle>
+            {buttonContainer?.option.borderRadius?.none !== undefined ? (
               <Applicable>
                 <Button
-                  text="Square"
+                  text="Text"
                   width="block"
                   borderRadius="none"
                   type={type}

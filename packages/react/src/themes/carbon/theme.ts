@@ -10,6 +10,10 @@ export const carbonTheme: KiskadeeSchema = {
       container: {
         option: {
           widthMin: '100px',
+          borderRadius: {
+            default: 0,
+            none: 0,
+          },
         },
         base: {
           rest: {
