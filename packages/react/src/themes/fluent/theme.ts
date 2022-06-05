@@ -10,6 +10,18 @@ export const fluentTheme: KiskadeeSchema = {
       container: {
         option: {
           widthMin: 100,
+          borderRadius: {
+            default: 4,
+            rounded: 4,
+          },
+        },
+        base: {
+          focus: {
+            outlineWidth: 2,
+            outlineStyle: 'solid',
+            outlineColor: '#000',
+            outlineOffset: 1,
+          },
         },
         type: {
           contained: {
@@ -19,7 +31,6 @@ export const fluentTheme: KiskadeeSchema = {
               paddingLeft: 11,
               paddingRight: 11,
               textAlign: 'center',
-              borderRadius: 4,
             },
             variant: {
               primary: {
@@ -32,14 +43,32 @@ export const fluentTheme: KiskadeeSchema = {
                 pressed: {
                   backgroundColor: '#327EC5',
                 },
-                focus: {
-                  outlineWidth: 2,
-                  outlineStyle: 'solid',
-                  outlineColor: '#000',
-                  outlineOffset: 1,
-                },
                 disabled: {
                   backgroundColor: '#C8C8C8',
+                },
+              },
+              secondary: {
+                rest: {
+                  backgroundColor: '#FFFFFFB2',
+                  paddingTop: 3,
+                  paddingBottom: 5,
+                  paddingLeft: 10,
+                  paddingRight: 10,
+                  borderWidth: 1,
+                  borderStyle: 'solid',
+                  borderColor: '#0000000F',
+                },
+                hover: {
+                  backgroundColor: '#F9F9F980',
+                },
+                pressed: {
+                  backgroundColor: '#F9F9F94D',
+                },
+                disabled: {
+                  backgroundColor: '#F9F9F94D',
+                },
+                focus: {
+                  backgroundColor: '#FFFFFFB2',
                 },
               },
             },
@@ -65,6 +94,14 @@ export const fluentTheme: KiskadeeSchema = {
                 },
                 pressed: {
                   color: '#ffffffb3',
+                },
+              },
+              secondary: {
+                rest: {
+                  color: '#000000E4',
+                },
+                disabled: {
+                  color: '#0000005C',
                 },
               },
             },

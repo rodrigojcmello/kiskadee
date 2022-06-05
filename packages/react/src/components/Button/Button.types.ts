@@ -41,78 +41,63 @@ export interface ButtonProps {
 
 // Container
 
-interface ButtonElementContainerRequired {
-  textAlign: CSSProperties['textAlign'];
-
+type ButtonElementContainer = {
   // Sizing
-  paddingTop: number;
-  paddingRight: number;
-  paddingBottom: number;
-  paddingLeft: number;
-}
+  paddingTop?: number;
+  paddingRight?: number;
+  paddingBottom?: number;
+  paddingLeft?: number;
 
-interface ButtonElementContainerOptional {
-  backgroundColor?: CSSProperties['backgroundColor'];
+  // Style
+  textAlign?: CSSProperties['textAlign'];
   background?: 'none';
+  backgroundColor?: CSSProperties['backgroundColor'];
+  borderWidth?: CSSProperties['borderWidth'];
   borderStyle?: CSSProperties['borderStyle'];
   borderColor?: CSSProperties['borderColor'];
-  boxShadow?: CSSProperties['boxShadow'];
-}
 
-type ButtonElementContainerBase = ButtonElementContainerRequired &
-  ButtonElementContainerOptional & {
-    borderWidth?: CSSProperties['borderWidth'];
-  };
+  // Elevation
+  boxShadow?: CSSProperties['boxShadow'];
+
+  // Focus
+  outlineOffset?: CSSProperties['outlineOffset'];
+  outlineColor?: CSSProperties['outlineColor'];
+  outlineStyle?: CSSProperties['outlineStyle'];
+  outlineWidth?: CSSProperties['outlineWidth'];
+  outline?: 'none';
+};
 
 // Text
 
-interface ButtonElementTextBase {
+interface ButtonElementText {
   // Style
-  fontFamily: CSSProperties['fontFamily'];
-  fontStyle: CSSProperties['fontStyle'];
-  fontWeight: CSSProperties['fontWeight'];
+  fontFamily?: CSSProperties['fontFamily'];
+  fontStyle?: CSSProperties['fontStyle'];
+  fontWeight?: CSSProperties['fontWeight'];
   color?: CSSProperties['color'];
 
   // Sizing
-  fontSize: CSSProperties['fontSize'];
-  lineHeight: CSSProperties['lineHeight'];
+  fontSize?: CSSProperties['fontSize'];
+  lineHeight?: CSSProperties['lineHeight'];
 }
 
 //------------------------------------------------------------------------------
 // States
 //------------------------------------------------------------------------------
 
-interface ButtonElementContainerFocus {
-  outlineOffset?: CSSProperties['outlineOffset'];
-  outlineColor?: CSSProperties['outlineColor'];
-  outlineStyle?: CSSProperties['outlineStyle'];
-  outlineWidth?: CSSProperties['outlineWidth'];
-  outline?: 'none';
-}
+type ButtonElementContainerVariant = Partial<
+  Record<InteractionState, ButtonElementContainer>
+>;
 
-type ButtonElementContainerVariant = {
-  rest?: ButtonElementContainerOptional;
-  hover?: ButtonElementContainerOptional;
-  focus?: ButtonElementContainerOptional & ButtonElementContainerFocus;
-  pressed?: ButtonElementContainerOptional;
-  visited?: ButtonElementContainerOptional;
-  disabled?: ButtonElementContainerOptional;
-};
-
-type ButtonElementTextVariant = {
-  rest?: { color?: CSSProperties['color'] };
-  hover?: { color?: CSSProperties['color'] };
-  focus?: { color?: CSSProperties['color'] };
-  pressed?: { color?: CSSProperties['color'] };
-  visited?: { color?: CSSProperties['color'] };
-  disabled?: { color?: CSSProperties['color'] };
-};
+type ButtonElementTextVariant = Partial<
+  Record<InteractionState, ButtonElementText>
+>;
 
 //------------------------------------------------------------------------------
 
 export interface ButtonSchema {
   container?: {
-    base?: ButtonElementContainerVariant & { rest: ButtonElementContainerBase };
+    base?: ButtonElementContainerVariant;
     option: {
       widthMin: CSSProperties['minWidth'];
       borderRadius?: {
@@ -126,7 +111,7 @@ export interface ButtonSchema {
       Record<
         ButtonType,
         {
-          base?: Partial<ButtonElementContainerBase>;
+          base?: Partial<ButtonElementContainer>;
           variant?: Partial<
             Record<ButtonVariant, ButtonElementContainerVariant>
           >;
@@ -135,12 +120,12 @@ export interface ButtonSchema {
     >;
   };
   text?: {
-    base?: ButtonElementTextVariant & { rest: ButtonElementTextBase };
+    base?: ButtonElementTextVariant;
     type?: Partial<
       Record<
         ButtonType,
         {
-          base?: Partial<ButtonElementTextBase>;
+          base?: ButtonElementText;
           variant?: Partial<Record<ButtonVariant, ButtonElementTextVariant>>;
         }
       >
