@@ -30,12 +30,6 @@ export const fluentTheme: KiskadeeSchema = {
         },
         type: {
           contained: {
-            base: {
-              paddingTop: 4,
-              paddingBottom: 6,
-              paddingLeft: 11,
-              paddingRight: 11,
-            },
             variant: {
               primary: {
                 rest: {
@@ -54,10 +48,6 @@ export const fluentTheme: KiskadeeSchema = {
               secondary: {
                 rest: {
                   backgroundColor: '#FFFFFFB2',
-                  paddingTop: 3,
-                  paddingBottom: 5,
-                  paddingLeft: 10,
-                  paddingRight: 10,
                   borderWidth: 1,
                   borderStyle: 'solid',
                   borderColor: '#0000000F',
@@ -79,6 +69,18 @@ export const fluentTheme: KiskadeeSchema = {
           },
         },
       },
+      leftIcon: {
+        base: {
+          rest: {
+            paddingTop: 3,
+            paddingBottom: 3,
+            paddingLeft: 3,
+            paddingRight: 3,
+            color: '#ffffff',
+            fontSize: '24px',
+          },
+        },
+      },
       text: {
         base: {
           rest: {
@@ -91,6 +93,12 @@ export const fluentTheme: KiskadeeSchema = {
         },
         type: {
           contained: {
+            base: {
+              paddingTop: 4,
+              paddingBottom: 6,
+              paddingLeft: 11,
+              paddingRight: 11,
+            },
             variant: {
               primary: {
                 rest: {
@@ -103,6 +111,10 @@ export const fluentTheme: KiskadeeSchema = {
               secondary: {
                 rest: {
                   color: '#000000E4',
+                  paddingTop: 3,
+                  paddingBottom: 5,
+                  paddingLeft: 10,
+                  paddingRight: 10,
                 },
                 disabled: {
                   color: '#0000005C',

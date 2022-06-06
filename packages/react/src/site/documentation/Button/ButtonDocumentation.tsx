@@ -67,6 +67,60 @@ export const ButtonDocumentation: FC = () => {
                 width="block"
                 type="contained"
                 variant="primary"
+                iconLeft={
+                  <span
+                    className="material-symbols-outlined"
+                    // style={{ color: 'red', fontSize: 24 }}
+                  >
+                    block
+                  </span>
+                }
+                onClick={(): void => {
+                  setType('contained');
+                  setVariant('primary');
+                }}
+              />
+            </Applicable>
+          ) : (
+            <NotApplicable />
+          )}
+          {buttonContainer?.type?.contained ? (
+            <Applicable>
+              <Button
+                text="Click me"
+                width="block"
+                type="contained"
+                variant="primary"
+                iconLeft={
+                  <span
+                    className="material-symbols-outlined"
+                    // style={{ color: 'red', fontSize: 24 }}
+                  >
+                    block
+                  </span>
+                }
+                iconLeftDetached
+                onClick={(): void => {
+                  setType('contained');
+                  setVariant('primary');
+                }}
+              />
+            </Applicable>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+      </Box>
+      <Box>
+        <div>
+          <BoxTitle>Contained</BoxTitle>
+          {buttonContainer?.type?.contained ? (
+            <Applicable>
+              <Button
+                text="Click me"
+                width="block"
+                type="contained"
+                variant="primary"
                 onClick={(): void => {
                   setType('contained');
                   setVariant('primary');

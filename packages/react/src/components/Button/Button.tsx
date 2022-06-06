@@ -16,6 +16,9 @@ export const Button: FC<ButtonProps> = ({
   onClick,
   width = 'auto',
   disabled,
+  iconLeft,
+  iconRight,
+  iconLeftDetached,
   // variant,
 }) => {
   const [theme] = useContext(KiskadeeContext);
@@ -36,8 +39,11 @@ export const Button: FC<ButtonProps> = ({
       variant={variant}
       typeStyle={type}
       disabled={disabled}
+      iconLeftDetached={iconLeftDetached}
     >
-      <span className="button__text">{text}</span>
+      {iconLeft && <div className="button__icon-left">{iconLeft}</div>}
+      <div className="button__text">{text}</div>
+      {iconRight && <span className="button__icon-right">{iconRight}</span>}
     </ButtonStyled>
   );
 };

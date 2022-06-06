@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactElement } from 'react';
 
 export type ButtonType = 'contained' | 'outline' | 'flat';
 
@@ -26,13 +26,16 @@ export interface ButtonProps {
 
   // STYLE
   width?: 'auto' | 'block' | 'min';
-  separateIcon?: boolean;
   variant: ButtonVariant;
   type: ButtonType;
   interaction?: InteractionState;
   borderRadius?: 'none' | 'full' | 'rounded' | 'default';
   textAlign?: 'left' | 'center' | 'right';
   disabled?: boolean;
+  iconLeft?: ReactElement;
+  iconLeftDetached?: boolean;
+  iconRight?: ReactElement;
+  iconRightDetached?: boolean;
 }
 
 //------------------------------------------------------------------------------
@@ -42,12 +45,6 @@ export interface ButtonProps {
 // Container
 
 type ButtonElementContainer = {
-  // Sizing
-  paddingTop?: number;
-  paddingRight?: number;
-  paddingBottom?: number;
-  paddingLeft?: number;
-
   // Style
   background?: 'none';
   backgroundColor?: CSSProperties['backgroundColor'];
@@ -66,6 +63,20 @@ type ButtonElementContainer = {
   outline?: 'none';
 };
 
+// Left Icon
+
+interface ButtonElementLeftIcon {
+  // Style
+  color?: CSSProperties['color'];
+
+  // Sizing
+  fontSize?: CSSProperties['fontSize'];
+  paddingTop?: number;
+  paddingRight?: number;
+  paddingBottom?: number;
+  paddingLeft?: number;
+}
+
 // Text
 
 interface ButtonElementText {
@@ -78,6 +89,10 @@ interface ButtonElementText {
   // Sizing
   fontSize?: CSSProperties['fontSize'];
   lineHeight?: CSSProperties['lineHeight'];
+  paddingTop?: number;
+  paddingRight?: number;
+  paddingBottom?: number;
+  paddingLeft?: number;
 }
 
 //------------------------------------------------------------------------------
@@ -86,6 +101,10 @@ interface ButtonElementText {
 
 type ButtonElementContainerVariant = Partial<
   Record<InteractionState, ButtonElementContainer>
+>;
+
+type ButtonElementLeftIconVariant = Partial<
+  Record<InteractionState, ButtonElementLeftIcon>
 >;
 
 type ButtonElementTextVariant = Partial<
@@ -119,6 +138,20 @@ export interface ButtonSchema {
           base?: Partial<ButtonElementContainer>;
           variant?: Partial<
             Record<ButtonVariant, ButtonElementContainerVariant>
+          >;
+        }
+      >
+    >;
+  };
+  leftIcon?: {
+    base?: ButtonElementLeftIconVariant;
+    type?: Partial<
+      Record<
+        ButtonType,
+        {
+          base?: ButtonElementLeftIcon;
+          variant?: Partial<
+            Record<ButtonVariant, ButtonElementLeftIconVariant>
           >;
         }
       >

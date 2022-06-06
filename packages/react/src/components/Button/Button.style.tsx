@@ -5,19 +5,20 @@ const timingFunction = 'ease';
 const duration = '0.2s';
 
 export const ButtonStyled = styled.button<
-  Pick<ButtonProps, 'width' | 'variant' | 'textAlign'> & {
+  Pick<ButtonProps, 'width' | 'variant' | 'textAlign' | 'iconLeftDetached'> & {
     theme?: ButtonSchema;
     typeStyle: ButtonProps['type'];
     borderRadius: Exclude<ButtonProps['borderRadius'], undefined>;
   }
 >(
   ({
-    theme: { text, container },
+    theme: { text, container, leftIcon },
     width,
     typeStyle,
     variant,
     borderRadius,
     textAlign,
+    iconLeftDetached,
   }) => {
     const containerStyle = {
       ...container?.base?.rest,
@@ -25,16 +26,29 @@ export const ButtonStyled = styled.button<
       ...container?.type?.[typeStyle]?.variant?.[variant]?.rest,
     };
 
+    const leftIconStyle = {
+      ...leftIcon?.base?.rest,
+      ...leftIcon?.type?.[typeStyle]?.base,
+      ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.rest,
+    };
+
+    const textStyle = {
+      ...text?.base?.rest,
+      ...text?.type?.[typeStyle]?.base,
+      ...text?.type?.[typeStyle]?.variant?.[variant]?.rest,
+    };
+
     const option = container?.option;
 
     return {
-      //--------------------------------------------------------------------------
+      //------------------------------------------------------------------------
       // Container
-      //--------------------------------------------------------------------------
+      //------------------------------------------------------------------------
 
       '&.button': {
         // Reset
         border: 'none',
+        padding: 0,
 
         // Style
         ...containerStyle,
@@ -46,6 +60,9 @@ export const ButtonStyled = styled.button<
           'box-shadow, border-color, background, padding, min-width',
         transitionDuration: duration,
         transitionTimingFunction: timingFunction,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
 
         // OPTION - WIDTH
         width: width === 'block' ? '100%' : 'auto',
@@ -61,23 +78,48 @@ export const ButtonStyled = styled.button<
             : option?.textAlign?.default,
       },
 
-      //--------------------------------------------------------------------------
+      //------------------------------------------------------------------------
+      // Left Icon
+      //------------------------------------------------------------------------
+
+      '& .button__icon-left': {
+        // Style
+        ...leftIconStyle,
+
+        // Default
+        display: 'flex',
+        // borderTopLeftRadius: 'inherit',
+        // borderBottomLeftRadius: 'inherit',
+        // backgroundColor: 'red',
+        // width: '100%',
+        // whiteSpace: 'nowrap',
+        // transitionProperty: 'color, font-size',
+        // transitionDuration: duration,
+        // transitionTimingFunction: timingFunction,
+        '& > *': {
+          fontSize: 'inherit',
+        },
+      },
+
+      //------------------------------------------------------------------------
       // Text
-      //--------------------------------------------------------------------------
+      //------------------------------------------------------------------------
 
       '& .button__text': {
-        ...text?.base?.rest,
-        ...text?.type?.[typeStyle]?.base,
-        ...text?.type?.[typeStyle]?.variant?.[variant]?.rest,
+        // Style
+        ...textStyle,
+
+        // Default
+        width: iconLeftDetached ? '100%' : 'auto',
         whiteSpace: 'nowrap',
         transitionProperty: 'color, font-size',
         transitionDuration: duration,
         transitionTimingFunction: timingFunction,
       },
 
-      //--------------------------------------------------------------------------
+      //------------------------------------------------------------------------
       // INTERACTION
-      //--------------------------------------------------------------------------
+      //------------------------------------------------------------------------
 
       // HOVER
       '&:hover, &.--hover': {

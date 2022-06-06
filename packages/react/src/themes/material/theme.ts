@@ -22,12 +22,6 @@ export const materialTheme: KiskadeeSchema = {
           },
         },
         base: {
-          rest: {
-            paddingTop: 10,
-            paddingBottom: 10,
-            paddingLeft: 24,
-            paddingRight: 24,
-          },
           focus: {
             outline: 'none',
           },
@@ -108,10 +102,6 @@ export const materialTheme: KiskadeeSchema = {
           },
           outline: {
             base: {
-              paddingTop: 9,
-              paddingBottom: 9,
-              paddingLeft: 23,
-              paddingRight: 23,
               borderWidth: '1px',
               borderStyle: 'solid',
               borderColor: '#79747E',
@@ -161,6 +151,27 @@ export const materialTheme: KiskadeeSchema = {
           },
         },
       },
+      leftIcon: {
+        base: {
+          rest: {
+            fontSize: 24,
+            paddingTop: 8,
+            paddingBottom: 8,
+            paddingLeft: 8,
+          },
+        },
+        type: {
+          contained: {
+            variant: {
+              primary: {
+                rest: {
+                  color: '#FFFFFF',
+                },
+              },
+            },
+          },
+        },
+      },
       text: {
         base: {
           rest: {
@@ -169,6 +180,10 @@ export const materialTheme: KiskadeeSchema = {
             fontWeight: 500,
             fontFamily: 'Roboto',
             fontStyle: 'normal',
+            paddingTop: 10,
+            paddingBottom: 10,
+            paddingLeft: 24,
+            paddingRight: 24,
           },
         },
         type: {
@@ -203,6 +218,10 @@ export const materialTheme: KiskadeeSchema = {
           outline: {
             base: {
               color: '#6750A4',
+              paddingTop: 9,
+              paddingBottom: 9,
+              paddingLeft: 23,
+              paddingRight: 23,
             },
             variant: {
               primary: {
