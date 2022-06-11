@@ -21,12 +21,6 @@ export const iosTheme: KiskadeeSchema = {
           },
         },
         base: {
-          rest: {
-            paddingTop: 14,
-            paddingBottom: 14,
-            paddingLeft: 20,
-            paddingRight: 20,
-          },
           disabled: {
             backgroundColor: '#74748114',
           },
@@ -73,6 +67,17 @@ export const iosTheme: KiskadeeSchema = {
           },
         },
       },
+      leftIcon: {
+        base: {
+          rest: {
+            fontSize: 24,
+            paddingRight: 8,
+            paddingLeft: 16,
+            paddingTop: 8,
+            paddingBottom: 8,
+          },
+        },
+      },
       text: {
         base: {
           rest: {
@@ -81,6 +86,10 @@ export const iosTheme: KiskadeeSchema = {
             fontWeight: 600,
             fontFamily: 'SF Pro Text',
             fontStyle: 'normal',
+            paddingTop: 14,
+            paddingBottom: 14,
+            paddingLeft: 20,
+            paddingRight: 20,
           },
           disabled: {
             color: '#3c3c444d',

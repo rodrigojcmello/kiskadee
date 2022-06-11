@@ -74,10 +74,10 @@ export const fluentTheme: KiskadeeSchema = {
           rest: {
             paddingTop: 3,
             paddingBottom: 3,
-            paddingLeft: 3,
-            paddingRight: 3,
+            paddingLeft: 8,
+            paddingRight: 8,
             color: '#ffffff',
-            fontSize: '24px',
+            fontSize: 16,
           },
         },
       },

@@ -5,7 +5,11 @@ import { Button } from '../../../components/Button';
 import { Box } from '../../components/Box/Box';
 import { Container } from '../../components/Container/Container';
 import { BoxTitle } from '../../components/BoxTitle/BoxTitle';
-import type { ButtonType, ButtonVariant } from '../../../components/Button';
+import type {
+  ButtonType,
+  ButtonVariant,
+  ButtonProps,
+} from '../../../components/Button';
 import { KiskadeeContext } from '../../../context';
 import style from './ButtonDocumentation.module.scss';
 
@@ -39,6 +43,7 @@ export const ButtonDocumentation: FC = () => {
   const [variant, setVariant] = useState<ButtonVariant>('primary');
   const [type, setType] = useState<ButtonType>('contained');
   const [pageLoad, setPageLoad] = useState(false);
+  const [radius, setRadius] = useState<ButtonProps['borderRadius']>('default');
 
   useLayoutEffect(() => {
     setTimeout(() => {
@@ -59,22 +64,19 @@ export const ButtonDocumentation: FC = () => {
     <Container className={!pageLoad ? style['no-transition'] : undefined}>
       <Box>
         <div>
-          <BoxTitle>Contained</BoxTitle>
+          <BoxTitle>Left attached icon</BoxTitle>
           {buttonContainer?.type?.contained ? (
             <Applicable>
               <Button
                 text="Click me"
                 width="block"
-                type="contained"
-                variant="primary"
+                type={type}
+                variant={variant}
+                borderRadius={radius}
                 iconLeft={
-                  <span
-                    className="material-symbols-outlined"
-                    // style={{ color: 'red', fontSize: 24 }}
-                  >
-                    block
-                  </span>
+                  <span className="material-symbols-outlined">thumb_up</span>
                 }
+                iconLeftType="attached"
                 onClick={(): void => {
                   setType('contained');
                   setVariant('primary');
@@ -84,22 +86,21 @@ export const ButtonDocumentation: FC = () => {
           ) : (
             <NotApplicable />
           )}
+        </div>
+        <div>
+          <BoxTitle>Left detached icon</BoxTitle>
           {buttonContainer?.type?.contained ? (
             <Applicable>
               <Button
                 text="Click me"
                 width="block"
-                type="contained"
-                variant="primary"
+                type={type}
+                variant={variant}
+                borderRadius={radius}
                 iconLeft={
-                  <span
-                    className="material-symbols-outlined"
-                    // style={{ color: 'red', fontSize: 24 }}
-                  >
-                    block
-                  </span>
+                  <span className="material-symbols-outlined">thumb_up</span>
                 }
-                iconLeftDetached
+                iconLeftType="detached"
                 onClick={(): void => {
                   setType('contained');
                   setVariant('primary');
@@ -121,6 +122,7 @@ export const ButtonDocumentation: FC = () => {
                 width="block"
                 type="contained"
                 variant="primary"
+                borderRadius={radius}
                 onClick={(): void => {
                   setType('contained');
                   setVariant('primary');
@@ -141,6 +143,7 @@ export const ButtonDocumentation: FC = () => {
                 width="block"
                 type="outline"
                 variant="primary"
+                borderRadius={radius}
                 onClick={(): void => {
                   setType('outline');
                   setVariant('primary');
@@ -160,6 +163,7 @@ export const ButtonDocumentation: FC = () => {
                 width="block"
                 type="flat"
                 variant="primary"
+                borderRadius={radius}
                 onClick={(): void => {
                   setType('flat');
                   setVariant('primary');
@@ -182,6 +186,7 @@ export const ButtonDocumentation: FC = () => {
                 width="block"
                 type={type}
                 variant="primary"
+                borderRadius={radius}
                 onClick={(): void => {
                   setVariant('primary');
                 }}
@@ -201,6 +206,7 @@ export const ButtonDocumentation: FC = () => {
                 width="block"
                 type="contained"
                 variant="secondary"
+                borderRadius={radius}
                 onClick={(): void => {
                   setVariant('secondary');
                 }}
@@ -219,6 +225,7 @@ export const ButtonDocumentation: FC = () => {
                 width="block"
                 type="contained"
                 variant="tertiary"
+                borderRadius={radius}
                 onClick={(): void => {
                   setVariant('tertiary');
                 }}
@@ -240,6 +247,7 @@ export const ButtonDocumentation: FC = () => {
                 width="block"
                 type="contained"
                 variant="success"
+                borderRadius={radius}
                 onClick={(): void => {
                   setVariant('success');
                 }}
@@ -259,6 +267,7 @@ export const ButtonDocumentation: FC = () => {
                 width="block"
                 type="contained"
                 variant="warning"
+                borderRadius={radius}
                 onClick={(): void => {
                   setVariant('warning');
                 }}
@@ -278,6 +287,7 @@ export const ButtonDocumentation: FC = () => {
                 width="block"
                 type={type}
                 variant="danger"
+                borderRadius={radius}
                 onClick={(): void => {
                   setVariant('danger');
                 }}
@@ -299,6 +309,7 @@ export const ButtonDocumentation: FC = () => {
                 width="block"
                 type={type}
                 variant={variant}
+                borderRadius={radius}
                 interaction="hover"
                 onClick={(): void => {}}
               />
@@ -317,6 +328,7 @@ export const ButtonDocumentation: FC = () => {
                 width="block"
                 type={type}
                 variant={variant}
+                borderRadius={radius}
                 interaction="focus"
                 onClick={(): void => {}}
               />
@@ -336,6 +348,7 @@ export const ButtonDocumentation: FC = () => {
                 width="block"
                 type={type}
                 variant={variant}
+                borderRadius={radius}
                 interaction="pressed"
                 onClick={(): void => {}}
               />
@@ -355,6 +368,7 @@ export const ButtonDocumentation: FC = () => {
                 width="block"
                 type={type}
                 variant={variant}
+                borderRadius={radius}
                 interaction="visited"
                 onClick={(): void => {}}
               />
@@ -374,6 +388,7 @@ export const ButtonDocumentation: FC = () => {
                 width="block"
                 type={type}
                 variant={variant}
+                borderRadius={radius}
                 disabled
                 onClick={(): void => {}}
               />
@@ -392,6 +407,7 @@ export const ButtonDocumentation: FC = () => {
               width="block"
               type={type}
               variant={variant}
+              borderRadius={radius}
               onClick={(): void => {}}
             />
           </div>
@@ -401,6 +417,7 @@ export const ButtonDocumentation: FC = () => {
               width="auto"
               type={type}
               variant={variant}
+              borderRadius={radius}
               onClick={(): void => {}}
             />
           </div>
@@ -410,6 +427,7 @@ export const ButtonDocumentation: FC = () => {
               width="min"
               type={type}
               variant={variant}
+              borderRadius={radius}
               onClick={(): void => {}}
             />
           </div>
@@ -423,12 +441,12 @@ export const ButtonDocumentation: FC = () => {
             {buttonContainer?.option?.borderRadius?.rounded !== undefined ? (
               <Applicable>
                 <Button
-                  text="Rounded"
+                  text="Text"
                   width="block"
                   borderRadius="rounded"
                   type={type}
                   variant={variant}
-                  onClick={(): void => {}}
+                  onClick={(): void => setRadius('rounded')}
                 />
               </Applicable>
             ) : (
@@ -440,12 +458,12 @@ export const ButtonDocumentation: FC = () => {
             {buttonContainer?.option?.borderRadius?.full !== undefined ? (
               <Applicable>
                 <Button
-                  text="Full"
+                  text="Text"
                   width="block"
                   borderRadius="full"
                   type={type}
                   variant={variant}
-                  onClick={(): void => {}}
+                  onClick={(): void => setRadius('full')}
                 />
               </Applicable>
             ) : (
@@ -462,7 +480,7 @@ export const ButtonDocumentation: FC = () => {
                   borderRadius="none"
                   type={type}
                   variant={variant}
-                  onClick={(): void => {}}
+                  onClick={(): void => setRadius('none')}
                 />
               </Applicable>
             ) : (
@@ -481,6 +499,7 @@ export const ButtonDocumentation: FC = () => {
                   textAlign="left"
                   type={type}
                   variant={variant}
+                  borderRadius={radius}
                   onClick={(): void => {}}
                 />
               </Applicable>
@@ -498,6 +517,7 @@ export const ButtonDocumentation: FC = () => {
                   textAlign="center"
                   type={type}
                   variant={variant}
+                  borderRadius={radius}
                   onClick={(): void => {}}
                 />
               </Applicable>
@@ -515,6 +535,7 @@ export const ButtonDocumentation: FC = () => {
                   textAlign="right"
                   type={type}
                   variant={variant}
+                  borderRadius={radius}
                   onClick={(): void => {}}
                 />
               </Applicable>

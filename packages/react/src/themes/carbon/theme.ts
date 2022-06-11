@@ -19,14 +19,6 @@ export const carbonTheme: KiskadeeSchema = {
             left: true,
           },
         },
-        base: {
-          rest: {
-            paddingTop: 13,
-            paddingBottom: 13,
-            paddingLeft: 16,
-            paddingRight: 64,
-          },
-        },
         type: {
           contained: {
             variant: {
@@ -96,10 +88,6 @@ export const carbonTheme: KiskadeeSchema = {
             base: {
               borderWidth: 1,
               borderStyle: 'solid',
-              paddingTop: 12,
-              paddingBottom: 12,
-              paddingLeft: 15,
-              paddingRight: 63,
             },
             variant: {
               primary: {
@@ -120,6 +108,10 @@ export const carbonTheme: KiskadeeSchema = {
             fontWeight: 400,
             fontFamily: 'IBM Plex Sans',
             fontStyle: 'normal',
+            paddingTop: 13,
+            paddingBottom: 13,
+            paddingLeft: 16,
+            paddingRight: 64,
           },
           disabled: {
             color: '#8d8d8d',
@@ -132,6 +124,12 @@ export const carbonTheme: KiskadeeSchema = {
             },
           },
           outline: {
+            base: {
+              paddingTop: 12,
+              paddingBottom: 12,
+              paddingLeft: 15,
+              paddingRight: 63,
+            },
             variant: {
               primary: {
                 rest: {

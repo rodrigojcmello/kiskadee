@@ -14,9 +14,9 @@ export const capybaraTheme: KiskadeeSchema = {
         type: {
           contained: {
             base: {
-              textAlign: 'center',
-              padding: '10px 24px',
-              borderRadius: 10,
+              // textAlign: 'center',
+              // padding: '10px 24px',
+              // borderRadius: 10,
             },
             variant: {
               primary: {
@@ -30,7 +30,7 @@ export const capybaraTheme: KiskadeeSchema = {
                 },
                 focus: {
                   backgroundColor: '#1269ec',
-                  outline: '2px solid #1269ec',
+                  // outline: '2px solid #1269ec',
                   outlineOffset: '1px',
                 },
                 pressed: {
@@ -55,7 +55,7 @@ export const capybaraTheme: KiskadeeSchema = {
                 },
                 focus: {
                   backgroundColor: '#1269ec',
-                  outline: '2px solid #1269ec',
+                  // outline: '2px solid #1269ec',
                   outlineOffset: '1px',
                 },
                 pressed: {
@@ -80,7 +80,7 @@ export const capybaraTheme: KiskadeeSchema = {
                 },
                 focus: {
                   backgroundColor: '#19AE59',
-                  outline: '2px solid #1269ec',
+                  // outline: '2px solid #1269ec',
                   outlineOffset: '1px',
                 },
                 pressed: {
@@ -105,7 +105,7 @@ export const capybaraTheme: KiskadeeSchema = {
                 },
                 focus: {
                   backgroundColor: '#1269ec',
-                  outline: '2px solid #1269ec',
+                  // outline: '2px solid #1269ec',
                   outlineOffset: '1px',
                 },
                 pressed: {
@@ -130,7 +130,7 @@ export const capybaraTheme: KiskadeeSchema = {
                 },
                 focus: {
                   backgroundColor: '#1269ec',
-                  outline: '2px solid #1269ec',
+                  // outline: '2px solid #1269ec',
                   outlineOffset: '1px',
                 },
                 pressed: {

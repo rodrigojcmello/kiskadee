@@ -158,16 +158,16 @@ export const materialTheme: KiskadeeSchema = {
             paddingTop: 8,
             paddingBottom: 8,
             paddingLeft: 8,
+            paddingRight: 8,
+            color: '#FFFFFF',
           },
         },
         type: {
-          contained: {
-            variant: {
-              primary: {
-                rest: {
-                  color: '#FFFFFF',
-                },
-              },
+          outline: {
+            base: {
+              paddingTop: 7,
+              paddingBottom: 7,
+              paddingLeft: 7,
             },
           },
         },

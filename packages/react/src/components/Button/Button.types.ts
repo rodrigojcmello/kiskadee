@@ -19,7 +19,6 @@ export type InteractionState =
   | 'disabled';
 
 export interface ButtonProps {
-  icon?: string;
   text: string;
   onClick: () => void;
   typeHTML?: 'button' | 'reset' | 'submit';
@@ -33,9 +32,9 @@ export interface ButtonProps {
   textAlign?: 'left' | 'center' | 'right';
   disabled?: boolean;
   iconLeft?: ReactElement;
-  iconLeftDetached?: boolean;
+  iconLeftType?: 'attached' | 'detached';
   iconRight?: ReactElement;
-  iconRightDetached?: boolean;
+  iconRightType?: 'attached' | 'detached';
 }
 
 //------------------------------------------------------------------------------
@@ -151,7 +150,13 @@ export interface ButtonSchema {
         {
           base?: ButtonElementLeftIcon;
           variant?: Partial<
-            Record<ButtonVariant, ButtonElementLeftIconVariant>
+            Record<
+              ButtonVariant,
+              {
+                attached?: ButtonElementLeftIconVariant;
+                detached?: ButtonElementLeftIconVariant;
+              }
+            >
           >;
         }
       >

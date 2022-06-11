@@ -5,7 +5,10 @@ const timingFunction = 'ease';
 const duration = '0.2s';
 
 export const ButtonStyled = styled.button<
-  Pick<ButtonProps, 'width' | 'variant' | 'textAlign' | 'iconLeftDetached'> & {
+  Pick<
+    ButtonProps,
+    'width' | 'variant' | 'textAlign' | 'iconLeft' | 'iconLeftType'
+  > & {
     theme?: ButtonSchema;
     typeStyle: ButtonProps['type'];
     borderRadius: Exclude<ButtonProps['borderRadius'], undefined>;
@@ -18,27 +21,43 @@ export const ButtonStyled = styled.button<
     variant,
     borderRadius,
     textAlign,
-    iconLeftDetached,
+    iconLeft,
+    iconLeftType,
   }) => {
-    const containerStyle = {
+    const elementContainer = {
       ...container?.base?.rest,
       ...container?.type?.[typeStyle]?.base,
       ...container?.type?.[typeStyle]?.variant?.[variant]?.rest,
     };
 
-    const leftIconStyle = {
+    const elementLeftIcon = iconLeftType && {
       ...leftIcon?.base?.rest,
       ...leftIcon?.type?.[typeStyle]?.base,
-      ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.rest,
+      ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconLeftType]?.rest,
     };
 
-    const textStyle = {
+    const elementText = {
       ...text?.base?.rest,
       ...text?.type?.[typeStyle]?.base,
       ...text?.type?.[typeStyle]?.variant?.[variant]?.rest,
     };
 
     const option = container?.option;
+
+    const elementContainerHover = {
+      ...container?.base?.hover,
+      ...container?.type?.[typeStyle]?.variant?.[variant]?.hover,
+    };
+
+    const elementIconLeftHover = iconLeftType && {
+      ...leftIcon?.base?.hover,
+      ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconLeftType]?.hover,
+    };
+
+    const elementTextHover = {
+      ...text?.base?.hover,
+      ...text?.type?.[typeStyle]?.variant?.[variant]?.hover,
+    };
 
     return {
       //------------------------------------------------------------------------
@@ -51,13 +70,13 @@ export const ButtonStyled = styled.button<
         padding: 0,
 
         // Style
-        ...containerStyle,
+        ...elementContainer,
 
         // Default
         cursor: 'pointer',
         fontSize: '16px',
         transitionProperty:
-          'box-shadow, border-color, background, padding, min-width',
+          'box-shadow, border-color, background, padding, min-width, border-radius',
         transitionDuration: duration,
         transitionTimingFunction: timingFunction,
         display: 'flex',
@@ -84,20 +103,17 @@ export const ButtonStyled = styled.button<
 
       '& .button__icon-left': {
         // Style
-        ...leftIconStyle,
+        color: elementText.color,
+        ...elementLeftIcon,
 
         // Default
         display: 'flex',
-        // borderTopLeftRadius: 'inherit',
-        // borderBottomLeftRadius: 'inherit',
-        // backgroundColor: 'red',
-        // width: '100%',
-        // whiteSpace: 'nowrap',
-        // transitionProperty: 'color, font-size',
-        // transitionDuration: duration,
-        // transitionTimingFunction: timingFunction,
+        transitionProperty: 'color, font-size',
+        transitionDuration: duration,
+        transitionTimingFunction: timingFunction,
         '& > *': {
           fontSize: 'inherit',
+          fill: elementLeftIcon?.color || elementText?.color || undefined,
         },
       },
 
@@ -107,12 +123,13 @@ export const ButtonStyled = styled.button<
 
       '& .button__text': {
         // Style
-        ...textStyle,
+        ...elementText,
+        paddingLeft: iconLeft ? 0 : elementText?.paddingLeft,
 
         // Default
-        width: iconLeftDetached ? '100%' : 'auto',
+        width: iconLeftType === 'detached' ? '100%' : 'auto',
         whiteSpace: 'nowrap',
-        transitionProperty: 'color, font-size',
+        transitionProperty: 'color, font-size, padding',
         transitionDuration: duration,
         transitionTimingFunction: timingFunction,
       },
@@ -123,11 +140,13 @@ export const ButtonStyled = styled.button<
 
       // HOVER
       '&:hover, &.--hover': {
-        ...container?.base?.hover,
-        ...container?.type?.[typeStyle]?.variant?.[variant]?.hover,
+        ...elementContainerHover,
         '.button__text': {
-          ...text?.base?.hover,
-          ...text?.type?.[typeStyle]?.variant?.[variant]?.hover,
+          ...elementTextHover,
+        },
+        '.button__icon-left': {
+          color: elementTextHover.color,
+          ...elementIconLeftHover,
         },
       },
 
