@@ -60,6 +60,10 @@ export const ButtonDocumentation: FC = () => {
   useEffect(() => {
     setType('contained');
     setVariant('primary');
+    setRadius('default');
+    // setIconLeftType(undefined);
+    // setIconLeft(undefined);
+    setTextAlign(undefined);
   }, [theme.name, theme.author, theme.version]);
 
   const buttonContainer = theme.component.button?.container;

@@ -205,7 +205,7 @@ export const ButtonStyled = styled.button<
         paddingLeft: iconLeft ? 0 : elementText?.paddingLeft,
 
         // Default
-        width: iconLeftType === 'detached' ? '100%' : 'auto',
+        width: iconLeftType === 'detached' || !iconLeft ? '100%' : 'auto',
         whiteSpace: 'nowrap',
         transitionProperty: 'color, font-size, padding',
         transitionDuration: duration,
