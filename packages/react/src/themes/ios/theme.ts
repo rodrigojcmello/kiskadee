@@ -73,8 +73,6 @@ export const iosTheme: KiskadeeSchema = {
             fontSize: 24,
             paddingRight: 8,
             paddingLeft: 16,
-            paddingTop: 8,
-            paddingBottom: 8,
           },
         },
       },

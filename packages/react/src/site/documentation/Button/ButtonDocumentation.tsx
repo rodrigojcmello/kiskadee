@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import type { FC, PropsWithChildren } from 'react';
+import type { FC, PropsWithChildren, ReactElement } from 'react';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { Button } from '../../../components/Button';
 import { Box } from '../../components/Box/Box';
@@ -44,6 +44,12 @@ export const ButtonDocumentation: FC = () => {
   const [type, setType] = useState<ButtonType>('contained');
   const [pageLoad, setPageLoad] = useState(false);
   const [radius, setRadius] = useState<ButtonProps['borderRadius']>('default');
+  const [iconLeftType, setIconLeftType] = useState<
+    ButtonProps['iconLeftType'] | undefined
+  >(undefined);
+  const [iconLeft, setIconLeft] = useState<ReactElement | undefined>(undefined);
+  const [textAlign, setTextAlign] =
+    useState<ButtonProps['textAlign']>(undefined);
 
   useLayoutEffect(() => {
     setTimeout(() => {
@@ -64,6 +70,27 @@ export const ButtonDocumentation: FC = () => {
     <Container className={!pageLoad ? style['no-transition'] : undefined}>
       <Box>
         <div>
+          <BoxTitle>No icon</BoxTitle>
+          {buttonContainer?.type?.contained ? (
+            <Applicable>
+              <Button
+                text="Click me"
+                width="block"
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                onClick={(): void => {
+                  setIconLeft(undefined);
+                  setIconLeftType(undefined);
+                }}
+              />
+            </Applicable>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+        <div>
           <BoxTitle>Left attached icon</BoxTitle>
           {buttonContainer?.type?.contained ? (
             <Applicable>
@@ -77,9 +104,12 @@ export const ButtonDocumentation: FC = () => {
                   <span className="material-symbols-outlined">thumb_up</span>
                 }
                 iconLeftType="attached"
+                textAlign={textAlign}
                 onClick={(): void => {
-                  setType('contained');
-                  setVariant('primary');
+                  setIconLeft(
+                    <span className="material-symbols-outlined">thumb_up</span>
+                  );
+                  setIconLeftType('attached');
                 }}
               />
             </Applicable>
@@ -101,9 +131,12 @@ export const ButtonDocumentation: FC = () => {
                   <span className="material-symbols-outlined">thumb_up</span>
                 }
                 iconLeftType="detached"
+                textAlign={textAlign}
                 onClick={(): void => {
-                  setType('contained');
-                  setVariant('primary');
+                  setIconLeft(
+                    <span className="material-symbols-outlined">thumb_up</span>
+                  );
+                  setIconLeftType('detached');
                 }}
               />
             </Applicable>
@@ -123,10 +156,13 @@ export const ButtonDocumentation: FC = () => {
                 type="contained"
                 variant="primary"
                 borderRadius={radius}
+                textAlign={textAlign}
                 onClick={(): void => {
                   setType('contained');
                   setVariant('primary');
                 }}
+                iconLeft={iconLeft}
+                iconLeftType={iconLeftType}
               />
             </Applicable>
           ) : (
@@ -144,10 +180,13 @@ export const ButtonDocumentation: FC = () => {
                 type="outline"
                 variant="primary"
                 borderRadius={radius}
+                textAlign={textAlign}
                 onClick={(): void => {
                   setType('outline');
                   setVariant('primary');
                 }}
+                iconLeft={iconLeft}
+                iconLeftType={iconLeftType}
               />
             </Applicable>
           ) : (
@@ -164,10 +203,13 @@ export const ButtonDocumentation: FC = () => {
                 type="flat"
                 variant="primary"
                 borderRadius={radius}
+                textAlign={textAlign}
                 onClick={(): void => {
                   setType('flat');
                   setVariant('primary');
                 }}
+                iconLeft={iconLeft}
+                iconLeftType={iconLeftType}
               />
             </Applicable>
           ) : (
@@ -187,9 +229,12 @@ export const ButtonDocumentation: FC = () => {
                 type={type}
                 variant="primary"
                 borderRadius={radius}
+                textAlign={textAlign}
                 onClick={(): void => {
                   setVariant('primary');
                 }}
+                iconLeft={iconLeft}
+                iconLeftType={iconLeftType}
               />
             </Applicable>
           ) : (
@@ -207,9 +252,12 @@ export const ButtonDocumentation: FC = () => {
                 type="contained"
                 variant="secondary"
                 borderRadius={radius}
+                textAlign={textAlign}
                 onClick={(): void => {
                   setVariant('secondary');
                 }}
+                iconLeft={iconLeft}
+                iconLeftType={iconLeftType}
               />
             </Applicable>
           ) : (
@@ -226,9 +274,12 @@ export const ButtonDocumentation: FC = () => {
                 type="contained"
                 variant="tertiary"
                 borderRadius={radius}
+                textAlign={textAlign}
                 onClick={(): void => {
                   setVariant('tertiary');
                 }}
+                iconLeft={iconLeft}
+                iconLeftType={iconLeftType}
               />
             </Applicable>
           ) : (
@@ -248,9 +299,12 @@ export const ButtonDocumentation: FC = () => {
                 type="contained"
                 variant="success"
                 borderRadius={radius}
+                textAlign={textAlign}
                 onClick={(): void => {
                   setVariant('success');
                 }}
+                iconLeft={iconLeft}
+                iconLeftType={iconLeftType}
               />
             </Applicable>
           ) : (
@@ -268,9 +322,12 @@ export const ButtonDocumentation: FC = () => {
                 type="contained"
                 variant="warning"
                 borderRadius={radius}
+                textAlign={textAlign}
                 onClick={(): void => {
                   setVariant('warning');
                 }}
+                iconLeft={iconLeft}
+                iconLeftType={iconLeftType}
               />
             </Applicable>
           ) : (
@@ -288,9 +345,12 @@ export const ButtonDocumentation: FC = () => {
                 type={type}
                 variant="danger"
                 borderRadius={radius}
+                textAlign={textAlign}
                 onClick={(): void => {
                   setVariant('danger');
                 }}
+                iconLeft={iconLeft}
+                iconLeftType={iconLeftType}
               />
             </Applicable>
           ) : (
@@ -311,7 +371,10 @@ export const ButtonDocumentation: FC = () => {
                 variant={variant}
                 borderRadius={radius}
                 interaction="hover"
+                textAlign={textAlign}
                 onClick={(): void => {}}
+                iconLeft={iconLeft}
+                iconLeftType={iconLeftType}
               />
             </Applicable>
           ) : (
@@ -330,7 +393,10 @@ export const ButtonDocumentation: FC = () => {
                 variant={variant}
                 borderRadius={radius}
                 interaction="focus"
+                textAlign={textAlign}
                 onClick={(): void => {}}
+                iconLeft={iconLeft}
+                iconLeftType={iconLeftType}
               />
             </Applicable>
           ) : (
@@ -350,7 +416,10 @@ export const ButtonDocumentation: FC = () => {
                 variant={variant}
                 borderRadius={radius}
                 interaction="pressed"
+                textAlign={textAlign}
                 onClick={(): void => {}}
+                iconLeft={iconLeft}
+                iconLeftType={iconLeftType}
               />
             </Applicable>
           ) : (
@@ -370,7 +439,10 @@ export const ButtonDocumentation: FC = () => {
                 variant={variant}
                 borderRadius={radius}
                 interaction="visited"
+                textAlign={textAlign}
                 onClick={(): void => {}}
+                iconLeft={iconLeft}
+                iconLeftType={iconLeftType}
               />
             </Applicable>
           ) : (
@@ -390,7 +462,10 @@ export const ButtonDocumentation: FC = () => {
                 variant={variant}
                 borderRadius={radius}
                 disabled
+                textAlign={textAlign}
                 onClick={(): void => {}}
+                iconLeft={iconLeft}
+                iconLeftType={iconLeftType}
               />
             </Applicable>
           ) : (
@@ -408,7 +483,10 @@ export const ButtonDocumentation: FC = () => {
               type={type}
               variant={variant}
               borderRadius={radius}
+              textAlign={textAlign}
               onClick={(): void => {}}
+              iconLeft={iconLeft}
+              iconLeftType={iconLeftType}
             />
           </div>
           <div>
@@ -418,7 +496,10 @@ export const ButtonDocumentation: FC = () => {
               type={type}
               variant={variant}
               borderRadius={radius}
+              textAlign={textAlign}
               onClick={(): void => {}}
+              iconLeft={iconLeft}
+              iconLeftType={iconLeftType}
             />
           </div>
           <div>
@@ -428,7 +509,10 @@ export const ButtonDocumentation: FC = () => {
               type={type}
               variant={variant}
               borderRadius={radius}
+              textAlign={textAlign}
               onClick={(): void => {}}
+              iconLeft={iconLeft}
+              iconLeftType={iconLeftType}
             />
           </div>
         </div>
@@ -446,7 +530,10 @@ export const ButtonDocumentation: FC = () => {
                   borderRadius="rounded"
                   type={type}
                   variant={variant}
+                  textAlign={textAlign}
                   onClick={(): void => setRadius('rounded')}
+                  iconLeft={iconLeft}
+                  iconLeftType={iconLeftType}
                 />
               </Applicable>
             ) : (
@@ -463,7 +550,10 @@ export const ButtonDocumentation: FC = () => {
                   borderRadius="full"
                   type={type}
                   variant={variant}
+                  textAlign={textAlign}
                   onClick={(): void => setRadius('full')}
+                  iconLeft={iconLeft}
+                  iconLeftType={iconLeftType}
                 />
               </Applicable>
             ) : (
@@ -480,7 +570,10 @@ export const ButtonDocumentation: FC = () => {
                   borderRadius="none"
                   type={type}
                   variant={variant}
+                  textAlign={textAlign}
                   onClick={(): void => setRadius('none')}
+                  iconLeft={iconLeft}
+                  iconLeftType={iconLeftType}
                 />
               </Applicable>
             ) : (
@@ -490,17 +583,42 @@ export const ButtonDocumentation: FC = () => {
         </Box>
         <Box>
           <div>
+            <BoxTitle>Default</BoxTitle>
+            {buttonContainer?.option?.textAlign?.left ? (
+              <Applicable>
+                <Button
+                  text="Click me"
+                  width="block"
+                  type={type}
+                  variant={variant}
+                  borderRadius={radius}
+                  onClick={(): void => {
+                    setTextAlign(undefined);
+                  }}
+                  iconLeft={iconLeft}
+                  iconLeftType={iconLeftType}
+                />
+              </Applicable>
+            ) : (
+              <NotApplicable />
+            )}
+          </div>
+          <div>
             <BoxTitle>Left</BoxTitle>
             {buttonContainer?.option?.textAlign?.left ? (
               <Applicable>
                 <Button
-                  text="Text"
+                  text="Click me"
                   width="block"
                   textAlign="left"
                   type={type}
                   variant={variant}
                   borderRadius={radius}
-                  onClick={(): void => {}}
+                  onClick={(): void => {
+                    setTextAlign('left');
+                  }}
+                  iconLeft={iconLeft}
+                  iconLeftType={iconLeftType}
                 />
               </Applicable>
             ) : (
@@ -512,13 +630,17 @@ export const ButtonDocumentation: FC = () => {
             {buttonContainer?.option?.textAlign?.center ? (
               <Applicable>
                 <Button
-                  text="Text"
+                  text="Click me"
                   width="block"
                   textAlign="center"
                   type={type}
                   variant={variant}
                   borderRadius={radius}
-                  onClick={(): void => {}}
+                  onClick={(): void => {
+                    setTextAlign('center');
+                  }}
+                  iconLeft={iconLeft}
+                  iconLeftType={iconLeftType}
                 />
               </Applicable>
             ) : (
@@ -530,13 +652,17 @@ export const ButtonDocumentation: FC = () => {
             {buttonContainer?.option?.textAlign?.right ? (
               <Applicable>
                 <Button
-                  text="Text"
+                  text="Click me"
                   width="block"
                   textAlign="right"
                   type={type}
                   variant={variant}
                   borderRadius={radius}
-                  onClick={(): void => {}}
+                  onClick={(): void => {
+                    setTextAlign('right');
+                  }}
+                  iconLeft={iconLeft}
+                  iconLeftType={iconLeftType}
                 />
               </Applicable>
             ) : (
