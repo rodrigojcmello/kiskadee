@@ -604,7 +604,11 @@ export const ButtonDocumentation: FC = () => {
         <BoxTitle>Radius Options</BoxTitle>
         <Box>
           <div>
-            <BoxTitle>Rounded</BoxTitle>
+            <BoxTitle>
+              Rounded
+              {buttonContainer?.option?.borderRadius?.default ===
+                buttonContainer?.option?.borderRadius?.rounded && ' (default)'}
+            </BoxTitle>
             {buttonContainer?.option?.borderRadius?.rounded !== undefined ? (
               <Applicable>
                 <Button
@@ -625,7 +629,11 @@ export const ButtonDocumentation: FC = () => {
             )}
           </div>
           <div>
-            <BoxTitle>Full</BoxTitle>
+            <BoxTitle>
+              Full
+              {buttonContainer?.option?.borderRadius?.default ===
+                buttonContainer?.option?.borderRadius?.full && ' (default)'}
+            </BoxTitle>
             {buttonContainer?.option?.borderRadius?.full !== undefined ? (
               <Applicable>
                 <Button
@@ -646,7 +654,11 @@ export const ButtonDocumentation: FC = () => {
             )}
           </div>
           <div>
-            <BoxTitle>None</BoxTitle>
+            <BoxTitle>
+              None
+              {buttonContainer?.option?.borderRadius?.default ===
+                buttonContainer?.option?.borderRadius?.none && ' (default)'}
+            </BoxTitle>
             {buttonContainer?.option?.borderRadius?.none !== undefined ? (
               <Applicable>
                 <Button
@@ -669,29 +681,11 @@ export const ButtonDocumentation: FC = () => {
         </Box>
         <Box>
           <div>
-            <BoxTitle>Default</BoxTitle>
-            {buttonContainer?.option?.textAlign?.left ? (
-              <Applicable>
-                <Button
-                  text="Click me"
-                  width="block"
-                  type={type}
-                  variant={variant}
-                  borderRadius={radius}
-                  onClick={(): void => {
-                    setTextAlign(undefined);
-                  }}
-                  iconLeft={iconLeft}
-                  iconRight={iconRight}
-                  iconType={iconType}
-                />
-              </Applicable>
-            ) : (
-              <NotApplicable />
-            )}
-          </div>
-          <div>
-            <BoxTitle>Left</BoxTitle>
+            <BoxTitle>
+              Left
+              {buttonContainer?.option?.textAlign?.default === 'left' &&
+                ' (default)'}
+            </BoxTitle>
             {buttonContainer?.option?.textAlign?.left ? (
               <Applicable>
                 <Button
@@ -714,7 +708,11 @@ export const ButtonDocumentation: FC = () => {
             )}
           </div>
           <div>
-            <BoxTitle>Center</BoxTitle>
+            <BoxTitle>
+              Center
+              {buttonContainer?.option?.textAlign?.default === 'center' &&
+                ' (default)'}
+            </BoxTitle>
             {buttonContainer?.option?.textAlign?.center ? (
               <Applicable>
                 <Button
@@ -737,7 +735,11 @@ export const ButtonDocumentation: FC = () => {
             )}
           </div>
           <div>
-            <BoxTitle>Right</BoxTitle>
+            <BoxTitle>
+              Right
+              {buttonContainer?.option?.textAlign?.default === 'right' &&
+                ' (default)'}
+            </BoxTitle>
             {buttonContainer?.option?.textAlign?.right ? (
               <Applicable>
                 <Button
