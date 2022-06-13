@@ -100,6 +100,15 @@ export const carbonTheme: KiskadeeSchema = {
           },
         },
       },
+      leftIcon: {
+        base: {
+          rest: {
+            fontSize: 16,
+            paddingRight: 16,
+            paddingLeft: 16,
+          },
+        },
+      },
       text: {
         base: {
           rest: {
@@ -137,6 +146,15 @@ export const carbonTheme: KiskadeeSchema = {
                 },
               },
             },
+          },
+        },
+      },
+      rightIcon: {
+        base: {
+          rest: {
+            fontSize: 16,
+            paddingRight: 16,
+            paddingLeft: 16,
           },
         },
       },
