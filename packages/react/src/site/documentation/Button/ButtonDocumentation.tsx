@@ -100,7 +100,7 @@ export const ButtonDocumentation: FC = () => {
         </div>
         <div>
           <BoxTitle>Left attached icon</BoxTitle>
-          {buttonContainer?.type?.contained ? (
+          {buttonContainer?.option?.icon?.leftAttached ? (
             <Applicable>
               <Button
                 text="Click me"
@@ -127,7 +127,7 @@ export const ButtonDocumentation: FC = () => {
         </div>
         <div>
           <BoxTitle>Left detached icon</BoxTitle>
-          {buttonContainer?.type?.contained ? (
+          {buttonContainer?.option?.icon?.leftDetached ? (
             <Applicable>
               <Button
                 text="Click me"
@@ -154,7 +154,7 @@ export const ButtonDocumentation: FC = () => {
         </div>
         <div>
           <BoxTitle>Right attached icon</BoxTitle>
-          {buttonContainer?.type?.contained ? (
+          {buttonContainer?.option?.icon?.rightAttached ? (
             <Applicable>
               <Button
                 text="Click me"
@@ -183,7 +183,7 @@ export const ButtonDocumentation: FC = () => {
         </div>
         <div>
           <BoxTitle>Right detached icon</BoxTitle>
-          {buttonContainer?.type?.contained ? (
+          {buttonContainer?.option?.icon?.rightDetached ? (
             <Applicable>
               <Button
                 text="Click me"

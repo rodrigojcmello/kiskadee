@@ -9,7 +9,7 @@ export const carbonTheme: KiskadeeSchema = {
     button: {
       container: {
         option: {
-          widthMin: '100px',
+          widthMin: 100,
           borderRadius: {
             default: 0,
             none: 0,
@@ -17,6 +17,9 @@ export const carbonTheme: KiskadeeSchema = {
           textAlign: {
             default: 'left',
             left: true,
+          },
+          icon: {
+            rightDetached: true,
           },
         },
         type: {

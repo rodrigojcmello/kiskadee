@@ -19,6 +19,9 @@ Experience
   scope  of the button. If any of these states become popular, we will review their adoption in the standard states.
 - **Minimum width** - not all design systems specifies a minimum width for buttons, in this case we chose to keep 
   the minimum width as 100px.
+- **Icons** - Few documentations refer to icons on buttons, in these cases, instead of not supporting icons or being 
+  limited to bad examples from the documentation itself, we chose to keep the use of icons free, except when the 
+  documentation clearly condemns the use, such as Carbon .
 
 Themes
 

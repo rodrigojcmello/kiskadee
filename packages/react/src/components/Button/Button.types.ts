@@ -128,6 +128,12 @@ export interface ButtonSchema {
         center?: true;
         right?: true;
       };
+      icon?: {
+        leftAttached?: true;
+        leftDetached?: true;
+        rightAttached?: true;
+        rightDetached?: true;
+      };
     };
     type?: Partial<
       Record<
