@@ -135,6 +135,15 @@ export const iosTheme: KiskadeeSchema = {
           },
         },
       },
+      rightIcon: {
+        base: {
+          rest: {
+            fontSize: 24,
+            paddingRight: 16,
+            paddingLeft: 8,
+          },
+        },
+      },
     },
   },
 };

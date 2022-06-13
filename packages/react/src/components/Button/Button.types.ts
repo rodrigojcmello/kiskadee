@@ -62,9 +62,9 @@ type ButtonElementContainer = {
   outline?: 'none';
 };
 
-// Left Icon
+// Icon
 
-interface ButtonElementLeftIcon {
+interface ButtonElementIcon {
   // Style
   color?: CSSProperties['color'];
 
@@ -102,8 +102,8 @@ type ButtonElementContainerVariant = Partial<
   Record<InteractionState, ButtonElementContainer>
 >;
 
-type ButtonElementLeftIconVariant = Partial<
-  Record<InteractionState, ButtonElementLeftIcon>
+type ButtonElementIconVariant = Partial<
+  Record<InteractionState, ButtonElementIcon>
 >;
 
 type ButtonElementTextVariant = Partial<
@@ -143,18 +143,18 @@ export interface ButtonSchema {
     >;
   };
   leftIcon?: {
-    base?: ButtonElementLeftIconVariant;
+    base?: ButtonElementIconVariant;
     type?: Partial<
       Record<
         ButtonType,
         {
-          base?: ButtonElementLeftIcon;
+          base?: ButtonElementIcon;
           variant?: Partial<
             Record<
               ButtonVariant,
               {
-                attached?: ButtonElementLeftIconVariant;
-                detached?: ButtonElementLeftIconVariant;
+                attached?: ButtonElementIconVariant;
+                detached?: ButtonElementIconVariant;
               }
             >
           >;
@@ -170,6 +170,26 @@ export interface ButtonSchema {
         {
           base?: ButtonElementText;
           variant?: Partial<Record<ButtonVariant, ButtonElementTextVariant>>;
+        }
+      >
+    >;
+  };
+  rightIcon?: {
+    base?: ButtonElementIconVariant;
+    type?: Partial<
+      Record<
+        ButtonType,
+        {
+          base?: ButtonElementIcon;
+          variant?: Partial<
+            Record<
+              ButtonVariant,
+              {
+                attached?: ButtonElementIconVariant;
+                detached?: ButtonElementIconVariant;
+              }
+            >
+          >;
         }
       >
     >;

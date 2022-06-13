@@ -72,8 +72,6 @@ export const fluentTheme: KiskadeeSchema = {
       leftIcon: {
         base: {
           rest: {
-            paddingTop: 3,
-            paddingBottom: 3,
             paddingLeft: 8,
             paddingRight: 8,
             color: '#ffffff',
@@ -121,6 +119,16 @@ export const fluentTheme: KiskadeeSchema = {
                 },
               },
             },
+          },
+        },
+      },
+      rightIcon: {
+        base: {
+          rest: {
+            paddingLeft: 8,
+            paddingRight: 8,
+            color: '#ffffff',
+            fontSize: 16,
           },
         },
       },

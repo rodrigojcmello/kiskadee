@@ -148,6 +148,64 @@ export const ButtonDocumentation: FC = () => {
             <NotApplicable />
           )}
         </div>
+        <div>
+          <BoxTitle>Right attached icon</BoxTitle>
+          {buttonContainer?.type?.contained ? (
+            <Applicable>
+              <Button
+                text="Click me"
+                width="block"
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                iconRight={
+                  <span className="material-symbols-outlined">expand_more</span>
+                }
+                iconRightType="attached"
+                textAlign={textAlign}
+                onClick={(): void => {
+                  setIconLeft(
+                    <span className="material-symbols-outlined">
+                      expand_more
+                    </span>
+                  );
+                  setIconLeftType('attached');
+                }}
+              />
+            </Applicable>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+        <div>
+          <BoxTitle>Right detached icon</BoxTitle>
+          {buttonContainer?.type?.contained ? (
+            <Applicable>
+              <Button
+                text="Click me"
+                width="block"
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                iconRight={
+                  <span className="material-symbols-outlined">expand_more</span>
+                }
+                iconRightType="detached"
+                textAlign={textAlign}
+                onClick={(): void => {
+                  setIconLeft(
+                    <span className="material-symbols-outlined">
+                      expand_more
+                    </span>
+                  );
+                  setIconLeftType('detached');
+                }}
+              />
+            </Applicable>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
       </Box>
       <Box>
         <div>
