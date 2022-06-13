@@ -32,9 +32,8 @@ export interface ButtonProps {
   textAlign?: 'left' | 'center' | 'right';
   disabled?: boolean;
   iconLeft?: ReactElement;
-  iconLeftType?: 'attached' | 'detached';
   iconRight?: ReactElement;
-  iconRightType?: 'attached' | 'detached';
+  iconType?: 'attached' | 'detached';
 }
 
 //------------------------------------------------------------------------------

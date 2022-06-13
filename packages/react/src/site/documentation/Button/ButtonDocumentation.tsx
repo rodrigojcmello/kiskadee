@@ -44,10 +44,13 @@ export const ButtonDocumentation: FC = () => {
   const [type, setType] = useState<ButtonType>('contained');
   const [pageLoad, setPageLoad] = useState(false);
   const [radius, setRadius] = useState<ButtonProps['borderRadius']>('default');
-  const [iconLeftType, setIconLeftType] = useState<
-    ButtonProps['iconLeftType'] | undefined
-  >(undefined);
+  const [iconType, setIconType] = useState<ButtonProps['iconType'] | undefined>(
+    undefined
+  );
   const [iconLeft, setIconLeft] = useState<ReactElement | undefined>(undefined);
+  const [iconRight, setIconRight] = useState<ReactElement | undefined>(
+    undefined
+  );
   const [textAlign, setTextAlign] =
     useState<ButtonProps['textAlign']>(undefined);
 
@@ -61,7 +64,7 @@ export const ButtonDocumentation: FC = () => {
     setType('contained');
     setVariant('primary');
     setRadius('default');
-    // setIconLeftType(undefined);
+    // setIconType(undefined);
     // setIconLeft(undefined);
     setTextAlign(undefined);
   }, [theme.name, theme.author, theme.version]);
@@ -86,7 +89,8 @@ export const ButtonDocumentation: FC = () => {
                 textAlign={textAlign}
                 onClick={(): void => {
                   setIconLeft(undefined);
-                  setIconLeftType(undefined);
+                  setIconRight(undefined);
+                  setIconType(undefined);
                 }}
               />
             </Applicable>
@@ -107,13 +111,13 @@ export const ButtonDocumentation: FC = () => {
                 iconLeft={
                   <span className="material-symbols-outlined">thumb_up</span>
                 }
-                iconLeftType="attached"
+                iconType="attached"
                 textAlign={textAlign}
                 onClick={(): void => {
                   setIconLeft(
                     <span className="material-symbols-outlined">thumb_up</span>
                   );
-                  setIconLeftType('attached');
+                  setIconType('attached');
                 }}
               />
             </Applicable>
@@ -134,13 +138,13 @@ export const ButtonDocumentation: FC = () => {
                 iconLeft={
                   <span className="material-symbols-outlined">thumb_up</span>
                 }
-                iconLeftType="detached"
+                iconType="detached"
                 textAlign={textAlign}
                 onClick={(): void => {
                   setIconLeft(
                     <span className="material-symbols-outlined">thumb_up</span>
                   );
-                  setIconLeftType('detached');
+                  setIconType('detached');
                 }}
               />
             </Applicable>
@@ -161,15 +165,15 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={
                   <span className="material-symbols-outlined">expand_more</span>
                 }
-                iconRightType="attached"
+                iconType="attached"
                 textAlign={textAlign}
                 onClick={(): void => {
-                  setIconLeft(
+                  setIconRight(
                     <span className="material-symbols-outlined">
                       expand_more
                     </span>
                   );
-                  setIconLeftType('attached');
+                  setIconType('attached');
                 }}
               />
             </Applicable>
@@ -190,15 +194,15 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={
                   <span className="material-symbols-outlined">expand_more</span>
                 }
-                iconRightType="detached"
+                iconType="detached"
                 textAlign={textAlign}
                 onClick={(): void => {
-                  setIconLeft(
+                  setIconRight(
                     <span className="material-symbols-outlined">
                       expand_more
                     </span>
                   );
-                  setIconLeftType('detached');
+                  setIconType('detached');
                 }}
               />
             </Applicable>
@@ -224,7 +228,8 @@ export const ButtonDocumentation: FC = () => {
                   setVariant('primary');
                 }}
                 iconLeft={iconLeft}
-                iconLeftType={iconLeftType}
+                iconRight={iconRight}
+                iconType={iconType}
               />
             </Applicable>
           ) : (
@@ -248,7 +253,8 @@ export const ButtonDocumentation: FC = () => {
                   setVariant('primary');
                 }}
                 iconLeft={iconLeft}
-                iconLeftType={iconLeftType}
+                iconRight={iconRight}
+                iconType={iconType}
               />
             </Applicable>
           ) : (
@@ -271,7 +277,8 @@ export const ButtonDocumentation: FC = () => {
                   setVariant('primary');
                 }}
                 iconLeft={iconLeft}
-                iconLeftType={iconLeftType}
+                iconRight={iconRight}
+                iconType={iconType}
               />
             </Applicable>
           ) : (
@@ -296,7 +303,8 @@ export const ButtonDocumentation: FC = () => {
                   setVariant('primary');
                 }}
                 iconLeft={iconLeft}
-                iconLeftType={iconLeftType}
+                iconRight={iconRight}
+                iconType={iconType}
               />
             </Applicable>
           ) : (
@@ -319,7 +327,8 @@ export const ButtonDocumentation: FC = () => {
                   setVariant('secondary');
                 }}
                 iconLeft={iconLeft}
-                iconLeftType={iconLeftType}
+                iconRight={iconRight}
+                iconType={iconType}
               />
             </Applicable>
           ) : (
@@ -341,7 +350,8 @@ export const ButtonDocumentation: FC = () => {
                   setVariant('tertiary');
                 }}
                 iconLeft={iconLeft}
-                iconLeftType={iconLeftType}
+                iconRight={iconRight}
+                iconType={iconType}
               />
             </Applicable>
           ) : (
@@ -366,7 +376,8 @@ export const ButtonDocumentation: FC = () => {
                   setVariant('success');
                 }}
                 iconLeft={iconLeft}
-                iconLeftType={iconLeftType}
+                iconRight={iconRight}
+                iconType={iconType}
               />
             </Applicable>
           ) : (
@@ -389,7 +400,8 @@ export const ButtonDocumentation: FC = () => {
                   setVariant('warning');
                 }}
                 iconLeft={iconLeft}
-                iconLeftType={iconLeftType}
+                iconRight={iconRight}
+                iconType={iconType}
               />
             </Applicable>
           ) : (
@@ -412,7 +424,8 @@ export const ButtonDocumentation: FC = () => {
                   setVariant('danger');
                 }}
                 iconLeft={iconLeft}
-                iconLeftType={iconLeftType}
+                iconRight={iconRight}
+                iconType={iconType}
               />
             </Applicable>
           ) : (
@@ -436,7 +449,8 @@ export const ButtonDocumentation: FC = () => {
                 textAlign={textAlign}
                 onClick={(): void => {}}
                 iconLeft={iconLeft}
-                iconLeftType={iconLeftType}
+                iconRight={iconRight}
+                iconType={iconType}
               />
             </Applicable>
           ) : (
@@ -458,7 +472,8 @@ export const ButtonDocumentation: FC = () => {
                 textAlign={textAlign}
                 onClick={(): void => {}}
                 iconLeft={iconLeft}
-                iconLeftType={iconLeftType}
+                iconRight={iconRight}
+                iconType={iconType}
               />
             </Applicable>
           ) : (
@@ -481,7 +496,8 @@ export const ButtonDocumentation: FC = () => {
                 textAlign={textAlign}
                 onClick={(): void => {}}
                 iconLeft={iconLeft}
-                iconLeftType={iconLeftType}
+                iconRight={iconRight}
+                iconType={iconType}
               />
             </Applicable>
           ) : (
@@ -504,7 +520,8 @@ export const ButtonDocumentation: FC = () => {
                 textAlign={textAlign}
                 onClick={(): void => {}}
                 iconLeft={iconLeft}
-                iconLeftType={iconLeftType}
+                iconRight={iconRight}
+                iconType={iconType}
               />
             </Applicable>
           ) : (
@@ -527,7 +544,8 @@ export const ButtonDocumentation: FC = () => {
                 textAlign={textAlign}
                 onClick={(): void => {}}
                 iconLeft={iconLeft}
-                iconLeftType={iconLeftType}
+                iconRight={iconRight}
+                iconType={iconType}
               />
             </Applicable>
           ) : (
@@ -548,7 +566,8 @@ export const ButtonDocumentation: FC = () => {
               textAlign={textAlign}
               onClick={(): void => {}}
               iconLeft={iconLeft}
-              iconLeftType={iconLeftType}
+              iconRight={iconRight}
+              iconType={iconType}
             />
           </div>
           <div>
@@ -561,7 +580,8 @@ export const ButtonDocumentation: FC = () => {
               textAlign={textAlign}
               onClick={(): void => {}}
               iconLeft={iconLeft}
-              iconLeftType={iconLeftType}
+              iconRight={iconRight}
+              iconType={iconType}
             />
           </div>
           <div>
@@ -574,7 +594,8 @@ export const ButtonDocumentation: FC = () => {
               textAlign={textAlign}
               onClick={(): void => {}}
               iconLeft={iconLeft}
-              iconLeftType={iconLeftType}
+              iconRight={iconRight}
+              iconType={iconType}
             />
           </div>
         </div>
@@ -595,7 +616,8 @@ export const ButtonDocumentation: FC = () => {
                   textAlign={textAlign}
                   onClick={(): void => setRadius('rounded')}
                   iconLeft={iconLeft}
-                  iconLeftType={iconLeftType}
+                  iconRight={iconRight}
+                  iconType={iconType}
                 />
               </Applicable>
             ) : (
@@ -615,7 +637,8 @@ export const ButtonDocumentation: FC = () => {
                   textAlign={textAlign}
                   onClick={(): void => setRadius('full')}
                   iconLeft={iconLeft}
-                  iconLeftType={iconLeftType}
+                  iconRight={iconRight}
+                  iconType={iconType}
                 />
               </Applicable>
             ) : (
@@ -635,7 +658,8 @@ export const ButtonDocumentation: FC = () => {
                   textAlign={textAlign}
                   onClick={(): void => setRadius('none')}
                   iconLeft={iconLeft}
-                  iconLeftType={iconLeftType}
+                  iconRight={iconRight}
+                  iconType={iconType}
                 />
               </Applicable>
             ) : (
@@ -658,7 +682,8 @@ export const ButtonDocumentation: FC = () => {
                     setTextAlign(undefined);
                   }}
                   iconLeft={iconLeft}
-                  iconLeftType={iconLeftType}
+                  iconRight={iconRight}
+                  iconType={iconType}
                 />
               </Applicable>
             ) : (
@@ -680,7 +705,8 @@ export const ButtonDocumentation: FC = () => {
                     setTextAlign('left');
                   }}
                   iconLeft={iconLeft}
-                  iconLeftType={iconLeftType}
+                  iconRight={iconRight}
+                  iconType={iconType}
                 />
               </Applicable>
             ) : (
@@ -702,7 +728,8 @@ export const ButtonDocumentation: FC = () => {
                     setTextAlign('center');
                   }}
                   iconLeft={iconLeft}
-                  iconLeftType={iconLeftType}
+                  iconRight={iconRight}
+                  iconType={iconType}
                 />
               </Applicable>
             ) : (
@@ -724,7 +751,8 @@ export const ButtonDocumentation: FC = () => {
                     setTextAlign('right');
                   }}
                   iconLeft={iconLeft}
-                  iconLeftType={iconLeftType}
+                  iconRight={iconRight}
+                  iconType={iconType}
                 />
               </Applicable>
             ) : (

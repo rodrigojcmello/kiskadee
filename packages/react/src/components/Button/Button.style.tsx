@@ -8,13 +8,7 @@ const duration = '0.2s';
 export const ButtonStyled = styled.button<
   Pick<
     ButtonProps,
-    | 'width'
-    | 'variant'
-    | 'textAlign'
-    | 'iconLeft'
-    | 'iconLeftType'
-    | 'iconRight'
-    | 'iconRightType'
+    'width' | 'variant' | 'textAlign' | 'iconLeft' | 'iconRight' | 'iconType'
   > & {
     theme?: ButtonSchema;
     typeStyle: ButtonProps['type'];
@@ -29,9 +23,8 @@ export const ButtonStyled = styled.button<
     borderRadius,
     textAlign,
     iconLeft,
-    iconLeftType,
     iconRight,
-    iconRightType,
+    iconType,
   }) => {
     const option = container?.option;
 
@@ -78,35 +71,29 @@ export const ButtonStyled = styled.button<
 
       // Base
       width:
-        iconLeftType === 'detached' ||
-        iconRightType === 'detached' ||
-        !(iconLeft || iconRight)
-          ? '100%'
-          : 'auto',
+        iconType === 'detached' || !(iconLeft || iconRight) ? '100%' : 'auto',
       whiteSpace: 'nowrap',
       transitionProperty: 'color, font-size, padding',
       transitionDuration: duration,
       transitionTimingFunction: timingFunction,
     } as unknown as CSSProperties;
 
-    const elementLeftIcon = iconLeftType && {
+    const elementLeftIcon = iconType && {
       color: elementText.color,
       ...leftIcon?.base?.rest,
       ...leftIcon?.type?.[typeStyle]?.base,
-      ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconLeftType]?.rest,
-
+      ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]?.rest,
       display: 'flex',
       transitionProperty: 'color, font-size',
       transitionDuration: duration,
       transitionTimingFunction: timingFunction,
     };
 
-    const elementRightIcon = iconRightType && {
+    const elementRightIcon = iconType && {
       color: elementText.color,
       ...rightIcon?.base?.rest,
       ...rightIcon?.type?.[typeStyle]?.base,
-      ...rightIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconRightType]
-        ?.rest,
+      ...rightIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]?.rest,
       display: 'flex',
       transitionProperty: 'color, font-size',
       transitionDuration: duration,
@@ -124,19 +111,21 @@ export const ButtonStyled = styled.button<
       ...text?.base?.hover,
       ...text?.type?.[typeStyle]?.variant?.[variant]?.hover,
     };
-
-    const elementIconLeftHover = iconLeftType && {
-      color: elementTextHover?.color,
-      ...leftIcon?.base?.hover,
-      ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconLeftType]?.hover,
-    };
-
-    const elementIconRightHover = iconRightType && {
-      color: elementTextHover?.color,
-      ...rightIcon?.base?.hover,
-      ...rightIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconRightType]
-        ?.hover,
-    };
+    const elementIconLeftHover = iconType
+      ? {
+          color: elementTextHover?.color,
+          ...leftIcon?.base?.hover,
+          ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]?.hover,
+        }
+      : {};
+    const elementIconRightHover = iconType
+      ? {
+          color: elementTextHover?.color,
+          ...rightIcon?.base?.hover,
+          ...rightIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]
+            ?.hover,
+        }
+      : {};
 
     // Pressed -----------------------------------------------------------------
 
@@ -149,20 +138,22 @@ export const ButtonStyled = styled.button<
       ...text?.base?.pressed,
       ...text?.type?.[typeStyle]?.variant?.[variant]?.pressed,
     };
-
-    const elementIconLeftPressed = iconLeftType && {
-      color: elementTextPressed?.color,
-      ...leftIcon?.base?.pressed,
-      ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconLeftType]
-        ?.pressed,
-    };
-
-    const elementIconRightPressed = iconRightType && {
-      color: elementTextPressed?.color,
-      ...rightIcon?.base?.pressed,
-      ...rightIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconRightType]
-        ?.pressed,
-    };
+    const elementIconLeftPressed = iconType
+      ? {
+          color: elementTextPressed?.color,
+          ...leftIcon?.base?.pressed,
+          ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]
+            ?.pressed,
+        }
+      : {};
+    const elementIconRightPressed = iconType
+      ? {
+          color: elementTextPressed?.color,
+          ...rightIcon?.base?.pressed,
+          ...rightIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]
+            ?.pressed,
+        }
+      : {};
 
     // Focus -------------------------------------------------------------------
 
@@ -175,19 +166,21 @@ export const ButtonStyled = styled.button<
       ...text?.base?.focus,
       ...text?.type?.[typeStyle]?.variant?.[variant]?.focus,
     };
-
-    const elementIconLeftFocus = iconLeftType && {
-      color: elementTextFocus?.color,
-      ...leftIcon?.base?.focus,
-      ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconLeftType]?.focus,
-    };
-
-    const elementIconRightFocus = iconRightType && {
-      color: elementTextFocus?.color,
-      ...rightIcon?.base?.focus,
-      ...rightIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconRightType]
-        ?.focus,
-    };
+    const elementIconLeftFocus = iconType
+      ? {
+          color: elementTextFocus?.color,
+          ...leftIcon?.base?.focus,
+          ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]?.focus,
+        }
+      : {};
+    const elementIconRightFocus = iconType
+      ? {
+          color: elementTextFocus?.color,
+          ...rightIcon?.base?.focus,
+          ...rightIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]
+            ?.focus,
+        }
+      : {};
 
     // Visited -----------------------------------------------------------------
 
@@ -200,20 +193,22 @@ export const ButtonStyled = styled.button<
       ...text?.base?.visited,
       ...text?.type?.[typeStyle]?.variant?.[variant]?.visited,
     };
-
-    const elementIconLeftVisited = iconLeftType && {
-      color: elementTextVisited?.color,
-      ...leftIcon?.base?.visited,
-      ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconLeftType]
-        ?.visited,
-    };
-
-    const elementIconRightVisited = iconRightType && {
-      color: elementTextVisited?.color,
-      ...rightIcon?.base?.visited,
-      ...rightIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconRightType]
-        ?.visited,
-    };
+    const elementIconLeftVisited = iconType
+      ? {
+          color: elementTextVisited?.color,
+          ...leftIcon?.base?.visited,
+          ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]
+            ?.visited,
+        }
+      : {};
+    const elementIconRightVisited = iconType
+      ? {
+          color: elementTextVisited?.color,
+          ...rightIcon?.base?.visited,
+          ...rightIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]
+            ?.visited,
+        }
+      : {};
 
     // Disabled
 
@@ -227,20 +222,22 @@ export const ButtonStyled = styled.button<
       ...text?.base?.disabled,
       ...text?.type?.[typeStyle]?.variant?.[variant]?.disabled,
     };
-
-    const elementIconLeftDisabled = iconLeftType && {
-      color: elementTextDisabled?.color,
-      ...leftIcon?.base?.disabled,
-      ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconLeftType]
-        ?.disabled,
-    };
-
-    const elementIconRightDisabled = iconRightType && {
-      color: elementTextDisabled?.color,
-      ...rightIcon?.base?.disabled,
-      ...rightIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconRightType]
-        ?.disabled,
-    };
+    const elementIconLeftDisabled = iconType
+      ? {
+          color: elementTextDisabled?.color,
+          ...leftIcon?.base?.disabled,
+          ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]
+            ?.disabled,
+        }
+      : {};
+    const elementIconRightDisabled = iconType
+      ? {
+          color: elementTextDisabled?.color,
+          ...rightIcon?.base?.disabled,
+          ...rightIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]
+            ?.disabled,
+        }
+      : {};
 
     return {
       //------------------------------------------------------------------------
@@ -281,7 +278,7 @@ export const ButtonStyled = styled.button<
 
         '& > *': {
           fontSize: 'inherit',
-          fill: elementLeftIcon?.color || undefined,
+          fill: elementRightIcon?.color || undefined,
         },
       },
 
