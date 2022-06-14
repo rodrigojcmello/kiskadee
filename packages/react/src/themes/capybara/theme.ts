@@ -10,6 +10,12 @@ export const capybaraTheme: KiskadeeSchema = {
       container: {
         option: {
           widthMin: '100px',
+          icon: {
+            rightAttached: true,
+            leftAttached: true,
+            leftDetached: true,
+            rightDetached: true,
+          },
         },
         type: {
           contained: {

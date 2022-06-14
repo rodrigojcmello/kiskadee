@@ -19,6 +19,12 @@ export const fluentTheme: KiskadeeSchema = {
             center: true,
             left: true,
           },
+          icon: {
+            rightAttached: true,
+            leftAttached: true,
+            leftDetached: true,
+            rightDetached: true,
+          },
         },
         base: {
           focus: {

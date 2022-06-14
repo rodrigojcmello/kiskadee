@@ -20,6 +20,12 @@ export const materialTheme: KiskadeeSchema = {
             default: 'center',
             center: true,
           },
+          icon: {
+            rightAttached: true,
+            leftAttached: true,
+            leftDetached: true,
+            rightDetached: true,
+          },
         },
         base: {
           focus: {
