@@ -80,7 +80,6 @@ export const fluentTheme: KiskadeeSchema = {
           rest: {
             paddingLeft: 8,
             paddingRight: 8,
-            color: '#ffffff',
             fontSize: 16,
           },
         },
@@ -133,7 +132,6 @@ export const fluentTheme: KiskadeeSchema = {
           rest: {
             paddingLeft: 8,
             paddingRight: 8,
-            color: '#ffffff',
             fontSize: 16,
           },
         },
