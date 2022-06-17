@@ -28,7 +28,9 @@ export const iosTheme: KiskadeeSchema = {
         },
         base: {
           disabled: {
-            backgroundColor: '#74748114',
+            md: {
+              backgroundColor: '#74748114',
+            },
           },
         },
         type: {
@@ -36,17 +38,23 @@ export const iosTheme: KiskadeeSchema = {
             variant: {
               primary: {
                 rest: {
-                  backgroundColor: '#007AFF',
+                  md: {
+                    backgroundColor: '#007AFF',
+                  },
                 },
               },
               secondary: {
                 rest: {
-                  backgroundColor: '#E1EBFE',
+                  md: {
+                    backgroundColor: '#E1EBFE',
+                  },
                 },
               },
               tertiary: {
                 rest: {
-                  backgroundColor: '#76767F1E',
+                  md: {
+                    backgroundColor: '#76767F1E',
+                  },
                 },
               },
             },
@@ -55,18 +63,26 @@ export const iosTheme: KiskadeeSchema = {
             variant: {
               primary: {
                 rest: {
-                  background: 'none',
+                  md: {
+                    background: 'none',
+                  },
                 },
                 disabled: {
-                  background: 'none',
+                  md: {
+                    background: 'none',
+                  },
                 },
               },
               danger: {
                 rest: {
-                  background: 'none',
+                  md: {
+                    background: 'none',
+                  },
                 },
                 disabled: {
-                  background: 'none',
+                  md: {
+                    background: 'none',
+                  },
                 },
               },
             },
@@ -76,27 +92,33 @@ export const iosTheme: KiskadeeSchema = {
       leftIcon: {
         base: {
           rest: {
-            fontSize: 24,
-            paddingRight: 8,
-            paddingLeft: 16,
+            md: {
+              fontSize: 24,
+              paddingRight: 8,
+              paddingLeft: 16,
+            },
           },
         },
       },
       text: {
         base: {
           rest: {
-            fontSize: '1.0625rem',
-            lineHeight: '22px',
-            fontWeight: 600,
-            fontFamily: 'SF Pro Text',
-            fontStyle: 'normal',
-            paddingTop: 14,
-            paddingBottom: 14,
-            paddingLeft: 20,
-            paddingRight: 20,
+            md: {
+              fontSize: '1.0625rem',
+              lineHeight: '22px',
+              fontWeight: 600,
+              fontFamily: 'SF Pro Text',
+              fontStyle: 'normal',
+              paddingTop: 14,
+              paddingBottom: 14,
+              paddingLeft: 20,
+              paddingRight: 20,
+            },
           },
           disabled: {
-            color: '#3c3c444d',
+            md: {
+              color: '#3c3c444d',
+            },
           },
         },
         type: {
@@ -104,17 +126,23 @@ export const iosTheme: KiskadeeSchema = {
             variant: {
               primary: {
                 rest: {
-                  color: '#FFFFFF',
+                  md: {
+                    color: '#FFFFFF',
+                  },
                 },
               },
               secondary: {
                 rest: {
-                  color: '#307DF6',
+                  md: {
+                    color: '#307DF6',
+                  },
                 },
               },
               tertiary: {
                 rest: {
-                  color: '#307DF6',
+                  md: {
+                    color: '#307DF6',
+                  },
                 },
               },
             },
@@ -123,18 +151,26 @@ export const iosTheme: KiskadeeSchema = {
             variant: {
               primary: {
                 rest: {
-                  color: '#307DF6',
+                  md: {
+                    color: '#307DF6',
+                  },
                 },
                 disabled: {
-                  color: '#0000004d',
+                  md: {
+                    color: '#0000004d',
+                  },
                 },
               },
               danger: {
                 rest: {
-                  color: '#EB4C3B',
+                  md: {
+                    color: '#EB4C3B',
+                  },
                 },
                 disabled: {
-                  color: '#0000004d',
+                  md: {
+                    color: '#0000004d',
+                  },
                 },
               },
             },
@@ -144,9 +180,11 @@ export const iosTheme: KiskadeeSchema = {
       rightIcon: {
         base: {
           rest: {
-            fontSize: 24,
-            paddingRight: 16,
-            paddingLeft: 8,
+            md: {
+              fontSize: 24,
+              paddingRight: 16,
+              paddingLeft: 8,
+            },
           },
         },
       },

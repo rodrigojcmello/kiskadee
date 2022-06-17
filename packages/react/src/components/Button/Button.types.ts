@@ -18,6 +18,8 @@ export type InteractionState =
   | 'visited'
   | 'disabled';
 
+type Size = 'xxxl' | 'xxl' | 'xl' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs' | 'xxxs';
+
 export interface ButtonProps {
   text: string;
   onClick: () => void;
@@ -94,19 +96,19 @@ interface ButtonElementText {
 }
 
 //------------------------------------------------------------------------------
-// States
+// States e Sizes
 //------------------------------------------------------------------------------
 
 type ButtonElementContainerVariant = Partial<
-  Record<InteractionState, ButtonElementContainer>
+  Record<InteractionState, Partial<Record<Size, ButtonElementContainer>>>
 >;
 
 type ButtonElementIconVariant = Partial<
-  Record<InteractionState, ButtonElementIcon>
+  Record<InteractionState, Partial<Record<Size, ButtonElementIcon>>>
 >;
 
 type ButtonElementTextVariant = Partial<
-  Record<InteractionState, ButtonElementText>
+  Record<InteractionState, Partial<Record<Size, ButtonElementText>>>
 >;
 
 //------------------------------------------------------------------------------
@@ -134,12 +136,26 @@ export interface ButtonSchema {
         rightAttached?: true;
         rightDetached?: true;
       };
+      size?: Partial<Record<Exclude<Size, 'md'>, boolean>> & { md: true };
+      responsive?: {
+        smallScreenBP1?: Size; // 0-320px
+        smallScreenBP2?: Size; // 321-375px
+        smallScreenBP3?: Size; // 376-480px
+
+        mediumScreenBP1?: Size; // 481-640px
+        mediumScreenBP2?: Size; // 641-768px
+        mediumScreenBP3?: Size; // 769-1024px
+
+        bigScreenBP1?: Size; // 1025-1280px
+        bigScreenBP2?: Size; // 1281-1440px
+        bigScreenBP3?: Size; // 1441-1600px
+      };
     };
     type?: Partial<
       Record<
         ButtonType,
         {
-          base?: Partial<ButtonElementContainer>;
+          base?: Partial<Record<Size, ButtonElementText>>;
           variant?: Partial<
             Record<ButtonVariant, ButtonElementContainerVariant>
           >;
@@ -153,7 +169,7 @@ export interface ButtonSchema {
       Record<
         ButtonType,
         {
-          base?: ButtonElementIcon;
+          base?: Partial<Record<Size, ButtonElementIcon>>;
           variant?: Partial<
             Record<
               ButtonVariant,
@@ -173,7 +189,7 @@ export interface ButtonSchema {
       Record<
         ButtonType,
         {
-          base?: ButtonElementText;
+          base?: Partial<Record<Size, ButtonElementText>>;
           variant?: Partial<Record<ButtonVariant, ButtonElementTextVariant>>;
         }
       >
@@ -185,7 +201,7 @@ export interface ButtonSchema {
       Record<
         ButtonType,
         {
-          base?: ButtonElementIcon;
+          base?: Partial<Record<Size, ButtonElementIcon>>;
           variant?: Partial<
             Record<
               ButtonVariant,

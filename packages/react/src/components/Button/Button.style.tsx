@@ -34,9 +34,9 @@ export const ButtonStyled = styled.button<
       padding: 0,
 
       // Custom
-      ...container?.base?.rest,
-      ...container?.type?.[typeStyle]?.base,
-      ...container?.type?.[typeStyle]?.variant?.[variant]?.rest,
+      ...container?.base?.rest?.md,
+      ...container?.type?.[typeStyle]?.base?.md,
+      ...container?.type?.[typeStyle]?.variant?.[variant]?.rest?.md,
 
       // Base
       cursor: 'pointer',
@@ -63,11 +63,11 @@ export const ButtonStyled = styled.button<
           : option?.textAlign?.default,
     };
 
-    const elementText = {
+    const elementText: CSSProperties | undefined = {
       // Custom
-      ...text?.base?.rest,
-      ...text?.type?.[typeStyle]?.base,
-      ...text?.type?.[typeStyle]?.variant?.[variant]?.rest,
+      ...text?.base?.rest?.md,
+      ...text?.type?.[typeStyle]?.base?.md,
+      ...text?.type?.[typeStyle]?.variant?.[variant]?.rest?.md,
 
       // Base
       width:
@@ -76,24 +76,33 @@ export const ButtonStyled = styled.button<
       transitionProperty: 'color, font-size, padding',
       transitionDuration: duration,
       transitionTimingFunction: timingFunction,
-    } as unknown as CSSProperties;
+    };
 
-    const elementLeftIcon = iconType && {
+    // Option
+    elementText.paddingLeft = iconLeft ? 0 : elementText?.paddingLeft;
+    elementText.paddingRight = iconRight ? 0 : elementText?.paddingRight;
+
+    const elementLeftIcon: CSSProperties | undefined = iconType && {
+      // Inherit from text
       color: elementText.color,
-      ...leftIcon?.base?.rest,
-      ...leftIcon?.type?.[typeStyle]?.base,
-      ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]?.rest,
+
+      // Custom
+      ...leftIcon?.base?.rest?.md,
+      ...leftIcon?.type?.[typeStyle]?.base?.md,
+      ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]?.rest?.md,
+
+      // Base
       display: 'flex',
       transitionProperty: 'color, font-size',
       transitionDuration: duration,
       transitionTimingFunction: timingFunction,
     };
 
-    const elementRightIcon = iconType && {
+    const elementRightIcon: CSSProperties | undefined = iconType && {
       color: elementText.color,
-      ...rightIcon?.base?.rest,
-      ...rightIcon?.type?.[typeStyle]?.base,
-      ...rightIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]?.rest,
+      ...rightIcon?.base?.rest?.md,
+      ...rightIcon?.type?.[typeStyle]?.base?.md,
+      ...rightIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]?.rest?.md,
       display: 'flex',
       transitionProperty: 'color, font-size',
       transitionDuration: duration,
@@ -108,9 +117,10 @@ export const ButtonStyled = styled.button<
     };
 
     const elementTextHover = {
-      ...text?.base?.hover,
-      ...text?.type?.[typeStyle]?.variant?.[variant]?.hover,
+      ...text?.base?.hover?.md,
+      ...text?.type?.[typeStyle]?.variant?.[variant]?.hover?.md,
     };
+
     const elementIconLeftHover = iconType
       ? {
           color: elementTextHover?.color,
@@ -118,6 +128,7 @@ export const ButtonStyled = styled.button<
           ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]?.hover,
         }
       : {};
+
     const elementIconRightHover = iconType
       ? {
           color: elementTextHover?.color,
@@ -135,9 +146,10 @@ export const ButtonStyled = styled.button<
     };
 
     const elementTextPressed = {
-      ...text?.base?.pressed,
-      ...text?.type?.[typeStyle]?.variant?.[variant]?.pressed,
+      ...text?.base?.pressed?.md,
+      ...text?.type?.[typeStyle]?.variant?.[variant]?.pressed?.md,
     };
+
     const elementIconLeftPressed = iconType
       ? {
           color: elementTextPressed?.color,
@@ -146,6 +158,7 @@ export const ButtonStyled = styled.button<
             ?.pressed,
         }
       : {};
+
     const elementIconRightPressed = iconType
       ? {
           color: elementTextPressed?.color,
@@ -158,14 +171,15 @@ export const ButtonStyled = styled.button<
     // Focus -------------------------------------------------------------------
 
     const elementContainerFocus = {
-      ...container?.base?.focus,
-      ...container?.type?.[typeStyle]?.variant?.[variant]?.focus,
+      ...container?.base?.focus?.md,
+      ...container?.type?.[typeStyle]?.variant?.[variant]?.focus?.md,
     };
 
     const elementTextFocus = {
-      ...text?.base?.focus,
-      ...text?.type?.[typeStyle]?.variant?.[variant]?.focus,
+      ...text?.base?.focus?.md,
+      ...text?.type?.[typeStyle]?.variant?.[variant]?.focus?.md,
     };
+
     const elementIconLeftFocus = iconType
       ? {
           color: elementTextFocus?.color,
@@ -173,6 +187,7 @@ export const ButtonStyled = styled.button<
           ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]?.focus,
         }
       : {};
+
     const elementIconRightFocus = iconType
       ? {
           color: elementTextFocus?.color,
@@ -185,14 +200,15 @@ export const ButtonStyled = styled.button<
     // Visited -----------------------------------------------------------------
 
     const elementContainerVisited = {
-      ...container?.base?.visited,
-      ...container?.type?.[typeStyle]?.variant?.[variant]?.visited,
+      ...container?.base?.visited?.md,
+      ...container?.type?.[typeStyle]?.variant?.[variant]?.visited?.md,
     };
 
     const elementTextVisited = {
-      ...text?.base?.visited,
-      ...text?.type?.[typeStyle]?.variant?.[variant]?.visited,
+      ...text?.base?.visited?.md,
+      ...text?.type?.[typeStyle]?.variant?.[variant]?.visited?.md,
     };
+
     const elementIconLeftVisited = iconType
       ? {
           color: elementTextVisited?.color,
@@ -201,6 +217,7 @@ export const ButtonStyled = styled.button<
             ?.visited,
         }
       : {};
+
     const elementIconRightVisited = iconType
       ? {
           color: elementTextVisited?.color,
@@ -213,15 +230,16 @@ export const ButtonStyled = styled.button<
     // Disabled
 
     const elementContainerDisabled = {
-      ...container?.base?.disabled,
-      ...container?.type?.[typeStyle]?.variant?.[variant]?.disabled,
+      ...container?.base?.disabled?.md,
+      ...container?.type?.[typeStyle]?.variant?.[variant]?.disabled?.md,
       cursor: 'not-allowed',
     };
 
     const elementTextDisabled = {
-      ...text?.base?.disabled,
-      ...text?.type?.[typeStyle]?.variant?.[variant]?.disabled,
+      ...text?.base?.disabled?.md,
+      ...text?.type?.[typeStyle]?.variant?.[variant]?.disabled?.md,
     };
+
     const elementIconLeftDisabled = iconType
       ? {
           color: elementTextDisabled?.color,
@@ -230,6 +248,7 @@ export const ButtonStyled = styled.button<
             ?.disabled,
         }
       : {};
+
     const elementIconRightDisabled = iconType
       ? {
           color: elementTextDisabled?.color,
@@ -265,8 +284,10 @@ export const ButtonStyled = styled.button<
 
       '& .button__text': {
         ...elementText,
-        paddingLeft: iconLeft ? 0 : elementText?.paddingLeft,
-        paddingRight: iconRight ? 0 : elementText?.paddingRight,
+
+        '@media (max-width: 600px)': {
+          ...elementText,
+        },
       },
 
       //------------------------------------------------------------------------
