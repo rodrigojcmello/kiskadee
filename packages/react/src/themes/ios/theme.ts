@@ -25,6 +25,11 @@ export const iosTheme: KiskadeeSchema = {
             leftDetached: true,
             rightDetached: true,
           },
+          size: {
+            md: true,
+            sm: true,
+            lg: true,
+          },
         },
         base: {
           disabled: {
@@ -113,6 +118,18 @@ export const iosTheme: KiskadeeSchema = {
               paddingBottom: 14,
               paddingLeft: 20,
               paddingRight: 20,
+            },
+            sm: {
+              paddingTop: 7,
+              paddingBottom: 7,
+              paddingLeft: 10,
+              paddingRight: 10,
+            },
+            lg: {
+              paddingTop: 28,
+              paddingBottom: 28,
+              paddingLeft: 40,
+              paddingRight: 40,
             },
           },
           disabled: {

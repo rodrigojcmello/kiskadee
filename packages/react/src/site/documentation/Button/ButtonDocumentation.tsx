@@ -77,6 +77,89 @@ export const ButtonDocumentation: FC = () => {
     <Container className={!pageLoad ? style['no-transition'] : undefined}>
       <Box>
         <div>
+          <BoxTitle>Medium</BoxTitle>
+          {buttonContainer?.option?.size?.sm ? (
+            <Applicable>
+              <Button
+                text="Click me"
+                width="block"
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                iconType={iconType}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                size="md"
+                onClick={(): void => {
+                  setIconLeft(undefined);
+                  setIconRight(undefined);
+                  setIconType(undefined);
+                }}
+              />
+            </Applicable>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+        <div>
+          <BoxTitle>Large</BoxTitle>
+          {buttonContainer?.option?.size?.lg ? (
+            <Applicable>
+              <Button
+                text="Click me"
+                width="block"
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                iconType={iconType}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                textAlign={textAlign}
+                size="lg"
+                onClick={(): void => {
+                  // setIconLeft(
+                  //   <span className="material-symbols-outlined">thumb_up</span>
+                  // );
+                  // setIconType('attached');
+                }}
+              />
+            </Applicable>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+        <div>
+          <BoxTitle>Small</BoxTitle>
+          {buttonContainer?.option?.size?.sm ? (
+            <Applicable>
+              <Button
+                text="Click me"
+                width="block"
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                iconType={iconType}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                textAlign={textAlign}
+                size="sm"
+                onClick={(): void => {
+                  // setIconLeft(
+                  //   <span className="material-symbols-outlined">thumb_up</span>
+                  // );
+                  // setIconType('detached');
+                }}
+              />
+            </Applicable>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+      </Box>
+
+      <Box>
+        <div>
           <BoxTitle>No icon</BoxTitle>
           {buttonContainer?.type?.contained ? (
             <Applicable>

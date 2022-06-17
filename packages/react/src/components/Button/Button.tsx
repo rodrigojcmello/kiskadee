@@ -18,6 +18,7 @@ export const Button: FC<ButtonProps> = ({
   iconLeft,
   iconType,
   iconRight,
+  size = 'md',
 }) => {
   const [theme] = useContext(KiskadeeContext);
 
@@ -40,6 +41,7 @@ export const Button: FC<ButtonProps> = ({
       iconLeft={iconLeft}
       iconRight={iconRight}
       iconType={iconType}
+      size={size}
     >
       {iconLeft && <div className="button__icon-left">{iconLeft}</div>}
       <div className="button__text">{text}</div>

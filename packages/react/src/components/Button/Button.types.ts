@@ -18,7 +18,16 @@ export type InteractionState =
   | 'visited'
   | 'disabled';
 
-type Size = 'xxxl' | 'xxl' | 'xl' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs' | 'xxxs';
+export type Size =
+  | 'xxxl'
+  | 'xxl'
+  | 'xl'
+  | 'lg'
+  | 'md'
+  | 'sm'
+  | 'xs'
+  | 'xxs'
+  | 'xxxs';
 
 export interface ButtonProps {
   text: string;
@@ -36,6 +45,7 @@ export interface ButtonProps {
   iconLeft?: ReactElement;
   iconRight?: ReactElement;
   iconType?: 'attached' | 'detached';
+  size?: Size;
 }
 
 //------------------------------------------------------------------------------
@@ -155,7 +165,7 @@ export interface ButtonSchema {
       Record<
         ButtonType,
         {
-          base?: Partial<Record<Size, ButtonElementText>>;
+          base?: Partial<Record<Size, ButtonElementContainer>>;
           variant?: Partial<
             Record<ButtonVariant, ButtonElementContainerVariant>
           >;

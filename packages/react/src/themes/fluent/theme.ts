@@ -28,10 +28,12 @@ export const fluentTheme: KiskadeeSchema = {
         },
         base: {
           focus: {
-            outlineWidth: 2,
-            outlineStyle: 'solid',
-            outlineColor: '#000',
-            outlineOffset: 1,
+            md: {
+              outlineWidth: 2,
+              outlineStyle: 'solid',
+              outlineColor: '#000',
+              outlineOffset: 1,
+            },
           },
         },
         type: {
@@ -39,36 +41,54 @@ export const fluentTheme: KiskadeeSchema = {
             variant: {
               primary: {
                 rest: {
-                  backgroundColor: '#005FB8',
+                  md: {
+                    backgroundColor: '#005FB8',
+                  },
                 },
                 hover: {
-                  backgroundColor: '#1A6FBF',
+                  md: {
+                    backgroundColor: '#1A6FBF',
+                  },
                 },
                 pressed: {
-                  backgroundColor: '#327EC5',
+                  md: {
+                    backgroundColor: '#327EC5',
+                  },
                 },
                 disabled: {
-                  backgroundColor: '#C8C8C8',
+                  md: {
+                    backgroundColor: '#C8C8C8',
+                  },
                 },
               },
               secondary: {
                 rest: {
-                  backgroundColor: '#FFFFFFB2',
-                  borderWidth: 1,
-                  borderStyle: 'solid',
-                  borderColor: '#0000000F',
+                  md: {
+                    backgroundColor: '#FFFFFFB2',
+                    borderWidth: 1,
+                    borderStyle: 'solid',
+                    borderColor: '#0000000F',
+                  },
                 },
                 hover: {
-                  backgroundColor: '#F9F9F980',
+                  md: {
+                    backgroundColor: '#F9F9F980',
+                  },
                 },
                 pressed: {
-                  backgroundColor: '#F9F9F94D',
+                  md: {
+                    backgroundColor: '#F9F9F94D',
+                  },
                 },
                 disabled: {
-                  backgroundColor: '#F9F9F94D',
+                  md: {
+                    backgroundColor: '#F9F9F94D',
+                  },
                 },
                 focus: {
-                  backgroundColor: '#FFFFFFB2',
+                  md: {
+                    backgroundColor: '#FFFFFFB2',
+                  },
                 },
               },
             },
@@ -78,49 +98,63 @@ export const fluentTheme: KiskadeeSchema = {
       leftIcon: {
         base: {
           rest: {
-            paddingLeft: 8,
-            paddingRight: 8,
-            fontSize: 16,
+            md: {
+              paddingLeft: 8,
+              paddingRight: 8,
+              fontSize: 16,
+            },
           },
         },
       },
       text: {
         base: {
           rest: {
-            fontSize: '0.875rem',
-            lineHeight: '20px',
-            fontWeight: 600,
-            fontFamily: 'Segoe UI',
-            fontStyle: 'normal',
+            md: {
+              fontSize: '0.875rem',
+              lineHeight: '20px',
+              fontWeight: 600,
+              fontFamily: 'Segoe UI',
+              fontStyle: 'normal',
+            },
           },
         },
         type: {
           contained: {
             base: {
-              paddingTop: 4,
-              paddingBottom: 6,
-              paddingLeft: 11,
-              paddingRight: 11,
+              md: {
+                paddingTop: 4,
+                paddingBottom: 6,
+                paddingLeft: 11,
+                paddingRight: 11,
+              },
             },
             variant: {
               primary: {
                 rest: {
-                  color: '#FFFFFF',
+                  md: {
+                    color: '#FFFFFF',
+                  },
                 },
                 pressed: {
-                  color: '#ffffffb3',
+                  md: {
+                    color: '#ffffffb3',
+                  },
                 },
               },
               secondary: {
                 rest: {
-                  color: '#000000E4',
-                  paddingTop: 3,
-                  paddingBottom: 5,
-                  paddingLeft: 10,
-                  paddingRight: 10,
+                  md: {
+                    color: '#000000E4',
+                    paddingTop: 3,
+                    paddingBottom: 5,
+                    paddingLeft: 10,
+                    paddingRight: 10,
+                  },
                 },
                 disabled: {
-                  color: '#0000005C',
+                  md: {
+                    color: '#0000005C',
+                  },
                 },
               },
             },
@@ -130,9 +164,11 @@ export const fluentTheme: KiskadeeSchema = {
       rightIcon: {
         base: {
           rest: {
-            paddingLeft: 8,
-            paddingRight: 8,
-            fontSize: 16,
+            md: {
+              paddingLeft: 8,
+              paddingRight: 8,
+              fontSize: 16,
+            },
           },
         },
       },

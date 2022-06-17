@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
-import type { ButtonProps, ButtonSchema } from './Button.types';
+import type { ButtonProps, ButtonSchema, Size } from './Button.types';
 
 const timingFunction = 'ease';
 const duration = '0.2s';
@@ -11,12 +11,14 @@ export const ButtonStyled = styled.button<
     'width' | 'variant' | 'textAlign' | 'iconLeft' | 'iconRight' | 'iconType'
   > & {
     theme?: ButtonSchema;
+    size: Size;
     typeStyle: ButtonProps['type'];
     borderRadius: Exclude<ButtonProps['borderRadius'], undefined>;
   }
 >(
   ({
     theme: { text, container, leftIcon, rightIcon },
+    size,
     width,
     typeStyle,
     variant,
@@ -35,8 +37,11 @@ export const ButtonStyled = styled.button<
 
       // Custom
       ...container?.base?.rest?.md,
+      ...container?.base?.rest?.[size],
       ...container?.type?.[typeStyle]?.base?.md,
+      ...container?.type?.[typeStyle]?.base?.[size],
       ...container?.type?.[typeStyle]?.variant?.[variant]?.rest?.md,
+      ...container?.type?.[typeStyle]?.variant?.[variant]?.rest?.[size],
 
       // Base
       cursor: 'pointer',
@@ -66,8 +71,11 @@ export const ButtonStyled = styled.button<
     const elementText: CSSProperties | undefined = {
       // Custom
       ...text?.base?.rest?.md,
+      ...text?.base?.rest?.[size],
       ...text?.type?.[typeStyle]?.base?.md,
+      ...text?.type?.[typeStyle]?.base?.[size],
       ...text?.type?.[typeStyle]?.variant?.[variant]?.rest?.md,
+      ...text?.type?.[typeStyle]?.variant?.[variant]?.rest?.[size],
 
       // Base
       width:
@@ -87,9 +95,14 @@ export const ButtonStyled = styled.button<
       color: elementText.color,
 
       // Custom
+      ...leftIcon?.base?.rest?.[size],
       ...leftIcon?.base?.rest?.md,
+      ...leftIcon?.type?.[typeStyle]?.base?.[size],
       ...leftIcon?.type?.[typeStyle]?.base?.md,
       ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]?.rest?.md,
+      ...leftIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]?.rest?.[
+        size
+      ],
 
       // Base
       display: 'flex',
@@ -101,8 +114,13 @@ export const ButtonStyled = styled.button<
     const elementRightIcon: CSSProperties | undefined = iconType && {
       color: elementText.color,
       ...rightIcon?.base?.rest?.md,
+      ...rightIcon?.base?.rest?.[size],
       ...rightIcon?.type?.[typeStyle]?.base?.md,
+      ...rightIcon?.type?.[typeStyle]?.base?.[size],
       ...rightIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]?.rest?.md,
+      ...rightIcon?.type?.[typeStyle]?.variant?.[variant]?.[iconType]?.rest?.[
+        size
+      ],
       display: 'flex',
       transitionProperty: 'color, font-size',
       transitionDuration: duration,
@@ -112,13 +130,13 @@ export const ButtonStyled = styled.button<
     // Hover -------------------------------------------------------------------
 
     const elementContainerHover = {
-      ...container?.base?.hover,
-      ...container?.type?.[typeStyle]?.variant?.[variant]?.hover,
+      ...container?.base?.hover?.md,
+      ...container?.type?.[typeStyle]?.variant?.[variant]?.hover?.md,
     };
 
     const elementTextHover = {
-      ...text?.base?.hover?.md,
-      ...text?.type?.[typeStyle]?.variant?.[variant]?.hover?.md,
+      ...text?.base?.hover?.[size],
+      ...text?.type?.[typeStyle]?.variant?.[variant]?.hover?.[size],
     };
 
     const elementIconLeftHover = iconType
@@ -146,8 +164,8 @@ export const ButtonStyled = styled.button<
     };
 
     const elementTextPressed = {
-      ...text?.base?.pressed?.md,
-      ...text?.type?.[typeStyle]?.variant?.[variant]?.pressed?.md,
+      ...text?.base?.pressed?.[size],
+      ...text?.type?.[typeStyle]?.variant?.[variant]?.pressed?.[size],
     };
 
     const elementIconLeftPressed = iconType
@@ -171,13 +189,13 @@ export const ButtonStyled = styled.button<
     // Focus -------------------------------------------------------------------
 
     const elementContainerFocus = {
-      ...container?.base?.focus?.md,
-      ...container?.type?.[typeStyle]?.variant?.[variant]?.focus?.md,
+      ...container?.base?.focus?.[size],
+      ...container?.type?.[typeStyle]?.variant?.[variant]?.focus?.[size],
     };
 
     const elementTextFocus = {
-      ...text?.base?.focus?.md,
-      ...text?.type?.[typeStyle]?.variant?.[variant]?.focus?.md,
+      ...text?.base?.focus?.[size],
+      ...text?.type?.[typeStyle]?.variant?.[variant]?.focus?.[size],
     };
 
     const elementIconLeftFocus = iconType
@@ -200,13 +218,13 @@ export const ButtonStyled = styled.button<
     // Visited -----------------------------------------------------------------
 
     const elementContainerVisited = {
-      ...container?.base?.visited?.md,
-      ...container?.type?.[typeStyle]?.variant?.[variant]?.visited?.md,
+      ...container?.base?.visited?.[size],
+      ...container?.type?.[typeStyle]?.variant?.[variant]?.visited?.[size],
     };
 
     const elementTextVisited = {
-      ...text?.base?.visited?.md,
-      ...text?.type?.[typeStyle]?.variant?.[variant]?.visited?.md,
+      ...text?.base?.visited?.[size],
+      ...text?.type?.[typeStyle]?.variant?.[variant]?.visited?.[size],
     };
 
     const elementIconLeftVisited = iconType
@@ -230,14 +248,14 @@ export const ButtonStyled = styled.button<
     // Disabled
 
     const elementContainerDisabled = {
-      ...container?.base?.disabled?.md,
-      ...container?.type?.[typeStyle]?.variant?.[variant]?.disabled?.md,
+      ...container?.base?.disabled?.[size],
+      ...container?.type?.[typeStyle]?.variant?.[variant]?.disabled?.[size],
       cursor: 'not-allowed',
     };
 
     const elementTextDisabled = {
-      ...text?.base?.disabled?.md,
-      ...text?.type?.[typeStyle]?.variant?.[variant]?.disabled?.md,
+      ...text?.base?.disabled?.[size],
+      ...text?.type?.[typeStyle]?.variant?.[variant]?.disabled?.[size],
     };
 
     const elementIconLeftDisabled = iconType

@@ -7,7 +7,6 @@ import { fluentTheme } from '../../../themes/fluent/theme';
 import { iosTheme } from '../../../themes/ios/theme';
 import type { KiskadeeSchema } from '../../../themes/theme.types';
 import { carbonTheme } from '../../../themes/carbon/theme';
-import { capybaraTheme } from '../../../themes/capybara/theme';
 
 const BarStyled = styled.div(() => ({
   padding: 8,
@@ -29,7 +28,6 @@ const SelectTheme = styled.select(() => ({
 
 const themes: Record<string, KiskadeeSchema> = {
   Material: materialTheme,
-  Capybara: capybaraTheme,
   Fluent: fluentTheme,
   iOS: iosTheme,
   Carbon: carbonTheme,
@@ -53,7 +51,6 @@ export const Bar: FC = () => {
     <BarStyled>
       <SelectTheme value={themeSelected} onChange={handleChange}>
         <option value="Material">Material 3 by Google</option>
-        <option value="Capybara">Capybara (Experimental) by Kiskadee</option>
         <option value="iOS">iOS 15.2 by Apple</option>
         <option value="Fluent">Windows UI 2.7 by Microsoft</option>
         <option value="Carbon">Carbon by IBM</option>

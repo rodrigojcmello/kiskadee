@@ -29,10 +29,14 @@ export const materialTheme: KiskadeeSchema = {
         },
         base: {
           focus: {
-            outline: 'none',
+            md: {
+              outline: 'none',
+            },
           },
           pressed: {
-            boxShadow: 'none',
+            md: {
+              boxShadow: 'none',
+            },
           },
         },
         type: {
@@ -40,96 +44,138 @@ export const materialTheme: KiskadeeSchema = {
             variant: {
               primary: {
                 rest: {
-                  backgroundColor: '#6750A4',
+                  md: {
+                    backgroundColor: '#6750A4',
+                  },
                 },
                 hover: {
-                  backgroundColor: '#735EAB',
-                  boxShadow:
-                    '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                  md: {
+                    backgroundColor: '#735EAB',
+                    boxShadow:
+                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                  },
                 },
                 focus: {
-                  backgroundColor: '#7965AF',
+                  md: {
+                    backgroundColor: '#7965AF',
+                  },
                 },
                 pressed: {
-                  backgroundColor: '#7965AF',
+                  md: {
+                    backgroundColor: '#7965AF',
+                  },
                 },
                 disabled: {
-                  boxShadow: 'none',
-                  backgroundColor: '#E4E4E4',
+                  md: {
+                    boxShadow: 'none',
+                    backgroundColor: '#E4E4E4',
+                  },
                 },
               },
               secondary: {
                 rest: {
-                  backgroundColor: '#E8DEF8',
+                  md: {
+                    backgroundColor: '#E8DEF8',
+                  },
                 },
                 hover: {
-                  backgroundColor: '#D8CEE8',
-                  boxShadow:
-                    '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                  md: {
+                    backgroundColor: '#D8CEE8',
+                    boxShadow:
+                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                  },
                 },
                 focus: {
-                  backgroundColor: '#D0C6DF',
+                  md: {
+                    backgroundColor: '#D0C6DF',
+                  },
                 },
                 pressed: {
-                  backgroundColor: '#D0C6DF',
+                  md: {
+                    backgroundColor: '#D0C6DF',
+                  },
                 },
                 disabled: {
-                  boxShadow: 'none',
-                  backgroundColor: '#E4E4E4',
+                  md: {
+                    boxShadow: 'none',
+                    backgroundColor: '#E4E4E4',
+                  },
                 },
               },
               tertiary: {
                 rest: {
-                  backgroundColor: '#F7F2FA',
-                  boxShadow:
-                    '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                  md: {
+                    backgroundColor: '#F7F2FA',
+                    boxShadow:
+                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                  },
                 },
                 hover: {
-                  backgroundColor: '#E8E0F0',
-                  boxShadow:
-                    '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15)',
+                  md: {
+                    backgroundColor: '#E8E0F0',
+                    boxShadow:
+                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15)',
+                  },
                 },
                 focus: {
-                  backgroundColor: '#E6DFF0',
-                  boxShadow:
-                    '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                  md: {
+                    backgroundColor: '#E6DFF0',
+                    boxShadow:
+                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                  },
                 },
                 pressed: {
-                  backgroundColor: '#E6DFF0',
-                  boxShadow:
-                    '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                  md: {
+                    backgroundColor: '#E6DFF0',
+                    boxShadow:
+                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                  },
                 },
                 disabled: {
-                  backgroundColor: '#E4E4E4',
-                  boxShadow: 'none',
+                  md: {
+                    backgroundColor: '#E4E4E4',
+                    boxShadow: 'none',
+                  },
                 },
               },
             },
           },
           outline: {
             base: {
-              borderWidth: '1px',
-              borderStyle: 'solid',
-              borderColor: '#79747E',
+              md: {
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: '#79747E',
+              },
             },
             variant: {
               primary: {
                 rest: {
-                  backgroundColor: '#FFFFFF',
+                  md: {
+                    backgroundColor: '#FFFFFF',
+                  },
                 },
                 hover: {
-                  backgroundColor: '#F3F1F8',
+                  md: {
+                    backgroundColor: '#F3F1F8',
+                  },
                 },
                 focus: {
-                  backgroundColor: '#ECEAF4',
-                  borderColor: '#6750A4',
+                  md: {
+                    backgroundColor: '#ECEAF4',
+                    borderColor: '#6750A4',
+                  },
                 },
                 pressed: {
-                  backgroundColor: '#ECEAF4',
+                  md: {
+                    backgroundColor: '#ECEAF4',
+                  },
                 },
                 disabled: {
-                  backgroundColor: '#FFFFFF',
-                  borderColor: '#1f1f1f1f',
+                  md: {
+                    backgroundColor: '#FFFFFF',
+                    borderColor: '#1f1f1f1f',
+                  },
                 },
               },
             },
@@ -138,19 +184,29 @@ export const materialTheme: KiskadeeSchema = {
             variant: {
               primary: {
                 rest: {
-                  backgroundColor: '#FFFFFF',
+                  md: {
+                    backgroundColor: '#FFFFFF',
+                  },
                 },
                 hover: {
-                  backgroundColor: '#F3F1F8',
+                  md: {
+                    backgroundColor: '#F3F1F8',
+                  },
                 },
                 focus: {
-                  backgroundColor: '#ECEAF4',
+                  md: {
+                    backgroundColor: '#ECEAF4',
+                  },
                 },
                 pressed: {
-                  backgroundColor: '#ECEAF4',
+                  md: {
+                    backgroundColor: '#ECEAF4',
+                  },
                 },
                 disabled: {
-                  backgroundColor: '#FFFFFF',
+                  md: {
+                    backgroundColor: '#FFFFFF',
+                  },
                 },
               },
             },
@@ -160,19 +216,23 @@ export const materialTheme: KiskadeeSchema = {
       leftIcon: {
         base: {
           rest: {
-            fontSize: 24,
-            paddingTop: 8,
-            paddingBottom: 8,
-            paddingLeft: 8,
-            paddingRight: 8,
+            md: {
+              fontSize: 24,
+              paddingTop: 8,
+              paddingBottom: 8,
+              paddingLeft: 8,
+              paddingRight: 8,
+            },
           },
         },
         type: {
           outline: {
             base: {
-              paddingTop: 7,
-              paddingBottom: 7,
-              paddingLeft: 7,
+              md: {
+                paddingTop: 7,
+                paddingBottom: 7,
+                paddingLeft: 7,
+              },
             },
           },
         },
@@ -180,15 +240,17 @@ export const materialTheme: KiskadeeSchema = {
       text: {
         base: {
           rest: {
-            fontSize: '0.875rem',
-            lineHeight: '20px',
-            fontWeight: 500,
-            fontFamily: 'Roboto',
-            fontStyle: 'normal',
-            paddingTop: 10,
-            paddingBottom: 10,
-            paddingLeft: 24,
-            paddingRight: 24,
+            md: {
+              fontSize: '0.875rem',
+              lineHeight: '20px',
+              fontWeight: 500,
+              fontFamily: 'Roboto',
+              fontStyle: 'normal',
+              paddingTop: 10,
+              paddingBottom: 10,
+              paddingLeft: 24,
+              paddingRight: 24,
+            },
           },
         },
         type: {
@@ -196,54 +258,74 @@ export const materialTheme: KiskadeeSchema = {
             variant: {
               primary: {
                 rest: {
-                  color: '#FFFFFF',
+                  md: {
+                    color: '#FFFFFF',
+                  },
                 },
                 disabled: {
-                  color: '#1b1a1e61',
+                  md: {
+                    color: '#1b1a1e61',
+                  },
                 },
               },
               secondary: {
                 rest: {
-                  color: '#1D192B',
+                  md: {
+                    color: '#1D192B',
+                  },
                 },
                 disabled: {
-                  color: '#1b1a1e61',
+                  md: {
+                    color: '#1b1a1e61',
+                  },
                 },
               },
               tertiary: {
                 rest: {
-                  color: '#6750A4',
+                  md: {
+                    color: '#6750A4',
+                  },
                 },
                 disabled: {
-                  color: '#1b1a1e61',
+                  md: {
+                    color: '#1b1a1e61',
+                  },
                 },
               },
             },
           },
           outline: {
             base: {
-              color: '#6750A4',
-              paddingTop: 9,
-              paddingBottom: 9,
-              paddingLeft: 23,
-              paddingRight: 23,
+              md: {
+                color: '#6750A4',
+                paddingTop: 9,
+                paddingBottom: 9,
+                paddingLeft: 23,
+                paddingRight: 23,
+              },
             },
             variant: {
               primary: {
                 disabled: {
-                  color: '#1b1a1e61',
+                  md: {
+                    color: '#1b1a1e61',
+                  },
                 },
               },
             },
           },
           flat: {
             base: {
-              color: '#6750A4',
+              md: {
+                color: '#6750A4',
+              },
             },
             variant: {
               primary: {
                 disabled: {
-                  color: '#1b1a1e61',
+                  md: {
+                    color: '#1b1a1e61',
+                  },
                 },
               },
             },
@@ -253,19 +335,23 @@ export const materialTheme: KiskadeeSchema = {
       rightIcon: {
         base: {
           rest: {
-            fontSize: 24,
-            paddingTop: 8,
-            paddingBottom: 8,
-            paddingLeft: 8,
-            paddingRight: 8,
+            md: {
+              fontSize: 24,
+              paddingTop: 8,
+              paddingBottom: 8,
+              paddingLeft: 8,
+              paddingRight: 8,
+            },
           },
         },
         type: {
           outline: {
             base: {
-              paddingTop: 7,
-              paddingBottom: 7,
-              paddingRight: 7,
+              md: {
+                paddingTop: 7,
+                paddingBottom: 7,
+                paddingRight: 7,
+              },
             },
           },
         },
