@@ -26,6 +26,11 @@ export const materialTheme: KiskadeeSchema = {
             leftDetached: true,
             rightDetached: true,
           },
+          size: {
+            md: true,
+            sm: true,
+            lg: true,
+          },
         },
         base: {
           focus: {
@@ -250,6 +255,12 @@ export const materialTheme: KiskadeeSchema = {
               paddingBottom: 10,
               paddingLeft: 24,
               paddingRight: 24,
+            },
+            sm: {
+              paddingTop: 6,
+              paddingBottom: 6,
+              paddingLeft: 16,
+              paddingRight: 16,
             },
           },
         },
