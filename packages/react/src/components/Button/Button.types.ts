@@ -123,44 +123,46 @@ type ButtonElementTextVariant = Partial<
 
 //------------------------------------------------------------------------------
 
+export interface ContainerOptions {
+  widthMin?: CSSProperties['minWidth'];
+  borderRadius?: {
+    default?: number;
+    full?: number;
+    rounded?: number;
+    none?: 0;
+  };
+  textAlign?: {
+    default?: 'left' | 'center' | 'right';
+    left?: true;
+    center?: true;
+    right?: true;
+  };
+  icon?: {
+    leftAttached?: true;
+    leftDetached?: true;
+    rightAttached?: true;
+    rightDetached?: true;
+  };
+  size?: Partial<Record<Exclude<Size, 'md'>, boolean>> & { md: true };
+  responsive?: {
+    smallScreenBP1?: Size; // 0-320px
+    smallScreenBP2?: Size; // 321-375px
+    smallScreenBP3?: Size; // 376-480px
+
+    mediumScreenBP1?: Size; // 481-640px
+    mediumScreenBP2?: Size; // 641-768px
+    mediumScreenBP3?: Size; // 769-1024px
+
+    bigScreenBP1?: Size; // 1025-1280px
+    bigScreenBP2?: Size; // 1281-1440px
+    bigScreenBP3?: Size; // 1441-1600px
+  };
+}
+
 export interface ButtonSchema {
   container?: {
     base?: ButtonElementContainerVariant;
-    option?: {
-      widthMin?: CSSProperties['minWidth'];
-      borderRadius?: {
-        default?: number;
-        full?: number;
-        rounded?: number;
-        none?: 0;
-      };
-      textAlign?: {
-        default?: 'left' | 'center' | 'right';
-        left?: true;
-        center?: true;
-        right?: true;
-      };
-      icon?: {
-        leftAttached?: true;
-        leftDetached?: true;
-        rightAttached?: true;
-        rightDetached?: true;
-      };
-      size?: Partial<Record<Exclude<Size, 'md'>, boolean>> & { md: true };
-      responsive?: {
-        smallScreenBP1?: Size; // 0-320px
-        smallScreenBP2?: Size; // 321-375px
-        smallScreenBP3?: Size; // 376-480px
-
-        mediumScreenBP1?: Size; // 481-640px
-        mediumScreenBP2?: Size; // 641-768px
-        mediumScreenBP3?: Size; // 769-1024px
-
-        bigScreenBP1?: Size; // 1025-1280px
-        bigScreenBP2?: Size; // 1281-1440px
-        bigScreenBP3?: Size; // 1441-1600px
-      };
-    };
+    option?: ContainerOptions;
     type?: Partial<
       Record<
         ButtonType,

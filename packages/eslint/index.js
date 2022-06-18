@@ -3,6 +3,19 @@ const commonRules = {
   'import/prefer-default-export': 'off',
   'unicorn/no-useless-undefined': 'off',
 
+  'no-underscore-dangle': [
+    'error',
+    {
+      allow: [],
+      allowAfterThis: true,
+      allowAfterSuper: false,
+      enforceInMethodNames: true,
+      allowAfterThisConstructor: false,
+      allowFunctionParams: true,
+      enforceInClassFields: false,
+    },
+  ],
+
   //----------------------------------------------------------------------------
   // UNUSED IMPORTS
   //----------------------------------------------------------------------------

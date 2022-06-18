@@ -1,17 +1,9 @@
 import type { FC } from 'react';
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import type { ButtonProps } from './Button.types';
 import { KiskadeeContext } from '../../context';
 import { ButtonStyled, elementText } from './Button.style';
-import {
-  elementContainer,
-  elementContainerCoreBackgroundColor,
-  elementContainerCoreBase,
-  elementContainerCoreBorder,
-  elementContainerOptionBorderRadius,
-  elementContainerOptionTextAlign,
-  elementContainerOptionWidth,
-} from './elements/01_container';
+import { ElementContainer } from './elements/01_container';
 
 export const ButtonOld: FC<ButtonProps> = ({
   text,
@@ -93,17 +85,19 @@ export const Button: FC<ButtonProps> = ({
   const classeName = ['button'];
   if (interaction) classeName.push(`--${interaction}`);
 
+  const styleButton = useMemo(() => new ElementContainer(style), [style]);
+
   return (
     <button
       className={[
         ...classeName,
-        elementContainer(style),
-        elementContainerCoreBackgroundColor(style),
-        elementContainerOptionWidth(style),
-        elementContainerOptionBorderRadius(style),
-        elementContainerOptionTextAlign(style),
-        elementContainerCoreBorder(style),
-        elementContainerCoreBase(),
+        styleButton.width(),
+        styleButton.radius(),
+        styleButton.textAlign(),
+        styleButton.border(),
+        styleButton.background(),
+        styleButton.core(),
+        styleButton.base(),
       ]
         .join(' ')
         .trim()}

@@ -1,6 +1,12 @@
 /* eslint-disable unicorn/filename-case */
 import { css } from '@stitches/core';
-import type { ButtonProps, ButtonSchema, Size } from '../Button.types';
+import type { CSSProperties } from 'react';
+import type {
+  ButtonProps,
+  ButtonSchema,
+  Size,
+  ContainerOptions,
+} from '../Button.types';
 
 const timingFunction = 'ease';
 const duration = '0.2s';
@@ -19,189 +25,175 @@ type ElementContainerProps = {
   textAlign?: ButtonProps['textAlign'];
 };
 
-export const elementContainer = ({
-  theme,
-  size,
-  typeStyle,
-  variant,
-}: ElementContainerProps) => {
-  const { container } = theme || {};
+export class ElementContainer {
+  private readonly size: ElementContainerProps['size'];
 
-  const containerStyle = {
-    ...container?.base?.rest?.md,
-    ...container?.base?.rest?.[size],
-    ...container?.type?.[typeStyle]?.base?.md,
-    ...container?.type?.[typeStyle]?.base?.[size],
-    ...container?.type?.[typeStyle]?.variant?.[variant]?.rest?.md,
-    ...container?.type?.[typeStyle]?.variant?.[variant]?.rest?.[size],
-  };
+  private readonly typeStyle: ElementContainerProps['typeStyle'];
 
-  // Hover ---------------------------------------------------------------------
+  private readonly variant: ElementContainerProps['variant'];
 
-  const elementContainerHover = {
-    ...container?.base?.hover?.md,
-    ...container?.type?.[typeStyle]?.variant?.[variant]?.hover?.md,
-  };
+  private readonly _width: ElementContainerProps['width'];
 
-  // Pressed -------------------------------------------------------------------
+  private readonly options: ContainerOptions | undefined;
 
-  const elementContainerPressed = {
-    ...container?.base?.pressed?.md,
-    ...container?.type?.[typeStyle]?.variant?.[variant]?.pressed?.md,
-  };
+  private readonly borderRadius: ElementContainerProps['borderRadius'];
 
-  // Focus ---------------------------------------------------------------------
+  private readonly _textAlign: ButtonProps['textAlign'];
 
-  const elementContainerFocus = {
-    ...container?.base?.focus?.md,
-    ...container?.type?.[typeStyle]?.variant?.[variant]?.focus?.md,
-  };
+  private readonly theme: ButtonSchema | undefined;
 
-  // Visited -------------------------------------------------------------------
+  private readonly baseStyle: CSSProperties;
 
-  const elementContainerVisited = {
-    ...container?.base?.visited?.md,
-    ...container?.type?.[typeStyle]?.variant?.[variant]?.visited?.md,
-  };
+  private readonly containerStyle: CSSProperties;
 
-  // Disabled ------------------------------------------------------------------
+  constructor(style: ElementContainerProps) {
+    this.size = style.size;
+    this.typeStyle = style.typeStyle;
+    this.variant = style.variant;
+    this.borderRadius = style.borderRadius;
+    this.theme = style.theme;
+    this._textAlign = style.textAlign;
+    this._width = style.width;
+    this.options = style.theme?.container?.option;
+    this.baseStyle = {
+      padding: 0,
+      cursor: 'pointer',
+      fontSize: '16px',
+      transitionProperty:
+        'box-shadow, border-color, background, padding, min-width, border-radius',
+      transitionDuration: duration,
+      transitionTimingFunction: timingFunction,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    };
+    this.containerStyle = {
+      ...this.theme?.container?.base?.rest?.[this.size],
+      ...this.theme?.container?.base?.rest?.[this.size],
+      ...this.theme?.container?.type?.[this.typeStyle]?.base?.[this.size],
+      ...this.theme?.container?.type?.[this.typeStyle]?.base?.[this.size],
+      ...this.theme?.container?.type?.[this.typeStyle]?.variant?.[this.variant]
+        ?.rest?.[this.size],
+      ...this.theme?.container?.type?.[this.typeStyle]?.variant?.[this.variant]
+        ?.rest?.[this.size],
+    };
+  }
 
-  const elementContainerDisabled = {
-    ...container?.base?.disabled?.md,
-    ...container?.type?.[typeStyle]?.variant?.[variant]?.disabled?.md,
-  };
+  width() {
+    return css({
+      width: this._width === 'block' ? '100%' : 'auto',
+      minWidth: this._width === 'min' ? this.options?.widthMin : 0,
+    })();
+  }
 
-  delete containerStyle.backgroundColor;
-  delete containerStyle.borderColor;
-  delete containerStyle.borderWidth;
-  delete containerStyle.borderStyle;
+  radius() {
+    return css({
+      borderRadius: this.options?.borderRadius?.[this.borderRadius] || 0,
+    })();
+  }
 
-  return css({
-    ...containerStyle,
-    '&:hover, &.--hover': {
-      ...elementContainerHover,
-    },
+  textAlign() {
+    return css({
+      textAlign:
+        this._textAlign && this.options?.textAlign?.[this._textAlign]
+          ? this._textAlign
+          : this.options?.textAlign?.default,
+    })();
+  }
 
-    // PRESSED
-    '&:active, &.--pressed': {
-      ...elementContainerPressed,
-    },
+  background() {
+    return css({
+      backgroundColor: this.containerStyle?.backgroundColor,
+    })();
+  }
 
-    // FOCUS
-    '&:focus-visible, &.--focus': {
-      ...elementContainerFocus,
-    },
+  border() {
+    return css({
+      border: this.containerStyle?.borderWidth ? undefined : 'none',
+      borderColor: this.containerStyle?.borderColor,
+      borderStyle: this.containerStyle?.borderStyle,
+      borderWidth: this.containerStyle?.borderWidth,
+    })();
+  }
 
-    // VISITED
-    '&:visited, &.--visited': {
-      ...elementContainerVisited,
-    },
+  base() {
+    return css(this.baseStyle as Record<string, string>)();
+  }
 
-    // DISABLED
-    '&:disabled, &--disabled': {
-      ...elementContainerDisabled,
-    },
-  })();
-};
+  core() {
+    // Hover ---------------------------------------------------------------------
 
-export const elementContainerOptionWidth = ({
-  theme,
-  width,
-}: ElementContainerProps) => {
-  const { container } = theme || {};
-  const { option } = container || {};
+    const elementContainerHover = {
+      ...this.theme?.container?.base?.hover?.[this.size],
+      ...this.theme?.container?.type?.[this.typeStyle]?.variant?.[this.variant]
+        ?.hover?.[this.size],
+    };
 
-  return css({
-    width: width === 'block' ? '100%' : 'auto',
-    minWidth: width === 'min' ? option?.widthMin : 0,
-  })();
-};
+    // Pressed -------------------------------------------------------------------
 
-export const elementContainerOptionBorderRadius = ({
-  theme,
-  borderRadius,
-}: ElementContainerProps) => {
-  const { container } = theme || {};
-  const { option } = container || {};
+    const elementContainerPressed = {
+      ...this.theme?.container?.base?.pressed?.[this.size],
+      ...this.theme?.container?.type?.[this.typeStyle]?.variant?.[this.variant]
+        ?.pressed?.[this.size],
+    };
 
-  return css({
-    borderRadius: option?.borderRadius?.[borderRadius] || 0,
-  })();
-};
+    // Focus ---------------------------------------------------------------------
 
-export const elementContainerOptionTextAlign = ({
-  theme,
-  textAlign,
-}: ElementContainerProps) => {
-  const { container } = theme || {};
-  const { option } = container || {};
+    const elementContainerFocus = {
+      ...this.theme?.container?.base?.focus?.[this.size],
+      ...this.theme?.container?.type?.[this.typeStyle]?.variant?.[this.variant]
+        ?.focus?.[this.size],
+    };
 
-  return css({
-    textAlign:
-      textAlign && option?.textAlign?.[textAlign]
-        ? textAlign
-        : option?.textAlign?.default,
-  })();
-};
+    // Visited -------------------------------------------------------------------
 
-export const elementContainerCoreBackgroundColor = ({
-  theme,
-  size,
-  typeStyle,
-  variant,
-}: ElementContainerProps) => {
-  const { container } = theme || {};
+    const elementContainerVisited = {
+      ...this.theme?.container?.base?.visited?.[this.size],
+      ...this.theme?.container?.type?.[this.typeStyle]?.variant?.[this.variant]
+        ?.visited?.[this.size],
+    };
 
-  const containerStyle = {
-    ...container?.base?.rest?.md,
-    ...container?.base?.rest?.[size],
-    ...container?.type?.[typeStyle]?.base?.md,
-    ...container?.type?.[typeStyle]?.base?.[size],
-    ...container?.type?.[typeStyle]?.variant?.[variant]?.rest?.md,
-    ...container?.type?.[typeStyle]?.variant?.[variant]?.rest?.[size],
-  };
+    // Disabled ------------------------------------------------------------------
 
-  return css({
-    backgroundColor: containerStyle?.backgroundColor,
-  })();
-};
+    const elementContainerDisabled = {
+      ...this.theme?.container?.base?.disabled?.[this.size],
+      ...this.theme?.container?.type?.[this.typeStyle]?.variant?.[this.variant]
+        ?.disabled?.[this.size],
+    };
 
-export const elementContainerCoreBorder = ({
-  theme,
-  size,
-  typeStyle,
-  variant,
-}: ElementContainerProps) => {
-  const { container } = theme || {};
+    const x = { ...this.containerStyle };
 
-  const containerStyle = {
-    ...container?.base?.rest?.md,
-    ...container?.base?.rest?.[size],
-    ...container?.type?.[typeStyle]?.base?.md,
-    ...container?.type?.[typeStyle]?.base?.[size],
-    ...container?.type?.[typeStyle]?.variant?.[variant]?.rest?.md,
-    ...container?.type?.[typeStyle]?.variant?.[variant]?.rest?.[size],
-  };
+    delete x.backgroundColor;
+    delete x.borderColor;
+    delete x.borderWidth;
+    delete x.borderStyle;
 
-  return css({
-    border: containerStyle?.borderWidth ? undefined : 'none',
-    borderColor: containerStyle?.borderColor,
-    borderStyle: containerStyle?.borderStyle,
-    borderWidth: containerStyle?.borderWidth,
-  })();
-};
+    return css({
+      ...x,
 
-export const elementContainerCoreBase = () => {
-  return css({
-    padding: 0,
-    cursor: 'pointer',
-    fontSize: '16px',
-    transitionProperty:
-      'box-shadow, border-color, background, padding, min-width, border-radius',
-    transitionDuration: duration,
-    transitionTimingFunction: timingFunction,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  })();
-};
+      '&:hover, &.--hover': {
+        ...elementContainerHover,
+      },
+
+      // PRESSED
+      '&:active, &.--pressed': {
+        ...elementContainerPressed,
+      },
+
+      // FOCUS
+      '&:focus-visible, &.--focus': {
+        ...elementContainerFocus,
+      },
+
+      // VISITED
+      '&:visited, &.--visited': {
+        ...elementContainerVisited,
+      },
+
+      // DISABLED
+      '&:disabled, &--disabled': {
+        ...elementContainerDisabled,
+      },
+    })();
+  }
+}
