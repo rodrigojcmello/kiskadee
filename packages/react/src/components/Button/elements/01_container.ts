@@ -36,6 +36,41 @@ export const elementContainer = ({
     ...container?.type?.[typeStyle]?.variant?.[variant]?.rest?.[size],
   };
 
+  // Hover ---------------------------------------------------------------------
+
+  const elementContainerHover = {
+    ...container?.base?.hover?.md,
+    ...container?.type?.[typeStyle]?.variant?.[variant]?.hover?.md,
+  };
+
+  // Pressed -------------------------------------------------------------------
+
+  const elementContainerPressed = {
+    ...container?.base?.pressed?.md,
+    ...container?.type?.[typeStyle]?.variant?.[variant]?.pressed?.md,
+  };
+
+  // Focus ---------------------------------------------------------------------
+
+  const elementContainerFocus = {
+    ...container?.base?.focus?.md,
+    ...container?.type?.[typeStyle]?.variant?.[variant]?.focus?.md,
+  };
+
+  // Visited -------------------------------------------------------------------
+
+  const elementContainerVisited = {
+    ...container?.base?.visited?.md,
+    ...container?.type?.[typeStyle]?.variant?.[variant]?.visited?.md,
+  };
+
+  // Disabled ------------------------------------------------------------------
+
+  const elementContainerDisabled = {
+    ...container?.base?.disabled?.md,
+    ...container?.type?.[typeStyle]?.variant?.[variant]?.disabled?.md,
+  };
+
   delete containerStyle.backgroundColor;
   delete containerStyle.borderColor;
   delete containerStyle.borderWidth;
@@ -43,6 +78,29 @@ export const elementContainer = ({
 
   return css({
     ...containerStyle,
+    '&:hover, &.--hover': {
+      ...elementContainerHover,
+    },
+
+    // PRESSED
+    '&:active, &.--pressed': {
+      ...elementContainerPressed,
+    },
+
+    // FOCUS
+    '&:focus-visible, &.--focus': {
+      ...elementContainerFocus,
+    },
+
+    // VISITED
+    '&:visited, &.--visited': {
+      ...elementContainerVisited,
+    },
+
+    // DISABLED
+    '&:disabled, &--disabled': {
+      ...elementContainerDisabled,
+    },
   })();
 };
 

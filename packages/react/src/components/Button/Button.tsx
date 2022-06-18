@@ -90,9 +90,13 @@ export const Button: FC<ButtonProps> = ({
     width,
   };
 
+  const classeName = ['button'];
+  if (interaction) classeName.push(`--${interaction}`);
+
   return (
     <button
       className={[
+        ...classeName,
         elementContainer(style),
         elementContainerCoreBackgroundColor(style),
         elementContainerOptionWidth(style),
