@@ -1,9 +1,54 @@
 import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
+import { css } from '@stitches/core';
 import type { ButtonProps, ButtonSchema, Size } from './Button.types';
 
 const timingFunction = 'ease';
 const duration = '0.2s';
+
+type ElementProps = {
+  size: Size;
+  typeStyle: ButtonProps['type'];
+  variant: ButtonProps['variant'];
+  borderRadius: Exclude<ButtonProps['borderRadius'], undefined>;
+
+  theme?: ButtonSchema;
+  iconLeft?: ButtonProps['iconLeft'];
+  iconRight?: ButtonProps['iconRight'];
+  iconType?: ButtonProps['iconType'];
+  width?: ButtonProps['width'];
+  textAlign?: ButtonProps['textAlign'];
+};
+
+export const elementText = ({
+  theme,
+  size,
+  typeStyle,
+  variant,
+  iconLeft,
+  iconRight,
+  iconType,
+}: ElementProps) => {
+  const { text } = theme || {};
+
+  return css({
+    // Custom
+    ...text?.base?.rest?.md,
+    ...text?.base?.rest?.[size],
+    ...text?.type?.[typeStyle]?.base?.md,
+    ...text?.type?.[typeStyle]?.base?.[size],
+    ...text?.type?.[typeStyle]?.variant?.[variant]?.rest?.md,
+    ...text?.type?.[typeStyle]?.variant?.[variant]?.rest?.[size],
+
+    // Base
+    width:
+      iconType === 'detached' || !(iconLeft || iconRight) ? '100%' : 'auto',
+    whiteSpace: 'nowrap',
+    transitionProperty: 'color, font-size, padding',
+    transitionDuration: duration,
+    transitionTimingFunction: timingFunction,
+  })();
+};
 
 export const ButtonStyled = styled.button<
   Pick<

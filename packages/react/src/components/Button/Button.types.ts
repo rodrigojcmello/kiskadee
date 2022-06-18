@@ -55,7 +55,7 @@ export interface ButtonProps {
 // Container
 
 type ButtonElementContainer = {
-  // Style
+  // Core Style
   background?: 'none';
   backgroundColor?: CSSProperties['backgroundColor'];
   borderWidth?: CSSProperties['borderWidth'];
