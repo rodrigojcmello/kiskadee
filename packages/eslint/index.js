@@ -16,6 +16,15 @@ const commonRules = {
     },
   ],
 
+  /**
+   * Prettier follows double quotes by default, but the Airbnb style guide
+   * recommends single quotes
+   * @see {@link https://github.com/airbnb/javascript#strings--quotes}
+   * @see {@link https://prettier.io/docs/en/options.html#quotes}
+   * @see {@link https://github.com/prettier/eslint-plugin-prettier#options}
+   */
+  'prettier/prettier': ['error', { singleQuote: true, printWidth: 120 }],
+
   //----------------------------------------------------------------------------
   // UNUSED IMPORTS
   //----------------------------------------------------------------------------
@@ -60,15 +69,6 @@ module.exports = {
     //--------------------------------------------------------------------------
     // CONFLICTS
     //--------------------------------------------------------------------------
-
-    /**
-     * Prettier follows double quotes by default, but the Airbnb style guide
-     * recommends single quotes
-     * @see {@link https://github.com/airbnb/javascript#strings--quotes}
-     * @see {@link https://prettier.io/docs/en/options.html#quotes}
-     * @see {@link https://github.com/prettier/eslint-plugin-prettier#options}
-     */
-    'prettier/prettier': ['error', { singleQuote: true }],
 
     // /**
     //  * Allow Function Expression

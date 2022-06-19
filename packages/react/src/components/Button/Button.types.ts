@@ -2,32 +2,11 @@ import type { CSSProperties, ReactElement } from 'react';
 
 export type ButtonType = 'contained' | 'outline' | 'flat';
 
-export type ButtonVariant =
-  | 'primary'
-  | 'secondary'
-  | 'tertiary'
-  | 'success'
-  | 'warning'
-  | 'danger';
+export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'success' | 'warning' | 'danger';
 
-export type InteractionState =
-  | 'rest'
-  | 'hover'
-  | 'focus'
-  | 'pressed'
-  | 'visited'
-  | 'disabled';
+export type InteractionState = 'rest' | 'hover' | 'focus' | 'pressed' | 'visited' | 'disabled';
 
-export type Size =
-  | 'xxxl'
-  | 'xxl'
-  | 'xl'
-  | 'lg'
-  | 'md'
-  | 'sm'
-  | 'xs'
-  | 'xxs'
-  | 'xxxs';
+export type Size = 'xxxl' | 'xxl' | 'xl' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs' | 'xxxs';
 
 export interface ButtonProps {
   text: string;
@@ -108,17 +87,11 @@ export interface ButtonElementText {
 // States e Sizes
 //------------------------------------------------------------------------------
 
-type ButtonElementContainerVariant = Partial<
-  Record<InteractionState, Partial<Record<Size, ButtonElementContainer>>>
->;
+type ButtonElementContainerVariant = Partial<Record<InteractionState, Partial<Record<Size, ButtonElementContainer>>>>;
 
-type ButtonElementIconVariant = Partial<
-  Record<InteractionState, Partial<Record<Size, ButtonElementIcon>>>
->;
+type ButtonElementIconVariant = Partial<Record<InteractionState, Partial<Record<Size, ButtonElementIcon>>>>;
 
-type ButtonElementTextVariant = Partial<
-  Record<InteractionState, Partial<Record<Size, ButtonElementText>>>
->;
+type ButtonElementTextVariant = Partial<Record<InteractionState, Partial<Record<Size, ButtonElementText>>>>;
 
 //------------------------------------------------------------------------------
 
@@ -158,6 +131,19 @@ export interface ContainerOptions {
   };
 }
 
+type ButtonIcon = {
+  base?: ButtonElementIconVariant;
+  type?: Partial<
+    Record<
+      ButtonType,
+      {
+        base?: Partial<Record<Size, ButtonElementIcon>>;
+        variant?: Partial<Record<ButtonVariant, ButtonElementIconVariant>>;
+      }
+    >
+  >;
+};
+
 export interface ButtonSchema {
   container?: {
     base?: ButtonElementContainerVariant;
@@ -167,37 +153,15 @@ export interface ButtonSchema {
         ButtonType,
         {
           base?: Partial<Record<Size, ButtonElementContainer>>;
-          variant?: Partial<
-            Record<ButtonVariant, ButtonElementContainerVariant>
-          >;
+          variant?: Partial<Record<ButtonVariant, ButtonElementContainerVariant>>;
         }
       >
     >;
   };
-  leftIconAttached?: {
-    base?: ButtonElementIconVariant;
-    type?: Partial<
-      Record<
-        ButtonType,
-        {
-          base?: Partial<Record<Size, ButtonElementIcon>>;
-          variant?: Partial<Record<ButtonVariant, ButtonElementIconVariant>>;
-        }
-      >
-    >;
-  };
-  leftIconDetached?: {
-    base?: ButtonElementIconVariant;
-    type?: Partial<
-      Record<
-        ButtonType,
-        {
-          base?: Partial<Record<Size, ButtonElementIcon>>;
-          variant?: Partial<Record<ButtonVariant, ButtonElementIconVariant>>;
-        }
-      >
-    >;
-  };
+  leftIconAttached?: ButtonIcon;
+  leftIconDetached?: ButtonIcon;
+  rightIconAttached?: ButtonIcon;
+  rightIconDetached?: ButtonIcon;
   text?: {
     base?: ButtonElementTextVariant;
     type?: Partial<
@@ -210,24 +174,4 @@ export interface ButtonSchema {
       >
     >;
   };
-  // rightIcon?: {
-  //   base?: ButtonElementIconVariant;
-  //   type?: Partial<
-  //     Record<
-  //       ButtonType,
-  //       {
-  //         base?: Partial<Record<Size, ButtonElementIcon>>;
-  //         variant?: Partial<
-  //           Record<
-  //             ButtonVariant,
-  //             {
-  //               attached?: ButtonElementIconVariant;
-  //               detached?: ButtonElementIconVariant;
-  //             }
-  //           >
-  //         >;
-  //       }
-  //     >
-  //   >;
-  // };
 }

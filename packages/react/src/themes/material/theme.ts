@@ -56,8 +56,7 @@ export const materialTheme: KiskadeeSchema = {
                 hover: {
                   md: {
                     backgroundColor: '#735EAB',
-                    boxShadow:
-                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                   },
                 },
                 focus: {
@@ -86,8 +85,7 @@ export const materialTheme: KiskadeeSchema = {
                 hover: {
                   md: {
                     backgroundColor: '#D8CEE8',
-                    boxShadow:
-                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                   },
                 },
                 focus: {
@@ -111,29 +109,25 @@ export const materialTheme: KiskadeeSchema = {
                 rest: {
                   md: {
                     backgroundColor: '#F7F2FA',
-                    boxShadow:
-                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                   },
                 },
                 hover: {
                   md: {
                     backgroundColor: '#E8E0F0',
-                    boxShadow:
-                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15)',
+                    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15)',
                   },
                 },
                 focus: {
                   md: {
                     backgroundColor: '#E6DFF0',
-                    boxShadow:
-                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                   },
                 },
                 pressed: {
                   md: {
                     backgroundColor: '#E6DFF0',
-                    boxShadow:
-                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                   },
                 },
                 disabled: {
@@ -243,6 +237,57 @@ export const materialTheme: KiskadeeSchema = {
         },
       },
       leftIconDetached: {
+        base: {
+          rest: {
+            md: {
+              fontSize: 24,
+              paddingTop: 8,
+              paddingBottom: 8,
+              paddingLeft: 8,
+              paddingRight: 8,
+            },
+            sm: {
+              fontSize: 16,
+            },
+          },
+        },
+        type: {
+          outline: {
+            base: {
+              md: {
+                paddingTop: 7,
+                paddingBottom: 7,
+                paddingLeft: 7,
+              },
+            },
+          },
+        },
+      },
+      rightIconAttached: {
+        base: {
+          rest: {
+            md: {
+              fontSize: 24,
+              paddingTop: 8,
+              paddingBottom: 8,
+              paddingLeft: 8,
+              paddingRight: 8,
+            },
+          },
+        },
+        type: {
+          outline: {
+            base: {
+              md: {
+                paddingTop: 7,
+                paddingBottom: 7,
+                paddingLeft: 7,
+              },
+            },
+          },
+        },
+      },
+      rightIconDetached: {
         base: {
           rest: {
             md: {
@@ -367,30 +412,6 @@ export const materialTheme: KiskadeeSchema = {
           },
         },
       },
-      // rightIcon: {
-      //   base: {
-      //     rest: {
-      //       md: {
-      //         fontSize: 24,
-      //         paddingTop: 8,
-      //         paddingBottom: 8,
-      //         paddingLeft: 8,
-      //         paddingRight: 8,
-      //       },
-      //     },
-      //   },
-      //   type: {
-      //     outline: {
-      //       base: {
-      //         md: {
-      //           paddingTop: 7,
-      //           paddingBottom: 7,
-      //           paddingRight: 7,
-      //         },
-      //       },
-      //     },
-      //   },
-      // },
     },
   },
 };

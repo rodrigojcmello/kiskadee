@@ -110,7 +110,7 @@ export const Button: FC<ButtonProps> = ({
         <div
           className={[
             'button__icon-left',
-            button.iconLeft.base,
+            button.icon.base,
             button.iconLeft.color,
             button.iconLeft.size,
             button.iconLeft.padding,
@@ -137,6 +137,22 @@ export const Button: FC<ButtonProps> = ({
       >
         {text}
       </span>
+      {iconRight && (
+        <div
+          className={[
+            'button__icon-right',
+            button.icon.base,
+            button.iconRight.color,
+            button.iconRight.size,
+            button.iconRight.padding,
+            button.common.transition,
+          ]
+            .join(' ')
+            .trim()}
+        >
+          {iconRight}
+        </div>
+      )}
     </button>
   );
 };
