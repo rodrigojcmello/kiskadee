@@ -1,4 +1,4 @@
-/* eslint-disable unicorn/filename-case */
+/* eslint-disable unicorn/filename-case,class-methods-use-this */
 import { css } from '@stitches/core';
 import type { CSSProperties } from 'react';
 import type {
@@ -65,6 +65,22 @@ export class ElementContainer {
     this._iconType = style.iconType;
   }
 
+  //----------------------------------------------------------------------------
+  // Container Element
+  //----------------------------------------------------------------------------
+
+  get container() {
+    return {
+      border: this.containerBorder(),
+      background: this.containerBackground(),
+      textAlign: this.containerTextAlign(),
+      radius: this.containerRadius(),
+      width: this.containerWidth(),
+      core: this.containerCore(),
+      base: this.containerBase(),
+    };
+  }
+
   private containerWidth() {
     return css({
       width: this._width === 'block' ? '100%' : 'auto',
@@ -106,28 +122,6 @@ export class ElementContainer {
     })();
   }
 
-  get container() {
-    return {
-      border: this.containerBorder(),
-      background: this.containerBackground(),
-      textAlign: this.containerTextAlign(),
-      radius: this.containerRadius(),
-      width: this.containerWidth(),
-      core: this.containerCore(),
-      base: this.containerBase(),
-    };
-  }
-
-  get text() {
-    return {
-      base: this.textBase(),
-      core: css({
-        ...this.getStyle<ButtonElementText>('text'),
-      })(),
-    };
-  }
-
-  // eslint-disable-next-line class-methods-use-this
   private containerBase() {
     return css({
       padding: 0,
@@ -141,45 +135,6 @@ export class ElementContainer {
       alignItems: 'center',
       justifyContent: 'center',
     })();
-  }
-
-  private textBase() {
-    return css({
-      width:
-        this._iconType === 'detached' || !(this._iconLeft || this._iconRight)
-          ? '100%'
-          : 'auto',
-      whiteSpace: 'nowrap',
-      transitionProperty: 'color, font-size, padding',
-      transitionDuration: duration,
-      transitionTimingFunction: timingFunction,
-    })();
-  }
-
-  private getStateStyle(element: keyof ButtonSchema, state: InteractionState) {
-    return {
-      ...this._theme?.[element]?.base?.[state]?.[this._size],
-      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[
-        this._variant
-      ]?.[state]?.[this._size],
-    };
-  }
-
-  private getStyle<T extends CSSProperties>(
-    element: keyof ButtonSchema
-  ): T | Record<string, never> {
-    return {
-      ...this._theme?.[element]?.base?.rest?.md,
-      ...this._theme?.[element]?.base?.rest?.[this._size],
-      ...this._theme?.[element]?.type?.[this._typeStyle]?.base?.md,
-      ...this._theme?.[element]?.type?.[this._typeStyle]?.base?.[this._size],
-      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[
-        this._variant
-      ]?.rest?.md,
-      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[
-        this._variant
-      ]?.rest?.[this._size],
-    } as T;
   }
 
   private containerCore() {
@@ -235,5 +190,61 @@ export class ElementContainer {
         },
       },
     })();
+  }
+
+  //----------------------------------------------------------------------------
+  // Text Element
+  //----------------------------------------------------------------------------
+
+  get text() {
+    return {
+      base: this.textBase(),
+      core: css({
+        ...this.getStyle<ButtonElementText>('text'),
+      })(),
+    };
+  }
+
+  private textBase() {
+    return css({
+      width:
+        this._iconType === 'detached' || !(this._iconLeft || this._iconRight)
+          ? '100%'
+          : 'auto',
+      whiteSpace: 'nowrap',
+      transitionProperty: 'color, font-size, padding',
+      transitionDuration: duration,
+      transitionTimingFunction: timingFunction,
+    })();
+  }
+
+  //------------------------------------------------------------------------
+  // Helper
+  //------------------------------------------------------------------------
+
+  private getStateStyle(element: keyof ButtonSchema, state: InteractionState) {
+    return {
+      ...this._theme?.[element]?.base?.[state]?.[this._size],
+      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[
+        this._variant
+      ]?.[state]?.[this._size],
+    };
+  }
+
+  private getStyle<T extends CSSProperties>(
+    element: keyof ButtonSchema
+  ): T | Record<string, never> {
+    return {
+      ...this._theme?.[element]?.base?.rest?.md,
+      ...this._theme?.[element]?.base?.rest?.[this._size],
+      ...this._theme?.[element]?.type?.[this._typeStyle]?.base?.md,
+      ...this._theme?.[element]?.type?.[this._typeStyle]?.base?.[this._size],
+      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[
+        this._variant
+      ]?.rest?.md,
+      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[
+        this._variant
+      ]?.rest?.[this._size],
+    } as T;
   }
 }
