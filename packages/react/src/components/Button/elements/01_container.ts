@@ -199,9 +199,9 @@ export class ElementContainer {
   get text() {
     return {
       base: this.textBase(),
-      core: css({
-        ...this.getStyle<ButtonElementText>('text'),
-      })(),
+      core: this.textCore(),
+      color: this.textColor(),
+      padding: this.textPadding(),
     };
   }
 
@@ -215,6 +215,39 @@ export class ElementContainer {
       transitionProperty: 'color, font-size, padding',
       transitionDuration: duration,
       transitionTimingFunction: timingFunction,
+    })();
+  }
+
+  private textCore() {
+    const textStyle = { ...this.getStyle<ButtonElementText>('text') };
+
+    delete textStyle.color;
+    delete textStyle.paddingBottom;
+    delete textStyle.paddingTop;
+    delete textStyle.paddingLeft;
+    delete textStyle.paddingRight;
+
+    return css({
+      ...textStyle,
+    });
+  }
+
+  private textColor() {
+    const textStyle = this.getStyle<ButtonElementText>('text');
+
+    return css({
+      color: textStyle?.color,
+    })();
+  }
+
+  private textPadding() {
+    const textStyle = this.getStyle<ButtonElementText>('text');
+
+    return css({
+      paddingTop: textStyle?.paddingTop,
+      paddingBottom: textStyle?.paddingBottom,
+      paddingLeft: textStyle?.paddingLeft,
+      paddingRight: textStyle?.paddingRight,
     })();
   }
 

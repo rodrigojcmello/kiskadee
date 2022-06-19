@@ -106,7 +106,13 @@ export const Button: FC<ButtonProps> = ({
       disabled={disabled}
     >
       <span
-        className={['button__text', button.text.core, button.text.base]
+        className={[
+          'button__text',
+          button.text.core,
+          button.text.base,
+          button.text.color,
+          button.text.padding,
+        ]
           .join(' ')
           .trim()}
       >
