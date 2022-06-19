@@ -54,7 +54,7 @@ export interface ButtonProps {
 
 // Container
 
-type ButtonElementContainer = {
+export type ButtonElementContainer = {
   // Core Style
   background?: 'none';
   backgroundColor?: CSSProperties['backgroundColor'];
@@ -89,7 +89,7 @@ interface ButtonElementIcon {
 
 // Text
 
-interface ButtonElementText {
+export interface ButtonElementText {
   // Style
   fontFamily?: CSSProperties['fontFamily'];
   fontStyle?: CSSProperties['fontStyle'];
@@ -99,10 +99,10 @@ interface ButtonElementText {
   // Sizing
   fontSize?: CSSProperties['fontSize'];
   lineHeight?: CSSProperties['lineHeight'];
-  paddingTop?: number;
-  paddingRight?: number;
-  paddingBottom?: number;
-  paddingLeft?: number;
+  paddingTop?: CSSProperties['paddingTop'];
+  paddingRight?: CSSProperties['paddingRight'];
+  paddingBottom?: CSSProperties['paddingBottom'];
+  paddingLeft?: CSSProperties['paddingLeft'];
 }
 
 //------------------------------------------------------------------------------
@@ -175,26 +175,26 @@ export interface ButtonSchema {
       >
     >;
   };
-  leftIcon?: {
-    base?: ButtonElementIconVariant;
-    type?: Partial<
-      Record<
-        ButtonType,
-        {
-          base?: Partial<Record<Size, ButtonElementIcon>>;
-          variant?: Partial<
-            Record<
-              ButtonVariant,
-              {
-                attached?: ButtonElementIconVariant;
-                detached?: ButtonElementIconVariant;
-              }
-            >
-          >;
-        }
-      >
-    >;
-  };
+  // leftIcon?: {
+  //   base?: ButtonElementIconVariant;
+  //   type?: Partial<
+  //     Record<
+  //       ButtonType,
+  //       {
+  //         base?: Partial<Record<Size, ButtonElementIcon>>;
+  //         variant?: Partial<
+  //           Record<
+  //             ButtonVariant,
+  //             {
+  //               attached?: ButtonElementIconVariant;
+  //               detached?: ButtonElementIconVariant;
+  //             }
+  //           >
+  //         >;
+  //       }
+  //     >
+  //   >;
+  // };
   text?: {
     base?: ButtonElementTextVariant;
     type?: Partial<
@@ -207,24 +207,24 @@ export interface ButtonSchema {
       >
     >;
   };
-  rightIcon?: {
-    base?: ButtonElementIconVariant;
-    type?: Partial<
-      Record<
-        ButtonType,
-        {
-          base?: Partial<Record<Size, ButtonElementIcon>>;
-          variant?: Partial<
-            Record<
-              ButtonVariant,
-              {
-                attached?: ButtonElementIconVariant;
-                detached?: ButtonElementIconVariant;
-              }
-            >
-          >;
-        }
-      >
-    >;
-  };
+  // rightIcon?: {
+  //   base?: ButtonElementIconVariant;
+  //   type?: Partial<
+  //     Record<
+  //       ButtonType,
+  //       {
+  //         base?: Partial<Record<Size, ButtonElementIcon>>;
+  //         variant?: Partial<
+  //           Record<
+  //             ButtonVariant,
+  //             {
+  //               attached?: ButtonElementIconVariant;
+  //               detached?: ButtonElementIconVariant;
+  //             }
+  //           >
+  //         >;
+  //       }
+  //     >
+  //   >;
+  // };
 }

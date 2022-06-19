@@ -6,6 +6,9 @@ import type {
   ButtonSchema,
   Size,
   ContainerOptions,
+  InteractionState,
+  ButtonElementContainer,
+  ButtonElementText,
 } from '../Button.types';
 
 const timingFunction = 'ease';
@@ -26,36 +29,107 @@ type ElementContainerProps = {
 };
 
 export class ElementContainer {
-  private readonly size: ElementContainerProps['size'];
+  private readonly _size: ElementContainerProps['size'];
 
-  private readonly typeStyle: ElementContainerProps['typeStyle'];
+  private readonly _typeStyle: ElementContainerProps['typeStyle'];
 
-  private readonly variant: ElementContainerProps['variant'];
+  private readonly _variant: ElementContainerProps['variant'];
 
   private readonly _width: ElementContainerProps['width'];
 
-  private readonly options: ContainerOptions | undefined;
+  private readonly _options: ContainerOptions | undefined;
 
-  private readonly borderRadius: ElementContainerProps['borderRadius'];
+  private readonly _borderRadius: ElementContainerProps['borderRadius'];
 
   private readonly _textAlign: ButtonProps['textAlign'];
 
-  private readonly theme: ButtonSchema | undefined;
+  private readonly _theme: ButtonSchema | undefined;
 
-  private readonly baseStyle: CSSProperties;
+  private readonly _iconLeft: ButtonProps['iconLeft'];
 
-  private readonly containerStyle: CSSProperties;
+  private readonly _iconRight: ButtonProps['iconRight'];
+
+  private readonly _iconType: ButtonProps['iconType'];
 
   constructor(style: ElementContainerProps) {
-    this.size = style.size;
-    this.typeStyle = style.typeStyle;
-    this.variant = style.variant;
-    this.borderRadius = style.borderRadius;
-    this.theme = style.theme;
+    this._size = style.size;
+    this._typeStyle = style.typeStyle;
+    this._variant = style.variant;
+    this._borderRadius = style.borderRadius;
+    this._theme = style.theme;
     this._textAlign = style.textAlign;
     this._width = style.width;
-    this.options = style.theme?.container?.option;
-    this.baseStyle = {
+    this._options = style.theme?.container?.option;
+    this._iconLeft = style.iconLeft;
+    this._iconRight = style.iconRight;
+    this._iconType = style.iconType;
+  }
+
+  private width() {
+    return css({
+      width: this._width === 'block' ? '100%' : 'auto',
+      minWidth: this._width === 'min' ? this._options?.widthMin : 0,
+    })();
+  }
+
+  private radius() {
+    return css({
+      borderRadius: this._options?.borderRadius?.[this._borderRadius] || 0,
+    })();
+  }
+
+  private textAlign() {
+    return css({
+      textAlign:
+        this._textAlign && this._options?.textAlign?.[this._textAlign]
+          ? this._textAlign
+          : this._options?.textAlign?.default,
+    })();
+  }
+
+  private background() {
+    const containerStyle = this.getStyle<ButtonElementContainer>('container');
+
+    return css({
+      backgroundColor: containerStyle?.backgroundColor,
+    })();
+  }
+
+  private border() {
+    const containerStyle = this.getStyle<ButtonElementContainer>('container');
+
+    return css({
+      border: containerStyle?.borderWidth ? undefined : 'none',
+      borderColor: containerStyle?.borderColor,
+      borderStyle: containerStyle?.borderStyle,
+      borderWidth: containerStyle?.borderWidth,
+    })();
+  }
+
+  get container() {
+    return {
+      border: this.border(),
+      background: this.background(),
+      textAlign: this.textAlign(),
+      radius: this.radius(),
+      width: this.width(),
+      core: this.containerCore(),
+      base: this.containerBase(),
+    };
+  }
+
+  get text() {
+    return {
+      base: this.textBase(),
+      core: css({
+        ...this.getStyle<ButtonElementText>('text'),
+      })(),
+    };
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private containerBase() {
+    return css({
       padding: 0,
       cursor: 'pointer',
       fontSize: '16px',
@@ -66,133 +140,99 @@ export class ElementContainer {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-    };
-    this.containerStyle = {
-      ...this.theme?.container?.base?.rest?.[this.size],
-      ...this.theme?.container?.base?.rest?.[this.size],
-      ...this.theme?.container?.type?.[this.typeStyle]?.base?.[this.size],
-      ...this.theme?.container?.type?.[this.typeStyle]?.base?.[this.size],
-      ...this.theme?.container?.type?.[this.typeStyle]?.variant?.[this.variant]
-        ?.rest?.[this.size],
-      ...this.theme?.container?.type?.[this.typeStyle]?.variant?.[this.variant]
-        ?.rest?.[this.size],
-    };
-  }
-
-  width() {
-    return css({
-      width: this._width === 'block' ? '100%' : 'auto',
-      minWidth: this._width === 'min' ? this.options?.widthMin : 0,
     })();
   }
 
-  radius() {
+  private textBase() {
     return css({
-      borderRadius: this.options?.borderRadius?.[this.borderRadius] || 0,
+      width:
+        this._iconType === 'detached' || !(this._iconLeft || this._iconRight)
+          ? '100%'
+          : 'auto',
+      whiteSpace: 'nowrap',
+      transitionProperty: 'color, font-size, padding',
+      transitionDuration: duration,
+      transitionTimingFunction: timingFunction,
     })();
   }
 
-  textAlign() {
-    return css({
-      textAlign:
-        this._textAlign && this.options?.textAlign?.[this._textAlign]
-          ? this._textAlign
-          : this.options?.textAlign?.default,
-    })();
+  private getStateStyle(element: keyof ButtonSchema, state: InteractionState) {
+    return {
+      ...this._theme?.[element]?.base?.[state]?.[this._size],
+      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[
+        this._variant
+      ]?.[state]?.[this._size],
+    };
   }
 
-  background() {
-    return css({
-      backgroundColor: this.containerStyle?.backgroundColor,
-    })();
+  private getStyle<T extends CSSProperties>(
+    element: keyof ButtonSchema
+  ): T | Record<string, never> {
+    return {
+      ...this._theme?.[element]?.base?.rest?.md,
+      ...this._theme?.[element]?.base?.rest?.[this._size],
+      ...this._theme?.[element]?.type?.[this._typeStyle]?.base?.md,
+      ...this._theme?.[element]?.type?.[this._typeStyle]?.base?.[this._size],
+      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[
+        this._variant
+      ]?.rest?.md,
+      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[
+        this._variant
+      ]?.rest?.[this._size],
+    } as T;
   }
 
-  border() {
-    return css({
-      border: this.containerStyle?.borderWidth ? undefined : 'none',
-      borderColor: this.containerStyle?.borderColor,
-      borderStyle: this.containerStyle?.borderStyle,
-      borderWidth: this.containerStyle?.borderWidth,
-    })();
-  }
-
-  base() {
-    return css(this.baseStyle as Record<string, string>)();
-  }
-
-  core() {
-    // Hover ---------------------------------------------------------------------
-
-    const elementContainerHover = {
-      ...this.theme?.container?.base?.hover?.[this.size],
-      ...this.theme?.container?.type?.[this.typeStyle]?.variant?.[this.variant]
-        ?.hover?.[this.size],
+  private containerCore() {
+    const containerStyle = {
+      ...this.getStyle<ButtonElementContainer>('container'),
     };
 
-    // Pressed -------------------------------------------------------------------
-
-    const elementContainerPressed = {
-      ...this.theme?.container?.base?.pressed?.[this.size],
-      ...this.theme?.container?.type?.[this.typeStyle]?.variant?.[this.variant]
-        ?.pressed?.[this.size],
-    };
-
-    // Focus ---------------------------------------------------------------------
-
-    const elementContainerFocus = {
-      ...this.theme?.container?.base?.focus?.[this.size],
-      ...this.theme?.container?.type?.[this.typeStyle]?.variant?.[this.variant]
-        ?.focus?.[this.size],
-    };
-
-    // Visited -------------------------------------------------------------------
-
-    const elementContainerVisited = {
-      ...this.theme?.container?.base?.visited?.[this.size],
-      ...this.theme?.container?.type?.[this.typeStyle]?.variant?.[this.variant]
-        ?.visited?.[this.size],
-    };
-
-    // Disabled ------------------------------------------------------------------
-
-    const elementContainerDisabled = {
-      ...this.theme?.container?.base?.disabled?.[this.size],
-      ...this.theme?.container?.type?.[this.typeStyle]?.variant?.[this.variant]
-        ?.disabled?.[this.size],
-    };
-
-    const x = { ...this.containerStyle };
-
-    delete x.backgroundColor;
-    delete x.borderColor;
-    delete x.borderWidth;
-    delete x.borderStyle;
+    delete containerStyle.backgroundColor;
+    delete containerStyle.borderColor;
+    delete containerStyle.borderWidth;
+    delete containerStyle.borderStyle;
 
     return css({
-      ...x,
+      ...containerStyle,
 
+      // HOVER
       '&:hover, &.--hover': {
-        ...elementContainerHover,
+        ...this.getStateStyle('container', 'hover'),
+        '& .button__text': {
+          ...this.getStateStyle('text', 'hover'),
+        },
       },
 
       // PRESSED
       '&:active, &.--pressed': {
-        ...elementContainerPressed,
+        ...this.getStateStyle('container', 'pressed'),
+        '& .button__text': {
+          ...this.getStateStyle('text', 'pressed'),
+        },
       },
 
       // FOCUS
       '&:focus-visible, &.--focus': {
-        ...elementContainerFocus,
+        ...this.getStateStyle('container', 'focus'),
+        '& .button__text': {
+          ...this.getStateStyle('text', 'focus'),
+        },
       },
 
       // VISITED
       '&:visited, &.--visited': {
-        ...elementContainerVisited,
+        ...this.getStateStyle('container', 'visited'),
+        '& .button__text': {
+          ...this.getStateStyle('text', 'visited'),
+        },
       },
 
       // DISABLED
       '&:disabled, &--disabled': {
-        ...elementContainerDisabled,
+        ...this.getStateStyle('container', 'disabled'),
+        '& .button__text': {
+          ...this.getStateStyle('text', 'disabled'),
+        },
       },
     })();
   }

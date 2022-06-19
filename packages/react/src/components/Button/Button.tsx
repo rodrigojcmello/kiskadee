@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import { useContext, useMemo } from 'react';
 import type { ButtonProps } from './Button.types';
 import { KiskadeeContext } from '../../context';
-import { ButtonStyled, elementText } from './Button.style';
+import { ButtonStyled } from './Button.style';
 import { ElementContainer } from './elements/01_container';
 
 export const ButtonOld: FC<ButtonProps> = ({
@@ -85,26 +85,32 @@ export const Button: FC<ButtonProps> = ({
   const classeName = ['button'];
   if (interaction) classeName.push(`--${interaction}`);
 
-  const styleButton = useMemo(() => new ElementContainer(style), [style]);
+  const button = useMemo(() => new ElementContainer(style), [style]);
 
   return (
     <button
       className={[
         ...classeName,
-        styleButton.width(),
-        styleButton.radius(),
-        styleButton.textAlign(),
-        styleButton.border(),
-        styleButton.background(),
-        styleButton.core(),
-        styleButton.base(),
+        button.container.width,
+        button.container.radius,
+        button.container.textAlign,
+        button.container.border,
+        button.container.background,
+        button.container.base,
+        button.container.core,
       ]
         .join(' ')
         .trim()}
       type="button"
       onClick={onClick}
     >
-      <span className={`button__text ${elementText(style)}`}>Button</span>
+      <span
+        className={['button__text', button.text.core, button.text.base]
+          .join(' ')
+          .trim()}
+      >
+        {text}
+      </span>
     </button>
   );
 };
