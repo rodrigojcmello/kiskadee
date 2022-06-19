@@ -103,6 +103,7 @@ export const Button: FC<ButtonProps> = ({
         .trim()}
       type="button"
       onClick={onClick}
+      disabled={disabled}
     >
       <span
         className={['button__text', button.text.core, button.text.base]

@@ -65,20 +65,20 @@ export class ElementContainer {
     this._iconType = style.iconType;
   }
 
-  private width() {
+  private containerWidth() {
     return css({
       width: this._width === 'block' ? '100%' : 'auto',
       minWidth: this._width === 'min' ? this._options?.widthMin : 0,
     })();
   }
 
-  private radius() {
+  private containerRadius() {
     return css({
       borderRadius: this._options?.borderRadius?.[this._borderRadius] || 0,
     })();
   }
 
-  private textAlign() {
+  private containerTextAlign() {
     return css({
       textAlign:
         this._textAlign && this._options?.textAlign?.[this._textAlign]
@@ -87,7 +87,7 @@ export class ElementContainer {
     })();
   }
 
-  private background() {
+  private containerBackground() {
     const containerStyle = this.getStyle<ButtonElementContainer>('container');
 
     return css({
@@ -95,7 +95,7 @@ export class ElementContainer {
     })();
   }
 
-  private border() {
+  private containerBorder() {
     const containerStyle = this.getStyle<ButtonElementContainer>('container');
 
     return css({
@@ -108,11 +108,11 @@ export class ElementContainer {
 
   get container() {
     return {
-      border: this.border(),
-      background: this.background(),
-      textAlign: this.textAlign(),
-      radius: this.radius(),
-      width: this.width(),
+      border: this.containerBorder(),
+      background: this.containerBackground(),
+      textAlign: this.containerTextAlign(),
+      radius: this.containerRadius(),
+      width: this.containerWidth(),
       core: this.containerCore(),
       base: this.containerBase(),
     };
