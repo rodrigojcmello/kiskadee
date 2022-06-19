@@ -10,8 +10,11 @@ export const iosTheme: KiskadeeSchema = {
       container: {
         option: {
           borderRadius: {
-            default: 10,
-            rounded: 10,
+            default: 'rounded',
+            variant: {
+              rounded: { md: 10, sm: 8 },
+              full: { md: 25, sm: 18 },
+            },
             none: 0,
           },
           widthMin: 100,
@@ -94,7 +97,40 @@ export const iosTheme: KiskadeeSchema = {
           },
         },
       },
-      leftIcon: {
+      leftIconAttached: {
+        base: {
+          rest: {
+            md: {
+              fontSize: 24,
+              paddingRight: 8,
+              paddingLeft: 16,
+            },
+          },
+        },
+      },
+      leftIconDetached: {
+        base: {
+          rest: {
+            md: {
+              fontSize: 24,
+              paddingRight: 8,
+              paddingLeft: 16,
+            },
+          },
+        },
+      },
+      rightIconAttached: {
+        base: {
+          rest: {
+            md: {
+              fontSize: 24,
+              paddingRight: 8,
+              paddingLeft: 16,
+            },
+          },
+        },
+      },
+      rightIconDetached: {
         base: {
           rest: {
             md: {
@@ -190,17 +226,6 @@ export const iosTheme: KiskadeeSchema = {
                   },
                 },
               },
-            },
-          },
-        },
-      },
-      rightIcon: {
-        base: {
-          rest: {
-            md: {
-              fontSize: 24,
-              paddingRight: 16,
-              paddingLeft: 8,
             },
           },
         },

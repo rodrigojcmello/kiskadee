@@ -9,11 +9,13 @@ export const materialTheme: KiskadeeSchema = {
     button: {
       container: {
         option: {
-          widthMin: '100px',
+          widthMin: 100,
           borderRadius: {
-            default: 20,
-            rounded: 16,
-            full: 20,
+            default: 'rounded',
+            variant: {
+              rounded: { md: 16, sm: 12 },
+              full: { md: 20, sm: 16 },
+            },
             none: 0,
           },
           textAlign: {
@@ -56,7 +58,8 @@ export const materialTheme: KiskadeeSchema = {
                 hover: {
                   md: {
                     backgroundColor: '#735EAB',
-                    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                    boxShadow:
+                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                   },
                 },
                 focus: {
@@ -85,7 +88,8 @@ export const materialTheme: KiskadeeSchema = {
                 hover: {
                   md: {
                     backgroundColor: '#D8CEE8',
-                    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                    boxShadow:
+                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                   },
                 },
                 focus: {
@@ -109,25 +113,29 @@ export const materialTheme: KiskadeeSchema = {
                 rest: {
                   md: {
                     backgroundColor: '#F7F2FA',
-                    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                    boxShadow:
+                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                   },
                 },
                 hover: {
                   md: {
                     backgroundColor: '#E8E0F0',
-                    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15)',
+                    boxShadow:
+                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15)',
                   },
                 },
                 focus: {
                   md: {
                     backgroundColor: '#E6DFF0',
-                    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                    boxShadow:
+                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                   },
                 },
                 pressed: {
                   md: {
                     backgroundColor: '#E6DFF0',
-                    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                    boxShadow:
+                      '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                   },
                 },
                 disabled: {

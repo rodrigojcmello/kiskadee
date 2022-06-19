@@ -99,8 +99,30 @@ export class ButtonStyle {
   }
 
   private containerRadius() {
+    let borderRadius;
+    if (this._borderRadius === 'rounded' || this._borderRadius === 'full') {
+      borderRadius =
+        this._options?.borderRadius?.variant?.[this._borderRadius]?.[
+          this._size
+        ] || this._options?.borderRadius?.variant?.[this._borderRadius]?.md;
+    } else if (
+      (this._options?.borderRadius?.default === 'rounded' ||
+        this._options?.borderRadius?.default === 'full') &&
+      this._borderRadius === 'default'
+    ) {
+      borderRadius =
+        this._options?.borderRadius?.variant?.[
+          this._options?.borderRadius?.default
+        ]?.[this._size] ||
+        this._options?.borderRadius?.variant?.[
+          this._options?.borderRadius?.default
+        ]?.md;
+    } else {
+      borderRadius = this._options?.borderRadius?.none;
+    }
+
     return css({
-      borderRadius: this._options?.borderRadius?.[this._borderRadius] || 0,
+      borderRadius: borderRadius || 0,
     })();
   }
 
@@ -137,7 +159,8 @@ export class ButtonStyle {
       padding: 0,
       cursor: 'pointer',
       fontSize: '16px',
-      transitionProperty: 'box-shadow, border-color, background, padding, min-width, border-radius',
+      transitionProperty:
+        'box-shadow, border-color, background, padding, min-width, border-radius',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -154,30 +177,84 @@ export class ButtonStyle {
     delete containerStyle.borderWidth;
     delete containerStyle.borderStyle;
 
-    const containerHover = this.getStateStyle<ButtonElementContainer>('container', 'hover');
+    const containerHover = this.getStateStyle<ButtonElementContainer>(
+      'container',
+      'hover'
+    );
     const textHover = this.getStateStyle<ButtonElementText>('text', 'hover');
-    const leftIconHover = this.getStateStyle<ButtonElementIcon>(this.getIcon('left'), 'hover');
-    const rightIconHover = this.getStateStyle<ButtonElementIcon>(this.getIcon('right'), 'hover');
+    const leftIconHover = this.getStateStyle<ButtonElementIcon>(
+      this.getIcon('left'),
+      'hover'
+    );
+    const rightIconHover = this.getStateStyle<ButtonElementIcon>(
+      this.getIcon('right'),
+      'hover'
+    );
 
-    const containerPressed = this.getStateStyle<ButtonElementContainer>('container', 'pressed');
-    const textPressed = this.getStateStyle<ButtonElementText>('text', 'pressed');
-    const leftIconPressed = this.getStateStyle<ButtonElementIcon>(this.getIcon('left'), 'pressed');
-    const rightIconPressed = this.getStateStyle<ButtonElementIcon>(this.getIcon('right'), 'pressed');
+    const containerPressed = this.getStateStyle<ButtonElementContainer>(
+      'container',
+      'pressed'
+    );
+    const textPressed = this.getStateStyle<ButtonElementText>(
+      'text',
+      'pressed'
+    );
+    const leftIconPressed = this.getStateStyle<ButtonElementIcon>(
+      this.getIcon('left'),
+      'pressed'
+    );
+    const rightIconPressed = this.getStateStyle<ButtonElementIcon>(
+      this.getIcon('right'),
+      'pressed'
+    );
 
-    const containerFocus = this.getStateStyle<ButtonElementContainer>('container', 'focus');
+    const containerFocus = this.getStateStyle<ButtonElementContainer>(
+      'container',
+      'focus'
+    );
     const textFocus = this.getStateStyle<ButtonElementText>('text', 'focus');
-    const leftIconFocus = this.getStateStyle<ButtonElementIcon>(this.getIcon('left'), 'focus');
-    const rightIconFocus = this.getStateStyle<ButtonElementIcon>(this.getIcon('right'), 'focus');
+    const leftIconFocus = this.getStateStyle<ButtonElementIcon>(
+      this.getIcon('left'),
+      'focus'
+    );
+    const rightIconFocus = this.getStateStyle<ButtonElementIcon>(
+      this.getIcon('right'),
+      'focus'
+    );
 
-    const containerVisited = this.getStateStyle<ButtonElementContainer>('container', 'visited');
-    const textVisited = this.getStateStyle<ButtonElementText>('text', 'visited');
-    const leftIconVisited = this.getStateStyle<ButtonElementIcon>(this.getIcon('left'), 'visited');
-    const rightIconVisited = this.getStateStyle<ButtonElementIcon>(this.getIcon('right'), 'visited');
+    const containerVisited = this.getStateStyle<ButtonElementContainer>(
+      'container',
+      'visited'
+    );
+    const textVisited = this.getStateStyle<ButtonElementText>(
+      'text',
+      'visited'
+    );
+    const leftIconVisited = this.getStateStyle<ButtonElementIcon>(
+      this.getIcon('left'),
+      'visited'
+    );
+    const rightIconVisited = this.getStateStyle<ButtonElementIcon>(
+      this.getIcon('right'),
+      'visited'
+    );
 
-    const containerDisabled = this.getStateStyle<ButtonElementContainer>('container', 'disabled');
-    const textDisabled = this.getStateStyle<ButtonElementText>('text', 'disabled');
-    const leftIconDisabled = this.getStateStyle<ButtonElementIcon>(this.getIcon('left'), 'disabled');
-    const rightIconDisabled = this.getStateStyle<ButtonElementIcon>(this.getIcon('right'), 'disabled');
+    const containerDisabled = this.getStateStyle<ButtonElementContainer>(
+      'container',
+      'disabled'
+    );
+    const textDisabled = this.getStateStyle<ButtonElementText>(
+      'text',
+      'disabled'
+    );
+    const leftIconDisabled = this.getStateStyle<ButtonElementIcon>(
+      this.getIcon('left'),
+      'disabled'
+    );
+    const rightIconDisabled = this.getStateStyle<ButtonElementIcon>(
+      this.getIcon('right'),
+      'disabled'
+    );
 
     return css({
       /**
@@ -305,7 +382,10 @@ export class ButtonStyle {
 
   private textWidth() {
     return css({
-      width: this._iconType === 'detached' || !(this._iconLeft || this._iconRight) ? '100%' : 'auto',
+      width:
+        this._iconType === 'detached' || !(this._iconLeft || this._iconRight)
+          ? '100%'
+          : 'auto',
     })();
   }
 
@@ -377,7 +457,9 @@ export class ButtonStyle {
   }
 
   private iconSize(position: 'left' | 'right') {
-    const iconLeftStyle = this.getStyle<ButtonElementIcon>(this.getIcon(position));
+    const iconLeftStyle = this.getStyle<ButtonElementIcon>(
+      this.getIcon(position)
+    );
 
     return css({
       fontSize: iconLeftStyle?.fontSize,
@@ -385,7 +467,9 @@ export class ButtonStyle {
   }
 
   private iconPadding(position: 'left' | 'right') {
-    const iconLeftStyle = this.getStyle<ButtonElementIcon>(this.getIcon(position));
+    const iconLeftStyle = this.getStyle<ButtonElementIcon>(
+      this.getIcon(position)
+    );
 
     return css({
       paddingTop: iconLeftStyle?.paddingTop,
@@ -401,8 +485,14 @@ export class ButtonStyle {
 
   private getIcon(
     position: 'left' | 'right'
-  ): 'leftIconAttached' | 'rightIconAttached' | 'leftIconDetached' | 'rightIconDetached' {
-    return this._iconType === 'attached' ? `${position}IconAttached` : `${position}IconDetached`;
+  ):
+    | 'leftIconAttached'
+    | 'rightIconAttached'
+    | 'leftIconDetached'
+    | 'rightIconDetached' {
+    return this._iconType === 'attached'
+      ? `${position}IconAttached`
+      : `${position}IconDetached`;
   }
 
   private getTransition() {
@@ -412,21 +502,32 @@ export class ButtonStyle {
     })();
   }
 
-  private getStateStyle<T>(element: keyof ButtonSchema, state: InteractionState): T | Record<string, never> {
+  private getStateStyle<T>(
+    element: keyof ButtonSchema,
+    state: InteractionState
+  ): T | Record<string, never> {
     return {
       ...this._theme?.[element]?.base?.[state]?.[this._size],
-      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[this._variant]?.[state]?.[this._size],
+      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[
+        this._variant
+      ]?.[state]?.[this._size],
     } as T;
   }
 
-  private getStyle<T extends CSSProperties>(element: keyof ButtonSchema): T | Record<string, never> {
+  private getStyle<T extends CSSProperties>(
+    element: keyof ButtonSchema
+  ): T | Record<string, never> {
     return {
       ...this._theme?.[element]?.base?.rest?.md,
       ...this._theme?.[element]?.base?.rest?.[this._size],
       ...this._theme?.[element]?.type?.[this._typeStyle]?.base?.md,
       ...this._theme?.[element]?.type?.[this._typeStyle]?.base?.[this._size],
-      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[this._variant]?.rest?.md,
-      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[this._variant]?.rest?.[this._size],
+      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[
+        this._variant
+      ]?.rest?.md,
+      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[
+        this._variant
+      ]?.rest?.[this._size],
     } as T;
   }
 }

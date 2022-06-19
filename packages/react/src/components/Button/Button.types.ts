@@ -2,11 +2,32 @@ import type { CSSProperties, ReactElement } from 'react';
 
 export type ButtonType = 'contained' | 'outline' | 'flat';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'success' | 'warning' | 'danger';
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'success'
+  | 'warning'
+  | 'danger';
 
-export type InteractionState = 'rest' | 'hover' | 'focus' | 'pressed' | 'visited' | 'disabled';
+export type InteractionState =
+  | 'rest'
+  | 'hover'
+  | 'focus'
+  | 'pressed'
+  | 'visited'
+  | 'disabled';
 
-export type Size = 'xxxl' | 'xxl' | 'xl' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs' | 'xxxs';
+export type Size =
+  | 'xxxl'
+  | 'xxl'
+  | 'xl'
+  | 'lg'
+  | 'md'
+  | 'sm'
+  | 'xs'
+  | 'xxs'
+  | 'xxxs';
 
 export interface ButtonProps {
   text: string;
@@ -87,20 +108,28 @@ export interface ButtonElementText {
 // States e Sizes
 //------------------------------------------------------------------------------
 
-type ButtonElementContainerVariant = Partial<Record<InteractionState, Partial<Record<Size, ButtonElementContainer>>>>;
+type ButtonElementContainerVariant = Partial<
+  Record<InteractionState, Partial<Record<Size, ButtonElementContainer>>>
+>;
 
-type ButtonElementIconVariant = Partial<Record<InteractionState, Partial<Record<Size, ButtonElementIcon>>>>;
+type ButtonElementIconVariant = Partial<
+  Record<InteractionState, Partial<Record<Size, ButtonElementIcon>>>
+>;
 
-type ButtonElementTextVariant = Partial<Record<InteractionState, Partial<Record<Size, ButtonElementText>>>>;
+type ButtonElementTextVariant = Partial<
+  Record<InteractionState, Partial<Record<Size, ButtonElementText>>>
+>;
 
 //------------------------------------------------------------------------------
 
 export interface ContainerOptions {
   widthMin?: CSSProperties['minWidth'];
   borderRadius?: {
-    default?: number;
-    full?: number;
-    rounded?: number;
+    default?: 'full' | 'rounded' | 'none';
+    variant?: {
+      full?: Partial<Record<Size, number>>;
+      rounded?: Partial<Record<Size, number>>;
+    };
     none?: 0;
   };
   textAlign?: {
@@ -153,7 +182,9 @@ export interface ButtonSchema {
         ButtonType,
         {
           base?: Partial<Record<Size, ButtonElementContainer>>;
-          variant?: Partial<Record<ButtonVariant, ButtonElementContainerVariant>>;
+          variant?: Partial<
+            Record<ButtonVariant, ButtonElementContainerVariant>
+          >;
         }
       >
     >;

@@ -23,7 +23,7 @@ const commonRules = {
    * @see {@link https://prettier.io/docs/en/options.html#quotes}
    * @see {@link https://github.com/prettier/eslint-plugin-prettier#options}
    */
-  'prettier/prettier': ['error', { singleQuote: true, printWidth: 120 }],
+  'prettier/prettier': ['error', { singleQuote: true }],
 
   //----------------------------------------------------------------------------
   // UNUSED IMPORTS
@@ -185,11 +185,7 @@ module.exports = {
             cases: {
               kebabCase: true,
             },
-            ignore: [
-              '^(?:[A-Z][a-z]+)+(\\.[a-z]+)?\\.ts(x)?$',
-              'setupTests.ts',
-              'reportWebVitals.ts',
-            ],
+            ignore: ['^(?:[A-Z][a-z]+)+(\\.[a-z]+)?\\.ts(x)?$', 'setupTests.ts', 'reportWebVitals.ts'],
           },
         ],
 

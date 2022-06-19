@@ -690,9 +690,11 @@ export const ButtonDocumentation: FC = () => {
             <BoxTitle>
               Rounded
               {buttonContainer?.option?.borderRadius?.default ===
-                buttonContainer?.option?.borderRadius?.rounded && ' (default)'}
+                buttonContainer?.option?.borderRadius?.variant?.rounded &&
+                ' (default)'}
             </BoxTitle>
-            {buttonContainer?.option?.borderRadius?.rounded !== undefined ? (
+            {buttonContainer?.option?.borderRadius?.variant?.rounded !==
+            undefined ? (
               <Applicable>
                 <Button
                   text="Text"
@@ -715,9 +717,11 @@ export const ButtonDocumentation: FC = () => {
             <BoxTitle>
               Full
               {buttonContainer?.option?.borderRadius?.default ===
-                buttonContainer?.option?.borderRadius?.full && ' (default)'}
+                buttonContainer?.option?.borderRadius?.variant?.full &&
+                ' (default)'}
             </BoxTitle>
-            {buttonContainer?.option?.borderRadius?.full !== undefined ? (
+            {buttonContainer?.option?.borderRadius?.variant?.full !==
+            undefined ? (
               <Applicable>
                 <Button
                   text="Text"
