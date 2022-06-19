@@ -3,7 +3,7 @@ import { useContext, useMemo } from 'react';
 import type { ButtonProps } from './Button.types';
 import { KiskadeeContext } from '../../context';
 import { ButtonStyled } from './Button.style';
-import { ElementContainer } from './elements/01_container';
+import { ButtonStyle } from './elements/01_container';
 
 export const ButtonOld: FC<ButtonProps> = ({
   text,
@@ -85,7 +85,7 @@ export const Button: FC<ButtonProps> = ({
   const classeName = ['button'];
   if (interaction) classeName.push(`--${interaction}`);
 
-  const button = useMemo(() => new ElementContainer(style), [style]);
+  const button = useMemo(() => new ButtonStyle(style), [style]);
 
   return (
     <button
@@ -98,6 +98,7 @@ export const Button: FC<ButtonProps> = ({
         button.container.background,
         button.container.base,
         button.container.core,
+        button.common.transition,
       ]
         .join(' ')
         .trim()}
@@ -105,6 +106,22 @@ export const Button: FC<ButtonProps> = ({
       onClick={onClick}
       disabled={disabled}
     >
+      {iconLeft && (
+        <div
+          className={[
+            'button__icon-left',
+            button.iconLeft.base,
+            button.iconLeft.color,
+            button.iconLeft.size,
+            button.iconLeft.padding,
+            button.common.transition,
+          ]
+            .join(' ')
+            .trim()}
+        >
+          {iconLeft}
+        </div>
+      )}
       <span
         className={[
           'button__text',
@@ -112,6 +129,8 @@ export const Button: FC<ButtonProps> = ({
           button.text.base,
           button.text.color,
           button.text.padding,
+          button.text.width,
+          button.common.transition,
         ]
           .join(' ')
           .trim()}

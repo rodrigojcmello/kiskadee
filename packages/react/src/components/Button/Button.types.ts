@@ -75,8 +75,7 @@ export type ButtonElementContainer = {
 
 // Icon
 
-interface ButtonElementIcon {
-  // Style
+export interface ButtonElementIcon {
   color?: CSSProperties['color'];
 
   // Sizing
@@ -175,26 +174,30 @@ export interface ButtonSchema {
       >
     >;
   };
-  // leftIcon?: {
-  //   base?: ButtonElementIconVariant;
-  //   type?: Partial<
-  //     Record<
-  //       ButtonType,
-  //       {
-  //         base?: Partial<Record<Size, ButtonElementIcon>>;
-  //         variant?: Partial<
-  //           Record<
-  //             ButtonVariant,
-  //             {
-  //               attached?: ButtonElementIconVariant;
-  //               detached?: ButtonElementIconVariant;
-  //             }
-  //           >
-  //         >;
-  //       }
-  //     >
-  //   >;
-  // };
+  leftIconAttached?: {
+    base?: ButtonElementIconVariant;
+    type?: Partial<
+      Record<
+        ButtonType,
+        {
+          base?: Partial<Record<Size, ButtonElementIcon>>;
+          variant?: Partial<Record<ButtonVariant, ButtonElementIconVariant>>;
+        }
+      >
+    >;
+  };
+  leftIconDetached?: {
+    base?: ButtonElementIconVariant;
+    type?: Partial<
+      Record<
+        ButtonType,
+        {
+          base?: Partial<Record<Size, ButtonElementIcon>>;
+          variant?: Partial<Record<ButtonVariant, ButtonElementIconVariant>>;
+        }
+      >
+    >;
+  };
   text?: {
     base?: ButtonElementTextVariant;
     type?: Partial<

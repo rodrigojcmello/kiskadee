@@ -1,4 +1,4 @@
-/* eslint-disable unicorn/filename-case,class-methods-use-this */
+/* eslint-disable unicorn/filename-case */
 import { css } from '@stitches/core';
 import type { CSSProperties } from 'react';
 import type {
@@ -9,10 +9,8 @@ import type {
   InteractionState,
   ButtonElementContainer,
   ButtonElementText,
+  ButtonElementIcon,
 } from '../Button.types';
-
-const timingFunction = 'ease';
-const duration = '0.2s';
 
 type ElementContainerProps = {
   size: Size;
@@ -28,7 +26,7 @@ type ElementContainerProps = {
   textAlign?: ButtonProps['textAlign'];
 };
 
-export class ElementContainer {
+export class ButtonStyle {
   private readonly _size: ElementContainerProps['size'];
 
   private readonly _typeStyle: ElementContainerProps['typeStyle'];
@@ -51,6 +49,10 @@ export class ElementContainer {
 
   private readonly _iconType: ButtonProps['iconType'];
 
+  private readonly _timingFunction: string;
+
+  private readonly _duration: string;
+
   constructor(style: ElementContainerProps) {
     this._size = style.size;
     this._typeStyle = style.typeStyle;
@@ -63,6 +65,14 @@ export class ElementContainer {
     this._iconLeft = style.iconLeft;
     this._iconRight = style.iconRight;
     this._iconType = style.iconType;
+    this._timingFunction = 'ease';
+    this._duration = '0.2s';
+  }
+
+  get common() {
+    return {
+      transition: this.getTransition(),
+    };
   }
 
   //----------------------------------------------------------------------------
@@ -77,7 +87,7 @@ export class ElementContainer {
       radius: this.containerRadius(),
       width: this.containerWidth(),
       core: this.containerCore(),
-      base: this.containerBase(),
+      base: ButtonStyle.containerBase(),
     };
   }
 
@@ -122,15 +132,13 @@ export class ElementContainer {
     })();
   }
 
-  private containerBase() {
+  private static containerBase() {
     return css({
       padding: 0,
       cursor: 'pointer',
       fontSize: '16px',
       transitionProperty:
         'box-shadow, border-color, background, padding, min-width, border-radius',
-      transitionDuration: duration,
-      transitionTimingFunction: timingFunction,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -148,6 +156,10 @@ export class ElementContainer {
     delete containerStyle.borderStyle;
 
     return css({
+      /**
+       * Only the box-shadow remains, but creating a new class just to control the interaction state and another one
+       * for the box-shadow would just needlessly duplicate the same thing
+       */
       ...containerStyle,
 
       // HOVER
@@ -155,6 +167,9 @@ export class ElementContainer {
         ...this.getStateStyle('container', 'hover'),
         '& .button__text': {
           ...this.getStateStyle('text', 'hover'),
+        },
+        '& .button__icon': {
+          ...this.getStateStyle(this.getIconLeft, 'hover'),
         },
       },
 
@@ -164,6 +179,9 @@ export class ElementContainer {
         '& .button__text': {
           ...this.getStateStyle('text', 'pressed'),
         },
+        '& .button__icon': {
+          ...this.getStateStyle(this.getIconLeft, 'pressed'),
+        },
       },
 
       // FOCUS
@@ -171,6 +189,9 @@ export class ElementContainer {
         ...this.getStateStyle('container', 'focus'),
         '& .button__text': {
           ...this.getStateStyle('text', 'focus'),
+        },
+        '& .button__icon': {
+          ...this.getStateStyle(this.getIconLeft, 'focus'),
         },
       },
 
@@ -180,6 +201,9 @@ export class ElementContainer {
         '& .button__text': {
           ...this.getStateStyle('text', 'visited'),
         },
+        '& .button__icon': {
+          ...this.getStateStyle(this.getIconLeft, 'visited'),
+        },
       },
 
       // DISABLED
@@ -187,6 +211,9 @@ export class ElementContainer {
         ...this.getStateStyle('container', 'disabled'),
         '& .button__text': {
           ...this.getStateStyle('text', 'disabled'),
+        },
+        '& .button__icon': {
+          ...this.getStateStyle(this.getIconLeft, 'disabled'),
         },
       },
     })();
@@ -198,23 +225,18 @@ export class ElementContainer {
 
   get text() {
     return {
-      base: this.textBase(),
+      base: ButtonStyle.textBase(),
       core: this.textCore(),
       color: this.textColor(),
       padding: this.textPadding(),
+      width: this.textWidth(),
     };
   }
 
-  private textBase() {
+  private static textBase() {
     return css({
-      width:
-        this._iconType === 'detached' || !(this._iconLeft || this._iconRight)
-          ? '100%'
-          : 'auto',
       whiteSpace: 'nowrap',
       transitionProperty: 'color, font-size, padding',
-      transitionDuration: duration,
-      transitionTimingFunction: timingFunction,
     })();
   }
 
@@ -232,6 +254,15 @@ export class ElementContainer {
     });
   }
 
+  private textWidth() {
+    return css({
+      width:
+        this._iconType === 'detached' || !(this._iconLeft || this._iconRight)
+          ? '100%'
+          : 'auto',
+    })();
+  }
+
   private textColor() {
     const textStyle = this.getStyle<ButtonElementText>('text');
 
@@ -246,14 +277,80 @@ export class ElementContainer {
     return css({
       paddingTop: textStyle?.paddingTop,
       paddingBottom: textStyle?.paddingBottom,
-      paddingLeft: textStyle?.paddingLeft,
+      paddingLeft: this._iconLeft ? 0 : textStyle?.paddingLeft,
       paddingRight: textStyle?.paddingRight,
     })();
   }
 
-  //------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
+  // Icon Left Element
+  //----------------------------------------------------------------------------
+
+  get iconLeft() {
+    return {
+      base: ButtonStyle.iconLeftBase(),
+      color: this.iconLeftColor(),
+      size: this.iconLeftSize(),
+      padding: this.iconLeftPadding(),
+    };
+  }
+
+  private static iconLeftBase() {
+    return css({
+      display: 'flex',
+      transitionProperty: 'color, font-size',
+    })();
+  }
+
+  private iconLeftColor() {
+    const iconLeftStyle = this.getStyle<ButtonElementIcon>(this.getIconLeft);
+    const textStyle = this.getStyle<ButtonElementText>('text');
+
+    return css({
+      color: textStyle?.color || iconLeftStyle?.color,
+
+      '& > *': {
+        fontSize: 'inherit',
+        fill: iconLeftStyle?.color || undefined,
+      },
+    })();
+  }
+
+  private iconLeftSize() {
+    const iconLeftStyle = this.getStyle<ButtonElementIcon>(this.getIconLeft);
+
+    return css({
+      fontSize: iconLeftStyle?.fontSize,
+    })();
+  }
+
+  private iconLeftPadding() {
+    const iconLeftStyle = this.getStyle<ButtonElementIcon>(this.getIconLeft);
+
+    return css({
+      paddingTop: iconLeftStyle?.paddingTop,
+      paddingBottom: iconLeftStyle?.paddingBottom,
+      paddingLeft: iconLeftStyle?.paddingLeft,
+      paddingRight: iconLeftStyle?.paddingRight,
+    })();
+  }
+
+  //----------------------------------------------------------------------------
   // Helper
-  //------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
+
+  private get getIconLeft() {
+    return this._iconType === 'attached'
+      ? 'leftIconAttached'
+      : 'leftIconDetached';
+  }
+
+  private getTransition() {
+    return css({
+      transitionDuration: this._duration,
+      transitionTimingFunction: this._timingFunction,
+    })();
+  }
 
   private getStateStyle(element: keyof ButtonSchema, state: InteractionState) {
     return {
