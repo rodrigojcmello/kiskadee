@@ -185,7 +185,11 @@ module.exports = {
             cases: {
               kebabCase: true,
             },
-            ignore: ['^(?:[A-Z][a-z]+)+(\\.[a-z]+)?\\.ts(x)?$', 'setupTests.ts', 'reportWebVitals.ts'],
+            ignore: [
+              '^(?:[A-Z][a-z]+)+(\\.[a-z]+)?\\.ts(x)?$',
+              'setupTests.ts',
+              'reportWebVitals.ts',
+            ],
           },
         ],
 
@@ -236,6 +240,16 @@ module.exports = {
         // TypeScript
         //----------------------------------------------------------------------
 
+        /**
+         * TypeScript handles this natively
+         */
+        'no-use-before-define': 'off',
+
+        /**
+         * Allow certain optimizations within compilers
+         * @see {https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html#type-only-imports-and-export}
+         * @see {https://www.typescriptlang.org/tsconfig#isolatedModules}
+         */
         '@typescript-eslint/consistent-type-imports': 'error',
 
         // /**

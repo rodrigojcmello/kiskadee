@@ -64,24 +64,24 @@ export const ButtonDocumentation: FC = () => {
     setType('contained');
     setVariant('primary');
     setRadius('default');
-    // setIconType(undefined);
-    // setIconLeft(undefined);
+    setIconType(undefined);
+    setIconLeft(undefined);
     setTextAlign(undefined);
   }, [theme.name, theme.author, theme.version]);
 
-  const buttonContainer = theme.component.button?.container;
-  const buttonVariant =
-    theme.component.button?.container?.type?.[type]?.variant;
+  const buttonOption = theme.component.button?.option;
+  const buttonContainer = theme.component.button?.elements?.container;
+  const buttonVariant = buttonContainer?.type?.[type]?.variant;
 
   return (
     <Container className={!pageLoad ? style['no-transition'] : undefined}>
       <Box>
         <div>
           <BoxTitle>Medium</BoxTitle>
-          {buttonContainer?.option?.size?.sm ? (
+          {buttonOption?.size?.sm ? (
             <Applicable>
               <Button
-                text="Click me"
+                // text="Click me"
                 width="block"
                 type={type}
                 variant={variant}
@@ -104,10 +104,10 @@ export const ButtonDocumentation: FC = () => {
         </div>
         <div>
           <BoxTitle>Large</BoxTitle>
-          {buttonContainer?.option?.size?.lg ? (
+          {buttonOption?.size?.lg ? (
             <Applicable>
               <Button
-                text="Click me"
+                label="Click me"
                 width="block"
                 type={type}
                 variant={variant}
@@ -131,10 +131,93 @@ export const ButtonDocumentation: FC = () => {
         </div>
         <div>
           <BoxTitle>Small</BoxTitle>
-          {buttonContainer?.option?.size?.sm ? (
+          {buttonOption?.size?.sm ? (
             <Applicable>
               <Button
-                text="Click me"
+                label="Click me"
+                width="block"
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                iconType={iconType}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                textAlign={textAlign}
+                size="sm"
+                onClick={(): void => {
+                  // setIconLeft(
+                  //   <span className="material-symbols-outlined">thumb_up</span>
+                  // );
+                  // setIconType('detached');
+                }}
+              />
+            </Applicable>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+      </Box>
+
+      <Box>
+        <div>
+          <BoxTitle>Medium</BoxTitle>
+          {buttonOption?.size?.sm ? (
+            <Applicable>
+              <Button
+                label="Click me"
+                width="block"
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                iconType={iconType}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                size="md"
+                onClick={(): void => {
+                  setIconLeft(undefined);
+                  setIconRight(undefined);
+                  setIconType(undefined);
+                }}
+              />
+            </Applicable>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+        <div>
+          <BoxTitle>Large</BoxTitle>
+          {buttonOption?.size?.lg ? (
+            <Applicable>
+              <Button
+                label="Click me"
+                width="block"
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                iconType={iconType}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                textAlign={textAlign}
+                size="lg"
+                onClick={(): void => {
+                  // setIconLeft(
+                  //   <span className="material-symbols-outlined">thumb_up</span>
+                  // );
+                  // setIconType('attached');
+                }}
+              />
+            </Applicable>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+        <div>
+          <BoxTitle>Small</BoxTitle>
+          {buttonOption?.size?.sm ? (
+            <Applicable>
+              <Button
+                label="Click me"
                 width="block"
                 type={type}
                 variant={variant}
@@ -164,7 +247,7 @@ export const ButtonDocumentation: FC = () => {
           {buttonContainer?.type?.contained ? (
             <Applicable>
               <Button
-                text="Click me"
+                label="Click me"
                 width="block"
                 type={type}
                 variant={variant}
@@ -183,10 +266,10 @@ export const ButtonDocumentation: FC = () => {
         </div>
         <div>
           <BoxTitle>Left attached icon</BoxTitle>
-          {buttonContainer?.option?.icon?.leftAttached ? (
+          {buttonOption?.icon?.enable?.left ? (
             <Applicable>
               <Button
-                text="Click me"
+                label="Click me"
                 width="block"
                 type={type}
                 variant={variant}
@@ -210,10 +293,10 @@ export const ButtonDocumentation: FC = () => {
         </div>
         <div>
           <BoxTitle>Left detached icon</BoxTitle>
-          {buttonContainer?.option?.icon?.leftDetached ? (
+          {buttonOption?.icon?.enable?.left ? (
             <Applicable>
               <Button
-                text="Click me"
+                label="Click me"
                 width="block"
                 type={type}
                 variant={variant}
@@ -237,10 +320,10 @@ export const ButtonDocumentation: FC = () => {
         </div>
         <div>
           <BoxTitle>Right attached icon</BoxTitle>
-          {buttonContainer?.option?.icon?.rightAttached ? (
+          {buttonOption?.icon?.enable?.right ? (
             <Applicable>
               <Button
-                text="Click me"
+                label="Click me"
                 width="block"
                 type={type}
                 variant={variant}
@@ -266,10 +349,10 @@ export const ButtonDocumentation: FC = () => {
         </div>
         <div>
           <BoxTitle>Right detached icon</BoxTitle>
-          {buttonContainer?.option?.icon?.rightDetached ? (
+          {buttonOption?.icon?.enable?.right ? (
             <Applicable>
               <Button
-                text="Click me"
+                label="Click me"
                 width="block"
                 type={type}
                 variant={variant}
@@ -300,7 +383,7 @@ export const ButtonDocumentation: FC = () => {
           {buttonContainer?.type?.contained ? (
             <Applicable>
               <Button
-                text="Click me"
+                label="Click me"
                 width="block"
                 type="contained"
                 variant="primary"
@@ -325,7 +408,7 @@ export const ButtonDocumentation: FC = () => {
           {buttonContainer?.type?.outline ? (
             <Applicable>
               <Button
-                text="Click me"
+                label="Click me"
                 width="block"
                 type="outline"
                 variant="primary"
@@ -349,7 +432,7 @@ export const ButtonDocumentation: FC = () => {
           {buttonContainer?.type?.flat ? (
             <Applicable>
               <Button
-                text="Click me"
+                label="Click me"
                 width="block"
                 type="flat"
                 variant="primary"
@@ -376,7 +459,7 @@ export const ButtonDocumentation: FC = () => {
           {buttonVariant?.primary ? (
             <Applicable>
               <Button
-                text="Click me"
+                label="Click me"
                 width="block"
                 type={type}
                 variant="primary"
@@ -400,7 +483,7 @@ export const ButtonDocumentation: FC = () => {
           {buttonVariant?.secondary ? (
             <Applicable>
               <Button
-                text="Click me"
+                label="Click me"
                 width="block"
                 type="contained"
                 variant="secondary"
@@ -423,7 +506,7 @@ export const ButtonDocumentation: FC = () => {
           {buttonVariant?.tertiary ? (
             <Applicable>
               <Button
-                text="Click me"
+                label="Click me"
                 width="block"
                 type="contained"
                 variant="tertiary"
@@ -449,7 +532,7 @@ export const ButtonDocumentation: FC = () => {
           {buttonVariant?.success ? (
             <Applicable>
               <Button
-                text="Click me"
+                label="Click me"
                 width="block"
                 type="contained"
                 variant="success"
@@ -473,7 +556,7 @@ export const ButtonDocumentation: FC = () => {
           {buttonVariant?.warning ? (
             <Applicable>
               <Button
-                text="Click me"
+                label="Click me"
                 width="block"
                 type="contained"
                 variant="warning"
@@ -497,7 +580,7 @@ export const ButtonDocumentation: FC = () => {
           {buttonVariant?.danger ? (
             <Applicable>
               <Button
-                text="Click me"
+                label="Click me"
                 width="block"
                 type={type}
                 variant="danger"
@@ -523,7 +606,7 @@ export const ButtonDocumentation: FC = () => {
           {buttonContainer?.base?.hover || buttonVariant?.[variant]?.hover ? (
             <Applicable>
               <Button
-                text="Text"
+                label="Text"
                 width="block"
                 type={type}
                 variant={variant}
@@ -546,7 +629,7 @@ export const ButtonDocumentation: FC = () => {
           {buttonContainer?.base?.focus || buttonVariant?.[variant]?.focus ? (
             <Applicable>
               <Button
-                text="Text"
+                label="Text"
                 width="block"
                 type={type}
                 variant={variant}
@@ -570,7 +653,7 @@ export const ButtonDocumentation: FC = () => {
           buttonVariant?.[variant]?.pressed ? (
             <Applicable>
               <Button
-                text="Text"
+                label="Text"
                 width="block"
                 type={type}
                 variant={variant}
@@ -594,7 +677,7 @@ export const ButtonDocumentation: FC = () => {
           buttonVariant?.[variant]?.visited ? (
             <Applicable>
               <Button
-                text="Text"
+                label="Text"
                 width="block"
                 type={type}
                 variant={variant}
@@ -618,7 +701,7 @@ export const ButtonDocumentation: FC = () => {
           buttonVariant?.[variant]?.disabled ? (
             <Applicable>
               <Button
-                text="Text"
+                label="Text"
                 width="block"
                 type={type}
                 variant={variant}
@@ -641,7 +724,7 @@ export const ButtonDocumentation: FC = () => {
         <div className={style.width}>
           <div>
             <Button
-              text="Text"
+              label="Text"
               width="block"
               type={type}
               variant={variant}
@@ -655,7 +738,7 @@ export const ButtonDocumentation: FC = () => {
           </div>
           <div>
             <Button
-              text="Text text text text text text"
+              label="Text text text text text text"
               width="auto"
               type={type}
               variant={variant}
@@ -669,7 +752,7 @@ export const ButtonDocumentation: FC = () => {
           </div>
           <div>
             <Button
-              text="Text"
+              label="Text"
               width="min"
               type={type}
               variant={variant}
@@ -689,15 +772,13 @@ export const ButtonDocumentation: FC = () => {
           <div>
             <BoxTitle>
               Rounded
-              {buttonContainer?.option?.borderRadius?.default ===
-                buttonContainer?.option?.borderRadius?.variant?.rounded &&
-                ' (default)'}
+              {buttonOption?.borderRadius?.default ===
+                buttonOption?.borderRadius?.variant?.rounded && ' (default)'}
             </BoxTitle>
-            {buttonContainer?.option?.borderRadius?.variant?.rounded !==
-            undefined ? (
+            {buttonOption?.borderRadius?.variant?.rounded !== undefined ? (
               <Applicable>
                 <Button
-                  text="Text"
+                  label="Text"
                   width="block"
                   borderRadius="rounded"
                   type={type}
@@ -716,15 +797,13 @@ export const ButtonDocumentation: FC = () => {
           <div>
             <BoxTitle>
               Full
-              {buttonContainer?.option?.borderRadius?.default ===
-                buttonContainer?.option?.borderRadius?.variant?.full &&
-                ' (default)'}
+              {buttonOption?.borderRadius?.default ===
+                buttonOption?.borderRadius?.variant?.full && ' (default)'}
             </BoxTitle>
-            {buttonContainer?.option?.borderRadius?.variant?.full !==
-            undefined ? (
+            {buttonOption?.borderRadius?.variant?.full !== undefined ? (
               <Applicable>
                 <Button
-                  text="Text"
+                  label="Text"
                   width="block"
                   borderRadius="full"
                   type={type}
@@ -743,13 +822,13 @@ export const ButtonDocumentation: FC = () => {
           <div>
             <BoxTitle>
               None
-              {buttonContainer?.option?.borderRadius?.default ===
-                buttonContainer?.option?.borderRadius?.none && ' (default)'}
+              {buttonOption?.borderRadius?.default ===
+                buttonOption?.borderRadius?.none && ' (default)'}
             </BoxTitle>
-            {buttonContainer?.option?.borderRadius?.none !== undefined ? (
+            {buttonOption?.borderRadius?.none !== undefined ? (
               <Applicable>
                 <Button
-                  text="Text"
+                  label="Text"
                   width="block"
                   borderRadius="none"
                   type={type}
@@ -770,13 +849,12 @@ export const ButtonDocumentation: FC = () => {
           <div>
             <BoxTitle>
               Left
-              {buttonContainer?.option?.textAlign?.default === 'left' &&
-                ' (default)'}
+              {buttonOption?.textAlign?.default === 'left' && ' (default)'}
             </BoxTitle>
-            {buttonContainer?.option?.textAlign?.left ? (
+            {buttonOption?.textAlign?.left ? (
               <Applicable>
                 <Button
-                  text="Click me"
+                  label="Click me"
                   width="block"
                   textAlign="left"
                   type={type}
@@ -797,13 +875,12 @@ export const ButtonDocumentation: FC = () => {
           <div>
             <BoxTitle>
               Center
-              {buttonContainer?.option?.textAlign?.default === 'center' &&
-                ' (default)'}
+              {buttonOption?.textAlign?.default === 'center' && ' (default)'}
             </BoxTitle>
-            {buttonContainer?.option?.textAlign?.center ? (
+            {buttonOption?.textAlign?.center ? (
               <Applicable>
                 <Button
-                  text="Click me"
+                  label="Click me"
                   width="block"
                   textAlign="center"
                   type={type}
@@ -824,13 +901,12 @@ export const ButtonDocumentation: FC = () => {
           <div>
             <BoxTitle>
               Right
-              {buttonContainer?.option?.textAlign?.default === 'right' &&
-                ' (default)'}
+              {buttonOption?.textAlign?.default === 'right' && ' (default)'}
             </BoxTitle>
-            {buttonContainer?.option?.textAlign?.right ? (
+            {buttonOption?.textAlign?.right ? (
               <Applicable>
                 <Button
-                  text="Click me"
+                  label="Click me"
                   width="block"
                   textAlign="right"
                   type={type}

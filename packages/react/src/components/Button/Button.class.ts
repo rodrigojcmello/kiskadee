@@ -6,11 +6,12 @@ import type {
   ButtonSchema,
   Size,
   ContainerOptions,
-  InteractionState,
+  Interaction,
   ButtonElementContainer,
   ButtonElementText,
   ButtonElementIcon,
-} from '../Button.types';
+  ButtonElement,
+} from './Button.types';
 
 type ElementContainerProps = {
   size: Size;
@@ -61,7 +62,7 @@ export class ButtonStyle {
     this._theme = style.theme;
     this._textAlign = style.textAlign;
     this._width = style.width;
-    this._options = style.theme?.container?.option;
+    this._options = style.theme?.option;
     this._iconLeft = style.iconLeft;
     this._iconRight = style.iconRight;
     this._iconType = style.iconType;
@@ -177,81 +178,72 @@ export class ButtonStyle {
     delete containerStyle.borderWidth;
     delete containerStyle.borderStyle;
 
-    const containerHover = this.getStateStyle<ButtonElementContainer>(
+    const containerHover = this.getStyle<ButtonElementContainer>(
       'container',
       'hover'
     );
-    const textHover = this.getStateStyle<ButtonElementText>('text', 'hover');
-    const leftIconHover = this.getStateStyle<ButtonElementIcon>(
+    const textHover = this.getStyle<ButtonElementText>('text', 'hover');
+    const leftIconHover = this.getStyle<ButtonElementIcon>(
       this.getIcon('left'),
       'hover'
     );
-    const rightIconHover = this.getStateStyle<ButtonElementIcon>(
+    const rightIconHover = this.getStyle<ButtonElementIcon>(
       this.getIcon('right'),
       'hover'
     );
 
-    const containerPressed = this.getStateStyle<ButtonElementContainer>(
+    const containerPressed = this.getStyle<ButtonElementContainer>(
       'container',
       'pressed'
     );
-    const textPressed = this.getStateStyle<ButtonElementText>(
-      'text',
-      'pressed'
-    );
-    const leftIconPressed = this.getStateStyle<ButtonElementIcon>(
+    const textPressed = this.getStyle<ButtonElementText>('text', 'pressed');
+    const leftIconPressed = this.getStyle<ButtonElementIcon>(
       this.getIcon('left'),
       'pressed'
     );
-    const rightIconPressed = this.getStateStyle<ButtonElementIcon>(
+    const rightIconPressed = this.getStyle<ButtonElementIcon>(
       this.getIcon('right'),
       'pressed'
     );
 
-    const containerFocus = this.getStateStyle<ButtonElementContainer>(
+    const containerFocus = this.getStyle<ButtonElementContainer>(
       'container',
       'focus'
     );
-    const textFocus = this.getStateStyle<ButtonElementText>('text', 'focus');
-    const leftIconFocus = this.getStateStyle<ButtonElementIcon>(
+    const textFocus = this.getStyle<ButtonElementText>('text', 'focus');
+    const leftIconFocus = this.getStyle<ButtonElementIcon>(
       this.getIcon('left'),
       'focus'
     );
-    const rightIconFocus = this.getStateStyle<ButtonElementIcon>(
+    const rightIconFocus = this.getStyle<ButtonElementIcon>(
       this.getIcon('right'),
       'focus'
     );
 
-    const containerVisited = this.getStateStyle<ButtonElementContainer>(
+    const containerVisited = this.getStyle<ButtonElementContainer>(
       'container',
       'visited'
     );
-    const textVisited = this.getStateStyle<ButtonElementText>(
-      'text',
-      'visited'
-    );
-    const leftIconVisited = this.getStateStyle<ButtonElementIcon>(
+    const textVisited = this.getStyle<ButtonElementText>('text', 'visited');
+    const leftIconVisited = this.getStyle<ButtonElementIcon>(
       this.getIcon('left'),
       'visited'
     );
-    const rightIconVisited = this.getStateStyle<ButtonElementIcon>(
+    const rightIconVisited = this.getStyle<ButtonElementIcon>(
       this.getIcon('right'),
       'visited'
     );
 
-    const containerDisabled = this.getStateStyle<ButtonElementContainer>(
+    const containerDisabled = this.getStyle<ButtonElementContainer>(
       'container',
       'disabled'
     );
-    const textDisabled = this.getStateStyle<ButtonElementText>(
-      'text',
-      'disabled'
-    );
-    const leftIconDisabled = this.getStateStyle<ButtonElementIcon>(
+    const textDisabled = this.getStyle<ButtonElementText>('text', 'disabled');
+    const leftIconDisabled = this.getStyle<ButtonElementIcon>(
       this.getIcon('left'),
       'disabled'
     );
-    const rightIconDisabled = this.getStateStyle<ButtonElementIcon>(
+    const rightIconDisabled = this.getStyle<ButtonElementIcon>(
       this.getIcon('right'),
       'disabled'
     );
@@ -483,16 +475,10 @@ export class ButtonStyle {
   // Helper
   //----------------------------------------------------------------------------
 
-  private getIcon(
-    position: 'left' | 'right'
-  ):
-    | 'leftIconAttached'
-    | 'rightIconAttached'
-    | 'leftIconDetached'
-    | 'rightIconDetached' {
+  private getIcon(position: 'left' | 'right'): 'leftIcon' | 'rightIcon' {
     return this._iconType === 'attached'
-      ? `${position}IconAttached`
-      : `${position}IconDetached`;
+      ? `${position}Icon`
+      : `${position}Icon`;
   }
 
   private getTransition() {
@@ -502,32 +488,31 @@ export class ButtonStyle {
     })();
   }
 
-  private getStateStyle<T>(
-    element: keyof ButtonSchema,
-    state: InteractionState
-  ): T | Record<string, never> {
-    return {
-      ...this._theme?.[element]?.base?.[state]?.[this._size],
-      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[
-        this._variant
-      ]?.[state]?.[this._size],
-    } as T;
-  }
-
   private getStyle<T extends CSSProperties>(
-    element: keyof ButtonSchema
+    element: ButtonElement,
+    interaction?: Interaction
   ): T | Record<string, never> {
+    const baseStyle = this._theme?.elements?.[element];
+    const typeStyle = baseStyle?.type?.[this._typeStyle];
+    const variantStyle = typeStyle?.variant?.[this._variant];
+
+    if (interaction) {
+      return {
+        ...baseStyle?.base?.[interaction]?.[this._size],
+
+        ...variantStyle?.[interaction]?.[this._size],
+      } as T;
+    }
+
     return {
-      ...this._theme?.[element]?.base?.rest?.md,
-      ...this._theme?.[element]?.base?.rest?.[this._size],
-      ...this._theme?.[element]?.type?.[this._typeStyle]?.base?.md,
-      ...this._theme?.[element]?.type?.[this._typeStyle]?.base?.[this._size],
-      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[
-        this._variant
-      ]?.rest?.md,
-      ...this._theme?.[element]?.type?.[this._typeStyle]?.variant?.[
-        this._variant
-      ]?.rest?.[this._size],
+      ...baseStyle?.base?.rest?.md,
+      ...baseStyle?.base?.rest?.[this._size],
+
+      ...typeStyle?.base?.md,
+      ...typeStyle?.base?.[this._size],
+
+      ...variantStyle?.rest?.md,
+      ...variantStyle?.rest?.[this._size],
     } as T;
   }
 }

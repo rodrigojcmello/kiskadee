@@ -3,10 +3,10 @@ import { useContext, useMemo } from 'react';
 import type { ButtonProps } from './Button.types';
 import { KiskadeeContext } from '../../context';
 import { ButtonStyled } from './Button.style';
-import { ButtonStyle } from './elements/01_container';
+import { ButtonStyle } from './Button.class';
 
 export const ButtonOld: FC<ButtonProps> = ({
-  text,
+  label,
   typeHTML = 'button',
   interaction,
   type,
@@ -45,14 +45,14 @@ export const ButtonOld: FC<ButtonProps> = ({
       size={size}
     >
       {iconLeft && <div className="button__icon-left">{iconLeft}</div>}
-      <div className="button__text">{text}</div>
+      <div className="button__text">{label}</div>
       {iconRight && <span className="button__icon-right">{iconRight}</span>}
     </ButtonStyled>
   );
 };
 
 export const Button: FC<ButtonProps> = ({
-  text,
+  label,
   typeHTML = 'button',
   interaction,
   type,
@@ -135,7 +135,7 @@ export const Button: FC<ButtonProps> = ({
           .join(' ')
           .trim()}
       >
-        {text}
+        {label}
       </span>
       {iconRight && (
         <div

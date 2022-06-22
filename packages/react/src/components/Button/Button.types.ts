@@ -1,5 +1,7 @@
 import type { CSSProperties, ReactElement } from 'react';
 
+// export type ButtonState = 'default' | 'attached' | 'detached' | 'alone';
+
 export type ButtonType = 'contained' | 'outline' | 'flat';
 
 export type ButtonVariant =
@@ -10,7 +12,7 @@ export type ButtonVariant =
   | 'warning'
   | 'danger';
 
-export type InteractionState =
+export type Interaction =
   | 'rest'
   | 'hover'
   | 'focus'
@@ -30,23 +32,25 @@ export type Size =
   | 'xxxs';
 
 export interface ButtonProps {
-  text: string;
-  onClick: () => void;
+  label?: string;
+  onClick?: () => void;
   typeHTML?: 'button' | 'reset' | 'submit';
 
   // STYLE
   width?: 'auto' | 'block' | 'min';
   variant: ButtonVariant;
   type: ButtonType;
-  interaction?: InteractionState;
+  interaction?: Interaction;
   borderRadius?: 'none' | 'full' | 'rounded' | 'default';
   textAlign?: 'left' | 'center' | 'right';
   disabled?: boolean;
   iconLeft?: ReactElement;
   iconRight?: ReactElement;
-  iconType?: 'attached' | 'detached';
+  iconType?: 'attached' | 'detached' | 'alone';
   size?: Size;
 }
+
+export type ButtonElement = keyof Exclude<ButtonSchema['elements'], undefined>;
 
 //------------------------------------------------------------------------------
 // Elements
@@ -55,17 +59,12 @@ export interface ButtonProps {
 // Container
 
 export type ButtonElementContainer = {
-  // Core Style
   background?: 'none';
   backgroundColor?: CSSProperties['backgroundColor'];
   borderWidth?: CSSProperties['borderWidth'];
   borderStyle?: CSSProperties['borderStyle'];
   borderColor?: CSSProperties['borderColor'];
-
-  // Elevation
   boxShadow?: CSSProperties['boxShadow'];
-
-  // Focus
   outlineOffset?: CSSProperties['outlineOffset'];
   outlineColor?: CSSProperties['outlineColor'];
   outlineStyle?: CSSProperties['outlineStyle'];
@@ -77,8 +76,6 @@ export type ButtonElementContainer = {
 
 export interface ButtonElementIcon {
   color?: CSSProperties['color'];
-
-  // Sizing
   fontSize?: CSSProperties['fontSize'];
   paddingTop?: number;
   paddingRight?: number;
@@ -89,36 +86,19 @@ export interface ButtonElementIcon {
 // Text
 
 export interface ButtonElementText {
-  // Style
   fontFamily?: CSSProperties['fontFamily'];
   fontStyle?: CSSProperties['fontStyle'];
   fontWeight?: CSSProperties['fontWeight'];
   color?: CSSProperties['color'];
-
-  // Sizing
   fontSize?: CSSProperties['fontSize'];
   lineHeight?: CSSProperties['lineHeight'];
+
+  // Padding
   paddingTop?: CSSProperties['paddingTop'];
   paddingRight?: CSSProperties['paddingRight'];
   paddingBottom?: CSSProperties['paddingBottom'];
   paddingLeft?: CSSProperties['paddingLeft'];
 }
-
-//------------------------------------------------------------------------------
-// States e Sizes
-//------------------------------------------------------------------------------
-
-type ButtonElementContainerVariant = Partial<
-  Record<InteractionState, Partial<Record<Size, ButtonElementContainer>>>
->;
-
-type ButtonElementIconVariant = Partial<
-  Record<InteractionState, Partial<Record<Size, ButtonElementIcon>>>
->;
-
-type ButtonElementTextVariant = Partial<
-  Record<InteractionState, Partial<Record<Size, ButtonElementText>>>
->;
 
 //------------------------------------------------------------------------------
 
@@ -139,10 +119,20 @@ export interface ContainerOptions {
     right?: true;
   };
   icon?: {
-    leftAttached?: true;
-    leftDetached?: true;
-    rightAttached?: true;
-    rightDetached?: true;
+    enable?: {
+      left?: true;
+      right?: true;
+    };
+    variant?: {
+      leftIcon: {
+        attached?: ElementSchema<ButtonElementIcon>;
+        detached?: ElementSchema<ButtonElementIcon>;
+      };
+      rightIcon: {
+        attached?: ElementSchema<ButtonElementIcon>;
+        detached?: ElementSchema<ButtonElementIcon>;
+      };
+    };
   };
   size?: Partial<Record<Exclude<Size, 'md'>, boolean>> & { md: true };
   responsive?: {
@@ -160,49 +150,30 @@ export interface ContainerOptions {
   };
 }
 
-type ButtonIcon = {
-  base?: ButtonElementIconVariant;
+type ElementSchema<Base> = {
+  base?: Partial<Record<Interaction, Partial<Record<Size, Base>>>>;
   type?: Partial<
     Record<
       ButtonType,
       {
-        base?: Partial<Record<Size, ButtonElementIcon>>;
-        variant?: Partial<Record<ButtonVariant, ButtonElementIconVariant>>;
+        base?: Partial<Record<Size, Base>>;
+        variant?: Partial<
+          Record<
+            ButtonVariant,
+            Partial<Record<Interaction, Partial<Record<Size, Base>>>>
+          >
+        >;
       }
     >
   >;
 };
 
 export interface ButtonSchema {
-  container?: {
-    base?: ButtonElementContainerVariant;
-    option?: ContainerOptions;
-    type?: Partial<
-      Record<
-        ButtonType,
-        {
-          base?: Partial<Record<Size, ButtonElementContainer>>;
-          variant?: Partial<
-            Record<ButtonVariant, ButtonElementContainerVariant>
-          >;
-        }
-      >
-    >;
-  };
-  leftIconAttached?: ButtonIcon;
-  leftIconDetached?: ButtonIcon;
-  rightIconAttached?: ButtonIcon;
-  rightIconDetached?: ButtonIcon;
-  text?: {
-    base?: ButtonElementTextVariant;
-    type?: Partial<
-      Record<
-        ButtonType,
-        {
-          base?: Partial<Record<Size, ButtonElementText>>;
-          variant?: Partial<Record<ButtonVariant, ButtonElementTextVariant>>;
-        }
-      >
-    >;
+  option?: ContainerOptions;
+  elements?: {
+    container?: ElementSchema<ButtonElementContainer>;
+    leftIcon?: ElementSchema<ButtonElementIcon>;
+    rightIcon?: ElementSchema<ButtonElementIcon>;
+    text?: ElementSchema<ButtonElementText>;
   };
 }
