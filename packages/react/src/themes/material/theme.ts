@@ -21,12 +21,12 @@ export const materialTheme: KiskadeeSchema = {
           default: 'center',
           center: true,
         },
-        // icon: {
-        //   rightAttached: true,
-        //   leftAttached: true,
-        //   leftDetached: true,
-        //   rightDetached: true,
-        // },
+        icon: {
+          enable: {
+            right: true,
+            left: true,
+          },
+        },
         size: {
           md: true,
           sm: true,
@@ -221,7 +221,7 @@ export const materialTheme: KiskadeeSchema = {
             },
           },
         },
-        leftIcon: {
+        leftIconAttached: {
           base: {
             rest: {
               md: {
@@ -245,7 +245,55 @@ export const materialTheme: KiskadeeSchema = {
             },
           },
         },
-        rightIcon: {
+        leftIconDetached: {
+          base: {
+            rest: {
+              md: {
+                fontSize: 24,
+                paddingTop: 8,
+                paddingBottom: 8,
+                paddingLeft: 8,
+                paddingRight: 8,
+              },
+            },
+          },
+          type: {
+            outline: {
+              base: {
+                md: {
+                  paddingTop: 7,
+                  paddingBottom: 7,
+                  paddingLeft: 7,
+                },
+              },
+            },
+          },
+        },
+        rightIconAttached: {
+          base: {
+            rest: {
+              md: {
+                fontSize: 24,
+                paddingTop: 8,
+                paddingBottom: 8,
+                paddingLeft: 8,
+                paddingRight: 8,
+              },
+            },
+          },
+          type: {
+            outline: {
+              base: {
+                md: {
+                  paddingTop: 7,
+                  paddingBottom: 7,
+                  paddingLeft: 7,
+                },
+              },
+            },
+          },
+        },
+        rightIconDetached: {
           base: {
             rest: {
               md: {

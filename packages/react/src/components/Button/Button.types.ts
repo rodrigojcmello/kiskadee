@@ -46,7 +46,7 @@ export interface ButtonProps {
   disabled?: boolean;
   iconLeft?: ReactElement;
   iconRight?: ReactElement;
-  iconType?: 'attached' | 'detached' | 'alone';
+  iconType?: 'attached' | 'detached';
   size?: Size;
 }
 
@@ -59,24 +59,34 @@ export type ButtonElement = keyof Exclude<ButtonSchema['elements'], undefined>;
 // Container
 
 export type ButtonElementContainer = {
-  background?: 'none';
-  backgroundColor?: CSSProperties['backgroundColor'];
-  borderWidth?: CSSProperties['borderWidth'];
-  borderStyle?: CSSProperties['borderStyle'];
-  borderColor?: CSSProperties['borderColor'];
+  // Core
   boxShadow?: CSSProperties['boxShadow'];
   outlineOffset?: CSSProperties['outlineOffset'];
   outlineColor?: CSSProperties['outlineColor'];
   outlineStyle?: CSSProperties['outlineStyle'];
   outlineWidth?: CSSProperties['outlineWidth'];
   outline?: 'none';
+
+  // Background
+  background?: 'none';
+  backgroundColor?: CSSProperties['backgroundColor'];
+
+  // Border
+  borderWidth?: CSSProperties['borderWidth'];
+  borderStyle?: CSSProperties['borderStyle'];
+  borderColor?: CSSProperties['borderColor'];
 };
 
 // Icon
 
 export interface ButtonElementIcon {
+  // Color
   color?: CSSProperties['color'];
+
+  // Size
   fontSize?: CSSProperties['fontSize'];
+
+  // Padding
   paddingTop?: number;
   paddingRight?: number;
   paddingBottom?: number;
@@ -86,12 +96,17 @@ export interface ButtonElementIcon {
 // Text
 
 export interface ButtonElementText {
+  // Core
   fontFamily?: CSSProperties['fontFamily'];
   fontStyle?: CSSProperties['fontStyle'];
   fontWeight?: CSSProperties['fontWeight'];
-  color?: CSSProperties['color'];
-  fontSize?: CSSProperties['fontSize'];
   lineHeight?: CSSProperties['lineHeight'];
+
+  // Color
+  color?: CSSProperties['color'];
+
+  // Size
+  fontSize?: CSSProperties['fontSize'];
 
   // Padding
   paddingTop?: CSSProperties['paddingTop'];
@@ -122,16 +137,6 @@ export interface ContainerOptions {
     enable?: {
       left?: true;
       right?: true;
-    };
-    variant?: {
-      leftIcon: {
-        attached?: ElementSchema<ButtonElementIcon>;
-        detached?: ElementSchema<ButtonElementIcon>;
-      };
-      rightIcon: {
-        attached?: ElementSchema<ButtonElementIcon>;
-        detached?: ElementSchema<ButtonElementIcon>;
-      };
     };
   };
   size?: Partial<Record<Exclude<Size, 'md'>, boolean>> & { md: true };
@@ -172,8 +177,10 @@ export interface ButtonSchema {
   option?: ContainerOptions;
   elements?: {
     container?: ElementSchema<ButtonElementContainer>;
-    leftIcon?: ElementSchema<ButtonElementIcon>;
-    rightIcon?: ElementSchema<ButtonElementIcon>;
+    leftIconAttached?: ElementSchema<ButtonElementIcon>;
+    leftIconDetached?: ElementSchema<ButtonElementIcon>;
+    rightIconAttached?: ElementSchema<ButtonElementIcon>;
+    rightIconDetached?: ElementSchema<ButtonElementIcon>;
     text?: ElementSchema<ButtonElementText>;
   };
 }

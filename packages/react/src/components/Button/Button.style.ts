@@ -48,13 +48,21 @@ export class ButtonStyle {
 
   private readonly _iconRight: ButtonProps['iconRight'];
 
-  private readonly _iconType: ButtonProps['iconType'];
+  private readonly _iconType: Exclude<ButtonProps['iconType'], undefined>;
 
   private readonly _timingFunction: string;
 
   private readonly _duration: string;
 
-  constructor(style: ElementContainerProps) {
+  constructor(
+    style: Exclude<ElementContainerProps, 'iconType'> & {
+      iconType: Exclude<ElementContainerProps['iconType'], undefined>;
+    }
+  ) {
+    // Required
+    this._iconType = style.iconType;
+
+    // Optional
     this._size = style.size;
     this._typeStyle = style.typeStyle;
     this._variant = style.variant;
@@ -65,7 +73,8 @@ export class ButtonStyle {
     this._options = style.theme?.option;
     this._iconLeft = style.iconLeft;
     this._iconRight = style.iconRight;
-    this._iconType = style.iconType;
+
+    // Transition
     this._timingFunction = 'ease';
     this._duration = '0.2s';
   }
@@ -140,6 +149,7 @@ export class ButtonStyle {
     const containerStyle = this.getStyle<ButtonElementContainer>('container');
 
     return css({
+      background: containerStyle?.background,
       backgroundColor: containerStyle?.backgroundColor,
     })();
   }
@@ -173,6 +183,7 @@ export class ButtonStyle {
       ...this.getStyle<ButtonElementContainer>('container'),
     };
 
+    delete containerStyle.background;
     delete containerStyle.backgroundColor;
     delete containerStyle.borderColor;
     delete containerStyle.borderWidth;
@@ -437,37 +448,34 @@ export class ButtonStyle {
   private iconColor(position: 'left' | 'right') {
     const iconStyle = this.getStyle<ButtonElementIcon>(this.getIcon(position));
     const textStyle = this.getStyle<ButtonElementText>('text');
+    const color = textStyle?.color || iconStyle?.color;
 
     return css({
-      color: textStyle?.color || iconStyle?.color,
+      color,
 
       '& > *': {
         fontSize: 'inherit',
-        fill: iconStyle?.color || undefined,
+        fill: color || undefined,
       },
     })();
   }
 
   private iconSize(position: 'left' | 'right') {
-    const iconLeftStyle = this.getStyle<ButtonElementIcon>(
-      this.getIcon(position)
-    );
+    const iconStyle = this.getStyle<ButtonElementIcon>(this.getIcon(position));
 
     return css({
-      fontSize: iconLeftStyle?.fontSize,
+      fontSize: iconStyle?.fontSize,
     })();
   }
 
   private iconPadding(position: 'left' | 'right') {
-    const iconLeftStyle = this.getStyle<ButtonElementIcon>(
-      this.getIcon(position)
-    );
+    const iconStyle = this.getStyle<ButtonElementIcon>(this.getIcon(position));
 
     return css({
-      paddingTop: iconLeftStyle?.paddingTop,
-      paddingBottom: iconLeftStyle?.paddingBottom,
-      paddingLeft: iconLeftStyle?.paddingLeft,
-      paddingRight: iconLeftStyle?.paddingRight,
+      paddingTop: iconStyle?.paddingTop,
+      paddingBottom: iconStyle?.paddingBottom,
+      paddingLeft: iconStyle?.paddingLeft,
+      paddingRight: iconStyle?.paddingRight,
     })();
   }
 
@@ -475,10 +483,16 @@ export class ButtonStyle {
   // Helper
   //----------------------------------------------------------------------------
 
-  private getIcon(position: 'left' | 'right'): 'leftIcon' | 'rightIcon' {
-    return this._iconType === 'attached'
-      ? `${position}Icon`
-      : `${position}Icon`;
+  private getIcon(
+    position: 'left' | 'right'
+  ):
+    | 'leftIconAttached'
+    | 'rightIconAttached'
+    | 'leftIconDetached'
+    | 'rightIconDetached' {
+    const iconType = this._iconType === 'attached' ? 'Attached' : 'Detached';
+
+    return `${position}Icon${iconType}`;
   }
 
   private getTransition() {

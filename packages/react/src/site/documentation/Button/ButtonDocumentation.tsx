@@ -243,7 +243,7 @@ export const ButtonDocumentation: FC = () => {
 
       <Box>
         <div>
-          <BoxTitle>No icon</BoxTitle>
+          <BoxTitle>Label</BoxTitle>
           {buttonContainer?.type?.contained ? (
             <Applicable>
               <Button

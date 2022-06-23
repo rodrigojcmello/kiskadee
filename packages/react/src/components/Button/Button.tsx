@@ -1,55 +1,9 @@
+/* eslint-disable react/button-has-type */
 import type { FC } from 'react';
 import { useContext, useMemo } from 'react';
 import type { ButtonProps } from './Button.types';
 import { KiskadeeContext } from '../../context';
-import { ButtonStyled } from './Button.style';
-import { ButtonStyle } from './Button.class';
-
-export const ButtonOld: FC<ButtonProps> = ({
-  label,
-  typeHTML = 'button',
-  interaction,
-  type,
-  variant,
-  borderRadius = 'default',
-  textAlign,
-  onClick,
-  width = 'auto',
-  disabled,
-  iconLeft,
-  iconType,
-  iconRight,
-  size = 'md',
-}) => {
-  const [theme] = useContext(KiskadeeContext);
-
-  const classeName = ['button'];
-  if (interaction) classeName.push(`--${interaction}`);
-
-  return (
-    <ButtonStyled
-      type={typeHTML}
-      onClick={onClick}
-      theme={theme.component.button}
-      className={classeName.join(' ').trim()}
-      // Options
-      borderRadius={borderRadius}
-      textAlign={textAlign}
-      width={width}
-      variant={variant}
-      typeStyle={type}
-      disabled={disabled}
-      iconLeft={iconLeft}
-      iconRight={iconRight}
-      iconType={iconType}
-      size={size}
-    >
-      {iconLeft && <div className="button__icon-left">{iconLeft}</div>}
-      <div className="button__text">{label}</div>
-      {iconRight && <span className="button__icon-right">{iconRight}</span>}
-    </ButtonStyled>
-  );
-};
+import { ButtonStyle } from './Button.style';
 
 export const Button: FC<ButtonProps> = ({
   label,
@@ -63,7 +17,7 @@ export const Button: FC<ButtonProps> = ({
   width = 'auto',
   disabled,
   iconLeft,
-  iconType,
+  iconType = 'attached',
   iconRight,
   size = 'md',
 }) => {
@@ -102,7 +56,7 @@ export const Button: FC<ButtonProps> = ({
       ]
         .join(' ')
         .trim()}
-      type="button"
+      type={typeHTML}
       onClick={onClick}
       disabled={disabled}
     >
