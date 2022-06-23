@@ -3,15 +3,17 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepare": "husky install",
+    "type-check": "tsc"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rodrigojcmello/kiskadee.git"
   },
   "keywords": [
-    "ui-kit",
-    "design-system"
+    "ui kit",
+    "design-system",
+    "theme builder"
   ],
   "author": "Rodrigo Mello",
   "license": "ISC",
@@ -21,5 +23,8 @@
   "homepage": "https://github.com/rodrigojcmello/kiskadee#readme",
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "husky": "^8.0.1"
+  }
 }
