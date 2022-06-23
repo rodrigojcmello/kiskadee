@@ -1,7 +1,7 @@
 /* eslint-disable react/button-has-type */
 import type { FC } from 'react';
 import { useContext, useMemo } from 'react';
-import type { ButtonProps } from './Button.types';
+import type { ButtonProps, ButtonStyleProps } from './Button.types';
 import { KiskadeeContext } from '../../context';
 import { ButtonStyle } from './Button.style';
 
@@ -28,7 +28,7 @@ export const Button: FC<ButtonProps> = ({
     size,
     typeStyle: type,
     variant,
-    iconType,
+    iconType: (!label ? 'icon' : iconType) as ButtonStyleProps['iconType'],
     iconRight,
     iconLeft,
     borderRadius,
@@ -75,22 +75,24 @@ export const Button: FC<ButtonProps> = ({
           {iconLeft}
         </div>
       )}
-      <span
-        className={[
-          'button__text',
-          button.text.core,
-          button.text.base,
-          button.text.color,
-          button.text.padding,
-          button.text.width,
-          button.text.align,
-          button.common.transition,
-        ]
-          .join(' ')
-          .trim()}
-      >
-        {label}
-      </span>
+      {label && (
+        <span
+          className={[
+            'button__text',
+            button.text.core,
+            button.text.base,
+            button.text.color,
+            button.text.padding,
+            button.text.width,
+            button.text.align,
+            button.common.transition,
+          ]
+            .join(' ')
+            .trim()}
+        >
+          {label}
+        </span>
+      )}
       {iconRight && (
         <div
           className={[

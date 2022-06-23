@@ -221,6 +221,30 @@ export const materialTheme: KiskadeeSchema = {
             },
           },
         },
+        iconAlone: {
+          base: {
+            rest: {
+              md: {
+                fontSize: 24,
+                paddingTop: 8,
+                paddingBottom: 8,
+                paddingLeft: 8,
+                paddingRight: 8,
+              },
+            },
+          },
+          type: {
+            outline: {
+              base: {
+                md: {
+                  paddingTop: 7,
+                  paddingBottom: 7,
+                  paddingLeft: 7,
+                },
+              },
+            },
+          },
+        },
         leftIconAttached: {
           base: {
             rest: {

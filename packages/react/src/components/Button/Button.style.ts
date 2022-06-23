@@ -2,32 +2,15 @@
 import { css } from '@stitches/core';
 import type { CSSProperties } from 'react';
 import type {
-  ButtonProps,
+  ButtonElement,
+  ButtonElementContainer,
+  ButtonElementIcon,
+  ButtonElementText,
   ButtonSchema,
-  Size,
+  ButtonStyleProps,
   ContainerOptions,
   Interaction,
-  ButtonElementContainer,
-  ButtonElementText,
-  ButtonElementIcon,
-  ButtonElement,
 } from './Button.types';
-
-type ButtonStyleProps = {
-  // Required
-  iconType: Exclude<ButtonProps['iconType'], undefined>;
-  borderRadius: Exclude<ButtonProps['borderRadius'], undefined>;
-  width: Exclude<ButtonProps['width'], undefined>;
-  size: Size;
-  typeStyle: ButtonProps['type'];
-  variant: ButtonProps['variant'];
-
-  // Optional
-  theme?: ButtonSchema;
-  iconLeft?: ButtonProps['iconLeft'];
-  iconRight?: ButtonProps['iconRight'];
-  textAlign?: ButtonProps['textAlign'];
-};
 
 export class ButtonStyle {
   // Required
@@ -490,13 +473,25 @@ export class ButtonStyle {
   private getIcon(
     position: 'left' | 'right'
   ):
+    | 'iconAlone'
     | 'leftIconAttached'
     | 'rightIconAttached'
     | 'leftIconDetached'
     | 'rightIconDetached' {
-    const iconType = this._iconType === 'attached' ? 'Attached' : 'Detached';
+    if (this._iconType === 'icon') {
+      return `iconAlone`;
+    }
+    return `${position}Icon${ButtonStyle.capitalizeFirstLetter(
+      this._iconType
+    )}` as
+      | 'leftIconAttached'
+      | 'rightIconAttached'
+      | 'leftIconDetached'
+      | 'rightIconDetached';
+  }
 
-    return `${position}Icon${iconType}`;
+  private static capitalizeFirstLetter(string: string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
   private getTransition() {

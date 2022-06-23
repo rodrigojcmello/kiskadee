@@ -50,6 +50,22 @@ export interface ButtonProps {
   size?: Size;
 }
 
+export type ButtonStyleProps = {
+  // Required
+  iconType: Exclude<ButtonProps['iconType'], undefined> | 'icon';
+  borderRadius: Exclude<ButtonProps['borderRadius'], undefined>;
+  width: Exclude<ButtonProps['width'], undefined>;
+  size: Size;
+  typeStyle: ButtonProps['type'];
+  variant: ButtonProps['variant'];
+
+  // Optional
+  theme?: ButtonSchema;
+  iconLeft?: ButtonProps['iconLeft'];
+  iconRight?: ButtonProps['iconRight'];
+  textAlign?: ButtonProps['textAlign'];
+};
+
 export type ButtonElement = keyof Exclude<ButtonSchema['elements'], undefined>;
 
 //------------------------------------------------------------------------------
@@ -177,6 +193,7 @@ export interface ButtonSchema {
   option?: ContainerOptions;
   elements?: {
     container?: ElementSchema<ButtonElementContainer>;
+    iconAlone?: ElementSchema<ButtonElementIcon>;
     leftIconAttached?: ElementSchema<ButtonElementIcon>;
     leftIconDetached?: ElementSchema<ButtonElementIcon>;
     rightIconAttached?: ElementSchema<ButtonElementIcon>;

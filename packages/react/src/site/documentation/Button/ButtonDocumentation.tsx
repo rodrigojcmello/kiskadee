@@ -77,19 +77,16 @@ export const ButtonDocumentation: FC = () => {
     <Container className={!pageLoad ? style['no-transition'] : undefined}>
       <Box>
         <div>
-          <BoxTitle>Medium</BoxTitle>
+          <BoxTitle>Icon</BoxTitle>
           {buttonOption?.size?.sm ? (
             <Applicable>
               <Button
-                // text="Click me"
-                width="block"
                 type={type}
                 variant={variant}
                 borderRadius={radius}
-                textAlign={textAlign}
-                iconType={iconType}
-                iconLeft={iconLeft}
-                iconRight={iconRight}
+                iconLeft={
+                  <span className="material-symbols-outlined">thumb_up</span>
+                }
                 size="md"
                 onClick={(): void => {
                   setIconLeft(undefined);
