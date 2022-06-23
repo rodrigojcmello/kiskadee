@@ -47,7 +47,6 @@ export const Button: FC<ButtonProps> = ({
         ...classeName,
         button.container.width,
         button.container.radius,
-        button.container.textAlign,
         button.container.border,
         button.container.background,
         button.container.base,
@@ -84,6 +83,7 @@ export const Button: FC<ButtonProps> = ({
           button.text.color,
           button.text.padding,
           button.text.width,
+          button.text.align,
           button.common.transition,
         ]
           .join(' ')

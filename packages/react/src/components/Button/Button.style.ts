@@ -97,7 +97,6 @@ export class ButtonStyle {
     return {
       border: this.containerBorder(),
       background: this.containerBackground(),
-      textAlign: this.containerTextAlign(),
       radius: this.containerRadius(),
       width: this.containerWidth(),
       core: this.containerCore(),
@@ -137,15 +136,6 @@ export class ButtonStyle {
 
     return css({
       borderRadius: borderRadius || 0,
-    })();
-  }
-
-  private containerTextAlign() {
-    return css({
-      textAlign:
-        this._textAlign && this._options?.textAlign?.[this._textAlign]
-          ? this._textAlign
-          : this._options?.textAlign?.default,
     })();
   }
 
@@ -363,6 +353,7 @@ export class ButtonStyle {
       color: this.textColor(),
       padding: this.textPadding(),
       width: this.textWidth(),
+      align: this.textAlign(),
     };
   }
 
@@ -385,6 +376,15 @@ export class ButtonStyle {
     return css({
       ...textStyle,
     });
+  }
+
+  private textAlign() {
+    return css({
+      textAlign:
+        this._textAlign && this._options?.textAlign?.[this._textAlign]
+          ? this._textAlign
+          : this._options?.textAlign?.default,
+    })();
   }
 
   private textWidth() {
