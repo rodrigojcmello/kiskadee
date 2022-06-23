@@ -13,63 +13,67 @@ import type {
   ButtonElement,
 } from './Button.types';
 
-type ElementContainerProps = {
+type ButtonStyleProps = {
+  // Required
+  iconType: Exclude<ButtonProps['iconType'], undefined>;
+  borderRadius: Exclude<ButtonProps['borderRadius'], undefined>;
+  width: Exclude<ButtonProps['width'], undefined>;
   size: Size;
   typeStyle: ButtonProps['type'];
   variant: ButtonProps['variant'];
-  borderRadius: Exclude<ButtonProps['borderRadius'], undefined>;
 
+  // Optional
   theme?: ButtonSchema;
   iconLeft?: ButtonProps['iconLeft'];
   iconRight?: ButtonProps['iconRight'];
-  iconType?: ButtonProps['iconType'];
-  width?: ButtonProps['width'];
   textAlign?: ButtonProps['textAlign'];
 };
 
 export class ButtonStyle {
-  private readonly _size: ElementContainerProps['size'];
+  // Required
 
-  private readonly _typeStyle: ElementContainerProps['typeStyle'];
+  private readonly _iconType: ButtonStyleProps['iconType'];
 
-  private readonly _variant: ElementContainerProps['variant'];
+  private readonly _borderRadius: ButtonStyleProps['borderRadius'];
 
-  private readonly _width: ElementContainerProps['width'];
+  private readonly _width: ButtonStyleProps['width'];
+
+  private readonly _size: ButtonStyleProps['size'];
+
+  private readonly _typeStyle: ButtonStyleProps['typeStyle'];
+
+  private readonly _variant: ButtonStyleProps['variant'];
+
+  // Optional
 
   private readonly _options: ContainerOptions | undefined;
 
-  private readonly _borderRadius: ElementContainerProps['borderRadius'];
-
-  private readonly _textAlign: ButtonProps['textAlign'];
+  private readonly _textAlign: ButtonStyleProps['textAlign'];
 
   private readonly _theme: ButtonSchema | undefined;
 
-  private readonly _iconLeft: ButtonProps['iconLeft'];
+  private readonly _iconLeft: ButtonStyleProps['iconLeft'];
 
-  private readonly _iconRight: ButtonProps['iconRight'];
+  private readonly _iconRight: ButtonStyleProps['iconRight'];
 
-  private readonly _iconType: Exclude<ButtonProps['iconType'], undefined>;
+  // Transition
 
   private readonly _timingFunction: string;
 
   private readonly _duration: string;
 
-  constructor(
-    style: Exclude<ElementContainerProps, 'iconType'> & {
-      iconType: Exclude<ElementContainerProps['iconType'], undefined>;
-    }
-  ) {
+  constructor(style: ButtonStyleProps) {
     // Required
     this._iconType = style.iconType;
-
-    // Optional
+    this._width = style.width;
     this._size = style.size;
     this._typeStyle = style.typeStyle;
     this._variant = style.variant;
     this._borderRadius = style.borderRadius;
+
+    // Optional
     this._theme = style.theme;
     this._textAlign = style.textAlign;
-    this._width = style.width;
     this._options = style.theme?.option;
     this._iconLeft = style.iconLeft;
     this._iconRight = style.iconRight;

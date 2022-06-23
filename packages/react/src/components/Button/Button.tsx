@@ -6,20 +6,20 @@ import { KiskadeeContext } from '../../context';
 import { ButtonStyle } from './Button.style';
 
 export const Button: FC<ButtonProps> = ({
+  iconType = 'attached',
+  width = 'auto',
+  borderRadius = 'default',
+  size = 'md',
   label,
-  typeHTML = 'button',
   interaction,
   type,
   variant,
-  borderRadius = 'default',
   textAlign,
   onClick,
-  width = 'auto',
   disabled,
   iconLeft,
-  iconType = 'attached',
   iconRight,
-  size = 'md',
+  typeHTML = 'button',
 }) => {
   const [theme] = useContext(KiskadeeContext);
 

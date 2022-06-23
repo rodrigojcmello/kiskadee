@@ -118,7 +118,7 @@ export interface ButtonElementText {
 //------------------------------------------------------------------------------
 
 export interface ContainerOptions {
-  widthMin?: CSSProperties['minWidth'];
+  widthMin?: number;
   borderRadius?: {
     default?: 'full' | 'rounded' | 'none';
     variant?: {
