@@ -21,16 +21,30 @@
   transition: none !important;
 }
 
-.width-container {
+.buttonRow {
   margin-top: 48px;
   width: 100%;
 }
 
 .width {
-  //display: flex;
   display: grid;
   grid-template-columns: 2fr auto auto;
   gap: 32px;
   align-items: center;
-  height: 50px;
+  min-height: 50px;
+}
+
+.buttonGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 32px;
+  align-items: center;
+}
+
+.buttonWrap {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  min-height: 50px;
+  align-items: center;
 }

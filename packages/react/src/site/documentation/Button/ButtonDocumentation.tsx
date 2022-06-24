@@ -27,7 +27,7 @@ const Applicable: FC<PropsWithChildren<Record<string, unknown>>> = ({
 
 const NotApplicable: FC = () => {
   return (
-    <div style={{ textAlign: 'center', fontSize: 0, padding: '13px 0' }}>
+    <div className={style.buttonWrap}>
       <span
         className="material-symbols-outlined"
         style={{ color: '#e6e6e6', fontSize: 24 }}
@@ -332,11 +332,12 @@ export const ButtonDocumentation: FC = () => {
           )}
         </div>
       </Box>
-      <Box>
+
+      <div className={`${style.buttonRow} ${style.buttonGrid}`}>
         <div>
           <BoxTitle>Contained</BoxTitle>
           {buttonContainer?.type?.contained ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
@@ -352,7 +353,7 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 iconType={iconType}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
@@ -361,7 +362,7 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>Outline</BoxTitle>
           {buttonContainer?.type?.outline ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
@@ -377,7 +378,7 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 iconType={iconType}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
@@ -385,7 +386,7 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>Flat</BoxTitle>
           {buttonContainer?.type?.flat ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
@@ -401,18 +402,18 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 iconType={iconType}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
         </div>
-      </Box>
+      </div>
 
-      <Box>
+      <div className={`${style.buttonRow} ${style.buttonGrid}`}>
         <div>
           <BoxTitle>Primary</BoxTitle>
           {buttonVariant?.primary ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
@@ -427,7 +428,7 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 iconType={iconType}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
@@ -436,7 +437,7 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>Secondary</BoxTitle>
           {buttonVariant?.secondary ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
@@ -451,7 +452,7 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 iconType={iconType}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
@@ -459,7 +460,7 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>Tertiary</BoxTitle>
           {buttonVariant?.tertiary ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
@@ -474,18 +475,18 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 iconType={iconType}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
         </div>
-      </Box>
+      </div>
 
-      <Box>
+      <div className={`${style.buttonRow} ${style.buttonGrid}`}>
         <div>
           <BoxTitle>Success</BoxTitle>
           {buttonVariant?.success ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
@@ -500,7 +501,7 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 iconType={iconType}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
@@ -509,7 +510,7 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>Warning</BoxTitle>
           {buttonVariant?.warning ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
@@ -524,7 +525,7 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 iconType={iconType}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
@@ -533,7 +534,7 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>Danger</BoxTitle>
           {buttonVariant?.danger ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width="block"
@@ -548,18 +549,18 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 iconType={iconType}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
         </div>
-      </Box>
+      </div>
 
-      <Box>
+      <div className={style.buttonGrid}>
         <div>
           <BoxTitle>Hover</BoxTitle>
           {buttonContainer?.base?.hover || buttonVariant?.[variant]?.hover ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
@@ -573,7 +574,7 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 iconType={iconType}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
@@ -582,7 +583,7 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>Focus</BoxTitle>
           {buttonContainer?.base?.focus || buttonVariant?.[variant]?.focus ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
@@ -596,7 +597,7 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 iconType={iconType}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
@@ -606,7 +607,7 @@ export const ButtonDocumentation: FC = () => {
           <BoxTitle>Pressed</BoxTitle>
           {buttonContainer?.base?.pressed ||
           buttonVariant?.[variant]?.pressed ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
@@ -620,7 +621,7 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 iconType={iconType}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
@@ -630,7 +631,7 @@ export const ButtonDocumentation: FC = () => {
           <BoxTitle>Visited</BoxTitle>
           {buttonContainer?.base?.visited ||
           buttonVariant?.[variant]?.visited ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
@@ -644,7 +645,7 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 iconType={iconType}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
@@ -654,7 +655,7 @@ export const ButtonDocumentation: FC = () => {
           <BoxTitle>Disabled</BoxTitle>
           {buttonContainer?.base?.disabled ||
           buttonVariant?.[variant]?.disabled ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
@@ -668,13 +669,14 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 iconType={iconType}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
         </div>
-      </Box>
-      <div className={style['width-container']}>
+      </div>
+
+      <div className={style.buttonRow}>
         <BoxTitle>Width options</BoxTitle>
         <div className={style.width}>
           <div>
@@ -721,165 +723,168 @@ export const ButtonDocumentation: FC = () => {
           </div>
         </div>
       </div>
-      <div>
-        <BoxTitle>Radius Options</BoxTitle>
-        <Box>
-          <div>
-            <BoxTitle>
-              Rounded
-              {buttonOption?.borderRadius?.default ===
-                buttonOption?.borderRadius?.variant?.rounded && ' (default)'}
-            </BoxTitle>
-            {buttonOption?.borderRadius?.variant?.rounded !== undefined ? (
-              <Applicable>
-                <Button
-                  label={label}
-                  width={width}
-                  borderRadius="rounded"
-                  type={type}
-                  variant={variant}
-                  textAlign={textAlign}
-                  onClick={(): void => setRadius('rounded')}
-                  iconLeft={iconLeft}
-                  iconRight={iconRight}
-                  iconType={iconType}
-                />
-              </Applicable>
-            ) : (
-              <NotApplicable />
-            )}
-          </div>
-          <div>
-            <BoxTitle>
-              Full
-              {buttonOption?.borderRadius?.default ===
-                buttonOption?.borderRadius?.variant?.full && ' (default)'}
-            </BoxTitle>
-            {buttonOption?.borderRadius?.variant?.full !== undefined ? (
-              <Applicable>
-                <Button
-                  label={label}
-                  width={width}
-                  borderRadius="full"
-                  type={type}
-                  variant={variant}
-                  textAlign={textAlign}
-                  onClick={(): void => setRadius('full')}
-                  iconLeft={iconLeft}
-                  iconRight={iconRight}
-                  iconType={iconType}
-                />
-              </Applicable>
-            ) : (
-              <NotApplicable />
-            )}
-          </div>
-          <div>
-            <BoxTitle>
-              None
-              {buttonOption?.borderRadius?.default ===
-                buttonOption?.borderRadius?.none && ' (default)'}
-            </BoxTitle>
-            {buttonOption?.borderRadius?.none !== undefined ? (
-              <Applicable>
-                <Button
-                  label={label}
-                  width={width}
-                  borderRadius="none"
-                  type={type}
-                  variant={variant}
-                  textAlign={textAlign}
-                  onClick={(): void => setRadius('none')}
-                  iconLeft={iconLeft}
-                  iconRight={iconRight}
-                  iconType={iconType}
-                />
-              </Applicable>
-            ) : (
-              <NotApplicable />
-            )}
-          </div>
-        </Box>
-        <Box>
-          <div>
-            <BoxTitle>
-              Left
-              {buttonOption?.textAlign?.default === 'left' && ' (default)'}
-            </BoxTitle>
-            {buttonOption?.textAlign?.left ? (
-              <Applicable>
-                <Button
-                  label="Click me"
-                  width="block"
-                  textAlign="left"
-                  type={type}
-                  variant={variant}
-                  borderRadius={radius}
-                  onClick={(): void => {
-                    setTextAlign('left');
-                  }}
-                  iconLeft={iconLeft}
-                  iconRight={iconRight}
-                  iconType={iconType}
-                />
-              </Applicable>
-            ) : (
-              <NotApplicable />
-            )}
-          </div>
-          <div>
-            <BoxTitle>
-              Center
-              {buttonOption?.textAlign?.default === 'center' && ' (default)'}
-            </BoxTitle>
-            {buttonOption?.textAlign?.center ? (
-              <Applicable>
-                <Button
-                  label="Click me"
-                  width="block"
-                  textAlign="center"
-                  type={type}
-                  variant={variant}
-                  borderRadius={radius}
-                  onClick={(): void => {
-                    setTextAlign('center');
-                  }}
-                  iconLeft={iconLeft}
-                  iconRight={iconRight}
-                  iconType={iconType}
-                />
-              </Applicable>
-            ) : (
-              <NotApplicable />
-            )}
-          </div>
-          <div>
-            <BoxTitle>
-              Right
-              {buttonOption?.textAlign?.default === 'right' && ' (default)'}
-            </BoxTitle>
-            {buttonOption?.textAlign?.right ? (
-              <Applicable>
-                <Button
-                  label="Click me"
-                  width="block"
-                  textAlign="right"
-                  type={type}
-                  variant={variant}
-                  borderRadius={radius}
-                  onClick={(): void => {
-                    setTextAlign('right');
-                  }}
-                  iconLeft={iconLeft}
-                  iconRight={iconRight}
-                  iconType={iconType}
-                />
-              </Applicable>
-            ) : (
-              <NotApplicable />
-            )}
-          </div>
-        </Box>
+
+      <div className={`${style.buttonRow} ${style.buttonGrid}`}>
+        <div>
+          <BoxTitle>
+            Rounded
+            {buttonOption?.borderRadius?.default ===
+              buttonOption?.borderRadius?.variant?.rounded && ' (default)'}
+          </BoxTitle>
+          {buttonOption?.borderRadius?.variant?.rounded !== undefined ? (
+            <div className={style.buttonWrap}>
+              <Button
+                label={label}
+                width={width}
+                borderRadius="rounded"
+                type={type}
+                variant={variant}
+                textAlign={textAlign}
+                onClick={(): void => setRadius('rounded')}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                iconType={iconType}
+              />
+            </div>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+
+        <div>
+          <BoxTitle>
+            Full
+            {buttonOption?.borderRadius?.default ===
+              buttonOption?.borderRadius?.variant?.full && ' (default)'}
+          </BoxTitle>
+          {buttonOption?.borderRadius?.variant?.full !== undefined ? (
+            <div className={style.buttonWrap}>
+              <Button
+                label={label}
+                width={width}
+                borderRadius="full"
+                type={type}
+                variant={variant}
+                textAlign={textAlign}
+                onClick={(): void => setRadius('full')}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                iconType={iconType}
+              />
+            </div>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+
+        <div>
+          <BoxTitle>
+            None
+            {buttonOption?.borderRadius?.default ===
+              buttonOption?.borderRadius?.none && ' (default)'}
+          </BoxTitle>
+          {buttonOption?.borderRadius?.none !== undefined ? (
+            <div className={style.buttonWrap}>
+              <Button
+                label={label}
+                width={width}
+                borderRadius="none"
+                type={type}
+                variant={variant}
+                textAlign={textAlign}
+                onClick={(): void => setRadius('none')}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                iconType={iconType}
+              />
+            </div>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+      </div>
+
+      <div className={`${style.buttonRow} ${style.buttonGrid}`}>
+        <div>
+          <BoxTitle>
+            Left
+            {buttonOption?.textAlign?.default === 'left' && ' (default)'}
+          </BoxTitle>
+          {buttonOption?.textAlign?.left ? (
+            <div className={style.buttonWrap}>
+              <Button
+                label="Click me"
+                width="block"
+                textAlign="left"
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                onClick={(): void => {
+                  setTextAlign('left');
+                }}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                iconType="detached"
+              />
+            </div>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+
+        <div>
+          <BoxTitle>
+            Center
+            {buttonOption?.textAlign?.default === 'center' && ' (default)'}
+          </BoxTitle>
+          {buttonOption?.textAlign?.center ? (
+            <div className={style.buttonWrap}>
+              <Button
+                label="Click me"
+                width="block"
+                textAlign="center"
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                onClick={(): void => {
+                  setTextAlign('center');
+                }}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                iconType="detached"
+              />
+            </div>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+
+        <div>
+          <BoxTitle>
+            Right
+            {buttonOption?.textAlign?.default === 'right' && ' (default)'}
+          </BoxTitle>
+          {buttonOption?.textAlign?.right ? (
+            <div className={style.buttonWrap}>
+              <Button
+                label="Click me"
+                width="block"
+                textAlign="right"
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                onClick={(): void => {
+                  setTextAlign('right');
+                }}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                iconType="detached"
+              />
+            </div>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
       </div>
     </Container>
   );
