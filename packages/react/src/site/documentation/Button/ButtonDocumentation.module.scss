@@ -1,22 +1,3 @@
-.applicable {
-  height: 50px;
-  position: relative;
-}
-
-.applicable-table {
-  display: table;
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-}
-
-.applicable-cell {
-  display: table-cell;
-  vertical-align: middle;
-}
-
 .no-transition * {
   transition: none !important;
 }

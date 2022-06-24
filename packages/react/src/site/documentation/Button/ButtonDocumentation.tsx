@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import type { FC, PropsWithChildren, ReactElement } from 'react';
+import type { FC, ReactElement } from 'react';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { Button } from '../../../components/Button';
-import { Box } from '../../components/Box/Box';
 import { Container } from '../../components/Container/Container';
 import { BoxTitle } from '../../components/BoxTitle/BoxTitle';
 import type {
@@ -12,18 +11,6 @@ import type {
 } from '../../../components/Button';
 import { KiskadeeContext } from '../../../context';
 import style from './ButtonDocumentation.module.scss';
-
-const Applicable: FC<PropsWithChildren<Record<string, unknown>>> = ({
-  children,
-}) => {
-  return (
-    <div className={style.applicable}>
-      <div className={style['applicable-table']}>
-        <div className={style['applicable-cell']}>{children}</div>
-      </div>
-    </div>
-  );
-};
 
 const NotApplicable: FC = () => {
   return (
@@ -78,11 +65,11 @@ export const ButtonDocumentation: FC = () => {
 
   return (
     <Container className={!pageLoad ? style['no-transition'] : undefined}>
-      <Box>
+      <div className={`${style.buttonRow} ${style.buttonGrid}`}>
         <div>
           <BoxTitle>Medium</BoxTitle>
           {buttonOption?.size?.sm ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
@@ -100,7 +87,7 @@ export const ButtonDocumentation: FC = () => {
                   setIconType(undefined);
                 }}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
@@ -108,7 +95,7 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>Large</BoxTitle>
           {buttonOption?.size?.lg ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
@@ -127,7 +114,7 @@ export const ButtonDocumentation: FC = () => {
                   // setIconType('attached');
                 }}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
@@ -135,7 +122,7 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>Small</BoxTitle>
           {buttonOption?.size?.sm ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
@@ -154,18 +141,18 @@ export const ButtonDocumentation: FC = () => {
                   // setIconType('detached');
                 }}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
         </div>
-      </Box>
+      </div>
 
-      <Box>
+      <div className={`${style.buttonRow} ${style.buttonGrid}`}>
         <div>
           <BoxTitle>Label</BoxTitle>
           {buttonContainer?.type?.contained ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label="Click me"
                 width="block"
@@ -180,7 +167,7 @@ export const ButtonDocumentation: FC = () => {
                   setIconType(undefined);
                 }}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
@@ -189,7 +176,7 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>Icon</BoxTitle>
           {buttonOption?.size?.sm ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 type={type}
                 variant={variant}
@@ -207,18 +194,18 @@ export const ButtonDocumentation: FC = () => {
                   setIconType(undefined);
                 }}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
         </div>
-      </Box>
+      </div>
 
-      <Box>
+      <div className={`${style.buttonRow} ${style.buttonGrid}`}>
         <div>
           <BoxTitle>Left attached icon</BoxTitle>
           {buttonOption?.icon?.enable?.left ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label="Click me"
                 width="block"
@@ -238,7 +225,7 @@ export const ButtonDocumentation: FC = () => {
                   setIconType('attached');
                 }}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
@@ -246,7 +233,7 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>Left detached icon</BoxTitle>
           {buttonOption?.icon?.enable?.left ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label="Click me"
                 width="block"
@@ -266,7 +253,7 @@ export const ButtonDocumentation: FC = () => {
                   );
                 }}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
@@ -274,7 +261,7 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>Right attached icon</BoxTitle>
           {buttonOption?.icon?.enable?.right ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label="Click me"
                 width="block"
@@ -296,7 +283,7 @@ export const ButtonDocumentation: FC = () => {
                   );
                 }}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
@@ -304,7 +291,7 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>Right detached icon</BoxTitle>
           {buttonOption?.icon?.enable?.right ? (
-            <Applicable>
+            <div className={style.buttonWrap}>
               <Button
                 label="Click me"
                 width="block"
@@ -326,12 +313,12 @@ export const ButtonDocumentation: FC = () => {
                   );
                 }}
               />
-            </Applicable>
+            </div>
           ) : (
             <NotApplicable />
           )}
         </div>
-      </Box>
+      </div>
 
       <div className={`${style.buttonRow} ${style.buttonGrid}`}>
         <div>
