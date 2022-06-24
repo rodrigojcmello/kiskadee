@@ -8,6 +8,7 @@ import type {
   ButtonType,
   ButtonVariant,
   ButtonProps,
+  Size,
 } from '../../../components/Button';
 import { KiskadeeContext } from '../../../context';
 import style from './ButtonDocumentation.module.scss';
@@ -28,6 +29,7 @@ const NotApplicable: FC = () => {
 export const ButtonDocumentation: FC = () => {
   const [theme] = useContext(KiskadeeContext);
   const [label, setLabel] = useState<string | undefined>('Click me');
+  const [size, setSize] = useState<Size>('md');
   const [variant, setVariant] = useState<ButtonVariant>('primary');
   const [type, setType] = useState<ButtonType>('contained');
   const [pageLoad, setPageLoad] = useState(false);
@@ -82,9 +84,7 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 size="md"
                 onClick={(): void => {
-                  setIconLeft(undefined);
-                  setIconRight(undefined);
-                  setIconType(undefined);
+                  setSize('md');
                 }}
               />
             </div>
@@ -108,10 +108,7 @@ export const ButtonDocumentation: FC = () => {
                 textAlign={textAlign}
                 size="lg"
                 onClick={(): void => {
-                  // setIconLeft(
-                  //   <span className="material-symbols-outlined">thumb_up</span>
-                  // );
-                  // setIconType('attached');
+                  setSize('lg');
                 }}
               />
             </div>
@@ -135,10 +132,7 @@ export const ButtonDocumentation: FC = () => {
                 textAlign={textAlign}
                 size="sm"
                 onClick={(): void => {
-                  // setIconLeft(
-                  //   <span className="material-symbols-outlined">thumb_up</span>
-                  // );
-                  // setIconType('detached');
+                  setSize('sm');
                 }}
               />
             </div>
@@ -160,6 +154,7 @@ export const ButtonDocumentation: FC = () => {
                 variant={variant}
                 borderRadius={radius}
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {
                   setLabel('Click me');
                   setIconLeft(undefined);
@@ -184,7 +179,7 @@ export const ButtonDocumentation: FC = () => {
                 iconLeft={
                   <span className="material-symbols-outlined">thumb_up</span>
                 }
-                size="md"
+                size={size}
                 onClick={(): void => {
                   setIconLeft(
                     <span className="material-symbols-outlined">thumb_up</span>
@@ -217,6 +212,7 @@ export const ButtonDocumentation: FC = () => {
                 }
                 iconType="attached"
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {
                   setLabel('Click me');
                   setIconLeft(
@@ -245,6 +241,7 @@ export const ButtonDocumentation: FC = () => {
                 }
                 iconType="detached"
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {
                   setLabel('Click me');
                   setIconType('detached');
@@ -273,6 +270,7 @@ export const ButtonDocumentation: FC = () => {
                 }
                 iconType="attached"
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {
                   setIconType('attached');
                   setLabel('Click me');
@@ -303,6 +301,7 @@ export const ButtonDocumentation: FC = () => {
                 }
                 iconType="detached"
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {
                   setLabel('Click me');
                   setIconType('detached');
@@ -332,6 +331,7 @@ export const ButtonDocumentation: FC = () => {
                 variant="primary"
                 borderRadius={radius}
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {
                   setType('contained');
                   setVariant('primary');
@@ -357,6 +357,7 @@ export const ButtonDocumentation: FC = () => {
                 variant="primary"
                 borderRadius={radius}
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {
                   setType('outline');
                   setVariant('primary');
@@ -381,6 +382,7 @@ export const ButtonDocumentation: FC = () => {
                 variant="primary"
                 borderRadius={radius}
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {
                   setType('flat');
                   setVariant('primary');
@@ -408,6 +410,7 @@ export const ButtonDocumentation: FC = () => {
                 variant="primary"
                 borderRadius={radius}
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {
                   setVariant('primary');
                 }}
@@ -432,6 +435,7 @@ export const ButtonDocumentation: FC = () => {
                 variant="secondary"
                 borderRadius={radius}
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {
                   setVariant('secondary');
                 }}
@@ -455,6 +459,7 @@ export const ButtonDocumentation: FC = () => {
                 variant="tertiary"
                 borderRadius={radius}
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {
                   setVariant('tertiary');
                 }}
@@ -481,6 +486,7 @@ export const ButtonDocumentation: FC = () => {
                 variant="success"
                 borderRadius={radius}
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {
                   setVariant('success');
                 }}
@@ -505,6 +511,7 @@ export const ButtonDocumentation: FC = () => {
                 variant="warning"
                 borderRadius={radius}
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {
                   setVariant('warning');
                 }}
@@ -529,6 +536,7 @@ export const ButtonDocumentation: FC = () => {
                 variant="danger"
                 borderRadius={radius}
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {
                   setVariant('danger');
                 }}
@@ -556,6 +564,7 @@ export const ButtonDocumentation: FC = () => {
                 borderRadius={radius}
                 interaction="hover"
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {}}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
@@ -579,6 +588,7 @@ export const ButtonDocumentation: FC = () => {
                 borderRadius={radius}
                 interaction="focus"
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {}}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
@@ -603,6 +613,7 @@ export const ButtonDocumentation: FC = () => {
                 borderRadius={radius}
                 interaction="pressed"
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {}}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
@@ -627,6 +638,7 @@ export const ButtonDocumentation: FC = () => {
                 borderRadius={radius}
                 interaction="visited"
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {}}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
@@ -651,6 +663,7 @@ export const ButtonDocumentation: FC = () => {
                 borderRadius={radius}
                 disabled
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => {}}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
@@ -674,6 +687,7 @@ export const ButtonDocumentation: FC = () => {
               variant={variant}
               borderRadius={radius}
               textAlign={textAlign}
+              size={size}
               onClick={(): void => {}}
               iconLeft={iconLeft}
               iconRight={iconRight}
@@ -688,6 +702,7 @@ export const ButtonDocumentation: FC = () => {
               variant={variant}
               borderRadius={radius}
               textAlign={textAlign}
+              size={size}
               onClick={(): void => {}}
               iconLeft={iconLeft}
               iconRight={iconRight}
@@ -702,6 +717,7 @@ export const ButtonDocumentation: FC = () => {
               variant={variant}
               borderRadius={radius}
               textAlign={textAlign}
+              size={size}
               onClick={(): void => {}}
               iconLeft={iconLeft}
               iconRight={iconRight}
@@ -727,6 +743,7 @@ export const ButtonDocumentation: FC = () => {
                 type={type}
                 variant={variant}
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => setRadius('rounded')}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
@@ -753,6 +770,7 @@ export const ButtonDocumentation: FC = () => {
                 type={type}
                 variant={variant}
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => setRadius('full')}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
@@ -779,6 +797,7 @@ export const ButtonDocumentation: FC = () => {
                 type={type}
                 variant={variant}
                 textAlign={textAlign}
+                size={size}
                 onClick={(): void => setRadius('none')}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
@@ -806,6 +825,7 @@ export const ButtonDocumentation: FC = () => {
                 type={type}
                 variant={variant}
                 borderRadius={radius}
+                size={size}
                 onClick={(): void => {
                   setTextAlign('left');
                 }}
@@ -833,6 +853,7 @@ export const ButtonDocumentation: FC = () => {
                 type={type}
                 variant={variant}
                 borderRadius={radius}
+                size={size}
                 onClick={(): void => {
                   setTextAlign('center');
                 }}
@@ -860,6 +881,7 @@ export const ButtonDocumentation: FC = () => {
                 type={type}
                 variant={variant}
                 borderRadius={radius}
+                size={size}
                 onClick={(): void => {
                   setTextAlign('right');
                 }}
