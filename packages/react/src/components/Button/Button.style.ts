@@ -511,8 +511,10 @@ export class ButtonStyle {
 
     if (interaction) {
       return {
+        ...baseStyle?.base?.[interaction]?.md,
         ...baseStyle?.base?.[interaction]?.[this._size],
 
+        ...variantStyle?.[interaction]?.md,
         ...variantStyle?.[interaction]?.[this._size],
       } as T;
     }
