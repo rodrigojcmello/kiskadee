@@ -92,6 +92,32 @@ export const ButtonDocumentation: FC = () => {
             <NotApplicable />
           )}
         </div>
+
+        <div>
+          <BoxTitle>Small</BoxTitle>
+          {buttonOption?.size?.sm ? (
+            <div className={style.buttonWrap}>
+              <Button
+                label={label}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                iconType={iconType}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                textAlign={textAlign}
+                size="sm"
+                onClick={(): void => {
+                  setSize('sm');
+                }}
+              />
+            </div>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+
         <div>
           <BoxTitle>Large</BoxTitle>
           {buttonOption?.size?.lg ? (
@@ -116,9 +142,10 @@ export const ButtonDocumentation: FC = () => {
             <NotApplicable />
           )}
         </div>
+
         <div>
-          <BoxTitle>Small</BoxTitle>
-          {buttonOption?.size?.sm ? (
+          <BoxTitle>Extra Large</BoxTitle>
+          {buttonOption?.size?.lg ? (
             <div className={style.buttonWrap}>
               <Button
                 label={label}
@@ -130,9 +157,9 @@ export const ButtonDocumentation: FC = () => {
                 iconLeft={iconLeft}
                 iconRight={iconRight}
                 textAlign={textAlign}
-                size="sm"
+                size="xl"
                 onClick={(): void => {
-                  setSize('sm');
+                  setSize('xl');
                 }}
               />
             </div>
@@ -551,7 +578,7 @@ export const ButtonDocumentation: FC = () => {
         </div>
       </div>
 
-      <div className={style.buttonGrid}>
+      <div className={`${style.buttonRow} ${style.buttonGrid}`}>
         <div>
           <BoxTitle>Hover</BoxTitle>
           {buttonContainer?.base?.hover || buttonVariant?.[variant]?.hover ? (
