@@ -17,6 +17,11 @@ const commonRules = {
   ],
 
   /**
+   * It is not up to ESLint to restrict syntax usage
+   */
+  'no-restricted-syntax': 'off',
+
+  /**
    * Prettier follows double quotes by default, but the Airbnb style guide
    * recommends single quotes
    * @see {@link https://github.com/airbnb/javascript#strings--quotes}
@@ -28,6 +33,7 @@ const commonRules = {
   //----------------------------------------------------------------------------
   // UNUSED IMPORTS
   //----------------------------------------------------------------------------
+
   'unused-imports/no-unused-imports': 'error',
   'unused-imports/no-unused-vars': [
     'warn',

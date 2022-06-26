@@ -10,6 +10,7 @@ import type {
   ButtonStyleProps,
   ContainerOptions,
   Interaction,
+  Size,
 } from './Button.types';
 
 export class ButtonStyle {
@@ -45,6 +46,13 @@ export class ButtonStyle {
 
   private readonly _duration: string;
 
+  // Responsive
+
+  private readonly _responsive: Record<
+    keyof Exclude<ContainerOptions['responsive'], undefined>,
+    number
+  >;
+
   constructor(style: ButtonStyleProps) {
     // Required
     this._iconType = style.iconType;
@@ -64,6 +72,22 @@ export class ButtonStyle {
     // Transition
     this._timingFunction = 'ease';
     this._duration = '0.2s';
+
+    // Responsive
+
+    this._responsive = {
+      smallScreenBP1: 0,
+      smallScreenBP2: 321,
+      smallScreenBP3: 376,
+
+      mediumScreenBP1: 481,
+      mediumScreenBP2: 641,
+      mediumScreenBP3: 769,
+
+      bigScreenBP1: 1025,
+      bigScreenBP2: 1281,
+      bigScreenBP3: 1441,
+    };
   }
 
   get common() {
@@ -123,11 +147,13 @@ export class ButtonStyle {
   }
 
   private containerBackground() {
-    const containerStyle = this.getStyle<ButtonElementContainer>('container');
+    const { elementRest, elementResponsive } =
+      this.responsiveStyle('container');
 
     return css({
-      background: containerStyle?.background,
-      backgroundColor: containerStyle?.backgroundColor,
+      background: elementRest?.background,
+      backgroundColor: elementRest?.backgroundColor,
+      ...elementResponsive,
     })();
   }
 
@@ -155,17 +181,62 @@ export class ButtonStyle {
     })();
   }
 
-  private containerCore() {
-    const containerStyle = {
-      ...this.getStyle<ButtonElementContainer>('container'),
+  responsiveStyle(element: ButtonElement, exclude?: boolean) {
+    const responsive: { [media: string]: CSSProperties } = {};
+    for (const breakpoint of Object.keys(this._options?.responsive || {})) {
+      const elementStyle = {
+        ...this.getStyle<CSSProperties>(
+          element,
+          undefined,
+          this._options?.responsive?.[
+            breakpoint as keyof Exclude<
+              ContainerOptions['responsive'],
+              undefined
+            >
+          ]
+        ),
+      };
+
+      // TODO: remove entire block
+      if (exclude) {
+        if (element === 'container') {
+          delete elementStyle.background;
+          delete elementStyle.backgroundColor;
+          delete elementStyle.borderColor;
+          delete elementStyle.borderWidth;
+          delete elementStyle.borderStyle;
+        } else if (element === 'text') {
+          delete elementStyle.color;
+          delete elementStyle.paddingBottom;
+          delete elementStyle.paddingTop;
+          delete elementStyle.paddingLeft;
+          delete elementStyle.paddingRight;
+        }
+      }
+
+      responsive[
+        `@media(min-width: ${
+          this._responsive[
+            breakpoint as keyof Exclude<
+              ContainerOptions['responsive'],
+              undefined
+            >
+          ]
+        }px)`
+      ] = elementStyle;
+    }
+
+    // TODO: return just on object
+    const { '@media(min-width: 0px)': elementRest, ...elementResponsive } =
+      responsive;
+
+    return {
+      elementRest,
+      elementResponsive,
     };
+  }
 
-    delete containerStyle.background;
-    delete containerStyle.backgroundColor;
-    delete containerStyle.borderColor;
-    delete containerStyle.borderWidth;
-    delete containerStyle.borderStyle;
-
+  private containerCore() {
     const containerHover = this.getStyle<ButtonElementContainer>(
       'container',
       'hover'
@@ -236,12 +307,18 @@ export class ButtonStyle {
       'disabled'
     );
 
+    const { elementRest, elementResponsive } = this.responsiveStyle(
+      'container',
+      true
+    );
+
     return css({
       /**
        * Only the box-shadow remains, but creating a new class just to control the interaction state and another one
        * for the box-shadow would just needlessly duplicate the same thing
        */
-      ...containerStyle,
+      ...elementRest,
+      ...elementResponsive,
 
       // HOVER
       '&:hover, &.--hover': {
@@ -388,14 +465,61 @@ export class ButtonStyle {
   }
 
   private textPadding() {
-    const textStyle = this.getStyle<ButtonElementText>('text');
+    const { elementRest, elementResponsive } = this.responsiveStyle(
+      'text',
+      false
+    );
+
+    const paddingPicks: (keyof CSSProperties)[] = [
+      'paddingTop',
+      'paddingBottom',
+      'paddingRight',
+      'paddingLeft',
+    ];
+
+    const p = ButtonStyle.pickResponsiveProperties(
+      elementResponsive,
+      paddingPicks
+    );
+
+    for (const m of Object.keys(p)) {
+      p[m].paddingRight = this._iconRight ? 0 : p[m].paddingRight;
+      p[m].paddingLeft = this._iconLeft ? 0 : p[m].paddingLeft;
+    }
 
     return css({
-      paddingTop: textStyle?.paddingTop,
-      paddingBottom: textStyle?.paddingBottom,
-      paddingLeft: this._iconLeft ? 0 : textStyle?.paddingLeft,
-      paddingRight: this._iconRight ? 0 : textStyle?.paddingRight,
+      paddingTop: elementRest?.paddingTop,
+      paddingBottom: elementRest?.paddingBottom,
+      paddingLeft: this._iconLeft ? 0 : elementRest?.paddingLeft,
+      paddingRight: this._iconRight ? 0 : elementRest?.paddingRight,
+      ...p,
     })();
+  }
+
+  private static pickResponsiveProperties(
+    responsive: {
+      [mediaQuery: string]: CSSProperties;
+    },
+    properties: (keyof CSSProperties)[]
+  ) {
+    const newObject: {
+      [mediaQuery: string]: CSSProperties;
+    } = {};
+    for (const mediaQuery of Object.keys(responsive)) {
+      if (!newObject[mediaQuery]) {
+        newObject[mediaQuery] = {};
+      }
+      for (const property of properties) {
+        /**
+         * TS2590: Expression produces a union type that is too complex to represent.
+         */
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        newObject[mediaQuery][property] = responsive[mediaQuery][property];
+      }
+    }
+
+    return newObject;
   }
 
   //----------------------------------------------------------------------------
@@ -503,7 +627,8 @@ export class ButtonStyle {
 
   private getStyle<T extends CSSProperties>(
     element: ButtonElement,
-    interaction?: Interaction
+    interaction?: Interaction,
+    size?: Size
   ): T | Record<string, never> {
     const baseStyle = this._theme?.elements?.[element];
     const typeStyle = baseStyle?.type?.[this._typeStyle];
@@ -512,22 +637,22 @@ export class ButtonStyle {
     if (interaction) {
       return {
         ...baseStyle?.base?.[interaction]?.md,
-        ...baseStyle?.base?.[interaction]?.[this._size],
+        ...baseStyle?.base?.[interaction]?.[size || this._size],
 
         ...variantStyle?.[interaction]?.md,
-        ...variantStyle?.[interaction]?.[this._size],
+        ...variantStyle?.[interaction]?.[size || this._size],
       } as T;
     }
 
     return {
       ...baseStyle?.base?.rest?.md,
-      ...baseStyle?.base?.rest?.[this._size],
+      ...baseStyle?.base?.rest?.[size || this._size],
 
       ...typeStyle?.base?.md,
-      ...typeStyle?.base?.[this._size],
+      ...typeStyle?.base?.[size || this._size],
 
       ...variantStyle?.rest?.md,
-      ...variantStyle?.rest?.[this._size],
+      ...variantStyle?.rest?.[size || this._size],
     } as T;
   }
 }

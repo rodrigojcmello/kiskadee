@@ -32,6 +32,10 @@ export const materialTheme: KiskadeeSchema = {
           sm: true,
           lg: true,
         },
+        responsive: {
+          smallScreenBP1: 'md',
+          mediumScreenBP1: 'sm',
+        },
       },
       elements: {
         container: {
@@ -54,6 +58,9 @@ export const materialTheme: KiskadeeSchema = {
                   rest: {
                     md: {
                       backgroundColor: '#6750A4',
+                    },
+                    sm: {
+                      backgroundColor: 'red',
                     },
                   },
                   hover: {

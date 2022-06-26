@@ -167,7 +167,7 @@ export interface ContainerOptions {
 
     bigScreenBP1?: Size; // 1025-1280px
     bigScreenBP2?: Size; // 1281-1440px
-    bigScreenBP3?: Size; // 1441-1600px
+    bigScreenBP3?: Size; // 1441px
   };
 }
 
