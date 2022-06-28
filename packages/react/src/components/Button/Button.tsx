@@ -9,7 +9,7 @@ export const Button: FC<ButtonProps> = ({
   iconType = 'attached',
   width = 'auto',
   borderRadius = 'default',
-  size = 'md',
+  size,
   label,
   interaction,
   type,

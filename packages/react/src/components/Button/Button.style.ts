@@ -1,8 +1,10 @@
 /* eslint-disable unicorn/filename-case */
 import { css } from '@stitches/core';
-import type { CSSProperties } from 'react';
 import type {
   ButtonElement,
+  ButtonElementContainer,
+  ButtonElementIcon,
+  ButtonElementText,
   ButtonSchema,
   ButtonStyleProps,
   ContainerOptions,
@@ -120,7 +122,7 @@ export class ButtonStyle {
     if (this._borderRadius === 'rounded' || this._borderRadius === 'full') {
       borderRadius =
         this._options?.borderRadius?.variant?.[this._borderRadius]?.[
-          this._size
+          this._size || 'md'
         ] || this._options?.borderRadius?.variant?.[this._borderRadius]?.md;
     } else if (
       (this._options?.borderRadius?.default === 'rounded' ||
@@ -130,7 +132,7 @@ export class ButtonStyle {
       borderRadius =
         this._options?.borderRadius?.variant?.[
           this._options?.borderRadius?.default
-        ]?.[this._size] ||
+        ]?.[this._size || 'md'] ||
         this._options?.borderRadius?.variant?.[
           this._options?.borderRadius?.default
         ]?.md;
@@ -145,7 +147,7 @@ export class ButtonStyle {
   }
 
   private containerBackground() {
-    const elementStyle = this.getStyle('container');
+    const elementStyle = this.getStyle<ButtonElementContainer>('container');
 
     return css({
       background: elementStyle?.background,
@@ -154,7 +156,7 @@ export class ButtonStyle {
   }
 
   private containerBorder() {
-    const containerStyle = this.getStyle('container');
+    const containerStyle = this.getStyle<ButtonElementContainer>('container');
 
     return css({
       border: containerStyle?.borderWidth ? undefined : 'none',
@@ -177,61 +179,118 @@ export class ButtonStyle {
     })();
   }
 
-  responsiveStyle(element: ButtonElement): {
-    [mediaQuery: string]: CSSProperties;
+  getResponsiveStyle<T>(element: ButtonElement): {
+    [mediaQuery: string]: T;
   } {
-    const responsive: { [media: string]: CSSProperties } = {};
-    for (const breakpoint of Object.keys(this._options?.responsive || {})) {
-      responsive[
-        `@media(min-width: ${
-          this._responsive[
+    const responsive: { [media: string]: T } = {};
+
+    if (!this._size) {
+      for (const breakpoint of Object.keys(this._options?.responsive || {})) {
+        responsive[
+          `@media(min-width: ${
+            this._responsive[
+              breakpoint as keyof Exclude<
+                ContainerOptions['responsive'],
+                undefined
+              >
+            ]
+          }px)`
+        ] = this.getStyle(
+          element,
+          undefined,
+          this._options?.responsive?.[
             breakpoint as keyof Exclude<
               ContainerOptions['responsive'],
               undefined
             >
           ]
-        }px)`
-      ] = this.getStyle(
-        element,
-        undefined,
-        this._options?.responsive?.[
-          breakpoint as keyof Exclude<ContainerOptions['responsive'], undefined>
-        ]
-      );
+        );
+      }
+    } else {
+      responsive['@media(min-width: 0px)'] = this.getStyle(element);
     }
 
     return responsive;
   }
 
   private containerCore() {
-    const containerHover = this.getStyle('container', 'hover');
-    const textHover = this.getStyle('text', 'hover');
-    const leftIconHover = this.getStyle(this.getIcon('left'), 'hover');
-    const rightIconHover = this.getStyle(this.getIcon('right'), 'hover');
+    const containerHover = this.getStyle<ButtonElementContainer>(
+      'container',
+      'hover'
+    );
+    const textHover = this.getStyle<ButtonElementText>('text', 'hover');
+    const leftIconHover = this.getStyle<ButtonElementIcon>(
+      this.getIcon('left'),
+      'hover'
+    );
+    const rightIconHover = this.getStyle<ButtonElementIcon>(
+      this.getIcon('right'),
+      'hover'
+    );
 
-    const containerPressed = this.getStyle('container', 'pressed');
-    const textPressed = this.getStyle('text', 'pressed');
-    const leftIconPressed = this.getStyle(this.getIcon('left'), 'pressed');
-    const rightIconPressed = this.getStyle(this.getIcon('right'), 'pressed');
+    const containerPressed = this.getStyle<ButtonElementContainer>(
+      'container',
+      'pressed'
+    );
+    const textPressed = this.getStyle<ButtonElementText>('text', 'pressed');
+    const leftIconPressed = this.getStyle<ButtonElementIcon>(
+      this.getIcon('left'),
+      'pressed'
+    );
+    const rightIconPressed = this.getStyle<ButtonElementIcon>(
+      this.getIcon('right'),
+      'pressed'
+    );
 
-    const containerFocus = this.getStyle('container', 'focus');
-    const textFocus = this.getStyle('text', 'focus');
-    const leftIconFocus = this.getStyle(this.getIcon('left'), 'focus');
-    const rightIconFocus = this.getStyle(this.getIcon('right'), 'focus');
+    const containerFocus = this.getStyle<ButtonElementContainer>(
+      'container',
+      'focus'
+    );
+    const textFocus = this.getStyle<ButtonElementText>('text', 'focus');
+    const leftIconFocus = this.getStyle<ButtonElementIcon>(
+      this.getIcon('left'),
+      'focus'
+    );
+    const rightIconFocus = this.getStyle<ButtonElementIcon>(
+      this.getIcon('right'),
+      'focus'
+    );
 
-    const containerVisited = this.getStyle('container', 'visited');
-    const textVisited = this.getStyle('text', 'visited');
-    const leftIconVisited = this.getStyle(this.getIcon('left'), 'visited');
-    const rightIconVisited = this.getStyle(this.getIcon('right'), 'visited');
+    const containerVisited = this.getStyle<ButtonElementContainer>(
+      'container',
+      'visited'
+    );
+    const textVisited = this.getStyle<ButtonElementText>('text', 'visited');
+    const leftIconVisited = this.getStyle<ButtonElementIcon>(
+      this.getIcon('left'),
+      'visited'
+    );
+    const rightIconVisited = this.getStyle<ButtonElementIcon>(
+      this.getIcon('right'),
+      'visited'
+    );
 
-    const containerDisabled = this.getStyle('container', 'disabled');
-    const textDisabled = this.getStyle('text', 'disabled');
-    const leftIconDisabled = this.getStyle(this.getIcon('left'), 'disabled');
-    const rightIconDisabled = this.getStyle(this.getIcon('right'), 'disabled');
+    const containerDisabled = this.getStyle<ButtonElementContainer>(
+      'container',
+      'disabled'
+    );
+    const textDisabled = this.getStyle<ButtonElementText>('text', 'disabled');
+    const leftIconDisabled = this.getStyle<ButtonElementIcon>(
+      this.getIcon('left'),
+      'disabled'
+    );
+    const rightIconDisabled = this.getStyle<ButtonElementIcon>(
+      this.getIcon('right'),
+      'disabled'
+    );
 
-    const elementStyle = this.responsiveStyle('container');
+    const elementStyle =
+      this.getResponsiveStyle<ButtonElementContainer>('container');
 
-    const p = ButtonStyle.pickResponsiveProperties(elementStyle, ['boxShadow']);
+    const p = ButtonStyle.pickResponsiveProperties<ButtonElementContainer>(
+      elementStyle,
+      ['boxShadow']
+    );
 
     const { '@media(min-width: 0px)': elementRest, ...elementResponsive } = p;
 
@@ -348,8 +407,9 @@ export class ButtonStyle {
   }
 
   private textCore() {
-    const textStyle = { ...this.getStyle('text') };
+    const textStyle = { ...this.getStyle<ButtonElementText>('text') };
 
+    // TODO: deprecated logic
     delete textStyle.color;
     delete textStyle.paddingBottom;
     delete textStyle.paddingTop;
@@ -380,17 +440,17 @@ export class ButtonStyle {
   }
 
   private textColor() {
-    const textStyle = this.getStyle('text');
+    const style = this.getStyle<ButtonElementText>('text');
 
     return css({
-      color: textStyle?.color,
+      color: style?.color,
     })();
   }
 
   private textPadding() {
-    const elementStyle = this.responsiveStyle('text');
+    const style = this.getResponsiveStyle<ButtonElementText>('text');
 
-    const p = ButtonStyle.pickResponsiveProperties(elementStyle, [
+    const p = ButtonStyle.pickResponsiveProperties<ButtonElementText>(style, [
       'paddingTop',
       'paddingBottom',
       'paddingRight',
@@ -410,18 +470,18 @@ export class ButtonStyle {
     })();
   }
 
-  private static pickResponsiveProperties(
+  private static pickResponsiveProperties<T>(
     responsive: {
-      [mediaQuery: string]: CSSProperties;
+      [mediaQuery: string]: T;
     },
-    properties: (keyof CSSProperties)[]
+    properties: (keyof T)[]
   ) {
     const newObject: {
-      [mediaQuery: string]: CSSProperties;
+      [mediaQuery: string]: T;
     } = {};
     for (const mediaQuery of Object.keys(responsive)) {
       if (!newObject[mediaQuery]) {
-        newObject[mediaQuery] = {};
+        newObject[mediaQuery] = {} as T;
       }
       for (const property of properties) {
         if (responsive[mediaQuery][property]) {
@@ -471,8 +531,9 @@ export class ButtonStyle {
   }
 
   private iconColor(position: 'left' | 'right') {
-    const iconStyle = this.getStyle(this.getIcon(position));
-    const textStyle = this.getStyle('text');
+    // TODO: call getStyle for each element on constructor
+    const iconStyle = this.getStyle<ButtonElementIcon>(this.getIcon(position));
+    const textStyle = this.getStyle<ButtonElementText>('text');
     const color = textStyle?.color || iconStyle?.color;
 
     return css({
@@ -486,7 +547,7 @@ export class ButtonStyle {
   }
 
   private iconSize(position: 'left' | 'right') {
-    const iconStyle = this.getStyle(this.getIcon(position));
+    const iconStyle = this.getStyle<ButtonElementIcon>(this.getIcon(position));
 
     return css({
       fontSize: iconStyle?.fontSize,
@@ -494,7 +555,7 @@ export class ButtonStyle {
   }
 
   private iconPadding(position: 'left' | 'right') {
-    const iconStyle = this.getStyle(this.getIcon(position));
+    const iconStyle = this.getStyle<ButtonElementIcon>(this.getIcon(position));
 
     return css({
       paddingTop: iconStyle?.paddingTop,
@@ -539,11 +600,11 @@ export class ButtonStyle {
     })();
   }
 
-  private getStyle(
+  private getStyle<T>(
     element: ButtonElement,
     interaction?: Interaction,
     size?: Size
-  ): CSSProperties {
+  ): T {
     const baseStyle = this._theme?.elements?.[element];
     const typeStyle = baseStyle?.type?.[this._typeStyle];
     const variantStyle = typeStyle?.variant?.[this._variant];
@@ -551,23 +612,23 @@ export class ButtonStyle {
     if (interaction) {
       return {
         ...baseStyle?.base?.[interaction]?.md,
-        ...baseStyle?.base?.[interaction]?.[size || this._size],
+        ...baseStyle?.base?.[interaction]?.[size || this._size || 'md'],
 
         // TODO: should use the same inferior logic?
         ...variantStyle?.[interaction]?.md,
-        ...variantStyle?.[interaction]?.[size || this._size],
-      };
+        ...variantStyle?.[interaction]?.[size || this._size || 'md'],
+      } as T;
     }
 
     return {
       ...(size ? {} : baseStyle?.base?.rest?.md),
-      ...baseStyle?.base?.rest?.[size || this._size],
+      ...baseStyle?.base?.rest?.[size || this._size || 'md'],
 
       ...(size ? {} : typeStyle?.base?.md),
-      ...typeStyle?.base?.[size || this._size],
+      ...typeStyle?.base?.[size || this._size || 'md'],
 
       ...(size ? {} : variantStyle?.rest?.md),
-      ...variantStyle?.rest?.[size || this._size],
-    };
+      ...variantStyle?.rest?.[size || this._size || 'md'],
+    } as T;
   }
 }

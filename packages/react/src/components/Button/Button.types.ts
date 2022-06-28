@@ -55,11 +55,11 @@ export type ButtonStyleProps = {
   iconType: Exclude<ButtonProps['iconType'], undefined> | 'icon';
   borderRadius: Exclude<ButtonProps['borderRadius'], undefined>;
   width: Exclude<ButtonProps['width'], undefined>;
-  size: Size;
   typeStyle: ButtonProps['type'];
   variant: ButtonProps['variant'];
 
   // Optional
+  size?: Size;
   theme?: ButtonSchema;
   iconLeft?: ButtonProps['iconLeft'];
   iconRight?: ButtonProps['iconRight'];
