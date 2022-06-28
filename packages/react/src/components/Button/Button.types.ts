@@ -99,10 +99,10 @@ export interface ButtonElementIcon {
   // Color
   color?: CSSProperties['color'];
 
-  // Size
+  // Size - Responsive
   fontSize?: CSSProperties['fontSize'];
 
-  // Padding
+  // Padding - Responsive
   paddingTop?: number;
   paddingRight?: number;
   paddingBottom?: number;
@@ -121,10 +121,10 @@ export interface ButtonElementText {
   // Color
   color?: CSSProperties['color'];
 
-  // Size
+  // Size - Responsive
   fontSize?: CSSProperties['fontSize'];
 
-  // Padding
+  // Padding - Responsive
   paddingTop?: CSSProperties['paddingTop'];
   paddingRight?: CSSProperties['paddingRight'];
   paddingBottom?: CSSProperties['paddingBottom'];

@@ -258,6 +258,17 @@ module.exports = {
          */
         '@typescript-eslint/consistent-type-imports': 'error',
 
+        /**
+         * It is good practice not to use ts-ignore, but when used it is usually
+         * really necessary, and when the project is "strict: true" we
+         * understand that there is already an extra care in typing which would
+         * make the use of "ts-ignore" rare, since in cases of "strict: false"
+         * we can understand that the project does not have a very strong
+         * typing, which would also weaken the use of this rule. And for these
+         * reasons we decided to disable this rule.
+         */
+        '@typescript-eslint/ban-ts-comment': 'off',
+
         // /**
         //  * This rule is disabled because of the "no-param-reassign" rule that
         //  * deals with the same issue.

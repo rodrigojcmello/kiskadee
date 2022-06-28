@@ -139,23 +139,17 @@ export class ButtonStyle {
     }
 
     return css({
+      // TODO: need to handle responsive
       borderRadius: borderRadius || 0,
     })();
   }
 
   private containerBackground() {
-    const elementStyle = this.responsiveStyle('container');
-
-    const p = ButtonStyle.pickResponsiveProperties(elementStyle, [
-      'background',
-      'backgroundColor',
-    ]);
-
-    const { '@media(min-width: 0px)': elementRest, ...elementResponsive } = p;
+    const elementStyle = this.getStyle('container');
 
     return css({
-      ...elementRest,
-      ...elementResponsive,
+      background: elementStyle?.background,
+      backgroundColor: elementStyle?.backgroundColor,
     })();
   }
 
@@ -434,7 +428,6 @@ export class ButtonStyle {
           /**
            * TS2590: Expression produces a union type that is too complex to represent.
            */
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           newObject[mediaQuery][property] = responsive[mediaQuery][property];
         }
@@ -560,6 +553,7 @@ export class ButtonStyle {
         ...baseStyle?.base?.[interaction]?.md,
         ...baseStyle?.base?.[interaction]?.[size || this._size],
 
+        // TODO: should use the same inferior logic?
         ...variantStyle?.[interaction]?.md,
         ...variantStyle?.[interaction]?.[size || this._size],
       };
