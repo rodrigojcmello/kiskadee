@@ -52,6 +52,14 @@ export class ButtonStyle {
     number
   >;
 
+  private readonly _styleContainer: ButtonElementContainer;
+
+  private readonly _styleContainerHover: ButtonElementContainer;
+
+  private readonly _styleText: ButtonElementText;
+
+  private readonly _styleTextHover: ButtonElementText;
+
   constructor(style: ButtonStyleProps) {
     // Required
     this._iconType = style.iconType;
@@ -87,6 +95,17 @@ export class ButtonStyle {
       bigScreenBP2: 1281,
       bigScreenBP3: 1441,
     };
+
+    // Element Style
+
+    this._styleContainer = this.getStyle<ButtonElementContainer>('container');
+    this._styleContainerHover = this.getStyle<ButtonElementContainer>(
+      'container',
+      'hover'
+    );
+
+    this._styleText = this.getStyle<ButtonElementText>('text');
+    this._styleTextHover = this.getStyle<ButtonElementText>('text', 'hover');
   }
 
   get common() {
@@ -147,7 +166,7 @@ export class ButtonStyle {
   }
 
   private containerBackground() {
-    const elementStyle = this.getStyle<ButtonElementContainer>('container');
+    const elementStyle = this._styleContainer;
 
     return css({
       background: elementStyle?.background,
@@ -156,7 +175,7 @@ export class ButtonStyle {
   }
 
   private containerBorder() {
-    const containerStyle = this.getStyle<ButtonElementContainer>('container');
+    const containerStyle = this._styleContainer;
 
     return css({
       border: containerStyle?.borderWidth ? undefined : 'none',
@@ -214,11 +233,8 @@ export class ButtonStyle {
   }
 
   private containerCore() {
-    const containerHover = this.getStyle<ButtonElementContainer>(
-      'container',
-      'hover'
-    );
-    const textHover = this.getStyle<ButtonElementText>('text', 'hover');
+    const containerHover = this._styleContainerHover;
+    const textHover = this._styleTextHover;
     const leftIconHover = this.getStyle<ButtonElementIcon>(
       this.getIcon('left'),
       'hover'
@@ -295,10 +311,7 @@ export class ButtonStyle {
     const { '@media(min-width: 0px)': elementRest, ...elementResponsive } = p;
 
     return css({
-      /**
-       * Only the box-shadow remains, but creating a new class just to control the interaction state and another one
-       * for the box-shadow would just needlessly duplicate the same thing
-       */
+      // TODO: need responsive?
       ...elementRest,
       ...elementResponsive,
 
@@ -407,7 +420,7 @@ export class ButtonStyle {
   }
 
   private textCore() {
-    const textStyle = { ...this.getStyle<ButtonElementText>('text') };
+    const textStyle = { ...this._styleText };
 
     // TODO: deprecated logic
     delete textStyle.color;
@@ -440,7 +453,7 @@ export class ButtonStyle {
   }
 
   private textColor() {
-    const style = this.getStyle<ButtonElementText>('text');
+    const style = this._styleText;
 
     return css({
       color: style?.color,
@@ -531,9 +544,8 @@ export class ButtonStyle {
   }
 
   private iconColor(position: 'left' | 'right') {
-    // TODO: call getStyle for each element on constructor
     const iconStyle = this.getStyle<ButtonElementIcon>(this.getIcon(position));
-    const textStyle = this.getStyle<ButtonElementText>('text');
+    const textStyle = this._styleText;
     const color = textStyle?.color || iconStyle?.color;
 
     return css({

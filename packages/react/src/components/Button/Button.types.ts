@@ -83,11 +83,11 @@ export type ButtonElementContainer = {
   outlineWidth?: CSSProperties['outlineWidth'];
   outline?: 'none';
 
-  // Background
+  // Background - Dark Mode
   background?: 'none';
   backgroundColor?: CSSProperties['backgroundColor'];
 
-  // Border
+  // Border - Dark Mode
   borderWidth?: CSSProperties['borderWidth'];
   borderStyle?: CSSProperties['borderStyle'];
   borderColor?: CSSProperties['borderColor'];
@@ -96,7 +96,7 @@ export type ButtonElementContainer = {
 // Icon
 
 export interface ButtonElementIcon {
-  // Color
+  // Color - Dark Mode
   color?: CSSProperties['color'];
 
   // Size - Responsive
@@ -118,7 +118,7 @@ export interface ButtonElementText {
   fontWeight?: CSSProperties['fontWeight'];
   lineHeight?: CSSProperties['lineHeight'];
 
-  // Color
+  // Color - Dark Mode
   color?: CSSProperties['color'];
 
   // Size - Responsive
