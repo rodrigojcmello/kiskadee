@@ -619,13 +619,15 @@ export class ButtonStyle {
     size?: Size
   ): T {
     const baseStyle = this._theme?.elements?.[element];
-    const typeStyle = baseStyle?.type?.[this._typeStyle];
+    const typeStyle = baseStyle?.light?.default?.type?.[this._typeStyle];
     const variantStyle = typeStyle?.variant?.[this._variant];
 
     if (interaction) {
       return {
-        ...baseStyle?.base?.[interaction]?.md,
-        ...baseStyle?.base?.[interaction]?.[size || this._size || 'md'],
+        ...baseStyle?.light?.default?.base?.[interaction]?.md,
+        ...baseStyle?.light?.default?.base?.[interaction]?.[
+          size || this._size || 'md'
+        ],
 
         // TODO: should use the same inferior logic?
         ...variantStyle?.[interaction]?.md,
@@ -634,8 +636,8 @@ export class ButtonStyle {
     }
 
     return {
-      ...(size ? {} : baseStyle?.base?.rest?.md),
-      ...baseStyle?.base?.rest?.[size || this._size || 'md'],
+      ...(size ? {} : baseStyle?.light?.default?.base?.rest?.md),
+      ...baseStyle?.light?.default?.base?.rest?.[size || this._size || 'md'],
 
       ...(size ? {} : typeStyle?.base?.md),
       ...typeStyle?.base?.[size || this._size || 'md'],

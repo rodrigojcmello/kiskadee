@@ -60,7 +60,8 @@ export const ButtonDocumentation: FC = () => {
   }, [theme.name, theme.author, theme.version]);
 
   const buttonOption = theme.component.button?.option;
-  const buttonContainer = theme.component.button?.elements?.container;
+  const buttonContainer =
+    theme.component.button?.elements?.container?.light?.default;
   const buttonVariant = buttonContainer?.type?.[type]?.variant;
 
   const width = label ? 'block' : undefined;

@@ -25,114 +25,118 @@ export const carbonTheme: KiskadeeSchema = {
       },
       elements: {
         container: {
-          type: {
-            contained: {
-              variant: {
-                primary: {
-                  rest: {
-                    md: {
-                      backgroundColor: '#0F62FE',
+          light: {
+            default: {
+              type: {
+                contained: {
+                  variant: {
+                    primary: {
+                      rest: {
+                        md: {
+                          backgroundColor: '#0F62FE',
+                        },
+                      },
+                      hover: {
+                        md: {
+                          backgroundColor: '#0353E9 ',
+                        },
+                      },
+                      focus: {
+                        md: {
+                          outlineWidth: 1,
+                          outlineColor: '#ffffff',
+                          outlineStyle: 'solid',
+                          outlineOffset: -3,
+                        },
+                      },
+                      pressed: {
+                        md: {
+                          backgroundColor: '#002D9C',
+                        },
+                      },
+                      disabled: {
+                        md: {
+                          backgroundColor: '#E4E4E4',
+                        },
+                      },
                     },
-                  },
-                  hover: {
-                    md: {
-                      backgroundColor: '#0353E9 ',
+                    secondary: {
+                      rest: {
+                        md: {
+                          backgroundColor: '#393939',
+                        },
+                      },
+                      hover: {
+                        md: {
+                          backgroundColor: '#474747',
+                        },
+                      },
+                      focus: {
+                        md: {
+                          outlineWidth: 1,
+                          outlineColor: '#ffffff',
+                          outlineStyle: 'solid',
+                          outlineOffset: -3,
+                        },
+                      },
+                      pressed: {
+                        md: {
+                          backgroundColor: '#6f6f6f',
+                        },
+                      },
+                      disabled: {
+                        md: {
+                          backgroundColor: '#E4E4E4',
+                        },
+                      },
                     },
-                  },
-                  focus: {
-                    md: {
-                      outlineWidth: 1,
-                      outlineColor: '#ffffff',
-                      outlineStyle: 'solid',
-                      outlineOffset: -3,
-                    },
-                  },
-                  pressed: {
-                    md: {
-                      backgroundColor: '#002D9C',
-                    },
-                  },
-                  disabled: {
-                    md: {
-                      backgroundColor: '#E4E4E4',
+                    danger: {
+                      rest: {
+                        md: {
+                          backgroundColor: '#da1e28',
+                        },
+                      },
+                      hover: {
+                        md: {
+                          backgroundColor: '#b81922',
+                        },
+                      },
+                      focus: {
+                        md: {
+                          outlineWidth: 1,
+                          outlineColor: '#ffffff',
+                          outlineStyle: 'solid',
+                          outlineOffset: -3,
+                        },
+                      },
+                      pressed: {
+                        md: {
+                          backgroundColor: '#750e13',
+                        },
+                      },
+                      disabled: {
+                        md: {
+                          backgroundColor: '#E4E4E4',
+                        },
+                      },
                     },
                   },
                 },
-                secondary: {
-                  rest: {
+                outline: {
+                  base: {
                     md: {
-                      backgroundColor: '#393939',
+                      borderWidth: 1,
+                      borderStyle: 'solid',
                     },
                   },
-                  hover: {
-                    md: {
-                      backgroundColor: '#474747',
-                    },
-                  },
-                  focus: {
-                    md: {
-                      outlineWidth: 1,
-                      outlineColor: '#ffffff',
-                      outlineStyle: 'solid',
-                      outlineOffset: -3,
-                    },
-                  },
-                  pressed: {
-                    md: {
-                      backgroundColor: '#6f6f6f',
-                    },
-                  },
-                  disabled: {
-                    md: {
-                      backgroundColor: '#E4E4E4',
-                    },
-                  },
-                },
-                danger: {
-                  rest: {
-                    md: {
-                      backgroundColor: '#da1e28',
-                    },
-                  },
-                  hover: {
-                    md: {
-                      backgroundColor: '#b81922',
-                    },
-                  },
-                  focus: {
-                    md: {
-                      outlineWidth: 1,
-                      outlineColor: '#ffffff',
-                      outlineStyle: 'solid',
-                      outlineOffset: -3,
-                    },
-                  },
-                  pressed: {
-                    md: {
-                      backgroundColor: '#750e13',
-                    },
-                  },
-                  disabled: {
-                    md: {
-                      backgroundColor: '#E4E4E4',
-                    },
-                  },
-                },
-              },
-            },
-            outline: {
-              base: {
-                md: {
-                  borderWidth: 1,
-                  borderStyle: 'solid',
-                },
-              },
-              variant: {
-                primary: {
-                  rest: {
-                    md: {
-                      backgroundColor: '#ffffff',
-                      borderColor: '#0F62FE',
+                  variant: {
+                    primary: {
+                      rest: {
+                        md: {
+                          backgroundColor: '#ffffff',
+                          borderColor: '#0F62FE',
+                        },
+                      },
                     },
                   },
                 },
@@ -141,48 +145,52 @@ export const carbonTheme: KiskadeeSchema = {
           },
         },
         text: {
-          base: {
-            rest: {
-              md: {
-                fontSize: '1rem',
-                lineHeight: '1.375rem',
-                fontWeight: 400,
-                fontFamily: 'IBM Plex Sans',
-                fontStyle: 'normal',
-                paddingTop: 13,
-                paddingBottom: 13,
-                paddingLeft: 16,
-                paddingRight: 64,
-              },
-            },
-            disabled: {
-              md: {
-                color: '#8d8d8d',
-              },
-            },
-          },
-          type: {
-            contained: {
+          light: {
+            default: {
               base: {
-                md: {
-                  color: '#FFFFFF',
+                rest: {
+                  md: {
+                    fontSize: '1rem',
+                    lineHeight: '1.375rem',
+                    fontWeight: 400,
+                    fontFamily: 'IBM Plex Sans',
+                    fontStyle: 'normal',
+                    paddingTop: 13,
+                    paddingBottom: 13,
+                    paddingLeft: 16,
+                    paddingRight: 64,
+                  },
+                },
+                disabled: {
+                  md: {
+                    color: '#8d8d8d',
+                  },
                 },
               },
-            },
-            outline: {
-              base: {
-                md: {
-                  paddingTop: 12,
-                  paddingBottom: 12,
-                  paddingLeft: 15,
-                  paddingRight: 63,
-                },
-              },
-              variant: {
-                primary: {
-                  rest: {
+              type: {
+                contained: {
+                  base: {
                     md: {
-                      color: '#0F62FE',
+                      color: '#FFFFFF',
+                    },
+                  },
+                },
+                outline: {
+                  base: {
+                    md: {
+                      paddingTop: 12,
+                      paddingBottom: 12,
+                      paddingLeft: 15,
+                      paddingRight: 63,
+                    },
+                  },
+                  variant: {
+                    primary: {
+                      rest: {
+                        md: {
+                          color: '#0F62FE',
+                        },
+                      },
                     },
                   },
                 },
@@ -191,12 +199,16 @@ export const carbonTheme: KiskadeeSchema = {
           },
         },
         rightIconDetached: {
-          base: {
-            rest: {
-              md: {
-                fontSize: 16,
-                paddingRight: 16,
-                paddingLeft: 16,
+          light: {
+            default: {
+              base: {
+                rest: {
+                  md: {
+                    fontSize: 16,
+                    paddingRight: 16,
+                    paddingLeft: 16,
+                  },
+                },
               },
             },
           },

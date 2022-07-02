@@ -189,15 +189,22 @@ type ElementSchema<Base> = {
   >;
 };
 
+type ElementTheme<T> = Partial<
+  Record<
+    'light' | 'dark',
+    Partial<Record<string | 'default', ElementSchema<T>>>
+  >
+>;
+
 export interface ButtonSchema {
   option?: ContainerOptions;
   elements?: {
-    container?: ElementSchema<ButtonElementContainer>;
-    iconAlone?: ElementSchema<ButtonElementIcon>;
-    leftIconAttached?: ElementSchema<ButtonElementIcon>;
-    leftIconDetached?: ElementSchema<ButtonElementIcon>;
-    rightIconAttached?: ElementSchema<ButtonElementIcon>;
-    rightIconDetached?: ElementSchema<ButtonElementIcon>;
-    text?: ElementSchema<ButtonElementText>;
+    container?: ElementTheme<ButtonElementContainer>;
+    iconAlone?: ElementTheme<ButtonElementIcon>;
+    leftIconAttached?: ElementTheme<ButtonElementIcon>;
+    leftIconDetached?: ElementTheme<ButtonElementIcon>;
+    rightIconAttached?: ElementTheme<ButtonElementIcon>;
+    rightIconDetached?: ElementTheme<ButtonElementIcon>;
+    text?: ElementTheme<ButtonElementText>;
   };
 }
