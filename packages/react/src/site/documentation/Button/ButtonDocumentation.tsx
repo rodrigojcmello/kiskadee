@@ -65,6 +65,8 @@ export const ButtonDocumentation: FC = () => {
 
   const width = label ? 'block' : undefined;
 
+  // TODO: document the responsiveness feature
+
   return (
     <Container className={!pageLoad ? style['no-transition'] : undefined}>
       <div className={`${style.buttonRow} ${style.buttonGrid}`}>
