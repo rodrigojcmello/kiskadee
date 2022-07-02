@@ -217,6 +217,7 @@ export class ButtonStyle {
         ] = this.getStyle(
           element,
           undefined,
+          // TODO: type this key
           this._options?.responsive?.[
             breakpoint as keyof Exclude<
               ContainerOptions['responsive'],

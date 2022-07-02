@@ -181,7 +181,7 @@ export const ButtonDocumentation: FC = () => {
                 variant={variant}
                 borderRadius={radius}
                 textAlign={textAlign}
-                size={size}
+                // size={size}
                 onClick={(): void => {
                   setLabel('Click me');
                   setIconLeft(undefined);

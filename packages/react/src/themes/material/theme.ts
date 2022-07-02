@@ -34,7 +34,7 @@ export const materialTheme: KiskadeeSchema = {
         },
         responsive: {
           smallScreenBP1: 'md',
-          // mediumScreenBP1: 'sm',
+          mediumScreenBP1: 'sm',
         },
       },
       elements: {
