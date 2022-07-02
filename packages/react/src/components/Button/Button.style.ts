@@ -514,6 +514,7 @@ export class ButtonStyle {
   // Icon Element
   //----------------------------------------------------------------------------
 
+  // TODO: jpg/png/webp icon support
   // eslint-disable-next-line class-methods-use-this
   get icon() {
     return {
