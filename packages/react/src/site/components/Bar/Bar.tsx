@@ -50,10 +50,10 @@ export const Bar: FC = () => {
   return (
     <BarStyled>
       <SelectTheme value={themeSelected} onChange={handleChange}>
-        <option value="Material">Material 3 by Google</option>
-        <option value="iOS">iOS 15.2 by Apple</option>
-        <option value="Fluent">Windows UI 2.7 by Microsoft</option>
-        <option value="Carbon">Carbon by IBM</option>
+        <option value={'Material'}>Material 3 by Google</option>
+        <option value={'iOS'}>iOS 15.2 by Apple</option>
+        <option value={'Fluent'}>Windows UI 2.7 by Microsoft</option>
+        <option value={'Carbon'}>Carbon by IBM</option>
       </SelectTheme>
     </BarStyled>
   );

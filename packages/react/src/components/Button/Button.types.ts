@@ -48,6 +48,7 @@ export interface ButtonProps {
   iconRight?: ReactElement;
   iconType?: 'attached' | 'detached';
   size?: Size;
+  dark?: boolean;
 }
 
 export type ButtonStyleProps = {
@@ -78,6 +79,7 @@ export type ButtonElementContainer = {
   // Core
   boxShadow?: CSSProperties['boxShadow'];
   outlineOffset?: CSSProperties['outlineOffset'];
+  // TODO: add to dark mode too
   outlineColor?: CSSProperties['outlineColor'];
   outlineStyle?: CSSProperties['outlineStyle'];
   outlineWidth?: CSSProperties['outlineWidth'];
@@ -195,6 +197,8 @@ type ElementTheme<T> = Partial<
     Partial<Record<string | 'default', ElementSchema<T>>>
   >
 >;
+
+export type ContrastStyle<T> = { [mediaQuery in 'light' | 'dark']?: T };
 
 export interface ButtonSchema {
   option?: ContainerOptions;

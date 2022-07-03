@@ -1,6 +1,6 @@
 import type { KiskadeeSchema } from './theme.types';
 
-export const theme: KiskadeeSchema = {
+export const schema: KiskadeeSchema = {
   name: 'Empty',
   author: 'Kiskadee',
   version: '0.0',

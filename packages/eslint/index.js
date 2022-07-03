@@ -46,6 +46,59 @@ const commonRules = {
   ],
 };
 
+const commonReactRules = {
+  //----------------------------------------------------------------------------
+  // REACT
+  //----------------------------------------------------------------------------
+  /**
+   * React.PropTypes is discouraged by adherence to TypeScript
+   */
+  'react/require-default-props': 'off',
+
+  /**
+   * Standardizes the way to declare a component (arrow-function)
+   */
+  'react/function-component-definition': [
+    'error',
+    {
+      namedComponents: 'arrow-function',
+      unnamedComponents: 'function-expression',
+    },
+  ],
+
+  /**
+   * With React version 17, import is optional
+   * @see {@link https://reactjs.org/blog/2020/10/20/react-v17.html#new-jsx-transform}
+   */
+  'react/react-in-jsx-scope': 'off',
+
+  /**
+   * It is not always necessary to specify all dependencies, this rule ends up
+   * being more of a hindrance than a help.
+   */
+  'react-hooks/exhaustive-deps': 'off',
+
+  /**
+   * This tweak goes against Airbnb JavaScript Style Guide, but makes it easier
+   * to change a static string to some dynamic parameter
+   */
+  'react/jsx-curly-brace-presence': [
+    'error',
+    { props: 'always', children: 'never' },
+  ],
+
+  // '@typescript-eslint/naming-convention': 'off',
+  // /**
+  //  * In the EcmaScript context this rule makes a lot of sense, since you
+  //  * are not sure what exists in props, however with TypeScript this is
+  //  * different, you know exactly the type of that props helping the code
+  //  * readability
+  //  * @see {@link https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-props-no-spreading.md}
+  //  * @see {@link https://www.typescriptlang.org/docs/handbook/interfaces.html}
+  //  */
+  // 'react/jsx-props-no-spreading': 'off',
+};
+
 /* eslint-disable unicorn/prefer-module */
 module.exports = {
   //----------------------------------------------------------------------------
@@ -94,6 +147,7 @@ module.exports = {
     //--------------------------------------------------------------------------
 
     ...commonRules,
+    ...commonReactRules,
   },
   plugins: ['unused-imports'],
 
@@ -269,6 +323,11 @@ module.exports = {
          */
         '@typescript-eslint/ban-ts-comment': 'off',
 
+        /**
+         * I like it :)
+         */
+        // '@typescript-eslint/explicit-function-return-type': 'error',
+
         // /**
         //  * This rule is disabled because of the "no-param-reassign" rule that
         //  * deals with the same issue.
@@ -317,37 +376,7 @@ module.exports = {
     //--------------------------------------------------------------------------
     {
       files: ['**/*.tsx'],
-      rules: {
-        '@typescript-eslint/naming-convention': 'off',
-        'react/function-component-definition': [
-          'error',
-          {
-            namedComponents: 'arrow-function',
-            unnamedComponents: 'function-expression',
-          },
-        ],
-
-        // /**
-        //  * In the EcmaScript context this rule makes a lot of sense, since you
-        //  * are not sure what exists in props, however with TypeScript this is
-        //  * different, you know exactly the type of that props helping the code
-        //  * readability
-        //  * @see {@link https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-props-no-spreading.md}
-        //  * @see {@link https://www.typescriptlang.org/docs/handbook/interfaces.html}
-        //  */
-        // 'react/jsx-props-no-spreading': 'off',
-
-        /**
-         * With version 17 of React, importing it is optional
-         * @see {@link https://reactjs.org/blog/2020/10/20/react-v17.html#new-jsx-transform}
-         */
-        'react/react-in-jsx-scope': 'off',
-
-        /**
-         * More hinders than helps
-         */
-        'react-hooks/exhaustive-deps': 'off',
-      },
+      rules: commonReactRules,
     },
   ],
 };

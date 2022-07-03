@@ -17,7 +17,7 @@ const NotApplicable: FC = () => {
   return (
     <div className={style.buttonWrap}>
       <span
-        className="material-symbols-outlined"
+        className={'material-symbols-outlined'}
         style={{ color: '#e6e6e6', fontSize: 24 }}
       >
         block
@@ -85,10 +85,11 @@ export const ButtonDocumentation: FC = () => {
                 iconType={iconType}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
-                size="md"
+                size={'md'}
                 onClick={(): void => {
                   setSize('md');
                 }}
+                dark
               />
             </div>
           ) : (
@@ -110,7 +111,7 @@ export const ButtonDocumentation: FC = () => {
                 iconLeft={iconLeft}
                 iconRight={iconRight}
                 textAlign={textAlign}
-                size="sm"
+                size={'sm'}
                 onClick={(): void => {
                   setSize('sm');
                 }}
@@ -135,7 +136,7 @@ export const ButtonDocumentation: FC = () => {
                 iconLeft={iconLeft}
                 iconRight={iconRight}
                 textAlign={textAlign}
-                size="lg"
+                size={'lg'}
                 onClick={(): void => {
                   setSize('lg');
                 }}
@@ -160,7 +161,7 @@ export const ButtonDocumentation: FC = () => {
                 iconLeft={iconLeft}
                 iconRight={iconRight}
                 textAlign={textAlign}
-                size="xl"
+                size={'xl'}
                 onClick={(): void => {
                   setSize('xl');
                 }}
@@ -178,8 +179,8 @@ export const ButtonDocumentation: FC = () => {
           {buttonContainer?.type?.contained ? (
             <div className={style.buttonWrap}>
               <Button
-                label="Click me"
-                width="block"
+                label={'Click me'}
+                width={'block'}
                 type={type}
                 variant={variant}
                 borderRadius={radius}
@@ -207,12 +208,14 @@ export const ButtonDocumentation: FC = () => {
                 variant={variant}
                 borderRadius={radius}
                 iconLeft={
-                  <span className="material-symbols-outlined">thumb_up</span>
+                  <span className={'material-symbols-outlined'}>thumb_up</span>
                 }
                 size={size}
                 onClick={(): void => {
                   setIconLeft(
-                    <span className="material-symbols-outlined">thumb_up</span>
+                    <span className={'material-symbols-outlined'}>
+                      thumb_up
+                    </span>
                   );
                   setLabel(undefined);
                   setIconRight(undefined);
@@ -232,21 +235,23 @@ export const ButtonDocumentation: FC = () => {
           {buttonOption?.icon?.enable?.left ? (
             <div className={style.buttonWrap}>
               <Button
-                label="Click me"
-                width="block"
+                label={'Click me'}
+                width={'block'}
                 type={type}
                 variant={variant}
                 borderRadius={radius}
                 iconLeft={
-                  <span className="material-symbols-outlined">thumb_up</span>
+                  <span className={'material-symbols-outlined'}>thumb_up</span>
                 }
-                iconType="attached"
+                iconType={'attached'}
                 textAlign={textAlign}
                 size={size}
                 onClick={(): void => {
                   setLabel('Click me');
                   setIconLeft(
-                    <span className="material-symbols-outlined">thumb_up</span>
+                    <span className={'material-symbols-outlined'}>
+                      thumb_up
+                    </span>
                   );
                   setIconType('attached');
                 }}
@@ -261,22 +266,24 @@ export const ButtonDocumentation: FC = () => {
           {buttonOption?.icon?.enable?.left ? (
             <div className={style.buttonWrap}>
               <Button
-                label="Click me"
-                width="block"
+                label={'Click me'}
+                width={'block'}
                 type={type}
                 variant={variant}
                 borderRadius={radius}
                 iconLeft={
-                  <span className="material-symbols-outlined">thumb_up</span>
+                  <span className={'material-symbols-outlined'}>thumb_up</span>
                 }
-                iconType="detached"
+                iconType={'detached'}
                 textAlign={textAlign}
                 size={size}
                 onClick={(): void => {
                   setLabel('Click me');
                   setIconType('detached');
                   setIconLeft(
-                    <span className="material-symbols-outlined">thumb_up</span>
+                    <span className={'material-symbols-outlined'}>
+                      thumb_up
+                    </span>
                   );
                 }}
               />
@@ -290,22 +297,24 @@ export const ButtonDocumentation: FC = () => {
           {buttonOption?.icon?.enable?.right ? (
             <div className={style.buttonWrap}>
               <Button
-                label="Click me"
-                width="block"
+                label={'Click me'}
+                width={'block'}
                 type={type}
                 variant={variant}
                 borderRadius={radius}
                 iconRight={
-                  <span className="material-symbols-outlined">expand_more</span>
+                  <span className={'material-symbols-outlined'}>
+                    expand_more
+                  </span>
                 }
-                iconType="attached"
+                iconType={'attached'}
                 textAlign={textAlign}
                 size={size}
                 onClick={(): void => {
                   setIconType('attached');
                   setLabel('Click me');
                   setIconRight(
-                    <span className="material-symbols-outlined">
+                    <span className={'material-symbols-outlined'}>
                       expand_more
                     </span>
                   );
@@ -321,22 +330,24 @@ export const ButtonDocumentation: FC = () => {
           {buttonOption?.icon?.enable?.right ? (
             <div className={style.buttonWrap}>
               <Button
-                label="Click me"
-                width="block"
+                label={'Click me'}
+                width={'block'}
                 type={type}
                 variant={variant}
                 borderRadius={radius}
                 iconRight={
-                  <span className="material-symbols-outlined">expand_more</span>
+                  <span className={'material-symbols-outlined'}>
+                    expand_more
+                  </span>
                 }
-                iconType="detached"
+                iconType={'detached'}
                 textAlign={textAlign}
                 size={size}
                 onClick={(): void => {
                   setLabel('Click me');
                   setIconType('detached');
                   setIconRight(
-                    <span className="material-symbols-outlined">
+                    <span className={'material-symbols-outlined'}>
                       expand_more
                     </span>
                   );
@@ -357,8 +368,8 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 label={label}
                 width={width}
-                type="contained"
-                variant="primary"
+                type={'contained'}
+                variant={'primary'}
                 borderRadius={radius}
                 textAlign={textAlign}
                 size={size}
@@ -383,8 +394,8 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 label={label}
                 width={width}
-                type="outline"
-                variant="primary"
+                type={'outline'}
+                variant={'primary'}
                 borderRadius={radius}
                 textAlign={textAlign}
                 size={size}
@@ -408,8 +419,8 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 label={label}
                 width={width}
-                type="flat"
-                variant="primary"
+                type={'flat'}
+                variant={'primary'}
                 borderRadius={radius}
                 textAlign={textAlign}
                 size={size}
@@ -437,7 +448,7 @@ export const ButtonDocumentation: FC = () => {
                 label={label}
                 width={width}
                 type={type}
-                variant="primary"
+                variant={'primary'}
                 borderRadius={radius}
                 textAlign={textAlign}
                 size={size}
@@ -461,8 +472,8 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 label={label}
                 width={width}
-                type="contained"
-                variant="secondary"
+                type={'contained'}
+                variant={'secondary'}
                 borderRadius={radius}
                 textAlign={textAlign}
                 size={size}
@@ -485,8 +496,8 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 label={label}
                 width={width}
-                type="contained"
-                variant="tertiary"
+                type={'contained'}
+                variant={'tertiary'}
                 borderRadius={radius}
                 textAlign={textAlign}
                 size={size}
@@ -512,8 +523,8 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 label={label}
                 width={width}
-                type="contained"
-                variant="success"
+                type={'contained'}
+                variant={'success'}
                 borderRadius={radius}
                 textAlign={textAlign}
                 size={size}
@@ -537,8 +548,8 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 label={label}
                 width={width}
-                type="contained"
-                variant="warning"
+                type={'contained'}
+                variant={'warning'}
                 borderRadius={radius}
                 textAlign={textAlign}
                 size={size}
@@ -561,9 +572,9 @@ export const ButtonDocumentation: FC = () => {
             <div className={style.buttonWrap}>
               <Button
                 label={label}
-                width="block"
+                width={'block'}
                 type={type}
-                variant="danger"
+                variant={'danger'}
                 borderRadius={radius}
                 textAlign={textAlign}
                 size={size}
@@ -592,7 +603,7 @@ export const ButtonDocumentation: FC = () => {
                 type={type}
                 variant={variant}
                 borderRadius={radius}
-                interaction="hover"
+                interaction={'hover'}
                 textAlign={textAlign}
                 size={size}
                 onClick={(): void => {}}
@@ -616,7 +627,7 @@ export const ButtonDocumentation: FC = () => {
                 type={type}
                 variant={variant}
                 borderRadius={radius}
-                interaction="focus"
+                interaction={'focus'}
                 textAlign={textAlign}
                 size={size}
                 onClick={(): void => {}}
@@ -641,7 +652,7 @@ export const ButtonDocumentation: FC = () => {
                 type={type}
                 variant={variant}
                 borderRadius={radius}
-                interaction="pressed"
+                interaction={'pressed'}
                 textAlign={textAlign}
                 size={size}
                 onClick={(): void => {}}
@@ -666,7 +677,7 @@ export const ButtonDocumentation: FC = () => {
                 type={type}
                 variant={variant}
                 borderRadius={radius}
-                interaction="visited"
+                interaction={'visited'}
                 textAlign={textAlign}
                 size={size}
                 onClick={(): void => {}}
@@ -711,8 +722,8 @@ export const ButtonDocumentation: FC = () => {
         <div className={style.width}>
           <div>
             <Button
-              label="Text"
-              width="block"
+              label={'Text'}
+              width={'block'}
               type={type}
               variant={variant}
               borderRadius={radius}
@@ -726,8 +737,8 @@ export const ButtonDocumentation: FC = () => {
           </div>
           <div>
             <Button
-              label="Text text text text text text"
-              width="auto"
+              label={'Text text text text text text'}
+              width={'auto'}
               type={type}
               variant={variant}
               borderRadius={radius}
@@ -741,8 +752,8 @@ export const ButtonDocumentation: FC = () => {
           </div>
           <div>
             <Button
-              label="Text"
-              width="min"
+              label={'Text'}
+              width={'min'}
               type={type}
               variant={variant}
               borderRadius={radius}
@@ -769,7 +780,7 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 label={label}
                 width={width}
-                borderRadius="rounded"
+                borderRadius={'rounded'}
                 type={type}
                 variant={variant}
                 textAlign={textAlign}
@@ -796,7 +807,7 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 label={label}
                 width={width}
-                borderRadius="full"
+                borderRadius={'full'}
                 type={type}
                 variant={variant}
                 textAlign={textAlign}
@@ -823,7 +834,7 @@ export const ButtonDocumentation: FC = () => {
               <Button
                 label={label}
                 width={width}
-                borderRadius="none"
+                borderRadius={'none'}
                 type={type}
                 variant={variant}
                 textAlign={textAlign}
@@ -849,9 +860,9 @@ export const ButtonDocumentation: FC = () => {
           {buttonOption?.textAlign?.left ? (
             <div className={style.buttonWrap}>
               <Button
-                label="Click me"
-                width="block"
-                textAlign="left"
+                label={'Click me'}
+                width={'block'}
+                textAlign={'left'}
                 type={type}
                 variant={variant}
                 borderRadius={radius}
@@ -861,7 +872,7 @@ export const ButtonDocumentation: FC = () => {
                 }}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
-                iconType="detached"
+                iconType={'detached'}
               />
             </div>
           ) : (
@@ -877,9 +888,9 @@ export const ButtonDocumentation: FC = () => {
           {buttonOption?.textAlign?.center ? (
             <div className={style.buttonWrap}>
               <Button
-                label="Click me"
-                width="block"
-                textAlign="center"
+                label={'Click me'}
+                width={'block'}
+                textAlign={'center'}
                 type={type}
                 variant={variant}
                 borderRadius={radius}
@@ -889,7 +900,7 @@ export const ButtonDocumentation: FC = () => {
                 }}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
-                iconType="detached"
+                iconType={'detached'}
               />
             </div>
           ) : (
@@ -905,9 +916,9 @@ export const ButtonDocumentation: FC = () => {
           {buttonOption?.textAlign?.right ? (
             <div className={style.buttonWrap}>
               <Button
-                label="Click me"
-                width="block"
-                textAlign="right"
+                label={'Click me'}
+                width={'block'}
+                textAlign={'right'}
                 type={type}
                 variant={variant}
                 borderRadius={radius}
@@ -917,7 +928,7 @@ export const ButtonDocumentation: FC = () => {
                 }}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
-                iconType="detached"
+                iconType={'detached'}
               />
             </div>
           ) : (

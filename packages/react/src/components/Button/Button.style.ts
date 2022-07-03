@@ -10,6 +10,7 @@ import type {
   ContainerOptions,
   Interaction,
   Size,
+  ContrastStyle,
 } from './Button.types';
 
 export class ButtonStyle {
@@ -166,11 +167,16 @@ export class ButtonStyle {
   }
 
   private containerBackground() {
-    const elementStyle = this._styleContainer;
+    const elementStyle =
+      this.getContrastStyle<ButtonElementContainer>('container');
 
     return css({
-      background: elementStyle?.background,
-      backgroundColor: elementStyle?.backgroundColor,
+      background: elementStyle?.light?.background,
+      backgroundColor: elementStyle?.light?.backgroundColor,
+      '@media (prefers-color-scheme: dark)': {
+        background: elementStyle?.dark?.background,
+        backgroundColor: elementStyle?.dark?.backgroundColor,
+      },
     })();
   }
 
@@ -196,41 +202,6 @@ export class ButtonStyle {
       alignItems: 'center',
       justifyContent: 'center',
     })();
-  }
-
-  getResponsiveStyle<T>(element: ButtonElement): {
-    [mediaQuery: string]: T;
-  } {
-    const responsive: { [media: string]: T } = {};
-
-    if (!this._size) {
-      for (const breakpoint of Object.keys(this._options?.responsive || {})) {
-        responsive[
-          `@media(min-width: ${
-            this._responsive[
-              breakpoint as keyof Exclude<
-                ContainerOptions['responsive'],
-                undefined
-              >
-            ]
-          }px)`
-        ] = this.getStyle(
-          element,
-          undefined,
-          // TODO: type this key
-          this._options?.responsive?.[
-            breakpoint as keyof Exclude<
-              ContainerOptions['responsive'],
-              undefined
-            >
-          ]
-        );
-      }
-    } else {
-      responsive['@media(min-width: 0px)'] = this.getStyle(element);
-    }
-
-    return responsive;
   }
 
   private containerCore() {
@@ -309,7 +280,7 @@ export class ButtonStyle {
       ['boxShadow']
     );
 
-    const { '@media(min-width: 0px)': elementRest, ...elementResponsive } = p;
+    const { '@media (min-width: 0px)': elementRest, ...elementResponsive } = p;
 
     return css({
       // TODO: need responsive?
@@ -454,10 +425,13 @@ export class ButtonStyle {
   }
 
   private textColor() {
-    const style = this._styleText;
+    const style = this.getContrastStyle<ButtonElementText>('text');
 
     return css({
-      color: style?.color,
+      color: style?.light?.color,
+      '@media (prefers-color-scheme: dark)': {
+        color: style?.dark?.color,
+      },
     })();
   }
 
@@ -476,7 +450,7 @@ export class ButtonStyle {
       p[m].paddingLeft = this._iconLeft ? 0 : p[m].paddingLeft;
     }
 
-    const { '@media(min-width: 0px)': elementRest, ...elementResponsive } = p;
+    const { '@media (min-width: 0px)': elementRest, ...elementResponsive } = p;
 
     return css({
       ...elementRest,
@@ -546,16 +520,26 @@ export class ButtonStyle {
   }
 
   private iconColor(position: 'left' | 'right') {
-    const iconStyle = this.getStyle<ButtonElementIcon>(this.getIcon(position));
-    const textStyle = this._styleText;
-    const color = textStyle?.color || iconStyle?.color;
+    const iconStyle = this.getContrastStyle<ButtonElementIcon>(
+      this.getIcon(position)
+    );
+    const textStyle = this.getContrastStyle<ButtonElementText>('text');
+    const colorLight = textStyle?.light?.color || iconStyle?.light?.color;
+    const colorDark = textStyle?.dark?.color || iconStyle?.dark?.color;
 
     return css({
-      color,
+      color: colorLight,
 
       '& > *': {
         fontSize: 'inherit',
-        fill: color || undefined,
+        fill: colorLight || undefined,
+      },
+
+      '@media (prefers-color-scheme: dark)': {
+        color: colorDark,
+        '& > *': {
+          fill: colorDark || undefined,
+        },
       },
     })();
   }
@@ -617,16 +601,18 @@ export class ButtonStyle {
   private getStyle<T>(
     element: ButtonElement,
     interaction?: Interaction,
-    size?: Size
+    size?: Size,
+    dark?: boolean
   ): T {
+    const contrast = dark ? 'dark' : 'light';
     const baseStyle = this._theme?.elements?.[element];
-    const typeStyle = baseStyle?.light?.default?.type?.[this._typeStyle];
+    const typeStyle = baseStyle?.[contrast]?.default?.type?.[this._typeStyle];
     const variantStyle = typeStyle?.variant?.[this._variant];
 
     if (interaction) {
       return {
-        ...baseStyle?.light?.default?.base?.[interaction]?.md,
-        ...baseStyle?.light?.default?.base?.[interaction]?.[
+        ...baseStyle?.[contrast]?.default?.base?.[interaction]?.md,
+        ...baseStyle?.[contrast]?.default?.base?.[interaction]?.[
           size || this._size || 'md'
         ],
 
@@ -637,7 +623,7 @@ export class ButtonStyle {
     }
 
     return {
-      ...(size ? {} : baseStyle?.light?.default?.base?.rest?.md),
+      ...(size ? {} : baseStyle?.[contrast]?.default?.base?.rest?.md),
       ...baseStyle?.light?.default?.base?.rest?.[size || this._size || 'md'],
 
       ...(size ? {} : typeStyle?.base?.md),
@@ -646,5 +632,54 @@ export class ButtonStyle {
       ...(size ? {} : variantStyle?.rest?.md),
       ...variantStyle?.rest?.[size || this._size || 'md'],
     } as T;
+  }
+
+  getResponsiveStyle<T>(element: ButtonElement): {
+    [mediaQuery: string]: T;
+  } {
+    const responsive: { [media: string]: T } = {};
+
+    if (!this._size) {
+      for (const breakpoint of Object.keys(this._options?.responsive || {})) {
+        responsive[
+          `@media (min-width: ${
+            this._responsive[
+              breakpoint as keyof Exclude<
+                ContainerOptions['responsive'],
+                undefined
+              >
+            ]
+          }px)`
+        ] = this.getStyle(
+          element,
+          undefined,
+          // TODO: type this key
+          this._options?.responsive?.[
+            breakpoint as keyof Exclude<
+              ContainerOptions['responsive'],
+              undefined
+            >
+          ]
+        );
+      }
+    } else {
+      responsive['@media (min-width: 0px)'] = this.getStyle(element);
+    }
+
+    return responsive;
+  }
+
+  getContrastStyle<T>(element: ButtonElement): ContrastStyle<T> {
+    const responsive: ContrastStyle<T> = {};
+
+    // TODO: optimize this
+    responsive.light = this.getStyle(element);
+
+    responsive.dark = {
+      ...responsive.light,
+      ...this.getStyle(element, undefined, undefined, true),
+    } as T;
+
+    return responsive;
   }
 }

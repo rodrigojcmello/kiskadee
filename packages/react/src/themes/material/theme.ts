@@ -231,6 +231,23 @@ export const materialTheme: KiskadeeSchema = {
               },
             },
           },
+          dark: {
+            default: {
+              type: {
+                contained: {
+                  variant: {
+                    primary: {
+                      rest: {
+                        md: {
+                          backgroundColor: '#D0BCFF',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         iconAlone: {
           light: {
@@ -505,6 +522,23 @@ export const materialTheme: KiskadeeSchema = {
                       disabled: {
                         md: {
                           color: '#1b1a1e61',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          dark: {
+            default: {
+              type: {
+                contained: {
+                  variant: {
+                    primary: {
+                      rest: {
+                        md: {
+                          color: '#381E72',
                         },
                       },
                     },

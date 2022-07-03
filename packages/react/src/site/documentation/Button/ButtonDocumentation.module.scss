@@ -29,3 +29,9 @@
   min-height: 50px;
   align-items: center;
 }
+
+body {
+  @media (prefers-color-scheme: dark) {
+    background: #1f1f1f;
+  }
+}

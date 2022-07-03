@@ -12,10 +12,16 @@ type KiskadeeContextType = [
 export const KiskadeeContext = createContext<KiskadeeContextType>(undefined!);
 
 export const KiskadeeProvider: FC<
-  PropsWithChildren<{ theme: KiskadeeSchema }>
-> = ({ theme, children }) => {
+  PropsWithChildren<{
+    schema: KiskadeeSchema;
+    theme?: string;
+    only?: 'light' | 'dark';
+  }>
+> = ({ schema, only = 'light', theme, children }) => {
+  console.log({ only, theme });
+
   return (
-    <KiskadeeContext.Provider value={useState<KiskadeeSchema>(theme)}>
+    <KiskadeeContext.Provider value={useState<KiskadeeSchema>(schema)}>
       {children}
     </KiskadeeContext.Provider>
   );
