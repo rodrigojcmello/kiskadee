@@ -24,8 +24,9 @@ export const Button: FC<ButtonProps> = ({
 }) => {
   const [theme] = useContext(KiskadeeContext);
 
-  const style = {
-    theme: theme.component.button,
+  const style: ButtonStyleProps = {
+    schema: theme.component.button,
+    theme: theme.theme,
     size,
     typeStyle: type,
     variant,

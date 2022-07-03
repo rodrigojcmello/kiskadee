@@ -14,14 +14,18 @@ export const KiskadeeContext = createContext<KiskadeeContextType>(undefined!);
 export const KiskadeeProvider: FC<
   PropsWithChildren<{
     schema: KiskadeeSchema;
-    theme?: string;
+    // theme?: { light?: string; dark?: string };
     only?: 'light' | 'dark';
   }>
-> = ({ schema, only = 'light', theme, children }) => {
-  console.log({ only, theme });
+> = ({ schema, only, children }) => {
+  const newSchema = { ...schema };
+  if (!newSchema.theme) {
+    newSchema.theme = {};
+  }
+  newSchema.theme.only = only;
 
   return (
-    <KiskadeeContext.Provider value={useState<KiskadeeSchema>(schema)}>
+    <KiskadeeContext.Provider value={useState<KiskadeeSchema>(newSchema)}>
       {children}
     </KiskadeeContext.Provider>
   );

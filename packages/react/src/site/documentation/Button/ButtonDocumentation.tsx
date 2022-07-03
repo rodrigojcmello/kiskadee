@@ -27,7 +27,7 @@ const NotApplicable: FC = () => {
 };
 
 export const ButtonDocumentation: FC = () => {
-  const [theme] = useContext(KiskadeeContext);
+  const [schema, setSchema] = useContext(KiskadeeContext);
   const [label, setLabel] = useState<string | undefined>('Click me');
   const [size, setSize] = useState<Size>('md');
   const [variant, setVariant] = useState<ButtonVariant>('primary');
@@ -57,11 +57,11 @@ export const ButtonDocumentation: FC = () => {
     setIconType(undefined);
     setIconLeft(undefined);
     setTextAlign(undefined);
-  }, [theme.name, theme.author, theme.version]);
+  }, [schema.name, schema.author, schema.version]);
 
-  const buttonOption = theme.component.button?.option;
+  const buttonOption = schema.component.button?.option;
   const buttonContainer =
-    theme.component.button?.elements?.container?.light?.default;
+    schema.component.button?.elements?.container?.light?.default;
   const buttonVariant = buttonContainer?.type?.[type]?.variant;
 
   const width = label ? 'block' : undefined;
@@ -70,6 +70,37 @@ export const ButtonDocumentation: FC = () => {
 
   return (
     <Container className={!pageLoad ? style['no-transition'] : undefined}>
+      <button
+        type={'button'}
+        onClick={() => {
+          const mode = schema.theme?.only === 'dark' ? 'light' : 'dark';
+
+          // TODO: create a setDarkMode / setContrastMode
+          setSchema({
+            ...schema,
+            theme: {
+              ...schema.theme,
+              only: mode,
+            },
+          });
+        }}
+      >
+        dark mode
+      </button>
+      <button
+        type={'button'}
+        onClick={() => {
+          setSchema({
+            ...schema,
+            theme: {
+              ...schema.theme,
+              only: undefined,
+            },
+          });
+        }}
+      >
+        OS Default
+      </button>
       <div className={`${style.buttonRow} ${style.buttonGrid}`}>
         <div>
           <BoxTitle>Medium</BoxTitle>

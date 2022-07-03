@@ -34,7 +34,9 @@ export class ButtonStyle {
 
   private readonly _textAlign: ButtonStyleProps['textAlign'];
 
-  private readonly _theme: ButtonSchema | undefined;
+  private readonly _schema: ButtonSchema | undefined;
+
+  private readonly _theme: ButtonStyleProps['theme'];
 
   private readonly _iconLeft: ButtonStyleProps['iconLeft'];
 
@@ -71,9 +73,10 @@ export class ButtonStyle {
     this._borderRadius = style.borderRadius;
 
     // Optional
+    this._schema = style.schema;
     this._theme = style.theme;
     this._textAlign = style.textAlign;
-    this._options = style.theme?.option;
+    this._options = style.schema?.option;
     this._iconLeft = style.iconLeft;
     this._iconRight = style.iconRight;
 
@@ -167,15 +170,14 @@ export class ButtonStyle {
   }
 
   private containerBackground() {
-    const elementStyle =
-      this.getContrastStyle<ButtonElementContainer>('container');
+    const style = this.getContrastStyle<ButtonElementContainer>('container');
 
     return css({
-      background: elementStyle?.light?.background,
-      backgroundColor: elementStyle?.light?.backgroundColor,
-      '@media (prefers-color-scheme: dark)': {
-        background: elementStyle?.dark?.background,
-        backgroundColor: elementStyle?.dark?.backgroundColor,
+      background: style?.defaultMode?.background,
+      backgroundColor: style?.defaultMode?.backgroundColor,
+      '@media (prefers-color-scheme: dark)': style?.contrastMode && {
+        background: style?.contrastMode?.background,
+        backgroundColor: style?.contrastMode?.backgroundColor,
       },
     })();
   }
@@ -384,6 +386,7 @@ export class ButtonStyle {
     };
   }
 
+  // OK
   private static textBase() {
     return css({
       whiteSpace: 'nowrap',
@@ -391,21 +394,18 @@ export class ButtonStyle {
     })();
   }
 
+  // OK
   private textCore() {
-    const textStyle = { ...this._styleText };
-
-    // TODO: deprecated logic
-    delete textStyle.color;
-    delete textStyle.paddingBottom;
-    delete textStyle.paddingTop;
-    delete textStyle.paddingLeft;
-    delete textStyle.paddingRight;
-
     return css({
-      ...textStyle,
+      fontSize: this._styleText.fontSize,
+      lineHeight: this._styleText.lineHeight,
+      fontWeight: this._styleText.fontWeight,
+      fontFamily: this._styleText.fontFamily,
+      fontStyle: this._styleText.fontStyle,
     });
   }
 
+  // OK
   private textAlign() {
     return css({
       textAlign:
@@ -415,12 +415,13 @@ export class ButtonStyle {
     })();
   }
 
+  // OK
   private textWidth() {
+    const block =
+      this._iconType === 'detached' || !(this._iconLeft || this._iconRight);
+
     return css({
-      width:
-        this._iconType === 'detached' || !(this._iconLeft || this._iconRight)
-          ? '100%'
-          : 'auto',
+      width: block ? '100%' : 'auto',
     })();
   }
 
@@ -428,9 +429,9 @@ export class ButtonStyle {
     const style = this.getContrastStyle<ButtonElementText>('text');
 
     return css({
-      color: style?.light?.color,
-      '@media (prefers-color-scheme: dark)': {
-        color: style?.dark?.color,
+      color: style?.defaultMode?.color,
+      '@media (prefers-color-scheme: dark)': style?.contrastMode && {
+        color: style?.contrastMode?.color,
       },
     })();
   }
@@ -520,25 +521,27 @@ export class ButtonStyle {
   }
 
   private iconColor(position: 'left' | 'right') {
-    const iconStyle = this.getContrastStyle<ButtonElementIcon>(
+    const icon = this.getContrastStyle<ButtonElementIcon>(
       this.getIcon(position)
     );
-    const textStyle = this.getContrastStyle<ButtonElementText>('text');
-    const colorLight = textStyle?.light?.color || iconStyle?.light?.color;
-    const colorDark = textStyle?.dark?.color || iconStyle?.dark?.color;
+    const text = this.getContrastStyle<ButtonElementText>('text');
+
+    const colorDefault = icon?.defaultMode?.color || text?.defaultMode?.color;
+    const colorContrast =
+      icon?.contrastMode?.color || text?.contrastMode?.color;
 
     return css({
-      color: colorLight,
+      color: colorDefault,
 
       '& > *': {
         fontSize: 'inherit',
-        fill: colorLight || undefined,
+        fill: colorDefault,
       },
 
-      '@media (prefers-color-scheme: dark)': {
-        color: colorDark,
+      '@media (prefers-color-scheme: dark)': colorContrast && {
+        color: colorContrast,
         '& > *': {
-          fill: colorDark || undefined,
+          fill: colorContrast,
         },
       },
     })();
@@ -604,8 +607,8 @@ export class ButtonStyle {
     size?: Size,
     dark?: boolean
   ): T {
-    const contrast = dark ? 'dark' : 'light';
-    const baseStyle = this._theme?.elements?.[element];
+    const contrast = dark || this._theme?.only === 'dark' ? 'dark' : 'light';
+    const baseStyle = this._schema?.elements?.[element];
     const typeStyle = baseStyle?.[contrast]?.default?.type?.[this._typeStyle];
     const variantStyle = typeStyle?.variant?.[this._variant];
 
@@ -673,12 +676,14 @@ export class ButtonStyle {
     const responsive: ContrastStyle<T> = {};
 
     // TODO: optimize this
-    responsive.light = this.getStyle(element);
+    responsive.defaultMode = this.getStyle(element);
 
-    responsive.dark = {
-      ...responsive.light,
-      ...this.getStyle(element, undefined, undefined, true),
-    } as T;
+    if (!this._theme?.only) {
+      responsive.contrastMode = {
+        ...responsive.defaultMode,
+        ...this.getStyle(element, undefined, undefined, true),
+      } as T;
+    }
 
     return responsive;
   }

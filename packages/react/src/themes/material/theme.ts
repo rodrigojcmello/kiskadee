@@ -5,6 +5,10 @@ export const materialTheme: KiskadeeSchema = {
   author: 'Google',
   version: '3.0',
   kiskadeeVersion: '0.0.1',
+  // theme: {
+  //   light: 'default',
+  //   dark: 'default',
+  // },
   component: {
     button: {
       option: {

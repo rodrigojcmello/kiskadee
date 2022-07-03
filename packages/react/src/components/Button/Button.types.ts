@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactElement } from 'react';
+import type { KiskadeeSchema } from '../../themes/theme.types';
 
 // export type ButtonState = 'default' | 'attached' | 'detached' | 'alone';
 
@@ -61,7 +62,8 @@ export type ButtonStyleProps = {
 
   // Optional
   size?: Size;
-  theme?: ButtonSchema;
+  theme?: KiskadeeSchema['theme'];
+  schema?: ButtonSchema;
   iconLeft?: ButtonProps['iconLeft'];
   iconRight?: ButtonProps['iconRight'];
   textAlign?: ButtonProps['textAlign'];
@@ -198,7 +200,9 @@ type ElementTheme<T> = Partial<
   >
 >;
 
-export type ContrastStyle<T> = { [mediaQuery in 'light' | 'dark']?: T };
+export type ContrastStyle<T> = {
+  [mediaQuery in 'defaultMode' | 'contrastMode']?: T;
+};
 
 export interface ButtonSchema {
   option?: ContainerOptions;
