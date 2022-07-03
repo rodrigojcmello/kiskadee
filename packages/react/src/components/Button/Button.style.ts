@@ -183,13 +183,11 @@ export class ButtonStyle {
   }
 
   private containerBorder() {
-    const containerStyle = this._styleContainer;
-
     return css({
-      border: containerStyle?.borderWidth ? undefined : 'none',
-      borderColor: containerStyle?.borderColor,
-      borderStyle: containerStyle?.borderStyle,
-      borderWidth: containerStyle?.borderWidth,
+      border: this._styleContainer?.borderWidth ? undefined : 'none',
+      borderColor: this._styleContainer?.borderColor,
+      borderStyle: this._styleContainer?.borderStyle,
+      borderWidth: this._styleContainer?.borderWidth,
     })();
   }
 
@@ -607,7 +605,8 @@ export class ButtonStyle {
     size?: Size,
     dark?: boolean
   ): T {
-    const contrast = dark || this._theme?.only === 'dark' ? 'dark' : 'light';
+    const isDark = dark || this._theme?.only === 'dark';
+    const contrast = isDark ? 'dark' : 'light';
     const baseStyle = this._schema?.elements?.[element];
     const typeStyle = baseStyle?.[contrast]?.default?.type?.[this._typeStyle];
     const variantStyle = typeStyle?.variant?.[this._variant];
@@ -626,6 +625,8 @@ export class ButtonStyle {
     }
 
     return {
+      // TODO: Just is?
+      ...(isDark ? baseStyle?.light?.default?.base?.rest?.md : {}),
       ...(size ? {} : baseStyle?.[contrast]?.default?.base?.rest?.md),
       ...baseStyle?.light?.default?.base?.rest?.[size || this._size || 'md'],
 
