@@ -20,7 +20,6 @@ export const Button: FC<ButtonProps> = ({
   iconLeft,
   iconRight,
   typeHTML = 'button',
-  dark,
 }) => {
   const [theme] = useContext(KiskadeeContext);
 
@@ -40,9 +39,25 @@ export const Button: FC<ButtonProps> = ({
 
   const classeName = ['button'];
   if (interaction) classeName.push(`--${interaction}`);
-  if (dark) classeName.push('--dark');
 
-  const button = useMemo(() => new ButtonStyle(style), [style]);
+  const button = useMemo(
+    () => new ButtonStyle(style),
+    [
+      style.schema,
+      style.theme,
+      style.size,
+      style.typeStyle,
+      style.variant,
+      style.iconType,
+      style.iconRight,
+      style.iconLeft,
+      style.borderRadius,
+      style.textAlign,
+      style.width,
+    ]
+  );
+
+  console.log('rerender');
 
   return (
     <button

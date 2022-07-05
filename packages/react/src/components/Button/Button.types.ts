@@ -49,7 +49,6 @@ export interface ButtonProps {
   iconRight?: ReactElement;
   iconType?: 'attached' | 'detached';
   size?: Size;
-  dark?: boolean;
 }
 
 export type ButtonStyleProps = {
@@ -69,7 +68,7 @@ export type ButtonStyleProps = {
   textAlign?: ButtonProps['textAlign'];
 };
 
-export type ButtonElement = keyof Exclude<ButtonSchema['elements'], undefined>;
+export type ButtonElements = keyof Exclude<ButtonSchema['elements'], undefined>;
 
 //------------------------------------------------------------------------------
 // Elements
@@ -203,6 +202,11 @@ type ElementTheme<T> = Partial<
 export type ContrastStyle<T> = {
   [mediaQuery in 'defaultMode' | 'contrastMode']?: T;
 };
+
+export type Breakpoint = keyof Exclude<
+  ContainerOptions['responsive'],
+  undefined
+>;
 
 export interface ButtonSchema {
   option?: ContainerOptions;

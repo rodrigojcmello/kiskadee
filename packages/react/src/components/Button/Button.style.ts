@@ -1,7 +1,8 @@
 /* eslint-disable unicorn/filename-case */
 import { css } from '@stitches/core';
+import type { CSSProperties } from 'react';
 import type {
-  ButtonElement,
+  ButtonElements,
   ButtonElementContainer,
   ButtonElementIcon,
   ButtonElementText,
@@ -11,6 +12,7 @@ import type {
   Interaction,
   Size,
   ContrastStyle,
+  Breakpoint,
 } from './Button.types';
 
 export class ButtonStyle {
@@ -55,13 +57,22 @@ export class ButtonStyle {
     number
   >;
 
-  private readonly _styleContainer: ButtonElementContainer;
+  // private readonly _styleContainer: ButtonElementContainer;
 
   private readonly _styleContainerHover: ButtonElementContainer;
 
   private readonly _styleText: ButtonElementText;
 
   private readonly _styleTextHover: ButtonElementText;
+
+  // Cache
+  private _style: {
+    [component: string]: {
+      [element: string]: {
+        [state: string]: CSSProperties;
+      };
+    };
+  };
 
   constructor(style: ButtonStyleProps) {
     // Required
@@ -100,16 +111,24 @@ export class ButtonStyle {
       bigScreenBP3: 1441,
     };
 
+    // Cache
+    this._style = {};
+
+    // TODO: remove this
     // Element Style
 
-    this._styleContainer = this.getStyle<ButtonElementContainer>('container');
-    this._styleContainerHover = this.getStyle<ButtonElementContainer>(
+    // this._styleContainer =
+    //   this.getStyleLegacy<ButtonElementContainer>('container');
+    this._styleContainerHover = this.getStyleLegacy<ButtonElementContainer>(
       'container',
       'hover'
     );
 
-    this._styleText = this.getStyle<ButtonElementText>('text');
-    this._styleTextHover = this.getStyle<ButtonElementText>('text', 'hover');
+    this._styleText = this.getStyleLegacy<ButtonElementText>('text');
+    this._styleTextHover = this.getStyleLegacy<ButtonElementText>(
+      'text',
+      'hover'
+    );
   }
 
   get common() {
@@ -183,11 +202,13 @@ export class ButtonStyle {
   }
 
   private containerBorder() {
+    const container = this.getStyleBase<ButtonElementContainer>('container');
+
     return css({
-      border: this._styleContainer?.borderWidth ? undefined : 'none',
-      borderColor: this._styleContainer?.borderColor,
-      borderStyle: this._styleContainer?.borderStyle,
-      borderWidth: this._styleContainer?.borderWidth,
+      border: container?.borderWidth ? undefined : 'none',
+      borderColor: container?.borderColor,
+      borderStyle: container?.borderStyle,
+      borderWidth: container?.borderWidth,
     })();
   }
 
@@ -207,67 +228,76 @@ export class ButtonStyle {
   private containerCore() {
     const containerHover = this._styleContainerHover;
     const textHover = this._styleTextHover;
-    const leftIconHover = this.getStyle<ButtonElementIcon>(
+    const leftIconHover = this.getStyleLegacy<ButtonElementIcon>(
       this.getIcon('left'),
       'hover'
     );
-    const rightIconHover = this.getStyle<ButtonElementIcon>(
+    const rightIconHover = this.getStyleLegacy<ButtonElementIcon>(
       this.getIcon('right'),
       'hover'
     );
 
-    const containerPressed = this.getStyle<ButtonElementContainer>(
+    const containerPressed = this.getStyleLegacy<ButtonElementContainer>(
       'container',
       'pressed'
     );
-    const textPressed = this.getStyle<ButtonElementText>('text', 'pressed');
-    const leftIconPressed = this.getStyle<ButtonElementIcon>(
+    const textPressed = this.getStyleLegacy<ButtonElementText>(
+      'text',
+      'pressed'
+    );
+    const leftIconPressed = this.getStyleLegacy<ButtonElementIcon>(
       this.getIcon('left'),
       'pressed'
     );
-    const rightIconPressed = this.getStyle<ButtonElementIcon>(
+    const rightIconPressed = this.getStyleLegacy<ButtonElementIcon>(
       this.getIcon('right'),
       'pressed'
     );
 
-    const containerFocus = this.getStyle<ButtonElementContainer>(
+    const containerFocus = this.getStyleLegacy<ButtonElementContainer>(
       'container',
       'focus'
     );
-    const textFocus = this.getStyle<ButtonElementText>('text', 'focus');
-    const leftIconFocus = this.getStyle<ButtonElementIcon>(
+    const textFocus = this.getStyleLegacy<ButtonElementText>('text', 'focus');
+    const leftIconFocus = this.getStyleLegacy<ButtonElementIcon>(
       this.getIcon('left'),
       'focus'
     );
-    const rightIconFocus = this.getStyle<ButtonElementIcon>(
+    const rightIconFocus = this.getStyleLegacy<ButtonElementIcon>(
       this.getIcon('right'),
       'focus'
     );
 
-    const containerVisited = this.getStyle<ButtonElementContainer>(
+    const containerVisited = this.getStyleLegacy<ButtonElementContainer>(
       'container',
       'visited'
     );
-    const textVisited = this.getStyle<ButtonElementText>('text', 'visited');
-    const leftIconVisited = this.getStyle<ButtonElementIcon>(
+    const textVisited = this.getStyleLegacy<ButtonElementText>(
+      'text',
+      'visited'
+    );
+    const leftIconVisited = this.getStyleLegacy<ButtonElementIcon>(
       this.getIcon('left'),
       'visited'
     );
-    const rightIconVisited = this.getStyle<ButtonElementIcon>(
+    const rightIconVisited = this.getStyleLegacy<ButtonElementIcon>(
       this.getIcon('right'),
       'visited'
     );
 
-    const containerDisabled = this.getStyle<ButtonElementContainer>(
+    const containerDisabled = this.getStyleLegacy<ButtonElementContainer>(
       'container',
       'disabled'
     );
-    const textDisabled = this.getStyle<ButtonElementText>('text', 'disabled');
-    const leftIconDisabled = this.getStyle<ButtonElementIcon>(
+    const textDisabled = this.getStyleLegacy<ButtonElementText>(
+      'text',
+      'disabled'
+    );
+    const leftIconDisabled = this.getStyleLegacy<ButtonElementIcon>(
       this.getIcon('left'),
       'disabled'
     );
-    const rightIconDisabled = this.getStyle<ButtonElementIcon>(
+    const rightIconDisabled = this.getStyleLegacy<ButtonElementIcon>(
       this.getIcon('right'),
       'disabled'
     );
@@ -287,6 +317,7 @@ export class ButtonStyle {
       ...elementRest,
       ...elementResponsive,
 
+      // TODO: limit props to interaction state
       // HOVER
       '&:hover, &.--hover': {
         ...containerHover,
@@ -471,7 +502,7 @@ export class ButtonStyle {
         newObject[mediaQuery] = {} as T;
       }
       for (const property of properties) {
-        if (responsive[mediaQuery][property]) {
+        if (responsive[mediaQuery]?.[property]) {
           /**
            * TS2590: Expression produces a union type that is too complex to represent.
            */
@@ -546,7 +577,9 @@ export class ButtonStyle {
   }
 
   private iconSize(position: 'left' | 'right') {
-    const iconStyle = this.getStyle<ButtonElementIcon>(this.getIcon(position));
+    const iconStyle = this.getStyleLegacy<ButtonElementIcon>(
+      this.getIcon(position)
+    );
 
     return css({
       fontSize: iconStyle?.fontSize,
@@ -554,7 +587,9 @@ export class ButtonStyle {
   }
 
   private iconPadding(position: 'left' | 'right') {
-    const iconStyle = this.getStyle<ButtonElementIcon>(this.getIcon(position));
+    const iconStyle = this.getStyleLegacy<ButtonElementIcon>(
+      this.getIcon(position)
+    );
 
     return css({
       paddingTop: iconStyle?.paddingTop,
@@ -599,12 +634,20 @@ export class ButtonStyle {
     })();
   }
 
-  private getStyle<T>(
-    element: ButtonElement,
+  private getStyleLegacy<T>(
+    element: ButtonElements,
     interaction?: Interaction,
     size?: Size,
     dark?: boolean
   ): T {
+    if (
+      !(interaction || size || dark) &&
+      element === 'text' &&
+      this._styleText
+    ) {
+      return this._styleText as T;
+    }
+
     const isDark = dark || this._theme?.only === 'dark';
     const contrast = isDark ? 'dark' : 'light';
     const baseStyle = this._schema?.elements?.[element];
@@ -638,53 +681,119 @@ export class ButtonStyle {
     } as T;
   }
 
-  getResponsiveStyle<T>(element: ButtonElement): {
+  private getStyleBase<T>(element: ButtonElements): T {
+    if (this._style.button) {
+      if (this._style.button[element]?.light) {
+        return this._style.button[element].light as T;
+      }
+      this._style.button[element] = {};
+    } else {
+      this._style.button = {
+        [element]: {},
+      };
+    }
+
+    const base = this._schema?.elements?.[element];
+    const type = base?.light?.default?.type?.[this._typeStyle];
+    const variant = type?.variant?.[this._variant];
+
+    this._style.button[element].light = {
+      ...base?.light?.default?.base?.rest?.md,
+      ...type?.base?.md,
+      ...variant?.rest?.md,
+    };
+
+    return this._style.button[element].light as T;
+  }
+
+  private getStyleDark<T>(element: ButtonElements): T {
+    if (this._style.button) {
+      if (this._style.button[element]?.dark) {
+        return this._style.button[element].dark as T;
+      }
+      this._style.button[element] = {};
+    } else {
+      this._style.button = {
+        [element]: {},
+      };
+    }
+
+    const base = this._schema?.elements?.[element];
+    const type = base?.dark?.default?.type?.[this._typeStyle];
+    const variant = type?.variant?.[this._variant];
+
+    this._style.button[element].dark = {
+      ...base?.dark?.default?.base?.rest?.md,
+      ...type?.base?.md,
+      ...variant?.rest?.md,
+    };
+
+    return this._style.button[element].dark as T;
+  }
+
+  private getStyleSize<T>(element: ButtonElements, size: Size): T {
+    if (this._style.button) {
+      if (this._style.button[element]?.[size]) {
+        return this._style.button[element][size] as T;
+      }
+      this._style.button[element] = {};
+    } else {
+      this._style.button = {
+        [element]: {},
+      };
+    }
+
+    const base = this._schema?.elements?.[element];
+    const type = base?.light?.default?.type?.[this._typeStyle];
+    const variant = type?.variant?.[this._variant];
+
+    this._style.button[element][size] = {
+      ...base?.light?.default?.base?.rest?.[size],
+      ...type?.base?.[size],
+      ...variant?.rest?.[size],
+    };
+
+    return this._style.button[element][size] as T;
+  }
+
+  getResponsiveStyle<T>(element: ButtonElements): {
     [mediaQuery: string]: T;
   } {
-    const responsive: { [media: string]: T } = {};
+    const responsive: { [mediaQuery: string]: T } = {};
 
     if (!this._size) {
       for (const breakpoint of Object.keys(this._options?.responsive || {})) {
-        responsive[
-          `@media (min-width: ${
-            this._responsive[
-              breakpoint as keyof Exclude<
-                ContainerOptions['responsive'],
-                undefined
-              >
-            ]
-          }px)`
-        ] = this.getStyle(
-          element,
-          undefined,
-          // TODO: type this key
-          this._options?.responsive?.[
-            breakpoint as keyof Exclude<
-              ContainerOptions['responsive'],
-              undefined
-            >
-          ]
-        );
+        const size = this?._options?.responsive?.[breakpoint as Breakpoint];
+        if (size) {
+          responsive[
+            `@media (min-width: ${
+              this._responsive[breakpoint as Breakpoint]
+            }px)`
+          ] = this.getStyleSize(element, size);
+        }
       }
     } else {
-      responsive['@media (min-width: 0px)'] = this.getStyle(element);
+      responsive['@media (min-width: 0px)'] = this.getStyleBase(element);
     }
 
     return responsive;
   }
 
-  getContrastStyle<T>(element: ButtonElement): ContrastStyle<T> {
+  getContrastStyle<T>(element: ButtonElements): ContrastStyle<T> {
     const responsive: ContrastStyle<T> = {};
 
-    // TODO: optimize this
-    responsive.defaultMode = this.getStyle(element);
+    const light: T = this.getStyleBase(element);
+
+    const dark: T = {
+      ...light,
+      ...this.getStyleDark(element),
+    };
 
     if (!this._theme?.only) {
-      responsive.contrastMode = {
-        ...responsive.defaultMode,
-        ...this.getStyle(element, undefined, undefined, true),
-      } as T;
+      responsive.contrastMode = dark;
     }
+
+    responsive.defaultMode = this._theme?.only === 'dark' ? dark : light;
 
     return responsive;
   }

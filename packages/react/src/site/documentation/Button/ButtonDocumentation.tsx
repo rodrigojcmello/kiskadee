@@ -120,7 +120,6 @@ export const ButtonDocumentation: FC = () => {
                 onClick={(): void => {
                   setSize('md');
                 }}
-                dark
               />
             </div>
           ) : (
