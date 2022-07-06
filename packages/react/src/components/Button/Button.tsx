@@ -101,6 +101,7 @@ export const Button: FC<ButtonProps> = ({
             button.text.base,
             button.text.color,
             button.text.padding,
+            button.text.fontSize,
             button.text.width,
             button.text.align,
             button.common.transition,

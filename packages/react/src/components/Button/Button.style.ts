@@ -409,6 +409,7 @@ export class ButtonStyle {
       base: ButtonStyle.textBase(),
       core: this.textCore(),
       color: this.textColor(),
+      fontSize: this.textFontSize(),
       padding: this.textPadding(),
       width: this.textWidth(),
       align: this.textAlign(),
@@ -425,13 +426,31 @@ export class ButtonStyle {
 
   // OK
   private textCore() {
+    const textElement = this.getStyleBase<ButtonElementText>('text');
+
     return css({
-      fontSize: this._styleText.fontSize,
-      lineHeight: this._styleText.lineHeight,
-      fontWeight: this._styleText.fontWeight,
-      fontFamily: this._styleText.fontFamily,
-      fontStyle: this._styleText.fontStyle,
+      lineHeight: textElement.lineHeight,
+      fontWeight: textElement.fontWeight,
+      fontFamily: textElement.fontFamily,
+      fontStyle: textElement.fontStyle,
     });
+  }
+
+  private textFontSize() {
+    let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
+
+    textResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementText>(
+      textResponsive,
+      ['fontSize']
+    );
+
+    const { '@media (min-width: 0px)': fontSize, ...fontSizeResponsive } =
+      textResponsive;
+
+    return css({
+      ...fontSize,
+      ...fontSizeResponsive,
+    })();
   }
 
   // OK
@@ -466,25 +485,28 @@ export class ButtonStyle {
   }
 
   private textPadding() {
-    const style = this.getResponsiveStyle<ButtonElementText>('text');
+    let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
 
-    const p = ButtonStyle.pickResponsiveProperties<ButtonElementText>(style, [
-      'paddingTop',
-      'paddingBottom',
-      'paddingRight',
-      'paddingLeft',
-    ]);
+    textResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementText>(
+      textResponsive,
+      ['paddingTop', 'paddingBottom', 'paddingRight', 'paddingLeft']
+    );
 
-    for (const m of Object.keys(p)) {
-      p[m].paddingRight = this._iconRight ? 0 : p[m].paddingRight;
-      p[m].paddingLeft = this._iconLeft ? 0 : p[m].paddingLeft;
+    for (const mq of Object.keys(textResponsive)) {
+      textResponsive[mq].paddingRight = this._iconRight
+        ? 0
+        : textResponsive[mq].paddingRight;
+      textResponsive[mq].paddingLeft = this._iconLeft
+        ? 0
+        : textResponsive[mq].paddingLeft;
     }
 
-    const { '@media (min-width: 0px)': elementRest, ...elementResponsive } = p;
+    const { '@media (min-width: 0px)': textPadding, ...textPaddingResponsive } =
+      textResponsive;
 
     return css({
-      ...elementRest,
-      ...elementResponsive,
+      ...textPadding,
+      ...textPaddingResponsive,
     })();
   }
 
@@ -577,12 +599,33 @@ export class ButtonStyle {
   }
 
   private iconSize(position: 'left' | 'right') {
-    const iconStyle = this.getStyleLegacy<ButtonElementIcon>(
+    const iconResponsive = this.getResponsiveStyle<ButtonElementIcon>(
       this.getIcon(position)
     );
+    const textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
+
+    const pIcon = ButtonStyle.pickResponsiveProperties<ButtonElementIcon>(
+      iconResponsive,
+      ['fontSize']
+    );
+
+    const pText = ButtonStyle.pickResponsiveProperties<ButtonElementText>(
+      iconResponsive,
+      ['fontSize']
+    );
+
+    console.log({ pIcon, pText });
+
+    // for (const m of Object.keys(p)) {
+    //   p[m].paddingRight = this._iconRight ? 0 : p[m].paddingRight;
+    //   p[m].paddingLeft = this._iconLeft ? 0 : p[m].paddingLeft;
+    // }
+
+    const { '@media (min-width: 0px)': elementRest, ...elementResponsive } =
+      pIcon;
 
     return css({
-      fontSize: iconStyle?.fontSize,
+      fontSize: elementRest?.fontSize,
     })();
   }
 
@@ -668,7 +711,6 @@ export class ButtonStyle {
     }
 
     return {
-      // TODO: Just is?
       ...(isDark ? baseStyle?.light?.default?.base?.rest?.md : {}),
       ...(size ? {} : baseStyle?.[contrast]?.default?.base?.rest?.md),
       ...baseStyle?.light?.default?.base?.rest?.[size || this._size || 'md'],

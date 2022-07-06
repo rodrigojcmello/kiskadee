@@ -25,6 +25,9 @@ const ButtonOnly = () => {
           variant={'primary'}
           label={'text text text'}
           size={'xl'}
+          iconLeft={
+            <span className={'material-symbols-outlined'}>thumb_up</span>
+          }
         />
       </div>
     </>
