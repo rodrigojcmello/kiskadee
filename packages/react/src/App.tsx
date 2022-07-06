@@ -24,6 +24,7 @@ const ButtonOnly = () => {
           type={'contained'}
           variant={'primary'}
           label={'text text text'}
+          size={'xl'}
         />
       </div>
     </>

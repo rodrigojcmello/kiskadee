@@ -731,7 +731,10 @@ export class ButtonStyle {
     return this._style.button[element].dark as T;
   }
 
-  private getStyleSize<T>(element: ButtonElements, size: Size): T {
+  private getStyleSize<T>(
+    element: ButtonElements,
+    size: Exclude<Size, 'md'>
+  ): T {
     if (this._style.button) {
       if (this._style.button[element]?.[size]) {
         return this._style.button[element][size] as T;
@@ -769,11 +772,17 @@ export class ButtonStyle {
             `@media (min-width: ${
               this._responsive[breakpoint as Breakpoint]
             }px)`
-          ] = this.getStyleSize(element, size);
+          ] =
+            size === 'md'
+              ? this.getStyleBase(element)
+              : this.getStyleSize(element, size);
         }
       }
     } else {
-      responsive['@media (min-width: 0px)'] = this.getStyleBase(element);
+      responsive['@media (min-width: 0px)'] =
+        !this._size || this._size === 'md'
+          ? this.getStyleBase(element)
+          : this.getStyleSize(element, this._size);
     }
 
     return responsive;
