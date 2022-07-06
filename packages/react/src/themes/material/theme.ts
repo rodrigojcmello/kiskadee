@@ -309,6 +309,12 @@ export const materialTheme: KiskadeeSchema = {
                     paddingLeft: 8,
                     paddingRight: 8,
                   },
+                  // xl: {
+                  //   paddingTop: 38,
+                  //   paddingBottom: 38,
+                  //   paddingLeft: 38,
+                  //   paddingRight: 38,
+                  // },
                 },
               },
               type: {

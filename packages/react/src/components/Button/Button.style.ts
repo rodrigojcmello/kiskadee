@@ -78,12 +78,12 @@ export class ButtonStyle {
     // Required
     this._iconType = style.iconType;
     this._width = style.width;
-    this._size = style.size;
     this._typeStyle = style.typeStyle;
     this._variant = style.variant;
     this._borderRadius = style.borderRadius;
 
     // Optional
+    this._size = style.size;
     this._schema = style.schema;
     this._theme = style.theme;
     this._textAlign = style.textAlign;
@@ -408,15 +408,14 @@ export class ButtonStyle {
     return {
       base: ButtonStyle.textBase(),
       core: this.textCore(),
-      color: this.textColor(),
-      fontSize: this.textFontSize(),
-      padding: this.textPadding(),
+      color: this.textColor_COLOR(),
+      fontSize: this.textFontSize_SIZE(),
+      padding: this.textPadding_SIZE(),
       width: this.textWidth(),
       align: this.textAlign(),
     };
   }
 
-  // OK
   private static textBase() {
     return css({
       whiteSpace: 'nowrap',
@@ -424,7 +423,6 @@ export class ButtonStyle {
     })();
   }
 
-  // OK
   private textCore() {
     const textElement = this.getStyleBase<ButtonElementText>('text');
 
@@ -436,7 +434,7 @@ export class ButtonStyle {
     });
   }
 
-  private textFontSize() {
+  private textFontSize_SIZE() {
     let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
 
     textResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementText>(
@@ -453,7 +451,6 @@ export class ButtonStyle {
     })();
   }
 
-  // OK
   private textAlign() {
     return css({
       textAlign:
@@ -463,7 +460,6 @@ export class ButtonStyle {
     })();
   }
 
-  // OK
   private textWidth() {
     const block =
       this._iconType === 'detached' || !(this._iconLeft || this._iconRight);
@@ -473,18 +469,18 @@ export class ButtonStyle {
     })();
   }
 
-  private textColor() {
-    const style = this.getContrastStyle<ButtonElementText>('text');
+  private textColor_COLOR() {
+    const textContrast = this.getContrastStyle<ButtonElementText>('text');
 
     return css({
-      color: style?.defaultMode?.color,
-      '@media (prefers-color-scheme: dark)': style?.contrastMode && {
-        color: style?.contrastMode?.color,
+      color: textContrast?.defaultMode?.color,
+      '@media (prefers-color-scheme: dark)': textContrast?.contrastMode && {
+        color: textContrast?.contrastMode?.color,
       },
     })();
   }
 
-  private textPadding() {
+  private textPadding_SIZE() {
     let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
 
     textResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementText>(
@@ -550,17 +546,17 @@ export class ButtonStyle {
 
   get iconLeft() {
     return {
-      color: this.iconColor('left'),
-      size: this.iconSize('left'),
-      padding: this.iconPadding('left'),
+      color: this.iconColor_COLOR('left'),
+      size: this.iconSize_SIZE('left'),
+      padding: this.iconPadding_SIZE('left'),
     };
   }
 
   get iconRight() {
     return {
-      color: this.iconColor('right'),
-      size: this.iconSize('right'),
-      padding: this.iconPadding('right'),
+      color: this.iconColor_COLOR('right'),
+      size: this.iconSize_SIZE('right'),
+      padding: this.iconPadding_SIZE('right'),
     };
   }
 
@@ -571,15 +567,16 @@ export class ButtonStyle {
     })();
   }
 
-  private iconColor(position: 'left' | 'right') {
-    const icon = this.getContrastStyle<ButtonElementIcon>(
+  private iconColor_COLOR(position: 'left' | 'right') {
+    const iconContrast = this.getContrastStyle<ButtonElementIcon>(
       this.getIcon(position)
     );
-    const text = this.getContrastStyle<ButtonElementText>('text');
+    const textContrast = this.getContrastStyle<ButtonElementText>('text');
 
-    const colorDefault = icon?.defaultMode?.color || text?.defaultMode?.color;
+    const colorDefault =
+      iconContrast?.defaultMode?.color || textContrast?.defaultMode?.color;
     const colorContrast =
-      icon?.contrastMode?.color || text?.contrastMode?.color;
+      iconContrast?.contrastMode?.color || textContrast?.contrastMode?.color;
 
     return css({
       color: colorDefault,
@@ -598,53 +595,79 @@ export class ButtonStyle {
     })();
   }
 
-  private iconSize(position: 'left' | 'right') {
-    const iconResponsive = this.getResponsiveStyle<ButtonElementIcon>(
+  private iconSize_SIZE(position: 'left' | 'right') {
+    let iconResponsive = this.getResponsiveStyle<ButtonElementIcon>(
       this.getIcon(position)
     );
-    const textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
+    let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
 
-    const pIcon = ButtonStyle.pickResponsiveProperties<ButtonElementIcon>(
+    iconResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementIcon>(
       iconResponsive,
       ['fontSize']
     );
-
-    const pText = ButtonStyle.pickResponsiveProperties<ButtonElementText>(
-      iconResponsive,
+    textResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementText>(
+      textResponsive,
       ['fontSize']
     );
 
-    console.log({ pIcon, pText });
+    for (const mq of Object.keys(iconResponsive)) {
+      iconResponsive[mq].fontSize =
+        iconResponsive[mq].fontSize || textResponsive[mq].fontSize;
+    }
 
-    // for (const m of Object.keys(p)) {
-    //   p[m].paddingRight = this._iconRight ? 0 : p[m].paddingRight;
-    //   p[m].paddingLeft = this._iconLeft ? 0 : p[m].paddingLeft;
-    // }
-
-    const { '@media (min-width: 0px)': elementRest, ...elementResponsive } =
-      pIcon;
+    const { '@media (min-width: 0px)': size, ...sizeResponsive } =
+      iconResponsive;
 
     return css({
-      fontSize: elementRest?.fontSize,
+      ...size,
+      ...sizeResponsive,
     })();
   }
 
-  private iconPadding(position: 'left' | 'right') {
-    const iconStyle = this.getStyleLegacy<ButtonElementIcon>(
+  private iconPadding_SIZE(position: 'left' | 'right'): string | undefined {
+    let iconResponsive = this.getResponsiveStyle<ButtonElementIcon>(
       this.getIcon(position)
     );
 
-    return css({
-      paddingTop: iconStyle?.paddingTop,
-      paddingBottom: iconStyle?.paddingBottom,
-      paddingLeft: iconStyle?.paddingLeft,
-      paddingRight: iconStyle?.paddingRight,
-    })();
+    iconResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementIcon>(
+      iconResponsive,
+      ['paddingTop', 'paddingBottom', 'paddingRight', 'paddingLeft']
+    );
+
+    const { '@media (min-width: 0px)': iconPadding, ...iconPaddingResponsive } =
+      iconResponsive;
+
+    return ButtonStyle.render(
+      {
+        ...iconPadding,
+        ...iconPaddingResponsive,
+      },
+      iconPadding
+    );
   }
 
   //----------------------------------------------------------------------------
   // Helper
   //----------------------------------------------------------------------------
+
+  /**
+   * Empty objects generates a css classe empty too with Stitches library
+   */
+  public static render(
+    allStyle: CSSProperties,
+    coreStyle?: CSSProperties
+  ): string | undefined {
+    const allStyleValidate = Object.keys(allStyle).length > 0 && !coreStyle;
+    const coreStyleValidate = coreStyle && Object.keys(coreStyle).length > 0;
+    if ((coreStyleValidate && allStyleValidate) || allStyleValidate) {
+      /**
+       * Stitches library doesn't extend CSSProperties generating this kind of
+       * type checking error
+       */
+      // @ts-ignore
+      return css(allStyle)();
+    }
+  }
 
   private getIcon(
     position: 'left' | 'right'
@@ -801,7 +824,7 @@ export class ButtonStyle {
     return this._style.button[element][size] as T;
   }
 
-  getResponsiveStyle<T>(element: ButtonElements): {
+  public getResponsiveStyle<T>(element: ButtonElements): {
     [mediaQuery: string]: T;
   } {
     const responsive: { [mediaQuery: string]: T } = {};
