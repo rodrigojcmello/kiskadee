@@ -500,10 +500,13 @@ export class ButtonStyle {
     const { '@media (min-width: 0px)': textPadding, ...textPaddingResponsive } =
       textResponsive;
 
-    return css({
-      ...textPadding,
-      ...textPaddingResponsive,
-    })();
+    return ButtonStyle.render(
+      {
+        ...textPadding,
+        ...textPaddingResponsive,
+      },
+      textPadding
+    );
   }
 
   private static pickResponsiveProperties<T>(
@@ -618,10 +621,13 @@ export class ButtonStyle {
     const { '@media (min-width: 0px)': size, ...sizeResponsive } =
       iconResponsive;
 
-    return css({
-      ...size,
-      ...sizeResponsive,
-    })();
+    return ButtonStyle.render(
+      {
+        ...size,
+        ...sizeResponsive,
+      },
+      size
+    );
   }
 
   private iconPadding_SIZE(position: 'left' | 'right'): string | undefined {
