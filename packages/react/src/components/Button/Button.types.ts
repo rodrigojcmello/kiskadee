@@ -1,9 +1,13 @@
 import type { CSSProperties, ReactElement } from 'react';
+import type * as Util from '@stitches/core/types/util';
 import type { KiskadeeSchema } from '../../themes/theme.types';
 
-// export type ButtonState = 'default' | 'attached' | 'detached' | 'alone';
-
 export type ButtonType = 'contained' | 'outline' | 'flat';
+
+export type StitchesProperties =
+  | string
+  | Util.Function
+  | { [name: string]: unknown };
 
 export type ButtonVariant =
   | 'primary'

@@ -13,6 +13,7 @@ import type {
   Size,
   ContrastStyle,
   Breakpoint,
+  StitchesProperties,
 } from './Button.types';
 
 export class ButtonStyle {
@@ -57,15 +58,8 @@ export class ButtonStyle {
     number
   >;
 
-  // private readonly _styleContainer: ButtonElementContainer;
-
-  private readonly _styleContainerHover: ButtonElementContainer;
-
-  private readonly _styleText: ButtonElementText;
-
-  private readonly _styleTextHover: ButtonElementText;
-
   // Cache
+
   private _style: {
     [component: string]: {
       [element: string]: {
@@ -112,23 +106,8 @@ export class ButtonStyle {
     };
 
     // Cache
+
     this._style = {};
-
-    // TODO: remove this
-    // Element Style
-
-    // this._styleContainer =
-    //   this.getStyleLegacy<ButtonElementContainer>('container');
-    this._styleContainerHover = this.getStyleLegacy<ButtonElementContainer>(
-      'container',
-      'hover'
-    );
-
-    this._styleText = this.getStyleLegacy<ButtonElementText>('text');
-    this._styleTextHover = this.getStyleLegacy<ButtonElementText>(
-      'text',
-      'hover'
-    );
   }
 
   get common() {
@@ -153,10 +132,10 @@ export class ButtonStyle {
   }
 
   private containerWidth() {
-    return css({
+    return ButtonStyle.render({
       width: this._width === 'block' ? '100%' : 'auto',
       minWidth: this._width === 'min' ? this._options?.widthMin : 0,
-    })();
+    });
   }
 
   private containerRadius() {
@@ -182,38 +161,38 @@ export class ButtonStyle {
       borderRadius = this._options?.borderRadius?.none;
     }
 
-    return css({
+    return ButtonStyle.render({
       // TODO: need to handle responsive
       borderRadius: borderRadius || 0,
-    })();
+    });
   }
 
   private containerBackground() {
     const style = this.getContrastStyle<ButtonElementContainer>('container');
 
-    return css({
+    return ButtonStyle.render({
       background: style?.defaultMode?.background,
       backgroundColor: style?.defaultMode?.backgroundColor,
       '@media (prefers-color-scheme: dark)': style?.contrastMode && {
         background: style?.contrastMode?.background,
         backgroundColor: style?.contrastMode?.backgroundColor,
       },
-    })();
+    });
   }
 
   private containerBorder() {
     const container = this.getStyleBase<ButtonElementContainer>('container');
 
-    return css({
+    return ButtonStyle.render({
       border: container?.borderWidth ? undefined : 'none',
       borderColor: container?.borderColor,
       borderStyle: container?.borderStyle,
       borderWidth: container?.borderWidth,
-    })();
+    });
   }
 
   private static containerBase() {
-    return css({
+    return ButtonStyle.render({
       padding: 0,
       cursor: 'pointer',
       fontSize: '16px',
@@ -222,82 +201,91 @@ export class ButtonStyle {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-    })();
+    });
   }
 
   private containerCore() {
-    const containerHover = this._styleContainerHover;
-    const textHover = this._styleTextHover;
-    const leftIconHover = this.getStyleLegacy<ButtonElementIcon>(
+    const containerHover = this.getStyleInteraction<ButtonElementContainer>(
+      'container',
+      'hover'
+    );
+    const textHover = this.getStyleInteraction<ButtonElementText>(
+      'text',
+      'hover'
+    );
+    const leftIconHover = this.getStyleInteraction<ButtonElementIcon>(
       this.getIcon('left'),
       'hover'
     );
-    const rightIconHover = this.getStyleLegacy<ButtonElementIcon>(
+    const rightIconHover = this.getStyleInteraction<ButtonElementIcon>(
       this.getIcon('right'),
       'hover'
     );
 
-    const containerPressed = this.getStyleLegacy<ButtonElementContainer>(
+    const containerPressed = this.getStyleInteraction<ButtonElementContainer>(
       'container',
       'pressed'
     );
-    const textPressed = this.getStyleLegacy<ButtonElementText>(
+    const textPressed = this.getStyleInteraction<ButtonElementText>(
       'text',
       'pressed'
     );
-    const leftIconPressed = this.getStyleLegacy<ButtonElementIcon>(
+    const leftIconPressed = this.getStyleInteraction<ButtonElementIcon>(
       this.getIcon('left'),
       'pressed'
     );
-    const rightIconPressed = this.getStyleLegacy<ButtonElementIcon>(
+    const rightIconPressed = this.getStyleInteraction<ButtonElementIcon>(
       this.getIcon('right'),
       'pressed'
     );
 
-    const containerFocus = this.getStyleLegacy<ButtonElementContainer>(
+    const containerFocus = this.getStyleInteraction<ButtonElementContainer>(
       'container',
       'focus'
     );
-    const textFocus = this.getStyleLegacy<ButtonElementText>('text', 'focus');
-    const leftIconFocus = this.getStyleLegacy<ButtonElementIcon>(
+    const textFocus = this.getStyleInteraction<ButtonElementText>(
+      'text',
+      'focus'
+    );
+    const leftIconFocus = this.getStyleInteraction<ButtonElementIcon>(
       this.getIcon('left'),
       'focus'
     );
-    const rightIconFocus = this.getStyleLegacy<ButtonElementIcon>(
+    const rightIconFocus = this.getStyleInteraction<ButtonElementIcon>(
       this.getIcon('right'),
       'focus'
     );
 
-    const containerVisited = this.getStyleLegacy<ButtonElementContainer>(
+    const containerVisited = this.getStyleInteraction<ButtonElementContainer>(
       'container',
       'visited'
     );
-    const textVisited = this.getStyleLegacy<ButtonElementText>(
+    const textVisited = this.getStyleInteraction<ButtonElementText>(
       'text',
       'visited'
     );
-    const leftIconVisited = this.getStyleLegacy<ButtonElementIcon>(
+    const leftIconVisited = this.getStyleInteraction<ButtonElementIcon>(
       this.getIcon('left'),
       'visited'
     );
-    const rightIconVisited = this.getStyleLegacy<ButtonElementIcon>(
+    const rightIconVisited = this.getStyleInteraction<ButtonElementIcon>(
       this.getIcon('right'),
       'visited'
     );
 
-    const containerDisabled = this.getStyleLegacy<ButtonElementContainer>(
+    const containerDisabled = this.getStyleInteraction<ButtonElementContainer>(
       'container',
       'disabled'
     );
-    const textDisabled = this.getStyleLegacy<ButtonElementText>(
+    const textDisabled = this.getStyleInteraction<ButtonElementText>(
       'text',
       'disabled'
     );
-    const leftIconDisabled = this.getStyleLegacy<ButtonElementIcon>(
+    const leftIconDisabled = this.getStyleInteraction<ButtonElementIcon>(
       this.getIcon('left'),
       'disabled'
     );
-    const rightIconDisabled = this.getStyleLegacy<ButtonElementIcon>(
+    const rightIconDisabled = this.getStyleInteraction<ButtonElementIcon>(
       this.getIcon('right'),
       'disabled'
     );
@@ -312,7 +300,7 @@ export class ButtonStyle {
 
     const { '@media (min-width: 0px)': elementRest, ...elementResponsive } = p;
 
-    return css({
+    return ButtonStyle.render({
       // TODO: need responsive?
       ...elementRest,
       ...elementResponsive,
@@ -397,7 +385,7 @@ export class ButtonStyle {
           ...rightIconDisabled,
         },
       },
-    })();
+    });
   }
 
   //----------------------------------------------------------------------------
@@ -417,16 +405,16 @@ export class ButtonStyle {
   }
 
   private static textBase() {
-    return css({
+    return ButtonStyle.render({
       whiteSpace: 'nowrap',
       transitionProperty: 'color, font-size, padding',
-    })();
+    });
   }
 
   private textCore() {
     const textElement = this.getStyleBase<ButtonElementText>('text');
 
-    return css({
+    return ButtonStyle.render({
       lineHeight: textElement.lineHeight,
       fontWeight: textElement.fontWeight,
       fontFamily: textElement.fontFamily,
@@ -445,39 +433,39 @@ export class ButtonStyle {
     const { '@media (min-width: 0px)': fontSize, ...fontSizeResponsive } =
       textResponsive;
 
-    return css({
+    return ButtonStyle.render({
       ...fontSize,
       ...fontSizeResponsive,
-    })();
+    });
   }
 
   private textAlign() {
-    return css({
+    return ButtonStyle.render({
       textAlign:
         this._textAlign && this._options?.textAlign?.[this._textAlign]
           ? this._textAlign
           : this._options?.textAlign?.default,
-    })();
+    });
   }
 
   private textWidth() {
     const block =
       this._iconType === 'detached' || !(this._iconLeft || this._iconRight);
 
-    return css({
+    return ButtonStyle.render({
       width: block ? '100%' : 'auto',
-    })();
+    });
   }
 
   private textColor_COLOR() {
     const textContrast = this.getContrastStyle<ButtonElementText>('text');
 
-    return css({
+    return ButtonStyle.render({
       color: textContrast?.defaultMode?.color,
       '@media (prefers-color-scheme: dark)': textContrast?.contrastMode && {
         color: textContrast?.contrastMode?.color,
       },
-    })();
+    });
   }
 
   private textPadding_SIZE() {
@@ -500,13 +488,10 @@ export class ButtonStyle {
     const { '@media (min-width: 0px)': textPadding, ...textPaddingResponsive } =
       textResponsive;
 
-    return ButtonStyle.render(
-      {
-        ...textPadding,
-        ...textPaddingResponsive,
-      },
-      textPadding
-    );
+    return ButtonStyle.render({
+      ...textPadding,
+      ...textPaddingResponsive,
+    });
   }
 
   private static pickResponsiveProperties<T>(
@@ -564,10 +549,10 @@ export class ButtonStyle {
   }
 
   private static iconBase() {
-    return css({
+    return ButtonStyle.render({
       display: 'flex',
       transitionProperty: 'color, font-size',
-    })();
+    });
   }
 
   private iconColor_COLOR(position: 'left' | 'right') {
@@ -581,7 +566,7 @@ export class ButtonStyle {
     const colorContrast =
       iconContrast?.contrastMode?.color || textContrast?.contrastMode?.color;
 
-    return css({
+    return ButtonStyle.render({
       color: colorDefault,
 
       '& > *': {
@@ -595,7 +580,7 @@ export class ButtonStyle {
           fill: colorContrast,
         },
       },
-    })();
+    });
   }
 
   private iconSize_SIZE(position: 'left' | 'right') {
@@ -621,13 +606,10 @@ export class ButtonStyle {
     const { '@media (min-width: 0px)': size, ...sizeResponsive } =
       iconResponsive;
 
-    return ButtonStyle.render(
-      {
-        ...size,
-        ...sizeResponsive,
-      },
-      size
-    );
+    return ButtonStyle.render({
+      ...size,
+      ...sizeResponsive,
+    });
   }
 
   private iconPadding_SIZE(position: 'left' | 'right'): string | undefined {
@@ -643,13 +625,10 @@ export class ButtonStyle {
     const { '@media (min-width: 0px)': iconPadding, ...iconPaddingResponsive } =
       iconResponsive;
 
-    return ButtonStyle.render(
-      {
-        ...iconPadding,
-        ...iconPaddingResponsive,
-      },
-      iconPadding
-    );
+    return ButtonStyle.render({
+      ...iconPadding,
+      ...iconPaddingResponsive,
+    });
   }
 
   //----------------------------------------------------------------------------
@@ -657,21 +636,13 @@ export class ButtonStyle {
   //----------------------------------------------------------------------------
 
   /**
-   * Empty objects generates a css classe empty too with Stitches library
+   * Empty objects generates a css classe empty in Stitches library
    */
-  public static render(
-    allStyle: CSSProperties,
-    coreStyle?: CSSProperties
-  ): string | undefined {
-    const allStyleValidate = Object.keys(allStyle).length > 0 && !coreStyle;
-    const coreStyleValidate = coreStyle && Object.keys(coreStyle).length > 0;
-    if ((coreStyleValidate && allStyleValidate) || allStyleValidate) {
-      /**
-       * Stitches library doesn't extend CSSProperties generating this kind of
-       * type checking error
-       */
-      // @ts-ignore
-      return css(allStyle)();
+  static render(properties: StitchesProperties): string | undefined {
+    const validProperties = Object.keys(properties).length > 0;
+
+    if (validProperties) {
+      return css(properties)();
     }
   }
 
@@ -700,56 +671,10 @@ export class ButtonStyle {
   }
 
   private getTransition() {
-    return css({
+    return ButtonStyle.render({
       transitionDuration: this._duration,
       transitionTimingFunction: this._timingFunction,
-    })();
-  }
-
-  private getStyleLegacy<T>(
-    element: ButtonElements,
-    interaction?: Interaction,
-    size?: Size,
-    dark?: boolean
-  ): T {
-    if (
-      !(interaction || size || dark) &&
-      element === 'text' &&
-      this._styleText
-    ) {
-      return this._styleText as T;
-    }
-
-    const isDark = dark || this._theme?.only === 'dark';
-    const contrast = isDark ? 'dark' : 'light';
-    const baseStyle = this._schema?.elements?.[element];
-    const typeStyle = baseStyle?.[contrast]?.default?.type?.[this._typeStyle];
-    const variantStyle = typeStyle?.variant?.[this._variant];
-
-    if (interaction) {
-      return {
-        ...baseStyle?.[contrast]?.default?.base?.[interaction]?.md,
-        ...baseStyle?.[contrast]?.default?.base?.[interaction]?.[
-          size || this._size || 'md'
-        ],
-
-        // TODO: should use the same inferior logic?
-        ...variantStyle?.[interaction]?.md,
-        ...variantStyle?.[interaction]?.[size || this._size || 'md'],
-      } as T;
-    }
-
-    return {
-      ...(isDark ? baseStyle?.light?.default?.base?.rest?.md : {}),
-      ...(size ? {} : baseStyle?.[contrast]?.default?.base?.rest?.md),
-      ...baseStyle?.light?.default?.base?.rest?.[size || this._size || 'md'],
-
-      ...(size ? {} : typeStyle?.base?.md),
-      ...typeStyle?.base?.[size || this._size || 'md'],
-
-      ...(size ? {} : variantStyle?.rest?.md),
-      ...variantStyle?.rest?.[size || this._size || 'md'],
-    } as T;
+    });
   }
 
   private getStyleBase<T>(element: ButtonElements): T {
@@ -775,6 +700,30 @@ export class ButtonStyle {
     };
 
     return this._style.button[element].light as T;
+  }
+
+  getStyleInteraction<T>(element: ButtonElements, interaction: Interaction): T {
+    if (this._style.button) {
+      if (this._style.button[element]?.[interaction]) {
+        return this._style.button[element][interaction] as T;
+      }
+      this._style.button[element] = {};
+    } else {
+      this._style.button = {
+        [element]: {},
+      };
+    }
+
+    const base = this._schema?.elements?.[element];
+    const type = base?.light?.default?.type?.[this._typeStyle];
+    const variant = type?.variant?.[this._variant];
+
+    this._style.button[element][interaction] = {
+      ...base?.light?.default?.base?.[interaction]?.md,
+      ...variant?.[interaction]?.md,
+    };
+
+    return this._style.button[element][interaction] as T;
   }
 
   private getStyleDark<T>(element: ButtonElements): T {

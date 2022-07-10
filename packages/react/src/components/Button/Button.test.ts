@@ -20,11 +20,18 @@ describe('ButtonStyle', () => {
         })
       );
     });
-    test('First parameter as empty object and second one as filled should return undefined', () => {
-      expect(ButtonStyle.render({}, { color: 'red' })).toBeUndefined();
-    });
-    test('Both parameters as empty object should return undefined', () => {
-      expect(ButtonStyle.render({}, {})).toBeUndefined();
-    });
+    // test('First parameter as empty object and second one as filled should return undefined', () => {
+    //   expect(ButtonStyle.render({}, { color: 'red' })).toBeUndefined();
+    // });
+    // test('Both parameters as empty object should return undefined', () => {
+    //   expect(ButtonStyle.render({}, {})).toBeUndefined();
+    // });
+    // test('Both parameters as filled should return a className', () => {
+    //   expect(ButtonStyle.render({ color: 'red' }, { color: 'red' })).toEqual(
+    //     expect.objectContaining({
+    //       className: expect.any(String),
+    //     })
+    //   );
+    // });
   });
 });
