@@ -1,8 +1,8 @@
 /* eslint-disable react/button-has-type */
 import type { FC } from 'react';
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import type { ButtonProps, ButtonStyleProps } from './Button.types';
-import { KiskadeeContext } from '../../context';
+import { useKiskadee } from '../../context';
 import { ButtonStyle } from './Button.style';
 
 export const Button: FC<ButtonProps> = ({
@@ -21,11 +21,11 @@ export const Button: FC<ButtonProps> = ({
   iconRight,
   typeHTML = 'button',
 }) => {
-  const [theme] = useContext(KiskadeeContext);
+  const [schema] = useKiskadee();
 
   const style: ButtonStyleProps = {
-    schema: theme.component.button,
-    theme: theme.theme,
+    schema: schema.component.button,
+    theme: schema.theme,
     size,
     typeStyle: type,
     variant,

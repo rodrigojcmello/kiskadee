@@ -101,6 +101,7 @@ export const ButtonDocumentation: FC = () => {
       >
         OS Default
       </button>
+
       <div className={`${style.buttonRow} ${style.buttonGrid}`}>
         <div>
           <BoxTitle>Medium</BoxTitle>

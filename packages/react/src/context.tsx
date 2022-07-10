@@ -1,5 +1,5 @@
 import type { FC, PropsWithChildren } from 'react';
-import { createContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import type { KiskadeeSchema } from './themes/theme.types';
 
 type KiskadeeContextType = [
@@ -10,6 +10,9 @@ type KiskadeeContextType = [
 ];
 
 export const KiskadeeContext = createContext<KiskadeeContextType>(undefined!);
+
+export const useKiskadee = (): KiskadeeContextType =>
+  useContext(KiskadeeContext);
 
 export const KiskadeeProvider: FC<
   PropsWithChildren<{
