@@ -19,12 +19,12 @@ const ButtonOnly = () => {
   return (
     <>
       <Bar />
-      <div style={{ margin: 100 }}>
+      <div style={{ padding: 100 }}>
         <Button
           type={'contained'}
           variant={'primary'}
           label={'text text text'}
-          size={'xl'}
+          size={'md'}
           iconLeft={
             <span className={'material-symbols-outlined'}>thumb_up</span>
           }

@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/filename-case */
-import { css } from '@stitches/core';
+import { css, keyframes } from '@stitches/core';
 import type { CSSProperties } from 'react';
 import type {
   ButtonElements,
@@ -15,6 +15,13 @@ import type {
   Breakpoint,
   StitchesProperties,
 } from './Button.types';
+
+const rippleKeyframe = keyframes({
+  to: {
+    transform: 'scale(4)',
+    opacity: 0,
+  },
+});
 
 export class ButtonStyle {
   // Required
@@ -128,7 +135,23 @@ export class ButtonStyle {
       width: this.containerWidth(),
       core: this.containerCore(),
       base: ButtonStyle.containerBase(),
+      ripple: this.containerRipple(),
     };
+  }
+
+  private containerRipple() {
+    const ripple = this.getContrastStyle<ButtonElementContainer>('container');
+
+    return ButtonStyle.render({
+      position: 'absolute',
+      borderRadius: '50%',
+      transform: 'scale(0)',
+      animation: `${rippleKeyframe} 600ms linear`,
+      backgroundColor: ripple?.defaultMode?.rippleColor,
+      '@media (prefers-color-scheme: dark)': ripple?.contrastMode && {
+        backgroundColor: ripple?.contrastMode.rippleColor,
+      },
+    });
   }
 
   private containerWidth() {
@@ -201,6 +224,8 @@ export class ButtonStyle {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      position: 'relative',
+      overflow: 'hidden',
     });
   }
 
@@ -570,7 +595,7 @@ export class ButtonStyle {
       color: colorDefault,
 
       '& > *': {
-        fontSize: 'inherit',
+        fontSize: 'inherit !important',
         fill: colorDefault,
       },
 
@@ -680,6 +705,9 @@ export class ButtonStyle {
   private getStyleBase<T>(element: ButtonElements): T {
     if (this._style.button) {
       if (this._style.button[element]?.light) {
+        console.log({
+          [`${element}_CACHE`]: this._style.button[element].light,
+        });
         return this._style.button[element].light as T;
       }
       this._style.button[element] = {};
@@ -698,6 +726,8 @@ export class ButtonStyle {
       ...type?.base?.md,
       ...variant?.rest?.md,
     };
+
+    console.log({ [`${element}_NO_EXIST`]: this._style.button[element].light });
 
     return this._style.button[element].light as T;
   }

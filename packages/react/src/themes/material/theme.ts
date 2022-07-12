@@ -64,6 +64,7 @@ export const materialTheme: KiskadeeSchema = {
                       rest: {
                         md: {
                           backgroundColor: '#6750A4',
+                          rippleColor: '#ffffff80',
                         },
                         sm: {
                           backgroundColor: 'red',
@@ -97,6 +98,7 @@ export const materialTheme: KiskadeeSchema = {
                       rest: {
                         md: {
                           backgroundColor: '#E8DEF8',
+                          rippleColor: '#6750a480',
                         },
                       },
                       hover: {
@@ -127,6 +129,7 @@ export const materialTheme: KiskadeeSchema = {
                       rest: {
                         md: {
                           backgroundColor: '#F7F2FA',
+                          rippleColor: '#6750a480',
                           boxShadow:
                             '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                         },

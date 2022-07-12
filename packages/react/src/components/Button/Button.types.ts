@@ -93,6 +93,7 @@ export type ButtonElementContainer = {
   // Background - Dark Mode
   background?: 'none';
   backgroundColor?: CSSProperties['backgroundColor'];
+  rippleColor?: CSSProperties['backgroundColor'];
 
   // Border - Dark Mode
   borderWidth?: CSSProperties['borderWidth'];

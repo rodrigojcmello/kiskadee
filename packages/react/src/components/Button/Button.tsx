@@ -1,5 +1,5 @@
 /* eslint-disable react/button-has-type */
-import type { FC } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { useMemo } from 'react';
 import type { ButtonProps, ButtonStyleProps } from './Button.types';
 import { useKiskadee } from '../../context';
@@ -57,6 +57,34 @@ export const Button: FC<ButtonProps> = ({
     ]
   );
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const createRipple = (event: MouseEvent<HTMLButtonElement>) => {
+    const container = event.currentTarget;
+
+    const circle = document.createElement('span');
+    const diameter = Math.max(container.clientWidth, container.clientHeight);
+    const radius = diameter / 2;
+    const { top } = document.body.getBoundingClientRect();
+
+    // eslint-disable-next-line no-multi-assign
+    circle.style.width = circle.style.height = `${diameter}px`;
+    circle.style.left = `${event.clientX - container.offsetLeft - radius}px`;
+    circle.style.top = `${
+      event.clientY - container.offsetTop - top - radius
+    }px`;
+    circle.classList.add(button.container.ripple!);
+
+    const ripple = container.querySelectorAll(
+      `.${button.container.ripple!}`
+    )[0];
+
+    if (ripple) {
+      ripple.remove();
+    }
+
+    container.append(circle);
+  };
+
   console.log('rerender');
 
   return (
@@ -74,7 +102,10 @@ export const Button: FC<ButtonProps> = ({
         .join(' ')
         .trim()}
       type={typeHTML}
-      onClick={onClick}
+      onClick={(event) => {
+        createRipple(event);
+        onClick?.();
+      }}
       disabled={disabled}
     >
       {iconLeft && (
