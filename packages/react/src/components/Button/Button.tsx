@@ -57,7 +57,6 @@ export const Button: FC<ButtonProps> = ({
     ]
   );
 
-  // eslint-disable-next-line unicorn/consistent-function-scoping
   const createRipple = (event: MouseEvent<HTMLButtonElement>) => {
     const container = event.currentTarget;
 
@@ -66,12 +65,13 @@ export const Button: FC<ButtonProps> = ({
     const radius = diameter / 2;
     const { top } = document.body.getBoundingClientRect();
 
-    // eslint-disable-next-line no-multi-assign
-    circle.style.width = circle.style.height = `${diameter}px`;
+    circle.style.height = `${diameter}px`;
+    circle.style.width = `${diameter}px`;
     circle.style.left = `${event.clientX - container.offsetLeft - radius}px`;
     circle.style.top = `${
       event.clientY - container.offsetTop - top - radius
     }px`;
+
     circle.classList.add(button.container.ripple!);
 
     const ripple = container.querySelectorAll(

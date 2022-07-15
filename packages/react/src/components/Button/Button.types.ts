@@ -225,3 +225,10 @@ export interface ButtonSchema {
     text?: ElementTheme<ButtonElementText>;
   };
 }
+
+export interface RippleProps {
+  top: string;
+  left: string;
+  width: string;
+  height: string;
+}

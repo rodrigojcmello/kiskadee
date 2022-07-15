@@ -22,7 +22,7 @@ const ButtonOnly = () => {
       <div style={{ padding: 100 }}>
         <Button
           type={'contained'}
-          variant={'primary'}
+          variant={'tertiary'}
           label={'text text text'}
           size={'md'}
           iconLeft={

@@ -15,6 +15,7 @@ import type {
   Breakpoint,
   StitchesProperties,
 } from './Button.types';
+import { RIPPLE_DURATION } from './constants';
 
 const rippleKeyframe = keyframes({
   to: {
@@ -146,7 +147,7 @@ export class ButtonStyle {
       position: 'absolute',
       borderRadius: '50%',
       transform: 'scale(0)',
-      animation: `${rippleKeyframe} 600ms linear`,
+      animation: `${rippleKeyframe} ${RIPPLE_DURATION}ms linear`,
       backgroundColor: ripple?.defaultMode?.rippleColor,
       '@media (prefers-color-scheme: dark)': ripple?.contrastMode && {
         backgroundColor: ripple?.contrastMode.rippleColor,
@@ -326,7 +327,6 @@ export class ButtonStyle {
     const { '@media (min-width: 0px)': elementRest, ...elementResponsive } = p;
 
     return ButtonStyle.render({
-      // TODO: need responsive?
       ...elementRest,
       ...elementResponsive,
 
