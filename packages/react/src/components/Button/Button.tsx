@@ -37,8 +37,8 @@ export const Button: FC<ButtonProps> = ({
     width,
   };
 
-  const classeName = ['button'];
-  if (interaction) classeName.push(`--${interaction}`);
+  const className = ['button'];
+  if (interaction) className.push(`--${interaction}`);
 
   const button = useMemo(
     () => new ButtonStyle(style),
@@ -90,7 +90,7 @@ export const Button: FC<ButtonProps> = ({
   return (
     <button
       className={[
-        ...classeName,
+        ...className,
         button.container.width,
         button.container.radius,
         button.container.border,
