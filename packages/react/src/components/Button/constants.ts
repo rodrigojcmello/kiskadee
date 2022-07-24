@@ -1,1 +1,1 @@
-export const RIPPLE_DURATION = 600;
+export const RIPPLE_DURATION = 400;

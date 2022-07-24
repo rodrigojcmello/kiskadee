@@ -72,11 +72,10 @@ export const Button: FC<ButtonProps> = ({
       event.clientY - container.offsetTop - top - radius
     }px`;
 
-    circle.classList.add(button.container.ripple!);
+    circle.classList.add(button.container.rippleCore!);
+    circle.classList.add(button.container.rippleBackground!);
 
-    const ripple = container.querySelectorAll(
-      `.${button.container.ripple!}`
-    )[0];
+    const ripple = container.querySelector(`.${button.container.rippleCore!}`);
 
     if (ripple) {
       ripple.remove();
@@ -104,7 +103,7 @@ export const Button: FC<ButtonProps> = ({
       type={typeHTML}
       onClick={(event) => {
         createRipple(event);
-        onClick?.();
+        onClick?.(event);
       }}
       disabled={disabled}
     >

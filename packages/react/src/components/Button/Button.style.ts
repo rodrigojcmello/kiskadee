@@ -136,7 +136,8 @@ export class ButtonStyle {
       width: this.containerWidth(),
       core: this.containerCore(),
       base: ButtonStyle.containerBase(),
-      ripple: this.containerRipple(),
+      rippleCore: this.containerRipple(),
+      rippleBackground: this.containerRippleBackground(),
     };
   }
 
@@ -147,7 +148,16 @@ export class ButtonStyle {
       position: 'absolute',
       borderRadius: '50%',
       transform: 'scale(0)',
-      animation: `${rippleKeyframe} ${RIPPLE_DURATION}ms linear`,
+      animationDuration: `${RIPPLE_DURATION}ms`,
+      animationTimingFunction: 'ease-in',
+      animationName: rippleKeyframe,
+    });
+  }
+
+  private containerRippleBackground() {
+    const ripple = this.getContrastStyle<ButtonElementContainer>('container');
+
+    return ButtonStyle.render({
       backgroundColor: ripple?.defaultMode?.rippleColor,
       '@media (prefers-color-scheme: dark)': ripple?.contrastMode && {
         backgroundColor: ripple?.contrastMode.rippleColor,

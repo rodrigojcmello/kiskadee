@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactElement } from 'react';
+import type { CSSProperties, ReactElement, MouseEvent } from 'react';
 import type * as Util from '@stitches/core/types/util';
 import type { KiskadeeSchema } from '../../themes/theme.types';
 
@@ -38,7 +38,7 @@ export type Size =
 
 export interface ButtonProps {
   label?: string;
-  onClick?: () => void;
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   typeHTML?: 'button' | 'reset' | 'submit';
 
   // STYLE
