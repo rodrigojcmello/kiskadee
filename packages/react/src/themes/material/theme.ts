@@ -170,6 +170,7 @@ export const materialTheme: KiskadeeSchema = {
                       borderWidth: '1px',
                       borderStyle: 'solid',
                       borderColor: '#79747E',
+                      rippleColor: '#6750a480',
                     },
                   },
                   variant: {
@@ -209,6 +210,7 @@ export const materialTheme: KiskadeeSchema = {
                     primary: {
                       rest: {
                         md: {
+                          rippleColor: '#6750a480',
                           backgroundColor: '#FFFFFF',
                         },
                       },

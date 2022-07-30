@@ -63,14 +63,11 @@ export const Button: FC<ButtonProps> = ({
     const circle = document.createElement('span');
     const diameter = Math.max(container.clientWidth, container.clientHeight);
     const radius = diameter / 2;
-    const { top } = document.body.getBoundingClientRect();
 
     circle.style.height = `${diameter}px`;
     circle.style.width = `${diameter}px`;
-    circle.style.left = `${event.clientX - container.offsetLeft - radius}px`;
-    circle.style.top = `${
-      event.clientY - container.offsetTop - top - radius
-    }px`;
+    circle.style.left = '0px';
+    circle.style.top = `${container.clientHeight / 2 - radius}px`;
 
     circle.classList.add(button.container.rippleCore!);
     circle.classList.add(button.container.rippleBackground!);
@@ -88,6 +85,7 @@ export const Button: FC<ButtonProps> = ({
 
   return (
     <button
+      data-test-id={'k-button'}
       className={[
         ...className,
         button.container.width,

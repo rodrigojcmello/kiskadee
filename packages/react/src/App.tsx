@@ -22,8 +22,8 @@ const ButtonOnly = () => {
       <div style={{ padding: 100 }}>
         <Button
           type={'contained'}
-          variant={'tertiary'}
-          label={'text text text'}
+          variant={'primary'}
+          label={'text text text text text'}
           size={'md'}
           iconLeft={
             <span className={'material-symbols-outlined'}>thumb_up</span>

@@ -15,7 +15,7 @@ import type {
   Breakpoint,
   StitchesProperties,
 } from './Button.types';
-import { RIPPLE_DURATION } from './constants';
+import { RIPPLE_DURATION, RIPPLE_TIMING_FUNCTION } from './constants';
 
 const rippleKeyframe = keyframes({
   to: {
@@ -94,8 +94,8 @@ export class ButtonStyle {
     this._iconRight = style.iconRight;
 
     // Transition
-    this._timingFunction = 'ease';
-    this._duration = '0.2s';
+    this._timingFunction = 'ease-in';
+    this._duration = '0.3s';
 
     // Responsive
 
@@ -136,25 +136,23 @@ export class ButtonStyle {
       width: this.containerWidth(),
       core: this.containerCore(),
       base: ButtonStyle.containerBase(),
-      rippleCore: this.containerRipple(),
+      rippleCore: ButtonStyle.containerRipple(),
       rippleBackground: this.containerRippleBackground(),
     };
   }
 
-  private containerRipple() {
-    const ripple = this.getContrastStyle<ButtonElementContainer>('container');
-
+  static containerRipple() {
     return ButtonStyle.render({
       position: 'absolute',
       borderRadius: '50%',
       transform: 'scale(0)',
       animationDuration: `${RIPPLE_DURATION}ms`,
-      animationTimingFunction: 'ease-in',
+      animationTimingFunction: RIPPLE_TIMING_FUNCTION,
       animationName: rippleKeyframe,
     });
   }
 
-  private containerRippleBackground() {
+  containerRippleBackground() {
     const ripple = this.getContrastStyle<ButtonElementContainer>('container');
 
     return ButtonStyle.render({
