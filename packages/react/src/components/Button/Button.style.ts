@@ -95,7 +95,7 @@ export class ButtonStyle {
 
     // Transition
     this._timingFunction = 'ease-in';
-    this._duration = '0.3s';
+    this._duration = '0.250s';
 
     // Responsive
 
@@ -225,6 +225,7 @@ export class ButtonStyle {
 
   private static containerBase() {
     return ButtonStyle.render({
+      userSelect: 'none',
       padding: 0,
       cursor: 'pointer',
       fontSize: '16px',

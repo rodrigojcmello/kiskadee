@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import type { ButtonProps, ButtonStyleProps } from './Button.types';
 import { useKiskadee } from '../../context';
 import { ButtonStyle } from './Button.style';
+import { EllipsisLoader } from '../Loader';
 
 export const Button: FC<ButtonProps> = ({
   iconType = 'attached',
@@ -105,6 +106,7 @@ export const Button: FC<ButtonProps> = ({
       }}
       disabled={disabled}
     >
+      <EllipsisLoader />
       {iconLeft && (
         <div
           className={[
