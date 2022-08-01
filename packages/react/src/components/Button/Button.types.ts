@@ -4,37 +4,13 @@ import type { KiskadeeSchema } from '../../themes/theme.types';
 
 export type ButtonType = 'contained' | 'outline' | 'flat';
 
-export type StitchesProperties =
-  | string
-  | Util.Function
-  | { [name: string]: unknown };
+export type StitchesProperties = string | Util.Function | { [name: string]: unknown };
 
-export type ButtonVariant =
-  | 'primary'
-  | 'secondary'
-  | 'tertiary'
-  | 'success'
-  | 'warning'
-  | 'danger';
+export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'success' | 'warning' | 'danger';
 
-export type Interaction =
-  | 'rest'
-  | 'hover'
-  | 'focus'
-  | 'pressed'
-  | 'visited'
-  | 'disabled';
+export type Interaction = 'rest' | 'hover' | 'focus' | 'pressed' | 'visited' | 'disabled';
 
-export type Size =
-  | 'xxxl'
-  | 'xxl'
-  | 'xl'
-  | 'lg'
-  | 'md'
-  | 'sm'
-  | 'xs'
-  | 'xxs'
-  | 'xxxs';
+export type Size = 'xxxl' | 'xxl' | 'xl' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs' | 'xxxs';
 
 export interface ButtonProps {
   label?: string;
@@ -53,6 +29,7 @@ export interface ButtonProps {
   iconRight?: ReactElement;
   iconType?: 'attached' | 'detached';
   size?: Size;
+  isLoading?: boolean;
 }
 
 export type ButtonStyleProps = {
@@ -186,32 +163,19 @@ type ElementSchema<Base> = {
       ButtonType,
       {
         base?: Partial<Record<Size, Base>>;
-        variant?: Partial<
-          Record<
-            ButtonVariant,
-            Partial<Record<Interaction, Partial<Record<Size, Base>>>>
-          >
-        >;
+        variant?: Partial<Record<ButtonVariant, Partial<Record<Interaction, Partial<Record<Size, Base>>>>>>;
       }
     >
   >;
 };
 
-type ElementTheme<T> = Partial<
-  Record<
-    'light' | 'dark',
-    Partial<Record<string | 'default', ElementSchema<T>>>
-  >
->;
+type ElementTheme<T> = Partial<Record<'light' | 'dark', Partial<Record<string | 'default', ElementSchema<T>>>>>;
 
 export type ContrastStyle<T> = {
   [mediaQuery in 'defaultMode' | 'contrastMode']?: T;
 };
 
-export type Breakpoint = keyof Exclude<
-  ContainerOptions['responsive'],
-  undefined
->;
+export type Breakpoint = keyof Exclude<ContainerOptions['responsive'], undefined>;
 
 export interface ButtonSchema {
   option?: ContainerOptions;

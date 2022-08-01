@@ -1,7 +1,8 @@
 import type { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { useState } from 'react';
 import { Bar } from './site/components/Bar/Bar';
-import { schema } from './themes/schema';
+import { materialTheme } from './themes/material/theme';
 import { KiskadeeProvider } from './context';
 import { ButtonDocumentation } from './site/documentation/Button/ButtonDocumentation';
 import { Button } from './components/Button';
@@ -16,6 +17,7 @@ const ButtonDocument = () => {
 };
 
 const ButtonOnly = () => {
+  const [loading, setLoading] = useState(false);
   return (
     <>
       <Bar />
@@ -25,9 +27,11 @@ const ButtonOnly = () => {
           variant={'primary'}
           label={'text text text text text'}
           size={'md'}
-          iconLeft={
-            <span className={'material-symbols-outlined'}>thumb_up</span>
-          }
+          isLoading={loading}
+          onClick={() => {
+            setLoading(true);
+          }}
+          iconLeft={<span className={'material-symbols-outlined'}>thumb_up</span>}
         />
       </div>
     </>
@@ -37,7 +41,7 @@ const ButtonOnly = () => {
 // TODO: packages/react become packages/docs
 export const App: FC = () => {
   return (
-    <KiskadeeProvider schema={schema} only={'dark'}>
+    <KiskadeeProvider schema={materialTheme}>
       <Routes>
         <Route path={'/'} element={<ButtonDocument />} />
         <Route path={'button'} element={<ButtonOnly />} />

@@ -21,6 +21,7 @@ export const Button: FC<ButtonProps> = ({
   iconLeft,
   iconRight,
   typeHTML = 'button',
+  isLoading,
 }) => {
   const [schema] = useKiskadee();
 
@@ -104,60 +105,63 @@ export const Button: FC<ButtonProps> = ({
         createRipple(event);
         onClick?.(event);
       }}
-      disabled={disabled}
+      disabled={isLoading || disabled}
     >
-      <EllipsisLoader />
-      {iconLeft && (
-        <div
-          className={[
-            'button__icon-left',
-            button.icon.base,
-            button.iconLeft.color,
-            button.iconLeft.size,
-            button.iconLeft.padding,
-            button.common.transition,
-          ]
-            .join(' ')
-            .trim()}
-        >
-          {iconLeft}
-        </div>
-      )}
-      {label && (
-        <span
-          className={[
-            'button__text',
-            button.text.core,
-            button.text.base,
-            button.text.color,
-            button.text.padding,
-            button.text.fontSize,
-            button.text.width,
-            button.text.align,
-            button.common.transition,
-          ]
-            .join(' ')
-            .trim()}
-        >
-          {label}
-        </span>
-      )}
-      {iconRight && (
-        <div
-          className={[
-            'button__icon-right',
-            button.icon.base,
-            button.iconRight.color,
-            button.iconRight.size,
-            button.iconRight.padding,
-            button.common.transition,
-          ]
-            .join(' ')
-            .trim()}
-        >
-          {iconRight}
-        </div>
-      )}
+      <span style={{ opacity: isLoading ? 0 : 1, display: 'flex' }}>
+        {iconLeft && (
+          <div
+            className={[
+              'button__icon-left',
+              button.icon.base,
+              button.iconLeft.color,
+              button.iconLeft.size,
+              button.iconLeft.padding,
+              button.common.transition,
+            ]
+              .join(' ')
+              .trim()}
+          >
+            {iconLeft}
+          </div>
+        )}
+        {label && (
+          <span
+            className={[
+              'button__text',
+              button.text.core,
+              button.text.base,
+              button.text.color,
+              button.text.padding,
+              button.text.fontSize,
+              button.text.width,
+              button.text.align,
+              button.common.transition,
+            ]
+              .join(' ')
+              .trim()}
+          >
+            {label}
+          </span>
+        )}
+        {iconRight && (
+          <div
+            className={[
+              'button__icon-right',
+              button.icon.base,
+              button.iconRight.color,
+              button.iconRight.size,
+              button.iconRight.padding,
+              button.common.transition,
+            ]
+              .join(' ')
+              .trim()}
+          >
+            {iconRight}
+          </div>
+        )}
+      </span>
+
+      {isLoading && <EllipsisLoader />}
     </button>
   );
 };

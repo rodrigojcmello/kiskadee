@@ -1,6 +1,8 @@
 import type { FC } from 'react';
 import { css, keyframes } from '@stitches/core';
 
+const time = 600;
+
 const ellipsisKF1 = keyframes({
   from: {
     transform: 'scale(0)',
@@ -15,7 +17,7 @@ const ellipsisKF2 = keyframes({
     transform: 'translate(0, 0)',
   },
   to: {
-    transform: 'translate(24px, 0)',
+    transform: 'translate(15px, 0)',
   },
 });
 
@@ -29,44 +31,44 @@ const ellipsisKF3 = keyframes({
 });
 
 const loader = css({
-  display: 'inline-block',
-  position: 'relative',
-  width: '80px',
-  height: '80px',
+  display: 'flex',
+  alignItems: 'center',
+  position: 'absolute',
+  width: '38px',
+  height: '8px',
   '& div': {
     position: 'absolute',
-    top: '33px',
-    width: '13px',
-    height: '13px',
+    top: '0px',
+    width: '8px',
+    height: '8px',
     borderRadius: '50%',
-    background: '#fff',
     animationTimingFunction: 'cubic-bezier(0, 1, 1, 0)',
   },
   '& div:nth-child(1)': {
-    left: '8px',
-    animation: `${ellipsisKF1} 0.6s infinite`,
+    left: '0px',
+    animation: `${ellipsisKF1} ${time}ms infinite`,
   },
   '& div:nth-child(2)': {
-    left: '8px',
-    animation: `${ellipsisKF2} 0.6s infinite`,
+    left: '0px',
+    animation: `${ellipsisKF2} ${time}ms infinite`,
   },
   '& div:nth-child(3)': {
-    left: '32px',
-    animation: `${ellipsisKF2} 0.6s infinite`,
+    left: '15px',
+    animation: `${ellipsisKF2} ${time}ms infinite`,
   },
   '& div:nth-child(4)': {
-    left: '56px',
-    animation: `${ellipsisKF3} 0.6s infinite`,
+    left: '30px',
+    animation: `${ellipsisKF3} ${time}ms infinite`,
   },
 })();
 
 export const EllipsisLoader: FC = () => {
   return (
     <div className={loader.className}>
-      <div />
-      <div />
-      <div />
-      <div />
+      <div className={'spinner'} />
+      <div className={'spinner'} />
+      <div className={'spinner'} />
+      <div className={'spinner'} />
     </div>
   );
 };

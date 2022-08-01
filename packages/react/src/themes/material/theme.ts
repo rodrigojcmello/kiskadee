@@ -73,8 +73,7 @@ export const materialTheme: KiskadeeSchema = {
                       hover: {
                         md: {
                           backgroundColor: '#735EAB',
-                          boxShadow:
-                            '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                         },
                       },
                       focus: {
@@ -104,8 +103,7 @@ export const materialTheme: KiskadeeSchema = {
                       hover: {
                         md: {
                           backgroundColor: '#D8CEE8',
-                          boxShadow:
-                            '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                         },
                       },
                       focus: {
@@ -130,29 +128,25 @@ export const materialTheme: KiskadeeSchema = {
                         md: {
                           backgroundColor: '#F7F2FA',
                           rippleColor: '#6750a480',
-                          boxShadow:
-                            '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                         },
                       },
                       hover: {
                         md: {
                           backgroundColor: '#E8E0F0',
-                          boxShadow:
-                            '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15)',
+                          boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15)',
                         },
                       },
                       focus: {
                         md: {
                           backgroundColor: '#E6DFF0',
-                          boxShadow:
-                            '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                         },
                       },
                       pressed: {
                         md: {
                           backgroundColor: '#E6DFF0',
-                          boxShadow:
-                            '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                         },
                       },
                       disabled: {
@@ -477,7 +471,7 @@ export const materialTheme: KiskadeeSchema = {
                       },
                       disabled: {
                         md: {
-                          color: '#1b1a1e61',
+                          color: '#979798',
                         },
                       },
                     },
