@@ -16,10 +16,9 @@ export const materialTheme: KiskadeeSchema = {
         borderRadius: {
           default: 'rounded',
           variant: {
-            rounded: { xl: 24, lg: 18, md: 16, sm: 4 },
+            rounded: { xl: 24, lg: 18, md: 16, sm: 10 },
             full: { xl: 48, lg: 30, md: 20, sm: 16 },
           },
-          none: 0,
         },
         textAlign: {
           default: 'center',
@@ -301,6 +300,9 @@ export const materialTheme: KiskadeeSchema = {
             default: {
               base: {
                 rest: {
+                  sm: {
+                    fontSize: 16,
+                  },
                   md: {
                     fontSize: 24,
                     paddingTop: 8,
@@ -308,12 +310,12 @@ export const materialTheme: KiskadeeSchema = {
                     paddingLeft: 8,
                     paddingRight: 8,
                   },
-                  // xl: {
-                  //   paddingTop: 38,
-                  //   paddingBottom: 38,
-                  //   paddingLeft: 38,
-                  //   paddingRight: 38,
-                  // },
+                  lg: {
+                    paddingTop: 16,
+                    paddingBottom: 16,
+                    paddingLeft: 16,
+                    paddingRight: 16,
+                  },
                 },
               },
               type: {

@@ -169,19 +169,13 @@ export class ButtonStyle {
 
   private containerRadius() {
     let borderRadius;
+    const defaultBorder = this._options?.borderRadius?.default;
+    const variant = this._options?.borderRadius?.variant;
+
     if (this._borderRadius === 'rounded' || this._borderRadius === 'full') {
-      borderRadius =
-        this._options?.borderRadius?.variant?.[this._borderRadius]?.[this._size || 'md'] ||
-        this._options?.borderRadius?.variant?.[this._borderRadius]?.md;
-    } else if (
-      (this._options?.borderRadius?.default === 'rounded' || this._options?.borderRadius?.default === 'full') &&
-      this._borderRadius === 'default'
-    ) {
-      borderRadius =
-        this._options?.borderRadius?.variant?.[this._options?.borderRadius?.default]?.[this._size || 'md'] ||
-        this._options?.borderRadius?.variant?.[this._options?.borderRadius?.default]?.md;
-    } else {
-      borderRadius = this._options?.borderRadius?.none;
+      borderRadius = variant?.[this._borderRadius]?.[this._size || 'md'] || variant?.[this._borderRadius]?.md;
+    } else if ((defaultBorder === 'rounded' || defaultBorder === 'full') && this._borderRadius === 'default') {
+      borderRadius = variant?.[defaultBorder]?.[this._size || 'md'] || variant?.[defaultBorder]?.md;
     }
 
     return ButtonStyle.render({
@@ -692,7 +686,7 @@ export class ButtonStyle {
     return this._style.button[element].dark as T;
   }
 
-  private getStyleSize<T>(element: ButtonElements, size: Exclude<Size, 'md'>): T {
+  getStyleSize<T>(element: ButtonElements, size: Exclude<Size, 'md'>): T {
     if (this._style.button) {
       if (this._style.button[element]?.[size]) {
         return this._style.button[element][size] as T;
@@ -732,7 +726,9 @@ export class ButtonStyle {
       }
     } else {
       responsive['@media (min-width: 0px)'] =
-        !this._size || this._size === 'md' ? this.getStyleBase(element) : this.getStyleSize(element, this._size);
+        !this._size || this._size === 'md'
+          ? this.getStyleBase(element)
+          : { ...this.getStyleBase(element), ...this.getStyleSize(element, this._size) };
     }
 
     return responsive;
