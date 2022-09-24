@@ -1,5 +1,5 @@
 {
-  "name": "@kiskadee/react",
+  "name": "@kiskadee/theme",
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
@@ -7,15 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Rodrigo Mello",
   "license": "ISC",
   "eslintConfig": {
     "extends": [
       "kiskadee"
     ]
-  },
-  "dependencies": {
-    "@stitches/core": "^1.2.8",
-    "react": "^18.2.0"
   }
 }
