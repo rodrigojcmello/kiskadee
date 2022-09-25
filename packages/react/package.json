@@ -17,5 +17,10 @@
   "dependencies": {
     "@stitches/core": "^1.2.8",
     "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.0.3",
+    "@types/react": "^18.0.21",
+    "jest": "^29.0.3"
   }
 }

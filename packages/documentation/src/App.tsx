@@ -24,7 +24,7 @@ const ButtonOnly = () => {
         <Button
           type={'contained'}
           variant={'primary'}
-          label={'text text text text text'}
+          label={'fulano'}
           size={'lg'}
           isLoading={loading}
           onClick={() => {
@@ -35,50 +35,50 @@ const ButtonOnly = () => {
           }
         />
       </div>
-      <div style={{ paddingTop: 50, paddingLeft: 50 }}>
-        <Button
-          type={'contained'}
-          variant={'primary'}
-          label={'text text text text text'}
-          size={'md'}
-          isLoading={loading}
-          onClick={() => {
-            setLoading(true);
-          }}
-          iconLeft={
-            <span className={'material-symbols-outlined'}>thumb_up</span>
-          }
-        />
-      </div>
-      <div style={{ paddingTop: 50, paddingLeft: 50 }}>
-        <Button
-          type={'contained'}
-          variant={'primary'}
-          size={'sm'}
-          label={'text text text text text'}
-          isLoading={loading}
-          onClick={() => {
-            setLoading(true);
-          }}
-          iconLeft={
-            <span className={'material-symbols-outlined'}>thumb_up</span>
-          }
-        />
-      </div>
-      <div style={{ paddingTop: 50, paddingLeft: 50 }}>
-        <Button
-          type={'contained'}
-          variant={'primary'}
-          label={'text text text text text'}
-          isLoading={loading}
-          onClick={() => {
-            setLoading(true);
-          }}
-          iconLeft={
-            <span className={'material-symbols-outlined'}>thumb_up</span>
-          }
-        />
-      </div>
+      {/* <div style={{ paddingTop: 50, paddingLeft: 50 }}> */}
+      {/*  <Button */}
+      {/*    type={'contained'} */}
+      {/*    variant={'primary'} */}
+      {/*    label={'text text text text text'} */}
+      {/*    size={'md'} */}
+      {/*    isLoading={loading} */}
+      {/*    onClick={() => { */}
+      {/*      setLoading(true); */}
+      {/*    }} */}
+      {/*    iconLeft={ */}
+      {/*      <span className={'material-symbols-outlined'}>thumb_up</span> */}
+      {/*    } */}
+      {/*  /> */}
+      {/* </div> */}
+      {/* <div style={{ paddingTop: 50, paddingLeft: 50 }}> */}
+      {/*  <Button */}
+      {/*    type={'contained'} */}
+      {/*    variant={'primary'} */}
+      {/*    size={'sm'} */}
+      {/*    label={'text text text text text'} */}
+      {/*    isLoading={loading} */}
+      {/*    onClick={() => { */}
+      {/*      setLoading(true); */}
+      {/*    }} */}
+      {/*    iconLeft={ */}
+      {/*      <span className={'material-symbols-outlined'}>thumb_up</span> */}
+      {/*    } */}
+      {/*  /> */}
+      {/* </div> */}
+      {/* <div style={{ paddingTop: 50, paddingLeft: 50 }}> */}
+      {/*  <Button */}
+      {/*    type={'contained'} */}
+      {/*    variant={'primary'} */}
+      {/*    label={'text text text text text'} */}
+      {/*    isLoading={loading} */}
+      {/*    onClick={() => { */}
+      {/*      setLoading(true); */}
+      {/*    }} */}
+      {/*    iconLeft={ */}
+      {/*      <span className={'material-symbols-outlined'}>thumb_up</span> */}
+      {/*    } */}
+      {/*  /> */}
+      {/* </div> */}
     </>
   );
 };

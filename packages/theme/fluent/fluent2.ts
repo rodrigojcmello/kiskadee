@@ -1,6 +1,6 @@
 import type { KiskadeeTheme } from '@kiskadee/react';
 
-export const fluentTheme: KiskadeeTheme = {
+export const fluent2: KiskadeeTheme = {
   name: 'Fluent',
   author: 'Microsoft',
   version: '2.0',

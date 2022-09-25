@@ -1,6 +1,6 @@
 import type { KiskadeeTheme } from '@kiskadee/react';
 
-export const carbonTheme: KiskadeeTheme = {
+export const carbon: KiskadeeTheme = {
   name: 'Carbon',
   author: 'IBM',
   version: '0.0',

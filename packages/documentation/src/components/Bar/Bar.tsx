@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import type { ChangeEvent, FC } from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { KiskadeeContext } from '@kiskadee/react';
-import { material3, ios15 } from '@kiskadee/theme';
+import { material3, ios15, carbon, fluent2 } from '@kiskadee/theme';
 import type { KiskadeeTheme } from '@kiskadee/react';
 
 const BarStyled = styled.div(() => ({
@@ -25,9 +25,9 @@ const SelectTheme = styled.select(() => ({
 
 const themes: Record<string, KiskadeeTheme> = {
   Material: material3,
-  // Fluent: fluentTheme,
+  Fluent: fluent2,
   iOS: ios15,
-  // Carbon: carbonTheme,
+  Carbon: carbon,
 };
 
 export const Bar: FC = () => {
