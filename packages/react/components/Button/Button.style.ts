@@ -2,20 +2,23 @@
 import { css, keyframes } from '@stitches/core';
 import type { CSSProperties } from 'react';
 import type {
-  ButtonElements,
+  Breakpoint,
   ButtonElementContainer,
   ButtonElementIcon,
+  ButtonElements,
   ButtonElementText,
   ButtonSchema,
   ButtonStyleProps,
+  ButtonType,
+  ButtonVariant,
   ContainerOptions,
+  ContrastStyle,
   Interaction,
   Size,
-  ContrastStyle,
-  Breakpoint,
   StitchesProperties,
 } from './Button.types';
 import { RIPPLE_DURATION, RIPPLE_TIMING_FUNCTION } from './constants';
+import { CacheStyle } from '../../utils/CacheStyle.class';
 
 const rippleKeyframe = keyframes({
   to: {
@@ -23,6 +26,8 @@ const rippleKeyframe = keyframes({
     opacity: 0,
   },
 });
+
+const cacheStyle = new CacheStyle();
 
 export class ButtonStyle {
   // Required
@@ -114,11 +119,11 @@ export class ButtonStyle {
     };
 
     // Cache
-
+    // TODO: delete it
     this._style = {};
   }
 
-  get common() {
+  common() {
     return {
       transition: this.getTransition(),
     };
@@ -128,9 +133,11 @@ export class ButtonStyle {
   // Container Element
   //----------------------------------------------------------------------------
 
-  get container() {
+  container() {
+    console.log('get container');
+
     return {
-      border: this.containerBorder(),
+      border: this.containerBorder(this._typeStyle, this._variant),
       background: this.containerBackground(),
       radius: this.containerRadius(),
       width: this.containerWidth(),
@@ -207,15 +214,38 @@ export class ButtonStyle {
     });
   }
 
-  private containerBorder() {
-    const container = this.getStyleBase<ButtonElementContainer>('container');
+  containerBorder(type: ButtonType, variant: ButtonVariant) {
+    const key = {
+      component: 'button',
+      element: 'container',
+      type,
+      variant,
+      property: 'border',
+    };
 
-    return ButtonStyle.render({
+    if (cacheStyle.get(key)) {
+      console.log('containerBorder cache');
+      return cacheStyle.get(key);
+    }
+
+    console.log('containerBorder no exist');
+
+    const container = this.getStyleBase<ButtonElementContainer>(
+      'container',
+      type,
+      variant
+    );
+
+    const style = ButtonStyle.render({
       border: container?.borderWidth ? undefined : 'none',
       borderColor: container?.borderColor,
       borderStyle: container?.borderStyle,
       borderWidth: container?.borderWidth,
     });
+
+    cacheStyle.set(key, style);
+
+    return style;
   }
 
   private static containerBase() {
@@ -427,7 +457,7 @@ export class ButtonStyle {
   // Text Element
   //----------------------------------------------------------------------------
 
-  get text() {
+  text() {
     return {
       base: ButtonStyle.textBase(),
       core: this.textCore(),
@@ -561,13 +591,13 @@ export class ButtonStyle {
 
   // TODO: jpg/png/webp icon support
   // eslint-disable-next-line class-methods-use-this
-  get icon() {
+  icon() {
     return {
       base: ButtonStyle.iconBase(),
     };
   }
 
-  get iconLeft() {
+  iconLeft() {
     return {
       color: this.iconColor_COLOR('left'),
       size: this.iconSize_SIZE('left'),
@@ -575,7 +605,7 @@ export class ButtonStyle {
     };
   }
 
-  get iconRight() {
+  iconRight() {
     return {
       color: this.iconColor_COLOR('right'),
       size: this.iconSize_SIZE('right'),
@@ -712,34 +742,41 @@ export class ButtonStyle {
     });
   }
 
-  private getStyleBase<T>(element: ButtonElements): T {
-    if (this._style.button) {
-      if (this._style.button[element]?.light) {
-        // console.log({
-        //   [`${element}_CACHE`]: this._style.button[element].light,
-        // });
-        return this._style.button[element].light as T;
-      }
-      this._style.button[element] = {};
-    } else {
-      this._style.button = {
-        [element]: {},
-      };
-    }
-
-    const base = this._schema?.elements?.[element];
-    const type = base?.light?.default?.type?.[this._typeStyle];
-    const variant = type?.variant?.[this._variant];
-
-    this._style.button[element].light = {
-      ...base?.light?.default?.base?.rest?.md,
-      ...type?.base?.md,
-      ...variant?.rest?.md,
+  getStyleBase<T>(
+    element: ButtonElements,
+    type: ButtonType = this._typeStyle,
+    variant: ButtonVariant = this._variant
+  ): T {
+    const key = {
+      component: 'button',
+      element,
+      type,
+      variant,
+      property: 'base',
     };
 
-    // console.log({ [`${element}_NO_EXIST`]: this._style.button[element].light });
+    if (cacheStyle.get(key)) {
+      console.log('getStyleBase cached', cacheStyle);
+      return cacheStyle.get(key) as T;
+    }
 
-    return this._style.button[element].light as T;
+    if (element === 'container') {
+      console.log('getStyleBase no exist');
+    }
+
+    const baseSchema = this._schema?.elements?.[element];
+    const typeSchema = baseSchema?.light?.default?.type?.[type];
+    const variantSchema = typeSchema?.variant?.[variant];
+
+    const value = {
+      ...baseSchema?.light?.default?.base?.rest?.md,
+      ...typeSchema?.base?.md,
+      ...variantSchema?.rest?.md,
+    } as T;
+
+    cacheStyle.set(key, value);
+
+    return value;
   }
 
   getStyleInteraction<T>(element: ButtonElements, interaction: Interaction): T {
@@ -813,7 +850,11 @@ export class ButtonStyle {
       ...variant?.rest?.[size],
     };
 
-    return this._style.button[element][size] as T;
+    const x = this._style.button[element][size] as T;
+
+    // console.log('### size', element, size, x);
+
+    return x;
   }
 
   public getResponsiveStyle<T>(element: ButtonElements): {

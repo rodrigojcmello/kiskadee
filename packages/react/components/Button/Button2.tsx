@@ -77,7 +77,7 @@ export const Button: FC<ButtonProps> = ({
     container.append(circle);
   };
 
-  console.log('----------------------------------------------------- rerender');
+  console.log('rerender');
 
   return (
     <button

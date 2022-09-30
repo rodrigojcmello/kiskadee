@@ -17,6 +17,9 @@ const ButtonDocument = () => {
 
 const ButtonOnly = () => {
   const [loading, setLoading] = useState(false);
+
+  console.log('ButtonOnly');
+
   return (
     <>
       <Bar />
@@ -84,6 +87,8 @@ const ButtonOnly = () => {
 };
 
 export const App: FC = () => {
+  console.log('app');
+
   return (
     <KiskadeeProvider schema={material3}>
       <Routes>

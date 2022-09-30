@@ -31,18 +31,22 @@ const themes: Record<string, KiskadeeTheme> = {
 };
 
 export const Bar: FC = () => {
-  const [, setTheme] = useContext(KiskadeeContext);
-  const theme = localStorage.getItem('theme') || 'Material';
-  const [themeSelected, setThemeSelected] = useState(theme);
+  const [theme, setTheme] = useContext(KiskadeeContext);
+  const localTheme = localStorage.getItem('theme') || 'Material';
+  const [themeSelected, setThemeSelected] = useState(localTheme);
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>): void => {
     setThemeSelected(event.target.value);
   };
 
   useEffect(() => {
-    localStorage.setItem('theme', themeSelected);
-    setTheme(themes[themeSelected]);
+    if (theme.name !== localTheme) {
+      localStorage.setItem('theme', themeSelected);
+      setTheme(themes[themeSelected]);
+    }
   }, [themeSelected]);
+
+  console.log('bar');
 
   return (
     <BarStyled>
