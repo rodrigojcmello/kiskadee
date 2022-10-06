@@ -9,8 +9,6 @@ import type {
   ButtonElementText,
   ButtonSchema,
   ButtonStyleProps,
-  ButtonType,
-  ButtonVariant,
   ContainerOptions,
   ContrastStyle,
   Interaction,
@@ -137,7 +135,7 @@ export class ButtonStyle {
     console.log('get container');
 
     return {
-      border: this.containerBorder(this._typeStyle, this._variant),
+      border: this.containerBorder(),
       background: this.containerBackground(),
       radius: this.containerRadius(),
       width: this.containerWidth(),
@@ -160,95 +158,83 @@ export class ButtonStyle {
   }
 
   containerRippleBackground() {
-    const ripple = this.getContrastStyle<ButtonElementContainer>('container');
+    return this.cache('container', 'rippleBackground', () => {
+      const ripple = this.getContrastStyle<ButtonElementContainer>('container');
 
-    return ButtonStyle.render({
-      backgroundColor: ripple?.defaultMode?.rippleColor,
-      '@media (prefers-color-scheme: dark)': ripple?.contrastMode && {
-        backgroundColor: ripple?.contrastMode.rippleColor,
-      },
+      return ButtonStyle.render({
+        backgroundColor: ripple?.defaultMode?.rippleColor,
+        '@media (prefers-color-scheme: dark)': ripple?.contrastMode && {
+          backgroundColor: ripple?.contrastMode.rippleColor,
+        },
+      });
     });
   }
 
-  private containerWidth() {
-    return ButtonStyle.render({
-      width: this._width === 'block' ? '100%' : 'auto',
-      minWidth: this._width === 'min' ? this._options?.widthMin : 0,
+  containerWidth() {
+    return this.cache('container', 'width', () => {
+      return ButtonStyle.render({
+        width: this._width === 'block' ? '100%' : 'auto',
+        minWidth: this._width === 'min' ? this._options?.widthMin : 0,
+      });
     });
   }
 
-  private containerRadius() {
-    let borderRadius;
-    const defaultBorder = this._options?.borderRadius?.default;
-    const variant = this._options?.borderRadius?.variant;
+  containerRadius() {
+    return this.cache('container', 'radius', () => {
+      let borderRadius;
+      const defaultBorder = this._options?.borderRadius?.default;
+      const variant = this._options?.borderRadius?.variant;
 
-    if (this._borderRadius === 'rounded' || this._borderRadius === 'full') {
-      borderRadius =
-        variant?.[this._borderRadius]?.[this._size || 'md'] ||
-        variant?.[this._borderRadius]?.md;
-    } else if (
-      (defaultBorder === 'rounded' || defaultBorder === 'full') &&
-      this._borderRadius === 'default'
-    ) {
-      borderRadius =
-        variant?.[defaultBorder]?.[this._size || 'md'] ||
-        variant?.[defaultBorder]?.md;
-    }
+      if (this._borderRadius === 'rounded' || this._borderRadius === 'full') {
+        borderRadius =
+          variant?.[this._borderRadius]?.[this._size || 'md'] ||
+          variant?.[this._borderRadius]?.md;
+      } else if (
+        (defaultBorder === 'rounded' || defaultBorder === 'full') &&
+        this._borderRadius === 'default'
+      ) {
+        borderRadius =
+          variant?.[defaultBorder]?.[this._size || 'md'] ||
+          variant?.[defaultBorder]?.md;
+      }
 
-    return ButtonStyle.render({
-      // TODO: need to handle responsive
-      borderRadius: borderRadius || 0,
+      return ButtonStyle.render({
+        // TODO: need to handle responsive
+        borderRadius: borderRadius || 0,
+      });
     });
   }
 
-  private containerBackground() {
-    const style = this.getContrastStyle<ButtonElementContainer>('container');
+  containerBackground() {
+    return this.cache('container', 'background', () => {
+      const style = this.getContrastStyle<ButtonElementContainer>('container');
 
-    return ButtonStyle.render({
-      background: style?.defaultMode?.background,
-      backgroundColor: style?.defaultMode?.backgroundColor,
-      '@media (prefers-color-scheme: dark)': style?.contrastMode && {
-        background: style?.contrastMode?.background,
-        backgroundColor: style?.contrastMode?.backgroundColor,
-      },
+      return ButtonStyle.render({
+        background: style?.defaultMode?.background,
+        backgroundColor: style?.defaultMode?.backgroundColor,
+        '@media (prefers-color-scheme: dark)': style?.contrastMode && {
+          background: style?.contrastMode?.background,
+          backgroundColor: style?.contrastMode?.backgroundColor,
+        },
+      });
     });
   }
 
-  containerBorder(type: ButtonType, variant: ButtonVariant) {
-    const key = {
-      component: 'button',
-      type,
-      variant,
-      element: 'container',
-      property: 'border',
-    };
+  containerBorder() {
+    return this.cache('container', 'border', () => {
+      const container = this.getStyleBase<ButtonElementContainer>('container');
 
-    if (cacheStyle.get(key)) {
-      console.log('containerBorder cache');
-      return cacheStyle.get(key);
-    }
-
-    console.log('containerBorder no exist');
-
-    const container = this.getStyleBase<ButtonElementContainer>(
-      'container',
-      type,
-      variant
-    );
-
-    const style = ButtonStyle.render({
-      border: container?.borderWidth ? undefined : 'none',
-      borderColor: container?.borderColor,
-      borderStyle: container?.borderStyle,
-      borderWidth: container?.borderWidth,
+      return ButtonStyle.render({
+        border: container?.borderWidth ? undefined : 'none',
+        borderColor: container?.borderColor,
+        borderStyle: container?.borderStyle,
+        borderWidth: container?.borderWidth,
+      });
     });
-
-    cacheStyle.set(key, style);
-
-    return style;
   }
 
   private static containerBase() {
+    // TODO: cache it
     return ButtonStyle.render({
       userSelect: 'none',
       padding: 0,
@@ -264,192 +250,196 @@ export class ButtonStyle {
     });
   }
 
-  private containerCore() {
-    const containerHover = this.getStyleInteraction<ButtonElementContainer>(
-      'container',
-      'hover'
-    );
-    const textHover = this.getStyleInteraction<ButtonElementText>(
-      'text',
-      'hover'
-    );
-    const leftIconHover = this.getStyleInteraction<ButtonElementIcon>(
-      this.getIcon('left'),
-      'hover'
-    );
-    const rightIconHover = this.getStyleInteraction<ButtonElementIcon>(
-      this.getIcon('right'),
-      'hover'
-    );
+  containerCore() {
+    return this.cache('container', 'core', () => {
+      const containerHover = this.getStyleInteraction<ButtonElementContainer>(
+        'container',
+        'hover'
+      );
+      const textHover = this.getStyleInteraction<ButtonElementText>(
+        'text',
+        'hover'
+      );
+      const leftIconHover = this.getStyleInteraction<ButtonElementIcon>(
+        this.getIcon('left'),
+        'hover'
+      );
+      const rightIconHover = this.getStyleInteraction<ButtonElementIcon>(
+        this.getIcon('right'),
+        'hover'
+      );
 
-    const containerPressed = this.getStyleInteraction<ButtonElementContainer>(
-      'container',
-      'pressed'
-    );
-    const textPressed = this.getStyleInteraction<ButtonElementText>(
-      'text',
-      'pressed'
-    );
-    const leftIconPressed = this.getStyleInteraction<ButtonElementIcon>(
-      this.getIcon('left'),
-      'pressed'
-    );
-    const rightIconPressed = this.getStyleInteraction<ButtonElementIcon>(
-      this.getIcon('right'),
-      'pressed'
-    );
+      const containerPressed = this.getStyleInteraction<ButtonElementContainer>(
+        'container',
+        'pressed'
+      );
+      const textPressed = this.getStyleInteraction<ButtonElementText>(
+        'text',
+        'pressed'
+      );
+      const leftIconPressed = this.getStyleInteraction<ButtonElementIcon>(
+        this.getIcon('left'),
+        'pressed'
+      );
+      const rightIconPressed = this.getStyleInteraction<ButtonElementIcon>(
+        this.getIcon('right'),
+        'pressed'
+      );
 
-    const containerFocus = this.getStyleInteraction<ButtonElementContainer>(
-      'container',
-      'focus'
-    );
-    const textFocus = this.getStyleInteraction<ButtonElementText>(
-      'text',
-      'focus'
-    );
-    const leftIconFocus = this.getStyleInteraction<ButtonElementIcon>(
-      this.getIcon('left'),
-      'focus'
-    );
-    const rightIconFocus = this.getStyleInteraction<ButtonElementIcon>(
-      this.getIcon('right'),
-      'focus'
-    );
+      const containerFocus = this.getStyleInteraction<ButtonElementContainer>(
+        'container',
+        'focus'
+      );
+      const textFocus = this.getStyleInteraction<ButtonElementText>(
+        'text',
+        'focus'
+      );
+      const leftIconFocus = this.getStyleInteraction<ButtonElementIcon>(
+        this.getIcon('left'),
+        'focus'
+      );
+      const rightIconFocus = this.getStyleInteraction<ButtonElementIcon>(
+        this.getIcon('right'),
+        'focus'
+      );
 
-    const containerVisited = this.getStyleInteraction<ButtonElementContainer>(
-      'container',
-      'visited'
-    );
-    const textVisited = this.getStyleInteraction<ButtonElementText>(
-      'text',
-      'visited'
-    );
-    const leftIconVisited = this.getStyleInteraction<ButtonElementIcon>(
-      this.getIcon('left'),
-      'visited'
-    );
-    const rightIconVisited = this.getStyleInteraction<ButtonElementIcon>(
-      this.getIcon('right'),
-      'visited'
-    );
+      const containerVisited = this.getStyleInteraction<ButtonElementContainer>(
+        'container',
+        'visited'
+      );
+      const textVisited = this.getStyleInteraction<ButtonElementText>(
+        'text',
+        'visited'
+      );
+      const leftIconVisited = this.getStyleInteraction<ButtonElementIcon>(
+        this.getIcon('left'),
+        'visited'
+      );
+      const rightIconVisited = this.getStyleInteraction<ButtonElementIcon>(
+        this.getIcon('right'),
+        'visited'
+      );
 
-    const containerDisabled = this.getStyleInteraction<ButtonElementContainer>(
-      'container',
-      'disabled'
-    );
-    const textDisabled = this.getStyleInteraction<ButtonElementText>(
-      'text',
-      'disabled'
-    );
-    const leftIconDisabled = this.getStyleInteraction<ButtonElementIcon>(
-      this.getIcon('left'),
-      'disabled'
-    );
-    const rightIconDisabled = this.getStyleInteraction<ButtonElementIcon>(
-      this.getIcon('right'),
-      'disabled'
-    );
+      const containerDisabled =
+        this.getStyleInteraction<ButtonElementContainer>(
+          'container',
+          'disabled'
+        );
+      const textDisabled = this.getStyleInteraction<ButtonElementText>(
+        'text',
+        'disabled'
+      );
+      const leftIconDisabled = this.getStyleInteraction<ButtonElementIcon>(
+        this.getIcon('left'),
+        'disabled'
+      );
+      const rightIconDisabled = this.getStyleInteraction<ButtonElementIcon>(
+        this.getIcon('right'),
+        'disabled'
+      );
 
-    const elementStyle =
-      this.getResponsiveStyle<ButtonElementContainer>('container');
+      const elementStyle =
+        this.getResponsiveStyle<ButtonElementContainer>('container');
 
-    const p = ButtonStyle.pickResponsiveProperties<ButtonElementContainer>(
-      elementStyle,
-      ['boxShadow']
-    );
+      const p = ButtonStyle.pickResponsiveProperties<ButtonElementContainer>(
+        elementStyle,
+        ['boxShadow']
+      );
 
-    const { '@media (min-width: 0px)': elementRest, ...elementResponsive } = p;
+      const { '@media (min-width: 0px)': elementRest, ...elementResponsive } =
+        p;
 
-    return ButtonStyle.render({
-      ...elementRest,
-      ...elementResponsive,
+      return ButtonStyle.render({
+        ...elementRest,
+        ...elementResponsive,
 
-      // TODO: limit props to interaction state
-      // HOVER
-      '&:hover, &.--hover': {
-        ...containerHover,
-        '& .button__text': {
-          ...textHover,
+        // TODO: limit props to interaction state
+        // HOVER
+        '&:hover, &.--hover': {
+          ...containerHover,
+          '& .button__text': {
+            ...textHover,
+          },
+          '& .button__icon-left': {
+            color: textHover?.color,
+            ...leftIconHover,
+          },
+          '& .button__icon-right': {
+            color: textHover?.color,
+            ...rightIconHover,
+          },
         },
-        '& .button__icon-left': {
-          color: textHover?.color,
-          ...leftIconHover,
-        },
-        '& .button__icon-right': {
-          color: textHover?.color,
-          ...rightIconHover,
-        },
-      },
 
-      // PRESSED
-      '&:active, &.--pressed': {
-        ...containerPressed,
-        '& .button__text': {
-          ...textPressed,
+        // PRESSED
+        '&:active, &.--pressed': {
+          ...containerPressed,
+          '& .button__text': {
+            ...textPressed,
+          },
+          '& .button__icon-left': {
+            color: textPressed?.color,
+            ...leftIconPressed,
+          },
+          '& .button__icon-right': {
+            color: textPressed?.color,
+            ...rightIconPressed,
+          },
         },
-        '& .button__icon-left': {
-          color: textPressed?.color,
-          ...leftIconPressed,
-        },
-        '& .button__icon-right': {
-          color: textPressed?.color,
-          ...rightIconPressed,
-        },
-      },
 
-      // FOCUS
-      '&:focus-visible, &.--focus': {
-        ...containerFocus,
-        '& .button__text': {
-          ...textFocus,
+        // FOCUS
+        '&:focus-visible, &.--focus': {
+          ...containerFocus,
+          '& .button__text': {
+            ...textFocus,
+          },
+          '& .button__icon-left': {
+            color: textFocus?.color,
+            ...leftIconFocus,
+          },
+          '& .button__icon-right': {
+            color: textFocus?.color,
+            ...rightIconFocus,
+          },
         },
-        '& .button__icon-left': {
-          color: textFocus?.color,
-          ...leftIconFocus,
-        },
-        '& .button__icon-right': {
-          color: textFocus?.color,
-          ...rightIconFocus,
-        },
-      },
 
-      // VISITED
-      '&:visited, &.--visited': {
-        ...containerVisited,
-        '& .button__text': {
-          ...textVisited,
+        // VISITED
+        '&:visited, &.--visited': {
+          ...containerVisited,
+          '& .button__text': {
+            ...textVisited,
+          },
+          '& .button__icon-left': {
+            color: textVisited?.color,
+            ...leftIconVisited,
+          },
+          '& .button__icon-right': {
+            color: textVisited?.color,
+            ...rightIconVisited,
+          },
         },
-        '& .button__icon-left': {
-          color: textVisited?.color,
-          ...leftIconVisited,
-        },
-        '& .button__icon-right': {
-          color: textVisited?.color,
-          ...rightIconVisited,
-        },
-      },
 
-      // DISABLED
-      '&:disabled, &--disabled': {
-        ...containerDisabled,
-        // cursor: 'not-allowed',
-        cursor: 'wait',
-        '& .spinner': {
-          backgroundColor: textDisabled.color,
+        // DISABLED
+        '&:disabled, &--disabled': {
+          ...containerDisabled,
+          // cursor: 'not-allowed',
+          cursor: 'wait',
+          '& .spinner': {
+            backgroundColor: textDisabled.color,
+          },
+          '& .button__text': {
+            ...textDisabled,
+          },
+          // TODO: fix this
+          '& .button__icon-left': {
+            color: textDisabled?.color,
+            ...leftIconDisabled,
+          },
+          '& .button__icon-right': {
+            color: textDisabled?.color,
+            ...rightIconDisabled,
+          },
         },
-        '& .button__text': {
-          ...textDisabled,
-        },
-        // TODO: fix this
-        '& .button__icon-left': {
-          color: textDisabled?.color,
-          ...leftIconDisabled,
-        },
-        '& .button__icon-right': {
-          color: textDisabled?.color,
-          ...rightIconDisabled,
-        },
-      },
+      });
     });
   }
 
@@ -700,6 +690,23 @@ export class ButtonStyle {
   // Helper
   //----------------------------------------------------------------------------
 
+  cache<T>(element: string, property: string, callback: () => T): T {
+    const key = {
+      component: 'button',
+      type: this._typeStyle,
+      variant: this._variant,
+      element,
+      property,
+    };
+
+    const cache = cacheStyle.get<T>(key);
+    if (cache) return cache;
+
+    const value = callback();
+    cacheStyle.set(key, value);
+    return value;
+  }
+
   /**
    * Empty objects generates a css classe empty in Stitches library
    */
@@ -742,31 +749,21 @@ export class ButtonStyle {
     });
   }
 
-  getStyleBase<T>(
-    element: ButtonElements,
-    type: ButtonType = this._typeStyle,
-    variant: ButtonVariant = this._variant
-  ): T {
+  getStyleBase<T>(element: ButtonElements): T {
     const key = {
       component: 'button',
-      type,
-      variant,
+      type: this._typeStyle,
+      variant: this._variant,
       element,
       property: 'base',
     };
 
-    if (cacheStyle.get(key)) {
-      console.log('getStyleBase cached', cacheStyle);
-      return cacheStyle.get(key) as T;
-    }
-
-    if (element === 'container') {
-      console.log('getStyleBase no exist');
-    }
+    const cache = cacheStyle.get(key);
+    if (cache) return cache as T;
 
     const baseSchema = this._schema?.elements?.[element];
-    const typeSchema = baseSchema?.light?.default?.type?.[type];
-    const variantSchema = typeSchema?.variant?.[variant];
+    const typeSchema = baseSchema?.light?.default?.type?.[this._typeStyle];
+    const variantSchema = typeSchema?.variant?.[this._variant];
 
     const value = {
       ...baseSchema?.light?.default?.base?.rest?.md,

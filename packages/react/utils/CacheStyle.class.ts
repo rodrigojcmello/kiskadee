@@ -20,12 +20,12 @@ export class CacheStyle {
     }
   }
 
-  get(key: object) {
+  get<T>(key: object): T {
     const arrayKey = Object.keys(key);
 
     return this.schema?.[arrayKey[0]]?.[arrayKey[1]]?.[arrayKey[2]]?.[
       arrayKey[3]
-    ]?.[arrayKey[4]]?.[arrayKey[5]];
+    ]?.[arrayKey[4]]?.[arrayKey[5]] as T;
 
     // return this.cache[JSON.stringify(key)];
   }
