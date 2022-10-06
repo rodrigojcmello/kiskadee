@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import type { ButtonProps, ButtonStyleProps } from './Button.types';
 import { useKiskadee } from '../../schema';
 import { ButtonStyle } from './Button.style';
+import { EllipsisLoader } from '../Loader';
 
 export const Button: FC<ButtonProps> = ({
   iconType = 'attached',
@@ -44,7 +45,7 @@ export const Button: FC<ButtonProps> = ({
   const button = useMemo(() => {
     console.log('useMemo');
     return new ButtonStyle(style);
-  }, []);
+  }, [style]);
 
   const buttonContainer = button.container();
   const buttonText = button.text();
@@ -101,61 +102,60 @@ export const Button: FC<ButtonProps> = ({
       }}
       disabled={isLoading || disabled}
     >
-      hello
-      {/* <span style={{ opacity: isLoading ? 0 : 1, display: 'flex' }}> */}
-      {/*  /!*{iconLeft && (*!/ */}
-      {/*  /!*  <div*!/ */}
-      {/*  /!*    className={[*!/ */}
-      {/*  /!*      'button__icon-left',*!/ */}
-      {/*  /!*      buttonIcon.base,*!/ */}
-      {/*  /!*      buttonIconLeft.color,*!/ */}
-      {/*  /!*      buttonIconLeft.size,*!/ */}
-      {/*  /!*      buttonIconLeft.padding,*!/ */}
-      {/*  /!*      buttonCommon.transition,*!/ */}
-      {/*  /!*    ]*!/ */}
-      {/*  /!*      .join(' ')*!/ */}
-      {/*  /!*      .trim()}*!/ */}
-      {/*  /!*  >*!/ */}
-      {/*  /!*    {iconLeft}*!/ */}
-      {/*  /!*  </div>*!/ */}
-      {/*  /!*)}*!/ */}
-      {/*  /!*{label && (*!/ */}
-      {/*  /!*  <span*!/ */}
-      {/*  /!*    className={[*!/ */}
-      {/*  /!*      'button__text',*!/ */}
-      {/*  /!*      buttonText.core,*!/ */}
-      {/*  /!*      buttonText.base,*!/ */}
-      {/*  /!*      buttonText.color,*!/ */}
-      {/*  /!*      buttonText.padding,*!/ */}
-      {/*  /!*      buttonText.fontSize,*!/ */}
-      {/*  /!*      buttonText.width,*!/ */}
-      {/*  /!*      buttonText.align,*!/ */}
-      {/*  /!*      buttonCommon.transition,*!/ */}
-      {/*  /!*    ]*!/ */}
-      {/*  /!*      .join(' ')*!/ */}
-      {/*  /!*      .trim()}*!/ */}
-      {/*  /!*  >*!/ */}
-      {/*  /!*    {label}*!/ */}
-      {/*  /!*  </span>*!/ */}
-      {/*  /!*)}*!/ */}
-      {/*  /!*{iconRight && (*!/ */}
-      {/*  /!*  <div*!/ */}
-      {/*  /!*    className={[*!/ */}
-      {/*  /!*      'button__icon-right',*!/ */}
-      {/*  /!*      buttonIcon.base,*!/ */}
-      {/*  /!*      buttonIconRight.color,*!/ */}
-      {/*  /!*      buttonIconRight.size,*!/ */}
-      {/*  /!*      buttonIconRight.padding,*!/ */}
-      {/*  /!*      buttonCommon.transition,*!/ */}
-      {/*  /!*    ]*!/ */}
-      {/*  /!*      .join(' ')*!/ */}
-      {/*  /!*      .trim()}*!/ */}
-      {/*  /!*  >*!/ */}
-      {/*  /!*    {iconRight}*!/ */}
-      {/*  /!*  </div>*!/ */}
-      {/*  /!*)}*!/ */}
-      {/* </span> */}
-      {/* {isLoading && <EllipsisLoader />} */}
+      <span style={{ opacity: isLoading ? 0 : 1, display: 'flex' }}>
+        {iconLeft && (
+          <div
+            className={[
+              'button__icon-left',
+              buttonIcon.base,
+              buttonIconLeft.color,
+              buttonIconLeft.size,
+              buttonIconLeft.padding,
+              buttonCommon.transition,
+            ]
+              .join(' ')
+              .trim()}
+          >
+            {iconLeft}
+          </div>
+        )}
+        {label && (
+          <span
+            className={[
+              'button__text',
+              buttonText.core,
+              buttonText.base,
+              buttonText.color,
+              buttonText.padding,
+              buttonText.fontSize,
+              buttonText.width,
+              buttonText.align,
+              buttonCommon.transition,
+            ]
+              .join(' ')
+              .trim()}
+          >
+            {label}
+          </span>
+        )}
+        {iconRight && (
+          <div
+            className={[
+              'button__icon-right',
+              buttonIcon.base,
+              buttonIconRight.color,
+              buttonIconRight.size,
+              buttonIconRight.padding,
+              buttonCommon.transition,
+            ]
+              .join(' ')
+              .trim()}
+          >
+            {iconRight}
+          </div>
+        )}
+      </span>
+      {isLoading && <EllipsisLoader />}
     </button>
   );
 };

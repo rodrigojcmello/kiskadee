@@ -217,9 +217,9 @@ export class ButtonStyle {
   containerBorder(type: ButtonType, variant: ButtonVariant) {
     const key = {
       component: 'button',
-      element: 'container',
       type,
       variant,
+      element: 'container',
       property: 'border',
     };
 
@@ -749,9 +749,9 @@ export class ButtonStyle {
   ): T {
     const key = {
       component: 'button',
-      element,
       type,
       variant,
+      element,
       property: 'base',
     };
 

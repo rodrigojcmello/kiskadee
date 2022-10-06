@@ -20,6 +20,8 @@ const commonRules = {
    * It is not up to ESLint to restrict syntax usage
    */
   'no-restricted-syntax': 'off',
+  'unicorn/no-array-reduce': 'off',
+  'no-param-reassign': 'off',
 
   /**
    * Prettier follows double quotes by default, but the Airbnb style guide
