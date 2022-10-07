@@ -718,7 +718,8 @@ export class ButtonStyle {
     }
   }
 
-  private getIcon(
+  // TODO: change status schema
+  getIcon(
     position: 'left' | 'right'
   ):
     | 'iconAlone'
