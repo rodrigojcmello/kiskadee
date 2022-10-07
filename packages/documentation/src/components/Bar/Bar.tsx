@@ -32,6 +32,7 @@ const themes: Record<string, KiskadeeTheme> = {
 
 export const Bar: FC = () => {
   const [theme, setTheme] = useContext(KiskadeeContext);
+
   const localTheme = localStorage.getItem('theme') || 'Material';
   const [themeSelected, setThemeSelected] = useState(localTheme);
 
@@ -40,13 +41,11 @@ export const Bar: FC = () => {
   };
 
   useEffect(() => {
-    if (theme.name !== localTheme) {
+    if (theme.name !== themeSelected) {
       localStorage.setItem('theme', themeSelected);
       setTheme(themes[themeSelected]);
     }
   }, [themeSelected]);
-
-  console.log('bar');
 
   return (
     <BarStyled>
