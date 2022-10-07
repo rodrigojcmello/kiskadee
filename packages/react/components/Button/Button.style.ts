@@ -459,120 +459,108 @@ export class ButtonStyle {
     };
   }
 
-  private static textBase() {
+  static textBase() {
     return ButtonStyle.render({
       whiteSpace: 'nowrap',
       transitionProperty: 'color, font-size, padding',
     });
   }
 
-  private textCore() {
-    const textElement = this.getStyleBase<ButtonElementText>('text');
+  textCore() {
+    return this.cache('text', 'core', () => {
+      const textElement = this.getStyleBase<ButtonElementText>('text');
 
-    return ButtonStyle.render({
-      lineHeight: textElement.lineHeight,
-      fontWeight: textElement.fontWeight,
-      fontFamily: textElement.fontFamily,
-      fontStyle: textElement.fontStyle,
+      return ButtonStyle.render({
+        lineHeight: textElement.lineHeight,
+        fontWeight: textElement.fontWeight,
+        fontFamily: textElement.fontFamily,
+        fontStyle: textElement.fontStyle,
+      });
     });
   }
 
-  private textFontSize_SIZE() {
-    let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
+  textFontSize_SIZE() {
+    return this.cache('text', 'fontSize', () => {
+      let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
 
-    textResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementText>(
-      textResponsive,
-      ['fontSize']
-    );
+      textResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementText>(
+        textResponsive,
+        ['fontSize']
+      );
 
-    const { '@media (min-width: 0px)': fontSize, ...fontSizeResponsive } =
-      textResponsive;
+      const { '@media (min-width: 0px)': fontSize, ...fontSizeResponsive } =
+        textResponsive;
 
-    return ButtonStyle.render({
-      ...fontSize,
-      ...fontSizeResponsive,
+      return ButtonStyle.render({
+        ...fontSize,
+        ...fontSizeResponsive,
+      });
     });
   }
 
   private textAlign() {
-    return ButtonStyle.render({
-      textAlign:
-        this._textAlign && this._options?.textAlign?.[this._textAlign]
-          ? this._textAlign
-          : this._options?.textAlign?.default,
+    return this.cache('text', 'align', () => {
+      return ButtonStyle.render({
+        textAlign:
+          this._textAlign && this._options?.textAlign?.[this._textAlign]
+            ? this._textAlign
+            : this._options?.textAlign?.default,
+      });
     });
   }
 
   private textWidth() {
-    const block =
-      this._iconType === 'detached' || !(this._iconLeft || this._iconRight);
+    return this.cache('text', 'width', () => {
+      const block =
+        this._iconType === 'detached' || !(this._iconLeft || this._iconRight);
 
-    return ButtonStyle.render({
-      width: block ? '100%' : 'auto',
+      return ButtonStyle.render({
+        width: block ? '100%' : 'auto',
+      });
     });
   }
 
   private textColor_COLOR() {
-    const textContrast = this.getContrastStyle<ButtonElementText>('text');
+    return this.cache('text', 'color', () => {
+      const textContrast = this.getContrastStyle<ButtonElementText>('text');
 
-    return ButtonStyle.render({
-      color: textContrast?.defaultMode?.color,
-      '@media (prefers-color-scheme: dark)': textContrast?.contrastMode && {
-        color: textContrast?.contrastMode?.color,
-      },
+      return ButtonStyle.render({
+        color: textContrast?.defaultMode?.color,
+        '@media (prefers-color-scheme: dark)': textContrast?.contrastMode && {
+          color: textContrast?.contrastMode?.color,
+        },
+      });
     });
   }
 
   private textPadding_SIZE() {
-    let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
+    return this.cache('text', 'padding', () => {
+      let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
 
-    textResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementText>(
-      textResponsive,
-      ['paddingTop', 'paddingBottom', 'paddingRight', 'paddingLeft']
-    );
+      textResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementText>(
+        textResponsive,
+        ['paddingTop', 'paddingBottom', 'paddingRight', 'paddingLeft']
+      );
 
-    for (const mq of Object.keys(textResponsive)) {
-      textResponsive[mq].paddingRight = this._iconRight
-        ? 0
-        : textResponsive[mq].paddingRight;
-      textResponsive[mq].paddingLeft = this._iconLeft
-        ? 0
-        : textResponsive[mq].paddingLeft;
-    }
+      for (const mq of Object.keys(textResponsive)) {
+        textResponsive[mq].paddingRight = this._iconRight
+          ? 0
+          : textResponsive[mq].paddingRight;
+        textResponsive[mq].paddingLeft = this._iconLeft
+          ? 0
+          : textResponsive[mq].paddingLeft;
+      }
 
-    const { '@media (min-width: 0px)': textPadding, ...textPaddingResponsive } =
-      textResponsive;
+      const {
+        '@media (min-width: 0px)': textPadding,
+        ...textPaddingResponsive
+      } = textResponsive;
 
-    return ButtonStyle.render({
-      ...textPadding,
-      ...textPaddingResponsive,
+      return ButtonStyle.render({
+        ...textPadding,
+        ...textPaddingResponsive,
+      });
     });
-  }
-
-  private static pickResponsiveProperties<T>(
-    responsive: {
-      [mediaQuery: string]: T;
-    },
-    properties: (keyof T)[]
-  ) {
-    const newObject: {
-      [mediaQuery: string]: T;
-    } = {};
-    for (const mediaQuery of Object.keys(responsive)) {
-      if (!newObject[mediaQuery]) {
-        newObject[mediaQuery] = {} as T;
-      }
-      for (const property of properties) {
-        if (responsive[mediaQuery]?.[property]) {
-          /**
-           * TS2590: Expression produces a union type that is too complex to represent.
-           */
-          // @ts-ignore
-          newObject[mediaQuery][property] = responsive[mediaQuery][property];
-        }
-      }
-    }
-    return newObject;
   }
 
   //----------------------------------------------------------------------------
@@ -611,78 +599,86 @@ export class ButtonStyle {
   }
 
   private iconColor_COLOR(position: 'left' | 'right') {
-    const iconContrast = this.getContrastStyle<ButtonElementIcon>(
-      this.getIcon(position)
-    );
-    const textContrast = this.getContrastStyle<ButtonElementText>('text');
+    return this.cache('icon', `color-${position}`, () => {
+      const iconContrast = this.getContrastStyle<ButtonElementIcon>(
+        this.getIcon(position)
+      );
+      const textContrast = this.getContrastStyle<ButtonElementText>('text');
 
-    const colorDefault =
-      iconContrast?.defaultMode?.color || textContrast?.defaultMode?.color;
-    const colorContrast =
-      iconContrast?.contrastMode?.color || textContrast?.contrastMode?.color;
+      const colorDefault =
+        iconContrast?.defaultMode?.color || textContrast?.defaultMode?.color;
+      const colorContrast =
+        iconContrast?.contrastMode?.color || textContrast?.contrastMode?.color;
 
-    return ButtonStyle.render({
-      color: colorDefault,
+      return ButtonStyle.render({
+        color: colorDefault,
 
-      '& > *': {
-        fontSize: 'inherit !important',
-        fill: colorDefault,
-      },
-
-      '@media (prefers-color-scheme: dark)': colorContrast && {
-        color: colorContrast,
         '& > *': {
-          fill: colorContrast,
+          fontSize: 'inherit !important',
+          fill: colorDefault,
         },
-      },
+
+        '@media (prefers-color-scheme: dark)': colorContrast && {
+          color: colorContrast,
+          '& > *': {
+            fill: colorContrast,
+          },
+        },
+      });
     });
   }
 
   private iconSize_SIZE(position: 'left' | 'right') {
-    let iconResponsive = this.getResponsiveStyle<ButtonElementIcon>(
-      this.getIcon(position)
-    );
-    let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
+    return this.cache('icon', `size-${position}`, () => {
+      let iconResponsive = this.getResponsiveStyle<ButtonElementIcon>(
+        this.getIcon(position)
+      );
+      let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
 
-    iconResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementIcon>(
-      iconResponsive,
-      ['fontSize']
-    );
-    textResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementText>(
-      textResponsive,
-      ['fontSize']
-    );
+      iconResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementIcon>(
+        iconResponsive,
+        ['fontSize']
+      );
+      textResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementText>(
+        textResponsive,
+        ['fontSize']
+      );
 
-    for (const mq of Object.keys(iconResponsive)) {
-      iconResponsive[mq].fontSize =
-        iconResponsive[mq].fontSize || textResponsive[mq].fontSize;
-    }
+      for (const mq of Object.keys(iconResponsive)) {
+        iconResponsive[mq].fontSize =
+          iconResponsive[mq].fontSize || textResponsive[mq].fontSize;
+      }
 
-    const { '@media (min-width: 0px)': size, ...sizeResponsive } =
-      iconResponsive;
+      const { '@media (min-width: 0px)': size, ...sizeResponsive } =
+        iconResponsive;
 
-    return ButtonStyle.render({
-      ...size,
-      ...sizeResponsive,
+      return ButtonStyle.render({
+        ...size,
+        ...sizeResponsive,
+      });
     });
   }
 
-  private iconPadding_SIZE(position: 'left' | 'right'): string | undefined {
-    let iconResponsive = this.getResponsiveStyle<ButtonElementIcon>(
-      this.getIcon(position)
-    );
+  iconPadding_SIZE(position: 'left' | 'right'): string | undefined {
+    return this.cache('icon', `padding-${position}`, () => {
+      let iconResponsive = this.getResponsiveStyle<ButtonElementIcon>(
+        this.getIcon(position)
+      );
 
-    iconResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementIcon>(
-      iconResponsive,
-      ['paddingTop', 'paddingBottom', 'paddingRight', 'paddingLeft']
-    );
+      iconResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementIcon>(
+        iconResponsive,
+        ['paddingTop', 'paddingBottom', 'paddingRight', 'paddingLeft']
+      );
 
-    const { '@media (min-width: 0px)': iconPadding, ...iconPaddingResponsive } =
-      iconResponsive;
+      const {
+        '@media (min-width: 0px)': iconPadding,
+        ...iconPaddingResponsive
+      } = iconResponsive;
 
-    return ButtonStyle.render({
-      ...iconPadding,
-      ...iconPaddingResponsive,
+      return ButtonStyle.render({
+        ...iconPadding,
+        ...iconPaddingResponsive,
+      });
     });
   }
 
@@ -705,6 +701,32 @@ export class ButtonStyle {
     const value = callback();
     cacheStyle.set(key, value);
     return value;
+  }
+
+  static pickResponsiveProperties<T>(
+    responsive: {
+      [mediaQuery: string]: T;
+    },
+    properties: (keyof T)[]
+  ) {
+    const newObject: {
+      [mediaQuery: string]: T;
+    } = {};
+    for (const mediaQuery of Object.keys(responsive)) {
+      if (!newObject[mediaQuery]) {
+        newObject[mediaQuery] = {} as T;
+      }
+      for (const property of properties) {
+        if (responsive[mediaQuery]?.[property]) {
+          /**
+           * TS2590: Expression produces a union type that is too complex to represent.
+           */
+          // @ts-ignore
+          newObject[mediaQuery][property] = responsive[mediaQuery][property];
+        }
+      }
+    }
+    return newObject;
   }
 
   /**
