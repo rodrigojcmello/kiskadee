@@ -11,7 +11,8 @@ import type {
   ButtonStyleProps,
   ContainerOptions,
   ContrastStyle,
-  Interaction,
+  IconPosition,
+  InteractionStatus,
   Size,
   StitchesProperties,
 } from './Button.types';
@@ -260,14 +261,14 @@ export class ButtonStyle {
         'text',
         'hover'
       );
-      const leftIconHover = this.getStyleInteraction<ButtonElementIcon>(
-        this.getIcon('left'),
-        'hover'
-      );
-      const rightIconHover = this.getStyleInteraction<ButtonElementIcon>(
-        this.getIcon('right'),
-        'hover'
-      );
+      // const leftIconHover = this.getStyleInteraction<ButtonElementIcon>(
+      //   this.getIcon('left'),
+      //   'hover'
+      // );
+      // const rightIconHover = this.getStyleInteraction<ButtonElementIcon>(
+      //   this.getIcon('right'),
+      //   'hover'
+      // );
 
       const containerPressed = this.getStyleInteraction<ButtonElementContainer>(
         'container',
@@ -277,14 +278,14 @@ export class ButtonStyle {
         'text',
         'pressed'
       );
-      const leftIconPressed = this.getStyleInteraction<ButtonElementIcon>(
-        this.getIcon('left'),
-        'pressed'
-      );
-      const rightIconPressed = this.getStyleInteraction<ButtonElementIcon>(
-        this.getIcon('right'),
-        'pressed'
-      );
+      // const leftIconPressed = this.getStyleInteraction<ButtonElementIcon>(
+      //   this.getIcon('left'),
+      //   'pressed'
+      // );
+      // const rightIconPressed = this.getStyleInteraction<ButtonElementIcon>(
+      //   this.getIcon('right'),
+      //   'pressed'
+      // );
 
       const containerFocus = this.getStyleInteraction<ButtonElementContainer>(
         'container',
@@ -294,14 +295,14 @@ export class ButtonStyle {
         'text',
         'focus'
       );
-      const leftIconFocus = this.getStyleInteraction<ButtonElementIcon>(
-        this.getIcon('left'),
-        'focus'
-      );
-      const rightIconFocus = this.getStyleInteraction<ButtonElementIcon>(
-        this.getIcon('right'),
-        'focus'
-      );
+      // const leftIconFocus = this.getStyleInteraction<ButtonElementIcon>(
+      //   this.getIcon('left'),
+      //   'focus'
+      // );
+      // const rightIconFocus = this.getStyleInteraction<ButtonElementIcon>(
+      //   this.getIcon('right'),
+      //   'focus'
+      // );
 
       const containerVisited = this.getStyleInteraction<ButtonElementContainer>(
         'container',
@@ -311,14 +312,14 @@ export class ButtonStyle {
         'text',
         'visited'
       );
-      const leftIconVisited = this.getStyleInteraction<ButtonElementIcon>(
-        this.getIcon('left'),
-        'visited'
-      );
-      const rightIconVisited = this.getStyleInteraction<ButtonElementIcon>(
-        this.getIcon('right'),
-        'visited'
-      );
+      // const leftIconVisited = this.getStyleInteraction<ButtonElementIcon>(
+      //   this.getIcon('left'),
+      //   'visited'
+      // );
+      // const rightIconVisited = this.getStyleInteraction<ButtonElementIcon>(
+      //   this.getIcon('right'),
+      //   'visited'
+      // );
 
       const containerDisabled =
         this.getStyleInteraction<ButtonElementContainer>(
@@ -329,14 +330,14 @@ export class ButtonStyle {
         'text',
         'disabled'
       );
-      const leftIconDisabled = this.getStyleInteraction<ButtonElementIcon>(
-        this.getIcon('left'),
-        'disabled'
-      );
-      const rightIconDisabled = this.getStyleInteraction<ButtonElementIcon>(
-        this.getIcon('right'),
-        'disabled'
-      );
+      // const leftIconDisabled = this.getStyleInteraction<ButtonElementIcon>(
+      //   this.getIcon('left'),
+      //   'disabled'
+      // );
+      // const rightIconDisabled = this.getStyleInteraction<ButtonElementIcon>(
+      //   this.getIcon('right'),
+      //   'disabled'
+      // );
 
       const elementStyle =
         this.getResponsiveStyle<ButtonElementContainer>('container');
@@ -360,14 +361,14 @@ export class ButtonStyle {
           '& .button__text': {
             ...textHover,
           },
-          '& .button__icon-left': {
-            color: textHover?.color,
-            ...leftIconHover,
-          },
-          '& .button__icon-right': {
-            color: textHover?.color,
-            ...rightIconHover,
-          },
+          // '& .button__icon-left': {
+          //   color: textHover?.color,
+          //   ...leftIconHover,
+          // },
+          // '& .button__icon-right': {
+          //   color: textHover?.color,
+          //   ...rightIconHover,
+          // },
         },
 
         // PRESSED
@@ -376,14 +377,14 @@ export class ButtonStyle {
           '& .button__text': {
             ...textPressed,
           },
-          '& .button__icon-left': {
-            color: textPressed?.color,
-            ...leftIconPressed,
-          },
-          '& .button__icon-right': {
-            color: textPressed?.color,
-            ...rightIconPressed,
-          },
+          // '& .button__icon-left': {
+          //   color: textPressed?.color,
+          //   ...leftIconPressed,
+          // },
+          // '& .button__icon-right': {
+          //   color: textPressed?.color,
+          //   ...rightIconPressed,
+          // },
         },
 
         // FOCUS
@@ -392,14 +393,14 @@ export class ButtonStyle {
           '& .button__text': {
             ...textFocus,
           },
-          '& .button__icon-left': {
-            color: textFocus?.color,
-            ...leftIconFocus,
-          },
-          '& .button__icon-right': {
-            color: textFocus?.color,
-            ...rightIconFocus,
-          },
+          // '& .button__icon-left': {
+          //   color: textFocus?.color,
+          //   ...leftIconFocus,
+          // },
+          // '& .button__icon-right': {
+          //   color: textFocus?.color,
+          //   ...rightIconFocus,
+          // },
         },
 
         // VISITED
@@ -408,14 +409,14 @@ export class ButtonStyle {
           '& .button__text': {
             ...textVisited,
           },
-          '& .button__icon-left': {
-            color: textVisited?.color,
-            ...leftIconVisited,
-          },
-          '& .button__icon-right': {
-            color: textVisited?.color,
-            ...rightIconVisited,
-          },
+          // '& .button__icon-left': {
+          //   color: textVisited?.color,
+          //   ...leftIconVisited,
+          // },
+          // '& .button__icon-right': {
+          //   color: textVisited?.color,
+          //   ...rightIconVisited,
+          // },
         },
 
         // DISABLED
@@ -429,15 +430,15 @@ export class ButtonStyle {
           '& .button__text': {
             ...textDisabled,
           },
-          // TODO: fix this
-          '& .button__icon-left': {
-            color: textDisabled?.color,
-            ...leftIconDisabled,
-          },
-          '& .button__icon-right': {
-            color: textDisabled?.color,
-            ...rightIconDisabled,
-          },
+          // // TODO: fix this
+          // '& .button__icon-left': {
+          //   color: textDisabled?.color,
+          //   ...leftIconDisabled,
+          // },
+          // '& .button__icon-right': {
+          //   color: textDisabled?.color,
+          //   ...rightIconDisabled,
+          // },
         },
       });
     });
@@ -577,17 +578,17 @@ export class ButtonStyle {
 
   iconLeft() {
     return {
-      color: this.iconColor_COLOR('left'),
-      size: this.iconSize_SIZE('left'),
-      padding: this.iconPadding_SIZE('left'),
+      color: this.iconColor_COLOR('Left'),
+      size: this.iconSize_SIZE('Left'),
+      padding: this.iconPadding_SIZE('Left'),
     };
   }
 
   iconRight() {
     return {
-      color: this.iconColor_COLOR('right'),
-      size: this.iconSize_SIZE('right'),
-      padding: this.iconPadding_SIZE('right'),
+      color: this.iconColor_COLOR('Right'),
+      size: this.iconSize_SIZE('Right'),
+      padding: this.iconPadding_SIZE('Right'),
     };
   }
 
@@ -598,10 +599,10 @@ export class ButtonStyle {
     });
   }
 
-  private iconColor_COLOR(position: 'left' | 'right') {
-    return this.cache('icon', `color-${position}`, () => {
+  private iconColor_COLOR(position: IconPosition) {
+    return this.cache(`icon${position}`, 'color', () => {
       const iconContrast = this.getContrastStyle<ButtonElementIcon>(
-        this.getIcon(position)
+        `icon${position}`
       );
       const textContrast = this.getContrastStyle<ButtonElementText>('text');
 
@@ -628,10 +629,11 @@ export class ButtonStyle {
     });
   }
 
-  private iconSize_SIZE(position: 'left' | 'right') {
-    return this.cache('icon', `size-${position}`, () => {
+  // TODO: support SVG
+  iconSize_SIZE(position: IconPosition) {
+    return this.cache(`icon${position}`, 'size', () => {
       let iconResponsive = this.getResponsiveStyle<ButtonElementIcon>(
-        this.getIcon(position)
+        `icon${position}`
       );
       let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
 
@@ -659,10 +661,10 @@ export class ButtonStyle {
     });
   }
 
-  iconPadding_SIZE(position: 'left' | 'right'): string | undefined {
-    return this.cache('icon', `padding-${position}`, () => {
+  iconPadding_SIZE(position: IconPosition): string | undefined {
+    return this.cache(`icon${position}`, 'padding', () => {
       let iconResponsive = this.getResponsiveStyle<ButtonElementIcon>(
-        this.getIcon(position)
+        `icon${position}`
       );
 
       iconResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementIcon>(
@@ -782,7 +784,10 @@ export class ButtonStyle {
     });
   }
 
-  getStyleInteraction<T>(element: ButtonElements, interaction: Interaction): T {
+  getStyleInteraction<T>(
+    element: ButtonElements,
+    interaction: InteractionStatus
+  ): T {
     if (this._style.button) {
       if (this._style.button[element]?.[interaction]) {
         return this._style.button[element][interaction] as T;

@@ -257,7 +257,7 @@ export const material3: KiskadeeTheme = {
             },
           },
         },
-        iconAlone: {
+        iconLeft: {
           light: {
             default: {
               base: {
@@ -301,7 +301,7 @@ export const material3: KiskadeeTheme = {
             },
           },
         },
-        leftIconAttached: {
+        iconRight: {
           light: {
             default: {
               base: {
@@ -338,99 +338,99 @@ export const material3: KiskadeeTheme = {
             },
           },
         },
-        leftIconDetached: {
-          light: {
-            default: {
-              base: {
-                rest: {
-                  lg: {
-                    paddingTop: 16,
-                    paddingBottom: 16,
-                    paddingLeft: 16,
-                    paddingRight: 0,
-                  },
-                  md: {
-                    fontSize: 24,
-                    paddingTop: 8,
-                    paddingBottom: 8,
-                    paddingLeft: 8,
-                    paddingRight: 8,
-                  },
-                  sm: {
-                    fontSize: 16,
-                  },
-                },
-              },
-              type: {
-                outline: {
-                  base: {
-                    md: {
-                      paddingTop: 7,
-                      paddingBottom: 7,
-                      paddingLeft: 7,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        rightIconAttached: {
-          light: {
-            default: {
-              base: {
-                rest: {
-                  md: {
-                    fontSize: 24,
-                    paddingTop: 8,
-                    paddingBottom: 8,
-                    paddingLeft: 8,
-                    paddingRight: 8,
-                  },
-                },
-              },
-              type: {
-                outline: {
-                  base: {
-                    md: {
-                      paddingTop: 7,
-                      paddingBottom: 7,
-                      paddingLeft: 7,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        rightIconDetached: {
-          light: {
-            default: {
-              base: {
-                rest: {
-                  md: {
-                    fontSize: 24,
-                    paddingTop: 8,
-                    paddingBottom: 8,
-                    paddingLeft: 8,
-                    paddingRight: 8,
-                  },
-                },
-              },
-              type: {
-                outline: {
-                  base: {
-                    md: {
-                      paddingTop: 7,
-                      paddingBottom: 7,
-                      paddingLeft: 7,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
+        // leftIconDetached: {
+        //   light: {
+        //     default: {
+        //       base: {
+        //         rest: {
+        //           lg: {
+        //             paddingTop: 16,
+        //             paddingBottom: 16,
+        //             paddingLeft: 16,
+        //             paddingRight: 0,
+        //           },
+        //           md: {
+        //             fontSize: 24,
+        //             paddingTop: 8,
+        //             paddingBottom: 8,
+        //             paddingLeft: 8,
+        //             paddingRight: 8,
+        //           },
+        //           sm: {
+        //             fontSize: 16,
+        //           },
+        //         },
+        //       },
+        //       type: {
+        //         outline: {
+        //           base: {
+        //             md: {
+        //               paddingTop: 7,
+        //               paddingBottom: 7,
+        //               paddingLeft: 7,
+        //             },
+        //           },
+        //         },
+        //       },
+        //     },
+        //   },
+        // },
+        // rightIconAttached: {
+        //   light: {
+        //     default: {
+        //       base: {
+        //         rest: {
+        //           md: {
+        //             fontSize: 24,
+        //             paddingTop: 8,
+        //             paddingBottom: 8,
+        //             paddingLeft: 8,
+        //             paddingRight: 8,
+        //           },
+        //         },
+        //       },
+        //       type: {
+        //         outline: {
+        //           base: {
+        //             md: {
+        //               paddingTop: 7,
+        //               paddingBottom: 7,
+        //               paddingLeft: 7,
+        //             },
+        //           },
+        //         },
+        //       },
+        //     },
+        //   },
+        // },
+        // rightIconDetached: {
+        //   light: {
+        //     default: {
+        //       base: {
+        //         rest: {
+        //           md: {
+        //             fontSize: 24,
+        //             paddingTop: 8,
+        //             paddingBottom: 8,
+        //             paddingLeft: 8,
+        //             paddingRight: 8,
+        //           },
+        //         },
+        //       },
+        //       type: {
+        //         outline: {
+        //           base: {
+        //             md: {
+        //               paddingTop: 7,
+        //               paddingBottom: 7,
+        //               paddingLeft: 7,
+        //             },
+        //           },
+        //         },
+        //       },
+        //     },
+        //   },
+        // },
         text: {
           light: {
             default: {

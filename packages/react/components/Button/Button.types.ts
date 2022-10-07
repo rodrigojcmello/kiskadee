@@ -2,6 +2,8 @@ import type { CSSProperties, ReactElement, MouseEvent } from 'react';
 import type * as Util from '@stitches/core/types/util';
 import type { KiskadeeTheme } from '@kiskadee/react';
 
+export type IconPosition = 'Left' | 'Right';
+
 export type ButtonType = 'contained' | 'outline' | 'flat';
 
 export type StitchesProperties =
@@ -17,7 +19,7 @@ export type ButtonVariant =
   | 'warning'
   | 'danger';
 
-export type Interaction =
+export type InteractionStatus =
   | 'rest'
   | 'hover'
   | 'focus'
@@ -45,7 +47,7 @@ export interface ButtonProps {
   width?: 'auto' | 'block' | 'min';
   variant: ButtonVariant;
   type: ButtonType;
-  interaction?: Interaction;
+  interaction?: InteractionStatus;
   borderRadius?: 'none' | 'full' | 'rounded' | 'default';
   textAlign?: 'left' | 'center' | 'right';
   disabled?: boolean;
@@ -180,8 +182,8 @@ export interface ContainerOptions {
   };
 }
 
-type ElementSchema<Base> = {
-  base?: Partial<Record<Interaction, Partial<Record<Size, Base>>>>;
+type ElementSchema<Base, ExtraStatus = string | undefined> = {
+  base?: Partial<Record<InteractionStatus, Partial<Record<Size, Base>>>>;
   type?: Partial<
     Record<
       ButtonType,
@@ -190,7 +192,14 @@ type ElementSchema<Base> = {
         variant?: Partial<
           Record<
             ButtonVariant,
-            Partial<Record<Interaction, Partial<Record<Size, Base>>>>
+            Partial<
+              Record<
+                ExtraStatus extends string
+                  ? InteractionStatus | ExtraStatus
+                  : InteractionStatus,
+                Partial<Record<Size, Base>>
+              >
+            >
           >
         >;
       }
@@ -198,10 +207,10 @@ type ElementSchema<Base> = {
   >;
 };
 
-type ElementTheme<T> = Partial<
+type ElementTheme<T, ExtraStatus = string | void> = Partial<
   Record<
     'light' | 'dark',
-    Partial<Record<string | 'default', ElementSchema<T>>>
+    Partial<Record<string | 'default', ElementSchema<T, ExtraStatus>>>
   >
 >;
 
@@ -218,11 +227,19 @@ export interface ButtonSchema {
   option?: ContainerOptions;
   elements?: {
     container?: ElementTheme<ButtonElementContainer>;
-    iconAlone?: ElementTheme<ButtonElementIcon>;
-    leftIconAttached?: ElementTheme<ButtonElementIcon>;
-    leftIconDetached?: ElementTheme<ButtonElementIcon>;
-    rightIconAttached?: ElementTheme<ButtonElementIcon>;
-    rightIconDetached?: ElementTheme<ButtonElementIcon>;
+    iconLeft?: ElementTheme<
+      ButtonElementIcon,
+      'alone' | 'attached' | 'detached'
+    >;
+    iconRight?: ElementTheme<
+      ButtonElementIcon,
+      'alone' | 'attached' | 'detached'
+    >;
+    // iconAlone?: ElementTheme<ButtonElementIcon>;
+    // leftIconAttached?: ElementTheme<ButtonElementIcon>;
+    // leftIconDetached?: ElementTheme<ButtonElementIcon>;
+    // rightIconAttached?: ElementTheme<ButtonElementIcon>;
+    // rightIconDetached?: ElementTheme<ButtonElementIcon>;
     text?: ElementTheme<ButtonElementText>;
   };
 }

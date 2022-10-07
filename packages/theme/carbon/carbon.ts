@@ -198,21 +198,21 @@ export const carbon: KiskadeeTheme = {
             },
           },
         },
-        rightIconDetached: {
-          light: {
-            default: {
-              base: {
-                rest: {
-                  md: {
-                    fontSize: 16,
-                    paddingRight: 16,
-                    paddingLeft: 16,
-                  },
-                },
-              },
-            },
-          },
-        },
+        // rightIconDetached: {
+        //   light: {
+        //     default: {
+        //       base: {
+        //         rest: {
+        //           md: {
+        //             fontSize: 16,
+        //             paddingRight: 16,
+        //             paddingLeft: 16,
+        //           },
+        //         },
+        //       },
+        //     },
+        //   },
+        // },
       },
     },
   },

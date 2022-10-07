@@ -103,21 +103,21 @@ export const fluent2: KiskadeeTheme = {
             },
           },
         },
-        leftIconAttached: {
-          light: {
-            default: {
-              base: {
-                rest: {
-                  md: {
-                    paddingLeft: 8,
-                    paddingRight: 8,
-                    fontSize: 16,
-                  },
-                },
-              },
-            },
-          },
-        },
+        // leftIconAttached: {
+        //   light: {
+        //     default: {
+        //       base: {
+        //         rest: {
+        //           md: {
+        //             paddingLeft: 8,
+        //             paddingRight: 8,
+        //             fontSize: 16,
+        //           },
+        //         },
+        //       },
+        //     },
+        //   },
+        // },
         text: {
           light: {
             default: {
@@ -177,21 +177,21 @@ export const fluent2: KiskadeeTheme = {
             },
           },
         },
-        rightIconAttached: {
-          light: {
-            default: {
-              base: {
-                rest: {
-                  md: {
-                    paddingLeft: 8,
-                    paddingRight: 8,
-                    fontSize: 16,
-                  },
-                },
-              },
-            },
-          },
-        },
+        // rightIconAttached: {
+        //   light: {
+        //     default: {
+        //       base: {
+        //         rest: {
+        //           md: {
+        //             paddingLeft: 8,
+        //             paddingRight: 8,
+        //             fontSize: 16,
+        //           },
+        //         },
+        //       },
+        //     },
+        //   },
+        // },
       },
     },
   },
