@@ -38,7 +38,7 @@ export class ButtonStyle {
 
   private readonly _size: ButtonStyleProps['size'];
 
-  private readonly _typeStyle: ButtonStyleProps['typeStyle'];
+  private readonly _type: ButtonStyleProps['type'];
 
   private readonly _variant: ButtonStyleProps['variant'];
 
@@ -83,7 +83,7 @@ export class ButtonStyle {
     // Required
     this._iconType = style.iconType;
     this._width = style.width;
-    this._typeStyle = style.typeStyle;
+    this._type = style.type;
     this._variant = style.variant;
     this._borderRadius = style.borderRadius;
 
@@ -689,7 +689,7 @@ export class ButtonStyle {
   cache<T>(element: string, property: string, callback: () => T): T {
     const key = {
       component: 'button',
-      type: this._typeStyle,
+      type: this._type,
       variant: this._variant,
       element,
       property,
@@ -718,10 +718,6 @@ export class ButtonStyle {
       }
       for (const property of properties) {
         if (responsive[mediaQuery]?.[property]) {
-          /**
-           * TS2590: Expression produces a union type that is too complex to represent.
-           */
-          // @ts-ignore
           newObject[mediaQuery][property] = responsive[mediaQuery][property];
         }
       }
@@ -730,7 +726,7 @@ export class ButtonStyle {
   }
 
   /**
-   * Empty objects generates a css classe empty in Stitches library
+   * Empty objects generates a css class empty in Stitches library
    */
   static render(properties: StitchesProperties): string | undefined {
     const validProperties = Object.keys(properties).length > 0;
@@ -773,30 +769,17 @@ export class ButtonStyle {
   }
 
   getStyleBase<T>(element: ButtonElements): T {
-    const key = {
-      component: 'button',
-      type: this._typeStyle,
-      variant: this._variant,
-      element,
-      property: 'base',
-    };
+    return this.cache('base', element, () => {
+      const baseSchema = this._schema?.elements?.[element];
+      const typeSchema = baseSchema?.light?.default?.type?.[this._type];
+      const variantSchema = typeSchema?.variant?.[this._variant];
 
-    const cache = cacheStyle.get(key);
-    if (cache) return cache as T;
-
-    const baseSchema = this._schema?.elements?.[element];
-    const typeSchema = baseSchema?.light?.default?.type?.[this._typeStyle];
-    const variantSchema = typeSchema?.variant?.[this._variant];
-
-    const value = {
-      ...baseSchema?.light?.default?.base?.rest?.md,
-      ...typeSchema?.base?.md,
-      ...variantSchema?.rest?.md,
-    } as T;
-
-    cacheStyle.set(key, value);
-
-    return value;
+      return {
+        ...baseSchema?.light?.default?.base?.rest?.md,
+        ...typeSchema?.base?.md,
+        ...variantSchema?.rest?.md,
+      } as T;
+    });
   }
 
   getStyleInteraction<T>(element: ButtonElements, interaction: Interaction): T {
@@ -812,7 +795,7 @@ export class ButtonStyle {
     }
 
     const base = this._schema?.elements?.[element];
-    const type = base?.light?.default?.type?.[this._typeStyle];
+    const type = base?.light?.default?.type?.[this._type];
     const variant = type?.variant?.[this._variant];
 
     this._style.button[element][interaction] = {
@@ -836,7 +819,7 @@ export class ButtonStyle {
     }
 
     const base = this._schema?.elements?.[element];
-    const type = base?.dark?.default?.type?.[this._typeStyle];
+    const type = base?.dark?.default?.type?.[this._type];
     const variant = type?.variant?.[this._variant];
 
     this._style.button[element].dark = {
@@ -861,7 +844,7 @@ export class ButtonStyle {
     }
 
     const base = this._schema?.elements?.[element];
-    const type = base?.light?.default?.type?.[this._typeStyle];
+    const type = base?.light?.default?.type?.[this._type];
     const variant = type?.variant?.[this._variant];
 
     this._style.button[element][size] = {

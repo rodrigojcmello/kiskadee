@@ -61,7 +61,7 @@ export type ButtonStyleProps = {
   iconType: Exclude<ButtonProps['iconType'], undefined> | 'icon';
   borderRadius: Exclude<ButtonProps['borderRadius'], undefined>;
   width: Exclude<ButtonProps['width'], undefined>;
-  typeStyle: ButtonProps['type'];
+  type: ButtonProps['type'];
   variant: ButtonProps['variant'];
 
   // Optional

@@ -29,7 +29,7 @@ export const Button: FC<ButtonProps> = ({
     schema: schema.component.button,
     theme: schema.theme,
     size,
-    typeStyle: type,
+    type,
     variant,
     iconType: (!label ? 'icon' : iconType) as ButtonStyleProps['iconType'],
     iconRight,
@@ -43,7 +43,6 @@ export const Button: FC<ButtonProps> = ({
   if (interaction) className.push(`--${interaction}`);
 
   const button = useMemo(() => {
-    console.log('useMemo');
     return new ButtonStyle(style);
   }, [style]);
 
