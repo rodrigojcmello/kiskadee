@@ -225,7 +225,7 @@ export class ButtonStyle {
       const container = this.getStyleBase<ButtonElementContainer>('container');
 
       return ButtonStyle.render({
-        border: container?.borderWidth ? undefined : 'none',
+        border: container?.borderWidth ? undefined : '0px solid transparent',
         borderColor: container?.borderColor,
         borderStyle: container?.borderStyle,
         borderWidth: container?.borderWidth,
@@ -241,7 +241,7 @@ export class ButtonStyle {
       cursor: 'pointer',
       fontSize: '16px',
       transitionProperty:
-        'box-shadow, border-color, background, padding, min-width, border-radius',
+        'box-shadow, border-color, border-width, background, padding, min-width, border-radius',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',

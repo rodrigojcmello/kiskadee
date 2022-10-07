@@ -511,12 +511,30 @@ export const material3: KiskadeeTheme = {
                 },
                 outline: {
                   base: {
+                    sm: {
+                      paddingTop: 5,
+                      paddingBottom: 5,
+                      paddingLeft: 15,
+                      paddingRight: 15,
+                    },
                     md: {
                       color: '#6750A4',
                       paddingTop: 9,
                       paddingBottom: 9,
                       paddingLeft: 23,
                       paddingRight: 23,
+                    },
+                    lg: {
+                      paddingTop: 17,
+                      paddingBottom: 17,
+                      paddingLeft: 17,
+                      paddingRight: 17,
+                    },
+                    xl: {
+                      paddingTop: 37,
+                      paddingBottom: 37,
+                      paddingLeft: 37,
+                      paddingRight: 37,
                     },
                   },
                   variant: {
