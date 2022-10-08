@@ -15,6 +15,7 @@ import type {
   InteractionStatus,
   Size,
   StitchesProperties,
+  IconType,
 } from './Button.types';
 import { RIPPLE_DURATION, RIPPLE_TIMING_FUNCTION } from './constants';
 import { CacheStyle } from '../../utils/CacheStyle.class';
@@ -253,91 +254,84 @@ export class ButtonStyle {
 
   containerCore() {
     return this.cache('container', 'core', () => {
-      const containerHover = this.getStyleInteraction<ButtonElementContainer>(
+      const containerHover = this.getStyleStatus<ButtonElementContainer>(
         'container',
         'hover'
       );
-      const textHover = this.getStyleInteraction<ButtonElementText>(
-        'text',
+      const textHover = this.getStyleStatus<ButtonElementText>('text', 'hover');
+      const leftIconHover = this.getStyleStatus<ButtonElementIcon>(
+        'iconLeft',
         'hover'
       );
-      // const leftIconHover = this.getStyleInteraction<ButtonElementIcon>(
-      //   this.getIcon('left'),
-      //   'hover'
-      // );
-      // const rightIconHover = this.getStyleInteraction<ButtonElementIcon>(
-      //   this.getIcon('right'),
-      //   'hover'
-      // );
+      const rightIconHover = this.getStyleStatus<ButtonElementIcon>(
+        'iconRight',
+        'hover'
+      );
 
-      const containerPressed = this.getStyleInteraction<ButtonElementContainer>(
+      const containerPressed = this.getStyleStatus<ButtonElementContainer>(
         'container',
         'pressed'
       );
-      const textPressed = this.getStyleInteraction<ButtonElementText>(
+      const textPressed = this.getStyleStatus<ButtonElementText>(
         'text',
         'pressed'
       );
-      // const leftIconPressed = this.getStyleInteraction<ButtonElementIcon>(
-      //   this.getIcon('left'),
-      //   'pressed'
-      // );
-      // const rightIconPressed = this.getStyleInteraction<ButtonElementIcon>(
-      //   this.getIcon('right'),
-      //   'pressed'
-      // );
+      const leftIconPressed = this.getStyleStatus<ButtonElementIcon>(
+        'iconLeft',
+        'pressed'
+      );
+      const rightIconPressed = this.getStyleStatus<ButtonElementIcon>(
+        'iconRight',
+        'pressed'
+      );
 
-      const containerFocus = this.getStyleInteraction<ButtonElementContainer>(
+      const containerFocus = this.getStyleStatus<ButtonElementContainer>(
         'container',
         'focus'
       );
-      const textFocus = this.getStyleInteraction<ButtonElementText>(
-        'text',
+      const textFocus = this.getStyleStatus<ButtonElementText>('text', 'focus');
+      const leftIconFocus = this.getStyleStatus<ButtonElementIcon>(
+        'iconLeft',
         'focus'
       );
-      // const leftIconFocus = this.getStyleInteraction<ButtonElementIcon>(
-      //   this.getIcon('left'),
-      //   'focus'
-      // );
-      // const rightIconFocus = this.getStyleInteraction<ButtonElementIcon>(
-      //   this.getIcon('right'),
-      //   'focus'
-      // );
+      const rightIconFocus = this.getStyleStatus<ButtonElementIcon>(
+        'iconRight',
+        'focus'
+      );
 
-      const containerVisited = this.getStyleInteraction<ButtonElementContainer>(
+      const containerVisited = this.getStyleStatus<ButtonElementContainer>(
         'container',
         'visited'
       );
-      const textVisited = this.getStyleInteraction<ButtonElementText>(
+      const textVisited = this.getStyleStatus<ButtonElementText>(
         'text',
         'visited'
       );
-      // const leftIconVisited = this.getStyleInteraction<ButtonElementIcon>(
-      //   this.getIcon('left'),
-      //   'visited'
-      // );
-      // const rightIconVisited = this.getStyleInteraction<ButtonElementIcon>(
-      //   this.getIcon('right'),
-      //   'visited'
-      // );
+      const leftIconVisited = this.getStyleStatus<ButtonElementIcon>(
+        'iconLeft',
+        'visited'
+      );
+      const rightIconVisited = this.getStyleStatus<ButtonElementIcon>(
+        'iconRight',
+        'visited'
+      );
 
-      const containerDisabled =
-        this.getStyleInteraction<ButtonElementContainer>(
-          'container',
-          'disabled'
-        );
-      const textDisabled = this.getStyleInteraction<ButtonElementText>(
+      const containerDisabled = this.getStyleStatus<ButtonElementContainer>(
+        'container',
+        'disabled'
+      );
+      const textDisabled = this.getStyleStatus<ButtonElementText>(
         'text',
         'disabled'
       );
-      // const leftIconDisabled = this.getStyleInteraction<ButtonElementIcon>(
-      //   this.getIcon('left'),
-      //   'disabled'
-      // );
-      // const rightIconDisabled = this.getStyleInteraction<ButtonElementIcon>(
-      //   this.getIcon('right'),
-      //   'disabled'
-      // );
+      const leftIconDisabled = this.getStyleStatus<ButtonElementIcon>(
+        'iconLeft',
+        'disabled'
+      );
+      const rightIconDisabled = this.getStyleStatus<ButtonElementIcon>(
+        'iconRight',
+        'disabled'
+      );
 
       const elementStyle =
         this.getResponsiveStyle<ButtonElementContainer>('container');
@@ -361,14 +355,14 @@ export class ButtonStyle {
           '& .button__text': {
             ...textHover,
           },
-          // '& .button__icon-left': {
-          //   color: textHover?.color,
-          //   ...leftIconHover,
-          // },
-          // '& .button__icon-right': {
-          //   color: textHover?.color,
-          //   ...rightIconHover,
-          // },
+          '& .button__icon-left': {
+            color: textHover?.color,
+            ...leftIconHover,
+          },
+          '& .button__icon-right': {
+            color: textHover?.color,
+            ...rightIconHover,
+          },
         },
 
         // PRESSED
@@ -377,14 +371,14 @@ export class ButtonStyle {
           '& .button__text': {
             ...textPressed,
           },
-          // '& .button__icon-left': {
-          //   color: textPressed?.color,
-          //   ...leftIconPressed,
-          // },
-          // '& .button__icon-right': {
-          //   color: textPressed?.color,
-          //   ...rightIconPressed,
-          // },
+          '& .button__icon-left': {
+            color: textPressed?.color,
+            ...leftIconPressed,
+          },
+          '& .button__icon-right': {
+            color: textPressed?.color,
+            ...rightIconPressed,
+          },
         },
 
         // FOCUS
@@ -393,14 +387,14 @@ export class ButtonStyle {
           '& .button__text': {
             ...textFocus,
           },
-          // '& .button__icon-left': {
-          //   color: textFocus?.color,
-          //   ...leftIconFocus,
-          // },
-          // '& .button__icon-right': {
-          //   color: textFocus?.color,
-          //   ...rightIconFocus,
-          // },
+          '& .button__icon-left': {
+            color: textFocus?.color,
+            ...leftIconFocus,
+          },
+          '& .button__icon-right': {
+            color: textFocus?.color,
+            ...rightIconFocus,
+          },
         },
 
         // VISITED
@@ -409,14 +403,14 @@ export class ButtonStyle {
           '& .button__text': {
             ...textVisited,
           },
-          // '& .button__icon-left': {
-          //   color: textVisited?.color,
-          //   ...leftIconVisited,
-          // },
-          // '& .button__icon-right': {
-          //   color: textVisited?.color,
-          //   ...rightIconVisited,
-          // },
+          '& .button__icon-left': {
+            color: textVisited?.color,
+            ...leftIconVisited,
+          },
+          '& .button__icon-right': {
+            color: textVisited?.color,
+            ...rightIconVisited,
+          },
         },
 
         // DISABLED
@@ -430,15 +424,15 @@ export class ButtonStyle {
           '& .button__text': {
             ...textDisabled,
           },
-          // // TODO: fix this
-          // '& .button__icon-left': {
-          //   color: textDisabled?.color,
-          //   ...leftIconDisabled,
-          // },
-          // '& .button__icon-right': {
-          //   color: textDisabled?.color,
-          //   ...rightIconDisabled,
-          // },
+          // TODO: fix this
+          '& .button__icon-left': {
+            color: textDisabled?.color,
+            ...leftIconDisabled,
+          },
+          '& .button__icon-right': {
+            color: textDisabled?.color,
+            ...rightIconDisabled,
+          },
         },
       });
     });
@@ -784,31 +778,22 @@ export class ButtonStyle {
     });
   }
 
-  getStyleInteraction<T>(
+  getStyleStatus<T, ExtraStatus = string | undefined>(
     element: ButtonElements,
-    interaction: InteractionStatus
+    status: ExtraStatus extends IconType
+      ? ExtraStatus | InteractionStatus
+      : InteractionStatus
   ): T {
-    if (this._style.button) {
-      if (this._style.button[element]?.[interaction]) {
-        return this._style.button[element][interaction] as T;
-      }
-      this._style.button[element] = {};
-    } else {
-      this._style.button = {
-        [element]: {},
-      };
-    }
+    return this.cache(element, status, () => {
+      const base = this._schema?.elements?.[element];
+      const type = base?.light?.default?.type?.[this._type];
+      const variant = type?.variant?.[this._variant];
 
-    const base = this._schema?.elements?.[element];
-    const type = base?.light?.default?.type?.[this._type];
-    const variant = type?.variant?.[this._variant];
-
-    this._style.button[element][interaction] = {
-      ...base?.light?.default?.base?.[interaction]?.md,
-      ...variant?.[interaction]?.md,
-    };
-
-    return this._style.button[element][interaction] as T;
+      return {
+        ...base?.light?.default?.base?.[status]?.md,
+        ...variant?.[status]?.md,
+      } as T;
+    });
   }
 
   private getStyleDark<T>(element: ButtonElements): T {

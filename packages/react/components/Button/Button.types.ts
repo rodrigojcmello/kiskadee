@@ -183,7 +183,14 @@ export interface ContainerOptions {
 }
 
 type ElementSchema<Base, ExtraStatus = string | undefined> = {
-  base?: Partial<Record<InteractionStatus, Partial<Record<Size, Base>>>>;
+  base?: Partial<
+    Record<
+      ExtraStatus extends string
+        ? InteractionStatus | ExtraStatus
+        : InteractionStatus,
+      Partial<Record<Size, Base>>
+    >
+  >;
   type?: Partial<
     Record<
       ButtonType,
@@ -223,18 +230,14 @@ export type Breakpoint = keyof Exclude<
   undefined
 >;
 
+export type IconType = 'alone' | 'attached' | 'detached';
+
 export interface ButtonSchema {
   option?: ContainerOptions;
   elements?: {
     container?: ElementTheme<ButtonElementContainer>;
-    iconLeft?: ElementTheme<
-      ButtonElementIcon,
-      'alone' | 'attached' | 'detached'
-    >;
-    iconRight?: ElementTheme<
-      ButtonElementIcon,
-      'alone' | 'attached' | 'detached'
-    >;
+    iconLeft?: ElementTheme<ButtonElementIcon, IconType>;
+    iconRight?: ElementTheme<ButtonElementIcon, IconType>;
     // iconAlone?: ElementTheme<ButtonElementIcon>;
     // leftIconAttached?: ElementTheme<ButtonElementIcon>;
     // leftIconDetached?: ElementTheme<ButtonElementIcon>;
