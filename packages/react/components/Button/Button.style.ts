@@ -1,6 +1,5 @@
 /* eslint-disable unicorn/filename-case */
 import { css, keyframes } from '@stitches/core';
-import type { CSSProperties } from 'react';
 import type {
   Breakpoint,
   ButtonElementContainer,
@@ -73,14 +72,6 @@ export class ButtonStyle {
 
   // Cache
 
-  private _style: {
-    [component: string]: {
-      [element: string]: {
-        [state: string]: CSSProperties;
-      };
-    };
-  };
-
   constructor(style: ButtonStyleProps) {
     // Required
     this._iconType = style.iconType;
@@ -117,10 +108,6 @@ export class ButtonStyle {
       bigScreenBP2: 1281,
       bigScreenBP3: 1441,
     };
-
-    // Cache
-    // TODO: delete it
-    this._style = {};
   }
 
   common() {
@@ -134,28 +121,28 @@ export class ButtonStyle {
   //----------------------------------------------------------------------------
 
   container() {
-    console.log('get container');
-
     return {
       border: this.containerBorder(),
       background: this.containerBackground(),
       radius: this.containerRadius(),
       width: this.containerWidth(),
       core: this.containerCore(),
-      base: ButtonStyle.containerBase(),
-      rippleCore: ButtonStyle.containerRipple(),
+      base: this.containerBase(),
+      rippleCore: this.containerRipple(),
       rippleBackground: this.containerRippleBackground(),
     };
   }
 
-  static containerRipple() {
-    return ButtonStyle.render({
-      position: 'absolute',
-      borderRadius: '50%',
-      transform: 'scale(0)',
-      animationDuration: `${RIPPLE_DURATION}ms`,
-      animationTimingFunction: RIPPLE_TIMING_FUNCTION,
-      animationName: rippleKeyframe,
+  containerRipple() {
+    return this.cache('container', 'ripple', () => {
+      return ButtonStyle.render({
+        position: 'absolute',
+        borderRadius: '50%',
+        transform: 'scale(0)',
+        animationDuration: `${RIPPLE_DURATION}ms`,
+        animationTimingFunction: RIPPLE_TIMING_FUNCTION,
+        animationName: rippleKeyframe,
+      });
     });
   }
 
@@ -235,20 +222,21 @@ export class ButtonStyle {
     });
   }
 
-  private static containerBase() {
-    // TODO: cache it
-    return ButtonStyle.render({
-      userSelect: 'none',
-      padding: 0,
-      cursor: 'pointer',
-      fontSize: '16px',
-      transitionProperty:
-        'box-shadow, border-color, border-width, background, padding, min-width, border-radius',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'relative',
-      overflow: 'hidden',
+  containerBase() {
+    return this.cache('container', 'base', () => {
+      return ButtonStyle.render({
+        userSelect: 'none',
+        padding: 0,
+        cursor: 'pointer',
+        fontSize: '16px',
+        transitionProperty:
+          'box-shadow, border-color, border-width, background, padding, min-width, border-radius',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+      });
     });
   }
 
@@ -493,7 +481,7 @@ export class ButtonStyle {
     });
   }
 
-  private textAlign() {
+  textAlign() {
     return this.cache('text', 'align', () => {
       return ButtonStyle.render({
         textAlign:
@@ -504,7 +492,7 @@ export class ButtonStyle {
     });
   }
 
-  private textWidth() {
+  textWidth() {
     return this.cache('text', 'width', () => {
       const block =
         this._iconType === 'detached' || !(this._iconLeft || this._iconRight);
@@ -515,7 +503,7 @@ export class ButtonStyle {
     });
   }
 
-  private textColor_COLOR() {
+  textColor_COLOR() {
     return this.cache('text', 'color', () => {
       const textContrast = this.getContrastStyle<ButtonElementText>('text');
 
@@ -528,7 +516,7 @@ export class ButtonStyle {
     });
   }
 
-  private textPadding_SIZE() {
+  textPadding_SIZE() {
     return this.cache('text', 'padding', () => {
       let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
 
@@ -566,7 +554,7 @@ export class ButtonStyle {
   // eslint-disable-next-line class-methods-use-this
   icon() {
     return {
-      base: ButtonStyle.iconBase(),
+      base: this.iconBase(),
     };
   }
 
@@ -586,14 +574,16 @@ export class ButtonStyle {
     };
   }
 
-  private static iconBase() {
-    return ButtonStyle.render({
-      display: 'flex',
-      transitionProperty: 'color, font-size',
+  iconBase() {
+    return this.cache('icon', 'base', () => {
+      return ButtonStyle.render({
+        display: 'flex',
+        transitionProperty: 'color, font-size',
+      });
     });
   }
 
-  private iconColor_COLOR(position: IconPosition) {
+  iconColor_COLOR(position: IconPosition) {
     return this.cache(`icon${position}`, 'color', () => {
       const iconContrast = this.getContrastStyle<ButtonElementIcon>(
         `icon${position}`
@@ -732,40 +722,17 @@ export class ButtonStyle {
     }
   }
 
-  // TODO: change status schema
-  getIcon(
-    position: 'left' | 'right'
-  ):
-    | 'iconAlone'
-    | 'leftIconAttached'
-    | 'rightIconAttached'
-    | 'leftIconDetached'
-    | 'rightIconDetached' {
-    if (this._iconType === 'icon') {
-      return `iconAlone`;
-    }
-    return `${position}Icon${ButtonStyle.capitalizeFirstLetter(
-      this._iconType
-    )}` as
-      | 'leftIconAttached'
-      | 'rightIconAttached'
-      | 'leftIconDetached'
-      | 'rightIconDetached';
-  }
-
-  private static capitalizeFirstLetter(string: string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
-  private getTransition() {
-    return ButtonStyle.render({
-      transitionDuration: this._duration,
-      transitionTimingFunction: this._timingFunction,
+  getTransition() {
+    return this.cache('all', 'transition', () => {
+      return ButtonStyle.render({
+        transitionDuration: this._duration,
+        transitionTimingFunction: this._timingFunction,
+      });
     });
   }
 
   getStyleBase<T>(element: ButtonElements): T {
-    return this.cache('base', element, () => {
+    return this.cache(element, 'base', () => {
       const baseSchema = this._schema?.elements?.[element];
       const typeSchema = baseSchema?.light?.default?.type?.[this._type];
       const variantSchema = typeSchema?.variant?.[this._variant];
@@ -796,108 +763,86 @@ export class ButtonStyle {
     });
   }
 
-  private getStyleDark<T>(element: ButtonElements): T {
-    if (this._style.button) {
-      if (this._style.button[element]?.dark) {
-        return this._style.button[element].dark as T;
-      }
-      this._style.button[element] = {};
-    } else {
-      this._style.button = {
-        [element]: {},
-      };
-    }
+  getStyleDark<T>(element: ButtonElements): T {
+    return this.cache(element, 'dark', () => {
+      const base = this._schema?.elements?.[element];
+      const type = base?.dark?.default?.type?.[this._type];
+      const variant = type?.variant?.[this._variant];
 
-    const base = this._schema?.elements?.[element];
-    const type = base?.dark?.default?.type?.[this._type];
-    const variant = type?.variant?.[this._variant];
-
-    this._style.button[element].dark = {
-      ...base?.dark?.default?.base?.rest?.md,
-      ...type?.base?.md,
-      ...variant?.rest?.md,
-    };
-
-    return this._style.button[element].dark as T;
+      return {
+        ...base?.dark?.default?.base?.rest?.md,
+        ...type?.base?.md,
+        ...variant?.rest?.md,
+      } as T;
+    });
   }
 
   getStyleSize<T>(element: ButtonElements, size: Exclude<Size, 'md'>): T {
-    if (this._style.button) {
-      if (this._style.button[element]?.[size]) {
-        return this._style.button[element][size] as T;
-      }
-      this._style.button[element] = {};
-    } else {
-      this._style.button = {
-        [element]: {},
-      };
-    }
+    return this.cache(element, size, () => {
+      const base = this._schema?.elements?.[element];
+      const type = base?.light?.default?.type?.[this._type];
+      const variant = type?.variant?.[this._variant];
 
-    const base = this._schema?.elements?.[element];
-    const type = base?.light?.default?.type?.[this._type];
-    const variant = type?.variant?.[this._variant];
-
-    this._style.button[element][size] = {
-      ...base?.light?.default?.base?.rest?.[size],
-      ...type?.base?.[size],
-      ...variant?.rest?.[size],
-    };
-
-    const x = this._style.button[element][size] as T;
-
-    // console.log('### size', element, size, x);
-
-    return x;
+      return {
+        ...base?.light?.default?.base?.rest?.[size],
+        ...type?.base?.[size],
+        ...variant?.rest?.[size],
+      } as T;
+    });
   }
 
-  public getResponsiveStyle<T>(element: ButtonElements): {
+  getResponsiveStyle<T>(element: ButtonElements): {
     [mediaQuery: string]: T;
   } {
-    const responsive: { [mediaQuery: string]: T } = {};
+    return this.cache(element, 'responsive', () => {
+      const responsive: { [mediaQuery: string]: T } = {};
 
-    if (!this._size) {
-      for (const breakpoint of Object.keys(this._options?.responsive || {})) {
-        const size = this?._options?.responsive?.[breakpoint as Breakpoint];
-        if (size) {
-          responsive[
-            `@media (min-width: ${
-              this._responsive[breakpoint as Breakpoint]
-            }px)`
-          ] =
-            size === 'md'
-              ? this.getStyleBase(element)
-              : this.getStyleSize(element, size);
+      if (!this._size) {
+        for (const breakpoint of Object.keys(this._options?.responsive || {})) {
+          const size = this?._options?.responsive?.[breakpoint as Breakpoint];
+          if (size) {
+            responsive[
+              `@media (min-width: ${
+                this._responsive[breakpoint as Breakpoint]
+              }px)`
+            ] =
+              size === 'md'
+                ? this.getStyleBase(element)
+                : this.getStyleSize(element, size);
+          }
         }
+      } else {
+        responsive['@media (min-width: 0px)'] =
+          !this._size || this._size === 'md'
+            ? this.getStyleBase(element)
+            : {
+                ...this.getStyleBase(element),
+                ...this.getStyleSize(element, this._size),
+              };
       }
-    } else {
-      responsive['@media (min-width: 0px)'] =
-        !this._size || this._size === 'md'
-          ? this.getStyleBase(element)
-          : {
-              ...this.getStyleBase(element),
-              ...this.getStyleSize(element, this._size),
-            };
-    }
 
-    return responsive;
+      return responsive;
+    });
   }
 
   getContrastStyle<T>(element: ButtonElements): ContrastStyle<T> {
-    const responsive: ContrastStyle<T> = {};
+    return this.cache(element, 'contrast', () => {
+      const responsive: ContrastStyle<T> = {};
 
-    const light: T = this.getStyleBase(element);
+      const light: T = this.getStyleBase(element);
 
-    const dark: T = {
-      ...light,
-      ...this.getStyleDark(element),
-    };
+      const dark: T = {
+        ...light,
+        ...this.getStyleDark(element),
+      };
 
-    if (!this._theme?.only) {
-      responsive.contrastMode = dark;
-    }
+      if (!this._theme?.only) {
+        responsive.contrastMode = dark;
+      }
 
-    responsive.defaultMode = this._theme?.only === 'dark' ? dark : light;
+      responsive.defaultMode = this._theme?.only === 'dark' ? dark : light;
 
-    return responsive;
+      return responsive;
+    });
   }
 }
