@@ -528,7 +528,7 @@ export class ButtonStyle {
   }
 
   textPadding_SIZE() {
-    return this.cache('text', 'padding', () => {
+    return this.cache('text', `padding${this._size}`, () => {
       let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
 
       textResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementText>(
