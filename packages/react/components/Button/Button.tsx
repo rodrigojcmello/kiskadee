@@ -26,8 +26,13 @@ export const Button: FC<ButtonProps> = ({
   const [schema] = useKiskadee();
 
   const style: ButtonStyleProps = {
+    theme: {
+      name: schema.name,
+      version: schema.version,
+      author: schema.author,
+      option: schema.theme,
+    },
     schema: schema.component.button,
-    theme: schema.theme,
     size,
     type,
     variant,

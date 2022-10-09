@@ -51,7 +51,7 @@ export class ButtonStyle {
 
   private readonly _schema: ButtonSchema | undefined;
 
-  private readonly _theme: ButtonStyleProps['theme'];
+  private readonly _theme: ButtonStyleProps['theme']['option'];
 
   private readonly _iconLeft: ButtonStyleProps['iconLeft'];
 
@@ -83,11 +83,17 @@ export class ButtonStyle {
     // Optional
     this._size = style.size;
     this._schema = style.schema;
-    this._theme = style.theme;
+    this._theme = style.theme.option;
     this._textAlign = style.textAlign;
     this._options = style.schema?.option;
     this._iconLeft = style.iconLeft;
     this._iconRight = style.iconRight;
+
+    cacheStyle.checkCache(
+      style.theme.name,
+      style.theme.version,
+      style.theme.author
+    );
 
     // Transition
     this._timingFunction = 'ease-in';
@@ -199,11 +205,11 @@ export class ButtonStyle {
       const style = this.getContrastStyle<ButtonElementContainer>('container');
 
       return ButtonStyle.render({
-        background: style?.defaultMode?.background,
-        backgroundColor: style?.defaultMode?.backgroundColor,
-        '@media (prefers-color-scheme: dark)': style?.contrastMode && {
-          background: style?.contrastMode?.background,
-          backgroundColor: style?.contrastMode?.backgroundColor,
+        background: style.defaultMode?.background,
+        backgroundColor: style.defaultMode?.backgroundColor,
+        '@media (prefers-color-scheme: dark)': style.contrastMode && {
+          background: style.contrastMode?.background,
+          backgroundColor: style.contrastMode?.backgroundColor,
         },
       });
     });

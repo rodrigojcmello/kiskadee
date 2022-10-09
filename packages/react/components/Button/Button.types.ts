@@ -68,7 +68,12 @@ export type ButtonStyleProps = {
 
   // Optional
   size?: Size;
-  theme?: KiskadeeTheme['theme'];
+  theme: {
+    name: string;
+    version: string;
+    author: string;
+    option?: KiskadeeTheme['theme'];
+  };
   schema?: ButtonSchema;
   iconLeft?: ButtonProps['iconLeft'];
   iconRight?: ButtonProps['iconRight'];

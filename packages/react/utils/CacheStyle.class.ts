@@ -1,28 +1,38 @@
 type CacheType = { [key: string]: CacheType };
 
 export class CacheStyle {
-  private readonly schema: CacheType;
+  private cache: CacheType;
 
-  private dependencies: Record<string, unknown>;
+  private dependencies: { name: string; version: string; author: string };
 
   constructor() {
-    this.schema = {};
-    this.dependencies = {};
+    this.cache = {};
+    this.dependencies = {
+      name: '',
+      version: '',
+      author: '',
+    };
   }
 
-  // update(dependencies: Record<string, unknown>) {
-  //   if (JSON.stringify(this.dependencies) !== JSON.stringify(dependencies)) {
-  //     this.dependencies = dependencies;
-  //     this.cache = {};
-  //   }
-  // }
+  checkCache(name: string, version: string, author: string) {
+    if (
+      !(
+        this.dependencies.name === name &&
+        this.dependencies.version === version &&
+        this.dependencies.author === author
+      )
+    ) {
+      this.dependencies.name = name;
+      this.dependencies.version = version;
+      this.dependencies.author = author;
+      this.cache = {};
+    }
+  }
 
   get<T>(key: object): T {
     const [component, type, variant, element, property] = Object.keys(key);
 
-    console.log({ schema: this.schema });
-
-    return this.schema?.[component]?.[type]?.[variant]?.[element]?.[
+    return this.cache?.[component]?.[type]?.[variant]?.[element]?.[
       property
     ] as T;
   }
@@ -37,6 +47,6 @@ export class CacheStyle {
         ] = index === arrayKey.length - 1 ? value : {};
       }
       return previousValue[objectKey[key]];
-    }, this.schema);
+    }, this.cache);
   }
 }
