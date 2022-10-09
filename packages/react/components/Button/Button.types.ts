@@ -53,20 +53,21 @@ export interface ButtonProps {
   disabled?: boolean;
   iconLeft?: ReactElement;
   iconRight?: ReactElement;
-  iconType?: 'attached' | 'detached';
+  iconType?: 'icon' | 'attached' | 'detached';
   size?: Size;
   isLoading?: boolean;
 }
 
 export type ButtonStyleProps = {
+  // TODO: each should have a default
   // Required
-  iconType: Exclude<ButtonProps['iconType'], undefined> | 'icon';
   borderRadius: Exclude<ButtonProps['borderRadius'], undefined>;
   width: Exclude<ButtonProps['width'], undefined>;
   type: ButtonProps['type'];
   variant: ButtonProps['variant'];
 
   // Optional
+  iconType: ButtonProps['iconType'];
   size?: Size;
   theme: {
     name: string;

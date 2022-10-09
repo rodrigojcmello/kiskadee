@@ -92,7 +92,9 @@ export class ButtonStyle {
     cacheStyle.checkCache(
       style.theme.name,
       style.theme.version,
-      style.theme.author
+      style.theme.author,
+      // TODO: find a new way to enable dark mode globally
+      style.theme.option?.only
     );
 
     // Transition
@@ -166,9 +168,11 @@ export class ButtonStyle {
   }
 
   containerWidth() {
-    return this.cache('container', 'width', () => {
+    const isBlock = this._iconType !== 'icon' || this._width === 'block';
+
+    return this.cache('container', `width${isBlock ? 'Block' : 'Auto'}`, () => {
       return ButtonStyle.render({
-        width: this._width === 'block' ? '100%' : 'auto',
+        width: isBlock ? '100%' : 'auto',
         minWidth: this._width === 'min' ? this._options?.widthMin : 0,
       });
     });
@@ -217,7 +221,8 @@ export class ButtonStyle {
 
   containerBorder() {
     return this.cache('container', 'border', () => {
-      const container = this.getStyleBase<ButtonElementContainer>('container');
+      const container =
+        this.getStyleEssential<ButtonElementContainer>('container');
 
       return ButtonStyle.render({
         border: container?.borderWidth ? undefined : '0px solid transparent',
@@ -457,7 +462,7 @@ export class ButtonStyle {
 
   textCore() {
     return this.cache('text', 'core', () => {
-      const textElement = this.getStyleBase<ButtonElementText>('text');
+      const textElement = this.getStyleEssential<ButtonElementText>('text');
 
       return ButtonStyle.render({
         lineHeight: textElement.lineHeight,
@@ -679,13 +684,7 @@ export class ButtonStyle {
   //----------------------------------------------------------------------------
 
   cache<T>(element: string, property: string, callback: () => T): T {
-    const key = {
-      component: 'button',
-      type: this._type,
-      variant: this._variant,
-      element,
-      property,
-    };
+    const key = ['button', this._type, this._variant, element, property];
 
     const cache = cacheStyle.get<T>(key);
     if (cache) return cache;
@@ -737,8 +736,8 @@ export class ButtonStyle {
     });
   }
 
-  getStyleBase<T>(element: ButtonElements): T {
-    return this.cache(element, 'base', () => {
+  getStyleEssential<T>(element: ButtonElements): T {
+    return this.cache(element, 'essential', () => {
       const baseSchema = this._schema?.elements?.[element];
       const typeSchema = baseSchema?.light?.default?.type?.[this._type];
       const variantSchema = typeSchema?.variant?.[this._variant];
@@ -813,16 +812,16 @@ export class ButtonStyle {
               }px)`
             ] =
               size === 'md'
-                ? this.getStyleBase(element)
+                ? this.getStyleEssential(element)
                 : this.getStyleSize(element, size);
           }
         }
       } else {
         responsive['@media (min-width: 0px)'] =
           !this._size || this._size === 'md'
-            ? this.getStyleBase(element)
+            ? this.getStyleEssential(element)
             : {
-                ...this.getStyleBase(element),
+                ...this.getStyleEssential(element),
                 ...this.getStyleSize(element, this._size),
               };
       }
@@ -835,7 +834,7 @@ export class ButtonStyle {
     return this.cache(element, 'contrast', () => {
       const responsive: ContrastStyle<T> = {};
 
-      const light: T = this.getStyleBase(element);
+      const light: T = this.getStyleEssential(element);
 
       const dark: T = {
         ...light,

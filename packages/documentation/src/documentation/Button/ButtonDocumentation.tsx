@@ -238,6 +238,7 @@ export const ButtonDocumentation: FC = () => {
                 type={type}
                 variant={variant}
                 borderRadius={radius}
+                iconType={'icon'}
                 iconLeft={
                   <span className={'material-symbols-outlined'}>thumb_up</span>
                 }

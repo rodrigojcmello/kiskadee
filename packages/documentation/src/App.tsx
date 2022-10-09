@@ -28,7 +28,7 @@ const ButtonOnly = () => {
           type={'contained'}
           variant={'primary'}
           label={'fulano'}
-          size={'lg'}
+          size={'md'}
           isLoading={loading}
           onClick={() => {
             setLoading(true);

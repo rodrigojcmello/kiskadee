@@ -3,7 +3,12 @@ type CacheType = { [key: string]: CacheType };
 export class CacheStyle {
   private cache: CacheType;
 
-  private dependencies: { name: string; version: string; author: string };
+  private dependencies: {
+    name: string;
+    version: string;
+    author: string;
+    themeOnly?: string;
+  };
 
   constructor() {
     this.cache = {};
@@ -14,39 +19,39 @@ export class CacheStyle {
     };
   }
 
-  checkCache(name: string, version: string, author: string) {
+  checkCache(
+    name: string,
+    version: string,
+    author: string,
+    themeOnly?: string
+  ) {
     if (
       !(
         this.dependencies.name === name &&
         this.dependencies.version === version &&
-        this.dependencies.author === author
+        this.dependencies.author === author &&
+        this.dependencies.themeOnly === themeOnly
       )
     ) {
       this.dependencies.name = name;
       this.dependencies.version = version;
       this.dependencies.author = author;
+      this.dependencies.themeOnly = themeOnly;
       this.cache = {};
     }
   }
 
-  get<T>(key: object): T {
-    const [component, type, variant, element, property] = Object.keys(key);
-
-    return this.cache?.[component]?.[type]?.[variant]?.[element]?.[
-      property
-    ] as T;
+  get<T>(key: string[]): T {
+    return this.cache?.[key[0]]?.[key[1]]?.[key[2]]?.[key[3]]?.[key[4]] as T;
   }
 
-  set(objectKey: Record<string, string>, value: unknown) {
-    const arrayKey = Object.keys(objectKey);
-
-    arrayKey.reduce((previousValue, key, index) => {
-      if (!previousValue[objectKey[key]]) {
-        (previousValue as { [key: string]: CacheType | unknown })[
-          objectKey[key]
-        ] = index === arrayKey.length - 1 ? value : {};
+  set(keys: string[], value: unknown) {
+    keys.reduce((previousValue, key, index) => {
+      if (!previousValue[key]) {
+        (previousValue as { [key: string]: CacheType | unknown })[key] =
+          index === keys.length - 1 ? value : {};
       }
-      return previousValue[objectKey[key]];
+      return previousValue[key];
     }, this.cache);
   }
 }
