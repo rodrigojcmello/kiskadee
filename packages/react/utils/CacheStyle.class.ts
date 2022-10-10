@@ -53,5 +53,7 @@ export class CacheStyle {
       }
       return previousValue[key];
     }, this.cache);
+
+    console.log(this.cache);
   }
 }

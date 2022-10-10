@@ -179,29 +179,33 @@ export class ButtonStyle {
   }
 
   containerRadius() {
-    return this.cache('container', 'radius', () => {
-      let borderRadius;
-      const defaultBorder = this._options?.borderRadius?.default;
-      const variant = this._options?.borderRadius?.variant;
+    return this.cache(
+      'container',
+      `radius${this._size}${this._borderRadius}`,
+      () => {
+        let borderRadius;
+        const defaultBorder = this._options?.borderRadius?.default;
+        const variant = this._options?.borderRadius?.variant;
 
-      if (this._borderRadius === 'rounded' || this._borderRadius === 'full') {
-        borderRadius =
-          variant?.[this._borderRadius]?.[this._size || 'md'] ||
-          variant?.[this._borderRadius]?.md;
-      } else if (
-        (defaultBorder === 'rounded' || defaultBorder === 'full') &&
-        this._borderRadius === 'default'
-      ) {
-        borderRadius =
-          variant?.[defaultBorder]?.[this._size || 'md'] ||
-          variant?.[defaultBorder]?.md;
+        if (this._borderRadius === 'rounded' || this._borderRadius === 'full') {
+          borderRadius =
+            variant?.[this._borderRadius]?.[this._size || 'md'] ||
+            variant?.[this._borderRadius]?.md;
+        } else if (
+          (defaultBorder === 'rounded' || defaultBorder === 'full') &&
+          this._borderRadius === 'default'
+        ) {
+          borderRadius =
+            variant?.[defaultBorder]?.[this._size || 'md'] ||
+            variant?.[defaultBorder]?.md;
+        }
+
+        return ButtonStyle.render({
+          // TODO: need to handle responsive
+          borderRadius: borderRadius || 0,
+        });
       }
-
-      return ButtonStyle.render({
-        // TODO: need to handle responsive
-        borderRadius: borderRadius || 0,
-      });
-    });
+    );
   }
 
   containerBackground() {
@@ -504,12 +508,12 @@ export class ButtonStyle {
   }
 
   textWidth() {
-    return this.cache('text', 'width', () => {
-      const block =
-        this._iconType === 'detached' || !(this._iconLeft || this._iconRight);
+    const isBlock =
+      this._iconType === 'detached' || !(this._iconLeft || this._iconRight);
 
+    return this.cache('text', `width${isBlock ? 'Block' : 'Auto'}`, () => {
       return ButtonStyle.render({
-        width: block ? '100%' : 'auto',
+        width: isBlock ? '100%' : 'auto',
       });
     });
   }
@@ -528,7 +532,11 @@ export class ButtonStyle {
   }
 
   textPadding_SIZE() {
-    return this.cache('text', `padding${this._size}`, () => {
+    const key = `${this._iconType}${this._iconLeft ? 'Left' : ''}${
+      this._iconRight ? 'Right' : ''
+    }${this._size}`;
+
+    return this.cache('text', `padding-${key}`, () => {
       let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
 
       textResponsive = ButtonStyle.pickResponsiveProperties<ButtonElementText>(
@@ -536,11 +544,15 @@ export class ButtonStyle {
         ['paddingTop', 'paddingBottom', 'paddingRight', 'paddingLeft']
       );
 
+      const isAttached = this._iconType === 'attached';
+      const hasLeftIcon = this._iconLeft && isAttached;
+      const hasRightIcon = this._iconRight && isAttached;
+
       for (const mq of Object.keys(textResponsive)) {
-        textResponsive[mq].paddingRight = this._iconRight
+        textResponsive[mq].paddingRight = hasRightIcon
           ? 0
           : textResponsive[mq].paddingRight;
-        textResponsive[mq].paddingLeft = this._iconLeft
+        textResponsive[mq].paddingLeft = hasLeftIcon
           ? 0
           : textResponsive[mq].paddingLeft;
       }
@@ -799,7 +811,7 @@ export class ButtonStyle {
   getResponsiveStyle<T>(element: ButtonElements): {
     [mediaQuery: string]: T;
   } {
-    return this.cache(element, 'responsive', () => {
+    return this.cache(element, `responsive${this._size}`, () => {
       const responsive: { [mediaQuery: string]: T } = {};
 
       if (!this._size) {
