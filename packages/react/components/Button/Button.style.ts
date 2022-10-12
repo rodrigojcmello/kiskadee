@@ -155,7 +155,7 @@ export class ButtonStyle {
   }
 
   containerRippleBackground() {
-    return this.cache('container', 'rippleBackground', () => {
+    return this.cache('container', 'ripple-background', () => {
       const ripple = this.getContrastStyle<ButtonElementContainer>('container');
 
       return ButtonStyle.render({
@@ -169,8 +169,9 @@ export class ButtonStyle {
 
   containerWidth() {
     const isBlock = this._iconType !== 'icon' || this._width === 'block';
+    const key = `width-${isBlock ? 'block' : 'auto'}`;
 
-    return this.cache('container', `width${isBlock ? 'Block' : 'Auto'}`, () => {
+    return this.cache('container', key, () => {
       return ButtonStyle.render({
         width: isBlock ? '100%' : 'auto',
         minWidth: this._width === 'min' ? this._options?.widthMin : 0,
@@ -179,33 +180,31 @@ export class ButtonStyle {
   }
 
   containerRadius() {
-    return this.cache(
-      'container',
-      `radius${this._size}${this._borderRadius}`,
-      () => {
-        let borderRadius;
-        const defaultBorder = this._options?.borderRadius?.default;
-        const variant = this._options?.borderRadius?.variant;
+    const key = `radius-${this._size ?? 'md'}-${this._borderRadius}`;
 
-        if (this._borderRadius === 'rounded' || this._borderRadius === 'full') {
-          borderRadius =
-            variant?.[this._borderRadius]?.[this._size || 'md'] ||
-            variant?.[this._borderRadius]?.md;
-        } else if (
-          (defaultBorder === 'rounded' || defaultBorder === 'full') &&
-          this._borderRadius === 'default'
-        ) {
-          borderRadius =
-            variant?.[defaultBorder]?.[this._size || 'md'] ||
-            variant?.[defaultBorder]?.md;
-        }
+    return this.cache('container', key, () => {
+      let borderRadius;
+      const defaultBorder = this._options?.borderRadius?.default;
+      const variant = this._options?.borderRadius?.variant;
 
-        return ButtonStyle.render({
-          // TODO: need to handle responsive
-          borderRadius: borderRadius || 0,
-        });
+      if (this._borderRadius === 'rounded' || this._borderRadius === 'full') {
+        borderRadius =
+          variant?.[this._borderRadius]?.[this._size || 'md'] ||
+          variant?.[this._borderRadius]?.md;
+      } else if (
+        (defaultBorder === 'rounded' || defaultBorder === 'full') &&
+        this._borderRadius === 'default'
+      ) {
+        borderRadius =
+          variant?.[defaultBorder]?.[this._size || 'md'] ||
+          variant?.[defaultBorder]?.md;
       }
-    );
+
+      return ButtonStyle.render({
+        // TODO: need to handle responsive
+        borderRadius: borderRadius || 0,
+      });
+    });
   }
 
   containerBackground() {
@@ -449,9 +448,9 @@ export class ButtonStyle {
     return {
       base: ButtonStyle.textBase(),
       core: this.textCore(),
-      color: this.textColor_COLOR(),
-      fontSize: this.textFontSize_SIZE(),
-      padding: this.textPadding_SIZE(),
+      color: this.textColor(),
+      fontSize: this.textFontSize(),
+      padding: this.textPadding(),
       width: this.textWidth(),
       align: this.textAlign(),
     };
@@ -477,7 +476,7 @@ export class ButtonStyle {
     });
   }
 
-  textFontSize_SIZE() {
+  textFontSize() {
     return this.cache('text', 'fontSize', () => {
       let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
 
@@ -510,15 +509,16 @@ export class ButtonStyle {
   textWidth() {
     const isBlock =
       this._iconType === 'detached' || !(this._iconLeft || this._iconRight);
+    const key = `width-${isBlock ? 'block' : 'auto'}`;
 
-    return this.cache('text', `width${isBlock ? 'Block' : 'Auto'}`, () => {
+    return this.cache('text', key, () => {
       return ButtonStyle.render({
         width: isBlock ? '100%' : 'auto',
       });
     });
   }
 
-  textColor_COLOR() {
+  textColor() {
     return this.cache('text', 'color', () => {
       const textContrast = this.getContrastStyle<ButtonElementText>('text');
 
@@ -531,10 +531,10 @@ export class ButtonStyle {
     });
   }
 
-  textPadding_SIZE() {
-    const key = `${this._iconType}${this._iconLeft ? 'Left' : ''}${
-      this._iconRight ? 'Right' : ''
-    }${this._size}`;
+  textPadding() {
+    const key = `${this._iconType}-${this._iconLeft ? 'left-' : ''}${
+      this._iconRight ? 'right-' : ''
+    }${this._size ?? 'md'}`;
 
     return this.cache('text', `padding-${key}`, () => {
       let textResponsive = this.getResponsiveStyle<ButtonElementText>('text');
@@ -583,17 +583,17 @@ export class ButtonStyle {
 
   iconLeft() {
     return {
-      color: this.iconColor_COLOR('Left'),
-      size: this.iconSize_SIZE('Left'),
-      padding: this.iconPadding_SIZE('Left'),
+      color: this.iconColor('Left'),
+      size: this.iconSize('Left'),
+      padding: this.iconPadding('Left'),
     };
   }
 
   iconRight() {
     return {
-      color: this.iconColor_COLOR('Right'),
-      size: this.iconSize_SIZE('Right'),
-      padding: this.iconPadding_SIZE('Right'),
+      color: this.iconColor('Right'),
+      size: this.iconSize('Right'),
+      padding: this.iconPadding('Right'),
     };
   }
 
@@ -606,7 +606,7 @@ export class ButtonStyle {
     });
   }
 
-  iconColor_COLOR(position: IconPosition) {
+  iconColor(position: IconPosition) {
     return this.cache(`icon${position}`, 'color', () => {
       const iconContrast = this.getContrastStyle<ButtonElementIcon>(
         `icon${position}`
@@ -637,7 +637,7 @@ export class ButtonStyle {
   }
 
   // TODO: support SVG
-  iconSize_SIZE(position: IconPosition) {
+  iconSize(position: IconPosition) {
     return this.cache(`icon${position}`, 'size', () => {
       let iconResponsive = this.getResponsiveStyle<ButtonElementIcon>(
         `icon${position}`
@@ -668,7 +668,7 @@ export class ButtonStyle {
     });
   }
 
-  iconPadding_SIZE(position: IconPosition): string | undefined {
+  iconPadding(position: IconPosition): string | undefined {
     return this.cache(`icon${position}`, 'padding', () => {
       let iconResponsive = this.getResponsiveStyle<ButtonElementIcon>(
         `icon${position}`
@@ -811,7 +811,8 @@ export class ButtonStyle {
   getResponsiveStyle<T>(element: ButtonElements): {
     [mediaQuery: string]: T;
   } {
-    return this.cache(element, `responsive${this._size}`, () => {
+    const key = `responsive-${this._size ?? 'md'}`;
+    return this.cache(element, key, () => {
       const responsive: { [mediaQuery: string]: T } = {};
 
       if (!this._size) {
