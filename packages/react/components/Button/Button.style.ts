@@ -446,7 +446,7 @@ export class ButtonStyle {
 
   text() {
     return {
-      base: ButtonStyle.textBase(),
+      base: this.textBase(),
       core: this.textCore(),
       color: this.textColor(),
       fontSize: this.textFontSize(),
@@ -456,10 +456,12 @@ export class ButtonStyle {
     };
   }
 
-  static textBase() {
-    return ButtonStyle.render({
-      whiteSpace: 'nowrap',
-      transitionProperty: 'color, font-size, padding',
+  textBase() {
+    return this.cache('text', 'base', () => {
+      return ButtonStyle.render({
+        whiteSpace: 'nowrap',
+        transitionProperty: 'color, font-size, padding',
+      });
     });
   }
 
@@ -467,10 +469,12 @@ export class ButtonStyle {
     return this.cache('text', 'core', () => {
       const textElement = this.getStyleEssential<ButtonElementText>('text');
 
+      // TODO: use Text component here
       return ButtonStyle.render({
         lineHeight: textElement.lineHeight,
         fontWeight: textElement.fontWeight,
-        fontFamily: textElement.fontFamily,
+        // TODO: not use it if undefined
+        fontFamily: `${textElement.fontFamily},Inter var,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;`,
         fontStyle: textElement.fontStyle,
       });
     });
