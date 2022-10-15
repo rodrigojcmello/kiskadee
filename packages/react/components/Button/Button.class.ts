@@ -495,6 +495,7 @@ export class ButtonClass extends Style {
     };
   }
 
+  // TODO: rename it
   iconLeft2() {
     return {
       color: this.iconColor('Left'),
@@ -552,7 +553,7 @@ export class ButtonClass extends Style {
 
   // TODO: support SVG
   iconSize(position: IconPosition) {
-    return this.cache(['icon', 'size', position], () => {
+    return this.cache(['icon', 'size', position, this.size || 'md'], () => {
       let iconResponsive = this.getResponsiveStyle<ButtonElementIcon>(
         `icon${position}`
       );
@@ -583,7 +584,7 @@ export class ButtonClass extends Style {
   }
 
   iconPadding(position: IconPosition): string | undefined {
-    return this.cache(['icon', 'padding', position], () => {
+    return this.cache(['icon', 'padding', position, this.size || 'md'], () => {
       let iconResponsive = this.getResponsiveStyle<ButtonElementIcon>(
         `icon${position}`
       );

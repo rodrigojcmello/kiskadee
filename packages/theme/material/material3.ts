@@ -276,7 +276,11 @@ export const material3: KiskadeeTheme = {
                     paddingRight: 18,
                   },
                   sm: {
-                    fontSize: 16,
+                    fontSize: 20,
+                    paddingTop: 6,
+                    paddingBottom: 6,
+                    paddingLeft: 6,
+                    paddingRight: 6,
                   },
                 },
               },
