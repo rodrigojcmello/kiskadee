@@ -112,8 +112,8 @@ export class Style {
     );
   }
 
-  cache<T>(element: string, property: string, callback: () => T): T {
-    const key = [this.component, this.type, this.variant, element, property];
+  cache<T>(keys: string[], callback: () => T): T {
+    const key = [this.component, this.type, this.variant, ...keys];
 
     const cache = cacheStyle.get<T>(key);
     if (cache) return cache;
@@ -157,7 +157,7 @@ export class Style {
   }
 
   getTransition() {
-    return this.cache('all', 'transition', () => {
+    return this.cache(['transition'], () => {
       return Style.render({
         transitionDuration: this.duration,
         transitionTimingFunction: this.timingFunction,
@@ -166,7 +166,7 @@ export class Style {
   }
 
   getStyleEssential<T>(element: ButtonElements): T {
-    return this.cache(element, 'essential', () => {
+    return this.cache([element, 'essential'], () => {
       const baseSchema = this.schema?.elements?.[element];
       const typeSchema = baseSchema?.light?.default?.type?.[this.type];
       const variantSchema = typeSchema?.variant?.[this.variant];
@@ -185,7 +185,7 @@ export class Style {
       ? ExtraStatus | InteractionStatus
       : InteractionStatus
   ): T {
-    return this.cache(element, status, () => {
+    return this.cache([element, status], () => {
       const base = this.schema?.elements?.[element];
       const type = base?.light?.default?.type?.[this.type];
       const variant = type?.variant?.[this.variant];
@@ -198,7 +198,7 @@ export class Style {
   }
 
   getStyleDark<T>(element: ButtonElements): T {
-    return this.cache(element, 'dark', () => {
+    return this.cache([element, 'dark'], () => {
       const base = this.schema?.elements?.[element];
       const type = base?.dark?.default?.type?.[this.type];
       const variant = type?.variant?.[this.variant];
@@ -212,7 +212,7 @@ export class Style {
   }
 
   getStyleSize<T>(element: ButtonElements, size: Exclude<Size, 'md'>): T {
-    return this.cache(element, size, () => {
+    return this.cache([element, size], () => {
       const base = this.schema?.elements?.[element];
       const type = base?.light?.default?.type?.[this.type];
       const variant = type?.variant?.[this.variant];
@@ -228,8 +228,7 @@ export class Style {
   getResponsiveStyle<T>(element: ButtonElements): {
     [mediaQuery: string]: T;
   } {
-    const key = `responsive-${this.size ?? 'md'}`;
-    return this.cache(element, key, () => {
+    return this.cache([element, 'responsive', this.size || 'md'], () => {
       const responsive: { [mediaQuery: string]: T } = {};
 
       if (!this.size) {
@@ -261,7 +260,7 @@ export class Style {
   }
 
   getContrastStyle<T>(element: ButtonElements): ContrastStyle<T> {
-    return this.cache(element, 'contrast', () => {
+    return this.cache([element, 'contrast'], () => {
       const responsive: ContrastStyle<T> = {};
 
       const light: T = this.getStyleEssential(element);
