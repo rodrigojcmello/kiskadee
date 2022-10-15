@@ -2,9 +2,9 @@
 import type { FC, ReactElement } from 'react';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import type {
+  ButtonProps,
   ButtonType,
   ButtonVariant,
-  ButtonProps,
   Size,
 } from '@kiskadee/react';
 import { Button, KiskadeeContext } from '@kiskadee/react';

@@ -3,7 +3,7 @@ import type { FC, MouseEvent } from 'react';
 import { useMemo } from 'react';
 import type { ButtonProps, ButtonStyleProps } from './Button.types';
 import { useKiskadee } from '../../schema';
-import { ButtonStyle } from './Button.style';
+import { ButtonClass } from './Button.class';
 import { EllipsisLoader } from '../Loader';
 
 export const Button: FC<ButtonProps> = ({
@@ -32,6 +32,7 @@ export const Button: FC<ButtonProps> = ({
       author: schema.author,
       option: schema.theme,
     },
+    component: 'button',
     schema: schema.component.button,
     size,
     type,
@@ -48,14 +49,14 @@ export const Button: FC<ButtonProps> = ({
   if (interaction) className.push(`--${interaction}`);
 
   const button = useMemo(() => {
-    return new ButtonStyle(style);
+    return new ButtonClass(style);
   }, [style]);
 
   const buttonContainer = button.container();
   const buttonText = button.text();
   const buttonIcon = button.icon();
-  const buttonIconLeft = button.iconLeft();
-  const buttonIconRight = button.iconRight();
+  const buttonIconLeft = button.iconLeft2();
+  const buttonIconRight = button.iconRight2();
   const buttonCommon = button.common();
 
   const createRipple = (event: MouseEvent<HTMLButtonElement>) => {
@@ -84,6 +85,7 @@ export const Button: FC<ButtonProps> = ({
 
   console.log('----------------------------------------------------- rerender');
 
+  // TODO: support link ("a" tag)
   return (
     <button
       data-test-id={'k-button'}

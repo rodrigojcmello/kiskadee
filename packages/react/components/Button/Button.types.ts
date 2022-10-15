@@ -1,23 +1,18 @@
-import type { CSSProperties, ReactElement, MouseEvent } from 'react';
+import type { CSSProperties, MouseEvent, ReactElement } from 'react';
 import type * as Util from '@stitches/core/types/util';
-import type { KiskadeeTheme } from '@kiskadee/react';
+import type {
+  ButtonType,
+  ButtonVariant,
+  KiskadeeTheme,
+  Size,
+} from '@kiskadee/react';
 
 export type IconPosition = 'Left' | 'Right';
-
-export type ButtonType = 'contained' | 'outline' | 'flat';
 
 export type StitchesProperties =
   | string
   | Util.Function
   | { [name: string]: unknown };
-
-export type ButtonVariant =
-  | 'primary'
-  | 'secondary'
-  | 'tertiary'
-  | 'success'
-  | 'warning'
-  | 'danger';
 
 export type InteractionStatus =
   | 'rest'
@@ -26,17 +21,6 @@ export type InteractionStatus =
   | 'pressed'
   | 'visited'
   | 'disabled';
-
-export type Size =
-  | 'xxxl'
-  | 'xxl'
-  | 'xl'
-  | 'lg'
-  | 'md'
-  | 'sm'
-  | 'xs'
-  | 'xxs'
-  | 'xxxs';
 
 export interface ButtonProps {
   label?: string;
@@ -65,6 +49,7 @@ export type ButtonStyleProps = {
   width: Exclude<ButtonProps['width'], undefined>;
   type: ButtonProps['type'];
   variant: ButtonProps['variant'];
+  component: keyof KiskadeeTheme['component'];
 
   // Optional
   iconType: ButtonProps['iconType'];
