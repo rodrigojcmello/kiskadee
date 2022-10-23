@@ -23,19 +23,33 @@ const ButtonOnly = () => {
   return (
     <>
       <Bar />
-      <div style={{ paddingTop: 100, paddingLeft: 50 }}>
+      <div style={{ paddingTop: 100, paddingLeft: 50, width: 200 }}>
         <Button
           type={'contained'}
           variant={'primary'}
           label={'fulano'}
-          size={'md'}
+          size={'sm'}
           isLoading={loading}
-          onClick={() => {
-            setLoading(true);
-          }}
-          iconLeft={
-            <span className={'material-symbols-outlined'}>thumb_up</span>
-          }
+          // onClick={() => {
+          //   setLoading(true);
+          // }}
+          // iconLeft={
+          //   <span className={'material-symbols-outlined'}>thumb_up</span>
+          // }
+        />
+      </div>
+      <div style={{ paddingTop: 100, paddingLeft: 50, width: 200 }}>
+        <Button
+          type={'contained'}
+          variant={'primary'}
+          label={'fulano'}
+          isLoading={loading}
+          // onClick={() => {
+          //   setLoading(true);
+          // }}
+          // iconLeft={
+          //   <span className={'material-symbols-outlined'}>thumb_up</span>
+          // }
         />
       </div>
       {/* <div style={{ paddingTop: 50, paddingLeft: 50 }}> */}

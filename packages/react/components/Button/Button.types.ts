@@ -32,12 +32,12 @@ export interface ButtonProps {
   variant: ButtonVariant;
   type: ButtonType;
   interaction?: InteractionStatus;
-  borderRadius?: 'none' | 'full' | 'rounded' | 'default';
+  borderRadius?: BorderRadiusState;
   textAlign?: 'left' | 'center' | 'right';
   disabled?: boolean;
   iconLeft?: ReactElement;
   iconRight?: ReactElement;
-  iconType?: 'icon' | 'attached' | 'detached';
+  iconType?: IconState;
   size?: Size;
   isLoading?: boolean;
 }
@@ -45,14 +45,14 @@ export interface ButtonProps {
 export type ButtonStyleProps = {
   // TODO: each should have a default
   // Required
-  borderRadius: Exclude<ButtonProps['borderRadius'], undefined>;
   width: Exclude<ButtonProps['width'], undefined>;
   type: ButtonProps['type'];
   variant: ButtonProps['variant'];
   component: keyof KiskadeeTheme['component'];
 
   // Optional
-  iconType: ButtonProps['iconType'];
+  borderRadius?: BorderRadiusState;
+  iconType?: IconState;
   size?: Size;
   theme: {
     name: string;
@@ -90,9 +90,13 @@ export type ButtonElementContainer = {
   rippleColor?: CSSProperties['backgroundColor'];
 
   // Border - Dark Mode
+  // TODO: remove CSSProperties
   borderWidth?: CSSProperties['borderWidth'];
   borderStyle?: CSSProperties['borderStyle'];
   borderColor?: CSSProperties['borderColor'];
+
+  // Border Radius - Responsive
+  borderRadius?: number;
 };
 
 // Icon
@@ -100,6 +104,7 @@ export type ButtonElementContainer = {
 export interface ButtonElementIcon {
   // Color - Dark Mode
   color?: CSSProperties['color'];
+  backgroundColor?: CSSProperties['backgroundColor'];
 
   // Size - Responsive
   fontSize?: CSSProperties['fontSize'];
@@ -137,14 +142,7 @@ export interface ButtonElementText {
 
 export interface ContainerOptions {
   widthMin?: number;
-  borderRadius?: {
-    default?: 'full' | 'rounded' | 'none';
-    variant?: {
-      full?: Partial<Record<Size, number>>;
-      rounded?: Partial<Record<Size, number>>;
-    };
-    none?: 0;
-  };
+  borderRadius?: BorderRadiusState;
   textAlign?: {
     default?: 'left' | 'center' | 'right';
     left?: true;
@@ -221,19 +219,35 @@ export type Breakpoint = keyof Exclude<
   undefined
 >;
 
-export type IconType = 'alone' | 'attached' | 'detached';
+export type BorderRadiusState = 'None' | 'Full' | 'Rounded';
+
+export type IconState = 'Alone' | 'Attached' | 'Detached';
+
+export type Prefix<
+  Element extends string,
+  State extends string
+> = `${Element}${State}`;
+
+export type ButtonStatus =
+  | InteractionStatus
+  | Prefix<'borderRadius', BorderRadiusState>
+  | Prefix<'icon', IconState>;
 
 export interface ButtonSchema {
   option?: ContainerOptions;
   elements?: {
-    container?: ElementTheme<ButtonElementContainer>;
-    iconLeft?: ElementTheme<ButtonElementIcon, IconType>;
-    iconRight?: ElementTheme<ButtonElementIcon, IconType>;
-    // iconAlone?: ElementTheme<ButtonElementIcon>;
-    // leftIconAttached?: ElementTheme<ButtonElementIcon>;
-    // leftIconDetached?: ElementTheme<ButtonElementIcon>;
-    // rightIconAttached?: ElementTheme<ButtonElementIcon>;
-    // rightIconDetached?: ElementTheme<ButtonElementIcon>;
+    container?: ElementTheme<
+      ButtonElementContainer,
+      Prefix<'borderRadius', BorderRadiusState>
+    >;
+    iconLeft?: ElementTheme<
+      ButtonElementIcon,
+      Prefix<'icon', IconState> & Prefix<'borderRadius', BorderRadiusState>
+    >;
+    iconRight?: ElementTheme<
+      ButtonElementIcon,
+      Prefix<'icon', IconState> & Prefix<'borderRadius', BorderRadiusState>
+    >;
     text?: ElementTheme<ButtonElementText>;
   };
 }

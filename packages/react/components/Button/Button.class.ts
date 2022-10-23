@@ -5,6 +5,9 @@ import type {
   ButtonElementIcon,
   ButtonElementText,
   IconPosition,
+  BorderRadiusState,
+  Prefix,
+  ButtonStatus,
 } from './Button.types';
 import { RIPPLE_DURATION, RIPPLE_TIMING_FUNCTION } from './constants';
 import { Style } from '../../utils';
@@ -68,7 +71,7 @@ export class ButtonClass extends Style {
   }
 
   containerWidth() {
-    const isBlock = this.iconType !== 'icon' || this.width === 'block';
+    const isBlock = this.iconType !== 'Alone' || this.width === 'block';
 
     const width = isBlock ? '100%' : 'auto';
 
@@ -82,28 +85,33 @@ export class ButtonClass extends Style {
 
   containerRadius() {
     return this.cache(
-      ['container', 'radius', this.borderRadius, this.size || 'md'],
+      [
+        'container',
+        'radius',
+        this.borderRadius || this.options?.borderRadius || 'default',
+        this.size || 'md',
+      ],
       () => {
-        let borderRadius;
-        const defaultBorder = this.options?.borderRadius?.default;
-        const variant = this.options?.borderRadius?.variant;
+        let status: Prefix<'borderRadius', BorderRadiusState> =
+          'borderRadiusNone';
 
-        if (this.borderRadius === 'rounded' || this.borderRadius === 'full') {
-          borderRadius =
-            variant?.[this.borderRadius]?.[this.size || 'md'] ||
-            variant?.[this.borderRadius]?.md;
-        } else if (
-          (defaultBorder === 'rounded' || defaultBorder === 'full') &&
-          this.borderRadius === 'default'
-        ) {
-          borderRadius =
-            variant?.[defaultBorder]?.[this.size || 'md'] ||
-            variant?.[defaultBorder]?.md;
+        if (!this.borderRadius && this.options?.borderRadius) {
+          status = `borderRadius${this.options?.borderRadius}`;
+        } else if (this.borderRadius === 'Rounded') {
+          status = 'borderRadiusRounded';
+        } else if (this.borderRadius === 'Full') {
+          status = 'borderRadiusFull';
         }
 
+        const containerBorderRadius = this.getStyleStatus<
+          ButtonElementContainer,
+          ButtonStatus
+        >('container', status);
+
         return ButtonClass.render({
-          // TODO: need to handle responsive
-          borderRadius: borderRadius || 0,
+          ...containerBorderRadius,
+          // // TODO: need to handle responsive
+          // borderRadius: borderRadius || 0,
         });
       }
     );
@@ -158,84 +166,90 @@ export class ButtonClass extends Style {
 
   containerCore() {
     return this.cache(['container', 'core'], () => {
-      const containerHover = this.getStyleStatus<ButtonElementContainer>(
-        'container',
+      const containerHover = this.getStyleStatus<
+        ButtonElementContainer,
+        ButtonStatus
+      >('container', 'hover');
+      const textHover = this.getStyleStatus<ButtonElementText, ButtonStatus>(
+        'text',
         'hover'
       );
-      const textHover = this.getStyleStatus<ButtonElementText>('text', 'hover');
-      const leftIconHover = this.getStyleStatus<ButtonElementIcon>(
-        'iconLeft',
-        'hover'
-      );
-      const rightIconHover = this.getStyleStatus<ButtonElementIcon>(
-        'iconRight',
-        'hover'
-      );
+      const leftIconHover = this.getStyleStatus<
+        ButtonElementIcon,
+        ButtonStatus
+      >('iconLeft', 'hover');
+      const rightIconHover = this.getStyleStatus<
+        ButtonElementIcon,
+        ButtonStatus
+      >('iconRight', 'hover');
 
-      const containerPressed = this.getStyleStatus<ButtonElementContainer>(
-        'container',
-        'pressed'
-      );
-      const textPressed = this.getStyleStatus<ButtonElementText>(
+      const containerPressed = this.getStyleStatus<
+        ButtonElementContainer,
+        ButtonStatus
+      >('container', 'pressed');
+      const textPressed = this.getStyleStatus<ButtonElementText, ButtonStatus>(
         'text',
         'pressed'
       );
-      const leftIconPressed = this.getStyleStatus<ButtonElementIcon>(
-        'iconLeft',
-        'pressed'
-      );
-      const rightIconPressed = this.getStyleStatus<ButtonElementIcon>(
-        'iconRight',
-        'pressed'
-      );
+      const leftIconPressed = this.getStyleStatus<
+        ButtonElementIcon,
+        ButtonStatus
+      >('iconLeft', 'pressed');
+      const rightIconPressed = this.getStyleStatus<
+        ButtonElementIcon,
+        ButtonStatus
+      >('iconRight', 'pressed');
 
-      const containerFocus = this.getStyleStatus<ButtonElementContainer>(
-        'container',
+      const containerFocus = this.getStyleStatus<
+        ButtonElementContainer,
+        ButtonStatus
+      >('container', 'focus');
+      const textFocus = this.getStyleStatus<ButtonElementText, ButtonStatus>(
+        'text',
         'focus'
       );
-      const textFocus = this.getStyleStatus<ButtonElementText>('text', 'focus');
-      const leftIconFocus = this.getStyleStatus<ButtonElementIcon>(
-        'iconLeft',
-        'focus'
-      );
-      const rightIconFocus = this.getStyleStatus<ButtonElementIcon>(
-        'iconRight',
-        'focus'
-      );
+      const leftIconFocus = this.getStyleStatus<
+        ButtonElementIcon,
+        ButtonStatus
+      >('iconLeft', 'focus');
+      const rightIconFocus = this.getStyleStatus<
+        ButtonElementIcon,
+        ButtonStatus
+      >('iconRight', 'focus');
 
-      const containerVisited = this.getStyleStatus<ButtonElementContainer>(
-        'container',
-        'visited'
-      );
-      const textVisited = this.getStyleStatus<ButtonElementText>(
+      const containerVisited = this.getStyleStatus<
+        ButtonElementContainer,
+        ButtonStatus
+      >('container', 'visited');
+      const textVisited = this.getStyleStatus<ButtonElementText, ButtonStatus>(
         'text',
         'visited'
       );
-      const leftIconVisited = this.getStyleStatus<ButtonElementIcon>(
-        'iconLeft',
-        'visited'
-      );
-      const rightIconVisited = this.getStyleStatus<ButtonElementIcon>(
-        'iconRight',
-        'visited'
-      );
+      const leftIconVisited = this.getStyleStatus<
+        ButtonElementIcon,
+        ButtonStatus
+      >('iconLeft', 'visited');
+      const rightIconVisited = this.getStyleStatus<
+        ButtonElementIcon,
+        ButtonStatus
+      >('iconRight', 'visited');
 
-      const containerDisabled = this.getStyleStatus<ButtonElementContainer>(
-        'container',
-        'disabled'
-      );
-      const textDisabled = this.getStyleStatus<ButtonElementText>(
+      const containerDisabled = this.getStyleStatus<
+        ButtonElementContainer,
+        ButtonStatus
+      >('container', 'disabled');
+      const textDisabled = this.getStyleStatus<ButtonElementText, ButtonStatus>(
         'text',
         'disabled'
       );
-      const leftIconDisabled = this.getStyleStatus<ButtonElementIcon>(
-        'iconLeft',
-        'disabled'
-      );
-      const rightIconDisabled = this.getStyleStatus<ButtonElementIcon>(
-        'iconRight',
-        'disabled'
-      );
+      const leftIconDisabled = this.getStyleStatus<
+        ButtonElementIcon,
+        ButtonStatus
+      >('iconLeft', 'disabled');
+      const rightIconDisabled = this.getStyleStatus<
+        ButtonElementIcon,
+        ButtonStatus
+      >('iconRight', 'disabled');
 
       const elementStyle =
         this.getResponsiveStyle<ButtonElementContainer>('container');
@@ -414,7 +428,7 @@ export class ButtonClass extends Style {
 
   textWidth() {
     const isBlock =
-      this.iconType === 'detached' || !(this.iconLeft || this.iconRight);
+      this.iconType === 'Detached' || !(this.iconLeft || this.iconRight);
 
     const width = isBlock ? '100%' : 'auto';
 
@@ -457,7 +471,7 @@ export class ButtonClass extends Style {
             ['paddingTop', 'paddingBottom', 'paddingRight', 'paddingLeft']
           );
 
-        const isAttached = this.iconType === 'attached';
+        const isAttached = this.iconType === 'Attached';
         const hasLeftIcon = this.iconLeft && isAttached;
         const hasRightIcon = this.iconRight && isAttached;
 
@@ -499,6 +513,7 @@ export class ButtonClass extends Style {
   iconLeft2() {
     return {
       color: this.iconColor('Left'),
+      backgroundColor: this.iconBackgroundColor('Left'),
       size: this.iconSize('Left'),
       padding: this.iconPadding('Left'),
     };
@@ -507,6 +522,7 @@ export class ButtonClass extends Style {
   iconRight2() {
     return {
       color: this.iconColor('Right'),
+      backgroundColor: this.iconBackgroundColor('Right'),
       size: this.iconSize('Right'),
       padding: this.iconPadding('Right'),
     };
@@ -546,6 +562,22 @@ export class ButtonClass extends Style {
           '& > *': {
             fill: colorContrast,
           },
+        },
+      });
+    });
+  }
+
+  iconBackgroundColor(position: IconPosition) {
+    return this.cache(['icon', 'background-color', position], () => {
+      const backgroundColorContrast = this.getContrastStyle<ButtonElementIcon>(
+        `icon${position}`
+      );
+
+      return ButtonClass.render({
+        backgroundColor: backgroundColorContrast.defaultMode?.backgroundColor,
+
+        '@media (prefers-color-scheme: dark)': backgroundColorContrast && {
+          color: backgroundColorContrast.contrastMode?.backgroundColor,
         },
       });
     });

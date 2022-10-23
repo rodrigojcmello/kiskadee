@@ -13,13 +13,7 @@ export const sandbox: KiskadeeTheme = {
     button: {
       option: {
         widthMin: 100,
-        borderRadius: {
-          default: 'rounded',
-          variant: {
-            rounded: { xl: 24, lg: 18, md: 16, sm: 10 },
-            full: { xl: 48, lg: 30, md: 20, sm: 16 },
-          },
-        },
+        borderRadius: 'Rounded',
         textAlign: {
           default: 'center',
           center: true,
@@ -55,6 +49,20 @@ export const sandbox: KiskadeeTheme = {
                     boxShadow: 'none',
                   },
                 },
+                borderRadiusFull: {
+                  xl: { borderRadius: 48 },
+                  lg: { borderRadius: 30 },
+                  md: { borderRadius: 20 },
+                  sm: { borderRadius: 16 },
+                },
+                borderRadiusRounded: {
+                  xl: { borderRadius: 24 },
+                  lg: { borderRadius: 18 },
+                  md: { borderRadius: 16 },
+                  sm: { borderRadius: 10 },
+                },
+                // TODO: keep empty if is enabled
+                borderRadiusNone: {},
               },
               type: {
                 contained: {
@@ -264,10 +272,12 @@ export const sandbox: KiskadeeTheme = {
                 rest: {
                   md: {
                     fontSize: 24,
-                    paddingTop: 8,
-                    paddingBottom: 8,
-                    paddingLeft: 8,
-                    paddingRight: 8,
+                    paddingTop: 6,
+                    paddingBottom: 6,
+                    paddingLeft: 6,
+                    paddingRight: 6,
+                    color: '#6750A4',
+                    backgroundColor: '#FFFFFF',
                   },
                   lg: {
                     paddingTop: 18,

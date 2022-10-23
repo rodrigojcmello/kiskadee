@@ -6,10 +6,8 @@ import type {
   ButtonStyleProps,
   ContainerOptions,
   ContrastStyle,
-  InteractionStatus,
   Size,
   StitchesProperties,
-  IconType,
   KiskadeeTheme,
 } from '@kiskadee/react';
 import { CacheStyle } from './CacheStyle.class';
@@ -167,32 +165,35 @@ export class Style {
 
   getStyleEssential<T>(element: ButtonElements): T {
     return this.cache([element, 'essential'], () => {
-      const baseSchema = this.schema?.elements?.[element];
-      const typeSchema = baseSchema?.light?.default?.type?.[this.type];
-      const variantSchema = typeSchema?.variant?.[this.variant];
-
-      return {
-        ...baseSchema?.light?.default?.base?.rest?.md,
-        ...typeSchema?.base?.md,
-        ...variantSchema?.rest?.md,
-      } as T;
-    });
-  }
-
-  getStyleStatus<T, ExtraStatus = string | undefined>(
-    element: ButtonElements,
-    status: ExtraStatus extends IconType
-      ? ExtraStatus | InteractionStatus
-      : InteractionStatus
-  ): T {
-    return this.cache([element, status], () => {
       const base = this.schema?.elements?.[element];
       const type = base?.light?.default?.type?.[this.type];
       const variant = type?.variant?.[this.variant];
 
       return {
-        ...base?.light?.default?.base?.[status]?.md,
-        ...variant?.[status]?.md,
+        // TODO: fix this type
+        // @ts-ignore
+        ...base?.light?.default?.base?.rest?.md,
+        ...type?.base?.md,
+        // @ts-ignore
+        ...variant?.rest?.md,
+      } as T;
+    });
+  }
+
+  getStyleStatus<T, ComponentStatus extends string>(
+    element: ButtonElements,
+    status: ComponentStatus
+  ): T {
+    return this.cache([element, status, this.size || 'md'], () => {
+      const base = this.schema?.elements?.[element];
+      const type = base?.light?.default?.type?.[this.type];
+      const variant = type?.variant?.[this.variant];
+
+      return {
+        // @ts-ignore
+        ...base?.light?.default?.base?.[status]?.[this.size || 'md'],
+        // @ts-ignore
+        ...variant?.[status]?.[this.size || 'md'],
       } as T;
     });
   }
@@ -204,8 +205,11 @@ export class Style {
       const variant = type?.variant?.[this.variant];
 
       return {
+        // TODO: fix this type
+        // @ts-ignore
         ...base?.dark?.default?.base?.rest?.md,
         ...type?.base?.md,
+        // @ts-ignore
         ...variant?.rest?.md,
       } as T;
     });
@@ -218,8 +222,11 @@ export class Style {
       const variant = type?.variant?.[this.variant];
 
       return {
+        // TODO: fix this type
+        // @ts-ignore
         ...base?.light?.default?.base?.rest?.[size],
         ...type?.base?.[size],
+        // @ts-ignore
         ...variant?.rest?.[size],
       } as T;
     });

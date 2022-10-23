@@ -33,7 +33,7 @@ export const ButtonDocumentation: FC = () => {
   const [variant, setVariant] = useState<ButtonVariant>('primary');
   const [type, setType] = useState<ButtonType>('contained');
   const [pageLoad, setPageLoad] = useState(false);
-  const [radius, setRadius] = useState<ButtonProps['borderRadius']>('default');
+  const [radius, setRadius] = useState<ButtonProps['borderRadius']>();
   const [iconType, setIconType] = useState<ButtonProps['iconType'] | undefined>(
     undefined
   );
@@ -53,7 +53,7 @@ export const ButtonDocumentation: FC = () => {
   useEffect(() => {
     setType('contained');
     setVariant('primary');
-    setRadius('default');
+    setRadius(undefined);
     setIconType(undefined);
     setIconLeft(undefined);
     setTextAlign(undefined);
@@ -238,7 +238,7 @@ export const ButtonDocumentation: FC = () => {
                 type={type}
                 variant={variant}
                 borderRadius={radius}
-                iconType={'icon'}
+                iconType={'Alone'}
                 iconLeft={
                   <span className={'material-symbols-outlined'}>thumb_up</span>
                 }
@@ -275,7 +275,7 @@ export const ButtonDocumentation: FC = () => {
                 iconLeft={
                   <span className={'material-symbols-outlined'}>thumb_up</span>
                 }
-                iconType={'attached'}
+                iconType={'Attached'}
                 textAlign={textAlign}
                 size={size}
                 onClick={(): void => {
@@ -285,7 +285,7 @@ export const ButtonDocumentation: FC = () => {
                       thumb_up
                     </span>
                   );
-                  setIconType('attached');
+                  setIconType('Attached');
                 }}
               />
             </div>
@@ -306,12 +306,12 @@ export const ButtonDocumentation: FC = () => {
                 iconLeft={
                   <span className={'material-symbols-outlined'}>thumb_up</span>
                 }
-                iconType={'detached'}
+                iconType={'Detached'}
                 textAlign={textAlign}
                 size={size}
                 onClick={(): void => {
                   setLabel('Click me');
-                  setIconType('detached');
+                  setIconType('Detached');
                   setIconLeft(
                     <span className={'material-symbols-outlined'}>
                       thumb_up
@@ -339,11 +339,11 @@ export const ButtonDocumentation: FC = () => {
                     expand_more
                   </span>
                 }
-                iconType={'attached'}
+                iconType={'Attached'}
                 textAlign={textAlign}
                 size={size}
                 onClick={(): void => {
-                  setIconType('attached');
+                  setIconType('Attached');
                   setLabel('Click me');
                   setIconRight(
                     <span className={'material-symbols-outlined'}>
@@ -372,12 +372,12 @@ export const ButtonDocumentation: FC = () => {
                     expand_more
                   </span>
                 }
-                iconType={'detached'}
+                iconType={'Detached'}
                 textAlign={textAlign}
                 size={size}
                 onClick={(): void => {
                   setLabel('Click me');
-                  setIconType('detached');
+                  setIconType('Detached');
                   setIconRight(
                     <span className={'material-symbols-outlined'}>
                       expand_more
@@ -804,20 +804,21 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>
             Rounded
-            {buttonOption?.borderRadius?.default ===
-              buttonOption?.borderRadius?.variant?.rounded && ' (default)'}
+            {buttonOption?.borderRadius === 'Rounded' && ' (default)'}
           </BoxTitle>
-          {buttonOption?.borderRadius?.variant?.rounded !== undefined ? (
+          {buttonContainer?.base?.borderRadiusRounded ||
+          buttonContainer?.type?.[type]?.variant?.[variant]
+            ?.borderRadiusRounded ? (
             <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
-                borderRadius={'rounded'}
+                borderRadius={'Rounded'}
                 type={type}
                 variant={variant}
                 textAlign={textAlign}
                 size={size}
-                onClick={(): void => setRadius('rounded')}
+                onClick={(): void => setRadius('Rounded')}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
                 iconType={iconType}
@@ -831,20 +832,21 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>
             Full
-            {buttonOption?.borderRadius?.default ===
-              buttonOption?.borderRadius?.variant?.full && ' (default)'}
+            {buttonOption?.borderRadius === 'Full' && ' (default)'}
           </BoxTitle>
-          {buttonOption?.borderRadius?.variant?.full !== undefined ? (
+          {buttonContainer?.base?.borderRadiusFull ||
+          buttonContainer?.type?.[type]?.variant?.[variant]
+            ?.borderRadiusFull ? (
             <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
-                borderRadius={'full'}
+                borderRadius={'Full'}
                 type={type}
                 variant={variant}
                 textAlign={textAlign}
                 size={size}
-                onClick={(): void => setRadius('full')}
+                onClick={(): void => setRadius('Full')}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
                 iconType={iconType}
@@ -858,20 +860,21 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>
             None
-            {buttonOption?.borderRadius?.default ===
-              buttonOption?.borderRadius?.none && ' (default)'}
+            {buttonOption?.borderRadius === 'None' && ' (default)'}
           </BoxTitle>
-          {buttonOption?.borderRadius?.none !== undefined ? (
+          {buttonContainer?.base?.borderRadiusNone ||
+          buttonContainer?.type?.[type]?.variant?.[variant]
+            ?.borderRadiusNone ? (
             <div className={style.buttonWrap}>
               <Button
                 label={label}
                 width={width}
-                borderRadius={'none'}
+                borderRadius={'None'}
                 type={type}
                 variant={variant}
                 textAlign={textAlign}
                 size={size}
-                onClick={(): void => setRadius('none')}
+                onClick={(): void => setRadius('None')}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
                 iconType={iconType}
@@ -904,7 +907,7 @@ export const ButtonDocumentation: FC = () => {
                 }}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
-                iconType={'detached'}
+                iconType={'Detached'}
               />
             </div>
           ) : (
@@ -932,7 +935,7 @@ export const ButtonDocumentation: FC = () => {
                 }}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
-                iconType={'detached'}
+                iconType={'Detached'}
               />
             </div>
           ) : (
@@ -960,7 +963,7 @@ export const ButtonDocumentation: FC = () => {
                 }}
                 iconLeft={iconLeft}
                 iconRight={iconRight}
-                iconType={'detached'}
+                iconType={'Detached'}
               />
             </div>
           ) : (
