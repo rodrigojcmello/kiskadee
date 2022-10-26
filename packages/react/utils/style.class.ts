@@ -182,18 +182,20 @@ export class Style {
 
   getStyleStatus<T, ComponentStatus extends string>(
     element: ButtonElements,
-    status: ComponentStatus
+    status: ComponentStatus,
+    size?: Size
   ): T {
-    return this.cache([element, status, this.size || 'md'], () => {
+    const sizeValue = size || this.size || 'md';
+    return this.cache([element, status, sizeValue], () => {
       const base = this.schema?.elements?.[element];
       const type = base?.light?.default?.type?.[this.type];
       const variant = type?.variant?.[this.variant];
 
       return {
         // @ts-ignore
-        ...base?.light?.default?.base?.[status]?.[this.size || 'md'],
+        ...base?.light?.default?.base?.[status]?.[sizeValue],
         // @ts-ignore
-        ...variant?.[status]?.[this.size || 'md'],
+        ...variant?.[status]?.[sizeValue],
       } as T;
     });
   }
@@ -232,38 +234,56 @@ export class Style {
     });
   }
 
-  getResponsiveStyle<T>(element: ButtonElements): {
+  getResponsiveStyle<T, Status = string | undefined>(
+    element: ButtonElements,
+    status?: Status extends string ? Status : undefined
+  ): {
     [mediaQuery: string]: T;
   } {
-    return this.cache([element, 'responsive', this.size || 'md'], () => {
-      const responsive: { [mediaQuery: string]: T } = {};
+    return this.cache(
+      [element, 'responsive', this.size || 'md', (status as string) || '-'],
+      () => {
+        const responsive: { [mediaQuery: string]: T } = {};
 
-      if (!this.size) {
-        for (const breakpoint of Object.keys(this.options?.responsive || {})) {
-          const size = this?.options?.responsive?.[breakpoint as Breakpoint];
-          if (size) {
-            responsive[
-              `@media (min-width: ${
-                this.responsive[breakpoint as Breakpoint]
-              }px)`
-            ] =
-              size === 'md'
-                ? this.getStyleEssential(element)
-                : this.getStyleSize(element, size);
+        if (!this.size) {
+          for (const breakpoint of Object.keys(
+            this.options?.responsive || {}
+          )) {
+            const size = this?.options?.responsive?.[breakpoint as Breakpoint];
+            if (size) {
+              responsive[
+                `@media (min-width: ${
+                  this.responsive[breakpoint as Breakpoint]
+                }px)`
+              ] =
+                size === 'md'
+                  ? {
+                      ...this.getStyleEssential(element),
+                      ...(status
+                        ? this.getStyleStatus(element, status, size)
+                        : {}),
+                    }
+                  : {
+                      ...this.getStyleSize(element, size),
+                      ...(status
+                        ? this.getStyleStatus(element, status, size)
+                        : {}),
+                    };
+            }
           }
+        } else {
+          responsive['@media (min-width: 0px)'] = {
+            ...this.getStyleEssential(element),
+            ...(!(!this.size || this.size === 'md')
+              ? this.getStyleSize(element, this.size)
+              : {}),
+            ...(status ? this.getStyleStatus(element, status) : {}),
+          };
         }
-      } else {
-        responsive['@media (min-width: 0px)'] =
-          !this.size || this.size === 'md'
-            ? this.getStyleEssential(element)
-            : {
-                ...this.getStyleEssential(element),
-                ...this.getStyleSize(element, this.size),
-              };
-      }
 
-      return responsive;
-    });
+        return responsive;
+      }
+    );
   }
 
   getContrastStyle<T>(element: ButtonElements): ContrastStyle<T> {

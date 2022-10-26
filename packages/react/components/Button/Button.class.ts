@@ -84,37 +84,32 @@ export class ButtonClass extends Style {
   }
 
   containerRadius() {
-    return this.cache(
-      [
-        'container',
-        'radius',
-        this.borderRadius || this.options?.borderRadius || 'default',
-        this.size || 'md',
-      ],
-      () => {
-        let status: Prefix<'borderRadius', BorderRadiusState> =
-          'borderRadiusNone';
+    let status: Prefix<'borderRadius', BorderRadiusState> = 'borderRadiusNone';
 
-        if (!this.borderRadius && this.options?.borderRadius) {
-          status = `borderRadius${this.options?.borderRadius}`;
-        } else if (this.borderRadius === 'Rounded') {
-          status = 'borderRadiusRounded';
-        } else if (this.borderRadius === 'Full') {
-          status = 'borderRadiusFull';
-        }
+    if (!this.borderRadius && this.options?.borderRadius) {
+      status = `borderRadius${this.options?.borderRadius}`;
+    } else if (this.borderRadius === 'Rounded') {
+      status = 'borderRadiusRounded';
+    } else if (this.borderRadius === 'Full') {
+      status = 'borderRadiusFull';
+    }
 
-        const containerBorderRadius = this.getStyleStatus<
-          ButtonElementContainer,
-          ButtonStatus
-        >('container', status);
+    const elementStyle = this.getResponsiveStyle<
+      ButtonElementContainer,
+      ButtonStatus
+    >('container', status);
 
-        return ButtonClass.render({
-          ...containerBorderRadius,
-          // // TODO: need to handle responsive
-          // borderRadius: borderRadius || 0,
-        });
-      }
+    const p = ButtonClass.pickResponsiveProperties<ButtonElementContainer>(
+      elementStyle,
+      ['borderRadius']
     );
+
+    const { '@media (min-width: 0px)': elementRest, ...elementResponsive } = p;
+
+    return ButtonClass.render({
+      ...elementRest,
+      ...elementResponsive,
+    });
   }
 
   containerBackground() {
