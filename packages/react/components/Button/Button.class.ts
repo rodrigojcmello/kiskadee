@@ -30,21 +30,21 @@ export class ButtonClass extends Style {
   // Container Element
   //----------------------------------------------------------------------------
 
-  container() {
+  elementContainer() {
     return {
-      border: this.containerBorder(),
-      background: this.containerBackground(),
-      radius: this.containerRadius(),
-      width: this.containerWidth(),
-      core: this.containerCore(),
-      base: this.containerBase(),
-      rippleCore: this.containerRipple(),
-      rippleBackground: this.containerRippleBackground(),
+      border: this.containerBorderStyle(),
+      background: this.containerBackgroundStyle(),
+      radius: this.containerRadiusStyle(),
+      width: this.containerWidthStyle(),
+      core: this.containerCoreStyle(),
+      base: this.containerBaseStyle(),
+      rippleCore: this.containerRippleStyle(),
+      rippleBackground: this.containerRippleBackgroundStyle(),
     };
   }
 
   // LRU and LFU cache, memory-cache, ttl
-  containerRipple() {
+  containerRippleStyle() {
     return this.cache(['container', 'ripple'], () => {
       return ButtonClass.render({
         position: 'absolute',
@@ -57,7 +57,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  containerRippleBackground() {
+  containerRippleBackgroundStyle() {
     return this.cache(['container', 'ripple-background'], () => {
       const ripple = this.getContrastStyle<ButtonContainer>('container');
 
@@ -70,7 +70,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  containerWidth() {
+  containerWidthStyle() {
     const isBlock = this.iconType !== 'Alone' || this.width === 'block';
 
     const width = isBlock ? '100%' : 'auto';
@@ -83,7 +83,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  containerRadius() {
+  containerRadiusStyle() {
     let status: PrefixState<'borderRadius', BorderRadiusState> =
       'borderRadiusNone';
 
@@ -113,7 +113,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  containerBackground() {
+  containerBackgroundStyle() {
     return this.cache(['container', 'background'], () => {
       const style = this.getContrastStyle<ButtonContainer>('container');
 
@@ -128,7 +128,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  containerBorder() {
+  containerBorderStyle() {
     return this.cache(['container', 'border'], () => {
       const container = this.getStyleEssential<ButtonContainer>('container');
 
@@ -141,7 +141,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  containerBase() {
+  containerBaseStyle() {
     return this.cache(['container', 'base'], () => {
       return ButtonClass.render({
         userSelect: 'none',
@@ -159,7 +159,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  containerCore() {
+  containerCoreStyle() {
     return this.cache(['container', 'core'], () => {
       const containerHover = this.getStyleStatus<ButtonContainer, ButtonStatus>(
         'container',
@@ -355,19 +355,19 @@ export class ButtonClass extends Style {
   // Text Element
   //----------------------------------------------------------------------------
 
-  text() {
+  elementText() {
     return {
-      base: this.textBase(),
-      core: this.textCore(),
-      color: this.textColor(),
-      fontSize: this.textFontSize(),
-      padding: this.textPadding(),
-      width: this.textWidth(),
-      align: this.textAlign2(),
+      base: this.textBaseStyle(),
+      core: this.textCoreStyle(),
+      color: this.textColorStyle(),
+      fontSize: this.textFontSizeStyle(),
+      padding: this.textPaddingStyle(),
+      width: this.textWidthStyle(),
+      align: this.textAlignStyle(),
     };
   }
 
-  textBase() {
+  textBaseStyle() {
     return this.cache(['text', 'base'], () => {
       return ButtonClass.render({
         whiteSpace: 'nowrap',
@@ -376,7 +376,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  textCore() {
+  textCoreStyle() {
     return this.cache(['text', 'core'], () => {
       const textElement = this.getStyleEssential<ButtonText>('text');
 
@@ -391,7 +391,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  textFontSize() {
+  textFontSizeStyle() {
     return this.cache(['text', 'fontSize'], () => {
       let textResponsive = this.getResponsiveStyle<ButtonText>('text');
 
@@ -410,7 +410,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  textAlign2() {
+  textAlignStyle() {
     return this.cache(['text', 'align'], () => {
       return ButtonClass.render({
         textAlign:
@@ -421,7 +421,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  textWidth() {
+  textWidthStyle() {
     const isBlock =
       this.iconType === 'Detached' || !(this.iconLeft || this.iconRight);
 
@@ -434,7 +434,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  textColor() {
+  textColorStyle() {
     return this.cache(['text', 'color'], () => {
       const textContrast = this.getContrastStyle<ButtonText>('text');
 
@@ -447,7 +447,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  textPadding() {
+  textPaddingStyle() {
     return this.cache(
       [
         'text',
@@ -497,32 +497,33 @@ export class ButtonClass extends Style {
 
   // TODO: jpg/png/webp icon support
   // eslint-disable-next-line class-methods-use-this
-  icon() {
+  elementIcon() {
     return {
-      base: this.iconBase(),
+      base: this.iconBaseStyle(),
     };
   }
 
-  // TODO: rename it
-  iconLeft2() {
+  elementIconLeft() {
     return {
-      color: this.iconColor('Left'),
-      backgroundColor: this.iconBackgroundColor('Left'),
-      size: this.iconSize('Left'),
-      padding: this.iconPadding('Left'),
+      color: this.iconColorStyle('Left'),
+      backgroundColor: this.iconBackgroundColorStyle('Left'),
+      size: this.iconSizeStyle('Left'),
+      padding: this.iconPaddingStyle('Left'),
+      margin: this.iconMarginStyle('Left'),
     };
   }
 
-  iconRight2() {
+  elementIconRight() {
     return {
-      color: this.iconColor('Right'),
-      backgroundColor: this.iconBackgroundColor('Right'),
-      size: this.iconSize('Right'),
-      padding: this.iconPadding('Right'),
+      color: this.iconColorStyle('Right'),
+      backgroundColor: this.iconBackgroundColorStyle('Right'),
+      size: this.iconSizeStyle('Right'),
+      padding: this.iconPaddingStyle('Right'),
+      margin: this.iconMarginStyle('Right'),
     };
   }
 
-  iconBase() {
+  iconBaseStyle() {
     return this.cache(['icon', 'base'], () => {
       return ButtonClass.render({
         display: 'flex',
@@ -531,7 +532,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  iconColor(position: IconPosition) {
+  iconColorStyle(position: IconPosition) {
     return this.cache(['icon', 'color', position], () => {
       const iconContrast = this.getContrastStyle<ButtonIcon>(`icon${position}`);
       const textContrast = this.getContrastStyle<ButtonText>('text');
@@ -559,7 +560,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  iconBackgroundColor(position: IconPosition) {
+  iconBackgroundColorStyle(position: IconPosition) {
     return this.cache(['icon', 'background-color', position], () => {
       const backgroundColorContrast = this.getContrastStyle<ButtonIcon>(
         `icon${position}`
@@ -576,7 +577,7 @@ export class ButtonClass extends Style {
   }
 
   // TODO: support SVG
-  iconSize(position: IconPosition) {
+  iconSizeStyle(position: IconPosition) {
     return this.cache(['icon', 'size', position, this.size || 'md'], () => {
       let iconResponsive = this.getResponsiveStyle<ButtonIcon>(
         `icon${position}`
@@ -607,7 +608,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  iconPadding(position: IconPosition): string | undefined {
+  iconPaddingStyle(position: IconPosition): string | undefined {
     return this.cache(['icon', 'padding', position, this.size || 'md'], () => {
       let iconResponsive = this.getResponsiveStyle<ButtonIcon>(
         `icon${position}`
@@ -628,5 +629,32 @@ export class ButtonClass extends Style {
         ...iconPaddingResponsive,
       });
     });
+  }
+
+  iconMarginStyle(position: IconPosition): string | undefined {
+    return this.cache(
+      ['icon', 'margin', position, this.size || 'md', this.iconType || '-'],
+      () => {
+        let iconResponsive = this.getResponsiveStyle<ButtonIcon>(
+          `icon${position}`,
+          `icon${this.iconType}`
+        );
+
+        iconResponsive = ButtonClass.pickResponsiveProperties<ButtonIcon>(
+          iconResponsive,
+          ['marginTop', 'marginBottom', 'marginRight', 'marginLeft']
+        );
+
+        const {
+          '@media (min-width: 0px)': iconMargin,
+          ...iconMarginResponsive
+        } = iconResponsive;
+
+        return ButtonClass.render({
+          ...iconMargin,
+          ...iconMarginResponsive,
+        });
+      }
+    );
   }
 }

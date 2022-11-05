@@ -207,11 +207,8 @@ export class Style {
       const variant = type?.variant?.[this.variant];
 
       return {
-        // TODO: fix this type
-        // @ts-ignore
         ...base?.dark?.default?.base?.rest?.md,
         ...type?.base?.md,
-        // @ts-ignore
         ...variant?.rest?.md,
       } as T;
     });

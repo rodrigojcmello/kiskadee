@@ -114,6 +114,12 @@ export interface ButtonIcon {
   paddingRight?: number;
   paddingBottom?: number;
   paddingLeft?: number;
+
+  // Margin - Responsive
+  marginTop?: number;
+  marginRight?: number;
+  marginBottom?: number;
+  marginLeft?: number;
 }
 
 // Text

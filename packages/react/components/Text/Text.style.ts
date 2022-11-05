@@ -2,11 +2,11 @@
 import { ButtonClass } from '../Button/Button.class';
 
 export class TextStyle extends ButtonClass {
-  elementContainer() {
-    return {
-      color: TextStyle.containerColor(),
-    };
-  }
+  // textElementContainer() {
+  //   return {
+  //     color: TextStyle.containerColor(),
+  //   };
+  // }
 
   static containerColor() {
     return ButtonClass.render({

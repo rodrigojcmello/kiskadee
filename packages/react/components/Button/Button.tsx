@@ -52,11 +52,11 @@ export const Button: FC<ButtonProps> = ({
     return new ButtonClass(style);
   }, [style]);
 
-  const buttonContainer = button.container();
-  const buttonText = button.text();
-  const buttonIcon = button.icon();
-  const buttonIconLeft = button.iconLeft2();
-  const buttonIconRight = button.iconRight2();
+  const buttonContainer = button.elementContainer();
+  const buttonText = button.elementText();
+  const buttonIcon = button.elementIcon();
+  const buttonIconLeft = button.elementIconLeft();
+  const buttonIconRight = button.elementIconRight();
   const buttonCommon = button.common();
 
   const createRipple = (event: MouseEvent<HTMLButtonElement>) => {
@@ -118,6 +118,7 @@ export const Button: FC<ButtonProps> = ({
             buttonIconLeft.backgroundColor,
             buttonIconLeft.size,
             buttonIconLeft.padding,
+            buttonIconLeft.margin,
             buttonCommon.transition,
           ]
             .join(' ')
@@ -154,6 +155,7 @@ export const Button: FC<ButtonProps> = ({
             buttonIconRight.backgroundColor,
             buttonIconRight.size,
             buttonIconRight.padding,
+            buttonIconRight.margin,
             buttonCommon.transition,
           ]
             .join(' ')

@@ -274,7 +274,6 @@ export const sandbox: KiskadeeTheme = {
                     paddingBottom: 7,
                     paddingLeft: 7,
                     paddingRight: 7,
-                    // rodrigo: '#fff',
                     color: '#6750A4',
                     backgroundColor: '#FFFFFF',
                   },
@@ -290,6 +289,16 @@ export const sandbox: KiskadeeTheme = {
                     paddingBottom: 6,
                     paddingLeft: 6,
                     paddingRight: 6,
+                  },
+                },
+                iconAttached: {
+                  md: {
+                    marginRight: 4,
+                  },
+                },
+                iconDetached: {
+                  md: {
+                    marginLeft: 1,
                   },
                 },
               },
