@@ -224,11 +224,8 @@ export class Style {
       const variant = type?.variant?.[this.variant];
 
       return {
-        // TODO: fix this type
-        // @ts-ignore
         ...base?.light?.default?.base?.rest?.[size],
         ...type?.base?.[size],
-        // @ts-ignore
         ...variant?.rest?.[size],
       } as T;
     });
