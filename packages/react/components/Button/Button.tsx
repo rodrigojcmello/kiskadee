@@ -119,6 +119,7 @@ export const Button: FC<ButtonProps> = ({
             buttonIconLeft.size,
             buttonIconLeft.padding,
             buttonIconLeft.margin,
+            buttonIconLeft.radius,
             buttonCommon.transition,
           ]
             .join(' ')
@@ -156,6 +157,7 @@ export const Button: FC<ButtonProps> = ({
             buttonIconRight.size,
             buttonIconRight.padding,
             buttonIconRight.margin,
+            buttonIconRight.radius,
             buttonCommon.transition,
           ]
             .join(' ')

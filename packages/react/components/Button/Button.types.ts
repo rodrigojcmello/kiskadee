@@ -120,6 +120,9 @@ export interface ButtonIcon {
   marginRight?: number;
   marginBottom?: number;
   marginLeft?: number;
+
+  // Border Radius - Responsive
+  borderRadius?: number;
 }
 
 // Text

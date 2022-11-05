@@ -301,6 +301,16 @@ export const sandbox: KiskadeeTheme = {
                     marginLeft: 1,
                   },
                 },
+                borderRadiusRounded: {
+                  md: {
+                    borderRadius: 15,
+                  },
+                },
+                borderRadiusFull: {
+                  md: {
+                    borderRadius: 20,
+                  },
+                },
               },
               type: {
                 outline: {

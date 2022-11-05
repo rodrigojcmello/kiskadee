@@ -8,6 +8,7 @@ import type {
   BorderRadiusState,
   PrefixState,
   ButtonStatus,
+  ButtonElements,
 } from './Button.types';
 import { RIPPLE_DURATION, RIPPLE_TIMING_FUNCTION } from './constants';
 import { Style } from '../../utils';
@@ -34,7 +35,7 @@ export class ButtonClass extends Style {
     return {
       border: this.containerBorderStyle(),
       background: this.containerBackgroundStyle(),
-      radius: this.containerRadiusStyle(),
+      radius: this.propertyRadiusStyle('container'),
       width: this.containerWidthStyle(),
       core: this.containerCoreStyle(),
       base: this.containerBaseStyle(),
@@ -83,7 +84,7 @@ export class ButtonClass extends Style {
     });
   }
 
-  containerRadiusStyle() {
+  propertyRadiusStyle(element: ButtonElements) {
     let status: PrefixState<'borderRadius', BorderRadiusState> =
       'borderRadiusNone';
 
@@ -95,12 +96,10 @@ export class ButtonClass extends Style {
       status = 'borderRadiusFull';
     }
 
-    const elementStyle = this.getResponsiveStyle<ButtonContainer, ButtonStatus>(
-      'container',
-      status
-    );
+    const elementStyle = this.getResponsiveStyle(element, status);
 
     const p = ButtonClass.pickResponsiveProperties<ButtonContainer>(
+      // @ts-ignore
       elementStyle,
       ['borderRadius']
     );
@@ -510,6 +509,7 @@ export class ButtonClass extends Style {
       size: this.iconSizeStyle('Left'),
       padding: this.iconPaddingStyle('Left'),
       margin: this.iconMarginStyle('Left'),
+      radius: this.propertyRadiusStyle('iconLeft'),
     };
   }
 
@@ -520,6 +520,7 @@ export class ButtonClass extends Style {
       size: this.iconSizeStyle('Right'),
       padding: this.iconPaddingStyle('Right'),
       margin: this.iconMarginStyle('Right'),
+      radius: this.propertyRadiusStyle('iconRight'),
     };
   }
 
