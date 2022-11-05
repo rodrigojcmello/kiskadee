@@ -74,7 +74,7 @@ export type ButtonElements = keyof Exclude<ButtonSchema['elements'], undefined>;
 
 // Container
 
-export type ButtonElementContainer = {
+export type ButtonContainer = {
   // Core
   boxShadow?: CSSProperties['boxShadow'];
   outlineOffset?: CSSProperties['outlineOffset'];
@@ -101,7 +101,7 @@ export type ButtonElementContainer = {
 
 // Icon
 
-export interface ButtonElementIcon {
+export interface ButtonIcon {
   // Color - Dark Mode
   color?: CSSProperties['color'];
   backgroundColor?: CSSProperties['backgroundColor'];
@@ -118,7 +118,7 @@ export interface ButtonElementIcon {
 
 // Text
 
-export interface ButtonElementText {
+export interface ButtonText {
   // Core
   fontFamily?: CSSProperties['fontFamily'];
   fontStyle?: CSSProperties['fontStyle'];
@@ -171,42 +171,31 @@ export interface ContainerOptions {
   };
 }
 
-type ElementSchema<Base, ExtraStatus = string | undefined> = {
-  base?: Partial<
-    Record<
-      ExtraStatus extends string
-        ? InteractionStatus | ExtraStatus
-        : InteractionStatus,
-      Partial<Record<Size, Base>>
-    >
-  >;
-  type?: Partial<
-    Record<
-      ButtonType,
-      {
-        base?: Partial<Record<Size, Base>>;
-        variant?: Partial<
-          Record<
-            ButtonVariant,
-            Partial<
-              Record<
-                ExtraStatus extends string
-                  ? InteractionStatus | ExtraStatus
-                  : InteractionStatus,
-                Partial<Record<Size, Base>>
-              >
-            >
-          >
-        >;
-      }
-    >
-  >;
-};
-
-type ElementTheme<T, ExtraStatus = string | void> = Partial<
+type ElementTheme<T, Status extends string> = Partial<
   Record<
     'light' | 'dark',
-    Partial<Record<string | 'default', ElementSchema<T, ExtraStatus>>>
+    Partial<
+      Record<
+        string | 'default',
+        {
+          base?: Partial<Record<Status, Partial<Record<Size, T>>>>;
+          type?: Partial<
+            Record<
+              ButtonType,
+              {
+                base?: Partial<Record<Size, T>>;
+                variant?: Partial<
+                  Record<
+                    ButtonVariant,
+                    Partial<Record<Status, Partial<Record<Size, T>>>>
+                  >
+                >;
+              }
+            >
+          >;
+        }
+      >
+    >
   >
 >;
 
@@ -223,32 +212,48 @@ export type BorderRadiusState = 'None' | 'Full' | 'Rounded';
 
 export type IconState = 'Alone' | 'Attached' | 'Detached';
 
-export type Prefix<
+export type PrefixState<
   Element extends string,
   State extends string
 > = `${Element}${State}`;
 
+// Property Status -------------------------------------------------------------
+
+type PropertyBorderRadiusStatus = PrefixState<
+  'borderRadius',
+  BorderRadiusState
+>;
+type PropertyIconStatus = PrefixState<'icon', IconState>;
+
+// Button Status ---------------------------------------------------------------
+
 export type ButtonStatus =
   | InteractionStatus
-  | Prefix<'borderRadius', BorderRadiusState>
-  | Prefix<'icon', IconState>;
+  | PropertyBorderRadiusStatus
+  | PropertyIconStatus;
+
+// Element Status --------------------------------------------------------------
+
+type ButtonContainerStatus =
+  | InteractionStatus
+  | PrefixState<'borderRadius', BorderRadiusState>;
+
+type ButtonIconStatus =
+  | InteractionStatus
+  | PrefixState<'icon', IconState>
+  | PrefixState<'borderRadius', BorderRadiusState>;
+
+type ButtonTextStatus = InteractionStatus;
+
+//------------------------------------------------------------------------------
 
 export interface ButtonSchema {
   option?: ContainerOptions;
   elements?: {
-    container?: ElementTheme<
-      ButtonElementContainer,
-      Prefix<'borderRadius', BorderRadiusState>
-    >;
-    iconLeft?: ElementTheme<
-      ButtonElementIcon,
-      Prefix<'icon', IconState> & Prefix<'borderRadius', BorderRadiusState>
-    >;
-    iconRight?: ElementTheme<
-      ButtonElementIcon,
-      Prefix<'icon', IconState> & Prefix<'borderRadius', BorderRadiusState>
-    >;
-    text?: ElementTheme<ButtonElementText>;
+    container?: ElementTheme<ButtonContainer, ButtonContainerStatus>;
+    iconLeft?: ElementTheme<ButtonIcon, ButtonIconStatus>;
+    iconRight?: ElementTheme<ButtonIcon, ButtonIconStatus>;
+    text?: ElementTheme<ButtonText, ButtonTextStatus>;
   };
 }
 

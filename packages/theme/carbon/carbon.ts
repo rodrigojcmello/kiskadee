@@ -9,10 +9,7 @@ export const carbon: KiskadeeTheme = {
     button: {
       option: {
         widthMin: 100,
-        borderRadius: {
-          default: 'none',
-          none: 0,
-        },
+        borderRadius: 'None',
         textAlign: {
           default: 'left',
           left: true,

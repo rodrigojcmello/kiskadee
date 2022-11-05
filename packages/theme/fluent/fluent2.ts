@@ -9,14 +9,7 @@ export const fluent2: KiskadeeTheme = {
     button: {
       option: {
         widthMin: 100,
-        borderRadius: {
-          default: 'rounded',
-          variant: {
-            rounded: {
-              md: 4,
-            },
-          },
-        },
+        borderRadius: 'Rounded',
         textAlign: {
           default: 'center',
           center: true,
@@ -40,6 +33,9 @@ export const fluent2: KiskadeeTheme = {
                     outlineColor: '#000',
                     outlineOffset: 1,
                   },
+                },
+                borderRadiusRounded: {
+                  md: { borderRadius: 4 },
                 },
               },
               type: {

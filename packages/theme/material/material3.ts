@@ -13,13 +13,6 @@ export const material3: KiskadeeTheme = {
     button: {
       option: {
         widthMin: 100,
-        borderRadius: {
-          default: 'rounded',
-          variant: {
-            rounded: { xl: 24, lg: 18, md: 16, sm: 10 },
-            full: { xl: 48, lg: 30, md: 20, sm: 16 },
-          },
-        },
         textAlign: {
           default: 'center',
           center: true,

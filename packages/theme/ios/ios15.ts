@@ -8,14 +8,7 @@ export const ios15: KiskadeeTheme = {
   component: {
     button: {
       option: {
-        borderRadius: {
-          default: 'rounded',
-          variant: {
-            rounded: { md: 10, sm: 8 },
-            full: { md: 25, sm: 18 },
-          },
-          none: 0,
-        },
+        borderRadius: 'Rounded',
         widthMin: 100,
         textAlign: {
           default: 'center',
@@ -42,6 +35,14 @@ export const ios15: KiskadeeTheme = {
                   md: {
                     backgroundColor: '#74748114',
                   },
+                },
+                borderRadiusRounded: {
+                  md: { borderRadius: 10 },
+                  sm: { borderRadius: 8 },
+                },
+                borderRadiusFull: {
+                  md: { borderRadius: 25 },
+                  sm: { borderRadius: 18 },
                 },
               },
               type: {
