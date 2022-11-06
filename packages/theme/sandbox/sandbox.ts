@@ -275,6 +275,7 @@ export const sandbox: KiskadeeTheme = {
                     paddingLeft: 7,
                     paddingRight: 7,
                     color: '#6750A4',
+                    backgroundColor: '#FFFFFF',
                   },
                   lg: {
                     paddingTop: 18,
@@ -306,7 +307,6 @@ export const sandbox: KiskadeeTheme = {
                   md: {
                     borderTopLeftRadius: 15,
                     borderBottomLeftRadius: 15,
-                    backgroundColor: '#FFFFFF',
                   },
                 },
                 borderRadiusFull: {
