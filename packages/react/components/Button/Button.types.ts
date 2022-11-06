@@ -123,6 +123,10 @@ export interface ButtonIcon {
 
   // Border Radius - Responsive
   borderRadius?: number;
+  borderTopLeftRadius?: number;
+  borderTopRightRadius?: number;
+  borderBottomLeftRadius?: number;
+  borderBottomRightRadius?: number;
 }
 
 // Text

@@ -275,7 +275,6 @@ export const sandbox: KiskadeeTheme = {
                     paddingLeft: 7,
                     paddingRight: 7,
                     color: '#6750A4',
-                    backgroundColor: '#FFFFFF',
                   },
                   lg: {
                     paddingTop: 18,
@@ -294,6 +293,8 @@ export const sandbox: KiskadeeTheme = {
                 iconAttached: {
                   md: {
                     marginRight: 4,
+                    // borderTopLeftRadius: 0,
+                    // borderBottomLeftRadius: 0,
                   },
                 },
                 iconDetached: {
@@ -303,7 +304,9 @@ export const sandbox: KiskadeeTheme = {
                 },
                 borderRadiusRounded: {
                   md: {
-                    borderRadius: 15,
+                    borderTopLeftRadius: 15,
+                    borderBottomLeftRadius: 15,
+                    backgroundColor: '#FFFFFF',
                   },
                 },
                 borderRadiusFull: {

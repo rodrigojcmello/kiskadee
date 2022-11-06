@@ -98,15 +98,28 @@ export class ButtonClass extends Style {
 
     const elementStyle = this.getResponsiveStyle(element, status);
 
-    const p = ButtonClass.pickResponsiveProperties<ButtonContainer>(
+    const p = ButtonClass.pickResponsiveProperties<
+      | 'borderRadius'
+      | 'borderTopLeftRadius'
+      | 'borderTopRightRadius'
+      | 'borderBottomLeftRadius'
+      | 'borderBottomRightRadius'
+    >(
       // @ts-ignore
       elementStyle,
-      ['borderRadius']
+      [
+        'borderRadius',
+        'borderTopLeftRadius',
+        'borderTopRightRadius',
+        'borderBottomLeftRadius',
+        'borderBottomRightRadius',
+      ]
     );
 
     const { '@media (min-width: 0px)': elementRest, ...elementResponsive } = p;
 
     return ButtonClass.render({
+      // @ts-ignore
       ...elementRest,
       ...elementResponsive,
     });
