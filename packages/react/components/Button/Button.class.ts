@@ -541,7 +541,7 @@ export class ButtonClass extends Style {
     return this.cache(['icon', 'base'], () => {
       return ButtonClass.render({
         display: 'flex',
-        transitionProperty: 'color, font-size',
+        transitionProperty: 'color, font-size, border-radius, padding',
       });
     });
   }
@@ -574,20 +574,25 @@ export class ButtonClass extends Style {
     });
   }
 
+  // TODO: merge all background-colors here
   iconBackgroundColorStyle(position: IconPosition) {
-    return this.cache(['icon', 'background-color', position], () => {
-      const backgroundColorContrast = this.getContrastStyle<ButtonIcon>(
-        `icon${position}`
-      );
+    return this.cache(
+      ['icon', 'background-color', position, this.iconType || '-'],
+      () => {
+        const backgroundColorContrast = this.getContrastStyle<ButtonIcon>(
+          `icon${position}`,
+          `icon${this.iconType}`
+        );
 
-      return ButtonClass.render({
-        backgroundColor: backgroundColorContrast.defaultMode?.backgroundColor,
+        return ButtonClass.render({
+          backgroundColor: backgroundColorContrast.defaultMode?.backgroundColor,
 
-        '@media (prefers-color-scheme: dark)': backgroundColorContrast && {
-          color: backgroundColorContrast.contrastMode?.backgroundColor,
-        },
-      });
-    });
+          '@media (prefers-color-scheme: dark)': backgroundColorContrast && {
+            color: backgroundColorContrast.contrastMode?.backgroundColor,
+          },
+        });
+      }
+    );
   }
 
   // TODO: support SVG

@@ -7,7 +7,8 @@ import { ButtonClass } from './Button.class';
 import { EllipsisLoader } from '../Loader';
 
 export const Button: FC<ButtonProps> = ({
-  iconType = 'attached',
+  // TODO: where default come from?
+  iconType = 'Attached',
   width = 'auto',
   borderRadius,
   size,

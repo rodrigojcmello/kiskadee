@@ -163,30 +163,29 @@ export class Style {
     });
   }
 
-  getStyleEssential<T>(element: ButtonElements): T {
+  getStyleEssential<T>(element: string): T {
     return this.cache([element, 'essential'], () => {
+      // @ts-ignore
       const base = this.schema?.elements?.[element];
       const type = base?.light?.default?.type?.[this.type];
       const variant = type?.variant?.[this.variant];
 
       return {
-        // TODO: fix this type
-        // @ts-ignore
         ...base?.light?.default?.base?.rest?.md,
         ...type?.base?.md,
-        // @ts-ignore
         ...variant?.rest?.md,
       } as T;
     });
   }
 
-  getStyleStatus<T, ComponentStatus extends string>(
-    element: ButtonElements,
-    status: ComponentStatus,
+  getStyleStatus<T, Status extends string>(
+    element: string,
+    status: Status,
     size?: Size
   ): T {
     const sizeValue = size || this.size || 'md';
     return this.cache([element, status, sizeValue], () => {
+      // @ts-ignore
       const base = this.schema?.elements?.[element];
       const type = base?.light?.default?.type?.[this.type];
       const variant = type?.variant?.[this.variant];
@@ -200,8 +199,9 @@ export class Style {
     });
   }
 
-  getStyleDark<T>(element: ButtonElements): T {
+  getStyleDark<T>(element: string): T {
     return this.cache([element, 'dark'], () => {
+      // @ts-ignore
       const base = this.schema?.elements?.[element];
       const type = base?.dark?.default?.type?.[this.type];
       const variant = type?.variant?.[this.variant];
@@ -280,11 +280,14 @@ export class Style {
     );
   }
 
-  getContrastStyle<T>(element: ButtonElements): ContrastStyle<T> {
-    return this.cache([element, 'contrast'], () => {
+  getContrastStyle<T>(element: string, status?: string): ContrastStyle<T> {
+    return this.cache([element, 'contrast', status || '-'], () => {
       const responsive: ContrastStyle<T> = {};
 
-      const light: T = this.getStyleEssential(element);
+      const light: T = {
+        ...this.getStyleEssential(element),
+        ...(status ? this.getStyleStatus(element, status) : {}),
+      };
 
       const dark: T = {
         ...light,

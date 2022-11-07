@@ -30,12 +30,13 @@ const ButtonOnly = () => {
           label={'fulano'}
           size={'sm'}
           isLoading={loading}
+          iconType={'Attached'}
           // onClick={() => {
           //   setLoading(true);
           // }}
-          // iconLeft={
-          //   <span className={'material-symbols-outlined'}>thumb_up</span>
-          // }
+          iconLeft={
+            <span className={'material-symbols-outlined'}>thumb_up</span>
+          }
         />
       </div>
       <div style={{ paddingTop: 100, paddingLeft: 50, width: 200 }}>
@@ -44,12 +45,13 @@ const ButtonOnly = () => {
           variant={'primary'}
           label={'fulano'}
           isLoading={loading}
+          iconType={'Detached'}
           // onClick={() => {
           //   setLoading(true);
           // }}
-          // iconLeft={
-          //   <span className={'material-symbols-outlined'}>thumb_up</span>
-          // }
+          iconLeft={
+            <span className={'material-symbols-outlined'}>thumb_up</span>
+          }
         />
       </div>
       {/* <div style={{ paddingTop: 50, paddingLeft: 50 }}> */}
