@@ -541,14 +541,18 @@ export class ButtonClass extends Style {
     return this.cache(['icon', 'base'], () => {
       return ButtonClass.render({
         display: 'flex',
-        transitionProperty: 'color, font-size, border-radius, padding',
+        transitionProperty:
+          'color, font-size, border-radius, padding, margin, background-color',
       });
     });
   }
 
   iconColorStyle(position: IconPosition) {
-    return this.cache(['icon', 'color', position], () => {
-      const iconContrast = this.getContrastStyle<ButtonIcon>(`icon${position}`);
+    return this.cache(['icon', 'color', position, this.iconType || '-'], () => {
+      const iconContrast = this.getContrastStyle<ButtonIcon>(
+        `icon${position}`,
+        `icon${this.iconType}`
+      );
       const textContrast = this.getContrastStyle<ButtonText>('text');
 
       const colorDefault =
