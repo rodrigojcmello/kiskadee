@@ -191,9 +191,9 @@ export class Style {
       const variant = type?.variant?.[this.variant];
 
       return {
-        // @ts-ignore
+        ...base?.light?.default?.base?.[status]?.md,
         ...base?.light?.default?.base?.[status]?.[sizeValue],
-        // @ts-ignore
+        ...variant?.[status]?.md,
         ...variant?.[status]?.[sizeValue],
       } as T;
     });

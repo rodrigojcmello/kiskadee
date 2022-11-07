@@ -650,6 +650,7 @@ export class ButtonClass extends Style {
     });
   }
 
+  // TODO: merge all margins here
   iconMarginStyle(position: IconPosition): string | undefined {
     return this.cache(
       ['icon', 'margin', position, this.size || 'md', this.iconType || '-'],
