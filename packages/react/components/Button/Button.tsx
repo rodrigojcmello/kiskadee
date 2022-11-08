@@ -38,7 +38,7 @@ export const Button: FC<ButtonProps> = ({
     size,
     type,
     variant,
-    iconType: (!label ? 'icon' : iconType) as ButtonStyleProps['iconType'],
+    iconType: !label ? 'Alone' : iconType,
     iconRight,
     iconLeft,
     borderRadius,

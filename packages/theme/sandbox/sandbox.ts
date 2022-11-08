@@ -274,7 +274,7 @@ export const sandbox: KiskadeeTheme = {
                     paddingBottom: 7,
                     paddingLeft: 7,
                     paddingRight: 7,
-                    color: '#6750A4',
+                    // color: '#6750A4',
                   },
                   lg: {
                     paddingTop: 18,
@@ -290,6 +290,11 @@ export const sandbox: KiskadeeTheme = {
                     paddingRight: 5,
                   },
                 },
+                iconAlone: {
+                  md: {
+                    color: '#FFFFFF',
+                  },
+                },
                 iconAttached: {
                   md: {
                     marginRight: 4,
@@ -302,6 +307,7 @@ export const sandbox: KiskadeeTheme = {
                   md: {
                     marginLeft: 1,
                     backgroundColor: '#FFFFFF',
+                    color: '#6750A4',
                   },
                 },
                 borderRadiusRounded: {
