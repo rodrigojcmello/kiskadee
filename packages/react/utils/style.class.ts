@@ -322,10 +322,10 @@ export class Style {
     callback?: (value: { [p: string]: GenericCSSProperties }) => {
       [p: string]: GenericCSSProperties;
     },
-    extraKey: string[] = []
+    extraKeys: string[] = []
   ): string | undefined {
     return this.cache(
-      [element, spacing, this.size || 'md', status || '-', ...extraKey],
+      [element, spacing, this.size || 'md', status || '-', ...extraKeys],
       () => {
         let elementResponsive = this.getResponsiveStyle(element, status);
 
