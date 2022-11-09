@@ -240,6 +240,44 @@ export const ios15: KiskadeeTheme = {
             },
           },
         },
+        iconLeft: {
+          light: {
+            default: {
+              base: {
+                rest: {
+                  md: {
+                    fontSize: 24,
+                    width: 24,
+                    height: 24,
+                    paddingTop: 13,
+                    paddingBottom: 13,
+                    paddingLeft: 13,
+                    paddingRight: 13,
+                  },
+                },
+              },
+            },
+          },
+        },
+        iconRight: {
+          light: {
+            default: {
+              base: {
+                rest: {
+                  md: {
+                    fontSize: 24,
+                    width: 24,
+                    height: 24,
+                    paddingTop: 13,
+                    paddingBottom: 13,
+                    paddingLeft: 13,
+                    paddingRight: 13,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     },
   },

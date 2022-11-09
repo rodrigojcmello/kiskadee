@@ -1104,9 +1104,6 @@ export const ButtonDocumentation: FC = () => {
                 onClick={(): void => {
                   setTextAlign('left');
                 }}
-                iconLeft={iconLeft}
-                iconRight={iconRight}
-                iconType={'Detached'}
               />
             </div>
           ) : (
@@ -1132,9 +1129,6 @@ export const ButtonDocumentation: FC = () => {
                 onClick={(): void => {
                   setTextAlign('center');
                 }}
-                iconLeft={iconLeft}
-                iconRight={iconRight}
-                iconType={'Detached'}
               />
             </div>
           ) : (
@@ -1160,9 +1154,6 @@ export const ButtonDocumentation: FC = () => {
                 onClick={(): void => {
                   setTextAlign('right');
                 }}
-                iconLeft={iconLeft}
-                iconRight={iconRight}
-                iconType={'Detached'}
               />
             </div>
           ) : (
