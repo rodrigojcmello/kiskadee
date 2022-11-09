@@ -10,9 +10,11 @@ import type {
 import { Button, KiskadeeContext } from '@kiskadee/react';
 import { Container } from '../../components/Container/Container';
 import { BoxTitle } from '../../components/BoxTitle/BoxTitle';
+// TODO: fix 2x and 3x
 import logoGooglePng from './assets/logo-google.png';
-// @ts-ignore
+import logoInstagram from './assets/logo-instagram.png';
 import { ReactComponent as LogoGoogleSvg } from './assets/logo-google.svg';
+import { ReactComponent as LogoInstagramSvg } from './assets/logo-instagram.svg';
 
 import style from './ButtonDocumentation.module.scss';
 
@@ -486,6 +488,99 @@ export const ButtonDocumentation: FC = () => {
                   setLabel('Click me');
                   setIconType('Attached');
                   setIconLeft(<LogoGoogleSvg />);
+                  setIconRight(undefined);
+                }}
+              />
+            </div>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+      </div>
+
+      <div className={`${style.buttonRow} ${style.buttonGrid}`}>
+        <div>
+          <BoxTitle>Detached PNG icon</BoxTitle>
+          {buttonOption?.icon?.enable?.left ? (
+            <div className={style.buttonWrap}>
+              <Button
+                label={'Share on Instagram'}
+                width={'block'}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                iconLeft={<img src={logoInstagram} alt={'Google'} />}
+                iconRight={
+                  <span className={'material-symbols-outlined'}>share</span>
+                }
+                iconType={'Detached'}
+                textAlign={textAlign}
+                size={size}
+                onClick={(): void => {
+                  setLabel('Click me');
+                  setIconType('Detached');
+                  setIconLeft(<img src={logoInstagram} alt={'Google'} />);
+                  setIconRight(
+                    <span className={'material-symbols-outlined'}>share</span>
+                  );
+                }}
+              />
+            </div>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+
+        <div>
+          <BoxTitle>Detached SVG icon</BoxTitle>
+          {buttonOption?.icon?.enable?.left ? (
+            <div className={style.buttonWrap}>
+              <Button
+                label={'Share on Instagram'}
+                width={'block'}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                iconLeft={<LogoInstagramSvg />}
+                iconRight={
+                  <span className={'material-symbols-outlined'}>share</span>
+                }
+                iconType={'Detached'}
+                textAlign={textAlign}
+                size={size}
+                onClick={(): void => {
+                  setLabel('Click me');
+                  setIconType('Detached');
+                  setIconLeft(<LogoInstagramSvg />);
+                  setIconRight(
+                    <span className={'material-symbols-outlined'}>share</span>
+                  );
+                }}
+              />
+            </div>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+
+        <div>
+          <BoxTitle>Attached font icon</BoxTitle>
+          {buttonOption?.icon?.enable?.left ? (
+            <div className={style.buttonWrap}>
+              <Button
+                label={'Share on Instagram'}
+                width={'block'}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                iconLeft={<LogoInstagramSvg />}
+                iconType={'Attached'}
+                textAlign={textAlign}
+                size={size}
+                onClick={(): void => {
+                  setLabel('Click me');
+                  setIconType('Attached');
+                  setIconLeft(<LogoInstagramSvg />);
                   setIconRight(undefined);
                 }}
               />
