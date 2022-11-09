@@ -319,8 +319,8 @@ export class Style {
     element: string,
     spacing: 'margin' | 'padding',
     status?: string,
-    callback?: (value: { [p: string]: GenericCSSProperties }) => {
-      [p: string]: GenericCSSProperties;
+    callback?: (value: { [mediaQuery: string]: GenericCSSProperties }) => {
+      [mediaQuery: string]: GenericCSSProperties;
     },
     extraKeys: string[] = []
   ): string | undefined {
