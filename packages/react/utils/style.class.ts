@@ -9,6 +9,9 @@ import type {
   StitchesProperties,
   KiskadeeTheme,
   GenericCSSProperties,
+  BorderRadiusState,
+  ButtonElements,
+  PrefixState,
 } from '@kiskadee/react';
 import { CacheStyle } from './CacheStyle.class';
 
@@ -352,5 +355,36 @@ export class Style {
         });
       }
     );
+  }
+
+  propertyRadiusStyle(element: ButtonElements) {
+    let status: PrefixState<'borderRadius', BorderRadiusState> =
+      'borderRadiusNone';
+
+    if (!this.borderRadius && this.options?.borderRadius) {
+      status = `borderRadius${this.options?.borderRadius}`;
+    } else if (this.borderRadius === 'Rounded') {
+      status = 'borderRadiusRounded';
+    } else if (this.borderRadius === 'Full') {
+      status = 'borderRadiusFull';
+    }
+
+    const elementStyle = this.getResponsiveStyle(element, status);
+
+    const p = Style.pickResponsiveProperties(elementStyle, [
+      'borderRadius',
+      'borderTopLeftRadius',
+      'borderTopRightRadius',
+      'borderBottomLeftRadius',
+      'borderBottomRightRadius',
+    ]);
+
+    const { '@media (min-width: 0px)': elementRest, ...elementResponsive } = p;
+
+    return Style.render({
+      // @ts-ignore
+      ...elementRest,
+      ...elementResponsive,
+    });
   }
 }

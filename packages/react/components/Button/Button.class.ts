@@ -5,10 +5,7 @@ import type {
   ButtonIcon,
   ButtonText,
   IconPosition,
-  BorderRadiusState,
-  PrefixState,
   ButtonStatus,
-  ButtonElements,
 } from './Button.types';
 import { RIPPLE_DURATION, RIPPLE_TIMING_FUNCTION } from './constants';
 import { Style } from '../../utils';
@@ -81,37 +78,6 @@ export class ButtonClass extends Style {
         width,
         minWidth: this.width === 'min' ? this.options?.widthMin : 0,
       });
-    });
-  }
-
-  propertyRadiusStyle(element: ButtonElements) {
-    let status: PrefixState<'borderRadius', BorderRadiusState> =
-      'borderRadiusNone';
-
-    if (!this.borderRadius && this.options?.borderRadius) {
-      status = `borderRadius${this.options?.borderRadius}`;
-    } else if (this.borderRadius === 'Rounded') {
-      status = 'borderRadiusRounded';
-    } else if (this.borderRadius === 'Full') {
-      status = 'borderRadiusFull';
-    }
-
-    const elementStyle = this.getResponsiveStyle(element, status);
-
-    const p = ButtonClass.pickResponsiveProperties(elementStyle, [
-      'borderRadius',
-      'borderTopLeftRadius',
-      'borderTopRightRadius',
-      'borderBottomLeftRadius',
-      'borderBottomRightRadius',
-    ]);
-
-    const { '@media (min-width: 0px)': elementRest, ...elementResponsive } = p;
-
-    return ButtonClass.render({
-      // @ts-ignore
-      ...elementRest,
-      ...elementResponsive,
     });
   }
 
