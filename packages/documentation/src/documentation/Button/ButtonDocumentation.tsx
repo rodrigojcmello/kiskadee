@@ -10,6 +10,9 @@ import type {
 import { Button, KiskadeeContext } from '@kiskadee/react';
 import { Container } from '../../components/Container/Container';
 import { BoxTitle } from '../../components/BoxTitle/BoxTitle';
+import logoGooglePng from './assets/logo-google.png';
+// @ts-ignore
+import { ReactComponent as LogoGoogleSvg } from './assets/logo-google.svg';
 
 import style from './ButtonDocumentation.module.scss';
 
@@ -383,6 +386,107 @@ export const ButtonDocumentation: FC = () => {
                       expand_more
                     </span>
                   );
+                }}
+              />
+            </div>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+      </div>
+
+      <div className={`${style.buttonRow} ${style.buttonGrid}`}>
+        <div>
+          <BoxTitle>Detached PNG icon</BoxTitle>
+          {buttonOption?.icon?.enable?.left ? (
+            <div className={style.buttonWrap}>
+              <Button
+                label={'Sign in with Google'}
+                width={'block'}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                iconLeft={<img src={logoGooglePng} alt={'Google'} />}
+                iconRight={
+                  <span className={'material-symbols-outlined'}>
+                    chevron_right
+                  </span>
+                }
+                iconType={'Detached'}
+                textAlign={textAlign}
+                size={size}
+                onClick={(): void => {
+                  setLabel('Click me');
+                  setIconType('Detached');
+                  setIconLeft(<img src={logoGooglePng} alt={'Google'} />);
+                  setIconRight(
+                    <span className={'material-symbols-outlined'}>
+                      chevron_right
+                    </span>
+                  );
+                }}
+              />
+            </div>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+
+        <div>
+          <BoxTitle>Detached SVG icon</BoxTitle>
+          {buttonOption?.icon?.enable?.left ? (
+            <div className={style.buttonWrap}>
+              <Button
+                label={'Sign in with Google'}
+                width={'block'}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                iconLeft={<LogoGoogleSvg />}
+                iconRight={
+                  <span className={'material-symbols-outlined'}>
+                    chevron_right
+                  </span>
+                }
+                iconType={'Detached'}
+                textAlign={textAlign}
+                size={size}
+                onClick={(): void => {
+                  setLabel('Click me');
+                  setIconType('Detached');
+                  setIconLeft(<LogoGoogleSvg />);
+                  setIconRight(
+                    <span className={'material-symbols-outlined'}>
+                      chevron_right
+                    </span>
+                  );
+                }}
+              />
+            </div>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+
+        <div>
+          <BoxTitle>Attached font icon</BoxTitle>
+          {buttonOption?.icon?.enable?.left ? (
+            <div className={style.buttonWrap}>
+              <Button
+                label={'Sign in with Google'}
+                width={'block'}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                iconLeft={<LogoGoogleSvg />}
+                iconType={'Attached'}
+                textAlign={textAlign}
+                size={size}
+                onClick={(): void => {
+                  setLabel('Click me');
+                  setIconType('Attached');
+                  setIconLeft(<LogoGoogleSvg />);
+                  setIconRight(undefined);
                 }}
               />
             </div>

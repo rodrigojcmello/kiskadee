@@ -110,7 +110,9 @@ export interface ButtonIcon {
   backgroundColor?: CSSProperties['backgroundColor'];
 
   // Size - Responsive
-  fontSize?: CSSProperties['fontSize'];
+  fontSize?: number;
+  width?: number;
+  height?: number;
 
   // Padding - Responsive
   paddingTop?: number;

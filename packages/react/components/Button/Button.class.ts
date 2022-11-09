@@ -533,6 +533,7 @@ export class ButtonClass extends Style {
   }
 
   // TODO: merge all background-colors here
+  // TODO: type all return values
   iconBackgroundColorStyle(position: IconPosition) {
     return this.cache(
       ['icon', 'background-color', position, this.iconType || '-'],
@@ -553,24 +554,16 @@ export class ButtonClass extends Style {
     );
   }
 
-  // TODO: support SVG
-  // TODO: type all return values
-  iconSizeStyle(position: IconPosition) {
+  // TODO: support SVG, png, jpg, webp
+  iconSizeStyle(position: IconPosition): string | undefined {
     return this.cache(['icon', 'size', position, this.size || 'md'], () => {
       let iconResponsive = this.getResponsiveStyle(`icon${position}`);
-      let textResponsive = this.getResponsiveStyle('text');
 
       iconResponsive = ButtonClass.pickResponsiveProperties(iconResponsive, [
         'fontSize',
+        'width',
+        'height',
       ]);
-      textResponsive = ButtonClass.pickResponsiveProperties(textResponsive, [
-        'fontSize',
-      ]);
-
-      for (const mq of Object.keys(iconResponsive)) {
-        iconResponsive[mq].fontSize =
-          iconResponsive[mq].fontSize || textResponsive[mq].fontSize;
-      }
 
       const { '@media (min-width: 0px)': size, ...sizeResponsive } =
         iconResponsive;
