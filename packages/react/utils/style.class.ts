@@ -1,7 +1,6 @@
 import { css } from '@stitches/core';
 import type {
   Breakpoint,
-  ButtonElements,
   ButtonSchema,
   ButtonStyleProps,
   ContainerOptions,
@@ -9,6 +8,7 @@ import type {
   Size,
   StitchesProperties,
   KiskadeeTheme,
+  GenericCSSProperties,
 } from '@kiskadee/react';
 import { CacheStyle } from './CacheStyle.class';
 
@@ -121,36 +121,14 @@ export class Style {
     return value;
   }
 
-  static pickResponsiveProperties<T>(
-    responsive: {
-      [mediaQuery: string]: T;
-    },
-    properties: (keyof T)[]
-  ) {
-    const newObject: {
-      [mediaQuery: string]: T;
-    } = {};
-    for (const mediaQuery of Object.keys(responsive)) {
-      if (!newObject[mediaQuery]) {
-        newObject[mediaQuery] = {} as T;
-      }
-      for (const property of properties) {
-        if (responsive[mediaQuery]?.[property]) {
-          newObject[mediaQuery][property] = responsive[mediaQuery][property];
-        }
-      }
-    }
-    return newObject;
-  }
-
-  /**
-   * Empty objects generates a css class empty in Stitches library
-   */
-  static render(properties: StitchesProperties): string | undefined {
+  static render(properties: GenericCSSProperties): string | undefined {
     const validProperties = Object.keys(properties).length > 0;
 
+    /**
+     * Empty objects generates a css class empty in Stitches library
+     */
     if (validProperties) {
-      return css(properties)();
+      return css(properties as StitchesProperties)();
     }
   }
 
@@ -214,8 +192,9 @@ export class Style {
     });
   }
 
-  getStyleSize<T>(element: ButtonElements, size: Exclude<Size, 'md'>): T {
+  getStyleSize<T>(element: string, size: Exclude<Size, 'md'>): T {
     return this.cache([element, size], () => {
+      // @ts-ignore
       const base = this.schema?.elements?.[element];
       const type = base?.light?.default?.type?.[this.type];
       const variant = type?.variant?.[this.variant];
@@ -228,16 +207,16 @@ export class Style {
     });
   }
 
-  getResponsiveStyle<T, Status = string | undefined>(
-    element: ButtonElements,
-    status?: Status extends string ? Status : undefined
+  getResponsiveStyle(
+    element: string,
+    status?: string
   ): {
-    [mediaQuery: string]: T;
+    [mediaQuery: string]: GenericCSSProperties;
   } {
     return this.cache(
       [element, 'responsive', this.size || 'md', (status as string) || '-'],
       () => {
-        const responsive: { [mediaQuery: string]: T } = {};
+        const responsive: { [mediaQuery: string]: GenericCSSProperties } = {};
 
         if (!this.size) {
           for (const breakpoint of Object.keys(
@@ -266,11 +245,16 @@ export class Style {
             }
           }
         } else {
+          // TODO: remove ts-ignore
           responsive['@media (min-width: 0px)'] = {
+            // @ts-ignores
             ...this.getStyleEssential(element),
+            // @ts-ignore
             ...(!(!this.size || this.size === 'md')
-              ? this.getStyleSize(element, this.size)
+              ? // @ts-ignore
+                this.getStyleSize(element, this.size)
               : {}),
+            // @ts-ignore
             ...(status ? this.getStyleStatus(element, status) : {}),
           };
         }
@@ -302,5 +286,71 @@ export class Style {
 
       return responsive;
     });
+  }
+
+  static pickResponsiveProperties(
+    responsive: {
+      [mediaQuery: string]: GenericCSSProperties;
+    },
+    properties: string[]
+  ): {
+    [mediaQuery: string]: Record<string, string>;
+  } {
+    const newObject: {
+      [mediaQuery: string]: Record<string, string>;
+    } = {};
+    for (const mediaQuery of Object.keys(responsive)) {
+      if (!newObject[mediaQuery]) {
+        // @ts-ignore
+        newObject[mediaQuery] = {} as unknown;
+      }
+      for (const property of properties) {
+        // @ts-ignore
+        if (responsive[mediaQuery]?.[property]) {
+          // @ts-ignore
+          newObject[mediaQuery][property] = responsive[mediaQuery][property];
+        }
+      }
+    }
+    return newObject;
+  }
+
+  propertySpacingStyle(
+    element: string,
+    spacing: 'margin' | 'padding',
+    status?: string,
+    callback?: (value: { [p: string]: GenericCSSProperties }) => {
+      [p: string]: GenericCSSProperties;
+    },
+    extraKey: string[] = []
+  ): string | undefined {
+    return this.cache(
+      [element, spacing, this.size || 'md', status || '-', ...extraKey],
+      () => {
+        let elementResponsive = this.getResponsiveStyle(element, status);
+
+        elementResponsive = Style.pickResponsiveProperties(elementResponsive, [
+          spacing,
+          `${spacing}Top`,
+          `${spacing}Bottom`,
+          `${spacing}Right`,
+          `${spacing}Left`,
+        ]);
+
+        if (callback) {
+          elementResponsive = callback(elementResponsive);
+        }
+
+        const {
+          '@media (min-width: 0px)': elementSpacing,
+          ...elementSpacingResponsive
+        } = elementResponsive;
+
+        return Style.render({
+          ...elementSpacing,
+          ...elementSpacingResponsive,
+        });
+      }
+    );
   }
 }

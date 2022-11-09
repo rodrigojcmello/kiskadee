@@ -98,23 +98,13 @@ export class ButtonClass extends Style {
 
     const elementStyle = this.getResponsiveStyle(element, status);
 
-    const p = ButtonClass.pickResponsiveProperties<
-      | 'borderRadius'
-      | 'borderTopLeftRadius'
-      | 'borderTopRightRadius'
-      | 'borderBottomLeftRadius'
-      | 'borderBottomRightRadius'
-    >(
-      // @ts-ignore
-      elementStyle,
-      [
-        'borderRadius',
-        'borderTopLeftRadius',
-        'borderTopRightRadius',
-        'borderBottomLeftRadius',
-        'borderBottomRightRadius',
-      ]
-    );
+    const p = ButtonClass.pickResponsiveProperties(elementStyle, [
+      'borderRadius',
+      'borderTopLeftRadius',
+      'borderTopRightRadius',
+      'borderBottomLeftRadius',
+      'borderBottomRightRadius',
+    ]);
 
     const { '@media (min-width: 0px)': elementRest, ...elementResponsive } = p;
 
@@ -258,13 +248,11 @@ export class ButtonClass extends Style {
         'disabled'
       );
 
-      const elementStyle =
-        this.getResponsiveStyle<ButtonContainer>('container');
+      const elementStyle = this.getResponsiveStyle('container');
 
-      const p = ButtonClass.pickResponsiveProperties<ButtonContainer>(
-        elementStyle,
-        ['boxShadow']
-      );
+      const p = ButtonClass.pickResponsiveProperties(elementStyle, [
+        'boxShadow',
+      ]);
 
       const { '@media (min-width: 0px)': elementRest, ...elementResponsive } =
         p;
@@ -405,12 +393,11 @@ export class ButtonClass extends Style {
 
   textFontSizeStyle() {
     return this.cache(['text', 'fontSize'], () => {
-      let textResponsive = this.getResponsiveStyle<ButtonText>('text');
+      let textResponsive = this.getResponsiveStyle('text');
 
-      textResponsive = ButtonClass.pickResponsiveProperties<ButtonText>(
-        textResponsive,
-        ['fontSize']
-      );
+      textResponsive = ButtonClass.pickResponsiveProperties(textResponsive, [
+        'fontSize',
+      ]);
 
       const { '@media (min-width: 0px)': fontSize, ...fontSizeResponsive } =
         textResponsive;
@@ -460,23 +447,11 @@ export class ButtonClass extends Style {
   }
 
   textPaddingStyle() {
-    return this.cache(
-      [
-        'text',
-        'padding',
-        this.iconType ?? '',
-        this.iconLeft ? 'left' : '',
-        this.iconRight ? 'right' : '',
-        this.size ?? 'md',
-      ],
-      () => {
-        let textResponsive = this.getResponsiveStyle<ButtonText>('text');
-
-        textResponsive = ButtonClass.pickResponsiveProperties<ButtonText>(
-          textResponsive,
-          ['paddingTop', 'paddingBottom', 'paddingRight', 'paddingLeft']
-        );
-
+    return this.propertySpacingStyle(
+      'text',
+      'padding',
+      undefined,
+      (textResponsive) => {
         const isAttached = this.iconType === 'Attached';
         const hasLeftIcon = this.iconLeft && isAttached;
         const hasRightIcon = this.iconRight && isAttached;
@@ -490,16 +465,13 @@ export class ButtonClass extends Style {
             : textResponsive[mq].paddingLeft;
         }
 
-        const {
-          '@media (min-width: 0px)': textPadding,
-          ...textPaddingResponsive
-        } = textResponsive;
-
-        return ButtonClass.render({
-          ...textPadding,
-          ...textPaddingResponsive,
-        });
-      }
+        return textResponsive;
+      },
+      [
+        this.iconLeft ? 'left' : '-',
+        this.iconRight ? 'right' : '-',
+        this.iconType || '-',
+      ]
     );
   }
 
@@ -520,8 +492,16 @@ export class ButtonClass extends Style {
       color: this.iconColorStyle('Left'),
       backgroundColor: this.iconBackgroundColorStyle('Left'),
       size: this.iconSizeStyle('Left'),
-      padding: this.iconPaddingStyle('Left'),
-      margin: this.iconMarginStyle('Left'),
+      padding: this.propertySpacingStyle(
+        'iconLeft',
+        'padding',
+        `icon${this.iconType}`
+      ),
+      margin: this.propertySpacingStyle(
+        'iconLeft',
+        'margin',
+        `icon${this.iconType}`
+      ),
       radius: this.propertyRadiusStyle('iconLeft'),
     };
   }
@@ -531,8 +511,16 @@ export class ButtonClass extends Style {
       color: this.iconColorStyle('Right'),
       backgroundColor: this.iconBackgroundColorStyle('Right'),
       size: this.iconSizeStyle('Right'),
-      padding: this.iconPaddingStyle('Right'),
-      margin: this.iconMarginStyle('Right'),
+      padding: this.propertySpacingStyle(
+        'iconRight',
+        'padding',
+        `icon${this.iconType}`
+      ),
+      margin: this.propertySpacingStyle(
+        'iconRight',
+        'margin',
+        `icon${this.iconType}`
+      ),
       radius: this.propertyRadiusStyle('iconRight'),
     };
   }
@@ -600,21 +588,18 @@ export class ButtonClass extends Style {
   }
 
   // TODO: support SVG
+  // TODO: type all return values
   iconSizeStyle(position: IconPosition) {
     return this.cache(['icon', 'size', position, this.size || 'md'], () => {
-      let iconResponsive = this.getResponsiveStyle<ButtonIcon>(
-        `icon${position}`
-      );
-      let textResponsive = this.getResponsiveStyle<ButtonText>('text');
+      let iconResponsive = this.getResponsiveStyle(`icon${position}`);
+      let textResponsive = this.getResponsiveStyle('text');
 
-      iconResponsive = ButtonClass.pickResponsiveProperties<ButtonIcon>(
-        iconResponsive,
-        ['fontSize']
-      );
-      textResponsive = ButtonClass.pickResponsiveProperties<ButtonText>(
-        textResponsive,
-        ['fontSize']
-      );
+      iconResponsive = ButtonClass.pickResponsiveProperties(iconResponsive, [
+        'fontSize',
+      ]);
+      textResponsive = ButtonClass.pickResponsiveProperties(textResponsive, [
+        'fontSize',
+      ]);
 
       for (const mq of Object.keys(iconResponsive)) {
         iconResponsive[mq].fontSize =
@@ -633,14 +618,14 @@ export class ButtonClass extends Style {
 
   iconPaddingStyle(position: IconPosition): string | undefined {
     return this.cache(['icon', 'padding', position, this.size || 'md'], () => {
-      let iconResponsive = this.getResponsiveStyle<ButtonIcon>(
-        `icon${position}`
-      );
+      let iconResponsive = this.getResponsiveStyle(`icon${position}`);
 
-      iconResponsive = ButtonClass.pickResponsiveProperties<ButtonIcon>(
-        iconResponsive,
-        ['paddingTop', 'paddingBottom', 'paddingRight', 'paddingLeft']
-      );
+      iconResponsive = ButtonClass.pickResponsiveProperties(iconResponsive, [
+        'paddingTop',
+        'paddingBottom',
+        'paddingRight',
+        'paddingLeft',
+      ]);
 
       const {
         '@media (min-width: 0px)': iconPadding,
@@ -659,15 +644,17 @@ export class ButtonClass extends Style {
     return this.cache(
       ['icon', 'margin', position, this.size || 'md', this.iconType || '-'],
       () => {
-        let iconResponsive = this.getResponsiveStyle<ButtonIcon>(
+        let iconResponsive = this.getResponsiveStyle(
           `icon${position}`,
           `icon${this.iconType}`
         );
 
-        iconResponsive = ButtonClass.pickResponsiveProperties<ButtonIcon>(
-          iconResponsive,
-          ['marginTop', 'marginBottom', 'marginRight', 'marginLeft']
-        );
+        iconResponsive = ButtonClass.pickResponsiveProperties(iconResponsive, [
+          'marginTop',
+          'marginBottom',
+          'marginRight',
+          'marginLeft',
+        ]);
 
         const {
           '@media (min-width: 0px)': iconMargin,

@@ -9,10 +9,13 @@ import type {
 
 export type IconPosition = 'Left' | 'Right';
 
+// TODO: move it
 export type StitchesProperties =
   | string
   | Util.Function
   | { [name: string]: unknown };
+
+export type GenericCSSProperties = { [name: string]: unknown };
 
 export type InteractionStatus =
   | 'rest'
