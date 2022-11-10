@@ -180,9 +180,6 @@ export const sandbox: KiskadeeTheme = {
                             'linear-gradient(87.1deg, #FFD522 -10.92%, #F1000B 48.02%, #B900B3 106.81%)',
                           rippleColor: '#ffffff80',
                         },
-                        sm: {
-                          background: 'red',
-                        },
                       },
                       hover: {
                         md: {
@@ -190,22 +187,6 @@ export const sandbox: KiskadeeTheme = {
                             '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                         },
                       },
-                      // focus: {
-                      //   md: {
-                      //     background: '#7965AF',
-                      //   },
-                      // },
-                      // pressed: {
-                      //   md: {
-                      //     background: '#7965AF',
-                      //   },
-                      // },
-                      // disabled: {
-                      //   md: {
-                      //     boxShadow: 'none',
-                      //     background: '#E4E4E4',
-                      //   },
-                      // },
                     },
                   },
                 },
@@ -316,7 +297,6 @@ export const sandbox: KiskadeeTheme = {
                     paddingBottom: 7,
                     paddingLeft: 7,
                     paddingRight: 7,
-                    // color: '#6750A4',
                   },
                   lg: {
                     paddingTop: 18,
@@ -340,9 +320,6 @@ export const sandbox: KiskadeeTheme = {
                 iconAttached: {
                   md: {
                     marginRight: 4,
-                    // color: '#FFFFFF',
-                    // borderTopLeftRadius: 0,
-                    // borderBottomLeftRadius: 0,
                   },
                 },
                 iconDetached: {
@@ -473,6 +450,11 @@ export const sandbox: KiskadeeTheme = {
                     paddingRight: 38,
                   },
                 },
+                disabled: {
+                  md: {
+                    color: '#979798',
+                  },
+                },
               },
               type: {
                 contained: {
@@ -483,21 +465,11 @@ export const sandbox: KiskadeeTheme = {
                           color: '#FFFFFF',
                         },
                       },
-                      disabled: {
-                        md: {
-                          color: '#979798',
-                        },
-                      },
                     },
                     secondary: {
                       rest: {
                         md: {
                           color: '#1D192B',
-                        },
-                      },
-                      disabled: {
-                        md: {
-                          color: '#1b1a1e61',
                         },
                       },
                     },
@@ -507,21 +479,11 @@ export const sandbox: KiskadeeTheme = {
                           color: '#6750A4',
                         },
                       },
-                      disabled: {
-                        md: {
-                          color: '#1b1a1e61',
-                        },
-                      },
                     },
                     instagram: {
                       rest: {
                         md: {
                           color: '#FFFFFF',
-                        },
-                      },
-                      disabled: {
-                        md: {
-                          color: '#979798',
                         },
                       },
                     },
