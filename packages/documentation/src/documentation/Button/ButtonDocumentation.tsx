@@ -612,6 +612,7 @@ export const ButtonDocumentation: FC = () => {
                 onClick={(): void => {
                   setLabel('Click me');
                   setIconType('Detached');
+                  setVariant('instagram');
                   setIconLeft(<img src={logoInstagram} alt={'Google'} />);
                   setIconRight(
                     <span className={'material-symbols-outlined'}>share</span>
@@ -644,6 +645,7 @@ export const ButtonDocumentation: FC = () => {
                 onClick={(): void => {
                   setLabel('Click me');
                   setIconType('Detached');
+                  setVariant('instagram');
                   setIconLeft(<LogoInstagramSvg />);
                   setIconRight(
                     <span className={'material-symbols-outlined'}>share</span>
@@ -673,6 +675,7 @@ export const ButtonDocumentation: FC = () => {
                 onClick={(): void => {
                   setLabel('Click me');
                   setIconType('Attached');
+                  setVariant('instagram');
                   setIconLeft(<LogoInstagramSvg />);
                   setIconRight(undefined);
                 }}

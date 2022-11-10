@@ -30,12 +30,12 @@ export const carbon: KiskadeeTheme = {
                     primary: {
                       rest: {
                         md: {
-                          backgroundColor: '#0F62FE',
+                          background: '#0F62FE',
                         },
                       },
                       hover: {
                         md: {
-                          backgroundColor: '#0353E9 ',
+                          background: '#0353E9 ',
                         },
                       },
                       focus: {
@@ -48,24 +48,24 @@ export const carbon: KiskadeeTheme = {
                       },
                       pressed: {
                         md: {
-                          backgroundColor: '#002D9C',
+                          background: '#002D9C',
                         },
                       },
                       disabled: {
                         md: {
-                          backgroundColor: '#E4E4E4',
+                          background: '#E4E4E4',
                         },
                       },
                     },
                     secondary: {
                       rest: {
                         md: {
-                          backgroundColor: '#393939',
+                          background: '#393939',
                         },
                       },
                       hover: {
                         md: {
-                          backgroundColor: '#474747',
+                          background: '#474747',
                         },
                       },
                       focus: {
@@ -78,24 +78,24 @@ export const carbon: KiskadeeTheme = {
                       },
                       pressed: {
                         md: {
-                          backgroundColor: '#6f6f6f',
+                          background: '#6f6f6f',
                         },
                       },
                       disabled: {
                         md: {
-                          backgroundColor: '#E4E4E4',
+                          background: '#E4E4E4',
                         },
                       },
                     },
                     danger: {
                       rest: {
                         md: {
-                          backgroundColor: '#da1e28',
+                          background: '#da1e28',
                         },
                       },
                       hover: {
                         md: {
-                          backgroundColor: '#b81922',
+                          background: '#b81922',
                         },
                       },
                       focus: {
@@ -108,12 +108,12 @@ export const carbon: KiskadeeTheme = {
                       },
                       pressed: {
                         md: {
-                          backgroundColor: '#750e13',
+                          background: '#750e13',
                         },
                       },
                       disabled: {
                         md: {
-                          backgroundColor: '#E4E4E4',
+                          background: '#E4E4E4',
                         },
                       },
                     },
@@ -130,7 +130,7 @@ export const carbon: KiskadeeTheme = {
                     primary: {
                       rest: {
                         md: {
-                          backgroundColor: '#ffffff',
+                          background: '#ffffff',
                           borderColor: '#0F62FE',
                         },
                       },

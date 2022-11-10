@@ -33,7 +33,7 @@ export const ios15: KiskadeeTheme = {
               base: {
                 disabled: {
                   md: {
-                    backgroundColor: '#74748114',
+                    background: '#74748114',
                   },
                 },
                 borderRadiusRounded: {
@@ -51,21 +51,21 @@ export const ios15: KiskadeeTheme = {
                     primary: {
                       rest: {
                         md: {
-                          backgroundColor: '#007AFF',
+                          background: '#007AFF',
                         },
                       },
                     },
                     secondary: {
                       rest: {
                         md: {
-                          backgroundColor: '#E1EBFE',
+                          background: '#E1EBFE',
                         },
                       },
                     },
                     tertiary: {
                       rest: {
                         md: {
-                          backgroundColor: '#76767F1E',
+                          background: '#76767F1E',
                         },
                       },
                     },

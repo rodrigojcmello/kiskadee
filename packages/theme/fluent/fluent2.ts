@@ -44,29 +44,29 @@ export const fluent2: KiskadeeTheme = {
                     primary: {
                       rest: {
                         md: {
-                          backgroundColor: '#005FB8',
+                          background: '#005FB8',
                         },
                       },
                       hover: {
                         md: {
-                          backgroundColor: '#1A6FBF',
+                          background: '#1A6FBF',
                         },
                       },
                       pressed: {
                         md: {
-                          backgroundColor: '#327EC5',
+                          background: '#327EC5',
                         },
                       },
                       disabled: {
                         md: {
-                          backgroundColor: '#C8C8C8',
+                          background: '#C8C8C8',
                         },
                       },
                     },
                     secondary: {
                       rest: {
                         md: {
-                          backgroundColor: '#FFFFFFB2',
+                          background: '#FFFFFFB2',
                           borderWidth: 1,
                           borderStyle: 'solid',
                           borderColor: '#0000000F',
@@ -74,22 +74,22 @@ export const fluent2: KiskadeeTheme = {
                       },
                       hover: {
                         md: {
-                          backgroundColor: '#F9F9F980',
+                          background: '#F9F9F980',
                         },
                       },
                       pressed: {
                         md: {
-                          backgroundColor: '#F9F9F94D',
+                          background: '#F9F9F94D',
                         },
                       },
                       disabled: {
                         md: {
-                          backgroundColor: '#F9F9F94D',
+                          background: '#F9F9F94D',
                         },
                       },
                       focus: {
                         md: {
-                          backgroundColor: '#FFFFFFB2',
+                          background: '#FFFFFFB2',
                         },
                       },
                     },

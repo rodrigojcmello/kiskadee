@@ -87,10 +87,8 @@ export class ButtonClass extends Style {
 
       return ButtonClass.render({
         background: style.defaultMode?.background,
-        backgroundColor: style.defaultMode?.backgroundColor,
         '@media (prefers-color-scheme: dark)': style.contrastMode && {
           background: style.contrastMode?.background,
-          backgroundColor: style.contrastMode?.backgroundColor,
         },
       });
     });
@@ -456,7 +454,7 @@ export class ButtonClass extends Style {
   elementIconLeft() {
     return {
       color: this.iconColorStyle('Left'),
-      backgroundColor: this.iconBackgroundColorStyle('Left'),
+      backgroundColor: this.iconBackgroundStyle('Left'),
       size: this.iconSizeStyle('Left'),
       padding: this.propertySpacingStyle(
         'iconLeft',
@@ -475,7 +473,7 @@ export class ButtonClass extends Style {
   elementIconRight() {
     return {
       color: this.iconColorStyle('Right'),
-      backgroundColor: this.iconBackgroundColorStyle('Right'),
+      backgroundColor: this.iconBackgroundStyle('Right'),
       size: this.iconSizeStyle('Right'),
       padding: this.propertySpacingStyle(
         'iconRight',
@@ -534,20 +532,20 @@ export class ButtonClass extends Style {
 
   // TODO: merge all background-colors here
   // TODO: type all return values
-  iconBackgroundColorStyle(position: IconPosition) {
+  iconBackgroundStyle(position: IconPosition) {
     return this.cache(
-      ['icon', 'background-color', position, this.iconType || '-'],
+      ['icon', 'background', position, this.iconType || '-'],
       () => {
-        const backgroundColorContrast = this.getContrastStyle<ButtonIcon>(
+        const backgroundContrast = this.getContrastStyle<ButtonIcon>(
           `icon${position}`,
           `icon${this.iconType}`
         );
 
         return ButtonClass.render({
-          backgroundColor: backgroundColorContrast.defaultMode?.backgroundColor,
+          background: backgroundContrast.defaultMode?.background,
 
-          '@media (prefers-color-scheme: dark)': backgroundColorContrast && {
-            color: backgroundColorContrast.contrastMode?.backgroundColor,
+          '@media (prefers-color-scheme: dark)': backgroundContrast && {
+            color: backgroundContrast.contrastMode?.background,
           },
         });
       }

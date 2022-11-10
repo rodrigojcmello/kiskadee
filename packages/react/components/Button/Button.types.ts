@@ -89,7 +89,6 @@ export type ButtonContainer = {
 
   // Background - Dark Mode
   background?: CSSProperties['background'];
-  backgroundColor?: CSSProperties['backgroundColor'];
   rippleColor?: CSSProperties['backgroundColor'];
 
   // Border - Dark Mode
@@ -107,7 +106,7 @@ export type ButtonContainer = {
 export interface ButtonIcon {
   // Color - Dark Mode
   color?: CSSProperties['color'];
-  backgroundColor?: CSSProperties['backgroundColor'];
+  background?: CSSProperties['background'];
 
   // Size - Responsive
   fontSize?: number;
