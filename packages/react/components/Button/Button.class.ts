@@ -307,12 +307,18 @@ export class ButtonClass extends Style {
             '& > *': {
               fill: textDisabled?.color || leftIconDisabled?.color,
             },
+            '& > img': {
+              opacity: 0.3,
+            },
           },
           '& .button__icon-right': {
             ...rightIconDisabled,
             color: textDisabled?.color || rightIconDisabled?.color,
             '& > *': {
               fill: textDisabled?.color || rightIconDisabled?.color,
+            },
+            '& > img': {
+              opacity: 0.3,
             },
           },
         },
