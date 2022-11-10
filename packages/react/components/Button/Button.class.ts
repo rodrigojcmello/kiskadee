@@ -570,6 +570,7 @@ export class ButtonClass extends Style {
 
       iconResponsive = ButtonClass.pickResponsiveProperties(iconResponsive, [
         'fontSize',
+        'minWidth',
         'width',
         'height',
       ]);

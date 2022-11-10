@@ -110,8 +110,13 @@ export interface ButtonIcon {
 
   // Size - Responsive
   fontSize?: number;
-  width?: number;
   height?: number;
+  /**
+   * minWidth is necessary to work in Firefox.
+   * width and minWidth are always the same value.
+   */
+  minWidth?: number;
+  width?: number;
 
   // Padding - Responsive
   paddingTop?: number;
