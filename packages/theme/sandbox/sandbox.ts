@@ -340,7 +340,7 @@ export const sandbox: KiskadeeTheme = {
                 iconAttached: {
                   md: {
                     marginRight: 4,
-                    color: '#FFFFFF',
+                    // color: '#FFFFFF',
                     // borderTopLeftRadius: 0,
                     // borderBottomLeftRadius: 0,
                   },

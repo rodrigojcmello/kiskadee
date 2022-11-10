@@ -293,22 +293,27 @@ export class ButtonClass extends Style {
         // DISABLED
         '&:disabled, &--disabled': {
           ...containerDisabled,
-          // cursor: 'not-allowed',
-          cursor: 'wait',
+          cursor: 'not-allowed',
+          // cursor: 'wait',
           '& .spinner': {
             backgroundColor: textDisabled.color,
           },
           '& .button__text': {
             ...textDisabled,
           },
-          // TODO: fix this
           '& .button__icon-left': {
-            color: textDisabled?.color,
             ...leftIconDisabled,
+            color: textDisabled?.color || leftIconDisabled?.color,
+            '& > *': {
+              fill: textDisabled?.color || leftIconDisabled?.color,
+            },
           },
           '& .button__icon-right': {
-            color: textDisabled?.color,
             ...rightIconDisabled,
+            color: textDisabled?.color || rightIconDisabled?.color,
+            '& > *': {
+              fill: textDisabled?.color || rightIconDisabled?.color,
+            },
           },
         },
       });
