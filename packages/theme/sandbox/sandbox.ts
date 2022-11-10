@@ -167,6 +167,40 @@ export const sandbox: KiskadeeTheme = {
                         },
                       },
                     },
+                    instagram: {
+                      rest: {
+                        md: {
+                          background:
+                            'linear-gradient(87.1deg, #FFD522 -10.92%, #F1000B 48.02%, #B900B3 106.81%)',
+                          rippleColor: '#ffffff80',
+                        },
+                        sm: {
+                          backgroundColor: 'red',
+                        },
+                      },
+                      hover: {
+                        md: {
+                          boxShadow:
+                            '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                        },
+                      },
+                      focus: {
+                        md: {
+                          backgroundColor: '#7965AF',
+                        },
+                      },
+                      pressed: {
+                        md: {
+                          backgroundColor: '#7965AF',
+                        },
+                      },
+                      disabled: {
+                        md: {
+                          boxShadow: 'none',
+                          backgroundColor: '#E4E4E4',
+                        },
+                      },
+                    },
                   },
                 },
                 outline: {
@@ -329,6 +363,17 @@ export const sandbox: KiskadeeTheme = {
                 },
               },
               type: {
+                contained: {
+                  variant: {
+                    instagram: {
+                      iconDetached: {
+                        md: {
+                          color: '#d50060',
+                        },
+                      },
+                    },
+                  },
+                },
                 outline: {
                   base: {
                     md: {
@@ -552,6 +597,18 @@ export const sandbox: KiskadeeTheme = {
                       disabled: {
                         md: {
                           color: '#1b1a1e61',
+                        },
+                      },
+                    },
+                    instagram: {
+                      rest: {
+                        md: {
+                          color: '#FFFFFF',
+                        },
+                      },
+                      disabled: {
+                        md: {
+                          color: '#979798',
                         },
                       },
                     },

@@ -11,10 +11,13 @@ export type Size =
 
 export type ButtonType = 'contained' | 'outline' | 'flat';
 
+export type ButtonSocialType = 'instagram' | 'facebook' | 'twitter';
+
 export type ButtonVariant =
   | 'primary'
   | 'secondary'
   | 'tertiary'
   | 'success'
   | 'warning'
-  | 'danger';
+  | 'danger'
+  | ButtonSocialType;

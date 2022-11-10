@@ -88,7 +88,7 @@ export type ButtonContainer = {
   outline?: 'none';
 
   // Background - Dark Mode
-  background?: 'none';
+  background?: CSSProperties['background'];
   backgroundColor?: CSSProperties['backgroundColor'];
   rippleColor?: CSSProperties['backgroundColor'];
 
