@@ -17,6 +17,8 @@ export const sandbox: KiskadeeTheme = {
         textAlign: {
           default: 'center',
           center: true,
+          left: true,
+          right: true,
         },
         icon: {
           enable: {

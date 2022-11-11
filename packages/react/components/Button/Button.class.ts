@@ -385,12 +385,14 @@ export class ButtonClass extends Style {
   }
 
   textAlignStyle() {
-    return this.cache(['text', 'align'], () => {
+    const textAlign =
+      this.textAlign && this.options?.textAlign?.[this.textAlign]
+        ? this.textAlign
+        : this.options?.textAlign?.default;
+
+    return this.cache(['text', 'align', textAlign || '-'], () => {
       return ButtonClass.render({
-        textAlign:
-          this.textAlign && this.options?.textAlign?.[this.textAlign]
-            ? this.textAlign
-            : this.options?.textAlign?.default,
+        textAlign,
       });
     });
   }
