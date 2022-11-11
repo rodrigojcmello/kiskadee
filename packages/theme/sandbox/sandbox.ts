@@ -11,6 +11,7 @@ export const sandbox: KiskadeeTheme = {
   // },
   component: {
     button: {
+      // TODO: review all options
       option: {
         widthMin: 100,
         borderRadius: 'Rounded',
