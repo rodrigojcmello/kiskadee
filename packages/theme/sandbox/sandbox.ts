@@ -67,6 +67,7 @@ export const sandbox: KiskadeeTheme = {
                   md: { borderRadius: 20 },
                   sm: { borderRadius: 16 },
                 },
+                borderRadiusNone: {},
               },
               type: {
                 contained: {

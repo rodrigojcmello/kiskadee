@@ -256,6 +256,10 @@ export type ButtonStatus =
 
 // Element Status --------------------------------------------------------------
 
+/**
+ * Status used just in "base", not in "type/variant" schema
+ * "borderRadiusNone" should be an empty object if borderRadius none is enabled
+ */
 type ButtonContainerStatus =
   | InteractionStatus
   | PrefixState<'borderRadius', BorderRadiusState>;

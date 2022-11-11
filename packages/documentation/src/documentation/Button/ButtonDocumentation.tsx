@@ -1101,9 +1101,7 @@ export const ButtonDocumentation: FC = () => {
             Rounded
             {buttonOption?.borderRadius === 'Rounded' && ' (default)'}
           </BoxTitle>
-          {buttonContainer?.base?.borderRadiusRounded ||
-          buttonContainer?.type?.[type]?.variant?.[variant]
-            ?.borderRadiusRounded ? (
+          {buttonContainer?.base?.borderRadiusRounded ? (
             <div className={style.buttonWrap}>
               <Button
                 label={label}
@@ -1129,9 +1127,7 @@ export const ButtonDocumentation: FC = () => {
             Full
             {buttonOption?.borderRadius === 'Full' && ' (default)'}
           </BoxTitle>
-          {buttonContainer?.base?.borderRadiusFull ||
-          buttonContainer?.type?.[type]?.variant?.[variant]
-            ?.borderRadiusFull ? (
+          {buttonContainer?.base?.borderRadiusFull ? (
             <div className={style.buttonWrap}>
               <Button
                 label={label}
@@ -1157,9 +1153,7 @@ export const ButtonDocumentation: FC = () => {
             None
             {buttonOption?.borderRadius === 'None' && ' (default)'}
           </BoxTitle>
-          {buttonContainer?.base?.borderRadiusNone ||
-          buttonContainer?.type?.[type]?.variant?.[variant]
-            ?.borderRadiusNone ? (
+          {buttonContainer?.base?.borderRadiusNone ? (
             <div className={style.buttonWrap}>
               <Button
                 label={label}
