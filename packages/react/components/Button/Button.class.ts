@@ -427,7 +427,9 @@ export class ButtonClass extends Style {
     return this.propertySpacingStyle(
       'text',
       'padding',
-      undefined,
+      this.iconType !== 'Alone' && this.iconType
+        ? `icon${this.iconType}`
+        : undefined,
       (textResponsive) => {
         const isAttached = this.iconType === 'Attached';
         const hasLeftIcon = this.iconLeft && isAttached;
@@ -444,11 +446,7 @@ export class ButtonClass extends Style {
 
         return textResponsive;
       },
-      [
-        this.iconLeft ? 'left' : '-',
-        this.iconRight ? 'right' : '-',
-        this.iconType || '-',
-      ]
+      [this.iconLeft ? 'left' : '-', this.iconRight ? 'right' : '-']
     );
   }
 

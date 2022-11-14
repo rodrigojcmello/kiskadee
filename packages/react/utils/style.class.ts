@@ -166,6 +166,7 @@ export class Style {
   ): T {
     const sizeValue = size || this.size || 'md';
     return this.cache([element, status, sizeValue], () => {
+      // TODO: remove this ts-ignore
       // @ts-ignore
       const base = this.schema?.elements?.[element];
       const type = base?.light?.default?.type?.[this.type];
@@ -217,7 +218,7 @@ export class Style {
     [mediaQuery: string]: GenericCSSProperties;
   } {
     return this.cache(
-      [element, 'responsive', this.size || 'md', (status as string) || '-'],
+      [element, 'responsive', this.size || 'md', status || '-'],
       () => {
         const responsive: { [mediaQuery: string]: GenericCSSProperties } = {};
 

@@ -460,6 +460,18 @@ export const sandbox: KiskadeeTheme = {
                     color: '#979798',
                   },
                 },
+                iconDetached: {
+                  md: {
+                    paddingLeft: 16,
+                    paddingRight: 16,
+                  },
+                },
+                iconAttached: {
+                  md: {
+                    paddingLeft: 14,
+                    paddingRight: 14,
+                  },
+                },
               },
               type: {
                 contained: {

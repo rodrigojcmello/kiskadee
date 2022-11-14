@@ -269,7 +269,12 @@ type ButtonIconStatus =
   | PrefixState<'icon', IconState>
   | PrefixState<'borderRadius', BorderRadiusState>;
 
-type ButtonTextStatus = InteractionStatus;
+/**
+ * Text padding can change in "iconDetached" status
+ */
+type ButtonTextStatus =
+  | InteractionStatus
+  | PrefixState<'icon', Extract<IconState, 'Detached' | 'Attached'>>;
 
 //------------------------------------------------------------------------------
 
