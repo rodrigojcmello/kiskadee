@@ -295,9 +295,6 @@ export const sandbox: KiskadeeTheme = {
                 rest: {
                   md: {
                     fontSize: 24,
-                    minWidth: 24,
-                    width: 24,
-                    height: 24,
                     paddingTop: 7,
                     paddingBottom: 7,
                     paddingLeft: 7,

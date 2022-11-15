@@ -42,10 +42,57 @@ const ButtonOnly = () => {
       <div style={{ paddingTop: 100, paddingLeft: 50, width: 200 }}>
         <Button
           type={'contained'}
+          variant={'primary'}
+          label={'fulano'}
+          isLoading={loading}
+          iconType={'Detached'}
+          // onClick={() => {
+          //   setLoading(true);
+          // }}
+          iconLeft={
+            <span className={'material-symbols-outlined'}>thumb_up</span>
+          }
+        />
+      </div>
+      <div style={{ paddingTop: 100, paddingLeft: 50, width: 200 }}>
+        <Button
+          type={'contained'}
           variant={'instagram'}
           label={'fulano'}
           isLoading={loading}
           iconType={'Detached'}
+          // onClick={() => {
+          //   setLoading(true);
+          // }}
+          iconLeft={
+            <span className={'material-symbols-outlined'}>thumb_up</span>
+          }
+        />
+      </div>
+      <div style={{ paddingTop: 100, paddingLeft: 50, width: 200 }}>
+        <Button
+          type={'contained'}
+          variant={'instagram'}
+          label={'fulano'}
+          isLoading={loading}
+          iconType={'Detached'}
+          size={'sm'}
+          // onClick={() => {
+          //   setLoading(true);
+          // }}
+          iconLeft={
+            <span className={'material-symbols-outlined'}>thumb_up</span>
+          }
+        />
+      </div>
+      <div style={{ paddingTop: 100, paddingLeft: 50, width: 200 }}>
+        <Button
+          type={'contained'}
+          variant={'instagram'}
+          label={'fulano'}
+          isLoading={loading}
+          iconType={'Detached'}
+          size={'md'}
           // onClick={() => {
           //   setLoading(true);
           // }}

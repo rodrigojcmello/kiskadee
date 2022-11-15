@@ -247,8 +247,6 @@ export const ios15: KiskadeeTheme = {
                 rest: {
                   md: {
                     fontSize: 24,
-                    width: 24,
-                    height: 24,
                     paddingTop: 13,
                     paddingBottom: 13,
                     paddingLeft: 13,
@@ -266,8 +264,6 @@ export const ios15: KiskadeeTheme = {
                 rest: {
                   md: {
                     fontSize: 24,
-                    width: 24,
-                    height: 24,
                     paddingTop: 13,
                     paddingBottom: 13,
                     paddingLeft: 13,

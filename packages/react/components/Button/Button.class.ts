@@ -460,7 +460,7 @@ export class ButtonClass extends Style {
         'iconLeft',
         `icon${this.iconType}`
       ),
-      size: this.iconSizeStyle('Left'),
+      size: this.iconSizeStyle('iconLeft'),
       padding: this.propertySpacingStyle(
         'iconLeft',
         'padding',
@@ -483,7 +483,7 @@ export class ButtonClass extends Style {
         'iconRight',
         `icon${this.iconType}`
       ),
-      size: this.iconSizeStyle('Right'),
+      size: this.iconSizeStyle('iconRight'),
       padding: this.propertySpacingStyle(
         'iconRight',
         'padding',
@@ -498,19 +498,19 @@ export class ButtonClass extends Style {
     };
   }
 
+  // TODO: type all return values
   iconBaseStyle() {
     return this.cache(['icon', 'base'], () => {
       return ButtonClass.render({
         display: 'flex',
         // TODO: review this
         transitionProperty:
-          'color, font-size, border-radius, border, padding, margin, background-color',
+          'color, font-size, border-radius, border, width, height, padding, margin, background-color',
       });
     });
   }
 
-  // TODO: type all return values
-  iconColorStyle(position: IconPosition) {
+  iconColorStyle(position: IconPosition): string | undefined {
     return this.cache(['icon', 'color', position, this.iconType || '-'], () => {
       const iconContrast = this.getContrastStyle(
         `icon${position}`,
@@ -541,17 +541,25 @@ export class ButtonClass extends Style {
     });
   }
 
-  // TODO: support SVG, png, jpg, webp
-  iconSizeStyle(position: IconPosition): string | undefined {
-    return this.cache(['icon', 'size', position, this.size || 'md'], () => {
-      let iconResponsive = this.getResponsiveStyle(`icon${position}`);
+  iconSizeStyle(element: string): string | undefined {
+    return this.cache([element, 'size', this.size || 'md'], () => {
+      let iconResponsive = this.getResponsiveStyle(element);
 
       iconResponsive = ButtonClass.pickResponsiveProperties(iconResponsive, [
         'fontSize',
-        'minWidth',
-        'width',
-        'height',
       ]);
+
+      for (const mq of Object.keys(iconResponsive)) {
+        iconResponsive[mq] = {
+          fontSize: iconResponsive[mq].fontSize,
+          height: iconResponsive[mq].fontSize,
+          width: iconResponsive[mq].fontSize,
+          /**
+           * minWidth is used just because of Firefox
+           */
+          minWidth: iconResponsive[mq].fontSize,
+        };
+      }
 
       const { '@media (min-width: 0px)': size, ...sizeResponsive } =
         iconResponsive;
@@ -561,58 +569,5 @@ export class ButtonClass extends Style {
         ...sizeResponsive,
       });
     });
-  }
-
-  iconPaddingStyle(position: IconPosition): string | undefined {
-    return this.cache(['icon', 'padding', position, this.size || 'md'], () => {
-      let iconResponsive = this.getResponsiveStyle(`icon${position}`);
-
-      iconResponsive = ButtonClass.pickResponsiveProperties(iconResponsive, [
-        'paddingTop',
-        'paddingBottom',
-        'paddingRight',
-        'paddingLeft',
-      ]);
-
-      const {
-        '@media (min-width: 0px)': iconPadding,
-        ...iconPaddingResponsive
-      } = iconResponsive;
-
-      return ButtonClass.render({
-        ...iconPadding,
-        ...iconPaddingResponsive,
-      });
-    });
-  }
-
-  // TODO: merge all margins here
-  iconMarginStyle(position: IconPosition): string | undefined {
-    return this.cache(
-      ['icon', 'margin', position, this.size || 'md', this.iconType || '-'],
-      () => {
-        let iconResponsive = this.getResponsiveStyle(
-          `icon${position}`,
-          `icon${this.iconType}`
-        );
-
-        iconResponsive = ButtonClass.pickResponsiveProperties(iconResponsive, [
-          'marginTop',
-          'marginBottom',
-          'marginRight',
-          'marginLeft',
-        ]);
-
-        const {
-          '@media (min-width: 0px)': iconMargin,
-          ...iconMarginResponsive
-        } = iconResponsive;
-
-        return ButtonClass.render({
-          ...iconMargin,
-          ...iconMarginResponsive,
-        });
-      }
-    );
   }
 }

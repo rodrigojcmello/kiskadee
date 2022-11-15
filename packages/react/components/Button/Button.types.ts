@@ -108,17 +108,12 @@ export interface ButtonIcon {
   color?: CSSProperties['color'];
   background?: CSSProperties['background'];
 
-  // Size - Responsive
-  // TODO: rename this to size
-  fontSize?: number;
-  height?: number;
-  // TODO: retry in Firefox without minWith
   /**
-   * minWidth is necessary to work in Firefox.
-   * width and minWidth are always the same value.
+   * FONTSIZE
+   * This property is RESPONSIVE
+   * This property handles FONTSIZE, WIDTH, MIN-WIDTH and HEIGHT values
    */
-  minWidth?: number;
-  width?: number;
+  fontSize?: number;
 
   // TODO: extract this types to a generic file
   /**
