@@ -42,10 +42,10 @@ const ButtonOnly = () => {
       <div style={{ paddingTop: 100, paddingLeft: 50, width: 200 }}>
         <Button
           type={'contained'}
-          variant={'primary'}
+          variant={'instagram'}
           label={'fulano'}
           isLoading={loading}
-          iconType={'Alone'}
+          iconType={'Detached'}
           // onClick={() => {
           //   setLoading(true);
           // }}

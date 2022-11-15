@@ -148,6 +148,7 @@ export interface ButtonIcon {
    * This property has DARK MODE
    * To override an existing border use "borderColor: 'transparent'" to hide it
    */
+  border?: 'none';
   borderWidth?: number;
   borderStyle?: 'solid';
   // TODO: create a type for colors
@@ -244,8 +245,8 @@ type ElementTheme<T, Status extends string> = Partial<
   >
 >;
 
-export type ContrastStyle<T> = {
-  [mediaQuery in 'defaultMode' | 'contrastMode']?: T;
+export type ContrastStyle = {
+  [mediaQuery in 'defaultMode' | 'contrastMode']?: CSSProperties;
 };
 
 export type Breakpoint = keyof Exclude<

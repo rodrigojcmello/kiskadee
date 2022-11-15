@@ -359,7 +359,7 @@ export const sandbox: KiskadeeTheme = {
                       iconDetached: {
                         md: {
                           color: '#d50060',
-                          borderColor: 'transparent',
+                          border: 'none',
                           padding: 6,
                           margin: 1,
                           background: 'rgb(255 255 255 / 85%)',

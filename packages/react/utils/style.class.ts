@@ -13,6 +13,7 @@ import type {
   ButtonElements,
   PrefixState,
 } from '@kiskadee/react';
+import type { CSSProperties } from 'react';
 import { CacheStyle } from './CacheStyle.class';
 
 const cacheStyle = new CacheStyle();
@@ -268,16 +269,16 @@ export class Style {
     );
   }
 
-  getContrastStyle<T>(element: string, status?: string): ContrastStyle<T> {
+  getContrastStyle(element: string, status?: string): ContrastStyle {
     return this.cache([element, 'contrast', status || '-'], () => {
-      const responsive: ContrastStyle<T> = {};
+      const responsive: ContrastStyle = {};
 
-      const light: T = {
+      const light: CSSProperties = {
         ...this.getStyleEssential(element),
         ...(status ? this.getStyleStatus(element, status) : {}),
       };
 
-      const dark: T = {
+      const dark: CSSProperties = {
         ...light,
         ...this.getStyleDark(element),
       };
@@ -342,44 +343,31 @@ export class Style {
 
   propertyBorderStyle(element: string, status?: string): string | undefined {
     return this.cache([element, 'border', status || '-'], () => {
-      const style = this.getContrastStyle(element, status);
+      const { defaultMode, contrastMode } = this.getContrastStyle(
+        element,
+        status
+      );
 
       return Style.render({
-        // @ts-ignore
-        border: style.defaultMode?.borderWidth
-          ? undefined
-          : '0px solid transparent',
-        // @ts-ignore
-        borderColor: style.defaultMode?.borderColor,
-        // @ts-ignore
-        borderStyle: style.defaultMode?.borderStyle,
-        // @ts-ignore
-        borderWidth: style.defaultMode?.borderWidth,
+        border: defaultMode?.border || '0px solid transparent',
 
-        '@media (prefers-color-scheme: dark)': style && {
-          // @ts-ignore
-          border: style.contrastMode?.borderWidth
-            ? undefined
-            : '0px solid transparent',
-          // @ts-ignore
-          borderColor: style.contrastMode?.borderColor,
-          // @ts-ignore
-          borderStyle: style.contrastMode?.borderStyle,
-          // @ts-ignore
-          borderWidth: style.contrastMode?.borderWidth,
-        },
+        ...(defaultMode?.border !== 'none'
+          ? {
+              borderColor: defaultMode?.borderColor,
+              borderStyle: defaultMode?.borderStyle,
+              borderWidth: defaultMode?.borderWidth,
+
+              '@media (prefers-color-scheme: dark)': contrastMode
+                ? {
+                    borderColor: contrastMode.borderColor,
+                    borderStyle: contrastMode.borderStyle,
+                    borderWidth: contrastMode.borderWidth,
+                  }
+                : undefined,
+            }
+          : {}),
       });
     });
-    // return this.cache([element, 'border', status || '-'], () => {
-    //   const container = this.getStyleEssential(element, status);
-    //
-    //   return Style.render({
-    //     border: container?.borderWidth ? undefined : '0px solid transparent',
-    //     borderColor: container?.borderColor,
-    //     borderStyle: container?.borderStyle,
-    //     borderWidth: container?.borderWidth,
-    //   });
-    // });
   }
 
   propertySpacingStyle(

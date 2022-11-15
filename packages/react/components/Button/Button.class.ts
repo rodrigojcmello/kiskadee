@@ -57,11 +57,14 @@ export class ButtonClass extends Style {
 
   containerRippleBackgroundStyle() {
     return this.cache(['container', 'ripple-background'], () => {
-      const ripple = this.getContrastStyle<ButtonContainer>('container');
+      const ripple = this.getContrastStyle('container');
 
       return ButtonClass.render({
+        // TODO: rename rippleColor to backgroundColor
+        // @ts-ignore
         backgroundColor: ripple?.defaultMode?.rippleColor,
         '@media (prefers-color-scheme: dark)': ripple?.contrastMode && {
+          // @ts-ignore
           backgroundColor: ripple?.contrastMode.rippleColor,
         },
       });
@@ -399,12 +402,12 @@ export class ButtonClass extends Style {
 
   textColorStyle() {
     return this.cache(['text', 'color'], () => {
-      const textContrast = this.getContrastStyle<ButtonText>('text');
+      const { contrastMode, defaultMode } = this.getContrastStyle('text');
 
       return ButtonClass.render({
-        color: textContrast?.defaultMode?.color,
-        '@media (prefers-color-scheme: dark)': textContrast?.contrastMode && {
-          color: textContrast?.contrastMode?.color,
+        color: defaultMode?.color,
+        '@media (prefers-color-scheme: dark)': contrastMode && {
+          color: contrastMode.color,
         },
       });
     });
@@ -499,8 +502,9 @@ export class ButtonClass extends Style {
     return this.cache(['icon', 'base'], () => {
       return ButtonClass.render({
         display: 'flex',
+        // TODO: review this
         transitionProperty:
-          'color, font-size, border-radius, padding, margin, background-color',
+          'color, font-size, border-radius, border, padding, margin, background-color',
       });
     });
   }
@@ -508,11 +512,11 @@ export class ButtonClass extends Style {
   // TODO: type all return values
   iconColorStyle(position: IconPosition) {
     return this.cache(['icon', 'color', position, this.iconType || '-'], () => {
-      const iconContrast = this.getContrastStyle<ButtonIcon>(
+      const iconContrast = this.getContrastStyle(
         `icon${position}`,
         `icon${this.iconType}`
       );
-      const textContrast = this.getContrastStyle<ButtonText>('text');
+      const textContrast = this.getContrastStyle('text');
 
       const colorDefault =
         iconContrast?.defaultMode?.color || textContrast?.defaultMode?.color;
