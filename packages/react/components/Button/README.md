@@ -1,4 +1,4 @@
-Limitations
+Limitations due to good performance
 
 - **Gradient border** is rare in design systems, with Microsoft's Fluent being one of the big adherents, but neither 
   the Web and Android versions of Fluent use this feature, which should indicate an equal understanding of the 
@@ -9,6 +9,7 @@ Limitations
   chose not to support this feature for simplicity and performance reasons. And its official web library is used border 
   property, but we disagreed with this approach, boarders shouldn't be used for focus state.
 - **Transitions** between states are not customizable. We may review this in the future.
+- **Picture tag** is supported for icons, but size changes based on responsive is limited. You need to set the icon size on picture tag.
 
 Experience
 

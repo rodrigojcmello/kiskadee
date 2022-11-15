@@ -10,8 +10,13 @@ import type {
 import { Button, KiskadeeContext } from '@kiskadee/react';
 import { Container } from '../../components/Container/Container';
 import { BoxTitle } from '../../components/BoxTitle/BoxTitle';
-// TODO: fix 2x and 3x
-import logoGooglePng from './assets/logo-google.png';
+// TODO: create a lib for this
+import logoGooglePng1x from './assets/logo-google@1x.png';
+import logoGooglePng2x from './assets/logo-google@2x.png';
+import logoGooglePng3x from './assets/logo-google@3x.png';
+import logoGoogleWebp1x from './assets/logo-google@1x.webp';
+import logoGoogleWebp2x from './assets/logo-google@2x.webp';
+import logoGoogleWebp3x from './assets/logo-google@3x.webp';
 import logoInstagram from './assets/logo-instagram.png';
 import { ReactComponent as LogoGoogleSvg } from './assets/logo-google.svg';
 import { ReactComponent as LogoInstagramSvg } from './assets/logo-instagram.svg';
@@ -408,7 +413,24 @@ export const ButtonDocumentation: FC = () => {
                 type={type}
                 variant={variant}
                 borderRadius={radius}
-                iconLeft={<img src={logoGooglePng} alt={'Google'} />}
+                iconLeft={
+                  <picture>
+                    <source
+                      width={'24px'}
+                      height={'24px'}
+                      srcSet={`${logoGoogleWebp1x}, ${logoGoogleWebp2x} 2x, ${logoGoogleWebp3x} 3x`}
+                      type={'image/webp'}
+                    />
+                    <source
+                      width={'24px'}
+                      height={'24px'}
+                      srcSet={`${logoGooglePng1x}, ${logoGooglePng2x} 2x, ${logoGooglePng3x} 3x`}
+                      type={'image/png'}
+                    />
+                    <img src={logoGooglePng2x} alt={'Google'} />
+                  </picture>
+                }
+                // iconLeft={<img src={logoGooglePng} alt={'Google'} />}
                 iconRight={
                   <span className={'material-symbols-outlined'}>
                     chevron_right
@@ -420,7 +442,19 @@ export const ButtonDocumentation: FC = () => {
                 onClick={(): void => {
                   setLabel('Click me');
                   setIconType('Detached');
-                  setIconLeft(<img src={logoGooglePng} alt={'Google'} />);
+                  setIconLeft(
+                    <picture>
+                      <source
+                        srcSet={`${logoGoogleWebp1x}, ${logoGoogleWebp2x} 2x, ${logoGoogleWebp3x} 3x`}
+                        type={'image/webp'}
+                      />
+                      <img
+                        src={logoGooglePng2x}
+                        srcSet={`${logoGooglePng1x}, ${logoGooglePng2x} 2x, ${logoGooglePng3x} 3x`}
+                        alt={'Google'}
+                      />
+                    </picture>
+                  );
                   setIconRight(
                     <span className={'material-symbols-outlined'}>
                       chevron_right
