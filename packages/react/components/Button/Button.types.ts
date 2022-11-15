@@ -109,8 +109,10 @@ export interface ButtonIcon {
   background?: CSSProperties['background'];
 
   // Size - Responsive
+  // TODO: rename this to size
   fontSize?: number;
   height?: number;
+  // TODO: retry in Firefox without minWith
   /**
    * minWidth is necessary to work in Firefox.
    * width and minWidth are always the same value.
@@ -118,17 +120,38 @@ export interface ButtonIcon {
   minWidth?: number;
   width?: number;
 
-  // Padding - Responsive
+  // TODO: extract this types to a generic file
+  /**
+   * PADDING
+   * This property is RESPONSIVE
+   * Use "padding" property ONLY to set the same value for all sides
+   */
+  padding?: number;
   paddingTop?: number;
   paddingRight?: number;
   paddingBottom?: number;
   paddingLeft?: number;
 
-  // Margin - Responsive
+  /**
+   * MARGIN
+   * This property is RESPONSIVE
+   * Use "margin" property ONLY to set the same value for all sides
+   */
+  margin?: number;
   marginTop?: number;
   marginRight?: number;
   marginBottom?: number;
   marginLeft?: number;
+
+  /**
+   * BORDER
+   * This property has DARK MODE
+   * To override an existing border use "borderColor: 'transparent'" to hide it
+   */
+  borderWidth?: number;
+  borderStyle?: 'solid';
+  // TODO: create a type for colors
+  borderColor?: string;
 
   // Border Radius - Responsive
   borderRadius?: number;

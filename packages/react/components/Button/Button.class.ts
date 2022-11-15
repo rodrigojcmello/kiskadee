@@ -30,8 +30,8 @@ export class ButtonClass extends Style {
 
   elementContainer() {
     return {
-      border: this.containerBorderStyle(),
-      background: this.containerBackgroundStyle(),
+      border: this.propertyBorderStyle('container'),
+      background: this.propertyBackgroundStyle('container'),
       radius: this.propertyRadiusStyle('container'),
       width: this.containerWidthStyle(),
       core: this.containerCoreStyle(),
@@ -81,31 +81,18 @@ export class ButtonClass extends Style {
     });
   }
 
-  containerBackgroundStyle() {
-    return this.cache(['container', 'background'], () => {
-      const style = this.getContrastStyle<ButtonContainer>('container');
-
-      return ButtonClass.render({
-        background: style.defaultMode?.background,
-        '@media (prefers-color-scheme: dark)': style.contrastMode && {
-          background: style.contrastMode?.background,
-        },
-      });
-    });
-  }
-
-  containerBorderStyle() {
-    return this.cache(['container', 'border'], () => {
-      const container = this.getStyleEssential<ButtonContainer>('container');
-
-      return ButtonClass.render({
-        border: container?.borderWidth ? undefined : '0px solid transparent',
-        borderColor: container?.borderColor,
-        borderStyle: container?.borderStyle,
-        borderWidth: container?.borderWidth,
-      });
-    });
-  }
+  // containerBackgroundStyle() {
+  //   return this.cache(['container', 'background'], () => {
+  //     const style = this.getContrastStyle<ButtonContainer>('container');
+  //
+  //     return ButtonClass.render({
+  //       background: style.defaultMode?.background,
+  //       '@media (prefers-color-scheme: dark)': style.contrastMode && {
+  //         background: style.contrastMode?.background,
+  //       },
+  //     });
+  //   });
+  // }
 
   containerBaseStyle() {
     return this.cache(['container', 'base'], () => {
@@ -465,7 +452,11 @@ export class ButtonClass extends Style {
   elementIconLeft() {
     return {
       color: this.iconColorStyle('Left'),
-      backgroundColor: this.iconBackgroundStyle('Left'),
+      border: this.propertyBorderStyle('iconLeft', `icon${this.iconType}`),
+      background: this.propertyBackgroundStyle(
+        'iconLeft',
+        `icon${this.iconType}`
+      ),
       size: this.iconSizeStyle('Left'),
       padding: this.propertySpacingStyle(
         'iconLeft',
@@ -484,7 +475,11 @@ export class ButtonClass extends Style {
   elementIconRight() {
     return {
       color: this.iconColorStyle('Right'),
-      backgroundColor: this.iconBackgroundStyle('Right'),
+      border: this.propertyBorderStyle('iconRight', `icon${this.iconType}`),
+      background: this.propertyBackgroundStyle(
+        'iconRight',
+        `icon${this.iconType}`
+      ),
       size: this.iconSizeStyle('Right'),
       padding: this.propertySpacingStyle(
         'iconRight',
@@ -510,6 +505,7 @@ export class ButtonClass extends Style {
     });
   }
 
+  // TODO: type all return values
   iconColorStyle(position: IconPosition) {
     return this.cache(['icon', 'color', position, this.iconType || '-'], () => {
       const iconContrast = this.getContrastStyle<ButtonIcon>(
@@ -539,28 +535,6 @@ export class ButtonClass extends Style {
         },
       });
     });
-  }
-
-  // TODO: merge all background-colors here
-  // TODO: type all return values
-  iconBackgroundStyle(position: IconPosition) {
-    return this.cache(
-      ['icon', 'background', position, this.iconType || '-'],
-      () => {
-        const backgroundContrast = this.getContrastStyle<ButtonIcon>(
-          `icon${position}`,
-          `icon${this.iconType}`
-        );
-
-        return ButtonClass.render({
-          background: backgroundContrast.defaultMode?.background,
-
-          '@media (prefers-color-scheme: dark)': backgroundContrast && {
-            color: backgroundContrast.contrastMode?.background,
-          },
-        });
-      }
-    );
   }
 
   // TODO: support SVG, png, jpg, webp

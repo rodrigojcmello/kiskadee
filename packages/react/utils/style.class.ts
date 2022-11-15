@@ -319,6 +319,69 @@ export class Style {
     return newObject;
   }
 
+  // Property Style ------------------------------------------------------------
+
+  propertyBackgroundStyle(
+    element: string,
+    status?: string
+  ): string | undefined {
+    return this.cache([element, 'background', status || '-'], () => {
+      const style = this.getContrastStyle(element, status);
+
+      return Style.render({
+        // @ts-ignore
+        background: style.defaultMode?.background,
+
+        '@media (prefers-color-scheme: dark)': style && {
+          // @ts-ignore
+          color: style.contrastMode?.background,
+        },
+      });
+    });
+  }
+
+  propertyBorderStyle(element: string, status?: string): string | undefined {
+    return this.cache([element, 'border', status || '-'], () => {
+      const style = this.getContrastStyle(element, status);
+
+      return Style.render({
+        // @ts-ignore
+        border: style.defaultMode?.borderWidth
+          ? undefined
+          : '0px solid transparent',
+        // @ts-ignore
+        borderColor: style.defaultMode?.borderColor,
+        // @ts-ignore
+        borderStyle: style.defaultMode?.borderStyle,
+        // @ts-ignore
+        borderWidth: style.defaultMode?.borderWidth,
+
+        '@media (prefers-color-scheme: dark)': style && {
+          // @ts-ignore
+          border: style.contrastMode?.borderWidth
+            ? undefined
+            : '0px solid transparent',
+          // @ts-ignore
+          borderColor: style.contrastMode?.borderColor,
+          // @ts-ignore
+          borderStyle: style.contrastMode?.borderStyle,
+          // @ts-ignore
+          borderWidth: style.contrastMode?.borderWidth,
+        },
+      });
+    });
+    // return this.cache([element, 'border', status || '-'], () => {
+    //   const container = this.getStyleEssential(element, status);
+    //
+    //   return Style.render({
+    //     border: container?.borderWidth ? undefined : '0px solid transparent',
+    //     borderColor: container?.borderColor,
+    //     borderStyle: container?.borderStyle,
+    //     borderWidth: container?.borderWidth,
+    //   });
+    // });
+  }
+
   propertySpacingStyle(
     element: string,
     spacing: 'margin' | 'padding',
