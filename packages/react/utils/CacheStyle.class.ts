@@ -8,6 +8,8 @@ export class CacheStyle {
 
   private cache: Record<string, unknown>;
 
+  private readonly cacheEnabled: boolean;
+
   constructor() {
     this.cache = {};
 
@@ -16,6 +18,8 @@ export class CacheStyle {
       version: '',
       author: '',
     };
+
+    this.cacheEnabled = false;
   }
 
   checkCache(
@@ -46,6 +50,9 @@ export class CacheStyle {
   }
 
   set(keys: string[], value: unknown) {
-    this.cache[JSON.stringify(keys)] = value;
+    if (this.cacheEnabled) {
+      this.cache[JSON.stringify(keys)] = value;
+    }
+    return value;
   }
 }

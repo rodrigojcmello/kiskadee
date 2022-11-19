@@ -385,11 +385,11 @@ export class Style {
         let elementResponsive = this.getResponsiveStyle(element, status);
 
         elementResponsive = Style.pickResponsiveProperties(elementResponsive, [
-          spacing,
           `${spacing}Top`,
           `${spacing}Bottom`,
           `${spacing}Right`,
           `${spacing}Left`,
+          spacing,
         ]);
 
         if (callback) {
@@ -424,17 +424,16 @@ export class Style {
     const elementStyle = this.getResponsiveStyle(element, status);
 
     const p = Style.pickResponsiveProperties(elementStyle, [
-      'borderRadius',
       'borderTopLeftRadius',
       'borderTopRightRadius',
       'borderBottomLeftRadius',
       'borderBottomRightRadius',
+      'borderRadius',
     ]);
 
     const { '@media (min-width: 0px)': elementRest, ...elementResponsive } = p;
 
     return Style.render({
-      // @ts-ignore
       ...elementRest,
       ...elementResponsive,
     });

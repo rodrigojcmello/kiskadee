@@ -69,6 +69,21 @@ export const ios15: KiskadeeTheme = {
                         },
                       },
                     },
+                    instagram: {
+                      rest: {
+                        md: {
+                          background:
+                            'linear-gradient(87.1deg, #FFD522 -10.92%, #F1000B 48.02%, #B900B3 106.81%)',
+                          rippleColor: '#ffffff80',
+                        },
+                      },
+                      // hover: {
+                      //     md: {
+                      //         boxShadow:
+                      //             '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                      //     },
+                      // },
+                    },
                   },
                 },
                 flat: {
@@ -206,6 +221,13 @@ export const ios15: KiskadeeTheme = {
                         },
                       },
                     },
+                    instagram: {
+                      rest: {
+                        md: {
+                          color: '#ffffff',
+                        },
+                      },
+                    },
                   },
                 },
                 flat: {
@@ -251,6 +273,45 @@ export const ios15: KiskadeeTheme = {
                     paddingBottom: 13,
                     paddingLeft: 13,
                     paddingRight: 13,
+                  },
+                },
+                iconDetached: {
+                  md: {
+                    padding: 6,
+                    color: '#307DF6',
+                    marginTop: 7,
+                    marginBottom: 7,
+                    marginLeft: 7,
+                    marginRight: 0,
+                    background: '#FFFFFF',
+                  },
+                },
+                iconAttached: {
+                  md: {
+                    color: '#FFFFFF',
+                  },
+                },
+                borderRadiusRounded: {
+                  md: {
+                    borderRadius: 6,
+                  },
+                },
+                borderRadiusFull: {
+                  md: {
+                    borderRadius: 18,
+                  },
+                },
+              },
+              type: {
+                contained: {
+                  variant: {
+                    instagram: {
+                      iconDetached: {
+                        md: {
+                          color: '#d50060',
+                        },
+                      },
+                    },
                   },
                 },
               },

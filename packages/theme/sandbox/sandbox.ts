@@ -324,15 +324,6 @@ export const sandbox: KiskadeeTheme = {
                     marginRight: 4,
                   },
                 },
-                iconDetached: {
-                  md: {
-                    background: '#FFFFFF',
-                    color: '#6750A4',
-                    borderWidth: 1,
-                    borderStyle: 'solid',
-                    borderColor: '#6750A4',
-                  },
-                },
                 borderRadiusRounded: {
                   md: {
                     borderTopLeftRadius: 15,
@@ -352,12 +343,23 @@ export const sandbox: KiskadeeTheme = {
               type: {
                 contained: {
                   variant: {
+                    primary: {
+                      iconDetached: {
+                        md: {
+                          background: '#FFFFFF',
+                          color: '#6750A4',
+                          borderWidth: 1,
+                          borderStyle: 'solid',
+                          borderColor: '#6750A4',
+                        },
+                      },
+                    },
                     instagram: {
                       iconDetached: {
                         md: {
                           color: '#d50060',
                           border: 'none',
-                          padding: 6,
+                          padding: 7,
                           margin: 1,
                           background: 'rgb(255 255 255 / 85%)',
                         },

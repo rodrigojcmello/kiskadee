@@ -414,21 +414,11 @@ export const ButtonDocumentation: FC = () => {
                 variant={variant}
                 borderRadius={radius}
                 iconLeft={
-                  <picture>
-                    <source
-                      width={'24px'}
-                      height={'24px'}
-                      srcSet={`${logoGoogleWebp1x}, ${logoGoogleWebp2x} 2x, ${logoGoogleWebp3x} 3x`}
-                      type={'image/webp'}
-                    />
-                    <source
-                      width={'24px'}
-                      height={'24px'}
-                      srcSet={`${logoGooglePng1x}, ${logoGooglePng2x} 2x, ${logoGooglePng3x} 3x`}
-                      type={'image/png'}
-                    />
-                    <img src={logoGooglePng2x} alt={'Google'} />
-                  </picture>
+                  <img
+                    src={logoGooglePng2x}
+                    srcSet={`${logoGoogleWebp1x}, ${logoGoogleWebp2x} 2x, ${logoGoogleWebp3x} 3x`}
+                    alt={'Google Logo'}
+                  />
                 }
                 // iconLeft={<img src={logoGooglePng} alt={'Google'} />}
                 iconRight={
@@ -443,17 +433,11 @@ export const ButtonDocumentation: FC = () => {
                   setLabel('Click me');
                   setIconType('Detached');
                   setIconLeft(
-                    <picture>
-                      <source
-                        srcSet={`${logoGoogleWebp1x}, ${logoGoogleWebp2x} 2x, ${logoGoogleWebp3x} 3x`}
-                        type={'image/webp'}
-                      />
-                      <img
-                        src={logoGooglePng2x}
-                        srcSet={`${logoGooglePng1x}, ${logoGooglePng2x} 2x, ${logoGooglePng3x} 3x`}
-                        alt={'Google'}
-                      />
-                    </picture>
+                    <img
+                      src={logoGooglePng2x}
+                      srcSet={`${logoGoogleWebp1x}, ${logoGoogleWebp2x} 2x, ${logoGoogleWebp3x} 3x, ${logoGooglePng1x}, ${logoGooglePng2x} 2x, ${logoGooglePng3x} 3x`}
+                      alt={'Google Logo'}
+                    />
                   );
                   setIconRight(
                     <span className={'material-symbols-outlined'}>
