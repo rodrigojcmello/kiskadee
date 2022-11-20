@@ -111,6 +111,7 @@ export class ButtonClass extends Style {
         justifyContent: 'center',
         position: 'relative',
         overflow: 'hidden',
+        WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
       });
     });
   }
