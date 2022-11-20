@@ -219,17 +219,19 @@ export class ButtonClass extends Style {
         // TODO: limit props to interaction state
         // HOVER
         '&:hover, &.--hover': {
-          ...containerHover,
-          '& .button__text': {
-            ...textHover,
-          },
-          '& .button__icon-left': {
-            color: textHover?.color,
-            ...leftIconHover,
-          },
-          '& .button__icon-right': {
-            color: textHover?.color,
-            ...rightIconHover,
+          '@media (pointer: fine)': {
+            ...containerHover,
+            '& .button__text': {
+              ...textHover,
+            },
+            '& .button__icon-left': {
+              color: textHover?.color,
+              ...leftIconHover,
+            },
+            '& .button__icon-right': {
+              color: textHover?.color,
+              ...rightIconHover,
+            },
           },
         },
 
