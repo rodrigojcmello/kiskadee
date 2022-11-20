@@ -1,6 +1,6 @@
 /* eslint-disable react/button-has-type */
 import type { FC, MouseEvent } from 'react';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { ButtonProps, ButtonStyleProps } from './Button.types';
 import { useKiskadee } from '../../schema';
 import { ButtonClass } from './Button.class';
@@ -25,6 +25,7 @@ export const Button: FC<ButtonProps> = ({
   isLoading,
 }) => {
   const [schema] = useKiskadee();
+  const [isPressed, setIsPressed] = useState(false);
 
   const style: ButtonStyleProps = {
     theme: {
@@ -48,6 +49,7 @@ export const Button: FC<ButtonProps> = ({
 
   const className = ['button'];
   if (interaction) className.push(`--${interaction}`);
+  if (interaction !== 'pressed' && isPressed) className.push('--pressed');
 
   const button = useMemo(() => {
     return new ButtonClass(style);
@@ -60,6 +62,7 @@ export const Button: FC<ButtonProps> = ({
   const buttonIconRight = button.elementIconRight();
   const buttonCommon = button.common();
 
+  // TODO: how disable ripple effect?
   const createRipple = (event: MouseEvent<HTMLButtonElement>) => {
     const container = event.currentTarget;
 
@@ -84,6 +87,20 @@ export const Button: FC<ButtonProps> = ({
     container.append(circle);
   };
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (isPressed) {
+      timer = setTimeout(() => {
+        setIsPressed(false);
+        // TODO: create a constant for this timer
+      }, 150);
+    }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [isPressed]);
+
   console.log('----------------------------------------------------- rerender');
 
   // TODO: support link ("a" tag)
@@ -105,6 +122,7 @@ export const Button: FC<ButtonProps> = ({
       type={typeHTML}
       onClick={(event) => {
         createRipple(event);
+        setIsPressed(true);
         onClick?.(event);
       }}
       disabled={isLoading || disabled}

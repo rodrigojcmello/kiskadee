@@ -51,7 +51,7 @@ export class Style {
 
   // Transition ----------------------------------------------------------------
 
-  readonly timingFunction: string;
+  readonly timingFunction: CSSProperties['animationTimingFunction'];
 
   readonly duration: string;
 
