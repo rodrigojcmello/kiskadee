@@ -22,7 +22,8 @@ Experience
   the minimum width as 100px.
 - **Icons** - Few documentations refer to icons on buttons, in these cases, instead of not supporting icons or being 
   limited to bad examples from the documentation itself, we chose to keep the use of icons free, except when the 
-  documentation clearly condemns the use, such as Carbon .
+  documentation clearly condemns the use, such as Carbon.
+- **Hover State** is limited to devices with a mouse.
 
 Themes
 
