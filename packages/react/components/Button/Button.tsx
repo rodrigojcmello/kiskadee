@@ -5,6 +5,7 @@ import type { ButtonProps, ButtonStyleProps } from './Button.types';
 import { useKiskadee } from '../../schema';
 import { ButtonClass } from './Button.class';
 import { EllipsisLoader } from '../Loader';
+import { CLICK_MIN_DURATION, CLICK_TRANSITION_DURATION } from './constants';
 
 export const Button: FC<ButtonProps> = ({
   // TODO: where default come from?
@@ -26,6 +27,7 @@ export const Button: FC<ButtonProps> = ({
 }) => {
   const [schema] = useKiskadee();
   const [isPressed, setIsPressed] = useState(false);
+  const [afterPressed, setAfterPressed] = useState(false);
 
   const style: ButtonStyleProps = {
     theme: {
@@ -87,19 +89,43 @@ export const Button: FC<ButtonProps> = ({
     container.append(circle);
   };
 
+  /**
+   * The complete animation requires the user to hold the mouse button for a
+   * few moments, with this implementation we were able to keep an animation
+   * with minimum duration thus improving the animation and button response
+   * experience
+   */
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
     if (isPressed) {
       timer = setTimeout(() => {
         setIsPressed(false);
-        // TODO: create a constant for this timer
-      }, 150);
+        setAfterPressed(true);
+      }, CLICK_MIN_DURATION);
     }
     return () => {
       clearTimeout(timer);
     };
   }, [isPressed]);
+
+  /**
+   * We have an animation for the active state, but we can't keep it after
+   * the active state is lost. Added a new style class to maintain animation
+   * consistency after click
+   */
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (afterPressed) {
+      timer = setTimeout(() => {
+        setAfterPressed(false);
+      }, CLICK_MIN_DURATION + CLICK_TRANSITION_DURATION);
+    }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [afterPressed]);
 
   console.log('----------------------------------------------------- rerender');
 
@@ -116,6 +142,7 @@ export const Button: FC<ButtonProps> = ({
         buttonContainer.base,
         buttonContainer.core,
         buttonCommon.transition,
+        afterPressed ? buttonContainer.transitionAfterPressed : '',
       ]
         .join(' ')
         .trim()}

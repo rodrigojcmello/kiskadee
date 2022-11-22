@@ -53,7 +53,7 @@ export class Style {
 
   readonly timingFunction: CSSProperties['animationTimingFunction'];
 
-  readonly duration: string;
+  readonly duration: number;
 
   // Responsive ----------------------------------------------------------------
 
@@ -85,7 +85,7 @@ export class Style {
     // Transition --------------------------------------------------------------
 
     this.timingFunction = 'ease-in';
-    this.duration = '0.250s';
+    this.duration = 270;
 
     // Responsive --------------------------------------------------------------
 
@@ -115,6 +115,7 @@ export class Style {
   }
 
   cache<T>(keys: string[], callback: () => T): T {
+    // TODO: review this
     const key = [this.component, this.type, this.variant, ...keys];
 
     const cache = cacheStyle.get<T>(key);
@@ -139,7 +140,7 @@ export class Style {
   getTransition() {
     return this.cache(['transition'], () => {
       return Style.render({
-        transitionDuration: this.duration,
+        transitionDuration: `${this.duration}ms`,
         transitionTimingFunction: this.timingFunction,
       });
     });

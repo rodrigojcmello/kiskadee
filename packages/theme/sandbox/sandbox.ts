@@ -79,7 +79,10 @@ export const sandbox: KiskadeeTheme = {
                       rest: {
                         md: {
                           background: '#6750A4',
-                          rippleColor: '#ffffff80',
+                          // rippleColor: '#ffffff80',
+                          borderWidth: 1,
+                          borderColor: '#6750A4',
+                          borderStyle: 'solid',
                         },
                         sm: {
                           background: 'red',
@@ -87,7 +90,8 @@ export const sandbox: KiskadeeTheme = {
                       },
                       hover: {
                         md: {
-                          background: '#735EAB',
+                          // background: '#735EAB',
+                          // borderColor: '#735EAB',
                           boxShadow:
                             '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                         },
@@ -99,7 +103,8 @@ export const sandbox: KiskadeeTheme = {
                       },
                       pressed: {
                         md: {
-                          background: '#7965AF',
+                          background: '#5c4893',
+                          borderColor: '#3c2f60',
                         },
                       },
                       disabled: {
@@ -113,6 +118,9 @@ export const sandbox: KiskadeeTheme = {
                       rest: {
                         md: {
                           background: '#E8DEF8',
+                          borderWidth: 1,
+                          borderColor: 'transparent',
+                          borderStyle: 'solid',
                           rippleColor: '#6750a480',
                         },
                       },
@@ -131,6 +139,7 @@ export const sandbox: KiskadeeTheme = {
                       pressed: {
                         md: {
                           background: '#D0C6DF',
+                          borderColor: '#b6a7cd',
                         },
                       },
                       disabled: {
@@ -240,8 +249,11 @@ export const sandbox: KiskadeeTheme = {
                     primary: {
                       rest: {
                         md: {
-                          rippleColor: '#6750a480',
+                          // rippleColor: '#6750a480',
                           background: '#FFFFFF',
+                          borderWidth: 1,
+                          borderColor: 'transparent',
+                          borderStyle: 'solid',
                         },
                       },
                       hover: {
@@ -257,6 +269,7 @@ export const sandbox: KiskadeeTheme = {
                       pressed: {
                         md: {
                           background: '#ECEAF4',
+                          borderColor: '#dedaec',
                         },
                       },
                       disabled: {
@@ -348,9 +361,9 @@ export const sandbox: KiskadeeTheme = {
                         md: {
                           background: '#FFFFFF',
                           color: '#6750A4',
-                          borderWidth: 1,
-                          borderStyle: 'solid',
-                          borderColor: '#6750A4',
+                          // borderWidth: 1,
+                          // borderStyle: 'solid',
+                          // borderColor: '#6750A4',
                         },
                       },
                     },
@@ -397,16 +410,10 @@ export const sandbox: KiskadeeTheme = {
                   },
                   md: {
                     fontSize: 24,
-                    paddingTop: 8,
-                    paddingBottom: 8,
-                    paddingLeft: 8,
-                    paddingRight: 8,
+                    padding: 7,
                   },
                   lg: {
-                    paddingTop: 16,
-                    paddingBottom: 16,
-                    paddingLeft: 16,
-                    paddingRight: 16,
+                    padding: 16,
                   },
                 },
               },
@@ -435,29 +442,29 @@ export const sandbox: KiskadeeTheme = {
                     fontWeight: 500,
                     fontFamily: 'Roboto',
                     fontStyle: 'normal',
-                    paddingTop: 10,
-                    paddingBottom: 10,
-                    paddingLeft: 24,
-                    paddingRight: 24,
+                    paddingTop: 9,
+                    paddingBottom: 9,
+                    paddingLeft: 23,
+                    paddingRight: 23,
                   },
                   sm: {
-                    paddingTop: 6,
-                    paddingBottom: 6,
-                    paddingLeft: 16,
-                    paddingRight: 16,
+                    paddingTop: 5,
+                    paddingBottom: 5,
+                    paddingLeft: 15,
+                    paddingRight: 15,
                   },
                   lg: {
-                    paddingTop: 18,
-                    paddingBottom: 18,
-                    paddingLeft: 18,
-                    paddingRight: 18,
+                    paddingTop: 17,
+                    paddingBottom: 17,
+                    paddingLeft: 17,
+                    paddingRight: 17,
                   },
                   xl: {
                     fontSize: '2rem',
-                    paddingTop: 38,
-                    paddingBottom: 38,
-                    paddingLeft: 38,
-                    paddingRight: 38,
+                    paddingTop: 37,
+                    paddingBottom: 37,
+                    paddingLeft: 37,
+                    paddingRight: 37,
                   },
                 },
                 disabled: {

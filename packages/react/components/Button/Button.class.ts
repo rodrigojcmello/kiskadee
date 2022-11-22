@@ -7,7 +7,11 @@ import type {
   IconPosition,
   ButtonStatus,
 } from './Button.types';
-import { RIPPLE_DURATION, RIPPLE_TIMING_FUNCTION } from './constants';
+import {
+  CLICK_TRANSITION_DURATION,
+  RIPPLE_DURATION,
+  RIPPLE_TIMING_FUNCTION,
+} from './constants';
 import { Style } from '../../utils';
 
 const rippleKeyframe = keyframes({
@@ -34,11 +38,21 @@ export class ButtonClass extends Style {
       background: this.propertyBackgroundStyle('container'),
       radius: this.propertyRadiusStyle('container'),
       width: this.containerWidthStyle(),
+      transitionAfterPressed: this.containerTransitionAfterPressed(),
       core: this.containerCoreStyle(),
       base: this.containerBaseStyle(),
       rippleCore: this.containerRippleStyle(),
       rippleBackground: this.containerRippleBackgroundStyle(),
     };
+  }
+
+  containerTransitionAfterPressed() {
+    return this.cache(['container', 'transition-pressed'], () => {
+      return ButtonClass.render({
+        transitionDuration: `${CLICK_TRANSITION_DURATION}ms !important`,
+        transitionTimingFunction: 'ease-out !important',
+      });
+    });
   }
 
   // LRU and LFU cache, memory-cache, ttl
@@ -83,19 +97,6 @@ export class ButtonClass extends Style {
       });
     });
   }
-
-  // containerBackgroundStyle() {
-  //   return this.cache(['container', 'background'], () => {
-  //     const style = this.getContrastStyle<ButtonContainer>('container');
-  //
-  //     return ButtonClass.render({
-  //       background: style.defaultMode?.background,
-  //       '@media (prefers-color-scheme: dark)': style.contrastMode && {
-  //         background: style.contrastMode?.background,
-  //       },
-  //     });
-  //   });
-  // }
 
   containerBaseStyle() {
     return this.cache(['container', 'base'], () => {
@@ -216,7 +217,6 @@ export class ButtonClass extends Style {
         ...elementRest,
         ...elementResponsive,
 
-        // TODO: limit props to interaction state
         // HOVER
         '&:hover, &.--hover': {
           '@media (pointer: fine)': {
@@ -238,6 +238,14 @@ export class ButtonClass extends Style {
         // PRESSED
         '&:active, &.--pressed': {
           ...containerPressed,
+
+          /**
+           * Animation needs to be faster on click. This creates a more
+           * fluid experience.
+           */
+          transitionDuration: `${CLICK_TRANSITION_DURATION}ms`,
+          transitionTimingFunction: 'ease-out',
+
           '& .button__text': {
             ...textPressed,
           },
