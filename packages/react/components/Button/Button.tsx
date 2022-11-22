@@ -120,7 +120,7 @@ export const Button: FC<ButtonProps> = ({
     if (afterPressed) {
       timer = setTimeout(() => {
         setAfterPressed(false);
-      }, CLICK_MIN_DURATION + CLICK_TRANSITION_DURATION);
+      }, CLICK_TRANSITION_DURATION);
     }
     return () => {
       clearTimeout(timer);
