@@ -121,6 +121,7 @@ export class ButtonClass extends Style {
         overflow: 'hidden',
         WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
         border: 'none',
+        // background: 'none',
       });
     });
   }
