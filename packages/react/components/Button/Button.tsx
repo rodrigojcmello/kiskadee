@@ -58,6 +58,7 @@ export const Button: FC<ButtonProps> = ({
   }, [style]);
 
   const buttonContainer = button.elementContainer();
+  const buttonContainerWrapper = button.elementContainerWrapper();
   const buttonText = button.elementText();
   const buttonIcon = button.elementIcon();
   const buttonIconLeft = button.elementIconLeft();
@@ -137,8 +138,6 @@ export const Button: FC<ButtonProps> = ({
         ...className,
         buttonContainer.width,
         buttonContainer.radius,
-        buttonContainer.border,
-        buttonContainer.background,
         buttonContainer.base,
         buttonContainer.core,
         buttonCommon.transition,
@@ -154,68 +153,80 @@ export const Button: FC<ButtonProps> = ({
       }}
       disabled={isLoading || disabled}
     >
-      {/* <span style={{ opacity: isLoading ? 0 : 1, display: 'flex' }}> */}
-      {iconLeft && (
-        <div
-          className={[
-            'button__icon-left',
-            buttonIcon.base,
-            buttonIconLeft.color,
-            buttonIconLeft.background,
-            buttonIconLeft.border,
-            buttonIconLeft.size,
-            buttonIconLeft.padding,
-            buttonIconLeft.margin,
-            buttonIconLeft.radius,
-            buttonCommon.transition,
-          ]
-            .join(' ')
-            .trim()}
-        >
-          {iconLeft}
-        </div>
-      )}
-      {label && (
-        <span
-          className={[
-            'button__text',
-            buttonText.core,
-            buttonText.base,
-            buttonText.color,
-            buttonText.padding,
-            buttonText.fontSize,
-            buttonText.width,
-            buttonText.align,
-            buttonCommon.transition,
-          ]
-            .join(' ')
-            .trim()}
-        >
-          {label}
-        </span>
-      )}
-      {iconRight && (
-        <div
-          className={[
-            'button__icon-right',
-            buttonIcon.base,
-            buttonIconRight.color,
-            buttonIconRight.background,
-            buttonIconRight.border,
-            buttonIconRight.size,
-            buttonIconRight.padding,
-            buttonIconRight.margin,
-            buttonIconRight.radius,
-            buttonCommon.transition,
-          ]
-            .join(' ')
-            .trim()}
-        >
-          {iconRight}
-        </div>
-      )}
-      {/* </span> */}
-      {isLoading && <EllipsisLoader />}
+      {/* This extra layer is only for the Ripple effect to be over the
+       border */}
+      <span
+        className={[
+          'button__container-wrapper',
+          buttonContainerWrapper.base,
+          buttonContainerWrapper.background,
+          buttonContainerWrapper.border,
+          buttonCommon.transition,
+        ].join(' ')}
+      >
+        {/* <span style={{ opacity: isLoading ? 0 : 1, display: 'flex' }}> */}
+        {iconLeft && (
+          <div
+            className={[
+              'button__icon-left',
+              buttonIcon.base,
+              buttonIconLeft.color,
+              buttonIconLeft.background,
+              buttonIconLeft.border,
+              buttonIconLeft.size,
+              buttonIconLeft.padding,
+              buttonIconLeft.margin,
+              buttonIconLeft.radius,
+              buttonCommon.transition,
+            ]
+              .join(' ')
+              .trim()}
+          >
+            {iconLeft}
+          </div>
+        )}
+        {label && (
+          <span
+            className={[
+              'button__text',
+              buttonText.core,
+              buttonText.base,
+              buttonText.color,
+              buttonText.padding,
+              buttonText.fontSize,
+              buttonText.width,
+              buttonText.align,
+              buttonCommon.transition,
+            ]
+              .join(' ')
+              .trim()}
+          >
+            {label}
+          </span>
+        )}
+        {iconRight && (
+          <div
+            className={[
+              'button__icon-right',
+              buttonIcon.base,
+              buttonIconRight.color,
+              buttonIconRight.background,
+              buttonIconRight.border,
+              buttonIconRight.size,
+              buttonIconRight.padding,
+              buttonIconRight.margin,
+              buttonIconRight.radius,
+              buttonCommon.transition,
+            ]
+              .join(' ')
+              .trim()}
+          >
+            {iconRight}
+          </div>
+        )}
+        {/* </span> */}
+        {isLoading && <EllipsisLoader />}
+      </span>
     </button>
   );
 };

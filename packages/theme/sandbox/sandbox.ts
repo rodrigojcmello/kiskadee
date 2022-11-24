@@ -79,7 +79,7 @@ export const sandbox: KiskadeeTheme = {
                       rest: {
                         md: {
                           background: '#6750A4',
-                          // rippleColor: '#ffffff80',
+                          rippleColor: '#ffffff80',
                           borderWidth: 1,
                           borderColor: '#6750A4',
                           borderStyle: 'solid',
@@ -91,7 +91,7 @@ export const sandbox: KiskadeeTheme = {
                       hover: {
                         md: {
                           // background: '#735EAB',
-                          // borderColor: '#735EAB',
+                          borderColor: '#735EAB',
                           boxShadow:
                             '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                         },
@@ -127,6 +127,7 @@ export const sandbox: KiskadeeTheme = {
                       hover: {
                         md: {
                           background: '#D8CEE8',
+                          // borderColor: 'red',
                           boxShadow:
                             '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                         },
@@ -249,7 +250,7 @@ export const sandbox: KiskadeeTheme = {
                     primary: {
                       rest: {
                         md: {
-                          // rippleColor: '#6750a480',
+                          rippleColor: '#6750a480',
                           background: '#FFFFFF',
                           borderWidth: 1,
                           borderColor: 'transparent',
@@ -312,6 +313,7 @@ export const sandbox: KiskadeeTheme = {
                     paddingBottom: 7,
                     paddingLeft: 7,
                     paddingRight: 7,
+                    // color: '#6750A4',
                   },
                   lg: {
                     paddingTop: 18,
@@ -327,11 +329,11 @@ export const sandbox: KiskadeeTheme = {
                     paddingRight: 5,
                   },
                 },
-                iconAlone: {
-                  md: {
-                    color: '#FFFFFF',
-                  },
-                },
+                // iconAlone: {
+                //   md: {
+                //     color: '#6750A4',
+                //   },
+                // },
                 iconAttached: {
                   md: {
                     marginRight: 4,
@@ -364,6 +366,13 @@ export const sandbox: KiskadeeTheme = {
                           // borderWidth: 1,
                           // borderStyle: 'solid',
                           // borderColor: '#6750A4',
+                        },
+                      },
+                    },
+                    secondary: {
+                      iconAlone: {
+                        md: {
+                          color: '#6750A4',
                         },
                       },
                     },

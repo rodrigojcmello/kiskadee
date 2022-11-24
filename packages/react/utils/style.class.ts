@@ -342,6 +342,27 @@ export class Style {
     });
   }
 
+  containerBackgroundStyle(
+    element: string,
+    status?: string
+  ): string | undefined {
+    return this.cache([element, 'background', status || '-'], () => {
+      const style = this.getContrastStyle(element, status);
+
+      return Style.render({
+        '& > span': {
+          // @ts-ignore
+          background: style.defaultMode?.background,
+
+          '@media (prefers-color-scheme: dark)': style && {
+            // @ts-ignore
+            color: style.contrastMode?.background,
+          },
+        },
+      });
+    });
+  }
+
   propertyBorderStyle(element: string, status?: string): string | undefined {
     return this.cache([element, 'border', status || '-'], () => {
       const { defaultMode, contrastMode } = this.getContrastStyle(
@@ -367,6 +388,37 @@ export class Style {
                 : undefined,
             }
           : {}),
+      });
+    });
+  }
+
+  containerBorderStyle(element: string, status?: string): string | undefined {
+    return this.cache([element, 'border', status || '-'], () => {
+      const { defaultMode, contrastMode } = this.getContrastStyle(
+        element,
+        status
+      );
+
+      return Style.render({
+        '& > span': {
+          border: defaultMode?.border || '0px solid transparent',
+
+          ...(defaultMode?.border !== 'none'
+            ? {
+                borderColor: defaultMode?.borderColor,
+                borderStyle: defaultMode?.borderStyle,
+                borderWidth: defaultMode?.borderWidth,
+
+                '@media (prefers-color-scheme: dark)': contrastMode
+                  ? {
+                      borderColor: contrastMode.borderColor,
+                      borderStyle: contrastMode.borderStyle,
+                      borderWidth: contrastMode.borderWidth,
+                    }
+                  : undefined,
+              }
+            : {}),
+        },
       });
     });
   }

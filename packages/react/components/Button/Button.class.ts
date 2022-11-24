@@ -34,8 +34,6 @@ export class ButtonClass extends Style {
 
   elementContainer() {
     return {
-      border: this.propertyBorderStyle('container'),
-      background: this.propertyBackgroundStyle('container'),
       radius: this.propertyRadiusStyle('container'),
       width: this.containerWidthStyle(),
       transitionAfterPressed: this.containerTransitionAfterPressed(),
@@ -46,11 +44,23 @@ export class ButtonClass extends Style {
     };
   }
 
+  elementContainerWrapper() {
+    return {
+      border: this.propertyBorderStyle('container'),
+      background: this.propertyBackgroundStyle('container'),
+      base: this.containerWrapperBaseStyle(),
+    };
+  }
+
   containerTransitionAfterPressed() {
     return this.cache(['container', 'transition-pressed'], () => {
       return ButtonClass.render({
         transitionDuration: `${CLICK_TRANSITION_DURATION}ms !important`,
         transitionTimingFunction: 'ease-out !important',
+        '& .button__container-wrapper': {
+          transitionDuration: 'inherit !important',
+          transitionTimingFunction: 'inherit !important',
+        },
       });
     });
   }
@@ -106,13 +116,23 @@ export class ButtonClass extends Style {
         cursor: 'pointer',
         fontSize: '16px',
         transitionProperty:
-          'box-shadow, border-color, border-width, background, padding, min-width, border-radius',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+          'box-shadow, border-width, min-width, border-radius',
         position: 'relative',
         overflow: 'hidden',
         WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
+        border: 'none',
+      });
+    });
+  }
+
+  containerWrapperBaseStyle() {
+    return this.cache(['container', 'base'], () => {
+      return ButtonClass.render({
+        transitionProperty: 'background, border-color',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 'inherit',
       });
     });
   }
@@ -220,7 +240,13 @@ export class ButtonClass extends Style {
         // HOVER
         '&:hover, &.--hover': {
           '@media (pointer: fine)': {
-            ...containerHover,
+            boxShadow: containerHover.boxShadow,
+            '& .button__container-wrapper': {
+              background: containerHover.background,
+              borderColor: containerHover.borderColor,
+              borderWidth: containerHover.borderWidth,
+              borderStyle: containerHover.borderStyle,
+            },
             '& .button__text': {
               ...textHover,
             },
@@ -237,7 +263,7 @@ export class ButtonClass extends Style {
 
         // PRESSED
         '&:active, &.--pressed': {
-          ...containerPressed,
+          boxShadow: containerPressed.boxShadow,
 
           /**
            * Animation needs to be faster on click. This creates a more
@@ -246,6 +272,15 @@ export class ButtonClass extends Style {
           transitionDuration: `${CLICK_TRANSITION_DURATION}ms`,
           transitionTimingFunction: 'ease-out',
 
+          '& .button__container-wrapper': {
+            background: containerPressed.background,
+            borderColor: containerPressed.borderColor,
+            borderWidth: containerPressed.borderWidth,
+            borderStyle: containerPressed.borderStyle,
+
+            transitionDuration: 'inherit',
+            transitionTimingFunction: 'inherit',
+          },
           '& .button__text': {
             ...textPressed,
           },
