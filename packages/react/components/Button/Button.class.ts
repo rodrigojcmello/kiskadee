@@ -37,6 +37,7 @@ export class ButtonClass extends Style {
       radius: this.propertyRadiusStyle('container'),
       width: this.containerWidthStyle(),
       transitionAfterPressed: this.containerTransitionAfterPressed(),
+      background: this.propertyBackgroundStyle('container'),
       core: this.containerCoreStyle(),
       base: this.containerBaseStyle(),
       rippleCore: this.containerRippleStyle(),
@@ -47,7 +48,6 @@ export class ButtonClass extends Style {
   elementContainerWrapper() {
     return {
       border: this.propertyBorderStyle('container'),
-      background: this.propertyBackgroundStyle('container'),
       base: this.containerWrapperBaseStyle(),
     };
   }
@@ -242,6 +242,7 @@ export class ButtonClass extends Style {
         '&:hover, &.--hover': {
           '@media (pointer: fine)': {
             boxShadow: containerHover.boxShadow,
+            background: containerHover.borderColor || containerHover.background,
             '& .button__container-wrapper': {
               background: containerHover.background,
               borderColor: containerHover.borderColor,
@@ -265,6 +266,8 @@ export class ButtonClass extends Style {
         // PRESSED
         '&:active, &.--pressed': {
           boxShadow: containerPressed.boxShadow,
+          background:
+            containerPressed.borderColor || containerPressed.background,
 
           /**
            * Animation needs to be faster on click. This creates a more
@@ -297,7 +300,16 @@ export class ButtonClass extends Style {
 
         // FOCUS
         '&:focus-visible, &.--focus': {
-          ...containerFocus,
+          boxShadow: containerFocus.boxShadow,
+          background: containerFocus.borderColor || containerFocus.background,
+          outline: containerFocus.outline,
+          outlineOffset: containerFocus.outlineOffset,
+          '& .button__container-wrapper': {
+            background: containerFocus.background,
+            borderColor: containerFocus.borderColor,
+            borderWidth: containerFocus.borderWidth,
+            borderStyle: containerFocus.borderStyle,
+          },
           '& .button__text': {
             ...textFocus,
           },
@@ -313,7 +325,15 @@ export class ButtonClass extends Style {
 
         // VISITED
         '&:visited, &.--visited': {
-          ...containerVisited,
+          boxShadow: containerVisited.boxShadow,
+          background:
+            containerVisited.borderColor || containerVisited.background,
+          '& .button__container-wrapper': {
+            background: containerVisited.background,
+            borderColor: containerVisited.borderColor,
+            borderWidth: containerVisited.borderWidth,
+            borderStyle: containerVisited.borderStyle,
+          },
           '& .button__text': {
             ...textVisited,
           },

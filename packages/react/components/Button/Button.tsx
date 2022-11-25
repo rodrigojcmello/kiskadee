@@ -144,7 +144,7 @@ export const Button: FC<ButtonProps> = ({
          *   This layer needs a background due to this ancient bug
          *   @see {@link https://bugs.chromium.org/p/chromium/issues/detail?id=157102}
          */
-        buttonContainerWrapper.background,
+        buttonContainer.background,
         buttonContainer.core,
         buttonCommon.transition,
         afterPressed ? buttonContainer.transitionAfterPressed : '',
@@ -165,7 +165,6 @@ export const Button: FC<ButtonProps> = ({
         className={[
           'button__container-wrapper',
           buttonContainerWrapper.base,
-          buttonContainerWrapper.background,
           buttonContainerWrapper.border,
           buttonCommon.transition,
         ].join(' ')}
