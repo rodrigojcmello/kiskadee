@@ -53,6 +53,8 @@ export const ButtonDocumentation: FC = () => {
   );
   const [textAlign, setTextAlign] =
     useState<ButtonProps['textAlign']>(undefined);
+  const [selected, setSelected] = useState<boolean>(false);
+  const [mouseOver, setMouseOver] = useState<boolean>(false);
 
   useLayoutEffect(() => {
     setTimeout(() => {
@@ -75,6 +77,10 @@ export const ButtonDocumentation: FC = () => {
   const buttonVariant = buttonContainer?.type?.[type]?.variant;
 
   const width = label ? 'block' : undefined;
+
+  const selectedLabel = selected ? 'Following' : 'Follow';
+  const selectedType = selected ? 'outline' : 'contained';
+  const selectedVariant = selected ? 'primary' : variant;
 
   // TODO: document the responsiveness feature
 
@@ -853,6 +859,44 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 iconType={iconType}
               />
+            </div>
+          ) : (
+            <NotApplicable />
+          )}
+        </div>
+      </div>
+
+      <div className={`${style.buttonRow} ${style.buttonGrid}`}>
+        <div>
+          <BoxTitle>Selected</BoxTitle>
+          {buttonContainer?.type?.outline?.variant?.primary ? (
+            // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
+            <div
+              onMouseOver={() => {
+                setMouseOver(true);
+              }}
+              onMouseOut={() => {
+                setMouseOver(false);
+              }}
+            >
+              <div className={style.buttonWrap}>
+                <Button
+                  label={mouseOver && selected ? 'Unfollow' : selectedLabel}
+                  width={width}
+                  type={mouseOver && selected ? 'outline' : selectedType}
+                  variant={mouseOver && selected ? 'danger' : selectedVariant}
+                  borderRadius={radius}
+                  textAlign={textAlign}
+                  size={size}
+                  onClick={(): void => {
+                    setSelected(!selected);
+                    // setVariant('selected');
+                  }}
+                  iconLeft={iconLeft}
+                  iconRight={iconRight}
+                  iconType={iconType}
+                />
+              </div>
             </div>
           ) : (
             <NotApplicable />

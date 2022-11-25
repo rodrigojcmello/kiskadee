@@ -243,6 +243,14 @@ export const sandbox: KiskadeeTheme = {
                         },
                       },
                     },
+                    danger: {
+                      rest: {
+                        md: {
+                          background: '#FFFFFF',
+                          borderColor: '#ff99c7',
+                        },
+                      },
+                    },
                   },
                 },
                 flat: {
@@ -560,6 +568,13 @@ export const sandbox: KiskadeeTheme = {
                       disabled: {
                         md: {
                           color: '#1b1a1e61',
+                        },
+                      },
+                    },
+                    danger: {
+                      rest: {
+                        md: {
+                          color: '#d50060',
                         },
                       },
                     },
