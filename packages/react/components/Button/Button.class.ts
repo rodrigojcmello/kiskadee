@@ -84,12 +84,13 @@ export class ButtonClass extends Style {
       const ripple = this.getContrastStyle('container');
 
       return ButtonClass.render({
-        // TODO: rename rippleColor to backgroundColor
-        // @ts-ignore
-        backgroundColor: ripple?.defaultMode?.rippleColor,
-        '@media (prefers-color-scheme: dark)': ripple?.contrastMode && {
-          // @ts-ignore
-          backgroundColor: ripple?.contrastMode.rippleColor,
+        '& .--ripple': {
+          backgroundColor:
+            ripple?.defaultMode?.['rippleColor' as 'backgroundColor'],
+          '@media (prefers-color-scheme: dark)': ripple?.contrastMode && {
+            backgroundColor:
+              ripple?.contrastMode['rippleColor' as 'backgroundColor'],
+          },
         },
       });
     });

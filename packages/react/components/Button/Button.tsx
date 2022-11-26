@@ -79,7 +79,7 @@ export const Button: FC<ButtonProps> = ({
     circle.style.top = `${container.clientHeight / 2 - radius}px`;
 
     circle.classList.add(buttonContainer.rippleCore!);
-    circle.classList.add(buttonContainer.rippleBackground!);
+    circle.classList.add('--ripple');
 
     const ripple = container.querySelector(`.${buttonContainer.rippleCore!}`);
 
@@ -139,6 +139,7 @@ export const Button: FC<ButtonProps> = ({
         buttonContainer.width,
         buttonContainer.radius,
         buttonContainer.base,
+        buttonContainer.rippleBackground,
 
         /**
          *   This layer needs a background due to this ancient bug
