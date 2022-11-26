@@ -24,6 +24,8 @@ Experience
   limited to bad examples from the documentation itself, we chose to keep the use of icons free, except when the 
   documentation clearly condemns the use, such as Carbon.
 - **Hover State** is limited to devices with a mouse.
+- **Selected** is not really a state like hover or focus, but it is a switch 
+  between two variants of the same button.
 
 Themes
 
