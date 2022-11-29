@@ -1,18 +1,20 @@
 /* eslint-disable unicorn/filename-case */
 import { keyframes } from '@stitches/core';
 import type {
-  ButtonContainer,
-  ButtonIcon,
   ButtonText,
   IconPosition,
-  ButtonStatus,
+  ButtonStyleProps,
+  ButtonOptions,
+  Breakpoint,
+  GenericCSSProperties,
 } from './Button.types';
 import {
   CLICK_TRANSITION_DURATION,
   RIPPLE_DURATION,
   RIPPLE_TIMING_FUNCTION,
 } from './constants';
-import { Style } from '../../utils';
+import type { ComponentSchema, KiskadeeTheme } from '../../utils';
+import { KiskadeeStyle } from '../../utils';
 
 const rippleKeyframe = keyframes({
   to: {
@@ -21,7 +23,68 @@ const rippleKeyframe = keyframes({
   },
 });
 
-export class ButtonClass extends Style {
+export class ButtonClass extends KiskadeeStyle {
+  // Required ------------------------------------------------------------------
+
+  readonly iconType: ButtonStyleProps['iconType'];
+
+  readonly borderRadius: ButtonStyleProps['borderRadius'];
+
+  readonly width: ButtonStyleProps['width'];
+
+  readonly size: ButtonStyleProps['size'];
+
+  // readonly type: ButtonStyleProps['type'];
+  //
+  // readonly variant: ButtonStyleProps['variant'];
+
+  // Optional ------------------------------------------------------------------
+
+  readonly options?: ButtonOptions;
+
+  readonly textAlign?: ButtonStyleProps['textAlign'];
+
+  readonly themeMode?: KiskadeeTheme['themeMode'];
+
+  readonly iconLeft?: ButtonStyleProps['iconLeft'];
+
+  readonly iconRight?: ButtonStyleProps['iconRight'];
+
+  // readonly type: ButtonStyleProps['type'];
+  //
+  // readonly variant: ButtonStyleProps['variant'];
+
+  constructor(style: ButtonStyleProps) {
+    super({
+      type: style.type,
+      variant: style.variant,
+      size: style.size,
+      componentSchema: style.componentSchema as ComponentSchema,
+      info: style.info,
+    });
+
+    this.component = 'button';
+
+    // Required ----------------------------------------------------------------
+
+    // todo: review iconType type. Is it really required?
+    this.iconType = style.iconType;
+    this.width = style.width;
+    // this.type = style.type;
+    // this.variant = style.variant;
+
+    // Optional ----------------------------------------------------------------
+
+    this.borderRadius = style.borderRadius;
+    this.size = style.size;
+    this.themeMode = style.info.themeMode;
+    this.textAlign = style.textAlign;
+    // @ts-ignore
+    this.options = style.options;
+    this.iconLeft = style.iconLeft;
+    this.iconRight = style.iconRight;
+  }
+
   common() {
     return {
       transition: this.getTransition(),
@@ -34,7 +97,7 @@ export class ButtonClass extends Style {
 
   elementContainer() {
     return {
-      radius: this.propertyRadiusStyle('container'),
+      radius: this.buttonRadiusStyle('container'),
       width: this.containerWidthStyle(),
       transitionAfterPressed: this.containerTransitionAfterPressed(),
       background: this.propertyBackgroundStyle('container'),
@@ -50,6 +113,20 @@ export class ButtonClass extends Style {
       border: this.propertyBorderStyle('container'),
       base: this.containerWrapperBaseStyle(),
     };
+  }
+
+  elementGroup() {
+    return {
+      base: this.groupBaseStyle(),
+    };
+  }
+
+  groupBaseStyle() {
+    return this.cache(['group', 'base'], () => {
+      return ButtonClass.render({
+        display: 'flex',
+      });
+    });
   }
 
   containerTransitionAfterPressed() {
@@ -141,90 +218,30 @@ export class ButtonClass extends Style {
 
   containerCoreStyle() {
     return this.cache(['container', 'core'], () => {
-      const containerHover = this.getStyleStatus<ButtonContainer, ButtonStatus>(
-        'container',
-        'hover'
-      );
-      const textHover = this.getStyleStatus<ButtonText, ButtonStatus>(
-        'text',
-        'hover'
-      );
-      const leftIconHover = this.getStyleStatus<ButtonIcon, ButtonStatus>(
-        'iconLeft',
-        'hover'
-      );
-      const rightIconHover = this.getStyleStatus<ButtonIcon, ButtonStatus>(
-        'iconRight',
-        'hover'
-      );
+      const containerHover = this.getStyleState('container', 'hover');
+      const textHover = this.getStyleState('text', 'hover');
+      const leftIconHover = this.getStyleState('iconLeft', 'hover');
+      const rightIconHover = this.getStyleState('iconRight', 'hover');
 
-      const containerPressed = this.getStyleStatus<
-        ButtonContainer,
-        ButtonStatus
-      >('container', 'pressed');
-      const textPressed = this.getStyleStatus<ButtonText, ButtonStatus>(
-        'text',
-        'pressed'
-      );
-      const leftIconPressed = this.getStyleStatus<ButtonIcon, ButtonStatus>(
-        'iconLeft',
-        'pressed'
-      );
-      const rightIconPressed = this.getStyleStatus<ButtonIcon, ButtonStatus>(
-        'iconRight',
-        'pressed'
-      );
+      const containerPressed = this.getStyleState('container', 'pressed');
+      const textPressed = this.getStyleState('text', 'pressed');
+      const leftIconPressed = this.getStyleState('iconLeft', 'pressed');
+      const rightIconPressed = this.getStyleState('iconRight', 'pressed');
 
-      const containerFocus = this.getStyleStatus<ButtonContainer, ButtonStatus>(
-        'container',
-        'focus'
-      );
-      const textFocus = this.getStyleStatus<ButtonText, ButtonStatus>(
-        'text',
-        'focus'
-      );
-      const leftIconFocus = this.getStyleStatus<ButtonIcon, ButtonStatus>(
-        'iconLeft',
-        'focus'
-      );
-      const rightIconFocus = this.getStyleStatus<ButtonIcon, ButtonStatus>(
-        'iconRight',
-        'focus'
-      );
+      const containerFocus = this.getStyleState('container', 'focus');
+      const textFocus = this.getStyleState('text', 'focus');
+      const leftIconFocus = this.getStyleState('iconLeft', 'focus');
+      const rightIconFocus = this.getStyleState('iconRight', 'focus');
 
-      const containerVisited = this.getStyleStatus<
-        ButtonContainer,
-        ButtonStatus
-      >('container', 'visited');
-      const textVisited = this.getStyleStatus<ButtonText, ButtonStatus>(
-        'text',
-        'visited'
-      );
-      const leftIconVisited = this.getStyleStatus<ButtonIcon, ButtonStatus>(
-        'iconLeft',
-        'visited'
-      );
-      const rightIconVisited = this.getStyleStatus<ButtonIcon, ButtonStatus>(
-        'iconRight',
-        'visited'
-      );
+      const containerVisited = this.getStyleState('container', 'visited');
+      const textVisited = this.getStyleState('text', 'visited');
+      const leftIconVisited = this.getStyleState('iconLeft', 'visited');
+      const rightIconVisited = this.getStyleState('iconRight', 'visited');
 
-      const containerDisabled = this.getStyleStatus<
-        ButtonContainer,
-        ButtonStatus
-      >('container', 'disabled');
-      const textDisabled = this.getStyleStatus<ButtonText, ButtonStatus>(
-        'text',
-        'disabled'
-      );
-      const leftIconDisabled = this.getStyleStatus<ButtonIcon, ButtonStatus>(
-        'iconLeft',
-        'disabled'
-      );
-      const rightIconDisabled = this.getStyleStatus<ButtonIcon, ButtonStatus>(
-        'iconRight',
-        'disabled'
-      );
+      const containerDisabled = this.getStyleState('container', 'disabled');
+      const textDisabled = this.getStyleState('text', 'disabled');
+      const leftIconDisabled = this.getStyleState('iconLeft', 'disabled');
+      const rightIconDisabled = this.getStyleState('iconRight', 'disabled');
 
       const elementStyle = this.getResponsiveStyle('container');
 
@@ -539,7 +556,7 @@ export class ButtonClass extends Style {
         'margin',
         `icon${this.iconType}`
       ),
-      radius: this.propertyRadiusStyle('iconLeft'),
+      radius: this.buttonRadiusStyle('iconLeft'),
     };
   }
 
@@ -562,7 +579,7 @@ export class ButtonClass extends Style {
         'margin',
         `icon${this.iconType}`
       ),
-      radius: this.propertyRadiusStyle('iconRight'),
+      radius: this.buttonRadiusStyle('iconRight'),
     };
   }
 
@@ -607,6 +624,144 @@ export class ButtonClass extends Style {
         },
       });
     });
+  }
+
+  getResponsiveStyle(
+    element: string,
+    state?: string
+  ): {
+    [mediaQuery: string]: GenericCSSProperties;
+  } {
+    return this.cache(
+      [element, 'responsive', this.size || 'md', state || '-'],
+      () => {
+        const responsive: { [mediaQuery: string]: GenericCSSProperties } = {};
+
+        if (this.size) {
+          // TODO: remove ts-ignore
+          responsive['@media (min-width: 0px)'] = {
+            // @ts-ignores
+            ...this.getStyleEssential(element),
+            // @ts-ignore
+            ...(!this.size || this.size === 'md'
+              ? // @ts-ignore
+                {}
+              : this.getStyleSize(element, this.size)),
+            // @ts-ignore
+            ...(state ? this.getStyleState(element, state) : {}),
+          };
+        } else {
+          for (const breakpoint of Object.keys(
+            this.options?.responsive || {}
+          )) {
+            const size = this?.options?.responsive?.[breakpoint as Breakpoint];
+            if (size) {
+              responsive[
+                `@media (min-width: ${
+                  this.responsive[breakpoint as Breakpoint]
+                }px)`
+              ] =
+                size === 'md'
+                  ? {
+                      ...this.getStyleEssential(element),
+                      ...(state
+                        ? this.getStyleState(element, state, size)
+                        : {}),
+                    }
+                  : {
+                      ...this.getStyleSize(element, size),
+                      ...(state
+                        ? this.getStyleState(element, state, size)
+                        : {}),
+                    };
+            }
+          }
+        }
+
+        return responsive;
+      }
+    );
+  }
+
+  propertySpacingStyle(
+    element: string,
+    spacing: 'margin' | 'padding',
+    status?: string,
+    callback?: (value: { [mediaQuery: string]: GenericCSSProperties }) => {
+      [mediaQuery: string]: GenericCSSProperties;
+    },
+    extraKeys: string[] = []
+  ): string | undefined {
+    return this.cache(
+      [element, spacing, this.size || 'md', status || '-', ...extraKeys],
+      () => {
+        let elementResponsive = this.getResponsiveStyle(element, status);
+
+        elementResponsive = KiskadeeStyle.pickResponsiveProperties(
+          elementResponsive,
+          [
+            `${spacing}Top`,
+            `${spacing}Bottom`,
+            `${spacing}Right`,
+            `${spacing}Left`,
+            spacing,
+          ]
+        );
+
+        if (callback) {
+          elementResponsive = callback(elementResponsive);
+        }
+
+        const {
+          '@media (min-width: 0px)': elementSpacing,
+          ...elementSpacingResponsive
+        } = elementResponsive;
+
+        return KiskadeeStyle.render({
+          ...elementSpacing,
+          ...elementSpacingResponsive,
+        });
+      }
+    );
+  }
+
+  // TODO: move to KiskadeeStyle class
+  propertyRadiusStyle(element: string, state?: string): string | undefined {
+    const elementStyle = this.getResponsiveStyle(element, state);
+
+    const { '@media (min-width: 0px)': elementRest, ...elementResponsive } =
+      KiskadeeStyle.pickResponsiveProperties(elementStyle, [
+        'borderTopLeftRadius',
+        'borderTopRightRadius',
+        'borderBottomLeftRadius',
+        'borderBottomRightRadius',
+
+        /**
+         * Unique property needs to be last to override the others
+         */
+        'borderRadius',
+      ]);
+
+    return KiskadeeStyle.render({
+      ...elementRest,
+      ...elementResponsive,
+    });
+  }
+
+  // TODO: review radius status
+  // TODO: standardize names
+  // TODO: rename status to state
+  buttonRadiusStyle(element: string): string | undefined {
+    let state = 'borderRadiusNone';
+    if (!this.borderRadius && this.options?.borderRadius) {
+      state = `borderRadius${this.options?.borderRadius}`;
+    } else if (this.borderRadius === 'Rounded') {
+      state = 'borderRadiusRounded';
+    } else if (this.borderRadius === 'Full') {
+      state = 'borderRadiusFull';
+    }
+
+    return this.propertyRadiusStyle(element, state);
   }
 
   iconSizeStyle(element: string): string | undefined {

@@ -30,18 +30,18 @@ export const Button: FC<ButtonProps> = ({
   const [afterPressed, setAfterPressed] = useState(false);
 
   const style: ButtonStyleProps = {
-    theme: {
+    info: {
       name: schema.name,
       version: schema.version,
       author: schema.author,
-      option: schema.theme,
+      themeMode: schema.themeMode,
     },
-    component: 'button',
-    schema: schema.component.button,
+    componentSchema: schema?.component?.button?.elements,
+    options: schema?.component?.button?.options,
     size,
     type,
     variant,
-    iconType: !label ? 'Alone' : iconType,
+    iconType: label ? iconType : 'Alone',
     iconRight,
     iconLeft,
     borderRadius,

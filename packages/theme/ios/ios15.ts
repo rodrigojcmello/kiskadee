@@ -7,7 +7,7 @@ export const ios15: KiskadeeTheme = {
   kiskadeeVersion: '0.0.1',
   component: {
     button: {
-      option: {
+      options: {
         borderRadius: 'Rounded',
         widthMin: 100,
         textAlign: {

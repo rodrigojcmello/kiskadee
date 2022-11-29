@@ -3,8 +3,9 @@ import type * as Util from '@stitches/core/types/util';
 import type {
   ButtonType,
   ButtonVariant,
-  KiskadeeTheme,
   Size,
+  ElementTheme,
+  KiskadeeTheme,
 } from '@kiskadee/react';
 
 export type IconPosition = 'Left' | 'Right';
@@ -45,31 +46,32 @@ export interface ButtonProps {
   isLoading?: boolean;
 }
 
-export type ButtonStyleProps = {
+export interface ButtonStyleProps {
   // TODO: each should have a default
   // Required
   width: Exclude<ButtonProps['width'], undefined>;
   type: ButtonProps['type'];
   variant: ButtonProps['variant'];
-  component: keyof KiskadeeTheme['component'];
 
   // Optional
   borderRadius?: BorderRadiusState;
   iconType?: IconState;
   size?: Size;
-  theme: {
+  info: {
     name: string;
     version: string;
     author: string;
-    option?: KiskadeeTheme['theme'];
+    themeMode?: KiskadeeTheme['themeMode'];
   };
-  schema?: ButtonSchema;
   iconLeft?: ButtonProps['iconLeft'];
   iconRight?: ButtonProps['iconRight'];
   textAlign?: ButtonProps['textAlign'];
-};
 
-export type ButtonElements = keyof Exclude<ButtonSchema['elements'], undefined>;
+  componentSchema?: ButtonElements;
+  options?: ButtonOptions;
+}
+
+// export type ButtonElements = keyof Exclude<ButtonSchema['elements'], undefined>;
 
 //------------------------------------------------------------------------------
 // Elements
@@ -181,7 +183,7 @@ export interface ButtonText {
 
 //------------------------------------------------------------------------------
 
-export interface ContainerOptions {
+export interface ButtonOptions {
   widthMin?: number;
   borderRadius?: BorderRadiusState;
   textAlign?: {
@@ -212,42 +214,11 @@ export interface ContainerOptions {
   };
 }
 
-type ElementTheme<T, Status extends string> = Partial<
-  Record<
-    'light' | 'dark',
-    Partial<
-      Record<
-        string | 'default',
-        {
-          base?: Partial<Record<Status, Partial<Record<Size, T>>>>;
-          type?: Partial<
-            Record<
-              ButtonType,
-              {
-                base?: Partial<Record<Size, T>>;
-                variant?: Partial<
-                  Record<
-                    ButtonVariant,
-                    Partial<Record<Status, Partial<Record<Size, T>>>>
-                  >
-                >;
-              }
-            >
-          >;
-        }
-      >
-    >
-  >
->;
-
 export type ContrastStyle = {
   [mediaQuery in 'defaultMode' | 'contrastMode']?: CSSProperties;
 };
 
-export type Breakpoint = keyof Exclude<
-  ContainerOptions['responsive'],
-  undefined
->;
+export type Breakpoint = keyof Exclude<ButtonOptions['responsive'], undefined>;
 
 export type BorderRadiusState = 'None' | 'Full' | 'Rounded';
 
@@ -297,14 +268,16 @@ type ButtonTextStatus =
 
 //------------------------------------------------------------------------------
 
+interface ButtonElements {
+  container?: ElementTheme<ButtonContainer, ButtonContainerStatus>;
+  iconLeft?: ElementTheme<ButtonIcon, ButtonIconStatus>;
+  iconRight?: ElementTheme<ButtonIcon, ButtonIconStatus>;
+  text?: ElementTheme<ButtonText, ButtonTextStatus>;
+}
+
 export interface ButtonSchema {
-  option?: ContainerOptions;
-  elements?: {
-    container?: ElementTheme<ButtonContainer, ButtonContainerStatus>;
-    iconLeft?: ElementTheme<ButtonIcon, ButtonIconStatus>;
-    iconRight?: ElementTheme<ButtonIcon, ButtonIconStatus>;
-    text?: ElementTheme<ButtonText, ButtonTextStatus>;
-  };
+  options?: ButtonOptions;
+  elements?: ButtonElements;
 }
 
 export interface RippleProps {

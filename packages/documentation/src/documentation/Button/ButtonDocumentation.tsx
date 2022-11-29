@@ -7,7 +7,7 @@ import type {
   ButtonVariant,
   Size,
 } from '@kiskadee/react';
-import { Button, KiskadeeContext } from '@kiskadee/react';
+import { Button, ButtonGroup, KiskadeeContext } from '@kiskadee/react';
 import { Container } from '../../components/Container/Container';
 import { BoxTitle } from '../../components/BoxTitle/BoxTitle';
 // TODO: create a lib for this
@@ -71,9 +71,9 @@ export const ButtonDocumentation: FC = () => {
     setTextAlign(undefined);
   }, [schema.name, schema.author, schema.version]);
 
-  const buttonOption = schema.component.button?.option;
+  const buttonOption = schema.component?.button?.options;
   const buttonContainer =
-    schema.component.button?.elements?.container?.light?.default;
+    schema.component?.button?.elements?.container?.light?.default;
   const buttonVariant = buttonContainer?.type?.[type]?.variant;
 
   const width = label ? 'block' : undefined;
@@ -85,17 +85,17 @@ export const ButtonDocumentation: FC = () => {
   // TODO: document the responsiveness feature
 
   return (
-    <Container className={!pageLoad ? style['no-transition'] : undefined}>
+    <Container className={pageLoad ? undefined : style['no-transition']}>
       <button
         type={'button'}
         onClick={() => {
-          const mode = schema.theme?.only === 'dark' ? 'light' : 'dark';
+          const mode = schema.themeMode?.only === 'dark' ? 'light' : 'dark';
 
           // TODO: create a setDarkMode / setContrastMode
           setSchema({
             ...schema,
-            theme: {
-              ...schema.theme,
+            themeMode: {
+              ...schema.themeMode,
               only: mode,
             },
           });
@@ -108,8 +108,8 @@ export const ButtonDocumentation: FC = () => {
         onClick={() => {
           setSchema({
             ...schema,
-            theme: {
-              ...schema.theme,
+            themeMode: {
+              ...schema.themeMode,
               only: undefined,
             },
           });
@@ -901,6 +901,48 @@ export const ButtonDocumentation: FC = () => {
           ) : (
             <NotApplicable />
           )}
+        </div>
+      </div>
+
+      <div className={`${style.buttonRow} ${style.buttonGrid}`}>
+        <div>
+          <BoxTitle>Button Group</BoxTitle>
+          <div className={style.buttonWrap}>
+            <ButtonGroup variant={variant} type={type} size={size}>
+              <Button
+                label={'Button 1'}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                size={size}
+                onClick={(): void => {
+                  // setSelected(!selected);
+                  // setVariant('selected');
+                }}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                iconType={iconType}
+              />
+              <Button
+                label={'Button 1'}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                size={size}
+                onClick={(): void => {
+                  // setSelected(!selected);
+                  // setVariant('selected');
+                }}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                iconType={iconType}
+              />
+            </ButtonGroup>
+          </div>
         </div>
       </div>
 

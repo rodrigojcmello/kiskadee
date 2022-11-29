@@ -7,7 +7,7 @@ export const fluent2: KiskadeeTheme = {
   kiskadeeVersion: '0.0.1',
   component: {
     button: {
-      option: {
+      options: {
         widthMin: 100,
         borderRadius: 'Rounded',
         textAlign: {

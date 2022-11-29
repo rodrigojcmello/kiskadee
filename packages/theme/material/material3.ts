@@ -11,7 +11,7 @@ export const material3: KiskadeeTheme = {
   // },
   component: {
     button: {
-      option: {
+      options: {
         widthMin: 100,
         textAlign: {
           default: 'center',

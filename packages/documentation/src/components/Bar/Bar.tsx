@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
 import type { ChangeEvent, FC } from 'react';
 import { useContext, useEffect, useState } from 'react';
+import type { KiskadeeTheme } from '@kiskadee/react';
 import { KiskadeeContext } from '@kiskadee/react';
 import { material3, ios15, carbon, fluent2, sandbox } from '@kiskadee/theme';
-import type { KiskadeeTheme } from '@kiskadee/react';
 
 const BarStyled = styled.div(() => ({
   padding: 8,

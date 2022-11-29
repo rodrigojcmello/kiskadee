@@ -1,2 +1,3 @@
 export * from './CacheStyle.class';
-export * from './style.class';
+export * from './KiskadeeStyle.class';
+export * from './KiskadeeStyle.types';
