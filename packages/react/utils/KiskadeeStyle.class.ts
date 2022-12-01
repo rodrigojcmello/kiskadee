@@ -9,6 +9,8 @@ import type {
   KiskadeeStyleType,
   ComponentSchema,
   KiskadeeTheme,
+  Breakpoint,
+  ResponsiveOption,
 } from '@kiskadee/react';
 import type { CSSProperties } from 'react';
 import { CacheStyle } from './CacheStyle.class';
@@ -30,6 +32,8 @@ export class KiskadeeStyle {
   readonly size: ButtonStyleProps['size'];
 
   readonly info: KiskadeeStyleType['info'];
+
+  responsiveOption?: ResponsiveOption;
 
   // Transition ----------------------------------------------------------------
 
@@ -57,6 +61,7 @@ export class KiskadeeStyle {
     this.size = style.size;
     this.componentSchema = style.componentSchema;
     this.info = style.info;
+    this.responsiveOption = style.responsiveOption;
 
     // Transition --------------------------------------------------------------
 
@@ -124,6 +129,28 @@ export class KiskadeeStyle {
     });
   }
 
+  propertyRadiusStyle(element: string, state?: string): string | undefined {
+    const elementStyle = this.getResponsiveStyle(element, state);
+
+    const { '@media (min-width: 0px)': elementRest, ...elementResponsive } =
+      KiskadeeStyle.pickResponsiveProperties(elementStyle, [
+        'borderTopLeftRadius',
+        'borderTopRightRadius',
+        'borderBottomLeftRadius',
+        'borderBottomRightRadius',
+
+        /**
+         * Unique property needs to be last to override the others
+         */
+        'borderRadius',
+      ]);
+
+    return KiskadeeStyle.render({
+      ...elementRest,
+      ...elementResponsive,
+    });
+  }
+
   getStyleEssential<T extends CSSProperties>(element: string): T {
     return this.cache([element, 'essential'], () => {
       const base = this.componentSchema?.[element];
@@ -169,6 +196,61 @@ export class KiskadeeStyle {
     });
   }
 
+  getResponsiveStyle(
+    element: string,
+    state?: string
+  ): {
+    [mediaQuery: string]: GenericCSSProperties;
+  } {
+    return this.cache(
+      [element, 'responsive', this.size || 'md', state || '-'],
+      () => {
+        const responsive: { [mediaQuery: string]: GenericCSSProperties } = {};
+
+        if (this.size) {
+          // TODO: remove ts-ignore
+          responsive['@media (min-width: 0px)'] = {
+            // @ts-ignores
+            ...this.getStyleEssential(element),
+            // @ts-ignore
+            ...(!this.size || this.size === 'md'
+              ? // @ts-ignore
+                {}
+              : this.getStyleSize(element, this.size)),
+            // @ts-ignore
+            ...(state ? this.getStyleState(element, state) : {}),
+          };
+        } else {
+          for (const breakpoint of Object.keys(this.responsiveOption || {})) {
+            const size = this.responsiveOption?.[breakpoint as Breakpoint];
+            if (size) {
+              responsive[
+                `@media (min-width: ${
+                  this.responsive[breakpoint as Breakpoint]
+                }px)`
+              ] =
+                size === 'md'
+                  ? {
+                      ...this.getStyleEssential(element),
+                      ...(state
+                        ? this.getStyleState(element, state, size)
+                        : {}),
+                    }
+                  : {
+                      ...this.getStyleSize(element, size),
+                      ...(state
+                        ? this.getStyleState(element, state, size)
+                        : {}),
+                    };
+            }
+          }
+        }
+
+        return responsive;
+      }
+    );
+  }
+
   getStyleSize<T>(element: string, size: Exclude<Size, 'md'>): T {
     return this.cache([element, size], () => {
       // @ts-ignore
@@ -209,6 +291,26 @@ export class KiskadeeStyle {
     });
   }
 
+  // Property Style ------------------------------------------------------------
+
+  propertyBackgroundStyle(
+    element: string,
+    status?: string
+  ): string | undefined {
+    return this.cache([element, 'background', status || '-'], () => {
+      const style = this.getContrastStyle(element, status);
+
+      return KiskadeeStyle.render({
+        background: style.defaultMode?.background,
+
+        '@media (prefers-color-scheme: dark)': style && {
+          // @ts-ignore
+          color: style.contrastMode?.background,
+        },
+      });
+    });
+  }
+
   static pickResponsiveProperties(
     responsive: {
       [mediaQuery: string]: GenericCSSProperties;
@@ -234,26 +336,6 @@ export class KiskadeeStyle {
       }
     }
     return newObject;
-  }
-
-  // Property Style ------------------------------------------------------------
-
-  propertyBackgroundStyle(
-    element: string,
-    status?: string
-  ): string | undefined {
-    return this.cache([element, 'background', status || '-'], () => {
-      const style = this.getContrastStyle(element, status);
-
-      return KiskadeeStyle.render({
-        background: style.defaultMode?.background,
-
-        '@media (prefers-color-scheme: dark)': style && {
-          // @ts-ignore
-          color: style.contrastMode?.background,
-        },
-      });
-    });
   }
 
   propertyBorderStyle(element: string, status?: string): string | undefined {

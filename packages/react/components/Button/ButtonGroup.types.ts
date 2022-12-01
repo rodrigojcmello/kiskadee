@@ -1,8 +1,11 @@
-import type { Size, ButtonType, ButtonVariant } from '../../types';
+import type { ButtonProps } from './Button.types';
+import type { KiskadeeStyleType } from '../../utils';
 
-export interface ButtonGroupProps {
+export interface ButtonGroupProps
+  extends Pick<ButtonProps, 'size' | 'type' | 'variant' | 'borderRadius'> {
   orientation?: 'horizontal' | 'vertical';
-  size?: Size;
-  type: ButtonType;
-  variant: ButtonVariant;
 }
+
+export interface ButtonGroupStyleProps
+  extends ButtonGroupProps,
+    KiskadeeStyleType {}

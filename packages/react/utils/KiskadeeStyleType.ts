@@ -1,6 +1,10 @@
 import type { CSSProperties } from 'react';
 import type { ButtonType, ButtonVariant, Size } from '../types';
-import type { ButtonProps, ButtonSchema } from '../components/Button';
+import type {
+  ButtonProps,
+  ButtonSchema,
+  ResponsiveOption,
+} from '../components/Button';
 
 export type KiskadeeStyleType = {
   // TODO: create a generic type
@@ -10,6 +14,7 @@ export type KiskadeeStyleType = {
   size?: Size;
   componentSchema?: ComponentSchema;
   componentOptions?: ComponentOptions;
+  responsiveOption?: ResponsiveOption;
 
   info: {
     name: string;

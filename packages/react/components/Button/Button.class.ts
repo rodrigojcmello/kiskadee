@@ -5,7 +5,6 @@ import type {
   IconPosition,
   ButtonStyleProps,
   ButtonOptions,
-  Breakpoint,
   GenericCSSProperties,
 } from './Button.types';
 import {
@@ -61,6 +60,7 @@ export class ButtonClass extends KiskadeeStyle {
       size: style.size,
       componentSchema: style.componentSchema as ComponentSchema,
       info: style.info,
+      responsiveOption: style.options?.responsive,
     });
 
     this.component = 'button';
@@ -97,6 +97,7 @@ export class ButtonClass extends KiskadeeStyle {
 
   elementContainer() {
     return {
+      // TODO: test shadow on dark mode
       radius: this.buttonRadiusStyle('container'),
       width: this.containerWidthStyle(),
       transitionAfterPressed: this.containerTransitionAfterPressed(),
@@ -199,7 +200,6 @@ export class ButtonClass extends KiskadeeStyle {
         overflow: 'hidden',
         WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
         border: 'none',
-        // background: 'none',
       });
     });
   }
@@ -626,63 +626,6 @@ export class ButtonClass extends KiskadeeStyle {
     });
   }
 
-  getResponsiveStyle(
-    element: string,
-    state?: string
-  ): {
-    [mediaQuery: string]: GenericCSSProperties;
-  } {
-    return this.cache(
-      [element, 'responsive', this.size || 'md', state || '-'],
-      () => {
-        const responsive: { [mediaQuery: string]: GenericCSSProperties } = {};
-
-        if (this.size) {
-          // TODO: remove ts-ignore
-          responsive['@media (min-width: 0px)'] = {
-            // @ts-ignores
-            ...this.getStyleEssential(element),
-            // @ts-ignore
-            ...(!this.size || this.size === 'md'
-              ? // @ts-ignore
-                {}
-              : this.getStyleSize(element, this.size)),
-            // @ts-ignore
-            ...(state ? this.getStyleState(element, state) : {}),
-          };
-        } else {
-          for (const breakpoint of Object.keys(
-            this.options?.responsive || {}
-          )) {
-            const size = this?.options?.responsive?.[breakpoint as Breakpoint];
-            if (size) {
-              responsive[
-                `@media (min-width: ${
-                  this.responsive[breakpoint as Breakpoint]
-                }px)`
-              ] =
-                size === 'md'
-                  ? {
-                      ...this.getStyleEssential(element),
-                      ...(state
-                        ? this.getStyleState(element, state, size)
-                        : {}),
-                    }
-                  : {
-                      ...this.getStyleSize(element, size),
-                      ...(state
-                        ? this.getStyleState(element, state, size)
-                        : {}),
-                    };
-            }
-          }
-        }
-
-        return responsive;
-      }
-    );
-  }
-
   propertySpacingStyle(
     element: string,
     spacing: 'margin' | 'padding',
@@ -723,29 +666,6 @@ export class ButtonClass extends KiskadeeStyle {
         });
       }
     );
-  }
-
-  // TODO: move to KiskadeeStyle class
-  propertyRadiusStyle(element: string, state?: string): string | undefined {
-    const elementStyle = this.getResponsiveStyle(element, state);
-
-    const { '@media (min-width: 0px)': elementRest, ...elementResponsive } =
-      KiskadeeStyle.pickResponsiveProperties(elementStyle, [
-        'borderTopLeftRadius',
-        'borderTopRightRadius',
-        'borderBottomLeftRadius',
-        'borderBottomRightRadius',
-
-        /**
-         * Unique property needs to be last to override the others
-         */
-        'borderRadius',
-      ]);
-
-    return KiskadeeStyle.render({
-      ...elementRest,
-      ...elementResponsive,
-    });
   }
 
   // TODO: review radius status

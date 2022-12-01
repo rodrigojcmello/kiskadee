@@ -1,12 +1,11 @@
 import type { FC, PropsWithChildren } from 'react';
 import { useMemo } from 'react';
-import type { ButtonGroupProps } from './ButtonGroup.types';
-import { useKiskadee } from '../../schema';
 import type {
-  ComponentSchema,
-  KiskadeeStyleType,
-  ComponentOptions,
-} from '../../utils';
+  ButtonGroupProps,
+  ButtonGroupStyleProps,
+} from './ButtonGroup.types';
+import { useKiskadee } from '../../schema';
+import type { ComponentSchema, ComponentOptions } from '../../utils';
 import { ButtonGroupClass } from './ButtonGroup.class';
 
 export const ButtonGroup: FC<PropsWithChildren<ButtonGroupProps>> = ({
@@ -15,13 +14,15 @@ export const ButtonGroup: FC<PropsWithChildren<ButtonGroupProps>> = ({
   variant,
   orientation = 'horizontal',
   children,
+  borderRadius,
 }) => {
   const [schema] = useKiskadee();
 
-  const style: KiskadeeStyleType = {
+  const style: ButtonGroupStyleProps = {
     size,
     componentSchema: schema?.component?.button?.elements as ComponentSchema,
     componentOptions: schema?.component?.button?.options as ComponentOptions,
+    borderRadius,
     type,
     variant,
     info: {
@@ -39,7 +40,11 @@ export const ButtonGroup: FC<PropsWithChildren<ButtonGroupProps>> = ({
   const container = buttonGroup.elementGroup();
 
   return (
-    <div className={['button-group', container.base].join(' ').trim()}>
+    <div
+      className={['button-group', container.radius, container.base]
+        .join(' ')
+        .trim()}
+    >
       {children}
     </div>
   );

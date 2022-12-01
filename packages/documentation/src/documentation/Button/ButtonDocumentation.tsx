@@ -908,7 +908,12 @@ export const ButtonDocumentation: FC = () => {
         <div>
           <BoxTitle>Button Group</BoxTitle>
           <div className={style.buttonWrap}>
-            <ButtonGroup variant={variant} type={type} size={size}>
+            <ButtonGroup
+              variant={variant}
+              type={type}
+              size={size}
+              borderRadius={radius}
+            >
               <Button
                 label={'Button 1'}
                 width={width}
