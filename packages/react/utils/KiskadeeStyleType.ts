@@ -2,14 +2,14 @@ import type { CSSProperties } from 'react';
 import type { ButtonType, ButtonVariant, Size } from '../types';
 import type { ButtonProps, ButtonSchema } from '../components/Button';
 
-export type KiskadeeStyleTypes = {
+export type KiskadeeStyleType = {
   // TODO: create a generic type
   type: ButtonProps['type'];
   // TODO: create a generic variant
   variant: ButtonProps['variant'];
   size?: Size;
   componentSchema?: ComponentSchema;
-  componentOptions?: Record<string, unknown>;
+  componentOptions?: ComponentOptions;
 
   info: {
     name: string;
@@ -22,6 +22,8 @@ export type KiskadeeStyleTypes = {
 export type ComponentSchema = {
   [element: string]: ElementTheme<CSSProperties, string>;
 };
+
+export type ComponentOptions = Record<string, unknown>;
 
 export type ElementTheme<T, State extends string> = Partial<
   Record<

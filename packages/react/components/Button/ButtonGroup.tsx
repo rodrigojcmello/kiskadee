@@ -1,6 +1,13 @@
 import type { FC, PropsWithChildren } from 'react';
+import { useMemo } from 'react';
 import type { ButtonGroupProps } from './ButtonGroup.types';
 import { useKiskadee } from '../../schema';
+import type {
+  ComponentSchema,
+  KiskadeeStyleType,
+  ComponentOptions,
+} from '../../utils';
+import { ButtonGroupClass } from './ButtonGroup.class';
 
 export const ButtonGroup: FC<PropsWithChildren<ButtonGroupProps>> = ({
   size,
@@ -11,18 +18,29 @@ export const ButtonGroup: FC<PropsWithChildren<ButtonGroupProps>> = ({
 }) => {
   const [schema] = useKiskadee();
 
-  // const style: KiskadeeStyleTypes = {
-  //   size,
-  //   schema,
-  //   type,
-  //   variant,
-  // };
-  //
-  // const buttonGroup = useMemo(() => {
-  //   return new ButtonGroupClass(style);
-  // }, [style]);
+  const style: KiskadeeStyleType = {
+    size,
+    componentSchema: schema?.component?.button?.elements as ComponentSchema,
+    componentOptions: schema?.component?.button?.options as ComponentOptions,
+    type,
+    variant,
+    info: {
+      name: schema.name,
+      version: schema.version,
+      author: schema.author,
+      themeMode: schema.themeMode,
+    },
+  };
 
-  // const container = buttonGroup.elementGroup();
+  const buttonGroup = useMemo(() => {
+    return new ButtonGroupClass(style);
+  }, [style]);
 
-  return <div className={['button-group'].join(',')}>{children}</div>;
+  const container = buttonGroup.elementGroup();
+
+  return (
+    <div className={['button-group', container.base].join(' ').trim()}>
+      {children}
+    </div>
+  );
 };

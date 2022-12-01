@@ -6,7 +6,7 @@ import type {
   Size,
   StitchesProperties,
   GenericCSSProperties,
-  KiskadeeStyleTypes,
+  KiskadeeStyleType,
   ComponentSchema,
   KiskadeeTheme,
 } from '@kiskadee/react';
@@ -18,7 +18,10 @@ const cacheStyle = new CacheStyle();
 export class KiskadeeStyle {
   readonly componentSchema?: ComponentSchema;
 
-  component: keyof Exclude<KiskadeeTheme['component'], undefined> | undefined;
+  component:
+    | keyof Exclude<KiskadeeTheme['component'], undefined>
+    | 'buttonGroup'
+    | undefined;
 
   readonly type: ButtonStyleProps['type'];
 
@@ -26,7 +29,7 @@ export class KiskadeeStyle {
 
   readonly size: ButtonStyleProps['size'];
 
-  readonly info: KiskadeeStyleTypes['info'];
+  readonly info: KiskadeeStyleType['info'];
 
   // Transition ----------------------------------------------------------------
 
@@ -41,7 +44,7 @@ export class KiskadeeStyle {
     number
   >;
 
-  constructor(style: KiskadeeStyleTypes) {
+  constructor(style: KiskadeeStyleType) {
     // Required ----------------------------------------------------------------
 
     this.type = style.type;

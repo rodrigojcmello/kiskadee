@@ -941,6 +941,102 @@ export const ButtonDocumentation: FC = () => {
                 iconRight={iconRight}
                 iconType={iconType}
               />
+              <Button
+                label={'Button 1'}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                size={size}
+                onClick={(): void => {
+                  // setSelected(!selected);
+                  // setVariant('selected');
+                }}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                iconType={iconType}
+              />
+              <Button
+                label={'Button 1'}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                size={size}
+                onClick={(): void => {
+                  // setSelected(!selected);
+                  // setVariant('selected');
+                }}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                iconType={iconType}
+              />
+              <Button
+                label={'Button 1'}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                size={size}
+                onClick={(): void => {
+                  // setSelected(!selected);
+                  // setVariant('selected');
+                }}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                iconType={iconType}
+              />
+              <Button
+                label={'Button 1'}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                size={size}
+                onClick={(): void => {
+                  // setSelected(!selected);
+                  // setVariant('selected');
+                }}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                iconType={iconType}
+              />
+              <Button
+                label={'Button 1'}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                size={size}
+                onClick={(): void => {
+                  // setSelected(!selected);
+                  // setVariant('selected');
+                }}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                iconType={iconType}
+              />
+              <Button
+                label={'Button 1'}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                size={size}
+                onClick={(): void => {
+                  // setSelected(!selected);
+                  // setVariant('selected');
+                }}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                iconType={iconType}
+              />
             </ButtonGroup>
           </div>
         </div>
