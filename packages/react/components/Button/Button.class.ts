@@ -317,8 +317,12 @@ export class ButtonClass extends KiskadeeStyle {
         '&:focus-visible, &.--focus': {
           boxShadow: containerFocus.boxShadow,
           background: containerFocus.borderColor || containerFocus.background,
-          outline: containerFocus.outline,
           outlineOffset: containerFocus.outlineOffset,
+          outlineWidth: containerFocus.outlineWidth,
+          outlineColor: containerFocus.outlineColor,
+          outlineStyle: containerFocus.outlineStyle,
+          outline: containerFocus.outline,
+          zIndex: 1,
           '& .button__container-wrapper': {
             background: containerFocus.background,
             borderColor: containerFocus.borderColor,

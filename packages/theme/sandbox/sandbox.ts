@@ -44,7 +44,10 @@ export const sandbox: KiskadeeTheme = {
               base: {
                 focus: {
                   md: {
-                    outline: 'none',
+                    outlineWidth: 2,
+                    outlineColor: '#e8def8',
+                    outlineStyle: 'solid',
+                    // outlineOffset: 0,
                   },
                 },
                 pressed: {
@@ -99,10 +102,6 @@ export const sandbox: KiskadeeTheme = {
                       focus: {
                         md: {
                           background: '#7965AF',
-                          outlineWidth: 1,
-                          outlineColor: '#ffffff',
-                          outlineStyle: 'solid',
-                          outlineOffset: -3,
                         },
                       },
                       pressed: {
