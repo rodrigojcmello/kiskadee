@@ -182,7 +182,6 @@ export const Button: FC<ButtonProps> = ({
               buttonIconLeft.padding,
               buttonIconLeft.margin,
               buttonIconLeft.radius,
-              buttonCommon.transition,
             ]
               .join(' ')
               .trim()}
@@ -201,7 +200,6 @@ export const Button: FC<ButtonProps> = ({
               buttonText.fontSize,
               buttonText.width,
               buttonText.align,
-              buttonCommon.transition,
             ]
               .join(' ')
               .trim()}
@@ -221,7 +219,6 @@ export const Button: FC<ButtonProps> = ({
               buttonIconRight.padding,
               buttonIconRight.margin,
               buttonIconRight.radius,
-              buttonCommon.transition,
             ]
               .join(' ')
               .trim()}

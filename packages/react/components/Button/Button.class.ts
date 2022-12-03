@@ -184,12 +184,15 @@ export class ButtonClass extends KiskadeeStyle {
   containerBaseStyle() {
     return this.cache(['container', 'base'], () => {
       return ButtonClass.render({
+        // TODO: extract reset styles to a class/helper
         userSelect: 'none',
         padding: 0,
         cursor: 'pointer',
+        // TODO: extract fontSize to a class/helper
         fontSize: '16px',
         transitionProperty:
-          'background, box-shadow, border-width, min-width, border-radius',
+          'background-color, box-shadow, border-width, min-width,' +
+          ' border-radius',
         position: 'relative',
         overflow: 'hidden',
         WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
@@ -201,10 +204,7 @@ export class ButtonClass extends KiskadeeStyle {
   containerWrapperBaseStyle() {
     return this.cache(['container', 'base'], () => {
       return ButtonClass.render({
-        transitionProperty: 'background, border-color',
-        // TODO: extract this and reuse it
-        transitionDuration: 'inherit',
-        transitionTimingFunction: 'inherit',
+        transitionProperty: 'border-color',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -257,9 +257,8 @@ export class ButtonClass extends KiskadeeStyle {
         '&:hover, &.--hover': {
           '@media (pointer: fine)': {
             boxShadow: containerHover.boxShadow,
-            background: containerHover.borderColor || containerHover.background,
+            background: containerHover.background,
             '& .button__container-wrapper': {
-              background: containerHover.background,
               borderColor: containerHover.borderColor,
               borderWidth: containerHover.borderWidth,
               borderStyle: containerHover.borderStyle,
@@ -317,8 +316,12 @@ export class ButtonClass extends KiskadeeStyle {
         '&:focus-visible, &.--focus': {
           boxShadow: containerFocus.boxShadow,
           background: containerFocus.borderColor || containerFocus.background,
-          outline: containerFocus.outline,
           outlineOffset: containerFocus.outlineOffset,
+          outlineWidth: containerFocus.outlineWidth,
+          outlineColor: containerFocus.outlineColor,
+          outlineStyle: containerFocus.outlineStyle,
+          outline: containerFocus.outline,
+          zIndex: 1,
           '& .button__container-wrapper': {
             background: containerFocus.background,
             borderColor: containerFocus.borderColor,

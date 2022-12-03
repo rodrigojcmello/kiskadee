@@ -44,7 +44,10 @@ export const sandbox: KiskadeeTheme = {
               base: {
                 focus: {
                   md: {
-                    outline: 'none',
+                    outlineWidth: 2,
+                    outlineColor: '#e8def8',
+                    outlineStyle: 'solid',
+                    // outlineOffset: 0,
                   },
                 },
                 pressed: {
@@ -99,10 +102,6 @@ export const sandbox: KiskadeeTheme = {
                       focus: {
                         md: {
                           background: '#7965AF',
-                          outlineWidth: 1,
-                          outlineColor: '#ffffff',
-                          outlineStyle: 'solid',
-                          outlineOffset: -3,
                         },
                       },
                       pressed: {
@@ -123,7 +122,7 @@ export const sandbox: KiskadeeTheme = {
                         md: {
                           background: '#E8DEF8',
                           borderWidth: 1,
-                          borderColor: 'transparent',
+                          borderColor: '#E8DEF8',
                           borderStyle: 'solid',
                           rippleColor: '#6750a480',
                         },
@@ -131,7 +130,7 @@ export const sandbox: KiskadeeTheme = {
                       hover: {
                         md: {
                           background: '#D8CEE8',
-                          // borderColor: 'red',
+                          borderColor: '#D8CEE8',
                           boxShadow:
                             '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
                         },

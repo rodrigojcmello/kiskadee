@@ -125,6 +125,10 @@ export class KiskadeeStyle {
       return KiskadeeStyle.render({
         transitionDuration: `${this.duration}ms`,
         transitionTimingFunction: this.timingFunction,
+        '& *': {
+          transitionDuration: 'inherit',
+          transitionTimingFunction: 'inherit',
+        },
       });
     });
   }
