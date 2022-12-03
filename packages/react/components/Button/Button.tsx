@@ -167,7 +167,6 @@ export const Button: FC<ButtonProps> = ({
           'button__container-wrapper',
           buttonContainerWrapper.base,
           buttonContainerWrapper.border,
-          buttonCommon.transition,
         ].join(' ')}
       >
         {/* <span style={{ opacity: isLoading ? 0 : 1, display: 'flex' }}> */}

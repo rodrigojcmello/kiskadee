@@ -41,16 +41,22 @@ export class ButtonGroupClass extends KiskadeeStyle {
 
   groupBaseStyle() {
     return this.cache(['buttonGroup', 'base'], () => {
+      const elementStyle = this.getResponsiveStyle('container');
+
       const { '@media (min-width: 0px)': elementRest, ...elementResponsive } =
-        this.getResponsiveStyle('container');
+        KiskadeeStyle.pickResponsiveProperties(elementStyle, ['boxShadow']);
 
       return ButtonGroupClass.render({
         ...elementRest,
         ...elementResponsive,
+
+        transitionProperty: 'box-shadow, border-radius',
         display: 'flex',
         '& > button': {
           boxShadow: 'none',
+          width: 'auto',
           '&:hover': {
+            // TODO: disable shadow if button rest has shadow
             boxShadow: 'none',
             zIndex: 1,
           },

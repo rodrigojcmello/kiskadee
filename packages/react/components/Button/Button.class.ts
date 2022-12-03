@@ -85,12 +85,6 @@ export class ButtonClass extends KiskadeeStyle {
     this.iconRight = style.iconRight;
   }
 
-  common() {
-    return {
-      transition: this.getTransition(),
-    };
-  }
-
   //----------------------------------------------------------------------------
   // Container Element
   //----------------------------------------------------------------------------
@@ -195,7 +189,7 @@ export class ButtonClass extends KiskadeeStyle {
         cursor: 'pointer',
         fontSize: '16px',
         transitionProperty:
-          'box-shadow, border-width, min-width, border-radius',
+          'background, box-shadow, border-width, min-width, border-radius',
         position: 'relative',
         overflow: 'hidden',
         WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
@@ -208,6 +202,9 @@ export class ButtonClass extends KiskadeeStyle {
     return this.cache(['container', 'base'], () => {
       return ButtonClass.render({
         transitionProperty: 'background, border-color',
+        // TODO: extract this and reuse it
+        transitionDuration: 'inherit',
+        transitionTimingFunction: 'inherit',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

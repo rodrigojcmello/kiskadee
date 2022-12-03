@@ -922,16 +922,96 @@ export const ButtonDocumentation: FC = () => {
                 borderRadius={radius}
                 textAlign={textAlign}
                 size={size}
-                onClick={(): void => {
-                  // setSelected(!selected);
-                  // setVariant('selected');
-                }}
-                iconLeft={iconLeft}
-                iconRight={iconRight}
-                iconType={iconType}
               />
               <Button
                 label={'Button 1'}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                size={size}
+              />
+              <Button
+                label={'Button 1'}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                size={size}
+              />
+              <Button
+                label={'Button 1'}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                size={size}
+              />
+              <Button
+                label={'Button 1'}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                size={size}
+              />
+              <Button
+                label={'Button 1'}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                size={size}
+              />
+              <Button
+                label={'Button 1'}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                size={size}
+              />
+              <Button
+                label={'Button 1'}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                size={size}
+              />
+            </ButtonGroup>
+          </div>
+        </div>
+      </div>
+
+      <div className={`${style.buttonRow} ${style.buttonGrid}`}>
+        <div>
+          <BoxTitle>Button Group</BoxTitle>
+          <div className={style.buttonWrap}>
+            <ButtonGroup
+              variant={variant}
+              type={type}
+              size={size}
+              borderRadius={radius}
+            >
+              <Button
+                label={'Button 1'}
+                width={width}
+                type={type}
+                variant={variant}
+                borderRadius={radius}
+                textAlign={textAlign}
+                size={size}
+                iconType={iconType}
+              />
+              <Button
                 width={width}
                 type={type}
                 variant={variant}
@@ -942,105 +1022,12 @@ export const ButtonDocumentation: FC = () => {
                   // setSelected(!selected);
                   // setVariant('selected');
                 }}
-                iconLeft={iconLeft}
-                iconRight={iconRight}
-                iconType={iconType}
-              />
-              <Button
-                label={'Button 1'}
-                width={width}
-                type={type}
-                variant={variant}
-                borderRadius={radius}
-                textAlign={textAlign}
-                size={size}
-                onClick={(): void => {
-                  // setSelected(!selected);
-                  // setVariant('selected');
-                }}
-                iconLeft={iconLeft}
-                iconRight={iconRight}
-                iconType={iconType}
-              />
-              <Button
-                label={'Button 1'}
-                width={width}
-                type={type}
-                variant={variant}
-                borderRadius={radius}
-                textAlign={textAlign}
-                size={size}
-                onClick={(): void => {
-                  // setSelected(!selected);
-                  // setVariant('selected');
-                }}
-                iconLeft={iconLeft}
-                iconRight={iconRight}
-                iconType={iconType}
-              />
-              <Button
-                label={'Button 1'}
-                width={width}
-                type={type}
-                variant={variant}
-                borderRadius={radius}
-                textAlign={textAlign}
-                size={size}
-                onClick={(): void => {
-                  // setSelected(!selected);
-                  // setVariant('selected');
-                }}
-                iconLeft={iconLeft}
-                iconRight={iconRight}
-                iconType={iconType}
-              />
-              <Button
-                label={'Button 1'}
-                width={width}
-                type={type}
-                variant={variant}
-                borderRadius={radius}
-                textAlign={textAlign}
-                size={size}
-                onClick={(): void => {
-                  // setSelected(!selected);
-                  // setVariant('selected');
-                }}
-                iconLeft={iconLeft}
-                iconRight={iconRight}
-                iconType={iconType}
-              />
-              <Button
-                label={'Button 1'}
-                width={width}
-                type={type}
-                variant={variant}
-                borderRadius={radius}
-                textAlign={textAlign}
-                size={size}
-                onClick={(): void => {
-                  // setSelected(!selected);
-                  // setVariant('selected');
-                }}
-                iconLeft={iconLeft}
-                iconRight={iconRight}
-                iconType={iconType}
-              />
-              <Button
-                label={'Button 1'}
-                width={width}
-                type={type}
-                variant={variant}
-                borderRadius={radius}
-                textAlign={textAlign}
-                size={size}
-                onClick={(): void => {
-                  // setSelected(!selected);
-                  // setVariant('selected');
-                }}
-                iconLeft={iconLeft}
-                iconRight={iconRight}
-                iconType={iconType}
+                iconRight={
+                  <span className={'material-symbols-outlined'}>
+                    expand_more
+                  </span>
+                }
+                iconType={'Alone'}
               />
             </ButtonGroup>
           </div>

@@ -38,10 +38,16 @@ export const ButtonGroup: FC<PropsWithChildren<ButtonGroupProps>> = ({
   }, [style]);
 
   const container = buttonGroup.elementGroup();
+  const common = buttonGroup.common();
 
   return (
     <div
-      className={['button-group', container.radius, container.base]
+      className={[
+        'button-group',
+        container.radius,
+        container.base,
+        common.transition,
+      ]
         .join(' ')
         .trim()}
     >

@@ -129,6 +129,12 @@ export class KiskadeeStyle {
     });
   }
 
+  common() {
+    return {
+      transition: this.getTransition(),
+    };
+  }
+
   propertyRadiusStyle(element: string, state?: string): string | undefined {
     const elementStyle = this.getResponsiveStyle(element, state);
 
