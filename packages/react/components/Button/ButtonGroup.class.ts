@@ -41,36 +41,89 @@ export class ButtonGroupClass extends KiskadeeStyle {
 
   groupBaseStyle() {
     return this.cache(['buttonGroup', 'base'], () => {
-      const elementStyle = this.getResponsiveStyle('container');
+      const groupStyle = this.getResponsiveStyle('group');
+      const containerStyle = this.getResponsiveStyle('container');
 
-      const { '@media (min-width: 0px)': elementRest, ...elementResponsive } =
-        KiskadeeStyle.pickResponsiveProperties(elementStyle, ['boxShadow']);
+      const {
+        '@media (min-width: 0px)': boxShadowRest,
+        ...boxShadowResponsive
+      } = KiskadeeStyle.pickResponsiveProperties(containerStyle, [
+        'boxShadow',
+        'background',
+      ]);
+
+      const { '@media (min-width: 0px)': divisorRest, ...divisorResponsive } =
+        KiskadeeStyle.pickResponsiveProperties(groupStyle, [
+          'height',
+          'background',
+          'top',
+        ]);
 
       return ButtonGroupClass.render({
-        ...elementRest,
-        ...elementResponsive,
+        ...boxShadowRest,
+        ...boxShadowResponsive,
 
-        transitionProperty: 'box-shadow, border-radius',
+        transitionProperty: 'background, box-shadow, border-radius',
         display: 'flex',
-        '& > button': {
-          boxShadow: 'none',
-          width: 'auto',
-          '&:hover': {
-            // TODO: disable shadow if button rest has shadow
-            boxShadow: 'none',
-            zIndex: 1,
+
+        '& > span': {
+          marginRight: 1,
+          position: 'relative',
+
+          '&::after': {
+            transitionProperty: 'background, height, top',
+            transitionDuration: 'inherit',
+            transitionTimingFunction: 'inherit',
+            content: '""',
+            position: 'absolute',
+            right: -1,
+            width: 1,
+            ...divisorRest,
+            ...divisorResponsive,
           },
-        },
-        '& > button:nth-child(n+2):nth-last-child(n+2)': {
-          borderRadius: 0,
-        },
-        '& > button:first-child': {
-          borderTopRightRadius: 0,
-          borderBottomRightRadius: 0,
-        },
-        '& > button:last-child': {
-          borderTopLeftRadius: 0,
-          borderBottomLeftRadius: 0,
+
+          '&:last-child': {
+            marginRight: 0,
+
+            '&::after': {
+              content: 'none',
+            },
+          },
+
+          '& > button': {
+            boxShadow: 'none',
+            width: 'auto',
+
+            '&:hover': {
+              // TODO: disable shadow if button rest has shadow
+              boxShadow: 'none',
+              zIndex: 1,
+            },
+          },
+
+          '&:nth-child(n+2):nth-last-child(n+2) > button': {
+            borderRadius: 0,
+            // '& > span': {
+            //   borderRightColor: 'transparent',
+            // },
+          },
+
+          '&:first-child > button': {
+            borderTopRightRadius: 0,
+            borderBottomRightRadius: 0,
+            // '& > span': {
+            //   borderRightColor: 'transparent',
+            // },
+          },
+
+          '&:last-child > button': {
+            borderTopLeftRadius: 0,
+            borderBottomLeftRadius: 0,
+            marginRight: 0,
+            '&::after': {
+              content: 'none',
+            },
+          },
         },
       });
     });

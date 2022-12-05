@@ -77,6 +77,12 @@ export interface ButtonStyleProps {
 // Elements
 //------------------------------------------------------------------------------
 
+export type ButtonGroupElement = {
+  height?: number;
+  background?: CSSProperties['background'];
+  top?: CSSProperties['top'];
+};
+
 // Container
 
 export type ButtonContainer = {
@@ -271,6 +277,7 @@ type ButtonTextStatus =
 //------------------------------------------------------------------------------
 
 interface ButtonElements {
+  group?: ElementTheme<ButtonGroupElement, InteractionStatus>;
   container?: ElementTheme<ButtonContainer, ButtonContainerStatus>;
   iconLeft?: ElementTheme<ButtonIcon, ButtonIconStatus>;
   iconRight?: ElementTheme<ButtonIcon, ButtonIconStatus>;

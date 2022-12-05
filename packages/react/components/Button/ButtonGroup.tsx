@@ -1,5 +1,5 @@
 import type { FC, PropsWithChildren } from 'react';
-import { useMemo } from 'react';
+import { Children, useMemo } from 'react';
 import type {
   ButtonGroupProps,
   ButtonGroupStyleProps,
@@ -51,7 +51,9 @@ export const ButtonGroup: FC<PropsWithChildren<ButtonGroupProps>> = ({
         .join(' ')
         .trim()}
     >
-      {children}
+      {Children.map(children, (child) => {
+        return <span>{child}</span>;
+      })}
     </div>
   );
 };
