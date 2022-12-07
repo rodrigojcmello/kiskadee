@@ -73,6 +73,17 @@ export const sandbox: KiskadeeTheme = {
                     },
                   },
                 },
+                flat: {
+                  variant: {
+                    primary: {
+                      rest: {
+                        md: {
+                          background: '#f3f1f8',
+                        },
+                      },
+                    },
+                  },
+                },
               },
             },
           },

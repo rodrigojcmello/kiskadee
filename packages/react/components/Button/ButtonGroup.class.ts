@@ -67,7 +67,7 @@ export class ButtonGroupClass extends KiskadeeStyle {
         display: 'flex',
 
         '& > span': {
-          marginRight: 1,
+          marginRight: this.type === 'outline' ? -1 : 1,
           position: 'relative',
 
           '&::after': {
