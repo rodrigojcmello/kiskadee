@@ -67,19 +67,21 @@ export class ButtonGroupClass extends KiskadeeStyle {
         display: 'flex',
 
         '& > span': {
-          marginRight: this.type === 'outline' ? -1 : 1,
+          // marginRight: this.type === 'outline' ? -1 : 1,
+          marginRight: -1,
           position: 'relative',
 
-          '&::after': {
-            transitionProperty: 'background, height, top',
-            transitionDuration: 'inherit',
-            transitionTimingFunction: 'inherit',
-            content: '""',
-            position: 'absolute',
-            right: -1,
-            width: 1,
-            ...divisorRest,
-            ...divisorResponsive,
+          '&:hover, &:active, &:focus': {
+            zIndex: 1,
+            '& + span': {
+              zIndex: 0,
+            },
+            '& button::before': {
+              background: 'transparent',
+            },
+            '& button::after': {
+              background: 'transparent',
+            },
           },
 
           '&:last-child': {
@@ -94,11 +96,43 @@ export class ButtonGroupClass extends KiskadeeStyle {
             boxShadow: 'none',
             width: 'auto',
 
+            '&::after': {
+              transitionProperty: 'background, height, top',
+              transitionDuration: 'inherit',
+              transitionTimingFunction: 'inherit',
+              content: '""',
+              position: 'absolute',
+              left: 0,
+              width: 1,
+              ...divisorRest,
+              ...divisorResponsive,
+            },
+
+            '&::before': {
+              transitionProperty: 'background, height, top',
+              transitionDuration: 'inherit',
+              transitionTimingFunction: 'inherit',
+              content: '""',
+              position: 'absolute',
+              right: 0,
+              width: 1,
+              ...divisorRest,
+              ...divisorResponsive,
+            },
+
             '&:hover': {
               // TODO: disable shadow if button rest has shadow
               boxShadow: 'none',
-              zIndex: 1,
             },
+            // '&:hover, &:active, &:focus': {
+            //   zIndex: 1,
+            //   '&::after': {
+            //     background: 'transparent',
+            //   },
+            //   '&::before': {
+            //     background: 'transparent',
+            //   },
+            // },
           },
 
           '&:nth-child(n+2):nth-last-child(n+2) > button': {

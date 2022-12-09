@@ -314,7 +314,7 @@ export const sandbox: KiskadeeTheme = {
                           rippleColor: '#6750a480',
                           background: '#FFFFFF',
                           borderWidth: 1,
-                          borderColor: 'transparent',
+                          borderColor: '#FFFFFF',
                           borderStyle: 'solid',
                         },
                       },
