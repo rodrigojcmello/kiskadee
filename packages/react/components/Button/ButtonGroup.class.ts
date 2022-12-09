@@ -67,7 +67,6 @@ export class ButtonGroupClass extends KiskadeeStyle {
         display: 'flex',
 
         '& > span': {
-          // marginRight: this.type === 'outline' ? -1 : 1,
           marginRight: -1,
           position: 'relative',
 
@@ -96,6 +95,17 @@ export class ButtonGroupClass extends KiskadeeStyle {
             boxShadow: 'none',
             width: 'auto',
 
+            '&:focus-visible': {
+              '&::after': {
+                background: 'transparent',
+                transitionDuration: '0ms',
+              },
+              '&::before': {
+                background: 'transparent',
+                transitionDuration: '0ms',
+              },
+            },
+
             '&::after': {
               transitionProperty: 'background, height, top',
               transitionDuration: 'inherit',
@@ -106,6 +116,7 @@ export class ButtonGroupClass extends KiskadeeStyle {
               width: 1,
               ...divisorRest,
               ...divisorResponsive,
+              // background: 'red',
             },
 
             '&::before': {
@@ -118,36 +129,22 @@ export class ButtonGroupClass extends KiskadeeStyle {
               width: 1,
               ...divisorRest,
               ...divisorResponsive,
+              // background: 'red',
             },
 
             '&:hover': {
               // TODO: disable shadow if button rest has shadow
               boxShadow: 'none',
             },
-            // '&:hover, &:active, &:focus': {
-            //   zIndex: 1,
-            //   '&::after': {
-            //     background: 'transparent',
-            //   },
-            //   '&::before': {
-            //     background: 'transparent',
-            //   },
-            // },
           },
 
           '&:nth-child(n+2):nth-last-child(n+2) > button': {
             borderRadius: 0,
-            // '& > span': {
-            //   borderRightColor: 'transparent',
-            // },
           },
 
           '&:first-child > button': {
             borderTopRightRadius: 0,
             borderBottomRightRadius: 0,
-            // '& > span': {
-            //   borderRightColor: 'transparent',
-            // },
           },
 
           '&:last-child > button': {
