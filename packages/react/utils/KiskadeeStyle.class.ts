@@ -361,12 +361,20 @@ export class KiskadeeStyle {
         ...(defaultMode?.border === 'none'
           ? {}
           : {
+              borderTopColor: defaultMode?.borderTopColor,
+              borderRightColor: defaultMode?.borderRightColor,
+              borderLeftColor: defaultMode?.borderLeftColor,
+              borderBottomColor: defaultMode?.borderBottomColor,
               borderColor: defaultMode?.borderColor,
               borderStyle: defaultMode?.borderStyle,
               borderWidth: defaultMode?.borderWidth,
 
               '@media (prefers-color-scheme: dark)': contrastMode
                 ? {
+                    borderTopColor: defaultMode?.borderTopColor,
+                    borderRightColor: defaultMode?.borderRightColor,
+                    borderLeftColor: defaultMode?.borderLeftColor,
+                    borderBottomColor: defaultMode?.borderBottomColor,
                     borderColor: contrastMode.borderColor,
                     borderStyle: contrastMode.borderStyle,
                     borderWidth: contrastMode.borderWidth,

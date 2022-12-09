@@ -69,12 +69,16 @@ export const fluent2: KiskadeeTheme = {
                           background: '#FFFFFFB2',
                           borderWidth: 1,
                           borderStyle: 'solid',
-                          borderColor: '#0000000F',
+                          borderLeftColor: '#EBEBEB',
+                          borderTopColor: '#EBEBEB',
+                          borderRightColor: '#EBEBEB',
+                          borderBottomColor: '#D2D2D2',
                         },
                       },
                       hover: {
                         md: {
                           background: '#F9F9F980',
+                          borderColor: 'red',
                         },
                       },
                       pressed: {

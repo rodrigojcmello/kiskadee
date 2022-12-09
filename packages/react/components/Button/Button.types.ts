@@ -103,6 +103,10 @@ export type ButtonContainer = {
   // TODO: remove CSSProperties
   borderWidth?: CSSProperties['borderWidth'];
   borderStyle?: CSSProperties['borderStyle'];
+  borderTopColor?: CSSProperties['borderTopColor'];
+  borderRightColor?: CSSProperties['borderRightColor'];
+  borderBottomColor?: CSSProperties['borderBottomColor'];
+  borderLeftColor?: CSSProperties['borderLeftColor'];
   borderColor?: CSSProperties['borderColor'];
 
   // Border Radius - Responsive
