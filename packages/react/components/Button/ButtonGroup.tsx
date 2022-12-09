@@ -61,11 +61,8 @@ export const ButtonGroup: FC<PropsWithChildren<ButtonGroupProps>> = ({
               setInteractedIndex(index);
             }}
             onFocus={() => {
-              setInteractedIndex(index);
+              setInteractedIndex(undefined);
             }}
-            // onMouseLeave={() => {
-            //   setInteractedIndex(undefined);
-            // }}
           >
             {child}
           </span>
