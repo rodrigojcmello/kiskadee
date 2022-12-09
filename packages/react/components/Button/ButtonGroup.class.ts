@@ -126,7 +126,7 @@ export class ButtonGroupClass extends KiskadeeStyle {
               width: 1,
               ...divisorRest,
               ...divisorResponsive,
-              // background: 'red',
+              background: 'red',
             },
 
             '&::before': {
@@ -139,7 +139,7 @@ export class ButtonGroupClass extends KiskadeeStyle {
               width: 1,
               ...divisorRest,
               ...divisorResponsive,
-              // background: 'blue',
+              background: 'blue',
             },
 
             '&:hover': {
@@ -155,15 +155,19 @@ export class ButtonGroupClass extends KiskadeeStyle {
           '&:first-child > button': {
             borderTopRightRadius: 0,
             borderBottomRightRadius: 0,
+
+            '&::after': {
+              content: 'none',
+            },
           },
 
           '&:last-child > button': {
             borderTopLeftRadius: 0,
             borderBottomLeftRadius: 0,
-            marginRight: 0,
-            // '&::after': {
-            //   content: 'none',
-            // },
+
+            '&::before': {
+              content: 'none',
+            },
           },
         },
       });
