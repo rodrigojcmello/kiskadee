@@ -1,5 +1,5 @@
 import type { FC, PropsWithChildren } from 'react';
-import { Children, useMemo } from 'react';
+import { Children, useMemo, useState } from 'react';
 import type {
   ButtonGroupProps,
   ButtonGroupStyleProps,
@@ -17,6 +17,7 @@ export const ButtonGroup: FC<PropsWithChildren<ButtonGroupProps>> = ({
   borderRadius,
 }) => {
   const [schema] = useKiskadee();
+  const [interactedIndex, setInteractedIndex] = useState<number | undefined>();
 
   const style: ButtonGroupStyleProps = {
     size,
@@ -51,8 +52,24 @@ export const ButtonGroup: FC<PropsWithChildren<ButtonGroupProps>> = ({
         .join(' ')
         .trim()}
     >
-      {Children.map(children, (child) => {
-        return <span>{child}</span>;
+      {Children.map(children, (child, index) => {
+        return (
+          // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
+          <span
+            className={interactedIndex === index ? '--interacted' : undefined}
+            onMouseOver={() => {
+              setInteractedIndex(index);
+            }}
+            onFocus={() => {
+              setInteractedIndex(index);
+            }}
+            // onMouseLeave={() => {
+            //   setInteractedIndex(undefined);
+            // }}
+          >
+            {child}
+          </span>
+        );
       })}
     </div>
   );

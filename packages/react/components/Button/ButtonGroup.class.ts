@@ -66,6 +66,13 @@ export class ButtonGroupClass extends KiskadeeStyle {
         transitionProperty: 'background, box-shadow, border-radius',
         display: 'flex',
 
+        '& > .--interacted': {
+          zIndex: 1,
+          '& + span': {
+            zIndex: 0,
+          },
+        },
+
         '& > span': {
           marginRight: -1,
           position: 'relative',
