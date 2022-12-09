@@ -126,7 +126,6 @@ export class ButtonGroupClass extends KiskadeeStyle {
               width: 1,
               ...divisorRest,
               ...divisorResponsive,
-              background: 'red',
             },
 
             '&::before': {
@@ -139,7 +138,6 @@ export class ButtonGroupClass extends KiskadeeStyle {
               width: 1,
               ...divisorRest,
               ...divisorResponsive,
-              background: 'blue',
             },
 
             '&:hover': {

@@ -276,7 +276,7 @@ export const sandbox: KiskadeeTheme = {
                       hover: {
                         md: {
                           background: '#F3F1F8',
-                          borderColor: 'red',
+                          // borderColor: 'red',
                         },
                       },
                       focus: {
