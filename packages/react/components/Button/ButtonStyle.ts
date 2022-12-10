@@ -98,8 +98,8 @@ export class ButtonStyle extends KiskadeeStyle {
       transitionAfterPressed: this.containerTransitionAfterPressed(),
       background: this.propertyBackgroundStyle('container'),
       core: this.containerCoreStyle(),
-      base: ButtonStyle.containerBaseStyle(),
-      rippleCore: this.containerRippleStyle(),
+      base: ButtonStyle.containerBaseStyle(), // OK
+      rippleCore: ButtonStyle.containerRippleStyle(), // OK
       rippleBackground: this.containerRippleBackgroundStyle(),
     };
   }
@@ -139,19 +139,19 @@ export class ButtonStyle extends KiskadeeStyle {
   }
 
   // LRU and LFU cache, memory-cache, ttl
-  containerRippleStyle() {
-    return this.cache(['container', 'ripple'], () => {
-      return ButtonStyle.render({
-        position: 'absolute',
-        borderRadius: '50%',
-        transform: 'scale(0)',
-        animationDuration: `${RIPPLE_DURATION}ms`,
-        animationTimingFunction: RIPPLE_TIMING_FUNCTION,
-        animationName: rippleKeyframe,
-      });
+  @Memoize()
+  static containerRippleStyle() {
+    return ButtonStyle.render({
+      position: 'absolute',
+      borderRadius: '50%',
+      transform: 'scale(0)',
+      animationDuration: `${RIPPLE_DURATION}ms`,
+      animationTimingFunction: RIPPLE_TIMING_FUNCTION,
+      animationName: rippleKeyframe,
     });
   }
 
+  // TODO: move ripple to a new layer
   containerRippleBackgroundStyle() {
     return this.cache(['container', 'ripple-background'], () => {
       const ripple = this.getContrastStyle('container');
