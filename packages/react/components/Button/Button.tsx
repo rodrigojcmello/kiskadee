@@ -3,7 +3,7 @@ import type { FC, MouseEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import type { ButtonProps, ButtonStyleProps } from './Button.types';
 import { useKiskadee } from '../../schema';
-import { ButtonClass } from './Button.class';
+import { ButtonStyle } from './ButtonStyle';
 import { EllipsisLoader } from '../Loader';
 import { CLICK_MIN_DURATION, CLICK_TRANSITION_DURATION } from './constants';
 
@@ -54,7 +54,7 @@ export const Button: FC<ButtonProps> = ({
   if (interaction !== 'pressed' && isPressed) className.push('--pressed');
 
   const button = useMemo(() => {
-    return new ButtonClass(style);
+    return new ButtonStyle(style);
   }, [style]);
 
   const buttonContainer = button.elementContainer();

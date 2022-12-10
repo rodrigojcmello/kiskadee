@@ -1,4 +1,4 @@
-import { ButtonClass } from './Button.class';
+import { ButtonStyle } from './ButtonStyle';
 
 const mock = {
   iconType: 'detached',
@@ -11,10 +11,10 @@ const mock = {
 describe('ButtonStyle', () => {
   describe('Render', () => {
     test('Empty object should return undefined.', () => {
-      expect(ButtonClass.render({})).toBeUndefined();
+      expect(ButtonStyle.render({})).toBeUndefined();
     });
     test('Filled style object should return a className', () => {
-      expect(ButtonClass.render({ color: 'red' })).toEqual(
+      expect(ButtonStyle.render({ color: 'red' })).toEqual(
         expect.objectContaining({
           className: expect.any(String),
         })

@@ -1,5 +1,6 @@
 /* eslint-disable unicorn/filename-case */
 import { keyframes } from '@stitches/core';
+import { Memoize } from '@typescript-plus/fast-memoize-decorator';
 import type {
   ButtonText,
   IconPosition,
@@ -22,7 +23,7 @@ const rippleKeyframe = keyframes({
   },
 });
 
-export class ButtonClass extends KiskadeeStyle {
+export class ButtonStyle extends KiskadeeStyle {
   // Required ------------------------------------------------------------------
 
   readonly iconType: ButtonStyleProps['iconType'];
@@ -97,7 +98,7 @@ export class ButtonClass extends KiskadeeStyle {
       transitionAfterPressed: this.containerTransitionAfterPressed(),
       background: this.propertyBackgroundStyle('container'),
       core: this.containerCoreStyle(),
-      base: this.containerBaseStyle(),
+      base: ButtonStyle.containerBaseStyle(),
       rippleCore: this.containerRippleStyle(),
       rippleBackground: this.containerRippleBackgroundStyle(),
     };
@@ -118,7 +119,7 @@ export class ButtonClass extends KiskadeeStyle {
 
   groupBaseStyle() {
     return this.cache(['group', 'base'], () => {
-      return ButtonClass.render({
+      return ButtonStyle.render({
         display: 'flex',
       });
     });
@@ -126,7 +127,7 @@ export class ButtonClass extends KiskadeeStyle {
 
   containerTransitionAfterPressed() {
     return this.cache(['container', 'transition-pressed'], () => {
-      return ButtonClass.render({
+      return ButtonStyle.render({
         transitionDuration: `${CLICK_TRANSITION_DURATION}ms !important`,
         transitionTimingFunction: 'ease-out !important',
         '& .button__container-wrapper': {
@@ -140,7 +141,7 @@ export class ButtonClass extends KiskadeeStyle {
   // LRU and LFU cache, memory-cache, ttl
   containerRippleStyle() {
     return this.cache(['container', 'ripple'], () => {
-      return ButtonClass.render({
+      return ButtonStyle.render({
         position: 'absolute',
         borderRadius: '50%',
         transform: 'scale(0)',
@@ -155,7 +156,7 @@ export class ButtonClass extends KiskadeeStyle {
     return this.cache(['container', 'ripple-background'], () => {
       const ripple = this.getContrastStyle('container');
 
-      return ButtonClass.render({
+      return ButtonStyle.render({
         '& .--ripple': {
           backgroundColor:
             ripple?.defaultMode?.['rippleColor' as 'backgroundColor'],
@@ -174,36 +175,35 @@ export class ButtonClass extends KiskadeeStyle {
     const width = isBlock ? '100%' : 'auto';
 
     return this.cache(['container', 'width', width], () => {
-      return ButtonClass.render({
+      return ButtonStyle.render({
         width,
         minWidth: this.width === 'min' ? this.options?.widthMin : 0,
       });
     });
   }
 
-  containerBaseStyle() {
-    return this.cache(['container', 'base'], () => {
-      return ButtonClass.render({
-        // TODO: extract reset styles to a class/helper
-        userSelect: 'none',
-        padding: 0,
-        cursor: 'pointer',
-        // TODO: extract fontSize to a class/helper
-        fontSize: '16px',
-        transitionProperty:
-          'background-color, box-shadow, border-width, min-width,' +
-          ' border-radius',
-        position: 'relative',
-        overflow: 'hidden',
-        WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
-        border: 'none',
-      });
+  @Memoize()
+  static containerBaseStyle(): string | undefined {
+    return ButtonStyle.render({
+      // TODO: extract reset styles to a class/helper
+      userSelect: 'none',
+      padding: 0,
+      cursor: 'pointer',
+      // TODO: extract fontSize to a class/helper
+      fontSize: '16px',
+      transitionProperty:
+        'background-color, box-shadow, border-width, min-width,' +
+        ' border-radius',
+      position: 'relative',
+      overflow: 'hidden',
+      WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
+      border: 'none',
     });
   }
 
   containerWrapperBaseStyle() {
     return this.cache(['container', 'base'], () => {
-      return ButtonClass.render({
+      return ButtonStyle.render({
         transitionProperty: 'border-color',
         display: 'flex',
         alignItems: 'center',
@@ -242,14 +242,14 @@ export class ButtonClass extends KiskadeeStyle {
 
       const elementStyle = this.getResponsiveStyle('container');
 
-      const p = ButtonClass.pickResponsiveProperties(elementStyle, [
+      const p = ButtonStyle.pickResponsiveProperties(elementStyle, [
         'boxShadow',
       ]);
 
       const { '@media (min-width: 0px)': elementRest, ...elementResponsive } =
         p;
 
-      return ButtonClass.render({
+      return ButtonStyle.render({
         ...elementRest,
         ...elementResponsive,
 
@@ -419,7 +419,7 @@ export class ButtonClass extends KiskadeeStyle {
 
   textBaseStyle() {
     return this.cache(['text', 'base'], () => {
-      return ButtonClass.render({
+      return ButtonStyle.render({
         whiteSpace: 'nowrap',
         transitionProperty: 'color, font-size, padding',
       });
@@ -431,7 +431,7 @@ export class ButtonClass extends KiskadeeStyle {
       const textElement = this.getStyleEssential<ButtonText>('text');
 
       // TODO: use Text component here
-      return ButtonClass.render({
+      return ButtonStyle.render({
         lineHeight: textElement.lineHeight,
         fontWeight: textElement.fontWeight,
         // TODO: not use it if undefined
@@ -445,14 +445,14 @@ export class ButtonClass extends KiskadeeStyle {
     return this.cache(['text', 'fontSize'], () => {
       let textResponsive = this.getResponsiveStyle('text');
 
-      textResponsive = ButtonClass.pickResponsiveProperties(textResponsive, [
+      textResponsive = ButtonStyle.pickResponsiveProperties(textResponsive, [
         'fontSize',
       ]);
 
       const { '@media (min-width: 0px)': fontSize, ...fontSizeResponsive } =
         textResponsive;
 
-      return ButtonClass.render({
+      return ButtonStyle.render({
         ...fontSize,
         ...fontSizeResponsive,
       });
@@ -466,7 +466,7 @@ export class ButtonClass extends KiskadeeStyle {
         : this.options?.textAlign?.default;
 
     return this.cache(['text', 'align', textAlign || '-'], () => {
-      return ButtonClass.render({
+      return ButtonStyle.render({
         textAlign,
       });
     });
@@ -479,7 +479,7 @@ export class ButtonClass extends KiskadeeStyle {
     const width = isBlock ? '100%' : 'auto';
 
     return this.cache(['text', 'width', width], () => {
-      return ButtonClass.render({
+      return ButtonStyle.render({
         width,
       });
     });
@@ -489,7 +489,7 @@ export class ButtonClass extends KiskadeeStyle {
     return this.cache(['text', 'color'], () => {
       const { contrastMode, defaultMode } = this.getContrastStyle('text');
 
-      return ButtonClass.render({
+      return ButtonStyle.render({
         color: defaultMode?.color,
         '@media (prefers-color-scheme: dark)': contrastMode && {
           color: contrastMode.color,
@@ -586,7 +586,7 @@ export class ButtonClass extends KiskadeeStyle {
   // TODO: type all return values
   iconBaseStyle() {
     return this.cache(['icon', 'base'], () => {
-      return ButtonClass.render({
+      return ButtonStyle.render({
         display: 'flex',
         // TODO: review this
         transitionProperty:
@@ -608,7 +608,7 @@ export class ButtonClass extends KiskadeeStyle {
       const colorContrast =
         iconContrast?.contrastMode?.color || textContrast?.contrastMode?.color;
 
-      return ButtonClass.render({
+      return ButtonStyle.render({
         color: colorDefault,
 
         '& > *': {
@@ -688,7 +688,7 @@ export class ButtonClass extends KiskadeeStyle {
     return this.cache([element, 'size', this.size || 'md'], () => {
       let iconResponsive = this.getResponsiveStyle(element);
 
-      iconResponsive = ButtonClass.pickResponsiveProperties(iconResponsive, [
+      iconResponsive = ButtonStyle.pickResponsiveProperties(iconResponsive, [
         'fontSize',
       ]);
 
@@ -707,7 +707,7 @@ export class ButtonClass extends KiskadeeStyle {
       const { '@media (min-width: 0px)': size, ...sizeResponsive } =
         iconResponsive;
 
-      return ButtonClass.render({
+      return ButtonStyle.render({
         ...size,
         ...sizeResponsive,
       });

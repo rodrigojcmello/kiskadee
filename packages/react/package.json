@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "@stitches/core": "^1.2.8",
+    "@typescript-plus/fast-memoize-decorator": "^0.2.1",
+    "fast-memoize": "^2.5.2",
     "react": "^18.2.0"
   },
   "devDependencies": {
