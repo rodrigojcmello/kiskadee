@@ -1,6 +1,5 @@
 /* eslint-disable unicorn/filename-case */
 import { keyframes } from '@stitches/core';
-import { Memoize } from '@typescript-plus/fast-memoize-decorator';
 import type {
   ButtonText,
   IconPosition,
@@ -84,6 +83,10 @@ export class ButtonStyle extends KiskadeeStyle {
     this.options = style.options;
     this.iconLeft = style.iconLeft;
     this.iconRight = style.iconRight;
+
+    // Cache -------------------------------------------------------------------
+
+    // this.buttonBackgroundStyle = memoize(this.buttonBackgroundStyle);
   }
 
   //----------------------------------------------------------------------------
@@ -98,7 +101,7 @@ export class ButtonStyle extends KiskadeeStyle {
       transitionAfterPressed: this.containerTransitionAfterPressed(),
       background: this.propertyBackgroundStyle('container'),
       core: this.containerCoreStyle(),
-      base: ButtonStyle.containerBaseStyle(), // OK
+      base: this.containerBaseStyle(),
       rippleCore: ButtonStyle.containerRippleStyle(), // OK
       rippleBackground: this.containerRippleBackgroundStyle(),
     };
@@ -139,7 +142,6 @@ export class ButtonStyle extends KiskadeeStyle {
   }
 
   // LRU and LFU cache, memory-cache, ttl
-  @Memoize()
   static containerRippleStyle() {
     return ButtonStyle.render({
       position: 'absolute',
@@ -182,27 +184,28 @@ export class ButtonStyle extends KiskadeeStyle {
     });
   }
 
-  @Memoize()
-  static containerBaseStyle(): string | undefined {
-    return ButtonStyle.render({
-      // TODO: extract reset styles to a class/helper
-      userSelect: 'none',
-      padding: 0,
-      cursor: 'pointer',
-      // TODO: extract fontSize to a class/helper
-      fontSize: '16px',
-      transitionProperty:
-        'background-color, box-shadow, border-width, min-width,' +
-        ' border-radius',
-      position: 'relative',
-      overflow: 'hidden',
-      WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
-      border: 'none',
+  containerBaseStyle(): string | undefined {
+    return this.cache(['container', 'base'], () => {
+      return ButtonStyle.render({
+        // TODO: extract reset styles to a class/helper
+        userSelect: 'none',
+        padding: 0,
+        cursor: 'pointer',
+        // TODO: extract fontSize to a class/helper
+        fontSize: '16px',
+        transitionProperty:
+          'background-color, box-shadow, border-width, min-width,' +
+          ' border-radius',
+        position: 'relative',
+        overflow: 'hidden',
+        WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
+        border: 'none',
+      });
     });
   }
 
   containerWrapperBaseStyle() {
-    return this.cache(['container', 'base'], () => {
+    return this.cache(['container-wrapper', 'base'], () => {
       return ButtonStyle.render({
         transitionProperty: 'border-color',
         display: 'flex',

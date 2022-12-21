@@ -13,7 +13,7 @@ import type {
   ResponsiveOption,
 } from '@kiskadee/react';
 import type { CSSProperties } from 'react';
-import { CacheStyle } from './CacheStyle.class';
+import { CacheStyle, memoize } from './CacheStyle.class';
 
 const cacheStyle = new CacheStyle();
 
@@ -95,18 +95,15 @@ export class KiskadeeStyle {
         style?.info.themeMode?.only
       );
     }
+
+    // this.propertyBackgroundStyle = memoize(this.propertyBackgroundStyle);
   }
 
-  cache<T>(keys: string[], callback: () => T): T {
-    // TODO: review this
-    const key = [this.component as string, this.type, this.variant, ...keys];
-
-    const cache = cacheStyle.get<T>(key);
-    if (cache) return cache;
-
-    const value = callback();
-    cacheStyle.set(key, value);
-    return value;
+  cache<T>(keys: (string | undefined)[], callback: () => T): T {
+    const key = [this.component, this.type, this.variant, ...keys];
+    const memoized = memoize<T>(callback);
+    return memoized(key);
+    // return callback();
   }
 
   static render(properties: GenericCSSProperties): string | undefined {
@@ -116,7 +113,7 @@ export class KiskadeeStyle {
      * Empty objects generates a css class empty in Stitches library
      */
     if (validProperties) {
-      return css(properties as StitchesProperties)();
+      return css(properties as StitchesProperties)().className;
     }
   }
 
@@ -277,7 +274,7 @@ export class KiskadeeStyle {
   }
 
   getContrastStyle(element: string, state?: string): ContrastStyle {
-    return this.cache([element, 'contrast', state || '-'], () => {
+    return this.cache([element, 'contrast', state], () => {
       const responsive: ContrastStyle = {};
 
       const light: CSSProperties = {
@@ -307,14 +304,13 @@ export class KiskadeeStyle {
     element: string,
     status?: string
   ): string | undefined {
-    return this.cache([element, 'background', status || '-'], () => {
+    return this.cache([element, 'background', status], () => {
       const style = this.getContrastStyle(element, status);
 
       return KiskadeeStyle.render({
         background: style.defaultMode?.background,
 
         '@media (prefers-color-scheme: dark)': style && {
-          // @ts-ignore
           color: style.contrastMode?.background,
         },
       });
@@ -349,7 +345,7 @@ export class KiskadeeStyle {
   }
 
   propertyBorderStyle(element: string, status?: string): string | undefined {
-    return this.cache([element, 'border', status || '-'], () => {
+    return this.cache([element, 'border', status], () => {
       const { defaultMode, contrastMode } = this.getContrastStyle(
         element,
         status

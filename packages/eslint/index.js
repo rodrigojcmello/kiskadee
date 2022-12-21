@@ -17,6 +17,13 @@ const commonRules = {
   ],
 
   /**
+   * Many of the abbreviations used are already common knowledge among
+   * developers. The responsibility for consistent names goes beyond a
+   * simple abbreviation.
+   */
+  'unicorn/prevent-abbreviations': 'off',
+
+  /**
    * It is not up to ESLint to restrict syntax usage
    */
   'no-restricted-syntax': 'off',
@@ -252,21 +259,6 @@ module.exports = {
               'setupTests.ts',
               'reportWebVitals.ts',
             ],
-          },
-        ],
-
-        /**
-         * Keep the rule to prevent abbreviations, but except "props" because of React
-         * @see {@link https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/prevent-abbreviations.md#whitelist}
-         * @see {@link https://reactjs.org/docs/render-props.html}
-         */
-        'unicorn/prevent-abbreviations': [
-          'error',
-          {
-            allowList: {
-              props: true,
-              Props: true,
-            },
           },
         ],
 
