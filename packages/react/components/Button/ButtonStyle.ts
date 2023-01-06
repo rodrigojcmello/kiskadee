@@ -587,13 +587,15 @@ export class ButtonStyle extends KiskadeeStyle {
   }
 
   // TODO: type all return values
-  iconBaseStyle() {
+  iconBaseStyle(): string | undefined {
     return this.cache(['icon', 'base'], () => {
       return ButtonStyle.render({
         display: 'flex',
-        // TODO: review this
         transitionProperty:
-          'color, font-size, border-radius, border, width, height, padding, margin, background-color',
+          'padding, border-radius, color, border, margin, background-color',
+        '& > *': {
+          transitionProperty: 'font-size, width, height',
+        },
       });
     });
   }
@@ -615,7 +617,6 @@ export class ButtonStyle extends KiskadeeStyle {
         color: colorDefault,
 
         '& > *': {
-          fontSize: 'inherit !important',
           fill: colorDefault,
         },
 
@@ -697,13 +698,23 @@ export class ButtonStyle extends KiskadeeStyle {
 
       for (const mq of Object.keys(iconResponsive)) {
         iconResponsive[mq] = {
-          fontSize: iconResponsive[mq].fontSize,
-          height: iconResponsive[mq].fontSize,
-          width: iconResponsive[mq].fontSize,
           /**
-           * minWidth is used just because of Firefox
+           * The initial idea would be to define the style properties in the
+           * layer that wraps the icon, and inherit the transition
+           * properties for the icon, but there is a bug in Chrome (in
+           * Firefox it is ok) with the transition of the font-size property
+           * when it is inherited generating thus a delay in the transition.
+           * To fix this, we pass the style properties differently to icon.
            */
-          minWidth: iconResponsive[mq].fontSize,
+          '& > *': {
+            /**
+             * !important is needed in case there are other sources/libs
+             * changing font size (e.g. Google Font Icons)
+             */
+            fontSize: `${iconResponsive[mq].fontSize}px !important`,
+            height: iconResponsive[mq].fontSize,
+            width: iconResponsive[mq].fontSize,
+          },
         };
       }
 

@@ -74,7 +74,6 @@ export class CacheStyle {
       this.dependencies.author = author;
       this.dependencies.themeOnly = themeOnly;
 
-      // this.cache = {};
       cacheMap.clear();
     }
   }
