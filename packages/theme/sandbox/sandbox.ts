@@ -412,9 +412,10 @@ export const sandbox: KiskadeeTheme = {
                   },
                 },
                 borderRadiusFull: {
-                  md: {
-                    borderRadius: 20,
-                  },
+                  xl: { borderRadius: 47 },
+                  lg: { borderRadius: 29 },
+                  md: { borderRadius: 19 },
+                  sm: { borderRadius: 15 },
                 },
               },
               type: {

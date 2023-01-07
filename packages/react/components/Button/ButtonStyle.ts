@@ -672,9 +672,6 @@ export class ButtonStyle extends KiskadeeStyle {
     );
   }
 
-  // TODO: review radius status
-  // TODO: standardize names
-  // TODO: rename status to state
   buttonRadiusStyle(element: string): string | undefined {
     let state = 'borderRadiusNone';
     if (!this.borderRadius && this.options?.borderRadius) {
