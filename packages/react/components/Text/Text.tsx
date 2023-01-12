@@ -1,32 +1,43 @@
 import type { FC, PropsWithChildren } from 'react';
 import type { TextProps } from './Text.types';
+import { useKiskadee } from '../../schema';
+import { TextStyle } from './Text.style';
 
 // @ts-ignore
-export const Text: FC<PropsWithChildren<TextProps>> = ({ children }) => {
-  // const [schema] = useKiskadee();
-  //
+export const Text: FC<PropsWithChildren<TextProps>> = ({
+  children,
+  tag,
+  colorHex,
+  weight,
+  italic,
+}) => {
+  const [schema] = useKiskadee();
+
   // const style: ButtonStyleProps = {
-  //   theme: {
+  //   info: {
   //     name: schema.name,
   //     version: schema.version,
   //     author: schema.author,
-  //     option: schema.theme,
+  //     themeMode: schema.themeMode,
   //   },
-  //   schema: schema.component.text,
+  //   componentSchema: schema?.component?.text?.elements,
   // };
-  //
-  // const text = useMemo(() => {
-  //   return new TextStyle(style);
-  // }, [style]);
-  //
-  // const textContainer = text.element().container;
-  //
-  // return (
-  //   <button
-  //     data-test-id={'k-text'}
-  //     className={[textContainer.color].join(' ').trim()}
-  //   >
-  //     {children}
-  //   </button>
-  // );
+
+  const text = TextStyle;
+
+  const Tag = tag || 'span';
+
+  return (
+    <Tag
+      className={[
+        text.color(colorHex?.light, colorHex?.dark),
+        text.weight(weight),
+        text.italic(italic),
+      ]
+        .join(' ')
+        .trim()}
+    >
+      {children}
+    </Tag>
+  );
 };

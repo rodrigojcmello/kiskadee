@@ -96,6 +96,12 @@ const commonReactRules = {
     { props: 'always', children: 'never' },
   ],
 
+  /**
+   * Keeping the value "true" of a boolean property is more practical when
+   * switching between negative and positive values.
+   */
+  'react/jsx-boolean-value': ['error', 'always'],
+
   // '@typescript-eslint/naming-convention': 'off',
   // /**
   //  * In the EcmaScript context this rule makes a lot of sense, since you
@@ -255,8 +261,16 @@ module.exports = {
               kebabCase: true,
             },
             ignore: [
+              // React components, test, styles, etc
               '^(?:[A-Z][a-z]+)+(\\.[a-z]+)?\\.ts(x)?$',
+
+              // React Hooks
+              '^(use)([A-Z][a-z]+)\\.ts?$',
+
+              // Typescript config
               'setupTests.ts',
+
+              // Create React App
               'reportWebVitals.ts',
             ],
           },

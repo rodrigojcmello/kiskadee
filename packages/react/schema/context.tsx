@@ -34,4 +34,30 @@ export const KiskadeeProvider: FC<
   );
 };
 
-export const KiskadeeConsumer = KiskadeeContext.Consumer;
+// -----------------------------------------------------------------------------
+
+interface KiskadeeCache {
+  text?: { italic?: string };
+}
+
+type KiskadeeCacheContextType = [
+  KiskadeeCache,
+  (
+    value: KiskadeeCache | ((previousState: KiskadeeCache) => KiskadeeCache)
+  ) => void
+];
+
+export const KiskadeeCacheContext = createContext<KiskadeeCacheContextType>(
+  undefined!
+);
+export const CacheProvider: FC<
+  PropsWithChildren<{
+    cache: KiskadeeCache;
+  }>
+> = ({ cache, children }) => {
+  return (
+    <KiskadeeCacheContext.Provider value={useState<KiskadeeCache>(cache)}>
+      {children}
+    </KiskadeeCacheContext.Provider>
+  );
+};

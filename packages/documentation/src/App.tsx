@@ -5,6 +5,7 @@ import { Button, KiskadeeProvider } from '@kiskadee/react';
 import { material3 } from '@kiskadee/theme';
 import { Bar } from './components/Bar/Bar';
 import { ButtonDocumentation } from './documentation/Button/ButtonDocumentation';
+import { TextOnly } from './documentation/Text/TextOnly';
 
 const ButtonDocument = () => {
   return (
@@ -172,6 +173,7 @@ export const App: FC = () => {
       <Routes>
         <Route path={'/'} element={<ButtonDocument />} />
         <Route path={'button'} element={<ButtonOnly />} />
+        <Route path={'test/text'} element={<TextOnly />} />
       </Routes>
     </KiskadeeProvider>
   );

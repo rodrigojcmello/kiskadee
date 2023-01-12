@@ -1,17 +1,18 @@
 import type { CSSProperties } from 'react';
-import type { ButtonType, ButtonVariant, Size } from '@kiskadee/react';
+import type { Size } from '@kiskadee/react';
 
 export interface TextProps {
-  maxWidth?: number;
-  variant: ButtonVariant;
-  type: ButtonType;
+  // maxWidth?: number;
+  // variant: ButtonVariant;
+  // type: ButtonType;
   textAlign?: 'center' | 'justify' | 'left' | 'right';
   size?: Size;
   noWrap?: boolean;
-  as: 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  tag?: 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   fontFamily?: string;
-  bold?: boolean;
   italic?: boolean;
+  colorHex?: { light: string; dark?: string };
+  weight?: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 }
 
 //------------------------------------------------------------------------------
