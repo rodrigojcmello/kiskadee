@@ -1,7 +1,8 @@
 import type { FC, PropsWithChildren } from 'react';
 import type { TextProps } from './Text.types';
-import { useKiskadee } from '../../schema';
-import { TextStyle } from './Text.style';
+import { useWeight } from '../../hooks/useWeight';
+import { useItalic } from '../../hooks/useItalic';
+import { useColor } from '../../hooks/useColor';
 
 // @ts-ignore
 export const Text: FC<PropsWithChildren<TextProps>> = ({
@@ -11,32 +12,14 @@ export const Text: FC<PropsWithChildren<TextProps>> = ({
   weight,
   italic,
 }) => {
-  const [schema] = useKiskadee();
-
-  // const style: ButtonStyleProps = {
-  //   info: {
-  //     name: schema.name,
-  //     version: schema.version,
-  //     author: schema.author,
-  //     themeMode: schema.themeMode,
-  //   },
-  //   componentSchema: schema?.component?.text?.elements,
-  // };
-
-  const text = TextStyle;
+  const weightClass = useWeight(weight);
+  const italicClass = useItalic(italic);
+  const colorClass = useColor(colorHex?.light, colorHex?.dark);
 
   const Tag = tag || 'span';
 
   return (
-    <Tag
-      className={[
-        text.color(colorHex?.light, colorHex?.dark),
-        text.weight(weight),
-        text.italic(italic),
-      ]
-        .join(' ')
-        .trim()}
-    >
+    <Tag className={[...colorClass, weightClass, italicClass].join(' ').trim()}>
       {children}
     </Tag>
   );

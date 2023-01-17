@@ -7,11 +7,27 @@ export const TextOnly: FC = () => {
       <h1>text only</h1>
       <Text
         tag={'h1'}
-        colorHex={{ light: 'green', dark: 'blue' }}
-        weight={700}
+        colorHex={{ light: 'red', dark: 'green' }}
+        weight={100}
         italic={true}
       >
-        Hello
+        Hello2
+      </Text>
+      <Text
+        tag={'h2'}
+        colorHex={{ light: 'blue', dark: 'pink' }}
+        weight={100}
+        italic={false}
+      >
+        Hi2345
+      </Text>
+      <Text
+        tag={'p'}
+        colorHex={{ light: 'blue', dark: 'orange' }}
+        weight={700}
+        italic={false}
+      >
+        Test
       </Text>
     </div>
   );

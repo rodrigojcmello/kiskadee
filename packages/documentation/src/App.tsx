@@ -44,7 +44,7 @@ const ButtonOnly = () => {
         <Button
           type={'contained'}
           variant={'primary'}
-          label={'fulano'}
+          label={'fulano23'}
           isLoading={loading}
           iconType={'Detached'}
           // onClick={() => {
