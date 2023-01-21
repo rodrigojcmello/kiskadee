@@ -39,6 +39,12 @@ const commonRules = {
    */
   'prettier/prettier': ['error', { singleQuote: true }],
 
+  /**
+   * It is not always necessary to specify all dependencies, this rule ends up
+   * being more of a hindrance than a help.
+   */
+  'react-hooks/exhaustive-deps': 'off',
+
   //----------------------------------------------------------------------------
   // UNUSED IMPORTS
   //----------------------------------------------------------------------------
@@ -80,12 +86,6 @@ const commonReactRules = {
    * @see {@link https://reactjs.org/blog/2020/10/20/react-v17.html#new-jsx-transform}
    */
   'react/react-in-jsx-scope': 'off',
-
-  /**
-   * It is not always necessary to specify all dependencies, this rule ends up
-   * being more of a hindrance than a help.
-   */
-  'react-hooks/exhaustive-deps': 'off',
 
   /**
    * This tweak goes against Airbnb JavaScript Style Guide, but makes it easier
@@ -265,7 +265,7 @@ module.exports = {
               '^(?:[A-Z][a-z]+)+(\\.[a-z]+)?\\.ts(x)?$',
 
               // React Hooks
-              '^(use)([A-Z][a-z]+)\\.ts?$',
+              '^(use)(?:[A-Z][a-z]+)+\\.ts?$',
 
               // Typescript config
               'setupTests.ts',

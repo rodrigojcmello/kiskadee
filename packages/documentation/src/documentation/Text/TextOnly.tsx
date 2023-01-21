@@ -24,10 +24,13 @@ export const TextOnly: FC = () => {
       <Text
         tag={'p'}
         colorHex={{ light: 'blue', dark: 'orange' }}
-        weight={700}
+        weight={400}
         italic={false}
+        textAlign={'center'}
+        size={16}
+        sizeResponsive={{ medium1: 14 }}
       >
-        Test
+        Test responsive
       </Text>
     </div>
   );

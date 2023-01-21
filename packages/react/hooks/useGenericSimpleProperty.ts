@@ -1,10 +1,12 @@
 import { css } from '@stitches/core';
 import { useEffect, useState } from 'react';
-import type { Weight } from '../components/Text';
 
-const cacheMap = new Map<number, string>();
+const cacheMap = new Map<string | number, string>();
 
-export const useWeight = (value: Weight = 400): string | undefined => {
+export const useGenericSimpleProperty = (
+  value: string,
+  property: string
+): string | undefined => {
   const [className, setClassName] = useState<string | undefined>(
     cacheMap.get(value)
   );
@@ -13,7 +15,7 @@ export const useWeight = (value: Weight = 400): string | undefined => {
     if (cacheMap.has(value)) {
       setClassName(cacheMap.get(value));
     } else {
-      const style = css({ fontWeight: value })().className;
+      const style = css({ [property]: value })().className;
       cacheMap.set(value, style);
       setClassName(style);
     }

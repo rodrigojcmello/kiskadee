@@ -1,18 +1,33 @@
 import type { CSSProperties } from 'react';
 import type { Size } from '@kiskadee/react';
 
+export type TextAlign = 'left' | 'center' | 'right' | 'justify';
+export type Weight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+export type Breakpoint =
+  | 'small1'
+  | 'small2'
+  | 'small3'
+  | 'medium1'
+  | 'medium2'
+  | 'medium3'
+  | 'big1'
+  | 'big2'
+  | 'big3';
+export type SizeResponsive = Partial<Record<Breakpoint, number>>;
+
 export interface TextProps {
   // maxWidth?: number;
   // variant: ButtonVariant;
   // type: ButtonType;
-  textAlign?: 'center' | 'justify' | 'left' | 'right';
-  size?: Size;
+  textAlign?: TextAlign;
+  size?: number;
+  sizeResponsive?: SizeResponsive;
   noWrap?: boolean;
   tag?: 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   fontFamily?: string;
   italic?: boolean;
   colorHex?: { light: string; dark?: string };
-  weight?: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+  weight?: Weight;
 }
 
 //------------------------------------------------------------------------------
