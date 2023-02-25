@@ -1,19 +1,8 @@
 import type { CSSProperties } from 'react';
-import type { Size } from '@kiskadee/react';
+import type { Size, SizeResponsive, SpacingValue } from '@kiskadee/react';
 
 export type TextAlign = 'left' | 'center' | 'right' | 'justify';
 export type Weight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
-export type Breakpoint =
-  | 'small1'
-  | 'small2'
-  | 'small3'
-  | 'medium1'
-  | 'medium2'
-  | 'medium3'
-  | 'big1'
-  | 'big2'
-  | 'big3';
-export type SizeResponsive = Partial<Record<Breakpoint, number>>;
 
 export interface TextProps {
   // maxWidth?: number;
@@ -21,13 +10,17 @@ export interface TextProps {
   // type: ButtonType;
   textAlign?: TextAlign;
   size?: number;
-  sizeResponsive?: SizeResponsive;
+  sizeResponsive?: SizeResponsive<number>;
+  lineHeight?: number;
+  lineHeightResponsive?: SizeResponsive<number>;
   noWrap?: boolean;
   tag?: 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   fontFamily?: string;
   italic?: boolean;
   colorHex?: { light: string; dark?: string };
   weight?: Weight;
+  margin?: SpacingValue;
+  marginResponsive?: SizeResponsive<SpacingValue>;
 }
 
 //------------------------------------------------------------------------------

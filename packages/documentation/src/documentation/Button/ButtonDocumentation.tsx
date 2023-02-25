@@ -1221,7 +1221,7 @@ export const ButtonDocumentation: FC = () => {
                 type={type}
                 variant={variant}
                 borderRadius={radius}
-                disabled
+                disabled={true}
                 textAlign={textAlign}
                 size={size}
                 onClick={(): void => {}}

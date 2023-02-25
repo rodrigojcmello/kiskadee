@@ -29,6 +29,12 @@ export const TextOnly: FC = () => {
         textAlign={'center'}
         size={16}
         sizeResponsive={{ medium1: 14 }}
+        lineHeight={20}
+        lineHeightResponsive={{ medium1: 16 }}
+        margin={{ top: 10, bottom: 10 }}
+        marginResponsive={{
+          medium1: { top: 20, bottom: 20 },
+        }}
       >
         Test responsive
       </Text>

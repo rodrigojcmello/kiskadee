@@ -1,10 +1,10 @@
 import { css } from '@stitches/core';
 import { useEffect, useState } from 'react';
-import type { Breakpoint, SizeResponsive } from '../../components/Text';
+import type { BreakpointKey, SizeResponsive } from '../../utils';
 
 const cacheMap = new Map<number | string, string>();
 
-const breakpoints: Record<Breakpoint, number> = {
+const breakpoints: Record<BreakpointKey, number> = {
   small1: 0,
   small2: 321,
   small3: 376,
@@ -18,10 +18,10 @@ const breakpoints: Record<Breakpoint, number> = {
   big3: 1441,
 };
 
-export const useFontSize = (
+export const useLineHeight = (
   // eslint-disable-next-line default-param-last
-  value = 16,
-  responsive?: SizeResponsive
+  value = 16 * 1.5,
+  responsive?: SizeResponsive<number>
 ): (string | undefined)[] => {
   const keyMain = value;
   const keyCombo = `${value}:${JSON.stringify(responsive)}`;
@@ -38,7 +38,7 @@ export const useFontSize = (
       setMainClass(cacheMap.get(keyMain));
     } else {
       const style = css({
-        fontSize: `${value / 16}rem`,
+        lineHeight: `${value / 16}rem`,
       })().className;
       cacheMap.set(keyMain, style);
       setMainClass(style);
@@ -52,12 +52,12 @@ export const useFontSize = (
       const mediaQueries: Record<string, Record<string, string>> = {};
 
       for (const breakpoint of Object.keys(responsive)) {
-        const fontSize = responsive?.[breakpoint as Breakpoint];
-        const mediaQuery = breakpoints[breakpoint as Breakpoint];
+        const fontSize = responsive?.[breakpoint as BreakpointKey];
+        const mediaQuery = breakpoints[breakpoint as BreakpointKey];
 
         if (mediaQuery && fontSize) {
           mediaQueries[`@media (min-width: ${mediaQuery}px)`] = {
-            fontSize: `${fontSize / 16}rem`,
+            lineHeight: `${fontSize / 16}rem`,
           };
         }
       }
