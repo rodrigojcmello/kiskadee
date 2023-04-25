@@ -1,38 +1,36 @@
 const commonRules = {
-  'import/no-default-export': 'error',
-  'import/prefer-default-export': 'off',
-  'unicorn/no-useless-undefined': 'off',
-
-  'no-underscore-dangle': [
-    'error',
-    {
-      allow: [],
-      allowAfterThis: true,
-      allowAfterSuper: false,
-      enforceInMethodNames: true,
-      allowAfterThisConstructor: false,
-      allowFunctionParams: true,
-      enforceInClassFields: false,
-    },
-  ],
+  // 'no-underscore-dangle': [
+  //   'error',
+  //   {
+  //     allow: [],
+  //     allowAfterThis: true,
+  //     allowAfterSuper: false,
+  //     enforceInMethodNames: true,
+  //     allowAfterThisConstructor: false,
+  //     allowFunctionParams: true,
+  //     enforceInClassFields: false,
+  //   },
+  // ],
 
   /**
-   * Many of the abbreviations used are already common knowledge among
-   * developers. The responsibility for consistent names goes beyond a
-   * simple abbreviation.
+   * Limiting the number of lines in a file contributes to better code
+   * organization. An excessively large file may indicate that it has too
+   * many responsibilities, and it would be beneficial to restructure its
+   * logic across multiple modules.
+   */
+  'max-lines': ['error', 500],
+
+  /**
+   * Numerous abbreviations are already widely recognized among developers.
+   * The responsibility for maintaining consistent naming extends beyond the
+   * use of simple abbreviations.
    */
   'unicorn/prevent-abbreviations': 'off',
 
   /**
-   * It is not up to ESLint to restrict syntax usage
-   */
-  'no-restricted-syntax': 'off',
-  'unicorn/no-array-reduce': 'off',
-  'no-param-reassign': 'off',
-
-  /**
-   * Prettier follows double quotes by default, but the Airbnb style guide
-   * recommends single quotes
+   * Prettier uses double quotes by default; however, the Airbnb style guide
+   * recommends single quotes. For this reason, we have chosen to stick with
+   * single quotes.
    * @see {@link https://github.com/airbnb/javascript#strings--quotes}
    * @see {@link https://prettier.io/docs/en/options.html#quotes}
    * @see {@link https://github.com/prettier/eslint-plugin-prettier#options}
@@ -40,15 +38,8 @@ const commonRules = {
   'prettier/prettier': ['error', { singleQuote: true }],
 
   /**
-   * It is not always necessary to specify all dependencies, this rule ends up
-   * being more of a hindrance than a help.
+   * Unused imports will be removed.
    */
-  'react-hooks/exhaustive-deps': 'off',
-
-  //----------------------------------------------------------------------------
-  // UNUSED IMPORTS
-  //----------------------------------------------------------------------------
-
   'unused-imports/no-unused-imports': 'error',
   'unused-imports/no-unused-vars': [
     'warn',
@@ -59,19 +50,30 @@ const commonRules = {
       argsIgnorePattern: '^_',
     },
   ],
+
+  /**
+   * Rules that impose limitations on syntax usage go beyond the purview of
+   * ESLint. We hold the view that certain decisions should be made by
+   * developers themselves, rather than constraining their choices. If any
+   * of these rules are significant for your project, please enable them in
+   * your project's settings.
+   */
+  'no-restricted-syntax': 'off',
+  'unicorn/no-array-reduce': 'off',
+  'no-param-reassign': 'off',
+  'no-restricted-exports': 'off',
+  'import/prefer-default-export': 'off',
 };
 
 const commonReactRules = {
-  //----------------------------------------------------------------------------
-  // REACT
-  //----------------------------------------------------------------------------
   /**
-   * React.PropTypes is discouraged by adherence to TypeScript
+   * The use of React.PropTypes is not recommended when working with TypeScript.
    */
   'react/require-default-props': 'off',
 
   /**
-   * Standardizes the way to declare a component (arrow-function)
+   * Establishes a consistent approach to declaring React components using
+   * arrow functions, as class components are no longer recommended.
    */
   'react/function-component-definition': [
     'error',
@@ -82,14 +84,17 @@ const commonReactRules = {
   ],
 
   /**
-   * With React version 17, import is optional
+   * This rule has been disabled because, starting from version 17,
+   * importing React is no longer mandatory.
    * @see {@link https://reactjs.org/blog/2020/10/20/react-v17.html#new-jsx-transform}
    */
   'react/react-in-jsx-scope': 'off',
 
   /**
-   * This tweak goes against Airbnb JavaScript Style Guide, but makes it easier
-   * to change a static string to some dynamic parameter
+   * This configuration allows for a simpler way of changing a static string
+   * to a dynamic parameter by using braces instead of quotes. Instead of
+   * manually changing the quotes to braces when modifying a value, simply
+   * wrapping it in braces allows for easier and more efficient updates.
    */
   'react/jsx-curly-brace-presence': [
     'error',
@@ -97,21 +102,28 @@ const commonReactRules = {
   ],
 
   /**
-   * Keeping the value "true" of a boolean property is more practical when
-   * switching between negative and positive values.
+   * When a boolean property is set to true, it is more practical to keep
+   * the property name without the value. However, omitting the value can
+   * cause readability and maintenance issues for the component.
    */
   'react/jsx-boolean-value': ['error', 'always'],
 
-  // '@typescript-eslint/naming-convention': 'off',
-  // /**
-  //  * In the EcmaScript context this rule makes a lot of sense, since you
-  //  * are not sure what exists in props, however with TypeScript this is
-  //  * different, you know exactly the type of that props helping the code
-  //  * readability
-  //  * @see {@link https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-props-no-spreading.md}
-  //  * @see {@link https://www.typescriptlang.org/docs/handbook/interfaces.html}
-  //  */
-  // 'react/jsx-props-no-spreading': 'off',
+  /**
+   * With JavaScript, using the spread operator can create uncertainty
+   * regarding the contents of props, making it difficult to maintain
+   * readability. However, with TypeScript's strong typing system, this
+   * concern is reduced as the type of the variable is known, making it
+   * easier to ensure code clarity and maintainability.
+   * @see {@link https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-props-no-spreading.md}
+   * @see {@link https://www.typescriptlang.org/docs/handbook/interfaces.html}
+   */
+  'react/jsx-props-no-spreading': 'off',
+
+  /**
+   * Specifying all dependencies is not always required, and at times, this
+   * rule may cause more problems than it solves.
+   */
+  'react-hooks/exhaustive-deps': 'off',
 };
 
 /* eslint-disable unicorn/prefer-module */
@@ -222,6 +234,16 @@ module.exports = {
         '@typescript-eslint/prefer-regexp-exec': 'off',
 
         /**
+         * TypeScript handles this natively
+         */
+        'no-use-before-define': 'off',
+
+        // /**
+        //  * Some typings don't handle this rule well.
+        //  */
+        // 'unicorn/no-useless-undefined': 'off',
+
+        /**
          * This rule was originally created to guarantee the use of components
          * in JSX files, but because we adopt TypeScript as a standard this rule
          * needs to be adjusted for TSX
@@ -234,7 +256,6 @@ module.exports = {
             extensions: ['.tsx'],
           },
         ],
-
         'import/extensions': [
           'error',
           {
@@ -243,13 +264,14 @@ module.exports = {
         ],
 
         /**
-         * this rule is disabled because of the type inference in Typescript
+         * Disabled due to the type inference in Typescript
          */
         'consistent-return': 'off',
 
         /**
-         * The idea here is to keep the kebab case as standard as recommended by
-         * Unicorn, except for React components that need to be pascal case
+         * The idea here is to maintain the kebab case as standard as
+         * recommended by Unicorn, except for React components, which require
+         * pascal case.
          * @see {@link https://github.com/airbnb/javascript/tree/master/react#naming }
          * @see {@link https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/filename-case.md}
          * @see {@link https://stackoverflow.com/questions/2103596/regex-that-matches-camel-and-pascal-case}
@@ -291,6 +313,7 @@ module.exports = {
          * the only rule that discourages
          */
         '@typescript-eslint/no-non-null-assertion': 'off',
+        '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
 
         //----------------------------------------------------------------------
         // Jest
@@ -306,11 +329,6 @@ module.exports = {
         //----------------------------------------------------------------------
         // TypeScript
         //----------------------------------------------------------------------
-
-        /**
-         * TypeScript handles this natively
-         */
-        'no-use-before-define': 'off',
 
         /**
          * Allow certain optimizations within compilers
@@ -333,7 +351,7 @@ module.exports = {
         /**
          * I like it :)
          */
-        // '@typescript-eslint/explicit-function-return-type': 'error',
+        '@typescript-eslint/explicit-function-return-type': 'error',
 
         // /**
         //  * This rule is disabled because of the "no-param-reassign" rule that
@@ -358,6 +376,9 @@ module.exports = {
         // UNUSED IMPORTS
         //----------------------------------------------------------------------
 
+        /**
+         * Unused imports will be removed.
+         */
         '@typescript-eslint/no-unused-vars': 'off',
 
         //----------------------------------------------------------------------
@@ -386,4 +407,9 @@ module.exports = {
       rules: commonReactRules,
     },
   ],
+  settings: {
+    'import/resolver': {
+      typescript: {},
+    },
+  },
 };
