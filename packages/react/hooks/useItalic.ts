@@ -1,22 +1,10 @@
-import { css } from '@stitches/core';
-import { useEffect, useState } from 'react';
+import { useStyle } from './useStyle';
 
-const cacheMap = new Map<boolean, string>();
+const cacheMap = new Map<string, string>();
 
 export const useItalic = (value = false): string | undefined => {
-  const [className, setClassName] = useState<string | undefined>(
-    cacheMap.get(value)
-  );
-
-  useEffect(() => {
-    if (cacheMap.has(value)) {
-      setClassName(cacheMap.get(value));
-    } else {
-      const style = css({ fontStyle: value ? 'italic' : 'normal' })().className;
-      cacheMap.set(value, style);
-      setClassName(style);
-    }
-  }, [value]);
-
-  return className;
+  return useStyle(cacheMap, {
+    key: `${value}`,
+    style: { fontStyle: value ? 'italic' : 'normal' },
+  })[0];
 };

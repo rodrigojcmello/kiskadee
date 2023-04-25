@@ -1,9 +1,10 @@
 import { css } from '@stitches/core';
 import { useEffect, useState } from 'react';
+import { useStyle } from './useStyle';
 
 const cacheMap = new Map<string, string>();
 
-export const useColor = (
+export const useColor2 = (
   // eslint-disable-next-line default-param-last
   hexLight = '#000',
   hexDark?: string
@@ -49,4 +50,20 @@ export const useColor = (
   }, [keyCombo, mainClass]);
 
   return [mainClass, comboClass];
+};
+
+type ColorProps = {
+  light?: string;
+  dark?: string;
+};
+export const useColor = (value?: ColorProps): (undefined | string)[] => {
+  const light = value?.light || '#000';
+
+  return useStyle(
+    cacheMap,
+    { key: light, style: { color: light } },
+    value?.dark
+      ? { key: value?.dark, style: { color: value?.dark }, type: 'color' }
+      : undefined
+  );
 };
