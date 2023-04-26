@@ -1,17 +1,4 @@
 const commonRules = {
-  // 'no-underscore-dangle': [
-  //   'error',
-  //   {
-  //     allow: [],
-  //     allowAfterThis: true,
-  //     allowAfterSuper: false,
-  //     enforceInMethodNames: true,
-  //     allowAfterThisConstructor: false,
-  //     allowFunctionParams: true,
-  //     enforceInClassFields: false,
-  //   },
-  // ],
-
   /**
    * Limiting the number of lines in a file contributes to better code
    * organization. An excessively large file may indicate that it has too
@@ -126,15 +113,16 @@ const commonReactRules = {
   'react-hooks/exhaustive-deps': 'off',
 };
 
-/* eslint-disable unicorn/prefer-module */
 module.exports = {
   //----------------------------------------------------------------------------
-  // JavaScript / Node
+  // Node
   //----------------------------------------------------------------------------
+
   env: {
     node: true,
     jest: true,
   },
+
   extends: [
     /**
      * @see {@link https://www.npmjs.com/package/eslint-config-airbnb-base}
@@ -151,46 +139,36 @@ module.exports = {
      */
     'plugin:prettier/recommended',
   ],
+
   rules: {
-    //--------------------------------------------------------------------------
-    // CONFLICTS
-    //--------------------------------------------------------------------------
+    /**
+     * Adopting JavaScript modules (ESM) is not applicable for general
+     * configuration files.
+     */
+    'unicorn/prefer-module': 'off',
 
-    // /**
-    //  * Allow Function Expression
-    //  * @see {@link https://javascript.info/function-expressions}
-    //  * @see {@link https://www.typescriptlang.org/docs/handbook/functions.html#functions}
-    //  */
-    // 'func-names': ['error', 'as-needed'],
-
-    //--------------------------------------------------------------------------
-    // UNUSED IMPORTS
-    //--------------------------------------------------------------------------
-
-    'no-unused-vars': 'off',
-
-    //--------------------------------------------------------------------------
-    // COMMONS
     //--------------------------------------------------------------------------
 
     ...commonRules,
-    ...commonReactRules,
   },
-  plugins: ['unused-imports'],
 
   //----------------------------------------------------------------------------
   // TypeScript
   //----------------------------------------------------------------------------
+
   overrides: [
     {
       files: ['**/*.ts', '**/*.tsx'],
+
       env: {
         browser: true,
         es2020: true,
         jest: true,
         node: true,
       },
+
       parser: '@typescript-eslint/parser',
+
       parserOptions: {
         ecmaFeatures: {
           jsx: true,
@@ -199,16 +177,38 @@ module.exports = {
         sourceType: 'module',
         project: ['./tsconfig.json'],
       },
+
       extends: [
-        // EcmaScript and React
+        //----------------------------------------------------------------------
+        // JavaScript and React
+        //----------------------------------------------------------------------
+
+        /**
+         * @see {@link https://www.npmjs.com/package/eslint-config-airbnb}
+         */
         'airbnb',
         'airbnb/hooks',
+
+        /**
+         * @see {@link https://github.com/sindresorhus/eslint-plugin-unicorn#recommended-config}
+         */
         'plugin:unicorn/recommended',
 
-        // Test
+        //----------------------------------------------------------------------
+        // Testing
+        //----------------------------------------------------------------------
+
+        /**
+         * @see {@link https://www.npmjs.com/package/eslint-plugin-jest-dom}
+         */
         'plugin:jest-dom/recommended',
 
+        //----------------------------------------------------------------------
         // TypeScript
+        //----------------------------------------------------------------------
+        /**
+         * @see {@link https://typescript-eslint.io/getting-started}
+         */
         'plugin:@typescript-eslint/recommended',
         'plugin:import/typescript',
 
