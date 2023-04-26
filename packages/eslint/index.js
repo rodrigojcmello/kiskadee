@@ -162,7 +162,7 @@ module.exports = {
 
       env: {
         browser: true,
-        es2020: true,
+        es2022: true,
         jest: true,
         node: true,
       },
