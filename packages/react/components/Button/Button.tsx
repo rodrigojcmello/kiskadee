@@ -1,11 +1,11 @@
 /* eslint-disable react/button-has-type */
 import type { FC, MouseEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import type { ButtonProps, ButtonStyleProps } from './Button.types';
-import { useKiskadee } from '../../schema';
-import { ButtonStyle } from './ButtonStyle';
-import { EllipsisLoader } from '../Loader';
 import { CLICK_MIN_DURATION, CLICK_TRANSITION_DURATION } from './constants';
+import type { ButtonProps, ButtonStyleProps } from './Button.types';
+import { ButtonStyle } from './ButtonStyle';
+import { useKiskadee } from '../../schema';
+import { EllipsisLoader } from '../Loader';
 
 export const Button: FC<ButtonProps> = ({
   // TODO: where default come from?
@@ -66,7 +66,7 @@ export const Button: FC<ButtonProps> = ({
   const buttonCommon = button.common();
 
   // TODO: how disable ripple effect?
-  const createRipple = (event: MouseEvent<HTMLButtonElement>) => {
+  const createRipple = (event: MouseEvent<HTMLButtonElement>): void => {
     const container = event.currentTarget;
 
     const circle = document.createElement('span');
@@ -153,7 +153,7 @@ export const Button: FC<ButtonProps> = ({
         .join(' ')
         .trim()}
       type={typeHTML}
-      onClick={(event) => {
+      onClick={(event): void => {
         createRipple(event);
         setIsPressed(true);
         onClick?.(event);

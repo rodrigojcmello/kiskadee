@@ -1,13 +1,15 @@
 import type { FC, PropsWithChildren } from 'react';
+import {
+  useWeight,
+  useItalic,
+  useColor,
+  useTextAlign,
+  useTransition,
+  useMargin,
+  useFontSize,
+  useLineHeight,
+} from '../../hooks';
 import type { TextProps } from './Text.types';
-import { useWeight } from '../../hooks/useWeight';
-import { useItalic } from '../../hooks/useItalic';
-import { useColor } from '../../hooks/useColor';
-import { useTextAlign } from '../../hooks/useTextAlign';
-import { useFontSize } from '../../hooks/responsive/useFontSize';
-import { useTransition } from '../../hooks/useTransition';
-import { useLineHeight } from '../../hooks/responsive/useLineHeight';
-import { useMargin } from '../../hooks/responsive/useMargin';
 
 // @ts-ignore
 export const Text: FC<PropsWithChildren<TextProps>> = ({
