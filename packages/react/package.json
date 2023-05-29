@@ -9,11 +9,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "eslintConfig": {
-    "extends": [
-      "kiskadee/react-level-3"
-    ]
-  },
   "dependencies": {
     "@stitches/core": "^1.2.8",
     "@typescript-plus/fast-memoize-decorator": "^0.2.1",
@@ -27,7 +22,7 @@
     "@typescript-eslint/parser": "^5.59.7",
     "eslint": "^8.41.0",
     "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-kiskadee": "^0.0.3",
+    "eslint-config-kiskadee": "^0.0.41",
     "eslint-config-prettier": "^8.8.0",
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-import": "^2.27.5",

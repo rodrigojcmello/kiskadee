@@ -11,7 +11,6 @@ import {
 } from '../../hooks';
 import type { TextProps } from './Text.types';
 
-// @ts-ignore
 export const Text: FC<PropsWithChildren<TextProps>> = ({
   children,
   tag,
