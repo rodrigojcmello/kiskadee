@@ -8,12 +8,12 @@ const mock = {
   borderRadius: 'default',
 };
 
-describe('ButtonStyle', () => {
+describe('Text Component', () => {
   describe('Render', () => {
-    test('Empty object should return undefined.', () => {
+    it('Empty object should return undefined.', () => {
       expect(TextStyle.render({})).toBeUndefined();
     });
-    test('Filled style object should return a className', () => {
+    it('Filled style object should return a className', () => {
       expect(TextStyle.render({ color: 'red' })).toEqual(
         expect.objectContaining({
           className: expect.any(String),
