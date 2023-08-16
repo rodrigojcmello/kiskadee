@@ -19,6 +19,7 @@
     "vite-tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
+    "vite-plugin-kiskadee": "*",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@typescript-eslint/eslint-plugin": "^5.59.7",
