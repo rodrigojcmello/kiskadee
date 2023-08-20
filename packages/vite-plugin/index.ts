@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument */
 import fs from 'node:fs';
 import type { KiskadeeTheme, ComponentName } from '@kiskadee/react';
+import createCssClass from './create-css-class';
 
 const filePath = process.argv[2];
 
@@ -19,7 +20,7 @@ try {
   console.log('Valor da propriedade "exemplo":', schema.name);
   console.log('Estrutura JSON:##', schema);
 
-  const cssContent = `
+  let cssContent = `
     .minha-classe {
       background-color: red;
       color: white;
@@ -49,29 +50,29 @@ try {
                   const properties = sizes[sizeName] ?? {};
                   for (const propertyName of Object.keys(properties)) {
                     const propertyValue = properties[propertyName];
-                    const x = types;
-                    console.log(
-                      '### HELLO64',
-                      {
-                        componentName,
-                        modes,
-                        modeName,
-                        themes,
-                        themeName,
-                        types,
-                        typeName,
-                        variants,
-                        variantName,
-                        interactionStatuses,
-                        interactiveStatus,
-                        sizes,
-                        sizeName,
-                        properties,
-                        propertyName,
-                        propertyValue,
-                      },
-                      { x },
-                    );
+
+                    const style = createCssClass(propertyName, propertyValue);
+                    if (style) {
+                      cssContent += style;
+                    }
+                    console.log('### HELLO64', {
+                      componentName,
+                      modes,
+                      modeName,
+                      themes,
+                      themeName,
+                      types,
+                      typeName,
+                      variants,
+                      variantName,
+                      interactionStatuses,
+                      interactiveStatus,
+                      sizes,
+                      sizeName,
+                      properties,
+                      propertyName,
+                      propertyValue,
+                    });
                   }
                 }
               }
@@ -81,6 +82,8 @@ try {
       }
     }
   }
+
+  console.log({ cssContent });
 
   // schema.component?.button?.elements?.container?.dark?.default?.type?.contained
   //   ?.base?.md?.borderColor = 'red';
