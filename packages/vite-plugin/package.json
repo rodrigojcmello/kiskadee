@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
+    "nodemon": "nodemon dist/index.js ../theme/sandbox/sandbox.schema.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

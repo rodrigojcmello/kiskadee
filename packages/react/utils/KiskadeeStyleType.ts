@@ -36,27 +36,31 @@ export type ElementTheme<T, State extends string> = Partial<
     Partial<
       Record<
         string | 'default',
-        {
-          base?: Partial<Record<State, Partial<Record<Size, T>>>>;
-          type?: Partial<
-            Record<
-              ButtonType,
-              {
-                base?: Partial<Record<Size, T>>;
-                variant?: Partial<
-                  Record<
-                    ButtonVariant,
-                    Partial<Record<State, Partial<Record<Size, T>>>>
-                  >
-                >;
-              }
-            >
-          >;
-        }
+        Partial<
+          Record<
+            ButtonType,
+            {
+              base?: Partial<Record<Size, T>>;
+              variant?: Partial<
+                Record<
+                  ButtonVariant,
+                  Partial<Record<State, Partial<Record<Size, T>>>>
+                >
+              >;
+            }
+          >
+        >
       >
     >
   >
 >;
+
+type ComponentMap = {
+  button: ButtonSchema;
+  textField: ButtonSchema;
+};
+
+export type ComponentName = keyof ComponentMap;
 
 export interface KiskadeeTheme {
   name: string;
@@ -69,6 +73,6 @@ export interface KiskadeeTheme {
     dark?: string | 'default';
   };
   component?: {
-    button?: ButtonSchema;
+    [key in ComponentName]?: ComponentMap[key];
   };
 }
