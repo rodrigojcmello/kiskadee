@@ -36,20 +36,23 @@ export type ElementTheme<T, State extends string> = Partial<
     Partial<
       Record<
         string | 'default',
-        Partial<
-          Record<
-            ButtonType,
-            {
-              base?: Partial<Record<Size, T>>;
-              variant?: Partial<
-                Record<
-                  ButtonVariant,
-                  Partial<Record<State, Partial<Record<Size, T>>>>
-                >
-              >;
-            }
-          >
-        >
+        {
+          base?: Partial<Record<State, Partial<Record<Size, T>>>>;
+          type?: Partial<
+            Record<
+              ButtonType,
+              {
+                base?: Partial<Record<Size, T>>;
+                variant?: Partial<
+                  Record<
+                    ButtonVariant,
+                    Partial<Record<State, Partial<Record<Size, T>>>>
+                  >
+                >;
+              }
+            >
+          >;
+        }
       >
     >
   >

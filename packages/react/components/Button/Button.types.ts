@@ -134,10 +134,10 @@ export interface ButtonIcon {
    * Use "padding" property ONLY to set the same value for all sides
    */
   padding?: number;
-  paddingTop?: number;
-  paddingRight?: number;
-  paddingBottom?: number;
-  paddingLeft?: number;
+  paddingTop?: string | number;
+  paddingRight?: string | number;
+  paddingBottom?: string | number;
+  paddingLeft?: string | number;
 
   /**
    * MARGIN
