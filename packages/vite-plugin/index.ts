@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument */
 import fs from 'node:fs';
 import type { KiskadeeTheme, ComponentName } from '@kiskadee/react';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import createCssClass, {
+  formatFileContent,
+  generateUniqueKey,
+} from './create-css-class';
 
 const filePath = process.argv[2];
 
@@ -19,12 +24,6 @@ try {
   console.log('Valor da propriedade "exemplo":', schema.name);
   console.log('Estrutura JSON:##', schema);
 
-  const cssContent = `
-    .minha-classe {
-      background-color: red;
-      color: white;
-    }
-  `;
   const uniqueStyle: Partial<Record<string, Record<string, number>>> = {};
 
   const getSize = (
@@ -111,13 +110,30 @@ try {
   }
 
   console.log({ uniqueStyle });
+  let currentKey = 'a';
+  let cssContent = '';
+
+  for (const propertyName of Object.keys(uniqueStyle)) {
+    const values = uniqueStyle[propertyName];
+    if (values) {
+      for (const propertyValue of Object.keys(values)) {
+        const content = createCssClass(currentKey, propertyName, propertyValue);
+        if (content) {
+          cssContent += content;
+        }
+        currentKey = generateUniqueKey(currentKey);
+      }
+    }
+  }
 
   // schema.component?.button?.elements?.container?.dark?.default?.type?.contained
   //   ?.base?.md?.borderColor = 'red';
 
   // const cssFilePath = path.resolve(__dirname, 'kiskadee.css');
 
-  fs.writeFileSync('kiskadee.css', cssContent);
+  // fs.writeFileSync('kiskadee.css', cssContent);
+  // eslint-disable-next-line no-void
+  void formatFileContent(cssContent, 'kiskadee.css');
 } catch (error) {
   console.error('Erro ao ler o arquivo ou fazer o parsing do JSON:', error);
 }

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import type { KiskadeeTheme } from '@kiskadee/react';
 
 export const material3: KiskadeeTheme = {

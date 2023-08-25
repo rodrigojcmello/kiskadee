@@ -200,6 +200,7 @@
               "outline": {
                 "base": {
                   "md": {
+                    "paddingTop": "7px",
                     "borderWidth": "1px",
                     "borderStyle": "solid",
                     "borderColor": "#79747E",
