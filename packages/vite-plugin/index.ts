@@ -2,10 +2,8 @@
 import fs from 'node:fs';
 import type { KiskadeeTheme, ComponentName } from '@kiskadee/react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import createCssClass, {
-  formatFileContent,
-  generateUniqueKey,
-} from './create-css-class';
+import createCssClass, { formatFileContent } from './create-css-class';
+import { generateUniqueKey } from './src/generate-unique-key/generate-unique-key';
 
 const filePath = process.argv[2];
 
@@ -110,30 +108,28 @@ try {
   }
 
   console.log({ uniqueStyle });
-  let currentKey = 'a';
+  let currentKey: string | undefined;
   let cssContent = '';
 
   for (const propertyName of Object.keys(uniqueStyle)) {
     const values = uniqueStyle[propertyName];
     if (values) {
       for (const propertyValue of Object.keys(values)) {
-        const content = createCssClass(currentKey, propertyName, propertyValue);
-        if (content) {
-          cssContent += content;
-        }
         currentKey = generateUniqueKey(currentKey);
+        if (currentKey) {
+          const content = createCssClass(
+            currentKey,
+            propertyName,
+            propertyValue,
+          );
+          if (content) cssContent += content;
+        }
       }
     }
   }
 
-  // schema.component?.button?.elements?.container?.dark?.default?.type?.contained
-  //   ?.base?.md?.borderColor = 'red';
-
-  // const cssFilePath = path.resolve(__dirname, 'kiskadee.css');
-
-  // fs.writeFileSync('kiskadee.css', cssContent);
-  // eslint-disable-next-line no-void
   void formatFileContent(cssContent, 'kiskadee.css');
 } catch (error) {
-  console.error('Erro ao ler o arquivo ou fazer o parsing do JSON:', error);
+  // eslint-disable-next-line no-console
+  console.error(error);
 }
