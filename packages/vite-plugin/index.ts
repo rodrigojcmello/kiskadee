@@ -11,6 +11,13 @@ console.log('### HELLO4', filePath);
 
 let schema: KiskadeeTheme;
 
+type UniqueStyle = Partial<
+  Record<
+    string,
+    Record<string, { total?: number; className?: string } | undefined>
+  >
+>;
+
 try {
   const fileContent = fs.readFileSync(filePath, 'utf8');
   schema = JSON.parse(fileContent) as KiskadeeTheme;
@@ -19,37 +26,41 @@ try {
     throw new Error('Arquivo não possui as propriedades "name" e "version".');
   }
 
-  console.log('Valor da propriedade "exemplo":', schema.name);
-  console.log('Estrutura JSON:##', schema);
+  // console.log('Valor da propriedade "exemplo":', schema.name);
+  // console.log('Estrutura JSON:##', schema);
 
-  const uniqueStyle: Partial<Record<string, Record<string, number>>> = {};
+  const uniqueStyle: UniqueStyle = {};
 
   const getSize = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     sizes: any,
   ): void => {
-    // console.log({ sizes });
-
     for (const sizeName of Object.keys(sizes)) {
       const properties = sizes[sizeName] ?? {};
       for (const propertyName of Object.keys(properties)) {
         const propertyValue = properties[propertyName] as string;
 
-        let property = uniqueStyle[propertyName];
-        if (property) {
-          if (property[propertyValue]) {
-            property[propertyValue] += 1;
-          } else {
-            property[propertyValue] = 1;
+        let values = uniqueStyle[propertyName];
+        if (values) {
+          let total = values[propertyValue]?.total;
+          total = total === undefined ? 1 : total + 1;
+
+          const value = values[propertyValue];
+          if (value) {
+            value.total = total;
           }
+
+          values[propertyValue] = value;
         } else {
-          property = {
-            [propertyValue]: 1,
+          values = {
+            [propertyValue]: {
+              total: 1,
+            },
           };
         }
 
         // TODO: remove this after fix types
-        uniqueStyle[propertyName] = property;
+        uniqueStyle[propertyName] = values;
       }
     }
   };
@@ -84,27 +95,27 @@ try {
                 const sizes = interactionStatuses[interactiveStatus] ?? {};
                 getSize(sizes);
 
-                if (elementName === 'iconLeft') {
-                  console.log('### HELLO64', {
-                    // componentName,
-                    elementName,
-                    // modes,
-                    // modeName,
-                    // themes,
-                    // themeName,
-                    types,
-                    typeName,
-                    // variants,
-                    // variantName,
-                    // interactionStatuses,
-                    // interactiveStatus,
-                    // sizes,
-                    // sizeName,
-                    // properties,
-                    // propertyName,
-                    // propertyValue,
-                  });
-                }
+                // if (elementName === 'iconLeft') {
+                //   console.log('### HELLO64', {
+                //     // componentName,
+                //     elementName,
+                //     // modes,
+                //     // modeName,
+                //     // themes,
+                //     // themeName,
+                //     types,
+                //     typeName,
+                //     // variants,
+                //     // variantName,
+                //     // interactionStatuses,
+                //     // interactiveStatus,
+                //     // sizes,
+                //     // sizeName,
+                //     // properties,
+                //     // propertyName,
+                //     // propertyValue,
+                //   });
+                // }
               }
             }
           }
@@ -113,7 +124,7 @@ try {
     }
   }
 
-  console.log({ uniqueStyle });
+  console.log({ uniqueStyle: JSON.stringify(uniqueStyle) });
   let currentKey: string | undefined;
   let cssContent = '';
 
