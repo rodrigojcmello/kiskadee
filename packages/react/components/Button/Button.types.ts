@@ -6,6 +6,7 @@ import type {
   Size,
   ElementTheme,
   KiskadeeTheme,
+  Padding,
 } from '@kiskadee/react';
 
 export type IconPosition = 'Left' | 'Right';
@@ -115,7 +116,7 @@ export type ButtonContainer = {
 
 // Icon
 
-export interface ButtonIcon {
+export interface ButtonIcon extends Padding {
   // Color - Dark Mode
   color?: CSSProperties['color'];
   background?: CSSProperties['background'];
@@ -126,18 +127,6 @@ export interface ButtonIcon {
    * This property handles FONTSIZE, WIDTH, MIN-WIDTH and HEIGHT values
    */
   fontSize?: number;
-
-  // TODO: extract this types to a generic file
-  /**
-   * PADDING
-   * This property is RESPONSIVE
-   * Use "padding" property ONLY to set the same value for all sides
-   */
-  padding?: number;
-  paddingTop?: string | number;
-  paddingRight?: string | number;
-  paddingBottom?: string | number;
-  paddingLeft?: string | number;
 
   /**
    * MARGIN

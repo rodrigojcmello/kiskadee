@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import type { KiskadeeTheme, ComponentName } from '@kiskadee/react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import createCssClass, { formatFileContent } from './create-css-class';
-import { generateUniqueKey } from './src/generate-unique-key/generate-unique-key';
+import { generateUniqueKey } from './src/generate-unique-key';
 
 const filePath = process.argv[2];
 
@@ -28,7 +28,7 @@ try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     sizes: any,
   ): void => {
-    console.log({ sizes });
+    // console.log({ sizes });
 
     for (const sizeName of Object.keys(sizes)) {
       const properties = sizes[sizeName] ?? {};
@@ -64,11 +64,17 @@ try {
       for (const modeName of Object.keys(modes)) {
         const themes = modes[modeName] ?? {};
         for (const themeName of Object.keys(themes)) {
-          const types = themes[themeName] ?? {};
+          const types = themes[themeName].type ?? {};
+          const typeBase = themes[themeName].base ?? {};
+          for (const typeBaseName of Object.keys(typeBase)) {
+            const sizes = typeBase[typeBaseName] ?? {};
+            getSize(sizes);
+          }
+
           for (const typeName of Object.keys(types)) {
             const variants = types[typeName].variant ?? {};
-            const base = types[typeName].base ?? {};
-            getSize(base);
+            const variantBase = types[typeName].base ?? {};
+            getSize(variantBase);
 
             for (const variantName of Object.keys(variants)) {
               const interactionStatuses = variants[variantName] ?? {};

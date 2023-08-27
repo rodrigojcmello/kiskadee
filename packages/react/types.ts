@@ -21,3 +21,14 @@ export type ButtonVariant =
   | 'warning'
   | 'danger'
   | ButtonSocialType;
+
+export interface Padding {
+  /**
+   * PADDING
+   * This property is RESPONSIVE
+   */
+  paddingTop?: string;
+  paddingRight?: string;
+  paddingBottom?: string;
+  paddingLeft?: string;
+}
