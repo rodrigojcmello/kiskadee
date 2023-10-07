@@ -4,6 +4,7 @@ import type { KiskadeeTheme, ComponentName } from '@kiskadee/react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import createCssClass, { formatFileContent } from './create-css-class';
 import { generateUniqueKey } from './src/generate-unique-key';
+import { getClassName } from './src/get-class-name';
 
 const filePath = process.argv[2];
 
@@ -11,7 +12,7 @@ console.log('### HELLO4', filePath);
 
 let schema: KiskadeeTheme;
 
-type UniqueStyle = Partial<
+export type UniqueStyle = Partial<
   Record<
     string,
     Record<string, { total?: number; className?: string } | undefined>
@@ -45,10 +46,8 @@ try {
           let total = values[propertyValue]?.total;
           total = total === undefined ? 1 : total + 1;
 
-          const value = values[propertyValue];
-          if (value) {
-            value.total = total;
-          }
+          const value = values[propertyValue] ?? {};
+          value.total = total;
 
           values[propertyValue] = value;
         } else {
@@ -124,7 +123,9 @@ try {
     }
   }
 
-  console.log({ uniqueStyle: JSON.stringify(uniqueStyle) });
+  // console.log({ uniqueStyle: JSON.stringify(uniqueStyle) });
+  // console.log({ uniqueStyle });
+
   let currentKey: string | undefined;
   let cssContent = '';
 
@@ -146,6 +147,74 @@ try {
   }
 
   void formatFileContent(cssContent, 'kiskadee.css');
+
+  //----------------------------------------------------------------------------
+
+  const schemaClone = JSON.parse(JSON.stringify(schema));
+
+  for (const componentName of Object.keys(schemaClone.component ?? {})) {
+    const component = schema.component?.[componentName as ComponentName] ?? {};
+    const elements = component.elements ?? {};
+
+    for (const elementName of Object.keys(elements)) {
+      // @ts-expect-error
+      const modes = elements[elementName] ?? {};
+      for (const modeName of Object.keys(modes)) {
+        const themes = modes[modeName] ?? {};
+        for (const themeName of Object.keys(themes)) {
+          const types = themes[themeName].type ?? {};
+          const typeBase = themes[themeName].base ?? {};
+          for (const typeBaseName of Object.keys(typeBase)) {
+            const sizes = typeBase[typeBaseName] ?? {};
+            typeBase[typeBaseName] = getClassName(sizes, uniqueStyle);
+          }
+
+          // console.log({ x: typeBase });
+
+          for (const typeName of Object.keys(types)) {
+            const variants = types[typeName].variant ?? {};
+            const variantBase = types[typeName].base ?? {};
+            types[typeName].base = getClassName(variantBase, uniqueStyle);
+
+            for (const variantName of Object.keys(variants)) {
+              const interactionStatuses = variants[variantName] ?? {};
+              for (const interactiveStatus of Object.keys(
+                interactionStatuses,
+              )) {
+                const sizes = interactionStatuses[interactiveStatus] ?? {};
+                interactionStatuses[interactiveStatus] = getClassName(
+                  sizes,
+                  uniqueStyle,
+                );
+
+                // if (elementName === 'iconLeft') {
+                //   console.log('### HELLO64', {
+                //     // componentName,
+                //     elementName,
+                //     // modes,
+                //     // modeName,
+                //     // themes,
+                //     // themeName,
+                //     types,
+                //     typeName,
+                //     // variants,
+                //     // variantName,
+                //     // interactionStatuses,
+                //     // interactiveStatus,
+                //     // sizes,
+                //     // sizeName,
+                //     // properties,
+                //     // propertyName,
+                //     // propertyValue,
+                //   });
+                // }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 } catch (error) {
   // eslint-disable-next-line no-console
   console.error(error);
