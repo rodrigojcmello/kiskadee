@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-argument */
 // eslint-disable-next-line typescript-paths/absolute-parent-import
-import type { UniqueStyle } from '..';
+
+import type { UniqueStyle } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getClassName(sizes: any, uniqueStyle: UniqueStyle) {

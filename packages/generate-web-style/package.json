@@ -1,5 +1,5 @@
 {
-  "name": "vite-plugin-kiskadee",
+  "name": "@kiskadee/generate-web-style",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -14,9 +14,6 @@
     "test:coverage": "vitest --coverage",
     "test-ui": "vitest --ui --coverage"
   },
-  "keywords": [
-    "vite-plugin"
-  ],
   "type": "commonjs",
   "author": "Rodrigo Mello",
   "license": "ISC",
