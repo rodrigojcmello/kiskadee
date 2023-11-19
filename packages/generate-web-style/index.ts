@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import type { ComponentName, KiskadeeTheme } from '@kiskadee/react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type { UniqueStyle } from './src/types';
-import { getPropertiesBasedOnSize } from './src/get-properties-based-on-size';
+import { countStyleProperties } from './src/count-style-properties';
 
 const filePath = process.argv[2];
 
@@ -38,13 +38,13 @@ try {
           const typeBase = themes[themeName].base ?? {};
           for (const typeBaseName of Object.keys(typeBase)) {
             const sizes = typeBase[typeBaseName] ?? {};
-            uniqueStyle = getPropertiesBasedOnSize(sizes, uniqueStyle);
+            uniqueStyle = countStyleProperties(sizes, uniqueStyle);
           }
 
           for (const typeName of Object.keys(types)) {
             const variants = types[typeName].variant ?? {};
             const variantBase = types[typeName].base ?? {};
-            uniqueStyle = getPropertiesBasedOnSize(variantBase, uniqueStyle);
+            uniqueStyle = countStyleProperties(variantBase, uniqueStyle);
 
             for (const variantName of Object.keys(variants)) {
               const interactionStatuses = variants[variantName] ?? {};
@@ -52,7 +52,7 @@ try {
                 interactionStatuses,
               )) {
                 const sizes = interactionStatuses[interactiveStatus] ?? {};
-                uniqueStyle = getPropertiesBasedOnSize(sizes, uniqueStyle);
+                uniqueStyle = countStyleProperties(sizes, uniqueStyle);
 
                 // if (elementName === 'iconLeft') {
                 //   console.log('### HELLO64', {

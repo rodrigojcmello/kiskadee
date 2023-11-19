@@ -30,6 +30,14 @@ export type ComponentSchema = {
 
 export type ComponentOptions = Record<string, unknown>;
 
+type StylePropertyValue = string | number;
+
+type StyleProperty = string;
+
+export type StyleBySize = Partial<
+  Record<Size, Record<StyleProperty, StylePropertyValue>>
+>;
+
 export type ElementTheme<T, State extends string> = Partial<
   Record<
     'light' | 'dark',
@@ -37,17 +45,14 @@ export type ElementTheme<T, State extends string> = Partial<
       Record<
         string | 'default',
         {
-          base?: Partial<Record<State, Partial<Record<Size, T>>>>;
+          base?: Partial<Record<State, StyleBySize>>;
           type?: Partial<
             Record<
               ButtonType,
               {
-                base?: Partial<Record<Size, T>>;
+                base?: StyleBySize;
                 variant?: Partial<
-                  Record<
-                    ButtonVariant,
-                    Partial<Record<State, Partial<Record<Size, T>>>>
-                  >
+                  Record<ButtonVariant, Partial<Record<State, StyleBySize>>>
                 >;
               }
             >
