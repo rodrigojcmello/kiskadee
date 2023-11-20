@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument */
-import fs from 'node:fs';
-import type { ComponentName, KiskadeeTheme } from '@kiskadee/react';
+import fs from "node:fs";
+import type { ComponentName, Mode, KiskadeeTheme, ElementType, ElementVariant } from "@kiskadee/react";
 // eslint-disable-next-line import/no-extraneous-dependencies
-import type { UniqueStyle } from './src/types';
-import { countStyleProperties } from './src/count-style-properties';
+import type { UniqueStyle } from "./src/types";
+import { countStyleProperties } from "./src/count-style-properties";
 
 const filePath = process.argv[2];
 
-console.log('### HELLO4', filePath);
+console.log("### HELLO4", filePath);
 
 let schema: KiskadeeTheme;
 
 try {
-  const fileContent = fs.readFileSync(filePath, 'utf8');
+  const fileContent = fs.readFileSync(filePath, "utf8");
   schema = JSON.parse(fileContent) as KiskadeeTheme;
 
   if (!schema.name && !schema.version) {
@@ -22,59 +22,81 @@ try {
   // console.log('Valor da propriedade "exemplo":', schema.name);
   // console.log('Estrutura JSON:##', schema);
 
+  // Count the style properties ---------------------------------------------------------------------------------------
+
   let uniqueStyle: UniqueStyle = {};
 
   for (const componentName of Object.keys(schema.component ?? {})) {
     const component = schema.component?.[componentName as ComponentName] ?? {};
-    const elements = component.elements ?? {};
+    const elementList = component.elements;
 
-    for (const elementName of Object.keys(elements)) {
-      // @ts-expect-error
-      const modes = elements[elementName] ?? {};
-      for (const modeName of Object.keys(modes)) {
-        const themes = modes[modeName] ?? {};
-        for (const themeName of Object.keys(themes)) {
-          const types = themes[themeName].type ?? {};
-          const typeBase = themes[themeName].base ?? {};
-          for (const typeBaseName of Object.keys(typeBase)) {
-            const sizes = typeBase[typeBaseName] ?? {};
-            uniqueStyle = countStyleProperties(sizes, uniqueStyle);
-          }
+    if (elementList) {
+      for (const element of Object.keys(elementList)) {
+        const modeList = elementList[element];
 
-          for (const typeName of Object.keys(types)) {
-            const variants = types[typeName].variant ?? {};
-            const variantBase = types[typeName].base ?? {};
-            uniqueStyle = countStyleProperties(variantBase, uniqueStyle);
+        if (modeList) {
+          for (const mode of Object.keys(modeList)) {
+            const themeList = modeList[mode as Mode];
 
-            for (const variantName of Object.keys(variants)) {
-              const interactionStatuses = variants[variantName] ?? {};
-              for (const interactiveStatus of Object.keys(
-                interactionStatuses,
-              )) {
-                const sizes = interactionStatuses[interactiveStatus] ?? {};
-                uniqueStyle = countStyleProperties(sizes, uniqueStyle);
+            if (themeList) {
+              for (const theme of Object.keys(themeList)) {
+                const typeBase = themeList[theme]?.base;
 
-                // if (elementName === 'iconLeft') {
-                //   console.log('### HELLO64', {
-                //     // componentName,
-                //     elementName,
-                //     // modes,
-                //     // modeName,
-                //     // themes,
-                //     // themeName,
-                //     types,
-                //     typeName,
-                //     // variants,
-                //     // variantName,
-                //     // interactionStatuses,
-                //     // interactiveStatus,
-                //     // sizes,
-                //     // sizeName,
-                //     // properties,
-                //     // propertyName,
-                //     // propertyValue,
-                //   });
-                // }
+                if (typeBase) {
+                  for (const typeBaseName of Object.keys(typeBase)) {
+                    const sizes = typeBase[typeBaseName];
+                    uniqueStyle = countStyleProperties(uniqueStyle, sizes);
+                  }
+                }
+
+                const typeList = themeList[theme]?.type;
+
+                if (typeList) {
+                  for (const type of Object.keys(typeList)) {
+                    const variantBase = typeList[type as ElementType]?.base;
+                    const variantList = typeList[type as ElementType]?.variant;
+
+                    if (variantBase) {
+                      uniqueStyle = countStyleProperties(uniqueStyle, variantBase);
+                    }
+
+                    if (variantList) {
+                      for (const variant of Object.keys(variantList)) {
+                        const interactionStatusList = variantList[variant as ElementVariant];
+
+                        if (interactionStatusList) {
+                          for (const interactiveStatus of Object.keys(interactionStatusList)) {
+                            const sizes = interactionStatusList[interactiveStatus];
+
+                            uniqueStyle = countStyleProperties(uniqueStyle, sizes);
+
+                            // if (elementName === 'iconLeft') {
+                            //   console.log('### HELLO64', {
+                            //     // componentName,
+                            //     elementName,
+                            //     // modes,
+                            //     // modeName,
+                            //     // themes,
+                            //     // themeName,
+                            //     types,
+                            //     typeName,
+                            //     // variants,
+                            //     // variantName,
+                            //     // interactionStatuses,
+                            //     // interactiveStatus,
+                            //     // sizes,
+                            //     // sizeName,
+                            //     // properties,
+                            //     // propertyName,
+                            //     // propertyValue,
+                            //   });
+                            // }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           }

@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment,no-param-reassign */
-import type { StyleBySize, Size } from '@kiskadee/react';
-import type { UniqueStyle } from './types';
+import type { StyleBySize, Size } from "@kiskadee/react";
+import type { UniqueStyle } from "./types";
 
-export const countStyleProperties = (
-  sizeList: StyleBySize,
-  uniqueStyle: UniqueStyle,
-): UniqueStyle => {
+export const countStyleProperties = (uniqueStyle: UniqueStyle, sizeList: StyleBySize = {}): UniqueStyle => {
   for (const size of Object.keys(sizeList)) {
     const propertyList = sizeList[size as Size];
 

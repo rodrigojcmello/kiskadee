@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import type { ButtonType, ButtonVariant, Size } from '../types';
+import type { ElementType, ElementVariant, Size } from '../types';
 import type {
   ButtonProps,
   ButtonSchema,
@@ -34,13 +34,15 @@ type StylePropertyValue = string | number;
 
 type StyleProperty = string;
 
-export type StyleBySize = Partial<
-  Record<Size, Record<StyleProperty, StylePropertyValue>>
->;
+export type Mode = 'light' | 'dark';
+
+export type StyleValue = Record<string, StylePropertyValue>;
+
+export type StyleBySize = Partial<Record<Size, StyleValue>>;
 
 export type ElementTheme<T, State extends string> = Partial<
   Record<
-    'light' | 'dark',
+    Mode,
     Partial<
       Record<
         string | 'default',
@@ -48,11 +50,11 @@ export type ElementTheme<T, State extends string> = Partial<
           base?: Partial<Record<State, StyleBySize>>;
           type?: Partial<
             Record<
-              ButtonType,
+              ElementType,
               {
                 base?: StyleBySize;
                 variant?: Partial<
-                  Record<ButtonVariant, Partial<Record<State, StyleBySize>>>
+                  Record<ElementVariant, Partial<Record<State, StyleBySize>>>
                 >;
               }
             >

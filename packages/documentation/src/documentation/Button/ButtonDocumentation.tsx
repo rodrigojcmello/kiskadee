@@ -3,8 +3,8 @@ import type { FC, ReactElement } from 'react';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import type {
   ButtonProps,
-  ButtonType,
-  ButtonVariant,
+  ElementType,
+  ElementVariant,
   Size,
 } from '@kiskadee/react';
 import { Button, ButtonGroup, KiskadeeContext } from '@kiskadee/react';
@@ -40,8 +40,8 @@ export const ButtonDocumentation: FC = () => {
   const [schema, setSchema] = useContext(KiskadeeContext);
   const [label, setLabel] = useState<string | undefined>('Click me');
   const [size, setSize] = useState<Size>('md');
-  const [variant, setVariant] = useState<ButtonVariant>('primary');
-  const [type, setType] = useState<ButtonType>('contained');
+  const [variant, setVariant] = useState<ElementVariant>('primary');
+  const [type, setType] = useState<ElementType>('contained');
   const [pageLoad, setPageLoad] = useState(false);
   const [radius, setRadius] = useState<ButtonProps['borderRadius']>();
   const [iconType, setIconType] = useState<ButtonProps['iconType'] | undefined>(

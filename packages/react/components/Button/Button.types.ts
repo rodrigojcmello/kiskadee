@@ -1,8 +1,8 @@
 import type { CSSProperties, MouseEvent, ReactElement } from 'react';
 import type * as Util from '@stitches/core/types/util';
 import type {
-  ButtonType,
-  ButtonVariant,
+  ElementType,
+  ElementVariant,
   Size,
   ElementTheme,
   KiskadeeTheme,
@@ -34,8 +34,8 @@ export interface ButtonProps {
 
   // STYLE
   width?: 'auto' | 'block' | 'min';
-  variant: ButtonVariant;
-  type: ButtonType;
+  variant: ElementVariant;
+  type: ElementType;
   interaction?: InteractionStatus;
   borderRadius?: BorderRadiusState;
   textAlign?: 'left' | 'center' | 'right';
@@ -269,7 +269,7 @@ type ButtonTextStatus =
 
 //------------------------------------------------------------------------------
 
-interface ButtonElements {
+interface ButtonElements extends BaseElement {
   group?: ElementTheme<ButtonGroupElement, InteractionStatus>;
   container?: ElementTheme<ButtonContainer, ButtonContainerStatus>;
   iconLeft?: ElementTheme<ButtonIcon, ButtonIconStatus>;
@@ -277,9 +277,11 @@ interface ButtonElements {
   text?: ElementTheme<ButtonText, ButtonTextStatus>;
 }
 
+type BaseElement = Partial<Record<string, ElementTheme<CSSProperties, string>>>;
+
 export interface ButtonSchema {
   options?: ButtonOptions;
-  elements?: ButtonElements;
+  elements?: BaseElement;
 }
 
 export interface RippleProps {
