@@ -131,9 +131,7 @@ export interface ButtonIcon extends Padding {
   /**
    * MARGIN
    * This property is RESPONSIVE
-   * Use "margin" property ONLY to set the same value for all sides
    */
-  margin?: number;
   marginTop?: number;
   marginRight?: number;
   marginBottom?: number;
@@ -168,16 +166,16 @@ export interface ButtonText {
   lineHeight?: CSSProperties['lineHeight'];
 
   // Color - Dark Mode
-  color?: CSSProperties['color'];
+  color?: string;
 
   // Size - Responsive
-  fontSize?: CSSProperties['fontSize'];
+  fontSize?: string;
 
   // Padding - Responsive
-  paddingTop?: CSSProperties['paddingTop'];
-  paddingRight?: CSSProperties['paddingRight'];
-  paddingBottom?: CSSProperties['paddingBottom'];
-  paddingLeft?: CSSProperties['paddingLeft'];
+  paddingTop?: string;
+  paddingRight?: string;
+  paddingBottom?: string;
+  paddingLeft?: string;
 }
 
 //------------------------------------------------------------------------------

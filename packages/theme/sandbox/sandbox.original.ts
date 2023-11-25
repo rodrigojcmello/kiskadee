@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import type { KiskadeeTheme } from '@kiskadee/react';
 
 export const sandbox: KiskadeeTheme = {
@@ -44,8 +45,8 @@ export const sandbox: KiskadeeTheme = {
               base: {
                 rest: {
                   md: {
-                    top: 12,
-                    height: 16,
+                    top: '12px',
+                    height: '16px',
                   },
                 },
               },
@@ -59,7 +60,7 @@ export const sandbox: KiskadeeTheme = {
                         },
                         sm: {
                           background: 'red',
-                          height: 12,
+                          height: '12px',
                         },
                       },
                     },
@@ -67,7 +68,7 @@ export const sandbox: KiskadeeTheme = {
                       rest: {
                         md: {
                           background: '#d8cee8',
-                          height: 16,
+                          height: '16px',
                         },
                       },
                     },
@@ -94,7 +95,7 @@ export const sandbox: KiskadeeTheme = {
               base: {
                 focus: {
                   md: {
-                    outlineWidth: 2,
+                    outlineWidth: '2px',
                     outlineColor: '#e8def8',
                     outlineStyle: 'solid',
                     // outlineOffset: 0,
@@ -112,16 +113,16 @@ export const sandbox: KiskadeeTheme = {
                   },
                 },
                 borderRadiusRounded: {
-                  xl: { borderRadius: 24 },
-                  lg: { borderRadius: 18 },
-                  md: { borderRadius: 16 },
-                  sm: { borderRadius: 10 },
+                  xl: { borderRadius: '24px' },
+                  lg: { borderRadius: '18px' },
+                  md: { borderRadius: '16px' },
+                  sm: { borderRadius: '10px' },
                 },
                 borderRadiusFull: {
-                  xl: { borderRadius: 48 },
-                  lg: { borderRadius: 30 },
-                  md: { borderRadius: 20 },
-                  sm: { borderRadius: 16 },
+                  xl: { borderRadius: '48px' },
+                  lg: { borderRadius: '30px' },
+                  md: { borderRadius: '20px' },
+                  sm: { borderRadius: '16px' },
                 },
                 borderRadiusNone: {},
               },
@@ -133,7 +134,7 @@ export const sandbox: KiskadeeTheme = {
                         md: {
                           background: '#6750A4',
                           rippleColor: '#ffffff80',
-                          borderWidth: 1,
+                          borderWidth: '1px',
                           borderColor: '#6750A4',
                           borderStyle: 'solid',
                         },
@@ -171,7 +172,7 @@ export const sandbox: KiskadeeTheme = {
                       rest: {
                         md: {
                           background: '#E8DEF8',
-                          borderWidth: 1,
+                          borderWidth: '1px',
                           borderColor: '#E8DEF8',
                           borderStyle: 'solid',
                           rippleColor: '#6750a480',
@@ -314,7 +315,7 @@ export const sandbox: KiskadeeTheme = {
                         md: {
                           rippleColor: '#6750a480',
                           background: '#FFFFFF',
-                          borderWidth: 1,
+                          borderWidth: '1px',
                           borderColor: '#FFFFFF',
                           borderStyle: 'solid',
                         },
@@ -370,25 +371,25 @@ export const sandbox: KiskadeeTheme = {
               base: {
                 rest: {
                   md: {
-                    fontSize: 24,
-                    paddingTop: 7,
-                    paddingBottom: 7,
-                    paddingLeft: 7,
-                    paddingRight: 7,
+                    fontSize: '24px',
+                    paddingTop: '7px',
+                    paddingBottom: '7px',
+                    paddingLeft: '7px',
+                    paddingRight: '7px',
                     // color: '#6750A4',
                   },
                   lg: {
-                    paddingTop: 18,
-                    paddingBottom: 18,
-                    paddingLeft: 18,
-                    paddingRight: 18,
+                    paddingTop: '18px',
+                    paddingBottom: '18px',
+                    paddingLeft: '18px',
+                    paddingRight: '18px',
                   },
                   sm: {
-                    fontSize: 20,
-                    paddingTop: 5,
-                    paddingBottom: 5,
-                    paddingLeft: 5,
-                    paddingRight: 5,
+                    fontSize: '20px',
+                    paddingTop: '5px',
+                    paddingBottom: '5px',
+                    paddingLeft: '5px',
+                    paddingRight: '5px',
                   },
                 },
                 // iconAlone: {
@@ -398,24 +399,24 @@ export const sandbox: KiskadeeTheme = {
                 // },
                 iconAttached: {
                   md: {
-                    marginRight: 4,
+                    marginRight: '4px',
                   },
                 },
                 borderRadiusRounded: {
                   md: {
-                    borderTopLeftRadius: 15,
-                    borderBottomLeftRadius: 15,
+                    borderTopLeftRadius: '15px',
+                    borderBottomLeftRadius: '15px',
                   },
                   sm: {
-                    borderTopLeftRadius: 9,
-                    borderBottomLeftRadius: 9,
+                    borderTopLeftRadius: '9px',
+                    borderBottomLeftRadius: '9px',
                   },
                 },
                 borderRadiusFull: {
-                  xl: { borderRadius: 47 },
-                  lg: { borderRadius: 29 },
-                  md: { borderRadius: 19 },
-                  sm: { borderRadius: 15 },
+                  xl: { borderRadius: '47px' },
+                  lg: { borderRadius: '29px' },
+                  md: { borderRadius: '19px' },
+                  sm: { borderRadius: '15px' },
                 },
               },
               type: {
@@ -444,8 +445,8 @@ export const sandbox: KiskadeeTheme = {
                         md: {
                           color: '#d50060',
                           border: 'none',
-                          padding: 7,
-                          margin: 1,
+                          padding22222222222222222222: '7px',
+                          margin: '1px',
                           background: 'rgb(255 255 255 / 85%)',
                         },
                       },
@@ -455,16 +456,16 @@ export const sandbox: KiskadeeTheme = {
                 outline: {
                   base: {
                     md: {
-                      paddingTop: 7,
-                      paddingBottom: 7,
-                      paddingLeft: 7,
-                      paddingRight: 7,
+                      paddingTop: '7px',
+                      paddingBottom: '7px',
+                      paddingLeft: '7px',
+                      paddingRight: '7px',
                     },
                     lg: {
-                      paddingTop: 17,
-                      paddingBottom: 17,
-                      paddingLeft: 17,
-                      paddingRight: 17,
+                      paddingTop: '17px',
+                      paddingBottom: '17px',
+                      paddingLeft: '17px',
+                      paddingRight: '17px',
                     },
                   },
                 },
@@ -478,14 +479,14 @@ export const sandbox: KiskadeeTheme = {
               base: {
                 rest: {
                   sm: {
-                    fontSize: 16,
+                    fontSize: '16px',
                   },
                   md: {
-                    fontSize: 24,
-                    padding: 7,
+                    fontSize: '24px',
+                    padding: '7px',
                   },
                   lg: {
-                    padding: 16,
+                    padding: '16px',
                   },
                 },
               },
@@ -493,9 +494,9 @@ export const sandbox: KiskadeeTheme = {
                 outline: {
                   base: {
                     md: {
-                      paddingTop: 7,
-                      paddingBottom: 7,
-                      paddingLeft: 7,
+                      paddingTop: '7px',
+                      paddingBottom: '7px',
+                      paddingLeft: '7px',
                     },
                   },
                 },
@@ -511,32 +512,32 @@ export const sandbox: KiskadeeTheme = {
                   md: {
                     fontSize: '0.875rem',
                     lineHeight: '20px',
-                    fontWeight: 500,
+                    fontWeight: '500',
                     fontFamily: 'Roboto',
                     fontStyle: 'normal',
-                    paddingTop: 9,
-                    paddingBottom: 9,
-                    paddingLeft: 23,
-                    paddingRight: 23,
+                    paddingTop: '9px',
+                    paddingBottom: '9px',
+                    paddingLeft: '23px',
+                    paddingRight: '23px',
                   },
                   sm: {
-                    paddingTop: 5,
-                    paddingBottom: 5,
-                    paddingLeft: 15,
-                    paddingRight: 15,
+                    paddingTop: '5px',
+                    paddingBottom: '5px',
+                    paddingLeft: '15px',
+                    paddingRight: '15px',
                   },
                   lg: {
-                    paddingTop: 17,
-                    paddingBottom: 17,
-                    paddingLeft: 17,
-                    paddingRight: 17,
+                    paddingTop: '17px',
+                    paddingBottom: '17px',
+                    paddingLeft: '17px',
+                    paddingRight: '17px',
                   },
                   xl: {
                     fontSize: '2rem',
-                    paddingTop: 37,
-                    paddingBottom: 37,
-                    paddingLeft: 37,
-                    paddingRight: 37,
+                    paddingTop: '37px',
+                    paddingBottom: '37px',
+                    paddingLeft: '37px',
+                    paddingRight: '37px',
                   },
                 },
                 disabled: {
@@ -546,14 +547,14 @@ export const sandbox: KiskadeeTheme = {
                 },
                 iconDetached: {
                   md: {
-                    paddingLeft: 16,
-                    paddingRight: 16,
+                    paddingLeft: '16px',
+                    paddingRight: '16px',
                   },
                 },
                 iconAttached: {
                   md: {
-                    paddingLeft: 14,
-                    paddingRight: 14,
+                    paddingLeft: '14px',
+                    paddingRight: '14px',
                   },
                 },
               },
@@ -593,29 +594,29 @@ export const sandbox: KiskadeeTheme = {
                 outline: {
                   base: {
                     sm: {
-                      paddingTop: 5,
-                      paddingBottom: 5,
-                      paddingLeft: 15,
-                      paddingRight: 15,
+                      paddingTop: '5px',
+                      paddingBottom: '5px',
+                      paddingLeft: '15px',
+                      paddingRight: '15px',
                     },
                     md: {
                       color: '#6750A4',
-                      paddingTop: 9,
-                      paddingBottom: 9,
-                      paddingLeft: 23,
-                      paddingRight: 23,
+                      paddingTop: '9px',
+                      paddingBottom: '9px',
+                      paddingLeft: '23px',
+                      paddingRight: '23px',
                     },
                     lg: {
-                      paddingTop: 17,
-                      paddingBottom: 17,
-                      paddingLeft: 17,
-                      paddingRight: 17,
+                      paddingTop: '17px',
+                      paddingBottom: '17px',
+                      paddingLeft: '17px',
+                      paddingRight: '17px',
                     },
                     xl: {
-                      paddingTop: 37,
-                      paddingBottom: 37,
-                      paddingLeft: 37,
-                      paddingRight: 37,
+                      paddingTop: '37px',
+                      paddingBottom: '37px',
+                      paddingLeft: '37px',
+                      paddingRight: '37px',
                     },
                   },
                   variant: {

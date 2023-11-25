@@ -30,7 +30,7 @@ export type ComponentSchema = {
 
 export type ComponentOptions = Record<string, unknown>;
 
-type StylePropertyValue = string | number;
+type StylePropertyValue = string;
 
 type StyleProperty = string;
 
