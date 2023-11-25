@@ -158,18 +158,20 @@ export class KiskadeeStyle {
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getStyleEssential<T extends CSSProperties>(element: string): T {
-    return this.cache([element, 'essential'], () => {
-      const base = this.componentSchema?.[element];
-      const type = base?.light?.default?.type?.[this.type];
-      const variant = type?.variant?.[this.variant];
-
-      return {
-        ...base?.light?.default?.base?.rest?.md,
-        ...type?.base?.md,
-        ...variant?.rest?.md,
-      } as T;
-    });
+    return {} as T;
+    // return this.cache([element, 'essential'], () => {
+    //   const base = this.componentSchema?.[element];
+    //   const type = base?.light?.default?.type?.[this.type];
+    //   const variant = type?.variant?.[this.variant];
+    //
+    //   return {
+    //     ...base?.light?.default?.base?.rest?.md,
+    //     ...type?.base?.md,
+    //     ...variant?.rest?.md,
+    //   } as T;
+    // });
   }
 
   getStyleState(element: string, state: string, size?: Size): CSSProperties {
