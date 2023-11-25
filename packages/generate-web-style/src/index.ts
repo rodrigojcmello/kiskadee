@@ -1,19 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument */
-import fs from "node:fs";
-import type { ComponentName, Mode, KiskadeeTheme, ElementType, ElementVariant } from "@kiskadee/react";
+import type { ComponentName, Mode, KiskadeeTheme, ElementType, ElementVariant } from '@kiskadee/react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import type { UniqueStyle } from "./src/types";
-import { countStyleProperties } from "./src/count-style-properties";
+import { sandbox } from './sandbox/sandbox.original';
+import type { UniqueStyle } from './types';
+import { countStyleProperties } from './count-style-properties';
 
 const filePath = process.argv[2];
 
-console.log("### HELLO4", filePath);
+console.log('### HELLO4', filePath);
 
 let schema: KiskadeeTheme;
 
 try {
-  const fileContent = fs.readFileSync(filePath, "utf8");
-  schema = JSON.parse(fileContent) as KiskadeeTheme;
+  // const fileContent = fs.readFileSync(filePath, "utf8");
+  // schema = JSON.parse(fileContent) as KiskadeeTheme;
+  schema = sandbox;
 
   if (!schema.name && !schema.version) {
     throw new Error('File does not have the "name" and "version" properties.');

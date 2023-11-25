@@ -1,9 +1,10 @@
 {
   "name": "@kiskadee/generate-web-style",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "start": "nodemon src/index.ts --ignore 'src/**/*.test.ts'",
     "build": "tsc",
     "watch": "tsc -w",
     "nodemon": "nodemon dist/index.js ./schema.json",
