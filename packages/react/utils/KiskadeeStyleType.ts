@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import type { StyleValue } from '@/utils/property.type';
 import type { ElementType, ElementVariant, Size } from '../types';
 import type {
   ButtonProps,
@@ -30,13 +31,7 @@ export type ComponentSchema = {
 
 export type ComponentOptions = Record<string, unknown>;
 
-type StylePropertyValue = string;
-
-type StyleProperty = string;
-
 export type Mode = 'light' | 'dark';
-
-export type StyleValue = Record<string, StylePropertyValue>;
 
 export type StyleBySize = Partial<Record<Size, StyleValue>>;
 
