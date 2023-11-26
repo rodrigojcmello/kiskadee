@@ -3,12 +3,16 @@ interface NumberProp {
   unit: 'px' | 'rem';
 }
 
-interface ColorProp {
-  // # + 6 digits
-  hex: string;
-  // between 0 and 1
-  alpha: number;
-}
+// # + 6 digits
+type HexColor = string;
+
+type ColorProp =
+  | HexColor
+  | {
+      hex: HexColor;
+      // between 0 and 1
+      alpha: number;
+    };
 
 interface ShadowValue {
   shadow?:
@@ -96,7 +100,7 @@ interface OutlineValue {
 
 interface FontValue {
   font?: {
-    family?: [string];
+    family?: string | [string];
     color?: ColorProp;
     size?: NumberProp;
     height?: NumberProp;
@@ -116,18 +120,18 @@ export type StyleValue =
   | MarginValue
   | ShadowValue;
 
-const x: StyleValue = {
-  box: {
-    color: {
-      hex: '#000000',
-      alpha: 1,
-    },
-  },
-  font: {
-    color: {
-      hex: '#000000',
-      alpha: 0.5,
-    },
-    family: ['Arial'],
-  },
-};
+// const x: StyleValue = {
+//   box: {
+//     color: {
+//       hex: '#000000',
+//       alpha: 1,
+//     },
+//   },
+//   font: {
+//     color: {
+//       hex: '#000000',
+//       alpha: 0.5,
+//     },
+//     family: ['Arial'],
+//   },
+// };

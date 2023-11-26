@@ -1,4 +1,4 @@
-import type { StyleValue } from '@/utils/property.type';
+import type { StyleValue } from './property.type';
 import type { ElementType, ElementVariant, Size } from '../types';
 import type {
   ButtonProps,
@@ -10,9 +10,10 @@ export type ComponentOptions = Record<string, unknown>;
 
 export type Mode = 'light' | 'dark';
 
+// export type StyleBySize = Partial<Record<Size, StyleValue>>;
 export type StyleBySize = Partial<Record<Size, StyleValue>>;
 
-export type InteractionStatus =
+export type Status =
   | 'rest'
   | 'hover'
   | 'focus'
@@ -27,17 +28,14 @@ export type ElementTheme = Partial<
       Record<
         string | 'default',
         {
-          base?: Partial<Record<InteractionStatus, StyleBySize>>;
+          base?: Partial<Record<Status, StyleBySize>>;
           type?: Partial<
             Record<
               ElementType,
               {
                 base?: StyleBySize;
                 variant?: Partial<
-                  Record<
-                    ElementVariant,
-                    Partial<Record<InteractionStatus, StyleBySize>>
-                  >
+                  Record<ElementVariant, Partial<Record<Status, StyleBySize>>>
                 >;
               }
             >
