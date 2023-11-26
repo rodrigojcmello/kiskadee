@@ -10,34 +10,67 @@ export const sandbox: KiskadeeTheme = {
   //   light: 'default',
   //   dark: 'default',
   // },
-  component: {
-    button: {
-      // TODO: review all options
-      options: {
-        widthMin: 100,
-        borderRadius: 'Rounded',
-        textAlign: {
-          default: 'center',
-          center: true,
-          left: true,
-          right: true,
-        },
-        icon: {
-          enable: {
-            right: true,
-            left: true,
+  components: {
+    label: {
+      elements: {
+        container: {
+          dark: {
+            default: {
+              base: {
+                rest: {
+                  md: {
+                    position2: {
+                      type3: 'absolute',
+                    },
+                  },
+                },
+              },
+              type: {
+                contained: {
+                  base: {
+                    md: {
+                      font: {
+                        color: {
+                          hex: '#FFFFFF',
+                          alpha: 1,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
-        size: {
-          md: true,
-          sm: true,
-          lg: true,
-        },
-        responsive: {
-          smallScreenBP1: 'md',
-          mediumScreenBP1: 'sm',
-        },
       },
+    },
+    button: {
+      // // TODO: review all options
+      // options: {
+      //   widthMin: 100,
+      //   borderRadius: 'Rounded',
+      //   textAlign: {
+      //     default: 'center',
+      //     center: true,
+      //     left: true,
+      //     right: true,
+      //   },
+      //   icon: {
+      //     enable: {
+      //       right: true,
+      //       left: true,
+      //     },
+      //   },
+      //   size: {
+      //     md: true,
+      //     sm: true,
+      //     lg: true,
+      //   },
+      //   responsive: {
+      //     smallScreenBP1: 'md',
+      //     mediumScreenBP1: 'sm',
+      //   },
+      // },
       elements: {
         group: {
           light: {
@@ -131,19 +164,19 @@ export const sandbox: KiskadeeTheme = {
                     bgColor: '#E4E4E4',
                   },
                 },
-                borderRadiusRounded: {
-                  xl: { borderRadius: '24px' },
-                  lg: { borderRadius: '18px' },
-                  md: { borderRadius: '16px' },
-                  sm: { borderRadius: '10px' },
-                },
-                borderRadiusFull: {
-                  xl: { borderRadius: '48px' },
-                  lg: { borderRadius: '30px' },
-                  md: { borderRadius: '20px' },
-                  sm: { borderRadius: '16px' },
-                },
-                borderRadiusNone: {},
+                // borderRadiusRounded: {
+                //   xl: { borderRadius: '24px' },
+                //   lg: { borderRadius: '18px' },
+                //   md: { borderRadius: '16px' },
+                //   sm: { borderRadius: '10px' },
+                // },
+                // borderRadiusFull: {
+                //   xl: { borderRadius: '48px' },
+                //   lg: { borderRadius: '30px' },
+                //   md: { borderRadius: '20px' },
+                //   sm: { borderRadius: '16px' },
+                // },
+                // borderRadiusNone: {},
               },
               type: {
                 contained: {
@@ -416,65 +449,65 @@ export const sandbox: KiskadeeTheme = {
                 //     color: '#6750A4',
                 //   },
                 // },
-                iconAttached: {
-                  md: {
-                    marginRight: '4px',
-                  },
-                },
-                borderRadiusRounded: {
-                  md: {
-                    borderTopLeftRadius: '15px',
-                    borderBottomLeftRadius: '15px',
-                  },
-                  sm: {
-                    borderTopLeftRadius: '9px',
-                    borderBottomLeftRadius: '9px',
-                  },
-                },
-                borderRadiusFull: {
-                  xl: { borderRadius: '47px' },
-                  lg: { borderRadius: '29px' },
-                  md: { borderRadius: '19px' },
-                  sm: { borderRadius: '15px' },
-                },
+                // iconAttached: {
+                //   md: {
+                //     marginRight: '4px',
+                //   },
+                // },
+                // borderRadiusRounded: {
+                //   md: {
+                //     borderTopLeftRadius: '15px',
+                //     borderBottomLeftRadius: '15px',
+                //   },
+                //   sm: {
+                //     borderTopLeftRadius: '9px',
+                //     borderBottomLeftRadius: '9px',
+                //   },
+                // },
+                // borderRadiusFull: {
+                //   xl: { borderRadius: '47px' },
+                //   lg: { borderRadius: '29px' },
+                //   md: { borderRadius: '19px' },
+                //   sm: { borderRadius: '15px' },
+                // },
               },
               type: {
                 contained: {
                   variant: {
                     primary: {
-                      iconDetached: {
-                        md: {
-                          bgColor: '#FFFFFF',
-                          // color: '#6750A4',
-                          // borderWidth: 1,
-                          // borderStyle: 'solid',
-                          // borderColor: '#6750A4',
-                        },
-                      },
+                      // iconDetached: {
+                      //   md: {
+                      //     bgColor: '#FFFFFF',
+                      //     // color: '#6750A4',
+                      //     // borderWidth: 1,
+                      //     // borderStyle: 'solid',
+                      //     // borderColor: '#6750A4',
+                      //   },
+                      // },
                     },
                     secondary: {
-                      iconAlone: {
-                        md: {
-                          color: '#6750A4',
-                        },
-                      },
+                      // iconAlone: {
+                      //   md: {
+                      //     color: '#6750A4',
+                      //   },
+                      // },
                     },
                     instagram: {
-                      iconDetached: {
-                        md: {
-                          color: '#d50060',
-                          // border: 'none',
-                          paddingTop: '7px',
-                          paddingRight: '7px',
-                          paddingBottom: '7px',
-                          paddingLeft: '7px',
-                          marginTop: '1px',
-                          marginRight: '1px',
-                          marginBottom: '1px',
-                          marginLeft: '1px',
-                          bgColor: 'rgb(255 255 255 / 85%)',
-                        },
-                      },
+                      // iconDetached: {
+                      //   md: {
+                      //     color: '#d50060',
+                      //     // border: 'none',
+                      //     paddingTop: '7px',
+                      //     paddingRight: '7px',
+                      //     paddingBottom: '7px',
+                      //     paddingLeft: '7px',
+                      //     marginTop: '1px',
+                      //     marginRight: '1px',
+                      //     marginBottom: '1px',
+                      //     marginLeft: '1px',
+                      //     bgColor: 'rgb(255 255 255 / 85%)',
+                      //   },
+                      // },
                     },
                   },
                 },
@@ -570,18 +603,18 @@ export const sandbox: KiskadeeTheme = {
                     color: '#979798',
                   },
                 },
-                iconDetached: {
-                  md: {
-                    paddingLeft: '16px',
-                    paddingRight: '16px',
-                  },
-                },
-                iconAttached: {
-                  md: {
-                    paddingLeft: '14px',
-                    paddingRight: '14px',
-                  },
-                },
+                // iconDetached: {
+                //   md: {
+                //     paddingLeft: '16px',
+                //     paddingRight: '16px',
+                //   },
+                // },
+                // iconAttached: {
+                //   md: {
+                //     paddingLeft: '14px',
+                //     paddingRight: '14px',
+                //   },
+                // },
               },
               type: {
                 contained: {

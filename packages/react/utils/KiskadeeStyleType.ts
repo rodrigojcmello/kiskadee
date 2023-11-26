@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react';
 import type { StyleValue } from '@/utils/property.type';
 import type { ElementType, ElementVariant, Size } from '../types';
 import type {
@@ -6,6 +5,80 @@ import type {
   ButtonSchema,
   ResponsiveOption,
 } from '../components/Button';
+
+export type ComponentOptions = Record<string, unknown>;
+
+export type Mode = 'light' | 'dark';
+
+export type StyleBySize = Partial<Record<Size, StyleValue>>;
+
+export type InteractionStatus =
+  | 'rest'
+  | 'hover'
+  | 'focus'
+  | 'pressed'
+  | 'visited'
+  | 'disabled';
+
+export type ElementTheme = Partial<
+  Record<
+    Mode,
+    Partial<
+      Record<
+        string | 'default',
+        {
+          base?: Partial<Record<InteractionStatus, StyleBySize>>;
+          type?: Partial<
+            Record<
+              ElementType,
+              {
+                base?: StyleBySize;
+                variant?: Partial<
+                  Record<
+                    ElementVariant,
+                    Partial<Record<InteractionStatus, StyleBySize>>
+                  >
+                >;
+              }
+            >
+          >;
+        }
+      >
+    >
+  >
+>;
+
+type ComponentMap = {
+  button: ButtonSchema;
+  textField: ButtonSchema;
+};
+
+export type ComponentName = keyof ComponentMap;
+
+export type ComponentSchema = {
+  [component: string]: {
+    // options?: {};
+    elements?: {
+      [element: string]: ElementTheme;
+    };
+  };
+};
+
+export interface KiskadeeTheme {
+  name: string;
+  author: string;
+  version: string;
+  kiskadeeVersion: string;
+  themeMode?: {
+    only?: 'light' | 'dark';
+    light?: string | 'default';
+    dark?: string | 'default';
+  };
+  // component?: {
+  //   [key in ComponentName]?: ComponentMap[key];
+  // };
+  components?: ComponentSchema;
+}
 
 export type KiskadeeStyleType = {
   // TODO: create a generic type
@@ -24,60 +97,3 @@ export type KiskadeeStyleType = {
     themeMode?: KiskadeeTheme['themeMode'];
   };
 };
-
-export type ComponentSchema = {
-  [element: string]: ElementTheme<CSSProperties, string>;
-};
-
-export type ComponentOptions = Record<string, unknown>;
-
-export type Mode = 'light' | 'dark';
-
-export type StyleBySize = Partial<Record<Size, StyleValue>>;
-
-export type ElementTheme<T, State extends string> = Partial<
-  Record<
-    Mode,
-    Partial<
-      Record<
-        string | 'default',
-        {
-          base?: Partial<Record<State, StyleBySize>>;
-          type?: Partial<
-            Record<
-              ElementType,
-              {
-                base?: StyleBySize;
-                variant?: Partial<
-                  Record<ElementVariant, Partial<Record<State, StyleBySize>>>
-                >;
-              }
-            >
-          >;
-        }
-      >
-    >
-  >
->;
-
-type ComponentMap = {
-  button: ButtonSchema;
-  textField: ButtonSchema;
-};
-
-export type ComponentName = keyof ComponentMap;
-
-export interface KiskadeeTheme {
-  name: string;
-  author: string;
-  version: string;
-  kiskadeeVersion: string;
-  themeMode?: {
-    only?: 'light' | 'dark';
-    light?: string | 'default';
-    dark?: string | 'default';
-  };
-  component?: {
-    [key in ComponentName]?: ComponentMap[key];
-  };
-}
