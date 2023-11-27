@@ -205,8 +205,27 @@ export const sandbox: KiskadeeTheme = {
                           border: {
                             color: '#7965af',
                           },
-                          // boxShadow:
-                          //   '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          shadow: [
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 2,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.3,
+                              },
+                            },
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 3,
+                              spread: 1,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.15,
+                              },
+                            },
+                          ],
                         },
                       },
                       focus: {
@@ -257,8 +276,27 @@ export const sandbox: KiskadeeTheme = {
                           border: {
                             color: '#D8CEE8',
                           },
-                          // boxShadow:
-                          //   '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          shadow: [
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 2,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.3,
+                              },
+                            },
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 3,
+                              spread: 1,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.15,
+                              },
+                            },
+                          ],
                         },
                       },
                       focus: {
@@ -294,8 +332,27 @@ export const sandbox: KiskadeeTheme = {
                             color: '#F7F2FA',
                           },
                           // rippleColor: '#6750a480',
-                          // boxShadow:
-                          //   '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          shadow: [
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 2,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.3,
+                              },
+                            },
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 3,
+                              spread: 1,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.15,
+                              },
+                            },
+                          ],
                         },
                       },
                       hover: {
@@ -303,8 +360,27 @@ export const sandbox: KiskadeeTheme = {
                           box: {
                             color: '#E8E0F0',
                           },
-                          // boxShadow:
-                          //   '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15)',
+                          shadow: [
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 2,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.3,
+                              },
+                            },
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 3,
+                              spread: 1,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.15,
+                              },
+                            },
+                          ],
                         },
                       },
                       focus: {
@@ -312,8 +388,27 @@ export const sandbox: KiskadeeTheme = {
                           box: {
                             color: '#E6DFF0',
                           },
-                          // boxShadow:
-                          //   '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          shadow: [
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 2,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.3,
+                              },
+                            },
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 3,
+                              spread: 1,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.15,
+                              },
+                            },
+                          ],
                         },
                       },
                       pressed: {
@@ -321,8 +416,27 @@ export const sandbox: KiskadeeTheme = {
                           box: {
                             color: '#E6DFF0',
                           },
-                          // boxShadow:
-                          //   '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          shadow: [
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 2,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.3,
+                              },
+                            },
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 3,
+                              spread: 1,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.15,
+                              },
+                            },
+                          ],
                         },
                       },
                       disabled: {
@@ -346,6 +460,15 @@ export const sandbox: KiskadeeTheme = {
                         md: {
                           // boxShadow:
                           //   '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          shadow: {
+                            x: 0,
+                            y: 1,
+                            blur: 2,
+                            color: {
+                              hex: '#000000',
+                              alpha: 0.3,
+                            },
+                          },
                         },
                       },
                     },
@@ -504,32 +627,17 @@ export const sandbox: KiskadeeTheme = {
                     font: {
                       size: 24,
                     },
-                    padding: {
-                      top: 7,
-                      right: 7,
-                      bottom: 7,
-                      left: 7,
-                    },
+                    padding: 7,
                     // color: '#6750A4',
                   },
                   lg: {
-                    padding: {
-                      top: 18,
-                      right: 18,
-                      bottom: 18,
-                      left: 18,
-                    },
+                    padding: 18,
                   },
                   sm: {
                     font: {
                       size: 20,
                     },
-                    padding: {
-                      top: 5,
-                      right: 5,
-                      bottom: 5,
-                      left: 5,
-                    },
+                    padding: 5,
                   },
                 },
                 // iconAlone: {
@@ -602,20 +710,10 @@ export const sandbox: KiskadeeTheme = {
                 outline: {
                   base: {
                     md: {
-                      padding: {
-                        top: 7,
-                        right: 7,
-                        bottom: 7,
-                        left: 7,
-                      },
+                      padding: 7,
                     },
                     lg: {
-                      padding: {
-                        top: 17,
-                        right: 17,
-                        bottom: 17,
-                        left: 17,
-                      },
+                      padding: 17,
                     },
                   },
                 },
@@ -637,20 +735,10 @@ export const sandbox: KiskadeeTheme = {
                     font: {
                       size: 24,
                     },
-                    padding: {
-                      top: 7,
-                      right: 7,
-                      bottom: 7,
-                      left: 7,
-                    },
+                    padding: 7,
                   },
                   lg: {
-                    padding: {
-                      top: 16,
-                      right: 16,
-                      bottom: 16,
-                      left: 16,
-                    },
+                    padding: 16,
                   },
                 },
               },
@@ -705,12 +793,7 @@ export const sandbox: KiskadeeTheme = {
                     },
                   },
                   lg: {
-                    padding: {
-                      top: 17,
-                      right: 17,
-                      bottom: 17,
-                      left: 17,
-                    },
+                    padding: 17,
                   },
                   xl: {
                     font: {
@@ -719,12 +802,7 @@ export const sandbox: KiskadeeTheme = {
                         unit: 'rem',
                       },
                     },
-                    padding: {
-                      top: 37,
-                      right: 37,
-                      bottom: 37,
-                      left: 37,
-                    },
+                    padding: 37,
                   },
                 },
                 disabled: {
@@ -810,20 +888,10 @@ export const sandbox: KiskadeeTheme = {
                       },
                     },
                     lg: {
-                      padding: {
-                        top: 17,
-                        right: 17,
-                        bottom: 17,
-                        left: 17,
-                      },
+                      padding: 17,
                     },
                     xl: {
-                      padding: {
-                        top: 37,
-                        right: 37,
-                        bottom: 37,
-                        left: 37,
-                      },
+                      padding: 37,
                     },
                   },
                   variant: {

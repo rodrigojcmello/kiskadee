@@ -19,17 +19,17 @@ type ColorProp =
       alpha: number;
     };
 
+interface Shadow {
+  color?: ColorProp;
+  x?: NumberProp;
+  y?: NumberProp;
+  blur?: NumberProp;
+  spread?: NumberProp;
+  inset?: boolean;
+}
+
 interface ShadowValue {
-  shadow?:
-    | 'none'
-    | {
-        color?: ColorProp;
-        x?: NumberProp;
-        y?: NumberProp;
-        blur?: NumberProp;
-        spread?: NumberProp;
-        inset?: boolean;
-      };
+  shadow?: 'none' | Shadow | Shadow[];
 }
 
 interface MarginValue {
