@@ -76,16 +76,10 @@ export const sandbox: KiskadeeTheme = {
                 rest: {
                   md: {
                     position: {
-                      top: {
-                        value: 12,
-                        unit: 'px',
-                      },
+                      top: 12,
                     },
                     box: {
-                      height: {
-                        value: 16,
-                        unit: 'px',
-                      },
+                      height: 16,
                     },
                   },
                   // md: {
@@ -107,10 +101,7 @@ export const sandbox: KiskadeeTheme = {
                         sm: {
                           box: {
                             color: '#d22649',
-                            height: {
-                              value: 12,
-                              unit: 'px',
-                            },
+                            height: 12,
                           },
                         },
                       },
@@ -120,10 +111,7 @@ export const sandbox: KiskadeeTheme = {
                         md: {
                           box: {
                             color: '#d8cee8',
-                            height: {
-                              value: 16,
-                              unit: 'px',
-                            },
+                            height: 16,
                           },
                         },
                       },
@@ -156,10 +144,7 @@ export const sandbox: KiskadeeTheme = {
                     outline: {
                       color: '#e8def8',
                       style: 'solid',
-                      width: {
-                        value: 2,
-                        unit: 'px',
-                      },
+                      width: 2,
                     },
                     // outlineOffset: 0,
                   },
@@ -203,10 +188,7 @@ export const sandbox: KiskadeeTheme = {
                           border: {
                             color: '#6750a4',
                             style: 'solid',
-                            width: {
-                              value: 1,
-                              unit: 'px',
-                            },
+                            width: 1,
                           },
                         },
                         sm: {
@@ -262,10 +244,7 @@ export const sandbox: KiskadeeTheme = {
                           border: {
                             color: '#E8DEF8',
                             style: 'solid',
-                            width: {
-                              value: 1,
-                              unit: 'px',
-                            },
+                            width: 1,
                           },
                           // rippleColor: '#6750a480',
                         },
@@ -378,10 +357,7 @@ export const sandbox: KiskadeeTheme = {
                       border: {
                         color: '#79747E',
                         style: 'solid',
-                        width: {
-                          value: 1,
-                          unit: 'px',
-                        },
+                        width: 1,
                       },
 
                       // rippleColor: '#6750a480',
@@ -416,12 +392,16 @@ export const sandbox: KiskadeeTheme = {
                       },
                       pressed: {
                         md: {
-                          box: { color: '#ECEAF4' },
+                          box: {
+                            color: '#ECEAF4',
+                          },
                         },
                       },
                       disabled: {
                         md: {
-                          box: { color: '#FFFFFF' },
+                          box: {
+                            color: '#FFFFFF',
+                          },
                           border: {
                             // color: '#1f1f1f1f',
                           },
@@ -431,7 +411,9 @@ export const sandbox: KiskadeeTheme = {
                     danger: {
                       rest: {
                         md: {
-                          box: { color: '#FFFFFF' },
+                          box: {
+                            color: '#FFFFFF',
+                          },
                           border: {
                             color: '#ff99c7',
                           },
@@ -446,30 +428,35 @@ export const sandbox: KiskadeeTheme = {
                       rest: {
                         md: {
                           // rippleColor: '#6750a480',
-                          box: { color: '#FFFFFF' },
+                          box: {
+                            color: '#FFFFFF',
+                          },
                           border: {
                             color: '#FFFFFF',
                             style: 'solid',
-                            width: {
-                              value: 1,
-                              unit: 'px',
-                            },
+                            width: 1,
                           },
                         },
                       },
                       hover: {
                         md: {
-                          box: { color: '#F3F1F8' },
+                          box: {
+                            color: '#F3F1F8',
+                          },
                         },
                       },
                       focus: {
                         md: {
-                          box: { color: '#ECEAF4' },
+                          box: {
+                            color: '#ECEAF4',
+                          },
                         },
                       },
                       pressed: {
                         md: {
-                          box: { color: '#ECEAF4' },
+                          box: {
+                            color: '#ECEAF4',
+                          },
                           border: {
                             color: '#dedaec',
                           },
@@ -477,7 +464,9 @@ export const sandbox: KiskadeeTheme = {
                       },
                       disabled: {
                         md: {
-                          box: { color: '#FFFFFF' },
+                          box: {
+                            color: '#FFFFFF',
+                          },
                         },
                       },
                     },
@@ -494,7 +483,9 @@ export const sandbox: KiskadeeTheme = {
                     primary: {
                       rest: {
                         md: {
-                          box: { color: '#D0BCFF' },
+                          box: {
+                            color: '#D0BCFF',
+                          },
                         },
                       },
                     },
@@ -511,75 +502,33 @@ export const sandbox: KiskadeeTheme = {
                 rest: {
                   md: {
                     font: {
-                      size: {
-                        value: 24,
-                        unit: 'px',
-                      },
+                      size: 24,
                     },
                     padding: {
-                      top: {
-                        value: 7,
-                        unit: 'px',
-                      },
-                      right: {
-                        value: 7,
-                        unit: 'px',
-                      },
-                      bottom: {
-                        value: 7,
-                        unit: 'px',
-                      },
-                      left: {
-                        value: 7,
-                        unit: 'px',
-                      },
+                      top: 7,
+                      right: 7,
+                      bottom: 7,
+                      left: 7,
                     },
                     // color: '#6750A4',
                   },
                   lg: {
                     padding: {
-                      top: {
-                        value: 18,
-                        unit: 'px',
-                      },
-                      right: {
-                        value: 18,
-                        unit: 'px',
-                      },
-                      bottom: {
-                        value: 18,
-                        unit: 'px',
-                      },
-                      left: {
-                        value: 18,
-                        unit: 'px',
-                      },
+                      top: 18,
+                      right: 18,
+                      bottom: 18,
+                      left: 18,
                     },
                   },
                   sm: {
                     font: {
-                      size: {
-                        value: 20,
-                        unit: 'px',
-                      },
+                      size: 20,
                     },
                     padding: {
-                      top: {
-                        value: 5,
-                        unit: 'px',
-                      },
-                      right: {
-                        value: 5,
-                        unit: 'px',
-                      },
-                      bottom: {
-                        value: 5,
-                        unit: 'px',
-                      },
-                      left: {
-                        value: 5,
-                        unit: 'px',
-                      },
+                      top: 5,
+                      right: 5,
+                      bottom: 5,
+                      left: 5,
                     },
                   },
                 },
@@ -654,42 +603,18 @@ export const sandbox: KiskadeeTheme = {
                   base: {
                     md: {
                       padding: {
-                        top: {
-                          value: 7,
-                          unit: 'px',
-                        },
-                        right: {
-                          value: 7,
-                          unit: 'px',
-                        },
-                        bottom: {
-                          value: 7,
-                          unit: 'px',
-                        },
-                        left: {
-                          value: 7,
-                          unit: 'px',
-                        },
+                        top: 7,
+                        right: 7,
+                        bottom: 7,
+                        left: 7,
                       },
                     },
                     lg: {
                       padding: {
-                        top: {
-                          value: 17,
-                          unit: 'px',
-                        },
-                        right: {
-                          value: 17,
-                          unit: 'px',
-                        },
-                        bottom: {
-                          value: 17,
-                          unit: 'px',
-                        },
-                        left: {
-                          value: 17,
-                          unit: 'px',
-                        },
+                        top: 17,
+                        right: 17,
+                        bottom: 17,
+                        left: 17,
                       },
                     },
                   },
@@ -705,56 +630,26 @@ export const sandbox: KiskadeeTheme = {
                 rest: {
                   sm: {
                     font: {
-                      size: {
-                        value: 16,
-                        unit: 'px',
-                      },
+                      size: 16,
                     },
                   },
                   md: {
                     font: {
-                      size: {
-                        value: 24,
-                        unit: 'px',
-                      },
+                      size: 24,
                     },
                     padding: {
-                      top: {
-                        value: 7,
-                        unit: 'px',
-                      },
-                      right: {
-                        value: 7,
-                        unit: 'px',
-                      },
-                      bottom: {
-                        value: 7,
-                        unit: 'px',
-                      },
-                      left: {
-                        value: 7,
-                        unit: 'px',
-                      },
+                      top: 7,
+                      right: 7,
+                      bottom: 7,
+                      left: 7,
                     },
                   },
                   lg: {
                     padding: {
-                      top: {
-                        value: 16,
-                        unit: 'px',
-                      },
-                      right: {
-                        value: 16,
-                        unit: 'px',
-                      },
-                      bottom: {
-                        value: 16,
-                        unit: 'px',
-                      },
-                      left: {
-                        value: 16,
-                        unit: 'px',
-                      },
+                      top: 16,
+                      right: 16,
+                      bottom: 16,
+                      left: 16,
                     },
                   },
                 },
@@ -764,18 +659,9 @@ export const sandbox: KiskadeeTheme = {
                   base: {
                     md: {
                       padding: {
-                        top: {
-                          value: 7,
-                          unit: 'px',
-                        },
-                        bottom: {
-                          value: 7,
-                          unit: 'px',
-                        },
-                        left: {
-                          value: 7,
-                          unit: 'px',
-                        },
+                        top: 7,
+                        bottom: 7,
+                        left: 7,
                       },
                     },
                   },
@@ -804,62 +690,26 @@ export const sandbox: KiskadeeTheme = {
                       style: 'normal',
                     },
                     padding: {
-                      top: {
-                        value: 9,
-                        unit: 'px',
-                      },
-                      right: {
-                        value: 23,
-                        unit: 'px',
-                      },
-                      bottom: {
-                        value: 9,
-                        unit: 'px',
-                      },
-                      left: {
-                        value: 23,
-                        unit: 'px',
-                      },
+                      top: 9,
+                      right: 23,
+                      bottom: 9,
+                      left: 23,
                     },
                   },
                   sm: {
                     padding: {
-                      top: {
-                        value: 5,
-                        unit: 'px',
-                      },
-                      right: {
-                        value: 15,
-                        unit: 'px',
-                      },
-                      bottom: {
-                        value: 5,
-                        unit: 'px',
-                      },
-                      left: {
-                        value: 15,
-                        unit: 'px',
-                      },
+                      top: 5,
+                      right: 15,
+                      bottom: 5,
+                      left: 15,
                     },
                   },
                   lg: {
                     padding: {
-                      top: {
-                        value: 17,
-                        unit: 'px',
-                      },
-                      right: {
-                        value: 17,
-                        unit: 'px',
-                      },
-                      bottom: {
-                        value: 17,
-                        unit: 'px',
-                      },
-                      left: {
-                        value: 17,
-                        unit: 'px',
-                      },
+                      top: 17,
+                      right: 17,
+                      bottom: 17,
+                      left: 17,
                     },
                   },
                   xl: {
@@ -870,22 +720,10 @@ export const sandbox: KiskadeeTheme = {
                       },
                     },
                     padding: {
-                      top: {
-                        value: 37,
-                        unit: 'px',
-                      },
-                      right: {
-                        value: 37,
-                        unit: 'px',
-                      },
-                      bottom: {
-                        value: 37,
-                        unit: 'px',
-                      },
-                      left: {
-                        value: 37,
-                        unit: 'px',
-                      },
+                      top: 37,
+                      right: 37,
+                      bottom: 37,
+                      left: 37,
                     },
                   },
                 },
@@ -954,22 +792,10 @@ export const sandbox: KiskadeeTheme = {
                   base: {
                     sm: {
                       padding: {
-                        top: {
-                          value: 5,
-                          unit: 'px',
-                        },
-                        right: {
-                          value: 15,
-                          unit: 'px',
-                        },
-                        bottom: {
-                          value: 5,
-                          unit: 'px',
-                        },
-                        left: {
-                          value: 15,
-                          unit: 'px',
-                        },
+                        top: 5,
+                        right: 15,
+                        bottom: 5,
+                        left: 15,
                       },
                     },
                     md: {
@@ -977,62 +803,26 @@ export const sandbox: KiskadeeTheme = {
                         color: '#6750A4',
                       },
                       padding: {
-                        top: {
-                          value: 9,
-                          unit: 'px',
-                        },
-                        right: {
-                          value: 23,
-                          unit: 'px',
-                        },
-                        bottom: {
-                          value: 9,
-                          unit: 'px',
-                        },
-                        left: {
-                          value: 23,
-                          unit: 'px',
-                        },
+                        top: 9,
+                        right: 23,
+                        bottom: 9,
+                        left: 23,
                       },
                     },
                     lg: {
                       padding: {
-                        top: {
-                          value: 17,
-                          unit: 'px',
-                        },
-                        right: {
-                          value: 17,
-                          unit: 'px',
-                        },
-                        bottom: {
-                          value: 17,
-                          unit: 'px',
-                        },
-                        left: {
-                          value: 17,
-                          unit: 'px',
-                        },
+                        top: 17,
+                        right: 17,
+                        bottom: 17,
+                        left: 17,
                       },
                     },
                     xl: {
                       padding: {
-                        top: {
-                          value: 37,
-                          unit: 'px',
-                        },
-                        right: {
-                          value: 37,
-                          unit: 'px',
-                        },
-                        bottom: {
-                          value: 37,
-                          unit: 'px',
-                        },
-                        left: {
-                          value: 37,
-                          unit: 'px',
-                        },
+                        top: 37,
+                        right: 37,
+                        bottom: 37,
+                        left: 37,
                       },
                     },
                   },
@@ -1041,7 +831,7 @@ export const sandbox: KiskadeeTheme = {
                       disabled: {
                         md: {
                           font: {
-                            color: '#1b1a1e61',
+                            // color: '#1b1a1e61',
                           },
                         },
                       },
@@ -1070,7 +860,7 @@ export const sandbox: KiskadeeTheme = {
                       disabled: {
                         md: {
                           font: {
-                            color: '#1b1a1e61',
+                            // color: '#1b1a1e61',
                           },
                         },
                       },

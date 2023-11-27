@@ -1,7 +1,12 @@
-interface NumberProp {
-  value: number;
-  unit: 'px' | 'rem';
-}
+// default is px
+type NumberValue = number;
+
+type NumberProp =
+  | NumberValue
+  | {
+      value: NumberValue;
+      unit: 'px' | 'rem';
+    };
 
 // # + 6 digits
 type HexColor = string;
