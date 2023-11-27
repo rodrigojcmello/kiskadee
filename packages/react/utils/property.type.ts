@@ -9,17 +9,24 @@ type NumberProp =
     };
 
 // # + 6 digits
-type HexColor = string;
+type HexValue = string;
 
 type NoneValue = 'none';
 
 type ColorProp =
-  | HexColor
+  | HexValue
   | {
-      hex: HexColor;
+      hex: HexValue;
       // between 0 and 1
       alpha: number;
     };
+
+interface PositionProp {
+  top?: NumberProp;
+  right?: NumberProp;
+  bottom?: NumberProp;
+  left?: NumberProp;
+}
 
 // Shadow --------------------------------------------------------------------------------------------------------------
 
@@ -33,45 +40,28 @@ interface ShadowProp {
 }
 
 interface ShadowValue {
-  shadow?: 'none' | ShadowProp | ShadowProp[];
+  shadow?: NoneValue | ShadowProp | ShadowProp[];
 }
 
 // Margin --------------------------------------------------------------------------------------------------------------
 
 interface MarginValue {
-  margin?:
-    | NumberProp
-    | {
-        top?: NumberProp;
-        right?: NumberProp;
-        bottom?: NumberProp;
-        left?: NumberProp;
-      };
+  margin?: NumberProp | PositionProp;
 }
 
 // Padding -------------------------------------------------------------------------------------------------------------
 
 interface PaddingValue {
-  padding?:
-    | NumberProp
-    | {
-        top?: NumberProp;
-        right?: NumberProp;
-        bottom?: NumberProp;
-        left?: NumberProp;
-      };
+  padding?: NumberProp | PositionProp;
 }
 
 // Position ------------------------------------------------------------------------------------------------------------
 
 type PositionType = 'absolute' | 'relative' | 'fixed';
 
+// TODO: We do we need this? It maybe a immutable property
 interface PositionValue {
-  position?: {
-    top?: NumberProp;
-    right?: NumberProp;
-    bottom?: NumberProp;
-    left?: NumberProp;
+  position?: PositionProp & {
     type?: PositionType;
   };
 }
@@ -80,6 +70,7 @@ interface PositionValue {
 
 interface BoxValue {
   box?: {
+    // TODO: Add support to gradient
     color?: ColorProp;
     height?: NumberProp;
     weight?: NumberProp;
@@ -115,6 +106,8 @@ interface BorderValue {
 
 // Outline -------------------------------------------------------------------------------------------------------------
 
+// TODO: Why do we have outline? It's just for focus?
+
 type OutlineStyle = 'solid' | 'dotted';
 
 interface OutlineValue {
@@ -134,6 +127,7 @@ type FontWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 type FontStyle = 'normal' | 'italic';
 
 interface FontValue {
+  // TODO: Can we have a global font setup? Because it probably will be the same for all components
   font?: {
     family?: FontFamily;
     color?: ColorProp;
