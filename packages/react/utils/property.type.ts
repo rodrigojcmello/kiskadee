@@ -11,6 +11,8 @@ type NumberProp =
 // # + 6 digits
 type HexColor = string;
 
+type NoneValue = 'none';
+
 type ColorProp =
   | HexColor
   | {
@@ -19,7 +21,9 @@ type ColorProp =
       alpha: number;
     };
 
-interface Shadow {
+// Shadow --------------------------------------------------------------------------------------------------------------
+
+interface ShadowProp {
   color?: ColorProp;
   x?: NumberProp;
   y?: NumberProp;
@@ -29,8 +33,10 @@ interface Shadow {
 }
 
 interface ShadowValue {
-  shadow?: 'none' | Shadow | Shadow[];
+  shadow?: 'none' | ShadowProp | ShadowProp[];
 }
+
+// Margin --------------------------------------------------------------------------------------------------------------
 
 interface MarginValue {
   margin?:
@@ -43,6 +49,8 @@ interface MarginValue {
       };
 }
 
+// Padding -------------------------------------------------------------------------------------------------------------
+
 interface PaddingValue {
   padding?:
     | NumberProp
@@ -54,15 +62,21 @@ interface PaddingValue {
       };
 }
 
+// Position ------------------------------------------------------------------------------------------------------------
+
+type PositionType = 'absolute' | 'relative' | 'fixed';
+
 interface PositionValue {
   position?: {
     top?: NumberProp;
     right?: NumberProp;
     bottom?: NumberProp;
     left?: NumberProp;
-    type?: 'absolute' | 'relative' | 'fixed';
+    type?: PositionType;
   };
 }
+
+// Box -----------------------------------------------------------------------------------------------------------------
 
 interface BoxValue {
   box?: {
@@ -71,6 +85,8 @@ interface BoxValue {
     weight?: NumberProp;
   };
 }
+
+// Radius --------------------------------------------------------------------------------------------------------------
 
 interface RadiusValue {
   radius?:
@@ -83,36 +99,52 @@ interface RadiusValue {
       };
 }
 
+// Border --------------------------------------------------------------------------------------------------------------
+
+type BorderStyle = 'solid' | 'dotted' | 'dashed';
+
 interface BorderValue {
   border?:
-    | 'none'
+    | NoneValue
     | {
         width?: NumberProp;
         color?: ColorProp;
-        style?: 'solid' | 'dotted' | 'dashed';
+        style?: BorderStyle;
       };
 }
+
+// Outline -------------------------------------------------------------------------------------------------------------
+
+type OutlineStyle = 'solid' | 'dotted';
 
 interface OutlineValue {
   outline?:
-    | 'none'
+    | NoneValue
     | {
         width?: NumberProp;
         color?: ColorProp;
-        style?: 'solid' | 'dotted';
+        style?: OutlineStyle;
       };
 }
 
+// Font ----------------------------------------------------------------------------------------------------------------
+
+type FontFamily = string | string[];
+type FontWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+type FontStyle = 'normal' | 'italic';
+
 interface FontValue {
   font?: {
-    family?: string | [string];
+    family?: FontFamily;
     color?: ColorProp;
     size?: NumberProp;
     height?: NumberProp;
-    weight?: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
-    style?: 'normal' | 'italic';
+    weight?: FontWeight;
+    style?: FontStyle;
   };
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
 
 export type StyleValue =
   | FontValue
@@ -124,19 +156,3 @@ export type StyleValue =
   | PaddingValue
   | MarginValue
   | ShadowValue;
-
-// const x: StyleValue = {
-//   box: {
-//     color: {
-//       hex: '#000000',
-//       alpha: 1,
-//     },
-//   },
-//   font: {
-//     color: {
-//       hex: '#000000',
-//       alpha: 0.5,
-//     },
-//     family: ['Arial'],
-//   },
-// };

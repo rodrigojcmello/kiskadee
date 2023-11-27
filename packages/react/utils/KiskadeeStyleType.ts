@@ -10,7 +10,6 @@ export type ComponentOptions = Record<string, unknown>;
 
 export type Mode = 'light' | 'dark';
 
-// export type StyleBySize = Partial<Record<Size, StyleValue>>;
 export type StyleBySize = Partial<Record<Size, StyleValue>>;
 
 export type Status =

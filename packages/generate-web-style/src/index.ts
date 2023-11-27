@@ -27,8 +27,8 @@ try {
 
   let uniqueStyle: UniqueStyle = {};
 
-  for (const componentName of Object.keys(schema.component ?? {})) {
-    const component = schema.component?.[componentName as ComponentName] ?? {};
+  for (const componentName of Object.keys(schema.components ?? {})) {
+    const component = schema.components?.[componentName as ComponentName] ?? {};
     const elementList = component.elements;
 
     if (elementList) {

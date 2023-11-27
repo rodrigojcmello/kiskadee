@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import type { KiskadeeTheme } from '@kiskadee/react';
 
 export const sandbox: KiskadeeTheme = {
@@ -9,34 +10,64 @@ export const sandbox: KiskadeeTheme = {
   //   light: 'default',
   //   dark: 'default',
   // },
-  component: {
-    button: {
-      // TODO: review all options
-      options: {
-        widthMin: 100,
-        borderRadius: 'Rounded',
-        textAlign: {
-          default: 'center',
-          center: true,
-          left: true,
-          right: true,
-        },
-        icon: {
-          enable: {
-            right: true,
-            left: true,
+  components: {
+    label: {
+      elements: {
+        container: {
+          dark: {
+            default: {
+              base: {
+                rest: {
+                  md: {
+                    position: {
+                      type: 'absolute',
+                    },
+                  },
+                },
+              },
+              type: {
+                contained: {
+                  base: {
+                    md: {
+                      font: {
+                        color: '#FFFFFF',
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
-        size: {
-          md: true,
-          sm: true,
-          lg: true,
-        },
-        responsive: {
-          smallScreenBP1: 'md',
-          mediumScreenBP1: 'sm',
-        },
       },
+    },
+    button: {
+      // // TODO: review all options
+      // options: {
+      //   widthMin: 100,
+      //   borderRadius: 'Rounded',
+      //   textAlign: {
+      //     default: 'center',
+      //     center: true,
+      //     left: true,
+      //     right: true,
+      //   },
+      //   icon: {
+      //     enable: {
+      //       right: true,
+      //       left: true,
+      //     },
+      //   },
+      //   size: {
+      //     md: true,
+      //     sm: true,
+      //     lg: true,
+      //   },
+      //   responsive: {
+      //     smallScreenBP1: 'md',
+      //     mediumScreenBP1: 'sm',
+      //   },
+      // },
       elements: {
         group: {
           light: {
@@ -44,9 +75,17 @@ export const sandbox: KiskadeeTheme = {
               base: {
                 rest: {
                   md: {
-                    top: 12,
-                    height: 16,
+                    position: {
+                      top: 12,
+                    },
+                    box: {
+                      height: 16,
+                    },
                   },
+                  // md: {
+                  //   top: '12px',
+                  //   height: '16px',
+                  // },
                 },
               },
               type: {
@@ -55,19 +94,25 @@ export const sandbox: KiskadeeTheme = {
                     primary: {
                       rest: {
                         md: {
-                          background: '#745eb0',
+                          box: {
+                            color: '#745eb0',
+                          },
                         },
                         sm: {
-                          background: 'red',
-                          height: 12,
+                          box: {
+                            color: '#d22649',
+                            height: 12,
+                          },
                         },
                       },
                     },
                     secondary: {
                       rest: {
                         md: {
-                          background: '#d8cee8',
-                          height: 16,
+                          box: {
+                            color: '#d8cee8',
+                            height: 16,
+                          },
                         },
                       },
                     },
@@ -78,7 +123,9 @@ export const sandbox: KiskadeeTheme = {
                     primary: {
                       rest: {
                         md: {
-                          background: '#f3f1f8',
+                          box: {
+                            color: '#f3f1f8',
+                          },
                         },
                       },
                     },
@@ -94,36 +141,40 @@ export const sandbox: KiskadeeTheme = {
               base: {
                 focus: {
                   md: {
-                    outlineWidth: 2,
-                    outlineColor: '#e8def8',
-                    outlineStyle: 'solid',
+                    outline: {
+                      color: '#e8def8',
+                      style: 'solid',
+                      width: 2,
+                    },
                     // outlineOffset: 0,
                   },
                 },
                 pressed: {
                   md: {
-                    boxShadow: 'none',
+                    shadow: 'none',
                   },
                 },
                 disabled: {
                   md: {
-                    boxShadow: 'none',
-                    background: '#E4E4E4',
+                    shadow: 'none',
+                    box: {
+                      color: '#e4e4e4',
+                    },
                   },
                 },
-                borderRadiusRounded: {
-                  xl: { borderRadius: 24 },
-                  lg: { borderRadius: 18 },
-                  md: { borderRadius: 16 },
-                  sm: { borderRadius: 10 },
-                },
-                borderRadiusFull: {
-                  xl: { borderRadius: 48 },
-                  lg: { borderRadius: 30 },
-                  md: { borderRadius: 20 },
-                  sm: { borderRadius: 16 },
-                },
-                borderRadiusNone: {},
+                // borderRadiusRounded: {
+                //   xl: { borderRadius: '24px' },
+                //   lg: { borderRadius: '18px' },
+                //   md: { borderRadius: '16px' },
+                //   sm: { borderRadius: '10px' },
+                // },
+                // borderRadiusFull: {
+                //   xl: { borderRadius: '48px' },
+                //   lg: { borderRadius: '30px' },
+                //   md: { borderRadius: '20px' },
+                //   sm: { borderRadius: '16px' },
+                // },
+                // borderRadiusNone: {},
               },
               type: {
                 contained: {
@@ -131,119 +182,293 @@ export const sandbox: KiskadeeTheme = {
                     primary: {
                       rest: {
                         md: {
-                          background: '#6750A4',
-                          rippleColor: '#ffffff80',
-                          borderWidth: 1,
-                          borderColor: '#6750A4',
-                          borderStyle: 'solid',
+                          box: {
+                            color: '#6750a4',
+                          },
+                          border: {
+                            color: '#6750a4',
+                            style: 'solid',
+                            width: 1,
+                          },
                         },
                         sm: {
-                          background: 'red',
+                          box: {
+                            color: '#d22649',
+                          },
                         },
                       },
                       hover: {
                         md: {
-                          background: '#735EAB',
-                          borderColor: '#735EAB',
-                          boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          box: {
+                            color: '#7965af',
+                          },
+                          border: {
+                            color: '#7965af',
+                          },
+                          shadow: [
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 2,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.3,
+                              },
+                            },
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 3,
+                              spread: 1,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.15,
+                              },
+                            },
+                          ],
                         },
                       },
                       focus: {
                         md: {
-                          background: '#7965AF',
+                          box: {
+                            color: '#7965AF',
+                          },
                         },
                       },
                       pressed: {
                         md: {
-                          background: '#5c4893',
-                          borderColor: '#564389',
+                          box: {
+                            color: '#564389',
+                          },
+                          border: {
+                            color: '#564389',
+                          },
                         },
                       },
                       disabled: {
                         md: {
-                          boxShadow: 'none',
-                          background: '#E4E4E4',
+                          shadow: 'none',
+                          box: {
+                            color: '#E4E4E4',
+                          },
                         },
                       },
                     },
                     secondary: {
                       rest: {
                         md: {
-                          background: '#E8DEF8',
-                          borderWidth: 1,
-                          borderColor: '#E8DEF8',
-                          borderStyle: 'solid',
-                          rippleColor: '#6750a480',
+                          box: {
+                            color: '#E8DEF8',
+                          },
+                          border: {
+                            color: '#E8DEF8',
+                            style: 'solid',
+                            width: 1,
+                          },
+                          // rippleColor: '#6750a480',
                         },
                       },
                       hover: {
                         md: {
-                          background: '#D8CEE8',
-                          borderColor: '#D8CEE8',
-                          boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          box: {
+                            color: '#D8CEE8',
+                          },
+                          border: {
+                            color: '#D8CEE8',
+                          },
+                          shadow: [
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 2,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.3,
+                              },
+                            },
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 3,
+                              spread: 1,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.15,
+                              },
+                            },
+                          ],
                         },
                       },
                       focus: {
                         md: {
-                          background: '#D0C6DF',
+                          box: {
+                            color: '#D0C6DF',
+                          },
                         },
                       },
                       pressed: {
                         md: {
-                          background: '#D0C6DF',
-                          borderColor: '#c4b7d7',
+                          box: {
+                            color: '#D0C6DF',
+                          },
+                          border: {
+                            color: '#D0C6DF',
+                          },
                         },
                       },
                       disabled: {
                         md: {
-                          boxShadow: 'none',
-                          background: '#E4E4E4',
+                          shadow: 'none',
+                          box: {
+                            color: '#E4E4E4',
+                          },
                         },
                       },
                     },
                     tertiary: {
                       rest: {
                         md: {
-                          background: '#F7F2FA',
-                          rippleColor: '#6750a480',
-                          boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          box: {
+                            color: '#F7F2FA',
+                          },
+                          // rippleColor: '#6750a480',
+                          shadow: [
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 2,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.3,
+                              },
+                            },
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 3,
+                              spread: 1,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.15,
+                              },
+                            },
+                          ],
                         },
                       },
                       hover: {
                         md: {
-                          background: '#E8E0F0',
-                          boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15)',
+                          box: {
+                            color: '#E8E0F0',
+                          },
+                          shadow: [
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 2,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.3,
+                              },
+                            },
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 3,
+                              spread: 1,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.15,
+                              },
+                            },
+                          ],
                         },
                       },
                       focus: {
                         md: {
-                          background: '#E6DFF0',
-                          boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          box: {
+                            color: '#E6DFF0',
+                          },
+                          shadow: [
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 2,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.3,
+                              },
+                            },
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 3,
+                              spread: 1,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.15,
+                              },
+                            },
+                          ],
                         },
                       },
                       pressed: {
                         md: {
-                          background: '#E6DFF0',
-                          boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          box: {
+                            color: '#E6DFF0',
+                          },
+                          shadow: [
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 2,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.3,
+                              },
+                            },
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 3,
+                              spread: 1,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.15,
+                              },
+                            },
+                          ],
                         },
                       },
                       disabled: {
                         md: {
-                          background: '#E4E4E4',
-                          boxShadow: 'none',
+                          box: {
+                            color: '#E4E4E4',
+                          },
+                          shadow: 'none',
                         },
                       },
                     },
                     instagram: {
                       rest: {
                         md: {
-                          background: 'linear-gradient(87.1deg, #FFD522 -10.92%, #F1000B 48.02%, #B900B3 106.81%)',
-                          rippleColor: '#ffffff80',
+                          // bgColor:
+                          //   'linear-gradient(87.1deg, #FFD522 -10.92%, #F1000B 48.02%, #B900B3 106.81%)',
+                          // rippleColor: '#ffffff80',
                         },
                       },
                       hover: {
                         md: {
-                          boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          // boxShadow:
+                          //   '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                          shadow: {
+                            x: 0,
+                            y: 1,
+                            blur: 2,
+                            color: {
+                              hex: '#000000',
+                              alpha: 0.3,
+                            },
+                          },
                         },
                       },
                     },
@@ -252,48 +477,69 @@ export const sandbox: KiskadeeTheme = {
                 outline: {
                   base: {
                     md: {
-                      borderWidth: '1px',
-                      borderStyle: 'solid',
-                      borderColor: '#79747E',
-                      rippleColor: '#6750a480',
+                      border: {
+                        color: '#79747E',
+                        style: 'solid',
+                        width: 1,
+                      },
+
+                      // rippleColor: '#6750a480',
                     },
                   },
                   variant: {
                     primary: {
                       rest: {
                         md: {
-                          background: '#FFFFFF',
+                          box: {
+                            color: '#FFFFFF',
+                          },
                         },
                       },
                       hover: {
                         md: {
-                          background: '#F3F1F8',
+                          box: {
+                            color: '#F3F1F8',
+                          },
                           // borderColor: 'red',
                         },
                       },
                       focus: {
                         md: {
-                          background: '#ECEAF4',
-                          borderColor: '#6750A4',
+                          box: {
+                            color: '#ECEAF4',
+                          },
+                          border: {
+                            color: '#6750A4',
+                          },
                         },
                       },
                       pressed: {
                         md: {
-                          background: '#ECEAF4',
+                          box: {
+                            color: '#ECEAF4',
+                          },
                         },
                       },
                       disabled: {
                         md: {
-                          background: '#FFFFFF',
-                          borderColor: '#1f1f1f1f',
+                          box: {
+                            color: '#FFFFFF',
+                          },
+                          border: {
+                            // color: '#1f1f1f1f',
+                          },
                         },
                       },
                     },
                     danger: {
                       rest: {
                         md: {
-                          background: '#FFFFFF',
-                          borderColor: '#ff99c7',
+                          box: {
+                            color: '#FFFFFF',
+                          },
+                          border: {
+                            color: '#ff99c7',
+                          },
                         },
                       },
                     },
@@ -304,32 +550,46 @@ export const sandbox: KiskadeeTheme = {
                     primary: {
                       rest: {
                         md: {
-                          rippleColor: '#6750a480',
-                          background: '#FFFFFF',
-                          borderWidth: 1,
-                          borderColor: '#FFFFFF',
-                          borderStyle: 'solid',
+                          // rippleColor: '#6750a480',
+                          box: {
+                            color: '#FFFFFF',
+                          },
+                          border: {
+                            color: '#FFFFFF',
+                            style: 'solid',
+                            width: 1,
+                          },
                         },
                       },
                       hover: {
                         md: {
-                          background: '#F3F1F8',
+                          box: {
+                            color: '#F3F1F8',
+                          },
                         },
                       },
                       focus: {
                         md: {
-                          background: '#ECEAF4',
+                          box: {
+                            color: '#ECEAF4',
+                          },
                         },
                       },
                       pressed: {
                         md: {
-                          background: '#ECEAF4',
-                          borderColor: '#dedaec',
+                          box: {
+                            color: '#ECEAF4',
+                          },
+                          border: {
+                            color: '#dedaec',
+                          },
                         },
                       },
                       disabled: {
                         md: {
-                          background: '#FFFFFF',
+                          box: {
+                            color: '#FFFFFF',
+                          },
                         },
                       },
                     },
@@ -346,7 +606,9 @@ export const sandbox: KiskadeeTheme = {
                     primary: {
                       rest: {
                         md: {
-                          background: '#D0BCFF',
+                          box: {
+                            color: '#D0BCFF',
+                          },
                         },
                       },
                     },
@@ -362,25 +624,20 @@ export const sandbox: KiskadeeTheme = {
               base: {
                 rest: {
                   md: {
-                    fontSize: 24,
-                    paddingTop: 7,
-                    paddingBottom: 7,
-                    paddingLeft: 7,
-                    paddingRight: 7,
+                    font: {
+                      size: 24,
+                    },
+                    padding: 7,
                     // color: '#6750A4',
                   },
                   lg: {
-                    paddingTop: 18,
-                    paddingBottom: 18,
-                    paddingLeft: 18,
-                    paddingRight: 18,
+                    padding: 18,
                   },
                   sm: {
-                    fontSize: 20,
-                    paddingTop: 5,
-                    paddingBottom: 5,
-                    paddingLeft: 5,
-                    paddingRight: 5,
+                    font: {
+                      size: 20,
+                    },
+                    padding: 5,
                   },
                 },
                 // iconAlone: {
@@ -388,75 +645,75 @@ export const sandbox: KiskadeeTheme = {
                 //     color: '#6750A4',
                 //   },
                 // },
-                iconAttached: {
-                  md: {
-                    marginRight: 4,
-                  },
-                },
-                borderRadiusRounded: {
-                  md: {
-                    borderTopLeftRadius: 15,
-                    borderBottomLeftRadius: 15,
-                  },
-                  sm: {
-                    borderTopLeftRadius: 9,
-                    borderBottomLeftRadius: 9,
-                  },
-                },
-                borderRadiusFull: {
-                  xl: { borderRadius: 47 },
-                  lg: { borderRadius: 29 },
-                  md: { borderRadius: 19 },
-                  sm: { borderRadius: 15 },
-                },
+                // iconAttached: {
+                //   md: {
+                //     marginRight: '4px',
+                //   },
+                // },
+                // borderRadiusRounded: {
+                //   md: {
+                //     borderTopLeftRadius: '15px',
+                //     borderBottomLeftRadius: '15px',
+                //   },
+                //   sm: {
+                //     borderTopLeftRadius: '9px',
+                //     borderBottomLeftRadius: '9px',
+                //   },
+                // },
+                // borderRadiusFull: {
+                //   xl: { borderRadius: '47px' },
+                //   lg: { borderRadius: '29px' },
+                //   md: { borderRadius: '19px' },
+                //   sm: { borderRadius: '15px' },
+                // },
               },
               type: {
                 contained: {
                   variant: {
                     primary: {
-                      iconDetached: {
-                        md: {
-                          background: '#FFFFFF',
-                          color: '#6750A4',
-                          // borderWidth: 1,
-                          // borderStyle: 'solid',
-                          // borderColor: '#6750A4',
-                        },
-                      },
+                      // iconDetached: {
+                      //   md: {
+                      //     bgColor3: '#FFFFFF',
+                      //     // color: '#6750A4',
+                      //     // borderWidth: 1,
+                      //     // borderStyle: 'solid',
+                      //     // borderColor: '#6750A4',
+                      //   },
+                      // },
                     },
                     secondary: {
-                      iconAlone: {
-                        md: {
-                          color: '#6750A4',
-                        },
-                      },
+                      // iconAlone: {
+                      //   md: {
+                      //     color: '#6750A4',
+                      //   },
+                      // },
                     },
                     instagram: {
-                      iconDetached: {
-                        md: {
-                          color: '#d50060',
-                          border: 'none',
-                          padding: 7,
-                          margin: 1,
-                          background: 'rgb(255 255 255 / 85%)',
-                        },
-                      },
+                      // iconDetached: {
+                      //   md: {
+                      //     color: '#d50060',
+                      //     // border: 'none',
+                      //     paddingTop: '7px',
+                      //     paddingRight: '7px',
+                      //     paddingBottom: '7px',
+                      //     paddingLeft: '7px',
+                      //     marginTop: '1px',
+                      //     marginRight: '1px',
+                      //     marginBottom: '1px',
+                      //     marginLeft: '1px',
+                      //     box: {color:'rgb}(255 255 255 / 85%)',
+                      //   },
+                      // },
                     },
                   },
                 },
                 outline: {
                   base: {
                     md: {
-                      paddingTop: 7,
-                      paddingBottom: 7,
-                      paddingLeft: 7,
-                      paddingRight: 7,
+                      padding: 7,
                     },
                     lg: {
-                      paddingTop: 17,
-                      paddingBottom: 17,
-                      paddingLeft: 17,
-                      paddingRight: 17,
+                      padding: 17,
                     },
                   },
                 },
@@ -470,10 +727,14 @@ export const sandbox: KiskadeeTheme = {
               base: {
                 rest: {
                   sm: {
-                    fontSize: 16,
+                    font: {
+                      size: 16,
+                    },
                   },
                   md: {
-                    fontSize: 24,
+                    font: {
+                      size: 24,
+                    },
                     padding: 7,
                   },
                   lg: {
@@ -485,9 +746,11 @@ export const sandbox: KiskadeeTheme = {
                 outline: {
                   base: {
                     md: {
-                      paddingTop: 7,
-                      paddingBottom: 7,
-                      paddingLeft: 7,
+                      padding: {
+                        top: 7,
+                        bottom: 7,
+                        left: 7,
+                      },
                     },
                   },
                 },
@@ -501,53 +764,66 @@ export const sandbox: KiskadeeTheme = {
               base: {
                 rest: {
                   md: {
-                    fontSize: '0.875rem',
-                    lineHeight: '20px',
-                    fontWeight: 500,
-                    fontFamily: 'Roboto',
-                    fontStyle: 'normal',
-                    paddingTop: 9,
-                    paddingBottom: 9,
-                    paddingLeft: 23,
-                    paddingRight: 23,
+                    font: {
+                      size: {
+                        value: 0.875,
+                        unit: 'rem',
+                      },
+                      height: {
+                        value: 1.25,
+                        unit: 'rem',
+                      },
+                      weight: 500,
+                      family: 'Roboto',
+                      style: 'normal',
+                    },
+                    padding: {
+                      top: 9,
+                      right: 23,
+                      bottom: 9,
+                      left: 23,
+                    },
                   },
                   sm: {
-                    paddingTop: 5,
-                    paddingBottom: 5,
-                    paddingLeft: 15,
-                    paddingRight: 15,
+                    padding: {
+                      top: 5,
+                      right: 15,
+                      bottom: 5,
+                      left: 15,
+                    },
                   },
                   lg: {
-                    paddingTop: 17,
-                    paddingBottom: 17,
-                    paddingLeft: 17,
-                    paddingRight: 17,
+                    padding: 17,
                   },
                   xl: {
-                    fontSize: '2rem',
-                    paddingTop: 37,
-                    paddingBottom: 37,
-                    paddingLeft: 37,
-                    paddingRight: 37,
+                    font: {
+                      size: {
+                        value: 2,
+                        unit: 'rem',
+                      },
+                    },
+                    padding: 37,
                   },
                 },
                 disabled: {
                   md: {
-                    color: '#979798',
+                    font: {
+                      color: '#979798',
+                    },
                   },
                 },
-                iconDetached: {
-                  md: {
-                    paddingLeft: 16,
-                    paddingRight: 16,
-                  },
-                },
-                iconAttached: {
-                  md: {
-                    paddingLeft: 14,
-                    paddingRight: 14,
-                  },
-                },
+                // iconDetached: {
+                //   md: {
+                //     paddingLeft: '16px',
+                //     paddingRight: '16px',
+                //   },
+                // },
+                // iconAttached: {
+                //   md: {
+                //     paddingLeft: '14px',
+                //     paddingRight: '14px',
+                //   },
+                // },
               },
               type: {
                 contained: {
@@ -555,28 +831,36 @@ export const sandbox: KiskadeeTheme = {
                     primary: {
                       rest: {
                         md: {
-                          color: '#FFFFFF',
+                          font: {
+                            color: '#FFFFFF',
+                          },
                         },
                       },
                     },
                     secondary: {
                       rest: {
                         md: {
-                          color: '#1D192B',
+                          font: {
+                            color: '#1D192B',
+                          },
                         },
                       },
                     },
                     tertiary: {
                       rest: {
                         md: {
-                          color: '#6750A4',
+                          font: {
+                            color: '#6750A4',
+                          },
                         },
                       },
                     },
                     instagram: {
                       rest: {
                         md: {
-                          color: '#FFFFFF',
+                          font: {
+                            color: '#FFFFFF',
+                          },
                         },
                       },
                     },
@@ -585,43 +869,47 @@ export const sandbox: KiskadeeTheme = {
                 outline: {
                   base: {
                     sm: {
-                      paddingTop: 5,
-                      paddingBottom: 5,
-                      paddingLeft: 15,
-                      paddingRight: 15,
+                      padding: {
+                        top: 5,
+                        right: 15,
+                        bottom: 5,
+                        left: 15,
+                      },
                     },
                     md: {
-                      color: '#6750A4',
-                      paddingTop: 9,
-                      paddingBottom: 9,
-                      paddingLeft: 23,
-                      paddingRight: 23,
+                      font: {
+                        color: '#6750A4',
+                      },
+                      padding: {
+                        top: 9,
+                        right: 23,
+                        bottom: 9,
+                        left: 23,
+                      },
                     },
                     lg: {
-                      paddingTop: 17,
-                      paddingBottom: 17,
-                      paddingLeft: 17,
-                      paddingRight: 17,
+                      padding: 17,
                     },
                     xl: {
-                      paddingTop: 37,
-                      paddingBottom: 37,
-                      paddingLeft: 37,
-                      paddingRight: 37,
+                      padding: 37,
                     },
                   },
                   variant: {
                     primary: {
                       disabled: {
                         md: {
-                          color: '#1b1a1e61',
+                          font: {
+                            // color: '#1b1a1e61',
+                          },
                         },
                       },
                     },
                     danger: {
                       rest: {
                         md: {
-                          color: '#d50060',
+                          font: {
+                            color: '#d50060',
+                          },
                         },
                       },
                     },
@@ -630,14 +918,18 @@ export const sandbox: KiskadeeTheme = {
                 flat: {
                   base: {
                     md: {
-                      color: '#6750A4',
+                      font: {
+                        color: '#6750A4',
+                      },
                     },
                   },
                   variant: {
                     primary: {
                       disabled: {
                         md: {
-                          color: '#1b1a1e61',
+                          font: {
+                            // color: '#1b1a1e61',
+                          },
                         },
                       },
                     },
@@ -654,7 +946,9 @@ export const sandbox: KiskadeeTheme = {
                     primary: {
                       rest: {
                         md: {
-                          color: '#381E72',
+                          font: {
+                            color: '#381E72',
+                          },
                         },
                       },
                     },
