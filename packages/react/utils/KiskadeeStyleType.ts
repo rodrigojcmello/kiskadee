@@ -55,9 +55,9 @@ export type ComponentName = keyof ComponentMap;
 export type ComponentSchema = {
   [component: string]: {
     // options?: {};
-    elements?: {
+    elements?: Partial<{
       [element: string]: ElementTheme;
-    };
+    }>;
   };
 };
 

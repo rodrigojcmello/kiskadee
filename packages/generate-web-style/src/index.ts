@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument */
-import type { ComponentName, Mode, KiskadeeTheme, ElementType, ElementVariant } from '@kiskadee/react';
+import type {
+  ComponentName,
+  Mode,
+  Status,
+  KiskadeeTheme,
+  ElementType,
+  ElementVariant,
+} from '@kiskadee/react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { sandbox } from './sandbox/sandbox.original';
 import type { UniqueStyle } from './types';
@@ -44,8 +51,8 @@ try {
                 const typeBase = themeList[theme]?.base;
 
                 if (typeBase) {
-                  for (const typeBaseName of Object.keys(typeBase)) {
-                    const sizes = typeBase[typeBaseName];
+                  for (const baseStatus of Object.keys(typeBase)) {
+                    const sizes = typeBase[baseStatus as Status];
                     uniqueStyle = countStyleProperties(uniqueStyle, sizes);
                   }
                 }
@@ -67,7 +74,7 @@ try {
 
                         if (interactionStatusList) {
                           for (const interactiveStatus of Object.keys(interactionStatusList)) {
-                            const sizes = interactionStatusList[interactiveStatus];
+                            const sizes = interactionStatusList[interactiveStatus as Status];
 
                             uniqueStyle = countStyleProperties(uniqueStyle, sizes);
 

@@ -122,11 +122,11 @@ interface OutlineValue {
 
 // Font --------------------------------------------------------------------------------------------
 
-type FontFamily = string | string[];
+export type FontFamily = string | string[];
 type FontWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 type FontStyle = 'normal' | 'italic';
 
-interface FontValue {
+export interface FontValue {
   // TODO: Can we have a global font setup? Because it probably will be the same for all components
   font?: {
     family?: FontFamily;
@@ -138,7 +138,11 @@ interface FontValue {
   };
 }
 
-// -------------------------------------------------------------------------------------------------
+export type FontKey = keyof FontValue['font'];
+
+export // -------------------------------------------------------------------------------------------------
+
+type StyleValueKey = keyof StyleValue;
 
 export type StyleValue =
   | FontValue

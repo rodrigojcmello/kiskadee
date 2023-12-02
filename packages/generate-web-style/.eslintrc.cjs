@@ -1,6 +1,6 @@
 module.exports = {
   extends: ['kiskadee/node-level-3'],
   rules: {
-    'prettier/prettier': ['error', { printWidth: 120, singleQuote: true }],
+    'prettier/prettier': ['error', { printWidth: 100, singleQuote: true }],
   },
 };
