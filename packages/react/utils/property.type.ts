@@ -1,25 +1,31 @@
 // default is px
 type NumberValue = number;
 
-type NumberProp =
-  | NumberValue
-  | {
-      value: NumberValue;
-      unit: 'px' | 'rem';
-    };
+export type NumberWithUnitValue = {
+  value: NumberValue;
+  unit: 'px' | 'rem';
+};
 
-// # + 6 digits
-type HexValue = string;
+export type NumberProp = NumberValue | NumberWithUnitValue;
+
+// None
 
 type NoneValue = 'none';
 
-type ColorProp =
-  | HexValue
-  | {
-      hex: HexValue;
-      // between 0 and 1
-      alpha: number;
-    };
+// Color
+
+// # + 6 digits
+export type HexValue = string;
+
+export type ColorValue = {
+  hex: HexValue;
+  // between 0 and 1
+  alpha: number;
+};
+
+export type ColorProp = HexValue | ColorValue;
+
+// Position
 
 interface PositionProp {
   top?: NumberProp;
@@ -123,8 +129,17 @@ interface OutlineValue {
 // Font --------------------------------------------------------------------------------------------
 
 export type FontFamily = string | string[];
-type FontWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
-type FontStyle = 'normal' | 'italic';
+export type FontWeight =
+  | 'thing'
+  | 'extra-light'
+  | 'light'
+  | 'regular'
+  | 'medium'
+  | 'semi-bold'
+  | 'bold'
+  | 'extra-bold'
+  | 'black';
+export type FontStyle = 'normal' | 'italic';
 
 export interface FontValue {
   // TODO: Can we have a global font setup? Because it probably will be the same for all components
@@ -146,11 +161,11 @@ type StyleValueKey = keyof StyleValue;
 
 export type StyleValue =
   | FontValue
-  | OutlineValue
   | BorderValue
   | RadiusValue
   | BoxValue
   | PositionValue
   | PaddingValue
   | MarginValue
-  | ShadowValue;
+  | ShadowValue
+  | OutlineValue;

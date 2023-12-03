@@ -5,6 +5,12 @@ import type {
   FontValue,
   FontKey,
   FontFamily,
+  ColorProp,
+  ColorValue,
+  NumberProp,
+  NumberWithUnitValue,
+  FontWeight,
+  FontStyle,
 } from '@kiskadee/react/utils/property.type';
 import type { UniqueStyle } from './types';
 
@@ -32,6 +38,10 @@ function extracted(uniqueStyle: UniqueStyle, property: string, propertyValue: st
   return uniqueStyle;
 }
 
+const SEPARATOR = '_';
+const UNIT = 'px';
+const OPACITY = '1';
+
 export const countStyleProperties = (
   uniqueStyle: UniqueStyle,
   sizeList: StyleBySize = {},
@@ -52,10 +62,59 @@ export const countStyleProperties = (
             if ((fontProperty as FontKey) === 'family') {
               const fontPropertyValue: FontFamily = fontPropertyList[fontProperty as FontKey];
               propertyValue = Array.isArray(fontPropertyValue)
-                ? (fontPropertyValue as string[]).join('')
+                ? (fontPropertyValue as string[]).join(SEPARATOR)
                 : fontPropertyValue;
 
               uniqueStyle = extracted(uniqueStyle, 'font-family', propertyValue);
+            }
+
+            if ((fontProperty as FontKey) === 'color') {
+              const fontPropertyValue = fontPropertyList[fontProperty as FontKey] as ColorProp;
+              propertyValue =
+                typeof fontPropertyValue === 'string'
+                  ? `${fontPropertyValue}${SEPARATOR}${OPACITY}`
+                  : `${(fontPropertyValue as ColorValue).hex}${SEPARATOR}${
+                      (fontPropertyValue as ColorValue).alpha
+                    }`;
+
+              uniqueStyle = extracted(uniqueStyle, 'font-color', propertyValue);
+            }
+
+            if ((fontProperty as FontKey) === 'size') {
+              const fontPropertyValue = fontPropertyList[fontProperty as FontKey] as NumberProp;
+              propertyValue =
+                typeof fontPropertyValue === 'number'
+                  ? `${fontPropertyValue}${SEPARATOR}${UNIT}`
+                  : `${(fontPropertyValue as NumberWithUnitValue).value}${SEPARATOR}${
+                      (fontPropertyValue as NumberWithUnitValue).unit
+                    }`;
+
+              uniqueStyle = extracted(uniqueStyle, 'font-size', propertyValue);
+            }
+
+            if ((fontProperty as FontKey) === 'height') {
+              const fontPropertyValue = fontPropertyList[fontProperty as FontKey] as NumberProp;
+              propertyValue =
+                typeof fontPropertyValue === 'number'
+                  ? `${fontPropertyValue}${SEPARATOR}${UNIT}`
+                  : `${(fontPropertyValue as NumberWithUnitValue).value}${SEPARATOR}${
+                      (fontPropertyValue as NumberWithUnitValue).unit
+                    }`;
+
+              uniqueStyle = extracted(uniqueStyle, 'font-height', propertyValue);
+            }
+
+            if ((fontProperty as FontKey) === 'weight') {
+              const fontPropertyValue = fontPropertyList[fontProperty as FontKey] as FontWeight;
+              propertyValue = `${fontPropertyValue}`;
+
+              uniqueStyle = extracted(uniqueStyle, 'font-weight', propertyValue);
+            }
+
+            if ((fontProperty as FontKey) === 'style') {
+              const fontPropertyValue = fontPropertyList[fontProperty as FontKey] as FontStyle;
+
+              uniqueStyle = extracted(uniqueStyle, 'font-style', fontPropertyValue);
             }
           }
         }

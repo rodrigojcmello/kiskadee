@@ -773,7 +773,7 @@ export const sandbox: KiskadeeTheme = {
                         value: 1.25,
                         unit: 'rem',
                       },
-                      weight: 500,
+                      weight: 'medium',
                       family: 'Roboto',
                       style: 'normal',
                     },
