@@ -53,6 +53,19 @@ function handleNumberProp(
   return extracted(uniqueStyle, property, value);
 }
 
+function handleColorProp(
+  uniqueStyle: UniqueStyle,
+  property: string,
+  propertyValue: ColorProp,
+): UniqueStyle {
+  const value =
+    typeof propertyValue === 'string'
+      ? `${propertyValue}${SEPARATOR}${OPACITY}`
+      : `${propertyValue.hex}${SEPARATOR}${propertyValue.alpha}`;
+
+  return extracted(uniqueStyle, property, value);
+}
+
 export const countStyleProperties = (
   uniqueStyle: UniqueStyle,
   sizeList: StyleBySize = {},
@@ -81,12 +94,7 @@ export const countStyleProperties = (
 
             if ((fontProperty as FontKey) === 'color') {
               const fontPropertyValue = fontPropertyList[fontProperty as FontKey] as ColorProp;
-              propertyValue =
-                typeof fontPropertyValue === 'string'
-                  ? `${fontPropertyValue}${SEPARATOR}${OPACITY}`
-                  : `${fontPropertyValue.hex}${SEPARATOR}${fontPropertyValue.alpha}`;
-
-              uniqueStyle = extracted(uniqueStyle, 'font-color', propertyValue);
+              uniqueStyle = handleColorProp(uniqueStyle, 'font-color', fontPropertyValue);
             }
 
             if ((fontProperty as FontKey) === 'size' || (fontProperty as FontKey) === 'height') {
@@ -131,12 +139,7 @@ export const countStyleProperties = (
                 const borderPropertyValue = borderPropertyList[
                   borderProperty as StyleValueKey
                 ] as ColorProp;
-                propertyValue =
-                  typeof borderPropertyValue === 'string'
-                    ? `${borderPropertyValue}${SEPARATOR}${OPACITY}`
-                    : `${borderPropertyValue.hex}${SEPARATOR}${borderPropertyValue.alpha}`;
-
-                uniqueStyle = extracted(uniqueStyle, 'border-color', propertyValue);
+                uniqueStyle = handleColorProp(uniqueStyle, 'border-color', borderPropertyValue);
               }
 
               if (borderProperty === 'style') {
@@ -178,12 +181,7 @@ export const countStyleProperties = (
           for (const boxProperty of Object.keys(boxPropertyList)) {
             if (boxProperty === 'color') {
               const boxPropertyValue = boxPropertyList[boxProperty as StyleValueKey] as ColorProp;
-              propertyValue =
-                typeof boxPropertyValue === 'string'
-                  ? `${boxPropertyValue}${SEPARATOR}${OPACITY}`
-                  : `${boxPropertyValue.hex}${SEPARATOR}${boxPropertyValue.alpha}`;
-
-              uniqueStyle = extracted(uniqueStyle, 'box-color', propertyValue);
+              uniqueStyle = handleColorProp(uniqueStyle, 'box-color', boxPropertyValue);
             }
 
             if (boxProperty === 'height' || boxProperty === 'weight') {
@@ -259,12 +257,7 @@ export const countStyleProperties = (
               const shadowPropertyValue = shadowPropertyList[
                 shadowProperty as StyleValueKey
               ] as ColorProp;
-              propertyValue =
-                typeof shadowPropertyValue === 'string'
-                  ? `${shadowPropertyValue}${SEPARATOR}${OPACITY}`
-                  : `${shadowPropertyValue.hex}${SEPARATOR}${shadowPropertyValue.alpha}`;
-
-              uniqueStyle = extracted(uniqueStyle, 'shadow-color', propertyValue);
+              uniqueStyle = handleColorProp(uniqueStyle, 'shadow-color', shadowPropertyValue);
             } else if (shadowProperty === 'inset') {
               const shadowPropertyValue = shadowPropertyList[shadowProperty as StyleValueKey];
               uniqueStyle = extracted(uniqueStyle, 'shadow-inset', shadowPropertyValue);
@@ -291,12 +284,7 @@ export const countStyleProperties = (
               const outlinePropertyValue = outlinePropertyList[
                 outlineProperty as StyleValueKey
               ] as ColorProp;
-              propertyValue =
-                typeof outlinePropertyValue === 'string'
-                  ? `${outlinePropertyValue}${SEPARATOR}${OPACITY}`
-                  : `${outlinePropertyValue.hex}${SEPARATOR}${outlinePropertyValue.alpha}`;
-
-              uniqueStyle = extracted(uniqueStyle, 'outline-color', propertyValue);
+              uniqueStyle = handleColorProp(uniqueStyle, 'outline-color', outlinePropertyValue);
             } else if (outlineProperty === 'style') {
               const outlinePropertyValue = outlinePropertyList[outlineProperty as StyleValueKey];
               uniqueStyle = extracted(uniqueStyle, 'outline-style', outlinePropertyValue);
