@@ -113,7 +113,17 @@ try {
     }
   }
 
-  console.log({ uniqueStyle: JSON.stringify(uniqueStyle) });
+  function sortObjectKeys(obj: UniqueStyle): UniqueStyle {
+    return Object.keys(obj)
+      .sort()
+      .reduce<UniqueStyle>((result, key) => {
+        result[key] = obj[key];
+        return result;
+      }, {});
+  }
+
+  const sortedUniqueStyle = sortObjectKeys(uniqueStyle);
+  console.log(JSON.stringify(sortedUniqueStyle, null, 2));
   // console.log({ uniqueStyle });
 
   // let currentKey: string | undefined;
