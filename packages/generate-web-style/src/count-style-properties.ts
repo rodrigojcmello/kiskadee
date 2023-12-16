@@ -6,9 +6,7 @@ import type {
   FontKey,
   FontFamily,
   ColorProp,
-  ColorValue,
   NumberProp,
-  NumberWithUnitValue,
   FontWeight,
   FontStyle,
 } from '@kiskadee/react/utils/property.type';
@@ -73,9 +71,7 @@ export const countStyleProperties = (
               propertyValue =
                 typeof fontPropertyValue === 'string'
                   ? `${fontPropertyValue}${SEPARATOR}${OPACITY}`
-                  : `${(fontPropertyValue as ColorValue).hex}${SEPARATOR}${
-                      (fontPropertyValue as ColorValue).alpha
-                    }`;
+                  : `${fontPropertyValue.hex}${SEPARATOR}${fontPropertyValue.alpha}`;
 
               uniqueStyle = extracted(uniqueStyle, 'font-color', propertyValue);
             }
@@ -85,9 +81,7 @@ export const countStyleProperties = (
               propertyValue =
                 typeof fontPropertyValue === 'number'
                   ? `${fontPropertyValue}${SEPARATOR}${UNIT}`
-                  : `${(fontPropertyValue as NumberWithUnitValue).value}${SEPARATOR}${
-                      (fontPropertyValue as NumberWithUnitValue).unit
-                    }`;
+                  : `${fontPropertyValue.value}${SEPARATOR}${fontPropertyValue.unit}`;
 
               uniqueStyle = extracted(uniqueStyle, 'font-size', propertyValue);
             }
@@ -97,9 +91,7 @@ export const countStyleProperties = (
               propertyValue =
                 typeof fontPropertyValue === 'number'
                   ? `${fontPropertyValue}${SEPARATOR}${UNIT}`
-                  : `${(fontPropertyValue as NumberWithUnitValue).value}${SEPARATOR}${
-                      (fontPropertyValue as NumberWithUnitValue).unit
-                    }`;
+                  : `${fontPropertyValue.value}${SEPARATOR}${fontPropertyValue.unit}`;
 
               uniqueStyle = extracted(uniqueStyle, 'font-height', propertyValue);
             }
@@ -120,6 +112,46 @@ export const countStyleProperties = (
         }
 
         // Border ----------------------------------------------------------------------------------
+
+        if ((property as StyleValueKey) === 'border') {
+          const borderPropertyList = propertyList[property as StyleValueKey];
+
+          if (typeof borderPropertyList === 'object') {
+            for (const borderProperty of Object.keys(borderPropertyList)) {
+              if (borderProperty === 'width') {
+                const borderPropertyValue = borderPropertyList[
+                  borderProperty as StyleValueKey
+                ] as NumberProp;
+                propertyValue =
+                  typeof borderPropertyValue === 'number'
+                    ? `${borderPropertyValue}${SEPARATOR}${UNIT}`
+                    : `${borderPropertyValue.value}${SEPARATOR}${borderPropertyValue.unit}`;
+
+                uniqueStyle = extracted(uniqueStyle, 'border-width', propertyValue);
+              }
+
+              if (borderProperty === 'color') {
+                const borderPropertyValue = borderPropertyList[
+                  borderProperty as StyleValueKey
+                ] as ColorProp;
+                propertyValue =
+                  typeof borderPropertyValue === 'string'
+                    ? `${borderPropertyValue}${SEPARATOR}${OPACITY}`
+                    : `${borderPropertyValue.hex}${SEPARATOR}${borderPropertyValue.alpha}`;
+
+                uniqueStyle = extracted(uniqueStyle, 'border-color', propertyValue);
+              }
+
+              if (borderProperty === 'style') {
+                const borderPropertyValue = borderPropertyList[borderProperty as StyleValueKey];
+
+                uniqueStyle = extracted(uniqueStyle, 'border-style', borderPropertyValue);
+              }
+            }
+          } else if (borderPropertyList === 'none') {
+            uniqueStyle = extracted(uniqueStyle, 'border', 'none');
+          }
+        }
       }
     }
   }

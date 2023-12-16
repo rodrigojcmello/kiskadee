@@ -195,6 +195,7 @@ export const sandbox: KiskadeeTheme = {
                           box: {
                             color: '#d22649',
                           },
+                          border: 'none',
                         },
                       },
                       hover: {
@@ -233,6 +234,7 @@ export const sandbox: KiskadeeTheme = {
                           box: {
                             color: '#7965AF',
                           },
+                          border: 'none',
                         },
                       },
                       pressed: {
@@ -692,7 +694,7 @@ export const sandbox: KiskadeeTheme = {
                       // iconDetached: {
                       //   md: {
                       //     color: '#d50060',
-                      //     // border: 'none',
+                      // border: 'none',
                       //     paddingTop: '7px',
                       //     paddingRight: '7px',
                       //     paddingBottom: '7px',
