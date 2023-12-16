@@ -45,19 +45,19 @@ interface ShadowProp {
   inset?: boolean;
 }
 
-interface ShadowValue {
+export interface ShadowValue {
   shadow?: NoneValue | ShadowProp | ShadowProp[];
 }
 
 // Margin ------------------------------------------------------------------------------------------
 
-interface MarginValue {
+export interface MarginValue {
   margin?: NumberProp | PositionProp;
 }
 
 // Padding -----------------------------------------------------------------------------------------
 
-interface PaddingValue {
+export interface PaddingValue {
   padding?: NumberProp | PositionProp;
 }
 
@@ -66,7 +66,7 @@ interface PaddingValue {
 type PositionType = 'absolute' | 'relative' | 'fixed';
 
 // TODO: We do we need this? It maybe a immutable property
-interface PositionValue {
+export interface PositionValue {
   position?: PositionProp & {
     type?: PositionType;
   };
@@ -74,7 +74,7 @@ interface PositionValue {
 
 // Box ---------------------------------------------------------------------------------------------
 
-interface BoxValue {
+export interface BoxValue {
   box?: {
     // TODO: Add support to gradient
     color?: ColorProp;
@@ -85,7 +85,7 @@ interface BoxValue {
 
 // Radius ------------------------------------------------------------------------------------------
 
-interface RadiusValue {
+export interface RadiusValue {
   radius?:
     | NumberProp
     | {
@@ -100,7 +100,7 @@ interface RadiusValue {
 
 type BorderStyle = 'solid' | 'dotted' | 'dashed';
 
-interface BorderValue {
+export interface BorderValue {
   border?:
     | NoneValue
     | {
@@ -116,7 +116,7 @@ interface BorderValue {
 
 type OutlineStyle = 'solid' | 'dotted';
 
-interface OutlineValue {
+export interface OutlineValue {
   outline?:
     | NoneValue
     | {
