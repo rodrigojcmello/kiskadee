@@ -36,7 +36,7 @@ interface PositionProp {
 
 // Shadow ------------------------------------------------------------------------------------------
 
-interface ShadowProp {
+export interface ShadowProp {
   color?: ColorProp;
   x?: NumberProp;
   y?: NumberProp;
