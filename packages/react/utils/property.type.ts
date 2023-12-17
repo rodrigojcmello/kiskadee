@@ -37,12 +37,12 @@ interface PositionProp {
 // Shadow ------------------------------------------------------------------------------------------
 
 export interface ShadowProp {
-  color?: ColorProp;
-  x?: NumberProp;
+  inset?: boolean;
   y?: NumberProp;
+  x?: NumberProp;
   blur?: NumberProp;
   spread?: NumberProp;
-  inset?: boolean;
+  color?: ColorProp;
 }
 
 export interface ShadowValue {

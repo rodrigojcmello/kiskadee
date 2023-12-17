@@ -291,6 +291,7 @@ const styleHandlers = {
       if (shadowPropertyList === 'none') {
         uniqueStyle = extracted(uniqueStyle, 'shadow', 'none');
       } else {
+        const x = [];
         for (const shadow of shadowPropertyList) {
           const shadowValues = Object.values(shadow).map((value) => {
             if (typeof value === 'object' && 'value' in value) {
@@ -299,11 +300,11 @@ const styleHandlers = {
             if (typeof value === 'object' && 'hex' in value) {
               return `${value.hex}${SEPARATOR}${value.alpha}`;
             }
-            return value.toString();
+            return `${value}${SEPARATOR}${UNIT}`;
           });
-          const shadowKey = shadowValues.join(SEPARATOR);
-          uniqueStyle = extracted(uniqueStyle, 'shadow', shadowKey);
+          x.push(shadowValues.join(SEPARATOR));
         }
+        uniqueStyle = extracted(uniqueStyle, 'shadow', x.toString());
       }
     }
 
