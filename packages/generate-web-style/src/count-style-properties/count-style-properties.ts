@@ -18,7 +18,7 @@ import type {
   StyleValue,
   StyleValueKey,
 } from '@kiskadee/react/utils/property.type';
-import type { UniqueStyle } from 'src/types';
+import type { UniqueStyle } from '@/types';
 import {
   addPropertyToUniqueStyle,
   defaultShadow,

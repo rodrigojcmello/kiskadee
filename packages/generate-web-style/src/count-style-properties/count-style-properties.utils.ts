@@ -1,4 +1,5 @@
-import type { UniqueStyle } from 'src/types';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import type { UniqueStyle } from '@/types';
 
 type AddPropertyToUniqueStyle = (
   uniqueStyle: UniqueStyle,
