@@ -1,17 +1,34 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import type { UniqueStyle } from '@/types';
+import type { AddPropertyToUniqueStyle } from '@/count-style-properties/count-style-properties.types';
 
-type AddPropertyToUniqueStyle = (
-  uniqueStyle: UniqueStyle,
-  property: string,
-  value?: string,
-) => UniqueStyle;
+export const SEPARATOR = '_';
+
+export const UNIT = 'px';
+
+export const OPACITY = '1';
+
+export const radiusMap = {
+  topLeft: 'top-left',
+  topRight: 'top-right',
+  bottomLeft: 'bottom-left',
+  bottomRight: 'bottom-right',
+};
+
+export const defaultShadow = {
+  inset: false,
+  y: { value: 0, unit: UNIT },
+  x: { value: 0, unit: UNIT },
+  blur: { value: 0, unit: UNIT },
+  spread: { value: 0, unit: UNIT },
+  color: { hex: '#000000', alpha: OPACITY },
+};
+
 export const addPropertyToUniqueStyle: AddPropertyToUniqueStyle = (
   uniqueStyle,
   property,
   propertyValue,
 ) => {
-  let valueList = uniqueStyle[property];
+  const uniqueStyleCopy = { ...uniqueStyle };
+  let valueList = uniqueStyleCopy[property];
 
   if (propertyValue) {
     if (valueList) {
@@ -30,25 +47,8 @@ export const addPropertyToUniqueStyle: AddPropertyToUniqueStyle = (
       };
     }
 
-    uniqueStyle[property] = valueList;
+    uniqueStyleCopy[property] = valueList;
   }
 
-  return uniqueStyle;
-};
-export const radiusMap = {
-  topLeft: 'top-left',
-  topRight: 'top-right',
-  bottomLeft: 'bottom-left',
-  bottomRight: 'bottom-right',
-};
-export const SEPARATOR = '_';
-export const UNIT = 'px';
-export const OPACITY = '1';
-export const defaultShadow = {
-  inset: false,
-  y: { value: 0, unit: UNIT },
-  x: { value: 0, unit: UNIT },
-  blur: { value: 0, unit: UNIT },
-  spread: { value: 0, unit: UNIT },
-  color: { hex: '#000000', alpha: OPACITY },
+  return uniqueStyleCopy;
 };
