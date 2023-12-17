@@ -10,7 +10,7 @@ import type {
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { sandbox } from './sandbox/sandbox.original';
 import type { UniqueStyle } from './types';
-import { countStyleProperties } from './count-style-properties';
+import { countStyleProperties } from './count-style-properties/count-style-properties';
 
 const filePath = process.argv[2];
 

@@ -1,72 +1,32 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment,no-param-reassign */
-import type { StyleBySize, Size } from '@kiskadee/react';
+import type { Size, StyleBySize } from '@kiskadee/react';
 import type {
-  StyleValueKey,
-  FontValue,
-  FontKey,
-  ColorProp,
-  NumberProp,
-  FontWeight,
-  FontStyle,
   BorderValue,
-  RadiusValue,
   BoxValue,
-  StyleValue,
-  PositionValue,
-  PaddingValue,
+  ColorProp,
+  FontKey,
+  FontStyle,
+  FontValue,
+  FontWeight,
   MarginValue,
-  ShadowValue,
+  NumberProp,
   OutlineValue,
+  PaddingValue,
+  PositionValue,
+  RadiusValue,
+  ShadowValue,
+  StyleValue,
+  StyleValueKey,
 } from '@kiskadee/react/utils/property.type';
-import type { UniqueStyle } from './types';
-
-type Extracted = (uniqueStyle: UniqueStyle, property: string, value?: string) => UniqueStyle;
-
-const extracted: Extracted = (uniqueStyle, property, propertyValue) => {
-  let valueList = uniqueStyle[property];
-
-  if (propertyValue) {
-    if (valueList) {
-      let total = valueList[propertyValue]?.total;
-      total = total === undefined ? 1 : total + 1;
-
-      const value = valueList[propertyValue] ?? {};
-      value.total = total;
-
-      valueList[propertyValue] = value;
-    } else {
-      valueList = {
-        [propertyValue]: {
-          total: 1,
-        },
-      };
-    }
-
-    uniqueStyle[property] = valueList;
-  }
-
-  return uniqueStyle;
-};
-
-const radiusMap = {
-  topLeft: 'top-left',
-  topRight: 'top-right',
-  bottomLeft: 'bottom-left',
-  bottomRight: 'bottom-right',
-};
-
-const SEPARATOR = '_';
-const UNIT = 'px';
-const OPACITY = '1';
-
-const defaultShadow = {
-  inset: false,
-  y: { value: 0, unit: UNIT },
-  x: { value: 0, unit: UNIT },
-  blur: { value: 0, unit: UNIT },
-  spread: { value: 0, unit: UNIT },
-  color: { hex: '#000000', alpha: OPACITY },
-};
+import type { UniqueStyle } from 'src/types';
+import {
+  addPropertyToUniqueStyle,
+  defaultShadow,
+  OPACITY,
+  radiusMap,
+  SEPARATOR,
+  UNIT,
+} from './count-style-properties.utils';
 
 function handleNumberProp(
   uniqueStyle: UniqueStyle,
@@ -78,7 +38,7 @@ function handleNumberProp(
       ? `${propertyValue}${SEPARATOR}${UNIT}`
       : `${propertyValue.value}${SEPARATOR}${propertyValue.unit}`;
 
-  return extracted(uniqueStyle, property, value);
+  return addPropertyToUniqueStyle(uniqueStyle, property, value);
 }
 
 function handleColorProp(
@@ -91,7 +51,7 @@ function handleColorProp(
       ? `${propertyValue}${SEPARATOR}${OPACITY}`
       : `${propertyValue.hex}${SEPARATOR}${propertyValue.alpha}`;
 
-  return extracted(uniqueStyle, property, value);
+  return addPropertyToUniqueStyle(uniqueStyle, property, value);
 }
 
 // const propertyHandlers = {
@@ -129,7 +89,7 @@ const styleHandlers = {
           propertyValue = Array.isArray(fontPropertyValue)
             ? fontPropertyValue.join(SEPARATOR)
             : fontPropertyValue;
-          uniqueStyle = extracted(uniqueStyle, 'font-family', propertyValue);
+          uniqueStyle = addPropertyToUniqueStyle(uniqueStyle, 'font-family', propertyValue);
         }
 
         if ((fontProperty as FontKey) === 'color') {
@@ -146,13 +106,13 @@ const styleHandlers = {
           const fontPropertyValue = fontPropertyList[fontProperty as FontKey] as FontWeight;
           propertyValue = `${fontPropertyValue}`;
 
-          uniqueStyle = extracted(uniqueStyle, 'font-weight', propertyValue);
+          uniqueStyle = addPropertyToUniqueStyle(uniqueStyle, 'font-weight', propertyValue);
         }
 
         if ((fontProperty as FontKey) === 'style') {
           const fontPropertyValue = fontPropertyList[fontProperty as FontKey] as FontStyle;
 
-          uniqueStyle = extracted(uniqueStyle, 'font-style', fontPropertyValue);
+          uniqueStyle = addPropertyToUniqueStyle(uniqueStyle, 'font-style', fontPropertyValue);
         }
       }
     }
@@ -181,11 +141,11 @@ const styleHandlers = {
         if (borderProperty === 'style') {
           const borderPropertyValue = borderPropertyList[borderProperty as StyleValueKey];
 
-          uniqueStyle = extracted(uniqueStyle, 'border-style', borderPropertyValue);
+          uniqueStyle = addPropertyToUniqueStyle(uniqueStyle, 'border-style', borderPropertyValue);
         }
       }
     } else if (borderPropertyList === 'none') {
-      uniqueStyle = extracted(uniqueStyle, 'border', 'none');
+      uniqueStyle = addPropertyToUniqueStyle(uniqueStyle, 'border', 'none');
     }
     return uniqueStyle;
   },
@@ -244,7 +204,11 @@ const styleHandlers = {
       for (const positionProperty of Object.keys(positionPropertyList)) {
         if (positionProperty === 'type') {
           const positionPropertyValue = positionPropertyList[positionProperty as StyleValueKey];
-          uniqueStyle = extracted(uniqueStyle, 'position-type', positionPropertyValue);
+          uniqueStyle = addPropertyToUniqueStyle(
+            uniqueStyle,
+            'position-type',
+            positionPropertyValue,
+          );
         } else {
           const positionPropertyValue = positionPropertyList[
             positionProperty as StyleValueKey
@@ -298,7 +262,7 @@ const styleHandlers = {
 
     if (shadowPropertyList) {
       if (shadowPropertyList === 'none') {
-        uniqueStyle = extracted(uniqueStyle, 'shadow', 'none');
+        uniqueStyle = addPropertyToUniqueStyle(uniqueStyle, 'shadow', 'none');
       } else {
         const shadowKeys = [];
         for (const shadow of shadowPropertyList) {
@@ -319,7 +283,7 @@ const styleHandlers = {
           });
           shadowKeys.push(shadowValues.join(SEPARATOR));
         }
-        uniqueStyle = extracted(uniqueStyle, 'shadow', shadowKeys.toString());
+        uniqueStyle = addPropertyToUniqueStyle(uniqueStyle, 'shadow', shadowKeys.toString());
       }
     }
 
@@ -337,7 +301,11 @@ const styleHandlers = {
           uniqueStyle = handleColorProp(uniqueStyle, 'outline-color', outlinePropertyValue);
         } else if (outlineProperty === 'style') {
           const outlinePropertyValue = outlinePropertyList[outlineProperty as StyleValueKey];
-          uniqueStyle = extracted(uniqueStyle, 'outline-style', outlinePropertyValue);
+          uniqueStyle = addPropertyToUniqueStyle(
+            uniqueStyle,
+            'outline-style',
+            outlinePropertyValue,
+          );
         } else {
           const outlinePropertyValue = outlinePropertyList[
             outlineProperty as StyleValueKey
