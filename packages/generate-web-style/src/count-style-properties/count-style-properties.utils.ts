@@ -1,6 +1,6 @@
 import type { AddPropertyToUniqueStyle } from '@/count-style-properties/count-style-properties.types';
 
-export const SEPARATOR = '_';
+export const SEPARATOR = '+';
 
 export const UNIT = 'px';
 

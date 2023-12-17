@@ -54,28 +54,34 @@ function handleColorProp(
   return addPropertyToUniqueStyle(uniqueStyle, property, value);
 }
 
-// const propertyHandlers = {
-//   color: (uniqueStyle: UniqueStyle, property: string, propertyValue: ColorProp): UniqueStyle => {
-//     const value =
-//       typeof propertyValue === 'string'
-//         ? `${propertyValue}${SEPARATOR}${OPACITY}`
-//         : `${propertyValue.hex}${SEPARATOR}${propertyValue.alpha}`;
-//
-//     return extracted(uniqueStyle, property, value);
-//   },
-//   number: (uniqueStyle: UniqueStyle, property: string, propertyValue: NumberProp): UniqueStyle => {
-//     const value =
-//       typeof propertyValue === 'number'
-//         ? `${propertyValue}${SEPARATOR}${UNIT}`
-//         : `${propertyValue.value}${SEPARATOR}${propertyValue.unit}`;
-//
-//     return extracted(uniqueStyle, property, value);
-//   },
-//   string: (uniqueStyle: UniqueStyle, property: string, propertyValue: string): UniqueStyle =>
-//     extracted(uniqueStyle, property, propertyValue),
-//   boolean: (uniqueStyle: UniqueStyle, property: string, propertyValue: boolean): UniqueStyle =>
-//     extracted(uniqueStyle, property, propertyValue.toString()),
-// };
+const propertyHandlers = {
+  color: (uniqueStyle: UniqueStyle, property: string, propertyValue: ColorProp): UniqueStyle => {
+    const value =
+      typeof propertyValue === 'string'
+        ? `${propertyValue}${SEPARATOR}${OPACITY}`
+        : `${propertyValue.hex}${SEPARATOR}${propertyValue.alpha}`;
+
+    return addPropertyToUniqueStyle(uniqueStyle, property, value);
+  },
+  number: (uniqueStyle: UniqueStyle, property: string, propertyValue: NumberProp): UniqueStyle => {
+    const value =
+      typeof propertyValue === 'number'
+        ? `${propertyValue}${SEPARATOR}${UNIT}`
+        : `${propertyValue.value}${SEPARATOR}${propertyValue.unit}`;
+
+    return addPropertyToUniqueStyle(uniqueStyle, property, value);
+  },
+  string: (uniqueStyle: UniqueStyle, property: string, propertyValue: string): UniqueStyle =>
+    addPropertyToUniqueStyle(uniqueStyle, property, propertyValue),
+  boolean: (uniqueStyle: UniqueStyle, property: string, propertyValue: boolean): UniqueStyle =>
+    addPropertyToUniqueStyle(uniqueStyle, property, propertyValue.toString()),
+  array: (uniqueStyle: UniqueStyle, property: string, propertyValue?: string[]): UniqueStyle =>
+    addPropertyToUniqueStyle(
+      uniqueStyle,
+      property,
+      propertyValue ? propertyValue.join(SEPARATOR) : undefined,
+    ),
+};
 
 const styleHandlers = {
   font: (uniqueStyle: UniqueStyle, propertyList: StyleValue): UniqueStyle => {
@@ -86,10 +92,11 @@ const styleHandlers = {
       for (const fontProperty of Object.keys(fontPropertyList)) {
         if ((fontProperty as FontKey) === 'family') {
           const fontPropertyValue = fontPropertyList.family;
-          propertyValue = Array.isArray(fontPropertyValue)
-            ? fontPropertyValue.join(SEPARATOR)
-            : fontPropertyValue;
-          uniqueStyle = addPropertyToUniqueStyle(uniqueStyle, 'font-family', propertyValue);
+          uniqueStyle = propertyHandlers.array(
+            uniqueStyle,
+            `font-${fontProperty}`,
+            fontPropertyValue,
+          );
         }
 
         if ((fontProperty as FontKey) === 'color') {
@@ -271,19 +278,19 @@ const styleHandlers = {
 
           const shadowValues = Object.values(completeShadow).map((value) => {
             if (typeof value === 'object' && 'value' in value) {
-              return `${value.value}${SEPARATOR}${value.unit}`;
+              return `${value.value}${'_'}${value.unit}`;
             }
             if (typeof value === 'object' && 'hex' in value) {
-              return `${value.hex}${SEPARATOR}${value.alpha}`;
+              return `${value.hex}${'_'}${value.alpha}`;
             }
             if (typeof value === 'boolean') {
               return value.toString();
             }
-            return `${value}${SEPARATOR}${UNIT}`;
+            return `${value}${'_'}${UNIT}`;
           });
-          shadowKeys.push(shadowValues.join(SEPARATOR));
+          shadowKeys.push(shadowValues.join('_'));
         }
-        uniqueStyle = addPropertyToUniqueStyle(uniqueStyle, 'shadow', shadowKeys.toString());
+        uniqueStyle = addPropertyToUniqueStyle(uniqueStyle, 'shadow', shadowKeys.join(SEPARATOR));
       }
     }
 

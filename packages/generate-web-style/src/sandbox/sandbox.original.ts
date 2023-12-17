@@ -778,7 +778,7 @@ export const sandbox: KiskadeeTheme = {
                         unit: 'rem',
                       },
                       weight: 'medium',
-                      family: ['Roboto'],
+                      family: ['Roboto', 'Arial'],
                       style: 'normal',
                     },
                     padding: {
