@@ -59,6 +59,15 @@ const SEPARATOR = '_';
 const UNIT = 'px';
 const OPACITY = '1';
 
+const defaultShadow = {
+  inset: false,
+  y: { value: 0, unit: UNIT },
+  x: { value: 0, unit: UNIT },
+  blur: { value: 0, unit: UNIT },
+  spread: { value: 0, unit: UNIT },
+  color: { hex: '#000000', alpha: OPACITY },
+};
+
 function handleNumberProp(
   uniqueStyle: UniqueStyle,
   property: string,
@@ -293,12 +302,18 @@ const styleHandlers = {
       } else {
         const x = [];
         for (const shadow of shadowPropertyList) {
-          const shadowValues = Object.values(shadow).map((value) => {
+          // Combine the current shadow object with the default shadow object
+          const completeShadow = { ...defaultShadow, ...shadow };
+
+          const shadowValues = Object.values(completeShadow).map((value) => {
             if (typeof value === 'object' && 'value' in value) {
               return `${value.value}${SEPARATOR}${value.unit}`;
             }
             if (typeof value === 'object' && 'hex' in value) {
               return `${value.hex}${SEPARATOR}${value.alpha}`;
+            }
+            if (typeof value === 'boolean') {
+              return value.toString();
             }
             return `${value}${SEPARATOR}${UNIT}`;
           });
