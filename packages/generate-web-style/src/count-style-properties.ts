@@ -300,7 +300,7 @@ const styleHandlers = {
       if (shadowPropertyList === 'none') {
         uniqueStyle = extracted(uniqueStyle, 'shadow', 'none');
       } else {
-        const x = [];
+        const shadowKeys = [];
         for (const shadow of shadowPropertyList) {
           // Combine the current shadow object with the default shadow object
           const completeShadow = { ...defaultShadow, ...shadow };
@@ -317,9 +317,9 @@ const styleHandlers = {
             }
             return `${value}${SEPARATOR}${UNIT}`;
           });
-          x.push(shadowValues.join(SEPARATOR));
+          shadowKeys.push(shadowValues.join(SEPARATOR));
         }
-        uniqueStyle = extracted(uniqueStyle, 'shadow', x.toString());
+        uniqueStyle = extracted(uniqueStyle, 'shadow', shadowKeys.toString());
       }
     }
 
