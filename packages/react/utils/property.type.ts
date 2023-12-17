@@ -46,7 +46,7 @@ export interface ShadowProp {
 }
 
 export interface ShadowValue {
-  shadow?: NoneValue | ShadowProp | ShadowProp[];
+  shadow?: NoneValue | ShadowProp[];
 }
 
 // Margin ------------------------------------------------------------------------------------------
@@ -128,7 +128,7 @@ export interface OutlineValue {
 
 // Font --------------------------------------------------------------------------------------------
 
-export type FontFamily = string | string[];
+export type FontFamily = string[];
 export type FontWeight =
   | 'thing'
   | 'extra-light'

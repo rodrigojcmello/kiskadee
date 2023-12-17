@@ -17,7 +17,6 @@ import type {
   MarginValue,
   ShadowValue,
   OutlineValue,
-  ShadowProp,
 } from '@kiskadee/react/utils/property.type';
 import type { UniqueStyle } from './types';
 
@@ -289,56 +288,25 @@ const styleHandlers = {
     const shadowPropertyList = (propertyList as ShadowValue).shadow;
 
     if (shadowPropertyList) {
-      for (const shadowProperty of Object.keys(shadowPropertyList)) {
-        if (shadowPropertyList === 'none') {
-          uniqueStyle = extracted(uniqueStyle, 'shadow', 'none');
-        } else if (Array.isArray(shadowPropertyList)) {
-          for (const shadow of shadowPropertyList) {
-            if (typeof shadow === 'object') {
-              for (const shadowKey of Object.keys(shadow)) {
-                if (shadowKey === 'color') {
-                  const shadowPropertyValue = shadow[shadowKey] as ColorProp;
-                  uniqueStyle = handleColorProp(uniqueStyle, 'shadow-color', shadowPropertyValue);
-                } else if (shadowKey === 'inset') {
-                  const shadowPropertyValue = shadow[shadowKey] as boolean;
-                  uniqueStyle = extracted(
-                    uniqueStyle,
-                    'shadow-inset',
-                    shadowPropertyValue.toString(),
-                  );
-                } else {
-                  const shadowPropertyValue = shadow[shadowKey as keyof ShadowProp] as NumberProp;
-                  uniqueStyle = handleNumberProp(
-                    uniqueStyle,
-                    `shadow-${shadowKey}`,
-                    shadowPropertyValue,
-                  );
-                }
-              }
+      if (shadowPropertyList === 'none') {
+        uniqueStyle = extracted(uniqueStyle, 'shadow', 'none');
+      } else {
+        for (const shadow of shadowPropertyList) {
+          const shadowValues = Object.values(shadow).map((value) => {
+            if (typeof value === 'object' && 'value' in value) {
+              return `${value.value}${SEPARATOR}${value.unit}`;
             }
-          }
-        } else {
-          for (const shadowKey of Object.keys(shadowPropertyList)) {
-            if (shadowKey === 'color') {
-              const shadowPropertyValue = shadowPropertyList[shadowKey] as ColorProp;
-              uniqueStyle = handleColorProp(uniqueStyle, 'shadow-color', shadowPropertyValue);
-            } else if (shadowKey === 'inset') {
-              const shadowPropertyValue = shadowPropertyList[shadowKey] as boolean;
-              uniqueStyle = extracted(uniqueStyle, 'shadow-inset', shadowPropertyValue.toString());
-            } else {
-              const shadowPropertyValue = shadowPropertyList[
-                shadowKey as keyof ShadowProp
-              ] as NumberProp;
-              uniqueStyle = handleNumberProp(
-                uniqueStyle,
-                `shadow-${shadowKey}`,
-                shadowPropertyValue,
-              );
+            if (typeof value === 'object' && 'hex' in value) {
+              return `${value.hex}${SEPARATOR}${value.alpha}`;
             }
-          }
+            return value.toString();
+          });
+          const shadowKey = shadowValues.join(SEPARATOR);
+          uniqueStyle = extracted(uniqueStyle, 'shadow', shadowKey);
         }
       }
     }
+
     return uniqueStyle;
   },
   outline: (uniqueStyle: UniqueStyle, propertyList: StyleValue): UniqueStyle => {

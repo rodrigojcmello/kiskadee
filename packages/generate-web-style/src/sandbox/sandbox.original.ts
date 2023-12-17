@@ -462,15 +462,17 @@ export const sandbox: KiskadeeTheme = {
                         md: {
                           // boxShadow:
                           //   '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
-                          shadow: {
-                            x: 0,
-                            y: 1,
-                            blur: 2,
-                            color: {
-                              hex: '#000000',
-                              alpha: 0.3,
+                          shadow: [
+                            {
+                              x: 0,
+                              y: 1,
+                              blur: 2,
+                              color: {
+                                hex: '#000000',
+                                alpha: 0.3,
+                              },
                             },
-                          },
+                          ],
                         },
                       },
                     },
@@ -776,7 +778,7 @@ export const sandbox: KiskadeeTheme = {
                         unit: 'rem',
                       },
                       weight: 'medium',
-                      family: 'Roboto',
+                      family: ['Roboto'],
                       style: 'normal',
                     },
                     padding: {
