@@ -10,7 +10,7 @@ export type NumberProp = NumberValue | NumberWithUnitValue;
 
 // None
 
-type NoneValue = 'none';
+export type NoneValue = 'none';
 
 // Color
 

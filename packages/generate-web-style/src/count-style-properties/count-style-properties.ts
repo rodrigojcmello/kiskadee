@@ -2,6 +2,7 @@
 import type {
   ColorProp,
   FontWeight,
+  NoneValue,
   NumberProp,
   ShadowValue,
   StyleValue,
@@ -154,21 +155,15 @@ const styleHandlers = {
 function createPropertyHandler(propertyHandlers: Record<string, Function>, key: string) {
   return (uniqueStyle: UniqueStyle, propertyList: Record<string, StyleValue> = {}): UniqueStyle => {
     let uniqueStyleCopy = { ...uniqueStyle };
-    // @ts-expect-error
-    if (propertyList[key] === 'none') {
+    if ((propertyList[key] as unknown as NoneValue) === 'none') {
       uniqueStyleCopy = addPropertyToUniqueStyle(uniqueStyleCopy, key, 'none');
     } else {
       for (const property of Object.keys(propertyList[key])) {
-        const x = propertyHandlers[property];
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (x) {
-          uniqueStyleCopy = propertyHandlers[property](
-            uniqueStyleCopy,
-            `${key}-${property}`,
-            // @ts-expect-error
-            propertyList[key][property],
-          );
-        }
+        uniqueStyleCopy = propertyHandlers[property](
+          uniqueStyleCopy,
+          `${key}-${property}`,
+          propertyList[key][property as StyleValueKey],
+        );
       }
     }
 
