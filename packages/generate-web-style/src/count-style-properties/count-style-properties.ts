@@ -5,6 +5,7 @@ import type {
   NumberProp,
   ShadowValue,
   StyleValue,
+  StyleValueKey,
 } from '@kiskadee/react/utils/property.type';
 import type { UniqueStyle } from '@/types';
 import type { Size, StyleBySize } from '@kiskadee/react';
@@ -175,6 +176,8 @@ function createPropertyHandler(propertyHandlers: Record<string, Function>, key: 
   };
 }
 
+type X = (uniqueStyle: UniqueStyle, propertyList?: StyleValue) => UniqueStyle;
+
 export const countStyleProperties = (
   uniqueStyle: UniqueStyle,
   sizeList: StyleBySize = {},
@@ -184,13 +187,11 @@ export const countStyleProperties = (
 
     if (propertyList) {
       for (const property of Object.keys(propertyList)) {
-        const handler = styleHandlers[property as keyof typeof styleHandlers];
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (handler) {
-          // @ts-expect-error
-          uniqueStyle = handler(uniqueStyle, propertyList);
-          // console.log({ uniqueStyle });
+        const handler = styleHandlers[property as StyleValueKey] as X | undefined;
+        if (!handler) {
+          throw new Error(`Handler for property ${property} does not exist.`);
         }
+        uniqueStyle = handler(uniqueStyle, propertyList);
       }
     }
   }
