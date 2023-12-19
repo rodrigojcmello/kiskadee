@@ -2,7 +2,6 @@
 import type {
   ColorProp,
   FontWeight,
-  NoneValue,
   NumberProp,
   ShadowValue,
   StyleValue,
@@ -155,9 +154,12 @@ const styleHandlers = {
 function createPropertyHandler(propertyHandlers: Record<string, Function>, key: string) {
   return (uniqueStyle: UniqueStyle, propertyList: Record<string, StyleValue> = {}): UniqueStyle => {
     let uniqueStyleCopy = { ...uniqueStyle };
-    if ((propertyList[key] as unknown as NoneValue) === 'none') {
+    console.log('propertyList[key]', propertyList[key]);
+    if (typeof propertyList[key] === 'string') {
       uniqueStyleCopy = addPropertyToUniqueStyle(uniqueStyleCopy, key, 'none');
-    } else {
+    } else if (typeof propertyList[key] === 'number') {
+      uniqueStyleCopy = propertyUtil.number(uniqueStyleCopy, key, propertyList[key] as number);
+    } else if (typeof propertyList[key] === 'object') {
       for (const property of Object.keys(propertyList[key])) {
         uniqueStyleCopy = propertyHandlers[property](
           uniqueStyleCopy,
