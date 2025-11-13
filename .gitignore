@@ -8,6 +8,7 @@ node_modules
 dist
 build
 # Except keep template assets tracked for the sandbox app (used in Vercel builds)
+!packages/sandbox/app/(data)/build
 !packages/sandbox/app/(data)/build/**
 *.local
 

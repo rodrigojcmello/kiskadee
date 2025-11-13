@@ -1,0 +1,20 @@
+{
+  "button": {
+    "e1": {
+      "c": {
+        "primary": {
+          "f": "i o q m k",
+          "d": "h n p l c a b j"
+        }
+      }
+    },
+    "e2": {
+      "c": {
+        "primary": {
+          "f": "ab ac ad",
+          "d": "aa e d"
+        }
+      }
+    }
+  }
+}

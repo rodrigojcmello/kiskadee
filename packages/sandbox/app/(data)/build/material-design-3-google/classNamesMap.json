@@ -1,0 +1,26 @@
+{
+  "button": {
+    "e1": {
+      "d": "w",
+      "e": "ar a au av at as",
+      "cs": "v t u s",
+      "s": {
+        "s:sm:1": "aq ab ac ah o",
+        "s:md:1": "am x ad ai a",
+        "s:lg:1": "an y ae aj p",
+        "s:lg:2": "ao z af ak q",
+        "s:lg:3": "ap aa ag al r"
+      }
+    },
+    "e2": {
+      "d": "aw bd",
+      "s": {
+        "s:sm:1": "n m",
+        "s:md:1": "n m",
+        "s:lg:1": "ba ax",
+        "s:lg:2": "bb ay",
+        "s:lg:3": "bc az"
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "button": {
+    "e1": {
+      "c": {
+        "primary": {
+          "d": "b e f d i g h c"
+        }
+      }
+    },
+    "e2": {
+      "c": {
+        "primary": {
+          "d": "j l k"
+        }
+      }
+    }
+  }
+}

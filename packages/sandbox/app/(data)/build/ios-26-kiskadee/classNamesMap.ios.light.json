@@ -1,0 +1,35 @@
+{
+  "button": {
+    "e1": {
+      "c": {
+        "primary": {
+          "f": "y ai al af r p q o ac",
+          "d": "x ah ak ae ab"
+        },
+        "neutral": {
+          "f": "w ag aj ad r p q o aa"
+        },
+        "redLike": {
+          "f": "z h j f m k l d",
+          "d": "b g i e c"
+        }
+      }
+    },
+    "e2": {
+      "c": {
+        "primary": {
+          "f": "aw ba bf t",
+          "d": "s bc a"
+        },
+        "neutral": {
+          "f": "av az be t",
+          "d": "a"
+        },
+        "redLike": {
+          "f": "ax bb bg bh ay",
+          "d": "s bd a"
+        }
+      }
+    }
+  }
+}
