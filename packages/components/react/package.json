@@ -10,10 +10,14 @@
   "author": "Rodrigo J C Mello",
   "license": "MIT",
   "private": true,
+  "sideEffects": false,
   "dependencies": {
     "@kiskadee/core": "workspace:^",
-    "@kiskadee/react-headless": "workspace:^",
-    "react": "19.2.0"
+    "@kiskadee/react-headless": "workspace:^"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
   },
   "devDependencies": {
     "@types/node": "^24.7.2",
