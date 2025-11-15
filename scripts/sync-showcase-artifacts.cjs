@@ -3,7 +3,7 @@
  * @kiskadee/showcase project (Next app).
  *
  * Source: packages/web-builder/build/**
- * Target: packages/sandbox/public/build/**
+ * Target: packages/showcase/public/build/**
  *
  * Usage:
  *   pnpm sync-showcase-artifacts
@@ -18,7 +18,7 @@ const path = require('node:path');
 
 const repoRoot = __dirname ? path.resolve(__dirname, '..') : process.cwd();
 const srcDir = path.resolve(repoRoot, 'packages', 'web-builder', 'build');
-const dstDir = path.resolve(repoRoot, 'packages', 'sandbox', 'public', 'build');
+const dstDir = path.resolve(repoRoot, 'packages', 'showcase', 'public', 'build');
 
 async function existsDir(dir) {
   try {
