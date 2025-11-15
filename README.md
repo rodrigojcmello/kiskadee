@@ -6,15 +6,17 @@ Below you’ll find each package/project’s purpose, how they relate, and the a
 
 ## Packages and responsibilities
 
-- packages/schema
-  - What it is: the platform‑agnostic design schema. It defines essential visual identity tokens organized by component/element: palettes (colors), decorations, scales (spacing/typography), and effects.
+- @kiskadee/core (packages/core)
+  - What it is: the platform‑agnostic design schema and core types/utilities. It defines essential visual identity tokens organized by component/element: palettes (colors), decorations, scales (spacing/typography), and effects.
   - What it is NOT: it does not contain platform resets (e.g., HTML widget fixes) nor structural/behavioral rules for components (layout, positioning). It also does not contain CSS — only data (plus schema utilities/types).
-  - Examples:
-    - templates (e.g., google-material-design, template-1, template-2) — schema sources that can be plugged into the Web builder.
-    - types — types for colors, decorations, etc.
 
-- packages/web-builder
-  - What it is: the pipeline that converts the schema into utility CSS and class maps for runtime consumption. It is Web‑specific in terms of output (CSS), but it does not contain resets/component structure.
+- @kiskadee/presets (packages/presets)
+  - What it is: a collection of ready‑to‑use schema presets built on top of @kiskadee/core.
+  - Examples:
+    - templates (e.g., google-material-design, ios-26-kiskadee, material-design-3-google) — schema sources that can be plugged into the Web builder.
+
+- @kiskadee/web-builder (packages/web-builder)
+  - What it is: the pipeline that converts the core schema (and presets) into utility CSS and class maps for runtime consumption. It is Web‑specific in terms of output (CSS), but it does not contain resets/component structure.
   - Main outputs:
     - Core CSS (decoration/scale/effects that do not depend on a palette)
     - Per‑palette CSS (colors only)
@@ -22,21 +24,24 @@ Below you’ll find each package/project’s purpose, how they relate, and the a
   - Where the pipeline lives: src/index.ts organizes phases 1–6.
   - What it is NOT: it does not apply Web normalize/reset, nor define component layout/structure.
 
-- packages/headless
+- @kiskadee/headless (packages/headless)
   - What it is: headless (agnostic) components — logic and accessibility, no styling. E.g., Tabs, Button behavior, etc., without CSS.
-  - What it is NOT: it does not apply visual identity or visual structure; it is meant to be styled/structured by the consumer (e.g., packages/components).
+  - What it is NOT: it does not apply visual identity or visual structure; it is meant to be styled/structured by the consumer (e.g., @kiskadee/react-components).
 
-- packages/components
+- @kiskadee/react-components (packages/components/react)
   - What it is: composition of visual components for the Web, combining:
-    - the utility CSS and class map from packages/web-builder;
-    - the logic/accessibility from packages/headless;
+    - the utility CSS and class map from @kiskadee/web-builder;
+    - the logic/accessibility from @kiskadee/headless;
     - local CSS Modules for minimal structure and any component‑specific resets (when needed).
   - Recommendations:
     - Prefer CSS Modules with compose to reuse generated utilities (avoids CSS duplication).
     - Keep structural adjustments here (display, flex/grid, hit area), leaving visual identity to the generated utility CSS.
 
+- @kiskadee/showcase (packages/sandbox)
+  - What it is: the documentation and demo app for Kiskadee, built on top of @kiskadee/react-components and the generated CSS/maps. Used to explore templates, palettes and components in a real Web environment.
+
 Optional external (not included in web-builder by architectural decision):
-- @kiskadee/web-base (suggested)
+- @kiskadee/web-base (suggested, external)
   - Small normalize/reset package and HTML widget fixes (e.g., remove the default ugly <button> border). It’s opt‑in and keeps the schema and the builder free of platform concerns.
 
 ## Web‑builder pipeline (Phases)
@@ -100,15 +105,15 @@ Location: packages/web-builder/src/index.ts
 
 ## Architecture guidelines
 
-- schema is agnostic: visual identity only. No Web reset/normalize, no component layout/structure.
+- core/presets are agnostic: visual identity only. No Web reset/normalize, no component layout/structure.
 - web-builder generates utilities and maps: no structural rules or platform resets.
 - headless provides accessibility and behavior, with no required CSS.
-- components composes everything for the Web: minimal structure via CSS Modules and visual identity via generated utilities. It may optionally consume a Web base/reset package (outside the builder).
+- react-components composes everything for the Web: minimal structure via CSS Modules and visual identity via generated utilities. It may optionally consume a Web base/reset package (outside the builder).
 
 ## Typical usage (high level)
 
-1) Choose a schema template (e.g., google-material-design) and run the web-builder to generate CSS bundles and classNamesMapSplit.
-2) In the components package, import the required bundles (core + palette) and compose classes in the markup using classNamesMapSplit together with the component’s interaction states (headless).
+1) Choose a schema template from @kiskadee/presets (e.g., google-material-design) and run the web-builder to generate CSS bundles and classNamesMapSplit.
+2) In the @kiskadee/react-components package, import the required bundles (core + palette) and compose classes in the markup using classNamesMapSplit together with the component’s interaction states (headless).
 3) Add minimal structure with CSS Modules (display, direction, alignment), preferring compose to reuse utilities.
 4) Optional: apply a Web baseline/reset (e.g., @kiskadee/web-base) in the app or in the components package.
 
@@ -118,7 +123,7 @@ Location: packages/web-builder/src/index.ts
 - packages/web-builder/src/phase-4-convert-style-keys-to-css-rules/palettes/transformColorKeyToCss.ts — selector generation rules by state (inline and reference).
 - packages/web-builder/src/phase-4-convert-style-keys-to-css-rules/generateCssSplit.ts — composition of the core vs palettes split.
 - packages/web-builder/src/phase-5-generate-class-names-map/generateClassNamesMap.ts — generation of classNamesMapSplit.
-- packages/schema/src/templates/* — example schemas.
+- packages/presets/src/templates/* — example schemas.
 
 ## Future and extensions
 
