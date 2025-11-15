@@ -1,4 +1,4 @@
-// Static registry for Kiskadee template assets used by the sandbox
+// Static registry for Kiskadee template assets used by the showcase
 // Replace or regenerate this file to expose your templates via dynamic import.
 // Example of how to add entries (when files are placed under app/(data)/build):
 // export const coreMaps = {
