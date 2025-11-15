@@ -7,9 +7,9 @@ pnpm-debug.log*
 node_modules
 dist
 build
-# Except keep template assets tracked for the sandbox app (used in Vercel builds)
-!packages/sandbox/public/build
-!packages/sandbox/public/build/**
+# Except keep template assets tracked for the showcase app (used in Vercel builds)
+!packages/showcase/public/build
+!packages/showcase/public/build/**
 *.local
 
 # Editor directories and files
