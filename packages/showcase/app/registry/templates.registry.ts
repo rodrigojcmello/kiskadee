@@ -7,12 +7,14 @@
 //   static URLs (for example: /build/ios-26-kiskadee/core.kiskadee.json)
 //   instead of local dynamic imports.
 // - To stay compatible with the current Providers implementation, each loader
-//   returns an object shaped like an ESM module: { default: JSON }.
+//   returns an object shaped like an ESM module: { default: ComponentClassNameMap }.
 //
 // The public/build directory must be kept in sync with packages/web-builder/build
 // by a sync script (at the monorepo root).
 
-type ClassNamesModuleLike = { default: unknown };
+import type { ComponentClassNameMap } from '@kiskadee/web-builder/types';
+
+type ClassNamesModuleLike = { default: ComponentClassNameMap };
 
 // Helper that wraps fetch and returns a "module-like" object compatible
 // with the existing code in app/providers.tsx.
@@ -24,7 +26,7 @@ function loadJsonModule(path: string): Promise<ClassNamesModuleLike> {
       }
       return response.json();
     })
-    .then((json) => ({ default: json }));
+    .then((json) => ({ default: json as ComponentClassNameMap }));
 }
 
 export const coreMaps = {
@@ -36,13 +38,11 @@ export const coreMaps = {
 
 export const paletteMaps = {
   // ios-26-apple palettes
-  'ios-26-apple|ios|light': () =>
-    loadJsonModule('/build/ios-26-apple/ios.light.kiskadee.json'),
+  'ios-26-apple|ios|light': () => loadJsonModule('/build/ios-26-apple/ios.light.kiskadee.json'),
   // ios-26-kiskadee palettes
   'ios-26-kiskadee|ios|light': () =>
     loadJsonModule('/build/ios-26-kiskadee/ios.light.kiskadee.json'),
-  'ios-26-kiskadee|ios|dark': () =>
-    loadJsonModule('/build/ios-26-kiskadee/ios.dark.kiskadee.json'),
+  'ios-26-kiskadee|ios|dark': () => loadJsonModule('/build/ios-26-kiskadee/ios.dark.kiskadee.json'),
   'ios-26-kiskadee|ios|darker': () =>
     loadJsonModule('/build/ios-26-kiskadee/ios.darker.kiskadee.json'),
   // material-design-3-google palettes
