@@ -1,25 +1,25 @@
 {
   "button": {
     "e1": {
-      "d": "w",
-      "e": "ar a au av at as",
-      "cs": "v t u s",
+      "d": "gmd-w",
+      "e": "gmd-ar gmd-a gmd-au gmd-av gmd-at gmd-as",
+      "cs": "gmd-v gmd-t gmd-u gmd-s",
       "s": {
-        "s:sm:1": "aq ab ac ah o",
-        "s:md:1": "am x ad ai a",
-        "s:lg:1": "an y ae aj p",
-        "s:lg:2": "ao z af ak q",
-        "s:lg:3": "ap aa ag al r"
+        "s:sm:1": "gmd-aq gmd-ab gmd-ac gmd-ah gmd-o",
+        "s:md:1": "gmd-am gmd-x gmd-ad gmd-ai gmd-a",
+        "s:lg:1": "gmd-an gmd-y gmd-ae gmd-aj gmd-p",
+        "s:lg:2": "gmd-ao gmd-z gmd-af gmd-ak gmd-q",
+        "s:lg:3": "gmd-ap gmd-aa gmd-ag gmd-al gmd-r"
       }
     },
     "e2": {
-      "d": "aw bd",
+      "d": "gmd-aw gmd-bd",
       "s": {
-        "s:sm:1": "n m",
-        "s:md:1": "n m",
-        "s:lg:1": "ba ax",
-        "s:lg:2": "bb ay",
-        "s:lg:3": "bc az"
+        "s:sm:1": "gmd-n gmd-m",
+        "s:md:1": "gmd-n gmd-m",
+        "s:lg:1": "gmd-ba gmd-ax",
+        "s:lg:2": "gmd-bb gmd-ay",
+        "s:lg:3": "gmd-bc gmd-az"
       }
     }
   }

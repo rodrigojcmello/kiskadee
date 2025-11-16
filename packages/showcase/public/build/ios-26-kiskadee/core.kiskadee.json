@@ -1,16 +1,16 @@
 {
   "button": {
     "e1": {
-      "d": "v",
-      "e": "aq at au as ar",
+      "d": "aki-v",
+      "e": "aki-aq aki-at aki-au aki-as aki-ar",
       "s": {
-        "s:md:1": "ap am an ao u"
+        "s:md:1": "aki-ap aki-am aki-an aki-ao aki-u"
       }
     },
     "e2": {
-      "d": "bi bl",
+      "d": "aki-bi aki-bl",
       "s": {
-        "s:md:1": "bk bj"
+        "s:md:1": "aki-bk aki-bj"
       }
     }
   }

@@ -21,6 +21,7 @@ const purple = segments.purple;
 
 export const schema: Schema = {
   name: 'Material Design',
+  prefix: 'gmd', // Google Material Design
   version: [3, 0, 0],
   author: 'Google',
   breakpoints,

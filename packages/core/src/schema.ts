@@ -68,6 +68,7 @@ export type SchemaMetadata = {
   version: [number, number, number];
   author: string;
   breakpoints: Breakpoints;
+  prefix?: string;
 };
 
 export type Schema = SchemaMetadata & {

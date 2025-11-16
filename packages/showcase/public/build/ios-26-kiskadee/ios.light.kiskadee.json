@@ -3,31 +3,31 @@
     "e1": {
       "c": {
         "primary": {
-          "f": "y ai al af r p q o ac",
-          "d": "x ah ak ae ab"
+          "f": "aki-y aki-ai aki-al aki-af aki-r aki-p aki-q aki-o aki-ac",
+          "d": "aki-x aki-ah aki-ak aki-ae aki-ab"
         },
         "neutral": {
-          "f": "w ag aj ad r p q o aa"
+          "f": "aki-w aki-ag aki-aj aki-ad aki-r aki-p aki-q aki-o aki-aa"
         },
         "redLike": {
-          "f": "z h j f m k l d",
-          "d": "b g i e c"
+          "f": "aki-z aki-h aki-j aki-f aki-m aki-k aki-l aki-d",
+          "d": "aki-b aki-g aki-i aki-e aki-c"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "f": "aw ba bf t",
-          "d": "s bc a"
+          "f": "aki-aw aki-ba aki-bf aki-t",
+          "d": "aki-s aki-bc aki-a"
         },
         "neutral": {
-          "f": "av az be t",
-          "d": "a"
+          "f": "aki-av aki-az aki-be aki-t",
+          "d": "aki-a"
         },
         "redLike": {
-          "f": "ax bb bg bh ay",
-          "d": "s bd a"
+          "f": "aki-ax aki-bb aki-bg aki-bh aki-ay",
+          "d": "aki-s aki-bd aki-a"
         }
       }
     }

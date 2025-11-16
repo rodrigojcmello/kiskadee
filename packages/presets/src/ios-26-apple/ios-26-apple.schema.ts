@@ -7,6 +7,7 @@ const ios = segments.ios;
 
 export const schema: Schema = {
   name: 'iOS',
+  prefix: 'aos', // Apple OS
   version: [26, 0, 0],
   author: 'Apple',
   breakpoints,

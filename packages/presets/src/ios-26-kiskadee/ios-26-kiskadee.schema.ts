@@ -7,6 +7,7 @@ const ios = segments.ios;
 
 export const schema: Schema = {
   name: 'iOS',
+  prefix: 'aki', // Apple OS by Kiskadee
   version: [26, 0, 0],
   author: 'Kiskadee',
   breakpoints,

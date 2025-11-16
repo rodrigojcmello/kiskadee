@@ -19,6 +19,10 @@ import {
 import { persistBuildArtifacts } from './phase-6-persist-build-artifacts/persistBuildArtifacts';
 import { publishMetadata } from './phase-7-publish-metadata/publishMetadata';
 
+// Feature flag simples para controlar o uso de prefixo nos nomes de classes CSS
+// Ajuste para `false` caso queira desativar o prefixo sem alterar o restante do código.
+const ENABLE_CLASSNAME_PREFIX = true;
+
 function slugifyName(name: string): string {
   return name
     .trim()
@@ -78,7 +82,18 @@ const baseBuildDir = resolve(__dirname, '..', '..', 'build');
     console.log('phase  2', { name: schema.name, styleKeyUsage });
 
     // Phase 3 - Shorten class names
-    const shortenCssClassNameMap: ShortenCssClassNames = shortenCssClassNames(styleKeyUsage);
+    // Optionally prefixes classes using the schema's configured prefix
+    // (SchemaMetadata.prefix). When no explicit prefix is provided, falls back
+    // to the previous behavior using lowercase schema name to maintain
+    // compatibility and isolation per template/design system.
+    const rawPrefix = ENABLE_CLASSNAME_PREFIX
+      ? (schema.prefix ?? slugifyName(schema.name))
+      : undefined;
+    const classNamePrefix = rawPrefix ? slugifyName(rawPrefix) : undefined;
+
+    const shortenCssClassNameMap: ShortenCssClassNames = shortenCssClassNames(styleKeyUsage, {
+      prefix: classNamePrefix ? `${classNamePrefix}-` : undefined
+    });
     console.log('phase 3', { name: schema.name, shortenCssClassNameMap });
 
     // Phase 4 - Generate CSS split
