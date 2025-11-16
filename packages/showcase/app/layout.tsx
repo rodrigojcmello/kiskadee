@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import './globals.css';
+import './globals.scss';
 import BackgroundTonePicker from '@/components/BackgroundTonePicker/BackgroundTonePicker';
 import DesignSystemControls from '@/components/DesignSystemControls/DesignSystemControls';
 import ThemeModePicker from '@/components/ThemeModePicker/ThemeModePicker';

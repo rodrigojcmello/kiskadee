@@ -1,0 +1,51 @@
+/* Basic reset and layout helpers for the showcase */
+
+:root {
+  color-scheme: light dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  line-height: 1.4;
+}
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+/* Generic transition utility applied opt-in by components */
+.kd-transition, .kd-transition * {
+	transition-property: background-color, padding, margin, border-color, border-width, color, font-size, border-radius, box-shadow, outline;
+	transition-duration: 800ms;
+	transition-timing-function: ease;
+}
+
+/* Disable all transitions/animations while the app is booting to avoid initial flare */
+.no-transitions *,
+.no-transitions *::before,
+.no-transitions *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+:focus-visible, .-f.-a {
+  outline: solid 2px #0059b1;
+  outline-offset: 1px;
+  position: relative;
+}

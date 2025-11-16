@@ -15,6 +15,18 @@ const DEFAULT_TEMPLATE =
 const DEFAULT_SEGMENT = 'ios';
 const DEFAULT_THEME: ThemeMode = 'light';
 
+// ----------------------------------------------------------------------------------------------
+// In-memory registries (module scoped)
+// ----------------------------------------------------------------------------------------------
+
+// Cache of already loaded class maps to avoid repeated dynamic imports
+const coreMapCache: Partial<Record<TemplateKey, ComponentClassNameMapJSON>> = {};
+const paletteMapCache: Partial<Record<string, ComponentClassNameMapJSON>> = {};
+
+// Cache of <link> elements by href to keep all loaded CSS in memory during the session
+// and avoid duplicating link tags.
+const stylesheetLinkCache: Partial<Record<string, HTMLLinkElement>> = {};
+
 export function Providers({ children }: { children: React.ReactNode }) {
   const [template, _setTemplate] = useState<TemplateKey>(DEFAULT_TEMPLATE);
   const [segment, _setSegment] = useState<string>(DEFAULT_SEGMENT);
@@ -91,23 +103,30 @@ export function Providers({ children }: { children: React.ReactNode }) {
       document.documentElement.classList.add('no-transitions');
     }
 
-    // Load core map via dynamic import registry (guard if not registered)
-    let core: ComponentClassNameMapJSON = {};
-    const coreLoader = coreMaps[template];
-    if (coreLoader) {
-      const coreMod = await coreLoader();
-      const asDefault = coreMod as { default?: ComponentClassNameMapJSON };
-      core = asDefault.default ?? (coreMod as unknown as ComponentClassNameMapJSON);
+    // Load core map via dynamic import registry (guard if not registered),
+    // reusing cached results to avoid repeated imports.
+    let core: ComponentClassNameMapJSON = coreMapCache[template] ?? {};
+    if (!Object.keys(core).length) {
+      const coreLoader = coreMaps[template];
+      if (coreLoader) {
+        const coreMod = await coreLoader();
+        const asDefault = coreMod as { default?: ComponentClassNameMapJSON };
+        core = asDefault.default ?? (coreMod as unknown as ComponentClassNameMapJSON);
+        coreMapCache[template] = core;
+      }
     }
 
-    // Load palette map if exists for current segment/theme
-    const key = `${String(template)}|${segment}|${theme}` as keyof typeof paletteMaps;
-    let palette: ComponentClassNameMapJSON = {};
-    const loader = paletteMaps[key];
-    if (loader) {
-      const palMod = await loader();
-      const asDefault = palMod as { default?: ComponentClassNameMapJSON };
-      palette = asDefault.default ?? (palMod as unknown as ComponentClassNameMapJSON);
+    // Load palette map if it exists for the current segment/theme, also using cache.
+    const paletteKey = `${String(template)}|${segment}|${theme}`;
+    let palette: ComponentClassNameMapJSON = paletteMapCache[paletteKey] ?? {};
+    if (!Object.keys(palette).length) {
+      const loader = paletteMaps[paletteKey as keyof typeof paletteMaps];
+      if (loader) {
+        const palMod = await loader();
+        const asDefault = palMod as { default?: ComponentClassNameMapJSON };
+        palette = asDefault.default ?? (palMod as unknown as ComponentClassNameMapJSON);
+        paletteMapCache[paletteKey] = palette;
+      }
     }
 
     // Deep merge: preserve core baseline (d/e/s) and overlay palette colors (c) and selected (cs)
@@ -179,35 +198,32 @@ export function Providers({ children }: { children: React.ReactNode }) {
   // Inject and clean up stylesheets via effects (App Router friendly)
   useEffect(() => {
     if (!coreHref || typeof document === 'undefined') return;
+    if (stylesheetLinkCache[coreHref]) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = coreHref;
     document.head.appendChild(link);
-    return () => {
-      link.parentNode?.removeChild(link);
-    };
+    stylesheetLinkCache[coreHref] = link;
   }, [coreHref]);
 
   useEffect(() => {
     if (!paletteHref || typeof document === 'undefined') return;
+    if (stylesheetLinkCache[paletteHref]) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = paletteHref;
     document.head.appendChild(link);
-    return () => {
-      link.parentNode?.removeChild(link);
-    };
+    stylesheetLinkCache[paletteHref] = link;
   }, [paletteHref]);
 
   useEffect(() => {
     if (!effectsHref || typeof document === 'undefined') return;
+    if (stylesheetLinkCache[effectsHref]) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = effectsHref;
     document.head.appendChild(link);
-    return () => {
-      link.parentNode?.removeChild(link);
-    };
+    stylesheetLinkCache[effectsHref] = link;
   }, [effectsHref]);
 
   return (
