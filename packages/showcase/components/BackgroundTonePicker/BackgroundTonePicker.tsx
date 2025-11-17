@@ -5,7 +5,7 @@ import styles from './BackgroundTonePicker.module.scss';
 
 const TONES = [
   { key: 'white', color: '#ffffff', aria: 'White' },
-  { key: 'gray', color: '#d1d5db', aria: 'Gray' },
+  { key: 'gray', color: '#f5f5f5', aria: 'Gray' },
   { key: 'dark-gray', color: '#374151', aria: 'Dark gray' },
   { key: 'black', color: '#000000', aria: 'Black' }
 ] as const;

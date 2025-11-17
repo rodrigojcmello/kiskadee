@@ -21,19 +21,29 @@ export const schema: Schema = {
           },
           scales: {
             paddingTop: {
-              's:md:1': 16
+              's:sm:1': 5,
+              's:md:1': 8,
+              's:lg:1': 16
             },
             paddingBottom: {
-              's:md:1': 16
+              's:sm:1': 5,
+              's:md:1': 8,
+              's:lg:1': 16
             },
             paddingLeft: {
-              's:md:1': 20
+              's:sm:1': 10,
+              's:md:1': 12,
+              's:lg:1': 20
             },
             paddingRight: {
-              's:md:1': 20
+              's:sm:1': 10,
+              's:md:1': 12,
+              's:lg:1': 20
             },
             borderRadius: {
-              's:md:1': 25
+              's:sm:1': 14,
+              's:md:1': 17,
+              's:lg:1': 25
             }
           },
           palettes: {
@@ -242,10 +252,14 @@ export const schema: Schema = {
           },
           scales: {
             textSize: {
-              's:md:1': 17
+              's:sm:1': 15,
+              's:md:1': 17,
+              's:lg:1': 17
             },
             textHeight: {
-              's:md:1': 18
+              's:sm:1': 18,
+              's:md:1': 18,
+              's:lg:1': 18
             }
           }
         }

@@ -41,15 +41,15 @@ export type ButtonProps = HeadlessButtonProps & {
 // Assumes semantic-aware map in `c`; no legacy flat format for performance.
 function collectStr(
   el: ClassNameByElementJSON | undefined,
-  tone: EmphasisVariant | undefined,
-  semantic: string | undefined
+  tone: EmphasisVariant | undefined = 'soft',
+  semantic: string | undefined = 'neutral'
 ): string {
   if (!el) return '';
   let out = '';
   if (el.d) out = el.d;
 
   const c = el.c as Record<string, import('@kiskadee/core').ColorClasses> | undefined;
-  const bySem = c ? c[semantic ?? 'neutral'] : undefined;
+  const bySem = c ? c[semantic] : undefined;
 
   if (bySem) {
     let color = '';

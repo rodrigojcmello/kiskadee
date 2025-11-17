@@ -3,14 +3,14 @@
     "e1": {
       "c": {
         "primary": {
-          "f": "aki-y aki-ai aki-al aki-af aki-r aki-p aki-q aki-o aki-ac",
-          "d": "aki-x aki-ah aki-ak aki-ae aki-ab"
+          "f": "aki-ac aki-am aki-ap aki-aj aki-s aki-q aki-r aki-p aki-ag",
+          "d": "aki-ab aki-al aki-ao aki-ai aki-af"
         },
         "neutral": {
-          "f": "aki-w aki-ag aki-aj aki-ad aki-r aki-p aki-q aki-o aki-aa"
+          "f": "aki-aa aki-ak aki-an aki-ah aki-s aki-q aki-r aki-p aki-ae"
         },
         "redLike": {
-          "f": "aki-z aki-h aki-j aki-f aki-m aki-k aki-l aki-d",
+          "f": "aki-ad aki-h aki-j aki-f aki-m aki-k aki-l aki-d",
           "d": "aki-b aki-g aki-i aki-e aki-c"
         }
       }
@@ -18,16 +18,16 @@
     "e2": {
       "c": {
         "primary": {
-          "f": "aki-aw aki-ba aki-bf aki-t",
-          "d": "aki-s aki-bc aki-a"
+          "f": "aki-bi aki-bm aki-br aki-u",
+          "d": "aki-t aki-bo aki-a"
         },
         "neutral": {
-          "f": "aki-av aki-az aki-be aki-t",
+          "f": "aki-bh aki-bl aki-bq aki-u",
           "d": "aki-a"
         },
         "redLike": {
-          "f": "aki-ax aki-bb aki-bg aki-bh aki-ay",
-          "d": "aki-s aki-bd aki-a"
+          "f": "aki-bj aki-bn aki-bs aki-bt aki-bk",
+          "d": "aki-t aki-bp aki-a"
         }
       }
     }
