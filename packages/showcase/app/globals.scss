@@ -4,6 +4,17 @@
   color-scheme: light dark;
 }
 
+/* Theme color variables */
+.light {
+  --primary-50: #0091ff;
+  --contrast-100: #000000;
+}
+
+.dark {
+  --primary-50: #0091ff;
+  --contrast-100: #ffffff;
+}
+
 * {
   box-sizing: border-box;
 }

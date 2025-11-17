@@ -1,14 +1,8 @@
 'use client';
 import type { ThemeMode } from '@kiskadee/core';
 import { useKiskadee } from '@kiskadee/react-components';
-import { useEffect, useId, useMemo, useState } from 'react';
-import moonBrightBlack from './img/moon-bright-48-black.png';
-import moonBrightWhite from './img/moon-bright-48-white.png';
-import moonFullBlack from './img/moon-full-48-black.png';
-import moonFullWhite from './img/moon-full-48-white.png';
-// Icon variants (black/white)
-import sunBlack from './img/sun-48-black.png';
-import sunWhite from './img/sun-48-white.png';
+import dynamic from 'next/dynamic';
+import { useId } from 'react';
 import styles from './ThemeModePicker.module.scss';
 
 /*
@@ -31,46 +25,37 @@ const OPTIONS: Array<{
 
 export type Position = 'inline' | 'fixed-right-top';
 
+const IconSunMax = dynamic(async () => {
+  const mod = await import('./icons/IconSunMax');
+  return mod.IconSunMax;
+});
+
+const IconMoonStars = dynamic(async () => {
+  const mod = await import('./icons/IconMoonStars');
+  return mod.IconMoonStars;
+});
+
+const IconMoon = dynamic(async () => {
+  const mod = await import('./icons/IconMoon');
+  return mod.IconMoon;
+});
+
 export default function ThemeModePicker({ position = 'inline' }: { position?: Position }) {
   const groupId = useId();
   const { theme, setTheme, availableThemes } = useKiskadee();
 
   const visibleOptions = OPTIONS.filter((o) => availableThemes.includes(o.key));
 
-  const STORAGE_KEY = 'kiskadee.preview.background';
-  const isDarkKey = (k: string | null | undefined) => k === 'dark-gray' || k === 'black';
-
-  const initialDark = useMemo(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return isDarkKey(saved);
-    } catch {
-      return false;
-    }
-  }, []);
-
-  const [useWhiteIcons, setUseWhiteIcons] = useState<boolean>(initialDark);
-
-  useEffect(() => {
-    const handler = (e: Event) => {
-      const ev = e as CustomEvent<{ key: string; color: string }>;
-      setUseWhiteIcons(isDarkKey(ev.detail?.key));
-    };
-    window.addEventListener('kiskadee:background-tone-changed', handler as EventListener);
-    return () =>
-      window.removeEventListener('kiskadee:background-tone-changed', handler as EventListener);
-  }, []);
-
   const iconFor = (mode: ThemeMode) => {
     switch (mode) {
       case 'light':
-        return useWhiteIcons ? sunWhite : sunBlack;
+        return IconSunMax;
       case 'dark':
-        return useWhiteIcons ? moonFullWhite : moonFullBlack;
+        return IconMoonStars;
       case 'darker':
-        return useWhiteIcons ? moonBrightWhite : moonBrightBlack;
+        return IconMoon;
       default:
-        return useWhiteIcons ? sunWhite : sunBlack;
+        return IconSunMax;
     }
   };
 
@@ -97,12 +82,10 @@ export default function ThemeModePicker({ position = 'inline' }: { position?: Po
                 className={styles.input}
               />
               <span className={theme === opt.key ? `${styles.dot} ${styles.selected}` : styles.dot}>
-                <img
-                  className={styles.icon}
-                  src={iconFor(opt.key) as unknown as string}
-                  alt=""
-                  aria-hidden="true"
-                />
+                {(() => {
+                  const Icon = iconFor(opt.key);
+                  return <Icon className={styles.icon} aria-hidden="true" focusable="false" />;
+                })()}
               </span>
               <span className={styles.label}>{opt.label}</span>
             </label>

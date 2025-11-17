@@ -96,6 +96,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
     [template, segment, clampPair]
   );
 
+  // Sync CSS theme classes with current ThemeMode so globals.scss variables apply app-wide.
+  // We intentionally map both "dark" and "darker" ThemeMode values to the same .dark
+  // class, as requested, so they share the same CSS custom properties.
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    const root = document.documentElement;
+    root.classList.remove('light', 'dark');
+
+    const cssThemeClass = theme === 'light' ? 'light' : 'dark';
+    root.classList.add(cssThemeClass);
+  }, [theme]);
+
   const templateMeta = useMemo(() => ({}) as Record<string, { displayName?: string }>, []);
 
   const ensureLoaded = useCallback(async () => {
