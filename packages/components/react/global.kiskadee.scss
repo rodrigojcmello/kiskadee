@@ -7,17 +7,19 @@
   --kd-ease-emph: cubic-bezier(0.2, 0, 1, 1);
 }
 
-.kd-transition, .kd-transition * {
-  transition-property: background-color, padding, margin, border-color, border-width, color, font-size, border-radius, box-shadow, outline;
-  transition-duration: var(--kd-dur-theme, 800ms);
-  transition-timing-function: var(--kd-ease-std, ease);
+/* Macro DS/theme transitions ("wow" effect) */
+.k-wow * {
+  transition-property: background-color, padding, margin, border-color, border-width, color, font-size, border-radius, box-shadow, outline !important;
+  transition-duration: 800ms !important;
+  transition-timing-function: ease-out !important;
 }
 
-//.kd-transition-int, .kd-transition-int * {
-//  transition-property: background-color, border-color, color, box-shadow;
-//  transition-duration: var(--kd-dur-int, 180ms);
-//  transition-timing-function: var(--kd-ease-std, ease-out);
-//}
+/* Interaction state transitions (hover/focus/pressed) */
+.k-state {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: var(--kd-dur-int, 180ms);
+  transition-timing-function: var(--kd-ease-std, ease-out);
+}
 
 .no-transitions *,
 .no-transitions *::before,

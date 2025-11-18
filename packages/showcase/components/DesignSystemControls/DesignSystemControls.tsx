@@ -23,7 +23,14 @@ export default function DesignSystemControls() {
         Design System:
         <select
           value={template}
-          onChange={(e) => setTemplate(e.target.value)}
+          onChange={(e) => {
+            const root = document.documentElement;
+            root.classList.add('k-wow');
+            window.setTimeout(() => {
+              root.classList.remove('k-wow');
+            }, 900);
+            setTemplate(e.target.value);
+          }}
           style={{ marginLeft: 8 }}
         >
           {templateKeys.map((k) => (
@@ -39,7 +46,14 @@ export default function DesignSystemControls() {
         Segment:
         <select
           value={segment}
-          onChange={(e) => setSegment(e.target.value)}
+          onChange={(e) => {
+            const root = document.documentElement;
+            root.classList.add('k-wow');
+            window.setTimeout(() => {
+              root.classList.remove('k-wow');
+            }, 900);
+            setSegment(e.target.value);
+          }}
           style={{ marginLeft: 8 }}
           disabled={availableSegments.length <= 1}
         >
@@ -56,7 +70,14 @@ export default function DesignSystemControls() {
         Theme:
         <select
           value={theme}
-          onChange={(e) => setTheme(e.target.value as ThemeMode)}
+          onChange={(e) => {
+            const root = document.documentElement;
+            root.classList.add('k-wow');
+            window.setTimeout(() => {
+              root.classList.remove('k-wow');
+            }, 900);
+            setTheme(e.target.value as ThemeMode);
+          }}
           style={{ marginLeft: 8 }}
           disabled={availableThemes.length <= 1}
         >
