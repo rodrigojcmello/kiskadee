@@ -1,0 +1,1 @@
+- Sobre idiomas: responda a perguntas sempre em português, já para código e comentários sempre em inglês.
