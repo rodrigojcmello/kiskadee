@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import './globals.scss';
+import '@kiskadee/react-components/global.kiskadee.scss';
 import BackgroundTonePicker from '@/components/BackgroundTonePicker/BackgroundTonePicker';
 import DesignSystemControls from '@/components/DesignSystemControls/DesignSystemControls';
 import ThemeModePicker from '@/components/ThemeModePicker/ThemeModePicker';
@@ -7,7 +8,8 @@ import { Providers } from './providers';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    // Start with .no-transitions to avoid animations on the first paint.
+    <html lang="en" className="no-transitions">
       <body>
         <Providers>
           <DesignSystemControls />

@@ -112,9 +112,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const templateMeta = useMemo(() => ({}) as Record<string, { displayName?: string }>, []);
 
   const ensureLoaded = useCallback(async () => {
-    if (typeof document !== 'undefined') {
-      document.documentElement.classList.add('no-transitions');
-    }
 
     // Load core map via dynamic import registry (guard if not registered),
     // reusing cached results to avoid repeated imports.
@@ -187,9 +184,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
     const merged = mergeMaps(core, palette);
     setClassesMap(merged);
 
-    // Stylesheets are managed declaratively via <Head> links derived from css.registry
+    // Stylesheets are managed via <Head> (css.registry). Here we only
+    // re-enable animations after a small delay to ensure the first
+    // paint happens without transitions.
     if (typeof document !== 'undefined') {
-      document.documentElement.classList.remove('no-transitions');
+      const root = document.documentElement;
+      window.setTimeout(() => {
+        root.classList.remove('no-transitions');
+      }, 300);
     }
   }, [template, segment, theme]);
 
