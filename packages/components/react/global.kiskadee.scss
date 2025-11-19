@@ -1,24 +1,24 @@
 :root {
-  --kd-dur-int-fast: 120ms;
-  --kd-dur-int: 180ms;
-  --kd-dur-int-slow: 240ms;
-  --kd-dur-theme: 800ms;
-  --kd-ease-std: ease-out;
-  --kd-ease-emph: cubic-bezier(0.2, 0, 1, 1);
+  --k-dur-int-fast: 120ms;
+  --k-dur-int: 180ms;
+  --k-dur-int-slow: 240ms;
+  --k-dur-theme: 800ms;
+  --k-ease-std: ease-out;
+  --k-ease-emph: cubic-bezier(0.2, 0, 1, 1);
 }
 
 /* Macro DS/theme transitions ("wow" effect) */
 .k-wow * {
   transition-property: background-color, padding, margin, border-color, border-width, color, font-size, border-radius, box-shadow, outline !important;
-  transition-duration: 800ms !important;
-  transition-timing-function: ease-out !important;
+  transition-duration: var(--k-dur-theme) !important;
+  transition-timing-function: var(--k-ease-std) !important;
 }
 
 /* Interaction state transitions (hover/focus/pressed) */
 .k-state {
   transition-property: background-color, border-color, color, box-shadow;
-  transition-duration: var(--kd-dur-int, 180ms);
-  transition-timing-function: var(--kd-ease-std, ease-out);
+  transition-duration: var(--k-dur-int);
+  transition-timing-function: var(--k-ease-std);
 }
 
 .no-transitions *,
