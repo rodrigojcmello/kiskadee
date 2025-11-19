@@ -1,6 +1,7 @@
 'use client';
 import type { ThemeMode } from '@kiskadee/core';
 import { useKiskadee } from '@kiskadee/react-components';
+import { playWowTransition } from '@/utils/playWowTransition';
 import dynamic from 'next/dynamic';
 import { useId } from 'react';
 import styles from './ThemeModePicker.module.scss';
@@ -76,7 +77,10 @@ export default function ThemeModePicker({ position = 'inline' }: { position?: Po
                 name={`tmp-${groupId}`}
                 value={opt.key}
                 checked={theme === opt.key}
-                onChange={() => setTheme(opt.key)}
+                onChange={() => {
+                  playWowTransition();
+                  setTheme(opt.key);
+                }}
                 aria-checked={theme === opt.key}
                 aria-label={opt.aria}
                 className={styles.input}

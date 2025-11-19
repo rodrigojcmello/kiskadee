@@ -7,6 +7,13 @@
   --k-ease-emph: cubic-bezier(0.2, 0, 1, 1);
 }
 
+/* Background tone / page background transitions (always on) */
+body {
+  transition-property: background-color;
+  transition-duration: var(--k-dur-theme);
+  transition-timing-function: var(--k-ease-std);
+}
+
 /* Macro DS/theme transitions ("wow" effect) */
 .k-wow * {
   transition-property: background-color, padding, margin, border-color, border-width, color, font-size, border-radius, box-shadow, outline !important;

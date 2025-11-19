@@ -41,19 +41,10 @@ export default function BackgroundTonePicker({
 
   useEffect(() => {
     const tone = TONES.find((t) => t.key === selected) ?? TONES[0];
-    const el = document.documentElement;
-    el.style.transition = 'background-color 150ms ease-in-out';
+    const el = document.body;
     el.style.backgroundColor = tone.color;
     try {
       localStorage.setItem(STORAGE_KEY, tone.key);
-    } catch {}
-    // Notify listeners about background tone change
-    try {
-      window.dispatchEvent(
-        new CustomEvent('kiskadee:background-tone-changed', {
-          detail: { key: tone.key, color: tone.color }
-        })
-      );
     } catch {}
     onChange?.(tone.key, tone.color);
   }, [selected, onChange]);

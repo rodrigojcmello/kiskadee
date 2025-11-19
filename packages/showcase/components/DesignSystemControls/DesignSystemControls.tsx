@@ -1,6 +1,7 @@
 'use client';
 import type { ThemeMode } from '@kiskadee/core';
 import { useKiskadee } from '@kiskadee/react-components';
+import { playWowTransition } from '@/utils/playWowTransition';
 
 export default function DesignSystemControls() {
   const {
@@ -24,11 +25,7 @@ export default function DesignSystemControls() {
         <select
           value={template}
           onChange={(e) => {
-            const root = document.documentElement;
-            root.classList.add('k-wow');
-            window.setTimeout(() => {
-              root.classList.remove('k-wow');
-            }, 900);
+            playWowTransition();
             setTemplate(e.target.value);
           }}
           style={{ marginLeft: 8 }}
@@ -47,11 +44,7 @@ export default function DesignSystemControls() {
         <select
           value={segment}
           onChange={(e) => {
-            const root = document.documentElement;
-            root.classList.add('k-wow');
-            window.setTimeout(() => {
-              root.classList.remove('k-wow');
-            }, 900);
+            playWowTransition();
             setSegment(e.target.value);
           }}
           style={{ marginLeft: 8 }}
@@ -71,11 +64,7 @@ export default function DesignSystemControls() {
         <select
           value={theme}
           onChange={(e) => {
-            const root = document.documentElement;
-            root.classList.add('k-wow');
-            window.setTimeout(() => {
-              root.classList.remove('k-wow');
-            }, 900);
+            playWowTransition();
             setTheme(e.target.value as ThemeMode);
           }}
           style={{ marginLeft: 8 }}
