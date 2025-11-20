@@ -66,7 +66,14 @@ async function loadPresetsToBuild(): Promise<
   return items;
 }
 
-const baseBuildDir = resolve(__dirname, '..', '..', 'build');
+// All build artifacts for @kiskadee/web-builder (including metadata) are
+// meant to live under packages/web-builder/build. This path is the single
+// source of truth and is also consumed by the sync-showcase-artifacts script.
+//
+// __dirname -> packages/web-builder/src
+// ..        -> packages/web-builder
+// build     -> packages/web-builder/build
+const baseBuildDir = resolve(__dirname, '..', 'build');
 
 (async () => {
   const presetsToBuild = await loadPresetsToBuild();
