@@ -1,0 +1,20 @@
+{
+  "button": {
+    "e1": {
+      "c": {
+        "primary": {
+          "f": "fms-i fms-o fms-q fms-m fms-k",
+          "d": "fms-h fms-n fms-p fms-l fms-c fms-a fms-b fms-j"
+        }
+      }
+    },
+    "e2": {
+      "c": {
+        "primary": {
+          "f": "fms-ab fms-ac fms-ad",
+          "d": "fms-aa fms-e fms-d"
+        }
+      }
+    }
+  }
+}

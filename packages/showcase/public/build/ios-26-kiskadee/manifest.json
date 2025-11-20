@@ -1,0 +1,20 @@
+{
+  "key": "ios-26-kiskadee",
+  "displayName": "iOS 26 by Kiskadee",
+  "author": "Kiskadee",
+  "schemaName": "iOS",
+  "version": [
+    26,
+    0,
+    0
+  ],
+  "segments": [
+    "ios"
+  ],
+  "themes": {
+    "ios": [
+      "light",
+      "dark"
+    ]
+  }
+}

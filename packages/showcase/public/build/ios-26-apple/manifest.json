@@ -1,0 +1,19 @@
+{
+  "key": "ios-26-apple",
+  "displayName": "iOS 26 by Apple",
+  "author": "Apple",
+  "schemaName": "iOS",
+  "version": [
+    26,
+    0,
+    0
+  ],
+  "segments": [
+    "ios"
+  ],
+  "themes": {
+    "ios": [
+      "light"
+    ]
+  }
+}

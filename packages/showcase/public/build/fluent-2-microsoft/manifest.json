@@ -1,0 +1,19 @@
+{
+  "key": "fluent-2-microsoft",
+  "displayName": "iOS 2 by Microsoft",
+  "author": "Microsoft",
+  "schemaName": "Fluent",
+  "version": [
+    2,
+    0,
+    0
+  ],
+  "segments": [
+    "ios"
+  ],
+  "themes": {
+    "ios": [
+      "light"
+    ]
+  }
+}

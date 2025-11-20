@@ -1,0 +1,17 @@
+{
+  "button": {
+    "e1": {
+      "d": "fms-g",
+      "e": "fms-v fms-y fms-z fms-x fms-w",
+      "s": {
+        "s:md:1": "fms-u fms-r fms-s fms-t fms-f"
+      }
+    },
+    "e2": {
+      "d": "fms-ae fms-ah",
+      "s": {
+        "s:md:1": "fms-ag fms-af"
+      }
+    }
+  }
+}

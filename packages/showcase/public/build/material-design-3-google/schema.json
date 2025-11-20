@@ -1,0 +1,338 @@
+{
+  "name": "Material Design",
+  "prefix": "gmd",
+  "version": [
+    3,
+    0,
+    0
+  ],
+  "author": "Google",
+  "breakpoints": {
+    "bp:all": 0,
+    "bp:sm:1": 320,
+    "bp:sm:2": 360,
+    "bp:sm:3": 400,
+    "bp:md:1": 568,
+    "bp:md:2": 768,
+    "bp:md:3": 1024,
+    "bp:lg:1": 1152,
+    "bp:lg:2": 1312,
+    "bp:lg:3": 1792,
+    "bp:lg:4": 2432
+  },
+  "components": {
+    "button": {
+      "elements": {
+        "e1": {
+          "decorations": {
+            "borderStyle": "none"
+          },
+          "scales": {
+            "paddingTop": {
+              "s:sm:1": 8,
+              "s:md:1": 10,
+              "s:lg:1": 16,
+              "s:lg:2": 32,
+              "s:lg:3": 48
+            },
+            "paddingBottom": {
+              "s:sm:1": 8,
+              "s:md:1": 10,
+              "s:lg:1": 16,
+              "s:lg:2": 32,
+              "s:lg:3": 48
+            },
+            "paddingLeft": {
+              "s:sm:1": 12,
+              "s:md:1": 16,
+              "s:lg:1": 24,
+              "s:lg:2": 48,
+              "s:lg:3": 64
+            },
+            "paddingRight": {
+              "s:sm:1": 12,
+              "s:md:1": 16,
+              "s:lg:1": 24,
+              "s:lg:2": 48,
+              "s:lg:3": 64
+            },
+            "borderRadius": {
+              "s:sm:1": 18,
+              "s:md:1": 20,
+              "s:lg:1": 28,
+              "s:lg:2": 48,
+              "s:lg:3": 68
+            }
+          },
+          "palettes": {
+            "material": {
+              "light": {
+                "boxColor": {
+                  "primary": {
+                    "soft": {
+                      "rest": [
+                        256,
+                        34,
+                        50,
+                        1
+                      ],
+                      "hover": [
+                        256,
+                        34,
+                        60,
+                        1
+                      ],
+                      "pressed": [
+                        256,
+                        34,
+                        40,
+                        1
+                      ],
+                      "disabled": [
+                        0,
+                        0,
+                        90,
+                        1
+                      ],
+                      "focus": [
+                        256,
+                        34,
+                        50,
+                        1
+                      ],
+                      "selected": {
+                        "rest": [
+                          256,
+                          34,
+                          90,
+                          1
+                        ],
+                        "hover": [
+                          256,
+                          34,
+                          92,
+                          1
+                        ],
+                        "pressed": [
+                          256,
+                          34,
+                          80,
+                          1
+                        ]
+                      }
+                    },
+                    "solid": {
+                      "rest": [
+                        256,
+                        34,
+                        50,
+                        1
+                      ],
+                      "hover": [
+                        256,
+                        34,
+                        60,
+                        1
+                      ],
+                      "pressed": [
+                        256,
+                        34,
+                        40,
+                        1
+                      ],
+                      "disabled": [
+                        0,
+                        0,
+                        90,
+                        1
+                      ],
+                      "focus": [
+                        256,
+                        34,
+                        50,
+                        1
+                      ],
+                      "selected": {
+                        "rest": [
+                          256,
+                          34,
+                          90,
+                          1
+                        ],
+                        "hover": [
+                          256,
+                          34,
+                          92,
+                          1
+                        ],
+                        "pressed": [
+                          256,
+                          34,
+                          80,
+                          1
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "effects": {
+            "borderRadius": {
+              "rest": 20,
+              "selected": {
+                "rest": 16,
+                "hover": 14,
+                "pressed": 12,
+                "focus": 14
+              }
+            },
+            "shadow": {
+              "x": {
+                "rest": 0,
+                "hover": 0,
+                "pressed": 0,
+                "focus": 0,
+                "disabled": 0
+              },
+              "y": {
+                "rest": 2,
+                "hover": 4,
+                "pressed": 0,
+                "focus": 4,
+                "disabled": 0
+              },
+              "blur": {
+                "rest": 6,
+                "hover": 10,
+                "pressed": 0,
+                "focus": 10,
+                "disabled": 0
+              },
+              "color": {
+                "rest": [
+                  0,
+                  0,
+                  0,
+                  0.28
+                ],
+                "hover": [
+                  0,
+                  0,
+                  0,
+                  0.35
+                ],
+                "pressed": [
+                  0,
+                  0,
+                  0,
+                  0.32
+                ],
+                "focus": [
+                  0,
+                  0,
+                  0,
+                  0.35
+                ],
+                "disabled": [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
+            }
+          }
+        },
+        "e2": {
+          "decorations": {
+            "textFont": [
+              "Roboto",
+              "sans-serif"
+            ],
+            "textWeight": "medium"
+          },
+          "palettes": {
+            "material": {
+              "light": {
+                "textColor": {
+                  "primary": {
+                    "soft": {
+                      "rest": [
+                        0,
+                        0,
+                        100,
+                        1
+                      ],
+                      "disabled": {
+                        "ref": [
+                          0,
+                          0,
+                          40,
+                          1
+                        ]
+                      },
+                      "selected": {
+                        "rest": {
+                          "ref": [
+                            0,
+                            0,
+                            30,
+                            1
+                          ]
+                        }
+                      }
+                    },
+                    "solid": {
+                      "rest": [
+                        0,
+                        0,
+                        100,
+                        1
+                      ],
+                      "disabled": {
+                        "ref": [
+                          0,
+                          0,
+                          40,
+                          1
+                        ]
+                      },
+                      "selected": {
+                        "rest": {
+                          "ref": [
+                            0,
+                            0,
+                            30,
+                            1
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "scales": {
+            "textSize": {
+              "s:sm:1": 14,
+              "s:md:1": 14,
+              "s:lg:1": 16,
+              "s:lg:2": 24,
+              "s:lg:3": 32
+            },
+            "textHeight": {
+              "s:sm:1": 20,
+              "s:md:1": 20,
+              "s:lg:1": 24,
+              "s:lg:2": 32,
+              "s:lg:3": 40
+            }
+          }
+        }
+      }
+    }
+  }
+}
