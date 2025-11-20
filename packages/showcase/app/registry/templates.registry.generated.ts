@@ -60,7 +60,7 @@ export const paletteIndex = {
 } as const;
 
 export const templateMeta = {
-  'fluent-2-microsoft': { displayName: "iOS 2 by Microsoft" },
+  'fluent-2-microsoft': { displayName: "Fluent 2 2 by Microsoft" },
   'ios-26-apple': { displayName: "iOS 26 by Apple" },
   'ios-26-kiskadee': { displayName: "iOS 26 by Kiskadee" },
   'material-design-3-google': { displayName: "Material Design - Purple 3 by Google" },

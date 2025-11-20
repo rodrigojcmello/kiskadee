@@ -248,4 +248,4 @@ export function generateColorScaleWithLog(
 // ios 26 #0091FF
 // ios 18 #007AFF
 
-generateColorScaleWithLog('#FF4245', true);
+generateColorScaleWithLog('#0F6CBD', true);

@@ -1,10 +1,22 @@
-.fms-ae { font-family: Roboto, sans-serif }
-.fms-af { line-height: 18px }
-.fms-ag { font-size: 1.0625rem }
-.fms-ah { font-weight: 500 }
-.fms-f { border-radius: 4px }
-.fms-g { border-style: none }
-.fms-r { padding-bottom: 16px }
-.fms-s { padding-left: 20px }
-.fms-t { padding-right: 20px }
-.fms-u { padding-top: 16px }
+.fms-a { border-radius: 4px }
+.fms-aa { padding-top: 6px }
+.fms-ab { padding-top: 8px }
+.fms-an { font-family: Roboto, sans-serif }
+.fms-ao { line-height: 16px }
+.fms-ap { line-height: 20px }
+.fms-aq { line-height: 22px }
+.fms-ar { font-size: 0.75rem }
+.fms-as { font-size: 0.875rem }
+.fms-at { font-size: 1rem }
+.fms-au { font-weight: 500 }
+.fms-f { border-style: none }
+.fms-q { padding-bottom: 2px }
+.fms-r { padding-bottom: 6px }
+.fms-s { padding-bottom: 8px }
+.fms-t { padding-left: 12px }
+.fms-u { padding-left: 16px }
+.fms-v { padding-left: 8px }
+.fms-w { padding-right: 12px }
+.fms-x { padding-right: 16px }
+.fms-y { padding-right: 8px }
+.fms-z { padding-top: 2px }

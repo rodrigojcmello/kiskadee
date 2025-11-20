@@ -3,16 +3,16 @@
     "e1": {
       "c": {
         "primary": {
-          "f": "fms-i fms-o fms-q fms-m fms-k",
-          "d": "fms-h fms-n fms-p fms-l fms-c fms-a fms-b fms-j"
+          "f": "fms-h fms-n fms-p fms-l fms-j",
+          "d": "fms-g fms-m fms-o fms-k fms-d fms-b fms-c fms-i"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "f": "fms-ab fms-ac fms-ad",
-          "d": "fms-aa fms-e fms-d"
+          "f": "fms-ai fms-al fms-am fms-aj",
+          "d": "fms-ah fms-e fms-ak"
         }
       }
     }

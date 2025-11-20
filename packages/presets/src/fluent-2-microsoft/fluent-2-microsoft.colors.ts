@@ -5,38 +5,38 @@ import type { SchemaSegments } from '@kiskadee/core';
 
 export const segments: SchemaSegments = {
   ios: {
-    name: 'iOS',
+    name: 'Fluent 2',
     mainColor: 'blue',
     themes: {
       light: {
         primary: {
           soft: {
             // Soft track: 0–10 (every 1%), then 15, 20, 25, 30
-            0: [206, 100, 100, 1], // 0% darkness (white/lightest)
-            1: [206, 100, 99, 1], // 1% darkness
-            2: [206, 100, 98, 1], // 2% darkness
-            3: [206, 100, 97, 1], // 3% darkness
-            4: [206, 100, 96, 1], // 4% darkness
-            5: [206, 100, 95, 1], // 5% darkness
-            6: [206, 100, 94, 1], // 6% darkness
-            7: [206, 100, 93, 1], // 7% darkness
-            8: [206, 100, 92, 1], // 8% darkness
-            9: [206, 100, 91, 1], // 9% darkness
-            10: [206, 100, 90, 1], // 10% darkness
-            15: [206, 100, 85, 1], // 15% darkness
-            20: [206, 100, 80, 1], // 20% darkness
-            25: [206, 100, 75, 1], // 25% darkness
-            30: [206, 100, 70, 1] // 30% darkness
+            0: [208, 85, 100, 1], // 0% darkness (white/lightest)
+            1: [208, 85, 99, 1], // 1% darkness
+            2: [208, 85, 98, 1], // 2% darkness
+            3: [208, 85, 97, 1], // 3% darkness
+            4: [208, 85, 96, 1], // 4% darkness
+            5: [208, 85, 95, 1], // 5% darkness
+            6: [208, 85, 94, 1], // 6% darkness
+            7: [208, 85, 93, 1], // 7% darkness
+            8: [208, 85, 92, 1], // 8% darkness
+            9: [208, 85, 91, 1], // 9% darkness
+            10: [208, 85, 90, 1], // 10% darkness
+            15: [208, 85, 85, 1], // 15% darkness
+            20: [208, 85, 80, 1], // 20% darkness
+            25: [208, 85, 75, 1], // 25% darkness
+            30: [208, 85, 70, 1] // 30% darkness
           },
           solid: {
             // Solid track: 40–100 every 10% darkness (40,50,60,70,80,90,100); 50 is the anchor
-            40: [206, 100, 60, 1], // 40% darkness
-            50: [206, 100, 50, 1], // 50% darkness - #0091FF - ANCHOR (unchanged)
-            60: [206, 100, 40, 1], // 60% darkness
-            70: [206, 100, 30, 1], // 70% darkness
-            80: [206, 100, 20, 1], // 80% darkness
-            90: [206, 100, 10, 1], // 90% darkness
-            100: [206, 100, 0, 1] // 100% darkness (black/darkest)
+            40: [208, 85, 60, 1], // 40% darkness
+            50: [208, 85, 50, 1], // 50% darkness - #0F6CBD - ANCHOR (unchanged)
+            60: [208, 85, 40, 1], // 60% darkness
+            70: [208, 85, 30, 1], // 70% darkness
+            80: [208, 85, 20, 1], // 80% darkness
+            90: [208, 85, 10, 1], // 90% darkness
+            100: [208, 85, 0, 1] // 100% darkness (black/darkest)
           }
         },
         neutral: {

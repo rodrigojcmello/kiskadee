@@ -21,19 +21,29 @@ export const schema: Schema = {
           },
           scales: {
             paddingTop: {
-              's:md:1': 16
+              's:sm:1': 2,
+              's:md:1': 6,
+              's:lg:1': 8
             },
             paddingBottom: {
-              's:md:1': 16
+              's:sm:1': 2,
+              's:md:1': 6,
+              's:lg:1': 8
             },
             paddingLeft: {
-              's:md:1': 20
+              's:sm:1': 8,
+              's:md:1': 12,
+              's:lg:1': 16
             },
             paddingRight: {
-              's:md:1': 20
+              's:sm:1': 8,
+              's:md:1': 12,
+              's:lg:1': 16
             },
             borderRadius: {
-              's:md:1': 4
+              's:sm:1': 4,
+              's:md:1': 4,
+              's:lg:1': 4
             }
           },
           palettes: {
@@ -54,11 +64,11 @@ export const schema: Schema = {
                       }
                     },
                     solid: {
-                      rest: color(ios, 'l', 'primary', 50),
-                      hover: color(ios, 'l', 'primary', 50, 80),
-                      pressed: color(ios, 'l', 'primary', 60),
-                      disabled: color(ios, 'l', 'primary', 50, 20),
-                      focus: color(ios, 'l', 'primary', 50),
+                      rest: color(ios, 'l', 'primary', 60),
+                      hover: color(ios, 'l', 'primary', 70),
+                      pressed: color(ios, 'l', 'primary', 80),
+                      disabled: color(ios, 'l', 'neutral', 10),
+                      focus: color(ios, 'l', 'primary', 70),
                       selected: {
                         rest: color(ios, 'l', 'primary', 10),
                         hover: color(ios, 'l', 'primary', 8),
@@ -112,7 +122,7 @@ export const schema: Schema = {
                     solid: {
                       rest: color(ios, 'l', 'neutral', 0),
                       disabled: {
-                        ref: color(ios, 'l', 'neutral', 0, 20)
+                        ref: color(ios, 'l', 'neutral', 60)
                       },
                       selected: {
                         rest: {
@@ -127,10 +137,14 @@ export const schema: Schema = {
           },
           scales: {
             textSize: {
-              's:md:1': 17
+              's:sm:1': 12,
+              's:md:1': 14,
+              's:lg:1': 16
             },
             textHeight: {
-              's:md:1': 18
+              's:sm:1': 16,
+              's:md:1': 20,
+              's:lg:1': 22
             }
           }
         }
