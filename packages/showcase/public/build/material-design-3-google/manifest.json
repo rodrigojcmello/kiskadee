@@ -1,6 +1,6 @@
 {
   "key": "material-design-3-google",
-  "displayName": "Material Design - Purple 3 by Google",
+  "displayName": "Material Design - Default (purple) 3 by Google",
   "author": "Google",
   "schemaName": "Material Design",
   "version": [
@@ -9,10 +9,10 @@
     0
   ],
   "segments": [
-    "material"
+    "default"
   ],
   "themes": {
-    "material": [
+    "default": [
       "light"
     ]
   }

@@ -8,9 +8,9 @@ import type { SchemaSegments } from '@kiskadee/core';
 //   "material.light.kiskadee.*" and can be correctly discovered by the
 //   Next.js showcase registry.
 export const segments: SchemaSegments = {
-	material: {
-		name: 'Material Design - Purple', // e.g. YouTube, Google, WhatsApp
-		mainColor: 'purple',
+  default: {
+    name: 'Material Design - Default (purple)', // e.g. YouTube, Google, WhatsApp
+    mainColor: 'purple',
     themes: {
       light: {
         primary: {
@@ -121,7 +121,7 @@ export const segments: SchemaSegments = {
             100: [0, 0, 0, 1] // 100% darkness (black/darkest)
           }
         }
-    		}
-	}
-	}
+      }
+    }
+  }
 };

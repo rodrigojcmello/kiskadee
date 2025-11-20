@@ -1,6 +1,6 @@
 {
-  "material": {
-    "name": "Material Design - Purple",
+  "default": {
+    "name": "Material Design - Default (purple)",
     "mainColor": "purple",
     "themes": {
       "light": {

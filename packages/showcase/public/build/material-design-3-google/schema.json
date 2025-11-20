@@ -65,7 +65,7 @@
             }
           },
           "palettes": {
-            "material": {
+            "default": {
               "light": {
                 "boxColor": {
                   "primary": {
@@ -254,7 +254,7 @@
             "textWeight": "medium"
           },
           "palettes": {
-            "material": {
+            "default": {
               "light": {
                 "textColor": {
                   "primary": {

@@ -46,7 +46,7 @@
             }
           },
           "palettes": {
-            "ios": {
+            "default": {
               "light": {
                 "boxColor": {
                   "primary": {
@@ -227,7 +227,7 @@
             "textWeight": "medium"
           },
           "palettes": {
-            "ios": {
+            "default": {
               "light": {
                 "textColor": {
                   "primary": {

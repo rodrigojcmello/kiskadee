@@ -1,0 +1,20 @@
+{
+  "button": {
+    "e1": {
+      "c": {
+        "primary": {
+          "f": "f-h f-n f-p f-l f-j",
+          "d": "f-g f-m f-o f-k f-d f-b f-c f-i"
+        }
+      }
+    },
+    "e2": {
+      "c": {
+        "primary": {
+          "f": "f-ai f-al f-am f-aj",
+          "d": "f-ah f-e f-ak"
+        }
+      }
+    }
+  }
+}

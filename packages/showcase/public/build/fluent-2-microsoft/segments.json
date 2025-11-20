@@ -1,6 +1,6 @@
 {
-  "ios": {
-    "name": "Fluent 2",
+  "default": {
+    "name": "Default",
     "mainColor": "blue",
     "themes": {
       "light": {

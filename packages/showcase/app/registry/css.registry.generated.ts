@@ -6,7 +6,7 @@ export const cssPaths = {
     core: '/build/fluent-2-microsoft/core.kiskadee.css',
     effects: '/build/fluent-2-microsoft/effects.kiskadee.css',
     palettes: {
-      'ios|light': '/build/fluent-2-microsoft/ios.light.kiskadee.css',
+      'default|light': '/build/fluent-2-microsoft/default.light.kiskadee.css',
     }
   },
   'ios-26-apple': {
@@ -28,7 +28,7 @@ export const cssPaths = {
     core: '/build/material-design-3-google/core.kiskadee.css',
     effects: '/build/material-design-3-google/effects.kiskadee.css',
     palettes: {
-      'material|light': '/build/material-design-3-google/material.light.kiskadee.css',
+      'default|light': '/build/material-design-3-google/default.light.kiskadee.css',
     }
   },
 } as const;

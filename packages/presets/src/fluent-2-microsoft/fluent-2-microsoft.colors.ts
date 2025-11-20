@@ -4,8 +4,8 @@ import type { SchemaSegments } from '@kiskadee/core';
 // iOS 18 - https://www.sketch.com/s/bb57439f-19da-4c7a-bfd2-a196cf51f766/symbols
 
 export const segments: SchemaSegments = {
-  ios: {
-    name: 'Fluent 2',
+  default: {
+    name: 'Default',
     mainColor: 'blue',
     themes: {
       light: {

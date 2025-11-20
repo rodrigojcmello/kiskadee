@@ -4,8 +4,9 @@ import { segments } from './ios-26-kiskadee.colors';
 // Kiskadee iOS 26: starts as a copy of Apple iOS 26; can evolve with Kiskadee opinions later
 
 const ios = segments.ios;
+type Segment = 'default';
 
-export const schema: Schema = {
+export const schema: Schema<Segment> = {
   name: 'iOS',
   prefix: 'aki', // Apple OS by Kiskadee
   version: [26, 0, 0],
@@ -47,7 +48,7 @@ export const schema: Schema = {
             }
           },
           palettes: {
-            ios: {
+            default: {
               light: {
                 boxColor: {
                   primary: {
@@ -184,7 +185,7 @@ export const schema: Schema = {
             textWeight: 'medium'
           },
           palettes: {
-            ios: {
+            default: {
               light: {
                 textColor: {
                   primary: {

@@ -5,7 +5,9 @@ import { segments } from './ios-26-apple.colors';
 
 const ios = segments.ios;
 
-export const schema: Schema = {
+type Segment = 'default';
+
+export const schema: Schema<Segment> = {
   name: 'iOS',
   prefix: 'aos', // Apple OS
   version: [26, 0, 0],
@@ -37,7 +39,7 @@ export const schema: Schema = {
             }
           },
           palettes: {
-            ios: {
+            default: {
               light: {
                 boxColor: {
                   primary: {
@@ -92,7 +94,7 @@ export const schema: Schema = {
             textWeight: 'medium'
           },
           palettes: {
-            ios: {
+            default: {
               light: {
                 textColor: {
                   primary: {

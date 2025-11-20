@@ -1,4 +1,6 @@
-import type { SegmentName } from '../../schema';
+// Unique identifier for each segment (brand/product identity) within a design system.
+// Defined here to avoid circular type dependencies between schema and color types.
+export type SegmentName = string;
 
 /** Represents a hue value in degrees ranging from 0 to 360. */
 type Hue = number;
@@ -175,6 +177,11 @@ export type Segment = {
   themes: Partial<Record<ThemeMode, ThemeColorPalette>>;
 };
 
-export type SchemaSegments = Record<SegmentName, Segment>;
+export type SchemaSegments<TSegmentName extends SegmentName = SegmentName> = Record<
+  TSegmentName,
+  Segment
+>;
 
-export type ElementPalettes = Partial<Record<SegmentName, Partial<Record<ThemeMode, ColorSchema>>>>;
+export type ElementPalettes<TSegmentName extends SegmentName = SegmentName> = Partial<
+  Record<TSegmentName, Partial<Record<ThemeMode, ColorSchema>>>
+>;

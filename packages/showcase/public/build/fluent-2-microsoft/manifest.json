@@ -1,6 +1,6 @@
 {
   "key": "fluent-2-microsoft",
-  "displayName": "Fluent 2 2 by Microsoft",
+  "displayName": "Default 2 by Microsoft",
   "author": "Microsoft",
   "schemaName": "Fluent",
   "version": [
@@ -9,10 +9,10 @@
     0
   ],
   "segments": [
-    "ios"
+    "default"
   ],
   "themes": {
-    "ios": [
+    "default": [
       "light"
     ]
   }

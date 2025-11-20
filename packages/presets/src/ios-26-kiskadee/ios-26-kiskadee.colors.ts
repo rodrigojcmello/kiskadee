@@ -19,7 +19,7 @@ import type { SchemaSegments } from '@kiskadee/core';
  */
 export const segments: SchemaSegments = {
   ios: {
-    name: 'iOS',
+    name: 'Default',
     mainColor: 'blue',
     themes: {
       light: {

@@ -1,6 +1,6 @@
 {
   "ios": {
-    "name": "iOS",
+    "name": "Default",
     "mainColor": "blue",
     "themes": {
       "light": {

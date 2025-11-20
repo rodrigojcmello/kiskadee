@@ -25,18 +25,18 @@ export const coreMaps = {
 } as const;
 
 export const paletteMaps = {
-  'fluent-2-microsoft|ios|light': () => loadJsonModule('/build/fluent-2-microsoft/ios.light.kiskadee.json'),
+  'fluent-2-microsoft|default|light': () => loadJsonModule('/build/fluent-2-microsoft/default.light.kiskadee.json'),
   'ios-26-apple|ios|light': () => loadJsonModule('/build/ios-26-apple/ios.light.kiskadee.json'),
   'ios-26-kiskadee|ios|light': () => loadJsonModule('/build/ios-26-kiskadee/ios.light.kiskadee.json'),
   'ios-26-kiskadee|ios|dark': () => loadJsonModule('/build/ios-26-kiskadee/ios.dark.kiskadee.json'),
-  'material-design-3-google|material|light': () => loadJsonModule('/build/material-design-3-google/material.light.kiskadee.json'),
+  'material-design-3-google|default|light': () => loadJsonModule('/build/material-design-3-google/default.light.kiskadee.json'),
 } as const;
 
 export const paletteIndex = {
   'fluent-2-microsoft': {
-    segments: ['ios'],
+    segments: ['default'],
     themesBySegment: {
-      "ios": ['light']
+      "default": ['light']
     }
   },
   'ios-26-apple': {
@@ -52,16 +52,16 @@ export const paletteIndex = {
     }
   },
   'material-design-3-google': {
-    segments: ['material'],
+    segments: ['default'],
     themesBySegment: {
-      "material": ['light']
+      "default": ['light']
     }
   },
 } as const;
 
 export const templateMeta = {
-  'fluent-2-microsoft': { displayName: "Fluent 2 2 by Microsoft" },
-  'ios-26-apple': { displayName: "iOS 26 by Apple" },
-  'ios-26-kiskadee': { displayName: "iOS 26 by Kiskadee" },
-  'material-design-3-google': { displayName: "Material Design - Purple 3 by Google" },
+  'fluent-2-microsoft': { displayName: "Default 2 by Microsoft" },
+  'ios-26-apple': { displayName: "Default 26 by Apple" },
+  'ios-26-kiskadee': { displayName: "Default 26 by Kiskadee" },
+  'material-design-3-google': { displayName: "Material Design - Default (purple) 3 by Google" },
 } as const;

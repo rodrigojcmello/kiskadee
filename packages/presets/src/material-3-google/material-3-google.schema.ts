@@ -1,4 +1,4 @@
-import { breakpoints, color, Schema } from '@kiskadee/core';
+import { breakpoints, color, Schema, type SegmentName } from '@kiskadee/core';
 import { segments } from './material-3-google.colors';
 
 /**
@@ -23,9 +23,10 @@ import { segments } from './material-3-google.colors';
  *   manifest consumed by the Next.js showcase registry.
  */
 
-const purple = segments.material;
+const defaultColor = segments.default;
+type Segment = 'default';
 
-export const schema: Schema = {
+export const schema: Schema<Segment> = {
   name: 'Material Design',
   prefix: 'gmd', // Google Material Design
   version: [3, 0, 0],
@@ -76,34 +77,34 @@ export const schema: Schema = {
             }
           },
           palettes: {
-            material: {
+            default: {
               light: {
                 boxColor: {
                   primary: {
                     soft: {
-                      rest: color(purple, 'l', 'primary', 50),
+                      rest: color(defaultColor, 'l', 'primary', 50),
                       // hover: [256, 34, 48, 1], // official
-                      hover: color(purple, 'l', 'primary', 40),
-                      pressed: color(purple, 'l', 'primary', 60),
-                      disabled: color(purple, 'l', 'neutral', 10),
-                      focus: color(purple, 'l', 'primary', 50),
+                      hover: color(defaultColor, 'l', 'primary', 40),
+                      pressed: color(defaultColor, 'l', 'primary', 60),
+                      disabled: color(defaultColor, 'l', 'neutral', 10),
+                      focus: color(defaultColor, 'l', 'primary', 50),
                       selected: {
-                        rest: color(purple, 'l', 'primary', 10),
-                        hover: color(purple, 'l', 'primary', 8),
-                        pressed: color(purple, 'l', 'primary', 20)
+                        rest: color(defaultColor, 'l', 'primary', 10),
+                        hover: color(defaultColor, 'l', 'primary', 8),
+                        pressed: color(defaultColor, 'l', 'primary', 20)
                       }
                     },
                     solid: {
-                      rest: color(purple, 'l', 'primary', 50),
+                      rest: color(defaultColor, 'l', 'primary', 50),
                       // hover: [256, 34, 48, 1], // official
-                      hover: color(purple, 'l', 'primary', 40),
-                      pressed: color(purple, 'l', 'primary', 60),
-                      disabled: color(purple, 'l', 'neutral', 10),
-                      focus: color(purple, 'l', 'primary', 50),
+                      hover: color(defaultColor, 'l', 'primary', 40),
+                      pressed: color(defaultColor, 'l', 'primary', 60),
+                      disabled: color(defaultColor, 'l', 'neutral', 10),
+                      focus: color(defaultColor, 'l', 'primary', 50),
                       selected: {
-                        rest: color(purple, 'l', 'primary', 10),
-                        hover: color(purple, 'l', 'primary', 8),
-                        pressed: color(purple, 'l', 'primary', 20)
+                        rest: color(defaultColor, 'l', 'primary', 10),
+                        hover: color(defaultColor, 'l', 'primary', 8),
+                        pressed: color(defaultColor, 'l', 'primary', 20)
                       }
                     }
                   }
@@ -150,29 +151,29 @@ export const schema: Schema = {
             textWeight: 'medium'
           },
           palettes: {
-            material: {
+            default: {
               light: {
                 textColor: {
                   primary: {
                     soft: {
                       rest: [0, 0, 100, 1],
                       disabled: {
-                        ref: color(purple, 'l', 'neutral', 60)
+                        ref: color(defaultColor, 'l', 'neutral', 60)
                       },
                       selected: {
                         rest: {
-                          ref: color(purple, 'l', 'neutral', 70)
+                          ref: color(defaultColor, 'l', 'neutral', 70)
                         }
                       }
                     },
                     solid: {
                       rest: [0, 0, 100, 1],
                       disabled: {
-                        ref: color(purple, 'l', 'neutral', 60)
+                        ref: color(defaultColor, 'l', 'neutral', 60)
                       },
                       selected: {
                         rest: {
-                          ref: color(purple, 'l', 'neutral', 70)
+                          ref: color(defaultColor, 'l', 'neutral', 70)
                         }
                       }
                     }

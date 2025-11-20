@@ -1,0 +1,18 @@
+{
+  "button": {
+    "e1": {
+      "c": {
+        "primary": {
+          "d": "gmd-b gmd-e gmd-f gmd-d gmd-i gmd-g gmd-h gmd-c"
+        }
+      }
+    },
+    "e2": {
+      "c": {
+        "primary": {
+          "d": "gmd-j gmd-l gmd-k"
+        }
+      }
+    }
+  }
+}
