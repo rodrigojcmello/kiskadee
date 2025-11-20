@@ -1,7 +1,7 @@
 import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/core';
 import { createContext, useContext } from 'react';
 
-export type TemplateManifest = {
+export type DesignSystemManifest = {
   displayName?: string;
   [key: string]: unknown;
 };
@@ -13,30 +13,22 @@ export type KiskadeeContextValue = {
   setSegment: (value: string) => void;
   setTheme: (value: ThemeMode) => void;
 
-  // Expose template controls and options
-  template: string;
-  setTemplate: (value: string) => void;
+  designSystem: string;
+  setDesignSystem: (value: string) => void;
   availableSegments: string[];
   availableThemes: string[];
-  templateKeys: string[];
-  templateMeta: Record<string, TemplateManifest>;
+  designSystemKeys: string[];
+  designSystemMeta: Record<string, DesignSystemManifest>;
 };
 
-// Default context value
-export const KiskadeeContext = createContext<KiskadeeContextValue>({
-  classesMap: {},
-  segment: 'ios',
-  theme: 'light',
-  setSegment: () => {},
-  setTheme: () => {},
-  template: 'ios-26-apple',
-  setTemplate: () => {},
-  availableSegments: [],
-  availableThemes: [],
-  templateKeys: [],
-  templateMeta: {}
-});
+export const KiskadeeContext = createContext<KiskadeeContextValue | undefined>(undefined);
 
-export function useKiskadee() {
-  return useContext(KiskadeeContext);
+export function useKiskadee(): KiskadeeContextValue {
+  const context = useContext(KiskadeeContext);
+
+  if (!context) {
+    throw new Error('useKiskadee must be used within a KiskadeeContext.Provider');
+  }
+
+  return context;
 }

@@ -5,10 +5,10 @@ import { playWowTransition } from '@/utils/playWowTransition';
 
 export default function DesignSystemControls() {
   const {
-    template,
-    setTemplate,
-    templateKeys,
-    templateMeta,
+    designSystem,
+    setDesignSystem,
+    designSystemKeys,
+    designSystemMeta,
     segment,
     setSegment,
     availableSegments,
@@ -23,16 +23,16 @@ export default function DesignSystemControls() {
       <label>
         Design System:
         <select
-          value={template}
+          value={designSystem}
           onChange={(e) => {
             playWowTransition();
-            setTemplate(e.target.value);
+            setDesignSystem(e.target.value);
           }}
           style={{ marginLeft: 8 }}
         >
-          {templateKeys.map((k) => (
+          {designSystemKeys.map((k) => (
             <option key={k} value={k}>
-              {templateMeta[k]?.displayName || k}
+              {designSystemMeta[k]?.displayName || k}
             </option>
           ))}
         </select>
