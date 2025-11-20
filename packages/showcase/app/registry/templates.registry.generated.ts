@@ -29,7 +29,7 @@ export const paletteMaps = {
   'ios-26-apple|ios|light': () => loadJsonModule('/build/ios-26-apple/ios.light.kiskadee.json'),
   'ios-26-kiskadee|ios|light': () => loadJsonModule('/build/ios-26-kiskadee/ios.light.kiskadee.json'),
   'ios-26-kiskadee|ios|dark': () => loadJsonModule('/build/ios-26-kiskadee/ios.dark.kiskadee.json'),
-  'material-design-3-google|purple|light': () => loadJsonModule('/build/material-design-3-google/purple.light.kiskadee.json'),
+  'material-design-3-google|material|light': () => loadJsonModule('/build/material-design-3-google/material.light.kiskadee.json'),
 } as const;
 
 export const paletteIndex = {
@@ -52,9 +52,9 @@ export const paletteIndex = {
     }
   },
   'material-design-3-google': {
-    segments: ['purple'],
+    segments: ['material'],
     themesBySegment: {
-      "purple": ['light']
+      "material": ['light']
     }
   },
 } as const;

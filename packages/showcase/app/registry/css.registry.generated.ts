@@ -28,7 +28,7 @@ export const cssPaths = {
     core: '/build/material-design-3-google/core.kiskadee.css',
     effects: '/build/material-design-3-google/effects.kiskadee.css',
     palettes: {
-      'purple|light': '/build/material-design-3-google/purple.light.kiskadee.css',
+      'material|light': '/build/material-design-3-google/material.light.kiskadee.css',
     }
   },
 } as const;

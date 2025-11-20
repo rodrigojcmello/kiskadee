@@ -73,6 +73,11 @@ Location: packages/web-builder/src/index.ts
    - Function: persistBuildArtifacts(cssGenerated, classNamesMapSplit, schema.name)
    - Writes CSS bundles and maps to disk (organized by palette and core).
 
+7) Phase 7 — Publish metadata
+   - Function: publishMetadata({ schema, segments, outDirSlug, schemaPath, baseBuildDir })
+   - Writes a manifest.json, schema.json, segments.json and schema.source.ts per preset directory
+     under packages/web-builder/build/<template-key>.
+
 ## Style key and interaction state conventions
 
 - Inline keys (——)
@@ -103,12 +108,59 @@ Location: packages/web-builder/src/index.ts
 - Per‑palette CSS: color rules only.
 - classNamesMapSplit: structure to apply the correct classes per component/element/state/palette at runtime.
 
+Metadata per template (under packages/web-builder/build/<template-key>):
+- manifest.json: central manifest used by the showcase to discover templates, segments and themes.
+- schema.json / segments.json: raw schema and segment data for inspection or tooling.
+
 ## Architecture guidelines
 
 - core/presets are agnostic: visual identity only. No Web reset/normalize, no component layout/structure.
 - web-builder generates utilities and maps: no structural rules or platform resets.
 - headless provides accessibility and behavior, with no required CSS.
 - react-components composes everything for the Web: minimal structure via CSS Modules and visual identity via generated utilities. It may optionally consume a Web base/reset package (outside the builder).
+
+## Build, sync and showcase registry scripts
+
+The monorepo includes a small set of scripts, all driven from the
+`@kiskadee/web-builder` package, to keep the **web-builder output**, the
+**Next.js showcase public assets** and the **showcase registries** in sync.
+
+### Web‑builder package scripts (packages/web-builder/package.json)
+
+Inside the `@kiskadee/web-builder` package there are helper scripts to drive
+this pipeline from the presets:
+
+- `pnpm --filter @kiskadee/web-builder run build`
+  - Runs `src/run-build.ts` using `tsx`.
+  - For each preset in `packages/presets/src/**` it:
+    - runs the full web-builder pipeline (phases 1–7),
+    - writes CSS/JSON artifacts into `packages/web-builder/build/<template-key>`.
+
+- `pnpm --filter @kiskadee/web-builder run sync`
+  - Executes the `packages/web-builder/scripts/sync-showcase-artifacts.cjs`
+    script from the `@kiskadee/web-builder` package root.
+  - Mirrors `packages/web-builder/build/**` to
+    `packages/showcase/public/build/**`, making the artifacts available as
+    static assets for the Next.js app.
+
+- `pnpm --filter @kiskadee/web-builder run generate`
+  - Executes the `packages/web-builder/scripts/generate-showcase-registry.cjs`
+    script from the `@kiskadee/web-builder` package root.
+  - Reads all `manifest.json` files under `packages/web-builder/build/**` and
+    generates two TypeScript registries in `packages/showcase/app/registry`:
+    - `templates.registry.generated.ts`
+    - `css.registry.generated.ts`
+  - These generated files are re‑exported by `templates.registry.ts` and
+    `css.registry.ts`, allowing the showcase to automatically discover new
+    presets/templates without manual updates.
+
+- `pnpm --filter @kiskadee/web-builder run build-sync-generate`
+  - Convenience script that chains the three steps above:
+    1. Build all presets (`run-build.ts`)
+    2. Sync artifacts to the showcase (`sync-showcase-artifacts`)
+    3. Regenerate the Next.js registries (`generate-showcase-registry`)
+  - This is the recommended command when you want to refresh everything the
+    showcase consumes from the presets.
 
 ## Typical usage (high level)
 

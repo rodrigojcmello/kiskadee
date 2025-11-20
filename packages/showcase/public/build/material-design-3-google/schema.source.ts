@@ -15,9 +15,15 @@ import { segments } from './material-3-google.colors';
  * - yellowLike: Attention, warning, caution (always yellow ~45°)
  * - redLike: Danger, error, urgent, notification (always red ~0°)
  * - neutral: Text, backgrounds, borders, dividers (always grayscale)
+ *
+ * IMPORTANT: the segment key used here ("material") must stay in sync with
+ * the key defined in material-3-google.colors.ts. This ensures that:
+ * - color() lookups receive a valid segment definition, and
+ * - generated palette filenames (<segment>.<theme>.kiskadee.*) match the
+ *   manifest consumed by the Next.js showcase registry.
  */
 
-const purple = segments.purple;
+const purple = segments.material;
 
 export const schema: Schema = {
   name: 'Material Design',

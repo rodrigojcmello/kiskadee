@@ -1,9 +1,16 @@
 import type { SchemaSegments } from '@kiskadee/core';
 
+// NOTE:
+// - The segment key must stay in sync with the palette name used in the
+//   schema ("material" in material-3-google.schema.ts).
+// - Palette files are emitted as <segment>.<theme>.kiskadee.(css|json), so
+//   using "material" here ensures the generated filenames match
+//   "material.light.kiskadee.*" and can be correctly discovered by the
+//   Next.js showcase registry.
 export const segments: SchemaSegments = {
-  purple: {
-    name: 'Material Design - Purple', // e.g. YouTube, Google, WhatsApp
-    mainColor: 'purple',
+	material: {
+		name: 'Material Design - Purple', // e.g. YouTube, Google, WhatsApp
+		mainColor: 'purple',
     themes: {
       light: {
         primary: {
@@ -114,7 +121,7 @@ export const segments: SchemaSegments = {
             100: [0, 0, 0, 1] // 100% darkness (black/darkest)
           }
         }
-      }
-    }
-  }
+    		}
+	}
+	}
 };

@@ -9,7 +9,10 @@
     "./types": "./types.ts"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsx ./src/run-build.ts",
+    "sync": "node ./scripts/sync-showcase-artifacts.cjs",
+    "generate": "node ./scripts/generate-showcase-registry.cjs",
+    "build-sync-generate": "pnpm run build && pnpm run sync && pnpm run generate",
     "vitest-ui": "vitest --ui"
   },
   "keywords": [],
@@ -24,6 +27,7 @@
     "@vitest/ui": "^3.2.4",
     "postcss": "^8.5.6",
     "postcss-combine-media-query": "^2.0.0",
+    "tsx": "^4.19.0",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   }

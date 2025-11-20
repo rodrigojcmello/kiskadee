@@ -6,9 +6,7 @@
   "license": "ISC",
   "scripts": {
     "test": "vitest run",
-    "commitlint": "commitlint --edit",
-    "sync-showcase-artifacts": "node scripts/sync-showcase-artifacts.cjs",
-    "generate-showcase-registry": "node scripts/generate-showcase-registry.cjs"
+    "commitlint": "commitlint --edit"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.4",

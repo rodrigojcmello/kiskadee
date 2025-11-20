@@ -16,8 +16,22 @@ const fs = require('node:fs');
 const fsp = require('node:fs/promises');
 const path = require('node:path');
 
-const repoRoot = __dirname ? path.resolve(__dirname, '..') : process.cwd();
-const srcDir = path.resolve(repoRoot, 'packages', 'web-builder', 'build');
+// When this script lived at the monorepo root, __dirname already pointed to
+// the repo root and we could resolve "packages/web-builder/build" directly.
+// After moving the script to packages/web-builder/scripts, we must:
+// - treat the web-builder package root as the source base (build directory),
+// - and still resolve the showcase target relative to the monorepo root.
+
+// packages/web-builder/scripts -> packages/web-builder
+const webBuilderRoot = __dirname ? path.resolve(__dirname, '..') : process.cwd();
+
+// Source: packages/web-builder/build
+const srcDir = path.resolve(webBuilderRoot, 'build');
+
+// Monorepo root: packages/web-builder -> ../.. -> <repoRoot>
+const repoRoot = path.resolve(webBuilderRoot, '..', '..');
+
+// Target: packages/showcase/public/build
 const dstDir = path.resolve(repoRoot, 'packages', 'showcase', 'public', 'build');
 
 async function existsDir(dir) {
