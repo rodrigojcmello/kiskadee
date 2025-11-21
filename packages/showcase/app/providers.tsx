@@ -3,7 +3,7 @@ import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/core';
 import { KiskadeeContext } from '@kiskadee/react-components';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cssPaths } from './registry/css.registry';
-import { coreMaps, paletteIndex, paletteMaps } from './registry/templates.registry';
+import { coreMaps, paletteIndex, paletteMaps } from './registry/design-systems.registry';
 
 // Client-side provider that mirrors legacy App.tsx/main.tsx responsibilities
 // Loads classNames maps (core + palette) via dynamic import (no fetch) and injects CSS served from /public/build.

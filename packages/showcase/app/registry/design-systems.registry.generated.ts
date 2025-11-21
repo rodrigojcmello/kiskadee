@@ -59,7 +59,7 @@ export const paletteIndex = {
   },
 } as const;
 
-export const templateMeta = {
+export const designSystemMeta = {
   'fluent-2-microsoft': { displayName: "Default 2 by Microsoft" },
   'ios-26-apple': { displayName: "Default 26 by Apple" },
   'ios-26-kiskadee': { displayName: "Default 26 by Kiskadee" },

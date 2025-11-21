@@ -177,8 +177,8 @@ function generateTemplatesRegistrySource(manifests) {
   lines.push('} as const;');
   lines.push('');
 
-  // templateMeta
-  lines.push('export const templateMeta = {');
+  // designSystemMeta
+  lines.push('export const designSystemMeta = {');
   for (const m of manifests) {
     const displayName = m.displayName || m.key;
     lines.push(`  '${m.key}': { displayName: ${JSON.stringify(displayName)} },`);
@@ -253,7 +253,7 @@ async function main() {
 
   const templatesTarget = path.resolve(
     showcaseRegistryDir,
-    'templates.registry.generated.ts'
+    'design-systems.registry.generated.ts'
   );
   const cssTarget = path.resolve(showcaseRegistryDir, 'css.registry.generated.ts');
 

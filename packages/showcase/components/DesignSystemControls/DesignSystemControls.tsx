@@ -19,7 +19,7 @@ export default function DesignSystemControls() {
 
   return (
     <div style={{ padding: 12, display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-      {/* 1. Template selector (Design System) */}
+      {/* 1. Design system selector */}
       <label>
         Design System:
         <select
