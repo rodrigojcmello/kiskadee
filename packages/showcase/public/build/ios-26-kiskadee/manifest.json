@@ -9,10 +9,10 @@
     0
   ],
   "segments": [
-    "ios"
+    "default"
   ],
   "themes": {
-    "ios": [
+    "default": [
       "light",
       "dark"
     ]

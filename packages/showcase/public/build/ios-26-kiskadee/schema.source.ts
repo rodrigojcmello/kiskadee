@@ -3,7 +3,7 @@ import { segments } from './colors.source';
 
 // Kiskadee iOS 26: starts as a copy of Apple iOS 26; can evolve with Kiskadee opinions later
 
-const ios = segments.ios;
+const iosDefault = segments.default;
 type Segment = 'default';
 
 export const schema: Schema<Segment> = {
@@ -53,60 +53,60 @@ export const schema: Schema<Segment> = {
                 boxColor: {
                   primary: {
                     soft: {
-                      rest: color(ios, 'l', 'primary', 5),
-                      hover: color(ios, 'l', 'primary', 3),
-                      focus: color(ios, 'l', 'primary', 5),
-                      pressed: color(ios, 'l', 'primary', 8),
-                      disabled: color(ios, 'l', 'primary', 5, 20),
+                      rest: color(iosDefault, 'l', 'primary', 5),
+                      hover: color(iosDefault, 'l', 'primary', 3),
+                      focus: color(iosDefault, 'l', 'primary', 5),
+                      pressed: color(iosDefault, 'l', 'primary', 8),
+                      disabled: color(iosDefault, 'l', 'primary', 5, 20),
                       selected: {
-                        rest: color(ios, 'l', 'primary', 50),
-                        hover: color(ios, 'l', 'primary', 50, 80),
-                        focus: color(ios, 'l', 'primary', 50),
-                        pressed: color(ios, 'l', 'primary', 60)
+                        rest: color(iosDefault, 'l', 'primary', 50),
+                        hover: color(iosDefault, 'l', 'primary', 50, 80),
+                        focus: color(iosDefault, 'l', 'primary', 50),
+                        pressed: color(iosDefault, 'l', 'primary', 60)
                       }
                     },
                     solid: {
-                      rest: color(ios, 'l', 'primary', 50),
-                      hover: color(ios, 'l', 'primary', 50, 80),
-                      focus: color(ios, 'l', 'primary', 50),
-                      pressed: color(ios, 'l', 'primary', 60),
-                      disabled: color(ios, 'l', 'primary', 50, 20)
+                      rest: color(iosDefault, 'l', 'primary', 50),
+                      hover: color(iosDefault, 'l', 'primary', 50, 80),
+                      focus: color(iosDefault, 'l', 'primary', 50),
+                      pressed: color(iosDefault, 'l', 'primary', 60),
+                      disabled: color(iosDefault, 'l', 'primary', 50, 20)
                     }
                   },
                   neutral: {
                     soft: {
-                      rest: color(ios, 'l', 'neutral', 5),
-                      hover: color(ios, 'l', 'neutral', 3),
-                      focus: color(ios, 'l', 'neutral', 5),
-                      pressed: color(ios, 'l', 'neutral', 8),
-                      disabled: color(ios, 'l', 'neutral', 5, 20),
+                      rest: color(iosDefault, 'l', 'neutral', 5),
+                      hover: color(iosDefault, 'l', 'neutral', 3),
+                      focus: color(iosDefault, 'l', 'neutral', 5),
+                      pressed: color(iosDefault, 'l', 'neutral', 8),
+                      disabled: color(iosDefault, 'l', 'neutral', 5, 20),
                       selected: {
-                        rest: color(ios, 'l', 'primary', 50),
-                        hover: color(ios, 'l', 'primary', 50, 80),
-                        focus: color(ios, 'l', 'primary', 50),
-                        pressed: color(ios, 'l', 'primary', 60)
+                        rest: color(iosDefault, 'l', 'primary', 50),
+                        hover: color(iosDefault, 'l', 'primary', 50, 80),
+                        focus: color(iosDefault, 'l', 'primary', 50),
+                        pressed: color(iosDefault, 'l', 'primary', 60)
                       }
                     }
                   },
                   redLike: {
                     soft: {
-                      rest: color(ios, 'l', 'redLike', 5),
-                      hover: color(ios, 'l', 'redLike', 3),
-                      focus: color(ios, 'l', 'redLike', 5),
-                      pressed: color(ios, 'l', 'redLike', 8),
-                      disabled: color(ios, 'l', 'redLike', 5, 20),
+                      rest: color(iosDefault, 'l', 'redLike', 5),
+                      hover: color(iosDefault, 'l', 'redLike', 3),
+                      focus: color(iosDefault, 'l', 'redLike', 5),
+                      pressed: color(iosDefault, 'l', 'redLike', 8),
+                      disabled: color(iosDefault, 'l', 'redLike', 5, 20),
                       selected: {
-                        rest: color(ios, 'l', 'redLike', 50),
-                        hover: color(ios, 'l', 'redLike', 50, 80),
-                        pressed: color(ios, 'l', 'redLike', 60)
+                        rest: color(iosDefault, 'l', 'redLike', 50),
+                        hover: color(iosDefault, 'l', 'redLike', 50, 80),
+                        pressed: color(iosDefault, 'l', 'redLike', 60)
                       }
                     },
                     solid: {
-                      rest: color(ios, 'l', 'redLike', 50),
-                      hover: color(ios, 'l', 'redLike', 50, 80),
-                      pressed: color(ios, 'l', 'redLike', 60),
-                      disabled: color(ios, 'l', 'redLike', 50, 20),
-                      focus: color(ios, 'l', 'redLike', 50)
+                      rest: color(iosDefault, 'l', 'redLike', 50),
+                      hover: color(iosDefault, 'l', 'redLike', 50, 80),
+                      pressed: color(iosDefault, 'l', 'redLike', 60),
+                      disabled: color(iosDefault, 'l', 'redLike', 50, 20),
+                      focus: color(iosDefault, 'l', 'redLike', 50)
                     }
                   }
                 }
@@ -115,23 +115,23 @@ export const schema: Schema<Segment> = {
                 boxColor: {
                   redLike: {
                     soft: {
-                      rest: color(ios, 'd', 'redLike', 50, 40),
-                      hover: color(ios, 'd', 'redLike', 3),
-                      focus: color(ios, 'd', 'redLike', 5),
-                      pressed: color(ios, 'd', 'redLike', 8),
-                      disabled: color(ios, 'd', 'redLike', 5, 20),
+                      rest: color(iosDefault, 'd', 'redLike', 50, 40),
+                      hover: color(iosDefault, 'd', 'redLike', 3),
+                      focus: color(iosDefault, 'd', 'redLike', 5),
+                      pressed: color(iosDefault, 'd', 'redLike', 8),
+                      disabled: color(iosDefault, 'd', 'redLike', 5, 20),
                       selected: {
-                        rest: color(ios, 'd', 'redLike', 50),
-                        hover: color(ios, 'd', 'redLike', 50, 80),
-                        pressed: color(ios, 'd', 'redLike', 60)
+                        rest: color(iosDefault, 'd', 'redLike', 50),
+                        hover: color(iosDefault, 'd', 'redLike', 50, 80),
+                        pressed: color(iosDefault, 'd', 'redLike', 60)
                       }
                     },
                     solid: {
-                      rest: color(ios, 'd', 'redLike', 50),
-                      hover: color(ios, 'd', 'redLike', 50, 80),
-                      pressed: color(ios, 'd', 'redLike', 60),
-                      disabled: color(ios, 'd', 'redLike', 50, 20),
-                      focus: color(ios, 'd', 'redLike', 50)
+                      rest: color(iosDefault, 'd', 'redLike', 50),
+                      hover: color(iosDefault, 'd', 'redLike', 50, 80),
+                      pressed: color(iosDefault, 'd', 'redLike', 60),
+                      disabled: color(iosDefault, 'd', 'redLike', 50, 20),
+                      focus: color(iosDefault, 'd', 'redLike', 50)
                     }
                   }
                 }
@@ -140,23 +140,23 @@ export const schema: Schema<Segment> = {
                 boxColor: {
                   redLike: {
                     soft: {
-                      rest: color(ios, 'd', 'redLike', 50, 40),
-                      hover: color(ios, 'd', 'redLike', 3),
-                      focus: color(ios, 'd', 'redLike', 5),
-                      pressed: color(ios, 'd', 'redLike', 8),
-                      disabled: color(ios, 'd', 'redLike', 5, 20),
+                      rest: color(iosDefault, 'd', 'redLike', 50, 40),
+                      hover: color(iosDefault, 'd', 'redLike', 3),
+                      focus: color(iosDefault, 'd', 'redLike', 5),
+                      pressed: color(iosDefault, 'd', 'redLike', 8),
+                      disabled: color(iosDefault, 'd', 'redLike', 5, 20),
                       selected: {
-                        rest: color(ios, 'd', 'redLike', 50),
-                        hover: color(ios, 'd', 'redLike', 50, 80),
-                        pressed: color(ios, 'd', 'redLike', 60)
+                        rest: color(iosDefault, 'd', 'redLike', 50),
+                        hover: color(iosDefault, 'd', 'redLike', 50, 80),
+                        pressed: color(iosDefault, 'd', 'redLike', 60)
                       }
                     },
                     solid: {
-                      rest: color(ios, 'd', 'redLike', 50),
-                      hover: color(ios, 'd', 'redLike', 50, 80),
-                      pressed: color(ios, 'd', 'redLike', 60),
-                      disabled: color(ios, 'd', 'redLike', 50, 20),
-                      focus: color(ios, 'd', 'redLike', 50)
+                      rest: color(iosDefault, 'd', 'redLike', 50),
+                      hover: color(iosDefault, 'd', 'redLike', 50, 80),
+                      pressed: color(iosDefault, 'd', 'redLike', 60),
+                      disabled: color(iosDefault, 'd', 'redLike', 50, 20),
+                      focus: color(iosDefault, 'd', 'redLike', 50)
                     }
                   }
                 }
@@ -190,60 +190,60 @@ export const schema: Schema<Segment> = {
                 textColor: {
                   primary: {
                     soft: {
-                      rest: color(ios, 'l', 'primary', 50),
-                      hover: { ref: color(ios, 'l', 'primary', 50, 80) },
-                      pressed: { ref: color(ios, 'l', 'primary', 50) },
+                      rest: color(iosDefault, 'l', 'primary', 50),
+                      hover: { ref: color(iosDefault, 'l', 'primary', 50, 80) },
+                      pressed: { ref: color(iosDefault, 'l', 'primary', 50) },
                       disabled: {
-                        ref: color(ios, 'l', 'neutral', 0, 20)
+                        ref: color(iosDefault, 'l', 'neutral', 0, 20)
                       },
                       selected: {
                         rest: {
-                          ref: color(ios, 'l', 'neutral', 0)
+                          ref: color(iosDefault, 'l', 'neutral', 0)
                         }
                       }
                     },
                     solid: {
-                      rest: color(ios, 'l', 'neutral', 0),
-                      pressed: { ref: color(ios, 'l', 'neutral', 0, 50) },
+                      rest: color(iosDefault, 'l', 'neutral', 0),
+                      pressed: { ref: color(iosDefault, 'l', 'neutral', 0, 50) },
                       disabled: {
-                        ref: color(ios, 'l', 'neutral', 0, 20)
+                        ref: color(iosDefault, 'l', 'neutral', 0, 20)
                       }
                     }
                   },
                   neutral: {
                     soft: {
-                      rest: color(ios, 'l', 'neutral', 50),
-                      hover: { ref: color(ios, 'l', 'neutral', 50, 80) },
-                      pressed: { ref: color(ios, 'l', 'neutral', 50) },
+                      rest: color(iosDefault, 'l', 'neutral', 50),
+                      hover: { ref: color(iosDefault, 'l', 'neutral', 50, 80) },
+                      pressed: { ref: color(iosDefault, 'l', 'neutral', 50) },
                       disabled: {
-                        ref: color(ios, 'l', 'neutral', 0, 20)
+                        ref: color(iosDefault, 'l', 'neutral', 0, 20)
                       },
                       selected: {
                         rest: {
-                          ref: color(ios, 'l', 'neutral', 0)
+                          ref: color(iosDefault, 'l', 'neutral', 0)
                         }
                       }
                     }
                   },
                   redLike: {
                     soft: {
-                      rest: color(ios, 'l', 'redLike', 50),
-                      hover: { ref: color(ios, 'l', 'redLike', 50, 80) },
-                      pressed: { ref: color(ios, 'l', 'redLike', 50, 70) },
+                      rest: color(iosDefault, 'l', 'redLike', 50),
+                      hover: { ref: color(iosDefault, 'l', 'redLike', 50, 80) },
+                      pressed: { ref: color(iosDefault, 'l', 'redLike', 50, 70) },
                       disabled: {
-                        ref: color(ios, 'l', 'redLike', 0, 20)
+                        ref: color(iosDefault, 'l', 'redLike', 0, 20)
                       },
                       selected: {
                         rest: {
-                          ref: color(ios, 'l', 'redLike', 0)
+                          ref: color(iosDefault, 'l', 'redLike', 0)
                         }
                       }
                     },
                     solid: {
-                      rest: color(ios, 'l', 'neutral', 0),
-                      pressed: { ref: color(ios, 'l', 'neutral', 0, 70) },
+                      rest: color(iosDefault, 'l', 'neutral', 0),
+                      pressed: { ref: color(iosDefault, 'l', 'neutral', 0, 70) },
                       disabled: {
-                        ref: color(ios, 'l', 'neutral', 0, 20)
+                        ref: color(iosDefault, 'l', 'neutral', 0, 20)
                       }
                     }
                   }

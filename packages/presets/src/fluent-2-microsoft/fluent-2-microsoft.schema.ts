@@ -3,7 +3,7 @@ import { segments } from './fluent-2-microsoft.colors';
 
 // Reference: https://www.figma.com/design/iEmab9I4qGqbUJlFSxRORE/Microsoft-Fluent-2-Web--Community-?node-id=1-840&p=f&t=M4w8UKqwRiqJgq8i-0
 
-const iosDefault = segments.default;
+const fluentDefault = segments.default;
 
 type Segments = 'default';
 
@@ -54,27 +54,27 @@ export const schema: Schema<Segments> = {
                 boxColor: {
                   primary: {
                     soft: {
-                      rest: color(iosDefault, 'l', 'primary', 5),
-                      hover: color(iosDefault, 'l', 'primary', 3),
-                      focus: color(iosDefault, 'l', 'primary', 5),
-                      pressed: color(iosDefault, 'l', 'primary', 8),
-                      disabled: color(iosDefault, 'l', 'primary', 5, 20),
+                      rest: color(fluentDefault, 'l', 'primary', 5),
+                      hover: color(fluentDefault, 'l', 'primary', 3),
+                      focus: color(fluentDefault, 'l', 'primary', 5),
+                      pressed: color(fluentDefault, 'l', 'primary', 8),
+                      disabled: color(fluentDefault, 'l', 'primary', 5, 20),
                       selected: {
-                        rest: color(iosDefault, 'l', 'primary', 10),
-                        hover: color(iosDefault, 'l', 'primary', 8),
-                        pressed: color(iosDefault, 'l', 'primary', 20)
+                        rest: color(fluentDefault, 'l', 'primary', 10),
+                        hover: color(fluentDefault, 'l', 'primary', 8),
+                        pressed: color(fluentDefault, 'l', 'primary', 20)
                       }
                     },
                     solid: {
-                      rest: color(iosDefault, 'l', 'primary', 60),
-                      hover: color(iosDefault, 'l', 'primary', 70),
-                      pressed: color(iosDefault, 'l', 'primary', 80),
-                      disabled: color(iosDefault, 'l', 'neutral', 10),
-                      focus: color(iosDefault, 'l', 'primary', 70),
+                      rest: color(fluentDefault, 'l', 'primary', 60),
+                      hover: color(fluentDefault, 'l', 'primary', 70),
+                      pressed: color(fluentDefault, 'l', 'primary', 80),
+                      disabled: color(fluentDefault, 'l', 'neutral', 10),
+                      focus: color(fluentDefault, 'l', 'primary', 70),
                       selected: {
-                        rest: color(iosDefault, 'l', 'primary', 10),
-                        hover: color(iosDefault, 'l', 'primary', 8),
-                        pressed: color(iosDefault, 'l', 'primary', 20)
+                        rest: color(fluentDefault, 'l', 'primary', 10),
+                        hover: color(fluentDefault, 'l', 'primary', 8),
+                        pressed: color(fluentDefault, 'l', 'primary', 20)
                       }
                     }
                   }
@@ -109,26 +109,26 @@ export const schema: Schema<Segments> = {
                 textColor: {
                   primary: {
                     soft: {
-                      rest: color(iosDefault, 'l', 'primary', 50),
-                      hover: { ref: color(iosDefault, 'l', 'primary', 50, 80) },
-                      pressed: { ref: color(iosDefault, 'l', 'primary', 50) },
+                      rest: color(fluentDefault, 'l', 'primary', 50),
+                      hover: { ref: color(fluentDefault, 'l', 'primary', 50, 80) },
+                      pressed: { ref: color(fluentDefault, 'l', 'primary', 50) },
                       disabled: {
-                        ref: color(iosDefault, 'l', 'neutral', 0, 20)
+                        ref: color(fluentDefault, 'l', 'neutral', 0, 20)
                       },
                       selected: {
                         rest: {
-                          ref: color(iosDefault, 'l', 'neutral', 70)
+                          ref: color(fluentDefault, 'l', 'neutral', 70)
                         }
                       }
                     },
                     solid: {
-                      rest: color(iosDefault, 'l', 'neutral', 0),
+                      rest: color(fluentDefault, 'l', 'neutral', 0),
                       disabled: {
-                        ref: color(iosDefault, 'l', 'neutral', 60)
+                        ref: color(fluentDefault, 'l', 'neutral', 60)
                       },
                       selected: {
                         rest: {
-                          ref: color(iosDefault, 'l', 'neutral', 70)
+                          ref: color(fluentDefault, 'l', 'neutral', 70)
                         }
                       }
                     }

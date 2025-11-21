@@ -26,9 +26,9 @@ export const coreMaps = {
 
 export const paletteMaps = {
   'fluent-2-microsoft|default|light': () => loadJsonModule('/build/fluent-2-microsoft/default.light.kiskadee.json'),
-  'ios-26-apple|ios|light': () => loadJsonModule('/build/ios-26-apple/ios.light.kiskadee.json'),
-  'ios-26-kiskadee|ios|light': () => loadJsonModule('/build/ios-26-kiskadee/ios.light.kiskadee.json'),
-  'ios-26-kiskadee|ios|dark': () => loadJsonModule('/build/ios-26-kiskadee/ios.dark.kiskadee.json'),
+  'ios-26-apple|default|light': () => loadJsonModule('/build/ios-26-apple/default.light.kiskadee.json'),
+  'ios-26-kiskadee|default|light': () => loadJsonModule('/build/ios-26-kiskadee/default.light.kiskadee.json'),
+  'ios-26-kiskadee|default|dark': () => loadJsonModule('/build/ios-26-kiskadee/default.dark.kiskadee.json'),
   'material-design-3-google|default|light': () => loadJsonModule('/build/material-design-3-google/default.light.kiskadee.json'),
 } as const;
 
@@ -40,15 +40,15 @@ export const paletteIndex = {
     }
   },
   'ios-26-apple': {
-    segments: ['ios'],
+    segments: ['default'],
     themesBySegment: {
-      "ios": ['light']
+      "default": ['light']
     }
   },
   'ios-26-kiskadee': {
-    segments: ['ios'],
+    segments: ['default'],
     themesBySegment: {
-      "ios": ['light', 'dark']
+      "default": ['light', 'dark']
     }
   },
   'material-design-3-google': {

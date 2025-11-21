@@ -3,7 +3,9 @@ import type { SchemaSegments } from '@kiskadee/core';
 // iOS 26 - https://www.sketch.com/s/f63aa308-1f82-498c-8019-530f3b846db9
 // iOS 18 - https://www.sketch.com/s/bb57439f-19da-4c7a-bfd2-a196cf51f766/symbols
 
-export const segments: SchemaSegments = {
+type Segment = 'default';
+
+export const segments: SchemaSegments<Segment> = {
   default: {
     name: 'Default',
     mainColor: 'blue',

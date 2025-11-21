@@ -3,9 +3,9 @@ import { segments } from './ios-26-apple.colors';
 
 // Kiskadee iOS 26: starts as a copy of Apple iOS 26; can evolve with Kiskadee opinions later
 
-const ios = segments.ios;
+export type Segment = 'default';
 
-type Segment = 'default';
+const iosDefault = segments.default;
 
 export const schema: Schema<Segment> = {
   name: 'iOS',
@@ -44,27 +44,27 @@ export const schema: Schema<Segment> = {
                 boxColor: {
                   primary: {
                     soft: {
-                      rest: color(ios, 'l', 'primary', 5),
-                      hover: color(ios, 'l', 'primary', 3),
-                      focus: color(ios, 'l', 'primary', 5),
-                      pressed: color(ios, 'l', 'primary', 8),
-                      disabled: color(ios, 'l', 'primary', 5, 20),
+                      rest: color(iosDefault, 'l', 'primary', 5),
+                      hover: color(iosDefault, 'l', 'primary', 3),
+                      focus: color(iosDefault, 'l', 'primary', 5),
+                      pressed: color(iosDefault, 'l', 'primary', 8),
+                      disabled: color(iosDefault, 'l', 'primary', 5, 20),
                       selected: {
-                        rest: color(ios, 'l', 'primary', 10),
-                        hover: color(ios, 'l', 'primary', 8),
-                        pressed: color(ios, 'l', 'primary', 20)
+                        rest: color(iosDefault, 'l', 'primary', 10),
+                        hover: color(iosDefault, 'l', 'primary', 8),
+                        pressed: color(iosDefault, 'l', 'primary', 20)
                       }
                     },
                     solid: {
-                      rest: color(ios, 'l', 'primary', 50),
-                      hover: color(ios, 'l', 'primary', 50, 80),
-                      pressed: color(ios, 'l', 'primary', 60),
-                      disabled: color(ios, 'l', 'primary', 50, 20),
-                      focus: color(ios, 'l', 'primary', 50),
+                      rest: color(iosDefault, 'l', 'primary', 50),
+                      hover: color(iosDefault, 'l', 'primary', 50, 80),
+                      pressed: color(iosDefault, 'l', 'primary', 60),
+                      disabled: color(iosDefault, 'l', 'primary', 50, 20),
+                      focus: color(iosDefault, 'l', 'primary', 50),
                       selected: {
-                        rest: color(ios, 'l', 'primary', 10),
-                        hover: color(ios, 'l', 'primary', 8),
-                        pressed: color(ios, 'l', 'primary', 20)
+                        rest: color(iosDefault, 'l', 'primary', 10),
+                        hover: color(iosDefault, 'l', 'primary', 8),
+                        pressed: color(iosDefault, 'l', 'primary', 20)
                       }
                     }
                   }
@@ -99,26 +99,26 @@ export const schema: Schema<Segment> = {
                 textColor: {
                   primary: {
                     soft: {
-                      rest: color(ios, 'l', 'primary', 50),
-                      hover: { ref: color(ios, 'l', 'primary', 50, 80) },
-                      pressed: { ref: color(ios, 'l', 'primary', 50) },
+                      rest: color(iosDefault, 'l', 'primary', 50),
+                      hover: { ref: color(iosDefault, 'l', 'primary', 50, 80) },
+                      pressed: { ref: color(iosDefault, 'l', 'primary', 50) },
                       disabled: {
-                        ref: color(ios, 'l', 'neutral', 0, 20)
+                        ref: color(iosDefault, 'l', 'neutral', 0, 20)
                       },
                       selected: {
                         rest: {
-                          ref: color(ios, 'l', 'neutral', 70)
+                          ref: color(iosDefault, 'l', 'neutral', 70)
                         }
                       }
                     },
                     solid: {
-                      rest: color(ios, 'l', 'neutral', 0),
+                      rest: color(iosDefault, 'l', 'neutral', 0),
                       disabled: {
-                        ref: color(ios, 'l', 'neutral', 0, 20)
+                        ref: color(iosDefault, 'l', 'neutral', 0, 20)
                       },
                       selected: {
                         rest: {
-                          ref: color(ios, 'l', 'neutral', 70)
+                          ref: color(iosDefault, 'l', 'neutral', 70)
                         }
                       }
                     }

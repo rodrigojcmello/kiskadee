@@ -7,7 +7,10 @@ import type { SchemaSegments } from '@kiskadee/core';
 //   using "material" here ensures the generated filenames match
 //   "material.light.kiskadee.*" and can be correctly discovered by the
 //   Next.js showcase registry.
-export const segments: SchemaSegments = {
+
+type Segment = 'default';
+
+export const segments: SchemaSegments<Segment> = {
   default: {
     name: 'Material Design - Default (purple)', // e.g. YouTube, Google, WhatsApp
     mainColor: 'purple',

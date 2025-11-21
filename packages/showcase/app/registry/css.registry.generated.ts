@@ -13,15 +13,15 @@ export const cssPaths = {
     core: '/build/ios-26-apple/core.kiskadee.css',
     effects: '/build/ios-26-apple/effects.kiskadee.css',
     palettes: {
-      'ios|light': '/build/ios-26-apple/ios.light.kiskadee.css',
+      'default|light': '/build/ios-26-apple/default.light.kiskadee.css',
     }
   },
   'ios-26-kiskadee': {
     core: '/build/ios-26-kiskadee/core.kiskadee.css',
     effects: '/build/ios-26-kiskadee/effects.kiskadee.css',
     palettes: {
-      'ios|light': '/build/ios-26-kiskadee/ios.light.kiskadee.css',
-      'ios|dark': '/build/ios-26-kiskadee/ios.dark.kiskadee.css',
+      'default|light': '/build/ios-26-kiskadee/default.light.kiskadee.css',
+      'default|dark': '/build/ios-26-kiskadee/default.dark.kiskadee.css',
     }
   },
   'material-design-3-google': {

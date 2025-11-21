@@ -17,8 +17,11 @@ import type { SchemaSegments } from '@kiskadee/core';
  * - redLike: Danger, error, urgent, notification (always red ~0°)
  * - neutral: Text, backgrounds, borders, dividers (always grayscale)
  */
-export const segments: SchemaSegments = {
-  ios: {
+
+type Segment = 'default';
+
+export const segments: SchemaSegments<Segment> = {
+  default: {
     name: 'Default',
     mainColor: 'blue',
     themes: {

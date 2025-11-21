@@ -23,7 +23,7 @@ import { segments } from './material-3-google.colors';
  *   manifest consumed by the Next.js showcase registry.
  */
 
-const defaultColor = segments.default;
+const materialDefault = segments.default;
 type Segment = 'default';
 
 export const schema: Schema<Segment> = {
@@ -82,29 +82,29 @@ export const schema: Schema<Segment> = {
                 boxColor: {
                   primary: {
                     soft: {
-                      rest: color(defaultColor, 'l', 'primary', 50),
+                      rest: color(materialDefault, 'l', 'primary', 50),
                       // hover: [256, 34, 48, 1], // official
-                      hover: color(defaultColor, 'l', 'primary', 40),
-                      pressed: color(defaultColor, 'l', 'primary', 60),
-                      disabled: color(defaultColor, 'l', 'neutral', 10),
-                      focus: color(defaultColor, 'l', 'primary', 50),
+                      hover: color(materialDefault, 'l', 'primary', 40),
+                      pressed: color(materialDefault, 'l', 'primary', 60),
+                      disabled: color(materialDefault, 'l', 'neutral', 10),
+                      focus: color(materialDefault, 'l', 'primary', 50),
                       selected: {
-                        rest: color(defaultColor, 'l', 'primary', 10),
-                        hover: color(defaultColor, 'l', 'primary', 8),
-                        pressed: color(defaultColor, 'l', 'primary', 20)
+                        rest: color(materialDefault, 'l', 'primary', 10),
+                        hover: color(materialDefault, 'l', 'primary', 8),
+                        pressed: color(materialDefault, 'l', 'primary', 20)
                       }
                     },
                     solid: {
-                      rest: color(defaultColor, 'l', 'primary', 50),
+                      rest: color(materialDefault, 'l', 'primary', 50),
                       // hover: [256, 34, 48, 1], // official
-                      hover: color(defaultColor, 'l', 'primary', 40),
-                      pressed: color(defaultColor, 'l', 'primary', 60),
-                      disabled: color(defaultColor, 'l', 'neutral', 10),
-                      focus: color(defaultColor, 'l', 'primary', 50),
+                      hover: color(materialDefault, 'l', 'primary', 40),
+                      pressed: color(materialDefault, 'l', 'primary', 60),
+                      disabled: color(materialDefault, 'l', 'neutral', 10),
+                      focus: color(materialDefault, 'l', 'primary', 50),
                       selected: {
-                        rest: color(defaultColor, 'l', 'primary', 10),
-                        hover: color(defaultColor, 'l', 'primary', 8),
-                        pressed: color(defaultColor, 'l', 'primary', 20)
+                        rest: color(materialDefault, 'l', 'primary', 10),
+                        hover: color(materialDefault, 'l', 'primary', 8),
+                        pressed: color(materialDefault, 'l', 'primary', 20)
                       }
                     }
                   }
@@ -158,22 +158,22 @@ export const schema: Schema<Segment> = {
                     soft: {
                       rest: [0, 0, 100, 1],
                       disabled: {
-                        ref: color(defaultColor, 'l', 'neutral', 60)
+                        ref: color(materialDefault, 'l', 'neutral', 60)
                       },
                       selected: {
                         rest: {
-                          ref: color(defaultColor, 'l', 'neutral', 70)
+                          ref: color(materialDefault, 'l', 'neutral', 70)
                         }
                       }
                     },
                     solid: {
                       rest: [0, 0, 100, 1],
                       disabled: {
-                        ref: color(defaultColor, 'l', 'neutral', 60)
+                        ref: color(materialDefault, 'l', 'neutral', 60)
                       },
                       selected: {
                         rest: {
-                          ref: color(defaultColor, 'l', 'neutral', 70)
+                          ref: color(materialDefault, 'l', 'neutral', 70)
                         }
                       }
                     }
