@@ -1,5 +1,5 @@
 import { breakpoints, color, Schema, type SegmentName } from '@kiskadee/core';
-import { segments } from './material-3-google.colors';
+import { segments } from './colors.source';
 
 /**
  * Segments definition for the Material Design 3 design system.

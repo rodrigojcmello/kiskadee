@@ -1,5 +1,5 @@
 import { breakpoints, color, type Schema, withAlpha } from '@kiskadee/core';
-import { segments } from './ios-26-kiskadee.colors';
+import { segments } from './colors.source';
 
 // Kiskadee iOS 26: starts as a copy of Apple iOS 26; can evolve with Kiskadee opinions later
 

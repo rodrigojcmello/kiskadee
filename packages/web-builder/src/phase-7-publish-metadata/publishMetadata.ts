@@ -1,5 +1,5 @@
-import { copyFile, mkdir, writeFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { dirname, resolve } from 'node:path';
 import type { Schema, SchemaSegments, ThemeMode } from '@kiskadee/core';
 
 function majorVersionFromTuple(v: [number, number, number] | number[]): number {
@@ -77,9 +77,39 @@ export async function publishMetadata(params: {
   await writeFile(resolve(buildDir, 'schema.json'), JSON.stringify(schema, null, 2), 'utf8');
   await writeFile(resolve(buildDir, 'segments.json'), JSON.stringify(segments, null, 2), 'utf8');
 
-  // Optional: copy original template TS for inspection
+  // Optional: copy original template TS for inspection.
+  // In the clean model we always expose two stable entrypoints:
+  // - schema.source.ts  -> a copy of the original schema, but with its
+  //                        local "*.colors" import rewritten to "./colors.source".
+  // - colors.source.ts  -> a copy of the original "<name>.colors.ts" file.
+  //
+  // No `<preset>.colors.ts` file is published to the build directory anymore;
+  // consumers should always rely on these two stable entrypoints instead.
   try {
-    await copyFile(schemaPath, resolve(buildDir, 'schema.source.ts'));
+    const schemaSourcePath = resolve(buildDir, 'schema.source.ts');
+    const source = await readFile(schemaPath, 'utf8');
+    const match = source.match(/from ['"](\.\/[^'\"]*\.colors)['"]/);
+
+    if (match && match[1]) {
+      const importStatement = match[0];
+      const rewrittenImport = "from './colors.source'";
+
+      // Rewrite the original local "*.colors" import to the stable
+      // alias entrypoint "./colors.source".
+      const rewrittenSchemaSource = source.replace(importStatement, rewrittenImport);
+      await writeFile(schemaSourcePath, rewrittenSchemaSource, 'utf8');
+
+      // Locate the original colors file (for example "./fluent-2-microsoft.colors.ts")
+      // next to the schema and copy it to "colors.source.ts" in the build directory.
+      const colorsRelPath = match[1];
+      const colorsSrcPath = resolve(dirname(schemaPath), `${colorsRelPath}.ts`);
+      const colorsSourceTarget = resolve(buildDir, 'colors.source.ts');
+      await copyFile(colorsSrcPath, colorsSourceTarget);
+    } else {
+      // If there is no local "*.colors" import, just copy the schema file as is,
+      // preserving the previous behavior.
+      await copyFile(schemaPath, schemaSourcePath);
+    }
   } catch (e) {
     console.warn('[web-builder] Failed to copy schema.source.ts for', manifest.key, e);
   }
