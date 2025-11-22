@@ -14,7 +14,7 @@ export const segments: SchemaSegments<Segment> = {
         primary: {
           soft: {
             // Soft track: 0–10 (every 1%), then 15, 20, 25, 30
-            0: [208, 85, 100, 1], // 0% darkness (white/lightest)
+            0: [0, 0, 100, 1], // 0% darkness (white/lightest)
             1: [208, 85, 99, 1], // 1% darkness
             2: [208, 85, 98, 1], // 2% darkness
             3: [208, 85, 97, 1], // 3% darkness
@@ -31,14 +31,15 @@ export const segments: SchemaSegments<Segment> = {
             30: [208, 85, 70, 1] // 30% darkness
           },
           solid: {
-            // Solid track: 40–100 every 10% darkness (40,50,60,70,80,90,100); 50 is the anchor
+            // Solid track: 40–100 every 10% darkness (40, 50, 60, 70, 80, 90, 100); 50 is the scale mid-point (L=50)
+            // Original color darkness ≈ 60% → usage anchor tone 60
             40: [208, 85, 60, 1], // 40% darkness
-            50: [208, 85, 50, 1], // 50% darkness - #0F6CBD - ANCHOR (unchanged)
-            60: [208, 85, 40, 1], // 60% darkness
+            50: [208, 85, 50, 1], // 50% darkness - scale mid-point (L=50)
+            60: [208, 85, 40, 1], // 60% darkness - closest tone to original color (#0F6CBD, L=40%) - USAGE ANCHOR
             70: [208, 85, 30, 1], // 70% darkness
             80: [208, 85, 20, 1], // 80% darkness
             90: [208, 85, 10, 1], // 90% darkness
-            100: [208, 85, 0, 1] // 100% darkness (black/darkest)
+            100: [0, 0, 0, 1] // 100% darkness (black/darkest)
           }
         },
         neutral: {
