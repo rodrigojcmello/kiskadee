@@ -1,7 +1,16 @@
 import { writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { ColorScale, ColorScaleDark, ColorScaleLight, HSLA, ToneTracks } from '@kiskadee/core';
+import type {
+  ColorScale,
+  ColorScaleDark,
+  ColorScaleLight,
+  DarkTrackTones,
+  HSLA,
+  LightTrackTones,
+  ToneTracks
+} from '@kiskadee/core';
+import { convertHslaToHex } from '@kiskadee/core';
 
 /**
  * Converts a hexadecimal color to HSLA format.
@@ -89,6 +98,8 @@ function hexToHSLA(hex: string, verbose = false): HSLA {
  * const scale = generateColorScale("#6750A4", true);
  * // Returns a ColorScale with tone 50 centered at 50 when the second argument is true.
  */
+type ToneOverrides = Partial<Record<LightTrackTones | DarkTrackTones, string>>;
+
 export function generateColorScale(hexColor: string, prioritizeLightnessScale = false): ToneTracks {
   const [hue, saturation, originalAnchorLightness, alpha] = hexToHSLA(hexColor);
   const anchorLightness = prioritizeLightnessScale ? 50 : originalAnchorLightness; // when prioritizing the lightness scale, center at 50
@@ -179,9 +190,46 @@ export function generateColorScale(hexColor: string, prioritizeLightnessScale = 
  */
 export function generateColorScaleWithLog(
   hexColor: string,
-  prioritizeLightnessScale = false
+  prioritizeLightnessScale = false,
+  overrides?: ToneOverrides
 ): ToneTracks {
-  const tracks = generateColorScale(hexColor, prioritizeLightnessScale);
+  const baseTracks = generateColorScale(hexColor, prioritizeLightnessScale);
+
+  // Clone base tracks so we can apply overrides only for logging / file
+  // emission, while still knowing what was originally generated.
+  const tracks: ToneTracks = {
+    soft: { ...baseTracks.soft },
+    solid: { ...baseTracks.solid }
+  };
+
+  const overriddenTones = new Set<number>();
+
+  // Apply optional overrides without ever changing absolute extremes 0/100.
+  if (overrides) {
+    for (const [toneKey, hex] of Object.entries(overrides)) {
+      if (!hex) continue;
+      const tone = Number(toneKey);
+
+      if (tone === 0 || tone === 100) {
+        // Do not override absolute white/black.
+        continue;
+      }
+
+      if ((tone as LightTrackTones) >= 0 && (tone as LightTrackTones) <= 30) {
+        const key = tone as LightTrackTones;
+        tracks.soft[key] = hexToHSLA(hex);
+        overriddenTones.add(tone);
+        continue;
+      }
+
+      if ((tone as DarkTrackTones) >= 40 && (tone as DarkTrackTones) <= 100) {
+        const key = tone as DarkTrackTones;
+        tracks.solid[key] = hexToHSLA(hex);
+        overriddenTones.add(tone);
+        continue;
+      }
+    }
+  }
 
   const isPrioritizingScale = prioritizeLightnessScale;
 
@@ -257,13 +305,22 @@ export function generateColorScaleWithLog(
   }
   for (const tone of [40, 50, 60, 70, 80, 90, 100] as const) {
     const color = tracks.solid[tone];
+    const baseColor = baseTracks.solid[tone];
     if (!color) continue;
     const comment = (() => {
       const darknessLabel = `${100 - color[2]}% darkness`;
 
+      const isOverridden = overriddenTones.has(tone);
+
       if (isPrioritizingScale) {
         // Canonical scale: index ≈ darkness%. We highlight the tone whose
         // darkness is closest to the original color as the usage anchor.
+        if (isOverridden && baseColor) {
+          const generatedHex = convertHslaToHex(baseColor);
+          const finalHex = convertHslaToHex(color);
+          return ` // ${darknessLabel} - OVERRIDDEN (generated ${generatedHex} -> ${finalHex})`;
+        }
+
         if (tone === usageAnchorTone) {
           return ` // ${darknessLabel} - closest tone to original color (${hexColor.toUpperCase()}, L=${originalLightness}%) - USAGE ANCHOR`;
         }
@@ -280,16 +337,22 @@ export function generateColorScaleWithLog(
       }
 
       // Non-canonical mode: tone 50 is exactly the input color; the rest of the
-      // track bends around it. We avoid tying the index numerically to the
-      // darkness concept here.
+      // track bends around it. We keep comments minimal here.
       if (tone === 50) {
-        // Keep this comment minimal: we only care about which hex was used
-        // as the anchor for the generated scale.
+        if (isOverridden && baseColor) {
+          const generatedHex = convertHslaToHex(baseColor);
+          const finalHex = convertHslaToHex(color);
+          return ` // Anchor color (input) - OVERRIDDEN (generated ${generatedHex} -> ${finalHex})`;
+        }
         return ` // Anchor color (input) - ${hexColor.toUpperCase()}`;
       }
 
-      // For the non-canonical mode we avoid extra commentary for the
-      // surrounding tones to keep the generated file focused on the anchor.
+      if (isOverridden && baseColor) {
+        const generatedHex = convertHslaToHex(baseColor);
+        const finalHex = convertHslaToHex(color);
+        return ` // OVERRIDDEN (generated ${generatedHex} -> ${finalHex})`;
+      }
+
       return '';
     })();
     solidLines.push(`    ${tone}: [${color.join(', ')}],${comment}`);
@@ -322,4 +385,6 @@ export function generateColorScaleWithLog(
 // iOS 26 #0091FF
 // iOS 18 #007AFF
 
-generateColorScaleWithLog('#0F6CBD', true);
+generateColorScaleWithLog('#0F6CBD', true, {
+  70: '#115EA3'
+});
