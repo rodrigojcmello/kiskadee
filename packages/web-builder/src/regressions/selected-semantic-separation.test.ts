@@ -1,4 +1,4 @@
-import { schema as ios26Kiskadee } from '@kiskadee/presets/src/ios-26-kiskadee/ios-26-kiskadee.schema';
+import { schema as ios26Kiskadee } from '@kiskadee/presets/src/presets/ios-26-kiskadee/ios-26-kiskadee.schema';
 import { describe, expect, it } from 'vitest';
 import { convertElementSchemaToStyleKeys } from '../phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys';
 import { mapStyleKeyUsage } from '../phase-2-map-style-key-usage/mapStyleKeyUsage';

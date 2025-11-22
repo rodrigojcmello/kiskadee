@@ -37,7 +37,9 @@ const __dirname = dirname(__filename);
 async function loadPresetsToBuild(): Promise<
   Array<{ schema: Schema; segments: SchemaSegments; schemaPath: string }>
 > {
-  const presetsDistDir = resolve(__dirname, '..', '..', 'presets', 'src');
+  // Presets live under packages/presets/src/presets. We only want to iterate
+  // actual preset folders, not tooling under src/tools.
+  const presetsDistDir = resolve(__dirname, '..', '..', 'presets', 'src', 'presets');
 
   const dirs = readdirSync(presetsDistDir, { withFileTypes: true })
     .filter((e) => e.isDirectory())
@@ -46,7 +48,7 @@ async function loadPresetsToBuild(): Promise<
   const items: Array<{ schema: Schema; segments: SchemaSegments; schemaPath: string }> = [];
 
   for (const dir of dirs) {
-    const mod = (await import(`@kiskadee/presets/src/${dir}`)) as {
+    const mod = (await import(`@kiskadee/presets/src/presets/${dir}`)) as {
       schema?: Schema;
       segments?: SchemaSegments;
     };
@@ -59,7 +61,16 @@ async function loadPresetsToBuild(): Promise<
     items.push({
       schema: mod.schema,
       segments: mod.segments,
-      schemaPath: resolve(__dirname, '..', '..', 'presets', 'src', dir, `${dir}.schema.ts`)
+      schemaPath: resolve(
+        __dirname,
+        '..',
+        '..',
+        'presets',
+        'src',
+        'presets',
+        dir,
+        `${dir}.schema.ts`
+      )
     });
   }
 

@@ -318,7 +318,7 @@ export function generateColorScaleWithLog(
         if (isOverridden && baseColor) {
           const generatedHex = convertHslaToHex(baseColor);
           const finalHex = convertHslaToHex(color);
-          return ` // ${darknessLabel} - OVERRIDDEN (generated ${generatedHex} -> ${finalHex})`;
+          return ` // ${darknessLabel} - OVERRIDDEN: generated ${generatedHex} was replaced by ${finalHex}`;
         }
 
         if (tone === usageAnchorTone) {
@@ -342,7 +342,7 @@ export function generateColorScaleWithLog(
         if (isOverridden && baseColor) {
           const generatedHex = convertHslaToHex(baseColor);
           const finalHex = convertHslaToHex(color);
-          return ` // Anchor color (input) - OVERRIDDEN (generated ${generatedHex} -> ${finalHex})`;
+          return ` // Anchor color (input) - OVERRIDDEN: generated ${generatedHex} was replaced by ${finalHex}`;
         }
         return ` // Anchor color (input) - ${hexColor.toUpperCase()}`;
       }
@@ -350,7 +350,7 @@ export function generateColorScaleWithLog(
       if (isOverridden && baseColor) {
         const generatedHex = convertHslaToHex(baseColor);
         const finalHex = convertHslaToHex(color);
-        return ` // OVERRIDDEN (generated ${generatedHex} -> ${finalHex})`;
+        return ` // OVERRIDDEN: generated ${generatedHex} was replaced by ${finalHex}`;
       }
 
       return '';
