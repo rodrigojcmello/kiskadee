@@ -1,13 +1,7 @@
 import { writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type {
-  ColorScale,
-  ColorScaleDark,
-  ColorScaleLight,
-  HSLA,
-  ToneTracks
-} from '../types/colors/colors.types';
+import type { ColorScale, ColorScaleDark, ColorScaleLight, HSLA, ToneTracks } from '@kiskadee/core';
 
 /**
  * Converts a hexadecimal color to HSLA format.
@@ -243,9 +237,9 @@ export function generateColorScaleWithLog(
   return tracks;
 }
 
-// macos rest #2E7CF6
-// macos pressed #2970DE
-// ios 26 #0091FF
-// ios 18 #007AFF
+// macOS rest #2E7CF6
+// macOS pressed #2970DE
+// iOS 26 #0091FF
+// iOS 18 #007AFF
 
 generateColorScaleWithLog('#0F6CBD', true);
