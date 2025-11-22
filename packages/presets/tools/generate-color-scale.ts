@@ -157,6 +157,12 @@ export function generateColorScale(hexColor: string, prioritizeLightnessScale = 
     if (c) solid[tone] = c;
   }
 
+  // Force absolute extremes so that tone 0 and 100 are truly neutral white/black.
+  // This keeps intermediate tones tinted by the original hue/saturation while
+  // making the scale endpoints consistent across semantics.
+  soft[0] = [0, 0, 100, alpha];
+  solid[100] = [0, 0, 0, alpha];
+
   return { soft, solid };
 }
 
@@ -176,6 +182,42 @@ export function generateColorScaleWithLog(
   prioritizeLightnessScale = false
 ): ToneTracks {
   const tracks = generateColorScale(hexColor, prioritizeLightnessScale);
+
+  const isPrioritizingScale = prioritizeLightnessScale;
+
+  // Recompute original lightness to derive an approximate darkness label.
+  // For prioritizeLightnessScale=false this is used only to document the
+  // anchor color (tone 50). For prioritizeLightnessScale=true we also use it
+  // to pick the closest DarkTrackTone in the canonical scale for usage
+  // guidance. This does not affect the generated scale itself.
+  const [, , originalLightness] = hexToHSLA(hexColor);
+  const originalDarkness = 100 - originalLightness;
+
+  const darkTones: (keyof ColorScaleDark)[] = [40, 50, 60, 70, 80, 90, 100];
+
+  function getNearestDarkTone(darkness: number): keyof ColorScaleDark {
+    let bestTone = darkTones[0];
+    let bestDiff = Math.abs(darkness - (bestTone as number));
+
+    for (const tone of darkTones) {
+      const diff = Math.abs(darkness - (tone as number));
+      if (diff < bestDiff) {
+        bestTone = tone;
+        bestDiff = diff;
+      }
+    }
+
+    return bestTone;
+  }
+
+  // When we prioritize the lightness scale, we keep the canonical
+  // "index ≈ darkness%" relationship and use the nearest dark tone to the
+  // original color as the usage anchor. When we do NOT prioritize the
+  // lightness scale, tone 50 is always the semantic anchor (exact input
+  // color), so we do not use the nearest tone concept there.
+  const usageAnchorTone = isPrioritizingScale
+    ? (getNearestDarkTone(originalDarkness) as 40 | 50 | 60 | 70 | 80 | 90 | 100)
+    : 50;
 
   // Build pretty lines for soft and solid
   const softLines: string[] = [];
@@ -199,19 +241,57 @@ export function generateColorScaleWithLog(
   const anchor = tracks.solid[50];
   solidLines.push('  solid: {');
   if (anchor?.[2] !== undefined) {
-    solidLines.push(
-      `    // Solid track: 40–100 every 10% darkness (40,50,60,70,80,90,100); 50 is the anchor`
-    );
+    if (isPrioritizingScale) {
+      solidLines.push(
+        `    // Solid track: 40–100 every 10% darkness (40, 50, 60, 70, 80, 90, 100); 50 is the scale mid-point (L=50)`
+      );
+      solidLines.push(
+        `    // Original color darkness ≈ ${originalDarkness}% → usage anchor tone ${usageAnchorTone}`
+      );
+    } else {
+      solidLines.push(
+        `    // Solid track: 40–100 every 10% darkness (40, 50, 60, 70, 80, 90, 100)`
+      );
+      solidLines.push(`    // Tone 50 is the anchor color (exactly the input hex lightness)`);
+    }
   }
   for (const tone of [40, 50, 60, 70, 80, 90, 100] as const) {
     const color = tracks.solid[tone];
     if (!color) continue;
-    const comment =
-      tone === 50
-        ? ` // ${tone}% darkness - ${hexColor.toUpperCase()} - ANCHOR (unchanged)`
-        : tone === 100
-          ? ' // 100% darkness (black/darkest)'
-          : ` // ${tone}% darkness`;
+    const comment = (() => {
+      const darknessLabel = `${100 - color[2]}% darkness`;
+
+      if (isPrioritizingScale) {
+        // Canonical scale: index ≈ darkness%. We highlight the tone whose
+        // darkness is closest to the original color as the usage anchor.
+        if (tone === usageAnchorTone) {
+          return ` // ${darknessLabel} - closest tone to original color (${hexColor.toUpperCase()}, L=${originalLightness}%) - USAGE ANCHOR`;
+        }
+
+        if (tone === 50) {
+          return ' // 50% darkness - scale mid-point (L=50)';
+        }
+
+        if (tone === 100) {
+          return ' // 100% darkness (black/darkest)';
+        }
+
+        return ` // ${darknessLabel}`;
+      }
+
+      // Non-canonical mode: tone 50 is exactly the input color; the rest of the
+      // track bends around it. We avoid tying the index numerically to the
+      // darkness concept here.
+      if (tone === 50) {
+        // Keep this comment minimal: we only care about which hex was used
+        // as the anchor for the generated scale.
+        return ` // Anchor color (input) - ${hexColor.toUpperCase()}`;
+      }
+
+      // For the non-canonical mode we avoid extra commentary for the
+      // surrounding tones to keep the generated file focused on the anchor.
+      return '';
+    })();
     solidLines.push(`    ${tone}: [${color.join(', ')}],${comment}`);
   }
   solidLines.push('  }');
