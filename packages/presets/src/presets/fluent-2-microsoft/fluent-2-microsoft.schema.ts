@@ -17,7 +17,7 @@ export const schema: Schema<Segments> = {
     palettes: {
       default: {
         light: {
-          color: color(fluentDefault, 'l', 'neutral', 0)
+          color: color(fluentDefault, 'l', 'neutral', 100)
         }
       }
     }

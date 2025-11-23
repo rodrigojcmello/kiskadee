@@ -13,6 +13,15 @@ export const schema: Schema<Segments> = {
   version: [2, 0, 0],
   author: 'Microsoft',
   breakpoints,
+  focusRing: {
+    palettes: {
+      default: {
+        light: {
+          color: color(fluentDefault, 'l', 'neutral', 100)
+        }
+      }
+    }
+  },
   components: {
     button: {
       elements: {
@@ -126,11 +135,6 @@ export const schema: Schema<Segments> = {
                       disabled: {
                         ref: color(fluentDefault, 'l', 'neutral', 25)
                       }
-                      // selected: {
-                      //   rest: {
-                      //     ref: color(fluentDefault, 'l', 'neutral', 0)
-                      //   }
-                      // }
                     }
                   }
                 }

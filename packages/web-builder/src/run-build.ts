@@ -18,6 +18,7 @@ import {
 } from './phase-5-generate-class-names-map/generateClassNamesMap';
 import { persistBuildArtifacts } from './phase-6-persist-build-artifacts/persistBuildArtifacts';
 import { publishMetadata } from './phase-7-publish-metadata/publishMetadata';
+import { writeExtraArtifacts } from './phase-8-write-extra-artifacts/writeExtraArtifacts';
 
 // Feature flag simples para controlar o uso de prefixo nos nomes de classes CSS
 // Ajuste para `false` caso queira desativar o prefixo sem alterar o restante do código.
@@ -140,6 +141,12 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
       outDirSlug,
       schemaPath: schemaPath,
       baseBuildDir
+    });
+
+    await writeExtraArtifacts({
+      schema,
+      segments,
+      outDirSlug
     });
   }
 })();
