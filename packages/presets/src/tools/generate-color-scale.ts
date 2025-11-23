@@ -242,7 +242,6 @@ export function generateColorScaleWithLog(
         // as possible.
         tracks.solid[key] = hexToHSLA(hex, false);
         overriddenTones.add(tone);
-        continue;
       }
     }
   }
@@ -403,10 +402,10 @@ export function generateColorScaleWithLog(
   console.log(prettyBodyOnly);
   console.log(`\n${'='.repeat(80)}\n`);
 
-  // Write the file "color-tones.ts" next to this script (overwrite on each run)
+  // Write the file "color.generated.ts" next to this script (overwrite on each run)
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
-  const outFilePath = join(__dirname, 'color-tones.ts');
+  const outFilePath = join(__dirname, 'color.generated.ts');
   // Emit a small header that captures the exact parameters used to generate
   // this file so it can be easily regenerated later.
   let headerLines: string[] = [];
@@ -430,7 +429,7 @@ export function generateColorScaleWithLog(
   }
 
   const header = `${headerLines.join('\n')}\n`;
-  const fileContent = `${header}export default ${prettyBodyOnly}\n`;
+  const fileContent = `${header}\nimport type { ToneTracks } from '@kiskadee/core';\n\nexport default ${prettyBodyOnly} as ToneTracks\n`;
   fs.writeFileSync(outFilePath, fileContent, 'utf8');
   console.log(`[generateColorScaleWithLog] Wrote TS to: ${outFilePath}`);
 

@@ -22,4 +22,4 @@ build
 coverage
 
 # Temporary
-color-tones.ts
+color.generated.ts
