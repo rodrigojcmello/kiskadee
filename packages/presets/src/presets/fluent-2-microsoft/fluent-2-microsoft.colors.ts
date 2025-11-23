@@ -15,30 +15,30 @@ export const segments: SchemaSegments<Segment> = {
           soft: {
             // Soft track: 0–10 (every 1%), then 15, 20, 25, 30
             0: [0, 0, 100, 1], // 0% darkness (white/lightest)
-            1: [208, 85, 99, 1], // 1% darkness
-            2: [208, 85, 98, 1], // 2% darkness
-            3: [208, 85, 97, 1], // 3% darkness
-            4: [208, 85, 96, 1], // 4% darkness
-            5: [208, 85, 95, 1], // 5% darkness
-            6: [208, 85, 94, 1], // 6% darkness
-            7: [208, 85, 93, 1], // 7% darkness
-            8: [208, 85, 92, 1], // 8% darkness
-            9: [208, 85, 91, 1], // 9% darkness
-            10: [208, 85, 90, 1], // 10% darkness
-            15: [208, 85, 85, 1], // 15% darkness
-            20: [208, 85, 80, 1], // 20% darkness
-            25: [208, 85, 75, 1], // 25% darkness
-            30: [208, 85, 70, 1] // 30% darkness
+            1: [207.93, 85.29, 99, 1], // 1% darkness
+            2: [207.93, 85.29, 98, 1], // 2% darkness
+            3: [207.93, 85.29, 97, 1], // 3% darkness
+            4: [207.93, 85.29, 96, 1], // 4% darkness
+            5: [207.93, 85.29, 95, 1], // 5% darkness
+            6: [207.93, 85.29, 94, 1], // 6% darkness
+            7: [207.93, 85.29, 93, 1], // 7% darkness
+            8: [207.93, 85.29, 92, 1], // 8% darkness
+            9: [207.93, 85.29, 91, 1], // 9% darkness
+            10: [207.93, 85.29, 90, 1], // 10% darkness
+            15: [207.93, 85.29, 85, 1], // 15% darkness
+            20: [207.93, 85.29, 80, 1], // 20% darkness
+            25: [207.93, 85.29, 75, 1], // 25% darkness
+            30: [207.93, 85.29, 70, 1] // 30% darkness
           },
           solid: {
             // Solid track: 40–100 every 10% darkness (40, 50, 60, 70, 80, 90, 100); 50 is the scale mid-point (L=50)
             // Original color darkness ≈ 60% → usage anchor tone 60
-            40: [208, 85, 60, 1], // 40% darkness
-            50: [208, 85, 50, 1], // 50% darkness - scale mid-point (L=50)
-            60: [208, 85, 40, 1], // 60% darkness - closest tone to original color (#0F6CBD, L=40%) - USAGE ANCHOR
-            70: [208, 85, 30, 1], // 70% darkness
-            80: [208, 85, 20, 1], // 80% darkness
-            90: [208, 85, 10, 1], // 90% darkness
+            40: [207.93, 85.29, 60, 1], // 40% darkness
+            50: [207.93, 85.29, 50, 1], // 50% darkness - scale mid-point (L=50)
+            60: [207.93, 85.29, 40, 1], // 60% darkness - closest tone to original color (#0F6CBD, L=40%) - USAGE ANCHOR
+            70: [208.36, 81.11, 35.29, 1], // 64.71% darkness - OVERRIDDEN: generated #0B518E was replaced by #115EA3
+            80: [205.61, 77.36, 20.78, 1], // 79.22% darkness - OVERRIDDEN: generated #08365E was replaced by #0C3B5E
+            90: [207.93, 85.29, 10, 1], // 90% darkness
             100: [0, 0, 0, 1] // 100% darkness (black/darkest)
           }
         },

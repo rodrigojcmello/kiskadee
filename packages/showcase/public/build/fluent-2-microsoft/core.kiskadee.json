@@ -1,20 +1,20 @@
 {
   "button": {
     "e1": {
-      "d": "f-f",
-      "e": "f-ac f-af f-ag f-ae f-ad",
+      "d": "f-c",
+      "e": "f-af f-ai f-aj f-ah f-ag",
       "s": {
-        "s:sm:1": "f-z f-q f-v f-y f-a",
-        "s:md:1": "f-aa f-r f-t f-w f-a",
-        "s:lg:1": "f-ab f-s f-u f-x f-a"
+        "s:sm:1": "f-ac f-t f-y f-ab f-a",
+        "s:md:1": "f-ad f-u f-w f-z f-a",
+        "s:lg:1": "f-ae f-v f-x f-aa f-a"
       }
     },
     "e2": {
-      "d": "f-an f-au",
+      "d": "f-aq f-ax",
       "s": {
-        "s:sm:1": "f-ar f-ao",
-        "s:md:1": "f-as f-ap",
-        "s:lg:1": "f-at f-aq"
+        "s:sm:1": "f-au f-ar",
+        "s:md:1": "f-av f-as",
+        "s:lg:1": "f-aw f-at"
       }
     }
   }

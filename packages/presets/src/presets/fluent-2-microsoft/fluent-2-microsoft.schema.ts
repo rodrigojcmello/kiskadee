@@ -68,13 +68,13 @@ export const schema: Schema<Segments> = {
                     solid: {
                       rest: color(fluentDefault, 'l', 'primary', 60),
                       hover: color(fluentDefault, 'l', 'primary', 70),
-                      pressed: color(fluentDefault, 'l', 'primary', 80),
+                      pressed: color(fluentDefault, 'l', 'primary', 90),
                       disabled: color(fluentDefault, 'l', 'neutral', 10),
-                      focus: color(fluentDefault, 'l', 'primary', 70),
+                      focus: color(fluentDefault, 'l', 'primary', 60),
                       selected: {
-                        rest: color(fluentDefault, 'l', 'primary', 10),
-                        hover: color(fluentDefault, 'l', 'primary', 8),
-                        pressed: color(fluentDefault, 'l', 'primary', 20)
+                        rest: color(fluentDefault, 'l', 'primary', 80),
+                        hover: color(fluentDefault, 'l', 'primary', 70),
+                        pressed: color(fluentDefault, 'l', 'primary', 90)
                       }
                     }
                   }
@@ -117,7 +117,7 @@ export const schema: Schema<Segments> = {
                       },
                       selected: {
                         rest: {
-                          ref: color(fluentDefault, 'l', 'neutral', 70)
+                          ref: color(fluentDefault, 'l', 'neutral', 0)
                         }
                       }
                     },
@@ -128,7 +128,7 @@ export const schema: Schema<Segments> = {
                       },
                       selected: {
                         rest: {
-                          ref: color(fluentDefault, 'l', 'neutral', 70)
+                          ref: color(fluentDefault, 'l', 'neutral', 0)
                         }
                       }
                     }

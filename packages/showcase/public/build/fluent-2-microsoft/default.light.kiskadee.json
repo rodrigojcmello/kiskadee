@@ -3,16 +3,16 @@
     "e1": {
       "c": {
         "primary": {
-          "f": "f-h f-n f-p f-l f-j",
-          "d": "f-g f-m f-o f-k f-d f-b f-c f-i"
+          "f": "f-e f-j f-m f-i f-s f-n f-q f-g",
+          "d": "f-d f-k f-l f-h f-r f-o f-p f-f"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "f": "f-ai f-al f-am f-aj",
-          "d": "f-ah f-e f-ak"
+          "f": "f-al f-ao f-ap f-am",
+          "d": "f-ak f-b f-an"
         }
       }
     }

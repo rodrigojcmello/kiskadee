@@ -1,4 +1,4 @@
-import { writeFileSync } from 'node:fs';
+import * as fs from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type {
@@ -15,7 +15,7 @@ import { convertHslaToHex } from '@kiskadee/core';
 /**
  * Converts a hexadecimal color to HSLA format.
  * @param hex - Hexadecimal color string (e.g., "#6750A4" or "6750A4")
- * @param verbose
+ * @param verbose - When true, logs intermediate conversion steps.
  * @returns HSLA array [hue, saturation, lightness, alpha]
  */
 function hexToHSLA(hex: string, verbose = false): HSLA {
@@ -70,10 +70,14 @@ function hexToHSLA(hex: string, verbose = false): HSLA {
   }
   if (verbose) console.log('[hexToHSLA] hue (0-1):', hue);
 
-  // Convert to degrees and percentages
-  const hueInDegrees = Math.round(hue * 360);
-  const saturationPercent = Math.round(saturation * 100);
-  const lightnessPercent = Math.round(lightness * 100);
+  // Convert to degrees and percentages. We intentionally clamp the HSLA
+  // components to two decimal places so that:
+  // - generated presets remain stable and readable in git diffs
+  // - downstream conversions back to HEX are still precise enough for
+  //   real-world design system work.
+  const hueInDegrees = Number((hue * 360).toFixed(2));
+  const saturationPercent = Number((saturation * 100).toFixed(2));
+  const lightnessPercent = Number((lightness * 100).toFixed(2));
 
   const out: HSLA = [hueInDegrees, saturationPercent, lightnessPercent, 1];
   if (verbose) console.log('[hexToHSLA] result HSLA:', out);
@@ -102,7 +106,12 @@ type ToneOverrides = Partial<Record<LightTrackTones | DarkTrackTones, string>>;
 
 export function generateColorScale(hexColor: string, prioritizeLightnessScale = false): ToneTracks {
   const [hue, saturation, originalAnchorLightness, alpha] = hexToHSLA(hexColor);
-  const anchorLightness = prioritizeLightnessScale ? 50 : originalAnchorLightness; // when prioritizing the lightness scale, center at 50
+  const isTooLightForAnchor = originalAnchorLightness > 70;
+  const anchorLightness = isTooLightForAnchor
+    ? 50
+    : prioritizeLightnessScale
+      ? 50
+      : originalAnchorLightness; // when prioritizing the lightness scale, or when the input is too light to be an anchor, center at 50
 
   const scale: ColorScale = {};
 
@@ -184,6 +193,7 @@ export function generateColorScale(hexColor: string, prioritizeLightnessScale = 
  * @param prioritizeLightnessScale - When true, ignore the original lightness and center tone 50 at 50.
  *                                   When false (default), keep the input color's original lightness at 50.
  *
+ * @param overrides
  * @example
  * generateColorScaleWithLog("#6750A4", true);
  * // Logs the scale structure and returns the ColorScale object
@@ -217,14 +227,20 @@ export function generateColorScaleWithLog(
 
       if ((tone as LightTrackTones) >= 0 && (tone as LightTrackTones) <= 30) {
         const key = tone as LightTrackTones;
-        tracks.soft[key] = hexToHSLA(hex);
+        // For overrides we preserve the full HSLA precision so that the
+        // resulting HEX matches the official design system values as closely
+        // as possible.
+        tracks.soft[key] = hexToHSLA(hex, false);
         overriddenTones.add(tone);
         continue;
       }
 
       if ((tone as DarkTrackTones) >= 40 && (tone as DarkTrackTones) <= 100) {
         const key = tone as DarkTrackTones;
-        tracks.solid[key] = hexToHSLA(hex);
+        // For overrides we preserve the full HSLA precision so that the
+        // resulting HEX matches the official design system values as closely
+        // as possible.
+        tracks.solid[key] = hexToHSLA(hex, false);
         overriddenTones.add(tone);
         continue;
       }
@@ -240,6 +256,7 @@ export function generateColorScaleWithLog(
   // guidance. This does not affect the generated scale itself.
   const [, , originalLightness] = hexToHSLA(hexColor);
   const originalDarkness = 100 - originalLightness;
+  const isTooLightForAnchor = originalLightness > 70;
 
   const darkTones: (keyof ColorScaleDark)[] = [40, 50, 60, 70, 80, 90, 100];
 
@@ -263,9 +280,10 @@ export function generateColorScaleWithLog(
   // original color as the usage anchor. When we do NOT prioritize the
   // lightness scale, tone 50 is always the semantic anchor (exact input
   // color), so we do not use the nearest tone concept there.
-  const usageAnchorTone = isPrioritizingScale
-    ? (getNearestDarkTone(originalDarkness) as 40 | 50 | 60 | 70 | 80 | 90 | 100)
-    : 50;
+  const usageAnchorTone =
+    isPrioritizingScale && !isTooLightForAnchor
+      ? (getNearestDarkTone(originalDarkness) as 40 | 50 | 60 | 70 | 80 | 90 | 100)
+      : 50;
 
   // Build pretty lines for soft and solid
   const softLines: string[] = [];
@@ -291,16 +309,24 @@ export function generateColorScaleWithLog(
   if (anchor?.[2] !== undefined) {
     if (isPrioritizingScale) {
       solidLines.push(
-        `    // Solid track: 40–100 every 10% darkness (40, 50, 60, 70, 80, 90, 100); 50 is the scale mid-point (L=50)`
+        `    // Solid track: 40–100 every 10% darkness (40, 50, 60, 70, 80, 90, 100)`
       );
-      solidLines.push(
-        `    // Original color darkness ≈ ${originalDarkness}% → usage anchor tone ${usageAnchorTone}`
-      );
+      if (!isTooLightForAnchor) {
+        solidLines.push(
+          `    // Original color darkness ≈ ${originalDarkness}% → usage anchor tone ${usageAnchorTone}`
+        );
+      }
     } else {
       solidLines.push(
         `    // Solid track: 40–100 every 10% darkness (40, 50, 60, 70, 80, 90, 100)`
       );
-      solidLines.push(`    // Tone 50 is the anchor color (exactly the input hex lightness)`);
+      if (!isTooLightForAnchor) {
+        solidLines.push(`    // Tone 50 is the anchor color (exactly the input hex lightness)`);
+      } else {
+        solidLines.push(
+          `    // Input color is very light (L=${originalLightness}%), so tone 50 was re-centered to L=50 instead of using the original lightness`
+        );
+      }
     }
   }
   for (const tone of [40, 50, 60, 70, 80, 90, 100] as const) {
@@ -308,7 +334,8 @@ export function generateColorScaleWithLog(
     const baseColor = baseTracks.solid[tone];
     if (!color) continue;
     const comment = (() => {
-      const darknessLabel = `${100 - color[2]}% darkness`;
+      const darknessRaw = 100 - color[2];
+      const darknessLabel = `${Number(darknessRaw.toFixed(2))}% darkness`;
 
       const isOverridden = overriddenTones.has(tone);
 
@@ -321,12 +348,15 @@ export function generateColorScaleWithLog(
           return ` // ${darknessLabel} - OVERRIDDEN: generated ${generatedHex} was replaced by ${finalHex}`;
         }
 
-        if (tone === usageAnchorTone) {
-          return ` // ${darknessLabel} - closest tone to original color (${hexColor.toUpperCase()}, L=${originalLightness}%) - USAGE ANCHOR`;
-        }
+        if (!isTooLightForAnchor && tone === usageAnchorTone) {
+          const anchorDarkness = usageAnchorTone as number;
+          const isExactDarknessMatch = Math.abs(originalDarkness - anchorDarkness) < 0.0001;
 
-        if (tone === 50) {
-          return ' // 50% darkness - scale mid-point (L=50)';
+          if (isExactDarknessMatch) {
+            return ` // ${darknessLabel} - original color tone (${hexColor.toUpperCase()}) - USAGE ANCHOR`;
+          }
+
+          return ` // ${darknessLabel} - closest tone to original color (${hexColor.toUpperCase()}, L=${originalLightness}%) - USAGE ANCHOR`;
         }
 
         if (tone === 100) {
@@ -336,13 +366,17 @@ export function generateColorScaleWithLog(
         return ` // ${darknessLabel}`;
       }
 
-      // Non-canonical mode: tone 50 is exactly the input color; the rest of the
-      // track bends around it. We keep comments minimal here.
+      // Non-canonical mode: tone 50 is normally exactly the input color; the rest
+      // of the track bends around it. When the input color is too light to be an
+      // anchor we silently re-center tone 50 at L=50.
       if (tone === 50) {
         if (isOverridden && baseColor) {
           const generatedHex = convertHslaToHex(baseColor);
           const finalHex = convertHslaToHex(color);
           return ` // Anchor color (input) - OVERRIDDEN: generated ${generatedHex} was replaced by ${finalHex}`;
+        }
+        if (isTooLightForAnchor) {
+          return ` // Re-centered mid tone (L=50) because input color (${hexColor.toUpperCase()}, L=${originalLightness}%) is too light to be an anchor`;
         }
         return ` // Anchor color (input) - ${hexColor.toUpperCase()}`;
       }
@@ -373,8 +407,31 @@ export function generateColorScaleWithLog(
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
   const outFilePath = join(__dirname, 'color-tones.ts');
-  const fileContent = `export default ${prettyBodyOnly}\n`;
-  writeFileSync(outFilePath, fileContent, 'utf8');
+  // Emit a small header that captures the exact parameters used to generate
+  // this file so it can be easily regenerated later.
+  let headerLines: string[] = [];
+
+  if (!overrides || Object.keys(overrides).length === 0) {
+    headerLines.push(
+      `// Generated by generateColorScaleWithLog('${hexColor}', ${prioritizeLightnessScale}, {})`
+    );
+  } else {
+    headerLines.push(
+      `// Generated by generateColorScaleWithLog('${hexColor}', ${prioritizeLightnessScale}, {`
+    );
+
+    const sortedEntries = Object.entries(overrides).sort(([a], [b]) => Number(a) - Number(b));
+
+    for (const [tone, hex] of sortedEntries) {
+      headerLines.push(`//   ${tone}: '${hex}',`);
+    }
+
+    headerLines.push('// })');
+  }
+
+  const header = `${headerLines.join('\n')}\n`;
+  const fileContent = `${header}export default ${prettyBodyOnly}\n`;
+  fs.writeFileSync(outFilePath, fileContent, 'utf8');
   console.log(`[generateColorScaleWithLog] Wrote TS to: ${outFilePath}`);
 
   return tracks;
@@ -386,5 +443,9 @@ export function generateColorScaleWithLog(
 // iOS 18 #007AFF
 
 generateColorScaleWithLog('#0F6CBD', true, {
-  70: '#115EA3'
+  70: '#115EA3',
+  80: '#0F548C',
+  90: '#0C3B5E'
 });
+
+// generateColorScaleWithLog('#fff', true, {});
