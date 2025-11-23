@@ -20,6 +20,20 @@
     "bp:lg:3": 1792,
     "bp:lg:4": 2432
   },
+  "focusRing": {
+    "palettes": {
+      "default": {
+        "light": {
+          "color": [
+            206,
+            100,
+            30,
+            1
+          ]
+        }
+      }
+    }
+  },
   "components": {
     "button": {
       "elements": {

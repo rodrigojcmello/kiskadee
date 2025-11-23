@@ -5,6 +5,9 @@
   --k-dur-theme: 800ms;
   --k-ease-std: ease-out;
   --k-ease-emph: cubic-bezier(0.2, 0, 1, 1);
+
+  /* Fallback focus ring color; can be overridden by host app via CSS custom property. */
+  --k-focus-ring-color: #0059b1;
 }
 
 /* Background tone / page background transitions (always on) */
@@ -35,8 +38,17 @@ body {
   animation: none !important;
 }
 
-:focus-visible, .-f.-a {
-  outline: solid 2px #0059b1;
+/*
+ * Global focus ring.
+ *
+ * Color is driven by the CSS custom property --k-focus-ring-color, which is
+ * provided by the host app (e.g., @kiskadee/showcase) based on design-system
+ * artifacts like extra.<segment>.<theme>.kiskadee.json. The fallback keeps
+ * backward-compatible behavior when the variable is not defined.
+ */
+:focus-visible,
+.-f.-a {
+  outline: solid 2px var(--k-focus-ring-color, #0059b1);
   outline-offset: 1px;
   position: relative;
 }

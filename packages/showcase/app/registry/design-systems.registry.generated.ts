@@ -32,6 +32,14 @@ export const paletteMaps = {
   'material-design-3-google|default|light': () => loadJsonModule('/build/material-design-3-google/default.light.kiskadee.json'),
 } as const;
 
+export const extraMaps = {
+  'fluent-2-microsoft|default|light': () => fetch('/build/fluent-2-microsoft/extra.default.light.kiskadee.json').then((r) => r.json()),
+  'ios-26-apple|default|light': () => fetch('/build/ios-26-apple/extra.default.light.kiskadee.json').then((r) => r.json()),
+  'ios-26-kiskadee|default|light': () => fetch('/build/ios-26-kiskadee/extra.default.light.kiskadee.json').then((r) => r.json()),
+  'ios-26-kiskadee|default|dark': () => fetch('/build/ios-26-kiskadee/extra.default.dark.kiskadee.json').then((r) => r.json()),
+  'material-design-3-google|default|light': () => fetch('/build/material-design-3-google/extra.default.light.kiskadee.json').then((r) => r.json()),
+} as const;
+
 export const paletteIndex = {
   'fluent-2-microsoft': {
     segments: ['default'],

@@ -3,7 +3,7 @@ import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/core';
 import { KiskadeeContext } from '@kiskadee/react-components';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cssPaths } from './registry/css.registry';
-import { coreMaps, paletteIndex, paletteMaps } from './registry/design-systems.registry';
+import { coreMaps, extraMaps, paletteIndex, paletteMaps } from './registry/design-systems.registry';
 
 // Client-side provider that mirrors legacy App.tsx/main.tsx responsibilities
 // Loads classNames maps (core + palette) via dynamic import (no fetch) and injects CSS served from /public/build.
@@ -113,6 +113,9 @@ function persistSelection(designSystem: DesignSystemKey, segment: string, theme:
 // Cache of already loaded class maps to avoid repeated dynamic imports
 const coreMapCache: Partial<Record<DesignSystemKey, ComponentClassNameMapJSON>> = {};
 const paletteMapCache: Partial<Record<string, ComponentClassNameMapJSON>> = {};
+
+// Cache for focusRing values loaded from extra.<segment>.<theme>.kiskadee.json
+const focusRingCache: Partial<Record<string, string>> = {};
 
 // Cache of <link> elements by href to keep all loaded CSS in memory during the session
 // and avoid duplicating link tags.
@@ -327,6 +330,46 @@ export function Providers({ children }: { children: React.ReactNode }) {
         root.classList.remove('no-transitions');
       }, 300);
     }
+  }, [designSystem, segment, theme]);
+
+  // Load focusRing from extra artifacts registry and expose as CSS custom property.
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    let cancelled = false;
+
+    const loadFocusRing = async () => {
+      const key = `${String(designSystem)}|${segment}|${theme}`;
+
+      // Try cache first
+      let hex = focusRingCache[key];
+
+      if (!hex) {
+        const loader = extraMaps[key as keyof typeof extraMaps];
+        if (loader) {
+          try {
+            const extra = await loader();
+            if (!cancelled && extra && typeof extra.focusRing === 'string') {
+              hex = extra.focusRing;
+              focusRingCache[key] = hex;
+            }
+          } catch {
+            // Ignore load errors; fallback will be used.
+          }
+        }
+      }
+
+      if (cancelled) return;
+
+      const root = document.documentElement;
+      root.style.setProperty('--k-focus-ring-color', hex ?? '#0059b1');
+    };
+
+    void loadFocusRing();
+
+    return () => {
+      cancelled = true;
+    };
   }, [designSystem, segment, theme]);
 
   useEffect(() => {

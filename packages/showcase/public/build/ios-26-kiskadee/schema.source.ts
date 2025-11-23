@@ -12,6 +12,15 @@ export const schema: Schema<Segment> = {
   version: [26, 0, 0],
   author: 'Kiskadee',
   breakpoints,
+  focusRing: {
+    palettes: {
+      default: {
+        light: {
+          color: color(iosDefault, 'l', 'primary', 70)
+        }
+      }
+    }
+  },
   components: {
     button: {
       elements: {
