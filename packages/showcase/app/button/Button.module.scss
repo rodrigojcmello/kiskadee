@@ -15,7 +15,7 @@
 
   // Override global button alignment so KButtons with different heights
   // (via scale) fiquem centralizados verticalmente neste exemplo.
-  :global(.btn) {
+  :global(.k-btn) {
     align-self: center;
   }
 }
