@@ -1,10 +1,13 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints';
 import type {
+  Color,
   ElementPalettes,
+  HSLA,
   InteractionState,
   SchemaSegments,
   SegmentName,
-  SemanticColor
+  SemanticColor,
+  ThemeMode
 } from './types/colors/colors.types';
 import type { DecorationSchema } from './types/decorations/decorations.types';
 import type { ElementEffects } from './types/effects';
@@ -79,8 +82,25 @@ export type SchemaMetadata = {
   prefix?: string;
 };
 
+export type FocusRing<TSegmentName extends SegmentName = SegmentName> = Partial<{
+  palettes: Partial<
+    Record<
+      TSegmentName,
+      Partial<
+        Record<
+          ThemeMode,
+          {
+            color?: HSLA;
+          }
+        >
+      >
+    >
+  >;
+}>;
+
 export type Schema<TSegmentName extends SegmentName = SegmentName> = SchemaMetadata & {
   segments?: SchemaSegments<TSegmentName>;
+  focusRing?: FocusRing<TSegmentName>;
   components: Components<TSegmentName>;
 };
 
