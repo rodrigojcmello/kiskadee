@@ -1,9 +1,8 @@
 .f-a { border-radius: 4px }
-.f-aa { padding-right: 16px }
-.f-ab { padding-right: 8px }
-.f-ac { padding-top: 2px }
-.f-ad { padding-top: 6px }
-.f-ae { padding-top: 8px }
+.f-aa { padding-right: 8px }
+.f-ab { padding-top: 2px }
+.f-ac { padding-top: 6px }
+.f-ad { padding-top: 8px }
 .f-aq { font-family: Roboto, sans-serif }
 .f-ar { line-height: 16px }
 .f-as { line-height: 20px }
@@ -12,11 +11,12 @@
 .f-av { font-size: 0.875rem }
 .f-aw { font-size: 1rem }
 .f-ax { font-weight: 500 }
-.f-c { border-style: none }
-.f-t { padding-bottom: 2px }
-.f-u { padding-bottom: 6px }
-.f-v { padding-bottom: 8px }
-.f-w { padding-left: 12px }
-.f-x { padding-left: 16px }
-.f-y { padding-left: 8px }
-.f-z { padding-right: 12px }
+.f-b { border-style: none }
+.f-s { padding-bottom: 2px }
+.f-t { padding-bottom: 6px }
+.f-u { padding-bottom: 8px }
+.f-v { padding-left: 12px }
+.f-w { padding-left: 16px }
+.f-x { padding-left: 8px }
+.f-y { padding-right: 12px }
+.f-z { padding-right: 16px }

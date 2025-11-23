@@ -294,11 +294,35 @@ export function generateColorScaleWithLog(
   const softKeysForLog = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30] as const;
   for (const tone of softKeysForLog) {
     const color = tracks.soft[tone as keyof ColorScaleLight];
-    if (color) {
-      const t = tone as number;
-      const comment = t === 0 ? ' // 0% darkness (white/lightest)' : ` // ${t}% darkness`;
-      softLines.push(`    ${t}: [${color.join(', ')}],${comment}`);
-    }
+    const baseColor = baseTracks.soft[tone as keyof ColorScaleLight];
+    if (!color) continue;
+
+    const t = tone as number;
+    const isOverridden = overriddenTones.has(t);
+
+    const comment = (() => {
+      // Soft track comments mirror the solid track behaviour for overrides: any
+      // tone that was replaced via the overrides map should clearly document
+      // which HEX was originally generated and which one replaced it.
+      if (isOverridden && baseColor) {
+        const generatedHex = convertHslaToHex(baseColor as HSLA);
+        const finalHex = convertHslaToHex(color as HSLA);
+
+        if (t === 0) {
+          // Tone 0 has a special semantic label, so we keep it and append the
+          // override information.
+          return ` // 0% darkness (white/lightest) - OVERRIDDEN: generated ${generatedHex} was replaced by ${finalHex}`;
+        }
+
+        return ` // ${t}% darkness - OVERRIDDEN: generated ${generatedHex} was replaced by ${finalHex}`;
+      }
+
+      // Non-overridden soft tones keep the existing simple darkness label.
+      if (t === 0) return ' // 0% darkness (white/lightest)';
+      return ` // ${t}% darkness`;
+    })();
+
+    softLines.push(`    ${t}: [${color.join(', ')}],${comment}`);
   }
   softLines.push('  },');
 
@@ -447,4 +471,6 @@ generateColorScaleWithLog('#0F6CBD', true, {
   90: '#0C3B5E'
 });
 
-// generateColorScaleWithLog('#fff', true, {});
+// generateColorScaleWithLog('#fff', true, {
+//   25: '#BDBDBD'
+// });

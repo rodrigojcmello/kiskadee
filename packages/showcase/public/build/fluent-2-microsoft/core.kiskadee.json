@@ -1,12 +1,12 @@
 {
   "button": {
     "e1": {
-      "d": "f-c",
-      "e": "f-af f-ai f-aj f-ah f-ag",
+      "d": "f-b",
+      "e": "f-ae f-ah f-ai f-ag f-af",
       "s": {
-        "s:sm:1": "f-ac f-t f-y f-ab f-a",
-        "s:md:1": "f-ad f-u f-w f-z f-a",
-        "s:lg:1": "f-ae f-v f-x f-aa f-a"
+        "s:sm:1": "f-ab f-s f-x f-aa f-a",
+        "s:md:1": "f-ac f-t f-v f-y f-a",
+        "s:lg:1": "f-ad f-u f-w f-z f-a"
       }
     },
     "e2": {

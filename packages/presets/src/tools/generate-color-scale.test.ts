@@ -165,6 +165,14 @@ describe('generateColorScaleWithLog', () => {
     // The soft-track override at tone 20 must be applied using the HSLA
     // conversion of #FF0000 → [0, 100, 50, 1].
     expect(tracks.soft[20]).toEqual([0, 100, 50, 1]);
+
+    const fileContent = readFileSync(new URL('./color.generated.ts', import.meta.url), 'utf8');
+
+    // Any overridden soft tone must carry an OVERRIDDEN comment in the
+    // generated file, mirroring the behaviour of the solid track.
+    expect(fileContent).toContain(
+      '20: [0, 100, 50, 1], // 20% darkness - OVERRIDDEN: generated'
+    );
   });
 
   it('documents anchor color and overrides in non-canonical mode when input is not too light', () => {
