@@ -9,7 +9,7 @@ type Segments = 'default';
 
 export const schema: Schema<Segments> = {
   name: 'Fluent',
-  prefix: 'f', // Fluent by MicroSoft
+  prefix: 'fm', // Fluent by MicroSoft
   version: [2, 0, 0],
   author: 'Microsoft',
   breakpoints,
@@ -68,9 +68,9 @@ export const schema: Schema<Segments> = {
                     solid: {
                       rest: color(fluentDefault, 'l', 'primary', 60),
                       hover: color(fluentDefault, 'l', 'primary', 70),
+                      focus: color(fluentDefault, 'l', 'primary', 60),
                       pressed: color(fluentDefault, 'l', 'primary', 90),
                       disabled: color(fluentDefault, 'l', 'neutral', 6),
-                      focus: color(fluentDefault, 'l', 'primary', 60),
                       selected: {
                         rest: color(fluentDefault, 'l', 'primary', 80),
                         hover: color(fluentDefault, 'l', 'primary', 70),
@@ -85,13 +85,13 @@ export const schema: Schema<Segments> = {
                   primary: {
                     solid: {
                       rest: color(fluentDefault, 'l', 'primary', 70),
-                      hover: color(fluentDefault, 'l', 'primary', 80),
-                      pressed: color(fluentDefault, 'l', 'primary', 80),
-                      disabled: color(fluentDefault, 'l', 'neutral', 6),
+                      hover: color(fluentDefault, 'l', 'primary', 60),
                       focus: color(fluentDefault, 'l', 'primary', 70),
+                      pressed: color(fluentDefault, 'l', 'primary', 90),
+                      disabled: color(fluentDefault, 'l', 'neutral', 6),
                       selected: {
-                        rest: color(fluentDefault, 'l', 'primary', 90),
-                        hover: color(fluentDefault, 'l', 'primary', 80),
+                        rest: color(fluentDefault, 'l', 'primary', 80),
+                        hover: color(fluentDefault, 'l', 'primary', 70),
                         pressed: color(fluentDefault, 'l', 'primary', 90)
                       }
                     }
