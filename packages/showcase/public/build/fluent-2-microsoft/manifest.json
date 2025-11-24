@@ -13,7 +13,8 @@
   ],
   "themes": {
     "default": [
-      "light"
+      "light",
+      "dark"
     ]
   }
 }

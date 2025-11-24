@@ -18,6 +18,9 @@ export const schema: Schema<Segments> = {
       default: {
         light: {
           color: color(fluentDefault, 'l', 'neutral', 100)
+        },
+        dark: {
+          color: color(fluentDefault, 'd', 'neutral', 0)
         }
       }
     }
@@ -62,27 +65,33 @@ export const schema: Schema<Segments> = {
               light: {
                 boxColor: {
                   primary: {
-                    soft: {
-                      rest: color(fluentDefault, 'l', 'primary', 5),
-                      hover: color(fluentDefault, 'l', 'primary', 3),
-                      focus: color(fluentDefault, 'l', 'primary', 5),
-                      pressed: color(fluentDefault, 'l', 'primary', 8),
-                      disabled: color(fluentDefault, 'l', 'neutral', 6),
-                      selected: {
-                        rest: color(fluentDefault, 'l', 'primary', 10),
-                        hover: color(fluentDefault, 'l', 'primary', 8),
-                        pressed: color(fluentDefault, 'l', 'primary', 20)
-                      }
-                    },
                     solid: {
                       rest: color(fluentDefault, 'l', 'primary', 60),
                       hover: color(fluentDefault, 'l', 'primary', 70),
                       pressed: color(fluentDefault, 'l', 'primary', 90),
-                      disabled: color(fluentDefault, 'l', 'neutral', 10),
+                      disabled: color(fluentDefault, 'l', 'neutral', 6),
                       focus: color(fluentDefault, 'l', 'primary', 60),
                       selected: {
                         rest: color(fluentDefault, 'l', 'primary', 80),
                         hover: color(fluentDefault, 'l', 'primary', 70),
+                        pressed: color(fluentDefault, 'l', 'primary', 90)
+                      }
+                    }
+                  }
+                }
+              },
+              dark: {
+                boxColor: {
+                  primary: {
+                    solid: {
+                      rest: color(fluentDefault, 'l', 'primary', 70),
+                      hover: color(fluentDefault, 'l', 'primary', 80),
+                      pressed: color(fluentDefault, 'l', 'primary', 80),
+                      disabled: color(fluentDefault, 'l', 'neutral', 6),
+                      focus: color(fluentDefault, 'l', 'primary', 70),
+                      selected: {
+                        rest: color(fluentDefault, 'l', 'primary', 90),
+                        hover: color(fluentDefault, 'l', 'primary', 80),
                         pressed: color(fluentDefault, 'l', 'primary', 90)
                       }
                     }
@@ -117,19 +126,18 @@ export const schema: Schema<Segments> = {
               light: {
                 textColor: {
                   primary: {
-                    soft: {
-                      rest: color(fluentDefault, 'l', 'primary', 50),
-                      hover: { ref: color(fluentDefault, 'l', 'primary', 50, 80) },
-                      pressed: { ref: color(fluentDefault, 'l', 'primary', 50) },
+                    solid: {
+                      rest: color(fluentDefault, 'l', 'neutral', 0),
                       disabled: {
-                        ref: color(fluentDefault, 'l', 'neutral', 0, 20)
-                      },
-                      selected: {
-                        rest: {
-                          ref: color(fluentDefault, 'l', 'neutral', 0)
-                        }
+                        ref: color(fluentDefault, 'l', 'neutral', 25)
                       }
-                    },
+                    }
+                  }
+                }
+              },
+              dark: {
+                textColor: {
+                  primary: {
                     solid: {
                       rest: color(fluentDefault, 'l', 'neutral', 0),
                       disabled: {

@@ -465,12 +465,18 @@ export function generateColorScaleWithLog(
 // iOS 26 #0091FF
 // iOS 18 #007AFF
 
-generateColorScaleWithLog('#0F6CBD', true, {
-  70: '#115EA3',
-  80: '#0F548C',
-  90: '#0C3B5E'
-});
+// Fluent Primary - Light
+// generateColorScaleWithLog('#0F6CBD', true, {
+//   70: '#115EA3',
+//   80: '#0F548C',
+//   90: '#0C3B5E'
+// });
 
+// Fluent Primary - Dark
+generateColorScaleWithLog('#115EA3', true, {});
+
+// // Fluent Neutral
 // generateColorScaleWithLog('#fff', true, {
+//   6: '#F0F0F0',
 //   25: '#BDBDBD'
 // });

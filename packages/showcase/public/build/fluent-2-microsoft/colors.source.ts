@@ -1,6 +1,6 @@
 import type { SchemaSegments } from '@kiskadee/core';
-import neutralLight from './colors/neutral.light';
-import primaryLight from './colors/primary.light';
+import neutralUnique from './colors/neutral.unique';
+import primaryUnique from './colors/primary.unique';
 
 type Segment = 'default';
 
@@ -10,8 +10,8 @@ export const segments: SchemaSegments<Segment> = {
     mainColor: 'blue',
     themes: {
       light: {
-        primary: primaryLight,
-        neutral: neutralLight,
+        primary: primaryUnique,
+        neutral: neutralUnique,
         secondary: {
           soft: {
             0: [180, 0, 100, 1],
@@ -60,6 +60,10 @@ export const segments: SchemaSegments<Segment> = {
             100: [0, 85, 10, 1]
           }
         }
+      },
+      dark: {
+        primary: primaryUnique,
+        neutral: neutralUnique
       }
     }
   }

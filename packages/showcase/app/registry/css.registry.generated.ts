@@ -7,6 +7,7 @@ export const cssPaths = {
     effects: '/build/fluent-2-microsoft/effects.kiskadee.css',
     palettes: {
       'default|light': '/build/fluent-2-microsoft/default.light.kiskadee.css',
+      'default|dark': '/build/fluent-2-microsoft/default.dark.kiskadee.css',
     }
   },
   'ios-26-apple': {

@@ -1,7 +1,7 @@
 {
   "button": {
     "e1": {
-      "d": "f-b",
+      "d": "f-f",
       "e": "f-ae f-ah f-ai f-ag f-af",
       "s": {
         "s:sm:1": "f-ab f-s f-x f-aa f-a",
@@ -10,11 +10,11 @@
       }
     },
     "e2": {
-      "d": "f-aq f-ax",
+      "d": "f-aj f-aq",
       "s": {
-        "s:sm:1": "f-au f-ar",
-        "s:md:1": "f-av f-as",
-        "s:lg:1": "f-aw f-at"
+        "s:sm:1": "f-an f-ak",
+        "s:md:1": "f-ao f-al",
+        "s:lg:1": "f-ap f-am"
       }
     }
   }

@@ -26,6 +26,7 @@ export const coreMaps = {
 
 export const paletteMaps = {
   'fluent-2-microsoft|default|light': () => loadJsonModule('/build/fluent-2-microsoft/default.light.kiskadee.json'),
+  'fluent-2-microsoft|default|dark': () => loadJsonModule('/build/fluent-2-microsoft/default.dark.kiskadee.json'),
   'ios-26-apple|default|light': () => loadJsonModule('/build/ios-26-apple/default.light.kiskadee.json'),
   'ios-26-kiskadee|default|light': () => loadJsonModule('/build/ios-26-kiskadee/default.light.kiskadee.json'),
   'ios-26-kiskadee|default|dark': () => loadJsonModule('/build/ios-26-kiskadee/default.dark.kiskadee.json'),
@@ -34,6 +35,7 @@ export const paletteMaps = {
 
 export const extraMaps = {
   'fluent-2-microsoft|default|light': () => fetch('/build/fluent-2-microsoft/extra.default.light.kiskadee.json').then((r) => r.json()),
+  'fluent-2-microsoft|default|dark': () => fetch('/build/fluent-2-microsoft/extra.default.dark.kiskadee.json').then((r) => r.json()),
   'ios-26-apple|default|light': () => fetch('/build/ios-26-apple/extra.default.light.kiskadee.json').then((r) => r.json()),
   'ios-26-kiskadee|default|light': () => fetch('/build/ios-26-kiskadee/extra.default.light.kiskadee.json').then((r) => r.json()),
   'ios-26-kiskadee|default|dark': () => fetch('/build/ios-26-kiskadee/extra.default.dark.kiskadee.json').then((r) => r.json()),
@@ -44,7 +46,7 @@ export const paletteIndex = {
   'fluent-2-microsoft': {
     segments: ['default'],
     themesBySegment: {
-      "default": ['light']
+      "default": ['light', 'dark']
     }
   },
   'ios-26-apple': {
