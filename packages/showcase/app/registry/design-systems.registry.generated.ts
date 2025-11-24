@@ -18,6 +18,7 @@ function loadJsonModule(path: string): Promise<ClassNamesModuleLike> {
 }
 
 export const coreMaps = {
+  'fluent-2-kiskadee': () => loadJsonModule('/build/fluent-2-kiskadee/core.kiskadee.json'),
   'fluent-2-microsoft': () => loadJsonModule('/build/fluent-2-microsoft/core.kiskadee.json'),
   'ios-26-apple': () => loadJsonModule('/build/ios-26-apple/core.kiskadee.json'),
   'ios-26-kiskadee': () => loadJsonModule('/build/ios-26-kiskadee/core.kiskadee.json'),
@@ -25,6 +26,8 @@ export const coreMaps = {
 } as const;
 
 export const paletteMaps = {
+  'fluent-2-kiskadee|default|light': () => loadJsonModule('/build/fluent-2-kiskadee/default.light.kiskadee.json'),
+  'fluent-2-kiskadee|default|dark': () => loadJsonModule('/build/fluent-2-kiskadee/default.dark.kiskadee.json'),
   'fluent-2-microsoft|default|light': () => loadJsonModule('/build/fluent-2-microsoft/default.light.kiskadee.json'),
   'fluent-2-microsoft|default|dark': () => loadJsonModule('/build/fluent-2-microsoft/default.dark.kiskadee.json'),
   'ios-26-apple|default|light': () => loadJsonModule('/build/ios-26-apple/default.light.kiskadee.json'),
@@ -34,6 +37,8 @@ export const paletteMaps = {
 } as const;
 
 export const extraMaps = {
+  'fluent-2-kiskadee|default|light': () => fetch('/build/fluent-2-kiskadee/extra.default.light.kiskadee.json').then((r) => r.json()),
+  'fluent-2-kiskadee|default|dark': () => fetch('/build/fluent-2-kiskadee/extra.default.dark.kiskadee.json').then((r) => r.json()),
   'fluent-2-microsoft|default|light': () => fetch('/build/fluent-2-microsoft/extra.default.light.kiskadee.json').then((r) => r.json()),
   'fluent-2-microsoft|default|dark': () => fetch('/build/fluent-2-microsoft/extra.default.dark.kiskadee.json').then((r) => r.json()),
   'ios-26-apple|default|light': () => fetch('/build/ios-26-apple/extra.default.light.kiskadee.json').then((r) => r.json()),
@@ -43,6 +48,12 @@ export const extraMaps = {
 } as const;
 
 export const paletteIndex = {
+  'fluent-2-kiskadee': {
+    segments: ['default'],
+    themesBySegment: {
+      "default": ['light', 'dark']
+    }
+  },
   'fluent-2-microsoft': {
     segments: ['default'],
     themesBySegment: {
@@ -70,6 +81,7 @@ export const paletteIndex = {
 } as const;
 
 export const designSystemMeta = {
+  'fluent-2-kiskadee': { displayName: "Default 2 by Kiskadee" },
   'fluent-2-microsoft': { displayName: "Default 2 by Microsoft" },
   'ios-26-apple': { displayName: "Default 26 by Apple" },
   'ios-26-kiskadee': { displayName: "Default 26 by Kiskadee" },
