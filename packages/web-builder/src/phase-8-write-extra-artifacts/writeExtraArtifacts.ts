@@ -11,10 +11,6 @@ type ExtractableSchema = Schema & {
 
 type SegmentKey = SegmentName | string;
 
-type Mode = ThemeMode | string;
-
-const DEFAULT_MODES: Mode[] = ['light'];
-
 function getBuildDir(outDirSlug: string): string {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
@@ -36,32 +32,24 @@ function getSegmentKeys(schema: ExtractableSchema): SegmentKey[] {
   return Object.keys(palettes as Record<string, unknown>);
 }
 
-function getModesForSegment(
-  schema: ExtractableSchema,
-  segment: SegmentKey,
-  allowedModes: Mode[]
-): Mode[] {
+function getModesForSegment(schema: ExtractableSchema, segment: SegmentKey): ThemeMode[] {
   const palettes = schema.focusRing?.palettes as
-    | Partial<Record<SegmentKey, Partial<Record<Mode, { color?: HSLA }>>>>
+    | Partial<Record<SegmentKey, Partial<Record<ThemeMode, { color?: HSLA }>>>>
     | undefined;
 
   if (!palettes || !palettes[segment]) {
     return [];
   }
 
-  const availableModes = Object.keys(palettes[segment] as Record<Mode, unknown>);
-
-  return allowedModes.filter((mode) => availableModes.includes(mode));
+  return Object.keys(palettes[segment] as Record<ThemeMode, unknown>) as ThemeMode[];
 }
 
 export async function writeExtraArtifacts(params: {
   schema: Schema;
-  segments: SchemaSegments;
   outDirSlug: string;
 }): Promise<void> {
-  const { schema, segments, outDirSlug } = params as {
+  const { schema, outDirSlug } = params as {
     schema: ExtractableSchema;
-    segments: SchemaSegments;
     outDirSlug: string;
   };
 
@@ -75,11 +63,11 @@ export async function writeExtraArtifacts(params: {
   const segmentKeys = getSegmentKeys(schema);
 
   for (const segment of segmentKeys) {
-    const modes = getModesForSegment(schema, segment, DEFAULT_MODES);
+    const modes = getModesForSegment(schema, segment);
 
     for (const mode of modes) {
       const palettes = schema.focusRing?.palettes as
-        | Partial<Record<SegmentKey, Partial<Record<Mode, { color?: HSLA }>>>>
+        | Partial<Record<SegmentKey, Partial<Record<ThemeMode, { color?: HSLA }>>>>
         | undefined;
 
       const color = palettes?.[segment]?.[mode]?.color;
@@ -99,7 +87,6 @@ export async function writeExtraArtifacts(params: {
       const filePath = resolve(buildDir, fileName);
 
       await writeFile(filePath, JSON.stringify(extraData, null, 2), 'utf8');
-      // eslint-disable-next-line no-console
       console.log(`[web-builder] Extra artifact written to: ${filePath}`);
     }
   }

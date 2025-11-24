@@ -143,9 +143,9 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
       baseBuildDir
     });
 
+    // Phase 8 - Write extra artifacts
     await writeExtraArtifacts({
       schema,
-      segments,
       outDirSlug
     });
   }
