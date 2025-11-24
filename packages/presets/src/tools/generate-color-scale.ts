@@ -104,6 +104,44 @@ function hexToHSLA(hex: string, verbose = false): HSLA {
  */
 type ToneOverrides = Partial<Record<LightTrackTones | DarkTrackTones, string>>;
 
+type DarkToneShaping = {
+  /**
+   * Solid-track tone that must remain untouched and serve as the reference
+   * for dark adjustments. For primary brand colors this is typically 60.
+   */
+  anchorTone: 40 | 50 | 60;
+
+  /**
+   * Total saturation drop (in percentage points) to distribute across the
+   * solid tones darker than the anchor. For example, with anchorTone=40 and
+   * saturationDropTotal=15 we have tones 50, 60, 70, 80, 90 (5 positions), so
+   * each successive tone loses 15/5 = 3 points of saturation relative to the
+   * anchor. Always applied as a decrease; pass 0 or omit to keep saturation
+   * unchanged.
+   */
+  saturationDropTotal?: number;
+
+  /**
+   * Total hue shift (in degrees) to distribute across solid tones darker than
+   * the anchor. Negative values rotate the hue in one direction, positive
+   * values in the other. A value of -5 to 5 is recommended (and typical for
+   * Fluent-like ramps). The shift is distributed evenly: with
+   * hueShiftTotal=5 and 5 darker tones we apply +1, +2, +3, +4, +5 degrees
+   * cumulativamente. Pass 0 or omit to keep hue unchanged.
+   */
+  hueShiftTotal?: number;
+
+  /**
+   * Target lightness step (in percentage points) between consecutive solid
+   * tones in the dark track. This is applied starting from the anchor tone and
+   * moving towards the darker tones (e.g. 70, 80, 90). The value is internally
+   * clamped to the inclusive range [5, 20] to avoid steps that are either
+   * imperceptibly small (<5) or excessively abrupt (>20). When omitted, the
+   * canonical 10-point step is preserved.
+   */
+  lightnessStep?: number;
+};
+
 export function generateColorScale(hexColor: string, prioritizeLightnessScale = false): ToneTracks {
   const [hue, saturation, originalAnchorLightness, alpha] = hexToHSLA(hexColor);
   const isTooLightForAnchor = originalAnchorLightness > 70;
@@ -186,6 +224,116 @@ export function generateColorScale(hexColor: string, prioritizeLightnessScale = 
   return { soft, solid };
 }
 
+const solidToneOrder: DarkTrackTones[] = [40, 50, 60, 70, 80, 90, 100];
+
+function applySaturationDrop(
+  solid: ColorScaleDark,
+  anchorTone: DarkTrackTones,
+  saturationDropTotal?: number
+): void {
+  if (!saturationDropTotal || saturationDropTotal <= 0) return;
+
+  // Saturation adjustments must never touch tone 100, which is reserved for
+  // absolute black ([0, 0, 0, 1]). We therefore limit shaping strictly to the
+  // 40–90 range, even though solidToneOrder also includes 100 for logging
+  // purposes.
+  const darkerTones = solidToneOrder.filter(
+    (tone) => tone > anchorTone && tone <= 90 && solid[tone]
+  );
+  const count = darkerTones.length;
+  if (count === 0) return;
+
+  const dropPerTone = saturationDropTotal / count;
+  const anchor = solid[anchorTone];
+  if (!anchor) return;
+
+  const baseSaturation = anchor[1];
+
+  darkerTones.forEach((tone, index) => {
+    const totalDrop = dropPerTone * (index + 1);
+    const next = solid[tone];
+    if (!next) return;
+
+    const newSaturation = Number((baseSaturation - totalDrop).toFixed(2));
+    solid[tone] = [next[0], newSaturation, next[2], next[3]];
+  });
+}
+
+function normalizeHue(hue: number): number {
+  let h = hue % 360;
+  if (h < 0) h += 360;
+  return Number(h.toFixed(2));
+}
+
+function applyHueShift(
+  solid: ColorScaleDark,
+  anchorTone: DarkTrackTones,
+  hueShiftTotal?: number
+): void {
+  if (!hueShiftTotal || hueShiftTotal === 0) return;
+
+  // Hue adjustments must also avoid tone 100 so that the darkest extreme
+  // remains a neutral black. Limit shaping to tones 40–90.
+  const darkerTones = solidToneOrder.filter(
+    (tone) => tone > anchorTone && tone <= 90 && solid[tone]
+  );
+  const count = darkerTones.length;
+  if (count === 0) return;
+
+  const step = hueShiftTotal / count;
+  const anchor = solid[anchorTone];
+  if (!anchor) return;
+
+  const baseHue = anchor[0];
+
+  darkerTones.forEach((tone, index) => {
+    const totalShift = step * (index + 1);
+    const next = solid[tone];
+    if (!next) return;
+
+    const newHue = normalizeHue(baseHue + totalShift);
+    solid[tone] = [newHue, next[1], next[2], next[3]];
+  });
+}
+
+const MIN_LIGHTNESS_STEP = 5;
+const MAX_LIGHTNESS_STEP = 20;
+
+function applyLightnessStep(
+  solid: ColorScaleDark,
+  anchorTone: DarkTrackTones,
+  lightnessStep?: number
+): void {
+  const tones = solidToneOrder.filter((tone) => tone >= 40 && tone <= 90 && solid[tone]);
+  if (tones.length < 2) return;
+
+  const anchorIndex = tones.indexOf(anchorTone);
+  if (anchorIndex === -1) return;
+
+  const anchor = solid[anchorTone];
+  if (!anchor) return;
+
+  // Clamp requested step into the guard-rail range [5, 20]. If none is
+  // provided we preserve the canonical 10-point step.
+  const rawStep = lightnessStep ?? 10;
+  const step = Math.min(Math.max(rawStep, MIN_LIGHTNESS_STEP), MAX_LIGHTNESS_STEP);
+
+  // Walk towards the darker tones (index > anchorIndex), applying the target
+  // step cumulatively from the previous tone so that each successive tone
+  // remains strictly darker than the one before while avoiding extreme jumps.
+  for (let i = anchorIndex + 1; i < tones.length; i += 1) {
+    const tone = tones[i];
+    const prevTone = tones[i - 1];
+
+    const prev = solid[prevTone];
+    const current = solid[tone];
+    if (!prev || !current) continue;
+
+    const newLightness = Number((prev[2] - step).toFixed(2));
+    solid[tone] = [current[0], current[1], newLightness, current[3]];
+  }
+}
+
 /**
  * Generates a complete Kiskadee color scale and logs it in a format that's easy to copy.
  *
@@ -201,7 +349,8 @@ export function generateColorScale(hexColor: string, prioritizeLightnessScale = 
 export function generateColorScaleWithLog(
   hexColor: string,
   prioritizeLightnessScale = false,
-  overrides?: ToneOverrides
+  overrides?: ToneOverrides,
+  shaping?: DarkToneShaping
 ): ToneTracks {
   const baseTracks = generateColorScale(hexColor, prioritizeLightnessScale);
 
@@ -211,6 +360,13 @@ export function generateColorScaleWithLog(
     soft: { ...baseTracks.soft },
     solid: { ...baseTracks.solid }
   };
+
+  if (shaping) {
+    const anchorTone = shaping.anchorTone as DarkTrackTones;
+    applySaturationDrop(tracks.solid, anchorTone, shaping.saturationDropTotal);
+    applyHueShift(tracks.solid, anchorTone, shaping.hueShiftTotal);
+    applyLightnessStep(tracks.solid, anchorTone, shaping.lightnessStep);
+  }
 
   const overriddenTones = new Set<number>();
 
@@ -431,22 +587,66 @@ export function generateColorScaleWithLog(
   const __dirname = dirname(__filename);
   const outFilePath = join(__dirname, 'color.generated.ts');
   // Emit a small header that captures the exact parameters used to generate
-  // this file so it can be easily regenerated later.
+  // this file so it can be easily regenerated later. We keep backwards
+  // compatibility with the previous 3-argument form when no shaping config is
+  // provided so that existing tests and documentation remain valid.
   let headerLines: string[] = [];
 
-  if (!overrides || Object.keys(overrides).length === 0) {
-    headerLines.push(
-      `// Generated by generateColorScaleWithLog('${hexColor}', ${prioritizeLightnessScale}, {})`
-    );
+  const hasOverrides = !!overrides && Object.keys(overrides).length > 0;
+
+  if (!shaping) {
+    // Legacy 3-argument form: generateColorScaleWithLog(hex, prioritize, overrides)
+    if (!hasOverrides) {
+      headerLines.push(
+        `// Generated by generateColorScaleWithLog('${hexColor}', ${prioritizeLightnessScale}, {})`
+      );
+    } else {
+      headerLines.push(
+        `// Generated by generateColorScaleWithLog('${hexColor}', ${prioritizeLightnessScale}, {`
+      );
+
+      const sortedEntries = Object.entries(overrides!).sort(([a], [b]) => Number(a) - Number(b));
+
+      for (const [tone, hex] of sortedEntries) {
+        headerLines.push(`//   ${tone}: '${hex}',`);
+      }
+
+      headerLines.push('// })');
+    }
   } else {
-    headerLines.push(
-      `// Generated by generateColorScaleWithLog('${hexColor}', ${prioritizeLightnessScale}, {`
-    );
+    // New 4-argument form: generateColorScaleWithLog(hex, prioritize, overrides, shaping)
+    if (!hasOverrides) {
+      headerLines.push(
+        `// Generated by generateColorScaleWithLog('${hexColor}', ${prioritizeLightnessScale}, {}, {`
+      );
+    } else {
+      headerLines.push(
+        `// Generated by generateColorScaleWithLog('${hexColor}', ${prioritizeLightnessScale}, {`
+      );
 
-    const sortedEntries = Object.entries(overrides).sort(([a], [b]) => Number(a) - Number(b));
+      const sortedEntries = Object.entries(overrides!).sort(([a], [b]) => Number(a) - Number(b));
 
-    for (const [tone, hex] of sortedEntries) {
-      headerLines.push(`//   ${tone}: '${hex}',`);
+      for (const [tone, hex] of sortedEntries) {
+        headerLines.push(`//   ${tone}: '${hex}',`);
+      }
+
+      headerLines.push('// }, {');
+    }
+
+    // Serialize shaping in a stable, explicit order so that diffs are
+    // predictable and the header can be copy‑pasted back into the script.
+    headerLines.push(`//   anchorTone: ${shaping.anchorTone},`);
+
+    if (typeof shaping.hueShiftTotal === 'number') {
+      headerLines.push(`//   hueShiftTotal: ${shaping.hueShiftTotal},`);
+    }
+
+    if (typeof shaping.saturationDropTotal === 'number') {
+      headerLines.push(`//   saturationDropTotal: ${shaping.saturationDropTotal},`);
+    }
+
+    if (typeof shaping.lightnessStep === 'number') {
+      headerLines.push(`//   lightnessStep: ${shaping.lightnessStep},`);
     }
 
     headerLines.push('// })');
@@ -473,10 +673,23 @@ export function generateColorScaleWithLog(
 // });
 
 // Fluent Primary - Dark
-generateColorScaleWithLog('#115EA3', true, {});
+// generateColorScaleWithLog('#115EA3', true, {});
 
 // // Fluent Neutral
 // generateColorScaleWithLog('#fff', true, {
 //   6: '#F0F0F0',
 //   25: '#BDBDBD'
 // });
+
+// Fluent 2 by Kiskadee - Primary
+generateColorScaleWithLog(
+  '#0F6CBD',
+  true,
+  {},
+  {
+    anchorTone: 60,
+    hueShiftTotal: -2.25,
+    saturationDropTotal: 7.93,
+    lightnessStep: 6.4
+  }
+);
