@@ -48,22 +48,14 @@ export const paletteMaps = {
 } as const;
 
 export const extraMaps = {
-  'fluent-2-kiskadee|default|light': () =>
-    loadExtraJson('/build/fluent-2-kiskadee/extra.default.light.kiskadee.json'),
-  'fluent-2-kiskadee|default|dark': () =>
-    loadExtraJson('/build/fluent-2-kiskadee/extra.default.dark.kiskadee.json'),
-  'fluent-2-microsoft|default|light': () =>
-    loadExtraJson('/build/fluent-2-microsoft/extra.default.light.kiskadee.json'),
-  'fluent-2-microsoft|default|dark': () =>
-    loadExtraJson('/build/fluent-2-microsoft/extra.default.dark.kiskadee.json'),
-  'ios-26-apple|default|light': () =>
-    loadExtraJson('/build/ios-26-apple/extra.default.light.kiskadee.json'),
-  'ios-26-kiskadee|default|light': () =>
-    loadExtraJson('/build/ios-26-kiskadee/extra.default.light.kiskadee.json'),
-  'ios-26-kiskadee|default|dark': () =>
-    loadExtraJson('/build/ios-26-kiskadee/extra.default.dark.kiskadee.json'),
-  'material-design-3-google|default|light': () =>
-    loadExtraJson('/build/material-design-3-google/extra.default.light.kiskadee.json'),
+  'fluent-2-kiskadee|default|light': () => loadExtraJson('/build/fluent-2-kiskadee/extra.default.light.kiskadee.json'),
+  'fluent-2-kiskadee|default|dark': () => loadExtraJson('/build/fluent-2-kiskadee/extra.default.dark.kiskadee.json'),
+  'fluent-2-microsoft|default|light': () => loadExtraJson('/build/fluent-2-microsoft/extra.default.light.kiskadee.json'),
+  'fluent-2-microsoft|default|dark': () => loadExtraJson('/build/fluent-2-microsoft/extra.default.dark.kiskadee.json'),
+  'ios-26-apple|default|light': () => loadExtraJson('/build/ios-26-apple/extra.default.light.kiskadee.json'),
+  'ios-26-kiskadee|default|light': () => loadExtraJson('/build/ios-26-kiskadee/extra.default.light.kiskadee.json'),
+  'ios-26-kiskadee|default|dark': () => loadExtraJson('/build/ios-26-kiskadee/extra.default.dark.kiskadee.json'),
+  'material-design-3-google|default|light': () => loadExtraJson('/build/material-design-3-google/extra.default.light.kiskadee.json'),
 } as const;
 
 export const paletteIndex = {

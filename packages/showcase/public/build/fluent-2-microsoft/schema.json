@@ -20,11 +20,11 @@
     "bp:lg:3": 1792,
     "bp:lg:4": 2432
   },
-  "focusRing": {
+  "themeTokens": {
     "palettes": {
       "default": {
         "light": {
-          "color": [
+          "focusColor": [
             0,
             0,
             0,
@@ -32,7 +32,7 @@
           ]
         },
         "dark": {
-          "color": [
+          "focusColor": [
             0,
             0,
             100,
