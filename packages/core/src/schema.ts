@@ -91,6 +91,7 @@ export type ThemeTokens<TSegmentName extends SegmentName = SegmentName> = Partia
           ThemeMode,
           {
             focusColor?: HSLA;
+            background?: HSLA;
           }
         >
       >

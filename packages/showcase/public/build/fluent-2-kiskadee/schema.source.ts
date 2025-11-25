@@ -20,7 +20,8 @@ export const schema: Schema<Segments> = {
           focusColor: color(fluentDefault, 'l', 'neutral', 100)
         },
         dark: {
-          focusColor: color(fluentDefault, 'd', 'neutral', 100)
+          focusColor: color(fluentDefault, 'd', 'neutral', 100),
+          background: [0, 0, 12, 1]
         }
       }
     }

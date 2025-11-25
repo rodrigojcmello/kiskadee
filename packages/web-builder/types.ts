@@ -12,7 +12,8 @@ export type {
 // JSON structure produced by phase-8 writeExtraArtifacts step.
 //
 // Currently it exposes the focusColor token resolved per design system,
-// segment, and theme.
+// segment, and theme, plus an optional background color.
 export type ExtraArtifactsJSON = {
-  focusColor: string;
+	focusColor: string;
+	background?: string;
 };

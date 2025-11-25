@@ -34,7 +34,20 @@ function getSegmentKeys(schema: ExtractableSchema): SegmentKey[] {
 
 function getThemesForSegment(schema: ExtractableSchema, segment: SegmentKey): ThemeMode[] {
   const palettes = schema.themeTokens?.palettes as
-    | Partial<Record<SegmentKey, Partial<Record<ThemeMode, { focusColor?: HSLA }>>>>
+    | Partial<
+        Record<
+          SegmentKey,
+          Partial<
+            Record<
+              ThemeMode,
+              {
+                focusColor?: HSLA;
+                background?: HSLA;
+              }
+            >
+          >
+        >
+      >
     | undefined;
 
   if (!palettes || !palettes[segment]) {
@@ -67,10 +80,25 @@ export async function writeExtraArtifacts(params: {
 
     for (const theme of themes) {
       const palettes = schema.themeTokens?.palettes as
-        | Partial<Record<SegmentKey, Partial<Record<ThemeMode, { focusColor?: HSLA }>>>>
+        | Partial<
+            Record<
+              SegmentKey,
+              Partial<
+                Record<
+                  ThemeMode,
+                  {
+                    focusColor?: HSLA;
+                    background?: HSLA;
+                  }
+                >
+              >
+            >
+          >
         | undefined;
 
-      const color = palettes?.[segment]?.[theme]?.focusColor;
+      const themeTokens = palettes?.[segment]?.[theme];
+      const color = themeTokens?.focusColor;
+      const background = themeTokens?.background;
 
       if (!color) {
         continue;
@@ -79,9 +107,18 @@ export async function writeExtraArtifacts(params: {
       const fullHex = convertHslaToHex(color as HSLA);
       const shortHex = toShortHex(fullHex);
 
-      const extraData = {
+      const extraData: {
+        focusColor: string;
+        background?: string;
+      } = {
         focusColor: shortHex
-      } as const;
+      };
+
+      if (background) {
+        const backgroundFullHex = convertHslaToHex(background as HSLA);
+        const backgroundShortHex = toShortHex(backgroundFullHex);
+        extraData.background = backgroundShortHex;
+      }
 
       const fileName = `extra.${segment}.${theme}.kiskadee.json`;
       const filePath = resolve(buildDir, fileName);
