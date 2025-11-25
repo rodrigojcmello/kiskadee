@@ -142,7 +142,11 @@ type DarkToneShaping = {
   lightnessStep?: number;
 };
 
-export function generateColorScale(hexColor: string, prioritizeLightnessScale = false): ToneTracks {
+export function generateColorScale(
+  hexColor: string,
+  prioritizeLightnessScale = false,
+  invertScale = false
+): ToneTracks {
   const [hue, saturation, originalAnchorLightness, alpha] = hexToHSLA(hexColor);
   const isTooLightForAnchor = originalAnchorLightness > 70;
   const anchorLightness = isTooLightForAnchor
@@ -179,6 +183,18 @@ export function generateColorScale(hexColor: string, prioritizeLightnessScale = 
   scale[80] = [hue, saturation, Math.round(anchorLightness - stepSizeAfterAnchor * 3), alpha];
   scale[90] = [hue, saturation, Math.round(anchorLightness - stepSizeAfterAnchor * 4), alpha];
   scale[100] = [hue, saturation, 0, alpha];
+
+  if (invertScale) {
+    for (const key of Object.keys(scale)) {
+      const tone = Number(key) as keyof ColorScale;
+      const color = scale[tone];
+      if (!color) continue;
+
+      const [h, s, l, a] = color;
+      const invertedLightness = 100 - l;
+      scale[tone] = [h, s, invertedLightness, a];
+    }
+  }
 
   // Split into tone tracks
   const soft: ColorScaleLight = {};
@@ -218,8 +234,15 @@ export function generateColorScale(hexColor: string, prioritizeLightnessScale = 
   // Force absolute extremes so that tone 0 and 100 are truly neutral white/black.
   // This keeps intermediate tones tinted by the original hue/saturation while
   // making the scale endpoints consistent across semantics.
-  soft[0] = [0, 0, 100, alpha];
-  solid[100] = [0, 0, 0, alpha];
+  if (invertScale) {
+    // In inverted mode we also invert the canonical extremes so that 0 is
+    // strictly black and 100 is strictly white.
+    soft[0] = [0, 0, 0, alpha];
+    solid[100] = [0, 0, 100, alpha];
+  } else {
+    soft[0] = [0, 0, 100, alpha];
+    solid[100] = [0, 0, 0, alpha];
+  }
 
   return { soft, solid };
 }
@@ -342,6 +365,8 @@ function applyLightnessStep(
  *                                   When false (default), keep the input color's original lightness at 50.
  *
  * @param overrides
+ * @param shaping
+ * @param invertScale
  * @example
  * generateColorScaleWithLog("#6750A4", true);
  * // Logs the scale structure and returns the ColorScale object
@@ -350,9 +375,10 @@ export function generateColorScaleWithLog(
   hexColor: string,
   prioritizeLightnessScale = false,
   overrides?: ToneOverrides,
-  shaping?: DarkToneShaping
+  shaping?: DarkToneShaping,
+  invertScale = false
 ): ToneTracks {
-  const baseTracks = generateColorScale(hexColor, prioritizeLightnessScale);
+  const baseTracks = generateColorScale(hexColor, prioritizeLightnessScale, invertScale);
 
   // Clone base tracks so we can apply overrides only for logging / file
   // emission, while still knowing what was originally generated.
@@ -467,15 +493,25 @@ export function generateColorScaleWithLog(
         if (t === 0) {
           // Tone 0 has a special semantic label, so we keep it and append the
           // override information.
-          return ` // 0% darkness (white/lightest) - OVERRIDDEN: generated ${generatedHex} was replaced by ${finalHex}`;
+          const zeroLabel = invertScale
+            ? '100% darkness (black/darkest)'
+            : '0% darkness (white/lightest)';
+          return ` // ${zeroLabel} - OVERRIDDEN: generated ${generatedHex} was replaced by ${finalHex}`;
         }
 
-        return ` // ${t}% darkness - OVERRIDDEN: generated ${generatedHex} was replaced by ${finalHex}`;
+        const darknessLabel = invertScale ? 100 - t : t;
+        return ` // ${darknessLabel}% darkness - OVERRIDDEN: generated ${generatedHex} was replaced by ${finalHex}`;
       }
 
       // Non-overridden soft tones keep the existing simple darkness label.
-      if (t === 0) return ' // 0% darkness (white/lightest)';
-      return ` // ${t}% darkness`;
+      if (t === 0) {
+        const zeroLabel = invertScale
+          ? '100% darkness (black/darkest)'
+          : '0% darkness (white/lightest)';
+        return ` // ${zeroLabel}`;
+      }
+      const darknessLabel = invertScale ? 100 - t : t;
+      return ` // ${darknessLabel}% darkness`;
     })();
 
     softLines.push(`    ${t}: [${color.join(', ')}],${comment}`);
@@ -539,7 +575,10 @@ export function generateColorScaleWithLog(
         }
 
         if (tone === 100) {
-          return ' // 100% darkness (black/darkest)';
+          const extremeLabel = invertScale
+            ? '0% darkness (white/lightest)'
+            : '100% darkness (black/darkest)';
+          return ` // ${extremeLabel}`;
         }
 
         return ` // ${darknessLabel}`;
@@ -595,10 +634,10 @@ export function generateColorScaleWithLog(
   const hasOverrides = !!overrides && Object.keys(overrides).length > 0;
 
   if (!shaping) {
-    // Legacy 3-argument form: generateColorScaleWithLog(hex, prioritize, overrides)
+    // 4-argument form without shaping: generateColorScaleWithLog(hex, prioritize, overrides, invertScale)
     if (!hasOverrides) {
       headerLines.push(
-        `// Generated by generateColorScaleWithLog('${hexColor}', ${prioritizeLightnessScale}, {})`
+        `// Generated by generateColorScaleWithLog('${hexColor}', ${prioritizeLightnessScale}, {}, ${invertScale})`
       );
     } else {
       headerLines.push(
@@ -611,10 +650,10 @@ export function generateColorScaleWithLog(
         headerLines.push(`//   ${tone}: '${hex}',`);
       }
 
-      headerLines.push('// })');
+      headerLines.push(`// }, ${invertScale})`);
     }
   } else {
-    // New 4-argument form: generateColorScaleWithLog(hex, prioritize, overrides, shaping)
+    // 5-argument form with shaping: generateColorScaleWithLog(hex, prioritize, overrides, shaping, invertScale)
     if (!hasOverrides) {
       headerLines.push(
         `// Generated by generateColorScaleWithLog('${hexColor}', ${prioritizeLightnessScale}, {}, {`
@@ -649,7 +688,7 @@ export function generateColorScaleWithLog(
       headerLines.push(`//   lightnessStep: ${shaping.lightnessStep},`);
     }
 
-    headerLines.push('// })');
+    headerLines.push(`// }, ${invertScale})`);
   }
 
   const header = `${headerLines.join('\n')}\n`;
@@ -676,20 +715,17 @@ export function generateColorScaleWithLog(
 // generateColorScaleWithLog('#115EA3', true, {});
 
 // // Fluent Neutral
-// generateColorScaleWithLog('#fff', true, {
-//   6: '#F0F0F0',
-//   25: '#BDBDBD'
-// });
+generateColorScaleWithLog('#fff', true, {}, undefined, false);
 
-// Fluent 2 by Kiskadee - Primary
-generateColorScaleWithLog(
-  '#0F6CBD',
-  true,
-  {},
-  {
-    anchorTone: 60,
-    hueShiftTotal: -2.25,
-    saturationDropTotal: 7.93,
-    lightnessStep: 6.4
-  }
-);
+// // Fluent 2 by Kiskadee - Primary
+// generateColorScaleWithLog(
+//   '#0F6CBD',
+//   true,
+//   {},
+//   {
+//     anchorTone: 60,
+//     hueShiftTotal: -2.25,
+//     saturationDropTotal: 7.93,
+//     lightnessStep: 6.4
+//   }
+// );
