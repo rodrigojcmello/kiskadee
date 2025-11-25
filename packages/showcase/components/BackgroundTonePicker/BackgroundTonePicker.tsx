@@ -53,7 +53,7 @@ export default function BackgroundTonePicker({
 
   // Sync background tone with theme changes: light → white, dark → black
   useEffect(() => {
-    setSelected(theme === 'dark' ? 'black' : 'white');
+    setSelected(theme === 'dark' ? 'dark-gray' : 'white');
   }, [theme]);
 
   useEffect(() => {
