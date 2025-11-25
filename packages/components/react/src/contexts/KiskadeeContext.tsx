@@ -19,6 +19,11 @@ export type KiskadeeContextValue = {
   availableThemes: string[];
   designSystemKeys: string[];
   designSystemMeta: Record<string, DesignSystemManifest>;
+  /**
+   * Map of background colors resolved per theme for the current design system/segment.
+   * Keys are ThemeMode string values (e.g. "light", "dark", "darker").
+   */
+  backgroundsByTheme: Record<string, string | undefined>;
 };
 
 export const KiskadeeContext = createContext<KiskadeeContextValue | undefined>(undefined);

@@ -9,6 +9,7 @@ import { coreMaps, extraMaps, paletteIndex, paletteMaps } from './registry/desig
 // Loads classNames maps (core + palette) via dynamic import (no fetch) and injects CSS served from /public/build.
 
 type DesignSystemKey = keyof typeof coreMaps;
+type BackgroundTones = Partial<Record<ThemeMode, string | undefined>>;
 
 function getDefaultSegmentAndThemeForDesignSystem(key: DesignSystemKey): {
   segment: string;
@@ -129,6 +130,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const [segment, _setSegment] = useState<string>(DEFAULT_SEGMENT);
   const [theme, _setTheme] = useState<ThemeMode>(DEFAULT_THEME);
   const [classesMap, setClassesMap] = useState<ComponentClassNameMapJSON>({});
+  const [backgroundsByTheme, setBackgroundsByTheme] = useState<BackgroundTones>({});
 
   const designSystemKeys = useMemo(() => Object.keys(coreMaps) as string[], []);
 
@@ -349,7 +351,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         if (loader) {
           try {
             const extra = await loader();
-            if (!cancelled && extra && typeof extra.focusColor === 'string') {
+            if (!cancelled && extra?.focusColor) {
               hex = extra.focusColor;
               focusRingCache[key] = hex;
             }
@@ -371,6 +373,55 @@ export function Providers({ children }: { children: React.ReactNode }) {
       cancelled = true;
     };
   }, [designSystem, segment, theme]);
+
+  // Load background colors for all available themes of the current design system/segment
+  // and keep them in memory so they can be consumed later via context.
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadBackgrounds = async () => {
+      const info = paletteIndex[designSystem as keyof typeof paletteIndex];
+      if (!info) return;
+
+      const themesMap = info.themesBySegment as unknown as Record<string, readonly ThemeMode[]>;
+      const themesForSegment = themesMap[segment] ?? ([] as readonly ThemeMode[]);
+
+      if (!themesForSegment.length) return;
+
+      const entries = await Promise.all(
+        themesForSegment.map(async (themeForBackground) => {
+          const key = `${String(designSystem)}|${segment}|${themeForBackground}`;
+          const loader = extraMaps[key as keyof typeof extraMaps];
+
+          if (!loader) {
+            return [themeForBackground, undefined] as const;
+          }
+
+          try {
+            const extra = await loader();
+            return [themeForBackground, extra.background] as const;
+          } catch {
+            return [themeForBackground, undefined] as const;
+          }
+        })
+      );
+
+      if (cancelled) return;
+
+      const nextBackgrounds: BackgroundTones = {};
+      for (const [themeKey, background] of entries) {
+        nextBackgrounds[themeKey] = background;
+      }
+
+      setBackgroundsByTheme(nextBackgrounds);
+    };
+
+    void loadBackgrounds();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [designSystem, segment]);
 
   useEffect(() => {
     void ensureLoaded();
@@ -431,7 +482,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
         designSystemKeys,
         designSystemMeta,
         availableSegments,
-        availableThemes
+        availableThemes,
+        backgroundsByTheme
       }}
     >
       {children}

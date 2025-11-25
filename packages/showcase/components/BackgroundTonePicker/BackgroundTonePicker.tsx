@@ -15,14 +15,31 @@ const STORAGE_KEY = 'kiskadee.preview.background';
 type Position = 'inline' | 'fixed-right-top';
 
 export default function BackgroundTonePicker({
-  position = 'fixed-right-top',
-  onChange
+  position = 'fixed-right-top'
 }: {
   position?: Position;
-  onChange?: (toneKey: string, color: string) => void;
 }) {
   const groupId = useId();
-  const { theme } = useKiskadee();
+  const { theme, backgroundsByTheme } = useKiskadee();
+
+  const tonesWithResolvedColors = useMemo(() => {
+    const themeByToneKey: Record<string, string | undefined> = {
+      white: 'light',
+      gray: undefined,
+      'dark-gray': 'dark',
+      black: 'darker'
+    };
+
+    return TONES.map((tone) => {
+      const themeKey = themeByToneKey[tone.key];
+      const backgroundFromStore = themeKey ? backgroundsByTheme[themeKey] : undefined;
+
+      return {
+        ...tone,
+        resolvedColor: backgroundFromStore ?? tone.color
+      };
+    });
+  }, [backgroundsByTheme]);
 
   const initialKey = useMemo(() => {
     try {
@@ -40,21 +57,21 @@ export default function BackgroundTonePicker({
   }, [theme]);
 
   useEffect(() => {
-    const tone = TONES.find((t) => t.key === selected) ?? TONES[0];
+    const tone =
+      tonesWithResolvedColors.find((t) => t.key === selected) ?? tonesWithResolvedColors[0];
     const el = document.body;
-    el.style.backgroundColor = tone.color;
+    el.style.backgroundColor = tone.resolvedColor;
     try {
       localStorage.setItem(STORAGE_KEY, tone.key);
     } catch {}
-    onChange?.(tone.key, tone.color);
-  }, [selected, onChange]);
+  }, [selected, tonesWithResolvedColors]);
 
   return (
     <div className={position === 'fixed-right-top' ? styles.containerFixed : undefined}>
       <fieldset className={styles.fieldset} aria-label="Background tone">
         <div className={styles.swatches} role="radiogroup" aria-labelledby={`rg-${groupId}`}>
-          {TONES.map((t) => (
-            <label key={t.key} className={styles.swatch} title={t.color}>
+          {tonesWithResolvedColors.map((t) => (
+            <label key={t.key} className={styles.swatch} title={t.resolvedColor}>
               <input
                 type="radio"
                 name={`ktp-${groupId}`}
@@ -67,7 +84,7 @@ export default function BackgroundTonePicker({
               />
               <span
                 className={selected === t.key ? `${styles.dot} ${styles.selected}` : styles.dot}
-                style={{ backgroundColor: t.color }}
+                style={{ backgroundColor: t.resolvedColor }}
               />
             </label>
           ))}
