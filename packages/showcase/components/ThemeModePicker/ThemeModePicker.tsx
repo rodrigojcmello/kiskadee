@@ -1,9 +1,9 @@
 'use client';
 import type { ThemeMode } from '@kiskadee/core';
 import { useKiskadee } from '@kiskadee/react-components';
-import { playWowTransition } from '@/utils/playWowTransition';
 import dynamic from 'next/dynamic';
 import { useId } from 'react';
+import { playWowTransition } from '@/utils/playWowTransition';
 import styles from './ThemeModePicker.module.scss';
 
 /*

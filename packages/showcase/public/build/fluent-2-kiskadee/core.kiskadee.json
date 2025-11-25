@@ -1,7 +1,7 @@
 {
   "button": {
     "e1": {
-      "d": "fk-i",
+      "d": "fk-g",
       "e": "fk-ab fk-ae fk-af fk-ad fk-ac",
       "s": {
         "s:sm:1": "fk-y fk-p fk-u fk-x fk-a",
@@ -10,11 +10,11 @@
       }
     },
     "e2": {
-      "d": "fk-ag fk-an",
+      "d": "fk-ai fk-ap",
       "s": {
-        "s:sm:1": "fk-ak fk-ah",
-        "s:md:1": "fk-al fk-ai",
-        "s:lg:1": "fk-am fk-aj"
+        "s:sm:1": "fk-am fk-aj",
+        "s:md:1": "fk-an fk-ak",
+        "s:lg:1": "fk-ao fk-al"
       }
     }
   }
