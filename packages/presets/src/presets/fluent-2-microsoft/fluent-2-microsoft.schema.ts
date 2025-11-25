@@ -13,14 +13,14 @@ export const schema: Schema<Segments> = {
   version: [2, 0, 0],
   author: 'Microsoft',
   breakpoints,
-  focusRing: {
+  themeTokens: {
     palettes: {
       default: {
         light: {
-          color: color(fluentDefault, 'l', 'neutral', 100)
+          focusColor: color(fluentDefault, 'l', 'neutral', 100)
         },
         dark: {
-          color: color(fluentDefault, 'd', 'neutral', 0)
+          focusColor: color(fluentDefault, 'd', 'neutral', 0)
         }
       }
     }

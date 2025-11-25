@@ -82,7 +82,7 @@ export type SchemaMetadata = {
   prefix?: string;
 };
 
-export type FocusRing<TSegmentName extends SegmentName = SegmentName> = Partial<{
+export type ThemeTokens<TSegmentName extends SegmentName = SegmentName> = Partial<{
   palettes: Partial<
     Record<
       TSegmentName,
@@ -90,7 +90,7 @@ export type FocusRing<TSegmentName extends SegmentName = SegmentName> = Partial<
         Record<
           ThemeMode,
           {
-            color?: HSLA;
+            focusColor?: HSLA;
           }
         >
       >
@@ -100,7 +100,7 @@ export type FocusRing<TSegmentName extends SegmentName = SegmentName> = Partial<
 
 export type Schema<TSegmentName extends SegmentName = SegmentName> = SchemaMetadata & {
   segments?: SchemaSegments<TSegmentName>;
-  focusRing?: FocusRing<TSegmentName>;
+  themeTokens?: ThemeTokens<TSegmentName>;
   components: Components<TSegmentName>;
 };
 

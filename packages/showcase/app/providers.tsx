@@ -114,7 +114,7 @@ function persistSelection(designSystem: DesignSystemKey, segment: string, theme:
 const coreMapCache: Partial<Record<DesignSystemKey, ComponentClassNameMapJSON>> = {};
 const paletteMapCache: Partial<Record<string, ComponentClassNameMapJSON>> = {};
 
-// Cache for focusRing values loaded from extra.<segment>.<theme>.kiskadee.json
+// Cache for focusColor values loaded from extra.<segment>.<theme>.kiskadee.json
 const focusRingCache: Partial<Record<string, string>> = {};
 
 // Cache of <link> elements by href to keep all loaded CSS in memory during the session
@@ -332,7 +332,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     }
   }, [designSystem, segment, theme]);
 
-  // Load focusRing from extra artifacts registry and expose as CSS custom property.
+  // Load focusColor from extra artifacts registry and expose as CSS custom property.
   useEffect(() => {
     if (typeof document === 'undefined') return;
 
@@ -349,8 +349,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
         if (loader) {
           try {
             const extra = await loader();
-            if (!cancelled && extra && typeof extra.focusRing === 'string') {
-              hex = extra.focusRing;
+            if (!cancelled && extra && typeof extra.focusColor === 'string') {
+              hex = extra.focusColor;
               focusRingCache[key] = hex;
             }
           } catch {

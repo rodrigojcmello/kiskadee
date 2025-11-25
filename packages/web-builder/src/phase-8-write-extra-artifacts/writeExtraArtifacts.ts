@@ -24,7 +24,7 @@ function getSegmentKeys(schema: ExtractableSchema): SegmentKey[] {
     return Object.keys(schema.segments);
   }
 
-  const palettes = schema.focusRing?.palettes;
+  const palettes = schema.themeTokens?.palettes;
   if (!palettes) {
     return [];
   }
@@ -32,9 +32,9 @@ function getSegmentKeys(schema: ExtractableSchema): SegmentKey[] {
   return Object.keys(palettes as Record<string, unknown>);
 }
 
-function getModesForSegment(schema: ExtractableSchema, segment: SegmentKey): ThemeMode[] {
-  const palettes = schema.focusRing?.palettes as
-    | Partial<Record<SegmentKey, Partial<Record<ThemeMode, { color?: HSLA }>>>>
+function getThemesForSegment(schema: ExtractableSchema, segment: SegmentKey): ThemeMode[] {
+  const palettes = schema.themeTokens?.palettes as
+    | Partial<Record<SegmentKey, Partial<Record<ThemeMode, { focusColor?: HSLA }>>>>
     | undefined;
 
   if (!palettes || !palettes[segment]) {
@@ -53,7 +53,7 @@ export async function writeExtraArtifacts(params: {
     outDirSlug: string;
   };
 
-  if (!schema.focusRing || !schema.focusRing.palettes) {
+  if (!schema.themeTokens || !schema.themeTokens.palettes) {
     return;
   }
 
@@ -63,14 +63,14 @@ export async function writeExtraArtifacts(params: {
   const segmentKeys = getSegmentKeys(schema);
 
   for (const segment of segmentKeys) {
-    const modes = getModesForSegment(schema, segment);
+    const themes = getThemesForSegment(schema, segment);
 
-    for (const mode of modes) {
-      const palettes = schema.focusRing?.palettes as
-        | Partial<Record<SegmentKey, Partial<Record<ThemeMode, { color?: HSLA }>>>>
+    for (const theme of themes) {
+      const palettes = schema.themeTokens?.palettes as
+        | Partial<Record<SegmentKey, Partial<Record<ThemeMode, { focusColor?: HSLA }>>>>
         | undefined;
 
-      const color = palettes?.[segment]?.[mode]?.color;
+      const color = palettes?.[segment]?.[theme]?.focusColor;
 
       if (!color) {
         continue;
@@ -80,10 +80,10 @@ export async function writeExtraArtifacts(params: {
       const shortHex = toShortHex(fullHex);
 
       const extraData = {
-        focusRing: shortHex
+        focusColor: shortHex
       } as const;
 
-      const fileName = `extra.${segment}.${mode}.kiskadee.json`;
+      const fileName = `extra.${segment}.${theme}.kiskadee.json`;
       const filePath = resolve(buildDir, fileName);
 
       await writeFile(filePath, JSON.stringify(extraData, null, 2), 'utf8');

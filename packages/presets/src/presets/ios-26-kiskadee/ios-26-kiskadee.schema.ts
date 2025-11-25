@@ -12,11 +12,11 @@ export const schema: Schema<Segment> = {
   version: [26, 0, 0],
   author: 'Kiskadee',
   breakpoints,
-  focusRing: {
+  themeTokens: {
     palettes: {
       default: {
         light: {
-          color: color(iosDefault, 'l', 'primary', 70)
+          focusColor: color(iosDefault, 'l', 'primary', 70)
         }
       }
     }
