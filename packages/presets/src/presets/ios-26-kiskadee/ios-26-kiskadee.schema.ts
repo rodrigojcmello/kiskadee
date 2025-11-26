@@ -190,7 +190,6 @@ export const schema: Schema<Segment> = {
         e2: {
           name: 'button-text',
           decorations: {
-            textFont: ['Roboto', 'sans-serif'],
             textWeight: 'medium'
           },
           palettes: {
