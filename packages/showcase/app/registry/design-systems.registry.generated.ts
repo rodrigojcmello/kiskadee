@@ -92,9 +92,9 @@ export const paletteIndex = {
 } as const;
 
 export const designSystemMeta = {
-  'fluent-2-kiskadee': { displayName: "Default 2 by Kiskadee" },
-  'fluent-2-microsoft': { displayName: "Default 2 by Microsoft" },
-  'ios-26-apple': { displayName: "Default 26 by Apple" },
-  'ios-26-kiskadee': { displayName: "Default 26 by Kiskadee" },
-  'material-design-3-google': { displayName: "Material Design - Default (purple) 3 by Google" },
+  'fluent-2-kiskadee': { displayName: "Fluent 2 by Kiskadee" },
+  'fluent-2-microsoft': { displayName: "Fluent 2 by Microsoft" },
+  'ios-26-apple': { displayName: "iOS 26 by Apple" },
+  'ios-26-kiskadee': { displayName: "iOS 26 by Kiskadee" },
+  'material-design-3-google': { displayName: "Material Design 3 by Google" },
 } as const;
