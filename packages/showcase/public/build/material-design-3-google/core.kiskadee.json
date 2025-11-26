@@ -13,13 +13,13 @@
       }
     },
     "e2": {
-      "d": "gmd-aw gmd-bd",
+      "d": "gmd-bc",
       "s": {
         "s:sm:1": "gmd-n gmd-m",
         "s:md:1": "gmd-n gmd-m",
-        "s:lg:1": "gmd-ba gmd-ax",
-        "s:lg:2": "gmd-bb gmd-ay",
-        "s:lg:3": "gmd-bc gmd-az"
+        "s:lg:1": "gmd-az gmd-aw",
+        "s:lg:2": "gmd-ba gmd-ax",
+        "s:lg:3": "gmd-bb gmd-ay"
       }
     }
   }

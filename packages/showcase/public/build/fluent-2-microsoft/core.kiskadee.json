@@ -10,11 +10,11 @@
       }
     },
     "e2": {
-      "d": "fm-ai fm-ap",
+      "d": "fm-ao",
       "s": {
-        "s:sm:1": "fm-am fm-aj",
-        "s:md:1": "fm-an fm-ak",
-        "s:lg:1": "fm-ao fm-al"
+        "s:sm:1": "fm-al fm-ai",
+        "s:md:1": "fm-am fm-aj",
+        "s:lg:1": "fm-an fm-ak"
       }
     }
   }

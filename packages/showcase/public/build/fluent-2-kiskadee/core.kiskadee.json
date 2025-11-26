@@ -10,11 +10,11 @@
       }
     },
     "e2": {
-      "d": "fk-ai fk-ap",
+      "d": "fk-ao",
       "s": {
-        "s:sm:1": "fk-am fk-aj",
-        "s:md:1": "fk-an fk-ak",
-        "s:lg:1": "fk-ao fk-al"
+        "s:sm:1": "fk-al fk-ai",
+        "s:md:1": "fk-am fk-aj",
+        "s:lg:1": "fk-an fk-ak"
       }
     }
   }

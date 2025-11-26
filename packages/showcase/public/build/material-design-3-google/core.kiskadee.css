@@ -16,14 +16,13 @@
 .gmd-ao { padding-top: 32px }
 .gmd-ap { padding-top: 48px }
 .gmd-aq { padding-top: 8px }
-.gmd-aw { font-family: Roboto, sans-serif }
-.gmd-ax { line-height: 24px }
-.gmd-ay { line-height: 32px }
-.gmd-az { line-height: 40px }
-.gmd-ba { font-size: 1rem }
-.gmd-bb { font-size: 1.5rem }
-.gmd-bc { font-size: 2rem }
-.gmd-bd { font-weight: 500 }
+.gmd-aw { line-height: 24px }
+.gmd-ax { line-height: 32px }
+.gmd-ay { line-height: 40px }
+.gmd-az { font-size: 1rem }
+.gmd-ba { font-size: 1.5rem }
+.gmd-bb { font-size: 2rem }
+.gmd-bc { font-weight: 500 }
 .gmd-m { line-height: 20px }
 .gmd-n { font-size: 0.875rem }
 .gmd-o { border-radius: 18px }

@@ -1,13 +1,12 @@
 .fm-a { border-radius: 4px }
 .fm-aa { padding-top: 8px }
-.fm-ai { font-family: Roboto, sans-serif }
-.fm-aj { line-height: 16px }
-.fm-ak { line-height: 20px }
-.fm-al { line-height: 22px }
-.fm-am { font-size: 0.75rem }
-.fm-an { font-size: 0.875rem }
-.fm-ao { font-size: 1rem }
-.fm-ap { font-weight: 500 }
+.fm-ai { line-height: 16px }
+.fm-aj { line-height: 20px }
+.fm-ak { line-height: 22px }
+.fm-al { font-size: 0.75rem }
+.fm-am { font-size: 0.875rem }
+.fm-an { font-size: 1rem }
+.fm-ao { font-weight: 500 }
 .fm-g { border-style: none }
 .fm-p { padding-bottom: 2px }
 .fm-q { padding-bottom: 6px }

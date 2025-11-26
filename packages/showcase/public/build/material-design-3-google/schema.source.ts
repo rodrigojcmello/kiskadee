@@ -147,7 +147,6 @@ export const schema: Schema<Segment> = {
         },
         e2: {
           decorations: {
-            textFont: ['Roboto', 'sans-serif'],
             textWeight: 'medium'
           },
           palettes: {
