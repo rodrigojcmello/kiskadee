@@ -18,20 +18,20 @@ describe('generateCssSplit', () => {
     const input = {
       button: {
         e1: {
-          decorations: ['borderStyle__none', 'textFont__["Roboto","sans-serif"]']
+          decorations: ['borderStyle__none', 'textWeight__bold']
         }
       }
     } as unknown as ComponentStyleKeyMap;
     const shortenMap: ShortenCssClassNames = {
       borderStyle__none: 'bs1',
-      'textFont__["Roboto","sans-serif"]': 'tf1'
+      'textWeight__bold': 'tw1'
     };
     const result = await generateCssSplit(input, shortenMap);
 
     expect(result.coreCss).toContain('.bs1');
     expect(result.coreCss).toContain('border-style');
-    expect(result.coreCss).toContain('.tf1');
-    expect(result.coreCss).toContain('font-family');
+    expect(result.coreCss).toContain('.tw1');
+    expect(result.coreCss).toContain('font-weight');
     expect(result.effectsCss).toBe('');
     expect(result.palettes).toEqual({});
   });
@@ -271,18 +271,18 @@ describe('generateCssSplit', () => {
           decorations: ['borderStyle__none']
         },
         e2: {
-          decorations: ['textFont__["Roboto","sans-serif"]']
+          decorations: ['textWeight__bold']
         }
       }
     } as unknown as ComponentStyleKeyMap;
     const shortenMap: ShortenCssClassNames = {
       borderStyle__none: 'bs1',
-      'textFont__["Roboto","sans-serif"]': 'tf1'
+      'textWeight__bold': 'tw1'
     };
     const result = await generateCssSplit(input, shortenMap);
 
     expect(result.coreCss).toContain('.bs1');
-    expect(result.coreCss).toContain('.tf1');
+    expect(result.coreCss).toContain('.tw1');
   });
 
   it('handles multiple components', async () => {
@@ -294,18 +294,18 @@ describe('generateCssSplit', () => {
       },
       tabs: {
         e1: {
-          decorations: ['textFont__["Roboto","sans-serif"]']
+          decorations: ['textWeight__bold']
         }
       }
     } as unknown as ComponentStyleKeyMap;
     const shortenMap: ShortenCssClassNames = {
       borderStyle__none: 'bs1',
-      'textFont__["Roboto","sans-serif"]': 'tf1'
+      'textWeight__bold': 'tw1'
     };
     const result = await generateCssSplit(input, shortenMap);
 
     expect(result.coreCss).toContain('.bs1');
-    expect(result.coreCss).toContain('.tf1');
+    expect(result.coreCss).toContain('.tw1');
   });
 
   it('uses shortened class names from shortenMap', async () => {

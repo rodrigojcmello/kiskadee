@@ -6,7 +6,6 @@ import {
   transformBorderStyleKeyToCss,
   transformShadowKeyToCss,
   transformTextAlignKeyToCss,
-  transformTextFontKeyToCss,
   transformTextItalicKeyToCss,
   transformTextLineTypeKeyToCss,
   transformTextWeightKeyToCss
@@ -35,8 +34,6 @@ export function generateCssRuleFromStyleKey(
     generatedCss = transformTextItalicKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('textWeight')) {
     generatedCss = transformTextWeightKeyToCss(styleKey, className);
-  } else if (styleKey.startsWith('textFont')) {
-    generatedCss = transformTextFontKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('borderRadius')) {
     // Border-radius effect: supports native and forced selectors controlled by forceState.
     generatedCss = transformBorderRadiusKeyToCss(styleKey, className, forceState);
