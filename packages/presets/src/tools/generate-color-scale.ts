@@ -715,7 +715,15 @@ export function generateColorScaleWithLog(
 // generateColorScaleWithLog('#115EA3', true, {});
 
 // // Fluent Neutral
-generateColorScaleWithLog('#fff', true, {}, undefined, false);
+generateColorScaleWithLog(
+  '#fff',
+  true,
+  {
+    40: '#5C5C5C'
+  },
+  undefined,
+  true
+);
 
 // // Fluent 2 by Kiskadee - Primary
 // generateColorScaleWithLog(
