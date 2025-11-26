@@ -1,10 +1,10 @@
 'use client';
 import type { ThemeMode } from '@kiskadee/core';
 import { useKiskadee } from '@kiskadee/react-components';
-import dynamic from 'next/dynamic';
 import { useId } from 'react';
 import { playWowTransition } from '@/utils/playWowTransition';
 import styles from './ThemeModePicker.module.scss';
+import { Icon, type IconName } from '../Icon/Icon';
 
 /*
   ThemeModePicker: mirrors BackgroundTonePicker identity
@@ -26,37 +26,22 @@ const OPTIONS: Array<{
 
 export type Position = 'inline' | 'fixed-right-top';
 
-const IconSunMax = dynamic(async () => {
-  const mod = await import('./icons/IconSunMax');
-  return mod.IconSunMax;
-});
-
-const IconMoonStars = dynamic(async () => {
-  const mod = await import('./icons/IconMoonStars');
-  return mod.IconMoonStars;
-});
-
-const IconMoon = dynamic(async () => {
-  const mod = await import('./icons/IconMoon');
-  return mod.IconMoon;
-});
-
 export default function ThemeModePicker({ position = 'inline' }: { position?: Position }) {
   const groupId = useId();
   const { theme, setTheme, availableThemes } = useKiskadee();
 
   const visibleOptions = OPTIONS.filter((o) => availableThemes.includes(o.key));
 
-  const iconFor = (mode: ThemeMode) => {
+  const iconFor = (mode: ThemeMode): IconName => {
     switch (mode) {
       case 'light':
-        return IconSunMax;
+        return 'SunMax';
       case 'dark':
-        return IconMoonStars;
+        return 'MoonStars';
       case 'darker':
-        return IconMoon;
+        return 'Moon';
       default:
-        return IconSunMax;
+        return 'SunMax';
     }
   };
 
@@ -86,10 +71,7 @@ export default function ThemeModePicker({ position = 'inline' }: { position?: Po
                 className={styles.input}
               />
               <span className={theme === opt.key ? `${styles.dot} ${styles.selected}` : styles.dot}>
-                {(() => {
-                  const Icon = iconFor(opt.key);
-                  return <Icon className={styles.icon} aria-hidden="true" focusable="false" />;
-                })()}
+                <Icon name={iconFor(opt.key)} className={styles.icon} aria-hidden="true" focusable="false" />
               </span>
               <span className={styles.label}>{opt.label}</span>
             </label>
