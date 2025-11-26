@@ -1,7 +1,9 @@
-'use client';
-import type { ThemeMode } from '@kiskadee/core';
-import { useKiskadee } from '@kiskadee/react-components';
-import { playWowTransition } from '@/utils/playWowTransition';
+"use client";
+import { Select } from "@kiskadee/react-headless";
+import { useKiskadee } from "@kiskadee/react-components";
+import { playWowTransition } from "@/utils/playWowTransition";
+import { Icon } from "../Icon/Icon";
+import styles from "./DesignSystemControls.module.scss";
 
 export default function DesignSystemControls() {
   const {
@@ -11,72 +13,86 @@ export default function DesignSystemControls() {
     designSystemMeta,
     segment,
     setSegment,
-    availableSegments,
-    theme,
-    setTheme,
-    availableThemes
+    availableSegments
   } = useKiskadee();
 
+  const designSystemOptions = designSystemKeys.map((key) => ({
+    value: key,
+    label: designSystemMeta[key]?.displayName || key
+  }));
+
+  const segmentOptions = availableSegments.map((s) => ({
+    value: s,
+    label: s
+  }));
+
   return (
-    <div style={{ padding: 12, display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+    <div className={styles.container}>
       {/* 1. Design system selector */}
-      <label>
-        Design System:
-        <select
+      <div className={styles.group}>
+        <span className={styles.label}>Design System</span>
+        <Select.Root
+          options={designSystemOptions}
           value={designSystem}
-          onChange={(e) => {
+          onValueChange={(value) => {
             playWowTransition();
-            setDesignSystem(e.target.value);
+            setDesignSystem(value);
           }}
-          style={{ marginLeft: 8 }}
+          classNames={{
+            e1: styles.selectContainer,
+            e2: styles.trigger,
+            e3: styles.dropdown,
+            e4: styles.option,
+            e4a: `${styles.option} ${styles.selected}`
+          }}
         >
-          {designSystemKeys.map((k) => (
-            <option key={k} value={k}>
-              {designSystemMeta[k]?.displayName || k}
-            </option>
-          ))}
-        </select>
-      </label>
+          <Select.Trigger>
+            <span>{designSystemMeta[designSystem]?.displayName || designSystem}</span>
+            <Icon name="ChevronDown" className={styles.chevron} />
+          </Select.Trigger>
+          <Select.Content>
+            {designSystemOptions.map((opt) => (
+              <Select.Option key={opt.value} value={opt.value}>
+                {opt.label}
+              </Select.Option>
+            ))}
+          </Select.Content>
+        </Select.Root>
+      </div>
 
       {/* 2. Segment selector (Brand/Product) */}
-      <label>
-        Segment:
-        <select
+      <div className={styles.group}>
+        <span className={styles.label}>Segment</span>
+        <Select.Root
+          options={segmentOptions}
           value={segment}
-          onChange={(e) => {
+          onValueChange={(value) => {
             playWowTransition();
-            setSegment(e.target.value);
+            setSegment(value);
           }}
-          style={{ marginLeft: 8 }}
           disabled={availableSegments.length <= 1}
-        >
-          {availableSegments.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      {/* 3. Theme Mode selector (Light/Dark) */}
-      <label>
-        Theme:
-        <select
-          value={theme}
-          onChange={(e) => {
-            playWowTransition();
-            setTheme(e.target.value as ThemeMode);
+          classNames={{
+            e1: styles.selectContainer,
+            e2: styles.trigger,
+            e3: styles.dropdown,
+            e4: styles.option,
+            e4a: `${styles.option} ${styles.selected}`,
+            e4d: `${styles.option} ${styles.optionDisabled}`
           }}
-          style={{ marginLeft: 8 }}
-          disabled={availableThemes.length <= 1}
         >
-          {availableThemes.map((t) => (
-            <option key={t} value={t}>
-              {t.charAt(0).toUpperCase() + t.slice(1)}
-            </option>
-          ))}
-        </select>
-      </label>
+          <Select.Trigger>
+            <span>{segment}</span>
+            <Icon name="ChevronDown" className={styles.chevron} />
+          </Select.Trigger>
+          <Select.Content>
+            {segmentOptions.map((opt) => (
+              <Select.Option key={opt.value} value={opt.value}>
+                {opt.label}
+              </Select.Option>
+            ))}
+          </Select.Content>
+        </Select.Root>
+      </div>
     </div>
   );
 }
