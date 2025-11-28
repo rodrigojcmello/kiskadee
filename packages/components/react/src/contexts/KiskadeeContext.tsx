@@ -24,6 +24,12 @@ export type KiskadeeContextValue = {
    * Keys are ThemeMode string values (e.g. "light", "dark", "darker").
    */
   backgroundsByTheme: Record<string, string | undefined>;
+
+  /**
+   * Current font family name/key used for smooth transitions.
+   */
+  fontName: string;
+  setFontName: (value: string) => void;
 };
 
 export const KiskadeeContext = createContext<KiskadeeContextValue | undefined>(undefined);

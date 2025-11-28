@@ -10,6 +10,7 @@ import { Button as HeadlessButton } from '@kiskadee/react-headless';
 import { memo, useMemo } from 'react';
 import './Button.scss';
 import { useKiskadee } from '../contexts/KiskadeeContext';
+import { SmoothText } from '../SmoothText/SmoothText';
 
 export type ButtonStatus = Exclude<StateActivatorKeys, 'selected' | 'shadow'>;
 export type ButtonProps = HeadlessButtonProps & {
@@ -76,11 +77,13 @@ function Button(props: ButtonProps) {
     tone,
     semantic = 'neutral',
     tabIndex,
+    label,
     ...restProps
   } = props;
   const {
     // e1 (root), e2 (label), e3 (icon)
-    classesMap: { button: { e1, e2, e3 } = {} }
+    classesMap: { button: { e1, e2, e3 } = {} },
+    fontName
   } = useKiskadee();
 
   // Note: We always apply 's:all' and a size-specific scale.
@@ -166,9 +169,12 @@ function Button(props: ButtonProps) {
   const ariaPressed =
     restProps['aria-pressed'] ?? (toggle ? (controlState === true ? true : undefined) : undefined);
 
+  const animatedLabel = label ? <SmoothText triggerKey={fontName}>{label}</SmoothText> : undefined;
+
   return (
     <HeadlessButton
       {...restProps}
+      label={animatedLabel}
       disabled={isDisabled}
       aria-disabled={ariaDisabled}
       aria-pressed={ariaPressed}

@@ -1,6 +1,8 @@
 'use client';
 import { KiskadeeContext } from '@kiskadee/react-components';
+import { useEffect, useState } from 'react';
 import { designSystemMeta } from './registry/design-systems.registry';
+import { FONTS, FONT_STORAGE_KEY } from './registry/fonts.registry';
 import { useClassMapLoader } from './hooks/use-class-map-loader';
 import { useDesignSystemSelection } from './hooks/use-design-system-selection';
 import { useGlobalThemeClasses } from './hooks/use-global-theme-classes';
@@ -34,6 +36,27 @@ export function Providers({ children }: { children: React.ReactNode }) {
   useStylesheetManager({ designSystem, segment, theme });
   useGlobalThemeClasses(theme);
 
+  // 5. Font Management
+  const [fontName, setFontName] = useState('system');
+
+  useEffect(() => {
+    // Initial load
+    try {
+      const saved = localStorage.getItem(FONT_STORAGE_KEY);
+      if (saved && FONTS.some((f) => f.key === saved)) {
+        setFontName(saved);
+      }
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    const font = FONTS.find((f) => f.key === fontName) ?? FONTS[0];
+    document.documentElement.style.setProperty('--k-font-name', font.family);
+    try {
+      localStorage.setItem(FONT_STORAGE_KEY, font.key);
+    } catch {}
+  }, [fontName]);
+
   return (
     <KiskadeeContext.Provider
       value={{
@@ -48,7 +71,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
         designSystemMeta,
         availableSegments,
         availableThemes,
-        backgroundsByTheme
+        backgroundsByTheme,
+        fontName,
+        setFontName
       }}
     >
       {children}
