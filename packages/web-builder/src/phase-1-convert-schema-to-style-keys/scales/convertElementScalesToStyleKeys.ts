@@ -48,8 +48,8 @@ export function convertElementScalesToStyleKeys(scales: ScaleSchema): StyleKeyBy
             if (breakpoint === 'bp:all') {
               styleKey = buildStyleKey({ propertyName, value });
             } else {
-              // Do NOT include size in the key; only breakpoint varies here
-              styleKey = buildStyleKey({ propertyName, value, breakpoint });
+              // Include size so buildStyleKey generates the correct key format with media query support
+              styleKey = buildStyleKey({ propertyName, value, breakpoint, size });
             }
 
             deepUpdate(styleKeys, [size], (arr: string[] = []) => [...arr, styleKey]);
