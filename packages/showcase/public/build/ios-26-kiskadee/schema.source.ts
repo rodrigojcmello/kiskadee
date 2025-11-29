@@ -8,7 +8,7 @@ type Segment = 'default';
 
 export const schema: Schema<Segment> = {
   name: 'iOS',
-  prefix: 'aki', // Apple OS by Kiskadee
+  prefix: 'ak', // Apple OS by Kiskadee
   version: [26, 0, 0],
   author: 'Kiskadee',
   breakpoints,
@@ -32,27 +32,42 @@ export const schema: Schema<Segment> = {
           scales: {
             paddingTop: {
               's:sm:1': 5,
-              's:md:1': 8,
+              's:md:1': {
+                'bp:all': 16,
+                'bp:lg:1': 8
+              },
               's:lg:1': 16
             },
             paddingBottom: {
               's:sm:1': 5,
-              's:md:1': 8,
+              's:md:1': {
+                'bp:all': 16,
+                'bp:lg:1': 8
+              },
               's:lg:1': 16
             },
             paddingLeft: {
               's:sm:1': 10,
-              's:md:1': 12,
+              's:md:1': {
+                'bp:all': 20,
+                'bp:lg:1': 12
+              },
               's:lg:1': 20
             },
             paddingRight: {
               's:sm:1': 10,
-              's:md:1': 12,
+              's:md:1': {
+                'bp:all': 20,
+                'bp:lg:1': 12
+              },
               's:lg:1': 20
             },
             borderRadius: {
               's:sm:1': 14,
-              's:md:1': 17,
+              's:md:1': {
+                'bp:all': 25,
+                'bp:lg:1': 17
+              },
               's:lg:1': 25
             }
           },

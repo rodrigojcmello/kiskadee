@@ -1,48 +1,48 @@
-.-a.-d .aki-a { color: #FFF3 }
-.-a.-d .aki-bk { color: #FFF3 }
-.-a.-s .aki-bt { color: #FFF }
-.-a.-s .aki-u { color: #FFF }
-.aki-aa { background: #F2F2F2 }
-.aki-ab { background: #0091FF }
-.aki-ac { background: #E5F4FF }
-.aki-ad { background: #FFE5E6 }
-.aki-ae.-d.-a { background: #F2F2F233 }
-.aki-af.-d.-a { background: #0091FF33 }
-.aki-ag.-d.-a { background: #E5F4FF33 }
-.aki-b { background: #FF0004 }
-.aki-bh { color: #808080 }
-.aki-bi { color: #0091FF }
-.aki-bj { color: #FF0004 }
-.aki-c.-d.-a { background: #FF000433 }
-.aki-d.-d.-a { background: #FFE5E633 }
-.aki-m.-s.-a { background: #FF0004 }
-.aki-s.-s.-a { background: #0091FF }
-.aki-t { color: #FFF }
-.aki-ah:focus-visible, .aki-ah.-f.-a { background: #F2F2F2 }
-.aki-ai:focus-visible, .aki-ai.-f.-a { background: #0091FF }
-.aki-aj:focus-visible, .aki-aj.-f.-a { background: #E5F4FF }
-.aki-e:focus-visible, .aki-e.-f.-a { background: #FF0004 }
-.aki-f:focus-visible, .aki-f.-f.-a { background: #FFE5E6 }
-.aki-p:focus-visible.-s, .aki-p.-s.-f.-a { background: #0091FF }
-.-i:hover .aki-bl, .-a.-h .aki-bl { color: #808080CC }
-.-i:hover .aki-bm, .-a.-h .aki-bm { color: #0091FFCC }
-.-i:hover .aki-bn, .-a.-h .aki-bn { color: #FF0004CC }
-.aki-ak:hover, .aki-ak.-h.-a { background: #F7F7F7 }
-.aki-al:hover, .aki-al.-h.-a { background: #0091FFCC }
-.aki-am:hover, .aki-am.-h.-a { background: #F0F8FF }
-.aki-g:hover, .aki-g.-h.-a { background: #FF0004CC }
-.aki-h:hover, .aki-h.-h.-a { background: #FFF0F0 }
-.aki-k:hover.-s, .aki-k.-s.-h.-a { background: #FF0004CC }
-.aki-q:hover.-s, .aki-q.-s.-h.-a { background: #0091FFCC }
-.-i:active .aki-bo, .-a.-p .aki-bo { color: #FFFFFF80 }
-.-i:active .aki-bp, .-a.-p .aki-bp { color: #FFFFFFB3 }
-.-i:active .aki-bq, .-a.-p .aki-bq { color: #808080 }
-.-i:active .aki-br, .-a.-p .aki-br { color: #0091FF }
-.-i:active .aki-bs, .-a.-p .aki-bs { color: #FF0004B3 }
-.aki-an:active, .aki-an.-p.-a { background: #EBEBEB }
-.aki-ao:active, .aki-ao.-p.-a { background: #0074CC }
-.aki-ap:active, .aki-ap.-p.-a { background: #D6EDFF }
-.aki-i:active, .aki-i.-p.-a { background: #CC0003 }
-.aki-j:active, .aki-j.-p.-a { background: #FFD6D7 }
-.aki-l:active.-s, .aki-l.-s.-p.-a { background: #CC0003 }
-.aki-r:active.-s, .aki-r.-s.-p.-a { background: #0074CC }
+.-a.-d .ak-a { color: #FFF3 }
+.-a.-d .ak-bk { color: #FFF3 }
+.-a.-s .ak-bt { color: #FFF }
+.-a.-s .ak-z { color: #FFF }
+.ak-ae { background: #F2F2F2 }
+.ak-af { background: #0091FF }
+.ak-ag { background: #E5F4FF }
+.ak-ah { background: #FFE5E6 }
+.ak-ai.-d.-a { background: #F2F2F233 }
+.ak-aj.-d.-a { background: #0091FF33 }
+.ak-ak.-d.-a { background: #E5F4FF33 }
+.ak-b { background: #FF0004 }
+.ak-bh { color: #808080 }
+.ak-bi { color: #0091FF }
+.ak-bj { color: #FF0004 }
+.ak-c.-d.-a { background: #FF000433 }
+.ak-d.-d.-a { background: #FFE5E633 }
+.ak-m.-s.-a { background: #FF0004 }
+.ak-t.-s.-a { background: #0091FF }
+.ak-y { color: #FFF }
+.ak-al:focus-visible, .ak-al.-f.-a { background: #F2F2F2 }
+.ak-am:focus-visible, .ak-am.-f.-a { background: #0091FF }
+.ak-an:focus-visible, .ak-an.-f.-a { background: #E5F4FF }
+.ak-e:focus-visible, .ak-e.-f.-a { background: #FF0004 }
+.ak-f:focus-visible, .ak-f.-f.-a { background: #FFE5E6 }
+.ak-q:focus-visible.-s, .ak-q.-s.-f.-a { background: #0091FF }
+.-i:hover .ak-bl, .-a.-h .ak-bl { color: #808080CC }
+.-i:hover .ak-bm, .-a.-h .ak-bm { color: #0091FFCC }
+.-i:hover .ak-bn, .-a.-h .ak-bn { color: #FF0004CC }
+.ak-ao:hover, .ak-ao.-h.-a { background: #F7F7F7 }
+.ak-ap:hover, .ak-ap.-h.-a { background: #0091FFCC }
+.ak-aq:hover, .ak-aq.-h.-a { background: #F0F8FF }
+.ak-g:hover, .ak-g.-h.-a { background: #FF0004CC }
+.ak-h:hover, .ak-h.-h.-a { background: #FFF0F0 }
+.ak-k:hover.-s, .ak-k.-s.-h.-a { background: #FF0004CC }
+.ak-r:hover.-s, .ak-r.-s.-h.-a { background: #0091FFCC }
+.-i:active .ak-bo, .-a.-p .ak-bo { color: #FFFFFF80 }
+.-i:active .ak-bp, .-a.-p .ak-bp { color: #FFFFFFB3 }
+.-i:active .ak-bq, .-a.-p .ak-bq { color: #808080 }
+.-i:active .ak-br, .-a.-p .ak-br { color: #0091FF }
+.-i:active .ak-bs, .-a.-p .ak-bs { color: #FF0004B3 }
+.ak-ar:active, .ak-ar.-p.-a { background: #EBEBEB }
+.ak-as:active, .ak-as.-p.-a { background: #0074CC }
+.ak-at:active, .ak-at.-p.-a { background: #D6EDFF }
+.ak-i:active, .ak-i.-p.-a { background: #CC0003 }
+.ak-j:active, .ak-j.-p.-a { background: #FFD6D7 }
+.ak-l:active.-s, .ak-l.-s.-p.-a { background: #CC0003 }
+.ak-s:active.-s, .ak-s.-s.-p.-a { background: #0074CC }

@@ -1,20 +1,20 @@
 {
   "button": {
     "e1": {
-      "d": "aki-z",
-      "e": "aki-bc aki-bf aki-bg aki-be aki-bd",
+      "d": "ak-ad",
+      "e": "ak-bc ak-bf ak-bg ak-be ak-bd",
       "s": {
-        "s:sm:1": "aki-ba aki-ar aki-at aki-aw aki-w",
-        "s:md:1": "aki-bb aki-as aki-au aki-ax aki-x",
-        "s:lg:1": "aki-az aki-aq aki-av aki-ay aki-y"
+        "s:sm:1": "ak-ba ak-au ak-aw ak-ay ak-ab",
+        "s:md:1": "ak-x ak-bb ak-u ak-av ak-v ak-ax ak-w ak-az ak-o ak-ac",
+        "s:lg:1": "ak-x ak-u ak-v ak-w ak-o"
       }
     },
     "e2": {
-      "d": "aki-bv",
+      "d": "ak-bv",
       "s": {
-        "s:sm:1": "aki-bu aki-n",
-        "s:md:1": "aki-v aki-n",
-        "s:lg:1": "aki-v aki-n"
+        "s:sm:1": "ak-bu ak-n",
+        "s:md:1": "ak-aa ak-n",
+        "s:lg:1": "ak-aa ak-n"
       }
     }
   }
