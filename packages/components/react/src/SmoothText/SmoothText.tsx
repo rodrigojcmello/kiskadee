@@ -1,13 +1,14 @@
-import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import './SmoothText.scss';
 
 interface SmoothTextProps {
   children: ReactNode;
   triggerKey?: string;
-  duration?: number;
 }
 
-export function SmoothText({ children, triggerKey, duration = 600 }: SmoothTextProps) {
+const ANIMATION_DURATION = 600;
+
+export function SmoothText({ children, triggerKey }: SmoothTextProps) {
   const [current, setCurrent] = useState(children);
   const [previous, setPrevious] = useState<ReactNode | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -18,10 +19,6 @@ export function SmoothText({ children, triggerKey, duration = 600 }: SmoothTextP
   useEffect(() => {
     const hasTriggerChanged = triggerKey !== lastTriggerKeyRef.current;
     const hasChildrenChanged = children !== lastChildrenRef.current;
-
-    // Only trigger animation if we have a previous value (not initial mount)
-    // But wait, we initialized current with children.
-    // If this runs on update:
 
     if (hasTriggerChanged || hasChildrenChanged) {
       setPrevious(current);
@@ -34,17 +31,13 @@ export function SmoothText({ children, triggerKey, duration = 600 }: SmoothTextP
       const timer = setTimeout(() => {
         setPrevious(null);
         setIsAnimating(false);
-      }, duration);
+      }, ANIMATION_DURATION);
       return () => clearTimeout(timer);
     }
-  }, [triggerKey, children, current, duration]); // current is dependency because we setPrevious(current)
-
-  const style = {
-    '--k-smooth-text-duration': `${duration}ms`
-  } as CSSProperties;
+  }, [triggerKey, children, current]);
 
   return (
-    <span className="k-smooth-text" style={style}>
+    <span className="k-smooth-text">
       {previous && (
         <span className="k-smooth-text__item k-smooth-text__exiting" aria-hidden="true">
           {previous}

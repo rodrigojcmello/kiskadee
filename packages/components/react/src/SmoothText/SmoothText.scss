@@ -2,32 +2,26 @@
   display: inline-grid;
   grid-template-areas: "stack";
   align-items: center;
-  /* Ensure the container doesn't collapse if children are absolute, but here we use grid overlap */
   width: max-content;
-  /* Inherit vertical align */
   vertical-align: inherit;
 }
 
 .k-smooth-text__item {
   grid-area: stack;
-  /* A transição fica como fallback, mas a animação controlará a saída e entrada */
-  transition: opacity var(--k-smooth-text-duration, 600ms) ease, transform var(--k-smooth-text-duration, 600ms) ease;
+  /* Importante: Remover transition para não conflitar com a animation */
   white-space: nowrap;
   display: inline-block;
   text-align: center;
 }
 
 .k-smooth-text__exiting {
-  /* CORREÇÃO: Usamos animation em vez de definir opacity: 0 diretamente.
-     Isso força o navegador a começar em opacity: 1 e ir até 0. */
-  animation: k-fadeOut var(--k-smooth-text-duration, 600ms) ease forwards;
-
+  animation: k-fadeOut 600ms ease forwards;
   pointer-events: none;
   user-select: none;
 }
 
 .k-smooth-text__entering {
-  animation: k-fadeIn var(--k-smooth-text-duration, 600ms) ease forwards;
+  animation: k-fadeIn 600ms ease forwards;
 }
 
 @keyframes k-fadeIn {
@@ -35,7 +29,6 @@
   to { opacity: 1; transform: scale(1); }
 }
 
-/* Novo keyframe para controlar a saída explicitamente */
 @keyframes k-fadeOut {
   from { opacity: 1; transform: scale(1); }
   to { opacity: 0; transform: scale(0.95); }
