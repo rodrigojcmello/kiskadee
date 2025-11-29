@@ -182,4 +182,8 @@ function Button(props: ButtonProps) {
 }
 
 const MemoButton = memo(Button);
-export { MemoButton as Button };
+const CompoundButton = Object.assign(MemoButton, {
+  Label: HeadlessButton.Label,
+  Icon: HeadlessButton.Icon
+});
+export { CompoundButton as Button };
