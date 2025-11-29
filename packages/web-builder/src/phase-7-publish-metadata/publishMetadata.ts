@@ -1,4 +1,4 @@
-import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, writeFile, cp } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import type { Schema, SchemaSegments, ThemeMode } from '@kiskadee/core';
 
@@ -105,6 +105,16 @@ export async function publishMetadata(params: {
       const colorsSrcPath = resolve(dirname(schemaPath), `${colorsRelPath}.ts`);
       const colorsSourceTarget = resolve(buildDir, 'colors.source.ts');
       await copyFile(colorsSrcPath, colorsSourceTarget);
+
+      try {
+        const colorsDirSrc = resolve(dirname(schemaPath), 'colors');
+        const colorsDirTarget = resolve(buildDir, 'colors');
+        await cp(colorsDirSrc, colorsDirTarget, { recursive: true });
+      } catch (error) {
+        if ((error as any).code !== 'ENOENT') {
+          console.warn('[web-builder] Warning: Failed to copy "colors" folder', error);
+        }
+      }
     } else {
       // If there is no local "*.colors" import, just copy the schema file as is,
       // preserving the previous behavior.
