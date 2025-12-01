@@ -1,9 +1,9 @@
 import type {
   DarkTrackTones,
-  HSLA,
   LightTrackTones,
   Segment,
-  SemanticColor
+  SemanticColor,
+  SolidColor
 } from '../types/colors/colors.types';
 import { withAlpha } from './withAlpha';
 
@@ -54,7 +54,7 @@ export function color(
   role: SemanticColor,
   tone: number,
   alpha?: number
-): HSLA {
+): SolidColor {
   const m = modeFromShort(mode) as 'light' | 'dark';
   const { series, key } = resolveSeriesAndKey(tone);
 
@@ -65,26 +65,26 @@ export function color(
 
   // Narrow by series to keep key types aligned with buckets
   if (series === 'soft') {
-    const bucket = theme?.[role]?.soft as Partial<Record<LightTrackTones, HSLA>> | undefined;
+    const bucket = theme?.[role]?.soft as Partial<Record<LightTrackTones, SolidColor>> | undefined;
     if (!bucket) {
       throw new Error(`Role/series not found: role=${role} series=soft in mode=${m}`);
     }
-    const hsla = bucket[key as LightTrackTones] as HSLA | undefined;
-    if (!hsla) {
+    const value = bucket[key as LightTrackTones] as SolidColor | undefined;
+    if (!value) {
       const available = Object.keys(bucket).join(', ');
       throw new Error(`Tone ${key} not available in ${role}.soft. Available: ${available}`);
     }
-    return typeof alpha === 'number' ? (withAlpha(hsla, alpha) as HSLA) : hsla;
+    return typeof alpha === 'number' ? (withAlpha(value, alpha) as SolidColor) : value;
   } else {
-    const bucket = theme?.[role]?.solid as Partial<Record<DarkTrackTones, HSLA>> | undefined;
+    const bucket = theme?.[role]?.solid as Partial<Record<DarkTrackTones, SolidColor>> | undefined;
     if (!bucket) {
       throw new Error(`Role/series not found: role=${role} series=solid in mode=${m}`);
     }
-    const hsla = bucket[key as DarkTrackTones] as HSLA | undefined;
-    if (!hsla) {
+    const value = bucket[key as DarkTrackTones] as SolidColor | undefined;
+    if (!value) {
       const available = Object.keys(bucket).join(', ');
       throw new Error(`Tone ${key} not available in ${role}.solid. Available: ${available}`);
     }
-    return typeof alpha === 'number' ? (withAlpha(hsla, alpha) as HSLA) : hsla;
+    return typeof alpha === 'number' ? (withAlpha(value, alpha) as SolidColor) : value;
   }
 }

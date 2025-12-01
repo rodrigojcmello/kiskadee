@@ -1,4 +1,4 @@
-import type { HSLA } from '../types/colors/colors.types';
+import type { HSLA, SolidColor } from '../types/colors/colors.types';
 
 /**
  * Applies visibility (opacity) to an HSLA color.
@@ -7,9 +7,9 @@ import type { HSLA } from '../types/colors/colors.types';
  * uses 0-100 scale (percentage) instead of the standard HSLA 0-1.
  * The conversion to the internal HSLA format is done automatically.
  *
- * @param color - Color in HSLA format [hue, saturation, lightness, alpha]. Returns undefined if undefined.
+ * @param color - Color in HSLA format [hue, saturation, lightness, alpha] or CSS string. Returns undefined if undefined.
  * @param visibility - Visibility percentage from 0 (invisible) to 100 (fully visible)
- * @returns New HSLA color with modified alpha, or empty string if color is undefined
+ * @returns New HSLA color with modified alpha, or string with injected alpha, or undefined
  *
  * @example
  * ```TypeScript
@@ -17,27 +17,24 @@ import type { HSLA } from '../types/colors/colors.types';
  * const disabled = withAlpha(palette.p1.primary.solid[50]!, 20);
  * // Result: [206, 100, 50, 0.2]
  *
- * // Shadow with 28% visibility
- * const shadow = withAlpha([0, 0, 0, 1], 28);
- * // Result: [0, 0, 0, 0.28]
- *
- * // Fully visible color
- * const opaque = withAlpha(color, 100);
- * // Result: [..., 1]
- *
- * // Invisible color
- * const transparent = withAlpha(color, 0);
- * // Result: [..., 0]
- *
- * // Undefined color
- * const empty = withAlpha(undefined, 50);
- * // Result: undefined
+ * // With CSS Variable
+ * const dynamic = withAlpha('hsl(var(--k-p-50))', 50);
+ * // Result: 'hsl(var(--k-p-50) / 0.5)'
  * ```
  */
-export function withAlpha(color: HSLA | undefined, visibility: number): HSLA | undefined {
+export function withAlpha(color: SolidColor | undefined, visibility: number): SolidColor | undefined {
   // Return undefined if the color is undefined
   if (color === undefined) {
     return undefined;
+  }
+
+  if (typeof color === 'string') {
+    if (color.startsWith('hsl(') && color.endsWith(')')) {
+      const clampedVisibility = Math.max(0, Math.min(100, visibility));
+      const alpha = clampedVisibility / 100;
+      return color.slice(0, -1) + ` / ${alpha})`;
+    }
+    return color;
   }
 
   const [h, s, l] = color;

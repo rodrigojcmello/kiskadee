@@ -1,12 +1,12 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints';
 import type {
-  Color,
   ElementPalettes,
-  HSLA,
   InteractionState,
   SchemaSegments,
   SegmentName,
+  SelectedInteractionStateToken,
   SemanticColor,
+  SolidColor,
   ThemeMode
 } from './types/colors/colors.types';
 import type { DecorationSchema } from './types/decorations/decorations.types';
@@ -16,7 +16,7 @@ import type { ScaleSchema } from './types/scales/scales.types';
 // Names of all supported components
 export type ComponentName = 'button' | 'tabs';
 
-export type ElementStyle<TSegmentName extends SegmentName = SegmentName> = Partial<{
+export type ElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   name?: string; // for example "element-element-element-element"
   decorations: DecorationSchema;
   scales: ScaleSchema;
@@ -26,7 +26,7 @@ export type ElementStyle<TSegmentName extends SegmentName = SegmentName> = Parti
   effects: ElementEffects;
 }>;
 
-type Elements<TSegmentName extends SegmentName = SegmentName> = Record<
+type Elements<TSegmentName extends SegmentName = never> = Record<
   ElementName,
   ElementStyle<TSegmentName>
 >;
@@ -41,21 +41,28 @@ export type StyleKey = string;
 export type ElementName = string;
 
 // Mapping of style keys by interaction state per element
-export type StyleKeysByInteractionState = Partial<Record<InteractionState, StyleKey[]>>;
+export type StyleKeysByInteractionState = Partial<
+  Record<InteractionState | SelectedInteractionStateToken, StyleKey[]>
+>;
 
 export type InteractionStateBySemanticColor = Partial<{
   [K in SemanticColor]: StyleKeysByInteractionState;
 }>;
 
-export interface StyleKeyByElement<TSegmentName extends SegmentName = SegmentName> {
+export interface StyleKeyByElement<TSegmentName extends SegmentName = never> {
   decorations: StyleKey[];
   effects: StyleKeysByInteractionState;
   scales: Partial<Record<ElementSizeValue | ElementAllSizeValue, StyleKey[]>>;
   // Palettes now include theme mode in the structure: segment → theme → semantic color → interaction states
-  palettes: Partial<Record<TSegmentName, Partial<Record<string, InteractionStateBySemanticColor>>>>;
+  palettes: Partial<
+    Record<
+      TSegmentName | 'default' | 'dynamic',
+      Partial<Record<ThemeMode, InteractionStateBySemanticColor>>
+    >
+  >;
 }
 
-export type ComponentStyleKeyMap<TSegmentName extends SegmentName = SegmentName> = Partial<{
+export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Partial<{
   [componenteName in ComponentName]: {
     [elementName: ElementName]: StyleKeyByElement<TSegmentName>;
   };
@@ -70,7 +77,7 @@ export interface ClassNameMap {
 
 // -------------------------------------------------------------------------------------------------
 
-type Components<TSegmentName extends SegmentName = SegmentName> = Partial<
+type Components<TSegmentName extends SegmentName = never> = Partial<
   Record<ComponentName, { elements: Elements<TSegmentName> }>
 >;
 
@@ -82,16 +89,16 @@ export type SchemaMetadata = {
   prefix?: string;
 };
 
-export type ThemeTokens<TSegmentName extends SegmentName = SegmentName> = Partial<{
+export type ThemeTokens<TSegmentName extends SegmentName = never> = Partial<{
   palettes: Partial<
     Record<
-      TSegmentName,
+      TSegmentName | 'default' | 'dynamic',
       Partial<
         Record<
           ThemeMode,
           {
-            focusColor?: HSLA;
-            background?: HSLA;
+            focusColor?: SolidColor;
+            background?: SolidColor;
           }
         >
       >
@@ -99,7 +106,7 @@ export type ThemeTokens<TSegmentName extends SegmentName = SegmentName> = Partia
   >;
 }>;
 
-export type Schema<TSegmentName extends SegmentName = SegmentName> = SchemaMetadata & {
+export type Schema<TSegmentName extends SegmentName = never> = SchemaMetadata & {
   segments?: SchemaSegments<TSegmentName>;
   themeTokens?: ThemeTokens<TSegmentName>;
   components: Components<TSegmentName>;

@@ -20,8 +20,11 @@ export type HSLA = [hue: Hue, saturation: Saturation, lightness: Lightness, alph
 /** Represents a color in hexadecimal format (e.g., "#ff0000" or "#ff0000ff"). */
 export type Hex = string;
 
-/** Represents a single solid color in HSLA format. */
-export type SolidColor = HSLA;
+/** Represents a CSS variable string (e.g., "var(--my-color)"). */
+export type CssVariable = string;
+
+/** Represents a single solid color in HSLA format or a CSS variable string. */
+export type SolidColor = HSLA | CssVariable;
 
 /** Represents the position of a color stop in a CSS gradient as a percentage (0–100). */
 type GradientStopPosition = number;
@@ -33,7 +36,7 @@ type GradientAngle = number;
  * Represents a gradient defined by an angle and a series of color stops.
  * Each stop is a tuple of [hue, lightness, saturation, alpha, position].
  */
-type Gradient = [GradientAngle, [...SolidColor, GradientStopPosition][]];
+type Gradient = [GradientAngle, [...HSLA, GradientStopPosition][]];
 
 /** Represents a color, which can be either a solid color or a gradient definition. */
 export type Color = SolidColor | Gradient;
@@ -177,11 +180,11 @@ export type Segment = {
   themes: Partial<Record<ThemeMode, ThemeColorPalette>>;
 };
 
-export type SchemaSegments<TSegmentName extends SegmentName = SegmentName> = Record<
-  TSegmentName,
-  Segment
->;
+export type SchemaSegments<TSegmentName extends SegmentName = never> = {
+  default: Segment;
+  dynamic?: Segment;
+} & Record<TSegmentName, Segment>;
 
-export type ElementPalettes<TSegmentName extends SegmentName = SegmentName> = Partial<
-  Record<TSegmentName, Partial<Record<ThemeMode, ColorSchema>>>
+export type ElementPalettes<TSegmentName extends SegmentName = never> = Partial<
+  Record<TSegmentName | 'default' | 'dynamic', Partial<Record<ThemeMode, ColorSchema>>>
 >;
