@@ -1,6 +1,7 @@
 'use client';
 import { useKiskadee } from '@kiskadee/react-components';
-import { useEffect, useId, useMemo, useState } from 'react';
+import { ColorRadioGroup } from '@kiskadee/react-headless';
+import { useEffect, useMemo, useState } from 'react';
 import styles from './BackgroundTonePicker.module.scss';
 
 const TONES = [
@@ -19,7 +20,6 @@ export default function BackgroundTonePicker({
 }: {
   position?: Position;
 }) {
-  const groupId = useId();
   const { theme, backgroundsByTheme } = useKiskadee();
 
   const tonesWithResolvedColors = useMemo(() => {
@@ -40,6 +40,16 @@ export default function BackgroundTonePicker({
       };
     });
   }, [backgroundsByTheme]);
+
+  const items = useMemo(
+    () =>
+      tonesWithResolvedColors.map((t) => ({
+        value: t.key,
+        color: t.resolvedColor,
+        label: t.aria
+      })),
+    [tonesWithResolvedColors]
+  );
 
   const initialKey = useMemo(() => {
     try {
@@ -68,28 +78,20 @@ export default function BackgroundTonePicker({
 
   return (
     <div className={position === 'fixed-right-top' ? styles.containerFixed : undefined}>
-      <fieldset className={styles.fieldset} aria-label="Background tone">
-        <div className={styles.swatches} role="radiogroup" aria-labelledby={`rg-${groupId}`}>
-          {tonesWithResolvedColors.map((t) => (
-            <label key={t.key} className={styles.swatch} title={t.resolvedColor}>
-              <input
-                type="radio"
-                name={`ktp-${groupId}`}
-                value={t.key}
-                checked={selected === t.key}
-                onChange={() => setSelected(t.key)}
-                aria-checked={selected === t.key}
-                aria-label={t.aria}
-                className={styles.input}
-              />
-              <span
-                className={selected === t.key ? `${styles.dot} ${styles.selected}` : styles.dot}
-                style={{ backgroundColor: t.resolvedColor }}
-              />
-            </label>
-          ))}
-        </div>
-      </fieldset>
+      <ColorRadioGroup
+        value={selected}
+        onValueChange={setSelected}
+        items={items}
+        aria-label="Background tone"
+        classNames={{
+          e1: styles.fieldset,
+          e2: styles.swatches,
+          e3: styles.swatch,
+          e4: styles.input,
+          e5: styles.dot,
+          e5a: styles.selected
+        }}
+      />
     </div>
   );
 }

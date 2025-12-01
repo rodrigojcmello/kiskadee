@@ -12,3 +12,10 @@ export type {
   SelectOptionProps
 } from './select/Select';
 export { Select } from './select/Select';
+
+export type {
+  ColorRadioItem,
+  ColorRadioGroupClassNames,
+  ColorRadioGroupProps
+} from './color-radio-group/ColorRadioGroup';
+export { ColorRadioGroup } from './color-radio-group/ColorRadioGroup';
