@@ -107,6 +107,9 @@ importers:
       '@kiskadee/react-headless':
         specifier: workspace:*
         version: link:../headless/react
+      '@kiskadee/runtime':
+        specifier: workspace:*
+        version: link:../runtime
       '@kiskadee/web-builder':
         specifier: workspace:*
         version: link:../web-builder

@@ -3,6 +3,7 @@ import './globals.scss';
 import '@kiskadee/react-components/global.kiskadee.scss';
 import BackgroundTonePicker from '@/components/BackgroundTonePicker/BackgroundTonePicker';
 import DesignSystemControls from '@/components/DesignSystemControls/DesignSystemControls';
+import DynamicColorPicker from '@/components/DynamicColorPicker/DynamicColorPicker';
 import FontNamePicker from '@/components/FontNamePicker/FontNamePicker';
 import ThemeModePicker from '@/components/ThemeModePicker/ThemeModePicker';
 import { Providers } from './providers';
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <BackgroundTonePicker position="inline" />
             <FontNamePicker position="inline" />
           </div>
+          <DynamicColorPicker />
           {children}
         </Providers>
       </body>

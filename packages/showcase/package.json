@@ -11,6 +11,7 @@
     "@kiskadee/core": "workspace:*",
     "@kiskadee/react-components": "workspace:*",
     "@kiskadee/react-headless": "workspace:*",
+    "@kiskadee/runtime": "workspace:*",
     "@kiskadee/web-builder": "workspace:*",
     "next": "16.0.1",
     "react": "19.2.0",
