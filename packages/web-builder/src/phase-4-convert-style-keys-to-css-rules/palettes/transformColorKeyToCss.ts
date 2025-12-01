@@ -45,14 +45,22 @@ export function transformColorKeyToCss(
   className: string,
   forceState?: boolean
 ): string {
-  // Extract HSLA values from brackets at the end; error if missing.
-  const hslaMatch = styleKey.match(/\[([^\]]+)]$/);
-  const hasHslaMatch = hslaMatch !== null;
-  if (hasHslaMatch === false) {
+  const separatorIndex = styleKey.indexOf('__');
+  if (separatorIndex === -1) {
     throw new Error(ERROR_INVALID_KEY_FORMAT);
   }
-  const hsla = hslaMatch[1].split(',').map(Number) as HSLA;
-  const hex = convertHslaToHex(hsla);
+  const rawValue = styleKey.slice(separatorIndex + 2);
+
+  let cssValue: string;
+
+  // Check if it is HSLA array
+  if (rawValue.startsWith('[') && rawValue.endsWith(']')) {
+    const inner = rawValue.slice(1, -1);
+    const hsla = inner.split(',').map(Number) as HSLA;
+    cssValue = convertHslaToHex(hsla);
+  } else {
+    cssValue = rawValue;
+  }
 
   // Base color property, e.g. "background-color" or "color"
   // Support both non-ref ("--" or "__") and ref ("==") separators
@@ -87,7 +95,7 @@ export function transformColorKeyToCss(
 
   if (!isRef) {
     if (filteredStates.length === 0) {
-      return `.${className} { ${optimizedProperty}: ${hex} }`;
+      return `.${className} { ${optimizedProperty}: ${cssValue} }`;
     }
 
     // Split states by availability of native pseudo
@@ -123,11 +131,11 @@ export function transformColorKeyToCss(
 
     if (selectors.length === 0) {
       // No way to express the states; fallback to base
-      return `.${className} { ${optimizedProperty}: ${hex} }`;
+      return `.${className} { ${optimizedProperty}: ${cssValue} }`;
     }
 
     const selector = selectors.join(', ');
-    return `${selector} { ${optimizedProperty}: ${hex} }`;
+    return `${selector} { ${optimizedProperty}: ${cssValue} }`;
   }
 
   // Ref (parent state gating child .className)
@@ -175,5 +183,5 @@ export function transformColorKeyToCss(
   }
 
   const selector = parentSelectors.join(', ');
-  return `${selector} { ${optimizedProperty}: ${hex} }`;
+  return `${selector} { ${optimizedProperty}: ${cssValue} }`;
 }

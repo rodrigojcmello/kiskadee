@@ -195,7 +195,7 @@ function generateTemplatesRegistrySource(manifests) {
     lines.push(`    segments: [${segs.map((s) => `'${s}'`).join(', ')}],`);
     if (themesBySegmentEntries.length) {
       lines.push('    themesBySegment: {');
-      lines.push(themesBySegmentEntries.join(',\\n'));
+      lines.push(themesBySegmentEntries.join(',\n'));
       lines.push('    }');
     } else {
       lines.push('    themesBySegment: {}');

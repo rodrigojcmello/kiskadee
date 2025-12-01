@@ -91,7 +91,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
 
   // Iterate over segments (for example, ios, youtube, appletv)
   for (const segmentName in palettes) {
-    const segment = palettes[segmentName as SegmentName];
+    const segment = palettes[segmentName as keyof ElementPalettes];
     if (!segment) continue;
 
     // Iterate over themes within each segment (e.g., light, dark, darker)
@@ -148,7 +148,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
                 const isRef = isRefValue(val);
                 const inner = isRef ? (val as { ref?: Color | undefined }).ref : (val as Color);
                 if (inner === undefined) return; // { ref: undefined } -> skip
-                const color = JSON.stringify(inner);
+                const color = inner;
 
                 // For the selected scope, we pass controlState=true and the base interaction (rest/hover/pressed/focus)
                 if (stateLabel.startsWith('selected:')) {
@@ -207,7 +207,6 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
             const isRef = isRefValue(val);
             const inner = isRef ? (val as { ref?: Color | undefined }).ref : (val as Color);
             if (inner === undefined) continue; // skip { ref: undefined }
-            const color = JSON.stringify(inner);
 
             // Build the style key including the interaction state and whether this is a ref.
             // Examples:
@@ -217,7 +216,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
               propertyName: colorProperty,
               interactionState: interactionState,
               isRef,
-              value: color
+              value: inner
             });
 
             // Insert the key in a nested structure:

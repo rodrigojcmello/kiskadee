@@ -90,6 +90,12 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@24.7.2)(@vitest/ui@3.2.4)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.94.0)(tsx@4.20.6)
 
+  packages/runtime:
+    devDependencies:
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+
   packages/showcase:
     dependencies:
       '@kiskadee/core':

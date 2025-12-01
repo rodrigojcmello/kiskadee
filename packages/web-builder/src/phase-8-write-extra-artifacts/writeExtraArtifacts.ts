@@ -1,7 +1,14 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { HSLA, Schema, SchemaSegments, SegmentName, ThemeMode } from '@kiskadee/core';
+import type {
+  HSLA,
+  Schema,
+  SchemaSegments,
+  SegmentName,
+  SolidColor,
+  ThemeMode
+} from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
 import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex';
 
@@ -87,8 +94,8 @@ export async function writeExtraArtifacts(params: {
                 Record<
                   ThemeMode,
                   {
-                    focusColor?: HSLA;
-                    background?: HSLA;
+                    focusColor?: SolidColor;
+                    background?: SolidColor;
                   }
                 >
               >
@@ -104,20 +111,26 @@ export async function writeExtraArtifacts(params: {
         continue;
       }
 
-      const fullHex = convertHslaToHex(color as HSLA);
-      const shortHex = toShortHex(fullHex);
+      let focusColorVal: string;
+      if (typeof color === 'string') {
+        focusColorVal = color;
+      } else {
+        focusColorVal = toShortHex(convertHslaToHex(color as HSLA));
+      }
 
       const extraData: {
         focusColor: string;
         background?: string;
       } = {
-        focusColor: shortHex
+        focusColor: focusColorVal
       };
 
       if (background) {
-        const backgroundFullHex = convertHslaToHex(background as HSLA);
-        const backgroundShortHex = toShortHex(backgroundFullHex);
-        extraData.background = backgroundShortHex;
+        if (typeof background === 'string') {
+          extraData.background = background;
+        } else {
+          extraData.background = toShortHex(convertHslaToHex(background));
+        }
       }
 
       const fileName = `extra.${segment}.${theme}.kiskadee.json`;
