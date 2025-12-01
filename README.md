@@ -14,15 +14,20 @@ Below you’ll find each package/project’s purpose, how they relate, and the a
   - What it is: a collection of ready‑to‑use schema presets built on top of @kiskadee/core.
   - Examples:
     - templates (e.g., google-material-design, ios-26-kiskadee, material-design-3-google) — schema sources that can be plugged into the Web builder.
+    - **Dynamic Segments**: presets now support segments that use CSS variables for their primary color, allowing runtime theming (e.g., "dynamic" segment).
 
 - @kiskadee/web-builder (packages/web-builder)
   - What it is: the pipeline that converts the core schema (and presets) into utility CSS and class maps for runtime consumption. It is Web‑specific in terms of output (CSS), but it does not contain resets/component structure.
   - Main outputs:
     - Core CSS (decoration/scale/effects that do not depend on a palette)
-    - Per‑palette CSS (colors only)
+    - Per‑palette CSS (colors only). Generates optimized Hex for static segments (e.g., "default") and CSS variables for dynamic segments (e.g., "dynamic").
     - Class name maps per component/element/state: classNamesMapSplit
   - Where the pipeline lives: src/index.ts organizes phases 1–6.
   - What it is NOT: it does not apply Web normalize/reset, nor define component layout/structure.
+
+- @kiskadee/runtime (packages/runtime)
+  - What it is: A lightweight, zero-dependency library for the browser.
+  - Purpose: Calculates and injects color scales into CSS variables at runtime. It powers the "dynamic" segment by taking a single source color (e.g., from a color picker or system API) and generating the full Kiskadee tonal palette on the fly.
 
 - @kiskadee/headless (packages/headless)
   - What it is: headless (agnostic) components — logic and accessibility, no styling. E.g., Tabs, Button behavior, etc., without CSS.
@@ -38,11 +43,7 @@ Below you’ll find each package/project’s purpose, how they relate, and the a
     - Keep structural adjustments here (display, flex/grid, hit area), leaving visual identity to the generated utility CSS.
 
 - @kiskadee/showcase (packages/sandbox)
-  - What it is: the documentation and demo app for Kiskadee, built on top of @kiskadee/react-components and the generated CSS/maps. Used to explore templates, palettes and components in a real Web environment.
-
-Optional external (not included in web-builder by architectural decision):
-- @kiskadee/web-base (suggested, external)
-  - Small normalize/reset package and HTML widget fixes (e.g., remove the default ugly <button> border). It’s opt‑in and keeps the schema and the builder free of platform concerns.
+  - What it is: the documentation and demo app for Kiskadee, built on top of @kiskadee/react-components and the generated CSS/maps. Used to explore templates, palettes, and components in a real Web environment.
 
 ## Web‑builder pipeline (Phases)
 
@@ -117,7 +118,7 @@ Metadata per template (under packages/web-builder/build/<template-key>):
 - core/presets are agnostic: visual identity only. No Web reset/normalize, no component layout/structure.
 - web-builder generates utilities and maps: no structural rules or platform resets.
 - headless provides accessibility and behavior, with no required CSS.
-- react-components composes everything for the Web: minimal structure via CSS Modules and visual identity via generated utilities. It may optionally consume a Web base/reset package (outside the builder).
+- react-components composes everything for the Web: minimal structure via CSS Modules and visual identity via generated utilities.
 
 ## Build, sync and showcase registry scripts
 
@@ -167,7 +168,6 @@ this pipeline from the presets:
 1) Choose a schema template from @kiskadee/presets (e.g., google-material-design) and run the web-builder to generate CSS bundles and classNamesMapSplit.
 2) In the @kiskadee/react-components package, import the required bundles (core + palette) and compose classes in the markup using classNamesMapSplit together with the component’s interaction states (headless).
 3) Add minimal structure with CSS Modules (display, direction, alignment), preferring compose to reuse utilities.
-4) Optional: apply a Web baseline/reset (e.g., @kiskadee/web-base) in the app or in the components package.
 
 ## Useful reference files
 
@@ -179,6 +179,5 @@ this pipeline from the presets:
 
 ## Future and extensions
 
-- Optional @kiskadee/web-base package for Web baseline/reset.
 - Tree‑shakeable generation of structural primitives (if adopted in the components package).
 - New platforms (Android/iOS/Flutter/React Native) can reuse the schema; the Web builder remains focused on CSS.
