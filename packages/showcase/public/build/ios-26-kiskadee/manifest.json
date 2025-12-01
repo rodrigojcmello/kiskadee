@@ -9,10 +9,15 @@
     0
   ],
   "segments": [
-    "default"
+    "default",
+    "dynamic"
   ],
   "themes": {
     "default": [
+      "light",
+      "dark"
+    ],
+    "dynamic": [
       "light",
       "dark"
     ]

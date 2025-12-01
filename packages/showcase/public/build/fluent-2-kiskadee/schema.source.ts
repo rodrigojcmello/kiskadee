@@ -5,9 +5,7 @@ import { segments } from './colors.source';
 
 const fluentDefault = segments.default;
 
-type Segments = 'default';
-
-export const schema: Schema<Segments> = {
+export const schema: Schema = {
   name: 'Fluent',
   prefix: 'fk', // Fluent by Kiskadee
   version: [2, 0, 0],

@@ -44,6 +44,8 @@ export const paletteMaps = {
   'ios-26-apple|default|light': () => loadJsonModule('/build/ios-26-apple/default.light.kiskadee.json'),
   'ios-26-kiskadee|default|light': () => loadJsonModule('/build/ios-26-kiskadee/default.light.kiskadee.json'),
   'ios-26-kiskadee|default|dark': () => loadJsonModule('/build/ios-26-kiskadee/default.dark.kiskadee.json'),
+  'ios-26-kiskadee|dynamic|light': () => loadJsonModule('/build/ios-26-kiskadee/dynamic.light.kiskadee.json'),
+  'ios-26-kiskadee|dynamic|dark': () => loadJsonModule('/build/ios-26-kiskadee/dynamic.dark.kiskadee.json'),
   'material-design-3-google|default|light': () => loadJsonModule('/build/material-design-3-google/default.light.kiskadee.json'),
 } as const;
 
@@ -55,6 +57,8 @@ export const extraMaps = {
   'ios-26-apple|default|light': () => loadExtraJson('/build/ios-26-apple/extra.default.light.kiskadee.json'),
   'ios-26-kiskadee|default|light': () => loadExtraJson('/build/ios-26-kiskadee/extra.default.light.kiskadee.json'),
   'ios-26-kiskadee|default|dark': () => loadExtraJson('/build/ios-26-kiskadee/extra.default.dark.kiskadee.json'),
+  'ios-26-kiskadee|dynamic|light': () => loadExtraJson('/build/ios-26-kiskadee/extra.dynamic.light.kiskadee.json'),
+  'ios-26-kiskadee|dynamic|dark': () => loadExtraJson('/build/ios-26-kiskadee/extra.dynamic.dark.kiskadee.json'),
   'material-design-3-google|default|light': () => loadExtraJson('/build/material-design-3-google/extra.default.light.kiskadee.json'),
 } as const;
 
@@ -78,9 +82,10 @@ export const paletteIndex = {
     }
   },
   'ios-26-kiskadee': {
-    segments: ['default'],
+    segments: ['default', 'dynamic'],
     themesBySegment: {
-      "default": ['light', 'dark']
+      "default": ['light', 'dark'],
+      "dynamic": ['light', 'dark']
     }
   },
   'material-design-3-google': {

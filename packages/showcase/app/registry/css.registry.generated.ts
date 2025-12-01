@@ -31,6 +31,8 @@ export const cssPaths = {
     palettes: {
       'default|light': '/build/ios-26-kiskadee/default.light.kiskadee.css',
       'default|dark': '/build/ios-26-kiskadee/default.dark.kiskadee.css',
+      'dynamic|light': '/build/ios-26-kiskadee/dynamic.light.kiskadee.css',
+      'dynamic|dark': '/build/ios-26-kiskadee/dynamic.dark.kiskadee.css',
     }
   },
   'material-design-3-google': {
