@@ -406,8 +406,6 @@ function SelectContent({ children, className }: SelectContentProps) {
 
   const contentClassName = className ?? classNames?.e3;
 
-  if (!isOpen) return null;
-
   return (
     <ul
       ref={listRef}
@@ -415,6 +413,8 @@ function SelectContent({ children, className }: SelectContentProps) {
       // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: <explanation>
       role="listbox"
       aria-labelledby={`${baseId}-trigger`}
+      aria-hidden={isOpen ? undefined : true}
+      data-open={isOpen || undefined}
       className={contentClassName}
       tabIndex={-1}
     >
