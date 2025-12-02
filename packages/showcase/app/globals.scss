@@ -7,34 +7,34 @@
 
 /* Theme color variables */
 .light {
-  --k-primary-0: #ffffff;
-  --k-primary-1: #fafdff;
-  --k-primary-2: #f5fbff;
-  --k-primary-3: #f0f8ff;
-  --k-primary-4: #ebf6ff;
-  --k-primary-5: #e5f4ff;
-  --k-primary-6: #e0f2ff;
-  --k-primary-7: #dbf0ff;
-  --k-primary-8: #d6edff;
-  --k-primary-9: #d1ebff;
-  --k-primary-10: #cce9ff;
-  --k-primary-15: #b3deff;
-  --k-primary-20: #99d3ff;
-  --k-primary-25: #80c8ff;
-  --k-primary-30: #66bdff;
-  --k-primary-40: #33a7ff;
-  --k-primary-50: #0090ff; // Main color
-  --k-primary-60: #0074cc;
-  --k-primary-70: #005799;
-  --k-primary-80: #003a66;
-  --k-primary-90: #001d33;
-  --k-primary-100: #000000;
+  --primary-0: #ffffff;
+  --primary-1: #fafdff;
+  --primary-2: #f5fbff;
+  --primary-3: #f0f8ff;
+  --primary-4: #ebf6ff;
+  --primary-5: #e5f4ff;
+  --primary-6: #e0f2ff;
+  --primary-7: #dbf0ff;
+  --primary-8: #d6edff;
+  --primary-9: #d1ebff;
+  --primary-10: #cce9ff;
+  --primary-15: #b3deff;
+  --primary-20: #99d3ff;
+  --primary-25: #80c8ff;
+  --primary-30: #66bdff;
+  --primary-40: #33a7ff;
+  --primary-50: #0090ff; // Main color
+  --primary-60: #0074cc;
+  --primary-70: #005799;
+  --primary-80: #003a66;
+  --primary-90: #001d33;
+  --primary-100: #000000;
 
   --contrast-100: #000000;
 }
 
 .dark {
-  --k-primary-50: #0091ff;
+  --primary-50: #0091ff;
   --contrast-100: #ffffff;
 }
 
