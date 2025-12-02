@@ -1,4 +1,4 @@
-/** biome-ignore-all lint/style/noHeadElement: <explanation> */
+/** biome-ignore-all lint/style/noHeadElement: ... */
 import { FONTS } from '@/app/registry/fonts.registry';
 
 export default function AppHead() {
