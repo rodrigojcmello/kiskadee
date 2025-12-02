@@ -13,7 +13,7 @@
 
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: saturate(1.2) blur(4px);
-  border-radius: 9999px;
+  border-radius: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), inset 0 0 0 1px hsl(0deg 0% 100% / 5%);
 
   border: none;
@@ -23,14 +23,16 @@
   outline: none;
   min-width: 140px;
 
-  transition: background 0.2s ease, transform 0.1s;
+  transition: background 0.2s ease, transform 0.1s, box-shadow 0.2s;
 
   &:hover {
     background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.14), inset 0 0 0 1px hsl(0deg 0% 100% / 5%);
   }
 
   &:active {
     transform: scale(0.98);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1), inset 0 0 0 1px hsl(0deg 0% 100% / 5%);
   }
 
   // Disabled state for trigger if needed, though usually on root
@@ -60,12 +62,8 @@
 
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: saturate(1.5) blur(16px);
-  -webkit-backdrop-filter: saturate(1.5) blur(16px);
 
-  border-radius: 16px;
-  box-shadow:
-    0 10px 40px -10px rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  border-radius: 14px;
 
   padding: 6px;
   margin: 0;
@@ -74,11 +72,13 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-
+  //box-shadow:
+  //  0 10px 40px -10px rgba(0, 0, 0, 0.2),
+  //  0 0 0 1px rgba(255, 255, 255, 0.5) inset;
   z-index: 10000;
 
   transform-origin: top left;
-  animation: scaleIn 0.15s ease-out;
+  animation: scaleIn 0.15s ease-out, shadow 0.6s forwards;
 }
 
 
@@ -86,10 +86,28 @@
   from {
     opacity: 0;
     transform: scale(0.95) translateY(-5px);
+    //box-shadow: none;
+    margin-top: -20px;
   }
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
+    //box-shadow:
+    //  0 10px 40px -10px rgba(0, 0, 0, 0.2),
+    //  0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    margin-top: 0;
+  }
+}
+
+@keyframes shadow {
+  from {
+    border-radius: 20px;
+  }
+  to {
+    border-radius: 14px;
+    box-shadow:
+      0 10px 40px -10px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.5) inset;
   }
 }
 
