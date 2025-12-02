@@ -55,6 +55,7 @@ export type SelectOptionProps = {
   value: string;
   children?: ReactNode;
   className?: string;
+  disabled?: boolean;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -431,7 +432,7 @@ function SelectContent({ children, className }: SelectContentProps) {
 // Option Component
 // ─────────────────────────────────────────────────────────────────────────────
 
-function SelectOption({ value, children, className }: SelectOptionProps) {
+function SelectOption({ value, children, className, disabled }: SelectOptionProps) {
   const {
     selected,
     setSelected,
@@ -449,7 +450,7 @@ function SelectOption({ value, children, className }: SelectOptionProps) {
   const optionIndex = options.findIndex((o) => o.value === value);
   const isSelected = selected === value;
   const isFocused = focusedIndex === optionIndex;
-  const isDisabled = option?.disabled ?? false;
+  const isDisabled = disabled || (option?.disabled ?? false);
 
   // Determine class name
   let optionClassName = className;
