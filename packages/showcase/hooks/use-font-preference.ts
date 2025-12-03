@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FONT_STORAGE_KEY, FONTS } from '../registry/fonts.registry';
+import { FONT_STORAGE_KEY, FONTS } from '@/registry/fonts.registry';
 
 export function useFontPreference() {
   const [fontName, setFontName] = useState('system');

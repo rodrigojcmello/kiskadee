@@ -1,12 +1,12 @@
 'use client';
 import { KiskadeeContext } from '@kiskadee/react-components';
-import { designSystemMeta } from './registry/design-systems.registry';
-import { useClassMapLoader } from './hooks/use-class-map-loader';
-import { useDesignSystemSelection } from './hooks/use-design-system-selection';
-import { useGlobalThemeClasses } from './hooks/use-global-theme-classes';
-import { useStylesheetManager } from './hooks/use-stylesheet-manager';
-import { useThemeExtras } from './hooks/use-theme-extras';
-import { useFontPreference } from './hooks/use-font-preference';
+import { useClassMapLoader } from '@/hooks/use-class-map-loader';
+import { useDesignSystemSelection } from '@/hooks/use-design-system-selection';
+import { useFontPreference } from '@/hooks/use-font-preference';
+import { useGlobalThemeClasses } from '@/hooks/use-global-theme-classes';
+import { useStylesheetManager } from '@/hooks/use-stylesheet-manager';
+import { useThemeExtras } from '@/hooks/use-theme-extras';
+import { designSystemMeta } from '@/registry/design-systems.registry';
 
 // Client-side provider that mirrors legacy App.tsx/main.tsx responsibilities
 // Refactored to use custom hooks for separation of concerns.

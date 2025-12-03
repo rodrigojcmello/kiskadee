@@ -1,5 +1,5 @@
 /** biome-ignore-all lint/style/noHeadElement: ... */
-import { FONTS } from '@/app/registry/fonts.registry';
+import { FONTS } from '@/registry/fonts.registry';
 
 export default function AppHead() {
   const googleFontsParams = FONTS.map((f) => f.googleFontParams)

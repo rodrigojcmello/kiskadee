@@ -1,10 +1,10 @@
-import type { ThemeMode } from '@kiskadee/core';
+import type { ThemeMode } from '@kiskadee/core/dist';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { coreMaps, paletteIndex } from '../registry/design-systems.registry';
+import { coreMaps, paletteIndex } from '@/registry/design-systems.registry';
 import {
   type DesignSystemKey,
   getDefaultSegmentAndThemeForDesignSystem
-} from '../registry/registry-utils';
+} from '@/registry/registry-utils';
 
 const STORAGE_KEYS = {
   designSystem: 'kiskadee:design-system',

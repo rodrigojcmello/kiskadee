@@ -1,7 +1,7 @@
 'use client';
 import { useKiskadee } from '@kiskadee/react-components';
-import { FONTS } from '@/app/registry/fonts.registry';
 import { Select } from '@/k-components';
+import { FONTS } from '@/registry/fonts.registry';
 import styles from './FontNamePicker.module.scss';
 
 export default function FontNamePicker({

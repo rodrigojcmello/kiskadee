@@ -1,4 +1,4 @@
-import type { ComponentClassNameMapJSON } from '@kiskadee/core';
+import type { ComponentClassNameMapJSON } from '@kiskadee/core/dist';
 
 // Deep merge: preserve core baseline (d/e/s) and overlay palette colors (c) and selected (cs)
 export const mergeMaps = (

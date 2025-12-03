@@ -7,6 +7,7 @@ import DesignSystemControls from '@/components/DesignSystemControls/DesignSystem
 import DynamicColorPicker from '@/components/DynamicColorPicker/DynamicColorPicker';
 import FontNamePicker from '@/components/FontNamePicker/FontNamePicker';
 import ThemeModePicker from '@/components/ThemeModePicker/ThemeModePicker';
+import style from './layout.module.scss';
 import { Providers } from './providers';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -32,7 +33,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <FontNamePicker position="inline" />
           </div>
           <DynamicColorPicker />
-          {children}
+          <div className={style.container}>{children}</div>
         </Providers>
       </body>
     </html>
