@@ -76,12 +76,11 @@
   transform-origin: top left;
 
   opacity: 0;
-  transform: scale(0.95) translateY(-5px);
-  margin-top: -20px;
+  transform: scale(0.95) translateY(-24px);
   pointer-events: none;
 
-  // Fechamento: uma única duração base e easing compartilhado.
-  transition-property: opacity, transform, margin-top, box-shadow, border-radius;
+  // Closing: single shared duration and easing.
+  transition-property: opacity, transform;
   transition-duration: var(--select-close-opacity-duration, 0.1s);
   transition-timing-function: ease-out;
 }
@@ -96,8 +95,8 @@
   box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.2),
   0 0 0 1px rgba(255, 255, 255, 0.5) inset;
 
-  // Abertura: uma única duração base e easing compartilhado.
-  transition-property: opacity, transform, margin-top, box-shadow, border-radius;
+  // Opening: single shared duration and easing.
+  transition-property: opacity, transform;
   transition-duration: var(--select-open-opacity-duration, 0.2s);
   transition-timing-function: ease-out;
 }

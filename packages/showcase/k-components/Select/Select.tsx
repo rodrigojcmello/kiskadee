@@ -13,23 +13,23 @@ interface SelectProps extends Omit<HeadlessSelectProps, 'children' | 'classNames
 export function Select({ value, onValueChange, options, disabled, className = '' }: SelectProps) {
   const selectedOption = options.find((o) => o.value === value);
 
-  // Flag interna para habilitar/desabilitar durações dinâmicas baseadas na quantidade de opções.
+  // Internal flag to enable/disable dynamic durations based on option count.
   const enableDynamicDurations = true;
 
   let dynamicStyle: CSSProperties | undefined;
 
   if (enableDynamicDurations) {
     const duration = (count: number, baseMs: number, perItemMs: number, maxMs: number) => {
-      // As opções só aparecem a partir de 2 itens.
-      // Consideramos 2 como "tamanho base" e só adicionamos tempo a partir do 3º item.
+      // Options are only visible starting from 2 items.
+      // Treat 2 as the base size and add extra time from the 3rd item onwards.
       const MIN_VISIBLE_OPTIONS = 2;
       const effectiveCount = Math.max(count - MIN_VISIBLE_OPTIONS, 0);
       const raw = baseMs + effectiveCount * perItemMs;
       return Math.min(raw, maxMs);
     };
 
-    // Uma única duração base para abertura, escalando com a quantidade de opções.
-    // baseMs = duração para 2 itens (mínimo visível).
+    // Single base duration for opening, scaling with the number of options.
+    // baseMs = duration for 2 options (visible minimum).
     const openDurationMs = duration(options.length, 100, 8, 200);
 
     // Fechamento: metade do tempo de abertura.
