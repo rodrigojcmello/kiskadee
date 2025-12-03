@@ -19,30 +19,25 @@ export function Select({ value, onValueChange, options, disabled, className = ''
   let dynamicStyle: CSSProperties | undefined;
 
   if (enableDynamicDurations) {
-    const optionCount = options.length;
-
-    const duration = (n: number, min: number, base: number, perItem: number, max: number) => {
-      const raw = base + n * perItem;
-      return Math.max(min, Math.min(raw, max));
+    const duration = (count: number, baseMs: number, perItemMs: number, maxMs: number) => {
+      // As opções só aparecem a partir de 2 itens.
+      // Consideramos 2 como "tamanho base" e só adicionamos tempo a partir do 3º item.
+      const MIN_VISIBLE_OPTIONS = 2;
+      const effectiveCount = Math.max(count - MIN_VISIBLE_OPTIONS, 0);
+      const raw = baseMs + effectiveCount * perItemMs;
+      return Math.min(raw, maxMs);
     };
 
-    // Opening animations
-    const openOpacityMs = duration(optionCount, 120, 120, 4, 200);
-    const openTransformMs = duration(optionCount, 160, 160, 6, 260);
-    const openShadowMs = duration(optionCount, 240, 260, 8, 420);
+    // Uma única duração base para abertura, escalando com a quantidade de opções.
+    // baseMs = duração para 2 itens (mínimo visível).
+    const openDurationMs = duration(options.length, 100, 8, 200);
 
-    // Closing animations
-    const closeOpacityMs = duration(optionCount, 80, 80, 3, 160);
-    const closeTransformMs = duration(optionCount, 120, 120, 5, 220);
-    const closeShadowMs = duration(optionCount, 160, 200, 6, 320);
+    // Fechamento: metade do tempo de abertura.
+    const closeDurationMs = openDurationMs / 2;
 
     dynamicStyle = {
-      '--select-open-opacity-duration': `${openOpacityMs}ms`,
-      '--select-open-transform-duration': `${openTransformMs}ms`,
-      '--select-open-shadow-duration': `${openShadowMs}ms`,
-      '--select-close-opacity-duration': `${closeOpacityMs}ms`,
-      '--select-close-transform-duration': `${closeTransformMs}ms`,
-      '--select-close-shadow-duration': `${closeShadowMs}ms`
+      '--select-open-opacity-duration': `${openDurationMs}ms`,
+      '--select-close-opacity-duration': `${closeDurationMs}ms`
     } as CSSProperties;
   }
 
