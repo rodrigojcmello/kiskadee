@@ -4,7 +4,7 @@
  *
  * This script reads metadata produced by the web-builder (one manifest.json
  * per preset under packages/web-builder/build/**) and generates TypeScript
- * registries under packages/showcase/app/registry:
+ * registries under packages/showcase/registry:
  *
  *   - templates.registry.generated.ts
  *   - css.registry.generated.ts
@@ -37,7 +37,8 @@ const repoRoot = path.resolve(webBuilderRoot, '..', '..');
 const showcaseBuildBase = '/build';
 
 // Target directory for generated registries in the showcase app
-const showcaseRegistryDir = path.resolve(repoRoot, 'packages', 'showcase', 'app', 'registry');
+// NOTE: The registry now lives at packages/showcase/registry (outside app/)
+const showcaseRegistryDir = path.resolve(repoRoot, 'packages', 'showcase', 'registry');
 
 /** @typedef {{
  *   key: string;
