@@ -1,4 +1,4 @@
-import type { KeyboardEvent, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, KeyboardEvent, ReactNode } from 'react';
 import {
   createContext,
   useCallback,
@@ -20,7 +20,9 @@ export type SelectOption = {
   disabled?: boolean;
 };
 
-export type SelectProps = {
+type SelectRootDivProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'className'>;
+
+export type SelectProps = SelectRootDivProps & {
   children: ReactNode;
   options: SelectOption[];
   value?: string; // controlled selected value
@@ -102,7 +104,8 @@ function SelectRoot({
   disabled = false,
   placeholder = 'Select an option',
   idPrefix,
-  classNames
+  classNames,
+  ...rootDivProps
 }: SelectProps) {
   const internalId = useId();
   const baseId = idPrefix ?? `select-${internalId}`;
@@ -199,7 +202,7 @@ function SelectRoot({
 
   return (
     <SelectContext.Provider value={contextValue}>
-      <div ref={containerRef} className={classNames?.e1}>
+      <div ref={containerRef} className={classNames?.e1} {...rootDivProps}>
         {children}
       </div>
     </SelectContext.Provider>

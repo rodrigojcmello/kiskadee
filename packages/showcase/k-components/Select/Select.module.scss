@@ -80,12 +80,13 @@
   margin-top: -20px;
   pointer-events: none;
 
-  // Fechamento: um pouco mais rápido
-  transition: opacity 0.1s ease-out,
-  transform 0.1s ease-out,
-  margin-top 0.1s ease-out,
-  box-shadow 0.1s ease,
-  border-radius 0.1s ease;
+  // Fechamento: usa variáveis CSS com fallback para o comportamento atual
+  transition:
+    opacity var(--select-close-opacity-duration, 0.1s) ease-out,
+    transform var(--select-close-transform-duration, 0.1s) ease-out,
+    margin-top var(--select-close-transform-duration, 0.1s) ease-out,
+    box-shadow var(--select-close-shadow-duration, 0.1s) ease,
+    border-radius var(--select-close-shadow-duration, 0.1s) ease;
 }
 
 .dropdown[data-open='true'] {
@@ -98,12 +99,13 @@
   box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.2),
   0 0 0 1px rgba(255, 255, 255, 0.5) inset;
 
-  // Abertura: um pouco mais suave/lenta
-  transition: opacity 0.15s ease-out,
-  transform 0.15s ease-out,
-  margin-top 0.15s ease-out,
-  box-shadow 0.4s ease,
-  border-radius 0.3s ease;
+  // Abertura: usa variáveis CSS com fallback para o comportamento atual
+  transition:
+    opacity var(--select-open-opacity-duration, 0.15s) ease-out,
+    transform var(--select-open-transform-duration, 0.2s) ease-out,
+    margin-top var(--select-open-transform-duration, 0.2s) ease-out,
+    box-shadow var(--select-open-shadow-duration, 0.4s) ease,
+    border-radius var(--select-open-shadow-duration, 0.4s) ease;
 }
 
 .option {
