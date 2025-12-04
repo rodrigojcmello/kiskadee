@@ -1,5 +1,6 @@
 'use client';
 import { useKiskadee } from '@kiskadee/react-components';
+import DynamicColorPicker from '@/components/DynamicColorPicker/DynamicColorPicker';
 import { Select } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
 import styles from './DesignSystemControls.module.scss';
@@ -52,6 +53,11 @@ export default function DesignSystemControls() {
           }}
           disabled={availableSegments.length <= 1}
         />
+      </div>
+
+      {/* 3. Dynamic theme color picker */}
+      <div className={styles.group}>
+        <DynamicColorPicker />
       </div>
     </div>
   );
