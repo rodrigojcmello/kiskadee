@@ -55,10 +55,12 @@ export default function DesignSystemControls() {
         />
       </div>
 
-      {/* 3. Dynamic theme color picker */}
-      <div className={styles.group}>
-        <DynamicColorPicker />
-      </div>
+      {/* 3. Dynamic theme color picker (only for "dynamic" segment) */}
+      {segment === 'dynamic' && (
+        <div className={styles.group}>
+          <DynamicColorPicker />
+        </div>
+      )}
     </div>
   );
 }
