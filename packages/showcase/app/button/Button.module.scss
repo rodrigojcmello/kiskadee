@@ -1,21 +1,39 @@
+$height: 64px;
+
 .interaction-state {
   width: 100%;
 
   button {
-    width: 150px;
+    width: 100%;
   }
 }
 
 .example-states {
-  display: flex;
-  gap: 16px;
   align-items: center;
+  display: grid;
+  column-gap: 16px;
+  row-gap: 8px;
   width: 100%;
-  height: 64px;
+  height: calc($height * 3);
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
   // Override global button alignment so KButtons with different heights
-  // (via scale) fiquem centralizados verticalmente neste exemplo.
   :global(.k-btn) {
     align-self: center;
+  }
+}
+
+@media (min-width: 768px) {
+  .example-states {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    height: calc($height * 2);
+  }
+}
+
+@media (min-width: 1024px) {
+  .example-states {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    height: $height;
   }
 }
