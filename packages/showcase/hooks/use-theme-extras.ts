@@ -1,6 +1,6 @@
 import type { ThemeMode } from '@kiskadee/core/dist';
 import { useEffect, useState } from 'react';
-import { extraMaps, paletteIndex } from '@/registry/design-systems.registry';
+import { extraMaps, paletteIndex } from '@/registry/design-systems.registry.generated';
 import type { DesignSystemKey } from '@/registry/registry-utils';
 
 type BackgroundTones = Partial<Record<ThemeMode, string | undefined>>;

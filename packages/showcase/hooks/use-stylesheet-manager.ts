@@ -1,6 +1,6 @@
 import type { ThemeMode } from '@kiskadee/core/dist';
 import { useEffect, useMemo } from 'react';
-import { cssPaths } from '@/registry/css.registry';
+import { cssPaths } from '@/registry/css.registry.generated';
 import type { DesignSystemKey } from '@/registry/registry-utils';
 
 const stylesheetLinkCache: Partial<Record<string, HTMLLinkElement>> = {};

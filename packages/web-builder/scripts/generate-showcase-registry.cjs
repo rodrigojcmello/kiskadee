@@ -127,6 +127,12 @@ function generateTemplatesRegistrySource(manifests) {
   lines.push('function loadExtraJson(path: string): Promise<ExtraArtifactsJSON> {');
   lines.push('  return fetch(path)');
   lines.push('    .then((response) => {');
+  lines.push('      if (response.status === 404) {');
+  lines.push(
+    '        // Extra artifacts are optional; treat 404 as "no extras" and return an empty object.'
+  );
+  lines.push('        return {} as ExtraArtifactsJSON;');
+  lines.push('      }');
   lines.push('      if (!response.ok) {');
   lines.push(
     '        throw new Error(`Failed to load extra JSON: ${path} (${response.status})`);'
@@ -172,6 +178,12 @@ function generateTemplatesRegistrySource(manifests) {
       for (const theme of themes) {
         const key = `${m.key}|${segment}|${theme}`;
         const file = `extra.${segment}.${theme}.kiskadee.json`;
+        // Only generate an entry if the corresponding extra JSON file
+        // actually exists in the web-builder build output. This avoids
+        // issuing fetch requests that would 404 for design systems that
+        // don't define extra artifacts for a given segment/theme.
+        const physicalPath = path.join(webBuilderBuildDir, m.key, file);
+        if (!fs.existsSync(physicalPath)) continue;
         const url = `${showcaseBuildBase}/${m.key}/${file}`;
         lines.push(`  '${key}': () => loadExtraJson('${url}'),`);
       }

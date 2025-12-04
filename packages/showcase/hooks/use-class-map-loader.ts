@@ -1,8 +1,8 @@
 import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/core/dist';
 import { useCallback, useEffect, useState } from 'react';
-import { coreMaps, paletteMaps } from '@/registry/design-systems.registry';
+import { coreMaps, paletteMaps } from '@/registry/design-systems.registry.generated';
 import type { DesignSystemKey } from '@/registry/registry-utils';
-import { mergeMaps } from '../utils/merge-class-maps';
+import { mergeMaps } from '@/utils/merge-class-maps';
 
 // Cache of already loaded class maps to avoid repeated dynamic imports
 const coreMapCache: Partial<Record<DesignSystemKey, ComponentClassNameMapJSON>> = {};

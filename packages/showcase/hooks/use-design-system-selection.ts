@@ -1,6 +1,6 @@
 import type { ThemeMode } from '@kiskadee/core/dist';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { coreMaps, paletteIndex } from '@/registry/design-systems.registry';
+import { coreMaps, paletteIndex } from '@/registry/design-systems.registry.generated';
 import {
   type DesignSystemKey,
   getDefaultSegmentAndThemeForDesignSystem
