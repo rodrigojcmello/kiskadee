@@ -34,8 +34,19 @@ gray                       →  neutral                   →  Button.neutral
 The foundation layer defines the actual color values. These are the raw HSLA color definitions that represent specific hues.
 
 ```typescript
-// Examples of real colors
-type BaseColor = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink' | 'gray';
+// Examples of real colors (actual type lives in @kiskadee/core)
+type BaseColor =
+  | 'red'
+  | 'orange'
+  | 'yellow'
+  | 'green'
+  | 'teal'
+  | 'cyan'
+  | 'blue'
+  | 'purple'
+  | 'pink'
+  | 'brown'
+  | 'black';
 ```
 
 **Purpose**: Provide the actual color values that will be used throughout the design system.
@@ -51,7 +62,6 @@ The semantic layer provides general meaning to colors without enforcing specific
 ```typescript
 type SemanticColor = 
   | 'primary'      // Brand identity color
-  | 'secondary'    // Supporting brand color
   | 'neutral'      // Text, backgrounds, borders (grayscale)
   | 'redLike'      // Danger, error, urgent, notifications
   | 'greenLike'    // Success, purchase, confirmation, profit
@@ -78,6 +88,50 @@ The `-like` suffix is intentional and important:
 // Example: Change redLike to use orange
 redLike = orange  // All destructive buttons, attention badges, etc. become orange
 ```
+
+---
+
+#### Why Kiskadee Does Not Use `secondary` / `tertiary` Semantic Colors
+
+Many design systems in the market expose `primary`, `secondary` and sometimes `tertiary` colors. In practice, these labels tend to mix two concepts:
+
+1. **Brand palette** (marketing): primary/secondary/tertiary brand colors.
+2. **UI usage**: primary/secondary buttons, accents, etc.
+
+Kiskadee separates these concerns explicitly:
+
+- **Brand colors** live in **Layer 1** (`BaseColor`). A brand can have yellow, blue, teal, purple, etc. as real colors.
+- **UI semantics** live in **Layer 2** (`SemanticColor`) and **Layer 3** (component intents like `destructive`, `positive`).
+
+Because of this, Kiskadee does **not** expose `secondary` or `tertiary` as global semantic colors:
+
+- What most design systems call a *secondary button* is, in Kiskadee, usually just a combination of:
+  - `semantic="primary"` or `semantic="neutral"`, with
+  - `tone="soft"` instead of `tone="solid"`.
+- A *tertiary button* is often just text with `primary` or `neutral` applied to `textColor`, without a strong `boxColor`.
+
+In other words, the "secondary/tertiary" UX is modeled by **tone and neutral usage**, not by extra global semantic color names.
+
+##### Real‑world example: Mercado Livre
+
+Mercado Livre is a good illustration of why Kiskadee avoids conflating brand and UI primaries:
+
+- In branding, the **yellow** is the clear primary color (logo, marketing, offline presence).
+- In the digital product UI, however, the **buttons are predominantly blue**, because blue over yellow backgrounds has better contrast and readability.
+
+In Kiskadee terms:
+
+- The brand can keep both **yellow** and **blue** as real colors in **Layer 1** (`BaseColor`).
+- For the **digital design system**, the segment can simply choose **`blue` as `primary`**, and use `yellow` freely as:
+  - `yellowLike` (for warnings/attention), or
+  - specific tokens for backgrounds/highlights.
+
+This way, Kiskadee models:
+
+- **Brand reality** (multiple important brand colors), and
+- **UI reality** (a single `primary` semantic color for actions),
+
+without inventing a global `secondary`/`tertiary` semantic color that rarely has a precise, consistent meaning across components.
 
 ---
 
@@ -170,10 +224,21 @@ This is **opinion based on real-world usage**, not theoretical completeness. If 
 
 ```typescript
 // Layer 1: Real colors (for palette generation)
-type BaseColor = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink' | 'gray';
+type BaseColor =
+  | 'red'
+  | 'orange'
+  | 'yellow'
+  | 'green'
+  | 'teal'
+  | 'cyan'
+  | 'blue'
+  | 'purple'
+  | 'pink'
+  | 'brown'
+  | 'black';
 
 // Layer 2: Semantic colors (already in @kiskadee/core)
-type SemanticColor = 'primary' | 'secondary' | 'neutral' | 'redLike' | 'greenLike' | 'yellowLike' | 'purpleLike';
+type SemanticColor = 'primary' | 'neutral' | 'redLike' | 'greenLike' | 'yellowLike' | 'purpleLike';
 
 // Layer 3: Component intents (defined per component)
 type ButtonIntent = 'primary' | 'neutral' | 'destructive' | 'positive';
