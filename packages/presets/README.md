@@ -1,0 +1,236 @@
+# @kiskadee/presets
+
+Official presets (tokens + schemas) for Kiskadee — a framework that generates and supports any design system.
+
+This package contains ready-to-use schema presets built on top of `@kiskadee/core`, including templates like iOS 26, Material Design 3, and more.
+
+---
+
+### Color Architecture: The 3-Layer System
+
+Kiskadee implements a robust 3-layer color architecture designed to provide maximum flexibility while maintaining semantic consistency across components. This system allows design systems to be fully customizable without sacrificing the benefits of inheritance and cascading changes.
+
+#### Overview
+
+```
+Layer 1: Real Colors       →  Layer 2: Semantic Colors  →  Layer 3: Component Intents
+─────────────────────────────────────────────────────────────────────────────────────
+red                        →  redLike                   →  Button.destructive
+                                                        →  Badge.attention
+                                                        
+green                      →  greenLike                 →  Button.positive
+                                                        
+purple                     →  purpleLike                →  Badge.new
+                                                        
+blue                       →  primary                   →  Button.primary
+                                                        
+gray                       →  neutral                   →  Button.neutral
+```
+
+---
+
+### Layer 1: Real Colors
+
+The foundation layer defines the actual color values. These are the raw HSLA color definitions that represent specific hues.
+
+```typescript
+// Examples of real colors
+type BaseColor = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink' | 'gray';
+```
+
+**Purpose**: Provide the actual color values that will be used throughout the design system.
+
+**When to modify**: When you want to adjust the specific tone/shade of a color globally (e.g., making red more orange-tinted).
+
+---
+
+### Layer 2: Semantic Colors (`-like`)
+
+The semantic layer provides general meaning to colors without enforcing specific hues. This abstraction allows flexibility in color choices while maintaining semantic consistency.
+
+```typescript
+type SemanticColor = 
+  | 'primary'      // Brand identity color
+  | 'secondary'    // Supporting brand color
+  | 'neutral'      // Text, backgrounds, borders (grayscale)
+  | 'redLike'      // Danger, error, urgent, notifications
+  | 'greenLike'    // Success, purchase, confirmation, profit
+  | 'yellowLike'   // Attention, warning, caution
+  | 'purpleLike';  // Novelty, special features, badges
+```
+
+#### Why `-like` Instead of `danger`, `success`, `warning`?
+
+The `-like` suffix is intentional and important:
+
+1. **Flexibility**: `redLike` can be red, orange, or any warm warning color — it's not forced to be exactly red.
+
+2. **Accuracy**: Terms like "danger" and "success" are imprecise:
+   - A red badge doesn't mean "danger" — it means "new notification"
+   - A green button doesn't mean "success" — it's an action with alternative emphasis to "primary"
+   - A red number in a bank statement means "withdrawal", not "danger"
+
+3. **Context independence**: The same semantic color (`redLike`) has different meanings in different components, which is handled by Layer 3.
+
+**When to modify**: When you want to swap an entire color family (e.g., making all "red-like" elements use orange instead).
+
+```typescript
+// Example: Change redLike to use orange
+redLike = orange  // All destructive buttons, attention badges, etc. become orange
+```
+
+---
+
+### Layer 3: Component Intents
+
+The intent layer provides context-specific meaning for each component. This is where the same semantic color can have different purposes depending on the component.
+
+```typescript
+// Button intents
+type ButtonIntent = 'primary' | 'neutral' | 'destructive' | 'positive';
+
+// Badge intents  
+type BadgeIntent = 'primary' | 'neutral' | 'attention' | 'new';
+
+// Avatar status
+type AvatarStatus = 'online' | 'offline' | 'busy' | 'away';
+```
+
+#### Why Different Intents Per Component?
+
+The same color means different things in different contexts:
+
+| Color | Button | Badge | Avatar | Bank Statement |
+|-------|--------|-------|--------|----------------|
+| Red-like | Destructive action | New notification | Offline/Busy | Withdrawal |
+| Green-like | Positive action | Verified | Online | Deposit |
+| Purple-like | — | New feature | — | — |
+
+Calling everything "danger" would be semantically incorrect.
+
+---
+
+### How the Cascade Works
+
+The 3-layer system uses **object references**, meaning changes automatically propagate through the chain:
+
+```
+red (Layer 1)
+  ↓ (referenced by)
+redLike (Layer 2)
+  ↓ (referenced by)
+Button.destructive (Layer 3)
+Badge.attention (Layer 3)
+```
+
+#### Customization Scenarios
+
+| Scenario | Action | Result |
+|----------|--------|--------|
+| Adjust red tone globally | Modify `red` color value | Everything using `redLike` updates automatically |
+| Use orange instead of red | Set `redLike = orange` | All red-like semantics become orange |
+| Purple badge, red button | Set `badge.attention = purpleLike` | Only badge changes; button stays red |
+| Direct color assignment | Set `badge.attention = purple` | Badge uses purple directly, skipping `-like` layer |
+
+---
+
+### Smart Defaults
+
+**Zero configuration required to start.** Everything comes pre-configured:
+
+```
+red → redLike → destructive (Button)
+               → attention (Badge)
+
+green → greenLike → positive (Button)
+
+purple → purpleLike → new (Badge)
+```
+
+Designers and developers can use the system immediately without understanding all three layers. The layers exist for **when customization is needed**, not as a barrier to entry.
+
+---
+
+### Not All Combinations Are Required
+
+An important design decision: **not every component needs every semantic color**.
+
+Based on research of major design systems (iOS, Material Design, Fluent, Carbon):
+
+- ✅ **Buttons**: `primary`, `neutral`, `destructive` (redLike), `positive` (greenLike)
+- ❌ **Buttons**: No yellow buttons, no purple buttons (not used in practice)
+- ✅ **Badges**: `primary`, `neutral`, `attention` (redLike or purpleLike)
+- ✅ **Inputs**: `error` (redLike), `success` (greenLike)
+
+This is **opinion based on real-world usage**, not theoretical completeness. If a specific design system needs a yellow button, it can be added via preset configuration.
+
+---
+
+### Type Definitions
+
+```typescript
+// Layer 1: Real colors (for palette generation)
+type BaseColor = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink' | 'gray';
+
+// Layer 2: Semantic colors (already in @kiskadee/core)
+type SemanticColor = 'primary' | 'secondary' | 'neutral' | 'redLike' | 'greenLike' | 'yellowLike' | 'purpleLike';
+
+// Layer 3: Component intents (defined per component)
+type ButtonIntent = 'primary' | 'neutral' | 'destructive' | 'positive';
+type BadgeIntent = 'primary' | 'neutral' | 'attention' | 'new';
+
+// Intent values can reference either layer
+type IntentValue = SemanticColor | BaseColor;
+
+// Configurable mapping per preset
+type IntentMapping = {
+  button: Record<ButtonIntent, SemanticColor>;
+  badge: Record<BadgeIntent, SemanticColor>;
+};
+```
+
+---
+
+### Visual Reference
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  Layer 1          │  Layer 2            │  Layer 3                         │
+│  (Real Colors)    │  (Semantic Colors)  │  (Component Intents)             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  red              │  redLike ───────────┼─→ Button.destructive             │
+│                   │           └─────────┼─→ Badge.attention                │
+│                   │                     │                                  │
+│  green            │  greenLike ─────────┼─→ Button.positive                │
+│                   │                     │                                  │
+│  purple           │  purpleLike ────────┼─→ Badge.new                      │
+│                   │                     │                                  │
+│  blue             │  primary ───────────┼─→ Button.primary                 │
+│                   │                     │                                  │
+│  gray             │  neutral ───────────┼─→ Button.neutral                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### Philosophy
+
+> "The system is **progressively revealed**: simple for those who want to use it, powerful for those who want to customize it."
+
+This architecture solves the tension between **flexibility** and **practicality** in design systems:
+
+1. **Flexibility**: Any color can be swapped at any level
+2. **Semantic consistency**: Colors maintain meaning across the system
+3. **Context awareness**: Same color, different meaning per component
+4. **No forced symmetry**: Components only support intents that make sense for them
+5. **Cascade by default**: Changes propagate automatically
+6. **Override when needed**: Any level can be customized independently
+
+---
+
+### Related Packages
+
+- `@kiskadee/core` — Platform-agnostic schema types and utilities
+- `@kiskadee/web-builder` — Generates CSS from presets
+- `@kiskadee/react-components` — React components using generated CSS
+- `@kiskadee/runtime` — Runtime color calculation for dynamic theming
