@@ -106,6 +106,26 @@ export type InteractionStateColorMap = {
   readOnly?: ColorValue;
 };
 
+/**
+ * Base hues supported by Kiskadee in the first layer (real colors).
+ *
+ * These represent generic color families without semantic meaning.
+ * They can be used as the source hues for segments (mainColor) and
+ * as building blocks for higher semantic layers (e.g., redLike).
+ */
+export type BaseColor =
+  | 'red'
+  | 'orange'
+  | 'yellow'
+  | 'green'
+  | 'teal'
+  | 'cyan'
+  | 'blue'
+  | 'purple'
+  | 'pink'
+  | 'brown'
+  | 'black';
+
 export type SemanticColor =
   | 'primary'
   | 'secondary'
@@ -166,17 +186,7 @@ export type ThemeColorPalette = ColorPalette;
 
 export type Segment = {
   name: string;
-  mainColor:
-    | 'red'
-    | 'orange'
-    | 'brown'
-    | 'yellow'
-    | 'green'
-    | 'cyan'
-    | 'blue'
-    | 'purple'
-    | 'pink'
-    | 'black';
+  mainColor: BaseColor;
   themes: Partial<Record<ThemeMode, ThemeColorPalette>>;
 };
 
