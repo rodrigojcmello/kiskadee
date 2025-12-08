@@ -17,7 +17,7 @@ function computeDisplayName(schema: Schema, segmentsObj: SchemaSegments): string
   const author = schema.author || '';
   const segName = schema.name || firstSegmentLabel(segmentsObj) || '';
   const major = majorVersionFromTuple(schema.version || []);
-  const left = [segName, major && String(major)].filter(Boolean).join(' ').trim();
+  const left = [segName, major > 1 ? String(major) : ''].filter(Boolean).join(' ').trim();
   return [left, author && `by ${author}`].filter(Boolean).join(' ').trim();
 }
 
