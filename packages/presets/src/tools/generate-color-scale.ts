@@ -157,20 +157,20 @@ export function generateColorScale(
 
   const scale: ColorScale = {};
 
-  // Range 0-10: 100% to 90% lightness (1% decrements)
-  for (let tone = 0; tone <= 10; tone += 1) {
+  // Range 0-15: 100% to 85% lightness (1% decrements)
+  for (let tone = 0; tone <= 15; tone += 1) {
     const lightness = 100 - tone;
     scale[tone as keyof ColorScale] = [hue, saturation, lightness, alpha];
   }
 
-  // Range 10-50: distribute from 90% to anchor lightness
-  const rangeBeforeAnchor = 90 - anchorLightness;
+  // Range 15-50: distribute from 85% to anchor lightness
+  const rangeBeforeAnchor = 85 - anchorLightness;
   const stepsBeforeAnchor = 4; // 20, 30, 40, 50
   const stepSizeBeforeAnchor = rangeBeforeAnchor / stepsBeforeAnchor;
 
-  scale[20] = [hue, saturation, Math.round(90 - stepSizeBeforeAnchor), alpha];
-  scale[30] = [hue, saturation, Math.round(90 - stepSizeBeforeAnchor * 2), alpha];
-  scale[40] = [hue, saturation, Math.round(90 - stepSizeBeforeAnchor * 3), alpha];
+  scale[20] = [hue, saturation, Math.round(85 - stepSizeBeforeAnchor), alpha];
+  scale[30] = [hue, saturation, Math.round(85 - stepSizeBeforeAnchor * 2), alpha];
+  scale[40] = [hue, saturation, Math.round(85 - stepSizeBeforeAnchor * 3), alpha];
   scale[50] = [hue, saturation, anchorLightness, alpha]; // Anchor (either original or centered at 50)
 
   // Range 50-100: distribute from anchor to 0% lightness
@@ -190,7 +190,7 @@ export function generateColorScale(
       const color = scale[tone];
       if (!color) continue;
 
-      const [h, s, l, a] = color;
+      const [h, s, l, a] = color as HSLA;
       const invertedLightness = 100 - l;
       scale[tone] = [h, s, invertedLightness, a];
     }
@@ -200,16 +200,11 @@ export function generateColorScale(
   const soft: ColorScaleLight = {};
   const solid: ColorScaleDark = {};
 
-  // Soft: 0–10 (step 1), then 15, 20, 25, 30
-  // Copy 0..10 directly
-  for (let t = 0; t <= 10; t += 1) {
+  // Soft: 0–15 (step 1), then 20, 25, 30
+  // Copy 0..15 directly
+  for (let t = 0; t <= 15; t += 1) {
     const c = scale[t as keyof ColorScale] as HSLA | undefined;
     if (c) soft[t as keyof ColorScaleLight] = c;
-  }
-  // Interpolate 15 between 10 and 20
-  if (scale[10] && scale[20]) {
-    const L15 = Math.round(((scale[10] as HSLA)[2] + (scale[20] as HSLA)[2]) / 2);
-    soft[15 as keyof ColorScaleLight] = [hue, saturation, L15, alpha];
   }
   // 20 from base scale
   if (scale[20]) {
@@ -225,10 +220,53 @@ export function generateColorScale(
     soft[30 as keyof ColorScaleLight] = scale[30] as HSLA;
   }
 
-  // Solid: 40–100 every 10%
-  for (const tone of [40, 50, 60, 70, 80, 90, 100] as const) {
-    const c = scale[tone];
-    if (c) solid[tone] = c;
+  // Solid track: always use the normalized DarkTrackTones grid 35–100 (step 5).
+  // We derive each solid tone by interpolating on top of the base `scale`
+  // tones, which encode the curved relationship around the anchor (tone 50).
+  const solidTones: DarkTrackTones[] = [35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
+
+  const baseStops = [30, 40, 50, 60, 70, 80, 90, 100];
+
+  for (const tone of solidTones) {
+    // Encontrar os dois stops da escala base que envolvem esse tom.
+    let lower = baseStops[0];
+    let upper = baseStops[baseStops.length - 1];
+
+    for (let i = 0; i < baseStops.length - 1; i += 1) {
+      const a = baseStops[i];
+      const b = baseStops[i + 1];
+      if (tone >= a && tone <= b) {
+        lower = a;
+        upper = b;
+        break;
+      }
+    }
+
+    const lowerColor = scale[lower as keyof ColorScale] as HSLA | undefined;
+    const upperColor = scale[upper as keyof ColorScale] as HSLA | undefined;
+
+    // Se algum dos extremos não existir por qualquer motivo, apenas pule.
+    if (!lowerColor || !upperColor) {
+      continue;
+    }
+
+    if (lower === upper || tone === lower) {
+      solid[tone] = [...lowerColor] as HSLA;
+      continue;
+    }
+    if (tone === upper) {
+      solid[tone] = [...upperColor] as HSLA;
+      continue;
+    }
+
+    const ratio = (tone - lower) / (upper - lower);
+
+    const h = Number((lowerColor[0] + (upperColor[0] - lowerColor[0]) * ratio).toFixed(2));
+    const s = Number((lowerColor[1] + (upperColor[1] - lowerColor[1]) * ratio).toFixed(2));
+    const l = Math.round(lowerColor[2] + (upperColor[2] - lowerColor[2]) * ratio);
+    const a = Number((lowerColor[3] + (upperColor[3] - lowerColor[3]) * ratio).toFixed(2));
+
+    solid[tone] = [h, s, l, a];
   }
 
   // Force absolute extremes so that tone 0 and 100 are truly neutral white/black.
@@ -243,11 +281,10 @@ export function generateColorScale(
     soft[0] = [0, 0, 100, alpha];
     solid[100] = [0, 0, 0, alpha];
   }
-
   return { soft, solid };
 }
 
-const solidToneOrder: DarkTrackTones[] = [40, 50, 60, 70, 80, 90, 100];
+const solidToneOrder: DarkTrackTones[] = [35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
 
 function applySaturationDrop(
   solid: ColorScaleDark,
@@ -267,14 +304,14 @@ function applySaturationDrop(
   if (count === 0) return;
 
   const dropPerTone = saturationDropTotal / count;
-  const anchor = solid[anchorTone];
+  const anchor = solid[anchorTone] as HSLA;
   if (!anchor) return;
 
   const baseSaturation = anchor[1];
 
   darkerTones.forEach((tone, index) => {
     const totalDrop = dropPerTone * (index + 1);
-    const next = solid[tone];
+    const next = solid[tone] as HSLA;
     if (!next) return;
 
     const newSaturation = Number((baseSaturation - totalDrop).toFixed(2));
@@ -304,14 +341,14 @@ function applyHueShift(
   if (count === 0) return;
 
   const step = hueShiftTotal / count;
-  const anchor = solid[anchorTone];
+  const anchor = solid[anchorTone] as HSLA;
   if (!anchor) return;
 
   const baseHue = anchor[0];
 
   darkerTones.forEach((tone, index) => {
     const totalShift = step * (index + 1);
-    const next = solid[tone];
+    const next = solid[tone] as HSLA;
     if (!next) return;
 
     const newHue = normalizeHue(baseHue + totalShift);
@@ -348,8 +385,8 @@ function applyLightnessStep(
     const tone = tones[i];
     const prevTone = tones[i - 1];
 
-    const prev = solid[prevTone];
-    const current = solid[tone];
+    const prev = solid[prevTone] as HSLA;
+    const current = solid[tone] as HSLA;
     if (!prev || !current) continue;
 
     const newLightness = Number((prev[2] - step).toFixed(2));
@@ -417,7 +454,7 @@ export function generateColorScaleWithLog(
         continue;
       }
 
-      if ((tone as DarkTrackTones) >= 40 && (tone as DarkTrackTones) <= 100) {
+      if ((tone as DarkTrackTones) >= 35 && (tone as DarkTrackTones) <= 100) {
         const key = tone as DarkTrackTones;
         // For overrides we preserve the full HSLA precision so that the
         // resulting HEX matches the official design system values as closely
@@ -439,7 +476,9 @@ export function generateColorScaleWithLog(
   const originalDarkness = 100 - originalLightness;
   const isTooLightForAnchor = originalLightness > 70;
 
-  const darkTones: (keyof ColorScaleDark)[] = [40, 50, 60, 70, 80, 90, 100];
+  const darkTones: (keyof ColorScaleDark)[] = [
+    35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100
+  ];
 
   function getNearestDarkTone(darkness: number): keyof ColorScaleDark {
     let bestTone = darkTones[0];
@@ -463,7 +502,7 @@ export function generateColorScaleWithLog(
   // color), so we do not use the nearest tone concept there.
   const usageAnchorTone =
     isPrioritizingScale && !isTooLightForAnchor
-      ? (getNearestDarkTone(originalDarkness) as 40 | 50 | 60 | 70 | 80 | 90 | 100)
+      ? (getNearestDarkTone(originalDarkness) as DarkTrackTones)
       : 50;
 
   // Build pretty lines for soft and solid
@@ -472,10 +511,12 @@ export function generateColorScaleWithLog(
 
   // Soft header
   softLines.push('  soft: {');
-  softLines.push('    // Soft track: 0–10 (every 1%), then 15, 20, 25, 30');
-  const softKeysForLog = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30] as const;
+  softLines.push('    // Soft track: 0–15 (every 1%), then 20, 25, 30');
+  const softKeysForLog = [
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 25, 30
+  ] as const;
   for (const tone of softKeysForLog) {
-    const color = tracks.soft[tone as keyof ColorScaleLight];
+    const color = tracks.soft[tone as keyof ColorScaleLight] as HSLA;
     const baseColor = baseTracks.soft[tone as keyof ColorScaleLight];
     if (!color) continue;
 
@@ -483,6 +524,19 @@ export function generateColorScaleWithLog(
     const isOverridden = overriddenTones.has(t);
 
     const comment = (() => {
+      // Para prioritizeLightnessScale=false, a partir da posição 16 (tons 16–30)
+      // a relação "índice ≈ darkness%" deixa de ser linear por causa da curva
+      // em direção ao anchor (50). Nesses tons removemos o rótulo de darkness
+      // para evitar informação imprecisa no arquivo gerado.
+      if (!isPrioritizingScale && t >= 16 && t <= 30) {
+        if (isOverridden && baseColor) {
+          const generatedHex = convertHslaToHex(baseColor as HSLA);
+          const finalHex = convertHslaToHex(color as HSLA);
+          return ` // OVERRIDDEN: generated ${generatedHex} was replaced by ${finalHex}`;
+        }
+        return '';
+      }
+
       // Soft track comments mirror the solid track behaviour for overrides: any
       // tone that was replaced via the overrides map should clearly document
       // which HEX was originally generated and which one replaced it.
@@ -522,31 +576,32 @@ export function generateColorScaleWithLog(
   const anchor = tracks.solid[50];
   solidLines.push('  solid: {');
   if (anchor?.[2] !== undefined) {
+    solidLines.push(
+      `    // Solid track: 35–100 every 5% darkness (35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100)`
+    );
+
     if (isPrioritizingScale) {
-      solidLines.push(
-        `    // Solid track: 40–100 every 10% darkness (40, 50, 60, 70, 80, 90, 100)`
-      );
       if (!isTooLightForAnchor) {
         solidLines.push(
           `    // Original color darkness ≈ ${originalDarkness}% → usage anchor tone ${usageAnchorTone}`
         );
       }
+    } else if (!isTooLightForAnchor) {
+      solidLines.push(`    // Tone 50 is the anchor color (exactly the input hex lightness)`);
     } else {
       solidLines.push(
-        `    // Solid track: 40–100 every 10% darkness (40, 50, 60, 70, 80, 90, 100)`
+        `    // Input color is very light (L=${originalLightness}%), so tone 50 was re-centered to L=50 instead of using the original lightness`
       );
-      if (!isTooLightForAnchor) {
-        solidLines.push(`    // Tone 50 is the anchor color (exactly the input hex lightness)`);
-      } else {
-        solidLines.push(
-          `    // Input color is very light (L=${originalLightness}%), so tone 50 was re-centered to L=50 instead of using the original lightness`
-        );
-      }
     }
   }
-  for (const tone of [40, 50, 60, 70, 80, 90, 100] as const) {
-    const color = tracks.solid[tone];
-    const baseColor = baseTracks.solid[tone];
+
+  const solidKeysForLog: DarkTrackTones[] = [
+    35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100
+  ];
+
+  for (const tone of solidKeysForLog) {
+    const color = tracks.solid[tone] as HSLA;
+    const baseColor = baseTracks.solid[tone] as HSLA;
     if (!color) continue;
     const comment = (() => {
       const darknessRaw = 100 - color[2];
@@ -629,13 +684,13 @@ export function generateColorScaleWithLog(
   // this file so it can be easily regenerated later. We keep backwards
   // compatibility with the previous 3-argument form when no shaping config is
   // provided so that existing tests and documentation remain valid.
-  let headerLines: string[] = [];
+  const headerLines: string[] = [];
 
   const hasOverrides = !!overrides && Object.keys(overrides).length > 0;
 
   if (!shaping) {
     // 4-argument form without shaping: generateColorScaleWithLog(hex, prioritize, overrides, invertScale)
-    if (!hasOverrides) {
+    if (hasOverrides === false) {
       headerLines.push(
         `// Generated by generateColorScaleWithLog('${hexColor}', ${prioritizeLightnessScale}, {}, ${invertScale})`
       );
@@ -644,7 +699,7 @@ export function generateColorScaleWithLog(
         `// Generated by generateColorScaleWithLog('${hexColor}', ${prioritizeLightnessScale}, {`
       );
 
-      const sortedEntries = Object.entries(overrides!).sort(([a], [b]) => Number(a) - Number(b));
+      const sortedEntries = Object.entries(overrides).sort(([a], [b]) => Number(a) - Number(b));
 
       for (const [tone, hex] of sortedEntries) {
         headerLines.push(`//   ${tone}: '${hex}',`);
@@ -663,6 +718,7 @@ export function generateColorScaleWithLog(
         `// Generated by generateColorScaleWithLog('${hexColor}', ${prioritizeLightnessScale}, {`
       );
 
+      // biome-ignore lint/style/noNonNullAssertion: ...
       const sortedEntries = Object.entries(overrides!).sort(([a], [b]) => Number(a) - Number(b));
 
       for (const [tone, hex] of sortedEntries) {
@@ -716,13 +772,13 @@ export function generateColorScaleWithLog(
 
 // // Fluent Neutral
 generateColorScaleWithLog(
-  '#fff',
+  '#000',
   true,
   {
-    40: '#5C5C5C'
-  },
-  undefined,
-  true
+    20: '#C6C6C6'
+  }
+  // undefined,
+  // true
 );
 
 // // Fluent 2 by Kiskadee - Primary
