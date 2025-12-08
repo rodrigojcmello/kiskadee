@@ -197,41 +197,6 @@ export function Button() {
           </div>
         </div>
 
-        <div className={s['interaction-state']}>
-          <h3>Size / Scale</h3>
-          <div className={s['example-states']}>
-            <KButton scale="s:sm:2">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName}>Small 2</SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton scale="s:sm:1">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName}>Small</SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton scale="s:md:1">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName}>Medium</SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton scale="s:lg:1">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName}>Large</SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton scale="s:lg:2">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName}>Large 2</SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton scale="s:lg:3">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName}>Large 3</SmoothText>
-              </KButton.Label>
-            </KButton>
-          </div>
-        </div>
         <div>
           <h3>Selected</h3>
           <KButton controlState={true}>
@@ -255,6 +220,7 @@ export function Button() {
             </KButton.Label>
           </KButton>
         </div>
+
         <div>
           <h3>Shadow</h3>
           <KButton shadow={true}>
@@ -283,23 +249,39 @@ export function Button() {
             </KButton.Label>
           </KButton>
         </div>
-        <div>
-          <h3>Compound Components</h3>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <KButton tone="solid" semantic="primary">
-              <KButton.Icon>
-                <span aria-hidden>🚀</span>
-              </KButton.Icon>
+
+        <div className={s['interaction-state']}>
+          <h3>Size / Scale</h3>
+          <div className={s['example-states']}>
+            <KButton scale="s:sm:2" semantic="primary" tone="solid">
               <KButton.Label>
-                <SmoothText triggerKey={fontName}>Compound</SmoothText>
+                <SmoothText triggerKey={fontName}>Small 2</SmoothText>
               </KButton.Label>
             </KButton>
-
-            <KButton tone="soft" semantic="primary">
-              <KButton.Label>Reverse</KButton.Label>
-              <KButton.Icon>
-                <span aria-hidden>👈</span>
-              </KButton.Icon>
+            <KButton scale="s:sm:1" semantic="primary" tone="solid">
+              <KButton.Label>
+                <SmoothText triggerKey={fontName}>Small</SmoothText>
+              </KButton.Label>
+            </KButton>
+            <KButton scale="s:md:1" semantic="primary" tone="solid">
+              <KButton.Label>
+                <SmoothText triggerKey={fontName}>Medium</SmoothText>
+              </KButton.Label>
+            </KButton>
+            <KButton scale="s:lg:1" semantic="primary" tone="solid">
+              <KButton.Label>
+                <SmoothText triggerKey={fontName}>Large</SmoothText>
+              </KButton.Label>
+            </KButton>
+            <KButton scale="s:lg:2" semantic="primary" tone="solid">
+              <KButton.Label>
+                <SmoothText triggerKey={fontName}>Large 2</SmoothText>
+              </KButton.Label>
+            </KButton>
+            <KButton scale="s:lg:3" semantic="primary" tone="solid">
+              <KButton.Label>
+                <SmoothText triggerKey={fontName}>Large 3</SmoothText>
+              </KButton.Label>
             </KButton>
           </div>
         </div>

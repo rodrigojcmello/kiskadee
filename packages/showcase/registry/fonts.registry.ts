@@ -53,6 +53,12 @@ export const FONTS: FontDef[] = [
     label: 'Ubuntu',
     family: '"Ubuntu", sans-serif',
     googleFontParams: 'Ubuntu:wght@400;500;700'
+  },
+  {
+    key: 'ibm-plex-sans',
+    label: 'IBM Plex Sans',
+    family: '"IBM Plex Sans", sans-serif',
+    googleFontParams: 'IBM+Plex+Sans:wght@400;500;700'
   }
 ];
 

@@ -1,0 +1,18 @@
+{
+  "button": {
+    "e1": {
+      "c": {
+        "primary": {
+          "d": "ci-g ci-j ci-k ci-i ci-h"
+        }
+      }
+    },
+    "e2": {
+      "c": {
+        "primary": {
+          "d": "ci-aa ci-ab"
+        }
+      }
+    }
+  }
+}

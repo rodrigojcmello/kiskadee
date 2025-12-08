@@ -1,0 +1,19 @@
+{
+  "key": "carbon-1-ibm",
+  "displayName": "Carbon by IBM",
+  "author": "IBM",
+  "schemaName": "Carbon",
+  "version": [
+    1,
+    0,
+    0
+  ],
+  "segments": [
+    "default"
+  ],
+  "themes": {
+    "default": [
+      "light"
+    ]
+  }
+}

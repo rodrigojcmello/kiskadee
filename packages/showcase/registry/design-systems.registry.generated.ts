@@ -33,6 +33,7 @@ function loadExtraJson(path: string): Promise<ExtraArtifactsJSON> {
 }
 
 export const coreMaps = {
+  'carbon-1-ibm': () => loadJsonModule('/build/carbon-1-ibm/core.kiskadee.json'),
   'fluent-2-kiskadee': () => loadJsonModule('/build/fluent-2-kiskadee/core.kiskadee.json'),
   'fluent-2-microsoft': () => loadJsonModule('/build/fluent-2-microsoft/core.kiskadee.json'),
   'ios-26-apple': () => loadJsonModule('/build/ios-26-apple/core.kiskadee.json'),
@@ -41,6 +42,7 @@ export const coreMaps = {
 } as const;
 
 export const paletteMaps = {
+  'carbon-1-ibm|default|light': () => loadJsonModule('/build/carbon-1-ibm/default.light.kiskadee.json'),
   'fluent-2-kiskadee|default|light': () => loadJsonModule('/build/fluent-2-kiskadee/default.light.kiskadee.json'),
   'fluent-2-kiskadee|default|dark': () => loadJsonModule('/build/fluent-2-kiskadee/default.dark.kiskadee.json'),
   'fluent-2-microsoft|default|light': () => loadJsonModule('/build/fluent-2-microsoft/default.light.kiskadee.json'),
@@ -54,6 +56,7 @@ export const paletteMaps = {
 } as const;
 
 export const extraMaps = {
+  'carbon-1-ibm|default|light': () => loadExtraJson('/build/carbon-1-ibm/extra.default.light.kiskadee.json'),
   'fluent-2-kiskadee|default|light': () => loadExtraJson('/build/fluent-2-kiskadee/extra.default.light.kiskadee.json'),
   'fluent-2-kiskadee|default|dark': () => loadExtraJson('/build/fluent-2-kiskadee/extra.default.dark.kiskadee.json'),
   'fluent-2-microsoft|default|light': () => loadExtraJson('/build/fluent-2-microsoft/extra.default.light.kiskadee.json'),
@@ -63,6 +66,12 @@ export const extraMaps = {
 } as const;
 
 export const paletteIndex = {
+  'carbon-1-ibm': {
+    segments: ['default'],
+    themesBySegment: {
+      "default": ['light']
+    }
+  },
   'fluent-2-kiskadee': {
     segments: ['default'],
     themesBySegment: {
@@ -97,6 +106,7 @@ export const paletteIndex = {
 } as const;
 
 export const designSystemMeta = {
+  'carbon-1-ibm': { displayName: "Carbon by IBM" },
   'fluent-2-kiskadee': { displayName: "Fluent 2 by Kiskadee" },
   'fluent-2-microsoft': { displayName: "Fluent 2 by Microsoft" },
   'ios-26-apple': { displayName: "iOS 26 by Apple" },
