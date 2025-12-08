@@ -4,11 +4,17 @@ import './SmoothText.scss';
 interface SmoothTextProps {
   children: ReactNode;
   triggerKey?: string;
+  /**
+   * Controls the horizontal alignment of the text within its container.
+   * Useful for animating alignment changes (e.g., center -> left) when switching themes/presets.
+   * When provided, the component takes full width (100%).
+   */
+  align?: 'left' | 'center';
 }
 
 const ANIMATION_DURATION = 600;
 
-export function SmoothText({ children, triggerKey }: SmoothTextProps) {
+export function SmoothText({ children, triggerKey, align }: SmoothTextProps) {
   const [current, setCurrent] = useState(children);
   const [previous, setPrevious] = useState<ReactNode | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -37,7 +43,7 @@ export function SmoothText({ children, triggerKey }: SmoothTextProps) {
   }, [triggerKey, children, current]);
 
   return (
-    <span className="k-smooth-text">
+    <span className="k-smooth-text" data-align={align}>
       {previous && (
         <span className="k-smooth-text__item k-smooth-text__exiting" aria-hidden="true">
           {previous}

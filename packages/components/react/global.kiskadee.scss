@@ -33,7 +33,7 @@ body {
 
 /* Macro DS/theme transitions ("wow" effect) */
 .k-wow * {
-  transition-property: background-color, padding, margin, border-color, border-width, color, font-size, border-radius, box-shadow, outline !important;
+  transition-property: background-color, padding, margin, border-color, border-width, color, font-size, border-radius, box-shadow, outline, grid-template-columns !important;
   transition-duration: var(--k-dur-theme) !important;
   transition-timing-function: var(--k-ease-std) !important;
 }
