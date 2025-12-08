@@ -162,9 +162,44 @@ export type ColorSchema = Partial<Record<ColorProperty, ColorEntry>>;
 
 export type ColorScale = Partial<Record<LightTrackTones | DarkTrackTones, SolidColor>>;
 
-export type LightTrackTones = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 15 | 20 | 25 | 30;
+// Soft track tones: 0–15 (step 1), then 20, 25, 30
+export type LightTrackTones =
+  | 0
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 11
+  | 12
+  | 13
+  | 14
+  | 15
+  | 20
+  | 25
+  | 30;
 
-export type DarkTrackTones = 40 | 50 | 60 | 70 | 80 | 90 | 100;
+// Dark track tones: 35–100 (step 5)
+export type DarkTrackTones =
+  | 35
+  | 40
+  | 45
+  | 50
+  | 55
+  | 60
+  | 65
+  | 70
+  | 75
+  | 80
+  | 85
+  | 90
+  | 95
+  | 100;
 
 export type ColorScaleLight = Partial<Record<LightTrackTones, SolidColor>>;
 export type ColorScaleDark = Partial<Record<DarkTrackTones, SolidColor>>;

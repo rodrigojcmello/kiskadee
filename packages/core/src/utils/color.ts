@@ -14,11 +14,46 @@ const modeFromShort = (m: ModeKeyShort) => (m === 'l' ? 'light' : 'dark');
 function resolveSeriesAndKey(
   tone: number
 ): { series: 'soft'; key: LightTrackTones } | { series: 'solid'; key: DarkTrackTones } {
-  // New normalized grids (Option B):
-  // soft: 0–10 (step 1) then 15, 20, 25, 30
-  // solid: 40, 50, 60, 70, 80, 90, 100
-  const softKeys: LightTrackTones[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30] as const;
-  const solidKeys: DarkTrackTones[] = [40, 50, 60, 70, 80, 90, 100] as const;
+  // Normalized grids:
+  // soft: 0–15 (step 1), then 20, 25, 30
+  // solid: 35–100 (step 5)
+  const softKeys: LightTrackTones[] = [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    20,
+    25,
+    30
+  ] as const;
+  const solidKeys: DarkTrackTones[] = [
+    35,
+    40,
+    45,
+    50,
+    55,
+    60,
+    65,
+    70,
+    75,
+    80,
+    85,
+    90,
+    95,
+    100
+  ] as const;
 
   if (tone <= 30) {
     const clamped = Math.max(0, Math.min(30, Math.round(tone)));
@@ -35,7 +70,7 @@ function resolveSeriesAndKey(
     return { series: 'soft', key: best };
   }
 
-  const clamped = Math.max(40, Math.min(100, Math.round(tone)));
+  const clamped = Math.max(35, Math.min(100, Math.round(tone)));
   let best = solidKeys[0];
   let bestDiff = Math.abs(clamped - best);
   for (const k of solidKeys) {
