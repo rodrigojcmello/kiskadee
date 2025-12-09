@@ -1,10 +1,6 @@
 import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/core';
+import type { Manifest as DesignSystemManifest } from '@kiskadee/web-builder/types';
 import { createContext, useContext } from 'react';
-
-export type DesignSystemManifest = {
-  displayName?: string;
-  [key: string]: unknown;
-};
 
 export type KiskadeeContextValue = {
   classesMap: ComponentClassNameMapJSON;

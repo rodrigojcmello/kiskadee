@@ -13,7 +13,8 @@
   "sideEffects": false,
   "dependencies": {
     "@kiskadee/core": "workspace:^",
-    "@kiskadee/react-headless": "workspace:^"
+    "@kiskadee/react-headless": "workspace:^",
+    "@kiskadee/web-builder": "workspace:^"
   },
   "peerDependencies": {
     "react": ">=18",
