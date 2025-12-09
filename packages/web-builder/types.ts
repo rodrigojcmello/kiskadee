@@ -11,9 +11,17 @@ export type {
 
 // JSON structure produced by phase-8 writeExtraArtifacts step.
 //
-// Currently it exposes the focusColor token resolved per design system,
+// Currently, it exposes the focusColor token resolved per design system,
 // segment, and theme, plus an optional background color.
 export type ExtraArtifactsJSON = {
-	focusColor: string;
-	background?: string;
+  focusColor: string;
+  background?: string;
 };
+
+// Manifest types (phase-7 publishMetadata) describing high-level
+// capabilities by design system.
+export type {
+  Manifest,
+  ManifestComponent,
+  ManifestComponentState
+} from './src/phase-7-publish-metadata/manifestTypes';

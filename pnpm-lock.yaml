@@ -29,6 +29,9 @@ importers:
       '@kiskadee/react-headless':
         specifier: workspace:^
         version: link:../../headless/react
+      '@kiskadee/web-builder':
+        specifier: workspace:^
+        version: link:../../web-builder
       react:
         specifier: '>=18'
         version: 19.2.0

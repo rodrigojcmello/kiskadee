@@ -1,6 +1,11 @@
 import { copyFile, mkdir, readFile, writeFile, cp } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import type { Schema, SchemaSegments, ThemeMode } from '@kiskadee/core';
+import type {
+  Manifest,
+  ManifestComponent,
+  ManifestComponentState
+} from './manifestTypes';
 
 function majorVersionFromTuple(v: [number, number, number] | number[]): number {
   return Array.isArray(v) && v.length > 0 ? Number(v[0]) : 0;
@@ -37,15 +42,118 @@ function discoverSegmentsThemes(segmentsObj: SchemaSegments): {
   return { segments, themes };
 }
 
-export type Manifest = {
-  key: string;
-  displayName: string;
-  author: string | null;
-  schemaName: string | null;
-  version: [number, number, number] | null;
-  segments: string[];
-  themes: Record<string, string[]>;
-};
+function buildButtonScale(schema: Schema): ManifestComponent['scale'] | undefined {
+  const components = (schema as any).components as Record<string, any> | undefined;
+  const button = components?.button;
+  const elements = button?.elements as Record<string, any> | undefined;
+  if (!elements) return undefined;
+
+  const scaleKeys = new Set<string>();
+
+  for (const el of Object.values(elements)) {
+    const scales = (el as any).scales as Record<string, Record<string, number>> | undefined;
+    if (!scales) continue;
+
+    for (const scaleMap of Object.values(scales)) {
+      for (const key of Object.keys(scaleMap)) {
+        scaleKeys.add(key);
+      }
+    }
+  }
+
+  if (!scaleKeys.size) return undefined;
+
+  const out: Record<string, true> = {};
+  for (const key of scaleKeys) {
+    out[key] = true;
+  }
+  return out;
+}
+
+function buildButtonState(schema: Schema): ManifestComponentState | undefined {
+  const components = (schema as any).components as Record<string, any> | undefined;
+  const button = components?.button;
+  const elements = button?.elements as Record<string, any> | undefined;
+  if (!elements) return undefined;
+
+  const stateMap: ManifestComponentState = {};
+
+  const ensureToneSet = (semantic: string, tone: string): Set<string> => {
+    const bySemantic = (stateMap[semantic] = stateMap[semantic] || {});
+    const bucket = (bySemantic[tone] = bySemantic[tone] || {});
+    // We use a Set during computation, but the final structure must be
+    // Record<string, true>. To avoid carrying Sets inside the public
+    // type, we keep a local Map from semantic/tone to Set and then
+    // materialise into stateMap at the end.
+    // For simplicity, we will store states temporarily in a parallel
+    // map.
+    return new Set<string>(Object.keys(bucket));
+  };
+
+  // Temporary accumulator so we can use Set semantics while
+  // computing, then convert to the ManifestComponentState
+  // structure at the end.
+  const tmp: Record<string, Record<string, Set<string>>> = {};
+
+  const addState = (semantic: string, tone: string, stateKey: string) => {
+    if (!tmp[semantic]) tmp[semantic] = {};
+    if (!tmp[semantic]![tone]) tmp[semantic]![tone] = new Set<string>();
+    tmp[semantic]![tone]!.add(stateKey);
+  };
+
+  for (const el of Object.values(elements)) {
+    const palettes = (el as any).palettes as
+      | Record<string, Record<string, { boxColor?: any; textColor?: any }>>
+      | undefined;
+    if (!palettes) continue;
+
+    for (const seg of Object.values(palettes)) {
+      for (const theme of Object.values(seg)) {
+        const boxColor = (theme as any).boxColor as Record<string, any> | undefined;
+        const textColor = (theme as any).textColor as Record<string, any> | undefined;
+
+        // boxColor: semantic -> tone -> { stateKey: value }
+        if (boxColor) {
+          for (const [semantic, byTone] of Object.entries(boxColor)) {
+            for (const [tone, statesObj] of Object.entries(byTone as Record<string, any>)) {
+              for (const stateKey of Object.keys(statesObj as Record<string, any>)) {
+                addState(semantic, tone, stateKey);
+              }
+            }
+          }
+        }
+
+        // textColor: semantic -> tone -> { stateKey: value }
+        if (textColor) {
+          for (const [semantic, byTone] of Object.entries(textColor)) {
+            for (const [tone, statesObj] of Object.entries(byTone as Record<string, any>)) {
+              for (const stateKey of Object.keys(statesObj as Record<string, any>)) {
+                addState(semantic, tone, stateKey);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Materialise tmp (with Sets) into the final ManifestComponentState
+  const semanticEntries = Object.entries(tmp);
+  if (!semanticEntries.length) return undefined;
+
+  for (const [semantic, tones] of semanticEntries) {
+    stateMap[semantic] = stateMap[semantic] || {};
+    for (const [tone, statesSet] of Object.entries(tones)) {
+      const statesRecord: Record<string, true> = {};
+      for (const st of statesSet) {
+        statesRecord[st] = true;
+      }
+      stateMap[semantic]![tone] = statesRecord;
+    }
+  }
+
+  return Object.keys(stateMap).length ? stateMap : undefined;
+}
 
 export async function publishMetadata(params: {
   schema: Schema;
@@ -66,8 +174,25 @@ export async function publishMetadata(params: {
     schemaName: schema.name ?? null,
     version: schema.version ?? null,
     segments: segKeys,
-    themes
+    themes,
+    components: {}
   };
+
+  // Derive component-level metadata from the schema. This keeps the
+  // manifest focused on high-level capabilities instead of duplicating
+  // the full schema structure. Absence of keys means the information is
+  // not defined or not applicable.
+  const buttonScale = buildButtonScale(schema);
+  const buttonState = buildButtonState(schema);
+
+  if (buttonScale || buttonState) {
+    manifest.components = manifest.components ?? {};
+    manifest.components.button = {
+      ...(manifest.components.button ?? {}),
+      ...(buttonScale ? { scale: buttonScale } : {}),
+      ...(buttonState ? { state: buttonState } : {})
+    };
+  }
 
   const buildDir = resolve(baseBuildDir, outDirSlug);
   await mkdir(buildDir, { recursive: true });
