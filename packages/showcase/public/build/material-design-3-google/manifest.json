@@ -15,5 +15,36 @@
     "default": [
       "light"
     ]
+  },
+  "components": {
+    "button": {
+      "scale": {
+        "s:sm:1": true,
+        "s:md:1": true,
+        "s:lg:1": true,
+        "s:lg:2": true,
+        "s:lg:3": true
+      },
+      "state": {
+        "primary": {
+          "soft": {
+            "rest": true,
+            "hover": true,
+            "pressed": true,
+            "disabled": true,
+            "focus": true,
+            "selected": true
+          },
+          "solid": {
+            "rest": true,
+            "hover": true,
+            "pressed": true,
+            "disabled": true,
+            "focus": true,
+            "selected": true
+          }
+        }
+      }
+    }
   }
 }

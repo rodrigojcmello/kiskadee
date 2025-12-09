@@ -4,10 +4,23 @@ import { Button as KButton, SmoothText, useKiskadee } from '@kiskadee/react-comp
 import s from './Button.module.scss';
 
 export function Button() {
-  const { fontName, designSystem } = useKiskadee();
+  const { fontName, designSystem, designSystemMeta } = useKiskadee();
 
   const isCarbon = designSystem === 'carbon-1-ibm';
   const alignment = isCarbon ? 'left' : 'center';
+
+  // Manifest-driven capabilities for the current design system.
+  // Se o metadata estiver ausente, caímos no fallback que exibe todos
+  // os estados (comportamento atual), mantendo compatibilidade com
+  // builds antigos.
+  const manifestForDS = designSystemMeta[designSystem];
+  const buttonMeta = manifestForDS?.components?.button;
+  const primarySolidState = buttonMeta?.state?.['primary']?.['solid'];
+
+  const hasPrimarySolidState = (state: string) => {
+    if (!primarySolidState) return true;
+    return Boolean(primarySolidState[state]);
+  };
 
   return (
     <section>
@@ -27,48 +40,60 @@ export function Button() {
         <div className={s['interaction-state']}>
           <h3>Interaction States - Primary (Solid)</h3>
           <div className={s['example-states']}>
-            <KButton tone="solid" semantic="primary">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Rest
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton tone="solid" semantic="primary" status="hover">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Hover
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton tone="solid" semantic="primary" status="focus">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Focus
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton tone="solid" semantic="primary" status="pressed">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Pressed
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton tone="solid" semantic="primary" controlState={true}>
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Selected
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton tone="solid" semantic="primary" status="disabled">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Disabled
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
+            {hasPrimarySolidState('rest') && (
+              <KButton tone="solid" semantic="primary">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Rest
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {hasPrimarySolidState('hover') && (
+              <KButton tone="solid" semantic="primary" status="hover">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Hover
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {hasPrimarySolidState('focus') && (
+              <KButton tone="solid" semantic="primary" status="focus">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Focus
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {hasPrimarySolidState('pressed') && (
+              <KButton tone="solid" semantic="primary" status="pressed">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Pressed
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {hasPrimarySolidState('selected') && (
+              <KButton tone="solid" semantic="primary" controlState={true}>
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Selected
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {hasPrimarySolidState('disabled') && (
+              <KButton tone="solid" semantic="primary" status="disabled">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Disabled
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
           </div>
         </div>
         <div className={s['interaction-state']}>

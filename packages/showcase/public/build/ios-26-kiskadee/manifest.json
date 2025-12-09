@@ -21,5 +21,60 @@
       "light",
       "dark"
     ]
+  },
+  "components": {
+    "button": {
+      "scale": {
+        "s:sm:1": true,
+        "s:md:1": true,
+        "s:lg:1": true
+      },
+      "state": {
+        "primary": {
+          "soft": {
+            "rest": true,
+            "hover": true,
+            "focus": true,
+            "pressed": true,
+            "disabled": true,
+            "selected": true
+          },
+          "solid": {
+            "rest": true,
+            "hover": true,
+            "focus": true,
+            "pressed": true,
+            "disabled": true
+          }
+        },
+        "neutral": {
+          "soft": {
+            "rest": true,
+            "hover": true,
+            "focus": true,
+            "pressed": true,
+            "disabled": true,
+            "selected": true
+          }
+        },
+        "redLike": {
+          "soft": {
+            "rest": true,
+            "hover": true,
+            "focus": true,
+            "pressed": true,
+            "disabled": true,
+            "selected": true
+          },
+          "solid": {
+            "rest": true,
+            "hover": true,
+            "pressed": true,
+            "disabled": true,
+            "focus": true
+          }
+        }
+      }
+    }
   }
 }

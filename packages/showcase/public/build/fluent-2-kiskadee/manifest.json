@@ -16,5 +16,26 @@
       "light",
       "dark"
     ]
+  },
+  "components": {
+    "button": {
+      "scale": {
+        "s:sm:1": true,
+        "s:md:1": true,
+        "s:lg:1": true
+      },
+      "state": {
+        "primary": {
+          "solid": {
+            "rest": true,
+            "hover": true,
+            "focus": true,
+            "pressed": true,
+            "disabled": true,
+            "selected": true
+          }
+        }
+      }
+    }
   }
 }
