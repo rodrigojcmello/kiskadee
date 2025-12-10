@@ -16,11 +16,12 @@ export function Button() {
   // builds antigos.
   const manifestForDS = designSystemMeta[designSystem];
   const buttonMeta = manifestForDS?.components?.button;
-  const primarySolidState = buttonMeta?.state?.['primary']?.['solid'];
 
-  const hasPrimarySolidState = (state: string) => {
-    if (!primarySolidState) return true;
-    return Boolean(primarySolidState[state]);
+  const hasState = (semantic: string, tone: string, state: string) => {
+    if (!buttonMeta?.state) return true;
+    const group = buttonMeta.state[semantic]?.[tone];
+    if (!group) return false;
+    return Boolean(group[state]);
   };
 
   return (
@@ -41,7 +42,7 @@ export function Button() {
         <div className={s['interaction-state']}>
           <h3>Interaction States - Primary (Solid)</h3>
           <div className={s['example-states']}>
-            {hasPrimarySolidState('rest') ? (
+            {hasState('primary', 'solid', 'rest') ? (
               <KButton tone="solid" semantic="primary">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -54,7 +55,7 @@ export function Button() {
                 <Icon name="NoSign" width={24} height={24} />
               </div>
             )}
-            {hasPrimarySolidState('hover') ? (
+            {hasState('primary', 'solid', 'hover') ? (
               <KButton tone="solid" semantic="primary" status="hover">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -67,7 +68,7 @@ export function Button() {
                 <Icon name="NoSign" width={24} height={24} />
               </div>
             )}
-            {hasPrimarySolidState('focus') ? (
+            {hasState('primary', 'solid', 'focus') ? (
               <KButton tone="solid" semantic="primary" status="focus">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -80,7 +81,7 @@ export function Button() {
                 <Icon name="NoSign" width={24} height={24} />
               </div>
             )}
-            {hasPrimarySolidState('pressed') ? (
+            {hasState('primary', 'solid', 'pressed') ? (
               <KButton tone="solid" semantic="primary" status="pressed">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -93,7 +94,7 @@ export function Button() {
                 <Icon name="NoSign" width={24} height={24} />
               </div>
             )}
-            {hasPrimarySolidState('selected') ? (
+            {hasState('primary', 'solid', 'selected') ? (
               <KButton tone="solid" semantic="primary" controlState={true}>
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -106,7 +107,7 @@ export function Button() {
                 <Icon name="NoSign" width={24} height={24} />
               </div>
             )}
-            {hasPrimarySolidState('disabled') ? (
+            {hasState('primary', 'solid', 'disabled') ? (
               <KButton tone="solid" semantic="primary" status="disabled">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -124,48 +125,84 @@ export function Button() {
         <div className={s['interaction-state']}>
           <h3>Interaction States - Primary (Soft)</h3>
           <div className={s['example-states']}>
-            <KButton tone="soft" semantic="primary">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Rest
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton tone="soft" semantic="primary" status="hover">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Hover
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton tone="soft" semantic="primary" status="focus">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Focus
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton tone="soft" semantic="primary" status="pressed">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Pressed
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton tone="soft" semantic="primary" controlState={true}>
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Selected
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton tone="soft" semantic="primary" status="disabled">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Disabled
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
+            {hasState('primary', 'soft', 'rest') ? (
+              <KButton tone="soft" semantic="primary">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Rest
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            ) : (
+              <div className={s.missingState}>
+                <Icon name="NoSign" width={24} height={24} />
+              </div>
+            )}
+            {hasState('primary', 'soft', 'hover') ? (
+              <KButton tone="soft" semantic="primary" status="hover">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Hover
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            ) : (
+              <div className={s.missingState}>
+                <Icon name="NoSign" width={24} height={24} />
+              </div>
+            )}
+            {hasState('primary', 'soft', 'focus') ? (
+              <KButton tone="soft" semantic="primary" status="focus">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Focus
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            ) : (
+              <div className={s.missingState}>
+                <Icon name="NoSign" width={24} height={24} />
+              </div>
+            )}
+            {hasState('primary', 'soft', 'pressed') ? (
+              <KButton tone="soft" semantic="primary" status="pressed">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Pressed
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            ) : (
+              <div className={s.missingState}>
+                <Icon name="NoSign" width={24} height={24} />
+              </div>
+            )}
+            {hasState('primary', 'soft', 'selected') ? (
+              <KButton tone="soft" semantic="primary" controlState={true}>
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Selected
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            ) : (
+              <div className={s.missingState}>
+                <Icon name="NoSign" width={24} height={24} />
+              </div>
+            )}
+            {hasState('primary', 'soft', 'disabled') ? (
+              <KButton tone="soft" semantic="primary" status="disabled">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Disabled
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            ) : (
+              <div className={s.missingState}>
+                <Icon name="NoSign" width={24} height={24} />
+              </div>
+            )}
           </div>
         </div>
         <div className={s['interaction-state']}>
