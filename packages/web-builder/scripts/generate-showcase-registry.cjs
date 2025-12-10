@@ -48,6 +48,7 @@ const showcaseRegistryDir = path.resolve(repoRoot, 'packages', 'showcase', 'regi
  *   version: [number, number, number] | null;
  *   segments: string[];
  *   themes: Record<string, string[]>;
+ *   components?: Record<string, any>;
  * }} Manifest
  */
 
@@ -222,7 +223,11 @@ function generateTemplatesRegistrySource(manifests) {
   lines.push('export const designSystemMeta = {');
   for (const m of manifests) {
     const displayName = m.displayName || m.key;
-    lines.push(`  '${m.key}': { displayName: ${JSON.stringify(displayName)} },`);
+    const entry = {
+      displayName,
+      components: m.components
+    };
+    lines.push(`  '${m.key}': ${JSON.stringify(entry)},`);
   }
   lines.push('} as const;');
   lines.push('');
