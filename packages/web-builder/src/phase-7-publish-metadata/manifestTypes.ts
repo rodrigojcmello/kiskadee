@@ -42,7 +42,7 @@ export type Manifest = {
   displayName: string;
   author: string | null;
   schemaName: string | null;
-  version: [number, number, number] | null;
+  version: string | null;
   segments: string[];
   themes: Record<string, string[]>;
   /**

@@ -3,11 +3,7 @@
   "displayName": "Fluent 2 by Microsoft",
   "author": "Microsoft",
   "schemaName": "Fluent",
-  "version": [
-    2,
-    0,
-    0
-  ],
+  "version": "2.0.0",
   "segments": [
     "default"
   ],

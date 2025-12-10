@@ -3,11 +3,7 @@
   "displayName": "iOS 26 by Apple",
   "author": "Apple",
   "schemaName": "iOS",
-  "version": [
-    26,
-    0,
-    0
-  ],
+  "version": "26.0.0",
   "segments": [
     "default"
   ],

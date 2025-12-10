@@ -3,11 +3,7 @@
   "displayName": "Material Design 3 by Google",
   "author": "Google",
   "schemaName": "Material Design",
-  "version": [
-    3,
-    0,
-    0
-  ],
+  "version": "3.0.0",
   "segments": [
     "default"
   ],

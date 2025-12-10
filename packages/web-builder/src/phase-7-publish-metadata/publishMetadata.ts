@@ -172,7 +172,7 @@ export async function publishMetadata(params: {
     displayName,
     author: schema.author ?? null,
     schemaName: schema.name ?? null,
-    version: schema.version ?? null,
+    version: schema.version ? schema.version.join('.') : null,
     segments: segKeys,
     themes,
     components: {}

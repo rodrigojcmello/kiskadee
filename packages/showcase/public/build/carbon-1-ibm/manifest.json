@@ -3,11 +3,7 @@
   "displayName": "Carbon by IBM",
   "author": "IBM",
   "schemaName": "Carbon",
-  "version": [
-    1,
-    0,
-    0
-  ],
+  "version": "1.0.0",
   "segments": [
     "default"
   ],
