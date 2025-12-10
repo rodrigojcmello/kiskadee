@@ -17,13 +17,34 @@ export function Button() {
   const manifestForDS = designSystemMeta[designSystem];
   const buttonMeta = manifestForDS?.components?.button;
 
-  const renderState = (semantic: string, tone: string, state: string, children: React.ReactNode) => {
-    // Verifica disponibilidade no manifesto
+  const renderState = (
+    semantic: string,
+    tone: string,
+    state: string,
+    children: React.ReactNode
+  ) => {
     const isSupported = (() => {
       if (!buttonMeta?.state) return true;
       const group = buttonMeta.state[semantic]?.[tone];
       if (!group) return false;
       return Boolean(group[state]);
+    })();
+
+    if (isSupported) {
+      return children;
+    }
+
+    return (
+      <div className={s.missingState}>
+        <Icon name="NoSign" width={24} height={24} />
+      </div>
+    );
+  };
+
+  const renderScale = (scale: string, children: React.ReactNode) => {
+    const isSupported = (() => {
+      if (!buttonMeta?.scale) return true;
+      return Boolean(buttonMeta.scale[scale]);
     })();
 
     if (isSupported) {
@@ -55,7 +76,10 @@ export function Button() {
         <div className={s['interaction-state']}>
           <h3>Interaction States - Primary (Solid)</h3>
           <div className={s['example-states']}>
-            {renderState('primary', 'solid', 'rest', (
+            {renderState(
+              'primary',
+              'solid',
+              'rest',
               <KButton tone="solid" semantic="primary">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -63,8 +87,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('primary', 'solid', 'hover', (
+            )}
+            {renderState(
+              'primary',
+              'solid',
+              'hover',
               <KButton tone="solid" semantic="primary" status="hover">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -72,8 +99,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('primary', 'solid', 'focus', (
+            )}
+            {renderState(
+              'primary',
+              'solid',
+              'focus',
               <KButton tone="solid" semantic="primary" status="focus">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -81,8 +111,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('primary', 'solid', 'pressed', (
+            )}
+            {renderState(
+              'primary',
+              'solid',
+              'pressed',
               <KButton tone="solid" semantic="primary" status="pressed">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -90,8 +123,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('primary', 'solid', 'selected', (
+            )}
+            {renderState(
+              'primary',
+              'solid',
+              'selected',
               <KButton tone="solid" semantic="primary" controlState={true}>
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -99,8 +135,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('primary', 'solid', 'disabled', (
+            )}
+            {renderState(
+              'primary',
+              'solid',
+              'disabled',
               <KButton tone="solid" semantic="primary" status="disabled">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -108,13 +147,16 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
+            )}
           </div>
         </div>
         <div className={s['interaction-state']}>
           <h3>Interaction States - Primary (Soft)</h3>
           <div className={s['example-states']}>
-            {renderState('primary', 'soft', 'rest', (
+            {renderState(
+              'primary',
+              'soft',
+              'rest',
               <KButton tone="soft" semantic="primary">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -122,8 +164,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('primary', 'soft', 'hover', (
+            )}
+            {renderState(
+              'primary',
+              'soft',
+              'hover',
               <KButton tone="soft" semantic="primary" status="hover">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -131,8 +176,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('primary', 'soft', 'focus', (
+            )}
+            {renderState(
+              'primary',
+              'soft',
+              'focus',
               <KButton tone="soft" semantic="primary" status="focus">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -140,8 +188,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('primary', 'soft', 'pressed', (
+            )}
+            {renderState(
+              'primary',
+              'soft',
+              'pressed',
               <KButton tone="soft" semantic="primary" status="pressed">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -149,8 +200,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('primary', 'soft', 'selected', (
+            )}
+            {renderState(
+              'primary',
+              'soft',
+              'selected',
               <KButton tone="soft" semantic="primary" controlState={true}>
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -158,8 +212,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('primary', 'soft', 'disabled', (
+            )}
+            {renderState(
+              'primary',
+              'soft',
+              'disabled',
               <KButton tone="soft" semantic="primary" status="disabled">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -167,13 +224,16 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
+            )}
           </div>
         </div>
         <div className={s['interaction-state']}>
           <h3>Interaction States - Neutral (Soft)</h3>
           <div className={s['example-states']}>
-            {renderState('neutral', 'soft', 'rest', (
+            {renderState(
+              'neutral',
+              'soft',
+              'rest',
               <KButton tone="soft">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -181,8 +241,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('neutral', 'soft', 'hover', (
+            )}
+            {renderState(
+              'neutral',
+              'soft',
+              'hover',
               <KButton tone="soft" status="hover">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -190,8 +253,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('neutral', 'soft', 'focus', (
+            )}
+            {renderState(
+              'neutral',
+              'soft',
+              'focus',
               <KButton tone="soft" status="focus">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -199,8 +265,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('neutral', 'soft', 'pressed', (
+            )}
+            {renderState(
+              'neutral',
+              'soft',
+              'pressed',
               <KButton tone="soft" status="pressed">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -208,8 +277,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('neutral', 'soft', 'selected', (
+            )}
+            {renderState(
+              'neutral',
+              'soft',
+              'selected',
               <KButton tone="soft" controlState={true}>
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -217,8 +289,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('neutral', 'soft', 'disabled', (
+            )}
+            {renderState(
+              'neutral',
+              'soft',
+              'disabled',
               <KButton tone="soft" status="disabled">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -226,13 +301,16 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
+            )}
           </div>
         </div>
         <div className={s['interaction-state']}>
           <h3>Interaction States - Destructive (Solid)</h3>
           <div className={s['example-states']}>
-            {renderState('redLike', 'solid', 'rest', (
+            {renderState(
+              'redLike',
+              'solid',
+              'rest',
               <KButton tone="solid" semantic="redLike">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -240,8 +318,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('redLike', 'solid', 'hover', (
+            )}
+            {renderState(
+              'redLike',
+              'solid',
+              'hover',
               <KButton tone="solid" semantic="redLike" status="hover">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -249,8 +330,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('redLike', 'solid', 'focus', (
+            )}
+            {renderState(
+              'redLike',
+              'solid',
+              'focus',
               <KButton tone="solid" semantic="redLike" status="focus">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -258,8 +342,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('redLike', 'solid', 'pressed', (
+            )}
+            {renderState(
+              'redLike',
+              'solid',
+              'pressed',
               <KButton tone="solid" semantic="redLike" status="pressed">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -267,8 +354,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('redLike', 'solid', 'selected', (
+            )}
+            {renderState(
+              'redLike',
+              'solid',
+              'selected',
               <KButton tone="solid" semantic="redLike" controlState={true}>
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -276,8 +366,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('redLike', 'solid', 'disabled', (
+            )}
+            {renderState(
+              'redLike',
+              'solid',
+              'disabled',
               <KButton tone="solid" semantic="redLike" status="disabled">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -285,13 +378,16 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
+            )}
           </div>
         </div>
         <div className={s['interaction-state']}>
           <h3>Interaction States - Destructive (Soft)</h3>
           <div className={s['example-states']}>
-            {renderState('redLike', 'soft', 'rest', (
+            {renderState(
+              'redLike',
+              'soft',
+              'rest',
               <KButton tone="soft" semantic="redLike">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -299,8 +395,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('redLike', 'soft', 'hover', (
+            )}
+            {renderState(
+              'redLike',
+              'soft',
+              'hover',
               <KButton tone="soft" semantic="redLike" status="hover">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -308,8 +407,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('redLike', 'soft', 'focus', (
+            )}
+            {renderState(
+              'redLike',
+              'soft',
+              'focus',
               <KButton tone="soft" semantic="redLike" status="focus">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -317,8 +419,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('redLike', 'soft', 'pressed', (
+            )}
+            {renderState(
+              'redLike',
+              'soft',
+              'pressed',
               <KButton tone="soft" semantic="redLike" status="pressed">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -326,8 +431,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('redLike', 'soft', 'selected', (
+            )}
+            {renderState(
+              'redLike',
+              'soft',
+              'selected',
               <KButton tone="soft" semantic="redLike" controlState={true}>
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -335,8 +443,11 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
-            {renderState('redLike', 'soft', 'disabled', (
+            )}
+            {renderState(
+              'redLike',
+              'soft',
+              'disabled',
               <KButton tone="soft" semantic="redLike" status="disabled">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -344,40 +455,59 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
-            ))}
+            )}
           </div>
         </div>
-
         <div>
           <h3>Selected</h3>
-          <KButton controlState={true}>
-            <KButton.Label>
-              <SmoothText triggerKey={fontName} align={alignment}>
-                Rest
-              </SmoothText>
-            </KButton.Label>
-          </KButton>
-          <KButton status="hover" controlState={true}>
-            <KButton.Label>
-              <SmoothText triggerKey={fontName} align={alignment}>
-                Hover
-              </SmoothText>
-            </KButton.Label>
-          </KButton>
-          <KButton status="focus" controlState={true}>
-            <KButton.Label>
-              <SmoothText triggerKey={fontName} align={alignment}>
-                Focus
-              </SmoothText>
-            </KButton.Label>
-          </KButton>
-          <KButton status="pressed" controlState={true}>
-            <KButton.Label>
-              <SmoothText triggerKey={fontName} align={alignment}>
-                Pressed
-              </SmoothText>
-            </KButton.Label>
-          </KButton>
+          {renderState(
+            'neutral',
+            'soft',
+            'selected',
+            <KButton controlState={true}>
+              <KButton.Label>
+                <SmoothText triggerKey={fontName} align={alignment}>
+                  Rest
+                </SmoothText>
+              </KButton.Label>
+            </KButton>
+          )}
+          {renderState(
+            'neutral',
+            'soft',
+            'selected',
+            <KButton status="hover" controlState={true}>
+              <KButton.Label>
+                <SmoothText triggerKey={fontName} align={alignment}>
+                  Hover
+                </SmoothText>
+              </KButton.Label>
+            </KButton>
+          )}
+          {renderState(
+            'neutral',
+            'soft',
+            'selected',
+            <KButton status="focus" controlState={true}>
+              <KButton.Label>
+                <SmoothText triggerKey={fontName} align={alignment}>
+                  Focus
+                </SmoothText>
+              </KButton.Label>
+            </KButton>
+          )}
+          {renderState(
+            'neutral',
+            'soft',
+            'selected',
+            <KButton status="pressed" controlState={true}>
+              <KButton.Label>
+                <SmoothText triggerKey={fontName} align={alignment}>
+                  Pressed
+                </SmoothText>
+              </KButton.Label>
+            </KButton>
+          )}
         </div>
 
         <div>
@@ -422,48 +552,66 @@ export function Button() {
         <div className={s['interaction-state']}>
           <h3>Size / Scale</h3>
           <div className={s['example-states']}>
-            <KButton scale="s:sm:2" semantic="primary" tone="solid">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Small 2
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton scale="s:sm:1" semantic="primary" tone="solid">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Small
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton scale="s:md:1" semantic="primary" tone="solid">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Medium
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton scale="s:lg:1" semantic="primary" tone="solid">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Large
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton scale="s:lg:2" semantic="primary" tone="solid">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Large 2
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton scale="s:lg:3" semantic="primary" tone="solid">
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Large 3
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
+            {renderScale(
+              's:sm:2',
+              <KButton scale="s:sm:2" semantic="primary" tone="solid">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Small 2
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderScale(
+              's:sm:1',
+              <KButton scale="s:sm:1" semantic="primary" tone="solid">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Small
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderScale(
+              's:md:1',
+              <KButton scale="s:md:1" semantic="primary" tone="solid">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Medium
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderScale(
+              's:lg:1',
+              <KButton scale="s:lg:1" semantic="primary" tone="solid">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Large
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderScale(
+              's:lg:2',
+              <KButton scale="s:lg:2" semantic="primary" tone="solid">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Large 2
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderScale(
+              's:lg:3',
+              <KButton scale="s:lg:3" semantic="primary" tone="solid">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Large 3
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
           </div>
         </div>
       </div>
