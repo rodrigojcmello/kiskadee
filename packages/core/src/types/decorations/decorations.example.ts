@@ -1,7 +1,7 @@
 import type { DecorationSchema } from './decorations.types';
 
 const decoration: DecorationSchema = {
-  textFont: ['Arial', 'Helvetica'],
+  textFont: 'body',
   textItalic: false,
   textWeight: 'semiBold',
   textLineType: 'underline',

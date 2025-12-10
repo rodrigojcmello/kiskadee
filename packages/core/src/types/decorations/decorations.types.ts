@@ -1,10 +1,7 @@
-import type { InteractionState, SolidColor } from '../colors/colors.types';
-import type { PixelValue } from '../scales/scales.types';
-
 // Font Family -------------------------------------------------------------------------------------
 
 /** Represents the name of a font family. */
-export type TextFontValue = string;
+export type TextFontValue = 'body' | 'heading' | 'code';
 
 // Text Italic -------------------------------------------------------------------------------------
 
@@ -107,7 +104,7 @@ export type DecorationProperty = keyof typeof CssDecorationProperty;
  * however, their dynamic behavior is specific to rendering.
  */
 export interface DecorationSchema {
-  textFont?: TextFontValue[];
+  textFont?: TextFontValue;
   textItalic?: TextItalicValue;
   textWeight?: TextWeightValue;
   textLineType?: TextLineTypeValue;

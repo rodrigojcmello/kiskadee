@@ -73,7 +73,7 @@ const color: ColorSchema = {
 // Example of SchemaSegments (theme-level segments with tonal scales per semantic category)
 export const exampleSchemaSegments: SchemaSegments = {
   // Each segment represents a brand/product identity
-  example: {
+  default: {
     name: 'Example Brand',
     mainColor: 'blue',
     themes: {
