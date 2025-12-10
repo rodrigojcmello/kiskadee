@@ -12,6 +12,7 @@ const icons = {
   MoonStars: dynamic(() =>
     import('./icons/IconMoonStars').then((mod) => mod.IconMoonStars)
   ),
+  NoSign: dynamic(() => import('./icons/IconNoSign').then((mod) => mod.IconNoSign)),
   SunMax: dynamic(() => import('./icons/IconSunMax').then((mod) => mod.IconSunMax))
 };
 
