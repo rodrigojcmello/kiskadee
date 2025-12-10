@@ -6,6 +6,7 @@ import {
   transformBorderStyleKeyToCss,
   transformShadowKeyToCss,
   transformTextAlignKeyToCss,
+  transformTextFontKeyToCss,
   transformTextItalicKeyToCss,
   transformTextLineTypeKeyToCss,
   transformTextWeightKeyToCss
@@ -28,6 +29,8 @@ export function generateCssRuleFromStyleKey(
     generatedCss = transformShadowKeyToCss(styleKey, className, forceState);
   } else if (styleKey.startsWith('textAlign')) {
     generatedCss = transformTextAlignKeyToCss(styleKey, className);
+  } else if (styleKey.startsWith('textFont')) {
+    generatedCss = transformTextFontKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('textLineType')) {
     generatedCss = transformTextLineTypeKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('textItalic')) {

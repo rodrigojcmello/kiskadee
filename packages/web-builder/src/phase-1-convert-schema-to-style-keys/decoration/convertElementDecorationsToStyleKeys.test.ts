@@ -4,11 +4,11 @@ import { convertElementDecorationsToStyleKeys } from './convertElementDecoration
 
 describe('convertElementDecorationsToStyleKeys', () => {
   describe('textFont style key generation', () => {
-    it('should generate the textFont style key for a font family array', () => {
-      const decoration: DecorationSchema = { textFont: ['Arial', 'Helvetica'] };
+    it('should generate the textFont style key for a semantic font token', () => {
+      const decoration: DecorationSchema = { textFont: 'body' };
       const styleKey = convertElementDecorationsToStyleKeys(decoration)[0];
 
-      expect(styleKey).toEqual('textFont__["Arial","Helvetica"]');
+      expect(styleKey).toEqual('textFont__body');
     });
   });
 
