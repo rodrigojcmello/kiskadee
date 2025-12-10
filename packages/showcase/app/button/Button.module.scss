@@ -24,6 +24,14 @@ $height: 64px;
   }
 }
 
+.missingState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  color: red;
+}
+
 @media (min-width: 768px) {
   .example-states {
     grid-template-columns: repeat(4, minmax(0, 1fr));

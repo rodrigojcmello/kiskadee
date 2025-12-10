@@ -1,6 +1,7 @@
 'use client';
 
 import { Button as KButton, SmoothText, useKiskadee } from '@kiskadee/react-components';
+import { Icon } from '@/components/Icon/Icon';
 import s from './Button.module.scss';
 
 export function Button() {
@@ -40,7 +41,7 @@ export function Button() {
         <div className={s['interaction-state']}>
           <h3>Interaction States - Primary (Solid)</h3>
           <div className={s['example-states']}>
-            {hasPrimarySolidState('rest') && (
+            {hasPrimarySolidState('rest') ? (
               <KButton tone="solid" semantic="primary">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -48,8 +49,12 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
+            ) : (
+              <div className={s.missingState}>
+                <Icon name="NoSign" width={24} height={24} />
+              </div>
             )}
-            {hasPrimarySolidState('hover') && (
+            {hasPrimarySolidState('hover') ? (
               <KButton tone="solid" semantic="primary" status="hover">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -57,8 +62,12 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
+            ) : (
+              <div className={s.missingState}>
+                <Icon name="NoSign" width={24} height={24} />
+              </div>
             )}
-            {hasPrimarySolidState('focus') && (
+            {hasPrimarySolidState('focus') ? (
               <KButton tone="solid" semantic="primary" status="focus">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -66,8 +75,12 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
+            ) : (
+              <div className={s.missingState}>
+                <Icon name="NoSign" width={24} height={24} />
+              </div>
             )}
-            {hasPrimarySolidState('pressed') && (
+            {hasPrimarySolidState('pressed') ? (
               <KButton tone="solid" semantic="primary" status="pressed">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -75,8 +88,12 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
+            ) : (
+              <div className={s.missingState}>
+                <Icon name="NoSign" width={24} height={24} />
+              </div>
             )}
-            {hasPrimarySolidState('selected') && (
+            {hasPrimarySolidState('selected') ? (
               <KButton tone="solid" semantic="primary" controlState={true}>
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -84,8 +101,12 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
+            ) : (
+              <div className={s.missingState}>
+                <Icon name="NoSign" width={24} height={24} />
+              </div>
             )}
-            {hasPrimarySolidState('disabled') && (
+            {hasPrimarySolidState('disabled') ? (
               <KButton tone="solid" semantic="primary" status="disabled">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
@@ -93,6 +114,10 @@ export function Button() {
                   </SmoothText>
                 </KButton.Label>
               </KButton>
+            ) : (
+              <div className={s.missingState}>
+                <Icon name="NoSign" width={24} height={24} />
+              </div>
             )}
           </div>
         </div>
