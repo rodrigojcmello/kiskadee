@@ -133,7 +133,7 @@ function Button(props: ButtonProps) {
 
     return {
       e1: `${e1Base} ${cn.interactive}${shadowFlag}${activation} k-btn k-state`,
-      e2: `${e2Base} k-font`,
+      e2: e2Base,
       e3: e3Base
     };
   }, [
