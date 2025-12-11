@@ -1,5 +1,5 @@
 'use client';
-import { useKiskadee } from '@kiskadee/react-components';
+import { useShowcase } from '@kiskadee/react-components';
 import { Select } from '@/k-components';
 import { FONTS } from '@/registry/fonts.registry';
 import styles from './FontNamePicker.module.scss';
@@ -9,7 +9,7 @@ export default function FontNamePicker({
 }: {
   position?: 'inline' | 'fixed-right-top';
 }) {
-  const { fontName, setFontName } = useKiskadee();
+  const { fontName, setFontName } = useShowcase();
 
   // Convert FONTS to SelectOption format
   const options = FONTS.map((font) => ({

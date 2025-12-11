@@ -1,11 +1,12 @@
 'use client';
 
-import { Button as KButton, SmoothText, useKiskadee } from '@kiskadee/react-components';
+import { Button as KButton, SmoothText, useKiskadee, useShowcase } from '@kiskadee/react-components';
 import { Icon } from '@/components/Icon/Icon';
 import s from './Button.module.scss';
 
 export function Button() {
-  const { fontName, designSystem, manifest } = useKiskadee();
+  const { designSystem, manifest } = useKiskadee();
+  const { fontName } = useShowcase();
 
   const isCarbon = designSystem === 'carbon-1-ibm';
   const alignment = isCarbon ? 'left' : 'center';

@@ -1,6 +1,6 @@
 'use client';
 import type { ThemeMode } from '@kiskadee/core';
-import { useKiskadee } from '@kiskadee/react-components';
+import { useKiskadee, useShowcase } from '@kiskadee/react-components';
 import { useId } from 'react';
 import { playWowTransition } from '@/utils/playWowTransition';
 import styles from './ThemeModePicker.module.scss';
@@ -28,7 +28,8 @@ export type Position = 'inline' | 'fixed-right-top';
 
 export default function ThemeModePicker({ position = 'inline' }: { position?: Position }) {
   const groupId = useId();
-  const { theme, setTheme, availableThemes } = useKiskadee();
+  const { theme, setTheme } = useKiskadee();
+  const { availableThemes } = useShowcase();
 
   const visibleOptions = OPTIONS.filter((o) => availableThemes.includes(o.key));
 

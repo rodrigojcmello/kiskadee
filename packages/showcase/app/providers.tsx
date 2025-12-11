@@ -1,5 +1,5 @@
 'use client';
-import { KiskadeeContext } from '@kiskadee/react-components';
+import { KiskadeeContext, ShowcaseContext } from '@kiskadee/react-components';
 import { useClassMapLoader } from '@/hooks/use-class-map-loader';
 import { useDesignSystemSelection } from '@/hooks/use-design-system-selection';
 import { useFontPreference } from '@/hooks/use-font-preference';
@@ -52,17 +52,22 @@ export function Providers({ children }: { children: React.ReactNode }) {
         setTheme,
         designSystem: String(designSystem),
         setDesignSystem: (v) => setDesignSystem(v),
-        designSystemKeys,
-        designSystemList,
         manifest,
-        availableSegments,
-        availableThemes,
-        backgroundsByTheme,
-        fontName,
-        setFontName
+        backgroundsByTheme
       }}
     >
-      {children}
+      <ShowcaseContext.Provider
+        value={{
+          designSystemKeys,
+          availableSegments,
+          availableThemes,
+          designSystemList,
+          fontName,
+          setFontName
+        }}
+      >
+        {children}
+      </ShowcaseContext.Provider>
     </KiskadeeContext.Provider>
   );
 }

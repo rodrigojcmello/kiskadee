@@ -1,20 +1,13 @@
 'use client';
-import { useKiskadee } from '@kiskadee/react-components';
-import { designSystemList } from '@/registry/design-systems.registry.generated';
+import { useKiskadee, useShowcase } from '@kiskadee/react-components';
 import DynamicColorPicker from '@/components/DynamicColorPicker/DynamicColorPicker';
 import { Select } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
 import styles from './DesignSystemControls.module.scss';
 
 export default function DesignSystemControls() {
-  const {
-    designSystem,
-    setDesignSystem,
-    designSystemKeys,
-    segment,
-    setSegment,
-    availableSegments
-  } = useKiskadee();
+  const { designSystem, setDesignSystem, segment, setSegment } = useKiskadee();
+  const { designSystemKeys, availableSegments, designSystemList } = useShowcase();
 
   const displayNameByKey = new Map<string, string>(
     designSystemList.map((entry) => [entry.key, entry.displayName])
