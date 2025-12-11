@@ -1,3 +1,5 @@
+import { SYSTEM_UI_FONT_STACK } from '@kiskadee/web-builder/types';
+
 export interface FontDef {
   key: string;
   label: string;
@@ -9,8 +11,7 @@ export const FONTS: FontDef[] = [
   {
     key: 'system',
     label: 'System UI',
-    family:
-      'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+    family: SYSTEM_UI_FONT_STACK
   },
   {
     key: 'inter',

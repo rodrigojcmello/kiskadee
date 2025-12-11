@@ -89,6 +89,18 @@ export type SchemaMetadata = {
   prefix?: string;
 };
 
+// Global, descriptive font tokens for a design system.
+//
+// These values represent the intended font-family stacks for the schema as a whole
+// and are not meant to be strictly enforced. Consumers are free to override fonts
+// at the application level (for example, by redefining CSS variables such as
+// --k-font-body / --k-font-heading / --k-font-code).
+export type SchemaFonts = {
+  body: string;
+  heading?: string;
+  code?: string;
+};
+
 export type ThemeTokens<TSegmentName extends SegmentName = never> = Partial<{
   palettes: Partial<
     Record<
@@ -107,6 +119,15 @@ export type ThemeTokens<TSegmentName extends SegmentName = never> = Partial<{
 }>;
 
 export type Schema<TSegmentName extends SegmentName = never> = SchemaMetadata & {
+  /**
+   * Optional, global font configuration for the schema.
+   *
+   * This is descriptive metadata that captures the font stacks originally
+   * envisioned for the design system (body/heading/code). Runtime consumers
+   * may choose to honor or override these values when wiring CSS variables
+   * or platform-specific font settings.
+   */
+  fonts?: SchemaFonts;
   segments?: SchemaSegments<TSegmentName>;
   themeTokens?: ThemeTokens<TSegmentName>;
   components: Components<TSegmentName>;

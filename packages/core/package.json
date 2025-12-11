@@ -10,10 +10,7 @@
   "author": "Rodrigo J C Mello",
   "license": "MIT",
   "private": true,
-  "scripts": {
-    "clean": "rm -rf dist",
-    "build": "npm run clean && tsc"
-  },
+  "scripts": {},
   "devDependencies": {
     "@types/node": "^24.7.2",
     "typescript": "^5.9.2"

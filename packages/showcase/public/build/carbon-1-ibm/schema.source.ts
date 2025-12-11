@@ -13,6 +13,11 @@ export const schema: Schema<Segments> = {
   version: [1, 0, 0],
   author: 'IBM',
   breakpoints,
+  fonts: {
+    body: 'IBM Plex Sans',
+    heading: 'IBM Plex Sans',
+    code: 'IBM Plex Mono'
+  },
   themeTokens: {
     palettes: {
       default: {

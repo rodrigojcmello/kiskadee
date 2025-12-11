@@ -8,12 +8,6 @@
 
   /* Fallback focus ring color; can be overridden by host app via CSS custom property. */
   --k-focus-ring-color: #0059b1;
-
-  /* Font defaults */
-  --k-font-name: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --k-font-body: var(--k-font-name);
-  --k-font-heading: var(--k-font-name);
-  --k-font-code: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
 }
 
 .k-font,

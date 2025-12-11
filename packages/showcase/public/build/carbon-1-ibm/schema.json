@@ -20,6 +20,11 @@
     "bp:lg:3": 1792,
     "bp:lg:4": 2432
   },
+  "fonts": {
+    "body": "IBM Plex Sans",
+    "heading": "IBM Plex Sans",
+    "code": "IBM Plex Mono"
+  },
   "themeTokens": {
     "palettes": {
       "default": {

@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import type {
   HSLA,
   Schema,
+  SchemaFonts,
   SchemaSegments,
   SegmentName,
   SolidColor,
@@ -79,6 +80,28 @@ export async function writeExtraArtifacts(params: {
 
   const buildDir = getBuildDir(outDirSlug);
   await mkdir(buildDir, { recursive: true });
+
+  // 1) Global fonts artifact (fonts.kiskadee.json)
+  //
+  //    This file is optional and only written when the schema defines
+  //    global fonts. It is meant as descriptive metadata capturing the
+  //    intended body/heading/code font stacks for the design system.
+  //    Runtime consumers are free to ignore or override these values.
+  const fonts = schema.fonts as SchemaFonts | undefined;
+
+  if (fonts && typeof fonts.body === 'string' && fonts.body.trim() !== '') {
+    const fontsFilePath = resolve(buildDir, 'fonts.kiskadee.json');
+    const fontsPayload = {
+      fonts: {
+        body: fonts.body,
+        ...(fonts.heading ? { heading: fonts.heading } : {}),
+        ...(fonts.code ? { code: fonts.code } : {})
+      }
+    } satisfies { fonts: SchemaFonts };
+
+    await writeFile(fontsFilePath, JSON.stringify(fontsPayload, null, 2), 'utf8');
+    console.log(`[web-builder] Fonts artifact written to: ${fontsFilePath}`);
+  }
 
   const segmentKeys = getSegmentKeys(schema);
 
