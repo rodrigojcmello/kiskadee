@@ -1,5 +1,5 @@
 import type { ThemeMode } from '@kiskadee/core';
-import type { DesignSystemListEntry } from '@kiskadee/web-builder/types';
+import type { DesignSystemListEntry, Manifest } from '@kiskadee/web-builder/types';
 import { createContext, useContext } from 'react';
 
 export type ShowcaseContextValue = {
@@ -11,6 +11,21 @@ export type ShowcaseContextValue = {
    * web-builder manifests. Contains only key and displayName.
    */
   designSystemList: DesignSystemListEntry[];
+
+  /**
+   * Full manifest for the currently selected design system, as produced
+   * by @kiskadee/web-builder (phase-7 publishMetadata).
+   *
+   * May be undefined temporarily while loading in environments where
+   * manifests are fetched lazily.
+   */
+  manifest?: Manifest;
+
+  /**
+   * Map of background colors resolved per theme for the current design system/segment.
+   * Keys are ThemeMode string values (e.g. "light", "dark", "darker").
+   */
+  backgroundsByTheme: Record<string, string | undefined>;
 
   /**
    * Current font family name/key used for smooth transitions.

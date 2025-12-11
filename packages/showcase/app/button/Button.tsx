@@ -5,8 +5,8 @@ import { Icon } from '@/components/Icon/Icon';
 import s from './Button.module.scss';
 
 export function Button() {
-  const { designSystem, manifest } = useKiskadee();
-  const { fontName } = useShowcase();
+  const { designSystem } = useKiskadee();
+  const { fontName, manifest } = useShowcase();
 
   const isCarbon = designSystem === 'carbon-1-ibm';
   const alignment = isCarbon ? 'left' : 'center';

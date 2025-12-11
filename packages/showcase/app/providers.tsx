@@ -51,9 +51,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         setSegment,
         setTheme,
         designSystem: String(designSystem),
-        setDesignSystem: (v) => setDesignSystem(v),
-        manifest,
-        backgroundsByTheme
+        setDesignSystem: (v) => setDesignSystem(v)
       }}
     >
       <ShowcaseContext.Provider
@@ -62,6 +60,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
           availableSegments,
           availableThemes,
           designSystemList,
+          manifest,
+          backgroundsByTheme,
           fontName,
           setFontName
         }}

@@ -1,5 +1,5 @@
 'use client';
-import { useKiskadee } from '@kiskadee/react-components';
+import { useKiskadee, useShowcase } from '@kiskadee/react-components';
 import { ColorRadioGroup } from '@kiskadee/react-headless';
 import { useEffect, useMemo, useState } from 'react';
 import styles from './BackgroundTonePicker.module.scss';
@@ -20,7 +20,8 @@ export default function BackgroundTonePicker({
 }: {
   position?: Position;
 }) {
-  const { theme, backgroundsByTheme } = useKiskadee();
+  const { theme } = useKiskadee();
+  const { backgroundsByTheme } = useShowcase();
 
   const tonesWithResolvedColors = useMemo(() => {
     const themeByToneKey: Record<string, string | undefined> = {
