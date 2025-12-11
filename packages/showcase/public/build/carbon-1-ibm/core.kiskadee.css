@@ -1,5 +1,6 @@
 .ci-a { padding-left: 17px }
-.ci-ac { font-weight: 500 }
+.ci-ac { font-family: var(--k-font-body) }
+.ci-ad { font-weight: 500 }
 .ci-b { padding-right: 17px }
 .ci-c { line-height: 18px }
 .ci-d { font-size: 0.875rem }

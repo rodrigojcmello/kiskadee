@@ -13,7 +13,7 @@
       }
     },
     "e2": {
-      "d": "ci-ac",
+      "d": "ci-ac ci-ad",
       "s": {
         "s:sm:2": "ci-d ci-c",
         "s:sm:1": "ci-d ci-c",

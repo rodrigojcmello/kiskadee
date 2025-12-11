@@ -31,12 +31,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
   // 3. Load extra resources (background colors, focus ring)
   const { backgroundsByTheme } = useThemeExtras({ designSystem, segment, theme });
 
-  // 4. Manage global CSS and stylesheet injection (side-effects)
+  // 4. Manage global CSS and stylesheet injection (side effects)
   useStylesheetManager({ designSystem, segment, theme });
   useGlobalThemeClasses(theme);
 
   // 5. Font Management
-  const { fontName, setFontName } = useFontPreference();
+  const { fontName, setFontName } = useFontPreference(String(designSystem));
 
   return (
     <KiskadeeContext.Provider

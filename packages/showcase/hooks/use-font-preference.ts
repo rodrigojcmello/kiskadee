@@ -1,33 +1,65 @@
 import { useEffect, useState } from 'react';
-import { FONT_STORAGE_KEY, FONTS } from '@/registry/fonts.registry';
+import { FONTS } from '@/registry/fonts.registry';
 
-export function useFontPreference() {
+function extractPrimaryFontLabel(bodyStack: string): string | null {
+  const trimmed = bodyStack.trim();
+  if (!trimmed) return null;
+
+  const [first] = trimmed.split(',');
+  if (!first) return null;
+
+  const cleaned = first.trim().replace(/^['"]+|['"]+$/g, '');
+  return cleaned || null;
+}
+
+async function loadBodyFontForDesignSystem(designSystemSlug: string): Promise<string | null> {
+  try {
+    const response = await fetch(`/build/${designSystemSlug}/fonts.kiskadee.json`);
+    if (!response.ok) return null;
+
+    const json = (await response.json()) as { fonts?: { body?: string } };
+    return json.fonts?.body ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export function useFontPreference(designSystemSlug?: string) {
   const [fontName, setFontName] = useState('system');
 
-  // 1. Load initial font preference from localStorage (if available)
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(FONT_STORAGE_KEY);
-      if (saved && FONTS.some((f) => f.key === saved)) {
-        setFontName(saved);
+    let cancelled = false;
+
+    async function resolveInitialFont() {
+      if (designSystemSlug) {
+        const bodyStack = await loadBodyFontForDesignSystem(designSystemSlug);
+
+        if (cancelled) return;
+
+        if (bodyStack) {
+          const primary = extractPrimaryFontLabel(bodyStack);
+
+          if (primary && primary !== 'system-ui') {
+            const match = FONTS.find((f) => f.label === primary);
+            if (match) {
+              setFontName(match.key);
+              return;
+            }
+          }
+        }
       }
-    } catch {
-      // Silently ignore environments without localStorage
+
+      if (!cancelled) {
+        setFontName('system');
+      }
     }
-  }, []);
 
-  // 2. Apply font to document and persist preference whenever it changes
-  useEffect(() => {
-    const font = FONTS.find((f) => f.key === fontName) ?? FONTS[0];
+    void resolveInitialFont();
 
-    document.documentElement.style.setProperty('--k-font-name', font.family);
-
-    try {
-      localStorage.setItem(FONT_STORAGE_KEY, font.key);
-    } catch {
-      // Silently ignore persistence errors
-    }
-  }, [fontName]);
+    return () => {
+      cancelled = true;
+    };
+  }, [designSystemSlug]);
 
   return { fontName, setFontName } as const;
 }

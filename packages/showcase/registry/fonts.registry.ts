@@ -62,5 +62,3 @@ export const FONTS: FontDef[] = [
     googleFontParams: 'IBM+Plex+Sans:wght@400;500;700'
   }
 ];
-
-export const FONT_STORAGE_KEY = 'kiskadee.preview.font';

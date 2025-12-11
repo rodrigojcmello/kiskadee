@@ -105,6 +105,7 @@ export const schema: Schema<Segments> = {
         e2: {
           name: 'button-text',
           decorations: {
+            textFont: 'body',
             textWeight: 'medium'
           },
           palettes: {
