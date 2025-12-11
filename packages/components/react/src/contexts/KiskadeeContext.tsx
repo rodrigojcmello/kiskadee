@@ -1,5 +1,5 @@
 import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/core';
-import type { DesignSystemListEntry, Manifest } from '@kiskadee/web-builder/types';
+import type { Manifest } from '@kiskadee/web-builder/types';
 import { createContext, useContext } from 'react';
 
 export type KiskadeeContextValue = {
@@ -11,14 +11,6 @@ export type KiskadeeContextValue = {
 
   designSystem: string;
   setDesignSystem: (value: string) => void;
-  availableSegments: string[];
-  availableThemes: string[];
-  designSystemKeys: string[];
-  /**
-   * Simplified list of all available design systems, derived from the
-   * web-builder manifests. Contains only key and displayName.
-   */
-  designSystemList: DesignSystemListEntry[];
 
   /**
    * Full manifest for the currently selected design system, as produced
@@ -33,12 +25,6 @@ export type KiskadeeContextValue = {
    * Keys are ThemeMode string values (e.g. "light", "dark", "darker").
    */
   backgroundsByTheme: Record<string, string | undefined>;
-
-  /**
-   * Current font family name/key used for smooth transitions.
-   */
-  fontName: string;
-  setFontName: (value: string) => void;
 };
 
 export const KiskadeeContext = createContext<KiskadeeContextValue | undefined>(undefined);
