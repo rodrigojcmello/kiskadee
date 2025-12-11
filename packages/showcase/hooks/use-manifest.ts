@@ -1,16 +1,9 @@
 import { useEffect, useState } from 'react';
 import type { Manifest } from '@kiskadee/web-builder/types';
+import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 
 async function loadManifest(designSystemKey: string): Promise<Manifest> {
-  const response = await fetch(`/build/${designSystemKey}/manifest.json`);
-
-  if (!response.ok) {
-    throw new Error(
-      `Failed to load manifest for design system "${designSystemKey}" (status ${response.status})`
-    );
-  }
-
-  return (await response.json()) as Manifest;
+  return loadJsonFromBuild<Manifest>(`${designSystemKey}/manifest.json`, { required: true });
 }
 
 export function useManifest(designSystemKey: string): Manifest | undefined {

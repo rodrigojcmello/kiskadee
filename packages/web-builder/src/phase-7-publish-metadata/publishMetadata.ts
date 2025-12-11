@@ -197,6 +197,22 @@ export async function publishMetadata(params: {
   const buildDir = resolve(baseBuildDir, outDirSlug);
   await mkdir(buildDir, { recursive: true });
 
+  // Detect optional font artifact published for this design system.
+  // If fonts.kiskadee.json exists, expose a positive `font: true` flag
+  // in the manifest. Absence of the flag means no dedicated font artifact.
+  try {
+    const fontsPath = resolve(buildDir, 'fonts.kiskadee.json');
+    // Using fs/promises here would require handling ENOENT via try/catch;
+    // a best-effort sync check is sufficient and cheap at this point.
+    // eslint-disable-next-line n/global-require, @typescript-eslint/no-var-requires
+    const fs = require('node:fs') as typeof import('node:fs');
+    if (fs.existsSync(fontsPath)) {
+      manifest.font = true;
+    }
+  } catch {
+    // If detection fails for any reason, silently skip the flag.
+  }
+
   // Write metadata files
   await writeFile(resolve(buildDir, 'manifest.json'), JSON.stringify(manifest, null, 2), 'utf8');
   await writeFile(resolve(buildDir, 'schema.json'), JSON.stringify(schema, null, 2), 'utf8');

@@ -46,6 +46,15 @@ export type Manifest = {
   segments: string[];
   themes: Record<string, string[]>;
   /**
+   * Indicates that this design system defines a dedicated font artifact
+   * (fonts.kiskadee.json) in the build output.
+   *
+   * Only positive information is stored: if this flag is present and true,
+   * the font artifact exists. If the flag is absent, no font metadata is
+   * published for this design system.
+   */
+  font?: boolean;
+  /**
    * Optional component-level metadata derived from the schema.
    *
    * This object is intentionally sparse and focuses on capabilities

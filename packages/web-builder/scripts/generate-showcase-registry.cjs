@@ -106,48 +106,33 @@ function generateTemplatesRegistrySource(manifests) {
   lines.push(
     "import type { ComponentClassNameMap, ExtraArtifactsJSON } from '@kiskadee/web-builder/types';"
   );
+  lines.push(
+    "import { loadJsonFromBuild } from '@/utils/build-artifacts.client';"
+  );
   lines.push('');
   lines.push('type ClassNamesModuleLike = { default: ComponentClassNameMap };');
   lines.push('');
-  lines.push('// Helper that wraps fetch and returns a "module-like" object compatible');
-  lines.push('// with the existing code in app/providers.tsx.');
-  lines.push('function loadJsonModule(path: string): Promise<ClassNamesModuleLike> {');
-  lines.push('  return fetch(path)');
-  lines.push('    .then((response) => {');
-  lines.push('      if (!response.ok) {');
+  lines.push('// Helper that wraps build JSON loading and returns a "module-like" object');
+  lines.push('// compatible with the existing code in app/providers.tsx.');
+  lines.push('function loadJsonModule(relativePath: string): Promise<ClassNamesModuleLike> {');
   lines.push(
-    '        throw new Error(`Failed to load classNamesMap JSON: ${path} (${response.status})`);'
+    '  return loadJsonFromBuild<ComponentClassNameMap>(relativePath, { required: true }).then((json) => ({ default: json }));'
   );
-  lines.push('      }');
-  lines.push('      return response.json();');
-  lines.push('    })');
-  lines.push('    .then((json) => ({ default: json as ComponentClassNameMap }));');
   lines.push('}');
   lines.push('');
   lines.push('// Helper to load extra.<segment>.<theme>.kiskadee.json files with proper typing.');
-  lines.push('function loadExtraJson(path: string): Promise<ExtraArtifactsJSON> {');
-  lines.push('  return fetch(path)');
-  lines.push('    .then((response) => {');
-  lines.push('      if (response.status === 404) {');
-  lines.push(
-    '        // Extra artifacts are optional; treat 404 as "no extras" and return an empty object.'
-  );
-  lines.push('        return {} as ExtraArtifactsJSON;');
-  lines.push('      }');
-  lines.push('      if (!response.ok) {');
-  lines.push(
-    '        throw new Error(`Failed to load extra JSON: ${path} (${response.status})`);'
-  );
-  lines.push('      }');
-  lines.push('      return response.json() as Promise<ExtraArtifactsJSON>;');
-  lines.push('    });');
+  lines.push('function loadExtraJson(relativePath: string): Promise<ExtraArtifactsJSON> {');
+  lines.push('  return loadJsonFromBuild<ExtraArtifactsJSON>(relativePath, {');
+  lines.push('    required: false,');
+  lines.push('    fallback: {} as ExtraArtifactsJSON,');
+  lines.push('  });');
   lines.push('}');
   lines.push('');
 
   // coreMaps
   lines.push('export const coreMaps = {');
   for (const m of manifests) {
-    const corePath = `${showcaseBuildBase}/${m.key}/core.kiskadee.json`;
+    const corePath = `${m.key}/core.kiskadee.json`;
     lines.push(`  '${m.key}': () => loadJsonModule('${corePath}'),`);
   }
   lines.push('} as const;');
@@ -162,8 +147,8 @@ function generateTemplatesRegistrySource(manifests) {
       for (const theme of themes) {
         const key = `${m.key}|${segment}|${theme}`;
         const file = `${segment}.${theme}.kiskadee.json`;
-        const url = `${showcaseBuildBase}/${m.key}/${file}`;
-        lines.push(`  '${key}': () => loadJsonModule('${url}'),`);
+        const rel = `${m.key}/${file}`;
+        lines.push(`  '${key}': () => loadJsonModule('${rel}'),`);
       }
     }
   }
@@ -185,8 +170,8 @@ function generateTemplatesRegistrySource(manifests) {
         // don't define extra artifacts for a given segment/theme.
         const physicalPath = path.join(webBuilderBuildDir, m.key, file);
         if (!fs.existsSync(physicalPath)) continue;
-        const url = `${showcaseBuildBase}/${m.key}/${file}`;
-        lines.push(`  '${key}': () => loadExtraJson('${url}'),`);
+        const rel = `${m.key}/${file}`;
+        lines.push(`  '${key}': () => loadExtraJson('${rel}'),`);
       }
     }
   }

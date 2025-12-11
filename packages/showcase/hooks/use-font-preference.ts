@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FONTS } from '@/registry/fonts.registry';
+import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 
 function extractPrimaryFontLabel(bodyStack: string): string | null {
   const trimmed = bodyStack.trim();
@@ -12,27 +13,36 @@ function extractPrimaryFontLabel(bodyStack: string): string | null {
   return cleaned || null;
 }
 
-async function loadBodyFontForDesignSystem(designSystemSlug: string): Promise<string | null> {
-  try {
-    const response = await fetch(`/build/${designSystemSlug}/fonts.kiskadee.json`);
-    if (!response.ok) return null;
+async function loadBodyFontForDesignSystem(
+  designSystemSlug: string,
+  hasFont: boolean | undefined
+): Promise<string | null> {
+  if (!hasFont) {
+    return null;
+  }
 
-    const json = (await response.json()) as { fonts?: { body?: string } };
+  try {
+    const json = await loadJsonFromBuild<{ fonts?: { body?: string } }>(
+      `${designSystemSlug}/fonts.kiskadee.json`,
+      { required: false, fallback: {} }
+    );
+
     return json.fonts?.body ?? null;
   } catch {
     return null;
   }
 }
 
-export function useFontPreference(designSystemSlug?: string) {
+export function useFontPreference(options: { designSystemSlug?: string; hasFont?: boolean }) {
+  const { designSystemSlug, hasFont } = options;
   const [fontName, setFontName] = useState('system');
 
   useEffect(() => {
     let cancelled = false;
 
     async function resolveInitialFont() {
-      if (designSystemSlug) {
-        const bodyStack = await loadBodyFontForDesignSystem(designSystemSlug);
+      if (designSystemSlug && hasFont) {
+        const bodyStack = await loadBodyFontForDesignSystem(designSystemSlug, hasFont);
 
         if (cancelled) return;
 
@@ -59,7 +69,7 @@ export function useFontPreference(designSystemSlug?: string) {
     return () => {
       cancelled = true;
     };
-  }, [designSystemSlug]);
+  }, [designSystemSlug, hasFont]);
 
   return { fontName, setFontName } as const;
 }

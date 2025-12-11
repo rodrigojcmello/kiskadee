@@ -36,11 +36,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
   useStylesheetManager({ designSystem, segment, theme });
   useGlobalThemeClasses(theme);
 
-  // 5. Font Management
-  const { fontName, setFontName } = useFontPreference(String(designSystem));
-
-  // 6. Manifest for the currently selected design system
+  // 5. Manifest for the currently selected design system
   const manifest = useManifest(String(designSystem));
+
+  // 6. Font Management (depends on manifest to know if a dedicated font exists)
+  const { fontName, setFontName } = useFontPreference({
+    designSystemSlug: String(designSystem),
+    hasFont: !!manifest?.font
+  });
 
   return (
     <KiskadeeContext.Provider
