@@ -1,6 +1,6 @@
 import type { ThemeMode } from '@kiskadee/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { coreMaps, paletteIndex } from '@/registry/design-systems.registry.generated';
+import { coreMaps, paletteIndex, designSystemList } from '@/registry/design-systems.registry.generated';
 import {
   type DesignSystemKey,
   getDefaultSegmentAndThemeForDesignSystem
@@ -64,7 +64,7 @@ function persistSelection(designSystem: DesignSystemKey, segment: string, theme:
   }
 }
 
-const designSystemKeysFromRegistry = Object.keys(coreMaps) as DesignSystemKey[];
+const designSystemKeysFromRegistry = designSystemList.map((entry) => entry.key) as DesignSystemKey[];
 
 if (!designSystemKeysFromRegistry.length) {
   throw new Error('No design systems registered in coreMaps.');
@@ -82,7 +82,7 @@ export function useDesignSystemSelection() {
   const [segment, _setSegment] = useState<string>(DEFAULT_SEGMENT);
   const [theme, _setTheme] = useState<ThemeMode>(DEFAULT_THEME);
 
-  const designSystemKeys = useMemo(() => Object.keys(coreMaps) as string[], []);
+  const designSystemKeys = useMemo(() => designSystemList.map((entry) => entry.key), []);
 
   // Helpers to get mutable arrays from readonly registry entries
   const getSegments = useCallback((key: DesignSystemKey): string[] => {

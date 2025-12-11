@@ -12,6 +12,11 @@ export type {
   ComponentClassNameMapSplit
 } from './src/phase-5-generate-class-names-map/generateClassNamesMap';
 
+export type DesignSystemListEntry = {
+  key: string;
+  displayName: string;
+};
+
 // JSON structure produced by phase-8 writeExtraArtifacts step.
 //
 // Currently, it exposes the focusColor token resolved per design system,

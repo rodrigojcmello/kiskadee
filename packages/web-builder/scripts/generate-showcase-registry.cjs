@@ -219,6 +219,17 @@ function generateTemplatesRegistrySource(manifests) {
   lines.push('} as const;');
   lines.push('');
 
+  // designSystemList (simplified manifest: key + displayName)
+  lines.push('export type DesignSystemListEntry = import(\'@kiskadee/web-builder/types\').DesignSystemListEntry;');
+  lines.push('');
+  lines.push('export const designSystemList: DesignSystemListEntry[] = [');
+  for (const m of manifests) {
+    const displayName = m.displayName || m.key;
+    lines.push(`  { key: '${m.key}', displayName: ${JSON.stringify(displayName)} },`);
+  }
+  lines.push('];');
+  lines.push('');
+
   // designSystemMeta
   lines.push('export const designSystemMeta = {');
   for (const m of manifests) {

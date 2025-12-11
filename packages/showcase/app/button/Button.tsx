@@ -5,17 +5,16 @@ import { Icon } from '@/components/Icon/Icon';
 import s from './Button.module.scss';
 
 export function Button() {
-  const { fontName, designSystem, designSystemMeta } = useKiskadee();
+  const { fontName, designSystem, manifest } = useKiskadee();
 
   const isCarbon = designSystem === 'carbon-1-ibm';
   const alignment = isCarbon ? 'left' : 'center';
 
   // Manifest-driven capabilities for the current design system.
-  // Se o metadata estiver ausente, caímos no fallback que exibe todos
-  // os estados (comportamento atual), mantendo compatibilidade com
-  // builds antigos.
-  const manifestForDS = designSystemMeta[designSystem];
-  const buttonMeta = manifestForDS?.components?.button;
+  // If the manifest is missing, we fall back to rendering all states
+  // (current behavior), preserving compatibility with older builds or
+  // environments without metadata.
+  const buttonMeta = manifest?.components?.button;
 
   const renderState = (
     semantic: string,

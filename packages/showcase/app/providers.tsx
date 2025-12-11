@@ -4,9 +4,10 @@ import { useClassMapLoader } from '@/hooks/use-class-map-loader';
 import { useDesignSystemSelection } from '@/hooks/use-design-system-selection';
 import { useFontPreference } from '@/hooks/use-font-preference';
 import { useGlobalThemeClasses } from '@/hooks/use-global-theme-classes';
+import { useManifest } from '@/hooks/use-manifest';
 import { useStylesheetManager } from '@/hooks/use-stylesheet-manager';
 import { useThemeExtras } from '@/hooks/use-theme-extras';
-import { designSystemMeta } from '@/registry/design-systems.registry.generated';
+import { designSystemList } from '@/registry/design-systems.registry.generated';
 
 // Client-side provider that mirrors legacy App.tsx/main.tsx responsibilities
 // Refactored to use custom hooks for separation of concerns.
@@ -38,6 +39,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   // 5. Font Management
   const { fontName, setFontName } = useFontPreference(String(designSystem));
 
+  // 6. Manifest for the currently selected design system
+  const manifest = useManifest(String(designSystem));
+
   return (
     <KiskadeeContext.Provider
       value={{
@@ -49,7 +53,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
         designSystem: String(designSystem),
         setDesignSystem: (v) => setDesignSystem(v),
         designSystemKeys,
-        designSystemMeta,
+        designSystemList,
+        manifest,
         availableSegments,
         availableThemes,
         backgroundsByTheme,
