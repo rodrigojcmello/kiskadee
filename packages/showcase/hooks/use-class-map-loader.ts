@@ -1,4 +1,4 @@
-import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/core/dist';
+import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/core';
 import { useCallback, useEffect, useState } from 'react';
 import { coreMaps, paletteMaps } from '@/registry/design-systems.registry.generated';
 import type { DesignSystemKey } from '@/registry/registry-utils';

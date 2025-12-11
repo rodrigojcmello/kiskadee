@@ -1,4 +1,4 @@
-import type { ThemeMode } from '@kiskadee/core/dist';
+import type { ThemeMode } from '@kiskadee/core';
 import { useEffect, useMemo } from 'react';
 import { cssPaths } from '@/registry/css.registry.generated';
 import type { DesignSystemKey } from '@/registry/registry-utils';
