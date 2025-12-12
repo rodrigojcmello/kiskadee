@@ -74,12 +74,7 @@ export async function writeExtraArtifacts(params: {
     outDirSlug: string;
   };
 
-  if (!schema.themeTokens || !schema.themeTokens.palettes) {
-    return;
-  }
-
   const buildDir = getBuildDir(outDirSlug);
-  await mkdir(buildDir, { recursive: true });
 
   // 1) Global fonts artifact (fonts.kiskadee.json)
   //
@@ -90,6 +85,7 @@ export async function writeExtraArtifacts(params: {
   const fonts = schema.fonts as SchemaFonts | undefined;
 
   if (fonts && typeof fonts.body === 'string' && fonts.body.trim() !== '') {
+    await mkdir(buildDir, { recursive: true });
     const fontsFilePath = resolve(buildDir, 'fonts.kiskadee.json');
     const fontsPayload = {
       fonts: {
@@ -102,6 +98,12 @@ export async function writeExtraArtifacts(params: {
     await writeFile(fontsFilePath, JSON.stringify(fontsPayload, null, 2), 'utf8');
     console.log(`[web-builder] Fonts artifact written to: ${fontsFilePath}`);
   }
+
+  if (!schema.themeTokens || !schema.themeTokens.palettes) {
+    return;
+  }
+
+  await mkdir(buildDir, { recursive: true });
 
   const segmentKeys = getSegmentKeys(schema);
 

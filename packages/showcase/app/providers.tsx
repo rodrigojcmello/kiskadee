@@ -4,7 +4,6 @@ import { useClassMapLoader } from '@/hooks/use-class-map-loader';
 import { useDesignSystemSelection } from '@/hooks/use-design-system-selection';
 import { useFontPreference } from '@/hooks/use-font-preference';
 import { useGlobalThemeClasses } from '@/hooks/use-global-theme-classes';
-import { useManifest } from '@/hooks/use-manifest';
 import { useStylesheetManager } from '@/hooks/use-stylesheet-manager';
 import { useThemeExtras } from '@/hooks/use-theme-extras';
 import { designSystemList } from '@/registry/design-systems.registry.generated';
@@ -36,13 +35,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   useStylesheetManager({ designSystem, segment, theme });
   useGlobalThemeClasses(theme);
 
-  // 5. Manifest for the currently selected design system
-  const manifest = useManifest(String(designSystem));
-
-  // 6. Font Management (depends on manifest to know if a dedicated font exists)
-  const { fontName, setFontName } = useFontPreference({
-    designSystemSlug: String(designSystem),
-    hasFont: !!manifest?.font
+  // 5. Manifest + font management for the currently selected design system
+  const { manifest, fontName, setFontName } = useFontPreference({
+    designSystemKey: String(designSystem)
   });
 
   return (

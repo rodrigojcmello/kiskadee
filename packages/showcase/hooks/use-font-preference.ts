@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useManifest } from '@/hooks/use-manifest';
 import { FONTS } from '@/registry/fonts.registry';
 import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
+
+const systemFont = FONTS[0].key;
 
 function extractPrimaryFontLabel(bodyStack: string): string | null {
   const trimmed = bodyStack.trim();
@@ -13,14 +16,7 @@ function extractPrimaryFontLabel(bodyStack: string): string | null {
   return cleaned || null;
 }
 
-async function loadBodyFontForDesignSystem(
-  designSystemSlug: string,
-  hasFont: boolean | undefined
-): Promise<string | null> {
-  if (!hasFont) {
-    return null;
-  }
-
+async function loadBodyFontForDesignSystem(designSystemSlug: string): Promise<string | null> {
   try {
     const json = await loadJsonFromBuild<{ fonts?: { body?: string } }>(
       `${designSystemSlug}/fonts.kiskadee.json`,
@@ -33,16 +29,31 @@ async function loadBodyFontForDesignSystem(
   }
 }
 
-export function useFontPreference(options: { designSystemSlug?: string; hasFont?: boolean }) {
-  const { designSystemSlug, hasFont } = options;
-  const [fontName, setFontName] = useState('system');
+export function useFontPreference(options: { designSystemKey?: string }) {
+  const { designSystemKey } = options;
+  const manifest = useManifest(designSystemKey);
+  const hasFont: boolean | undefined = manifest?.font;
+  const [fontName, setFontName] = useState(systemFont);
 
   useEffect(() => {
     let cancelled = false;
 
     async function resolveInitialFont() {
-      if (designSystemSlug && hasFont) {
-        const bodyStack = await loadBodyFontForDesignSystem(designSystemSlug, hasFont);
+      if (!manifest?.key) {
+        if (!cancelled) {
+          setFontName(systemFont);
+        }
+        return;
+      }
+
+      // While manifest is loading for the current design system, keep
+      // the existing fontName to avoid unnecessary flicker.
+      if (hasFont === undefined) {
+        return;
+      }
+
+      if (hasFont) {
+        const bodyStack = await loadBodyFontForDesignSystem(manifest.key);
 
         if (cancelled) return;
 
@@ -60,7 +71,7 @@ export function useFontPreference(options: { designSystemSlug?: string; hasFont?
       }
 
       if (!cancelled) {
-        setFontName('system');
+        setFontName(systemFont);
       }
     }
 
@@ -69,7 +80,7 @@ export function useFontPreference(options: { designSystemSlug?: string; hasFont?
     return () => {
       cancelled = true;
     };
-  }, [designSystemSlug, hasFont]);
+  }, [manifest?.key, hasFont]);
 
-  return { fontName, setFontName } as const;
+  return { manifest, fontName, setFontName } as const;
 }

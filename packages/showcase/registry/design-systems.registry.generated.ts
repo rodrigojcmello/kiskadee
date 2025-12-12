@@ -8,16 +8,14 @@ type ClassNamesModuleLike = { default: ComponentClassNameMap };
 // Helper that wraps build JSON loading and returns a "module-like" object
 // compatible with the existing code in app/providers.tsx.
 function loadJsonModule(relativePath: string): Promise<ClassNamesModuleLike> {
-  return loadJsonFromBuild<ComponentClassNameMap>(relativePath, { required: true }).then(
-    (json) => ({ default: json })
-  );
+  return loadJsonFromBuild<ComponentClassNameMap>(relativePath, { required: true }).then((json) => ({ default: json }));
 }
 
 // Helper to load extra.<segment>.<theme>.kiskadee.json files with proper typing.
 function loadExtraJson(relativePath: string): Promise<ExtraArtifactsJSON> {
   return loadJsonFromBuild<ExtraArtifactsJSON>(relativePath, {
     required: false,
-    fallback: {} as ExtraArtifactsJSON
+    fallback: {} as ExtraArtifactsJSON,
   });
 }
 
@@ -27,257 +25,89 @@ export const coreMaps = {
   'fluent-2-microsoft': () => loadJsonModule('fluent-2-microsoft/core.kiskadee.json'),
   'ios-26-apple': () => loadJsonModule('ios-26-apple/core.kiskadee.json'),
   'ios-26-kiskadee': () => loadJsonModule('ios-26-kiskadee/core.kiskadee.json'),
-  'material-design-3-google': () => loadJsonModule('material-design-3-google/core.kiskadee.json')
+  'material-design-3-google': () => loadJsonModule('material-design-3-google/core.kiskadee.json'),
 } as const;
 
 export const paletteMaps = {
   'carbon-1-ibm|default|light': () => loadJsonModule('carbon-1-ibm/default.light.kiskadee.json'),
-  'fluent-2-kiskadee|default|light': () =>
-    loadJsonModule('fluent-2-kiskadee/default.light.kiskadee.json'),
-  'fluent-2-kiskadee|default|dark': () =>
-    loadJsonModule('fluent-2-kiskadee/default.dark.kiskadee.json'),
-  'fluent-2-microsoft|default|light': () =>
-    loadJsonModule('fluent-2-microsoft/default.light.kiskadee.json'),
-  'fluent-2-microsoft|default|dark': () =>
-    loadJsonModule('fluent-2-microsoft/default.dark.kiskadee.json'),
+  'fluent-2-kiskadee|default|light': () => loadJsonModule('fluent-2-kiskadee/default.light.kiskadee.json'),
+  'fluent-2-kiskadee|default|dark': () => loadJsonModule('fluent-2-kiskadee/default.dark.kiskadee.json'),
+  'fluent-2-microsoft|default|light': () => loadJsonModule('fluent-2-microsoft/default.light.kiskadee.json'),
+  'fluent-2-microsoft|default|dark': () => loadJsonModule('fluent-2-microsoft/default.dark.kiskadee.json'),
   'ios-26-apple|default|light': () => loadJsonModule('ios-26-apple/default.light.kiskadee.json'),
-  'ios-26-kiskadee|default|light': () =>
-    loadJsonModule('ios-26-kiskadee/default.light.kiskadee.json'),
-  'ios-26-kiskadee|default|dark': () =>
-    loadJsonModule('ios-26-kiskadee/default.dark.kiskadee.json'),
-  'ios-26-kiskadee|dynamic|light': () =>
-    loadJsonModule('ios-26-kiskadee/dynamic.light.kiskadee.json'),
-  'ios-26-kiskadee|dynamic|dark': () =>
-    loadJsonModule('ios-26-kiskadee/dynamic.dark.kiskadee.json'),
-  'material-design-3-google|default|light': () =>
-    loadJsonModule('material-design-3-google/default.light.kiskadee.json')
+  'ios-26-kiskadee|default|light': () => loadJsonModule('ios-26-kiskadee/default.light.kiskadee.json'),
+  'ios-26-kiskadee|default|dark': () => loadJsonModule('ios-26-kiskadee/default.dark.kiskadee.json'),
+  'ios-26-kiskadee|dynamic|light': () => loadJsonModule('ios-26-kiskadee/dynamic.light.kiskadee.json'),
+  'ios-26-kiskadee|dynamic|dark': () => loadJsonModule('ios-26-kiskadee/dynamic.dark.kiskadee.json'),
+  'material-design-3-google|default|light': () => loadJsonModule('material-design-3-google/default.light.kiskadee.json'),
 } as const;
 
 export const extraMaps = {
-  'carbon-1-ibm|default|light': () =>
-    loadExtraJson('carbon-1-ibm/extra.default.light.kiskadee.json'),
-  'fluent-2-kiskadee|default|light': () =>
-    loadExtraJson('fluent-2-kiskadee/extra.default.light.kiskadee.json'),
-  'fluent-2-kiskadee|default|dark': () =>
-    loadExtraJson('fluent-2-kiskadee/extra.default.dark.kiskadee.json'),
-  'fluent-2-microsoft|default|light': () =>
-    loadExtraJson('fluent-2-microsoft/extra.default.light.kiskadee.json'),
-  'fluent-2-microsoft|default|dark': () =>
-    loadExtraJson('fluent-2-microsoft/extra.default.dark.kiskadee.json'),
-  'ios-26-kiskadee|default|light': () =>
-    loadExtraJson('ios-26-kiskadee/extra.default.light.kiskadee.json'),
-  'ios-26-kiskadee|dynamic|light': () =>
-    loadExtraJson('ios-26-kiskadee/extra.dynamic.light.kiskadee.json')
+  'carbon-1-ibm|default|light': () => loadExtraJson('carbon-1-ibm/extra.default.light.kiskadee.json'),
+  'fluent-2-kiskadee|default|light': () => loadExtraJson('fluent-2-kiskadee/extra.default.light.kiskadee.json'),
+  'fluent-2-kiskadee|default|dark': () => loadExtraJson('fluent-2-kiskadee/extra.default.dark.kiskadee.json'),
+  'fluent-2-microsoft|default|light': () => loadExtraJson('fluent-2-microsoft/extra.default.light.kiskadee.json'),
+  'fluent-2-microsoft|default|dark': () => loadExtraJson('fluent-2-microsoft/extra.default.dark.kiskadee.json'),
+  'ios-26-kiskadee|default|light': () => loadExtraJson('ios-26-kiskadee/extra.default.light.kiskadee.json'),
+  'ios-26-kiskadee|dynamic|light': () => loadExtraJson('ios-26-kiskadee/extra.dynamic.light.kiskadee.json'),
 } as const;
 
 export const paletteIndex = {
   'carbon-1-ibm': {
     segments: ['default'],
     themesBySegment: {
-      default: ['light']
+      "default": ['light']
     }
   },
   'fluent-2-kiskadee': {
     segments: ['default'],
     themesBySegment: {
-      default: ['light', 'dark']
+      "default": ['light', 'dark']
     }
   },
   'fluent-2-microsoft': {
     segments: ['default'],
     themesBySegment: {
-      default: ['light', 'dark']
+      "default": ['light', 'dark']
     }
   },
   'ios-26-apple': {
     segments: ['default'],
     themesBySegment: {
-      default: ['light']
+      "default": ['light']
     }
   },
   'ios-26-kiskadee': {
     segments: ['default', 'dynamic'],
     themesBySegment: {
-      default: ['light', 'dark'],
-      dynamic: ['light', 'dark']
+      "default": ['light', 'dark'],
+      "dynamic": ['light', 'dark']
     }
   },
   'material-design-3-google': {
     segments: ['default'],
     themesBySegment: {
-      default: ['light']
+      "default": ['light']
     }
-  }
+  },
 } as const;
 
 export type DesignSystemListEntry = import('@kiskadee/web-builder/types').DesignSystemListEntry;
 
 export const designSystemList: DesignSystemListEntry[] = [
-  { key: 'carbon-1-ibm', displayName: 'Carbon by IBM' },
-  { key: 'fluent-2-kiskadee', displayName: 'Fluent 2 by Kiskadee' },
-  { key: 'fluent-2-microsoft', displayName: 'Fluent 2 by Microsoft' },
-  { key: 'ios-26-apple', displayName: 'iOS 26 by Apple' },
-  { key: 'ios-26-kiskadee', displayName: 'iOS 26 by Kiskadee' },
-  { key: 'material-design-3-google', displayName: 'Material Design 3 by Google' }
+  { key: 'carbon-1-ibm', displayName: "Carbon by IBM" },
+  { key: 'fluent-2-kiskadee', displayName: "Fluent 2 by Kiskadee" },
+  { key: 'fluent-2-microsoft', displayName: "Fluent 2 by Microsoft" },
+  { key: 'ios-26-apple', displayName: "iOS 26 by Apple" },
+  { key: 'ios-26-kiskadee', displayName: "iOS 26 by Kiskadee" },
+  { key: 'material-design-3-google', displayName: "Material Design 3 by Google" },
 ];
 
 export const designSystemMeta = {
-  'carbon-1-ibm': {
-    displayName: 'Carbon by IBM',
-    components: {
-      button: {
-        scale: {
-          's:sm:2': true,
-          's:sm:1': true,
-          's:md:1': true,
-          's:lg:1': true,
-          's:lg:2': true,
-          's:lg:3': true
-        },
-        state: {
-          primary: {
-            solid: { rest: true, hover: true, focus: true, pressed: true, disabled: true }
-          }
-        }
-      }
-    }
-  },
-  'fluent-2-kiskadee': {
-    displayName: 'Fluent 2 by Kiskadee',
-    components: {
-      button: {
-        scale: { 's:sm:1': true, 's:md:1': true, 's:lg:1': true },
-        state: {
-          primary: {
-            solid: {
-              rest: true,
-              hover: true,
-              focus: true,
-              pressed: true,
-              disabled: true,
-              selected: true
-            }
-          }
-        }
-      }
-    }
-  },
-  'fluent-2-microsoft': {
-    displayName: 'Fluent 2 by Microsoft',
-    components: {
-      button: {
-        scale: { 's:sm:1': true, 's:md:1': true, 's:lg:1': true },
-        state: {
-          primary: {
-            solid: {
-              rest: true,
-              hover: true,
-              focus: true,
-              pressed: true,
-              disabled: true,
-              selected: true
-            }
-          }
-        }
-      }
-    }
-  },
-  'ios-26-apple': {
-    displayName: 'iOS 26 by Apple',
-    components: {
-      button: {
-        scale: { 's:md:1': true },
-        state: {
-          primary: {
-            soft: {
-              rest: true,
-              hover: true,
-              focus: true,
-              pressed: true,
-              disabled: true,
-              selected: true
-            },
-            solid: {
-              rest: true,
-              hover: true,
-              pressed: true,
-              disabled: true,
-              focus: true,
-              selected: true
-            }
-          }
-        }
-      }
-    }
-  },
-  'ios-26-kiskadee': {
-    displayName: 'iOS 26 by Kiskadee',
-    components: {
-      button: {
-        scale: { 's:sm:1': true, 's:md:1': true, 's:lg:1': true },
-        state: {
-          primary: {
-            soft: {
-              rest: true,
-              hover: true,
-              focus: true,
-              pressed: true,
-              disabled: true,
-              selected: true
-            },
-            solid: { rest: true, hover: true, focus: true, pressed: true, disabled: true }
-          },
-          neutral: {
-            soft: {
-              rest: true,
-              hover: true,
-              focus: true,
-              pressed: true,
-              disabled: true,
-              selected: true
-            }
-          },
-          redLike: {
-            soft: {
-              rest: true,
-              hover: true,
-              focus: true,
-              pressed: true,
-              disabled: true,
-              selected: true
-            },
-            solid: { rest: true, hover: true, pressed: true, disabled: true, focus: true }
-          }
-        }
-      }
-    }
-  },
-  'material-design-3-google': {
-    displayName: 'Material Design 3 by Google',
-    components: {
-      button: {
-        scale: { 's:sm:1': true, 's:md:1': true, 's:lg:1': true, 's:lg:2': true, 's:lg:3': true },
-        state: {
-          primary: {
-            soft: {
-              rest: true,
-              hover: true,
-              pressed: true,
-              disabled: true,
-              focus: true,
-              selected: true
-            },
-            solid: {
-              rest: true,
-              hover: true,
-              pressed: true,
-              disabled: true,
-              focus: true,
-              selected: true
-            }
-          }
-        }
-      }
-    }
-  }
+  'carbon-1-ibm': {"displayName":"Carbon by IBM","components":{"button":{"scale":{"s:sm:2":true,"s:sm:1":true,"s:md:1":true,"s:lg:1":true,"s:lg:2":true,"s:lg:3":true},"state":{"primary":{"solid":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true}}}}}},
+  'fluent-2-kiskadee': {"displayName":"Fluent 2 by Kiskadee","components":{"button":{"scale":{"s:sm:1":true,"s:md:1":true,"s:lg:1":true},"state":{"primary":{"solid":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true,"selected":true}}}}}},
+  'fluent-2-microsoft': {"displayName":"Fluent 2 by Microsoft","components":{"button":{"scale":{"s:sm:1":true,"s:md:1":true,"s:lg:1":true},"state":{"primary":{"solid":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true,"selected":true}}}}}},
+  'ios-26-apple': {"displayName":"iOS 26 by Apple","components":{"button":{"scale":{"s:md:1":true},"state":{"primary":{"soft":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true,"selected":true},"solid":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true}}}}}},
+  'ios-26-kiskadee': {"displayName":"iOS 26 by Kiskadee","components":{"button":{"scale":{"s:sm:1":true,"s:md:1":true,"s:lg:1":true},"state":{"primary":{"soft":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true,"selected":true},"solid":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true}},"neutral":{"soft":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true,"selected":true}},"redLike":{"soft":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true,"selected":true},"solid":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true}}}}}},
+  'material-design-3-google': {"displayName":"Material Design 3 by Google","components":{"button":{"scale":{"s:sm:1":true,"s:md:1":true,"s:lg:1":true,"s:lg:2":true,"s:lg:3":true},"state":{"primary":{"soft":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true},"solid":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true}}}}}},
 } as const;

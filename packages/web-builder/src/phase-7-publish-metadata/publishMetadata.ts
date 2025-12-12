@@ -1,11 +1,7 @@
-import { copyFile, mkdir, readFile, writeFile, cp } from 'node:fs/promises';
+import { copyFile, cp, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import type { Schema, SchemaSegments, ThemeMode } from '@kiskadee/core';
-import type {
-  Manifest,
-  ManifestComponent,
-  ManifestComponentState
-} from './manifestTypes';
+import type { Manifest, ManifestComponent, ManifestComponentState } from './manifestTypes';
 
 function majorVersionFromTuple(v: [number, number, number] | number[]): number {
   return Array.isArray(v) && v.length > 0 ? Number(v[0]) : 0;
@@ -178,6 +174,18 @@ export async function publishMetadata(params: {
     components: {}
   };
 
+  // Derive global font capability directly from the schema. This keeps the
+  // flag deterministic and independent from the order in which build phases
+  // emit artifacts such as "fonts.kiskadee.json".
+  const hasGlobalFonts =
+    !!(schema as any).fonts &&
+    typeof (schema as any).fonts.body === 'string' &&
+    (schema as any).fonts.body.trim() !== '';
+
+  if (hasGlobalFonts) {
+    (manifest as any).font = true;
+  }
+
   // Derive component-level metadata from the schema. This keeps the
   // manifest focused on high-level capabilities instead of duplicating
   // the full schema structure. Absence of keys means the information is
@@ -196,22 +204,6 @@ export async function publishMetadata(params: {
 
   const buildDir = resolve(baseBuildDir, outDirSlug);
   await mkdir(buildDir, { recursive: true });
-
-  // Detect optional font artifact published for this design system.
-  // If fonts.kiskadee.json exists, expose a positive `font: true` flag
-  // in the manifest. Absence of the flag means no dedicated font artifact.
-  try {
-    const fontsPath = resolve(buildDir, 'fonts.kiskadee.json');
-    // Using fs/promises here would require handling ENOENT via try/catch;
-    // a best-effort sync check is sufficient and cheap at this point.
-    // eslint-disable-next-line n/global-require, @typescript-eslint/no-var-requires
-    const fs = require('node:fs') as typeof import('node:fs');
-    if (fs.existsSync(fontsPath)) {
-      manifest.font = true;
-    }
-  } catch {
-    // If detection fails for any reason, silently skip the flag.
-  }
 
   // Write metadata files
   await writeFile(resolve(buildDir, 'manifest.json'), JSON.stringify(manifest, null, 2), 'utf8');
