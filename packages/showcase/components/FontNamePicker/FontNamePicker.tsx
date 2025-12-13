@@ -18,5 +18,5 @@ export default function FontNamePicker() {
     )
   }));
 
-  return <Select options={options} value={fontName} onValueChange={setFontName} />;
+  return <Select label="Font" options={options} value={fontName} onValueChange={setFontName} />;
 }

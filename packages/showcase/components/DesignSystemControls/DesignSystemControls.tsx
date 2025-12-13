@@ -27,8 +27,8 @@ export default function DesignSystemControls() {
     <div className={styles.container}>
       {/* 1. Design system selector */}
       <div className={styles.group}>
-        <span className={styles.label}>Design System</span>
         <Select
+          label="Design System"
           options={designSystemOptions}
           value={designSystem}
           onValueChange={(value) => {
@@ -40,8 +40,8 @@ export default function DesignSystemControls() {
 
       {/* 2. Segment selector (Brand/Product) */}
       <div className={styles.group}>
-        <span className={styles.label}>Segment</span>
         <Select
+          label="Segment"
           options={segmentOptions}
           value={segment}
           onValueChange={(value) => {
