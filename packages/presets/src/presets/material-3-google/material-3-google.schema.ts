@@ -33,7 +33,7 @@ export const schema: Schema<Segment> = {
   author: 'Google',
   breakpoints,
   fonts: {
-    body: '"Roboto", sans-serif'
+    body: ['Roboto', 'sans-serif']
   },
   components: {
     button: {

@@ -1,4 +1,4 @@
-import type { ThemeMode } from '@kiskadee/core/dist';
+import type { ThemeMode } from '@kiskadee/core';
 import { useEffect } from 'react';
 
 export function useGlobalThemeClasses(theme: ThemeMode) {

@@ -1,3 +1,4 @@
+import { toCssFontFamily } from '@kiskadee/web-builder/types';
 import { useEffect, useState } from 'react';
 import { useManifest } from '@/hooks/use-manifest';
 import { FONTS } from '@/registry/fonts.registry';
@@ -5,25 +6,20 @@ import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 
 const systemFont = FONTS[0].key;
 
-function extractPrimaryFontLabel(bodyStack: string): string | null {
-  const trimmed = bodyStack.trim();
-  if (!trimmed) return null;
-
-  const [first] = trimmed.split(',');
-  if (!first) return null;
-
-  const cleaned = first.trim().replace(/^['"]+|['"]+$/g, '');
-  return cleaned || null;
-}
-
-async function loadBodyFontForDesignSystem(designSystemSlug: string): Promise<string | null> {
+async function loadFontsForDesignSystem(designSystemSlug: string): Promise<{
+  body: string;
+  heading: string;
+} | null> {
   try {
-    const json = await loadJsonFromBuild<{ fonts?: { body?: string } }>(
+    const json = await loadJsonFromBuild<{ fonts?: { body?: string; heading?: string } }>(
       `${designSystemSlug}/fonts.kiskadee.json`,
       { required: false, fallback: {} }
     );
 
-    return json.fonts?.body ?? null;
+    const body = json.fonts?.body?.trim();
+    const heading = json.fonts?.heading?.trim();
+    if (!body || !heading) return null;
+    return { body, heading };
   } catch {
     return null;
   }
@@ -32,8 +28,14 @@ async function loadBodyFontForDesignSystem(designSystemSlug: string): Promise<st
 export function useFontPreference(options: { designSystemKey?: string }) {
   const { designSystemKey } = options;
   const manifest = useManifest(designSystemKey);
-  const hasFont: boolean | undefined = manifest?.font;
-  const [fontName, setFontName] = useState(systemFont);
+  const hasFont: boolean | undefined = manifest ? manifest.font !== undefined : undefined;
+  const [fontName, setFontNameInternal] = useState(systemFont);
+  const [isOverrideActive, setIsOverrideActive] = useState(false);
+
+  const setFontName = (next: string) => {
+    setIsOverrideActive(true);
+    setFontNameInternal(next);
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -41,7 +43,8 @@ export function useFontPreference(options: { designSystemKey?: string }) {
     async function resolveInitialFont() {
       if (!manifest?.key) {
         if (!cancelled) {
-          setFontName(systemFont);
+          setIsOverrideActive(false);
+          setFontNameInternal(systemFont);
         }
         return;
       }
@@ -52,26 +55,34 @@ export function useFontPreference(options: { designSystemKey?: string }) {
         return;
       }
 
-      if (hasFont) {
-        const bodyStack = await loadBodyFontForDesignSystem(manifest.key);
+      if (hasFont && manifest.font) {
+        // Reset override state when switching design systems.
+        if (!cancelled) {
+          setIsOverrideActive(false);
+        }
 
-        if (cancelled) return;
-
-        if (bodyStack) {
-          const primary = extractPrimaryFontLabel(bodyStack);
-
-          if (primary && primary !== 'system-ui') {
-            const match = FONTS.find((f) => f.label === primary);
-            if (match) {
-              setFontName(match.key);
-              return;
+        const primary = manifest.font.body[0] ?? null;
+        if (primary) {
+          if (primary === 'system-ui') {
+            if (!cancelled) {
+              setFontNameInternal(systemFont);
             }
+            return;
+          }
+
+          const match = FONTS.find((f) => f.family[0] === primary);
+          if (match) {
+            if (!cancelled) {
+              setFontNameInternal(match.key);
+            }
+            return;
           }
         }
       }
 
       if (!cancelled) {
-        setFontName(systemFont);
+        setIsOverrideActive(false);
+        setFontNameInternal(systemFont);
       }
     }
 
@@ -81,6 +92,56 @@ export function useFontPreference(options: { designSystemKey?: string }) {
       cancelled = true;
     };
   }, [manifest?.key, hasFont]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function applyFontCssVariables() {
+      const root = document.documentElement;
+
+      if (!manifest?.key) {
+        const system = FONTS[0];
+        const systemCss = toCssFontFamily(system.family);
+        root.style.setProperty('--k-font-body', systemCss);
+        root.style.setProperty('--k-font-heading', systemCss);
+        return;
+      }
+
+      if (hasFont === undefined) {
+        return;
+      }
+
+      if (isOverrideActive) {
+        const selected = FONTS.find((f) => f.key === fontName) ?? FONTS[0];
+        const selectedCss = toCssFontFamily(selected.family);
+        root.style.setProperty('--k-font-body', selectedCss);
+        root.style.setProperty('--k-font-heading', selectedCss);
+        return;
+      }
+
+      if (hasFont) {
+        const fonts = await loadFontsForDesignSystem(manifest.key);
+        if (cancelled) return;
+
+        if (fonts) {
+          root.style.setProperty('--k-font-body', fonts.body);
+          root.style.setProperty('--k-font-heading', fonts.heading);
+          return;
+        }
+      }
+
+      const system = FONTS[0];
+      const systemCss = toCssFontFamily(system.family);
+      root.style.setProperty('--k-font-body', systemCss);
+      root.style.setProperty('--k-font-heading', systemCss);
+    }
+
+    void applyFontCssVariables();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [manifest?.key, hasFont, fontName, isOverrideActive]);
 
   return { manifest, fontName, setFontName } as const;
 }

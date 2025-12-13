@@ -35,5 +35,14 @@
       }
     }
   },
-  "font": true
+  "font": {
+    "body": [
+      "IBM Plex Sans",
+      "sans-serif"
+    ],
+    "heading": [
+      "IBM Plex Sans",
+      "sans-serif"
+    ]
+  }
 }

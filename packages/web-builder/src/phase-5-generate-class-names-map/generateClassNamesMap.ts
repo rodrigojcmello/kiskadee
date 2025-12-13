@@ -124,12 +124,17 @@ export function generateClassNamesMapSplit(
 
       // Palettes split per segment.theme; segregate by tone (unique/soft/solid)
       if (el.palettes) {
-        for (const segmentName of Object.keys(el.palettes)) {
-          const segmentThemes = el.palettes[segmentName];
+        // `el.palettes` is typed with a constrained key union in @kiskadee/core
+        // but in practice schemas may use arbitrary segment keys. Treat it as a
+        // string-keyed record for artifact generation.
+        const palettesBySegment = el.palettes as unknown as Record<string, any>;
+
+        for (const segmentName of Object.keys(palettesBySegment)) {
+          const segmentThemes = palettesBySegment[segmentName] as Record<string, any> | undefined;
           if (!segmentThemes) continue;
 
           for (const themeName of Object.keys(segmentThemes)) {
-            const bySemantic = segmentThemes[themeName];
+            const bySemantic = segmentThemes[themeName] as Record<string, any> | undefined;
             if (!bySemantic) continue;
 
             // Create a composite key: segment.theme (e.g., "ios.light", "ios.dark")
@@ -156,9 +161,9 @@ export function generateClassNamesMapSplit(
               const solidSet = new Set<string>();
 
               for (const st of Object.keys(byState ?? {})) {
-                const styleKeys = byState?.[st as InteractionState];
+                const styleKeys = byState?.[st as InteractionState] as string[] | undefined;
 
-                styleKeys?.forEach((styleKey) => {
+                styleKeys?.forEach((styleKey: string) => {
                   const shortenedClass = shortenMap[styleKey] ?? styleKey;
                   const meta = toneMetadata.get(styleKey);
 

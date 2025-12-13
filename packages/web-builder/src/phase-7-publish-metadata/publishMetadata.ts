@@ -1,7 +1,13 @@
 import { copyFile, cp, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
-import type { Schema, SchemaSegments, ThemeMode } from '@kiskadee/core';
-import type { Manifest, ManifestComponent, ManifestComponentState } from './manifestTypes';
+import type { Schema, SchemaFonts, SchemaSegments, ThemeMode } from '@kiskadee/core';
+import type {
+  Manifest,
+  ManifestComponent,
+  ManifestComponentState,
+  ManifestFontStack,
+  ManifestFonts
+} from './manifestTypes';
 
 function majorVersionFromTuple(v: [number, number, number] | number[]): number {
   return Array.isArray(v) && v.length > 0 ? Number(v[0]) : 0;
@@ -174,16 +180,15 @@ export async function publishMetadata(params: {
     components: {}
   };
 
-  // Derive global font capability directly from the schema. This keeps the
-  // flag deterministic and independent from the order in which build phases
+  // Publish global font metadata directly from the schema. This keeps the
+  // manifest deterministic and independent from the order in which build phases
   // emit artifacts such as "fonts.kiskadee.json".
-  const hasGlobalFonts =
-    !!(schema as any).fonts &&
-    typeof (schema as any).fonts.body === 'string' &&
-    (schema as any).fonts.body.trim() !== '';
-
-  if (hasGlobalFonts) {
-    (manifest as any).font = true;
+  const fonts = schema.fonts as SchemaFonts | undefined;
+  if (fonts?.body) {
+    const body = fonts.body as ManifestFontStack;
+    const heading = (fonts.heading ?? fonts.body) as ManifestFontStack;
+    const font: ManifestFonts = { body, heading };
+    manifest.font = font;
   }
 
   // Derive component-level metadata from the schema. This keeps the

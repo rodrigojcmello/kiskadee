@@ -7,6 +7,13 @@
 
 import type { ComponentName } from '@kiskadee/core';
 
+export type ManifestFontStack = readonly [primary: string, fallback: string];
+
+export type ManifestFonts = {
+  body: ManifestFontStack;
+  heading: ManifestFontStack;
+};
+
 export type ManifestComponentState = Record<
   string, // semantic: primary, neutral, redLike, ...
   Record<
@@ -46,14 +53,12 @@ export type Manifest = {
   segments: string[];
   themes: Record<string, string[]>;
   /**
-   * Indicates that this design system defines a dedicated font artifact
-   * (fonts.kiskadee.json) in the build output.
+   * Optional, global font metadata for the schema.
    *
-   * Only positive information is stored: if this flag is present and true,
-   * the font artifact exists. If the flag is absent, no font metadata is
-   * published for this design system.
+   * When present, `body` is required and `heading` is always published (it
+   * mirrors `body` when the schema doesn't define it).
    */
-  font?: boolean;
+  font?: ManifestFonts;
   /**
    * Optional component-level metadata derived from the schema.
    *

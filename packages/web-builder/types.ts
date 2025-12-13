@@ -11,6 +11,8 @@ export type {
   ComponentClassNameMap,
   ComponentClassNameMapSplit
 } from './src/phase-5-generate-class-names-map/generateClassNamesMap';
+export type { FontStack } from './src/utils/fontFamily';
+export { toCssFontFamily } from './src/utils/fontFamily';
 
 export type DesignSystemListEntry = {
   key: string;

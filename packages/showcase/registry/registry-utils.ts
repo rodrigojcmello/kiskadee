@@ -1,4 +1,4 @@
-import type { ThemeMode } from '@kiskadee/core/dist';
+import type { ThemeMode } from '@kiskadee/core';
 import { type coreMaps, paletteIndex } from './design-systems.registry.generated';
 
 export type DesignSystemKey = keyof typeof coreMaps;

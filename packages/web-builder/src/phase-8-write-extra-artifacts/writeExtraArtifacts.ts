@@ -12,6 +12,7 @@ import type {
 } from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
 import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex';
+import { type FontStack, toCssFontFamily } from '../utils/fontFamily';
 
 type ExtractableSchema = Schema & {
   segments?: SchemaSegments;
@@ -84,16 +85,25 @@ export async function writeExtraArtifacts(params: {
   //    Runtime consumers are free to ignore or override these values.
   const fonts = schema.fonts as SchemaFonts | undefined;
 
-  if (fonts && typeof fonts.body === 'string' && fonts.body.trim() !== '') {
+  function toCssFontFamilyString(value: FontStack): string | null {
+    const css = toCssFontFamily(value);
+    return css.trim() ? css : null;
+  }
+
+  const bodyCss = fonts ? toCssFontFamilyString(fonts.body as FontStack) : null;
+  const headingCssRaw =
+    fonts && fonts.heading ? toCssFontFamilyString(fonts.heading as FontStack) : null;
+  const headingCss = headingCssRaw ?? bodyCss;
+
+  if (bodyCss) {
     await mkdir(buildDir, { recursive: true });
     const fontsFilePath = resolve(buildDir, 'fonts.kiskadee.json');
     const fontsPayload = {
       fonts: {
-        body: fonts.body,
-        ...(fonts.heading ? { heading: fonts.heading } : {}),
-        ...(fonts.code ? { code: fonts.code } : {})
+        body: bodyCss,
+        ...(headingCss ? { heading: headingCss } : {})
       }
-    } satisfies { fonts: SchemaFonts };
+    } satisfies { fonts: { body: string; heading?: string } };
 
     await writeFile(fontsFilePath, JSON.stringify(fontsPayload, null, 2), 'utf8');
     console.log(`[web-builder] Fonts artifact written to: ${fontsFilePath}`);

@@ -94,11 +94,12 @@ export type SchemaMetadata = {
 // These values represent the intended font-family stacks for the schema as a whole
 // and are not meant to be strictly enforced. Consumers are free to override fonts
 // at the application level (for example, by redefining CSS variables such as
-// --k-font-body / --k-font-heading / --k-font-code).
+// --k-font-body / --k-font-heading).
+export type SchemaFontStack = readonly [primary: string, fallback: string];
+
 export type SchemaFonts = {
-  body: string;
-  heading?: string;
-  code?: string;
+  body: SchemaFontStack;
+  heading?: SchemaFontStack;
 };
 
 export type ThemeTokens<TSegmentName extends SegmentName = never> = Partial<{
