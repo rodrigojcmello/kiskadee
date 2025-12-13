@@ -3,6 +3,16 @@
   display: inline-block;
 }
 
+.label {
+  display: block;
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--neutral-100);
+  margin-bottom: 6px;
+  user-select: none;
+}
+
 .trigger {
   display: inline-flex;
   align-items: center;

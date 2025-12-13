@@ -2,15 +2,23 @@
 
 import type { SelectProps as HeadlessSelectProps } from '@kiskadee/react-headless';
 import { Select as HeadlessSelect } from '@kiskadee/react-headless';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { Icon } from '@/components/Icon/Icon';
 import styles from './Select.module.scss';
 
 interface SelectProps extends Omit<HeadlessSelectProps, 'children' | 'classNames'> {
   className?: string;
+  label?: ReactNode;
 }
 
-export function Select({ value, onValueChange, options, disabled, className = '' }: SelectProps) {
+export function Select({
+  value,
+  onValueChange,
+  options,
+  disabled,
+  className = '',
+  label
+}: SelectProps) {
   const selectedOption = options.find((o) => o.value === value);
 
   // Internal flag to enable/disable dynamic durations based on option count.
@@ -50,6 +58,7 @@ export function Select({ value, onValueChange, options, disabled, className = ''
       style={dynamicStyle}
       classNames={{
         e1: `${styles.container} ${className}`.trim(),
+        e5: styles.label,
         e2: styles.trigger,
         e3: styles.dropdown,
         e4: styles.option,
@@ -57,6 +66,7 @@ export function Select({ value, onValueChange, options, disabled, className = ''
         e4d: `${styles.option} ${styles.optionDisabled}`
       }}
     >
+      {label ? <HeadlessSelect.Label>{label}</HeadlessSelect.Label> : null}
       <HeadlessSelect.Trigger>
         <span>{selectedOption?.label || value}</span>
         <Icon name="ChevronDown" className={styles.chevron} />
