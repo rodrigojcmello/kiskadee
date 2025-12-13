@@ -8,15 +8,15 @@ import styles from './DesignSystemToolbar.module.scss';
 
 export default function DesignSystemToolbar() {
   return (
-    <>
-      <div className={styles.left}>
+    <div className={styles.toolbar}>
+      <div>
         <DesignSystemControls />
       </div>
-      <div className={styles.right}>
+      <div>
         <ThemeModePicker />
         <BackgroundTonePicker />
         <FontNamePicker />
       </div>
-    </>
+    </div>
   );
 }
