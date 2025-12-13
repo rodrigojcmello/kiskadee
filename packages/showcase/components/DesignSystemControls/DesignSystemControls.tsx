@@ -1,6 +1,7 @@
 'use client';
 import { useKiskadee, useShowcase } from '@kiskadee/react-components';
 import DynamicColorPicker from '@/components/DynamicColorPicker/DynamicColorPicker';
+import FontNamePicker from '@/components/FontNamePicker/FontNamePicker';
 import { Select } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
 import styles from './DesignSystemControls.module.scss';
@@ -58,6 +59,8 @@ export default function DesignSystemControls() {
           <DynamicColorPicker />
         </div>
       )}
+
+      <FontNamePicker />
     </div>
   );
 }
