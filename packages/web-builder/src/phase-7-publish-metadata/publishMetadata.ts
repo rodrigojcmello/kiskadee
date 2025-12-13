@@ -80,18 +80,6 @@ function buildButtonState(schema: Schema): ManifestComponentState | undefined {
 
   const stateMap: ManifestComponentState = {};
 
-  const ensureToneSet = (semantic: string, tone: string): Set<string> => {
-    const bySemantic = (stateMap[semantic] = stateMap[semantic] || {});
-    const bucket = (bySemantic[tone] = bySemantic[tone] || {});
-    // We use a Set during computation, but the final structure must be
-    // Record<string, true>. To avoid carrying Sets inside the public
-    // type, we keep a local Map from semantic/tone to Set and then
-    // materialise into stateMap at the end.
-    // For simplicity, we will store states temporarily in a parallel
-    // map.
-    return new Set<string>(Object.keys(bucket));
-  };
-
   // Temporary accumulator so we can use Set semantics while
   // computing, then convert to the ManifestComponentState
   // structure at the end.
