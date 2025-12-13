@@ -1,4 +1,10 @@
-import type { ComponentPropsWithoutRef, KeyboardEvent, ReactNode } from 'react';
+import type {
+  ComponentPropsWithoutRef,
+  Dispatch,
+  KeyboardEvent,
+  ReactNode,
+  SetStateAction
+} from 'react';
 import {
   createContext,
   useCallback,
@@ -39,8 +45,9 @@ export type SelectProps = SelectRootDivProps & {
    * - e4: Option (role=option) — rest state
    * - e4a: Option (role=option) — selected state
    * - e4d: Option (role=option) — disabled state
+   * - e5: Label
    */
-  classNames?: Partial<Record<'e1' | 'e2' | 'e3' | 'e4' | 'e4a' | 'e4d', string>>;
+  classNames?: Partial<Record<'e1' | 'e2' | 'e3' | 'e4' | 'e4a' | 'e4d' | 'e5', string>>;
 };
 
 export type SelectTriggerProps = {
@@ -60,6 +67,12 @@ export type SelectOptionProps = {
   disabled?: boolean;
 };
 
+export type SelectLabelProps = {
+  children?: ReactNode;
+  className?: string;
+  id?: string;
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Context
 // ─────────────────────────────────────────────────────────────────────────────
@@ -75,6 +88,8 @@ type SelectContextValue = {
   disabled: boolean;
   placeholder: string;
   baseId: string;
+  labelId?: string;
+  setLabelId: Dispatch<SetStateAction<string | undefined>>;
   classNames?: SelectProps['classNames'];
   triggerRef: React.RefObject<HTMLButtonElement | null>;
   listRef: React.RefObject<HTMLUListElement | null>;
@@ -109,6 +124,8 @@ function SelectRoot({
 }: SelectProps) {
   const internalId = useId();
   const baseId = idPrefix ?? `select-${internalId}`;
+
+  const [labelId, setLabelId] = useState<string | undefined>(undefined);
 
   // Controlled/uncontrolled selected value
   const isControlled = value !== undefined;
@@ -182,6 +199,8 @@ function SelectRoot({
       disabled,
       placeholder,
       baseId,
+      labelId,
+      setLabelId,
       classNames,
       triggerRef,
       listRef,
@@ -196,6 +215,7 @@ function SelectRoot({
       disabled,
       placeholder,
       baseId,
+      labelId,
       classNames
     ]
   );
@@ -225,9 +245,9 @@ function SelectTrigger({ children, className }: SelectTriggerProps) {
     disabled,
     placeholder,
     baseId,
+    labelId,
     classNames,
-    triggerRef,
-    listRef
+    triggerRef
   } = useSelectContext();
 
   const selectedOption = options.find((o) => o.value === selected);
@@ -388,7 +408,7 @@ function SelectTrigger({ children, className }: SelectTriggerProps) {
       aria-haspopup="listbox"
       aria-expanded={isOpen}
       aria-controls={`${baseId}-listbox`}
-      aria-labelledby={`${baseId}-trigger`}
+      aria-labelledby={labelId ? `${labelId} ${baseId}-trigger` : `${baseId}-trigger`}
       aria-disabled={disabled || undefined}
       disabled={disabled}
       className={triggerClassName}
@@ -397,6 +417,31 @@ function SelectTrigger({ children, className }: SelectTriggerProps) {
     >
       {children ?? displayLabel}
     </button>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Label Component
+// ─────────────────────────────────────────────────────────────────────────────
+
+function SelectLabel({ children, className, id }: SelectLabelProps) {
+  const { baseId, setLabelId, classNames } = useSelectContext();
+
+  const resolvedId = id ?? `${baseId}-label`;
+
+  useEffect(() => {
+    setLabelId(resolvedId);
+    return () => {
+      setLabelId((current) => (current === resolvedId ? undefined : current));
+    };
+  }, [resolvedId, setLabelId]);
+
+  const resolvedClassName = className ?? classNames?.e5;
+
+  return (
+    <span id={resolvedId} className={resolvedClassName}>
+      {children}
+    </span>
   );
 }
 
@@ -413,7 +458,7 @@ function SelectContent({ children, className }: SelectContentProps) {
     <ul
       ref={listRef}
       id={`${baseId}-listbox`}
-      // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: <explanation>
+      // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: ...
       role="listbox"
       aria-labelledby={`${baseId}-trigger`}
       aria-hidden={isOpen ? undefined : true}
@@ -482,8 +527,8 @@ function SelectOption({ value, children, className, disabled }: SelectOptionProp
   }, [isDisabled, optionIndex, setFocusedIndex]);
 
   return (
-    // biome-ignore lint/a11y/useFocusableInteractive: <explanation>
-    // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+    // biome-ignore lint/a11y/useFocusableInteractive: ...
+    // biome-ignore lint/a11y/useKeyWithClickEvents: ...
     <li
       ref={(el) => {
         optionRefs.current.set(value, el);
@@ -513,5 +558,6 @@ export const Select = {
   Root: SelectRoot,
   Trigger: SelectTrigger,
   Content: SelectContent,
-  Option: SelectOption
+  Option: SelectOption,
+  Label: SelectLabel
 };
