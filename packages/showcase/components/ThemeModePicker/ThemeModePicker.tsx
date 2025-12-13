@@ -24,9 +24,7 @@ const OPTIONS: Array<{
   { key: 'darker', label: 'Darker', aria: 'Darker theme' }
 ];
 
-export type Position = 'inline' | 'fixed-right-top';
-
-export default function ThemeModePicker({ position = 'inline' }: { position?: Position }) {
+export default function ThemeModePicker() {
   const groupId = useId();
   const { theme, setTheme } = useKiskadee();
   const { availableThemes } = useShowcase();
@@ -47,38 +45,39 @@ export default function ThemeModePicker({ position = 'inline' }: { position?: Po
   };
 
   return (
-    <div className={position === 'fixed-right-top' ? styles.containerFixed : undefined}>
-      <fieldset className={styles.fieldset} aria-label="Theme mode">
-        <div className={styles.swatches} role="radiogroup" aria-labelledby={`rg-${groupId}`}>
-          {visibleOptions.map((opt) => (
-            <label
-              key={opt.key}
-              className={
-                theme === opt.key ? `${styles.swatch} ${styles.swatchSelected}` : styles.swatch
-              }
-              title={opt.label}
-            >
-              <input
-                type="radio"
-                name={`tmp-${groupId}`}
-                value={opt.key}
-                checked={theme === opt.key}
-                onChange={() => {
-                  playWowTransition();
-                  setTheme(opt.key);
-                }}
-                aria-checked={theme === opt.key}
-                aria-label={opt.aria}
-                className={styles.input}
+    <fieldset className={styles.fieldset} aria-label="Theme mode">
+      <div className={styles.swatches} role="radiogroup" aria-labelledby={`rg-${groupId}`}>
+        {visibleOptions.map((opt) => (
+          <label
+            key={opt.key}
+            className={theme === opt.key ? `${styles.swatch} ${styles.swatchSelected}` : styles.swatch}
+            title={opt.label}
+          >
+            <input
+              type="radio"
+              name={`tmp-${groupId}`}
+              value={opt.key}
+              checked={theme === opt.key}
+              onChange={() => {
+                playWowTransition();
+                setTheme(opt.key);
+              }}
+              aria-checked={theme === opt.key}
+              aria-label={opt.aria}
+              className={styles.input}
+            />
+            <span className={theme === opt.key ? `${styles.dot} ${styles.selected}` : styles.dot}>
+              <Icon
+                name={iconFor(opt.key)}
+                className={styles.icon}
+                aria-hidden="true"
+                focusable="false"
               />
-              <span className={theme === opt.key ? `${styles.dot} ${styles.selected}` : styles.dot}>
-                <Icon name={iconFor(opt.key)} className={styles.icon} aria-hidden="true" focusable="false" />
-              </span>
-              <span className={styles.label}>{opt.label}</span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-    </div>
+            </span>
+            <span className={styles.label}>{opt.label}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
   );
 }

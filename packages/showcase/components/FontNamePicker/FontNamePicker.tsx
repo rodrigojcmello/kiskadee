@@ -4,13 +4,8 @@ import { useShowcase } from '@kiskadee/react-components';
 import { toCssFontFamily } from '@kiskadee/web-builder/types';
 import { Select } from '@/k-components';
 import { FONTS } from '@/registry/fonts.registry';
-import styles from './FontNamePicker.module.scss';
 
-export default function FontNamePicker({
-  position = 'inline'
-}: {
-  position?: 'inline' | 'fixed-right-top';
-}) {
+export default function FontNamePicker() {
   const { fontName, setFontName } = useShowcase();
 
   // Convert FONTS to SelectOption format
@@ -23,12 +18,5 @@ export default function FontNamePicker({
     )
   }));
 
-  return (
-    <Select
-      options={options}
-      value={fontName}
-      onValueChange={setFontName}
-      className={position === 'fixed-right-top' ? styles.fixed : ''}
-    />
-  );
+  return <Select options={options} value={fontName} onValueChange={setFontName} />;
 }

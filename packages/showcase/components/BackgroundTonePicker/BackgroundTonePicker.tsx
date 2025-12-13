@@ -13,13 +13,7 @@ const TONES = [
 
 const STORAGE_KEY = 'kiskadee.preview.background';
 
-type Position = 'inline' | 'fixed-right-top';
-
-export default function BackgroundTonePicker({
-  position = 'fixed-right-top'
-}: {
-  position?: Position;
-}) {
+export default function BackgroundTonePicker() {
   const { theme } = useKiskadee();
   const { backgroundsByTheme } = useShowcase();
 
@@ -78,21 +72,19 @@ export default function BackgroundTonePicker({
   }, [selected, tonesWithResolvedColors]);
 
   return (
-    <div className={position === 'fixed-right-top' ? styles.containerFixed : undefined}>
-      <ColorRadioGroup
-        value={selected}
-        onValueChange={setSelected}
-        items={items}
-        aria-label="Background tone"
-        classNames={{
-          e1: styles.fieldset,
-          e2: styles.swatches,
-          e3: styles.swatch,
-          e4: styles.input,
-          e5: styles.dot,
-          e5a: styles.selected
-        }}
-      />
-    </div>
+    <ColorRadioGroup
+      value={selected}
+      onValueChange={setSelected}
+      items={items}
+      aria-label="Background tone"
+      classNames={{
+        e1: styles.fieldset,
+        e2: styles.swatches,
+        e3: styles.swatch,
+        e4: styles.input,
+        e5: styles.dot,
+        e5a: styles.selected
+      }}
+    />
   );
 }
