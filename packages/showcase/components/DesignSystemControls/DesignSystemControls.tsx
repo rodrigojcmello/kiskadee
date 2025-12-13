@@ -30,6 +30,7 @@ export default function DesignSystemControls() {
       <div className={styles.group}>
         <Select
           label="Design System"
+          width={220}
           options={designSystemOptions}
           value={designSystem}
           onValueChange={(value) => {
@@ -43,6 +44,7 @@ export default function DesignSystemControls() {
       <div className={styles.group}>
         <Select
           label="Segment"
+          width={160}
           options={segmentOptions}
           value={segment}
           onValueChange={(value) => {
@@ -60,7 +62,9 @@ export default function DesignSystemControls() {
         </div>
       )}
 
-      <FontNamePicker />
+      <div className={styles.group}>
+        <FontNamePicker />
+      </div>
     </div>
   );
 }

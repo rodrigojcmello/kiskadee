@@ -30,7 +30,9 @@
   cursor: pointer;
   font-size: 0.9rem;
   outline: none;
-  min-width: 140px;
+  min-width: var(--select-trigger-min-width, 140px);
+  width: var(--select-trigger-width, auto);
+  max-width: var(--select-trigger-max-width, none);
 
   transition: background 0.2s ease, transform 0.1s, box-shadow 0.2s;
 
@@ -49,6 +51,14 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
+}
+
+.value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 @media (prefers-color-scheme: dark) {

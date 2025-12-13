@@ -18,5 +18,13 @@ export default function FontNamePicker() {
     )
   }));
 
-  return <Select label="Font" options={options} value={fontName} onValueChange={setFontName} />;
+  return (
+    <Select
+      label="Font"
+      width={160}
+      options={options}
+      value={fontName}
+      onValueChange={setFontName}
+    />
+  );
 }

@@ -9,6 +9,9 @@ import styles from './Select.module.scss';
 interface SelectProps extends Omit<HeadlessSelectProps, 'children' | 'classNames'> {
   className?: string;
   label?: ReactNode;
+  width?: number | string;
+  minWidth?: number | string;
+  maxWidth?: number | string;
 }
 
 export function Select({
@@ -17,7 +20,10 @@ export function Select({
   options,
   disabled,
   className = '',
-  label
+  label,
+  width,
+  minWidth,
+  maxWidth
 }: SelectProps) {
   const selectedOption = options.find((o) => o.value === value);
 
@@ -49,13 +55,29 @@ export function Select({
     } as CSSProperties;
   }
 
+  const toCssSize = (v: number | string | undefined) => (typeof v === 'number' ? `${v}px` : v);
+
+  const sizingStyle: CSSProperties = {
+    '--select-trigger-width': toCssSize(width),
+    '--select-trigger-min-width': toCssSize(minWidth),
+    '--select-trigger-max-width': toCssSize(maxWidth)
+  } as CSSProperties;
+
+  const mergedStyle: CSSProperties | undefined =
+    dynamicStyle || width !== undefined || minWidth !== undefined || maxWidth !== undefined
+      ? ({
+          ...(dynamicStyle ?? {}),
+          ...sizingStyle
+        } as CSSProperties)
+      : undefined;
+
   return (
     <HeadlessSelect.Root
       value={value}
       onValueChange={onValueChange}
       disabled={disabled}
       options={options}
-      style={dynamicStyle}
+      style={mergedStyle}
       classNames={{
         e1: `${styles.container} ${className}`.trim(),
         e5: styles.label,
@@ -68,7 +90,7 @@ export function Select({
     >
       {label ? <HeadlessSelect.Label>{label}</HeadlessSelect.Label> : null}
       <HeadlessSelect.Trigger>
-        <span>{selectedOption?.label || value}</span>
+        <span className={styles.value}>{selectedOption?.label || value}</span>
         <Icon name="ChevronDown" className={styles.chevron} />
       </HeadlessSelect.Trigger>
       <HeadlessSelect.Content>
