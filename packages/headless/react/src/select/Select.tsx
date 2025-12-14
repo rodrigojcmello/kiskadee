@@ -1,4 +1,4 @@
-import { autoUpdate, offset, useFloating } from '@floating-ui/react';
+import { autoUpdate, offset as floatingOffset, useFloating } from '@floating-ui/react';
 import type {
   ComponentPropsWithoutRef,
   Dispatch,
@@ -86,6 +86,13 @@ export type SelectContentProps = {
    * Useful to avoid clipping/stacking-context issues (e.g. `backdrop-filter`).
    */
   portalled?: boolean;
+  /**
+   * Gap (in pixels) between the trigger and the dropdown when `portalled` is enabled.
+   *
+   * NOTE: In the non-portalled mode, spacing is typically controlled via CSS
+   * (e.g. `top: calc(100% + 8px)` on the dropdown).
+   */
+  offset?: number;
   /**
    * Custom portal container. If not provided, defaults to `document.body` on the client.
    * If `null`, portal rendering is disabled.
@@ -500,6 +507,7 @@ function SelectContent({
   children,
   className,
   portalled = false,
+  offset = 8,
   portalContainer
 }: SelectContentProps) {
   const { isOpen, options, baseId, classNames, listRef, triggerRef } = useSelectContext();
@@ -513,7 +521,7 @@ function SelectContent({
   const { refs, floatingStyles, update } = useFloating({
     strategy: 'fixed',
     placement: 'bottom-start',
-    middleware: [offset(8)],
+    middleware: [floatingOffset(offset)],
     // IMPORTANT: Floating UI defaults to positioning via `transform: translate(...)`.
     // Our dropdown animation also uses `transform` (scale/translateY). If we
     // keep Floating UI's transform, it will override the CSS animation.
