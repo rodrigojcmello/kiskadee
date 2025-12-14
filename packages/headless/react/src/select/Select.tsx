@@ -1,3 +1,4 @@
+import { autoUpdate, offset, useFloating } from '@floating-ui/react';
 import type {
   ComponentPropsWithoutRef,
   Dispatch,
@@ -15,6 +16,28 @@ import {
   useRef,
   useState
 } from 'react';
+import { createPortal } from 'react-dom';
+
+// NOTE ABOUT PORTALS + POSITIONING
+// -----------------------------------------------------------------------------
+// This Select supports an opt-in `portalled` mode on `Select.Content`.
+//
+// Why is JS positioning needed when portalled?
+// - In the default (non-portalled) mode, the dropdown is typically positioned
+//   purely with CSS (e.g. `position: absolute; top: 100%; left: 0`) because it
+//   lives inside the same DOM tree as the trigger, sharing the same containing
+//   block.
+// - When we render the dropdown in a React portal (usually into `document.body`),
+//   it is removed from that local layout context, so CSS-only absolute
+//   positioning no longer anchors it to the trigger.
+//
+// We use `@floating-ui/react` to keep the dropdown anchored to the trigger even
+// when portalled:
+// - `refs.setReference(triggerEl)` defines the anchor (the trigger).
+// - `refs.setFloating(dropdownEl)` defines the floating element (the listbox).
+// - `floatingStyles` provides the computed `top/left/position` (we use
+//   `strategy: 'fixed'` so coordinates are viewport-based).
+// - `autoUpdate` keeps it in sync on scroll/resize/layout changes.
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -58,6 +81,16 @@ export type SelectTriggerProps = {
 export type SelectContentProps = {
   children?: ReactNode;
   className?: string;
+  /**
+   * When enabled, renders the dropdown in a React portal (defaults to `document.body`).
+   * Useful to avoid clipping/stacking-context issues (e.g. `backdrop-filter`).
+   */
+  portalled?: boolean;
+  /**
+   * Custom portal container. If not provided, defaults to `document.body` on the client.
+   * If `null`, portal rendering is disabled.
+   */
+  portalContainer?: HTMLElement | null;
 };
 
 export type SelectOptionProps = {
@@ -128,6 +161,9 @@ function SelectRoot({
   const [labelId, setLabelId] = useState<string | undefined>(undefined);
 
   // Controlled/uncontrolled selected value
+  // - Controlled: `value` is provided, so we never update internal state.
+  // - Uncontrolled: `value` is undefined, so we store selection locally and
+  //   still notify the consumer via `onValueChange`.
   const isControlled = value !== undefined;
   const [uncontrolled, setUncontrolled] = useState<string | undefined>(defaultValue ?? undefined);
   const selected = isControlled ? value : uncontrolled;
@@ -150,10 +186,21 @@ function SelectRoot({
   const optionRefs = useRef<Map<string, HTMLLIElement | null>>(new Map());
 
   // Close on click outside
+  // IMPORTANT: when `Select.Content` is rendered with `portalled`, the listbox
+  // lives outside of `containerRef` (the root div). In that case, a naive
+  // `containerRef.contains(target)` check would treat clicks inside the dropdown
+  // as “outside” and immediately close it.
+  //
+  // To support both modes, we consider both:
+  // - `containerRef` (root subtree)
+  // - `listRef` (the actual listbox element, whether portalled or not)
   const containerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const clickedInsideRoot = containerRef.current?.contains(target) ?? false;
+      const clickedInsideList = listRef.current?.contains(target) ?? false;
+      if (!clickedInsideRoot && !clickedInsideList) {
         setIsOpen(false);
       }
     };
@@ -449,14 +496,64 @@ function SelectLabel({ children, className, id }: SelectLabelProps) {
 // Content Component (Dropdown/Listbox)
 // ─────────────────────────────────────────────────────────────────────────────
 
-function SelectContent({ children, className }: SelectContentProps) {
-  const { isOpen, options, baseId, classNames, listRef } = useSelectContext();
+function SelectContent({
+  children,
+  className,
+  portalled = false,
+  portalContainer
+}: SelectContentProps) {
+  const { isOpen, options, baseId, classNames, listRef, triggerRef } = useSelectContext();
+
+  // Floating UI is used only to provide robust, anchor-based positioning when
+  // `portalled` is enabled. In the default non-portalled mode, consumers usually
+  // position the dropdown via CSS (e.g. absolute positioning inside `e1`).
+  //
+  // We keep this hook here unconditionally for simplicity; the computed styles
+  // are only applied when `portalled` is true.
+  const { refs, floatingStyles, update } = useFloating({
+    strategy: 'fixed',
+    placement: 'bottom-start',
+    middleware: [offset(8)],
+    whileElementsMounted: autoUpdate
+  });
+
+  // Connect the floating anchor to the trigger element.
+  // This is what makes the dropdown follow the trigger even when rendered in a portal.
+  useEffect(() => {
+    if (!portalled) return;
+    if (!triggerRef.current) return;
+    refs.setReference(triggerRef.current);
+  }, [portalled, refs, triggerRef]);
+
+  // When opening, force an immediate position calculation so the first frame of
+  // the open animation starts at the correct coordinates.
+  useEffect(() => {
+    if (!portalled) return;
+    if (!isOpen) return;
+    update();
+  }, [portalled, isOpen, update]);
 
   const contentClassName = className ?? classNames?.e3;
 
-  return (
+  // Portal container resolution:
+  // - `portalContainer === undefined`: default to `document.body` on the client.
+  // - `portalContainer === null`: explicitly disable portal usage.
+  // - SSR safety: if `document` is not available, portal is disabled.
+  const resolvedPortalContainer =
+    portalContainer === undefined
+      ? typeof document !== 'undefined'
+        ? document.body
+        : null
+      : portalContainer;
+
+  const ul = (
     <ul
-      ref={listRef}
+      ref={(node) => {
+        listRef.current = node;
+        // Connect the floating element (the listbox) so Floating UI can measure
+        // it and compute the correct viewport coordinates.
+        if (portalled) refs.setFloating(node);
+      }}
       id={`${baseId}-listbox`}
       // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: ...
       role="listbox"
@@ -465,6 +562,15 @@ function SelectContent({ children, className }: SelectContentProps) {
       data-open={isOpen || undefined}
       className={contentClassName}
       tabIndex={-1}
+      style={
+        portalled
+          ? {
+              ...floatingStyles,
+              // Ensure the dropdown is above local fixed headers by default.
+              zIndex: 10000
+            }
+          : undefined
+      }
     >
       {children ??
         options.map((option) => (
@@ -474,6 +580,16 @@ function SelectContent({ children, className }: SelectContentProps) {
         ))}
     </ul>
   );
+
+  // If we are not in portalled mode, or portal rendering is unavailable/disabled,
+  // render inline and allow consumers to position via CSS.
+  if (!portalled || !resolvedPortalContainer) return ul;
+
+  // Portalled rendering:
+  // - avoids clipping by overflow/stacking contexts
+  // - helps with cases where `backdrop-filter` and fixed headers interfere
+  // - requires JS positioning (handled by Floating UI above)
+  return createPortal(ul, resolvedPortalContainer);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -534,7 +650,7 @@ function SelectOption({ value, children, className, disabled }: SelectOptionProp
         optionRefs.current.set(value, el);
       }}
       id={`${baseId}-option-${value}`}
-      // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: <explanation>
+      // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: this list item acts as a listbox option
       role="option"
       aria-selected={isSelected}
       aria-disabled={isDisabled || undefined}
