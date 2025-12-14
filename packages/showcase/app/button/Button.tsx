@@ -1,6 +1,11 @@
 'use client';
 
-import { Button as KButton, SmoothText, useKiskadee, useShowcase } from '@kiskadee/react-components';
+import {
+  Button as KButton,
+  SmoothText,
+  useKiskadee,
+  useShowcase
+} from '@kiskadee/react-components';
 import { Icon } from '@/components/Icon/Icon';
 import s from './Button.module.scss';
 
@@ -75,7 +80,7 @@ export function Button() {
         {/*/>*/}
         <div className={s['interaction-state']}>
           <h3>Interaction States - Primary (Solid)</h3>
-          <div className={s['example-states']}>
+          <div className={`${s['example-states']} k-root`}>
             {renderState(
               'primary',
               'solid',
@@ -152,7 +157,7 @@ export function Button() {
         </div>
         <div className={s['interaction-state']}>
           <h3>Interaction States - Primary (Soft)</h3>
-          <div className={s['example-states']}>
+          <div className={`${s['example-states']} k-root`}>
             {renderState(
               'primary',
               'soft',
@@ -229,7 +234,7 @@ export function Button() {
         </div>
         <div className={s['interaction-state']}>
           <h3>Interaction States - Neutral (Soft)</h3>
-          <div className={s['example-states']}>
+          <div className={`${s['example-states']} k-root`}>
             {renderState(
               'neutral',
               'soft',
@@ -306,7 +311,7 @@ export function Button() {
         </div>
         <div className={s['interaction-state']}>
           <h3>Interaction States - Destructive (Solid)</h3>
-          <div className={s['example-states']}>
+          <div className={`${s['example-states']} k-root`}>
             {renderState(
               'redLike',
               'solid',
@@ -383,7 +388,7 @@ export function Button() {
         </div>
         <div className={s['interaction-state']}>
           <h3>Interaction States - Destructive (Soft)</h3>
-          <div className={s['example-states']}>
+          <div className={`${s['example-states']} k-root`}>
             {renderState(
               'redLike',
               'soft',
@@ -551,7 +556,7 @@ export function Button() {
 
         <div className={s['interaction-state']}>
           <h3>Size / Scale</h3>
-          <div className={s['example-states']}>
+          <div className={`${s['example-states']} k-root`}>
             {renderScale(
               's:sm:2',
               <KButton scale="s:sm:2" semantic="primary" tone="solid">

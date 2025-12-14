@@ -10,7 +10,6 @@
   --k-focus-ring-color: #0059b1;
 }
 
-.k-font,
 .k-font-body {
   font-family: var(--k-font-body);
 }
@@ -19,11 +18,7 @@
   font-family: var(--k-font-heading);
 }
 
-.k-font-code {
-  font-family: var(--k-font-code);
-}
-
-body {
+.k-root {
   font-family: var(--k-font-body);
 }
 
