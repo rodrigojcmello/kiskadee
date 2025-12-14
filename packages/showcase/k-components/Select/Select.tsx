@@ -93,7 +93,7 @@ export function Select({
         <span className={styles.value}>{selectedOption?.label || value}</span>
         <Icon name="ChevronDown" className={styles.chevron} />
       </HeadlessSelect.Trigger>
-      <HeadlessSelect.Content>
+      <HeadlessSelect.Content portalled>
         {options.map((opt) => (
           <HeadlessSelect.Option key={opt.value} value={opt.value} disabled={opt.disabled}>
             {opt.label}

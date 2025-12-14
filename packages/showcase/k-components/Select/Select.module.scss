@@ -105,6 +105,13 @@
   transition-timing-function: ease-out;
 }
 
+// When the dropdown is rendered in a portal (portalled mode), positioning is handled by JS.
+// Keep all visuals (blur, animation, etc.) but avoid fighting `top/left/position`.
+.dropdown[style] {
+  top: auto;
+  left: auto;
+}
+
 .dropdown[data-open='true'] {
   opacity: 1;
   transform: scale(1) translateY(0);
