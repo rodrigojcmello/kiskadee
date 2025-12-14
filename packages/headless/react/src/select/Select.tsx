@@ -514,6 +514,13 @@ function SelectContent({
     strategy: 'fixed',
     placement: 'bottom-start',
     middleware: [offset(8)],
+    // IMPORTANT: Floating UI defaults to positioning via `transform: translate(...)`.
+    // Our dropdown animation also uses `transform` (scale/translateY). If we
+    // keep Floating UI's transform, it will override the CSS animation.
+    //
+    // By disabling transforms here, Floating UI will output `top/left` instead,
+    // preserving the dropdown's CSS `transform` for the open/close animation.
+    transform: false,
     whileElementsMounted: autoUpdate
   });
 
