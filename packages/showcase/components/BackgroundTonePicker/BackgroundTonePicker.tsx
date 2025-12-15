@@ -1,4 +1,5 @@
 'use client';
+
 import { useKiskadee, useShowcase } from '@kiskadee/react-components';
 import { ColorRadioGroup } from '@kiskadee/react-headless';
 import { useEffect, useMemo, useState } from 'react';
@@ -10,8 +11,6 @@ const TONES = [
   { key: 'dark-gray', color: '#29313d', displayColor: '#6b6f7b', aria: 'Dark gray' },
   { key: 'black', color: '#000000', displayColor: '#000000', aria: 'Black' }
 ] as const;
-
-const STORAGE_KEY = 'kiskadee.preview.background';
 
 export default function BackgroundTonePicker() {
   const { theme } = useKiskadee();
@@ -46,15 +45,9 @@ export default function BackgroundTonePicker() {
     [tonesWithResolvedColors]
   );
 
-  const initialKey = useMemo(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved && TONES.some((t) => t.key === saved)) return saved;
-    } catch {}
-    return 'white';
-  }, []);
-
-  const [selected, setSelected] = useState<string>(initialKey);
+  const [selected, setSelected] = useState<string>(() =>
+    theme === 'dark' ? 'dark-gray' : 'white'
+  );
 
   // Sync background tone with theme changes: light → white, dark → black
   useEffect(() => {
@@ -71,9 +64,6 @@ export default function BackgroundTonePicker() {
       tonesWithResolvedColors.find((t) => t.key === selected) ?? tonesWithResolvedColors[0];
     const el = document.body;
     el.style.backgroundColor = tone.resolvedColor;
-    try {
-      localStorage.setItem(STORAGE_KEY, tone.key);
-    } catch {}
   }, [selected, tonesWithResolvedColors]);
 
   return (
