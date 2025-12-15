@@ -1,9 +1,8 @@
 'use client';
 
-import { ColorRadioGroup } from '@kiskadee/react-headless';
 import { applyDynamicTheme } from '@kiskadee/runtime';
 import { useEffect, useState } from 'react';
-import styles from './DynamicColorPicker.module.scss';
+import { SwatchRadioGroup } from '@/k-components';
 
 const SEGMENT_COLORS = [
   { value: 'blue', color: '#0091FF', label: 'Blue' }, // iOS
@@ -19,10 +18,6 @@ const SEGMENT_COLORS = [
 export default function DynamicColorPicker() {
   const [selected, setSelected] = useState(SEGMENT_COLORS[0].value);
 
-  const handleColorChange = (value: string) => {
-    setSelected(value);
-  };
-
   // Apply initial color on mount
   useEffect(() => {
     const segment = SEGMENT_COLORS.find((s) => s.value === selected);
@@ -33,27 +28,19 @@ export default function DynamicColorPicker() {
 
   const items = SEGMENT_COLORS.map((segment) => ({
     value: segment.value,
-    color: segment.color,
-    label: segment.label
+    label: segment.label,
+    swatch: {
+      color: segment.color
+    }
   }));
 
   return (
-    <div className={styles.container}>
-      <span className={styles.label}>Dynamic Theme Color</span>
-      <ColorRadioGroup
-        value={selected}
-        onValueChange={handleColorChange}
-        items={items}
-        aria-label="Choose dynamic theme color"
-        classNames={{
-          e1: styles.fieldset,
-          e2: styles.swatches,
-          e3: styles.swatch,
-          e4: styles.input,
-          e5: styles.dot,
-          e5a: styles.selected
-        }}
-      />
-    </div>
+    <SwatchRadioGroup
+      groupLabel="Dynamic Theme Color"
+      value={selected}
+      onValueChange={setSelected}
+      items={items}
+      aria-label="Choose dynamic theme color"
+    />
   );
 }
