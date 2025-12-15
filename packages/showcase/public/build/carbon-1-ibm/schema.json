@@ -24,16 +24,18 @@
     "body": [
       "IBM Plex Sans",
       "sans-serif"
-    ],
-    "heading": [
-      "IBM Plex Sans",
-      "sans-serif"
     ]
   },
   "themeTokens": {
     "palettes": {
       "default": {
         "light": {
+          "background": [
+            0,
+            0,
+            96,
+            1
+          ],
           "focusColor": [
             219.16,
             99.17,

@@ -14,13 +14,13 @@ export const schema: Schema<Segments> = {
   author: 'IBM',
   breakpoints,
   fonts: {
-    body: ['IBM Plex Sans', 'sans-serif'],
-    heading: ['IBM Plex Sans', 'sans-serif']
+    body: ['IBM Plex Sans', 'sans-serif']
   },
   themeTokens: {
     palettes: {
       default: {
         light: {
+          background: color(carbonDefault, 'l', 'neutral', 4),
           focusColor: color(carbonDefault, 'l', 'primary', 50)
         }
       }
