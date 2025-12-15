@@ -4,7 +4,7 @@
 
   --swatch-size: 24px;
   --swatch-selected-size: 34px;
-  --swatch-selected-scale: 1.4166667;
+  --swatch-selected-visual-scale: 1.4308334;
 }
 
 .label {
@@ -52,6 +52,7 @@
   height: var(--swatch-size);
   border-radius: 50%;
   transform: translate(-50%, -50%);
+  z-index: 2;
   pointer-events: none;
   transition: box-shadow 150ms ease, width 120ms ease, height 120ms ease;
 }
@@ -67,13 +68,15 @@
   width: var(--swatch-size);
   height: var(--swatch-size);
   border-radius: 50%;
+  position: relative;
+  z-index: 1;
   //border: 1px solid rgba(0, 0, 0, 0.15);
   //box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
   transition: box-shadow 150ms ease, transform 120ms ease;
 }
 
 .selected {
-  transform: scale(var(--swatch-selected-scale));
+  transform: scale(var(--swatch-selected-visual-scale));
 }
 
 .swatches > .swatch:has(.selected)::after {
@@ -88,21 +91,18 @@
 
 // Light Gray
 .swatches > .swatch:nth-child(2):has(.selected)::after {
-  box-shadow: 0 0 0 3px #3b82f6,
-  inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25), 0 0 0 3px #3b82f6;
 }
 
 // Dark Gray
 .swatches > .swatch:nth-child(3):has(.selected)::after {
-  box-shadow: 0 0 0 3px #3b82f6,
-  inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 0 0 1px #ffffff12, 0 0 0 1px #00000026, 0 0 0 3px #3b82f6;
 }
 
 
 // Black
 .swatches > .swatch:nth-child(4):has(.selected)::after {
-  box-shadow: 0 0 0 3px #3b82f6,
-  inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 3px #3b82f6;
 }
 
 /* Keyboard focus */
