@@ -1,10 +1,9 @@
 'use client';
 import type { ThemeMode } from '@kiskadee/core';
 import { useKiskadee, useShowcase } from '@kiskadee/react-components';
-import { useId } from 'react';
+import { SwatchRadioGroup } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
 import { Icon, type IconName } from '../Icon/Icon';
-import styles from './ThemeModePicker.module.scss';
 
 /*
   ThemeModePicker: mirrors BackgroundTonePicker identity
@@ -25,7 +24,6 @@ const OPTIONS: Array<{
 ];
 
 export default function ThemeModePicker() {
-  const groupId = useId();
   const { theme, setTheme } = useKiskadee();
   const { availableThemes } = useShowcase();
 
@@ -45,44 +43,24 @@ export default function ThemeModePicker() {
   };
 
   return (
-    <div className={styles.container}>
-      <span className={styles.groupLabel}>Theme</span>
-      <fieldset className={styles.fieldset} aria-label="Theme mode">
-        <div className={styles.swatches} role="radiogroup" aria-labelledby={`rg-${groupId}`}>
-          {visibleOptions.map((opt) => (
-            <label
-              key={opt.key}
-              className={
-                theme === opt.key ? `${styles.swatch} ${styles.swatchSelected}` : styles.swatch
-              }
-              title={opt.label}
-            >
-              <input
-                type="radio"
-                name={`tmp-${groupId}`}
-                value={opt.key}
-                checked={theme === opt.key}
-                onChange={() => {
-                  playWowTransition();
-                  setTheme(opt.key);
-                }}
-                aria-checked={theme === opt.key}
-                aria-label={opt.aria}
-                className={styles.input}
-              />
-              <span className={theme === opt.key ? `${styles.dot} ${styles.selected}` : styles.dot}>
-                <Icon
-                  name={iconFor(opt.key)}
-                  className={styles.icon}
-                  aria-hidden="true"
-                  focusable="false"
-                />
-              </span>
-              <span className={styles.optionLabel}>{opt.label}</span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-    </div>
+    <SwatchRadioGroup
+      groupLabel="Theme"
+      aria-label="Theme mode"
+      value={theme}
+      items={visibleOptions.map((opt) => ({
+        value: opt.key,
+        label: opt.label
+      }))}
+      showItemLabels
+      onBeforeValueChange={() => {
+        playWowTransition();
+      }}
+      onValueChange={(value) => {
+        setTheme(value as ThemeMode);
+      }}
+      renderSwatch={(item) => (
+        <Icon name={iconFor(item.value as ThemeMode)} aria-hidden="true" focusable="false" />
+      )}
+    />
   );
 }
