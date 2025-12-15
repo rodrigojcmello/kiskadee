@@ -1,0 +1,112 @@
+.container {
+  position: relative;
+  display: inline-block;
+
+  --swatch-size: 24px;
+  --swatch-selected-size: 34px;
+  --swatch-selected-visual-scale: 1.4308334;
+
+  --swatch-selected-ring-shadow: 0 0 0 3px #3b82f6;
+}
+
+.groupLabel {
+  display: block;
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--neutral-100);
+  margin-bottom: 6px;
+  user-select: none;
+}
+
+.fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.swatches {
+  display: inline-flex;
+  gap: 8px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.20);
+  backdrop-filter: saturate(1.2) blur(4px);
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), inset 0 0 0 1px hsl(0deg 0% 100% / 5%);
+}
+
+.swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  position: relative;
+}
+
+.swatch::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--swatch-size) / 2);
+  top: 50%;
+  width: var(--swatch-size);
+  height: var(--swatch-size);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  pointer-events: none;
+  transition: box-shadow 150ms ease, width 120ms ease, height 120ms ease;
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.dot {
+  width: var(--swatch-size);
+  height: var(--swatch-size);
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+  transition: box-shadow 150ms ease, transform 120ms ease;
+}
+
+.selected {
+  transform: scale(var(--swatch-selected-visual-scale));
+}
+
+.swatches > .swatch:has(.selected)::after {
+  width: var(--swatch-selected-size);
+  height: var(--swatch-selected-size);
+  box-shadow: var(--swatch-selected-ring-shadow);
+}
+
+/* Keyboard focus */
+.swatch:has(.input:focus-visible) .dot {
+  box-shadow: 0 0 0 3px #93c5fd,
+  inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+}
+
+.itemLabel {
+  font-size: 12px;
+  line-height: 1;
+  user-select: none;
+  padding-left: 4px;
+  padding-right: 12px;
+  font-weight: 600;
+  color: var(--neutral-100);
+}
+
+.itemLabelHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
