@@ -5,10 +5,10 @@ import { useEffect, useMemo, useState } from 'react';
 import styles from './BackgroundTonePicker.module.scss';
 
 const TONES = [
-  { key: 'white', color: '#ffffff', aria: 'White' },
-  { key: 'gray', color: '#f5f5f5', aria: 'Gray' },
-  { key: 'dark-gray', color: '#374151', aria: 'Dark gray' },
-  { key: 'black', color: '#000000', aria: 'Black' }
+  { key: 'white', color: '#ffffff', displayColor: '#ffffff', aria: 'White' },
+  { key: 'gray', color: '#f5f5f5', displayColor: '#e5e7eb', aria: 'Gray' },
+  { key: 'dark-gray', color: '#29313d', displayColor: '#6b6f7b', aria: 'Dark gray' },
+  { key: 'black', color: '#000000', displayColor: '#000000', aria: 'Black' }
 ] as const;
 
 const STORAGE_KEY = 'kiskadee.preview.background';
@@ -19,8 +19,8 @@ export default function BackgroundTonePicker() {
 
   const tonesWithResolvedColors = useMemo(() => {
     const themeByToneKey: Record<string, string | undefined> = {
-      white: 'light',
-      gray: undefined,
+      white: undefined,
+      gray: 'light',
       'dark-gray': 'dark',
       black: 'darker'
     };
@@ -40,7 +40,7 @@ export default function BackgroundTonePicker() {
     () =>
       tonesWithResolvedColors.map((t) => ({
         value: t.key,
-        color: t.resolvedColor,
+        color: t.displayColor,
         label: t.aria
       })),
     [tonesWithResolvedColors]
@@ -58,8 +58,13 @@ export default function BackgroundTonePicker() {
 
   // Sync background tone with theme changes: light → white, dark → black
   useEffect(() => {
-    setSelected(theme === 'dark' ? 'dark-gray' : 'white');
-  }, [theme]);
+    if (theme === 'dark') {
+      setSelected('dark-gray');
+      return;
+    }
+
+    setSelected(backgroundsByTheme.light ? 'gray' : 'white');
+  }, [theme, backgroundsByTheme.light]);
 
   useEffect(() => {
     const tone =
