@@ -19,3 +19,11 @@ export type {
   ColorRadioGroupProps
 } from './color-radio-group/ColorRadioGroup';
 export { ColorRadioGroup } from './color-radio-group/ColorRadioGroup';
+
+export type {
+  SwatchRadioItem,
+  SwatchRadioGroupClassNames,
+  SwatchRadioGroupProps,
+  SwatchRadioGroupRenderSwatchArgs
+} from './swatch-radio-group/SwatchRadioGroup';
+export { SwatchRadioGroup } from './swatch-radio-group/SwatchRadioGroup';
