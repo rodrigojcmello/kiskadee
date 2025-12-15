@@ -67,19 +67,22 @@ export default function BackgroundTonePicker() {
   }, [selected, tonesWithResolvedColors]);
 
   return (
-    <ColorRadioGroup
-      value={selected}
-      onValueChange={setSelected}
-      items={items}
-      aria-label="Background tone"
-      classNames={{
-        e1: styles.fieldset,
-        e2: styles.swatches,
-        e3: styles.swatch,
-        e4: styles.input,
-        e5: styles.dot,
-        e5a: styles.selected
-      }}
-    />
+    <div className={styles.container}>
+      <span className={styles.label}>Background</span>
+      <ColorRadioGroup
+        value={selected}
+        onValueChange={setSelected}
+        items={items}
+        aria-label="Background tone"
+        classNames={{
+          e1: styles.fieldset,
+          e2: styles.swatches,
+          e3: styles.swatch,
+          e4: styles.input,
+          e5: styles.dot,
+          e5a: styles.selected
+        }}
+      />
+    </div>
   );
 }

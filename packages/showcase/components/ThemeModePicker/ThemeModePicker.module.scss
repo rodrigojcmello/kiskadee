@@ -1,3 +1,18 @@
+.container {
+  position: relative;
+  display: inline-block;
+}
+
+.groupLabel {
+  display: block;
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--neutral-100);
+  margin-bottom: 6px;
+  user-select: none;
+}
+
 .fieldset {
   border: none;
   margin: 0;
@@ -57,7 +72,7 @@
   color: var(--neutral-100);
 }
 
-.label {
+.optionLabel {
   font-size: 12px;
   line-height: 1;
   user-select: none;
@@ -69,7 +84,7 @@
 
 
 /* Selected state styles propagated to the text label as well */
-.swatchSelected .label {
+.swatchSelected .optionLabel {
   color: var(--primary-50); /* same blue used for selected outline */
   //font-weight: 600;
 }
