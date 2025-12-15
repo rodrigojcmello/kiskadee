@@ -1,9 +1,8 @@
 'use client';
 
 import { useKiskadee, useShowcase } from '@kiskadee/react-components';
-import { ColorRadioGroup } from '@kiskadee/react-headless';
 import { useEffect, useMemo, useState } from 'react';
-import styles from './BackgroundTonePicker.module.scss';
+import { SwatchRadioGroup } from '@/k-components';
 
 const TONES = [
   { key: 'white', color: '#ffffff', displayColor: '#ffffff', aria: 'White' },
@@ -39,8 +38,10 @@ export default function BackgroundTonePicker() {
     () =>
       tonesWithResolvedColors.map((t) => ({
         value: t.key,
-        color: t.displayColor,
-        label: t.aria
+        label: t.aria,
+        swatch: {
+          color: t.displayColor
+        }
       })),
     [tonesWithResolvedColors]
   );
@@ -62,27 +63,16 @@ export default function BackgroundTonePicker() {
   useEffect(() => {
     const tone =
       tonesWithResolvedColors.find((t) => t.key === selected) ?? tonesWithResolvedColors[0];
-    const el = document.body;
-    el.style.backgroundColor = tone.resolvedColor;
+    document.body.style.backgroundColor = tone.resolvedColor;
   }, [selected, tonesWithResolvedColors]);
 
   return (
-    <div className={styles.container}>
-      <span className={styles.label}>Background</span>
-      <ColorRadioGroup
-        value={selected}
-        onValueChange={setSelected}
-        items={items}
-        aria-label="Background tone"
-        classNames={{
-          e1: styles.fieldset,
-          e2: styles.swatches,
-          e3: styles.swatch,
-          e4: styles.input,
-          e5: styles.dot,
-          e5a: styles.selected
-        }}
-      />
-    </div>
+    <SwatchRadioGroup
+      groupLabel="Background"
+      value={selected}
+      onValueChange={setSelected}
+      items={items}
+      aria-label="Background tone"
+    />
   );
 }
