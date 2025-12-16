@@ -2,6 +2,9 @@
   position: relative;
   display: inline-block;
 
+  --swatch-transition-duration: 180ms;
+  --swatch-transition-easing: ease-out;
+
   --swatch-size: 24px;
   --swatch-selected-size: 34px;
   --swatch-selected-visual-scale: 1.4308334;
@@ -54,7 +57,9 @@
   transform: translate(-50%, -50%);
   z-index: 2;
   pointer-events: none;
-  transition: box-shadow 150ms ease, width 120ms ease, height 120ms ease;
+  transition-property: box-shadow, width, height;
+  transition-duration: var(--swatch-transition-duration);
+  transition-timing-function: var(--swatch-transition-easing);
 }
 
 .input {
@@ -75,7 +80,9 @@
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
   position: relative;
   z-index: 1;
-  transition: box-shadow 150ms ease, transform 120ms ease;
+  transition-property: box-shadow, transform;
+  transition-duration: var(--swatch-transition-duration);
+  transition-timing-function: var(--swatch-transition-easing);
 }
 
 .selected {
