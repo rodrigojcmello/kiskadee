@@ -3,7 +3,7 @@ import type {
   ColorProperty,
   ColorValue,
   ElementPalettes,
-  EmphasisVariant,
+  Emphasis,
   InteractionState,
   InteractionStateColorMap,
   SegmentName,
@@ -16,9 +16,9 @@ import type {
 } from '@kiskadee/core';
 import { buildStyleKey, deepUpdate } from '../../utils';
 
-// Metadata to track, which tone (soft/solid) generated each style key
+// Metadata to track, which emphasis (soft/solid) generated each style key
 export type ToneMetadata = {
-  tone?: EmphasisVariant; // undefined = color without a tone (single color)
+  tone?: Emphasis; // undefined = color without a emphasis (single color)
 };
 
 // Local type guards to avoid any
@@ -67,7 +67,7 @@ function isInteractionStateColorMap(val: unknown): val is InteractionStateColorM
  *     "textColor==hover__[0,0,0,0.5]").
  * - Appends the generated key to a nested output structure organized by:
  *     segmentName -> themeName -> semanticColor -> interactionState -> StyleKey[]
- * - Additionally tracks which tone (soft/solid) generated each style key in a parallel Map
+ * - Additionally tracks which emphasis (subtle/vivid) generated each style key in a parallel Map
  *
  * Why pre-stringify color values:
  * - buildStyleKey stringifies primitives via String(value) and JSON-serializes non-primitives.
@@ -80,7 +80,7 @@ function isInteractionStateColorMap(val: unknown): val is InteractionStateColorM
  *   Validation and error handling occur when transforming keys into CSS in a later phase.
  *
  * @param palettes - The ElementPalettes object defining palettes organized by segment and theme.
- * @returns An object with styleKeys and toneMetadata Map tracking tone info for each key.
+ * @returns An object with styleKeys and toneMetadata Map tracking emphasis info for each key.
  */
 export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
   styleKeys: StyleKeyByElement['palettes'];
@@ -104,14 +104,14 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
         const colorEntry = colorSchema[colorProperty];
         if (colorEntry === undefined) continue;
 
-        // The new schema requires emphasis tracks (soft/solid) under each semantic color.
+        // The new schema requires emphasis tracks (subtle/vivid) under each semantic color.
         // Reject legacy direct InteractionStateColorMap at the property root.
         if (isInteractionStateColorMap(colorEntry)) {
           throw new Error(
-            'Invalid color schema: direct interaction-state maps are no longer supported. Use soft/solid tracks under each semantic color.'
+            'Invalid color schema: direct interaction-state maps are no longer supported. Use subtle/vivid tracks under each semantic color.'
           );
         }
-        type SemanticEntry = Record<EmphasisVariant, InteractionStateColorMap> | unknown;
+        type SemanticEntry = Record<Emphasis, InteractionStateColorMap> | unknown;
         const semanticColorMap: Partial<Record<SemanticColor, SemanticEntry>> =
           colorEntry as Partial<Record<SemanticColor, SemanticEntry>>;
 
@@ -119,7 +119,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
         const processInteractionStateMap = (
           semanticColor: SemanticColor,
           interactionStateMap: InteractionStateColorMap,
-          tone?: EmphasisVariant
+          tone?: Emphasis
         ) => {
           const keys: (keyof InteractionStateColorMap)[] = [
             'rest',
@@ -165,7 +165,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
                     [segmentName, themeName, semanticColor, stateLabel],
                     (arr: string[] = []) => [...arr, styleKey]
                   );
-                  // Store tone metadata
+                  // Store emphasis metadata
                   if (tone !== undefined) {
                     toneMetadata.set(styleKey, { tone });
                   }
@@ -181,7 +181,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
                     [segmentName, themeName, semanticColor, stateLabel],
                     (arr: string[] = []) => [...arr, styleKey]
                   );
-                  // Store tone metadata
+                  // Store emphasis metadata
                   if (tone !== undefined) {
                     toneMetadata.set(styleKey, { tone });
                   }
@@ -227,7 +227,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
               (arr: string[] = []) => [...arr, styleKey]
             );
 
-            // Store tone metadata for this style key
+            // Store emphasis metadata for this style key
             if (tone !== undefined) {
               toneMetadata.set(styleKey, { tone });
             }
@@ -238,13 +238,13 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
           const semanticColor = s as SemanticColor;
           const entry = semanticColorMap[semanticColor];
 
-          // Support tone tracks (soft/solid) as an intermediate level under the semantic color.
-          const hasSoftOrSolid =
-            entry && typeof entry === 'object' && ('soft' in entry || 'solid' in entry);
-          if (hasSoftOrSolid) {
-            const tracks = ['soft', 'solid'] as const;
+          // Support emphasis tracks (subtle/vivid) as an intermediate level under the semantic color.
+          const hasSubtleOrVivid =
+            entry && typeof entry === 'object' && ('subtle' in entry || 'vivid' in entry);
+          if (hasSubtleOrVivid) {
+            const tracks = ['subtle', 'vivid'] as const;
             for (const t of tracks) {
-              const trackEntry = (entry as Record<'soft' | 'solid', unknown>)[t];
+              const trackEntry = (entry as Record<'subtle' | 'vivid', unknown>)[t];
               if (isInteractionStateColorMap(trackEntry)) {
                 processInteractionStateMap(semanticColor, trackEntry, t);
               }
@@ -255,7 +255,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
           // Fallback: legacy shape (direct interaction-state map under a semantic color) is no longer supported
           if (isInteractionStateColorMap(entry)) {
             throw new Error(
-              `Invalid color schema: semantic color "${semanticColor}" must define soft/solid tracks.`
+              `Invalid color schema: semantic color "${semanticColor}" must define subtle/vivid tracks.`
             );
           }
         }

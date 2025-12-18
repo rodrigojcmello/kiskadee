@@ -50,7 +50,7 @@
               "light": {
                 "boxColor": {
                   "primary": {
-                    "soft": {
+                    "subtle": {
                       "rest": [
                         206,
                         100,
@@ -102,7 +102,7 @@
                         ]
                       }
                     },
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         206,
                         100,
@@ -227,7 +227,7 @@
               "light": {
                 "textColor": {
                   "primary": {
-                    "soft": {
+                    "subtle": {
                       "rest": [
                         206,
                         100,
@@ -269,7 +269,7 @@
                         }
                       }
                     },
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         0,
                         0,

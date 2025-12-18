@@ -4,7 +4,7 @@ import type { ColorSchema, SchemaSegments } from './colors.types';
 const color: ColorSchema = {
   boxColor: {
     primary: {
-      soft: {
+      subtle: {
         rest: [
           90,
           [
@@ -13,7 +13,7 @@ const color: ColorSchema = {
           ]
         ]
       },
-      solid: {
+      vivid: {
         rest: [
           90,
           [
@@ -26,19 +26,19 @@ const color: ColorSchema = {
   },
   borderColor: {
     primary: {
-      soft: {
+      subtle: {
         rest: [45, 0, 0, 0.02]
       },
-      solid: {
+      vivid: {
         rest: [45, 0, 0, 0.02]
       }
     },
     redLike: {
-      soft: {
+      subtle: {
         rest: [0, 0, 0, 0.02],
         hover: [0, 0, 0, 0.02]
       },
-      solid: {
+      vivid: {
         rest: [0, 0, 0, 0.02],
         hover: [0, 0, 0, 0.02]
       }
@@ -46,13 +46,13 @@ const color: ColorSchema = {
   },
   textColor: {
     primary: {
-      soft: {
+      subtle: {
         rest: [120, 50, 50, 1],
         hover: {
           ref: [240, 50, 50, 0.5]
         }
       },
-      solid: {
+      vivid: {
         rest: [120, 50, 50, 1],
         hover: {
           ref: [240, 50, 50, 0.5]
@@ -60,10 +60,10 @@ const color: ColorSchema = {
       }
     },
     secondary: {
-      soft: {
+      subtle: {
         rest: [240, 50, 50, 0.5]
       },
-      solid: {
+      vivid: {
         rest: [240, 50, 50, 0.5]
       }
     }
@@ -78,16 +78,16 @@ export const exampleSchemaSegments: SchemaSegments = {
     mainColor: 'blue',
     themes: {
       light: {
-        // Demonstrates ToneTracks (soft/solid) for a semantic color
+        // Demonstrates EmphasisLevel (subtle/vivid) for a semantic color
         primary: {
-          soft: {
+          subtle: {
             0: [206, 100, 100, 1],
             1: [206, 100, 99, 1],
             10: [206, 100, 90, 1],
             20: [206, 100, 80, 1],
             30: [206, 100, 70, 1]
           },
-          solid: {
+          vivid: {
             40: [206, 100, 60, 1],
             50: [206, 100, 50, 1],
             60: [206, 100, 40, 1],
@@ -96,52 +96,52 @@ export const exampleSchemaSegments: SchemaSegments = {
           }
         },
         secondary: {
-          soft: {
+          subtle: {
             0: [180, 0, 100, 1],
             10: [180, 20, 90, 1]
           },
-          solid: {
+          vivid: {
             50: [180, 60, 50, 1],
             100: [180, 60, 0, 1]
           }
         },
         greenLike: {
-          soft: {
+          subtle: {
             0: [140, 0, 100, 1],
             10: [140, 30, 90, 1]
           },
-          solid: {
+          vivid: {
             50: [140, 70, 50, 1],
             100: [140, 70, 0, 1]
           }
         },
         yellowLike: {
-          soft: {
+          subtle: {
             0: [45, 0, 100, 1],
             10: [45, 40, 90, 1]
           },
-          solid: {
+          vivid: {
             50: [45, 95, 50, 1],
             100: [45, 95, 0, 1]
           }
         },
         redLike: {
-          soft: {
+          subtle: {
             0: [0, 0, 100, 1],
             10: [0, 40, 90, 1]
           },
-          solid: {
+          vivid: {
             50: [0, 85, 50, 1],
             100: [0, 85, 0, 1]
           }
         },
         neutral: {
-          soft: {
+          subtle: {
             0: [0, 0, 100, 1],
             1: [0, 0, 99, 1],
             10: [0, 0, 90, 1]
           },
-          solid: {
+          vivid: {
             50: [0, 0, 50, 1],
             100: [0, 0, 0, 1]
           }

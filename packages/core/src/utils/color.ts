@@ -13,11 +13,11 @@ const modeFromShort = (m: ModeKeyShort) => (m === 'l' ? 'light' : 'dark');
 
 function resolveSeriesAndKey(
   tone: number
-): { series: 'soft'; key: LightTrackTones } | { series: 'solid'; key: DarkTrackTones } {
+): { series: 'subtle'; key: LightTrackTones } | { series: 'vivid'; key: DarkTrackTones } {
   // Normalized grids:
-  // soft: 0–15 (step 1), then 20, 25, 30
-  // solid: 35–100 (step 5)
-  const softKeys: LightTrackTones[] = [
+  // subtle: 0–15 (step 1), then 20, 25, 30
+  // vivid: 35–100 (step 5)
+  const subtleKeys: LightTrackTones[] = [
     0,
     1,
     2,
@@ -38,7 +38,7 @@ function resolveSeriesAndKey(
     25,
     30
   ] as const;
-  const solidKeys: DarkTrackTones[] = [
+  const vividKeys: DarkTrackTones[] = [
     35,
     40,
     45,
@@ -57,30 +57,30 @@ function resolveSeriesAndKey(
 
   if (tone <= 30) {
     const clamped = Math.max(0, Math.min(30, Math.round(tone)));
-    // snap to nearest allowed soft key
-    let best = softKeys[0];
+    // snap to nearest allowed subtle key
+    let best = subtleKeys[0];
     let bestDiff = Math.abs(clamped - best);
-    for (const k of softKeys) {
+    for (const k of subtleKeys) {
       const diff = Math.abs(clamped - k);
       if (diff < bestDiff) {
         best = k;
         bestDiff = diff;
       }
     }
-    return { series: 'soft', key: best };
+    return { series: 'subtle', key: best };
   }
 
   const clamped = Math.max(35, Math.min(100, Math.round(tone)));
-  let best = solidKeys[0];
+  let best = vividKeys[0];
   let bestDiff = Math.abs(clamped - best);
-  for (const k of solidKeys) {
+  for (const k of vividKeys) {
     const diff = Math.abs(clamped - k);
     if (diff < bestDiff) {
       best = k;
       bestDiff = diff;
     }
   }
-  return { series: 'solid', key: best };
+  return { series: 'vivid', key: best };
 }
 
 export function color(
@@ -99,26 +99,26 @@ export function color(
   }
 
   // Narrow by series to keep key types aligned with buckets
-  if (series === 'soft') {
-    const bucket = theme?.[role]?.soft as Partial<Record<LightTrackTones, SolidColor>> | undefined;
+  if (series === 'subtle') {
+    const bucket = theme?.[role]?.subtle as Partial<Record<LightTrackTones, SolidColor>> | undefined;
     if (!bucket) {
-      throw new Error(`Role/series not found: role=${role} series=soft in mode=${m}`);
+      throw new Error(`Role/series not found: role=${role} series=subtle in mode=${m}`);
     }
     const value = bucket[key as LightTrackTones] as SolidColor | undefined;
     if (!value) {
       const available = Object.keys(bucket).join(', ');
-      throw new Error(`Tone ${key} not available in ${role}.soft. Available: ${available}`);
+      throw new Error(`Tone ${key} not available in ${role}.subtle. Available: ${available}`);
     }
     return typeof alpha === 'number' ? (withAlpha(value, alpha) as SolidColor) : value;
   } else {
-    const bucket = theme?.[role]?.solid as Partial<Record<DarkTrackTones, SolidColor>> | undefined;
+    const bucket = theme?.[role]?.vivid as Partial<Record<DarkTrackTones, SolidColor>> | undefined;
     if (!bucket) {
-      throw new Error(`Role/series not found: role=${role} series=solid in mode=${m}`);
+      throw new Error(`Role/series not found: role=${role} series=vivid in mode=${m}`);
     }
     const value = bucket[key as DarkTrackTones] as SolidColor | undefined;
     if (!value) {
       const available = Object.keys(bucket).join(', ');
-      throw new Error(`Tone ${key} not available in ${role}.solid. Available: ${available}`);
+      throw new Error(`Tone ${key} not available in ${role}.vivid. Available: ${available}`);
     }
     return typeof alpha === 'number' ? (withAlpha(value, alpha) as SolidColor) : value;
   }

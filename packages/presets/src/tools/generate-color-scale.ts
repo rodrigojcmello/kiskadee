@@ -6,9 +6,9 @@ import type {
   ColorScaleDark,
   ColorScaleLight,
   DarkTrackTones,
+  EmphasisLevel,
   HSLA,
-  LightTrackTones,
-  ToneTracks
+  LightTrackTones
 } from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
 
@@ -87,7 +87,7 @@ function hexToHSLA(hex: string, verbose = false): HSLA {
 
 /**
  * Generates a complete Kiskadee color scale (0-100) from a hex color.
- * The input color is used as the anchor at tone 50.
+ * The input color is used as the anchor at emphasis 50.
  *
  * Scale rules:
  * - Tone 0-10: 100% to 90% lightness (1% decrements, 11 tones total)
@@ -95,18 +95,18 @@ function hexToHSLA(hex: string, verbose = false): HSLA {
  * - Tone 50-100: proportional distribution from anchor to 0% lightness
  *
  * @param hexColor - Hexadecimal color string (e.g., "#6750A4")
- * @param prioritizeLightnessScale - When true, set tone 50 to L=50 regardless of input; when false, keep the input lightness at 50.
+ * @param prioritizeLightnessScale - When true, set emphasis 50 to L=50 regardless of input; when false, keep the input lightness at 50.
  * @returns ColorScale object with tones 0, 1, 2...100
  *
  * @example
  * const scale = generateColorScale("#6750A4", true);
- * // Returns a ColorScale with tone 50 centered at 50 when the second argument is true.
+ * // Returns a ColorScale with emphasis 50 centered at 50 when the second argument is true.
  */
 type ToneOverrides = Partial<Record<LightTrackTones | DarkTrackTones, string>>;
 
 type DarkToneShaping = {
   /**
-   * Solid-track tone that must remain untouched and serve as the reference
+   * Solid-track emphasis that must remain untouched and serve as the reference
    * for dark adjustments. For primary brand colors this is typically 60.
    */
   anchorTone: 40 | 50 | 60;
@@ -115,7 +115,7 @@ type DarkToneShaping = {
    * Total saturation drop (in percentage points) to distribute across the
    * solid tones darker than the anchor. For example, with anchorTone=40 and
    * saturationDropTotal=15 we have tones 50, 60, 70, 80, 90 (5 positions), so
-   * each successive tone loses 15/5 = 3 points of saturation relative to the
+   * each successive emphasis loses 15/5 = 3 points of saturation relative to the
    * anchor. Always applied as a decrease; pass 0 or omit to keep saturation
    * unchanged.
    */
@@ -133,7 +133,7 @@ type DarkToneShaping = {
 
   /**
    * Target lightness step (in percentage points) between consecutive solid
-   * tones in the dark track. This is applied starting from the anchor tone and
+   * tones in the dark track. This is applied starting from the anchor emphasis and
    * moving towards the darker tones (e.g. 70, 80, 90). The value is internally
    * clamped to the inclusive range [5, 20] to avoid steps that are either
    * imperceptibly small (<5) or excessively abrupt (>20). When omitted, the
@@ -146,7 +146,7 @@ export function generateColorScale(
   hexColor: string,
   prioritizeLightnessScale = false,
   invertScale = false
-): ToneTracks {
+): EmphasisLevel {
   const [hue, saturation, originalAnchorLightness, alpha] = hexToHSLA(hexColor);
   const isTooLightForAnchor = originalAnchorLightness > 70;
   const anchorLightness = isTooLightForAnchor
@@ -196,9 +196,9 @@ export function generateColorScale(
     }
   }
 
-  // Split into tone tracks
-  const soft: ColorScaleLight = {};
-  const solid: ColorScaleDark = {};
+  // Split into emphasis tracks
+  const subtle: ColorScaleLight = {};
+  const vivid: ColorScaleDark = {};
 
   // Soft: 0–15 (step 1), then 20, 25, 30
   // Copy 0..15 directly
@@ -220,9 +220,9 @@ export function generateColorScale(
     soft[30 as keyof ColorScaleLight] = scale[30] as HSLA;
   }
 
-  // Solid track: always use the normalized DarkTrackTones grid 35–100 (step 5).
-  // We derive each solid tone by interpolating on top of the base `scale`
-  // tones, which encode the curved relationship around the anchor (tone 50).
+  // Vivid track: always use the normalized DarkTrackTones grid 35–100 (step 5).
+  // We derive each solid emphasis by interpolating on top of the base `scale`
+  // tones, which encode the curved relationship around the anchor (emphasis 50).
   const solidTones: DarkTrackTones[] = [35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
 
   const baseStops = [30, 40, 50, 60, 70, 80, 90, 100];
@@ -269,7 +269,7 @@ export function generateColorScale(
     solid[tone] = [h, s, l, a];
   }
 
-  // Force absolute extremes so that tone 0 and 100 are truly neutral white/black.
+  // Force absolute extremes so that emphasis 0 and 100 are truly neutral white/black.
   // This keeps intermediate tones tinted by the original hue/saturation while
   // making the scale endpoints consistent across semantics.
   if (invertScale) {
@@ -287,13 +287,13 @@ export function generateColorScale(
 const solidToneOrder: DarkTrackTones[] = [35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
 
 function applySaturationDrop(
-  solid: ColorScaleDark,
+  vivid: ColorScaleDark,
   anchorTone: DarkTrackTones,
   saturationDropTotal?: number
 ): void {
   if (!saturationDropTotal || saturationDropTotal <= 0) return;
 
-  // Saturation adjustments must never touch tone 100, which is reserved for
+  // Saturation adjustments must never touch emphasis 100, which is reserved for
   // absolute black ([0, 0, 0, 1]). We therefore limit shaping strictly to the
   // 40–90 range, even though solidToneOrder also includes 100 for logging
   // purposes.
@@ -326,13 +326,13 @@ function normalizeHue(hue: number): number {
 }
 
 function applyHueShift(
-  solid: ColorScaleDark,
+  vivid: ColorScaleDark,
   anchorTone: DarkTrackTones,
   hueShiftTotal?: number
 ): void {
   if (!hueShiftTotal || hueShiftTotal === 0) return;
 
-  // Hue adjustments must also avoid tone 100 so that the darkest extreme
+  // Hue adjustments must also avoid emphasis 100 so that the darkest extreme
   // remains a neutral black. Limit shaping to tones 40–90.
   const darkerTones = solidToneOrder.filter(
     (tone) => tone > anchorTone && tone <= 90 && solid[tone]
@@ -360,7 +360,7 @@ const MIN_LIGHTNESS_STEP = 5;
 const MAX_LIGHTNESS_STEP = 20;
 
 function applyLightnessStep(
-  solid: ColorScaleDark,
+  vivid: ColorScaleDark,
   anchorTone: DarkTrackTones,
   lightnessStep?: number
 ): void {
@@ -379,7 +379,7 @@ function applyLightnessStep(
   const step = Math.min(Math.max(rawStep, MIN_LIGHTNESS_STEP), MAX_LIGHTNESS_STEP);
 
   // Walk towards the darker tones (index > anchorIndex), applying the target
-  // step cumulatively from the previous tone so that each successive tone
+  // step cumulatively from the previous emphasis so that each successive emphasis
   // remains strictly darker than the one before while avoiding extreme jumps.
   for (let i = anchorIndex + 1; i < tones.length; i += 1) {
     const tone = tones[i];
@@ -398,7 +398,7 @@ function applyLightnessStep(
  * Generates a complete Kiskadee color scale and logs it in a format that's easy to copy.
  *
  * @param hexColor - Hexadecimal color string (e.g., "#6750A4")
- * @param prioritizeLightnessScale - When true, ignore the original lightness and center tone 50 at 50.
+ * @param prioritizeLightnessScale - When true, ignore the original lightness and center emphasis 50 at 50.
  *                                   When false (default), keep the input color's original lightness at 50.
  *
  * @param overrides
@@ -414,14 +414,14 @@ export function generateColorScaleWithLog(
   overrides?: ToneOverrides,
   shaping?: DarkToneShaping,
   invertScale = false
-): ToneTracks {
+): EmphasisLevel {
   const baseTracks = generateColorScale(hexColor, prioritizeLightnessScale, invertScale);
 
   // Clone base tracks so we can apply overrides only for logging / file
   // emission, while still knowing what was originally generated.
-  const tracks: ToneTracks = {
-    soft: { ...baseTracks.soft },
-    solid: { ...baseTracks.solid }
+  const tracks: EmphasisLevel = {
+    subtle: { ...baseTracks.soft },
+    vivid: { ...baseTracks.solid }
   };
 
   if (shaping) {
@@ -469,7 +469,7 @@ export function generateColorScaleWithLog(
 
   // Recompute original lightness to derive an approximate darkness label.
   // For prioritizeLightnessScale=false this is used only to document the
-  // anchor color (tone 50). For prioritizeLightnessScale=true we also use it
+  // anchor color (emphasis 50). For prioritizeLightnessScale=true we also use it
   // to pick the closest DarkTrackTone in the canonical scale for usage
   // guidance. This does not affect the generated scale itself.
   const [, , originalLightness] = hexToHSLA(hexColor);
@@ -496,10 +496,10 @@ export function generateColorScaleWithLog(
   }
 
   // When we prioritize the lightness scale, we keep the canonical
-  // "index ≈ darkness%" relationship and use the nearest dark tone to the
+  // "index ≈ darkness%" relationship and use the nearest dark emphasis to the
   // original color as the usage anchor. When we do NOT prioritize the
-  // lightness scale, tone 50 is always the semantic anchor (exact input
-  // color), so we do not use the nearest tone concept there.
+  // lightness scale, emphasis 50 is always the semantic anchor (exact input
+  // color), so we do not use the nearest emphasis concept there.
   const usageAnchorTone =
     isPrioritizingScale && !isTooLightForAnchor
       ? (getNearestDarkTone(originalDarkness) as DarkTrackTones)
@@ -510,8 +510,8 @@ export function generateColorScaleWithLog(
   const solidLines: string[] = [];
 
   // Soft header
-  softLines.push('  soft: {');
-  softLines.push('    // Soft track: 0–15 (every 1%), then 20, 25, 30');
+  softLines.push('  subtle: {');
+  softLines.push('    // Subtle track: 0–15 (every 1%), then 20, 25, 30');
   const softKeysForLog = [
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 25, 30
   ] as const;
@@ -537,8 +537,8 @@ export function generateColorScaleWithLog(
         return '';
       }
 
-      // Soft track comments mirror the solid track behaviour for overrides: any
-      // tone that was replaced via the overrides map should clearly document
+      // Subtle track comments mirror the solid track behaviour for overrides: any
+      // emphasis that was replaced via the overrides map should clearly document
       // which HEX was originally generated and which one replaced it.
       if (isOverridden && baseColor) {
         const generatedHex = convertHslaToHex(baseColor as HSLA);
@@ -574,10 +574,10 @@ export function generateColorScaleWithLog(
 
   // Solid header
   const anchor = tracks.solid[50];
-  solidLines.push('  solid: {');
+  solidLines.push('  vivid: {');
   if (anchor?.[2] !== undefined) {
     solidLines.push(
-      `    // Solid track: 35–100 every 5% darkness (35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100)`
+      `    // Vivid track: 35–100 every 5% darkness (35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100)`
     );
 
     if (isPrioritizingScale) {
@@ -610,7 +610,7 @@ export function generateColorScaleWithLog(
       const isOverridden = overriddenTones.has(tone);
 
       if (isPrioritizingScale) {
-        // Canonical scale: index ≈ darkness%. We highlight the tone whose
+        // Canonical scale: index ≈ darkness%. We highlight the emphasis whose
         // darkness is closest to the original color as the usage anchor.
         if (isOverridden && baseColor) {
           const generatedHex = convertHslaToHex(baseColor);
@@ -639,9 +639,9 @@ export function generateColorScaleWithLog(
         return ` // ${darknessLabel}`;
       }
 
-      // Non-canonical mode: tone 50 is normally exactly the input color; the rest
+      // Non-canonical mode: emphasis 50 is normally exactly the input color; the rest
       // of the track bends around it. When the input color is too light to be an
-      // anchor we silently re-center tone 50 at L=50.
+      // anchor we silently re-center emphasis 50 at L=50.
       if (tone === 50) {
         if (isOverridden && baseColor) {
           const generatedHex = convertHslaToHex(baseColor);
@@ -672,7 +672,9 @@ export function generateColorScaleWithLog(
   console.log(`\n${'='.repeat(80)}`);
   console.log(`Color Scale (${hexColor})`);
   console.log('='.repeat(80));
-  console.log('\n// Copy the structure below and paste inside your palette object (ToneTracks):\n');
+  console.log(
+    '\n// Copy the structure below and paste inside your palette object (EmphasisLevel):\n'
+  );
   console.log(prettyBodyOnly);
   console.log(`\n${'='.repeat(80)}\n`);
 

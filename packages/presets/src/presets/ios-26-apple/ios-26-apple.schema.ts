@@ -43,7 +43,7 @@ export const schema: Schema<Segment> = {
               light: {
                 boxColor: {
                   primary: {
-                    soft: {
+                    subtle: {
                       rest: color(iosDefault, 'l', 'primary', 5),
                       hover: color(iosDefault, 'l', 'primary', 3),
                       focus: color(iosDefault, 'l', 'primary', 5),
@@ -55,7 +55,7 @@ export const schema: Schema<Segment> = {
                         pressed: color(iosDefault, 'l', 'primary', 20)
                       }
                     },
-                    solid: {
+                    vivid: {
                       rest: color(iosDefault, 'l', 'primary', 50),
                       hover: color(iosDefault, 'l', 'primary', 50, 80),
                       pressed: color(iosDefault, 'l', 'primary', 60),
@@ -97,7 +97,7 @@ export const schema: Schema<Segment> = {
               light: {
                 textColor: {
                   primary: {
-                    soft: {
+                    subtle: {
                       rest: color(iosDefault, 'l', 'primary', 50),
                       hover: { ref: color(iosDefault, 'l', 'primary', 50, 80) },
                       pressed: { ref: color(iosDefault, 'l', 'primary', 50) },
@@ -110,7 +110,7 @@ export const schema: Schema<Segment> = {
                         }
                       }
                     },
-                    solid: {
+                    vivid: {
                       rest: color(iosDefault, 'l', 'neutral', 0),
                       disabled: {
                         ref: color(iosDefault, 'l', 'neutral', 0, 20)

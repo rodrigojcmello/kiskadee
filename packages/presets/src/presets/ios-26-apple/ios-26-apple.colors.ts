@@ -12,8 +12,8 @@ export const segments: SchemaSegments<Segment> = {
     themes: {
       light: {
         primary: {
-          soft: {
-            // Soft track: 0–10 (every 1%), then 15, 20, 25, 30
+          subtle: {
+            // Subtle track: 0–10 (every 1%), then 15, 20, 25, 30
             0: [206, 100, 100, 1], // 0% darkness (white/lightest)
             1: [206, 100, 99, 1], // 1% darkness
             2: [206, 100, 98, 1], // 2% darkness
@@ -30,8 +30,8 @@ export const segments: SchemaSegments<Segment> = {
             25: [206, 100, 75, 1], // 25% darkness
             30: [206, 100, 70, 1] // 30% darkness
           },
-          solid: {
-            // Solid track: 40–100 every 10% darkness (40,50,60,70,80,90,100); 50 is the anchor
+          vivid: {
+            // Vivid track: 40–100 every 10% darkness (40,50,60,70,80,90,100); 50 is the anchor
             40: [206, 100, 60, 1], // 40% darkness
             50: [206, 100, 50, 1], // 50% darkness - #0091FF - ANCHOR (unchanged)
             60: [206, 100, 40, 1], // 60% darkness
@@ -42,8 +42,8 @@ export const segments: SchemaSegments<Segment> = {
           }
         },
         neutral: {
-          soft: {
-            // Soft track: 0–10 (every 1%), then 15, 20, 25, 30
+          subtle: {
+            // Subtle track: 0–10 (every 1%), then 15, 20, 25, 30
             0: [0, 0, 100, 1], // 0% darkness (white/lightest)
             1: [0, 0, 99, 1], // 1% darkness
             2: [0, 0, 98, 1], // 2% darkness
@@ -60,8 +60,8 @@ export const segments: SchemaSegments<Segment> = {
             25: [0, 0, 75, 1], // 25% darkness
             30: [0, 0, 70, 1] // 30% darkness
           },
-          solid: {
-            // Solid track: 40–100 every 10% darkness (40,50,60,70,80,90,100); 50 is the anchor
+          vivid: {
+            // Vivid track: 40–100 every 10% darkness (40,50,60,70,80,90,100); 50 is the anchor
             40: [0, 0, 60, 1], // 40% darkness
             50: [0, 0, 50, 1], // 50% darkness
             60: [0, 0, 40, 1], // 60% darkness
@@ -72,50 +72,50 @@ export const segments: SchemaSegments<Segment> = {
           }
         },
         secondary: {
-          soft: {
+          subtle: {
             0: [180, 0, 100, 1],
             1: [180, 20, 92, 1],
             5: [180, 40, 75, 1],
             10: [180, 50, 60, 1]
           },
-          solid: {
+          vivid: {
             50: [180, 60, 40, 1],
             100: [180, 60, 5, 1]
           }
         },
         greenLike: {
-          soft: {
+          subtle: {
             0: [140, 0, 100, 1],
             1: [140, 30, 90, 1],
             5: [140, 50, 70, 1],
             10: [140, 60, 55, 1]
           },
-          solid: {
-            50: [140, 70, 40, 1], // Green mid-tone for "buy", "confirm"
+          vivid: {
+            50: [140, 70, 40, 1], // Green mid-emphasis for "buy", "confirm"
             100: [140, 70, 5, 1]
           }
         },
         yellowLike: {
-          soft: {
+          subtle: {
             0: [45, 0, 100, 1],
             1: [45, 40, 90, 1],
             5: [45, 80, 75, 1],
             10: [45, 90, 60, 1]
           },
-          solid: {
+          vivid: {
             50: [45, 95, 50, 1], // Yellow/amber for "attention"
             100: [45, 95, 10, 1]
           }
         },
         redLike: {
-          soft: {
+          subtle: {
             0: [0, 0, 100, 1],
             1: [0, 40, 90, 1],
             5: [0, 70, 75, 1],
             10: [0, 80, 60, 1]
           },
-          solid: {
-            50: [0, 85, 50, 1], // Red mid-tone for "urgent", "notification"
+          vivid: {
+            50: [0, 85, 50, 1], // Red mid-emphasis for "urgent", "notification"
             100: [0, 85, 10, 1]
           }
         }

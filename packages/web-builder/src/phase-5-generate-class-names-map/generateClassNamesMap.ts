@@ -12,16 +12,16 @@ import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/sh
 
 // Color classes structure matching schema.ts
 type ColorClasses = {
-  u?: string; // unique/single color (no tone variants)
-  f?: string; // soft (light tone track)
-  d?: string; // solid (dark tone track)
+  u?: string; // unique/single color (no emphasis variants)
+  f?: string; // subtle (light emphasis track)
+  d?: string; // vivid (dark emphasis track)
 };
 
 // Shortened keys for optimization (Phase 5 artifact schema):
 // d = decorations (always-on, flattened string)
 // e = effects by interaction state (arrays of classes, opt-in at component level)
 // s = scales (size variants only, flattened strings per size)
-// c = color classes (organized by tone: u/f/d)
+// c = color classes (organized by emphasis: u/f/d)
 // cs = control states (selected)
 export type ClassNamesByInteractionState = Partial<Record<string, string[]>>; // legacy for reference
 export type ClassNameByElement = {
@@ -32,7 +32,7 @@ export type ClassNameByElement = {
   e?: string;
   // Scales aggregated per size as flattened strings (size variants only, not effects)
   s?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
-  // Color classes organized by tone (u/f/d)
+  // Color classes organized by emphasis (u/f/d)
   c?: ColorClasses;
   // Control-state specific (selected) — flattened string of utility classes
   cs?: string;
@@ -122,7 +122,7 @@ export function generateClassNamesMapSplit(
         }
       }
 
-      // Palettes split per segment.theme; segregate by tone (unique/soft/solid)
+      // Palettes split per segment.theme; segregate by emphasis (unique/soft/solid)
       if (el.palettes) {
         // `el.palettes` is typed with a constrained key union in @kiskadee/core
         // but in practice schemas may use arbitrary segment keys. Treat it as a
@@ -155,7 +155,7 @@ export function generateClassNamesMapSplit(
             for (const sem of Object.keys(bySemantic)) {
               const byState = bySemantic[sem as SemanticColor];
 
-              // Segregate classes by tone (or unique if no tone) per semantic
+              // Segregate classes by emphasis (or unique if no emphasis) per semantic
               const uniqueSet = new Set<string>();
               const softSet = new Set<string>();
               const solidSet = new Set<string>();
@@ -167,13 +167,13 @@ export function generateClassNamesMapSplit(
                   const shortenedClass = shortenMap[styleKey] ?? styleKey;
                   const meta = toneMetadata.get(styleKey);
 
-                  // Do NOT move selected palette classes into core.cs. Always classify by tone/unique.
-                  if (meta?.tone === 'soft') {
+                  // Do NOT move selected palette classes into core.cs. Always classify by emphasis/unique.
+                  if (meta?.tone === 'subtle') {
                     softSet.add(shortenedClass);
-                  } else if (meta?.tone === 'solid') {
+                  } else if (meta?.tone === 'vivid') {
                     solidSet.add(shortenedClass);
                   } else {
-                    // No tone = unique/single color
+                    // No emphasis = unique/single color
                     uniqueSet.add(shortenedClass);
                   }
                 });

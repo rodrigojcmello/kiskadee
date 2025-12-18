@@ -4,11 +4,11 @@
 //   90: '#0C3B5E',
 // })
 
-import type { ToneTracks } from '@kiskadee/core';
+import type { EmphasisLevel } from '@kiskadee/core';
 
 export default {
-  soft: {
-    // Soft track: 0–10 (every 1%), then 15, 20, 25, 30
+  subtle: {
+    // Subtle track: 0–10 (every 1%), then 15, 20, 25, 30
     0: [0, 0, 100, 1], // 0% darkness (white/lightest)
     1: [207.93, 85.29, 99, 1], // 1% darkness
     2: [207.93, 85.29, 98, 1], // 2% darkness
@@ -25,15 +25,15 @@ export default {
     25: [207.93, 85.29, 75, 1], // 25% darkness
     30: [207.93, 85.29, 70, 1] // 30% darkness
   },
-  solid: {
-    // Solid track: 40–100 every 10% darkness (40, 50, 60, 70, 80, 90, 100)
-    // Original color darkness ≈ 60% → usage anchor tone 60
+  vivid: {
+    // Vivid track: 40–100 every 10% darkness (40, 50, 60, 70, 80, 90, 100)
+    // Original color darkness ≈ 60% → usage anchor emphasis 60
     40: [207.93, 85.29, 60, 1], // 40% darkness
     50: [207.93, 85.29, 50, 1], // 50% darkness
-    60: [207.93, 85.29, 40, 1], // 60% darkness - original color tone (#0F6CBD) - USAGE ANCHOR
+    60: [207.93, 85.29, 40, 1], // 60% darkness - original color emphasis (#0F6CBD) - USAGE ANCHOR
     70: [208.36, 81.11, 35.29, 1], // 64.71% darkness - OVERRIDDEN: generated #0B518E was replaced by #115EA3
     80: [206.88, 80.65, 30.39, 1], // 69.61% darkness - OVERRIDDEN: generated #08365E was replaced by #0F548C
     90: [205.61, 77.36, 20.78, 1], // 79.22% darkness - OVERRIDDEN: generated #041B2F was replaced by #0C3B5E
     100: [0, 0, 0, 1] // 100% darkness (black/darkest)
   }
-} as ToneTracks;
+} as EmphasisLevel;

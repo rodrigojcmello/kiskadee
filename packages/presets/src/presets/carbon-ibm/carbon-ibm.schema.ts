@@ -74,7 +74,7 @@ export const schema: Schema<Segments> = {
               light: {
                 boxColor: {
                   primary: {
-                    solid: {
+                    vivid: {
                       rest: color(carbonDefault, 'l', 'primary', 50),
                       hover: color(carbonDefault, 'l', 'primary', 45),
                       focus: color(carbonDefault, 'l', 'primary', 50),
@@ -112,7 +112,7 @@ export const schema: Schema<Segments> = {
               light: {
                 textColor: {
                   primary: {
-                    solid: {
+                    vivid: {
                       rest: color(carbonDefault, 'l', 'neutral', 0),
                       disabled: {
                         ref: color(carbonDefault, 'l', 'neutral', 45)

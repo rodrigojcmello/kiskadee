@@ -19,7 +19,7 @@ import { convertElementScalesToStyleKeys } from './scales/convertElementScalesTo
  * Processes a Schema object by iterating over each component's elements.
  * For each style object, it processes the decoration, scales, and colors
  * (if defined) using their respective methods, and accumulates results
- * into styleKeysByComponent. Also collects tone metadata from color processing.
+ * into styleKeysByComponent. Also collects emphasis metadata from color processing.
  *
  * @param schema - The Schema object to process.
  * @returns An object containing styleKeys and toneMetadata Map.
@@ -53,7 +53,7 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
           const { styleKeys: paletteKeys, toneMetadata: paletteToneMetadata } =
             convertElementColorsToStyleKeys(element.palettes);
           el.palettes = paletteKeys;
-          // Merge tone metadata from this element into the global map
+          // Merge emphasis metadata from this element into the global map
           for (const [key, meta] of paletteToneMetadata) {
             toneMetadata.set(key, meta);
           }

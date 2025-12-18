@@ -1,7 +1,7 @@
-import type { ToneTracks } from '@kiskadee/core';
+import type { EmphasisLevel } from '@kiskadee/core';
 
 export default {
-  soft: {
+  subtle: {
     0: [206, 100, 100, 1],
     1: [206, 100, 99, 1],
     2: [206, 100, 98, 1],
@@ -18,7 +18,7 @@ export default {
     25: [206, 100, 75, 1],
     30: [206, 100, 70, 1]
   },
-  solid: {
+  vivid: {
     40: [206, 100, 60, 1],
     50: [206, 100, 50, 1],
     60: [206, 100, 40, 1],
@@ -27,4 +27,4 @@ export default {
     90: [206, 100, 10, 1],
     100: [206, 100, 0, 1]
   }
-} as ToneTracks;
+} as EmphasisLevel;

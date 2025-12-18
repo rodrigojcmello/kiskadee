@@ -134,10 +134,10 @@ export type SemanticColor =
   | 'greenLike'
   | 'neutral';
 
-export type EmphasisVariant = 'soft' | 'solid';
+export type Emphasis = keyof EmphasisLevel;
 
 export type SemanticColorMap = Partial<
-  Record<SemanticColor, Partial<Record<EmphasisVariant, InteractionStateColorMap>>>
+  Record<SemanticColor, Partial<Record<Emphasis, InteractionStateColorMap>>>
 >;
 
 export enum CssColorProperty {
@@ -185,21 +185,7 @@ export type LightTrackTones =
   | 30;
 
 // Dark track tones: 35–100 (step 5)
-export type DarkTrackTones =
-  | 35
-  | 40
-  | 45
-  | 50
-  | 55
-  | 60
-  | 65
-  | 70
-  | 75
-  | 80
-  | 85
-  | 90
-  | 95
-  | 100;
+export type DarkTrackTones = 35 | 40 | 45 | 50 | 55 | 60 | 65 | 70 | 75 | 80 | 85 | 90 | 95 | 100;
 
 export type ColorScaleLight = Partial<Record<LightTrackTones, SolidColor>>;
 export type ColorScaleDark = Partial<Record<DarkTrackTones, SolidColor>>;
@@ -211,12 +197,12 @@ export type VariantColorScale = {
 
 export type ThemeMode = 'light' | 'dark' | 'darker';
 
-export type ToneTracks = {
-  soft: ColorScaleLight;
-  solid: ColorScaleDark;
+export type EmphasisLevel = {
+  subtle: ColorScaleLight;
+  vivid: ColorScaleDark;
 };
 
-export type ColorPalette = Partial<Record<SemanticColor, ToneTracks>>;
+export type ColorPalette = Partial<Record<SemanticColor, EmphasisLevel>>;
 export type ThemeColorPalette = ColorPalette;
 
 export type Segment = {

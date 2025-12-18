@@ -107,7 +107,7 @@ Because of this, Kiskadee does **not** expose `secondary` or `tertiary` as globa
 
 - What most design systems call a *secondary button* is, in Kiskadee, usually just a combination of:
   - `semantic="primary"` or `semantic="neutral"`, with
-  - `tone="soft"` instead of `tone="solid"`.
+  - `tone="subtle"` instead of `tone="vivid"`.
 - A *tertiary button* is often just text with `primary` or `neutral` applied to `textColor`, without a strong `boxColor`.
 
 In other words, the "secondary/tertiary" UX is modeled by **tone and neutral usage**, not by extra global semantic color names.

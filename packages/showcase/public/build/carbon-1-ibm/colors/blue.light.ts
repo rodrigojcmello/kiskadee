@@ -3,11 +3,11 @@
 //   70: '#002D9C',
 // }, false)
 
-import type { ToneTracks } from '@kiskadee/core';
+import type { EmphasisLevel } from '@kiskadee/core';
 
 export default {
-  soft: {
-    // Soft track: 0–15 (every 1%), then 20, 25, 30
+  subtle: {
+    // Subtle track: 0–15 (every 1%), then 20, 25, 30
     0: [0, 0, 100, 1], // 0% darkness (white/lightest)
     1: [219.16, 99.17, 99, 1], // 1% darkness
     2: [219.16, 99.17, 98, 1], // 2% darkness
@@ -28,8 +28,8 @@ export default {
     25: [219.16, 99.17, 73, 1],
     30: [219.16, 99.17, 69, 1]
   },
-  solid: {
-    // Solid track: 35–100 every 5% darkness (35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100)
+  vivid: {
+    // Vivid track: 35–100 every 5% darkness (35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100)
     // Tone 50 is the anchor color (exactly the input hex lightness)
     35: [219.16, 99.17, 65, 1],
     40: [219.16, 99.17, 61, 1],
@@ -46,4 +46,4 @@ export default {
     95: [219.16, 99.17, 6, 1],
     100: [0, 0, 0, 1]
   }
-} as ToneTracks;
+} as EmphasisLevel;

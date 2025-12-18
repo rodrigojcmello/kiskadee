@@ -102,7 +102,7 @@ function buildButtonState(schema: Schema): ManifestComponentState | undefined {
         const boxColor = (theme as any).boxColor as Record<string, any> | undefined;
         const textColor = (theme as any).textColor as Record<string, any> | undefined;
 
-        // boxColor: semantic -> tone -> { stateKey: value }
+        // boxColor: semantic -> emphasis -> { stateKey: value }
         if (boxColor) {
           for (const [semantic, byTone] of Object.entries(boxColor)) {
             for (const [tone, statesObj] of Object.entries(byTone as Record<string, any>)) {
@@ -113,7 +113,7 @@ function buildButtonState(schema: Schema): ManifestComponentState | undefined {
           }
         }
 
-        // textColor: semantic -> tone -> { stateKey: value }
+        // textColor: semantic -> emphasis -> { stateKey: value }
         if (textColor) {
           for (const [semantic, byTone] of Object.entries(textColor)) {
             for (const [tone, statesObj] of Object.entries(byTone as Record<string, any>)) {

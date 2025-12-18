@@ -23,7 +23,7 @@
       },
       "state": {
         "primary": {
-          "soft": {
+          "subtle": {
             "rest": true,
             "hover": true,
             "pressed": true,
@@ -31,7 +31,7 @@
             "focus": true,
             "selected": true
           },
-          "solid": {
+          "vivid": {
             "rest": true,
             "hover": true,
             "pressed": true,

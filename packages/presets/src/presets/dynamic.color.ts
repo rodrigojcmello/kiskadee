@@ -1,7 +1,7 @@
 import type { ToneTracks } from '@kiskadee/core/dist';
 
 export default {
-  soft: {
+  subtle: {
     0: 'hsl(var(--k-p-0))',
     1: 'hsl(var(--k-p-1))',
     2: 'hsl(var(--k-p-2))',
@@ -18,7 +18,7 @@ export default {
     25: 'hsl(var(--k-p-25))',
     30: 'hsl(var(--k-p-30))'
   },
-  solid: {
+  vivid: {
     40: 'hsl(var(--k-p-40))',
     50: 'hsl(var(--k-p-50))',
     60: 'hsl(var(--k-p-60))',

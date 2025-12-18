@@ -64,7 +64,7 @@ export const schema: Schema = {
               light: {
                 boxColor: {
                   primary: {
-                    solid: {
+                    vivid: {
                       rest: color(fluentDefault, 'l', 'primary', 60),
                       hover: color(fluentDefault, 'l', 'primary', 70),
                       focus: color(fluentDefault, 'l', 'primary', 60),
@@ -82,7 +82,7 @@ export const schema: Schema = {
               dark: {
                 boxColor: {
                   primary: {
-                    solid: {
+                    vivid: {
                       rest: color(fluentDefault, 'l', 'primary', 70),
                       hover: color(fluentDefault, 'l', 'primary', 60),
                       focus: color(fluentDefault, 'l', 'primary', 70),
@@ -125,7 +125,7 @@ export const schema: Schema = {
               light: {
                 textColor: {
                   primary: {
-                    solid: {
+                    vivid: {
                       rest: color(fluentDefault, 'l', 'neutral', 0),
                       disabled: {
                         ref: color(fluentDefault, 'l', 'neutral', 25)
@@ -137,7 +137,7 @@ export const schema: Schema = {
               dark: {
                 textColor: {
                   primary: {
-                    solid: {
+                    vivid: {
                       rest: color(fluentDefault, 'd', 'neutral', 100),
                       disabled: {
                         ref: color(fluentDefault, 'd', 'neutral', 100, 25)

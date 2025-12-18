@@ -79,7 +79,7 @@ export const schema: Schema = {
             light: {
               boxColor: {
                 primary: {
-                  soft: {
+                  subtle: {
                     rest: color(segment, 'l', 'primary', 5),
                     hover: color(segment, 'l', 'primary', 3),
                     focus: color(segment, 'l', 'primary', 5),
@@ -92,7 +92,7 @@ export const schema: Schema = {
                       pressed: color(segment, 'l', 'primary', 60)
                     }
                   },
-                  solid: {
+                  vivid: {
                     rest: color(segment, 'l', 'primary', 50),
                     hover: color(segment, 'l', 'primary', 50, 80),
                     focus: color(segment, 'l', 'primary', 50),
@@ -101,7 +101,7 @@ export const schema: Schema = {
                   }
                 },
                 neutral: {
-                  soft: {
+                  subtle: {
                     rest: color(segment, 'l', 'neutral', 5),
                     hover: color(segment, 'l', 'neutral', 3),
                     focus: color(segment, 'l', 'neutral', 5),
@@ -116,7 +116,7 @@ export const schema: Schema = {
                   }
                 },
                 redLike: {
-                  soft: {
+                  subtle: {
                     rest: color(segment, 'l', 'redLike', 5),
                     hover: color(segment, 'l', 'redLike', 3),
                     focus: color(segment, 'l', 'redLike', 5),
@@ -128,7 +128,7 @@ export const schema: Schema = {
                       pressed: color(segment, 'l', 'redLike', 60)
                     }
                   },
-                  solid: {
+                  vivid: {
                     rest: color(segment, 'l', 'redLike', 50),
                     hover: color(segment, 'l', 'redLike', 50, 80),
                     pressed: color(segment, 'l', 'redLike', 60),
@@ -155,7 +155,7 @@ export const schema: Schema = {
             dark: {
               boxColor: {
                 redLike: {
-                  soft: {
+                  subtle: {
                     rest: color(segment, 'd', 'redLike', 50, 40),
                     hover: color(segment, 'd', 'redLike', 3),
                     focus: color(segment, 'd', 'redLike', 5),
@@ -167,7 +167,7 @@ export const schema: Schema = {
                       pressed: color(segment, 'd', 'redLike', 60)
                     }
                   },
-                  solid: {
+                  vivid: {
                     rest: color(segment, 'd', 'redLike', 50),
                     hover: color(segment, 'd', 'redLike', 50, 80),
                     pressed: color(segment, 'd', 'redLike', 60),
@@ -180,7 +180,7 @@ export const schema: Schema = {
             darker: {
               boxColor: {
                 redLike: {
-                  soft: {
+                  subtle: {
                     rest: color(segment, 'd', 'redLike', 50, 40),
                     hover: color(segment, 'd', 'redLike', 3),
                     focus: color(segment, 'd', 'redLike', 5),
@@ -192,7 +192,7 @@ export const schema: Schema = {
                       pressed: color(segment, 'd', 'redLike', 60)
                     }
                   },
-                  solid: {
+                  vivid: {
                     rest: color(segment, 'd', 'redLike', 50),
                     hover: color(segment, 'd', 'redLike', 50, 80),
                     pressed: color(segment, 'd', 'redLike', 60),
@@ -213,7 +213,7 @@ export const schema: Schema = {
             light: {
               textColor: {
                 primary: {
-                  soft: {
+                  subtle: {
                     rest: color(segment, 'l', 'primary', 50),
                     hover: { ref: color(segment, 'l', 'primary', 50, 80) },
                     pressed: { ref: color(segment, 'l', 'primary', 50) },
@@ -226,7 +226,7 @@ export const schema: Schema = {
                       }
                     }
                   },
-                  solid: {
+                  vivid: {
                     rest: color(segment, 'l', 'neutral', 0),
                     pressed: { ref: color(segment, 'l', 'neutral', 0, 50) },
                     disabled: {
@@ -235,7 +235,7 @@ export const schema: Schema = {
                   }
                 },
                 neutral: {
-                  soft: {
+                  subtle: {
                     rest: color(segment, 'l', 'neutral', 50),
                     hover: { ref: color(segment, 'l', 'neutral', 50, 80) },
                     pressed: { ref: color(segment, 'l', 'neutral', 50) },
@@ -250,7 +250,7 @@ export const schema: Schema = {
                   }
                 },
                 redLike: {
-                  soft: {
+                  subtle: {
                     rest: color(segment, 'l', 'redLike', 50),
                     hover: { ref: color(segment, 'l', 'redLike', 50, 80) },
                     pressed: { ref: color(segment, 'l', 'redLike', 50, 70) },
@@ -263,7 +263,7 @@ export const schema: Schema = {
                       }
                     }
                   },
-                  solid: {
+                  vivid: {
                     rest: color(segment, 'l', 'neutral', 0),
                     pressed: { ref: color(segment, 'l', 'neutral', 0, 70) },
                     disabled: {

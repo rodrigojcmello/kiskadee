@@ -39,7 +39,7 @@ export function generatePrimaryScale(h: number, s: number): Record<string, strin
 
   for (const tone of allTones) {
     const l = 100 - tone;
-    // Ensure 0 <= l <= 100 (though 100-tone is safe with these inputs)
+    // Ensure 0 <= l <= 100 (though 100-emphasis is safe with these inputs)
     const safeL = Math.max(0, Math.min(100, l));
 
     vars[`--k-p-${tone}`] = `${h} ${s}% ${safeL}%`;

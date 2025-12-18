@@ -136,9 +136,10 @@ export type Schema<TSegmentName extends SegmentName = never> = SchemaMetadata & 
 
 // Color classes structure: segregates single-color, soft, and solid variants
 export type ColorClasses = {
+  // TODO: remove u (unique) support
   u?: string; // unique/single color (no tone variants)
-  f?: string; // soft (light tone track)
-  d?: string; // solid (dark tone track)
+  f?: string; // subtle (light tone track)
+  d?: string; // vivid (dark tone track)
 };
 
 // Types describing the JSON artifact produced by web-builder (classNamesMap.json)

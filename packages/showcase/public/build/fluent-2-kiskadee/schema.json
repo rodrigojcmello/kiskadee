@@ -88,7 +88,7 @@
               "light": {
                 "boxColor": {
                   "primary": {
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         207.93,
                         85.29,
@@ -146,7 +146,7 @@
               "dark": {
                 "boxColor": {
                   "primary": {
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         207.18,
                         82.65,
@@ -271,7 +271,7 @@
               "light": {
                 "textColor": {
                   "primary": {
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         0,
                         0,
@@ -293,7 +293,7 @@
               "dark": {
                 "textColor": {
                   "primary": {
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         0,
                         0,

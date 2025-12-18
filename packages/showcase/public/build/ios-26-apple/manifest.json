@@ -19,7 +19,7 @@
       },
       "state": {
         "primary": {
-          "soft": {
+          "subtle": {
             "rest": true,
             "hover": true,
             "focus": true,
@@ -27,7 +27,7 @@
             "disabled": true,
             "selected": true
           },
-          "solid": {
+          "vivid": {
             "rest": true,
             "hover": true,
             "pressed": true,

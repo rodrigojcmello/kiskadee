@@ -2,7 +2,7 @@ import {
   type ClassNameByElementJSON,
   stateActivator as cn,
   type ElementSizeValue,
-  type EmphasisVariant,
+  type Emphasis,
   type StateActivatorKeys
 } from '@kiskadee/core';
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
@@ -27,21 +27,21 @@ export type ButtonProps = HeadlessButtonProps & {
   /** Enable elevation/shadow visuals. When true, adds the shadow activation class. */
   shadow?: boolean;
   /**
-   * Emphasis variant (tone) for the button colors.
-   * When provided, selects only classes for the specified tone (soft or solid).
-   * If not provided or if tone metadata is not available, uses all palette classes.
+   * Emphasis (tone) for the button colors.
+   * When provided, selects only classes for the specified emphasis (subtle or vivid).
+   * If not provided or if emphasis metadata is not available, uses all palette classes.
    */
-  tone?: EmphasisVariant;
+  emphasis?: Emphasis;
   /** Semantic color family to use across ALL elements (e1, e2, e3, ...). Default is 'neutral'. */
   semantic?: string;
 };
 
 // Build a single space-separated class string from flattened d and color classes (sizes handled in e1)
-// Selects color classes based on tone: soft (f), solid (d), or unique (u)
+// Selects color classes based on emphasis: subtle (f), vivid (d), or unique (u)
 // Assumes semantic-aware map in `c`; no legacy flat format for performance.
 function collectStr(
   el: ClassNameByElementJSON | undefined,
-  tone: EmphasisVariant | undefined = 'soft',
+  emphasis: Emphasis | undefined = 'subtle',
   semantic: string | undefined = 'neutral'
 ): string {
   if (!el) return '';
@@ -53,9 +53,9 @@ function collectStr(
 
   if (bySem) {
     let color = '';
-    if (tone === 'soft' && bySem.f) color = bySem.f;
-    else if (tone === 'solid' && bySem.d) color = bySem.d;
-    else if (!tone) color = bySem.d ?? bySem.f ?? bySem.u ?? '';
+    if (emphasis === 'subtle' && bySem.f) color = bySem.f;
+    else if (emphasis === 'vivid' && bySem.d) color = bySem.d;
+    else if (!emphasis) color = bySem.d ?? bySem.f ?? bySem.u ?? '';
     else if (!color && bySem.u) color = bySem.u; // last resort within the same semantic
 
     if (color) out = out ? `${out} ${color}` : color;
@@ -73,7 +73,7 @@ function Button(props: ButtonProps) {
     scale = 's:md:1',
     disabled,
     shadow = false,
-    tone,
+    emphasis,
     semantic = 'neutral',
     tabIndex,
     label,
@@ -88,9 +88,9 @@ function Button(props: ButtonProps) {
   // If no `scale` prop is passed, we default to the median 's:md:1' so the button never renders without a scale.
 
   const computed = useMemo<NonNullable<HeadlessButtonProps['classNames']>>(() => {
-    const el1 = collectStr(e1, tone, semantic);
-    const el2 = collectStr(e2, tone, semantic);
-    const el3 = collectStr(e3, tone, semantic);
+    const el1 = collectStr(e1, emphasis, semantic);
+    const el2 = collectStr(e2, emphasis, semantic);
+    const el3 = collectStr(e3, emphasis, semantic);
 
     // Include scales for e1 (root) and e2 (label)
     const sAllE1 = e1?.s?.['s:all'] ?? '';
@@ -144,7 +144,7 @@ function Button(props: ButtonProps) {
     controlState,
     scale,
     shadow,
-    tone,
+    emphasis,
     semantic,
     classNames.e1,
     classNames.e2,

@@ -94,7 +94,7 @@
               "light": {
                 "boxColor": {
                   "primary": {
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         219.16,
                         99.17,
@@ -200,7 +200,7 @@
               "light": {
                 "textColor": {
                   "primary": {
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         0,
                         0,

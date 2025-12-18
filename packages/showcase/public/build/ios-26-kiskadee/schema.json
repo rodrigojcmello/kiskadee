@@ -94,7 +94,7 @@
               "light": {
                 "boxColor": {
                   "primary": {
-                    "soft": {
+                    "subtle": {
                       "rest": [
                         206,
                         100,
@@ -152,7 +152,7 @@
                         ]
                       }
                     },
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         206,
                         100,
@@ -186,7 +186,7 @@
                     }
                   },
                   "neutral": {
-                    "soft": {
+                    "subtle": {
                       "rest": [
                         0,
                         0,
@@ -246,7 +246,7 @@
                     }
                   },
                   "redLike": {
-                    "soft": {
+                    "subtle": {
                       "rest": [
                         359,
                         100,
@@ -298,7 +298,7 @@
                         ]
                       }
                     },
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         359,
                         100,
@@ -393,7 +393,7 @@
               "dark": {
                 "boxColor": {
                   "redLike": {
-                    "soft": {
+                    "subtle": {
                       "rest": [
                         359,
                         100,
@@ -445,7 +445,7 @@
                         ]
                       }
                     },
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         359,
                         100,
@@ -483,7 +483,7 @@
               "darker": {
                 "boxColor": {
                   "redLike": {
-                    "soft": {
+                    "subtle": {
                       "rest": [
                         359,
                         100,
@@ -535,7 +535,7 @@
                         ]
                       }
                     },
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         359,
                         100,
@@ -575,7 +575,7 @@
               "light": {
                 "boxColor": {
                   "primary": {
-                    "soft": {
+                    "subtle": {
                       "rest": "hsl(var(--k-p-5))",
                       "hover": "hsl(var(--k-p-3))",
                       "focus": "hsl(var(--k-p-5))",
@@ -588,7 +588,7 @@
                         "pressed": "hsl(var(--k-p-60))"
                       }
                     },
-                    "solid": {
+                    "vivid": {
                       "rest": "hsl(var(--k-p-50))",
                       "hover": "hsl(var(--k-p-50) / 0.8)",
                       "focus": "hsl(var(--k-p-50))",
@@ -597,7 +597,7 @@
                     }
                   },
                   "neutral": {
-                    "soft": {
+                    "subtle": {
                       "rest": [
                         0,
                         0,
@@ -637,7 +637,7 @@
                     }
                   },
                   "redLike": {
-                    "soft": {
+                    "subtle": {
                       "rest": [
                         359,
                         100,
@@ -689,7 +689,7 @@
                         ]
                       }
                     },
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         359,
                         100,
@@ -784,7 +784,7 @@
               "dark": {
                 "boxColor": {
                   "redLike": {
-                    "soft": {
+                    "subtle": {
                       "rest": [
                         359,
                         100,
@@ -836,7 +836,7 @@
                         ]
                       }
                     },
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         359,
                         100,
@@ -874,7 +874,7 @@
               "darker": {
                 "boxColor": {
                   "redLike": {
-                    "soft": {
+                    "subtle": {
                       "rest": [
                         359,
                         100,
@@ -926,7 +926,7 @@
                         ]
                       }
                     },
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         359,
                         100,
@@ -974,7 +974,7 @@
               "light": {
                 "textColor": {
                   "primary": {
-                    "soft": {
+                    "subtle": {
                       "rest": [
                         206,
                         100,
@@ -1016,7 +1016,7 @@
                         }
                       }
                     },
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         0,
                         0,
@@ -1042,7 +1042,7 @@
                     }
                   },
                   "neutral": {
-                    "soft": {
+                    "subtle": {
                       "rest": [
                         0,
                         0,
@@ -1086,7 +1086,7 @@
                     }
                   },
                   "redLike": {
-                    "soft": {
+                    "subtle": {
                       "rest": [
                         359,
                         100,
@@ -1128,7 +1128,7 @@
                         }
                       }
                     },
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         0,
                         0,
@@ -1160,7 +1160,7 @@
               "light": {
                 "textColor": {
                   "primary": {
-                    "soft": {
+                    "subtle": {
                       "rest": "hsl(var(--k-p-50))",
                       "hover": {
                         "ref": "hsl(var(--k-p-50) / 0.8)"
@@ -1187,7 +1187,7 @@
                         }
                       }
                     },
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         0,
                         0,
@@ -1213,7 +1213,7 @@
                     }
                   },
                   "neutral": {
-                    "soft": {
+                    "subtle": {
                       "rest": [
                         0,
                         0,
@@ -1257,7 +1257,7 @@
                     }
                   },
                   "redLike": {
-                    "soft": {
+                    "subtle": {
                       "rest": [
                         359,
                         100,
@@ -1299,7 +1299,7 @@
                         }
                       }
                     },
-                    "solid": {
+                    "vivid": {
                       "rest": [
                         0,
                         0,

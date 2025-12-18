@@ -2,11 +2,11 @@
 //   40: '#5C5C5C',
 // }, true)
 
-import type { ToneTracks } from '@kiskadee/core';
+import type { EmphasisLevel } from '@kiskadee/core';
 
 export default {
-  soft: {
-    // Soft track: 0–10 (every 1%), then 15, 20, 25, 30
+  subtle: {
+    // Subtle track: 0–10 (every 1%), then 15, 20, 25, 30
     0: [0, 0, 0, 1], // 100% darkness (black/darkest)
     1: [0, 0, 1, 1], // 99% darkness
     2: [0, 0, 2, 1], // 98% darkness
@@ -23,8 +23,8 @@ export default {
     25: [0, 0, 25, 1], // 75% darkness
     30: [0, 0, 30, 1] // 70% darkness
   },
-  solid: {
-    // Solid track: 40–100 every 10% darkness (40, 50, 60, 70, 80, 90, 100)
+  vivid: {
+    // Vivid track: 40–100 every 10% darkness (40, 50, 60, 70, 80, 90, 100)
     40: [0, 0, 36.08, 1], // 63.92% darkness - OVERRIDDEN: generated #666666 was replaced by #5C5C5C
     50: [0, 0, 50, 1], // 50% darkness
     60: [0, 0, 60, 1], // 40% darkness
@@ -33,4 +33,4 @@ export default {
     90: [0, 0, 90, 1], // 10% darkness
     100: [0, 0, 100, 1] // 0% darkness (white/lightest)
   }
-} as ToneTracks;
+} as EmphasisLevel;
