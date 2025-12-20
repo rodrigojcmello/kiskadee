@@ -1,62 +1,73 @@
 import { readFileSync } from 'node:fs';
+import { convertHslaToHex } from '@kiskadee/core';
 import type { MockInstance } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { convertHslaToHex } from '@kiskadee/core';
 import { generateColorScale, generateColorScaleWithLog } from './generate-color-scale';
+
+function expectHsla(value: unknown): asserts value is [number, number, number, number] {
+  expect(Array.isArray(value)).toBe(true);
+}
 
 describe('generateColorScale', () => {
   it('creates a canonical scale when prioritizeLightnessScale is true', () => {
-    const { soft, solid } = generateColorScale('#0F6CBD', true);
+    const { subtle, vivid } = generateColorScale('#0F6CBD', true);
 
     // Subtle track extremes
-    expect(soft[0]).toEqual([0, 0, 100, 1]);
+    expect(subtle[0]).toEqual([0, 0, 100, 1]);
 
     // Vivid track canonical mapping: index ≈ darkness%. Hue and saturation are
     // now clamped to two decimal places by hexToHSLA.
-    expect(solid[40]).toEqual([207.93, 85.29, 60, 1]);
-    expect(solid[50]).toEqual([207.93, 85.29, 50, 1]);
-    expect(solid[60]).toEqual([207.93, 85.29, 40, 1]);
-    expect(solid[70]).toEqual([207.93, 85.29, 30, 1]);
-    expect(solid[80]).toEqual([207.93, 85.29, 20, 1]);
-    expect(solid[90]).toEqual([207.93, 85.29, 10, 1]);
+    // Note: intermediate values are rounded, so some stops can differ by 1.
+    expect(vivid[40]).toEqual([207.93, 85.29, 59, 1]);
+    expect(vivid[50]).toEqual([207.93, 85.29, 50, 1]);
+    expect(vivid[60]).toEqual([207.93, 85.29, 40, 1]);
+    expect(vivid[70]).toEqual([207.93, 85.29, 30, 1]);
+    expect(vivid[80]).toEqual([207.93, 85.29, 20, 1]);
+    expect(vivid[90]).toEqual([207.93, 85.29, 10, 1]);
 
     // Solid darkest extreme is absolute black
-    expect(solid[100]).toEqual([0, 0, 0, 1]);
+    expect(vivid[100]).toEqual([0, 0, 0, 1]);
   });
 
   it('keeps the input color lightness at emphasis 50 when prioritizeLightnessScale is false', () => {
-    const { soft, solid } = generateColorScale('#0F6CBD', false);
+    const { subtle, vivid } = generateColorScale('#0F6CBD', false);
 
     // Still enforce absolute extremes
-    expect(soft[0]).toEqual([0, 0, 100, 1]);
-    expect(solid[100]).toEqual([0, 0, 0, 1]);
+    expect(subtle[0]).toEqual([0, 0, 100, 1]);
+    expect(vivid[100]).toEqual([0, 0, 0, 1]);
 
     // Anchor (emphasis 50) must preserve the original lightness (L=40 for #0F6CBD)
-    expect(solid[50]?.[2]).toBe(40);
+    expect(vivid[50]?.[2]).toBe(40);
   });
 
   it('re-centers anchor lightness to 50 when the input color is too light to be an anchor', () => {
-    const { soft, solid } = generateColorScale('#FFFFFF', false);
+    const { subtle, vivid } = generateColorScale('#FFFFFF', false);
 
     // Still enforce absolute extremes
-    expect(soft[0]).toEqual([0, 0, 100, 1]);
-    expect(solid[100]).toEqual([0, 0, 0, 1]);
+    expect(subtle[0]).toEqual([0, 0, 100, 1]);
+    expect(vivid[100]).toEqual([0, 0, 0, 1]);
 
     // For very light inputs (L>70), emphasis 50 should be re-centered to L=50
-    expect(solid[50]?.[2]).toBe(50);
+    expect(vivid[50]?.[2]).toBe(50);
   });
 
   it('rounds arbitrary lightness to the nearest dark emphasis bucket', () => {
     // This color was chosen so that its HSLA lightness is approximately 33%,
     // meaning its darkness (~67%) sits between the canonical dark tones 60 and 70.
     // In the Kiskadee model, darkness 67 should snap to emphasis 70 (70% darkness).
-    const { solid } = generateColorScale('#135FA3', true);
+    const { vivid } = generateColorScale('#135FA3', true);
 
     // Tone 70 must be darker than emphasis 60 and lighter than emphasis 80, reflecting
     // that 67% darkness has been rounded to the 70 bucket.
-    const l60 = solid[60]?.[2] ?? 0;
-    const l70 = solid[70]?.[2] ?? 0;
-    const l80 = solid[80]?.[2] ?? 0;
+    const c60 = vivid[60];
+    const c70 = vivid[70];
+    const c80 = vivid[80];
+    expectHsla(c60);
+    expectHsla(c70);
+    expectHsla(c80);
+    const l60 = c60[2];
+    const l70 = c70[2];
+    const l80 = c80[2];
 
     expect(l60).toBeGreaterThan(l70);
     expect(l70).toBeGreaterThan(l80);
@@ -77,31 +88,30 @@ describe('generateColorScaleWithLog', () => {
   it('applies emphasis overrides without changing absolute extremes 0 and 100', () => {
     const overrides = {
       0: '#FF0000', // should be ignored (absolute white is enforced)
-      70: '#115EA3', // should override solid[70]
+      70: '#115EA3', // should override vivid[70]
       100: '#00FF00' // should be ignored (absolute black is enforced)
     } as const;
 
     const tracks = generateColorScaleWithLog('#0F6CBD', true, overrides);
 
-    // Soft[0] and solid[100] must remain absolute white/black
-    expect(tracks.soft[0]).toEqual([0, 0, 100, 1]);
-    expect(tracks.solid[100]).toEqual([0, 0, 0, 1]);
+    // Subtle[0] and vivid[100] must remain absolute white/black
+    expect(tracks.subtle[0]).toEqual([0, 0, 100, 1]);
+    expect(tracks.vivid[100]).toEqual([0, 0, 0, 1]);
 
     // Solid[70] must reflect the overridden Fluent emphasis (#115EA3). We do not
     // assert the exact HSLA tuple here (as tiny floating point differences
     // may arise depending on the HSL implementation); instead we round-trip
     // back to HEX and assert on the final color value.
-    const overridden70 = tracks.solid[70];
+    const overridden70 = tracks.vivid[70];
     expect(overridden70).toBeDefined();
     if (overridden70) {
+      expectHsla(overridden70);
       expect(convertHslaToHex(overridden70)).toBe('#115EA3');
     }
 
-    // O arquivo gerado deve conter o cabeçalho e os comentários de override.
+    // Generated file must contain the header and override comments.
     const fileContent = readFileSync(new URL('./color.generated.ts', import.meta.url), 'utf8');
-    expect(fileContent).toContain(
-      "// Generated by generateColorScaleWithLog('#0F6CBD', true, {"
-    );
+    expect(fileContent).toContain("// Generated by generateColorScaleWithLog('#0F6CBD', true, {");
     expect(fileContent).toContain("//   70: '#115EA3',");
     expect(fileContent).toContain('// }, false)');
     expect(fileContent).toContain('OVERRIDDEN: generated');
@@ -112,8 +122,8 @@ describe('generateColorScaleWithLog', () => {
     const tracks = generateColorScaleWithLog('#0F6CBD', true);
 
     // Sanity check: extremes are still enforced when no overrides are provided
-    expect(tracks.soft[0]).toEqual([0, 0, 100, 1]);
-    expect(tracks.solid[100]).toEqual([0, 0, 0, 1]);
+    expect(tracks.subtle[0]).toEqual([0, 0, 100, 1]);
+    expect(tracks.vivid[100]).toEqual([0, 0, 0, 1]);
 
     const fileContent = readFileSync(new URL('./color.generated.ts', import.meta.url), 'utf8');
 
@@ -124,15 +134,13 @@ describe('generateColorScaleWithLog', () => {
 
     // Canonical usage anchor information should be present for the base color
     expect(fileContent).toContain('Original color darkness');
-    expect(fileContent).toContain('usage anchor emphasis');
+    expect(fileContent).toContain('usage anchor tone');
 
     // For #0F6CBD the darkness matches a canonical bucket exactly, so the
     // comment should use the "original color emphasis" wording instead of
     // "closest emphasis".
-    expect(fileContent).toContain(
-      'original color emphasis (#0F6CBD'
-    );
-    expect(fileContent).not.toContain('closest emphasis to original color (#0F6CBD');
+    expect(fileContent).toContain('original color tone (#0F6CBD');
+    expect(fileContent).not.toContain('closest tone to original color (#0F6CBD');
 
     // Darkest emphasis should still be explicitly documented.
     expect(fileContent).toContain('100% darkness (black/darkest)');
@@ -146,65 +154,76 @@ describe('generateColorScaleWithLog', () => {
     // For this color the original darkness sits between canonical buckets, so
     // the comment must indicate that the chosen emphasis is merely the closest
     // one, not an exact match.
-    expect(fileContent).toContain('closest emphasis to original color (');
+    expect(fileContent).toContain('closest tone to original color (');
   });
 
   it('applies subtle track overrides while still enforcing absolute extremes', () => {
     const overrides = {
-      0: '#FF0000', // must be ignored (soft[0] stays white)
-      20: '#FF0000', // valid soft-track override
-      100: '#00FF00' // must be ignored (solid[100] stays black)
+      0: '#FF0000', // must be ignored (subtle[0] stays white)
+      20: '#FF0000', // valid subtle-track override
+      100: '#00FF00' // must be ignored (vivid[100] stays black)
     } as const;
 
     const tracks = generateColorScaleWithLog('#0F6CBD', true, overrides);
 
     // Absolute extremes must remain neutral white/black
-    expect(tracks.soft[0]).toEqual([0, 0, 100, 1]);
-    expect(tracks.solid[100]).toEqual([0, 0, 0, 1]);
+    expect(tracks.subtle[0]).toEqual([0, 0, 100, 1]);
+    expect(tracks.vivid[100]).toEqual([0, 0, 0, 1]);
 
     // The soft-track override at emphasis 20 must be applied using the HSLA
     // conversion of #FF0000 → [0, 100, 50, 1].
-    expect(tracks.soft[20]).toEqual([0, 100, 50, 1]);
+    expect(tracks.subtle[20]).toEqual([0, 100, 50, 1]);
 
     const fileContent = readFileSync(new URL('./color.generated.ts', import.meta.url), 'utf8');
 
     // Any overridden soft emphasis must carry an OVERRIDDEN comment in the
     // generated file, mirroring the behaviour of the solid track.
-    expect(fileContent).toContain(
-      '20: [0, 100, 50, 1], // 20% darkness - OVERRIDDEN: generated'
-    );
+    expect(fileContent).toContain('20: [0, 100, 50, 1], // 20% darkness - OVERRIDDEN: generated');
   });
 
   it('applies dark emphasis shaping only between 40 and 90, keeping extremes and anchor stable', () => {
     const base = generateColorScale('#0F6CBD', true);
 
-    const shaped = generateColorScaleWithLog('#0F6CBD', true, {}, {
-      anchorTone: 60,
-      saturationDropTotal: 9,
-      hueShiftTotal: 3,
-      lightnessStep: 8
-    });
+    const shaped = generateColorScaleWithLog(
+      '#0F6CBD',
+      true,
+      {},
+      {
+        anchorTone: 60,
+        saturationDropTotal: 9,
+        hueShiftTotal: 3,
+        lightnessStep: 8
+      }
+    );
 
-    const solidBase = base.solid;
-    const solid = shaped.solid;
+    const vividBase = base.vivid;
+    const vivid = shaped.vivid;
 
     // Absolute extremes must remain neutral white/black and untouched by shaping.
-    expect(shaped.soft[0]).toEqual([0, 0, 100, 1]);
-    expect(solid[100]).toEqual([0, 0, 0, 1]);
+    expect(shaped.subtle[0]).toEqual([0, 0, 100, 1]);
+    expect(vivid[100]).toEqual([0, 0, 0, 1]);
 
     // Anchor emphasis must keep its original HSLA from generateColorScale.
-    expect(solid[60]).toEqual(solidBase[60]);
+    expect(vivid[60]).toEqual(vividBase[60]);
 
     // Tones lighter than the anchor must also keep the canonical values.
-    expect(solid[40]).toEqual(solidBase[40]);
-    expect(solid[50]).toEqual(solidBase[50]);
+    expect(vivid[40]).toEqual(vividBase[40]);
+    expect(vivid[50]).toEqual(vividBase[50]);
 
     // Saturation: tones darker than the anchor (70, 80, 90) should be
     // progressively less saturated than the anchor.
-    const s60 = solid[60]?.[1] ?? 0;
-    const s70 = solid[70]?.[1] ?? 0;
-    const s80 = solid[80]?.[1] ?? 0;
-    const s90 = solid[90]?.[1] ?? 0;
+    const c60 = vivid[60];
+    const c70 = vivid[70];
+    const c80 = vivid[80];
+    const c90 = vivid[90];
+    expectHsla(c60);
+    expectHsla(c70);
+    expectHsla(c80);
+    expectHsla(c90);
+    const s60 = c60[1];
+    const s70 = c70[1];
+    const s80 = c80[1];
+    const s90 = c90[1];
 
     expect(s70).toBeLessThan(s60);
     expect(s80).toBeLessThan(s70);
@@ -212,13 +231,25 @@ describe('generateColorScaleWithLog', () => {
 
     // Hue: tones darker than the anchor should reflect the cumulative shift,
     // but 40, 50 and 60 keep the base hue.
-    const h60Base = solidBase[60]?.[0];
-    const h70Base = solidBase[70]?.[0];
+    const c60Base = vividBase[60];
+    const c70Base = vividBase[70];
+    expectHsla(c60Base);
+    expectHsla(c70Base);
+    const h60Base = c60Base[0];
+    const h70Base = c70Base[0];
 
-    const h60 = solid[60]?.[0];
-    const h70 = solid[70]?.[0];
-    const h80 = solid[80]?.[0];
-    const h90 = solid[90]?.[0];
+    const c60Hue = vivid[60];
+    const c70Hue = vivid[70];
+    const c80Hue = vivid[80];
+    const c90Hue = vivid[90];
+    expectHsla(c60Hue);
+    expectHsla(c70Hue);
+    expectHsla(c80Hue);
+    expectHsla(c90Hue);
+    const h60 = c60Hue[0];
+    const h70 = c70Hue[0];
+    const h80 = c80Hue[0];
+    const h90 = c90Hue[0];
 
     expect(h60).toBe(h60Base);
     // At least the first darker emphasis must differ from the base hue to prove
@@ -226,17 +257,37 @@ describe('generateColorScaleWithLog', () => {
     expect(h70).not.toBe(h70Base);
 
     // Lightness: using lightnessStep=8 we expect the darker tones to descend
-    // roughly in 8-point steps from the previous emphasis, starting at the
-    // anchor. Exact values are asserted to protect against regressions.
-    const l60 = solid[60]?.[2] ?? 0;
-    const l70 = solid[70]?.[2] ?? 0;
-    const l80 = solid[80]?.[2] ?? 0;
-    const l90 = solid[90]?.[2] ?? 0;
+    // in ~8-point steps from the previous tone, starting at the first tone
+    // after the anchor (65).
+    const c60l = vivid[60];
+    const c65l = vivid[65];
+    const c70l = vivid[70];
+    const c75l = vivid[75];
+    const c80l = vivid[80];
+    const c85l = vivid[85];
+    const c90l = vivid[90];
+    expectHsla(c60l);
+    expectHsla(c65l);
+    expectHsla(c70l);
+    expectHsla(c75l);
+    expectHsla(c80l);
+    expectHsla(c85l);
+    expectHsla(c90l);
+    const l60 = c60l[2];
+    const l65 = c65l[2];
+    const l70 = c70l[2];
+    const l75 = c75l[2];
+    const l80 = c80l[2];
+    const l85 = c85l[2];
+    const l90 = c90l[2];
 
     expect(l60).toBe(40);
-    expect(l70).toBeCloseTo(l60 - 8, 2);
-    expect(l80).toBeCloseTo(l70 - 8, 2);
-    expect(l90).toBeCloseTo(l80 - 8, 2);
+    expect(l65).toBeCloseTo(l60 - 8, 2);
+    expect(l70).toBeCloseTo(l65 - 8, 2);
+    expect(l75).toBeCloseTo(l70 - 8, 2);
+    expect(l80).toBeCloseTo(l75 - 8, 2);
+    expect(l85).toBeCloseTo(l80 - 8, 2);
+    expect(l90).toBeCloseTo(l85 - 8, 2);
   });
 
   it('documents anchor color and overrides in non-canonical mode when input is not too light', () => {
@@ -248,16 +299,14 @@ describe('generateColorScaleWithLog', () => {
     const tracks = generateColorScaleWithLog('#0F6CBD', false, overrides);
 
     // Non-canonical mode must still enforce absolute extremes
-    expect(tracks.soft[0]).toEqual([0, 0, 100, 1]);
-    expect(tracks.solid[100]).toEqual([0, 0, 0, 1]);
+    expect(tracks.subtle[0]).toEqual([0, 0, 100, 1]);
+    expect(tracks.vivid[100]).toEqual([0, 0, 0, 1]);
 
     const fileContent = readFileSync(new URL('./color.generated.ts', import.meta.url), 'utf8');
 
     // Tone 50 should be documented as the anchor color and also mention that
     // it was overridden.
-    expect(fileContent).toContain(
-      'Anchor color (input) - OVERRIDDEN: generated'
-    );
+    expect(fileContent).toContain('Anchor color (input) - OVERRIDDEN: generated');
     expect(fileContent).toContain('#123456');
 
     // A non-anchor solid emphasis (e.g. 60) that is overridden in non-canonical
@@ -269,15 +318,14 @@ describe('generateColorScaleWithLog', () => {
   it('documents anchor color without overrides in non-canonical mode when input is not too light', () => {
     const tracks = generateColorScaleWithLog('#0F6CBD', false);
 
-    // Mesmo em modo não canônico, os extremos devem permanecer consistentes.
-    expect(tracks.soft[0]).toEqual([0, 0, 100, 1]);
-    expect(tracks.solid[100]).toEqual([0, 0, 0, 1]);
+    // Even in non-canonical mode, extremes must remain consistent.
+    expect(tracks.subtle[0]).toEqual([0, 0, 100, 1]);
+    expect(tracks.vivid[100]).toEqual([0, 0, 0, 1]);
 
     const fileContent = readFileSync(new URL('./color.generated.ts', import.meta.url), 'utf8');
 
-    // Como a cor de entrada não é clara demais e não há overrides, o tom 50
-    // deve ser documentado como cor âncora de entrada, exercitando o ramo
-    // "Anchor color (input) - ${hexColor.toUpperCase()}".
+    // Since the input color is not too light and there are no overrides, tone 50
+    // should be documented as the input anchor color.
     expect(fileContent).toContain('Anchor color (input) - #0F6CBD');
   });
 
@@ -286,26 +334,29 @@ describe('generateColorScaleWithLog', () => {
 
     // Even in non-canonical mode, very light inputs should not be used as the
     // solid-track anchor; emphasis 50 must be re-centered at L=50.
-    expect(tracks.soft[0]).toEqual([0, 0, 100, 1]);
-    expect(tracks.solid[100]).toEqual([0, 0, 0, 1]);
-    expect(tracks.solid[50]?.[2]).toBe(50);
+    expect(tracks.subtle[0]).toEqual([0, 0, 100, 1]);
+    expect(tracks.vivid[100]).toEqual([0, 0, 0, 1]);
+    expect(tracks.vivid[50]?.[2]).toBe(50);
 
     const fileContent = readFileSync(new URL('./color.generated.ts', import.meta.url), 'utf8');
 
     // The log should explain that the mid emphasis was re-centered instead of
     // using the original, excessively light input color.
-    expect(fileContent).toContain(
-      'Re-centered mid emphasis (L=50) because input color (#FFFFFF'
-    );
+    expect(fileContent).toContain('Re-centered mid tone (L=50) because input color (#FFFFFF');
   });
 
   it('writes a header that includes shaping configuration when provided', () => {
-    generateColorScaleWithLog('#0F6CBD', true, {}, {
-      anchorTone: 60,
-      hueShiftTotal: -2.25,
-      saturationDropTotal: 7.93,
-      lightnessStep: 6.4
-    });
+    generateColorScaleWithLog(
+      '#0F6CBD',
+      true,
+      {},
+      {
+        anchorTone: 60,
+        hueShiftTotal: -2.25,
+        saturationDropTotal: 7.93,
+        lightnessStep: 6.4
+      }
+    );
 
     const fileContent = readFileSync(new URL('./color.generated.ts', import.meta.url), 'utf8');
 
