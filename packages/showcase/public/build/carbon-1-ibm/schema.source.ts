@@ -1,20 +1,7 @@
-import {
-  breakpoints,
-  color,
-  primitive,
-  type Schema,
-  type SchemaColors,
-  withAlpha
-} from '@kiskadee/core';
-import { componentIntents, globalSemantics, primitiveColors, segments } from './colors.source';
+import { breakpoints, color, primitive, type Schema, withAlpha } from '@kiskadee/core';
+import { schemaColors, segments } from './colors.source';
 
 // Reference: https://www.figma.com/community/file/1157761560874207208 copied to "ds-refs/(v11) Carbon Design System (Community).fig"
-
-const schemaColors = {
-  primitiveColors,
-  globalSemantics,
-  componentIntents
-} as const satisfies SchemaColors;
 
 const schemaContext = { colors: schemaColors };
 
