@@ -13,7 +13,7 @@ Kiskadee implements a robust 3-layer color architecture designed to provide maxi
 #### Overview
 
 ```
-Layer 1: Real Colors       →  Layer 2: Semantic Colors  →  Layer 3: Component Intents
+Layer 1: Primitive Colors  →  Layer 2: Global Semantics  →  Layer 3: Component Intents
 ─────────────────────────────────────────────────────────────────────────────────────
 red                        →  redLike                   →  Button.destructive
                                                         →  Badge.attention
@@ -29,12 +29,12 @@ gray                       →  neutral                   →  Button.neutral
 
 ---
 
-### Layer 1: Real Colors
+### Layer 1: Primitive Colors
 
 The foundation layer defines the actual color values. These are the raw HSLA color definitions that represent specific hues.
 
 ```typescript
-// Examples of real colors (actual type lives in @kiskadee/core)
+// Examples of primitive colors (actual type lives in @kiskadee/core)
 type BaseColor =
   | 'red'
   | 'orange'
@@ -55,9 +55,9 @@ type BaseColor =
 
 ---
 
-### Layer 2: Semantic Colors (`-like`)
+### Layer 2: Global Semantics (`-like`)
 
-The semantic layer provides general meaning to colors without enforcing specific hues. This abstraction allows flexibility in color choices while maintaining semantic consistency.
+The global semantics layer provides general meaning to colors without enforcing specific hues. This abstraction allows flexibility in color choices while maintaining semantic consistency across the entire system.
 
 ```typescript
 type SemanticColor = 
@@ -91,7 +91,7 @@ redLike = orange  // All destructive buttons, attention badges, etc. become oran
 
 ---
 
-#### Why Kiskadee Does Not Use `secondary` / `tertiary` Semantic Colors
+#### Why Kiskadee Does Not Use `secondary` / `tertiary` Global Semantic Colors
 
 Many design systems in the market expose `primary`, `secondary` and sometimes `tertiary` colors. In practice, these labels tend to mix two concepts:
 
@@ -100,7 +100,7 @@ Many design systems in the market expose `primary`, `secondary` and sometimes `t
 
 Kiskadee separates these concerns explicitly:
 
-- **Brand colors** live in **Layer 1** (`BaseColor`). A brand can have yellow, blue, teal, purple, etc. as real colors.
+- **Brand colors** live in **Layer 1** (`BaseColor`). A brand can have yellow, blue, teal, purple, etc. as primitive colors.
 - **UI semantics** live in **Layer 2** (`SemanticColor`) and **Layer 3** (component intents like `destructive`, `positive`).
 
 Because of this, Kiskadee does **not** expose `secondary` or `tertiary` as global semantic colors:
@@ -121,7 +121,7 @@ Mercado Livre is a good illustration of why Kiskadee avoids conflating brand and
 
 In Kiskadee terms:
 
-- The brand can keep both **yellow** and **blue** as real colors in **Layer 1** (`BaseColor`).
+- The brand can keep both **yellow** and **blue** as primitive colors in **Layer 1** (`BaseColor`).
 - For the **digital design system**, the segment can simply choose **`blue` as `primary`**, and use `yellow` freely as:
   - `yellowLike` (for warnings/attention), or
   - specific tokens for backgrounds/highlights.
@@ -223,7 +223,7 @@ This is **opinion based on real-world usage**, not theoretical completeness. If 
 ### Type Definitions
 
 ```typescript
-// Layer 1: Real colors (for palette generation)
+// Layer 1: Primitive colors (for palette generation)
 type BaseColor =
   | 'red'
   | 'orange'
@@ -237,7 +237,7 @@ type BaseColor =
   | 'brown'
   | 'black';
 
-// Layer 2: Semantic colors (already in @kiskadee/core)
+// Layer 2: Global semantics (already in @kiskadee/core)
 type SemanticColor = 'primary' | 'neutral' | 'redLike' | 'greenLike' | 'yellowLike' | 'purpleLike';
 
 // Layer 3: Component intents (defined per component)
@@ -260,8 +260,8 @@ type IntentMapping = {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  Layer 1          │  Layer 2            │  Layer 3                         │
-│  (Real Colors)    │  (Semantic Colors)  │  (Component Intents)             │
+│  Layer 1               │  Layer 2                │  Layer 3                 │
+│  (Primitive Colors)    │  (Global Semantics)     │  (Component Intents)     │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │  red              │  redLike ───────────┼─→ Button.destructive             │
 │                   │           └─────────┼─→ Badge.attention                │

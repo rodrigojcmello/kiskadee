@@ -145,6 +145,9 @@ export type SemanticColor =
  */
 export type ThemeShortcut = 'l' | 'd';
 
+/** Theme names used in configuration/data structures (explicit, human-readable). */
+export type ThemeName = 'light' | 'dark';
+
 /**
  * Layer 1 (Primitive) color names.
  *
@@ -153,7 +156,7 @@ export type ThemeShortcut = 'l' | 'd';
  * NOTE: For now this is a global union shared across design systems.
  * If a future preset needs extra primitive names, we can extend this union later.
  */
-export type CorePrimitiveColorName = 'default' | 'alt_1' | 'alt_2' | 'alt_3';
+export type CorePrimitiveColorName = 'default' | 'alt_1' | 'alt_2' | 'alt_3' | 'dynamic';
 
 export type SocialPrimitiveColorName =
   | 'linkedin'
@@ -200,11 +203,11 @@ export type IntentValue = SemanticColor | PrimitiveColorRef;
 export type Role = `${string}.${string}`;
 
 export type PrimitiveColorAsset = {
-  solid: Partial<Record<ThemeShortcut, EmphasisLevel>>;
+  solid: Partial<Record<ThemeName, EmphasisLevel>>;
 
   // TEMP: gradient support intentionally disabled for now.
   // Re-introduce later as:
-  // gradient?: Partial<Record<ThemeShortcut, EmphasisLevel>>;
+  // gradient?: Partial<Record<ThemeName, EmphasisLevel>>;
 };
 
 export type PrimitiveColors = Partial<
@@ -220,7 +223,7 @@ export type GlobalSemanticPaintMap = {
 };
 
 export type GlobalSemanticsByTheme = Record<
-  ThemeShortcut,
+  ThemeName,
   Partial<Record<SemanticColor, GlobalSemanticPaintMap>>
 >;
 
@@ -229,6 +232,13 @@ export type ComponentIntents = Partial<Record<string, Record<string, IntentValue
 export type SchemaColors = Partial<{
   primitiveColors: PrimitiveColors;
   globalSemantics: GlobalSemanticsByTheme;
+  /**
+   * Optional per-segment overrides for Layer 2.
+   *
+   * This allows segments (brands/products) to use different primitive mappings for the same
+   * global semantic key (e.g. `primary`) without changing component intents.
+   */
+  globalSemanticsBySegment: Partial<Record<SegmentName, GlobalSemanticsByTheme>>;
   componentIntents: ComponentIntents;
 }>;
 

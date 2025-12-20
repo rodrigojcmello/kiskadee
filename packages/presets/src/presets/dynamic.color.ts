@@ -1,4 +1,4 @@
-import type { ToneTracks } from '@kiskadee/core/dist';
+import type { EmphasisLevel } from '@kiskadee/core';
 
 export default {
   subtle: {
@@ -27,4 +27,4 @@ export default {
     90: 'hsl(var(--k-p-90))',
     100: 'hsl(var(--k-p-100))'
   }
-} as ToneTracks;
+} as EmphasisLevel;

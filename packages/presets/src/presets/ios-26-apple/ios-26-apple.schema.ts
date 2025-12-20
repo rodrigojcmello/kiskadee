@@ -1,11 +1,11 @@
 import { breakpoints, color, type Schema, withAlpha } from '@kiskadee/core';
-import { segments } from './ios-26-apple.colors';
+import { schemaColors, segments } from './ios-26-apple.colors';
 
 // Kiskadee iOS 26: starts as a copy of Apple iOS 26; can evolve with Kiskadee opinions later
 
 export type Segment = 'default';
 
-const iosDefault = segments.default;
+const schemaContext = { colors: schemaColors };
 
 export const schema: Schema<Segment> = {
   name: 'iOS',
@@ -13,6 +13,8 @@ export const schema: Schema<Segment> = {
   version: [26, 0, 0],
   author: 'Apple',
   breakpoints,
+  colors: schemaColors,
+  segments,
   components: {
     button: {
       elements: {
@@ -44,27 +46,27 @@ export const schema: Schema<Segment> = {
                 boxColor: {
                   primary: {
                     subtle: {
-                      rest: color(iosDefault, 'l', 'primary', 5),
-                      hover: color(iosDefault, 'l', 'primary', 3),
-                      focus: color(iosDefault, 'l', 'primary', 5),
-                      pressed: color(iosDefault, 'l', 'primary', 8),
-                      disabled: color(iosDefault, 'l', 'primary', 5, 20),
+                      rest: color(schemaContext, 'default', 'l', 'button.primary', 5),
+                      hover: color(schemaContext, 'default', 'l', 'button.primary', 3),
+                      focus: color(schemaContext, 'default', 'l', 'button.primary', 5),
+                      pressed: color(schemaContext, 'default', 'l', 'button.primary', 8),
+                      disabled: color(schemaContext, 'default', 'l', 'button.primary', 5, 20),
                       selected: {
-                        rest: color(iosDefault, 'l', 'primary', 10),
-                        hover: color(iosDefault, 'l', 'primary', 8),
-                        pressed: color(iosDefault, 'l', 'primary', 20)
+                        rest: color(schemaContext, 'default', 'l', 'button.primary', 10),
+                        hover: color(schemaContext, 'default', 'l', 'button.primary', 8),
+                        pressed: color(schemaContext, 'default', 'l', 'button.primary', 20)
                       }
                     },
                     vivid: {
-                      rest: color(iosDefault, 'l', 'primary', 50),
-                      hover: color(iosDefault, 'l', 'primary', 50, 80),
-                      pressed: color(iosDefault, 'l', 'primary', 60),
-                      disabled: color(iosDefault, 'l', 'primary', 50, 20),
-                      focus: color(iosDefault, 'l', 'primary', 50),
+                      rest: color(schemaContext, 'default', 'l', 'button.primary', 50),
+                      hover: color(schemaContext, 'default', 'l', 'button.primary', 50, 80),
+                      pressed: color(schemaContext, 'default', 'l', 'button.primary', 60),
+                      disabled: color(schemaContext, 'default', 'l', 'button.primary', 50, 20),
+                      focus: color(schemaContext, 'default', 'l', 'button.primary', 50),
                       selected: {
-                        rest: color(iosDefault, 'l', 'primary', 10),
-                        hover: color(iosDefault, 'l', 'primary', 8),
-                        pressed: color(iosDefault, 'l', 'primary', 20)
+                        rest: color(schemaContext, 'default', 'l', 'button.primary', 10),
+                        hover: color(schemaContext, 'default', 'l', 'button.primary', 8),
+                        pressed: color(schemaContext, 'default', 'l', 'button.primary', 20)
                       }
                     }
                   }
@@ -98,26 +100,28 @@ export const schema: Schema<Segment> = {
                 textColor: {
                   primary: {
                     subtle: {
-                      rest: color(iosDefault, 'l', 'primary', 50),
-                      hover: { ref: color(iosDefault, 'l', 'primary', 50, 80) },
-                      pressed: { ref: color(iosDefault, 'l', 'primary', 50) },
+                      rest: color(schemaContext, 'default', 'l', 'button.primary', 50),
+                      hover: {
+                        ref: color(schemaContext, 'default', 'l', 'button.primary', 50, 80)
+                      },
+                      pressed: { ref: color(schemaContext, 'default', 'l', 'button.primary', 50) },
                       disabled: {
-                        ref: color(iosDefault, 'l', 'neutral', 0, 20)
+                        ref: color(schemaContext, 'default', 'l', 'button.neutral', 0, 20)
                       },
                       selected: {
                         rest: {
-                          ref: color(iosDefault, 'l', 'neutral', 70)
+                          ref: color(schemaContext, 'default', 'l', 'button.neutral', 70)
                         }
                       }
                     },
                     vivid: {
-                      rest: color(iosDefault, 'l', 'neutral', 0),
+                      rest: color(schemaContext, 'default', 'l', 'button.neutral', 0),
                       disabled: {
-                        ref: color(iosDefault, 'l', 'neutral', 0, 20)
+                        ref: color(schemaContext, 'default', 'l', 'button.neutral', 0, 20)
                       },
                       selected: {
                         rest: {
-                          ref: color(iosDefault, 'l', 'neutral', 70)
+                          ref: color(schemaContext, 'default', 'l', 'button.neutral', 70)
                         }
                       }
                     }
