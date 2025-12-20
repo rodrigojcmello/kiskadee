@@ -59,23 +59,10 @@ async function loadPresetsToBuild(): Promise<
       continue;
     }
 
-    const schemaSegments = mod.schema.segments;
-    const legacySegments = mod.segments;
-
-    // TEMP (Phase 7): fallback to `mod.segments` while we finalize the migration.
-    // Once all presets rely exclusively on `schema.segments`, remove this fallback.
-    const segments = schemaSegments ?? legacySegments;
+    const segments = mod.schema.segments;
     if (!segments) {
-      console.warn(
-        `[web-builder] Skipping preset "${dir}": missing schema.segments (and no legacy segments export).`
-      );
+      console.warn(`[web-builder] Skipping preset "${dir}": missing schema.segments.`);
       continue;
-    }
-
-    if (!schemaSegments && legacySegments) {
-      console.warn(
-        `[web-builder] TEMP: preset "${dir}" is using legacy export "segments". Please migrate to "schema.segments".`
-      );
     }
 
     items.push({
