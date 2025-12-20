@@ -1,6 +1,7 @@
 import { autoUpdate, offset as floatingOffset, useFloating } from '@floating-ui/react';
 import type {
   ComponentPropsWithoutRef,
+  CSSProperties,
   Dispatch,
   KeyboardEvent,
   ReactNode,
@@ -579,11 +580,11 @@ function SelectContent({
       tabIndex={-1}
       style={
         portalled
-          ? {
+          ? ({
               ...floatingStyles,
               // Ensure the dropdown is above local fixed headers by default.
               zIndex: 10000
-            }
+            } as CSSProperties)
           : undefined
       }
     >
