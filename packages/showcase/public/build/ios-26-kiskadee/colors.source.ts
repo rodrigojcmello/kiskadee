@@ -1,4 +1,13 @@
-import type { SchemaSegments, ThemeColorPalette, ThemeMode } from '@kiskadee/core';
+import type {
+  ComponentIntents,
+  GlobalSemanticsByTheme,
+  HueName,
+  PrimitiveColorRef,
+  PrimitiveColors,
+  SchemaSegments,
+  ThemeColorPalette,
+  ThemeMode
+} from '@kiskadee/core';
 import { createSegmentFactory } from '../../utils/segmentFactory';
 import dynamicColor from '../dynamic.color';
 import neutralLight from './colors/neutral.light';
@@ -49,3 +58,69 @@ export const segments: SchemaSegments = {
     }
   })
 };
+
+// -------------------------------------------------------------------------------------------------
+// 3-layer color architecture (Primitive → Global semantics → Component intents)
+// -------------------------------------------------------------------------------------------------
+
+/**
+ * Layer 1: primitive color assets.
+ *
+ * NOTE: For now, we reuse light scales for `d` as a placeholder.
+ */
+export const primitiveColors = {
+  blue: {
+    default: { solid: { light: primaryLight, dark: primaryLight } },
+    // `dynamic` segment override uses `dynamic`.
+    dynamic: { solid: { light: dynamicColor, dark: dynamicColor } }
+  },
+  black: {
+    default: { solid: { light: neutralLight, dark: neutralLight } }
+  },
+  red: {
+    default: { solid: { light: redLikeLight, dark: redLikeLight } }
+  }
+} as const satisfies PrimitiveColors;
+
+type GlobalSemanticKey = 'primary' | 'neutral' | 'redLike';
+
+export const globalSemantics = {
+  light: {
+    primary: { solid: { hue: 'blue', name: 'default' } },
+    neutral: { solid: { hue: 'black', name: 'default' } },
+    redLike: { solid: { hue: 'red', name: 'default' } }
+  },
+  dark: {
+    primary: { solid: { hue: 'blue', name: 'default' } },
+    neutral: { solid: { hue: 'black', name: 'default' } },
+    redLike: { solid: { hue: 'red', name: 'default' } }
+  }
+} as const satisfies GlobalSemanticsByTheme;
+
+/**
+ * Optional per-segment overrides for global semantics.
+ *
+ * Here we override `primary` for the `dynamic` segment to use a different primitive.
+ */
+export const globalSemanticsBySegment = {
+  dynamic: {
+    light: {
+      primary: { solid: { hue: 'blue', name: 'dynamic' } }
+    },
+    dark: {
+      primary: { solid: { hue: 'blue', name: 'dynamic' } }
+    }
+  }
+} as const satisfies Partial<Record<string, GlobalSemanticsByTheme>>;
+
+export const componentIntents = {
+  button: {
+    primary: 'primary',
+    neutral: 'neutral',
+    destructive: 'redLike'
+  }
+} as const satisfies ComponentIntents;
+
+// Type-level sanity: make sure our per-segment override points to a valid primitive ref.
+const _dynamicPrimaryRef: PrimitiveColorRef = globalSemanticsBySegment.dynamic.light.primary.solid;
+void _dynamicPrimaryRef;

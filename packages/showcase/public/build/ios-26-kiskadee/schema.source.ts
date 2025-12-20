@@ -2,14 +2,43 @@ import {
   breakpoints,
   color,
   type Schema,
+  type SchemaColors,
   withAlpha
 } from '@kiskadee/core';
-import { createSegmentBinder } from '../../utils/segmentBinder';
-import { segments } from './colors.source';
+import {
+  componentIntents,
+  globalSemantics,
+  globalSemanticsBySegment,
+  primitiveColors,
+  segments
+} from './colors.source';
 
 // Kiskadee iOS 26: starts as a copy of Apple iOS 26; can evolve with Kiskadee opinions later
 
-const bindSegments = createSegmentBinder(segments, ['default', 'dynamic']);
+const segmentNames = ['default', 'dynamic'] as const;
+type SegmentName = (typeof segmentNames)[number];
+
+const bindSegments = <R>(fn: (segmentName: SegmentName) => R): Partial<Record<SegmentName, R>> => ({
+  default: fn('default'),
+  dynamic: fn('dynamic')
+});
+
+const schemaColors = {
+  primitiveColors,
+  globalSemantics,
+  globalSemanticsBySegment,
+  componentIntents
+} as const satisfies SchemaColors;
+
+const schemaContext = { colors: schemaColors };
+
+const c = (
+  segmentName: SegmentName,
+  theme: 'l' | 'd',
+  role: string,
+  tone: number,
+  alpha?: number
+) => color(schemaContext, segmentName, theme, role as never, tone, alpha);
 
 
 export const schema: Schema = {
@@ -18,10 +47,12 @@ export const schema: Schema = {
   version: [26, 0, 0],
   author: 'Kiskadee',
   breakpoints,
+  colors: schemaColors,
+  segments,
   themeTokens: {
     palettes: bindSegments((segment) => ({
       light: {
-        focusColor: color(segment, 'l', 'primary', 70)
+        focusColor: c(segment, 'l', 'button.primary', 70)
       }
     }))
   },
@@ -80,60 +111,60 @@ export const schema: Schema = {
               boxColor: {
                 primary: {
                   subtle: {
-                    rest: color(segment, 'l', 'primary', 5),
-                    hover: color(segment, 'l', 'primary', 3),
-                    focus: color(segment, 'l', 'primary', 5),
-                    pressed: color(segment, 'l', 'primary', 8),
-                    disabled: color(segment, 'l', 'primary', 5, 20),
+                    rest: c(segment, 'l', 'button.primary', 5),
+                    hover: c(segment, 'l', 'button.primary', 3),
+                    focus: c(segment, 'l', 'button.primary', 5),
+                    pressed: c(segment, 'l', 'button.primary', 8),
+                    disabled: c(segment, 'l', 'button.primary', 5, 20),
                     selected: {
-                      rest: color(segment, 'l', 'primary', 50),
-                      hover: color(segment, 'l', 'primary', 50, 80),
-                      focus: color(segment, 'l', 'primary', 50),
-                      pressed: color(segment, 'l', 'primary', 60)
+                      rest: c(segment, 'l', 'button.primary', 50),
+                      hover: c(segment, 'l', 'button.primary', 50, 80),
+                      focus: c(segment, 'l', 'button.primary', 50),
+                      pressed: c(segment, 'l', 'button.primary', 60)
                     }
                   },
                   vivid: {
-                    rest: color(segment, 'l', 'primary', 50),
-                    hover: color(segment, 'l', 'primary', 50, 80),
-                    focus: color(segment, 'l', 'primary', 50),
-                    pressed: color(segment, 'l', 'primary', 60),
-                    disabled: color(segment, 'l', 'primary', 50, 20)
+                    rest: c(segment, 'l', 'button.primary', 50),
+                    hover: c(segment, 'l', 'button.primary', 50, 80),
+                    focus: c(segment, 'l', 'button.primary', 50),
+                    pressed: c(segment, 'l', 'button.primary', 60),
+                    disabled: c(segment, 'l', 'button.primary', 50, 20)
                   }
                 },
                 neutral: {
                   subtle: {
-                    rest: color(segment, 'l', 'neutral', 5),
-                    hover: color(segment, 'l', 'neutral', 3),
-                    focus: color(segment, 'l', 'neutral', 5),
-                    pressed: color(segment, 'l', 'neutral', 8),
-                    disabled: color(segment, 'l', 'neutral', 5, 20),
+                    rest: c(segment, 'l', 'button.neutral', 5),
+                    hover: c(segment, 'l', 'button.neutral', 3),
+                    focus: c(segment, 'l', 'button.neutral', 5),
+                    pressed: c(segment, 'l', 'button.neutral', 8),
+                    disabled: c(segment, 'l', 'button.neutral', 5, 20),
                     selected: {
-                      rest: color(segment, 'l', 'primary', 50),
-                      hover: color(segment, 'l', 'primary', 50, 80),
-                      focus: color(segment, 'l', 'primary', 50),
-                      pressed: color(segment, 'l', 'primary', 60)
+                      rest: c(segment, 'l', 'button.primary', 50),
+                      hover: c(segment, 'l', 'button.primary', 50, 80),
+                      focus: c(segment, 'l', 'button.primary', 50),
+                      pressed: c(segment, 'l', 'button.primary', 60)
                     }
                   }
                 },
                 redLike: {
                   subtle: {
-                    rest: color(segment, 'l', 'redLike', 5),
-                    hover: color(segment, 'l', 'redLike', 3),
-                    focus: color(segment, 'l', 'redLike', 5),
-                    pressed: color(segment, 'l', 'redLike', 8),
-                    disabled: color(segment, 'l', 'redLike', 5, 20),
+                    rest: c(segment, 'l', 'button.destructive', 5),
+                    hover: c(segment, 'l', 'button.destructive', 3),
+                    focus: c(segment, 'l', 'button.destructive', 5),
+                    pressed: c(segment, 'l', 'button.destructive', 8),
+                    disabled: c(segment, 'l', 'button.destructive', 5, 20),
                     selected: {
-                      rest: color(segment, 'l', 'redLike', 50),
-                      hover: color(segment, 'l', 'redLike', 50, 80),
-                      pressed: color(segment, 'l', 'redLike', 60)
+                      rest: c(segment, 'l', 'button.destructive', 50),
+                      hover: c(segment, 'l', 'button.destructive', 50, 80),
+                      pressed: c(segment, 'l', 'button.destructive', 60)
                     }
                   },
                   vivid: {
-                    rest: color(segment, 'l', 'redLike', 50),
-                    hover: color(segment, 'l', 'redLike', 50, 80),
-                    pressed: color(segment, 'l', 'redLike', 60),
-                    disabled: color(segment, 'l', 'redLike', 50, 20),
-                    focus: color(segment, 'l', 'redLike', 50)
+                    rest: c(segment, 'l', 'button.destructive', 50),
+                    hover: c(segment, 'l', 'button.destructive', 50, 80),
+                    pressed: c(segment, 'l', 'button.destructive', 60),
+                    disabled: c(segment, 'l', 'button.destructive', 50, 20),
+                    focus: c(segment, 'l', 'button.destructive', 50)
                   }
                 }
               },
@@ -156,23 +187,23 @@ export const schema: Schema = {
               boxColor: {
                 redLike: {
                   subtle: {
-                    rest: color(segment, 'd', 'redLike', 50, 40),
-                    hover: color(segment, 'd', 'redLike', 3),
-                    focus: color(segment, 'd', 'redLike', 5),
-                    pressed: color(segment, 'd', 'redLike', 8),
-                    disabled: color(segment, 'd', 'redLike', 5, 20),
+                    rest: c(segment, 'd', 'button.destructive', 50, 40),
+                    hover: c(segment, 'd', 'button.destructive', 3),
+                    focus: c(segment, 'd', 'button.destructive', 5),
+                    pressed: c(segment, 'd', 'button.destructive', 8),
+                    disabled: c(segment, 'd', 'button.destructive', 5, 20),
                     selected: {
-                      rest: color(segment, 'd', 'redLike', 50),
-                      hover: color(segment, 'd', 'redLike', 50, 80),
-                      pressed: color(segment, 'd', 'redLike', 60)
+                      rest: c(segment, 'd', 'button.destructive', 50),
+                      hover: c(segment, 'd', 'button.destructive', 50, 80),
+                      pressed: c(segment, 'd', 'button.destructive', 60)
                     }
                   },
                   vivid: {
-                    rest: color(segment, 'd', 'redLike', 50),
-                    hover: color(segment, 'd', 'redLike', 50, 80),
-                    pressed: color(segment, 'd', 'redLike', 60),
-                    disabled: color(segment, 'd', 'redLike', 50, 20),
-                    focus: color(segment, 'd', 'redLike', 50)
+                    rest: c(segment, 'd', 'button.destructive', 50),
+                    hover: c(segment, 'd', 'button.destructive', 50, 80),
+                    pressed: c(segment, 'd', 'button.destructive', 60),
+                    disabled: c(segment, 'd', 'button.destructive', 50, 20),
+                    focus: c(segment, 'd', 'button.destructive', 50)
                   }
                 }
               }
@@ -181,23 +212,23 @@ export const schema: Schema = {
               boxColor: {
                 redLike: {
                   subtle: {
-                    rest: color(segment, 'd', 'redLike', 50, 40),
-                    hover: color(segment, 'd', 'redLike', 3),
-                    focus: color(segment, 'd', 'redLike', 5),
-                    pressed: color(segment, 'd', 'redLike', 8),
-                    disabled: color(segment, 'd', 'redLike', 5, 20),
+                    rest: c(segment, 'd', 'button.destructive', 50, 40),
+                    hover: c(segment, 'd', 'button.destructive', 3),
+                    focus: c(segment, 'd', 'button.destructive', 5),
+                    pressed: c(segment, 'd', 'button.destructive', 8),
+                    disabled: c(segment, 'd', 'button.destructive', 5, 20),
                     selected: {
-                      rest: color(segment, 'd', 'redLike', 50),
-                      hover: color(segment, 'd', 'redLike', 50, 80),
-                      pressed: color(segment, 'd', 'redLike', 60)
+                      rest: c(segment, 'd', 'button.destructive', 50),
+                      hover: c(segment, 'd', 'button.destructive', 50, 80),
+                      pressed: c(segment, 'd', 'button.destructive', 60)
                     }
                   },
                   vivid: {
-                    rest: color(segment, 'd', 'redLike', 50),
-                    hover: color(segment, 'd', 'redLike', 50, 80),
-                    pressed: color(segment, 'd', 'redLike', 60),
-                    disabled: color(segment, 'd', 'redLike', 50, 20),
-                    focus: color(segment, 'd', 'redLike', 50)
+                    rest: c(segment, 'd', 'button.destructive', 50),
+                    hover: c(segment, 'd', 'button.destructive', 50, 80),
+                    pressed: c(segment, 'd', 'button.destructive', 60),
+                    disabled: c(segment, 'd', 'button.destructive', 50, 20),
+                    focus: c(segment, 'd', 'button.destructive', 50)
                   }
                 }
               }
@@ -214,60 +245,60 @@ export const schema: Schema = {
               textColor: {
                 primary: {
                   subtle: {
-                    rest: color(segment, 'l', 'primary', 50),
-                    hover: { ref: color(segment, 'l', 'primary', 50, 80) },
-                    pressed: { ref: color(segment, 'l', 'primary', 50) },
+                    rest: c(segment, 'l', 'button.primary', 50),
+                    hover: { ref: c(segment, 'l', 'button.primary', 50, 80) },
+                    pressed: { ref: c(segment, 'l', 'button.primary', 50) },
                     disabled: {
-                      ref: color(segment, 'l', 'neutral', 0, 20)
+                      ref: c(segment, 'l', 'button.neutral', 0, 20)
                     },
                     selected: {
                       rest: {
-                        ref: color(segment, 'l', 'neutral', 0)
+                        ref: c(segment, 'l', 'button.neutral', 0)
                       }
                     }
                   },
                   vivid: {
-                    rest: color(segment, 'l', 'neutral', 0),
-                    pressed: { ref: color(segment, 'l', 'neutral', 0, 50) },
+                    rest: c(segment, 'l', 'button.neutral', 0),
+                    pressed: { ref: c(segment, 'l', 'button.neutral', 0, 50) },
                     disabled: {
-                      ref: color(segment, 'l', 'neutral', 0, 20)
+                      ref: c(segment, 'l', 'button.neutral', 0, 20)
                     }
                   }
                 },
                 neutral: {
                   subtle: {
-                    rest: color(segment, 'l', 'neutral', 50),
-                    hover: { ref: color(segment, 'l', 'neutral', 50, 80) },
-                    pressed: { ref: color(segment, 'l', 'neutral', 50) },
+                    rest: c(segment, 'l', 'button.neutral', 50),
+                    hover: { ref: c(segment, 'l', 'button.neutral', 50, 80) },
+                    pressed: { ref: c(segment, 'l', 'button.neutral', 50) },
                     disabled: {
-                      ref: color(segment, 'l', 'neutral', 0, 20)
+                      ref: c(segment, 'l', 'button.neutral', 0, 20)
                     },
                     selected: {
                       rest: {
-                        ref: color(segment, 'l', 'neutral', 0)
+                        ref: c(segment, 'l', 'button.neutral', 0)
                       }
                     }
                   }
                 },
                 redLike: {
                   subtle: {
-                    rest: color(segment, 'l', 'redLike', 50),
-                    hover: { ref: color(segment, 'l', 'redLike', 50, 80) },
-                    pressed: { ref: color(segment, 'l', 'redLike', 50, 70) },
+                    rest: c(segment, 'l', 'button.destructive', 50),
+                    hover: { ref: c(segment, 'l', 'button.destructive', 50, 80) },
+                    pressed: { ref: c(segment, 'l', 'button.destructive', 50, 70) },
                     disabled: {
-                      ref: color(segment, 'l', 'redLike', 0, 20)
+                      ref: c(segment, 'l', 'button.destructive', 0, 20)
                     },
                     selected: {
                       rest: {
-                        ref: color(segment, 'l', 'redLike', 0)
+                        ref: c(segment, 'l', 'button.destructive', 0)
                       }
                     }
                   },
                   vivid: {
-                    rest: color(segment, 'l', 'neutral', 0),
-                    pressed: { ref: color(segment, 'l', 'neutral', 0, 70) },
+                    rest: c(segment, 'l', 'button.neutral', 0),
+                    pressed: { ref: c(segment, 'l', 'button.neutral', 0, 70) },
                     disabled: {
-                      ref: color(segment, 'l', 'neutral', 0, 20)
+                      ref: c(segment, 'l', 'button.neutral', 0, 20)
                     }
                   }
                 }

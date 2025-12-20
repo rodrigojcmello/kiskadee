@@ -1,10 +1,4 @@
-import {
-  breakpoints,
-  color,
-  type Schema,
-  type SchemaColors,
-  withAlpha
-} from '@kiskadee/core';
+import { breakpoints, color, type Schema, type SchemaColors, withAlpha } from '@kiskadee/core';
 import {
   componentIntents,
   globalSemantics,
@@ -39,7 +33,6 @@ const c = (
   tone: number,
   alpha?: number
 ) => color(schemaContext, segmentName, theme, role as never, tone, alpha);
-
 
 export const schema: Schema = {
   name: 'iOS',
@@ -233,7 +226,7 @@ export const schema: Schema = {
                 }
               }
             }
-          })),
+          }))
         },
         e2: {
           name: 'button-text',

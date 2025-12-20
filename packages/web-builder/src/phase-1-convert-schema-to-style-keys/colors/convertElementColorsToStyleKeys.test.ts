@@ -10,11 +10,11 @@ import { convertElementColorsToStyleKeys } from './convertElementColorsToStyleKe
 describe('convertElementColorsToStyleKeys', () => {
   it('generates style keys for palette property without reference', (): void => {
     const elementPalettes: ElementPalettes = {
-      ios: {
+      default: {
         light: {
           boxColor: {
             primary: {
-              solid: { rest: [45, 100, 50, 1] }
+              subtle: { rest: [45, 100, 50, 1] }
             }
           }
         }
@@ -22,7 +22,7 @@ describe('convertElementColorsToStyleKeys', () => {
     };
     const result = convertElementColorsToStyleKeys(elementPalettes);
     expect(result.styleKeys).toEqual({
-      ios: {
+      default: {
         light: {
           primary: {
             rest: ['boxColor__[45,100,50,1]']
@@ -34,11 +34,11 @@ describe('convertElementColorsToStyleKeys', () => {
 
   it('generates style keys for palette property with a reference value', (): void => {
     const elementPalettes: ElementPalettes = {
-      ios: {
+      default: {
         light: {
           borderColor: {
             primary: {
-              solid: {
+              subtle: {
                 rest: [255, 255, 255, 1],
                 hover: { ref: [255, 255, 255, 0.1] }
               }
@@ -49,7 +49,7 @@ describe('convertElementColorsToStyleKeys', () => {
     };
     const result = convertElementColorsToStyleKeys(elementPalettes);
     expect(result.styleKeys).toEqual({
-      ios: {
+      default: {
         light: {
           primary: {
             rest: ['borderColor__[255,255,255,1]'],
@@ -62,29 +62,29 @@ describe('convertElementColorsToStyleKeys', () => {
 
   it('generates style keys for multiple palette entries', (): void => {
     const elementPalettes: ElementPalettes = {
-      ios: {
+      default: {
         light: {
           textColor: {
             primary: {
-              solid: {
+              subtle: {
                 rest: [120, 50, 50, 1],
                 hover: { ref: [240, 50, 50, 0.5] }
               }
             },
             secondary: {
-              solid: {
+              subtle: {
                 rest: [240, 50, 50, 0.5]
               }
             }
           },
           borderColor: {
             primary: {
-              solid: {
+              subtle: {
                 rest: [120, 50, 50, 1]
               }
             },
             redLike: {
-              solid: {
+              subtle: {
                 rest: [0, 0, 0, 0.02],
                 focus: { ref: [10, 20, 30, 0.1] }
               }
@@ -95,7 +95,7 @@ describe('convertElementColorsToStyleKeys', () => {
     };
     const result = convertElementColorsToStyleKeys(elementPalettes);
     expect(result.styleKeys).toEqual({
-      ios: {
+      default: {
         light: {
           primary: {
             rest: ['textColor__[120,50,50,1]', 'borderColor__[120,50,50,1]'],
@@ -115,7 +115,7 @@ describe('convertElementColorsToStyleKeys', () => {
 
   it('throws when using legacy direct interaction-state map at property root (no soft/solid)', (): void => {
     const elementPalettes: ElementPalettes = {
-      ios: {
+      default: {
         light: {
           // Legacy direct interaction‐state map at property level (invalid now)
           boxColor: {
@@ -133,11 +133,11 @@ describe('convertElementColorsToStyleKeys', () => {
 
   it('handles selected submap: emits selected/rest and selected:hover keys', (): void => {
     const elementPalettes: ElementPalettes = {
-      ios: {
+      default: {
         light: {
           boxColor: {
             primary: {
-              solid: {
+              subtle: {
                 rest: [10, 20, 30, 0.9],
                 hover: [15, 25, 35, 0.9],
                 selected: {
@@ -155,7 +155,7 @@ describe('convertElementColorsToStyleKeys', () => {
     const result = convertElementColorsToStyleKeys(elementPalettes);
 
     expect(result.styleKeys).toEqual({
-      ios: {
+      default: {
         light: {
           primary: {
             rest: ['boxColor__[10,20,30,0.9]'],
@@ -175,11 +175,11 @@ describe('convertElementColorsToStyleKeys – invalid inputs', () => {
     // Although TypeScript typing forbids rest to be a reference (ColorValue),
     // we cast to any to simulate a runtime-invalid schema and assert current behavior.
     const elementPalettes = {
-      ios: {
+      default: {
         light: {
           boxColor: {
             primary: {
-              solid: {
+              subtle: {
                 rest: { ref: [10, 20, 30, 0.5] } as unknown as Color
               }
             }

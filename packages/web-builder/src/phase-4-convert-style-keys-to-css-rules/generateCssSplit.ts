@@ -4,7 +4,8 @@ import type {
   ElementAllSizeValue,
   ElementSizeValue,
   InteractionState,
-  SemanticColor
+  SemanticColor,
+  ThemeMode
 } from '@kiskadee/core';
 import postcss from 'postcss';
 import combineMq from 'postcss-combine-media-query';
@@ -105,16 +106,16 @@ export async function generateCssSplit(
 
       // palettes: segmentName -> themeName -> semantic -> interactionState -> string[] (color keys only)
       if (el.palettes) {
-        for (const segmentName in el.palettes) {
+        for (const segmentName of Object.keys(el.palettes) as Array<keyof typeof el.palettes>) {
           const themes = el.palettes[segmentName];
           if (!themes) continue;
 
-          for (const themeName in themes) {
+          for (const themeName of Object.keys(themes) as ThemeMode[]) {
             const bySemantic = themes[themeName];
             if (!bySemantic) continue;
 
             // Create a composite key: segment.theme (e.g., "ios.light", "ios.dark")
-            const bundleKey = `${segmentName}.${themeName}`;
+            const bundleKey = `${String(segmentName)}.${themeName}`;
             if (!paletteRules[bundleKey]) paletteRules[bundleKey] = new Set();
 
             for (const sem in bySemantic) {

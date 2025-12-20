@@ -1,9 +1,22 @@
-import { breakpoints, color, type Schema, withAlpha } from '@kiskadee/core';
-import { segments } from './colors.source';
+import {
+  breakpoints,
+  color,
+  primitive,
+  type Schema,
+  type SchemaColors,
+  withAlpha
+} from '@kiskadee/core';
+import { componentIntents, globalSemantics, primitiveColors, segments } from './colors.source';
 
 // Reference: https://www.figma.com/community/file/1157761560874207208 copied to "ds-refs/(v11) Carbon Design System (Community).fig"
 
-const carbonDefault = segments.default;
+const schemaColors = {
+  primitiveColors,
+  globalSemantics,
+  componentIntents
+} as const satisfies SchemaColors;
+
+const schemaContext = { colors: schemaColors };
 
 type Segments = 'default';
 
@@ -13,6 +26,8 @@ export const schema: Schema<Segments> = {
   version: [1, 0, 0],
   author: 'IBM',
   breakpoints,
+  colors: schemaColors,
+  segments,
   fonts: {
     body: ['IBM Plex Sans', 'sans-serif']
   },
@@ -20,8 +35,9 @@ export const schema: Schema<Segments> = {
     palettes: {
       default: {
         light: {
-          background: color(carbonDefault, 'l', 'neutral', 4),
-          focusColor: color(carbonDefault, 'l', 'primary', 50)
+          // Global theme tokens can reference primitive colors directly.
+          background: color(schemaContext, 'default', 'l', primitive('black', 'default'), 4),
+          focusColor: color(schemaContext, 'default', 'l', primitive('blue', 'default'), 50)
         }
       }
     }
@@ -75,11 +91,11 @@ export const schema: Schema<Segments> = {
                 boxColor: {
                   primary: {
                     vivid: {
-                      rest: color(carbonDefault, 'l', 'primary', 50),
-                      hover: color(carbonDefault, 'l', 'primary', 45),
-                      focus: color(carbonDefault, 'l', 'primary', 50),
-                      pressed: color(carbonDefault, 'l', 'primary', 70),
-                      disabled: color(carbonDefault, 'l', 'neutral', 20)
+                      rest: color(schemaContext, 'default', 'l', 'button.primary', 50),
+                      hover: color(schemaContext, 'default', 'l', 'button.primary', 45),
+                      focus: color(schemaContext, 'default', 'l', 'button.primary', 50),
+                      pressed: color(schemaContext, 'default', 'l', 'button.primary', 70),
+                      disabled: color(schemaContext, 'default', 'l', 'button.neutral', 20)
                     }
                   }
                 }
@@ -113,9 +129,9 @@ export const schema: Schema<Segments> = {
                 textColor: {
                   primary: {
                     vivid: {
-                      rest: color(carbonDefault, 'l', 'neutral', 0),
+                      rest: color(schemaContext, 'default', 'l', 'button.neutral', 0),
                       disabled: {
-                        ref: color(carbonDefault, 'l', 'neutral', 45)
+                        ref: color(schemaContext, 'default', 'l', 'button.neutral', 45)
                       }
                     }
                   }
