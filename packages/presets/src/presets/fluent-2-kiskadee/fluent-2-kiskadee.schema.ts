@@ -5,12 +5,16 @@ import { schemaColors, segments } from './fluent-2-kiskadee.colors';
 
 const schemaContext = { colors: schemaColors };
 
-export const schema: Schema = {
+type Segments = 'default';
+
+export const schema: Schema<Segments> = {
   name: 'Fluent',
   prefix: 'fk', // Fluent by Kiskadee
   version: [2, 0, 0],
   author: 'Kiskadee',
   breakpoints,
+  colors: schemaColors,
+  segments,
   themeTokens: {
     palettes: {
       default: {

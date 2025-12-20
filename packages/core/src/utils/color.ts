@@ -6,17 +6,11 @@ import type {
   PrimitiveColorRef,
   Role,
   SchemaColors,
-  Segment,
-  SemanticColor,
   SolidColor,
   ThemeName,
   ThemeShortcut
 } from '../types/colors/colors.types';
 import { withAlpha } from './withAlpha';
-
-export type ModeKeyShort = 'l' | 'd';
-
-const modeFromShort = (m: ModeKeyShort) => (m === 'l' ? 'light' : 'dark');
 
 function resolveSeriesAndKey(
   tone: number
@@ -60,9 +54,10 @@ function resolveSeriesAndKey(
 }
 
 export function color(
-  segment: Segment,
-  mode: ModeKeyShort,
-  role: SemanticColor,
+  schema: { colors?: SchemaColors },
+  segmentName: string,
+  theme: ThemeShortcut,
+  roleOrPrimitive: Role | PrimitiveColorRef,
   tone: number,
   alpha?: number
 ): SolidColor;
@@ -74,27 +69,8 @@ export function color(
   roleOrPrimitive: Role | PrimitiveColorRef,
   tone: number,
   alpha?: number
-): SolidColor;
-
-export function color(
-  a: Segment | { colors?: SchemaColors },
-  b: ModeKeyShort | string,
-  c: SemanticColor | ThemeShortcut,
-  d: number | Role | PrimitiveColorRef,
-  e?: number,
-  f?: number
 ): SolidColor {
-  // New API: color(schema, segmentName, theme, roleOrPrimitive, tone, alpha?)
-  if (
-    typeof b === 'string' &&
-    (c === 'l' || c === 'd') &&
-    (typeof d === 'string' || isPrimitiveColorRef(d))
-  ) {
-    return resolveColor(a as { colors?: SchemaColors }, b, c, d, e as number, f);
-  }
-
-  // Legacy API: color(segment, mode, semanticRole, tone, alpha?)
-  return legacyColor(a as Segment, b as ModeKeyShort, c as SemanticColor, d as number, e);
+  return resolveColor(schema, segmentName, theme, roleOrPrimitive, tone, alpha);
 }
 
 /**
@@ -108,49 +84,6 @@ export function primitive(
   name: PrimitiveColorName
 ): PrimitiveColorRef {
   return { hue, name };
-}
-
-function legacyColor(
-  segment: Segment,
-  mode: ModeKeyShort,
-  role: SemanticColor,
-  tone: number,
-  alpha?: number
-): SolidColor {
-  const m = modeFromShort(mode) as 'light' | 'dark';
-  const { series, key } = resolveSeriesAndKey(tone);
-
-  const theme = segment?.themes?.[m];
-  if (!theme) {
-    throw new Error(`Theme not found for provided segment in mode=${m}`);
-  }
-
-  // Narrow by series to keep key types aligned with buckets
-  if (series === 'subtle') {
-    const bucket = theme?.[role]?.subtle as
-      | Partial<Record<LightTrackTones, SolidColor>>
-      | undefined;
-    if (!bucket) {
-      throw new Error(`Role/series not found: role=${role} series=subtle in mode=${m}`);
-    }
-    const value = bucket[key as LightTrackTones] as SolidColor | undefined;
-    if (!value) {
-      const available = Object.keys(bucket).join(', ');
-      throw new Error(`Tone ${key} not available in ${role}.subtle. Available: ${available}`);
-    }
-    return typeof alpha === 'number' ? (withAlpha(value, alpha) as SolidColor) : value;
-  } else {
-    const bucket = theme?.[role]?.vivid as Partial<Record<DarkTrackTones, SolidColor>> | undefined;
-    if (!bucket) {
-      throw new Error(`Role/series not found: role=${role} series=vivid in mode=${m}`);
-    }
-    const value = bucket[key as DarkTrackTones] as SolidColor | undefined;
-    if (!value) {
-      const available = Object.keys(bucket).join(', ');
-      throw new Error(`Tone ${key} not available in ${role}.vivid. Available: ${available}`);
-    }
-    return typeof alpha === 'number' ? (withAlpha(value, alpha) as SolidColor) : value;
-  }
 }
 
 type ResolvedBucket =
