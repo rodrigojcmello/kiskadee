@@ -1,8 +1,80 @@
-import type { SchemaSegments } from '@kiskadee/core';
+import type {
+  ComponentIntents,
+  GlobalSemanticsByTheme,
+  PrimitiveColors,
+  SchemaColors,
+  SchemaSegments
+} from '@kiskadee/core';
 import blackLight from './colors/black.light';
 import blueLight from './colors/blue.light';
 
 type Segment = 'default';
+
+// Layer 1: Primitive colors
+export const primitiveColors = {
+  blue: {
+    default: {
+      solid: { light: blueLight, dark: blueLight }
+    }
+  },
+  black: {
+    default: {
+      solid: { light: blackLight, dark: blackLight }
+    }
+  }
+} as const satisfies PrimitiveColors;
+
+// Layer 2: Semantic colors (global meanings).
+//
+// Layer 2 is stable by default (no `light/dark`) and must not change meaning per
+// component. However, for maximum flexibility, we support per-theme overrides.
+//
+// In practice, ~99% of design systems will mirror `light` and `dark` here: the same
+// global semantic keys (e.g. `primary`, `neutral`) will point to the same primitive
+// color assets.
+//
+// We still keep `Theme` support in Layer 2 for maximum flexibility in the remaining
+// ~1% of cases. Example: in `light` you might map `neutral` to a black-based scale
+// sitting on a very light gray surface; but in `dark` you may want to map `neutral`
+// to a warm beige/rose primitive scale to increase contrast and improve readability.
+// Having `light`/`dark` overrides in Layer 2 enables these fine-tuned adjustments.
+//
+export const globalSemantics = {
+  light: {
+    primary: {
+      solid: { hue: 'blue', name: 'default' }
+    },
+    neutral: {
+      solid: { hue: 'black', name: 'default' }
+    }
+  },
+  dark: {
+    primary: {
+      solid: { hue: 'blue', name: 'default' }
+    },
+    neutral: {
+      solid: { hue: 'black', name: 'default' }
+    }
+  }
+} as const satisfies GlobalSemanticsByTheme;
+
+export const componentIntents = {
+  button: {
+    primary: 'primary',
+    neutral: 'neutral',
+    destructive: 'redLike',
+    positive: 'greenLike'
+
+    // Example of direct Layer 1 usage (e.g. social buttons):
+    // socialLinkedIn: { hue: 'blue', name: 'linkedin' }
+  }
+} as const satisfies ComponentIntents;
+
+export const schemaColors = {
+  primitiveColors,
+  globalSemantics,
+  componentIntents
+} as const satisfies SchemaColors;
 
 export const segments: SchemaSegments<Segment> = {
   default: {
@@ -10,6 +82,10 @@ export const segments: SchemaSegments<Segment> = {
     mainColor: 'blue',
     themes: {
       light: {
+        primary: blueLight,
+        neutral: blackLight
+      },
+      dark: {
         primary: blueLight,
         neutral: blackLight
       }

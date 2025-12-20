@@ -54,14 +54,20 @@ async function loadPresetsToBuild(): Promise<
       segments?: SchemaSegments;
     };
 
-    if (!mod?.schema || !mod?.segments) {
-      console.warn(`Ignorando preset "${dir}": não exporta schema/segments.`);
+    if (!mod?.schema) {
+      console.warn(`[web-builder] Skipping preset "${dir}": missing schema export.`);
+      continue;
+    }
+
+    const segments = mod.schema.segments;
+    if (!segments) {
+      console.warn(`[web-builder] Skipping preset "${dir}": missing schema.segments.`);
       continue;
     }
 
     items.push({
       schema: mod.schema,
-      segments: mod.segments,
+      segments,
       schemaPath: resolve(
         __dirname,
         '..',

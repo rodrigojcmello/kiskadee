@@ -1,5 +1,5 @@
 import { breakpoints, color, Schema, type SegmentName } from '@kiskadee/core';
-import { segments } from './material-3-google.colors';
+import { schemaColors, segments } from './material-3-google.colors';
 
 /**
  * Segments definition for the Material Design 3 design system.
@@ -23,7 +23,7 @@ import { segments } from './material-3-google.colors';
  *   manifest consumed by the Next.js showcase registry.
  */
 
-const materialDefault = segments.default;
+const schemaContext = { colors: schemaColors };
 type Segment = 'default';
 
 export const schema: Schema<Segment> = {
@@ -32,6 +32,8 @@ export const schema: Schema<Segment> = {
   version: [3, 0, 0],
   author: 'Google',
   breakpoints,
+  colors: schemaColors,
+  segments,
   fonts: {
     body: ['Roboto', 'sans-serif']
   },
@@ -85,29 +87,29 @@ export const schema: Schema<Segment> = {
                 boxColor: {
                   primary: {
                     subtle: {
-                      rest: color(materialDefault, 'l', 'primary', 50),
+                      rest: color(schemaContext, 'default', 'l', 'button.primary', 50),
                       // hover: [256, 34, 48, 1], // official
-                      hover: color(materialDefault, 'l', 'primary', 40),
-                      pressed: color(materialDefault, 'l', 'primary', 60),
-                      disabled: color(materialDefault, 'l', 'neutral', 10),
-                      focus: color(materialDefault, 'l', 'primary', 50),
+                      hover: color(schemaContext, 'default', 'l', 'button.primary', 40),
+                      pressed: color(schemaContext, 'default', 'l', 'button.primary', 60),
+                      disabled: color(schemaContext, 'default', 'l', 'button.neutral', 10),
+                      focus: color(schemaContext, 'default', 'l', 'button.primary', 50),
                       selected: {
-                        rest: color(materialDefault, 'l', 'primary', 10),
-                        hover: color(materialDefault, 'l', 'primary', 8),
-                        pressed: color(materialDefault, 'l', 'primary', 20)
+                        rest: color(schemaContext, 'default', 'l', 'button.primary', 10),
+                        hover: color(schemaContext, 'default', 'l', 'button.primary', 8),
+                        pressed: color(schemaContext, 'default', 'l', 'button.primary', 20)
                       }
                     },
                     vivid: {
-                      rest: color(materialDefault, 'l', 'primary', 50),
+                      rest: color(schemaContext, 'default', 'l', 'button.primary', 50),
                       // hover: [256, 34, 48, 1], // official
-                      hover: color(materialDefault, 'l', 'primary', 40),
-                      pressed: color(materialDefault, 'l', 'primary', 60),
-                      disabled: color(materialDefault, 'l', 'neutral', 10),
-                      focus: color(materialDefault, 'l', 'primary', 50),
+                      hover: color(schemaContext, 'default', 'l', 'button.primary', 40),
+                      pressed: color(schemaContext, 'default', 'l', 'button.primary', 60),
+                      disabled: color(schemaContext, 'default', 'l', 'button.neutral', 10),
+                      focus: color(schemaContext, 'default', 'l', 'button.primary', 50),
                       selected: {
-                        rest: color(materialDefault, 'l', 'primary', 10),
-                        hover: color(materialDefault, 'l', 'primary', 8),
-                        pressed: color(materialDefault, 'l', 'primary', 20)
+                        rest: color(schemaContext, 'default', 'l', 'button.primary', 10),
+                        hover: color(schemaContext, 'default', 'l', 'button.primary', 8),
+                        pressed: color(schemaContext, 'default', 'l', 'button.primary', 20)
                       }
                     }
                   }
@@ -160,22 +162,22 @@ export const schema: Schema<Segment> = {
                     subtle: {
                       rest: [0, 0, 100, 1],
                       disabled: {
-                        ref: color(materialDefault, 'l', 'neutral', 60)
+                        ref: color(schemaContext, 'default', 'l', 'button.neutral', 60)
                       },
                       selected: {
                         rest: {
-                          ref: color(materialDefault, 'l', 'neutral', 70)
+                          ref: color(schemaContext, 'default', 'l', 'button.neutral', 70)
                         }
                       }
                     },
                     vivid: {
                       rest: [0, 0, 100, 1],
                       disabled: {
-                        ref: color(materialDefault, 'l', 'neutral', 60)
+                        ref: color(schemaContext, 'default', 'l', 'button.neutral', 60)
                       },
                       selected: {
                         rest: {
-                          ref: color(materialDefault, 'l', 'neutral', 70)
+                          ref: color(schemaContext, 'default', 'l', 'button.neutral', 70)
                         }
                       }
                     }

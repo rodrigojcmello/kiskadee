@@ -1,4 +1,10 @@
-import type { SchemaSegments } from '@kiskadee/core';
+import type {
+  ComponentIntents,
+  GlobalSemanticsByTheme,
+  PrimitiveColors,
+  SchemaColors,
+  SchemaSegments
+} from '@kiskadee/core';
 
 // NOTE:
 // - The segment key must stay in sync with the palette name used in the
@@ -128,3 +134,52 @@ export const segments: SchemaSegments<Segment> = {
     }
   }
 };
+
+// -------------------------------------------------------------------------------------------------
+// 3-layer color architecture (Primitive → Global semantics → Component intents)
+// -------------------------------------------------------------------------------------------------
+
+// NOTE: This preset is currently light-only. We keep `dark` keys present as placeholders.
+
+export const primitiveColors = {
+  purple: {
+    default: {
+      solid: {
+        light: segments.default.themes.light.primary,
+        dark: segments.default.themes.light.primary
+      }
+    }
+  },
+  black: {
+    default: {
+      solid: {
+        light: segments.default.themes.light.neutral,
+        dark: segments.default.themes.light.neutral
+      }
+    }
+  }
+} as const satisfies PrimitiveColors;
+
+export const globalSemantics = {
+  light: {
+    primary: { solid: { hue: 'purple', name: 'default' } },
+    neutral: { solid: { hue: 'black', name: 'default' } }
+  },
+  dark: {
+    primary: { solid: { hue: 'purple', name: 'default' } },
+    neutral: { solid: { hue: 'black', name: 'default' } }
+  }
+} as const satisfies GlobalSemanticsByTheme;
+
+export const componentIntents = {
+  button: {
+    primary: 'primary',
+    neutral: 'neutral'
+  }
+} as const satisfies ComponentIntents;
+
+export const schemaColors = {
+  primitiveColors,
+  globalSemantics,
+  componentIntents
+} as const satisfies SchemaColors;

@@ -2,6 +2,7 @@ import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './break
 import type {
   ElementPalettes,
   InteractionState,
+  SchemaColors,
   SchemaSegments,
   SegmentName,
   SelectedInteractionStateToken,
@@ -130,6 +131,15 @@ export type Schema<TSegmentName extends SegmentName = never> = SchemaMetadata & 
    */
   fonts?: SchemaFonts;
   segments?: SchemaSegments<TSegmentName>;
+  /**
+   * Optional 3-layer color configuration.
+   *
+   * This is the source of truth for the modern color pipeline:
+   * - Layer 1: primitive colors
+   * - Layer 2: global semantics
+   * - Layer 3: component intents
+   */
+  colors?: SchemaColors;
   themeTokens?: ThemeTokens<TSegmentName>;
   components: Components<TSegmentName>;
 };

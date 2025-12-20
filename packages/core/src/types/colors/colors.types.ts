@@ -113,7 +113,7 @@ export type InteractionStateColorMap = {
  * They can be used as the source hues for segments (mainColor) and
  * as building blocks for higher semantic layers (e.g., redLike).
  */
-export type BaseColor =
+export type HueName =
   | 'red'
   | 'orange'
   | 'yellow'
@@ -133,6 +133,114 @@ export type SemanticColor =
   | 'yellowLike'
   | 'greenLike'
   | 'neutral';
+
+// -------------------------------------------------------------------------------------------------
+// 3-layer color architecture (Primitive → Global semantics → Component intents)
+// -------------------------------------------------------------------------------------------------
+
+/**
+ * Theme shortcuts used across schema definitions to keep call sites visually compact.
+ *
+ * Note: These are shortcuts for theme *names* (light/dark), not “modes”.
+ */
+export type ThemeShortcut = 'l' | 'd';
+
+/** Theme names used in configuration/data structures (explicit, human-readable). */
+export type ThemeName = 'light' | 'dark';
+
+/**
+ * Layer 1 (Primitive) color names.
+ *
+ * These keys are used to identify a specific primitive color asset within a hue family.
+ *
+ * NOTE: For now this is a global union shared across design systems.
+ * If a future preset needs extra primitive names, we can extend this union later.
+ */
+export type CorePrimitiveColorName = 'default' | 'alt_1' | 'alt_2' | 'alt_3' | 'dynamic';
+
+export type SocialPrimitiveColorName =
+  | 'linkedin'
+  | 'microsoft'
+  | 'google'
+  | 'twitter'
+  | 'telegram'
+  | 'facebook'
+  | 'instagram'
+  | 'github'
+  | 'gitlab'
+  | 'whatsapp'
+  | 'youtube'
+  | 'tiktok'
+  | 'discord'
+  | 'slack'
+  | 'reddit';
+
+/**
+ * Layer 1 (Primitive) color names.
+ *
+ * These keys are used to identify a specific primitive color asset within a hue family.
+ */
+export type PrimitiveColorName = CorePrimitiveColorName | SocialPrimitiveColorName;
+
+/** Layer 1 reference: points to a primitive asset by `hue` and `name`. */
+export type PrimitiveColorRef = {
+  hue: HueName;
+  name: PrimitiveColorName;
+};
+
+/**
+ * Intent values can reference either:
+ * - Layer 2 (global semantics) via `SemanticColor`, or
+ * - Layer 1 (primitive) directly via `PrimitiveColorRef`.
+ */
+export type IntentValue = SemanticColor | PrimitiveColorRef;
+
+/**
+ * Qualified role identifier used by the new `color()` API.
+ *
+ * Example: `button.primary`.
+ */
+export type Role = `${string}.${string}`;
+
+export type PrimitiveColorAsset = {
+  solid: Partial<Record<ThemeName, EmphasisLevel>>;
+
+  // TEMP: gradient support intentionally disabled for now.
+  // Re-introduce later as:
+  // gradient?: Partial<Record<ThemeName, EmphasisLevel>>;
+};
+
+export type PrimitiveColors = Partial<
+  Record<HueName, Partial<Record<PrimitiveColorName, PrimitiveColorAsset>>>
+>;
+
+export type GlobalSemanticPaintMap = {
+  solid: PrimitiveColorRef;
+
+  // TEMP: gradient support intentionally disabled for now.
+  // Re-introduce later as:
+  // gradient?: PrimitiveColorRef;
+};
+
+export type GlobalSemanticsByTheme = Record<
+  ThemeName,
+  Partial<Record<SemanticColor, GlobalSemanticPaintMap>>
+>;
+
+export type ComponentIntents = Partial<Record<string, Record<string, IntentValue>>>;
+
+export type SchemaColors = Partial<{
+  primitiveColors: PrimitiveColors;
+  globalSemantics: GlobalSemanticsByTheme;
+  /**
+   * Optional per-segment overrides for Layer 2.
+   *
+   * This allows segments (brands/products) to use different primitive mappings for the same
+   * global semantic key (e.g. `primary`) without changing component intents.
+   */
+  globalSemanticsBySegment: Partial<Record<SegmentName, GlobalSemanticsByTheme>>;
+  componentIntents: ComponentIntents;
+}>;
 
 export type Emphasis = keyof EmphasisLevel;
 
@@ -207,7 +315,7 @@ export type ThemeColorPalette = ColorPalette;
 
 export type Segment = {
   name: string;
-  mainColor: BaseColor;
+  mainColor: HueName;
   themes: Partial<Record<ThemeMode, ThemeColorPalette>>;
 };
 

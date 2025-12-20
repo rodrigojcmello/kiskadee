@@ -1,24 +1,28 @@
-import { breakpoints, color, type Schema, withAlpha } from '@kiskadee/core';
-import { segments } from './fluent-2-kiskadee.colors';
+import { breakpoints, color, primitive, type Schema, withAlpha } from '@kiskadee/core';
+import { schemaColors, segments } from './fluent-2-kiskadee.colors';
 
 // Reference: https://www.figma.com/design/iEmab9I4qGqbUJlFSxRORE/Microsoft-Fluent-2-Web--Community-?node-id=1-840&p=f&t=M4w8UKqwRiqJgq8i-0
 
-const fluentDefault = segments.default;
+const schemaContext = { colors: schemaColors };
 
-export const schema: Schema = {
+type Segments = 'default';
+
+export const schema: Schema<Segments> = {
   name: 'Fluent',
   prefix: 'fk', // Fluent by Kiskadee
   version: [2, 0, 0],
   author: 'Kiskadee',
   breakpoints,
+  colors: schemaColors,
+  segments,
   themeTokens: {
     palettes: {
       default: {
         light: {
-          focusColor: color(fluentDefault, 'l', 'neutral', 100)
+          focusColor: color(schemaContext, 'default', 'l', primitive('black', 'default'), 100)
         },
         dark: {
-          focusColor: color(fluentDefault, 'd', 'neutral', 100),
+          focusColor: color(schemaContext, 'default', 'd', primitive('black', 'default'), 100),
           background: [0, 0, 12, 1]
         }
       }
@@ -65,15 +69,15 @@ export const schema: Schema = {
                 boxColor: {
                   primary: {
                     vivid: {
-                      rest: color(fluentDefault, 'l', 'primary', 60),
-                      hover: color(fluentDefault, 'l', 'primary', 70),
-                      focus: color(fluentDefault, 'l', 'primary', 60),
-                      pressed: color(fluentDefault, 'l', 'primary', 90),
-                      disabled: color(fluentDefault, 'l', 'neutral', 6),
+                      rest: color(schemaContext, 'default', 'l', 'button.primary', 60),
+                      hover: color(schemaContext, 'default', 'l', 'button.primary', 70),
+                      focus: color(schemaContext, 'default', 'l', 'button.primary', 60),
+                      pressed: color(schemaContext, 'default', 'l', 'button.primary', 90),
+                      disabled: color(schemaContext, 'default', 'l', 'button.neutral', 6),
                       selected: {
-                        rest: color(fluentDefault, 'l', 'primary', 80),
-                        hover: color(fluentDefault, 'l', 'primary', 70),
-                        pressed: color(fluentDefault, 'l', 'primary', 90)
+                        rest: color(schemaContext, 'default', 'l', 'button.primary', 80),
+                        hover: color(schemaContext, 'default', 'l', 'button.primary', 70),
+                        pressed: color(schemaContext, 'default', 'l', 'button.primary', 90)
                       }
                     }
                   }
@@ -83,16 +87,16 @@ export const schema: Schema = {
                 boxColor: {
                   primary: {
                     vivid: {
-                      rest: color(fluentDefault, 'l', 'primary', 70),
-                      hover: color(fluentDefault, 'l', 'primary', 60),
-                      focus: color(fluentDefault, 'l', 'primary', 70),
-                      pressed: color(fluentDefault, 'l', 'primary', 90),
+                      rest: color(schemaContext, 'default', 'd', 'button.primary', 70),
+                      hover: color(schemaContext, 'default', 'd', 'button.primary', 60),
+                      focus: color(schemaContext, 'default', 'd', 'button.primary', 70),
+                      pressed: color(schemaContext, 'default', 'd', 'button.primary', 90),
                       // disabled: color(fluentDefault, 'd', 'neutral', 8),
-                      disabled: color(fluentDefault, 'd', 'neutral', 0, 40),
+                      disabled: color(schemaContext, 'default', 'd', 'button.neutral', 0, 40),
                       selected: {
-                        rest: color(fluentDefault, 'l', 'primary', 80),
-                        hover: color(fluentDefault, 'l', 'primary', 70),
-                        pressed: color(fluentDefault, 'l', 'primary', 90)
+                        rest: color(schemaContext, 'default', 'd', 'button.primary', 80),
+                        hover: color(schemaContext, 'default', 'd', 'button.primary', 70),
+                        pressed: color(schemaContext, 'default', 'd', 'button.primary', 90)
                       }
                     }
                   }
@@ -126,9 +130,9 @@ export const schema: Schema = {
                 textColor: {
                   primary: {
                     vivid: {
-                      rest: color(fluentDefault, 'l', 'neutral', 0),
+                      rest: color(schemaContext, 'default', 'l', 'button.neutral', 0),
                       disabled: {
-                        ref: color(fluentDefault, 'l', 'neutral', 25)
+                        ref: color(schemaContext, 'default', 'l', 'button.neutral', 25)
                       }
                     }
                   }
@@ -138,9 +142,9 @@ export const schema: Schema = {
                 textColor: {
                   primary: {
                     vivid: {
-                      rest: color(fluentDefault, 'd', 'neutral', 100),
+                      rest: color(schemaContext, 'default', 'd', 'button.neutral', 100),
                       disabled: {
-                        ref: color(fluentDefault, 'd', 'neutral', 100, 25)
+                        ref: color(schemaContext, 'default', 'd', 'button.neutral', 100, 25)
                       }
                     }
                   }

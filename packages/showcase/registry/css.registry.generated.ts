@@ -7,6 +7,7 @@ export const cssPaths = {
     effects: '/build/carbon-1-ibm/effects.kiskadee.css',
     palettes: {
       'default|light': '/build/carbon-1-ibm/default.light.kiskadee.css',
+      'default|dark': '/build/carbon-1-ibm/default.dark.kiskadee.css',
     }
   },
   'fluent-2-kiskadee': {
