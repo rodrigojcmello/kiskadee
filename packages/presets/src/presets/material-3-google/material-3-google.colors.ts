@@ -145,16 +145,16 @@ export const primitiveColors = {
   purple: {
     default: {
       solid: {
-        light: segments.default.themes.light.primary,
-        dark: segments.default.themes.light.primary
+        light: segments?.default?.themes?.light?.primary,
+        dark: segments?.default?.themes?.light?.primary
       }
     }
   },
   black: {
     default: {
       solid: {
-        light: segments.default.themes.light.neutral,
-        dark: segments.default.themes.light.neutral
+        light: segments?.default?.themes?.light?.neutral,
+        dark: segments?.default?.themes?.light?.neutral
       }
     }
   }
