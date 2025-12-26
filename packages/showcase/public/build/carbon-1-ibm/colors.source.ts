@@ -13,12 +13,12 @@ type Segment = 'default';
 // Layer 1: Primitive colors
 export const primitiveColors = {
   blue: {
-    default: {
+    v1: {
       solid: { light: blueLight, dark: blueLight }
     }
   },
   black: {
-    default: {
+    v1: {
       solid: { light: blackLight, dark: blackLight }
     }
   }
@@ -42,18 +42,18 @@ export const primitiveColors = {
 export const globalSemantics = {
   light: {
     primary: {
-      solid: { hue: 'blue', name: 'default' }
+      solid: { hue: 'blue', name: 'v1' }
     },
     neutral: {
-      solid: { hue: 'black', name: 'default' }
+      solid: { hue: 'black', name: 'v1' }
     }
   },
   dark: {
     primary: {
-      solid: { hue: 'blue', name: 'default' }
+      solid: { hue: 'blue', name: 'v1' }
     },
     neutral: {
-      solid: { hue: 'black', name: 'default' }
+      solid: { hue: 'black', name: 'v1' }
     }
   }
 } as const satisfies GlobalSemanticsByTheme;

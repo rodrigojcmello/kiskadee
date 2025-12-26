@@ -143,18 +143,18 @@ export const segments: SchemaSegments<Segment> = {
 
 export const primitiveColors = {
   purple: {
-    default: {
+    v1: {
       solid: {
-        light: segments.default.themes.light.primary,
-        dark: segments.default.themes.light.primary
+        light: segments?.default?.themes?.light?.primary,
+        dark: segments?.default?.themes?.light?.primary
       }
     }
   },
   black: {
-    default: {
+    v1: {
       solid: {
-        light: segments.default.themes.light.neutral,
-        dark: segments.default.themes.light.neutral
+        light: segments?.default?.themes?.light?.neutral,
+        dark: segments?.default?.themes?.light?.neutral
       }
     }
   }
@@ -162,19 +162,21 @@ export const primitiveColors = {
 
 export const globalSemantics = {
   light: {
-    primary: { solid: { hue: 'purple', name: 'default' } },
-    neutral: { solid: { hue: 'black', name: 'default' } }
+    primary: { solid: { hue: 'purple', name: 'v1' } },
+    neutral: { solid: { hue: 'black', name: 'v1' } }
   },
   dark: {
-    primary: { solid: { hue: 'purple', name: 'default' } },
-    neutral: { solid: { hue: 'black', name: 'default' } }
+    primary: { solid: { hue: 'purple', name: 'v1' } },
+    neutral: { solid: { hue: 'black', name: 'v1' } }
   }
 } as const satisfies GlobalSemanticsByTheme;
 
 export const componentIntents = {
   button: {
     primary: 'primary',
-    neutral: 'neutral'
+    neutral: 'neutral',
+    destructive: 'redLike',
+    positive: 'greenLike'
   }
 } as const satisfies ComponentIntents;
 

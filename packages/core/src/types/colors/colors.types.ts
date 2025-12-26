@@ -1,3 +1,8 @@
+import type { ButtonIntent, RoleButton } from './colors.intents';
+
+export type { ButtonIntent, RoleButton } from './colors.intents';
+export { ButtonIntentKeys } from './colors.intents';
+
 // Unique identifier for each segment (brand/product identity) within a design system.
 // Defined here to avoid circular type dependencies between schema and color types.
 export type SegmentName = string;
@@ -156,7 +161,13 @@ export type ThemeName = 'light' | 'dark';
  * NOTE: For now this is a global union shared across design systems.
  * If a future preset needs extra primitive names, we can extend this union later.
  */
-export type CorePrimitiveColorName = 'default' | 'alt_1' | 'alt_2' | 'alt_3' | 'dynamic';
+/**
+ * Core (non-social) primitive slots.
+ *
+ * These are ordinal slots within a hue family and are intentionally versioned
+ * as `v1..v4` to match file naming like `purple-2.*` -> `v2`.
+ */
+export type CorePrimitiveColorName = 'v1' | 'v2' | 'v3' | 'v4' | 'dynamic';
 
 export type SocialPrimitiveColorName =
   | 'linkedin'
@@ -200,7 +211,21 @@ export type IntentValue = SemanticColor | PrimitiveColorRef;
  *
  * Example: `button.primary`.
  */
-export type Role = `${string}.${string}`;
+
+/**
+ * Qualified role identifier used by the new `color()` API.
+ *
+ * NOTE: This is intentionally extensible. Each component can introduce its own
+ * typed role union later (e.g. `RoleBadge`) and be merged into `Role`.
+ */
+export type Role = RoleButton | `${string}.${string}`;
+
+/**
+ * Qualified primitive identifier used by the new `color()` API.
+ *
+ * Example: `primitive.blue.v1`.
+ */
+export type PrimitiveRole = `primitive.${HueName}.${PrimitiveColorName}`;
 
 export type PrimitiveColorAsset = {
   solid: Partial<Record<ThemeName, EmphasisLevel>>;
@@ -227,7 +252,16 @@ export type GlobalSemanticsByTheme = Record<
   Partial<Record<SemanticColor, GlobalSemanticPaintMap>>
 >;
 
-export type ComponentIntents = Partial<Record<string, Record<string, IntentValue>>>;
+/**
+ * Layer 3 (Component intents).
+ *
+ * Each component maps its supported intent keys to either:
+ * - a global semantic key (Layer 2), or
+ * - a direct primitive reference (Layer 1).
+ */
+export type ComponentIntents = {
+  button?: Record<ButtonIntent, IntentValue>;
+} & Partial<Record<string, Record<string, IntentValue>>>;
 
 export type SchemaColors = Partial<{
   primitiveColors: PrimitiveColors;

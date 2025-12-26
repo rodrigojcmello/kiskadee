@@ -70,15 +70,15 @@ export const segments: SchemaSegments = {
  */
 export const primitiveColors = {
   blue: {
-    default: { solid: { light: primaryLight, dark: primaryLight } },
+    v1: { solid: { light: primaryLight, dark: primaryLight } },
     // `dynamic` segment override uses `dynamic`.
     dynamic: { solid: { light: dynamicColor, dark: dynamicColor } }
   },
   black: {
-    default: { solid: { light: neutralLight, dark: neutralLight } }
+    v1: { solid: { light: neutralLight, dark: neutralLight } }
   },
   red: {
-    default: { solid: { light: redLikeLight, dark: redLikeLight } }
+    v1: { solid: { light: redLikeLight, dark: redLikeLight } }
   }
 } as const satisfies PrimitiveColors;
 
@@ -86,14 +86,14 @@ type GlobalSemanticKey = 'primary' | 'neutral' | 'redLike';
 
 export const globalSemantics = {
   light: {
-    primary: { solid: { hue: 'blue', name: 'default' } },
-    neutral: { solid: { hue: 'black', name: 'default' } },
-    redLike: { solid: { hue: 'red', name: 'default' } }
+    primary: { solid: { hue: 'blue', name: 'v1' } },
+    neutral: { solid: { hue: 'black', name: 'v1' } },
+    redLike: { solid: { hue: 'red', name: 'v1' } }
   },
   dark: {
-    primary: { solid: { hue: 'blue', name: 'default' } },
-    neutral: { solid: { hue: 'black', name: 'default' } },
-    redLike: { solid: { hue: 'red', name: 'default' } }
+    primary: { solid: { hue: 'blue', name: 'v1' } },
+    neutral: { solid: { hue: 'black', name: 'v1' } },
+    redLike: { solid: { hue: 'red', name: 'v1' } }
   }
 } as const satisfies GlobalSemanticsByTheme;
 
@@ -117,7 +117,8 @@ export const componentIntents = {
   button: {
     primary: 'primary',
     neutral: 'neutral',
-    destructive: 'redLike'
+    destructive: 'redLike',
+    positive: 'primary'
   }
 } as const satisfies ComponentIntents;
 

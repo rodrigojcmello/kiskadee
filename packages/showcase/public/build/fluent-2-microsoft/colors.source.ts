@@ -34,28 +34,30 @@ export const segments: SchemaSegments<Segment> = {
 
 export const primitiveColors = {
   blue: {
-    default: { solid: { light: primaryUnique, dark: primaryUnique } }
+    v1: { solid: { light: primaryUnique, dark: primaryUnique } }
   },
   black: {
-    default: { solid: { light: neutralLight, dark: neutralDark } }
+    v1: { solid: { light: neutralLight, dark: neutralDark } }
   }
 } as const satisfies PrimitiveColors;
 
 export const globalSemantics = {
   light: {
-    primary: { solid: { hue: 'blue', name: 'default' } },
-    neutral: { solid: { hue: 'black', name: 'default' } }
+    primary: { solid: { hue: 'blue', name: 'v1' } },
+    neutral: { solid: { hue: 'black', name: 'v1' } }
   },
   dark: {
-    primary: { solid: { hue: 'blue', name: 'default' } },
-    neutral: { solid: { hue: 'black', name: 'default' } }
+    primary: { solid: { hue: 'blue', name: 'v1' } },
+    neutral: { solid: { hue: 'black', name: 'v1' } }
   }
 } as const satisfies GlobalSemanticsByTheme;
 
 export const componentIntents = {
   button: {
     primary: 'primary',
-    neutral: 'neutral'
+    neutral: 'neutral',
+    destructive: 'redLike',
+    positive: 'greenLike'
   }
 } as const satisfies ComponentIntents;
 

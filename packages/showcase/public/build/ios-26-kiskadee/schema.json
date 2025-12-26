@@ -23,7 +23,7 @@
   "colors": {
     "primitiveColors": {
       "blue": {
-        "default": {
+        "v1": {
           "solid": {
             "light": {
               "subtle": {
@@ -365,7 +365,7 @@
         }
       },
       "black": {
-        "default": {
+        "v1": {
           "solid": {
             "light": {
               "subtle": {
@@ -647,7 +647,7 @@
         }
       },
       "red": {
-        "default": {
+        "v1": {
           "solid": {
             "light": {
               "subtle": {
@@ -934,19 +934,19 @@
         "primary": {
           "solid": {
             "hue": "blue",
-            "name": "default"
+            "name": "v1"
           }
         },
         "neutral": {
           "solid": {
             "hue": "black",
-            "name": "default"
+            "name": "v1"
           }
         },
         "redLike": {
           "solid": {
             "hue": "red",
-            "name": "default"
+            "name": "v1"
           }
         }
       },
@@ -954,19 +954,19 @@
         "primary": {
           "solid": {
             "hue": "blue",
-            "name": "default"
+            "name": "v1"
           }
         },
         "neutral": {
           "solid": {
             "hue": "black",
-            "name": "default"
+            "name": "v1"
           }
         },
         "redLike": {
           "solid": {
             "hue": "red",
-            "name": "default"
+            "name": "v1"
           }
         }
       }
@@ -995,7 +995,8 @@
       "button": {
         "primary": "primary",
         "neutral": "neutral",
-        "destructive": "redLike"
+        "destructive": "redLike",
+        "positive": "primary"
       }
     }
   },

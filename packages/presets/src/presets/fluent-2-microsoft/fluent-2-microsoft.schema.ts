@@ -3,9 +3,10 @@ import { schemaColors, segments } from './fluent-2-microsoft.colors';
 
 // Reference: https://www.figma.com/design/iEmab9I4qGqbUJlFSxRORE/Microsoft-Fluent-2-Web--Community-?node-id=1-840&p=f&t=M4w8UKqwRiqJgq8i-0
 
-const schemaContext = { colors: schemaColors };
+const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
 
-type Segments = 'default';
+// The `Schema` generic represents extra segment names beyond the built-ins (`default` and optional `dynamic`).
+type Segments = never;
 
 export const schema: Schema<Segments> = {
   name: 'Fluent',
@@ -19,10 +20,10 @@ export const schema: Schema<Segments> = {
     palettes: {
       default: {
         light: {
-          focusColor: color(schemaContext, 'default', 'l', primitive('black', 'default'), 100)
+          focusColor: color(schemaContext, 'default', 'l', primitive('black', 'v1'), 100)
         },
         dark: {
-          focusColor: color(schemaContext, 'default', 'd', primitive('black', 'default'), 100),
+          focusColor: color(schemaContext, 'default', 'd', primitive('black', 'v1'), 100),
           background: [0, 0, 12, 1]
         }
       }

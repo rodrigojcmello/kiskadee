@@ -23,7 +23,7 @@
   "colors": {
     "primitiveColors": {
       "blue": {
-        "default": {
+        "v1": {
           "solid": {
             "light": {
               "subtle": {
@@ -305,7 +305,7 @@
         }
       },
       "black": {
-        "default": {
+        "v1": {
           "solid": {
             "light": {
               "subtle": {
@@ -592,13 +592,13 @@
         "primary": {
           "solid": {
             "hue": "blue",
-            "name": "default"
+            "name": "v1"
           }
         },
         "neutral": {
           "solid": {
             "hue": "black",
-            "name": "default"
+            "name": "v1"
           }
         }
       },
@@ -606,13 +606,13 @@
         "primary": {
           "solid": {
             "hue": "blue",
-            "name": "default"
+            "name": "v1"
           }
         },
         "neutral": {
           "solid": {
             "hue": "black",
-            "name": "default"
+            "name": "v1"
           }
         }
       }
@@ -620,7 +620,9 @@
     "componentIntents": {
       "button": {
         "primary": "primary",
-        "neutral": "neutral"
+        "neutral": "neutral",
+        "destructive": "redLike",
+        "positive": "greenLike"
       }
     }
   },

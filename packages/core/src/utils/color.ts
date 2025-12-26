@@ -4,6 +4,7 @@ import type {
   LightTrackTones,
   PrimitiveColorName,
   PrimitiveColorRef,
+  PrimitiveRole,
   Role,
   SchemaColors,
   SolidColor,
@@ -57,7 +58,7 @@ export function color(
   schema: { colors?: SchemaColors },
   segmentName: string,
   theme: ThemeShortcut,
-  roleOrPrimitive: Role | PrimitiveColorRef,
+  roleOrPrimitive: Role | PrimitiveRole | PrimitiveColorRef,
   tone: number,
   alpha?: number
 ): SolidColor;
@@ -66,7 +67,7 @@ export function color(
   schema: { colors?: SchemaColors },
   segmentName: string,
   theme: ThemeShortcut,
-  roleOrPrimitive: Role | PrimitiveColorRef,
+  roleOrPrimitive: Role | PrimitiveRole | PrimitiveColorRef,
   tone: number,
   alpha?: number
 ): SolidColor {
@@ -133,6 +134,16 @@ function parseRole(role: Role): { component: string; intent: string } {
   return { component: role.slice(0, firstDot), intent: role.slice(firstDot + 1) };
 }
 
+function parsePrimitiveRole(role: PrimitiveRole): PrimitiveColorRef {
+  // Expected format: primitive.<hue>.<name>
+  const parts = role.split('.');
+  if (parts.length !== 3) {
+    throw new Error(`Invalid primitive role format. Expected "primitive.<hue>.<name>", got: ${role}`);
+  }
+  const [, hue, name] = parts;
+  return { hue, name } as PrimitiveColorRef;
+}
+
 function isPrimitiveColorRef(value: unknown): value is PrimitiveColorRef {
   return (
     typeof value === 'object' &&
@@ -155,7 +166,7 @@ export function resolveColor(
   schema: { colors?: SchemaColors },
   segmentName: string,
   theme: ThemeShortcut,
-  roleOrPrimitive: Role | PrimitiveColorRef,
+  roleOrPrimitive: Role | PrimitiveRole | PrimitiveColorRef,
   tone: number,
   alpha?: number
 ): SolidColor {
@@ -167,7 +178,11 @@ export function resolveColor(
   const primitiveRef: PrimitiveColorRef =
     typeof roleOrPrimitive === 'string'
       ? (() => {
-          const { component, intent } = parseRole(roleOrPrimitive);
+          if (roleOrPrimitive.startsWith('primitive.')) {
+            return parsePrimitiveRole(roleOrPrimitive as PrimitiveRole);
+          }
+
+          const { component, intent } = parseRole(roleOrPrimitive as Role);
           const intentValue = colors.componentIntents?.[component]?.[intent];
           if (!intentValue) {
             throw new Error(`Intent not mapped for role=${roleOrPrimitive}`);
