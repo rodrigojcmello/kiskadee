@@ -11,6 +11,10 @@ import primaryUnique from './colors/primary.unique';
 import purpleLight from './colors/purple.light';
 import purple2Light from './colors/purple-2.light';
 
+// -------------------------------------------------------------------------------------------------
+// Segments
+// -------------------------------------------------------------------------------------------------
+
 type Segment = 'default';
 
 export const segments: SchemaSegments<Segment> = {
@@ -31,7 +35,7 @@ export const segments: SchemaSegments<Segment> = {
 };
 
 // -------------------------------------------------------------------------------------------------
-// 3-layer color architecture (Primitive → Global semantics → Component intents)
+// Color Layer 1 - Primitive Colors
 // -------------------------------------------------------------------------------------------------
 
 export const primitiveColors = {
@@ -47,6 +51,10 @@ export const primitiveColors = {
   }
 } as const satisfies PrimitiveColors;
 
+// -------------------------------------------------------------------------------------------------
+// Color Layer 2 - Global Semantics
+// -------------------------------------------------------------------------------------------------
+
 export const globalSemantics = {
   light: {
     primary: { solid: { hue: 'blue', name: 'v1' } },
@@ -58,6 +66,10 @@ export const globalSemantics = {
   }
 } as const satisfies GlobalSemanticsByTheme;
 
+// -------------------------------------------------------------------------------------------------
+// Color Layer 3 - Component Intents
+// -------------------------------------------------------------------------------------------------
+
 export const componentIntents = {
   button: {
     primary: 'primary',
@@ -66,6 +78,8 @@ export const componentIntents = {
     positive: 'greenLike'
   }
 } as const satisfies ComponentIntents;
+
+// -------------------------------------------------------------------------------------------------
 
 export const schemaColors = {
   primitiveColors,
