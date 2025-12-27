@@ -5,10 +5,15 @@
   "schemaName": "Fluent",
   "version": "2.0.0",
   "segments": [
-    "default"
+    "default",
+    "dynamic"
   ],
   "themes": {
     "default": [
+      "light",
+      "dark"
+    ],
+    "dynamic": [
       "light",
       "dark"
     ]

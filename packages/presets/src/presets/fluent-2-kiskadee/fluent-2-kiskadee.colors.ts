@@ -5,6 +5,7 @@ import type {
   SchemaColors,
   SchemaSegments
 } from '@kiskadee/core';
+import dynamicColor from '../dynamic.color';
 import neutralDark from './colors/neutral.dark';
 import neutralLight from './colors/neutral.light';
 import primaryUnique from './colors/primary.unique';
@@ -31,8 +32,26 @@ export const segments: SchemaSegments<Segment> = {
         neutral: neutralDark
       }
     }
+  },
+  dynamic: {
+    name: 'Dynamic',
+    mainColor: 'blue',
+    themes: {
+      light: {
+        primary: dynamicColor,
+        neutral: neutralLight
+      },
+      dark: {
+        primary: dynamicColor,
+        neutral: neutralDark
+      }
+    }
   }
 };
+
+// -------------------------------------------------------------------------------------------------
+// 3-layer color architecture (Primitive → Global semantics → Component intents)
+// -------------------------------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------------------------------
 // Color Layer 1 - Primitive Colors
@@ -40,7 +59,9 @@ export const segments: SchemaSegments<Segment> = {
 
 export const primitiveColors = {
   blue: {
-    v1: { solid: { light: primaryUnique, dark: primaryUnique } }
+    v1: { solid: { light: primaryUnique, dark: primaryUnique } },
+    // Used by the `dynamic` segment override.
+    dynamic: { solid: { light: dynamicColor, dark: dynamicColor } }
   },
   black: {
     v1: { solid: { light: neutralLight, dark: neutralDark } }
@@ -67,6 +88,27 @@ export const globalSemantics = {
 } as const satisfies GlobalSemanticsByTheme;
 
 // -------------------------------------------------------------------------------------------------
+// Color Layer 2 (optional) - Global semantics overrides by segment
+// -------------------------------------------------------------------------------------------------
+
+/**
+ * Optional per-segment overrides for global semantics.
+ *
+ * Most presets will keep this empty. When a segment (brand/product) needs a different
+ * primitive mapping for a semantic key (e.g. `primary`), add it here.
+ */
+export const globalSemanticsBySegment = {
+  dynamic: {
+    light: {
+      primary: { solid: { hue: 'blue', name: 'dynamic' } }
+    },
+    dark: {
+      primary: { solid: { hue: 'blue', name: 'dynamic' } }
+    }
+  }
+} as const satisfies Partial<Record<string, GlobalSemanticsByTheme>>;
+
+// -------------------------------------------------------------------------------------------------
 // Color Layer 3 - Component Intents
 // -------------------------------------------------------------------------------------------------
 
@@ -79,10 +121,11 @@ export const componentIntents = {
   }
 } as const satisfies ComponentIntents;
 
-// -------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 export const schemaColors = {
   primitiveColors,
   globalSemantics,
+  globalSemanticsBySegment,
   componentIntents
 } as const satisfies SchemaColors;

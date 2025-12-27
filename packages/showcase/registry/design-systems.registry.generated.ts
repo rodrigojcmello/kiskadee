@@ -33,6 +33,8 @@ export const paletteMaps = {
   'carbon-1-ibm|default|dark': () => loadJsonModule('carbon-1-ibm/default.dark.kiskadee.json'),
   'fluent-2-kiskadee|default|light': () => loadJsonModule('fluent-2-kiskadee/default.light.kiskadee.json'),
   'fluent-2-kiskadee|default|dark': () => loadJsonModule('fluent-2-kiskadee/default.dark.kiskadee.json'),
+  'fluent-2-kiskadee|dynamic|light': () => loadJsonModule('fluent-2-kiskadee/dynamic.light.kiskadee.json'),
+  'fluent-2-kiskadee|dynamic|dark': () => loadJsonModule('fluent-2-kiskadee/dynamic.dark.kiskadee.json'),
   'fluent-2-microsoft|default|light': () => loadJsonModule('fluent-2-microsoft/default.light.kiskadee.json'),
   'fluent-2-microsoft|default|dark': () => loadJsonModule('fluent-2-microsoft/default.dark.kiskadee.json'),
   'ios-26-apple|default|light': () => loadJsonModule('ios-26-apple/default.light.kiskadee.json'),
@@ -61,9 +63,10 @@ export const paletteIndex = {
     }
   },
   'fluent-2-kiskadee': {
-    segments: ['default'],
+    segments: ['default', 'dynamic'],
     themesBySegment: {
-      "default": ['light', 'dark']
+      "default": ['light', 'dark'],
+      "dynamic": ['light', 'dark']
     }
   },
   'fluent-2-microsoft': {

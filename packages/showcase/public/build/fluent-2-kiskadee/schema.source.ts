@@ -5,6 +5,86 @@ import { schemaColors, segments } from './colors.source';
 
 const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
 
+function c(
+  segmentName: 'default' | 'dynamic',
+  theme: 'l' | 'd',
+  roleOrPrimitive: Parameters<typeof color>[3],
+  tone: number,
+  alpha?: number
+) {
+  return color(schemaContext, segmentName, theme, roleOrPrimitive, tone, alpha);
+}
+
+function createButtonElementPalettes(segmentName: 'default' | 'dynamic') {
+  return {
+    light: {
+      boxColor: {
+        primary: {
+          vivid: {
+            rest: c(segmentName, 'l', 'button.primary', 60),
+            hover: c(segmentName, 'l', 'button.primary', 70),
+            focus: c(segmentName, 'l', 'button.primary', 60),
+            pressed: c(segmentName, 'l', 'button.primary', 90),
+            disabled: c(segmentName, 'l', 'button.neutral', 6),
+            selected: {
+              rest: c(segmentName, 'l', 'button.primary', 80),
+              hover: c(segmentName, 'l', 'button.primary', 70),
+              pressed: c(segmentName, 'l', 'button.primary', 90)
+            }
+          }
+        }
+      }
+    },
+    dark: {
+      boxColor: {
+        primary: {
+          vivid: {
+            rest: c(segmentName, 'd', 'button.primary', 70),
+            hover: c(segmentName, 'd', 'button.primary', 60),
+            focus: c(segmentName, 'd', 'button.primary', 70),
+            pressed: c(segmentName, 'd', 'button.primary', 90),
+            disabled: c(segmentName, 'd', 'button.neutral', 0, 40),
+            selected: {
+              rest: c(segmentName, 'd', 'button.primary', 80),
+              hover: c(segmentName, 'd', 'button.primary', 70),
+              pressed: c(segmentName, 'd', 'button.primary', 90)
+            }
+          }
+        }
+      }
+    }
+  };
+}
+
+function createButtonTextElementPalettes(segmentName: 'default' | 'dynamic') {
+  return {
+    light: {
+      textColor: {
+        primary: {
+          vivid: {
+            rest: c(segmentName, 'l', 'button.neutral', 0),
+            disabled: {
+              ref: c(segmentName, 'l', 'button.neutral', 25)
+            }
+          }
+        }
+      }
+    },
+    dark: {
+      textColor: {
+        primary: {
+          vivid: {
+            rest: c(segmentName, 'd', 'button.neutral', 100),
+            disabled: {
+              ref: c(segmentName, 'd', 'button.neutral', 100, 25)
+            }
+          }
+        }
+      }
+    }
+  };
+}
+
 // The `Schema` generic represents extra segment names beyond the built-ins (`default` and optional `dynamic`).
 type Segments = never;
 
@@ -65,45 +145,8 @@ export const schema: Schema<Segments> = {
             }
           },
           palettes: {
-            default: {
-              light: {
-                boxColor: {
-                  primary: {
-                    vivid: {
-                      rest: color(schemaContext, 'default', 'l', 'button.primary', 60),
-                      hover: color(schemaContext, 'default', 'l', 'button.primary', 70),
-                      focus: color(schemaContext, 'default', 'l', 'button.primary', 60),
-                      pressed: color(schemaContext, 'default', 'l', 'button.primary', 90),
-                      disabled: color(schemaContext, 'default', 'l', 'button.neutral', 6),
-                      selected: {
-                        rest: color(schemaContext, 'default', 'l', 'button.primary', 80),
-                        hover: color(schemaContext, 'default', 'l', 'button.primary', 70),
-                        pressed: color(schemaContext, 'default', 'l', 'button.primary', 90)
-                      }
-                    }
-                  }
-                }
-              },
-              dark: {
-                boxColor: {
-                  primary: {
-                    vivid: {
-                      rest: color(schemaContext, 'default', 'd', 'button.primary', 70),
-                      hover: color(schemaContext, 'default', 'd', 'button.primary', 60),
-                      focus: color(schemaContext, 'default', 'd', 'button.primary', 70),
-                      pressed: color(schemaContext, 'default', 'd', 'button.primary', 90),
-                      // disabled: color(fluentDefault, 'd', 'neutral', 8),
-                      disabled: color(schemaContext, 'default', 'd', 'button.neutral', 0, 40),
-                      selected: {
-                        rest: color(schemaContext, 'default', 'd', 'button.primary', 80),
-                        hover: color(schemaContext, 'default', 'd', 'button.primary', 70),
-                        pressed: color(schemaContext, 'default', 'd', 'button.primary', 90)
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            default: createButtonElementPalettes('default'),
+            dynamic: createButtonElementPalettes('dynamic')
           },
           effects: {
             shadow: {
@@ -126,32 +169,8 @@ export const schema: Schema<Segments> = {
             textWeight: 'medium'
           },
           palettes: {
-            default: {
-              light: {
-                textColor: {
-                  primary: {
-                    vivid: {
-                      rest: color(schemaContext, 'default', 'l', 'button.neutral', 0),
-                      disabled: {
-                        ref: color(schemaContext, 'default', 'l', 'button.neutral', 25)
-                      }
-                    }
-                  }
-                }
-              },
-              dark: {
-                textColor: {
-                  primary: {
-                    vivid: {
-                      rest: color(schemaContext, 'default', 'd', 'button.neutral', 100),
-                      disabled: {
-                        ref: color(schemaContext, 'default', 'd', 'button.neutral', 100, 25)
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            default: createButtonTextElementPalettes('default'),
+            dynamic: createButtonTextElementPalettes('dynamic')
           },
           scales: {
             textSize: {

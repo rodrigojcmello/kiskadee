@@ -1,7 +1,6 @@
 import type {
   ComponentIntents,
   GlobalSemanticsByTheme,
-  HueName,
   PrimitiveColorRef,
   PrimitiveColors,
   SchemaSegments,
@@ -15,6 +14,10 @@ import primaryLight from './colors/primary.light';
 import redLikeLight from './colors/red-like.light';
 
 // Kiskadee iOS 26: starts as a copy of Apple iOS 26; can evolve with Kiskadee opinions later
+
+// -------------------------------------------------------------------------------------------------
+// Segments
+// -------------------------------------------------------------------------------------------------
 
 /**
  * Segments definition for the iOS 26 design system.
@@ -96,6 +99,10 @@ export const globalSemantics = {
     redLike: { solid: { hue: 'red', name: 'v1' } }
   }
 } as const satisfies GlobalSemanticsByTheme;
+
+// -------------------------------------------------------------------------------------------------
+// Color Layer 2 (optional) - Global semantics overrides by segment
+// -------------------------------------------------------------------------------------------------
 
 /**
  * Optional per-segment overrides for global semantics.
