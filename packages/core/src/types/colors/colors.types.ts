@@ -291,12 +291,9 @@ export type SchemaColors = Partial<{
    * - override primitive mappings for the same global semantic key (e.g. `primary`) without
    *   changing component intents.
    *
-   * NOTE: During migration, we also accept the legacy shape `{ [segment]: GlobalSemanticsByTheme }`.
-   * This will be removed once all presets are updated.
+   * NOTE: Segment overrides live under `themes`.
    */
-  globalSemanticsBySegment:
-    | GlobalSemanticsBySegment
-    | Partial<Record<SegmentName, GlobalSemanticsByTheme>>;
+  globalSemanticsBySegment: GlobalSemanticsBySegment;
   componentIntents: ComponentIntents;
 }>;
 
