@@ -189,8 +189,18 @@ export function resolveColor(
           }
 
           if (typeof intentValue === 'string') {
+            const bySegment = colors.globalSemanticsBySegment?.[segmentName];
+
+            // Migration note:
+            // - New shape: `{ meta, themes }`
+            // - Legacy shape: `{ [themeName]: { ... } }`
+            const segmentThemes =
+              bySegment && typeof bySegment === 'object' && 'themes' in bySegment
+                ? (bySegment as { themes?: unknown }).themes
+                : bySegment;
+
             const paint =
-              colors.globalSemanticsBySegment?.[segmentName]?.[themeName]?.[intentValue] ??
+              (segmentThemes as Record<string, any> | undefined)?.[themeName]?.[intentValue] ??
               colors.globalSemantics?.[themeName]?.[intentValue];
             if (!paint) {
               throw new Error(

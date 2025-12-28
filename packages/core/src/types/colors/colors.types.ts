@@ -252,6 +252,23 @@ export type GlobalSemanticsByTheme = Record<
   Partial<Record<SemanticColor, GlobalSemanticPaintMap>>
 >;
 
+/** Segment metadata used by tooling (build/showcase), not by the color resolver. */
+export type SegmentMeta = {
+  name: string;
+};
+
+/**
+ * Segment-scoped Layer 2 overrides.
+ *
+ * `themes` is optional because most segments will share the global baseline.
+ */
+export type GlobalSemanticsBySegmentEntry = {
+  meta: SegmentMeta;
+  themes?: GlobalSemanticsByTheme;
+};
+
+export type GlobalSemanticsBySegment = Partial<Record<SegmentName, GlobalSemanticsBySegmentEntry>>;
+
 /**
  * Layer 3 (Component intents).
  *
@@ -267,12 +284,19 @@ export type SchemaColors = Partial<{
   primitiveColors: PrimitiveColors;
   globalSemantics: GlobalSemanticsByTheme;
   /**
-   * Optional per-segment overrides for Layer 2.
+   * Segment registry + optional per-segment overrides for Layer 2.
    *
-   * This allows segments (brands/products) to use different primitive mappings for the same
-   * global semantic key (e.g. `primary`) without changing component intents.
+   * This allows segments (brands/products) to:
+   * - be discoverable by tooling (via `meta.name`), and
+   * - override primitive mappings for the same global semantic key (e.g. `primary`) without
+   *   changing component intents.
+   *
+   * NOTE: During migration, we also accept the legacy shape `{ [segment]: GlobalSemanticsByTheme }`.
+   * This will be removed once all presets are updated.
    */
-  globalSemanticsBySegment: Partial<Record<SegmentName, GlobalSemanticsByTheme>>;
+  globalSemanticsBySegment:
+    | GlobalSemanticsBySegment
+    | Partial<Record<SegmentName, GlobalSemanticsByTheme>>;
   componentIntents: ComponentIntents;
 }>;
 
