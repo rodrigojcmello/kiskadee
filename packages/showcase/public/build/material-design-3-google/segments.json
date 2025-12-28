@@ -2,6 +2,36 @@
   "default": {
     "meta": {
       "name": "Material Design - Default (purple)"
+    },
+    "themes": {
+      "light": {
+        "primary": {
+          "solid": {
+            "hue": "purple",
+            "name": "v1"
+          }
+        },
+        "neutral": {
+          "solid": {
+            "hue": "black",
+            "name": "v1"
+          }
+        }
+      },
+      "dark": {
+        "primary": {
+          "solid": {
+            "hue": "purple",
+            "name": "v1"
+          }
+        },
+        "neutral": {
+          "solid": {
+            "hue": "black",
+            "name": "v1"
+          }
+        }
+      }
     }
   }
 }

@@ -2,6 +2,36 @@
   "default": {
     "meta": {
       "name": "Default"
+    },
+    "themes": {
+      "light": {
+        "primary": {
+          "solid": {
+            "hue": "blue",
+            "name": "v1"
+          }
+        },
+        "neutral": {
+          "solid": {
+            "hue": "black",
+            "name": "v1"
+          }
+        }
+      },
+      "dark": {
+        "primary": {
+          "solid": {
+            "hue": "blue",
+            "name": "v1"
+          }
+        },
+        "neutral": {
+          "solid": {
+            "hue": "black",
+            "name": "v1"
+          }
+        }
+      }
     }
   }
 }

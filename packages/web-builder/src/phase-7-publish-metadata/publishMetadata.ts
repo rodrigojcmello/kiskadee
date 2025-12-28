@@ -1,6 +1,13 @@
 import { copyFile, cp, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
-import type { GlobalSemanticsBySegment, Schema, SchemaColors, SchemaFonts, ThemeMode } from '@kiskadee/core';
+import type {
+  GlobalSemanticsBySegment,
+  GlobalSemanticsByTheme,
+  Schema,
+  SchemaColors,
+  SchemaFonts,
+  ThemeMode
+} from '@kiskadee/core';
 import type {
   Manifest,
   ManifestComponent,
@@ -19,6 +26,52 @@ function requireSegmentRegistry(colors: SchemaColors | undefined): GlobalSemanti
     throw new Error('[web-builder] Schema is missing `colors.globalSemanticsBySegment` segment registry');
   }
   return bySegment;
+}
+
+function requireGlobalSemantics(colors: SchemaColors | undefined): GlobalSemanticsByTheme {
+  const gs = colors?.globalSemantics as GlobalSemanticsByTheme | undefined;
+  if (!gs || typeof gs !== 'object') {
+    throw new Error('[web-builder] Schema is missing `colors.globalSemantics`');
+  }
+  return gs;
+}
+
+/**
+ * Build-time segment metadata artifact.
+ *
+ * Even though the runtime resolver supports inheritance (segment overrides fall back to
+ * `colors.globalSemantics`), artifacts should be explicit. Therefore we materialize `themes`
+ * for every segment (including `default`) by merging the global baseline with per-segment overrides.
+ */
+function materializeSegmentThemesArtifact(
+  colors: SchemaColors | undefined,
+  bySegment: GlobalSemanticsBySegment
+): Record<string, unknown> {
+  const globalSemantics = requireGlobalSemantics(colors);
+
+  const out: Record<string, unknown> = {};
+
+  for (const segmentKey of Object.keys(bySegment)) {
+    const entry = bySegment[segmentKey as keyof typeof bySegment];
+    if (!entry) continue;
+
+    const themes: Record<string, unknown> = {};
+    for (const themeName of Object.keys(globalSemantics)) {
+      const base = (globalSemantics as any)[themeName] ?? {};
+      const override = (entry as any)?.themes?.[themeName] ?? {};
+      themes[themeName] = {
+        ...base,
+        ...override
+      };
+    }
+
+    out[segmentKey] = {
+      meta: entry.meta,
+      themes
+    };
+  }
+
+  return out;
 }
 
 function firstSegmentLabel(bySegment: GlobalSemanticsBySegment): string | null {
@@ -251,11 +304,8 @@ export async function publishMetadata(params: {
   // Write metadata files
   await writeFile(resolve(buildDir, 'manifest.json'), JSON.stringify(manifest, null, 2), 'utf8');
   await writeFile(resolve(buildDir, 'schema.json'), JSON.stringify(schema, null, 2), 'utf8');
-  await writeFile(
-    resolve(buildDir, 'segments.json'),
-    JSON.stringify(segmentRegistry, null, 2),
-    'utf8'
-  );
+  const segmentsArtifact = materializeSegmentThemesArtifact(schema.colors, segmentRegistry);
+  await writeFile(resolve(buildDir, 'segments.json'), JSON.stringify(segmentsArtifact, null, 2), 'utf8');
 
   // Optional: copy original template TS for inspection.
   // In the clean model we always expose two stable entrypoints:

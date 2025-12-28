@@ -2,6 +2,48 @@
   "default": {
     "meta": {
       "name": "Default"
+    },
+    "themes": {
+      "light": {
+        "primary": {
+          "solid": {
+            "hue": "blue",
+            "name": "v1"
+          }
+        },
+        "neutral": {
+          "solid": {
+            "hue": "black",
+            "name": "v1"
+          }
+        },
+        "redLike": {
+          "solid": {
+            "hue": "red",
+            "name": "v1"
+          }
+        }
+      },
+      "dark": {
+        "primary": {
+          "solid": {
+            "hue": "blue",
+            "name": "v1"
+          }
+        },
+        "neutral": {
+          "solid": {
+            "hue": "black",
+            "name": "v1"
+          }
+        },
+        "redLike": {
+          "solid": {
+            "hue": "red",
+            "name": "v1"
+          }
+        }
+      }
     }
   },
   "dynamic": {
@@ -15,6 +57,18 @@
             "hue": "blue",
             "name": "dynamic"
           }
+        },
+        "neutral": {
+          "solid": {
+            "hue": "black",
+            "name": "v1"
+          }
+        },
+        "redLike": {
+          "solid": {
+            "hue": "red",
+            "name": "v1"
+          }
         }
       },
       "dark": {
@@ -22,6 +76,18 @@
           "solid": {
             "hue": "blue",
             "name": "dynamic"
+          }
+        },
+        "neutral": {
+          "solid": {
+            "hue": "black",
+            "name": "v1"
+          }
+        },
+        "redLike": {
+          "solid": {
+            "hue": "red",
+            "name": "v1"
           }
         }
       }
