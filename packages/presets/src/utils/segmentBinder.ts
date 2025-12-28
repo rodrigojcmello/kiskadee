@@ -1,4 +1,6 @@
-import type { SchemaSegments, Segment } from '@kiskadee/core';
+// NOTE: Segments are no longer defined by a `SchemaSegments` structure in the core.
+// Presets discover segments via `schema.colors.globalSemanticsBySegment` and typically keep
+// a local `segmentNames` const (e.g. `['default', 'dynamic'] as const`).
 
 /**
  * Creates a binder function that iterates over a specific list of segment keys
@@ -10,15 +12,16 @@ import type { SchemaSegments, Segment } from '@kiskadee/core';
  * @param keys - An array of keys (e.g., ['default', 'dynamic']) to include.
  * @returns A function that accepts a callback (fn) and returns an object mapping the keys to fn(segment).
  */
-export function createSegmentBinder<T extends SchemaSegments>(segments: T, keys: (keyof T)[]) {
-  return <R>(fn: (segment: Segment) => R): Partial<Record<keyof T, R>> => {
-    const result = {} as Partial<Record<keyof T, R>>;
-    // We only iterate over the explicitly registered keys
-    for (const key of keys) {
-      const seg = segments[key];
-      if (seg) {
-        result[key] = fn(seg as unknown as Segment);
-      }
+export function createSegmentBinder<const TSegmentNames extends readonly string[]>(
+  segmentNames: TSegmentNames
+) {
+  type SegmentName = TSegmentNames[number];
+
+  return <R>(fn: (segmentName: SegmentName) => R): Record<SegmentName, R> => {
+    const result = {} as Record<SegmentName, R>;
+    for (const segmentName of segmentNames) {
+      const key = segmentName as SegmentName;
+      result[key] = fn(key);
     }
     return result;
   };

@@ -17,10 +17,18 @@ export function mergeThemePalettes(
 ): Partial<Record<ThemeMode, ThemeColorPalette>> {
   const out: Partial<Record<ThemeMode, ThemeColorPalette>> = {};
 
-  const allModes = new Set([
-    ...Object.keys(baseThemes),
-    ...Object.keys(overrides || {})
-  ]) as Set<ThemeMode>;
+  const isThemeMode = (value: string): value is ThemeMode =>
+    value === 'light' || value === 'dark' || value === 'darker';
+
+  const allModes = new Set<ThemeMode>();
+
+  for (const key of Object.keys(baseThemes)) {
+    if (isThemeMode(key)) allModes.add(key);
+  }
+
+  for (const key of Object.keys(overrides || {})) {
+    if (isThemeMode(key)) allModes.add(key);
+  }
 
   for (const mode of allModes) {
     const base = baseThemes[mode] || {};
