@@ -1,5 +1,5 @@
 import { breakpoints, color, Schema, type SegmentName } from '@kiskadee/core';
-import { schemaColors, segments } from './colors.source';
+import { schemaColors } from './colors.source';
 
 /**
  * Segments definition for the Material Design 3 design system.
@@ -33,7 +33,6 @@ export const schema: Schema<Segment> = {
   author: 'Google',
   breakpoints,
   colors: schemaColors,
-  segments,
   fonts: {
     body: ['Roboto', 'sans-serif']
   },

@@ -20,7 +20,7 @@ type Saturation = number;
 type Alpha = number;
 
 /** Represents a color in HSLA format: [hue, saturation, lightness, alpha]. */
-export type HSLA = [hue: Hue, saturation: Saturation, lightness: Lightness, alpha: Alpha];
+export type HSLA = readonly [hue: Hue, saturation: Saturation, lightness: Lightness, alpha: Alpha];
 
 /** Represents a color in hexadecimal format (e.g., "#ff0000" or "#ff0000ff"). */
 export type Hex = string;

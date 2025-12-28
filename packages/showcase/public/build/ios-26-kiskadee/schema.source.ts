@@ -3,8 +3,7 @@ import {
   componentIntents,
   globalSemantics,
   globalSemanticsBySegment,
-  primitiveColors,
-  segments
+  primitiveColors
 } from './colors.source';
 
 // Kiskadee iOS 26: starts as a copy of Apple iOS 26; can evolve with Kiskadee opinions later
@@ -41,7 +40,6 @@ export const schema: Schema = {
   author: 'Kiskadee',
   breakpoints,
   colors: schemaColors,
-  segments,
   themeTokens: {
     palettes: bindSegments((segment) => ({
       light: {

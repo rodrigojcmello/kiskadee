@@ -56,7 +56,14 @@ export function transformColorKeyToCss(
   // Check if it is HSLA array
   if (rawValue.startsWith('[') && rawValue.endsWith(']')) {
     const inner = rawValue.slice(1, -1);
-    const hsla = inner.split(',').map(Number) as HSLA;
+    const parts = inner.split(',').map(Number);
+    if (parts.length !== 4 || parts.some((n) => Number.isNaN(n))) {
+      throw new Error(
+        `Invalid HSLA tuple in style key. Expected "h,s,l,a" (4 numbers), got: "${inner}"`
+      );
+    }
+    // TS note: `HSLA` is a `readonly` tuple. We validate length at runtime and then cast.
+    const hsla = parts as unknown as HSLA;
     cssValue = convertHslaToHex(hsla);
   } else {
     cssValue = rawValue;

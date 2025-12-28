@@ -1,5 +1,5 @@
 import { breakpoints, color, primitive, type Schema, withAlpha } from '@kiskadee/core';
-import { schemaColors, segments } from './colors.source';
+import { schemaColors } from './colors.source';
 
 // Reference: https://www.figma.com/community/file/1157761560874207208 copied to "ds-refs/(v11) Carbon Design System (Community).fig"
 
@@ -14,7 +14,6 @@ export const schema: Schema<Segments> = {
   author: 'IBM',
   breakpoints,
   colors: schemaColors,
-  segments,
   fonts: {
     body: ['IBM Plex Sans', 'sans-serif']
   },
