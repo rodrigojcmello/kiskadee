@@ -1,10 +1,12 @@
 import type {
+  Color,
   DarkTrackTones,
   EmphasisLevel,
   LightTrackTones,
   PrimitiveColorName,
   PrimitiveColorRef,
   PrimitiveRole,
+  ResolvedGradient,
   Role,
   SchemaColors,
   SolidColor,
@@ -58,19 +60,19 @@ export function color(
   schema: { colors?: SchemaColors },
   segmentName: string,
   theme: ThemeShortcut,
-  roleOrPrimitive: Role | PrimitiveRole | PrimitiveColorRef,
-  tone: number,
+  roleOrPrimitive: Role | PrimitiveRole,
+  tone: number | number[],
   alpha?: number
-): SolidColor;
+): Color;
 
 export function color(
   schema: { colors?: SchemaColors },
   segmentName: string,
   theme: ThemeShortcut,
-  roleOrPrimitive: Role | PrimitiveRole | PrimitiveColorRef,
-  tone: number,
+  roleOrPrimitive: Role | PrimitiveRole,
+  tone: number | number[],
   alpha?: number
-): SolidColor {
+): Color {
   return resolveColor(schema, segmentName, theme, roleOrPrimitive, tone, alpha);
 }
 
@@ -125,34 +127,70 @@ function requireSchemaColors(colors: SchemaColors | undefined): Required<SchemaC
   return colors as Required<SchemaColors>;
 }
 
-function parseRole(role: Role): { component: string; intent: string } {
-  const firstDot = role.indexOf('.');
-  const lastDot = role.lastIndexOf('.');
-  if (firstDot <= 0 || lastDot !== firstDot || firstDot === role.length - 1) {
-    throw new Error(`Invalid role format. Expected "component.intent", got: ${role}`);
+type PaintKind = 'solid' | 'gradient';
+
+function parseRole(role: Role): { component: string; intent: string; paint: PaintKind } {
+  const parts = role.split('.');
+  if (parts.length === 2) {
+    const [component, intent] = parts;
+    if (!component || !intent) {
+      throw new Error(`Invalid role format. Expected "component.intent[.paint]", got: ${role}`);
+    }
+    return { component, intent, paint: 'solid' };
   }
-  return { component: role.slice(0, firstDot), intent: role.slice(firstDot + 1) };
+
+  if (parts.length === 3) {
+    const [component, intent, paintRaw] = parts;
+    if (!component || !intent || !paintRaw) {
+      throw new Error(`Invalid role format. Expected "component.intent[.paint]", got: ${role}`);
+    }
+    if (paintRaw !== 'solid' && paintRaw !== 'gradient') {
+      throw new Error(
+        `Invalid role paint. Expected "solid" or "gradient", got: ${paintRaw} (role=${role})`
+      );
+    }
+    return { component, intent, paint: paintRaw };
+  }
+
+  throw new Error(`Invalid role format. Expected "component.intent[.paint]", got: ${role}`);
 }
 
 function parsePrimitiveRole(role: PrimitiveRole): PrimitiveColorRef {
   // Expected format: primitive.<hue>.<name>
   const parts = role.split('.');
   if (parts.length !== 3) {
-    throw new Error(`Invalid primitive role format. Expected "primitive.<hue>.<name>", got: ${role}`);
+    throw new Error(
+      `Invalid primitive role format. Expected "primitive.<hue>.<name>", got: ${role}`
+    );
   }
   const [, hue, name] = parts;
   return { hue, name } as PrimitiveColorRef;
 }
 
-function isPrimitiveColorRef(value: unknown): value is PrimitiveColorRef {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'hue' in value &&
-    'name' in value &&
-    typeof (value as { hue?: unknown }).hue === 'string' &&
-    typeof (value as { name?: unknown }).name === 'string'
-  );
+function resolveSolidFromPrimitiveRef(
+  colors: Required<SchemaColors>,
+  themeName: ThemeName,
+  primitiveRef: PrimitiveColorRef,
+  tone: number
+): SolidColor {
+  const asset = colors.primitiveColors?.[primitiveRef.hue]?.[primitiveRef.name];
+  const emphasis = asset?.solid?.[themeName];
+  if (!emphasis) {
+    throw new Error(
+      `Primitive color asset not found for hue=${primitiveRef.hue} name=${primitiveRef.name} theme=${themeName}`
+    );
+  }
+
+  const resolved = resolveBucketFromEmphasis(emphasis, tone);
+  const value = resolved.bucket[resolved.key as never] as SolidColor | undefined;
+  if (!value) {
+    const available = Object.keys(resolved.bucket).join(', ');
+    throw new Error(
+      `Tone ${resolved.key} not available in primitive hue=${primitiveRef.hue} name=${primitiveRef.name} series=${resolved.series}. Available: ${available}`
+    );
+  }
+
+  return value;
 }
 
 /**
@@ -166,64 +204,84 @@ export function resolveColor(
   schema: { colors?: SchemaColors },
   segmentName: string,
   theme: ThemeShortcut,
-  roleOrPrimitive: Role | PrimitiveRole | PrimitiveColorRef,
-  tone: number,
+  roleOrPrimitive: Role | PrimitiveRole,
+  tone: number | number[],
   alpha?: number
-): SolidColor {
+): Color {
   // `segmentName` is kept for per-segment overrides.
   const themeName: ThemeName = theme === 'l' ? 'light' : 'dark';
 
   const colors = requireSchemaColors(schema.colors);
 
-  const primitiveRef: PrimitiveColorRef =
-    typeof roleOrPrimitive === 'string'
-      ? (() => {
-          if (roleOrPrimitive.startsWith('primitive.')) {
-            return parsePrimitiveRole(roleOrPrimitive as PrimitiveRole);
-          }
+  if (roleOrPrimitive.startsWith('primitive.')) {
+    // Direct Layer 1 usage (always solid for now).
+    if (Array.isArray(tone)) {
+      throw new Error(
+        `Invalid tone. Expected number for primitive role, got array (role=${roleOrPrimitive})`
+      );
+    }
+    const primitiveRef = parsePrimitiveRole(roleOrPrimitive as PrimitiveRole);
+    const value = resolveSolidFromPrimitiveRef(colors, themeName, primitiveRef, tone);
+    return typeof alpha === 'number' ? (withAlpha(value, alpha) as SolidColor) : value;
+  }
 
-          const { component, intent } = parseRole(roleOrPrimitive as Role);
-          const intentValue = colors.componentIntents?.[component]?.[intent];
-          if (!intentValue) {
-            throw new Error(`Intent not mapped for role=${roleOrPrimitive}`);
-          }
+  const { component, intent, paint } = parseRole(roleOrPrimitive as Role);
+  const intentValue = colors.componentIntents?.[component]?.[intent];
+  if (!intentValue) {
+    throw new Error(`Intent not mapped for role=${roleOrPrimitive}`);
+  }
 
-          if (typeof intentValue === 'string') {
-            const paint =
-              colors.globalSemanticsBySegment?.[segmentName]?.themes?.[themeName]?.[intentValue] ??
-              colors.globalSemantics?.[themeName]?.[intentValue];
-            if (!paint) {
-              throw new Error(
-                `Global semantic not mapped for semantic=${intentValue} theme=${theme} (role=${roleOrPrimitive})`
-              );
-            }
-            return paint.solid;
-          }
+  const primitiveRole: PrimitiveRole =
+    typeof intentValue === 'string'
+      ? intentValue.startsWith('primitive.')
+        ? (intentValue as PrimitiveRole)
+        : (colors.globalSemanticsBySegment?.[segmentName]?.themes?.[themeName]?.[intentValue] ??
+          colors.globalSemantics?.[themeName]?.[intentValue])
+      : (intentValue as PrimitiveRole);
 
-          if (!isPrimitiveColorRef(intentValue)) {
-            throw new Error(`Invalid intent value for role=${roleOrPrimitive}`);
-          }
+  if (!primitiveRole) {
+    throw new Error(`Global semantic not mapped for role=${roleOrPrimitive} theme=${theme}`);
+  }
 
-          return intentValue;
-        })()
-      : roleOrPrimitive;
+  const basePrimitiveRef = parsePrimitiveRole(primitiveRole);
 
-  const asset = colors.primitiveColors?.[primitiveRef.hue]?.[primitiveRef.name];
-  const emphasis = asset?.solid?.[themeName];
-  if (!emphasis) {
+  if (paint === 'solid') {
+    if (Array.isArray(tone)) {
+      throw new Error(
+        `Invalid tone. Expected number for solid role, got array (role=${roleOrPrimitive})`
+      );
+    }
+    const value = resolveSolidFromPrimitiveRef(colors, themeName, basePrimitiveRef, tone);
+    return typeof alpha === 'number' ? (withAlpha(value, alpha) as SolidColor) : value;
+  }
+
+  // paint === 'gradient'
+  const asset = colors.primitiveColors?.[basePrimitiveRef.hue]?.[basePrimitiveRef.name];
+  const template = asset?.gradient;
+  if (!template) {
     throw new Error(
-      `Primitive color asset not found for hue=${primitiveRef.hue} name=${primitiveRef.name} theme=${theme}`
+      `Gradient not defined for primitive hue=${basePrimitiveRef.hue} name=${basePrimitiveRef.name} (role=${roleOrPrimitive})`
     );
   }
 
-  const resolved = resolveBucketFromEmphasis(emphasis, tone);
-  const value = resolved.bucket[resolved.key as never] as SolidColor | undefined;
-  if (!value) {
-    const available = Object.keys(resolved.bucket).join(', ');
+  const tones: number[] = Array.isArray(tone) ? tone : template.stops.map(() => tone);
+  if (Array.isArray(tone) && tone.length !== template.stops.length) {
     throw new Error(
-      `Tone ${resolved.key} not available in primitive hue=${primitiveRef.hue} name=${primitiveRef.name} series=${resolved.series}. Available: ${available}`
+      `Invalid gradient tones length. Expected ${template.stops.length}, got ${tone.length} (role=${roleOrPrimitive})`
     );
   }
 
-  return typeof alpha === 'number' ? (withAlpha(value, alpha) as SolidColor) : value;
+  const resolvedStops: ResolvedGradient['stops'] = template.stops.map((stop, idx) => {
+    const stopRef = parsePrimitiveRole(stop.primitive as PrimitiveRole);
+    const stopColor = resolveSolidFromPrimitiveRef(colors, themeName, stopRef, tones[idx]!);
+    const finalColor =
+      typeof alpha === 'number' ? (withAlpha(stopColor, alpha) as SolidColor) : stopColor;
+    return { color: finalColor, position: stop.position };
+  });
+
+  return {
+    kind: 'linear',
+    angle: template.angle,
+    stops: resolvedStops
+  } satisfies ResolvedGradient;
 }
