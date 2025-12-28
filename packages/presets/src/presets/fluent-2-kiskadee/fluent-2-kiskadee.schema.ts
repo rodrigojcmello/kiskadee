@@ -9,8 +9,8 @@ function c(
   segmentName: 'default' | 'dynamic',
   theme: 'l' | 'd',
   roleOrPrimitive: Parameters<typeof color>[3],
-  tone: number,
-  alpha?: number
+  tone: Parameters<typeof color>[4],
+  alpha?: Parameters<typeof color>[5]
 ) {
   return color(schemaContext, segmentName, theme, roleOrPrimitive, tone, alpha);
 }

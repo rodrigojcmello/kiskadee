@@ -2,11 +2,11 @@ import type {
   Color,
   DarkTrackTones,
   EmphasisLevel,
+  HueName,
   LightTrackTones,
   PrimitiveColorName,
   PrimitiveColorRef,
   PrimitiveRole,
-  ResolvedGradient,
   Role,
   SchemaColors,
   SolidColor,
@@ -82,11 +82,8 @@ export function color(
  * This stays intentionally tiny so call sites remain ergonomic:
  * `color(schema, 'default', 'l', primitive('blue', 'linkedin'), 50)`.
  */
-export function primitive(
-  hue: PrimitiveColorRef['hue'],
-  name: PrimitiveColorName
-): PrimitiveColorRef {
-  return { hue, name };
+export function primitive(hue: HueName, name: PrimitiveColorName): PrimitiveRole {
+  return `primitive.${hue}.${name}` as PrimitiveRole;
 }
 
 type ResolvedBucket =
