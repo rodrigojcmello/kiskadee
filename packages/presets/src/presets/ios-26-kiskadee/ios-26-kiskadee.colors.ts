@@ -51,13 +51,14 @@ export const globalSemantics = {
 } as const satisfies GlobalSemanticsByTheme;
 
 // -------------------------------------------------------------------------------------------------
-// Color Layer 2 (optional) - Global semantics overrides by segment
+// Color Layer 2 - Global semantics by segment (registry + optional overrides)
 // -------------------------------------------------------------------------------------------------
 
 /**
- * Optional per-segment overrides for global semantics.
+ * Segment registry + optional per-segment overrides for global semantics.
  *
- * Here we override `primary` for the `dynamic` segment to use a different primitive.
+ * - `default` is always present to register the primary segment.
+ * - `themes` is optional and should be used only when a segment must override Layer 2 mappings.
  */
 export const globalSemanticsBySegment = {
   default: {
