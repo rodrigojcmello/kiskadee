@@ -1,9 +1,9 @@
 import type {
   ComponentIntents,
+  GlobalSemanticsBySegment,
   GlobalSemanticsByTheme,
   PrimitiveColors,
-  SchemaColors,
-  SchemaSegments
+  SchemaColors
 } from '@kiskadee/core';
 import dynamicColor from '../dynamic.color';
 import neutralDark from './colors/neutral.dark';
@@ -11,43 +11,6 @@ import neutralLight from './colors/neutral.light';
 import primaryUnique from './colors/primary.unique';
 import purpleLight from './colors/purple.light';
 import purple2Light from './colors/purple-2.light';
-
-// -------------------------------------------------------------------------------------------------
-// Segments
-// -------------------------------------------------------------------------------------------------
-
-type Segment = 'default';
-
-export const segments: SchemaSegments<Segment> = {
-  default: {
-    name: 'Default',
-    mainColor: 'blue',
-    themes: {
-      light: {
-        primary: primaryUnique,
-        neutral: neutralLight
-      },
-      dark: {
-        primary: primaryUnique,
-        neutral: neutralDark
-      }
-    }
-  },
-  dynamic: {
-    name: 'Dynamic',
-    mainColor: 'blue',
-    themes: {
-      light: {
-        primary: dynamicColor,
-        neutral: neutralLight
-      },
-      dark: {
-        primary: dynamicColor,
-        neutral: neutralDark
-      }
-    }
-  }
-};
 
 // -------------------------------------------------------------------------------------------------
 // 3-layer color architecture (Primitive → Global semantics → Component intents)
@@ -98,15 +61,25 @@ export const globalSemantics = {
  * primitive mapping for a semantic key (e.g. `primary`), add it here.
  */
 export const globalSemanticsBySegment = {
+  default: {
+    meta: {
+      name: 'Default'
+    }
+  },
   dynamic: {
-    light: {
-      primary: { solid: { hue: 'blue', name: 'dynamic' } }
+    meta: {
+      name: 'Dynamic'
     },
-    dark: {
-      primary: { solid: { hue: 'blue', name: 'dynamic' } }
+    themes: {
+      light: {
+        primary: { solid: { hue: 'blue', name: 'dynamic' } }
+      },
+      dark: {
+        primary: { solid: { hue: 'blue', name: 'dynamic' } }
+      }
     }
   }
-} as const satisfies Partial<Record<string, GlobalSemanticsByTheme>>;
+} as const satisfies GlobalSemanticsBySegment;
 
 // -------------------------------------------------------------------------------------------------
 // Color Layer 3 - Component Intents

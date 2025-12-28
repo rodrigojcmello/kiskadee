@@ -371,17 +371,6 @@ export type EmphasisLevel = {
 export type ColorPalette = Partial<Record<SemanticColor, EmphasisLevel>>;
 export type ThemeColorPalette = ColorPalette;
 
-export type Segment = {
-  name: string;
-  mainColor: HueName;
-  themes: Partial<Record<ThemeMode, ThemeColorPalette>>;
-};
-
-export type SchemaSegments<TSegmentName extends SegmentName = never> = {
-  default: Segment;
-  dynamic?: Segment;
-} & Record<TSegmentName, Segment>;
-
 export type ElementPalettes<TSegmentName extends SegmentName = never> = Partial<
   Record<TSegmentName | 'default' | 'dynamic', Partial<Record<ThemeMode, ColorSchema>>>
 >;

@@ -5,7 +5,6 @@ import type {
   HSLA,
   Schema,
   SchemaFonts,
-  SchemaSegments,
   SegmentName,
   SolidColor,
   ThemeMode
@@ -14,9 +13,7 @@ import { convertHslaToHex } from '@kiskadee/core';
 import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex';
 import { type FontStack, toCssFontFamily } from '../utils/fontFamily';
 
-type ExtractableSchema = Schema & {
-  segments?: SchemaSegments;
-};
+type ExtractableSchema = Schema;
 
 type SegmentKey = SegmentName | string;
 
@@ -29,8 +26,10 @@ function getBuildDir(outDirSlug: string): string {
 }
 
 function getSegmentKeys(schema: ExtractableSchema): SegmentKey[] {
-  if (schema.segments) {
-    return Object.keys(schema.segments);
+  const bySegment = schema.colors?.globalSemanticsBySegment;
+  if (bySegment && typeof bySegment === 'object') {
+    const keys = Object.keys(bySegment as Record<string, unknown>);
+    if (keys.length) return keys;
   }
 
   const palettes = schema.themeTokens?.palettes;

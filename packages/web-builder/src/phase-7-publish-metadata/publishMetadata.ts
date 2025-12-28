@@ -1,6 +1,6 @@
 import { copyFile, cp, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
-import type { Schema, SchemaFonts, SchemaSegments, ThemeMode } from '@kiskadee/core';
+import type { GlobalSemanticsBySegment, Schema, SchemaColors, SchemaFonts, ThemeMode } from '@kiskadee/core';
 import type {
   Manifest,
   ManifestComponent,
@@ -13,35 +13,83 @@ function majorVersionFromTuple(v: [number, number, number] | number[]): number {
   return Array.isArray(v) && v.length > 0 ? Number(v[0]) : 0;
 }
 
-function firstSegmentLabel(segmentsObj: SchemaSegments): string | null {
-  const keys = segmentsObj ? Object.keys(segmentsObj) : [];
-  if (!keys.length) return null;
-  const first = segmentsObj[keys[0] as keyof typeof segmentsObj];
-  return (first && 'name' in first ? first.name : undefined) || keys[0] || null;
+function requireSegmentRegistry(colors: SchemaColors | undefined): GlobalSemanticsBySegment {
+  const bySegment = colors?.globalSemanticsBySegment as GlobalSemanticsBySegment | undefined;
+  if (!bySegment || typeof bySegment !== 'object') {
+    throw new Error('[web-builder] Schema is missing `colors.globalSemanticsBySegment` segment registry');
+  }
+  return bySegment;
 }
 
-function computeDisplayName(schema: Schema, segmentsObj: SchemaSegments): string {
+function firstSegmentLabel(bySegment: GlobalSemanticsBySegment): string | null {
+  const keys = Object.keys(bySegment);
+  if (!keys.length) return null;
+  const first = bySegment[keys[0] as keyof typeof bySegment];
+  return first?.meta?.name ?? keys[0] ?? null;
+}
+
+function computeDisplayName(schema: Schema, bySegment: GlobalSemanticsBySegment): string {
   const author = schema.author || '';
-  const segName = schema.name || firstSegmentLabel(segmentsObj) || '';
+  const defaultName = bySegment.default?.meta?.name;
+  const segName = schema.name || defaultName || firstSegmentLabel(bySegment) || '';
   const major = majorVersionFromTuple(schema.version || []);
   const left = [segName, major > 1 ? String(major) : ''].filter(Boolean).join(' ').trim();
   return [left, author && `by ${author}`].filter(Boolean).join(' ').trim();
 }
 
-function discoverSegmentsThemes(segmentsObj: SchemaSegments): {
+function discoverSegmentsThemesFromPalettes(
+  schema: Schema,
+  segmentKeys: string[]
+): {
   segments: string[];
   themes: Record<string, string[]>;
 } {
-  const segments: string[] = [];
-  const themes: Record<string, string[]> = {};
-  for (const segKey of Object.keys(segmentsObj)) {
-    segments.push(segKey);
-    const seg = segmentsObj[segKey as keyof typeof segmentsObj];
-    const themeNames = seg?.themes ? (Object.keys(seg.themes) as string[]) : [];
-    // Filter to only valid ThemeMode strings if present
-    themes[segKey] = themeNames as ThemeMode[] as string[];
+  const themesBySegment: Record<string, Set<string>> = {};
+  for (const seg of segmentKeys) {
+    themesBySegment[seg] = new Set<string>();
   }
-  return { segments, themes };
+
+  const add = (seg: string, theme: string) => {
+    if (!themesBySegment[seg]) themesBySegment[seg] = new Set<string>();
+    themesBySegment[seg]!.add(theme);
+  };
+
+  const themeTokensPalettes = (schema.themeTokens as any)?.palettes as
+    | Record<string, Record<string, unknown>>
+    | undefined;
+  if (themeTokensPalettes) {
+    for (const seg of Object.keys(themeTokensPalettes)) {
+      const byTheme = themeTokensPalettes[seg];
+      for (const theme of Object.keys(byTheme ?? {})) {
+        add(seg, theme);
+      }
+    }
+  }
+
+  const components = (schema as any).components as Record<string, any> | undefined;
+  if (components) {
+    for (const component of Object.values(components)) {
+      const elements = (component as any)?.elements as Record<string, any> | undefined;
+      if (!elements) continue;
+      for (const el of Object.values(elements)) {
+        const palettes = (el as any)?.palettes as Record<string, Record<string, unknown>> | undefined;
+        if (!palettes) continue;
+        for (const seg of Object.keys(palettes)) {
+          const byTheme = palettes[seg];
+          for (const theme of Object.keys(byTheme ?? {})) {
+            add(seg, theme);
+          }
+        }
+      }
+    }
+  }
+
+  const themes: Record<string, string[]> = {};
+  for (const seg of Object.keys(themesBySegment)) {
+    themes[seg] = Array.from(themesBySegment[seg] ?? []).sort() as ThemeMode[] as string[];
+  }
+
+  return { segments: segmentKeys, themes };
 }
 
 function buildButtonScale(schema: Schema): ManifestComponent['scale'] | undefined {
@@ -147,16 +195,18 @@ function buildButtonState(schema: Schema): ManifestComponentState | undefined {
 
 export async function publishMetadata(params: {
   schema: Schema;
-  segments: SchemaSegments;
   outDirSlug: string;
   schemaPath: string;
   baseBuildDir: string;
 }): Promise<void> {
-  const { schema, segments, outDirSlug, schemaPath, baseBuildDir } = params;
+  const { schema, outDirSlug, schemaPath, baseBuildDir } = params;
+
+  const segmentRegistry = requireSegmentRegistry(schema.colors);
+  const segmentKeys = Object.keys(segmentRegistry);
 
   // Build manifest content
-  const displayName = computeDisplayName(schema, segments);
-  const { segments: segKeys, themes } = discoverSegmentsThemes(segments);
+  const displayName = computeDisplayName(schema, segmentRegistry);
+  const { segments: segKeys, themes } = discoverSegmentsThemesFromPalettes(schema, segmentKeys);
   const manifest: Manifest = {
     key: outDirSlug,
     displayName,
@@ -201,7 +251,11 @@ export async function publishMetadata(params: {
   // Write metadata files
   await writeFile(resolve(buildDir, 'manifest.json'), JSON.stringify(manifest, null, 2), 'utf8');
   await writeFile(resolve(buildDir, 'schema.json'), JSON.stringify(schema, null, 2), 'utf8');
-  await writeFile(resolve(buildDir, 'segments.json'), JSON.stringify(segments, null, 2), 'utf8');
+  await writeFile(
+    resolve(buildDir, 'segments.json'),
+    JSON.stringify(segmentRegistry, null, 2),
+    'utf8'
+  );
 
   // Optional: copy original template TS for inspection.
   // In the clean model we always expose two stable entrypoints:

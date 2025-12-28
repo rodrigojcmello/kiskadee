@@ -1,32 +1,13 @@
 import type {
   ComponentIntents,
+  GlobalSemanticsBySegment,
   GlobalSemanticsByTheme,
   PrimitiveColors,
-  SchemaColors,
-  SchemaSegments
+  SchemaColors
 } from '@kiskadee/core';
 import neutralDark from './colors/neutral.dark';
 import neutralLight from './colors/neutral.light';
 import primaryUnique from './colors/primary.unique';
-
-type Segment = 'default';
-
-export const segments: SchemaSegments<Segment> = {
-  default: {
-    name: 'Default',
-    mainColor: 'blue',
-    themes: {
-      light: {
-        primary: primaryUnique,
-        neutral: neutralLight
-      },
-      dark: {
-        primary: primaryUnique,
-        neutral: neutralDark
-      }
-    }
-  }
-};
 
 // -------------------------------------------------------------------------------------------------
 // 3-layer color architecture (Primitive → Global semantics → Component intents)
@@ -52,6 +33,14 @@ export const globalSemantics = {
   }
 } as const satisfies GlobalSemanticsByTheme;
 
+export const globalSemanticsBySegment = {
+  default: {
+    meta: {
+      name: 'Default'
+    }
+  }
+} as const satisfies GlobalSemanticsBySegment;
+
 export const componentIntents = {
   button: {
     primary: 'primary',
@@ -64,5 +53,6 @@ export const componentIntents = {
 export const schemaColors = {
   primitiveColors,
   globalSemantics,
+  globalSemanticsBySegment,
   componentIntents
 } as const satisfies SchemaColors;

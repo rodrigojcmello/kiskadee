@@ -1,5 +1,5 @@
 import { breakpoints, color, primitive, type Schema, withAlpha } from '@kiskadee/core';
-import { schemaColors, segments } from './fluent-2-kiskadee.colors';
+import { schemaColors } from './fluent-2-kiskadee.colors';
 
 // Reference: https://www.figma.com/design/iEmab9I4qGqbUJlFSxRORE/Microsoft-Fluent-2-Web--Community-?node-id=1-840&p=f&t=M4w8UKqwRiqJgq8i-0
 
@@ -95,7 +95,6 @@ export const schema: Schema<Segments> = {
   author: 'Kiskadee',
   breakpoints,
   colors: schemaColors,
-  segments,
   themeTokens: {
     palettes: {
       default: {
