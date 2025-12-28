@@ -1,3 +1,4 @@
+import type { PrimitiveRole, ResolvedGradient, RoleWithPaint, SolidColor } from '@kiskadee/core';
 import { breakpoints, color, primitive, type Schema, withAlpha } from '@kiskadee/core';
 import { schemaColors } from './fluent-2-kiskadee.colors';
 
@@ -8,11 +9,39 @@ const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, '
 function c(
   segmentName: 'default' | 'dynamic',
   theme: 'l' | 'd',
-  roleOrPrimitive: Parameters<typeof color>[3],
-  tone: Parameters<typeof color>[4],
-  alpha?: Parameters<typeof color>[5]
-) {
-  return color(schemaContext, segmentName, theme, roleOrPrimitive, tone, alpha);
+  roleOrPrimitive: PrimitiveRole,
+  tone: number,
+  alpha?: number
+): SolidColor;
+function c(
+  segmentName: 'default' | 'dynamic',
+  theme: 'l' | 'd',
+  roleOrPrimitive: `${string}.${string}` | `${string}.${string}.solid`,
+  tone: number,
+  alpha?: number
+): SolidColor;
+function c(
+  segmentName: 'default' | 'dynamic',
+  theme: 'l' | 'd',
+  roleOrPrimitive: `${string}.${string}.gradient`,
+  tone: number | number[],
+  alpha?: number
+): ResolvedGradient;
+function c(
+  segmentName: 'default' | 'dynamic',
+  theme: 'l' | 'd',
+  roleOrPrimitive: RoleWithPaint | PrimitiveRole,
+  tone: number | number[],
+  alpha?: number
+): SolidColor | ResolvedGradient {
+  return color(
+    schemaContext,
+    segmentName,
+    theme,
+    roleOrPrimitive as never,
+    tone as never,
+    alpha as never
+  );
 }
 
 function createButtonElementPalettes(segmentName: 'default' | 'dynamic') {
@@ -21,15 +50,15 @@ function createButtonElementPalettes(segmentName: 'default' | 'dynamic') {
       boxColor: {
         primary: {
           vivid: {
-            rest: c(segmentName, 'l', 'button.primary', 60),
-            hover: c(segmentName, 'l', 'button.primary', 70),
-            focus: c(segmentName, 'l', 'button.primary', 60),
-            pressed: c(segmentName, 'l', 'button.primary', 90),
+            rest: c(segmentName, 'l', 'button.primary.gradient', 60),
+            hover: c(segmentName, 'l', 'button.primary.gradient', 70),
+            focus: c(segmentName, 'l', 'button.primary.gradient', 60),
+            pressed: c(segmentName, 'l', 'button.primary.gradient', 90),
             disabled: c(segmentName, 'l', 'button.neutral', 6),
             selected: {
-              rest: c(segmentName, 'l', 'button.primary', 80),
-              hover: c(segmentName, 'l', 'button.primary', 70),
-              pressed: c(segmentName, 'l', 'button.primary', 90)
+              rest: c(segmentName, 'l', 'button.primary.gradient', 80),
+              hover: c(segmentName, 'l', 'button.primary.gradient', 70),
+              pressed: c(segmentName, 'l', 'button.primary.gradient', 90)
             }
           }
         }
@@ -39,15 +68,15 @@ function createButtonElementPalettes(segmentName: 'default' | 'dynamic') {
       boxColor: {
         primary: {
           vivid: {
-            rest: c(segmentName, 'd', 'button.primary', 70),
-            hover: c(segmentName, 'd', 'button.primary', 60),
-            focus: c(segmentName, 'd', 'button.primary', 70),
-            pressed: c(segmentName, 'd', 'button.primary', 90),
+            rest: c(segmentName, 'd', 'button.primary.gradient', 70),
+            hover: c(segmentName, 'd', 'button.primary.gradient', 60),
+            focus: c(segmentName, 'd', 'button.primary.gradient', 70),
+            pressed: c(segmentName, 'd', 'button.primary.gradient', 90),
             disabled: c(segmentName, 'd', 'button.neutral', 0, 40),
             selected: {
-              rest: c(segmentName, 'd', 'button.primary', 80),
-              hover: c(segmentName, 'd', 'button.primary', 70),
-              pressed: c(segmentName, 'd', 'button.primary', 90)
+              rest: c(segmentName, 'd', 'button.primary.gradient', 80),
+              hover: c(segmentName, 'd', 'button.primary.gradient', 70),
+              pressed: c(segmentName, 'd', 'button.primary.gradient', 90)
             }
           }
         }

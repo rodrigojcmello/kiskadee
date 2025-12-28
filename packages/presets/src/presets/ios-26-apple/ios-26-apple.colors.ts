@@ -98,12 +98,12 @@ export const primitiveColors = {
 
 export const globalSemantics = {
   light: {
-    primary: { solid: { hue: 'blue', name: 'v1' } },
-    neutral: { solid: { hue: 'black', name: 'v1' } }
+    primary: 'primitive.blue.v1',
+    neutral: 'primitive.black.v1'
   },
   dark: {
-    primary: { solid: { hue: 'blue', name: 'v1' } },
-    neutral: { solid: { hue: 'black', name: 'v1' } }
+    primary: 'primitive.blue.v1',
+    neutral: 'primitive.black.v1'
   }
 } as const satisfies GlobalSemanticsByTheme;
 

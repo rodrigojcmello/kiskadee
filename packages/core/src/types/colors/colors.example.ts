@@ -5,22 +5,24 @@ const color: ColorSchema = {
   boxColor: {
     primary: {
       subtle: {
-        rest: [
-          90,
-          [
-            [45, 100, 50, 1, 0],
-            [180, 100, 50, 1, 100]
+        rest: {
+          kind: 'linear',
+          angle: 90,
+          stops: [
+            { color: [45, 100, 50, 1], position: 0 },
+            { color: [180, 100, 50, 1], position: 100 }
           ]
-        ]
+        }
       },
       vivid: {
-        rest: [
-          90,
-          [
-            [45, 100, 50, 1, 0],
-            [180, 100, 50, 1, 100]
+        rest: {
+          kind: 'linear',
+          angle: 90,
+          stops: [
+            { color: [45, 100, 50, 1], position: 0 },
+            { color: [180, 100, 50, 1], position: 100 }
           ]
-        ]
+        }
       }
     }
   },
@@ -82,10 +84,10 @@ export const exampleGlobalSemanticsBySegment: GlobalSemanticsBySegment = {
     meta: { name: 'Dynamic' },
     themes: {
       light: {
-        primary: { solid: { hue: 'blue', name: 'dynamic' } }
+        primary: 'primitive.blue.dynamic'
       },
       dark: {
-        primary: { solid: { hue: 'blue', name: 'dynamic' } }
+        primary: 'primitive.blue.dynamic'
       }
     }
   }

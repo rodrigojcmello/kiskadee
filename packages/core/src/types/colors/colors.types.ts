@@ -230,6 +230,20 @@ export type IntentValue = SemanticColor | PrimitiveRole;
 export type Role = RoleButton | `${string}.${string}`;
 
 /**
+ * Qualified role identifier used by the new `color()` API.
+ *
+ * Supports an optional paint suffix:
+ * - `component.intent` (defaults to `solid`)
+ * - `component.intent.solid`
+ * - `component.intent.gradient`
+ */
+export type RoleWithPaint =
+  | RoleButton
+  | `${string}.${string}`
+  | `${string}.${string}.solid`
+  | `${string}.${string}.gradient`;
+
+/**
  * Qualified primitive identifier used by the new `color()` API.
  *
  * Example: `primitive.blue.v1`.

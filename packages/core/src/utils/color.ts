@@ -7,8 +7,11 @@ import type {
   PrimitiveColorName,
   PrimitiveColorRef,
   PrimitiveRole,
+  ResolvedGradient,
   Role,
+  RoleWithPaint,
   SchemaColors,
+  SemanticColor,
   SolidColor,
   ThemeName,
   ThemeShortcut
@@ -60,16 +63,34 @@ export function color(
   schema: { colors?: SchemaColors },
   segmentName: string,
   theme: ThemeShortcut,
-  roleOrPrimitive: Role | PrimitiveRole,
-  tone: number | number[],
+  roleOrPrimitive: PrimitiveRole,
+  tone: number,
   alpha?: number
-): Color;
+): SolidColor;
 
 export function color(
   schema: { colors?: SchemaColors },
   segmentName: string,
   theme: ThemeShortcut,
-  roleOrPrimitive: Role | PrimitiveRole,
+  roleOrPrimitive: `${string}.${string}` | `${string}.${string}.solid`,
+  tone: number,
+  alpha?: number
+): SolidColor;
+
+export function color(
+  schema: { colors?: SchemaColors },
+  segmentName: string,
+  theme: ThemeShortcut,
+  roleOrPrimitive: `${string}.${string}.gradient`,
+  tone: number | number[],
+  alpha?: number
+): ResolvedGradient;
+
+export function color(
+  schema: { colors?: SchemaColors },
+  segmentName: string,
+  theme: ThemeShortcut,
+  roleOrPrimitive: RoleWithPaint | PrimitiveRole,
   tone: number | number[],
   alpha?: number
 ): Color {
@@ -126,7 +147,7 @@ function requireSchemaColors(colors: SchemaColors | undefined): Required<SchemaC
 
 type PaintKind = 'solid' | 'gradient';
 
-function parseRole(role: Role): { component: string; intent: string; paint: PaintKind } {
+function parseRole(role: RoleWithPaint): { component: string; intent: string; paint: PaintKind } {
   const parts = role.split('.');
   if (parts.length === 2) {
     const [component, intent] = parts;
@@ -201,7 +222,7 @@ export function resolveColor(
   schema: { colors?: SchemaColors },
   segmentName: string,
   theme: ThemeShortcut,
-  roleOrPrimitive: Role | PrimitiveRole,
+  roleOrPrimitive: RoleWithPaint | PrimitiveRole,
   tone: number | number[],
   alpha?: number
 ): Color {
@@ -222,19 +243,17 @@ export function resolveColor(
     return typeof alpha === 'number' ? (withAlpha(value, alpha) as SolidColor) : value;
   }
 
-  const { component, intent, paint } = parseRole(roleOrPrimitive as Role);
+  const { component, intent, paint } = parseRole(roleOrPrimitive as RoleWithPaint);
   const intentValue = colors.componentIntents?.[component]?.[intent];
   if (!intentValue) {
     throw new Error(`Intent not mapped for role=${roleOrPrimitive}`);
   }
 
-  const primitiveRole: PrimitiveRole =
-    typeof intentValue === 'string'
-      ? intentValue.startsWith('primitive.')
-        ? (intentValue as PrimitiveRole)
-        : (colors.globalSemanticsBySegment?.[segmentName]?.themes?.[themeName]?.[intentValue] ??
-          colors.globalSemantics?.[themeName]?.[intentValue])
-      : (intentValue as PrimitiveRole);
+  const primitiveRole: PrimitiveRole | undefined = intentValue.startsWith('primitive.')
+    ? (intentValue as PrimitiveRole)
+    : (colors.globalSemanticsBySegment?.[segmentName]?.themes?.[themeName]?.[
+        intentValue as SemanticColor
+      ] ?? colors.globalSemantics?.[themeName]?.[intentValue as SemanticColor]);
 
   if (!primitiveRole) {
     throw new Error(`Global semantic not mapped for role=${roleOrPrimitive} theme=${theme}`);
