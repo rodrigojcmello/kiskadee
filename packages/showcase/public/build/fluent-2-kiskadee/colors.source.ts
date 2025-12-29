@@ -52,11 +52,11 @@ export const primitiveColors = {
 
 export const globalSemantics = {
   light: {
-    primary: 'primitive.purple.v1',
+    primary: 'primitive.blue.v1',
     neutral: 'primitive.black.v1'
   },
   dark: {
-    primary: 'primitive.purple.v1',
+    primary: 'primitive.blue.v1',
     neutral: 'primitive.black.v1'
   }
 } as const satisfies GlobalSemanticsByTheme;
@@ -75,6 +75,19 @@ export const globalSemanticsBySegment = {
   default: {
     meta: {
       name: 'Default'
+    }
+  },
+  modern: {
+    meta: {
+      name: 'Modern'
+    },
+    themes: {
+      light: {
+        primary: 'primitive.purple.v1'
+      },
+      dark: {
+        primary: 'primitive.purple.v1'
+      }
     }
   },
   dynamic: {

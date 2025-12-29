@@ -5,6 +5,21 @@
     },
     "themes": {
       "light": {
+        "primary": "primitive.blue.v1",
+        "neutral": "primitive.black.v1"
+      },
+      "dark": {
+        "primary": "primitive.blue.v1",
+        "neutral": "primitive.black.v1"
+      }
+    }
+  },
+  "modern": {
+    "meta": {
+      "name": "Modern"
+    },
+    "themes": {
+      "light": {
         "primary": "primitive.purple.v1",
         "neutral": "primitive.black.v1"
       },

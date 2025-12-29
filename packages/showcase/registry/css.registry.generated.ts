@@ -15,6 +15,8 @@ export const cssPaths = {
     palettes: {
       'default|dark': '/build/fluent-2-kiskadee/default.dark.kiskadee.css',
       'default|light': '/build/fluent-2-kiskadee/default.light.kiskadee.css',
+      'modern|dark': '/build/fluent-2-kiskadee/modern.dark.kiskadee.css',
+      'modern|light': '/build/fluent-2-kiskadee/modern.light.kiskadee.css',
       'dynamic|dark': '/build/fluent-2-kiskadee/dynamic.dark.kiskadee.css',
       'dynamic|light': '/build/fluent-2-kiskadee/dynamic.light.kiskadee.css',
     }

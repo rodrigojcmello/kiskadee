@@ -1488,11 +1488,11 @@
     },
     "globalSemantics": {
       "light": {
-        "primary": "primitive.purple.v1",
+        "primary": "primitive.blue.v1",
         "neutral": "primitive.black.v1"
       },
       "dark": {
-        "primary": "primitive.purple.v1",
+        "primary": "primitive.blue.v1",
         "neutral": "primitive.black.v1"
       }
     },
@@ -1500,6 +1500,19 @@
       "default": {
         "meta": {
           "name": "Default"
+        }
+      },
+      "modern": {
+        "meta": {
+          "name": "Modern"
+        },
+        "themes": {
+          "light": {
+            "primary": "primitive.purple.v1"
+          },
+          "dark": {
+            "primary": "primitive.purple.v1"
+          }
         }
       },
       "dynamic": {
@@ -1594,6 +1607,124 @@
                 "boxColor": {
                   "primary": {
                     "vivid": {
+                      "rest": [
+                        207.93,
+                        85.29,
+                        40,
+                        1
+                      ],
+                      "hover": [
+                        207.18,
+                        82.65,
+                        33.6,
+                        1
+                      ],
+                      "focus": [
+                        207.93,
+                        85.29,
+                        40,
+                        1
+                      ],
+                      "pressed": [
+                        205.68,
+                        77.36,
+                        20.8,
+                        1
+                      ],
+                      "disabled": [
+                        0,
+                        0,
+                        94,
+                        1
+                      ],
+                      "selected": {
+                        "rest": [
+                          206.43,
+                          80,
+                          27.2,
+                          1
+                        ],
+                        "hover": [
+                          207.18,
+                          82.65,
+                          33.6,
+                          1
+                        ],
+                        "pressed": [
+                          205.68,
+                          77.36,
+                          20.8,
+                          1
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "dark": {
+                "boxColor": {
+                  "primary": {
+                    "vivid": {
+                      "rest": [
+                        207.18,
+                        82.65,
+                        33.6,
+                        1
+                      ],
+                      "hover": [
+                        207.93,
+                        85.29,
+                        40,
+                        1
+                      ],
+                      "focus": [
+                        207.18,
+                        82.65,
+                        33.6,
+                        1
+                      ],
+                      "pressed": [
+                        205.68,
+                        77.36,
+                        20.8,
+                        1
+                      ],
+                      "disabled": [
+                        0,
+                        0,
+                        0,
+                        0.4
+                      ],
+                      "selected": {
+                        "rest": [
+                          206.43,
+                          80,
+                          27.2,
+                          1
+                        ],
+                        "hover": [
+                          207.18,
+                          82.65,
+                          33.6,
+                          1
+                        ],
+                        "pressed": [
+                          205.68,
+                          77.36,
+                          20.8,
+                          1
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "modern": {
+              "light": {
+                "boxColor": {
+                  "primary": {
+                    "vivid": {
                       "rest": {
                         "kind": "linear",
                         "angle": 180,
@@ -1602,7 +1733,7 @@
                             "color": [
                               239.48,
                               86.57,
-                              40,
+                              75,
                               1
                             ],
                             "position": 0
@@ -1611,7 +1742,7 @@
                             "color": [
                               251.6,
                               88.15,
-                              40,
+                              75,
                               1
                             ],
                             "position": 100
@@ -1786,7 +1917,7 @@
                             "color": [
                               239.48,
                               86.57,
-                              30,
+                              75,
                               1
                             ],
                             "position": 0
@@ -1795,7 +1926,7 @@
                             "color": [
                               251.6,
                               88.15,
-                              30,
+                              75,
                               1
                             ],
                             "position": 100
@@ -2073,6 +2204,52 @@
           },
           "palettes": {
             "default": {
+              "light": {
+                "textColor": {
+                  "primary": {
+                    "vivid": {
+                      "rest": [
+                        0,
+                        0,
+                        100,
+                        1
+                      ],
+                      "disabled": {
+                        "ref": [
+                          0,
+                          0,
+                          75,
+                          1
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "dark": {
+                "textColor": {
+                  "primary": {
+                    "vivid": {
+                      "rest": [
+                        0,
+                        0,
+                        100,
+                        1
+                      ],
+                      "disabled": {
+                        "ref": [
+                          0,
+                          0,
+                          100,
+                          0.25
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "modern": {
               "light": {
                 "textColor": {
                   "primary": {

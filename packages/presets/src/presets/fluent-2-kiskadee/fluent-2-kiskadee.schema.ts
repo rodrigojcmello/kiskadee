@@ -14,6 +14,9 @@ function createButtonElementPalettes(segmentName: SegmentName) {
   // NOTE: For now, the `dynamic` segment is expected to be solid-only.
   // Gradient support for dynamic segments will be added later.
 
+  // NOTE: The `default` segment uses `primary` = blue (solid-only).
+  // The `modern` segment overrides `primary` to purple and can opt into gradients.
+
   if (segmentName === 'dynamic') {
     const primaryBoxRole = 'button.primary' as const;
     return {
@@ -56,13 +59,14 @@ function createButtonElementPalettes(segmentName: SegmentName) {
     };
   }
 
-  const primaryBoxRole = 'button.primary.gradient' as const;
+  const primaryBoxRole: 'button.primary' | 'button.primary.gradient' =
+    segmentName === 'modern' ? 'button.primary.gradient' : 'button.primary';
   return {
     light: {
       boxColor: {
         primary: {
           vivid: {
-            rest: c(segmentName, 'l', primaryBoxRole, 60),
+            rest: c(segmentName, 'l', primaryBoxRole, segmentName === 'modern' ? 25 : 60),
             hover: c(segmentName, 'l', primaryBoxRole, 70),
             focus: c(segmentName, 'l', primaryBoxRole, 60),
             pressed: c(segmentName, 'l', primaryBoxRole, 90),
@@ -80,7 +84,7 @@ function createButtonElementPalettes(segmentName: SegmentName) {
       boxColor: {
         primary: {
           vivid: {
-            rest: c(segmentName, 'd', primaryBoxRole, 70),
+            rest: c(segmentName, 'd', primaryBoxRole, segmentName === 'modern' ? 25 : 70),
             hover: c(segmentName, 'd', primaryBoxRole, 60),
             focus: c(segmentName, 'd', primaryBoxRole, 70),
             pressed: c(segmentName, 'd', primaryBoxRole, 90),
