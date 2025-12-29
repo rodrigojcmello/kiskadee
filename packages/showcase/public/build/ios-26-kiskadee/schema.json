@@ -931,44 +931,14 @@
     },
     "globalSemantics": {
       "light": {
-        "primary": {
-          "solid": {
-            "hue": "blue",
-            "name": "v1"
-          }
-        },
-        "neutral": {
-          "solid": {
-            "hue": "black",
-            "name": "v1"
-          }
-        },
-        "redLike": {
-          "solid": {
-            "hue": "red",
-            "name": "v1"
-          }
-        }
+        "primary": "primitive.blue.v1",
+        "neutral": "primitive.black.v1",
+        "redLike": "primitive.red.v1"
       },
       "dark": {
-        "primary": {
-          "solid": {
-            "hue": "blue",
-            "name": "v1"
-          }
-        },
-        "neutral": {
-          "solid": {
-            "hue": "black",
-            "name": "v1"
-          }
-        },
-        "redLike": {
-          "solid": {
-            "hue": "red",
-            "name": "v1"
-          }
-        }
+        "primary": "primitive.blue.v1",
+        "neutral": "primitive.black.v1",
+        "redLike": "primitive.red.v1"
       }
     },
     "globalSemanticsBySegment": {
@@ -983,20 +953,10 @@
         },
         "themes": {
           "light": {
-            "primary": {
-              "solid": {
-                "hue": "blue",
-                "name": "dynamic"
-              }
-            }
+            "primary": "primitive.blue.dynamic"
           },
           "dark": {
-            "primary": {
-              "solid": {
-                "hue": "blue",
-                "name": "dynamic"
-              }
-            }
+            "primary": "primitive.blue.dynamic"
           }
         }
       }

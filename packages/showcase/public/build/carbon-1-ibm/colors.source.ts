@@ -39,20 +39,12 @@ export const primitiveColors = {
 //
 export const globalSemantics = {
   light: {
-    primary: {
-      solid: { hue: 'blue', name: 'v1' }
-    },
-    neutral: {
-      solid: { hue: 'black', name: 'v1' }
-    }
+    primary: 'primitive.blue.v1',
+    neutral: 'primitive.black.v1'
   },
   dark: {
-    primary: {
-      solid: { hue: 'blue', name: 'v1' }
-    },
-    neutral: {
-      solid: { hue: 'black', name: 'v1' }
-    }
+    primary: 'primitive.blue.v1',
+    neutral: 'primitive.black.v1'
   }
 } as const satisfies GlobalSemanticsByTheme;
 
@@ -82,7 +74,7 @@ export const componentIntents = {
     positive: 'greenLike'
 
     // Example of direct Layer 1 usage (e.g. social buttons):
-    // socialLinkedIn: { hue: 'blue', name: 'linkedin' }
+    // socialLinkedIn: 'primitive.blue.linkedin'
   }
 } as const satisfies ComponentIntents;
 

@@ -10,6 +10,33 @@ import {
 } from '@kiskadee/core';
 import { convertHslaToHex } from '../utils/convertHslaToHex';
 
+type ResolvedGradientLike = {
+  kind: 'linear';
+  angle: number;
+  stops: Array<{ color: unknown; position: number }>;
+};
+
+function isHslaLike(v: unknown): v is HSLA {
+  return (
+    Array.isArray(v) && v.length === 4 && v.every((n) => typeof n === 'number' && !Number.isNaN(n))
+  );
+}
+
+function isResolvedGradientLike(v: unknown): v is ResolvedGradientLike {
+  if (!v || typeof v !== 'object') return false;
+  const g = v as Partial<ResolvedGradientLike>;
+  if (g.kind !== 'linear') return false;
+  if (typeof g.angle !== 'number' || Number.isNaN(g.angle)) return false;
+  if (!Array.isArray(g.stops) || g.stops.length === 0) return false;
+  return g.stops.every((s) => {
+    if (!s || typeof s !== 'object') return false;
+    const stop = s as { color?: unknown; position?: unknown };
+    if (typeof stop.position !== 'number' || Number.isNaN(stop.position)) return false;
+    // color is either HSLA-like array or string (e.g. CSS variable)
+    return typeof stop.color === 'string' || isHslaLike(stop.color);
+  });
+}
+
 export const ERROR_INVALID_KEY_FORMAT =
   'Invalid key format. Expected value in square brackets at the end.';
 export const ERROR_REF_REQUIRE_STATE =
@@ -53,7 +80,7 @@ export function transformColorKeyToCss(
 
   let cssValue: string;
 
-  // Check if it is HSLA array
+  // Check if it is HSLA array (solid color encoded as JSON array)
   if (rawValue.startsWith('[') && rawValue.endsWith(']')) {
     const inner = rawValue.slice(1, -1);
     const parts = inner.split(',').map(Number);
@@ -65,7 +92,48 @@ export function transformColorKeyToCss(
     // TS note: `HSLA` is a `readonly` tuple. We validate length at runtime and then cast.
     const hsla = parts as unknown as HSLA;
     cssValue = convertHslaToHex(hsla);
+  } else if (rawValue.startsWith('{') && rawValue.endsWith('}')) {
+    // Cross-platform encoding: gradients are stored as JSON objects in the style key.
+    // Web builder converts them to a valid CSS gradient only at this phase.
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(rawValue);
+    } catch {
+      throw new Error(`Invalid JSON value in style key: ${rawValue}`);
+    }
+
+    if (!isResolvedGradientLike(parsed)) {
+      throw new Error(
+        `Unsupported JSON value in style key (expected ResolvedGradient): ${rawValue}`
+      );
+    }
+
+    // Base color property, e.g. "background-color" or "color"
+    // Support both non-ref ("--" or "__") and ref ("==") separators
+    const propertyName = styleKey.split(/==|--|__/)[0] as ColorProperty;
+    const colorProperty = CssColorProperty[propertyName];
+    // Optimization: use shorthand "background" instead of "background-color"
+    const optimizedProperty = colorProperty === 'background-color' ? 'background' : colorProperty;
+
+    // Gradients are only supported for box/background paints on Web.
+    if (optimizedProperty !== 'background') {
+      throw new Error(
+        `Gradient value is not supported for property "${String(propertyName)}" (styleKey=${styleKey}). Use a solid color instead.`
+      );
+    }
+
+    const g = parsed;
+    const stops = g.stops
+      .map((s) => {
+        const stopColor = typeof s.color === 'string' ? s.color : convertHslaToHex(s.color as HSLA);
+        return `${stopColor} ${s.position}%`;
+      })
+      .join(', ');
+
+    // Keep output stable and compact.
+    cssValue = `linear-gradient(${g.angle}deg, ${stops})`;
   } else {
+    // String value (e.g. CSS var)
     cssValue = rawValue;
   }
 

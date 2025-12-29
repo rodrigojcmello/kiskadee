@@ -31,7 +31,8 @@ export const primitiveColors = {
   },
   purple: {
     v1: {
-      solid: { light: purpleLight },
+      // NOTE: Dark scale is currently mirrored from light as a placeholder.
+      solid: { light: purpleLight, dark: purpleLight },
       gradient: {
         angle: 180,
         stops: [
@@ -40,7 +41,8 @@ export const primitiveColors = {
         ]
       }
     },
-    v2: { solid: { light: purple2Light } }
+    // NOTE: Dark scale is currently mirrored from light as a placeholder.
+    v2: { solid: { light: purple2Light, dark: purple2Light } }
   }
 } as const satisfies PrimitiveColors;
 
@@ -50,11 +52,11 @@ export const primitiveColors = {
 
 export const globalSemantics = {
   light: {
-    primary: 'primitive.purple.v1',
+    primary: 'primitive.blue.v1',
     neutral: 'primitive.black.v1'
   },
   dark: {
-    primary: 'primitive.purple.v1',
+    primary: 'primitive.blue.v1',
     neutral: 'primitive.black.v1'
   }
 } as const satisfies GlobalSemanticsByTheme;
@@ -73,6 +75,19 @@ export const globalSemanticsBySegment = {
   default: {
     meta: {
       name: 'Default'
+    }
+  },
+  modern: {
+    meta: {
+      name: 'Modern'
+    },
+    themes: {
+      light: {
+        primary: 'primitive.purple.v1'
+      },
+      dark: {
+        primary: 'primitive.purple.v1'
+      }
     }
   },
   dynamic: {

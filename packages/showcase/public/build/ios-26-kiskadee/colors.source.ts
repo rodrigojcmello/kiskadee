@@ -2,7 +2,6 @@ import type {
   ComponentIntents,
   GlobalSemanticsBySegment,
   GlobalSemanticsByTheme,
-  PrimitiveColorRef,
   PrimitiveColors
 } from '@kiskadee/core';
 import dynamicColor from '../dynamic.color';
@@ -39,14 +38,14 @@ type GlobalSemanticKey = 'primary' | 'neutral' | 'redLike';
 
 export const globalSemantics = {
   light: {
-    primary: { solid: { hue: 'blue', name: 'v1' } },
-    neutral: { solid: { hue: 'black', name: 'v1' } },
-    redLike: { solid: { hue: 'red', name: 'v1' } }
+    primary: 'primitive.blue.v1',
+    neutral: 'primitive.black.v1',
+    redLike: 'primitive.red.v1'
   },
   dark: {
-    primary: { solid: { hue: 'blue', name: 'v1' } },
-    neutral: { solid: { hue: 'black', name: 'v1' } },
-    redLike: { solid: { hue: 'red', name: 'v1' } }
+    primary: 'primitive.blue.v1',
+    neutral: 'primitive.black.v1',
+    redLike: 'primitive.red.v1'
   }
 } as const satisfies GlobalSemanticsByTheme;
 
@@ -72,10 +71,10 @@ export const globalSemanticsBySegment = {
     },
     themes: {
       light: {
-        primary: { solid: { hue: 'blue', name: 'dynamic' } }
+        primary: 'primitive.blue.dynamic'
       },
       dark: {
-        primary: { solid: { hue: 'blue', name: 'dynamic' } }
+        primary: 'primitive.blue.dynamic'
       }
     }
   }
@@ -89,8 +88,3 @@ export const componentIntents = {
     positive: 'primary'
   }
 } as const satisfies ComponentIntents;
-
-// Type-level sanity: make sure our per-segment override points to a valid primitive ref.
-const _dynamicPrimaryRef: PrimitiveColorRef =
-  globalSemanticsBySegment.dynamic.themes!.light.primary.solid;
-void _dynamicPrimaryRef;
