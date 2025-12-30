@@ -1,4 +1,5 @@
 import { breakpoints, color, primitive, type Schema, withAlpha } from '@kiskadee/core';
+import { buildBySegment } from '../../utils/buildBySegment';
 import { createPresetColorGetter } from '../../utils/presetColor';
 import { schemaColors } from './fluent-2-kiskadee.colors';
 
@@ -6,75 +7,28 @@ import { schemaColors } from './fluent-2-kiskadee.colors';
 
 const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
 
-type SegmentName = 'default' | 'dynamic' | 'modern';
+const segmentNames = ['default', 'modern', 'dynamic'] as const;
+type SegmentName = (typeof segmentNames)[number];
 
 const c = createPresetColorGetter<SegmentName>(schemaContext);
 
-function createButtonElementPalettes(segmentName: SegmentName) {
+function createButtonElementPalettesBase(segmentName: SegmentName) {
   // NOTE: For now, the `dynamic` segment is expected to be solid-only.
   // Gradient support for dynamic segments will be added later.
-
-  // NOTE: The `default` segment uses `primary` = blue (solid-only).
-  // The `modern` segment overrides `primary` to purple and can opt into gradients.
-
-  if (segmentName === 'dynamic') {
-    const primaryBoxRole = 'button.primary' as const;
-    return {
-      light: {
-        boxColor: {
-          primary: {
-            vivid: {
-              rest: c(segmentName, 'l', primaryBoxRole, 60),
-              hover: c(segmentName, 'l', primaryBoxRole, 70),
-              focus: c(segmentName, 'l', primaryBoxRole, 60),
-              pressed: c(segmentName, 'l', primaryBoxRole, 90),
-              disabled: c(segmentName, 'l', 'button.neutral', 6),
-              selected: {
-                rest: c(segmentName, 'l', primaryBoxRole, 80),
-                hover: c(segmentName, 'l', primaryBoxRole, 70),
-                pressed: c(segmentName, 'l', primaryBoxRole, 90)
-              }
-            }
-          }
-        }
-      },
-      dark: {
-        boxColor: {
-          primary: {
-            vivid: {
-              rest: c(segmentName, 'd', primaryBoxRole, 70),
-              hover: c(segmentName, 'd', primaryBoxRole, 60),
-              focus: c(segmentName, 'd', primaryBoxRole, 70),
-              pressed: c(segmentName, 'd', primaryBoxRole, 90),
-              disabled: c(segmentName, 'd', 'button.neutral', 0, 40),
-              selected: {
-                rest: c(segmentName, 'd', primaryBoxRole, 80),
-                hover: c(segmentName, 'd', primaryBoxRole, 70),
-                pressed: c(segmentName, 'd', primaryBoxRole, 90)
-              }
-            }
-          }
-        }
-      }
-    };
-  }
-
-  const primaryBoxRole: 'button.primary' | 'button.primary.gradient' =
-    segmentName === 'modern' ? 'button.primary.gradient' : 'button.primary';
   return {
     light: {
       boxColor: {
         primary: {
           vivid: {
-            rest: c(segmentName, 'l', primaryBoxRole, segmentName === 'modern' ? 25 : 60),
-            hover: c(segmentName, 'l', primaryBoxRole, 70),
-            focus: c(segmentName, 'l', primaryBoxRole, 60),
-            pressed: c(segmentName, 'l', primaryBoxRole, 90),
+            rest: c(segmentName, 'l', 'button.primary', 60),
+            hover: c(segmentName, 'l', 'button.primary', 70),
+            focus: c(segmentName, 'l', 'button.primary', 60),
+            pressed: c(segmentName, 'l', 'button.primary', 90),
             disabled: c(segmentName, 'l', 'button.neutral', 6),
             selected: {
-              rest: c(segmentName, 'l', primaryBoxRole, 80),
-              hover: c(segmentName, 'l', primaryBoxRole, 70),
-              pressed: c(segmentName, 'l', primaryBoxRole, 90)
+              rest: c(segmentName, 'l', 'button.primary', 80),
+              hover: c(segmentName, 'l', 'button.primary', 70),
+              pressed: c(segmentName, 'l', 'button.primary', 90)
             }
           }
         }
@@ -84,15 +38,15 @@ function createButtonElementPalettes(segmentName: SegmentName) {
       boxColor: {
         primary: {
           vivid: {
-            rest: c(segmentName, 'd', primaryBoxRole, segmentName === 'modern' ? 25 : 70),
-            hover: c(segmentName, 'd', primaryBoxRole, 60),
-            focus: c(segmentName, 'd', primaryBoxRole, 70),
-            pressed: c(segmentName, 'd', primaryBoxRole, 90),
+            rest: c(segmentName, 'd', 'button.primary', 70),
+            hover: c(segmentName, 'd', 'button.primary', 60),
+            focus: c(segmentName, 'd', 'button.primary', 70),
+            pressed: c(segmentName, 'd', 'button.primary', 90),
             disabled: c(segmentName, 'd', 'button.neutral', 0, 40),
             selected: {
-              rest: c(segmentName, 'd', primaryBoxRole, 80),
-              hover: c(segmentName, 'd', primaryBoxRole, 70),
-              pressed: c(segmentName, 'd', primaryBoxRole, 90)
+              rest: c(segmentName, 'd', 'button.primary', 80),
+              hover: c(segmentName, 'd', 'button.primary', 70),
+              pressed: c(segmentName, 'd', 'button.primary', 90)
             }
           }
         }
@@ -101,7 +55,46 @@ function createButtonElementPalettes(segmentName: SegmentName) {
   };
 }
 
-function createButtonTextElementPalettes(segmentName: SegmentName) {
+const buttonElementPalettes = buildBySegment(segmentNames, createButtonElementPalettesBase, {
+  modern: (segmentName) => ({
+    light: {
+      boxColor: {
+        primary: {
+          vivid: {
+            rest: c(segmentName, 'l', 'button.primary.gradient', 25),
+            hover: c(segmentName, 'l', 'button.primary.gradient', 70),
+            focus: c(segmentName, 'l', 'button.primary.gradient', 60),
+            pressed: c(segmentName, 'l', 'button.primary.gradient', 90),
+            selected: {
+              rest: c(segmentName, 'l', 'button.primary.gradient', 80),
+              hover: c(segmentName, 'l', 'button.primary.gradient', 70),
+              pressed: c(segmentName, 'l', 'button.primary.gradient', 90)
+            }
+          }
+        }
+      }
+    },
+    dark: {
+      boxColor: {
+        primary: {
+          vivid: {
+            rest: c(segmentName, 'd', 'button.primary.gradient', 25),
+            hover: c(segmentName, 'd', 'button.primary.gradient', 60),
+            focus: c(segmentName, 'd', 'button.primary.gradient', 70),
+            pressed: c(segmentName, 'd', 'button.primary.gradient', 90),
+            selected: {
+              rest: c(segmentName, 'd', 'button.primary.gradient', 80),
+              hover: c(segmentName, 'd', 'button.primary.gradient', 70),
+              pressed: c(segmentName, 'd', 'button.primary.gradient', 90)
+            }
+          }
+        }
+      }
+    }
+  })
+});
+
+function createButtonTextElementPalettesBase(segmentName: SegmentName) {
   return {
     light: {
       textColor: {
@@ -129,6 +122,8 @@ function createButtonTextElementPalettes(segmentName: SegmentName) {
     }
   };
 }
+
+const buttonTextElementPalettes = buildBySegment(segmentNames, createButtonTextElementPalettesBase);
 
 // The `Schema` generic represents extra segment names beyond the built-ins (`default` and optional `dynamic`).
 type Segments = 'modern';
@@ -189,9 +184,7 @@ export const schema: Schema<Segments> = {
             }
           },
           palettes: {
-            default: createButtonElementPalettes('default'),
-            modern: createButtonElementPalettes('modern'),
-            dynamic: createButtonElementPalettes('dynamic')
+            ...buttonElementPalettes
           },
           effects: {
             shadow: {
@@ -214,9 +207,7 @@ export const schema: Schema<Segments> = {
             textWeight: 'medium'
           },
           palettes: {
-            default: createButtonTextElementPalettes('default'),
-            modern: createButtonTextElementPalettes('modern'),
-            dynamic: createButtonTextElementPalettes('dynamic')
+            ...buttonTextElementPalettes
           },
           scales: {
             textSize: {
