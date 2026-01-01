@@ -32,6 +32,11 @@ export const schema: Schema<Segments> = {
           focusColor: color(schemaContext, 'default', 'd', primitive('black', 'v1'), 100),
           background: [0, 0, 12, 1]
         }
+      },
+      modern: {
+        light: {
+          focusColor: color(schemaContext, 'modern', 'l', 'primitive.purple.v1', 25)
+        }
       }
     }
   },
@@ -121,9 +126,9 @@ export const schema: Schema<Segments> = {
                     primary: {
                       vivid: {
                         rest: c(segmentName, 'l', 'button.primary.gradient', 25),
-                        hover: c(segmentName, 'l', 'button.primary.gradient', 70),
-                        focus: c(segmentName, 'l', 'button.primary.gradient', 60),
-                        pressed: c(segmentName, 'l', 'button.primary.gradient', 90),
+                        hover: c(segmentName, 'l', 'button.primary.gradient', 20),
+                        focus: c(segmentName, 'l', 'button.primary.gradient', 15),
+                        pressed: c(segmentName, 'l', 'button.primary.gradient', 30),
                         selected: {
                           rest: c(segmentName, 'l', 'button.primary.gradient', 80),
                           hover: c(segmentName, 'l', 'button.primary.gradient', 70),
