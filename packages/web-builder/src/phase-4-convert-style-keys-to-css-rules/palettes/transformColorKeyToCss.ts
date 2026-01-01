@@ -78,7 +78,16 @@ export function transformColorKeyToCss(
   }
   const rawValue = styleKey.slice(separatorIndex + 2);
 
+  // Base color property, e.g. "background-color" or "color"
+  // Support both non-ref ("--" or "__") and ref ("==") separators
+  const propertyName = styleKey.split(/==|--|__/)[0] as ColorProperty;
+  const colorProperty = CssColorProperty[propertyName];
+  // Optimization: use shorthand "background" instead of "background-color"
+  const optimizedProperty = colorProperty === 'background-color' ? 'background' : colorProperty;
+
   let cssValue: string;
+  let gradientVars: string | undefined;
+  let gradientBackground: string | undefined;
 
   // Check if it is HSLA array (solid color encoded as JSON array)
   if (rawValue.startsWith('[') && rawValue.endsWith(']')) {
@@ -108,13 +117,6 @@ export function transformColorKeyToCss(
       );
     }
 
-    // Base color property, e.g. "background-color" or "color"
-    // Support both non-ref ("--" or "__") and ref ("==") separators
-    const propertyName = styleKey.split(/==|--|__/)[0] as ColorProperty;
-    const colorProperty = CssColorProperty[propertyName];
-    // Optimization: use shorthand "background" instead of "background-color"
-    const optimizedProperty = colorProperty === 'background-color' ? 'background' : colorProperty;
-
     // Gradients are only supported for box/background paints on Web.
     if (optimizedProperty !== 'background') {
       throw new Error(
@@ -123,26 +125,34 @@ export function transformColorKeyToCss(
     }
 
     const g = parsed;
-    const stops = g.stops
-      .map((s) => {
-        const stopColor = typeof s.color === 'string' ? s.color : convertHslaToHex(s.color as HSLA);
-        return `${stopColor} ${s.position}%`;
-      })
-      .join(', ');
+    const resolvedStops = g.stops.map((s) => {
+      const stopColor = typeof s.color === 'string' ? s.color : convertHslaToHex(s.color as HSLA);
+      return { color: stopColor, position: s.position };
+    });
 
-    // Keep output stable and compact.
-    cssValue = `linear-gradient(${g.angle}deg, ${stops})`;
+    // Animated gradient strategy for Web (2–3 stops):
+    // - Background is expressed in terms of CSS custom properties (--k-bg0/1/2)
+    // - Interaction states only override the variables, allowing browsers that support
+    //   `@property` to interpolate colors (progressive enhancement).
+    if (resolvedStops.length === 2 || resolvedStops.length === 3) {
+      const varNames = ['--k-bg0', '--k-bg1', '--k-bg2'] as const;
+
+      gradientVars = resolvedStops.map((s, i) => `${varNames[i]}: ${s.color};`).join(' ');
+
+      const bgStops = resolvedStops.map((s, i) => `var(${varNames[i]}) ${s.position}%`).join(', ');
+
+      gradientBackground = `linear-gradient(${g.angle}deg, ${bgStops})`;
+      // For non-rest states we want to emit only vars. For rest we emit vars + background.
+      cssValue = gradientBackground;
+    } else {
+      // Fallback: keep output stable and compact (no animation support).
+      const stops = resolvedStops.map((s) => `${s.color} ${s.position}%`).join(', ');
+      cssValue = `linear-gradient(${g.angle}deg, ${stops})`;
+    }
   } else {
     // String value (e.g. CSS var)
     cssValue = rawValue;
   }
-
-  // Base color property, e.g. "background-color" or "color"
-  // Support both non-ref ("--" or "__") and ref ("==") separators
-  const propertyName = styleKey.split(/==|--|__/)[0] as ColorProperty;
-  const colorProperty = CssColorProperty[propertyName];
-  // Optimization: use shorthand "background" instead of "background-color"
-  const optimizedProperty = colorProperty === 'background-color' ? 'background' : colorProperty;
 
   const isRef = styleKey.includes('==');
 
@@ -170,6 +180,10 @@ export function transformColorKeyToCss(
 
   if (!isRef) {
     if (filteredStates.length === 0) {
+      if (gradientVars && gradientBackground && optimizedProperty === 'background') {
+        return `.${className} { ${gradientVars} ${optimizedProperty}: ${gradientBackground} }`;
+      }
+
       return `.${className} { ${optimizedProperty}: ${cssValue} }`;
     }
 
@@ -210,6 +224,12 @@ export function transformColorKeyToCss(
     }
 
     const selector = selectors.join(', ');
+    if (gradientVars && optimizedProperty === 'background') {
+      // Non-rest state: override only variables.
+      // The background expression is expected to be provided by the rest (base) rule.
+      return `${selector} { ${gradientVars} }`;
+    }
+
     return `${selector} { ${optimizedProperty}: ${cssValue} }`;
   }
 
@@ -258,5 +278,9 @@ export function transformColorKeyToCss(
   }
 
   const selector = parentSelectors.join(', ');
+  if (gradientVars && gradientBackground && optimizedProperty === 'background') {
+    // Ref rules do not have a guaranteed rest anchor, so emit vars + background together.
+    return `${selector} { ${gradientVars} ${optimizedProperty}: ${gradientBackground} }`;
+  }
   return `${selector} { ${optimizedProperty}: ${cssValue} }`;
 }

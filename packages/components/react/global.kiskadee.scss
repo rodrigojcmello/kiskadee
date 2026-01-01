@@ -1,3 +1,21 @@
+@property --k-bg0 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --k-bg1 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --k-bg2 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
 :root {
   --k-dur-int-fast: 120ms;
   --k-dur-int: 180ms;
@@ -38,7 +56,7 @@ body {
 
 /* Interaction state transitions (hover/focus/pressed) */
 .k-state {
-  transition-property: padding, background-color, border-color, color, box-shadow;
+  transition-property: padding, background-color, border-color, color, box-shadow, --k-bg0, --k-bg1, --k-bg2;
   transition-duration: var(--k-dur-int);
   transition-timing-function: var(--k-ease-std);
 }

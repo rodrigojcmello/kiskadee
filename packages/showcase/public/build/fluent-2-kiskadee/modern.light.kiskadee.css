@@ -1,10 +1,10 @@
 .-a.-d .fk-f { color: #BFBFBF }
 .fk-a { color: #FFF }
 .fk-d.-d.-a { background: #F0F0F0 }
-.fk-g { background: linear-gradient(180deg, #8889F6 0%, #9D87F7 100%) }
-.fk-r.-s.-a { background: linear-gradient(180deg, #07085F 0%, #170660 100%) }
-.fk-ab:focus-visible, .fk-ab.-f.-a { background: linear-gradient(180deg, #0E0FBE 0%, #2F0CC0 100%) }
-.fk-ag:hover, .fk-ag.-h.-a { background: linear-gradient(180deg, #0A0B8F 0%, #230990 100%) }
-.fk-l:hover.-s, .fk-l.-s.-h.-a { background: linear-gradient(180deg, #0A0B8F 0%, #230990 100%) }
-.fk-i:active, .fk-i.-p.-a { background: linear-gradient(180deg, #030430 0%, #0C0330 100%) }
-.fk-o:active.-s, .fk-o.-s.-p.-a { background: linear-gradient(180deg, #030430 0%, #0C0330 100%) }
+.fk-g { --k-bg0: #8889F6; --k-bg1: #9D87F7; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }
+.fk-r.-s.-a { --k-bg0: #07085F; --k-bg1: #170660; }
+.fk-ab:focus-visible, .fk-ab.-f.-a { --k-bg0: #0E0FBE; --k-bg1: #2F0CC0; }
+.fk-ag:hover, .fk-ag.-h.-a { --k-bg0: #0A0B8F; --k-bg1: #230990; }
+.fk-l:hover.-s, .fk-l.-s.-h.-a { --k-bg0: #0A0B8F; --k-bg1: #230990; }
+.fk-i:active, .fk-i.-p.-a { --k-bg0: #030430; --k-bg1: #0C0330; }
+.fk-o:active.-s, .fk-o.-s.-p.-a { --k-bg0: #030430; --k-bg1: #0C0330; }
