@@ -2,6 +2,55 @@
 
 Build pipeline that converts a Kiskadee `Schema` into Web artifacts (utility CSS + JSON maps).
 
+## Gradients: `ResolvedGradient` + smooth transitions on Web
+
+Kiskadee stores gradients in a **platform-agnostic** way (as a `ResolvedGradient` object coming from `@kiskadee/core`).
+The Web builder is responsible for converting that data into valid CSS.
+
+### Why gradients do not transition by default
+
+In CSS, `linear-gradient(...)` is treated as an **image**, and browsers generally do not interpolate images.
+That means transitions like `transition: background 180ms` typically do **not** animate between gradients.
+
+### Strategy used by Kiskadee (CSS-only, no JS)
+
+For `boxColor` gradients, the Web builder emits:
+
+1) A stable gradient expression that references CSS custom properties:
+
+```css
+.myClass {
+  background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%);
+}
+```
+
+2) State-specific rules that only override the variables (instead of swapping the whole gradient):
+
+```css
+.myClass { --k-bg0: #AABBCC; --k-bg1: #DDEEFF; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%); }
+.myClass:hover { --k-bg0: #112233; --k-bg1: #445566; }
+```
+
+3) Global `@property` registrations (so browsers that support it can interpolate `<color>` values):
+
+- `@property --k-bg0`
+- `@property --k-bg1`
+- `@property --k-bg2`
+
+Those live in `packages/components/react/global.kiskadee.scss`.
+
+### Constraints and fallbacks
+
+- This strategy is implemented only for `boxColor` on Web.
+- Animation is enabled only for gradients with **2 or 3 stops**.
+- For other gradients (or unsupported browsers), the output remains correct, but transitions may be skipped (progressive enhancement).
+
+### Important note about class composition
+
+State rules (like `:hover`, `:active`, `:focus-visible`) only override `--k-bg0/--k-bg1/--k-bg2`.
+The base gradient `background: linear-gradient(...)` is emitted on the `rest` rule.
+Therefore, the element must carry the base (rest) class for the state override to work.
+
 ## Segment registry vs `segments.json` artifact
 
 Kiskadee no longer uses a `schema.segments` object as a source of truth.
