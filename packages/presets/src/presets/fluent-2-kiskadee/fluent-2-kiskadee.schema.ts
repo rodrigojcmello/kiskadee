@@ -35,7 +35,7 @@ export const schema: Schema<Segments> = {
       },
       modern: {
         light: {
-          focusColor: color(schemaContext, 'modern', 'l', 'primitive.purple.v1', 25)
+          focusColor: color(schemaContext, 'modern', 'l', 'primitive.purple.v1', 40)
         }
       }
     }
@@ -127,7 +127,7 @@ export const schema: Schema<Segments> = {
                       vivid: {
                         rest: c(segmentName, 'l', 'button.primary.gradient', 25),
                         hover: c(segmentName, 'l', 'button.primary.gradient', 20),
-                        focus: c(segmentName, 'l', 'button.primary.gradient', 15),
+                        focus: c(segmentName, 'l', 'button.primary.gradient', 5),
                         pressed: c(segmentName, 'l', 'button.primary.gradient', 30),
                         selected: {
                           rest: c(segmentName, 'l', 'button.primary.gradient', 80),
@@ -178,34 +178,59 @@ export const schema: Schema<Segments> = {
           decorations: {
             textWeight: 'medium'
           },
-          palettes: buildBySegment(segmentNames, (segmentName) => {
-            return {
-              light: {
-                textColor: {
-                  primary: {
-                    vivid: {
-                      rest: c(segmentName, 'l', 'button.neutral', 0),
-                      disabled: {
-                        ref: c(segmentName, 'l', 'button.neutral', 25)
+          palettes: buildBySegment(
+            segmentNames,
+            (segmentName) => {
+              return {
+                light: {
+                  textColor: {
+                    primary: {
+                      vivid: {
+                        rest: c(segmentName, 'l', 'button.neutral', 0),
+                        disabled: {
+                          ref: c(segmentName, 'l', 'button.neutral', 25)
+                        }
+                      }
+                    }
+                  }
+                },
+                dark: {
+                  textColor: {
+                    primary: {
+                      vivid: {
+                        rest: c(segmentName, 'd', 'button.neutral', 100),
+                        disabled: {
+                          ref: c(segmentName, 'd', 'button.neutral', 100, 25)
+                        }
                       }
                     }
                   }
                 }
-              },
-              dark: {
-                textColor: {
-                  primary: {
-                    vivid: {
-                      rest: c(segmentName, 'd', 'button.neutral', 100),
-                      disabled: {
-                        ref: c(segmentName, 'd', 'button.neutral', 100, 25)
+              };
+            },
+            {
+              modern: (segmentName) => ({
+                light: {
+                  textColor: {
+                    primary: {
+                      vivid: {
+                        rest: c(segmentName, 'l', 'button.neutral', 0),
+                        hover: {
+                          ref: c(segmentName, 'l', 'button.neutral', 0)
+                        },
+                        focus: {
+                          ref: c(segmentName, 'l', 'primitive.purple.v2', 45)
+                        },
+                        disabled: {
+                          ref: c(segmentName, 'l', 'button.neutral', 100, 25)
+                        }
                       }
                     }
                   }
                 }
-              }
-            };
-          }),
+              })
+            }
+          ),
           scales: {
             textSize: {
               's:sm:1': 12,

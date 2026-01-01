@@ -10,11 +10,11 @@
       }
     },
     "e2": {
-      "d": "fk-bi",
+      "d": "fk-bl",
       "s": {
-        "s:sm:1": "fk-bf fk-bc",
-        "s:md:1": "fk-bg fk-bd",
-        "s:lg:1": "fk-bh fk-be"
+        "s:sm:1": "fk-bi fk-bf",
+        "s:md:1": "fk-bj fk-bg",
+        "s:lg:1": "fk-bk fk-bh"
       }
     }
   }
