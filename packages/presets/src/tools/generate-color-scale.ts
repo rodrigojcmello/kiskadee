@@ -817,7 +817,15 @@ export function generateColorScaleArtifact(
 // });
 
 // Fluent Primary - Dark
-generateColorScaleArtifact('#9780F7', false, undefined, undefined, false);
+generateColorScaleArtifact(
+  '#9780F7',
+  false,
+  {
+    25: '#9780F7'
+  },
+  undefined,
+  false
+);
 
 // // // Fluent Neutral
 // generateColorScaleArtifact(

@@ -221,6 +221,9 @@ export const schema: Schema<Segments> = {
                         focus: {
                           ref: c(segmentName, 'l', 'primitive.purple.v2', 45)
                         },
+                        pressed: {
+                          ref: c(segmentName, 'l', 'button.neutral', 0, 80)
+                        },
                         disabled: {
                           ref: c(segmentName, 'l', 'button.neutral', 100, 25)
                         }
