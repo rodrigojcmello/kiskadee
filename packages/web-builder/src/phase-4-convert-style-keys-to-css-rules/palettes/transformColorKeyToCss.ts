@@ -167,11 +167,12 @@ export function transformColorKeyToCss(
       return seg ? seg.split(':') : [];
     }
     // non-ref: state segment is between "--" and "__" (if present)
-    const start = styleKey.indexOf('--');
+    // IMPORTANT: only consider the key portion (before "__"). Values may contain "--"
+    // (e.g. CSS vars like "var(--x)" inside JSON-encoded gradients).
+    const head = styleKey.split('__')[0] ?? '';
+    const start = head.indexOf('--');
     if (start === -1) return [];
-    const rest = styleKey.slice(start + 2);
-    const end = rest.indexOf('__');
-    const seg = end === -1 ? rest : rest.slice(0, end);
+    const seg = head.slice(start + 2);
     return seg ? seg.split(':') : [];
   };
 
