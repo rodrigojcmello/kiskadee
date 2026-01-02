@@ -3,7 +3,6 @@ import type {
   ElementPalettes,
   InteractionState,
   SchemaColors,
-  SchemaSegments,
   SegmentName,
   SelectedInteractionStateToken,
   SemanticColor,
@@ -21,8 +20,8 @@ export type ElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   name?: string; // for example "element-element-element-element"
   decorations: DecorationSchema;
   scales: ScaleSchema;
-  // Palettes follow the same structure as SchemaSegments: segmentName → themes → ColorSchema
-  // This ensures consistency and enables proper white-label theming with light/dark mode support
+  // Palettes follow the structure: segmentName → theme → ColorSchema.
+  // This ensures consistency and enables proper white-label theming with theme mode support.
   palettes: ElementPalettes<TSegmentName>;
   effects: ElementEffects;
 }>;
@@ -130,7 +129,6 @@ export type Schema<TSegmentName extends SegmentName = never> = SchemaMetadata & 
    * or platform-specific font settings.
    */
   fonts?: SchemaFonts;
-  segments?: SchemaSegments<TSegmentName>;
   /**
    * Optional 3-layer color configuration.
    *

@@ -1,32 +1,13 @@
 import type {
   ComponentIntents,
+  GlobalSemanticsBySegment,
   GlobalSemanticsByTheme,
   PrimitiveColors,
-  SchemaColors,
-  SchemaSegments
+  SchemaColors
 } from '@kiskadee/core';
 import neutralDark from './colors/neutral.dark';
 import neutralLight from './colors/neutral.light';
 import primaryUnique from './colors/primary.unique';
-
-type Segment = 'default';
-
-export const segments: SchemaSegments<Segment> = {
-  default: {
-    name: 'Default',
-    mainColor: 'blue',
-    themes: {
-      light: {
-        primary: primaryUnique,
-        neutral: neutralLight
-      },
-      dark: {
-        primary: primaryUnique,
-        neutral: neutralDark
-      }
-    }
-  }
-};
 
 // -------------------------------------------------------------------------------------------------
 // 3-layer color architecture (Primitive → Global semantics → Component intents)
@@ -43,14 +24,32 @@ export const primitiveColors = {
 
 export const globalSemantics = {
   light: {
-    primary: { solid: { hue: 'blue', name: 'v1' } },
-    neutral: { solid: { hue: 'black', name: 'v1' } }
+    primary: 'primitive.blue.v1',
+    neutral: 'primitive.black.v1'
   },
   dark: {
-    primary: { solid: { hue: 'blue', name: 'v1' } },
-    neutral: { solid: { hue: 'black', name: 'v1' } }
+    primary: 'primitive.blue.v1',
+    neutral: 'primitive.black.v1'
   }
 } as const satisfies GlobalSemanticsByTheme;
+
+// -------------------------------------------------------------------------------------------------
+// Color Layer 2 - Global semantics by segment (registry + optional overrides)
+// -------------------------------------------------------------------------------------------------
+
+/**
+ * Segment registry + optional per-segment overrides for global semantics.
+ *
+ * - `default` is always present to register the primary segment.
+ * - `themes` is optional and should be used only when a segment must override Layer 2 mappings.
+ */
+export const globalSemanticsBySegment = {
+  default: {
+    meta: {
+      name: 'Default'
+    }
+  }
+} as const satisfies GlobalSemanticsBySegment;
 
 export const componentIntents = {
   button: {
@@ -64,5 +63,6 @@ export const componentIntents = {
 export const schemaColors = {
   primitiveColors,
   globalSemantics,
+  globalSemanticsBySegment,
   componentIntents
 } as const satisfies SchemaColors;

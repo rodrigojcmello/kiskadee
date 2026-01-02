@@ -1,7 +1,7 @@
 import { readdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Schema, SchemaSegments } from '@kiskadee/core';
+import type { Schema } from '@kiskadee/core';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys';
 import {
   mapStyleKeyUsage,
@@ -35,9 +35,7 @@ function slugifyName(name: string): string {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-async function loadPresetsToBuild(): Promise<
-  Array<{ schema: Schema; segments: SchemaSegments; schemaPath: string }>
-> {
+async function loadPresetsToBuild(): Promise<Array<{ schema: Schema; schemaPath: string }>> {
   // Presets live under packages/presets/src/presets. We only want to iterate
   // actual preset folders, not tooling under src/tools.
   const presetsDistDir = resolve(__dirname, '..', '..', 'presets', 'src', 'presets');
@@ -46,12 +44,11 @@ async function loadPresetsToBuild(): Promise<
     .filter((e) => e.isDirectory())
     .map((e) => e.name);
 
-  const items: Array<{ schema: Schema; segments: SchemaSegments; schemaPath: string }> = [];
+  const items: Array<{ schema: Schema; schemaPath: string }> = [];
 
   for (const dir of dirs) {
     const mod = (await import(`@kiskadee/presets/src/presets/${dir}`)) as {
       schema?: Schema;
-      segments?: SchemaSegments;
     };
 
     if (!mod?.schema) {
@@ -59,15 +56,8 @@ async function loadPresetsToBuild(): Promise<
       continue;
     }
 
-    const segments = mod.schema.segments;
-    if (!segments) {
-      console.warn(`[web-builder] Skipping preset "${dir}": missing schema.segments.`);
-      continue;
-    }
-
     items.push({
       schema: mod.schema,
-      segments,
       schemaPath: resolve(
         __dirname,
         '..',
@@ -96,7 +86,7 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
 (async () => {
   const presetsToBuild = await loadPresetsToBuild();
   for (const t of presetsToBuild) {
-    const { schema, segments, schemaPath } = t;
+    const { schema, schemaPath } = t;
 
     // Phase 1 - Convert Element Schema to Style Keys
     const { styleKeys, toneMetadata } = convertElementSchemaToStyleKeys(schema);
@@ -143,7 +133,6 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
     // Phase 7 - Publish manifest + raw schema/segments
     await publishMetadata({
       schema,
-      segments,
       outDirSlug,
       schemaPath: schemaPath,
       baseBuildDir

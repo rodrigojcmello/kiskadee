@@ -10,6 +10,33 @@ import {
 } from '@kiskadee/core';
 import { convertHslaToHex } from '../utils/convertHslaToHex';
 
+type ResolvedGradientLike = {
+  kind: 'linear';
+  angle: number;
+  stops: Array<{ color: unknown; position: number }>;
+};
+
+function isHslaLike(v: unknown): v is HSLA {
+  return (
+    Array.isArray(v) && v.length === 4 && v.every((n) => typeof n === 'number' && !Number.isNaN(n))
+  );
+}
+
+function isResolvedGradientLike(v: unknown): v is ResolvedGradientLike {
+  if (!v || typeof v !== 'object') return false;
+  const g = v as Partial<ResolvedGradientLike>;
+  if (g.kind !== 'linear') return false;
+  if (typeof g.angle !== 'number' || Number.isNaN(g.angle)) return false;
+  if (!Array.isArray(g.stops) || g.stops.length === 0) return false;
+  return g.stops.every((s) => {
+    if (!s || typeof s !== 'object') return false;
+    const stop = s as { color?: unknown; position?: unknown };
+    if (typeof stop.position !== 'number' || Number.isNaN(stop.position)) return false;
+    // color is either HSLA-like array or string (e.g. CSS variable)
+    return typeof stop.color === 'string' || isHslaLike(stop.color);
+  });
+}
+
 export const ERROR_INVALID_KEY_FORMAT =
   'Invalid key format. Expected value in square brackets at the end.';
 export const ERROR_REF_REQUIRE_STATE =
@@ -51,23 +78,81 @@ export function transformColorKeyToCss(
   }
   const rawValue = styleKey.slice(separatorIndex + 2);
 
-  let cssValue: string;
-
-  // Check if it is HSLA array
-  if (rawValue.startsWith('[') && rawValue.endsWith(']')) {
-    const inner = rawValue.slice(1, -1);
-    const hsla = inner.split(',').map(Number) as HSLA;
-    cssValue = convertHslaToHex(hsla);
-  } else {
-    cssValue = rawValue;
-  }
-
   // Base color property, e.g. "background-color" or "color"
   // Support both non-ref ("--" or "__") and ref ("==") separators
   const propertyName = styleKey.split(/==|--|__/)[0] as ColorProperty;
   const colorProperty = CssColorProperty[propertyName];
   // Optimization: use shorthand "background" instead of "background-color"
   const optimizedProperty = colorProperty === 'background-color' ? 'background' : colorProperty;
+
+  let cssValue: string;
+  let gradientVars: string | undefined;
+  let gradientBackground: string | undefined;
+
+  // Check if it is HSLA array (solid color encoded as JSON array)
+  if (rawValue.startsWith('[') && rawValue.endsWith(']')) {
+    const inner = rawValue.slice(1, -1);
+    const parts = inner.split(',').map(Number);
+    if (parts.length !== 4 || parts.some((n) => Number.isNaN(n))) {
+      throw new Error(
+        `Invalid HSLA tuple in style key. Expected "h,s,l,a" (4 numbers), got: "${inner}"`
+      );
+    }
+    // TS note: `HSLA` is a `readonly` tuple. We validate length at runtime and then cast.
+    const hsla = parts as unknown as HSLA;
+    cssValue = convertHslaToHex(hsla);
+  } else if (rawValue.startsWith('{') && rawValue.endsWith('}')) {
+    // Cross-platform encoding: gradients are stored as JSON objects in the style key.
+    // Web builder converts them to a valid CSS gradient only at this phase.
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(rawValue);
+    } catch {
+      throw new Error(`Invalid JSON value in style key: ${rawValue}`);
+    }
+
+    if (!isResolvedGradientLike(parsed)) {
+      throw new Error(
+        `Unsupported JSON value in style key (expected ResolvedGradient): ${rawValue}`
+      );
+    }
+
+    // Gradients are only supported for box/background paints on Web.
+    if (optimizedProperty !== 'background') {
+      throw new Error(
+        `Gradient value is not supported for property "${String(propertyName)}" (styleKey=${styleKey}). Use a solid color instead.`
+      );
+    }
+
+    const g = parsed;
+    const resolvedStops = g.stops.map((s) => {
+      const stopColor = typeof s.color === 'string' ? s.color : convertHslaToHex(s.color as HSLA);
+      return { color: stopColor, position: s.position };
+    });
+
+    // Animated gradient strategy for Web (2–3 stops):
+    // - Background is expressed in terms of CSS custom properties (--k-bg0/1/2)
+    // - Interaction states only override the variables, allowing browsers that support
+    //   `@property` to interpolate colors (progressive enhancement).
+    if (resolvedStops.length === 2 || resolvedStops.length === 3) {
+      const varNames = ['--k-bg0', '--k-bg1', '--k-bg2'] as const;
+
+      gradientVars = resolvedStops.map((s, i) => `${varNames[i]}: ${s.color};`).join(' ');
+
+      const bgStops = resolvedStops.map((s, i) => `var(${varNames[i]}) ${s.position}%`).join(', ');
+
+      gradientBackground = `linear-gradient(${g.angle}deg, ${bgStops})`;
+      // For non-rest states we want to emit only vars. For rest we emit vars + background.
+      cssValue = gradientBackground;
+    } else {
+      // Fallback: keep output stable and compact (no animation support).
+      const stops = resolvedStops.map((s) => `${s.color} ${s.position}%`).join(', ');
+      cssValue = `linear-gradient(${g.angle}deg, ${stops})`;
+    }
+  } else {
+    // String value (e.g. CSS var)
+    cssValue = rawValue;
+  }
 
   const isRef = styleKey.includes('==');
 
@@ -82,11 +167,12 @@ export function transformColorKeyToCss(
       return seg ? seg.split(':') : [];
     }
     // non-ref: state segment is between "--" and "__" (if present)
-    const start = styleKey.indexOf('--');
+    // IMPORTANT: only consider the key portion (before "__"). Values may contain "--"
+    // (e.g. CSS vars like "var(--x)" inside JSON-encoded gradients).
+    const head = styleKey.split('__')[0] ?? '';
+    const start = head.indexOf('--');
     if (start === -1) return [];
-    const rest = styleKey.slice(start + 2);
-    const end = rest.indexOf('__');
-    const seg = end === -1 ? rest : rest.slice(0, end);
+    const seg = head.slice(start + 2);
     return seg ? seg.split(':') : [];
   };
 
@@ -95,6 +181,10 @@ export function transformColorKeyToCss(
 
   if (!isRef) {
     if (filteredStates.length === 0) {
+      if (gradientVars && gradientBackground && optimizedProperty === 'background') {
+        return `.${className} { ${gradientVars} ${optimizedProperty}: ${gradientBackground} }`;
+      }
+
       return `.${className} { ${optimizedProperty}: ${cssValue} }`;
     }
 
@@ -135,6 +225,12 @@ export function transformColorKeyToCss(
     }
 
     const selector = selectors.join(', ');
+    if (gradientVars && optimizedProperty === 'background') {
+      // Non-rest state: override only variables.
+      // The background expression is expected to be provided by the rest (base) rule.
+      return `${selector} { ${gradientVars} }`;
+    }
+
     return `${selector} { ${optimizedProperty}: ${cssValue} }`;
   }
 
@@ -183,5 +279,9 @@ export function transformColorKeyToCss(
   }
 
   const selector = parentSelectors.join(', ');
+  if (gradientVars && gradientBackground && optimizedProperty === 'background') {
+    // Ref rules do not have a guaranteed rest anchor, so emit vars + background together.
+    return `${selector} { ${gradientVars} ${optimizedProperty}: ${gradientBackground} }`;
+  }
   return `${selector} { ${optimizedProperty}: ${cssValue} }`;
 }

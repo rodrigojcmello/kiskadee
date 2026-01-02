@@ -1,66 +1,15 @@
 import type {
   ComponentIntents,
+  GlobalSemanticsBySegment,
   GlobalSemanticsByTheme,
-  PrimitiveColorRef,
-  PrimitiveColors,
-  SchemaSegments,
-  ThemeColorPalette,
-  ThemeMode
+  PrimitiveColors
 } from '@kiskadee/core';
-import { createSegmentFactory } from '../../utils/segmentFactory';
 import dynamicColor from '../dynamic.color';
 import neutralLight from './colors/neutral.light';
 import primaryLight from './colors/primary.light';
 import redLikeLight from './colors/red-like.light';
 
 // Kiskadee iOS 26: starts as a copy of Apple iOS 26; can evolve with Kiskadee opinions later
-
-// -------------------------------------------------------------------------------------------------
-// Segments
-// -------------------------------------------------------------------------------------------------
-
-/**
- * Segments definition for the iOS 26 design system.
- * Each segment represents a brand/product identity with support for multiple theme modes.
- *
- * Current implementation includes:
- * - ios: Primary segment with light theme (blue brand color HSL 206°)
- *
- * All segments include universal semantic colors:
- * - primary: Brand identity color (varies by segment)
- * - secondary: Supporting brand color
- * - greenLike: Success, purchase, confirmation, profit (always green ~140°)
- * - yellowLike: Attention, warning, caution (always yellow ~45°)
- * - redLike: Danger, error, urgent, notification (always red ~0°)
- * - neutral: Text, backgrounds, borders, dividers (always grayscale)
- */
-
-// Define the base theme shared across segments
-const baseThemes: Partial<Record<ThemeMode, ThemeColorPalette>> = {
-  light: {
-    neutral: neutralLight,
-    redLike: redLikeLight
-  },
-  dark: {
-    redLike: redLikeLight
-  }
-};
-
-// Create the factory with the base theme
-const createSegment = createSegmentFactory(baseThemes);
-
-export const segments: SchemaSegments = {
-  default: createSegment('Default', 'blue', {
-    light: {
-      primary: primaryLight
-    }
-  }),
-  dynamic: createSegment('Dynamic', 'blue', {
-    light: {
-      primary: dynamicColor
-    }
-  })
-};
 
 // -------------------------------------------------------------------------------------------------
 // 3-layer color architecture (Primitive → Global semantics → Component intents)
@@ -89,36 +38,47 @@ type GlobalSemanticKey = 'primary' | 'neutral' | 'redLike';
 
 export const globalSemantics = {
   light: {
-    primary: { solid: { hue: 'blue', name: 'v1' } },
-    neutral: { solid: { hue: 'black', name: 'v1' } },
-    redLike: { solid: { hue: 'red', name: 'v1' } }
+    primary: 'primitive.blue.v1',
+    neutral: 'primitive.black.v1',
+    redLike: 'primitive.red.v1'
   },
   dark: {
-    primary: { solid: { hue: 'blue', name: 'v1' } },
-    neutral: { solid: { hue: 'black', name: 'v1' } },
-    redLike: { solid: { hue: 'red', name: 'v1' } }
+    primary: 'primitive.blue.v1',
+    neutral: 'primitive.black.v1',
+    redLike: 'primitive.red.v1'
   }
 } as const satisfies GlobalSemanticsByTheme;
 
 // -------------------------------------------------------------------------------------------------
-// Color Layer 2 (optional) - Global semantics overrides by segment
+// Color Layer 2 - Global semantics by segment (registry + optional overrides)
 // -------------------------------------------------------------------------------------------------
 
 /**
- * Optional per-segment overrides for global semantics.
+ * Segment registry + optional per-segment overrides for global semantics.
  *
- * Here we override `primary` for the `dynamic` segment to use a different primitive.
+ * - `default` is always present to register the primary segment.
+ * - `themes` is optional and should be used only when a segment must override Layer 2 mappings.
  */
 export const globalSemanticsBySegment = {
+  default: {
+    meta: {
+      name: 'Default'
+    }
+  },
   dynamic: {
-    light: {
-      primary: { solid: { hue: 'blue', name: 'dynamic' } }
+    meta: {
+      name: 'Dynamic'
     },
-    dark: {
-      primary: { solid: { hue: 'blue', name: 'dynamic' } }
+    themes: {
+      light: {
+        primary: 'primitive.blue.dynamic'
+      },
+      dark: {
+        primary: 'primitive.blue.dynamic'
+      }
     }
   }
-} as const satisfies Partial<Record<string, GlobalSemanticsByTheme>>;
+} as const satisfies GlobalSemanticsBySegment;
 
 export const componentIntents = {
   button: {
@@ -128,7 +88,3 @@ export const componentIntents = {
     positive: 'primary'
   }
 } as const satisfies ComponentIntents;
-
-// Type-level sanity: make sure our per-segment override points to a valid primitive ref.
-const _dynamicPrimaryRef: PrimitiveColorRef = globalSemanticsBySegment.dynamic.light.primary.solid;
-void _dynamicPrimaryRef;

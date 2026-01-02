@@ -7,25 +7,26 @@ export const cssPaths = {
     effects: '/build/carbon-1-ibm/effects.kiskadee.css',
     palettes: {
       'default|light': '/build/carbon-1-ibm/default.light.kiskadee.css',
-      'default|dark': '/build/carbon-1-ibm/default.dark.kiskadee.css',
     }
   },
   'fluent-2-kiskadee': {
     core: '/build/fluent-2-kiskadee/core.kiskadee.css',
     effects: '/build/fluent-2-kiskadee/effects.kiskadee.css',
     palettes: {
-      'default|light': '/build/fluent-2-kiskadee/default.light.kiskadee.css',
       'default|dark': '/build/fluent-2-kiskadee/default.dark.kiskadee.css',
-      'dynamic|light': '/build/fluent-2-kiskadee/dynamic.light.kiskadee.css',
+      'default|light': '/build/fluent-2-kiskadee/default.light.kiskadee.css',
+      'modern|dark': '/build/fluent-2-kiskadee/modern.dark.kiskadee.css',
+      'modern|light': '/build/fluent-2-kiskadee/modern.light.kiskadee.css',
       'dynamic|dark': '/build/fluent-2-kiskadee/dynamic.dark.kiskadee.css',
+      'dynamic|light': '/build/fluent-2-kiskadee/dynamic.light.kiskadee.css',
     }
   },
   'fluent-2-microsoft': {
     core: '/build/fluent-2-microsoft/core.kiskadee.css',
     effects: '/build/fluent-2-microsoft/effects.kiskadee.css',
     palettes: {
-      'default|light': '/build/fluent-2-microsoft/default.light.kiskadee.css',
       'default|dark': '/build/fluent-2-microsoft/default.dark.kiskadee.css',
+      'default|light': '/build/fluent-2-microsoft/default.light.kiskadee.css',
     }
   },
   'ios-26-apple': {
@@ -39,10 +40,12 @@ export const cssPaths = {
     core: '/build/ios-26-kiskadee/core.kiskadee.css',
     effects: '/build/ios-26-kiskadee/effects.kiskadee.css',
     palettes: {
-      'default|light': '/build/ios-26-kiskadee/default.light.kiskadee.css',
       'default|dark': '/build/ios-26-kiskadee/default.dark.kiskadee.css',
-      'dynamic|light': '/build/ios-26-kiskadee/dynamic.light.kiskadee.css',
+      'default|darker': '/build/ios-26-kiskadee/default.darker.kiskadee.css',
+      'default|light': '/build/ios-26-kiskadee/default.light.kiskadee.css',
       'dynamic|dark': '/build/ios-26-kiskadee/dynamic.dark.kiskadee.css',
+      'dynamic|darker': '/build/ios-26-kiskadee/dynamic.darker.kiskadee.css',
+      'dynamic|light': '/build/ios-26-kiskadee/dynamic.light.kiskadee.css',
     }
   },
   'material-design-3-google': {

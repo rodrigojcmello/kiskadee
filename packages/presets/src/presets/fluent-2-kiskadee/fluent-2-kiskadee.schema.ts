@@ -1,92 +1,19 @@
 import { breakpoints, color, primitive, type Schema, withAlpha } from '@kiskadee/core';
-import { schemaColors, segments } from './fluent-2-kiskadee.colors';
+import { buildBySegment } from '../../utils/buildBySegment';
+import { createPresetColorGetter } from '../../utils/presetColor';
+import { schemaColors } from './fluent-2-kiskadee.colors';
 
 // Reference: https://www.figma.com/design/iEmab9I4qGqbUJlFSxRORE/Microsoft-Fluent-2-Web--Community-?node-id=1-840&p=f&t=M4w8UKqwRiqJgq8i-0
 
 const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
 
-function c(
-  segmentName: 'default' | 'dynamic',
-  theme: 'l' | 'd',
-  roleOrPrimitive: Parameters<typeof color>[3],
-  tone: number,
-  alpha?: number
-) {
-  return color(schemaContext, segmentName, theme, roleOrPrimitive, tone, alpha);
-}
+const segmentNames = ['default', 'modern', 'dynamic'] as const;
+type SegmentName = (typeof segmentNames)[number];
 
-function createButtonElementPalettes(segmentName: 'default' | 'dynamic') {
-  return {
-    light: {
-      boxColor: {
-        primary: {
-          vivid: {
-            rest: c(segmentName, 'l', 'button.primary', 60),
-            hover: c(segmentName, 'l', 'button.primary', 70),
-            focus: c(segmentName, 'l', 'button.primary', 60),
-            pressed: c(segmentName, 'l', 'button.primary', 90),
-            disabled: c(segmentName, 'l', 'button.neutral', 6),
-            selected: {
-              rest: c(segmentName, 'l', 'button.primary', 80),
-              hover: c(segmentName, 'l', 'button.primary', 70),
-              pressed: c(segmentName, 'l', 'button.primary', 90)
-            }
-          }
-        }
-      }
-    },
-    dark: {
-      boxColor: {
-        primary: {
-          vivid: {
-            rest: c(segmentName, 'd', 'button.primary', 70),
-            hover: c(segmentName, 'd', 'button.primary', 60),
-            focus: c(segmentName, 'd', 'button.primary', 70),
-            pressed: c(segmentName, 'd', 'button.primary', 90),
-            disabled: c(segmentName, 'd', 'button.neutral', 0, 40),
-            selected: {
-              rest: c(segmentName, 'd', 'button.primary', 80),
-              hover: c(segmentName, 'd', 'button.primary', 70),
-              pressed: c(segmentName, 'd', 'button.primary', 90)
-            }
-          }
-        }
-      }
-    }
-  };
-}
-
-function createButtonTextElementPalettes(segmentName: 'default' | 'dynamic') {
-  return {
-    light: {
-      textColor: {
-        primary: {
-          vivid: {
-            rest: c(segmentName, 'l', 'button.neutral', 0),
-            disabled: {
-              ref: c(segmentName, 'l', 'button.neutral', 25)
-            }
-          }
-        }
-      }
-    },
-    dark: {
-      textColor: {
-        primary: {
-          vivid: {
-            rest: c(segmentName, 'd', 'button.neutral', 100),
-            disabled: {
-              ref: c(segmentName, 'd', 'button.neutral', 100, 25)
-            }
-          }
-        }
-      }
-    }
-  };
-}
+const c = createPresetColorGetter<SegmentName>(schemaContext);
 
 // The `Schema` generic represents extra segment names beyond the built-ins (`default` and optional `dynamic`).
-type Segments = never;
+type Segments = 'modern';
 
 export const schema: Schema<Segments> = {
   name: 'Fluent',
@@ -95,7 +22,6 @@ export const schema: Schema<Segments> = {
   author: 'Kiskadee',
   breakpoints,
   colors: schemaColors,
-  segments,
   themeTokens: {
     palettes: {
       default: {
@@ -105,6 +31,11 @@ export const schema: Schema<Segments> = {
         dark: {
           focusColor: color(schemaContext, 'default', 'd', primitive('black', 'v1'), 100),
           background: [0, 0, 12, 1]
+        }
+      },
+      modern: {
+        light: {
+          focusColor: color(schemaContext, 'modern', 'l', 'primitive.purple.v1', 40)
         }
       }
     }
@@ -144,10 +75,89 @@ export const schema: Schema<Segments> = {
               's:lg:1': 4
             }
           },
-          palettes: {
-            default: createButtonElementPalettes('default'),
-            dynamic: createButtonElementPalettes('dynamic')
-          },
+          palettes: buildBySegment(
+            segmentNames,
+            (segmentName) => {
+              // NOTE: For now, the `dynamic` segment is expected to be solid-only.
+              // Gradient support for dynamic segments will be added later.
+              return {
+                light: {
+                  boxColor: {
+                    primary: {
+                      vivid: {
+                        rest: c(segmentName, 'l', 'button.primary', 60),
+                        hover: c(segmentName, 'l', 'button.primary', 70),
+                        focus: c(segmentName, 'l', 'button.primary', 60),
+                        pressed: c(segmentName, 'l', 'button.primary', 90),
+                        disabled: c(segmentName, 'l', 'button.neutral', 6),
+                        selected: {
+                          rest: c(segmentName, 'l', 'button.primary', 80),
+                          hover: c(segmentName, 'l', 'button.primary', 70),
+                          pressed: c(segmentName, 'l', 'button.primary', 90)
+                        }
+                      }
+                    }
+                  }
+                },
+                dark: {
+                  boxColor: {
+                    primary: {
+                      vivid: {
+                        rest: c(segmentName, 'd', 'button.primary', 70),
+                        hover: c(segmentName, 'd', 'button.primary', 60),
+                        focus: c(segmentName, 'd', 'button.primary', 70),
+                        pressed: c(segmentName, 'd', 'button.primary', 90),
+                        disabled: c(segmentName, 'd', 'button.neutral', 0, 40),
+                        selected: {
+                          rest: c(segmentName, 'd', 'button.primary', 80),
+                          hover: c(segmentName, 'd', 'button.primary', 70),
+                          pressed: c(segmentName, 'd', 'button.primary', 90)
+                        }
+                      }
+                    }
+                  }
+                }
+              };
+            },
+            {
+              modern: (segmentName) => ({
+                light: {
+                  boxColor: {
+                    primary: {
+                      vivid: {
+                        rest: c(segmentName, 'l', 'button.primary.gradient', 25),
+                        hover: c(segmentName, 'l', 'button.primary.gradient', 20),
+                        focus: c(segmentName, 'l', 'button.primary.gradient', 5),
+                        pressed: c(segmentName, 'l', 'button.primary.gradient', 30),
+                        selected: {
+                          rest: c(segmentName, 'l', 'button.primary.gradient', 80),
+                          hover: c(segmentName, 'l', 'button.primary.gradient', 70),
+                          pressed: c(segmentName, 'l', 'button.primary.gradient', 90)
+                        }
+                      }
+                    }
+                  }
+                },
+                dark: {
+                  boxColor: {
+                    primary: {
+                      vivid: {
+                        rest: c(segmentName, 'd', 'button.primary.gradient', 25),
+                        hover: c(segmentName, 'd', 'button.primary.gradient', 60),
+                        focus: c(segmentName, 'd', 'button.primary.gradient', 70),
+                        pressed: c(segmentName, 'd', 'button.primary.gradient', 90),
+                        selected: {
+                          rest: c(segmentName, 'd', 'button.primary.gradient', 80),
+                          hover: c(segmentName, 'd', 'button.primary.gradient', 70),
+                          pressed: c(segmentName, 'd', 'button.primary.gradient', 90)
+                        }
+                      }
+                    }
+                  }
+                }
+              })
+            }
+          ),
           effects: {
             shadow: {
               x: { rest: 0, hover: 0, pressed: 0, focus: 0, disabled: 0 },
@@ -168,10 +178,62 @@ export const schema: Schema<Segments> = {
           decorations: {
             textWeight: 'medium'
           },
-          palettes: {
-            default: createButtonTextElementPalettes('default'),
-            dynamic: createButtonTextElementPalettes('dynamic')
-          },
+          palettes: buildBySegment(
+            segmentNames,
+            (segmentName) => {
+              return {
+                light: {
+                  textColor: {
+                    primary: {
+                      vivid: {
+                        rest: c(segmentName, 'l', 'button.neutral', 0),
+                        disabled: {
+                          ref: c(segmentName, 'l', 'button.neutral', 25)
+                        }
+                      }
+                    }
+                  }
+                },
+                dark: {
+                  textColor: {
+                    primary: {
+                      vivid: {
+                        rest: c(segmentName, 'd', 'button.neutral', 100),
+                        disabled: {
+                          ref: c(segmentName, 'd', 'button.neutral', 100, 25)
+                        }
+                      }
+                    }
+                  }
+                }
+              };
+            },
+            {
+              modern: (segmentName) => ({
+                light: {
+                  textColor: {
+                    primary: {
+                      vivid: {
+                        rest: c(segmentName, 'l', 'button.neutral', 0),
+                        hover: {
+                          ref: c(segmentName, 'l', 'button.neutral', 0)
+                        },
+                        focus: {
+                          ref: c(segmentName, 'l', 'primitive.purple.v2', 45)
+                        },
+                        pressed: {
+                          ref: c(segmentName, 'l', 'button.neutral', 0, 80)
+                        },
+                        disabled: {
+                          ref: c(segmentName, 'l', 'button.neutral', 100, 25)
+                        }
+                      }
+                    }
+                  }
+                }
+              })
+            }
+          ),
           scales: {
             textSize: {
               's:sm:1': 12,

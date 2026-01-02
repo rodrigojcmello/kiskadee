@@ -9,8 +9,7 @@
   ],
   "themes": {
     "default": [
-      "light",
-      "dark"
+      "light"
     ]
   },
   "components": {

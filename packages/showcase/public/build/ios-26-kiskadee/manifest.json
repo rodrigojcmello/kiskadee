@@ -10,12 +10,14 @@
   ],
   "themes": {
     "default": [
-      "light",
-      "dark"
+      "dark",
+      "darker",
+      "light"
     ],
     "dynamic": [
-      "light",
-      "dark"
+      "dark",
+      "darker",
+      "light"
     ]
   },
   "components": {

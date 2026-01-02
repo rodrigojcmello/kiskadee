@@ -18,6 +18,9 @@ build
 .idea
 .DS_Store
 
+# AI Agents
+.output.txt
+
 # Tests
 coverage
 

@@ -3,14 +3,14 @@
     "e1": {
       "c": {
         "primary": {
-          "d": "fk-r fk-aa fk-f fk-v fk-l fk-h fk-j fk-d"
+          "d": "fk-v fk-ai fk-h fk-ab fk-q fk-k fk-n fk-d"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "d": "fk-a fk-n"
+          "d": "fk-a fk-r"
         }
       }
     }

@@ -75,9 +75,11 @@ Location: packages/web-builder/src/index.ts
    - Writes CSS bundles and maps to disk (organized by palette and core).
 
 7) Phase 7 — Publish metadata
-   - Function: publishMetadata({ schema, segments, outDirSlug, schemaPath, baseBuildDir })
+   - Function: publishMetadata({ schema, outDirSlug, schemaPath, baseBuildDir })
    - Writes a manifest.json, schema.json, segments.json and schema.source.ts per preset directory
      under packages/web-builder/build/<template-key>.
+   - Note: `segments.json` is generated from `schema.colors.globalSemanticsBySegment` (segment registry)
+     and materializes `themes` for every segment (including `default`).
 
 ## Style key and interaction state conventions
 

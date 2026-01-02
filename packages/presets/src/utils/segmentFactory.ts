@@ -1,46 +1,44 @@
-import type { Segment, ThemeColorPalette, ThemeMode } from '@kiskadee/core';
+import type { ThemeColorPalette, ThemeMode } from '@kiskadee/core';
 
 // Partial<Record<ThemeMode, Partial<ThemeColorPalette>>>
 // Use Partial to allow providing only some modes or some semantic colors
-export type SegmentOverrides = Partial<Record<ThemeMode, Partial<ThemeColorPalette>>>;
+export type ThemeOverrides = Partial<Record<ThemeMode, Partial<ThemeColorPalette>>>;
 
 /**
- * Creates a factory function for defining segments that inherit from a base theme.
+ * Merges base theme palettes with optional overrides.
  *
- * @param baseThemes - The base definitions for light/dark themes (e.g. neutral, redLike).
- * @returns A function (createSegment) that generates a full Segment object.
+ * This is useful to keep shared semantic palettes (e.g. `neutral`, `redLike`) consistent
+ * across multiple segment definitions without introducing a dedicated `segments.themes.*`
+ * registry as a source of truth.
  */
-export function createSegmentFactory(
-  baseThemes: Partial<Record<ThemeMode, ThemeColorPalette>>
-) {
-  return (
-    name: string,
-    mainColor: Segment['mainColor'],
-    overrides?: SegmentOverrides
-  ): Segment => {
-    const themes: Segment['themes'] = {};
+export function mergeThemePalettes(
+  baseThemes: Partial<Record<ThemeMode, ThemeColorPalette>>,
+  overrides?: ThemeOverrides
+): Partial<Record<ThemeMode, ThemeColorPalette>> {
+  const out: Partial<Record<ThemeMode, ThemeColorPalette>> = {};
 
-    // Modes to process (could be strictly light/dark or dynamic based on baseThemes)
-    // We'll iterate over keys present in baseThemes or overrides
-    const allModes = new Set([
-      ...Object.keys(baseThemes),
-      ...Object.keys(overrides || {})
-    ]) as Set<ThemeMode>;
+  const isThemeMode = (value: string): value is ThemeMode =>
+    value === 'light' || value === 'dark' || value === 'darker';
 
-    for (const mode of allModes) {
-      const base = baseThemes[mode] || {};
-      const override = overrides?.[mode] || {};
+  const allModes = new Set<ThemeMode>();
 
-      themes[mode] = {
-        ...base,
-        ...override
-      };
-    }
+  for (const key of Object.keys(baseThemes)) {
+    if (isThemeMode(key)) allModes.add(key);
+  }
 
-    return {
-      name,
-      mainColor,
-      themes
+  for (const key of Object.keys(overrides || {})) {
+    if (isThemeMode(key)) allModes.add(key);
+  }
+
+  for (const mode of allModes) {
+    const base = baseThemes[mode] || {};
+    const override = overrides?.[mode] || {};
+
+    out[mode] = {
+      ...base,
+      ...override
     };
-  };
+  }
+
+  return out;
 }

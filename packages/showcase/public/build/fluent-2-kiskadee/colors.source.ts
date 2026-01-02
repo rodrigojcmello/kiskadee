@@ -1,9 +1,9 @@
 import type {
   ComponentIntents,
+  GlobalSemanticsBySegment,
   GlobalSemanticsByTheme,
   PrimitiveColors,
-  SchemaColors,
-  SchemaSegments
+  SchemaColors
 } from '@kiskadee/core';
 import dynamicColor from '../dynamic.color';
 import neutralDark from './colors/neutral.dark';
@@ -11,43 +11,6 @@ import neutralLight from './colors/neutral.light';
 import primaryUnique from './colors/primary.unique';
 import purpleLight from './colors/purple.light';
 import purple2Light from './colors/purple-2.light';
-
-// -------------------------------------------------------------------------------------------------
-// Segments
-// -------------------------------------------------------------------------------------------------
-
-type Segment = 'default';
-
-export const segments: SchemaSegments<Segment> = {
-  default: {
-    name: 'Default',
-    mainColor: 'blue',
-    themes: {
-      light: {
-        primary: primaryUnique,
-        neutral: neutralLight
-      },
-      dark: {
-        primary: primaryUnique,
-        neutral: neutralDark
-      }
-    }
-  },
-  dynamic: {
-    name: 'Dynamic',
-    mainColor: 'blue',
-    themes: {
-      light: {
-        primary: dynamicColor,
-        neutral: neutralLight
-      },
-      dark: {
-        primary: dynamicColor,
-        neutral: neutralDark
-      }
-    }
-  }
-};
 
 // -------------------------------------------------------------------------------------------------
 // 3-layer color architecture (Primitive → Global semantics → Component intents)
@@ -67,8 +30,19 @@ export const primitiveColors = {
     v1: { solid: { light: neutralLight, dark: neutralDark } }
   },
   purple: {
-    v1: { solid: { light: purpleLight } },
-    v2: { solid: { light: purple2Light } }
+    v1: {
+      // NOTE: Dark scale is currently mirrored from light as a placeholder.
+      solid: { light: purpleLight, dark: purpleLight },
+      gradient: {
+        angle: 180,
+        stops: [
+          { primitive: 'primitive.purple.v1', position: 0 },
+          { primitive: 'primitive.purple.v2', position: 100 }
+        ]
+      }
+    },
+    // NOTE: Dark scale is currently mirrored from light as a placeholder.
+    v2: { solid: { light: purple2Light, dark: purple2Light } }
   }
 } as const satisfies PrimitiveColors;
 
@@ -78,35 +52,58 @@ export const primitiveColors = {
 
 export const globalSemantics = {
   light: {
-    primary: { solid: { hue: 'blue', name: 'v1' } },
-    neutral: { solid: { hue: 'black', name: 'v1' } }
+    primary: 'primitive.blue.v1',
+    neutral: 'primitive.black.v1'
   },
   dark: {
-    primary: { solid: { hue: 'blue', name: 'v1' } },
-    neutral: { solid: { hue: 'black', name: 'v1' } }
+    primary: 'primitive.blue.v1',
+    neutral: 'primitive.black.v1'
   }
 } as const satisfies GlobalSemanticsByTheme;
 
 // -------------------------------------------------------------------------------------------------
-// Color Layer 2 (optional) - Global semantics overrides by segment
+// Color Layer 2 - Global semantics by segment (registry + optional overrides)
 // -------------------------------------------------------------------------------------------------
 
 /**
- * Optional per-segment overrides for global semantics.
+ * Segment registry + optional per-segment overrides for global semantics.
  *
- * Most presets will keep this empty. When a segment (brand/product) needs a different
- * primitive mapping for a semantic key (e.g. `primary`), add it here.
+ * - `default` is always present to register the primary segment.
+ * - `themes` is optional and should be used only when a segment must override Layer 2 mappings.
  */
 export const globalSemanticsBySegment = {
-  dynamic: {
-    light: {
-      primary: { solid: { hue: 'blue', name: 'dynamic' } }
+  default: {
+    meta: {
+      name: 'Default'
+    }
+  },
+  modern: {
+    meta: {
+      name: 'Modern'
     },
-    dark: {
-      primary: { solid: { hue: 'blue', name: 'dynamic' } }
+    themes: {
+      light: {
+        primary: 'primitive.purple.v1'
+      },
+      dark: {
+        primary: 'primitive.purple.v1'
+      }
+    }
+  },
+  dynamic: {
+    meta: {
+      name: 'Dynamic'
+    },
+    themes: {
+      light: {
+        primary: 'primitive.blue.dynamic'
+      },
+      dark: {
+        primary: 'primitive.blue.dynamic'
+      }
     }
   }
-} as const satisfies Partial<Record<string, GlobalSemanticsByTheme>>;
+} as const satisfies GlobalSemanticsBySegment;
 
 // -------------------------------------------------------------------------------------------------
 // Color Layer 3 - Component Intents
