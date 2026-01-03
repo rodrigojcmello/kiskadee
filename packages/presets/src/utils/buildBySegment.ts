@@ -1,8 +1,8 @@
-import { type DeepPartial, deepMerge } from './deepMerge';
+import { type DeepOverride, deepMerge } from './deepMerge';
 
 export type SegmentOverride<T, S extends string> =
-  | DeepPartial<T>
-  | ((segmentName: S) => DeepPartial<T>);
+  | DeepOverride<T>
+  | ((segmentName: S) => DeepOverride<T>);
 
 /**
  * Builds a segment-keyed map from a base generator plus optional per-segment overrides.
@@ -29,7 +29,7 @@ export function buildBySegment<const TSegmentNames extends readonly string[], T>
 
     const patch = (
       typeof override === 'function' ? override(segmentName) : override
-    ) as DeepPartial<T>;
+    ) as DeepOverride<T>;
     out[segmentName] = deepMerge(baseValue, patch);
   }
 
