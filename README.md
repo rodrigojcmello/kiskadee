@@ -76,7 +76,7 @@ Location: packages/web-builder/src/index.ts
 
 7) Phase 7 — Publish metadata
    - Function: publishMetadata({ schema, outDirSlug, schemaPath, baseBuildDir })
-   - Writes a manifest.json, schema.json, segments.json and schema.source.ts per preset directory
+   - Writes a manifest.json, schema.json and segments.json per preset directory
      under packages/web-builder/build/<template-key>.
    - Note: `segments.json` is generated from `schema.colors.globalSemanticsBySegment` (segment registry)
      and materializes `themes` for every segment (including `default`).

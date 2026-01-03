@@ -1,13 +1,17 @@
-import { copyFile, cp, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import type {
+  EmphasisLevel,
   GlobalSemanticsBySegment,
   GlobalSemanticsByTheme,
+  HSLA,
   Schema,
   SchemaColors,
   SchemaFonts,
   ThemeMode
 } from '@kiskadee/core';
+import { convertHslaToHex } from '@kiskadee/core';
+import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex';
 import type {
   Manifest,
   ManifestComponent,
@@ -307,51 +311,43 @@ export async function publishMetadata(params: {
   const segmentsArtifact = materializeSegmentThemesArtifact(schema.colors, segmentRegistry);
   await writeFile(resolve(buildDir, 'segments.json'), JSON.stringify(segmentsArtifact, null, 2), 'utf8');
 
-  // Optional: copy original template TS for inspection.
-  // In the clean model we always expose two stable entrypoints:
-  // - schema.source.ts  -> a copy of the original schema, but with its
-  //                        local "*.colors" import rewritten to "./colors.source".
-  // - colors.source.ts  -> a copy of the original "<name>.colors.ts" file.
-  //
-  // No `<preset>.colors.ts` file is published to the build directory anymore;
-  // consumers should always rely on these two stable entrypoints instead.
+  // Process and convert color scales to JSON
   try {
-    const schemaSourcePath = resolve(buildDir, 'schema.source.ts');
-    const source = await readFile(schemaPath, 'utf8');
-    const match = source.match(/from ['"](\.\/[^'\"]*\.colors)['"]/);
+    const colorsDirSrc = resolve(dirname(schemaPath), 'colors');
+    const colorsDirTarget = resolve(buildDir, 'colors');
 
-    if (match && match[1]) {
-      const importStatement = match[0];
-      const rewrittenImport = "from './colors.source'";
+    const files = await readdir(colorsDirSrc);
+    if (files.length > 0) {
+      await mkdir(colorsDirTarget, { recursive: true });
 
-      // Rewrite the original local "*.colors" import to the stable
-      // alias entrypoint "./colors.source".
-      const rewrittenSchemaSource = source.replace(importStatement, rewrittenImport);
-      await writeFile(schemaSourcePath, rewrittenSchemaSource, 'utf8');
+      for (const file of files) {
+        if (!file.endsWith('.ts')) continue;
 
-      // Locate the original colors file (for example "./fluent-2-microsoft.colors.ts")
-      // next to the schema and copy it to "colors.source.ts" in the build directory.
-      const colorsRelPath = match[1];
-      const colorsSrcPath = resolve(dirname(schemaPath), `${colorsRelPath}.ts`);
-      const colorsSourceTarget = resolve(buildDir, 'colors.source.ts');
-      await copyFile(colorsSrcPath, colorsSourceTarget);
+        const srcFilePath = resolve(colorsDirSrc, file);
+        const targetFilePath = resolve(colorsDirTarget, file.replace(/\.ts$/, '.json'));
 
-      try {
-        const colorsDirSrc = resolve(dirname(schemaPath), 'colors');
-        const colorsDirTarget = resolve(buildDir, 'colors');
-        await cp(colorsDirSrc, colorsDirTarget, { recursive: true });
-      } catch (error) {
-        if ((error as any).code !== 'ENOENT') {
-          console.warn('[web-builder] Warning: Failed to copy "colors" folder', error);
+        // Import the color scale from the source file
+        const mod = (await import(srcFilePath)) as { default: EmphasisLevel };
+        const colorScale = mod.default;
+
+        if (!colorScale) continue;
+
+        const convertedScale: Record<string, Record<string, string>> = {};
+
+        for (const [trackKey, trackValues] of Object.entries(colorScale)) {
+          convertedScale[trackKey] = {};
+          for (const [tone, hsla] of Object.entries(trackValues)) {
+            convertedScale[trackKey][tone] = toShortHex(convertHslaToHex(hsla as HSLA));
+          }
         }
+
+        await writeFile(targetFilePath, JSON.stringify(convertedScale, null, 2), 'utf8');
       }
-    } else {
-      // If there is no local "*.colors" import, just copy the schema file as is,
-      // preserving the previous behavior.
-      await copyFile(schemaPath, schemaSourcePath);
     }
-  } catch (e) {
-    console.warn('[web-builder] Failed to copy schema.source.ts for', manifest.key, e);
+  } catch (error) {
+    if ((error as any).code !== 'ENOENT') {
+      console.warn('[web-builder] Warning: Failed to process "colors" folder', error);
+    }
   }
 
   console.log('[web-builder] Phase 7: metadata published to', buildDir);
