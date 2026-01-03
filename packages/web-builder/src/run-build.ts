@@ -1,7 +1,5 @@
-import { readdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Schema } from '@kiskadee/core';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys';
 import {
   mapStyleKeyUsage,
@@ -19,6 +17,7 @@ import {
 import { persistBuildArtifacts } from './phase-6-persist-build-artifacts/persistBuildArtifacts';
 import { publishMetadata } from './phase-7-publish-metadata/publishMetadata';
 import { writeExtraArtifacts } from './phase-8-write-extra-artifacts/writeExtraArtifacts';
+import { loadPresetsToBuild } from './utils/loadPresetsToBuild';
 
 // Feature flag simples para controlar o uso de prefixo nos nomes de classes CSS
 // Ajuste para `false` caso queira desativar o prefixo sem alterar o restante do código.
@@ -35,45 +34,6 @@ function slugifyName(name: string): string {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-async function loadPresetsToBuild(): Promise<Array<{ schema: Schema; schemaPath: string }>> {
-  // Presets live under packages/presets/src/presets. We only want to iterate
-  // actual preset folders, not tooling under src/tools.
-  const presetsDistDir = resolve(__dirname, '..', '..', 'presets', 'src', 'presets');
-
-  const dirs = readdirSync(presetsDistDir, { withFileTypes: true })
-    .filter((e) => e.isDirectory())
-    .map((e) => e.name);
-
-  const items: Array<{ schema: Schema; schemaPath: string }> = [];
-
-  for (const dir of dirs) {
-    const mod = (await import(`@kiskadee/presets/src/presets/${dir}`)) as {
-      schema?: Schema;
-    };
-
-    if (!mod?.schema) {
-      console.warn(`[web-builder] Skipping preset "${dir}": missing schema export.`);
-      continue;
-    }
-
-    items.push({
-      schema: mod.schema,
-      schemaPath: resolve(
-        __dirname,
-        '..',
-        '..',
-        'presets',
-        'src',
-        'presets',
-        dir,
-        `${dir}.schema.ts`
-      )
-    });
-  }
-
-  return items;
-}
-
 // All build artifacts for @kiskadee/web-builder (including metadata) are
 // meant to live under packages/web-builder/build. This path is the single
 // source of truth and is also consumed by the sync-showcase-artifacts script.
@@ -84,7 +44,7 @@ async function loadPresetsToBuild(): Promise<Array<{ schema: Schema; schemaPath:
 const baseBuildDir = resolve(__dirname, '..', 'build');
 
 (async () => {
-  const presetsToBuild = await loadPresetsToBuild();
+  const presetsToBuild = await loadPresetsToBuild(__dirname);
   for (const t of presetsToBuild) {
     const { schema, schemaPath } = t;
 
