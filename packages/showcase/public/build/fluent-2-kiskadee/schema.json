@@ -643,6 +643,19 @@
                 ]
               }
             }
+          },
+          "gradient": {
+            "angle": 180,
+            "stops": [
+              {
+                "primitive": "primitive.black.v1",
+                "position": 0
+              },
+              {
+                "primitive": "primitive.black.v1",
+                "position": 100
+              }
+            ]
           }
         }
       },
@@ -1831,12 +1844,30 @@
                           }
                         ]
                       },
-                      "disabled": [
-                        0,
-                        0,
-                        94,
-                        1
-                      ],
+                      "disabled": {
+                        "kind": "linear",
+                        "angle": 180,
+                        "stops": [
+                          {
+                            "color": [
+                              0,
+                              0,
+                              92,
+                              1
+                            ],
+                            "position": 0
+                          },
+                          {
+                            "color": [
+                              0,
+                              0,
+                              94,
+                              1
+                            ],
+                            "position": 100
+                          }
+                        ]
+                      },
                       "selected": {
                         "rest": {
                           "kind": "linear",

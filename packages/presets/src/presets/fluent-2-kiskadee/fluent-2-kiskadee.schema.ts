@@ -129,6 +129,7 @@ export const schema: Schema<Segments> = {
                         hover: c(segmentName, 'l', 'button.primary.gradient', 20),
                         focus: c(segmentName, 'l', 'button.primary.gradient', 5),
                         pressed: c(segmentName, 'l', 'button.primary.gradient', 30),
+                        disabled: c(segmentName, 'l', 'button.neutral.gradient', [8, 6]),
                         selected: {
                           rest: c(segmentName, 'l', 'button.primary.gradient', 80),
                           hover: c(segmentName, 'l', 'button.primary.gradient', 70),

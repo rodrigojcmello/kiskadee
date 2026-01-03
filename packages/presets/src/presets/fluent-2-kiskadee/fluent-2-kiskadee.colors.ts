@@ -27,7 +27,16 @@ export const primitiveColors = {
     dynamic: { solid: { light: dynamicColor, dark: dynamicColor } }
   },
   black: {
-    v1: { solid: { light: neutralLight, dark: neutralDark } }
+    v1: {
+      solid: { light: neutralLight, dark: neutralDark },
+      gradient: {
+        angle: 180,
+        stops: [
+          { primitive: 'primitive.black.v1', position: 0 },
+          { primitive: 'primitive.black.v1', position: 100 }
+        ]
+      }
+    }
   },
   purple: {
     v1: {
