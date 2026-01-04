@@ -619,6 +619,20 @@
       "sans-serif"
     ]
   },
+  "themeTokens": {
+    "palettes": {
+      "default": {
+        "light": {
+          "background": [
+            0,
+            0,
+            96,
+            1
+          ]
+        }
+      }
+    }
+  },
   "components": {
     "button": {
       "elements": {

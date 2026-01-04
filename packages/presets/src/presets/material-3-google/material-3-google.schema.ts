@@ -1,4 +1,4 @@
-import { breakpoints, color, Schema, type SegmentName } from '@kiskadee/core';
+import { breakpoints, color, primitive, Schema, type SegmentName } from '@kiskadee/core';
 import { schemaColors } from './material-3-google.colors';
 
 /**
@@ -35,6 +35,18 @@ export const schema: Schema<Segment> = {
   colors: schemaColors,
   fonts: {
     body: ['Roboto', 'sans-serif']
+  },
+  themeTokens: {
+    palettes: {
+      default: {
+        light: {
+          // Global theme tokens can reference primitive colors directly.
+          background: color(schemaContext, 'default', 'l', 'primitive.black.v1', 4)
+          // TODO: register a blue.v1 for Material
+          // focusColor: color(schemaContext, 'default', 'l', 'primitive.blue.v1', 50)
+        }
+      }
+    }
   },
   components: {
     button: {

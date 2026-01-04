@@ -1,14 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type {
-  HSLA,
-  Schema,
-  SchemaFonts,
-  SegmentName,
-  SolidColor,
-  ThemeMode
-} from '@kiskadee/core';
+import type { HSLA, Schema, SchemaFonts, SegmentName, SolidColor, ThemeMode } from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
 import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex';
 import { type FontStack, toCssFontFamily } from '../utils/fontFamily';
@@ -141,23 +134,24 @@ export async function writeExtraArtifacts(params: {
       const color = themeTokens?.focusColor;
       const background = themeTokens?.background;
 
-      if (!color) {
+      // Both focusColor and background are optional.
+      // We only skip writing the artifact when neither is present.
+      if (!color && !background) {
         continue;
       }
 
-      let focusColorVal: string;
-      if (typeof color === 'string') {
-        focusColorVal = color;
-      } else {
-        focusColorVal = toShortHex(convertHslaToHex(color as HSLA));
-      }
-
       const extraData: {
-        focusColor: string;
+        focusColor?: string;
         background?: string;
-      } = {
-        focusColor: focusColorVal
-      };
+      } = {};
+
+      if (color) {
+        if (typeof color === 'string') {
+          extraData.focusColor = color;
+        } else {
+          extraData.focusColor = toShortHex(convertHslaToHex(color as HSLA));
+        }
+      }
 
       if (background) {
         if (typeof background === 'string') {
