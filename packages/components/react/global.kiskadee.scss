@@ -81,4 +81,8 @@ body {
   outline: solid 2px var(--k-focus-ring-color, #0059b1);
   outline-offset: 1px;
   position: relative;
+
+  /* Keep focus feedback snappy: high-contrast themes may flip bg/text colors on focus, and slow transitions feel jarring. */
+  transition-duration: var(--k-dur-int-fast);
+  transition-timing-function: linear;
 }
