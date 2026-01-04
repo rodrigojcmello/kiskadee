@@ -3,14 +3,16 @@
     "e1": {
       "c": {
         "primary": {
-          "d": "gmd-f gmd-j gmd-l gmd-h gmd-r gmd-n gmd-p gmd-a"
+          "s": "gmd-f gmd-j gmd-l gmd-h gmd-r gmd-n gmd-p gmd-a",
+          "v": "gmd-f gmd-j gmd-l gmd-h gmd-r gmd-n gmd-p gmd-a"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "d": "gmd-b gmd-d gmd-c"
+          "s": "gmd-b gmd-d gmd-c",
+          "v": "gmd-b gmd-d gmd-c"
         }
       }
     }

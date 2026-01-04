@@ -16,10 +16,27 @@ import type {
 } from '@kiskadee/core';
 import { buildStyleKey, deepUpdate } from '../../utils';
 
-// Metadata to track, which emphasis (soft/solid) generated each style key
+// Metadata to track which emphasis track(s) generated each style key.
+//
+// Important: different tracks (subtle/vivid) may legitimately produce the same StyleKey
+// when their resolved color values are identical. In that case we must retain BOTH
+// tracks; otherwise downstream bucketing (f/d) becomes order-dependent.
 export type ToneMetadata = {
-  tone?: Emphasis; // undefined = color without a emphasis (single color)
+  tones?: Emphasis[]; // undefined = color without emphasis (single/unique color)
 };
+
+function addToneMetadata(
+  toneMetadata: Map<StyleKey, ToneMetadata>,
+  styleKey: StyleKey,
+  tone: Emphasis
+): void {
+  const existing = toneMetadata.get(styleKey);
+  const tones = existing?.tones ?? [];
+  if (tones.includes(tone)) {
+    return;
+  }
+  toneMetadata.set(styleKey, { tones: [...tones, tone] });
+}
 
 // Local type guards to avoid any
 function isPlainObject(v: unknown): v is Record<string, unknown> {
@@ -167,7 +184,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
                   );
                   // Store emphasis metadata
                   if (tone !== undefined) {
-                    toneMetadata.set(styleKey, { tone });
+                    addToneMetadata(toneMetadata, styleKey, tone);
                   }
                 } else {
                   const styleKey = buildStyleKey({
@@ -183,7 +200,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
                   );
                   // Store emphasis metadata
                   if (tone !== undefined) {
-                    toneMetadata.set(styleKey, { tone });
+                    addToneMetadata(toneMetadata, styleKey, tone);
                   }
                 }
               };
@@ -229,7 +246,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
 
             // Store emphasis metadata for this style key
             if (tone !== undefined) {
-              toneMetadata.set(styleKey, { tone });
+              addToneMetadata(toneMetadata, styleKey, tone);
             }
           }
         };

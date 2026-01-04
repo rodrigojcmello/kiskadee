@@ -146,13 +146,13 @@ export type Schema<TSegmentName extends SegmentName = never> = SchemaMetadata & 
 export type ColorClasses = {
   // TODO: remove u (unique) support
   u?: string; // unique/single color (no tone variants)
-  f?: string; // subtle (light tone track)
-  d?: string; // vivid (dark tone track)
+  s?: string; // subtle
+  v?: string; // vivid
 };
 
 // Types describing the JSON artifact produced by web-builder (classNamesMap.json)
 export type ClassNameByElementJSON = {
-  // d = decorations, e = effects, s = scales, c = colors (with u/f/d sub-fields), cs = control states
+  // d = decorations, e = effects, s = scales, c = colors (with u/s/v sub-fields), cs = control states
   // d: flattened into a single space-separated string of class names (always-on)
   d?: string;
   // e: unified string of effect base classes (space-separated). These classes are opt-in and require

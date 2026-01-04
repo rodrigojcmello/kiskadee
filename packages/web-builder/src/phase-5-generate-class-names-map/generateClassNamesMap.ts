@@ -12,16 +12,17 @@ import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/sh
 
 // Color classes structure matching schema.ts
 type ColorClasses = {
+  // Legacy buckets (kept for backward compatibility with existing consumers).
   u?: string; // unique/single color (no emphasis variants)
-  f?: string; // subtle (light emphasis track)
-  d?: string; // vivid (dark emphasis track)
+  s?: string; // subtle
+  v?: string; // vivid
 };
 
 // Shortened keys for optimization (Phase 5 artifact schema):
 // d = decorations (always-on, flattened string)
 // e = effects by interaction state (arrays of classes, opt-in at component level)
 // s = scales (size variants only, flattened strings per size)
-// c = color classes (organized by emphasis: u/f/d)
+// c = color classes (organized by emphasis: u/s/v)
 // cs = control states (selected)
 export type ClassNamesByInteractionState = Partial<Record<string, string[]>>; // legacy for reference
 export type ClassNameByElement = {
@@ -32,7 +33,7 @@ export type ClassNameByElement = {
   e?: string;
   // Scales aggregated per size as flattened strings (size variants only, not effects)
   s?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
-  // Color classes organized by emphasis (u/f/d)
+  // Color classes organized by emphasis (u/s/v)
   c?: ColorClasses;
   // Control-state specific (selected) — flattened string of utility classes
   cs?: string;
@@ -149,7 +150,7 @@ export function generateClassNamesMapSplit(
             }
             const elemRecord = palettes[bundleKey][componentName][elementName];
 
-            // Build color classes per semantic: c[semantic] = { u, f, d }
+            // Build color classes per semantic: c[semantic] = { u, s, v }
             const colorBySemantic: Record<string, ColorClasses> = {};
 
             for (const sem of Object.keys(bySemantic)) {
@@ -160,19 +161,26 @@ export function generateClassNamesMapSplit(
               const softSet = new Set<string>();
               const solidSet = new Set<string>();
 
-              for (const st of Object.keys(byState ?? {})) {
-                const styleKeys = byState?.[st as InteractionState] as string[] | undefined;
+              for (const stateKey of Object.keys(byState ?? {})) {
+                const interactionState = stateKey as InteractionState;
+                const styleKeys = byState?.[interactionState] as string[] | undefined;
 
                 styleKeys?.forEach((styleKey: string) => {
                   const shortenedClass = shortenMap[styleKey] ?? styleKey;
                   const meta = toneMetadata.get(styleKey);
 
+                  const tones = meta?.tones ?? [];
+
                   // Do NOT move selected palette classes into core.cs. Always classify by emphasis/unique.
-                  if (meta?.tone === 'subtle') {
+                  if (tones.includes('subtle')) {
                     softSet.add(shortenedClass);
-                  } else if (meta?.tone === 'vivid') {
+                  }
+
+                  if (tones.includes('vivid')) {
                     solidSet.add(shortenedClass);
-                  } else {
+                  }
+
+                  if (tones.length === 0) {
                     // No emphasis = unique/single color
                     uniqueSet.add(shortenedClass);
                   }
@@ -181,8 +189,8 @@ export function generateClassNamesMapSplit(
 
               const colorClasses: ColorClasses = {};
               if (uniqueSet.size > 0) colorClasses.u = Array.from(uniqueSet).join(' ');
-              if (softSet.size > 0) colorClasses.f = Array.from(softSet).join(' ');
-              if (solidSet.size > 0) colorClasses.d = Array.from(solidSet).join(' ');
+              if (softSet.size > 0) colorClasses.s = Array.from(softSet).join(' ');
+              if (solidSet.size > 0) colorClasses.v = Array.from(solidSet).join(' ');
               if (Object.keys(colorClasses).length > 0) {
                 colorBySemantic[sem] = colorClasses;
               }

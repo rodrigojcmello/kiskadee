@@ -37,7 +37,7 @@ export type ButtonProps = HeadlessButtonProps & {
 };
 
 // Build a single space-separated class string from flattened d and color classes (sizes handled in e1)
-// Selects color classes based on emphasis: subtle (f), vivid (d), or unique (u)
+// Selects color classes based on emphasis: subtle (s), vivid (v), or unique (u)
 // Assumes semantic-aware map in `c`; no legacy flat format for performance.
 function collectStr(
   el: ClassNameByElementJSON | undefined,
@@ -53,9 +53,9 @@ function collectStr(
 
   if (bySem) {
     let color = '';
-    if (emphasis === 'subtle' && bySem.f) color = bySem.f;
-    else if (emphasis === 'vivid' && bySem.d) color = bySem.d;
-    else if (!emphasis) color = bySem.d ?? bySem.f ?? bySem.u ?? '';
+    if (emphasis === 'subtle' && bySem.s) color = bySem.s;
+    else if (emphasis === 'vivid' && bySem.v) color = bySem.v;
+    else if (!emphasis) color = bySem.v ?? bySem.s ?? bySem.u ?? '';
     else if (!color && bySem.u) color = bySem.u; // last resort within the same semantic
 
     if (color) out = out ? `${out} ${color}` : color;
