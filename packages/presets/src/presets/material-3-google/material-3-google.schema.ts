@@ -1,4 +1,6 @@
-import { breakpoints, color, primitive, Schema, type SegmentName } from '@kiskadee/core';
+import { breakpoints, primitive, type Schema } from '@kiskadee/core';
+import { buildBySegment } from '../../utils/buildBySegment';
+import { createPresetColorGetter } from '../../utils/presetColor';
 import { schemaColors } from './material-3-google.colors';
 
 /**
@@ -6,7 +8,7 @@ import { schemaColors } from './material-3-google.colors';
  * Each segment represents a brand/product identity with support for multiple theme modes.
  *
  * Current implementation includes:
- * - material: Primary segment with light theme (purple brand color HSL 256°)
+ * - default: Primary segment (purple brand color HSL 256°)
  *
  * All segments include universal semantic colors:
  * - primary: Brand identity color (varies by segment)
@@ -16,17 +18,22 @@ import { schemaColors } from './material-3-google.colors';
  * - redLike: Danger, error, urgent, notification (always red ~0°)
  * - neutral: Text, backgrounds, borders, dividers (always grayscale)
  *
- * IMPORTANT: the segment key used here ("material") must stay in sync with
- * the key defined in material-3-google.colors.ts. This ensures that:
- * - color() lookups receive a valid segment definition, and
- * - generated palette filenames (<segment>.<theme>.kiskadee.*) match the
- *   manifest consumed by the Next.js showcase registry.
+ * NOTE:
+ * - This preset registers `default` and `dynamic` segments.
+ * - Palette files are emitted as `<segment>.<theme>.kiskadee.(css|json)`.
  */
 
-const schemaContext = { colors: schemaColors };
-type Segment = 'default';
+const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
 
-export const schema: Schema<Segment> = {
+const segmentNames = ['default', 'dynamic'] as const;
+type SegmentName = (typeof segmentNames)[number];
+
+const c = createPresetColorGetter<SegmentName>(schemaContext);
+
+// The `Schema` generic represents extra segment names beyond the built-ins (`default` and optional `dynamic`).
+type Segments = never;
+
+export const schema: Schema<Segments> = {
   name: 'Material Design',
   prefix: 'gmd', // Google Material Design
   version: [3, 0, 0],
@@ -41,9 +48,20 @@ export const schema: Schema<Segment> = {
       default: {
         light: {
           // Global theme tokens can reference primitive colors directly.
-          background: color(schemaContext, 'default', 'l', 'primitive.black.v1', 4)
-          // TODO: register a blue.v1 for Material
-          // focusColor: color(schemaContext, 'default', 'l', 'primitive.blue.v1', 50)
+          background: c('default', 'l', primitive('black', 'v1'), 4)
+        },
+        dark: {
+          background: c('default', 'd', primitive('black', 'v1'), 4)
+        }
+      },
+      dynamic: {
+        light: {
+          background: c('dynamic', 'l', primitive('black', 'v1'), 4),
+          focusColor: c('dynamic', 'l', 'primitive.purple.dynamic', 50)
+        },
+        dark: {
+          background: c('dynamic', 'd', primitive('black', 'v1'), 4),
+          focusColor: c('dynamic', 'd', 'primitive.purple.dynamic', 50)
         }
       }
     }
@@ -92,42 +110,72 @@ export const schema: Schema<Segment> = {
               's:lg:3': 68
             }
           },
-          palettes: {
-            default: {
+          palettes: buildBySegment(segmentNames, (segmentName) => {
+            return {
               light: {
                 boxColor: {
                   primary: {
                     subtle: {
-                      rest: color(schemaContext, 'default', 'l', 'button.primary', 50),
+                      rest: c(segmentName, 'l', 'button.primary', 50),
                       // hover: [256, 34, 48, 1], // official
-                      hover: color(schemaContext, 'default', 'l', 'button.primary', 40),
-                      pressed: color(schemaContext, 'default', 'l', 'button.primary', 60),
-                      disabled: color(schemaContext, 'default', 'l', 'button.neutral', 10),
-                      focus: color(schemaContext, 'default', 'l', 'button.primary', 50),
+                      hover: c(segmentName, 'l', 'button.primary', 40),
+                      pressed: c(segmentName, 'l', 'button.primary', 60),
+                      disabled: c(segmentName, 'l', 'button.neutral', 10),
+                      focus: c(segmentName, 'l', 'button.primary', 50),
                       selected: {
-                        rest: color(schemaContext, 'default', 'l', 'button.primary', 10),
-                        hover: color(schemaContext, 'default', 'l', 'button.primary', 8),
-                        pressed: color(schemaContext, 'default', 'l', 'button.primary', 20)
+                        rest: c(segmentName, 'l', 'button.primary', 10),
+                        hover: c(segmentName, 'l', 'button.primary', 8),
+                        pressed: c(segmentName, 'l', 'button.primary', 20)
                       }
                     },
                     vivid: {
-                      rest: color(schemaContext, 'default', 'l', 'button.primary', 50),
+                      rest: c(segmentName, 'l', 'button.primary', 50),
                       // hover: [256, 34, 48, 1], // official
-                      hover: color(schemaContext, 'default', 'l', 'button.primary', 40),
-                      pressed: color(schemaContext, 'default', 'l', 'button.primary', 60),
-                      disabled: color(schemaContext, 'default', 'l', 'button.neutral', 10),
-                      focus: color(schemaContext, 'default', 'l', 'button.primary', 50),
+                      hover: c(segmentName, 'l', 'button.primary', 40),
+                      pressed: c(segmentName, 'l', 'button.primary', 60),
+                      disabled: c(segmentName, 'l', 'button.neutral', 10),
+                      focus: c(segmentName, 'l', 'button.primary', 50),
                       selected: {
-                        rest: color(schemaContext, 'default', 'l', 'button.primary', 10),
-                        hover: color(schemaContext, 'default', 'l', 'button.primary', 8),
-                        pressed: color(schemaContext, 'default', 'l', 'button.primary', 20)
+                        rest: c(segmentName, 'l', 'button.primary', 10),
+                        hover: c(segmentName, 'l', 'button.primary', 8),
+                        pressed: c(segmentName, 'l', 'button.primary', 20)
+                      }
+                    }
+                  }
+                }
+              },
+              dark: {
+                boxColor: {
+                  primary: {
+                    subtle: {
+                      rest: c(segmentName, 'd', 'button.primary', 50),
+                      hover: c(segmentName, 'd', 'button.primary', 40),
+                      pressed: c(segmentName, 'd', 'button.primary', 60),
+                      disabled: c(segmentName, 'd', 'button.neutral', 10),
+                      focus: c(segmentName, 'd', 'button.primary', 50),
+                      selected: {
+                        rest: c(segmentName, 'd', 'button.primary', 10),
+                        hover: c(segmentName, 'd', 'button.primary', 8),
+                        pressed: c(segmentName, 'd', 'button.primary', 20)
+                      }
+                    },
+                    vivid: {
+                      rest: c(segmentName, 'd', 'button.primary', 50),
+                      hover: c(segmentName, 'd', 'button.primary', 40),
+                      pressed: c(segmentName, 'd', 'button.primary', 60),
+                      disabled: c(segmentName, 'd', 'button.neutral', 10),
+                      focus: c(segmentName, 'd', 'button.primary', 50),
+                      selected: {
+                        rest: c(segmentName, 'd', 'button.primary', 10),
+                        hover: c(segmentName, 'd', 'button.primary', 8),
+                        pressed: c(segmentName, 'd', 'button.primary', 20)
                       }
                     }
                   }
                 }
               }
-            }
-          },
+            };
+          }),
           effects: {
             // Material Design 3 interaction-driven shape. Border radius decreases as interaction intensifies
             // (rest > hover/focus > pressed), emulating MD3 "animated corners". This enables Kiskadee to
@@ -165,38 +213,66 @@ export const schema: Schema<Segment> = {
           decorations: {
             textWeight: 'medium'
           },
-          palettes: {
-            default: {
+          palettes: buildBySegment(segmentNames, (segmentName) => {
+            return {
               light: {
                 textColor: {
                   primary: {
                     subtle: {
-                      rest: [0, 0, 100, 1],
+                      rest: [0, 0, 100, 1] as const,
                       disabled: {
-                        ref: color(schemaContext, 'default', 'l', 'button.neutral', 60)
+                        ref: c(segmentName, 'l', 'button.neutral', 60)
                       },
                       selected: {
                         rest: {
-                          ref: color(schemaContext, 'default', 'l', 'button.neutral', 70)
+                          ref: c(segmentName, 'l', 'button.neutral', 70)
                         }
                       }
                     },
                     vivid: {
-                      rest: [0, 0, 100, 1],
+                      rest: [0, 0, 100, 1] as const,
                       disabled: {
-                        ref: color(schemaContext, 'default', 'l', 'button.neutral', 60)
+                        ref: c(segmentName, 'l', 'button.neutral', 60)
                       },
                       selected: {
                         rest: {
-                          ref: color(schemaContext, 'default', 'l', 'button.neutral', 70)
+                          ref: c(segmentName, 'l', 'button.neutral', 70)
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              dark: {
+                textColor: {
+                  primary: {
+                    subtle: {
+                      rest: [0, 0, 100, 1] as const,
+                      disabled: {
+                        ref: c(segmentName, 'd', 'button.neutral', 60)
+                      },
+                      selected: {
+                        rest: {
+                          ref: c(segmentName, 'd', 'button.neutral', 70)
+                        }
+                      }
+                    },
+                    vivid: {
+                      rest: [0, 0, 100, 1] as const,
+                      disabled: {
+                        ref: c(segmentName, 'd', 'button.neutral', 60)
+                      },
+                      selected: {
+                        rest: {
+                          ref: c(segmentName, 'd', 'button.neutral', 70)
                         }
                       }
                     }
                   }
                 }
               }
-            }
-          },
+            };
+          }),
           scales: {
             textSize: {
               's:sm:1': 14,
@@ -206,7 +282,7 @@ export const schema: Schema<Segment> = {
               's:lg:3': 32
             },
             textHeight: {
-              // TODO: Bug, tá gerando duplicado, pq a style key tem tamanho
+              // TODO: Investigate why this key is being emitted twice (likely due to size-based style keys).
               's:sm:1': 20,
               's:md:1': 20,
               's:lg:1': 24,

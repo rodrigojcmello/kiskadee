@@ -13,5 +13,20 @@
         "neutral": "primitive.black.v1"
       }
     }
+  },
+  "dynamic": {
+    "meta": {
+      "name": "Material Design - Dynamic"
+    },
+    "themes": {
+      "light": {
+        "primary": "primitive.purple.dynamic",
+        "neutral": "primitive.black.v1"
+      },
+      "dark": {
+        "primary": "primitive.purple.dynamic",
+        "neutral": "primitive.black.v1"
+      }
+    }
   }
 }

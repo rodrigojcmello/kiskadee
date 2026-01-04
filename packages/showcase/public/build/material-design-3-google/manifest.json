@@ -5,10 +5,16 @@
   "schemaName": "Material Design",
   "version": "3.0.0",
   "segments": [
-    "default"
+    "default",
+    "dynamic"
   ],
   "themes": {
     "default": [
+      "dark",
+      "light"
+    ],
+    "dynamic": [
+      "dark",
       "light"
     ]
   },

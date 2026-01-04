@@ -52,7 +52,10 @@ export const cssPaths = {
     core: '/build/material-design-3-google/core.kiskadee.css',
     effects: '/build/material-design-3-google/effects.kiskadee.css',
     palettes: {
+      'default|dark': '/build/material-design-3-google/default.dark.kiskadee.css',
       'default|light': '/build/material-design-3-google/default.light.kiskadee.css',
+      'dynamic|dark': '/build/material-design-3-google/dynamic.dark.kiskadee.css',
+      'dynamic|light': '/build/material-design-3-google/dynamic.light.kiskadee.css',
     }
   },
 } as const;

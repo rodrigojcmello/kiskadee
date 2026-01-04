@@ -45,7 +45,10 @@ export const paletteMaps = {
   'ios-26-kiskadee|dynamic|dark': () => loadJsonModule('ios-26-kiskadee/dynamic.dark.kiskadee.json'),
   'ios-26-kiskadee|dynamic|darker': () => loadJsonModule('ios-26-kiskadee/dynamic.darker.kiskadee.json'),
   'ios-26-kiskadee|dynamic|light': () => loadJsonModule('ios-26-kiskadee/dynamic.light.kiskadee.json'),
+  'material-design-3-google|default|dark': () => loadJsonModule('material-design-3-google/default.dark.kiskadee.json'),
   'material-design-3-google|default|light': () => loadJsonModule('material-design-3-google/default.light.kiskadee.json'),
+  'material-design-3-google|dynamic|dark': () => loadJsonModule('material-design-3-google/dynamic.dark.kiskadee.json'),
+  'material-design-3-google|dynamic|light': () => loadJsonModule('material-design-3-google/dynamic.light.kiskadee.json'),
 } as const;
 
 export const extraMaps = {
@@ -57,7 +60,10 @@ export const extraMaps = {
   'fluent-2-microsoft|default|light': () => loadExtraJson('fluent-2-microsoft/extra.default.light.kiskadee.json'),
   'ios-26-kiskadee|default|light': () => loadExtraJson('ios-26-kiskadee/extra.default.light.kiskadee.json'),
   'ios-26-kiskadee|dynamic|light': () => loadExtraJson('ios-26-kiskadee/extra.dynamic.light.kiskadee.json'),
+  'material-design-3-google|default|dark': () => loadExtraJson('material-design-3-google/extra.default.dark.kiskadee.json'),
   'material-design-3-google|default|light': () => loadExtraJson('material-design-3-google/extra.default.light.kiskadee.json'),
+  'material-design-3-google|dynamic|dark': () => loadExtraJson('material-design-3-google/extra.dynamic.dark.kiskadee.json'),
+  'material-design-3-google|dynamic|light': () => loadExtraJson('material-design-3-google/extra.dynamic.light.kiskadee.json'),
 } as const;
 
 export const paletteIndex = {
@@ -95,9 +101,10 @@ export const paletteIndex = {
     }
   },
   'material-design-3-google': {
-    segments: ['default'],
+    segments: ['default', 'dynamic'],
     themesBySegment: {
-      "default": ['light']
+      "default": ['dark', 'light'],
+      "dynamic": ['dark', 'light']
     }
   },
 } as const;
