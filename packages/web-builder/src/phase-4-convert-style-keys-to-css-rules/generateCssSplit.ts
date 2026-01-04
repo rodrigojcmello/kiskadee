@@ -10,8 +10,15 @@ import type {
 import postcss from 'postcss';
 import combineMq from 'postcss-combine-media-query';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
-import { generateCssRuleFromStyleKey } from './generateCss';
+import {
+  type GenerateCssRuleFromStyleKeyOptions,
+  generateCssRuleFromStyleKey
+} from './generateCss';
 import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
+
+export type GenerateCssSplitOptions = {
+  forceState?: boolean;
+} & GenerateCssRuleFromStyleKeyOptions;
 
 export type SplitCssBundles = {
   coreCss: string;
@@ -27,8 +34,14 @@ const EMIT_PASSIVE_EFFECTS = false;
 export async function generateCssSplit(
   styleKeys: ComponentStyleKeyMap,
   shortenMap: ShortenCssClassNames,
-  forceState?: boolean
+  forceStateOrOptions?: boolean | GenerateCssSplitOptions
 ): Promise<SplitCssBundles> {
+  const options: GenerateCssSplitOptions | undefined =
+    typeof forceStateOrOptions === 'boolean'
+      ? { forceState: forceStateOrOptions }
+      : forceStateOrOptions;
+
+  const forceState = options?.forceState;
   const coreRules: Set<string> = new Set();
   const effectsRules: Set<string> = new Set(); // collect effects separately
   const paletteRules: Record<string, Set<string>> = {};
@@ -59,7 +72,7 @@ export async function generateCssSplit(
       if (Array.isArray(el.decorations)) {
         for (const key of el.decorations) {
           const cn = shortenMap[key] ?? key;
-          const rule = generateCssRuleFromStyleKey(key, cn, forceState);
+          const rule = generateCssRuleFromStyleKey(key, cn, forceState, options);
           if (rule && rule.trim() !== '') coreRules.add(rule);
         }
       }
@@ -70,7 +83,7 @@ export async function generateCssSplit(
           const arr: string[] = el.scales[scaleKey as ElementSizeValue | ElementAllSizeValue] ?? [];
           for (const key of arr) {
             const cn = shortenMap[key] ?? key;
-            const rule = generateCssRuleFromStyleKey(key, cn, forceState);
+            const rule = generateCssRuleFromStyleKey(key, cn, forceState, options);
             if (rule && rule.trim() !== '') coreRules.add(rule);
           }
         }
@@ -85,7 +98,7 @@ export async function generateCssSplit(
           const arr: string[] = el.effects[st as InteractionState] ?? [];
           for (const key of arr) {
             const cn = shortenMap[key] ?? key;
-            const rule = generateCssRuleFromStyleKey(key, cn, forceState);
+            const rule = generateCssRuleFromStyleKey(key, cn, forceState, options);
             if (rule && rule.trim() !== '') {
               if (isComplexSelector(rule)) {
                 // Gated by class activator or native pseudo → goes to effects bundle
@@ -125,7 +138,7 @@ export async function generateCssSplit(
                 for (const key of arr) {
                   const cn = shortenMap[key] ?? key;
                   // Only color keys are expected here; call color transformer directly and pass the forceState flag
-                  const rule = transformColorKeyToCss(key, cn, forceState);
+                  const rule = transformColorKeyToCss(key, cn, forceState, options);
                   if (rule && rule.trim() !== '') paletteRules[bundleKey].add(rule);
                 }
               }

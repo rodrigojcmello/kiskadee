@@ -10,6 +10,16 @@ import {
 } from '@kiskadee/core';
 import { convertHslaToHex } from '../utils/convertHslaToHex';
 
+export type TransformColorKeyToCssOptions = {
+  /**
+   * When enabled, `boxColor` solid values are emitted as a 2-stop linear-gradient (degenerate)
+   * using `--k-bg0/--k-bg1` so transitions keep the same CSS type across Design Systems.
+   *
+   * Applies ONLY to `boxColor` (`background` on Web).
+   */
+  enableSolidBoxColorAsGradient?: boolean;
+};
+
 type ResolvedGradientLike = {
   kind: 'linear';
   angle: number;
@@ -70,7 +80,8 @@ export const ERROR_REF_REQUIRE_STATE =
 export function transformColorKeyToCss(
   styleKey: StyleKey,
   className: string,
-  forceState?: boolean
+  forceState?: boolean,
+  options?: TransformColorKeyToCssOptions
 ): string {
   const separatorIndex = styleKey.indexOf('__');
   if (separatorIndex === -1) {
@@ -100,7 +111,21 @@ export function transformColorKeyToCss(
     }
     // TS note: `HSLA` is a `readonly` tuple. We validate length at runtime and then cast.
     const hsla = parts as unknown as HSLA;
-    cssValue = convertHslaToHex(hsla);
+    const solidHex = convertHslaToHex(hsla);
+
+    // Feature flag: force solid `boxColor` to be emitted as a 2-stop gradient
+    // so we can transition between different Design Systems (gradient <-> solid)
+    // without swapping `background-color` vs `background-image`.
+    const shouldForceSolidAsGradient =
+      options?.enableSolidBoxColorAsGradient === true && optimizedProperty === 'background';
+
+    if (shouldForceSolidAsGradient) {
+      gradientVars = `--k-bg0: ${solidHex}; --k-bg1: ${solidHex};`;
+      gradientBackground = 'linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%)';
+      cssValue = gradientBackground;
+    } else {
+      cssValue = solidHex;
+    }
   } else if (rawValue.startsWith('{') && rawValue.endsWith('}')) {
     // Cross-platform encoding: gradients are stored as JSON objects in the style key.
     // Web builder converts them to a valid CSS gradient only at this phase.

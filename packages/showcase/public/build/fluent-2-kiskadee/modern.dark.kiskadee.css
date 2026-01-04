@@ -1,6 +1,6 @@
 .-a.-d .fk-d { color: #FFFFFF40 }
 .fk-a { color: #FFF }
-.fk-c.-d.-a { background: #0006 }
+.fk-c.-d.-a { --k-bg0: #0006; --k-bg1: #0006; }
 .fk-e { --k-bg0: #8283F6; --k-bg1: #9780F7; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }
 .fk-p.-s.-a { --k-bg0: #07085F; --k-bg1: #170660; }
 .fk-aa:focus-visible, .fk-aa.-f.-a { --k-bg0: #0A0B8F; --k-bg1: #230990; }

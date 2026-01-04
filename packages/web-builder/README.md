@@ -45,11 +45,58 @@ Those live in `packages/components/react/global.kiskadee.scss`.
 - Animation is enabled only for gradients with **2 or 3 stops**.
 - For other gradients (or unsupported browsers), the output remains correct, but transitions may be skipped (progressive enhancement).
 
+### Feature flag: force solid `boxColor` as gradient (showcase)
+
+When switching between Design Systems, CSS cannot interpolate between `background-color` (a color) and
+`background-image: linear-gradient(...)` (an image). That can cause a visual “jump” when a DS uses
+solid backgrounds and another uses gradients.
+
+To mitigate this (initially for the showcase), the web-builder supports forcing **solid `boxColor`**
+to be emitted as a **degenerate 2-stop gradient** (same color on both stops), so the CSS type stays
+consistent across DS.
+
+- Flag lives in `packages/web-builder/src/run-build.ts`
+- Name: `ENABLE_SOLID_BOXCOLOR_AS_GRADIENT`
+- Default: `false`
+
+When enabled, a solid `boxColor` becomes:
+
+```css
+.myClass {
+  --k-bg0: #AABBCC;
+  --k-bg1: #AABBCC;
+  background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%);
+}
+```
+
 ### Important note about class composition
 
 State rules (like `:hover`, `:active`, `:focus-visible`) only override `--k-bg0/--k-bg1/--k-bg2`.
 The base gradient `background: linear-gradient(...)` is emitted on the `rest` rule.
 Therefore, the element must carry the base (rest) class for the state override to work.
+
+### Feature flag: forced interaction states as class selectors (showcase)
+
+For the showcase, it can be useful to display components in a specific interaction state
+without relying on native browser pseudos (e.g. you cannot realistically force `:hover`
+on a static HTML snapshot).
+
+When enabled, the web-builder emits **additional selectors** for interaction states using
+**forced state classes** (e.g. `.-h`, `.-f`) gated by the activator class `.-a`.
+
+Examples (conceptual):
+
+```css
+/* Native pseudo */
+.myClass:hover { /* ... */ }
+
+/* Forced state (opt-in via classes) */
+.myClass.-h.-a { /* ... */ }
+```
+
+- Flag lives in `packages/web-builder/src/run-build.ts`
+- Name: `ENABLE_FORCED_INTERACTION_STATES`
+- Default: `true` (showcase-oriented; change as needed)
 
 ## Segment registry vs `segments.json` artifact
 

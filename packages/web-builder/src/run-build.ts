@@ -23,6 +23,19 @@ import { loadPresetsToBuild } from './utils/loadPresetsToBuild';
 // Ajuste para `false` caso queira desativar o prefixo sem alterar o restante do código.
 const ENABLE_CLASSNAME_PREFIX = true;
 
+// Feature flag: quando `true`, força `boxColor` sólido a ser emitido como `linear-gradient(...)`
+// com 2 stops (mesma cor), para permitir transição suave entre Design Systems que alternam
+// entre sólido vs gradiente.
+//
+// Por padrão fica `false` para não aumentar CSS nem alterar o output atual.
+const ENABLE_SOLID_BOX_COLOR_AS_GRADIENT = true;
+
+// Feature flag: force interaction states as class-based selectors (showcase)
+//
+// When `true`, emits interaction state selectors using forced state classes (e.g. `.-h`, `.-f`)
+// so the showcase can simulate states via HTML classes.
+const ENABLE_FORCED_INTERACTION_STATES = true;
+
 function slugifyName(name: string): string {
   return name
     .trim()
@@ -72,7 +85,10 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
     console.log('phase 3', { name: schema.name, shortenCssClassNameMap });
 
     // Phase 4 - Generate CSS split
-    const cssGenerated = await generateCssSplit(styleKeys, shortenCssClassNameMap, true);
+    const cssGenerated = await generateCssSplit(styleKeys, shortenCssClassNameMap, {
+      forceState: ENABLE_FORCED_INTERACTION_STATES,
+      enableSolidBoxColorAsGradient: ENABLE_SOLID_BOX_COLOR_AS_GRADIENT
+    });
     console.log('phase 4', { name: schema.name, cssGenerated });
 
     // Phase 5 - Generate class names map split

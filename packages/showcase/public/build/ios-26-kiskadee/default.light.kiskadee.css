@@ -2,47 +2,47 @@
 .-a.-d .ak-am { color: #FFF3 }
 .-a.-s .ak-at { color: #FFF }
 .-a.-s .ak-p { color: #FFF }
-.ak-ae.-s.-a { background: #0091FF }
+.ak-ae.-s.-a { --k-bg0: #0091FF; --k-bg1: #0091FF; }
 .ak-ak { color: #808080 }
 .ak-al { color: #FF0004 }
-.ak-ay { background: #0091FF }
-.ak-az { background: #E5F4FF }
-.ak-b { background: #FF0004 }
-.ak-bc.-d.-a { background: #0091FF33 }
-.ak-bd.-d.-a { background: #E5F4FF33 }
-.ak-c.-d.-a { background: #FF000433 }
+.ak-ay { --k-bg0: #0091FF; --k-bg1: #0091FF; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }
+.ak-az { --k-bg0: #E5F4FF; --k-bg1: #E5F4FF; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }
+.ak-b { --k-bg0: #FF0004; --k-bg1: #FF0004; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }
+.ak-bc.-d.-a { --k-bg0: #0091FF33; --k-bg1: #0091FF33; }
+.ak-bd.-d.-a { --k-bg0: #E5F4FF33; --k-bg1: #E5F4FF33; }
+.ak-c.-d.-a { --k-bg0: #FF000433; --k-bg1: #FF000433; }
 .ak-ca { color: #0091FF }
-.ak-d.-d.-a { background: #FFE5E633 }
-.ak-m.-s.-a { background: #FF0004 }
+.ak-d.-d.-a { --k-bg0: #FFE5E633; --k-bg1: #FFE5E633; }
+.ak-m.-s.-a { --k-bg0: #FF0004; --k-bg1: #FF0004; }
 .ak-o { color: #FFF }
-.ak-s { background: #F2F2F2 }
-.ak-t { background: #FFE5E6 }
-.ak-u.-d.-a { background: #F2F2F233 }
-.ak-bg:focus-visible, .ak-bg.-f.-a { background: #0091FF }
-.ak-bh:focus-visible, .ak-bh.-f.-a { background: #E5F4FF }
-.ak-e:focus-visible, .ak-e.-f.-a { background: #FF0004 }
-.ak-f:focus-visible, .ak-f.-f.-a { background: #FFE5E6 }
-.ak-v:focus-visible, .ak-v.-f.-a { background: #F2F2F2 }
-.ak-y:focus-visible.-s, .ak-y.-s.-f.-a { background: #0091FF }
+.ak-s { --k-bg0: #F2F2F2; --k-bg1: #F2F2F2; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }
+.ak-t { --k-bg0: #FFE5E6; --k-bg1: #FFE5E6; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }
+.ak-u.-d.-a { --k-bg0: #F2F2F233; --k-bg1: #F2F2F233; }
+.ak-bg:focus-visible, .ak-bg.-f.-a { --k-bg0: #0091FF; --k-bg1: #0091FF; }
+.ak-bh:focus-visible, .ak-bh.-f.-a { --k-bg0: #E5F4FF; --k-bg1: #E5F4FF; }
+.ak-e:focus-visible, .ak-e.-f.-a { --k-bg0: #FF0004; --k-bg1: #FF0004; }
+.ak-f:focus-visible, .ak-f.-f.-a { --k-bg0: #FFE5E6; --k-bg1: #FFE5E6; }
+.ak-v:focus-visible, .ak-v.-f.-a { --k-bg0: #F2F2F2; --k-bg1: #F2F2F2; }
+.ak-y:focus-visible.-s, .ak-y.-s.-f.-a { --k-bg0: #0091FF; --k-bg1: #0091FF; }
 .-i:hover .ak-an, .-a.-h .ak-an { color: #808080CC }
 .-i:hover .ak-ao, .-a.-h .ak-ao { color: #FF0004CC }
 .-i:hover .ak-cc, .-a.-h .ak-cc { color: #0091FFCC }
-.ak-aa:hover.-s, .ak-aa.-s.-h.-a { background: #0091FFCC }
-.ak-bk:hover, .ak-bk.-h.-a { background: #0091FFCC }
-.ak-bl:hover, .ak-bl.-h.-a { background: #F0F8FF }
-.ak-g:hover, .ak-g.-h.-a { background: #FF0004CC }
-.ak-h:hover, .ak-h.-h.-a { background: #FFF0F0 }
-.ak-k:hover.-s, .ak-k.-s.-h.-a { background: #FF0004CC }
-.ak-w:hover, .ak-w.-h.-a { background: #F7F7F7 }
+.ak-aa:hover.-s, .ak-aa.-s.-h.-a { --k-bg0: #0091FFCC; --k-bg1: #0091FFCC; }
+.ak-bk:hover, .ak-bk.-h.-a { --k-bg0: #0091FFCC; --k-bg1: #0091FFCC; }
+.ak-bl:hover, .ak-bl.-h.-a { --k-bg0: #F0F8FF; --k-bg1: #F0F8FF; }
+.ak-g:hover, .ak-g.-h.-a { --k-bg0: #FF0004CC; --k-bg1: #FF0004CC; }
+.ak-h:hover, .ak-h.-h.-a { --k-bg0: #FFF0F0; --k-bg1: #FFF0F0; }
+.ak-k:hover.-s, .ak-k.-s.-h.-a { --k-bg0: #FF0004CC; --k-bg1: #FF0004CC; }
+.ak-w:hover, .ak-w.-h.-a { --k-bg0: #F7F7F7; --k-bg1: #F7F7F7; }
 .-i:active .ak-ap, .-a.-p .ak-ap { color: #FFFFFF80 }
 .-i:active .ak-aq, .-a.-p .ak-aq { color: #FFFFFFB3 }
 .-i:active .ak-ar, .-a.-p .ak-ar { color: #808080 }
 .-i:active .ak-as, .-a.-p .ak-as { color: #FF0004B3 }
 .-i:active .ak-ce, .-a.-p .ak-ce { color: #0091FF }
-.ak-ac:active.-s, .ak-ac.-s.-p.-a { background: #0074CC }
-.ak-bo:active, .ak-bo.-p.-a { background: #0074CC }
-.ak-bp:active, .ak-bp.-p.-a { background: #D6EDFF }
-.ak-i:active, .ak-i.-p.-a { background: #CC0003 }
-.ak-j:active, .ak-j.-p.-a { background: #FFD6D7 }
-.ak-l:active.-s, .ak-l.-s.-p.-a { background: #CC0003 }
-.ak-x:active, .ak-x.-p.-a { background: #EBEBEB }
+.ak-ac:active.-s, .ak-ac.-s.-p.-a { --k-bg0: #0074CC; --k-bg1: #0074CC; }
+.ak-bo:active, .ak-bo.-p.-a { --k-bg0: #0074CC; --k-bg1: #0074CC; }
+.ak-bp:active, .ak-bp.-p.-a { --k-bg0: #D6EDFF; --k-bg1: #D6EDFF; }
+.ak-i:active, .ak-i.-p.-a { --k-bg0: #CC0003; --k-bg1: #CC0003; }
+.ak-j:active, .ak-j.-p.-a { --k-bg0: #FFD6D7; --k-bg1: #FFD6D7; }
+.ak-l:active.-s, .ak-l.-s.-p.-a { --k-bg0: #CC0003; --k-bg1: #CC0003; }
+.ak-x:active, .ak-x.-p.-a { --k-bg0: #EBEBEB; --k-bg1: #EBEBEB; }

@@ -1,7 +1,7 @@
 .-a.-d .ci-ab { color: #8C8C8C }
 .ci-aa { color: #FFF }
-.ci-g { background: #0F62FE }
-.ci-h.-d.-a { background: #C6C6C6 }
-.ci-i:focus-visible, .ci-i.-f.-a { background: #0F62FE }
-.ci-j:hover, .ci-j.-h.-a { background: #0050E6 }
-.ci-k:active, .ci-k.-p.-a { background: #002D9C }
+.ci-g { --k-bg0: #0F62FE; --k-bg1: #0F62FE; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }
+.ci-h.-d.-a { --k-bg0: #C6C6C6; --k-bg1: #C6C6C6; }
+.ci-i:focus-visible, .ci-i.-f.-a { --k-bg0: #0F62FE; --k-bg1: #0F62FE; }
+.ci-j:hover, .ci-j.-h.-a { --k-bg0: #0050E6; --k-bg1: #0050E6; }
+.ci-k:active, .ci-k.-p.-a { --k-bg0: #002D9C; --k-bg1: #002D9C; }

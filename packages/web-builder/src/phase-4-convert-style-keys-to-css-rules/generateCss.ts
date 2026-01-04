@@ -12,13 +12,19 @@ import {
   transformTextWeightKeyToCss
 } from './decorations';
 import { transformBorderRadiusKeyToCss } from './effects/transformBorderRadiusKeyToCss/transformBorderRadiusKeyToCss';
-import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
+import {
+  transformColorKeyToCss,
+  type TransformColorKeyToCssOptions
+} from './palettes/transformColorKeyToCss';
 import { transformScaleKeyToCss } from './scales/transformScaleKeyToCss';
+
+export type GenerateCssRuleFromStyleKeyOptions = TransformColorKeyToCssOptions;
 
 export function generateCssRuleFromStyleKey(
   styleKey: string,
   className: string,
-  forceState?: boolean
+  forceState?: boolean,
+  options?: GenerateCssRuleFromStyleKeyOptions
 ): string {
   let generatedCss: string | undefined;
 
@@ -51,7 +57,7 @@ export function generateCssRuleFromStyleKey(
         styleKey.startsWith(colorProperty)
       );
       if (matchColor != null) {
-        generatedCss = transformColorKeyToCss(styleKey, className, forceState);
+        generatedCss = transformColorKeyToCss(styleKey, className, forceState, options);
       }
     }
   }

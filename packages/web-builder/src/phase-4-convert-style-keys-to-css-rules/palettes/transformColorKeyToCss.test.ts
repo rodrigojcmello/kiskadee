@@ -50,6 +50,43 @@ describe('transformColorKeyToCss', () => {
         });
       });
 
+      describe('solid as gradient (feature flag)', () => {
+        it('rest emits vars + background when enabled', () => {
+          const force = false as const;
+          const result = transformColorKeyToCss('boxColor__[240,50,50,0.5]', className, force, {
+            enableSolidBoxColorAsGradient: true
+          });
+
+          expect(result).toEqual(
+            '.abc { --k-bg0: #4040BF80; --k-bg1: #4040BF80; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }'
+          );
+        });
+
+        it('hover emits vars only when enabled (forceState=true)', () => {
+          const force = true as const;
+          const result = transformColorKeyToCss(
+            'boxColor--hover__[240,50,50,0.5]',
+            className,
+            force,
+            {
+              enableSolidBoxColorAsGradient: true
+            }
+          );
+
+          expect(result).toEqual(
+            '.abc:hover, .abc.-h.-a { --k-bg0: #4040BF80; --k-bg1: #4040BF80; }'
+          );
+        });
+
+        it('does not affect non-boxColor properties', () => {
+          const force = false as const;
+          const result = transformColorKeyToCss('textColor__[240,50,50,0.5]', className, force, {
+            enableSolidBoxColorAsGradient: true
+          });
+          expect(result).toEqual('.abc { color: #4040BF80 }');
+        });
+      });
+
       describe('selected:hover', () => {
         it('forceState=false', () => {
           const force = false as const;
