@@ -62,7 +62,7 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
     const { schema, schemaPath } = t;
 
     // Phase 1 - Convert Element Schema to Style Keys
-    const { styleKeys, toneMetadata } = convertElementSchemaToStyleKeys(schema);
+    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
     console.log('phase 1', { name: schema.name, styleKeys: JSON.stringify(styleKeys, null, 2) });
 
     // Phase 2 - Map style key usage
@@ -95,7 +95,7 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
     const classNamesMapSplit: ComponentClassNameMapSplit = generateClassNamesMapSplit(
       styleKeys,
       shortenCssClassNameMap,
-      toneMetadata
+      toneMetadataByPalette
     );
     console.log('phrase 5', { name: schema.name, classNamesMapSplit });
 

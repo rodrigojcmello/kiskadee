@@ -2,13 +2,13 @@ import type {
   ComponentName,
   ComponentStyleKeyMap,
   Schema,
-  StyleKey,
   StyleKeyByElement
 } from '@kiskadee/core';
 import { deepUpdate } from '../utils';
 import {
   convertElementColorsToStyleKeys,
-  type ToneMetadata
+  type ToneMetadata,
+  type ToneMetadataByPalette
 } from './colors/convertElementColorsToStyleKeys';
 import { convertElementDecorationsToStyleKeys } from './decoration/convertElementDecorationsToStyleKeys';
 import { convertElementShadowToStyleKeys } from './effects/convertElementShadowToStyleKeys';
@@ -26,10 +26,10 @@ import { convertElementScalesToStyleKeys } from './scales/convertElementScalesTo
  */
 export function convertElementSchemaToStyleKeys(schema: Schema): {
   styleKeys: ComponentStyleKeyMap;
-  toneMetadata: Map<StyleKey, ToneMetadata>;
+  toneMetadataByPalette: ToneMetadataByPalette;
 } {
   const styleKeysByComponent: ComponentStyleKeyMap = {};
-  const toneMetadata = new Map<StyleKey, ToneMetadata>();
+  const toneMetadataByPalette: ToneMetadataByPalette = new Map();
 
   // Iterate over each component in the schema.
   for (const c in schema.components) {
@@ -50,12 +50,23 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
           el.scales = convertElementScalesToStyleKeys(element.scales);
         }
         if (element.palettes) {
-          const { styleKeys: paletteKeys, toneMetadata: paletteToneMetadata } =
+          const { styleKeys: paletteKeys, toneMetadataByPalette: paletteToneMetadataByPalette } =
             convertElementColorsToStyleKeys(element.palettes);
           el.palettes = paletteKeys;
-          // Merge emphasis metadata from this element into the global map
-          for (const [key, meta] of paletteToneMetadata) {
-            toneMetadata.set(key, meta);
+          // Merge emphasis metadata from this element into the global map, keeping it scoped by palette.
+          for (const [paletteKey, byMetaKey] of paletteToneMetadataByPalette) {
+            if (!toneMetadataByPalette.has(paletteKey)) {
+              toneMetadataByPalette.set(paletteKey, new Map());
+            }
+            const target = toneMetadataByPalette.get(paletteKey)!;
+
+            for (const [metaKey, meta] of byMetaKey) {
+              const existing = target.get(metaKey);
+              const existingTones = existing?.tones ?? [];
+              const incomingTones = meta?.tones ?? [];
+              const mergedTones = Array.from(new Set([...existingTones, ...incomingTones]));
+              target.set(metaKey, mergedTones.length ? { tones: mergedTones } : {});
+            }
           }
         }
         // Effects: merge multiple effect maps (shadow, borderRadius, ...)
@@ -87,5 +98,5 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
     }
   }
 
-  return { styleKeys: styleKeysByComponent, toneMetadata };
+  return { styleKeys: styleKeysByComponent, toneMetadataByPalette };
 }

@@ -7,7 +7,10 @@ import type {
   SemanticColor,
   StyleKey
 } from '@kiskadee/core';
-import type { ToneMetadata } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
+import type {
+  ToneMetadata,
+  ToneMetadataByPalette
+} from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
 
 // Color classes structure matching schema.ts
@@ -68,7 +71,7 @@ function mapArray(
 export function generateClassNamesMapSplit(
   styleKeys: ComponentStyleKeyMap,
   shortenMap: ShortenCssClassNames,
-  toneMetadata: Map<StyleKey, ToneMetadata>
+  toneMetadataByPalette: ToneMetadataByPalette
 ): ComponentClassNameMapSplit {
   const core: ComponentClassNameMap = {};
   const palettes: Record<string, ComponentClassNameMap> = {};
@@ -140,6 +143,21 @@ export function generateClassNamesMapSplit(
 
             // Create a composite key: segment.theme (e.g., "ios.light", "ios.dark")
             const bundleKey = `${segmentName}.${themeName}`;
+
+            // IMPORTANT:
+            // `toneMetadataByPalette` is scoped by palette (segment + theme) on purpose.
+            //
+            // Rationale:
+            // - The same StyleKey can be used across multiple palettes because StyleKey encodes
+            //   the final CSS rule/value and must remain globally deduplicable.
+            // - However, the emphasis bucket (subtle/vivid) is semantic metadata and is allowed
+            //   to differ per palette. If we used a single global metadata map keyed only by
+            //   StyleKey, emphasis could "leak" from one palette to another and make the JSON
+            //   artifact incorrectly classify subtle classes as vivid (or vice-versa).
+            //
+            // By resolving metadata through `bundleKey`, we keep CSS dedupe intact while producing
+            // correct per-palette `c[semantic].s` / `c[semantic].v` buckets.
+            const toneMetaForPalette = toneMetadataByPalette.get(bundleKey);
             if (!palettes[bundleKey]) palettes[bundleKey] = {};
             if (!palettes[bundleKey][componentName]) {
               palettes[bundleKey][componentName] = {};
@@ -167,7 +185,8 @@ export function generateClassNamesMapSplit(
 
                 styleKeys?.forEach((styleKey: string) => {
                   const shortenedClass = shortenMap[styleKey] ?? styleKey;
-                  const meta = toneMetadata.get(styleKey);
+                  const metaKey = `${sem}::${styleKey}`;
+                  const meta = toneMetaForPalette?.get(metaKey);
 
                   const tones = meta?.tones ?? [];
 

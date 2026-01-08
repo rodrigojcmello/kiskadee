@@ -919,7 +919,7 @@
                       "rest": [
                         256.43,
                         34.43,
-                        48,
+                        92,
                         1
                       ],
                       "hover": [
@@ -1138,7 +1138,7 @@
                 "boxColor": {
                   "primary": {
                     "subtle": {
-                      "rest": "hsl(var(--k-p-50))",
+                      "rest": "hsl(var(--k-p-8))",
                       "hover": "hsl(var(--k-p-40))",
                       "pressed": "hsl(var(--k-p-60))",
                       "disabled": [

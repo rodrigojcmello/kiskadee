@@ -25,17 +25,63 @@ export type ToneMetadata = {
   tones?: Emphasis[]; // undefined = color without emphasis (single/unique color)
 };
 
-function addToneMetadata(
-  toneMetadata: Map<StyleKey, ToneMetadata>,
-  styleKey: StyleKey,
+export type PaletteKey = string;
+export type ToneMetadataKey = string;
+
+export type ToneMetadataByPalette = Map<PaletteKey, Map<ToneMetadataKey, ToneMetadata>>;
+
+function buildPaletteKey(segmentName: string, themeName: string): PaletteKey {
+  // IMPORTANT:
+  // We scope tone/emphasis metadata by palette (segment + theme), NOT by StyleKey.
+  //
+  // Rationale:
+  // - StyleKey is the identity of a CSS rule. It must remain global so Phase 3/4 can dedupe
+  //   classes: same rule/value => same StyleKey => same CSS class.
+  // - The emphasis bucket in the JSON artifact (subtle/vivid) is palette-specific. The same
+  //   StyleKey can be subtle in one palette and vivid in another (because the tone calls differ).
+  //   If we store emphasis metadata globally, it can “leak” across palettes and make subtle
+  //   appear as vivid (or vice-versa) in a given palette.
+  //
+  // Therefore, we keep StyleKey global and move ONLY the metadata into a per-palette map.
+  return `${segmentName}.${themeName}`;
+}
+
+function buildToneMetadataKey(params: {
+  semanticColor: SemanticColor;
+  styleKey: StyleKey;
+}): ToneMetadataKey {
+  const { semanticColor, styleKey } = params;
+  // IMPORTANT: do not include segment/theme here.
+  // StyleKey identity must remain global/deduplicable.
+  // Palette scoping is handled by the outer ToneMetadataByPalette map.
+  //
+  // We still include `semanticColor` here because the same StyleKey may be reused under
+  // different semantics within the same palette, and the artifact buckets are semantic-aware.
+  return `${semanticColor}::${styleKey}`;
+}
+
+function addToneMetadataByPalette(
+  toneMetadataByPalette: ToneMetadataByPalette,
+  paletteKey: PaletteKey,
+  toneMetadataKey: ToneMetadataKey,
   tone: Emphasis
 ): void {
-  const existing = toneMetadata.get(styleKey);
+  if (!toneMetadataByPalette.has(paletteKey)) {
+    toneMetadataByPalette.set(paletteKey, new Map());
+  }
+  const byMetaKey = toneMetadataByPalette.get(paletteKey)!;
+
+  const existing = byMetaKey.get(toneMetadataKey);
   const tones = existing?.tones ?? [];
   if (tones.includes(tone)) {
     return;
   }
-  toneMetadata.set(styleKey, { tones: [...tones, tone] });
+
+  // NOTE:
+  // Different tracks (subtle/vivid) can legitimately produce the same StyleKey when their
+  // resolved color values are identical. In that case we must retain BOTH tones.
+  // Downstream, Phase 5 is allowed to put the same CSS class into both `s` and `v` buckets.
+  byMetaKey.set(toneMetadataKey, { tones: [...tones, tone] });
 }
 
 // Local type guards to avoid any
@@ -101,10 +147,10 @@ function isInteractionStateColorMap(val: unknown): val is InteractionStateColorM
  */
 export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
   styleKeys: StyleKeyByElement['palettes'];
-  toneMetadata: Map<StyleKey, ToneMetadata>;
+  toneMetadataByPalette: ToneMetadataByPalette;
 } {
   const styleKeys: StyleKeyByElement['palettes'] = {};
-  const toneMetadata = new Map<StyleKey, ToneMetadata>();
+  const toneMetadataByPalette: ToneMetadataByPalette = new Map();
 
   // Iterate over segments (for example, ios, youtube, appletv)
   for (const segmentName in palettes) {
@@ -138,6 +184,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
           interactionStateMap: InteractionStateColorMap,
           tone?: Emphasis
         ) => {
+          const paletteKey = buildPaletteKey(segmentName, themeName);
           const keys: (keyof InteractionStateColorMap)[] = [
             'rest',
             'hover',
@@ -184,7 +231,8 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
                   );
                   // Store emphasis metadata
                   if (tone !== undefined) {
-                    addToneMetadata(toneMetadata, styleKey, tone);
+                    const key = buildToneMetadataKey({ semanticColor, styleKey });
+                    addToneMetadataByPalette(toneMetadataByPalette, paletteKey, key, tone);
                   }
                 } else {
                   const styleKey = buildStyleKey({
@@ -200,7 +248,8 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
                   );
                   // Store emphasis metadata
                   if (tone !== undefined) {
-                    addToneMetadata(toneMetadata, styleKey, tone);
+                    const key = buildToneMetadataKey({ semanticColor, styleKey });
+                    addToneMetadataByPalette(toneMetadataByPalette, paletteKey, key, tone);
                   }
                 }
               };
@@ -246,7 +295,9 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
 
             // Store emphasis metadata for this style key
             if (tone !== undefined) {
-              addToneMetadata(toneMetadata, styleKey, tone);
+              const paletteKey = buildPaletteKey(segmentName, themeName);
+              const key = buildToneMetadataKey({ semanticColor, styleKey });
+              addToneMetadataByPalette(toneMetadataByPalette, paletteKey, key, tone);
             }
           }
         };
@@ -280,5 +331,5 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
     } // End theme loop
   } // End segment loop
 
-  return { styleKeys, toneMetadata };
+  return { styleKeys, toneMetadataByPalette };
 }
