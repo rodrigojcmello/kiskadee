@@ -229,7 +229,7 @@ export const schema: Schema<Segments> = {
                       }
                     },
                     vivid: {
-                      rest: [0, 0, 100, 1] as const,
+                      rest: c(segmentName, 'l', primitive('black', 'v1'), 0),
                       disabled: {
                         ref: c(segmentName, 'l', 'button.neutral', 60)
                       },
@@ -246,7 +246,7 @@ export const schema: Schema<Segments> = {
                 textColor: {
                   primary: {
                     subtle: {
-                      rest: [0, 0, 100, 1] as const,
+                      rest: c(segmentName, 'd', primitive('black', 'v1'), 0),
                       disabled: {
                         ref: c(segmentName, 'd', 'button.neutral', 60)
                       },
@@ -257,7 +257,7 @@ export const schema: Schema<Segments> = {
                       }
                     },
                     vivid: {
-                      rest: [0, 0, 100, 1] as const,
+                      rest: c(segmentName, 'd', primitive('black', 'v1'), 0),
                       disabled: {
                         ref: c(segmentName, 'd', 'button.neutral', 60)
                       },
