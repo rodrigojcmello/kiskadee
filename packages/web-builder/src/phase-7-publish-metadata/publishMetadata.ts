@@ -250,6 +250,138 @@ function buildButtonState(schema: Schema): ManifestComponentState | undefined {
   return Object.keys(stateMap).length ? stateMap : undefined;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object';
+}
+
+function convertEmphasisLevelToJson(scale: EmphasisLevel): Record<string, Record<string, string>> {
+  const convertedScale: Record<string, Record<string, string>> = {};
+
+  for (const [trackKey, trackValues] of Object.entries(scale as Record<string, unknown>)) {
+    if (!isRecord(trackValues)) continue;
+    convertedScale[trackKey] = {};
+    for (const [tone, value] of Object.entries(trackValues)) {
+      // Emphasis levels may contain either HSLA tuples or already-resolved strings
+      // (e.g. CSS vars in `dynamic.color.ts`).
+      if (typeof value === 'string') {
+        convertedScale[trackKey][tone] = value;
+      } else {
+        convertedScale[trackKey][tone] = toShortHex(convertHslaToHex(value as HSLA));
+      }
+    }
+  }
+
+  return convertedScale;
+}
+
+function isHslaTuple(value: unknown): value is HSLA {
+  return (
+    Array.isArray(value) &&
+    value.length === 4 &&
+    value.every((v) => typeof v === 'number' && Number.isFinite(v))
+  );
+}
+
+function deepConvertHslaTuplesToHex(value: unknown): unknown {
+  if (isHslaTuple(value)) {
+    return toShortHex(convertHslaToHex(value));
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((v) => deepConvertHslaTuplesToHex(v));
+  }
+
+  if (isRecord(value)) {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value)) {
+      out[k] = deepConvertHslaTuplesToHex(v);
+    }
+    return out;
+  }
+
+  return value;
+}
+
+function collectPrimitiveSolidScales(colors: SchemaColors): Array<{
+  baseColor: string;
+  variant: string;
+  theme: 'light' | 'dark';
+  scale: EmphasisLevel;
+}> {
+  const result: Array<{
+    baseColor: string;
+    variant: string;
+    theme: 'light' | 'dark';
+    scale: EmphasisLevel;
+  }> = [];
+
+  const primitiveColors = (colors as any).primitiveColors as Record<string, unknown> | undefined;
+  if (!primitiveColors || !isRecord(primitiveColors)) return result;
+
+  for (const [baseColor, variantsValue] of Object.entries(primitiveColors)) {
+    if (!isRecord(variantsValue)) continue;
+
+    for (const [variant, variantValue] of Object.entries(variantsValue)) {
+      if (!isRecord(variantValue)) continue;
+      const solid = (variantValue as any).solid as any;
+      if (!solid || typeof solid !== 'object') continue;
+
+      for (const theme of ['light', 'dark'] as const) {
+        const scale = solid[theme] as unknown;
+        if (scale && typeof scale === 'object') {
+          result.push({ baseColor, variant, theme, scale: scale as EmphasisLevel });
+        }
+      }
+    }
+  }
+
+  return result;
+}
+
+function buildColorsArtifact(colors: SchemaColors, scaleFileNameByRef: WeakMap<object, string>): SchemaColors {
+  const primitiveColorsSrc = (colors as any).primitiveColors as Record<string, unknown> | undefined;
+  const primitiveColorsOut: Record<string, unknown> = {};
+
+  if (primitiveColorsSrc && isRecord(primitiveColorsSrc)) {
+    for (const [baseColor, variantsValue] of Object.entries(primitiveColorsSrc)) {
+      if (!isRecord(variantsValue)) continue;
+      const variantsOut: Record<string, unknown> = {};
+
+      for (const [variant, variantValue] of Object.entries(variantsValue)) {
+        if (!isRecord(variantValue)) continue;
+
+        // Clone to keep any extra primitive asset config (e.g. `gradient`) intact.
+        const variantOut: any = structuredClone(variantValue as any);
+        const solidSrc = (variantValue as any).solid as any;
+
+        if (solidSrc && typeof solidSrc === 'object') {
+          variantOut.solid = variantOut.solid ?? {};
+
+          for (const theme of ['light', 'dark'] as const) {
+            const scale = solidSrc[theme] as unknown;
+            if (scale && typeof scale === 'object') {
+              const fileName = scaleFileNameByRef.get(scale as object);
+              if (fileName) {
+                variantOut.solid[theme] = fileName;
+              }
+            }
+          }
+        }
+
+        variantsOut[variant] = variantOut;
+      }
+
+      primitiveColorsOut[baseColor] = variantsOut;
+    }
+  }
+
+  // Keep Layers 2 and 3 as-is, but override Layer 1 with file references.
+  return {
+    ...(colors as any),
+    primitiveColors: primitiveColorsOut
+  } as SchemaColors;
+}
+
 export async function publishMetadata(params: {
   schema: Schema;
   outDirSlug: string;
@@ -258,7 +390,11 @@ export async function publishMetadata(params: {
 }): Promise<void> {
   const { schema, outDirSlug, schemaPath, baseBuildDir } = params;
 
-  const segmentRegistry = requireSegmentRegistry(schema.colors);
+  // `Schema.colors` is required by presets, but the public type allows it to be optional.
+  // At this point we already depend on it (segments, artifacts), so we assert it.
+  const colors = schema.colors as SchemaColors;
+
+  const segmentRegistry = requireSegmentRegistry(colors);
   const segmentKeys = Object.keys(segmentRegistry);
 
   // Build manifest content
@@ -307,9 +443,19 @@ export async function publishMetadata(params: {
 
   // Write metadata files
   await writeFile(resolve(buildDir, 'manifest.json'), JSON.stringify(manifest, null, 2), 'utf8');
-  await writeFile(resolve(buildDir, 'schema.json'), JSON.stringify(schema, null, 2), 'utf8');
-  const segmentsArtifact = materializeSegmentThemesArtifact(schema.colors, segmentRegistry);
+  const segmentsArtifact = materializeSegmentThemesArtifact(colors, segmentRegistry);
   await writeFile(resolve(buildDir, 'segments.json'), JSON.stringify(segmentsArtifact, null, 2), 'utf8');
+
+  // ---------------------------------------------------------------------------
+  // Colors artifacts
+  // ---------------------------------------------------------------------------
+  // Contract:
+  // - `schema.json` must NOT embed `colors`.
+  // - `colors.json` is the single source of truth for Layer 1/2/3.
+  // - Primitive solid scales (Layer 1) are referenced only by file name
+  //   (e.g. "purple.light.json"), implicitly living under `colors/`.
+
+  const scaleFileNameByRef = new WeakMap<object, string>();
 
   // Process and convert color scales to JSON
   try {
@@ -332,15 +478,10 @@ export async function publishMetadata(params: {
 
         if (!colorScale) continue;
 
-        const convertedScale: Record<string, Record<string, string>> = {};
+        // Make this scale discoverable for `colors.json` references.
+        scaleFileNameByRef.set(colorScale as unknown as object, file.replace(/\.ts$/, '.json'));
 
-        for (const [trackKey, trackValues] of Object.entries(colorScale)) {
-          convertedScale[trackKey] = {};
-          for (const [tone, hsla] of Object.entries(trackValues)) {
-            convertedScale[trackKey][tone] = toShortHex(convertHslaToHex(hsla as HSLA));
-          }
-        }
-
+        const convertedScale = convertEmphasisLevelToJson(colorScale);
         await writeFile(targetFilePath, JSON.stringify(convertedScale, null, 2), 'utf8');
       }
     }
@@ -349,6 +490,34 @@ export async function publishMetadata(params: {
       console.warn('[web-builder] Warning: Failed to process "colors" folder', error);
     }
   }
+
+  // Ensure all primitive solid scales referenced by the schema have a file.
+  // This covers cases like `dynamic.color.ts` (shared module outside `colors/`).
+  const colorsDirTarget = resolve(buildDir, 'colors');
+  const primitiveScales = collectPrimitiveSolidScales(colors);
+  for (const { baseColor, variant, theme, scale } of primitiveScales) {
+    if (scaleFileNameByRef.has(scale as unknown as object)) continue;
+
+    await mkdir(colorsDirTarget, { recursive: true });
+    const fileName = `${baseColor}.${variant}.${theme}.json`;
+    const filePath = resolve(colorsDirTarget, fileName);
+
+    scaleFileNameByRef.set(scale as unknown as object, fileName);
+    const convertedScale = convertEmphasisLevelToJson(scale);
+    await writeFile(filePath, JSON.stringify(convertedScale, null, 2), 'utf8');
+  }
+
+  const colorsArtifact = buildColorsArtifact(colors, scaleFileNameByRef);
+  await writeFile(resolve(buildDir, 'colors.json'), JSON.stringify(colorsArtifact, null, 2), 'utf8');
+
+  // Write schema.json without `colors`
+  const schemaArtifact: any = structuredClone(schema as any);
+  delete schemaArtifact.colors;
+  // Rule: any explicit colors inside `components` in schema.json must be HEX.
+  if (schemaArtifact.components) {
+    schemaArtifact.components = deepConvertHslaTuplesToHex(schemaArtifact.components);
+  }
+  await writeFile(resolve(buildDir, 'schema.json'), JSON.stringify(schemaArtifact, null, 2), 'utf8');
 
   console.log('[web-builder] Phase 7: metadata published to', buildDir);
 }

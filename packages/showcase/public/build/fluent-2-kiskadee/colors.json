@@ -1,0 +1,117 @@
+{
+  "primitiveColors": {
+    "blue": {
+      "v1": {
+        "solid": {
+          "light": "primary.unique.json",
+          "dark": "primary.unique.json"
+        }
+      },
+      "dynamic": {
+        "solid": {
+          "light": "blue.dynamic.light.json",
+          "dark": "blue.dynamic.light.json"
+        }
+      }
+    },
+    "black": {
+      "v1": {
+        "solid": {
+          "light": "neutral.light.json",
+          "dark": "neutral.dark.json"
+        },
+        "gradient": {
+          "angle": 180,
+          "stops": [
+            {
+              "primitive": "primitive.black.v1",
+              "position": 0
+            },
+            {
+              "primitive": "primitive.black.v1",
+              "position": 100
+            }
+          ]
+        }
+      }
+    },
+    "purple": {
+      "v1": {
+        "solid": {
+          "light": "purple.light.json",
+          "dark": "purple.light.json"
+        },
+        "gradient": {
+          "angle": 180,
+          "stops": [
+            {
+              "primitive": "primitive.purple.v1",
+              "position": 0
+            },
+            {
+              "primitive": "primitive.purple.v2",
+              "position": 100
+            }
+          ]
+        }
+      },
+      "v2": {
+        "solid": {
+          "light": "purple-2.light.json",
+          "dark": "purple-2.light.json"
+        }
+      }
+    }
+  },
+  "globalSemantics": {
+    "light": {
+      "primary": "primitive.blue.v1",
+      "neutral": "primitive.black.v1"
+    },
+    "dark": {
+      "primary": "primitive.blue.v1",
+      "neutral": "primitive.black.v1"
+    }
+  },
+  "globalSemanticsBySegment": {
+    "default": {
+      "meta": {
+        "name": "Default"
+      }
+    },
+    "modern": {
+      "meta": {
+        "name": "Modern"
+      },
+      "themes": {
+        "light": {
+          "primary": "primitive.purple.v1"
+        },
+        "dark": {
+          "primary": "primitive.purple.v1"
+        }
+      }
+    },
+    "dynamic": {
+      "meta": {
+        "name": "Dynamic"
+      },
+      "themes": {
+        "light": {
+          "primary": "primitive.blue.dynamic"
+        },
+        "dark": {
+          "primary": "primitive.blue.dynamic"
+        }
+      }
+    }
+  },
+  "componentIntents": {
+    "button": {
+      "primary": "primary",
+      "neutral": "neutral",
+      "destructive": "redLike",
+      "positive": "greenLike"
+    }
+  }
+}

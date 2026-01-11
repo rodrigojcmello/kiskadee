@@ -1,0 +1,64 @@
+{
+  "primitiveColors": {
+    "purple": {
+      "v1": {
+        "solid": {
+          "light": "purple.light.json",
+          "dark": "purple.light.json"
+        }
+      },
+      "dynamic": {
+        "solid": {
+          "light": "purple.dynamic.light.json",
+          "dark": "purple.dynamic.light.json"
+        }
+      }
+    },
+    "black": {
+      "v1": {
+        "solid": {
+          "light": "black.light.json",
+          "dark": "black.light.json"
+        }
+      }
+    }
+  },
+  "globalSemantics": {
+    "light": {
+      "primary": "primitive.purple.v1",
+      "neutral": "primitive.black.v1"
+    },
+    "dark": {
+      "primary": "primitive.purple.v1",
+      "neutral": "primitive.black.v1"
+    }
+  },
+  "globalSemanticsBySegment": {
+    "default": {
+      "meta": {
+        "name": "Material Design - Default (purple)"
+      }
+    },
+    "dynamic": {
+      "meta": {
+        "name": "Material Design - Dynamic"
+      },
+      "themes": {
+        "light": {
+          "primary": "primitive.purple.dynamic"
+        },
+        "dark": {
+          "primary": "primitive.purple.dynamic"
+        }
+      }
+    }
+  },
+  "componentIntents": {
+    "button": {
+      "primary": "primary",
+      "neutral": "neutral",
+      "destructive": "redLike",
+      "positive": "greenLike"
+    }
+  }
+}

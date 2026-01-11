@@ -1,0 +1,45 @@
+`{
+  "primitiveColors": {
+    "blue": {
+      "v1": {
+        "solid": {
+          "light": "blue.light.json",
+          "dark": "blue.light.json"
+        }
+      }
+    },
+    "black": {
+      "v1": {
+        "solid": {
+          "light": "black.light.json",
+          "dark": "black.light.json"
+        }
+      }
+    }
+  },
+  "globalSemantics": {
+    "light": {
+      "primary": "primitive.blue.v1",
+      "neutral": "primitive.black.v1"
+    },
+    "dark": {
+      "primary": "primitive.blue.v1",
+      "neutral": "primitive.black.v1"
+    }
+  },
+  "globalSemanticsBySegment": {
+    "default": {
+      "meta": {
+        "name": "Default"
+      }
+    }
+  },
+  "componentIntents": {
+    "button": {
+      "primary": "primary",
+      "neutral": "neutral",
+      "destructive": "redLike",
+      "positive": "greenLike"
+    }
+  }
+}
