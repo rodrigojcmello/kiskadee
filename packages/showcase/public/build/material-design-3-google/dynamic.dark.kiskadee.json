@@ -11,8 +11,8 @@
     "e2": {
       "c": {
         "primary": {
-          "s": "gmd-b gmd-d gmd-c",
-          "v": "gmd-b gmd-d gmd-c"
+          "s": "gmd-d gmd-c gmd-b",
+          "v": "gmd-d gmd-c gmd-b"
         }
       }
     }

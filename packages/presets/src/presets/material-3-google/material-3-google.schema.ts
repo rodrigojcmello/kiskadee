@@ -116,7 +116,7 @@ export const schema: Schema<Segments> = {
                 boxColor: {
                   primary: {
                     subtle: {
-                      rest: c(segmentName, 'l', 'button.primary', 8),
+                      rest: c(segmentName, 'l', 'button.primary', 10),
                       hover: c(segmentName, 'l', 'button.primary', 40),
                       pressed: c(segmentName, 'l', 'button.primary', 60),
                       disabled: c(segmentName, 'l', 'button.neutral', 10),
@@ -218,7 +218,7 @@ export const schema: Schema<Segments> = {
                 textColor: {
                   primary: {
                     subtle: {
-                      rest: [0, 0, 100, 1] as const,
+                      rest: c(segmentName, 'l', 'button.neutral', 70),
                       disabled: {
                         ref: c(segmentName, 'l', 'button.neutral', 60)
                       },
