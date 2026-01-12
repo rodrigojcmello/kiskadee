@@ -3,6 +3,7 @@ import './globals.scss';
 import '@kiskadee/react-components/global.kiskadee.scss';
 import AppHead from '@/components/AppHead/AppHead';
 import DesignSystemToolbar from '@/components/DesignSystemToolbar/DesignSystemToolbar';
+import PrimaryColorScale from '@/components/PrimaryColorScale/PrimaryColorScale';
 import style from './layout.module.scss';
 import { Providers } from './providers';
 
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <Providers>
           <DesignSystemToolbar />
+          <PrimaryColorScale />
           <div className={style.container}>{children}</div>
         </Providers>
       </body>

@@ -2,7 +2,7 @@ import type { ThemeMode } from '@kiskadee/core';
 import { useEffect } from 'react';
 
 export function useGlobalThemeClasses(theme: ThemeMode) {
-  // Sync CSS theme classes with current ThemeMode so globals.scss variables apply app-wide.
+  // Sync CSS theme classes with the current ThemeMode so globals.scss variables apply app-wide.
   useEffect(() => {
     if (typeof document === 'undefined') return;
 

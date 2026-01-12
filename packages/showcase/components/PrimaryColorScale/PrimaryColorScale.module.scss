@@ -1,0 +1,71 @@
+.container {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.8;
+  margin-bottom: 8px;
+}
+
+.meta {
+  font-size: 12px;
+  opacity: 0.75;
+  margin-bottom: 12px;
+}
+
+.tracks {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.trackTitle {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  opacity: 0.9;
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 8px;
+}
+
+.swatch {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.chip {
+  height: 32px;
+}
+
+.label {
+  padding: 6px 8px;
+  font-size: 11px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tone {
+  opacity: 0.75;
+}
+
+.hex {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+  'Courier New', monospace;
+}
+
+.error {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 0, 0, 0.08);
+  color: rgba(120, 0, 0, 0.95);
+  font-size: 12px;
+}
