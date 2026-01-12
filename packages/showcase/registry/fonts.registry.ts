@@ -1,4 +1,4 @@
-import { type FontStack } from '@kiskadee/web-builder/types';
+import type { FontStack } from '@kiskadee/web-builder/types';
 
 export interface FontDef {
   key: string;
