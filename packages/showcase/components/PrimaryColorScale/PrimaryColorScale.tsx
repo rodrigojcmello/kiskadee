@@ -133,10 +133,15 @@ export default function PrimaryColorScale() {
               <div className={style.swatches}>
                 {t.entries.map((e) => (
                   <div key={`${t.trackName}-${e.tone}`} className={style.swatch}>
-                    <div className={style.chip} style={{ background: e.hex }} />
-                    <div className={style.label}>
-                      <span className={style.tone}>{e.tone}</span>
-                      <span className={style.hex}>{e.hex}</span>
+                    <div className={style.chip} style={{ background: e.hex }}>
+                      <div
+                        className={`${style.chipLabel} ${
+                          t.trackName === 'subtle' ? style.textOnSubtle : style.textOnVivid
+                        }`}
+                      >
+                        <span className={style.tone}>{e.tone}</span>
+                        <span className={style.hex}>{e.hex}</span>
+                      </div>
                     </div>
                   </div>
                 ))}

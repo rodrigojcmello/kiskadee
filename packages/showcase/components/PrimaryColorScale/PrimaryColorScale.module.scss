@@ -20,6 +20,12 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
+  width: 290px;
+  position: fixed;
+  right: 0;
+  top: 110px;
+  overflow: scroll;
+  height: 100%;
 }
 
 .trackTitle {
@@ -42,15 +48,22 @@
 }
 
 .chip {
-  height: 32px;
+  height: 44px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
 }
 
-.label {
+.chipLabel {
+  width: 100%;
   padding: 6px 8px;
-  font-size: 11px;
+  font-size: 8px;
   display: flex;
   justify-content: space-between;
   gap: 8px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0));
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+  opacity: 0.4;
 }
 
 .tone {
@@ -60,6 +73,16 @@
 .hex {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
   'Courier New', monospace;
+}
+
+.textOnSubtle {
+  color: rgba(0, 0, 0, 0.9);
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0));
+  text-shadow: none;
+}
+
+.textOnVivid {
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .error {
