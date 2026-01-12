@@ -6,7 +6,7 @@ import { useFontPreference } from '@/hooks/use-font-preference';
 import { useGlobalThemeClasses } from '@/hooks/use-global-theme-classes';
 import { useStylesheetManager } from '@/hooks/use-stylesheet-manager';
 import { useThemeExtras } from '@/hooks/use-theme-extras';
-import { designSystemList } from '@/registry/design-systems.registry.generated';
+import { designSystemList } from '@/registry/design-systems.registry';
 
 // Client-side provider that mirrors legacy App.tsx/main.tsx responsibilities
 // Refactored to use custom hooks for separation of concerns.

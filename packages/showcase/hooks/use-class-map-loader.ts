@@ -1,6 +1,6 @@
 import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/core';
 import { useCallback, useEffect, useState } from 'react';
-import { coreMaps, paletteMaps } from '@/registry/design-systems.registry.generated';
+import { coreMaps, paletteMaps } from '@/registry/design-systems.registry';
 import type { DesignSystemKey } from '@/registry/registry-utils';
 import { mergeMaps } from '@/utils/merge-class-maps';
 

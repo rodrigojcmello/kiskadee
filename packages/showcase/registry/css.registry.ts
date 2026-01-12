@@ -3,8 +3,8 @@
 // The URLs here are served directly from packages/showcase/public/build/**
 //
 // NOTE: The actual data is now generated automatically by
-// scripts/generate-showcase-registry.cjs into css.registry.generated.ts.
+// scripts/generate-showcase-registry.cjs into `registry/generated/`.
 // This file simply re-exports those definitions so that existing imports
 // keep working.
 
-export * from './css.registry.generated';
+export * from './generated/css.registry.generated';
