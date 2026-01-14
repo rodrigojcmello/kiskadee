@@ -59,6 +59,12 @@ export default function ColorScaleViewer() {
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Always reset selection when switching design systems.
+  // Not every design system supports every primitive color; "primary" is the safest default.
+  useEffect(() => {
+    setSelection('semantic:primary');
+  }, [designSystemKey]);
+
   const colorsLoader = useMemo(() => {
     return (colorsMaps as Record<string, (() => Promise<any>) | undefined>)[designSystemKey];
   }, [designSystemKey]);
@@ -82,14 +88,6 @@ export default function ColorScaleViewer() {
         const colorsJson = (await colorsLoader()) as ColorsJson;
         if (cancelled) return;
         setColors(colorsJson);
-
-        // If the current selection is not available in this DS, try to keep a reasonable default.
-        const hasPrimary = Boolean(colorsJson?.globalSemantics?.[theme]?.primary);
-        if (!hasPrimary) {
-          // Fallback to the first available semantic or primitive (resolved later).
-          const firstSemantic = Object.keys(colorsJson?.globalSemantics?.[theme] ?? {})[0];
-          if (firstSemantic) setSelection(`semantic:${firstSemantic}`);
-        }
       } catch (e) {
         if (cancelled) return;
         setError(e instanceof Error ? e.message : String(e));
@@ -154,13 +152,17 @@ export default function ColorScaleViewer() {
 
       if (!colors) return;
       if (!resolvedPrimitiveRef) {
-        setError('Could not resolve selection to a primitive reference');
+        if (selection !== 'semantic:primary') {
+          setSelection('semantic:primary');
+        }
         return;
       }
 
       const parsed = parsePrimitiveRef(resolvedPrimitiveRef);
       if (!parsed) {
-        setError(`Unexpected primitive reference format: "${resolvedPrimitiveRef}"`);
+        if (selection !== 'semantic:primary') {
+          setSelection('semantic:primary');
+        }
         return;
       }
 
@@ -169,23 +171,31 @@ export default function ColorScaleViewer() {
           | string
           | undefined;
       if (!scaleFileName) {
-        setError(
-          `Could not find primitiveColors.${parsed.baseColor}.${parsed.variant}.solid.${theme} in colors.json`
-        );
+        if (selection !== 'semantic:primary') {
+          setSelection('semantic:primary');
+        }
         return;
       }
 
-      const scaleJson = await loadColorScaleFromBuild(designSystemKey, scaleFileName);
-      if (cancelled) return;
-      setMeta({ resolvedPrimitiveRef, scaleFileName });
-      setScale(scaleJson);
+      try {
+        const scaleJson = await loadColorScaleFromBuild(designSystemKey, scaleFileName);
+        if (cancelled) return;
+        setMeta({ resolvedPrimitiveRef, scaleFileName });
+        setScale(scaleJson);
+      } catch {
+        // A 404 is acceptable: not every DS has every referenced scale file.
+        // Keep the UI stable and allow the user to switch selections.
+        if (cancelled) return;
+        setMeta({ resolvedPrimitiveRef, scaleFileName });
+        setScale(null);
+      }
     }
 
     void run();
     return () => {
       cancelled = true;
     };
-  }, [colors, resolvedPrimitiveRef, designSystemKey, theme]);
+  }, [colors, resolvedPrimitiveRef, designSystemKey, theme, selection]);
 
   const tracks = useMemo(() => {
     if (!scale) return [];
