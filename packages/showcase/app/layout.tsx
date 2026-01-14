@@ -2,8 +2,8 @@ import type { ReactNode } from 'react';
 import './globals.scss';
 import '@kiskadee/react-components/global.kiskadee.scss';
 import AppHead from '@/components/AppHead/AppHead';
+import ColorScaleViewer from '@/components/ColorScaleViewer/ColorScaleViewer';
 import DesignSystemToolbar from '@/components/DesignSystemToolbar/DesignSystemToolbar';
-import PrimaryColorScale from '@/components/PrimaryColorScale/PrimaryColorScale';
 import style from './layout.module.scss';
 import { Providers } from './providers';
 
@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <Providers>
           <DesignSystemToolbar />
-          <PrimaryColorScale />
+          <ColorScaleViewer />
           <div className={style.container}>{children}</div>
         </Providers>
       </body>
