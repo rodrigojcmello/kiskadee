@@ -1,6 +1,6 @@
 .-a.-d .fk-r { color: #BFBFBF }
 .fk-a { color: #FFF }
-.fk-f.-d.-a { --k-bg0: #F0F0F0; --k-bg1: #F0F0F0; }
+.fk-f.-d.-a { background: #F0F0F0 }
 .fk-q.-s.-a { background: hsl(var(--k-p-80)) }
 .fk-v { background: hsl(var(--k-p-60)) }
 .fk-ac:focus-visible, .fk-ac.-f.-a { background: hsl(var(--k-p-60)) }

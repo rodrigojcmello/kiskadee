@@ -2,18 +2,18 @@
 .-a.-s .aos-e { color: #4D4D4D }
 .aos-aa { color: #FFF }
 .aos-ab { color: #0091FF }
-.aos-c.-s.-a { --k-bg0: #CCE9FF; --k-bg1: #CCE9FF; }
-.aos-h { --k-bg0: #0091FF; --k-bg1: #0091FF; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }
-.aos-i { --k-bg0: #E5F4FF; --k-bg1: #E5F4FF; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }
-.aos-j.-d.-a { --k-bg0: #0091FF33; --k-bg1: #0091FF33; }
-.aos-k.-d.-a { --k-bg0: #E5F4FF33; --k-bg1: #E5F4FF33; }
-.aos-l:focus-visible, .aos-l.-f.-a { --k-bg0: #0091FF; --k-bg1: #0091FF; }
-.aos-m:focus-visible, .aos-m.-f.-a { --k-bg0: #E5F4FF; --k-bg1: #E5F4FF; }
+.aos-c.-s.-a { background: #CCE9FF }
+.aos-h { background: #0091FF }
+.aos-i { background: #E5F4FF }
+.aos-j.-d.-a { background: #0091FF33 }
+.aos-k.-d.-a { background: #E5F4FF33 }
+.aos-l:focus-visible, .aos-l.-f.-a { background: #0091FF }
+.aos-m:focus-visible, .aos-m.-f.-a { background: #E5F4FF }
 .-i:hover .aos-ac, .-a.-h .aos-ac { color: #0091FFCC }
-.aos-a:hover.-s, .aos-a.-s.-h.-a { --k-bg0: #D6EDFF; --k-bg1: #D6EDFF; }
-.aos-n:hover, .aos-n.-h.-a { --k-bg0: #0091FFCC; --k-bg1: #0091FFCC; }
-.aos-o:hover, .aos-o.-h.-a { --k-bg0: #F0F8FF; --k-bg1: #F0F8FF; }
+.aos-a:hover.-s, .aos-a.-s.-h.-a { background: #D6EDFF }
+.aos-n:hover, .aos-n.-h.-a { background: #0091FFCC }
+.aos-o:hover, .aos-o.-h.-a { background: #F0F8FF }
 .-i:active .aos-ad, .-a.-p .aos-ad { color: #0091FF }
-.aos-b:active.-s, .aos-b.-s.-p.-a { --k-bg0: #99D3FF; --k-bg1: #99D3FF; }
-.aos-p:active, .aos-p.-p.-a { --k-bg0: #0074CC; --k-bg1: #0074CC; }
-.aos-q:active, .aos-q.-p.-a { --k-bg0: #D6EDFF; --k-bg1: #D6EDFF; }
+.aos-b:active.-s, .aos-b.-s.-p.-a { background: #99D3FF }
+.aos-p:active, .aos-p.-p.-a { background: #0074CC }
+.aos-q:active, .aos-q.-p.-a { background: #D6EDFF }

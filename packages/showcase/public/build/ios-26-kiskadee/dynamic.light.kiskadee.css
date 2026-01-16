@@ -5,24 +5,24 @@
 .ak-af.-s.-a { background: hsl(var(--k-p-50)) }
 .ak-ak { color: #808080 }
 .ak-al { color: #FF0004 }
-.ak-b { --k-bg0: #FF0004; --k-bg1: #FF0004; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }
+.ak-b { background: #FF0004 }
 .ak-ba { background: hsl(var(--k-p-5)) }
 .ak-bb { background: hsl(var(--k-p-50)) }
 .ak-be.-d.-a { background: hsl(var(--k-p-5) / 0.2) }
 .ak-bf.-d.-a { background: hsl(var(--k-p-50) / 0.2) }
-.ak-c.-d.-a { --k-bg0: #FF000433; --k-bg1: #FF000433; }
+.ak-c.-d.-a { background: #FF000433 }
 .ak-cb { color: hsl(var(--k-p-50)) }
-.ak-d.-d.-a { --k-bg0: #FFE5E633; --k-bg1: #FFE5E633; }
-.ak-m.-s.-a { --k-bg0: #FF0004; --k-bg1: #FF0004; }
+.ak-d.-d.-a { background: #FFE5E633 }
+.ak-m.-s.-a { background: #FF0004 }
 .ak-o { color: #FFF }
-.ak-s { --k-bg0: #F2F2F2; --k-bg1: #F2F2F2; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }
-.ak-t { --k-bg0: #FFE5E6; --k-bg1: #FFE5E6; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }
-.ak-u.-d.-a { --k-bg0: #F2F2F233; --k-bg1: #F2F2F233; }
+.ak-s { background: #F2F2F2 }
+.ak-t { background: #FFE5E6 }
+.ak-u.-d.-a { background: #F2F2F233 }
 .ak-bi:focus-visible, .ak-bi.-f.-a { background: hsl(var(--k-p-5)) }
 .ak-bj:focus-visible, .ak-bj.-f.-a { background: hsl(var(--k-p-50)) }
-.ak-e:focus-visible, .ak-e.-f.-a { --k-bg0: #FF0004; --k-bg1: #FF0004; }
-.ak-f:focus-visible, .ak-f.-f.-a { --k-bg0: #FFE5E6; --k-bg1: #FFE5E6; }
-.ak-v:focus-visible, .ak-v.-f.-a { --k-bg0: #F2F2F2; --k-bg1: #F2F2F2; }
+.ak-e:focus-visible, .ak-e.-f.-a { background: #FF0004 }
+.ak-f:focus-visible, .ak-f.-f.-a { background: #FFE5E6 }
+.ak-v:focus-visible, .ak-v.-f.-a { background: #F2F2F2 }
 .ak-z:focus-visible.-s, .ak-z.-s.-f.-a { background: hsl(var(--k-p-50)) }
 .-i:hover .ak-an, .-a.-h .ak-an { color: #808080CC }
 .-i:hover .ak-ao, .-a.-h .ak-ao { color: #FF0004CC }
@@ -30,10 +30,10 @@
 .ak-ab:hover.-s, .ak-ab.-s.-h.-a { background: hsl(var(--k-p-50) / 0.8) }
 .ak-bm:hover, .ak-bm.-h.-a { background: hsl(var(--k-p-3)) }
 .ak-bn:hover, .ak-bn.-h.-a { background: hsl(var(--k-p-50) / 0.8) }
-.ak-g:hover, .ak-g.-h.-a { --k-bg0: #FF0004CC; --k-bg1: #FF0004CC; }
-.ak-h:hover, .ak-h.-h.-a { --k-bg0: #FFF0F0; --k-bg1: #FFF0F0; }
-.ak-k:hover.-s, .ak-k.-s.-h.-a { --k-bg0: #FF0004CC; --k-bg1: #FF0004CC; }
-.ak-w:hover, .ak-w.-h.-a { --k-bg0: #F7F7F7; --k-bg1: #F7F7F7; }
+.ak-g:hover, .ak-g.-h.-a { background: #FF0004CC }
+.ak-h:hover, .ak-h.-h.-a { background: #FFF0F0 }
+.ak-k:hover.-s, .ak-k.-s.-h.-a { background: #FF0004CC }
+.ak-w:hover, .ak-w.-h.-a { background: #F7F7F7 }
 .-i:active .ak-ap, .-a.-p .ak-ap { color: #FFFFFF80 }
 .-i:active .ak-aq, .-a.-p .ak-aq { color: #FFFFFFB3 }
 .-i:active .ak-ar, .-a.-p .ak-ar { color: #808080 }
@@ -42,7 +42,7 @@
 .ak-ad:active.-s, .ak-ad.-s.-p.-a { background: hsl(var(--k-p-60)) }
 .ak-bq:active, .ak-bq.-p.-a { background: hsl(var(--k-p-60)) }
 .ak-br:active, .ak-br.-p.-a { background: hsl(var(--k-p-8)) }
-.ak-i:active, .ak-i.-p.-a { --k-bg0: #CC0003; --k-bg1: #CC0003; }
-.ak-j:active, .ak-j.-p.-a { --k-bg0: #FFD6D7; --k-bg1: #FFD6D7; }
-.ak-l:active.-s, .ak-l.-s.-p.-a { --k-bg0: #CC0003; --k-bg1: #CC0003; }
-.ak-x:active, .ak-x.-p.-a { --k-bg0: #EBEBEB; --k-bg1: #EBEBEB; }
+.ak-i:active, .ak-i.-p.-a { background: #CC0003 }
+.ak-j:active, .ak-j.-p.-a { background: #FFD6D7 }
+.ak-l:active.-s, .ak-l.-s.-p.-a { background: #CC0003 }
+.ak-x:active, .ak-x.-p.-a { background: #EBEBEB }

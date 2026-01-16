@@ -10,6 +10,8 @@ import type {
   LightTrackTones
 } from '@kiskadee/core';
 
+generateColorScaleFromColorsArtifact(['#000']);
+
 function hexToHSLA(hex: string): HSLA {
   // Normalize hex: remove # and expand 3-digit to 6-digit
   let cleanHex = hex.trim().replace(/^#/, '').toLowerCase();

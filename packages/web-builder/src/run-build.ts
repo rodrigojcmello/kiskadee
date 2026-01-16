@@ -28,7 +28,7 @@ const ENABLE_CLASSNAME_PREFIX = true;
 // entre sólido vs gradiente.
 //
 // Por padrão fica `false` para não aumentar CSS nem alterar o output atual.
-const ENABLE_SOLID_BOX_COLOR_AS_GRADIENT = true;
+const ENABLE_SOLID_BOX_COLOR_AS_GRADIENT = false;
 
 // Feature flag: force interaction states as class-based selectors (showcase)
 //

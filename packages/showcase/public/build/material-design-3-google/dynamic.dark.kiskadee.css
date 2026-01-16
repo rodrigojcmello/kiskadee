@@ -1,6 +1,6 @@
 .-a.-d .gmd-b { color: #666 }
 .-a.-s .gmd-c { color: #4D4D4D }
-.gmd-a.-d.-a { --k-bg0: #E6E6E6; --k-bg1: #E6E6E6; }
+.gmd-a.-d.-a { background: #E6E6E6 }
 .gmd-d { color: #FFF }
 .gmd-p.-s.-a { background: hsl(var(--k-p-10)) }
 .gmd-r { background: hsl(var(--k-p-50)) }

@@ -1,10 +1,10 @@
 .-a.-d .fm-ah { color: #5C5C5C }
 .fm-af { color: #000 }
-.fm-e.-s.-a { --k-bg0: #0F548C; --k-bg1: #0F548C; }
-.fm-h { --k-bg0: #115EA3; --k-bg1: #115EA3; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }
-.fm-i.-d.-a { --k-bg0: #141414; --k-bg1: #141414; }
-.fm-l:focus-visible, .fm-l.-f.-a { --k-bg0: #115EA3; --k-bg1: #115EA3; }
-.fm-c:hover.-s, .fm-c.-s.-h.-a { --k-bg0: #115EA3; --k-bg1: #115EA3; }
-.fm-m:hover, .fm-m.-h.-a { --k-bg0: #0F6CBD; --k-bg1: #0F6CBD; }
-.fm-b:active, .fm-b.-p.-a { --k-bg0: #0C3B5E; --k-bg1: #0C3B5E; }
-.fm-d:active.-s, .fm-d.-s.-p.-a { --k-bg0: #0C3B5E; --k-bg1: #0C3B5E; }
+.fm-e.-s.-a { background: #0F548C }
+.fm-h { background: #115EA3 }
+.fm-i.-d.-a { background: #141414 }
+.fm-l:focus-visible, .fm-l.-f.-a { background: #115EA3 }
+.fm-c:hover.-s, .fm-c.-s.-h.-a { background: #115EA3 }
+.fm-m:hover, .fm-m.-h.-a { background: #0F6CBD }
+.fm-b:active, .fm-b.-p.-a { background: #0C3B5E }
+.fm-d:active.-s, .fm-d.-s.-p.-a { background: #0C3B5E }
