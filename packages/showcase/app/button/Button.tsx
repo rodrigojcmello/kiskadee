@@ -6,12 +6,16 @@ import {
   useKiskadee,
   useShowcase
 } from '@kiskadee/react-components';
+import React from 'react';
 import { Icon } from '@/components/Icon/Icon';
 import s from './Button.module.scss';
 
 export function Button() {
   const { designSystem } = useKiskadee();
   const { fontName, manifest } = useShowcase();
+
+  const [isSelected, setIsSelected] = React.useState(false);
+  const [isSelectedVivid, setIsSelectedVivid] = React.useState(false);
 
   const isCarbon = designSystem === 'carbon-1-ibm';
   const alignment = isCarbon ? 'left' : 'center';
@@ -463,56 +467,50 @@ export function Button() {
             )}
           </div>
         </div>
-        <div>
-          <h3>Selected</h3>
-          {renderState(
-            'neutral',
-            'subtle',
-            'selected',
-            <KButton controlState={true}>
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Rest
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-          )}
-          {renderState(
-            'neutral',
-            'subtle',
-            'selected',
-            <KButton status="hover" controlState={true}>
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Hover
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-          )}
-          {renderState(
-            'neutral',
-            'subtle',
-            'selected',
-            <KButton status="focus" controlState={true}>
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Focus
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-          )}
-          {renderState(
-            'neutral',
-            'subtle',
-            'selected',
-            <KButton status="pressed" controlState={true}>
-              <KButton.Label>
-                <SmoothText triggerKey={fontName} align={alignment}>
-                  Pressed
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-          )}
+        <div className={s['interaction-state']}>
+          <h3>Selected (Primary / Subtle)</h3>
+          <div className={`${s['example-states']} k-root`}>
+            {renderState(
+              'primary',
+              'subtle',
+              isSelected ? 'selected' : 'rest',
+              <KButton
+                emphasis="subtle"
+                semantic="primary"
+                controlState={isSelected}
+                onClick={() => setIsSelected((prev) => !prev)}
+              >
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    {isSelected ? 'Followed' : 'Follow'}
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+          </div>
+        </div>
+
+        <div className={s['interaction-state']}>
+          <h3>Selected (Primary / Vivid)</h3>
+          <div className={`${s['example-states']} k-root`}>
+            {renderState(
+              'primary',
+              'vivid',
+              isSelectedVivid ? 'selected' : 'rest',
+              <KButton
+                emphasis="vivid"
+                semantic="primary"
+                controlState={isSelectedVivid}
+                onClick={() => setIsSelectedVivid((prev) => !prev)}
+              >
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    {isSelectedVivid ? 'Followed' : 'Follow'}
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+          </div>
         </div>
 
         <div>
