@@ -224,7 +224,7 @@ export const schema: Schema<Segments> = {
                       },
                       selected: {
                         rest: {
-                          ref: c(segmentName, 'l', 'button.neutral', 70)
+                          ref: c(segmentName, 'l', 'button.neutral', 0)
                         }
                       }
                     },

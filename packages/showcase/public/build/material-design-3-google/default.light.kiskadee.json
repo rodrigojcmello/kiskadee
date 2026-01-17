@@ -3,7 +3,7 @@
     "e1": {
       "c": {
         "primary": {
-          "s": "gmd-af gmd-aj gmd-al gmd-ah gmd-ar gmd-an gmd-ap gmd-a",
+          "s": "gmd-ag gmd-ak gmd-am gmd-ai gmd-as gmd-ao gmd-aq gmd-a",
           "v": "gmd-e gmd-i gmd-k gmd-g gmd-q gmd-m gmd-o gmd-a"
         }
       }
@@ -11,8 +11,8 @@
     "e2": {
       "c": {
         "primary": {
-          "s": "gmd-t gmd-c gmd-b",
-          "v": "gmd-d gmd-c gmd-b"
+          "s": "gmd-t gmd-u gmd-b",
+          "v": "gmd-c gmd-d gmd-b"
         }
       }
     }
