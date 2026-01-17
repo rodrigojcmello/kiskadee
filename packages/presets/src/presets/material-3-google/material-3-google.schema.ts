@@ -117,14 +117,14 @@ export const schema: Schema<Segments> = {
                   primary: {
                     subtle: {
                       rest: c(segmentName, 'l', 'button.primary', 10),
-                      hover: c(segmentName, 'l', 'button.primary', 40),
-                      pressed: c(segmentName, 'l', 'button.primary', 60),
+                      hover: c(segmentName, 'l', 'button.primary', 8),
+                      pressed: c(segmentName, 'l', 'button.primary', 13),
                       disabled: c(segmentName, 'l', 'button.neutral', 10),
-                      focus: c(segmentName, 'l', 'button.primary', 50),
+                      focus: c(segmentName, 'l', 'button.primary', 10),
                       selected: {
-                        rest: c(segmentName, 'l', 'button.primary', 10),
-                        hover: c(segmentName, 'l', 'button.primary', 8),
-                        pressed: c(segmentName, 'l', 'button.primary', 20)
+                        rest: c(segmentName, 'l', 'button.primary', 50),
+                        hover: c(segmentName, 'l', 'button.primary', 40),
+                        pressed: c(segmentName, 'l', 'button.primary', 60)
                       }
                     },
                     vivid: {

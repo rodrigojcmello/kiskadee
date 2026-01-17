@@ -119,14 +119,14 @@
                   "primary": {
                     "subtle": {
                       "rest": "#E2D5F6",
-                      "hover": "#886EC4",
-                      "pressed": "#564389",
+                      "hover": "#E8DDF8",
+                      "pressed": "#D9CAF2",
                       "disabled": "#E6E6E6",
-                      "focus": "#6C54AB",
+                      "focus": "#E2D5F6",
                       "selected": {
-                        "rest": "#E2D5F6",
-                        "hover": "#E8DDF8",
-                        "pressed": "#C4AFE9"
+                        "rest": "#6C54AB",
+                        "hover": "#886EC4",
+                        "pressed": "#564389"
                       }
                     },
                     "vivid": {
@@ -181,14 +181,14 @@
                   "primary": {
                     "subtle": {
                       "rest": "hsl(var(--k-p-10))",
-                      "hover": "hsl(var(--k-p-40))",
-                      "pressed": "hsl(var(--k-p-60))",
+                      "hover": "hsl(var(--k-p-8))",
+                      "pressed": "hsl(var(--k-p-13))",
                       "disabled": "#E6E6E6",
-                      "focus": "hsl(var(--k-p-50))",
+                      "focus": "hsl(var(--k-p-10))",
                       "selected": {
-                        "rest": "hsl(var(--k-p-10))",
-                        "hover": "hsl(var(--k-p-8))",
-                        "pressed": "hsl(var(--k-p-20))"
+                        "rest": "hsl(var(--k-p-50))",
+                        "hover": "hsl(var(--k-p-40))",
+                        "pressed": "hsl(var(--k-p-60))"
                       }
                     },
                     "vivid": {
