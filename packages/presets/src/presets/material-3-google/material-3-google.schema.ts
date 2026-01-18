@@ -48,10 +48,12 @@ export const schema: Schema<Segments> = {
       default: {
         light: {
           // Global theme tokens can reference primitive colors directly.
-          background: c('default', 'l', 'primitive.black.v1', 4)
+          background: c('default', 'l', 'primitive.black.v1', 4),
+          focusColor: c('default', 'l', 'primitive.purple.v1', 60)
         },
         dark: {
-          background: c('default', 'd', 'primitive.black.v1', 85)
+          background: c('default', 'd', 'primitive.black.v1', 85),
+          focusColor: c('default', 'l', 'primitive.purple.v1', 60)
         }
       },
       dynamic: {
