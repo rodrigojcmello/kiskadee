@@ -181,13 +181,13 @@ export const schema: Schema<Segments> = {
             // generate stateful CSS for rounded corners.
             borderRadius: {
               rest: 20,
-              // hover: 14,
-              // pressed: 16,
-              // focus: 14
+              hover: 14,
+              pressed: 10,
+              focus: 14,
               selected: {
                 rest: 16,
                 hover: 14,
-                pressed: 12,
+                pressed: 10,
                 focus: 14
               }
             },

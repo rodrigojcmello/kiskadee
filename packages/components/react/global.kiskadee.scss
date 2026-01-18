@@ -56,7 +56,7 @@ body {
 
 /* Interaction state transitions (hover/focus/pressed) */
 .k-state {
-  transition-property: padding, background-color, border-color, color, box-shadow, --k-bg0, --k-bg1, --k-bg2;
+  transition-property: padding, background-color, border-color, border-radius, color, box-shadow, --k-bg0, --k-bg1, --k-bg2;
   transition-duration: var(--k-dur-int);
   transition-timing-function: var(--k-ease-std);
 }
