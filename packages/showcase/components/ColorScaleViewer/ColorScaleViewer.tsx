@@ -2,38 +2,11 @@
 
 import { KiskadeeContext } from '@kiskadee/react-components';
 import { useContext, useEffect, useMemo, useState } from 'react';
+import { type SelectionValue, useColorScale } from '@/hooks/use-color-scale';
 import { Select } from '@/k-components/Select/Select';
-import {
-  type ColorScaleJson,
-  colorsMaps,
-  loadColorScaleFromBuild
-} from '@/registry/colors.registry';
 import style from './ColorScaleViewer.module.scss';
 
 type ThemeKey = 'light' | 'dark';
-
-type ColorsJson = {
-  primitiveColors?: Record<
-    string,
-    Record<
-      string,
-      {
-        solid?: Record<ThemeKey, string>;
-      }
-    >
-  >;
-  globalSemantics?: Record<ThemeKey, Record<string, string>>;
-};
-
-type SelectionValue = `semantic:${string}` | `primitive:${string}.${string}`;
-
-function parsePrimitiveRef(ref: string): { baseColor: string; variant: string } | null {
-  // Expected: "primitive.<baseColor>.<variant>" (e.g. "primitive.purple.v1")
-  const parts = ref.split('.');
-  if (parts.length < 3) return null;
-  if (parts[0] !== 'primitive') return null;
-  return { baseColor: parts[1]!, variant: parts[2]! };
-}
 
 function normalizeTheme(theme: unknown): ThemeKey {
   return theme === 'dark' ? 'dark' : 'light';
@@ -49,56 +22,21 @@ export default function ColorScaleViewer() {
   const ctx = useContext(KiskadeeContext);
   const designSystemKey = String(ctx?.designSystem ?? '');
   const theme = normalizeTheme(ctx?.theme);
-
-  const [colors, setColors] = useState<ColorsJson | null>(null);
   const [selection, setSelection] = useState<SelectionValue>('semantic:primary');
-  const [scale, setScale] = useState<ColorScaleJson | null>(null);
-  const [meta, setMeta] = useState<{
-    resolvedPrimitiveRef?: string;
-    scaleFileName?: string;
-  } | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   // Always reset selection when switching design systems.
   // Not every design system supports every primitive color; "primary" is the safest default.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: ...
   useEffect(() => {
     setSelection('semantic:primary');
   }, [designSystemKey]);
 
-  const colorsLoader = useMemo(() => {
-    return (colorsMaps as Record<string, (() => Promise<any>) | undefined>)[designSystemKey];
-  }, [designSystemKey]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function run() {
-      setError(null);
-      setScale(null);
-      setMeta(null);
-      setColors(null);
-
-      if (!designSystemKey) return;
-      if (!colorsLoader) {
-        setError(`No colors registry found for designSystem="${designSystemKey}"`);
-        return;
-      }
-
-      try {
-        const colorsJson = (await colorsLoader()) as ColorsJson;
-        if (cancelled) return;
-        setColors(colorsJson);
-      } catch (e) {
-        if (cancelled) return;
-        setError(e instanceof Error ? e.message : String(e));
-      }
-    }
-
-    void run();
-    return () => {
-      cancelled = true;
-    };
-  }, [designSystemKey, theme, colorsLoader]);
+  const { colors, scale, meta, error } = useColorScale({
+    designSystemKey,
+    theme,
+    selection,
+    enabled: Boolean(designSystemKey)
+  });
 
   const selectOptions = useMemo(() => {
     if (!colors) return [];
@@ -125,77 +63,17 @@ export default function ColorScaleViewer() {
     return out;
   }, [colors]);
 
-  const resolvedPrimitiveRef = useMemo(() => {
-    if (!colors) return null;
-
-    if (selection.startsWith('semantic:')) {
-      const semanticKey = selection.replace('semantic:', '');
-      const ref = colors.globalSemantics?.[theme]?.[semanticKey];
-      return typeof ref === 'string' ? ref : null;
-    }
-
-    if (selection.startsWith('primitive:')) {
-      const target = selection.replace('primitive:', '');
-      return `primitive.${target}`;
-    }
-
-    return null;
-  }, [colors, selection, theme]);
-
+  // Keep the UI stable: when the resolved ref is invalid for this DS/theme,
+  // fallback to the safest semantic.
   useEffect(() => {
-    let cancelled = false;
+    if (!designSystemKey) return;
+    if (!colors) return;
+    if (meta?.resolvedPrimitiveRef) return;
 
-    async function run() {
-      setError(null);
-      setScale(null);
-      setMeta(null);
-
-      if (!colors) return;
-      if (!resolvedPrimitiveRef) {
-        if (selection !== 'semantic:primary') {
-          setSelection('semantic:primary');
-        }
-        return;
-      }
-
-      const parsed = parsePrimitiveRef(resolvedPrimitiveRef);
-      if (!parsed) {
-        if (selection !== 'semantic:primary') {
-          setSelection('semantic:primary');
-        }
-        return;
-      }
-
-      const scaleFileName =
-        colors?.primitiveColors?.[parsed.baseColor]?.[parsed.variant]?.solid?.[theme] as
-          | string
-          | undefined;
-      if (!scaleFileName) {
-        if (selection !== 'semantic:primary') {
-          setSelection('semantic:primary');
-        }
-        return;
-      }
-
-      try {
-        const scaleJson = await loadColorScaleFromBuild(designSystemKey, scaleFileName);
-        if (cancelled) return;
-        setMeta({ resolvedPrimitiveRef, scaleFileName });
-        setScale(scaleJson);
-      } catch {
-        // A 404 is acceptable: not every DS has every referenced scale file.
-        // Keep the UI stable and allow the user to switch selections.
-        if (cancelled) return;
-        setMeta({ resolvedPrimitiveRef, scaleFileName });
-        setScale(null);
-      }
+    if (selection !== 'semantic:primary') {
+      setSelection('semantic:primary');
     }
-
-    void run();
-    return () => {
-      cancelled = true;
-    };
-  }, [colors, resolvedPrimitiveRef, designSystemKey, theme, selection]);
+  }, [designSystemKey, colors, meta?.resolvedPrimitiveRef, selection]);
 
   const tracks = useMemo(() => {
     if (!scale) return [];

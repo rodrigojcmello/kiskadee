@@ -1,0 +1,271 @@
+'use client';
+
+import { useEffect, useMemo, useState } from 'react';
+import {
+  type ColorScaleJson,
+  colorsMaps,
+  loadColorScaleFromBuild
+} from '@/registry/colors.registry';
+
+type ThemeKey = 'light' | 'dark';
+
+export type ColorsJson = {
+  primitiveColors?: Record<
+    string,
+    Record<
+      string,
+      {
+        solid?: Record<ThemeKey, string>;
+      }
+    >
+  >;
+  globalSemantics?: Record<ThemeKey, Record<string, string>>;
+};
+
+export type SelectionValue = `semantic:${string}` | `primitive:${string}.${string}`;
+
+export type ColorScaleMeta = {
+  resolvedPrimitiveRef?: string;
+  scaleFileName?: string;
+};
+
+type PrimitiveRef = { baseColor: string; variant: string };
+
+// Cache while the tab is open.
+// We cache Promises to dedupe concurrent requests too.
+const colorsPromiseCache = new Map<string, Promise<ColorsJson>>();
+const scalePromiseCache = new Map<string, Promise<ColorScaleJson>>();
+
+function parsePrimitiveRef(ref: string): PrimitiveRef | null {
+  // Expected: "primitive.<baseColor>.<variant>" (e.g. "primitive.purple.v1")
+  const parts = ref.split('.');
+  if (parts.length < 3) return null;
+  if (parts[0] !== 'primitive') return null;
+  return { baseColor: parts[1]!, variant: parts[2]! };
+}
+
+function getColorsLoader(designSystemKey: string): (() => Promise<any>) | null {
+  const loader = (colorsMaps as Record<string, (() => Promise<any>) | undefined>)[designSystemKey];
+  return loader ?? null;
+}
+
+function loadColorsJsonCached(designSystemKey: string): Promise<ColorsJson> {
+  const cached = colorsPromiseCache.get(designSystemKey);
+  if (cached) return cached;
+
+  const loader = getColorsLoader(designSystemKey);
+  if (!loader) {
+    // Keep the promise shape stable.
+    const p = Promise.reject(new Error(`No colors registry found for designSystem="${designSystemKey}"`));
+    colorsPromiseCache.set(designSystemKey, p);
+    return p;
+  }
+
+  const p = loader().then((json) => json as ColorsJson);
+  colorsPromiseCache.set(designSystemKey, p);
+  return p;
+}
+
+function loadScaleJsonCached(designSystemKey: string, scaleFileName: string): Promise<ColorScaleJson> {
+  const key = `${designSystemKey}|${scaleFileName}`;
+  const cached = scalePromiseCache.get(key);
+  if (cached) return cached;
+
+  const p = loadColorScaleFromBuild(designSystemKey, scaleFileName);
+  scalePromiseCache.set(key, p);
+  return p;
+}
+
+function resolvePrimitiveRefFromSelection(params: {
+  colors: ColorsJson;
+  theme: ThemeKey;
+  selection: SelectionValue;
+}): string | null {
+  const { colors, theme, selection } = params;
+
+  if (selection.startsWith('semantic:')) {
+    const semanticKey = selection.replace('semantic:', '');
+    const ref = colors.globalSemantics?.[theme]?.[semanticKey];
+    return typeof ref === 'string' ? ref : null;
+  }
+
+  if (selection.startsWith('primitive:')) {
+    const target = selection.replace('primitive:', '');
+    return `primitive.${target}`;
+  }
+
+  return null;
+}
+
+function resolveScaleFileName(params: {
+  colors: ColorsJson;
+  theme: ThemeKey;
+  resolvedPrimitiveRef: string;
+}): string | null {
+  const { colors, theme, resolvedPrimitiveRef } = params;
+  const parsed = parsePrimitiveRef(resolvedPrimitiveRef);
+  if (!parsed) return null;
+
+  const fileName = colors.primitiveColors?.[parsed.baseColor]?.[parsed.variant]?.solid?.[theme] as
+    | string
+    | undefined;
+  return fileName ?? null;
+}
+
+export function pickScaleTone(params: {
+  scale: ColorScaleJson;
+  tone: string;
+  preferredTracks: string[];
+}): string | undefined {
+  const { scale, tone, preferredTracks } = params;
+
+  for (const track of preferredTracks) {
+    const v = scale[track]?.[tone];
+    if (typeof v === 'string') return v;
+  }
+
+  for (const track of Object.keys(scale)) {
+    const v = scale[track]?.[tone];
+    if (typeof v === 'string') return v;
+  }
+
+  return undefined;
+}
+
+export function useColorScale(params: {
+  designSystemKey: string;
+  theme: ThemeKey;
+  selection: SelectionValue;
+  enabled?: boolean;
+}): {
+  colors: ColorsJson | null;
+  scale: ColorScaleJson | null;
+  meta: ColorScaleMeta | null;
+  loading: boolean;
+  error: string | null;
+} {
+  const { designSystemKey, theme, selection, enabled = true } = params;
+
+  const [colors, setColors] = useState<ColorsJson | null>(null);
+  const [scale, setScale] = useState<ColorScaleJson | null>(null);
+  const [meta, setMeta] = useState<ColorScaleMeta | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function run() {
+      setError(null);
+      setLoading(true);
+      setScale(null);
+      setMeta(null);
+      setColors(null);
+
+      if (!enabled) {
+        setLoading(false);
+        return;
+      }
+
+      if (!designSystemKey) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const colorsJson = await loadColorsJsonCached(designSystemKey);
+        if (cancelled) return;
+        setColors(colorsJson);
+
+        const resolvedPrimitiveRef = resolvePrimitiveRefFromSelection({
+          colors: colorsJson,
+          theme,
+          selection
+        });
+        if (!resolvedPrimitiveRef) {
+          setMeta(null);
+          setScale(null);
+          setLoading(false);
+          return;
+        }
+
+        const scaleFileName = resolveScaleFileName({
+          colors: colorsJson,
+          theme,
+          resolvedPrimitiveRef
+        });
+        if (!scaleFileName) {
+          setMeta({ resolvedPrimitiveRef });
+          setScale(null);
+          setLoading(false);
+          return;
+        }
+
+        try {
+          const scaleJson = await loadScaleJsonCached(designSystemKey, scaleFileName);
+          if (cancelled) return;
+          setMeta({ resolvedPrimitiveRef, scaleFileName });
+          setScale(scaleJson);
+          setLoading(false);
+        } catch {
+          // A 404 is acceptable: not every DS has every referenced scale file.
+          if (cancelled) return;
+          setMeta({ resolvedPrimitiveRef, scaleFileName });
+          setScale(null);
+          setLoading(false);
+        }
+      } catch (e) {
+        if (cancelled) return;
+        setError(e instanceof Error ? e.message : String(e));
+        setLoading(false);
+      }
+    }
+
+    void run();
+    return () => {
+      cancelled = true;
+    };
+  }, [designSystemKey, theme, selection, enabled]);
+
+  return { colors, scale, meta, loading, error };
+}
+
+export function useColorScaleTones(params: {
+  designSystemKey: string;
+  theme: ThemeKey;
+  selection: SelectionValue;
+  tones: readonly string[];
+  preferredTracks: readonly string[];
+  enabled?: boolean;
+}): {
+  meta: ColorScaleMeta | null;
+  loading: boolean;
+  error: string | null;
+  picked: Record<string, string | undefined>;
+} {
+  const { designSystemKey, theme, selection, tones, preferredTracks, enabled } = params;
+  const { scale, meta, loading, error } = useColorScale({
+    designSystemKey,
+    theme,
+    selection,
+    enabled
+  });
+
+  const picked = useMemo(() => {
+    const out: Record<string, string | undefined> = {};
+    for (const t of tones) out[t] = undefined;
+    if (!scale) return out;
+
+    for (const t of tones) {
+      out[t] = pickScaleTone({
+        scale,
+        tone: String(t),
+        preferredTracks: Array.from(preferredTracks)
+      });
+    }
+
+    return out;
+  }, [scale, tones, preferredTracks]);
+
+  return { meta, loading, error, picked };
+}
