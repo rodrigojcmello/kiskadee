@@ -152,20 +152,22 @@ export type ColorClasses = {
 
 // Types describing the JSON artifact produced by web-builder (classNamesMap.json)
 export type ClassNameByElementJSON = {
-  // d = decorations, e = effects, s = scales, c = colors (with u/s/v sub-fields), cs = control states
+  // d = decorations, e = effects (segregated), s = scales, c = colors (with u/s/v sub-fields), l = control states
   // d: flattened into a single space-separated string of class names (always-on)
   d?: string;
-  // e: unified string of effect base classes (space-separated). These classes are opt-in and require
-  // activation via state activators (.-a, .-h, .-f, .-p, .-s, .-d, .-r) or native pseudos to take effect.
-  // No interaction-state nesting here; components may append all base effect classes unconditionally.
-  e?: string;
-  // s: values are pre-joined into a single space-separated string (no arrays) per size key
+  // e: effect buckets (each bucket is opt-in at component level).
+  // Each bucket value is a space-separated string of class names.
+  // Example buckets (not exhaustive):
+  // - h: shadow
+  // - r: border radius
+  e?: Partial<Record<string, string>>;
+  // s: values are pre-joined into a single space-separated string (no arrays) per size key.
+  // For web payload optimization, keys are stored without the "s:" prefix (e.g. "s:md:1" -> "md:1", "s:all" -> "all").
   s?: Partial<Record<string, string>>;
   // c: Map of semantic key -> ColorClasses (semantic-aware colors). No legacy flat format.
   c?: Record<string, ColorClasses>;
-  // cs: control-state specific (selected) — flattened string of utility classes
-  // TODO: replace is with a single letter
-  cs?: string;
+  // l: control-state specific (selected) — flattened string of utility classes
+  l?: string;
 };
 
 export type ComponentClassNameMapJSON = Partial<

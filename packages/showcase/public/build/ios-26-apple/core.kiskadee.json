@@ -2,15 +2,17 @@
   "button": {
     "e1": {
       "d": "aos-g",
-      "e": "aos-v aos-y aos-z aos-x aos-w",
+      "e": {
+        "h": "aos-v aos-y aos-z aos-x aos-w"
+      },
       "s": {
-        "s:md:1": "aos-u aos-r aos-s aos-t aos-f"
+        "md:1": "aos-u aos-r aos-s aos-t aos-f"
       }
     },
     "e2": {
       "d": "aos-ag",
       "s": {
-        "s:md:1": "aos-af aos-ae"
+        "md:1": "aos-af aos-ae"
       }
     }
   }

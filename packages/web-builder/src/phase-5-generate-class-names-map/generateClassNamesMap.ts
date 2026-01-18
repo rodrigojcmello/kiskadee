@@ -31,15 +31,15 @@ export type ClassNamesByInteractionState = Partial<Record<string, string[]>>; //
 export type ClassNameByElement = {
   // Flattened decorations only (always-on). Effects no longer merge here.
   d?: string;
-  // Unified effects base classes string (space-separated). No per-state nesting.
-  // Components may append this string unconditionally; activation is controlled by state classes/pseudos in CSS.
-  e?: string;
+  // Effects buckets (space-separated strings), opt-in at component level.
+  // Keys are short for web payload optimization (single letters).
+  e?: Partial<Record<string, string>>;
   // Scales aggregated per size as flattened strings (size variants only, not effects)
   s?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
   // Color classes organized by emphasis (u/s/v)
   c?: ColorClasses;
   // Control-state specific (selected) — flattened string of utility classes
-  cs?: string;
+  l?: string;
 };
 export type ComponentClassNameMap = Partial<Record<string, Record<string, ClassNameByElement>>>;
 
@@ -89,17 +89,17 @@ export function generateClassNamesMapSplit(
       // - scales (size variants only) into `s`.
       const dSet = new Set<string>();
       const sMap = new Map<string, Set<string>>();
-      // Collect all effects (across interaction states) into a single unified set
-      const eSet = new Set<string>();
-      // Control-state: selected — collect separately and do not mix into e/p
-      const cSelectedSet = new Set<string>();
+      // Effects buckets (by effect kind), excluding selected/control-state.
+      const eBuckets = new Map<string, Set<string>>();
+      // Control-state: selected — collect separately and do not mix into e
+      const selectedSet = new Set<string>();
 
       // decorations → d
       mapArray(el.decorations, shortenMap)?.forEach((c) => {
         dSet.add(c);
       });
 
-      // effects → e (flatten non-selected states into a single set); never merge effects into d/s
+      // effects → e (bucketized; never merge effects into d/s)
       if (el.effects) {
         for (const st of Object.keys(el.effects)) {
           const arr = (el.effects as any)[st] as string[] | undefined;
@@ -107,8 +107,20 @@ export function generateClassNamesMapSplit(
           const isSelectedState = st === 'selected' || st.startsWith('selected:');
           for (const key of arr) {
             const cls = shortenMap[key] ?? key;
-            if (isSelectedState) cSelectedSet.add(cls);
-            else eSet.add(cls);
+            if (isSelectedState) {
+              selectedSet.add(cls);
+              continue;
+            }
+
+            // Bucket by effect family inferred from the style key prefix.
+            // Keep single-letter bucket keys for minimal payload.
+            let bucket: string;
+            if (key.startsWith('shadow')) bucket = 'h';
+            else if (key.startsWith('borderRadius')) bucket = 'r';
+            else bucket = 'x';
+
+            if (!eBuckets.has(bucket)) eBuckets.set(bucket, new Set());
+            eBuckets.get(bucket)!.add(cls);
           }
         }
       }
@@ -116,10 +128,12 @@ export function generateClassNamesMapSplit(
       // scales → s[size] (size-only variants)
       if (el.scales) {
         for (const [size, arr] of Object.entries(el.scales)) {
+          // Web artifact optimization: strip "s:" prefix from size keys (e.g. "s:md:1" -> "md:1").
+          const sizeKey = size.startsWith('s:') ? size.slice(2) : size;
           const mapped = mapArray(arr, shortenMap);
           if (!mapped || mapped.length === 0) continue;
-          if (!sMap.has(size)) sMap.set(size, new Set());
-          const set = sMap.get(size)!;
+          if (!sMap.has(sizeKey)) sMap.set(sizeKey, new Set());
+          const set = sMap.get(sizeKey)!;
           mapped.forEach((c) => {
             set.add(c);
           });
@@ -227,8 +241,16 @@ export function generateClassNamesMapSplit(
       // After processing palettes, finalize the core element record so `cs` includes palette-derived selected classes
       core[componentName][elementName] = {
         d: dSet.size ? Array.from(dSet).join(' ') : undefined,
-        e: eSet.size ? Array.from(eSet).join(' ') : undefined,
-        cs: cSelectedSet.size ? Array.from(cSelectedSet).join(' ') : undefined,
+        e:
+          eBuckets.size > 0
+            ? Object.fromEntries(
+                Array.from(eBuckets.entries()).map(([k, set]) => [
+                  k,
+                  set.size ? Array.from(set).join(' ') : undefined
+                ])
+              )
+            : undefined,
+        l: selectedSet.size ? Array.from(selectedSet).join(' ') : undefined,
         s:
           sMap.size > 0
             ? Object.fromEntries(

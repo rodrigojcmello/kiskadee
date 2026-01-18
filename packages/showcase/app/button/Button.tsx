@@ -477,6 +477,7 @@ export function Button() {
               <KButton
                 emphasis="subtle"
                 semantic="primary"
+                radius={true}
                 controlState={isSelected}
                 onClick={() => setIsSelected((prev) => !prev)}
               >
@@ -500,6 +501,7 @@ export function Button() {
               <KButton
                 emphasis="vivid"
                 semantic="primary"
+                radius={true}
                 controlState={isSelectedVivid}
                 onClick={() => setIsSelectedVivid((prev) => !prev)}
               >

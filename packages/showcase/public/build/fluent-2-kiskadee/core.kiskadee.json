@@ -2,19 +2,21 @@
   "button": {
     "e1": {
       "d": "fk-s",
-      "e": "fk-ay fk-bb fk-bc fk-ba fk-az",
+      "e": {
+        "h": "fk-ay fk-bb fk-bc fk-ba fk-az"
+      },
       "s": {
-        "s:sm:1": "fk-av fk-am fk-ar fk-au fk-b",
-        "s:md:1": "fk-aw fk-an fk-ap fk-as fk-b",
-        "s:lg:1": "fk-ax fk-ao fk-aq fk-at fk-b"
+        "sm:1": "fk-av fk-am fk-ar fk-au fk-b",
+        "md:1": "fk-aw fk-an fk-ap fk-as fk-b",
+        "lg:1": "fk-ax fk-ao fk-aq fk-at fk-b"
       }
     },
     "e2": {
       "d": "fk-bn",
       "s": {
-        "s:sm:1": "fk-bk fk-bh",
-        "s:md:1": "fk-bl fk-bi",
-        "s:lg:1": "fk-bm fk-bj"
+        "sm:1": "fk-bk fk-bh",
+        "md:1": "fk-bl fk-bi",
+        "lg:1": "fk-bm fk-bj"
       }
     }
   }

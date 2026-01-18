@@ -3,17 +3,17 @@
     "e1": {
       "d": "ak-ax",
       "s": {
-        "s:sm:1": "ak-by ak-bs ak-bu ak-bw ak-av",
-        "s:md:1": "ak-aj ak-bz ak-ag ak-bt ak-ah ak-bv ak-ai ak-bx ak-r ak-aw",
-        "s:lg:1": "ak-aj ak-ag ak-ah ak-ai ak-r"
+        "sm:1": "ak-by ak-bs ak-bu ak-bw ak-av",
+        "md:1": "ak-aj ak-bz ak-ag ak-bt ak-ah ak-bv ak-ai ak-bx ak-r ak-aw",
+        "lg:1": "ak-aj ak-ag ak-ah ak-ai ak-r"
       }
     },
     "e2": {
       "d": "ak-ch",
       "s": {
-        "s:sm:1": "ak-cg ak-q",
-        "s:md:1": "ak-au ak-q",
-        "s:lg:1": "ak-au ak-q"
+        "sm:1": "ak-cg ak-q",
+        "md:1": "ak-au ak-q",
+        "lg:1": "ak-au ak-q"
       }
     }
   }

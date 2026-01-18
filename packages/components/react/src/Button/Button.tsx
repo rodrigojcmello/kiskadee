@@ -26,6 +26,8 @@ export type ButtonProps = HeadlessButtonProps & {
   scale?: ElementSizeValue;
   /** Enable elevation/shadow visuals. When true, adds the shadow activation class. */
   shadow?: boolean;
+  /** Enable border-radius effects. When true, adds the radius effect bucket classes. */
+  radius?: boolean;
   /**
    * Emphasis (tone) for the button colors.
    * When provided, selects only classes for the specified emphasis (subtle or vivid).
@@ -38,7 +40,7 @@ export type ButtonProps = HeadlessButtonProps & {
 
 // Build a single space-separated class string from flattened d and color classes (sizes handled in e1)
 // Selects color classes based on emphasis: subtle (s), vivid (v), or unique (u)
-// Assumes semantic-aware map in `c`; no legacy flat format for performance.
+// Assumes a semantic-aware map in `c`; no legacy flat format for performance.
 function collectStr(
   el: ClassNameByElementJSON | undefined,
   emphasis: Emphasis | undefined = 'subtle',
@@ -73,6 +75,7 @@ function Button(props: ButtonProps) {
     scale = 's:md:1',
     disabled,
     shadow = false,
+    radius = false,
     emphasis,
     semantic = 'neutral',
     tabIndex,
@@ -92,16 +95,23 @@ function Button(props: ButtonProps) {
     const el2 = collectStr(e2, emphasis, semantic);
     const el3 = collectStr(e3, emphasis, semantic);
 
-    // Include scales for e1 (root) and e2 (label)
-    const sAllE1 = e1?.s?.['s:all'] ?? '';
-    const sScaleE1 = e1?.s?.[scale] ?? '';
-    const sAllE2 = e2?.s?.['s:all'] ?? '';
-    const sScaleE2 = e2?.s?.[scale] ?? '';
+    const normalizeScaleKey = (k: string) => (k.startsWith('s:') ? k.slice(2) : k);
 
-    // Effects base classes (from Phase 5 `e`) — unified string.
-    // We append them unconditionally; activation is governed by forced state classes or native pseudos in CSS.
-    const e1Effects = e1?.e ?? '';
-    const selected = controlState ? (e1?.cs ?? '') : '';
+    // Include scales for e1 (root) and e2 (label).
+    // Note: In core.kiskadee.json we store size keys without the "s:" prefix (e.g. "s:md:1" -> "md:1").
+    const scaleKey = normalizeScaleKey(scale);
+    const sAllE1 = e1?.s?.['all'] ?? '';
+    const sScaleE1 = e1?.s?.[scaleKey] ?? '';
+    const sAllE2 = e2?.s?.['all'] ?? '';
+    const sScaleE2 = e2?.s?.[scaleKey] ?? '';
+
+    // Effects buckets (from Phase 5 `e`) — opt-in at component level.
+    // We only append the buckets requested by props.
+    const e = e1?.e;
+    const shadowEffects = shadow ? (e?.h ?? '') : '';
+    const radiusEffects = radius ? (e?.r ?? '') : '';
+    const e1Effects = `${shadowEffects}${shadowEffects && radiusEffects ? ' ' : ''}${radiusEffects}`;
+    const selected = controlState ? (e1?.l ?? '') : '';
 
     const e1Base =
       (el1 ? `${el1}` : '') +
@@ -144,6 +154,7 @@ function Button(props: ButtonProps) {
     controlState,
     scale,
     shadow,
+    radius,
     emphasis,
     semantic,
     classNames.e1,
