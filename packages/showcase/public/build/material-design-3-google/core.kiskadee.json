@@ -4,9 +4,8 @@
       "d": "gmd-ai",
       "e": {
         "h": "gmd-br gmd-bu gmd-bv gmd-bt gmd-bs",
-        "r": "gmd-s gmd-ac gmd-ad gmd-ab"
+        "r": "gmd-s gmd-ac gmd-ad gmd-ab gmd-ah gmd-af gmd-ag gmd-ae"
       },
-      "l": "gmd-ah gmd-af gmd-ag gmd-ae",
       "s": {
         "sm:1": "gmd-bq gmd-bb gmd-bc gmd-bh gmd-x",
         "md:1": "gmd-bm gmd-ax gmd-bd gmd-bi gmd-s",

@@ -91,7 +91,10 @@ export function generateClassNamesMapSplit(
       const sMap = new Map<string, Set<string>>();
       // Effects buckets (by effect kind), excluding selected/control-state.
       const eBuckets = new Map<string, Set<string>>();
-      // Control-state: selected — collect separately and do not mix into e
+      // Control-state: selected — kept as a dedicated field (`l`) but must NOT include effects.
+      // Control-state is expressed via runtime activators (e.g. `-s -a`) and palette/state rules.
+      // Effects that happen to be authored under `selected*` interaction states must remain effects
+      // and therefore must stay in `e` buckets (opt-in via component props like `radius`).
       const selectedSet = new Set<string>();
 
       // decorations → d
@@ -104,13 +107,13 @@ export function generateClassNamesMapSplit(
         for (const st of Object.keys(el.effects)) {
           const arr = (el.effects as any)[st] as string[] | undefined;
           if (!arr || arr.length === 0) continue;
-          const isSelectedState = st === 'selected' || st.startsWith('selected:');
           for (const key of arr) {
             const cls = shortenMap[key] ?? key;
-            if (isSelectedState) {
-              selectedSet.add(cls);
-              continue;
-            }
+
+            // IMPORTANT:
+            // Do not treat `selected*` interaction states as control-state (`l`).
+            // `l` is reserved for control-state-only classes, while interaction-driven changes
+            // (including selected-specific effects like MD3 animated corners) remain effects.
 
             // Bucket by effect family inferred from the style key prefix.
             // Keep single-letter bucket keys for minimal payload.
@@ -250,6 +253,8 @@ export function generateClassNamesMapSplit(
                 ])
               )
             : undefined,
+        // Intentionally empty until we have a dedicated source of control-state-only classes.
+        // Do not backfill this from `effects.selected*`.
         l: selectedSet.size ? Array.from(selectedSet).join(' ') : undefined,
         s:
           sMap.size > 0

@@ -137,7 +137,7 @@ export function Button() {
               'primary',
               'vivid',
               'selected',
-              <KButton emphasis="vivid" semantic="primary" controlState={true}>
+              <KButton emphasis="vivid" semantic="primary" controlState={true} radius={true}>
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Selected
@@ -214,7 +214,7 @@ export function Button() {
               'primary',
               'subtle',
               'selected',
-              <KButton emphasis="subtle" semantic="primary" controlState={true}>
+              <KButton emphasis="subtle" semantic="primary" controlState={true} radius={true}>
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Selected
