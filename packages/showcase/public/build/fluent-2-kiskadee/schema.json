@@ -20,6 +20,12 @@
     "bp:lg:3": 1792,
     "bp:lg:4": 2432
   },
+  "global": {
+    "focus": {
+      "width": 2,
+      "offset": 1
+    }
+  },
   "themeTokens": {
     "palettes": {
       "default": {

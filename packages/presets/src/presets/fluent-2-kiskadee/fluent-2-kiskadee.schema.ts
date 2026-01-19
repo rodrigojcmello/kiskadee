@@ -22,6 +22,12 @@ export const schema: Schema<Segments> = {
   author: 'Kiskadee',
   breakpoints,
   colors: schemaColors,
+  global: {
+    focus: {
+      width: 2,
+      offset: 1
+    }
+  },
   themeTokens: {
     palettes: {
       default: {
