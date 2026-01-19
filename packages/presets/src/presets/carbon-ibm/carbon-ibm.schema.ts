@@ -17,6 +17,10 @@ export const schema: Schema<Segments> = {
   global: {
     fonts: {
       body: ['IBM Plex Sans', 'sans-serif']
+    },
+    focus: {
+      width: 1,
+      offset: -3
     }
   },
   themeTokens: {
@@ -24,8 +28,8 @@ export const schema: Schema<Segments> = {
       default: {
         light: {
           // Global theme tokens can reference primitive colors directly.
-          background: color(schemaContext, 'default', 'l', primitive('black', 'v1'), 4),
-          focusColor: color(schemaContext, 'default', 'l', primitive('blue', 'v1'), 50)
+          background: color(schemaContext, 'default', 'l', 'primitive.black.v1', 4),
+          focusColor: color(schemaContext, 'default', 'l', 'primitive.black.v1', 0)
         }
       }
     }

@@ -45,10 +45,8 @@ export const schema: Schema<Segments> = {
       body: ['Roboto', 'sans-serif']
     },
     focus: {
-      // Defaults match `packages/components/react/global.kiskadee.scss` fallback values.
-      // Consumers can tune these per design system without tying them to segment/theme.
       width: 2,
-      offset: 1
+      offset: 2
     }
   },
   themeTokens: {

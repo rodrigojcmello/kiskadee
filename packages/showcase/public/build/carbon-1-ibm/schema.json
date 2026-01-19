@@ -26,6 +26,10 @@
         "IBM Plex Sans",
         "sans-serif"
       ]
+    },
+    "focus": {
+      "width": 1,
+      "offset": -3
     }
   },
   "themeTokens": {
@@ -39,9 +43,9 @@
             1
           ],
           "focusColor": [
-            219.16,
-            99.17,
-            52.75,
+            0,
+            0,
+            100,
             1
           ]
         }
