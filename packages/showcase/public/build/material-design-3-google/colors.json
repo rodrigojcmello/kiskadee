@@ -3,8 +3,8 @@
     "purple": {
       "v1": {
         "solid": {
-          "light": "purple.light.json",
-          "dark": "purple.light.json"
+          "light": "purple.v1.light.json",
+          "dark": "purple.v1.light.json"
         }
       },
       "dynamic": {

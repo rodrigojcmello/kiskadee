@@ -10,7 +10,7 @@ import type {
   LightTrackTones
 } from '@kiskadee/core';
 
-generateColorScaleFromColorsArtifact(['#000']);
+generateColorScaleFromColorsArtifact(['#c8b3fd', '#675496', '#4e3b7b']);
 
 function hexToHSLA(hex: string): HSLA {
   // Normalize hex: remove # and expand 3-digit to 6-digit

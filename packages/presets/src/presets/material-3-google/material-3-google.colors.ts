@@ -7,7 +7,7 @@ import type {
 } from '@kiskadee/core';
 import dynamicColor from '../dynamic.color';
 import blackLight from './colors/black.light';
-import purpleLight from './colors/purple.light';
+import purpleV1Light from './colors/purple.v1.light';
 
 // -------------------------------------------------------------------------------------------------
 // 3-layer color architecture (Primitive → Global semantics → Component intents)
@@ -19,12 +19,17 @@ export const primitiveColors = {
   purple: {
     v1: {
       solid: {
-        light: purpleLight,
-        dark: purpleLight
+        light: purpleV1Light,
+        dark: purpleV1Light
       }
     },
     // Used by the `dynamic` segment override.
-    dynamic: { solid: { light: dynamicColor, dark: dynamicColor } }
+    dynamic: {
+      solid: {
+        light: dynamicColor,
+        dark: dynamicColor
+      }
+    }
   },
   black: {
     v1: {
