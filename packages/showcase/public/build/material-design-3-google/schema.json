@@ -20,11 +20,17 @@
     "bp:lg:3": 1792,
     "bp:lg:4": 2432
   },
-  "fonts": {
-    "body": [
-      "Roboto",
-      "sans-serif"
-    ]
+  "global": {
+    "fonts": {
+      "body": [
+        "Roboto",
+        "sans-serif"
+      ]
+    },
+    "focus": {
+      "width": 2,
+      "offset": 1
+    }
   },
   "themeTokens": {
     "palettes": {

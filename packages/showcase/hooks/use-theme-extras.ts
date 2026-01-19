@@ -2,11 +2,15 @@ import type { ThemeMode } from '@kiskadee/core';
 import { useEffect, useState } from 'react';
 import { extraMaps, paletteIndex } from '@/registry/design-systems.registry';
 import type { DesignSystemKey } from '@/registry/registry-utils';
+import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 
 type BackgroundTones = Partial<Record<ThemeMode, string | undefined>>;
 
 // Cache for focusColor values loaded from extra.<segment>.<theme>.kiskadee.json
 const focusRingCache: Partial<Record<string, string>> = {};
+
+// Cache for global focus metrics loaded from <ds>/global.kiskadee.json
+const focusGlobalCache: Partial<Record<string, { width?: number; offset?: number }>> = {};
 
 export function useThemeExtras({
   designSystem,
@@ -19,7 +23,45 @@ export function useThemeExtras({
 }) {
   const [backgroundsByTheme, setBackgroundsByTheme] = useState<BackgroundTones>({});
 
-  // Load focusColor from extra artifacts registry and expose as CSS custom property.
+  // Load global focus metrics and expose as CSS custom properties.
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    let cancelled = false;
+
+    const loadFocusGlobals = async () => {
+      const dsKey = String(designSystem);
+      if (!dsKey) return;
+
+      let focus = focusGlobalCache[dsKey];
+      if (!focus) {
+        try {
+          const json = await loadJsonFromBuild<{ focus?: { width?: number; offset?: number } }>(
+            `${dsKey}/global.kiskadee.json`,
+            { required: false, fallback: {} }
+          );
+          focus = json.focus;
+          focusGlobalCache[dsKey] = focus ?? {};
+        } catch {
+          focusGlobalCache[dsKey] = {};
+        }
+      }
+
+      if (cancelled) return;
+
+      const root = document.documentElement;
+      if (focus?.width !== undefined) root.style.setProperty('--k-focus-width', String(focus.width));
+      if (focus?.offset !== undefined) root.style.setProperty('--k-focus-offset', String(focus.offset));
+    };
+
+    void loadFocusGlobals();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [designSystem]);
+
+  // Load focus color from extra artifacts registry and expose as CSS custom property.
   useEffect(() => {
     if (typeof document === 'undefined') return;
 
@@ -49,7 +91,7 @@ export function useThemeExtras({
       if (cancelled) return;
 
       const root = document.documentElement;
-      root.style.setProperty('--k-focus-ring-color', hex ?? '#0059b1');
+      root.style.setProperty('--k-focus-color', hex ?? '#0059b1');
     };
 
     void loadFocusRing();

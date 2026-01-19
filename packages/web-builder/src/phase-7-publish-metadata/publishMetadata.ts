@@ -413,8 +413,8 @@ export async function publishMetadata(params: {
 
   // Publish global font metadata directly from the schema. This keeps the
   // manifest deterministic and independent from the order in which build phases
-  // emit artifacts such as "fonts.kiskadee.json".
-  const fonts = schema.fonts as SchemaFonts | undefined;
+  // emit artifacts such as "global.kiskadee.json".
+  const fonts = schema.global?.fonts as SchemaFonts | undefined;
   if (fonts?.body) {
     const body = fonts.body as ManifestFontStack;
     const heading = (fonts.heading ?? fonts.body) as ManifestFontStack;

@@ -69,13 +69,13 @@ export async function writeExtraArtifacts(params: {
 
   const buildDir = getBuildDir(outDirSlug);
 
-  // 1) Global fonts artifact (fonts.kiskadee.json)
+  // 1) Global artifact (global.kiskadee.json)
   //
   //    This file is optional and only written when the schema defines
-  //    global fonts. It is meant as descriptive metadata capturing the
-  //    intended body/heading/code font stacks for the design system.
-  //    Runtime consumers are free to ignore or override these values.
-  const fonts = schema.fonts as SchemaFonts | undefined;
+  //    any global data (fonts, focus metrics, ...). It is meant as descriptive
+  //    metadata capturing global design system intentions.
+  const fonts = schema.global?.fonts as SchemaFonts | undefined;
+  const focus = schema.global?.focus as { width?: number; offset?: number } | undefined;
 
   function toCssFontFamilyString(value: FontStack): string | null {
     const css = toCssFontFamily(value);
@@ -87,18 +87,34 @@ export async function writeExtraArtifacts(params: {
     fonts && fonts.heading ? toCssFontFamilyString(fonts.heading as FontStack) : null;
   const headingCss = headingCssRaw ?? bodyCss;
 
-  if (bodyCss) {
+  const hasFonts = Boolean(bodyCss);
+  const hasFocus = Boolean(focus && (focus.width !== undefined || focus.offset !== undefined));
+
+  if (hasFonts || hasFocus) {
     await mkdir(buildDir, { recursive: true });
-    const fontsFilePath = resolve(buildDir, 'fonts.kiskadee.json');
-    const fontsPayload = {
-      fonts: {
+    const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
+
+    const globalPayload: {
+      fonts?: { body: string; heading?: string };
+      focus?: { width?: number; offset?: number };
+    } = {};
+
+    if (hasFonts && bodyCss) {
+      globalPayload.fonts = {
         body: bodyCss,
         ...(headingCss ? { heading: headingCss } : {})
-      }
-    } satisfies { fonts: { body: string; heading?: string } };
+      };
+    }
 
-    await writeFile(fontsFilePath, JSON.stringify(fontsPayload, null, 2), 'utf8');
-    console.log(`[web-builder] Fonts artifact written to: ${fontsFilePath}`);
+    if (hasFocus && focus) {
+      globalPayload.focus = {
+        ...(focus.width !== undefined ? { width: focus.width } : {}),
+        ...(focus.offset !== undefined ? { offset: focus.offset } : {})
+      };
+    }
+
+    await writeFile(globalFilePath, JSON.stringify(globalPayload, null, 2), 'utf8');
+    console.log(`[web-builder] Global artifact written to: ${globalFilePath}`);
   }
 
   if (!schema.themeTokens || !schema.themeTokens.palettes) {

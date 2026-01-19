@@ -14,8 +14,10 @@ export const schema: Schema<Segments> = {
   author: 'IBM',
   breakpoints,
   colors: schemaColors,
-  fonts: {
-    body: ['IBM Plex Sans', 'sans-serif']
+  global: {
+    fonts: {
+      body: ['IBM Plex Sans', 'sans-serif']
+    }
   },
   themeTokens: {
     palettes: {

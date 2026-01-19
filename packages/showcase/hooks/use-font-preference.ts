@@ -12,7 +12,7 @@ async function loadFontsForDesignSystem(designSystemSlug: string): Promise<{
 } | null> {
   try {
     const json = await loadJsonFromBuild<{ fonts?: { body?: string; heading?: string } }>(
-      `${designSystemSlug}/fonts.kiskadee.json`,
+      `${designSystemSlug}/global.kiskadee.json`,
       { required: false, fallback: {} }
     );
 

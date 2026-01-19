@@ -102,6 +102,18 @@ export type SchemaFonts = {
   heading?: SchemaFontStack;
 };
 
+export type FocusGlobalTokens = {
+  /** Outline width in px (unitless number in schema/artifacts; consumers append px). */
+  width?: number;
+  /** Outline offset in px (unitless number; may be negative to simulate inset). */
+  offset?: number;
+};
+
+export type SchemaGlobalTokens = {
+  fonts?: SchemaFonts;
+  focus?: FocusGlobalTokens;
+};
+
 export type ThemeTokens<TSegmentName extends SegmentName = never> = Partial<{
   palettes: Partial<
     Record<
@@ -121,14 +133,11 @@ export type ThemeTokens<TSegmentName extends SegmentName = never> = Partial<{
 
 export type Schema<TSegmentName extends SegmentName = never> = SchemaMetadata & {
   /**
-   * Optional, global font configuration for the schema.
+   * Global tokens independent of segment/theme (web payload optimization).
    *
-   * This is descriptive metadata that captures the font stacks originally
-   * envisioned for the design system (body/heading/code). Runtime consumers
-   * may choose to honor or override these values when wiring CSS variables
-   * or platform-specific font settings.
+   * Example: focus outline width/offset and global font stacks.
    */
-  fonts?: SchemaFonts;
+  global?: SchemaGlobalTokens;
   /**
    * Optional 3-layer color configuration.
    *

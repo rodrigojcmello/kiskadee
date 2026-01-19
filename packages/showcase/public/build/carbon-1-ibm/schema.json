@@ -20,11 +20,13 @@
     "bp:lg:3": 1792,
     "bp:lg:4": 2432
   },
-  "fonts": {
-    "body": [
-      "IBM Plex Sans",
-      "sans-serif"
-    ]
+  "global": {
+    "fonts": {
+      "body": [
+        "IBM Plex Sans",
+        "sans-serif"
+      ]
+    }
   },
   "themeTokens": {
     "palettes": {
