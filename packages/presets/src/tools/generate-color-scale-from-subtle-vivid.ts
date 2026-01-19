@@ -10,7 +10,14 @@ import type {
   LightTrackTones
 } from '@kiskadee/core';
 
-generateColorScaleFromColorsArtifact(['#c8b3fd', '#675496', '#4e3b7b']);
+generateColorScaleFromColorsArtifact([
+  '#c8b3fd',
+  '#ac98e0',
+  '#675496',
+  '#4e3b7b',
+  '#402f67',
+  '#1e0a42'
+]);
 
 function hexToHSLA(hex: string): HSLA {
   // Normalize hex: remove # and expand 3-digit to 6-digit
@@ -88,22 +95,55 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
-function nearestIntegerTone0To30(darkness: number): LightTrackTones {
-  const snapped = Math.round(darkness);
-  return clamp(snapped, 0, 30) as LightTrackTones;
+const EMITTED_SUBTLE_TONES: LightTrackTones[] = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 25, 30
+];
+
+const EMITTED_VIVID_TONES: DarkTrackTones[] = [
+  35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100
+];
+
+function snapToNearestEmittedTone<T extends number>(tone: number, emitted: readonly T[]): T {
+  if (emitted.length === 0) {
+    throw new Error('Invalid configuration: emitted tones list must not be empty.');
+  }
+
+  const first = emitted[0];
+  if (first === undefined) {
+    throw new Error('Invalid configuration: emitted tones list must not be empty.');
+  }
+
+  let best = first;
+  let bestDistance = Math.abs(tone - best);
+
+  for (let i = 1; i < emitted.length; i += 1) {
+    const candidate = emitted[i];
+    if (candidate === undefined) continue;
+    const distance = Math.abs(tone - candidate);
+    if (distance < bestDistance) {
+      best = candidate;
+      bestDistance = distance;
+    }
+  }
+
+  return best;
 }
 
-function nearestTone35To100Step5(darkness: number): DarkTrackTones {
+function nearestEmittedSubtleTone(darkness: number): LightTrackTones {
+  const clamped = clamp(darkness, 0, 30);
+  return snapToNearestEmittedTone(clamped, EMITTED_SUBTLE_TONES);
+}
+
+function nearestEmittedVividTone(darkness: number): DarkTrackTones {
   const clamped = clamp(darkness, 35, 100);
-  const snapped = Math.round(clamped / 5) * 5;
-  return clamp(snapped, 35, 100) as DarkTrackTones;
+  return snapToNearestEmittedTone(clamped, EMITTED_VIVID_TONES);
 }
 
 type SupportedTone = LightTrackTones | DarkTrackTones;
 
 function snapSupportedTone(darkness: number): SupportedTone {
-  if (darkness <= 30) return nearestIntegerTone0To30(darkness);
-  return nearestTone35To100Step5(darkness);
+  if (darkness <= 30) return nearestEmittedSubtleTone(darkness);
+  return nearestEmittedVividTone(darkness);
 }
 
 function canonicalLightnessAtTone(tone: number): number {
@@ -134,8 +174,8 @@ export function generateColorScaleFromSubtleVivid(
   const subtleDarkness = 100 - subtleLightness;
   const vividDarkness = 100 - vividLightness;
 
-  const subtleTone = nearestIntegerTone0To30(subtleDarkness);
-  const vividTone = nearestTone35To100Step5(vividDarkness);
+  const subtleTone = nearestEmittedSubtleTone(subtleDarkness);
+  const vividTone = nearestEmittedVividTone(vividDarkness);
 
   const [subtleHue, subtleSaturation, , subtleAlpha] = subtleInput;
   const [vividHue, vividSaturation, , vividAlpha] = vividInput;
@@ -163,17 +203,12 @@ export function generateColorScaleFromSubtleVivid(
   const subtle: ColorScaleLight = {};
   const vivid: ColorScaleDark = {};
 
-  // Subtle track: 0–15 (step 1), then 20, 25, 30
-  for (let tone = 0; tone <= 15; tone += 1) {
-    subtle[tone as LightTrackTones] = resolveHslaAtTone(tone);
+  for (const tone of EMITTED_SUBTLE_TONES) {
+    subtle[tone] = resolveHslaAtTone(tone);
   }
-  subtle[20] = resolveHslaAtTone(20);
-  subtle[25] = resolveHslaAtTone(25);
-  subtle[30] = resolveHslaAtTone(30);
 
-  // Vivid track: 35–100 (step 5)
-  for (let tone = 35; tone <= 100; tone += 5) {
-    vivid[tone as DarkTrackTones] = resolveHslaAtTone(tone);
+  for (const tone of EMITTED_VIVID_TONES) {
+    vivid[tone] = resolveHslaAtTone(tone);
   }
 
   // Absolute extremes
@@ -303,17 +338,12 @@ export function generateColorScaleFromColors(hexColors: string[]): EmphasisLevel
   const subtle: ColorScaleLight = {};
   const vivid: ColorScaleDark = {};
 
-  // Subtle track: 0–15 (step 1), then 20, 25, 30
-  for (let tone = 0; tone <= 15; tone += 1) {
-    subtle[tone as LightTrackTones] = resolveHslaAtTone(tone);
+  for (const tone of EMITTED_SUBTLE_TONES) {
+    subtle[tone] = resolveHslaAtTone(tone);
   }
-  subtle[20] = resolveHslaAtTone(20);
-  subtle[25] = resolveHslaAtTone(25);
-  subtle[30] = resolveHslaAtTone(30);
 
-  // Vivid track: 35–100 (step 5)
-  for (let tone = 35; tone <= 100; tone += 5) {
-    vivid[tone as DarkTrackTones] = resolveHslaAtTone(tone);
+  for (const tone of EMITTED_VIVID_TONES) {
+    vivid[tone] = resolveHslaAtTone(tone);
   }
 
   // Absolute extremes (use alpha from the first stop for consistency)
@@ -330,28 +360,54 @@ export function generateColorScaleFromSubtleVividArtifact(
 ): EmphasisLevel {
   const tracks = generateColorScaleFromSubtleVivid(subtleHexColor, vividHexColor);
 
+  const subtleInput = hexToHSLA(subtleHexColor);
+  const vividInput = hexToHSLA(vividHexColor);
+
+  const subtleLightness = subtleInput[2];
+  const vividLightness = vividInput[2];
+
+  const subtleTone = nearestEmittedSubtleTone(100 - subtleLightness);
+  const vividTone = nearestEmittedVividTone(100 - vividLightness);
+
+  const toneToInputMeta = new Map<number, { hex: string; lightness: number }[]>([
+    [subtleTone as number, [{ hex: subtleHexColor, lightness: subtleLightness }]],
+    [vividTone as number, [{ hex: vividHexColor, lightness: vividLightness }]]
+  ]);
+
+  const resolveInputCommentForTone = (tone: number): string => {
+    const entries = toneToInputMeta.get(tone);
+    if (!entries || entries.length === 0) return '';
+
+    const canonicalLightness = canonicalLightnessAtTone(tone);
+    const isExact = entries.every(
+      (e) => Math.abs(Number(e.lightness.toFixed(2)) - canonicalLightness) <= 0.01
+    );
+    const marker = isExact ? 'input=' : 'input≈';
+    const pretty = entries.map((e) => `${e.hex} (L=${Number(e.lightness.toFixed(2))})`).join(', ');
+
+    return ` // ${marker}: ${pretty}`;
+  };
+
   const subtleLines: string[] = [];
   const vividLines: string[] = [];
 
   subtleLines.push('  subtle: {');
-  subtleLines.push('    // Subtle track: 0–15 (every 1%), then 20, 25, 30');
-  const subtleKeys = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 25, 30] as const;
-  for (const tone of subtleKeys) {
-    const color = tracks.subtle[tone as LightTrackTones];
+  for (const tone of EMITTED_SUBTLE_TONES) {
+    const color = tracks.subtle[tone];
     if (!color) continue;
-    subtleLines.push(`    ${tone}: [${(color as HSLA).join(', ')}],`);
+    subtleLines.push(
+      `    ${tone}: [${(color as HSLA).join(', ')}],${resolveInputCommentForTone(tone)}`
+    );
   }
   subtleLines.push('  },');
 
   vividLines.push('  vivid: {');
-  vividLines.push(
-    '    // Vivid track: 35–100 every 5% darkness (35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100)'
-  );
-  const vividKeys: DarkTrackTones[] = [35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
-  for (const tone of vividKeys) {
+  for (const tone of EMITTED_VIVID_TONES) {
     const color = tracks.vivid[tone];
     if (!color) continue;
-    vividLines.push(`    ${tone}: [${(color as HSLA).join(', ')}],`);
+    vividLines.push(
+      `    ${tone}: [${(color as HSLA).join(', ')}],${resolveInputCommentForTone(tone)}`
+    );
   }
   vividLines.push('  }');
 
@@ -371,28 +427,50 @@ export function generateColorScaleFromSubtleVividArtifact(
 export function generateColorScaleFromColorsArtifact(hexColors: string[]): EmphasisLevel {
   const tracks = generateColorScaleFromColors(hexColors);
 
+  const toneToInputMeta = new Map<number, { hex: string; lightness: number }[]>();
+  for (const hex of hexColors) {
+    const hsla = hexToHSLA(hex);
+    const lightness = hsla[2];
+    const tone = snapSupportedTone(100 - lightness) as number;
+    const list = toneToInputMeta.get(tone) ?? [];
+    list.push({ hex, lightness });
+    toneToInputMeta.set(tone, list);
+  }
+
+  const resolveInputCommentForTone = (tone: number): string => {
+    const entries = toneToInputMeta.get(tone);
+    if (!entries || entries.length === 0) return '';
+
+    const canonicalLightness = canonicalLightnessAtTone(tone);
+    const isExact = entries.every(
+      (e) => Math.abs(Number(e.lightness.toFixed(2)) - canonicalLightness) <= 0.01
+    );
+    const marker = isExact ? 'input=' : 'input≈';
+    const pretty = entries.map((e) => `${e.hex} (L=${Number(e.lightness.toFixed(2))})`).join(', ');
+
+    return ` // ${marker}: ${pretty}`;
+  };
+
   const subtleLines: string[] = [];
   const vividLines: string[] = [];
 
   subtleLines.push('  subtle: {');
-  subtleLines.push('    // Subtle track: 0–15 (every 1%), then 20, 25, 30');
-  const subtleKeys = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 25, 30] as const;
-  for (const tone of subtleKeys) {
-    const color = tracks.subtle[tone as LightTrackTones];
+  for (const tone of EMITTED_SUBTLE_TONES) {
+    const color = tracks.subtle[tone];
     if (!color) continue;
-    subtleLines.push(`    ${tone}: [${(color as HSLA).join(', ')}],`);
+    subtleLines.push(
+      `    ${tone}: [${(color as HSLA).join(', ')}],${resolveInputCommentForTone(tone)}`
+    );
   }
   subtleLines.push('  },');
 
   vividLines.push('  vivid: {');
-  vividLines.push(
-    '    // Vivid track: 35–100 every 5% darkness (35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100)'
-  );
-  const vividKeys: DarkTrackTones[] = [35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
-  for (const tone of vividKeys) {
+  for (const tone of EMITTED_VIVID_TONES) {
     const color = tracks.vivid[tone];
     if (!color) continue;
-    vividLines.push(`    ${tone}: [${(color as HSLA).join(', ')}],`);
+    vividLines.push(
+      `    ${tone}: [${(color as HSLA).join(', ')}],${resolveInputCommentForTone(tone)}`
+    );
   }
   vividLines.push('  }');
 
