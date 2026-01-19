@@ -6,7 +6,7 @@ import type {
   SchemaColors
 } from '@kiskadee/core';
 import dynamicColor from '../dynamic.color';
-import blackLight from './colors/black.light';
+import blackLight from './colors/black.v1.light';
 import purpleV1Light from './colors/purple.v1.light';
 
 // -------------------------------------------------------------------------------------------------

@@ -17,8 +17,8 @@
     "black": {
       "v1": {
         "solid": {
-          "light": "black.light.json",
-          "dark": "black.light.json"
+          "light": "black.v1.light.json",
+          "dark": "black.v1.light.json"
         }
       }
     }

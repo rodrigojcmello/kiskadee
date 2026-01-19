@@ -10,15 +10,6 @@ import type {
   LightTrackTones
 } from '@kiskadee/core';
 
-generateColorScaleFromColorsArtifact([
-  '#c8b3fd',
-  '#ac98e0',
-  '#675496',
-  '#4e3b7b',
-  '#402f67',
-  '#1e0a42'
-]);
-
 function hexToHSLA(hex: string): HSLA {
   // Normalize hex: remove # and expand 3-digit to 6-digit
   let cleanHex = hex.trim().replace(/^#/, '').toLowerCase();
@@ -487,3 +478,5 @@ export function generateColorScaleFromColorsArtifact(hexColors: string[]): Empha
 
   return tracks;
 }
+
+generateColorScaleFromColorsArtifact(['#000']);

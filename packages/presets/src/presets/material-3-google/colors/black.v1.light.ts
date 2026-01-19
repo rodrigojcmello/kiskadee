@@ -4,7 +4,6 @@ import type { EmphasisLevel } from '@kiskadee/core';
 
 export default {
   subtle: {
-    // Subtle track: 0–15 (every 1%), then 20, 25, 30
     0: [0, 0, 100, 1],
     1: [0, 0, 99, 1],
     2: [0, 0, 98, 1],
@@ -26,7 +25,6 @@ export default {
     30: [0, 0, 70, 1]
   },
   vivid: {
-    // Vivid track: 35–100 every 5% darkness (35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100)
     35: [0, 0, 65, 1],
     40: [0, 0, 60, 1],
     45: [0, 0, 55, 1],
@@ -40,6 +38,6 @@ export default {
     85: [0, 0, 15, 1],
     90: [0, 0, 10, 1],
     95: [0, 0, 5, 1],
-    100: [0, 0, 0, 1]
+    100: [0, 0, 0, 1] // input=: #000 (L=0)
   }
 } as EmphasisLevel;
