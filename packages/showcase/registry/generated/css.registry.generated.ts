@@ -66,6 +66,8 @@ export const cssPaths = {
       'default|light': '/build/material-design-3-kiskadee/default.light.kiskadee.css',
       'dynamic|dark': '/build/material-design-3-kiskadee/dynamic.dark.kiskadee.css',
       'dynamic|light': '/build/material-design-3-kiskadee/dynamic.light.kiskadee.css',
+      'modern|dark': '/build/material-design-3-kiskadee/modern.dark.kiskadee.css',
+      'modern|light': '/build/material-design-3-kiskadee/modern.light.kiskadee.css',
     }
   },
 } as const;

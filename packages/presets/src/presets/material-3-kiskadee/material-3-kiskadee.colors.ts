@@ -1,10 +1,15 @@
-import type { ComponentIntents, SchemaColors } from '@kiskadee/core';
+import type {
+  ComponentIntents,
+  GlobalSemanticsBySegment,
+  PrimitiveColors,
+  SchemaColors
+} from '@kiskadee/core';
 import { type DeepOverride, deepMerge } from '../../utils/deepMerge';
 import {
   componentIntents as baseComponentIntents,
-  globalSemantics,
-  globalSemanticsBySegment,
-  primitiveColors
+  globalSemanticsBySegment as baseGlobalSemanticsBySegment,
+  primitiveColors as basePrimitiveColors,
+  globalSemantics
 } from '../material-3-google/material-3-google.colors';
 
 // Material 3 (Kiskadee): derived from the official Google preset with minimal overrides.
@@ -15,6 +20,49 @@ const componentIntentsPatch = {
     destructive: 'redLike'
   }
 } as const satisfies DeepOverride<typeof baseComponentIntents>;
+
+const primitiveColorsPatch = {
+  purple: {
+    v1: {
+      gradient: {
+        angle: 180,
+        stops: [
+          { primitive: 'primitive.purple.v1', position: 0 },
+          { primitive: 'primitive.purple.v2', position: 100 }
+        ]
+      }
+    }
+  },
+  black: {
+    v1: {
+      gradient: {
+        angle: 180,
+        stops: [
+          { primitive: 'primitive.black.v1', position: 0 },
+          { primitive: 'primitive.black.v1', position: 100 }
+        ]
+      }
+    }
+  }
+} as const satisfies DeepOverride<PrimitiveColors>;
+
+export const primitiveColors = deepMerge(
+  basePrimitiveColors as PrimitiveColors,
+  primitiveColorsPatch
+) satisfies PrimitiveColors;
+
+const globalSemanticsBySegmentPatch = {
+  modern: {
+    meta: {
+      name: 'Material Design - Modern'
+    }
+  }
+} as const satisfies DeepOverride<GlobalSemanticsBySegment>;
+
+export const globalSemanticsBySegment = deepMerge(
+  baseGlobalSemanticsBySegment as GlobalSemanticsBySegment,
+  globalSemanticsBySegmentPatch
+) satisfies GlobalSemanticsBySegment;
 
 export const componentIntents = deepMerge(
   baseComponentIntents,

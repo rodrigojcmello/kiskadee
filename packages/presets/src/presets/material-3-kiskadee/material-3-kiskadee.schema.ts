@@ -4,7 +4,7 @@ import { createPresetColorGetter } from '../../utils/presetColor';
 import { schema as baseSchema } from '../material-3-google/material-3-google.schema';
 import { schemaColors } from './material-3-kiskadee.colors';
 
-const segmentNames = ['default', 'dynamic'] as const;
+const segmentNames = ['default', 'modern', 'dynamic'] as const;
 type SegmentName = (typeof segmentNames)[number];
 
 const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
@@ -12,7 +12,7 @@ const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, '
 const c = createPresetColorGetter<SegmentName>(schemaContext);
 
 // The `Schema` generic represents extra segment names beyond the built-ins (`default` and optional `dynamic`).
-type Segments = never;
+type Segments = 'modern';
 
 const patch = {
   name: 'Material Design',
@@ -20,11 +20,139 @@ const patch = {
   version: [3, 0, 0],
   author: 'Kiskadee',
   colors: schemaColors,
+  themeTokens: {
+    palettes: {
+      modern: {
+        light: {
+          background: c('modern', 'l', 'primitive.black.v1', 4),
+          focusColor: c('modern', 'l', 'primitive.purple.v2', 70)
+        },
+        dark: {
+          background: c('modern', 'd', 'primitive.black.v1', 85),
+          focusColor: c('modern', 'd', 'primitive.purple.v1', 60)
+        }
+      }
+    }
+  },
   components: {
     button: {
       elements: {
         e1: {
           palettes: {
+            modern: {
+              light: {
+                boxColor: {
+                  primary: {
+                    subtle: {
+                      rest: c('modern', 'l', 'button.primary', 10),
+                      hover: c('modern', 'l', 'button.primary', 8),
+                      pressed: c('modern', 'l', 'button.primary', 13),
+                      disabled: c('modern', 'l', 'button.neutral', 10),
+                      focus: c('modern', 'l', 'button.primary', 10),
+                      selected: {
+                        rest: c('modern', 'l', 'button.primary', 50),
+                        hover: c('modern', 'l', 'button.primary', 40),
+                        pressed: c('modern', 'l', 'button.primary', 60)
+                      }
+                    },
+                    vivid: {
+                      rest: c('modern', 'l', 'button.primary.gradient', 25),
+                      hover: c('modern', 'l', 'button.primary.gradient', 20),
+                      pressed: c('modern', 'l', 'button.primary.gradient', 30),
+                      disabled: c('modern', 'l', 'button.neutral', 10),
+                      focus: c('modern', 'l', 'button.primary.gradient', 5),
+                      selected: {
+                        rest: c('modern', 'l', 'button.primary.gradient', 80),
+                        hover: c('modern', 'l', 'button.primary.gradient', 70),
+                        pressed: c('modern', 'l', 'button.primary.gradient', 90)
+                      }
+                    }
+                  },
+                  destructive: {
+                    subtle: {
+                      rest: c('modern', 'l', 'button.destructive', 10),
+                      hover: c('modern', 'l', 'button.destructive', 8),
+                      pressed: c('modern', 'l', 'button.destructive', 13),
+                      disabled: c('modern', 'l', 'button.neutral', 10),
+                      focus: c('modern', 'l', 'button.destructive', 10),
+                      selected: {
+                        rest: c('modern', 'l', 'button.destructive', 50),
+                        hover: c('modern', 'l', 'button.destructive', 40),
+                        pressed: c('modern', 'l', 'button.destructive', 60)
+                      }
+                    },
+                    vivid: {
+                      rest: c('modern', 'l', 'button.destructive', 50),
+                      hover: c('modern', 'l', 'button.destructive', 40),
+                      pressed: c('modern', 'l', 'button.destructive', 60),
+                      disabled: c('modern', 'l', 'button.neutral', 10),
+                      focus: c('modern', 'l', 'button.destructive', 50),
+                      selected: {
+                        rest: c('modern', 'l', 'button.destructive', 10),
+                        hover: c('modern', 'l', 'button.destructive', 8),
+                        pressed: c('modern', 'l', 'button.destructive', 20)
+                      }
+                    }
+                  }
+                }
+              },
+              dark: {
+                boxColor: {
+                  primary: {
+                    subtle: {
+                      rest: c('modern', 'd', 'button.primary', 50),
+                      hover: c('modern', 'd', 'button.primary', 40),
+                      pressed: c('modern', 'd', 'button.primary', 60),
+                      disabled: c('modern', 'd', 'button.neutral', 10),
+                      focus: c('modern', 'd', 'button.primary', 50),
+                      selected: {
+                        rest: c('modern', 'd', 'button.primary', 10),
+                        hover: c('modern', 'd', 'button.primary', 8),
+                        pressed: c('modern', 'd', 'button.primary', 20)
+                      }
+                    },
+                    vivid: {
+                      rest: c('modern', 'd', 'button.primary.gradient', 25),
+                      hover: c('modern', 'd', 'button.primary.gradient', 60),
+                      pressed: c('modern', 'd', 'button.primary.gradient', 90),
+                      disabled: c('modern', 'd', 'button.neutral', 10),
+                      focus: c('modern', 'd', 'button.primary.gradient', 70),
+                      selected: {
+                        rest: c('modern', 'd', 'button.primary.gradient', 80),
+                        hover: c('modern', 'd', 'button.primary.gradient', 70),
+                        pressed: c('modern', 'd', 'button.primary.gradient', 90)
+                      }
+                    }
+                  },
+                  destructive: {
+                    subtle: {
+                      rest: c('modern', 'd', 'button.destructive', 50),
+                      hover: c('modern', 'd', 'button.destructive', 40),
+                      pressed: c('modern', 'd', 'button.destructive', 60),
+                      disabled: c('modern', 'd', 'button.neutral', 10),
+                      focus: c('modern', 'd', 'button.destructive', 50),
+                      selected: {
+                        rest: c('modern', 'd', 'button.destructive', 10),
+                        hover: c('modern', 'd', 'button.destructive', 8),
+                        pressed: c('modern', 'd', 'button.destructive', 20)
+                      }
+                    },
+                    vivid: {
+                      rest: c('modern', 'd', 'button.destructive', 50),
+                      hover: c('modern', 'd', 'button.destructive', 40),
+                      pressed: c('modern', 'd', 'button.destructive', 60),
+                      disabled: c('modern', 'd', 'button.neutral', 10),
+                      focus: c('modern', 'd', 'button.destructive', 50),
+                      selected: {
+                        rest: c('modern', 'd', 'button.destructive', 10),
+                        hover: c('modern', 'd', 'button.destructive', 8),
+                        pressed: c('modern', 'd', 'button.destructive', 20)
+                      }
+                    }
+                  }
+                }
+              }
+            },
             default: {
               light: {
                 boxColor: {
@@ -93,6 +221,112 @@ const patch = {
         },
         e2: {
           palettes: {
+            modern: {
+              light: {
+                textColor: {
+                  primary: {
+                    subtle: {
+                      rest: c('modern', 'l', 'button.neutral', 70),
+                      disabled: {
+                        ref: c('modern', 'l', 'button.neutral', 60)
+                      },
+                      selected: {
+                        rest: {
+                          ref: c('modern', 'l', 'button.neutral', 0)
+                        }
+                      }
+                    },
+                    vivid: {
+                      rest: c('modern', 'l', primitive('black', 'v1'), 0),
+                      disabled: {
+                        ref: c('modern', 'l', 'button.neutral', 60)
+                      },
+                      selected: {
+                        rest: {
+                          ref: c('modern', 'l', 'button.neutral', 70)
+                        }
+                      }
+                    }
+                  },
+                  destructive: {
+                    subtle: {
+                      rest: c('modern', 'l', 'button.destructive', 70),
+                      disabled: {
+                        ref: c('modern', 'l', 'button.neutral', 60)
+                      },
+                      selected: {
+                        rest: {
+                          ref: c('modern', 'l', 'button.neutral', 0)
+                        }
+                      }
+                    },
+                    vivid: {
+                      rest: c('modern', 'l', 'button.neutral', 0),
+                      disabled: {
+                        ref: c('modern', 'l', 'button.neutral', 60)
+                      },
+                      selected: {
+                        rest: {
+                          ref: c('modern', 'l', 'button.neutral', 70)
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              dark: {
+                textColor: {
+                  primary: {
+                    subtle: {
+                      rest: c('modern', 'd', primitive('black', 'v1'), 0),
+                      disabled: {
+                        ref: c('modern', 'd', 'button.neutral', 60)
+                      },
+                      selected: {
+                        rest: {
+                          ref: c('modern', 'd', 'button.neutral', 70)
+                        }
+                      }
+                    },
+                    vivid: {
+                      rest: c('modern', 'd', primitive('black', 'v1'), 0),
+                      disabled: {
+                        ref: c('modern', 'd', 'button.neutral', 60)
+                      },
+                      selected: {
+                        rest: {
+                          ref: c('modern', 'd', 'button.neutral', 70)
+                        }
+                      }
+                    }
+                  },
+                  destructive: {
+                    subtle: {
+                      rest: c('modern', 'd', 'button.neutral', 0),
+                      disabled: {
+                        ref: c('modern', 'd', 'button.neutral', 60)
+                      },
+                      selected: {
+                        rest: {
+                          ref: c('modern', 'd', 'button.neutral', 70)
+                        }
+                      }
+                    },
+                    vivid: {
+                      rest: c('modern', 'd', primitive('black', 'v1'), 0),
+                      disabled: {
+                        ref: c('modern', 'd', 'button.neutral', 60)
+                      },
+                      selected: {
+                        rest: {
+                          ref: c('modern', 'd', 'button.neutral', 70)
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
             default: {
               light: {
                 textColor: {

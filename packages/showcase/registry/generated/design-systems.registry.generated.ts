@@ -54,6 +54,8 @@ export const paletteMaps = {
   'material-design-3-kiskadee|default|light': () => loadJsonModule('material-design-3-kiskadee/default.light.kiskadee.json'),
   'material-design-3-kiskadee|dynamic|dark': () => loadJsonModule('material-design-3-kiskadee/dynamic.dark.kiskadee.json'),
   'material-design-3-kiskadee|dynamic|light': () => loadJsonModule('material-design-3-kiskadee/dynamic.light.kiskadee.json'),
+  'material-design-3-kiskadee|modern|dark': () => loadJsonModule('material-design-3-kiskadee/modern.dark.kiskadee.json'),
+  'material-design-3-kiskadee|modern|light': () => loadJsonModule('material-design-3-kiskadee/modern.light.kiskadee.json'),
 } as const;
 
 export const extraMaps = {
@@ -73,6 +75,8 @@ export const extraMaps = {
   'material-design-3-kiskadee|default|light': () => loadExtraJson('material-design-3-kiskadee/extra.default.light.kiskadee.json'),
   'material-design-3-kiskadee|dynamic|dark': () => loadExtraJson('material-design-3-kiskadee/extra.dynamic.dark.kiskadee.json'),
   'material-design-3-kiskadee|dynamic|light': () => loadExtraJson('material-design-3-kiskadee/extra.dynamic.light.kiskadee.json'),
+  'material-design-3-kiskadee|modern|dark': () => loadExtraJson('material-design-3-kiskadee/extra.modern.dark.kiskadee.json'),
+  'material-design-3-kiskadee|modern|light': () => loadExtraJson('material-design-3-kiskadee/extra.modern.light.kiskadee.json'),
 } as const;
 
 export const paletteIndex = {
@@ -117,10 +121,11 @@ export const paletteIndex = {
     }
   },
   'material-design-3-kiskadee': {
-    segments: ['default', 'dynamic'],
+    segments: ['default', 'dynamic', 'modern'],
     themesBySegment: {
       "default": ['dark', 'light'],
-      "dynamic": ['dark', 'light']
+      "dynamic": ['dark', 'light'],
+      "modern": ['dark', 'light']
     }
   },
 } as const;

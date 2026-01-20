@@ -50,7 +50,8 @@ export const primitiveColors = {
   red: {
     v1: {
       solid: {
-        light: redV1Light
+        light: redV1Light,
+        dark: redV1Light
       }
     }
   }

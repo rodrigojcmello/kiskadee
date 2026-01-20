@@ -5,6 +5,19 @@
         "solid": {
           "light": "purple.v1.light.json",
           "dark": "purple.v1.dark.json"
+        },
+        "gradient": {
+          "angle": 180,
+          "stops": [
+            {
+              "primitive": "primitive.purple.v1",
+              "position": 0
+            },
+            {
+              "primitive": "primitive.purple.v2",
+              "position": 100
+            }
+          ]
         }
       },
       "v2": {
@@ -25,13 +38,27 @@
         "solid": {
           "light": "black.v1.light.json",
           "dark": "black.v1.dark.json"
+        },
+        "gradient": {
+          "angle": 180,
+          "stops": [
+            {
+              "primitive": "primitive.black.v1",
+              "position": 0
+            },
+            {
+              "primitive": "primitive.black.v1",
+              "position": 100
+            }
+          ]
         }
       }
     },
     "red": {
       "v1": {
         "solid": {
-          "light": "red.v1.light.json"
+          "light": "red.v1.light.json",
+          "dark": "red.v1.dark.json"
         }
       }
     }
@@ -65,6 +92,11 @@
         "dark": {
           "primary": "primitive.purple.dynamic"
         }
+      }
+    },
+    "modern": {
+      "meta": {
+        "name": "Material Design - Modern"
       }
     }
   },

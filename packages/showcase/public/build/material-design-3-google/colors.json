@@ -31,7 +31,8 @@
     "red": {
       "v1": {
         "solid": {
-          "light": "red.v1.light.json"
+          "light": "red.v1.light.json",
+          "dark": "red.v1.light.json"
         }
       }
     }

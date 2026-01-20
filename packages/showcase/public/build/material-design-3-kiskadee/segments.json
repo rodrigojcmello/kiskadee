@@ -32,5 +32,22 @@
         "redLike": "primitive.red.v1"
       }
     }
+  },
+  "modern": {
+    "meta": {
+      "name": "Material Design - Modern"
+    },
+    "themes": {
+      "light": {
+        "primary": "primitive.purple.v1",
+        "neutral": "primitive.black.v1",
+        "redLike": "primitive.red.v1"
+      },
+      "dark": {
+        "primary": "primitive.purple.v1",
+        "neutral": "primitive.black.v1",
+        "redLike": "primitive.red.v1"
+      }
+    }
   }
 }

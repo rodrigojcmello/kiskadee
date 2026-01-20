@@ -479,11 +479,4 @@ export function generateColorScaleFromColorsArtifact(hexColors: string[]): Empha
   return tracks;
 }
 
-generateColorScaleFromColorsArtifact([
-  '#410E0B',
-  '#8C1D18',
-  '#DC362E',
-  '#EC928E',
-  '#F9DEDC',
-  '#FFFBF9'
-]);
+generateColorScaleFromColorsArtifact(['#9780F7']);
