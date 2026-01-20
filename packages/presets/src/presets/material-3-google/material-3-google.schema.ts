@@ -7,17 +7,6 @@ import { schemaColors } from './material-3-google.colors';
  * Segments definition for the Material Design 3 design system.
  * Each segment represents a brand/product identity with support for multiple theme modes.
  *
- * Current implementation includes:
- * - default: Primary segment (purple brand color HSL 256°)
- *
- * All segments include universal semantic colors:
- * - primary: Brand identity color (varies by segment)
- * - secondary: Supporting brand color
- * - greenLike: Success, purchase, confirmation, profit (always green ~140°)
- * - yellowLike: Attention, warning, caution (always yellow ~45°)
- * - redLike: Danger, error, urgent, notification (always red ~0°)
- * - neutral: Text, backgrounds, borders, dividers (always grayscale)
- *
  * NOTE:
  * - This preset registers `default` and `dynamic` segments.
  * - Palette files are emitted as `<segment>.<theme>.kiskadee.(css|json)`.
@@ -55,7 +44,7 @@ export const schema: Schema<Segments> = {
         light: {
           // Global theme tokens can reference primitive colors directly.
           background: c('default', 'l', 'primitive.black.v1', 4),
-          focusColor: c('default', 'l', 'primitive.purple.v1', 70)
+          focusColor: c('default', 'l', 'primitive.purple.v2', 70)
         },
         dark: {
           background: c('default', 'd', 'primitive.black.v1', 85),

@@ -43,8 +43,8 @@
             1
           ],
           "focusColor": [
-            259.22,
-            71.65,
+            258,
+            12.82,
             30,
             1
           ]
@@ -275,6 +275,32 @@
                         "pressed": "#625B71"
                       }
                     }
+                  },
+                  "destructive": {
+                    "subtle": {
+                      "rest": "#F8D6D3",
+                      "hover": "#F9DEDC",
+                      "pressed": "#F5C9C6",
+                      "disabled": "#E6E6E6",
+                      "focus": "#F8D6D3",
+                      "selected": {
+                        "rest": "#DA2D25",
+                        "hover": "#E25750",
+                        "pressed": "#AE241E"
+                      }
+                    },
+                    "vivid": {
+                      "rest": "#DA2D25",
+                      "hover": "#E25750",
+                      "pressed": "#AE241E",
+                      "disabled": "#E6E6E6",
+                      "focus": "#DA2D25",
+                      "selected": {
+                        "rest": "#F8D6D3",
+                        "hover": "#F9DEDC",
+                        "pressed": "#F0ABA8"
+                      }
+                    }
                   }
                 }
               },
@@ -389,7 +415,7 @@
                   },
                   "destructive": {
                     "subtle": {
-                      "rest": "#4D4D4D",
+                      "rest": "#831B16",
                       "disabled": {
                         "ref": "#666"
                       },
@@ -446,6 +472,30 @@
               "light": {
                 "textColor": {
                   "primary": {
+                    "subtle": {
+                      "rest": "#4D4D4D",
+                      "disabled": {
+                        "ref": "#666"
+                      },
+                      "selected": {
+                        "rest": {
+                          "ref": "#FFF"
+                        }
+                      }
+                    },
+                    "vivid": {
+                      "rest": "#FFF",
+                      "disabled": {
+                        "ref": "#666"
+                      },
+                      "selected": {
+                        "rest": {
+                          "ref": "#4D4D4D"
+                        }
+                      }
+                    }
+                  },
+                  "destructive": {
                     "subtle": {
                       "rest": "#4D4D4D",
                       "disabled": {

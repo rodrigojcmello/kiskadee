@@ -4,19 +4,19 @@
       "v1": {
         "solid": {
           "light": "purple.v1.light.json",
-          "dark": "purple.v1.light.json"
+          "dark": "purple.v1.dark.json"
         }
       },
       "v2": {
         "solid": {
           "light": "purple.v2.light.json",
-          "dark": "purple.v2.light.json"
+          "dark": "purple.v2.dark.json"
         }
       },
       "dynamic": {
         "solid": {
           "light": "purple.dynamic.light.json",
-          "dark": "purple.dynamic.light.json"
+          "dark": "purple.dynamic.dark.json"
         }
       }
     },
@@ -24,7 +24,7 @@
       "v1": {
         "solid": {
           "light": "black.v1.light.json",
-          "dark": "black.v1.light.json"
+          "dark": "black.v1.dark.json"
         }
       }
     },

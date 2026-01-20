@@ -98,7 +98,7 @@ const patch = {
                 textColor: {
                   destructive: {
                     subtle: {
-                      rest: c('default', 'l', 'button.neutral', 70),
+                      rest: c('default', 'l', 'button.destructive', 70),
                       disabled: {
                         ref: c('default', 'l', 'button.neutral', 60)
                       },
@@ -109,7 +109,7 @@ const patch = {
                       }
                     },
                     vivid: {
-                      rest: c('default', 'l', primitive('black', 'v1'), 0),
+                      rest: c('default', 'l', 'button.neutral', 0),
                       disabled: {
                         ref: c('default', 'l', 'button.neutral', 60)
                       },
