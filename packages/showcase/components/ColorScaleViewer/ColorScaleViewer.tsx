@@ -31,7 +31,7 @@ export default function ColorScaleViewer() {
     setSelection('semantic:primary');
   }, [designSystemKey]);
 
-  const { colors, scale, meta, error } = useColorScale({
+  const { colors, scale, meta, error, loading } = useColorScale({
     designSystemKey,
     theme,
     selection,
@@ -68,12 +68,13 @@ export default function ColorScaleViewer() {
   useEffect(() => {
     if (!designSystemKey) return;
     if (!colors) return;
+    if (loading) return;
     if (meta?.resolvedPrimitiveRef) return;
 
     if (selection !== 'semantic:primary') {
       setSelection('semantic:primary');
     }
-  }, [designSystemKey, colors, meta?.resolvedPrimitiveRef, selection]);
+  }, [designSystemKey, colors, loading, meta?.resolvedPrimitiveRef, selection]);
 
   const tracks = useMemo(() => {
     if (!scale) return [];
