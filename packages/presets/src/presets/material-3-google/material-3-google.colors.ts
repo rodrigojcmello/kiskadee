@@ -8,6 +8,8 @@ import type {
 import dynamicColor from '../dynamic.color';
 import blackLight from './colors/black.v1.light';
 import purpleV1Light from './colors/purple.v1.light';
+import purpleV2Light from './colors/purple.v2.light';
+import redV1Light from './colors/red.v1.light';
 
 // -------------------------------------------------------------------------------------------------
 // 3-layer color architecture (Primitive → Global semantics → Component intents)
@@ -21,6 +23,12 @@ export const primitiveColors = {
       solid: {
         light: purpleV1Light,
         dark: purpleV1Light
+      }
+    },
+    v2: {
+      solid: {
+        light: purpleV2Light,
+        dark: purpleV2Light
       }
     },
     // Used by the `dynamic` segment override.
@@ -38,17 +46,26 @@ export const primitiveColors = {
         dark: blackLight
       }
     }
+  },
+  red: {
+    v1: {
+      solid: {
+        light: redV1Light
+      }
+    }
   }
 } as const satisfies PrimitiveColors;
 
 export const globalSemantics = {
   light: {
     primary: 'primitive.purple.v1',
-    neutral: 'primitive.black.v1'
+    neutral: 'primitive.black.v1',
+    redLike: 'primitive.red.v1'
   },
   dark: {
     primary: 'primitive.purple.v1',
-    neutral: 'primitive.black.v1'
+    neutral: 'primitive.black.v1',
+    redLike: 'primitive.red.v1'
   }
 } as const satisfies GlobalSemanticsByTheme;
 

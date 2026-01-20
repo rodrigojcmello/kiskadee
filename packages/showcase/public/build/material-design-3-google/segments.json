@@ -6,11 +6,13 @@
     "themes": {
       "light": {
         "primary": "primitive.purple.v1",
-        "neutral": "primitive.black.v1"
+        "neutral": "primitive.black.v1",
+        "redLike": "primitive.red.v1"
       },
       "dark": {
         "primary": "primitive.purple.v1",
-        "neutral": "primitive.black.v1"
+        "neutral": "primitive.black.v1",
+        "redLike": "primitive.red.v1"
       }
     }
   },
@@ -21,11 +23,13 @@
     "themes": {
       "light": {
         "primary": "primitive.purple.dynamic",
-        "neutral": "primitive.black.v1"
+        "neutral": "primitive.black.v1",
+        "redLike": "primitive.red.v1"
       },
       "dark": {
         "primary": "primitive.purple.dynamic",
-        "neutral": "primitive.black.v1"
+        "neutral": "primitive.black.v1",
+        "redLike": "primitive.red.v1"
       }
     }
   }

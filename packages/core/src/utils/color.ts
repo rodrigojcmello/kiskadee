@@ -215,7 +215,7 @@ function resolveSolidFromPrimitiveRef(
  * Resolves a final color using the 3-layer color architecture stored in `schema.colors`.
  *
  * Notes:
- * - This is the new pipeline (Caminho B). It does not replace the legacy `color(segment, mode, semantic, ...)` yet.
+ * - This is the new pipeline. It does not replace the legacy `color(segment, mode, semantic, ...)` yet.
  * - Only `solid` paints are supported for now (gradient intentionally disabled).
  */
 export function resolveColor(

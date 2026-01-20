@@ -1,4 +1,5 @@
 import {
+  type ButtonIntent,
   type ClassNameByElementJSON,
   stateActivator as cn,
   type ElementSizeValue,
@@ -15,7 +16,7 @@ export type ButtonStatus = Exclude<StateActivatorKeys, 'selected' | 'shadow'>;
 export type ButtonProps = HeadlessButtonProps & {
   /** Force Kiskadee visual/interaction state on the root element (e1). Excludes 'selected' and 'shadow'. */
   status?: ButtonStatus;
-  /** Marks this button as a semantic toggle (Following vs. Follow). */
+  /** Marks this button as an intent toggle (Following vs. Follow). */
   toggle?: boolean;
   /** Semantic control state (selected/active/checked). When true, selected styles are applied. */
   controlState?: boolean;
@@ -35,30 +36,30 @@ export type ButtonProps = HeadlessButtonProps & {
    */
   emphasis?: Emphasis;
   /** Semantic color family to use across ALL elements (e1, e2, e3, ...). Default is 'neutral'. */
-  semantic?: string;
+  intent?: ButtonIntent;
 };
 
 // Build a single space-separated class string from flattened d and color classes (sizes handled in e1)
 // Selects color classes based on emphasis: subtle (s), vivid (v), or unique (u)
-// Assumes a semantic-aware map in `c`; no legacy flat format for performance.
+// Assumes an intent-aware map in `c`; no legacy flat format for performance.
 function collectStr(
   el: ClassNameByElementJSON | undefined,
   emphasis: Emphasis | undefined = 'subtle',
-  semantic: string | undefined = 'neutral'
+  intent: ButtonIntent | undefined = 'neutral'
 ): string {
   if (!el) return '';
   let out = '';
   if (el.d) out = el.d;
 
-  const c = el.c as Record<string, import('@kiskadee/core').ColorClasses> | undefined;
-  const bySem = c ? c[semantic] : undefined;
+  const c = el.c as Record<ButtonIntent, import('@kiskadee/core').ColorClasses> | undefined;
+  const bySem = c ? c[intent] : undefined;
 
   if (bySem) {
     let color = '';
     if (emphasis === 'subtle' && bySem.s) color = bySem.s;
     else if (emphasis === 'vivid' && bySem.v) color = bySem.v;
     else if (!emphasis) color = bySem.v ?? bySem.s ?? bySem.u ?? '';
-    else if (!color && bySem.u) color = bySem.u; // last resort within the same semantic
+    else if (!color && bySem.u) color = bySem.u; // last resort within the same intent
 
     if (color) out = out ? `${out} ${color}` : color;
   }
@@ -77,7 +78,7 @@ function Button(props: ButtonProps) {
     shadow = false,
     radius = false,
     emphasis,
-    semantic = 'neutral',
+    intent = 'neutral',
     tabIndex,
     label,
     ...restProps
@@ -91,9 +92,9 @@ function Button(props: ButtonProps) {
   // If no `scale` prop is passed, we default to the median 's:md:1' so the button never renders without a scale.
 
   const computed = useMemo<NonNullable<HeadlessButtonProps['classNames']>>(() => {
-    const el1 = collectStr(e1, emphasis, semantic);
-    const el2 = collectStr(e2, emphasis, semantic);
-    const el3 = collectStr(e3, emphasis, semantic);
+    const el1 = collectStr(e1, emphasis, intent);
+    const el2 = collectStr(e2, emphasis, intent);
+    const el3 = collectStr(e3, emphasis, intent);
 
     const normalizeScaleKey = (k: string) => (k.startsWith('s:') ? k.slice(2) : k);
 
@@ -156,7 +157,7 @@ function Button(props: ButtonProps) {
     shadow,
     radius,
     emphasis,
-    semantic,
+    intent,
     classNames.e1,
     classNames.e2,
     classNames.e3

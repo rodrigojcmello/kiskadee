@@ -305,7 +305,7 @@ export type GlobalSemanticsBySegment = Partial<Record<SegmentName, GlobalSemanti
  * Layer 3 (Component intents).
  *
  * Each component maps its supported intent keys to either:
- * - a global semantic key (Layer 2), or
+ * - a global semantic key (Layer 2) or
  * - a direct primitive reference (Layer 1).
  */
 export type ComponentIntents = {
