@@ -412,6 +412,30 @@
                         }
                       }
                     }
+                  },
+                  "destructive": {
+                    "subtle": {
+                      "rest": "#4D4D4D",
+                      "disabled": {
+                        "ref": "#666"
+                      },
+                      "selected": {
+                        "rest": {
+                          "ref": "#FFF"
+                        }
+                      }
+                    },
+                    "vivid": {
+                      "rest": "#FFF",
+                      "disabled": {
+                        "ref": "#666"
+                      },
+                      "selected": {
+                        "rest": {
+                          "ref": "#4D4D4D"
+                        }
+                      }
+                    }
                   }
                 }
               },
@@ -448,6 +472,30 @@
               "light": {
                 "textColor": {
                   "primary": {
+                    "subtle": {
+                      "rest": "#4D4D4D",
+                      "disabled": {
+                        "ref": "#666"
+                      },
+                      "selected": {
+                        "rest": {
+                          "ref": "#FFF"
+                        }
+                      }
+                    },
+                    "vivid": {
+                      "rest": "#FFF",
+                      "disabled": {
+                        "ref": "#666"
+                      },
+                      "selected": {
+                        "rest": {
+                          "ref": "#4D4D4D"
+                        }
+                      }
+                    }
+                  },
+                  "destructive": {
                     "subtle": {
                       "rest": "#4D4D4D",
                       "disabled": {

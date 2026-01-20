@@ -2,10 +2,10 @@
 .-a.-s .gmd-d { color: #4D4D4D }
 .gmd-a.-d.-a { background: #E6E6E6 }
 .gmd-c { color: #FFF }
-.gmd-e { background: #684BB4 }
-.gmd-q.-s.-a { background: #DECDFE }
-.gmd-g:focus-visible, .gmd-g.-f.-a { background: #684BB4 }
-.gmd-i:hover, .gmd-i.-h.-a { background: #8267CB }
-.gmd-m:hover.-s, .gmd-m.-s.-h.-a { background: #E6D6FF }
-.gmd-k:active, .gmd-k.-p.-a { background: #533A92 }
-.gmd-o:active.-s, .gmd-o.-s.-p.-a { background: #B8A0F8 }
+.gmd-g { background: #684BB4 }
+.gmd-s.-s.-a { background: #DECDFE }
+.gmd-i:focus-visible, .gmd-i.-f.-a { background: #684BB4 }
+.gmd-k:hover, .gmd-k.-h.-a { background: #8267CB }
+.gmd-o:hover.-s, .gmd-o.-s.-h.-a { background: #E6D6FF }
+.gmd-m:active, .gmd-m.-p.-a { background: #533A92 }
+.gmd-q:active.-s, .gmd-q.-s.-p.-a { background: #B8A0F8 }

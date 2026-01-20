@@ -288,6 +288,30 @@ export const schema: Schema<Segments> = {
                         }
                       }
                     }
+                  },
+                  destructive: {
+                    subtle: {
+                      rest: c(segmentName, 'l', 'button.neutral', 70),
+                      disabled: {
+                        ref: c(segmentName, 'l', 'button.neutral', 60)
+                      },
+                      selected: {
+                        rest: {
+                          ref: c(segmentName, 'l', 'button.neutral', 0)
+                        }
+                      }
+                    },
+                    vivid: {
+                      rest: c(segmentName, 'l', primitive('black', 'v1'), 0),
+                      disabled: {
+                        ref: c(segmentName, 'l', 'button.neutral', 60)
+                      },
+                      selected: {
+                        rest: {
+                          ref: c(segmentName, 'l', 'button.neutral', 70)
+                        }
+                      }
+                    }
                   }
                 }
               },
