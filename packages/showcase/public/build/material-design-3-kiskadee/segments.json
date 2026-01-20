@@ -1,0 +1,36 @@
+{
+  "default": {
+    "meta": {
+      "name": "Material Design - Default (purple)"
+    },
+    "themes": {
+      "light": {
+        "primary": "primitive.purple.v1",
+        "neutral": "primitive.black.v1",
+        "redLike": "primitive.red.v1"
+      },
+      "dark": {
+        "primary": "primitive.purple.v1",
+        "neutral": "primitive.black.v1",
+        "redLike": "primitive.red.v1"
+      }
+    }
+  },
+  "dynamic": {
+    "meta": {
+      "name": "Material Design - Dynamic"
+    },
+    "themes": {
+      "light": {
+        "primary": "primitive.purple.dynamic",
+        "neutral": "primitive.black.v1",
+        "redLike": "primitive.red.v1"
+      },
+      "dark": {
+        "primary": "primitive.purple.dynamic",
+        "neutral": "primitive.black.v1",
+        "redLike": "primitive.red.v1"
+      }
+    }
+  }
+}

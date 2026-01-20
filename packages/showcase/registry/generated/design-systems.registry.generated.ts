@@ -26,6 +26,7 @@ export const coreMaps = {
   'ios-26-apple': () => loadJsonModule('ios-26-apple/core.kiskadee.json'),
   'ios-26-kiskadee': () => loadJsonModule('ios-26-kiskadee/core.kiskadee.json'),
   'material-design-3-google': () => loadJsonModule('material-design-3-google/core.kiskadee.json'),
+  'material-design-3-kiskadee': () => loadJsonModule('material-design-3-kiskadee/core.kiskadee.json'),
 } as const;
 
 export const paletteMaps = {
@@ -49,6 +50,10 @@ export const paletteMaps = {
   'material-design-3-google|default|light': () => loadJsonModule('material-design-3-google/default.light.kiskadee.json'),
   'material-design-3-google|dynamic|dark': () => loadJsonModule('material-design-3-google/dynamic.dark.kiskadee.json'),
   'material-design-3-google|dynamic|light': () => loadJsonModule('material-design-3-google/dynamic.light.kiskadee.json'),
+  'material-design-3-kiskadee|default|dark': () => loadJsonModule('material-design-3-kiskadee/default.dark.kiskadee.json'),
+  'material-design-3-kiskadee|default|light': () => loadJsonModule('material-design-3-kiskadee/default.light.kiskadee.json'),
+  'material-design-3-kiskadee|dynamic|dark': () => loadJsonModule('material-design-3-kiskadee/dynamic.dark.kiskadee.json'),
+  'material-design-3-kiskadee|dynamic|light': () => loadJsonModule('material-design-3-kiskadee/dynamic.light.kiskadee.json'),
 } as const;
 
 export const extraMaps = {
@@ -64,6 +69,10 @@ export const extraMaps = {
   'material-design-3-google|default|light': () => loadExtraJson('material-design-3-google/extra.default.light.kiskadee.json'),
   'material-design-3-google|dynamic|dark': () => loadExtraJson('material-design-3-google/extra.dynamic.dark.kiskadee.json'),
   'material-design-3-google|dynamic|light': () => loadExtraJson('material-design-3-google/extra.dynamic.light.kiskadee.json'),
+  'material-design-3-kiskadee|default|dark': () => loadExtraJson('material-design-3-kiskadee/extra.default.dark.kiskadee.json'),
+  'material-design-3-kiskadee|default|light': () => loadExtraJson('material-design-3-kiskadee/extra.default.light.kiskadee.json'),
+  'material-design-3-kiskadee|dynamic|dark': () => loadExtraJson('material-design-3-kiskadee/extra.dynamic.dark.kiskadee.json'),
+  'material-design-3-kiskadee|dynamic|light': () => loadExtraJson('material-design-3-kiskadee/extra.dynamic.light.kiskadee.json'),
 } as const;
 
 export const paletteIndex = {
@@ -107,6 +116,13 @@ export const paletteIndex = {
       "dynamic": ['dark', 'light']
     }
   },
+  'material-design-3-kiskadee': {
+    segments: ['default', 'dynamic'],
+    themesBySegment: {
+      "default": ['dark', 'light'],
+      "dynamic": ['dark', 'light']
+    }
+  },
 } as const;
 
 export type DesignSystemListEntry = import('@kiskadee/web-builder/types').DesignSystemListEntry;
@@ -118,6 +134,7 @@ export const designSystemList: DesignSystemListEntry[] = [
   { key: 'ios-26-apple', displayName: "iOS 26 by Apple" },
   { key: 'ios-26-kiskadee', displayName: "iOS 26 by Kiskadee" },
   { key: 'material-design-3-google', displayName: "Material Design 3 by Google" },
+  { key: 'material-design-3-kiskadee', displayName: "Material Design 3 by Kiskadee" },
 ];
 
 export const designSystemMeta = {
@@ -126,5 +143,6 @@ export const designSystemMeta = {
   'fluent-2-microsoft': {"displayName":"Fluent 2 by Microsoft","components":{"button":{"scale":{"s:sm:1":true,"s:md:1":true,"s:lg:1":true},"state":{"primary":{"vivid":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true,"selected":true}}}}}},
   'ios-26-apple': {"displayName":"iOS 26 by Apple","components":{"button":{"scale":{"s:md:1":true},"state":{"primary":{"subtle":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true,"selected":true},"vivid":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true}}}}}},
   'ios-26-kiskadee': {"displayName":"iOS 26 by Kiskadee","components":{"button":{"scale":{"s:sm:1":true,"s:md:1":true,"s:lg:1":true},"state":{"primary":{"subtle":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true,"selected":true},"vivid":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true}},"neutral":{"subtle":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true,"selected":true}},"redLike":{"subtle":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true,"selected":true},"vivid":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true}}}}}},
-  'material-design-3-google': {"displayName":"Material Design 3 by Google","components":{"button":{"scale":{"s:sm:1":true,"s:md:1":true,"s:lg:1":true,"s:lg:2":true,"s:lg:3":true},"state":{"primary":{"subtle":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true},"vivid":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true}},"neutral":{"subtle":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true}},"destructive":{"subtle":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true},"vivid":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true}}}}}},
+  'material-design-3-google': {"displayName":"Material Design 3 by Google","components":{"button":{"scale":{"s:sm:1":true,"s:md:1":true,"s:lg:1":true,"s:lg:2":true,"s:lg:3":true},"state":{"primary":{"subtle":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true},"vivid":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true}},"neutral":{"subtle":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true}}}}}},
+  'material-design-3-kiskadee': {"displayName":"Material Design 3 by Kiskadee","components":{"button":{"scale":{"s:sm:1":true,"s:md:1":true,"s:lg:1":true,"s:lg:2":true,"s:lg:3":true},"state":{"primary":{"subtle":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true},"vivid":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true}},"neutral":{"subtle":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true}},"destructive":{"subtle":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true},"vivid":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true}}}}}},
 } as const;

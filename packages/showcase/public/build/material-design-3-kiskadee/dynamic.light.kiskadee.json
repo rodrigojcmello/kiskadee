@@ -1,0 +1,23 @@
+{
+  "button": {
+    "e1": {
+      "c": {
+        "primary": {
+          "s": "mk-at mk-bb mk-bf mk-ax mk-br mk-bj mk-bn mk-a",
+          "v": "mk-f mk-j mk-l mk-h mk-r mk-n mk-p mk-a"
+        },
+        "neutral": {
+          "s": "mk-v mk-x mk-y mk-w mk-ab mk-z mk-aa mk-a"
+        }
+      }
+    },
+    "e2": {
+      "c": {
+        "primary": {
+          "s": "mk-s mk-t mk-b",
+          "v": "mk-c mk-d mk-b"
+        }
+      }
+    }
+  }
+}

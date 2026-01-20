@@ -162,33 +162,6 @@ export const schema: Schema<Segments> = {
                         pressed: c(segmentName, 'l', 'primitive.purple.v2', 60)
                       }
                     }
-                  },
-                  destructive: {
-                    subtle: {
-                      rest: c(segmentName, 'l', 'button.destructive', 10),
-                      hover: c(segmentName, 'l', 'button.destructive', 8),
-                      pressed: c(segmentName, 'l', 'button.destructive', 13),
-                      disabled: c(segmentName, 'l', 'button.neutral', 10),
-                      focus: c(segmentName, 'l', 'button.destructive', 10),
-                      selected: {
-                        rest: c(segmentName, 'l', 'button.destructive', 50),
-                        hover: c(segmentName, 'l', 'button.destructive', 40),
-                        pressed: c(segmentName, 'l', 'button.destructive', 60)
-                      }
-                    },
-                    vivid: {
-                      rest: c(segmentName, 'l', 'button.destructive', 50),
-                      // hover: [256, 34, 48, 1], // official
-                      hover: c(segmentName, 'l', 'button.destructive', 40),
-                      pressed: c(segmentName, 'l', 'button.destructive', 60),
-                      disabled: c(segmentName, 'l', 'button.neutral', 10),
-                      focus: c(segmentName, 'l', 'button.destructive', 50),
-                      selected: {
-                        rest: c(segmentName, 'l', 'button.destructive', 10),
-                        hover: c(segmentName, 'l', 'button.destructive', 8),
-                        pressed: c(segmentName, 'l', 'button.destructive', 20)
-                      }
-                    }
                   }
                 }
               },
@@ -266,30 +239,6 @@ export const schema: Schema<Segments> = {
               light: {
                 textColor: {
                   primary: {
-                    subtle: {
-                      rest: c(segmentName, 'l', 'button.neutral', 70),
-                      disabled: {
-                        ref: c(segmentName, 'l', 'button.neutral', 60)
-                      },
-                      selected: {
-                        rest: {
-                          ref: c(segmentName, 'l', 'button.neutral', 0)
-                        }
-                      }
-                    },
-                    vivid: {
-                      rest: c(segmentName, 'l', primitive('black', 'v1'), 0),
-                      disabled: {
-                        ref: c(segmentName, 'l', 'button.neutral', 60)
-                      },
-                      selected: {
-                        rest: {
-                          ref: c(segmentName, 'l', 'button.neutral', 70)
-                        }
-                      }
-                    }
-                  },
-                  destructive: {
                     subtle: {
                       rest: c(segmentName, 'l', 'button.neutral', 70),
                       disabled: {

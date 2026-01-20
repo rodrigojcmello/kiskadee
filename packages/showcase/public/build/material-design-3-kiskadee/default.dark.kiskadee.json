@@ -1,0 +1,20 @@
+{
+  "button": {
+    "e1": {
+      "c": {
+        "primary": {
+          "s": "mk-e mk-i mk-k mk-g mk-q mk-m mk-o mk-a",
+          "v": "mk-e mk-i mk-k mk-g mk-q mk-m mk-o mk-a"
+        }
+      }
+    },
+    "e2": {
+      "c": {
+        "primary": {
+          "s": "mk-c mk-d mk-b",
+          "v": "mk-c mk-d mk-b"
+        }
+      }
+    }
+  }
+}

@@ -2,10 +2,10 @@
 .-a.-s .gmd-d { color: #4D4D4D }
 .gmd-a.-d.-a { background: #E6E6E6 }
 .gmd-c { color: #FFF }
-.gmd-h { background: hsl(var(--k-p-50)) }
-.gmd-t.-s.-a { background: hsl(var(--k-p-10)) }
-.gmd-j:focus-visible, .gmd-j.-f.-a { background: hsl(var(--k-p-50)) }
-.gmd-l:hover, .gmd-l.-h.-a { background: hsl(var(--k-p-40)) }
-.gmd-p:hover.-s, .gmd-p.-s.-h.-a { background: hsl(var(--k-p-8)) }
-.gmd-n:active, .gmd-n.-p.-a { background: hsl(var(--k-p-60)) }
-.gmd-r:active.-s, .gmd-r.-s.-p.-a { background: hsl(var(--k-p-20)) }
+.gmd-f { background: hsl(var(--k-p-50)) }
+.gmd-r.-s.-a { background: hsl(var(--k-p-10)) }
+.gmd-h:focus-visible, .gmd-h.-f.-a { background: hsl(var(--k-p-50)) }
+.gmd-j:hover, .gmd-j.-h.-a { background: hsl(var(--k-p-40)) }
+.gmd-n:hover.-s, .gmd-n.-s.-h.-a { background: hsl(var(--k-p-8)) }
+.gmd-l:active, .gmd-l.-p.-a { background: hsl(var(--k-p-60)) }
+.gmd-p:active.-s, .gmd-p.-s.-p.-a { background: hsl(var(--k-p-20)) }

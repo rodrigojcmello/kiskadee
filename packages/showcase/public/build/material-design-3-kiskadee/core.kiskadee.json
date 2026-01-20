@@ -1,0 +1,28 @@
+{
+  "button": {
+    "e1": {
+      "d": "mk-ap",
+      "e": {
+        "h": "mk-cm mk-cp mk-cq mk-co mk-cn",
+        "r": "mk-u mk-aj mk-ak mk-ai mk-ao mk-am mk-an mk-al"
+      },
+      "s": {
+        "sm:1": "mk-cl mk-bw mk-bx mk-cc mk-ae",
+        "md:1": "mk-ch mk-bs mk-by mk-cd mk-u",
+        "lg:1": "mk-ci mk-bt mk-bz mk-ce mk-af",
+        "lg:2": "mk-cj mk-bu mk-ca mk-cf mk-ag",
+        "lg:3": "mk-ck mk-bv mk-cb mk-cg mk-ah"
+      }
+    },
+    "e2": {
+      "d": "mk-cx",
+      "s": {
+        "sm:1": "mk-ad mk-ac",
+        "md:1": "mk-ad mk-ac",
+        "lg:1": "mk-cu mk-cr",
+        "lg:2": "mk-cv mk-cs",
+        "lg:3": "mk-cw mk-ct"
+      }
+    }
+  }
+}

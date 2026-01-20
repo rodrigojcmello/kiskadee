@@ -1,0 +1,10 @@
+{
+  "fonts": {
+    "body": "Roboto, sans-serif",
+    "heading": "Roboto, sans-serif"
+  },
+  "focus": {
+    "width": 2,
+    "offset": 2
+  }
+}

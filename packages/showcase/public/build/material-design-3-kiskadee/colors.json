@@ -1,0 +1,79 @@
+{
+  "primitiveColors": {
+    "purple": {
+      "v1": {
+        "solid": {
+          "light": "purple.v1.light.json",
+          "dark": "purple.v1.light.json"
+        }
+      },
+      "v2": {
+        "solid": {
+          "light": "purple.v2.light.json",
+          "dark": "purple.v2.light.json"
+        }
+      },
+      "dynamic": {
+        "solid": {
+          "light": "purple.dynamic.light.json",
+          "dark": "purple.dynamic.light.json"
+        }
+      }
+    },
+    "black": {
+      "v1": {
+        "solid": {
+          "light": "black.v1.light.json",
+          "dark": "black.v1.light.json"
+        }
+      }
+    },
+    "red": {
+      "v1": {
+        "solid": {
+          "light": "red.v1.light.json"
+        }
+      }
+    }
+  },
+  "globalSemantics": {
+    "light": {
+      "primary": "primitive.purple.v1",
+      "neutral": "primitive.black.v1",
+      "redLike": "primitive.red.v1"
+    },
+    "dark": {
+      "primary": "primitive.purple.v1",
+      "neutral": "primitive.black.v1",
+      "redLike": "primitive.red.v1"
+    }
+  },
+  "globalSemanticsBySegment": {
+    "default": {
+      "meta": {
+        "name": "Material Design - Default (purple)"
+      }
+    },
+    "dynamic": {
+      "meta": {
+        "name": "Material Design - Dynamic"
+      },
+      "themes": {
+        "light": {
+          "primary": "primitive.purple.dynamic"
+        },
+        "dark": {
+          "primary": "primitive.purple.dynamic"
+        }
+      }
+    }
+  },
+  "componentIntents": {
+    "button": {
+      "primary": "primary",
+      "neutral": "neutral",
+      "destructive": "redLike",
+      "positive": "greenLike"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "button": {
+    "e1": {
+      "c": {
+        "primary": {
+          "s": "mk-ar mk-az mk-bd mk-av mk-bp mk-bh mk-bl mk-a",
+          "v": "mk-e mk-i mk-k mk-g mk-q mk-m mk-o mk-a"
+        },
+        "neutral": {
+          "s": "mk-v mk-x mk-y mk-w mk-ab mk-z mk-aa mk-a"
+        },
+        "destructive": {
+          "s": "mk-as mk-ba mk-be mk-aw mk-bo mk-bg mk-bk mk-a",
+          "v": "mk-aq mk-ay mk-bc mk-au mk-bq mk-bi mk-bm mk-a"
+        }
+      }
+    },
+    "e2": {
+      "c": {
+        "primary": {
+          "s": "mk-s mk-t mk-b",
+          "v": "mk-c mk-d mk-b"
+        },
+        "destructive": {
+          "s": "mk-s mk-t mk-b",
+          "v": "mk-c mk-d mk-b"
+        }
+      }
+    }
+  }
+}

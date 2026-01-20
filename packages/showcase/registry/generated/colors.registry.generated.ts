@@ -13,6 +13,7 @@ export const colorsMaps = {
   'ios-26-apple': () => loadJsonFromBuild<ColorsJson>('ios-26-apple/colors.json', { required: true }),
   'ios-26-kiskadee': () => loadJsonFromBuild<ColorsJson>('ios-26-kiskadee/colors.json', { required: true }),
   'material-design-3-google': () => loadJsonFromBuild<ColorsJson>('material-design-3-google/colors.json', { required: true }),
+  'material-design-3-kiskadee': () => loadJsonFromBuild<ColorsJson>('material-design-3-kiskadee/colors.json', { required: true }),
 } as const;
 
 // Helper to load a primitive color scale file referenced by colors.json
