@@ -309,7 +309,17 @@ export type GlobalSemanticsBySegment = Partial<Record<SegmentName, GlobalSemanti
  * - a direct primitive reference (Layer 1).
  */
 export type ComponentIntents = {
-  button?: Record<ButtonIntent, IntentValue>;
+  /**
+   * Button intents.
+   *
+   * Only `primary` and `neutral` are required in presets.
+   * The remaining intents are optional and should be defined only
+   * when the design system actually supports them.
+   */
+  button?: Record<Extract<ButtonIntent, 'primary' | 'neutral'>, IntentValue> &
+    Partial<
+      Record<Exclude<ButtonIntent, Extract<ButtonIntent, 'primary' | 'neutral'>>, IntentValue>
+    >;
 } & Partial<Record<string, Record<string, IntentValue>>>;
 
 export type SchemaColors = Partial<{

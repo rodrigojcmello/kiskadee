@@ -42,7 +42,6 @@ export const schema: Schema<Segments> = {
     palettes: {
       default: {
         light: {
-          // Global theme tokens can reference primitive colors directly.
           background: c('default', 'l', 'primitive.black.v1', 4),
           focusColor: c('default', 'l', 'primitive.purple.v2', 65)
         },
@@ -116,8 +115,8 @@ export const schema: Schema<Segments> = {
                       rest: c(seg, 'l', 'button.primary', 10),
                       hover: c(seg, 'l', 'button.primary', 8),
                       pressed: c(seg, 'l', 'button.primary', 13),
-                      disabled: c(seg, 'l', 'button.neutral', 10),
                       focus: c(seg, 'l', 'button.primary', 10),
+                      disabled: c(seg, 'l', 'primitive.black.v1', 10),
                       selected: {
                         rest: c(seg, 'l', 'button.primary', 50),
                         hover: c(seg, 'l', 'button.primary', 40),
@@ -129,7 +128,7 @@ export const schema: Schema<Segments> = {
                       hover: c(seg, 'l', 'button.primary', 55),
                       pressed: c(seg, 'l', 'button.primary', 65),
                       focus: c(seg, 'l', 'button.primary', 60),
-                      disabled: c(seg, 'l', 'button.neutral', 10),
+                      disabled: c(seg, 'l', 'primitive.black.v1', 10),
                       selected: {
                         rest: c(seg, 'l', 'button.primary', 10),
                         hover: c(seg, 'l', 'button.primary', 8),
@@ -139,15 +138,15 @@ export const schema: Schema<Segments> = {
                   },
                   neutral: {
                     vivid: {
-                      rest: c(seg, 'l', 'primitive.purple.v2', 60),
-                      hover: c(seg, 'l', 'primitive.purple.v2', 55),
-                      pressed: c(seg, 'l', 'primitive.purple.v2', 65),
-                      focus: c(seg, 'l', 'primitive.purple.v2', 60),
-                      disabled: c(seg, 'l', 'button.neutral', 10),
+                      rest: c(seg, 'l', 'button.neutral', 60),
+                      hover: c(seg, 'l', 'button.neutral', 55),
+                      pressed: c(seg, 'l', 'button.neutral', 65),
+                      focus: c(seg, 'l', 'button.neutral', 60),
+                      disabled: c(seg, 'l', 'primitive.black.v1', 10),
                       selected: {
-                        rest: c(seg, 'l', 'primitive.purple.v2', 50),
-                        hover: c(seg, 'l', 'primitive.purple.v2', 40),
-                        pressed: c(seg, 'l', 'primitive.purple.v2', 60)
+                        rest: c(seg, 'l', 'button.neutral', 50),
+                        hover: c(seg, 'l', 'button.neutral', 40),
+                        pressed: c(seg, 'l', 'button.neutral', 60)
                       }
                     }
                   }

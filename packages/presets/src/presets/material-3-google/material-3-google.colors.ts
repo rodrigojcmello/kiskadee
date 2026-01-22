@@ -78,7 +78,7 @@ export const globalSemantics = {
  * Segment registry + optional per-segment overrides for global semantics.
  *
  * - `default` is always present to register the primary segment.
- * - `themes` is optional and should be used only when a segment must override Layer 2 mappings.
+ * - `themes` are optional and should be used only when a segment must override Layer 2 mappings.
  */
 export const globalSemanticsBySegment = {
   default: {
@@ -104,9 +104,7 @@ export const globalSemanticsBySegment = {
 export const componentIntents = {
   button: {
     primary: 'primary',
-    neutral: 'neutral',
-    destructive: 'redLike',
-    positive: 'greenLike'
+    neutral: 'primitive.purple.v2'
   }
 } as const satisfies ComponentIntents;
 

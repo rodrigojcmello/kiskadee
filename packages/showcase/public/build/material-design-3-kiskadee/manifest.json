@@ -38,8 +38,8 @@
             "rest": true,
             "hover": true,
             "pressed": true,
-            "disabled": true,
             "focus": true,
+            "disabled": true,
             "selected": true
           },
           "vivid": {

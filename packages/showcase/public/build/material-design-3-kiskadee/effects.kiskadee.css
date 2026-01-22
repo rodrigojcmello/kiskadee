@@ -1,12 +1,12 @@
-.mk-bq.-s.-a { border-radius: 16px }
-.mk-dj.-e { box-shadow: 0 2px 6px #00000047 }
-.mk-dk.-e.-d.-a { box-shadow: 0 0 0 #0000 }
-.mk-bk:focus-visible, .mk-bk.-f.-a { border-radius: 14px }
-.mk-bn:focus-visible.-s, .mk-bn.-s.-f.-a { border-radius: 14px }
-.mk-dl.-e:focus-visible, .mk-dl.-e.-f.-a { box-shadow: 0 4px 10px #00000059 }
-.mk-bl:hover, .mk-bl.-h.-a { border-radius: 14px }
-.mk-bo:hover.-s, .mk-bo.-s.-h.-a { border-radius: 14px }
-.mk-dm.-e:hover, .mk-dm.-e.-h.-a { box-shadow: 0 4px 10px #00000059 }
-.mk-bm:active, .mk-bm.-p.-a { border-radius: 10px }
-.mk-bp:active.-s, .mk-bp.-s.-p.-a { border-radius: 10px }
-.mk-dn.-e:active, .mk-dn.-e.-p.-a { box-shadow: 0 0 0 #00000052 }
+.mk-br.-s.-a { border-radius: 16px }
+.mk-dk.-e { box-shadow: 0 2px 6px #00000047 }
+.mk-dl.-e.-d.-a { box-shadow: 0 0 0 #0000 }
+.mk-bl:focus-visible, .mk-bl.-f.-a { border-radius: 14px }
+.mk-bo:focus-visible.-s, .mk-bo.-s.-f.-a { border-radius: 14px }
+.mk-dm.-e:focus-visible, .mk-dm.-e.-f.-a { box-shadow: 0 4px 10px #00000059 }
+.mk-bm:hover, .mk-bm.-h.-a { border-radius: 14px }
+.mk-bp:hover.-s, .mk-bp.-s.-h.-a { border-radius: 14px }
+.mk-dn.-e:hover, .mk-dn.-e.-h.-a { box-shadow: 0 4px 10px #00000059 }
+.mk-bn:active, .mk-bn.-p.-a { border-radius: 10px }
+.mk-bq:active.-s, .mk-bq.-s.-p.-a { border-radius: 10px }
+.mk-do.-e:active, .mk-do.-e.-p.-a { box-shadow: 0 0 0 #00000052 }

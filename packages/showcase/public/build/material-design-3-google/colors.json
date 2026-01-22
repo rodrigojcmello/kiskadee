@@ -72,9 +72,7 @@
   "componentIntents": {
     "button": {
       "primary": "primary",
-      "neutral": "neutral",
-      "destructive": "redLike",
-      "positive": "greenLike"
+      "neutral": "primitive.purple.v2"
     }
   }
 }
