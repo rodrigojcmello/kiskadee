@@ -2,10 +2,10 @@
 .-a.-s .mk-d { color: #4D4D4D }
 .mk-a.-d.-a { background: #E6E6E6 }
 .mk-c { color: #FFF }
-.mk-m { background: #684BB4 }
-.mk-s.-s.-a { background: #DECDFE }
-.mk-n:focus-visible, .mk-n.-f.-a { background: #684BB4 }
-.mk-o:hover, .mk-o.-h.-a { background: #8267CB }
-.mk-q:hover.-s, .mk-q.-s.-h.-a { background: #E6D6FF }
-.mk-p:active, .mk-p.-p.-a { background: #533A92 }
-.mk-r:active.-s, .mk-r.-s.-p.-a { background: #B8A0F8 }
+.mk-j.-s.-a { background: #E9DDFF }
+.mk-m { background: #8069BF }
+.mk-o:focus-visible, .mk-o.-f.-a { background: #8069BF }
+.mk-f:hover.-s, .mk-f.-s.-h.-a { background: #EEE4FF }
+.mk-q:hover, .mk-q.-h.-a { background: #9A83DB }
+.mk-h:active.-s, .mk-h.-s.-p.-a { background: #CFBCFF }
+.mk-t:active, .mk-t.-p.-a { background: #6750A4 }

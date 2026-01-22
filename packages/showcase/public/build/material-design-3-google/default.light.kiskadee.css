@@ -3,25 +3,25 @@
 .-a.-s .gmd-d { color: #4D4D4D }
 .gmd-a.-d.-a { background: #E6E6E6 }
 .gmd-aa { color: #4D4D4D }
-.gmd-aq { background: #DECDFE }
-.gmd-bc.-s.-a { background: #684BB4 }
+.gmd-aq { background: #6750A4 }
+.gmd-ar { background: #E9DDFF }
+.gmd-bk.-s.-a { background: #8069BF }
 .gmd-c { color: #FFF }
-.gmd-e { background: #684BB4 }
-.gmd-q.-s.-a { background: #DECDFE }
-.gmd-t { background: #E2D6F5 }
+.gmd-i.-s.-a { background: #E9DDFF }
+.gmd-m { background: #E2D6F5 }
 .gmd-z.-s.-a { background: #7C748B }
-.gmd-as:focus-visible, .gmd-as.-f.-a { background: #DECDFE }
-.gmd-g:focus-visible, .gmd-g.-f.-a { background: #684BB4 }
-.gmd-u:focus-visible, .gmd-u.-f.-a { background: #E2D6F5 }
-.gmd-au:hover, .gmd-au.-h.-a { background: #E6D6FF }
-.gmd-ay:hover.-s, .gmd-ay.-s.-h.-a { background: #8267CB }
-.gmd-i:hover, .gmd-i.-h.-a { background: #8267CB }
-.gmd-m:hover.-s, .gmd-m.-s.-h.-a { background: #E6D6FF }
-.gmd-v:hover, .gmd-v.-h.-a { background: #E8DDF8 }
+.gmd-au:focus-visible, .gmd-au.-f.-a { background: #6750A4 }
+.gmd-av:focus-visible, .gmd-av.-f.-a { background: #E9DDFF }
+.gmd-p:focus-visible, .gmd-p.-f.-a { background: #E2D6F5 }
+.gmd-ay:hover, .gmd-ay.-h.-a { background: #735CB1 }
+.gmd-az:hover, .gmd-az.-h.-a { background: #EEE4FF }
+.gmd-bg:hover.-s, .gmd-bg.-s.-h.-a { background: #9A83DB }
+.gmd-e:hover.-s, .gmd-e.-s.-h.-a { background: #EEE4FF }
+.gmd-s:hover, .gmd-s.-h.-a { background: #E8DDF8 }
 .gmd-x:hover.-s, .gmd-x.-s.-h.-a { background: #958CA6 }
-.gmd-aw:active, .gmd-aw.-p.-a { background: #D3BFFD }
-.gmd-ba:active.-s, .gmd-ba.-s.-p.-a { background: #533A92 }
-.gmd-k:active, .gmd-k.-p.-a { background: #533A92 }
-.gmd-o:active.-s, .gmd-o.-s.-p.-a { background: #B8A0F8 }
-.gmd-w:active, .gmd-w.-p.-a { background: #DACCF0 }
+.gmd-bc:active, .gmd-bc.-p.-a { background: #5B4397 }
+.gmd-bd:active, .gmd-bd.-p.-a { background: #E1D3FF }
+.gmd-bi:active.-s, .gmd-bi.-s.-p.-a { background: #6750A4 }
+.gmd-g:active.-s, .gmd-g.-s.-p.-a { background: #CFBCFF }
+.gmd-v:active, .gmd-v.-p.-a { background: #DACCF0 }
 .gmd-y:active.-s, .gmd-y.-s.-p.-a { background: #625B71 }

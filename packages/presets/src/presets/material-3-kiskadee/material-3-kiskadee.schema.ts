@@ -86,7 +86,6 @@ const patch = {
                       hover: c('modern', 'l', 'button.destructive', 40),
                       pressed: c('modern', 'l', 'button.destructive', 60),
                       disabled: c('modern', 'l', 'button.neutral', 10),
-                      focus: c('modern', 'l', 'button.destructive', 50),
                       selected: {
                         rest: c('modern', 'l', 'button.destructive', 10),
                         hover: c('modern', 'l', 'button.destructive', 8),
@@ -125,24 +124,24 @@ const patch = {
                     }
                   },
                   destructive: {
-                    subtle: {
-                      rest: c('modern', 'd', 'button.destructive', 50),
-                      hover: c('modern', 'd', 'button.destructive', 40),
-                      pressed: c('modern', 'd', 'button.destructive', 60),
-                      disabled: c('modern', 'd', 'button.neutral', 10),
-                      focus: c('modern', 'd', 'button.destructive', 50),
-                      selected: {
-                        rest: c('modern', 'd', 'button.destructive', 10),
-                        hover: c('modern', 'd', 'button.destructive', 8),
-                        pressed: c('modern', 'd', 'button.destructive', 20)
-                      }
-                    },
+                    // subtle: {
+                    //   rest: c('modern', 'd', 'button.destructive', 50),
+                    //   hover: c('modern', 'd', 'button.destructive', 40),
+                    //   pressed: c('modern', 'd', 'button.destructive', 60),
+                    //   disabled: c('modern', 'd', 'button.neutral', 10),
+                    //   focus: c('modern', 'd', 'button.destructive', 50),
+                    //   selected: {
+                    //     rest: c('modern', 'd', 'button.destructive', 10),
+                    //     hover: c('modern', 'd', 'button.destructive', 8),
+                    //     pressed: c('modern', 'd', 'button.destructive', 20)
+                    //   }
+                    // },
                     vivid: {
-                      rest: c('modern', 'd', 'button.destructive', 50),
-                      hover: c('modern', 'd', 'button.destructive', 40),
-                      pressed: c('modern', 'd', 'button.destructive', 60),
+                      rest: c('modern', 'd', 'button.destructive', 55),
+                      hover: c('modern', 'd', 'button.destructive', 50),
+                      pressed: c('modern', 'd', 'button.destructive', 65),
                       disabled: c('modern', 'd', 'button.neutral', 10),
-                      focus: c('modern', 'd', 'button.destructive', 50),
+                      focus: c('modern', 'd', 'button.destructive', 55),
                       selected: {
                         rest: c('modern', 'd', 'button.destructive', 10),
                         hover: c('modern', 'd', 'button.destructive', 8),
@@ -170,11 +169,11 @@ const patch = {
                       }
                     },
                     vivid: {
-                      rest: c('default', 'l', 'button.destructive', 50),
-                      hover: c('default', 'l', 'button.destructive', 40),
+                      rest: c('default', 'l', 'button.destructive', 55),
+                      hover: c('default', 'l', 'button.destructive', 50),
                       pressed: c('default', 'l', 'button.destructive', 60),
                       disabled: c('default', 'l', 'button.neutral', 10),
-                      focus: c('default', 'l', 'button.destructive', 50),
+                      focus: c('default', 'l', 'button.destructive', 55),
                       selected: {
                         rest: c('default', 'l', 'button.destructive', 10),
                         hover: c('default', 'l', 'button.destructive', 8),
