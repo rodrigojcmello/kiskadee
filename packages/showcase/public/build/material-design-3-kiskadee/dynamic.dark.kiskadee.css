@@ -1,8 +1,8 @@
-.-a.-d .mk-b { color: #666 }
+.-a.-d .mk-a { color: #666 }
 .-a.-s .mk-d { color: #4D4D4D }
-.mk-a.-d.-a { background: #E6E6E6 }
 .mk-aa.-s.-a { background: hsl(var(--k-p-10)) }
 .mk-ah { background: hsl(var(--k-p-50)) }
+.mk-b.-d.-a { background: #E6E6E6 }
 .mk-c { color: #FFF }
 .mk-al:focus-visible, .mk-al.-f.-a { background: hsl(var(--k-p-50)) }
 .mk-aq:hover, .mk-aq.-h.-a { background: hsl(var(--k-p-40)) }

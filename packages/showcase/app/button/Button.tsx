@@ -314,6 +314,83 @@ export function Button() {
           </div>
         </div>
         <div className={s['interaction-state']}>
+          <h3>Interaction States - Neutral (Vivid)</h3>
+          <div className={`${s['example-states']} k-root`}>
+            {renderState(
+              'neutral',
+              'vivid',
+              'rest',
+              <KButton emphasis="vivid">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Rest
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'neutral',
+              'vivid',
+              'hover',
+              <KButton emphasis="vivid" status="hover">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Hover
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'neutral',
+              'vivid',
+              'focus',
+              <KButton emphasis="vivid" status="focus">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Focus
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'neutral',
+              'vivid',
+              'pressed',
+              <KButton emphasis="vivid" status="pressed">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Pressed
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'neutral',
+              'vivid',
+              'selected',
+              <KButton emphasis="vivid" controlState={true}>
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Selected
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'neutral',
+              'vivid',
+              'disabled',
+              <KButton emphasis="vivid" status="disabled">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Disabled
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+          </div>
+        </div>
+        <div className={s['interaction-state']}>
           <h3>Interaction States - Destructive (Vivid)</h3>
           <div className={`${s['example-states']} k-root`}>
             {renderState(

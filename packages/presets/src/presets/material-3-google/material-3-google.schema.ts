@@ -44,7 +44,7 @@ export const schema: Schema<Segments> = {
         light: {
           // Global theme tokens can reference primitive colors directly.
           background: c('default', 'l', 'primitive.black.v1', 4),
-          focusColor: c('default', 'l', 'primitive.purple.v2', 70)
+          focusColor: c('default', 'l', 'primitive.purple.v2', 65)
         },
         dark: {
           background: c('default', 'd', 'primitive.black.v1', 85),
@@ -138,12 +138,12 @@ export const schema: Schema<Segments> = {
                     }
                   },
                   neutral: {
-                    subtle: {
-                      rest: c(seg, 'l', 'primitive.purple.v2', 10),
-                      hover: c(seg, 'l', 'primitive.purple.v2', 8),
-                      pressed: c(seg, 'l', 'primitive.purple.v2', 13),
+                    vivid: {
+                      rest: c(seg, 'l', 'primitive.purple.v2', 60),
+                      hover: c(seg, 'l', 'primitive.purple.v2', 55),
+                      pressed: c(seg, 'l', 'primitive.purple.v2', 65),
+                      focus: c(seg, 'l', 'primitive.purple.v2', 60),
                       disabled: c(seg, 'l', 'button.neutral', 10),
-                      focus: c(seg, 'l', 'primitive.purple.v2', 10),
                       selected: {
                         rest: c(seg, 'l', 'primitive.purple.v2', 50),
                         hover: c(seg, 'l', 'primitive.purple.v2', 40),
@@ -247,6 +247,14 @@ export const schema: Schema<Segments> = {
                         rest: {
                           ref: c(segmentName, 'l', 'button.neutral', 70)
                         }
+                      }
+                    }
+                  },
+                  neutral: {
+                    vivid: {
+                      rest: c(segmentName, 'l', 'button.neutral', 0),
+                      disabled: {
+                        ref: c(segmentName, 'l', 'button.neutral', 60)
                       }
                     }
                   }

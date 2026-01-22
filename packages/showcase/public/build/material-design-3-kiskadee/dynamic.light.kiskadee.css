@@ -1,11 +1,11 @@
-.-a.-d .mk-b { color: #666 }
+.-a.-d .mk-a { color: #666 }
 .-a.-s .mk-d { color: #4D4D4D }
 .-a.-s .mk-e { color: #FFF }
-.mk-a.-d.-a { background: #E6E6E6 }
 .mk-aa.-s.-a { background: hsl(var(--k-p-10)) }
 .mk-ad { background: #DE372F }
-.mk-af { background: #E2D6F5 }
-.mk-bb.-s.-a { background: #7C748B }
+.mk-ae { background: #625B71 }
+.mk-b.-d.-a { background: #E6E6E6 }
+.mk-bb.-s.-a { background: #7B738A }
 .mk-bt { background: hsl(var(--k-p-10)) }
 .mk-bu { background: hsl(var(--k-p-60)) }
 .mk-c { color: #FFF }
@@ -14,14 +14,14 @@
 .mk-l { color: #4D4D4D }
 .mk-n { background: #FFDAD5 }
 .mk-z.-s.-a { background: #DE372F }
-.mk-ak:focus-visible, .mk-ak.-f.-a { background: #E2D6F5 }
+.mk-aj:focus-visible, .mk-aj.-f.-a { background: #625B71 }
 .mk-bv:focus-visible, .mk-bv.-f.-a { background: #DE372F }
 .mk-bz:focus-visible, .mk-bz.-f.-a { background: hsl(var(--k-p-10)) }
 .mk-ca:focus-visible, .mk-ca.-f.-a { background: hsl(var(--k-p-60)) }
 .mk-p:focus-visible, .mk-p.-f.-a { background: #FFDAD5 }
-.mk-ao:hover, .mk-ao.-h.-a { background: #E8DDF8 }
+.mk-an:hover, .mk-an.-h.-a { background: #6E677E }
 .mk-ap:hover, .mk-ap.-h.-a { background: #FF5448 }
-.mk-av:hover.-s, .mk-av.-s.-h.-a { background: #958CA6 }
+.mk-av:hover.-s, .mk-av.-s.-h.-a { background: #958DA5 }
 .mk-ce:hover, .mk-ce.-h.-a { background: hsl(var(--k-p-55)) }
 .mk-cf:hover, .mk-cf.-h.-a { background: hsl(var(--k-p-8)) }
 .mk-cm:hover.-s, .mk-cm.-s.-h.-a { background: hsl(var(--k-p-40)) }
@@ -29,7 +29,7 @@
 .mk-r:hover, .mk-r.-h.-a { background: #FFE2DE }
 .mk-v:hover.-s, .mk-v.-s.-h.-a { background: #FF5448 }
 .mk-w:hover.-s, .mk-w.-s.-h.-a { background: hsl(var(--k-p-8)) }
-.mk-as:active, .mk-as.-p.-a { background: #DACCF0 }
+.mk-as:active, .mk-as.-p.-a { background: #564F65 }
 .mk-ay:active.-s, .mk-ay.-s.-p.-a { background: #625B71 }
 .mk-ck:active, .mk-ck.-p.-a { background: hsl(var(--k-p-13)) }
 .mk-cl:active, .mk-cl.-p.-a { background: hsl(var(--k-p-65)) }

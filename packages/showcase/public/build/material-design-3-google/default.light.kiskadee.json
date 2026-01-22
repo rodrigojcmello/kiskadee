@@ -7,7 +7,7 @@
           "v": "gmd-aq gmd-ay gmd-bc gmd-au gmd-i gmd-e gmd-g gmd-a"
         },
         "neutral": {
-          "s": "gmd-m gmd-s gmd-v gmd-p gmd-z gmd-x gmd-y gmd-a"
+          "v": "gmd-m gmd-s gmd-v gmd-p gmd-z gmd-x gmd-y gmd-a"
         }
       }
     },
@@ -16,6 +16,9 @@
         "primary": {
           "s": "gmd-aa gmd-ab gmd-b",
           "v": "gmd-c gmd-d gmd-b"
+        },
+        "neutral": {
+          "v": "gmd-c gmd-b"
         }
       }
     }

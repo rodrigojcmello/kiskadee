@@ -43,9 +43,9 @@
             1
           ],
           "focusColor": [
-            258,
-            12.82,
-            30,
+            259.09,
+            12.22,
+            35.29,
             1
           ]
         },
@@ -161,15 +161,15 @@
                     }
                   },
                   "neutral": {
-                    "subtle": {
-                      "rest": "#E2D6F5",
-                      "hover": "#E8DDF8",
-                      "pressed": "#DACCF0",
+                    "vivid": {
+                      "rest": "#625B71",
+                      "hover": "#6E677E",
+                      "pressed": "#564F65",
+                      "focus": "#625B71",
                       "disabled": "#E6E6E6",
-                      "focus": "#E2D6F5",
                       "selected": {
-                        "rest": "#7C748B",
-                        "hover": "#958CA6",
+                        "rest": "#7B738A",
+                        "hover": "#958DA5",
                         "pressed": "#625B71"
                       }
                     }
@@ -237,15 +237,15 @@
                     }
                   },
                   "neutral": {
-                    "subtle": {
-                      "rest": "#E2D6F5",
-                      "hover": "#E8DDF8",
-                      "pressed": "#DACCF0",
+                    "vivid": {
+                      "rest": "#625B71",
+                      "hover": "#6E677E",
+                      "pressed": "#564F65",
+                      "focus": "#625B71",
                       "disabled": "#E6E6E6",
-                      "focus": "#E2D6F5",
                       "selected": {
-                        "rest": "#7C748B",
-                        "hover": "#958CA6",
+                        "rest": "#7B738A",
+                        "hover": "#958DA5",
                         "pressed": "#625B71"
                       }
                     }
@@ -360,6 +360,14 @@
                         }
                       }
                     }
+                  },
+                  "neutral": {
+                    "vivid": {
+                      "rest": "#FFF",
+                      "disabled": {
+                        "ref": "#666"
+                      }
+                    }
                   }
                 }
               },
@@ -416,6 +424,14 @@
                         "rest": {
                           "ref": "#4D4D4D"
                         }
+                      }
+                    }
+                  },
+                  "neutral": {
+                    "vivid": {
+                      "rest": "#FFF",
+                      "disabled": {
+                        "ref": "#666"
                       }
                     }
                   }
