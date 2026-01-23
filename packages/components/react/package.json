@@ -7,10 +7,9 @@
   "types": "src/index.ts",
   "exports": {
     ".": {
-      "development": "./src/index.ts",
-      "default": "./dist/index.js"
+      "default": "./src/index.ts"
     },
-    "./style": "./dist/style.kiskadee.css"
+    "./style": "./src/styles/style.kiskadee.css"
   },
   "files": [
     "src",
