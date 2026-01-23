@@ -140,7 +140,7 @@
                       "hover": "#EEE4FF",
                       "pressed": "#E1D3FF",
                       "focus": "#E9DDFF",
-                      "disabled": "#E6E6E6",
+                      "disabled": "#1A1A1A1F",
                       "selected": {
                         "rest": "#8069BF",
                         "hover": "#9A83DB",
@@ -152,7 +152,7 @@
                       "hover": "#735CB1",
                       "pressed": "#5B4397",
                       "focus": "#6750A4",
-                      "disabled": "#E6E6E6",
+                      "disabled": "#1A1A1A1F",
                       "selected": {
                         "rest": "#E9DDFF",
                         "hover": "#EEE4FF",
@@ -166,7 +166,7 @@
                       "hover": "#6E677E",
                       "pressed": "#564F65",
                       "focus": "#625B71",
-                      "disabled": "#E6E6E6",
+                      "disabled": "#1A1A1A1F",
                       "selected": {
                         "rest": "#7B738A",
                         "hover": "#958DA5",
@@ -216,7 +216,7 @@
                       "hover": "hsl(var(--k-p-8))",
                       "pressed": "hsl(var(--k-p-13))",
                       "focus": "hsl(var(--k-p-10))",
-                      "disabled": "#E6E6E6",
+                      "disabled": "#1A1A1A1F",
                       "selected": {
                         "rest": "hsl(var(--k-p-50))",
                         "hover": "hsl(var(--k-p-40))",
@@ -228,7 +228,7 @@
                       "hover": "hsl(var(--k-p-55))",
                       "pressed": "hsl(var(--k-p-65))",
                       "focus": "hsl(var(--k-p-60))",
-                      "disabled": "#E6E6E6",
+                      "disabled": "#1A1A1A1F",
                       "selected": {
                         "rest": "hsl(var(--k-p-10))",
                         "hover": "hsl(var(--k-p-8))",
@@ -242,7 +242,7 @@
                       "hover": "#6E677E",
                       "pressed": "#564F65",
                       "focus": "#625B71",
-                      "disabled": "#E6E6E6",
+                      "disabled": "#1A1A1A1F",
                       "selected": {
                         "rest": "#7B738A",
                         "hover": "#958DA5",
@@ -341,7 +341,7 @@
                     "subtle": {
                       "rest": "#4A4358",
                       "disabled": {
-                        "ref": "#625B71"
+                        "ref": "#1E192B61"
                       },
                       "selected": {
                         "rest": {
@@ -352,7 +352,7 @@
                     "vivid": {
                       "rest": "#FFF",
                       "disabled": {
-                        "ref": "#625B71"
+                        "ref": "#1E192B61"
                       },
                       "selected": {
                         "rest": {
@@ -365,7 +365,7 @@
                     "vivid": {
                       "rest": "#FFF",
                       "disabled": {
-                        "ref": "#625B71"
+                        "ref": "#1E192B61"
                       }
                     }
                   }
@@ -407,7 +407,7 @@
                     "subtle": {
                       "rest": "#4A4358",
                       "disabled": {
-                        "ref": "#625B71"
+                        "ref": "#1E192B61"
                       },
                       "selected": {
                         "rest": {
@@ -418,7 +418,7 @@
                     "vivid": {
                       "rest": "#FFF",
                       "disabled": {
-                        "ref": "#625B71"
+                        "ref": "#1E192B61"
                       },
                       "selected": {
                         "rest": {
@@ -431,7 +431,7 @@
                     "vivid": {
                       "rest": "#FFF",
                       "disabled": {
-                        "ref": "#625B71"
+                        "ref": "#1E192B61"
                       }
                     }
                   }

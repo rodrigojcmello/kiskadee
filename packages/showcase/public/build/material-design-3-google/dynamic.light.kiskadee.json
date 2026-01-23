@@ -3,22 +3,22 @@
     "e1": {
       "c": {
         "primary": {
-          "s": "gmd-at gmd-bc gmd-bf gmd-ax gmd-bm gmd-bi gmd-bk gmd-c",
-          "v": "gmd-au gmd-bb gmd-bg gmd-ay gmd-k gmd-g gmd-i gmd-c"
+          "s": "gmd-au gmd-bd gmd-bg gmd-ay gmd-bn gmd-bj gmd-bl gmd-b",
+          "v": "gmd-av gmd-bc gmd-bh gmd-az gmd-l gmd-h gmd-j gmd-b"
         },
         "neutral": {
-          "v": "gmd-n gmd-t gmd-w gmd-q gmd-aa gmd-y gmd-z gmd-c"
+          "v": "gmd-o gmd-u gmd-x gmd-r gmd-ab gmd-z gmd-aa gmd-b"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "s": "gmd-ab gmd-ac gmd-a",
-          "v": "gmd-b gmd-d gmd-a"
+          "s": "gmd-ac gmd-ad gmd-c",
+          "v": "gmd-a gmd-d gmd-c"
         },
         "neutral": {
-          "v": "gmd-b gmd-a"
+          "v": "gmd-a gmd-c"
         }
       }
     }

@@ -3,16 +3,16 @@
     "e1": {
       "c": {
         "primary": {
-          "s": "mk-ai mk-ar mk-au mk-am mk-ab mk-x mk-z mk-c",
-          "v": "mk-ai mk-ar mk-au mk-am mk-ab mk-x mk-z mk-c"
+          "s": "mk-aj mk-as mk-av mk-an mk-ac mk-y mk-aa mk-c",
+          "v": "mk-aj mk-as mk-av mk-an mk-ac mk-y mk-aa mk-c"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "s": "mk-b mk-d mk-a",
-          "v": "mk-b mk-d mk-a"
+          "s": "mk-a mk-d mk-b",
+          "v": "mk-a mk-d mk-b"
         }
       }
     }

@@ -116,7 +116,7 @@ export const schema: Schema<Segments> = {
                       hover: c(seg, 'l', 'button.primary', 8),
                       pressed: c(seg, 'l', 'button.primary', 13),
                       focus: c(seg, 'l', 'button.primary', 10),
-                      disabled: c(seg, 'l', 'primitive.black.v1', 10),
+                      disabled: c(seg, 'l', 'primitive.black.v1', 90, 12),
                       selected: {
                         rest: c(seg, 'l', 'button.primary', 50),
                         hover: c(seg, 'l', 'button.primary', 40),
@@ -128,7 +128,7 @@ export const schema: Schema<Segments> = {
                       hover: c(seg, 'l', 'button.primary', 55),
                       pressed: c(seg, 'l', 'button.primary', 65),
                       focus: c(seg, 'l', 'button.primary', 60),
-                      disabled: c(seg, 'l', 'primitive.black.v1', 10),
+                      disabled: c(seg, 'l', 'primitive.black.v1', 90, 12),
                       selected: {
                         rest: c(seg, 'l', 'button.primary', 10),
                         hover: c(seg, 'l', 'button.primary', 8),
@@ -142,7 +142,7 @@ export const schema: Schema<Segments> = {
                       hover: c(seg, 'l', 'button.neutral', 55),
                       pressed: c(seg, 'l', 'button.neutral', 65),
                       focus: c(seg, 'l', 'button.neutral', 60),
-                      disabled: c(seg, 'l', 'primitive.black.v1', 10),
+                      disabled: c(seg, 'l', 'primitive.black.v1', 90, 12),
                       selected: {
                         rest: c(seg, 'l', 'button.neutral', 50),
                         hover: c(seg, 'l', 'button.neutral', 40),
@@ -229,7 +229,7 @@ export const schema: Schema<Segments> = {
                     subtle: {
                       rest: c(segmentName, 'l', 'button.neutral', 70),
                       disabled: {
-                        ref: c(segmentName, 'l', 'button.neutral', 60)
+                        ref: c(segmentName, 'l', 'button.neutral', 90, 38)
                       },
                       selected: {
                         rest: {
@@ -240,7 +240,7 @@ export const schema: Schema<Segments> = {
                     vivid: {
                       rest: c(segmentName, 'l', primitive('black', 'v1'), 0),
                       disabled: {
-                        ref: c(segmentName, 'l', 'button.neutral', 60)
+                        ref: c(segmentName, 'l', 'button.neutral', 90, 38)
                       },
                       selected: {
                         rest: {
@@ -253,7 +253,7 @@ export const schema: Schema<Segments> = {
                     vivid: {
                       rest: c(segmentName, 'l', 'button.neutral', 0),
                       disabled: {
-                        ref: c(segmentName, 'l', 'button.neutral', 60)
+                        ref: c(segmentName, 'l', 'button.neutral', 90, 38)
                       }
                     }
                   }
