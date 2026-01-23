@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import './globals.scss';
-import '@kiskadee/react-components/global.kiskadee.scss';
+import '@kiskadee/react-components/style';
 import AppHead from '@/components/AppHead/AppHead';
 import ColorScaleViewer from '@/components/ColorScaleViewer/ColorScaleViewer';
 import DesignSystemToolbar from '@/components/DesignSystemToolbar/DesignSystemToolbar';

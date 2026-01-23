@@ -3,14 +3,23 @@
   "version": "1.0.0",
   "type": "module",
   "description": "",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "development": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./style": "./dist/style.kiskadee.css"
+  },
   "files": [
     "src",
-    "dist",
-    "global.kiskadee.scss"
+    "dist"
   ],
   "scripts": {
-    "build:styles": "mkdir -p dist && sass --no-source-map global.kiskadee.scss dist/global.kiskadee.css && postcss dist/global.kiskadee.css -o dist/global.kiskadee.css"
+    "build:ts": "tsc -p tsconfig.build.json",
+    "build:styles": "mkdir -p dist && sass --no-source-map src/styles/style.kiskadee.scss dist/style.kiskadee.css && postcss dist/style.kiskadee.css -o dist/style.kiskadee.css",
+    "build": "pnpm run build:ts && pnpm run build:styles"
   },
   "author": "Rodrigo J C Mello",
   "license": "MIT",

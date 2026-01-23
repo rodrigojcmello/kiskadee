@@ -37,7 +37,7 @@ For `boxColor` gradients, the Web builder emits:
 - `@property --k-bg1`
 - `@property --k-bg2`
 
-Those live in `packages/components/react/global.kiskadee.scss`.
+Those live in `packages/components/react/src/styles/style.kiskadee.scss`.
 
 ### Constraints and fallbacks
 
