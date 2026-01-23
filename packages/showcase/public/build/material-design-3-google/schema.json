@@ -175,23 +175,23 @@
                 "boxColor": {
                   "primary": {
                     "subtle": {
-                      "rest": "#8069BF",
-                      "hover": "#9A83DB",
-                      "pressed": "#6750A4",
-                      "disabled": "#E8DEF9",
-                      "focus": "#8069BF",
+                      "rest": "#22005D",
+                      "hover": "#1D0053",
+                      "pressed": "#280963",
+                      "focus": "#22005D",
+                      "disabled": "#1A1A1A1F",
                       "selected": {
-                        "rest": "#E9DDFF",
-                        "hover": "#EEE4FF",
-                        "pressed": "#CFBCFF"
+                        "rest": "#8069BF",
+                        "hover": "#6750A4",
+                        "pressed": "#9A83DB"
                       }
                     },
                     "vivid": {
-                      "rest": "#8069BF",
-                      "hover": "#9A83DB",
-                      "pressed": "#6750A4",
-                      "disabled": "#E8DEF9",
-                      "focus": "#8069BF"
+                      "rest": "#9A83DB",
+                      "hover": "#8D76CD",
+                      "pressed": "#A890E9",
+                      "focus": "#9A83DB",
+                      "disabled": "#1A1A1A1F"
                     }
                   }
                 }
@@ -241,23 +241,23 @@
                 "boxColor": {
                   "primary": {
                     "subtle": {
-                      "rest": "hsl(var(--k-p-50))",
-                      "hover": "hsl(var(--k-p-40))",
-                      "pressed": "hsl(var(--k-p-60))",
-                      "disabled": "#E8DEF9",
-                      "focus": "hsl(var(--k-p-50))",
+                      "rest": "hsl(var(--k-p-10))",
+                      "hover": "hsl(var(--k-p-8))",
+                      "pressed": "hsl(var(--k-p-13))",
+                      "focus": "hsl(var(--k-p-10))",
+                      "disabled": "#1A1A1A1F",
                       "selected": {
-                        "rest": "hsl(var(--k-p-10))",
-                        "hover": "hsl(var(--k-p-8))",
-                        "pressed": "hsl(var(--k-p-20))"
+                        "rest": "hsl(var(--k-p-50))",
+                        "hover": "hsl(var(--k-p-40))",
+                        "pressed": "hsl(var(--k-p-60))"
                       }
                     },
                     "vivid": {
-                      "rest": "hsl(var(--k-p-50))",
-                      "hover": "hsl(var(--k-p-40))",
-                      "pressed": "hsl(var(--k-p-60))",
-                      "disabled": "#E8DEF9",
-                      "focus": "hsl(var(--k-p-50))"
+                      "rest": "hsl(var(--k-p-60))",
+                      "hover": "hsl(var(--k-p-55))",
+                      "pressed": "hsl(var(--k-p-65))",
+                      "focus": "hsl(var(--k-p-60))",
+                      "disabled": "#1A1A1A1F"
                     }
                   }
                 }

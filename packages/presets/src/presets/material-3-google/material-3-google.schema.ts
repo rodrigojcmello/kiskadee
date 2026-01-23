@@ -151,23 +151,23 @@ export const schema: Schema<Segments> = {
                 boxColor: {
                   primary: {
                     subtle: {
-                      rest: c(seg, 'd', 'button.primary', 50),
-                      hover: c(seg, 'd', 'button.primary', 40),
-                      pressed: c(seg, 'd', 'button.primary', 60),
-                      disabled: c(seg, 'd', 'button.neutral', 10),
-                      focus: c(seg, 'd', 'button.primary', 50),
+                      rest: c(seg, 'd', 'button.primary', 10),
+                      hover: c(seg, 'd', 'button.primary', 8),
+                      pressed: c(seg, 'd', 'button.primary', 13),
+                      focus: c(seg, 'd', 'button.primary', 10),
+                      disabled: c(seg, 'l', 'primitive.black.v1', 90, 12),
                       selected: {
-                        rest: c(seg, 'd', 'button.primary', 10),
-                        hover: c(seg, 'd', 'button.primary', 8),
-                        pressed: c(seg, 'd', 'button.primary', 20)
+                        rest: c(seg, 'd', 'button.primary', 50),
+                        hover: c(seg, 'd', 'button.primary', 40),
+                        pressed: c(seg, 'd', 'button.primary', 60)
                       }
                     },
                     vivid: {
-                      rest: c(seg, 'd', 'button.primary', 50),
-                      hover: c(seg, 'd', 'button.primary', 40),
-                      pressed: c(seg, 'd', 'button.primary', 60),
-                      disabled: c(seg, 'd', 'button.neutral', 10),
-                      focus: c(seg, 'd', 'button.primary', 50)
+                      rest: c(seg, 'd', 'button.primary', 60),
+                      hover: c(seg, 'd', 'button.primary', 55),
+                      pressed: c(seg, 'd', 'button.primary', 65),
+                      focus: c(seg, 'd', 'button.primary', 60),
+                      disabled: c(seg, 'l', 'primitive.black.v1', 90, 12)
                     }
                   }
                 }

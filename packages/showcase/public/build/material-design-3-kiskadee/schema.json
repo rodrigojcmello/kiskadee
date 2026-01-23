@@ -107,9 +107,9 @@
             1
           ],
           "focusColor": [
-            256.43,
-            34.43,
-            47.84,
+            255.68,
+            55,
+            68.63,
             1
           ]
         }
@@ -231,23 +231,23 @@
                 "boxColor": {
                   "primary": {
                     "subtle": {
-                      "rest": "#8069BF",
-                      "hover": "#9A83DB",
-                      "pressed": "#6750A4",
-                      "disabled": "#E8DEF9",
-                      "focus": "#8069BF",
+                      "rest": "#22005D",
+                      "hover": "#1D0053",
+                      "pressed": "#280963",
+                      "focus": "#22005D",
+                      "disabled": "#1A1A1A1F",
                       "selected": {
-                        "rest": "#E9DDFF",
-                        "hover": "#EEE4FF",
-                        "pressed": "#CFBCFF"
+                        "rest": "#8069BF",
+                        "hover": "#6750A4",
+                        "pressed": "#9A83DB"
                       }
                     },
                     "vivid": {
-                      "rest": "#8069BF",
-                      "hover": "#9A83DB",
-                      "pressed": "#6750A4",
-                      "disabled": "#E8DEF9",
-                      "focus": "#8069BF"
+                      "rest": "#9A83DB",
+                      "hover": "#8D76CD",
+                      "pressed": "#A890E9",
+                      "focus": "#9A83DB",
+                      "disabled": "#1A1A1A1F"
                     }
                   }
                 }
@@ -323,23 +323,23 @@
                 "boxColor": {
                   "primary": {
                     "subtle": {
-                      "rest": "hsl(var(--k-p-50))",
-                      "hover": "hsl(var(--k-p-40))",
-                      "pressed": "hsl(var(--k-p-60))",
-                      "disabled": "#E8DEF9",
-                      "focus": "hsl(var(--k-p-50))",
+                      "rest": "hsl(var(--k-p-10))",
+                      "hover": "hsl(var(--k-p-8))",
+                      "pressed": "hsl(var(--k-p-13))",
+                      "focus": "hsl(var(--k-p-10))",
+                      "disabled": "#1A1A1A1F",
                       "selected": {
-                        "rest": "hsl(var(--k-p-10))",
-                        "hover": "hsl(var(--k-p-8))",
-                        "pressed": "hsl(var(--k-p-20))"
+                        "rest": "hsl(var(--k-p-50))",
+                        "hover": "hsl(var(--k-p-40))",
+                        "pressed": "hsl(var(--k-p-60))"
                       }
                     },
                     "vivid": {
-                      "rest": "hsl(var(--k-p-50))",
-                      "hover": "hsl(var(--k-p-40))",
-                      "pressed": "hsl(var(--k-p-60))",
-                      "disabled": "#E8DEF9",
-                      "focus": "hsl(var(--k-p-50))"
+                      "rest": "hsl(var(--k-p-60))",
+                      "hover": "hsl(var(--k-p-55))",
+                      "pressed": "hsl(var(--k-p-65))",
+                      "focus": "hsl(var(--k-p-60))",
+                      "disabled": "#1A1A1A1F"
                     }
                   }
                 }
@@ -497,14 +497,14 @@
                   "primary": {
                     "subtle": {
                       "rest": "#8069BF",
-                      "hover": "#9A83DB",
-                      "pressed": "#6750A4",
+                      "hover": "#6750A4",
+                      "pressed": "#9A83DB",
                       "disabled": "#E8DEF9",
                       "focus": "#8069BF",
                       "selected": {
-                        "rest": "#E9DDFF",
-                        "hover": "#EEE4FF",
-                        "pressed": "#CFBCFF"
+                        "rest": "#22005D",
+                        "hover": "#1D0053",
+                        "pressed": "#381E72"
                       }
                     },
                     "vivid": {
@@ -513,7 +513,7 @@
                         "angle": 180,
                         "stops": [
                           {
-                            "color": "#C3ACFF",
+                            "color": "#432B7E",
                             "position": 0
                           },
                           {
@@ -527,7 +527,7 @@
                         "angle": 180,
                         "stops": [
                           {
-                            "color": "#6750A4",
+                            "color": "#9A83DB",
                             "position": 0
                           },
                           {
@@ -541,7 +541,7 @@
                         "angle": 180,
                         "stops": [
                           {
-                            "color": "#22005D",
+                            "color": "#E9DDFF",
                             "position": 0
                           },
                           {
@@ -556,7 +556,7 @@
                         "angle": 180,
                         "stops": [
                           {
-                            "color": "#4F378A",
+                            "color": "#B69DF8",
                             "position": 0
                           },
                           {
@@ -571,7 +571,7 @@
                           "angle": 180,
                           "stops": [
                             {
-                              "color": "#381E72",
+                              "color": "#CFBCFF",
                               "position": 0
                             },
                             {
@@ -585,7 +585,7 @@
                           "angle": 180,
                           "stops": [
                             {
-                              "color": "#4F378A",
+                              "color": "#B69DF8",
                               "position": 0
                             },
                             {
@@ -599,7 +599,7 @@
                           "angle": 180,
                           "stops": [
                             {
-                              "color": "#22005D",
+                              "color": "#E9DDFF",
                               "position": 0
                             },
                             {

@@ -7,6 +7,7 @@ import type {
 } from '@kiskadee/core';
 import dynamicColor from '../dynamic.color';
 import blackLight from './colors/black.v1.light';
+import purpleV1Dark from './colors/purple.v1.dark';
 import purpleV1Light from './colors/purple.v1.light';
 import purpleV2Light from './colors/purple.v2.light';
 import redV1Light from './colors/red.v1.light';
@@ -22,7 +23,7 @@ export const primitiveColors = {
     v1: {
       solid: {
         light: purpleV1Light,
-        dark: purpleV1Light
+        dark: purpleV1Dark
       }
     },
     v2: {
