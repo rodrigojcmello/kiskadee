@@ -42,8 +42,7 @@
             "hover": true,
             "pressed": true,
             "focus": true,
-            "disabled": true,
-            "selected": true
+            "disabled": true
           }
         },
         "neutral": {

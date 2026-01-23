@@ -1,27 +1,27 @@
 {
   "button": {
     "e1": {
-      "d": "gmd-ar",
+      "d": "gmd-ak",
       "e": {
-        "h": "gmd-ci gmd-cl gmd-cm gmd-ck gmd-cj",
-        "r": "gmd-m gmd-al gmd-am gmd-ak gmd-aq gmd-ao gmd-ap gmd-an"
+        "h": "gmd-ch gmd-ck gmd-cl gmd-cj gmd-ci",
+        "r": "gmd-f gmd-ae gmd-af gmd-ad gmd-aj gmd-ah gmd-ai gmd-ag"
       },
       "s": {
-        "sm:1": "gmd-ch gmd-bs gmd-bt gmd-by gmd-ag",
-        "md:1": "gmd-cd gmd-bo gmd-bu gmd-bz gmd-m",
-        "lg:1": "gmd-ce gmd-bp gmd-bv gmd-ca gmd-ah",
-        "lg:2": "gmd-cf gmd-bq gmd-bw gmd-cb gmd-ai",
-        "lg:3": "gmd-cg gmd-br gmd-bx gmd-cc gmd-aj"
+        "sm:1": "gmd-cg gmd-br gmd-bs gmd-bx gmd-z",
+        "md:1": "gmd-cc gmd-bn gmd-bt gmd-by gmd-f",
+        "lg:1": "gmd-cd gmd-bo gmd-bu gmd-bz gmd-aa",
+        "lg:2": "gmd-ce gmd-bp gmd-bv gmd-ca gmd-ab",
+        "lg:3": "gmd-cf gmd-bq gmd-bw gmd-cb gmd-ac"
       }
     },
     "e2": {
-      "d": "gmd-ct",
+      "d": "gmd-cs",
       "s": {
-        "sm:1": "gmd-af gmd-ae",
-        "md:1": "gmd-af gmd-ae",
-        "lg:1": "gmd-cq gmd-cn",
-        "lg:2": "gmd-cr gmd-co",
-        "lg:3": "gmd-cs gmd-cp"
+        "sm:1": "gmd-y gmd-x",
+        "md:1": "gmd-y gmd-x",
+        "lg:1": "gmd-cp gmd-cm",
+        "lg:2": "gmd-cq gmd-cn",
+        "lg:3": "gmd-cr gmd-co"
       }
     }
   }

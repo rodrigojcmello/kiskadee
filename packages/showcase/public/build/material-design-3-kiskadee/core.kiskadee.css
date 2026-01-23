@@ -1,11 +1,10 @@
-.mk-ad { border-radius: 20px }
-.mk-bg { line-height: 20px }
-.mk-bh { font-size: 0.875rem }
-.mk-bi { border-radius: 18px }
-.mk-bj { border-radius: 28px }
-.mk-bk { border-radius: 48px }
-.mk-bl { border-radius: 68px }
-.mk-bt { border-style: none }
+.mk-bd { line-height: 20px }
+.mk-be { font-size: 0.875rem }
+.mk-bf { border-radius: 18px }
+.mk-bg { border-radius: 28px }
+.mk-bh { border-radius: 48px }
+.mk-bi { border-radius: 68px }
+.mk-bq { border-style: none }
 .mk-cr { padding-bottom: 10px }
 .mk-cs { padding-bottom: 16px }
 .mk-ct { padding-bottom: 32px }
@@ -33,3 +32,4 @@
 .mk-du { font-size: 1.5rem }
 .mk-dv { font-size: 2rem }
 .mk-dw { font-weight: 500 }
+.mk-x { border-radius: 20px }
