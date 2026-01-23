@@ -1,23 +1,23 @@
 .-a.-d .gmd-c { color: #1E192B61 }
-.-a.-s .gmd-v { color: #FFF }
+.-a.-s .gmd-r { color: #FFF }
 .gmd-a.-d.-a { background: #1A1A1A1F }
-.gmd-ak { background: #6750A4 }
-.gmd-am { background: #E9DDFF }
+.gmd-ag { background: #6750A4 }
+.gmd-ai { background: #E9DDFF }
 .gmd-b { color: #FFF }
+.gmd-bn.-s.-a { background: #6750A4 }
 .gmd-f { background: #625B71 }
-.gmd-r.-s.-a { background: #8069BF }
-.gmd-s.-s.-a { background: #7B738A }
-.gmd-u { color: #4A4358 }
-.gmd-aq:focus-visible, .gmd-aq.-f.-a { background: #6750A4 }
-.gmd-as:focus-visible, .gmd-as.-f.-a { background: #E9DDFF }
+.gmd-p.-s.-a { background: #7B738A }
+.gmd-q { color: #4A4358 }
+.gmd-am:focus-visible, .gmd-am.-f.-a { background: #6750A4 }
+.gmd-ao:focus-visible, .gmd-ao.-f.-a { background: #E9DDFF }
 .gmd-h:focus-visible, .gmd-h.-f.-a { background: #625B71 }
-.gmd-aw:hover, .gmd-aw.-h.-a { background: #735CB1 }
-.gmd-az:hover, .gmd-az.-h.-a { background: #EEE4FF }
-.gmd-bi:hover.-s, .gmd-bi.-s.-h.-a { background: #9A83DB }
+.gmd-as:hover, .gmd-as.-h.-a { background: #735CB1 }
+.gmd-av:hover, .gmd-av.-h.-a { background: #EEE4FF }
+.gmd-be:hover.-s, .gmd-be.-s.-h.-a { background: #735CB1 }
 .gmd-j:hover, .gmd-j.-h.-a { background: #6E677E }
 .gmd-n:hover.-s, .gmd-n.-s.-h.-a { background: #958DA5 }
-.gmd-bc:active, .gmd-bc.-p.-a { background: #5B4397 }
-.gmd-be:active, .gmd-be.-p.-a { background: #E1D3FF }
-.gmd-bl:active.-s, .gmd-bl.-s.-p.-a { background: #6750A4 }
+.gmd-ay:active, .gmd-ay.-p.-a { background: #5B4397 }
+.gmd-ba:active, .gmd-ba.-p.-a { background: #E1D3FF }
+.gmd-bj:active.-s, .gmd-bj.-s.-p.-a { background: #5B4397 }
 .gmd-l:active, .gmd-l.-p.-a { background: #564F65 }
-.gmd-p:active.-s, .gmd-p.-s.-p.-a { background: #625B71 }
+.gmd-o:active.-s, .gmd-o.-s.-p.-a { background: #625B71 }

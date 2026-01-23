@@ -165,6 +165,13 @@
               "light": {
                 "boxColor": {
                   "primary": {
+                    "vivid": {
+                      "rest": "#6750A4",
+                      "hover": "#735CB1",
+                      "pressed": "#5B4397",
+                      "focus": "#6750A4",
+                      "disabled": "#1A1A1A1F"
+                    },
                     "subtle": {
                       "rest": "#E9DDFF",
                       "hover": "#EEE4FF",
@@ -172,17 +179,10 @@
                       "focus": "#E9DDFF",
                       "disabled": "#1A1A1A1F",
                       "selected": {
-                        "rest": "#8069BF",
-                        "hover": "#9A83DB",
-                        "pressed": "#6750A4"
+                        "rest": "#6750A4",
+                        "hover": "#735CB1",
+                        "pressed": "#5B4397"
                       }
-                    },
-                    "vivid": {
-                      "rest": "#6750A4",
-                      "hover": "#735CB1",
-                      "pressed": "#5B4397",
-                      "focus": "#6750A4",
-                      "disabled": "#1A1A1A1F"
                     }
                   },
                   "neutral": {
@@ -257,6 +257,13 @@
               "light": {
                 "boxColor": {
                   "primary": {
+                    "vivid": {
+                      "rest": "hsl(var(--k-p-60))",
+                      "hover": "hsl(var(--k-p-55))",
+                      "pressed": "hsl(var(--k-p-65))",
+                      "focus": "hsl(var(--k-p-60))",
+                      "disabled": "#1A1A1A1F"
+                    },
                     "subtle": {
                       "rest": "hsl(var(--k-p-10))",
                       "hover": "hsl(var(--k-p-8))",
@@ -264,17 +271,10 @@
                       "focus": "hsl(var(--k-p-10))",
                       "disabled": "#1A1A1A1F",
                       "selected": {
-                        "rest": "hsl(var(--k-p-50))",
-                        "hover": "hsl(var(--k-p-40))",
-                        "pressed": "hsl(var(--k-p-60))"
+                        "rest": "hsl(var(--k-p-60))",
+                        "hover": "hsl(var(--k-p-55))",
+                        "pressed": "hsl(var(--k-p-65))"
                       }
-                    },
-                    "vivid": {
-                      "rest": "hsl(var(--k-p-60))",
-                      "hover": "hsl(var(--k-p-55))",
-                      "pressed": "hsl(var(--k-p-65))",
-                      "focus": "hsl(var(--k-p-60))",
-                      "disabled": "#1A1A1A1F"
                     }
                   },
                   "neutral": {

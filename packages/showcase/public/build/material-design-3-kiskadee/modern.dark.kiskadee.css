@@ -1,25 +1,25 @@
 .-a.-d .mk-b { color: #625B71 }
 .-a.-s .mk-e { color: #4A4358 }
 .mk-a { color: #FFF }
-.mk-bj { background: #8069BF }
-.mk-bo { --k-bg0: #432B7E; --k-bg1: #BEB5CE; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }
+.mk-be { background: #8069BF }
+.mk-bj { --k-bg0: #432B7E; --k-bg1: #BEB5CE; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }
 .mk-c.-d.-a { background: #E8DEF9 }
-.mk-cz.-s.-a { background: #22005D }
-.mk-da.-s.-a { --k-bg0: #CFBCFF; --k-bg1: #332D41; }
+.mk-dd.-s.-a { background: #22005D }
+.mk-de.-s.-a { --k-bg0: #CFBCFF; --k-bg1: #332D41; }
 .mk-j.-s.-a { background: #FFDAD5 }
-.mk-v { background: #CC2A24 }
-.mk-aa:focus-visible, .mk-aa.-f.-a { background: #CC2A24 }
-.mk-bs:focus-visible, .mk-bs.-f.-a { background: #8069BF }
-.mk-bw:focus-visible, .mk-bw.-f.-a { --k-bg0: #B69DF8; --k-bg1: #4A4358; }
-.mk-ae:hover, .mk-ae.-h.-a { background: #DE372F }
-.mk-cb:hover, .mk-cb.-h.-a { background: #6750A4 }
-.mk-ce:hover, .mk-ce.-h.-a { --k-bg0: #9A83DB; --k-bg1: #625B71; }
-.mk-cs:hover.-s, .mk-cs.-s.-h.-a { background: #1D0053 }
-.mk-ct:hover.-s, .mk-ct.-s.-h.-a { --k-bg0: #B69DF8; --k-bg1: #4A4358; }
+.mk-u { background: #CC2A24 }
+.mk-bn:focus-visible, .mk-bn.-f.-a { background: #8069BF }
+.mk-br:focus-visible, .mk-br.-f.-a { --k-bg0: #B69DF8; --k-bg1: #4A4358; }
+.mk-z:focus-visible, .mk-z.-f.-a { background: #CC2A24 }
+.mk-ad:hover, .mk-ad.-h.-a { background: #DE372F }
+.mk-bw:hover, .mk-bw.-h.-a { background: #6750A4 }
+.mk-bz:hover, .mk-bz.-h.-a { --k-bg0: #9A83DB; --k-bg1: #625B71; }
+.mk-cp:hover.-s, .mk-cp.-s.-h.-a { background: #1D0053 }
+.mk-cq:hover.-s, .mk-cq.-s.-h.-a { --k-bg0: #B69DF8; --k-bg1: #4A4358; }
 .mk-h:hover.-s, .mk-h.-s.-h.-a { background: #FFE2DE }
-.mk-ci:active, .mk-ci.-p.-a { background: #9A83DB }
-.mk-cm:active, .mk-cm.-p.-a { background: #A8080E }
-.mk-co:active, .mk-co.-p.-a { --k-bg0: #E9DDFF; --k-bg1: #1E192B; }
-.mk-cw:active.-s, .mk-cw.-s.-p.-a { background: #381E72 }
-.mk-cx:active.-s, .mk-cx.-s.-p.-a { --k-bg0: #E9DDFF; --k-bg1: #1E192B; }
+.mk-cd:active, .mk-cd.-p.-a { background: #9A83DB }
+.mk-ch:active, .mk-ch.-p.-a { background: #A8080E }
+.mk-cj:active, .mk-cj.-p.-a { --k-bg0: #E9DDFF; --k-bg1: #1E192B; }
+.mk-cx:active.-s, .mk-cx.-s.-p.-a { background: #381E72 }
+.mk-cy:active.-s, .mk-cy.-s.-p.-a { --k-bg0: #E9DDFF; --k-bg1: #1E192B; }
 .mk-i:active.-s, .mk-i.-s.-p.-a { background: #FFB4AA }

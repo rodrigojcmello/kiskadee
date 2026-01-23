@@ -111,6 +111,13 @@ export const schema: Schema<Segments> = {
               light: {
                 boxColor: {
                   primary: {
+                    vivid: {
+                      rest: c(seg, 'l', 'button.primary', 60),
+                      hover: c(seg, 'l', 'button.primary', 55),
+                      pressed: c(seg, 'l', 'button.primary', 65),
+                      focus: c(seg, 'l', 'button.primary', 60),
+                      disabled: c(seg, 'l', 'primitive.black.v1', 90, 12)
+                    },
                     subtle: {
                       rest: c(seg, 'l', 'button.primary', 10),
                       hover: c(seg, 'l', 'button.primary', 8),
@@ -118,17 +125,10 @@ export const schema: Schema<Segments> = {
                       focus: c(seg, 'l', 'button.primary', 10),
                       disabled: c(seg, 'l', 'primitive.black.v1', 90, 12),
                       selected: {
-                        rest: c(seg, 'l', 'button.primary', 50),
-                        hover: c(seg, 'l', 'button.primary', 40),
-                        pressed: c(seg, 'l', 'button.primary', 60)
+                        rest: c(seg, 'l', 'button.primary', 60),
+                        hover: c(seg, 'l', 'button.primary', 55),
+                        pressed: c(seg, 'l', 'button.primary', 65)
                       }
-                    },
-                    vivid: {
-                      rest: c(seg, 'l', 'button.primary', 60),
-                      hover: c(seg, 'l', 'button.primary', 55),
-                      pressed: c(seg, 'l', 'button.primary', 65),
-                      focus: c(seg, 'l', 'button.primary', 60),
-                      disabled: c(seg, 'l', 'primitive.black.v1', 90, 12)
                     }
                   },
                   neutral: {

@@ -34,7 +34,7 @@
       },
       "state": {
         "primary": {
-          "subtle": {
+          "vivid": {
             "rest": true,
             "hover": true,
             "pressed": true,
@@ -42,7 +42,7 @@
             "disabled": true,
             "selected": true
           },
-          "vivid": {
+          "subtle": {
             "rest": true,
             "hover": true,
             "pressed": true,
