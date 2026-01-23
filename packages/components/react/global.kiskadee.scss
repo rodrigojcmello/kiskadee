@@ -94,3 +94,7 @@ body {
   //transition-duration: var(--k-dur-int-fast);
   //transition-timing-function: linear;
 }
+
+button, a, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
