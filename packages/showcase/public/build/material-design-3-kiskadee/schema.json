@@ -243,10 +243,10 @@
                       }
                     },
                     "vivid": {
-                      "rest": "#9A83DB",
-                      "hover": "#8D76CD",
-                      "pressed": "#A890E9",
-                      "focus": "#9A83DB",
+                      "rest": "#4F378A",
+                      "hover": "#5B4397",
+                      "pressed": "#432B7E",
+                      "focus": "#4F378A",
                       "disabled": "#1A1A1A1F"
                     }
                   }
@@ -335,10 +335,10 @@
                       }
                     },
                     "vivid": {
-                      "rest": "hsl(var(--k-p-60))",
-                      "hover": "hsl(var(--k-p-55))",
-                      "pressed": "hsl(var(--k-p-65))",
-                      "focus": "hsl(var(--k-p-60))",
+                      "rest": "hsl(var(--k-p-30))",
+                      "hover": "hsl(var(--k-p-35))",
+                      "pressed": "hsl(var(--k-p-25))",
+                      "focus": "hsl(var(--k-p-30))",
                       "disabled": "#1A1A1A1F"
                     }
                   }

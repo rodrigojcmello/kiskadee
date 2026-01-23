@@ -1,14 +1,14 @@
 .-a.-d .gmd-d { color: #625B71 }
 .gmd-a.-d.-a { background: #1A1A1A1F }
+.gmd-ao { background: hsl(var(--k-p-30)) }
 .gmd-b { color: #FFF }
 .gmd-g { background: hsl(var(--k-p-10)) }
-.gmd-h { background: hsl(var(--k-p-60)) }
-.gmd-x.-s.-a { background: hsl(var(--k-p-50)) }
-.gmd-j:focus-visible, .gmd-j.-f.-a { background: hsl(var(--k-p-10)) }
-.gmd-k:focus-visible, .gmd-k.-f.-a { background: hsl(var(--k-p-60)) }
-.gmd-m:hover, .gmd-m.-h.-a { background: hsl(var(--k-p-55)) }
-.gmd-n:hover, .gmd-n.-h.-a { background: hsl(var(--k-p-8)) }
-.gmd-s:hover.-s, .gmd-s.-s.-h.-a { background: hsl(var(--k-p-40)) }
-.gmd-p:active, .gmd-p.-p.-a { background: hsl(var(--k-p-13)) }
-.gmd-q:active, .gmd-q.-p.-a { background: hsl(var(--k-p-65)) }
-.gmd-u:active.-s, .gmd-u.-s.-p.-a { background: hsl(var(--k-p-60)) }
+.gmd-t.-s.-a { background: hsl(var(--k-p-50)) }
+.gmd-au:focus-visible, .gmd-au.-f.-a { background: hsl(var(--k-p-30)) }
+.gmd-i:focus-visible, .gmd-i.-f.-a { background: hsl(var(--k-p-10)) }
+.gmd-ba:hover, .gmd-ba.-h.-a { background: hsl(var(--k-p-35)) }
+.gmd-k:hover, .gmd-k.-h.-a { background: hsl(var(--k-p-8)) }
+.gmd-o:hover.-s, .gmd-o.-s.-h.-a { background: hsl(var(--k-p-40)) }
+.gmd-bg:active, .gmd-bg.-p.-a { background: hsl(var(--k-p-25)) }
+.gmd-m:active, .gmd-m.-p.-a { background: hsl(var(--k-p-13)) }
+.gmd-q:active.-s, .gmd-q.-s.-p.-a { background: hsl(var(--k-p-60)) }

@@ -163,10 +163,10 @@ export const schema: Schema<Segments> = {
                       }
                     },
                     vivid: {
-                      rest: c(seg, 'd', 'button.primary', 60),
-                      hover: c(seg, 'd', 'button.primary', 55),
-                      pressed: c(seg, 'd', 'button.primary', 65),
-                      focus: c(seg, 'd', 'button.primary', 60),
+                      rest: c(seg, 'd', 'button.primary', 30),
+                      hover: c(seg, 'd', 'button.primary', 35),
+                      pressed: c(seg, 'd', 'button.primary', 25),
+                      focus: c(seg, 'd', 'button.primary', 30),
                       disabled: c(seg, 'l', 'primitive.black.v1', 90, 12)
                     }
                   }
