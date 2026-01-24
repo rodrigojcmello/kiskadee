@@ -48,9 +48,9 @@
         "neutral": {
           "vivid": {
             "rest": true,
+            "focus": true,
             "hover": true,
             "pressed": true,
-            "focus": true,
             "disabled": true,
             "selected": true
           }

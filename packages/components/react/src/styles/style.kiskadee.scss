@@ -62,16 +62,18 @@ body {
 }
 
 /* Interaction state transitions (hover/focus/pressed) */
+$props-active: padding, border-color, border-radius, box-shadow, --k-bg0, --k-bg1, --k-bg2;
+$props-state: $props-active, background-color, color;
+
 .k-state {
-  transition-property: padding, background-color, border-color, border-radius, color, box-shadow, --k-bg0, --k-bg1, --k-bg2;
+  transition-property: $props-state;
   transition-duration: var(--k-dur-int);
   transition-timing-function: var(--k-ease-std);
 }
 
+/* Active state skips text/background transitions to keep press feedback snappy. */
 :active {
-  transition-property: padding, border-color, border-radius, box-shadow, --k-bg0, --k-bg1, --k-bg2;
-  transition-duration: var(--k-dur-int);
-  transition-timing-function: var(--k-ease-std);
+  transition-property: $props-active;
 }
 
 .no-transitions *,

@@ -158,9 +158,9 @@
                   "neutral": {
                     "vivid": {
                       "rest": "#625B71",
-                      "hover": "#6E677E",
-                      "pressed": "#564F65",
                       "focus": "#625B71",
+                      "hover": "#6E677E",
+                      "pressed": "#4A4358",
                       "disabled": "#1A1A1A1F",
                       "selected": {
                         "rest": "#7B738A",
@@ -224,9 +224,9 @@
                   "neutral": {
                     "vivid": {
                       "rest": "#625B71",
-                      "hover": "#6E677E",
-                      "pressed": "#564F65",
                       "focus": "#625B71",
+                      "hover": "#6E677E",
+                      "pressed": "#4A4358",
                       "disabled": "#1A1A1A1F",
                       "selected": {
                         "rest": "#7B738A",

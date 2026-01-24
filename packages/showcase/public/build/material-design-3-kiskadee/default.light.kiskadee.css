@@ -3,39 +3,39 @@
 .-a.-s .mk-e { color: #4A4358 }
 .-a.-s .mk-g { color: #FFF }
 .mk-a { color: #FFF }
-.mk-am.-s.-a { background: #7B738A }
-.mk-an { color: #930008 }
-.mk-bd { background: #6750A4 }
+.mk-an.-s.-a { background: #7B738A }
+.mk-ao { color: #930008 }
+.mk-be { background: #6750A4 }
 .mk-c.-d.-a { background: #E8DEF9 }
 .mk-d.-d.-a { background: #1A1A1A1F }
-.mk-de.-s.-a { background: #6750A4 }
+.mk-df.-s.-a { background: #6750A4 }
 .mk-j.-s.-a { background: #FFDAD5 }
 .mk-k { color: #4A4358 }
 .mk-l { background: #FFDAD5 }
-.mk-s.-s.-a { background: #DE372F }
-.mk-u { background: #CC2A24 }
-.mk-w { background: #625B71 }
-.mk-x { background: #E9DDFF }
-.mk-aa:focus-visible, .mk-aa.-f.-a { background: #625B71 }
-.mk-ab:focus-visible, .mk-ab.-f.-a { background: #E9DDFF }
-.mk-bm:focus-visible, .mk-bm.-f.-a { background: #6750A4 }
+.mk-q.-s.-a { background: #DE372F }
+.mk-s { background: #CC2A24 }
+.mk-u { background: #625B71 }
+.mk-v { background: #E9DDFF }
+.mk-bn:focus-visible, .mk-bn.-f.-a { background: #6750A4 }
 .mk-m:focus-visible, .mk-m.-f.-a { background: #FFDAD5 }
-.mk-z:focus-visible, .mk-z.-f.-a { background: #CC2A24 }
-.mk-ad:hover, .mk-ad.-h.-a { background: #DE372F }
-.mk-ae:hover, .mk-ae.-h.-a { background: #6E677E }
-.mk-af:hover, .mk-af.-h.-a { background: #EEE4FF }
-.mk-aj:hover.-s, .mk-aj.-s.-h.-a { background: #958DA5 }
-.mk-bt:hover, .mk-bt.-h.-a { background: #735CB1 }
-.mk-cp:hover.-s, .mk-cp.-s.-h.-a { background: #735CB1 }
+.mk-x:focus-visible, .mk-x.-f.-a { background: #CC2A24 }
+.mk-y:focus-visible, .mk-y.-f.-a { background: #625B71 }
+.mk-z:focus-visible, .mk-z.-f.-a { background: #E9DDFF }
+.mk-ab:hover, .mk-ab.-h.-a { background: #DE372F }
+.mk-ac:hover, .mk-ac.-h.-a { background: #6E677E }
+.mk-ad:hover, .mk-ad.-h.-a { background: #EEE4FF }
+.mk-ak:hover.-s, .mk-ak.-s.-h.-a { background: #958DA5 }
+.mk-bu:hover, .mk-bu.-h.-a { background: #735CB1 }
+.mk-cq:hover.-s, .mk-cq.-s.-h.-a { background: #735CB1 }
 .mk-h:hover.-s, .mk-h.-s.-h.-a { background: #FFE2DE }
 .mk-n:hover, .mk-n.-h.-a { background: #FFE2DE }
-.mk-q:hover.-s, .mk-q.-s.-h.-a { background: #FF5448 }
-.mk-ai:active, .mk-ai.-p.-a { background: #564F65 }
-.mk-ak:active.-s, .mk-ak.-s.-p.-a { background: #625B71 }
-.mk-cc:active, .mk-cc.-p.-a { background: #4F378A }
-.mk-ce:active, .mk-ce.-p.-a { background: #DCCDFF }
-.mk-cy:active.-s, .mk-cy.-s.-p.-a { background: #5B4397 }
+.mk-o:hover.-s, .mk-o.-s.-h.-a { background: #FF5448 }
+.mk-ah:active, .mk-ah.-p.-a { background: #4A4358 }
+.mk-ai:active, .mk-ai.-p.-a { background: #A8080E }
+.mk-al:active.-s, .mk-al.-s.-p.-a { background: #625B71 }
+.mk-cd:active, .mk-cd.-p.-a { background: #4F378A }
+.mk-cf:active, .mk-cf.-p.-a { background: #DCCDFF }
+.mk-ci:active, .mk-ci.-p.-a { background: #FFC7C0 }
+.mk-cz:active.-s, .mk-cz.-s.-p.-a { background: #5B4397 }
 .mk-i:active.-s, .mk-i.-s.-p.-a { background: #FFB4AA }
-.mk-o:active, .mk-o.-p.-a { background: #BA1B19 }
-.mk-p:active, .mk-p.-p.-a { background: #FFCFC9 }
-.mk-r:active.-s, .mk-r.-s.-p.-a { background: #BA1B19 }
+.mk-p:active.-s, .mk-p.-s.-p.-a { background: #BA1B19 }

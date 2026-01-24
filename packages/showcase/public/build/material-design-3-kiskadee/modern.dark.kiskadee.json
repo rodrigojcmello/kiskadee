@@ -3,11 +3,11 @@
     "e1": {
       "c": {
         "primary": {
-          "s": "mk-bc mk-bu mk-cb mk-bl mk-df mk-cr mk-cz mk-c",
-          "v": "mk-bh mk-bx mk-cj mk-bp mk-dg mk-cs mk-da mk-c"
+          "s": "mk-bd mk-bv mk-cc mk-bm mk-dg mk-cs mk-da mk-c",
+          "v": "mk-bi mk-by mk-ck mk-bq mk-dh mk-ct mk-db mk-c"
         },
         "destructive": {
-          "v": "mk-u mk-ad mk-ch mk-z mk-j mk-h mk-i mk-c"
+          "v": "mk-s mk-ab mk-ai mk-x mk-j mk-h mk-i mk-c"
         }
       }
     },

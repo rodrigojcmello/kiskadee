@@ -156,28 +156,28 @@ const patch = {
               light: {
                 boxColor: {
                   destructive: {
-                    subtle: {
-                      rest: c('default', 'l', 'button.destructive', 10),
-                      hover: c('default', 'l', 'button.destructive', 8),
-                      pressed: c('default', 'l', 'button.destructive', 13),
-                      disabled: c('default', 'l', 'button.neutral', 10),
-                      focus: c('default', 'l', 'button.destructive', 10),
-                      selected: {
-                        rest: c('default', 'l', 'button.destructive', 50),
-                        hover: c('default', 'l', 'button.destructive', 40),
-                        pressed: c('default', 'l', 'button.destructive', 60)
-                      }
-                    },
                     vivid: {
                       rest: c('default', 'l', 'button.destructive', 55),
-                      hover: c('default', 'l', 'button.destructive', 50),
-                      pressed: c('default', 'l', 'button.destructive', 60),
-                      disabled: c('default', 'l', 'button.neutral', 10),
                       focus: c('default', 'l', 'button.destructive', 55),
+                      hover: c('default', 'l', 'button.destructive', 50),
+                      pressed: c('default', 'l', 'button.destructive', 65),
+                      disabled: c('default', 'l', 'button.neutral', 10),
                       selected: {
                         rest: c('default', 'l', 'button.destructive', 10),
                         hover: c('default', 'l', 'button.destructive', 8),
                         pressed: c('default', 'l', 'button.destructive', 20)
+                      }
+                    },
+                    subtle: {
+                      rest: c('default', 'l', 'button.destructive', 10),
+                      focus: c('default', 'l', 'button.destructive', 10),
+                      hover: c('default', 'l', 'button.destructive', 8),
+                      pressed: c('default', 'l', 'button.destructive', 15),
+                      disabled: c('default', 'l', 'button.neutral', 10),
+                      selected: {
+                        rest: c('default', 'l', 'button.destructive', 50),
+                        hover: c('default', 'l', 'button.destructive', 40),
+                        pressed: c('default', 'l', 'button.destructive', 60)
                       }
                     }
                   }

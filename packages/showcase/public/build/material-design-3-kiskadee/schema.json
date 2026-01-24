@@ -188,9 +188,9 @@
                   "neutral": {
                     "vivid": {
                       "rest": "#625B71",
-                      "hover": "#6E677E",
-                      "pressed": "#564F65",
                       "focus": "#625B71",
+                      "hover": "#6E677E",
+                      "pressed": "#4A4358",
                       "disabled": "#1A1A1A1F",
                       "selected": {
                         "rest": "#7B738A",
@@ -200,28 +200,28 @@
                     }
                   },
                   "destructive": {
-                    "subtle": {
-                      "rest": "#FFDAD5",
-                      "hover": "#FFE2DE",
-                      "pressed": "#FFCFC9",
-                      "disabled": "#E8DEF9",
-                      "focus": "#FFDAD5",
-                      "selected": {
-                        "rest": "#DE372F",
-                        "hover": "#FF5448",
-                        "pressed": "#BA1B19"
-                      }
-                    },
                     "vivid": {
                       "rest": "#CC2A24",
-                      "hover": "#DE372F",
-                      "pressed": "#BA1B19",
-                      "disabled": "#E8DEF9",
                       "focus": "#CC2A24",
+                      "hover": "#DE372F",
+                      "pressed": "#A8080E",
+                      "disabled": "#E8DEF9",
                       "selected": {
                         "rest": "#FFDAD5",
                         "hover": "#FFE2DE",
                         "pressed": "#FFB4AA"
+                      }
+                    },
+                    "subtle": {
+                      "rest": "#FFDAD5",
+                      "focus": "#FFDAD5",
+                      "hover": "#FFE2DE",
+                      "pressed": "#FFC7C0",
+                      "disabled": "#E8DEF9",
+                      "selected": {
+                        "rest": "#DE372F",
+                        "hover": "#FF5448",
+                        "pressed": "#BA1B19"
                       }
                     }
                   }
@@ -280,9 +280,9 @@
                   "neutral": {
                     "vivid": {
                       "rest": "#625B71",
-                      "hover": "#6E677E",
-                      "pressed": "#564F65",
                       "focus": "#625B71",
+                      "hover": "#6E677E",
+                      "pressed": "#4A4358",
                       "disabled": "#1A1A1A1F",
                       "selected": {
                         "rest": "#7B738A",

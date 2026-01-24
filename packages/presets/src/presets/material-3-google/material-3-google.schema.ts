@@ -134,9 +134,9 @@ export const schema: Schema<Segments> = {
                   neutral: {
                     vivid: {
                       rest: c(s, 'l', 'button.neutral', 60),
-                      hover: c(s, 'l', 'button.neutral', 55),
-                      pressed: c(s, 'l', 'button.neutral', 65),
                       focus: c(s, 'l', 'button.neutral', 60),
+                      hover: c(s, 'l', 'button.neutral', 55),
+                      pressed: c(s, 'l', 'button.neutral', 70),
                       disabled: c(s, 'l', 'primitive.black.v1', 90, 12),
                       selected: {
                         rest: c(s, 'l', 'button.neutral', 50),
