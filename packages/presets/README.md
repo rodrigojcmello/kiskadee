@@ -6,6 +6,14 @@ This package contains ready-to-use schema presets built on top of `@kiskadee/cor
 
 ---
 
+### Interaction Feedback: Pressed State Rule
+
+The pressed interaction state (`:active`) is intentionally the highest-contrast step among interaction states. It is also the only state that does not transition: the click itself should immediately trigger the color change. This makes the feedback unmistakable and confirms to the user that the control was actually pressed.
+
+This behavior applies to every design system registered in Kiskadee (Material, Fluent, iOS, Carbon, etc.). It is treated as a UX micro-interaction, not a brand choice, so we keep it consistent across all presets.
+
+---
+
 ### Color Architecture: The 3-Layer System
 
 Kiskadee implements a robust 3-layer color architecture designed to provide maximum flexibility while maintaining semantic consistency across components. This system allows design systems to be fully customizable without sacrificing the benefits of inheritance and cascading changes.
