@@ -106,42 +106,42 @@ export const schema: Schema<Segments> = {
               's:lg:3': 68
             }
           },
-          palettes: buildBySegment(segmentNames, (seg) => {
+          palettes: buildBySegment(segmentNames, (s) => {
             return {
               light: {
                 boxColor: {
                   primary: {
                     vivid: {
-                      rest: c(seg, 'l', 'button.primary', 60),
-                      hover: c(seg, 'l', 'button.primary', 55),
-                      pressed: c(seg, 'l', 'button.primary', 65),
-                      focus: c(seg, 'l', 'button.primary', 60),
-                      disabled: c(seg, 'l', 'primitive.black.v1', 90, 12)
+                      rest: c(s, 'l', 'button.primary', 60),
+                      focus: c(s, 'l', 'button.primary', 60),
+                      hover: c(s, 'l', 'button.primary', 55),
+                      pressed: c(s, 'l', 'button.primary', 70),
+                      disabled: c(s, 'l', 'primitive.black.v1', 90, 12)
                     },
                     subtle: {
-                      rest: c(seg, 'l', 'button.primary', 10),
-                      hover: c(seg, 'l', 'button.primary', 8),
-                      pressed: c(seg, 'l', 'button.primary', 13),
-                      focus: c(seg, 'l', 'button.primary', 10),
-                      disabled: c(seg, 'l', 'primitive.black.v1', 90, 12),
+                      rest: c(s, 'l', 'button.primary', 10),
+                      focus: c(s, 'l', 'button.primary', 10),
+                      hover: c(s, 'l', 'button.primary', 8),
+                      pressed: c(s, 'l', 'button.primary', 15),
+                      disabled: c(s, 'l', 'primitive.black.v1', 90, 12),
                       selected: {
-                        rest: c(seg, 'l', 'button.primary', 60),
-                        hover: c(seg, 'l', 'button.primary', 55),
-                        pressed: c(seg, 'l', 'button.primary', 65)
+                        rest: c(s, 'l', 'button.primary', 60),
+                        hover: c(s, 'l', 'button.primary', 55),
+                        pressed: c(s, 'l', 'button.primary', 65)
                       }
                     }
                   },
                   neutral: {
                     vivid: {
-                      rest: c(seg, 'l', 'button.neutral', 60),
-                      hover: c(seg, 'l', 'button.neutral', 55),
-                      pressed: c(seg, 'l', 'button.neutral', 65),
-                      focus: c(seg, 'l', 'button.neutral', 60),
-                      disabled: c(seg, 'l', 'primitive.black.v1', 90, 12),
+                      rest: c(s, 'l', 'button.neutral', 60),
+                      hover: c(s, 'l', 'button.neutral', 55),
+                      pressed: c(s, 'l', 'button.neutral', 65),
+                      focus: c(s, 'l', 'button.neutral', 60),
+                      disabled: c(s, 'l', 'primitive.black.v1', 90, 12),
                       selected: {
-                        rest: c(seg, 'l', 'button.neutral', 50),
-                        hover: c(seg, 'l', 'button.neutral', 40),
-                        pressed: c(seg, 'l', 'button.neutral', 60)
+                        rest: c(s, 'l', 'button.neutral', 50),
+                        hover: c(s, 'l', 'button.neutral', 40),
+                        pressed: c(s, 'l', 'button.neutral', 60)
                       }
                     }
                   }
@@ -151,23 +151,23 @@ export const schema: Schema<Segments> = {
                 boxColor: {
                   primary: {
                     subtle: {
-                      rest: c(seg, 'd', 'button.primary', 10),
-                      hover: c(seg, 'd', 'button.primary', 8),
-                      pressed: c(seg, 'd', 'button.primary', 13),
-                      focus: c(seg, 'd', 'button.primary', 10),
-                      disabled: c(seg, 'l', 'primitive.black.v1', 90, 12),
+                      rest: c(s, 'd', 'button.primary', 10),
+                      hover: c(s, 'd', 'button.primary', 8),
+                      pressed: c(s, 'd', 'button.primary', 13),
+                      focus: c(s, 'd', 'button.primary', 10),
+                      disabled: c(s, 'l', 'primitive.black.v1', 90, 12),
                       selected: {
-                        rest: c(seg, 'd', 'button.primary', 50),
-                        hover: c(seg, 'd', 'button.primary', 40),
-                        pressed: c(seg, 'd', 'button.primary', 60)
+                        rest: c(s, 'd', 'button.primary', 50),
+                        hover: c(s, 'd', 'button.primary', 40),
+                        pressed: c(s, 'd', 'button.primary', 60)
                       }
                     },
                     vivid: {
-                      rest: c(seg, 'd', 'button.primary', 30),
-                      hover: c(seg, 'd', 'button.primary', 35),
-                      pressed: c(seg, 'd', 'button.primary', 25),
-                      focus: c(seg, 'd', 'button.primary', 30),
-                      disabled: c(seg, 'l', 'primitive.black.v1', 90, 12)
+                      rest: c(s, 'd', 'button.primary', 30),
+                      hover: c(s, 'd', 'button.primary', 35),
+                      pressed: c(s, 'd', 'button.primary', 25),
+                      focus: c(s, 'd', 'button.primary', 30),
+                      disabled: c(s, 'l', 'primitive.black.v1', 90, 12)
                     }
                   }
                 }

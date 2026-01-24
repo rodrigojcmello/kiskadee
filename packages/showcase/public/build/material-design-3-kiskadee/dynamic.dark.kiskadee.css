@@ -1,14 +1,14 @@
 .-a.-d .mk-b { color: #625B71 }
 .mk-a { color: #FFF }
-.mk-bk { background: hsl(var(--k-p-30)) }
+.mk-bi { background: hsl(var(--k-p-30)) }
 .mk-d.-d.-a { background: #1A1A1A1F }
-.mk-dg.-s.-a { background: hsl(var(--k-p-50)) }
+.mk-di.-s.-a { background: hsl(var(--k-p-50)) }
 .mk-y { background: hsl(var(--k-p-10)) }
 .mk-ac:focus-visible, .mk-ac.-f.-a { background: hsl(var(--k-p-10)) }
-.mk-bt:focus-visible, .mk-bt.-f.-a { background: hsl(var(--k-p-30)) }
+.mk-br:focus-visible, .mk-br.-f.-a { background: hsl(var(--k-p-30)) }
 .mk-ah:hover, .mk-ah.-h.-a { background: hsl(var(--k-p-8)) }
-.mk-cb:hover, .mk-cb.-h.-a { background: hsl(var(--k-p-35)) }
-.mk-cs:hover.-s, .mk-cs.-s.-h.-a { background: hsl(var(--k-p-40)) }
-.mk-ak:active, .mk-ak.-p.-a { background: hsl(var(--k-p-13)) }
-.mk-ck:active, .mk-ck.-p.-a { background: hsl(var(--k-p-25)) }
-.mk-da:active.-s, .mk-da.-s.-p.-a { background: hsl(var(--k-p-60)) }
+.mk-bz:hover, .mk-bz.-h.-a { background: hsl(var(--k-p-35)) }
+.mk-cu:hover.-s, .mk-cu.-s.-h.-a { background: hsl(var(--k-p-40)) }
+.mk-ck:active, .mk-ck.-p.-a { background: hsl(var(--k-p-13)) }
+.mk-cm:active, .mk-cm.-p.-a { background: hsl(var(--k-p-25)) }
+.mk-dc:active.-s, .mk-dc.-s.-p.-a { background: hsl(var(--k-p-60)) }

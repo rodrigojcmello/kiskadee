@@ -68,11 +68,11 @@ body {
   transition-timing-function: var(--k-ease-std);
 }
 
-:active {
-  transition-property: padding, border-color, border-radius, box-shadow, --k-bg0, --k-bg1, --k-bg2;
-  transition-duration: var(--k-dur-int);
-  transition-timing-function: var(--k-ease-std);
-}
+//:active {
+//  transition-property: padding, border-color, border-radius, box-shadow, --k-bg0, --k-bg1, --k-bg2;
+//  transition-duration: var(--k-dur-int);
+//  transition-timing-function: var(--k-ease-std);
+//}
 
 .no-transitions *,
 .no-transitions *::before,
