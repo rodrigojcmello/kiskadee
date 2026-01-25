@@ -29,6 +29,12 @@ preset. The "kiskadee" versions may extend the DS by:
 
 This keeps fidelity for official presets while enabling richer variants in "kiskadee" presets.
 
+Outline border rule:
+
+- `borderStyle: solid` means the border is always on for that base button style.
+- `borderStyle: none` means the border is only used in `outline`.
+- `borderWidth` remains flexible and is used by both cases.
+
 ---
 
 ### Color Architecture: The 3-Layer System

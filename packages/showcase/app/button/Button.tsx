@@ -237,6 +237,160 @@ export function Button() {
           </div>
         </div>
         <div className={s['interaction-state']}>
+          <h3>Interaction States - Primary (Outline)</h3>
+          <div className={`${s['example-states']} k-root`}>
+            {renderState(
+              'primary',
+              'subtle',
+              'rest',
+              <KButton emphasis="subtle" intent="primary">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Rest
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'primary',
+              'subtle',
+              'hover',
+              <KButton emphasis="subtle" intent="primary" status="hover">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Hover
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'primary',
+              'subtle',
+              'focus',
+              <KButton emphasis="subtle" intent="primary" status="focus">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Focus
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'primary',
+              'subtle',
+              'pressed',
+              <KButton emphasis="subtle" intent="primary" status="pressed">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Pressed
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'primary',
+              'subtle',
+              'selected',
+              <KButton emphasis="subtle" intent="primary" controlState={true} radius={true}>
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Selected
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'primary',
+              'subtle',
+              'disabled',
+              <KButton emphasis="subtle" intent="primary" status="disabled">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Disabled
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+          </div>
+        </div>
+        <div className={s['interaction-state']}>
+          <h3>Interaction States - Primary (Flat)</h3>
+          <div className={`${s['example-states']} k-root`}>
+            {renderState(
+              'primary',
+              'subtle',
+              'rest',
+              <KButton emphasis="subtle" intent="primary">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Rest
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'primary',
+              'subtle',
+              'hover',
+              <KButton emphasis="subtle" intent="primary" status="hover">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Hover
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'primary',
+              'subtle',
+              'focus',
+              <KButton emphasis="subtle" intent="primary" status="focus">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Focus
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'primary',
+              'subtle',
+              'pressed',
+              <KButton emphasis="subtle" intent="primary" status="pressed">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Pressed
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'primary',
+              'subtle',
+              'selected',
+              <KButton emphasis="subtle" intent="primary" controlState={true} radius={true}>
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Selected
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'primary',
+              'subtle',
+              'disabled',
+              <KButton emphasis="subtle" intent="primary" status="disabled">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Disabled
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+          </div>
+        </div>
+        <div className={s['interaction-state']}>
           <h3>Interaction States - Neutral (Subtle)</h3>
           <div className={`${s['example-states']} k-root`}>
             {renderState(
