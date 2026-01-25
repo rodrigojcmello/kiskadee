@@ -14,6 +14,23 @@ This behavior applies to every design system registered in Kiskadee (Material, F
 
 ---
 
+### Button Variants: Subtle as Low-Emphasis Base (Kiskadee Extensions)
+
+Kiskadee treats `subtle` as the **low-emphasis base** for button styling. The `outline` and `flat`
+variants (when available) are derived from `subtle`, since those variants are conceptually low-
+emphasis (white/transparent background with colored or neutral text).
+
+Important: **official presets stay faithful** to the original design systems. If a DS does not
+define outline/flat (e.g., Material 3, Carbon), those variants are not introduced in the official
+preset. The "kiskadee" versions may extend the DS by:
+
+- Adding a `subtle` low-emphasis definition when the original only provides `vivid`
+- Exposing `outline` and `flat` based on that `subtle` base
+
+This keeps fidelity for official presets while enabling richer variants in "kiskadee" presets.
+
+---
+
 ### Color Architecture: The 3-Layer System
 
 Kiskadee implements a robust 3-layer color architecture designed to provide maximum flexibility while maintaining semantic consistency across components. This system allows design systems to be fully customizable without sacrificing the benefits of inheritance and cascading changes.
