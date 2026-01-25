@@ -20,6 +20,18 @@
     "bp:lg:3": 1792,
     "bp:lg:4": 2432
   },
+  "global": {
+    "fonts": {
+      "body": [
+        "Roboto",
+        "sans-serif"
+      ]
+    },
+    "focus": {
+      "width": 3,
+      "offset": 0
+    }
+  },
   "themeTokens": {
     "palettes": {
       "default": {
@@ -27,14 +39,14 @@
           "focusColor": [
             206,
             100,
-            30,
+            80,
             1
           ]
         }
       },
       "dynamic": {
         "light": {
-          "focusColor": "hsl(var(--k-p-70))"
+          "focusColor": "hsl(var(--k-p-20))"
         }
       }
     }

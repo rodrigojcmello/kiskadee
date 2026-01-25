@@ -9,7 +9,7 @@
     ".": {
       "default": "./src/index.ts"
     },
-    "./style": "./src/styles/style.kiskadee.css"
+    "./style": "./src/styles/style.kiskadee.scss"
   },
   "files": [
     "src",

@@ -38,5 +38,15 @@
         }
       }
     }
+  },
+  "font": {
+    "body": [
+      "Roboto",
+      "sans-serif"
+    ],
+    "heading": [
+      "Roboto",
+      "sans-serif"
+    ]
   }
 }

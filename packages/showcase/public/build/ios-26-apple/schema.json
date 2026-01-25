@@ -20,6 +20,18 @@
     "bp:lg:3": 1792,
     "bp:lg:4": 2432
   },
+  "global": {
+    "fonts": {
+      "body": [
+        "Roboto",
+        "sans-serif"
+      ]
+    },
+    "focus": {
+      "width": 2,
+      "offset": 0
+    }
+  },
   "components": {
     "button": {
       "elements": {

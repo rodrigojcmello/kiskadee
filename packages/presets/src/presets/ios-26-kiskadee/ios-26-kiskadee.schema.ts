@@ -31,11 +31,20 @@ export const schema: Schema = {
   author: 'Kiskadee',
   breakpoints,
   colors: schemaColors,
+  global: {
+    fonts: {
+      body: ['Roboto', 'sans-serif']
+    },
+    focus: {
+      width: 3,
+      offset: 0
+    }
+  },
   themeTokens: {
     palettes: buildBySegment(segmentNames, (segmentName) => {
       return {
         light: {
-          focusColor: c(segmentName, 'l', 'button.primary', 70)
+          focusColor: c(segmentName, 'l', 'button.primary', 20)
         }
       };
     })

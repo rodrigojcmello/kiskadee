@@ -1,4 +1,5 @@
 import { breakpoints, color, type Schema, withAlpha } from '@kiskadee/core';
+import { buildBySegment } from '../../utils/buildBySegment';
 import { schemaColors } from './ios-26-apple.colors';
 
 // Kiskadee iOS 26: starts as a copy of Apple iOS 26; can evolve with Kiskadee opinions later
@@ -14,6 +15,15 @@ export const schema: Schema<Segment> = {
   author: 'Apple',
   breakpoints,
   colors: schemaColors,
+  global: {
+    fonts: {
+      body: ['Roboto', 'sans-serif']
+    },
+    focus: {
+      width: 2,
+      offset: 0
+    }
+  },
   components: {
     button: {
       elements: {
