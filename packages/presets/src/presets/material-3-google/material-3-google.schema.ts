@@ -124,14 +124,14 @@ export const schema: Schema<Segments> = {
                       focus: c(s, 'l', 'button.primary', 60),
                       hover: c(s, 'l', 'button.primary', 55),
                       pressed: c(s, 'l', 'button.primary', 70),
-                      disabled: c(s, 'l', 'primitive.black.v1', 90, 12)
+                      disabled: c(s, 'l', 'primitive.black.v1', 90, 10)
                     },
                     medium: {
                       rest: c(s, 'l', 'button.primary', 10),
                       focus: c(s, 'l', 'button.primary', 10),
                       hover: c(s, 'l', 'button.primary', 8),
                       pressed: c(s, 'l', 'button.primary', 15),
-                      disabled: c(s, 'l', 'primitive.black.v1', 90, 12),
+                      disabled: c(s, 'l', 'primitive.black.v1', 90, 10),
                       selected: {
                         rest: c(s, 'l', 'button.primary', 60),
                         hover: c(s, 'l', 'button.primary', 55),
