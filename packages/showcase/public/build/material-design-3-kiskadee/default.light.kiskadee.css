@@ -4,20 +4,20 @@
 .-a.-s .mk-n { color: #FFF }
 .mk-a.-d.-a { border-color: #0000 }
 .mk-ag.-s.-a { background: #DE372F }
-.mk-ai { border-color: #D8D3DA }
-.mk-an { background: #CC2A24 }
-.mk-ap { background: #575E71 }
-.mk-aq { background: #DBE2F9 }
-.mk-ar { background: #E9DDFF }
+.mk-ah { border-color: #D8D3DA }
+.mk-am { background: #CC2A24 }
+.mk-ao { background: #575E71 }
+.mk-ap { background: #DBE2F9 }
+.mk-aq { background: #EBDDFF }
 .mk-c { border-color: #0000 }
-.mk-ch.-s.-a { background: #575E71 }
-.mk-ci.-s.-a { background: #70778B }
-.mk-cj.-s.-a { background: #6750A4 }
+.mk-cg.-s.-a { background: #575E71 }
+.mk-ch.-s.-a { background: #70778B }
+.mk-cj.-s.-a { background: #68548E }
 .mk-ck.-s.-a { background: #605D63 }
-.mk-cn { color: #6750A4 }
+.mk-co { color: #68548E }
 .mk-cp { color: #930008 }
-.mk-dd { border-color: #DCCDFF }
-.mk-ef { background: #6750A4 }
+.mk-dd { border-color: #DFCCFF }
+.mk-eg { background: #68548E }
 .mk-g { color: #FFF }
 .mk-h { background: #0000 }
 .mk-i.-d.-a { background: #0000 }
@@ -28,53 +28,53 @@
 .mk-v.-s.-a { background: #FFDAD5 }
 .mk-w { color: #404759 }
 .mk-x { background: #FFDAD5 }
-.mk-aj:focus-visible, .mk-aj.-f.-a { border-color: #D8D3DA }
-.mk-at:focus-visible, .mk-at.-f.-a { background: #CC2A24 }
-.mk-au:focus-visible, .mk-au.-f.-a { background: #575E71 }
-.mk-av:focus-visible, .mk-av.-f.-a { background: #DBE2F9 }
-.mk-aw:focus-visible, .mk-aw.-f.-a { background: #F5F6FF }
-.mk-ax:focus-visible, .mk-ax.-f.-a { background: #E9DDFF }
-.mk-ay:focus-visible, .mk-ay.-f.-a { background: #FBF4FF }
-.mk-az:focus-visible, .mk-az.-f.-a { background: #FBF4FC }
+.mk-ai:focus-visible, .mk-ai.-f.-a { border-color: #D8D3DA }
+.mk-as:focus-visible, .mk-as.-f.-a { background: #CC2A24 }
+.mk-at:focus-visible, .mk-at.-f.-a { background: #575E71 }
+.mk-au:focus-visible, .mk-au.-f.-a { background: #DBE2F9 }
+.mk-av:focus-visible, .mk-av.-f.-a { background: #F5F6FF }
+.mk-aw:focus-visible, .mk-aw.-f.-a { background: #EBDDFF }
+.mk-ax:focus-visible, .mk-ax.-f.-a { background: #FCF4FF }
+.mk-ay:focus-visible, .mk-ay.-f.-a { background: #FBF4FC }
 .mk-d:focus-visible, .mk-d.-f.-a { border-color: #0000 }
-.mk-dh:focus-visible, .mk-dh.-f.-a { border-color: #DCCDFF }
-.mk-eo:focus-visible, .mk-eo.-f.-a { background: #6750A4 }
+.mk-dh:focus-visible, .mk-dh.-f.-a { border-color: #DFCCFF }
+.mk-ep:focus-visible, .mk-ep.-f.-a { background: #68548E }
 .mk-z:focus-visible, .mk-z.-f.-a { background: #FFDAD5 }
 .mk-ab:hover, .mk-ab.-h.-a { background: #FFE2DE }
 .mk-ae:hover.-s, .mk-ae.-s.-h.-a { background: #FF5448 }
-.mk-ak:hover, .mk-ak.-h.-a { border-color: #E6E1E8 }
-.mk-bb:hover, .mk-bb.-h.-a { background: #DE372F }
-.mk-bc:hover, .mk-bc.-h.-a { background: #636A7E }
-.mk-bd:hover, .mk-bd.-h.-a { background: #E1E8FF }
-.mk-be:hover, .mk-be.-h.-a { background: #F5F6FF }
-.mk-bf:hover, .mk-bf.-h.-a { background: #EEE4FF }
-.mk-bg:hover, .mk-bg.-h.-a { background: #FBF4FF }
-.mk-bh:hover, .mk-bh.-h.-a { background: #FBF4FC }
-.mk-bt:hover.-s, .mk-bt.-s.-h.-a { background: #636A7E }
-.mk-bu:hover.-s, .mk-bu.-s.-h.-a { background: #8990A5 }
-.mk-bv:hover.-s, .mk-bv.-s.-h.-a { background: #735CB1 }
-.mk-bx:hover.-s, .mk-bx.-s.-h.-a { background: #6D696F }
-.mk-cs:hover, .mk-cs.-h.-a { color: #735CB1 }
-.mk-dl:hover, .mk-dl.-h.-a { border-color: #E9DDFF }
+.mk-aj:hover, .mk-aj.-h.-a { border-color: #E6E1E8 }
+.mk-ba:hover, .mk-ba.-h.-a { background: #DE372F }
+.mk-bb:hover, .mk-bb.-h.-a { background: #636A7E }
+.mk-bc:hover, .mk-bc.-h.-a { background: #E1E8FF }
+.mk-bd:hover, .mk-bd.-h.-a { background: #F5F6FF }
+.mk-be:hover, .mk-be.-h.-a { background: #F0E3FF }
+.mk-bf:hover, .mk-bf.-h.-a { background: #FCF4FF }
+.mk-bg:hover, .mk-bg.-h.-a { background: #FBF4FC }
+.mk-bs:hover.-s, .mk-bs.-s.-h.-a { background: #636A7E }
+.mk-bt:hover.-s, .mk-bt.-s.-h.-a { background: #8990A5 }
+.mk-bv:hover.-s, .mk-bv.-s.-h.-a { background: #75609B }
+.mk-bw:hover.-s, .mk-bw.-s.-h.-a { background: #6D696F }
+.mk-ct:hover, .mk-ct.-h.-a { color: #75609B }
+.mk-dl:hover, .mk-dl.-h.-a { border-color: #EBDDFF }
 .mk-e:hover, .mk-e.-h.-a { border-color: #0000 }
-.mk-eu:hover, .mk-eu.-h.-a { background: #735CB1 }
+.mk-ew:hover, .mk-ew.-h.-a { background: #5C4881 }
 .mk-t:hover.-s, .mk-t.-s.-h.-a { background: #FFE2DE }
 .mk-af:active.-s, .mk-af.-s.-p.-a { background: #BA1B19 }
-.mk-al:active, .mk-al.-p.-a { border-color: #CAC5CC }
-.mk-bl:active, .mk-bl.-p.-a { background: #404759 }
-.mk-bm:active, .mk-bm.-p.-a { background: #CDD4EA }
-.mk-bn:active, .mk-bn.-p.-a { background: #EDF0FF }
-.mk-bo:active, .mk-bo.-p.-a { background: #F6EEFF }
-.mk-bp:active, .mk-bp.-p.-a { background: #F5EFF6 }
-.mk-bq:active, .mk-bq.-p.-a { background: #A8080E }
-.mk-ca:active.-s, .mk-ca.-s.-p.-a { background: #575E71 }
-.mk-cb:active.-s, .mk-cb.-s.-p.-a { background: #4B5265 }
-.mk-cd:active.-s, .mk-cd.-s.-p.-a { background: #5B4397 }
-.mk-ce:active.-s, .mk-ce.-s.-p.-a { background: #545157 }
-.mk-cw:active, .mk-cw.-p.-a { color: #4F378A }
-.mk-do:active, .mk-do.-p.-a { border-color: #CFBCFF }
+.mk-ak:active, .mk-ak.-p.-a { border-color: #CAC5CC }
+.mk-bk:active, .mk-bk.-p.-a { background: #404759 }
+.mk-bl:active, .mk-bl.-p.-a { background: #CDD4EA }
+.mk-bm:active, .mk-bm.-p.-a { background: #EDF0FF }
+.mk-bn:active, .mk-bn.-p.-a { background: #F7EDFF }
+.mk-bo:active, .mk-bo.-p.-a { background: #F5EFF6 }
+.mk-bp:active, .mk-bp.-p.-a { background: #A8080E }
+.mk-bz:active.-s, .mk-bz.-s.-p.-a { background: #575E71 }
+.mk-ca:active.-s, .mk-ca.-s.-p.-a { background: #4B5265 }
+.mk-cc:active.-s, .mk-cc.-s.-p.-a { background: #5C4881 }
+.mk-cd:active.-s, .mk-cd.-s.-p.-a { background: #545157 }
+.mk-cx:active, .mk-cx.-p.-a { color: #503C75 }
+.mk-dp:active, .mk-dp.-p.-a { border-color: #D3BBFD }
 .mk-f:active, .mk-f.-p.-a { border-color: #0000 }
-.mk-fc:active, .mk-fc.-p.-a { background: #4F378A }
-.mk-fe:active, .mk-fe.-p.-a { background: #DCCDFF }
+.mk-fd:active, .mk-fd.-p.-a { background: #503C75 }
+.mk-fe:active, .mk-fe.-p.-a { background: #DFCCFF }
 .mk-fg:active, .mk-fg.-p.-a { background: #FFC7C0 }
 .mk-u:active.-s, .mk-u.-s.-p.-a { background: #FFB4AA }

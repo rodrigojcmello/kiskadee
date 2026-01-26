@@ -122,7 +122,7 @@ export const schema: Schema<Segments> = {
                     high: {
                       rest: c(s, 'l', 'button.primary', 60),
                       focus: c(s, 'l', 'button.primary', 60),
-                      hover: c(s, 'l', 'button.primary', 55),
+                      hover: c(s, 'l', 'button.primary', 65),
                       pressed: c(s, 'l', 'button.primary', 70),
                       disabled: c(s, 'l', 'primitive.black.v1', 90, 10)
                     },

@@ -42,7 +42,7 @@
 .gmd-bx:hover, .gmd-bx.-h.-a { color: hsl(var(--k-p-55)) }
 .gmd-cp:hover, .gmd-cp.-h.-a { border-color: hsl(var(--k-p-10)) }
 .gmd-d:hover, .gmd-d.-h.-a { border-color: #0000 }
-.gmd-dw:hover, .gmd-dw.-h.-a { background: hsl(var(--k-p-55)) }
+.gmd-dw:hover, .gmd-dw.-h.-a { background: hsl(var(--k-p-65)) }
 .gmd-p:hover, .gmd-p.-h.-a { background: hsl(var(--k-p-8)) }
 .gmd-w:hover, .gmd-w.-h.-a { border-color: #E6E1E8 }
 .gmd-ao:active, .gmd-ao.-p.-a { background: #404759 }
