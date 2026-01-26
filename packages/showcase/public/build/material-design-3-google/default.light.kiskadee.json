@@ -3,16 +3,16 @@
     "e1": {
       "c": {
         "primary": {
-          "h": "gmd-de gmd-b gmd-dp gmd-d gmd-du gmd-e gmd-dk gmd-c gmd-h gmd-a",
-          "m": "gmd-dg gmd-b gmd-dr gmd-d gmd-dw gmd-e gmd-dm gmd-c gmd-h gmd-a gmd-bh gmd-as gmd-ba",
-          "l": "gmd-f gmd-cd gmd-p gmd-cl gmd-ao gmd-co gmd-n gmd-ch gmd-g gmd-m gmd-bh gmd-as gmd-ba",
-          "ll": "gmd-f gmd-b gmd-p gmd-d gmd-ao gmd-e gmd-n gmd-c gmd-g gmd-a"
+          "h": "gmd-dg gmd-b gmd-dr gmd-d gmd-dw gmd-e gmd-dm gmd-c gmd-h gmd-a",
+          "m": "gmd-di gmd-b gmd-dt gmd-d gmd-dy gmd-e gmd-do gmd-c gmd-h gmd-a gmd-bl gmd-aw gmd-be",
+          "l": "gmd-f gmd-cf gmd-al gmd-cn gmd-ar gmd-cq gmd-af gmd-cj gmd-g gmd-m gmd-bl gmd-aw gmd-be",
+          "ll": "gmd-f gmd-b gmd-al gmd-d gmd-ar gmd-e gmd-af gmd-c gmd-g gmd-a"
         },
         "neutral": {
-          "h": "gmd-aa gmd-b gmd-ai gmd-d gmd-am gmd-e gmd-ae gmd-c gmd-bj gmd-av gmd-bb gmd-h gmd-a",
-          "m": "gmd-ab gmd-b gmd-aj gmd-d gmd-an gmd-e gmd-af gmd-c gmd-bi gmd-au gmd-bc gmd-h gmd-a",
-          "l": "gmd-f gmd-v gmd-ah gmd-x gmd-al gmd-y gmd-ad gmd-w gmd-bf gmd-ar gmd-ay gmd-g gmd-m",
-          "ll": "gmd-f gmd-b gmd-p gmd-d gmd-ap gmd-e gmd-n gmd-c gmd-g gmd-a"
+          "h": "gmd-y gmd-b gmd-ai gmd-d gmd-ao gmd-e gmd-ac gmd-c gmd-bj gmd-av gmd-bb gmd-h gmd-a",
+          "m": "gmd-z gmd-b gmd-aj gmd-d gmd-ap gmd-e gmd-ad gmd-c gmd-bi gmd-au gmd-bc gmd-h gmd-a",
+          "l": "gmd-f gmd-t gmd-ah gmd-v gmd-an gmd-w gmd-ab gmd-u gmd-bh gmd-at gmd-ba gmd-g gmd-m",
+          "ll": "gmd-f gmd-b gmd-ak gmd-d gmd-aq gmd-e gmd-ae gmd-c gmd-g gmd-a"
         }
       }
     },
@@ -20,9 +20,9 @@
       "c": {
         "primary": {
           "h": "gmd-j gmd-i",
-          "m": "gmd-bo gmd-i gmd-bz",
-          "l": "gmd-bm gmd-i gmd-br gmd-bv",
-          "ll": "gmd-bm gmd-i gmd-br gmd-bv"
+          "m": "gmd-bo gmd-i gmd-cb",
+          "l": "gmd-bp gmd-i gmd-bt gmd-bx",
+          "ll": "gmd-bp gmd-i gmd-bt gmd-bx"
         },
         "neutral": {
           "h": "gmd-j gmd-i"
