@@ -29,24 +29,39 @@
       },
       "state": {
         "primary": {
-          "vivid": {
+          "high": {
             "rest": true,
             "focus": true,
             "hover": true,
             "pressed": true,
             "disabled": true
           },
-          "subtle": {
+          "medium": {
             "rest": true,
             "focus": true,
             "hover": true,
             "pressed": true,
             "disabled": true,
             "selected": true
+          },
+          "low": {
+            "rest": true,
+            "focus": true,
+            "hover": true,
+            "pressed": true,
+            "disabled": true,
+            "selected": true
+          },
+          "lowest": {
+            "rest": true,
+            "focus": true,
+            "hover": true,
+            "pressed": true,
+            "disabled": true
           }
         },
         "neutral": {
-          "vivid": {
+          "high": {
             "rest": true,
             "focus": true,
             "hover": true,

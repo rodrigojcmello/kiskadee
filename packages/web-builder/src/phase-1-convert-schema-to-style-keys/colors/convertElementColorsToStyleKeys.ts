@@ -3,7 +3,7 @@ import type {
   ColorProperty,
   ColorValue,
   ElementPalettes,
-  Emphasis,
+  ComponentEmphasis,
   InteractionState,
   InteractionStateColorMap,
   SegmentName,
@@ -18,11 +18,11 @@ import { buildStyleKey, deepUpdate } from '../../utils';
 
 // Metadata to track which emphasis track(s) generated each style key.
 //
-// Important: different tracks (subtle/vivid) may legitimately produce the same StyleKey
+// Important: different tracks (high/medium/low/lowest) may legitimately produce the same StyleKey
 // when their resolved color values are identical. In that case we must retain BOTH
 // tracks; otherwise downstream bucketing (f/d) becomes order-dependent.
 export type ToneMetadata = {
-  tones?: Emphasis[]; // undefined = color without emphasis (single/unique color)
+  tones?: ComponentEmphasis[]; // undefined = color without emphasis (single/unique color)
 };
 
 export type PaletteKey = string;
@@ -64,7 +64,7 @@ function addToneMetadataByPalette(
   toneMetadataByPalette: ToneMetadataByPalette,
   paletteKey: PaletteKey,
   toneMetadataKey: ToneMetadataKey,
-  tone: Emphasis
+  tone: ComponentEmphasis
 ): void {
   if (!toneMetadataByPalette.has(paletteKey)) {
     toneMetadataByPalette.set(paletteKey, new Map());
@@ -130,7 +130,7 @@ function isInteractionStateColorMap(val: unknown): val is InteractionStateColorM
  *     "textColor==hover__[0,0,0,0.5]").
  * - Appends the generated key to a nested output structure organized by:
  *     segmentName -> themeName -> semanticColor -> interactionState -> StyleKey[]
- * - Additionally tracks which emphasis (subtle/vivid) generated each style key in a parallel Map
+ * - Additionally tracks which emphasis (high/medium/low/lowest) generated each style key in a parallel Map
  *
  * Why pre-stringify color values:
  * - buildStyleKey stringifies primitives via String(value) and JSON-serializes non-primitives.
@@ -167,14 +167,14 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
         const colorEntry = colorSchema[colorProperty];
         if (colorEntry === undefined) continue;
 
-        // The new schema requires emphasis tracks (subtle/vivid) under each semantic color.
+        // The new schema requires emphasis tracks (high/medium/low/lowest) under each semantic color.
         // Reject legacy direct InteractionStateColorMap at the property root.
         if (isInteractionStateColorMap(colorEntry)) {
           throw new Error(
-            'Invalid color schema: direct interaction-state maps are no longer supported. Use subtle/vivid tracks under each semantic color.'
+            'Invalid color schema: direct interaction-state maps are no longer supported. Use high/medium/low/lowest tracks under each semantic color.'
           );
         }
-        type SemanticEntry = Record<Emphasis, InteractionStateColorMap> | unknown;
+        type SemanticEntry = Record<ComponentEmphasis, InteractionStateColorMap> | unknown;
         const semanticColorMap: Partial<Record<SemanticColor, SemanticEntry>> =
           colorEntry as Partial<Record<SemanticColor, SemanticEntry>>;
 
@@ -182,7 +182,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
         const processInteractionStateMap = (
           semanticColor: SemanticColor,
           interactionStateMap: InteractionStateColorMap,
-          tone?: Emphasis
+          tone?: ComponentEmphasis
         ) => {
           const paletteKey = buildPaletteKey(segmentName, themeName);
           const keys: (keyof InteractionStateColorMap)[] = [
@@ -306,13 +306,15 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
           const semanticColor = s as SemanticColor;
           const entry = semanticColorMap[semanticColor];
 
-          // Support emphasis tracks (subtle/vivid) as an intermediate level under the semantic color.
-          const hasSubtleOrVivid =
-            entry && typeof entry === 'object' && ('subtle' in entry || 'vivid' in entry);
-          if (hasSubtleOrVivid) {
-            const tracks = ['subtle', 'vivid'] as const;
+          // Support emphasis tracks (high/medium/low/lowest) as an intermediate level under the semantic color.
+          const hasEmphasisTracks =
+            entry &&
+            typeof entry === 'object' &&
+            ('high' in entry || 'medium' in entry || 'low' in entry || 'lowest' in entry);
+          if (hasEmphasisTracks) {
+            const tracks = ['high', 'medium', 'low', 'lowest'] as const;
             for (const t of tracks) {
-              const trackEntry = (entry as Record<'subtle' | 'vivid', unknown>)[t];
+              const trackEntry = (entry as Record<typeof tracks[number], unknown>)[t];
               if (isInteractionStateColorMap(trackEntry)) {
                 processInteractionStateMap(semanticColor, trackEntry, t);
               }
@@ -323,7 +325,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
           // Fallback: legacy shape (direct interaction-state map under a semantic color) is no longer supported
           if (isInteractionStateColorMap(entry)) {
             throw new Error(
-              `Invalid color schema: semantic color "${semanticColor}" must define subtle/vivid tracks.`
+              `Invalid color schema: semantic color "${semanticColor}" must define high/medium/low/lowest tracks.`
             );
           }
         }

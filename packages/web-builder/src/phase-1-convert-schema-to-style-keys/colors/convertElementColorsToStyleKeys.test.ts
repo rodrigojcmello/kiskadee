@@ -14,7 +14,7 @@ describe('convertElementColorsToStyleKeys', () => {
         light: {
           boxColor: {
             primary: {
-              subtle: { rest: [45, 100, 50, 1] }
+              medium: { rest: [45, 100, 50, 1] }
             }
           }
         }
@@ -38,7 +38,7 @@ describe('convertElementColorsToStyleKeys', () => {
         light: {
           borderColor: {
             primary: {
-              subtle: {
+              medium: {
                 rest: [255, 255, 255, 1],
                 hover: { ref: [255, 255, 255, 0.1] }
               }
@@ -66,25 +66,25 @@ describe('convertElementColorsToStyleKeys', () => {
         light: {
           textColor: {
             primary: {
-              subtle: {
+              medium: {
                 rest: [120, 50, 50, 1],
                 hover: { ref: [240, 50, 50, 0.5] }
               }
             },
             secondary: {
-              subtle: {
+              medium: {
                 rest: [240, 50, 50, 0.5]
               }
             }
           },
           borderColor: {
             primary: {
-              subtle: {
+              medium: {
                 rest: [120, 50, 50, 1]
               }
             },
             redLike: {
-              subtle: {
+              medium: {
                 rest: [0, 0, 0, 0.02],
                 focus: { ref: [10, 20, 30, 0.1] }
               }
@@ -113,7 +113,7 @@ describe('convertElementColorsToStyleKeys', () => {
     });
   });
 
-  it('throws when using legacy direct interaction-state map at property root (no soft/solid)', (): void => {
+  it('throws when using legacy direct interaction-state map at property root (no emphasis)', (): void => {
     const elementPalettes: ElementPalettes = {
       default: {
         light: {
@@ -127,7 +127,7 @@ describe('convertElementColorsToStyleKeys', () => {
       }
     };
     expect(() => convertElementColorsToStyleKeys(elementPalettes)).toThrowError(
-      /no longer supported|must define soft\/solid/i
+      /no longer supported|must define high\/medium\/low\/lowest/i
     );
   });
 
@@ -137,7 +137,7 @@ describe('convertElementColorsToStyleKeys', () => {
         light: {
           boxColor: {
             primary: {
-              subtle: {
+              medium: {
                 rest: [10, 20, 30, 0.9],
                 hover: [15, 25, 35, 0.9],
                 selected: {
@@ -179,7 +179,7 @@ describe('convertElementColorsToStyleKeys – invalid inputs', () => {
         light: {
           boxColor: {
             primary: {
-              subtle: {
+              medium: {
                 rest: { ref: [10, 20, 30, 0.5] } as unknown as Color
               }
             }

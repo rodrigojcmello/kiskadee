@@ -1,14 +1,28 @@
-.-a.-d .gmd-d { color: #625B71 }
-.gmd-a.-d.-a { background: #1A1A1A1F }
-.gmd-ag { background: #4F378A }
-.gmd-ai { background: #22005D }
-.gmd-b { color: #FFF }
-.gmd-bn.-s.-a { background: #8069BF }
-.gmd-am:focus-visible, .gmd-am.-f.-a { background: #4F378A }
-.gmd-ao:focus-visible, .gmd-ao.-f.-a { background: #22005D }
-.gmd-as:hover, .gmd-as.-h.-a { background: #5B4397 }
-.gmd-at:hover, .gmd-at.-h.-a { background: #1D0053 }
-.gmd-bg:hover.-s, .gmd-bg.-s.-h.-a { background: #6750A4 }
-.gmd-ay:active, .gmd-ay.-p.-a { background: #432B7E }
-.gmd-ba:active, .gmd-ba.-p.-a { background: #280963 }
-.gmd-bj:active.-s, .gmd-bj.-s.-p.-a { background: #9A83DB }
+.-a.-d .gmd-k { color: #625B71 }
+.gmd-a.-d.-a { border-color: #0000 }
+.gmd-ap.-s.-a { background: #8069BF }
+.gmd-av { color: #4F378A }
+.gmd-b { border-color: #0000 }
+.gmd-bk { border-color: #4F378A }
+.gmd-cn { background: #4F378A }
+.gmd-cp { background: #22005D }
+.gmd-f.-d.-a { background: #1A1A1A1F }
+.gmd-h { background: #0000 }
+.gmd-i.-d.-a { background: #0000 }
+.gmd-j { color: #FFF }
+.gmd-bo:focus-visible, .gmd-bo.-f.-a { border-color: #4F378A }
+.gmd-c:focus-visible, .gmd-c.-f.-a { border-color: #0000 }
+.gmd-ct:focus-visible, .gmd-ct.-f.-a { background: #4F378A }
+.gmd-o:focus-visible, .gmd-o.-f.-a { background: #22005D }
+.gmd-ag:hover.-s, .gmd-ag.-s.-h.-a { background: #6750A4 }
+.gmd-ba:hover, .gmd-ba.-h.-a { color: #5B4397 }
+.gmd-bs:hover, .gmd-bs.-h.-a { border-color: #5B4397 }
+.gmd-cy:hover, .gmd-cy.-h.-a { background: #5B4397 }
+.gmd-d:hover, .gmd-d.-h.-a { border-color: #0000 }
+.gmd-p:hover, .gmd-p.-h.-a { background: #1D0053 }
+.gmd-ak:active.-s, .gmd-ak.-s.-p.-a { background: #9A83DB }
+.gmd-be:active, .gmd-be.-p.-a { color: #432B7E }
+.gmd-bx:active, .gmd-bx.-p.-a { border-color: #432B7E }
+.gmd-dd:active, .gmd-dd.-p.-a { background: #432B7E }
+.gmd-e:active, .gmd-e.-p.-a { border-color: #0000 }
+.gmd-q:active, .gmd-q.-p.-a { background: #280963 }

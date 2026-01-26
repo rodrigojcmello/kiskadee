@@ -4,7 +4,7 @@ import type { ColorSchema, GlobalSemanticsBySegment } from './colors.types';
 const color: ColorSchema = {
   boxColor: {
     primary: {
-      subtle: {
+      high: {
         rest: {
           kind: 'linear',
           angle: 90,
@@ -14,7 +14,7 @@ const color: ColorSchema = {
           ]
         }
       },
-      vivid: {
+      medium: {
         rest: {
           kind: 'linear',
           angle: 90,
@@ -28,19 +28,19 @@ const color: ColorSchema = {
   },
   borderColor: {
     primary: {
-      subtle: {
+      high: {
         rest: [45, 0, 0, 0.02]
       },
-      vivid: {
+      medium: {
         rest: [45, 0, 0, 0.02]
       }
     },
     redLike: {
-      subtle: {
+      high: {
         rest: [0, 0, 0, 0.02],
         hover: [0, 0, 0, 0.02]
       },
-      vivid: {
+      medium: {
         rest: [0, 0, 0, 0.02],
         hover: [0, 0, 0, 0.02]
       }
@@ -48,13 +48,13 @@ const color: ColorSchema = {
   },
   textColor: {
     primary: {
-      subtle: {
+      high: {
         rest: [120, 50, 50, 1],
         hover: {
           ref: [240, 50, 50, 0.5]
         }
       },
-      vivid: {
+      medium: {
         rest: [120, 50, 50, 1],
         hover: {
           ref: [240, 50, 50, 0.5]
@@ -62,10 +62,10 @@ const color: ColorSchema = {
       }
     },
     secondary: {
-      subtle: {
+      high: {
         rest: [240, 50, 50, 0.5]
       },
-      vivid: {
+      medium: {
         rest: [240, 50, 50, 0.5]
       }
     }

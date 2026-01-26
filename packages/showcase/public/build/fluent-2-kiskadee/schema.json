@@ -104,7 +104,7 @@
               "light": {
                 "boxColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": "#0F6CBD",
                       "hover": "#0F5C9C",
                       "focus": "#0F6CBD",
@@ -122,7 +122,7 @@
               "dark": {
                 "boxColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": "#0F5C9C",
                       "hover": "#0F6CBD",
                       "focus": "#0F5C9C",
@@ -142,7 +142,7 @@
               "light": {
                 "boxColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": {
                         "kind": "linear",
                         "angle": 180,
@@ -264,7 +264,7 @@
               "dark": {
                 "boxColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": {
                         "kind": "linear",
                         "angle": 180,
@@ -375,7 +375,7 @@
               "light": {
                 "boxColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": "hsl(var(--k-p-60))",
                       "hover": "hsl(var(--k-p-70))",
                       "focus": "hsl(var(--k-p-60))",
@@ -393,7 +393,7 @@
               "dark": {
                 "boxColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": "hsl(var(--k-p-70))",
                       "hover": "hsl(var(--k-p-60))",
                       "focus": "hsl(var(--k-p-70))",
@@ -453,7 +453,7 @@
               "light": {
                 "textColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": "#FFF",
                       "disabled": {
                         "ref": "#BFBFBF"
@@ -465,7 +465,7 @@
               "dark": {
                 "textColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": "#FFF",
                       "disabled": {
                         "ref": "#FFFFFF40"
@@ -479,7 +479,7 @@
               "light": {
                 "textColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": "#FFF",
                       "disabled": {
                         "ref": "#00000040"
@@ -500,7 +500,7 @@
               "dark": {
                 "textColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": "#FFF",
                       "disabled": {
                         "ref": "#FFFFFF40"
@@ -514,7 +514,7 @@
               "light": {
                 "textColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": "#FFF",
                       "disabled": {
                         "ref": "#BFBFBF"
@@ -526,7 +526,7 @@
               "dark": {
                 "textColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": "#FFF",
                       "disabled": {
                         "ref": "#FFFFFF40"

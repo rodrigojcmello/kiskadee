@@ -151,17 +151,17 @@ export type Schema<TSegmentName extends SegmentName = never> = SchemaMetadata & 
   components: Components<TSegmentName>;
 };
 
-// Color classes structure: segregates single-color, soft, and solid variants
+// Color classes structure: emphasis variants for component palettes
 export type ColorClasses = {
-  // TODO: remove u (unique) support
-  u?: string; // unique/single color (no tone variants)
-  s?: string; // subtle
-  v?: string; // vivid
+  h?: string; // high emphasis
+  m?: string; // medium emphasis
+  l?: string; // low emphasis
+  ll?: string; // lowest emphasis
 };
 
 // Types describing the JSON artifact produced by web-builder (classNamesMap.json)
 export type ClassNameByElementJSON = {
-  // d = decorations, e = effects (segregated), s = scales, c = colors (with u/s/v sub-fields), l = control states
+  // d = decorations, e = effects (segregated), s = scales, c = colors (with h/m/l/ll sub-fields), l = control states
   // d: flattened into a single space-separated string of class names (always-on)
   d?: string;
   // e: effect buckets (each bucket is opt-in at component level).

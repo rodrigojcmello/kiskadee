@@ -106,7 +106,7 @@
               "light": {
                 "boxColor": {
                   "primary": {
-                    "subtle": {
+                    "medium": {
                       "rest": "#E5F4FF",
                       "hover": "#F0F8FF",
                       "focus": "#E5F4FF",
@@ -119,7 +119,7 @@
                         "pressed": "#0074CC"
                       }
                     },
-                    "vivid": {
+                    "high": {
                       "rest": "#0091FF",
                       "hover": "#0091FFCC",
                       "focus": "#0091FF",
@@ -128,7 +128,7 @@
                     }
                   },
                   "neutral": {
-                    "subtle": {
+                    "medium": {
                       "rest": "#F2F2F2",
                       "hover": "#F7F7F7",
                       "focus": "#F2F2F2",
@@ -143,7 +143,7 @@
                     }
                   },
                   "redLike": {
-                    "subtle": {
+                    "medium": {
                       "rest": "#FFE5E6",
                       "hover": "#FFF0F0",
                       "focus": "#FFE5E6",
@@ -155,7 +155,7 @@
                         "pressed": "#CC0003"
                       }
                     },
-                    "vivid": {
+                    "high": {
                       "rest": "#FF0004",
                       "hover": "#FF0004CC",
                       "pressed": "#CC0003",
@@ -200,7 +200,7 @@
               "dark": {
                 "boxColor": {
                   "redLike": {
-                    "subtle": {
+                    "medium": {
                       "rest": "#FF000466",
                       "hover": "#FFF0F0",
                       "focus": "#FFE5E6",
@@ -212,7 +212,7 @@
                         "pressed": "#CC0003"
                       }
                     },
-                    "vivid": {
+                    "high": {
                       "rest": "#FF0004",
                       "hover": "#FF0004CC",
                       "pressed": "#CC0003",
@@ -225,7 +225,7 @@
               "darker": {
                 "boxColor": {
                   "redLike": {
-                    "subtle": {
+                    "medium": {
                       "rest": "#FF000466",
                       "hover": "#FFF0F0",
                       "focus": "#FFE5E6",
@@ -237,7 +237,7 @@
                         "pressed": "#CC0003"
                       }
                     },
-                    "vivid": {
+                    "high": {
                       "rest": "#FF0004",
                       "hover": "#FF0004CC",
                       "pressed": "#CC0003",
@@ -252,7 +252,7 @@
               "light": {
                 "boxColor": {
                   "primary": {
-                    "subtle": {
+                    "medium": {
                       "rest": "hsl(var(--k-p-5))",
                       "hover": "hsl(var(--k-p-3))",
                       "focus": "hsl(var(--k-p-5))",
@@ -265,7 +265,7 @@
                         "pressed": "hsl(var(--k-p-60))"
                       }
                     },
-                    "vivid": {
+                    "high": {
                       "rest": "hsl(var(--k-p-50))",
                       "hover": "hsl(var(--k-p-50) / 0.8)",
                       "focus": "hsl(var(--k-p-50))",
@@ -274,7 +274,7 @@
                     }
                   },
                   "neutral": {
-                    "subtle": {
+                    "medium": {
                       "rest": "#F2F2F2",
                       "hover": "#F7F7F7",
                       "focus": "#F2F2F2",
@@ -289,7 +289,7 @@
                     }
                   },
                   "redLike": {
-                    "subtle": {
+                    "medium": {
                       "rest": "#FFE5E6",
                       "hover": "#FFF0F0",
                       "focus": "#FFE5E6",
@@ -301,7 +301,7 @@
                         "pressed": "#CC0003"
                       }
                     },
-                    "vivid": {
+                    "high": {
                       "rest": "#FF0004",
                       "hover": "#FF0004CC",
                       "pressed": "#CC0003",
@@ -346,7 +346,7 @@
               "dark": {
                 "boxColor": {
                   "redLike": {
-                    "subtle": {
+                    "medium": {
                       "rest": "#FF000466",
                       "hover": "#FFF0F0",
                       "focus": "#FFE5E6",
@@ -358,7 +358,7 @@
                         "pressed": "#CC0003"
                       }
                     },
-                    "vivid": {
+                    "high": {
                       "rest": "#FF0004",
                       "hover": "#FF0004CC",
                       "pressed": "#CC0003",
@@ -371,7 +371,7 @@
               "darker": {
                 "boxColor": {
                   "redLike": {
-                    "subtle": {
+                    "medium": {
                       "rest": "#FF000466",
                       "hover": "#FFF0F0",
                       "focus": "#FFE5E6",
@@ -383,7 +383,7 @@
                         "pressed": "#CC0003"
                       }
                     },
-                    "vivid": {
+                    "high": {
                       "rest": "#FF0004",
                       "hover": "#FF0004CC",
                       "pressed": "#CC0003",
@@ -406,7 +406,7 @@
               "light": {
                 "textColor": {
                   "primary": {
-                    "subtle": {
+                    "medium": {
                       "rest": "#0091FF",
                       "hover": {
                         "ref": "#0091FFCC"
@@ -423,7 +423,7 @@
                         }
                       }
                     },
-                    "vivid": {
+                    "high": {
                       "rest": "#FFF",
                       "pressed": {
                         "ref": "#FFFFFF80"
@@ -434,7 +434,7 @@
                     }
                   },
                   "neutral": {
-                    "subtle": {
+                    "medium": {
                       "rest": "#808080",
                       "hover": {
                         "ref": "#808080CC"
@@ -453,7 +453,7 @@
                     }
                   },
                   "redLike": {
-                    "subtle": {
+                    "medium": {
                       "rest": "#FF0004",
                       "hover": {
                         "ref": "#FF0004CC"
@@ -470,7 +470,7 @@
                         }
                       }
                     },
-                    "vivid": {
+                    "high": {
                       "rest": "#FFF",
                       "pressed": {
                         "ref": "#FFFFFFB3"
@@ -487,7 +487,7 @@
               "light": {
                 "textColor": {
                   "primary": {
-                    "subtle": {
+                    "medium": {
                       "rest": "hsl(var(--k-p-50))",
                       "hover": {
                         "ref": "hsl(var(--k-p-50) / 0.8)"
@@ -504,7 +504,7 @@
                         }
                       }
                     },
-                    "vivid": {
+                    "high": {
                       "rest": "#FFF",
                       "pressed": {
                         "ref": "#FFFFFF80"
@@ -515,7 +515,7 @@
                     }
                   },
                   "neutral": {
-                    "subtle": {
+                    "medium": {
                       "rest": "#808080",
                       "hover": {
                         "ref": "#808080CC"
@@ -534,7 +534,7 @@
                     }
                   },
                   "redLike": {
-                    "subtle": {
+                    "medium": {
                       "rest": "#FF0004",
                       "hover": {
                         "ref": "#FF0004CC"
@@ -551,7 +551,7 @@
                         }
                       }
                     },
-                    "vivid": {
+                    "high": {
                       "rest": "#FFF",
                       "pressed": {
                         "ref": "#FFFFFFB3"

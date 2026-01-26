@@ -1,9 +1,10 @@
 import {
   type ButtonIntent,
   type ClassNameByElementJSON,
+  componentEmphasisBuckets,
   stateActivator as cn,
+  type ComponentEmphasis,
   type ElementSizeValue,
-  type Emphasis,
   type StateActivatorKeys
 } from '@kiskadee/core';
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
@@ -30,21 +31,21 @@ export type ButtonProps = HeadlessButtonProps & {
   /** Enable border-radius effects. When true, adds the radius effect bucket classes. */
   radius?: boolean;
   /**
-   * Emphasis (tone) for the button colors.
-   * When provided, selects only classes for the specified emphasis (subtle or vivid).
+   * Emphasis level for the button colors.
+   * When provided, selects only classes for the specified emphasis (high/medium/low/lowest).
    * If not provided or if emphasis metadata is not available, uses all palette classes.
    */
-  emphasis?: Emphasis;
+  emphasis?: ComponentEmphasis;
   /** Semantic color family to use across ALL elements (e1, e2, e3, ...). Default is 'neutral'. */
   intent?: ButtonIntent;
 };
 
 // Build a single space-separated class string from flattened d and color classes (sizes handled in e1)
-// Selects color classes based on emphasis: subtle (s), vivid (v), or unique (u)
+// Selects color classes based on emphasis: high (h), medium (m), low (l), lowest (ll), or unique (u)
 // Assumes an intent-aware map in `c`; no legacy flat format for performance.
 function collectStr(
   el: ClassNameByElementJSON | undefined,
-  emphasis: Emphasis | undefined = 'subtle',
+  emphasis: ComponentEmphasis | undefined = 'medium',
   intent: ButtonIntent | undefined = 'neutral'
 ): string {
   if (!el) return '';
@@ -56,10 +57,12 @@ function collectStr(
 
   if (bySem) {
     let color = '';
-    if (emphasis === 'subtle' && bySem.s) color = bySem.s;
-    else if (emphasis === 'vivid' && bySem.v) color = bySem.v;
-    else if (!emphasis) color = bySem.v ?? bySem.s ?? bySem.u ?? '';
-    else if (!color && bySem.u) color = bySem.u; // last resort within the same intent
+    const bucket = emphasis ? componentEmphasisBuckets[emphasis] : undefined;
+    if (bucket && (bySem as Record<string, string | undefined>)[bucket]) {
+      color = (bySem as Record<string, string | undefined>)[bucket] ?? '';
+    } else if (!emphasis) {
+      color = bySem.h ?? bySem.m ?? bySem.l ?? bySem.ll ?? '';
+    }
 
     if (color) out = out ? `${out} ${color}` : color;
   }

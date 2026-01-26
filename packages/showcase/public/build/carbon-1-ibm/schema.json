@@ -100,7 +100,7 @@
               "light": {
                 "boxColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": "#0F62FE",
                       "hover": "#0050E6",
                       "focus": "#0F62FE",
@@ -156,7 +156,7 @@
               "light": {
                 "textColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": "#FFF",
                       "disabled": {
                         "ref": "#8C8C8C"

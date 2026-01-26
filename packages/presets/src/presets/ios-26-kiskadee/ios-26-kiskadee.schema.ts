@@ -104,7 +104,7 @@ export const schema: Schema = {
               light: {
                 boxColor: {
                   primary: {
-                    subtle: {
+                    medium: {
                       rest: c(segmentName, 'l', 'button.primary', 5),
                       hover: c(segmentName, 'l', 'button.primary', 3),
                       focus: c(segmentName, 'l', 'button.primary', 5),
@@ -117,7 +117,7 @@ export const schema: Schema = {
                         pressed: c(segmentName, 'l', 'button.primary', 60)
                       }
                     },
-                    vivid: {
+                    high: {
                       rest: c(segmentName, 'l', 'button.primary', 50),
                       hover: c(segmentName, 'l', 'button.primary', 50, 80),
                       focus: c(segmentName, 'l', 'button.primary', 50),
@@ -126,7 +126,7 @@ export const schema: Schema = {
                     }
                   },
                   neutral: {
-                    subtle: {
+                    medium: {
                       rest: c(segmentName, 'l', 'button.neutral', 5),
                       hover: c(segmentName, 'l', 'button.neutral', 3),
                       focus: c(segmentName, 'l', 'button.neutral', 5),
@@ -141,7 +141,7 @@ export const schema: Schema = {
                     }
                   },
                   redLike: {
-                    subtle: {
+                    medium: {
                       rest: c(segmentName, 'l', 'button.destructive', 5),
                       hover: c(segmentName, 'l', 'button.destructive', 3),
                       focus: c(segmentName, 'l', 'button.destructive', 5),
@@ -153,7 +153,7 @@ export const schema: Schema = {
                         pressed: c(segmentName, 'l', 'button.destructive', 60)
                       }
                     },
-                    vivid: {
+                    high: {
                       rest: c(segmentName, 'l', 'button.destructive', 50),
                       hover: c(segmentName, 'l', 'button.destructive', 50, 80),
                       pressed: c(segmentName, 'l', 'button.destructive', 60),
@@ -180,7 +180,7 @@ export const schema: Schema = {
               dark: {
                 boxColor: {
                   redLike: {
-                    subtle: {
+                    medium: {
                       rest: c(segmentName, 'd', 'button.destructive', 50, 40),
                       hover: c(segmentName, 'd', 'button.destructive', 3),
                       focus: c(segmentName, 'd', 'button.destructive', 5),
@@ -192,7 +192,7 @@ export const schema: Schema = {
                         pressed: c(segmentName, 'd', 'button.destructive', 60)
                       }
                     },
-                    vivid: {
+                    high: {
                       rest: c(segmentName, 'd', 'button.destructive', 50),
                       hover: c(segmentName, 'd', 'button.destructive', 50, 80),
                       pressed: c(segmentName, 'd', 'button.destructive', 60),
@@ -205,7 +205,7 @@ export const schema: Schema = {
               darker: {
                 boxColor: {
                   redLike: {
-                    subtle: {
+                    medium: {
                       rest: c(segmentName, 'd', 'button.destructive', 50, 40),
                       hover: c(segmentName, 'd', 'button.destructive', 3),
                       focus: c(segmentName, 'd', 'button.destructive', 5),
@@ -217,7 +217,7 @@ export const schema: Schema = {
                         pressed: c(segmentName, 'd', 'button.destructive', 60)
                       }
                     },
-                    vivid: {
+                    high: {
                       rest: c(segmentName, 'd', 'button.destructive', 50),
                       hover: c(segmentName, 'd', 'button.destructive', 50, 80),
                       pressed: c(segmentName, 'd', 'button.destructive', 60),
@@ -240,7 +240,7 @@ export const schema: Schema = {
               light: {
                 textColor: {
                   primary: {
-                    subtle: {
+                    medium: {
                       rest: c(segmentName, 'l', 'button.primary', 50),
                       hover: { ref: c(segmentName, 'l', 'button.primary', 50, 80) },
                       pressed: { ref: c(segmentName, 'l', 'button.primary', 50) },
@@ -253,7 +253,7 @@ export const schema: Schema = {
                         }
                       }
                     },
-                    vivid: {
+                    high: {
                       rest: c(segmentName, 'l', 'button.neutral', 0),
                       pressed: { ref: c(segmentName, 'l', 'button.neutral', 0, 50) },
                       disabled: {
@@ -262,7 +262,7 @@ export const schema: Schema = {
                     }
                   },
                   neutral: {
-                    subtle: {
+                    medium: {
                       rest: c(segmentName, 'l', 'button.neutral', 50),
                       hover: { ref: c(segmentName, 'l', 'button.neutral', 50, 80) },
                       pressed: { ref: c(segmentName, 'l', 'button.neutral', 50) },
@@ -277,7 +277,7 @@ export const schema: Schema = {
                     }
                   },
                   redLike: {
-                    subtle: {
+                    medium: {
                       rest: c(segmentName, 'l', 'button.destructive', 50),
                       hover: { ref: c(segmentName, 'l', 'button.destructive', 50, 80) },
                       pressed: { ref: c(segmentName, 'l', 'button.destructive', 50, 70) },
@@ -290,7 +290,7 @@ export const schema: Schema = {
                         }
                       }
                     },
-                    vivid: {
+                    high: {
                       rest: c(segmentName, 'l', 'button.neutral', 0),
                       pressed: { ref: c(segmentName, 'l', 'button.neutral', 0, 70) },
                       disabled: {

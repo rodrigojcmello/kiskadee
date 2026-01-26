@@ -17,7 +17,7 @@ export type ManifestFonts = {
 export type ManifestComponentState = Record<
   string, // semantic: primary, neutral, redLike, ...
   Record<
-    string, // emphasis: soft, solid, u, ...
+    string, // emphasis: high, medium, low, lowest
     Record<string, true> // state: rest, hover, focus, pressed, selected, disabled, ...
   >
 >;
@@ -25,7 +25,7 @@ export type ManifestComponentState = Record<
 export type ManifestComponent = {
   /**
    * Interaction states supported by the Button component, grouped by
-   * semantic (primary/neutral/...) and emphasis (soft/solid/u).
+   * semantic (primary/neutral/...) and emphasis (high/medium/low/lowest).
    *
    * Only positive information is stored: if a state key is present
    * (e.g. "selected": true), the state exists for that

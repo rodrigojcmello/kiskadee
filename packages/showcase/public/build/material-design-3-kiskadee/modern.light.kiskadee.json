@@ -3,24 +3,24 @@
     "e1": {
       "c": {
         "primary": {
-          "s": "mk-v mk-ad mk-cg mk-z mk-am mk-cp mk-cy mk-c",
-          "v": "mk-bh mk-bz mk-cj mk-br mk-di mk-cu mk-dc mk-c"
+          "h": "mk-dn mk-ed mk-em mk-dw mk-fb mk-eu mk-ey mk-h",
+          "m": "mk-al mk-au mk-ek mk-ap mk-af mk-er mk-ev mk-h"
         },
         "destructive": {
-          "s": "mk-l mk-n mk-aj mk-m mk-q mk-o mk-p mk-c",
-          "v": "mk-t mk-ae mk-ag mk-j mk-h mk-i mk-c"
+          "h": "mk-aj mk-aw mk-ay mk-t mk-r mk-s mk-h",
+          "m": "mk-v mk-z mk-bc mk-ae mk-ac mk-ad mk-h mk-x"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "s": "mk-k mk-g mk-b",
-          "v": "mk-a mk-e mk-b"
+          "h": "mk-b mk-m mk-a",
+          "m": "mk-u mk-n mk-a"
         },
         "destructive": {
-          "s": "mk-ao mk-g mk-b",
-          "v": "mk-a mk-e mk-b"
+          "h": "mk-b mk-m mk-a",
+          "m": "mk-bu mk-n mk-a"
         }
       }
     }

@@ -88,7 +88,7 @@
               "light": {
                 "boxColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": "#0F6CBD",
                       "hover": "#115EA3",
                       "focus": "#0F6CBD",
@@ -106,7 +106,7 @@
               "dark": {
                 "boxColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": "#115EA3",
                       "hover": "#0F6CBD",
                       "focus": "#115EA3",
@@ -166,7 +166,7 @@
               "light": {
                 "textColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": "#FFF",
                       "disabled": {
                         "ref": "#BDBDBD"
@@ -178,7 +178,7 @@
               "dark": {
                 "textColor": {
                   "primary": {
-                    "vivid": {
+                    "high": {
                       "rest": "#000",
                       "disabled": {
                         "ref": "#5C5C5C"

@@ -312,14 +312,9 @@ export type ComponentIntents = {
   /**
    * Button intents.
    *
-   * Only `primary` and `neutral` are required in presets.
-   * The remaining intents are optional and should be defined only
-   * when the design system actually supports them.
+   * All intents are optional so presets can override selectively.
    */
-  button?: Record<Extract<ButtonIntent, 'primary' | 'neutral'>, IntentValue> &
-    Partial<
-      Record<Exclude<ButtonIntent, Extract<ButtonIntent, 'primary' | 'neutral'>>, IntentValue>
-    >;
+  button?: Partial<Record<ButtonIntent, IntentValue>>;
 } & Partial<Record<string, Record<string, IntentValue>>>;
 
 export type SchemaColors = Partial<{
@@ -339,10 +334,17 @@ export type SchemaColors = Partial<{
   componentIntents: ComponentIntents;
 }>;
 
-export type Emphasis = keyof EmphasisLevel;
+export const componentEmphasisBuckets = {
+  high: 'h',
+  medium: 'm',
+  low: 'l',
+  lowest: 'll'
+} as const;
+
+export type ComponentEmphasis = keyof typeof componentEmphasisBuckets;
 
 export type SemanticColorMap = Partial<
-  Record<SemanticColor, Partial<Record<Emphasis, InteractionStateColorMap>>>
+  Record<SemanticColor, Partial<Record<ComponentEmphasis, InteractionStateColorMap>>>
 >;
 
 export enum CssColorProperty {

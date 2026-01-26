@@ -19,7 +19,7 @@
       },
       "state": {
         "primary": {
-          "subtle": {
+          "medium": {
             "rest": true,
             "hover": true,
             "focus": true,
@@ -27,7 +27,7 @@
             "disabled": true,
             "selected": true
           },
-          "vivid": {
+          "high": {
             "rest": true,
             "hover": true,
             "pressed": true,

@@ -3,16 +3,20 @@
     "e1": {
       "c": {
         "primary": {
-          "s": "mk-bg mk-bx mk-ch mk-bp mk-am mk-cr mk-cx mk-d",
-          "v": "mk-bf mk-bw mk-ce mk-bo mk-d"
+          "h": "mk-dl mk-d mk-eb mk-f mk-ei mk-g mk-du mk-e mk-i mk-c",
+          "m": "mk-dm mk-d mk-y mk-f mk-aa mk-g mk-w mk-e mk-i mk-c mk-af mk-bf mk-bj",
+          "l": "mk-k mk-ch mk-y mk-cp mk-aa mk-cu mk-w mk-cl mk-l mk-c mk-af mk-bf mk-bj",
+          "ll": "mk-k mk-d mk-y mk-f mk-aa mk-g mk-w mk-e mk-l mk-c"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "s": "mk-a mk-b",
-          "v": "mk-a mk-b"
+          "h": "mk-b mk-a",
+          "m": "mk-b mk-a",
+          "l": "mk-bt mk-a mk-by mk-cc",
+          "ll": "mk-bt mk-a mk-by mk-cc"
         }
       }
     }

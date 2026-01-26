@@ -19,7 +19,7 @@ const componentIntentsPatch = {
   button: {
     destructive: 'redLike'
   }
-} as const satisfies DeepOverride<typeof baseComponentIntents>;
+} as const satisfies DeepOverride<ComponentIntents>;
 
 const primitiveColorsPatch = {
   purple: {
@@ -65,7 +65,7 @@ export const globalSemanticsBySegment = deepMerge(
 ) satisfies GlobalSemanticsBySegment;
 
 export const componentIntents = deepMerge(
-  baseComponentIntents,
+  baseComponentIntents as ComponentIntents,
   componentIntentsPatch
 ) satisfies ComponentIntents;
 

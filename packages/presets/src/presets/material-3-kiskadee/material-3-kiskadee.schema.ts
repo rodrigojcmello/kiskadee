@@ -43,7 +43,7 @@ const patch = {
               light: {
                 boxColor: {
                   primary: {
-                    subtle: {
+                    medium: {
                       rest: c('modern', 'l', 'button.primary', 10),
                       hover: c('modern', 'l', 'button.primary', 8),
                       pressed: c('modern', 'l', 'button.primary', 13),
@@ -55,7 +55,7 @@ const patch = {
                         pressed: c('modern', 'l', 'button.primary', 60)
                       }
                     },
-                    vivid: {
+                    high: {
                       rest: c('modern', 'l', 'button.primary.gradient', 25),
                       hover: c('modern', 'l', 'button.primary.gradient', 20),
                       pressed: c('modern', 'l', 'button.primary.gradient', 30),
@@ -69,7 +69,7 @@ const patch = {
                     }
                   },
                   destructive: {
-                    subtle: {
+                    medium: {
                       rest: c('modern', 'l', 'button.destructive', 10),
                       hover: c('modern', 'l', 'button.destructive', 8),
                       pressed: c('modern', 'l', 'button.destructive', 13),
@@ -81,7 +81,7 @@ const patch = {
                         pressed: c('modern', 'l', 'button.destructive', 60)
                       }
                     },
-                    vivid: {
+                    high: {
                       rest: c('modern', 'l', 'button.destructive', 50),
                       hover: c('modern', 'l', 'button.destructive', 40),
                       pressed: c('modern', 'l', 'button.destructive', 60),
@@ -98,7 +98,7 @@ const patch = {
               dark: {
                 boxColor: {
                   primary: {
-                    subtle: {
+                    medium: {
                       rest: c('modern', 'd', 'button.primary', 50),
                       hover: c('modern', 'd', 'button.primary', 40),
                       pressed: c('modern', 'd', 'button.primary', 60),
@@ -110,7 +110,7 @@ const patch = {
                         pressed: c('modern', 'd', 'button.primary', 20)
                       }
                     },
-                    vivid: {
+                    high: {
                       rest: c('modern', 'd', 'button.primary.gradient', 25),
                       hover: c('modern', 'd', 'button.primary.gradient', 60),
                       pressed: c('modern', 'd', 'button.primary.gradient', 90),
@@ -124,7 +124,7 @@ const patch = {
                     }
                   },
                   destructive: {
-                    // subtle: {
+                    // medium: {
                     //   rest: c('modern', 'd', 'button.destructive', 50),
                     //   hover: c('modern', 'd', 'button.destructive', 40),
                     //   pressed: c('modern', 'd', 'button.destructive', 60),
@@ -136,7 +136,7 @@ const patch = {
                     //     pressed: c('modern', 'd', 'button.destructive', 20)
                     //   }
                     // },
-                    vivid: {
+                    high: {
                       rest: c('modern', 'd', 'button.destructive', 55),
                       hover: c('modern', 'd', 'button.destructive', 50),
                       pressed: c('modern', 'd', 'button.destructive', 65),
@@ -156,7 +156,7 @@ const patch = {
               light: {
                 boxColor: {
                   destructive: {
-                    vivid: {
+                    high: {
                       rest: c('default', 'l', 'button.destructive', 55),
                       focus: c('default', 'l', 'button.destructive', 55),
                       hover: c('default', 'l', 'button.destructive', 50),
@@ -168,7 +168,7 @@ const patch = {
                         pressed: c('default', 'l', 'button.destructive', 20)
                       }
                     },
-                    subtle: {
+                    medium: {
                       rest: c('default', 'l', 'button.destructive', 10),
                       focus: c('default', 'l', 'button.destructive', 10),
                       hover: c('default', 'l', 'button.destructive', 8),
@@ -188,7 +188,7 @@ const patch = {
               light: {
                 boxColor: {
                   destructive: {
-                    subtle: {
+                    medium: {
                       rest: c('dynamic', 'l', 'button.destructive', 10),
                       hover: c('dynamic', 'l', 'button.destructive', 8),
                       pressed: c('dynamic', 'l', 'button.destructive', 13),
@@ -200,7 +200,7 @@ const patch = {
                         pressed: c('dynamic', 'l', 'button.destructive', 60)
                       }
                     },
-                    vivid: {
+                    high: {
                       rest: c('dynamic', 'l', 'button.destructive', 50),
                       hover: c('dynamic', 'l', 'button.destructive', 40),
                       pressed: c('dynamic', 'l', 'button.destructive', 60),
@@ -224,7 +224,7 @@ const patch = {
               light: {
                 textColor: {
                   primary: {
-                    subtle: {
+                    medium: {
                       rest: c('modern', 'l', 'button.neutral', 70),
                       disabled: {
                         ref: c('modern', 'l', 'button.neutral', 60)
@@ -235,7 +235,7 @@ const patch = {
                         }
                       }
                     },
-                    vivid: {
+                    high: {
                       rest: c('modern', 'l', primitive('black', 'v1'), 0),
                       disabled: {
                         ref: c('modern', 'l', 'button.neutral', 60)
@@ -248,7 +248,7 @@ const patch = {
                     }
                   },
                   destructive: {
-                    subtle: {
+                    medium: {
                       rest: c('modern', 'l', 'button.destructive', 70),
                       disabled: {
                         ref: c('modern', 'l', 'button.neutral', 60)
@@ -259,7 +259,7 @@ const patch = {
                         }
                       }
                     },
-                    vivid: {
+                    high: {
                       rest: c('modern', 'l', 'button.neutral', 0),
                       disabled: {
                         ref: c('modern', 'l', 'button.neutral', 60)
@@ -276,7 +276,7 @@ const patch = {
               dark: {
                 textColor: {
                   primary: {
-                    subtle: {
+                    medium: {
                       rest: c('modern', 'd', primitive('black', 'v1'), 0),
                       disabled: {
                         ref: c('modern', 'd', 'button.neutral', 60)
@@ -287,7 +287,7 @@ const patch = {
                         }
                       }
                     },
-                    vivid: {
+                    high: {
                       rest: c('modern', 'd', primitive('black', 'v1'), 0),
                       disabled: {
                         ref: c('modern', 'd', 'button.neutral', 60)
@@ -300,7 +300,7 @@ const patch = {
                     }
                   },
                   destructive: {
-                    subtle: {
+                    medium: {
                       rest: c('modern', 'd', 'button.neutral', 0),
                       disabled: {
                         ref: c('modern', 'd', 'button.neutral', 60)
@@ -311,7 +311,7 @@ const patch = {
                         }
                       }
                     },
-                    vivid: {
+                    high: {
                       rest: c('modern', 'd', primitive('black', 'v1'), 0),
                       disabled: {
                         ref: c('modern', 'd', 'button.neutral', 60)
@@ -330,7 +330,7 @@ const patch = {
               light: {
                 textColor: {
                   destructive: {
-                    subtle: {
+                    medium: {
                       rest: c('default', 'l', 'button.destructive', 70),
                       disabled: {
                         ref: c('default', 'l', 'button.neutral', 60)
@@ -341,7 +341,7 @@ const patch = {
                         }
                       }
                     },
-                    vivid: {
+                    high: {
                       rest: c('default', 'l', 'button.neutral', 0),
                       disabled: {
                         ref: c('default', 'l', 'button.neutral', 60)
@@ -360,7 +360,7 @@ const patch = {
               light: {
                 textColor: {
                   destructive: {
-                    subtle: {
+                    medium: {
                       rest: c('dynamic', 'l', 'button.neutral', 70),
                       disabled: {
                         ref: c('dynamic', 'l', 'button.neutral', 60)
@@ -371,7 +371,7 @@ const patch = {
                         }
                       }
                     },
-                    vivid: {
+                    high: {
                       rest: c('dynamic', 'l', primitive('black', 'v1'), 0),
                       disabled: {
                         ref: c('dynamic', 'l', 'button.neutral', 60)

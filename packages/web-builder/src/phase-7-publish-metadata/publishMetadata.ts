@@ -191,9 +191,10 @@ function buildButtonState(schema: Schema): ManifestComponentState | undefined {
   const tmp: Record<string, Record<string, Set<string>>> = {};
 
   const addState = (semantic: string, tone: string, stateKey: string) => {
+    const emphasis = tone;
     if (!tmp[semantic]) tmp[semantic] = {};
-    if (!tmp[semantic]![tone]) tmp[semantic]![tone] = new Set<string>();
-    tmp[semantic]![tone]!.add(stateKey);
+    if (!tmp[semantic]![emphasis]) tmp[semantic]![emphasis] = new Set<string>();
+    tmp[semantic]![emphasis]!.add(stateKey);
   };
 
   for (const el of Object.values(elements)) {

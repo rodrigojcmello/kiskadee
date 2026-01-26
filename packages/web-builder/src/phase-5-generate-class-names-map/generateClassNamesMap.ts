@@ -1,8 +1,10 @@
+import { componentEmphasisBuckets } from '@kiskadee/core';
 import type {
   ComponentName,
   ComponentStyleKeyMap,
   ElementAllSizeValue,
   ElementSizeValue,
+  ComponentEmphasis,
   InteractionState,
   SemanticColor,
   StyleKey
@@ -13,19 +15,18 @@ import type {
 } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
 
-// Color classes structure matching schema.ts
 type ColorClasses = {
-  // Legacy buckets (kept for backward compatibility with existing consumers).
-  u?: string; // unique/single color (no emphasis variants)
-  s?: string; // subtle
-  v?: string; // vivid
+  h?: string; // high
+  m?: string; // medium
+  l?: string; // low
+  ll?: string; // lowest
 };
 
 // Shortened keys for optimization (Phase 5 artifact schema):
 // d = decorations (always-on, flattened string)
 // e = effects by interaction state (arrays of classes, opt-in at component level)
 // s = scales (size variants only, flattened strings per size)
-// c = color classes (organized by emphasis: u/s/v)
+// c = color classes (organized by emphasis: h/m/l/ll)
 // cs = control states (selected)
 export type ClassNamesByInteractionState = Partial<Record<string, string[]>>; // legacy for reference
 export type ClassNameByElement = {
@@ -36,7 +37,7 @@ export type ClassNameByElement = {
   e?: Partial<Record<string, string>>;
   // Scales aggregated per size as flattened strings (size variants only, not effects)
   s?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
-  // Color classes organized by emphasis (u/s/v)
+  // Color classes organized by emphasis (h/m/l/ll)
   c?: ColorClasses;
   // Control-state specific (selected) — flattened string of utility classes
   l?: string;
@@ -170,10 +171,10 @@ export function generateClassNamesMapSplit(
             // - However, the emphasis bucket (subtle/vivid) is semantic metadata and is allowed
             //   to differ per palette. If we used a single global metadata map keyed only by
             //   StyleKey, emphasis could "leak" from one palette to another and make the JSON
-            //   artifact incorrectly classify subtle classes as vivid (or vice-versa).
+            //   artifact incorrectly classify high/medium/low/lowest classes.
             //
             // By resolving metadata through `bundleKey`, we keep CSS dedupe intact while producing
-            // correct per-palette `c[semantic].s` / `c[semantic].v` buckets.
+            // correct per-palette `c[semantic].h|m|l|ll` buckets.
             const toneMetaForPalette = toneMetadataByPalette.get(bundleKey);
             if (!palettes[bundleKey]) palettes[bundleKey] = {};
             if (!palettes[bundleKey][componentName]) {
@@ -185,16 +186,14 @@ export function generateClassNamesMapSplit(
             }
             const elemRecord = palettes[bundleKey][componentName][elementName];
 
-            // Build color classes per semantic: c[semantic] = { u, s, v }
+            // Build color classes per semantic: c[semantic] = { h, m, l, ll }
             const colorBySemantic: Record<string, ColorClasses> = {};
 
             for (const sem of Object.keys(bySemantic)) {
               const byState = bySemantic[sem as SemanticColor];
 
               // Segregate classes by emphasis (or unique if no emphasis) per semantic
-              const uniqueSet = new Set<string>();
-              const softSet = new Set<string>();
-              const solidSet = new Set<string>();
+              const emphasisSets = new Map<ComponentEmphasis, Set<string>>();
 
               for (const stateKey of Object.keys(byState ?? {})) {
                 const interactionState = stateKey as InteractionState;
@@ -208,25 +207,21 @@ export function generateClassNamesMapSplit(
                   const tones = meta?.tones ?? [];
 
                   // Do NOT move selected palette classes into core.cs. Always classify by emphasis/unique.
-                  if (tones.includes('subtle')) {
-                    softSet.add(shortenedClass);
+                  for (const tone of tones) {
+                    if (!emphasisSets.has(tone)) emphasisSets.set(tone, new Set());
+                    emphasisSets.get(tone)!.add(shortenedClass);
                   }
 
-                  if (tones.includes('vivid')) {
-                    solidSet.add(shortenedClass);
-                  }
-
-                  if (tones.length === 0) {
-                    // No emphasis = unique/single color
-                    uniqueSet.add(shortenedClass);
-                  }
+                  // No unique bucket; all component colors must declare emphasis.
                 });
               }
 
               const colorClasses: ColorClasses = {};
-              if (uniqueSet.size > 0) colorClasses.u = Array.from(uniqueSet).join(' ');
-              if (softSet.size > 0) colorClasses.s = Array.from(softSet).join(' ');
-              if (solidSet.size > 0) colorClasses.v = Array.from(solidSet).join(' ');
+              for (const [tone, set] of emphasisSets.entries()) {
+                if (set.size === 0) continue;
+                const bucket = componentEmphasisBuckets[tone];
+                (colorClasses as Record<string, string>)[bucket] = Array.from(set).join(' ');
+              }
               if (Object.keys(colorClasses).length > 0) {
                 colorBySemantic[sem] = colorClasses;
               }

@@ -1,27 +1,27 @@
 {
   "button": {
     "e1": {
-      "d": "mk-bc",
+      "d": "mk-di",
       "e": {
-        "h": "mk-ef mk-ei mk-ej mk-eh mk-eg",
-        "r": "mk-r mk-aw mk-ax mk-av mk-bb mk-az mk-ba mk-ay"
+        "h": "mk-fw mk-fz mk-ga mk-fy mk-fx",
+        "r": "mk-ah mk-dc mk-dd mk-db mk-dh mk-df mk-dg mk-de"
       },
       "s": {
-        "sm:1": "mk-ee mk-dp mk-dq mk-dv mk-ar",
-        "md:1": "mk-ea mk-dl mk-dr mk-dw mk-r",
-        "lg:1": "mk-eb mk-dm mk-ds mk-dx mk-as",
-        "lg:2": "mk-ec mk-dn mk-dt mk-dy mk-at",
-        "lg:3": "mk-ed mk-do mk-du mk-dz mk-au"
+        "sm:1": "mk-fv mk-fg mk-fh mk-fm mk-o mk-cx",
+        "md:1": "mk-fr mk-fc mk-fi mk-fn mk-o mk-ah",
+        "lg:1": "mk-fs mk-fd mk-fj mk-fo mk-o mk-cy",
+        "lg:2": "mk-ft mk-fe mk-fk mk-fp mk-o mk-cz",
+        "lg:3": "mk-fu mk-ff mk-fl mk-fq mk-o mk-da"
       }
     },
     "e2": {
-      "d": "mk-eq",
+      "d": "mk-gh",
       "s": {
-        "sm:1": "mk-aq mk-ap",
-        "md:1": "mk-aq mk-ap",
-        "lg:1": "mk-en mk-ek",
-        "lg:2": "mk-eo mk-el",
-        "lg:3": "mk-ep mk-em"
+        "sm:1": "mk-cg mk-cf",
+        "md:1": "mk-cg mk-cf",
+        "lg:1": "mk-ge mk-gb",
+        "lg:2": "mk-gf mk-gc",
+        "lg:3": "mk-gg mk-gd"
       }
     }
   }
