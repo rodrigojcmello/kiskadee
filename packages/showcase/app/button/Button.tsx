@@ -474,7 +474,7 @@ export function Button() {
               'neutral',
               'high',
               'rest',
-              <KButton emphasis="high">
+              <KButton emphasis="high" intent="neutral">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Rest
@@ -486,7 +486,7 @@ export function Button() {
               'neutral',
               'high',
               'hover',
-              <KButton emphasis="high" status="hover">
+              <KButton emphasis="high" intent="neutral" status="hover">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Hover
@@ -498,7 +498,7 @@ export function Button() {
               'neutral',
               'high',
               'focus',
-              <KButton emphasis="high" status="focus">
+              <KButton emphasis="high" intent="neutral" status="focus">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Focus
@@ -510,7 +510,7 @@ export function Button() {
               'neutral',
               'high',
               'pressed',
-              <KButton emphasis="high" status="pressed">
+              <KButton emphasis="high" intent="neutral" status="pressed">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Pressed
@@ -522,7 +522,7 @@ export function Button() {
               'neutral',
               'high',
               'selected',
-              <KButton emphasis="high" controlState={true}>
+              <KButton emphasis="high" intent="neutral" controlState={true}>
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Selected
@@ -534,7 +534,161 @@ export function Button() {
               'neutral',
               'high',
               'disabled',
-              <KButton emphasis="high" status="disabled">
+              <KButton emphasis="high" intent="neutral" status="disabled">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Disabled
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+          </div>
+        </div>
+        <div className={s['interaction-state']}>
+          <h3>Interaction States - Neutral (Low)</h3>
+          <div className={`${s['example-states']} k-root`}>
+            {renderState(
+              'neutral',
+              'low',
+              'rest',
+              <KButton emphasis="low" intent="neutral">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Rest
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'neutral',
+              'low',
+              'hover',
+              <KButton emphasis="low" intent="neutral" status="hover">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Hover
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'neutral',
+              'low',
+              'focus',
+              <KButton emphasis="low" intent="neutral" status="focus">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Focus
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'neutral',
+              'low',
+              'pressed',
+              <KButton emphasis="low" intent="neutral" status="pressed">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Pressed
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'neutral',
+              'low',
+              'selected',
+              <KButton emphasis="low" intent="neutral" controlState={true}>
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Selected
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'neutral',
+              'low',
+              'disabled',
+              <KButton emphasis="low" intent="neutral" status="disabled">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Disabled
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+          </div>
+        </div>
+        <div className={s['interaction-state']}>
+          <h3>Interaction States - Neutral (Lowest)</h3>
+          <div className={`${s['example-states']} k-root`}>
+            {renderState(
+              'neutral',
+              'lowest',
+              'rest',
+              <KButton emphasis="lowest" intent="neutral">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Rest
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'neutral',
+              'lowest',
+              'hover',
+              <KButton emphasis="lowest" intent="neutral" status="hover">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Hover
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'neutral',
+              'lowest',
+              'focus',
+              <KButton emphasis="lowest" intent="neutral" status="focus">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Focus
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'neutral',
+              'lowest',
+              'pressed',
+              <KButton emphasis="lowest" intent="neutral" status="pressed">
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Pressed
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'neutral',
+              'lowest',
+              'selected',
+              <KButton emphasis="lowest" intent="neutral" controlState={true}>
+                <KButton.Label>
+                  <SmoothText triggerKey={fontName} align={alignment}>
+                    Selected
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            )}
+            {renderState(
+              'neutral',
+              'lowest',
+              'disabled',
+              <KButton emphasis="lowest" intent="neutral" status="disabled">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Disabled
