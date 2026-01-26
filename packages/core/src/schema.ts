@@ -156,6 +156,8 @@ export type ColorClasses = {
   // TODO: remove u (unique) support
   u?: string; // unique/single color (no tone variants)
   s?: string; // subtle
+  o?: string; // subtle-outline (derived)
+  f?: string; // subtle-flat (derived)
   v?: string; // vivid
 };
 

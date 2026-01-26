@@ -37,6 +37,22 @@
             "disabled": true,
             "selected": true
           },
+          "subtle-outline": {
+            "rest": true,
+            "hover": true,
+            "focus": true,
+            "pressed": true,
+            "disabled": true,
+            "selected": true
+          },
+          "subtle-flat": {
+            "rest": true,
+            "hover": true,
+            "focus": true,
+            "pressed": true,
+            "disabled": true,
+            "selected": true
+          },
           "vivid": {
             "rest": true,
             "hover": true,
@@ -53,10 +69,42 @@
             "pressed": true,
             "disabled": true,
             "selected": true
+          },
+          "subtle-outline": {
+            "rest": true,
+            "hover": true,
+            "focus": true,
+            "pressed": true,
+            "disabled": true,
+            "selected": true
+          },
+          "subtle-flat": {
+            "rest": true,
+            "hover": true,
+            "focus": true,
+            "pressed": true,
+            "disabled": true,
+            "selected": true
           }
         },
         "redLike": {
           "subtle": {
+            "rest": true,
+            "hover": true,
+            "focus": true,
+            "pressed": true,
+            "disabled": true,
+            "selected": true
+          },
+          "subtle-outline": {
+            "rest": true,
+            "hover": true,
+            "focus": true,
+            "pressed": true,
+            "disabled": true,
+            "selected": true
+          },
+          "subtle-flat": {
             "rest": true,
             "hover": true,
             "focus": true,

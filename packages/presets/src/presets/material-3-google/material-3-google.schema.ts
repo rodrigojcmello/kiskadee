@@ -98,6 +98,13 @@ export const schema: Schema<Segments> = {
               's:lg:2': 48,
               's:lg:3': 64
             },
+            borderWidth: {
+              's:sm:1': 1,
+              's:md:1': 1,
+              's:lg:1': 1,
+              's:lg:2': 1,
+              's:lg:3': 1
+            },
             borderRadius: {
               's:sm:1': 18,
               's:md:1': 20,
@@ -145,6 +152,22 @@ export const schema: Schema<Segments> = {
                       }
                     }
                   }
+                },
+                borderColor: {
+                  primary: {
+                    subtle: {
+                      rest: c(s, 'l', 'button.primary', 60),
+                      focus: c(s, 'l', 'button.primary', 60),
+                      hover: c(s, 'l', 'button.primary', 55),
+                      pressed: c(s, 'l', 'button.primary', 70),
+                      disabled: c(s, 'l', 'primitive.black.v1', 90, 12),
+                      selected: {
+                        rest: c(s, 'l', 'button.primary', 60),
+                        hover: c(s, 'l', 'button.primary', 55),
+                        pressed: c(s, 'l', 'button.primary', 65)
+                      }
+                    }
+                  }
                 }
               },
               dark: {
@@ -168,6 +191,22 @@ export const schema: Schema<Segments> = {
                       pressed: c(s, 'd', 'button.primary', 25),
                       focus: c(s, 'd', 'button.primary', 30),
                       disabled: c(s, 'l', 'primitive.black.v1', 90, 12)
+                    }
+                  }
+                },
+                borderColor: {
+                  primary: {
+                    subtle: {
+                      rest: c(s, 'd', 'button.primary', 30),
+                      hover: c(s, 'd', 'button.primary', 35),
+                      pressed: c(s, 'd', 'button.primary', 25),
+                      focus: c(s, 'd', 'button.primary', 30),
+                      disabled: c(s, 'l', 'primitive.black.v1', 90, 12),
+                      selected: {
+                        rest: c(s, 'd', 'button.primary', 30),
+                        hover: c(s, 'd', 'button.primary', 35),
+                        pressed: c(s, 'd', 'button.primary', 25)
+                      }
                     }
                   }
                 }

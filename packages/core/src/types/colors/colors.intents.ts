@@ -44,3 +44,17 @@ export type ButtonIntent = keyof typeof ButtonIntentKeys;
 
 /** Qualified role identifier for `button` intents (e.g. `button.primary`). */
 export type RoleButton = `button.${ButtonIntent}`;
+
+/**
+ * Supported emphasis variants for the `button` component.
+ * Consumers use these to select subtle/vivid and subtle-derived variants.
+ */
+export const ButtonEmphasisKeys = {
+  subtle: 'subtle',
+  vivid: 'vivid',
+  subtleOutline: 'subtle-outline',
+  subtleFlat: 'subtle-flat'
+} as const;
+
+/** Supported emphasis values for the `button` component. */
+export type ButtonEmphasis = (typeof ButtonEmphasisKeys)[keyof typeof ButtonEmphasisKeys];

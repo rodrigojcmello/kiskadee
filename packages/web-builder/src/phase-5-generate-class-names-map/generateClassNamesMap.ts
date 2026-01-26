@@ -3,6 +3,7 @@ import type {
   ComponentStyleKeyMap,
   ElementAllSizeValue,
   ElementSizeValue,
+  emphasisVariantClassNames,
   InteractionState,
   SemanticColor,
   StyleKey
@@ -18,6 +19,8 @@ type ColorClasses = {
   // Legacy buckets (kept for backward compatibility with existing consumers).
   u?: string; // unique/single color (no emphasis variants)
   s?: string; // subtle
+  o?: string; // subtle-outline (derived)
+  f?: string; // subtle-flat (derived)
   v?: string; // vivid
 };
 
@@ -73,6 +76,8 @@ export function generateClassNamesMapSplit(
   shortenMap: ShortenCssClassNames,
   toneMetadataByPalette: ToneMetadataByPalette
 ): ComponentClassNameMapSplit {
+  const { outline: outlineClass, flat: flatClass } = emphasisVariantClassNames;
+
   const core: ComponentClassNameMap = {};
   const palettes: Record<string, ComponentClassNameMap> = {};
 
@@ -185,7 +190,7 @@ export function generateClassNamesMapSplit(
             }
             const elemRecord = palettes[bundleKey][componentName][elementName];
 
-            // Build color classes per semantic: c[semantic] = { u, s, v }
+            // Build color classes per semantic: c[semantic] = { u, s, v, o, f }
             const colorBySemantic: Record<string, ColorClasses> = {};
 
             for (const sem of Object.keys(bySemantic)) {
@@ -194,6 +199,7 @@ export function generateClassNamesMapSplit(
               // Segregate classes by emphasis (or unique if no emphasis) per semantic
               const uniqueSet = new Set<string>();
               const softSet = new Set<string>();
+              const softNoBoxSet = new Set<string>();
               const solidSet = new Set<string>();
 
               for (const stateKey of Object.keys(byState ?? {})) {
@@ -208,8 +214,11 @@ export function generateClassNamesMapSplit(
                   const tones = meta?.tones ?? [];
 
                   // Do NOT move selected palette classes into core.cs. Always classify by emphasis/unique.
+                  const isBoxColor = styleKey.startsWith('boxColor');
+
                   if (tones.includes('subtle')) {
                     softSet.add(shortenedClass);
+                    if (!isBoxColor) softNoBoxSet.add(shortenedClass);
                   }
 
                   if (tones.includes('vivid')) {
@@ -227,6 +236,17 @@ export function generateClassNamesMapSplit(
               if (uniqueSet.size > 0) colorClasses.u = Array.from(uniqueSet).join(' ');
               if (softSet.size > 0) colorClasses.s = Array.from(softSet).join(' ');
               if (solidSet.size > 0) colorClasses.v = Array.from(solidSet).join(' ');
+
+              const isOutlineElement = componentName === 'button' && elementName === 'e1';
+              if (isOutlineElement && softSet.size > 0) {
+                const outlineSet = new Set(softNoBoxSet.size > 0 ? softNoBoxSet : softSet);
+                outlineSet.add(outlineClass);
+                colorClasses.o = Array.from(outlineSet).join(' ');
+
+                const flatSet = new Set(softNoBoxSet.size > 0 ? softNoBoxSet : softSet);
+                flatSet.add(flatClass);
+                colorClasses.f = Array.from(flatSet).join(' ');
+              }
               if (Object.keys(colorClasses).length > 0) {
                 colorBySemantic[sem] = colorClasses;
               }

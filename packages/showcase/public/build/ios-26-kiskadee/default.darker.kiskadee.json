@@ -4,7 +4,9 @@
       "c": {
         "redLike": {
           "s": "ak-n ak-h ak-j ak-f ak-m ak-k ak-l ak-d",
-          "v": "ak-b ak-g ak-i ak-e ak-c"
+          "v": "ak-b ak-g ak-i ak-e ak-c",
+          "o": "ak-n ak-h ak-j ak-f ak-m ak-k ak-l ak-d k-ol",
+          "f": "ak-n ak-h ak-j ak-f ak-m ak-k ak-l ak-d k-fl"
         }
       }
     }

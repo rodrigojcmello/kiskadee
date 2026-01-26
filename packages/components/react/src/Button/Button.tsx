@@ -1,9 +1,9 @@
 import {
+  type ButtonEmphasis,
   type ButtonIntent,
   type ClassNameByElementJSON,
   stateActivator as cn,
   type ElementSizeValue,
-  type Emphasis,
   type StateActivatorKeys
 } from '@kiskadee/core';
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
@@ -31,10 +31,11 @@ export type ButtonProps = HeadlessButtonProps & {
   radius?: boolean;
   /**
    * Emphasis (tone) for the button colors.
-   * When provided, selects only classes for the specified emphasis (subtle or vivid).
+   * When provided, selects only classes for the specified emphasis.
+   * Supported: subtle, vivid, subtle-outline, subtle-flat.
    * If not provided or if emphasis metadata is not available, uses all palette classes.
    */
-  emphasis?: Emphasis;
+  emphasis?: ButtonEmphasis;
   /** Semantic color family to use across ALL elements (e1, e2, e3, ...). Default is 'neutral'. */
   intent?: ButtonIntent;
 };
@@ -44,7 +45,7 @@ export type ButtonProps = HeadlessButtonProps & {
 // Assumes an intent-aware map in `c`; no legacy flat format for performance.
 function collectStr(
   el: ClassNameByElementJSON | undefined,
-  emphasis: Emphasis | undefined = 'subtle',
+  emphasis: ButtonEmphasis | undefined = 'subtle',
   intent: ButtonIntent | undefined = 'neutral'
 ): string {
   if (!el) return '';
@@ -56,8 +57,12 @@ function collectStr(
 
   if (bySem) {
     let color = '';
-    if (emphasis === 'subtle' && bySem.s) color = bySem.s;
+    if (emphasis === 'subtle-outline' && bySem.o) color = bySem.o;
+    else if (emphasis === 'subtle-flat' && bySem.f) color = bySem.f;
+    else if (emphasis === 'subtle' && bySem.s) color = bySem.s;
     else if (emphasis === 'vivid' && bySem.v) color = bySem.v;
+    else if (emphasis === 'subtle-outline' && bySem.s) color = bySem.s;
+    else if (emphasis === 'subtle-flat' && bySem.s) color = bySem.s;
     else if (!emphasis) color = bySem.v ?? bySem.s ?? bySem.u ?? '';
     else if (!color && bySem.u) color = bySem.u; // last resort within the same intent
 

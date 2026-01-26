@@ -43,6 +43,22 @@
             "pressed": true,
             "disabled": true,
             "selected": true
+          },
+          "subtle-outline": {
+            "rest": true,
+            "focus": true,
+            "hover": true,
+            "pressed": true,
+            "disabled": true,
+            "selected": true
+          },
+          "subtle-flat": {
+            "rest": true,
+            "focus": true,
+            "hover": true,
+            "pressed": true,
+            "disabled": true,
+            "selected": true
           }
         },
         "neutral": {

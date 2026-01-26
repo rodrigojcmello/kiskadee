@@ -4,7 +4,9 @@
       "c": {
         "primary": {
           "s": "aos-i aos-o aos-q aos-m aos-c aos-a aos-b aos-k",
-          "v": "aos-h aos-n aos-p aos-l aos-c aos-a aos-b aos-j"
+          "v": "aos-h aos-n aos-p aos-l aos-c aos-a aos-b aos-j",
+          "o": "aos-i aos-o aos-q aos-m aos-c aos-a aos-b aos-k k-ol",
+          "f": "aos-i aos-o aos-q aos-m aos-c aos-a aos-b aos-k k-fl"
         }
       }
     },

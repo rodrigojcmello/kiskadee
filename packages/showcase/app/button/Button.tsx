@@ -241,9 +241,9 @@ export function Button() {
           <div className={`${s['example-states']} k-root`}>
             {renderState(
               'primary',
-              'subtle',
+              'subtle-outline',
               'rest',
-              <KButton emphasis="subtle" intent="primary">
+              <KButton emphasis="subtle-outline" intent="primary">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Rest
@@ -253,9 +253,9 @@ export function Button() {
             )}
             {renderState(
               'primary',
-              'subtle',
+              'subtle-outline',
               'hover',
-              <KButton emphasis="subtle" intent="primary" status="hover">
+              <KButton emphasis="subtle-outline" intent="primary" status="hover">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Hover
@@ -265,9 +265,9 @@ export function Button() {
             )}
             {renderState(
               'primary',
-              'subtle',
+              'subtle-outline',
               'focus',
-              <KButton emphasis="subtle" intent="primary" status="focus">
+              <KButton emphasis="subtle-outline" intent="primary" status="focus">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Focus
@@ -277,9 +277,9 @@ export function Button() {
             )}
             {renderState(
               'primary',
-              'subtle',
+              'subtle-outline',
               'pressed',
-              <KButton emphasis="subtle" intent="primary" status="pressed">
+              <KButton emphasis="subtle-outline" intent="primary" status="pressed">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Pressed
@@ -289,9 +289,14 @@ export function Button() {
             )}
             {renderState(
               'primary',
-              'subtle',
+              'subtle-outline',
               'selected',
-              <KButton emphasis="subtle" intent="primary" controlState={true} radius={true}>
+              <KButton
+                emphasis="subtle-outline"
+                intent="primary"
+                controlState={true}
+                radius={true}
+              >
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Selected
@@ -301,9 +306,9 @@ export function Button() {
             )}
             {renderState(
               'primary',
-              'subtle',
+              'subtle-outline',
               'disabled',
-              <KButton emphasis="subtle" intent="primary" status="disabled">
+              <KButton emphasis="subtle-outline" intent="primary" status="disabled">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Disabled
@@ -318,9 +323,9 @@ export function Button() {
           <div className={`${s['example-states']} k-root`}>
             {renderState(
               'primary',
-              'subtle',
+              'subtle-flat',
               'rest',
-              <KButton emphasis="subtle" intent="primary">
+              <KButton emphasis="subtle-flat" intent="primary">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Rest
@@ -330,9 +335,9 @@ export function Button() {
             )}
             {renderState(
               'primary',
-              'subtle',
+              'subtle-flat',
               'hover',
-              <KButton emphasis="subtle" intent="primary" status="hover">
+              <KButton emphasis="subtle-flat" intent="primary" status="hover">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Hover
@@ -342,9 +347,9 @@ export function Button() {
             )}
             {renderState(
               'primary',
-              'subtle',
+              'subtle-flat',
               'focus',
-              <KButton emphasis="subtle" intent="primary" status="focus">
+              <KButton emphasis="subtle-flat" intent="primary" status="focus">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Focus
@@ -354,9 +359,9 @@ export function Button() {
             )}
             {renderState(
               'primary',
-              'subtle',
+              'subtle-flat',
               'pressed',
-              <KButton emphasis="subtle" intent="primary" status="pressed">
+              <KButton emphasis="subtle-flat" intent="primary" status="pressed">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Pressed
@@ -366,9 +371,9 @@ export function Button() {
             )}
             {renderState(
               'primary',
-              'subtle',
+              'subtle-flat',
               'selected',
-              <KButton emphasis="subtle" intent="primary" controlState={true} radius={true}>
+              <KButton emphasis="subtle-flat" intent="primary" controlState={true} radius={true}>
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Selected
@@ -378,9 +383,9 @@ export function Button() {
             )}
             {renderState(
               'primary',
-              'subtle',
+              'subtle-flat',
               'disabled',
-              <KButton emphasis="subtle" intent="primary" status="disabled">
+              <KButton emphasis="subtle-flat" intent="primary" status="disabled">
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Disabled

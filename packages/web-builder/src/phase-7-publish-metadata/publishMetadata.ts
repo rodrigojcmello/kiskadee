@@ -194,6 +194,15 @@ function buildButtonState(schema: Schema): ManifestComponentState | undefined {
     if (!tmp[semantic]) tmp[semantic] = {};
     if (!tmp[semantic]![tone]) tmp[semantic]![tone] = new Set<string>();
     tmp[semantic]![tone]!.add(stateKey);
+
+    if (tone === 'subtle') {
+      const outlineTone = 'subtle-outline';
+      const flatTone = 'subtle-flat';
+      if (!tmp[semantic]![outlineTone]) tmp[semantic]![outlineTone] = new Set<string>();
+      if (!tmp[semantic]![flatTone]) tmp[semantic]![flatTone] = new Set<string>();
+      tmp[semantic]![outlineTone]!.add(stateKey);
+      tmp[semantic]![flatTone]!.add(stateKey);
+    }
   };
 
   for (const el of Object.values(elements)) {

@@ -4,14 +4,20 @@
       "c": {
         "primary": {
           "s": "ak-ba ak-bm ak-br ak-bi ak-af ak-ab ak-ad ak-z ak-be",
-          "v": "ak-bb ak-bn ak-bq ak-bj ak-bf"
+          "v": "ak-bb ak-bn ak-bq ak-bj ak-bf",
+          "o": "ak-ba ak-bm ak-br ak-bi ak-af ak-ab ak-ad ak-z ak-be k-ol",
+          "f": "ak-ba ak-bm ak-br ak-bi ak-af ak-ab ak-ad ak-z ak-be k-fl"
         },
         "neutral": {
-          "s": "ak-s ak-w ak-x ak-v ak-af ak-ab ak-ad ak-z ak-u"
+          "s": "ak-s ak-w ak-x ak-v ak-af ak-ab ak-ad ak-z ak-u",
+          "o": "ak-s ak-w ak-x ak-v ak-af ak-ab ak-ad ak-z ak-u k-ol",
+          "f": "ak-s ak-w ak-x ak-v ak-af ak-ab ak-ad ak-z ak-u k-fl"
         },
         "redLike": {
           "s": "ak-t ak-h ak-j ak-f ak-m ak-k ak-l ak-d",
-          "v": "ak-b ak-g ak-i ak-e ak-c"
+          "v": "ak-b ak-g ak-i ak-e ak-c",
+          "o": "ak-t ak-h ak-j ak-f ak-m ak-k ak-l ak-d k-ol",
+          "f": "ak-t ak-h ak-j ak-f ak-m ak-k ak-l ak-d k-fl"
         }
       }
     },

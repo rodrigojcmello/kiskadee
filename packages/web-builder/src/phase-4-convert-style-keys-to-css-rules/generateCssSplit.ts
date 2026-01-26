@@ -7,6 +7,7 @@ import type {
   SemanticColor,
   ThemeMode
 } from '@kiskadee/core';
+import { emphasisVariantClassNames } from '@kiskadee/core';
 import postcss from 'postcss';
 import combineMq from 'postcss-combine-media-query';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
@@ -45,6 +46,9 @@ export async function generateCssSplit(
   const coreRules: Set<string> = new Set();
   const effectsRules: Set<string> = new Set(); // collect effects separately
   const paletteRules: Record<string, Set<string>> = {};
+
+  // Variant overrides (outline/flat) live in effects CSS so they load after palettes.
+  const { outline: outlineClass, flat: flatClass } = emphasisVariantClassNames;
 
   // Helper: detect if a CSS rule is "gated" by interaction/state.
   // We consider a selector complex (i.e., gated) when:
@@ -148,6 +152,11 @@ export async function generateCssSplit(
       }
     }
   }
+
+  // Outline/flat overrides: keep the background transparent and control border style.
+  // These are emitted into effects so they override palette backgrounds.
+  effectsRules.add(`.${outlineClass} { background: transparent; border-style: solid; }`);
+  effectsRules.add(`.${flatClass} { background: transparent; border-style: none; }`);
 
   // Build strings, sort for stability, and post-process media queries per bundle
   const coreRaw = Array.from(coreRules).sort().join('\n');

@@ -3,8 +3,10 @@
     "e1": {
       "c": {
         "primary": {
-          "s": "mk-bg mk-bx mk-ch mk-bp mk-am mk-cr mk-cx mk-d",
-          "v": "mk-bf mk-bw mk-ce mk-bo mk-d"
+          "s": "mk-ck mk-au mk-db mk-bc mk-dl mk-bg mk-ct mk-ay mk-ao mk-bs mk-dv mk-bk mk-eb mk-bo mk-d mk-i",
+          "v": "mk-cj mk-da mk-di mk-cs mk-d",
+          "o": "mk-au mk-bc mk-bg mk-ay mk-bs mk-bk mk-bo mk-i k-ol",
+          "f": "mk-au mk-bc mk-bg mk-ay mk-bs mk-bk mk-bo mk-i k-fl"
         }
       }
     },

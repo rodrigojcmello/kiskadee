@@ -1,7 +1,7 @@
-import type { ButtonIntent, RoleButton } from './colors.intents';
+import type { ButtonEmphasis, ButtonIntent, RoleButton } from './colors.intents';
 
-export type { ButtonIntent, RoleButton } from './colors.intents';
-export { ButtonIntentKeys } from './colors.intents';
+export type { ButtonEmphasis, ButtonIntent, RoleButton } from './colors.intents';
+export { ButtonEmphasisKeys, ButtonIntentKeys } from './colors.intents';
 
 // Unique identifier for each segment (brand/product identity) within a design system.
 // Defined here to avoid circular type dependencies between schema and color types.
@@ -99,6 +99,15 @@ export const stateActivator = {
 };
 
 export type StateActivatorKeys = keyof typeof stateActivator;
+
+// Emphasis variant classes used for subtle-derived button variants.
+export const emphasisVariantClassNames = {
+  outline: 'k-ol',
+  flat: 'k-fl'
+} as const;
+
+export type EmphasisVariantClassName =
+  (typeof emphasisVariantClassNames)[keyof typeof emphasisVariantClassNames];
 
 export type SelectedInteractionState = keyof SelectedInteractionSubMap;
 export type SelectedInteractionStateToken = `selected:${SelectedInteractionState}`;
