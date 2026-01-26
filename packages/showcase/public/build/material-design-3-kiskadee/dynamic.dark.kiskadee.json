@@ -3,20 +3,20 @@
     "e1": {
       "c": {
         "primary": {
-          "h": "mk-dp mk-d mk-ee mk-f mk-ep mk-g mk-dx mk-e mk-i mk-c",
-          "m": "mk-am mk-d mk-q mk-f mk-ab mk-g mk-p mk-e mk-i mk-c mk-bq mk-bh mk-bm",
-          "l": "mk-k mk-ck mk-q mk-cs mk-ab mk-cw mk-p mk-co mk-l mk-c mk-bq mk-bh mk-bm",
-          "ll": "mk-k mk-d mk-q mk-f mk-ab mk-g mk-p mk-e mk-l mk-c"
+          "h": "mk-eh mk-c mk-ew mk-e mk-fh mk-f mk-ep mk-d mk-j mk-a",
+          "m": "mk-at mk-c mk-t mk-e mk-ae mk-f mk-r mk-d mk-j mk-a mk-ci mk-bv mk-cc",
+          "l": "mk-h mk-dc mk-t mk-dk mk-ae mk-do mk-r mk-dg mk-i mk-a mk-ci mk-bv mk-cc",
+          "ll": "mk-h mk-c mk-t mk-e mk-ae mk-f mk-r mk-d mk-i mk-a"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "h": "mk-b mk-a",
-          "m": "mk-b mk-a",
-          "l": "mk-bv mk-a mk-bz mk-cd",
-          "ll": "mk-bv mk-a mk-bz mk-cd"
+          "h": "mk-g mk-b",
+          "m": "mk-g mk-b",
+          "l": "mk-cn mk-b mk-cr mk-cv",
+          "ll": "mk-cn mk-b mk-cr mk-cv"
         }
       }
     }

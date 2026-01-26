@@ -3,23 +3,23 @@
     "e1": {
       "c": {
         "primary": {
-          "h": "mk-do mk-ec mk-en mk-dv mk-fa mk-et mk-ex mk-h",
-          "m": "mk-dj mk-ea mk-eg mk-ds mk-ez mk-es mk-ew mk-h"
+          "h": "mk-eg mk-eu mk-ff mk-en mk-fs mk-fl mk-fp mk-k",
+          "m": "mk-eb mk-es mk-ey mk-ek mk-fr mk-fk mk-fo mk-k"
         },
         "destructive": {
-          "h": "mk-ai mk-as mk-bb mk-an mk-t mk-r mk-s mk-h"
+          "h": "mk-ao mk-bb mk-bn mk-av mk-w mk-u mk-v mk-k"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "h": "mk-b mk-m mk-a",
-          "m": "mk-b mk-m mk-a"
+          "h": "mk-g mk-m mk-b",
+          "m": "mk-g mk-m mk-b"
         },
         "destructive": {
-          "h": "mk-b mk-m mk-a",
-          "m": "mk-b mk-m mk-a"
+          "h": "mk-g mk-m mk-b",
+          "m": "mk-g mk-m mk-b"
         }
       }
     }

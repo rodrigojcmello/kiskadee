@@ -68,6 +68,29 @@
             "pressed": true,
             "disabled": true,
             "selected": true
+          },
+          "medium": {
+            "rest": true,
+            "focus": true,
+            "hover": true,
+            "pressed": true,
+            "disabled": true,
+            "selected": true
+          },
+          "low": {
+            "rest": true,
+            "focus": true,
+            "hover": true,
+            "pressed": true,
+            "disabled": true,
+            "selected": true
+          },
+          "lowest": {
+            "rest": true,
+            "focus": true,
+            "hover": true,
+            "pressed": true,
+            "disabled": true
           }
         }
       }

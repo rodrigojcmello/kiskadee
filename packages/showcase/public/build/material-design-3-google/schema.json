@@ -193,6 +193,37 @@
                         "hover": "#958DA5",
                         "pressed": "#625B71"
                       }
+                    },
+                    "medium": {
+                      "rest": "#E8DEF9",
+                      "focus": "#E8DEF9",
+                      "hover": "#EEE4FE",
+                      "pressed": "#DAD0EA",
+                      "disabled": "#1A1A1A1F",
+                      "selected": {
+                        "rest": "#625B71",
+                        "hover": "#6E677E",
+                        "pressed": "#564F65"
+                      }
+                    },
+                    "low": {
+                      "rest": "#0000",
+                      "focus": "#F7F7F7",
+                      "hover": "#F7F7F7",
+                      "pressed": "#F2F2F2",
+                      "disabled": "#0000",
+                      "selected": {
+                        "rest": "#666",
+                        "hover": "#737373",
+                        "pressed": "#595959"
+                      }
+                    },
+                    "lowest": {
+                      "rest": "#0000",
+                      "focus": "#FBF4FF",
+                      "hover": "#FBF4FF",
+                      "pressed": "#F6EDFF",
+                      "disabled": "#0000"
                     }
                   }
                 },
@@ -217,6 +248,36 @@
                       "focus": "#DCCDFF",
                       "hover": "#E9DDFF",
                       "pressed": "#CFBCFF",
+                      "disabled": "#D9D9D9"
+                    },
+                    "lowest": {
+                      "rest": "#0000",
+                      "focus": "#0000",
+                      "hover": "#0000",
+                      "pressed": "#0000",
+                      "disabled": "#0000"
+                    }
+                  },
+                  "neutral": {
+                    "high": {
+                      "rest": "#0000",
+                      "focus": "#0000",
+                      "hover": "#0000",
+                      "pressed": "#0000",
+                      "disabled": "#0000"
+                    },
+                    "medium": {
+                      "rest": "#0000",
+                      "focus": "#0000",
+                      "hover": "#0000",
+                      "pressed": "#0000",
+                      "disabled": "#0000"
+                    },
+                    "low": {
+                      "rest": "#D9D9D9",
+                      "focus": "#D9D9D9",
+                      "hover": "#E6E6E6",
+                      "pressed": "#CCC",
                       "disabled": "#D9D9D9"
                     },
                     "lowest": {
@@ -361,6 +422,37 @@
                         "hover": "#958DA5",
                         "pressed": "#625B71"
                       }
+                    },
+                    "medium": {
+                      "rest": "#E8DEF9",
+                      "focus": "#E8DEF9",
+                      "hover": "#EEE4FE",
+                      "pressed": "#DAD0EA",
+                      "disabled": "#1A1A1A1F",
+                      "selected": {
+                        "rest": "#625B71",
+                        "hover": "#6E677E",
+                        "pressed": "#564F65"
+                      }
+                    },
+                    "low": {
+                      "rest": "#0000",
+                      "focus": "#F7F7F7",
+                      "hover": "#F7F7F7",
+                      "pressed": "#F2F2F2",
+                      "disabled": "#0000",
+                      "selected": {
+                        "rest": "#666",
+                        "hover": "#737373",
+                        "pressed": "#595959"
+                      }
+                    },
+                    "lowest": {
+                      "rest": "#0000",
+                      "focus": "#FBF4FF",
+                      "hover": "#FBF4FF",
+                      "pressed": "#F6EDFF",
+                      "disabled": "#0000"
                     }
                   }
                 },
@@ -385,6 +477,36 @@
                       "focus": "hsl(var(--k-p-15))",
                       "hover": "hsl(var(--k-p-10))",
                       "pressed": "hsl(var(--k-p-20))",
+                      "disabled": "#D9D9D9"
+                    },
+                    "lowest": {
+                      "rest": "#0000",
+                      "focus": "#0000",
+                      "hover": "#0000",
+                      "pressed": "#0000",
+                      "disabled": "#0000"
+                    }
+                  },
+                  "neutral": {
+                    "high": {
+                      "rest": "#0000",
+                      "focus": "#0000",
+                      "hover": "#0000",
+                      "pressed": "#0000",
+                      "disabled": "#0000"
+                    },
+                    "medium": {
+                      "rest": "#0000",
+                      "focus": "#0000",
+                      "hover": "#0000",
+                      "pressed": "#0000",
+                      "disabled": "#0000"
+                    },
+                    "low": {
+                      "rest": "#D9D9D9",
+                      "focus": "#D9D9D9",
+                      "hover": "#E6E6E6",
+                      "pressed": "#CCC",
                       "disabled": "#D9D9D9"
                     },
                     "lowest": {
