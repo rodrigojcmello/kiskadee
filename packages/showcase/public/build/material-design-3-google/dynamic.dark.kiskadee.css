@@ -1,28 +1,28 @@
-.-a.-d .gmd-k { color: #575E71 }
+.-a.-d .gmd-m { color: #565E71 }
 .gmd-a.-d.-a { border-color: #0000 }
-.gmd-ac { background: hsl(var(--k-p-10)) }
+.gmd-ac { color: #7BABFF }
+.gmd-ah { border-color: #7BABFF }
+.gmd-av { background: #7BABFF }
 .gmd-b { border-color: #0000 }
-.gmd-bo.-s.-a { background: hsl(var(--k-p-50)) }
-.gmd-bt { color: hsl(var(--k-p-30)) }
-.gmd-cj { border-color: hsl(var(--k-p-30)) }
-.gmd-dk { background: hsl(var(--k-p-30)) }
 .gmd-f { background: #0000 }
 .gmd-g.-d.-a { background: #0000 }
-.gmd-i.-d.-a { background: #1D1B201F }
-.gmd-j { color: #FFF }
+.gmd-i.-d.-a { background: #1A1B1F1F }
+.gmd-l { color: #FFF }
+.gmd-t { background: #D7E3FF }
+.gmd-z.-s.-a { background: #0074E8 }
+.gmd-ak:focus-visible, .gmd-ak.-f.-a { border-color: #7BABFF }
+.gmd-az:focus-visible, .gmd-az.-f.-a { background: #7BABFF }
 .gmd-c:focus-visible, .gmd-c.-f.-a { border-color: #0000 }
-.gmd-cn:focus-visible, .gmd-cn.-f.-a { border-color: hsl(var(--k-p-30)) }
-.gmd-do:focus-visible, .gmd-do.-f.-a { background: hsl(var(--k-p-30)) }
-.gmd-p:focus-visible, .gmd-p.-f.-a { background: hsl(var(--k-p-10)) }
-.gmd-ba:hover.-s, .gmd-ba.-s.-h.-a { background: hsl(var(--k-p-40)) }
-.gmd-bx:hover, .gmd-bx.-h.-a { color: hsl(var(--k-p-35)) }
-.gmd-cr:hover, .gmd-cr.-h.-a { border-color: hsl(var(--k-p-35)) }
+.gmd-j:focus-visible, .gmd-j.-f.-a { background: #D7E3FF }
+.gmd-ae:hover, .gmd-ae.-h.-a { color: #619DFF }
+.gmd-an:hover, .gmd-an.-h.-a { border-color: #619DFF }
+.gmd-be:hover, .gmd-be.-h.-a { background: #619DFF }
 .gmd-d:hover, .gmd-d.-h.-a { border-color: #0000 }
-.gmd-ds:hover, .gmd-ds.-h.-a { background: hsl(var(--k-p-35)) }
-.gmd-r:hover, .gmd-r.-h.-a { background: hsl(var(--k-p-8)) }
-.gmd-bh:active.-s, .gmd-bh.-s.-p.-a { background: hsl(var(--k-p-60)) }
-.gmd-cb:active, .gmd-cb.-p.-a { color: hsl(var(--k-p-25)) }
-.gmd-cv:active, .gmd-cv.-p.-a { border-color: hsl(var(--k-p-25)) }
-.gmd-dy:active, .gmd-dy.-p.-a { background: hsl(var(--k-p-25)) }
+.gmd-k:hover, .gmd-k.-h.-a { background: #DFE8FF }
+.gmd-w:hover.-s, .gmd-w.-s.-h.-a { background: #428FFF }
+.gmd-ag:active, .gmd-ag.-p.-a { color: #94B9FF }
+.gmd-aq:active, .gmd-aq.-p.-a { border-color: #94B9FF }
+.gmd-bj:active, .gmd-bj.-p.-a { background: #94B9FF }
 .gmd-e:active, .gmd-e.-p.-a { border-color: #0000 }
-.gmd-t:active, .gmd-t.-p.-a { background: hsl(var(--k-p-13)) }
+.gmd-p:active, .gmd-p.-p.-a { background: #CADAFF }
+.gmd-x:active.-s, .gmd-x.-s.-p.-a { background: #005CBA }

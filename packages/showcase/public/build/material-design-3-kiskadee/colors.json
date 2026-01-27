@@ -1,38 +1,5 @@
 {
   "primitiveColors": {
-    "purple": {
-      "v1": {
-        "solid": {
-          "light": "purple.v1.light.json",
-          "dark": "purple.v1.dark.json"
-        },
-        "gradient": {
-          "angle": 180,
-          "stops": [
-            {
-              "primitive": "primitive.purple.v1",
-              "position": 0
-            },
-            {
-              "primitive": "primitive.purple.v2",
-              "position": 100
-            }
-          ]
-        }
-      },
-      "v2": {
-        "solid": {
-          "light": "purple.v2.light.json",
-          "dark": "purple.v2.dark.json"
-        }
-      },
-      "dynamic": {
-        "solid": {
-          "light": "purple.dynamic.light.json",
-          "dark": "purple.dynamic.dark.json"
-        }
-      }
-    },
     "blue": {
       "v1": {
         "solid": {
@@ -52,19 +19,12 @@
         "solid": {
           "light": "black.v1.light.json",
           "dark": "black.v1.dark.json"
-        },
-        "gradient": {
-          "angle": 180,
-          "stops": [
-            {
-              "primitive": "primitive.black.v1",
-              "position": 0
-            },
-            {
-              "primitive": "primitive.black.v1",
-              "position": 100
-            }
-          ]
+        }
+      },
+      "v2": {
+        "solid": {
+          "light": "black.v2.light.json",
+          "dark": "black.v2.dark.json"
         }
       }
     },
@@ -80,12 +40,12 @@
   "globalSemantics": {
     "light": {
       "primary": "primitive.blue.v1",
-      "neutral": "primitive.black.v1",
+      "neutral": "primitive.blue.v2",
       "redLike": "primitive.red.v1"
     },
     "dark": {
       "primary": "primitive.blue.v1",
-      "neutral": "primitive.black.v1",
+      "neutral": "primitive.blue.v2",
       "redLike": "primitive.red.v1"
     }
   },
@@ -93,19 +53,6 @@
     "default": {
       "meta": {
         "name": "Material Design - Default (purple)"
-      }
-    },
-    "dynamic": {
-      "meta": {
-        "name": "Material Design - Dynamic"
-      },
-      "themes": {
-        "light": {
-          "primary": "primitive.purple.dynamic"
-        },
-        "dark": {
-          "primary": "primitive.purple.dynamic"
-        }
       }
     },
     "modern": {
@@ -117,7 +64,7 @@
   "componentIntents": {
     "button": {
       "primary": "primary",
-      "neutral": "primitive.purple.v2",
+      "neutral": "neutral",
       "destructive": "redLike"
     }
   }

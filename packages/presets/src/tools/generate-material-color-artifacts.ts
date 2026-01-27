@@ -1,0 +1,300 @@
+import * as fs from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type {
+  ColorScaleDark,
+  ColorScaleLight,
+  DarkTrackTones,
+  EmphasisLevel,
+  HSLA,
+  HueName,
+  LightTrackTones
+} from '@kiskadee/core';
+import { argbFromHex, CorePalette, hexFromArgb } from '@material/material-color-utilities';
+import { resolveHueNameFromHsla } from '../utils/resolveHueName';
+
+type MaterialTonalPalette = {
+  tone: (tone: number) => number;
+};
+
+type MaterialPaletteKey = 'a1' | 'a2' | 'a3' | 'n1' | 'n2' | 'error';
+
+type GenerateMaterialColorArtifactsOptions = {
+  preserveChroma?: boolean;
+  includeDark?: boolean;
+};
+
+const EMITTED_SUBTLE_TONES: LightTrackTones[] = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 25, 30
+];
+
+const EMITTED_VIVID_TONES: DarkTrackTones[] = [
+  35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100
+];
+
+const REFERENCE_TONE = 60;
+
+function normalizeHex(hex: string): string {
+  return `#${hex.trim().replace(/^#/, '').toLowerCase()}`;
+}
+
+function hexToHSLA(hex: string): HSLA {
+  let cleanHex = hex.trim().replace(/^#/, '').toLowerCase();
+  if (cleanHex.length === 3) {
+    cleanHex = cleanHex
+      .split('')
+      .map((c) => c + c)
+      .join('');
+  }
+  if (cleanHex.length !== 6) {
+    cleanHex = '000000';
+  }
+
+  const r = parseInt(cleanHex.substring(0, 2), 16) / 255;
+  const g = parseInt(cleanHex.substring(2, 4), 16) / 255;
+  const b = parseInt(cleanHex.substring(4, 6), 16) / 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const delta = max - min;
+
+  const lightness = (max + min) / 2;
+
+  let saturation = 0;
+  if (delta !== 0) {
+    saturation = lightness > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+  }
+
+  let hue = 0;
+  if (delta !== 0) {
+    if (max === r) {
+      hue = ((g - b) / delta + (g < b ? 6 : 0)) / 6;
+    } else if (max === g) {
+      hue = ((b - r) / delta + 2) / 6;
+    } else {
+      hue = ((r - g) / delta + 4) / 6;
+    }
+  }
+
+  const hueInDegrees = Number((hue * 360).toFixed(2));
+  const saturationPercent = Number((saturation * 100).toFixed(2));
+  const lightnessPercent = Number((lightness * 100).toFixed(2));
+
+  return [hueInDegrees, saturationPercent, lightnessPercent, 1];
+}
+
+function materialToneFromScaleTone(tone: number, invertScale: boolean): number {
+  return invertScale ? tone : 100 - tone;
+}
+
+function resolveEmphasisLevelFromPalette(params: {
+  palette: MaterialTonalPalette;
+  invertScale: boolean;
+}): EmphasisLevel {
+  const { palette, invertScale } = params;
+
+  const subtle: ColorScaleLight = {};
+  const vivid: ColorScaleDark = {};
+
+  const resolveHslaAtTone = (tone: number): HSLA => {
+    const materialTone = materialToneFromScaleTone(tone, invertScale);
+    const argb = palette.tone(materialTone);
+    const hex = hexFromArgb(argb);
+    return hexToHSLA(hex);
+  };
+
+  for (const tone of EMITTED_SUBTLE_TONES) {
+    subtle[tone] = resolveHslaAtTone(tone);
+  }
+
+  for (const tone of EMITTED_VIVID_TONES) {
+    vivid[tone] = resolveHslaAtTone(tone);
+  }
+
+  subtle[0] = invertScale ? [0, 0, 0, 1] : [0, 0, 100, 1];
+  vivid[100] = invertScale ? [0, 0, 100, 1] : [0, 0, 0, 1];
+
+  return { subtle, vivid };
+}
+
+function formatEmphasisLevel(emphasis: EmphasisLevel): string {
+  const subtleLines: string[] = [];
+  const vividLines: string[] = [];
+
+  subtleLines.push('  subtle: {');
+  for (const tone of EMITTED_SUBTLE_TONES) {
+    const color = emphasis.subtle[tone];
+    if (!color) continue;
+    subtleLines.push(`    ${tone}: [${(color as HSLA).join(', ')}],`);
+  }
+  subtleLines.push('  },');
+
+  vividLines.push('  vivid: {');
+  for (const tone of EMITTED_VIVID_TONES) {
+    const color = emphasis.vivid[tone];
+    if (!color) continue;
+    vividLines.push(`    ${tone}: [${(color as HSLA).join(', ')}],`);
+  }
+  vividLines.push('  }');
+
+  return ['{', ...subtleLines, ...vividLines, '}'].join('\n');
+}
+
+function resolveHueNameFromPalette(palette: MaterialTonalPalette): HueName {
+  const argb = palette.tone(REFERENCE_TONE);
+  const hex = normalizeHex(hexFromArgb(argb));
+  const hsla = hexToHSLA(hex);
+  return resolveHueNameFromHsla(hsla);
+}
+
+function nextVersionForHue(
+  hue: HueName,
+  usedVersions: Map<HueName, number>
+): 'v1' | 'v2' | 'v3' | 'v4' {
+  const nextIndex = (usedVersions.get(hue) ?? 0) + 1;
+  if (nextIndex > 4) {
+    throw new Error(`Too many variants for hue=${hue}. Supports up to v4.`);
+  }
+  usedVersions.set(hue, nextIndex);
+  return `v${nextIndex}` as 'v1' | 'v2' | 'v3' | 'v4';
+}
+
+function resolveColorsDir(baseDir: string): string {
+  return join(baseDir, 'colors');
+}
+
+function writeEmphasisLevelFile(params: {
+  outFilePath: string;
+  emphasis: EmphasisLevel;
+  sourceHex: string;
+  paletteKey: MaterialPaletteKey;
+  invertScale: boolean;
+  preserveChroma: boolean;
+}): void {
+  const { outFilePath, emphasis, sourceHex, paletteKey, invertScale, preserveChroma } = params;
+  const header = `// Generated by generateMaterialColorArtifacts('${sourceHex}', { palette: '${paletteKey}', preserveChroma: ${preserveChroma}, invertScale: ${invertScale} })\n`;
+  const body = formatEmphasisLevel(emphasis);
+  const fileContent = `${header}\nimport type { EmphasisLevel } from '@kiskadee/core';\n\nexport default ${body} as EmphasisLevel;\n`;
+  fs.writeFileSync(outFilePath, fileContent, 'utf8');
+  console.log(`[generateMaterialColorArtifacts] Wrote TS to: ${outFilePath}`);
+}
+
+function writePaletteArtifacts(params: {
+  palette: MaterialTonalPalette;
+  hue: HueName;
+  version: 'v1' | 'v2' | 'v3' | 'v4';
+  paletteKey: MaterialPaletteKey;
+  sourceHex: string;
+  colorsDir: string;
+  preserveChroma: boolean;
+  includeDark: boolean;
+}): void {
+  const { palette, hue, version, paletteKey, sourceHex, colorsDir, preserveChroma, includeDark } =
+    params;
+
+  const lightEmphasis = resolveEmphasisLevelFromPalette({ palette, invertScale: false });
+  const lightPath = join(colorsDir, `${hue}.${version}.light.ts`);
+  writeEmphasisLevelFile({
+    outFilePath: lightPath,
+    emphasis: lightEmphasis,
+    sourceHex,
+    paletteKey,
+    invertScale: false,
+    preserveChroma
+  });
+
+  if (includeDark) {
+    const darkEmphasis = resolveEmphasisLevelFromPalette({ palette, invertScale: true });
+    const darkPath = join(colorsDir, `${hue}.${version}.dark.ts`);
+    writeEmphasisLevelFile({
+      outFilePath: darkPath,
+      emphasis: darkEmphasis,
+      sourceHex,
+      paletteKey,
+      invertScale: true,
+      preserveChroma
+    });
+  }
+}
+
+export function generateMaterialColorArtifacts(
+  hexColor: string,
+  options?: GenerateMaterialColorArtifactsOptions
+): void {
+  const sourceHex = normalizeHex(hexColor);
+  const preserveChroma = Boolean(options?.preserveChroma);
+  const includeDark = Boolean(options?.includeDark);
+
+  const argb = argbFromHex(sourceHex);
+  const core = preserveChroma ? CorePalette.contentOf(argb) : CorePalette.of(argb);
+
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  const colorsDir = resolveColorsDir(__dirname);
+  fs.rmSync(colorsDir, { recursive: true, force: true });
+  fs.mkdirSync(colorsDir, { recursive: true });
+
+  const usedVersions = new Map<HueName, number>([
+    ['black', 2],
+    ['red', 1]
+  ]);
+
+  const accentPalettes: Array<{ key: MaterialPaletteKey; palette: MaterialTonalPalette }> = [
+    { key: 'a1', palette: core.a1 },
+    { key: 'a2', palette: core.a2 },
+    { key: 'a3', palette: core.a3 }
+  ];
+
+  for (const entry of accentPalettes) {
+    const hue = resolveHueNameFromPalette(entry.palette);
+    const version = nextVersionForHue(hue, usedVersions);
+    writePaletteArtifacts({
+      palette: entry.palette,
+      hue,
+      version,
+      paletteKey: entry.key,
+      sourceHex,
+      colorsDir,
+      preserveChroma,
+      includeDark
+    });
+  }
+
+  writePaletteArtifacts({
+    palette: core.n1,
+    hue: 'black',
+    version: 'v1',
+    paletteKey: 'n1',
+    sourceHex,
+    colorsDir,
+    preserveChroma,
+    includeDark
+  });
+
+  writePaletteArtifacts({
+    palette: core.n2,
+    hue: 'black',
+    version: 'v2',
+    paletteKey: 'n2',
+    sourceHex,
+    colorsDir,
+    preserveChroma,
+    includeDark
+  });
+
+  writePaletteArtifacts({
+    palette: core.error,
+    hue: 'red',
+    version: 'v1',
+    paletteKey: 'error',
+    sourceHex,
+    colorsDir,
+    preserveChroma,
+    includeDark
+  });
+}
+
+generateMaterialColorArtifacts('#0481FF', {
+  preserveChroma: false,
+  includeDark: false
+});

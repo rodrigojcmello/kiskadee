@@ -6,7 +6,6 @@
   "version": "3.0.0",
   "segments": [
     "default",
-    "dynamic",
     "modern"
   ],
   "themes": {
@@ -14,11 +13,11 @@
       "dark",
       "light"
     ],
-    "dynamic": [
+    "modern": [
       "dark",
       "light"
     ],
-    "modern": [
+    "dynamic": [
       "dark",
       "light"
     ]

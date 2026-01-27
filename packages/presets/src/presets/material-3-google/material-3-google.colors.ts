@@ -7,10 +7,9 @@ import type {
 } from '@kiskadee/core';
 import dynamicColor from '../dynamic.color';
 import blackLight from './colors/black.v1.light';
+import blackV2Light from './colors/black.v2.light';
 import blueV1Light from './colors/blue.v1.light';
-import purpleV1Dark from './colors/purple.v1.dark';
-import purpleV1Light from './colors/purple.v1.light';
-import purpleV2Light from './colors/purple.v2.light';
+import blueV2Light from './colors/blue.v2.light';
 import redV1Light from './colors/red.v1.light';
 
 // -------------------------------------------------------------------------------------------------
@@ -20,27 +19,6 @@ import redV1Light from './colors/red.v1.light';
 // NOTE: This preset is currently light-only. We keep `dark` keys present as placeholders.
 
 export const primitiveColors = {
-  purple: {
-    v1: {
-      solid: {
-        light: purpleV1Light,
-        dark: purpleV1Dark
-      }
-    },
-    v2: {
-      solid: {
-        light: purpleV2Light,
-        dark: purpleV2Light
-      }
-    },
-    // Used by the `dynamic` segment override.
-    dynamic: {
-      solid: {
-        light: dynamicColor,
-        dark: dynamicColor
-      }
-    }
-  },
   blue: {
     v1: {
       solid: {
@@ -50,8 +28,8 @@ export const primitiveColors = {
     },
     v2: {
       solid: {
-        light: purpleV2Light,
-        dark: purpleV2Light
+        light: blueV2Light,
+        dark: blueV2Light
       }
     }
   },
@@ -60,6 +38,12 @@ export const primitiveColors = {
       solid: {
         light: blackLight,
         dark: blackLight
+      }
+    },
+    v2: {
+      solid: {
+        light: blackV2Light,
+        dark: blackV2Light
       }
     }
   },
@@ -76,12 +60,12 @@ export const primitiveColors = {
 export const globalSemantics = {
   light: {
     primary: 'primitive.blue.v1',
-    neutral: 'primitive.black.v1',
+    neutral: 'primitive.blue.v2',
     redLike: 'primitive.red.v1'
   },
   dark: {
     primary: 'primitive.blue.v1',
-    neutral: 'primitive.black.v1',
+    neutral: 'primitive.blue.v2',
     redLike: 'primitive.red.v1'
   }
 } as const satisfies GlobalSemanticsByTheme;
@@ -101,26 +85,26 @@ export const globalSemanticsBySegment = {
     meta: {
       name: 'Material Design - Default (purple)'
     }
-  },
-  dynamic: {
-    meta: {
-      name: 'Material Design - Dynamic'
-    },
-    themes: {
-      light: {
-        primary: 'primitive.purple.dynamic'
-      },
-      dark: {
-        primary: 'primitive.purple.dynamic'
-      }
-    }
   }
+  // dynamic: {
+  //   meta: {
+  //     name: 'Material Design - Dynamic'
+  //   },
+  //   themes: {
+  //     light: {
+  //       primary: 'primitive.purple.dynamic'
+  //     },
+  //     dark: {
+  //       primary: 'primitive.purple.dynamic'
+  //     }
+  //   }
+  // }
 } as const satisfies GlobalSemanticsBySegment;
 
 export const componentIntents = {
   button: {
     primary: 'primary',
-    neutral: 'primitive.purple.v2'
+    neutral: 'neutral'
   }
 } as const satisfies ComponentIntents;
 

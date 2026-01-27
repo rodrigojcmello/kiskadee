@@ -1,28 +1,28 @@
-.-a.-d .gmd-k { color: #575E71 }
+.-a.-d .gmd-m { color: #565E71 }
 .gmd-a.-d.-a { border-color: #0000 }
-.gmd-ab { background: #DAE2FF }
+.gmd-ac { color: #7BABFF }
+.gmd-ah { border-color: #7BABFF }
+.gmd-av { background: #7BABFF }
 .gmd-b { border-color: #0000 }
-.gmd-bk.-s.-a { background: #5474C4 }
-.gmd-bs { color: #89A9FC }
-.gmd-cg { border-color: #89A9FC }
-.gmd-dj { background: #89A9FC }
 .gmd-f { background: #0000 }
 .gmd-g.-d.-a { background: #0000 }
-.gmd-i.-d.-a { background: #1D1B201F }
-.gmd-j { color: #FFF }
+.gmd-i.-d.-a { background: #1A1B1F1F }
+.gmd-l { color: #FFF }
+.gmd-t { background: #D7E3FF }
+.gmd-z.-s.-a { background: #0074E8 }
+.gmd-ak:focus-visible, .gmd-ak.-f.-a { border-color: #7BABFF }
+.gmd-az:focus-visible, .gmd-az.-f.-a { background: #7BABFF }
 .gmd-c:focus-visible, .gmd-c.-f.-a { border-color: #0000 }
-.gmd-ck:focus-visible, .gmd-ck.-f.-a { border-color: #89A9FC }
-.gmd-dn:focus-visible, .gmd-dn.-f.-a { background: #89A9FC }
-.gmd-o:focus-visible, .gmd-o.-f.-a { background: #DAE2FF }
-.gmd-aw:hover.-s, .gmd-aw.-s.-h.-a { background: #6E8EDF }
-.gmd-bw:hover, .gmd-bw.-h.-a { color: #7B9CEE }
-.gmd-co:hover, .gmd-co.-h.-a { border-color: #7B9CEE }
+.gmd-j:focus-visible, .gmd-j.-f.-a { background: #D7E3FF }
+.gmd-ae:hover, .gmd-ae.-h.-a { color: #619DFF }
+.gmd-an:hover, .gmd-an.-h.-a { border-color: #619DFF }
+.gmd-be:hover, .gmd-be.-h.-a { background: #619DFF }
 .gmd-d:hover, .gmd-d.-h.-a { border-color: #0000 }
-.gmd-dr:hover, .gmd-dr.-h.-a { background: #7B9CEE }
-.gmd-q:hover, .gmd-q.-h.-a { background: #E2E7FF }
-.gmd-bd:active.-s, .gmd-bd.-s.-p.-a { background: #395BA9 }
-.gmd-ca:active, .gmd-ca.-p.-a { color: #9DB7FF }
-.gmd-cs:active, .gmd-cs.-p.-a { border-color: #9DB7FF }
-.gmd-dv:active, .gmd-dv.-p.-a { background: #9DB7FF }
+.gmd-k:hover, .gmd-k.-h.-a { background: #DFE8FF }
+.gmd-w:hover.-s, .gmd-w.-s.-h.-a { background: #428FFF }
+.gmd-ag:active, .gmd-ag.-p.-a { color: #94B9FF }
+.gmd-aq:active, .gmd-aq.-p.-a { border-color: #94B9FF }
+.gmd-bj:active, .gmd-bj.-p.-a { background: #94B9FF }
 .gmd-e:active, .gmd-e.-p.-a { border-color: #0000 }
-.gmd-s:active, .gmd-s.-p.-a { background: #CED9FF }
+.gmd-p:active, .gmd-p.-p.-a { background: #CADAFF }
+.gmd-x:active.-s, .gmd-x.-s.-p.-a { background: #005CBA }

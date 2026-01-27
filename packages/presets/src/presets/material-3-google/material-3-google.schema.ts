@@ -44,21 +44,21 @@ export const schema: Schema<Segments> = {
       default: {
         light: {
           background: c('default', 'l', 'primitive.black.v1', 4),
-          focusColor: c('default', 'l', 'primitive.purple.v2', 65)
+          focusColor: c('default', 'l', 'primitive.blue.v2', 65)
         },
         dark: {
           background: c('default', 'd', 'primitive.black.v1', 85),
-          focusColor: c('default', 'l', 'primitive.purple.v1', 60)
+          focusColor: c('default', 'l', 'primitive.blue.v1', 60)
         }
       },
       dynamic: {
         light: {
           background: c('dynamic', 'l', 'primitive.black.v1', 4),
-          focusColor: c('dynamic', 'l', 'primitive.purple.dynamic', 50)
+          focusColor: c('dynamic', 'l', 'primitive.blue.v1', 50)
         },
         dark: {
           background: c('dynamic', 'd', 'primitive.black.v1', 4),
-          focusColor: c('dynamic', 'd', 'primitive.purple.dynamic', 50)
+          focusColor: c('dynamic', 'd', 'primitive.blue.v1', 50)
         }
       }
     }

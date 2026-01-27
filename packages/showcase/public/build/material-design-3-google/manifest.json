@@ -5,8 +5,7 @@
   "schemaName": "Material Design",
   "version": "3.0.0",
   "segments": [
-    "default",
-    "dynamic"
+    "default"
   ],
   "themes": {
     "default": [

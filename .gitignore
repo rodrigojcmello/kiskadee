@@ -26,3 +26,4 @@ coverage
 
 # Temporary
 color.generated.ts
+packages/presets/src/tools/colors

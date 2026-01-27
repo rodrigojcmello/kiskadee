@@ -3,20 +3,16 @@
     "e1": {
       "c": {
         "primary": {
-          "h": "mk-dz mk-c mk-el mk-e mk-ev mk-f mk-ef mk-d mk-q mk-a",
-          "m": "mk-ah mk-c mk-u mk-e mk-et mk-f mk-s mk-d mk-q mk-a mk-cc mk-bk mk-bt",
-          "l": "mk-h mk-cu mk-av mk-dc mk-bb mk-dg mk-ao mk-cy mk-i mk-o mk-cc mk-bk mk-bt",
-          "ll": "mk-h mk-c mk-av mk-e mk-bb mk-f mk-ao mk-d mk-i mk-a"
+          "h": "mk-ax mk-b mk-bh mk-d mk-bm mk-e mk-bc mk-c mk-w mk-a",
+          "m": "mk-v mk-b mk-m mk-d mk-bp mk-e mk-l mk-c mk-w mk-a mk-ac mk-x mk-aa",
+          "l": "mk-h mk-al mk-p mk-ar mk-r mk-au mk-o mk-ao mk-i mk-u mk-ac mk-x mk-aa",
+          "ll": "mk-h mk-b mk-p mk-d mk-r mk-e mk-o mk-c mk-i mk-a"
         },
         "neutral": {
-          "h": "mk-ad mk-c mk-ap mk-e mk-aw mk-f mk-ai mk-d mk-by mk-bf mk-bo mk-k mk-a",
-          "m": "mk-ae mk-c mk-aq mk-e mk-ax mk-f mk-aj mk-d mk-bx mk-be mk-bp mk-k mk-a",
-          "l": "mk-h mk-y mk-at mk-aa mk-ba mk-ab mk-am mk-z mk-bz mk-bg mk-bq mk-i mk-o",
-          "ll": "mk-h mk-c mk-ar mk-e mk-ay mk-f mk-ak mk-d mk-i mk-a"
-        },
-        "destructive": {
-          "h": "mk-dv mk-ej mk-em mk-eb mk-ca mk-bi mk-br mk-p",
-          "m": "mk-ag mk-au mk-es mk-an mk-bu mk-bh mk-bl mk-p"
+          "h": "mk-az mk-b mk-bj mk-d mk-bo mk-e mk-be mk-c mk-by mk-bt mk-bw mk-k mk-a",
+          "m": "mk-ba mk-b mk-bk mk-d mk-bq mk-e mk-bf mk-c mk-bz mk-bs mk-bv mk-k mk-a",
+          "l": "mk-h mk-am mk-bl mk-as mk-br mk-av mk-bg mk-ap mk-ca mk-bu mk-bx mk-i mk-u",
+          "ll": "mk-h mk-b mk-p mk-d mk-r mk-e mk-o mk-c mk-i mk-a"
         }
       }
     },
@@ -24,16 +20,12 @@
       "c": {
         "primary": {
           "h": "mk-g mk-j",
-          "m": "mk-v mk-j mk-m",
-          "l": "mk-ch mk-j mk-cl mk-cp",
-          "ll": "mk-ch mk-j mk-cl mk-cp"
+          "m": "mk-aj mk-j mk-t",
+          "l": "mk-ad mk-j mk-af mk-ah",
+          "ll": "mk-ad mk-j mk-af mk-ah"
         },
         "neutral": {
           "h": "mk-g mk-j"
-        },
-        "destructive": {
-          "h": "mk-g mk-l mk-b",
-          "m": "mk-v mk-m mk-b"
         }
       }
     }

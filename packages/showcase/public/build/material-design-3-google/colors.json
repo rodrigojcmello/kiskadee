@@ -1,25 +1,5 @@
 {
   "primitiveColors": {
-    "purple": {
-      "v1": {
-        "solid": {
-          "light": "purple.v1.light.json",
-          "dark": "purple.v1.dark.json"
-        }
-      },
-      "v2": {
-        "solid": {
-          "light": "purple.v2.light.json",
-          "dark": "purple.v2.light.json"
-        }
-      },
-      "dynamic": {
-        "solid": {
-          "light": "purple.dynamic.light.json",
-          "dark": "purple.dynamic.light.json"
-        }
-      }
-    },
     "blue": {
       "v1": {
         "solid": {
@@ -29,8 +9,8 @@
       },
       "v2": {
         "solid": {
-          "light": "purple.v2.light.json",
-          "dark": "purple.v2.light.json"
+          "light": "blue.v2.light.json",
+          "dark": "blue.v2.light.json"
         }
       }
     },
@@ -39,6 +19,12 @@
         "solid": {
           "light": "black.v1.light.json",
           "dark": "black.v1.light.json"
+        }
+      },
+      "v2": {
+        "solid": {
+          "light": "black.v2.light.json",
+          "dark": "black.v2.light.json"
         }
       }
     },
@@ -54,12 +40,12 @@
   "globalSemantics": {
     "light": {
       "primary": "primitive.blue.v1",
-      "neutral": "primitive.black.v1",
+      "neutral": "primitive.blue.v2",
       "redLike": "primitive.red.v1"
     },
     "dark": {
       "primary": "primitive.blue.v1",
-      "neutral": "primitive.black.v1",
+      "neutral": "primitive.blue.v2",
       "redLike": "primitive.red.v1"
     }
   },
@@ -68,25 +54,12 @@
       "meta": {
         "name": "Material Design - Default (purple)"
       }
-    },
-    "dynamic": {
-      "meta": {
-        "name": "Material Design - Dynamic"
-      },
-      "themes": {
-        "light": {
-          "primary": "primitive.purple.dynamic"
-        },
-        "dark": {
-          "primary": "primitive.purple.dynamic"
-        }
-      }
     }
   },
   "componentIntents": {
     "button": {
       "primary": "primary",
-      "neutral": "primitive.purple.v2"
+      "neutral": "neutral"
     }
   }
 }

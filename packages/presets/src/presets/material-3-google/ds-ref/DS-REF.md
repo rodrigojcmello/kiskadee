@@ -92,3 +92,20 @@ In the Material 3 Figma ecosystem, the color plugin can generate these backgroun
 - When a tinted surface is desired, use a lighter `primary` tone (Kiskadee `subtle`) explicitly, rather than deriving the entire neutral ramp from `primary`.
 
 Decision: in all Material segments, Kiskadee uses a pure grayscale tonal scale for backgrounds, with no dependency on the primary color.
+
+#### 3.4. Material CorePalette mapping into Kiskadee layers
+
+Material's `CorePalette` exposes six tonal ramps: `a1`, `a2`, `a3`, `n1`, `n2`, and `error`.
+Kiskadee maps these ramps into its 3-layer model as follows:
+
+- `a1` -> Layer 1 primitive: `primary` hue `v1` (global semantic `primary`)
+- `a2` -> Layer 1 primitive: same hue `v2` (global semantic `neutral`)
+- `a3` -> Layer 1 primitive: accent hue `v1` (kept as a primitive; not bound to a global semantic by default)
+- `n1` -> Layer 1 primitive: `black.v1` (background/surface ramp)
+- `n2` -> Layer 1 primitive: `black.v2` (neutral variant ramp)
+- `error` -> Layer 1 primitive: `red.v1` (global semantic `redLike`)
+
+Notes:
+- The `a2` ramp (Material "secondary") is used as a low-emphasis neutral family in Kiskadee.
+- The `a3` ramp (Material "tertiary") is stored for optional direct use in components but is not automatically mapped to a semantic slot.
+- The neutral ramps (`n1`, `n2`) remain grayscale in Kiskadee for predictability across segments.

@@ -25,11 +25,11 @@ const patch = {
       modern: {
         light: {
           background: c('modern', 'l', 'primitive.black.v1', 4),
-          focusColor: c('modern', 'l', 'primitive.purple.v2', 70)
+          focusColor: c('modern', 'l', 'primitive.blue.v1', 70)
         },
         dark: {
           background: c('modern', 'd', 'primitive.black.v1', 85),
-          focusColor: c('modern', 'd', 'primitive.purple.v1', 60)
+          focusColor: c('modern', 'd', 'primitive.blue.v1', 60)
         }
       }
     }
@@ -183,39 +183,39 @@ const patch = {
                   }
                 }
               }
-            },
-            dynamic: {
-              light: {
-                boxColor: {
-                  destructive: {
-                    medium: {
-                      rest: c('dynamic', 'l', 'button.destructive', 10),
-                      hover: c('dynamic', 'l', 'button.destructive', 8),
-                      pressed: c('dynamic', 'l', 'button.destructive', 13),
-                      disabled: c('dynamic', 'l', 'button.neutral', 10),
-                      focus: c('dynamic', 'l', 'button.destructive', 10),
-                      selected: {
-                        rest: c('dynamic', 'l', 'button.destructive', 50),
-                        hover: c('dynamic', 'l', 'button.destructive', 40),
-                        pressed: c('dynamic', 'l', 'button.destructive', 60)
-                      }
-                    },
-                    high: {
-                      rest: c('dynamic', 'l', 'button.destructive', 50),
-                      hover: c('dynamic', 'l', 'button.destructive', 40),
-                      pressed: c('dynamic', 'l', 'button.destructive', 60),
-                      disabled: c('dynamic', 'l', 'button.neutral', 10),
-                      focus: c('dynamic', 'l', 'button.destructive', 50),
-                      selected: {
-                        rest: c('dynamic', 'l', 'button.destructive', 10),
-                        hover: c('dynamic', 'l', 'button.destructive', 8),
-                        pressed: c('dynamic', 'l', 'button.destructive', 20)
-                      }
-                    }
-                  }
-                }
-              }
             }
+            // dynamic: {
+            //   light: {
+            //     boxColor: {
+            //       destructive: {
+            //         medium: {
+            //           rest: c('dynamic', 'l', 'button.destructive', 10),
+            //           hover: c('dynamic', 'l', 'button.destructive', 8),
+            //           pressed: c('dynamic', 'l', 'button.destructive', 13),
+            //           disabled: c('dynamic', 'l', 'button.neutral', 10),
+            //           focus: c('dynamic', 'l', 'button.destructive', 10),
+            //           selected: {
+            //             rest: c('dynamic', 'l', 'button.destructive', 50),
+            //             hover: c('dynamic', 'l', 'button.destructive', 40),
+            //             pressed: c('dynamic', 'l', 'button.destructive', 60)
+            //           }
+            //         },
+            //         high: {
+            //           rest: c('dynamic', 'l', 'button.destructive', 50),
+            //           hover: c('dynamic', 'l', 'button.destructive', 40),
+            //           pressed: c('dynamic', 'l', 'button.destructive', 60),
+            //           disabled: c('dynamic', 'l', 'button.neutral', 10),
+            //           focus: c('dynamic', 'l', 'button.destructive', 50),
+            //           selected: {
+            //             rest: c('dynamic', 'l', 'button.destructive', 10),
+            //             hover: c('dynamic', 'l', 'button.destructive', 8),
+            //             pressed: c('dynamic', 'l', 'button.destructive', 20)
+            //           }
+            //         }
+            //       }
+            //     }
+            //   }
+            // }
           }
         },
         e2: {
@@ -355,37 +355,37 @@ const patch = {
                   }
                 }
               }
-            },
-            dynamic: {
-              light: {
-                textColor: {
-                  destructive: {
-                    medium: {
-                      rest: c('dynamic', 'l', 'button.neutral', 70),
-                      disabled: {
-                        ref: c('dynamic', 'l', 'button.neutral', 60)
-                      },
-                      selected: {
-                        rest: {
-                          ref: c('dynamic', 'l', 'button.neutral', 0)
-                        }
-                      }
-                    },
-                    high: {
-                      rest: c('dynamic', 'l', primitive('black', 'v1'), 0),
-                      disabled: {
-                        ref: c('dynamic', 'l', 'button.neutral', 60)
-                      },
-                      selected: {
-                        rest: {
-                          ref: c('dynamic', 'l', 'button.neutral', 70)
-                        }
-                      }
-                    }
-                  }
-                }
-              }
             }
+            // dynamic: {
+            //   light: {
+            //     textColor: {
+            //       destructive: {
+            //         medium: {
+            //           rest: c('dynamic', 'l', 'button.neutral', 70),
+            //           disabled: {
+            //             ref: c('dynamic', 'l', 'button.neutral', 60)
+            //           },
+            //           selected: {
+            //             rest: {
+            //               ref: c('dynamic', 'l', 'button.neutral', 0)
+            //             }
+            //           }
+            //         },
+            //         high: {
+            //           rest: c('dynamic', 'l', primitive('black', 'v1'), 0),
+            //           disabled: {
+            //             ref: c('dynamic', 'l', 'button.neutral', 60)
+            //           },
+            //           selected: {
+            //             rest: {
+            //               ref: c('dynamic', 'l', 'button.neutral', 70)
+            //             }
+            //           }
+            //         }
+            //       }
+            //     }
+            //   }
+            // }
           }
         }
       }

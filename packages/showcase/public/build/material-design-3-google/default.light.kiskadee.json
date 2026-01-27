@@ -3,29 +3,29 @@
     "e1": {
       "c": {
         "primary": {
-          "h": "gmd-di gmd-b gmd-dq gmd-d gmd-du gmd-e gmd-dm gmd-c gmd-n gmd-a",
-          "m": "gmd-ab gmd-b gmd-q gmd-d gmd-dw gmd-e gmd-o gmd-c gmd-n gmd-a gmd-bj gmd-av gmd-bc",
-          "l": "gmd-f gmd-ch gmd-am gmd-cp gmd-as gmd-ct gmd-ag gmd-cl gmd-g gmd-m gmd-bj gmd-av gmd-bc",
-          "ll": "gmd-f gmd-b gmd-am gmd-d gmd-as gmd-e gmd-ag gmd-c gmd-g gmd-a"
+          "h": "gmd-au gmd-b gmd-bd gmd-d gmd-bi gmd-e gmd-ay gmd-c gmd-u gmd-a",
+          "m": "gmd-t gmd-b gmd-k gmd-d gmd-bl gmd-e gmd-j gmd-c gmd-u gmd-a gmd-aa gmd-v gmd-y",
+          "l": "gmd-f gmd-ai gmd-o gmd-ao gmd-q gmd-ar gmd-n gmd-al gmd-g gmd-s gmd-aa gmd-v gmd-y",
+          "ll": "gmd-f gmd-b gmd-o gmd-d gmd-q gmd-e gmd-n gmd-c gmd-g gmd-a"
         },
         "neutral": {
-          "h": "gmd-z gmd-b gmd-aj gmd-d gmd-ap gmd-e gmd-ad gmd-c gmd-bm gmd-ay gmd-be gmd-i gmd-a",
-          "m": "gmd-aa gmd-b gmd-ak gmd-d gmd-aq gmd-e gmd-ae gmd-c gmd-bl gmd-ax gmd-bf gmd-i gmd-a",
-          "l": "gmd-f gmd-u gmd-an gmd-w gmd-at gmd-x gmd-ah gmd-v gmd-bn gmd-az gmd-bg gmd-g gmd-m",
-          "ll": "gmd-f gmd-b gmd-al gmd-d gmd-ar gmd-e gmd-af gmd-c gmd-g gmd-a"
+          "h": "gmd-aw gmd-b gmd-bf gmd-d gmd-bk gmd-e gmd-ba gmd-c gmd-bu gmd-bp gmd-bs gmd-i gmd-a",
+          "m": "gmd-ax gmd-b gmd-bg gmd-d gmd-bm gmd-e gmd-bb gmd-c gmd-bv gmd-bo gmd-br gmd-i gmd-a",
+          "l": "gmd-f gmd-aj gmd-bh gmd-ap gmd-bn gmd-as gmd-bc gmd-am gmd-bw gmd-bq gmd-bt gmd-g gmd-s",
+          "ll": "gmd-f gmd-b gmd-o gmd-d gmd-q gmd-e gmd-n gmd-c gmd-g gmd-a"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "h": "gmd-j gmd-h",
-          "m": "gmd-br gmd-h gmd-cd",
-          "l": "gmd-bq gmd-h gmd-bv gmd-bz",
-          "ll": "gmd-bq gmd-h gmd-bv gmd-bz"
+          "h": "gmd-l gmd-h",
+          "m": "gmd-bx gmd-h gmd-by",
+          "l": "gmd-ab gmd-h gmd-ad gmd-af",
+          "ll": "gmd-ab gmd-h gmd-ad gmd-af"
         },
         "neutral": {
-          "h": "gmd-j gmd-h"
+          "h": "gmd-l gmd-h"
         }
       }
     }

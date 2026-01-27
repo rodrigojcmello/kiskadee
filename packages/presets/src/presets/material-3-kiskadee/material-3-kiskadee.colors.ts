@@ -22,28 +22,28 @@ const componentIntentsPatch = {
 } as const satisfies DeepOverride<ComponentIntents>;
 
 const primitiveColorsPatch = {
-  purple: {
-    v1: {
-      gradient: {
-        angle: 180,
-        stops: [
-          { primitive: 'primitive.purple.v1', position: 0 },
-          { primitive: 'primitive.purple.v2', position: 100 }
-        ]
-      }
-    }
-  },
-  black: {
-    v1: {
-      gradient: {
-        angle: 180,
-        stops: [
-          { primitive: 'primitive.black.v1', position: 0 },
-          { primitive: 'primitive.black.v1', position: 100 }
-        ]
-      }
-    }
-  }
+  // purple: {
+  //   v1: {
+  //     gradient: {
+  //       angle: 180,
+  //       stops: [
+  //         { primitive: 'primitive.purple.v1', position: 0 },
+  //         { primitive: 'primitive.purple.v2', position: 100 }
+  //       ]
+  //     }
+  //   }
+  // },
+  // black: {
+  //   v1: {
+  //     gradient: {
+  //       angle: 180,
+  //       stops: [
+  //         { primitive: 'primitive.black.v1', position: 0 },
+  //         { primitive: 'primitive.black.v1', position: 100 }
+  //       ]
+  //     }
+  //   }
+  // }
 } as const satisfies DeepOverride<PrimitiveColors>;
 
 export const primitiveColors = deepMerge(

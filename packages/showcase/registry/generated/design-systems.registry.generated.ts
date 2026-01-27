@@ -48,12 +48,8 @@ export const paletteMaps = {
   'ios-26-kiskadee|dynamic|light': () => loadJsonModule('ios-26-kiskadee/dynamic.light.kiskadee.json'),
   'material-design-3-google|default|dark': () => loadJsonModule('material-design-3-google/default.dark.kiskadee.json'),
   'material-design-3-google|default|light': () => loadJsonModule('material-design-3-google/default.light.kiskadee.json'),
-  'material-design-3-google|dynamic|dark': () => loadJsonModule('material-design-3-google/dynamic.dark.kiskadee.json'),
-  'material-design-3-google|dynamic|light': () => loadJsonModule('material-design-3-google/dynamic.light.kiskadee.json'),
   'material-design-3-kiskadee|default|dark': () => loadJsonModule('material-design-3-kiskadee/default.dark.kiskadee.json'),
   'material-design-3-kiskadee|default|light': () => loadJsonModule('material-design-3-kiskadee/default.light.kiskadee.json'),
-  'material-design-3-kiskadee|dynamic|dark': () => loadJsonModule('material-design-3-kiskadee/dynamic.dark.kiskadee.json'),
-  'material-design-3-kiskadee|dynamic|light': () => loadJsonModule('material-design-3-kiskadee/dynamic.light.kiskadee.json'),
   'material-design-3-kiskadee|modern|dark': () => loadJsonModule('material-design-3-kiskadee/modern.dark.kiskadee.json'),
   'material-design-3-kiskadee|modern|light': () => loadJsonModule('material-design-3-kiskadee/modern.light.kiskadee.json'),
 } as const;
@@ -69,12 +65,8 @@ export const extraMaps = {
   'ios-26-kiskadee|dynamic|light': () => loadExtraJson('ios-26-kiskadee/extra.dynamic.light.kiskadee.json'),
   'material-design-3-google|default|dark': () => loadExtraJson('material-design-3-google/extra.default.dark.kiskadee.json'),
   'material-design-3-google|default|light': () => loadExtraJson('material-design-3-google/extra.default.light.kiskadee.json'),
-  'material-design-3-google|dynamic|dark': () => loadExtraJson('material-design-3-google/extra.dynamic.dark.kiskadee.json'),
-  'material-design-3-google|dynamic|light': () => loadExtraJson('material-design-3-google/extra.dynamic.light.kiskadee.json'),
   'material-design-3-kiskadee|default|dark': () => loadExtraJson('material-design-3-kiskadee/extra.default.dark.kiskadee.json'),
   'material-design-3-kiskadee|default|light': () => loadExtraJson('material-design-3-kiskadee/extra.default.light.kiskadee.json'),
-  'material-design-3-kiskadee|dynamic|dark': () => loadExtraJson('material-design-3-kiskadee/extra.dynamic.dark.kiskadee.json'),
-  'material-design-3-kiskadee|dynamic|light': () => loadExtraJson('material-design-3-kiskadee/extra.dynamic.light.kiskadee.json'),
   'material-design-3-kiskadee|modern|dark': () => loadExtraJson('material-design-3-kiskadee/extra.modern.dark.kiskadee.json'),
   'material-design-3-kiskadee|modern|light': () => loadExtraJson('material-design-3-kiskadee/extra.modern.light.kiskadee.json'),
 } as const;
@@ -114,17 +106,15 @@ export const paletteIndex = {
     }
   },
   'material-design-3-google': {
-    segments: ['default', 'dynamic'],
+    segments: ['default'],
     themesBySegment: {
-      "default": ['dark', 'light'],
-      "dynamic": ['dark', 'light']
+      "default": ['dark', 'light']
     }
   },
   'material-design-3-kiskadee': {
-    segments: ['default', 'dynamic', 'modern'],
+    segments: ['default', 'modern'],
     themesBySegment: {
       "default": ['dark', 'light'],
-      "dynamic": ['dark', 'light'],
       "modern": ['dark', 'light']
     }
   },
