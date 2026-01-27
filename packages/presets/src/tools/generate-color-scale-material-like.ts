@@ -245,7 +245,7 @@ export function generateColorScaleMaterialLikeArtifact(
   return tracks;
 }
 
-generateColorScaleMaterialLikeArtifact('#68548E', {
+generateColorScaleMaterialLikeArtifact('#475C91', {
   preserveChroma: false
   // invertScale: true
 });

@@ -1,28 +1,28 @@
 .-a.-d .mk-b { color: #575E71 }
 .mk-a.-d.-a { border-color: #0000 }
+.mk-af { background: #DAE2FF }
+.mk-bw.-s.-a { background: #5474C4 }
 .mk-c { border-color: #0000 }
-.mk-ci.-s.-a { background: #8069BF }
-.mk-cn { color: #4F378A }
-.mk-dc { border-color: #4F378A }
-.mk-ef { background: #4F378A }
-.mk-eh { background: #22005D }
+.mk-ce { color: #89A9FC }
+.mk-cs { border-color: #89A9FC }
+.mk-dx { background: #89A9FC }
 .mk-g { color: #FFF }
 .mk-h { background: #0000 }
 .mk-i.-d.-a { background: #0000 }
-.mk-l.-d.-a { background: #1D1B201F }
+.mk-k.-d.-a { background: #1D1B201F }
+.mk-cw:focus-visible, .mk-cw.-f.-a { border-color: #89A9FC }
 .mk-d:focus-visible, .mk-d.-f.-a { border-color: #0000 }
-.mk-dg:focus-visible, .mk-dg.-f.-a { border-color: #4F378A }
-.mk-eo:focus-visible, .mk-eo.-f.-a { background: #4F378A }
-.mk-y:focus-visible, .mk-y.-f.-a { background: #22005D }
-.mk-aa:hover, .mk-aa.-h.-a { background: #1D0053 }
-.mk-bu:hover.-s, .mk-bu.-s.-h.-a { background: #6750A4 }
-.mk-cs:hover, .mk-cs.-h.-a { color: #5B4397 }
-.mk-dk:hover, .mk-dk.-h.-a { border-color: #5B4397 }
+.mk-ed:focus-visible, .mk-ed.-f.-a { background: #89A9FC }
+.mk-r:focus-visible, .mk-r.-f.-a { background: #DAE2FF }
+.mk-bd:hover.-s, .mk-bd.-s.-h.-a { background: #6E8EDF }
+.mk-cj:hover, .mk-cj.-h.-a { color: #7B9CEE }
+.mk-da:hover, .mk-da.-h.-a { border-color: #7B9CEE }
 .mk-e:hover, .mk-e.-h.-a { border-color: #0000 }
-.mk-ev:hover, .mk-ev.-h.-a { background: #5B4397 }
-.mk-ac:active, .mk-ac.-p.-a { background: #280963 }
-.mk-cb:active.-s, .mk-cb.-s.-p.-a { background: #9A83DB }
-.mk-cw:active, .mk-cw.-p.-a { color: #432B7E }
-.mk-do:active, .mk-do.-p.-a { border-color: #432B7E }
+.mk-ei:hover, .mk-ei.-h.-a { background: #7B9CEE }
+.mk-t:hover, .mk-t.-h.-a { background: #E2E7FF }
+.mk-bn:active.-s, .mk-bn.-s.-p.-a { background: #395BA9 }
+.mk-cn:active, .mk-cn.-p.-a { color: #9DB7FF }
+.mk-de:active, .mk-de.-p.-a { border-color: #9DB7FF }
+.mk-eo:active, .mk-eo.-p.-a { background: #9DB7FF }
 .mk-f:active, .mk-f.-p.-a { border-color: #0000 }
-.mk-fc:active, .mk-fc.-p.-a { background: #432B7E }
+.mk-w:active, .mk-w.-p.-a { background: #CED9FF }

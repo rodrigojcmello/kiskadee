@@ -20,6 +20,20 @@
         }
       }
     },
+    "blue": {
+      "v1": {
+        "solid": {
+          "light": "blue.v1.light.json",
+          "dark": "blue.v1.light.json"
+        }
+      },
+      "v2": {
+        "solid": {
+          "light": "purple.v2.light.json",
+          "dark": "purple.v2.light.json"
+        }
+      }
+    },
     "black": {
       "v1": {
         "solid": {
@@ -39,12 +53,12 @@
   },
   "globalSemantics": {
     "light": {
-      "primary": "primitive.purple.v1",
+      "primary": "primitive.blue.v1",
       "neutral": "primitive.black.v1",
       "redLike": "primitive.red.v1"
     },
     "dark": {
-      "primary": "primitive.purple.v1",
+      "primary": "primitive.blue.v1",
       "neutral": "primitive.black.v1",
       "redLike": "primitive.red.v1"
     }

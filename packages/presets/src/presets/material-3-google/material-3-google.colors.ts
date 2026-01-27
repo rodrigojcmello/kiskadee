@@ -7,6 +7,7 @@ import type {
 } from '@kiskadee/core';
 import dynamicColor from '../dynamic.color';
 import blackLight from './colors/black.v1.light';
+import blueV1Light from './colors/blue.v1.light';
 import purpleV1Dark from './colors/purple.v1.dark';
 import purpleV1Light from './colors/purple.v1.light';
 import purpleV2Light from './colors/purple.v2.light';
@@ -40,6 +41,20 @@ export const primitiveColors = {
       }
     }
   },
+  blue: {
+    v1: {
+      solid: {
+        light: blueV1Light,
+        dark: blueV1Light
+      }
+    },
+    v2: {
+      solid: {
+        light: purpleV2Light,
+        dark: purpleV2Light
+      }
+    }
+  },
   black: {
     v1: {
       solid: {
@@ -60,12 +75,12 @@ export const primitiveColors = {
 
 export const globalSemantics = {
   light: {
-    primary: 'primitive.purple.v1',
+    primary: 'primitive.blue.v1',
     neutral: 'primitive.black.v1',
     redLike: 'primitive.red.v1'
   },
   dark: {
-    primary: 'primitive.purple.v1',
+    primary: 'primitive.blue.v1',
     neutral: 'primitive.black.v1',
     redLike: 'primitive.red.v1'
   }

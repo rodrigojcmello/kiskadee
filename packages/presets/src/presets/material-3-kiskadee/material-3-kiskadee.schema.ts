@@ -39,119 +39,119 @@ const patch = {
       elements: {
         e1: {
           palettes: {
-            modern: {
-              light: {
-                boxColor: {
-                  primary: {
-                    high: {
-                      rest: c('modern', 'l', 'button.primary.gradient', 25),
-                      hover: c('modern', 'l', 'button.primary.gradient', 20),
-                      pressed: c('modern', 'l', 'button.primary.gradient', 30),
-                      disabled: c('modern', 'l', 'button.neutral', 10),
-                      focus: c('modern', 'l', 'button.primary.gradient', 5),
-                      selected: {
-                        rest: c('modern', 'l', 'button.primary.gradient', 80),
-                        hover: c('modern', 'l', 'button.primary.gradient', 70),
-                        pressed: c('modern', 'l', 'button.primary.gradient', 90)
-                      }
-                    },
-                    medium: {
-                      rest: c('modern', 'l', 'button.primary', 10),
-                      hover: c('modern', 'l', 'button.primary', 8),
-                      pressed: c('modern', 'l', 'button.primary', 13),
-                      disabled: c('modern', 'l', 'button.neutral', 10),
-                      focus: c('modern', 'l', 'button.primary', 10),
-                      selected: {
-                        rest: c('modern', 'l', 'button.primary', 50),
-                        hover: c('modern', 'l', 'button.primary', 40),
-                        pressed: c('modern', 'l', 'button.primary', 60)
-                      }
-                    }
-                  },
-                  destructive: {
-                    high: {
-                      rest: c('modern', 'l', 'button.destructive', 50),
-                      hover: c('modern', 'l', 'button.destructive', 40),
-                      pressed: c('modern', 'l', 'button.destructive', 60),
-                      disabled: c('modern', 'l', 'button.neutral', 10),
-                      selected: {
-                        rest: c('modern', 'l', 'button.destructive', 10),
-                        hover: c('modern', 'l', 'button.destructive', 8),
-                        pressed: c('modern', 'l', 'button.destructive', 20)
-                      }
-                    },
-                    medium: {
-                      rest: c('modern', 'l', 'button.destructive', 10),
-                      hover: c('modern', 'l', 'button.destructive', 8),
-                      pressed: c('modern', 'l', 'button.destructive', 13),
-                      disabled: c('modern', 'l', 'button.neutral', 10),
-                      focus: c('modern', 'l', 'button.destructive', 10),
-                      selected: {
-                        rest: c('modern', 'l', 'button.destructive', 50),
-                        hover: c('modern', 'l', 'button.destructive', 40),
-                        pressed: c('modern', 'l', 'button.destructive', 60)
-                      }
-                    }
-                  }
-                }
-              },
-              dark: {
-                boxColor: {
-                  primary: {
-                    medium: {
-                      rest: c('modern', 'd', 'button.primary', 50),
-                      hover: c('modern', 'd', 'button.primary', 40),
-                      pressed: c('modern', 'd', 'button.primary', 60),
-                      disabled: c('modern', 'd', 'button.neutral', 10),
-                      focus: c('modern', 'd', 'button.primary', 50),
-                      selected: {
-                        rest: c('modern', 'd', 'button.primary', 10),
-                        hover: c('modern', 'd', 'button.primary', 8),
-                        pressed: c('modern', 'd', 'button.primary', 20)
-                      }
-                    },
-                    high: {
-                      rest: c('modern', 'd', 'button.primary.gradient', 25),
-                      hover: c('modern', 'd', 'button.primary.gradient', 60),
-                      pressed: c('modern', 'd', 'button.primary.gradient', 90),
-                      disabled: c('modern', 'd', 'button.neutral', 10),
-                      focus: c('modern', 'd', 'button.primary.gradient', 70),
-                      selected: {
-                        rest: c('modern', 'd', 'button.primary.gradient', 80),
-                        hover: c('modern', 'd', 'button.primary.gradient', 70),
-                        pressed: c('modern', 'd', 'button.primary.gradient', 90)
-                      }
-                    }
-                  },
-                  destructive: {
-                    // medium: {
-                    //   rest: c('modern', 'd', 'button.destructive', 50),
-                    //   hover: c('modern', 'd', 'button.destructive', 40),
-                    //   pressed: c('modern', 'd', 'button.destructive', 60),
-                    //   disabled: c('modern', 'd', 'button.neutral', 10),
-                    //   focus: c('modern', 'd', 'button.destructive', 50),
-                    //   selected: {
-                    //     rest: c('modern', 'd', 'button.destructive', 10),
-                    //     hover: c('modern', 'd', 'button.destructive', 8),
-                    //     pressed: c('modern', 'd', 'button.destructive', 20)
-                    //   }
-                    // },
-                    high: {
-                      rest: c('modern', 'd', 'button.destructive', 55),
-                      hover: c('modern', 'd', 'button.destructive', 50),
-                      pressed: c('modern', 'd', 'button.destructive', 65),
-                      disabled: c('modern', 'd', 'button.neutral', 10),
-                      focus: c('modern', 'd', 'button.destructive', 55),
-                      selected: {
-                        rest: c('modern', 'd', 'button.destructive', 10),
-                        hover: c('modern', 'd', 'button.destructive', 8),
-                        pressed: c('modern', 'd', 'button.destructive', 20)
-                      }
-                    }
-                  }
-                }
-              }
-            },
+            // modern: {
+            //   light: {
+            //     boxColor: {
+            //       primary: {
+            //         high: {
+            //           rest: c('modern', 'l', 'button.primary.gradient', 25),
+            //           hover: c('modern', 'l', 'button.primary.gradient', 20),
+            //           pressed: c('modern', 'l', 'button.primary.gradient', 30),
+            //           disabled: c('modern', 'l', 'button.neutral', 10),
+            //           focus: c('modern', 'l', 'button.primary.gradient', 5),
+            //           selected: {
+            //             rest: c('modern', 'l', 'button.primary.gradient', 80),
+            //             hover: c('modern', 'l', 'button.primary.gradient', 70),
+            //             pressed: c('modern', 'l', 'button.primary.gradient', 90)
+            //           }
+            //         },
+            //         medium: {
+            //           rest: c('modern', 'l', 'button.primary', 10),
+            //           hover: c('modern', 'l', 'button.primary', 8),
+            //           pressed: c('modern', 'l', 'button.primary', 13),
+            //           disabled: c('modern', 'l', 'button.neutral', 10),
+            //           focus: c('modern', 'l', 'button.primary', 10),
+            //           selected: {
+            //             rest: c('modern', 'l', 'button.primary', 50),
+            //             hover: c('modern', 'l', 'button.primary', 40),
+            //             pressed: c('modern', 'l', 'button.primary', 60)
+            //           }
+            //         }
+            //       },
+            //       destructive: {
+            //         high: {
+            //           rest: c('modern', 'l', 'button.destructive', 50),
+            //           hover: c('modern', 'l', 'button.destructive', 40),
+            //           pressed: c('modern', 'l', 'button.destructive', 60),
+            //           disabled: c('modern', 'l', 'button.neutral', 10),
+            //           selected: {
+            //             rest: c('modern', 'l', 'button.destructive', 10),
+            //             hover: c('modern', 'l', 'button.destructive', 8),
+            //             pressed: c('modern', 'l', 'button.destructive', 20)
+            //           }
+            //         },
+            //         medium: {
+            //           rest: c('modern', 'l', 'button.destructive', 10),
+            //           hover: c('modern', 'l', 'button.destructive', 8),
+            //           pressed: c('modern', 'l', 'button.destructive', 13),
+            //           disabled: c('modern', 'l', 'button.neutral', 10),
+            //           focus: c('modern', 'l', 'button.destructive', 10),
+            //           selected: {
+            //             rest: c('modern', 'l', 'button.destructive', 50),
+            //             hover: c('modern', 'l', 'button.destructive', 40),
+            //             pressed: c('modern', 'l', 'button.destructive', 60)
+            //           }
+            //         }
+            //       }
+            //     }
+            //   },
+            //   dark: {
+            //     boxColor: {
+            //       primary: {
+            //         medium: {
+            //           rest: c('modern', 'd', 'button.primary', 50),
+            //           hover: c('modern', 'd', 'button.primary', 40),
+            //           pressed: c('modern', 'd', 'button.primary', 60),
+            //           disabled: c('modern', 'd', 'button.neutral', 10),
+            //           focus: c('modern', 'd', 'button.primary', 50),
+            //           selected: {
+            //             rest: c('modern', 'd', 'button.primary', 10),
+            //             hover: c('modern', 'd', 'button.primary', 8),
+            //             pressed: c('modern', 'd', 'button.primary', 20)
+            //           }
+            //         },
+            //         high: {
+            //           rest: c('modern', 'd', 'button.primary.gradient', 25),
+            //           hover: c('modern', 'd', 'button.primary.gradient', 60),
+            //           pressed: c('modern', 'd', 'button.primary.gradient', 90),
+            //           disabled: c('modern', 'd', 'button.neutral', 10),
+            //           focus: c('modern', 'd', 'button.primary.gradient', 70),
+            //           selected: {
+            //             rest: c('modern', 'd', 'button.primary.gradient', 80),
+            //             hover: c('modern', 'd', 'button.primary.gradient', 70),
+            //             pressed: c('modern', 'd', 'button.primary.gradient', 90)
+            //           }
+            //         }
+            //       },
+            //       destructive: {
+            //         // medium: {
+            //         //   rest: c('modern', 'd', 'button.destructive', 50),
+            //         //   hover: c('modern', 'd', 'button.destructive', 40),
+            //         //   pressed: c('modern', 'd', 'button.destructive', 60),
+            //         //   disabled: c('modern', 'd', 'button.neutral', 10),
+            //         //   focus: c('modern', 'd', 'button.destructive', 50),
+            //         //   selected: {
+            //         //     rest: c('modern', 'd', 'button.destructive', 10),
+            //         //     hover: c('modern', 'd', 'button.destructive', 8),
+            //         //     pressed: c('modern', 'd', 'button.destructive', 20)
+            //         //   }
+            //         // },
+            //         high: {
+            //           rest: c('modern', 'd', 'button.destructive', 55),
+            //           hover: c('modern', 'd', 'button.destructive', 50),
+            //           pressed: c('modern', 'd', 'button.destructive', 65),
+            //           disabled: c('modern', 'd', 'button.neutral', 10),
+            //           focus: c('modern', 'd', 'button.destructive', 55),
+            //           selected: {
+            //             rest: c('modern', 'd', 'button.destructive', 10),
+            //             hover: c('modern', 'd', 'button.destructive', 8),
+            //             pressed: c('modern', 'd', 'button.destructive', 20)
+            //           }
+            //         }
+            //       }
+            //     }
+            //   }
+            // },
             default: {
               light: {
                 boxColor: {

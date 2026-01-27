@@ -1,25 +1,14 @@
 {
   "button": {
-    "e1": {
-      "c": {
-        "primary": {
-          "h": "mk-ei mk-ex mk-fh mk-eq mk-fw mk-fo mk-fs mk-j",
-          "m": "mk-ee mk-eu mk-fb mk-en mk-fv mk-fm mk-fq mk-j"
-        },
-        "destructive": {
-          "h": "mk-am mk-ba mk-bp mk-as mk-v mk-t mk-u mk-j"
-        }
-      }
-    },
     "e2": {
       "c": {
         "primary": {
-          "h": "mk-g mk-m mk-b",
-          "m": "mk-g mk-m mk-b"
+          "h": "mk-g mk-l mk-b",
+          "m": "mk-g mk-l mk-b"
         },
         "destructive": {
-          "h": "mk-g mk-m mk-b",
-          "m": "mk-g mk-m mk-b"
+          "h": "mk-g mk-l mk-b",
+          "m": "mk-g mk-l mk-b"
         }
       }
     }
