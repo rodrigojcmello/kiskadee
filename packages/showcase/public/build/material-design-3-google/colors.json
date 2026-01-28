@@ -4,13 +4,13 @@
       "v1": {
         "solid": {
           "light": "blue.v1.light.json",
-          "dark": "blue.v1.light.json"
+          "dark": "blue.v1.dark.json"
         }
       },
       "v2": {
         "solid": {
           "light": "blue.v2.light.json",
-          "dark": "blue.v2.light.json"
+          "dark": "black.v2.dark.json"
         }
       }
     },
@@ -18,13 +18,13 @@
       "v1": {
         "solid": {
           "light": "black.v1.light.json",
-          "dark": "black.v1.light.json"
+          "dark": "black.v1.dark.json"
         }
       },
       "v2": {
         "solid": {
           "light": "black.v2.light.json",
-          "dark": "black.v2.light.json"
+          "dark": "black.v2.dark.json"
         }
       }
     },
@@ -32,7 +32,7 @@
       "v1": {
         "solid": {
           "light": "red.v1.light.json",
-          "dark": "red.v1.light.json"
+          "dark": "red.v1.dark.json"
         }
       }
     }

@@ -284,6 +284,6 @@ export function generateMaterialColorArtifacts(
   });
 }
 
-generateMaterialColorArtifacts('#0481FF', {
+generateMaterialColorArtifacts('#0B57CF', {
   preserveChroma: false
 });
