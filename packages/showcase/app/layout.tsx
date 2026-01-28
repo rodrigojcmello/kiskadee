@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <Providers>
           <DesignSystemToolbar />
-          {/*<ColorScaleViewer />*/}
+          <ColorScaleViewer />
           <div className={style.container}>{children}</div>
         </Providers>
       </body>

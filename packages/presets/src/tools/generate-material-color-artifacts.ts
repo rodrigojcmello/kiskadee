@@ -21,7 +21,6 @@ type MaterialPaletteKey = 'a1' | 'a2' | 'a3' | 'n1' | 'n2' | 'error';
 
 type GenerateMaterialColorArtifactsOptions = {
   preserveChroma?: boolean;
-  includeDark?: boolean;
 };
 
 const EMITTED_SUBTLE_TONES: LightTrackTones[] = [
@@ -187,10 +186,8 @@ function writePaletteArtifacts(params: {
   sourceHex: string;
   colorsDir: string;
   preserveChroma: boolean;
-  includeDark: boolean;
 }): void {
-  const { palette, hue, version, paletteKey, sourceHex, colorsDir, preserveChroma, includeDark } =
-    params;
+  const { palette, hue, version, paletteKey, sourceHex, colorsDir, preserveChroma } = params;
 
   const lightEmphasis = resolveEmphasisLevelFromPalette({ palette, invertScale: false });
   const lightPath = join(colorsDir, `${hue}.${version}.light.ts`);
@@ -203,18 +200,16 @@ function writePaletteArtifacts(params: {
     preserveChroma
   });
 
-  if (includeDark) {
-    const darkEmphasis = resolveEmphasisLevelFromPalette({ palette, invertScale: true });
-    const darkPath = join(colorsDir, `${hue}.${version}.dark.ts`);
-    writeEmphasisLevelFile({
-      outFilePath: darkPath,
-      emphasis: darkEmphasis,
-      sourceHex,
-      paletteKey,
-      invertScale: true,
-      preserveChroma
-    });
-  }
+  const darkEmphasis = resolveEmphasisLevelFromPalette({ palette, invertScale: true });
+  const darkPath = join(colorsDir, `${hue}.${version}.dark.ts`);
+  writeEmphasisLevelFile({
+    outFilePath: darkPath,
+    emphasis: darkEmphasis,
+    sourceHex,
+    paletteKey,
+    invertScale: true,
+    preserveChroma
+  });
 }
 
 export function generateMaterialColorArtifacts(
@@ -223,7 +218,6 @@ export function generateMaterialColorArtifacts(
 ): void {
   const sourceHex = normalizeHex(hexColor);
   const preserveChroma = Boolean(options?.preserveChroma);
-  const includeDark = Boolean(options?.includeDark);
 
   const argb = argbFromHex(sourceHex);
   const core = preserveChroma ? CorePalette.contentOf(argb) : CorePalette.of(argb);
@@ -255,8 +249,7 @@ export function generateMaterialColorArtifacts(
       paletteKey: entry.key,
       sourceHex,
       colorsDir,
-      preserveChroma,
-      includeDark
+      preserveChroma
     });
   }
 
@@ -267,8 +260,7 @@ export function generateMaterialColorArtifacts(
     paletteKey: 'n1',
     sourceHex,
     colorsDir,
-    preserveChroma,
-    includeDark
+    preserveChroma
   });
 
   writePaletteArtifacts({
@@ -278,8 +270,7 @@ export function generateMaterialColorArtifacts(
     paletteKey: 'n2',
     sourceHex,
     colorsDir,
-    preserveChroma,
-    includeDark
+    preserveChroma
   });
 
   writePaletteArtifacts({
@@ -289,12 +280,10 @@ export function generateMaterialColorArtifacts(
     paletteKey: 'error',
     sourceHex,
     colorsDir,
-    preserveChroma,
-    includeDark
+    preserveChroma
   });
 }
 
 generateMaterialColorArtifacts('#0481FF', {
-  preserveChroma: false,
-  includeDark: false
+  preserveChroma: false
 });
