@@ -389,5 +389,5 @@ export function generateMaterialColorArtifacts(
 // - dynamic-fruit-salad: SchemeFruitSalad (playful, shifted greens)
 
 generateMaterialColorArtifacts('#0B57CF', {
-  mode: 'dynamic'
+  mode: 'static'
 });
