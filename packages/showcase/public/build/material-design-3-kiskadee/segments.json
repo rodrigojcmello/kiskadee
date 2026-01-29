@@ -6,14 +6,14 @@
     "themes": {
       "light": {
         "primary": "primitive.blue.v1",
-        "neutral": "primitive.blue.v2",
-        "purpleLike": "primitive.orange.v1",
+        "neutral": "primitive.cyan.v1",
+        "purpleLike": "primitive.blue.v2",
         "redLike": "primitive.red.v1"
       },
       "dark": {
         "primary": "primitive.blue.v1",
-        "neutral": "primitive.blue.v2",
-        "purpleLike": "primitive.orange.v1",
+        "neutral": "primitive.cyan.v1",
+        "purpleLike": "primitive.blue.v2",
         "redLike": "primitive.red.v1"
       }
     }
@@ -25,14 +25,14 @@
     "themes": {
       "light": {
         "primary": "primitive.blue.v1",
-        "neutral": "primitive.blue.v2",
-        "purpleLike": "primitive.orange.v1",
+        "neutral": "primitive.cyan.v1",
+        "purpleLike": "primitive.blue.v2",
         "redLike": "primitive.red.v1"
       },
       "dark": {
         "primary": "primitive.blue.v1",
-        "neutral": "primitive.blue.v2",
-        "purpleLike": "primitive.orange.v1",
+        "neutral": "primitive.cyan.v1",
+        "purpleLike": "primitive.blue.v2",
         "redLike": "primitive.red.v1"
       }
     }

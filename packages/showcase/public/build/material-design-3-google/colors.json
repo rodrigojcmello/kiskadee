@@ -28,11 +28,11 @@
         }
       }
     },
-    "orange": {
+    "cyan": {
       "v1": {
         "solid": {
-          "light": "orange.v1.light.json",
-          "dark": "orange.v1.dark.json"
+          "light": "cyan.v1.light.json",
+          "dark": "cyan.v1.dark.json"
         }
       }
     },
@@ -48,14 +48,14 @@
   "globalSemantics": {
     "light": {
       "primary": "primitive.blue.v1",
-      "neutral": "primitive.blue.v2",
-      "purpleLike": "primitive.orange.v1",
+      "neutral": "primitive.cyan.v1",
+      "purpleLike": "primitive.blue.v2",
       "redLike": "primitive.red.v1"
     },
     "dark": {
       "primary": "primitive.blue.v1",
-      "neutral": "primitive.blue.v2",
-      "purpleLike": "primitive.orange.v1",
+      "neutral": "primitive.cyan.v1",
+      "purpleLike": "primitive.blue.v2",
       "redLike": "primitive.red.v1"
     }
   },

@@ -47,7 +47,10 @@ type MaterialColorMode =
   | 'dynamic-fruit-salad';
 
 type GenerateMaterialColorArtifactsOptions = {
+  primaryHex: string;
   mode?: MaterialColorMode;
+  secondaryHex?: string;
+  tertiaryHex?: string;
 };
 
 const EMITTED_SUBTLE_TONES: LightTrackTones[] = [
@@ -201,42 +204,23 @@ type MaterialLayerMapping = {
 };
 
 function resolvePaletteSet(params: {
-  hexColor: string;
+  primaryHex: string;
   mode: MaterialColorMode;
+  secondaryHex?: string;
+  tertiaryHex?: string;
 }): MaterialPaletteSet {
-  const { hexColor, mode } = params;
-  const argb = argbFromHex(hexColor);
+  const { primaryHex, mode, secondaryHex, tertiaryHex } = params;
+  const primaryArgb = argbFromHex(primaryHex);
 
-  if (mode === 'static') {
-    const core = CorePalette.of(argb);
-    return {
-      a1: core.a1,
-      a2: core.a2,
-      a3: core.a3,
-      n1: core.n1,
-      n2: core.n2,
-      error: core.error
-    };
-  }
+  const resolveCorePalette = (hex: string) =>
+    mode === 'static' ? CorePalette.of(argbFromHex(hex)) : CorePalette.contentOf(argbFromHex(hex));
 
-  if (mode === 'static-content') {
-    const core = CorePalette.contentOf(argb);
-    return {
-      a1: core.a1,
-      a2: core.a2,
-      a3: core.a3,
-      n1: core.n1,
-      n2: core.n2,
-      error: core.error
-    };
-  }
+  const resolveDynamicScheme = (hex: string) => {
+    const source = Hct.fromInt(argbFromHex(hex));
+    const contrastLevel = 0;
+    const isDark = false;
 
-  const source = Hct.fromInt(argb);
-  const contrastLevel = 0;
-  const isDark = false;
-
-  const scheme =
-    mode === 'dynamic'
+    return mode === 'dynamic'
       ? new SchemeTonalSpot(source, isDark, contrastLevel)
       : mode === 'dynamic-content'
         ? new SchemeContent(source, isDark, contrastLevel)
@@ -253,11 +237,31 @@ function resolvePaletteSet(params: {
                   : mode === 'dynamic-rainbow'
                     ? new SchemeRainbow(source, isDark, contrastLevel)
                     : new SchemeFruitSalad(source, isDark, contrastLevel);
+  };
+
+  if (mode === 'static' || mode === 'static-content') {
+    const core = resolveCorePalette(primaryHex);
+    const secondaryCore = secondaryHex ? resolveCorePalette(secondaryHex) : core;
+    const tertiaryCore = tertiaryHex ? resolveCorePalette(tertiaryHex) : core;
+
+    return {
+      a1: core.a1,
+      a2: secondaryCore.a1,
+      a3: tertiaryCore.a1,
+      n1: core.n1,
+      n2: core.n2,
+      error: core.error
+    };
+  }
+
+  const scheme = resolveDynamicScheme(primaryHex);
+  const secondaryScheme = secondaryHex ? resolveDynamicScheme(secondaryHex) : scheme;
+  const tertiaryScheme = tertiaryHex ? resolveDynamicScheme(tertiaryHex) : scheme;
 
   return {
     a1: scheme.primaryPalette,
-    a2: scheme.secondaryPalette,
-    a3: scheme.tertiaryPalette,
+    a2: secondaryScheme.primaryPalette,
+    a3: tertiaryScheme.primaryPalette,
     n1: scheme.neutralPalette,
     n2: scheme.neutralVariantPalette,
     error: scheme.errorPalette
@@ -392,12 +396,16 @@ function writePaletteArtifacts(params: {
 }
 
 export function generateMaterialColorArtifacts(
-  hexColor: string,
-  options?: GenerateMaterialColorArtifactsOptions
+  options: GenerateMaterialColorArtifactsOptions
 ): void {
-  const sourceHex = normalizeHex(hexColor);
-  const mode = options?.mode ?? 'static';
-  const paletteSet = resolvePaletteSet({ hexColor: sourceHex, mode });
+  const sourceHex = normalizeHex(options.primaryHex);
+  const mode = options.mode ?? 'static';
+  const paletteSet = resolvePaletteSet({
+    primaryHex: sourceHex,
+    mode,
+    secondaryHex: options.secondaryHex ? normalizeHex(options.secondaryHex) : undefined,
+    tertiaryHex: options.tertiaryHex ? normalizeHex(options.tertiaryHex) : undefined
+  });
 
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
@@ -493,6 +501,8 @@ export function generateMaterialColorArtifacts(
 // - dynamic-rainbow: SchemeRainbow (playful, detached hues)
 // - dynamic-fruit-salad: SchemeFruitSalad (playful, shifted greens)
 
-generateMaterialColorArtifacts('#0B57CF', {
-  mode: 'dynamic-fidelity'
+generateMaterialColorArtifacts({
+  primaryHex: '#0B57CF',
+  secondaryHex: '#00639b',
+  mode: 'static'
 });
