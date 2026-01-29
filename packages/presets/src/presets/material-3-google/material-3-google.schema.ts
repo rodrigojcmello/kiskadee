@@ -42,25 +42,25 @@ export const schema: Schema<Segments> = {
   themeTokens: {
     palettes: {
       default: {
-        light: {
-          background: c('default', 'l', 'primitive.black.v1', 4),
-          focusColor: c('default', 'l', 'primitive.blue.v2', 65)
-        },
-        dark: {
-          background: c('default', 'd', 'primitive.black.v1', 85),
-          focusColor: c('default', 'l', 'primitive.blue.v1', 60)
-        }
-      },
-      dynamic: {
-        light: {
-          background: c('dynamic', 'l', 'primitive.black.v1', 4),
-          focusColor: c('dynamic', 'l', 'primitive.blue.v1', 50)
-        },
-        dark: {
-          background: c('dynamic', 'd', 'primitive.black.v1', 4),
-          focusColor: c('dynamic', 'd', 'primitive.blue.v1', 50)
-        }
+        // light: {
+        //   background: c('default', 'l', 'primitive.black.v1', 4),
+        //   focusColor: c('default', 'l', 'primitive.cyan.v1', 65)
+        // },
+        // dark: {
+        //   background: c('default', 'd', 'primitive.black.v1', 85),
+        //   focusColor: c('default', 'l', 'primitive.cyan.v1', 60)
+        // }
       }
+      // dynamic: {
+      //   light: {
+      //     background: c('dynamic', 'l', 'primitive.black.v1', 4),
+      //     focusColor: c('dynamic', 'l', 'primitive.blue.v1', 50)
+      //   },
+      //   dark: {
+      //     background: c('dynamic', 'd', 'primitive.black.v1', 4),
+      //     focusColor: c('dynamic', 'd', 'primitive.blue.v1', 50)
+      //   }
+      // }
     }
   },
   components: {

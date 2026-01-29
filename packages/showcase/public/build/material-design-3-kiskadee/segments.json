@@ -7,11 +7,13 @@
       "light": {
         "primary": "primitive.blue.v1",
         "neutral": "primitive.blue.v2",
+        "purpleLike": "primitive.orange.v1",
         "redLike": "primitive.red.v1"
       },
       "dark": {
         "primary": "primitive.blue.v1",
         "neutral": "primitive.blue.v2",
+        "purpleLike": "primitive.orange.v1",
         "redLike": "primitive.red.v1"
       }
     }
@@ -24,11 +26,13 @@
       "light": {
         "primary": "primitive.blue.v1",
         "neutral": "primitive.blue.v2",
+        "purpleLike": "primitive.orange.v1",
         "redLike": "primitive.red.v1"
       },
       "dark": {
         "primary": "primitive.blue.v1",
         "neutral": "primitive.blue.v2",
+        "purpleLike": "primitive.orange.v1",
         "redLike": "primitive.red.v1"
       }
     }

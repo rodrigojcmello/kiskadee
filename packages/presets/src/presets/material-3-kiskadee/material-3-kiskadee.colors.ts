@@ -6,10 +6,12 @@ import type {
 } from '@kiskadee/core';
 import { type DeepOverride, deepMerge } from '../../utils/deepMerge';
 import {
-  componentIntents as baseComponentIntents,
-  globalSemanticsBySegment as baseGlobalSemanticsBySegment,
   primitiveColors as basePrimitiveColors,
   globalSemantics
+} from '../material-3-google/color.layers';
+import {
+  componentIntents as baseComponentIntents,
+  globalSemanticsBySegment as baseGlobalSemanticsBySegment
 } from '../material-3-google/material-3-google.colors';
 
 // Material 3 (Kiskadee): derived from the official Google preset with minimal overrides.

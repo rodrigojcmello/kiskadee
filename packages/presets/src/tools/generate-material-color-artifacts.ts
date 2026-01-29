@@ -191,6 +191,15 @@ function resolveColorsDir(baseDir: string): string {
 
 type MaterialPaletteSet = Record<MaterialPaletteKey, MaterialTonalPalette>;
 
+type MaterialLayerMapping = {
+  a1: { hue: HueName; version: 'v1' | 'v2' | 'v3' | 'v4' };
+  a2: { hue: HueName; version: 'v1' | 'v2' | 'v3' | 'v4' };
+  a3: { hue: HueName; version: 'v1' | 'v2' | 'v3' | 'v4' };
+  n1: { hue: 'black'; version: 'v1' };
+  n2: { hue: 'black'; version: 'v2' };
+  error: { hue: 'red'; version: 'v1' };
+};
+
 function resolvePaletteSet(params: {
   hexColor: string;
   mode: MaterialColorMode;
@@ -253,6 +262,83 @@ function resolvePaletteSet(params: {
     n2: scheme.neutralVariantPalette,
     error: scheme.errorPalette
   };
+}
+
+function writeColorLayersFile(params: {
+  outFilePath: string;
+  mapping: MaterialLayerMapping;
+}): void {
+  const { outFilePath, mapping } = params;
+
+  const hueBuckets = new Map<HueName, Set<'v1' | 'v2' | 'v3' | 'v4'>>();
+  const register = (hue: HueName, version: 'v1' | 'v2' | 'v3' | 'v4') => {
+    const bucket = hueBuckets.get(hue) ?? new Set();
+    bucket.add(version);
+    hueBuckets.set(hue, bucket);
+  };
+
+  register(mapping.a1.hue, mapping.a1.version);
+  register(mapping.a2.hue, mapping.a2.version);
+  register(mapping.a3.hue, mapping.a3.version);
+  register(mapping.n1.hue, mapping.n1.version);
+  register(mapping.n2.hue, mapping.n2.version);
+  register(mapping.error.hue, mapping.error.version);
+
+  const importLines: string[] = [];
+  const primitiveLines: string[] = [];
+
+  const sortedHues = Array.from(hueBuckets.keys()).sort((a, b) => a.localeCompare(b));
+
+  const formatVersionToken = (version: 'v1' | 'v2' | 'v3' | 'v4') => `V${version.slice(1)}`;
+
+  for (const hue of sortedHues) {
+    const versions = Array.from(hueBuckets.get(hue) ?? []).sort();
+    primitiveLines.push(`  ${hue}: {`);
+
+    for (const version of versions) {
+      const versionToken = formatVersionToken(version);
+      const lightImportName = `${hue}${versionToken}Light`;
+      const darkImportName = `${hue}${versionToken}Dark`;
+      importLines.push(`import ${lightImportName} from './colors/${hue}.${version}.light';`);
+      importLines.push(`import ${darkImportName} from './colors/${hue}.${version}.dark';`);
+
+      primitiveLines.push(`    ${version}: {`);
+      primitiveLines.push('      solid: {');
+      primitiveLines.push(`        light: ${lightImportName},`);
+      primitiveLines.push(`        dark: ${darkImportName}`);
+      primitiveLines.push('      }');
+      primitiveLines.push('    },');
+    }
+
+    primitiveLines.push('  },');
+  }
+
+  const primitiveColors = ['export const primitiveColors = {', ...primitiveLines, '} as const;'];
+
+  const { a1, a2, a3, error } = mapping;
+  const globalSemantics = [
+    'export const globalSemantics = {',
+    '  light: {',
+    `    primary: 'primitive.${a1.hue}.${a1.version}',`,
+    `    neutral: 'primitive.${a2.hue}.${a2.version}',`,
+    `    purpleLike: 'primitive.${a3.hue}.${a3.version}',`,
+    `    redLike: 'primitive.${error.hue}.${error.version}'`,
+    '  },',
+    '  dark: {',
+    `    primary: 'primitive.${a1.hue}.${a1.version}',`,
+    `    neutral: 'primitive.${a2.hue}.${a2.version}',`,
+    `    purpleLike: 'primitive.${a3.hue}.${a3.version}',`,
+    `    redLike: 'primitive.${error.hue}.${error.version}'`,
+    '  }',
+    '} as const;'
+  ];
+
+  const fileContent = [...importLines, '', ...primitiveColors, '', ...globalSemantics, ''].join(
+    '\n'
+  );
+
+  fs.writeFileSync(outFilePath, fileContent, 'utf8');
+  console.log(`[generateMaterialColorArtifacts] Wrote TS to: ${outFilePath}`);
 }
 
 function writeEmphasisLevelFile(params: {
@@ -324,6 +410,15 @@ export function generateMaterialColorArtifacts(
     ['red', 1]
   ]);
 
+  const layerMapping: MaterialLayerMapping = {
+    a1: { hue: 'blue', version: 'v1' },
+    a2: { hue: 'blue', version: 'v2' },
+    a3: { hue: 'purple', version: 'v1' },
+    n1: { hue: 'black', version: 'v1' },
+    n2: { hue: 'black', version: 'v2' },
+    error: { hue: 'red', version: 'v1' }
+  };
+
   const accentPalettes: Array<{ key: MaterialPaletteKey; palette: MaterialTonalPalette }> = [
     { key: 'a1', palette: paletteSet.a1 },
     { key: 'a2', palette: paletteSet.a2 },
@@ -333,6 +428,13 @@ export function generateMaterialColorArtifacts(
   for (const entry of accentPalettes) {
     const hue = resolveHueNameFromPalette(entry.palette);
     const version = nextVersionForHue(hue, usedVersions);
+    if (entry.key === 'a1') {
+      layerMapping.a1 = { hue, version };
+    } else if (entry.key === 'a2') {
+      layerMapping.a2 = { hue, version };
+    } else {
+      layerMapping.a3 = { hue, version };
+    }
     writePaletteArtifacts({
       palette: entry.palette,
       hue,
@@ -373,6 +475,9 @@ export function generateMaterialColorArtifacts(
     colorsDir,
     mode
   });
+
+  const layersPath = join(__dirname, 'color.layers.ts');
+  writeColorLayersFile({ outFilePath: layersPath, mapping: layerMapping });
 }
 
 // mode:
@@ -389,5 +494,5 @@ export function generateMaterialColorArtifacts(
 // - dynamic-fruit-salad: SchemeFruitSalad (playful, shifted greens)
 
 generateMaterialColorArtifacts('#0B57CF', {
-  mode: 'static'
+  mode: 'dynamic-fidelity'
 });

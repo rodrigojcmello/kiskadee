@@ -1,5 +1,19 @@
 {
   "primitiveColors": {
+    "black": {
+      "v1": {
+        "solid": {
+          "light": "black.v1.light.json",
+          "dark": "black.v1.dark.json"
+        }
+      },
+      "v2": {
+        "solid": {
+          "light": "black.v2.light.json",
+          "dark": "black.v2.dark.json"
+        }
+      }
+    },
     "blue": {
       "v1": {
         "solid": {
@@ -14,17 +28,11 @@
         }
       }
     },
-    "black": {
+    "orange": {
       "v1": {
         "solid": {
-          "light": "black.v1.light.json",
-          "dark": "black.v1.dark.json"
-        }
-      },
-      "v2": {
-        "solid": {
-          "light": "black.v2.light.json",
-          "dark": "black.v2.dark.json"
+          "light": "orange.v1.light.json",
+          "dark": "orange.v1.dark.json"
         }
       }
     },
@@ -41,11 +49,13 @@
     "light": {
       "primary": "primitive.blue.v1",
       "neutral": "primitive.blue.v2",
+      "purpleLike": "primitive.orange.v1",
       "redLike": "primitive.red.v1"
     },
     "dark": {
       "primary": "primitive.blue.v1",
       "neutral": "primitive.blue.v2",
+      "purpleLike": "primitive.orange.v1",
       "redLike": "primitive.red.v1"
     }
   },
