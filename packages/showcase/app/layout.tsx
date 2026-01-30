@@ -2,8 +2,7 @@ import type { ReactNode } from 'react';
 import './globals.scss';
 import '@kiskadee/react-components/style';
 import AppHead from '@/components/AppHead/AppHead';
-import ColorScaleViewer from '@/components/ColorScaleViewer/ColorScaleViewer';
-import DesignSystemToolbar from '@/components/DesignSystemToolbar/DesignSystemToolbar';
+import DesignSystemToolbarWithColorScale from '@/components/DesignSystemToolbar/DesignSystemToolbarWithColorScale';
 import style from './layout.module.scss';
 import { Providers } from './providers';
 
@@ -14,8 +13,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <AppHead />
       <body>
         <Providers>
-          <DesignSystemToolbar />
-          <ColorScaleViewer />
+          <DesignSystemToolbarWithColorScale />
           <div className={style.container}>{children}</div>
         </Providers>
       </body>
