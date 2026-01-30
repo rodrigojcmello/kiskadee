@@ -501,8 +501,15 @@ export function generateMaterialColorArtifacts(
 // - dynamic-rainbow: SchemeRainbow (playful, detached hues)
 // - dynamic-fruit-salad: SchemeFruitSalad (playful, shifted greens)
 
+// Google Static (2 seeds)
 generateMaterialColorArtifacts({
   primaryHex: '#0B57CF',
   secondaryHex: '#00639b',
+  mode: 'static'
+});
+
+// Google Dynamic (Samsung)
+generateMaterialColorArtifacts({
+  primaryHex: '#0481FF',
   mode: 'static'
 });
