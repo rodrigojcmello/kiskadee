@@ -34,7 +34,16 @@
   },
   "themeTokens": {
     "palettes": {
-      "default": {}
+      "default": {
+        "light": {
+          "focusColor": [
+            220.8,
+            39.68,
+            37.06,
+            1
+          ]
+        }
+      }
     }
   },
   "components": {

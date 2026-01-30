@@ -44,7 +44,7 @@ export const schema: Schema<Segments> = {
       default: {
         light: {
           // background: c('default', 'l', 'primitive.black.v1', 4),
-          focusColor: c('default', 'l', 'primitive.cyan.v1', 65)
+          focusColor: c('default', 'l', 'neutral', 65)
         }
         // dark: {
         //   background: c('default', 'd', 'primitive.black.v1', 85),
