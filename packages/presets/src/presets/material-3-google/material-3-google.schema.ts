@@ -42,10 +42,10 @@ export const schema: Schema<Segments> = {
   themeTokens: {
     palettes: {
       default: {
-        // light: {
-        //   background: c('default', 'l', 'primitive.black.v1', 4),
-        //   focusColor: c('default', 'l', 'primitive.cyan.v1', 65)
-        // },
+        light: {
+          // background: c('default', 'l', 'primitive.black.v1', 4),
+          focusColor: c('default', 'l', 'primitive.cyan.v1', 65)
+        }
         // dark: {
         //   background: c('default', 'd', 'primitive.black.v1', 85),
         //   focusColor: c('default', 'l', 'primitive.cyan.v1', 60)
@@ -122,7 +122,7 @@ export const schema: Schema<Segments> = {
                     high: {
                       rest: c(s, 'l', 'button.primary', 60),
                       focus: c(s, 'l', 'button.primary', 60),
-                      hover: c(s, 'l', 'button.primary', 65),
+                      hover: c(s, 'l', 'button.primary', 55),
                       pressed: c(s, 'l', 'button.primary', 70),
                       disabled: c(s, 'l', 'primitive.black.v1', 90, 10)
                     },

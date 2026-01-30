@@ -1,27 +1,27 @@
 {
   "button": {
     "e1": {
-      "d": "gmd-cs",
+      "d": "gmd-ct",
       "e": {
-        "h": "gmd-dn gmd-dq gmd-dr gmd-dp gmd-do",
-        "r": "gmd-au gmd-cm gmd-cn gmd-cl gmd-cr gmd-cp gmd-cq gmd-co"
+        "h": "gmd-do gmd-dr gmd-ds gmd-dq gmd-dp",
+        "r": "gmd-at gmd-cn gmd-co gmd-cm gmd-cs gmd-cq gmd-cr gmd-cp"
       },
       "s": {
-        "sm:1": "gmd-dm gmd-cx gmd-cy gmd-dd gmd-n gmd-ch",
-        "md:1": "gmd-di gmd-ct gmd-cz gmd-de gmd-n gmd-au",
-        "lg:1": "gmd-dj gmd-cu gmd-da gmd-df gmd-n gmd-ci",
-        "lg:2": "gmd-dk gmd-cv gmd-db gmd-dg gmd-n gmd-cj",
-        "lg:3": "gmd-dl gmd-cw gmd-dc gmd-dh gmd-n gmd-ck"
+        "sm:1": "gmd-dn gmd-cy gmd-cz gmd-de gmd-n gmd-ci",
+        "md:1": "gmd-dj gmd-cu gmd-da gmd-df gmd-n gmd-at",
+        "lg:1": "gmd-dk gmd-cv gmd-db gmd-dg gmd-n gmd-cj",
+        "lg:2": "gmd-dl gmd-cw gmd-dc gmd-dh gmd-n gmd-ck",
+        "lg:3": "gmd-dm gmd-cx gmd-dd gmd-di gmd-n gmd-cl"
       }
     },
     "e2": {
-      "d": "gmd-dy",
+      "d": "gmd-dz",
       "s": {
-        "sm:1": "gmd-cg gmd-cf",
-        "md:1": "gmd-cg gmd-cf",
-        "lg:1": "gmd-dv gmd-ds",
-        "lg:2": "gmd-dw gmd-dt",
-        "lg:3": "gmd-dx gmd-du"
+        "sm:1": "gmd-ch gmd-cg",
+        "md:1": "gmd-ch gmd-cg",
+        "lg:1": "gmd-dw gmd-dt",
+        "lg:2": "gmd-dx gmd-du",
+        "lg:3": "gmd-dy gmd-dv"
       }
     }
   }

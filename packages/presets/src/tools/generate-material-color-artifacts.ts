@@ -246,8 +246,8 @@ function resolvePaletteSet(params: {
 
     return {
       a1: core.a1,
-      a2: secondaryCore.a1,
-      a3: tertiaryCore.a1,
+      a2: secondaryHex ? secondaryCore.a1 : core.a2,
+      a3: tertiaryHex ? tertiaryCore.a1 : core.a3,
       n1: core.n1,
       n2: core.n2,
       error: core.error
@@ -260,8 +260,8 @@ function resolvePaletteSet(params: {
 
   return {
     a1: scheme.primaryPalette,
-    a2: secondaryScheme.primaryPalette,
-    a3: tertiaryScheme.primaryPalette,
+    a2: secondaryHex ? secondaryScheme.primaryPalette : scheme.secondaryPalette,
+    a3: tertiaryHex ? tertiaryScheme.primaryPalette : scheme.tertiaryPalette,
     n1: scheme.neutralPalette,
     n2: scheme.neutralVariantPalette,
     error: scheme.errorPalette
@@ -502,14 +502,21 @@ export function generateMaterialColorArtifacts(
 // - dynamic-fruit-salad: SchemeFruitSalad (playful, shifted greens)
 
 // Google Static (2 seeds)
+// generateMaterialColorArtifacts({
+//   primaryHex: '#0B57CF',
+//   secondaryHex: '#00639b',
+//   mode: 'static'
+// });
+
+// Google Dynamic (Figma)
 generateMaterialColorArtifacts({
-  primaryHex: '#0B57CF',
-  secondaryHex: '#00639b',
-  mode: 'static'
+  primaryHex: '#6442d6',
+  secondaryHex: '#575E71',
+  mode: 'dynamic'
 });
 
 // Google Dynamic (Samsung)
-generateMaterialColorArtifacts({
-  primaryHex: '#0481FF',
-  mode: 'static'
-});
+// generateMaterialColorArtifacts({
+//   primaryHex: '#0481FF',
+//   mode: 'dynamic'
+// });

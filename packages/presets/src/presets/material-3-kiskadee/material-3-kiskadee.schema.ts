@@ -22,16 +22,16 @@ const patch = {
   colors: schemaColors,
   themeTokens: {
     palettes: {
-      modern: {
-        light: {
-          background: c('modern', 'l', 'primitive.black.v1', 4),
-          focusColor: c('modern', 'l', 'primitive.blue.v1', 70)
-        },
-        dark: {
-          background: c('modern', 'd', 'primitive.black.v1', 85),
-          focusColor: c('modern', 'd', 'primitive.blue.v1', 60)
-        }
-      }
+      // modern: {
+      //   light: {
+      //     background: c('modern', 'l', 'primitive.black.v1', 4),
+      //     focusColor: c('modern', 'l', 'primitive.blue.v1', 70)
+      //   },
+      //   dark: {
+      //     background: c('modern', 'd', 'primitive.black.v1', 85),
+      //     focusColor: c('modern', 'd', 'primitive.blue.v1', 60)
+      //   }
+      // }
     }
   },
   components: {

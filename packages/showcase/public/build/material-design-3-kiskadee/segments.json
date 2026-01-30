@@ -5,15 +5,15 @@
     },
     "themes": {
       "light": {
-        "primary": "primitive.blue.v1",
-        "neutral": "primitive.cyan.v1",
-        "purpleLike": "primitive.blue.v2",
+        "primary": "primitive.purple.v1",
+        "neutral": "primitive.blue.v1",
+        "purpleLike": "primitive.pink.v1",
         "redLike": "primitive.red.v1"
       },
       "dark": {
-        "primary": "primitive.blue.v1",
-        "neutral": "primitive.cyan.v1",
-        "purpleLike": "primitive.blue.v2",
+        "primary": "primitive.purple.v1",
+        "neutral": "primitive.blue.v1",
+        "purpleLike": "primitive.pink.v1",
         "redLike": "primitive.red.v1"
       }
     }
@@ -24,15 +24,15 @@
     },
     "themes": {
       "light": {
-        "primary": "primitive.blue.v1",
-        "neutral": "primitive.cyan.v1",
-        "purpleLike": "primitive.blue.v2",
+        "primary": "primitive.purple.v1",
+        "neutral": "primitive.blue.v1",
+        "purpleLike": "primitive.pink.v1",
         "redLike": "primitive.red.v1"
       },
       "dark": {
-        "primary": "primitive.blue.v1",
-        "neutral": "primitive.cyan.v1",
-        "purpleLike": "primitive.blue.v2",
+        "primary": "primitive.purple.v1",
+        "neutral": "primitive.blue.v1",
+        "purpleLike": "primitive.pink.v1",
         "redLike": "primitive.red.v1"
       }
     }

@@ -20,19 +20,21 @@
           "light": "blue.v1.light.json",
           "dark": "blue.v1.dark.json"
         }
-      },
-      "v2": {
+      }
+    },
+    "pink": {
+      "v1": {
         "solid": {
-          "light": "blue.v2.light.json",
-          "dark": "blue.v2.dark.json"
+          "light": "pink.v1.light.json",
+          "dark": "pink.v1.dark.json"
         }
       }
     },
-    "cyan": {
+    "purple": {
       "v1": {
         "solid": {
-          "light": "cyan.v1.light.json",
-          "dark": "cyan.v1.dark.json"
+          "light": "purple.v1.light.json",
+          "dark": "purple.v1.dark.json"
         }
       }
     },
@@ -47,15 +49,15 @@
   },
   "globalSemantics": {
     "light": {
-      "primary": "primitive.blue.v1",
-      "neutral": "primitive.cyan.v1",
-      "purpleLike": "primitive.blue.v2",
+      "primary": "primitive.purple.v1",
+      "neutral": "primitive.blue.v1",
+      "purpleLike": "primitive.pink.v1",
       "redLike": "primitive.red.v1"
     },
     "dark": {
-      "primary": "primitive.blue.v1",
-      "neutral": "primitive.cyan.v1",
-      "purpleLike": "primitive.blue.v2",
+      "primary": "primitive.purple.v1",
+      "neutral": "primitive.blue.v1",
+      "purpleLike": "primitive.pink.v1",
       "redLike": "primitive.red.v1"
     }
   },

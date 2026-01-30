@@ -109,3 +109,6 @@ Notes:
 - The `a2` ramp (Material "secondary") is used as a low-emphasis neutral family in Kiskadee.
 - The `a3` ramp (Material "tertiary") is stored for optional direct use in components but is not automatically mapped to a semantic slot.
 - The neutral ramps (`n1`, `n2`) remain grayscale in Kiskadee for predictability across segments.
+
+
+O hover nos botões adiciona uma camada totalmente branca com opacidade 8% em cima, esse tipo de estratégia não faz sentido pensando em nível de desenvolvimento nativo, seja web ou mobile. Por um critério técnico sólido entre diferentes plataformas vamos adotar 5 posições na escala para o sentido mais claro, se o resto é 60 então o hover seria 55.
