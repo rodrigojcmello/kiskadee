@@ -40,7 +40,7 @@ In the Figma ecosystem, `primary` and `secondary` are very close in the light to
 Image 2 (Figma):
 ![Figma reference](./img-03.png)
 
-#### 2.3. Focus indication (site vs. Figma)
+#### 2.3. Focus and interaction overlays (site vs. Figma)
 
 On the Material documentation site, the UI preview shows a visible focus ring / outline in some examples, but the page does not clearly document which token/source color drives that ring:
 
@@ -51,6 +51,18 @@ In the Material 3 Figma ecosystem (UI kit + plugin outputs), this focus indicati
 ![Figma focus ring reference](./img-05.png)
 
 Decision: for Kiskadee, we follow the Material website as the reference for focus indication. By design, all focusable elements (including buttons) must render a visible border/outline in the `focus` state. Differences in the Figma ecosystem (especially in mobile-first assets) should not be interpreted as “no focus border”.
+
+##### 2.3.1. Hover and focus overlays
+
+Some Material samples implement hover/focus as a white overlay (e.g., 8% for hover, 10% for focus) applied on top of the base color. While that is a valid visual technique, it is not a portable, cross-platform-friendly rule for native and web implementations.
+
+Decision: in Kiskadee, hover is expressed as a tone shift within the same palette (e.g., if `rest` is tone 60, `hover` becomes tone 55). For Material, the `focus` state keeps the same tone as `rest` and relies on the focus ring/outline for emphasis. This keeps a consistent rule across platforms without relying on opacity overlays.
+
+##### 2.3.2. Pressed ripple vs. pressed color
+
+Material’s pressed feedback often relies on the ripple animation. That is an effect, not the base pressed color.
+
+Decision: Kiskadee treats the ripple as a future effect layer. The `pressed` state in the schema remains a tone-based color change, independent of the ripple animation.
 
 ### 3. Adaptations
 
@@ -109,6 +121,3 @@ Notes:
 - The `a2` ramp (Material "secondary") is used as a low-emphasis neutral family in Kiskadee.
 - The `a3` ramp (Material "tertiary") is stored for optional direct use in components but is not automatically mapped to a semantic slot.
 - The neutral ramps (`n1`, `n2`) remain grayscale in Kiskadee for predictability across segments.
-
-
-O hover nos botões adiciona uma camada totalmente branca com opacidade 8% em cima, esse tipo de estratégia não faz sentido pensando em nível de desenvolvimento nativo, seja web ou mobile. Por um critério técnico sólido entre diferentes plataformas vamos adotar 5 posições na escala para o sentido mais claro, se o resto é 60 então o hover seria 55.
