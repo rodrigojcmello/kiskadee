@@ -124,7 +124,7 @@ export const schema: Schema<Segments> = {
                       focus: c(s, 'l', 'button.primary', 60),
                       hover: c(s, 'l', 'button.primary', 55),
                       pressed: c(s, 'l', 'button.primary', 70),
-                      disabled: c(s, 'l', 'primitive.black.v1', 90, 10)
+                      disabled: c(s, 'l', 'button.neutral', 90, 10)
                     },
                     medium: {
                       rest: c(s, 'l', 'button.primary', 10),
@@ -387,6 +387,12 @@ export const schema: Schema<Segments> = {
               light: {
                 textColor: {
                   primary: {
+                    high: {
+                      rest: c(segmentName, 'l', 'button.neutral', 0),
+                      disabled: {
+                        ref: c(segmentName, 'l', 'button.neutral', 90, 38)
+                      }
+                    },
                     medium: {
                       rest: c(segmentName, 'l', 'button.neutral', 70),
                       disabled: {
@@ -396,12 +402,6 @@ export const schema: Schema<Segments> = {
                         rest: {
                           ref: c(segmentName, 'l', 'button.neutral', 0)
                         }
-                      }
-                    },
-                    high: {
-                      rest: c(segmentName, 'l', primitive('black', 'v1'), 0),
-                      disabled: {
-                        ref: c(segmentName, 'l', 'button.neutral', 90, 38)
                       }
                     },
                     low: {

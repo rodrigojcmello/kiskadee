@@ -637,6 +637,12 @@
               "light": {
                 "textColor": {
                   "primary": {
+                    "high": {
+                      "rest": "#FFF",
+                      "disabled": {
+                        "ref": "#1C1B2061"
+                      }
+                    },
                     "medium": {
                       "rest": "#48464C",
                       "disabled": {
@@ -646,12 +652,6 @@
                         "rest": {
                           "ref": "#FFF"
                         }
-                      }
-                    },
-                    "high": {
-                      "rest": "#FFF",
-                      "disabled": {
-                        "ref": "#1C1B2061"
                       }
                     },
                     "low": {
@@ -744,6 +744,12 @@
               "light": {
                 "textColor": {
                   "primary": {
+                    "high": {
+                      "rest": "#FFF",
+                      "disabled": {
+                        "ref": "#1C1B2061"
+                      }
+                    },
                     "medium": {
                       "rest": "#48464C",
                       "disabled": {
@@ -753,12 +759,6 @@
                         "rest": {
                           "ref": "#FFF"
                         }
-                      }
-                    },
-                    "high": {
-                      "rest": "#FFF",
-                      "disabled": {
-                        "ref": "#1C1B2061"
                       }
                     },
                     "low": {
