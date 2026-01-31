@@ -19,7 +19,10 @@ export type ColorsJson = {
       }
     >
   >;
-  globalSemantics?: Record<ThemeKey, Record<string, string>>;
+  globalSemantics?: Record<
+    ThemeKey,
+    Record<string, string | { v1: string; v2?: string }>
+  >;
 };
 
 export type SelectionValue = `semantic:${string}` | `primitive:${string}.${string}`;
@@ -84,9 +87,14 @@ function resolvePrimitiveRefFromSelection(params: {
   const { colors, theme, selection } = params;
 
   if (selection.startsWith('semantic:')) {
-    const semanticKey = selection.replace('semantic:', '');
+    const semanticRaw = selection.replace('semantic:', '');
+    const [semanticKey, variant] = semanticRaw.split('.');
+    if (!semanticKey) return null;
     const ref = colors.globalSemantics?.[theme]?.[semanticKey];
-    return typeof ref === 'string' ? ref : null;
+    if (!ref) return null;
+    if (typeof ref === 'string') return ref;
+    if (variant === 'v2') return ref.v2 ?? ref.v1;
+    return ref.v1;
   }
 
   if (selection.startsWith('primitive:')) {
