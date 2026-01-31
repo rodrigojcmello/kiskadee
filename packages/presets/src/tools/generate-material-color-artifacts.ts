@@ -319,20 +319,20 @@ function writeColorLayersFile(params: {
 
   const primitiveColors = ['export const primitiveColors = {', ...primitiveLines, '} as const;'];
 
-  const { a1, a2, a3, error } = mapping;
+  const { a1, a2, a3, n1, n2, error } = mapping;
   const globalSemantics = [
     'export const globalSemantics = {',
     '  light: {',
-    `    primary: 'primitive.${a1.hue}.${a1.version}',`,
-    `    neutral: 'primitive.${a2.hue}.${a2.version}',`,
-    `    purpleLike: 'primitive.${a3.hue}.${a3.version}',`,
-    `    redLike: 'primitive.${error.hue}.${error.version}'`,
+    `    primary: { v1: 'primitive.${a1.hue}.${a1.version}', v2: 'primitive.${a2.hue}.${a2.version}' },`,
+    `    neutral: { v1: 'primitive.${n1.hue}.${n1.version}', v2: 'primitive.${n2.hue}.${n2.version}' },`,
+    `    purpleLike: { v1: 'primitive.${a3.hue}.${a3.version}' },`,
+    `    redLike: { v1: 'primitive.${error.hue}.${error.version}' }`,
     '  },',
     '  dark: {',
-    `    primary: 'primitive.${a1.hue}.${a1.version}',`,
-    `    neutral: 'primitive.${a2.hue}.${a2.version}',`,
-    `    purpleLike: 'primitive.${a3.hue}.${a3.version}',`,
-    `    redLike: 'primitive.${error.hue}.${error.version}'`,
+    `    primary: { v1: 'primitive.${a1.hue}.${a1.version}', v2: 'primitive.${a2.hue}.${a2.version}' },`,
+    `    neutral: { v1: 'primitive.${n1.hue}.${n1.version}', v2: 'primitive.${n2.hue}.${n2.version}' },`,
+    `    purpleLike: { v1: 'primitive.${a3.hue}.${a3.version}' },`,
+    `    redLike: { v1: 'primitive.${error.hue}.${error.version}' }`,
     '  }',
     '} as const;'
   ];

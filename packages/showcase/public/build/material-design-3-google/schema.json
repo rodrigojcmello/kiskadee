@@ -37,9 +37,9 @@
       "default": {
         "light": {
           "focusColor": [
-            220.8,
-            39.68,
-            37.06,
+            265.71,
+            4.14,
+            33.14,
             1
           ]
         }
@@ -155,15 +155,15 @@
                       }
                     },
                     "medium": {
-                      "rest": "#D9E2FF",
-                      "focus": "#D9E2FF",
-                      "hover": "#E1E8FF",
-                      "pressed": "#C4D4FF",
+                      "rest": "#E6E1E9",
+                      "focus": "#E6E1E9",
+                      "hover": "#ECE6EE",
+                      "pressed": "#D7D3DB",
                       "disabled": "#1C1B201F",
                       "selected": {
-                        "rest": "#465D91",
-                        "hover": "#526A9E",
-                        "pressed": "#395184"
+                        "rest": "#605D64",
+                        "hover": "#6C6970",
+                        "pressed": "#545158"
                       }
                     },
                     "low": {
@@ -180,9 +180,9 @@
                     },
                     "lowest": {
                       "rest": "#0000",
-                      "focus": "#F5F6FF",
-                      "hover": "#F5F6FF",
-                      "pressed": "#EDF0FF",
+                      "focus": "#FAF5FD",
+                      "hover": "#FAF5FD",
+                      "pressed": "#F4EFF7",
                       "disabled": "#0000"
                     }
                   }
@@ -384,15 +384,15 @@
                       }
                     },
                     "medium": {
-                      "rest": "#D9E2FF",
-                      "focus": "#D9E2FF",
-                      "hover": "#E1E8FF",
-                      "pressed": "#C4D4FF",
+                      "rest": "#E6E1E9",
+                      "focus": "#E6E1E9",
+                      "hover": "#ECE6EE",
+                      "pressed": "#D7D3DB",
                       "disabled": "#1C1B201F",
                       "selected": {
-                        "rest": "#465D91",
-                        "hover": "#526A9E",
-                        "pressed": "#395184"
+                        "rest": "#605D64",
+                        "hover": "#6C6970",
+                        "pressed": "#545158"
                       }
                     },
                     "low": {
@@ -409,9 +409,9 @@
                     },
                     "lowest": {
                       "rest": "#0000",
-                      "focus": "#F5F6FF",
-                      "hover": "#F5F6FF",
-                      "pressed": "#EDF0FF",
+                      "focus": "#FAF5FD",
+                      "hover": "#FAF5FD",
+                      "pressed": "#F4EFF7",
                       "disabled": "#0000"
                     }
                   }
@@ -612,9 +612,9 @@
                 "textColor": {
                   "primary": {
                     "medium": {
-                      "rest": "#2D4678",
+                      "rest": "#48464C",
                       "disabled": {
-                        "ref": "#001A4361"
+                        "ref": "#1C1B2061"
                       },
                       "selected": {
                         "rest": {
@@ -625,7 +625,7 @@
                     "high": {
                       "rest": "#FFF",
                       "disabled": {
-                        "ref": "#001A4361"
+                        "ref": "#1C1B2061"
                       }
                     },
                     "low": {
@@ -633,7 +633,7 @@
                       "hover": "#6E629D",
                       "pressed": "#493E76",
                       "disabled": {
-                        "ref": "#001A4361"
+                        "ref": "#1C1B2061"
                       }
                     },
                     "lowest": {
@@ -641,7 +641,7 @@
                       "hover": "#6E629D",
                       "pressed": "#493E76",
                       "disabled": {
-                        "ref": "#001A4361"
+                        "ref": "#1C1B2061"
                       }
                     }
                   },
@@ -649,7 +649,7 @@
                     "high": {
                       "rest": "#FFF",
                       "disabled": {
-                        "ref": "#001A4361"
+                        "ref": "#1C1B2061"
                       }
                     }
                   }
@@ -661,13 +661,13 @@
                     "medium": {
                       "rest": "#000",
                       "disabled": {
-                        "ref": "#7890C7"
+                        "ref": "#938F97"
                       }
                     },
                     "high": {
                       "rest": "#000",
                       "disabled": {
-                        "ref": "#7890C7"
+                        "ref": "#938F97"
                       }
                     },
                     "low": {
@@ -675,7 +675,7 @@
                       "hover": "#554A83",
                       "pressed": "#3E336A",
                       "disabled": {
-                        "ref": "#7890C7"
+                        "ref": "#938F97"
                       }
                     },
                     "lowest": {
@@ -683,7 +683,7 @@
                       "hover": "#554A83",
                       "pressed": "#3E336A",
                       "disabled": {
-                        "ref": "#7890C7"
+                        "ref": "#938F97"
                       }
                     }
                   }
@@ -695,9 +695,9 @@
                 "textColor": {
                   "primary": {
                     "medium": {
-                      "rest": "#2D4678",
+                      "rest": "#48464C",
                       "disabled": {
-                        "ref": "#001A4361"
+                        "ref": "#1C1B2061"
                       },
                       "selected": {
                         "rest": {
@@ -708,7 +708,7 @@
                     "high": {
                       "rest": "#FFF",
                       "disabled": {
-                        "ref": "#001A4361"
+                        "ref": "#1C1B2061"
                       }
                     },
                     "low": {
@@ -716,7 +716,7 @@
                       "hover": "#6E629D",
                       "pressed": "#493E76",
                       "disabled": {
-                        "ref": "#001A4361"
+                        "ref": "#1C1B2061"
                       }
                     },
                     "lowest": {
@@ -724,7 +724,7 @@
                       "hover": "#6E629D",
                       "pressed": "#493E76",
                       "disabled": {
-                        "ref": "#001A4361"
+                        "ref": "#1C1B2061"
                       }
                     }
                   },
@@ -732,7 +732,7 @@
                     "high": {
                       "rest": "#FFF",
                       "disabled": {
-                        "ref": "#001A4361"
+                        "ref": "#1C1B2061"
                       }
                     }
                   }
@@ -744,13 +744,13 @@
                     "medium": {
                       "rest": "#000",
                       "disabled": {
-                        "ref": "#7890C7"
+                        "ref": "#938F97"
                       }
                     },
                     "high": {
                       "rest": "#000",
                       "disabled": {
-                        "ref": "#7890C7"
+                        "ref": "#938F97"
                       }
                     },
                     "low": {
@@ -758,7 +758,7 @@
                       "hover": "#554A83",
                       "pressed": "#3E336A",
                       "disabled": {
-                        "ref": "#7890C7"
+                        "ref": "#938F97"
                       }
                     },
                     "lowest": {
@@ -766,7 +766,7 @@
                       "hover": "#554A83",
                       "pressed": "#3E336A",
                       "disabled": {
-                        "ref": "#7890C7"
+                        "ref": "#938F97"
                       }
                     }
                   }

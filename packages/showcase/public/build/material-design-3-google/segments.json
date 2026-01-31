@@ -5,16 +5,36 @@
     },
     "themes": {
       "light": {
-        "primary": "primitive.purple.v1",
-        "neutral": "primitive.blue.v1",
-        "purpleLike": "primitive.pink.v1",
-        "redLike": "primitive.red.v1"
+        "primary": {
+          "v1": "primitive.purple.v1",
+          "v2": "primitive.blue.v1"
+        },
+        "neutral": {
+          "v1": "primitive.black.v1",
+          "v2": "primitive.black.v2"
+        },
+        "purpleLike": {
+          "v1": "primitive.pink.v1"
+        },
+        "redLike": {
+          "v1": "primitive.red.v1"
+        }
       },
       "dark": {
-        "primary": "primitive.purple.v1",
-        "neutral": "primitive.blue.v1",
-        "purpleLike": "primitive.pink.v1",
-        "redLike": "primitive.red.v1"
+        "primary": {
+          "v1": "primitive.purple.v1",
+          "v2": "primitive.blue.v1"
+        },
+        "neutral": {
+          "v1": "primitive.black.v1",
+          "v2": "primitive.black.v2"
+        },
+        "purpleLike": {
+          "v1": "primitive.pink.v1"
+        },
+        "redLike": {
+          "v1": "primitive.red.v1"
+        }
       }
     }
   }

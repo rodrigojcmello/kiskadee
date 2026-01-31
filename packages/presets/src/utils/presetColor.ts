@@ -5,6 +5,7 @@ import type {
   RoleWithPaint,
   Schema,
   SemanticColor,
+  SemanticVariant,
   SolidColor
 } from '@kiskadee/core';
 import { color } from '@kiskadee/core';
@@ -22,15 +23,29 @@ const semanticKeys = [
   'neutral'
 ] as const satisfies SemanticColor[];
 
-function isSemanticColor(value: string): value is SemanticColor {
-  return (semanticKeys as readonly string[]).includes(value);
+type SemanticRole = SemanticColor | `${SemanticColor}.${SemanticVariant}`;
+
+function parseSemanticRole(value: string): { semantic: SemanticColor; variant: SemanticVariant } | null {
+  const [semanticRaw, variantRaw] = value.split('.');
+  if (!semanticRaw) return null;
+  if (!(semanticKeys as readonly string[]).includes(semanticRaw)) return null;
+
+  if (!variantRaw) {
+    return { semantic: semanticRaw as SemanticColor, variant: 'v1' };
+  }
+
+  if (variantRaw === 'v1' || variantRaw === 'v2') {
+    return { semantic: semanticRaw as SemanticColor, variant: variantRaw };
+  }
+
+  return null;
 }
 
 export type PresetColorGetter<TSegmentName extends string> = {
   (
     segmentName: TSegmentName,
     theme: ThemeShortcut,
-    roleOrPrimitive: PrimitiveRole | SolidRole | SemanticColor,
+    roleOrPrimitive: PrimitiveRole | SolidRole | SemanticRole,
     tone: number,
     alpha?: number
   ): SolidColor;
@@ -57,11 +72,14 @@ export function createPresetColorGetter<TSegmentName extends string>(schemaConte
   const c = (
     segmentName: TSegmentName,
     theme: ThemeShortcut,
-    roleOrPrimitive: RoleWithPaint | PrimitiveRole | SemanticColor,
+    roleOrPrimitive: RoleWithPaint | PrimitiveRole | SemanticRole,
     tone: number | number[],
     alpha?: number
   ): SolidColor | ResolvedGradient => {
-    if (typeof roleOrPrimitive === 'string' && isSemanticColor(roleOrPrimitive)) {
+    const semanticRole =
+      typeof roleOrPrimitive === 'string' ? parseSemanticRole(roleOrPrimitive) : null;
+
+    if (semanticRole) {
       if (Array.isArray(tone)) {
         throw new Error(
           `Invalid tone. Expected number for semantic role, got array (role=${roleOrPrimitive})`
@@ -71,12 +89,14 @@ export function createPresetColorGetter<TSegmentName extends string>(schemaConte
       const colors = schemaContext.colors;
       const themeName = theme === 'l' ? 'light' : 'dark';
       const fromSegment = colors.globalSemanticsBySegment?.[segmentName]?.themes?.[themeName]?.[
-        roleOrPrimitive
+        semanticRole.semantic
       ];
       const fromGlobal = (colors.globalSemantics as GlobalSemanticsByTheme | undefined)?.[
         themeName
-      ]?.[roleOrPrimitive];
-      const primitiveRole = fromSegment ?? fromGlobal;
+      ]?.[semanticRole.semantic];
+      const entry = fromSegment ?? fromGlobal;
+      const primitiveRole =
+        typeof entry === 'string' ? entry : entry?.[semanticRole.variant] ?? entry?.v1;
       if (!primitiveRole) {
         throw new Error(
           `Global semantic not mapped for role=${roleOrPrimitive} theme=${theme} segment=${String(segmentName)}`

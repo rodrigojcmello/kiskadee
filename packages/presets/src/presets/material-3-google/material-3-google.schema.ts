@@ -160,46 +160,46 @@ export const schema: Schema<Segments> = {
                   },
                   neutral: {
                     high: {
-                      rest: c(s, 'l', 'button.neutral', 60),
-                      focus: c(s, 'l', 'button.neutral', 60),
-                      hover: c(s, 'l', 'button.neutral', 55),
-                      pressed: c(s, 'l', 'button.neutral', 70),
+                      rest: c(s, 'l', 'primary.v2', 60),
+                      focus: c(s, 'l', 'primary.v2', 60),
+                      hover: c(s, 'l', 'primary.v2', 55),
+                      pressed: c(s, 'l', 'primary.v2', 70),
                       disabled: c(s, 'l', 'primitive.black.v1', 90, 12),
                       selected: {
-                        rest: c(s, 'l', 'button.neutral', 50),
-                        hover: c(s, 'l', 'button.neutral', 40),
-                        pressed: c(s, 'l', 'button.neutral', 60)
+                        rest: c(s, 'l', 'primary.v2', 50),
+                        hover: c(s, 'l', 'primary.v2', 40),
+                        pressed: c(s, 'l', 'primary.v2', 60)
                       }
                     },
                     medium: {
-                      rest: c(s, 'l', 'button.neutral', 10),
-                      focus: c(s, 'l', 'button.neutral', 10),
-                      hover: c(s, 'l', 'button.neutral', 8),
-                      pressed: c(s, 'l', 'button.neutral', 15),
+                      rest: c(s, 'l', 'neutral', 10),
+                      focus: c(s, 'l', 'neutral', 10),
+                      hover: c(s, 'l', 'neutral', 8),
+                      pressed: c(s, 'l', 'neutral', 15),
                       disabled: c(s, 'l', 'primitive.black.v1', 90, 12),
                       selected: {
-                        rest: c(s, 'l', 'button.neutral', 60),
-                        hover: c(s, 'l', 'button.neutral', 55),
-                        pressed: c(s, 'l', 'button.neutral', 65)
+                        rest: c(s, 'l', 'neutral', 60),
+                        hover: c(s, 'l', 'neutral', 55),
+                        pressed: c(s, 'l', 'neutral', 65)
                       }
                     },
                     low: {
                       rest: transparent,
-                      focus: c(s, 'l', 'primitive.black.v1', 3),
-                      hover: c(s, 'l', 'primitive.black.v1', 3),
-                      pressed: c(s, 'l', 'primitive.black.v1', 5),
+                      focus: c(s, 'l', 'neutral', 3),
+                      hover: c(s, 'l', 'neutral', 3),
+                      pressed: c(s, 'l', 'neutral', 5),
                       disabled: transparent,
                       selected: {
-                        rest: c(s, 'l', 'primitive.black.v1', 60),
-                        hover: c(s, 'l', 'primitive.black.v1', 55),
-                        pressed: c(s, 'l', 'primitive.black.v1', 65)
+                        rest: c(s, 'l', 'neutral', 60),
+                        hover: c(s, 'l', 'neutral', 55),
+                        pressed: c(s, 'l', 'neutral', 65)
                       }
                     },
                     lowest: {
                       rest: transparent,
-                      focus: c(s, 'l', 'button.neutral', 3),
-                      hover: c(s, 'l', 'button.neutral', 3),
-                      pressed: c(s, 'l', 'button.neutral', 5),
+                      focus: c(s, 'l', 'neutral', 3),
+                      hover: c(s, 'l', 'neutral', 3),
+                      pressed: c(s, 'l', 'neutral', 5),
                       disabled: transparent
                     }
                   }
@@ -251,11 +251,11 @@ export const schema: Schema<Segments> = {
                       disabled: transparent
                     },
                     low: {
-                      rest: c(s, 'l', 'primitive.black.v1', 15),
-                      focus: c(s, 'l', 'primitive.black.v1', 15),
-                      hover: c(s, 'l', 'primitive.black.v1', 10),
-                      pressed: c(s, 'l', 'primitive.black.v1', 20),
-                      disabled: c(s, 'l', 'primitive.black.v1', 15)
+                      rest: c(s, 'l', 'neutral', 15),
+                      focus: c(s, 'l', 'neutral', 15),
+                      hover: c(s, 'l', 'neutral', 10),
+                      pressed: c(s, 'l', 'neutral', 20),
+                      disabled: c(s, 'l', 'neutral', 15)
                     },
                     lowest: {
                       rest: transparent,

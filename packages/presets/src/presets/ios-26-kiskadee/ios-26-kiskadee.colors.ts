@@ -38,14 +38,14 @@ type GlobalSemanticKey = 'primary' | 'neutral' | 'redLike';
 
 export const globalSemantics = {
   light: {
-    primary: 'primitive.blue.v1',
-    neutral: 'primitive.black.v1',
-    redLike: 'primitive.red.v1'
+    primary: { v1: 'primitive.blue.v1' },
+    neutral: { v1: 'primitive.black.v1' },
+    redLike: { v1: 'primitive.red.v1' }
   },
   dark: {
-    primary: 'primitive.blue.v1',
-    neutral: 'primitive.black.v1',
-    redLike: 'primitive.red.v1'
+    primary: { v1: 'primitive.blue.v1' },
+    neutral: { v1: 'primitive.black.v1' },
+    redLike: { v1: 'primitive.red.v1' }
   }
 } as const satisfies GlobalSemanticsByTheme;
 
@@ -71,10 +71,10 @@ export const globalSemanticsBySegment = {
     },
     themes: {
       light: {
-        primary: 'primitive.blue.dynamic'
+        primary: { v1: 'primitive.blue.dynamic' }
       },
       dark: {
-        primary: 'primitive.blue.dynamic'
+        primary: { v1: 'primitive.blue.dynamic' }
       }
     }
   }

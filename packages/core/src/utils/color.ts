@@ -249,11 +249,16 @@ export function resolveColor(
     throw new Error(`Intent not mapped for role=${roleOrPrimitive}`);
   }
 
+  const semanticEntry =
+    colors.globalSemanticsBySegment?.[segmentName]?.themes?.[themeName]?.[
+      intentValue as SemanticColor
+    ] ?? colors.globalSemantics?.[themeName]?.[intentValue as SemanticColor];
+
   const primitiveRole: PrimitiveRole | undefined = intentValue.startsWith('primitive.')
     ? (intentValue as PrimitiveRole)
-    : (colors.globalSemanticsBySegment?.[segmentName]?.themes?.[themeName]?.[
-        intentValue as SemanticColor
-      ] ?? colors.globalSemantics?.[themeName]?.[intentValue as SemanticColor]);
+    : typeof semanticEntry === 'string'
+      ? (semanticEntry as PrimitiveRole)
+      : semanticEntry?.v1;
 
   if (!primitiveRole) {
     throw new Error(`Global semantic not mapped for role=${roleOrPrimitive} theme=${theme}`);

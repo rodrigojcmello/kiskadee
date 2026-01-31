@@ -148,6 +148,8 @@ export type SemanticColor =
   | 'greenLike'
   | 'neutral';
 
+export type SemanticVariant = 'v1' | 'v2';
+
 // -------------------------------------------------------------------------------------------------
 // 3-layer color architecture (Primitive → Global semantics → Component intents)
 // -------------------------------------------------------------------------------------------------
@@ -279,9 +281,14 @@ export type PrimitiveColors = Partial<
   Record<HueName, Partial<Record<PrimitiveColorName, PrimitiveColorAsset>>>
 >;
 
+export type SemanticVariantMap = {
+  v1: PrimitiveRole;
+  v2?: PrimitiveRole;
+};
+
 export type GlobalSemanticsByTheme = Record<
   ThemeName,
-  Partial<Record<SemanticColor, PrimitiveRole>>
+  Partial<Record<SemanticColor, PrimitiveRole | SemanticVariantMap>>
 >;
 
 /** Segment metadata used by tooling (build/showcase), not by the color resolver. */
