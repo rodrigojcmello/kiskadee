@@ -66,6 +66,12 @@ Decision: Kiskadee treats the ripple as a future effect layer. The `pressed` sta
 
 Decision: for pressed, Kiskadee uses a 10-step darker shift on the tonal scale. This larger contrast is intentional for touch devices: the user’s finger partially covers the UI feedback, so a stronger delta improves perceived confirmation. This 10-step shift is the default across all Kiskadee presets, but it is not a hard constraint—designers can increase or reduce the contrast as needed. We emphasize strong micro-interaction feedback while keeping the system flexible.
 
+##### 2.3.3. Color fidelity disclaimer (Figma vs. Kiskadee rounding)
+
+In some comparisons, the base tone matches exactly between Figma and Kiskadee, but the alpha-composited result can differ by 1 RGB unit. Example: `#1C1B20` at 38% opacity over white yields `#E8E8E8` in Kiskadee and `#E9E9E9` in Figma (232 vs 233). This appears to be a rounding difference in the conversion pipeline (HSL/HCT/ARGB to HEX + alpha) rather than a real color mismatch. Figma shows `HSL(252, 8, 12)`, while Kiskadee uses `HSL(252, 8.47, 11.57)` before conversion, which is visually indistinguishable but can round differently after compositing.
+
+Decision: Kiskadee treats 1-point RGB deltas caused by rounding as acceptable. Visual fidelity is maintained even when numeric values differ slightly across tools.
+
 ### 3. Adaptations
 
 This section documents intentional adaptations needed to fit Material concepts into Kiskadee's fixed 16-position model (`subtle` + `vivid`).

@@ -6,6 +6,16 @@ This package contains ready-to-use schema presets built on top of `@kiskadee/cor
 
 ---
 
+### Color Fidelity Disclaimer (Figma vs. Kiskadee Rounding)
+
+Some presets may show tiny numeric differences when comparing colors between Figma and Kiskadee. This usually happens after alpha compositing (e.g., disabled states), where different rounding strategies in the conversion pipeline (HSL/HCT/ARGB → HEX + alpha) can yield a 1‑point RGB delta.
+
+Example: a base tone that matches perfectly (`#1C1B20`) can produce `#E8E8E8` in Kiskadee versus `#E9E9E9` in Figma at 38% opacity over white (232 vs 233). This is visually indistinguishable and considered acceptable across all presets.
+
+Decision: Kiskadee treats 1‑point RGB deltas caused by rounding as normal and does not attempt to “force match” Figma’s internal rounding.
+
+---
+
 ### Interaction Feedback: Pressed State Rule
 
 The pressed interaction state (`:active`) is intentionally the highest-contrast step among interaction states. It is also the only state that does not transition: the click itself should immediately trigger the color change. This makes the feedback unmistakable and confirms to the user that the control was actually pressed.
