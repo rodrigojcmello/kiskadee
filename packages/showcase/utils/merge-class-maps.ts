@@ -11,6 +11,7 @@ export const mergeMaps = (
     ...Object.keys(paletteMap || {})
   ]);
   for (const comp of compKeys) {
+    if (comp === '$schema') continue;
     const cComp = (coreMap as unknown as Record<string, unknown>)?.[comp] as
       | Record<string, unknown>
       | undefined;

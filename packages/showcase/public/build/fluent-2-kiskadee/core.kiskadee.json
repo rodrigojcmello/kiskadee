@@ -1,4 +1,5 @@
 {
+  "$schema": "./core.kiskadee.schema.json",
   "button": {
     "e1": {
       "d": "fk-s",

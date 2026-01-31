@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Kiskadee core.kiskadee.json",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference for this artifact."
+    }
+  },
+  "additionalProperties": {
+    "$ref": "#/definitions/component"
+  },
+  "definitions": {
+    "component": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/element"
+      }
+    },
+    "element": {
+      "type": "object",
+      "properties": {
+        "d": {
+          "type": "string",
+          "description": "Always-on decorations (space-separated class list)."
+        },
+        "e": {
+          "type": "object",
+          "description": "Effect buckets (opt-in).",
+          "properties": {
+            "h": {
+              "type": "string",
+              "description": "Shadow effects."
+            },
+            "rr": {
+              "type": "string",
+              "description": "Border radius effects for rounded mode."
+            },
+            "rf": {
+              "type": "string",
+              "description": "Border radius effects for full mode."
+            }
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "s": {
+          "type": "object",
+          "description": "Scale classes by size key.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "r": {
+          "type": "object",
+          "description": "Rounded border radius scales by size key.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "c": {
+          "type": "object",
+          "description": "Color classes by semantic key.",
+          "additionalProperties": {
+            "$ref": "#/definitions/colorClasses"
+          }
+        },
+        "l": {
+          "type": "string",
+          "description": "Control-state classes (selected)."
+        }
+      },
+      "additionalProperties": true
+    },
+    "colorClasses": {
+      "type": "object",
+      "properties": {
+        "h": {
+          "type": "string",
+          "description": "High emphasis classes."
+        },
+        "m": {
+          "type": "string",
+          "description": "Medium emphasis classes."
+        },
+        "l": {
+          "type": "string",
+          "description": "Low emphasis classes."
+        },
+        "ll": {
+          "type": "string",
+          "description": "Lowest emphasis classes."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
