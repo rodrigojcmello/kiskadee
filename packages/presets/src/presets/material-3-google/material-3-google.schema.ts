@@ -119,6 +119,7 @@ export const schema: Schema<Segments> = {
               light: {
                 boxColor: {
                   primary: {
+                    // verified: 2026-01-31 | figma v1.23
                     high: {
                       rest: c(s, 'l', 'button.primary', 60),
                       focus: c(s, 'l', 'button.primary', 60),
@@ -387,6 +388,7 @@ export const schema: Schema<Segments> = {
               light: {
                 textColor: {
                   primary: {
+                    // verified: 2026-01-31 | figma v1.23
                     high: {
                       rest: c(segmentName, 'l', 'button.neutral', 0),
                       disabled: {

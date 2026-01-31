@@ -12,6 +12,12 @@ Local reference image:
 - File: `color.png`
 - Preview: ![Material color roles reference](./color.png)
 
+Figma reference:
+- File: https://www.figma.com/community/file/1035203688168086460
+- Name: Material 3 Design Kit
+- Version: 1.23
+- Last updated: 2025-08-12
+
 ### 2. Inconsistencies
 
 This section documents mismatches observed between different official Material channels. These notes exist to explain why a Kiskadee preset may need to pick a single reference source.
