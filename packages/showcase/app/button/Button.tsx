@@ -137,7 +137,7 @@ export function Button() {
               'primary',
               'high',
               'selected',
-              <KButton emphasis="high" intent="primary" controlState={true} radius={true}>
+              <KButton emphasis="high" intent="primary" controlState={true} radiusEffect={true}>
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Selected
@@ -214,7 +214,7 @@ export function Button() {
               'primary',
               'medium',
               'selected',
-              <KButton emphasis="medium" intent="primary" controlState={true} radius={true}>
+              <KButton emphasis="medium" intent="primary" controlState={true} radiusEffect={true}>
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Selected
@@ -291,7 +291,7 @@ export function Button() {
               'primary',
               'low',
               'selected',
-              <KButton emphasis="low" intent="primary" controlState={true} radius={true}>
+              <KButton emphasis="low" intent="primary" controlState={true} radiusEffect={true}>
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Selected
@@ -368,7 +368,7 @@ export function Button() {
               'primary',
               'lowest',
               'selected',
-              <KButton emphasis="lowest" intent="primary" controlState={true} radius={true}>
+              <KButton emphasis="lowest" intent="primary" controlState={true} radiusEffect={true}>
                 <KButton.Label>
                   <SmoothText triggerKey={fontName} align={alignment}>
                     Selected
@@ -1330,7 +1330,8 @@ export function Button() {
               <KButton
                 emphasis="medium"
                 intent="primary"
-                radius={true}
+                radius="rounded"
+                radiusEffect={true}
                 controlState={isSelected}
                 onClick={() => setIsSelected((prev) => !prev)}
               >
@@ -1354,7 +1355,8 @@ export function Button() {
               <KButton
                 emphasis="high"
                 intent="primary"
-                radius={true}
+                radius="rounded"
+                radiusEffect={true}
                 controlState={isSelectedVivid}
                 onClick={() => setIsSelectedVivid((prev) => !prev)}
               >

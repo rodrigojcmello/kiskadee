@@ -83,6 +83,14 @@ outline-offset var(--k-dur-int-fast) var(--k-ease-std);
   transition: $transition-state;
 }
 
+.k-radius-full {
+  border-radius: 9999px;
+}
+
+.k-radius-square {
+  border-radius: 0;
+}
+
 /* Active state skips text/background transitions to keep press feedback snappy. */
 :active {
   transition-property: $props-active;

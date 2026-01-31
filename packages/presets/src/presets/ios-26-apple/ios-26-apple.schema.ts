@@ -22,7 +22,8 @@ export const schema: Schema<Segment> = {
     focus: {
       width: 2,
       offset: 0
-    }
+    },
+    radius: 'rounded'
   },
   components: {
     button: {

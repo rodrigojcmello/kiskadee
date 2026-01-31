@@ -29,7 +29,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const classesMap = useClassMapLoader({ designSystem, segment, theme });
 
   // 3. Load extra resources (background colors, focus ring)
-  const { backgroundsByTheme } = useThemeExtras({ designSystem, segment, theme });
+  const { backgroundsByTheme, globalRadius } = useThemeExtras({ designSystem, segment, theme });
 
   // 4. Manage global CSS and stylesheet injection (side effects)
   useStylesheetManager({ designSystem, segment, theme });
@@ -49,7 +49,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
         setSegment,
         setTheme,
         designSystem: String(designSystem),
-        setDesignSystem: (v) => setDesignSystem(v)
+        setDesignSystem: (v) => setDesignSystem(v),
+        global: {
+          radius: globalRadius
+        }
       }}
     >
       <ShowcaseContext.Provider

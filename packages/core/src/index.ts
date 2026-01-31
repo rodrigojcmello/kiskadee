@@ -5,6 +5,7 @@ export * from './types/decorations/decorations.types';
 export * from './types/effects';
 export type {
   BorderRadiusEffectSchema,
+  BorderRadiusEffectMode,
   NumericByInteractionState,
   NumericWithSelected,
   ResponsiveNumeric

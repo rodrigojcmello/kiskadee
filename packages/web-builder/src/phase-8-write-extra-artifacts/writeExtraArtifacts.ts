@@ -1,7 +1,15 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { HSLA, Schema, SchemaFonts, SegmentName, SolidColor, ThemeMode } from '@kiskadee/core';
+import type {
+  HSLA,
+  RadiusMode,
+  Schema,
+  SchemaFonts,
+  SegmentName,
+  SolidColor,
+  ThemeMode
+} from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
 import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex';
 import { type FontStack, toCssFontFamily } from '../utils/fontFamily';
@@ -76,6 +84,7 @@ export async function writeExtraArtifacts(params: {
   //    metadata capturing global design system intentions.
   const fonts = schema.global?.fonts as SchemaFonts | undefined;
   const focus = schema.global?.focus as { width?: number; offset?: number } | undefined;
+  const radius = schema.global?.radius as RadiusMode | undefined;
 
   function toCssFontFamilyString(value: FontStack): string | null {
     const css = toCssFontFamily(value);
@@ -89,14 +98,16 @@ export async function writeExtraArtifacts(params: {
 
   const hasFonts = Boolean(bodyCss);
   const hasFocus = Boolean(focus && (focus.width !== undefined || focus.offset !== undefined));
+  const hasRadius = Boolean(radius);
 
-  if (hasFonts || hasFocus) {
+  if (hasFonts || hasFocus || hasRadius) {
     await mkdir(buildDir, { recursive: true });
     const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
 
     const globalPayload: {
       fonts?: { body: string; heading?: string };
       focus?: { width?: number; offset?: number };
+      radius?: RadiusMode;
     } = {};
 
     if (hasFonts && bodyCss) {
@@ -111,6 +122,10 @@ export async function writeExtraArtifacts(params: {
         ...(focus.width !== undefined ? { width: focus.width } : {}),
         ...(focus.offset !== undefined ? { offset: focus.offset } : {})
       };
+    }
+
+    if (hasRadius && radius) {
+      globalPayload.radius = radius;
     }
 
     await writeFile(globalFilePath, JSON.stringify(globalPayload, null, 2), 'utf8');

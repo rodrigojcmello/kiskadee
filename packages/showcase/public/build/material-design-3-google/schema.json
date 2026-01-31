@@ -30,7 +30,8 @@
     "focus": {
       "width": 2,
       "offset": 2
-    }
+    },
+    "radius": "full"
   },
   "themeTokens": {
     "palettes": {
@@ -559,15 +560,29 @@
           },
           "effects": {
             "borderRadius": {
-              "rest": 20,
-              "hover": 14,
-              "pressed": 10,
-              "focus": 14,
-              "selected": {
-                "rest": 16,
+              "rounded": {
+                "rest": 20,
                 "hover": 14,
                 "pressed": 10,
-                "focus": 14
+                "focus": 14,
+                "selected": {
+                  "rest": 16,
+                  "hover": 14,
+                  "pressed": 10,
+                  "focus": 14
+                }
+              },
+              "full": {
+                "rest": 20,
+                "hover": 14,
+                "pressed": 10,
+                "focus": 14,
+                "selected": {
+                  "rest": 16,
+                  "hover": 14,
+                  "pressed": 10,
+                  "focus": 14
+                }
               }
             },
             "shadow": {

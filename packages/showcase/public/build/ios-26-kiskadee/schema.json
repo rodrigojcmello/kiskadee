@@ -30,7 +30,8 @@
     "focus": {
       "width": 3,
       "offset": 0
-    }
+    },
+    "radius": "rounded"
   },
   "themeTokens": {
     "palettes": {

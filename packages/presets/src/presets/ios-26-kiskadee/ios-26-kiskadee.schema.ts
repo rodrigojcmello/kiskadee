@@ -38,7 +38,8 @@ export const schema: Schema = {
     focus: {
       width: 3,
       offset: 0
-    }
+    },
+    radius: 'rounded'
   },
   themeTokens: {
     palettes: buildBySegment(segmentNames, (segmentName) => {

@@ -6,9 +6,14 @@
         "h": "fk-ay fk-bb fk-bc fk-ba fk-az"
       },
       "s": {
-        "sm:1": "fk-av fk-am fk-ar fk-au fk-b",
-        "md:1": "fk-aw fk-an fk-ap fk-as fk-b",
-        "lg:1": "fk-ax fk-ao fk-aq fk-at fk-b"
+        "sm:1": "fk-av fk-am fk-ar fk-au",
+        "md:1": "fk-aw fk-an fk-ap fk-as",
+        "lg:1": "fk-ax fk-ao fk-aq fk-at"
+      },
+      "r": {
+        "sm:1": "fk-b",
+        "md:1": "fk-b",
+        "lg:1": "fk-b"
       }
     },
     "e2": {

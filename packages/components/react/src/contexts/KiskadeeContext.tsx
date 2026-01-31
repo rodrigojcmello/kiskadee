@@ -1,4 +1,4 @@
-import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/core';
+import type { ComponentClassNameMapJSON, RadiusMode, ThemeMode } from '@kiskadee/core';
 import { createContext, useContext } from 'react';
 
 export type KiskadeeContextValue = {
@@ -10,6 +10,9 @@ export type KiskadeeContextValue = {
 
   designSystem: string;
   setDesignSystem: (value: string) => void;
+  global?: {
+    radius?: RadiusMode;
+  };
 };
 
 export const KiskadeeContext = createContext<KiskadeeContextValue | undefined>(undefined);

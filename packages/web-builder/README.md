@@ -80,13 +80,45 @@ Therefore, the element must carry the base (rest) class for the state override t
 Kiskadee treats `controlState` (e.g. `selected`) and interaction effects (e.g. stateful `borderRadius`) as **separate, opt-in concerns**.
 
 - `controlState` is a semantic toggle state that is activated by the runtime (e.g. `controlState={true}` on React components).
-- Effects are optional, component-level features and must only be applied when the consumer explicitly opts in (e.g. `radius={true}`, `shadow={true}`).
+- Effects are optional, component-level features and must only be applied when the consumer explicitly opts in (e.g. `radiusEffect={true}`, `shadow={true}`).
 
 This distinction matters because some Design Systems (e.g. Material Design 3) author *selected-specific* interaction effects (like “animated corners” under `effects.borderRadius.selected`). Those effects must **not** automatically activate just because `controlState` is on.
 
 **Rule:** interaction keys under `selected:*` remain effects and stay inside the element `e` buckets in `core.kiskadee.json`. They must never be moved into the control-state field (`l`).
 
-Practical implication for consumers: if a DS wants “selected + animated corners”, the component must be rendered with **both** `controlState={true}` and `radius={true}`.
+Practical implication for consumers: if a DS wants “selected + animated corners”, the component must be rendered with **both** `controlState={true}` and `radiusEffect={true}`.
+
+## Border radius: modes vs effects (rounded / square / full)
+
+Kiskadee separates **radius mode** (the base shape) from **radius effect** (stateful animated corners).
+This keeps the base geometry cross‑platform and allows effects to be opt‑in.
+
+### Radius modes (base geometry)
+
+`radius` is a component prop that accepts:
+
+- `rounded` (default): uses the schema `borderRadius` scale.
+- `square`: forces 0 radius (hard corners).
+- `full`: forces a capsule/pill shape.
+
+The default mode comes from `schema.global.radius` and is exported in the build artifact `global.kiskadee.json`.
+On web, `full` is implemented as a large fixed radius (`9999px`) while `square` is `0`.
+On native platforms, `full` should be resolved as **50% of the element height** (or equivalent), and `square` as `0`.
+
+### Radius effects (animated corners)
+
+`radiusEffect` is a boolean prop that enables the **effects** bucket generated from `effects.borderRadius`:
+
+- `rounded` uses `effects.borderRadius.rounded`
+- `full` uses `effects.borderRadius.full`
+- `square` ignores the radius effect
+
+This is intentional: effects are opt‑in and never applied by default, even if the mode is `rounded` or `full`.
+
+### Cross‑platform rule
+
+- **Base geometry**: resolved by the renderer per platform (`rounded` uses schema values, `full` uses 50%/height‑2).
+- **Effects**: always opt‑in via `radiusEffect`, regardless of platform.
 
 ### Feature flag: forced interaction states as class selectors (showcase)
 

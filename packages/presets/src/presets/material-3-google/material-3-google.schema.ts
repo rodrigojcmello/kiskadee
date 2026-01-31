@@ -37,7 +37,8 @@ export const schema: Schema<Segments> = {
     focus: {
       width: 2,
       offset: 2
-    }
+    },
+    radius: 'full'
   },
   themeTokens: {
     palettes: {
@@ -351,15 +352,29 @@ export const schema: Schema<Segments> = {
             // (rest > hover/focus > pressed), emulating MD3 "animated corners". This enables Kiskadee to
             // generate stateful CSS for rounded corners.
             borderRadius: {
-              rest: 20,
-              hover: 14,
-              pressed: 10,
-              focus: 14,
-              selected: {
-                rest: 16,
+              rounded: {
+                rest: 20,
                 hover: 14,
                 pressed: 10,
-                focus: 14
+                focus: 14,
+                selected: {
+                  rest: 16,
+                  hover: 14,
+                  pressed: 10,
+                  focus: 14
+                }
+              },
+              full: {
+                rest: 20,
+                hover: 14,
+                pressed: 10,
+                focus: 14,
+                selected: {
+                  rest: 16,
+                  hover: 14,
+                  pressed: 10,
+                  focus: 14
+                }
               }
             },
             shadow: {

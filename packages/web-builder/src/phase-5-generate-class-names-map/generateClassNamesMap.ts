@@ -37,6 +37,8 @@ export type ClassNameByElement = {
   e?: Partial<Record<string, string>>;
   // Scales aggregated per size as flattened strings (size variants only, not effects)
   s?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
+  // Rounded radius scales aggregated per size (opt-in at component level)
+  r?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
   // Color classes organized by emphasis (h/m/l/ll)
   c?: ColorClasses;
   // Control-state specific (selected) — flattened string of utility classes
@@ -90,6 +92,7 @@ export function generateClassNamesMapSplit(
       // - scales (size variants only) into `s`.
       const dSet = new Set<string>();
       const sMap = new Map<string, Set<string>>();
+      const rMap = new Map<string, Set<string>>();
       // Effects buckets (by effect kind), excluding selected/control-state.
       const eBuckets = new Map<string, Set<string>>();
       // Control-state: selected — kept as a dedicated field (`l`) but must NOT include effects.
@@ -120,7 +123,8 @@ export function generateClassNamesMapSplit(
             // Keep single-letter bucket keys for minimal payload.
             let bucket: string;
             if (key.startsWith('shadow')) bucket = 'h';
-            else if (key.startsWith('borderRadius')) bucket = 'r';
+            else if (key.startsWith('borderRadiusRounded')) bucket = 'rr';
+            else if (key.startsWith('borderRadiusFull')) bucket = 'rf';
             else bucket = 'x';
 
             if (!eBuckets.has(bucket)) eBuckets.set(bucket, new Set());
@@ -144,6 +148,19 @@ export function generateClassNamesMapSplit(
         }
       }
 
+      // radiusScales → r[size] (rounded radius only)
+      if (el.radiusScales) {
+        for (const [size, arr] of Object.entries(el.radiusScales)) {
+          const sizeKey = size.startsWith('s:') ? size.slice(2) : size;
+          const mapped = mapArray(arr, shortenMap);
+          if (!mapped || mapped.length === 0) continue;
+          if (!rMap.has(sizeKey)) rMap.set(sizeKey, new Set());
+          const set = rMap.get(sizeKey)!;
+          mapped.forEach((c) => {
+            set.add(c);
+          });
+        }
+      }
       // Palettes split per segment.theme; segregate by emphasis (unique/soft/solid)
       if (el.palettes) {
         // `el.palettes` is typed with a constrained key union in @kiskadee/core
@@ -255,6 +272,15 @@ export function generateClassNamesMapSplit(
           sMap.size > 0
             ? Object.fromEntries(
                 Array.from(sMap.entries()).map(([k, set]) => [
+                  k,
+                  set.size ? Array.from(set).join(' ') : undefined
+                ])
+              )
+            : undefined,
+        r:
+          rMap.size > 0
+            ? Object.fromEntries(
+                Array.from(rMap.entries()).map(([k, set]) => [
                   k,
                   set.size ? Array.from(set).join(' ') : undefined
                 ])

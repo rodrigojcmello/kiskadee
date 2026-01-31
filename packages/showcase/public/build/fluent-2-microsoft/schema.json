@@ -20,6 +20,9 @@
     "bp:lg:3": 1792,
     "bp:lg:4": 2432
   },
+  "global": {
+    "radius": "rounded"
+  },
   "themeTokens": {
     "palettes": {
       "default": {

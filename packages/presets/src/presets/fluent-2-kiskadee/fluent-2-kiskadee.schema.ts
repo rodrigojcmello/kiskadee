@@ -26,7 +26,8 @@ export const schema: Schema<Segments> = {
     focus: {
       width: 2,
       offset: 1
-    }
+    },
+    radius: 'rounded'
   },
   themeTokens: {
     palettes: {

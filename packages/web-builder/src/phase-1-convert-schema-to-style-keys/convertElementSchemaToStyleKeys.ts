@@ -1,18 +1,18 @@
 import type {
   ComponentName,
   ComponentStyleKeyMap,
+  ScaleSchema,
   Schema,
   StyleKeyByElement
 } from '@kiskadee/core';
 import { deepUpdate } from '../utils';
 import {
   convertElementColorsToStyleKeys,
-  type ToneMetadata,
   type ToneMetadataByPalette
 } from './colors/convertElementColorsToStyleKeys';
 import { convertElementDecorationsToStyleKeys } from './decoration/convertElementDecorationsToStyleKeys';
-import { convertElementShadowToStyleKeys } from './effects/convertElementShadowToStyleKeys';
 import { convertElementBorderRadiusToStyleKeys } from './effects/convertElementBorderRadiusToStyleKeys';
+import { convertElementShadowToStyleKeys } from './effects/convertElementShadowToStyleKeys';
 import { convertElementScalesToStyleKeys } from './scales/convertElementScalesToStyleKeys';
 
 /**
@@ -47,7 +47,15 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
           el.decorations = convertElementDecorationsToStyleKeys(element.decorations);
         }
         if (element.scales) {
-          el.scales = convertElementScalesToStyleKeys(element.scales);
+          const { borderRadius, ...otherScales } = element.scales as ScaleSchema;
+          if (Object.keys(otherScales).length > 0) {
+            el.scales = convertElementScalesToStyleKeys(otherScales as ScaleSchema);
+          }
+          if (borderRadius !== undefined) {
+            el.radiusScales = convertElementScalesToStyleKeys({
+              borderRadius
+            } as ScaleSchema);
+          }
         }
         if (element.palettes) {
           const { styleKeys: paletteKeys, toneMetadataByPalette: paletteToneMetadataByPalette } =
@@ -82,10 +90,24 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
             }
           }
           if ((element.effects as any).borderRadius) {
-            const brMap = convertElementBorderRadiusToStyleKeys((element.effects as any).borderRadius);
-            for (const st in brMap) {
-              const arr = (brMap as any)[st] as string[];
-              deepUpdate(effectsMap, [st], (prev: string[] = []) => [...prev, ...arr]);
+            const borderRadius = (element.effects as any).borderRadius;
+            const rounded = borderRadius?.rounded;
+            const full = borderRadius?.full;
+
+            if (rounded) {
+              const brMap = convertElementBorderRadiusToStyleKeys(rounded, 'borderRadiusRounded');
+              for (const st in brMap) {
+                const arr = (brMap as any)[st] as string[];
+                deepUpdate(effectsMap, [st], (prev: string[] = []) => [...prev, ...arr]);
+              }
+            }
+
+            if (full) {
+              const brMap = convertElementBorderRadiusToStyleKeys(full, 'borderRadiusFull');
+              for (const st in brMap) {
+                const arr = (brMap as any)[st] as string[];
+                deepUpdate(effectsMap, [st], (prev: string[] = []) => [...prev, ...arr]);
+              }
             }
           }
           if (Object.keys(effectsMap).length > 0) {

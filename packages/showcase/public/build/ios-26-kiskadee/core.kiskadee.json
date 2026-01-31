@@ -3,9 +3,14 @@
     "e1": {
       "d": "ak-ax",
       "s": {
-        "sm:1": "ak-by ak-bs ak-bu ak-bw ak-av",
-        "md:1": "ak-aj ak-bz ak-ag ak-bt ak-ah ak-bv ak-ai ak-bx ak-r ak-aw",
-        "lg:1": "ak-aj ak-ag ak-ah ak-ai ak-r"
+        "sm:1": "ak-by ak-bs ak-bu ak-bw",
+        "md:1": "ak-aj ak-bz ak-ag ak-bt ak-ah ak-bv ak-ai ak-bx",
+        "lg:1": "ak-aj ak-ag ak-ah ak-ai"
+      },
+      "r": {
+        "sm:1": "ak-av",
+        "md:1": "ak-r ak-aw",
+        "lg:1": "ak-r"
       }
     },
     "e2": {

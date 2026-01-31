@@ -6,5 +6,6 @@
   "focus": {
     "width": 2,
     "offset": 2
-  }
+  },
+  "radius": "full"
 }

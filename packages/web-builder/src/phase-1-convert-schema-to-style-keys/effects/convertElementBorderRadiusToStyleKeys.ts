@@ -1,8 +1,7 @@
 import type {
-  BorderRadiusEffectSchema,
-  ElementSizeValue,
   InteractionState,
   NumericByInteractionState,
+  NumericWithSelected,
   ResponsiveNumeric,
   SelectedInteractionState,
   SelectedInteractionStateToken,
@@ -40,7 +39,8 @@ import { buildStyleKey, deepUpdate } from '../../utils';
  *   - No logic other than key generation; CSS translation is handled later in phase-4.
  */
 export function convertElementBorderRadiusToStyleKeys(
-  borderRadius: BorderRadiusEffectSchema
+  borderRadius: NumericWithSelected,
+  propertyName: 'borderRadiusRounded' | 'borderRadiusFull'
 ): StyleKeysByInteractionState {
   const out: Partial<Record<InteractionState | SelectedInteractionStateToken, string[]>> = {};
 
@@ -65,7 +65,7 @@ export function convertElementBorderRadiusToStyleKeys(
 
           if (token === 's:all') {
             const styleKey = buildStyleKey({
-              propertyName: 'borderRadius',
+              propertyName,
               value: px,
               interactionState: interactionState,
               controlState: controlState || undefined
@@ -76,7 +76,7 @@ export function convertElementBorderRadiusToStyleKeys(
 
           // For specific size tokens, DO NOT encode size in the style key; size is applied via class mapping later.
           const styleKey = buildStyleKey({
-            propertyName: 'borderRadius',
+            propertyName,
             value: px,
             interactionState: interactionState,
             controlState: controlState || undefined
@@ -90,7 +90,7 @@ export function convertElementBorderRadiusToStyleKeys(
     // Simple numeric value
     const isBaseRest = controlState !== true && interactionState === 'rest';
     const styleKey = buildStyleKey({
-      propertyName: 'borderRadius',
+      propertyName,
       value: val,
       interactionState: isBaseRest ? undefined : interactionState,
       controlState: controlState || undefined

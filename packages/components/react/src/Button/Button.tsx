@@ -2,6 +2,7 @@ import {
   type ButtonIntent,
   type ClassNameByElementJSON,
   componentEmphasisBuckets,
+  type RadiusMode,
   stateActivator as cn,
   type ComponentEmphasis,
   type ElementSizeValue,
@@ -28,8 +29,10 @@ export type ButtonProps = HeadlessButtonProps & {
   scale?: ElementSizeValue;
   /** Enable elevation/shadow visuals. When true, adds the shadow activation class. */
   shadow?: boolean;
-  /** Enable border-radius effects. When true, adds the radius effect bucket classes. */
-  radius?: boolean;
+  /** Border radius mode. Uses schema radius scales when set to "rounded". */
+  radius?: RadiusMode;
+  /** Enable border-radius effects (animated corners). */
+  radiusEffect?: boolean;
   /**
    * Emphasis level for the button colors.
    * When provided, selects only classes for the specified emphasis (high/medium/low/lowest).
@@ -79,7 +82,8 @@ function Button(props: ButtonProps) {
     scale = 's:md:1',
     disabled,
     shadow = false,
-    radius = false,
+    radius,
+    radiusEffect = false,
     emphasis,
     intent = 'neutral',
     tabIndex,
@@ -88,7 +92,8 @@ function Button(props: ButtonProps) {
   } = props;
   const {
     // e1 (root), e2 (label), e3 (icon)
-    classesMap: { button: { e1, e2, e3 } = {} }
+    classesMap: { button: { e1, e2, e3 } = {} },
+    global
   } = useKiskadee();
 
   // Note: We always apply 's:all' and a size-specific scale.
@@ -109,11 +114,23 @@ function Button(props: ButtonProps) {
     const sAllE2 = e2?.s?.['all'] ?? '';
     const sScaleE2 = e2?.s?.[scaleKey] ?? '';
 
+    const radiusMode = radius ?? global?.radius ?? 'rounded';
+    const rAllE1 = radiusMode === 'rounded' ? (e1?.r?.['all'] ?? '') : '';
+    const rScaleE1 = radiusMode === 'rounded' ? (e1?.r?.[scaleKey] ?? '') : '';
+    const radiusOverrideClass =
+      radiusMode === 'full' ? 'k-radius-full' : radiusMode === 'square' ? 'k-radius-square' : '';
+
     // Effects buckets (from Phase 5 `e`) — opt-in at component level.
     // We only append the buckets requested by props.
     const e = e1?.e;
     const shadowEffects = shadow ? (e?.h ?? '') : '';
-    const radiusEffects = radius ? (e?.r ?? '') : '';
+    const radiusEffects = radiusEffect
+      ? radiusMode === 'rounded'
+        ? (e?.rr ?? '')
+        : radiusMode === 'full'
+          ? (e?.rf ?? '')
+          : ''
+      : '';
     const e1Effects = `${shadowEffects}${shadowEffects && radiusEffects ? ' ' : ''}${radiusEffects}`;
     const selected = controlState ? (e1?.l ?? '') : '';
 
@@ -122,6 +139,9 @@ function Button(props: ButtonProps) {
       (sAllE1 ? ` ${sAllE1}` : '') +
       (classNames.e1 ? ` ${classNames.e1}` : '') +
       (sScaleE1 ? ` ${sScaleE1}` : '') +
+      (rAllE1 ? ` ${rAllE1}` : '') +
+      (rScaleE1 ? ` ${rScaleE1}` : '') +
+      (radiusOverrideClass ? ` ${radiusOverrideClass}` : '') +
       (e1Effects ? ` ${e1Effects}` : '') +
       (selected ? ` ${selected}` : '');
 
@@ -159,6 +179,8 @@ function Button(props: ButtonProps) {
     scale,
     shadow,
     radius,
+    radiusEffect,
+    global?.radius,
     emphasis,
     intent,
     classNames.e1,

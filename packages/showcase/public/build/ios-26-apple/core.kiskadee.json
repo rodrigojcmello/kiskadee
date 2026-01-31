@@ -6,7 +6,10 @@
         "h": "aos-v aos-y aos-z aos-x aos-w"
       },
       "s": {
-        "md:1": "aos-u aos-r aos-s aos-t aos-f"
+        "md:1": "aos-u aos-r aos-s aos-t"
+      },
+      "r": {
+        "md:1": "aos-f"
       }
     },
     "e2": {

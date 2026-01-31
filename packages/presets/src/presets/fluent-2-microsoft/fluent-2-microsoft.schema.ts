@@ -15,6 +15,9 @@ export const schema: Schema<Segments> = {
   author: 'Microsoft',
   breakpoints,
   colors: schemaColors,
+  global: {
+    radius: 'rounded'
+  },
   themeTokens: {
     palettes: {
       default: {

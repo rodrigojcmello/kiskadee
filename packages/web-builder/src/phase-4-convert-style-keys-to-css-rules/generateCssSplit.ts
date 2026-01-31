@@ -89,6 +89,19 @@ export async function generateCssSplit(
         }
       }
 
+      // radiusScales: rounded border-radius scales (size variants). Also go to the core.
+      if (el.radiusScales) {
+        for (const scaleKey in el.radiusScales) {
+          const arr: string[] =
+            el.radiusScales[scaleKey as ElementSizeValue | ElementAllSizeValue] ?? [];
+          for (const key of arr) {
+            const cn = shortenMap[key] ?? key;
+            const rule = generateCssRuleFromStyleKey(key, cn, forceState, options);
+            if (rule && rule.trim() !== '') coreRules.add(rule);
+          }
+        }
+      }
+
       // effects: by interaction state -> string[]
       // Policy: effects are opt-in (activatable). We only emit rules that are gated by native
       // pseudos or forced state classes. Simple (passive) effects are ignored by default to avoid
