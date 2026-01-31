@@ -70,6 +70,45 @@ gray                       →  neutral                   →  Button.neutral
 
 ---
 
+### DS Adaptation Checklist (Color Roles)
+
+Use this checklist when mapping any design system into Kiskadee. It clarifies what belongs to primitives, global semantics, and component intents, and avoids introducing redundant semantic keys.
+
+- Is the color a **global role** (brand, neutral, status) or a **component-specific role**?
+  - Global role → Layer 2 (global semantics).
+  - Component-specific role → Layer 3 (component intents).
+- Is the color a **brand support/auxiliary tone** of the primary?
+  - Yes → use `primary.v2` (same semantic, different variant), not a new semantic.
+- Is the color a **surface/background structure** (surface, container, outline, on‑surface context)?
+  - Yes → use `neutral` (`v1`/`v2`) and control emphasis via tone.
+- Is the color a **state/attention role** (error, success, warning, novelty)?
+  - Map to `redLike`, `greenLike`, `yellowLike`, `purpleLike` in Layer 2.
+- Are you seeing “secondary/tertiary” in the DS?
+  - Treat them as **variants** of existing semantics (usually `primary.v2`, sometimes `neutral.v2`) rather than new semantic keys.
+
+Short rule: **semantics are global, emphasis is hierarchy, variants are tone families, and components interpret meaning**.
+
+---
+
+### Core Mental Model (Kiskadee)
+
+This is the conceptual baseline used to adapt any design system into Kiskadee:
+
+- **Layer 1 (Primitive):** pure hues and tonal ramps. No meaning, just “color families”.
+- **Layer 2 (Global Semantics):** meaning that is system‑wide (primary/neutral/redLike/etc.).
+- **Layer 3 (Component Intents):** component‑specific meaning (button.primary, badge.attention, etc.).
+- **Emphasis:** hierarchy of visibility (high → lowest). It is not a visual style; it is a contrast rule applied to the same semantic family.
+- **Variants (`v1`/`v2`):** alternate ramps within the same semantic family (e.g., primary support tones). Variants are not new semantics.
+
+Interpretation rules:
+
+- If the role is global (brand, neutral, status), it belongs to Layer 2.
+- If the role is component‑specific or contextual, it belongs to Layer 3.
+- If the role is “surface/background structure”, it is neutral + emphasis, not primary.
+- If the role is “secondary/tertiary”, it is usually a semantic variant, not a new semantic.
+
+---
+
 ### Layer 1: Primitive Colors
 
 The foundation layer defines the actual color values. These are the raw HSLA color definitions that represent specific hues.
@@ -148,10 +187,17 @@ Because of this, Kiskadee does **not** expose `secondary` or `tertiary` as globa
 
 - What most design systems call a *secondary button* is, in Kiskadee, usually just a combination of:
   - `semantic="primary"` or `semantic="neutral"`, with
-  - `tone="subtle"` instead of `tone="vivid"`.
-- A *tertiary button* is often just text with `primary` or `neutral` applied to `textColor`, without a strong `boxColor`.
+  - `emphasis="medium"` instead of `emphasis="high"`.
+- A *tertiary button* is often just text with `primary` or `neutral` applied to `textColor`, without a strong `boxColor`. Many design systems also use “tertiary” as a highlight color for accents such as *new feature* badges, which fits better as a semantic (`purpleLike`) or a `primary.v2` variant, depending on the product.
 
 In other words, the "secondary/tertiary" UX is modeled by **tone and neutral usage**, not by extra global semantic color names.
+
+In most real systems, “secondary” is not a new semantic role; it is a **support variation of the primary brand color** (usually a nearby hue or a softer chroma). Kiskadee captures this with **semantic variants** in Layer 2:
+
+- `primary.v1` = main brand color ramp  
+- `primary.v2` = supporting/auxiliary ramp within the same semantic family
+
+This keeps a single semantic meaning (primary) while still allowing multiple brand ramps to coexist without inventing new semantics.
 
 ##### Real‑world example: Mercado Livre
 
