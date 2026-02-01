@@ -135,3 +135,39 @@ Notes:
 - The `a2` ramp (Material "secondary") is used as a low-emphasis neutral family in Kiskadee.
 - The `a3` ramp (Material "tertiary") is stored for optional direct use in components but is not automatically mapped to a semantic slot.
 - The neutral ramps (`n1`, `n2`) remain grayscale in Kiskadee for predictability across segments.
+
+#### 3.5. Toggle button vs. Toggle button elevated
+
+Material 3 defines two variants in Figma:
+
+- **Toggle button** (no shadow)
+- **Toggle button elevated** (with shadow)
+
+In Kiskadee, shadow is an **effect** that is opt-in and does not change text or background colors.
+We intentionally keep it that way; adding shadow should not alter the base palette.
+
+Observations from the Material kit:
+
+- Both toggle variants are based on **Material neutral** (equivalent to Kiskadee `neutral.v1`), not the primary ramp.
+  The neutral ramp has a slight hue bias toward the primary color but remains a neutral family.
+- The two variants differ mainly by **surface tone** (one is lighter than the other).
+- The elevated variant uses **primary-colored text**, while the non-elevated uses **black text**.
+
+Decision (Kiskadee adaptation):
+
+- We do **not** model two separate toggle button variants.
+- We keep a **single toggle button** style based on the **lighter surface tone** (matching the elevated variant).
+- Text uses the **primary** color.
+- Shadow remains an opt-in **effect**, so any toggle button can be elevated if needed.
+
+This preserves semantic consistency and avoids duplicating intents for a pattern that is rarely used in real products.
+
+Image references:
+
+Toggle button elevated (with shadow):
+
+![Figma reference](./img-06.png)
+
+Toggle button (no shadow):
+
+![Figma reference](./img-07.png)
