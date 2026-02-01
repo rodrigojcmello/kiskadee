@@ -9,11 +9,11 @@
         "rf": "gmd-cm gmd-co gmd-cp gmd-cn gmd-ct gmd-cr gmd-cs gmd-cq"
       },
       "s": {
-        "sm:1": "gmd-dw gmd-dh gmd-di gmd-dn gmd-p",
-        "md:1": "gmd-ds gmd-dd gmd-dj gmd-do gmd-p",
-        "lg:1": "gmd-dt gmd-de gmd-dk gmd-dp gmd-p",
-        "lg:2": "gmd-du gmd-df gmd-dl gmd-dq gmd-p",
-        "lg:3": "gmd-dv gmd-dg gmd-dm gmd-dr gmd-p"
+        "sm:1": "gmd-dw gmd-dh gmd-di gmd-dn gmd-q",
+        "md:1": "gmd-ds gmd-dd gmd-dj gmd-do gmd-q",
+        "lg:1": "gmd-dt gmd-de gmd-dk gmd-dp gmd-q",
+        "lg:2": "gmd-du gmd-df gmd-dl gmd-dq gmd-q",
+        "lg:3": "gmd-dv gmd-dg gmd-dm gmd-dr gmd-q"
       },
       "r": {
         "sm:1": "gmd-ch",

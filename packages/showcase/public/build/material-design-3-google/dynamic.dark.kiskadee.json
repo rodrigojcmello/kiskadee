@@ -4,9 +4,9 @@
       "c": {
         "primary": {
           "h": "gmd-ay gmd-b gmd-bk gmd-d gmd-bs gmd-e gmd-bf gmd-c gmd-i gmd-a",
-          "m": "gmd-az gmd-b gmd-l gmd-d gmd-m gmd-e gmd-k gmd-c gmd-i gmd-a gmd-x gmd-t gmd-v",
-          "l": "gmd-f gmd-ah gmd-l gmd-ap gmd-m gmd-as gmd-k gmd-am gmd-g gmd-a gmd-x gmd-t gmd-v",
-          "ll": "gmd-f gmd-b gmd-l gmd-d gmd-m gmd-e gmd-k gmd-c gmd-g gmd-a"
+          "m": "gmd-az gmd-b gmd-m gmd-d gmd-n gmd-e gmd-l gmd-c gmd-i gmd-a gmd-x gmd-t gmd-v",
+          "l": "gmd-f gmd-ah gmd-m gmd-ap gmd-n gmd-as gmd-l gmd-am gmd-g gmd-a gmd-x gmd-t gmd-v",
+          "ll": "gmd-f gmd-b gmd-m gmd-d gmd-n gmd-e gmd-l gmd-c gmd-g gmd-a"
         }
       }
     },

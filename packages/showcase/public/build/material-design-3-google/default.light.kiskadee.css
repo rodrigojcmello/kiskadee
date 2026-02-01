@@ -1,12 +1,12 @@
 .-a.-d .gmd-h { color: #1C1B2061 }
 .-a.-s .gmd-ag { color: #FFF }
-.-a.-s .gmd-av { border-color: #0000 }
 .gmd-a.-d.-a { border-color: #0000 }
 .gmd-aa { color: #FFF }
 .gmd-ai { border-color: #C9C4CF }
 .gmd-aj { border-color: #D7D3DB }
-.gmd-ak.-d.-a { border-color: #D7D3DB }
-.gmd-al.-d.-a { border-color: #C9C5CD }
+.gmd-ak.-d.-a { border-color: #C9C4CF }
+.gmd-al.-d.-a { border-color: #D7D3DB }
+.gmd-av.-s.-a { border-color: #0000 }
 .gmd-aw { background: #465D91 }
 .gmd-ax { background: #615690 }
 .gmd-b { border-color: #0000 }
@@ -18,8 +18,8 @@
 .gmd-f { background: #0000 }
 .gmd-g.-d.-a { background: #0000 }
 .gmd-i.-d.-a { background: #1C1B201F }
-.gmd-o { color: #615690 }
-.gmd-q.-d.-a { background: #1C1B201A }
+.gmd-k.-d.-a { background: #1C1B201A }
+.gmd-p { color: #615690 }
 .gmd-y.-s.-a { background: #605D64 }
 .gmd-an:focus-visible, .gmd-an.-f.-a { border-color: #C9C4CF }
 .gmd-ao:focus-visible, .gmd-ao.-f.-a { border-color: #D7D3DB }
@@ -58,5 +58,5 @@
 .gmd-ca:active.-s, .gmd-ca.-s.-p.-a { background: #493E76 }
 .gmd-cb:active.-s, .gmd-cb.-s.-p.-a { background: #1C1B20 }
 .gmd-e:active, .gmd-e.-p.-a { border-color: #0000 }
-.gmd-n:active, .gmd-n.-p.-a { background: #F4EFF7 }
+.gmd-o:active, .gmd-o.-p.-a { background: #F4EFF7 }
 .gmd-w:active.-s, .gmd-w.-s.-p.-a { background: #545158 }

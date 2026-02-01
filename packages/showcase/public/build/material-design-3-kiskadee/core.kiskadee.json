@@ -9,11 +9,11 @@
         "rf": "mk-cr mk-ct mk-cu mk-cs mk-cy mk-cw mk-cx mk-cv"
       },
       "s": {
-        "sm:1": "mk-ep mk-ea mk-eb mk-eg mk-t",
-        "md:1": "mk-el mk-dw mk-ec mk-eh mk-t",
-        "lg:1": "mk-em mk-dx mk-ed mk-ei mk-t",
-        "lg:2": "mk-en mk-dy mk-ee mk-ej mk-t",
-        "lg:3": "mk-eo mk-dz mk-ef mk-ek mk-t"
+        "sm:1": "mk-ep mk-ea mk-eb mk-eg mk-u",
+        "md:1": "mk-el mk-dw mk-ec mk-eh mk-u",
+        "lg:1": "mk-em mk-dx mk-ed mk-ei mk-u",
+        "lg:2": "mk-en mk-dy mk-ee mk-ej mk-u",
+        "lg:3": "mk-eo mk-dz mk-ef mk-ek mk-u"
       },
       "r": {
         "sm:1": "mk-cm",

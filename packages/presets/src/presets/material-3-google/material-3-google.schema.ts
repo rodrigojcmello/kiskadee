@@ -120,7 +120,7 @@ export const schema: Schema<Segments> = {
               light: {
                 boxColor: {
                   primary: {
-                    // It matches Material "toggle button elevated" button
+                    // It matches Material "filled button"
                     // verified: 2026-01-31 | Figma v1.23
                     high: {
                       rest: c(s, 'l', 'button.primary', 60), // match
@@ -129,7 +129,7 @@ export const schema: Schema<Segments> = {
                       pressed: c(s, 'l', 'button.primary', 70),
                       disabled: c(s, 'l', 'button.neutral', 90, 10) // match
                     },
-                    // It matches Material "toggle button (elevated)" button
+                    // It matches Material "toggle button (normal* / elevated*)"
                     // verified: 2026-01-31 | Figma v1.23
                     medium: {
                       rest: c(s, 'l', 'button.neutral', 4), // match
@@ -143,16 +143,18 @@ export const schema: Schema<Segments> = {
                         pressed: c(s, 'l', 'button.primary', 70)
                       }
                     },
+                    // It matches Material "outlined button (primary*)"
+                    // verified: 2026-02-01 | Figma v1.23
                     low: {
-                      rest: transparent,
-                      focus: c(s, 'l', 'button.primary', 3),
-                      hover: c(s, 'l', 'button.primary', 3),
-                      pressed: c(s, 'l', 'button.primary', 5),
-                      disabled: transparent,
+                      rest: transparent, // match
+                      focus: transparent,
+                      hover: c(s, 'l', 'button.neutral', 2),
+                      pressed: c(s, 'l', 'button.neutral', 5),
+                      disabled: c(s, 'l', 'button.neutral', 90, 10), // match
                       selected: {
-                        rest: c(s, 'l', 'button.primary', 60),
-                        hover: c(s, 'l', 'button.primary', 55),
-                        pressed: c(s, 'l', 'button.primary', 65)
+                        rest: c(s, 'l', 'button.neutral', 80), // match
+                        hover: c(s, 'l', 'button.neutral', 75),
+                        pressed: c(s, 'l', 'button.neutral', 90)
                       }
                     },
                     lowest: {
@@ -211,26 +213,35 @@ export const schema: Schema<Segments> = {
                 },
                 borderColor: {
                   primary: {
+                    // It matches Material "filled button"
+                    // verified: 2026-02-01 | Figma v1.23
                     high: {
-                      rest: transparent,
-                      focus: transparent,
-                      hover: transparent,
-                      pressed: transparent,
-                      disabled: transparent
+                      rest: transparent, // match
+                      focus: transparent, // match
+                      hover: transparent, // match
+                      pressed: transparent, // match
+                      disabled: transparent // match
                     },
+                    // It matches Material "toggle button (normal* / elevated*)"
+                    // verified: 2026-02-01 | Figma v1.23
                     medium: {
-                      rest: transparent,
-                      focus: transparent,
-                      hover: transparent,
-                      pressed: transparent,
-                      disabled: transparent
+                      rest: transparent, // match
+                      focus: transparent, // match
+                      hover: transparent, // match
+                      pressed: transparent, // match
+                      disabled: transparent // match
                     },
+                    // It matches Material "outlined button (primary*)"
+                    // verified: 2026-02-01 | Figma v1.23
                     low: {
-                      rest: c(s, 'l', 'button.primary', 15),
-                      focus: c(s, 'l', 'button.primary', 15),
-                      hover: c(s, 'l', 'button.primary', 10),
-                      pressed: c(s, 'l', 'button.primary', 20),
-                      disabled: c(s, 'l', 'primitive.black.v1', 15)
+                      rest: c(s, 'l', 'button.neutral.v2', 20), // match
+                      focus: c(s, 'l', 'button.neutral.v2', 20),
+                      hover: c(s, 'l', 'button.neutral.v2', 20),
+                      pressed: c(s, 'l', 'button.neutral.v2', 20),
+                      disabled: c(s, 'l', 'button.neutral.v2', 20), // match
+                      selected: {
+                        rest: transparent // match
+                      }
                     },
                     lowest: {
                       rest: transparent,
@@ -401,54 +412,61 @@ export const schema: Schema<Segments> = {
           decorations: {
             textWeight: 'medium'
           },
-          palettes: buildBySegment(segmentNames, (segmentName) => {
+          palettes: buildBySegment(segmentNames, (s) => {
             return {
               light: {
                 textColor: {
                   primary: {
-                    // It matches Material "filled" button
+                    // It matches Material "filled button"
                     // verified: 2026-01-31 | Figma v1.23
                     high: {
-                      rest: c(segmentName, 'l', 'button.neutral', 0), // match
+                      rest: c(s, 'l', 'button.neutral', 0), // match
                       disabled: {
-                        ref: c(segmentName, 'l', 'button.neutral', 90, 38) // match
+                        ref: c(s, 'l', 'button.neutral', 90, 38) // match
                       }
                     },
-                    // It matches Material "toggle button (elevated)" button
+                    // It matches Material "toggle button (normal* / elevated*)"
                     // verified: 2026-01-31 | Figma v1.23
                     medium: {
-                      rest: c(segmentName, 'l', 'button.primary', 60), // match
+                      rest: c(s, 'l', 'button.primary', 60), // match
                       disabled: {
-                        ref: c(segmentName, 'l', 'button.neutral', 90, 38) // match
+                        ref: c(s, 'l', 'button.neutral', 90, 38) // match
                       },
                       selected: {
                         rest: {
-                          ref: c(segmentName, 'l', 'button.neutral', 0) // match
+                          ref: c(s, 'l', 'button.neutral', 0) // match
                         }
                       }
                     },
+                    // It matches Material "outline button (primary*)"
+                    // verified: 2026-02-01 | Figma v1.23
                     low: {
-                      rest: c(segmentName, 'l', 'button.primary', 60),
-                      hover: c(segmentName, 'l', 'button.primary', 55),
-                      pressed: c(segmentName, 'l', 'button.primary', 70),
+                      rest: c(s, 'l', 'button.primary', 60),
+                      hover: c(s, 'l', 'button.primary', 55),
+                      pressed: c(s, 'l', 'button.primary', 70),
                       disabled: {
-                        ref: c(segmentName, 'l', 'button.neutral', 90, 38)
+                        ref: c(s, 'l', 'button.neutral', 90, 38) // match
+                      },
+                      selected: {
+                        rest: {
+                          ref: c(s, 'l', 'button.neutral', 0) // match
+                        }
                       }
                     },
                     lowest: {
-                      rest: c(segmentName, 'l', 'button.primary', 60),
-                      hover: c(segmentName, 'l', 'button.primary', 55),
-                      pressed: c(segmentName, 'l', 'button.primary', 70),
+                      rest: c(s, 'l', 'button.primary', 60),
+                      hover: c(s, 'l', 'button.primary', 55),
+                      pressed: c(s, 'l', 'button.primary', 70),
                       disabled: {
-                        ref: c(segmentName, 'l', 'button.neutral', 90, 38)
+                        ref: c(s, 'l', 'button.neutral', 90, 38)
                       }
                     }
                   },
                   neutral: {
                     high: {
-                      rest: c(segmentName, 'l', 'button.neutral', 0),
+                      rest: c(s, 'l', 'button.neutral', 0),
                       disabled: {
-                        ref: c(segmentName, 'l', 'button.neutral', 90, 38)
+                        ref: c(s, 'l', 'button.neutral', 90, 38)
                       }
                     }
                   }
@@ -458,31 +476,31 @@ export const schema: Schema<Segments> = {
                 textColor: {
                   primary: {
                     medium: {
-                      rest: c(segmentName, 'd', primitive('black', 'v1'), 0),
+                      rest: c(s, 'd', primitive('black', 'v1'), 0),
                       disabled: {
-                        ref: c(segmentName, 'd', 'button.neutral', 60)
+                        ref: c(s, 'd', 'button.neutral', 60)
                       }
                     },
                     high: {
-                      rest: c(segmentName, 'd', primitive('black', 'v1'), 0),
+                      rest: c(s, 'd', primitive('black', 'v1'), 0),
                       disabled: {
-                        ref: c(segmentName, 'd', 'button.neutral', 60)
+                        ref: c(s, 'd', 'button.neutral', 60)
                       }
                     },
                     low: {
-                      rest: c(segmentName, 'd', 'button.primary', 30),
-                      hover: c(segmentName, 'd', 'button.primary', 35),
-                      pressed: c(segmentName, 'd', 'button.primary', 25),
+                      rest: c(s, 'd', 'button.primary', 30),
+                      hover: c(s, 'd', 'button.primary', 35),
+                      pressed: c(s, 'd', 'button.primary', 25),
                       disabled: {
-                        ref: c(segmentName, 'd', 'button.neutral', 60)
+                        ref: c(s, 'd', 'button.neutral', 60)
                       }
                     },
                     lowest: {
-                      rest: c(segmentName, 'd', 'button.primary', 30),
-                      hover: c(segmentName, 'd', 'button.primary', 35),
-                      pressed: c(segmentName, 'd', 'button.primary', 25),
+                      rest: c(s, 'd', 'button.primary', 30),
+                      hover: c(s, 'd', 'button.primary', 35),
+                      pressed: c(s, 'd', 'button.primary', 25),
                       disabled: {
-                        ref: c(segmentName, 'd', 'button.neutral', 60)
+                        ref: c(s, 'd', 'button.neutral', 60)
                       }
                     }
                   }
