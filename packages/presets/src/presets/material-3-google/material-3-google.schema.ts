@@ -120,24 +120,27 @@ export const schema: Schema<Segments> = {
               light: {
                 boxColor: {
                   primary: {
-                    // verified: 2026-01-31 | figma v1.23
+                    // It matches Material "toggle button elevated" button
+                    // verified: 2026-01-31 | Figma v1.23
                     high: {
-                      rest: c(s, 'l', 'button.primary', 60),
+                      rest: c(s, 'l', 'button.primary', 60), // match
                       focus: c(s, 'l', 'button.primary', 60),
                       hover: c(s, 'l', 'button.primary', 55),
                       pressed: c(s, 'l', 'button.primary', 70),
-                      disabled: c(s, 'l', 'button.neutral', 90, 10)
+                      disabled: c(s, 'l', 'button.neutral', 90, 10) // match
                     },
+                    // It matches Material "toggle button (elevated)" button
+                    // verified: 2026-01-31 | Figma v1.23
                     medium: {
-                      rest: c(s, 'l', 'button.primary', 10),
-                      focus: c(s, 'l', 'button.primary', 10),
-                      hover: c(s, 'l', 'button.primary', 8),
-                      pressed: c(s, 'l', 'button.primary', 15),
-                      disabled: c(s, 'l', 'primitive.black.v1', 90, 10),
+                      rest: c(s, 'l', 'button.neutral', 4), // match
+                      focus: c(s, 'l', 'button.neutral', 4),
+                      hover: c(s, 'l', 'button.neutral', 6),
+                      pressed: c(s, 'l', 'button.neutral', 8),
+                      disabled: c(s, 'l', 'button.neutral', 90, 10), // match
                       selected: {
-                        rest: c(s, 'l', 'button.primary', 60),
+                        rest: c(s, 'l', 'button.primary', 60), // match
                         hover: c(s, 'l', 'button.primary', 55),
-                        pressed: c(s, 'l', 'button.primary', 65)
+                        pressed: c(s, 'l', 'button.primary', 70)
                       }
                     },
                     low: {
@@ -403,21 +406,24 @@ export const schema: Schema<Segments> = {
               light: {
                 textColor: {
                   primary: {
-                    // verified: 2026-01-31 | figma v1.23
+                    // It matches Material "filled" button
+                    // verified: 2026-01-31 | Figma v1.23
                     high: {
-                      rest: c(segmentName, 'l', 'button.neutral', 0),
+                      rest: c(segmentName, 'l', 'button.neutral', 0), // match
                       disabled: {
-                        ref: c(segmentName, 'l', 'button.neutral', 90, 38)
+                        ref: c(segmentName, 'l', 'button.neutral', 90, 38) // match
                       }
                     },
+                    // It matches Material "toggle button (elevated)" button
+                    // verified: 2026-01-31 | Figma v1.23
                     medium: {
-                      rest: c(segmentName, 'l', 'button.neutral', 70),
+                      rest: c(segmentName, 'l', 'button.primary', 60), // match
                       disabled: {
-                        ref: c(segmentName, 'l', 'button.neutral', 90, 38)
+                        ref: c(segmentName, 'l', 'button.neutral', 90, 38) // match
                       },
                       selected: {
                         rest: {
-                          ref: c(segmentName, 'l', 'button.neutral', 0)
+                          ref: c(segmentName, 'l', 'button.neutral', 0) // match
                         }
                       }
                     },

@@ -111,15 +111,15 @@
                       "disabled": "#1C1B201A"
                     },
                     "medium": {
-                      "rest": "#E7DEFF",
-                      "focus": "#E7DEFF",
-                      "hover": "#ECE4FF",
-                      "pressed": "#D9CEFF",
+                      "rest": "#F7F2FA",
+                      "focus": "#F7F2FA",
+                      "hover": "#F1ECF4",
+                      "pressed": "#ECE6EE",
                       "disabled": "#1C1B201A",
                       "selected": {
                         "rest": "#615690",
                         "hover": "#6E629D",
-                        "pressed": "#554A83"
+                        "pressed": "#493E76"
                       }
                     },
                     "low": {
@@ -366,15 +366,15 @@
                       "disabled": "#1C1B201A"
                     },
                     "medium": {
-                      "rest": "#E7DEFF",
-                      "focus": "#E7DEFF",
-                      "hover": "#ECE4FF",
-                      "pressed": "#D9CEFF",
+                      "rest": "#F7F2FA",
+                      "focus": "#F7F2FA",
+                      "hover": "#F1ECF4",
+                      "pressed": "#ECE6EE",
                       "disabled": "#1C1B201A",
                       "selected": {
                         "rest": "#615690",
                         "hover": "#6E629D",
-                        "pressed": "#554A83"
+                        "pressed": "#493E76"
                       }
                     },
                     "low": {
@@ -659,7 +659,7 @@
                       }
                     },
                     "medium": {
-                      "rest": "#48464C",
+                      "rest": "#615690",
                       "disabled": {
                         "ref": "#1C1B2061"
                       },
@@ -766,7 +766,7 @@
                       }
                     },
                     "medium": {
-                      "rest": "#48464C",
+                      "rest": "#615690",
                       "disabled": {
                         "ref": "#1C1B2061"
                       },

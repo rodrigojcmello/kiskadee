@@ -3,9 +3,9 @@
     "e1": {
       "c": {
         "primary": {
-          "h": "mk-bg mk-b mk-br mk-d mk-bx mk-e mk-bn mk-c mk-j mk-a",
-          "m": "mk-bh mk-b mk-n mk-d mk-o mk-e mk-m mk-c mk-j mk-a mk-ah mk-aa mk-ae",
-          "l": "mk-f mk-as mk-n mk-ay mk-o mk-bc mk-m mk-av mk-g mk-a mk-ah mk-aa mk-ae",
+          "h": "mk-be mk-b mk-bp mk-d mk-bv mk-e mk-bl mk-c mk-j mk-a",
+          "m": "mk-bf mk-b mk-n mk-d mk-o mk-e mk-m mk-c mk-j mk-a mk-ah mk-ab mk-ae",
+          "l": "mk-f mk-aq mk-n mk-aw mk-o mk-ba mk-m mk-at mk-g mk-a mk-ah mk-ab mk-ae",
           "ll": "mk-f mk-b mk-n mk-d mk-o mk-e mk-m mk-c mk-g mk-a"
         }
       }
@@ -15,8 +15,8 @@
         "primary": {
           "h": "mk-k mk-h",
           "m": "mk-k mk-h",
-          "l": "mk-ak mk-h mk-al mk-ao",
-          "ll": "mk-ak mk-h mk-al mk-ao"
+          "l": "mk-aj mk-h mk-ak mk-an",
+          "ll": "mk-aj mk-h mk-ak mk-an"
         }
       }
     }
