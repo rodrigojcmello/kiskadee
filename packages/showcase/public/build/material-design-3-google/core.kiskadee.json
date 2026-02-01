@@ -2,35 +2,35 @@
   "$schema": "./core.kiskadee.schema.json",
   "button": {
     "e1": {
-      "d": "gmd-cw",
+      "d": "gmd-dc",
       "e": {
-        "h": "gmd-dr gmd-du gmd-dv gmd-dt gmd-ds",
-        "rr": "gmd-co gmd-cq gmd-cr gmd-cp gmd-cv gmd-ct gmd-cu gmd-cs",
-        "rf": "gmd-cg gmd-ci gmd-cj gmd-ch gmd-cn gmd-cl gmd-cm gmd-ck"
+        "h": "gmd-dx gmd-ea gmd-eb gmd-dz gmd-dy",
+        "rr": "gmd-cu gmd-cw gmd-cx gmd-cv gmd-db gmd-cz gmd-da gmd-cy",
+        "rf": "gmd-cm gmd-co gmd-cp gmd-cn gmd-ct gmd-cr gmd-cs gmd-cq"
       },
       "s": {
-        "sm:1": "gmd-dq gmd-db gmd-dc gmd-dh gmd-o",
-        "md:1": "gmd-dm gmd-cx gmd-dd gmd-di gmd-o",
-        "lg:1": "gmd-dn gmd-cy gmd-de gmd-dj gmd-o",
-        "lg:2": "gmd-do gmd-cz gmd-df gmd-dk gmd-o",
-        "lg:3": "gmd-dp gmd-da gmd-dg gmd-dl gmd-o"
+        "sm:1": "gmd-dw gmd-dh gmd-di gmd-dn gmd-p",
+        "md:1": "gmd-ds gmd-dd gmd-dj gmd-do gmd-p",
+        "lg:1": "gmd-dt gmd-de gmd-dk gmd-dp gmd-p",
+        "lg:2": "gmd-du gmd-df gmd-dl gmd-dq gmd-p",
+        "lg:3": "gmd-dv gmd-dg gmd-dm gmd-dr gmd-p"
       },
       "r": {
-        "sm:1": "gmd-cb",
-        "md:1": "gmd-cc",
-        "lg:1": "gmd-cd",
-        "lg:2": "gmd-ce",
-        "lg:3": "gmd-cf"
+        "sm:1": "gmd-ch",
+        "md:1": "gmd-ci",
+        "lg:1": "gmd-cj",
+        "lg:2": "gmd-ck",
+        "lg:3": "gmd-cl"
       }
     },
     "e2": {
-      "d": "gmd-ec",
+      "d": "gmd-ei",
       "s": {
-        "sm:1": "gmd-ca gmd-bz",
-        "md:1": "gmd-ca gmd-bz",
-        "lg:1": "gmd-dz gmd-dw",
-        "lg:2": "gmd-ea gmd-dx",
-        "lg:3": "gmd-eb gmd-dy"
+        "sm:1": "gmd-cg gmd-cf",
+        "md:1": "gmd-cg gmd-cf",
+        "lg:1": "gmd-ef gmd-ec",
+        "lg:2": "gmd-eg gmd-ed",
+        "lg:3": "gmd-eh gmd-ee"
       }
     }
   }

@@ -3,20 +3,20 @@
     "e1": {
       "c": {
         "primary": {
-          "h": "mk-bd mk-b mk-bq mk-d mk-bu mk-e mk-bk mk-c mk-u mk-a",
-          "m": "mk-bh mk-b mk-br mk-d mk-bx mk-e mk-bn mk-c mk-u mk-a mk-ag mk-ac mk-cb",
-          "l": "mk-f mk-ar mk-x mk-ax mk-z mk-az mk-v mk-au mk-g mk-t mk-ag mk-ac mk-ca",
-          "ll": "mk-f mk-b mk-x mk-d mk-z mk-e mk-v mk-c mk-g mk-a"
+          "h": "mk-ba mk-b mk-bp mk-d mk-bv mk-e mk-bi mk-c mk-u mk-a",
+          "m": "mk-be mk-b mk-br mk-d mk-bz mk-e mk-bm mk-c mk-u mk-a mk-ch mk-cb mk-ce",
+          "l": "mk-f mk-al mk-bs mk-at mk-q mk-aw mk-bg mk-aq mk-g mk-ao mk-ci mk-ay mk-cc mk-cf",
+          "ll": "mk-f mk-b mk-bq mk-d mk-bx mk-e mk-bk mk-c mk-g mk-a"
         },
         "neutral": {
-          "h": "mk-bc mk-b mk-bo mk-d mk-bt mk-e mk-bj mk-c mk-cc mk-by mk-bz mk-j mk-a",
-          "m": "mk-bg mk-b mk-bs mk-d mk-bw mk-e mk-bm mk-c mk-ai mk-ad mk-af mk-j mk-a",
-          "l": "mk-f mk-as mk-y mk-ay mk-aa mk-bb mk-w mk-av mk-ai mk-ad mk-af mk-g mk-t",
-          "ll": "mk-f mk-b mk-y mk-d mk-aa mk-e mk-w mk-c mk-g mk-a"
+          "h": "mk-az mk-b mk-bn mk-d mk-bu mk-e mk-bh mk-c mk-cg mk-ca mk-cd mk-j mk-a",
+          "m": "mk-bd mk-b mk-bt mk-d mk-by mk-e mk-bl mk-c mk-ac mk-y mk-aa mk-j mk-a",
+          "l": "mk-f mk-am mk-w mk-au mk-q mk-ax mk-v mk-ar mk-ac mk-y mk-aa mk-g mk-an",
+          "ll": "mk-f mk-b mk-w mk-d mk-q mk-e mk-v mk-c mk-g mk-a"
         },
         "destructive": {
-          "h": "mk-dc mk-dg mk-di mk-de mk-dp mk-dl mk-dn mk-bi",
-          "m": "mk-dd mk-dh mk-dj mk-df mk-do mk-dk mk-dm mk-bi"
+          "h": "mk-di mk-dm mk-do mk-dk mk-dv mk-dr mk-dt mk-bf",
+          "m": "mk-dj mk-dn mk-dp mk-dl mk-du mk-dq mk-ds mk-bf"
         }
       }
     },
@@ -24,16 +24,16 @@
       "c": {
         "primary": {
           "h": "mk-l mk-i",
-          "m": "mk-p mk-i mk-s",
-          "l": "mk-p mk-i mk-al mk-am",
-          "ll": "mk-p mk-i mk-al mk-am"
+          "m": "mk-r mk-i mk-m",
+          "l": "mk-r mk-i mk-m mk-af mk-ag",
+          "ll": "mk-r mk-i mk-af mk-ag"
         },
         "neutral": {
           "h": "mk-l mk-i"
         },
         "destructive": {
-          "h": "mk-l mk-ap mk-q",
-          "m": "mk-cd mk-s mk-q"
+          "h": "mk-l mk-aj mk-s",
+          "m": "mk-cj mk-m mk-s"
         }
       }
     }
