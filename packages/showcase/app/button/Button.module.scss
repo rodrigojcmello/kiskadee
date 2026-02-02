@@ -32,6 +32,36 @@ $height: 64px;
   color: red;
 }
 
+.state-section {
+  width: 100%;
+}
+
+.state-title {
+  margin: 0 0 12px;
+}
+
+.emphasis-title {
+  align-items: center;
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 16px 0;
+  gap: 12px;
+  color: rgba(0, 0, 0, 0.16)
+}
+
+.emphasis-divider {
+  flex: 1;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.section-divider {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  margin: 16px 0 24px;
+  width: 100%;
+}
+
 @media (min-width: 768px) {
   .example-states {
     grid-template-columns: repeat(4, minmax(0, 1fr));
