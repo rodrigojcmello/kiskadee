@@ -78,6 +78,23 @@ In some comparisons, the base tone matches exactly between Figma and Kiskadee, b
 
 Decision: Kiskadee treats 1-point RGB deltas caused by rounding as acceptable. Visual fidelity is maintained even when numeric values differ slightly across tools.
 
+#### 2.4. Outlined button color (Play Store vs. Figma)
+
+In the Material 3 Figma kit, the **outlined button** is shown with a neutral variant outline and neutral variant text (both in gray/near-black tones):
+
+![Figma outlined button reference](./img-09.png)
+
+However, real-world usage (e.g., Google Play Store) shows an outlined button where the **text uses the primary color** (blue), indicating a **primary outlined** treatment not documented in the Figma kit or on the Material site:
+
+![Play Store outlined button reference](./img-08.png)
+
+Decision (Kiskadee adaptation):
+
+- Support **two outlined treatments** in the preset:
+  - **Neutral outlined**: neutral variant outline + neutral variant text (as in Figma).
+  - **Primary outlined**: neutral variant outline + primary text (as seen in Play Store).
+- This preserves fidelity with the Figma reference while acknowledging a real, production-grade variant used by Google.
+
 ### 3. Adaptations
 
 This section documents intentional adaptations needed to fit Material concepts into Kiskadee's fixed 16-position model (`subtle` + `vivid`).

@@ -4,7 +4,7 @@
     "heading": "Roboto, sans-serif"
   },
   "focus": {
-    "width": 2,
+    "width": 3,
     "offset": 2
   },
   "radius": "full"

@@ -28,7 +28,7 @@
       ]
     },
     "focus": {
-      "width": 2,
+      "width": 3,
       "offset": 2
     },
     "radius": "full"
@@ -38,9 +38,9 @@
       "default": {
         "light": {
           "focusColor": [
-            265.71,
-            4.14,
-            33.14,
+            221.6,
+            34.88,
+            42.16,
             1
           ]
         }
@@ -136,10 +136,10 @@
                     },
                     "lowest": {
                       "rest": "#0000",
-                      "focus": "#FAF4FF",
-                      "hover": "#FAF4FF",
-                      "pressed": "#F5EEFF",
-                      "disabled": "#0000"
+                      "focus": "#61569014",
+                      "hover": "#61569014",
+                      "pressed": "#61569029",
+                      "disabled": "#1C1B201A"
                     }
                   },
                   "neutral": {
@@ -368,10 +368,10 @@
                     },
                     "lowest": {
                       "rest": "#0000",
-                      "focus": "#FAF4FF",
-                      "hover": "#FAF4FF",
-                      "pressed": "#F5EEFF",
-                      "disabled": "#0000"
+                      "focus": "#61569014",
+                      "hover": "#61569014",
+                      "pressed": "#61569029",
+                      "disabled": "#1C1B201A"
                     }
                   },
                   "neutral": {
@@ -664,8 +664,6 @@
                     },
                     "lowest": {
                       "rest": "#615690",
-                      "hover": "#6E629D",
-                      "pressed": "#493E76",
                       "disabled": {
                         "ref": "#1C1B2061"
                       }
@@ -752,8 +750,6 @@
                     },
                     "lowest": {
                       "rest": "#615690",
-                      "hover": "#6E629D",
-                      "pressed": "#493E76",
                       "disabled": {
                         "ref": "#1C1B2061"
                       }
