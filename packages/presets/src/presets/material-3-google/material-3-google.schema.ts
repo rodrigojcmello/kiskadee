@@ -34,9 +34,10 @@ export const schema: Schema<Segments> = {
     fonts: {
       body: ['Roboto', 'sans-serif']
     },
+    // verified: 2026-02-02 | Figma v1.23
     focus: {
-      width: 2,
-      offset: 2
+      width: 3, // =
+      offset: 2 // =
     },
     radius: 'full'
   },
@@ -45,7 +46,8 @@ export const schema: Schema<Segments> = {
       default: {
         light: {
           // background: c('default', 'l', 'primitive.black.v1', 4),
-          focusColor: c('default', 'l', 'neutral', 65)
+          // verified: 2026-02-02 | Figma v1.23
+          focusColor: c('default', 'l', 'primary.v2', 60) // =
         }
         // dark: {
         //   background: c('default', 'd', 'primitive.black.v1', 85),
@@ -157,12 +159,14 @@ export const schema: Schema<Segments> = {
                         pressed: c(s, 'l', 'button.neutral', 90)
                       }
                     },
+                    // It matches Material "button text"
+                    // verified: 2026-02-02 | Figma v1.23
                     lowest: {
-                      rest: transparent,
-                      focus: c(s, 'l', 'button.primary', 3),
-                      hover: c(s, 'l', 'button.primary', 3),
-                      pressed: c(s, 'l', 'button.primary', 5),
-                      disabled: transparent
+                      rest: transparent, // =
+                      focus: c(s, 'l', 'button.primary', 60, 8), // =
+                      hover: c(s, 'l', 'button.primary', 60, 8),
+                      pressed: c(s, 'l', 'button.primary', 60, 16),
+                      disabled: c(s, 'l', 'button.neutral', 90, 10) // =
                     }
                   },
                   neutral: {
@@ -243,12 +247,10 @@ export const schema: Schema<Segments> = {
                         rest: transparent // match
                       }
                     },
+                    // It matches Material "button text"
+                    // verified: 2026-02-02 | Figma v1.23
                     lowest: {
-                      rest: transparent,
-                      focus: transparent,
-                      hover: transparent,
-                      pressed: transparent,
-                      disabled: transparent
+                      rest: transparent // =
                     }
                   },
                   neutral: {
@@ -453,12 +455,12 @@ export const schema: Schema<Segments> = {
                         }
                       }
                     },
+                    // It matches Material "button text"
+                    // verified: 2026-02-02 | Figma v1.23
                     lowest: {
-                      rest: c(s, 'l', 'button.primary', 60),
-                      hover: c(s, 'l', 'button.primary', 55),
-                      pressed: c(s, 'l', 'button.primary', 70),
+                      rest: c(s, 'l', 'button.primary', 60), // =
                       disabled: {
-                        ref: c(s, 'l', 'button.neutral', 90, 38)
+                        ref: c(s, 'l', 'button.neutral', 90, 38) // =
                       }
                     }
                   },
