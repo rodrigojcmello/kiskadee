@@ -26,7 +26,7 @@ describe('transformScaleKeyToCss', () => {
         const result = transformScaleKeyToCss('paddingTop__16', breakpoints, 'abc');
 
         expect(result).toContain('.abc {');
-        expect(result).toContain('padding-top: 16px');
+        expect(result).toContain('padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px)))');
       });
 
       it("should convert 'marginLeft__16' into a valid CSS rule", () => {
@@ -70,7 +70,7 @@ describe('transformScaleKeyToCss', () => {
         const result = transformScaleKeyToCss('paddingRight++s:sm:1__16', breakpoints, 'abc');
 
         expect(result).toContain('.abc {');
-        expect(result).toContain('padding-right: 16px');
+        expect(result).toContain('padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px)))');
       });
 
       it("should convert 'marginLeft++s:sm:1__16' into a valid CSS rule", () => {
@@ -103,18 +103,18 @@ describe('transformScaleKeyToCss', () => {
     });
 
     describe('Valid Properties (Media Query Support)', () => {
-      it("should convert 'paddingTop++s:sm:1::bp:lg:1__16' into a valid CSS rule with media query", () => {
-        const result = transformScaleKeyToCss(
-          'paddingTop++s:sm:1::bp:lg:1__16',
-          breakpoints,
-          'abc'
-        );
+    it("should convert 'paddingTop++s:sm:1::bp:lg:1__16' into a valid CSS rule with media query", () => {
+      const result = transformScaleKeyToCss(
+        'paddingTop++s:sm:1::bp:lg:1__16',
+        breakpoints,
+        'abc'
+      );
 
-        const bpValue = breakpoints['bp:lg:1'];
-        expect(result).toContain(`@media (min-width: ${bpValue}px)`);
-        expect(result).toContain('.abc {');
-        expect(result).toContain('padding-top: 16px');
-      });
+      const bpValue = breakpoints['bp:lg:1'];
+      expect(result).toContain(`@media (min-width: ${bpValue}px)`);
+      expect(result).toContain('.abc {');
+      expect(result).toContain('padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px)))');
+    });
 
       it("should convert 'textSize++s:sm:1::bp:lg:1__16' into a valid CSS rule with media query and rem unit", () => {
         const result = transformScaleKeyToCss('textSize++s:sm:1::bp:lg:1__16', breakpoints, 'abc');

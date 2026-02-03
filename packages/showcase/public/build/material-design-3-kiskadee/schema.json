@@ -241,11 +241,7 @@
                       }
                     },
                     "lowest": {
-                      "rest": "#0000",
-                      "focus": "#0000",
-                      "hover": "#0000",
-                      "pressed": "#0000",
-                      "disabled": "#0000"
+                      "rest": "#0000"
                     }
                   },
                   "neutral": {
@@ -473,11 +469,7 @@
                       }
                     },
                     "lowest": {
-                      "rest": "#0000",
-                      "focus": "#0000",
-                      "hover": "#0000",
-                      "pressed": "#0000",
-                      "disabled": "#0000"
+                      "rest": "#0000"
                     }
                   },
                   "neutral": {

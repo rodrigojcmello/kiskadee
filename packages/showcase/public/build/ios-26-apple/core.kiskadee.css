@@ -3,7 +3,7 @@
 .aos-ag { font-weight: 500 }
 .aos-f { border-radius: 25px }
 .aos-g { border-style: none }
-.aos-r { padding-bottom: 16px }
-.aos-s { padding-left: 20px }
-.aos-t { padding-right: 20px }
-.aos-u { padding-top: 16px }
+.aos-r { --k-pb: 16px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
+.aos-s { --k-pl: 20px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
+.aos-t { --k-pr: 20px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
+.aos-u { --k-pt: 16px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }

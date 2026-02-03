@@ -1,18 +1,18 @@
-.ci-a { padding-left: 17px }
+.ci-a { --k-pl: 17px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
 .ci-ac { font-family: var(--k-font-body) }
 .ci-ad { font-weight: 500 }
-.ci-b { padding-right: 17px }
+.ci-b { --k-pr: 17px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
 .ci-c { line-height: 18px }
 .ci-d { font-size: 0.875rem }
-.ci-e { padding-top: 17px }
+.ci-e { --k-pt: 17px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
 .ci-f { border-style: none }
-.ci-l { padding-bottom: 12px }
-.ci-m { padding-bottom: 17px }
-.ci-n { padding-bottom: 31px }
-.ci-o { padding-bottom: 4px }
-.ci-p { padding-bottom: 47px }
-.ci-q { padding-bottom: 8px }
-.ci-r { padding-top: 12px }
-.ci-s { padding-top: 4px }
-.ci-t { padding-top: 8px }
+.ci-l { --k-pb: 12px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
+.ci-m { --k-pb: 17px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
+.ci-n { --k-pb: 31px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
+.ci-o { --k-pb: 4px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
+.ci-p { --k-pb: 47px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
+.ci-q { --k-pb: 8px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
+.ci-r { --k-pt: 12px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
+.ci-s { --k-pt: 4px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
+.ci-t { --k-pt: 8px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
 .ci-z { text-align: left }

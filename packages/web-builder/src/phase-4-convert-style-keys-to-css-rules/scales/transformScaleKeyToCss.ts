@@ -155,7 +155,28 @@ export function transformScaleKeyToCss(
     cssValue = `${scaleValue}px`;
   }
 
-  let rule = `.${className} { ${cssProperty}: ${cssValue} }`;
+  let rule: string;
+  if (scaleProperty === 'borderWidth') {
+    rule = `.${className} { --k-bw: ${cssValue}; ${cssProperty}: ${cssValue} }`;
+  } else if (
+    scaleProperty === 'paddingTop' ||
+    scaleProperty === 'paddingRight' ||
+    scaleProperty === 'paddingBottom' ||
+    scaleProperty === 'paddingLeft'
+  ) {
+    const paddingVar =
+      scaleProperty === 'paddingTop'
+        ? '--k-pt'
+        : scaleProperty === 'paddingRight'
+          ? '--k-pr'
+          : scaleProperty === 'paddingBottom'
+            ? '--k-pb'
+            : '--k-pl';
+    const adjustedPadding = `max(0px, calc(var(${paddingVar}) - var(--k-bw, 0px)))`;
+    rule = `.${className} { ${paddingVar}: ${cssValue}; ${cssProperty}: ${adjustedPadding} }`;
+  } else {
+    rule = `.${className} { ${cssProperty}: ${cssValue} }`;
+  }
 
   if (mediaQuery) {
     rule = `${mediaQuery} { ${rule} }`;
