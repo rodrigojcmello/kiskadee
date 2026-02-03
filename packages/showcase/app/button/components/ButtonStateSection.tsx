@@ -1,20 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
 import { Button as KButton, SmoothText } from '@kiskadee/react-components';
+import { type ReactNode, useState } from 'react';
 import s from '../Button.module.scss';
 
 type RenderState = (
   semantic: string,
   emphasis: string,
   state: string,
-  children: React.ReactNode
-) => React.ReactNode;
+  children: ReactNode
+) => ReactNode;
 
 type ButtonStateSectionProps = {
   intent: 'primary' | 'neutral' | 'positive' | 'destructive';
   title: string;
-  alignment: 'left' | 'center' | 'right';
   fontName: string;
   renderState: RenderState;
 };
@@ -30,7 +29,6 @@ const EMPHASIS_LABELS: Record<(typeof EMPHASIS_ORDER)[number], string> = {
 export function ButtonStateSection({
   intent,
   title,
-  alignment,
   fontName,
   renderState
 }: ButtonStateSectionProps) {
@@ -61,9 +59,7 @@ export function ButtonStateSection({
               'rest',
               <KButton emphasis={emphasis} intent={intent}>
                 <KButton.Label>
-                  <SmoothText triggerKey={fontName} align={alignment}>
-                    Rest
-                  </SmoothText>
+                  <SmoothText triggerKey={fontName}>Rest</SmoothText>
                 </KButton.Label>
               </KButton>
             )}
@@ -73,9 +69,7 @@ export function ButtonStateSection({
               'hover',
               <KButton emphasis={emphasis} intent={intent} status="hover">
                 <KButton.Label>
-                  <SmoothText triggerKey={fontName} align={alignment}>
-                    Hover
-                  </SmoothText>
+                  <SmoothText triggerKey={fontName}>Hover</SmoothText>
                 </KButton.Label>
               </KButton>
             )}
@@ -85,9 +79,7 @@ export function ButtonStateSection({
               'focus',
               <KButton emphasis={emphasis} intent={intent} status="focus">
                 <KButton.Label>
-                  <SmoothText triggerKey={fontName} align={alignment}>
-                    Focus
-                  </SmoothText>
+                  <SmoothText triggerKey={fontName}>Focus</SmoothText>
                 </KButton.Label>
               </KButton>
             )}
@@ -97,9 +89,7 @@ export function ButtonStateSection({
               'pressed',
               <KButton emphasis={emphasis} intent={intent} status="pressed">
                 <KButton.Label>
-                  <SmoothText triggerKey={fontName} align={alignment}>
-                    Pressed
-                  </SmoothText>
+                  <SmoothText triggerKey={fontName}>Pressed</SmoothText>
                 </KButton.Label>
               </KButton>
             )}
@@ -115,7 +105,7 @@ export function ButtonStateSection({
                 onClick={() => toggleSelected(emphasis)}
               >
                 <KButton.Label>
-                  <SmoothText triggerKey={fontName} align={alignment}>
+                  <SmoothText triggerKey={fontName}>
                     {selectedMap[emphasis] ? 'Selected' : 'Select'}
                   </SmoothText>
                 </KButton.Label>
@@ -127,9 +117,7 @@ export function ButtonStateSection({
               'disabled',
               <KButton emphasis={emphasis} intent={intent} status="disabled">
                 <KButton.Label>
-                  <SmoothText triggerKey={fontName} align={alignment}>
-                    Disabled
-                  </SmoothText>
+                  <SmoothText triggerKey={fontName}>Disabled</SmoothText>
                 </KButton.Label>
               </KButton>
             )}

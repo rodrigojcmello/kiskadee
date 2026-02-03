@@ -86,7 +86,6 @@ export function Button() {
         <ButtonStateSection
           intent="primary"
           title="Primary"
-          alignment={alignment}
           fontName={fontName}
           renderState={renderState}
         />
@@ -94,7 +93,6 @@ export function Button() {
         <ButtonStateSection
           intent="neutral"
           title="Neutral"
-          alignment={alignment}
           fontName={fontName}
           renderState={renderState}
         />
