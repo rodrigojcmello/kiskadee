@@ -1,8 +1,8 @@
 'use client';
 
 import type { ButtonIntent, InteractionState } from '@kiskadee/core';
-import type { ManifestComponent } from '@kiskadee/web-builder/types';
 import { Button as KButton, SmoothText } from '@kiskadee/react-components';
+import type { ManifestComponent } from '@kiskadee/web-builder/types';
 import { type ReactNode, useState } from 'react';
 import { Icon } from '@/components/Icon/Icon';
 import s from '../Button.module.scss';
@@ -117,7 +117,7 @@ export function ButtonStateSection({
                 onClick={() => toggleSelected(emphasis)}
               >
                 <KButton.Label>
-                  <SmoothText triggerKey={fontName}>
+                  <SmoothText triggerKey={fontName} speed="fast">
                     {selectedMap[emphasis] ? 'Selected' : 'Select'}
                   </SmoothText>
                 </KButton.Label>

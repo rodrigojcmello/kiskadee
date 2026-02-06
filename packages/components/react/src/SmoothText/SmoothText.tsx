@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react';
-import './SmoothText.scss';
+import styles from './SmoothText.module.scss';
 
 interface SmoothTextProps {
   children: ReactNode;
@@ -10,11 +10,18 @@ interface SmoothTextProps {
    * When provided, the component takes full width (100%).
    */
   align?: 'left' | 'center';
+  /** Transition speed for text swaps. */
+  speed?: 'fast' | 'slow';
 }
 
-const ANIMATION_DURATION = 600;
+const ANIMATION_DURATION_BY_SPEED = {
+  // Sourced from styles/style.kiskadee.scss (--k-dur-int-slow).
+  fast: 240,
+  // Uses 2x --k-dur-int-slow for a calmer default.
+  slow: 480
+} as const;
 
-export function SmoothText({ children, triggerKey, align }: SmoothTextProps) {
+export function SmoothText({ children, triggerKey, align, speed = 'slow' }: SmoothTextProps) {
   const [current, setCurrent] = useState(children);
   const [previous, setPrevious] = useState<ReactNode | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -37,21 +44,19 @@ export function SmoothText({ children, triggerKey, align }: SmoothTextProps) {
       const timer = setTimeout(() => {
         setPrevious(null);
         setIsAnimating(false);
-      }, ANIMATION_DURATION);
+      }, ANIMATION_DURATION_BY_SPEED[speed]);
       return () => clearTimeout(timer);
     }
-  }, [triggerKey, children, current]);
+  }, [triggerKey, children, speed]);
 
   return (
-    <span className="k-smooth-text" data-align={align}>
+    <span className={styles.wrapper} data-align={align} data-speed={speed}>
       {previous && (
-        <span className="k-smooth-text__item k-smooth-text__exiting" aria-hidden="true">
+        <span className={`${styles.item} ${styles.exiting}`} aria-hidden="true">
           {previous}
         </span>
       )}
-      <span className={`k-smooth-text__item ${isAnimating ? 'k-smooth-text__entering' : ''}`}>
-        {current}
-      </span>
+      <span className={`${styles.item} ${isAnimating ? styles.entering : ''}`}>{current}</span>
     </span>
   );
 }

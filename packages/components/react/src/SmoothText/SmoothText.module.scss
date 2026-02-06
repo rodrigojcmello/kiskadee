@@ -1,9 +1,22 @@
-.k-smooth-text {
+.wrapper {
+  /* Mirrors design tokens in styles/style.kiskadee.scss (2x --k-dur-int-slow). */
+  --smooth-text-duration: 480ms;
+
   display: inline-grid;
   grid-template-areas: "stack";
   align-items: center;
   width: max-content;
   vertical-align: inherit;
+
+  &[data-speed="fast"] {
+    /* Mirrors design tokens in styles/style.kiskadee.scss (--k-dur-int-slow). */
+    --smooth-text-duration: 240ms;
+  }
+
+  &[data-speed="slow"] {
+    /* Mirrors design tokens in styles/style.kiskadee.scss (2x --k-dur-int-slow). */
+    --smooth-text-duration: 480ms;
+  }
 
   /* Alignment mode (opt-in via align prop) */
   &[data-align] {
@@ -28,24 +41,24 @@
   }
 }
 
-.k-smooth-text__item {
+.item {
   grid-area: stack;
   white-space: nowrap;
   display: inline-block;
   text-align: center;
 }
 
-.k-smooth-text__exiting {
-  animation: k-fadeOut 600ms ease forwards;
+.exiting {
+  animation: fadeOut var(--smooth-text-duration) ease forwards;
   pointer-events: none;
   user-select: none;
 }
 
-.k-smooth-text__entering {
-  animation: k-fadeIn 600ms ease forwards;
+.entering {
+  animation: fadeIn var(--smooth-text-duration) ease forwards;
 }
 
-@keyframes k-fadeIn {
+@keyframes fadeIn {
   from {
     opacity: 0;
   }
@@ -54,7 +67,7 @@
   }
 }
 
-@keyframes k-fadeOut {
+@keyframes fadeOut {
   from {
     opacity: 1;
   }
