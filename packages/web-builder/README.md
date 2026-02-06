@@ -207,3 +207,107 @@ This means:
 
 - **Runtime config** should stay small and avoid duplication (baseline + overrides).
 - **Artifacts** should be easy to inspect and consume without requiring the reader to understand inheritance.
+
+## Web-builder pipeline (phases)
+
+Location: `packages/web-builder/src/index.ts`
+
+1) Phase 1 - Convert schema to style keys
+   - Function: `convertElementSchemaToStyleKeys(schema)`
+   - Produces normalized style keys per component and element.
+
+2) Phase 2 - Map style key usage
+   - Function: `mapStyleKeyUsage(styleKeys)`
+   - Collects usage to shorten class names.
+
+3) Phase 3 - Shorten class names
+   - Function: `shortenCssClassNames(usageMap)`
+   - Produces a dictionary of short class names per style key.
+
+4) Phase 4 - Generate CSS rules (split core vs palettes)
+   - Function: `generateCssSplit(styleKeys, shortenMap)`
+   - Colors use `transformColorKeyToCss` with `forceState=true`.
+   - Results: `coreCss` and `palettes[paletteName]`.
+
+5) Phase 5 - Generate classNamesMap split
+   - Function: `generateClassNamesMapSplit(styleKeys, shortenMap)`
+   - Produces the class map per component/element/state/palette.
+
+6) Phase 6 - Persist artifacts
+   - Function: `persistBuildArtifacts(cssGenerated, classNamesMapSplit, schema.name)`
+   - Writes CSS bundles and maps to disk by preset.
+
+7) Phase 7 - Publish metadata
+   - Function: `publishMetadata({ schema, outDirSlug, schemaPath, baseBuildDir })`
+   - Writes `manifest.json`, `schema.json` and `segments.json` under `build/<template-key>`.
+   - `segments.json` is derived from `schema.colors.globalSemanticsBySegment`.
+
+## Style key and interaction state conventions
+
+- Inline keys (`--`)
+  - Format: `property--state__value`
+  - Apply to the element itself using native pseudos and/or forced classes.
+
+- Reference keys (`==`)
+  - Format: `property==state__value`
+  - State lives on the parent and applies to the child class.
+
+- Interaction states -> selectors
+  - Native pseudos: `hover`, `focus`, `pressed` (mapped in `InteractionStateCssPseudoSelector`).
+  - Forced classes: `-h`, `-f`, `-p`, `-s`, `-d` (hover, focus, pressed, selected, disabled).
+  - Activator class: `-a` (only apply forced states when explicitly activated).
+
+- Generation rules (summary)
+  - Inline
+    - Native: does not include `-a`; includes non-native markers (e.g. `-s`) when relevant.
+    - Forced: includes all forced classes plus `-a`.
+  - Reference (parent -> child)
+    - Native: include `-a` on the parent, pseudos on the parent, select the child class.
+    - Forced: parent with `-a` and forced classes, select the child class.
+  - Disabled: can always generate a forced variant with `-d` and `-a`.
+
+## Generated artifacts
+
+- Core CSS: utilities for decorations/scales/effects (palette-independent).
+- Per-palette CSS: color rules only.
+- `classNamesMapSplit`: maps classes per component/element/state/palette at runtime.
+
+Metadata per template (under `packages/web-builder/build/<template-key>`):
+
+- `manifest.json`: used by the showcase to discover templates, segments and themes.
+- `schema.json` / `segments.json`: raw schema and segment data for inspection or tooling.
+
+## Build, sync and showcase registry scripts
+
+The monorepo uses scripts from this package to keep artifacts and the showcase in sync.
+
+### Package scripts (packages/web-builder/package.json)
+
+- `pnpm --filter @kiskadee/web-builder run build`
+  - Runs `src/run-build.ts` using `tsx`.
+  - Builds all presets under `packages/presets/src/**`.
+  - Writes artifacts to `packages/web-builder/build/<template-key>`.
+
+- `pnpm --filter @kiskadee/web-builder run sync`
+  - Runs `scripts/sync-showcase-artifacts.cjs`.
+  - Copies build output to `packages/showcase/public/build/**`.
+
+- `pnpm --filter @kiskadee/web-builder run generate`
+  - Runs `scripts/generate-showcase-registry.cjs`.
+  - Generates registries under `packages/showcase/app/registry`.
+
+- `pnpm --filter @kiskadee/web-builder run build-sync-generate`
+  - Convenience command to run build, sync and generate in sequence.
+
+## Typical usage (high level)
+
+1) Choose a preset from `@kiskadee/presets` and run the web-builder to generate CSS and class maps.
+2) Consume `core` and palette CSS in the app, and apply classes from `classNamesMapSplit`.
+3) Keep layout/structure in component code; the builder should only own visual identity.
+
+## Useful reference files
+
+- `packages/web-builder/src/index.ts` - orchestrates the pipeline phases.
+- `packages/web-builder/src/phase-4-convert-style-keys-to-css-rules/palettes/transformColorKeyToCss.ts` - selector generation rules.
+- `packages/web-builder/src/phase-4-convert-style-keys-to-css-rules/generateCssSplit.ts` - core vs palettes split.
+- `packages/web-builder/src/phase-5-generate-class-names-map/generateClassNamesMap.ts` - classNamesMapSplit generation.
