@@ -21,5 +21,12 @@
     "parser": {
       "allowComments": true
     }
+  },
+  "linter": {
+    "rules": {
+      "suspicious": {
+        "useExhaustiveDependencies": "off"
+      }
+    }
   }
 }
