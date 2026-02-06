@@ -25,7 +25,10 @@
       "scale": {
         "s:sm:1": true,
         "s:md:1": true,
-        "s:lg:1": true
+        "s:lg:1": true,
+        "rounded": true,
+        "pill": true,
+        "square": true
       },
       "state": {
         "primary": {

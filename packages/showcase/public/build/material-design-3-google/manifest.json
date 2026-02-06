@@ -24,7 +24,10 @@
         "s:md:1": true,
         "s:lg:1": true,
         "s:lg:2": true,
-        "s:lg:3": true
+        "s:lg:3": true,
+        "rounded": true,
+        "pill": true,
+        "square": true
       },
       "state": {
         "primary": {

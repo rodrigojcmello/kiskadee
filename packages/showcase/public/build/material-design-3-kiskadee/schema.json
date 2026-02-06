@@ -31,7 +31,7 @@
       "width": 3,
       "offset": 2
     },
-    "radius": "full"
+    "radius": "pill"
   },
   "themeTokens": {
     "palettes": {
@@ -91,11 +91,27 @@
               "s:lg:3": 1
             },
             "borderRadius": {
-              "s:sm:1": 18,
-              "s:md:1": 20,
-              "s:lg:1": 28,
-              "s:lg:2": 48,
-              "s:lg:3": 68
+              "rounded": {
+                "s:sm:1": 18,
+                "s:md:1": 20,
+                "s:lg:1": 28,
+                "s:lg:2": 48,
+                "s:lg:3": 68
+              },
+              "pill": {
+                "s:sm:1": 18,
+                "s:md:1": 20,
+                "s:lg:1": 28,
+                "s:lg:2": 48,
+                "s:lg:3": 68
+              },
+              "square": {
+                "s:sm:1": 0,
+                "s:md:1": 0,
+                "s:lg:1": 0,
+                "s:lg:2": 0,
+                "s:lg:3": 0
+              }
             }
           },
           "palettes": {
@@ -596,7 +612,19 @@
                   "focus": 14
                 }
               },
-              "full": {
+              "pill": {
+                "rest": 20,
+                "hover": 14,
+                "pressed": 10,
+                "focus": 14,
+                "selected": {
+                  "rest": 16,
+                  "hover": 14,
+                  "pressed": 10,
+                  "focus": 14
+                }
+              },
+              "square": {
                 "rest": 20,
                 "hover": 14,
                 "pressed": 10,

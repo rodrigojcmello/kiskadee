@@ -39,6 +39,10 @@ export type ClassNameByElement = {
   s?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
   // Rounded radius scales aggregated per size (opt-in at component level)
   r?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
+  // Pill radius scales aggregated per size (opt-in at component level)
+  rp?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
+  // Square radius scales aggregated per size (opt-in at component level)
+  rs?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
   // Color classes organized by emphasis (h/m/l/ll)
   c?: ColorClasses;
   // Control-state specific (selected) — flattened string of utility classes
@@ -93,6 +97,8 @@ export function generateClassNamesMapSplit(
       const dSet = new Set<string>();
       const sMap = new Map<string, Set<string>>();
       const rMap = new Map<string, Set<string>>();
+      const rpMap = new Map<string, Set<string>>();
+      const rsMap = new Map<string, Set<string>>();
       // Effects buckets (by effect kind), excluding selected/control-state.
       const eBuckets = new Map<string, Set<string>>();
       // Control-state: selected — kept as a dedicated field (`l`) but must NOT include effects.
@@ -124,7 +130,8 @@ export function generateClassNamesMapSplit(
             let bucket: string;
             if (key.startsWith('shadow')) bucket = 'h';
             else if (key.startsWith('borderRadiusRounded')) bucket = 'rr';
-            else if (key.startsWith('borderRadiusFull')) bucket = 'rf';
+            else if (key.startsWith('borderRadiusPill')) bucket = 'rp';
+            else if (key.startsWith('borderRadiusSquare')) bucket = 'rs';
             else bucket = 'x';
 
             if (!eBuckets.has(bucket)) eBuckets.set(bucket, new Set());
@@ -148,18 +155,28 @@ export function generateClassNamesMapSplit(
         }
       }
 
-      // radiusScales → r[size] (rounded radius only)
+      // radiusScales → r/rp/rs[size] (rounded/pill/square radius)
       if (el.radiusScales) {
-        for (const [size, arr] of Object.entries(el.radiusScales)) {
-          const sizeKey = size.startsWith('s:') ? size.slice(2) : size;
-          const mapped = mapArray(arr, shortenMap);
-          if (!mapped || mapped.length === 0) continue;
-          if (!rMap.has(sizeKey)) rMap.set(sizeKey, new Set());
-          const set = rMap.get(sizeKey)!;
-          mapped.forEach((c) => {
-            set.add(c);
-          });
-        }
+        const applyRadiusMap = (
+          target: Map<string, Set<string>>,
+          bySize: Record<string, string[] | undefined> | undefined
+        ) => {
+          if (!bySize) return;
+          for (const [size, arr] of Object.entries(bySize)) {
+            const sizeKey = size.startsWith('s:') ? size.slice(2) : size;
+            const mapped = mapArray(arr, shortenMap);
+            if (!mapped || mapped.length === 0) continue;
+            if (!target.has(sizeKey)) target.set(sizeKey, new Set());
+            const set = target.get(sizeKey)!;
+            mapped.forEach((c) => {
+              set.add(c);
+            });
+          }
+        };
+
+        applyRadiusMap(rMap, el.radiusScales.rounded);
+        applyRadiusMap(rpMap, el.radiusScales.pill);
+        applyRadiusMap(rsMap, el.radiusScales.square);
       }
       // Palettes split per segment.theme; segregate by emphasis (unique/soft/solid)
       if (el.palettes) {
@@ -281,6 +298,24 @@ export function generateClassNamesMapSplit(
           rMap.size > 0
             ? Object.fromEntries(
                 Array.from(rMap.entries()).map(([k, set]) => [
+                  k,
+                  set.size ? Array.from(set).join(' ') : undefined
+                ])
+              )
+            : undefined,
+        rp:
+          rpMap.size > 0
+            ? Object.fromEntries(
+                Array.from(rpMap.entries()).map(([k, set]) => [
+                  k,
+                  set.size ? Array.from(set).join(' ') : undefined
+                ])
+              )
+            : undefined,
+        rs:
+          rsMap.size > 0
+            ? Object.fromEntries(
+                Array.from(rsMap.entries()).map(([k, set]) => [
                   k,
                   set.size ? Array.from(set).join(' ') : undefined
                 ])

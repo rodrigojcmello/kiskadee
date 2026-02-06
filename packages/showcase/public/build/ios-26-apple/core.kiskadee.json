@@ -2,21 +2,27 @@
   "$schema": "./core.kiskadee.schema.json",
   "button": {
     "e1": {
-      "d": "aos-g",
+      "d": "aos-h",
       "e": {
-        "h": "aos-v aos-y aos-z aos-x aos-w"
+        "h": "aos-w aos-z aos-aa aos-y aos-x"
       },
       "s": {
-        "md:1": "aos-u aos-r aos-s aos-t"
+        "md:1": "aos-v aos-s aos-t aos-u"
       },
       "r": {
-        "md:1": "aos-f"
+        "md:1": "aos-a"
+      },
+      "rp": {
+        "md:1": "aos-a"
+      },
+      "rs": {
+        "md:1": "aos-g"
       }
     },
     "e2": {
-      "d": "aos-ag",
+      "d": "aos-ah",
       "s": {
-        "md:1": "aos-af aos-ae"
+        "md:1": "aos-ag aos-af"
       }
     }
   }

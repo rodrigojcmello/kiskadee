@@ -15,7 +15,10 @@
   "components": {
     "button": {
       "scale": {
-        "s:md:1": true
+        "s:md:1": true,
+        "rounded": true,
+        "pill": true,
+        "square": true
       },
       "state": {
         "primary": {

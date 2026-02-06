@@ -1,9 +1,10 @@
-.aos-ae { line-height: 18px }
-.aos-af { font-size: 1.0625rem }
-.aos-ag { font-weight: 500 }
-.aos-f { border-radius: 25px }
-.aos-g { border-style: none }
-.aos-r { --k-pb: 16px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
-.aos-s { --k-pl: 20px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
-.aos-t { --k-pr: 20px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
-.aos-u { --k-pt: 16px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
+.aos-a { border-radius: 25px }
+.aos-af { line-height: 18px }
+.aos-ag { font-size: 1.0625rem }
+.aos-ah { font-weight: 500 }
+.aos-g { border-radius: 0px }
+.aos-h { border-style: none }
+.aos-s { --k-pb: 16px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
+.aos-t { --k-pl: 20px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
+.aos-u { --k-pr: 20px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
+.aos-v { --k-pt: 16px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }

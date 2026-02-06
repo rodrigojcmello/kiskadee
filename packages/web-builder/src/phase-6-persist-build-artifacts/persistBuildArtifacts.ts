@@ -39,7 +39,8 @@ const coreClassMapSchema = {
           properties: {
             h: { type: 'string', description: 'Shadow effects.' },
             rr: { type: 'string', description: 'Border radius effects for rounded mode.' },
-            rf: { type: 'string', description: 'Border radius effects for full mode.' }
+            rp: { type: 'string', description: 'Border radius effects for pill mode.' },
+            rs: { type: 'string', description: 'Border radius effects for square mode.' }
           },
           additionalProperties: { type: 'string' }
         },
@@ -51,6 +52,16 @@ const coreClassMapSchema = {
         r: {
           type: 'object',
           description: 'Rounded border radius scales by size key.',
+          additionalProperties: { type: 'string' }
+        },
+        rp: {
+          type: 'object',
+          description: 'Pill border radius scales by size key.',
+          additionalProperties: { type: 'string' }
+        },
+        rs: {
+          type: 'object',
+          description: 'Square border radius scales by size key.',
           additionalProperties: { type: 'string' }
         },
         c: {

@@ -21,6 +21,9 @@ export const SCALE_PROPERTIES = [
   'boxWidth',
   // Border
   'borderWidth',
+  'borderRadiusRounded',
+  'borderRadiusPill',
+  'borderRadiusSquare',
   'borderRadius'
 ] as const;
 
@@ -30,9 +33,15 @@ export const scaleProperties: ScaleProperty[] = [...SCALE_PROPERTIES];
 
 export type ScaleByBreakpoint = Partial<Record<BreakpointValue, PixelValue>>;
 
-export type ScaleSchema = Partial<
-  Record<
-    ScaleProperty,
-    Partial<Record<ElementSizeValue, ScaleByBreakpoint | PixelValue>> | PixelValue
-  >
+export type BorderRadiusMode = 'rounded' | 'pill' | 'square';
+export type ScaleBySize = Partial<Record<ElementSizeValue, ScaleByBreakpoint | PixelValue>>;
+export type BorderRadiusScaleSchema = Partial<Record<BorderRadiusMode, ScaleBySize | PixelValue>>;
+
+export type StandardScaleProperty = Exclude<
+  ScaleProperty,
+  'borderRadius' | 'borderRadiusRounded' | 'borderRadiusPill' | 'borderRadiusSquare'
 >;
+
+export type ScaleSchema = Partial<Record<StandardScaleProperty, ScaleBySize | PixelValue>> & {
+  borderRadius?: BorderRadiusScaleSchema;
+};

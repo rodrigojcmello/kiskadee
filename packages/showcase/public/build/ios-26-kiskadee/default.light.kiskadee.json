@@ -3,30 +3,30 @@
     "e1": {
       "c": {
         "primary": {
-          "h": "ak-ay ak-bk ak-bo ak-bg ak-bc",
-          "m": "ak-az ak-bl ak-bp ak-bh ak-bd ak-ae ak-aa ak-ac ak-y"
+          "h": "ak-ba ak-bm ak-bq ak-bi ak-be",
+          "m": "ak-bb ak-bn ak-br ak-bj ak-bf ak-ah ak-ad ak-af ak-ab"
         },
         "neutral": {
-          "m": "ak-s ak-w ak-x ak-v ak-ae ak-aa ak-ac ak-y ak-u"
+          "m": "ak-v ak-z ak-aa ak-y ak-ah ak-ad ak-af ak-ab ak-x"
         },
         "redLike": {
           "h": "ak-b ak-g ak-i ak-e ak-c",
-          "m": "ak-t ak-h ak-j ak-f ak-d ak-m ak-k ak-l"
+          "m": "ak-w ak-h ak-j ak-f ak-d ak-m ak-k ak-l"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "h": "ak-o ak-ap ak-a",
-          "m": "ak-ca ak-ce ak-a ak-cc ak-p"
+          "h": "ak-p ak-as ak-a",
+          "m": "ak-cc ak-cg ak-a ak-ce ak-q"
         },
         "neutral": {
-          "m": "ak-ak ak-an ak-ar ak-p ak-a"
+          "m": "ak-an ak-aq ak-au ak-q ak-a"
         },
         "redLike": {
-          "h": "ak-o ak-aq ak-a",
-          "m": "ak-al ak-as ak-am ak-ao ak-at"
+          "h": "ak-p ak-at ak-a",
+          "m": "ak-ao ak-av ak-ap ak-ar ak-aw"
         }
       }
     }

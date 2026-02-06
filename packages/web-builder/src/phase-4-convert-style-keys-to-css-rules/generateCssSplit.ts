@@ -89,15 +89,17 @@ export async function generateCssSplit(
         }
       }
 
-      // radiusScales: rounded border-radius scales (size variants). Also go to the core.
+      // radiusScales: border-radius scales by mode (size variants). Also go to the core.
       if (el.radiusScales) {
-        for (const scaleKey in el.radiusScales) {
-          const arr: string[] =
-            el.radiusScales[scaleKey as ElementSizeValue | ElementAllSizeValue] ?? [];
-          for (const key of arr) {
-            const cn = shortenMap[key] ?? key;
-            const rule = generateCssRuleFromStyleKey(key, cn, forceState, options);
-            if (rule && rule.trim() !== '') coreRules.add(rule);
+        for (const bySize of Object.values(el.radiusScales)) {
+          for (const scaleKey in bySize ?? {}) {
+            const arr: string[] =
+              bySize?.[scaleKey as ElementSizeValue | ElementAllSizeValue] ?? [];
+            for (const key of arr) {
+              const cn = shortenMap[key] ?? key;
+              const rule = generateCssRuleFromStyleKey(key, cn, forceState, options);
+              if (rule && rule.trim() !== '') coreRules.add(rule);
+            }
           }
         }
       }

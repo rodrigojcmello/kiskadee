@@ -53,7 +53,9 @@ export interface StyleKeyByElement<TSegmentName extends SegmentName = never> {
   decorations: StyleKey[];
   effects: StyleKeysByInteractionState;
   scales: Partial<Record<ElementSizeValue | ElementAllSizeValue, StyleKey[]>>;
-  radiusScales?: Partial<Record<ElementSizeValue | ElementAllSizeValue, StyleKey[]>>;
+  radiusScales?: Partial<
+    Record<RadiusMode, Partial<Record<ElementSizeValue | ElementAllSizeValue, StyleKey[]>>>
+  >;
   // Palettes now include theme mode in the structure: segment → theme → semantic color → interaction states
   palettes: Partial<
     Record<
@@ -110,7 +112,7 @@ export type FocusGlobalTokens = {
   offset?: number;
 };
 
-export type RadiusMode = 'rounded' | 'square' | 'full';
+export type RadiusMode = 'rounded' | 'square' | 'pill';
 
 export type SchemaGlobalTokens = {
   fonts?: SchemaFonts;
@@ -173,13 +175,18 @@ export type ClassNameByElementJSON = {
   // Example buckets (not exhaustive):
   // - h: shadow
   // - rr: border radius (rounded)
-  // - rf: border radius (full)
+  // - rp: border radius (pill)
+  // - rs: border radius (square)
   e?: Partial<Record<string, string>>;
   // s: values are pre-joined into a single space-separated string (no arrays) per size key.
   // For web payload optimization, keys are stored without the "s:" prefix (e.g. "s:md:1" -> "md:1", "s:all" -> "all").
   s?: Partial<Record<string, string>>;
   // r: rounded border radius scales (size-aware, opt-in at component level).
   r?: Partial<Record<string, string>>;
+  // rp: pill border radius scales (size-aware, opt-in at component level).
+  rp?: Partial<Record<string, string>>;
+  // rs: square border radius scales (size-aware, opt-in at component level).
+  rs?: Partial<Record<string, string>>;
   // c: Map of semantic key -> ColorClasses (semantic-aware colors). No legacy flat format.
   c?: Record<string, ColorClasses>;
   // l: control-state specific (selected) — flattened string of utility classes

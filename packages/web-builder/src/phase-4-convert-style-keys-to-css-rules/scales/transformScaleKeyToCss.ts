@@ -25,6 +25,9 @@ export const ERROR_INVALID_KEY_FORMAT = 'Invalid scale key format; missing requi
  */
 const cssPropertyMap: Record<ScaleProperty, string> = {
   borderRadius: 'border-radius',
+  borderRadiusRounded: 'border-radius',
+  borderRadiusPill: 'border-radius',
+  borderRadiusSquare: 'border-radius',
   borderWidth: 'border-width',
   boxHeight: 'height',
   boxWidth: 'width',

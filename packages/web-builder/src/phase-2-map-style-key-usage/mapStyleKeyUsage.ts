@@ -28,9 +28,11 @@ export function mapStyleKeyUsage(styleKeysByComponent: ComponentStyleKeyMap): St
         keys?.forEach(increment);
       }
 
-      // 3.1) radius scales (rounded border radius, size/responsiveness)
-      for (const keys of Object.values(element.radiusScales ?? {})) {
-        keys?.forEach(increment);
+      // 3.1) radius scales (by radius mode, size/responsiveness)
+      for (const bySize of Object.values(element.radiusScales ?? {})) {
+        for (const keys of Object.values(bySize ?? {})) {
+          keys?.forEach(increment);
+        }
       }
 
       // 4) palettes (by segment / theme / semantic color / interaction state)

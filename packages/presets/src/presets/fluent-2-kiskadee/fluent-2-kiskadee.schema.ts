@@ -77,9 +77,21 @@ export const schema: Schema<Segments> = {
               's:lg:1': 16
             },
             borderRadius: {
-              's:sm:1': 4,
-              's:md:1': 4,
-              's:lg:1': 4
+              rounded: {
+                's:sm:1': 4,
+                's:md:1': 4,
+                's:lg:1': 4
+              },
+              pill: {
+                's:sm:1': 4,
+                's:md:1': 4,
+                's:lg:1': 4
+              },
+              square: {
+                's:sm:1': 0,
+                's:md:1': 0,
+                's:lg:1': 0
+              }
             }
           },
           palettes: buildBySegment(

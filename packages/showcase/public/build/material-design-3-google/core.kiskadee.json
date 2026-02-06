@@ -2,35 +2,50 @@
   "$schema": "./core.kiskadee.schema.json",
   "button": {
     "e1": {
-      "d": "gmd-dc",
+      "d": "gmd-dl",
       "e": {
-        "h": "gmd-dx gmd-ea gmd-eb gmd-dz gmd-dy",
-        "rr": "gmd-cu gmd-cw gmd-cx gmd-cv gmd-db gmd-cz gmd-da gmd-cy",
-        "rf": "gmd-cm gmd-co gmd-cp gmd-cn gmd-ct gmd-cr gmd-cs gmd-cq"
+        "h": "gmd-eg gmd-ej gmd-ek gmd-ei gmd-eh",
+        "rr": "gmd-cv gmd-cx gmd-cy gmd-cw gmd-dc gmd-da gmd-db gmd-cz",
+        "rp": "gmd-cn gmd-cp gmd-cq gmd-co gmd-cu gmd-cs gmd-ct gmd-cr",
+        "rs": "gmd-dd gmd-df gmd-dg gmd-de gmd-dk gmd-di gmd-dj gmd-dh"
       },
       "s": {
-        "sm:1": "gmd-dw gmd-dh gmd-di gmd-dn gmd-q",
-        "md:1": "gmd-ds gmd-dd gmd-dj gmd-do gmd-q",
-        "lg:1": "gmd-dt gmd-de gmd-dk gmd-dp gmd-q",
-        "lg:2": "gmd-du gmd-df gmd-dl gmd-dq gmd-q",
-        "lg:3": "gmd-dv gmd-dg gmd-dm gmd-dr gmd-q"
+        "sm:1": "gmd-ef gmd-dq gmd-dr gmd-dw gmd-r",
+        "md:1": "gmd-eb gmd-dm gmd-ds gmd-dx gmd-r",
+        "lg:1": "gmd-ec gmd-dn gmd-dt gmd-dy gmd-r",
+        "lg:2": "gmd-ed gmd-do gmd-du gmd-dz gmd-r",
+        "lg:3": "gmd-ee gmd-dp gmd-dv gmd-ea gmd-r"
       },
       "r": {
-        "sm:1": "gmd-ch",
-        "md:1": "gmd-ci",
-        "lg:1": "gmd-cj",
-        "lg:2": "gmd-ck",
-        "lg:3": "gmd-cl"
+        "sm:1": "gmd-av",
+        "md:1": "gmd-aw",
+        "lg:1": "gmd-ax",
+        "lg:2": "gmd-ay",
+        "lg:3": "gmd-az"
+      },
+      "rp": {
+        "sm:1": "gmd-av",
+        "md:1": "gmd-aw",
+        "lg:1": "gmd-ax",
+        "lg:2": "gmd-ay",
+        "lg:3": "gmd-az"
+      },
+      "rs": {
+        "sm:1": "gmd-q",
+        "md:1": "gmd-q",
+        "lg:1": "gmd-q",
+        "lg:2": "gmd-q",
+        "lg:3": "gmd-q"
       }
     },
     "e2": {
-      "d": "gmd-ei",
+      "d": "gmd-er",
       "s": {
-        "sm:1": "gmd-cg gmd-cf",
-        "md:1": "gmd-cg gmd-cf",
-        "lg:1": "gmd-ef gmd-ec",
-        "lg:2": "gmd-eg gmd-ed",
-        "lg:3": "gmd-eh gmd-ee"
+        "sm:1": "gmd-cm gmd-cl",
+        "md:1": "gmd-cm gmd-cl",
+        "lg:1": "gmd-eo gmd-el",
+        "lg:2": "gmd-ep gmd-em",
+        "lg:3": "gmd-eq gmd-en"
       }
     }
   }

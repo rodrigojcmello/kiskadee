@@ -29,7 +29,7 @@ export type ButtonProps = HeadlessButtonProps & {
   scale?: ElementSizeValue;
   /** Enable elevation/shadow visuals. When true, adds the shadow activation class. */
   shadow?: boolean;
-  /** Border radius mode. Uses schema radius scales when set to "rounded". */
+  /** Border radius mode. Uses schema radius scales for rounded/pill/square. */
   radius?: RadiusMode;
   /** Enable border-radius effects (animated corners). */
   radiusEffect?: boolean;
@@ -115,10 +115,18 @@ function Button(props: ButtonProps) {
     const sScaleE2 = e2?.s?.[scaleKey] ?? '';
 
     const radiusMode = radius ?? global?.radius ?? 'rounded';
-    const rAllE1 = radiusMode === 'rounded' ? (e1?.r?.['all'] ?? '') : '';
-    const rScaleE1 = radiusMode === 'rounded' ? (e1?.r?.[scaleKey] ?? '') : '';
-    const radiusOverrideClass =
-      radiusMode === 'full' ? 'k-radius-full' : radiusMode === 'square' ? 'k-radius-square' : '';
+    const rAllE1 =
+      radiusMode === 'rounded'
+        ? (e1?.r?.['all'] ?? '')
+        : radiusMode === 'pill'
+          ? (e1?.rp?.['all'] ?? '')
+          : (e1?.rs?.['all'] ?? '');
+    const rScaleE1 =
+      radiusMode === 'rounded'
+        ? (e1?.r?.[scaleKey] ?? '')
+        : radiusMode === 'pill'
+          ? (e1?.rp?.[scaleKey] ?? '')
+          : (e1?.rs?.[scaleKey] ?? '');
 
     // Effects buckets (from Phase 5 `e`) — opt-in at component level.
     // We only append the buckets requested by props.
@@ -127,8 +135,8 @@ function Button(props: ButtonProps) {
     const radiusEffects = radiusEffect
       ? radiusMode === 'rounded'
         ? (e?.rr ?? '')
-        : radiusMode === 'full'
-          ? (e?.rf ?? '')
+        : radiusMode === 'pill'
+          ? (e?.rp ?? '')
           : ''
       : '';
     const e1Effects = `${shadowEffects}${shadowEffects && radiusEffects ? ' ' : ''}${radiusEffects}`;
@@ -141,7 +149,6 @@ function Button(props: ButtonProps) {
       (sScaleE1 ? ` ${sScaleE1}` : '') +
       (rAllE1 ? ` ${rAllE1}` : '') +
       (rScaleE1 ? ` ${rScaleE1}` : '') +
-      (radiusOverrideClass ? ` ${radiusOverrideClass}` : '') +
       (e1Effects ? ` ${e1Effects}` : '') +
       (selected ? ` ${selected}` : '');
 

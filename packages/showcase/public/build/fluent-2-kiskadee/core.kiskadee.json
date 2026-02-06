@@ -2,27 +2,37 @@
   "$schema": "./core.kiskadee.schema.json",
   "button": {
     "e1": {
-      "d": "fk-s",
+      "d": "fk-t",
       "e": {
-        "h": "fk-ay fk-bb fk-bc fk-ba fk-az"
+        "h": "fk-az fk-bc fk-bd fk-bb fk-ba"
       },
       "s": {
-        "sm:1": "fk-av fk-am fk-ar fk-au",
-        "md:1": "fk-aw fk-an fk-ap fk-as",
-        "lg:1": "fk-ax fk-ao fk-aq fk-at"
+        "sm:1": "fk-aw fk-an fk-as fk-av",
+        "md:1": "fk-ax fk-ao fk-aq fk-at",
+        "lg:1": "fk-ay fk-ap fk-ar fk-au"
       },
       "r": {
-        "sm:1": "fk-b",
-        "md:1": "fk-b",
-        "lg:1": "fk-b"
+        "sm:1": "fk-a",
+        "md:1": "fk-a",
+        "lg:1": "fk-a"
+      },
+      "rp": {
+        "sm:1": "fk-a",
+        "md:1": "fk-a",
+        "lg:1": "fk-a"
+      },
+      "rs": {
+        "sm:1": "fk-c",
+        "md:1": "fk-c",
+        "lg:1": "fk-c"
       }
     },
     "e2": {
-      "d": "fk-bn",
+      "d": "fk-bo",
       "s": {
-        "sm:1": "fk-bk fk-bh",
-        "md:1": "fk-bl fk-bi",
-        "lg:1": "fk-bm fk-bj"
+        "sm:1": "fk-bl fk-bi",
+        "md:1": "fk-bm fk-bj",
+        "lg:1": "fk-bn fk-bk"
       }
     }
   }

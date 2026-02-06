@@ -2,24 +2,34 @@
   "$schema": "./core.kiskadee.schema.json",
   "button": {
     "e1": {
-      "d": "ak-ax",
+      "d": "ak-az",
       "s": {
-        "sm:1": "ak-by ak-bs ak-bu ak-bw",
-        "md:1": "ak-aj ak-bz ak-ag ak-bt ak-ah ak-bv ak-ai ak-bx",
-        "lg:1": "ak-aj ak-ag ak-ah ak-ai"
+        "sm:1": "ak-ca ak-bu ak-bw ak-by",
+        "md:1": "ak-am ak-cb ak-aj ak-bv ak-ak ak-bx ak-al ak-bz",
+        "lg:1": "ak-am ak-aj ak-ak ak-al"
       },
       "r": {
-        "sm:1": "ak-av",
-        "md:1": "ak-r ak-aw",
+        "sm:1": "ak-t",
+        "md:1": "ak-n ak-u",
+        "lg:1": "ak-n"
+      },
+      "rp": {
+        "sm:1": "ak-t",
+        "md:1": "ak-n ak-u",
+        "lg:1": "ak-n"
+      },
+      "rs": {
+        "sm:1": "ak-r",
+        "md:1": "ak-r ak-ay",
         "lg:1": "ak-r"
       }
     },
     "e2": {
-      "d": "ak-ch",
+      "d": "ak-cj",
       "s": {
-        "sm:1": "ak-cg ak-q",
-        "md:1": "ak-au ak-q",
-        "lg:1": "ak-au ak-q"
+        "sm:1": "ak-ci ak-s",
+        "md:1": "ak-ax ak-s",
+        "lg:1": "ak-ax ak-s"
       }
     }
   }

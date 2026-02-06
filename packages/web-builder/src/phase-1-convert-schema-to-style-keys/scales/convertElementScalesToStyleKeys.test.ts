@@ -1,10 +1,10 @@
-import type { ScaleSchema, StyleKeyByElement } from '@kiskadee/core';
+import type { StyleKeyByElement } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import { convertElementScalesToStyleKeys } from './convertElementScalesToStyleKeys';
 
 describe('convertElementScalesToStyleKeys', () => {
   it('should generate paddingTop 10 style key for numeric value', () => {
-    const scale: ScaleSchema = { paddingTop: 10 };
+    const scale = { paddingTop: 10 };
     const result = convertElementScalesToStyleKeys(scale);
     expect(result).toEqual({
       's:all': ['paddingTop__10']
@@ -12,7 +12,7 @@ describe('convertElementScalesToStyleKeys', () => {
   });
 
   it('should generate textSize 16 style key when provided as a direct number', () => {
-    const scale: ScaleSchema = { textSize: 16 };
+    const scale = { textSize: 16 };
     const result = convertElementScalesToStyleKeys(scale);
     expect(result).toEqual({
       's:all': ['textSize__16']
@@ -20,7 +20,7 @@ describe('convertElementScalesToStyleKeys', () => {
   });
 
   it('should generate textSize__14 style key when given as a size token without breakpoints', () => {
-    const scale: ScaleSchema = { textSize: { 's:md:1': 14 } };
+    const scale = { textSize: { 's:md:1': 14 } };
     const result = convertElementScalesToStyleKeys(scale);
     expect(result).toEqual({
       's:md:1': ['textSize__14']
@@ -28,7 +28,7 @@ describe('convertElementScalesToStyleKeys', () => {
   });
 
   it('should generate default and breakpoint style keys for nested responsive overrides', () => {
-    const scale: ScaleSchema = {
+    const scale = {
       textSize: { 's:md:1': { 'bp:all': 16, 'bp:lg:2': 10 } }
     };
     const result = convertElementScalesToStyleKeys(scale);
@@ -38,7 +38,7 @@ describe('convertElementScalesToStyleKeys', () => {
   });
 
   it('should generate style keys for textSize, paddingBottom and marginTop together', () => {
-    const scale: ScaleSchema = {
+    const scale = {
       textSize: {
         's:sm:1': { 'bp:all': 14, 'bp:lg:1': 12 },
         's:md:1': { 'bp:all': 16, 'bp:lg:1': 14 }

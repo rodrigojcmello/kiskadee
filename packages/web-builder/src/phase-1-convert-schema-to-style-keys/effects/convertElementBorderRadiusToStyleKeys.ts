@@ -29,10 +29,10 @@ import { buildStyleKey, deepUpdate } from '../../utils';
  *   }
  *
  * Emitted key patterns (examples):
- *   - Inline state:      "borderRadius--hover__18"
- *   - Selected inline:   "borderRadius--selected:hover__12" (via controlState=true)
- *   - Responsive size:   "borderRadius--hover++s:md:1__18"
- *   - All sizes:         "borderRadius__18" (when token is "s:all")
+ *   - Inline state:      "borderRadiusRounded--hover__18"
+ *   - Selected inline:   "borderRadiusRounded--selected:hover__12" (via controlState=true)
+ *   - Responsive size:   "borderRadiusRounded--hover++s:md:1__18"
+ *   - All sizes:         "borderRadiusRounded__18" (when token is "s:all")
  *
  * Notes:
  *   - We only add "--rest" when in the selected scope; otherwise rest omits the state for brevity.
@@ -40,7 +40,7 @@ import { buildStyleKey, deepUpdate } from '../../utils';
  */
 export function convertElementBorderRadiusToStyleKeys(
   borderRadius: NumericWithSelected,
-  propertyName: 'borderRadiusRounded' | 'borderRadiusFull'
+  propertyName: 'borderRadiusRounded' | 'borderRadiusPill' | 'borderRadiusSquare'
 ): StyleKeysByInteractionState {
   const out: Partial<Record<InteractionState | SelectedInteractionStateToken, string[]>> = {};
 

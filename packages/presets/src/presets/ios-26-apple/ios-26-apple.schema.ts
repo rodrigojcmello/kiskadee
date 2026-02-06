@@ -47,7 +47,15 @@ export const schema: Schema<Segment> = {
               's:md:1': 20
             },
             borderRadius: {
-              's:md:1': 25
+              rounded: {
+                's:md:1': 25
+              },
+              pill: {
+                's:md:1': 25
+              },
+              square: {
+                's:md:1': 0
+              }
             }
           },
           palettes: {

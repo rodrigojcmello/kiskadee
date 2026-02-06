@@ -2,12 +2,16 @@ import type {
   BorderRadiusEffectSchema,
   ComponentName,
   ComponentStyleKeyMap,
+  ElementAllSizeValue,
+  ElementSizeValue,
+  RadiusMode,
+  ScaleProperty,
   ScaleSchema,
   Schema,
   StyleKeyByElement,
   StyleKeysByInteractionState
 } from '@kiskadee/core';
-import { deepUpdate } from '../utils';
+import { buildStyleKey, deepUpdate } from '../utils';
 import {
   convertElementColorsToStyleKeys,
   type ToneMetadataByPalette
@@ -15,7 +19,10 @@ import {
 import { convertElementDecorationsToStyleKeys } from './decoration/convertElementDecorationsToStyleKeys';
 import { convertElementBorderRadiusToStyleKeys } from './effects/convertElementBorderRadiusToStyleKeys';
 import { convertElementShadowToStyleKeys } from './effects/convertElementShadowToStyleKeys';
-import { convertElementScalesToStyleKeys } from './scales/convertElementScalesToStyleKeys';
+import {
+  convertElementScalesToStyleKeys,
+  type ScaleValue
+} from './scales/convertElementScalesToStyleKeys';
 
 /**
  * Processes a Schema object by iterating over each component's elements.
@@ -51,12 +58,138 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
         if (element.scales) {
           const { borderRadius, ...otherScales } = element.scales as ScaleSchema;
           if (Object.keys(otherScales).length > 0) {
-            el.scales = convertElementScalesToStyleKeys(otherScales as ScaleSchema);
+            el.scales = convertElementScalesToStyleKeys(
+              otherScales as Partial<Record<ScaleProperty, ScaleValue>>
+            );
           }
-          if (borderRadius !== undefined) {
-            el.radiusScales = convertElementScalesToStyleKeys({
-              borderRadius
-            } as ScaleSchema);
+          const radiusScales: NonNullable<StyleKeyByElement['radiusScales']> = {};
+          if (borderRadius) {
+            const modes: RadiusMode[] = ['rounded', 'pill', 'square'];
+            const modeValues = {
+              rounded: borderRadius.rounded,
+              pill: borderRadius.pill,
+              square: borderRadius.square
+            } as const;
+
+            type RadiusSizeToken = ElementSizeValue | ElementAllSizeValue;
+            const sizeMapByMode: Record<RadiusMode, Partial<Record<RadiusSizeToken, unknown>>> = {
+              rounded: {},
+              pill: {},
+              square: {}
+            };
+
+            const addSizeValues = (mode: RadiusMode, value: unknown) => {
+              if (value === undefined) return;
+              if (typeof value === 'number') {
+                sizeMapByMode[mode]['s:all'] = value;
+                return;
+              }
+              if (value && typeof value === 'object' && !Array.isArray(value)) {
+                for (const [size, sizeValue] of Object.entries(value)) {
+                  const sizeToken = size as RadiusSizeToken;
+                  sizeMapByMode[mode][sizeToken] = sizeValue;
+                }
+              }
+            };
+
+            for (const mode of modes) {
+              addSizeValues(mode, modeValues[mode]);
+            }
+
+            const allSizes = new Set<RadiusSizeToken>();
+            for (const mode of modes) {
+              for (const size of Object.keys(sizeMapByMode[mode])) {
+                allSizes.add(size as RadiusSizeToken);
+              }
+            }
+
+            const valueKey = (value: unknown): string => {
+              if (typeof value === 'number') return `n:${value}`;
+              if (value && typeof value === 'object' && !Array.isArray(value)) {
+                const entries = Object.entries(value as Record<string, number>).sort(([a], [b]) =>
+                  a.localeCompare(b)
+                );
+                return `o:${entries.map(([k, v]) => `${k}:${v}`).join('|')}`;
+              }
+              return `u:${String(value)}`;
+            };
+
+            const emitKeys = (
+              propertyName: string,
+              size: RadiusSizeToken,
+              sizeValue: unknown
+            ): string[] => {
+              const keys: string[] = [];
+              if (typeof sizeValue === 'number') {
+                const key = buildStyleKey({ propertyName, value: sizeValue });
+                keys.push(key);
+                return keys;
+              }
+              if (sizeValue && typeof sizeValue === 'object' && !Array.isArray(sizeValue)) {
+                for (const [bp, value] of Object.entries(sizeValue as Record<string, number>)) {
+                  const breakpoint = bp as keyof Schema['breakpoints'];
+                  if (bp === 'bp:all') {
+                    keys.push(buildStyleKey({ propertyName, value }));
+                  } else {
+                    if (size === 's:all') {
+                      keys.push(buildStyleKey({ propertyName, value }));
+                      continue;
+                    }
+                    keys.push(
+                      buildStyleKey({
+                        propertyName,
+                        value,
+                        size,
+                        breakpoint
+                      })
+                    );
+                  }
+                }
+              }
+              return keys;
+            };
+
+            const propertyNameForMode = (mode: RadiusMode): string => {
+              if (mode === 'rounded') return 'borderRadiusRounded';
+              if (mode === 'pill') return 'borderRadiusPill';
+              return 'borderRadiusSquare';
+            };
+
+            for (const size of allSizes) {
+              // Dedupe by mode/value: if rounded/pill/square share the same size token value,
+              // emit a single generic borderRadius style key so we don't duplicate identical CSS.
+              const groups = new Map<string, RadiusMode[]>();
+              for (const mode of modes) {
+                const sizeValue = sizeMapByMode[mode][size];
+                if (sizeValue === undefined) continue;
+                const key = valueKey(sizeValue);
+                let group = groups.get(key);
+                if (!group) {
+                  group = [];
+                  groups.set(key, group);
+                }
+                group.push(mode);
+              }
+
+              for (const [_groupKey, groupedModes] of groups.entries()) {
+                const isShared = groupedModes.length > 1;
+                const sharedProperty = isShared ? 'borderRadius' : undefined;
+                const sizeValue = sizeMapByMode[groupedModes[0]][size];
+                const propertyName = sharedProperty ?? propertyNameForMode(groupedModes[0]);
+                const keys = emitKeys(propertyName, size, sizeValue);
+
+                for (const mode of groupedModes) {
+                  if (!radiusScales[mode]) radiusScales[mode] = {};
+                  const modeScales = radiusScales[mode];
+                  if (!modeScales) continue;
+                  const sizeKeys = modeScales[size] ?? [];
+                  modeScales[size] = [...sizeKeys, ...keys];
+                }
+              }
+            }
+          }
+          if (Object.keys(radiusScales).length > 0) {
+            el.radiusScales = radiusScales;
           }
         }
         if (element.palettes) {
@@ -68,7 +201,8 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
             if (!toneMetadataByPalette.has(paletteKey)) {
               toneMetadataByPalette.set(paletteKey, new Map());
             }
-            const target = toneMetadataByPalette.get(paletteKey)!;
+            const target = toneMetadataByPalette.get(paletteKey);
+            if (!target) continue;
 
             for (const [metaKey, meta] of byMetaKey) {
               const existing = target.get(metaKey);
@@ -98,15 +232,20 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
           if (element.effects.borderRadius) {
             const borderRadius: BorderRadiusEffectSchema = element.effects.borderRadius;
             const rounded = borderRadius?.rounded;
-            const full = borderRadius?.full;
+            const pill = borderRadius?.pill;
+            const square = borderRadius?.square;
 
             if (rounded) {
               const brMap = convertElementBorderRadiusToStyleKeys(rounded, 'borderRadiusRounded');
               appendEffectMap(brMap);
             }
 
-            if (full) {
-              const brMap = convertElementBorderRadiusToStyleKeys(full, 'borderRadiusFull');
+            if (pill) {
+              const brMap = convertElementBorderRadiusToStyleKeys(pill, 'borderRadiusPill');
+              appendEffectMap(brMap);
+            }
+            if (square) {
+              const brMap = convertElementBorderRadiusToStyleKeys(square, 'borderRadiusSquare');
               appendEffectMap(brMap);
             }
           }

@@ -43,12 +43,11 @@ export function generateCssRuleFromStyleKey(
     generatedCss = transformTextItalicKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('textWeight')) {
     generatedCss = transformTextWeightKeyToCss(styleKey, className);
-  } else if (styleKey.startsWith('borderRadius')) {
-    // Border-radius effect: supports native and forced selectors controlled by forceState.
-    generatedCss = transformBorderRadiusKeyToCss(styleKey, className, forceState);
   } else if (generatedCss === undefined) {
+    const isBorderRadiusEffectKey =
+      styleKey.startsWith('borderRadius') && (styleKey.includes('--') || styleKey.includes('=='));
     const matchScale = scaleProperties.find((scaleProperty) => styleKey.startsWith(scaleProperty));
-    if (matchScale != null) {
+    if (matchScale != null && !isBorderRadiusEffectKey) {
       generatedCss = transformScaleKeyToCss(styleKey, breakpoints, className);
     } else {
       // Colors ------------------------------------------------------------------------------------
@@ -58,6 +57,9 @@ export function generateCssRuleFromStyleKey(
       );
       if (matchColor != null) {
         generatedCss = transformColorKeyToCss(styleKey, className, forceState, options);
+      } else if (isBorderRadiusEffectKey) {
+        // Border-radius effect: supports native and forced selectors controlled by forceState.
+        generatedCss = transformBorderRadiusKeyToCss(styleKey, className, forceState);
       }
     }
   }

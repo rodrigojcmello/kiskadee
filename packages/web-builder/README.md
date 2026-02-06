@@ -104,7 +104,7 @@ This distinction matters because some Design Systems (e.g. Material Design 3) au
 
 Practical implication for consumers: if a DS wants “selected + animated corners”, the component must be rendered with **both** `controlState={true}` and `radiusEffect={true}`.
 
-## Border radius: modes vs effects (rounded / square / full)
+## Border radius: modes vs effects (rounded / square / pill)
 
 Kiskadee separates **radius mode** (the base shape) from **radius effect** (stateful animated corners).
 This keeps the base geometry cross‑platform and allows effects to be opt‑in.
@@ -113,27 +113,27 @@ This keeps the base geometry cross‑platform and allows effects to be opt‑in.
 
 `radius` is a component prop that accepts:
 
-- `rounded` (default): uses the schema `borderRadius` scale.
-- `square`: forces 0 radius (hard corners).
-- `full`: forces a capsule/pill shape.
+- `rounded` (default): uses `scales.borderRadius.rounded`.
+- `square`: uses `scales.borderRadius.square`.
+- `pill`: uses `scales.borderRadius.pill`.
 
 The default mode comes from `schema.global.radius` and is exported in the build artifact `global.kiskadee.json`.
-On web, `full` is implemented as a large fixed radius (`9999px`) while `square` is `0`.
-On native platforms, `full` should be resolved as **50% of the element height** (or equivalent), and `square` as `0`.
+All three modes are **explicit** in the schema, so the web-builder emits concrete classes for each mode
+(no runtime hacks like `9999px`).
 
 ### Radius effects (animated corners)
 
 `radiusEffect` is a boolean prop that enables the **effects** bucket generated from `effects.borderRadius`:
 
 - `rounded` uses `effects.borderRadius.rounded`
-- `full` uses `effects.borderRadius.full`
+- `pill` uses `effects.borderRadius.pill`
 - `square` ignores the radius effect
 
-This is intentional: effects are opt‑in and never applied by default, even if the mode is `rounded` or `full`.
+This is intentional: effects are opt‑in and never applied by default, even if the mode is `rounded` or `pill`.
 
 ### Cross‑platform rule
 
-- **Base geometry**: resolved by the renderer per platform (`rounded` uses schema values, `full` uses 50%/height‑2).
+- **Base geometry**: resolved by the renderer per platform using the schema values for each mode.
 - **Effects**: always opt‑in via `radiusEffect`, regardless of platform.
 
 ### Feature flag: forced interaction states as class selectors (showcase)

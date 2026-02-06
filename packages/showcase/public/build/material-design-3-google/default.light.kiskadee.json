@@ -3,29 +3,29 @@
     "e1": {
       "c": {
         "primary": {
-          "h": "gmd-av gmd-a gmd-bk gmd-d gmd-bq gmd-e gmd-bd gmd-c gmd-i gmd-b",
-          "m": "gmd-az gmd-a gmd-bl gmd-d gmd-bt gmd-e gmd-bg gmd-c gmd-i gmd-b gmd-cb gmd-bv gmd-by",
-          "l": "gmd-f gmd-ag gmd-bm gmd-ao gmd-o gmd-ar gmd-ba gmd-al gmd-i gmd-ai gmd-cc gmd-at gmd-bw gmd-bz",
-          "ll": "gmd-f gmd-a gmd-bi gmd-bp gmd-bc gmd-i"
+          "h": "gmd-bb gmd-a gmd-bq gmd-d gmd-bw gmd-e gmd-bj gmd-c gmd-i gmd-b",
+          "m": "gmd-bf gmd-a gmd-br gmd-d gmd-bz gmd-e gmd-bm gmd-c gmd-i gmd-b gmd-ch gmd-cb gmd-ce",
+          "l": "gmd-f gmd-ah gmd-bs gmd-ap gmd-o gmd-as gmd-bg gmd-am gmd-i gmd-aj gmd-ci gmd-au gmd-cc gmd-cf",
+          "ll": "gmd-f gmd-a gmd-bo gmd-bv gmd-bi gmd-i"
         },
         "neutral": {
-          "h": "gmd-au gmd-a gmd-bh gmd-d gmd-bo gmd-e gmd-bb gmd-c gmd-ca gmd-bu gmd-bx gmd-j gmd-b",
-          "m": "gmd-ay gmd-a gmd-bn gmd-d gmd-bs gmd-e gmd-bf gmd-c gmd-y gmd-u gmd-w gmd-j gmd-b",
-          "l": "gmd-f gmd-ah gmd-s gmd-ap gmd-o gmd-as gmd-r gmd-am gmd-y gmd-u gmd-w gmd-h gmd-aj",
-          "ll": "gmd-f gmd-a gmd-s gmd-d gmd-o gmd-e gmd-r gmd-c gmd-h gmd-b"
+          "h": "gmd-ba gmd-a gmd-bn gmd-d gmd-bu gmd-e gmd-bh gmd-c gmd-cg gmd-ca gmd-cd gmd-j gmd-b",
+          "m": "gmd-be gmd-a gmd-bt gmd-d gmd-by gmd-e gmd-bl gmd-c gmd-z gmd-v gmd-x gmd-j gmd-b",
+          "l": "gmd-f gmd-ai gmd-t gmd-aq gmd-o gmd-at gmd-s gmd-an gmd-z gmd-v gmd-x gmd-h gmd-ak",
+          "ll": "gmd-f gmd-a gmd-t gmd-d gmd-o gmd-e gmd-s gmd-c gmd-h gmd-b"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "h": "gmd-aa gmd-g",
-          "m": "gmd-p gmd-g gmd-ae",
-          "l": "gmd-p gmd-g gmd-ae gmd-cd gmd-ce",
+          "h": "gmd-ab gmd-g",
+          "m": "gmd-p gmd-g gmd-af",
+          "l": "gmd-p gmd-g gmd-af gmd-cj gmd-ck",
           "ll": "gmd-p gmd-g"
         },
         "neutral": {
-          "h": "gmd-aa gmd-g"
+          "h": "gmd-ab gmd-g"
         }
       }
     }

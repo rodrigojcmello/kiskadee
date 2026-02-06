@@ -3,16 +3,16 @@
     "e1": {
       "c": {
         "primary": {
-          "h": "aos-h aos-n aos-p aos-l aos-c aos-a aos-b aos-j",
-          "m": "aos-i aos-o aos-q aos-m aos-c aos-a aos-b aos-k"
+          "h": "aos-i aos-o aos-q aos-m aos-d aos-b aos-c aos-k",
+          "m": "aos-j aos-p aos-r aos-n aos-d aos-b aos-c aos-l"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "h": "aos-aa aos-e aos-d",
-          "m": "aos-ab aos-e aos-d aos-ac aos-ad"
+          "h": "aos-ab aos-f aos-e",
+          "m": "aos-ac aos-f aos-e aos-ad aos-ae"
         }
       }
     }

@@ -92,12 +92,30 @@ export const schema: Schema = {
               's:lg:1': 20
             },
             borderRadius: {
-              's:sm:1': 14,
-              's:md:1': {
-                'bp:all': 25,
-                'bp:lg:1': 17
+              rounded: {
+                's:sm:1': 14,
+                's:md:1': {
+                  'bp:all': 25,
+                  'bp:lg:1': 17
+                },
+                's:lg:1': 25
               },
-              's:lg:1': 25
+              pill: {
+                's:sm:1': 14,
+                's:md:1': {
+                  'bp:all': 25,
+                  'bp:lg:1': 17
+                },
+                's:lg:1': 25
+              },
+              square: {
+                's:sm:1': 0,
+                's:md:1': {
+                  'bp:all': 0,
+                  'bp:lg:1': 0
+                },
+                's:lg:1': 0
+              }
             }
           },
           palettes: buildBySegment(segmentNames, (segmentName) => {

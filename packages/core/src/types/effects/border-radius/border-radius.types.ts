@@ -20,7 +20,7 @@ export type NumericWithSelected = NumericByInteractionState &
     selected: NumericByInteractionState;
   }>;
 
-export type BorderRadiusEffectMode = 'rounded' | 'full';
+export type BorderRadiusEffectMode = 'rounded' | 'pill' | 'square';
 
 // Effect schema for border-radius with optional transition control
 export type BorderRadiusEffectSchema = Partial<Record<BorderRadiusEffectMode, NumericWithSelected>>;

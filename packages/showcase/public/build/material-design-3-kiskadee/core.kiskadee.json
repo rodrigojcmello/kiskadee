@@ -2,35 +2,50 @@
   "$schema": "./core.kiskadee.schema.json",
   "button": {
     "e1": {
-      "d": "mk-dh",
+      "d": "mk-dq",
       "e": {
-        "h": "mk-eq mk-et mk-eu mk-es mk-er",
-        "rr": "mk-cz mk-db mk-dc mk-da mk-dg mk-de mk-df mk-dd",
-        "rf": "mk-cr mk-ct mk-cu mk-cs mk-cy mk-cw mk-cx mk-cv"
+        "h": "mk-ez mk-fc mk-fd mk-fb mk-fa",
+        "rr": "mk-da mk-dc mk-dd mk-db mk-dh mk-df mk-dg mk-de",
+        "rp": "mk-cs mk-cu mk-cv mk-ct mk-cz mk-cx mk-cy mk-cw",
+        "rs": "mk-di mk-dk mk-dl mk-dj mk-dp mk-dn mk-do mk-dm"
       },
       "s": {
-        "sm:1": "mk-ep mk-ea mk-eb mk-eg mk-u",
-        "md:1": "mk-el mk-dw mk-ec mk-eh mk-u",
-        "lg:1": "mk-em mk-dx mk-ed mk-ei mk-u",
-        "lg:2": "mk-en mk-dy mk-ee mk-ej mk-u",
-        "lg:3": "mk-eo mk-dz mk-ef mk-ek mk-u"
+        "sm:1": "mk-ey mk-ej mk-ek mk-ep mk-v",
+        "md:1": "mk-eu mk-ef mk-el mk-eq mk-v",
+        "lg:1": "mk-ev mk-eg mk-em mk-er mk-v",
+        "lg:2": "mk-ew mk-eh mk-en mk-es mk-v",
+        "lg:3": "mk-ex mk-ei mk-eo mk-et mk-v"
       },
       "r": {
-        "sm:1": "mk-cm",
-        "md:1": "mk-cn",
-        "lg:1": "mk-co",
-        "lg:2": "mk-cp",
-        "lg:3": "mk-cq"
+        "sm:1": "mk-ay",
+        "md:1": "mk-az",
+        "lg:1": "mk-ba",
+        "lg:2": "mk-bb",
+        "lg:3": "mk-bc"
+      },
+      "rp": {
+        "sm:1": "mk-ay",
+        "md:1": "mk-az",
+        "lg:1": "mk-ba",
+        "lg:2": "mk-bb",
+        "lg:3": "mk-bc"
+      },
+      "rs": {
+        "sm:1": "mk-u",
+        "md:1": "mk-u",
+        "lg:1": "mk-u",
+        "lg:2": "mk-u",
+        "lg:3": "mk-u"
       }
     },
     "e2": {
-      "d": "mk-fc",
+      "d": "mk-fl",
       "s": {
-        "sm:1": "mk-cl mk-ck",
-        "md:1": "mk-cl mk-ck",
-        "lg:1": "mk-ez mk-ew",
-        "lg:2": "mk-fa mk-ex",
-        "lg:3": "mk-fb mk-ey"
+        "sm:1": "mk-cr mk-cq",
+        "md:1": "mk-cr mk-cq",
+        "lg:1": "mk-fi mk-ff",
+        "lg:2": "mk-fj mk-fg",
+        "lg:3": "mk-fk mk-fh"
       }
     }
   }

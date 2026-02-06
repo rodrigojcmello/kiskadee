@@ -1,10 +1,12 @@
 import type {
   BreakpointValue,
   ElementSizeValue,
-  ScaleSchema,
+  ScaleProperty,
   StyleKeyByElement
 } from '@kiskadee/core';
 import { deepUpdate, buildStyleKey } from '../../utils';
+
+export type ScaleValue = Partial<Record<ElementSizeValue, Record<string, number> | number>> | number;
 
 /**
  * Converts an element's scale schema into style keys organized by size and breakpoint.
@@ -13,10 +15,12 @@ import { deepUpdate, buildStyleKey } from '../../utils';
  * numbers, and nested breakpoint overrides, generating style keys with
  * {@link buildStyleKey} for each dimension.
  *
- * @param scales - The ScaleSchema defining element dimension scales.
+ * @param scales - The scale definition keyed by scale property.
  * @returns A map from size and breakpoint tokens to arrays of style key strings.
  */
-export function convertElementScalesToStyleKeys(scales: ScaleSchema): StyleKeyByElement['scales'] {
+export function convertElementScalesToStyleKeys(
+  scales: Partial<Record<ScaleProperty, ScaleValue>>
+): StyleKeyByElement['scales'] {
   const styleKeys: StyleKeyByElement['scales'] = {};
 
   for (const [propertyName, propertyValue] of Object.entries(scales)) {
