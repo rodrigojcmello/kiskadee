@@ -87,14 +87,14 @@ export function Button() {
           intent="primary"
           title="Primary"
           fontName={fontName}
-          renderState={renderState}
+          buttonMeta={buttonMeta}
         />
 
         <ButtonStateSection
           intent="neutral"
           title="Neutral"
           fontName={fontName}
-          renderState={renderState}
+          buttonMeta={buttonMeta}
         />
 
         {/* Neutral */}

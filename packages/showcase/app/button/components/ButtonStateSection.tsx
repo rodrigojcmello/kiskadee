@@ -1,25 +1,22 @@
 'use client';
 
+import type { ButtonIntent, InteractionState } from '@kiskadee/core';
+import type { ManifestComponent } from '@kiskadee/web-builder/types';
 import { Button as KButton, SmoothText } from '@kiskadee/react-components';
 import { type ReactNode, useState } from 'react';
+import { Icon } from '@/components/Icon/Icon';
 import s from '../Button.module.scss';
 
-type RenderState = (
-  semantic: string,
-  emphasis: string,
-  state: string,
-  children: ReactNode
-) => ReactNode;
-
 type ButtonStateSectionProps = {
-  intent: 'primary' | 'neutral' | 'positive' | 'destructive';
+  intent: ButtonIntent;
   title: string;
   fontName: string;
-  renderState: RenderState;
+  buttonMeta?: ManifestComponent;
 };
 
 const EMPHASIS_ORDER = ['high', 'medium', 'low', 'lowest'] as const;
-const EMPHASIS_LABELS: Record<(typeof EMPHASIS_ORDER)[number], string> = {
+type Emphasis = (typeof EMPHASIS_ORDER)[number];
+const EMPHASIS_LABELS: Record<Emphasis, string> = {
   high: 'High',
   medium: 'Medium',
   low: 'Low',
@@ -30,17 +27,37 @@ export function ButtonStateSection({
   intent,
   title,
   fontName,
-  renderState
+  buttonMeta
 }: ButtonStateSectionProps) {
-  const [selectedMap, setSelectedMap] = useState<Record<string, boolean>>(() =>
-    EMPHASIS_ORDER.reduce(
-      (acc, emphasis) => ({ ...acc, [emphasis]: true }),
-      {} as Record<string, boolean>
-    )
-  );
+  const [selectedMap, setSelectedMap] = useState<Record<Emphasis, boolean>>(() => {
+    const initial = {} as Record<Emphasis, boolean>;
+    for (const emphasis of EMPHASIS_ORDER) {
+      initial[emphasis] = true;
+    }
+    return initial;
+  });
 
-  const toggleSelected = (emphasis: (typeof EMPHASIS_ORDER)[number]) => {
+  const toggleSelected = (emphasis: Emphasis) => {
     setSelectedMap((prev) => ({ ...prev, [emphasis]: !prev[emphasis] }));
+  };
+
+  const renderState = (emphasis: Emphasis, state: InteractionState, children: ReactNode) => {
+    const isSupported = (() => {
+      if (!buttonMeta?.state) return true;
+      const group = buttonMeta.state[intent]?.[emphasis];
+      if (!group) return false;
+      return Boolean(group[state]);
+    })();
+
+    if (isSupported) {
+      return children;
+    }
+
+    return (
+      <div className={s.missingState}>
+        <Icon name="NoSign" width={24} height={24} />
+      </div>
+    );
   };
 
   return (
@@ -54,7 +71,6 @@ export function ButtonStateSection({
           </h4>
           <div className={`${s['example-states']} k-root`}>
             {renderState(
-              intent,
               emphasis,
               'rest',
               <KButton emphasis={emphasis} intent={intent}>
@@ -64,7 +80,6 @@ export function ButtonStateSection({
               </KButton>
             )}
             {renderState(
-              intent,
               emphasis,
               'hover',
               <KButton emphasis={emphasis} intent={intent} status="hover">
@@ -74,7 +89,6 @@ export function ButtonStateSection({
               </KButton>
             )}
             {renderState(
-              intent,
               emphasis,
               'focus',
               <KButton emphasis={emphasis} intent={intent} status="focus">
@@ -84,7 +98,6 @@ export function ButtonStateSection({
               </KButton>
             )}
             {renderState(
-              intent,
               emphasis,
               'pressed',
               <KButton emphasis={emphasis} intent={intent} status="pressed">
@@ -94,7 +107,6 @@ export function ButtonStateSection({
               </KButton>
             )}
             {renderState(
-              intent,
               emphasis,
               selectedMap[emphasis] ? 'selected' : 'rest',
               <KButton
@@ -112,7 +124,6 @@ export function ButtonStateSection({
               </KButton>
             )}
             {renderState(
-              intent,
               emphasis,
               'disabled',
               <KButton emphasis={emphasis} intent={intent} status="disabled">
