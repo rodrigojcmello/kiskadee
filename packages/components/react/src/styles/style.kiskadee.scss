@@ -67,7 +67,7 @@ $props-active: padding, border-color, border-radius, box-shadow, --k-bg0, --k-bg
 $props-focus: outline-color, outline-width, outline-offset;
 $props-state: $props-active, background-color, color, $props-focus;
 $transition-state: padding var(--k-dur-int) var(--k-ease-out),
-background-color var(--k-dur-int-slow) var(--k-ease-out), // ease-in para transição de select/selected. ease-out para hover/focus/etc
+background-color var(--k-dur-int) var(--k-ease-out),
 border-color var(--k-dur-int) var(--k-ease-out),
 border-radius var(--k-dur-int) var(--k-ease-out),
 color var(--k-dur-int) var(--k-ease-out),
