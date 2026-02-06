@@ -22,7 +22,7 @@
   --k-dur-int: 180ms;
   --k-dur-int-slow: 240ms;
   --k-dur-theme: 800ms;
-  --k-ease-std: ease-out;
+  --k-ease-out: ease-out;
   --k-ease-in: ease-in;
   --k-ease-emph: cubic-bezier(0.2, 0, 1, 1);
 
@@ -46,7 +46,7 @@
 body {
   transition-property: background-color;
   transition-duration: var(--k-dur-theme);
-  transition-timing-function: var(--k-ease-std);
+  transition-timing-function: var(--k-ease-out);
 }
 
 /* Macro DS/theme transitions ("wow" effect) */
@@ -59,25 +59,25 @@ body {
   // If this is macOS-only, consider re-enabling it and/or reporting a bug to the Chrome team.
   transition-property: background-color, padding, margin, border-color, border-width, color, font-size, border-radius, box-shadow, outline-color, outline-width, outline-offset, grid-template-columns, --k-bg0, --k-bg1, --k-bg2 !important;
   transition-duration: var(--k-dur-theme) !important;
-  transition-timing-function: var(--k-ease-std) !important;
+  transition-timing-function: var(--k-ease-out) !important;
 }
 
 /* Interaction state transitions (hover/focus/pressed) */
 $props-active: padding, border-color, border-radius, box-shadow, --k-bg0, --k-bg1, --k-bg2;
 $props-focus: outline-color, outline-width, outline-offset;
 $props-state: $props-active, background-color, color, $props-focus;
-$transition-state: padding var(--k-dur-int) var(--k-ease-std),
-background-color var(--k-dur-int) var(--k-ease-std),
-border-color var(--k-dur-int) var(--k-ease-std),
-border-radius var(--k-dur-int) var(--k-ease-std),
-color var(--k-dur-int) var(--k-ease-std),
-box-shadow var(--k-dur-int) var(--k-ease-std),
---k-bg0 var(--k-dur-int) var(--k-ease-std),
---k-bg1 var(--k-dur-int) var(--k-ease-std),
---k-bg2 var(--k-dur-int) var(--k-ease-std),
-outline-color var(--k-dur-int-fast) var(--k-ease-std),
+$transition-state: padding var(--k-dur-int) var(--k-ease-out),
+background-color var(--k-dur-int) var(--k-ease-out),
+border-color var(--k-dur-int) var(--k-ease-out),
+border-radius var(--k-dur-int) var(--k-ease-out),
+color var(--k-dur-int) var(--k-ease-out),
+box-shadow var(--k-dur-int) var(--k-ease-out),
+--k-bg0 var(--k-dur-int) var(--k-ease-out),
+--k-bg1 var(--k-dur-int) var(--k-ease-out),
+--k-bg2 var(--k-dur-int) var(--k-ease-out),
+outline-color var(--k-dur-int-fast) var(--k-ease-out),
 outline-width var(--k-dur-int-xfast) var(--k-ease-in),
-outline-offset var(--k-dur-int-fast) var(--k-ease-std);
+outline-offset var(--k-dur-int-fast) var(--k-ease-out);
 
 .k-state {
   transition: $transition-state;
