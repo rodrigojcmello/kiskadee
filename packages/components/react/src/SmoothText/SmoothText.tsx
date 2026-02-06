@@ -26,6 +26,8 @@ export function SmoothText({ children, triggerKey, align, speed = 'slow' }: Smoo
   const [previous, setPrevious] = useState<ReactNode | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
 
+  console.log({ triggerKey });
+
   const lastTriggerKeyRef = useRef(triggerKey);
   const lastChildrenRef = useRef(children);
 
@@ -47,7 +49,7 @@ export function SmoothText({ children, triggerKey, align, speed = 'slow' }: Smoo
       }, ANIMATION_DURATION_BY_SPEED[speed]);
       return () => clearTimeout(timer);
     }
-  }, [triggerKey, children, speed]);
+  }, [triggerKey, children, speed, current]);
 
   return (
     <span className={styles.wrapper} data-align={align} data-speed={speed}>
