@@ -21,7 +21,9 @@
   --k-dur-int-fast: 120ms;
   --k-dur-int: 180ms;
   --k-dur-int-slow: 240ms;
+
   --k-dur-theme: 800ms;
+
   --k-ease-out: ease-out;
   --k-ease-in: ease-in;
   --k-ease-emph: cubic-bezier(0.2, 0, 1, 1);
@@ -40,6 +42,11 @@
 
 .k-root {
   font-family: var(--k-font-body);
+
+  // Ensure form controls inherit the global font stack instead of UA defaults.
+  button {
+    font-family: inherit;
+  }
 }
 
 /* Background tone / page background transitions (always on) */
@@ -62,30 +69,34 @@ body {
   transition-timing-function: var(--k-ease-out) !important;
 }
 
-/* Interaction state transitions (hover/focus/pressed) */
-$props-active: padding, border-color, border-radius, box-shadow, --k-bg0, --k-bg1, --k-bg2;
-$props-focus: outline-color, outline-width, outline-offset;
-$props-state: $props-active, background-color, color, $props-focus;
-$transition-state: padding var(--k-dur-int) var(--k-ease-out),
-background-color var(--k-dur-int) var(--k-ease-out),
+$transition-base: padding var(--k-dur-int) var(--k-ease-out),
 border-color var(--k-dur-int) var(--k-ease-out),
 border-radius var(--k-dur-int) var(--k-ease-out),
 color var(--k-dur-int) var(--k-ease-out),
 box-shadow var(--k-dur-int) var(--k-ease-out),
 --k-bg0 var(--k-dur-int) var(--k-ease-out),
 --k-bg1 var(--k-dur-int) var(--k-ease-out),
---k-bg2 var(--k-dur-int) var(--k-ease-out),
-outline-color var(--k-dur-int-fast) var(--k-ease-out),
+--k-bg2 var(--k-dur-int) var(--k-ease-out);
+
+$transition-focus: outline-color var(--k-dur-int-fast) var(--k-ease-out),
 outline-width var(--k-dur-int-xfast) var(--k-ease-in),
 outline-offset var(--k-dur-int-fast) var(--k-ease-out);
+
+$transition-state: $transition-base,
+$transition-focus,
+background-color var(--k-dur-int) var(--k-ease-out);
+
+$transition-pressed: $transition-base,
+$transition-focus,
+background-color var(--k-dur-int-xfast) var(--k-ease-in);
 
 .k-state {
   transition: $transition-state;
 }
 
-/* Active state skips text/background transitions to keep press feedback snappy. */
-:active {
-  transition-property: $props-active;
+/* Pressed state is a short-lived click feedback for non-toggle buttons (toggles use selected styles). */
+.k-pressed {
+  transition: $transition-pressed;
 }
 
 .no-transitions *,
@@ -111,7 +122,7 @@ outline-offset var(--k-dur-int-fast) var(--k-ease-out);
   outline-offset: calc(var(--k-focus-offset, 1) * 1px);
   position: relative;
 }
-
+ 
 button, a, [role="button"] {
   -webkit-tap-highlight-color: transparent;
 }

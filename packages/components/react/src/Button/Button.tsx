@@ -1,16 +1,16 @@
 import {
   type ButtonIntent,
   type ClassNameByElementJSON,
-  componentEmphasisBuckets,
-  type RadiusMode,
-  stateActivator as cn,
   type ComponentEmphasis,
+  stateActivator as cn,
+  componentEmphasisBuckets,
   type ElementSizeValue,
+  type RadiusMode,
   type StateActivatorKeys
 } from '@kiskadee/core';
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
 import { Button as HeadlessButton } from '@kiskadee/react-headless';
-import { memo, useMemo } from 'react';
+import { type MouseEvent, memo, useEffect, useMemo, useRef, useState } from 'react';
 import './Button.scss';
 import { useKiskadee } from '../contexts/KiskadeeContext';
 
@@ -41,6 +41,8 @@ export type ButtonProps = HeadlessButtonProps & {
   emphasis?: ComponentEmphasis;
   /** Semantic color family to use across ALL elements (e1, e2, e3, ...). Default is 'neutral'. */
   intent?: ButtonIntent;
+  /** Duration for the pressed visual state (ms). */
+  pressedDurationMs?: number;
 };
 
 // Build a single space-separated class string from flattened d and color classes (sizes handled in e1)
@@ -88,6 +90,8 @@ function Button(props: ButtonProps) {
     intent = 'neutral',
     tabIndex,
     label,
+    pressedDurationMs,
+    onClick,
     ...restProps
   } = props;
   const {
@@ -99,7 +103,15 @@ function Button(props: ButtonProps) {
   // Note: We always apply 's:all' and a size-specific scale.
   // If no `scale` prop is passed, we default to the median 's:md:1' so the button never renders without a scale.
 
-  const computed = useMemo<NonNullable<HeadlessButtonProps['classNames']>>(() => {
+  const [isPressed, setIsPressed] = useState(false);
+  const pressedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    return () => {
+      if (pressedTimeoutRef.current) clearTimeout(pressedTimeoutRef.current);
+    };
+  }, []);
+
+  const baseClassNames = useMemo<NonNullable<HeadlessButtonProps['classNames']>>(() => {
     const el1 = collectStr(e1, emphasis, intent);
     const el2 = collectStr(e2, emphasis, intent);
     const el3 = collectStr(e3, emphasis, intent);
@@ -109,18 +121,18 @@ function Button(props: ButtonProps) {
     // Include scales for e1 (root) and e2 (label).
     // Note: In core.kiskadee.json we store size keys without the "s:" prefix (e.g. "s:md:1" -> "md:1").
     const scaleKey = normalizeScaleKey(scale);
-    const sAllE1 = e1?.s?.['all'] ?? '';
+    const sAllE1 = e1?.s?.all ?? '';
     const sScaleE1 = e1?.s?.[scaleKey] ?? '';
-    const sAllE2 = e2?.s?.['all'] ?? '';
+    const sAllE2 = e2?.s?.all ?? '';
     const sScaleE2 = e2?.s?.[scaleKey] ?? '';
 
     const radiusMode = radius ?? global?.radius ?? 'rounded';
     const rAllE1 =
       radiusMode === 'rounded'
-        ? (e1?.r?.['all'] ?? '')
+        ? (e1?.r?.all ?? '')
         : radiusMode === 'pill'
-          ? (e1?.rp?.['all'] ?? '')
-          : (e1?.rs?.['all'] ?? '');
+          ? (e1?.rp?.all ?? '')
+          : (e1?.rs?.all ?? '');
     const rScaleE1 =
       radiusMode === 'rounded'
         ? (e1?.r?.[scaleKey] ?? '')
@@ -195,6 +207,12 @@ function Button(props: ButtonProps) {
     classNames.e3
   ]);
 
+  // k-pressed is short-lived click feedback for non-toggle buttons; toggles use selected styles.
+  const computed: NonNullable<HeadlessButtonProps['classNames']> = {
+    ...baseClassNames,
+    e1: `${baseClassNames.e1}${isPressed && controlState !== true ? ' k-pressed' : ''}`
+  };
+
   // Map Kiskadee status to native/ARIA attributes
   const ariaDisabled = restProps['aria-disabled'];
   let isDisabled: boolean | undefined;
@@ -211,6 +229,22 @@ function Button(props: ButtonProps) {
   const ariaPressed =
     restProps['aria-pressed'] ?? (toggle ? (controlState === true ? true : undefined) : undefined);
 
+  const resolvedPressedDurationMs = pressedDurationMs ?? 60;
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    if (isDisabled === true) return;
+
+    // Avoid k-pressed for toggles; selected state already communicates the click with a smoother transition.
+    if (controlState !== true) {
+      if (pressedTimeoutRef.current) clearTimeout(pressedTimeoutRef.current);
+      setIsPressed(true);
+      pressedTimeoutRef.current = setTimeout(() => {
+        setIsPressed(false);
+      }, resolvedPressedDurationMs);
+    }
+
+    onClick?.(event);
+  };
+
   return (
     <HeadlessButton
       {...restProps}
@@ -219,6 +253,7 @@ function Button(props: ButtonProps) {
       aria-disabled={ariaDisabled}
       aria-pressed={ariaPressed}
       classNames={computed}
+      onClick={handleClick}
       // Safari (macOS and iOS) requires tabIndex to support focus
       tabIndex={tabIndex ?? 0}
     />
