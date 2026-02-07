@@ -87,6 +87,7 @@ export function Button() {
           intent="primary"
           title="Primary"
           fontName={fontName}
+          align={alignment}
           buttonMeta={buttonMeta}
         />
 
@@ -94,6 +95,7 @@ export function Button() {
           intent="neutral"
           title="Neutral"
           fontName={fontName}
+          align={alignment}
           buttonMeta={buttonMeta}
         />
 

@@ -11,6 +11,7 @@ type ButtonStateSectionProps = {
   intent: ButtonIntent;
   title: string;
   fontName: string;
+  align?: 'left' | 'center';
   buttonMeta?: ManifestComponent;
 };
 
@@ -27,6 +28,7 @@ export function ButtonStateSection({
   intent,
   title,
   fontName,
+  align,
   buttonMeta
 }: ButtonStateSectionProps) {
   const [selectedMap, setSelectedMap] = useState<Record<Emphasis, boolean>>(() => {
@@ -75,7 +77,9 @@ export function ButtonStateSection({
               'rest',
               <KButton emphasis={emphasis} intent={intent}>
                 <KButton.Label>
-                  <SmoothText fontName={fontName}>Rest</SmoothText>
+                  <SmoothText fontName={fontName} align={align}>
+                    Rest
+                  </SmoothText>
                 </KButton.Label>
               </KButton>
             )}
@@ -84,7 +88,9 @@ export function ButtonStateSection({
               'hover',
               <KButton emphasis={emphasis} intent={intent} status="hover">
                 <KButton.Label>
-                  <SmoothText fontName={fontName}>Hover</SmoothText>
+                  <SmoothText fontName={fontName} align={align}>
+                    Hover
+                  </SmoothText>
                 </KButton.Label>
               </KButton>
             )}
@@ -93,7 +99,9 @@ export function ButtonStateSection({
               'focus',
               <KButton emphasis={emphasis} intent={intent} status="focus">
                 <KButton.Label>
-                  <SmoothText fontName={fontName}>Focus</SmoothText>
+                  <SmoothText fontName={fontName} align={align}>
+                    Focus
+                  </SmoothText>
                 </KButton.Label>
               </KButton>
             )}
@@ -102,7 +110,9 @@ export function ButtonStateSection({
               'pressed',
               <KButton emphasis={emphasis} intent={intent} status="pressed">
                 <KButton.Label>
-                  <SmoothText fontName={fontName}>Pressed</SmoothText>
+                  <SmoothText fontName={fontName} align={align}>
+                    Pressed
+                  </SmoothText>
                 </KButton.Label>
               </KButton>
             )}
@@ -117,7 +127,7 @@ export function ButtonStateSection({
                 onClick={() => toggleSelected(emphasis)}
               >
                 <KButton.Label>
-                  <SmoothText fontName={fontName} speed="fast">
+                  <SmoothText fontName={fontName} speed="fast" align={align}>
                     {selectedMap[emphasis] ? 'Selected' : 'Select'}
                   </SmoothText>
                 </KButton.Label>
@@ -128,7 +138,9 @@ export function ButtonStateSection({
               'disabled',
               <KButton emphasis={emphasis} intent={intent} status="disabled">
                 <KButton.Label>
-                  <SmoothText fontName={fontName}>Disabled</SmoothText>
+                  <SmoothText fontName={fontName} align={align}>
+                    Disabled
+                  </SmoothText>
                 </KButton.Label>
               </KButton>
             )}
