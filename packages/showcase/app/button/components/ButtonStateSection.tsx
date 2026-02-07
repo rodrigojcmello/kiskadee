@@ -75,7 +75,7 @@ export function ButtonStateSection({
               'rest',
               <KButton emphasis={emphasis} intent={intent}>
                 <KButton.Label>
-                  <SmoothText triggerKey={fontName}>Rest</SmoothText>
+                  <SmoothText fontName={fontName}>Rest</SmoothText>
                 </KButton.Label>
               </KButton>
             )}
@@ -84,7 +84,7 @@ export function ButtonStateSection({
               'hover',
               <KButton emphasis={emphasis} intent={intent} status="hover">
                 <KButton.Label>
-                  <SmoothText triggerKey={fontName}>Hover</SmoothText>
+                  <SmoothText fontName={fontName}>Hover</SmoothText>
                 </KButton.Label>
               </KButton>
             )}
@@ -93,7 +93,7 @@ export function ButtonStateSection({
               'focus',
               <KButton emphasis={emphasis} intent={intent} status="focus">
                 <KButton.Label>
-                  <SmoothText triggerKey={fontName}>Focus</SmoothText>
+                  <SmoothText fontName={fontName}>Focus</SmoothText>
                 </KButton.Label>
               </KButton>
             )}
@@ -102,7 +102,7 @@ export function ButtonStateSection({
               'pressed',
               <KButton emphasis={emphasis} intent={intent} status="pressed">
                 <KButton.Label>
-                  <SmoothText triggerKey={fontName}>Pressed</SmoothText>
+                  <SmoothText fontName={fontName}>Pressed</SmoothText>
                 </KButton.Label>
               </KButton>
             )}
@@ -117,7 +117,7 @@ export function ButtonStateSection({
                 onClick={() => toggleSelected(emphasis)}
               >
                 <KButton.Label>
-                  <SmoothText triggerKey={fontName} speed="fast">
+                  <SmoothText fontName={fontName} speed="fast">
                     {selectedMap[emphasis] ? 'Selected' : 'Select'}
                   </SmoothText>
                 </KButton.Label>
@@ -128,7 +128,7 @@ export function ButtonStateSection({
               'disabled',
               <KButton emphasis={emphasis} intent={intent} status="disabled">
                 <KButton.Label>
-                  <SmoothText triggerKey={fontName}>Disabled</SmoothText>
+                  <SmoothText fontName={fontName}>Disabled</SmoothText>
                 </KButton.Label>
               </KButton>
             )}

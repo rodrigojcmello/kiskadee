@@ -3,7 +3,7 @@ import styles from './SmoothText.module.scss';
 
 interface SmoothTextProps {
   children: ReactNode;
-  triggerKey?: string;
+  fontName?: string;
   /**
    * Controls the horizontal alignment of the text within its container.
    * Useful for animating alignment changes (e.g., center -> left) when switching themes/presets.
@@ -21,16 +21,16 @@ const ANIMATION_DURATION_BY_SPEED = {
   slow: 480
 } as const;
 
-export function SmoothText({ children, triggerKey, align, speed = 'slow' }: SmoothTextProps) {
+export function SmoothText({ children, fontName, align, speed = 'slow' }: SmoothTextProps) {
   const [current, setCurrent] = useState(children);
   const [previous, setPrevious] = useState<ReactNode | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const lastTriggerKeyRef = useRef(triggerKey);
+  const lastTriggerKeyRef = useRef(fontName);
   const lastChildrenRef = useRef(children);
 
   useEffect(() => {
-    const hasTriggerChanged = triggerKey !== lastTriggerKeyRef.current;
+    const hasTriggerChanged = fontName !== lastTriggerKeyRef.current;
     const hasChildrenChanged = children !== lastChildrenRef.current;
 
     if (hasTriggerChanged || hasChildrenChanged) {
@@ -38,7 +38,7 @@ export function SmoothText({ children, triggerKey, align, speed = 'slow' }: Smoo
       setCurrent(children);
       setIsAnimating(true);
 
-      lastTriggerKeyRef.current = triggerKey;
+      lastTriggerKeyRef.current = fontName;
       lastChildrenRef.current = children;
 
       const timer = setTimeout(() => {
@@ -47,7 +47,7 @@ export function SmoothText({ children, triggerKey, align, speed = 'slow' }: Smoo
       }, ANIMATION_DURATION_BY_SPEED[speed]);
       return () => clearTimeout(timer);
     }
-  }, [triggerKey, children, speed]);
+  }, [fontName, children, speed]);
 
   return (
     <span className={styles.wrapper} data-align={align} data-speed={speed}>
