@@ -78,9 +78,9 @@ box-shadow var(--k-dur-int) var(--k-ease-out),
 --k-bg1 var(--k-dur-int) var(--k-ease-out),
 --k-bg2 var(--k-dur-int) var(--k-ease-out);
 
-$transition-focus: outline-color var(--k-dur-int-fast) var(--k-ease-out),
-outline-width var(--k-dur-int-xfast) var(--k-ease-in),
-outline-offset var(--k-dur-int-fast) var(--k-ease-out);
+$transition-focus: outline-color 30ms var(--k-ease-out),
+outline-width 30ms var(--k-ease-out),
+outline-offset 0ms;
 
 $transition-state: $transition-base,
 $transition-focus,
@@ -122,7 +122,7 @@ background-color var(--k-dur-int-xfast) var(--k-ease-in);
   outline-offset: calc(var(--k-focus-offset, 1) * 1px);
   position: relative;
 }
- 
+
 button, a, [role="button"] {
   -webkit-tap-highlight-color: transparent;
 }
