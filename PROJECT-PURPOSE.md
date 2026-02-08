@@ -15,6 +15,15 @@ Kiskadee is a set of packages that:
 - provides headless components and reference React components,
 - includes a showcase for inspection and visual tests.
 
+## Effects vs. Decorations vs. Scales vs. Palettes (colors)
+
+Kiskadee’s schema separates visual concerns so components can opt in to effects without changing their semantic colors or layout rules.
+
+- **Palettes (colors):** The color system (intent, emphasis, state) that drives fills, text, and borders. This is the semantic layer.
+- **Scales:** Size/geometry scales (spacing, sizing, radius scales) used to normalize component sizing across a system.
+- **Decorations:** Structural, always-on styling rules that shape the base look (e.g., radius mode, border styles, typography mapping).
+- **Effects:** Opt-in, additive visuals (e.g., shadows, animated corners) that can be toggled per component without changing base colors.
+
 ## Monorepo projects and goals
 
 - `packages/core`
