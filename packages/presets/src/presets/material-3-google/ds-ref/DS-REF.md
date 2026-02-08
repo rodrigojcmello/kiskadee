@@ -52,11 +52,11 @@ On the Material documentation site, the UI preview shows a visible focus ring / 
 
 ![Material website focus ring](./img-04.png)
 
-In the Material 3 Figma ecosystem (UI kit + plugin outputs), this focus indication may not be represented in the same way (or may be omitted entirely in the assets we referenced):
+In the Material 3 Figma ecosystem, the focus border is present but needs to be enabled in the component settings:
 
-![Figma focus ring reference](./img-05.png)
+![Figma focus ring reference](./img-10.png)
 
-Decision: for Kiskadee, we follow the Material website as the reference for focus indication. By design, all focusable elements (including buttons) must render a visible border/outline in the `focus` state. Differences in the Figma ecosystem (especially in mobile-first assets) should not be interpreted as “no focus border”.
+Decision: for Kiskadee, we follow the Material website as the reference for focus indication. By design, all focusable elements (including buttons) must render a visible border/outline in the `focus` state. We keep the border at **2px** (not 3px) for visual balance; the 3px option in Figma reads too heavy in real products. In practice, Google surfaces like Google Search, Gmail, Google Drive, and Google Maps do not use a 3px focus border.
 
 ##### 2.3.1. Hover and focus overlays
 

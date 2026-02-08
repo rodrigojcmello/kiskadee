@@ -34,9 +34,9 @@ export const schema: Schema<Segments> = {
     fonts: {
       body: ['Roboto', 'sans-serif']
     },
-    // verified: 2026-02-02 | Figma v1.23
+    // verified: 2026-02-07 | Figma v1.23
     focus: {
-      width: 3, // =
+      width: 2, // !
       offset: 2 // =
     },
     radius: 'pill'
