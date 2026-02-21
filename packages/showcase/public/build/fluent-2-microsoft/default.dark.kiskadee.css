@@ -4,7 +4,7 @@
 .fm-i { background: #115EA3 }
 .fm-j.-d.-a { background: #141414 }
 .fm-m:focus-visible, .fm-m.-f.-a { background: #115EA3 }
-.fm-d:hover.-s, .fm-d.-s.-h.-a { background: #115EA3 }
-.fm-n:hover, .fm-n.-h.-a { background: #0F6CBD }
 .fm-c:active, .fm-c.-p.-a { background: #0C3B5E }
+.fm-d:hover:not(:active).-s, .fm-d.-s.-h.-a { background: #115EA3 }
 .fm-e:active.-s, .fm-e.-s.-p.-a { background: #0C3B5E }
+.fm-n:hover:not(:active), .fm-n.-h.-a { background: #0F6CBD }

@@ -305,6 +305,32 @@ The monorepo uses scripts from this package to keep artifacts and the showcase i
 2) Consume `core` and palette CSS in the app, and apply classes from `classNamesMapSplit`.
 3) Keep layout/structure in component code; the builder should only own visual identity.
 
+## Runtime vs CSS contract
+
+To keep behavior predictable and performance-oriented, Kiskadee follows this contract:
+
+- **Runtime decisions must come from JSON artifacts** (for example: `global.kiskadee.json`, `core.kiskadee.json`).
+- **CSS is the final visual layer** (presentation only), not the source of truth for runtime branching.
+
+### What belongs to runtime (JSON)
+
+- Interaction policy and behavior switches:
+  - ripple mode selection
+  - ripple origin (`center` vs `pointer`)
+  - input feedback mode (`pressed` vs `ripple`)
+  - pressed visual behavior (`state` vs `overlay`)
+
+### What belongs to CSS
+
+- Final styling values:
+  - colors, opacity, shadows, border radius, spacing
+  - animation timing/easing values used by style rules
+
+### Rule of thumb
+
+- Runtime must read behavior and runtime animation parameters from JSON artifacts.
+- Runtime must not read CSS variables/custom properties to decide runtime behavior or timing.
+
 ## Useful reference files
 
 - `packages/web-builder/src/index.ts` - orchestrates the pipeline phases.

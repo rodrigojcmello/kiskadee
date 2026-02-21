@@ -162,6 +162,13 @@ export function transformScaleKeyToCss(
   if (scaleProperty === 'borderWidth') {
     rule = `.${className} { --k-bw: ${cssValue}; ${cssProperty}: ${cssValue} }`;
   } else if (
+    scaleProperty === 'borderRadius' ||
+    scaleProperty === 'borderRadiusRounded' ||
+    scaleProperty === 'borderRadiusPill' ||
+    scaleProperty === 'borderRadiusSquare'
+  ) {
+    rule = `.${className} { --k-br: ${cssValue}; ${cssProperty}: ${cssValue} }`;
+  } else if (
     scaleProperty === 'paddingTop' ||
     scaleProperty === 'paddingRight' ||
     scaleProperty === 'paddingBottom' ||

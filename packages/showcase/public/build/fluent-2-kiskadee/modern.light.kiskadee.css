@@ -5,9 +5,9 @@
 .fk-y.-d.-a { --k-bg0: #EBEBEB; --k-bg1: #F0F0F0; }
 .-i:focus-visible .fk-bf, .-a.-f .fk-bf { color: #4E27F1 }
 .fk-ac:focus-visible, .fk-ac.-f.-a { --k-bg0: #E7E7FD; --k-bg1: #EBE7FD; }
-.-i:hover .fk-bg, .-a.-h .fk-bg { color: #FFF }
-.fk-ai:hover, .fk-ai.-h.-a { --k-bg0: #A0A1F8; --k-bg1: #B09FF9; }
-.fk-k:hover.-s, .fk-k.-s.-h.-a { --k-bg0: #0A0B8F; --k-bg1: #230990; }
 .-i:active .fk-bh, .-a.-p .fk-bh { color: #FFFC }
+.-i:hover:not(:active) .fk-bg, .-a.-h .fk-bg { color: #FFF }
+.fk-ai:hover:not(:active), .fk-ai.-h.-a { --k-bg0: #A0A1F8; --k-bg1: #B09FF9; }
 .fk-am:active, .fk-am.-p.-a { --k-bg0: #7071F5; --k-bg1: #896FF6; }
+.fk-k:hover:not(:active).-s, .fk-k.-s.-h.-a { --k-bg0: #0A0B8F; --k-bg1: #230990; }
 .fk-n:active.-s, .fk-n.-s.-p.-a { --k-bg0: #030430; --k-bg1: #0C0330; }

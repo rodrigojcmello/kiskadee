@@ -3,9 +3,5 @@
     "body": "\"IBM Plex Sans\", sans-serif",
     "heading": "\"IBM Plex Sans\", sans-serif"
   },
-  "focus": {
-    "width": 1,
-    "offset": -3
-  },
   "radius": "square"
 }

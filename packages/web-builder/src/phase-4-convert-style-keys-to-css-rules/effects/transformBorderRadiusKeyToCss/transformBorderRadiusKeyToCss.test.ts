@@ -18,13 +18,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded++s:md:1__18';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc { border-radius: 18px }');
+          expect(out).toEqual('.abc { --k-br: 18px; border-radius: 18px }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded++s:md:1__18';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc { border-radius: 18px }');
+          expect(out).toEqual('.abc { --k-br: 18px; border-radius: 18px }');
         });
       });
 
@@ -33,13 +33,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded++s:md:1::bp:lg:2__18';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('@media (min-width: 1312px) { .abc { border-radius: 18px } }');
+          expect(out).toEqual('@media (min-width: 1312px) { .abc { --k-br: 18px; border-radius: 18px } }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded++s:md:1::bp:lg:2__18';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('@media (min-width: 1312px) { .abc { border-radius: 18px } }');
+          expect(out).toEqual('@media (min-width: 1312px) { .abc { --k-br: 18px; border-radius: 18px } }');
         });
       });
 
@@ -48,13 +48,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded++s:sm:1__12';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc { border-radius: 12px }');
+          expect(out).toEqual('.abc { --k-br: 12px; border-radius: 12px }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded++s:sm:1__12';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc { border-radius: 12px }');
+          expect(out).toEqual('.abc { --k-br: 12px; border-radius: 12px }');
         });
       });
 
@@ -63,13 +63,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded--hover++s:md:1__22';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc:hover { border-radius: 22px }');
+          expect(out).toEqual('.abc:hover { --k-br: 22px; border-radius: 22px }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded--hover++s:md:1__22';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc:hover, .abc.-h.-a { border-radius: 22px }');
+          expect(out).toEqual('.abc:hover, .abc.-h.-a { --k-br: 22px; border-radius: 22px }');
         });
       });
 
@@ -79,14 +79,14 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded--selected:hover++s:md:1__6';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           // TODO: deveria ter o "-a"?!
-          expect(out).toEqual('.abc:hover.-s { border-radius: 6px }');
+          expect(out).toEqual('.abc:hover.-s { --k-br: 6px; border-radius: 6px }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded--selected:hover++s:md:1__6';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           // TODO: deveria ter o "-a"?!
-          expect(out).toEqual('.abc:hover.-s, .abc.-s.-h.-a { border-radius: 6px }');
+          expect(out).toEqual('.abc:hover.-s, .abc.-s.-h.-a { --k-br: 6px; border-radius: 6px }');
         });
       });
 
@@ -96,7 +96,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded--selected:hover++s:lg:1::bp:lg:2__4';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 1312px) { .abc:hover.-s { border-radius: 4px } }'
+            '@media (min-width: 1312px) { .abc:hover.-s { --k-br: 4px; border-radius: 4px } }'
           );
         });
         it('forceState=true', () => {
@@ -104,7 +104,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded--selected:hover++s:lg:1::bp:lg:2__4';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 1312px) { .abc:hover.-s, .abc.-s.-h.-a { border-radius: 4px } }'
+            '@media (min-width: 1312px) { .abc:hover.-s, .abc.-s.-h.-a { --k-br: 4px; border-radius: 4px } }'
           );
         });
       });
@@ -115,7 +115,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded--focus++s:lg:1::bp:md:3__18';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 1024px) { .abc:focus-visible { border-radius: 18px } }'
+            '@media (min-width: 1024px) { .abc:focus-visible { --k-br: 18px; border-radius: 18px } }'
           );
         });
         it('forceState=true', () => {
@@ -123,7 +123,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded--focus++s:lg:1::bp:md:3__18';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 1024px) { .abc:focus-visible, .abc.-f.-a { border-radius: 18px } }'
+            '@media (min-width: 1024px) { .abc:focus-visible, .abc.-f.-a { --k-br: 18px; border-radius: 18px } }'
           );
         });
       });
@@ -133,13 +133,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded--pressed++s:sm:1__14';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc:active { border-radius: 14px }');
+          expect(out).toEqual('.abc:active { --k-br: 14px; border-radius: 14px }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded--pressed++s:sm:1__14';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc:active, .abc.-p.-a { border-radius: 14px }');
+          expect(out).toEqual('.abc:active, .abc.-p.-a { --k-br: 14px; border-radius: 14px }');
         });
       });
     });
@@ -169,13 +169,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded__20';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc { border-radius: 20px }');
+          expect(out).toEqual('.abc { --k-br: 20px; border-radius: 20px }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded__20';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc { border-radius: 20px }');
+          expect(out).toEqual('.abc { --k-br: 20px; border-radius: 20px }');
         });
       });
 
@@ -184,13 +184,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded--hover__24';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc:hover { border-radius: 24px }');
+          expect(out).toEqual('.abc:hover { --k-br: 24px; border-radius: 24px }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded--hover__24';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc:hover, .abc.-h.-a { border-radius: 24px }');
+          expect(out).toEqual('.abc:hover, .abc.-h.-a { --k-br: 24px; border-radius: 24px }');
         });
       });
 
@@ -199,13 +199,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded--selected:hover__12';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc:hover.-s { border-radius: 12px }');
+          expect(out).toEqual('.abc:hover.-s { --k-br: 12px; border-radius: 12px }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded--selected:hover__12';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc:hover.-s, .abc.-s.-h.-a { border-radius: 12px }');
+          expect(out).toEqual('.abc:hover.-s, .abc.-s.-h.-a { --k-br: 12px; border-radius: 12px }');
         });
       });
 
@@ -214,13 +214,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded--disabled__10';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc.-d.-a { border-radius: 10px }');
+          expect(out).toEqual('.abc.-d.-a { --k-br: 10px; border-radius: 10px }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded--disabled__10';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc.-d.-a { border-radius: 10px }');
+          expect(out).toEqual('.abc.-d.-a { --k-br: 10px; border-radius: 10px }');
         });
       });
     });
@@ -244,13 +244,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded==hover__12';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-i:hover .abc { border-radius: 12px }');
+          expect(out).toEqual('.-i:hover .abc { --k-br: 12px; border-radius: 12px }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded==hover__12';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-i:hover .abc, .-a.-h \.abc { border-radius: 12px }'.replace(' \\.',' .'));
+          expect(out).toEqual('.-i:hover .abc, .-a.-h \.abc { --k-br: 12px; border-radius: 12px }'.replace(' \\.',' .'));
         });
       });
 
@@ -259,13 +259,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded==focus__6';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-i:focus-visible .abc { border-radius: 6px }');
+          expect(out).toEqual('.-i:focus-visible .abc { --k-br: 6px; border-radius: 6px }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded==focus__6';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-i:focus-visible .abc, .-a.-f .abc { border-radius: 6px }');
+          expect(out).toEqual('.-i:focus-visible .abc, .-a.-f .abc { --k-br: 6px; border-radius: 6px }');
         });
       });
 
@@ -274,14 +274,14 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded==selected:hover__8';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-i:hover.-s .abc { border-radius: 8px }');
+          expect(out).toEqual('.-i:hover.-s .abc { --k-br: 8px; border-radius: 8px }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded==selected:hover__8';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '.-i:hover.-s .abc, .-a.-s.-h \.abc { border-radius: 8px }'.replace(' \\.', ' .')
+            '.-i:hover.-s .abc, .-a.-s.-h \.abc { --k-br: 8px; border-radius: 8px }'.replace(' \\.', ' .')
           );
         });
       });
@@ -291,13 +291,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded==disabled__14';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-a.-d \.abc { border-radius: 14px }'.replace(' \\.', ' .'));
+          expect(out).toEqual('.-a.-d \.abc { --k-br: 14px; border-radius: 14px }'.replace(' \\.', ' .'));
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded==disabled__14';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-a.-d .abc { border-radius: 14px }');
+          expect(out).toEqual('.-a.-d .abc { --k-br: 14px; border-radius: 14px }');
         });
       });
 
@@ -306,13 +306,13 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded==hover++s:md:1__14';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-i:hover \.abc { border-radius: 14px }'.replace(' \\.', ' .'));
+          expect(out).toEqual('.-i:hover \.abc { --k-br: 14px; border-radius: 14px }'.replace(' \\.', ' .'));
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded==hover++s:md:1__14';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-i:hover .abc, .-a.-h .abc { border-radius: 14px }');
+          expect(out).toEqual('.-i:hover .abc, .-a.-h .abc { --k-br: 14px; border-radius: 14px }');
         });
       });
 
@@ -322,7 +322,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded==hover++s:md:1::bp:lg:2__16';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 1312px) { .-i:hover .abc { border-radius: 16px } }'
+            '@media (min-width: 1312px) { .-i:hover .abc { --k-br: 16px; border-radius: 16px } }'
           );
         });
         it('forceState=true', () => {
@@ -330,7 +330,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded==hover++s:md:1::bp:lg:2__16';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 1312px) { .-i:hover .abc, .-a.-h \\.abc { border-radius: 16px } }'.replace(
+            '@media (min-width: 1312px) { .-i:hover .abc, .-a.-h \\.abc { --k-br: 16px; border-radius: 16px } }'.replace(
               ' \\.',
               ' .'
             )
@@ -344,7 +344,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded==focus++s:lg:1::bp:md:2__10';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 768px) { .-i:focus-visible .abc { border-radius: 10px } }'
+            '@media (min-width: 768px) { .-i:focus-visible .abc { --k-br: 10px; border-radius: 10px } }'
           );
         });
         it('forceState=true', () => {
@@ -352,7 +352,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded==focus++s:lg:1::bp:md:2__10';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 768px) { .-i:focus-visible \.abc, .-a.-f \.abc { border-radius: 10px } }'.replace(' \\.', ' .')
+            '@media (min-width: 768px) { .-i:focus-visible \.abc, .-a.-f \.abc { --k-br: 10px; border-radius: 10px } }'.replace(' \\.', ' .')
           );
         });
       });
@@ -363,7 +363,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded==selected:focus++s:sm:1::bp:md:2__8';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 768px) { .-i:focus-visible.-s .abc { border-radius: 8px } }'
+            '@media (min-width: 768px) { .-i:focus-visible.-s .abc { --k-br: 8px; border-radius: 8px } }'
           );
         });
         it('forceState=true', () => {
@@ -371,7 +371,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded==selected:focus++s:sm:1::bp:md:2__8';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 768px) { .-i:focus-visible.-s .abc, .-a.-s.-f .abc { border-radius: 8px } }'
+            '@media (min-width: 768px) { .-i:focus-visible.-s .abc, .-a.-s.-f .abc { --k-br: 8px; border-radius: 8px } }'
           );
         });
       });

@@ -7,6 +7,12 @@ import { createContext, forwardRef, useContext, useMemo } from 'react';
 
 export type ButtonClassNames = Partial<Record<'e1' | 'e2' | 'e3', string>>;
 
+type ButtonDataAttributes = {
+  [key: `data-${string}`]: string | number | boolean | undefined;
+};
+
+type ButtonUnsafeAttributes = Record<string, string | number | boolean | undefined>;
+
 export type ButtonProps = {
   /**
    * Class names by compact element keys for styling integration.
@@ -20,7 +26,13 @@ export type ButtonProps = {
   /** Optional icon element. Rendered before the label by default. */
   icon?: ReactNode;
   children?: ReactNode;
-} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'>;
+  /**
+   * Escape hatch for uncommon attributes not covered by native button typings.
+   * Prefer native props and data-* attributes whenever possible.
+   */
+  unsafeAttrs?: ButtonUnsafeAttributes;
+} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> &
+  ButtonDataAttributes;
 
 export type ButtonLabelProps = HTMLAttributes<HTMLSpanElement>;
 export type ButtonIconProps = HTMLAttributes<HTMLSpanElement>;
@@ -87,7 +99,7 @@ const ButtonIcon = forwardRef<HTMLSpanElement, ButtonIconProps>(function ButtonI
  * - Accepts native attributes like disabled and ARIA props (aria-pressed, aria-disabled) directly.
  */
 const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { classNames = {}, label, icon, type = 'button', children, ...rest },
+  { classNames = {}, label, icon, type = 'button', children, unsafeAttrs, ...rest },
   ref
 ) {
   const { e1, e2, e3 } = classNames;
@@ -99,7 +111,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
 
   return (
     <ButtonContext.Provider value={contextValue}>
-      <button {...rest} ref={ref} type={type} className={e1}>
+      <button {...rest} {...unsafeAttrs} ref={ref} type={type} className={e1}>
         {children ? (
           children
         ) : (

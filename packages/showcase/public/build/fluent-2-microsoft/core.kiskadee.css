@@ -1,4 +1,4 @@
-.fm-a { border-radius: 4px }
+.fm-a { --k-br: 4px; border-radius: 4px }
 .fm-aa { --k-pt: 8px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
 .fm-ak { line-height: 16px }
 .fm-al { line-height: 20px }
@@ -7,7 +7,7 @@
 .fm-ao { font-size: 0.875rem }
 .fm-ap { font-size: 1rem }
 .fm-aq { font-weight: 500 }
-.fm-b { border-radius: 0px }
+.fm-b { --k-br: 0px; border-radius: 0px }
 .fm-g { border-style: none }
 .fm-p { --k-pb: 2px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
 .fm-q { --k-pb: 6px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }

@@ -200,6 +200,6 @@ export function transformBorderRadiusKeyToCss(
   // Assemble the final CSS rule: join selectors by comma and emit border-radius with the parsed px value.
   const selectors = isRef ? buildRefSelectors() : buildInlineSelectors();
   const selector = selectors.join(', ');
-  const rule = `${selector} { border-radius: ${px}px }`;
+  const rule = `${selector} { --k-br: ${px}px; border-radius: ${px}px }`;
   return mediaQuery ? `${mediaQuery} { ${rule} }` : rule;
 }

@@ -1,4 +1,9 @@
-import type { ComponentClassNameMapJSON, RadiusMode, ThemeMode } from '@kiskadee/core';
+import type {
+  ComponentClassNameMapJSON,
+  RadiusMode,
+  RippleEffectSchema,
+  ThemeMode
+} from '@kiskadee/core';
 import { createContext, useContext } from 'react';
 
 export type KiskadeeContextValue = {
@@ -12,6 +17,11 @@ export type KiskadeeContextValue = {
   setDesignSystem: (value: string) => void;
   global?: {
     radius?: RadiusMode;
+    // [RIPPLE EFFECT 16] START: Global ripple config exposed to React components.
+    effects?: {
+      ripple?: RippleEffectSchema;
+    };
+    // [RIPPLE EFFECT 16] END: Global ripple config exposed to React components.
   };
 };
 

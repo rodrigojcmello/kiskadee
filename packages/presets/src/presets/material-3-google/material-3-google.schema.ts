@@ -39,7 +39,75 @@ export const schema: Schema<Segments> = {
       width: 2, // !
       offset: 2 // =
     },
-    radius: 'pill'
+    radius: 'pill',
+    effects: {
+      ripple: {
+        mode: 'surface',
+        origin: 'pointer',
+        inputFeedback: {
+          mouse: 'pressed',
+          keyboard: 'pressed'
+        },
+        pressedVisual: 'overlay',
+        overlayAlphaByEmphasis: {
+          high: 0.15,
+          medium: 0.06,
+          low: 0.05,
+          lowest: 0.05
+        },
+        profiles: {
+          surface: {
+            animateSize: true,
+            size: 'auto',
+            durationToken: 'interaction.slow',
+            curveToken: 'motion.emphasized.out',
+            fade: {
+              delayToken: 'interaction.hold.short',
+              durationToken: 'interaction.fade.short',
+              curveToken: 'motion.standard.out'
+            },
+            fillToken: 'surface'
+          },
+          overflow: {
+            animateSize: true,
+            size: 80,
+            durationToken: 'interaction.fast',
+            curveToken: 'motion.standard.out',
+            fade: {
+              delayToken: 'interaction.hold.short',
+              durationToken: 'interaction.fade.short',
+              curveToken: 'motion.standard.out'
+            },
+            fillToken: 'overflow'
+          },
+          overflowStatic: {
+            animateSize: false,
+            size: 80,
+            durationToken: 'interaction.instant',
+            fade: {
+              delayToken: 'interaction.hold.short',
+              durationToken: 'interaction.fade.long',
+              curveToken: 'motion.standard.out'
+            },
+            fillToken: 'overflowStatic',
+            border: { width: 1, colorToken: 'overflowStaticBorder' }
+          },
+          pressed: {
+            animateSize: false,
+            size: 'auto',
+            // Slightly longer hold to keep mouse/trackpad tap feedback visible.
+            durationToken: 'interaction.hold.short',
+            curveToken: 'motion.standard.out',
+            fade: {
+              delayToken: 'interaction.hold.short',
+              durationToken: 'interaction.fade.long',
+              curveToken: 'motion.standard.out'
+            },
+            fillToken: 'surface'
+          }
+        }
+      }
+    }
   },
   themeTokens: {
     palettes: {
@@ -47,7 +115,27 @@ export const schema: Schema<Segments> = {
         light: {
           // background: c('default', 'l', 'primitive.black.v1', 4),
           // verified: 2026-02-02 | Figma v1.23
-          focusColor: c('default', 'l', 'primary.v2', 60) // =
+          focusColor: c('default', 'l', 'primary.v2', 60), // =
+          effects: {
+            ripple: {
+              surface: {
+                color: '#000000',
+                opacity: 0.12
+              },
+              overflow: {
+                color: '#0481FF',
+                opacity: 0.15
+              },
+              overflowStatic: {
+                color: '#0481FF',
+                opacity: 0.15
+              },
+              overflowStaticBorder: {
+                color: '#0481FF',
+                opacity: 0.3
+              }
+            }
+          }
         }
         // dark: {
         //   background: c('default', 'd', 'primitive.black.v1', 85),
@@ -141,38 +229,38 @@ export const schema: Schema<Segments> = {
                     // It matches Material "filled button"
                     // verified: 2026-01-31 | Figma v1.23
                     high: {
-                      rest: c(s, 'l', 'button.primary', 60), // match
-                      focus: c(s, 'l', 'button.primary', 60),
-                      hover: c(s, 'l', 'button.primary', 55),
-                      pressed: c(s, 'l', 'button.primary', 70),
+                      rest: c(s, 'l', 'button.primary', 60), // =
+                      focus: c(s, 'l', 'button.primary', 55), // !
+                      hover: c(s, 'l', 'button.primary', 55), // !
+                      pressed: c(s, 'l', 'button.primary', 55), // !
                       disabled: c(s, 'l', 'button.neutral', 90, 10) // match
                     },
                     // It matches Material "toggle button (normal* / elevated*)"
                     // verified: 2026-01-31 | Figma v1.23
                     medium: {
-                      rest: c(s, 'l', 'button.neutral', 4), // match
-                      focus: c(s, 'l', 'button.neutral', 4),
-                      hover: c(s, 'l', 'button.neutral', 6),
-                      pressed: c(s, 'l', 'button.neutral', 8),
-                      disabled: c(s, 'l', 'button.neutral', 90, 10), // match
+                      rest: c(s, 'l', 'button.neutral', 4), // =
+                      focus: c(s, 'l', 'button.neutral', 6), // !
+                      hover: c(s, 'l', 'button.neutral', 6), // !
+                      pressed: c(s, 'l', 'button.neutral', 6), // !
+                      disabled: c(s, 'l', 'button.neutral', 90, 10), // =
                       selected: {
-                        rest: c(s, 'l', 'button.primary', 60), // match
+                        rest: c(s, 'l', 'button.primary', 60), // =
                         hover: c(s, 'l', 'button.primary', 55),
-                        pressed: c(s, 'l', 'button.primary', 70)
+                        pressed: c(s, 'l', 'button.primary', 55)
                       }
                     },
                     // It matches Material "outlined button (primary*)"
                     // verified: 2026-02-01 | Figma v1.23
                     low: {
                       rest: transparent, // match
-                      focus: transparent,
+                      focus: c(s, 'l', 'button.neutral', 2),
                       hover: c(s, 'l', 'button.neutral', 2),
-                      pressed: c(s, 'l', 'button.neutral', 5),
+                      pressed: c(s, 'l', 'button.neutral', 2),
                       disabled: c(s, 'l', 'button.neutral', 90, 10), // match
                       selected: {
-                        rest: c(s, 'l', 'button.neutral', 80), // match
-                        hover: c(s, 'l', 'button.neutral', 75),
-                        pressed: c(s, 'l', 'button.neutral', 90)
+                        rest: c(s, 'l', 'button.neutral', 60), // match
+                        hover: c(s, 'l', 'button.neutral', 55),
+                        pressed: c(s, 'l', 'button.neutral', 55)
                       }
                     },
                     // It matches Material "button text"
@@ -180,17 +268,17 @@ export const schema: Schema<Segments> = {
                     lowest: {
                       rest: transparent, // =
                       focus: c(s, 'l', 'button.primary', 60, 8), // =
-                      hover: c(s, 'l', 'button.primary', 60, 8),
-                      pressed: c(s, 'l', 'button.primary', 60, 16),
+                      hover: c(s, 'l', 'button.primary', 60, 8), // !
+                      pressed: c(s, 'l', 'button.primary', 60, 8), // !
                       disabled: c(s, 'l', 'button.neutral', 90, 10) // =
                     }
                   },
                   neutral: {
                     high: {
                       rest: c(s, 'l', 'primary.v2', 60),
-                      focus: c(s, 'l', 'primary.v2', 60),
+                      focus: c(s, 'l', 'primary.v2', 55),
                       hover: c(s, 'l', 'primary.v2', 55),
-                      pressed: c(s, 'l', 'primary.v2', 70),
+                      pressed: c(s, 'l', 'primary.v2', 55),
                       disabled: c(s, 'l', 'primitive.black.v1', 90, 12),
                       selected: {
                         rest: c(s, 'l', 'primary.v2', 50),
@@ -200,9 +288,9 @@ export const schema: Schema<Segments> = {
                     },
                     medium: {
                       rest: c(s, 'l', 'neutral', 10),
-                      focus: c(s, 'l', 'neutral', 10),
-                      hover: c(s, 'l', 'neutral', 8),
-                      pressed: c(s, 'l', 'neutral', 15),
+                      focus: c(s, 'l', 'neutral', 6),
+                      hover: c(s, 'l', 'neutral', 6),
+                      pressed: c(s, 'l', 'neutral', 6),
                       disabled: c(s, 'l', 'primitive.black.v1', 90, 12),
                       selected: {
                         rest: c(s, 'l', 'neutral', 60),
@@ -212,9 +300,9 @@ export const schema: Schema<Segments> = {
                     },
                     low: {
                       rest: transparent,
-                      focus: c(s, 'l', 'neutral', 3),
-                      hover: c(s, 'l', 'neutral', 3),
-                      pressed: c(s, 'l', 'neutral', 5),
+                      focus: c(s, 'l', 'neutral', 2),
+                      hover: c(s, 'l', 'neutral', 2),
+                      pressed: c(s, 'l', 'neutral', 2),
                       disabled: transparent,
                       selected: {
                         rest: c(s, 'l', 'neutral', 60),
@@ -224,9 +312,9 @@ export const schema: Schema<Segments> = {
                     },
                     lowest: {
                       rest: transparent,
-                      focus: c(s, 'l', 'neutral', 3),
-                      hover: c(s, 'l', 'neutral', 3),
-                      pressed: c(s, 'l', 'neutral', 5),
+                      focus: c(s, 'l', 'neutral', 2),
+                      hover: c(s, 'l', 'neutral', 2),
+                      pressed: c(s, 'l', 'neutral', 2),
                       disabled: transparent
                     }
                   }
@@ -421,6 +509,7 @@ export const schema: Schema<Segments> = {
                 }
               }
             },
+            ripple: true,
             shadow: {
               // MD3-like elevation: medium at rest, stronger on hover/pressed, focused similar to hover.
               // x stays 0 to avoid lateral drift; y and blur increase with intensity. Color stays black with varying alphas.

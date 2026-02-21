@@ -10,6 +10,29 @@ export type {
   NumericWithSelected,
   ResponsiveNumeric
 } from './types/effects/border-radius/border-radius.types';
+// [RIPPLE EFFECT 8] START: Public ripple type exports.
+export type {
+  RippleEffectSchema,
+  RippleInputFeedback,
+  RippleMotionCurveToken,
+  RippleMotionDurationToken,
+  RippleMode,
+  RipplePressedVisual,
+  RippleProfile,
+  RippleOrigin
+} from './types/effects/ripple/ripple.types';
+export {
+  DEFAULT_PRESSED_RIPPLE_PROFILE,
+  DEFAULT_RIPPLE_PROFILES,
+  RIPPLE_DURATION_TOKEN_TO_MS
+} from './types/effects/ripple/ripple.constants';
+export {
+  resolveRippleDurationMs,
+  resolvePressedRippleProfile,
+  resolveRippleProfile,
+  resolveRippleProfileKey
+} from './types/effects/ripple/ripple.utils';
+// [RIPPLE EFFECT 8] END: Public ripple type exports.
 export * from './types/effects/shadow/shadow.types';
 export * from './types/scales/scales.types';
 export * from './utils/color';

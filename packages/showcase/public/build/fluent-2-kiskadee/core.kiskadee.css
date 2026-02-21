@@ -1,4 +1,4 @@
-.fk-a { border-radius: 4px }
+.fk-a { --k-br: 4px; border-radius: 4px }
 .fk-an { --k-pb: 2px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
 .fk-ao { --k-pb: 6px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
 .fk-ap { --k-pb: 8px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
@@ -18,5 +18,5 @@
 .fk-bm { font-size: 0.875rem }
 .fk-bn { font-size: 1rem }
 .fk-bo { font-weight: 500 }
-.fk-c { border-radius: 0px }
+.fk-c { --k-br: 0px; border-radius: 0px }
 .fk-t { border-style: none }

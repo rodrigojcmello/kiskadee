@@ -244,10 +244,16 @@ function generateCssRegistrySource(manifests) {
   for (const m of manifests) {
     const coreCss = `${showcaseBuildBase}/${m.key}/core.kiskadee.css`;
     const effectsCss = `${showcaseBuildBase}/${m.key}/effects.kiskadee.css`;
+    const globalTokensFile = 'tokens.kiskadee.css';
+    const globalTokensPhysicalPath = path.join(webBuilderBuildDir, m.key, globalTokensFile);
+    const globalTokensCss = fs.existsSync(globalTokensPhysicalPath)
+      ? `${showcaseBuildBase}/${m.key}/${globalTokensFile}`
+      : null;
 
     lines.push(`  '${m.key}': {`);
     lines.push(`    core: '${coreCss}',`);
     lines.push(`    effects: '${effectsCss}',`);
+    lines.push(`    tokens: ${globalTokensCss ? `'${globalTokensCss}'` : 'null'},`);
     lines.push('    palettes: {');
 
     for (const segment of m.segments || []) {
@@ -257,6 +263,21 @@ function generateCssRegistrySource(manifests) {
         const file = `${segment}.${theme}.kiskadee.css`;
         const url = `${showcaseBuildBase}/${m.key}/${file}`;
         lines.push(`      '${paletteKey}': '${url}',`);
+      }
+    }
+
+    lines.push('    },');
+    lines.push('    tokenPalettes: {');
+
+    for (const segment of m.segments || []) {
+      const themes = m.themes?.[segment] || [];
+      for (const theme of themes) {
+        const tokenPaletteKey = `${segment}|${theme}`;
+        const tokenFile = `tokens.${segment}.${theme}.kiskadee.css`;
+        const tokenPhysicalPath = path.join(webBuilderBuildDir, m.key, tokenFile);
+        if (!fs.existsSync(tokenPhysicalPath)) continue;
+        const tokenUrl = `${showcaseBuildBase}/${m.key}/${tokenFile}`;
+        lines.push(`      '${tokenPaletteKey}': '${tokenUrl}',`);
       }
     }
 

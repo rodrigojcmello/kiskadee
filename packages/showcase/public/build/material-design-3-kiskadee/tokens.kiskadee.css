@@ -1,0 +1,8 @@
+:root {
+  --k-focus-width: 2;
+  --k-focus-offset: 2;
+  --k-ripple-alpha-h: 0.15;
+  --k-ripple-alpha-m: 0.06;
+  --k-ripple-alpha-l: 0.05;
+  --k-ripple-alpha-ll: 0.05;
+}

@@ -1,4 +1,4 @@
-import type { RadiusMode, ThemeMode } from '@kiskadee/core';
+import type { RadiusMode, RippleEffectSchema, ThemeMode } from '@kiskadee/core';
 import { useEffect, useState } from 'react';
 import { extraMaps, paletteIndex } from '@/registry/design-systems.registry';
 import type { DesignSystemKey } from '@/registry/registry-utils';
@@ -6,111 +6,65 @@ import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 
 type BackgroundTones = Partial<Record<ThemeMode, string | undefined>>;
 
-// Cache for focusColor values loaded from extra.<segment>.<theme>.kiskadee.json
-const focusRingCache: Partial<Record<string, string>> = {};
-
-// Cache for global focus metrics loaded from <ds>/global.kiskadee.json
-const focusGlobalCache: Partial<Record<string, { width?: number; offset?: number }>> = {};
+// Cache for global radius/ripple metadata loaded from <ds>/global.kiskadee.json
 const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
+const rippleGlobalCache: Partial<Record<string, RippleEffectSchema | null>> = {};
 
 export function useThemeExtras({
   designSystem,
-  segment,
-  theme
+  segment
 }: {
   designSystem: DesignSystemKey;
   segment: string;
-  theme: ThemeMode;
 }) {
   const [backgroundsByTheme, setBackgroundsByTheme] = useState<BackgroundTones>({});
   const [globalRadius, setGlobalRadius] = useState<RadiusMode | undefined>(undefined);
+  const [globalRipple, setGlobalRipple] = useState<RippleEffectSchema | undefined>(undefined);
 
-  // Load global focus metrics and expose as CSS custom properties.
+  // Load global radius/ripple metadata.
   useEffect(() => {
-    if (typeof document === 'undefined') return;
-
     let cancelled = false;
 
-    const loadFocusGlobals = async () => {
+    const loadGlobals = async () => {
       const dsKey = String(designSystem);
       if (!dsKey) return;
 
-      let focus = focusGlobalCache[dsKey];
       const hasRadius = Object.prototype.hasOwnProperty.call(radiusGlobalCache, dsKey);
       let radius = radiusGlobalCache[dsKey] ?? undefined;
-      if (!focus || !hasRadius) {
+      const hasRipple = Object.prototype.hasOwnProperty.call(rippleGlobalCache, dsKey);
+      let ripple = rippleGlobalCache[dsKey] ?? undefined;
+      if (!hasRadius || !hasRipple) {
         try {
           const json = await loadJsonFromBuild<{
-            focus?: { width?: number; offset?: number };
             radius?: RadiusMode;
+            effects?: { ripple?: RippleEffectSchema };
           }>(
             `${dsKey}/global.kiskadee.json`,
             { required: false, fallback: {} }
           );
-          focus = json.focus;
-          focusGlobalCache[dsKey] = focus ?? {};
           radius = json.radius;
           radiusGlobalCache[dsKey] = radius ?? null;
-        } catch {
-          focusGlobalCache[dsKey] = {};
-          radiusGlobalCache[dsKey] = null;
+          ripple = json.effects?.ripple;
+          rippleGlobalCache[dsKey] = ripple ?? null;
+        } catch (error) {
+          console.warn(
+            `[showcase] Failed to load global artifact for "${dsKey}". Retrying on next mount/selection change.`,
+            error
+          );
         }
       }
 
       if (cancelled) return;
-
-      const root = document.documentElement;
-      if (focus?.width !== undefined) root.style.setProperty('--k-focus-width', String(focus.width));
-      if (focus?.offset !== undefined) root.style.setProperty('--k-focus-offset', String(focus.offset));
       setGlobalRadius(radius);
+      setGlobalRipple(ripple);
     };
 
-    void loadFocusGlobals();
+    void loadGlobals();
 
     return () => {
       cancelled = true;
     };
   }, [designSystem]);
-
-  // Load focus color from extra artifacts registry and expose as CSS custom property.
-  useEffect(() => {
-    if (typeof document === 'undefined') return;
-
-    let cancelled = false;
-
-    const loadFocusRing = async () => {
-      const key = `${String(designSystem)}|${segment}|${theme}`;
-
-      // Try cache first
-      let hex = focusRingCache[key];
-
-      if (!hex) {
-        const loader = extraMaps[key as keyof typeof extraMaps];
-        if (loader) {
-          try {
-            const extra = await loader();
-            if (!cancelled && extra?.focusColor) {
-              hex = extra.focusColor;
-              focusRingCache[key] = hex;
-            }
-          } catch {
-            // Ignore load errors; fallback will be used.
-          }
-        }
-      }
-
-      if (cancelled) return;
-
-      const root = document.documentElement;
-      root.style.setProperty('--k-focus-color', hex ?? '#0059b1');
-    };
-
-    void loadFocusRing();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [designSystem, segment, theme]);
 
   // Load background colors for all available themes of the current design system/segment
   // and keep them in memory so they can be consumed later via context.
@@ -138,7 +92,11 @@ export function useThemeExtras({
           try {
             const extra = await loader();
             return [themeForBackground, extra.background] as const;
-          } catch {
+          } catch (error) {
+            console.warn(
+              `[showcase] Failed to load extra artifact for "${key}". Falling back to undefined background.`,
+              error
+            );
             return [themeForBackground, undefined] as const;
           }
         })
@@ -161,5 +119,5 @@ export function useThemeExtras({
     };
   }, [designSystem, segment]);
 
-  return { backgroundsByTheme, globalRadius };
+  return { backgroundsByTheme, globalRadius, globalRipple };
 }

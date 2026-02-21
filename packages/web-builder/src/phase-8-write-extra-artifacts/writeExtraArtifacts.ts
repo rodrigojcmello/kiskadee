@@ -1,9 +1,10 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, unlink, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type {
   HSLA,
   RadiusMode,
+  RippleEffectSchema,
   Schema,
   SchemaFonts,
   SegmentName,
@@ -17,6 +18,15 @@ import { type FontStack, toCssFontFamily } from '../utils/fontFamily';
 type ExtractableSchema = Schema;
 
 type SegmentKey = SegmentName | string;
+
+function hasErrnoCode(error: unknown, code: string): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    (error as { code?: unknown }).code === code
+  );
+}
 
 function getBuildDir(outDirSlug: string): string {
   const __filename = fileURLToPath(import.meta.url);
@@ -66,6 +76,25 @@ function getThemesForSegment(schema: ExtractableSchema, segment: SegmentKey): Th
   return Object.keys(palettes[segment] as Record<ThemeMode, unknown>) as ThemeMode[];
 }
 
+function toCssColor(value: SolidColor | undefined): string | undefined {
+  if (value === undefined) return undefined;
+  if (typeof value === 'string') return value;
+  return toShortHex(convertHslaToHex(value as HSLA));
+}
+
+function buildRootTokensCss(
+  vars: ReadonlyArray<{
+    name: string;
+    value: string | number | undefined;
+  }>
+): string | null {
+  const declared = vars.filter((entry) => entry.value !== undefined);
+  if (!declared.length) return null;
+
+  const lines = declared.map((entry) => `  ${entry.name}: ${String(entry.value)};`);
+  return `:root {\n${lines.join('\n')}\n}\n`;
+}
+
 export async function writeExtraArtifacts(params: {
   schema: Schema;
   outDirSlug: string;
@@ -77,14 +106,46 @@ export async function writeExtraArtifacts(params: {
 
   const buildDir = getBuildDir(outDirSlug);
 
+  // Clean stale global/extra/token artifacts from previous builds so the output
+  // always reflects the current schema and doesn't keep dead files around.
+  try {
+    const existingFiles = await readdir(buildDir);
+    const isExtraArtifact = (fileName: string): boolean =>
+      fileName === 'global.kiskadee.json' ||
+      (fileName.startsWith('extra.') && fileName.endsWith('.kiskadee.json')) ||
+      fileName === 'tokens.kiskadee.css' ||
+      (fileName.startsWith('tokens.') && fileName.endsWith('.kiskadee.css'));
+
+    await Promise.all(
+      existingFiles
+        .filter((fileName) => isExtraArtifact(fileName))
+        .map(async (fileName) => {
+          try {
+            await unlink(resolve(buildDir, fileName));
+          } catch (error) {
+            if (hasErrnoCode(error, 'ENOENT')) return;
+            throw error;
+          }
+        })
+    );
+  } catch (error) {
+    // Ignore only missing build directory; files are recreated below.
+    if (hasErrnoCode(error, 'ENOENT')) {
+      // no-op
+    } else {
+      throw error;
+    }
+  }
+
   // 1) Global artifact (global.kiskadee.json)
   //
   //    This file is optional and only written when the schema defines
-  //    any global data (fonts, focus metrics, ...). It is meant as descriptive
+  //    any global metadata (fonts, radius, ripple behavior...). It is meant as descriptive
   //    metadata capturing global design system intentions.
   const fonts = schema.global?.fonts as SchemaFonts | undefined;
   const focus = schema.global?.focus as { width?: number; offset?: number } | undefined;
   const radius = schema.global?.radius as RadiusMode | undefined;
+  const ripple = schema.global?.effects?.ripple as RippleEffectSchema | undefined;
 
   function toCssFontFamilyString(value: FontStack): string | null {
     const css = toCssFontFamily(value);
@@ -97,17 +158,17 @@ export async function writeExtraArtifacts(params: {
   const headingCss = headingCssRaw ?? bodyCss;
 
   const hasFonts = Boolean(bodyCss);
-  const hasFocus = Boolean(focus && (focus.width !== undefined || focus.offset !== undefined));
   const hasRadius = Boolean(radius);
+  const hasRipple = Boolean(ripple && Object.keys(ripple).length > 0);
 
-  if (hasFonts || hasFocus || hasRadius) {
+  if (hasFonts || hasRadius || hasRipple) {
     await mkdir(buildDir, { recursive: true });
     const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
 
     const globalPayload: {
       fonts?: { body: string; heading?: string };
-      focus?: { width?: number; offset?: number };
       radius?: RadiusMode;
+      effects?: { ripple?: RippleEffectSchema };
     } = {};
 
     if (hasFonts && bodyCss) {
@@ -117,19 +178,35 @@ export async function writeExtraArtifacts(params: {
       };
     }
 
-    if (hasFocus && focus) {
-      globalPayload.focus = {
-        ...(focus.width !== undefined ? { width: focus.width } : {}),
-        ...(focus.offset !== undefined ? { offset: focus.offset } : {})
-      };
-    }
-
     if (hasRadius && radius) {
       globalPayload.radius = radius;
     }
 
+    if (hasRipple && ripple) {
+      globalPayload.effects = {
+        ripple
+      };
+    }
+
     await writeFile(globalFilePath, JSON.stringify(globalPayload, null, 2), 'utf8');
     console.log(`[web-builder] Global artifact written to: ${globalFilePath}`);
+  }
+
+  // Global design tokens consumed directly by CSS (no runtime setProperty/removeProperty).
+  const globalTokensCss = buildRootTokensCss([
+    { name: '--k-focus-width', value: focus?.width },
+    { name: '--k-focus-offset', value: focus?.offset },
+    { name: '--k-ripple-alpha-h', value: ripple?.overlayAlphaByEmphasis?.high },
+    { name: '--k-ripple-alpha-m', value: ripple?.overlayAlphaByEmphasis?.medium },
+    { name: '--k-ripple-alpha-l', value: ripple?.overlayAlphaByEmphasis?.low },
+    { name: '--k-ripple-alpha-ll', value: ripple?.overlayAlphaByEmphasis?.lowest }
+  ]);
+
+  if (globalTokensCss) {
+    await mkdir(buildDir, { recursive: true });
+    const globalTokensFilePath = resolve(buildDir, 'tokens.kiskadee.css');
+    await writeFile(globalTokensFilePath, globalTokensCss, 'utf8');
+    console.log(`[web-builder] Global tokens CSS written to: ${globalTokensFilePath}`);
   }
 
   if (!schema.themeTokens || !schema.themeTokens.palettes) {
@@ -154,6 +231,26 @@ export async function writeExtraArtifacts(params: {
                   {
                     focusColor?: SolidColor;
                     background?: SolidColor;
+                    effects?: {
+                      ripple?: {
+                        surface?: {
+                          color?: SolidColor;
+                          opacity?: number;
+                        };
+                        overflow?: {
+                          color?: SolidColor;
+                          opacity?: number;
+                        };
+                        overflowStatic?: {
+                          color?: SolidColor;
+                          opacity?: number;
+                        };
+                        overflowStaticBorder?: {
+                          color?: SolidColor;
+                          opacity?: number;
+                        };
+                      };
+                    };
                   }
                 >
               >
@@ -164,39 +261,46 @@ export async function writeExtraArtifacts(params: {
       const themeTokens = palettes?.[segment]?.[theme];
       const color = themeTokens?.focusColor;
       const background = themeTokens?.background;
+      const ripple = themeTokens?.effects?.ripple;
+      const tokensCss = buildRootTokensCss([
+        { name: '--k-focus-color', value: toCssColor(color) },
+        { name: '--k-ripple-surface-color', value: toCssColor(ripple?.surface?.color) },
+        { name: '--k-ripple-surface-opacity', value: ripple?.surface?.opacity },
+        { name: '--k-ripple-overflow-color', value: toCssColor(ripple?.overflow?.color) },
+        { name: '--k-ripple-overflow-opacity', value: ripple?.overflow?.opacity },
+        {
+          name: '--k-ripple-overflow-static-color',
+          value: toCssColor(ripple?.overflowStatic?.color)
+        },
+        { name: '--k-ripple-overflow-static-opacity', value: ripple?.overflowStatic?.opacity },
+        {
+          name: '--k-ripple-overflow-static-border-color',
+          value: toCssColor(ripple?.overflowStaticBorder?.color)
+        },
+        {
+          name: '--k-ripple-overflow-static-border-opacity',
+          value: ripple?.overflowStaticBorder?.opacity
+        }
+      ]);
 
-      // Both focusColor and background are optional.
-      // We only skip writing the artifact when neither is present.
-      if (!color && !background) {
+      if (tokensCss) {
+        const tokensFileName = `tokens.${segment}.${theme}.kiskadee.css`;
+        const tokensFilePath = resolve(buildDir, tokensFileName);
+        await writeFile(tokensFilePath, tokensCss, 'utf8');
+        console.log(`[web-builder] Theme tokens CSS written to: ${tokensFilePath}`);
+      }
+
+      if (!background) {
         continue;
       }
 
-      const extraData: {
-        focusColor?: string;
-        background?: string;
-      } = {};
+      const extraData: { background?: string } = {};
+      extraData.background = toCssColor(background);
 
-      if (color) {
-        if (typeof color === 'string') {
-          extraData.focusColor = color;
-        } else {
-          extraData.focusColor = toShortHex(convertHslaToHex(color as HSLA));
-        }
-      }
-
-      if (background) {
-        if (typeof background === 'string') {
-          extraData.background = background;
-        } else {
-          extraData.background = toShortHex(convertHslaToHex(background));
-        }
-      }
-
-      const fileName = `extra.${segment}.${theme}.kiskadee.json`;
-      const filePath = resolve(buildDir, fileName);
-
-      await writeFile(filePath, JSON.stringify(extraData, null, 2), 'utf8');
-      console.log(`[web-builder] Extra artifact written to: ${filePath}`);
+      const extraFileName = `extra.${segment}.${theme}.kiskadee.json`;
+      const extraFilePath = resolve(buildDir, extraFileName);
+      await writeFile(extraFilePath, JSON.stringify(extraData, null, 2), 'utf8');
+      console.log(`[web-builder] Extra artifact written to: ${extraFilePath}`);
     }
   }
 }

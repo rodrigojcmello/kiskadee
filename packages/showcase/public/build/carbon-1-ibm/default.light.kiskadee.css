@@ -3,5 +3,5 @@
 .ci-g { background: #0F62FE }
 .ci-h.-d.-a { background: #C6C6C6 }
 .ci-i:focus-visible, .ci-i.-f.-a { background: #0F62FE }
-.ci-j:hover, .ci-j.-h.-a { background: #0050E6 }
+.ci-j:hover:not(:active), .ci-j.-h.-a { background: #0050E6 }
 .ci-k:active, .ci-k.-p.-a { background: #002D9C }

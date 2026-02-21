@@ -4,7 +4,7 @@
 .fk-r.-s.-a { background: hsl(var(--k-p-80)) }
 .fk-x { background: hsl(var(--k-p-70)) }
 .fk-ae:focus-visible, .fk-ae.-f.-a { background: hsl(var(--k-p-70)) }
-.fk-aj:hover, .fk-aj.-h.-a { background: hsl(var(--k-p-60)) }
-.fk-l:hover.-s, .fk-l.-s.-h.-a { background: hsl(var(--k-p-70)) }
+.fk-aj:hover:not(:active), .fk-aj.-h.-a { background: hsl(var(--k-p-60)) }
 .fk-i:active, .fk-i.-p.-a { background: hsl(var(--k-p-90)) }
+.fk-l:hover:not(:active).-s, .fk-l.-s.-h.-a { background: hsl(var(--k-p-70)) }
 .fk-o:active.-s, .fk-o.-s.-p.-a { background: hsl(var(--k-p-90)) }

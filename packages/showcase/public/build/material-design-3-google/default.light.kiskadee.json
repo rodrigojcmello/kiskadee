@@ -3,29 +3,29 @@
     "e1": {
       "c": {
         "primary": {
-          "h": "gmd-bb gmd-a gmd-bq gmd-d gmd-bw gmd-e gmd-bj gmd-c gmd-i gmd-b",
-          "m": "gmd-bf gmd-a gmd-br gmd-d gmd-bz gmd-e gmd-bm gmd-c gmd-i gmd-b gmd-ch gmd-cb gmd-ce",
-          "l": "gmd-f gmd-ah gmd-bs gmd-ap gmd-o gmd-as gmd-bg gmd-am gmd-i gmd-aj gmd-ci gmd-au gmd-cc gmd-cf",
-          "ll": "gmd-f gmd-a gmd-bo gmd-bv gmd-bi gmd-i"
+          "h": "gmd-be gmd-a gmd-bq gmd-d gmd-bu gmd-e gmd-bm gmd-c gmd-i gmd-b",
+          "m": "gmd-bi gmd-a gmd-x gmd-d gmd-y gmd-e gmd-w gmd-c gmd-i gmd-b gmd-cb gmd-bw gmd-by",
+          "l": "gmd-f gmd-ak gmd-o gmd-as gmd-q gmd-av gmd-m gmd-ap gmd-i gmd-am gmd-s gmd-ax gmd-r gmd-bz",
+          "ll": "gmd-f gmd-a gmd-bo gmd-bs gmd-bk gmd-i"
         },
         "neutral": {
-          "h": "gmd-ba gmd-a gmd-bn gmd-d gmd-bu gmd-e gmd-bh gmd-c gmd-cg gmd-ca gmd-cd gmd-j gmd-b",
-          "m": "gmd-be gmd-a gmd-bt gmd-d gmd-by gmd-e gmd-bl gmd-c gmd-z gmd-v gmd-x gmd-j gmd-b",
-          "l": "gmd-f gmd-ai gmd-t gmd-aq gmd-o gmd-at gmd-s gmd-an gmd-z gmd-v gmd-x gmd-h gmd-ak",
-          "ll": "gmd-f gmd-a gmd-t gmd-d gmd-o gmd-e gmd-s gmd-c gmd-h gmd-b"
+          "h": "gmd-bd gmd-a gmd-bn gmd-d gmd-br gmd-e gmd-bj gmd-c gmd-ca gmd-bv gmd-bx gmd-j gmd-b",
+          "m": "gmd-bh gmd-a gmd-x gmd-d gmd-y gmd-e gmd-w gmd-c gmd-s gmd-r gmd-ab gmd-j gmd-b",
+          "l": "gmd-f gmd-al gmd-o gmd-at gmd-q gmd-aw gmd-m gmd-aq gmd-s gmd-r gmd-ab gmd-h gmd-an",
+          "ll": "gmd-f gmd-a gmd-o gmd-d gmd-q gmd-e gmd-m gmd-c gmd-h gmd-b"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "h": "gmd-ab gmd-g",
-          "m": "gmd-p gmd-g gmd-af",
-          "l": "gmd-p gmd-g gmd-af gmd-cj gmd-ck",
-          "ll": "gmd-p gmd-g"
+          "h": "gmd-ae gmd-g",
+          "m": "gmd-t gmd-g gmd-ai",
+          "l": "gmd-t gmd-g gmd-ai gmd-cc gmd-cd",
+          "ll": "gmd-t gmd-g"
         },
         "neutral": {
-          "h": "gmd-ab gmd-g"
+          "h": "gmd-ae gmd-g"
         }
       }
     }

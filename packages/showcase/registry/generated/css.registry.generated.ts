@@ -5,13 +5,18 @@ export const cssPaths = {
   'carbon-1-ibm': {
     core: '/build/carbon-1-ibm/core.kiskadee.css',
     effects: '/build/carbon-1-ibm/effects.kiskadee.css',
+    tokens: '/build/carbon-1-ibm/tokens.kiskadee.css',
     palettes: {
       'default|light': '/build/carbon-1-ibm/default.light.kiskadee.css',
+    },
+    tokenPalettes: {
+      'default|light': '/build/carbon-1-ibm/tokens.default.light.kiskadee.css',
     }
   },
   'fluent-2-kiskadee': {
     core: '/build/fluent-2-kiskadee/core.kiskadee.css',
     effects: '/build/fluent-2-kiskadee/effects.kiskadee.css',
+    tokens: '/build/fluent-2-kiskadee/tokens.kiskadee.css',
     palettes: {
       'default|dark': '/build/fluent-2-kiskadee/default.dark.kiskadee.css',
       'default|light': '/build/fluent-2-kiskadee/default.light.kiskadee.css',
@@ -19,26 +24,40 @@ export const cssPaths = {
       'modern|light': '/build/fluent-2-kiskadee/modern.light.kiskadee.css',
       'dynamic|dark': '/build/fluent-2-kiskadee/dynamic.dark.kiskadee.css',
       'dynamic|light': '/build/fluent-2-kiskadee/dynamic.light.kiskadee.css',
+    },
+    tokenPalettes: {
+      'default|dark': '/build/fluent-2-kiskadee/tokens.default.dark.kiskadee.css',
+      'default|light': '/build/fluent-2-kiskadee/tokens.default.light.kiskadee.css',
+      'modern|light': '/build/fluent-2-kiskadee/tokens.modern.light.kiskadee.css',
     }
   },
   'fluent-2-microsoft': {
     core: '/build/fluent-2-microsoft/core.kiskadee.css',
     effects: '/build/fluent-2-microsoft/effects.kiskadee.css',
+    tokens: null,
     palettes: {
       'default|dark': '/build/fluent-2-microsoft/default.dark.kiskadee.css',
       'default|light': '/build/fluent-2-microsoft/default.light.kiskadee.css',
+    },
+    tokenPalettes: {
+      'default|dark': '/build/fluent-2-microsoft/tokens.default.dark.kiskadee.css',
+      'default|light': '/build/fluent-2-microsoft/tokens.default.light.kiskadee.css',
     }
   },
   'ios-26-apple': {
     core: '/build/ios-26-apple/core.kiskadee.css',
     effects: '/build/ios-26-apple/effects.kiskadee.css',
+    tokens: '/build/ios-26-apple/tokens.kiskadee.css',
     palettes: {
       'default|light': '/build/ios-26-apple/default.light.kiskadee.css',
+    },
+    tokenPalettes: {
     }
   },
   'ios-26-kiskadee': {
     core: '/build/ios-26-kiskadee/core.kiskadee.css',
     effects: '/build/ios-26-kiskadee/effects.kiskadee.css',
+    tokens: '/build/ios-26-kiskadee/tokens.kiskadee.css',
     palettes: {
       'default|dark': '/build/ios-26-kiskadee/default.dark.kiskadee.css',
       'default|darker': '/build/ios-26-kiskadee/default.darker.kiskadee.css',
@@ -46,24 +65,36 @@ export const cssPaths = {
       'dynamic|dark': '/build/ios-26-kiskadee/dynamic.dark.kiskadee.css',
       'dynamic|darker': '/build/ios-26-kiskadee/dynamic.darker.kiskadee.css',
       'dynamic|light': '/build/ios-26-kiskadee/dynamic.light.kiskadee.css',
+    },
+    tokenPalettes: {
+      'default|light': '/build/ios-26-kiskadee/tokens.default.light.kiskadee.css',
+      'dynamic|light': '/build/ios-26-kiskadee/tokens.dynamic.light.kiskadee.css',
     }
   },
   'material-design-3-google': {
     core: '/build/material-design-3-google/core.kiskadee.css',
     effects: '/build/material-design-3-google/effects.kiskadee.css',
+    tokens: '/build/material-design-3-google/tokens.kiskadee.css',
     palettes: {
       'default|dark': '/build/material-design-3-google/default.dark.kiskadee.css',
       'default|light': '/build/material-design-3-google/default.light.kiskadee.css',
+    },
+    tokenPalettes: {
+      'default|light': '/build/material-design-3-google/tokens.default.light.kiskadee.css',
     }
   },
   'material-design-3-kiskadee': {
     core: '/build/material-design-3-kiskadee/core.kiskadee.css',
     effects: '/build/material-design-3-kiskadee/effects.kiskadee.css',
+    tokens: '/build/material-design-3-kiskadee/tokens.kiskadee.css',
     palettes: {
       'default|dark': '/build/material-design-3-kiskadee/default.dark.kiskadee.css',
       'default|light': '/build/material-design-3-kiskadee/default.light.kiskadee.css',
       'modern|dark': '/build/material-design-3-kiskadee/modern.dark.kiskadee.css',
       'modern|light': '/build/material-design-3-kiskadee/modern.light.kiskadee.css',
+    },
+    tokenPalettes: {
+      'default|light': '/build/material-design-3-kiskadee/tokens.default.light.kiskadee.css',
     }
   },
 } as const;

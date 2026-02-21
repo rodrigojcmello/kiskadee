@@ -57,14 +57,7 @@ export const paletteMaps = {
 export const extraMaps = {
   'carbon-1-ibm|default|light': () => loadExtraJson('carbon-1-ibm/extra.default.light.kiskadee.json'),
   'fluent-2-kiskadee|default|dark': () => loadExtraJson('fluent-2-kiskadee/extra.default.dark.kiskadee.json'),
-  'fluent-2-kiskadee|default|light': () => loadExtraJson('fluent-2-kiskadee/extra.default.light.kiskadee.json'),
-  'fluent-2-kiskadee|modern|light': () => loadExtraJson('fluent-2-kiskadee/extra.modern.light.kiskadee.json'),
   'fluent-2-microsoft|default|dark': () => loadExtraJson('fluent-2-microsoft/extra.default.dark.kiskadee.json'),
-  'fluent-2-microsoft|default|light': () => loadExtraJson('fluent-2-microsoft/extra.default.light.kiskadee.json'),
-  'ios-26-kiskadee|default|light': () => loadExtraJson('ios-26-kiskadee/extra.default.light.kiskadee.json'),
-  'ios-26-kiskadee|dynamic|light': () => loadExtraJson('ios-26-kiskadee/extra.dynamic.light.kiskadee.json'),
-  'material-design-3-google|default|light': () => loadExtraJson('material-design-3-google/extra.default.light.kiskadee.json'),
-  'material-design-3-kiskadee|default|light': () => loadExtraJson('material-design-3-kiskadee/extra.default.light.kiskadee.json'),
 } as const;
 
 export const paletteIndex = {

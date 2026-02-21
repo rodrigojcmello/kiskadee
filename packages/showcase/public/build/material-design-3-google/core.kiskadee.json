@@ -2,50 +2,54 @@
   "$schema": "./core.kiskadee.schema.json",
   "button": {
     "e1": {
-      "d": "gmd-dl",
+      "d": "gmd-de",
       "e": {
-        "h": "gmd-eg gmd-ej gmd-ek gmd-ei gmd-eh",
-        "rr": "gmd-cv gmd-cx gmd-cy gmd-cw gmd-dc gmd-da gmd-db gmd-cz",
-        "rp": "gmd-cn gmd-cp gmd-cq gmd-co gmd-cu gmd-cs gmd-ct gmd-cr",
-        "rs": "gmd-dd gmd-df gmd-dg gmd-de gmd-dk gmd-di gmd-dj gmd-dh"
+        "h": "gmd-ed gmd-eg gmd-eh gmd-ef gmd-ee",
+        "ris": "gmd-eb",
+        "rio": "gmd-ea",
+        "rix": "gmd-dz",
+        "rip": "gmd-ec",
+        "rr": "gmd-co gmd-cq gmd-cr gmd-cp gmd-cv gmd-ct gmd-cu gmd-cs",
+        "rp": "gmd-cg gmd-ci gmd-cj gmd-ch gmd-cn gmd-cl gmd-cm gmd-ck",
+        "rs": "gmd-cw gmd-cy gmd-cz gmd-cx gmd-dd gmd-db gmd-dc gmd-da"
       },
       "s": {
-        "sm:1": "gmd-ef gmd-dq gmd-dr gmd-dw gmd-r",
-        "md:1": "gmd-eb gmd-dm gmd-ds gmd-dx gmd-r",
-        "lg:1": "gmd-ec gmd-dn gmd-dt gmd-dy gmd-r",
-        "lg:2": "gmd-ed gmd-do gmd-du gmd-dz gmd-r",
-        "lg:3": "gmd-ee gmd-dp gmd-dv gmd-ea gmd-r"
+        "sm:1": "gmd-dy gmd-dj gmd-dk gmd-dp gmd-v",
+        "md:1": "gmd-du gmd-df gmd-dl gmd-dq gmd-v",
+        "lg:1": "gmd-dv gmd-dg gmd-dm gmd-dr gmd-v",
+        "lg:2": "gmd-dw gmd-dh gmd-dn gmd-ds gmd-v",
+        "lg:3": "gmd-dx gmd-di gmd-do gmd-dt gmd-v"
       },
       "r": {
-        "sm:1": "gmd-av",
-        "md:1": "gmd-aw",
-        "lg:1": "gmd-ax",
-        "lg:2": "gmd-ay",
-        "lg:3": "gmd-az"
+        "sm:1": "gmd-ay",
+        "md:1": "gmd-az",
+        "lg:1": "gmd-ba",
+        "lg:2": "gmd-bb",
+        "lg:3": "gmd-bc"
       },
       "rp": {
-        "sm:1": "gmd-av",
-        "md:1": "gmd-aw",
-        "lg:1": "gmd-ax",
-        "lg:2": "gmd-ay",
-        "lg:3": "gmd-az"
+        "sm:1": "gmd-ay",
+        "md:1": "gmd-az",
+        "lg:1": "gmd-ba",
+        "lg:2": "gmd-bb",
+        "lg:3": "gmd-bc"
       },
       "rs": {
-        "sm:1": "gmd-q",
-        "md:1": "gmd-q",
-        "lg:1": "gmd-q",
-        "lg:2": "gmd-q",
-        "lg:3": "gmd-q"
+        "sm:1": "gmd-u",
+        "md:1": "gmd-u",
+        "lg:1": "gmd-u",
+        "lg:2": "gmd-u",
+        "lg:3": "gmd-u"
       }
     },
     "e2": {
-      "d": "gmd-er",
+      "d": "gmd-eo",
       "s": {
-        "sm:1": "gmd-cm gmd-cl",
-        "md:1": "gmd-cm gmd-cl",
-        "lg:1": "gmd-eo gmd-el",
-        "lg:2": "gmd-ep gmd-em",
-        "lg:3": "gmd-eq gmd-en"
+        "sm:1": "gmd-cf gmd-ce",
+        "md:1": "gmd-cf gmd-ce",
+        "lg:1": "gmd-el gmd-ei",
+        "lg:2": "gmd-em gmd-ej",
+        "lg:3": "gmd-en gmd-ek"
       }
     }
   }

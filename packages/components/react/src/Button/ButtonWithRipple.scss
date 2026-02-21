@@ -1,0 +1,81 @@
+/* [RIPPLE EFFECT 27] START: Ripple-only button styles. */
+.k-ripple {
+  position: relative;
+  z-index: 0;
+  --k-ripple-overflow: hidden;
+  overflow: var(--k-ripple-overflow);
+  clip-path: var(--k-ripple-clip, inset(0 round var(--k-br, 0px)));
+
+  /*
+   * clip-path clips outline painting on focused buttons.
+   * During focus-visible we disable clip-path so outline-offset can render outside.
+   */
+  &:focus-visible,
+  &.-f.-a {
+    clip-path: none;
+    overflow: hidden;
+  }
+
+  /* Emphasis-specific ripple alpha overrides for surface mode (uses global overlayAlphaByEmphasis). */
+  &.k-emph-h {
+    --k-ripple-surface-opacity: var(--k-ripple-alpha-h);
+  }
+
+  &.k-emph-m {
+    --k-ripple-surface-opacity: var(--k-ripple-alpha-m);
+  }
+
+  &.k-emph-l {
+    --k-ripple-surface-opacity: var(--k-ripple-alpha-l);
+  }
+
+  &.k-emph-ll {
+    --k-ripple-surface-opacity: var(--k-ripple-alpha-ll);
+  }
+
+  > * {
+    position: relative;
+    z-index: var(--k-ripple-content-z, 1);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: var(--k-ripple-x, 50%);
+    top: var(--k-ripple-y, 50%);
+    width: var(--k-ripple-start-size);
+    height: var(--k-ripple-start-size);
+    background-color: var(--k-ripple-color, currentColor);
+    border-width: var(--k-ripple-border-width, 0);
+    border-style: solid;
+    border-color: color-mix(
+      in srgb,
+      var(--k-ripple-border-color, transparent) calc(var(--k-ripple-border-opacity, 1) * 100%),
+      transparent
+    );
+    border-radius: 999px;
+    visibility: hidden;
+    transform: translate(-50%, -50%);
+    opacity: var(--k-ripple-opacity);
+    transition: width var(--k-ripple-duration) var(--k-ripple-ease),
+    height var(--k-ripple-duration) var(--k-ripple-ease),
+    opacity var(--k-ripple-fade-duration) var(--k-ripple-fade-ease);
+    will-change: transform, opacity;
+    display: block;
+    z-index: var(--k-ripple-z);
+    pointer-events: none;
+  }
+
+  &-active::after {
+    animation: none;
+    visibility: visible;
+    transform: translate(-50%, -50%);
+    width: var(--k-ripple-end-size);
+    height: var(--k-ripple-end-size);
+  }
+
+  &-fade::after {
+    opacity: 0;
+  }
+}
+/* [RIPPLE EFFECT 27] END: Ripple-only button styles. */

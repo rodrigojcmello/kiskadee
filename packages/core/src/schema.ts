@@ -11,6 +11,9 @@ import type {
 } from './types/colors/colors.types';
 import type { DecorationSchema } from './types/decorations/decorations.types';
 import type { ElementEffects } from './types/effects';
+// [RIPPLE EFFECT 1] START: Schema-level ripple types.
+import type { RippleEffectSchema } from './types/effects/ripple/ripple.types';
+// [RIPPLE EFFECT 1] END: Schema-level ripple types.
 import type { ScaleSchema } from './types/scales/scales.types';
 
 // Names of all supported components
@@ -105,6 +108,12 @@ export type SchemaFonts = {
   heading?: SchemaFontStack;
 };
 
+// [RIPPLE EFFECT 2] START: Global ripple schema section.
+export type SchemaGlobalEffects = {
+  ripple?: RippleEffectSchema;
+};
+// [RIPPLE EFFECT 2] END: Global ripple schema section.
+
 export type FocusGlobalTokens = {
   /** Outline width in px (unitless number in schema/artifacts; consumers append px). */
   width?: number;
@@ -118,6 +127,7 @@ export type SchemaGlobalTokens = {
   fonts?: SchemaFonts;
   focus?: FocusGlobalTokens;
   radius?: RadiusMode;
+  effects?: SchemaGlobalEffects;
 };
 
 export type ThemeTokens<TSegmentName extends SegmentName = never> = Partial<{
@@ -130,6 +140,28 @@ export type ThemeTokens<TSegmentName extends SegmentName = never> = Partial<{
           {
             focusColor?: SolidColor;
             background?: SolidColor;
+            // [RIPPLE EFFECT 3] START: Theme ripple token overrides.
+            effects?: {
+              ripple?: {
+                surface?: {
+                  color?: SolidColor;
+                  opacity?: number;
+                };
+                overflow?: {
+                  color?: SolidColor;
+                  opacity?: number;
+                };
+                overflowStatic?: {
+                  color?: SolidColor;
+                  opacity?: number;
+                };
+                overflowStaticBorder?: {
+                  color?: SolidColor;
+                  opacity?: number;
+                };
+              };
+            };
+            // [RIPPLE EFFECT 3] END: Theme ripple token overrides.
           }
         >
       >

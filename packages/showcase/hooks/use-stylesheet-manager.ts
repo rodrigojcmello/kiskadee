@@ -5,6 +5,31 @@ import type { DesignSystemKey } from '@/registry/registry-utils';
 
 const stylesheetLinkCache: Partial<Record<string, HTMLLinkElement>> = {};
 
+function upsertSingletonStylesheet(role: string, href: string | null): void {
+  if (typeof document === 'undefined') return;
+
+  const selector = `link[rel="stylesheet"][data-k-role="${role}"]`;
+  const existing = document.head.querySelector(selector) as HTMLLinkElement | null;
+
+  if (!href) {
+    if (existing) existing.remove();
+    return;
+  }
+
+  if (existing) {
+    if (existing.getAttribute('href') !== href) {
+      existing.setAttribute('href', href);
+    }
+    return;
+  }
+
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.setAttribute('data-k-role', role);
+  link.href = href;
+  document.head.appendChild(link);
+}
+
 export function useStylesheetManager({
   designSystem,
   segment,
@@ -15,13 +40,18 @@ export function useStylesheetManager({
   theme: ThemeMode;
 }) {
   // Derive stylesheet hrefs declaratively from registry
-  const { coreHref, paletteHref, effectsHref } = useMemo(() => {
+  const { coreHref, paletteHref, effectsHref, tokenHref, tokenPaletteHref } = useMemo(() => {
     const entry = cssPaths[designSystem as keyof typeof cssPaths];
     const palettes = entry?.palettes as Record<string, string> | undefined;
+    const tokenPalettes = (entry as { tokenPalettes?: Record<string, string> } | undefined)
+      ?.tokenPalettes;
+    const tokenHref = (entry as { tokens?: string | null } | undefined)?.tokens ?? null;
     return {
       coreHref: entry?.core ?? null,
       paletteHref: palettes ? (palettes[`${segment}|${theme}`] ?? null) : null,
-      effectsHref: entry?.effects ?? null
+      effectsHref: entry?.effects ?? null,
+      tokenHref,
+      tokenPaletteHref: tokenPalettes ? (tokenPalettes[`${segment}|${theme}`] ?? null) : null
     } as const;
   }, [designSystem, segment, theme]);
 
@@ -55,4 +85,12 @@ export function useStylesheetManager({
     document.head.appendChild(link);
     stylesheetLinkCache[effectsHref] = link;
   }, [effectsHref]);
+
+  useEffect(() => {
+    upsertSingletonStylesheet('kiskadee-tokens-global', tokenHref);
+  }, [tokenHref]);
+
+  useEffect(() => {
+    upsertSingletonStylesheet('kiskadee-tokens-theme', tokenPaletteHref);
+  }, [tokenPaletteHref]);
 }

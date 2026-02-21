@@ -2,50 +2,54 @@
   "$schema": "./core.kiskadee.schema.json",
   "button": {
     "e1": {
-      "d": "mk-dq",
+      "d": "mk-dj",
       "e": {
-        "h": "mk-ez mk-fc mk-fd mk-fb mk-fa",
-        "rr": "mk-da mk-dc mk-dd mk-db mk-dh mk-df mk-dg mk-de",
-        "rp": "mk-cs mk-cu mk-cv mk-ct mk-cz mk-cx mk-cy mk-cw",
-        "rs": "mk-di mk-dk mk-dl mk-dj mk-dp mk-dn mk-do mk-dm"
+        "h": "mk-ew mk-ez mk-fa mk-ey mk-ex",
+        "ris": "mk-eu",
+        "rio": "mk-et",
+        "rix": "mk-es",
+        "rip": "mk-ev",
+        "rr": "mk-ct mk-cv mk-cw mk-cu mk-da mk-cy mk-cz mk-cx",
+        "rp": "mk-cl mk-cn mk-co mk-cm mk-cs mk-cq mk-cr mk-cp",
+        "rs": "mk-db mk-dd mk-de mk-dc mk-di mk-dg mk-dh mk-df"
       },
       "s": {
-        "sm:1": "mk-ey mk-ej mk-ek mk-ep mk-v",
-        "md:1": "mk-eu mk-ef mk-el mk-eq mk-v",
-        "lg:1": "mk-ev mk-eg mk-em mk-er mk-v",
-        "lg:2": "mk-ew mk-eh mk-en mk-es mk-v",
-        "lg:3": "mk-ex mk-ei mk-eo mk-et mk-v"
+        "sm:1": "mk-er mk-ec mk-ed mk-ei mk-z",
+        "md:1": "mk-en mk-dy mk-ee mk-ej mk-z",
+        "lg:1": "mk-eo mk-dz mk-ef mk-ek mk-z",
+        "lg:2": "mk-ep mk-ea mk-eg mk-el mk-z",
+        "lg:3": "mk-eq mk-eb mk-eh mk-em mk-z"
       },
       "r": {
-        "sm:1": "mk-ay",
-        "md:1": "mk-az",
-        "lg:1": "mk-ba",
-        "lg:2": "mk-bb",
-        "lg:3": "mk-bc"
+        "sm:1": "mk-bb",
+        "md:1": "mk-bc",
+        "lg:1": "mk-bd",
+        "lg:2": "mk-be",
+        "lg:3": "mk-bf"
       },
       "rp": {
-        "sm:1": "mk-ay",
-        "md:1": "mk-az",
-        "lg:1": "mk-ba",
-        "lg:2": "mk-bb",
-        "lg:3": "mk-bc"
+        "sm:1": "mk-bb",
+        "md:1": "mk-bc",
+        "lg:1": "mk-bd",
+        "lg:2": "mk-be",
+        "lg:3": "mk-bf"
       },
       "rs": {
-        "sm:1": "mk-u",
-        "md:1": "mk-u",
-        "lg:1": "mk-u",
-        "lg:2": "mk-u",
-        "lg:3": "mk-u"
+        "sm:1": "mk-y",
+        "md:1": "mk-y",
+        "lg:1": "mk-y",
+        "lg:2": "mk-y",
+        "lg:3": "mk-y"
       }
     },
     "e2": {
-      "d": "mk-fl",
+      "d": "mk-fi",
       "s": {
-        "sm:1": "mk-cr mk-cq",
-        "md:1": "mk-cr mk-cq",
-        "lg:1": "mk-fi mk-ff",
-        "lg:2": "mk-fj mk-fg",
-        "lg:3": "mk-fk mk-fh"
+        "sm:1": "mk-ck mk-cj",
+        "md:1": "mk-ck mk-cj",
+        "lg:1": "mk-ff mk-fc",
+        "lg:2": "mk-fg mk-fd",
+        "lg:3": "mk-fh mk-fe"
       }
     }
   }

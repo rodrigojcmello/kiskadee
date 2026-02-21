@@ -99,6 +99,46 @@ export function Button() {
           buttonMeta={buttonMeta}
         />
 
+        {/* [RIPPLE EFFECT 28] START: Showcase examples for ripple modes/origin overrides. */}
+        <div className={s['interaction-state']}>
+          <h3>Ripple Modes</h3>
+          <div className={`${s['example-states']} k-root`}>
+            <KButton intent="primary" emphasis="high" rippleEffect={{ mode: 'surface' }}>
+              <KButton.Label>
+                <SmoothText fontName={fontName} align={alignment}>
+                  Ripple Surface
+                </SmoothText>
+              </KButton.Label>
+            </KButton>
+            <KButton
+              intent="primary"
+              emphasis="high"
+              rippleEffect={{ mode: 'surface', origin: 'center' }}
+            >
+              <KButton.Label>
+                <SmoothText fontName={fontName} align={alignment}>
+                  Ripple Surface (Center)
+                </SmoothText>
+              </KButton.Label>
+            </KButton>
+            <KButton intent="primary" emphasis="high" rippleEffect={{ mode: 'overflow' }}>
+              <KButton.Label>
+                <SmoothText fontName={fontName} align={alignment}>
+                  Ripple Overflow
+                </SmoothText>
+              </KButton.Label>
+            </KButton>
+            <KButton intent="primary" emphasis="high" rippleEffect={{ mode: 'overflow-static' }}>
+              <KButton.Label>
+                <SmoothText fontName={fontName} align={alignment}>
+                  Ripple Overflow Static
+                </SmoothText>
+              </KButton.Label>
+            </KButton>
+          </div>
+        </div>
+        {/* [RIPPLE EFFECT 28] END: Showcase examples for ripple modes/origin overrides. */}
+
         {/* Neutral */}
         <div className={s['interaction-state']}>
           <h3>Interaction States - Neutral (High)</h3>

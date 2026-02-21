@@ -28,8 +28,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
   // 2. Load class maps (core + palette) dynamically
   const classesMap = useClassMapLoader({ designSystem, segment, theme });
 
-  // 3. Load extra resources (background colors, focus ring)
-  const { backgroundsByTheme, globalRadius } = useThemeExtras({ designSystem, segment, theme });
+  // 3. Load extra resources (background colors) and global radius/ripple metadata
+  const { backgroundsByTheme, globalRadius, globalRipple } = useThemeExtras({
+    designSystem,
+    segment
+  });
+
+  const globalConfig =
+    globalRadius !== undefined || globalRipple !== undefined
+      ? {
+          ...(globalRadius !== undefined ? { radius: globalRadius } : {}),
+          ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {})
+        }
+      : undefined;
 
   // 4. Manage global CSS and stylesheet injection (side effects)
   useStylesheetManager({ designSystem, segment, theme });
@@ -50,9 +61,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         setTheme,
         designSystem: String(designSystem),
         setDesignSystem: (v) => setDesignSystem(v),
-        global: {
-          radius: globalRadius
-        }
+        global: globalConfig
       }}
     >
       <ShowcaseContext.Provider

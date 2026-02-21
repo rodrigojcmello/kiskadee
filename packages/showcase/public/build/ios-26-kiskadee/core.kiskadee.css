@@ -10,8 +10,8 @@
 .ak-ca { --k-pt: 5px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
 .ak-ci { font-size: 0.9375rem }
 .ak-cj { font-weight: 500 }
-.ak-n { border-radius: 25px }
-.ak-r { border-radius: 0px }
+.ak-n { --k-br: 25px; border-radius: 25px }
+.ak-r { --k-br: 0px; border-radius: 0px }
 .ak-s { line-height: 18px }
-.ak-t { border-radius: 14px }
-@media (min-width: 1152px) { .ak-ay { border-radius: 0px } .ak-bv { --k-pb: 8px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) } .ak-bx { --k-pl: 12px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) } .ak-bz { --k-pr: 12px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) } .ak-cb { --k-pt: 8px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) } .ak-u { border-radius: 17px } }
+.ak-t { --k-br: 14px; border-radius: 14px }
+@media (min-width: 1152px) { .ak-ay { --k-br: 0px; border-radius: 0px } .ak-bv { --k-pb: 8px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) } .ak-bx { --k-pl: 12px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) } .ak-bz { --k-pr: 12px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) } .ak-cb { --k-pt: 8px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) } .ak-u { --k-br: 17px; border-radius: 17px } }

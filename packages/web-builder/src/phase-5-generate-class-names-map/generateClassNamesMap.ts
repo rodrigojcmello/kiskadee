@@ -1,18 +1,14 @@
-import { componentEmphasisBuckets } from '@kiskadee/core';
 import type {
+  ComponentEmphasis,
   ComponentName,
   ComponentStyleKeyMap,
   ElementAllSizeValue,
   ElementSizeValue,
-  ComponentEmphasis,
   InteractionState,
-  SemanticColor,
-  StyleKey
+  SemanticColor
 } from '@kiskadee/core';
-import type {
-  ToneMetadata,
-  ToneMetadataByPalette
-} from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
+import { componentEmphasisBuckets } from '@kiskadee/core';
+import type { ToneMetadataByPalette } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
 
 type ColorClasses = {
@@ -62,6 +58,36 @@ function mapArray(
   if (!keys) return undefined;
   return keys.map((k) => shortenMap[k] ?? k);
 }
+
+// Ripple buckets follow a compact 3-letter convention to keep artifact payloads small.
+// This is not a universal rule for every bucket, but for ripple we intentionally
+// cap the key size at 3 characters: ris/rio/rix/rip.
+// [RIPPLE EFFECT 14] START: Ripple bucket compaction for class-map payload.
+function rippleBucketForKey(key: string): string {
+  if (key.startsWith('ripplePressed')) return 'rip';
+
+  const separatorIndex = key.indexOf('__');
+  const rawValue = separatorIndex === -1 ? '' : key.slice(separatorIndex + 2);
+
+  if (rawValue.startsWith('{')) {
+    try {
+      const parsed = JSON.parse(rawValue) as { mode?: string };
+      if (parsed.mode === 'surface') return 'ris';
+      if (parsed.mode === 'overflow') return 'rio';
+      if (parsed.mode === 'overflow-static') return 'rix';
+    } catch {
+      // fall through to string matching
+    }
+  }
+
+  if (rawValue.includes('overflow-static')) return 'rix';
+  if (rawValue.includes('overflow')) return 'rio';
+  if (rawValue.includes('surface')) return 'ris';
+  throw new Error(
+    `Unable to resolve ripple bucket for style key "${key}". Expected mode: surface|overflow|overflow-static.`
+  );
+}
+// [RIPPLE EFFECT 14] END: Ripple bucket compaction for class-map payload.
 
 /**
  * Produces two JSON-friendly maps of class names from the aggregated StyleKeys:
@@ -126,12 +152,15 @@ export function generateClassNamesMapSplit(
             // (including selected-specific effects like MD3 animated corners) remain effects.
 
             // Bucket by effect family inferred from the style key prefix.
-            // Keep single-letter bucket keys for minimal payload.
+            // Keep compact bucket keys (1-3 chars) for minimal payload.
             let bucket: string;
             if (key.startsWith('shadow')) bucket = 'h';
             else if (key.startsWith('borderRadiusRounded')) bucket = 'rr';
             else if (key.startsWith('borderRadiusPill')) bucket = 'rp';
             else if (key.startsWith('borderRadiusSquare')) bucket = 'rs';
+            // [RIPPLE EFFECT 15] START: Assign ripple style keys to compact ripple buckets.
+            else if (key.startsWith('ripple')) bucket = rippleBucketForKey(key);
+            // [RIPPLE EFFECT 15] END: Assign ripple style keys to compact ripple buckets.
             else bucket = 'x';
 
             if (!eBuckets.has(bucket)) eBuckets.set(bucket, new Set());

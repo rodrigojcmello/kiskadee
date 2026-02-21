@@ -1,8 +1,8 @@
-.aos-a { border-radius: 25px }
+.aos-a { --k-br: 25px; border-radius: 25px }
 .aos-af { line-height: 18px }
 .aos-ag { font-size: 1.0625rem }
 .aos-ah { font-weight: 500 }
-.aos-g { border-radius: 0px }
+.aos-g { --k-br: 0px; border-radius: 0px }
 .aos-h { border-style: none }
 .aos-s { --k-pb: 16px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
 .aos-t { --k-pl: 20px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }

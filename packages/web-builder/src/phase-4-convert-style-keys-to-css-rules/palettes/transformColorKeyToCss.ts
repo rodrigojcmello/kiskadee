@@ -72,6 +72,7 @@ export const ERROR_REF_REQUIRE_STATE =
  *                     class in HTML. Example: if pseudo-class is "hover" and its forced suffix
  *                     is "-h", the generated selector list will include ".abc:hover, .abc.-h" for
  *                     inline rules or ".-a:hover .abc, .-a.-h .abc" for parent-ref rules.
+ * @param options
  * @returns GeneratedCss containing:
  *   - className: token without a dot prefix, for use in HTML
  *   - cssRule: full CSS text including selector(s)
@@ -203,6 +204,8 @@ export function transformColorKeyToCss(
 
   const states = extractStates();
   const filteredStates = states.filter((s) => s !== 'rest' && s !== '');
+  const normalizeNativePseudo = (pseudo: string): string =>
+    pseudo === ':hover' ? ':hover:not(:active)' : pseudo;
 
   if (!isRef) {
     if (filteredStates.length === 0) {
@@ -216,6 +219,7 @@ export function transformColorKeyToCss(
     // Split states by availability of native pseudo
     const nativeTokens = filteredStates
       .map((s) => InteractionStateCssPseudoSelector[s as PseudoSelectorKeys] || '')
+      .map(normalizeNativePseudo)
       .filter((v) => v !== '');
     const nonNativeForcedSuffixes = filteredStates
       .filter((s) => !InteractionStateCssPseudoSelector[s as PseudoSelectorKeys])
@@ -265,10 +269,10 @@ export function transformColorKeyToCss(
     // The new structure requires a preceding non-rest interaction state for refs
     throw new Error(ERROR_REF_REQUIRE_STATE);
   }
-
   // Split states for parent
   const nativeTokens = parentStates
     .map((s) => InteractionStateCssPseudoSelector[s as PseudoSelectorKeys] || '')
+    .map(normalizeNativePseudo)
     .filter((v) => v !== '');
   const nonNativeForcedSuffixes = parentStates
     .filter((s) => !InteractionStateCssPseudoSelector[s as PseudoSelectorKeys])

@@ -21,10 +21,9 @@ export type DesignSystemListEntry = {
 
 // JSON structure produced by phase-8 writeExtraArtifacts step.
 //
-// Currently, it exposes the focusColor token resolved per design system,
-// segment, and theme, plus an optional background color.
+// This artifact is intentionally minimal and now only exposes
+// optional showcase background color per design system/segment/theme.
 export type ExtraArtifactsJSON = {
-  focusColor: string;
   background?: string;
 };
 

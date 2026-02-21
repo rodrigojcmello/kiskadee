@@ -18,6 +18,7 @@ import {
 } from './colors/convertElementColorsToStyleKeys';
 import { convertElementDecorationsToStyleKeys } from './decoration/convertElementDecorationsToStyleKeys';
 import { convertElementBorderRadiusToStyleKeys } from './effects/convertElementBorderRadiusToStyleKeys';
+import { convertElementRippleToStyleKeys } from './effects/convertElementRippleToStyleKeys';
 import { convertElementShadowToStyleKeys } from './effects/convertElementShadowToStyleKeys';
 import {
   convertElementScalesToStyleKeys,
@@ -39,6 +40,9 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
 } {
   const styleKeysByComponent: ComponentStyleKeyMap = {};
   const toneMetadataByPalette: ToneMetadataByPalette = new Map();
+  // [RIPPLE EFFECT 10] START: Read global ripple config for element-level ripple conversion.
+  const rippleConfig = schema.global?.effects?.ripple;
+  // [RIPPLE EFFECT 10] END: Read global ripple config for element-level ripple conversion.
 
   // Iterate over each component in the schema.
   for (const c in schema.components) {
@@ -229,6 +233,14 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
             const shadowMap = convertElementShadowToStyleKeys(element.effects.shadow);
             appendEffectMap(shadowMap);
           }
+          // [RIPPLE EFFECT 11] START: Emit ripple style keys from global ripple config.
+          if (element.effects.ripple) {
+            const rippleMap = convertElementRippleToStyleKeys({
+              config: rippleConfig
+            });
+            appendEffectMap(rippleMap);
+          }
+          // [RIPPLE EFFECT 11] END: Emit ripple style keys from global ripple config.
           if (element.effects.borderRadius) {
             const borderRadius: BorderRadiusEffectSchema = element.effects.borderRadius;
             const rounded = borderRadius?.rounded;

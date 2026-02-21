@@ -12,6 +12,7 @@ import {
   transformTextWeightKeyToCss
 } from './decorations';
 import { transformBorderRadiusKeyToCss } from './effects/transformBorderRadiusKeyToCss/transformBorderRadiusKeyToCss';
+import { transformRippleKeyToCss } from './effects/transformRippleKeyToCss/transformRippleKeyToCss';
 import {
   transformColorKeyToCss,
   type TransformColorKeyToCssOptions
@@ -33,6 +34,10 @@ export function generateCssRuleFromStyleKey(
     generatedCss = transformBorderStyleKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('shadow')) {
     generatedCss = transformShadowKeyToCss(styleKey, className, forceState);
+  // [RIPPLE EFFECT 12] START: Route ripple style keys through ripple CSS transformer.
+  } else if (styleKey.startsWith('ripple')) {
+    generatedCss = transformRippleKeyToCss(styleKey, className);
+  // [RIPPLE EFFECT 12] END: Route ripple style keys through ripple CSS transformer.
   } else if (styleKey.startsWith('textAlign')) {
     generatedCss = transformTextAlignKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('textFont')) {
