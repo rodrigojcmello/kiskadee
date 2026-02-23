@@ -1,15 +1,22 @@
 export * from './breakpoints';
+export * from './components/button';
+export * from './components/tabs';
 export * from './schema';
 export * from './types/colors/colors.types';
 export * from './types/decorations/decorations.types';
 export * from './types/effects';
 export type {
-  BorderRadiusEffectSchema,
   BorderRadiusEffectMode,
+  BorderRadiusEffectSchema,
   NumericByInteractionState,
   NumericWithSelected,
   ResponsiveNumeric
 } from './types/effects/border-radius/border-radius.types';
+export {
+  DEFAULT_PRESSED_RIPPLE_PROFILE,
+  DEFAULT_RIPPLE_PROFILES,
+  RIPPLE_DURATION_TOKEN_TO_MS
+} from './types/effects/ripple/ripple.constants';
 // [RIPPLE EFFECT 8] START: Public ripple type exports.
 export type {
   RippleEffectSchema,
@@ -22,13 +29,8 @@ export type {
   RippleOrigin
 } from './types/effects/ripple/ripple.types';
 export {
-  DEFAULT_PRESSED_RIPPLE_PROFILE,
-  DEFAULT_RIPPLE_PROFILES,
-  RIPPLE_DURATION_TOKEN_TO_MS
-} from './types/effects/ripple/ripple.constants';
-export {
-  resolveRippleDurationMs,
   resolvePressedRippleProfile,
+  resolveRippleDurationMs,
   resolveRippleProfile,
   resolveRippleProfileKey
 } from './types/effects/ripple/ripple.utils';
@@ -37,4 +39,5 @@ export * from './types/effects/shadow/shadow.types';
 export * from './types/scales/scales.types';
 export * from './utils/color';
 export * from './utils/convertHslaToHex';
+export * from './utils/validateComponentContracts';
 export * from './utils/withAlpha';
