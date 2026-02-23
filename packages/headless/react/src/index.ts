@@ -1,4 +1,10 @@
-export type { TabItem, TabsProps } from './tabs/Tabs';
+export type {
+  TabsRootProps,
+  TabsListProps,
+  TabsTriggerProps,
+  TabsPanelProps,
+  TabsIndicatorProps
+} from './tabs/Tabs';
 export { Tabs } from './tabs/Tabs';
 
 export type { ButtonProps } from './button/Button';
