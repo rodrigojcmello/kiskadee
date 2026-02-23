@@ -42,3 +42,17 @@
 - "Keyboard/a11y behavior" -> `headless`
 - "Component visual style" -> `components`
 - "Docs/demo visualization" -> `showcase`
+
+## Canonical end-to-end flow
+
+Use this order when reasoning about delivery status:
+
+1. `core` defines contracts.
+2. `presets` instantiate schemas for each design system.
+3. `web-builder` generates artifacts (`build/<designSystemKey>`).
+4. `web-builder sync/generate` copies artifacts and refreshes showcase registries.
+5. `components` consumes artifacts + headless behavior.
+6. `showcase` routes render real scenarios using synced artifacts and components.
+
+Rule:
+- Successful schema/build does not mean "component delivered" until component + showcase route are in place.
