@@ -91,6 +91,23 @@ Practical reading:
 - `sync/generate -> showcase` exposes artifacts for inspection.
 - `headless + components + showcase route` validates component usability end-to-end.
 
+## Structural CSS naming convention (components layer)
+
+For structural classes in `packages/components/react`:
+
+- Use prefix `k-` (Kiskadee namespace).
+- Use a 3-letter component id (example: `tab` for Tabs).
+- For schema-mapped elements, use `k-<cmp>-e<n>`:
+  - `k-tab-e1`, `k-tab-e2`, `k-tab-e3`, etc.
+- For option/variation suffixes, use short flags:
+  - `-t` for top, `-b` for bottom (example: `k-tab-e1-t`, `k-tab-e1-b`).
+- For non-schema helper nodes, keep short semantic suffixes (example: `k-tab-p` for panel).
+
+Scope rule:
+
+- Structural Sass should only define layout/behavior structure (display, positioning, flow, interaction basics).
+- Visual customization (colors, radius, sizes, emphasis/state styling) must come from schema build artifacts and runtime state classes, not hardcoded component Sass values.
+
 ## New component rollout (end-to-end)
 
 Defining a new component under `schema.components` (for example `tabs` with `e1`, `e2`, etc.) is necessary, but not sufficient for full product delivery.

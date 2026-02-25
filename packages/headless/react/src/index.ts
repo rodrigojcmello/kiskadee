@@ -1,8 +1,8 @@
 export type {
   TabsRootProps,
-  TabsListProps,
-  TabsTriggerProps,
-  TabsPanelProps,
+  TabsBarProps,
+  TabsTabProps,
+  TabsContentProps,
   TabsIndicatorProps
 } from './tabs/Tabs';
 export { Tabs } from './tabs/Tabs';

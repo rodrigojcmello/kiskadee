@@ -2,6 +2,7 @@ import type {
   ComponentClassNameMapJSON,
   RadiusMode,
   RippleEffectSchema,
+  TabsIndicatorPosition,
   ThemeMode
 } from '@kiskadee/core';
 import { createContext, useContext } from 'react';
@@ -22,6 +23,13 @@ export type KiskadeeContextValue = {
       ripple?: RippleEffectSchema;
     };
     // [RIPPLE EFFECT 16] END: Global ripple config exposed to React components.
+    components?: {
+      tabs?: {
+        options?: {
+          indicatorPosition?: TabsIndicatorPosition;
+        };
+      };
+    };
   };
 };
 

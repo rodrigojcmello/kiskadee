@@ -2,54 +2,92 @@
   "$schema": "./core.kiskadee.schema.json",
   "button": {
     "e1": {
-      "d": "mk-dj",
+      "d": "mk-bj",
       "e": {
-        "h": "mk-ew mk-ez mk-fa mk-ey mk-ex",
-        "ris": "mk-eu",
-        "rio": "mk-et",
-        "rix": "mk-es",
-        "rip": "mk-ev",
-        "rr": "mk-ct mk-cv mk-cw mk-cu mk-da mk-cy mk-cz mk-cx",
-        "rp": "mk-cl mk-cn mk-co mk-cm mk-cs mk-cq mk-cr mk-cp",
-        "rs": "mk-db mk-dd mk-de mk-dc mk-di mk-dg mk-dh mk-df"
+        "h": "mk-fu mk-fx mk-fy mk-fw mk-fv",
+        "ris": "mk-fs",
+        "rio": "mk-fr",
+        "rix": "mk-fq",
+        "rip": "mk-ft",
+        "rr": "mk-dd mk-df mk-dg mk-de mk-dk mk-di mk-dj mk-dh",
+        "rp": "mk-cv mk-cx mk-cy mk-cw mk-dc mk-da mk-db mk-cz",
+        "rs": "mk-dl mk-dn mk-do mk-dm mk-ds mk-dq mk-dr mk-dp"
       },
       "s": {
-        "sm:1": "mk-er mk-ec mk-ed mk-ei mk-z",
-        "md:1": "mk-en mk-dy mk-ee mk-ej mk-z",
-        "lg:1": "mk-eo mk-dz mk-ef mk-ek mk-z",
-        "lg:2": "mk-ep mk-ea mk-eg mk-el mk-z",
-        "lg:3": "mk-eq mk-eb mk-eh mk-em mk-z"
+        "sm:1": "mk-fp mk-ey mk-ez mk-ff mk-z",
+        "md:1": "mk-cm mk-cl mk-fb mk-fh mk-z",
+        "lg:1": "mk-fm mk-ev mk-fc mk-fi mk-z",
+        "lg:2": "mk-fn mk-ew mk-fd mk-fj mk-z",
+        "lg:3": "mk-fo mk-ex mk-fe mk-fk mk-z"
       },
       "r": {
-        "sm:1": "mk-bb",
-        "md:1": "mk-bc",
-        "lg:1": "mk-bd",
-        "lg:2": "mk-be",
-        "lg:3": "mk-bf"
+        "sm:1": "mk-bf",
+        "md:1": "mk-ac",
+        "lg:1": "mk-bg",
+        "lg:2": "mk-bh",
+        "lg:3": "mk-bi"
       },
       "rp": {
-        "sm:1": "mk-bb",
-        "md:1": "mk-bc",
-        "lg:1": "mk-bd",
-        "lg:2": "mk-be",
-        "lg:3": "mk-bf"
+        "sm:1": "mk-bf",
+        "md:1": "mk-ac",
+        "lg:1": "mk-bg",
+        "lg:2": "mk-bh",
+        "lg:3": "mk-bi"
       },
       "rs": {
-        "sm:1": "mk-y",
-        "md:1": "mk-y",
-        "lg:1": "mk-y",
-        "lg:2": "mk-y",
-        "lg:3": "mk-y"
+        "sm:1": "mk-o",
+        "md:1": "mk-o",
+        "lg:1": "mk-o",
+        "lg:2": "mk-o",
+        "lg:3": "mk-o"
       }
     },
     "e2": {
-      "d": "mk-fi",
+      "d": "mk-cu",
       "s": {
-        "sm:1": "mk-ck mk-cj",
-        "md:1": "mk-ck mk-cj",
-        "lg:1": "mk-ff mk-fc",
-        "lg:2": "mk-fg mk-fd",
-        "lg:3": "mk-fh mk-fe"
+        "sm:1": "mk-ao mk-an",
+        "md:1": "mk-ao mk-an",
+        "lg:1": "mk-gd mk-ga",
+        "lg:2": "mk-ge mk-gb",
+        "lg:3": "mk-gf mk-gc"
+      }
+    }
+  },
+  "tabs": {
+    "e1": {
+      "d": "mk-bj",
+      "s": {
+        "all": "mk-dt"
+      }
+    },
+    "e2": {
+      "s": {
+        "all": "mk-cm mk-cl mk-fa mk-fg"
+      }
+    },
+    "e3": {
+      "d": "mk-cu",
+      "s": {
+        "all": "mk-ao mk-an"
+      }
+    },
+    "e4": {
+      "s": {
+        "all": "mk-eu mk-es mk-fl"
+      }
+    },
+    "e5": {
+      "s": {
+        "all": "mk-et"
+      },
+      "r": {
+        "all": "mk-ac"
+      },
+      "rp": {
+        "all": "mk-ac"
+      },
+      "rs": {
+        "all": "mk-o"
       }
     }
   }

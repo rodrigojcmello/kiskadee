@@ -73,5 +73,12 @@
         }
       }
     }
+  },
+  "components": {
+    "tabs": {
+      "options": {
+        "indicatorPosition": "bottom"
+      }
+    }
   }
 }

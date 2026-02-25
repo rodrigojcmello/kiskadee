@@ -1,6 +1,6 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints';
 import type { ButtonElements } from './components/button';
-import type { TabsElements } from './components/tabs';
+import type { TabsElements, TabsOptions } from './components/tabs';
 import type {
   ElementPalettes,
   InteractionState,
@@ -87,7 +87,7 @@ export interface ClassNameMap {
 
 type Components<TSegmentName extends SegmentName = never> = Partial<{
   button: { elements: ButtonElements<TSegmentName> & Elements<TSegmentName> };
-  tabs: { elements: TabsElements<TSegmentName> };
+  tabs: { elements: TabsElements<TSegmentName>; options?: TabsOptions };
 }>;
 
 export type SchemaMetadata = {

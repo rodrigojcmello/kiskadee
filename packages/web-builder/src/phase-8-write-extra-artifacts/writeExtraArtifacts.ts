@@ -9,6 +9,7 @@ import type {
   SchemaFonts,
   SegmentName,
   SolidColor,
+  TabsIndicatorPosition,
   ThemeMode
 } from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
@@ -146,6 +147,8 @@ export async function writeExtraArtifacts(params: {
   const focus = schema.global?.focus as { width?: number; offset?: number } | undefined;
   const radius = schema.global?.radius as RadiusMode | undefined;
   const ripple = schema.global?.effects?.ripple as RippleEffectSchema | undefined;
+  const tabsIndicatorPosition = schema.components?.tabs?.options
+    ?.indicatorPosition as TabsIndicatorPosition | undefined;
 
   function toCssFontFamilyString(value: FontStack): string | null {
     const css = toCssFontFamily(value);
@@ -160,8 +163,9 @@ export async function writeExtraArtifacts(params: {
   const hasFonts = Boolean(bodyCss);
   const hasRadius = Boolean(radius);
   const hasRipple = Boolean(ripple && Object.keys(ripple).length > 0);
+  const hasTabsOptions = Boolean(tabsIndicatorPosition);
 
-  if (hasFonts || hasRadius || hasRipple) {
+  if (hasFonts || hasRadius || hasRipple || hasTabsOptions) {
     await mkdir(buildDir, { recursive: true });
     const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
 
@@ -169,6 +173,13 @@ export async function writeExtraArtifacts(params: {
       fonts?: { body: string; heading?: string };
       radius?: RadiusMode;
       effects?: { ripple?: RippleEffectSchema };
+      components?: {
+        tabs?: {
+          options?: {
+            indicatorPosition?: TabsIndicatorPosition;
+          };
+        };
+      };
     } = {};
 
     if (hasFonts && bodyCss) {
@@ -185,6 +196,17 @@ export async function writeExtraArtifacts(params: {
     if (hasRipple && ripple) {
       globalPayload.effects = {
         ripple
+      };
+    }
+
+    if (hasTabsOptions && tabsIndicatorPosition) {
+      globalPayload.components = {
+        ...(globalPayload.components ?? {}),
+        tabs: {
+          options: {
+            indicatorPosition: tabsIndicatorPosition
+          }
+        }
       };
     }
 

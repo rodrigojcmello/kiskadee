@@ -1,0 +1,81 @@
+/*
+ * Tabs structural styles.
+ * Any visual customization must come from schema build artifacts (CSS/JSON)
+ * or runtime state classes.
+ * Avoid hardcoded theme visual values in this file.
+ */
+.k-tab {
+  /* e1: bar */
+  &-e1 {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    isolation: isolate;
+    overflow: visible;
+    border-width: 0 !important;
+
+    /* e1-b: bar bottom-border variant (indicator on bottom) */
+    &-b {
+      border-bottom-width: var(--k-bw, 0px) !important;
+    }
+
+    /* e1-t: bar top-border variant (indicator on top) */
+    &-t {
+      border-top-width: var(--k-bw, 0px) !important;
+    }
+  }
+
+  /* e2: tab */
+  &-e2 {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    user-select: none;
+
+    &[aria-disabled='true'] {
+      cursor: not-allowed;
+    }
+  }
+
+  /* e3: label */
+  &-e3 {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* e4: icon */
+  &-e4 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+  }
+
+  /* p: tab panel content container */
+  &-p {
+    display: block;
+  }
+
+  /* e5: indicator */
+  &-e5 {
+    position: absolute;
+    left: 0;
+    pointer-events: none;
+    z-index: 2;
+    transition:
+      transform 180ms ease,
+      width 180ms ease,
+      height 180ms ease;
+    will-change: transform, width, height;
+  }
+}

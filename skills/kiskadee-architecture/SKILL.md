@@ -40,6 +40,7 @@ Use this skill to make architecture decisions and implementation plans that stay
 - Keep visual implementation/composition in `packages/components`.
 - Keep inspection/demo integration in `packages/showcase`.
 - Treat schema declaration as necessary but not sufficient for "component done".
+- For structural classes in `packages/components/react`, use `k-<cmp>-e<n>` for schema elements (`cmp` = 3-letter id, e.g. `tab`) and short option suffixes (`-t`, `-b`); keep visual theming in generated artifacts/runtime, not hardcoded Sass.
 
 ## New component rollout checklist
 

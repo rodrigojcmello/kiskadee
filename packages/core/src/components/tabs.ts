@@ -28,16 +28,21 @@ type ElementScalesByProperty<TScaleProperty extends StandardScaleProperty> = Par
 
 /**
  * Tabs elements canonical mapping:
- * - e1: container/bar
- * - e2: tab trigger surface
- * - e3: tab label
- * - e4: tab icon
- * - e5: selection indicator
+ * - e1: bar
+ * - e2: tab
+ * - e3: label
+ * - e4: icon
+ * - e5: indicator
  */
 export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
+export type TabsIndicatorPosition = 'top' | 'bottom';
+
+export type TabsOptions = Partial<{
+  indicatorPosition: TabsIndicatorPosition;
+}>;
 
 /**
- * e1 — container/bar
+ * e1 — bar
  * - boxColor
  * - border
  *
@@ -54,7 +59,7 @@ export type TabsBarElementStyle<TSegmentName extends SegmentName = never> = Part
 }>;
 
 /**
- * e2 — tab trigger surface
+ * e2 — tab
  * - boxColor
  * - padding
  */
@@ -66,7 +71,7 @@ export type TabsTriggerElementStyle<TSegmentName extends SegmentName = never> = 
 }>;
 
 /**
- * e3 — tab label
+ * e3 — label
  * - textColor
  * - textSize
  * - textFamily
@@ -85,7 +90,7 @@ export type TabsLabelElementStyle<TSegmentName extends SegmentName = never> = Pa
 }>;
 
 /**
- * e4 — tab icon
+ * e4 — icon
  * - iconSize
  * - iconColor
  * - padding
@@ -104,7 +109,7 @@ export type TabsIconElementStyle<TSegmentName extends SegmentName = never> = Par
 }>;
 
 /**
- * e5 — selection indicator (line/background/pill)
+ * e5 — indicator (line/background/pill)
  * - boxHeight
  * - borderRadius
  * - boxColor
@@ -117,10 +122,15 @@ export type TabsIndicatorElementStyle<TSegmentName extends SegmentName = never> 
 }>;
 
 export type TabsElements<TSegmentName extends SegmentName = never> = {
+  // e1: bar
   e1?: TabsBarElementStyle<TSegmentName>;
+  // e2: tab
   e2?: TabsTriggerElementStyle<TSegmentName>;
+  // e3: label
   e3?: TabsLabelElementStyle<TSegmentName>;
+  // e4: icon
   e4?: TabsIconElementStyle<TSegmentName>;
+  // e5: indicator
   e5?: TabsIndicatorElementStyle<TSegmentName>;
 };
 
@@ -130,9 +140,10 @@ type ElementContractRules = {
   palettes?: readonly string[];
 };
 
-const TABS_COMPONENT_KEYS = ['elements'] as const;
+const TABS_COMPONENT_KEYS = ['elements', 'options'] as const;
 const TABS_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5'] as const;
 const TABS_ELEMENT_BASE_KEYS = ['name', 'decorations', 'scales', 'palettes', 'effects'] as const;
+const TABS_OPTIONS_KEYS = ['indicatorPosition'] as const;
 
 const TABS_RULES: Record<(typeof TABS_ELEMENTS_KEYS)[number], ElementContractRules> = {
   e1: {
@@ -252,6 +263,23 @@ function validateElementContract(
   }
 }
 
+function validateTabsOptions(value: unknown, path: string, issues: string[]): void {
+  if (!isRecord(value)) {
+    issues.push(`${path}: expected object`);
+    return;
+  }
+
+  validateAllowedKeys(value, TABS_OPTIONS_KEYS, path, issues);
+
+  if (
+    value.indicatorPosition !== undefined &&
+    value.indicatorPosition !== 'top' &&
+    value.indicatorPosition !== 'bottom'
+  ) {
+    issues.push(`${path}.indicatorPosition: expected "top" or "bottom"`);
+  }
+}
+
 export function validateTabsComponentContract(value: unknown, path = 'components.tabs'): string[] {
   const issues: string[] = [];
 
@@ -273,6 +301,10 @@ export function validateTabsComponentContract(value: unknown, path = 'components
     const element = elements[key];
     if (element === undefined) continue;
     validateElementContract(element, `${path}.elements.${key}`, TABS_RULES[key], issues);
+  }
+
+  if (value.options !== undefined) {
+    validateTabsOptions(value.options, `${path}.options`, issues);
   }
 
   return issues;

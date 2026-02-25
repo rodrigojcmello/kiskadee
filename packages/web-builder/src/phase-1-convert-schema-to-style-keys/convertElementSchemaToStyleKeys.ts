@@ -51,8 +51,17 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
     if (!component?.elements) continue;
 
     // Iterate over each element within the component.
-    for (const elementName in component.elements) {
-      const element = component.elements[elementName];
+    const elements = component.elements as Record<
+      string,
+      {
+        decorations?: any;
+        scales?: any;
+        palettes?: any;
+        effects?: any;
+      }
+    >;
+    for (const [elementName, element] of Object.entries(elements)) {
+      if (!element) continue;
 
       deepUpdate<StyleKeyByElement>(styleKeysByComponent, [componentName, elementName], (prev) => {
         const el: Partial<StyleKeyByElement> = prev ? { ...prev } : {};

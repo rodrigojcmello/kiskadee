@@ -1,5 +1,5 @@
 /** @vitest-environment jsdom */
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { Tabs } from './Tabs';
 
@@ -11,12 +11,12 @@ describe('Headless Tabs', () => {
   it('respects controlled value in compound API', () => {
     render(
       <Tabs.Root value="b">
-        <Tabs.List>
-          <Tabs.Trigger value="a">Tab A</Tabs.Trigger>
-          <Tabs.Trigger value="b">Tab B</Tabs.Trigger>
-        </Tabs.List>
-        <Tabs.Panel value="a">Panel A</Tabs.Panel>
-        <Tabs.Panel value="b">Panel B</Tabs.Panel>
+        <Tabs.Bar>
+          <Tabs.Tab value="a">Tab A</Tabs.Tab>
+          <Tabs.Tab value="b">Tab B</Tabs.Tab>
+        </Tabs.Bar>
+        <Tabs.Content value="a">Panel A</Tabs.Content>
+        <Tabs.Content value="b">Panel B</Tabs.Content>
       </Tabs.Root>
     );
 
@@ -34,12 +34,12 @@ describe('Headless Tabs', () => {
   it('supports compound API for custom composition', () => {
     render(
       <Tabs.Root defaultValue="second">
-        <Tabs.List>
-          <Tabs.Trigger value="first">First</Tabs.Trigger>
-          <Tabs.Trigger value="second">Second</Tabs.Trigger>
-        </Tabs.List>
-        <Tabs.Panel value="first">One</Tabs.Panel>
-        <Tabs.Panel value="second">Two</Tabs.Panel>
+        <Tabs.Bar>
+          <Tabs.Tab value="first">First</Tabs.Tab>
+          <Tabs.Tab value="second">Second</Tabs.Tab>
+        </Tabs.Bar>
+        <Tabs.Content value="first">One</Tabs.Content>
+        <Tabs.Content value="second">Two</Tabs.Content>
       </Tabs.Root>
     );
 
@@ -49,7 +49,7 @@ describe('Headless Tabs', () => {
     expect(screen.queryByText('One')).toBeNull();
   });
 
-  it('applies classNames mapping to root/list/trigger/panel/indicator', () => {
+  it('applies classNames mapping to root/bar/tab/content/indicator', () => {
     const { container } = render(
       <Tabs.Root
         classNames={{
@@ -62,13 +62,13 @@ describe('Headless Tabs', () => {
         }}
         defaultValue="b"
       >
-        <Tabs.List>
-          <Tabs.Trigger value="a">Tab A</Tabs.Trigger>
-          <Tabs.Trigger value="b">Tab B</Tabs.Trigger>
+        <Tabs.Bar>
+          <Tabs.Tab value="a">Tab A</Tabs.Tab>
+          <Tabs.Tab value="b">Tab B</Tabs.Tab>
           <Tabs.Indicator />
-        </Tabs.List>
-        <Tabs.Panel value="a">Panel A</Tabs.Panel>
-        <Tabs.Panel value="b">Panel B</Tabs.Panel>
+        </Tabs.Bar>
+        <Tabs.Content value="a">Panel A</Tabs.Content>
+        <Tabs.Content value="b">Panel B</Tabs.Content>
       </Tabs.Root>
     );
 
@@ -81,17 +81,57 @@ describe('Headless Tabs', () => {
   });
 
   it('throws when compound components are used outside Tabs.Root', () => {
-    expect(() => render(<Tabs.List>orphan</Tabs.List>)).toThrow(
+    expect(() => render(<Tabs.Bar>orphan</Tabs.Bar>)).toThrow(
       'Tabs components must be used within a Tabs.Root'
     );
-    expect(() => render(<Tabs.Trigger value="x">orphan</Tabs.Trigger>)).toThrow(
+    expect(() => render(<Tabs.Tab value="x">orphan</Tabs.Tab>)).toThrow(
       'Tabs components must be used within a Tabs.Root'
     );
-    expect(() => render(<Tabs.Panel value="x">orphan</Tabs.Panel>)).toThrow(
+    expect(() => render(<Tabs.Content value="x">orphan</Tabs.Content>)).toThrow(
       'Tabs components must be used within a Tabs.Root'
     );
     expect(() => render(<Tabs.Indicator />)).toThrow(
       'Tabs components must be used within a Tabs.Root'
     );
+  });
+
+  it('keeps non-selected tabs keyboard focusable', () => {
+    render(
+      <Tabs.Root defaultValue="second">
+        <Tabs.Bar>
+          <Tabs.Tab value="first">First</Tabs.Tab>
+          <Tabs.Tab value="second">Second</Tabs.Tab>
+        </Tabs.Bar>
+        <Tabs.Content value="first">One</Tabs.Content>
+        <Tabs.Content value="second">Two</Tabs.Content>
+      </Tabs.Root>
+    );
+
+    const firstTab = screen.getByRole('tab', { name: 'First' });
+    const secondTab = screen.getByRole('tab', { name: 'Second' });
+
+    expect(firstTab.getAttribute('tabindex')).toBe('0');
+    expect(secondTab.getAttribute('tabindex')).toBe('0');
+  });
+
+  it('selects focused tab in automatic activation mode', () => {
+    render(
+      <Tabs.Root defaultValue="second" activationMode="automatic">
+        <Tabs.Bar>
+          <Tabs.Tab value="first">First</Tabs.Tab>
+          <Tabs.Tab value="second">Second</Tabs.Tab>
+        </Tabs.Bar>
+        <Tabs.Content value="first">One</Tabs.Content>
+        <Tabs.Content value="second">Two</Tabs.Content>
+      </Tabs.Root>
+    );
+
+    const firstTab = screen.getByRole('tab', { name: 'First' });
+    const secondTab = screen.getByRole('tab', { name: 'Second' });
+
+    expect(secondTab.getAttribute('aria-selected')).toBe('true');
+    fireEvent.focus(firstTab);
+    expect(firstTab.getAttribute('aria-selected')).toBe('true');
+    expect(secondTab.getAttribute('aria-selected')).toBe('false');
   });
 });

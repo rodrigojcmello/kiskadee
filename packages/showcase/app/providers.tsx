@@ -29,16 +29,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const classesMap = useClassMapLoader({ designSystem, segment, theme });
 
   // 3. Load extra resources (background colors) and global radius/ripple metadata
-  const { backgroundsByTheme, globalRadius, globalRipple } = useThemeExtras({
+  const { backgroundsByTheme, globalRadius, globalRipple, tabsIndicatorPosition } = useThemeExtras({
     designSystem,
     segment
   });
 
   const globalConfig =
-    globalRadius !== undefined || globalRipple !== undefined
+    globalRadius !== undefined || globalRipple !== undefined || tabsIndicatorPosition !== undefined
       ? {
           ...(globalRadius !== undefined ? { radius: globalRadius } : {}),
-          ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {})
+          ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {}),
+          ...(tabsIndicatorPosition !== undefined
+            ? { components: { tabs: { options: { indicatorPosition: tabsIndicatorPosition } } } }
+            : {})
         }
       : undefined;
 

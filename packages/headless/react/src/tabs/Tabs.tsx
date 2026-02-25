@@ -33,28 +33,28 @@ export type TabsRootProps = TabsRootDivProps & {
   /**
    * Class names by compact element keys:
    * - e1: Tabs root container (div)
-   * - e2: Tab list (role=tablist)
+   * - e2: Tab bar (role=tablist)
    * - e3: Tab button (role=tab) — rest state
    * - e3a: Tab button (role=tab) — selected state
-   * - e4: Tab panel (role=tabpanel)
+   * - e4: Tab content (role=tabpanel)
    * - e5: Tab active indicator (optional)
    */
   classNames?: Partial<Record<'e1' | 'e2' | 'e3' | 'e3a' | 'e4' | 'e5', string>>;
 };
 
-export type TabsListProps = {
+export type TabsBarProps = {
   children?: ReactNode;
   className?: string;
 };
 
-export type TabsTriggerProps = {
+export type TabsTabProps = {
   value: string;
   children?: ReactNode;
   className?: string;
   disabled?: boolean;
 };
 
-export type TabsPanelProps = {
+export type TabsContentProps = {
   value: string;
   children?: ReactNode;
   className?: string;
@@ -108,7 +108,7 @@ function TabsRoot({
   defaultValue,
   onValueChange,
   orientation = 'horizontal',
-  activationMode = 'automatic',
+  activationMode = 'manual',
   idPrefix,
   classNames,
   ...rootDivProps
@@ -217,10 +217,10 @@ function TabsRoot({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// List Component
+// Bar Component
 // ─────────────────────────────────────────────────────────────────────────────
 
-function TabsList({ children, className }: TabsListProps) {
+function TabsBar({ children, className }: TabsBarProps) {
   const {
     tabs,
     orientation,
@@ -336,16 +336,16 @@ function TabsList({ children, className }: TabsListProps) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Trigger Component
+// Tab Component
 // ─────────────────────────────────────────────────────────────────────────────
 
-function TabsTrigger({ value, children, className, disabled = false }: TabsTriggerProps) {
+function TabsTab({ value, children, className, disabled = false }: TabsTabProps) {
   const {
     selected,
     setSelected,
+    activationMode,
     classNames,
     baseId,
-    tabs,
     registerTab,
     unregisterTab,
     setTabDisabled,
@@ -364,14 +364,7 @@ function TabsTrigger({ value, children, className, disabled = false }: TabsTrigg
     setTabDisabled(value, disabled);
   }, [value, disabled, setTabDisabled]);
 
-  const enabledValues = useMemo(
-    () => tabs.filter((tab) => !tab.disabled).map((tab) => tab.value),
-    [tabs]
-  );
-
   const isSelected = selected === value;
-  const focusableValue =
-    selected && enabledValues.includes(selected) ? selected : enabledValues[0] ?? undefined;
 
   const triggerClassName =
     className ??
@@ -390,7 +383,12 @@ function TabsTrigger({ value, children, className, disabled = false }: TabsTrigg
       aria-selected={isSelected}
       aria-controls={`${baseId}-panel-${value}`}
       aria-disabled={disabled || undefined}
-      tabIndex={focusableValue === value && !disabled ? 0 : -1}
+      tabIndex={disabled ? -1 : 0}
+      onFocus={() => {
+        if (!disabled && activationMode === 'automatic') {
+          setSelected(value);
+        }
+      }}
       onClick={() => !disabled && setSelected(value)}
     >
       {children}
@@ -406,7 +404,6 @@ type IndicatorRect = {
   x: number;
   y: number;
   width: number;
-  height: number;
 };
 
 function TabsIndicator({ className, style, ...indicatorDivProps }: TabsIndicatorProps) {
@@ -432,8 +429,7 @@ function TabsIndicator({ className, style, ...indicatorDivProps }: TabsIndicator
     setRect({
       x: tabRect.left - listRect.left + listEl.scrollLeft,
       y: tabRect.top - listRect.top + listEl.scrollTop,
-      width: tabRect.width,
-      height: tabRect.height
+      width: tabRect.width
     });
   }, [selected, listRef, tabRefs]);
 
@@ -471,7 +467,6 @@ function TabsIndicator({ className, style, ...indicatorDivProps }: TabsIndicator
     top: 0,
     left: 0,
     width: rect?.width,
-    height: rect?.height,
     transform: rect ? `translate3d(${rect.x}px, ${rect.y}px, 0)` : undefined,
     ...style
   };
@@ -490,10 +485,10 @@ function TabsIndicator({ className, style, ...indicatorDivProps }: TabsIndicator
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Panel Component
+// Content Component
 // ─────────────────────────────────────────────────────────────────────────────
 
-function TabsPanel({ value, children, className }: TabsPanelProps) {
+function TabsContent({ value, children, className }: TabsContentProps) {
   const { selected, classNames, baseId } = useTabsContext();
 
   const isSelected = selected === value;
@@ -518,8 +513,8 @@ function TabsPanel({ value, children, className }: TabsPanelProps) {
 
 export const Tabs = {
   Root: TabsRoot,
-  List: TabsList,
-  Trigger: TabsTrigger,
-  Panel: TabsPanel,
+  Bar: TabsBar,
+  Tab: TabsTab,
+  Content: TabsContent,
   Indicator: TabsIndicator
 };
