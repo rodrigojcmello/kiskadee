@@ -6,11 +6,7 @@ import type {
 } from '../types/colors/colors.types';
 import type { DecorationSchema } from '../types/decorations/decorations.types';
 import type { ElementEffects } from '../types/effects';
-import type {
-  ScaleBySize,
-  ScaleSchema,
-  StandardScaleProperty
-} from '../types/scales/scales.types';
+import type { ScaleBySize, ScaleSchema, StandardScaleProperty } from '../types/scales/scales.types';
 
 type ElementPalettesByColor<
   TSegmentName extends SegmentName,
@@ -47,7 +43,7 @@ export type TabsOptions = Partial<{
  * - border
  *
  * NOTE:
- * Current schema supports border as generic border color/width.
+ * The current schema supports border as a generic border color /width.
  * Side-specific border top/bottom is not yet modeled at schema level.
  */
 export type TabsBarElementStyle<TSegmentName extends SegmentName = never> = Partial<{

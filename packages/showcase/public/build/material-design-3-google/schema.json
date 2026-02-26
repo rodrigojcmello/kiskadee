@@ -956,7 +956,7 @@
                 "borderColor": {
                   "neutral": {
                     "high": {
-                      "rest": "#C9C5CD"
+                      "rest": "#E6E1E9"
                     }
                   }
                 }
@@ -994,9 +994,9 @@
                   "neutral": {
                     "high": {
                       "rest": "#0000",
-                      "hover": "#F1ECF4",
-                      "focus": "#F1ECF4",
-                      "pressed": "#ECE6EE",
+                      "hover": "#F7F2FA",
+                      "focus": "#F7F2FA",
+                      "pressed": "#E6E1E9",
                       "selected": {
                         "rest": "#0000",
                         "hover": "#F1ECF4",

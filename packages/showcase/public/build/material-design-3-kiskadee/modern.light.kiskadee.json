@@ -4,11 +4,11 @@
       "c": {
         "primary": {
           "h": "mk-m mk-am mk-y",
-          "m": "mk-fz mk-n mk-y"
+          "m": "mk-gc mk-n mk-y"
         },
         "destructive": {
           "h": "mk-m mk-am mk-y",
-          "m": "mk-cp mk-n mk-y"
+          "m": "mk-co mk-n mk-y"
         }
       }
     }

@@ -1,6 +1,5 @@
-import Tabs from './Tabs';
+import ShowcaseTabs from './ShowcaseTabs';
 
 export default function TabsPage() {
-  return <Tabs />;
+  return <ShowcaseTabs />;
 }
-

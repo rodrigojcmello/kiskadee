@@ -1,44 +1,44 @@
-.mk-ac { --k-br: 20px; border-radius: 20px }
+.mk-aa { --k-br: 20px; border-radius: 20px }
 .mk-an { line-height: 20px }
 .mk-ao { font-size: 0.875rem }
-.mk-bf { --k-br: 18px; border-radius: 18px }
-.mk-bg { --k-br: 28px; border-radius: 28px }
-.mk-bh { --k-br: 48px; border-radius: 48px }
-.mk-bi { --k-br: 68px; border-radius: 68px }
-.mk-bj { border-style: solid }
-.mk-cl { --k-pb: 10px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
-.mk-cm { --k-pt: 10px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
-.mk-cu { font-weight: 500 }
-.mk-dt { --k-bw: 2px; border-width: 2px }
-.mk-es { height: 18px }
-.mk-et { height: 2px }
-.mk-eu { width: 18px }
-.mk-ev { --k-pb: 16px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
-.mk-ew { --k-pb: 32px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
-.mk-ex { --k-pb: 48px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
-.mk-ey { --k-pb: 8px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
-.mk-ez { --k-pl: 12px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
-.mk-fa { --k-pl: 14px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
-.mk-fb { --k-pl: 16px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
-.mk-fc { --k-pl: 24px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
-.mk-fd { --k-pl: 48px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
-.mk-fe { --k-pl: 64px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
-.mk-ff { --k-pr: 12px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
-.mk-fg { --k-pr: 14px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
-.mk-fh { --k-pr: 16px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
-.mk-fi { --k-pr: 24px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
-.mk-fj { --k-pr: 48px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
-.mk-fk { --k-pr: 64px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
-.mk-fl { --k-pr: 8px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
-.mk-fm { --k-pt: 16px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
-.mk-fn { --k-pt: 32px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
-.mk-fo { --k-pt: 48px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
-.mk-fp { --k-pt: 8px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
-.mk-ga { line-height: 24px }
-.mk-gb { line-height: 32px }
-.mk-gc { line-height: 40px }
-.mk-gd { font-size: 1rem }
-.mk-ge { font-size: 1.5rem }
-.mk-gf { font-size: 2rem }
+.mk-be { --k-br: 18px; border-radius: 18px }
+.mk-bf { --k-br: 28px; border-radius: 28px }
+.mk-bg { --k-br: 48px; border-radius: 48px }
+.mk-bh { --k-br: 68px; border-radius: 68px }
+.mk-bi { border-style: solid }
+.mk-ck { --k-pb: 10px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
+.mk-cl { --k-pt: 10px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
+.mk-ct { font-weight: 500 }
+.mk-du { --k-bw: 2px; border-width: 2px }
+.mk-ev { height: 18px }
+.mk-ew { height: 2px }
+.mk-ex { width: 18px }
+.mk-ey { --k-pb: 16px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
+.mk-ez { --k-pb: 32px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
+.mk-fa { --k-pb: 48px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
+.mk-fb { --k-pb: 8px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
+.mk-fc { --k-pl: 12px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
+.mk-fd { --k-pl: 14px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
+.mk-fe { --k-pl: 16px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
+.mk-ff { --k-pl: 24px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
+.mk-fg { --k-pl: 48px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
+.mk-fh { --k-pl: 64px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
+.mk-fi { --k-pr: 12px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
+.mk-fj { --k-pr: 14px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
+.mk-fk { --k-pr: 16px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
+.mk-fl { --k-pr: 24px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
+.mk-fm { --k-pr: 48px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
+.mk-fn { --k-pr: 64px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
+.mk-fo { --k-pr: 8px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
+.mk-fp { --k-pt: 16px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
+.mk-fq { --k-pt: 32px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
+.mk-fr { --k-pt: 48px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
+.mk-fs { --k-pt: 8px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
+.mk-gd { line-height: 24px }
+.mk-ge { line-height: 32px }
+.mk-gf { line-height: 40px }
+.mk-gg { font-size: 1rem }
+.mk-gh { font-size: 1.5rem }
+.mk-gi { font-size: 2rem }
 .mk-o { --k-br: 0px; border-radius: 0px }
 .mk-z { --k-bw: 1px; border-width: 1px }

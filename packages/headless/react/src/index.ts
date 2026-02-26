@@ -4,8 +4,8 @@ export type {
   TabsTabProps,
   TabsContentProps,
   TabsIndicatorProps
-} from './tabs/Tabs';
-export { Tabs } from './tabs/Tabs';
+} from './tabs/HeadlessTabs';
+export { HeadlessTabs } from './tabs/HeadlessTabs';
 
 export type { ButtonProps } from './button/Button';
 export { Button } from './button/Button';

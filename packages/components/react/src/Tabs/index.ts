@@ -1,4 +1,4 @@
-export { Tabs } from './Tabs';
+export { KTabs } from './KTabs';
 export type {
   TabsBarProps,
   TabsClassNames,
@@ -9,4 +9,4 @@ export type {
   TabsLabelProps,
   TabsRootProps,
   TabsTabProps
-} from './Tabs.types';
+} from './KTabs.types.ts';

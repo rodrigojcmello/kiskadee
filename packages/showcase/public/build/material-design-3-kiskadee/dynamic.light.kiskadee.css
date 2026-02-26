@@ -3,16 +3,16 @@
 .mk-a { border-color: #0000 }
 .mk-aq { border-color: #C9C4CF }
 .mk-ar { border-color: #D7D3DB }
-.mk-at.-d.-a { border-color: #C9C4CF }
-.mk-au.-d.-a { border-color: #D7D3DB }
+.mk-as.-d.-a { border-color: #C9C4CF }
+.mk-at.-d.-a { border-color: #D7D3DB }
 .mk-b.-d.-a { border-color: #0000 }
-.mk-be.-s.-a { border-color: #0000 }
-.mk-bk { background: #465D91 }
-.mk-bl { background: #615690 }
-.mk-bo { background: #E6E1E9 }
-.mk-bp { background: #F7F2FA }
-.mk-cj.-s.-a { background: #5F76AC }
-.mk-ck.-s.-a { background: #615690 }
+.mk-bd.-s.-a { border-color: #0000 }
+.mk-bj { background: #465D91 }
+.mk-bk { background: #615690 }
+.mk-bn { background: #E6E1E9 }
+.mk-bo { background: #F7F2FA }
+.mk-ci.-s.-a { background: #5F76AC }
+.mk-cj.-s.-a { background: #615690 }
 .mk-f { background: #0000 }
 .mk-i.-d.-a { background: #0000 }
 .mk-j.-d.-a { background: #1C1B201A }
@@ -20,34 +20,34 @@
 .mk-m { color: #FFF }
 .mk-w.-s.-a { background: #605D64 }
 .mk-x { color: #615690 }
-.mk-aa:focus-visible, .mk-aa.-f.-a { background: #F1ECF4 }
-.mk-aw:focus-visible, .mk-aw.-f.-a { border-color: #C9C4CF }
-.mk-ax:focus-visible, .mk-ax.-f.-a { border-color: #D7D3DB }
-.mk-br:focus-visible, .mk-br.-f.-a { background: #526A9E }
-.mk-bs:focus-visible, .mk-bs.-f.-a { background: #61569014 }
-.mk-bu:focus-visible, .mk-bu.-f.-a { background: #6E629D }
+.mk-ab:focus-visible, .mk-ab.-f.-a { background: #F1ECF4 }
+.mk-av:focus-visible, .mk-av.-f.-a { border-color: #C9C4CF }
+.mk-aw:focus-visible, .mk-aw.-f.-a { border-color: #D7D3DB }
+.mk-bq:focus-visible, .mk-bq.-f.-a { background: #526A9E }
+.mk-br:focus-visible, .mk-br.-f.-a { background: #61569014 }
+.mk-bt:focus-visible, .mk-bt.-f.-a { background: #6E629D }
 .mk-c:focus-visible, .mk-c.-f.-a { border-color: #0000 }
 .mk-q:focus-visible, .mk-q.-f.-a { background: #FDF7FF }
-.mk-ab:hover:not(:active), .mk-ab.-h.-a { background: #F1ECF4 }
+.mk-ac:hover:not(:active), .mk-ac.-h.-a { background: #F1ECF4 }
 .mk-ad:active, .mk-ad.-p.-a { background: #F1ECF4 }
 .mk-ag:active.-s, .mk-ag.-s.-p.-a { background: #545158 }
-.mk-az:hover:not(:active), .mk-az.-h.-a { border-color: #C9C4CF }
-.mk-ba:hover:not(:active), .mk-ba.-h.-a { border-color: #E6E1E9 }
-.mk-bc:active, .mk-bc.-p.-a { border-color: #C9C4CF }
-.mk-bd:active, .mk-bd.-p.-a { border-color: #C9C5CD }
-.mk-bv:hover:not(:active), .mk-bv.-h.-a { background: #526A9E }
-.mk-bw:hover:not(:active), .mk-bw.-h.-a { background: #61569014 }
-.mk-by:hover:not(:active), .mk-by.-h.-a { background: #6E629D }
-.mk-bz:active, .mk-bz.-p.-a { background: #526A9E }
-.mk-ca:active, .mk-ca.-p.-a { background: #61569014 }
-.mk-cc:active, .mk-cc.-p.-a { background: #6E629D }
-.mk-cd:hover:not(:active).-s, .mk-cd.-s.-h.-a { background: #7890C7 }
-.mk-ce:hover:not(:active).-s, .mk-ce.-s.-h.-a { background: #6E629D }
-.mk-cf:active.-s, .mk-cf.-s.-p.-a { background: #465D91 }
-.mk-cg:active.-s, .mk-cg.-s.-p.-a { background: #6E629D }
-.mk-ch:active.-s, .mk-ch.-s.-p.-a { background: #6C6970 }
-.mk-cq:hover:not(:active), .mk-cq.-h.-a { color: #6E629D }
-.mk-cr:active, .mk-cr.-p.-a { color: #493E76 }
+.mk-ay:hover:not(:active), .mk-ay.-h.-a { border-color: #C9C4CF }
+.mk-az:hover:not(:active), .mk-az.-h.-a { border-color: #E6E1E9 }
+.mk-bb:active, .mk-bb.-p.-a { border-color: #C9C4CF }
+.mk-bc:active, .mk-bc.-p.-a { border-color: #C9C5CD }
+.mk-bu:hover:not(:active), .mk-bu.-h.-a { background: #526A9E }
+.mk-bv:hover:not(:active), .mk-bv.-h.-a { background: #61569014 }
+.mk-bx:hover:not(:active), .mk-bx.-h.-a { background: #6E629D }
+.mk-by:active, .mk-by.-p.-a { background: #526A9E }
+.mk-bz:active, .mk-bz.-p.-a { background: #61569014 }
+.mk-cb:active, .mk-cb.-p.-a { background: #6E629D }
+.mk-cc:hover:not(:active).-s, .mk-cc.-s.-h.-a { background: #7890C7 }
+.mk-cd:hover:not(:active).-s, .mk-cd.-s.-h.-a { background: #6E629D }
+.mk-ce:active.-s, .mk-ce.-s.-p.-a { background: #465D91 }
+.mk-cf:active.-s, .mk-cf.-s.-p.-a { background: #6E629D }
+.mk-cg:active.-s, .mk-cg.-s.-p.-a { background: #6C6970 }
+.mk-cp:hover:not(:active), .mk-cp.-h.-a { color: #6E629D }
+.mk-cq:active, .mk-cq.-p.-a { color: #493E76 }
 .mk-d:hover:not(:active), .mk-d.-h.-a { border-color: #0000 }
 .mk-e:active, .mk-e.-p.-a { border-color: #0000 }
 .mk-s:hover:not(:active), .mk-s.-h.-a { background: #FDF7FF }

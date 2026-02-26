@@ -2,8 +2,8 @@ import type {
   ComponentPropsWithoutRef,
   CSSProperties,
   KeyboardEvent,
-  MutableRefObject,
-  ReactNode
+  ReactNode,
+  RefObject
 } from 'react';
 import {
   createContext,
@@ -16,9 +16,9 @@ import {
   useState
 } from 'react';
 
-// ─────────────────────────────────────────────────────────────────────────────
+// -------------------------------------------------------------------------------------------------
 // Types
-// ─────────────────────────────────────────────────────────────────────────────
+// -------------------------------------------------------------------------------------------------
 
 type TabsRootDivProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'className'>;
 
@@ -64,9 +64,9 @@ export type TabsIndicatorProps = Omit<ComponentPropsWithoutRef<'div'>, 'children
   className?: string;
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
+// -------------------------------------------------------------------------------------------------
 // Context
-// ─────────────────────────────────────────────────────────────────────────────
+// -------------------------------------------------------------------------------------------------
 
 type TabsRegistration = {
   value: string;
@@ -84,8 +84,8 @@ type TabsContextValue = {
   registerTab: (value: string) => void;
   unregisterTab: (value: string) => void;
   setTabDisabled: (value: string, disabled: boolean) => void;
-  tabRefs: MutableRefObject<Map<string, HTMLButtonElement | null>>;
-  listRef: MutableRefObject<HTMLDivElement | null>;
+  tabRefs: RefObject<Map<string, HTMLButtonElement | null>>;
+  listRef: RefObject<HTMLDivElement | null>;
 };
 
 const TabsContext = createContext<TabsContextValue | null>(null);
@@ -98,9 +98,9 @@ function useTabsContext() {
   return context;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Root Component
-// ─────────────────────────────────────────────────────────────────────────────
+// -------------------------------------------------------------------------------------------------
+// Root Element
+// -------------------------------------------------------------------------------------------------
 
 function TabsRoot({
   children,
@@ -216,20 +216,13 @@ function TabsRoot({
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Bar Component
-// ─────────────────────────────────────────────────────────────────────────────
+// -------------------------------------------------------------------------------------------------
+// Bar Element
+// -------------------------------------------------------------------------------------------------
 
 function TabsBar({ children, className }: TabsBarProps) {
-  const {
-    tabs,
-    orientation,
-    activationMode,
-    setSelected,
-    classNames,
-    tabRefs,
-    listRef
-  } = useTabsContext();
+  const { tabs, orientation, activationMode, setSelected, classNames, tabRefs, listRef } =
+    useTabsContext();
 
   const enabledValues = useMemo(
     () => tabs.filter((tab) => !tab.disabled).map((tab) => tab.value),
@@ -335,9 +328,9 @@ function TabsBar({ children, className }: TabsBarProps) {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Tab Component
-// ─────────────────────────────────────────────────────────────────────────────
+// -------------------------------------------------------------------------------------------------
+// Tab Element
+// -------------------------------------------------------------------------------------------------
 
 function TabsTab({ value, children, className, disabled = false }: TabsTabProps) {
   const {
@@ -367,8 +360,7 @@ function TabsTab({ value, children, className, disabled = false }: TabsTabProps)
   const isSelected = selected === value;
 
   const triggerClassName =
-    className ??
-    (isSelected ? (classNames?.e3a ?? classNames?.e3 ?? '') : (classNames?.e3 ?? ''));
+    className ?? (isSelected ? (classNames?.e3a ?? classNames?.e3 ?? '') : (classNames?.e3 ?? ''));
 
   return (
     <button
@@ -396,9 +388,9 @@ function TabsTab({ value, children, className, disabled = false }: TabsTabProps)
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Indicator Component
-// ─────────────────────────────────────────────────────────────────────────────
+// -------------------------------------------------------------------------------------------------
+// Indicator Element
+// -------------------------------------------------------------------------------------------------
 
 type IndicatorRect = {
   x: number;
@@ -463,11 +455,13 @@ function TabsIndicator({ className, style, ...indicatorDivProps }: TabsIndicator
   const indicatorClassName = className ?? classNames?.e5;
 
   const indicatorStyle: CSSProperties = {
-    position: 'absolute',
     top: 0,
-    left: 0,
     width: rect?.width,
-    transform: rect ? `translate3d(${rect.x}px, ${rect.y}px, 0)` : undefined,
+    transform: rect
+      ? orientation === 'horizontal'
+        ? `translate3d(${rect.x}px, 0px, 0)`
+        : `translate3d(0px, ${rect.y}px, 0)`
+      : undefined,
     ...style
   };
 
@@ -484,9 +478,9 @@ function TabsIndicator({ className, style, ...indicatorDivProps }: TabsIndicator
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Content Component
-// ─────────────────────────────────────────────────────────────────────────────
+// -------------------------------------------------------------------------------------------------
+// Content Element
+// -------------------------------------------------------------------------------------------------
 
 function TabsContent({ value, children, className }: TabsContentProps) {
   const { selected, classNames, baseId } = useTabsContext();
@@ -507,11 +501,11 @@ function TabsContent({ value, children, className }: TabsContentProps) {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// -------------------------------------------------------------------------------------------------
 // Export
-// ─────────────────────────────────────────────────────────────────────────────
+// -------------------------------------------------------------------------------------------------
 
-export const Tabs = {
+export const HeadlessTabs = {
   Root: TabsRoot,
   Bar: TabsBar,
   Tab: TabsTab,

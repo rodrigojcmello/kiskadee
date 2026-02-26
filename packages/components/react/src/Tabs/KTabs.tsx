@@ -4,7 +4,7 @@ import {
   stateActivator as cn,
   componentEmphasisBuckets
 } from '@kiskadee/core';
-import { Tabs as HeadlessTabs } from '@kiskadee/react-headless';
+import { HeadlessTabs } from '@kiskadee/react-headless';
 import {
   type CSSProperties,
   createContext,
@@ -26,8 +26,8 @@ import type {
   TabsLabelProps,
   TabsRootProps,
   TabsTabProps
-} from './Tabs.types';
-import './Tabs.scss';
+} from './KTabs.types.ts';
+import './KTabs.scss';
 
 export type {
   TabsBarProps,
@@ -39,7 +39,7 @@ export type {
   TabsLabelProps,
   TabsRootProps,
   TabsTabProps
-} from './Tabs.types';
+} from './KTabs.types.ts';
 
 const DEFAULT_SCALE = 's:md:1';
 const DEFAULT_INTENT = 'neutral';
@@ -282,6 +282,7 @@ const TabsLabel = forwardRef<HTMLSpanElement, TabsLabelProps>(function TabsLabel
     }),
     classNames.e3,
     'k-tab-e3',
+    cn.activator,
     isSelected ? cn.selected : '',
     className
   );
@@ -309,6 +310,7 @@ const TabsIcon = forwardRef<HTMLSpanElement, TabsIconProps>(function TabsIcon(
     }),
     classNames.e4,
     'k-tab-e4',
+    cn.activator,
     isSelected ? cn.selected : '',
     className
   );
@@ -353,7 +355,7 @@ function TabsIndicator({ className, style, ...props }: TabsIndicatorProps) {
   );
 }
 
-type TabsComponent = {
+type KTabsComponent = {
   Root: typeof TabsRoot;
   Bar: typeof TabsBar;
   Tab: typeof TabsTab;
@@ -365,7 +367,7 @@ type TabsComponent = {
 
 const TabsRootMemo = memo(TabsRoot);
 
-export const Tabs = Object.assign(TabsRootMemo, {
+export const KTabs = Object.assign(TabsRootMemo, {
   Root: TabsRootMemo,
   Bar: TabsBar,
   Tab: TabsTab,
@@ -373,6 +375,6 @@ export const Tabs = Object.assign(TabsRootMemo, {
   Icon: TabsIcon,
   Content: TabsContent,
   Indicator: TabsIndicator
-}) as TabsComponent;
+}) as KTabsComponent;
 
-export default Tabs;
+export default KTabs;

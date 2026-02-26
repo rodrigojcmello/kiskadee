@@ -1,23 +1,23 @@
 /** @vitest-environment jsdom */
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Tabs } from './Tabs';
+import { HeadlessTabs } from './HeadlessTabs';
 
 afterEach(() => {
   cleanup();
 });
 
-describe('Headless Tabs', () => {
+describe('HeadlessTabs', () => {
   it('respects controlled value in compound API', () => {
     render(
-      <Tabs.Root value="b">
-        <Tabs.Bar>
-          <Tabs.Tab value="a">Tab A</Tabs.Tab>
-          <Tabs.Tab value="b">Tab B</Tabs.Tab>
-        </Tabs.Bar>
-        <Tabs.Content value="a">Panel A</Tabs.Content>
-        <Tabs.Content value="b">Panel B</Tabs.Content>
-      </Tabs.Root>
+      <HeadlessTabs.Root value="b">
+        <HeadlessTabs.Bar>
+          <HeadlessTabs.Tab value="a">Tab A</HeadlessTabs.Tab>
+          <HeadlessTabs.Tab value="b">Tab B</HeadlessTabs.Tab>
+        </HeadlessTabs.Bar>
+        <HeadlessTabs.Content value="a">Panel A</HeadlessTabs.Content>
+        <HeadlessTabs.Content value="b">Panel B</HeadlessTabs.Content>
+      </HeadlessTabs.Root>
     );
 
     const tabA = screen.getByRole('tab', { name: 'Tab A' });
@@ -33,14 +33,14 @@ describe('Headless Tabs', () => {
 
   it('supports compound API for custom composition', () => {
     render(
-      <Tabs.Root defaultValue="second">
-        <Tabs.Bar>
-          <Tabs.Tab value="first">First</Tabs.Tab>
-          <Tabs.Tab value="second">Second</Tabs.Tab>
-        </Tabs.Bar>
-        <Tabs.Content value="first">One</Tabs.Content>
-        <Tabs.Content value="second">Two</Tabs.Content>
-      </Tabs.Root>
+      <HeadlessTabs.Root defaultValue="second">
+        <HeadlessTabs.Bar>
+          <HeadlessTabs.Tab value="first">First</HeadlessTabs.Tab>
+          <HeadlessTabs.Tab value="second">Second</HeadlessTabs.Tab>
+        </HeadlessTabs.Bar>
+        <HeadlessTabs.Content value="first">One</HeadlessTabs.Content>
+        <HeadlessTabs.Content value="second">Two</HeadlessTabs.Content>
+      </HeadlessTabs.Root>
     );
 
     expect(screen.getByRole('tablist')).toBeTruthy();
@@ -51,7 +51,7 @@ describe('Headless Tabs', () => {
 
   it('applies classNames mapping to root/bar/tab/content/indicator', () => {
     const { container } = render(
-      <Tabs.Root
+      <HeadlessTabs.Root
         classNames={{
           e1: 'tabs-root',
           e2: 'tabs-list',
@@ -62,14 +62,14 @@ describe('Headless Tabs', () => {
         }}
         defaultValue="b"
       >
-        <Tabs.Bar>
-          <Tabs.Tab value="a">Tab A</Tabs.Tab>
-          <Tabs.Tab value="b">Tab B</Tabs.Tab>
-          <Tabs.Indicator />
-        </Tabs.Bar>
-        <Tabs.Content value="a">Panel A</Tabs.Content>
-        <Tabs.Content value="b">Panel B</Tabs.Content>
-      </Tabs.Root>
+        <HeadlessTabs.Bar>
+          <HeadlessTabs.Tab value="a">Tab A</HeadlessTabs.Tab>
+          <HeadlessTabs.Tab value="b">Tab B</HeadlessTabs.Tab>
+          <HeadlessTabs.Indicator />
+        </HeadlessTabs.Bar>
+        <HeadlessTabs.Content value="a">Panel A</HeadlessTabs.Content>
+        <HeadlessTabs.Content value="b">Panel B</HeadlessTabs.Content>
+      </HeadlessTabs.Root>
     );
 
     expect(container.querySelector('.tabs-root')).toBeTruthy();
@@ -80,31 +80,31 @@ describe('Headless Tabs', () => {
     expect(container.querySelector('.tabs-indicator')).toBeTruthy();
   });
 
-  it('throws when compound components are used outside Tabs.Root', () => {
-    expect(() => render(<Tabs.Bar>orphan</Tabs.Bar>)).toThrow(
+  it('throws when compound components are used outside HeadlessTabs.Root', () => {
+    expect(() => render(<HeadlessTabs.Bar>orphan</HeadlessTabs.Bar>)).toThrow(
       'Tabs components must be used within a Tabs.Root'
     );
-    expect(() => render(<Tabs.Tab value="x">orphan</Tabs.Tab>)).toThrow(
+    expect(() => render(<HeadlessTabs.Tab value="x">orphan</HeadlessTabs.Tab>)).toThrow(
       'Tabs components must be used within a Tabs.Root'
     );
-    expect(() => render(<Tabs.Content value="x">orphan</Tabs.Content>)).toThrow(
+    expect(() => render(<HeadlessTabs.Content value="x">orphan</HeadlessTabs.Content>)).toThrow(
       'Tabs components must be used within a Tabs.Root'
     );
-    expect(() => render(<Tabs.Indicator />)).toThrow(
+    expect(() => render(<HeadlessTabs.Indicator />)).toThrow(
       'Tabs components must be used within a Tabs.Root'
     );
   });
 
   it('keeps non-selected tabs keyboard focusable', () => {
     render(
-      <Tabs.Root defaultValue="second">
-        <Tabs.Bar>
-          <Tabs.Tab value="first">First</Tabs.Tab>
-          <Tabs.Tab value="second">Second</Tabs.Tab>
-        </Tabs.Bar>
-        <Tabs.Content value="first">One</Tabs.Content>
-        <Tabs.Content value="second">Two</Tabs.Content>
-      </Tabs.Root>
+      <HeadlessTabs.Root defaultValue="second">
+        <HeadlessTabs.Bar>
+          <HeadlessTabs.Tab value="first">First</HeadlessTabs.Tab>
+          <HeadlessTabs.Tab value="second">Second</HeadlessTabs.Tab>
+        </HeadlessTabs.Bar>
+        <HeadlessTabs.Content value="first">One</HeadlessTabs.Content>
+        <HeadlessTabs.Content value="second">Two</HeadlessTabs.Content>
+      </HeadlessTabs.Root>
     );
 
     const firstTab = screen.getByRole('tab', { name: 'First' });
@@ -116,14 +116,14 @@ describe('Headless Tabs', () => {
 
   it('selects focused tab in automatic activation mode', () => {
     render(
-      <Tabs.Root defaultValue="second" activationMode="automatic">
-        <Tabs.Bar>
-          <Tabs.Tab value="first">First</Tabs.Tab>
-          <Tabs.Tab value="second">Second</Tabs.Tab>
-        </Tabs.Bar>
-        <Tabs.Content value="first">One</Tabs.Content>
-        <Tabs.Content value="second">Two</Tabs.Content>
-      </Tabs.Root>
+      <HeadlessTabs.Root defaultValue="second" activationMode="automatic">
+        <HeadlessTabs.Bar>
+          <HeadlessTabs.Tab value="first">First</HeadlessTabs.Tab>
+          <HeadlessTabs.Tab value="second">Second</HeadlessTabs.Tab>
+        </HeadlessTabs.Bar>
+        <HeadlessTabs.Content value="first">One</HeadlessTabs.Content>
+        <HeadlessTabs.Content value="second">Two</HeadlessTabs.Content>
+      </HeadlessTabs.Root>
     );
 
     const firstTab = screen.getByRole('tab', { name: 'First' });

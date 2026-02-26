@@ -13,8 +13,8 @@
       "import": "./src/index.ts"
     },
     "./tabs": {
-      "types": "./src/tabs/Tabs.tsx",
-      "import": "./src/tabs/Tabs.tsx"
+      "types": "./src/tabs/HeadlessTabs.tsx",
+      "import": "./src/tabs/HeadlessTabs.tsx"
     },
     "./button": {
       "types": "./src/button/Button.tsx",
