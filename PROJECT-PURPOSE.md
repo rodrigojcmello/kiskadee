@@ -132,6 +132,10 @@ Practical rule:
 
 ## Relevant documentation
 
+- [SCHEMA-BUILD-RUNTIME-RULES.md](SCHEMA-BUILD-RUNTIME-RULES.md)
+  - Operational rules for deciding what belongs in schema, artifacts, runtime, and structural Sass.
+  - Includes `components.<name>.options` vs `global` ownership and segment/theme/emphasis artifact mapping.
+
 - [packages/web-builder/README.md](packages/web-builder/README.md)
   - Web-only details (border/padding compensation, gradients, states).
   - Radius rules (modes vs effects) and segments.

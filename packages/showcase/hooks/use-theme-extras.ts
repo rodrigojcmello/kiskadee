@@ -1,4 +1,10 @@
-import type { RadiusMode, RippleEffectSchema, TabsIndicatorPosition, ThemeMode } from '@kiskadee/core';
+import type {
+  RadiusMode,
+  RippleEffectSchema,
+  TabsIndicatorPosition,
+  TabsIndicatorShape,
+  ThemeMode
+} from '@kiskadee/core';
 import { useEffect, useState } from 'react';
 import { extraMaps, paletteIndex } from '@/registry/design-systems.registry';
 import type { DesignSystemKey } from '@/registry/registry-utils';
@@ -10,6 +16,7 @@ type BackgroundTones = Partial<Record<ThemeMode, string | undefined>>;
 const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
 const rippleGlobalCache: Partial<Record<string, RippleEffectSchema | null>> = {};
 const tabsIndicatorPositionCache: Partial<Record<string, TabsIndicatorPosition | null>> = {};
+const tabsIndicatorShapeCache: Partial<Record<string, TabsIndicatorShape | null>> = {};
 
 export function useThemeExtras({
   designSystem,
@@ -24,6 +31,9 @@ export function useThemeExtras({
   const [tabsIndicatorPosition, setTabsIndicatorPosition] = useState<
     TabsIndicatorPosition | undefined
   >(undefined);
+  const [tabsIndicatorShape, setTabsIndicatorShape] = useState<TabsIndicatorShape | undefined>(
+    undefined
+  );
 
   // Load global radius/ripple metadata.
   useEffect(() => {
@@ -42,7 +52,12 @@ export function useThemeExtras({
         dsKey
       );
       let indicatorPosition = tabsIndicatorPositionCache[dsKey] ?? undefined;
-      if (!hasRadius || !hasRipple || !hasTabsIndicatorPosition) {
+      const hasTabsIndicatorShape = Object.prototype.hasOwnProperty.call(
+        tabsIndicatorShapeCache,
+        dsKey
+      );
+      let indicatorShape = tabsIndicatorShapeCache[dsKey] ?? undefined;
+      if (!hasRadius || !hasRipple || !hasTabsIndicatorPosition || !hasTabsIndicatorShape) {
         try {
           const json = await loadJsonFromBuild<{
             radius?: RadiusMode;
@@ -51,19 +66,19 @@ export function useThemeExtras({
               tabs?: {
                 options?: {
                   indicatorPosition?: TabsIndicatorPosition;
+                  indicatorShape?: TabsIndicatorShape;
                 };
               };
             };
-          }>(
-            `${dsKey}/global.kiskadee.json`,
-            { required: false, fallback: {} }
-          );
+          }>(`${dsKey}/global.kiskadee.json`, { required: false, fallback: {} });
           radius = json.radius;
           radiusGlobalCache[dsKey] = radius ?? null;
           ripple = json.effects?.ripple;
           rippleGlobalCache[dsKey] = ripple ?? null;
           indicatorPosition = json.components?.tabs?.options?.indicatorPosition;
           tabsIndicatorPositionCache[dsKey] = indicatorPosition ?? null;
+          indicatorShape = json.components?.tabs?.options?.indicatorShape;
+          tabsIndicatorShapeCache[dsKey] = indicatorShape ?? null;
         } catch (error) {
           console.warn(
             `[showcase] Failed to load global artifact for "${dsKey}". Retrying on next mount/selection change.`,
@@ -76,6 +91,7 @@ export function useThemeExtras({
       setGlobalRadius(radius);
       setGlobalRipple(ripple);
       setTabsIndicatorPosition(indicatorPosition);
+      setTabsIndicatorShape(indicatorShape);
     };
 
     void loadGlobals();
@@ -138,5 +154,11 @@ export function useThemeExtras({
     };
   }, [designSystem, segment]);
 
-  return { backgroundsByTheme, globalRadius, globalRipple, tabsIndicatorPosition };
+  return {
+    backgroundsByTheme,
+    globalRadius,
+    globalRipple,
+    tabsIndicatorPosition,
+    tabsIndicatorShape
+  };
 }

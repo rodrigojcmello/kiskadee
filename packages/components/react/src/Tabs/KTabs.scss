@@ -77,5 +77,28 @@
       width 180ms ease,
       height 180ms ease;
     will-change: transform, width, height;
+
+    /* e5-q: indicator square shape */
+    &-q {
+      border-radius: 0;
+    }
+
+    /* e5-r: indicator rounded shape */
+    &-r {
+      border-radius: 20px;
+    }
+
+    /* e5-c: indicator rounded-clip shape */
+    &-c {
+      /* e5-c + e5-b: rounded-clip with bottom indicator */
+      &.k-tab-e5-b {
+        border-radius: 20px 20px 0 0;
+      }
+
+      /* e5-c + e5-t: rounded-clip with top indicator */
+      &.k-tab-e5-t {
+        border-radius: 0 0 20px 20px;
+      }
+    }
   }
 }

@@ -50,6 +50,7 @@ type TabsVisualContextValue = {
   intent: string;
   emphasis: TabsRootProps['emphasis'];
   indicatorPosition: NonNullable<TabsRootProps['indicatorPosition']>;
+  indicatorShape: NonNullable<TabsRootProps['indicatorShape']>;
   listClassName: string | undefined;
   classNames: TabsClassNames;
   elements: TabsClassesMap;
@@ -144,6 +145,7 @@ function TabsRoot({
   emphasis = 'medium',
   intent = DEFAULT_INTENT,
   indicatorPosition,
+  indicatorShape,
   value,
   defaultValue,
   onValueChange,
@@ -171,6 +173,8 @@ function TabsRoot({
   const elements = (rawTabsMap ?? {}) as TabsClassesMap;
   const resolvedIndicatorPosition =
     indicatorPosition ?? global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
+  const resolvedIndicatorShape =
+    indicatorShape ?? global?.components?.tabs?.options?.indicatorShape ?? 'square';
 
   const listClassName = joinClassNames(
     'k-tab-e1',
@@ -189,6 +193,7 @@ function TabsRoot({
       intent,
       emphasis,
       indicatorPosition: resolvedIndicatorPosition,
+      indicatorShape: resolvedIndicatorShape,
       listClassName,
       classNames,
       elements
@@ -199,6 +204,7 @@ function TabsRoot({
       intent,
       emphasis,
       resolvedIndicatorPosition,
+      resolvedIndicatorShape,
       listClassName,
       classNames,
       elements
@@ -328,7 +334,7 @@ function TabsContent(props: TabsContentProps) {
 }
 
 function TabsIndicator({ className, style, ...props }: TabsIndicatorProps) {
-  const { scale, intent, emphasis, classNames, elements, indicatorPosition } =
+  const { scale, intent, emphasis, classNames, elements, indicatorPosition, indicatorShape } =
     useTabsVisualContext();
 
   const indicatorClassName = joinClassNames(
@@ -341,6 +347,9 @@ function TabsIndicator({ className, style, ...props }: TabsIndicatorProps) {
     classNames.e5,
     'k-tab-e5',
     indicatorPosition === 'top' ? 'k-tab-e5-t' : 'k-tab-e5-b',
+    indicatorShape === 'rounded' ? 'k-tab-e5-r' : '',
+    indicatorShape === 'roundedClip' ? 'k-tab-e5-c' : '',
+    indicatorShape === 'square' ? 'k-tab-e5-q' : '',
     'k-state',
     className
   );

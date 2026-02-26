@@ -933,7 +933,8 @@
     },
     "tabs": {
       "options": {
-        "indicatorPosition": "bottom"
+        "indicatorPosition": "bottom",
+        "indicatorShape": "square"
       },
       "elements": {
         "e1": {
@@ -941,7 +942,7 @@
             "borderStyle": "solid"
           },
           "scales": {
-            "borderWidth": 2
+            "borderWidth": 1
           },
           "palettes": {
             "default": {
@@ -1100,12 +1101,7 @@
         },
         "e5": {
           "scales": {
-            "boxHeight": 2,
-            "borderRadius": {
-              "rounded": 20,
-              "pill": 20,
-              "square": 0
-            }
+            "boxHeight": 5
           },
           "palettes": {
             "default": {

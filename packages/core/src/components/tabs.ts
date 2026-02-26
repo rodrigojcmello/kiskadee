@@ -6,7 +6,7 @@ import type {
 } from '../types/colors/colors.types';
 import type { DecorationSchema } from '../types/decorations/decorations.types';
 import type { ElementEffects } from '../types/effects';
-import type { ScaleBySize, ScaleSchema, StandardScaleProperty } from '../types/scales/scales.types';
+import type { ScaleBySize, StandardScaleProperty } from '../types/scales/scales.types';
 
 type ElementPalettesByColor<
   TSegmentName extends SegmentName,
@@ -32,9 +32,11 @@ type ElementScalesByProperty<TScaleProperty extends StandardScaleProperty> = Par
  */
 export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
 export type TabsIndicatorPosition = 'top' | 'bottom';
+export type TabsIndicatorShape = 'square' | 'rounded' | 'roundedClip';
 
 export type TabsOptions = Partial<{
   indicatorPosition: TabsIndicatorPosition;
+  indicatorShape: TabsIndicatorShape;
 }>;
 
 /**
@@ -107,12 +109,11 @@ export type TabsIconElementStyle<TSegmentName extends SegmentName = never> = Par
 /**
  * e5 — indicator (line/background/pill)
  * - boxHeight
- * - borderRadius
  * - boxColor
  */
 export type TabsIndicatorElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   name?: string;
-  scales: ElementScalesByProperty<'boxHeight'> & Pick<ScaleSchema, 'borderRadius'>;
+  scales: ElementScalesByProperty<'boxHeight'>;
   palettes: ElementPalettesByColor<TSegmentName, 'boxColor'>;
   effects: ElementEffects;
 }>;
@@ -139,7 +140,7 @@ type ElementContractRules = {
 const TABS_COMPONENT_KEYS = ['elements', 'options'] as const;
 const TABS_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5'] as const;
 const TABS_ELEMENT_BASE_KEYS = ['name', 'decorations', 'scales', 'palettes', 'effects'] as const;
-const TABS_OPTIONS_KEYS = ['indicatorPosition'] as const;
+const TABS_OPTIONS_KEYS = ['indicatorPosition', 'indicatorShape'] as const;
 
 const TABS_RULES: Record<(typeof TABS_ELEMENTS_KEYS)[number], ElementContractRules> = {
   e1: {
@@ -161,7 +162,7 @@ const TABS_RULES: Record<(typeof TABS_ELEMENTS_KEYS)[number], ElementContractRul
     palettes: ['textColor']
   },
   e5: {
-    scales: ['boxHeight', 'borderRadius'],
+    scales: ['boxHeight'],
     palettes: ['boxColor']
   }
 };
@@ -273,6 +274,15 @@ function validateTabsOptions(value: unknown, path: string, issues: string[]): vo
     value.indicatorPosition !== 'bottom'
   ) {
     issues.push(`${path}.indicatorPosition: expected "top" or "bottom"`);
+  }
+
+  if (
+    value.indicatorShape !== undefined &&
+    value.indicatorShape !== 'square' &&
+    value.indicatorShape !== 'rounded' &&
+    value.indicatorShape !== 'roundedClip'
+  ) {
+    issues.push(`${path}.indicatorShape: expected "square", "rounded", or "roundedClip"`);
   }
 }
 

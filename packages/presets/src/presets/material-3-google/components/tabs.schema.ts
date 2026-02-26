@@ -15,7 +15,8 @@ export function createMaterial3GoogleTabsSchema({
 }: CreateMaterial3GoogleTabsSchemaArgs): TabsComponent {
   return {
     options: {
-      indicatorPosition: 'bottom'
+      indicatorPosition: 'bottom',
+      indicatorShape: 'square'
     },
     elements: {
       // e1: bar
@@ -24,7 +25,7 @@ export function createMaterial3GoogleTabsSchema({
           borderStyle: 'solid'
         },
         scales: {
-          borderWidth: 2
+          borderWidth: 1
         },
         palettes: {
           default: {
@@ -187,12 +188,7 @@ export function createMaterial3GoogleTabsSchema({
       // e5: indicator
       e5: {
         scales: {
-          boxHeight: 2,
-          borderRadius: {
-            rounded: 20,
-            pill: 20,
-            square: 0
-          }
+          boxHeight: 5
         },
         palettes: {
           default: {

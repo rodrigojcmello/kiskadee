@@ -4,14 +4,14 @@
       "c": {
         "primary": {
           "h": "gmd-bh gmd-a gmd-bt gmd-d gmd-bx gmd-e gmd-bp gmd-c gmd-i gmd-b",
-          "m": "gmd-bl gmd-a gmd-y gmd-d gmd-z gmd-e gmd-x gmd-c gmd-i gmd-b gmd-cf gmd-bz gmd-cb",
-          "l": "gmd-f gmd-an gmd-p gmd-av gmd-r gmd-ay gmd-n gmd-as gmd-i gmd-ap gmd-t gmd-ba gmd-s gmd-cc",
+          "m": "gmd-bl gmd-a gmd-x gmd-d gmd-y gmd-e gmd-w gmd-c gmd-i gmd-b gmd-cf gmd-bz gmd-cb",
+          "l": "gmd-f gmd-am gmd-p gmd-au gmd-r gmd-ax gmd-n gmd-ar gmd-i gmd-ao gmd-t gmd-az gmd-s gmd-cc",
           "ll": "gmd-f gmd-a gmd-br gmd-bv gmd-bn gmd-i"
         },
         "neutral": {
           "h": "gmd-bg gmd-f gmd-a gmd-bq gmd-d gmd-bu gmd-e gmd-bm gmd-c gmd-ce gmd-by gmd-ca gmd-j gmd-b",
-          "m": "gmd-bk gmd-a gmd-y gmd-d gmd-z gmd-e gmd-x gmd-c gmd-t gmd-s gmd-ac gmd-j gmd-b",
-          "l": "gmd-f gmd-ao gmd-p gmd-aw gmd-r gmd-az gmd-n gmd-at gmd-t gmd-s gmd-ac gmd-h gmd-aq",
+          "m": "gmd-bk gmd-a gmd-x gmd-d gmd-y gmd-e gmd-w gmd-c gmd-t gmd-s gmd-ab gmd-j gmd-b",
+          "l": "gmd-f gmd-an gmd-p gmd-av gmd-r gmd-ay gmd-n gmd-as gmd-t gmd-s gmd-ab gmd-h gmd-ap",
           "ll": "gmd-f gmd-a gmd-p gmd-d gmd-r gmd-e gmd-n gmd-c gmd-h gmd-b"
         }
       }
@@ -19,13 +19,13 @@
     "e2": {
       "c": {
         "primary": {
-          "h": "gmd-af gmd-g",
-          "m": "gmd-u gmd-g gmd-aj",
-          "l": "gmd-u gmd-g gmd-aj gmd-ck gmd-cl",
+          "h": "gmd-ae gmd-g",
+          "m": "gmd-u gmd-g gmd-ai",
+          "l": "gmd-u gmd-g gmd-ai gmd-ck gmd-cl",
           "ll": "gmd-u gmd-g"
         },
         "neutral": {
-          "h": "gmd-af gmd-g"
+          "h": "gmd-ae gmd-g"
         }
       }
     }
@@ -45,7 +45,7 @@
         "neutral": {
           "l": "gmd-f",
           "ll": "gmd-f",
-          "h": "gmd-f gmd-dv gmd-dx gmd-dt gmd-cd gmd-dz gmd-eb"
+          "h": "gmd-f gmd-du gmd-dw gmd-ds gmd-cd gmd-dy gmd-ea"
         }
       }
     },
@@ -66,7 +66,7 @@
     "e5": {
       "c": {
         "neutral": {
-          "h": "gmd-dq"
+          "h": "gmd-dp"
         }
       }
     }

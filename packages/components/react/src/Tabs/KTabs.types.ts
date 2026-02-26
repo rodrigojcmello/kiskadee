@@ -2,7 +2,8 @@ import type {
   ClassNameByElementJSON,
   ComponentEmphasis,
   ElementSizeValue,
-  TabsIndicatorPosition
+  TabsIndicatorPosition,
+  TabsIndicatorShape
 } from '@kiskadee/core';
 import type {
   TabsBarProps as HeadlessTabsBarProps,
@@ -24,6 +25,7 @@ export type TabsRootProps = Omit<HeadlessTabsRootProps, 'classNames'> & {
   scale?: ElementSizeValue;
   emphasis?: ComponentEmphasis;
   indicatorPosition?: TabsIndicatorPosition;
+  indicatorShape?: TabsIndicatorShape;
   /**
    * Semantic color family key for class map lookup (e.g. "primary", "neutral").
    * Falls back to the first available semantic key when not found.
