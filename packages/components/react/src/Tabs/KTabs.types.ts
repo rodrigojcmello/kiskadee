@@ -2,9 +2,9 @@ import type {
   ClassNameByElementJSON,
   ComponentEmphasis,
   ElementSizeValue,
-  TabsVariant,
   TabsIndicatorPosition,
-  TabsIndicatorShape
+  TabsIndicatorShape,
+  TabsVariant
 } from '@kiskadee/core';
 import type {
   TabsBarProps as HeadlessTabsBarProps,
@@ -15,7 +15,7 @@ import type {
 } from '@kiskadee/react-headless';
 import type { HTMLAttributes, ReactNode } from 'react';
 
-export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
+export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 
 export type TabsClassNames = Partial<Record<TabsElementName, string>>;
 
@@ -29,6 +29,7 @@ export type TabsRootProps = Omit<HeadlessTabsRootProps, 'classNames'> & {
   indicatorMotion?: 'auto' | 'none';
   indicatorPosition?: TabsIndicatorPosition;
   indicatorShape?: TabsIndicatorShape;
+  separator?: boolean;
   /**
    * Semantic color family key for class map lookup (e.g. "primary", "neutral").
    * Falls back to the first available semantic key when not found.

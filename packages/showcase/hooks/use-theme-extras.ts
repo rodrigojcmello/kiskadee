@@ -17,6 +17,7 @@ const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
 const rippleGlobalCache: Partial<Record<string, RippleEffectSchema | null>> = {};
 const tabsIndicatorPositionCache: Partial<Record<string, TabsIndicatorPosition | null>> = {};
 const tabsIndicatorShapeCache: Partial<Record<string, TabsIndicatorShape | null>> = {};
+const tabsSeparatorCache: Partial<Record<string, boolean | null>> = {};
 
 export function useThemeExtras({
   designSystem,
@@ -34,6 +35,7 @@ export function useThemeExtras({
   const [tabsIndicatorShape, setTabsIndicatorShape] = useState<TabsIndicatorShape | undefined>(
     undefined
   );
+  const [tabsSeparator, setTabsSeparator] = useState<boolean | undefined>(undefined);
 
   // Load global radius/ripple metadata.
   useEffect(() => {
@@ -57,7 +59,15 @@ export function useThemeExtras({
         dsKey
       );
       let indicatorShape = tabsIndicatorShapeCache[dsKey] ?? undefined;
-      if (!hasRadius || !hasRipple || !hasTabsIndicatorPosition || !hasTabsIndicatorShape) {
+      const hasTabsSeparator = Object.prototype.hasOwnProperty.call(tabsSeparatorCache, dsKey);
+      let separator = tabsSeparatorCache[dsKey] ?? undefined;
+      if (
+        !hasRadius ||
+        !hasRipple ||
+        !hasTabsIndicatorPosition ||
+        !hasTabsIndicatorShape ||
+        !hasTabsSeparator
+      ) {
         try {
           const json = await loadJsonFromBuild<{
             radius?: RadiusMode;
@@ -67,6 +77,7 @@ export function useThemeExtras({
                 options?: {
                   indicatorPosition?: TabsIndicatorPosition;
                   indicatorShape?: TabsIndicatorShape;
+                  separator?: boolean;
                 };
               };
             };
@@ -79,6 +90,8 @@ export function useThemeExtras({
           tabsIndicatorPositionCache[dsKey] = indicatorPosition ?? null;
           indicatorShape = json.components?.tabs?.options?.indicatorShape;
           tabsIndicatorShapeCache[dsKey] = indicatorShape ?? null;
+          separator = json.components?.tabs?.options?.separator;
+          tabsSeparatorCache[dsKey] = separator ?? null;
         } catch (error) {
           console.warn(
             `[showcase] Failed to load global artifact for "${dsKey}". Retrying on next mount/selection change.`,
@@ -92,6 +105,7 @@ export function useThemeExtras({
       setGlobalRipple(ripple);
       setTabsIndicatorPosition(indicatorPosition);
       setTabsIndicatorShape(indicatorShape);
+      setTabsSeparator(separator);
     };
 
     void loadGlobals();
@@ -159,6 +173,7 @@ export function useThemeExtras({
     globalRadius,
     globalRipple,
     tabsIndicatorPosition,
-    tabsIndicatorShape
+    tabsIndicatorShape,
+    tabsSeparator
   };
 }

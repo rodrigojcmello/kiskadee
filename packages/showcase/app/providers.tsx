@@ -34,7 +34,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
     globalRadius,
     globalRipple,
     tabsIndicatorPosition,
-    tabsIndicatorShape
+    tabsIndicatorShape,
+    tabsSeparator
   } = useThemeExtras({
     designSystem,
     segment
@@ -44,11 +45,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
     globalRadius !== undefined ||
     globalRipple !== undefined ||
     tabsIndicatorPosition !== undefined ||
-    tabsIndicatorShape !== undefined
+    tabsIndicatorShape !== undefined ||
+    tabsSeparator !== undefined
       ? {
           ...(globalRadius !== undefined ? { radius: globalRadius } : {}),
           ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {}),
-          ...(tabsIndicatorPosition !== undefined || tabsIndicatorShape !== undefined
+          ...(tabsIndicatorPosition !== undefined ||
+          tabsIndicatorShape !== undefined ||
+          tabsSeparator !== undefined
             ? {
                 components: {
                   tabs: {
@@ -58,7 +62,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
                         : {}),
                       ...(tabsIndicatorShape !== undefined
                         ? { indicatorShape: tabsIndicatorShape }
-                        : {})
+                        : {}),
+                      ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {})
                     }
                   }
                 }

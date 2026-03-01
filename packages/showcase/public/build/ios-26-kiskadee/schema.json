@@ -603,7 +603,8 @@
       "options": {
         "variant": "box",
         "indicatorShape": "rounded",
-        "indicatorPosition": "bottom"
+        "indicatorPosition": "bottom",
+        "separator": true
       },
       "variants": {
         "box": {
@@ -890,6 +891,36 @@
                           "rest": "#FFF",
                           "hover": "#FAFAFA",
                           "pressed": "#F0F0F0"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "e6": {
+              "scales": {
+                "boxWidth": 1,
+                "boxHeight": 16
+              },
+              "palettes": {
+                "default": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#0000001A"
+                        }
+                      }
+                    }
+                  }
+                },
+                "dynamic": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#0000001A"
                         }
                       }
                     }

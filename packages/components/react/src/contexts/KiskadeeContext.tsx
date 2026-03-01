@@ -31,6 +31,7 @@ export type KiskadeeContextValue = {
           variant?: TabsVariant;
           indicatorPosition?: TabsIndicatorPosition;
           indicatorShape?: TabsIndicatorShape;
+          separator?: boolean;
         };
       };
     };

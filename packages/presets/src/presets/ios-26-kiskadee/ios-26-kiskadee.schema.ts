@@ -340,7 +340,8 @@ export const schema: Schema = {
       options: {
         variant: 'box',
         indicatorShape: 'rounded',
-        indicatorPosition: 'bottom'
+        indicatorPosition: 'bottom',
+        separator: true
       },
       variants: {
         box: {
@@ -549,6 +550,26 @@ export const schema: Schema = {
                           rest: c(segmentName, 'l', 'neutral', 0),
                           hover: c(segmentName, 'l', 'neutral', 2),
                           pressed: c(segmentName, 'l', 'neutral', 6)
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            },
+            // e6: separator (between tabs)
+            e6: {
+              scales: {
+                boxWidth: 1,
+                boxHeight: 16
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    boxColor: {
+                      neutral: {
+                        medium: {
+                          rest: c(segmentName, 'l', 'neutral', 100, 10)
                         }
                       }
                     }

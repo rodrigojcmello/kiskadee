@@ -61,6 +61,36 @@
     line-height: 0;
   }
 
+  /* e6: separator */
+  &-e6 {
+    flex: 0 0 auto;
+    align-self: center;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 160ms ease;
+    will-change: opacity;
+
+    &-h {
+      opacity: 0;
+    }
+  }
+
+  &-e1-ma {
+    .k-tab-e6 {
+      &-h {
+        transition-delay: 180ms;
+      }
+    }
+  }
+
+  &-e1-mn {
+    .k-tab-e6 {
+      &-h {
+        transition-delay: 0ms;
+      }
+    }
+  }
+
   /* p: tab panel content container */
   &-p {
     display: block;

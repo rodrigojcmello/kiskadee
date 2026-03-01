@@ -24,12 +24,14 @@ function TabsExample({
   title,
   indicatorShape,
   variant,
-  indicatorMotion
+  indicatorMotion,
+  separator
 }: {
   title: string;
   indicatorShape?: 'square' | 'rounded' | 'roundedClip';
   variant?: 'line' | 'box';
   indicatorMotion?: 'auto' | 'none';
+  separator?: boolean;
 }) {
   return (
     <div>
@@ -40,6 +42,7 @@ function TabsExample({
         indicatorShape={indicatorShape}
         indicatorMotion={indicatorMotion}
         variant={variant}
+        separator={separator}
         activationMode="manual"
       >
         <KTabs.Bar>
@@ -69,6 +72,18 @@ export default function ShowcaseTabs() {
       <TabsExample title="Indicator: rounded clip" indicatorShape="roundedClip" />
 
       <TabsExample title="Box: indicator background (animated)" variant="box" indicatorShape="rounded" />
+      <TabsExample
+        title="Box: indicator background (animated + separator)"
+        variant="box"
+        indicatorShape="rounded"
+        separator
+      />
+      <TabsExample
+        title="Box: indicator background (animated + no separator)"
+        variant="box"
+        indicatorShape="rounded"
+        separator={false}
+      />
       <TabsExample
         title="Box: indicator background (no motion)"
         variant="box"

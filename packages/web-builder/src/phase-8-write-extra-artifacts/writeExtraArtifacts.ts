@@ -154,6 +154,7 @@ export async function writeExtraArtifacts(params: {
   const tabsIndicatorShape = schema.components?.tabs?.options
     ?.indicatorShape as TabsIndicatorShape | undefined;
   const tabsVariant = schema.components?.tabs?.options?.variant as TabsVariant | undefined;
+  const tabsSeparator = schema.components?.tabs?.options?.separator as boolean | undefined;
 
   function toCssFontFamilyString(value: FontStack): string | null {
     const css = toCssFontFamily(value);
@@ -168,7 +169,9 @@ export async function writeExtraArtifacts(params: {
   const hasFonts = Boolean(bodyCss);
   const hasRadius = Boolean(radius);
   const hasRipple = Boolean(ripple && Object.keys(ripple).length > 0);
-  const hasTabsOptions = Boolean(tabsIndicatorPosition || tabsIndicatorShape || tabsVariant);
+  const hasTabsOptions = Boolean(
+    tabsIndicatorPosition || tabsIndicatorShape || tabsVariant || tabsSeparator !== undefined
+  );
 
   if (hasFonts || hasRadius || hasRipple || hasTabsOptions) {
     await mkdir(buildDir, { recursive: true });
@@ -184,6 +187,7 @@ export async function writeExtraArtifacts(params: {
             variant?: TabsVariant;
             indicatorPosition?: TabsIndicatorPosition;
             indicatorShape?: TabsIndicatorShape;
+            separator?: boolean;
           };
         };
       };
@@ -213,7 +217,8 @@ export async function writeExtraArtifacts(params: {
           options: {
             ...(tabsVariant ? { variant: tabsVariant } : {}),
             ...(tabsIndicatorPosition ? { indicatorPosition: tabsIndicatorPosition } : {}),
-            ...(tabsIndicatorShape ? { indicatorShape: tabsIndicatorShape } : {})
+            ...(tabsIndicatorShape ? { indicatorShape: tabsIndicatorShape } : {}),
+            ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {})
           }
         }
       };

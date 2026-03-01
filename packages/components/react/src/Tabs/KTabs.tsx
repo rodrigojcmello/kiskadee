@@ -7,9 +7,12 @@ import {
 } from '@kiskadee/core';
 import { HeadlessTabs } from '@kiskadee/react-headless';
 import {
+  Children,
   type CSSProperties,
+  type ReactNode,
   createContext,
   forwardRef,
+  isValidElement,
   memo,
   useCallback,
   useContext,
@@ -56,7 +59,9 @@ type TabsVisualContextValue = {
   indicatorMotion: NonNullable<TabsRootProps['indicatorMotion']>;
   indicatorPosition: NonNullable<TabsRootProps['indicatorPosition']>;
   indicatorShape: NonNullable<TabsRootProps['indicatorShape']>;
+  separator: boolean;
   listClassName: string | undefined;
+  separatorClassName: string | undefined;
   classNames: TabsClassNames;
   elements: TabsClassesMap;
 };
@@ -190,6 +195,7 @@ function TabsRoot({
   indicatorMotion = 'auto',
   indicatorPosition,
   indicatorShape,
+  separator,
   value,
   defaultValue,
   onValueChange,
@@ -224,6 +230,8 @@ function TabsRoot({
     indicatorPosition ?? global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
   const resolvedIndicatorShape =
     indicatorShape ?? global?.components?.tabs?.options?.indicatorShape ?? 'square';
+  const resolvedSeparator =
+    separator ?? global?.components?.tabs?.options?.separator ?? false;
   const resolvedRadiusMode = (global?.radius ?? 'rounded') as RadiusMode;
 
   const listClassName = joinClassNames(
@@ -237,6 +245,15 @@ function TabsRoot({
     }),
     classNames.e1
   );
+  const separatorClassName = joinClassNames(
+    resolveElementClassName(elements.e6, {
+      scale,
+      intent,
+      emphasis
+    }),
+    classNames.e6,
+    'k-tab-e6'
+  );
 
   const visualContext = useMemo<TabsVisualContextValue>(
     () => ({
@@ -249,7 +266,9 @@ function TabsRoot({
       indicatorMotion,
       indicatorPosition: resolvedIndicatorPosition,
       indicatorShape: resolvedIndicatorShape,
+      separator: resolvedSeparator,
       listClassName,
+      separatorClassName,
       classNames,
       elements
     }),
@@ -263,7 +282,9 @@ function TabsRoot({
       indicatorMotion,
       resolvedIndicatorPosition,
       resolvedIndicatorShape,
+      resolvedSeparator,
       listClassName,
+      separatorClassName,
       classNames,
       elements
     ]
@@ -278,19 +299,60 @@ function TabsRoot({
   );
 }
 
-function TabsBar({ className, ...props }: TabsBarProps) {
-  const { listClassName, indicatorPosition, variant } = useTabsVisualContext();
+function extractTabValue(child: ReactNode): string | undefined {
+  if (!isValidElement(child)) return undefined;
+  const value = (child.props as { value?: unknown }).value;
+  return typeof value === 'string' ? value : undefined;
+}
+
+function TabsBar({ className, children, ...props }: TabsBarProps) {
+  const {
+    selected,
+    separator,
+    separatorClassName,
+    listClassName,
+    indicatorPosition,
+    indicatorMotion,
+    variant
+  } = useTabsVisualContext();
   const positionClass =
     variant === 'line' ? (indicatorPosition === 'top' ? 'k-tab-e1-t' : 'k-tab-e1-b') : undefined;
+  const motionClass = variant === 'box' ? (indicatorMotion === 'none' ? 'k-tab-e1-mn' : 'k-tab-e1-ma') : undefined;
+
+  const childrenWithSeparators = useMemo(() => {
+    const items = Children.toArray(children);
+    if (variant !== 'box' || !separator || items.length <= 1) return items;
+
+    const values = items.map(extractTabValue);
+    const output: ReactNode[] = [];
+
+    for (let index = 0; index < items.length; index += 1) {
+      output.push(items[index]);
+      if (index === items.length - 1) continue;
+
+      const leftValue = values[index];
+      const rightValue = values[index + 1];
+      const hidden = selected !== undefined && (selected === leftValue || selected === rightValue);
+
+      output.push(
+        <span
+          key={`k-tab-separator-${leftValue ?? index}-${rightValue ?? index + 1}`}
+          aria-hidden="true"
+          className={joinClassNames(separatorClassName, hidden ? 'k-tab-e6-h' : '')}
+        />
+      );
+    }
+
+    return output;
+  }, [children, selected, separator, separatorClassName, variant]);
+
   return (
     <HeadlessTabs.Bar
       {...props}
-      className={joinClassNames(
-        listClassName,
-        positionClass,
-        className
-      )}
-    />
+      className={joinClassNames(listClassName, positionClass, motionClass, className)}
+    >
+      {childrenWithSeparators}
+    </HeadlessTabs.Bar>
   );
 }
 

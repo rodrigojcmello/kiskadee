@@ -29,8 +29,9 @@ type ElementScalesByProperty<TScaleProperty extends StandardScaleProperty> = Par
  * - e3: label
  * - e4: icon
  * - e5: indicator
+ * - e6: separator
  */
-export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
+export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 export type TabsVariant = 'line' | 'box';
 export type TabsIndicatorPosition = 'top' | 'bottom';
 export type TabsIndicatorShape = 'square' | 'rounded' | 'roundedClip';
@@ -39,6 +40,7 @@ export type TabsOptions = Partial<{
   variant: TabsVariant;
   indicatorPosition: TabsIndicatorPosition;
   indicatorShape: TabsIndicatorShape;
+  separator: boolean;
 }>;
 
 /**
@@ -142,6 +144,22 @@ export type TabsIndicatorElementStyle<TSegmentName extends SegmentName = never> 
   effects: ElementEffects;
 }>;
 
+/**
+ * e6 — separator (between tabs)
+ * - boxWidth
+ * - boxHeight
+ * - margins
+ * - boxColor
+ */
+export type TabsSeparatorElementStyle<TSegmentName extends SegmentName = never> = Partial<{
+  name?: string;
+  scales: ElementScalesByProperty<
+    'boxWidth' | 'boxHeight' | 'marginTop' | 'marginRight' | 'marginBottom' | 'marginLeft'
+  >;
+  palettes: ElementPalettesByColor<TSegmentName, 'boxColor'>;
+  effects: ElementEffects;
+}>;
+
 export type TabsElements<TSegmentName extends SegmentName = never> = {
   // e1: bar
   e1?: TabsBarElementStyle<TSegmentName>;
@@ -153,6 +171,8 @@ export type TabsElements<TSegmentName extends SegmentName = never> = {
   e4?: TabsIconElementStyle<TSegmentName>;
   // e5: indicator
   e5?: TabsIndicatorElementStyle<TSegmentName>;
+  // e6: separator
+  e6?: TabsSeparatorElementStyle<TSegmentName>;
 };
 
 export type TabsVariantConfig<TSegmentName extends SegmentName = never> = {
@@ -171,9 +191,9 @@ type ElementContractRules = {
 };
 
 const TABS_COMPONENT_KEYS = ['elements', 'options', 'variants'] as const;
-const TABS_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5'] as const;
+const TABS_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5', 'e6'] as const;
 const TABS_ELEMENT_BASE_KEYS = ['name', 'decorations', 'scales', 'palettes', 'effects'] as const;
-const TABS_OPTIONS_KEYS = ['variant', 'indicatorPosition', 'indicatorShape'] as const;
+const TABS_OPTIONS_KEYS = ['variant', 'indicatorPosition', 'indicatorShape', 'separator'] as const;
 
 const TABS_RULES: Record<(typeof TABS_ELEMENTS_KEYS)[number], ElementContractRules> = {
   e1: {
@@ -203,6 +223,10 @@ const TABS_RULES: Record<(typeof TABS_ELEMENTS_KEYS)[number], ElementContractRul
   },
   e5: {
     scales: ['boxHeight', 'borderRadius'],
+    palettes: ['boxColor']
+  },
+  e6: {
+    scales: ['boxWidth', 'boxHeight', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
     palettes: ['boxColor']
   }
 };
@@ -331,6 +355,10 @@ function validateTabsOptions(value: unknown, path: string, issues: string[]): vo
     value.indicatorShape !== 'roundedClip'
   ) {
     issues.push(`${path}.indicatorShape: expected "square", "rounded", or "roundedClip"`);
+  }
+
+  if (value.separator !== undefined && typeof value.separator !== 'boolean') {
+    issues.push(`${path}.separator: expected boolean`);
   }
 }
 
