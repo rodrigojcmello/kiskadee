@@ -31,10 +31,12 @@ type ElementScalesByProperty<TScaleProperty extends StandardScaleProperty> = Par
  * - e5: indicator
  */
 export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
+export type TabsVariant = 'line' | 'box';
 export type TabsIndicatorPosition = 'top' | 'bottom';
 export type TabsIndicatorShape = 'square' | 'rounded' | 'roundedClip';
 
 export type TabsOptions = Partial<{
+  variant: TabsVariant;
   indicatorPosition: TabsIndicatorPosition;
   indicatorShape: TabsIndicatorShape;
 }>;
@@ -51,7 +53,15 @@ export type TabsOptions = Partial<{
 export type TabsBarElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   name?: string;
   decorations: Pick<DecorationSchema, 'borderStyle'>;
-  scales: ElementScalesByProperty<'borderWidth'>;
+  scales: ElementScalesByProperty<
+    'borderWidth' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'
+  > & {
+    borderRadius?: {
+      rounded?: ScaleBySize | number;
+      pill?: ScaleBySize | number;
+      square?: ScaleBySize | number;
+    };
+  };
   palettes: ElementPalettesByColor<TSegmentName, 'boxColor' | 'borderColor'>;
   effects: ElementEffects;
 }>;
@@ -60,10 +70,17 @@ export type TabsBarElementStyle<TSegmentName extends SegmentName = never> = Part
  * e2 — tab
  * - boxColor
  * - padding
+ * - borderRadius
  */
 export type TabsTriggerElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   name?: string;
-  scales: ElementScalesByProperty<'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
+  scales: ElementScalesByProperty<'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'> & {
+    borderRadius?: {
+      rounded?: ScaleBySize | number;
+      pill?: ScaleBySize | number;
+      square?: ScaleBySize | number;
+    };
+  };
   palettes: ElementPalettesByColor<TSegmentName, 'boxColor'>;
   effects: ElementEffects;
 }>;
@@ -110,10 +127,17 @@ export type TabsIconElementStyle<TSegmentName extends SegmentName = never> = Par
  * e5 — indicator (line/background/pill)
  * - boxHeight
  * - boxColor
+ * - borderRadius
  */
 export type TabsIndicatorElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   name?: string;
-  scales: ElementScalesByProperty<'boxHeight'>;
+  scales: ElementScalesByProperty<'boxHeight'> & {
+    borderRadius?: {
+      rounded?: ScaleBySize | number;
+      pill?: ScaleBySize | number;
+      square?: ScaleBySize | number;
+    };
+  };
   palettes: ElementPalettesByColor<TSegmentName, 'boxColor'>;
   effects: ElementEffects;
 }>;
@@ -131,25 +155,41 @@ export type TabsElements<TSegmentName extends SegmentName = never> = {
   e5?: TabsIndicatorElementStyle<TSegmentName>;
 };
 
+export type TabsVariantConfig<TSegmentName extends SegmentName = never> = {
+  elements: TabsElements<TSegmentName>;
+  options?: TabsOptions;
+};
+
+export type TabsVariants<TSegmentName extends SegmentName = never> = Partial<
+  Record<TabsVariant, TabsVariantConfig<TSegmentName>>
+>;
+
 type ElementContractRules = {
   decorations?: readonly string[];
   scales?: readonly string[];
   palettes?: readonly string[];
 };
 
-const TABS_COMPONENT_KEYS = ['elements', 'options'] as const;
+const TABS_COMPONENT_KEYS = ['elements', 'options', 'variants'] as const;
 const TABS_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5'] as const;
 const TABS_ELEMENT_BASE_KEYS = ['name', 'decorations', 'scales', 'palettes', 'effects'] as const;
-const TABS_OPTIONS_KEYS = ['indicatorPosition', 'indicatorShape'] as const;
+const TABS_OPTIONS_KEYS = ['variant', 'indicatorPosition', 'indicatorShape'] as const;
 
 const TABS_RULES: Record<(typeof TABS_ELEMENTS_KEYS)[number], ElementContractRules> = {
   e1: {
     decorations: ['borderStyle'],
-    scales: ['borderWidth'],
+    scales: [
+      'borderWidth',
+      'paddingTop',
+      'paddingRight',
+      'paddingBottom',
+      'paddingLeft',
+      'borderRadius'
+    ],
     palettes: ['boxColor', 'borderColor']
   },
   e2: {
-    scales: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
+    scales: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'borderRadius'],
     palettes: ['boxColor']
   },
   e3: {
@@ -162,7 +202,7 @@ const TABS_RULES: Record<(typeof TABS_ELEMENTS_KEYS)[number], ElementContractRul
     palettes: ['textColor']
   },
   e5: {
-    scales: ['boxHeight'],
+    scales: ['boxHeight', 'borderRadius'],
     palettes: ['boxColor']
   }
 };
@@ -269,6 +309,14 @@ function validateTabsOptions(value: unknown, path: string, issues: string[]): vo
   validateAllowedKeys(value, TABS_OPTIONS_KEYS, path, issues);
 
   if (
+    value.variant !== undefined &&
+    value.variant !== 'line' &&
+    value.variant !== 'box'
+  ) {
+    issues.push(`${path}.variant: expected "line" or "box"`);
+  }
+
+  if (
     value.indicatorPosition !== undefined &&
     value.indicatorPosition !== 'top' &&
     value.indicatorPosition !== 'bottom'
@@ -296,17 +344,61 @@ export function validateTabsComponentContract(value: unknown, path = 'components
   validateAllowedKeys(value, TABS_COMPONENT_KEYS, path, issues);
 
   const elements = value.elements;
-  if (!isRecord(elements)) {
-    issues.push(`${path}.elements: expected object`);
-    return issues;
+  if (elements !== undefined) {
+    if (!isRecord(elements)) {
+      issues.push(`${path}.elements: expected object`);
+    } else {
+      validateAllowedKeys(elements, TABS_ELEMENTS_KEYS, `${path}.elements`, issues);
+
+      for (const key of TABS_ELEMENTS_KEYS) {
+        const element = elements[key];
+        if (element === undefined) continue;
+        validateElementContract(element, `${path}.elements.${key}`, TABS_RULES[key], issues);
+      }
+    }
   }
 
-  validateAllowedKeys(elements, TABS_ELEMENTS_KEYS, `${path}.elements`, issues);
+  const variants = value.variants;
+  if (variants !== undefined) {
+    if (!isRecord(variants)) {
+      issues.push(`${path}.variants: expected object`);
+    } else {
+      for (const [variantName, variant] of Object.entries(variants)) {
+        const variantPath = `${path}.variants.${variantName}`;
+        if (!isRecord(variant)) {
+          issues.push(`${variantPath}: expected object`);
+          continue;
+        }
 
-  for (const key of TABS_ELEMENTS_KEYS) {
-    const element = elements[key];
-    if (element === undefined) continue;
-    validateElementContract(element, `${path}.elements.${key}`, TABS_RULES[key], issues);
+        const variantElements = (variant as Record<string, unknown>).elements;
+        if (!isRecord(variantElements)) {
+          issues.push(`${variantPath}.elements: expected object`);
+          continue;
+        }
+
+        validateAllowedKeys(variantElements, TABS_ELEMENTS_KEYS, `${variantPath}.elements`, issues);
+
+        for (const key of TABS_ELEMENTS_KEYS) {
+          const element = (variantElements as Record<string, unknown>)[key];
+          if (element === undefined) continue;
+          validateElementContract(
+            element,
+            `${variantPath}.elements.${key}`,
+            TABS_RULES[key],
+            issues
+          );
+        }
+
+        const variantOptions = (variant as Record<string, unknown>).options;
+        if (variantOptions !== undefined) {
+          validateTabsOptions(variantOptions, `${variantPath}.options`, issues);
+        }
+      }
+    }
+  }
+
+  if (elements === undefined && variants === undefined) {
+    issues.push(`${path}: expected "elements" or "variants"`);
   }
 
   if (value.options !== undefined) {

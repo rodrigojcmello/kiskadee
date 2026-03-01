@@ -1,6 +1,6 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints';
 import type { ButtonElements } from './components/button';
-import type { TabsElements, TabsOptions } from './components/tabs';
+import type { TabsElements, TabsOptions, TabsVariants } from './components/tabs';
 import type {
   ElementPalettes,
   InteractionState,
@@ -70,10 +70,20 @@ export interface StyleKeyByElement<TSegmentName extends SegmentName = never> {
   >;
 }
 
+export type ComponentElementsStyleKeyMap<TSegmentName extends SegmentName = never> = Record<
+  ElementName,
+  StyleKeyByElement<TSegmentName>
+>;
+
+export type ComponentVariantsStyleKeyMap<TSegmentName extends SegmentName = never> = Record<
+  string,
+  ComponentElementsStyleKeyMap<TSegmentName>
+>;
+
 export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Partial<{
-  [componenteName in ComponentName]: {
-    [elementName: ElementName]: StyleKeyByElement<TSegmentName>;
-  };
+  [componenteName in ComponentName]:
+    | ComponentElementsStyleKeyMap<TSegmentName>
+    | ComponentVariantsStyleKeyMap<TSegmentName>;
 }>;
 
 // Legacy, delete it
@@ -87,7 +97,7 @@ export interface ClassNameMap {
 
 type Components<TSegmentName extends SegmentName = never> = Partial<{
   button: { elements: ButtonElements<TSegmentName> & Elements<TSegmentName> };
-  tabs: { elements: TabsElements<TSegmentName>; options?: TabsOptions };
+  tabs: { elements?: TabsElements<TSegmentName>; options?: TabsOptions; variants?: TabsVariants<TSegmentName> };
 }>;
 
 export type SchemaMetadata = {
@@ -229,5 +239,5 @@ export type ClassNameByElementJSON = {
 };
 
 export type ComponentClassNameMapJSON = Partial<
-  Record<string, Record<string, ClassNameByElementJSON>>
+  Record<string, Record<string, ClassNameByElementJSON> | Record<string, Record<string, ClassNameByElementJSON>>>
 >;

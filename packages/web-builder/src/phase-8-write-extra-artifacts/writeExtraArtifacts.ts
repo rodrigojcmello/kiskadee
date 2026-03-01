@@ -9,7 +9,9 @@ import type {
   SchemaFonts,
   SegmentName,
   SolidColor,
+  TabsIndicatorShape,
   TabsIndicatorPosition,
+  TabsVariant,
   ThemeMode
 } from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
@@ -149,6 +151,9 @@ export async function writeExtraArtifacts(params: {
   const ripple = schema.global?.effects?.ripple as RippleEffectSchema | undefined;
   const tabsIndicatorPosition = schema.components?.tabs?.options
     ?.indicatorPosition as TabsIndicatorPosition | undefined;
+  const tabsIndicatorShape = schema.components?.tabs?.options
+    ?.indicatorShape as TabsIndicatorShape | undefined;
+  const tabsVariant = schema.components?.tabs?.options?.variant as TabsVariant | undefined;
 
   function toCssFontFamilyString(value: FontStack): string | null {
     const css = toCssFontFamily(value);
@@ -163,7 +168,7 @@ export async function writeExtraArtifacts(params: {
   const hasFonts = Boolean(bodyCss);
   const hasRadius = Boolean(radius);
   const hasRipple = Boolean(ripple && Object.keys(ripple).length > 0);
-  const hasTabsOptions = Boolean(tabsIndicatorPosition);
+  const hasTabsOptions = Boolean(tabsIndicatorPosition || tabsIndicatorShape || tabsVariant);
 
   if (hasFonts || hasRadius || hasRipple || hasTabsOptions) {
     await mkdir(buildDir, { recursive: true });
@@ -176,7 +181,9 @@ export async function writeExtraArtifacts(params: {
       components?: {
         tabs?: {
           options?: {
+            variant?: TabsVariant;
             indicatorPosition?: TabsIndicatorPosition;
+            indicatorShape?: TabsIndicatorShape;
           };
         };
       };
@@ -199,12 +206,14 @@ export async function writeExtraArtifacts(params: {
       };
     }
 
-    if (hasTabsOptions && tabsIndicatorPosition) {
+    if (hasTabsOptions) {
       globalPayload.components = {
         ...(globalPayload.components ?? {}),
         tabs: {
           options: {
-            indicatorPosition: tabsIndicatorPosition
+            ...(tabsVariant ? { variant: tabsVariant } : {}),
+            ...(tabsIndicatorPosition ? { indicatorPosition: tabsIndicatorPosition } : {}),
+            ...(tabsIndicatorShape ? { indicatorShape: tabsIndicatorShape } : {})
           }
         }
       };

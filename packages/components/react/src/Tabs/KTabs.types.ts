@@ -2,6 +2,7 @@ import type {
   ClassNameByElementJSON,
   ComponentEmphasis,
   ElementSizeValue,
+  TabsVariant,
   TabsIndicatorPosition,
   TabsIndicatorShape
 } from '@kiskadee/core';
@@ -24,6 +25,8 @@ export type TabsRootProps = Omit<HeadlessTabsRootProps, 'classNames'> & {
   classNames?: TabsClassNames;
   scale?: ElementSizeValue;
   emphasis?: ComponentEmphasis;
+  variant?: TabsVariant;
+  indicatorMotion?: 'auto' | 'none';
   indicatorPosition?: TabsIndicatorPosition;
   indicatorShape?: TabsIndicatorShape;
   /**

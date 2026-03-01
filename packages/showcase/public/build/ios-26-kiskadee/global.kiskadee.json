@@ -3,5 +3,14 @@
     "body": "Roboto, sans-serif",
     "heading": "Roboto, sans-serif"
   },
-  "radius": "rounded"
+  "radius": "rounded",
+  "components": {
+    "tabs": {
+      "options": {
+        "variant": "box",
+        "indicatorPosition": "bottom",
+        "indicatorShape": "rounded"
+      }
+    }
+  }
 }

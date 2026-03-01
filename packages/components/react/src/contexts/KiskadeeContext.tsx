@@ -2,6 +2,7 @@ import type {
   ComponentClassNameMapJSON,
   RadiusMode,
   RippleEffectSchema,
+  TabsVariant,
   TabsIndicatorShape,
   TabsIndicatorPosition,
   ThemeMode
@@ -27,6 +28,7 @@ export type KiskadeeContextValue = {
     components?: {
       tabs?: {
         options?: {
+          variant?: TabsVariant;
           indicatorPosition?: TabsIndicatorPosition;
           indicatorShape?: TabsIndicatorShape;
         };

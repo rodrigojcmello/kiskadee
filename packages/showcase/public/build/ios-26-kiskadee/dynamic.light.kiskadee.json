@@ -3,30 +3,69 @@
     "e1": {
       "c": {
         "primary": {
-          "h": "ak-bd ak-bp ak-bs ak-bl ak-bh",
-          "m": "ak-bc ak-bo ak-bt ak-bk ak-bg ak-ai ak-ae ak-ag ak-ac"
+          "h": "ak-bw ak-ci ak-cl ak-ce ak-ca",
+          "m": "ak-bv ak-ch ak-cm ak-cd ak-bz ak-az ak-at ak-aw ak-aq"
         },
         "neutral": {
-          "m": "ak-v ak-z ak-aa ak-y ak-ai ak-ae ak-ag ak-ac ak-x"
+          "m": "ak-ag ak-am ak-t ak-ak ak-az ak-at ak-aw ak-aq ak-aj"
         },
         "redLike": {
-          "h": "ak-b ak-g ak-i ak-e ak-c",
-          "m": "ak-w ak-h ak-j ak-f ak-d ak-m ak-k ak-l"
+          "h": "ak-e ak-j ak-l ak-h ak-f",
+          "m": "ak-ai ak-k ak-m ak-i ak-g ak-p ak-n ak-o"
         }
       }
     },
     "e2": {
       "c": {
         "primary": {
-          "h": "ak-p ak-as ak-a",
-          "m": "ak-cd ak-ch ak-a ak-cf ak-q"
+          "h": "ak-u ak-bj ak-c",
+          "m": "ak-di ak-dm ak-c ak-dk ak-x"
         },
         "neutral": {
-          "m": "ak-an ak-aq ak-au ak-q ak-a"
+          "m": "ak-be ak-bh ak-bl ak-x ak-c"
         },
         "redLike": {
-          "h": "ak-p ak-at ak-a",
-          "m": "ak-ao ak-av ak-ap ak-ar ak-aw"
+          "h": "ak-u ak-bk ak-c",
+          "m": "ak-bf ak-bm ak-bg ak-bi ak-bn"
+        }
+      }
+    }
+  },
+  "tabs": {
+    "box": {
+      "e1": {
+        "c": {
+          "neutral": {
+            "m": "ak-ah ak-ab"
+          }
+        }
+      },
+      "e2": {
+        "c": {
+          "neutral": {
+            "m": "ak-ae ak-al ak-t ak-ax ak-ar ak-au"
+          }
+        }
+      },
+      "e3": {
+        "c": {
+          "neutral": {
+            "h": "ak-v ak-w"
+          }
+        }
+      },
+      "e4": {
+        "c": {
+          "neutral": {
+            "h": "ak-v ak-w"
+          }
+        }
+      },
+      "e5": {
+        "c": {
+          "neutral": {
+            "h": "ak-af ak-an ak-ao"
+          }
         }
       }
     }

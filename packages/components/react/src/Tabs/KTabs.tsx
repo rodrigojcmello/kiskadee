@@ -1,6 +1,7 @@
 import {
   type ClassNameByElementJSON,
   type ColorClasses,
+  type RadiusMode,
   stateActivator as cn,
   componentEmphasisBuckets
 } from '@kiskadee/core';
@@ -43,12 +44,16 @@ export type {
 
 const DEFAULT_SCALE = 's:md:1';
 const DEFAULT_INTENT = 'neutral';
+const DEFAULT_VARIANT = 'line';
 
 type TabsVisualContextValue = {
   selected: string | undefined;
   scale: string;
   intent: string;
   emphasis: TabsRootProps['emphasis'];
+  variant: NonNullable<TabsRootProps['variant']>;
+  radiusMode: RadiusMode;
+  indicatorMotion: NonNullable<TabsRootProps['indicatorMotion']>;
   indicatorPosition: NonNullable<TabsRootProps['indicatorPosition']>;
   indicatorShape: NonNullable<TabsRootProps['indicatorShape']>;
   listClassName: string | undefined;
@@ -138,12 +143,51 @@ function resolveElementClassName(
   );
 }
 
+function resolveVariantElements(
+  map: TabsClassesMap | Record<string, TabsClassesMap> | undefined,
+  variant: string
+): TabsClassesMap {
+  if (!map) return {};
+  const asRecord = map as Record<string, TabsClassesMap>;
+  const isElementMap = Object.prototype.hasOwnProperty.call(asRecord, 'e1');
+  if (isElementMap) return map as TabsClassesMap;
+  return asRecord[variant] ?? asRecord.line ?? asRecord.box ?? {};
+}
+
+function resolveRadiusClassName(
+  element: ClassNameByElementJSON | undefined,
+  scale: string,
+  radiusMode: RadiusMode
+): string {
+  if (!element) return '';
+  const scaleKey = normalizeScaleKey(scale);
+  const all =
+    radiusMode === 'rounded'
+      ? (element.r?.all ?? '')
+      : radiusMode === 'pill'
+        ? (element.rp?.all ?? '')
+        : radiusMode === 'square'
+        ? (element.rs?.all ?? '')
+        : '';
+  const byScale =
+    radiusMode === 'rounded'
+      ? (element.r?.[scaleKey] ?? '')
+      : radiusMode === 'pill'
+        ? (element.rp?.[scaleKey] ?? '')
+        : radiusMode === 'square'
+        ? (element.rs?.[scaleKey] ?? '')
+        : '';
+  return joinClassNames(all, byScale) ?? '';
+}
+
 function TabsRoot({
   children,
   classNames = {},
   scale = DEFAULT_SCALE,
   emphasis = 'medium',
   intent = DEFAULT_INTENT,
+  variant,
+  indicatorMotion = 'auto',
   indicatorPosition,
   indicatorShape,
   value,
@@ -170,14 +214,22 @@ function TabsRoot({
     global
   } = useKiskadee();
 
-  const elements = (rawTabsMap ?? {}) as TabsClassesMap;
+  const resolvedVariant =
+    variant ?? global?.components?.tabs?.options?.variant ?? DEFAULT_VARIANT;
+  const elements = resolveVariantElements(
+    rawTabsMap as TabsClassesMap | Record<string, TabsClassesMap> | undefined,
+    resolvedVariant
+  );
   const resolvedIndicatorPosition =
     indicatorPosition ?? global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
   const resolvedIndicatorShape =
     indicatorShape ?? global?.components?.tabs?.options?.indicatorShape ?? 'square';
+  const resolvedRadiusMode = (global?.radius ?? 'rounded') as RadiusMode;
 
   const listClassName = joinClassNames(
     'k-tab-e1',
+    resolvedVariant === 'box' ? 'k-tab--box' : 'k-tab--line',
+    resolveRadiusClassName(elements.e1, scale, resolvedRadiusMode),
     resolveElementClassName(elements.e1, {
       scale,
       intent,
@@ -192,6 +244,9 @@ function TabsRoot({
       scale,
       intent,
       emphasis,
+      variant: resolvedVariant,
+      radiusMode: resolvedRadiusMode,
+      indicatorMotion,
       indicatorPosition: resolvedIndicatorPosition,
       indicatorShape: resolvedIndicatorShape,
       listClassName,
@@ -203,6 +258,9 @@ function TabsRoot({
       scale,
       intent,
       emphasis,
+      resolvedVariant,
+      resolvedRadiusMode,
+      indicatorMotion,
       resolvedIndicatorPosition,
       resolvedIndicatorShape,
       listClassName,
@@ -221,13 +279,15 @@ function TabsRoot({
 }
 
 function TabsBar({ className, ...props }: TabsBarProps) {
-  const { listClassName, indicatorPosition } = useTabsVisualContext();
+  const { listClassName, indicatorPosition, variant } = useTabsVisualContext();
+  const positionClass =
+    variant === 'line' ? (indicatorPosition === 'top' ? 'k-tab-e1-t' : 'k-tab-e1-b') : undefined;
   return (
     <HeadlessTabs.Bar
       {...props}
       className={joinClassNames(
         listClassName,
-        indicatorPosition === 'top' ? 'k-tab-e1-t' : 'k-tab-e1-b',
+        positionClass,
         className
       )}
     />
@@ -235,7 +295,7 @@ function TabsBar({ className, ...props }: TabsBarProps) {
 }
 
 function TabsTab({ value, className, label, icon, children, ...restProps }: TabsTabProps) {
-  const { selected, scale, intent, emphasis, classNames, elements } = useTabsVisualContext();
+  const { selected, scale, intent, emphasis, classNames, elements, radiusMode } = useTabsVisualContext();
   const isSelected = selected === value;
 
   const triggerClassName = joinClassNames(
@@ -245,6 +305,7 @@ function TabsTab({ value, className, label, icon, children, ...restProps }: Tabs
       emphasis,
       selected: isSelected
     }),
+    resolveRadiusClassName(elements.e2, scale, radiusMode),
     classNames.e2,
     'k-tab-e2',
     'k-state',
@@ -334,8 +395,19 @@ function TabsContent(props: TabsContentProps) {
 }
 
 function TabsIndicator({ className, style, ...props }: TabsIndicatorProps) {
-  const { scale, intent, emphasis, classNames, elements, indicatorPosition, indicatorShape } =
-    useTabsVisualContext();
+  const {
+    scale,
+    intent,
+    emphasis,
+    classNames,
+    elements,
+    indicatorPosition,
+    indicatorShape,
+    radiusMode,
+    indicatorMotion,
+    variant
+  } = useTabsVisualContext();
+  const indicatorRadiusMode: RadiusMode = indicatorShape === 'square' ? 'square' : radiusMode;
 
   const indicatorClassName = joinClassNames(
     resolveElementClassName(elements.e5, {
@@ -344,20 +416,25 @@ function TabsIndicator({ className, style, ...props }: TabsIndicatorProps) {
       emphasis,
       selected: true
     }),
+    resolveRadiusClassName(elements.e5, scale, indicatorRadiusMode),
     classNames.e5,
     'k-tab-e5',
     indicatorPosition === 'top' ? 'k-tab-e5-t' : 'k-tab-e5-b',
     indicatorShape === 'rounded' ? 'k-tab-e5-r' : '',
     indicatorShape === 'roundedClip' ? 'k-tab-e5-c' : '',
     indicatorShape === 'square' ? 'k-tab-e5-q' : '',
+    indicatorMotion === 'none' ? 'k-tab-e5-n' : '',
+    elements.e5?.e?.h ? cn.shadow : '',
     'k-state',
     className
   );
 
   const indicatorStyle: CSSProperties =
-    indicatorPosition === 'top'
-      ? { top: 'calc(var(--k-bw, 0px) * -1)', bottom: 'auto', ...style }
-      : { top: 'auto', bottom: 'calc(var(--k-bw, 0px) * -1)', ...style };
+    variant === 'box'
+      ? { top: 0, bottom: 'auto', ...style }
+      : indicatorPosition === 'top'
+        ? { top: 'calc(var(--k-bw, 0px) * -1)', bottom: 'auto', ...style }
+        : { top: 'auto', bottom: 'calc(var(--k-bw, 0px) * -1)', ...style };
 
   return (
     <HeadlessTabs.Indicator {...props} style={indicatorStyle} className={indicatorClassName} />

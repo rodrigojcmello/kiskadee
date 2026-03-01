@@ -396,6 +396,7 @@ type IndicatorRect = {
   x: number;
   y: number;
   width: number;
+  height: number;
 };
 
 function TabsIndicator({ className, style, ...indicatorDivProps }: TabsIndicatorProps) {
@@ -421,7 +422,8 @@ function TabsIndicator({ className, style, ...indicatorDivProps }: TabsIndicator
     setRect({
       x: tabRect.left - listRect.left + listEl.scrollLeft,
       y: tabRect.top - listRect.top + listEl.scrollTop,
-      width: tabRect.width
+      width: tabRect.width,
+      height: tabRect.height
     });
   }, [selected, listRef, tabRefs]);
 
@@ -456,12 +458,14 @@ function TabsIndicator({ className, style, ...indicatorDivProps }: TabsIndicator
 
   const indicatorStyle: CSSProperties = {
     top: 0,
-    width: rect?.width,
-    transform: rect
-      ? orientation === 'horizontal'
-        ? `translate3d(${rect.x}px, 0px, 0)`
-        : `translate3d(0px, ${rect.y}px, 0)`
-      : undefined,
+    ...(rect
+      ? {
+          ['--k-tab-x' as const]: `${rect.x}px`,
+          ['--k-tab-y' as const]: `${rect.y}px`,
+          ['--k-tab-w' as const]: `${rect.width}px`,
+          ['--k-tab-h' as const]: `${rect.height}px`
+        }
+      : {}),
     ...style
   };
 

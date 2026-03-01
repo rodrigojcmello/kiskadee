@@ -195,10 +195,16 @@ function useButtonCommonProps(props: ButtonProps) {
     ...restProps
   } = props;
 
-  const {
-    classesMap: { button: { e1, e2, e3 } = {} },
-    global
-  } = useKiskadee();
+  const { classesMap, global } = useKiskadee();
+  const buttonComponent = classesMap.button as
+    | Record<string, ClassNameByElementJSON>
+    | Record<string, Record<string, ClassNameByElementJSON>>
+    | undefined;
+  const buttonElements =
+    buttonComponent && Object.prototype.hasOwnProperty.call(buttonComponent, 'e1')
+      ? (buttonComponent as Record<string, ClassNameByElementJSON>)
+      : undefined;
+  const { e1, e2, e3 } = buttonElements ?? {};
   const status: ButtonStatus | 'rest' = statusProp;
 
   return {

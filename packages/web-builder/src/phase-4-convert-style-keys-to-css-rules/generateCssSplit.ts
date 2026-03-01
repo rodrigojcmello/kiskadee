@@ -31,6 +31,18 @@ export type SplitCssBundles = {
 // or a native pseudo (:hover, :focus, :active, etc.). Passive effects are ignored to avoid dead CSS.
 const EMIT_PASSIVE_EFFECTS = false;
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isElementMap(value: unknown): value is Record<string, any> {
+  if (!isRecord(value)) return false;
+  const first = Object.values(value).find(Boolean);
+  if (!isRecord(first)) return false;
+  const elementKeys = ['decorations', 'effects', 'scales', 'radiusScales', 'palettes'];
+  return elementKeys.some((key) => key in first);
+}
+
 export async function generateCssSplit(
   styleKeys: ComponentStyleKeyMap,
   shortenMap: ShortenCssClassNames,
@@ -62,9 +74,7 @@ export async function generateCssSplit(
     return /\.-[a-z]\b/.test(rule);
   };
 
-  // Walk through all style keys by component/element to preserve palette grouping
-  for (const componentName in styleKeys) {
-    const elements = styleKeys[componentName as ComponentName];
+  const consumeElements = (elements: Record<string, any>) => {
     for (const elementName in elements) {
       const el = elements[elementName];
 
@@ -91,10 +101,14 @@ export async function generateCssSplit(
 
       // radiusScales: border-radius scales by mode (size variants). Also go to the core.
       if (el.radiusScales) {
-        for (const bySize of Object.values(el.radiusScales)) {
-          for (const scaleKey in bySize ?? {}) {
+        for (const bySize of Object.values(el.radiusScales as Record<string, unknown>)) {
+          if (!isRecord(bySize)) continue;
+          const bySizeRecord = bySize as Partial<
+            Record<ElementSizeValue | ElementAllSizeValue, string[]>
+          >;
+          for (const scaleKey in bySizeRecord) {
             const arr: string[] =
-              bySize?.[scaleKey as ElementSizeValue | ElementAllSizeValue] ?? [];
+              bySizeRecord[scaleKey as ElementSizeValue | ElementAllSizeValue] ?? [];
             for (const key of arr) {
               const cn = shortenMap[key] ?? key;
               const rule = generateCssRuleFromStyleKey(key, cn, forceState, options);
@@ -160,6 +174,24 @@ export async function generateCssSplit(
             }
           }
         }
+      }
+    }
+  };
+
+  // Walk through all style keys by component/element to preserve palette grouping
+  for (const componentName in styleKeys) {
+    const elements = styleKeys[componentName as ComponentName];
+    if (!elements) continue;
+
+    if (isElementMap(elements)) {
+      consumeElements(elements);
+      continue;
+    }
+
+    for (const variantElements of Object.values(elements as Record<string, any>)) {
+      if (!variantElements) continue;
+      if (isElementMap(variantElements)) {
+        consumeElements(variantElements);
       }
     }
   }

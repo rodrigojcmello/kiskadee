@@ -44,26 +44,16 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
   const rippleConfig = schema.global?.effects?.ripple;
   // [RIPPLE EFFECT 10] END: Read global ripple config for element-level ripple conversion.
 
-  // Iterate over each component in the schema.
-  for (const c in schema.components) {
-    const componentName = c as ComponentName;
-    const component = schema.components[componentName];
-    if (!component?.elements) continue;
-
-    // Iterate over each element within the component.
-    const elements = component.elements as Record<
-      string,
-      {
-        decorations?: any;
-        scales?: any;
-        palettes?: any;
-        effects?: any;
-      }
-    >;
-    for (const [elementName, element] of Object.entries(elements)) {
-      if (!element) continue;
-
-      deepUpdate<StyleKeyByElement>(styleKeysByComponent, [componentName, elementName], (prev) => {
+  const applyElement = (
+    path: string[],
+    element: {
+      decorations?: any;
+      scales?: any;
+      palettes?: any;
+      effects?: any;
+    }
+  ) => {
+    deepUpdate<StyleKeyByElement>(styleKeysByComponent, path, (prev) => {
         const el: Partial<StyleKeyByElement> = prev ? { ...prev } : {};
         if (element.decorations) {
           el.decorations = convertElementDecorationsToStyleKeys(element.decorations);
@@ -277,6 +267,53 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
 
         return el as StyleKeyByElement;
       });
+  };
+
+  // Iterate over each component in the schema.
+  for (const c in schema.components) {
+    const componentName = c as ComponentName;
+    const component = schema.components[componentName] as
+      | {
+          elements?: Record<string, any>;
+          variants?: Record<string, { elements?: Record<string, any> }>;
+        }
+      | undefined;
+    if (!component) continue;
+
+    const variants = component.variants;
+    if (variants && typeof variants === 'object') {
+      for (const [variantName, variant] of Object.entries(variants)) {
+        const elements = variant?.elements as Record<
+          string,
+          {
+            decorations?: any;
+            scales?: any;
+            palettes?: any;
+            effects?: any;
+          }
+        >;
+        if (!elements) continue;
+        for (const [elementName, element] of Object.entries(elements)) {
+          if (!element) continue;
+          applyElement([componentName, variantName, elementName], element);
+        }
+      }
+      continue;
+    }
+
+    const elements = component.elements as Record<
+      string,
+      {
+        decorations?: any;
+        scales?: any;
+        palettes?: any;
+        effects?: any;
+      }
+    >;
+    if (!elements) continue;
+    for (const [elementName, element] of Object.entries(elements)) {
+      if (!element) continue;
+      applyElement([componentName, elementName], element);
     }
   }
 

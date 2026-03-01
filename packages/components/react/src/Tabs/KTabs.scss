@@ -77,6 +77,12 @@
       width 180ms ease,
       height 180ms ease;
     will-change: transform, width, height;
+    width: var(--k-tab-w, 0px);
+    transform: translate3d(var(--k-tab-x, 0px), 0px, 0);
+
+    &[data-orientation='vertical'] {
+      transform: translate3d(0px, var(--k-tab-y, 0px), 0);
+    }
 
     /* e5-q: indicator square shape */
     &-q {
@@ -85,7 +91,7 @@
 
     /* e5-r: indicator rounded shape */
     &-r {
-      border-radius: 20px;
+      /* Rounded mode radius comes from schema artifacts (r/rp/rs). */
     }
 
     /* e5-c: indicator rounded-clip shape */
@@ -100,5 +106,29 @@
         border-radius: 0 0 20px 20px;
       }
     }
+
+    &-n {
+      transition: none;
+    }
+  }
+}
+
+.k-tab--box {
+  .k-tab-e2 {
+    z-index: 1;
+
+    &[aria-selected='true'] {
+      z-index: 3;
+    }
+  }
+
+  .k-tab-e5 {
+    z-index: 2;
+    height: var(--k-tab-h, 0px);
+    transform: translate3d(
+      var(--k-tab-x, 0px),
+      var(--k-tab-y, 0px),
+      0
+    );
   }
 }

@@ -2,84 +2,120 @@
   "$schema": "./core.kiskadee.schema.json",
   "button": {
     "e1": {
-      "d": "gmd-bf",
+      "d": "gmd-aq",
       "e": {
-        "h": "gmd-fd gmd-fg gmd-fh gmd-ff gmd-fe",
-        "ris": "gmd-fb",
-        "rio": "gmd-fa",
-        "rix": "gmd-ez",
-        "rip": "gmd-fc",
-        "rr": "gmd-cz gmd-db gmd-dc gmd-da gmd-dg gmd-de gmd-df gmd-dd",
-        "rp": "gmd-cr gmd-ct gmd-cu gmd-cs gmd-cy gmd-cw gmd-cx gmd-cv",
-        "rs": "gmd-dh gmd-dj gmd-dk gmd-di gmd-do gmd-dm gmd-dn gmd-dl"
+        "h": "gmd-fm gmd-fp gmd-fq gmd-fo gmd-fn",
+        "ris": "gmd-fk",
+        "rio": "gmd-fj",
+        "rix": "gmd-fi",
+        "rip": "gmd-fl",
+        "rr": "gmd-dn gmd-dp gmd-dq gmd-do gmd-du gmd-ds gmd-dt gmd-dr",
+        "rp": "gmd-df gmd-dh gmd-di gmd-dg gmd-dm gmd-dk gmd-dl gmd-dj",
+        "rs": "gmd-dv gmd-dx gmd-dy gmd-dw gmd-ec gmd-ea gmd-eb gmd-dz"
       },
       "s": {
-        "sm:1": "gmd-ey gmd-eh gmd-ei gmd-eo gmd-l",
-        "md:1": "gmd-ch gmd-cg gmd-ek gmd-eq gmd-l",
-        "lg:1": "gmd-ev gmd-ee gmd-el gmd-er gmd-l",
-        "lg:2": "gmd-ew gmd-ef gmd-em gmd-es gmd-l",
-        "lg:3": "gmd-ex gmd-eg gmd-en gmd-et gmd-l"
+        "sm:1": "gmd-fh gmd-eq gmd-er gmd-ex gmd-l",
+        "md:1": "gmd-aw gmd-av gmd-es gmd-ey gmd-l",
+        "lg:1": "gmd-fd gmd-em gmd-et gmd-ez gmd-l",
+        "lg:2": "gmd-fe gmd-en gmd-ev gmd-fb gmd-l",
+        "lg:3": "gmd-fg gmd-ep gmd-ew gmd-fc gmd-l"
       },
       "r": {
-        "sm:1": "gmd-ba",
-        "md:1": "gmd-bb",
-        "lg:1": "gmd-bc",
-        "lg:2": "gmd-bd",
-        "lg:3": "gmd-be"
+        "sm:1": "gmd-bq",
+        "md:1": "gmd-w",
+        "lg:1": "gmd-br",
+        "lg:2": "gmd-bs",
+        "lg:3": "gmd-bt"
       },
       "rp": {
-        "sm:1": "gmd-ba",
-        "md:1": "gmd-bb",
-        "lg:1": "gmd-bc",
-        "lg:2": "gmd-bd",
-        "lg:3": "gmd-be"
+        "sm:1": "gmd-bq",
+        "md:1": "gmd-w",
+        "lg:1": "gmd-br",
+        "lg:2": "gmd-bs",
+        "lg:3": "gmd-bt"
       },
       "rs": {
-        "sm:1": "gmd-v",
-        "md:1": "gmd-v",
-        "lg:1": "gmd-v",
-        "lg:2": "gmd-v",
-        "lg:3": "gmd-v"
+        "sm:1": "gmd-m",
+        "md:1": "gmd-m",
+        "lg:1": "gmd-m",
+        "lg:2": "gmd-m",
+        "lg:3": "gmd-m"
       }
     },
     "e2": {
-      "d": "gmd-co",
+      "d": "gmd-ay",
       "s": {
-        "sm:1": "gmd-ak gmd-aj",
-        "md:1": "gmd-ak gmd-aj",
-        "lg:1": "gmd-fl gmd-fi",
-        "lg:2": "gmd-fm gmd-fj",
-        "lg:3": "gmd-fn gmd-fk"
+        "sm:1": "gmd-ap gmd-ao",
+        "md:1": "gmd-ap gmd-ao",
+        "lg:1": "gmd-fv gmd-fs",
+        "lg:2": "gmd-fw gmd-ft",
+        "lg:3": "gmd-fx gmd-fu"
       }
     }
   },
   "tabs": {
-    "e1": {
-      "d": "gmd-bf",
-      "s": {
-        "all": "gmd-l"
+    "line": {
+      "e1": {
+        "d": "gmd-aq",
+        "s": {
+          "all": "gmd-l"
+        }
+      },
+      "e2": {
+        "s": {
+          "all": "gmd-aw gmd-av gmd-da gmd-db"
+        }
+      },
+      "e3": {
+        "d": "gmd-ay",
+        "s": {
+          "all": "gmd-ap gmd-ao"
+        }
+      },
+      "e4": {
+        "s": {
+          "all": "gmd-cz gmd-cy gmd-dc"
+        }
+      },
+      "e5": {
+        "s": {
+          "all": "gmd-el"
+        }
       }
     },
-    "e2": {
-      "s": {
-        "all": "gmd-ch gmd-cg gmd-ej gmd-ep"
-      }
-    },
-    "e3": {
-      "d": "gmd-co",
-      "s": {
-        "all": "gmd-ak gmd-aj"
-      }
-    },
-    "e4": {
-      "s": {
-        "all": "gmd-ed gmd-eb gmd-eu"
-      }
-    },
-    "e5": {
-      "s": {
-        "all": "gmd-ec"
-      }
+    "box": {
+      "e1": {
+        "d": "gmd-aq",
+        "s": {
+          "all": "gmd-l gmd-ff gmd-eo gmd-eu gmd-fa"
+        },
+        "r": {
+          "all": "gmd-w"
+        },
+        "rp": {
+          "all": "gmd-w"
+        },
+        "rs": {
+          "all": "gmd-m"
+        }
+      },
+      "e2": {
+        "s": {
+          "all": "gmd-aw gmd-av gmd-da gmd-db"
+        }
+      },
+      "e3": {
+        "d": "gmd-ay",
+        "s": {
+          "all": "gmd-ap gmd-ao"
+        }
+      },
+      "e4": {
+        "s": {
+          "all": "gmd-cz gmd-cy gmd-dc"
+        }
+      },
+      "e5": {}
     }
   }
 }

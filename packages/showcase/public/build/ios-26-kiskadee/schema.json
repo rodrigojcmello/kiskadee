@@ -598,6 +598,308 @@
           }
         }
       }
+    },
+    "tabs": {
+      "options": {
+        "variant": "box",
+        "indicatorShape": "rounded",
+        "indicatorPosition": "bottom"
+      },
+      "variants": {
+        "box": {
+          "elements": {
+            "e1": {
+              "decorations": {
+                "borderStyle": "solid"
+              },
+              "scales": {
+                "borderWidth": 1,
+                "paddingTop": 4,
+                "paddingBottom": 4,
+                "paddingLeft": 4,
+                "paddingRight": 4,
+                "borderRadius": {
+                  "rounded": {
+                    "s:sm:1": 10,
+                    "s:md:1": 10,
+                    "s:lg:1": 10
+                  },
+                  "pill": {
+                    "s:sm:1": 999,
+                    "s:md:1": {
+                      "bp:all": 999,
+                      "bp:lg:1": 999
+                    },
+                    "s:lg:1": 999
+                  },
+                  "square": {
+                    "s:sm:1": 0,
+                    "s:md:1": {
+                      "bp:all": 0,
+                      "bp:lg:1": 0
+                    },
+                    "s:lg:1": 0
+                  }
+                }
+              },
+              "palettes": {
+                "default": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#F5F5F5"
+                        }
+                      }
+                    },
+                    "borderColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#E6E6E6"
+                        }
+                      }
+                    }
+                  }
+                },
+                "dynamic": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#F5F5F5"
+                        }
+                      }
+                    },
+                    "borderColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#E6E6E6"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "e2": {
+              "scales": {
+                "paddingTop": 6,
+                "paddingBottom": 6,
+                "paddingLeft": 16,
+                "paddingRight": 16,
+                "borderRadius": {
+                  "rounded": {
+                    "s:sm:1": 8,
+                    "s:md:1": 8,
+                    "s:lg:1": 8
+                  },
+                  "pill": {
+                    "s:sm:1": 999,
+                    "s:md:1": {
+                      "bp:all": 999,
+                      "bp:lg:1": 999
+                    },
+                    "s:lg:1": 999
+                  },
+                  "square": {
+                    "s:sm:1": 0,
+                    "s:md:1": {
+                      "bp:all": 0,
+                      "bp:lg:1": 0
+                    },
+                    "s:lg:1": 0
+                  }
+                }
+              },
+              "palettes": {
+                "default": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#0000",
+                          "hover": "#F0F0F0",
+                          "pressed": "#EBEBEB",
+                          "selected": {
+                            "rest": "#0000",
+                            "hover": "#0000",
+                            "pressed": "#0000"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "dynamic": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#0000",
+                          "hover": "#F0F0F0",
+                          "pressed": "#EBEBEB",
+                          "selected": {
+                            "rest": "#0000",
+                            "hover": "#0000",
+                            "pressed": "#0000"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "e3": {
+              "decorations": {
+                "textWeight": "medium"
+              },
+              "scales": {
+                "textSize": 14,
+                "textHeight": 20
+              },
+              "palettes": {
+                "default": {
+                  "light": {
+                    "textColor": {
+                      "neutral": {
+                        "high": {
+                          "rest": "#4D4D4D",
+                          "selected": {
+                            "rest": "#1A1A1A"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "dynamic": {
+                  "light": {
+                    "textColor": {
+                      "neutral": {
+                        "high": {
+                          "rest": "#4D4D4D",
+                          "selected": {
+                            "rest": "#1A1A1A"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "e4": {
+              "scales": {
+                "boxWidth": 18,
+                "boxHeight": 18,
+                "paddingRight": 8
+              },
+              "palettes": {
+                "default": {
+                  "light": {
+                    "textColor": {
+                      "neutral": {
+                        "high": {
+                          "rest": "#4D4D4D",
+                          "selected": {
+                            "rest": "#1A1A1A"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "dynamic": {
+                  "light": {
+                    "textColor": {
+                      "neutral": {
+                        "high": {
+                          "rest": "#4D4D4D",
+                          "selected": {
+                            "rest": "#1A1A1A"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "e5": {
+              "scales": {
+                "borderRadius": {
+                  "rounded": {
+                    "s:sm:1": 8,
+                    "s:md:1": 8,
+                    "s:lg:1": 8
+                  },
+                  "pill": {
+                    "s:sm:1": 999,
+                    "s:md:1": {
+                      "bp:all": 999,
+                      "bp:lg:1": 999
+                    },
+                    "s:lg:1": 999
+                  },
+                  "square": {
+                    "s:sm:1": 0,
+                    "s:md:1": {
+                      "bp:all": 0,
+                      "bp:lg:1": 0
+                    },
+                    "s:lg:1": 0
+                  }
+                }
+              },
+              "effects": {
+                "shadow": {
+                  "x": {
+                    "rest": 0
+                  },
+                  "y": {
+                    "rest": 1
+                  },
+                  "blur": {
+                    "rest": 3
+                  },
+                  "color": {
+                    "rest": "#0003"
+                  }
+                }
+              },
+              "palettes": {
+                "default": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "high": {
+                          "rest": "#FFF",
+                          "hover": "#FAFAFA",
+                          "pressed": "#F0F0F0"
+                        }
+                      }
+                    }
+                  }
+                },
+                "dynamic": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "high": {
+                          "rest": "#FFF",
+                          "hover": "#FAFAFA",
+                          "pressed": "#F0F0F0"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -335,6 +335,230 @@ export const schema: Schema = {
           }
         }
       }
+    },
+    tabs: {
+      options: {
+        variant: 'box',
+        indicatorShape: 'rounded',
+        indicatorPosition: 'bottom'
+      },
+      variants: {
+        box: {
+          elements: {
+            // e1: bar
+            e1: {
+              decorations: {
+                borderStyle: 'solid'
+              },
+              scales: {
+                borderWidth: 1,
+                paddingTop: 4,
+                paddingBottom: 4,
+                paddingLeft: 4,
+                paddingRight: 4,
+                borderRadius: {
+                  rounded: {
+                    's:sm:1': 10,
+                    's:md:1': 10,
+                    's:lg:1': 10
+                  },
+                  pill: {
+                    's:sm:1': 999,
+                    's:md:1': {
+                      'bp:all': 999,
+                      'bp:lg:1': 999
+                    },
+                    's:lg:1': 999
+                  },
+                  square: {
+                    's:sm:1': 0,
+                    's:md:1': {
+                      'bp:all': 0,
+                      'bp:lg:1': 0
+                    },
+                    's:lg:1': 0
+                  }
+                }
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    boxColor: {
+                      neutral: {
+                        medium: {
+                          rest: c(segmentName, 'l', 'neutral', 4)
+                        }
+                      }
+                    },
+                    borderColor: {
+                      neutral: {
+                        medium: {
+                          rest: c(segmentName, 'l', 'neutral', 10)
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            },
+            // e2: tab
+            e2: {
+              scales: {
+                paddingTop: 6,
+                paddingBottom: 6,
+                paddingLeft: 16,
+                paddingRight: 16,
+                borderRadius: {
+                  rounded: {
+                    's:sm:1': 8,
+                    's:md:1': 8,
+                    's:lg:1': 8
+                  },
+                  pill: {
+                    's:sm:1': 999,
+                    's:md:1': {
+                      'bp:all': 999,
+                      'bp:lg:1': 999
+                    },
+                    's:lg:1': 999
+                  },
+                  square: {
+                    's:sm:1': 0,
+                    's:md:1': {
+                      'bp:all': 0,
+                      'bp:lg:1': 0
+                    },
+                    's:lg:1': 0
+                  }
+                }
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    boxColor: {
+                      neutral: {
+                        medium: {
+                          rest: [0, 0, 0, 0],
+                          hover: c(segmentName, 'l', 'neutral', 6),
+                          pressed: c(segmentName, 'l', 'neutral', 8),
+                          selected: {
+                            rest: [0, 0, 0, 0],
+                            hover: [0, 0, 0, 0],
+                            pressed: [0, 0, 0, 0]
+                          }
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            },
+            // e3: label
+            e3: {
+              decorations: {
+                textWeight: 'medium'
+              },
+              scales: {
+                textSize: 14,
+                textHeight: 20
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    textColor: {
+                      neutral: {
+                        high: {
+                          rest: c(segmentName, 'l', 'neutral', 70),
+                          selected: {
+                            rest: c(segmentName, 'l', 'neutral', 90)
+                          }
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            },
+            // e4: icon
+            e4: {
+              scales: {
+                boxWidth: 18,
+                boxHeight: 18,
+                paddingRight: 8
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    textColor: {
+                      neutral: {
+                        high: {
+                          rest: c(segmentName, 'l', 'neutral', 70),
+                          selected: {
+                            rest: c(segmentName, 'l', 'neutral', 90)
+                          }
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            },
+            // e5: indicator (background)
+            e5: {
+              scales: {
+                borderRadius: {
+                  rounded: {
+                    's:sm:1': 8,
+                    's:md:1': 8,
+                    's:lg:1': 8
+                  },
+                  pill: {
+                    's:sm:1': 999,
+                    's:md:1': {
+                      'bp:all': 999,
+                      'bp:lg:1': 999
+                    },
+                    's:lg:1': 999
+                  },
+                  square: {
+                    's:sm:1': 0,
+                    's:md:1': {
+                      'bp:all': 0,
+                      'bp:lg:1': 0
+                    },
+                    's:lg:1': 0
+                  }
+                }
+              },
+              effects: {
+                shadow: {
+                  x: { rest: 0 },
+                  y: { rest: 1 },
+                  blur: { rest: 3 },
+                  color: {
+                    rest: withAlpha([0, 0, 0, 1], 20)
+                  }
+                }
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    boxColor: {
+                      neutral: {
+                        high: {
+                          rest: c(segmentName, 'l', 'neutral', 0),
+                          hover: c(segmentName, 'l', 'neutral', 2),
+                          pressed: c(segmentName, 'l', 'neutral', 6)
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            }
+          }
+        }
+      }
     }
   }
 };

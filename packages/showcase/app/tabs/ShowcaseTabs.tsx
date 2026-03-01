@@ -22,10 +22,14 @@ const tabItems = [
 
 function TabsExample({
   title,
-  indicatorShape
+  indicatorShape,
+  variant,
+  indicatorMotion
 }: {
   title: string;
   indicatorShape?: 'square' | 'rounded' | 'roundedClip';
+  variant?: 'line' | 'box';
+  indicatorMotion?: 'auto' | 'none';
 }) {
   return (
     <div>
@@ -34,6 +38,8 @@ function TabsExample({
         defaultValue="locations"
         indicatorPosition="bottom"
         indicatorShape={indicatorShape}
+        indicatorMotion={indicatorMotion}
+        variant={variant}
         activationMode="manual"
       >
         <KTabs.Bar>
@@ -61,6 +67,14 @@ export default function ShowcaseTabs() {
       <TabsExample title="Indicator: square (default)" />
       <TabsExample title="Indicator: rounded" indicatorShape="rounded" />
       <TabsExample title="Indicator: rounded clip" indicatorShape="roundedClip" />
+
+      <TabsExample title="Box: indicator background (animated)" variant="box" indicatorShape="rounded" />
+      <TabsExample
+        title="Box: indicator background (no motion)"
+        variant="box"
+        indicatorShape="rounded"
+        indicatorMotion="none"
+      />
     </section>
   );
 }

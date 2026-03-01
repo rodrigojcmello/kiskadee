@@ -44,12 +44,29 @@ export type ClassNameByElement = {
   // Control-state specific (selected) — flattened string of utility classes
   l?: string;
 };
-export type ComponentClassNameMap = Partial<Record<string, Record<string, ClassNameByElement>>>;
+export type ComponentClassNameMap = Partial<
+  Record<
+    string,
+    Record<string, ClassNameByElement> | Record<string, Record<string, ClassNameByElement>>
+  >
+>;
 
 export type ComponentClassNameMapSplit = {
   core: ComponentClassNameMap; // no palettes included
   palettes: Record<string, ComponentClassNameMap>; // each contains only flattened `p` for that palette
 };
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isElementMap(value: unknown): value is Record<string, any> {
+  if (!isRecord(value)) return false;
+  const first = Object.values(value).find(Boolean);
+  if (!isRecord(first)) return false;
+  const elementKeys = ['decorations', 'effects', 'scales', 'radiusScales', 'palettes'];
+  return elementKeys.some((key) => key in first);
+}
 
 function mapArray(
   keys: string[] | undefined,
@@ -109,10 +126,33 @@ export function generateClassNamesMapSplit(
   const core: ComponentClassNameMap = {};
   const palettes: Record<string, ComponentClassNameMap> = {};
 
-  for (const componentName of Object.keys(styleKeys)) {
-    const elements = styleKeys[componentName as ComponentName];
-    if (!elements) continue;
-    core[componentName] = {};
+  const ensurePaletteElement = (
+    bundleKey: string,
+    componentName: string,
+    variantName: string | undefined,
+    elementName: string
+  ): Record<string, unknown> => {
+    if (!palettes[bundleKey]) palettes[bundleKey] = {};
+    if (!palettes[bundleKey][componentName]) {
+      palettes[bundleKey][componentName] = variantName ? {} : {};
+    }
+    const componentEntry = palettes[bundleKey][componentName] as Record<string, unknown>;
+    const target = variantName
+      ? ((componentEntry[variantName] as Record<string, unknown> | undefined) ??
+        (componentEntry[variantName] = {}))
+      : componentEntry;
+    if (!target[elementName]) {
+      target[elementName] = {};
+    }
+    return target[elementName] as Record<string, unknown>;
+  };
+
+  const processElements = (
+    componentName: string,
+    elements: Record<string, any>,
+    coreTarget: Record<string, ClassNameByElement>,
+    variantName?: string
+  ) => {
     for (const elementName of Object.keys(elements)) {
       const el = elements[elementName];
 
@@ -171,7 +211,8 @@ export function generateClassNamesMapSplit(
 
       // scales → s[size] (size-only variants)
       if (el.scales) {
-        for (const [size, arr] of Object.entries(el.scales)) {
+        for (const [size, raw] of Object.entries(el.scales as Record<string, unknown>)) {
+          const arr = Array.isArray(raw) ? (raw as string[]) : undefined;
           // Web artifact optimization: strip "s:" prefix from size keys (e.g. "s:md:1" -> "md:1").
           const sizeKey = size.startsWith('s:') ? size.slice(2) : size;
           const mapped = mapArray(arr, shortenMap);
@@ -239,15 +280,12 @@ export function generateClassNamesMapSplit(
             // By resolving metadata through `bundleKey`, we keep CSS dedupe intact while producing
             // correct per-palette `c[semantic].h|m|l|ll` buckets.
             const toneMetaForPalette = toneMetadataByPalette.get(bundleKey);
-            if (!palettes[bundleKey]) palettes[bundleKey] = {};
-            if (!palettes[bundleKey][componentName]) {
-              palettes[bundleKey][componentName] = {};
-            }
-            // ensure element record exists (avoid assignment inside expression per Biome rule)
-            if (!palettes[bundleKey][componentName][elementName]) {
-              palettes[bundleKey][componentName][elementName] = {};
-            }
-            const elemRecord = palettes[bundleKey][componentName][elementName];
+            const elemRecord = ensurePaletteElement(
+              bundleKey,
+              componentName,
+              variantName,
+              elementName
+            );
 
             // Build color classes per semantic: c[semantic] = { h, m, l, ll }
             const colorBySemantic: Record<string, ColorClasses> = {};
@@ -300,7 +338,7 @@ export function generateClassNamesMapSplit(
       }
 
       // After processing palettes, finalize the core element record so `cs` includes palette-derived selected classes
-      core[componentName][elementName] = {
+      coreTarget[elementName] = {
         d: dSet.size ? Array.from(dSet).join(' ') : undefined,
         e:
           eBuckets.size > 0
@@ -351,6 +389,30 @@ export function generateClassNamesMapSplit(
               )
             : undefined
       };
+    }
+  };
+
+  for (const componentName of Object.keys(styleKeys)) {
+    const elements = styleKeys[componentName as ComponentName];
+    if (!elements) continue;
+
+    if (isElementMap(elements)) {
+      core[componentName] = {};
+      processElements(
+        componentName,
+        elements,
+        core[componentName] as Record<string, ClassNameByElement>
+      );
+      continue;
+    }
+
+    const variantMap = elements as Record<string, any>;
+    const coreVariants: Record<string, Record<string, ClassNameByElement>> = {};
+    core[componentName] = coreVariants;
+    for (const [variantName, variantElements] of Object.entries(variantMap)) {
+      if (!variantElements || !isElementMap(variantElements)) continue;
+      coreVariants[variantName] = {};
+      processElements(componentName, variantElements, coreVariants[variantName], variantName);
     }
   }
 

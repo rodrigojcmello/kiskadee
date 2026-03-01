@@ -2,84 +2,120 @@
   "$schema": "./core.kiskadee.schema.json",
   "button": {
     "e1": {
-      "d": "mk-bi",
+      "d": "mk-as",
       "e": {
-        "h": "mk-fw mk-fz mk-ga mk-fy mk-fx",
-        "ris": "mk-fu",
-        "rio": "mk-ft",
-        "rix": "mk-fs",
-        "rip": "mk-fv",
-        "rr": "mk-de mk-dg mk-dh mk-df mk-dl mk-dj mk-dk mk-di",
-        "rp": "mk-cw mk-cy mk-cz mk-cx mk-dd mk-db mk-dc mk-da",
-        "rs": "mk-dm mk-do mk-dp mk-dn mk-dt mk-dr mk-ds mk-dq"
+        "h": "mk-gf mk-gi mk-gj mk-gh mk-gg",
+        "ris": "mk-gd",
+        "rio": "mk-gc",
+        "rix": "mk-gb",
+        "rip": "mk-ge",
+        "rr": "mk-ds mk-du mk-dv mk-dt mk-dz mk-dx mk-dy mk-dw",
+        "rp": "mk-dk mk-dm mk-dn mk-dl mk-dr mk-dp mk-dq mk-do",
+        "rs": "mk-ea mk-ec mk-ed mk-eb mk-eh mk-ef mk-eg mk-ee"
       },
       "s": {
-        "sm:1": "mk-fr mk-fa mk-fb mk-fh mk-o",
-        "md:1": "mk-cl mk-ck mk-fd mk-fj mk-o",
-        "lg:1": "mk-fo mk-ex mk-fe mk-fk mk-o",
-        "lg:2": "mk-fp mk-ey mk-ff mk-fl mk-o",
-        "lg:3": "mk-fq mk-ez mk-fg mk-fm mk-o"
+        "sm:1": "mk-ga mk-fj mk-fk mk-fq mk-m",
+        "md:1": "mk-ay mk-ax mk-fl mk-fr mk-m",
+        "lg:1": "mk-fw mk-ff mk-fm mk-fs mk-m",
+        "lg:2": "mk-fx mk-fg mk-fo mk-fu mk-m",
+        "lg:3": "mk-fz mk-fi mk-fp mk-fv mk-m"
       },
       "r": {
-        "sm:1": "mk-bd",
-        "md:1": "mk-be",
-        "lg:1": "mk-bf",
-        "lg:2": "mk-bg",
-        "lg:3": "mk-bh"
+        "sm:1": "mk-bt",
+        "md:1": "mk-aa",
+        "lg:1": "mk-bu",
+        "lg:2": "mk-bv",
+        "lg:3": "mk-bw"
       },
       "rp": {
-        "sm:1": "mk-bd",
-        "md:1": "mk-be",
-        "lg:1": "mk-bf",
-        "lg:2": "mk-bg",
-        "lg:3": "mk-bh"
+        "sm:1": "mk-bt",
+        "md:1": "mk-aa",
+        "lg:1": "mk-bu",
+        "lg:2": "mk-bv",
+        "lg:3": "mk-bw"
       },
       "rs": {
-        "sm:1": "mk-z",
-        "md:1": "mk-z",
-        "lg:1": "mk-z",
-        "lg:2": "mk-z",
-        "lg:3": "mk-z"
+        "sm:1": "mk-p",
+        "md:1": "mk-p",
+        "lg:1": "mk-p",
+        "lg:2": "mk-p",
+        "lg:3": "mk-p"
       }
     },
     "e2": {
-      "d": "mk-ct",
+      "d": "mk-bb",
       "s": {
-        "sm:1": "mk-an mk-am",
-        "md:1": "mk-an mk-am",
-        "lg:1": "mk-gf mk-gc",
-        "lg:2": "mk-gg mk-gd",
-        "lg:3": "mk-gh mk-ge"
+        "sm:1": "mk-ar mk-aq",
+        "md:1": "mk-ar mk-aq",
+        "lg:1": "mk-gp mk-gm",
+        "lg:2": "mk-gq mk-gn",
+        "lg:3": "mk-gr mk-go"
       }
     }
   },
   "tabs": {
-    "e1": {
-      "d": "mk-bi",
-      "s": {
-        "all": "mk-o"
+    "line": {
+      "e1": {
+        "d": "mk-as",
+        "s": {
+          "all": "mk-m"
+        }
+      },
+      "e2": {
+        "s": {
+          "all": "mk-ay mk-ax mk-de mk-df"
+        }
+      },
+      "e3": {
+        "d": "mk-bb",
+        "s": {
+          "all": "mk-ar mk-aq"
+        }
+      },
+      "e4": {
+        "s": {
+          "all": "mk-dd mk-dc mk-dg"
+        }
+      },
+      "e5": {
+        "s": {
+          "all": "mk-fe"
+        }
       }
     },
-    "e2": {
-      "s": {
-        "all": "mk-cl mk-ck mk-fc mk-fi"
-      }
-    },
-    "e3": {
-      "d": "mk-ct",
-      "s": {
-        "all": "mk-an mk-am"
-      }
-    },
-    "e4": {
-      "s": {
-        "all": "mk-ew mk-eu mk-fn"
-      }
-    },
-    "e5": {
-      "s": {
-        "all": "mk-ev"
-      }
+    "box": {
+      "e1": {
+        "d": "mk-as",
+        "s": {
+          "all": "mk-m mk-fy mk-fh mk-fn mk-ft"
+        },
+        "r": {
+          "all": "mk-aa"
+        },
+        "rp": {
+          "all": "mk-aa"
+        },
+        "rs": {
+          "all": "mk-p"
+        }
+      },
+      "e2": {
+        "s": {
+          "all": "mk-ay mk-ax mk-de mk-df"
+        }
+      },
+      "e3": {
+        "d": "mk-bb",
+        "s": {
+          "all": "mk-ar mk-aq"
+        }
+      },
+      "e4": {
+        "s": {
+          "all": "mk-dd mk-dc mk-dg"
+        }
+      },
+      "e5": {}
     }
   }
 }
