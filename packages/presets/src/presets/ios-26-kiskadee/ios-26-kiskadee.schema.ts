@@ -23,6 +23,7 @@ const schemaColors = {
 const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
 
 const c = createPresetColorGetter<SegmentName>(schemaContext);
+const transparent = withAlpha([0, 0, 0, 1], 0);
 
 export const schema: Schema = {
   name: 'iOS',
@@ -439,13 +440,13 @@ export const schema: Schema = {
                     boxColor: {
                       neutral: {
                         medium: {
-                          rest: [0, 0, 0, 0],
+                          rest: transparent,
                           hover: c(segmentName, 'l', 'neutral', 6),
                           pressed: c(segmentName, 'l', 'neutral', 8),
                           selected: {
-                            rest: [0, 0, 0, 0],
-                            hover: [0, 0, 0, 0],
-                            pressed: [0, 0, 0, 0]
+                            rest: transparent,
+                            hover: transparent,
+                            pressed: transparent
                           }
                         }
                       }
