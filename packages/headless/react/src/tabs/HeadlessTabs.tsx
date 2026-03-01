@@ -399,19 +399,41 @@ type IndicatorRect = {
   height: number;
 };
 
+const MIN_INDICATOR_MOTION_MS = 120;
+const MAX_INDICATOR_MOTION_MS = 320;
+const INDICATOR_MOTION_FACTOR = 0.35;
+
+function computeIndicatorMotionMs(previous: IndicatorRect | null, next: IndicatorRect): number {
+  if (!previous) return 0;
+  const delta = Math.max(
+    Math.abs(next.x - previous.x),
+    Math.abs(next.y - previous.y),
+    Math.abs(next.width - previous.width),
+    Math.abs(next.height - previous.height)
+  );
+  const raw = Math.round(MIN_INDICATOR_MOTION_MS + delta * INDICATOR_MOTION_FACTOR);
+  return Math.max(MIN_INDICATOR_MOTION_MS, Math.min(MAX_INDICATOR_MOTION_MS, raw));
+}
+
 function TabsIndicator({ className, style, ...indicatorDivProps }: TabsIndicatorProps) {
   const { selected, orientation, classNames, listRef, tabRefs, tabs } = useTabsContext();
   const [rect, setRect] = useState<IndicatorRect | null>(null);
+  const previousRectRef = useRef<IndicatorRect | null>(null);
 
   const updateRect = useCallback(() => {
+    const listEl = listRef.current;
     if (!selected) {
+      previousRectRef.current = null;
+      if (listEl) {
+        listEl.style.setProperty('--k-tab-dur', '0ms');
+      }
       setRect(null);
       return;
     }
 
-    const listEl = listRef.current;
     const selectedTab = tabRefs.current.get(selected);
     if (!listEl || !selectedTab) {
+      previousRectRef.current = null;
       setRect(null);
       return;
     }
@@ -419,12 +441,17 @@ function TabsIndicator({ className, style, ...indicatorDivProps }: TabsIndicator
     const listRect = listEl.getBoundingClientRect();
     const tabRect = selectedTab.getBoundingClientRect();
 
-    setRect({
+    const nextRect = {
       x: tabRect.left - listRect.left + listEl.scrollLeft,
       y: tabRect.top - listRect.top + listEl.scrollTop,
       width: tabRect.width,
       height: tabRect.height
-    });
+    };
+    const motionMs = computeIndicatorMotionMs(previousRectRef.current, nextRect);
+    listEl.style.setProperty('--k-tab-dur', `${motionMs}ms`);
+    previousRectRef.current = nextRect;
+
+    setRect(nextRect);
   }, [selected, listRef, tabRefs]);
 
   useEffect(() => {

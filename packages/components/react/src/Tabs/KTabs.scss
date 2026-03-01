@@ -78,7 +78,7 @@
   &-e1-ma {
     .k-tab-e6 {
       &-h {
-        transition-delay: 180ms;
+        transition-delay: var(--k-tab-dur, 180ms);
       }
     }
   }
@@ -103,9 +103,9 @@
     pointer-events: none;
     z-index: 2;
     transition:
-      transform 180ms ease,
-      width 180ms ease,
-      height 180ms ease;
+      transform var(--k-tab-dur, 180ms) ease,
+      width var(--k-tab-dur, 180ms) ease,
+      height var(--k-tab-dur, 180ms) ease;
     will-change: transform, width, height;
     width: var(--k-tab-w, 0px);
     transform: translate3d(var(--k-tab-x, 0px), 0px, 0);
