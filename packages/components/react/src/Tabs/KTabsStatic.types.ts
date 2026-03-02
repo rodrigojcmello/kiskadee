@@ -21,16 +21,6 @@ export type TabsClassNames = Partial<Record<TabsElementName, string>>;
 
 export type TabsClassesMap = Partial<Record<TabsElementName, ClassNameByElementJSON>>;
 
-export type TabsSpringPreset = 'snappy' | 'gentle' | 'debugSlow';
-
-export type TabsSpringConfig = Partial<{
-  stiffness: number;
-  damping: number;
-  mass: number;
-  restDelta: number;
-  restSpeed: number;
-}>;
-
 export type TabsRootProps = Omit<HeadlessTabsRootProps, 'classNames'> & {
   classNames?: TabsClassNames;
   scale?: ElementSizeValue;
@@ -40,8 +30,6 @@ export type TabsRootProps = Omit<HeadlessTabsRootProps, 'classNames'> & {
   indicatorPosition?: TabsIndicatorPosition;
   indicatorShape?: TabsIndicatorShape;
   separator?: boolean;
-  spring?: TabsSpringPreset | TabsSpringConfig;
-  indicatorLayoutId?: string;
   /**
    * Semantic color family key for class map lookup (e.g. "primary", "neutral").
    * Falls back to the first available semantic key when not found.

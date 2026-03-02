@@ -1,0 +1,171 @@
+/*
+ * Tabs structural styles.
+ * Any visual customization must come from schema build artifacts (CSS/JSON)
+ * or runtime state classes.
+ * Avoid hardcoded theme visual values in this file.
+ */
+.k-tab {
+  /* e1: bar */
+  &-e1 {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    isolation: isolate;
+    overflow: visible;
+    border-width: 0 !important;
+
+    /* e1-b: bar bottom-border variant (indicator on bottom) */
+    &-b {
+      border-bottom-width: var(--k-bw, 0px) !important;
+    }
+
+    /* e1-t: bar top-border variant (indicator on top) */
+    &-t {
+      border-top-width: var(--k-bw, 0px) !important;
+    }
+  }
+
+  /* e2: tab */
+  &-e2 {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    user-select: none;
+
+    &[aria-disabled='true'] {
+      cursor: not-allowed;
+    }
+  }
+
+  /* e3: label */
+  &-e3 {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* e4: icon */
+  &-e4 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+  }
+
+  /* e6: separator */
+  &-e6 {
+    flex: 0 0 auto;
+    align-self: center;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 60ms ease-out;
+    will-change: opacity;
+
+    &-h {
+      opacity: 0;
+    }
+  }
+
+  &-e1-ma {
+    .k-tab-e6 {
+      &-h {
+        transition-delay: var(--k-tab-dur, 180ms);
+      }
+    }
+  }
+
+  &-e1-mn {
+    .k-tab-e6 {
+      &-h {
+        transition-delay: 0ms;
+      }
+    }
+  }
+
+  /* p: tab panel content container */
+  &-p {
+    display: block;
+  }
+
+  /* e5: indicator */
+  &-e5 {
+    position: absolute;
+    left: 0;
+    pointer-events: none;
+    z-index: 2;
+    transition: transform var(--k-tab-dur, 180ms) ease,
+    width var(--k-tab-dur, 180ms) ease,
+    height var(--k-tab-dur, 180ms) ease;
+    will-change: transform, width, height;
+    width: var(--k-tab-w, 0px);
+    transform: translate3d(var(--k-tab-x, 0px), 0px, 0);
+
+    &[data-orientation='vertical'] {
+      transform: translate3d(0px, var(--k-tab-y, 0px), 0);
+    }
+
+    /* e5-q: indicator square shape */
+    &-q {
+      border-radius: 0;
+    }
+
+    /* e5-r: indicator rounded shape */
+    &-r {
+      /*
+       * Fallback to pill so rounded remains visually distinct when a preset
+       * does not define radius classes for e5 (common in line variant).
+       */
+      border-radius: 999px;
+    }
+
+    /*
+     * e5-c: indicator rounded-clip shape
+     * Rounded-clip geometry is structural/behavioral and intentionally fixed.
+     * Radius tokens for rounded/pill must come from preset artifacts (JSON/CSS classes).
+     */
+    &-c {
+      /* e5-c + e5-b: rounded-clip with bottom indicator */
+      &.k-tab-e5-b {
+        border-radius: 20px 20px 0 0;
+      }
+
+      /* e5-c + e5-t: rounded-clip with top indicator */
+      &.k-tab-e5-t {
+        border-radius: 0 0 20px 20px;
+      }
+    }
+
+    &-n {
+      transition: none;
+    }
+  }
+}
+
+.k-tab--box {
+  .k-tab-e2 {
+    z-index: 1;
+
+    &[aria-selected='true'] {
+      z-index: 3;
+    }
+  }
+
+  .k-tab-e5 {
+    z-index: 2;
+    height: var(--k-tab-h, 0px);
+    transform: translate3d(
+        var(--k-tab-x, 0px),
+        var(--k-tab-y, 0px),
+        0
+    );
+  }
+}

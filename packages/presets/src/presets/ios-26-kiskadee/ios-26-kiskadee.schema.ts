@@ -509,6 +509,7 @@ export const schema: Schema = {
             e5: {
               scales: {
                 borderRadius: {
+                  // box uses square or rounded in runtime; "pill" keeps full capsule as schema option.
                   rounded: {
                     's:sm:1': 8,
                     's:md:1': 8,

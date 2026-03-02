@@ -34,7 +34,13 @@ type ElementScalesByProperty<TScaleProperty extends StandardScaleProperty> = Par
 export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 export type TabsVariant = 'line' | 'box';
 export type TabsIndicatorPosition = 'top' | 'bottom';
-export type TabsIndicatorShape = 'square' | 'rounded' | 'roundedClip';
+export const tabsIndicatorShapesByVariant = {
+  line: ['square', 'rounded', 'roundedClip'],
+  box: ['square', 'rounded', 'pill']
+} as const;
+export type TabsLineIndicatorShape = (typeof tabsIndicatorShapesByVariant.line)[number];
+export type TabsBoxIndicatorShape = (typeof tabsIndicatorShapesByVariant.box)[number];
+export type TabsIndicatorShape = TabsLineIndicatorShape | TabsBoxIndicatorShape;
 
 export type TabsOptions = Partial<{
   variant: TabsVariant;
@@ -130,6 +136,10 @@ export type TabsIconElementStyle<TSegmentName extends SegmentName = never> = Par
  * - boxHeight
  * - boxColor
  * - borderRadius
+ *
+ * NOTE:
+ * `roundedClip` is a structural shape handled by component styles (fixed geometry).
+ * `rounded` / `pill` radius values must come from preset artifacts (JSON/CSS classes).
  */
 export type TabsIndicatorElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   name?: string;
@@ -352,9 +362,10 @@ function validateTabsOptions(value: unknown, path: string, issues: string[]): vo
     value.indicatorShape !== undefined &&
     value.indicatorShape !== 'square' &&
     value.indicatorShape !== 'rounded' &&
-    value.indicatorShape !== 'roundedClip'
+    value.indicatorShape !== 'roundedClip' &&
+    value.indicatorShape !== 'pill'
   ) {
-    issues.push(`${path}.indicatorShape: expected "square", "rounded", or "roundedClip"`);
+    issues.push(`${path}.indicatorShape: expected "square", "rounded", "roundedClip", or "pill"`);
   }
 
   if (value.separator !== undefined && typeof value.separator !== 'boolean') {

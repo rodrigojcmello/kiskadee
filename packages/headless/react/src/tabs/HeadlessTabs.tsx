@@ -7,6 +7,7 @@ import type {
 } from 'react';
 import {
   createContext,
+  forwardRef,
   useCallback,
   useContext,
   useEffect,
@@ -220,7 +221,10 @@ function TabsRoot({
 // Bar Element
 // -------------------------------------------------------------------------------------------------
 
-function TabsBar({ children, className }: TabsBarProps) {
+const TabsBar = forwardRef<HTMLDivElement, TabsBarProps>(function TabsBar(
+  { children, className },
+  forwardedRef
+) {
   const { tabs, orientation, activationMode, setSelected, classNames, tabRefs, listRef } =
     useTabsContext();
 
@@ -317,7 +321,16 @@ function TabsBar({ children, className }: TabsBarProps) {
 
   return (
     <div
-      ref={listRef}
+      ref={(node) => {
+        listRef.current = node;
+        if (typeof forwardedRef === 'function') {
+          forwardedRef(node);
+          return;
+        }
+        if (forwardedRef) {
+          forwardedRef.current = node;
+        }
+      }}
       role="tablist"
       aria-orientation={orientation}
       className={listClassName}
@@ -326,7 +339,7 @@ function TabsBar({ children, className }: TabsBarProps) {
       {children}
     </div>
   );
-}
+});
 
 // -------------------------------------------------------------------------------------------------
 // Tab Element
