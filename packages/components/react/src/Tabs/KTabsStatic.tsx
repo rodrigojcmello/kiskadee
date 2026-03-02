@@ -236,8 +236,9 @@ function TabsRoot({
   const resolvedIndicatorMotion: NonNullable<TabsRootProps['indicatorMotion']> = 'none';
 
   const listClassName = joinClassNames(
+    'k-tab-s',
     'k-tab-e1',
-    resolvedVariant === 'box' ? 'k-tab--box' : 'k-tab--line',
+    resolvedVariant === 'box' ? 'k-tab-b' : 'k-tab-l',
     resolveRadiusClassName(elements.e1, scale, resolvedRadiusMode),
     resolveElementClassName(elements.e1, {
       scale,
@@ -313,12 +314,10 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     separatorClassName,
     listClassName,
     indicatorPosition,
-    indicatorMotion,
     variant
   } = useTabsVisualContext();
   const positionClass =
     variant === 'line' ? (indicatorPosition === 'top' ? 'k-tab-e1-t' : 'k-tab-e1-b') : undefined;
-  const motionClass = variant === 'box' ? (indicatorMotion === 'none' ? 'k-tab-e1-mn' : 'k-tab-e1-ma') : undefined;
 
   const childrenWithSeparators = useMemo(() => {
     const items = Children.toArray(children);
@@ -350,7 +349,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
   return (
     <HeadlessTabs.Bar
       {...props}
-      className={joinClassNames(listClassName, positionClass, motionClass, className)}
+      className={joinClassNames(listClassName, positionClass, className)}
     >
       {childrenWithSeparators}
     </HeadlessTabs.Bar>

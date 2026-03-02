@@ -282,8 +282,9 @@ function TabsRoot({
   const indicatorTransition = resolveIndicatorTransition(indicatorMotion, spring);
 
   const listClassName = joinClassNames(
-    'k-tabp-e1',
-    resolvedVariant === 'box' ? 'k-tabp--box' : 'k-tabp--line',
+    'k-tab-a',
+    'k-tab-e1',
+    resolvedVariant === 'box' ? 'k-tab-b' : 'k-tab-l',
     resolveRadiusClassName(elements.e1, scale, resolvedRadiusMode),
     resolveElementClassName(elements.e1, {
       scale,
@@ -300,7 +301,7 @@ function TabsRoot({
       emphasis
     }),
     classNames.e6,
-    'k-tabp-e6'
+    'k-tab-e6'
   );
 
   const visualContext = useMemo<TabsVisualContextValue>(
@@ -391,7 +392,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
   const previousSelectedRef = useRef<string | undefined>(selected);
 
   const positionClass =
-    variant === 'line' ? (indicatorPosition === 'top' ? 'k-tabp-e1-t' : 'k-tabp-e1-b') : undefined;
+    variant === 'line' ? (indicatorPosition === 'top' ? 'k-tab-e1-t' : 'k-tab-e1-b') : undefined;
   const separatorSelected =
     indicatorMotion === 'none' ? selected : isIndicatorAnimating ? undefined : settledSelected;
 
@@ -418,12 +419,12 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
 
         output.push(
           <span
-            key={`k-tabp-separator-${previousTabValue}-${currentTabValue}-${separatorIndex}`}
+            key={`k-tab-separator-${previousTabValue}-${currentTabValue}-${separatorIndex}`}
             aria-hidden="true"
             className={joinClassNames(
               separatorClassName,
-              hidden ? 'k-tabp-e6-h' : '',
-              dimmed ? 'k-tabp-e6-d' : ''
+              hidden ? 'k-tab-e6-h' : '',
+              dimmed ? 'k-tab-e6-d' : ''
             )}
           />
         );
@@ -526,13 +527,13 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
           : radiusMode;
   const indicatorShapeClass =
     indicatorShape === 'rounded'
-      ? 'k-tabp-e5-r'
+      ? 'k-tab-e5-r'
       : indicatorShape === 'pill'
-        ? 'k-tabp-e5-p'
+        ? 'k-tab-e5-p'
       : indicatorShape === 'roundedClip' && variant === 'line'
-        ? 'k-tabp-e5-c'
+        ? 'k-tab-e5-c'
         : indicatorShape === 'square'
-          ? 'k-tabp-e5-q'
+          ? 'k-tab-e5-q'
           : '';
   const indicatorClassName = joinClassNames(
     resolveElementClassName(elements.e5, {
@@ -543,10 +544,10 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     }),
     resolveRadiusClassName(elements.e5, scale, indicatorRadiusMode),
     classNames.e5,
-    'k-tabp-e5',
-    variant === 'line' ? (indicatorPosition === 'top' ? 'k-tabp-e5-t' : 'k-tabp-e5-b') : '',
+    'k-tab-e5',
+    variant === 'line' ? (indicatorPosition === 'top' ? 'k-tab-e5-t' : 'k-tab-e5-b') : '',
     indicatorShapeClass,
-    indicatorMotion === 'none' ? 'k-tabp-e5-n' : '',
+    indicatorMotion === 'none' ? 'k-tab-e5-n' : '',
     elements.e5?.e?.h ? cn.shadow : '',
     'k-state'
   );
@@ -603,7 +604,7 @@ function TabsTab({ value, className, label, icon, children, ...restProps }: Tabs
     }),
     resolveRadiusClassName(elements.e2, scale, radiusMode),
     classNames.e2,
-    'k-tabp-e2',
+    'k-tab-e2',
     'k-state',
     cn.interactive,
     cn.activator,
@@ -616,7 +617,7 @@ function TabsTab({ value, className, label, icon, children, ...restProps }: Tabs
   return (
     <HeadlessTabs.Tab {...restProps} value={value} className={triggerClassName}>
       <TabsTabContext.Provider value={tabContext}>
-        <span className="k-tabp-e2c">
+        <span className="k-tab-e2c">
           {children ? (
             children
           ) : (
@@ -646,7 +647,7 @@ const TabsLabel = forwardRef<HTMLSpanElement, TabsLabelProps>(function TabsLabel
       selected: isSelected
     }),
     classNames.e3,
-    'k-tabp-e3',
+    'k-tab-e3',
     cn.activator,
     isSelected ? cn.selected : '',
     className
@@ -674,7 +675,7 @@ const TabsIcon = forwardRef<HTMLSpanElement, TabsIconProps>(function TabsIcon(
       selected: isSelected
     }),
     classNames.e4,
-    'k-tabp-e4',
+    'k-tab-e4',
     cn.activator,
     isSelected ? cn.selected : '',
     className
@@ -688,7 +689,7 @@ const TabsIcon = forwardRef<HTMLSpanElement, TabsIconProps>(function TabsIcon(
 });
 
 function TabsContent(props: TabsContentProps) {
-  const panelClassName = joinClassNames('k-tabp-p', props.className);
+  const panelClassName = joinClassNames('k-tab-p', props.className);
   return <HeadlessTabs.Content {...props} className={panelClassName} />;
 }
 

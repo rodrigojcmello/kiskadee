@@ -2,8 +2,12 @@
  * KTabs structural styles.
  * Visual values must come from schema artifacts.
  */
-.k-tabp {
-  &-e1 {
+
+/*
+ * a: animated mode
+ */
+.k-tab-a {
+  &.k-tab-e1 {
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -12,16 +16,16 @@
     overflow: visible;
     border-width: 0 !important;
 
-    &-b {
+    &.k-tab-e1-b {
       border-bottom-width: var(--k-bw, 0px) !important;
     }
 
-    &-t {
+    &.k-tab-e1-t {
       border-top-width: var(--k-bw, 0px) !important;
     }
   }
 
-  &-e2 {
+  .k-tab-e2 {
     position: relative;
     z-index: 1;
     display: inline-flex;
@@ -42,7 +46,7 @@
     }
   }
 
-  &-e2c {
+  .k-tab-e2c {
     position: relative;
     z-index: 1;
     display: inline-flex;
@@ -50,32 +54,30 @@
     gap: 8px;
   }
 
-  &-e3 {
+  .k-tab-e3 {
     display: inline-flex;
     align-items: center;
   }
 
-  &-e4 {
+  .k-tab-e4 {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     line-height: 0;
   }
 
-  &-e5 {
+  .k-tab-e5 {
     position: absolute;
     left: 0;
     top: 0;
     pointer-events: none;
     z-index: 2;
 
-    /* e5-q: indicator square shape */
-    &-q {
+    &.k-tab-e5-q {
       border-radius: 0;
     }
 
-    /* e5-r: indicator rounded shape */
-    &-r {
+    &.k-tab-e5-r {
       /*
        * Fallback to pill so rounded remains visually distinct when a preset
        * does not define radius classes for e5 (common in line variant).
@@ -88,72 +90,74 @@
      * Rounded-clip geometry is structural/behavioral and intentionally fixed.
      * Radius tokens for rounded/pill must come from preset artifacts (JSON/CSS classes).
      */
-    &-c {
-      &.k-tabp-e5-b {
+    &.k-tab-e5-c {
+      &.k-tab-e5-b {
         border-radius: 20px 20px 0 0;
       }
 
-      &.k-tabp-e5-t {
+      &.k-tab-e5-t {
         border-radius: 0 0 20px 20px;
       }
     }
+
+    &.k-tab-e5-n {
+      transition: none !important;
+    }
   }
 
-  &-e5-n {
-    transition: none !important;
-  }
-
-  &-e6 {
+  .k-tab-e6 {
     flex: 0 0 auto;
     align-self: center;
     pointer-events: none;
     opacity: 1;
     transition: none;
 
-    &-d {
+    &.k-tab-e6-d {
       opacity: 0.5;
       transition: opacity 200ms ease-out;
     }
 
-    &-h {
+    &.k-tab-e6-h {
       opacity: 0;
       transition: opacity 160ms ease;
     }
   }
 
-  &-p {
+  .k-tab-p {
     display: block;
   }
-}
 
-.k-tabp--line {
-  .k-tabp-e5 {
-    top: auto;
-    bottom: calc(var(--k-bw, 0px) * -1);
+  /*
+   * l: line variant
+   */
+  &.k-tab-l {
+    .k-tab-e5 {
+      top: auto;
+      bottom: calc(var(--k-bw, 0px) * -1);
+    }
+
+    .k-tab-e5-t {
+      top: calc(var(--k-bw, 0px) * -1);
+      bottom: auto;
+    }
   }
 
-  .k-tabp-e5-t {
-    top: calc(var(--k-bw, 0px) * -1);
-    bottom: auto;
-  }
-}
-
-.k-tabp--box {
-  .k-tabp-e1 {
+  /*
+   * b: box variant
+   */
+  &.k-tab-b {
     overflow: hidden;
-  }
 
-  .k-tabp-e5 {
-    z-index: 2;
-  }
+    .k-tab-e5 {
+      z-index: 2;
+    }
 
-  .k-tabp-e2 {
-    /* Keep tab background/hover below indicator. */
-    z-index: auto;
-  }
+    .k-tab-e2 {
+      z-index: auto;
+    }
 
-  .k-tabp-e2c {
-    /* Keep label/icon above indicator. */
-    z-index: 3;
+    .k-tab-e2c {
+      z-index: 3;
+    }
   }
 }
