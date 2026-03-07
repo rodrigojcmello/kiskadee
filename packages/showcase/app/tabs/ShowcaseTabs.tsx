@@ -47,7 +47,8 @@ const springOptions = [
 const lineShapeTitles: Record<TabsLineIndicatorShape, string> = {
   square: 'Line / Square',
   rounded: 'Line / Rounded',
-  roundedClip: 'Line / Rounded Clip'
+  roundedClip: 'Line / Rounded Clip',
+  dot: 'Line / Dot'
 };
 
 const boxShapeTitles: Record<TabsBoxIndicatorShape, string> = {

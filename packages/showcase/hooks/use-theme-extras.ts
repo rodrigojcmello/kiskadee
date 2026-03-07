@@ -3,6 +3,7 @@ import type {
   RippleEffectSchema,
   TabsIndicatorPosition,
   TabsIndicatorShape,
+  TabsIndicatorWidthMode,
   ThemeMode
 } from '@kiskadee/core';
 import { useEffect, useState } from 'react';
@@ -17,6 +18,7 @@ const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
 const rippleGlobalCache: Partial<Record<string, RippleEffectSchema | null>> = {};
 const tabsIndicatorPositionCache: Partial<Record<string, TabsIndicatorPosition | null>> = {};
 const tabsIndicatorShapeCache: Partial<Record<string, TabsIndicatorShape | null>> = {};
+const tabsIndicatorWidthModeCache: Partial<Record<string, TabsIndicatorWidthMode | null>> = {};
 const tabsSeparatorCache: Partial<Record<string, boolean | null>> = {};
 
 export function useThemeExtras({
@@ -35,6 +37,9 @@ export function useThemeExtras({
   const [tabsIndicatorShape, setTabsIndicatorShape] = useState<TabsIndicatorShape | undefined>(
     undefined
   );
+  const [tabsIndicatorWidthMode, setTabsIndicatorWidthMode] = useState<
+    TabsIndicatorWidthMode | undefined
+  >(undefined);
   const [tabsSeparator, setTabsSeparator] = useState<boolean | undefined>(undefined);
 
   // Load global radius/ripple metadata.
@@ -59,6 +64,11 @@ export function useThemeExtras({
         dsKey
       );
       let indicatorShape = tabsIndicatorShapeCache[dsKey] ?? undefined;
+      const hasTabsIndicatorWidthMode = Object.prototype.hasOwnProperty.call(
+        tabsIndicatorWidthModeCache,
+        dsKey
+      );
+      let indicatorWidthMode = tabsIndicatorWidthModeCache[dsKey] ?? undefined;
       const hasTabsSeparator = Object.prototype.hasOwnProperty.call(tabsSeparatorCache, dsKey);
       let separator = tabsSeparatorCache[dsKey] ?? undefined;
       if (
@@ -66,6 +76,7 @@ export function useThemeExtras({
         !hasRipple ||
         !hasTabsIndicatorPosition ||
         !hasTabsIndicatorShape ||
+        !hasTabsIndicatorWidthMode ||
         !hasTabsSeparator
       ) {
         try {
@@ -77,6 +88,7 @@ export function useThemeExtras({
                 options?: {
                   indicatorPosition?: TabsIndicatorPosition;
                   indicatorShape?: TabsIndicatorShape;
+                  indicatorWidthMode?: TabsIndicatorWidthMode;
                   separator?: boolean;
                 };
               };
@@ -90,6 +102,8 @@ export function useThemeExtras({
           tabsIndicatorPositionCache[dsKey] = indicatorPosition ?? null;
           indicatorShape = json.components?.tabs?.options?.indicatorShape;
           tabsIndicatorShapeCache[dsKey] = indicatorShape ?? null;
+          indicatorWidthMode = json.components?.tabs?.options?.indicatorWidthMode;
+          tabsIndicatorWidthModeCache[dsKey] = indicatorWidthMode ?? null;
           separator = json.components?.tabs?.options?.separator;
           tabsSeparatorCache[dsKey] = separator ?? null;
         } catch (error) {
@@ -105,6 +119,7 @@ export function useThemeExtras({
       setGlobalRipple(ripple);
       setTabsIndicatorPosition(indicatorPosition);
       setTabsIndicatorShape(indicatorShape);
+      setTabsIndicatorWidthMode(indicatorWidthMode);
       setTabsSeparator(separator);
     };
 
@@ -174,6 +189,7 @@ export function useThemeExtras({
     globalRipple,
     tabsIndicatorPosition,
     tabsIndicatorShape,
+    tabsIndicatorWidthMode,
     tabsSeparator
   };
 }

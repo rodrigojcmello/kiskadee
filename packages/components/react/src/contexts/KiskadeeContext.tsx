@@ -5,6 +5,7 @@ import type {
   TabsVariant,
   TabsIndicatorShape,
   TabsIndicatorPosition,
+  TabsIndicatorWidthMode,
   ThemeMode
 } from '@kiskadee/core';
 import { createContext, useContext } from 'react';
@@ -31,6 +32,7 @@ export type KiskadeeContextValue = {
           variant?: TabsVariant;
           indicatorPosition?: TabsIndicatorPosition;
           indicatorShape?: TabsIndicatorShape;
+          indicatorWidthMode?: TabsIndicatorWidthMode;
           separator?: boolean;
         };
       };

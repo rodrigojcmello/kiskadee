@@ -123,6 +123,22 @@ In palette JSON maps, emphasis is encoded in color buckets:
 
 Runtime picks one of these buckets from component emphasis.
 
+### 5.3 Default public component baseline
+
+Public components should expose a canonical baseline whenever the design system supports it:
+
+- default intent: `neutral`
+- default emphasis: `medium`
+
+Practical authoring rules:
+
+- If a component has only one emphasis in a preset, that emphasis should be `medium`.
+- Add `high` only when there is a genuinely stronger visual presentation of the same semantic family.
+- Treat `low` and `lowest` as optional expansions, not mandatory completeness buckets.
+- Runtime fallback logic may still exist for resilience, but fallback behavior does not define the architectural contract.
+
+This keeps `neutral.medium` as the default mental model when a component is instantiated without explicit semantic or emphasis overrides.
+
 ## 6) Runtime responsibilities
 
 Runtime should compose, not invent design.

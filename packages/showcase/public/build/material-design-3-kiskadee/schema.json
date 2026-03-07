@@ -1091,7 +1091,8 @@
       "options": {
         "variant": "line",
         "indicatorPosition": "bottom",
-        "indicatorShape": "square"
+        "indicatorShape": "square",
+        "indicatorWidthMode": "tab"
       },
       "variants": {
         "line": {
@@ -1260,7 +1261,10 @@
             },
             "e5": {
               "scales": {
-                "boxHeight": 5
+                "boxWidth": 24,
+                "boxHeight": 5,
+                "marginTop": 0,
+                "marginBottom": 0
               },
               "palettes": {
                 "default": {

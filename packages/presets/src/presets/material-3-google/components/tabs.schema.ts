@@ -27,14 +27,14 @@ export function createMaterial3GoogleTabsSchema({
           light: {
             boxColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: transparent
                 }
               }
             },
             borderColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: c('default', 'l', 'neutral', 10)
                 }
               }
@@ -43,14 +43,14 @@ export function createMaterial3GoogleTabsSchema({
           dark: {
             boxColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: transparent
                 }
               }
             },
             borderColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: c('default', 'd', 'neutral', 80)
                 }
               }
@@ -72,7 +72,7 @@ export function createMaterial3GoogleTabsSchema({
           light: {
             boxColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: transparent,
                   hover: c('default', 'l', 'neutral', 4),
                   focus: c('default', 'l', 'neutral', 4),
@@ -89,7 +89,7 @@ export function createMaterial3GoogleTabsSchema({
           dark: {
             boxColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: transparent,
                   hover: c('default', 'd', 'neutral', 86),
                   focus: c('default', 'd', 'neutral', 86),
@@ -120,7 +120,7 @@ export function createMaterial3GoogleTabsSchema({
           light: {
             textColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: c('default', 'l', 'neutral', 40),
                   selected: {
                     rest: c('default', 'l', 'primary.v2', 40)
@@ -132,7 +132,7 @@ export function createMaterial3GoogleTabsSchema({
           dark: {
             textColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: c('default', 'd', 'neutral', 80),
                   selected: {
                     rest: c('default', 'd', 'primary.v2', 80)
@@ -156,7 +156,7 @@ export function createMaterial3GoogleTabsSchema({
           light: {
             textColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: c('default', 'l', 'neutral', 40),
                   selected: {
                     rest: c('default', 'l', 'primary.v2', 40)
@@ -168,7 +168,7 @@ export function createMaterial3GoogleTabsSchema({
           dark: {
             textColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: c('default', 'd', 'neutral', 80),
                   selected: {
                     rest: c('default', 'd', 'primary.v2', 80)
@@ -183,14 +183,17 @@ export function createMaterial3GoogleTabsSchema({
     // e5: indicator
     e5: {
       scales: {
-        boxHeight: 5
+        boxWidth: 24,
+        boxHeight: 5,
+        marginTop: 0,
+        marginBottom: 0
       },
       palettes: {
         default: {
           light: {
             boxColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: c('default', 'l', 'primary.v2', 40)
                 }
               }
@@ -199,7 +202,7 @@ export function createMaterial3GoogleTabsSchema({
           dark: {
             boxColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: c('default', 'd', 'primary.v2', 80)
                 }
               }
@@ -233,14 +236,14 @@ export function createMaterial3GoogleTabsSchema({
           light: {
             boxColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: c('default', 'l', 'neutral', 4)
                 }
               }
             },
             borderColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: c('default', 'l', 'neutral', 10)
                 }
               }
@@ -249,14 +252,14 @@ export function createMaterial3GoogleTabsSchema({
           dark: {
             boxColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: c('default', 'd', 'neutral', 90)
                 }
               }
             },
             borderColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: c('default', 'd', 'neutral', 80)
                 }
               }
@@ -278,7 +281,7 @@ export function createMaterial3GoogleTabsSchema({
           light: {
             boxColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: transparent,
                   hover: c('default', 'l', 'neutral', 4),
                   focus: c('default', 'l', 'neutral', 4),
@@ -295,7 +298,7 @@ export function createMaterial3GoogleTabsSchema({
           dark: {
             boxColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: transparent,
                   hover: c('default', 'd', 'neutral', 86),
                   focus: c('default', 'd', 'neutral', 86),
@@ -326,7 +329,7 @@ export function createMaterial3GoogleTabsSchema({
           light: {
             textColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: c('default', 'l', 'neutral', 40),
                   selected: {
                     rest: c('default', 'l', 'primary.v2', 0)
@@ -338,7 +341,7 @@ export function createMaterial3GoogleTabsSchema({
           dark: {
             textColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: c('default', 'd', 'neutral', 80),
                   selected: {
                     rest: c('default', 'd', 'primary.v2', 80)
@@ -359,7 +362,7 @@ export function createMaterial3GoogleTabsSchema({
           light: {
             boxColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: c('default', 'l', 'primary', 50),
                   hover: c('default', 'l', 'primary', 45),
                   pressed: c('default', 'l', 'primary', 55)
@@ -370,7 +373,7 @@ export function createMaterial3GoogleTabsSchema({
           dark: {
             boxColor: {
               neutral: {
-                high: {
+                medium: {
                   rest: c('default', 'd', 'primary', 50),
                   hover: c('default', 'd', 'primary', 45),
                   pressed: c('default', 'd', 'primary', 55)
@@ -387,7 +390,8 @@ export function createMaterial3GoogleTabsSchema({
     options: {
       variant: 'line',
       indicatorPosition: 'bottom',
-      indicatorShape: 'square'
+      indicatorShape: 'square',
+      indicatorWidthMode: 'tab'
     },
     variants: {
       line: {

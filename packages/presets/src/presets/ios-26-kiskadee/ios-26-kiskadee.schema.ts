@@ -469,7 +469,7 @@ export const schema: Schema = {
                   light: {
                     textColor: {
                       neutral: {
-                        high: {
+                        medium: {
                           rest: c(segmentName, 'l', 'neutral', 70),
                           selected: {
                             rest: c(segmentName, 'l', 'neutral', 90)
@@ -493,7 +493,7 @@ export const schema: Schema = {
                   light: {
                     textColor: {
                       neutral: {
-                        high: {
+                        medium: {
                           rest: c(segmentName, 'l', 'neutral', 70),
                           selected: {
                             rest: c(segmentName, 'l', 'neutral', 90)
@@ -548,7 +548,7 @@ export const schema: Schema = {
                   light: {
                     boxColor: {
                       neutral: {
-                        high: {
+                        medium: {
                           rest: c(segmentName, 'l', 'neutral', 0),
                           hover: c(segmentName, 'l', 'neutral', 2),
                           pressed: c(segmentName, 'l', 'neutral', 6)

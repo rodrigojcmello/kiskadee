@@ -123,6 +123,24 @@ Interpretation rules:
 
 ---
 
+### Default Public Component Baseline
+
+When a public component exposes a standard, non-specialized presentation, Kiskadee treats that baseline as:
+
+- `intent: neutral`
+- `emphasis: medium`
+
+Preset authoring rules:
+
+- If the preset only defines one emphasis for a component, use `medium`.
+- Introduce `high` only when the same component truly needs a more emphatic version.
+- Use `low` and `lowest` only when there is a recurring, justified use case.
+- If a component cannot reasonably expose `neutral.medium`, document that as an explicit exception in the preset instead of silently choosing another baseline.
+
+Short rule: the default public face of a component should be `neutral.medium`, and stronger or weaker emphases are extensions of that baseline.
+
+---
+
 ### Layer 1: Primitive Colors
 
 The foundation layer defines the actual color values. These are the raw HSLA color definitions that represent specific hues.

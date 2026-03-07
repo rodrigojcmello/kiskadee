@@ -8,6 +8,7 @@ import {
 import { HeadlessTabs } from '@kiskadee/react-headless';
 import { motion } from 'motion/react';
 import {
+  type CSSProperties,
   Children,
   createContext,
   forwardRef,
@@ -72,6 +73,7 @@ type TabsVisualContextValue = {
   indicatorMotion: NonNullable<TabsRootProps['indicatorMotion']>;
   indicatorPosition: NonNullable<TabsRootProps['indicatorPosition']>;
   indicatorShape: NonNullable<TabsRootProps['indicatorShape']>;
+  indicatorWidthMode: NonNullable<TabsRootProps['indicatorWidthMode']>;
   indicatorTransition: Record<string, unknown>;
   separator: boolean;
   listClassName: string | undefined;
@@ -232,6 +234,17 @@ function resolveIndicatorTransition(
   };
 }
 
+function resolveIndicatorLineModeClass(
+  indicatorShape: NonNullable<TabsRootProps['indicatorShape']>,
+  indicatorWidthMode: NonNullable<TabsRootProps['indicatorWidthMode']>
+): string {
+  if (indicatorShape === 'dot') {
+    return 'k-tab-e5-o';
+  }
+
+  return indicatorWidthMode === 'fixed' ? 'k-tab-e5-f' : 'k-tab-e5-a';
+}
+
 function TabsRoot({
   children,
   classNames = {},
@@ -242,6 +255,7 @@ function TabsRoot({
   indicatorMotion = 'auto',
   indicatorPosition,
   indicatorShape,
+  indicatorWidthMode,
   separator,
   spring,
   value,
@@ -277,6 +291,8 @@ function TabsRoot({
     indicatorPosition ?? global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
   const resolvedIndicatorShape =
     indicatorShape ?? global?.components?.tabs?.options?.indicatorShape ?? 'square';
+  const resolvedIndicatorWidthMode =
+    indicatorWidthMode ?? global?.components?.tabs?.options?.indicatorWidthMode ?? 'tab';
   const resolvedSeparator = separator ?? global?.components?.tabs?.options?.separator ?? false;
   const resolvedRadiusMode = (global?.radius ?? 'rounded') as RadiusMode;
   const indicatorTransition = resolveIndicatorTransition(indicatorMotion, spring);
@@ -315,6 +331,7 @@ function TabsRoot({
       indicatorMotion,
       indicatorPosition: resolvedIndicatorPosition,
       indicatorShape: resolvedIndicatorShape,
+      indicatorWidthMode: resolvedIndicatorWidthMode,
       indicatorTransition,
       separator: resolvedSeparator,
       listClassName,
@@ -332,6 +349,7 @@ function TabsRoot({
       indicatorMotion,
       resolvedIndicatorPosition,
       resolvedIndicatorShape,
+      resolvedIndicatorWidthMode,
       indicatorTransition,
       resolvedSeparator,
       listClassName,
@@ -376,6 +394,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     indicatorMotion,
     indicatorPosition,
     indicatorShape,
+    indicatorWidthMode,
     indicatorTransition,
     classNames,
     elements,
@@ -535,6 +554,8 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
         : indicatorShape === 'square'
           ? 'k-tab-e5-q'
           : '';
+  const indicatorLineModeClass =
+    variant === 'line' ? resolveIndicatorLineModeClass(indicatorShape, indicatorWidthMode) : '';
   const indicatorClassName = joinClassNames(
     resolveElementClassName(elements.e5, {
       scale,
@@ -546,23 +567,24 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     classNames.e5,
     'k-tab-e5',
     variant === 'line' ? (indicatorPosition === 'top' ? 'k-tab-e5-t' : 'k-tab-e5-b') : '',
+    indicatorLineModeClass,
     indicatorShapeClass,
     indicatorMotion === 'none' ? 'k-tab-e5-n' : '',
     elements.e5?.e?.h ? cn.shadow : '',
     'k-state'
   );
 
-  const indicatorAnimate: Record<string, number> | undefined = indicatorRect
+  const indicatorAnimate: Record<string, string> | undefined = indicatorRect
     ? variant === 'box'
       ? {
-          x: indicatorRect.x,
-          y: indicatorRect.y,
-          width: indicatorRect.width,
-          height: indicatorRect.height
+          ['--k-tab-x' as const]: `${indicatorRect.x}px`,
+          ['--k-tab-y' as const]: `${indicatorRect.y}px`,
+          ['--k-tab-w' as const]: `${indicatorRect.width}px`,
+          ['--k-tab-h' as const]: `${indicatorRect.height}px`
         }
       : {
-          x: indicatorRect.x,
-          width: indicatorRect.width
+          ['--k-tab-x' as const]: `${indicatorRect.x}px`,
+          ['--k-tab-w' as const]: `${indicatorRect.width}px`
         }
     : undefined;
 
@@ -578,6 +600,14 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
           initial={false}
           animate={indicatorAnimate}
           transition={indicatorTransition}
+          style={
+            {
+              ['--k-tab-x' as const]: '0px',
+              ['--k-tab-y' as const]: '0px',
+              ['--k-tab-w' as const]: '0px',
+              ['--k-tab-h' as const]: '0px'
+            } as CSSProperties
+          }
           onAnimationComplete={() => {
             if (indicatorMotion === 'none') return;
             setSettledSelected(latestSelectedRef.current);

@@ -79,7 +79,8 @@
       "options": {
         "variant": "line",
         "indicatorPosition": "bottom",
-        "indicatorShape": "square"
+        "indicatorShape": "square",
+        "indicatorWidthMode": "tab"
       }
     }
   }

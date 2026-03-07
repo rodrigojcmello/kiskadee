@@ -72,6 +72,34 @@
     top: 0;
     pointer-events: none;
     z-index: 2;
+    --k-tab-x: 0px;
+    --k-tab-y: 0px;
+    --k-tab-w: 0px;
+    --k-tab-h: 0px;
+
+    &.k-tab-e5-a {
+      width: var(--k-tab-w, 0px);
+      transform: translate3d(var(--k-tab-x, 0px), 0px, 0);
+    }
+
+    &.k-tab-e5-f {
+      transform: translate3d(
+        calc(var(--k-tab-x, 0px) + (var(--k-tab-w, 0px) - 100%) / 2),
+        0px,
+        0
+      );
+    }
+
+    &.k-tab-e5-o {
+      width: auto;
+      aspect-ratio: 1 / 1;
+      border-radius: 999px;
+      transform: translate3d(
+        calc(var(--k-tab-x, 0px) + (var(--k-tab-w, 0px) - 100%) / 2),
+        0px,
+        0
+      );
+    }
 
     &.k-tab-e5-q {
       border-radius: 0;
@@ -150,6 +178,9 @@
 
     .k-tab-e5 {
       z-index: 2;
+      width: var(--k-tab-w, 0px);
+      height: var(--k-tab-h, 0px);
+      transform: translate3d(var(--k-tab-x, 0px), var(--k-tab-y, 0px), 0);
     }
 
     .k-tab-e2 {

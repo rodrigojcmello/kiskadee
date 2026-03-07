@@ -4,6 +4,7 @@ import type {
   ElementSizeValue,
   TabsIndicatorPosition,
   TabsIndicatorShape,
+  TabsIndicatorWidthMode,
   TabsVariant
 } from '@kiskadee/core';
 import type {
@@ -29,6 +30,7 @@ export type TabsRootProps = Omit<HeadlessTabsRootProps, 'classNames'> & {
   indicatorMotion?: 'auto' | 'none';
   indicatorPosition?: TabsIndicatorPosition;
   indicatorShape?: TabsIndicatorShape;
+  indicatorWidthMode?: TabsIndicatorWidthMode;
   separator?: boolean;
   /**
    * Semantic color family key for class map lookup (e.g. "primary", "neutral").

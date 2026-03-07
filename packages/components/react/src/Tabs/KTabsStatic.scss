@@ -81,16 +81,38 @@
     left: 0;
     pointer-events: none;
     z-index: 2;
+    --k-tab-x: 0px;
+    --k-tab-y: 0px;
+    --k-tab-w: 0px;
+    --k-tab-h: 0px;
     transition:
       transform var(--k-tab-dur, 180ms) ease,
       width var(--k-tab-dur, 180ms) ease,
       height var(--k-tab-dur, 180ms) ease;
     will-change: transform, width, height;
-    width: var(--k-tab-w, 0px);
-    transform: translate3d(var(--k-tab-x, 0px), 0px, 0);
 
-    &[data-orientation='vertical'] {
-      transform: translate3d(0px, var(--k-tab-y, 0px), 0);
+    &.k-tab-e5-a {
+      width: var(--k-tab-w, 0px);
+      transform: translate3d(var(--k-tab-x, 0px), 0px, 0);
+    }
+
+    &.k-tab-e5-f {
+      transform: translate3d(
+        calc(var(--k-tab-x, 0px) + (var(--k-tab-w, 0px) - 100%) / 2),
+        0px,
+        0
+      );
+    }
+
+    &.k-tab-e5-o {
+      width: auto;
+      aspect-ratio: 1 / 1;
+      border-radius: 999px;
+      transform: translate3d(
+        calc(var(--k-tab-x, 0px) + (var(--k-tab-w, 0px) - 100%) / 2),
+        0px,
+        0
+      );
     }
 
     &.k-tab-e5-q {
@@ -146,6 +168,7 @@
       z-index: 2;
       height: var(--k-tab-h, 0px);
       transform: translate3d(var(--k-tab-x, 0px), var(--k-tab-y, 0px), 0);
+      width: var(--k-tab-w, 0px);
     }
   }
 }

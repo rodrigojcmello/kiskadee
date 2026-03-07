@@ -92,6 +92,9 @@
     "button": {
       "primary": "primary",
       "neutral": "neutral"
+    },
+    "tabs": {
+      "neutral": "neutral"
     }
   }
 }

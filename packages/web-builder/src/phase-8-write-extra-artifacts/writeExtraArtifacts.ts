@@ -11,6 +11,7 @@ import type {
   SolidColor,
   TabsIndicatorShape,
   TabsIndicatorPosition,
+  TabsIndicatorWidthMode,
   TabsVariant,
   ThemeMode
 } from '@kiskadee/core';
@@ -153,6 +154,8 @@ export async function writeExtraArtifacts(params: {
     ?.indicatorPosition as TabsIndicatorPosition | undefined;
   const tabsIndicatorShape = schema.components?.tabs?.options
     ?.indicatorShape as TabsIndicatorShape | undefined;
+  const tabsIndicatorWidthMode = schema.components?.tabs?.options
+    ?.indicatorWidthMode as TabsIndicatorWidthMode | undefined;
   const tabsVariant = schema.components?.tabs?.options?.variant as TabsVariant | undefined;
   const tabsSeparator = schema.components?.tabs?.options?.separator as boolean | undefined;
 
@@ -170,7 +173,11 @@ export async function writeExtraArtifacts(params: {
   const hasRadius = Boolean(radius);
   const hasRipple = Boolean(ripple && Object.keys(ripple).length > 0);
   const hasTabsOptions = Boolean(
-    tabsIndicatorPosition || tabsIndicatorShape || tabsVariant || tabsSeparator !== undefined
+    tabsIndicatorPosition ||
+      tabsIndicatorShape ||
+      tabsIndicatorWidthMode ||
+      tabsVariant ||
+      tabsSeparator !== undefined
   );
 
   if (hasFonts || hasRadius || hasRipple || hasTabsOptions) {
@@ -187,6 +194,7 @@ export async function writeExtraArtifacts(params: {
             variant?: TabsVariant;
             indicatorPosition?: TabsIndicatorPosition;
             indicatorShape?: TabsIndicatorShape;
+            indicatorWidthMode?: TabsIndicatorWidthMode;
             separator?: boolean;
           };
         };
@@ -218,6 +226,7 @@ export async function writeExtraArtifacts(params: {
             ...(tabsVariant ? { variant: tabsVariant } : {}),
             ...(tabsIndicatorPosition ? { indicatorPosition: tabsIndicatorPosition } : {}),
             ...(tabsIndicatorShape ? { indicatorShape: tabsIndicatorShape } : {}),
+            ...(tabsIndicatorWidthMode ? { indicatorWidthMode: tabsIndicatorWidthMode } : {}),
             ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {})
           }
         }

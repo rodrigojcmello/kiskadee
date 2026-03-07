@@ -59,6 +59,7 @@ type TabsVisualContextValue = {
   indicatorMotion: NonNullable<TabsRootProps['indicatorMotion']>;
   indicatorPosition: NonNullable<TabsRootProps['indicatorPosition']>;
   indicatorShape: NonNullable<TabsRootProps['indicatorShape']>;
+  indicatorWidthMode: NonNullable<TabsRootProps['indicatorWidthMode']>;
   separator: boolean;
   listClassName: string | undefined;
   separatorClassName: string | undefined;
@@ -185,6 +186,17 @@ function resolveRadiusClassName(
   return joinClassNames(all, byScale) ?? '';
 }
 
+function resolveIndicatorLineModeClass(
+  indicatorShape: NonNullable<TabsRootProps['indicatorShape']>,
+  indicatorWidthMode: NonNullable<TabsRootProps['indicatorWidthMode']>
+): string {
+  if (indicatorShape === 'dot') {
+    return 'k-tab-e5-o';
+  }
+
+  return indicatorWidthMode === 'fixed' ? 'k-tab-e5-f' : 'k-tab-e5-a';
+}
+
 function TabsRoot({
   children,
   classNames = {},
@@ -195,6 +207,7 @@ function TabsRoot({
   indicatorMotion: _indicatorMotion = 'none',
   indicatorPosition,
   indicatorShape,
+  indicatorWidthMode,
   separator,
   value,
   defaultValue,
@@ -230,6 +243,8 @@ function TabsRoot({
     indicatorPosition ?? global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
   const resolvedIndicatorShape =
     indicatorShape ?? global?.components?.tabs?.options?.indicatorShape ?? 'square';
+  const resolvedIndicatorWidthMode =
+    indicatorWidthMode ?? global?.components?.tabs?.options?.indicatorWidthMode ?? 'tab';
   const resolvedSeparator =
     separator ?? global?.components?.tabs?.options?.separator ?? false;
   const resolvedRadiusMode = (global?.radius ?? 'rounded') as RadiusMode;
@@ -268,6 +283,7 @@ function TabsRoot({
       indicatorMotion: resolvedIndicatorMotion,
       indicatorPosition: resolvedIndicatorPosition,
       indicatorShape: resolvedIndicatorShape,
+      indicatorWidthMode: resolvedIndicatorWidthMode,
       separator: resolvedSeparator,
       listClassName,
       separatorClassName,
@@ -284,6 +300,7 @@ function TabsRoot({
       resolvedIndicatorMotion,
       resolvedIndicatorPosition,
       resolvedIndicatorShape,
+      resolvedIndicatorWidthMode,
       resolvedSeparator,
       listClassName,
       separatorClassName,
@@ -465,6 +482,7 @@ function TabsIndicator({ className, style, ...props }: TabsIndicatorProps) {
     elements,
     indicatorPosition,
     indicatorShape,
+    indicatorWidthMode,
     radiusMode,
     indicatorMotion,
     variant
@@ -487,6 +505,8 @@ function TabsIndicator({ className, style, ...props }: TabsIndicatorProps) {
         : indicatorShape === 'square'
           ? 'k-tab-e5-q'
           : '';
+  const indicatorLineModeClass =
+    variant === 'line' ? resolveIndicatorLineModeClass(indicatorShape, indicatorWidthMode) : '';
 
   const indicatorClassName = joinClassNames(
     resolveElementClassName(elements.e5, {
@@ -499,6 +519,7 @@ function TabsIndicator({ className, style, ...props }: TabsIndicatorProps) {
     classNames.e5,
     'k-tab-e5',
     indicatorPosition === 'top' ? 'k-tab-e5-t' : 'k-tab-e5-b',
+    indicatorLineModeClass,
     indicatorShapeClass,
     indicatorMotion === 'none' ? 'k-tab-e5-n' : '',
     elements.e5?.e?.h ? cn.shadow : '',

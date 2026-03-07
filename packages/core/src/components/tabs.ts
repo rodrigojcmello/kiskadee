@@ -34,8 +34,9 @@ type ElementScalesByProperty<TScaleProperty extends StandardScaleProperty> = Par
 export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 export type TabsVariant = 'line' | 'box';
 export type TabsIndicatorPosition = 'top' | 'bottom';
+export type TabsIndicatorWidthMode = 'tab' | 'fixed';
 export const tabsIndicatorShapesByVariant = {
-  line: ['square', 'rounded', 'roundedClip'],
+  line: ['square', 'rounded', 'roundedClip', 'dot'],
   box: ['square', 'rounded', 'pill']
 } as const;
 export type TabsLineIndicatorShape = (typeof tabsIndicatorShapesByVariant.line)[number];
@@ -46,6 +47,7 @@ export type TabsOptions = Partial<{
   variant: TabsVariant;
   indicatorPosition: TabsIndicatorPosition;
   indicatorShape: TabsIndicatorShape;
+  indicatorWidthMode: TabsIndicatorWidthMode;
   separator: boolean;
 }>;
 
@@ -133,17 +135,24 @@ export type TabsIconElementStyle<TSegmentName extends SegmentName = never> = Par
 
 /**
  * e5 — indicator (line/background/pill)
+ * - boxWidth
  * - boxHeight
+ * - margins
  * - boxColor
  * - borderRadius
  *
  * NOTE:
+ * `boxWidth` is used by line indicators when `indicatorWidthMode` is `fixed`.
+ * `boxHeight` is the line thickness for line indicators and the diameter for `dot`.
+ * `marginTop` / `marginBottom` define the gap between the indicator and the bar edge.
+ *
  * `roundedClip` is a structural shape handled by component styles (fixed geometry).
+ * `dot` is a structural shape handled by component styles (fixed circle geometry).
  * `rounded` / `pill` radius values must come from preset artifacts (JSON/CSS classes).
  */
 export type TabsIndicatorElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   name?: string;
-  scales: ElementScalesByProperty<'boxHeight'> & {
+  scales: ElementScalesByProperty<'boxWidth' | 'boxHeight' | 'marginTop' | 'marginBottom'> & {
     borderRadius?: {
       rounded?: ScaleBySize | number;
       pill?: ScaleBySize | number;
@@ -203,7 +212,13 @@ type ElementContractRules = {
 const TABS_COMPONENT_KEYS = ['elements', 'options', 'variants'] as const;
 const TABS_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5', 'e6'] as const;
 const TABS_ELEMENT_BASE_KEYS = ['name', 'decorations', 'scales', 'palettes', 'effects'] as const;
-const TABS_OPTIONS_KEYS = ['variant', 'indicatorPosition', 'indicatorShape', 'separator'] as const;
+const TABS_OPTIONS_KEYS = [
+  'variant',
+  'indicatorPosition',
+  'indicatorShape',
+  'indicatorWidthMode',
+  'separator'
+] as const;
 
 const TABS_RULES: Record<(typeof TABS_ELEMENTS_KEYS)[number], ElementContractRules> = {
   e1: {
@@ -232,7 +247,7 @@ const TABS_RULES: Record<(typeof TABS_ELEMENTS_KEYS)[number], ElementContractRul
     palettes: ['textColor']
   },
   e5: {
-    scales: ['boxHeight', 'borderRadius'],
+    scales: ['boxWidth', 'boxHeight', 'marginTop', 'marginBottom', 'borderRadius'],
     palettes: ['boxColor']
   },
   e6: {
@@ -363,9 +378,20 @@ function validateTabsOptions(value: unknown, path: string, issues: string[]): vo
     value.indicatorShape !== 'square' &&
     value.indicatorShape !== 'rounded' &&
     value.indicatorShape !== 'roundedClip' &&
+    value.indicatorShape !== 'dot' &&
     value.indicatorShape !== 'pill'
   ) {
-    issues.push(`${path}.indicatorShape: expected "square", "rounded", "roundedClip", or "pill"`);
+    issues.push(
+      `${path}.indicatorShape: expected "square", "rounded", "roundedClip", "dot", or "pill"`
+    );
+  }
+
+  if (
+    value.indicatorWidthMode !== undefined &&
+    value.indicatorWidthMode !== 'tab' &&
+    value.indicatorWidthMode !== 'fixed'
+  ) {
+    issues.push(`${path}.indicatorWidthMode: expected "tab" or "fixed"`);
   }
 
   if (value.separator !== undefined && typeof value.separator !== 'boolean') {

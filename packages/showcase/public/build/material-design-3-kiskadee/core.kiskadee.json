@@ -4,21 +4,21 @@
     "e1": {
       "d": "mk-as",
       "e": {
-        "h": "mk-gf mk-gi mk-gj mk-gh mk-gg",
-        "ris": "mk-gd",
-        "rio": "mk-gc",
-        "rix": "mk-gb",
-        "rip": "mk-ge",
+        "h": "mk-gi mk-gl mk-gm mk-gk mk-gj",
+        "ris": "mk-gg",
+        "rio": "mk-gf",
+        "rix": "mk-ge",
+        "rip": "mk-gh",
         "rr": "mk-ds mk-du mk-dv mk-dt mk-dz mk-dx mk-dy mk-dw",
         "rp": "mk-dk mk-dm mk-dn mk-dl mk-dr mk-dp mk-dq mk-do",
         "rs": "mk-ea mk-ec mk-ed mk-eb mk-eh mk-ef mk-eg mk-ee"
       },
       "s": {
-        "sm:1": "mk-ga mk-fj mk-fk mk-fq mk-m",
-        "md:1": "mk-ay mk-ax mk-fl mk-fr mk-m",
-        "lg:1": "mk-fw mk-ff mk-fm mk-fs mk-m",
-        "lg:2": "mk-fx mk-fg mk-fo mk-fu mk-m",
-        "lg:3": "mk-fz mk-fi mk-fp mk-fv mk-m"
+        "sm:1": "mk-gd mk-fm mk-fn mk-ft mk-m",
+        "md:1": "mk-ay mk-ax mk-fo mk-fu mk-m",
+        "lg:1": "mk-fz mk-fi mk-fp mk-fv mk-m",
+        "lg:2": "mk-ga mk-fj mk-fr mk-fx mk-m",
+        "lg:3": "mk-gc mk-fl mk-fs mk-fy mk-m"
       },
       "r": {
         "sm:1": "mk-bt",
@@ -47,9 +47,9 @@
       "s": {
         "sm:1": "mk-ar mk-aq",
         "md:1": "mk-ar mk-aq",
-        "lg:1": "mk-gp mk-gm",
-        "lg:2": "mk-gq mk-gn",
-        "lg:3": "mk-gr mk-go"
+        "lg:1": "mk-gs mk-gp",
+        "lg:2": "mk-gt mk-gq",
+        "lg:3": "mk-gu mk-gr"
       }
     }
   },
@@ -79,7 +79,7 @@
       },
       "e5": {
         "s": {
-          "all": "mk-fe"
+          "all": "mk-ff mk-fe mk-fh mk-fg"
         }
       }
     },
@@ -87,7 +87,7 @@
       "e1": {
         "d": "mk-as",
         "s": {
-          "all": "mk-m mk-fy mk-fh mk-fn mk-ft"
+          "all": "mk-m mk-gb mk-fk mk-fq mk-fw"
         },
         "r": {
           "all": "mk-aa"

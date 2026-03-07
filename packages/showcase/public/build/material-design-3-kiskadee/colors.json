@@ -98,6 +98,9 @@
       "primary": "primary",
       "neutral": "neutral",
       "destructive": "redLike"
+    },
+    "tabs": {
+      "neutral": "neutral"
     }
   }
 }

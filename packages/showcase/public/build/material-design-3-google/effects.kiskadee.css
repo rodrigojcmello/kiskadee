@@ -1,30 +1,30 @@
 .gmd-dm.-s.-a { --k-br: 16px; border-radius: 16px }
 .gmd-du.-s.-a { --k-br: 16px; border-radius: 16px }
 .gmd-ec.-s.-a { --k-br: 16px; border-radius: 16px }
-.gmd-fi.-i { --k-ripple-overflow: visible; --k-ripple-clip: none; --k-ripple-color: var(--k-ripple-overflow-static-color, #0481FF); --k-ripple-opacity: var(--k-ripple-overflow-static-opacity, 0.15); --k-ripple-duration: 0ms; --k-ripple-ease: ease-out; --k-ripple-fade-duration: 180ms; --k-ripple-fade-ease: ease-out; --k-ripple-border-width: 1px; --k-ripple-border-color: var(--k-ripple-overflow-static-border-color, transparent); --k-ripple-border-opacity: var(--k-ripple-overflow-static-border-opacity, 1); --k-ripple-z: 2; }
-.gmd-fj.-i { --k-ripple-overflow: visible; --k-ripple-clip: none; --k-ripple-color: var(--k-ripple-overflow-color, #0481FF); --k-ripple-opacity: var(--k-ripple-overflow-opacity, 0.15); --k-ripple-duration: 360ms; --k-ripple-ease: ease-out; --k-ripple-fade-duration: 100ms; --k-ripple-fade-ease: ease-out; --k-ripple-border-width: 0; --k-ripple-border-color: transparent; --k-ripple-border-opacity: 1; --k-ripple-z: 2; }
-.gmd-fk.-i { --k-ripple-overflow: hidden; --k-ripple-clip: inset(0 round var(--k-br, 0px)); --k-ripple-color: var(--k-ripple-surface-color, #000); --k-ripple-opacity: var(--k-ripple-surface-opacity, 0.12); --k-ripple-duration: 468ms; --k-ripple-ease: cubic-bezier(0.2, 0, 0.2, 1); --k-ripple-fade-duration: 100ms; --k-ripple-fade-ease: ease-out; --k-ripple-border-width: 0; --k-ripple-border-color: transparent; --k-ripple-border-opacity: 1; --k-ripple-z: 2; }
-.gmd-fl.-i { --k-ripple-overflow: hidden; --k-ripple-clip: inset(0 round var(--k-br, 0px)); --k-ripple-color: var(--k-ripple-surface-color, #000); --k-ripple-opacity: var(--k-ripple-surface-opacity, 0.12); --k-ripple-duration: 50ms; --k-ripple-ease: ease-out; --k-ripple-fade-duration: 180ms; --k-ripple-fade-ease: ease-out; --k-ripple-border-width: 0; --k-ripple-border-color: transparent; --k-ripple-border-opacity: 1; --k-ripple-z: 2; }
-.gmd-fm.-e { box-shadow: 0 2px 6px #00000047 }
-.gmd-fn.-e.-d.-a { box-shadow: 0 0 0 #0000 }
+.gmd-fl.-i { --k-ripple-overflow: visible; --k-ripple-clip: none; --k-ripple-color: var(--k-ripple-overflow-static-color, #0481FF); --k-ripple-opacity: var(--k-ripple-overflow-static-opacity, 0.15); --k-ripple-duration: 0ms; --k-ripple-ease: ease-out; --k-ripple-fade-duration: 180ms; --k-ripple-fade-ease: ease-out; --k-ripple-border-width: 1px; --k-ripple-border-color: var(--k-ripple-overflow-static-border-color, transparent); --k-ripple-border-opacity: var(--k-ripple-overflow-static-border-opacity, 1); --k-ripple-z: 2; }
+.gmd-fm.-i { --k-ripple-overflow: visible; --k-ripple-clip: none; --k-ripple-color: var(--k-ripple-overflow-color, #0481FF); --k-ripple-opacity: var(--k-ripple-overflow-opacity, 0.15); --k-ripple-duration: 360ms; --k-ripple-ease: ease-out; --k-ripple-fade-duration: 100ms; --k-ripple-fade-ease: ease-out; --k-ripple-border-width: 0; --k-ripple-border-color: transparent; --k-ripple-border-opacity: 1; --k-ripple-z: 2; }
+.gmd-fn.-i { --k-ripple-overflow: hidden; --k-ripple-clip: inset(0 round var(--k-br, 0px)); --k-ripple-color: var(--k-ripple-surface-color, #000); --k-ripple-opacity: var(--k-ripple-surface-opacity, 0.12); --k-ripple-duration: 468ms; --k-ripple-ease: cubic-bezier(0.2, 0, 0.2, 1); --k-ripple-fade-duration: 100ms; --k-ripple-fade-ease: ease-out; --k-ripple-border-width: 0; --k-ripple-border-color: transparent; --k-ripple-border-opacity: 1; --k-ripple-z: 2; }
+.gmd-fo.-i { --k-ripple-overflow: hidden; --k-ripple-clip: inset(0 round var(--k-br, 0px)); --k-ripple-color: var(--k-ripple-surface-color, #000); --k-ripple-opacity: var(--k-ripple-surface-opacity, 0.12); --k-ripple-duration: 50ms; --k-ripple-ease: ease-out; --k-ripple-fade-duration: 180ms; --k-ripple-fade-ease: ease-out; --k-ripple-border-width: 0; --k-ripple-border-color: transparent; --k-ripple-border-opacity: 1; --k-ripple-z: 2; }
+.gmd-fp.-e { box-shadow: 0 2px 6px #00000047 }
+.gmd-fq.-e.-d.-a { box-shadow: 0 0 0 #0000 }
 .gmd-dg:focus-visible, .gmd-dg.-f.-a { --k-br: 14px; border-radius: 14px }
 .gmd-dj:focus-visible.-s, .gmd-dj.-s.-f.-a { --k-br: 14px; border-radius: 14px }
 .gmd-do:focus-visible, .gmd-do.-f.-a { --k-br: 14px; border-radius: 14px }
 .gmd-dr:focus-visible.-s, .gmd-dr.-s.-f.-a { --k-br: 14px; border-radius: 14px }
 .gmd-dw:focus-visible, .gmd-dw.-f.-a { --k-br: 14px; border-radius: 14px }
 .gmd-dz:focus-visible.-s, .gmd-dz.-s.-f.-a { --k-br: 14px; border-radius: 14px }
-.gmd-fo.-e:focus-visible, .gmd-fo.-e.-f.-a { box-shadow: 0 4px 10px #00000059 }
+.gmd-fr.-e:focus-visible, .gmd-fr.-e.-f.-a { box-shadow: 0 4px 10px #00000059 }
 .gmd-dh:hover, .gmd-dh.-h.-a { --k-br: 14px; border-radius: 14px }
 .gmd-dk:hover.-s, .gmd-dk.-s.-h.-a { --k-br: 14px; border-radius: 14px }
 .gmd-dp:hover, .gmd-dp.-h.-a { --k-br: 14px; border-radius: 14px }
 .gmd-ds:hover.-s, .gmd-ds.-s.-h.-a { --k-br: 14px; border-radius: 14px }
 .gmd-dx:hover, .gmd-dx.-h.-a { --k-br: 14px; border-radius: 14px }
 .gmd-ea:hover.-s, .gmd-ea.-s.-h.-a { --k-br: 14px; border-radius: 14px }
-.gmd-fp.-e:hover, .gmd-fp.-e.-h.-a { box-shadow: 0 4px 10px #00000059 }
+.gmd-fs.-e:hover, .gmd-fs.-e.-h.-a { box-shadow: 0 4px 10px #00000059 }
 .gmd-di:active, .gmd-di.-p.-a { --k-br: 10px; border-radius: 10px }
 .gmd-dl:active.-s, .gmd-dl.-s.-p.-a { --k-br: 10px; border-radius: 10px }
 .gmd-dq:active, .gmd-dq.-p.-a { --k-br: 10px; border-radius: 10px }
 .gmd-dt:active.-s, .gmd-dt.-s.-p.-a { --k-br: 10px; border-radius: 10px }
 .gmd-dy:active, .gmd-dy.-p.-a { --k-br: 10px; border-radius: 10px }
 .gmd-eb:active.-s, .gmd-eb.-s.-p.-a { --k-br: 10px; border-radius: 10px }
-.gmd-fq.-e:active, .gmd-fq.-e.-p.-a { box-shadow: 0 0 0 #00000052 }
+.gmd-ft.-e:active, .gmd-ft.-e.-p.-a { box-shadow: 0 0 0 #00000052 }
