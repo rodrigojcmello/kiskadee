@@ -2,193 +2,76 @@
  * KTabs structural styles.
  * Visual values must come from schema artifacts.
  */
+@import './Tabs.common.scss';
 
-/*
- * a: animated mode
- */
-.k-tab-a {
-  &.k-tab-e1 {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 0;
-    isolation: isolate;
-    overflow: visible;
-    border-width: 0 !important;
+/* `k-tab-c`: trigger content wrapper for stacked label/icon content. */
+.k-tab-a .k-tab-c {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
 
-    &.k-tab-e1-b {
-      border-bottom-width: var(--k-bw, 0px) !important;
-    }
+/* `k-tab-e5`: animated indicator starts from the top-left origin. */
+.k-tab-a .k-tab-e5 {
+  top: 0;
+}
 
-    &.k-tab-e1-t {
-      border-top-width: var(--k-bw, 0px) !important;
-    }
-  }
+/* `k-tab-e5j`: disables animated indicator transitions. */
+.k-tab-a .k-tab-e5.k-tab-e5j {
+  transition: none !important;
+}
 
-  .k-tab-e2 {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    border: 0;
-    margin: 0;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    cursor: pointer;
-    user-select: none;
-    overflow: visible;
+/* `k-tab-e6`: animated separator between box tabs. */
+.k-tab-a .k-tab-e6 {
+  flex: 0 0 auto;
+  align-self: center;
+  pointer-events: none;
+  opacity: 1;
+  transition: none;
+}
 
-    &[aria-disabled='true'] {
-      cursor: not-allowed;
-    }
-  }
+/* `k-tab-e6a`: dimmed separator during indicator animation. */
+.k-tab-a .k-tab-e6.k-tab-e6a {
+  opacity: 0.5;
+  transition: opacity 200ms ease-out;
+}
 
-  .k-tab-e2c {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
+/* `k-tab-e6b`: hidden separator near the selected tab. */
+.k-tab-a .k-tab-e6.k-tab-e6b {
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
 
-  .k-tab-e3 {
-    display: inline-flex;
-    align-items: center;
-  }
+/* `k-tab-l`: line variant indicator anchored to the bottom edge. */
+.k-tab-a.k-tab-l .k-tab-e5 {
+  top: auto;
+  bottom: calc(var(--k-bw, 0px) * -1);
+}
 
-  .k-tab-e4 {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 0;
-  }
+/* `k-tab-e5i`: line indicator anchored to the top edge. */
+.k-tab-a.k-tab-l .k-tab-e5.k-tab-e5i {
+  top: calc(var(--k-bw, 0px) * -1);
+  bottom: auto;
+}
 
-  .k-tab-e5 {
-    position: absolute;
-    left: 0;
-    top: 0;
-    pointer-events: none;
-    z-index: 2;
-    --k-tab-x: 0px;
-    --k-tab-y: 0px;
-    --k-tab-w: 0px;
-    --k-tab-h: 0px;
+/* `k-tab-b`: box variant root clips the indicator background. */
+.k-tab-a.k-tab-b {
+  overflow: hidden;
+}
 
-    &.k-tab-e5-a {
-      width: var(--k-tab-w, 0px);
-      transform: translate3d(var(--k-tab-x, 0px), 0px, 0);
-    }
+/* `k-tab-b` + `k-tab-e5`: box indicator uses tab rect geometry. */
+.k-tab-a.k-tab-b .k-tab-e5 {
+  top: 0;
+}
 
-    &.k-tab-e5-f {
-      transform: translate3d(
-        calc(var(--k-tab-x, 0px) + (var(--k-tab-w, 0px) - 100%) / 2),
-        0px,
-        0
-      );
-    }
+/* `k-tab-b` + `k-tab-e2`: box triggers sit below the indicator content wrapper. */
+.k-tab-a.k-tab-b .k-tab-e2 {
+  z-index: auto;
+}
 
-    &.k-tab-e5-o {
-      width: auto;
-      aspect-ratio: 1 / 1;
-      border-radius: 999px;
-      transform: translate3d(
-        calc(var(--k-tab-x, 0px) + (var(--k-tab-w, 0px) - 100%) / 2),
-        0px,
-        0
-      );
-    }
-
-    &.k-tab-e5-q {
-      border-radius: 0;
-    }
-
-    &.k-tab-e5-r {
-      /*
-       * Fallback to pill so rounded remains visually distinct when a preset
-       * does not define radius classes for e5 (common in line variant).
-       */
-      border-radius: 999px;
-    }
-
-    /*
-     * e5-c: indicator rounded-clip shape
-     * Rounded-clip geometry is structural/behavioral and intentionally fixed.
-     * Radius tokens for rounded/pill must come from preset artifacts (JSON/CSS classes).
-     */
-    &.k-tab-e5-c {
-      &.k-tab-e5-b {
-        border-radius: 20px 20px 0 0;
-      }
-
-      &.k-tab-e5-t {
-        border-radius: 0 0 20px 20px;
-      }
-    }
-
-    &.k-tab-e5-n {
-      transition: none !important;
-    }
-  }
-
-  .k-tab-e6 {
-    flex: 0 0 auto;
-    align-self: center;
-    pointer-events: none;
-    opacity: 1;
-    transition: none;
-
-    &.k-tab-e6-d {
-      opacity: 0.5;
-      transition: opacity 200ms ease-out;
-    }
-
-    &.k-tab-e6-h {
-      opacity: 0;
-      transition: opacity 160ms ease;
-    }
-  }
-
-  .k-tab-p {
-    display: block;
-  }
-
-  /*
-   * l: line variant
-   */
-  &.k-tab-l {
-    .k-tab-e5 {
-      top: auto;
-      bottom: calc(var(--k-bw, 0px) * -1);
-    }
-
-    .k-tab-e5-t {
-      top: calc(var(--k-bw, 0px) * -1);
-      bottom: auto;
-    }
-  }
-
-  /*
-   * b: box variant
-   */
-  &.k-tab-b {
-    overflow: hidden;
-
-    .k-tab-e5 {
-      z-index: 2;
-      width: var(--k-tab-w, 0px);
-      height: var(--k-tab-h, 0px);
-      transform: translate3d(var(--k-tab-x, 0px), var(--k-tab-y, 0px), 0);
-    }
-
-    .k-tab-e2 {
-      z-index: auto;
-    }
-
-    .k-tab-e2c {
-      z-index: 3;
-    }
-  }
+/* `k-tab-b` + `k-tab-c`: box content wrapper stays above the indicator background. */
+.k-tab-a.k-tab-b .k-tab-c {
+  z-index: 3;
 }

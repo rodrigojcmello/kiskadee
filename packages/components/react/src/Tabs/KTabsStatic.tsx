@@ -31,16 +31,20 @@ import type {
   TabsRootProps,
   TabsTabProps
 } from './KTabsStatic.types.ts';
+import type { ResolvedTabsIndicator } from './TabsIndicator.types.ts';
 import './KTabsStatic.scss';
 
 export type {
   TabsBarProps,
+  TabsBoxIndicatorConfig,
   TabsClassNames,
   TabsContentProps,
   TabsElementName,
+  TabsIndicatorConfig,
   TabsIconProps,
   TabsIndicatorProps,
   TabsLabelProps,
+  TabsLineIndicatorConfig,
   TabsRootProps,
   TabsTabProps
 } from './KTabsStatic.types.ts';
@@ -56,10 +60,7 @@ type TabsVisualContextValue = {
   emphasis: TabsRootProps['emphasis'];
   variant: NonNullable<TabsRootProps['variant']>;
   radiusMode: RadiusMode;
-  indicatorMotion: NonNullable<TabsRootProps['indicatorMotion']>;
-  indicatorPosition: NonNullable<TabsRootProps['indicatorPosition']>;
-  indicatorShape: NonNullable<TabsRootProps['indicatorShape']>;
-  indicatorWidthMode: NonNullable<TabsRootProps['indicatorWidthMode']>;
+  indicator: ResolvedTabsIndicator<'none'>;
   separator: boolean;
   listClassName: string | undefined;
   separatorClassName: string | undefined;
@@ -187,14 +188,14 @@ function resolveRadiusClassName(
 }
 
 function resolveIndicatorLineModeClass(
-  indicatorShape: NonNullable<TabsRootProps['indicatorShape']>,
-  indicatorWidthMode: NonNullable<TabsRootProps['indicatorWidthMode']>
+  indicatorShape: TabsVisualContextValue['indicator']['shape'],
+  indicatorWidthMode: TabsVisualContextValue['indicator']['widthMode']
 ): string {
   if (indicatorShape === 'dot') {
-    return 'k-tab-e5-o';
+    return 'k-tab-e5c';
   }
 
-  return indicatorWidthMode === 'fixed' ? 'k-tab-e5-f' : 'k-tab-e5-a';
+  return indicatorWidthMode === 'fixed' ? 'k-tab-e5b' : 'k-tab-e5a';
 }
 
 function TabsRoot({
@@ -204,10 +205,7 @@ function TabsRoot({
   emphasis = 'medium',
   intent = DEFAULT_INTENT,
   variant,
-  indicatorMotion: _indicatorMotion = 'none',
-  indicatorPosition,
-  indicatorShape,
-  indicatorWidthMode,
+  indicator,
   separator,
   value,
   defaultValue,
@@ -240,15 +238,20 @@ function TabsRoot({
     resolvedVariant
   );
   const resolvedIndicatorPosition =
-    indicatorPosition ?? global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
+    indicator?.position ?? global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
   const resolvedIndicatorShape =
-    indicatorShape ?? global?.components?.tabs?.options?.indicatorShape ?? 'square';
+    indicator?.shape ?? global?.components?.tabs?.options?.indicatorShape ?? 'square';
   const resolvedIndicatorWidthMode =
-    indicatorWidthMode ?? global?.components?.tabs?.options?.indicatorWidthMode ?? 'tab';
+    indicator?.widthMode ?? global?.components?.tabs?.options?.indicatorWidthMode ?? 'tab';
   const resolvedSeparator =
     separator ?? global?.components?.tabs?.options?.separator ?? false;
   const resolvedRadiusMode = (global?.radius ?? 'rounded') as RadiusMode;
-  const resolvedIndicatorMotion: NonNullable<TabsRootProps['indicatorMotion']> = 'none';
+  const resolvedIndicator: ResolvedTabsIndicator<'none'> = {
+    motion: 'none',
+    position: resolvedIndicatorPosition,
+    shape: resolvedIndicatorShape,
+    widthMode: resolvedIndicatorWidthMode
+  };
 
   const listClassName = joinClassNames(
     'k-tab-s',
@@ -280,10 +283,7 @@ function TabsRoot({
       emphasis,
       variant: resolvedVariant,
       radiusMode: resolvedRadiusMode,
-      indicatorMotion: resolvedIndicatorMotion,
-      indicatorPosition: resolvedIndicatorPosition,
-      indicatorShape: resolvedIndicatorShape,
-      indicatorWidthMode: resolvedIndicatorWidthMode,
+      indicator: resolvedIndicator,
       separator: resolvedSeparator,
       listClassName,
       separatorClassName,
@@ -297,10 +297,7 @@ function TabsRoot({
       emphasis,
       resolvedVariant,
       resolvedRadiusMode,
-      resolvedIndicatorMotion,
-      resolvedIndicatorPosition,
-      resolvedIndicatorShape,
-      resolvedIndicatorWidthMode,
+      resolvedIndicator,
       resolvedSeparator,
       listClassName,
       separatorClassName,
@@ -330,11 +327,11 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     separator,
     separatorClassName,
     listClassName,
-    indicatorPosition,
+    indicator,
     variant
   } = useTabsVisualContext();
   const positionClass =
-    variant === 'line' ? (indicatorPosition === 'top' ? 'k-tab-e1-t' : 'k-tab-e1-b') : undefined;
+    variant === 'line' ? (indicator.position === 'top' ? 'k-tab-e1b' : 'k-tab-e1a') : undefined;
 
   const childrenWithSeparators = useMemo(() => {
     const items = Children.toArray(children);
@@ -355,7 +352,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
         <span
           key={`k-tab-separator-${leftValue ?? index}-${rightValue ?? index + 1}`}
           aria-hidden="true"
-          className={joinClassNames(separatorClassName, hidden ? 'k-tab-e6-h' : '')}
+          className={joinClassNames(separatorClassName, hidden ? 'k-tab-e6b' : '')}
         />
       );
     }
@@ -480,33 +477,30 @@ function TabsIndicator({ className, style, ...props }: TabsIndicatorProps) {
     emphasis,
     classNames,
     elements,
-    indicatorPosition,
-    indicatorShape,
-    indicatorWidthMode,
+    indicator,
     radiusMode,
-    indicatorMotion,
     variant
   } = useTabsVisualContext();
   const indicatorRadiusMode: RadiusMode =
-    indicatorShape === 'square'
+    indicator.shape === 'square'
       ? 'square'
-      : indicatorShape === 'pill'
+      : indicator.shape === 'pill'
         ? 'pill'
-        : indicatorShape === 'rounded'
+        : indicator.shape === 'rounded'
           ? 'rounded'
           : radiusMode;
   const indicatorShapeClass =
-    indicatorShape === 'rounded'
-      ? 'k-tab-e5-r'
-      : indicatorShape === 'pill'
-        ? 'k-tab-e5-p'
-      : indicatorShape === 'roundedClip' && variant === 'line'
-        ? 'k-tab-e5-c'
-        : indicatorShape === 'square'
-          ? 'k-tab-e5-q'
+    indicator.shape === 'rounded'
+      ? 'k-tab-e5e'
+      : indicator.shape === 'pill'
+        ? 'k-tab-e5f'
+      : indicator.shape === 'roundedClip' && variant === 'line'
+        ? 'k-tab-e5g'
+        : indicator.shape === 'square'
+          ? 'k-tab-e5d'
           : '';
   const indicatorLineModeClass =
-    variant === 'line' ? resolveIndicatorLineModeClass(indicatorShape, indicatorWidthMode) : '';
+    variant === 'line' ? resolveIndicatorLineModeClass(indicator.shape, indicator.widthMode) : '';
 
   const indicatorClassName = joinClassNames(
     resolveElementClassName(elements.e5, {
@@ -518,10 +512,10 @@ function TabsIndicator({ className, style, ...props }: TabsIndicatorProps) {
     resolveRadiusClassName(elements.e5, scale, indicatorRadiusMode),
     classNames.e5,
     'k-tab-e5',
-    indicatorPosition === 'top' ? 'k-tab-e5-t' : 'k-tab-e5-b',
+    indicator.position === 'top' ? 'k-tab-e5i' : 'k-tab-e5h',
     indicatorLineModeClass,
     indicatorShapeClass,
-    indicatorMotion === 'none' ? 'k-tab-e5-n' : '',
+    indicator.motion === 'none' ? 'k-tab-e5j' : '',
     elements.e5?.e?.h ? cn.shadow : '',
     'k-state',
     className
@@ -530,7 +524,7 @@ function TabsIndicator({ className, style, ...props }: TabsIndicatorProps) {
   const indicatorStyle: CSSProperties =
     variant === 'box'
       ? { top: 0, bottom: 'auto', ...style }
-      : indicatorPosition === 'top'
+      : indicator.position === 'top'
         ? { top: 'calc(var(--k-bw, 0px) * -1)', bottom: 'auto', ...style }
         : { top: 'auto', bottom: 'calc(var(--k-bw, 0px) * -1)', ...style };
 

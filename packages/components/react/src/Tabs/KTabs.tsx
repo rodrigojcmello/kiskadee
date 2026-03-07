@@ -36,16 +36,21 @@ import type {
   TabsSpringPreset,
   TabsTabProps
 } from './KTabs.types.ts';
+import type { ResolvedTabsIndicator } from './TabsIndicator.types.ts';
 import './KTabs.scss';
 
 export type {
   TabsBarProps,
+  TabsBoxIndicatorConfig,
   TabsClassNames,
   TabsContentProps,
   TabsElementName,
+  TabsIndicatorConfig,
+  TabsIndicatorMotion,
   TabsIconProps,
   TabsIndicatorProps,
   TabsLabelProps,
+  TabsLineIndicatorConfig,
   TabsRootProps,
   TabsSpringConfig,
   TabsSpringPreset,
@@ -70,10 +75,7 @@ type TabsVisualContextValue = {
   emphasis: TabsRootProps['emphasis'];
   variant: NonNullable<TabsRootProps['variant']>;
   radiusMode: RadiusMode;
-  indicatorMotion: NonNullable<TabsRootProps['indicatorMotion']>;
-  indicatorPosition: NonNullable<TabsRootProps['indicatorPosition']>;
-  indicatorShape: NonNullable<TabsRootProps['indicatorShape']>;
-  indicatorWidthMode: NonNullable<TabsRootProps['indicatorWidthMode']>;
+  indicator: ResolvedTabsIndicator;
   indicatorTransition: Record<string, unknown>;
   separator: boolean;
   listClassName: string | undefined;
@@ -220,7 +222,7 @@ function resolveSpringConfig(
 }
 
 function resolveIndicatorTransition(
-  indicatorMotion: NonNullable<TabsRootProps['indicatorMotion']>,
+  indicatorMotion: TabsVisualContextValue['indicator']['motion'],
   spring: TabsSpringPreset | TabsSpringConfig | undefined
 ): Record<string, unknown> {
   if (indicatorMotion === 'none') {
@@ -235,14 +237,14 @@ function resolveIndicatorTransition(
 }
 
 function resolveIndicatorLineModeClass(
-  indicatorShape: NonNullable<TabsRootProps['indicatorShape']>,
-  indicatorWidthMode: NonNullable<TabsRootProps['indicatorWidthMode']>
+  indicatorShape: TabsVisualContextValue['indicator']['shape'],
+  indicatorWidthMode: TabsVisualContextValue['indicator']['widthMode']
 ): string {
   if (indicatorShape === 'dot') {
-    return 'k-tab-e5-o';
+    return 'k-tab-e5c';
   }
 
-  return indicatorWidthMode === 'fixed' ? 'k-tab-e5-f' : 'k-tab-e5-a';
+  return indicatorWidthMode === 'fixed' ? 'k-tab-e5b' : 'k-tab-e5a';
 }
 
 function TabsRoot({
@@ -252,10 +254,7 @@ function TabsRoot({
   emphasis = 'medium',
   intent = DEFAULT_INTENT,
   variant,
-  indicatorMotion = 'auto',
-  indicatorPosition,
-  indicatorShape,
-  indicatorWidthMode,
+  indicator,
   separator,
   spring,
   value,
@@ -288,14 +287,21 @@ function TabsRoot({
     resolvedVariant
   );
   const resolvedIndicatorPosition =
-    indicatorPosition ?? global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
+    indicator?.position ?? global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
   const resolvedIndicatorShape =
-    indicatorShape ?? global?.components?.tabs?.options?.indicatorShape ?? 'square';
+    indicator?.shape ?? global?.components?.tabs?.options?.indicatorShape ?? 'square';
   const resolvedIndicatorWidthMode =
-    indicatorWidthMode ?? global?.components?.tabs?.options?.indicatorWidthMode ?? 'tab';
+    indicator?.widthMode ?? global?.components?.tabs?.options?.indicatorWidthMode ?? 'tab';
   const resolvedSeparator = separator ?? global?.components?.tabs?.options?.separator ?? false;
   const resolvedRadiusMode = (global?.radius ?? 'rounded') as RadiusMode;
-  const indicatorTransition = resolveIndicatorTransition(indicatorMotion, spring);
+  const resolvedIndicatorMotion = indicator?.motion ?? 'auto';
+  const indicatorTransition = resolveIndicatorTransition(resolvedIndicatorMotion, spring);
+  const resolvedIndicator: ResolvedTabsIndicator = {
+    motion: resolvedIndicatorMotion,
+    position: resolvedIndicatorPosition,
+    shape: resolvedIndicatorShape,
+    widthMode: resolvedIndicatorWidthMode
+  };
 
   const listClassName = joinClassNames(
     'k-tab-a',
@@ -328,10 +334,7 @@ function TabsRoot({
       emphasis,
       variant: resolvedVariant,
       radiusMode: resolvedRadiusMode,
-      indicatorMotion,
-      indicatorPosition: resolvedIndicatorPosition,
-      indicatorShape: resolvedIndicatorShape,
-      indicatorWidthMode: resolvedIndicatorWidthMode,
+      indicator: resolvedIndicator,
       indicatorTransition,
       separator: resolvedSeparator,
       listClassName,
@@ -346,10 +349,7 @@ function TabsRoot({
       emphasis,
       resolvedVariant,
       resolvedRadiusMode,
-      indicatorMotion,
-      resolvedIndicatorPosition,
-      resolvedIndicatorShape,
-      resolvedIndicatorWidthMode,
+      resolvedIndicator,
       indicatorTransition,
       resolvedSeparator,
       listClassName,
@@ -391,10 +391,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     emphasis,
     variant,
     radiusMode,
-    indicatorMotion,
-    indicatorPosition,
-    indicatorShape,
-    indicatorWidthMode,
+    indicator,
     indicatorTransition,
     classNames,
     elements,
@@ -411,9 +408,9 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
   const previousSelectedRef = useRef<string | undefined>(selected);
 
   const positionClass =
-    variant === 'line' ? (indicatorPosition === 'top' ? 'k-tab-e1-t' : 'k-tab-e1-b') : undefined;
+    variant === 'line' ? (indicator.position === 'top' ? 'k-tab-e1b' : 'k-tab-e1a') : undefined;
   const separatorSelected =
-    indicatorMotion === 'none' ? selected : isIndicatorAnimating ? undefined : settledSelected;
+    indicator.motion === 'none' ? selected : isIndicatorAnimating ? undefined : settledSelected;
 
   const childrenWithSeparators = useMemo(() => {
     const items = Children.toArray(children);
@@ -434,7 +431,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
         const hidden =
           separatorSelected !== undefined &&
           (separatorSelected === previousTabValue || separatorSelected === currentTabValue);
-        const dimmed = indicatorMotion !== 'none' && isIndicatorAnimating && willHideOnSettle;
+        const dimmed = indicator.motion !== 'none' && isIndicatorAnimating && willHideOnSettle;
 
         output.push(
           <span
@@ -442,8 +439,8 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
             aria-hidden="true"
             className={joinClassNames(
               separatorClassName,
-              hidden ? 'k-tab-e6-h' : '',
-              dimmed ? 'k-tab-e6-d' : ''
+              hidden ? 'k-tab-e6b' : '',
+              dimmed ? 'k-tab-e6a' : ''
             )}
           />
         );
@@ -459,7 +456,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     return output;
   }, [
     children,
-    indicatorMotion,
+    indicator.motion,
     isIndicatorAnimating,
     selected,
     separator,
@@ -493,7 +490,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
 
   useEffect(() => {
     latestSelectedRef.current = selected;
-    if (indicatorMotion === 'none') {
+    if (indicator.motion === 'none') {
       setSettledSelected(selected);
       setIsIndicatorAnimating(false);
       previousSelectedRef.current = selected;
@@ -511,7 +508,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
       setIsIndicatorAnimating(true);
       previousSelectedRef.current = selected;
     }
-  }, [indicatorMotion, selected]);
+  }, [indicator.motion, selected]);
 
   useEffect(() => {
     const barElement = barRef.current;
@@ -537,25 +534,25 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
   }, [selected, updateIndicatorRect]);
 
   const indicatorRadiusMode: RadiusMode =
-    indicatorShape === 'square'
+    indicator.shape === 'square'
       ? 'square'
-      : indicatorShape === 'pill'
+      : indicator.shape === 'pill'
         ? 'pill'
-        : indicatorShape === 'rounded'
+        : indicator.shape === 'rounded'
           ? 'rounded'
           : radiusMode;
   const indicatorShapeClass =
-    indicatorShape === 'rounded'
-      ? 'k-tab-e5-r'
-      : indicatorShape === 'pill'
-        ? 'k-tab-e5-p'
-      : indicatorShape === 'roundedClip' && variant === 'line'
-        ? 'k-tab-e5-c'
-        : indicatorShape === 'square'
-          ? 'k-tab-e5-q'
+    indicator.shape === 'rounded'
+      ? 'k-tab-e5e'
+      : indicator.shape === 'pill'
+        ? 'k-tab-e5f'
+      : indicator.shape === 'roundedClip' && variant === 'line'
+        ? 'k-tab-e5g'
+        : indicator.shape === 'square'
+          ? 'k-tab-e5d'
           : '';
   const indicatorLineModeClass =
-    variant === 'line' ? resolveIndicatorLineModeClass(indicatorShape, indicatorWidthMode) : '';
+    variant === 'line' ? resolveIndicatorLineModeClass(indicator.shape, indicator.widthMode) : '';
   const indicatorClassName = joinClassNames(
     resolveElementClassName(elements.e5, {
       scale,
@@ -566,10 +563,10 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     resolveRadiusClassName(elements.e5, scale, indicatorRadiusMode),
     classNames.e5,
     'k-tab-e5',
-    variant === 'line' ? (indicatorPosition === 'top' ? 'k-tab-e5-t' : 'k-tab-e5-b') : '',
+    variant === 'line' ? (indicator.position === 'top' ? 'k-tab-e5i' : 'k-tab-e5h') : '',
     indicatorLineModeClass,
     indicatorShapeClass,
-    indicatorMotion === 'none' ? 'k-tab-e5-n' : '',
+    indicator.motion === 'none' ? 'k-tab-e5j' : '',
     elements.e5?.e?.h ? cn.shadow : '',
     'k-state'
   );
@@ -609,7 +606,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
             } as CSSProperties
           }
           onAnimationComplete={() => {
-            if (indicatorMotion === 'none') return;
+            if (indicator.motion === 'none') return;
             setSettledSelected(latestSelectedRef.current);
             setIsIndicatorAnimating(false);
           }}
@@ -647,7 +644,7 @@ function TabsTab({ value, className, label, icon, children, ...restProps }: Tabs
   return (
     <HeadlessTabs.Tab {...restProps} value={value} className={triggerClassName}>
       <TabsTabContext.Provider value={tabContext}>
-        <span className="k-tab-e2c">
+        <span className="k-tab-c">
           {children ? (
             children
           ) : (

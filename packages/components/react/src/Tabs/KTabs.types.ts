@@ -1,11 +1,7 @@
 import type {
   ClassNameByElementJSON,
   ComponentEmphasis,
-  ElementSizeValue,
-  TabsIndicatorPosition,
-  TabsIndicatorShape,
-  TabsIndicatorWidthMode,
-  TabsVariant
+  ElementSizeValue
 } from '@kiskadee/core';
 import type {
   TabsBarProps as HeadlessTabsBarProps,
@@ -15,6 +11,11 @@ import type {
   TabsTabProps as HeadlessTabsTabProps
 } from '@kiskadee/react-headless';
 import type { HTMLAttributes, ReactNode } from 'react';
+import type {
+  TabsBoxIndicatorConfig,
+  TabsIndicatorMotion,
+  TabsLineIndicatorConfig
+} from './TabsIndicator.types.ts';
 
 export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 
@@ -32,15 +33,10 @@ export type TabsSpringConfig = Partial<{
   restSpeed: number;
 }>;
 
-export type TabsRootProps = Omit<HeadlessTabsRootProps, 'classNames'> & {
+type TabsRootBaseProps = Omit<HeadlessTabsRootProps, 'classNames'> & {
   classNames?: TabsClassNames;
   scale?: ElementSizeValue;
   emphasis?: ComponentEmphasis;
-  variant?: TabsVariant;
-  indicatorMotion?: 'auto' | 'none';
-  indicatorPosition?: TabsIndicatorPosition;
-  indicatorShape?: TabsIndicatorShape;
-  indicatorWidthMode?: TabsIndicatorWidthMode;
   separator?: boolean;
   spring?: TabsSpringPreset | TabsSpringConfig;
   indicatorLayoutId?: string;
@@ -50,6 +46,19 @@ export type TabsRootProps = Omit<HeadlessTabsRootProps, 'classNames'> & {
    */
   intent?: string;
 };
+
+export type TabsRootLineProps = TabsRootBaseProps & {
+  variant?: 'line';
+  indicator?: TabsLineIndicatorConfig;
+};
+
+export type TabsRootBoxProps = TabsRootBaseProps & {
+  variant: 'box';
+  indicator?: TabsBoxIndicatorConfig;
+};
+
+export type TabsRootProps = TabsRootLineProps | TabsRootBoxProps;
+export type TabsIndicatorConfig = TabsLineIndicatorConfig | TabsBoxIndicatorConfig;
 
 export type TabsBarProps = HeadlessTabsBarProps;
 
@@ -67,3 +76,5 @@ export type TabsIndicatorProps = HeadlessTabsIndicatorProps;
 export type TabsLabelProps = HTMLAttributes<HTMLSpanElement>;
 
 export type TabsIconProps = HTMLAttributes<HTMLSpanElement>;
+
+export type { TabsBoxIndicatorConfig, TabsIndicatorMotion, TabsLineIndicatorConfig };

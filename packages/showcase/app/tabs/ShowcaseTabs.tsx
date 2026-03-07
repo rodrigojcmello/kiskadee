@@ -5,9 +5,7 @@ import type { TabsSpringPreset } from '@kiskadee/react-components';
 import {
   tabsIndicatorShapesByVariant,
   type TabsBoxIndicatorShape,
-  type TabsIndicatorShape,
-  type TabsLineIndicatorShape,
-  type TabsVariant
+  type TabsLineIndicatorShape
 } from '@kiskadee/core';
 import { useState } from 'react';
 import { Select } from '@/k-components';
@@ -74,22 +72,35 @@ function TabsExample({
   mode,
   spring,
   variant,
-  indicatorShape
-}: {
-  title: string;
-  mode: TabsMode;
-  spring: TabsSpring;
-  variant: TabsVariant;
-  indicatorShape: TabsIndicatorShape;
-}) {
+  indicator
+}: (
+  | {
+      title: string;
+      mode: TabsMode;
+      spring: TabsSpring;
+      variant: 'line';
+      indicator: {
+        position: 'bottom';
+        shape: TabsLineIndicatorShape;
+      };
+    }
+  | {
+      title: string;
+      mode: TabsMode;
+      spring: TabsSpring;
+      variant: 'box';
+      indicator: {
+        shape: TabsBoxIndicatorShape;
+      };
+    }
+)) {
   if (mode === 'animated') {
     return (
       <div>
         <h3>{title}</h3>
         <KTabs.Root
           defaultValue="locations"
-          indicatorPosition="bottom"
-          indicatorShape={indicatorShape}
+          indicator={indicator}
           variant={variant}
           activationMode="manual"
           spring={spring}
@@ -97,7 +108,7 @@ function TabsExample({
           <KTabs.Bar>
             {tabItems.map((tab) => (
               <KTabs.Tab
-                key={`${variant}-${indicatorShape}-${tab.value}`}
+                key={`${variant}-${indicator.shape}-${tab.value}`}
                 value={tab.value}
                 label={tab.label}
               />
@@ -106,7 +117,7 @@ function TabsExample({
 
           {tabItems.map((tab) => (
             <KTabs.Content
-              key={`${variant}-${indicatorShape}-content-${tab.value}`}
+              key={`${variant}-${indicator.shape}-content-${tab.value}`}
               value={tab.value}
             >
               {loremByValue[tab.value]}
@@ -122,15 +133,14 @@ function TabsExample({
       <h3>{title}</h3>
       <KTabsStatic.Root
         defaultValue="locations"
-        indicatorPosition="bottom"
-        indicatorShape={indicatorShape}
+        indicator={indicator}
         variant={variant}
         activationMode="manual"
       >
         <KTabsStatic.Bar>
           {tabItems.map((tab) => (
             <KTabsStatic.Tab
-              key={`${variant}-${indicatorShape}-static-${tab.value}`}
+              key={`${variant}-${indicator.shape}-static-${tab.value}`}
               value={tab.value}
               label={tab.label}
             />
@@ -140,7 +150,7 @@ function TabsExample({
 
         {tabItems.map((tab) => (
           <KTabsStatic.Content
-            key={`${variant}-${indicatorShape}-static-content-${tab.value}`}
+            key={`${variant}-${indicator.shape}-static-content-${tab.value}`}
             value={tab.value}
           >
             {loremByValue[tab.value]}
@@ -187,7 +197,10 @@ export default function ShowcaseTabs() {
           mode={mode}
           spring={spring}
           variant="line"
-          indicatorShape={example.shape}
+          indicator={{
+            position: 'bottom',
+            shape: example.shape
+          }}
         />
       ))}
 
@@ -199,7 +212,9 @@ export default function ShowcaseTabs() {
           mode={mode}
           spring={spring}
           variant="box"
-          indicatorShape={example.shape}
+          indicator={{
+            shape: example.shape
+          }}
         />
       ))}
     </section>

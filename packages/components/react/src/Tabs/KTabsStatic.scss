@@ -4,171 +4,50 @@
  * or runtime state classes.
  * Avoid hardcoded theme visual values in this file.
  */
+@import './Tabs.common.scss';
 
-/*
- * s: static mode
- */
-.k-tab-s {
-  &.k-tab-e1 {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 0;
-    isolation: isolate;
-    overflow: visible;
-    border-width: 0 !important;
+/* `k-tab-e6`: static separator between box tabs. */
+.k-tab-s .k-tab-e6 {
+  flex: 0 0 auto;
+  align-self: center;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 60ms ease-out;
+  will-change: opacity;
+}
 
-    &.k-tab-e1-b {
-      border-bottom-width: var(--k-bw, 0px) !important;
-    }
+/* `k-tab-e6b`: hidden static separator near the selected tab. */
+.k-tab-s .k-tab-e6.k-tab-e6b {
+  opacity: 0;
+}
 
-    &.k-tab-e1-t {
-      border-top-width: var(--k-bw, 0px) !important;
-    }
-  }
+/* `k-tab-e5`: static selected indicator base. */
+.k-tab-s .k-tab-e5 {
+  transition:
+    transform var(--k-tab-dur, 180ms) ease,
+    width var(--k-tab-dur, 180ms) ease,
+    height var(--k-tab-dur, 180ms) ease;
+  will-change: transform, width, height;
+}
 
-  .k-tab-e2 {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    border: 0;
-    margin: 0;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    cursor: pointer;
-    user-select: none;
+/* `k-tab-e5j`: disables static indicator transitions. */
+.k-tab-s .k-tab-e5.k-tab-e5j {
+  transition: none;
+}
 
-    &[aria-disabled='true'] {
-      cursor: not-allowed;
-    }
-  }
+/* `k-tab-b` + `k-tab-e2`: box trigger stays above indicator except when selected. */
+.k-tab-s.k-tab-b .k-tab-e2 {
+  z-index: 1;
+}
 
-  .k-tab-e3 {
-    display: inline-flex;
-    align-items: center;
-  }
+/* `k-tab-b` + selected `k-tab-e2`: selected box trigger rises above the indicator. */
+.k-tab-s.k-tab-b .k-tab-e2[aria-selected='true'] {
+  z-index: 3;
+}
 
-  .k-tab-e4 {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 0;
-  }
-
-  .k-tab-e6 {
-    flex: 0 0 auto;
-    align-self: center;
-    pointer-events: none;
-    opacity: 1;
-    transition: opacity 60ms ease-out;
-    will-change: opacity;
-
-    &.k-tab-e6-h {
-      opacity: 0;
-    }
-  }
-
-  .k-tab-p {
-    display: block;
-  }
-
-  .k-tab-e5 {
-    position: absolute;
-    left: 0;
-    pointer-events: none;
-    z-index: 2;
-    --k-tab-x: 0px;
-    --k-tab-y: 0px;
-    --k-tab-w: 0px;
-    --k-tab-h: 0px;
-    transition:
-      transform var(--k-tab-dur, 180ms) ease,
-      width var(--k-tab-dur, 180ms) ease,
-      height var(--k-tab-dur, 180ms) ease;
-    will-change: transform, width, height;
-
-    &.k-tab-e5-a {
-      width: var(--k-tab-w, 0px);
-      transform: translate3d(var(--k-tab-x, 0px), 0px, 0);
-    }
-
-    &.k-tab-e5-f {
-      transform: translate3d(
-        calc(var(--k-tab-x, 0px) + (var(--k-tab-w, 0px) - 100%) / 2),
-        0px,
-        0
-      );
-    }
-
-    &.k-tab-e5-o {
-      width: auto;
-      aspect-ratio: 1 / 1;
-      border-radius: 999px;
-      transform: translate3d(
-        calc(var(--k-tab-x, 0px) + (var(--k-tab-w, 0px) - 100%) / 2),
-        0px,
-        0
-      );
-    }
-
-    &.k-tab-e5-q {
-      border-radius: 0;
-    }
-
-    &.k-tab-e5-r {
-      /*
-       * Fallback to pill so rounded remains visually distinct when a preset
-       * does not define radius classes for e5 (common in line variant).
-       */
-      border-radius: 999px;
-    }
-
-    /*
-     * e5-c: indicator rounded-clip shape
-     * Rounded-clip geometry is structural/behavioral and intentionally fixed.
-     * Radius tokens for rounded/pill must come from preset artifacts (JSON/CSS classes).
-     */
-    &.k-tab-e5-c {
-      &.k-tab-e5-b {
-        border-radius: 20px 20px 0 0;
-      }
-
-      &.k-tab-e5-t {
-        border-radius: 0 0 20px 20px;
-      }
-    }
-
-    &.k-tab-e5-n {
-      transition: none;
-    }
-  }
-
-  /*
-   * l: line variant
-   * No extra structural overrides.
-   */
-
-  /*
-   * b: box variant
-   */
-  &.k-tab-b {
-    .k-tab-e2 {
-      z-index: 1;
-
-      &[aria-selected='true'] {
-        z-index: 3;
-      }
-    }
-
-    .k-tab-e5 {
-      z-index: 2;
-      height: var(--k-tab-h, 0px);
-      transform: translate3d(var(--k-tab-x, 0px), var(--k-tab-y, 0px), 0);
-      width: var(--k-tab-w, 0px);
-    }
-  }
+/* `k-tab-b` + `k-tab-e5`: static box indicator uses tab rect geometry. */
+.k-tab-s.k-tab-b .k-tab-e5 {
+  height: var(--k-tab-h, 0px);
+  transform: translate3d(var(--k-tab-x, 0px), var(--k-tab-y, 0px), 0);
+  width: var(--k-tab-w, 0px);
 }

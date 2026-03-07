@@ -9,8 +9,8 @@
           "ll": "mk-c mk-a mk-ck mk-cp mk-ce mk-j"
         },
         "neutral": {
-          "h": "mk-bx mk-c mk-a mk-cj mk-e mk-co mk-f mk-cd mk-d mk-da mk-cu mk-cx mk-k mk-b",
-          "m": "mk-at mk-a mk-ac mk-e mk-ad mk-f mk-ab mk-d mk-x mk-w mk-ag mk-k mk-b",
+          "h": "mk-bx mk-a mk-cj mk-e mk-co mk-f mk-cd mk-d mk-da mk-cu mk-cx mk-k mk-b",
+          "m": "mk-at mk-c mk-a mk-ac mk-e mk-ad mk-f mk-ab mk-d mk-x mk-w mk-ag mk-k mk-b",
           "l": "mk-c mk-be mk-t mk-bo mk-v mk-br mk-r mk-bl mk-x mk-w mk-ag mk-i mk-bi",
           "ll": "mk-c mk-a mk-t mk-e mk-v mk-f mk-r mk-d mk-i mk-b"
         },
@@ -45,7 +45,7 @@
           "neutral": {
             "l": "mk-c",
             "ll": "mk-c",
-            "h": "mk-c mk-bg"
+            "m": "mk-c mk-bg"
           }
         }
       },
@@ -54,28 +54,28 @@
           "neutral": {
             "l": "mk-c",
             "ll": "mk-c",
-            "h": "mk-c mk-cn mk-cs mk-ci mk-ah mk-ev mk-fa"
+            "m": "mk-c mk-cn mk-cs mk-ci mk-ah mk-ev mk-fa"
           }
         }
       },
       "e3": {
         "c": {
           "neutral": {
-            "h": "mk-ak mk-az"
+            "m": "mk-ak mk-az"
           }
         }
       },
       "e4": {
         "c": {
           "neutral": {
-            "h": "mk-ak mk-az"
+            "m": "mk-ak mk-az"
           }
         }
       },
       "e5": {
         "c": {
           "neutral": {
-            "h": "mk-ej"
+            "m": "mk-ej"
           }
         }
       }
@@ -84,7 +84,7 @@
       "e1": {
         "c": {
           "neutral": {
-            "h": "mk-au mk-bg"
+            "m": "mk-au mk-bg"
           }
         }
       },
@@ -93,28 +93,28 @@
           "neutral": {
             "l": "mk-c",
             "ll": "mk-c",
-            "h": "mk-c mk-cn mk-cs mk-ci mk-ah mk-ct mk-cw"
+            "m": "mk-c mk-cn mk-cs mk-ci mk-ah mk-ct mk-cw"
           }
         }
       },
       "e3": {
         "c": {
           "neutral": {
-            "h": "mk-ak mk-go"
+            "m": "mk-ak mk-go"
           }
         }
       },
       "e4": {
         "c": {
           "neutral": {
-            "h": "mk-ak mk-az"
+            "m": "mk-ak mk-az"
           }
         }
       },
       "e5": {
         "c": {
           "neutral": {
-            "h": "mk-ca mk-ep mk-aw"
+            "m": "mk-ca mk-ep mk-aw"
           }
         }
       }

@@ -26,35 +26,35 @@
       "e1": {
         "c": {
           "neutral": {
-            "h": "mk-c mk-bf"
+            "m": "mk-c mk-bf"
           }
         }
       },
       "e2": {
         "c": {
           "neutral": {
-            "h": "mk-c mk-cm mk-cr mk-ch mk-ah mk-eu mk-ez"
+            "m": "mk-c mk-cm mk-cr mk-ch mk-ah mk-eu mk-ez"
           }
         }
       },
       "e3": {
         "c": {
           "neutral": {
-            "h": "mk-al mk-ao"
+            "m": "mk-al mk-ao"
           }
         }
       },
       "e4": {
         "c": {
           "neutral": {
-            "h": "mk-al mk-ao"
+            "m": "mk-al mk-ao"
           }
         }
       },
       "e5": {
         "c": {
           "neutral": {
-            "h": "mk-ek"
+            "m": "mk-ek"
           }
         }
       }
@@ -63,35 +63,35 @@
       "e1": {
         "c": {
           "neutral": {
-            "h": "mk-at mk-bf"
+            "m": "mk-at mk-bf"
           }
         }
       },
       "e2": {
         "c": {
           "neutral": {
-            "h": "mk-c mk-cm mk-cr mk-ch mk-ah mk-ct mk-cw"
+            "m": "mk-c mk-cm mk-cr mk-ch mk-ah mk-ct mk-cw"
           }
         }
       },
       "e3": {
         "c": {
           "neutral": {
-            "h": "mk-al mk-ao"
+            "m": "mk-al mk-ao"
           }
         }
       },
       "e4": {
         "c": {
           "neutral": {
-            "h": "mk-al mk-ao"
+            "m": "mk-al mk-ao"
           }
         }
       },
       "e5": {
         "c": {
           "neutral": {
-            "h": "mk-ca mk-av mk-er"
+            "m": "mk-ca mk-av mk-er"
           }
         }
       }
