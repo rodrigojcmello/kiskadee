@@ -339,8 +339,8 @@ export const schema: Schema = {
     },
     tabs: {
       options: {
-        variant: 'box',
-        indicatorShape: 'rounded',
+        type: 'box',
+        indicatorVariant: 'rounded',
         indicatorPosition: 'bottom',
         separator: true
       },
@@ -572,6 +572,139 @@ export const schema: Schema = {
                       neutral: {
                         medium: {
                           rest: c(segmentName, 'l', 'neutral', 100, 10)
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            }
+          }
+        },
+        dot: {
+          elements: {
+            // e1: bar
+            e1: {
+              decorations: {
+                borderStyle: 'solid'
+              },
+              scales: {
+                borderWidth: 1
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    boxColor: {
+                      neutral: {
+                        medium: {
+                          rest: transparent
+                        }
+                      }
+                    },
+                    borderColor: {
+                      neutral: {
+                        medium: {
+                          rest: c(segmentName, 'l', 'neutral', 10)
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            },
+            // e2: tab
+            e2: {
+              scales: {
+                paddingTop: 6,
+                paddingBottom: 6,
+                paddingLeft: 16,
+                paddingRight: 16
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    boxColor: {
+                      neutral: {
+                        medium: {
+                          rest: transparent,
+                          hover: c(segmentName, 'l', 'neutral', 6),
+                          pressed: c(segmentName, 'l', 'neutral', 8),
+                          selected: {
+                            rest: transparent,
+                            hover: transparent,
+                            pressed: transparent
+                          }
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            },
+            // e3: label
+            e3: {
+              decorations: {
+                textWeight: 'medium'
+              },
+              scales: {
+                textSize: 14,
+                textHeight: 20
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    textColor: {
+                      neutral: {
+                        medium: {
+                          rest: c(segmentName, 'l', 'neutral', 70),
+                          selected: {
+                            rest: c(segmentName, 'l', 'neutral', 90)
+                          }
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            },
+            // e4: icon
+            e4: {
+              scales: {
+                boxWidth: 18,
+                boxHeight: 18,
+                paddingRight: 8
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    textColor: {
+                      neutral: {
+                        medium: {
+                          rest: c(segmentName, 'l', 'neutral', 70),
+                          selected: {
+                            rest: c(segmentName, 'l', 'neutral', 90)
+                          }
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            },
+            // e5: indicator (dot)
+            e5: {
+              scales: {
+                boxHeight: 8,
+                marginTop: 0,
+                marginBottom: 5
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    boxColor: {
+                      neutral: {
+                        medium: {
+                          rest: c(segmentName, 'l', 'neutral', 90)
                         }
                       }
                     }

@@ -929,6 +929,209 @@
               }
             }
           }
+        },
+        "dot": {
+          "elements": {
+            "e1": {
+              "decorations": {
+                "borderStyle": "solid"
+              },
+              "scales": {
+                "borderWidth": 1
+              },
+              "palettes": {
+                "default": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#0000"
+                        }
+                      }
+                    },
+                    "borderColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#E6E6E6"
+                        }
+                      }
+                    }
+                  }
+                },
+                "dynamic": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#0000"
+                        }
+                      }
+                    },
+                    "borderColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#E6E6E6"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "e2": {
+              "scales": {
+                "paddingTop": 6,
+                "paddingBottom": 6,
+                "paddingLeft": 16,
+                "paddingRight": 16
+              },
+              "palettes": {
+                "default": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#0000",
+                          "hover": "#F0F0F0",
+                          "pressed": "#EBEBEB",
+                          "selected": {
+                            "rest": "#0000",
+                            "hover": "#0000",
+                            "pressed": "#0000"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "dynamic": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#0000",
+                          "hover": "#F0F0F0",
+                          "pressed": "#EBEBEB",
+                          "selected": {
+                            "rest": "#0000",
+                            "hover": "#0000",
+                            "pressed": "#0000"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "e3": {
+              "decorations": {
+                "textWeight": "medium"
+              },
+              "scales": {
+                "textSize": 14,
+                "textHeight": 20
+              },
+              "palettes": {
+                "default": {
+                  "light": {
+                    "textColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#4D4D4D",
+                          "selected": {
+                            "rest": "#1A1A1A"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "dynamic": {
+                  "light": {
+                    "textColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#4D4D4D",
+                          "selected": {
+                            "rest": "#1A1A1A"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "e4": {
+              "scales": {
+                "boxWidth": 18,
+                "boxHeight": 18,
+                "paddingRight": 8
+              },
+              "palettes": {
+                "default": {
+                  "light": {
+                    "textColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#4D4D4D",
+                          "selected": {
+                            "rest": "#1A1A1A"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "dynamic": {
+                  "light": {
+                    "textColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#4D4D4D",
+                          "selected": {
+                            "rest": "#1A1A1A"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "e5": {
+              "scales": {
+                "boxHeight": 8,
+                "marginTop": 0,
+                "marginBottom": 5
+              },
+              "palettes": {
+                "default": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#1A1A1A"
+                        }
+                      }
+                    }
+                  }
+                },
+                "dynamic": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#1A1A1A"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }

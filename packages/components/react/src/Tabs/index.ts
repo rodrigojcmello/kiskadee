@@ -1,10 +1,12 @@
-export { KTabs } from './KTabs';
-export { KTabsStatic } from './KTabsStatic';
+export { KTabs } from './Tabs.animated';
+export { KTabsStatic } from './Tabs.static';
 export type {
   TabsBarProps,
   TabsBoxIndicatorConfig,
   TabsClassNames,
+  TabsClassesMap,
   TabsContentProps,
+  TabsDotIndicatorConfig,
   TabsElementName,
   TabsIndicatorConfig,
   TabsIndicatorMotion,
@@ -16,12 +18,14 @@ export type {
   TabsSpringConfig,
   TabsSpringPreset,
   TabsTabProps
-} from './KTabs.types.ts';
+} from './Tabs.animated.types.ts';
 export type {
   TabsBarProps as TabsMotionBarProps,
   TabsBoxIndicatorConfig as TabsMotionBoxIndicatorConfig,
   TabsClassNames as TabsMotionClassNames,
+  TabsClassesMap as TabsMotionClassesMap,
   TabsContentProps as TabsMotionContentProps,
+  TabsDotIndicatorConfig as TabsMotionDotIndicatorConfig,
   TabsElementName as TabsMotionElementName,
   TabsIndicatorConfig as TabsMotionIndicatorConfig,
   TabsIndicatorMotion as TabsMotionIndicatorMotion,
@@ -33,12 +37,14 @@ export type {
   TabsSpringConfig as TabsMotionSpringConfig,
   TabsSpringPreset as TabsMotionSpringPreset,
   TabsTabProps as TabsMotionTabProps
-} from './KTabs.types.ts';
+} from './Tabs.animated.types.ts';
 export type {
   TabsBarProps as TabsStaticBarProps,
   TabsBoxIndicatorConfig as TabsStaticBoxIndicatorConfig,
   TabsClassNames as TabsStaticClassNames,
+  TabsClassesMap as TabsStaticClassesMap,
   TabsContentProps as TabsStaticContentProps,
+  TabsDotIndicatorConfig as TabsStaticDotIndicatorConfig,
   TabsElementName as TabsStaticElementName,
   TabsIndicatorConfig as TabsStaticIndicatorConfig,
   TabsIconProps as TabsStaticIconProps,
@@ -47,4 +53,4 @@ export type {
   TabsLineIndicatorConfig as TabsStaticLineIndicatorConfig,
   TabsRootProps as TabsStaticRootProps,
   TabsTabProps as TabsStaticTabProps
-} from './KTabsStatic.types.ts';
+} from './Tabs.static.types.ts';

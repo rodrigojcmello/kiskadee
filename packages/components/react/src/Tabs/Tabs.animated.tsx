@@ -1,22 +1,13 @@
-import {
-  type ClassNameByElementJSON,
-  type ColorClasses,
-  stateActivator as cn,
-  componentEmphasisBuckets,
-  type RadiusMode
-} from '@kiskadee/core';
+import type { RadiusMode } from '@kiskadee/core';
 import { HeadlessTabs } from '@kiskadee/react-headless';
 import { motion } from 'motion/react';
 import {
-  type CSSProperties,
   Children,
-  createContext,
+  type CSSProperties,
   forwardRef,
-  isValidElement,
   memo,
   type ReactNode,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -26,7 +17,6 @@ import { useKiskadee } from '../contexts/KiskadeeContext';
 import type {
   TabsBarProps,
   TabsClassesMap,
-  TabsClassNames,
   TabsContentProps,
   TabsIconProps,
   TabsIndicatorProps,
@@ -35,19 +25,48 @@ import type {
   TabsSpringConfig,
   TabsSpringPreset,
   TabsTabProps
-} from './KTabs.types.ts';
-import type { ResolvedTabsIndicator } from './TabsIndicator.types.ts';
-import './KTabs.scss';
+} from './Tabs.animated.types.ts';
+import {
+  DEFAULT_EMPHASIS,
+  DEFAULT_INTENT,
+  DEFAULT_SCALE,
+  DEFAULT_TYPE,
+  extractTabValue,
+  joinClassNames,
+  resolveIconClassName,
+  resolveIndicatorClassName,
+  resolveIndicatorVariant,
+  resolveIndicatorWidthMode,
+  resolveLabelClassName,
+  resolveListClassName,
+  resolveSeparatorClassName,
+  resolveTriggerClassName,
+  resolveVariantElements,
+  TabsTabContextProvider,
+  TabsVisualContextProvider,
+  useTabsTabContext,
+  useTabsVisualContext
+} from './Tabs.common.ts';
+import './Tabs.common.scss';
+import type {
+  ResolvedTabsIndicator,
+  TabsIndicatorMotion,
+  TabsTabContextValue,
+  TabsVisualContextValue
+} from './Tabs.common.types.ts';
+import './Tabs.animated.scss';
 
 export type {
   TabsBarProps,
   TabsBoxIndicatorConfig,
+  TabsClassesMap,
   TabsClassNames,
   TabsContentProps,
+  TabsDotIndicatorConfig,
   TabsElementName,
+  TabsIconProps,
   TabsIndicatorConfig,
   TabsIndicatorMotion,
-  TabsIconProps,
   TabsIndicatorProps,
   TabsLabelProps,
   TabsLineIndicatorConfig,
@@ -55,11 +74,7 @@ export type {
   TabsSpringConfig,
   TabsSpringPreset,
   TabsTabProps
-} from './KTabs.types.ts';
-
-const DEFAULT_SCALE = 's:md:1';
-const DEFAULT_INTENT = 'neutral';
-const DEFAULT_VARIANT = 'line';
+} from './Tabs.animated.types.ts';
 
 type IndicatorRect = {
   x: number;
@@ -68,140 +83,7 @@ type IndicatorRect = {
   height: number;
 };
 
-type TabsVisualContextValue = {
-  selected: string | undefined;
-  scale: string;
-  intent: string;
-  emphasis: TabsRootProps['emphasis'];
-  variant: NonNullable<TabsRootProps['variant']>;
-  radiusMode: RadiusMode;
-  indicator: ResolvedTabsIndicator;
-  indicatorTransition: Record<string, unknown>;
-  separator: boolean;
-  listClassName: string | undefined;
-  separatorClassName: string | undefined;
-  classNames: TabsClassNames;
-  elements: TabsClassesMap;
-};
-
-const TabsVisualContext = createContext<TabsVisualContextValue | null>(null);
-
-function useTabsVisualContext(): TabsVisualContextValue {
-  const context = useContext(TabsVisualContext);
-  if (!context) {
-    throw new Error('Tabs compound components must be used within a Tabs.Root');
-  }
-  return context;
-}
-
-type TabsTabContextValue = {
-  isSelected: boolean;
-};
-
-const TabsTabContext = createContext<TabsTabContextValue | null>(null);
-
-function useTabsTabContext(): TabsTabContextValue {
-  const context = useContext(TabsTabContext);
-  if (!context) {
-    throw new Error('Tabs.Label and Tabs.Icon must be used within a Tabs.Tab');
-  }
-  return context;
-}
-
-const normalizeScaleKey = (key: string): string => (key.startsWith('s:') ? key.slice(2) : key);
-
-function joinClassNames(...parts: Array<string | undefined | false | null>): string | undefined {
-  const joined = parts.filter(Boolean).join(' ').trim();
-  return joined.length > 0 ? joined : undefined;
-}
-
-function resolveIntentClasses(
-  element: ClassNameByElementJSON | undefined,
-  intent: string,
-  emphasis: TabsRootProps['emphasis']
-): string {
-  if (!element?.c) return '';
-
-  const byIntent = element.c as Record<string, ColorClasses>;
-  const chosen = byIntent[intent] ?? Object.values(byIntent)[0];
-  if (!chosen) return '';
-
-  if (emphasis) {
-    const bucket = componentEmphasisBuckets[emphasis];
-    const buckets = chosen as Record<string, string | undefined>;
-    return buckets[bucket] ?? chosen.h ?? chosen.m ?? chosen.l ?? chosen.ll ?? '';
-  }
-
-  return chosen.h ?? chosen.m ?? chosen.l ?? chosen.ll ?? '';
-}
-
-function resolveEffectClasses(element: ClassNameByElementJSON | undefined): string {
-  if (!element?.e) return '';
-  return Object.values(element.e)
-    .filter((value): value is string => typeof value === 'string' && value.length > 0)
-    .join(' ');
-}
-
-function resolveElementClassName(
-  element: ClassNameByElementJSON | undefined,
-  options: {
-    scale: string;
-    intent: string;
-    emphasis: TabsRootProps['emphasis'];
-    selected?: boolean;
-  }
-): string {
-  if (!element) return '';
-
-  const scaleKey = normalizeScaleKey(options.scale);
-  return (
-    joinClassNames(
-      element.d,
-      resolveIntentClasses(element, options.intent, options.emphasis),
-      element.s?.all,
-      element.s?.[scaleKey],
-      resolveEffectClasses(element),
-      options.selected ? element.l : ''
-    ) ?? ''
-  );
-}
-
-function resolveVariantElements(
-  map: TabsClassesMap | Record<string, TabsClassesMap> | undefined,
-  variant: string
-): TabsClassesMap {
-  if (!map) return {};
-  const asRecord = map as Record<string, TabsClassesMap>;
-  const isElementMap = Object.prototype.hasOwnProperty.call(asRecord, 'e1');
-  if (isElementMap) return map as TabsClassesMap;
-  return asRecord[variant] ?? asRecord.line ?? asRecord.box ?? {};
-}
-
-function resolveRadiusClassName(
-  element: ClassNameByElementJSON | undefined,
-  scale: string,
-  radiusMode: RadiusMode
-): string {
-  if (!element) return '';
-  const scaleKey = normalizeScaleKey(scale);
-  const all =
-    radiusMode === 'rounded'
-      ? (element.r?.all ?? '')
-      : radiusMode === 'pill'
-        ? (element.rp?.all ?? '')
-        : radiusMode === 'square'
-          ? (element.rs?.all ?? '')
-          : '';
-  const byScale =
-    radiusMode === 'rounded'
-      ? (element.r?.[scaleKey] ?? '')
-      : radiusMode === 'pill'
-        ? (element.rp?.[scaleKey] ?? '')
-        : radiusMode === 'square'
-          ? (element.rs?.[scaleKey] ?? '')
-          : '';
-  return joinClassNames(all, byScale) ?? '';
-}
+type DotIndicatorPhase = 'idle' | 'exit' | 'enter';
 
 function resolveSpringConfig(
   spring: TabsSpringPreset | TabsSpringConfig | undefined
@@ -222,7 +104,7 @@ function resolveSpringConfig(
 }
 
 function resolveIndicatorTransition(
-  indicatorMotion: TabsVisualContextValue['indicator']['motion'],
+  indicatorMotion: TabsIndicatorMotion,
   spring: TabsSpringPreset | TabsSpringConfig | undefined
 ): Record<string, unknown> {
   if (indicatorMotion === 'none') {
@@ -236,24 +118,13 @@ function resolveIndicatorTransition(
   };
 }
 
-function resolveIndicatorLineModeClass(
-  indicatorShape: TabsVisualContextValue['indicator']['shape'],
-  indicatorWidthMode: TabsVisualContextValue['indicator']['widthMode']
-): string {
-  if (indicatorShape === 'dot') {
-    return 'k-tab-e5c';
-  }
-
-  return indicatorWidthMode === 'fixed' ? 'k-tab-e5b' : 'k-tab-e5a';
-}
-
 function TabsRoot({
   children,
   classNames = {},
   scale = DEFAULT_SCALE,
-  emphasis = 'medium',
+  emphasis = DEFAULT_EMPHASIS,
   intent = DEFAULT_INTENT,
-  variant,
+  type,
   indicator,
   separator,
   spring,
@@ -281,17 +152,28 @@ function TabsRoot({
     global
   } = useKiskadee();
 
-  const resolvedVariant = variant ?? global?.components?.tabs?.options?.variant ?? DEFAULT_VARIANT;
+  const resolvedType =
+    type ??
+    global?.components?.tabs?.options?.type ??
+    global?.components?.tabs?.options?.variant ??
+    DEFAULT_TYPE;
   const elements = resolveVariantElements(
     rawTabsMap as TabsClassesMap | Record<string, TabsClassesMap> | undefined,
-    resolvedVariant
+    resolvedType
   );
   const resolvedIndicatorPosition =
     indicator?.position ?? global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
-  const resolvedIndicatorShape =
-    indicator?.shape ?? global?.components?.tabs?.options?.indicatorShape ?? 'square';
-  const resolvedIndicatorWidthMode =
-    indicator?.widthMode ?? global?.components?.tabs?.options?.indicatorWidthMode ?? 'tab';
+  const resolvedIndicatorVariant = resolveIndicatorVariant(
+    resolvedType,
+    indicator?.variant,
+    global?.components?.tabs?.options?.indicatorVariant ??
+      global?.components?.tabs?.options?.indicatorShape
+  );
+  const resolvedIndicatorWidthMode = resolveIndicatorWidthMode(
+    resolvedType,
+    indicator?.widthMode,
+    global?.components?.tabs?.options?.indicatorWidthMode
+  );
   const resolvedSeparator = separator ?? global?.components?.tabs?.options?.separator ?? false;
   const resolvedRadiusMode = (global?.radius ?? 'rounded') as RadiusMode;
   const resolvedIndicatorMotion = indicator?.motion ?? 'auto';
@@ -299,32 +181,28 @@ function TabsRoot({
   const resolvedIndicator: ResolvedTabsIndicator = {
     motion: resolvedIndicatorMotion,
     position: resolvedIndicatorPosition,
-    shape: resolvedIndicatorShape,
+    variant: resolvedIndicatorVariant,
     widthMode: resolvedIndicatorWidthMode
   };
 
-  const listClassName = joinClassNames(
-    'k-tab-a',
-    'k-tab-e1',
-    resolvedVariant === 'box' ? 'k-tab-b' : 'k-tab-l',
-    resolveRadiusClassName(elements.e1, scale, resolvedRadiusMode),
-    resolveElementClassName(elements.e1, {
-      scale,
-      intent,
-      emphasis
-    }),
-    classNames.e1
-  );
+  const listClassName = resolveListClassName({
+    modeClass: 'k-tab-a',
+    elements,
+    classNames,
+    scale,
+    intent,
+    emphasis,
+    radiusMode: resolvedRadiusMode,
+    type: resolvedType
+  });
 
-  const separatorClassName = joinClassNames(
-    resolveElementClassName(elements.e6, {
-      scale,
-      intent,
-      emphasis
-    }),
-    classNames.e6,
-    'k-tab-e6'
-  );
+  const separatorClassName = resolveSeparatorClassName({
+    elements,
+    classNames,
+    scale,
+    intent,
+    emphasis
+  });
 
   const visualContext = useMemo<TabsVisualContextValue>(
     () => ({
@@ -332,7 +210,7 @@ function TabsRoot({
       scale,
       intent,
       emphasis,
-      variant: resolvedVariant,
+      type: resolvedType,
       radiusMode: resolvedRadiusMode,
       indicator: resolvedIndicator,
       indicatorTransition,
@@ -347,7 +225,7 @@ function TabsRoot({
       scale,
       intent,
       emphasis,
-      resolvedVariant,
+      resolvedType,
       resolvedRadiusMode,
       resolvedIndicator,
       indicatorTransition,
@@ -360,18 +238,12 @@ function TabsRoot({
   );
 
   return (
-    <TabsVisualContext.Provider value={visualContext}>
+    <TabsVisualContextProvider value={visualContext}>
       <HeadlessTabs.Root {...restProps} value={selected} onValueChange={handleValueChange}>
         {children}
       </HeadlessTabs.Root>
-    </TabsVisualContext.Provider>
+    </TabsVisualContextProvider>
   );
-}
-
-function extractTabValue(child: ReactNode): string | undefined {
-  if (!isValidElement(child)) return undefined;
-  const value = (child.props as { value?: unknown }).value;
-  return typeof value === 'string' ? value : undefined;
 }
 
 function findSelectedTabElement(
@@ -389,7 +261,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     scale,
     intent,
     emphasis,
-    variant,
+    type,
     radiusMode,
     indicator,
     indicatorTransition,
@@ -402,19 +274,23 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
 
   const barRef = useRef<HTMLDivElement | null>(null);
   const [indicatorRect, setIndicatorRect] = useState<IndicatorRect | null>(null);
+  const [dotDisplayRect, setDotDisplayRect] = useState<IndicatorRect | null>(null);
+  const [dotPhase, setDotPhase] = useState<DotIndicatorPhase>('idle');
   const [settledSelected, setSettledSelected] = useState<string | undefined>(selected);
   const [isIndicatorAnimating, setIsIndicatorAnimating] = useState(false);
   const latestSelectedRef = useRef<string | undefined>(selected);
   const previousSelectedRef = useRef<string | undefined>(selected);
+  const lastSettledIndicatorRectRef = useRef<IndicatorRect | null>(null);
+  const isDotIndicator = type === 'dot';
 
   const positionClass =
-    variant === 'line' ? (indicator.position === 'top' ? 'k-tab-e1b' : 'k-tab-e1a') : undefined;
+    type !== 'box' ? (indicator.position === 'top' ? 'k-tab-e1b' : 'k-tab-e1a') : undefined;
   const separatorSelected =
     indicator.motion === 'none' ? selected : isIndicatorAnimating ? undefined : settledSelected;
 
   const childrenWithSeparators = useMemo(() => {
     const items = Children.toArray(children);
-    if (variant !== 'box' || !separator || items.length <= 1) return items;
+    if (type !== 'box' || !separator || items.length <= 1) return items;
 
     const output: ReactNode[] = [];
     let previousTabValue: string | undefined;
@@ -426,8 +302,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
 
       if (currentTabValue && previousTabValue) {
         const willHideOnSettle =
-          selected !== undefined &&
-          (selected === previousTabValue || selected === currentTabValue);
+          selected !== undefined && (selected === previousTabValue || selected === currentTabValue);
         const hidden =
           separatorSelected !== undefined &&
           (separatorSelected === previousTabValue || separatorSelected === currentTabValue);
@@ -462,7 +337,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     separator,
     separatorClassName,
     separatorSelected,
-    variant
+    type
   ]);
 
   const updateIndicatorRect = useCallback(() => {
@@ -489,10 +364,25 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
   }, [updateIndicatorRect, children]);
 
   useEffect(() => {
+    if (!isDotIndicator) {
+      setDotPhase('idle');
+      setDotDisplayRect(null);
+      lastSettledIndicatorRectRef.current = null;
+      return;
+    }
+
+    if (dotPhase === 'idle') {
+      setDotDisplayRect(indicatorRect);
+      lastSettledIndicatorRectRef.current = indicatorRect;
+    }
+  }, [dotPhase, indicatorRect, isDotIndicator]);
+
+  useEffect(() => {
     latestSelectedRef.current = selected;
     if (indicator.motion === 'none') {
       setSettledSelected(selected);
       setIsIndicatorAnimating(false);
+      setDotPhase('idle');
       previousSelectedRef.current = selected;
       return;
     }
@@ -500,15 +390,20 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     if (previousSelectedRef.current === undefined || selected === undefined) {
       setSettledSelected(selected);
       setIsIndicatorAnimating(false);
+      setDotPhase('idle');
       previousSelectedRef.current = selected;
       return;
     }
 
     if (previousSelectedRef.current !== selected) {
       setIsIndicatorAnimating(true);
+      if (isDotIndicator) {
+        setDotDisplayRect(lastSettledIndicatorRectRef.current ?? indicatorRect);
+        setDotPhase('exit');
+      }
       previousSelectedRef.current = selected;
     }
-  }, [indicator.motion, selected]);
+  }, [indicator.motion, indicatorRect, isDotIndicator, selected]);
 
   useEffect(() => {
     const barElement = barRef.current;
@@ -533,57 +428,46 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     };
   }, [selected, updateIndicatorRect]);
 
-  const indicatorRadiusMode: RadiusMode =
-    indicator.shape === 'square'
-      ? 'square'
-      : indicator.shape === 'pill'
-        ? 'pill'
-        : indicator.shape === 'rounded'
-          ? 'rounded'
-          : radiusMode;
-  const indicatorShapeClass =
-    indicator.shape === 'rounded'
-      ? 'k-tab-e5e'
-      : indicator.shape === 'pill'
-        ? 'k-tab-e5f'
-      : indicator.shape === 'roundedClip' && variant === 'line'
-        ? 'k-tab-e5g'
-        : indicator.shape === 'square'
-          ? 'k-tab-e5d'
-          : '';
-  const indicatorLineModeClass =
-    variant === 'line' ? resolveIndicatorLineModeClass(indicator.shape, indicator.widthMode) : '';
-  const indicatorClassName = joinClassNames(
-    resolveElementClassName(elements.e5, {
-      scale,
-      intent,
-      emphasis,
-      selected: true
-    }),
-    resolveRadiusClassName(elements.e5, scale, indicatorRadiusMode),
-    classNames.e5,
-    'k-tab-e5',
-    variant === 'line' ? (indicator.position === 'top' ? 'k-tab-e5i' : 'k-tab-e5h') : '',
-    indicatorLineModeClass,
-    indicatorShapeClass,
-    indicator.motion === 'none' ? 'k-tab-e5j' : '',
-    elements.e5?.e?.h ? cn.shadow : '',
-    'k-state'
-  );
+  const indicatorClassName = resolveIndicatorClassName({
+    elements,
+    classNames,
+    scale,
+    intent,
+    emphasis,
+    radiusMode,
+    indicator,
+    type
+  });
 
-  const indicatorAnimate: Record<string, string> | undefined = indicatorRect
-    ? variant === 'box'
+  const renderedIndicatorRect = isDotIndicator ? (dotDisplayRect ?? indicatorRect) : indicatorRect;
+  const indicatorAnimate: Record<string, string | number> | undefined = renderedIndicatorRect
+    ? isDotIndicator
       ? {
-          ['--k-tab-x' as const]: `${indicatorRect.x}px`,
-          ['--k-tab-y' as const]: `${indicatorRect.y}px`,
-          ['--k-tab-w' as const]: `${indicatorRect.width}px`,
-          ['--k-tab-h' as const]: `${indicatorRect.height}px`
+          scale: dotPhase === 'exit' ? 0 : 1,
+          opacity: dotPhase === 'exit' ? 0 : 1
         }
-      : {
-          ['--k-tab-x' as const]: `${indicatorRect.x}px`,
-          ['--k-tab-w' as const]: `${indicatorRect.width}px`
-        }
+      : type === 'box'
+        ? {
+            ['--k-tab-x' as const]: `${renderedIndicatorRect.x}px`,
+            ['--k-tab-y' as const]: `${renderedIndicatorRect.y}px`,
+            ['--k-tab-w' as const]: `${renderedIndicatorRect.width}px`,
+            ['--k-tab-h' as const]: `${renderedIndicatorRect.height}px`
+          }
+        : {
+            ['--k-tab-x' as const]: `${renderedIndicatorRect.x}px`,
+            ['--k-tab-w' as const]: `${renderedIndicatorRect.width}px`
+          }
     : undefined;
+  const dotTransition: Record<string, unknown> =
+    dotPhase === 'exit' ? { duration: 0.09, ease: 'easeIn' } : { duration: 0.14, ease: 'easeOut' };
+  const indicatorStyle = {
+    ['--k-tab-x' as const]:
+      isDotIndicator && renderedIndicatorRect ? `${renderedIndicatorRect.x}px` : '0px',
+    ['--k-tab-y' as const]: '0px',
+    ['--k-tab-w' as const]:
+      isDotIndicator && renderedIndicatorRect ? `${renderedIndicatorRect.width}px` : '0px',
+    ['--k-tab-h' as const]: '0px'
+  } as CSSProperties;
 
   return (
     <HeadlessTabs.Bar
@@ -596,17 +480,20 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
         <motion.span
           initial={false}
           animate={indicatorAnimate}
-          transition={indicatorTransition}
-          style={
-            {
-              ['--k-tab-x' as const]: '0px',
-              ['--k-tab-y' as const]: '0px',
-              ['--k-tab-w' as const]: '0px',
-              ['--k-tab-h' as const]: '0px'
-            } as CSSProperties
-          }
+          transition={isDotIndicator ? dotTransition : indicatorTransition}
+          style={indicatorStyle}
           onAnimationComplete={() => {
             if (indicator.motion === 'none') return;
+            if (isDotIndicator && dotPhase === 'exit') {
+              if (indicatorRect) {
+                setDotDisplayRect(indicatorRect);
+              }
+              setDotPhase('enter');
+              return;
+            }
+            if (isDotIndicator && dotPhase === 'enter') {
+              setDotPhase('idle');
+            }
             setSettledSelected(latestSelectedRef.current);
             setIsIndicatorAnimating(false);
           }}
@@ -622,28 +509,22 @@ function TabsTab({ value, className, label, icon, children, ...restProps }: Tabs
     useTabsVisualContext();
   const isSelected = selected === value;
 
-  const triggerClassName = joinClassNames(
-    resolveElementClassName(elements.e2, {
-      scale,
-      intent,
-      emphasis,
-      selected: isSelected
-    }),
-    resolveRadiusClassName(elements.e2, scale, radiusMode),
-    classNames.e2,
-    'k-tab-e2',
-    'k-state',
-    cn.interactive,
-    cn.activator,
-    isSelected ? cn.selected : '',
+  const triggerClassName = resolveTriggerClassName({
+    elements,
+    classNames,
+    scale,
+    intent,
+    emphasis,
+    radiusMode,
+    selected: isSelected,
     className
-  );
+  });
 
   const tabContext = useMemo<TabsTabContextValue>(() => ({ isSelected }), [isSelected]);
 
   return (
     <HeadlessTabs.Tab {...restProps} value={value} className={triggerClassName}>
-      <TabsTabContext.Provider value={tabContext}>
+      <TabsTabContextProvider value={tabContext}>
         <span className="k-tab-c">
           {children ? (
             children
@@ -654,7 +535,7 @@ function TabsTab({ value, className, label, icon, children, ...restProps }: Tabs
             </>
           )}
         </span>
-      </TabsTabContext.Provider>
+      </TabsTabContextProvider>
     </HeadlessTabs.Tab>
   );
 }
@@ -666,19 +547,15 @@ const TabsLabel = forwardRef<HTMLSpanElement, TabsLabelProps>(function TabsLabel
   const { isSelected } = useTabsTabContext();
   const { scale, intent, emphasis, classNames, elements } = useTabsVisualContext();
 
-  const labelClassName = joinClassNames(
-    resolveElementClassName(elements.e3, {
-      scale,
-      intent,
-      emphasis,
-      selected: isSelected
-    }),
-    classNames.e3,
-    'k-tab-e3',
-    cn.activator,
-    isSelected ? cn.selected : '',
+  const labelClassName = resolveLabelClassName({
+    elements,
+    classNames,
+    scale,
+    intent,
+    emphasis,
+    selected: isSelected,
     className
-  );
+  });
 
   return (
     <span ref={ref} className={labelClassName} {...props}>
@@ -694,19 +571,15 @@ const TabsIcon = forwardRef<HTMLSpanElement, TabsIconProps>(function TabsIcon(
   const { isSelected } = useTabsTabContext();
   const { scale, intent, emphasis, classNames, elements } = useTabsVisualContext();
 
-  const iconClassName = joinClassNames(
-    resolveElementClassName(elements.e4, {
-      scale,
-      intent,
-      emphasis,
-      selected: isSelected
-    }),
-    classNames.e4,
-    'k-tab-e4',
-    cn.activator,
-    isSelected ? cn.selected : '',
+  const iconClassName = resolveIconClassName({
+    elements,
+    classNames,
+    scale,
+    intent,
+    emphasis,
+    selected: isSelected,
     className
-  );
+  });
 
   return (
     <span ref={ref} className={iconClassName} aria-hidden={ariaHidden} {...props}>

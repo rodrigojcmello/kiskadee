@@ -2,7 +2,6 @@
  * KTabs structural styles.
  * Visual values must come from schema artifacts.
  */
-@import './Tabs.common.scss';
 
 /* `k-tab-c`: trigger content wrapper for stacked label/icon content. */
 .k-tab-a .k-tab-c {
@@ -44,19 +43,21 @@
   transition: opacity 160ms ease;
 }
 
-/* `k-tab-l`: line variant indicator anchored to the bottom edge. */
-.k-tab-a.k-tab-l .k-tab-e5 {
+/* `k-tab-l` / `k-tab-d`: bottom-anchored line or dot indicator. */
+.k-tab-a.k-tab-l .k-tab-e5,
+.k-tab-a.k-tab-d .k-tab-e5 {
   top: auto;
   bottom: calc(var(--k-bw, 0px) * -1);
 }
 
-/* `k-tab-e5i`: line indicator anchored to the top edge. */
-.k-tab-a.k-tab-l .k-tab-e5.k-tab-e5i {
+/* `k-tab-e5i`: top-anchored line or dot indicator. */
+.k-tab-a.k-tab-l .k-tab-e5.k-tab-e5i,
+.k-tab-a.k-tab-d .k-tab-e5.k-tab-e5i {
   top: calc(var(--k-bw, 0px) * -1);
   bottom: auto;
 }
 
-/* `k-tab-b`: box variant root clips the indicator background. */
+/* `k-tab-b`: box type root clips the indicator background. */
 .k-tab-a.k-tab-b {
   overflow: hidden;
 }

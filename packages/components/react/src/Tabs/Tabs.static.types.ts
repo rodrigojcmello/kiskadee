@@ -1,8 +1,4 @@
-import type {
-  ClassNameByElementJSON,
-  ComponentEmphasis,
-  ElementSizeValue
-} from '@kiskadee/core';
+import type { ComponentEmphasis, ElementSizeValue } from '@kiskadee/core';
 import type {
   TabsBarProps as HeadlessTabsBarProps,
   TabsContentProps as HeadlessTabsContentProps,
@@ -13,14 +9,12 @@ import type {
 import type { HTMLAttributes, ReactNode } from 'react';
 import type {
   TabsBoxIndicatorConfig,
+  TabsClassesMap,
+  TabsClassNames,
+  TabsDotIndicatorConfig,
+  TabsElementName,
   TabsLineIndicatorConfig
-} from './TabsIndicator.types.ts';
-
-export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
-
-export type TabsClassNames = Partial<Record<TabsElementName, string>>;
-
-export type TabsClassesMap = Partial<Record<TabsElementName, ClassNameByElementJSON>>;
+} from './Tabs.common.types.ts';
 
 type TabsRootBaseProps = Omit<HeadlessTabsRootProps, 'classNames'> & {
   classNames?: TabsClassNames;
@@ -35,17 +29,26 @@ type TabsRootBaseProps = Omit<HeadlessTabsRootProps, 'classNames'> & {
 };
 
 export type TabsRootLineProps = TabsRootBaseProps & {
-  variant?: 'line';
+  type?: 'line';
   indicator?: TabsLineIndicatorConfig<'none'>;
 };
 
 export type TabsRootBoxProps = TabsRootBaseProps & {
-  variant: 'box';
+  type: 'box';
   indicator?: TabsBoxIndicatorConfig<'none'>;
 };
 
-export type TabsRootProps = TabsRootLineProps | TabsRootBoxProps;
-export type TabsIndicatorConfig = TabsLineIndicatorConfig<'none'> | TabsBoxIndicatorConfig<'none'>;
+export type TabsRootDotProps = TabsRootBaseProps & {
+  type: 'dot';
+  indicator?: TabsDotIndicatorConfig<'none'>;
+};
+
+export type TabsRootProps = TabsRootLineProps | TabsRootBoxProps | TabsRootDotProps;
+
+export type TabsIndicatorConfig =
+  | TabsLineIndicatorConfig<'none'>
+  | TabsBoxIndicatorConfig<'none'>
+  | TabsDotIndicatorConfig<'none'>;
 
 export type TabsBarProps = HeadlessTabsBarProps;
 
@@ -66,5 +69,9 @@ export type TabsIconProps = HTMLAttributes<HTMLSpanElement>;
 
 export type {
   TabsBoxIndicatorConfig,
+  TabsClassNames,
+  TabsClassesMap,
+  TabsDotIndicatorConfig,
+  TabsElementName,
   TabsLineIndicatorConfig
 };

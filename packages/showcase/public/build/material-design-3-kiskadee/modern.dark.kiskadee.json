@@ -3,12 +3,12 @@
     "e2": {
       "c": {
         "primary": {
-          "h": "mk-l mk-ap mk-g",
-          "m": "mk-l mk-ap mk-g"
+          "h": "mk-m mk-av mk-g",
+          "m": "mk-m mk-av mk-g"
         },
         "destructive": {
-          "h": "mk-l mk-ap mk-g",
-          "m": "mk-l mk-ap mk-g"
+          "h": "mk-m mk-av mk-g",
+          "m": "mk-m mk-av mk-g"
         }
       }
     }

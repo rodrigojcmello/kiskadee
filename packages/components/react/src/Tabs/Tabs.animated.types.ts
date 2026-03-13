@@ -1,8 +1,4 @@
-import type {
-  ClassNameByElementJSON,
-  ComponentEmphasis,
-  ElementSizeValue
-} from '@kiskadee/core';
+import type { ComponentEmphasis, ElementSizeValue } from '@kiskadee/core';
 import type {
   TabsBarProps as HeadlessTabsBarProps,
   TabsContentProps as HeadlessTabsContentProps,
@@ -13,15 +9,13 @@ import type {
 import type { HTMLAttributes, ReactNode } from 'react';
 import type {
   TabsBoxIndicatorConfig,
+  TabsClassNames,
+  TabsClassesMap,
+  TabsDotIndicatorConfig,
+  TabsElementName,
   TabsIndicatorMotion,
   TabsLineIndicatorConfig
-} from './TabsIndicator.types.ts';
-
-export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
-
-export type TabsClassNames = Partial<Record<TabsElementName, string>>;
-
-export type TabsClassesMap = Partial<Record<TabsElementName, ClassNameByElementJSON>>;
+} from './Tabs.common.types.ts';
 
 export type TabsSpringPreset = 'snappy' | 'gentle' | 'debugSlow';
 
@@ -48,17 +42,26 @@ type TabsRootBaseProps = Omit<HeadlessTabsRootProps, 'classNames'> & {
 };
 
 export type TabsRootLineProps = TabsRootBaseProps & {
-  variant?: 'line';
+  type?: 'line';
   indicator?: TabsLineIndicatorConfig;
 };
 
 export type TabsRootBoxProps = TabsRootBaseProps & {
-  variant: 'box';
+  type: 'box';
   indicator?: TabsBoxIndicatorConfig;
 };
 
-export type TabsRootProps = TabsRootLineProps | TabsRootBoxProps;
-export type TabsIndicatorConfig = TabsLineIndicatorConfig | TabsBoxIndicatorConfig;
+export type TabsRootDotProps = TabsRootBaseProps & {
+  type: 'dot';
+  indicator?: TabsDotIndicatorConfig;
+};
+
+export type TabsRootProps = TabsRootLineProps | TabsRootBoxProps | TabsRootDotProps;
+
+export type TabsIndicatorConfig =
+  | TabsLineIndicatorConfig
+  | TabsBoxIndicatorConfig
+  | TabsDotIndicatorConfig;
 
 export type TabsBarProps = HeadlessTabsBarProps;
 
@@ -77,4 +80,12 @@ export type TabsLabelProps = HTMLAttributes<HTMLSpanElement>;
 
 export type TabsIconProps = HTMLAttributes<HTMLSpanElement>;
 
-export type { TabsBoxIndicatorConfig, TabsIndicatorMotion, TabsLineIndicatorConfig };
+export type {
+  TabsBoxIndicatorConfig,
+  TabsClassNames,
+  TabsClassesMap,
+  TabsDotIndicatorConfig,
+  TabsElementName,
+  TabsIndicatorMotion,
+  TabsLineIndicatorConfig
+};

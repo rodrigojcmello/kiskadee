@@ -1,13 +1,13 @@
-.ak-e { background: #FF0004 }
-.ak-f.-d.-a { background: #FF000433 }
-.ak-g.-d.-a { background: #FFE5E633 }
-.ak-p.-s.-a { background: #FF0004 }
-.ak-s { background: #FF000466 }
-.ak-h:focus-visible, .ak-h.-f.-a { background: #FF0004 }
-.ak-i:focus-visible, .ak-i.-f.-a { background: #FFE5E6 }
-.ak-j:hover:not(:active), .ak-j.-h.-a { background: #FF0004CC }
-.ak-k:hover:not(:active), .ak-k.-h.-a { background: #FFF0F0 }
-.ak-l:active, .ak-l.-p.-a { background: #CC0003 }
-.ak-m:active, .ak-m.-p.-a { background: #FFD6D7 }
-.ak-n:hover:not(:active).-s, .ak-n.-s.-h.-a { background: #FF0004CC }
-.ak-o:active.-s, .ak-o.-s.-p.-a { background: #CC0003 }
+.ak-h { background: #FF0004 }
+.ak-i.-d.-a { background: #FF000433 }
+.ak-j.-d.-a { background: #FFE5E633 }
+.ak-t.-s.-a { background: #FF0004 }
+.ak-x { background: #FF000466 }
+.ak-k:focus-visible, .ak-k.-f.-a { background: #FF0004 }
+.ak-l:focus-visible, .ak-l.-f.-a { background: #FFE5E6 }
+.ak-m:hover:not(:active), .ak-m.-h.-a { background: #FF0004CC }
+.ak-n:hover:not(:active), .ak-n.-h.-a { background: #FFF0F0 }
+.ak-p:active, .ak-p.-p.-a { background: #CC0003 }
+.ak-q:active, .ak-q.-p.-a { background: #FFD6D7 }
+.ak-r:hover:not(:active).-s, .ak-r.-s.-h.-a { background: #FF0004CC }
+.ak-s:active.-s, .ak-s.-s.-p.-a { background: #CC0003 }

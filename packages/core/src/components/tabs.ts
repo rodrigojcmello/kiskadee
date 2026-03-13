@@ -32,21 +32,26 @@ type ElementScalesByProperty<TScaleProperty extends StandardScaleProperty> = Par
  * - e6: separator
  */
 export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
-export type TabsVariant = 'line' | 'box';
+export type TabsType = 'line' | 'box' | 'dot';
 export type TabsIndicatorPosition = 'top' | 'bottom';
 export type TabsIndicatorWidthMode = 'tab' | 'fixed';
-export const tabsIndicatorShapesByVariant = {
-  line: ['square', 'rounded', 'roundedClip', 'dot'],
-  box: ['square', 'rounded', 'pill']
+export const tabsIndicatorVariantsByType = {
+  line: ['square', 'rounded', 'roundedClip'],
+  box: ['square', 'rounded', 'pill'],
+  dot: ['dot']
 } as const;
-export type TabsLineIndicatorShape = (typeof tabsIndicatorShapesByVariant.line)[number];
-export type TabsBoxIndicatorShape = (typeof tabsIndicatorShapesByVariant.box)[number];
-export type TabsIndicatorShape = TabsLineIndicatorShape | TabsBoxIndicatorShape;
+export type TabsLineIndicatorVariant = (typeof tabsIndicatorVariantsByType.line)[number];
+export type TabsBoxIndicatorVariant = (typeof tabsIndicatorVariantsByType.box)[number];
+export type TabsDotIndicatorVariant = (typeof tabsIndicatorVariantsByType.dot)[number];
+export type TabsIndicatorVariant =
+  | TabsLineIndicatorVariant
+  | TabsBoxIndicatorVariant
+  | TabsDotIndicatorVariant;
 
 export type TabsOptions = Partial<{
-  variant: TabsVariant;
+  type: TabsType;
   indicatorPosition: TabsIndicatorPosition;
-  indicatorShape: TabsIndicatorShape;
+  indicatorVariant: TabsIndicatorVariant;
   indicatorWidthMode: TabsIndicatorWidthMode;
   separator: boolean;
 }>;
@@ -143,11 +148,11 @@ export type TabsIconElementStyle<TSegmentName extends SegmentName = never> = Par
  *
  * NOTE:
  * `boxWidth` is used by line indicators when `indicatorWidthMode` is `fixed`.
- * `boxHeight` is the line thickness for line indicators and the diameter for `dot`.
+ * `boxHeight` is the line thickness for `line`, the diameter for `dot`, and the fill height for `box`.
  * `marginTop` / `marginBottom` define the gap between the indicator and the bar edge.
  *
- * `roundedClip` is a structural shape handled by component styles (fixed geometry).
- * `dot` is a structural shape handled by component styles (fixed circle geometry).
+ * `roundedClip` is a structural indicator variant handled by component styles (fixed geometry).
+ * `dot` is a dedicated type handled by component styles (fixed circle geometry).
  * `rounded` / `pill` radius values must come from preset artifacts (JSON/CSS classes).
  */
 export type TabsIndicatorElementStyle<TSegmentName extends SegmentName = never> = Partial<{
@@ -194,13 +199,13 @@ export type TabsElements<TSegmentName extends SegmentName = never> = {
   e6?: TabsSeparatorElementStyle<TSegmentName>;
 };
 
-export type TabsVariantConfig<TSegmentName extends SegmentName = never> = {
+export type TabsTypeConfig<TSegmentName extends SegmentName = never> = {
   elements: TabsElements<TSegmentName>;
   options?: TabsOptions;
 };
 
-export type TabsVariants<TSegmentName extends SegmentName = never> = Partial<
-  Record<TabsVariant, TabsVariantConfig<TSegmentName>>
+export type TabsTypes<TSegmentName extends SegmentName = never> = Partial<
+  Record<TabsType, TabsTypeConfig<TSegmentName>>
 >;
 
 type ElementContractRules = {
@@ -213,9 +218,9 @@ const TABS_COMPONENT_KEYS = ['elements', 'options', 'variants'] as const;
 const TABS_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5', 'e6'] as const;
 const TABS_ELEMENT_BASE_KEYS = ['name', 'decorations', 'scales', 'palettes', 'effects'] as const;
 const TABS_OPTIONS_KEYS = [
-  'variant',
+  'type',
   'indicatorPosition',
-  'indicatorShape',
+  'indicatorVariant',
   'indicatorWidthMode',
   'separator'
 ] as const;
@@ -358,11 +363,12 @@ function validateTabsOptions(value: unknown, path: string, issues: string[]): vo
   validateAllowedKeys(value, TABS_OPTIONS_KEYS, path, issues);
 
   if (
-    value.variant !== undefined &&
-    value.variant !== 'line' &&
-    value.variant !== 'box'
+    value.type !== undefined &&
+    value.type !== 'line' &&
+    value.type !== 'box' &&
+    value.type !== 'dot'
   ) {
-    issues.push(`${path}.variant: expected "line" or "box"`);
+    issues.push(`${path}.type: expected "line", "box", or "dot"`);
   }
 
   if (
@@ -374,15 +380,15 @@ function validateTabsOptions(value: unknown, path: string, issues: string[]): vo
   }
 
   if (
-    value.indicatorShape !== undefined &&
-    value.indicatorShape !== 'square' &&
-    value.indicatorShape !== 'rounded' &&
-    value.indicatorShape !== 'roundedClip' &&
-    value.indicatorShape !== 'dot' &&
-    value.indicatorShape !== 'pill'
+    value.indicatorVariant !== undefined &&
+    value.indicatorVariant !== 'square' &&
+    value.indicatorVariant !== 'rounded' &&
+    value.indicatorVariant !== 'roundedClip' &&
+    value.indicatorVariant !== 'dot' &&
+    value.indicatorVariant !== 'pill'
   ) {
     issues.push(
-      `${path}.indicatorShape: expected "square", "rounded", "roundedClip", "dot", or "pill"`
+      `${path}.indicatorVariant: expected "square", "rounded", "roundedClip", "dot", or "pill"`
     );
   }
 
@@ -392,6 +398,34 @@ function validateTabsOptions(value: unknown, path: string, issues: string[]): vo
     value.indicatorWidthMode !== 'fixed'
   ) {
     issues.push(`${path}.indicatorWidthMode: expected "tab" or "fixed"`);
+  }
+
+  if (
+    value.type === 'line' &&
+    (value.indicatorVariant === 'pill' || value.indicatorVariant === 'dot')
+  ) {
+    issues.push(
+      `${path}.indicatorVariant: "line" supports only "square", "rounded", or "roundedClip"`
+    );
+  }
+
+  if (
+    value.type === 'box' &&
+    (value.indicatorVariant === 'roundedClip' || value.indicatorVariant === 'dot')
+  ) {
+    issues.push(`${path}.indicatorVariant: "box" supports only "square", "rounded", or "pill"`);
+  }
+
+  if (
+    value.type === 'dot' &&
+    value.indicatorVariant !== undefined &&
+    value.indicatorVariant !== 'dot'
+  ) {
+    issues.push(`${path}.indicatorVariant: "dot" does not accept alternate variants`);
+  }
+
+  if (value.type === 'dot' && value.indicatorWidthMode !== undefined) {
+    issues.push(`${path}.indicatorWidthMode: "dot" does not support indicatorWidthMode`);
   }
 
   if (value.separator !== undefined && typeof value.separator !== 'boolean') {

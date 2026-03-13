@@ -2,114 +2,143 @@
   "$schema": "./core.kiskadee.schema.json",
   "button": {
     "e1": {
-      "d": "ak-br",
+      "d": "ak-cd",
       "s": {
-        "sm:1": "ak-dg ak-ct ak-cw ak-da",
-        "md:1": "ak-be ak-di ak-bb ak-cv ak-bc ak-cz ak-bd ak-de",
-        "lg:1": "ak-be ak-bb ak-bc ak-bd"
+        "sm:1": "ak-dn ak-de ak-dg ak-dj",
+        "md:1": "ak-bo ak-do ak-bh ak-df ak-bk ak-di ak-bm ak-dl",
+        "lg:1": "ak-bo ak-bh ak-bk ak-bm"
       },
       "r": {
-        "sm:1": "ak-ac",
-        "md:1": "ak-q ak-ad",
-        "lg:1": "ak-q"
+        "sm:1": "ak-ai",
+        "md:1": "ak-v ak-aj",
+        "lg:1": "ak-v"
       },
       "rp": {
-        "sm:1": "ak-ac",
-        "md:1": "ak-q ak-ad",
-        "lg:1": "ak-q"
+        "sm:1": "ak-ai",
+        "md:1": "ak-v ak-aj",
+        "lg:1": "ak-v"
       },
       "rs": {
         "sm:1": "ak-a",
-        "md:1": "ak-a ak-r",
+        "md:1": "ak-a ak-w",
         "lg:1": "ak-a"
       }
     },
     "e2": {
-      "d": "ak-bq",
+      "d": "ak-ah",
       "s": {
-        "sm:1": "ak-ds ak-aa",
-        "md:1": "ak-bp ak-aa",
-        "lg:1": "ak-bp ak-aa"
+        "sm:1": "ak-dw ak-ag",
+        "md:1": "ak-cc ak-ag",
+        "lg:1": "ak-cc ak-ag"
       }
     }
   },
   "tabs": {
     "box": {
       "e1": {
-        "d": "ak-bs",
+        "d": "ak-ak",
         "s": {
-          "all": "ak-bt ak-df ak-cs ak-cy ak-dc"
+          "all": "ak-al ak-dm ak-dd ak-dh ak-dk"
         },
         "r": {
-          "sm:1": "ak-z",
-          "md:1": "ak-z",
-          "lg:1": "ak-z"
+          "sm:1": "ak-af",
+          "md:1": "ak-af",
+          "lg:1": "ak-af"
         },
         "rp": {
           "sm:1": "ak-b",
-          "md:1": "ak-b ak-y",
+          "md:1": "ak-b ak-ae",
           "lg:1": "ak-b"
         },
         "rs": {
           "sm:1": "ak-a",
-          "md:1": "ak-a ak-r",
+          "md:1": "ak-a ak-w",
           "lg:1": "ak-a"
         }
       },
       "e2": {
         "s": {
-          "all": "ak-dh ak-cu ak-cx ak-db"
+          "all": "ak-bp ak-bi ak-bj ak-bl"
         },
         "r": {
-          "sm:1": "ak-d",
-          "md:1": "ak-d",
-          "lg:1": "ak-d"
+          "sm:1": "ak-f",
+          "md:1": "ak-f",
+          "lg:1": "ak-f"
         },
         "rp": {
           "sm:1": "ak-b",
-          "md:1": "ak-b ak-y",
+          "md:1": "ak-b ak-ae",
           "lg:1": "ak-b"
         },
         "rs": {
           "sm:1": "ak-a",
-          "md:1": "ak-a ak-r",
+          "md:1": "ak-a ak-w",
           "lg:1": "ak-a"
         }
       },
       "e3": {
-        "d": "ak-bq",
+        "d": "ak-ah",
         "s": {
-          "all": "ak-dr ak-dq"
+          "all": "ak-cb ak-ca"
         }
       },
       "e4": {
         "s": {
-          "all": "ak-cr ak-cp ak-dd"
+          "all": "ak-bg ak-bf ak-bn"
         }
       },
       "e5": {
         "e": {
-          "h": "ak-dj"
+          "h": "ak-dp"
         },
         "r": {
-          "sm:1": "ak-d",
-          "md:1": "ak-d",
-          "lg:1": "ak-d"
+          "sm:1": "ak-f",
+          "md:1": "ak-f",
+          "lg:1": "ak-f"
         },
         "rp": {
           "sm:1": "ak-b",
-          "md:1": "ak-b ak-y",
+          "md:1": "ak-b ak-ae",
           "lg:1": "ak-b"
         },
         "rs": {
           "sm:1": "ak-a",
-          "md:1": "ak-a ak-r",
+          "md:1": "ak-a ak-w",
           "lg:1": "ak-a"
         }
       },
       "e6": {
         "s": {
-          "all": "ak-cq ak-co"
+          "all": "ak-da ak-cy"
+        }
+      }
+    },
+    "dot": {
+      "e1": {
+        "d": "ak-ak",
+        "s": {
+          "all": "ak-al"
+        }
+      },
+      "e2": {
+        "s": {
+          "all": "ak-bp ak-bi ak-bj ak-bl"
+        }
+      },
+      "e3": {
+        "d": "ak-ah",
+        "s": {
+          "all": "ak-cb ak-ca"
+        }
+      },
+      "e4": {
+        "s": {
+          "all": "ak-bg ak-bf ak-bn"
+        }
+      },
+      "e5": {
+        "s": {
+          "all": "ak-cz ak-dc ak-db"
         }
       }
     }

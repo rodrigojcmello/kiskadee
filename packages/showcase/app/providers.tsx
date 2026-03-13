@@ -33,8 +33,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     backgroundsByTheme,
     globalRadius,
     globalRipple,
+    tabsType,
     tabsIndicatorPosition,
-    tabsIndicatorShape,
+    tabsIndicatorVariant,
     tabsIndicatorWidthMode,
     tabsSeparator
   } = useThemeExtras({
@@ -45,26 +46,29 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const globalConfig =
     globalRadius !== undefined ||
     globalRipple !== undefined ||
+    tabsType !== undefined ||
     tabsIndicatorPosition !== undefined ||
-    tabsIndicatorShape !== undefined ||
+    tabsIndicatorVariant !== undefined ||
     tabsIndicatorWidthMode !== undefined ||
     tabsSeparator !== undefined
       ? {
           ...(globalRadius !== undefined ? { radius: globalRadius } : {}),
           ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {}),
-          ...(tabsIndicatorPosition !== undefined ||
-          tabsIndicatorShape !== undefined ||
+          ...(tabsType !== undefined ||
+          tabsIndicatorPosition !== undefined ||
+          tabsIndicatorVariant !== undefined ||
           tabsIndicatorWidthMode !== undefined ||
           tabsSeparator !== undefined
             ? {
                 components: {
                   tabs: {
                     options: {
+                      ...(tabsType !== undefined ? { type: tabsType } : {}),
                       ...(tabsIndicatorPosition !== undefined
                         ? { indicatorPosition: tabsIndicatorPosition }
                         : {}),
-                      ...(tabsIndicatorShape !== undefined
-                        ? { indicatorShape: tabsIndicatorShape }
+                      ...(tabsIndicatorVariant !== undefined
+                        ? { indicatorVariant: tabsIndicatorVariant }
                         : {}),
                       ...(tabsIndicatorWidthMode !== undefined
                         ? { indicatorWidthMode: tabsIndicatorWidthMode }

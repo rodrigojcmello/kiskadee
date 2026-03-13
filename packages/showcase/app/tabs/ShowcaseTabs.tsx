@@ -1,12 +1,12 @@
 'use client';
 
-import { KTabs, KTabsStatic } from '@kiskadee/react-components';
-import type { TabsSpringPreset } from '@kiskadee/react-components';
 import {
-  tabsIndicatorShapesByVariant,
-  type TabsBoxIndicatorShape,
-  type TabsLineIndicatorShape
+  type TabsBoxIndicatorVariant,
+  type TabsLineIndicatorVariant,
+  tabsIndicatorVariantsByType
 } from '@kiskadee/core';
+import type { TabsSpringPreset } from '@kiskadee/react-components';
+import { KTabs, KTabsStatic } from '@kiskadee/react-components';
 import { useState } from 'react';
 import { Select } from '@/k-components';
 
@@ -42,88 +42,138 @@ const springOptions = [
   { value: 'debugSlow', label: 'Debug Slow' }
 ];
 
-const lineShapeTitles: Record<TabsLineIndicatorShape, string> = {
+const lineIndicatorVariantTitles: Record<TabsLineIndicatorVariant, string> = {
   square: 'Line / Square',
   rounded: 'Line / Rounded',
-  roundedClip: 'Line / Rounded Clip',
-  dot: 'Line / Dot'
+  roundedClip: 'Line / Rounded Clip'
 };
 
-const boxShapeTitles: Record<TabsBoxIndicatorShape, string> = {
+const boxIndicatorVariantTitles: Record<TabsBoxIndicatorVariant, string> = {
   square: 'Box / Square',
   rounded: 'Box / Rounded',
   pill: 'Box / Pill'
 };
 
-const lineExamples: Array<{ title: string; shape: TabsLineIndicatorShape }> =
-  tabsIndicatorShapesByVariant.line.map((shape) => ({
-    title: lineShapeTitles[shape],
-    shape
+const lineExamples: Array<{ title: string; indicatorVariant: TabsLineIndicatorVariant }> =
+  tabsIndicatorVariantsByType.line.map((indicatorVariant) => ({
+    title: lineIndicatorVariantTitles[indicatorVariant],
+    indicatorVariant
   }));
 
-const boxExamples: Array<{ title: string; shape: TabsBoxIndicatorShape }> =
-  tabsIndicatorShapesByVariant.box.map((shape) => ({
-    title: boxShapeTitles[shape],
-    shape
+const boxExamples: Array<{ title: string; indicatorVariant: TabsBoxIndicatorVariant }> =
+  tabsIndicatorVariantsByType.box.map((indicatorVariant) => ({
+    title: boxIndicatorVariantTitles[indicatorVariant],
+    indicatorVariant
   }));
 
-function TabsExample({
-  title,
-  mode,
-  spring,
-  variant,
-  indicator
-}: (
+const dotExample = { title: 'Dot' } as const;
+
+type TabsExampleProps =
   | {
       title: string;
       mode: TabsMode;
       spring: TabsSpring;
-      variant: 'line';
+      type: 'line';
       indicator: {
         position: 'bottom';
-        shape: TabsLineIndicatorShape;
+        variant: TabsLineIndicatorVariant;
       };
     }
   | {
       title: string;
       mode: TabsMode;
       spring: TabsSpring;
-      variant: 'box';
+      type: 'box';
       indicator: {
-        shape: TabsBoxIndicatorShape;
+        variant: TabsBoxIndicatorVariant;
       };
     }
-)) {
+  | {
+      title: string;
+      mode: TabsMode;
+      spring: TabsSpring;
+      type: 'dot';
+      indicator: {
+        position: 'bottom';
+      };
+    };
+
+function TabsExample(props: TabsExampleProps) {
+  const { title, mode, spring } = props;
+  const type = props.type;
+  const indicator = props.indicator;
+  const tabVariantKey = 'variant' in indicator ? indicator.variant : 'dot';
+  const tabs = (
+    <KTabs.Bar>
+      {tabItems.map((tab) => (
+        <KTabs.Tab key={`${type}-${tabVariantKey}-${tab.value}`} value={tab.value} label={tab.label} />
+      ))}
+    </KTabs.Bar>
+  );
+  const contents = tabItems.map((tab) => (
+    <KTabs.Content key={`${type}-${tabVariantKey}-content-${tab.value}`} value={tab.value}>
+      {loremByValue[tab.value]}
+    </KTabs.Content>
+  ));
+  const staticTabs = (
+    <KTabsStatic.Bar>
+      {tabItems.map((tab) => (
+        <KTabsStatic.Tab
+          key={`${type}-${tabVariantKey}-static-${tab.value}`}
+          value={tab.value}
+          label={tab.label}
+        />
+      ))}
+      <KTabsStatic.Indicator />
+    </KTabsStatic.Bar>
+  );
+  const staticContents = tabItems.map((tab) => (
+    <KTabsStatic.Content
+      key={`${type}-${tabVariantKey}-static-content-${tab.value}`}
+      value={tab.value}
+    >
+      {loremByValue[tab.value]}
+    </KTabsStatic.Content>
+  ));
+
   if (mode === 'animated') {
     return (
       <div>
         <h3>{title}</h3>
-        <KTabs.Root
-          defaultValue="locations"
-          indicator={indicator}
-          variant={variant}
-          activationMode="manual"
-          spring={spring}
-        >
-          <KTabs.Bar>
-            {tabItems.map((tab) => (
-              <KTabs.Tab
-                key={`${variant}-${indicator.shape}-${tab.value}`}
-                value={tab.value}
-                label={tab.label}
-              />
-            ))}
-          </KTabs.Bar>
-
-          {tabItems.map((tab) => (
-            <KTabs.Content
-              key={`${variant}-${indicator.shape}-content-${tab.value}`}
-              value={tab.value}
-            >
-              {loremByValue[tab.value]}
-            </KTabs.Content>
-          ))}
-        </KTabs.Root>
+        {props.type === 'box' ? (
+          <KTabs.Root
+            defaultValue="locations"
+            activationMode="manual"
+            type={props.type}
+            indicator={props.indicator}
+            spring={spring}
+          >
+            {tabs}
+            {contents}
+          </KTabs.Root>
+        ) : props.type === 'dot' ? (
+          <KTabs.Root
+            defaultValue="locations"
+            activationMode="manual"
+            type={props.type}
+            indicator={props.indicator}
+            spring={spring}
+          >
+            {tabs}
+            {contents}
+          </KTabs.Root>
+        ) : (
+          <KTabs.Root
+            defaultValue="locations"
+            activationMode="manual"
+            type={props.type}
+            indicator={props.indicator}
+            spring={spring}
+          >
+            {tabs}
+            {contents}
+          </KTabs.Root>
+        )}
       </div>
     );
   }
@@ -131,32 +181,37 @@ function TabsExample({
   return (
     <div>
       <h3>{title}</h3>
-      <KTabsStatic.Root
-        defaultValue="locations"
-        indicator={indicator}
-        variant={variant}
-        activationMode="manual"
-      >
-        <KTabsStatic.Bar>
-          {tabItems.map((tab) => (
-            <KTabsStatic.Tab
-              key={`${variant}-${indicator.shape}-static-${tab.value}`}
-              value={tab.value}
-              label={tab.label}
-            />
-          ))}
-          <KTabsStatic.Indicator />
-        </KTabsStatic.Bar>
-
-        {tabItems.map((tab) => (
-          <KTabsStatic.Content
-            key={`${variant}-${indicator.shape}-static-content-${tab.value}`}
-            value={tab.value}
-          >
-            {loremByValue[tab.value]}
-          </KTabsStatic.Content>
-        ))}
-      </KTabsStatic.Root>
+      {props.type === 'box' ? (
+        <KTabsStatic.Root
+          defaultValue="locations"
+          activationMode="manual"
+          type={props.type}
+          indicator={props.indicator}
+        >
+          {staticTabs}
+          {staticContents}
+        </KTabsStatic.Root>
+      ) : props.type === 'dot' ? (
+        <KTabsStatic.Root
+          defaultValue="locations"
+          activationMode="manual"
+          type={props.type}
+          indicator={props.indicator}
+        >
+          {staticTabs}
+          {staticContents}
+        </KTabsStatic.Root>
+      ) : (
+        <KTabsStatic.Root
+          defaultValue="locations"
+          activationMode="manual"
+          type={props.type}
+          indicator={props.indicator}
+        >
+          {staticTabs}
+          {staticContents}
+        </KTabsStatic.Root>
+      )}
     </div>
   );
 }
@@ -169,9 +224,17 @@ export default function ShowcaseTabs() {
     <section style={{ marginTop: 106 }}>
       <h2>Tabs</h2>
 
-      <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap', marginBottom: 20 }}>
+      <div
+        style={{
+          display: 'flex',
+          gap: 12,
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          marginBottom: 20
+        }}
+      >
         <Select
-          label="Type"
+          label="Mode"
           width={180}
           options={modeOptions}
           value={mode}
@@ -189,31 +252,43 @@ export default function ShowcaseTabs() {
         ) : null}
       </div>
 
-      <h2>Type A (Line)</h2>
+      <h2>Line</h2>
       {lineExamples.map((example) => (
         <TabsExample
-          key={`line-${example.shape}-${mode}`}
+          key={`line-${example.indicatorVariant}-${mode}`}
           title={example.title}
           mode={mode}
           spring={spring}
-          variant="line"
+          type="line"
           indicator={{
             position: 'bottom',
-            shape: example.shape
+            variant: example.indicatorVariant
           }}
         />
       ))}
 
-      <h2 style={{ marginTop: 40 }}>Type B (Box)</h2>
+      <h2 style={{ marginTop: 40 }}>Dot</h2>
+      <TabsExample
+        key={`dot-${mode}`}
+        title={dotExample.title}
+        mode={mode}
+        spring={spring}
+        type="dot"
+        indicator={{
+          position: 'bottom'
+        }}
+      />
+
+      <h2 style={{ marginTop: 40 }}>Box</h2>
       {boxExamples.map((example) => (
         <TabsExample
-          key={`box-${example.shape}-${mode}`}
+          key={`box-${example.indicatorVariant}-${mode}`}
           title={example.title}
           mode={mode}
           spring={spring}
-          variant="box"
+          type="box"
           indicator={{
-            shape: example.shape
+            variant: example.indicatorVariant
           }}
         />
       ))}

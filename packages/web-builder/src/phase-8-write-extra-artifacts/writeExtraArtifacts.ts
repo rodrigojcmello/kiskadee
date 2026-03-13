@@ -9,10 +9,10 @@ import type {
   SchemaFonts,
   SegmentName,
   SolidColor,
-  TabsIndicatorShape,
+  TabsIndicatorVariant,
   TabsIndicatorPosition,
   TabsIndicatorWidthMode,
-  TabsVariant,
+  TabsType,
   ThemeMode
 } from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
@@ -152,11 +152,14 @@ export async function writeExtraArtifacts(params: {
   const ripple = schema.global?.effects?.ripple as RippleEffectSchema | undefined;
   const tabsIndicatorPosition = schema.components?.tabs?.options
     ?.indicatorPosition as TabsIndicatorPosition | undefined;
-  const tabsIndicatorShape = schema.components?.tabs?.options
-    ?.indicatorShape as TabsIndicatorShape | undefined;
+  const tabsIndicatorVariant =
+    (schema.components?.tabs?.options?.indicatorVariant ??
+      schema.components?.tabs?.options?.indicatorShape) as TabsIndicatorVariant | undefined;
   const tabsIndicatorWidthMode = schema.components?.tabs?.options
     ?.indicatorWidthMode as TabsIndicatorWidthMode | undefined;
-  const tabsVariant = schema.components?.tabs?.options?.variant as TabsVariant | undefined;
+  const tabsType =
+    (schema.components?.tabs?.options?.type ??
+      schema.components?.tabs?.options?.variant) as TabsType | undefined;
   const tabsSeparator = schema.components?.tabs?.options?.separator as boolean | undefined;
 
   function toCssFontFamilyString(value: FontStack): string | null {
@@ -174,9 +177,9 @@ export async function writeExtraArtifacts(params: {
   const hasRipple = Boolean(ripple && Object.keys(ripple).length > 0);
   const hasTabsOptions = Boolean(
     tabsIndicatorPosition ||
-      tabsIndicatorShape ||
+      tabsIndicatorVariant ||
       tabsIndicatorWidthMode ||
-      tabsVariant ||
+      tabsType ||
       tabsSeparator !== undefined
   );
 
@@ -191,9 +194,9 @@ export async function writeExtraArtifacts(params: {
       components?: {
         tabs?: {
           options?: {
-            variant?: TabsVariant;
+            type?: TabsType;
             indicatorPosition?: TabsIndicatorPosition;
-            indicatorShape?: TabsIndicatorShape;
+            indicatorVariant?: TabsIndicatorVariant;
             indicatorWidthMode?: TabsIndicatorWidthMode;
             separator?: boolean;
           };
@@ -223,9 +226,9 @@ export async function writeExtraArtifacts(params: {
         ...(globalPayload.components ?? {}),
         tabs: {
           options: {
-            ...(tabsVariant ? { variant: tabsVariant } : {}),
+            ...(tabsType ? { type: tabsType } : {}),
             ...(tabsIndicatorPosition ? { indicatorPosition: tabsIndicatorPosition } : {}),
-            ...(tabsIndicatorShape ? { indicatorShape: tabsIndicatorShape } : {}),
+            ...(tabsIndicatorVariant ? { indicatorVariant: tabsIndicatorVariant } : {}),
             ...(tabsIndicatorWidthMode ? { indicatorWidthMode: tabsIndicatorWidthMode } : {}),
             ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {})
           }

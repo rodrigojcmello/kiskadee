@@ -213,6 +213,26 @@ export function createMaterial3GoogleTabsSchema({
     }
   };
 
+  const dotElements: TabsComponent['elements'] = {
+    // e1: bar
+    e1: lineElements.e1,
+    // e2: tab
+    e2: lineElements.e2,
+    // e3: label
+    e3: lineElements.e3,
+    // e4: icon
+    e4: lineElements.e4,
+    // e5: indicator
+    e5: {
+      scales: {
+        boxHeight: 8,
+        marginTop: 0,
+        marginBottom: 5
+      },
+      palettes: lineElements.e5?.palettes
+    }
+  };
+
   const boxElements: TabsComponent['elements'] = {
     // e1: bar
     e1: {
@@ -388,14 +408,17 @@ export function createMaterial3GoogleTabsSchema({
 
   return {
     options: {
-      variant: 'line',
+      type: 'line',
       indicatorPosition: 'bottom',
-      indicatorShape: 'square',
+      indicatorVariant: 'square',
       indicatorWidthMode: 'tab'
     },
     variants: {
       line: {
         elements: lineElements
+      },
+      dot: {
+        elements: dotElements
       },
       box: {
         elements: boxElements

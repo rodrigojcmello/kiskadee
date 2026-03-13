@@ -2,8 +2,8 @@ import type {
   ComponentClassNameMapJSON,
   RadiusMode,
   RippleEffectSchema,
-  TabsVariant,
-  TabsIndicatorShape,
+  TabsType,
+  TabsIndicatorVariant,
   TabsIndicatorPosition,
   TabsIndicatorWidthMode,
   ThemeMode
@@ -29,11 +29,14 @@ export type KiskadeeContextValue = {
     components?: {
       tabs?: {
         options?: {
-          variant?: TabsVariant;
+          type?: TabsType;
           indicatorPosition?: TabsIndicatorPosition;
-          indicatorShape?: TabsIndicatorShape;
+          indicatorVariant?: TabsIndicatorVariant;
           indicatorWidthMode?: TabsIndicatorWidthMode;
           separator?: boolean;
+          // Legacy aliases kept only for runtime fallback with stale artifacts.
+          variant?: TabsType;
+          indicatorShape?: TabsIndicatorVariant;
         };
       };
     };
