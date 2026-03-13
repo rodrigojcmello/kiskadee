@@ -9,6 +9,7 @@ import type {
   TabsLineIndicatorVariant,
   TabsType
 } from '@kiskadee/core';
+import type { RefObject } from 'react';
 
 export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 
@@ -68,6 +69,7 @@ export type TabsVisualContextValue<TMotion extends TabsIndicatorMotion = TabsInd
   emphasis: ComponentEmphasis | undefined;
   type: TabsType;
   radiusMode: RadiusMode;
+  barRef: RefObject<HTMLDivElement | null>;
   indicator: ResolvedTabsIndicator<TMotion>;
   indicatorTransition?: Record<string, unknown>;
   separator: boolean;

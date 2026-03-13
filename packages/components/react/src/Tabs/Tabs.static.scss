@@ -47,6 +47,6 @@
 /* `k-tab-b` + `k-tab-e5`: static box indicator uses tab rect geometry. */
 .k-tab-s.k-tab-b .k-tab-e5 {
   height: var(--k-tab-h, 0px);
-  transform: translate3d(var(--k-tab-x, 0px), var(--k-tab-y, 0px), 0);
+  transform: translate3d(var(--k-tab-x, 0px), var(--k-tab-y, 0px), 0px);
   width: var(--k-tab-w, 0px);
 }

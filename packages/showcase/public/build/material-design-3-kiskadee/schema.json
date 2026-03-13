@@ -1089,9 +1089,9 @@
     },
     "tabs": {
       "options": {
-        "variant": "line",
+        "type": "line",
         "indicatorPosition": "bottom",
-        "indicatorShape": "square",
+        "indicatorVariant": "square",
         "indicatorWidthMode": "tab"
       },
       "variants": {

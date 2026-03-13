@@ -34,7 +34,7 @@ type ElementScalesByProperty<TScaleProperty extends StandardScaleProperty> = Par
 export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 export type TabsType = 'line' | 'box' | 'dot';
 export type TabsIndicatorPosition = 'top' | 'bottom';
-export type TabsIndicatorWidthMode = 'tab' | 'fixed';
+export type TabsIndicatorWidthMode = 'tab' | 'fixed' | 'content';
 export const tabsIndicatorVariantsByType = {
   line: ['square', 'rounded', 'roundedClip'],
   box: ['square', 'rounded', 'pill'],
@@ -148,6 +148,7 @@ export type TabsIconElementStyle<TSegmentName extends SegmentName = never> = Par
  *
  * NOTE:
  * `boxWidth` is used by line indicators when `indicatorWidthMode` is `fixed`.
+ * `content` width is measured from the rendered tab content by the visual component layer.
  * `boxHeight` is the line thickness for `line`, the diameter for `dot`, and the fill height for `box`.
  * `marginTop` / `marginBottom` define the gap between the indicator and the bar edge.
  *
@@ -395,9 +396,10 @@ function validateTabsOptions(value: unknown, path: string, issues: string[]): vo
   if (
     value.indicatorWidthMode !== undefined &&
     value.indicatorWidthMode !== 'tab' &&
-    value.indicatorWidthMode !== 'fixed'
+    value.indicatorWidthMode !== 'fixed' &&
+    value.indicatorWidthMode !== 'content'
   ) {
-    issues.push(`${path}.indicatorWidthMode: expected "tab" or "fixed"`);
+    issues.push(`${path}.indicatorWidthMode: expected "tab", "fixed", or "content"`);
   }
 
   if (

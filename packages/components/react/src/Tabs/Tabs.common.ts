@@ -18,6 +18,7 @@ export const DEFAULT_SCALE = 's:md:1';
 export const DEFAULT_EMPHASIS: TabsVisualContextValue['emphasis'] = 'medium';
 export const DEFAULT_INTENT = 'neutral';
 export const DEFAULT_TYPE: TabsVisualContextValue['type'] = 'line';
+const TAB_CONTENT_SELECTOR = '.k-tab-c';
 
 const TabsVisualContext = createContext<TabsVisualContextValue | null>(null);
 const TabsTabContext = createContext<TabsTabContextValue | null>(null);
@@ -182,6 +183,52 @@ export function resolveIndicatorWidthMode(
   }
 
   return indicatorWidthMode ?? globalIndicatorWidthMode ?? 'tab';
+}
+
+export type IndicatorRect = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+export function findSelectedTabElement(
+  barElement: HTMLDivElement | null,
+  selected: string | undefined
+): HTMLElement | null {
+  if (!barElement || !selected) return null;
+  const tabs = Array.from(barElement.querySelectorAll<HTMLElement>('[role="tab"]'));
+  return tabs.find((tab) => tab.getAttribute('data-tab-value') === selected) ?? null;
+}
+
+function findMeasuredTabContentElement(selectedTab: HTMLElement): HTMLElement | null {
+  return selectedTab.querySelector<HTMLElement>(TAB_CONTENT_SELECTOR);
+}
+
+export function measureIndicatorRect(options: {
+  barElement: HTMLDivElement | null;
+  selected: string | undefined;
+  widthMode: TabsVisualContextValue['indicator']['widthMode'];
+}): IndicatorRect | null {
+  const { barElement, selected, widthMode } = options;
+  const selectedTab = findSelectedTabElement(barElement, selected);
+  if (!barElement || !selectedTab) {
+    return null;
+  }
+
+  const barRect = barElement.getBoundingClientRect();
+  const tabRect = selectedTab.getBoundingClientRect();
+  const measuredRect =
+    widthMode === 'content'
+      ? (findMeasuredTabContentElement(selectedTab)?.getBoundingClientRect() ?? tabRect)
+      : tabRect;
+
+  return {
+    x: measuredRect.left - barRect.left + barElement.scrollLeft,
+    y: measuredRect.top - barRect.top + barElement.scrollTop,
+    width: measuredRect.width,
+    height: measuredRect.height
+  };
 }
 
 export function resolveListClassName(options: {

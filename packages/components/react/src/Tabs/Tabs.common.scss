@@ -42,6 +42,13 @@
   overflow: visible;
 }
 
+/* `k-tab-c`: tab content wrapper used for indicator measurements. */
+.k-tab-c {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* `k-tab-e2`: disabled trigger cursor state. */
 .k-tab-e2[aria-disabled='true'] {
   cursor: not-allowed;
@@ -76,16 +83,13 @@
 /* `k-tab-e5a`: line indicator with automatic tab width. */
 .k-tab-e5.k-tab-e5a {
   width: var(--k-tab-w, 0px);
-  transform: translate3d(var(--k-tab-x, 0px), 0px, 0);
+  transform: translate3d(var(--k-tab-x, 0px), 0px, 0px);
 }
 
 /* `k-tab-e5b`: line indicator with fixed width centered in the tab. */
 .k-tab-e5.k-tab-e5b {
-  transform: translate3d(
-    calc(var(--k-tab-x, 0px) + (var(--k-tab-w, 0px) - 100%) / 2),
-    0px,
-    0
-  );
+  left: calc(var(--k-tab-x, 0px) + (var(--k-tab-w, 0px) / 2));
+  translate: -50% 0;
 }
 
 /* `k-tab-e5c`: dot indicator centered in the tab. */

@@ -7,7 +7,9 @@ import {
   memo,
   type ReactNode,
   useCallback,
+  useEffect,
   useMemo,
+  useRef,
   useState
 } from 'react';
 import { useKiskadee } from '../contexts/KiskadeeContext';
@@ -28,6 +30,7 @@ import {
   DEFAULT_TYPE,
   extractTabValue,
   joinClassNames,
+  measureIndicatorRect,
   resolveIconClassName,
   resolveIndicatorClassName,
   resolveIndicatorVariant,
@@ -41,7 +44,7 @@ import {
   TabsVisualContextProvider,
   useTabsTabContext,
   useTabsVisualContext
-} from './Tabs.common.ts';
+} from './Tabs.common';
 import './Tabs.common.scss';
 import type {
   ResolvedTabsIndicator,
@@ -83,6 +86,7 @@ function TabsRoot({
 }: TabsRootProps) {
   const isControlled = value !== undefined;
   const [uncontrolledValue, setUncontrolledValue] = useState<string | undefined>(defaultValue);
+  const barRef = useRef<HTMLDivElement | null>(null);
   const selected = isControlled ? value : uncontrolledValue;
 
   const handleValueChange = useCallback(
@@ -157,6 +161,7 @@ function TabsRoot({
       emphasis,
       type: resolvedType,
       radiusMode: resolvedRadiusMode,
+      barRef,
       indicator: resolvedIndicator,
       separator: resolvedSeparator,
       listClassName,
@@ -171,6 +176,7 @@ function TabsRoot({
       emphasis,
       resolvedType,
       resolvedRadiusMode,
+      barRef,
       resolvedIndicator,
       resolvedSeparator,
       listClassName,
@@ -190,7 +196,7 @@ function TabsRoot({
 }
 
 function TabsBar({ className, children, ...props }: TabsBarProps) {
-  const { selected, separator, separatorClassName, listClassName, indicator, type } =
+  const { selected, separator, separatorClassName, listClassName, indicator, type, barRef } =
     useTabsVisualContext();
   const positionClass =
     type !== 'box' ? (indicator.position === 'top' ? 'k-tab-e1b' : 'k-tab-e1a') : undefined;
@@ -224,6 +230,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
 
   return (
     <HeadlessTabs.Bar
+      ref={barRef}
       {...props}
       className={joinClassNames(listClassName, positionClass, className)}
     >
@@ -253,14 +260,16 @@ function TabsTab({ value, className, label, icon, children, ...restProps }: Tabs
   return (
     <HeadlessTabs.Tab {...restProps} value={value} className={triggerClassName}>
       <TabsTabContextProvider value={tabContext}>
-        {children ? (
-          children
-        ) : (
-          <>
-            {icon ? <TabsIcon>{icon}</TabsIcon> : null}
-            {label ? <TabsLabel>{label}</TabsLabel> : null}
-          </>
-        )}
+        <span className="k-tab-c">
+          {children ? (
+            children
+          ) : (
+            <>
+              {icon ? <TabsIcon>{icon}</TabsIcon> : null}
+              {label ? <TabsLabel>{label}</TabsLabel> : null}
+            </>
+          )}
+        </span>
       </TabsTabContextProvider>
     </HeadlessTabs.Tab>
   );
@@ -320,8 +329,48 @@ function TabsContent(props: TabsContentProps) {
 }
 
 function TabsIndicator({ className, style, ...props }: TabsIndicatorProps) {
-  const { scale, intent, emphasis, classNames, elements, indicator, radiusMode, type } =
+  const { selected, scale, intent, emphasis, classNames, elements, indicator, radiusMode, type, barRef } =
     useTabsVisualContext();
+  const [indicatorRect, setIndicatorRect] = useState<ReturnType<typeof measureIndicatorRect>>(null);
+
+  const updateIndicatorRect = useCallback(() => {
+    setIndicatorRect(
+      measureIndicatorRect({
+        barElement: barRef.current,
+        selected,
+        widthMode: indicator.widthMode
+      })
+    );
+  }, [barRef, indicator.widthMode, selected]);
+
+  useEffect(() => {
+    updateIndicatorRect();
+  }, [updateIndicatorRect]);
+
+  useEffect(() => {
+    const barElement = barRef.current;
+    if (!barElement) return;
+    const selectedTab = barElement.querySelector<HTMLElement>(
+      `[role="tab"][data-tab-value="${selected ?? ''}"]`
+    );
+
+    barElement.addEventListener('scroll', updateIndicatorRect, { passive: true });
+    window.addEventListener('resize', updateIndicatorRect);
+
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(updateIndicatorRect);
+      resizeObserver.observe(barElement);
+      if (selectedTab) resizeObserver.observe(selectedTab);
+    }
+
+    return () => {
+      barElement.removeEventListener('scroll', updateIndicatorRect);
+      window.removeEventListener('resize', updateIndicatorRect);
+      resizeObserver?.disconnect();
+    };
+  }, [barRef, selected, updateIndicatorRect]);
+
   const indicatorClassName = resolveIndicatorClassName({
     elements,
     classNames,
@@ -333,16 +382,37 @@ function TabsIndicator({ className, style, ...props }: TabsIndicatorProps) {
     type,
     className
   });
-
-  const indicatorStyle: CSSProperties =
+  const indicatorRectVars =
+    indicatorRect !== null
+      ? {
+          ['--k-tab-x' as const]: `${indicatorRect.x}px`,
+          ['--k-tab-y' as const]: `${indicatorRect.y}px`,
+          ['--k-tab-w' as const]: `${indicatorRect.width}px`,
+          ['--k-tab-h' as const]: `${indicatorRect.height}px`
+        }
+      : {};
+  const indicatorPlacementStyle: CSSProperties =
     type === 'box'
-      ? { top: 0, bottom: 'auto', ...style }
+      ? { top: 0, bottom: 'auto' }
       : indicator.position === 'top'
-        ? { top: 'calc(var(--k-bw, 0px) * -1)', bottom: 'auto', ...style }
-        : { top: 'auto', bottom: 'calc(var(--k-bw, 0px) * -1)', ...style };
+        ? { top: 'calc(var(--k-bw, 0px) * -1)', bottom: 'auto' }
+        : { top: 'auto', bottom: 'calc(var(--k-bw, 0px) * -1)' };
+
+  const indicatorStyle: CSSProperties = {
+    ...indicatorPlacementStyle,
+    ...indicatorRectVars,
+    ...style
+  };
 
   return (
-    <HeadlessTabs.Indicator {...props} style={indicatorStyle} className={indicatorClassName} />
+    <div
+      {...props}
+      aria-hidden="true"
+      data-visible={indicatorRect ? true : undefined}
+      hidden={!indicatorRect}
+      style={indicatorStyle}
+      className={indicatorClassName}
+    />
   );
 }
 

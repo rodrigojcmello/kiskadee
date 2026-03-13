@@ -601,8 +601,8 @@
     },
     "tabs": {
       "options": {
-        "variant": "box",
-        "indicatorShape": "rounded",
+        "type": "box",
+        "indicatorVariant": "rounded",
         "indicatorPosition": "bottom",
         "separator": true
       },

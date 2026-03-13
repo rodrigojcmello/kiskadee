@@ -32,6 +32,7 @@ import {
   DEFAULT_SCALE,
   DEFAULT_TYPE,
   extractTabValue,
+  measureIndicatorRect,
   joinClassNames,
   resolveIconClassName,
   resolveIndicatorClassName,
@@ -46,7 +47,7 @@ import {
   TabsVisualContextProvider,
   useTabsTabContext,
   useTabsVisualContext
-} from './Tabs.common.ts';
+} from './Tabs.common';
 import './Tabs.common.scss';
 import type {
   ResolvedTabsIndicator,
@@ -135,6 +136,7 @@ function TabsRoot({
 }: TabsRootProps) {
   const isControlled = value !== undefined;
   const [uncontrolledValue, setUncontrolledValue] = useState<string | undefined>(defaultValue);
+  const barRef = useRef<HTMLDivElement | null>(null);
   const selected = isControlled ? value : uncontrolledValue;
 
   const handleValueChange = useCallback(
@@ -212,6 +214,7 @@ function TabsRoot({
       emphasis,
       type: resolvedType,
       radiusMode: resolvedRadiusMode,
+      barRef,
       indicator: resolvedIndicator,
       indicatorTransition,
       separator: resolvedSeparator,
@@ -227,6 +230,7 @@ function TabsRoot({
       emphasis,
       resolvedType,
       resolvedRadiusMode,
+      barRef,
       resolvedIndicator,
       indicatorTransition,
       resolvedSeparator,
@@ -246,15 +250,6 @@ function TabsRoot({
   );
 }
 
-function findSelectedTabElement(
-  barElement: HTMLDivElement | null,
-  selected: string | undefined
-): HTMLElement | null {
-  if (!barElement || !selected) return null;
-  const tabs = Array.from(barElement.querySelectorAll<HTMLElement>('[role="tab"]'));
-  return tabs.find((tab) => tab.getAttribute('data-tab-value') === selected) ?? null;
-}
-
 function TabsBar({ className, children, ...props }: TabsBarProps) {
   const {
     selected,
@@ -267,12 +262,11 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     indicatorTransition,
     classNames,
     elements,
+    barRef,
     separator,
     separatorClassName,
     listClassName
   } = useTabsVisualContext();
-
-  const barRef = useRef<HTMLDivElement | null>(null);
   const [indicatorRect, setIndicatorRect] = useState<IndicatorRect | null>(null);
   const [dotDisplayRect, setDotDisplayRect] = useState<IndicatorRect | null>(null);
   const [dotPhase, setDotPhase] = useState<DotIndicatorPhase>('idle');
@@ -341,23 +335,14 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
   ]);
 
   const updateIndicatorRect = useCallback(() => {
-    const barElement = barRef.current;
-    const selectedTab = findSelectedTabElement(barElement, selected);
-    if (!barElement || !selectedTab) {
-      setIndicatorRect(null);
-      return;
-    }
-
-    const barRect = barElement.getBoundingClientRect();
-    const tabRect = selectedTab.getBoundingClientRect();
-    const nextRect = {
-      x: tabRect.left - barRect.left + barElement.scrollLeft,
-      y: tabRect.top - barRect.top + barElement.scrollTop,
-      width: tabRect.width,
-      height: tabRect.height
-    };
-    setIndicatorRect(nextRect);
-  }, [selected]);
+    setIndicatorRect(
+      measureIndicatorRect({
+        barElement: barRef.current,
+        selected,
+        widthMode: indicator.widthMode
+      })
+    );
+  }, [barRef, indicator.widthMode, selected]);
 
   useEffect(() => {
     updateIndicatorRect();
@@ -408,7 +393,9 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
   useEffect(() => {
     const barElement = barRef.current;
     if (!barElement) return;
-    const selectedTab = findSelectedTabElement(barElement, selected);
+    const selectedTab = barElement.querySelector<HTMLElement>(
+      `[role="tab"][data-tab-value="${selected ?? ''}"]`
+    );
 
     const onResize = () => updateIndicatorRect();
     barElement.addEventListener('scroll', onResize, { passive: true });
