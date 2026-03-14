@@ -20,7 +20,7 @@
 .ak-ck.-d.-a { background: hsl(var(--k-p-5) / 0.2) }
 .ak-cl.-d.-a { background: hsl(var(--k-p-50) / 0.2) }
 .ak-d.-s.-a { color: #1A1A1A }
-.ak-dr { color: hsl(var(--k-p-50)) }
+.ak-du { color: hsl(var(--k-p-50)) }
 .ak-g { background: #0000 }
 .ak-h { background: #FF0004 }
 .ak-i.-d.-a { background: #FF000433 }
@@ -37,10 +37,10 @@
 .-i:active .ak-bw, .-a.-p .ak-bw { color: #FFFFFFB3 }
 .-i:active .ak-bx, .-a.-p .ak-bx { color: #808080 }
 .-i:active .ak-by, .-a.-p .ak-by { color: #FF0004B3 }
-.-i:active .ak-dv, .-a.-p .ak-dv { color: hsl(var(--k-p-50)) }
+.-i:active .ak-dy, .-a.-p .ak-dy { color: hsl(var(--k-p-50)) }
 .-i:hover:not(:active) .ak-bt, .-a.-h .ak-bt { color: #808080CC }
 .-i:hover:not(:active) .ak-bu, .-a.-h .ak-bu { color: #FF0004CC }
-.-i:hover:not(:active) .ak-dt, .-a.-h .ak-dt { color: hsl(var(--k-p-50) / 0.8) }
+.-i:hover:not(:active) .ak-dw, .-a.-h .ak-dw { color: hsl(var(--k-p-50) / 0.8) }
 .ak-aa:active.-s, .ak-aa.-s.-p.-a { background: #0000 }
 .ak-au:hover:not(:active), .ak-au.-h.-a { background: #F7F7F7 }
 .ak-av:hover:not(:active), .ak-av.-h.-a { background: #FAFAFA }

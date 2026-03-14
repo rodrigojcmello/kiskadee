@@ -3,9 +3,9 @@
     "e1": {
       "c": {
         "primary": {
-          "h": "gmd-cj gmd-b gmd-cs gmd-e gmd-cv gmd-f gmd-co gmd-d gmd-k gmd-c",
-          "m": "gmd-cl gmd-b gmd-p gmd-e gmd-r gmd-f gmd-n gmd-d gmd-k gmd-c gmd-al gmd-ai gmd-aj",
-          "l": "gmd-a gmd-bm gmd-p gmd-bu gmd-r gmd-bx gmd-n gmd-br gmd-i gmd-c gmd-al gmd-ai gmd-aj",
+          "h": "gmd-cm gmd-b gmd-cv gmd-e gmd-cy gmd-f gmd-cr gmd-d gmd-k gmd-c",
+          "m": "gmd-co gmd-b gmd-p gmd-e gmd-r gmd-f gmd-n gmd-d gmd-k gmd-c gmd-al gmd-ai gmd-aj",
+          "l": "gmd-a gmd-bp gmd-p gmd-bx gmd-r gmd-ca gmd-n gmd-bu gmd-i gmd-c gmd-al gmd-ai gmd-aj",
           "ll": "gmd-a gmd-b gmd-p gmd-e gmd-r gmd-f gmd-n gmd-d gmd-i gmd-c"
         }
       }
@@ -33,7 +33,7 @@
       "e2": {
         "c": {
           "neutral": {
-            "m": "gmd-a gmd-bc gmd-bf gmd-az gmd-u gmd-cz gmd-df"
+            "m": "gmd-a gmd-bc gmd-bf gmd-az gmd-u gmd-dc gmd-di"
           }
         }
       },
@@ -54,7 +54,7 @@
       "e5": {
         "c": {
           "neutral": {
-            "m": "gmd-ch"
+            "m": "gmd-ck"
           }
         }
       }
@@ -70,7 +70,7 @@
       "e2": {
         "c": {
           "neutral": {
-            "m": "gmd-a gmd-bc gmd-bf gmd-az gmd-u gmd-cz gmd-df"
+            "m": "gmd-a gmd-bc gmd-bf gmd-az gmd-u gmd-dc gmd-di"
           }
         }
       },
@@ -91,7 +91,7 @@
       "e5": {
         "c": {
           "neutral": {
-            "m": "gmd-ch"
+            "m": "gmd-ck"
           }
         }
       }
@@ -107,7 +107,7 @@
       "e2": {
         "c": {
           "neutral": {
-            "m": "gmd-a gmd-bc gmd-bf gmd-az gmd-u gmd-cw gmd-db"
+            "m": "gmd-a gmd-bc gmd-bf gmd-az gmd-u gmd-cz gmd-de"
           }
         }
       },
@@ -128,7 +128,7 @@
       "e5": {
         "c": {
           "neutral": {
-            "m": "gmd-ck gmd-bb gmd-el"
+            "m": "gmd-cn gmd-bb gmd-eo"
           }
         }
       }

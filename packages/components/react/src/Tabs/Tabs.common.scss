@@ -28,6 +28,7 @@
 .k-tab-e2 {
   position: relative;
   z-index: 1;
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -40,6 +41,11 @@
   cursor: pointer;
   user-select: none;
   overflow: visible;
+}
+
+/* `k-tab-e2a`: fixed-width trigger keeps its schema width without flex shrink. */
+.k-tab-e2.k-tab-e2a {
+  flex: 0 0 auto;
 }
 
 /* `k-tab-c`: tab content wrapper used for indicator measurements. */

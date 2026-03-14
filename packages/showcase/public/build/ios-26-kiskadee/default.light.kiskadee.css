@@ -20,7 +20,7 @@
 .ak-ci.-d.-a { background: #0091FF33 }
 .ak-cj.-d.-a { background: #E5F4FF33 }
 .ak-d.-s.-a { color: #1A1A1A }
-.ak-dq { color: #0091FF }
+.ak-dt { color: #0091FF }
 .ak-g { background: #0000 }
 .ak-h { background: #FF0004 }
 .ak-i.-d.-a { background: #FF000433 }
@@ -37,10 +37,10 @@
 .-i:active .ak-bw, .-a.-p .ak-bw { color: #FFFFFFB3 }
 .-i:active .ak-bx, .-a.-p .ak-bx { color: #808080 }
 .-i:active .ak-by, .-a.-p .ak-by { color: #FF0004B3 }
-.-i:active .ak-du, .-a.-p .ak-du { color: #0091FF }
+.-i:active .ak-dx, .-a.-p .ak-dx { color: #0091FF }
 .-i:hover:not(:active) .ak-bt, .-a.-h .ak-bt { color: #808080CC }
 .-i:hover:not(:active) .ak-bu, .-a.-h .ak-bu { color: #FF0004CC }
-.-i:hover:not(:active) .ak-ds, .-a.-h .ak-ds { color: #0091FFCC }
+.-i:hover:not(:active) .ak-dv, .-a.-h .ak-dv { color: #0091FFCC }
 .ak-aa:active.-s, .ak-aa.-s.-p.-a { background: #0000 }
 .ak-au:hover:not(:active), .ak-au.-h.-a { background: #F7F7F7 }
 .ak-av:hover:not(:active), .ak-av.-h.-a { background: #FAFAFA }

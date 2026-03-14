@@ -103,6 +103,16 @@ export function resolveElementClassName(
   );
 }
 
+export function resolveWidthClassName(
+  element: ClassNameByElementJSON | undefined,
+  scale: string
+): string {
+  if (!element) return '';
+
+  const scaleKey = normalizeScaleKey(scale);
+  return joinClassNames(element.w?.all, element.w?.[scaleKey]) ?? '';
+}
+
 export function resolveVariantElements(
   map: TabsClassesMap | Record<string, TabsClassesMap> | undefined,
   variant: string
@@ -183,6 +193,13 @@ export function resolveIndicatorWidthMode(
   }
 
   return indicatorWidthMode ?? globalIndicatorWidthMode ?? 'tab';
+}
+
+export function resolveTabWidthMode(
+  tabWidthMode: TabsVisualContextValue['tabWidthMode'] | undefined,
+  globalTabWidthMode: TabsVisualContextValue['tabWidthMode'] | undefined
+): TabsVisualContextValue['tabWidthMode'] {
+  return tabWidthMode ?? globalTabWidthMode ?? 'auto';
 }
 
 export type IndicatorRect = {
@@ -279,6 +296,7 @@ export function resolveTriggerClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
+  tabWidthMode: TabsVisualContextValue['tabWidthMode'];
   radiusMode: RadiusMode;
   selected: boolean;
   className?: string;
@@ -290,9 +308,11 @@ export function resolveTriggerClassName(options: {
       emphasis: options.emphasis,
       selected: options.selected
     }),
+    options.tabWidthMode === 'fixed' ? resolveWidthClassName(options.elements.e2, options.scale) : '',
     resolveRadiusClassName(options.elements.e2, options.scale, options.radiusMode),
     options.classNames.e2,
     'k-tab-e2',
+    options.tabWidthMode === 'fixed' ? 'k-tab-e2a' : '',
     'k-state',
     cn.interactive,
     cn.activator,

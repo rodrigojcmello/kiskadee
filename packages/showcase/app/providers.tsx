@@ -37,6 +37,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     tabsIndicatorPosition,
     tabsIndicatorVariant,
     tabsIndicatorWidthMode,
+    tabsTabWidthMode,
     tabsSeparator
   } = useThemeExtras({
     designSystem,
@@ -50,6 +51,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     tabsIndicatorPosition !== undefined ||
     tabsIndicatorVariant !== undefined ||
     tabsIndicatorWidthMode !== undefined ||
+    tabsTabWidthMode !== undefined ||
     tabsSeparator !== undefined
       ? {
           ...(globalRadius !== undefined ? { radius: globalRadius } : {}),
@@ -58,6 +60,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           tabsIndicatorPosition !== undefined ||
           tabsIndicatorVariant !== undefined ||
           tabsIndicatorWidthMode !== undefined ||
+          tabsTabWidthMode !== undefined ||
           tabsSeparator !== undefined
             ? {
                 components: {
@@ -72,6 +75,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
                         : {}),
                       ...(tabsIndicatorWidthMode !== undefined
                         ? { indicatorWidthMode: tabsIndicatorWidthMode }
+                        : {}),
+                      ...(tabsTabWidthMode !== undefined
+                        ? { tabWidthMode: tabsTabWidthMode }
                         : {}),
                       ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {})
                     }

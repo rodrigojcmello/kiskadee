@@ -24,6 +24,25 @@ Kiskadee’s schema separates visual concerns so components can opt in to effect
 - **Decorations:** Structural, always-on styling rules that shape the base look (e.g., radius mode, border styles, typography mapping).
 - **Effects:** Opt-in, additive visuals (e.g., shadows, animated corners) that can be toggled per component without changing base colors.
 
+## Options vs. Element values
+
+Component schema also has an important split between:
+
+- **`components.<name>.options`:** behavioral switches or canonical component modes.
+- **`components.<name>.elements.<el>.scales/decorations/palettes/effects`:** the actual visual values used when a mode is active.
+
+Practical rule:
+
+- Put "what mode is active" in `options`.
+- Put "what value should be used when that mode is active" in the element definition.
+
+Example:
+
+- `tabs.options.tabWidthMode = 'auto' | 'fixed'` chooses the tab width behavior.
+- `tabs.variants.<type>.elements.e2.scales.boxWidth` provides the fixed width value.
+
+This matters because not every geometric value is always-on. Some values exist in the schema as available design tokens, but only become active when a component/runtime option selects them.
+
 ## Monorepo projects and goals
 
 - `packages/core`
@@ -72,6 +91,7 @@ This is the baseline end-to-end flow for Web:
 3. `packages/web-builder`
 - Converts preset schemas into web artifacts (CSS + JSON maps + metadata).
 - Writes build output to `packages/web-builder/build/<designSystemKey>/...`.
+- May split generated classes into dedicated artifact buckets when runtime/components need conditional opt-in behavior beyond the generic `s` scale bucket.
 
 4. `packages/web-builder` sync/generate steps
 - `sync`: copies artifacts to `packages/showcase/public/build/<designSystemKey>/...`.
@@ -90,6 +110,12 @@ Practical reading:
 - `core -> presets -> web-builder` defines and compiles visual identity.
 - `sync/generate -> showcase` exposes artifacts for inspection.
 - `headless + components + showcase route` validates component usability end-to-end.
+
+Artifact note:
+
+- JSON artifact buckets are not only a transport optimization; they also express runtime intent.
+- When a visual value must be applied conditionally by the component layer, it may need a dedicated bucket instead of being merged into the generic scale bucket.
+- Example: Tabs tab fixed width uses `w` (width) as an opt-in artifact bucket instead of merging `boxWidth` into `s`.
 
 ## Structural CSS naming convention (components layer)
 

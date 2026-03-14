@@ -62,6 +62,11 @@ export function createMaterial3GoogleTabsSchema({
     // e2: tab
     e2: {
       scales: {
+        boxWidth: {
+          's:sm:1': 120,
+          's:md:1': 144,
+          's:lg:1': 160
+        },
         paddingTop: 10,
         paddingBottom: 10,
         paddingLeft: 14,
@@ -291,6 +296,11 @@ export function createMaterial3GoogleTabsSchema({
     // e2: tab
     e2: {
       scales: {
+        boxWidth: {
+          's:sm:1': 120,
+          's:md:1': 144,
+          's:lg:1': 160
+        },
         paddingTop: 10,
         paddingBottom: 10,
         paddingLeft: 14,
@@ -411,7 +421,8 @@ export function createMaterial3GoogleTabsSchema({
       type: 'line',
       indicatorPosition: 'bottom',
       indicatorVariant: 'square',
-      indicatorWidthMode: 'tab'
+      indicatorWidthMode: 'tab',
+      tabWidthMode: 'auto'
     },
     variants: {
       line: {

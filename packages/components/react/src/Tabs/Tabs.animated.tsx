@@ -41,6 +41,7 @@ import {
   resolveLabelClassName,
   resolveListClassName,
   resolveSeparatorClassName,
+  resolveTabWidthMode,
   resolveTriggerClassName,
   resolveVariantElements,
   TabsTabContextProvider,
@@ -126,6 +127,7 @@ function TabsRoot({
   emphasis = DEFAULT_EMPHASIS,
   intent = DEFAULT_INTENT,
   type,
+  tabWidthMode,
   indicator,
   separator,
   spring,
@@ -176,6 +178,10 @@ function TabsRoot({
     indicator?.widthMode,
     global?.components?.tabs?.options?.indicatorWidthMode
   );
+  const resolvedTabWidthMode = resolveTabWidthMode(
+    tabWidthMode,
+    global?.components?.tabs?.options?.tabWidthMode
+  );
   const resolvedSeparator = separator ?? global?.components?.tabs?.options?.separator ?? false;
   const resolvedRadiusMode = (global?.radius ?? 'rounded') as RadiusMode;
   const resolvedIndicatorMotion = indicator?.motion ?? 'auto';
@@ -213,6 +219,7 @@ function TabsRoot({
       intent,
       emphasis,
       type: resolvedType,
+      tabWidthMode: resolvedTabWidthMode,
       radiusMode: resolvedRadiusMode,
       barRef,
       indicator: resolvedIndicator,
@@ -229,6 +236,7 @@ function TabsRoot({
       intent,
       emphasis,
       resolvedType,
+      resolvedTabWidthMode,
       resolvedRadiusMode,
       barRef,
       resolvedIndicator,
@@ -492,7 +500,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
 }
 
 function TabsTab({ value, className, label, icon, children, ...restProps }: TabsTabProps) {
-  const { selected, scale, intent, emphasis, classNames, elements, radiusMode } =
+  const { selected, scale, intent, emphasis, classNames, elements, tabWidthMode, radiusMode } =
     useTabsVisualContext();
   const isSelected = selected === value;
 
@@ -502,6 +510,7 @@ function TabsTab({ value, className, label, icon, children, ...restProps }: Tabs
     scale,
     intent,
     emphasis,
+    tabWidthMode,
     radiusMode,
     selected: isSelected,
     className

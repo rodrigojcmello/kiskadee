@@ -1,4 +1,4 @@
-import type { ComponentEmphasis, ElementSizeValue } from '@kiskadee/core';
+import type { ComponentEmphasis, ElementSizeValue, TabsTabWidthMode } from '@kiskadee/core';
 import type {
   TabsBarProps as HeadlessTabsBarProps,
   TabsContentProps as HeadlessTabsContentProps,
@@ -31,6 +31,7 @@ type TabsRootBaseProps = Omit<HeadlessTabsRootProps, 'classNames'> & {
   classNames?: TabsClassNames;
   scale?: ElementSizeValue;
   emphasis?: ComponentEmphasis;
+  tabWidthMode?: TabsTabWidthMode;
   separator?: boolean;
   spring?: TabsSpringPreset | TabsSpringConfig;
   indicatorLayoutId?: string;

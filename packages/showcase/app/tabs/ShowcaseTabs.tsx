@@ -4,6 +4,7 @@ import {
   type TabsBoxIndicatorVariant,
   type TabsIndicatorWidthMode,
   type TabsLineIndicatorVariant,
+  type TabsTabWidthMode,
   tabsIndicatorVariantsByType
 } from '@kiskadee/core';
 import type { TabsSpringPreset } from '@kiskadee/react-components';
@@ -14,6 +15,7 @@ import { Select } from '@/k-components';
 type TabsMode = 'animated' | 'static';
 type TabsSpring = TabsSpringPreset;
 type TabsLineWidthModeControl = 'default' | TabsIndicatorWidthMode;
+type TabsTabWidthModeControl = 'default' | TabsTabWidthMode;
 type TabsExampleId = `line:${TabsLineIndicatorVariant}` | `box:${TabsBoxIndicatorVariant}` | 'dot';
 type TabsSelectionByExample = Partial<Record<TabsExampleId, string>>;
 const DEFAULT_TAB_VALUE = 'locations';
@@ -53,6 +55,11 @@ const lineIndicatorWidthModeLabels: Record<TabsIndicatorWidthMode, string> = {
   fixed: 'Fixed'
 };
 
+const tabWidthModeLabels: Record<TabsTabWidthMode, string> = {
+  auto: 'Auto',
+  fixed: 'Fixed'
+};
+
 const lineIndicatorVariantTitles: Record<TabsLineIndicatorVariant, string> = {
   square: 'Line / Square',
   rounded: 'Line / Rounded',
@@ -86,6 +93,7 @@ type TabsExampleProps =
       spring: TabsSpring;
       selectedValue: string;
       onSelectedValueChange: (value: string) => void;
+      tabWidthMode?: TabsTabWidthMode;
       type: 'line';
       indicator: {
         position: 'bottom';
@@ -99,6 +107,7 @@ type TabsExampleProps =
       spring: TabsSpring;
       selectedValue: string;
       onSelectedValueChange: (value: string) => void;
+      tabWidthMode?: TabsTabWidthMode;
       type: 'box';
       indicator: {
         variant: TabsBoxIndicatorVariant;
@@ -110,6 +119,7 @@ type TabsExampleProps =
       spring: TabsSpring;
       selectedValue: string;
       onSelectedValueChange: (value: string) => void;
+      tabWidthMode?: TabsTabWidthMode;
       type: 'dot';
       indicator: {
         position: 'bottom';
@@ -117,7 +127,7 @@ type TabsExampleProps =
     };
 
 function TabsExample(props: TabsExampleProps) {
-  const { title, mode, spring, selectedValue, onSelectedValueChange } = props;
+  const { title, mode, spring, selectedValue, onSelectedValueChange, tabWidthMode } = props;
   const type = props.type;
   const indicator = props.indicator;
   const tabVariantKey = 'variant' in indicator ? indicator.variant : 'dot';
@@ -164,6 +174,7 @@ function TabsExample(props: TabsExampleProps) {
             onValueChange={onSelectedValueChange}
             activationMode="manual"
             type={props.type}
+            tabWidthMode={tabWidthMode}
             indicator={props.indicator}
             spring={spring}
           >
@@ -176,6 +187,7 @@ function TabsExample(props: TabsExampleProps) {
             onValueChange={onSelectedValueChange}
             activationMode="manual"
             type={props.type}
+            tabWidthMode={tabWidthMode}
             indicator={props.indicator}
             spring={spring}
           >
@@ -188,6 +200,7 @@ function TabsExample(props: TabsExampleProps) {
             onValueChange={onSelectedValueChange}
             activationMode="manual"
             type={props.type}
+            tabWidthMode={tabWidthMode}
             indicator={props.indicator}
             spring={spring}
           >
@@ -208,6 +221,7 @@ function TabsExample(props: TabsExampleProps) {
           onValueChange={onSelectedValueChange}
           activationMode="manual"
           type={props.type}
+          tabWidthMode={tabWidthMode}
           indicator={props.indicator}
         >
           {staticTabs}
@@ -219,6 +233,7 @@ function TabsExample(props: TabsExampleProps) {
           onValueChange={onSelectedValueChange}
           activationMode="manual"
           type={props.type}
+          tabWidthMode={tabWidthMode}
           indicator={props.indicator}
         >
           {staticTabs}
@@ -230,6 +245,7 @@ function TabsExample(props: TabsExampleProps) {
           onValueChange={onSelectedValueChange}
           activationMode="manual"
           type={props.type}
+          tabWidthMode={tabWidthMode}
           indicator={props.indicator}
         >
           {staticTabs}
@@ -245,8 +261,10 @@ export default function ShowcaseTabs() {
   const [mode, setMode] = useState<TabsMode>('animated');
   const [spring, setSpring] = useState<TabsSpring>('snappy');
   const [lineWidthMode, setLineWidthMode] = useState<TabsLineWidthModeControl>('default');
+  const [tabWidthMode, setTabWidthMode] = useState<TabsTabWidthModeControl>('default');
   const [selectedTabsByExample, setSelectedTabsByExample] = useState<TabsSelectionByExample>({});
   const schemaLineWidthMode = global?.components?.tabs?.options?.indicatorWidthMode ?? 'tab';
+  const schemaTabWidthMode = global?.components?.tabs?.options?.tabWidthMode ?? 'auto';
   const lineWidthModeOptions = [
     {
       value: 'default',
@@ -257,6 +275,15 @@ export default function ShowcaseTabs() {
     { value: 'fixed', label: lineIndicatorWidthModeLabels.fixed }
   ];
   const lineWidthModeProp = lineWidthMode === 'default' ? undefined : lineWidthMode;
+  const tabWidthModeOptions = [
+    {
+      value: 'default',
+      label: `Schema Default (${tabWidthModeLabels[schemaTabWidthMode]})`
+    },
+    { value: 'auto', label: tabWidthModeLabels.auto },
+    { value: 'fixed', label: tabWidthModeLabels.fixed }
+  ];
+  const tabWidthModeProp = tabWidthMode === 'default' ? undefined : tabWidthMode;
   const resolveSelectedTabValue = (exampleId: TabsExampleId): string =>
     selectedTabsByExample[exampleId] ?? DEFAULT_TAB_VALUE;
   const handleSelectedTabChange = (exampleId: TabsExampleId, value: string) => {
@@ -301,13 +328,22 @@ export default function ShowcaseTabs() {
           value={lineWidthMode}
           onValueChange={(value) => setLineWidthMode(value as TabsLineWidthModeControl)}
         />
+
+        <Select
+          label="Tab Width"
+          width={220}
+          options={tabWidthModeOptions}
+          value={tabWidthMode}
+          onValueChange={(value) => setTabWidthMode(value as TabsTabWidthModeControl)}
+        />
       </div>
 
       <h2>Line</h2>
       <p style={{ marginTop: 0, marginBottom: 20, maxWidth: 720 }}>
         Line tabs can use the schema default width mode or override it per component via the
         `indicator.widthMode` prop. Available modes are full tab width, rendered content width,
-        and fixed indicator width.
+        and fixed indicator width. Tab width itself can also stay automatic or use the schema
+        `e2.scales.boxWidth` when `tabWidthMode` is set to `fixed`.
       </p>
       {lineExamples.map((example) => (
         <TabsExample
@@ -319,6 +355,7 @@ export default function ShowcaseTabs() {
           onSelectedValueChange={(value) =>
             handleSelectedTabChange(`line:${example.indicatorVariant}`, value)
           }
+          tabWidthMode={tabWidthModeProp}
           type="line"
           indicator={{
             position: 'bottom',
@@ -336,6 +373,7 @@ export default function ShowcaseTabs() {
         spring={spring}
         selectedValue={resolveSelectedTabValue('dot')}
         onSelectedValueChange={(value) => handleSelectedTabChange('dot', value)}
+        tabWidthMode={tabWidthModeProp}
         type="dot"
         indicator={{
           position: 'bottom'
@@ -353,6 +391,7 @@ export default function ShowcaseTabs() {
           onSelectedValueChange={(value) =>
             handleSelectedTabChange(`box:${example.indicatorVariant}`, value)
           }
+          tabWidthMode={tabWidthModeProp}
           type="box"
           indicator={{
             variant: example.indicatorVariant

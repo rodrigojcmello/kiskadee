@@ -35,6 +35,7 @@ export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 export type TabsType = 'line' | 'box' | 'dot';
 export type TabsIndicatorPosition = 'top' | 'bottom';
 export type TabsIndicatorWidthMode = 'tab' | 'fixed' | 'content';
+export type TabsTabWidthMode = 'auto' | 'fixed';
 export const tabsIndicatorVariantsByType = {
   line: ['square', 'rounded', 'roundedClip'],
   box: ['square', 'rounded', 'pill'],
@@ -53,6 +54,7 @@ export type TabsOptions = Partial<{
   indicatorPosition: TabsIndicatorPosition;
   indicatorVariant: TabsIndicatorVariant;
   indicatorWidthMode: TabsIndicatorWidthMode;
+  tabWidthMode: TabsTabWidthMode;
   separator: boolean;
 }>;
 
@@ -84,12 +86,18 @@ export type TabsBarElementStyle<TSegmentName extends SegmentName = never> = Part
 /**
  * e2 — tab
  * - boxColor
+ * - boxWidth
  * - padding
  * - borderRadius
+ *
+ * NOTE:
+ * `boxWidth` is only applied when `tabWidthMode` is `fixed`.
  */
 export type TabsTriggerElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   name?: string;
-  scales: ElementScalesByProperty<'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'> & {
+  scales: ElementScalesByProperty<
+    'boxWidth' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'
+  > & {
     borderRadius?: {
       rounded?: ScaleBySize | number;
       pill?: ScaleBySize | number;
@@ -223,6 +231,7 @@ const TABS_OPTIONS_KEYS = [
   'indicatorPosition',
   'indicatorVariant',
   'indicatorWidthMode',
+  'tabWidthMode',
   'separator'
 ] as const;
 
@@ -240,7 +249,7 @@ const TABS_RULES: Record<(typeof TABS_ELEMENTS_KEYS)[number], ElementContractRul
     palettes: ['boxColor', 'borderColor']
   },
   e2: {
-    scales: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'borderRadius'],
+    scales: ['boxWidth', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'borderRadius'],
     palettes: ['boxColor']
   },
   e3: {
@@ -428,6 +437,14 @@ function validateTabsOptions(value: unknown, path: string, issues: string[]): vo
 
   if (value.type === 'dot' && value.indicatorWidthMode !== undefined) {
     issues.push(`${path}.indicatorWidthMode: "dot" does not support indicatorWidthMode`);
+  }
+
+  if (
+    value.tabWidthMode !== undefined &&
+    value.tabWidthMode !== 'auto' &&
+    value.tabWidthMode !== 'fixed'
+  ) {
+    issues.push(`${path}.tabWidthMode: expected "auto" or "fixed"`);
   }
 
   if (value.separator !== undefined && typeof value.separator !== 'boolean') {

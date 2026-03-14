@@ -41,6 +41,23 @@ Use this skill to make architecture decisions and implementation plans that stay
 - Keep inspection/demo integration in `packages/showcase`.
 - Treat schema declaration as necessary but not sufficient for "component done".
 - For structural classes in `packages/components/react`, use `k-<cmp>-e<n>` for schema elements (`cmp` = 3-letter id, e.g. `tab`) and short option suffixes (`-t`, `-b`); keep visual theming in generated artifacts/runtime, not hardcoded Sass.
+- Put behavioral switches in `components.<name>.options` and keep the corresponding numeric/visual values in `components.<name>.elements`.
+- If a schema value must exist but only apply when a runtime/component option enables it, do not assume the generic artifact scale bucket is enough; verify whether `packages/web-builder` needs a dedicated opt-in bucket.
+
+## Schema and artifact decision rules
+
+Use these rules before proposing a schema change:
+
+1. If the change answers "which behavior/mode is active?", prefer `components.<name>.options`.
+2. If the change answers "what is the value for that behavior?", prefer the relevant element `scales/decorations/palettes/effects`.
+3. If the value is always-on once generated, the generic artifact bucket is usually enough.
+4. If the value must be generated but only conditionally applied by the visual layer, check whether the artifact needs a dedicated bucket instead of merging into generic `s`.
+
+Example:
+
+- `tabs.options.tabWidthMode` selects `auto` vs `fixed`.
+- `tabs.variants.<type>.elements.e2.scales.boxWidth` stores the fixed width token.
+- `packages/web-builder` may publish a dedicated width bucket so `packages/components` can opt in only when the mode is `fixed`.
 
 ## New component rollout checklist
 

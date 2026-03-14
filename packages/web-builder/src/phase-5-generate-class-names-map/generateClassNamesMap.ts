@@ -22,6 +22,7 @@ type ColorClasses = {
 // d = decorations (always-on, flattened string)
 // e = effects by interaction state (arrays of classes, opt-in at component level)
 // s = scales (size variants only, flattened strings per size)
+// w = width-only scales (opt-in at component level, flattened strings per size)
 // c = color classes (organized by emphasis: h/m/l/ll)
 // cs = control states (selected)
 export type ClassNamesByInteractionState = Partial<Record<string, string[]>>; // legacy for reference
@@ -33,6 +34,8 @@ export type ClassNameByElement = {
   e?: Partial<Record<string, string>>;
   // Scales aggregated per size as flattened strings (size variants only, not effects)
   s?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
+  // Width-only scales aggregated per size (opt-in at component level)
+  w?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
   // Rounded radius scales aggregated per size (opt-in at component level)
   r?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
   // Pill radius scales aggregated per size (opt-in at component level)
@@ -159,9 +162,11 @@ export function generateClassNamesMapSplit(
       // Core (no palettes) — aggregate:
       // - decorations into `d` (always-on),
       // - effects into `e` per interaction state (opt-in),
-      // - scales (size variants only) into `s`.
+      // - scales (size variants only) into `s`,
+      // - width-only scales into `w`.
       const dSet = new Set<string>();
       const sMap = new Map<string, Set<string>>();
+      const wMap = new Map<string, Set<string>>();
       const rMap = new Map<string, Set<string>>();
       const rpMap = new Map<string, Set<string>>();
       const rsMap = new Map<string, Set<string>>();
@@ -209,19 +214,22 @@ export function generateClassNamesMapSplit(
         }
       }
 
-      // scales → s[size] (size-only variants)
+      // scales → s[size] (generic scale variants), width-only scales → w[size]
       if (el.scales) {
         for (const [size, raw] of Object.entries(el.scales as Record<string, unknown>)) {
           const arr = Array.isArray(raw) ? (raw as string[]) : undefined;
           // Web artifact optimization: strip "s:" prefix from size keys (e.g. "s:md:1" -> "md:1").
           const sizeKey = size.startsWith('s:') ? size.slice(2) : size;
-          const mapped = mapArray(arr, shortenMap);
-          if (!mapped || mapped.length === 0) continue;
-          if (!sMap.has(sizeKey)) sMap.set(sizeKey, new Set());
-          const set = sMap.get(sizeKey)!;
-          mapped.forEach((c) => {
-            set.add(c);
-          });
+          if (!arr || arr.length === 0) continue;
+
+          for (const key of arr) {
+            const cls = shortenMap[key] ?? key;
+            const isOptInWidthScale =
+              componentName === 'tabs' && elementName === 'e2' && key.startsWith('boxWidth');
+            const target = isOptInWidthScale ? wMap : sMap;
+            if (!target.has(sizeKey)) target.set(sizeKey, new Set());
+            target.get(sizeKey)!.add(cls);
+          }
         }
       }
 
@@ -356,6 +364,15 @@ export function generateClassNamesMapSplit(
           sMap.size > 0
             ? Object.fromEntries(
                 Array.from(sMap.entries()).map(([k, set]) => [
+                  k,
+                  set.size ? Array.from(set).join(' ') : undefined
+                ])
+              )
+            : undefined,
+        w:
+          wMap.size > 0
+            ? Object.fromEntries(
+                Array.from(wMap.entries()).map(([k, set]) => [
                   k,
                   set.size ? Array.from(set).join(' ') : undefined
                 ])

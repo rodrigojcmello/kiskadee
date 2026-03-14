@@ -342,6 +342,7 @@ export const schema: Schema = {
         type: 'box',
         indicatorVariant: 'rounded',
         indicatorPosition: 'bottom',
+        tabWidthMode: 'auto',
         separator: true
       },
       variants: {
@@ -406,6 +407,11 @@ export const schema: Schema = {
             // e2: tab
             e2: {
               scales: {
+                boxWidth: {
+                  's:sm:1': 120,
+                  's:md:1': 144,
+                  's:lg:1': 160
+                },
                 paddingTop: 6,
                 paddingBottom: 6,
                 paddingLeft: 16,

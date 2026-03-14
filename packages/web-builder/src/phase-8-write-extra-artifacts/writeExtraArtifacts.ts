@@ -12,6 +12,7 @@ import type {
   TabsIndicatorVariant,
   TabsIndicatorPosition,
   TabsIndicatorWidthMode,
+  TabsTabWidthMode,
   TabsType,
   ThemeMode
 } from '@kiskadee/core';
@@ -152,14 +153,14 @@ export async function writeExtraArtifacts(params: {
   const ripple = schema.global?.effects?.ripple as RippleEffectSchema | undefined;
   const tabsIndicatorPosition = schema.components?.tabs?.options
     ?.indicatorPosition as TabsIndicatorPosition | undefined;
-  const tabsIndicatorVariant =
-    (schema.components?.tabs?.options?.indicatorVariant ??
-      schema.components?.tabs?.options?.indicatorShape) as TabsIndicatorVariant | undefined;
+  const tabsIndicatorVariant = schema.components?.tabs?.options
+    ?.indicatorVariant as TabsIndicatorVariant | undefined;
   const tabsIndicatorWidthMode = schema.components?.tabs?.options
     ?.indicatorWidthMode as TabsIndicatorWidthMode | undefined;
-  const tabsType =
-    (schema.components?.tabs?.options?.type ??
-      schema.components?.tabs?.options?.variant) as TabsType | undefined;
+  const tabsTabWidthMode = schema.components?.tabs?.options?.tabWidthMode as
+    | TabsTabWidthMode
+    | undefined;
+  const tabsType = schema.components?.tabs?.options?.type as TabsType | undefined;
   const tabsSeparator = schema.components?.tabs?.options?.separator as boolean | undefined;
 
   function toCssFontFamilyString(value: FontStack): string | null {
@@ -176,9 +177,10 @@ export async function writeExtraArtifacts(params: {
   const hasRadius = Boolean(radius);
   const hasRipple = Boolean(ripple && Object.keys(ripple).length > 0);
   const hasTabsOptions = Boolean(
-    tabsIndicatorPosition ||
+      tabsIndicatorPosition ||
       tabsIndicatorVariant ||
       tabsIndicatorWidthMode ||
+      tabsTabWidthMode ||
       tabsType ||
       tabsSeparator !== undefined
   );
@@ -198,6 +200,7 @@ export async function writeExtraArtifacts(params: {
             indicatorPosition?: TabsIndicatorPosition;
             indicatorVariant?: TabsIndicatorVariant;
             indicatorWidthMode?: TabsIndicatorWidthMode;
+            tabWidthMode?: TabsTabWidthMode;
             separator?: boolean;
           };
         };
@@ -230,6 +233,7 @@ export async function writeExtraArtifacts(params: {
             ...(tabsIndicatorPosition ? { indicatorPosition: tabsIndicatorPosition } : {}),
             ...(tabsIndicatorVariant ? { indicatorVariant: tabsIndicatorVariant } : {}),
             ...(tabsIndicatorWidthMode ? { indicatorWidthMode: tabsIndicatorWidthMode } : {}),
+            ...(tabsTabWidthMode ? { tabWidthMode: tabsTabWidthMode } : {}),
             ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {})
           }
         }

@@ -80,7 +80,8 @@
         "type": "line",
         "indicatorPosition": "bottom",
         "indicatorVariant": "square",
-        "indicatorWidthMode": "tab"
+        "indicatorWidthMode": "tab",
+        "tabWidthMode": "auto"
       }
     }
   }

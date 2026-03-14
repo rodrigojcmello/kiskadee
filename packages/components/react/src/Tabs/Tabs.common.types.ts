@@ -7,6 +7,7 @@ import type {
   TabsIndicatorVariant,
   TabsIndicatorWidthMode,
   TabsLineIndicatorVariant,
+  TabsTabWidthMode,
   TabsType
 } from '@kiskadee/core';
 import type { RefObject } from 'react';
@@ -68,6 +69,7 @@ export type TabsVisualContextValue<TMotion extends TabsIndicatorMotion = TabsInd
   intent: string;
   emphasis: ComponentEmphasis | undefined;
   type: TabsType;
+  tabWidthMode: TabsTabWidthMode;
   radiusMode: RadiusMode;
   barRef: RefObject<HTMLDivElement | null>;
   indicator: ResolvedTabsIndicator<TMotion>;

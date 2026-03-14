@@ -10,6 +10,7 @@
         "type": "box",
         "indicatorPosition": "bottom",
         "indicatorVariant": "rounded",
+        "tabWidthMode": "auto",
         "separator": true
       }
     }
