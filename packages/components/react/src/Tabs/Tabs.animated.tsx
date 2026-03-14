@@ -32,7 +32,9 @@ import {
   DEFAULT_SCALE,
   DEFAULT_TYPE,
   extractTabValue,
+  type IndicatorRect,
   measureIndicatorRect,
+  measureElementRectRelativeToBar,
   joinClassNames,
   resolveIconClassName,
   resolveIndicatorClassName,
@@ -53,6 +55,7 @@ import './Tabs.common.scss';
 import type {
   ResolvedTabsIndicator,
   TabsIndicatorMotion,
+  TabsIndicatorMotionStyle,
   TabsTabContextValue,
   TabsVisualContextValue
 } from './Tabs.common.types.ts';
@@ -78,14 +81,9 @@ export type {
   TabsTabProps
 } from './Tabs.animated.types.ts';
 
-type IndicatorRect = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
-
 type DotIndicatorPhase = 'idle' | 'exit' | 'enter';
+type StretchIndicatorPhase = 'idle' | 'stretch' | 'settle';
+const STRETCH_INDICATOR_MAX_WIDTH = 400;
 
 function resolveSpringConfig(
   spring: TabsSpringPreset | TabsSpringConfig | undefined
@@ -117,6 +115,34 @@ function resolveIndicatorTransition(
   return {
     type: 'spring',
     ...springConfig
+  };
+}
+
+function resolveStretchIndicatorRect(options: {
+  originRect: IndicatorRect;
+  finalRect: IndicatorRect;
+}): IndicatorRect {
+  const { originRect, finalRect } = options;
+  const originRight = originRect.x + originRect.width;
+  const finalRight = finalRect.x + finalRect.width;
+  const movingRight = finalRect.x >= originRect.x;
+
+  if (movingRight) {
+    const width = Math.min(finalRight - originRect.x, STRETCH_INDICATOR_MAX_WIDTH);
+    return {
+      x: finalRight - width,
+      y: finalRect.y,
+      width,
+      height: finalRect.height
+    };
+  }
+
+  const width = Math.min(originRight - finalRect.x, STRETCH_INDICATOR_MAX_WIDTH);
+  return {
+    x: finalRect.x,
+    y: finalRect.y,
+    width,
+    height: finalRect.height
   };
 }
 
@@ -185,9 +211,12 @@ function TabsRoot({
   const resolvedSeparator = separator ?? global?.components?.tabs?.options?.separator ?? false;
   const resolvedRadiusMode = (global?.radius ?? 'rounded') as RadiusMode;
   const resolvedIndicatorMotion = indicator?.motion ?? 'auto';
+  const resolvedIndicatorMotionStyle: TabsIndicatorMotionStyle =
+    resolvedType === 'dot' ? 'direct' : indicator?.motionStyle ?? 'direct';
   const indicatorTransition = resolveIndicatorTransition(resolvedIndicatorMotion, spring);
   const resolvedIndicator: ResolvedTabsIndicator = {
     motion: resolvedIndicatorMotion,
+    motionStyle: resolvedIndicatorMotionStyle,
     position: resolvedIndicatorPosition,
     variant: resolvedIndicatorVariant,
     widthMode: resolvedIndicatorWidthMode
@@ -277,13 +306,84 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
   } = useTabsVisualContext();
   const [indicatorRect, setIndicatorRect] = useState<IndicatorRect | null>(null);
   const [dotDisplayRect, setDotDisplayRect] = useState<IndicatorRect | null>(null);
+  const [stretchDisplayRect, setStretchDisplayRect] = useState<IndicatorRect | null>(null);
   const [dotPhase, setDotPhase] = useState<DotIndicatorPhase>('idle');
+  const [stretchPhase, setStretchPhase] = useState<StretchIndicatorPhase>('idle');
   const [settledSelected, setSettledSelected] = useState<string | undefined>(selected);
   const [isIndicatorAnimating, setIsIndicatorAnimating] = useState(false);
+  const indicatorRef = useRef<HTMLSpanElement | null>(null);
   const latestSelectedRef = useRef<string | undefined>(selected);
   const previousSelectedRef = useRef<string | undefined>(selected);
   const lastSettledIndicatorRectRef = useRef<IndicatorRect | null>(null);
   const isDotIndicator = type === 'dot';
+  const supportsStretchMotion =
+    !isDotIndicator && indicator.motion !== 'none' && indicator.motionStyle === 'stretch';
+
+  const measureRenderedIndicatorRect = useCallback(
+    () =>
+      measureElementRectRelativeToBar({
+        barElement: barRef.current,
+        element: indicatorRef.current
+      }),
+    [barRef]
+  );
+
+  const measureAnimatedIndicatorRect = useCallback(
+    (
+      nextValue: string | undefined,
+      currentRenderedRect?: IndicatorRect | null
+    ): IndicatorRect | null => {
+      const barElement = barRef.current;
+      if (!barElement || !nextValue) {
+        return null;
+      }
+
+      if (type !== 'line' || indicator.widthMode !== 'fixed') {
+        return measureIndicatorRect({
+          barElement,
+          selected: nextValue,
+          widthMode: indicator.widthMode
+        });
+      }
+
+      const tabRect = measureIndicatorRect({
+        barElement,
+        selected: nextValue,
+        widthMode: 'tab'
+      });
+
+      if (!tabRect) {
+        return null;
+      }
+
+      const fixedWidth =
+        stretchPhase === 'idle'
+          ? currentRenderedRect?.width ??
+            measureRenderedIndicatorRect()?.width ??
+            lastSettledIndicatorRectRef.current?.width
+          : lastSettledIndicatorRectRef.current?.width ??
+            currentRenderedRect?.width ??
+            measureRenderedIndicatorRect()?.width;
+
+      if (!fixedWidth) {
+        return tabRect;
+      }
+
+      return {
+        x: tabRect.x + (tabRect.width - fixedWidth) / 2,
+        y: tabRect.y,
+        width: fixedWidth,
+        height: tabRect.height
+      };
+    },
+    [barRef, indicator.widthMode, measureRenderedIndicatorRect, stretchPhase, type]
+  );
+
+  const resolveSettledIndicatorRect = useCallback(
+    (nextValue: string | undefined): IndicatorRect | null =>
+      measureAnimatedIndicatorRect(nextValue) ?? indicatorRect,
+    [indicatorRect, measureAnimatedIndicatorRect]
+  );
 
   const positionClass =
     type !== 'box' ? (indicator.position === 'top' ? 'k-tab-e1b' : 'k-tab-e1a') : undefined;
@@ -360,30 +460,100 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     if (!isDotIndicator) {
       setDotPhase('idle');
       setDotDisplayRect(null);
-      lastSettledIndicatorRectRef.current = null;
       return;
     }
 
     if (dotPhase === 'idle') {
       setDotDisplayRect(indicatorRect);
-      lastSettledIndicatorRectRef.current = indicatorRect;
+      lastSettledIndicatorRectRef.current = measureRenderedIndicatorRect() ?? indicatorRect;
     }
-  }, [dotPhase, indicatorRect, isDotIndicator]);
+  }, [dotPhase, indicatorRect, isDotIndicator, measureRenderedIndicatorRect]);
+
+  useEffect(() => {
+    if (!supportsStretchMotion) {
+      setStretchPhase('idle');
+      setStretchDisplayRect(null);
+      if (!isDotIndicator) {
+        lastSettledIndicatorRectRef.current = measureRenderedIndicatorRect() ?? indicatorRect;
+      }
+      return;
+    }
+
+    if (stretchPhase === 'idle') {
+      const settledRect = resolveSettledIndicatorRect(selected);
+      setStretchDisplayRect(settledRect);
+      lastSettledIndicatorRectRef.current = settledRect;
+    }
+  }, [
+    indicatorRect,
+    isDotIndicator,
+    measureRenderedIndicatorRect,
+    resolveSettledIndicatorRect,
+    selected,
+    stretchPhase,
+    supportsStretchMotion
+  ]);
+
+  const resolveStretchTargets = useCallback(
+    (nextValue: string | undefined): { stretchRect: IndicatorRect; finalRect: IndicatorRect } | null => {
+      const barElement = barRef.current;
+      if (!barElement || !nextValue) {
+        return null;
+      }
+
+      const currentRenderedRect = measureRenderedIndicatorRect();
+      const finalRect = measureAnimatedIndicatorRect(nextValue, currentRenderedRect);
+
+      if (!finalRect) {
+        return null;
+      }
+
+      const previousIndicatorRect = measureAnimatedIndicatorRect(
+        previousSelectedRef.current,
+        currentRenderedRect
+      );
+      const originRect =
+        currentRenderedRect ??
+        stretchDisplayRect ??
+        lastSettledIndicatorRectRef.current ??
+        previousIndicatorRect ??
+        finalRect;
+
+      const stretchRect = resolveStretchIndicatorRect({
+        originRect,
+        finalRect
+      });
+
+      return {
+        stretchRect,
+        finalRect
+      };
+    },
+    [barRef, measureAnimatedIndicatorRect, measureRenderedIndicatorRect, stretchDisplayRect]
+  );
 
   useEffect(() => {
     latestSelectedRef.current = selected;
     if (indicator.motion === 'none') {
+      const settledRect = resolveSettledIndicatorRect(selected);
       setSettledSelected(selected);
       setIsIndicatorAnimating(false);
       setDotPhase('idle');
+      setStretchPhase('idle');
+      setStretchDisplayRect(settledRect);
+      lastSettledIndicatorRectRef.current = settledRect;
       previousSelectedRef.current = selected;
       return;
     }
 
     if (previousSelectedRef.current === undefined || selected === undefined) {
+      const settledRect = resolveSettledIndicatorRect(selected);
       setSettledSelected(selected);
       setIsIndicatorAnimating(false);
       setDotPhase('idle');
+      setStretchPhase('idle');
+      setStretchDisplayRect(settledRect);
+      lastSettledIndicatorRectRef.current = settledRect;
       previousSelectedRef.current = selected;
       return;
     }
@@ -393,10 +563,27 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
       if (isDotIndicator) {
         setDotDisplayRect(lastSettledIndicatorRectRef.current ?? indicatorRect);
         setDotPhase('exit');
+      } else if (supportsStretchMotion) {
+        const stretchTargets = resolveStretchTargets(selected);
+        if (stretchTargets) {
+          setStretchDisplayRect(stretchTargets.stretchRect);
+          setStretchPhase('stretch');
+        } else {
+          setStretchDisplayRect(indicatorRect);
+          setStretchPhase('idle');
+        }
       }
       previousSelectedRef.current = selected;
     }
-  }, [indicator.motion, indicatorRect, isDotIndicator, selected]);
+  }, [
+    indicator.motion,
+    indicatorRect,
+    isDotIndicator,
+    resolveStretchTargets,
+    resolveSettledIndicatorRect,
+    selected,
+    supportsStretchMotion
+  ]);
 
   useEffect(() => {
     const barElement = barRef.current;
@@ -431,10 +618,21 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     emphasis,
     radiusMode,
     indicator,
-    type
+    type,
+    className:
+      type === 'line' &&
+      indicator.widthMode === 'fixed' &&
+      supportsStretchMotion &&
+      stretchPhase !== 'idle'
+        ? 'k-tab-e5k'
+        : undefined
   });
 
-  const renderedIndicatorRect = isDotIndicator ? (dotDisplayRect ?? indicatorRect) : indicatorRect;
+  const renderedIndicatorRect = isDotIndicator
+    ? (dotDisplayRect ?? indicatorRect)
+    : supportsStretchMotion
+      ? (stretchDisplayRect ?? indicatorRect)
+      : indicatorRect;
   const indicatorAnimate: Record<string, string | number> | undefined = renderedIndicatorRect
     ? isDotIndicator
       ? {
@@ -473,6 +671,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
       {childrenWithSeparators}
       {indicatorAnimate ? (
         <motion.span
+          ref={indicatorRef}
           initial={false}
           animate={indicatorAnimate}
           transition={isDotIndicator ? dotTransition : indicatorTransition}
@@ -488,7 +687,25 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
             }
             if (isDotIndicator && dotPhase === 'enter') {
               setDotPhase('idle');
+              lastSettledIndicatorRectRef.current = indicatorRect;
             }
+            if (supportsStretchMotion && stretchPhase === 'stretch') {
+              const finalRect =
+                measureAnimatedIndicatorRect(latestSelectedRef.current) ?? indicatorRect;
+              if (finalRect) {
+                setStretchDisplayRect(finalRect);
+                setStretchPhase('settle');
+                return;
+              }
+            }
+            if (supportsStretchMotion && stretchPhase === 'settle') {
+              setStretchPhase('idle');
+              lastSettledIndicatorRectRef.current = measureRenderedIndicatorRect() ?? indicatorRect;
+              setSettledSelected(latestSelectedRef.current);
+              setIsIndicatorAnimating(false);
+              return;
+            }
+            lastSettledIndicatorRectRef.current = measureRenderedIndicatorRect() ?? indicatorRect;
             setSettledSelected(latestSelectedRef.current);
             setIsIndicatorAnimating(false);
           }}

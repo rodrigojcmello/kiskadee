@@ -209,13 +209,44 @@ export type IndicatorRect = {
   height: number;
 };
 
-export function findSelectedTabElement(
+export function findTabElement(
   barElement: HTMLDivElement | null,
-  selected: string | undefined
+  value: string | undefined
 ): HTMLElement | null {
-  if (!barElement || !selected) return null;
+  if (!barElement || !value) return null;
   const tabs = Array.from(barElement.querySelectorAll<HTMLElement>('[role="tab"]'));
-  return tabs.find((tab) => tab.getAttribute('data-tab-value') === selected) ?? null;
+  return tabs.find((tab) => tab.getAttribute('data-tab-value') === value) ?? null;
+}
+
+export function measureElementRectRelativeToBar(options: {
+  barElement: HTMLDivElement | null;
+  element: HTMLElement | null;
+}): IndicatorRect | null {
+  const { barElement, element } = options;
+  if (!barElement || !element) {
+    return null;
+  }
+
+  const barRect = barElement.getBoundingClientRect();
+  const elementRect = element.getBoundingClientRect();
+
+  return {
+    x: elementRect.left - barRect.left + barElement.scrollLeft,
+    y: elementRect.top - barRect.top + barElement.scrollTop,
+    width: elementRect.width,
+    height: elementRect.height
+  };
+}
+
+export function measureTabRect(options: {
+  barElement: HTMLDivElement | null;
+  value: string | undefined;
+}): IndicatorRect | null {
+  const { barElement, value } = options;
+  return measureElementRectRelativeToBar({
+    barElement,
+    element: findTabElement(barElement, value)
+  });
 }
 
 function findMeasuredTabContentElement(selectedTab: HTMLElement): HTMLElement | null {
@@ -228,24 +259,24 @@ export function measureIndicatorRect(options: {
   widthMode: TabsVisualContextValue['indicator']['widthMode'];
 }): IndicatorRect | null {
   const { barElement, selected, widthMode } = options;
-  const selectedTab = findSelectedTabElement(barElement, selected);
+  const selectedTab = findTabElement(barElement, selected);
   if (!barElement || !selectedTab) {
     return null;
   }
 
-  const barRect = barElement.getBoundingClientRect();
-  const tabRect = selectedTab.getBoundingClientRect();
+  const tabRect = measureElementRectRelativeToBar({
+    barElement,
+    element: selectedTab
+  });
   const measuredRect =
     widthMode === 'content'
-      ? (findMeasuredTabContentElement(selectedTab)?.getBoundingClientRect() ?? tabRect)
+      ? measureElementRectRelativeToBar({
+          barElement,
+          element: findMeasuredTabContentElement(selectedTab)
+        }) ?? tabRect
       : tabRect;
 
-  return {
-    x: measuredRect.left - barRect.left + barElement.scrollLeft,
-    y: measuredRect.top - barRect.top + barElement.scrollTop,
-    width: measuredRect.width,
-    height: measuredRect.height
-  };
+  return measuredRect;
 }
 
 export function resolveListClassName(options: {

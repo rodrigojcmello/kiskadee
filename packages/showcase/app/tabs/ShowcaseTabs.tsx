@@ -7,13 +7,14 @@ import {
   type TabsTabWidthMode,
   tabsIndicatorVariantsByType
 } from '@kiskadee/core';
-import type { TabsSpringPreset } from '@kiskadee/react-components';
+import type { TabsIndicatorMotionStyle, TabsSpringPreset } from '@kiskadee/react-components';
 import { KTabs, KTabsStatic, useKiskadee } from '@kiskadee/react-components';
 import { useState } from 'react';
 import { Select } from '@/k-components';
 
 type TabsMode = 'animated' | 'static';
 type TabsSpring = TabsSpringPreset;
+type TabsIndicatorMotionStyleControl = TabsIndicatorMotionStyle;
 type TabsLineWidthModeControl = 'default' | TabsIndicatorWidthMode;
 type TabsTabWidthModeControl = 'default' | TabsTabWidthMode;
 type TabsExampleId = `line:${TabsLineIndicatorVariant}` | `box:${TabsBoxIndicatorVariant}` | 'dot';
@@ -60,6 +61,11 @@ const tabWidthModeLabels: Record<TabsTabWidthMode, string> = {
   fixed: 'Fixed'
 };
 
+const indicatorMotionStyleLabels: Record<TabsIndicatorMotionStyle, string> = {
+  direct: 'Direct',
+  stretch: 'Stretch'
+};
+
 const lineIndicatorVariantTitles: Record<TabsLineIndicatorVariant, string> = {
   square: 'Line / Square',
   rounded: 'Line / Rounded',
@@ -99,6 +105,7 @@ type TabsExampleProps =
         position: 'bottom';
         variant: TabsLineIndicatorVariant;
         widthMode?: TabsIndicatorWidthMode;
+        motionStyle?: TabsIndicatorMotionStyle;
       };
     }
   | {
@@ -111,6 +118,7 @@ type TabsExampleProps =
       type: 'box';
       indicator: {
         variant: TabsBoxIndicatorVariant;
+        motionStyle?: TabsIndicatorMotionStyle;
       };
     }
   | {
@@ -260,9 +268,15 @@ export default function ShowcaseTabs() {
   const { global } = useKiskadee();
   const [mode, setMode] = useState<TabsMode>('animated');
   const [spring, setSpring] = useState<TabsSpring>('snappy');
+  const [indicatorMotionStyle, setIndicatorMotionStyle] =
+    useState<TabsIndicatorMotionStyleControl>('direct');
   const [lineWidthMode, setLineWidthMode] = useState<TabsLineWidthModeControl>('default');
   const [tabWidthMode, setTabWidthMode] = useState<TabsTabWidthModeControl>('default');
   const [selectedTabsByExample, setSelectedTabsByExample] = useState<TabsSelectionByExample>({});
+  const indicatorMotionStyleOptions = [
+    { value: 'direct', label: indicatorMotionStyleLabels.direct },
+    { value: 'stretch', label: indicatorMotionStyleLabels.stretch }
+  ];
   const schemaLineWidthMode = global?.components?.tabs?.options?.indicatorWidthMode ?? 'tab';
   const schemaTabWidthMode = global?.components?.tabs?.options?.tabWidthMode ?? 'auto';
   const lineWidthModeOptions = [
@@ -321,6 +335,16 @@ export default function ShowcaseTabs() {
           />
         ) : null}
 
+        {mode === 'animated' ? (
+          <Select
+            label="Motion Style"
+            width={180}
+            options={indicatorMotionStyleOptions}
+            value={indicatorMotionStyle}
+            onValueChange={(value) => setIndicatorMotionStyle(value as TabsIndicatorMotionStyle)}
+          />
+        ) : null}
+
         <Select
           label="Line Width"
           width={220}
@@ -343,7 +367,8 @@ export default function ShowcaseTabs() {
         Line tabs can use the schema default width mode or override it per component via the
         `indicator.widthMode` prop. Available modes are full tab width, rendered content width,
         and fixed indicator width. Tab width itself can also stay automatic or use the schema
-        `e2.scales.boxWidth` when `tabWidthMode` is set to `fixed`.
+        `e2.scales.boxWidth` when `tabWidthMode` is set to `fixed`. In animated mode, the
+        indicator can also switch between the direct transition and the new stretch transition.
       </p>
       {lineExamples.map((example) => (
         <TabsExample
@@ -360,6 +385,7 @@ export default function ShowcaseTabs() {
           indicator={{
             position: 'bottom',
             variant: example.indicatorVariant,
+            motionStyle: indicatorMotionStyle,
             ...(lineWidthModeProp ? { widthMode: lineWidthModeProp } : {})
           }}
         />
@@ -394,7 +420,8 @@ export default function ShowcaseTabs() {
           tabWidthMode={tabWidthModeProp}
           type="box"
           indicator={{
-            variant: example.indicatorVariant
+            variant: example.indicatorVariant,
+            motionStyle: indicatorMotionStyle
           }}
         />
       ))}

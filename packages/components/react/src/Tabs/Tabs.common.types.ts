@@ -19,6 +19,7 @@ export type TabsClassNames = Partial<Record<TabsElementName, string>>;
 export type TabsClassesMap = Partial<Record<TabsElementName, ClassNameByElementJSON>>;
 
 export type TabsIndicatorMotion = 'auto' | 'none';
+export type TabsIndicatorMotionStyle = 'direct' | 'stretch';
 
 type TabsIndicatorMotionConfig<TMotion extends TabsIndicatorMotion> = {
   motion?: TMotion;
@@ -32,6 +33,7 @@ type TabsLineIndicatorBarConfig<TMotion extends TabsIndicatorMotion> =
   TabsLineIndicatorShared<TMotion> & {
     variant?: TabsLineIndicatorVariant;
     widthMode?: TabsIndicatorWidthMode;
+    motionStyle?: TabsIndicatorMotionStyle;
   };
 
 export type TabsLineIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsIndicatorMotion> =
@@ -40,6 +42,7 @@ export type TabsLineIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsIn
 export type TabsBoxIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsIndicatorMotion> =
   TabsIndicatorMotionConfig<TMotion> & {
     variant?: TabsBoxIndicatorVariant;
+    motionStyle?: TabsIndicatorMotionStyle;
     position?: never;
     widthMode?: never;
   };
@@ -47,6 +50,7 @@ export type TabsBoxIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsInd
 export type TabsDotIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsIndicatorMotion> =
   TabsIndicatorMotionConfig<TMotion> & {
     variant?: never;
+    motionStyle?: never;
     position?: TabsIndicatorPosition;
     widthMode?: never;
   };
@@ -58,6 +62,7 @@ export type TabsIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsIndica
 
 export type ResolvedTabsIndicator<TMotion extends TabsIndicatorMotion = TabsIndicatorMotion> = {
   motion: TMotion;
+  motionStyle: TabsIndicatorMotionStyle;
   position: TabsIndicatorPosition;
   variant: TabsIndicatorVariant;
   widthMode: TabsIndicatorWidthMode;

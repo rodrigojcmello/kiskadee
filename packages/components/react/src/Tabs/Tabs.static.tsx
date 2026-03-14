@@ -136,6 +136,7 @@ function TabsRoot({
   const resolvedRadiusMode = (global?.radius ?? 'rounded') as RadiusMode;
   const resolvedIndicator: ResolvedTabsIndicator<'none'> = {
     motion: 'none',
+    motionStyle: 'direct',
     position: resolvedIndicatorPosition,
     variant: resolvedIndicatorVariant,
     widthMode: resolvedIndicatorWidthMode

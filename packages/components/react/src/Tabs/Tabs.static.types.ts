@@ -13,6 +13,7 @@ import type {
   TabsClassNames,
   TabsDotIndicatorConfig,
   TabsElementName,
+  TabsIndicatorMotionStyle,
   TabsLineIndicatorConfig
 } from './Tabs.common.types.ts';
 
@@ -74,5 +75,6 @@ export type {
   TabsClassesMap,
   TabsDotIndicatorConfig,
   TabsElementName,
+  TabsIndicatorMotionStyle,
   TabsLineIndicatorConfig
 };
