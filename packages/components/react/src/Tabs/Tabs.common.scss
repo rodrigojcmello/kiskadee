@@ -141,6 +141,71 @@
   border-radius: 0 0 20px 20px;
 }
 
+/* `k-tab-g`: bridge type keeps the bar open for the attached indicator silhouette. */
+.k-tab-g {
+  overflow: visible;
+}
+
+/* `k-tab-g` + `k-tab-e2`: bridge triggers keep content above the indicator silhouette. */
+.k-tab-g .k-tab-e2 {
+  z-index: auto;
+}
+
+/* `k-tab-g` + selected `k-tab-e2`: selected bridge trigger rises above the indicator body. */
+.k-tab-g .k-tab-e2[aria-selected='true'] {
+  z-index: 3;
+}
+
+/* `k-tab-g` + `k-tab-c`: bridge trigger content stays above the indicator fill. */
+.k-tab-g .k-tab-c {
+  z-index: 3;
+}
+
+/* `k-tab-e5m`: bridge indicator wrapper for SVG + cap composition. */
+.k-tab-e5.k-tab-e5m {
+  overflow: visible;
+  background: transparent !important;
+  border-width: 0 !important;
+}
+
+/* `k-tab-e5v`: hidden probe used to resolve schema-driven colors and CSS vars. */
+.k-tab-e5.k-tab-e5v {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* `k-tab-e5n`: bridge indicator SVG shell. */
+.k-tab-e5n {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* `k-tab-e5r`: bridge curve stroke keeps rounded joins and flat caps. */
+.k-tab-e5r {
+  fill: none;
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+}
+
+/* `k-tab-e5p`: bridge cap box draws the top and vertical borders. */
+.k-tab-e5p {
+  position: absolute;
+  box-sizing: border-box;
+  border-bottom: none;
+}
+
+/* `k-tab-e5q`: bridge wall extension closes the outer edge when curves are trimmed. */
+.k-tab-e5q {
+  position: absolute;
+  width: var(--k-tab-bridge-border-width, 1px);
+}
+
 /* `k-tab-p`: content panel wrapper. */
 .k-tab-p {
   display: block;

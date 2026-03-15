@@ -2,164 +2,213 @@
   "$schema": "./core.kiskadee.schema.json",
   "button": {
     "e1": {
-      "d": "gmd-ae",
+      "d": "gmd-ad",
       "e": {
-        "h": "gmd-fu gmd-fx gmd-fy gmd-fw gmd-fv",
-        "ris": "gmd-fs",
-        "rio": "gmd-fr",
-        "rix": "gmd-fq",
-        "rip": "gmd-ft",
-        "rr": "gmd-dx gmd-dz gmd-ea gmd-dy gmd-ee gmd-ec gmd-ed gmd-eb",
-        "rp": "gmd-dp gmd-dr gmd-ds gmd-dq gmd-dw gmd-du gmd-dv gmd-dt",
-        "rs": "gmd-ef gmd-eh gmd-ei gmd-eg gmd-em gmd-ek gmd-el gmd-ej"
+        "h": "gmd-gf gmd-gi gmd-gj gmd-gh gmd-gg",
+        "ris": "gmd-gd",
+        "rio": "gmd-gc",
+        "rix": "gmd-gb",
+        "rip": "gmd-ge",
+        "rr": "gmd-eb gmd-ef gmd-eg gmd-ee gmd-ek gmd-ei gmd-ej gmd-eh",
+        "rp": "gmd-ck gmd-du gmd-dv gmd-dt gmd-dz gmd-dx gmd-dy gmd-dw",
+        "rs": "gmd-el gmd-en gmd-eo gmd-em gmd-es gmd-eq gmd-er gmd-ep"
       },
       "s": {
-        "sm:1": "gmd-fp gmd-ey gmd-ez gmd-ff gmd-h",
-        "md:1": "gmd-an gmd-am gmd-fa gmd-fg gmd-h",
-        "lg:1": "gmd-fl gmd-eu gmd-fb gmd-fh gmd-h",
-        "lg:2": "gmd-fm gmd-ev gmd-fd gmd-fj gmd-h",
-        "lg:3": "gmd-fo gmd-ex gmd-fe gmd-fk gmd-h"
+        "sm:1": "gmd-ga gmd-fj gmd-fk gmd-fq gmd-h",
+        "md:1": "gmd-ah gmd-ag gmd-fl gmd-fr gmd-h",
+        "lg:1": "gmd-fw gmd-ff gmd-fm gmd-fs gmd-h",
+        "lg:2": "gmd-fx gmd-fg gmd-fo gmd-fu gmd-h",
+        "lg:3": "gmd-fz gmd-fi gmd-fp gmd-fv gmd-h"
       },
       "r": {
-        "sm:1": "gmd-ce",
-        "md:1": "gmd-ad",
-        "lg:1": "gmd-cf",
-        "lg:2": "gmd-cg",
-        "lg:3": "gmd-ch"
+        "sm:1": "gmd-cg",
+        "md:1": "gmd-al",
+        "lg:1": "gmd-ch",
+        "lg:2": "gmd-ci",
+        "lg:3": "gmd-cj"
       },
       "rp": {
-        "sm:1": "gmd-ce",
-        "md:1": "gmd-ad",
-        "lg:1": "gmd-cf",
-        "lg:2": "gmd-cg",
-        "lg:3": "gmd-ch"
+        "sm:1": "gmd-cg",
+        "md:1": "gmd-al",
+        "lg:1": "gmd-ch",
+        "lg:2": "gmd-ci",
+        "lg:3": "gmd-cj"
       },
       "rs": {
-        "sm:1": "gmd-m",
-        "md:1": "gmd-m",
-        "lg:1": "gmd-m",
-        "lg:2": "gmd-m",
-        "lg:3": "gmd-m"
+        "sm:1": "gmd-q",
+        "md:1": "gmd-q",
+        "lg:1": "gmd-q",
+        "lg:2": "gmd-q",
+        "lg:3": "gmd-q"
       }
     },
     "e2": {
-      "d": "gmd-au",
+      "d": "gmd-ai",
       "s": {
         "sm:1": "gmd-ac gmd-ab",
         "md:1": "gmd-ac gmd-ab",
-        "lg:1": "gmd-gd gmd-ga",
-        "lg:2": "gmd-ge gmd-gb",
-        "lg:3": "gmd-gf gmd-gc"
+        "lg:1": "gmd-gn gmd-gk",
+        "lg:2": "gmd-go gmd-gl",
+        "lg:3": "gmd-gp gmd-gm"
       }
     }
   },
   "tabs": {
     "line": {
       "e1": {
-        "d": "gmd-ae",
+        "d": "gmd-ad",
         "s": {
           "all": "gmd-h"
         }
       },
       "e2": {
         "s": {
-          "all": "gmd-an gmd-am gmd-bm gmd-bn"
+          "all": "gmd-ah gmd-ag gmd-bg gmd-bh"
         },
         "w": {
-          "sm:1": "gmd-bi",
-          "md:1": "gmd-bj",
-          "lg:1": "gmd-bk"
+          "sm:1": "gmd-bc",
+          "md:1": "gmd-bd",
+          "lg:1": "gmd-be"
         }
       },
       "e3": {
-        "d": "gmd-au",
+        "d": "gmd-ai",
         "s": {
           "all": "gmd-ac gmd-ab"
         }
       },
       "e4": {
         "s": {
-          "all": "gmd-bl gmd-bh gmd-bo"
+          "all": "gmd-bf gmd-bb gmd-bi"
         }
       },
       "e5": {
         "s": {
-          "all": "gmd-er gmd-ep gmd-dm gmd-es"
+          "all": "gmd-ez gmd-ex gmd-dn gmd-fd"
         }
       }
     },
     "dot": {
       "e1": {
-        "d": "gmd-ae",
+        "d": "gmd-ad",
         "s": {
           "all": "gmd-h"
         }
       },
       "e2": {
         "s": {
-          "all": "gmd-an gmd-am gmd-bm gmd-bn"
+          "all": "gmd-ah gmd-ag gmd-bg gmd-bh"
         },
         "w": {
-          "sm:1": "gmd-bi",
-          "md:1": "gmd-bj",
-          "lg:1": "gmd-bk"
+          "sm:1": "gmd-bc",
+          "md:1": "gmd-bd",
+          "lg:1": "gmd-be"
         }
       },
       "e3": {
-        "d": "gmd-au",
+        "d": "gmd-ai",
         "s": {
           "all": "gmd-ac gmd-ab"
         }
       },
       "e4": {
         "s": {
-          "all": "gmd-bl gmd-bh gmd-bo"
+          "all": "gmd-bf gmd-bb gmd-bi"
         }
       },
       "e5": {
         "s": {
-          "all": "gmd-eq gmd-dm gmd-et"
+          "all": "gmd-ey gmd-dn gmd-fe"
         }
       }
     },
     "box": {
       "e1": {
-        "d": "gmd-ae",
+        "d": "gmd-ad",
         "s": {
-          "all": "gmd-h gmd-fn gmd-ew gmd-fc gmd-fi"
+          "all": "gmd-h gmd-fy gmd-fh gmd-fn gmd-ft"
         },
         "r": {
-          "all": "gmd-ad"
+          "all": "gmd-al"
         },
         "rp": {
-          "all": "gmd-ad"
+          "all": "gmd-al"
         },
         "rs": {
-          "all": "gmd-m"
+          "all": "gmd-q"
         }
       },
       "e2": {
         "s": {
-          "all": "gmd-an gmd-am gmd-bm gmd-bn"
+          "all": "gmd-ah gmd-ag gmd-bg gmd-bh"
         },
         "w": {
-          "sm:1": "gmd-bi",
-          "md:1": "gmd-bj",
-          "lg:1": "gmd-bk"
+          "sm:1": "gmd-bc",
+          "md:1": "gmd-bd",
+          "lg:1": "gmd-be"
         }
       },
       "e3": {
-        "d": "gmd-au",
+        "d": "gmd-ai",
         "s": {
           "all": "gmd-ac gmd-ab"
         }
       },
       "e4": {
         "s": {
-          "all": "gmd-bl gmd-bh gmd-bo"
+          "all": "gmd-bf gmd-bb gmd-bi"
         }
       },
       "e5": {}
+    },
+    "bridge": {
+      "e1": {
+        "d": "gmd-ad",
+        "s": {
+          "all": "gmd-h"
+        }
+      },
+      "e2": {
+        "s": {
+          "all": "gmd-ah gmd-ag gmd-bg gmd-bh"
+        },
+        "w": {
+          "sm:1": "gmd-bc",
+          "md:1": "gmd-bd",
+          "lg:1": "gmd-be"
+        }
+      },
+      "e3": {
+        "d": "gmd-ai",
+        "s": {
+          "all": "gmd-ac gmd-ab"
+        }
+      },
+      "e4": {
+        "s": {
+          "all": "gmd-bf gmd-bb gmd-bi"
+        }
+      },
+      "e5": {
+        "s": {
+          "sm:1": "gmd-fa",
+          "md:1": "gmd-fb",
+          "lg:1": "gmd-fc"
+        },
+        "r": {
+          "sm:1": "gmd-ea",
+          "md:1": "gmd-ec",
+          "lg:1": "gmd-ed"
+        },
+        "rp": {
+          "sm:1": "gmd-ck",
+          "md:1": "gmd-dr",
+          "lg:1": "gmd-ds"
+        },
+        "rs": {
+          "all": "gmd-q"
+        }
+      }
     }
   }
 }

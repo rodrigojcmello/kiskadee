@@ -1,0 +1,390 @@
+.demo {
+  --bridge-surface: #fff;
+  --bridge-rail: #d7dfec;
+  --bridge-line-width: 1px;
+  --bridge-shadow: 0 24px 56px -36px rgba(15, 23, 42, 0.42);
+  --bridge-text: #24344d;
+  --bridge-text-muted: #607089;
+  --bridge-accent: #3a87d6;
+  color: var(--bridge-text);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.kicker {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7d8da5;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(26px, 3vw, 34px);
+  line-height: 1.02;
+  font-weight: 700;
+}
+
+.description {
+  max-width: 720px;
+  margin: 10px 0 0;
+  color: var(--bridge-text-muted);
+  line-height: 1.55;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.radiusControls {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lineWidthControl {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #ccd6e4;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.lineWidthLabel {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.lineWidthInput {
+  width: 132px;
+  accent-color: #17253b;
+}
+
+.lineWidthValue {
+  min-width: 34px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.switchControl {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #ccd6e4;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.switchLabel {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.switchField {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.switchInput {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.switchTrack {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 44px;
+  height: 26px;
+  padding: 3px;
+  border-radius: 999px;
+  background: #d7dfec;
+  transition: background-color 160ms ease;
+}
+
+.switchThumb {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.16);
+  transition: transform 160ms ease;
+}
+
+.switchInput:checked + .switchTrack {
+  background: #17253b;
+}
+
+.switchInput:checked + .switchTrack .switchThumb {
+  transform: translateX(18px);
+}
+
+.radiusChip,
+.radiusChipActive {
+  border: 1px solid #ccd6e4;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--bridge-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.radiusChip:hover,
+.radiusChipActive:hover {
+  transform: translateY(-1px);
+}
+
+.radiusChipActive {
+  background: #17253b;
+  border-color: #17253b;
+  color: #fff;
+}
+
+.surface {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(246, 249, 253, 0.98) 100%);
+  border-radius: 28px;
+  padding: 30px 28px 26px;
+  box-shadow: var(--bridge-shadow);
+}
+
+.tablist {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 0 18px;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none;
+  isolation: isolate;
+}
+
+.tablist::-webkit-scrollbar {
+  display: none;
+}
+
+.tablist::after {
+  content: '';
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 0;
+  border-bottom: var(--bridge-line-width) solid var(--bridge-rail);
+  z-index: 0;
+}
+
+.indicatorWrap {
+  position: absolute;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
+  transition:
+    left 220ms ease,
+    width 220ms ease;
+}
+
+.indicatorCapWrap {
+  position: absolute;
+  bottom: 0;
+  z-index: 3;
+  pointer-events: none;
+  transition:
+    left 220ms ease,
+    width 220ms ease;
+}
+
+.indicatorCapBox {
+  position: absolute;
+  box-sizing: border-box;
+  border-top: var(--bridge-line-width) solid var(--bridge-rail);
+  border-left: var(--bridge-line-width) solid var(--bridge-rail);
+  border-right: var(--bridge-line-width) solid var(--bridge-rail);
+  border-bottom: none;
+}
+
+.indicatorWallExtension {
+  position: absolute;
+  width: var(--bridge-line-width);
+  background: var(--bridge-rail);
+}
+
+.indicatorSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.indicatorFill {
+  fill: var(--bridge-surface);
+}
+
+.indicatorStroke {
+  fill: none;
+  stroke: var(--bridge-rail);
+  stroke-width: var(--bridge-line-width);
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+}
+
+.tab,
+.tabActive {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 18px 28px 18px;
+  border: none;
+  background: transparent;
+  color: #6d7f98;
+  font: inherit;
+  font-size: clamp(17px, 2vw, 22px);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.tab:hover,
+.tab:focus-visible,
+.tabActive:hover,
+.tabActive:focus-visible {
+  color: var(--bridge-accent);
+  outline: none;
+}
+
+.tab:focus-visible,
+.tabActive:focus-visible {
+  transform: translateY(-1px);
+}
+
+.tabActive {
+  color: var(--bridge-accent);
+}
+
+.tabLabel {
+  position: relative;
+  z-index: 1;
+}
+
+.panel {
+  padding: 26px 18px 8px;
+}
+
+.panelEyebrow {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7d8da5;
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: clamp(24px, 2.3vw, 32px);
+  line-height: 1.05;
+  font-weight: 700;
+}
+
+.panelText {
+  max-width: 760px;
+  margin: 12px 0 0;
+  color: var(--bridge-text-muted);
+  line-height: 1.62;
+}
+
+.metrics {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0 0;
+}
+
+.metrics div {
+  min-width: 120px;
+  padding: 14px 16px;
+  border: 1px solid #dfe6f0;
+  border-radius: 18px;
+  background: rgba(248, 251, 255, 0.85);
+}
+
+.metrics dt {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7d8da5;
+}
+
+.metrics dd {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--bridge-text);
+}
+
+@media (max-width: 820px) {
+  .surface {
+    padding: 24px 16px 20px;
+    border-radius: 22px;
+  }
+
+  .tablist {
+    padding: 0 10px;
+    gap: 0;
+  }
+
+  .tablist::after {
+    left: 10px;
+    right: 10px;
+  }
+
+  .tab,
+  .tabActive {
+    padding: 16px 20px 16px;
+    font-size: 18px;
+  }
+
+  .panel {
+    padding: 24px 10px 0;
+  }
+}

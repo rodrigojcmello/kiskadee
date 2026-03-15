@@ -31,6 +31,7 @@ const cssPropertyMap: Record<ScaleProperty, string> = {
   borderWidth: 'border-width',
   boxHeight: 'height',
   boxWidth: 'width',
+  curveWidth: '--k-tab-cw',
   marginBottom: 'margin-bottom',
   marginLeft: 'margin-left',
   marginRight: 'margin-right',

@@ -38,7 +38,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
     tabsIndicatorVariant,
     tabsIndicatorWidthMode,
     tabsTabWidthMode,
-    tabsSeparator
+    tabsSeparator,
+    tabsTrimOuterCurves
   } = useThemeExtras({
     designSystem,
     segment
@@ -52,7 +53,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
     tabsIndicatorVariant !== undefined ||
     tabsIndicatorWidthMode !== undefined ||
     tabsTabWidthMode !== undefined ||
-    tabsSeparator !== undefined
+    tabsSeparator !== undefined ||
+    tabsTrimOuterCurves !== undefined
       ? {
           ...(globalRadius !== undefined ? { radius: globalRadius } : {}),
           ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {}),
@@ -61,7 +63,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
           tabsIndicatorVariant !== undefined ||
           tabsIndicatorWidthMode !== undefined ||
           tabsTabWidthMode !== undefined ||
-          tabsSeparator !== undefined
+          tabsSeparator !== undefined ||
+          tabsTrimOuterCurves !== undefined
             ? {
                 components: {
                   tabs: {
@@ -79,7 +82,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
                       ...(tabsTabWidthMode !== undefined
                         ? { tabWidthMode: tabsTabWidthMode }
                         : {}),
-                      ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {})
+                      ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {}),
+                      ...(tabsTrimOuterCurves !== undefined
+                        ? { trimOuterCurves: tabsTrimOuterCurves }
+                        : {})
                     }
                   }
                 }

@@ -32,22 +32,25 @@ type ElementScalesByProperty<TScaleProperty extends StandardScaleProperty> = Par
  * - e6: separator
  */
 export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
-export type TabsType = 'line' | 'box' | 'dot';
+export type TabsType = 'line' | 'box' | 'dot' | 'bridge';
 export type TabsIndicatorPosition = 'top' | 'bottom';
 export type TabsIndicatorWidthMode = 'tab' | 'fixed' | 'content';
 export type TabsTabWidthMode = 'auto' | 'fixed';
 export const tabsIndicatorVariantsByType = {
   line: ['square', 'rounded', 'roundedClip'],
   box: ['square', 'rounded', 'pill'],
-  dot: ['dot']
+  dot: ['dot'],
+  bridge: ['square', 'rounded', 'pill']
 } as const;
 export type TabsLineIndicatorVariant = (typeof tabsIndicatorVariantsByType.line)[number];
 export type TabsBoxIndicatorVariant = (typeof tabsIndicatorVariantsByType.box)[number];
 export type TabsDotIndicatorVariant = (typeof tabsIndicatorVariantsByType.dot)[number];
+export type TabsBridgeIndicatorVariant = (typeof tabsIndicatorVariantsByType.bridge)[number];
 export type TabsIndicatorVariant =
   | TabsLineIndicatorVariant
   | TabsBoxIndicatorVariant
-  | TabsDotIndicatorVariant;
+  | TabsDotIndicatorVariant
+  | TabsBridgeIndicatorVariant;
 
 export type TabsOptions = Partial<{
   type: TabsType;
@@ -56,6 +59,7 @@ export type TabsOptions = Partial<{
   indicatorWidthMode: TabsIndicatorWidthMode;
   tabWidthMode: TabsTabWidthMode;
   separator: boolean;
+  trimOuterCurves: boolean;
 }>;
 
 /**
@@ -150,6 +154,7 @@ export type TabsIconElementStyle<TSegmentName extends SegmentName = never> = Par
  * e5 — indicator (line/background/pill)
  * - boxWidth
  * - boxHeight
+ * - curveWidth
  * - margins
  * - boxColor
  * - borderRadius
@@ -158,6 +163,7 @@ export type TabsIconElementStyle<TSegmentName extends SegmentName = never> = Par
  * `boxWidth` is used by line indicators when `indicatorWidthMode` is `fixed`.
  * `content` width is measured from the rendered tab content by the visual component layer.
  * `boxHeight` is the line thickness for `line`, the diameter for `dot`, and the fill height for `box`.
+ * `curveWidth` controls the shoulder width for `bridge` indicators.
  * `marginTop` / `marginBottom` define the gap between the indicator and the bar edge.
  *
  * `roundedClip` is a structural indicator variant handled by component styles (fixed geometry).
@@ -166,7 +172,9 @@ export type TabsIconElementStyle<TSegmentName extends SegmentName = never> = Par
  */
 export type TabsIndicatorElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   name?: string;
-  scales: ElementScalesByProperty<'boxWidth' | 'boxHeight' | 'marginTop' | 'marginBottom'> & {
+  scales: ElementScalesByProperty<
+    'boxWidth' | 'boxHeight' | 'curveWidth' | 'marginTop' | 'marginBottom'
+  > & {
     borderRadius?: {
       rounded?: ScaleBySize | number;
       pill?: ScaleBySize | number;
@@ -232,7 +240,8 @@ const TABS_OPTIONS_KEYS = [
   'indicatorVariant',
   'indicatorWidthMode',
   'tabWidthMode',
-  'separator'
+  'separator',
+  'trimOuterCurves'
 ] as const;
 
 const TABS_RULES: Record<(typeof TABS_ELEMENTS_KEYS)[number], ElementContractRules> = {
@@ -262,7 +271,7 @@ const TABS_RULES: Record<(typeof TABS_ELEMENTS_KEYS)[number], ElementContractRul
     palettes: ['textColor']
   },
   e5: {
-    scales: ['boxWidth', 'boxHeight', 'marginTop', 'marginBottom', 'borderRadius'],
+    scales: ['boxWidth', 'boxHeight', 'curveWidth', 'marginTop', 'marginBottom', 'borderRadius'],
     palettes: ['boxColor']
   },
   e6: {
@@ -376,9 +385,10 @@ function validateTabsOptions(value: unknown, path: string, issues: string[]): vo
     value.type !== undefined &&
     value.type !== 'line' &&
     value.type !== 'box' &&
-    value.type !== 'dot'
+    value.type !== 'dot' &&
+    value.type !== 'bridge'
   ) {
-    issues.push(`${path}.type: expected "line", "box", or "dot"`);
+    issues.push(`${path}.type: expected "line", "box", "dot", or "bridge"`);
   }
 
   if (
@@ -428,6 +438,15 @@ function validateTabsOptions(value: unknown, path: string, issues: string[]): vo
   }
 
   if (
+    value.type === 'bridge' &&
+    (value.indicatorVariant === 'roundedClip' || value.indicatorVariant === 'dot')
+  ) {
+    issues.push(
+      `${path}.indicatorVariant: "bridge" supports only "square", "rounded", or "pill"`
+    );
+  }
+
+  if (
     value.type === 'dot' &&
     value.indicatorVariant !== undefined &&
     value.indicatorVariant !== 'dot'
@@ -437,6 +456,18 @@ function validateTabsOptions(value: unknown, path: string, issues: string[]): vo
 
   if (value.type === 'dot' && value.indicatorWidthMode !== undefined) {
     issues.push(`${path}.indicatorWidthMode: "dot" does not support indicatorWidthMode`);
+  }
+
+  if (value.type === 'bridge' && value.indicatorWidthMode !== undefined) {
+    issues.push(`${path}.indicatorWidthMode: "bridge" does not support indicatorWidthMode`);
+  }
+
+  if (
+    value.type === 'bridge' &&
+    value.indicatorPosition !== undefined &&
+    value.indicatorPosition !== 'bottom'
+  ) {
+    issues.push(`${path}.indicatorPosition: "bridge" supports only "bottom"`);
   }
 
   if (
@@ -449,6 +480,14 @@ function validateTabsOptions(value: unknown, path: string, issues: string[]): vo
 
   if (value.separator !== undefined && typeof value.separator !== 'boolean') {
     issues.push(`${path}.separator: expected boolean`);
+  }
+
+  if (value.type === 'bridge' && value.separator === true) {
+    issues.push(`${path}.separator: "bridge" does not support separators`);
+  }
+
+  if (value.trimOuterCurves !== undefined && typeof value.trimOuterCurves !== 'boolean') {
+    issues.push(`${path}.trimOuterCurves: expected boolean`);
   }
 }
 

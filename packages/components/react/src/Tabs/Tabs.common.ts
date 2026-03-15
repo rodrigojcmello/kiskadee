@@ -121,7 +121,7 @@ export function resolveVariantElements(
   const asRecord = map as Record<string, TabsClassesMap>;
   const isElementMap = Object.hasOwn(asRecord, 'e1');
   if (isElementMap) return map as TabsClassesMap;
-  return asRecord[variant] ?? asRecord.line ?? asRecord.box ?? asRecord.dot ?? {};
+  return asRecord[variant] ?? asRecord.line ?? asRecord.box ?? asRecord.dot ?? asRecord.bridge ?? {};
 }
 
 export function resolveRadiusClassName(
@@ -180,6 +180,10 @@ export function resolveIndicatorVariant(
     return candidate === 'rounded' || candidate === 'roundedClip' ? candidate : 'square';
   }
 
+  if (type === 'bridge') {
+    return candidate === 'rounded' || candidate === 'pill' ? candidate : 'square';
+  }
+
   return candidate === 'rounded' || candidate === 'pill' ? candidate : 'square';
 }
 
@@ -200,6 +204,13 @@ export function resolveTabWidthMode(
   globalTabWidthMode: TabsVisualContextValue['tabWidthMode'] | undefined
 ): TabsVisualContextValue['tabWidthMode'] {
   return tabWidthMode ?? globalTabWidthMode ?? 'auto';
+}
+
+export function resolveTrimOuterCurves(
+  trimOuterCurves: boolean | undefined,
+  globalTrimOuterCurves: boolean | undefined
+): boolean {
+  return trimOuterCurves ?? globalTrimOuterCurves ?? false;
 }
 
 export type IndicatorRect = {
@@ -292,7 +303,13 @@ export function resolveListClassName(options: {
   return joinClassNames(
     options.modeClass,
     'k-tab-e1',
-    options.type === 'box' ? 'k-tab-b' : options.type === 'dot' ? 'k-tab-d' : 'k-tab-l',
+    options.type === 'box'
+      ? 'k-tab-b'
+      : options.type === 'dot'
+        ? 'k-tab-d'
+        : options.type === 'bridge'
+          ? 'k-tab-g'
+          : 'k-tab-l',
     resolveRadiusClassName(options.elements.e1, options.scale, options.radiusMode),
     resolveElementClassName(options.elements.e1, {
       scale: options.scale,
@@ -440,7 +457,7 @@ export function resolveIndicatorClassName(options: {
     resolveRadiusClassName(options.elements.e5, options.scale, indicatorRadiusMode),
     options.classNames.e5,
     'k-tab-e5',
-    options.type !== 'box'
+    options.type !== 'box' && options.type !== 'bridge'
       ? options.indicator.position === 'top'
         ? 'k-tab-e5i'
         : 'k-tab-e5h'

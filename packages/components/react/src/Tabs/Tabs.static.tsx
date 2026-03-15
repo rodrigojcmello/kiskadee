@@ -39,6 +39,7 @@ import {
   resolveListClassName,
   resolveSeparatorClassName,
   resolveTabWidthMode,
+  resolveTrimOuterCurves,
   resolveTriggerClassName,
   resolveVariantElements,
   TabsTabContextProvider,
@@ -52,10 +53,12 @@ import type {
   TabsTabContextValue,
   TabsVisualContextValue
 } from './Tabs.common.types.ts';
+import { TabsBridgeIndicator } from './Tabs.bridge';
 import './Tabs.static.scss';
 
 export type {
   TabsBarProps,
+  TabsBridgeIndicatorConfig,
   TabsBoxIndicatorConfig,
   TabsClassNames,
   TabsClassesMap,
@@ -81,6 +84,7 @@ function TabsRoot({
   tabWidthMode,
   indicator,
   separator,
+  trimOuterCurves,
   value,
   defaultValue,
   onValueChange,
@@ -133,11 +137,15 @@ function TabsRoot({
     global?.components?.tabs?.options?.tabWidthMode
   );
   const resolvedSeparator = separator ?? global?.components?.tabs?.options?.separator ?? false;
+  const resolvedTrimOuterCurves = resolveTrimOuterCurves(
+    trimOuterCurves,
+    global?.components?.tabs?.options?.trimOuterCurves
+  );
   const resolvedRadiusMode = (global?.radius ?? 'rounded') as RadiusMode;
   const resolvedIndicator: ResolvedTabsIndicator<'none'> = {
     motion: 'none',
     motionStyle: 'direct',
-    position: resolvedIndicatorPosition,
+    position: resolvedType === 'bridge' ? 'bottom' : resolvedIndicatorPosition,
     variant: resolvedIndicatorVariant,
     widthMode: resolvedIndicatorWidthMode
   };
@@ -172,6 +180,7 @@ function TabsRoot({
       barRef,
       indicator: resolvedIndicator,
       separator: resolvedSeparator,
+      trimOuterCurves: resolvedTrimOuterCurves,
       listClassName,
       separatorClassName,
       classNames,
@@ -188,6 +197,7 @@ function TabsRoot({
       barRef,
       resolvedIndicator,
       resolvedSeparator,
+      resolvedTrimOuterCurves,
       listClassName,
       separatorClassName,
       classNames,
@@ -208,7 +218,11 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
   const { selected, separator, separatorClassName, listClassName, indicator, type, barRef } =
     useTabsVisualContext();
   const positionClass =
-    type !== 'box' ? (indicator.position === 'top' ? 'k-tab-e1b' : 'k-tab-e1a') : undefined;
+    type !== 'box' && type !== 'bridge'
+      ? indicator.position === 'top'
+        ? 'k-tab-e1b'
+        : 'k-tab-e1a'
+      : undefined;
 
   const childrenWithSeparators = useMemo(() => {
     const items = Children.toArray(children);
@@ -339,8 +353,19 @@ function TabsContent(props: TabsContentProps) {
 }
 
 function TabsIndicator({ className, style, ...props }: TabsIndicatorProps) {
-  const { selected, scale, intent, emphasis, classNames, elements, indicator, radiusMode, type, barRef } =
-    useTabsVisualContext();
+  const {
+    selected,
+    scale,
+    intent,
+    emphasis,
+    classNames,
+    elements,
+    indicator,
+    radiusMode,
+    type,
+    barRef,
+    trimOuterCurves
+  } = useTabsVisualContext();
   const [indicatorRect, setIndicatorRect] = useState<ReturnType<typeof measureIndicatorRect>>(null);
 
   const updateIndicatorRect = useCallback(() => {
@@ -390,8 +415,28 @@ function TabsIndicator({ className, style, ...props }: TabsIndicatorProps) {
     radiusMode,
     indicator,
     type,
-    className
+    className: type === 'bridge' ? undefined : className
   });
+
+  if (type === 'bridge') {
+    if (!indicatorRect) {
+      return null;
+    }
+
+    return (
+      <TabsBridgeIndicator
+        {...props}
+        barRef={barRef}
+        className={joinClassNames('k-tab-e5', 'k-tab-e5m', className)}
+        indicatorRect={indicatorRect}
+        probeClassName={indicatorClassName}
+        selected={selected}
+        style={style}
+        trimOuterCurves={trimOuterCurves}
+      />
+    );
+  }
+
   const indicatorRectVars =
     indicatorRect !== null
       ? {

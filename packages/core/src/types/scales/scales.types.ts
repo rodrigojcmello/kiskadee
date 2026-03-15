@@ -19,6 +19,7 @@ export const SCALE_PROPERTIES = [
   // Box
   'boxHeight',
   'boxWidth',
+  'curveWidth',
   // Border
   'borderWidth',
   'borderRadiusRounded',

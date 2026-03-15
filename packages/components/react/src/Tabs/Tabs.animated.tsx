@@ -44,6 +44,7 @@ import {
   resolveListClassName,
   resolveSeparatorClassName,
   resolveTabWidthMode,
+  resolveTrimOuterCurves,
   resolveTriggerClassName,
   resolveVariantElements,
   TabsTabContextProvider,
@@ -59,10 +60,12 @@ import type {
   TabsTabContextValue,
   TabsVisualContextValue
 } from './Tabs.common.types.ts';
+import { TabsBridgeIndicator } from './Tabs.bridge';
 import './Tabs.animated.scss';
 
 export type {
   TabsBarProps,
+  TabsBridgeIndicatorConfig,
   TabsBoxIndicatorConfig,
   TabsClassesMap,
   TabsClassNames,
@@ -156,6 +159,7 @@ function TabsRoot({
   tabWidthMode,
   indicator,
   separator,
+  trimOuterCurves,
   spring,
   value,
   defaultValue,
@@ -209,15 +213,19 @@ function TabsRoot({
     global?.components?.tabs?.options?.tabWidthMode
   );
   const resolvedSeparator = separator ?? global?.components?.tabs?.options?.separator ?? false;
+  const resolvedTrimOuterCurves = resolveTrimOuterCurves(
+    trimOuterCurves,
+    global?.components?.tabs?.options?.trimOuterCurves
+  );
   const resolvedRadiusMode = (global?.radius ?? 'rounded') as RadiusMode;
   const resolvedIndicatorMotion = indicator?.motion ?? 'auto';
   const resolvedIndicatorMotionStyle: TabsIndicatorMotionStyle =
-    resolvedType === 'dot' ? 'direct' : indicator?.motionStyle ?? 'direct';
+    resolvedType === 'dot' || resolvedType === 'bridge' ? 'direct' : indicator?.motionStyle ?? 'direct';
   const indicatorTransition = resolveIndicatorTransition(resolvedIndicatorMotion, spring);
   const resolvedIndicator: ResolvedTabsIndicator = {
     motion: resolvedIndicatorMotion,
     motionStyle: resolvedIndicatorMotionStyle,
-    position: resolvedIndicatorPosition,
+    position: resolvedType === 'bridge' ? 'bottom' : resolvedIndicatorPosition,
     variant: resolvedIndicatorVariant,
     widthMode: resolvedIndicatorWidthMode
   };
@@ -254,6 +262,7 @@ function TabsRoot({
       indicator: resolvedIndicator,
       indicatorTransition,
       separator: resolvedSeparator,
+      trimOuterCurves: resolvedTrimOuterCurves,
       listClassName,
       separatorClassName,
       classNames,
@@ -271,6 +280,7 @@ function TabsRoot({
       resolvedIndicator,
       indicatorTransition,
       resolvedSeparator,
+      resolvedTrimOuterCurves,
       listClassName,
       separatorClassName,
       classNames,
@@ -301,6 +311,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     elements,
     barRef,
     separator,
+    trimOuterCurves,
     separatorClassName,
     listClassName
   } = useTabsVisualContext();
@@ -311,7 +322,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
   const [stretchPhase, setStretchPhase] = useState<StretchIndicatorPhase>('idle');
   const [settledSelected, setSettledSelected] = useState<string | undefined>(selected);
   const [isIndicatorAnimating, setIsIndicatorAnimating] = useState(false);
-  const indicatorRef = useRef<HTMLSpanElement | null>(null);
+  const indicatorRef = useRef<HTMLElement | null>(null);
   const latestSelectedRef = useRef<string | undefined>(selected);
   const previousSelectedRef = useRef<string | undefined>(selected);
   const lastSettledIndicatorRectRef = useRef<IndicatorRect | null>(null);
@@ -386,7 +397,11 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
   );
 
   const positionClass =
-    type !== 'box' ? (indicator.position === 'top' ? 'k-tab-e1b' : 'k-tab-e1a') : undefined;
+    type !== 'box' && type !== 'bridge'
+      ? indicator.position === 'top'
+        ? 'k-tab-e1b'
+        : 'k-tab-e1a'
+      : undefined;
   const separatorSelected =
     indicator.motion === 'none' ? selected : isIndicatorAnimating ? undefined : settledSelected;
 
@@ -620,12 +635,15 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
     indicator,
     type,
     className:
+      type !== 'bridge' &&
       type === 'line' &&
       indicator.widthMode === 'fixed' &&
       supportsStretchMotion &&
       stretchPhase !== 'idle'
         ? 'k-tab-e5k'
-        : undefined
+        : type === 'bridge'
+          ? undefined
+          : undefined
   });
 
   const renderedIndicatorRect = isDotIndicator
@@ -639,7 +657,7 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
           scale: dotPhase === 'exit' ? 0 : 1,
           opacity: dotPhase === 'exit' ? 0 : 1
         }
-      : type === 'box'
+      : type === 'box' || type === 'bridge'
         ? {
             ['--k-tab-x' as const]: `${renderedIndicatorRect.x}px`,
             ['--k-tab-y' as const]: `${renderedIndicatorRect.y}px`,
@@ -661,6 +679,38 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
       isDotIndicator && renderedIndicatorRect ? `${renderedIndicatorRect.width}px` : '0px',
     ['--k-tab-h' as const]: '0px'
   } as CSSProperties;
+  const handleIndicatorAnimationComplete = () => {
+    if (indicator.motion === 'none') return;
+    if (isDotIndicator && dotPhase === 'exit') {
+      if (indicatorRect) {
+        setDotDisplayRect(indicatorRect);
+      }
+      setDotPhase('enter');
+      return;
+    }
+    if (isDotIndicator && dotPhase === 'enter') {
+      setDotPhase('idle');
+      lastSettledIndicatorRectRef.current = indicatorRect;
+    }
+    if (supportsStretchMotion && stretchPhase === 'stretch') {
+      const finalRect = measureAnimatedIndicatorRect(latestSelectedRef.current) ?? indicatorRect;
+      if (finalRect) {
+        setStretchDisplayRect(finalRect);
+        setStretchPhase('settle');
+        return;
+      }
+    }
+    if (supportsStretchMotion && stretchPhase === 'settle') {
+      setStretchPhase('idle');
+      lastSettledIndicatorRectRef.current = measureRenderedIndicatorRect() ?? indicatorRect;
+      setSettledSelected(latestSelectedRef.current);
+      setIsIndicatorAnimating(false);
+      return;
+    }
+    lastSettledIndicatorRectRef.current = measureRenderedIndicatorRect() ?? indicatorRect;
+    setSettledSelected(latestSelectedRef.current);
+    setIsIndicatorAnimating(false);
+  };
 
   return (
     <HeadlessTabs.Bar
@@ -669,49 +719,34 @@ function TabsBar({ className, children, ...props }: TabsBarProps) {
       className={joinClassNames(listClassName, positionClass, className)}
     >
       {childrenWithSeparators}
-      {indicatorAnimate ? (
-        <motion.span
-          ref={indicatorRef}
-          initial={false}
-          animate={indicatorAnimate}
-          transition={isDotIndicator ? dotTransition : indicatorTransition}
-          style={indicatorStyle}
-          onAnimationComplete={() => {
-            if (indicator.motion === 'none') return;
-            if (isDotIndicator && dotPhase === 'exit') {
-              if (indicatorRect) {
-                setDotDisplayRect(indicatorRect);
-              }
-              setDotPhase('enter');
-              return;
-            }
-            if (isDotIndicator && dotPhase === 'enter') {
-              setDotPhase('idle');
-              lastSettledIndicatorRectRef.current = indicatorRect;
-            }
-            if (supportsStretchMotion && stretchPhase === 'stretch') {
-              const finalRect =
-                measureAnimatedIndicatorRect(latestSelectedRef.current) ?? indicatorRect;
-              if (finalRect) {
-                setStretchDisplayRect(finalRect);
-                setStretchPhase('settle');
-                return;
-              }
-            }
-            if (supportsStretchMotion && stretchPhase === 'settle') {
-              setStretchPhase('idle');
-              lastSettledIndicatorRectRef.current = measureRenderedIndicatorRect() ?? indicatorRect;
-              setSettledSelected(latestSelectedRef.current);
-              setIsIndicatorAnimating(false);
-              return;
-            }
-            lastSettledIndicatorRectRef.current = measureRenderedIndicatorRect() ?? indicatorRect;
-            setSettledSelected(latestSelectedRef.current);
-            setIsIndicatorAnimating(false);
-          }}
-          className={indicatorClassName}
-        />
-      ) : null}
+      {indicatorAnimate
+        ? type === 'bridge' && renderedIndicatorRect
+          ? (
+            <TabsBridgeIndicator
+              as={motion.div}
+              animate
+              barRef={barRef}
+              className={joinClassNames('k-tab-e5', 'k-tab-e5m')}
+              indicatorRect={renderedIndicatorRect}
+              onAnimationComplete={handleIndicatorAnimationComplete}
+              probeClassName={indicatorClassName}
+              selected={selected}
+              trimOuterCurves={trimOuterCurves}
+              transition={indicatorTransition}
+            />
+            )
+          : (
+            <motion.span
+              ref={indicatorRef as any}
+              initial={false}
+              animate={indicatorAnimate}
+              transition={isDotIndicator ? dotTransition : indicatorTransition}
+              style={indicatorStyle}
+              onAnimationComplete={handleIndicatorAnimationComplete}
+              className={indicatorClassName}
+            />
+            )
+        : null}
     </HeadlessTabs.Bar>
   );
 }

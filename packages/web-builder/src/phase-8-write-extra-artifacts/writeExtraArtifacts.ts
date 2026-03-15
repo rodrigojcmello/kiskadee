@@ -162,6 +162,9 @@ export async function writeExtraArtifacts(params: {
     | undefined;
   const tabsType = schema.components?.tabs?.options?.type as TabsType | undefined;
   const tabsSeparator = schema.components?.tabs?.options?.separator as boolean | undefined;
+  const tabsTrimOuterCurves = schema.components?.tabs?.options?.trimOuterCurves as
+    | boolean
+    | undefined;
 
   function toCssFontFamilyString(value: FontStack): string | null {
     const css = toCssFontFamily(value);
@@ -182,7 +185,8 @@ export async function writeExtraArtifacts(params: {
       tabsIndicatorWidthMode ||
       tabsTabWidthMode ||
       tabsType ||
-      tabsSeparator !== undefined
+      tabsSeparator !== undefined ||
+      tabsTrimOuterCurves !== undefined
   );
 
   if (hasFonts || hasRadius || hasRipple || hasTabsOptions) {
@@ -202,6 +206,7 @@ export async function writeExtraArtifacts(params: {
             indicatorWidthMode?: TabsIndicatorWidthMode;
             tabWidthMode?: TabsTabWidthMode;
             separator?: boolean;
+            trimOuterCurves?: boolean;
           };
         };
       };
@@ -234,7 +239,10 @@ export async function writeExtraArtifacts(params: {
             ...(tabsIndicatorVariant ? { indicatorVariant: tabsIndicatorVariant } : {}),
             ...(tabsIndicatorWidthMode ? { indicatorWidthMode: tabsIndicatorWidthMode } : {}),
             ...(tabsTabWidthMode ? { tabWidthMode: tabsTabWidthMode } : {}),
-            ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {})
+            ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {}),
+            ...(tabsTrimOuterCurves !== undefined
+              ? { trimOuterCurves: tabsTrimOuterCurves }
+              : {})
           }
         }
       };

@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  type TabsBridgeIndicatorVariant,
   type TabsBoxIndicatorVariant,
   type TabsIndicatorWidthMode,
   type TabsLineIndicatorVariant,
@@ -11,13 +12,19 @@ import type { TabsIndicatorMotionStyle, TabsSpringPreset } from '@kiskadee/react
 import { KTabs, KTabsStatic, useKiskadee } from '@kiskadee/react-components';
 import { useState } from 'react';
 import { Select } from '@/k-components';
+import { ExperimentalBridgeTabs } from './ExperimentalBridgeTabs';
 
 type TabsMode = 'animated' | 'static';
 type TabsSpring = TabsSpringPreset;
 type TabsIndicatorMotionStyleControl = TabsIndicatorMotionStyle;
 type TabsLineWidthModeControl = 'default' | TabsIndicatorWidthMode;
 type TabsTabWidthModeControl = 'default' | TabsTabWidthMode;
-type TabsExampleId = `line:${TabsLineIndicatorVariant}` | `box:${TabsBoxIndicatorVariant}` | 'dot';
+type TabsExampleId =
+  | `line:${TabsLineIndicatorVariant}`
+  | `box:${TabsBoxIndicatorVariant}`
+  | `bridge:${TabsBridgeIndicatorVariant}`
+  | 'bridge:trimmed'
+  | 'dot';
 type TabsSelectionByExample = Partial<Record<TabsExampleId, string>>;
 const DEFAULT_TAB_VALUE = 'locations';
 
@@ -78,6 +85,12 @@ const boxIndicatorVariantTitles: Record<TabsBoxIndicatorVariant, string> = {
   pill: 'Box / Pill'
 };
 
+const bridgeIndicatorVariantTitles: Record<TabsBridgeIndicatorVariant, string> = {
+  square: 'Bridge / Square',
+  rounded: 'Bridge / Rounded',
+  pill: 'Bridge / Pill'
+};
+
 const lineExamples: Array<{ title: string; indicatorVariant: TabsLineIndicatorVariant }> =
   tabsIndicatorVariantsByType.line.map((indicatorVariant) => ({
     title: lineIndicatorVariantTitles[indicatorVariant],
@@ -87,6 +100,12 @@ const lineExamples: Array<{ title: string; indicatorVariant: TabsLineIndicatorVa
 const boxExamples: Array<{ title: string; indicatorVariant: TabsBoxIndicatorVariant }> =
   tabsIndicatorVariantsByType.box.map((indicatorVariant) => ({
     title: boxIndicatorVariantTitles[indicatorVariant],
+    indicatorVariant
+  }));
+
+const bridgeExamples: Array<{ title: string; indicatorVariant: TabsBridgeIndicatorVariant }> =
+  tabsIndicatorVariantsByType.bridge.map((indicatorVariant) => ({
+    title: bridgeIndicatorVariantTitles[indicatorVariant],
     indicatorVariant
   }));
 
@@ -132,6 +151,19 @@ type TabsExampleProps =
       indicator: {
         position: 'bottom';
       };
+    }
+  | {
+      title: string;
+      mode: TabsMode;
+      spring: TabsSpring;
+      selectedValue: string;
+      onSelectedValueChange: (value: string) => void;
+      tabWidthMode?: TabsTabWidthMode;
+      type: 'bridge';
+      trimOuterCurves?: boolean;
+      indicator: {
+        variant: TabsBridgeIndicatorVariant;
+      };
     };
 
 function TabsExample(props: TabsExampleProps) {
@@ -171,51 +203,28 @@ function TabsExample(props: TabsExampleProps) {
       {loremByValue[tab.value]}
     </KTabsStatic.Content>
   ));
+  const sharedRootProps =
+    props.type === 'bridge' && props.trimOuterCurves !== undefined
+      ? { trimOuterCurves: props.trimOuterCurves }
+      : {};
 
   if (mode === 'animated') {
     return (
       <div>
         <h3>{title}</h3>
-        {props.type === 'box' ? (
-          <KTabs.Root
-            value={selectedValue}
-            onValueChange={onSelectedValueChange}
-            activationMode="manual"
-            type={props.type}
-            tabWidthMode={tabWidthMode}
-            indicator={props.indicator}
-            spring={spring}
-          >
-            {tabs}
-            {contents}
-          </KTabs.Root>
-        ) : props.type === 'dot' ? (
-          <KTabs.Root
-            value={selectedValue}
-            onValueChange={onSelectedValueChange}
-            activationMode="manual"
-            type={props.type}
-            tabWidthMode={tabWidthMode}
-            indicator={props.indicator}
-            spring={spring}
-          >
-            {tabs}
-            {contents}
-          </KTabs.Root>
-        ) : (
-          <KTabs.Root
-            value={selectedValue}
-            onValueChange={onSelectedValueChange}
-            activationMode="manual"
-            type={props.type}
-            tabWidthMode={tabWidthMode}
-            indicator={props.indicator}
-            spring={spring}
-          >
-            {tabs}
-            {contents}
-          </KTabs.Root>
-        )}
+        <KTabs.Root
+          value={selectedValue}
+          onValueChange={onSelectedValueChange}
+          activationMode="manual"
+          type={props.type}
+          tabWidthMode={tabWidthMode}
+          indicator={props.indicator as never}
+          spring={spring}
+          {...sharedRootProps}
+        >
+          {tabs}
+          {contents}
+        </KTabs.Root>
       </div>
     );
   }
@@ -223,43 +232,18 @@ function TabsExample(props: TabsExampleProps) {
   return (
     <div>
       <h3>{title}</h3>
-      {props.type === 'box' ? (
-        <KTabsStatic.Root
-          value={selectedValue}
-          onValueChange={onSelectedValueChange}
-          activationMode="manual"
-          type={props.type}
-          tabWidthMode={tabWidthMode}
-          indicator={props.indicator}
-        >
-          {staticTabs}
-          {staticContents}
-        </KTabsStatic.Root>
-      ) : props.type === 'dot' ? (
-        <KTabsStatic.Root
-          value={selectedValue}
-          onValueChange={onSelectedValueChange}
-          activationMode="manual"
-          type={props.type}
-          tabWidthMode={tabWidthMode}
-          indicator={props.indicator}
-        >
-          {staticTabs}
-          {staticContents}
-        </KTabsStatic.Root>
-      ) : (
-        <KTabsStatic.Root
-          value={selectedValue}
-          onValueChange={onSelectedValueChange}
-          activationMode="manual"
-          type={props.type}
-          tabWidthMode={tabWidthMode}
-          indicator={props.indicator}
-        >
-          {staticTabs}
-          {staticContents}
-        </KTabsStatic.Root>
-      )}
+      <KTabsStatic.Root
+        value={selectedValue}
+        onValueChange={onSelectedValueChange}
+        activationMode="manual"
+        type={props.type}
+        tabWidthMode={tabWidthMode}
+        indicator={props.indicator as never}
+        {...sharedRootProps}
+      >
+        {staticTabs}
+        {staticContents}
+      </KTabsStatic.Root>
     </div>
   );
 }
@@ -362,6 +346,14 @@ export default function ShowcaseTabs() {
         />
       </div>
 
+      <h2 style={{ marginTop: 0 }}>Experimental</h2>
+      <p style={{ marginTop: 0, marginBottom: 20, maxWidth: 780 }}>
+        This isolated prototype lives only in the showcase so we can validate the attached tab body
+        and the curved shoulder that reconnects into the bottom rail before translating the idea
+        into schema, build artifacts, and runtime classes.
+      </p>
+      <ExperimentalBridgeTabs />
+
       <h2>Line</h2>
       <p style={{ marginTop: 0, marginBottom: 20, maxWidth: 720 }}>
         Line tabs can use the schema default width mode or override it per component via the
@@ -425,6 +417,44 @@ export default function ShowcaseTabs() {
           }}
         />
       ))}
+
+      <h2 style={{ marginTop: 40 }}>Bridge</h2>
+      <p style={{ marginTop: 0, marginBottom: 20, maxWidth: 720 }}>
+        The real `bridge` type now uses schema-driven `curveWidth`, border width, border radius,
+        and the optional `trimOuterCurves` structural override. The prototype stays above as a
+        reference until this runtime version is fully stable.
+      </p>
+      {bridgeExamples.map((example) => (
+        <TabsExample
+          key={`bridge-${example.indicatorVariant}`}
+          title={example.title}
+          mode={mode}
+          spring={spring}
+          selectedValue={resolveSelectedTabValue(`bridge:${example.indicatorVariant}`)}
+          onSelectedValueChange={(value) =>
+            handleSelectedTabChange(`bridge:${example.indicatorVariant}`, value)
+          }
+          tabWidthMode={tabWidthModeProp}
+          type="bridge"
+          indicator={{
+            variant: example.indicatorVariant
+          }}
+        />
+      ))}
+      <TabsExample
+        key="bridge-trimmed"
+        title="Bridge / Trim Outer Curves"
+        mode={mode}
+        spring={spring}
+        selectedValue={resolveSelectedTabValue('bridge:trimmed')}
+        onSelectedValueChange={(value) => handleSelectedTabChange('bridge:trimmed', value)}
+        tabWidthMode={tabWidthModeProp}
+        type="bridge"
+        trimOuterCurves
+        indicator={{
+          variant: 'rounded'
+        }}
+      />
     </section>
   );
 }

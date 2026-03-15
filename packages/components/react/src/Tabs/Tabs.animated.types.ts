@@ -8,6 +8,7 @@ import type {
 } from '@kiskadee/react-headless';
 import type { HTMLAttributes, ReactNode } from 'react';
 import type {
+  TabsBridgeIndicatorConfig,
   TabsBoxIndicatorConfig,
   TabsClassNames,
   TabsClassesMap,
@@ -34,6 +35,7 @@ type TabsRootBaseProps = Omit<HeadlessTabsRootProps, 'classNames'> & {
   emphasis?: ComponentEmphasis;
   tabWidthMode?: TabsTabWidthMode;
   separator?: boolean;
+  trimOuterCurves?: boolean;
   spring?: TabsSpringPreset | TabsSpringConfig;
   indicatorLayoutId?: string;
   /**
@@ -58,12 +60,22 @@ export type TabsRootDotProps = TabsRootBaseProps & {
   indicator?: TabsDotIndicatorConfig;
 };
 
-export type TabsRootProps = TabsRootLineProps | TabsRootBoxProps | TabsRootDotProps;
+export type TabsRootBridgeProps = TabsRootBaseProps & {
+  type: 'bridge';
+  indicator?: TabsBridgeIndicatorConfig;
+};
+
+export type TabsRootProps =
+  | TabsRootLineProps
+  | TabsRootBoxProps
+  | TabsRootDotProps
+  | TabsRootBridgeProps;
 
 export type TabsIndicatorConfig =
   | TabsLineIndicatorConfig
   | TabsBoxIndicatorConfig
-  | TabsDotIndicatorConfig;
+  | TabsDotIndicatorConfig
+  | TabsBridgeIndicatorConfig;
 
 export type TabsBarProps = HeadlessTabsBarProps;
 
@@ -83,6 +95,7 @@ export type TabsLabelProps = HTMLAttributes<HTMLSpanElement>;
 export type TabsIconProps = HTMLAttributes<HTMLSpanElement>;
 
 export type {
+  TabsBridgeIndicatorConfig,
   TabsBoxIndicatorConfig,
   TabsClassNames,
   TabsClassesMap,

@@ -24,6 +24,7 @@ const tabsIndicatorVariantCache: Partial<Record<string, TabsIndicatorVariant | n
 const tabsIndicatorWidthModeCache: Partial<Record<string, TabsIndicatorWidthMode | null>> = {};
 const tabsTabWidthModeCache: Partial<Record<string, TabsTabWidthMode | null>> = {};
 const tabsSeparatorCache: Partial<Record<string, boolean | null>> = {};
+const tabsTrimOuterCurvesCache: Partial<Record<string, boolean | null>> = {};
 
 export function useThemeExtras({
   designSystem,
@@ -51,6 +52,7 @@ export function useThemeExtras({
     undefined
   );
   const [tabsSeparator, setTabsSeparator] = useState<boolean | undefined>(undefined);
+  const [tabsTrimOuterCurves, setTabsTrimOuterCurves] = useState<boolean | undefined>(undefined);
 
   // Load global radius/ripple metadata.
   useEffect(() => {
@@ -82,6 +84,11 @@ export function useThemeExtras({
       let tabWidthMode = tabsTabWidthModeCache[dsKey] ?? undefined;
       const hasTabsSeparator = Object.prototype.hasOwnProperty.call(tabsSeparatorCache, dsKey);
       let separator = tabsSeparatorCache[dsKey] ?? undefined;
+      const hasTabsTrimOuterCurves = Object.prototype.hasOwnProperty.call(
+        tabsTrimOuterCurvesCache,
+        dsKey
+      );
+      let trimOuterCurves = tabsTrimOuterCurvesCache[dsKey] ?? undefined;
       if (
         !hasRadius ||
         !hasRipple ||
@@ -90,7 +97,8 @@ export function useThemeExtras({
         !hasTabsIndicatorVariant ||
         !hasTabsIndicatorWidthMode ||
         !hasTabsTabWidthMode ||
-        !hasTabsSeparator
+        !hasTabsSeparator ||
+        !hasTabsTrimOuterCurves
       ) {
         try {
           const json = await loadJsonFromBuild<{
@@ -105,6 +113,7 @@ export function useThemeExtras({
                   indicatorWidthMode?: TabsIndicatorWidthMode;
                   tabWidthMode?: TabsTabWidthMode;
                   separator?: boolean;
+                  trimOuterCurves?: boolean;
                   variant?: TabsType;
                   indicatorShape?: TabsIndicatorVariant;
                 };
@@ -129,6 +138,8 @@ export function useThemeExtras({
           tabsTabWidthModeCache[dsKey] = tabWidthMode ?? null;
           separator = json.components?.tabs?.options?.separator;
           tabsSeparatorCache[dsKey] = separator ?? null;
+          trimOuterCurves = json.components?.tabs?.options?.trimOuterCurves;
+          tabsTrimOuterCurvesCache[dsKey] = trimOuterCurves ?? null;
         } catch (error) {
           console.warn(
             `[showcase] Failed to load global artifact for "${dsKey}". Retrying on next mount/selection change.`,
@@ -146,6 +157,7 @@ export function useThemeExtras({
       setTabsIndicatorWidthMode(indicatorWidthMode);
       setTabsTabWidthMode(tabWidthMode);
       setTabsSeparator(separator);
+      setTabsTrimOuterCurves(trimOuterCurves);
     };
 
     void loadGlobals();
@@ -217,6 +229,7 @@ export function useThemeExtras({
     tabsIndicatorVariant,
     tabsIndicatorWidthMode,
     tabsTabWidthMode,
-    tabsSeparator
+    tabsSeparator,
+    tabsTrimOuterCurves
   };
 }

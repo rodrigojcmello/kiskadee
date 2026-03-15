@@ -36,6 +36,7 @@ export type KiskadeeContextValue = {
           indicatorWidthMode?: TabsIndicatorWidthMode;
           tabWidthMode?: TabsTabWidthMode;
           separator?: boolean;
+          trimOuterCurves?: boolean;
           // Legacy aliases kept only for runtime fallback with stale artifacts.
           variant?: TabsType;
           indicatorShape?: TabsIndicatorVariant;

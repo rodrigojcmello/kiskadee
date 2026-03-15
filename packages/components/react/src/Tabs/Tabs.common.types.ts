@@ -2,6 +2,7 @@ import type {
   ClassNameByElementJSON,
   ComponentEmphasis,
   RadiusMode,
+  TabsBridgeIndicatorVariant,
   TabsBoxIndicatorVariant,
   TabsIndicatorPosition,
   TabsIndicatorVariant,
@@ -47,6 +48,14 @@ export type TabsBoxIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsInd
     widthMode?: never;
   };
 
+export type TabsBridgeIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsIndicatorMotion> =
+  TabsIndicatorMotionConfig<TMotion> & {
+    variant?: TabsBridgeIndicatorVariant;
+    motionStyle?: never;
+    position?: never;
+    widthMode?: never;
+  };
+
 export type TabsDotIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsIndicatorMotion> =
   TabsIndicatorMotionConfig<TMotion> & {
     variant?: never;
@@ -58,7 +67,8 @@ export type TabsDotIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsInd
 export type TabsIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsIndicatorMotion> =
   | TabsLineIndicatorConfig<TMotion>
   | TabsBoxIndicatorConfig<TMotion>
-  | TabsDotIndicatorConfig<TMotion>;
+  | TabsDotIndicatorConfig<TMotion>
+  | TabsBridgeIndicatorConfig<TMotion>;
 
 export type ResolvedTabsIndicator<TMotion extends TabsIndicatorMotion = TabsIndicatorMotion> = {
   motion: TMotion;
@@ -80,6 +90,7 @@ export type TabsVisualContextValue<TMotion extends TabsIndicatorMotion = TabsInd
   indicator: ResolvedTabsIndicator<TMotion>;
   indicatorTransition?: Record<string, unknown>;
   separator: boolean;
+  trimOuterCurves: boolean;
   listClassName: string | undefined;
   separatorClassName: string | undefined;
   classNames: TabsClassNames;

@@ -8,6 +8,7 @@ import type {
 } from '@kiskadee/react-headless';
 import type { HTMLAttributes, ReactNode } from 'react';
 import type {
+  TabsBridgeIndicatorConfig,
   TabsBoxIndicatorConfig,
   TabsClassesMap,
   TabsClassNames,
@@ -23,6 +24,7 @@ type TabsRootBaseProps = Omit<HeadlessTabsRootProps, 'classNames'> & {
   emphasis?: ComponentEmphasis;
   tabWidthMode?: TabsTabWidthMode;
   separator?: boolean;
+  trimOuterCurves?: boolean;
   /**
    * Semantic color family key for class map lookup (e.g. "primary", "neutral").
    * Falls back to the first available semantic key when not found.
@@ -45,12 +47,22 @@ export type TabsRootDotProps = TabsRootBaseProps & {
   indicator?: TabsDotIndicatorConfig<'none'>;
 };
 
-export type TabsRootProps = TabsRootLineProps | TabsRootBoxProps | TabsRootDotProps;
+export type TabsRootBridgeProps = TabsRootBaseProps & {
+  type: 'bridge';
+  indicator?: TabsBridgeIndicatorConfig<'none'>;
+};
+
+export type TabsRootProps =
+  | TabsRootLineProps
+  | TabsRootBoxProps
+  | TabsRootDotProps
+  | TabsRootBridgeProps;
 
 export type TabsIndicatorConfig =
   | TabsLineIndicatorConfig<'none'>
   | TabsBoxIndicatorConfig<'none'>
-  | TabsDotIndicatorConfig<'none'>;
+  | TabsDotIndicatorConfig<'none'>
+  | TabsBridgeIndicatorConfig<'none'>;
 
 export type TabsBarProps = HeadlessTabsBarProps;
 
@@ -70,6 +82,7 @@ export type TabsLabelProps = HTMLAttributes<HTMLSpanElement>;
 export type TabsIconProps = HTMLAttributes<HTMLSpanElement>;
 
 export type {
+  TabsBridgeIndicatorConfig,
   TabsBoxIndicatorConfig,
   TabsClassNames,
   TabsClassesMap,

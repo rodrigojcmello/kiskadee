@@ -1704,6 +1704,225 @@
               }
             }
           }
+        },
+        "bridge": {
+          "elements": {
+            "e1": {
+              "decorations": {
+                "borderStyle": "solid"
+              },
+              "scales": {
+                "borderWidth": 1
+              },
+              "palettes": {
+                "default": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#0000"
+                        }
+                      }
+                    },
+                    "borderColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#E6E1E9"
+                        }
+                      }
+                    }
+                  },
+                  "dark": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#0000"
+                        }
+                      }
+                    },
+                    "borderColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#C9C5CD"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "e2": {
+              "scales": {
+                "boxWidth": {
+                  "s:sm:1": 120,
+                  "s:md:1": 144,
+                  "s:lg:1": 160
+                },
+                "paddingTop": 10,
+                "paddingBottom": 10,
+                "paddingLeft": 14,
+                "paddingRight": 14
+              },
+              "palettes": {
+                "default": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#0000",
+                          "hover": "#F7F2FA",
+                          "focus": "#F7F2FA",
+                          "pressed": "#E6E1E9",
+                          "selected": {
+                            "rest": "#0000",
+                            "hover": "#0000",
+                            "pressed": "#0000"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "dark": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#0000",
+                          "hover": "#D7D3DB",
+                          "focus": "#D7D3DB",
+                          "pressed": "#C9C5CD",
+                          "selected": {
+                            "rest": "#0000",
+                            "hover": "#0000",
+                            "pressed": "#0000"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "e3": {
+              "decorations": {
+                "textWeight": "medium"
+              },
+              "scales": {
+                "textSize": 14,
+                "textHeight": 20
+              },
+              "palettes": {
+                "default": {
+                  "light": {
+                    "textColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#938F97",
+                          "selected": {
+                            "rest": "#FFF"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "dark": {
+                    "textColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#C9C5CD",
+                          "selected": {
+                            "rest": "#AFC6FF"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "e4": {
+              "scales": {
+                "boxWidth": 18,
+                "boxHeight": 18,
+                "paddingRight": 8
+              },
+              "palettes": {
+                "default": {
+                  "light": {
+                    "textColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#938F97",
+                          "selected": {
+                            "rest": "#7890C7"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "dark": {
+                    "textColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#C9C5CD",
+                          "selected": {
+                            "rest": "#AFC6FF"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "e5": {
+              "scales": {
+                "curveWidth": {
+                  "s:sm:1": 18,
+                  "s:md:1": 24,
+                  "s:lg:1": 30
+                },
+                "borderRadius": {
+                  "rounded": {
+                    "s:sm:1": 16,
+                    "s:md:1": 22,
+                    "s:lg:1": 28
+                  },
+                  "pill": {
+                    "s:sm:1": 20,
+                    "s:md:1": 28,
+                    "s:lg:1": 34
+                  },
+                  "square": 0
+                }
+              },
+              "palettes": {
+                "default": {
+                  "light": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#F7F2FA",
+                          "hover": "#F7F2FA",
+                          "pressed": "#F7F2FA"
+                        }
+                      }
+                    }
+                  },
+                  "dark": {
+                    "boxColor": {
+                      "neutral": {
+                        "medium": {
+                          "rest": "#E6E1E9",
+                          "hover": "#E6E1E9",
+                          "pressed": "#E6E1E9"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
