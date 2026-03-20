@@ -9,7 +9,16 @@
     ".": {
       "default": "./src/index.ts"
     },
-    "./style": "./src/styles/style.kiskadee.scss"
+    "./style": "./src/styles/style.kiskadee.scss",
+    "./tabs/line": {
+      "default": "./src/Tabs/line/Tabs.line.tsx"
+    },
+    "./tabs/box": {
+      "default": "./src/Tabs/box/Tabs.box.tsx"
+    },
+    "./tabs/dot": {
+      "default": "./src/Tabs/dot/Tabs.dot.tsx"
+    }
   },
   "files": [
     "src",

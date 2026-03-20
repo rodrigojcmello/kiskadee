@@ -1,59 +1,26 @@
-export { KTabs } from './Tabs.animated';
-export { KTabsStatic } from './Tabs.static';
+export { TabsBox } from './box/Tabs.box';
+export { TabsDot } from './dot/Tabs.dot';
+export { TabsLine } from './line/Tabs.line';
 export type {
   TabsBarProps,
   TabsBoxIndicatorConfig,
+  TabsBoxRootProps,
   TabsClassNames,
   TabsClassesMap,
   TabsContentProps,
   TabsDotIndicatorConfig,
+  TabsDotRootProps,
   TabsElementName,
+  TabsIconProps,
   TabsIndicatorConfig,
   TabsIndicatorMotion,
   TabsIndicatorMotionStyle,
-  TabsIconProps,
   TabsIndicatorProps,
   TabsLabelProps,
   TabsLineIndicatorConfig,
+  TabsLineRootProps,
   TabsRootProps,
   TabsSpringConfig,
   TabsSpringPreset,
   TabsTabProps
-} from './Tabs.animated.types.ts';
-export type {
-  TabsBarProps as TabsMotionBarProps,
-  TabsBoxIndicatorConfig as TabsMotionBoxIndicatorConfig,
-  TabsClassNames as TabsMotionClassNames,
-  TabsClassesMap as TabsMotionClassesMap,
-  TabsContentProps as TabsMotionContentProps,
-  TabsDotIndicatorConfig as TabsMotionDotIndicatorConfig,
-  TabsElementName as TabsMotionElementName,
-  TabsIndicatorConfig as TabsMotionIndicatorConfig,
-  TabsIndicatorMotion as TabsMotionIndicatorMotion,
-  TabsIndicatorMotionStyle as TabsMotionIndicatorMotionStyle,
-  TabsIconProps as TabsMotionIconProps,
-  TabsIndicatorProps as TabsMotionIndicatorProps,
-  TabsLabelProps as TabsMotionLabelProps,
-  TabsLineIndicatorConfig as TabsMotionLineIndicatorConfig,
-  TabsRootProps as TabsMotionRootProps,
-  TabsSpringConfig as TabsMotionSpringConfig,
-  TabsSpringPreset as TabsMotionSpringPreset,
-  TabsTabProps as TabsMotionTabProps
-} from './Tabs.animated.types.ts';
-export type {
-  TabsBarProps as TabsStaticBarProps,
-  TabsBoxIndicatorConfig as TabsStaticBoxIndicatorConfig,
-  TabsClassNames as TabsStaticClassNames,
-  TabsClassesMap as TabsStaticClassesMap,
-  TabsContentProps as TabsStaticContentProps,
-  TabsDotIndicatorConfig as TabsStaticDotIndicatorConfig,
-  TabsElementName as TabsStaticElementName,
-  TabsIndicatorConfig as TabsStaticIndicatorConfig,
-  TabsIndicatorMotionStyle as TabsStaticIndicatorMotionStyle,
-  TabsIconProps as TabsStaticIconProps,
-  TabsIndicatorProps as TabsStaticIndicatorProps,
-  TabsLabelProps as TabsStaticLabelProps,
-  TabsLineIndicatorConfig as TabsStaticLineIndicatorConfig,
-  TabsRootProps as TabsStaticRootProps,
-  TabsTabProps as TabsStaticTabProps
-} from './Tabs.static.types.ts';
+} from './Tabs.types';

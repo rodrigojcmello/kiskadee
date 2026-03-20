@@ -5,46 +5,36 @@ import {
   componentEmphasisBuckets,
   type RadiusMode
 } from '@kiskadee/core';
-import { createContext, isValidElement, type ReactNode, useContext } from 'react';
+import { isValidElement, type ReactNode } from 'react';
 import type {
-  ResolvedTabsIndicator,
   TabsClassesMap,
   TabsClassNames,
-  TabsTabContextValue,
+  TabsResolvedIndicator,
   TabsVisualContextValue
-} from './Tabs.common.types.ts';
+} from './Tabs.types';
 
 export const DEFAULT_SCALE = 's:md:1';
 export const DEFAULT_EMPHASIS: TabsVisualContextValue['emphasis'] = 'medium';
 export const DEFAULT_INTENT = 'neutral';
 export const DEFAULT_TYPE: TabsVisualContextValue['type'] = 'line';
-const TAB_CONTENT_SELECTOR = '.k-tab-c';
 
-const TabsVisualContext = createContext<TabsVisualContextValue | null>(null);
-const TabsTabContext = createContext<TabsTabContextValue | null>(null);
-
-export function useTabsVisualContext(): TabsVisualContextValue {
-  const context = useContext(TabsVisualContext);
-  if (!context) {
-    throw new Error('Tabs compound components must be used within a Tabs.Root');
-  }
-  return context;
-}
-
-export function useTabsTabContext(): TabsTabContextValue {
-  const context = useContext(TabsTabContext);
-  if (!context) {
-    throw new Error('Tabs.Label and Tabs.Icon must be used within a Tabs.Tab');
-  }
-  return context;
-}
-
-export const TabsVisualContextProvider = TabsVisualContext.Provider;
-export const TabsTabContextProvider = TabsTabContext.Provider;
-
+/**
+ * What
+ *     Normalizes a scale token by stripping the `s:` prefix when it exists.
+ * Why
+ *     Schema class maps are keyed by the raw scale name, so every resolver needs the same
+ *     lookup format.
+ */
 export const normalizeScaleKey = (key: string): string =>
   key.startsWith('s:') ? key.slice(2) : key;
 
+/**
+ * What
+ *     Joins className fragments into a single trimmed string while discarding empty values.
+ * Why
+ *     Every class resolver in this file assembles conditional fragments, so this avoids
+ *     repeating filtering and trimming logic.
+ */
 export function joinClassNames(
   ...parts: Array<string | undefined | false | null>
 ): string | undefined {
@@ -52,6 +42,14 @@ export function joinClassNames(
   return joined.length > 0 ? joined : undefined;
 }
 
+/**
+ * What
+ *     Resolves the semantic color classes for one schema element using the current intent and
+ *     emphasis.
+ * Why
+ *     Tabs elements share the same color bucket structure, and this keeps that selection
+ *     logic in one place before each element-specific resolver adds its own modifiers.
+ */
 export function resolveIntentClasses(
   element: TabsClassesMap['e1'] | undefined,
   intent: string,
@@ -72,6 +70,13 @@ export function resolveIntentClasses(
   return chosen.h ?? chosen.m ?? chosen.l ?? chosen.ll ?? '';
 }
 
+/**
+ * What
+ *     Collects every effect class declared for a schema element into a flat className string.
+ * Why
+ *     Element effects are optional and can be declared in multiple slots, so resolvers need
+ *     a shared way to merge them without duplicating that traversal.
+ */
 export function resolveEffectClasses(element: TabsClassesMap['e1'] | undefined): string {
   if (!element?.e) return '';
   return Object.values(element.e)
@@ -79,6 +84,15 @@ export function resolveEffectClasses(element: TabsClassesMap['e1'] | undefined):
     .join(' ');
 }
 
+/**
+ * What
+ *     Builds the base className for one schema element from its default, color, scale,
+ *     effect, and selected-state classes.
+ * Why
+ *     Most Tabs slots share this same assembly pattern, so higher-level resolvers can
+ *     compose on top of one common element resolver instead of rebuilding the same stack
+ *     each time.
+ */
 export function resolveElementClassName(
   element: TabsClassesMap['e1'] | undefined,
   options: {
@@ -103,6 +117,13 @@ export function resolveElementClassName(
   );
 }
 
+/**
+ * What
+ *     Resolves width classes for schema elements that expose size rules per scale.
+ * Why
+ *     Fixed-width tabs need to opt into width tokens without mixing that concern into the
+ *     generic element-class resolver.
+ */
 export function resolveWidthClassName(
   element: ClassNameByElementJSON | undefined,
   scale: string
@@ -113,6 +134,13 @@ export function resolveWidthClassName(
   return joinClassNames(element.w?.all, element.w?.[scaleKey]) ?? '';
 }
 
+/**
+ * What
+ *     Selects the class-map branch that corresponds to the current Tabs variant.
+ * Why
+ *     The runtime accepts either a direct element map or a variant-indexed map, so this
+ *     normalizes both shapes into one predictable structure for the rest of the file.
+ */
 export function resolveVariantElements(
   map: TabsClassesMap | Record<string, TabsClassesMap> | undefined,
   variant: string
@@ -124,6 +152,13 @@ export function resolveVariantElements(
   return asRecord[variant] ?? asRecord.line ?? asRecord.box ?? asRecord.dot ?? {};
 }
 
+/**
+ * What
+ *     Resolves radius classes for a schema element using the active radius mode and scale.
+ * Why
+ *     Tabs can switch between rounded, pill, and square radii at runtime, so slot resolvers
+ *     need a shared way to pick the matching schema classes.
+ */
 export function resolveRadiusClassName(
   element: ClassNameByElementJSON | undefined,
   scale: string,
@@ -150,6 +185,14 @@ export function resolveRadiusClassName(
   return joinClassNames(all, byScale) ?? '';
 }
 
+/**
+ * What
+ *     Maps the current Tabs type and indicator width mode to the structural indicator
+ *     modifier class.
+ * Why
+ *     The indicator CSS changes layout rules by type, and this keeps that branching in one
+ *     small resolver instead of scattering hard-coded class names across renderers.
+ */
 export function resolveIndicatorModeClass(
   type: TabsVisualContextValue['type'],
   indicatorWidthMode: TabsVisualContextValue['indicator']['widthMode']
@@ -165,12 +208,20 @@ export function resolveIndicatorModeClass(
   return indicatorWidthMode === 'fixed' ? 'k-tab-e5b' : 'k-tab-e5a';
 }
 
+/**
+ * What
+ *     Resolves the final indicator variant allowed for the current Tabs type.
+ * Why
+ *     Global options and local props can request variants that do not apply to every type,
+ *     so this function clamps them to the supported set before rendering.
+ */
 export function resolveIndicatorVariant(
   type: TabsVisualContextValue['type'],
-  indicatorVariant: ResolvedTabsIndicator['variant'] | undefined,
+  indicatorVariant: TabsResolvedIndicator['variant'] | undefined,
   globalIndicatorVariant: string | undefined
-): ResolvedTabsIndicator['variant'] {
-  const candidate = typeof indicatorVariant === 'string' ? indicatorVariant : globalIndicatorVariant;
+): TabsResolvedIndicator['variant'] {
+  const candidate =
+    typeof indicatorVariant === 'string' ? indicatorVariant : globalIndicatorVariant;
 
   if (type === 'dot') {
     return 'dot';
@@ -183,6 +234,13 @@ export function resolveIndicatorVariant(
   return candidate === 'rounded' || candidate === 'pill' ? candidate : 'square';
 }
 
+/**
+ * What
+ *     Resolves the effective indicator width mode from local and global settings.
+ * Why
+ *     Only line tabs support alternate width behaviors, so this centralizes the fallback
+ *     rules and the type-specific restriction in one place.
+ */
 export function resolveIndicatorWidthMode(
   type: TabsVisualContextValue['type'],
   indicatorWidthMode: TabsVisualContextValue['indicator']['widthMode'] | undefined,
@@ -195,6 +253,13 @@ export function resolveIndicatorWidthMode(
   return indicatorWidthMode ?? globalIndicatorWidthMode ?? 'tab';
 }
 
+/**
+ * What
+ *     Resolves the effective tab width mode from local props and global component defaults.
+ * Why
+ *     Trigger class resolution needs one final width mode, so this avoids repeating the same
+ *     fallback order wherever tab width affects styling.
+ */
 export function resolveTabWidthMode(
   tabWidthMode: TabsVisualContextValue['tabWidthMode'] | undefined,
   globalTabWidthMode: TabsVisualContextValue['tabWidthMode'] | undefined
@@ -202,85 +267,16 @@ export function resolveTabWidthMode(
   return tabWidthMode ?? globalTabWidthMode ?? 'auto';
 }
 
-export type IndicatorRect = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
-
-export function findTabElement(
-  barElement: HTMLDivElement | null,
-  value: string | undefined
-): HTMLElement | null {
-  if (!barElement || !value) return null;
-  const tabs = Array.from(barElement.querySelectorAll<HTMLElement>('[role="tab"]'));
-  return tabs.find((tab) => tab.getAttribute('data-tab-value') === value) ?? null;
-}
-
-export function measureElementRectRelativeToBar(options: {
-  barElement: HTMLDivElement | null;
-  element: HTMLElement | null;
-}): IndicatorRect | null {
-  const { barElement, element } = options;
-  if (!barElement || !element) {
-    return null;
-  }
-
-  const barRect = barElement.getBoundingClientRect();
-  const elementRect = element.getBoundingClientRect();
-
-  return {
-    x: elementRect.left - barRect.left + barElement.scrollLeft,
-    y: elementRect.top - barRect.top + barElement.scrollTop,
-    width: elementRect.width,
-    height: elementRect.height
-  };
-}
-
-export function measureTabRect(options: {
-  barElement: HTMLDivElement | null;
-  value: string | undefined;
-}): IndicatorRect | null {
-  const { barElement, value } = options;
-  return measureElementRectRelativeToBar({
-    barElement,
-    element: findTabElement(barElement, value)
-  });
-}
-
-function findMeasuredTabContentElement(selectedTab: HTMLElement): HTMLElement | null {
-  return selectedTab.querySelector<HTMLElement>(TAB_CONTENT_SELECTOR);
-}
-
-export function measureIndicatorRect(options: {
-  barElement: HTMLDivElement | null;
-  selected: string | undefined;
-  widthMode: TabsVisualContextValue['indicator']['widthMode'];
-}): IndicatorRect | null {
-  const { barElement, selected, widthMode } = options;
-  const selectedTab = findTabElement(barElement, selected);
-  if (!barElement || !selectedTab) {
-    return null;
-  }
-
-  const tabRect = measureElementRectRelativeToBar({
-    barElement,
-    element: selectedTab
-  });
-  const measuredRect =
-    widthMode === 'content'
-      ? measureElementRectRelativeToBar({
-          barElement,
-          element: findMeasuredTabContentElement(selectedTab)
-        }) ?? tabRect
-      : tabRect;
-
-  return measuredRect;
-}
-
+/**
+ * What
+ *     Builds the final className for the tab-list container by combining schema classes and
+ *     type-specific structural modifiers.
+ * Why
+ *     Each Tabs type reuses the same root slot but applies different structural markers, so
+ *     the runtime needs one resolver that expresses those differences without duplicating
+ *     class assembly.
+ */
 export function resolveListClassName(options: {
-  modeClass: 'k-tab-a' | 'k-tab-s';
   elements: TabsClassesMap;
   classNames: TabsClassNames;
   scale: string;
@@ -288,11 +284,13 @@ export function resolveListClassName(options: {
   emphasis: TabsVisualContextValue['emphasis'];
   radiusMode: RadiusMode;
   type: TabsVisualContextValue['type'];
+  indicatorPosition: TabsResolvedIndicator['position'];
 }): string | undefined {
   return joinClassNames(
-    options.modeClass,
+    'k-tab',
     'k-tab-e1',
     options.type === 'box' ? 'k-tab-b' : options.type === 'dot' ? 'k-tab-d' : 'k-tab-l',
+    options.type !== 'box' ? (options.indicatorPosition === 'top' ? 'k-tab-e1b' : 'k-tab-e1a') : '',
     resolveRadiusClassName(options.elements.e1, options.scale, options.radiusMode),
     resolveElementClassName(options.elements.e1, {
       scale: options.scale,
@@ -303,6 +301,13 @@ export function resolveListClassName(options: {
   );
 }
 
+/**
+ * What
+ *     Builds the final className for the optional separator element rendered between box tabs.
+ * Why
+ *     Box tabs can inject separators dynamically, so their renderer needs a dedicated
+ *     resolver for that extra slot without special-casing raw class assembly inline.
+ */
 export function resolveSeparatorClassName(options: {
   elements: TabsClassesMap;
   classNames: TabsClassNames;
@@ -321,6 +326,14 @@ export function resolveSeparatorClassName(options: {
   );
 }
 
+/**
+ * What
+ *     Builds the final className for a tab trigger by merging schema classes, consumer
+ *     overrides, width/radius modifiers, and interactive/selected state markers.
+ * Why
+ *     Tabs.Tab uses this as the single place where trigger styling is assembled, so the
+ *     runtime can keep rendering logic separate from class-resolution rules.
+ */
 export function resolveTriggerClassName(options: {
   elements: TabsClassesMap;
   classNames: TabsClassNames;
@@ -339,7 +352,9 @@ export function resolveTriggerClassName(options: {
       emphasis: options.emphasis,
       selected: options.selected
     }),
-    options.tabWidthMode === 'fixed' ? resolveWidthClassName(options.elements.e2, options.scale) : '',
+    options.tabWidthMode === 'fixed'
+      ? resolveWidthClassName(options.elements.e2, options.scale)
+      : '',
     resolveRadiusClassName(options.elements.e2, options.scale, options.radiusMode),
     options.classNames.e2,
     'k-tab-e2',
@@ -352,6 +367,13 @@ export function resolveTriggerClassName(options: {
   );
 }
 
+/**
+ * What
+ *     Builds the final className for the tab label slot.
+ * Why
+ *     Tabs.Label is rendered inside the trigger context, so it needs its own resolver to
+ *     inherit the current selected state and still allow schema and consumer overrides.
+ */
 export function resolveLabelClassName(options: {
   elements: TabsClassesMap;
   classNames: TabsClassNames;
@@ -376,6 +398,14 @@ export function resolveLabelClassName(options: {
   );
 }
 
+/**
+ * What
+ *     Builds the final className for the tab icon slot.
+ * Why
+ *     Tabs.Icon follows the same state-driven styling model as the label, but keeps a
+ *     separate resolver so icon-specific schema classes stay independent from label
+ *     classes.
+ */
 export function resolveIconClassName(options: {
   elements: TabsClassesMap;
   classNames: TabsClassNames;
@@ -400,6 +430,15 @@ export function resolveIconClassName(options: {
   );
 }
 
+/**
+ * What
+ *     Builds the final className for the active indicator, including variant, position,
+ *     motion, and type-specific modifiers.
+ * Why
+ *     Static and motion renderers for line, box, and dot all depend on the same indicator
+ *     slot, so this keeps indicator class branching centralized and consistent across
+ *     implementations.
+ */
 export function resolveIndicatorClassName(options: {
   elements: TabsClassesMap;
   classNames: TabsClassNames;
@@ -407,7 +446,7 @@ export function resolveIndicatorClassName(options: {
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
   radiusMode: RadiusMode;
-  indicator: ResolvedTabsIndicator;
+  indicator: TabsResolvedIndicator;
   type: TabsVisualContextValue['type'];
   className?: string;
 }): string | undefined {
@@ -454,6 +493,13 @@ export function resolveIndicatorClassName(options: {
   );
 }
 
+/**
+ * What
+ *     Extracts the `value` prop from a potential React tab child when it is a valid element.
+ * Why
+ *     Box tabs build separator elements between triggers, and that logic needs a lightweight
+ *     way to inspect child values without depending on a stricter child shape.
+ */
 export function extractTabValue(child: ReactNode): string | undefined {
   if (!isValidElement(child)) return undefined;
   const value = (child.props as { value?: unknown }).value;

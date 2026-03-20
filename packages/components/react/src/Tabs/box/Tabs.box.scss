@@ -1,0 +1,35 @@
+.k-tab.k-tab-b .k-tab-e6 {
+  flex: 0 0 auto;
+  align-self: center;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 60ms ease-out;
+  will-change: opacity;
+}
+
+.k-tab.k-tab-b .k-tab-e6.k-tab-e6b {
+  opacity: 0;
+}
+
+.k-tab.k-tab-b .k-tab-e5 {
+  transition:
+    transform var(--k-tab-dur, 180ms) ease,
+    width var(--k-tab-dur, 180ms) ease,
+    height var(--k-tab-dur, 180ms) ease;
+  will-change: transform, width, height;
+  height: var(--k-tab-h, 0px);
+  transform: translate3d(var(--k-tab-x, 0px), var(--k-tab-y, 0px), 0px);
+  width: var(--k-tab-w, 0px);
+}
+
+.k-tab.k-tab-b .k-tab-e5.k-tab-e5j {
+  transition: none;
+}
+
+.k-tab.k-tab-b .k-tab-e2 {
+  z-index: 1;
+}
+
+.k-tab.k-tab-b .k-tab-e2[aria-selected='true'] {
+  z-index: 3;
+}

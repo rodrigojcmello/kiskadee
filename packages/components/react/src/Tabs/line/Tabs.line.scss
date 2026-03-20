@@ -1,0 +1,11 @@
+.k-tab.k-tab-l .k-tab-e5 {
+  transition:
+    transform var(--k-tab-dur, 180ms) ease,
+    width var(--k-tab-dur, 180ms) ease,
+    height var(--k-tab-dur, 180ms) ease;
+  will-change: transform, width, height;
+}
+
+.k-tab.k-tab-l .k-tab-e5.k-tab-e5j {
+  transition: none;
+}

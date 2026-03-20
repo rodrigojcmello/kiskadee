@@ -8,7 +8,10 @@ import {
   tabsIndicatorVariantsByType
 } from '@kiskadee/core';
 import type { TabsIndicatorMotionStyle, TabsSpringPreset } from '@kiskadee/react-components';
-import { KTabs, KTabsStatic, useKiskadee } from '@kiskadee/react-components';
+import { useKiskadee } from '@kiskadee/react-components';
+import { TabsBox } from '@kiskadee/react-components/tabs/box';
+import { TabsDot } from '@kiskadee/react-components/tabs/dot';
+import { TabsLine } from '@kiskadee/react-components/tabs/line';
 import { useState } from 'react';
 import { Select } from '@/k-components';
 
@@ -134,132 +137,102 @@ type TabsExampleProps =
       };
     };
 
+type TabsCompoundSlots = Pick<typeof TabsLine, 'Bar' | 'Tab' | 'Content'>;
+
+function renderTabsSlots(Component: TabsCompoundSlots, keyBase: string) {
+  const tabs = (
+    <Component.Bar>
+      {tabItems.map((tab) => (
+        <Component.Tab key={`${keyBase}-${tab.value}`} value={tab.value} label={tab.label} />
+      ))}
+    </Component.Bar>
+  );
+  const contents = tabItems.map((tab) => (
+    <Component.Content key={`${keyBase}-content-${tab.value}`} value={tab.value}>
+      {loremByValue[tab.value]}
+    </Component.Content>
+  ));
+
+  return { tabs, contents };
+}
+
 function TabsExample(props: TabsExampleProps) {
   const { title, mode, spring, selectedValue, onSelectedValueChange, tabWidthMode } = props;
   const type = props.type;
   const indicator = props.indicator;
   const tabVariantKey = 'variant' in indicator ? indicator.variant : 'dot';
-  const tabs = (
-    <KTabs.Bar>
-      {tabItems.map((tab) => (
-        <KTabs.Tab key={`${type}-${tabVariantKey}-${tab.value}`} value={tab.value} label={tab.label} />
-      ))}
-    </KTabs.Bar>
-  );
-  const contents = tabItems.map((tab) => (
-    <KTabs.Content key={`${type}-${tabVariantKey}-content-${tab.value}`} value={tab.value}>
-      {loremByValue[tab.value]}
-    </KTabs.Content>
-  ));
-  const staticTabs = (
-    <KTabsStatic.Bar>
-      {tabItems.map((tab) => (
-        <KTabsStatic.Tab
-          key={`${type}-${tabVariantKey}-static-${tab.value}`}
-          value={tab.value}
-          label={tab.label}
-        />
-      ))}
-      <KTabsStatic.Indicator />
-    </KTabsStatic.Bar>
-  );
-  const staticContents = tabItems.map((tab) => (
-    <KTabsStatic.Content
-      key={`${type}-${tabVariantKey}-static-content-${tab.value}`}
-      value={tab.value}
-    >
-      {loremByValue[tab.value]}
-    </KTabsStatic.Content>
-  ));
+  const keyBase = `${type}-${tabVariantKey}`;
 
-  if (mode === 'animated') {
+  if (props.type === 'line') {
+    const resolvedIndicator = {
+      ...props.indicator,
+      motion: mode === 'animated' ? ('auto' as const) : ('none' as const)
+    };
+    const { tabs, contents } = renderTabsSlots(TabsLine, keyBase);
+
     return (
       <div>
         <h3>{title}</h3>
-        {props.type === 'box' ? (
-          <KTabs.Root
-            value={selectedValue}
-            onValueChange={onSelectedValueChange}
-            activationMode="manual"
-            type={props.type}
-            tabWidthMode={tabWidthMode}
-            indicator={props.indicator}
-            spring={spring}
-          >
-            {tabs}
-            {contents}
-          </KTabs.Root>
-        ) : props.type === 'dot' ? (
-          <KTabs.Root
-            value={selectedValue}
-            onValueChange={onSelectedValueChange}
-            activationMode="manual"
-            type={props.type}
-            tabWidthMode={tabWidthMode}
-            indicator={props.indicator}
-            spring={spring}
-          >
-            {tabs}
-            {contents}
-          </KTabs.Root>
-        ) : (
-          <KTabs.Root
-            value={selectedValue}
-            onValueChange={onSelectedValueChange}
-            activationMode="manual"
-            type={props.type}
-            tabWidthMode={tabWidthMode}
-            indicator={props.indicator}
-            spring={spring}
-          >
-            {tabs}
-            {contents}
-          </KTabs.Root>
-        )}
+        <TabsLine.Root
+          value={selectedValue}
+          onValueChange={onSelectedValueChange}
+          activationMode="manual"
+          tabWidthMode={tabWidthMode}
+          indicator={resolvedIndicator}
+          spring={spring}
+        >
+          {tabs}
+          {contents}
+        </TabsLine.Root>
       </div>
     );
   }
 
+  if (props.type === 'box') {
+    const resolvedIndicator = {
+      ...props.indicator,
+      motion: mode === 'animated' ? ('auto' as const) : ('none' as const)
+    };
+    const { tabs, contents } = renderTabsSlots(TabsBox, keyBase);
+
+    return (
+      <div>
+        <h3>{title}</h3>
+        <TabsBox.Root
+          value={selectedValue}
+          onValueChange={onSelectedValueChange}
+          activationMode="manual"
+          tabWidthMode={tabWidthMode}
+          indicator={resolvedIndicator}
+          spring={spring}
+        >
+          {tabs}
+          {contents}
+        </TabsBox.Root>
+      </div>
+    );
+  }
+
+  const resolvedIndicator = {
+    ...props.indicator,
+    motion: mode === 'animated' ? ('auto' as const) : ('none' as const)
+  };
+  const { tabs, contents } = renderTabsSlots(TabsDot, keyBase);
+
   return (
     <div>
       <h3>{title}</h3>
-      {props.type === 'box' ? (
-        <KTabsStatic.Root
-          value={selectedValue}
-          onValueChange={onSelectedValueChange}
-          activationMode="manual"
-          type={props.type}
-          tabWidthMode={tabWidthMode}
-          indicator={props.indicator}
-        >
-          {staticTabs}
-          {staticContents}
-        </KTabsStatic.Root>
-      ) : props.type === 'dot' ? (
-        <KTabsStatic.Root
-          value={selectedValue}
-          onValueChange={onSelectedValueChange}
-          activationMode="manual"
-          type={props.type}
-          tabWidthMode={tabWidthMode}
-          indicator={props.indicator}
-        >
-          {staticTabs}
-          {staticContents}
-        </KTabsStatic.Root>
-      ) : (
-        <KTabsStatic.Root
-          value={selectedValue}
-          onValueChange={onSelectedValueChange}
-          activationMode="manual"
-          type={props.type}
-          tabWidthMode={tabWidthMode}
-          indicator={props.indicator}
-        >
-          {staticTabs}
-          {staticContents}
-        </KTabsStatic.Root>
-      )}
+      <TabsDot.Root
+        value={selectedValue}
+        onValueChange={onSelectedValueChange}
+        activationMode="manual"
+        tabWidthMode={tabWidthMode}
+        indicator={resolvedIndicator}
+        spring={spring}
+      >
+        {tabs}
+        {contents}
+      </TabsDot.Root>
     </div>
   );
 }
