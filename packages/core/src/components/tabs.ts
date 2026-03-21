@@ -223,6 +223,12 @@ type ElementContractRules = {
   palettes?: readonly string[];
 };
 
+type ElementDisallowedRules = Partial<{
+  decorations: readonly string[];
+  scales: readonly string[];
+  palettes: readonly string[];
+}>;
+
 const TABS_COMPONENT_KEYS = ['elements', 'options', 'variants'] as const;
 const TABS_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5', 'e6'] as const;
 const TABS_ELEMENT_BASE_KEYS = ['name', 'decorations', 'scales', 'palettes', 'effects'] as const;
@@ -271,8 +277,27 @@ const TABS_RULES: Record<(typeof TABS_ELEMENTS_KEYS)[number], ElementContractRul
   }
 };
 
+const TABS_TYPE_DISALLOWED_RULES: Partial<
+  Record<TabsType, Partial<Record<TabsElementName, ElementDisallowedRules>>>
+> = {
+  line: {
+    e1: {
+      scales: ['borderRadius']
+    }
+  }
+};
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isTabsType(value: unknown): value is TabsType {
+  return value === 'line' || value === 'box' || value === 'dot';
+}
+
+function readTabsType(value: unknown): TabsType | undefined {
+  if (!isRecord(value)) return undefined;
+  return isTabsType(value.type) ? value.type : undefined;
 }
 
 function validateAllowedKeys(
@@ -284,6 +309,20 @@ function validateAllowedKeys(
   for (const key of Object.keys(target)) {
     if (!allowed.includes(key)) {
       issues.push(`${path}.${key}: unrecognized key`);
+    }
+  }
+}
+
+function validateDisallowedKeys(
+  target: Record<string, unknown>,
+  disallowed: readonly string[],
+  path: string,
+  tabsType: TabsType,
+  issues: string[]
+): void {
+  for (const key of Object.keys(target)) {
+    if (disallowed.includes(key)) {
+      issues.push(`${path}.${key}: not allowed for tabs type "${tabsType}"`);
     }
   }
 }
@@ -362,6 +401,51 @@ function validateElementContract(
       validatePalettes(value.palettes, rules.palettes, `${path}.palettes`, issues);
     }
   }
+}
+
+function validateTypeSpecificElementRestrictions(
+  value: unknown,
+  path: string,
+  tabsType: TabsType | undefined,
+  elementName: TabsElementName,
+  issues: string[]
+): void {
+  if (!tabsType || !isRecord(value)) return;
+
+  const disallowedRules = TABS_TYPE_DISALLOWED_RULES[tabsType]?.[elementName];
+  if (!disallowedRules) return;
+
+  if (disallowedRules.decorations && isRecord(value.decorations)) {
+    validateDisallowedKeys(
+      value.decorations,
+      disallowedRules.decorations,
+      `${path}.decorations`,
+      tabsType,
+      issues
+    );
+  }
+
+  if (disallowedRules.scales && isRecord(value.scales)) {
+    validateDisallowedKeys(
+      value.scales,
+      disallowedRules.scales,
+      `${path}.scales`,
+      tabsType,
+      issues
+    );
+  }
+
+  if (disallowedRules.palettes && isRecord(value.palettes)) {
+    validateDisallowedKeys(
+      value.palettes,
+      disallowedRules.palettes,
+      `${path}.palettes`,
+      tabsType,
+      issues
+    );
+  }
+
+  // TODO: Extend type-specific Tabs restrictions to element.effects before merging this feature.
 }
 
 function validateTabsOptions(value: unknown, path: string, issues: string[]): void {
@@ -461,6 +545,8 @@ export function validateTabsComponentContract(value: unknown, path = 'components
 
   validateAllowedKeys(value, TABS_COMPONENT_KEYS, path, issues);
 
+  const componentType = readTabsType(value.options);
+
   const elements = value.elements;
   if (elements !== undefined) {
     if (!isRecord(elements)) {
@@ -472,6 +558,13 @@ export function validateTabsComponentContract(value: unknown, path = 'components
         const element = elements[key];
         if (element === undefined) continue;
         validateElementContract(element, `${path}.elements.${key}`, TABS_RULES[key], issues);
+        validateTypeSpecificElementRestrictions(
+          element,
+          `${path}.elements.${key}`,
+          componentType,
+          key,
+          issues
+        );
       }
     }
   }
@@ -496,6 +589,9 @@ export function validateTabsComponentContract(value: unknown, path = 'components
 
         validateAllowedKeys(variantElements, TABS_ELEMENTS_KEYS, `${variantPath}.elements`, issues);
 
+        const variantOptions = (variant as Record<string, unknown>).options;
+        const variantType = isTabsType(variantName) ? variantName : readTabsType(variantOptions);
+
         for (const key of TABS_ELEMENTS_KEYS) {
           const element = (variantElements as Record<string, unknown>)[key];
           if (element === undefined) continue;
@@ -505,9 +601,15 @@ export function validateTabsComponentContract(value: unknown, path = 'components
             TABS_RULES[key],
             issues
           );
+          validateTypeSpecificElementRestrictions(
+            element,
+            `${variantPath}.elements.${key}`,
+            variantType,
+            key,
+            issues
+          );
         }
 
-        const variantOptions = (variant as Record<string, unknown>).options;
         if (variantOptions !== undefined) {
           validateTabsOptions(variantOptions, `${variantPath}.options`, issues);
         }

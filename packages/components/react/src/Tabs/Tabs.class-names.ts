@@ -138,8 +138,9 @@ export function resolveWidthClassName(
  * What
  *     Selects the class-map branch that corresponds to the current Tabs variant.
  * Why
- *     The runtime accepts either a direct element map or a variant-indexed map, so this
- *     normalizes both shapes into one predictable structure for the rest of the file.
+ *     The runtime accepts either a direct element map or a variant-indexed map. Tabs variants
+ *     are not interchangeable, so when the requested variant is missing we must return an empty
+ *     map instead of borrowing styles from another variant branch.
  */
 export function resolveVariantElements(
   map: TabsClassesMap | Record<string, TabsClassesMap> | undefined,
@@ -149,7 +150,7 @@ export function resolveVariantElements(
   const asRecord = map as Record<string, TabsClassesMap>;
   const isElementMap = Object.hasOwn(asRecord, 'e1');
   if (isElementMap) return map as TabsClassesMap;
-  return asRecord[variant] ?? asRecord.line ?? asRecord.box ?? asRecord.dot ?? {};
+  return asRecord[variant] ?? {};
 }
 
 /**

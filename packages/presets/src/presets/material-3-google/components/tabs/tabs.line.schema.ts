@@ -12,7 +12,9 @@ type CreateMaterial3GoogleTabsVariantArgs = {
 export function createMaterial3GoogleTabsLineVariant({
   c,
   transparent
-}: CreateMaterial3GoogleTabsVariantArgs): NonNullable<NonNullable<TabsComponent['variants']>['line']> {
+}: CreateMaterial3GoogleTabsVariantArgs): NonNullable<
+  NonNullable<TabsComponent['variants']>['line']
+> {
   return {
     elements: {
       // e1: bar
