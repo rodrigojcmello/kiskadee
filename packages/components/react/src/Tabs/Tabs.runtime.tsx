@@ -237,6 +237,7 @@ export function createTabsComponent<
       <TabsVisualContextProvider value={visualContext}>
         <HeadlessTabs.Root
           {...headlessRootProps}
+          orientation="horizontal"
           value={rootState.selected}
           onValueChange={rootState.handleValueChange}
         >

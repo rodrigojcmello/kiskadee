@@ -77,7 +77,7 @@ export type TabsSpringConfig = Partial<{
   restSpeed: number;
 }>;
 
-export type TabsRootBaseProps = Omit<HeadlessTabsRootProps, 'classNames'> & {
+export type TabsRootBaseProps = Omit<HeadlessTabsRootProps, 'classNames' | 'orientation'> & {
   classNames?: TabsClassNames;
   scale?: ElementSizeValue;
   emphasis?: ComponentEmphasis;
