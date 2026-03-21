@@ -208,14 +208,49 @@ export type TabsElements<TSegmentName extends SegmentName = never> = {
   e6?: TabsSeparatorElementStyle<TSegmentName>;
 };
 
-export type TabsTypeConfig<TSegmentName extends SegmentName = never> = {
-  elements: TabsElements<TSegmentName>;
+type TabsLineBarElementStyle<TSegmentName extends SegmentName = never> = Omit<
+  TabsBarElementStyle<TSegmentName>,
+  'scales'
+> & {
+  scales?: ElementScalesByProperty<
+    'borderWidth' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'
+  >;
+};
+
+export type TabsLineElements<TSegmentName extends SegmentName = never> = Omit<
+  TabsElements<TSegmentName>,
+  'e1'
+> & {
+  // `line` bars must not define schema border radius.
+  e1?: TabsLineBarElementStyle<TSegmentName>;
+};
+
+export type TabsTypeConfig<
+  TSegmentName extends SegmentName = never,
+  TElements extends TabsElements<TSegmentName> = TabsElements<TSegmentName>
+> = {
+  elements: TElements;
   options?: TabsOptions;
 };
 
-export type TabsTypes<TSegmentName extends SegmentName = never> = Partial<
-  Record<TabsType, TabsTypeConfig<TSegmentName>>
+export type TabsLineTypeConfig<TSegmentName extends SegmentName = never> = TabsTypeConfig<
+  TSegmentName,
+  TabsLineElements<TSegmentName>
 >;
+
+export type TabsBoxTypeConfig<TSegmentName extends SegmentName = never> = TabsTypeConfig<
+  TSegmentName
+>;
+
+export type TabsDotTypeConfig<TSegmentName extends SegmentName = never> = TabsTypeConfig<
+  TSegmentName
+>;
+
+export type TabsTypes<TSegmentName extends SegmentName = never> = Partial<{
+  line: TabsLineTypeConfig<TSegmentName>;
+  box: TabsBoxTypeConfig<TSegmentName>;
+  dot: TabsDotTypeConfig<TSegmentName>;
+}>;
 
 type ElementContractRules = {
   decorations?: readonly string[];
