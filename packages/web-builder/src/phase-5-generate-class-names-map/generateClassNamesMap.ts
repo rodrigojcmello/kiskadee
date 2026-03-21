@@ -10,6 +10,8 @@ import type {
 import { componentEmphasisBuckets } from '@kiskadee/core';
 import type { ToneMetadataByPalette } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
+import type { WebBuildPolicy } from '../web-build-policy';
+import { resolveWebStyleKeyIdentity } from '../web-style-key-identity';
 
 type ColorClasses = {
   h?: string; // high
@@ -73,10 +75,10 @@ function isElementMap(value: unknown): value is Record<string, any> {
 
 function mapArray(
   keys: string[] | undefined,
-  shortenMap: ShortenCssClassNames
+  resolveClassName: (key: string) => string
 ): string[] | undefined {
   if (!keys) return undefined;
-  return keys.map((k) => shortenMap[k] ?? k);
+  return keys.map((k) => resolveClassName(k));
 }
 
 // Ripple buckets follow a compact 3-letter convention to keep artifact payloads small.
@@ -124,7 +126,10 @@ function rippleBucketForKey(key: string): string {
 export function generateClassNamesMapSplit(
   styleKeys: ComponentStyleKeyMap,
   shortenMap: ShortenCssClassNames,
-  toneMetadataByPalette: ToneMetadataByPalette
+  toneMetadataByPalette: ToneMetadataByPalette,
+  options?: {
+    webBuildPolicy?: WebBuildPolicy;
+  }
 ): ComponentClassNameMapSplit {
   const core: ComponentClassNameMap = {};
   const palettes: Record<string, ComponentClassNameMap> = {};
@@ -158,6 +163,15 @@ export function generateClassNamesMapSplit(
   ) => {
     for (const elementName of Object.keys(elements)) {
       const el = elements[elementName];
+      const resolveClassName = (key: string) => {
+        const identity = resolveWebStyleKeyIdentity(
+          key,
+          options?.webBuildPolicy,
+          componentName,
+          elementName
+        );
+        return shortenMap[identity] ?? key;
+      };
 
       // Core (no palettes) — aggregate:
       // - decorations into `d` (always-on),
@@ -179,7 +193,7 @@ export function generateClassNamesMapSplit(
       const selectedSet = new Set<string>();
 
       // decorations → d
-      mapArray(el.decorations, shortenMap)?.forEach((c) => {
+      mapArray(el.decorations, resolveClassName)?.forEach((c) => {
         dSet.add(c);
       });
 
@@ -189,7 +203,7 @@ export function generateClassNamesMapSplit(
           const arr = (el.effects as any)[st] as string[] | undefined;
           if (!arr || arr.length === 0) continue;
           for (const key of arr) {
-            const cls = shortenMap[key] ?? key;
+            const cls = resolveClassName(key);
 
             // IMPORTANT:
             // Do not treat `selected*` interaction states as control-state (`l`).
@@ -223,7 +237,7 @@ export function generateClassNamesMapSplit(
           if (!arr || arr.length === 0) continue;
 
           for (const key of arr) {
-            const cls = shortenMap[key] ?? key;
+            const cls = resolveClassName(key);
             const isOptInWidthScale =
               componentName === 'tabs' && elementName === 'e2' && key.startsWith('boxWidth');
             const target = isOptInWidthScale ? wMap : sMap;
@@ -242,7 +256,7 @@ export function generateClassNamesMapSplit(
           if (!bySize) return;
           for (const [size, arr] of Object.entries(bySize)) {
             const sizeKey = size.startsWith('s:') ? size.slice(2) : size;
-            const mapped = mapArray(arr, shortenMap);
+            const mapped = mapArray(arr, resolveClassName);
             if (!mapped || mapped.length === 0) continue;
             if (!target.has(sizeKey)) target.set(sizeKey, new Set());
             const set = target.get(sizeKey)!;
@@ -309,7 +323,7 @@ export function generateClassNamesMapSplit(
                 const styleKeys = byState?.[interactionState] as string[] | undefined;
 
                 styleKeys?.forEach((styleKey: string) => {
-                  const shortenedClass = shortenMap[styleKey] ?? styleKey;
+                  const shortenedClass = resolveClassName(styleKey);
                   const metaKey = `${sem}::${styleKey}`;
                   const meta = toneMetaForPalette?.get(metaKey);
 

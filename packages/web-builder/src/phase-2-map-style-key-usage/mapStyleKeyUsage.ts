@@ -1,6 +1,8 @@
 import type { ComponentStyleKeyMap, StyleKey } from '@kiskadee/core';
+import type { WebBuildPolicy } from '../web-build-policy';
+import { resolveWebStyleKeyIdentity } from '../web-style-key-identity';
 
-export type StyleKeyUsageMap = Record<StyleKey, number>;
+export type StyleKeyUsageMap = Record<string, number>;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -14,20 +16,28 @@ function isElementMap(value: unknown): value is Record<string, any> {
   return elementKeys.some((key) => key in first);
 }
 
-export function mapStyleKeyUsage(styleKeysByComponent: ComponentStyleKeyMap): StyleKeyUsageMap {
+export function mapStyleKeyUsage(
+  styleKeysByComponent: ComponentStyleKeyMap,
+  options?: {
+    webBuildPolicy?: WebBuildPolicy;
+  }
+): StyleKeyUsageMap {
   const usage: StyleKeyUsageMap = {};
 
-  const increment = (key: StyleKey): void => {
+  const increment = (key: string): void => {
     usage[key] = (usage[key] ?? 0) + 1;
   };
 
-  const consumeElements = (elements: Record<string, any>) => {
-    for (const element of Object.values(elements)) {
+  const consumeElements = (componentName: string, elements: Record<string, any>) => {
+    for (const [elementName, element] of Object.entries(elements)) {
       if (!element) continue;
+      const resolveKey = (key: StyleKey) =>
+        resolveWebStyleKeyIdentity(key, options?.webBuildPolicy, componentName, elementName);
+
       // 1) decorations
       if (Array.isArray(element.decorations)) {
         for (const key of element.decorations) {
-          if (typeof key === 'string') increment(key);
+          if (typeof key === 'string') increment(resolveKey(key));
         }
       }
 
@@ -35,7 +45,7 @@ export function mapStyleKeyUsage(styleKeysByComponent: ComponentStyleKeyMap): St
       for (const keys of Object.values((element.effects ?? {}) as Record<string, unknown>)) {
         if (!Array.isArray(keys)) continue;
         for (const key of keys) {
-          if (typeof key === 'string') increment(key);
+          if (typeof key === 'string') increment(resolveKey(key));
         }
       }
 
@@ -43,7 +53,7 @@ export function mapStyleKeyUsage(styleKeysByComponent: ComponentStyleKeyMap): St
       for (const keys of Object.values((element.scales ?? {}) as Record<string, unknown>)) {
         if (!Array.isArray(keys)) continue;
         for (const key of keys) {
-          if (typeof key === 'string') increment(key);
+          if (typeof key === 'string') increment(resolveKey(key));
         }
       }
 
@@ -53,7 +63,7 @@ export function mapStyleKeyUsage(styleKeysByComponent: ComponentStyleKeyMap): St
         for (const keys of Object.values(bySize)) {
           if (!Array.isArray(keys)) continue;
           for (const key of keys) {
-            if (typeof key === 'string') increment(key);
+            if (typeof key === 'string') increment(resolveKey(key));
           }
         }
       }
@@ -68,7 +78,7 @@ export function mapStyleKeyUsage(styleKeysByComponent: ComponentStyleKeyMap): St
             for (const keys of Object.values(interactionStates)) {
               if (!Array.isArray(keys)) continue;
               for (const key of keys) {
-                if (typeof key === 'string') increment(key);
+                if (typeof key === 'string') increment(resolveKey(key));
               }
             }
           }
@@ -78,18 +88,18 @@ export function mapStyleKeyUsage(styleKeysByComponent: ComponentStyleKeyMap): St
   };
 
   // Iterate over each component
-  for (const elements of Object.values(styleKeysByComponent)) {
+  for (const [componentName, elements] of Object.entries(styleKeysByComponent)) {
     if (!elements) continue;
 
     if (isElementMap(elements)) {
-      consumeElements(elements);
+      consumeElements(componentName, elements);
       continue;
     }
 
     for (const variantElements of Object.values(elements as Record<string, any>)) {
       if (!variantElements) continue;
       if (isElementMap(variantElements)) {
-        consumeElements(variantElements);
+        consumeElements(componentName, variantElements);
       }
     }
   }

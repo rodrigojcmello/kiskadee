@@ -4,19 +4,19 @@
 .ak-ah { font-weight: 500 }
 .ak-ai { --k-br: 14px; border-radius: 14px }
 .ak-ak { border-style: solid }
-.ak-al { --k-bw: 1px; border-width: 1px }
+.ak-al { border-width: 1px }
 .ak-b { --k-br: 999px; border-radius: 999px }
 .ak-bf { height: 18px }
 .ak-bg { width: 18px }
 .ak-bh { --k-pb: 16px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
-.ak-bi { --k-pb: 6px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
-.ak-bj { --k-pl: 16px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
+.ak-bi { padding-bottom: 6px }
+.ak-bj { padding-left: 16px }
 .ak-bk { --k-pl: 20px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
-.ak-bl { --k-pr: 16px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
+.ak-bl { padding-right: 16px }
 .ak-bm { --k-pr: 20px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
-.ak-bn { --k-pr: 8px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
+.ak-bn { padding-right: 8px }
 .ak-bo { --k-pt: 16px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
-.ak-bp { --k-pt: 6px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
+.ak-bp { padding-top: 6px }
 .ak-ca { line-height: 20px }
 .ak-cb { font-size: 0.875rem }
 .ak-cc { font-size: 1.0625rem }
@@ -29,13 +29,13 @@
 .ak-dd { width: 160px }
 .ak-de { margin-bottom: 5px }
 .ak-df { margin-top: 0px }
-.ak-dg { --k-pb: 4px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
+.ak-dg { padding-bottom: 4px }
 .ak-dh { --k-pb: 5px; padding-bottom: max(0px, calc(var(--k-pb) - var(--k-bw, 0px))) }
 .ak-dj { --k-pl: 10px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
-.ak-dk { --k-pl: 4px; padding-left: max(0px, calc(var(--k-pl) - var(--k-bw, 0px))) }
+.ak-dk { padding-left: 4px }
 .ak-dm { --k-pr: 10px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
-.ak-dn { --k-pr: 4px; padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px))) }
-.ak-dp { --k-pt: 4px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
+.ak-dn { padding-right: 4px }
+.ak-dp { padding-top: 4px }
 .ak-dq { --k-pt: 5px; padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px))) }
 .ak-dz { font-size: 0.9375rem }
 .ak-f { --k-br: 8px; border-radius: 8px }

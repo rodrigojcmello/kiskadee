@@ -8,6 +8,10 @@ import {
   scaleProperties
 } from '@kiskadee/core';
 import { SEPARATORS } from '../../utils/buildStyleKey/buildStyleKey';
+import {
+  DEFAULT_BOX_MODEL_BUILD_POLICY,
+  type ResolvedBoxModelBuildPolicy
+} from '../../web-build-policy';
 
 export const ERROR_NO_MATCHING_SCALE_PROPERTY = 'No matching scale key found.';
 export const ERROR_INVALID_MEDIA_QUERY_PATTERN =
@@ -19,6 +23,10 @@ export const ERROR_NO_STANDARD_SCALE_KEY = 'No matching standard scale key found
 export const ERROR_INVALID_STANDARD_PATTERN =
   'Invalid standard scale key format; unexpected number of parts.';
 export const ERROR_INVALID_KEY_FORMAT = 'Invalid scale key format; missing required delimiters.';
+
+export type TransformScaleKeyToCssOptions = {
+  boxModelPolicy?: ResolvedBoxModelBuildPolicy;
+};
 
 /**
  * Map of project scale keys to their corresponding CSS property names.
@@ -67,7 +75,8 @@ const cssPropertyMap: Record<ScaleProperty, string> = {
 export function transformScaleKeyToCss(
   styleKey: StyleKey,
   breakpoints: Breakpoints,
-  className: string
+  className: string,
+  options?: TransformScaleKeyToCssOptions
 ): string {
   let scaleProperty: ScaleProperty | undefined;
   let mediaQuery: string | undefined;
@@ -158,9 +167,13 @@ export function transformScaleKeyToCss(
     cssValue = `${scaleValue}px`;
   }
 
+  const boxModelPolicy = options?.boxModelPolicy ?? DEFAULT_BOX_MODEL_BUILD_POLICY;
   let rule: string;
   if (scaleProperty === 'borderWidth') {
-    rule = `.${className} { --k-bw: ${cssValue}; ${cssProperty}: ${cssValue} }`;
+    rule =
+      boxModelPolicy.borderWidthMode === 'var'
+        ? `.${className} { --k-bw: ${cssValue}; ${cssProperty}: ${cssValue} }`
+        : `.${className} { ${cssProperty}: ${cssValue} }`;
   } else if (
     scaleProperty === 'borderRadius' ||
     scaleProperty === 'borderRadiusRounded' ||
@@ -174,16 +187,20 @@ export function transformScaleKeyToCss(
     scaleProperty === 'paddingBottom' ||
     scaleProperty === 'paddingLeft'
   ) {
-    const paddingVar =
-      scaleProperty === 'paddingTop'
-        ? '--k-pt'
-        : scaleProperty === 'paddingRight'
-          ? '--k-pr'
-          : scaleProperty === 'paddingBottom'
-            ? '--k-pb'
-            : '--k-pl';
-    const adjustedPadding = `max(0px, calc(var(${paddingVar}) - var(--k-bw, 0px)))`;
-    rule = `.${className} { ${paddingVar}: ${cssValue}; ${cssProperty}: ${adjustedPadding} }`;
+    if (boxModelPolicy.paddingMode === 'compensated') {
+      const paddingVar =
+        scaleProperty === 'paddingTop'
+          ? '--k-pt'
+          : scaleProperty === 'paddingRight'
+            ? '--k-pr'
+            : scaleProperty === 'paddingBottom'
+              ? '--k-pb'
+              : '--k-pl';
+      const adjustedPadding = `max(0px, calc(var(${paddingVar}) - var(--k-bw, 0px)))`;
+      rule = `.${className} { ${paddingVar}: ${cssValue}; ${cssProperty}: ${adjustedPadding} }`;
+    } else {
+      rule = `.${className} { ${cssProperty}: ${cssValue} }`;
+    }
   } else {
     rule = `.${className} { ${cssProperty}: ${cssValue} }`;
   }

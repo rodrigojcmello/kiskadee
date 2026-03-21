@@ -11,17 +11,18 @@
   gap: 0;
   isolation: isolate;
   overflow: visible;
-  border-width: 0 !important;
+  border-left-width: 0 !important;
+  border-right-width: 0 !important;
 }
 
 /* `k-tab-e1a`: bar with bottom border emphasis. */
 .k-tab-e1.k-tab-e1a {
-  border-bottom-width: var(--k-bw, 0px) !important;
+  border-top-width: 0 !important;
 }
 
 /* `k-tab-e1b`: bar with top border emphasis. */
 .k-tab-e1.k-tab-e1b {
-  border-top-width: var(--k-bw, 0px) !important;
+  border-bottom-width: 0 !important;
 }
 
 /* `k-tab-e2`: tab trigger button. */

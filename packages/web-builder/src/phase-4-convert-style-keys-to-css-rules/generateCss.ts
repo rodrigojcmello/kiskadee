@@ -17,9 +17,13 @@ import {
   transformColorKeyToCss,
   type TransformColorKeyToCssOptions
 } from './palettes/transformColorKeyToCss';
-import { transformScaleKeyToCss } from './scales/transformScaleKeyToCss';
+import {
+  transformScaleKeyToCss,
+  type TransformScaleKeyToCssOptions
+} from './scales/transformScaleKeyToCss';
 
-export type GenerateCssRuleFromStyleKeyOptions = TransformColorKeyToCssOptions;
+export type GenerateCssRuleFromStyleKeyOptions = TransformColorKeyToCssOptions &
+  TransformScaleKeyToCssOptions;
 
 export function generateCssRuleFromStyleKey(
   styleKey: string,
@@ -53,7 +57,7 @@ export function generateCssRuleFromStyleKey(
       styleKey.startsWith('borderRadius') && (styleKey.includes('--') || styleKey.includes('=='));
     const matchScale = scaleProperties.find((scaleProperty) => styleKey.startsWith(scaleProperty));
     if (matchScale != null && !isBorderRadiusEffectKey) {
-      generatedCss = transformScaleKeyToCss(styleKey, breakpoints, className);
+      generatedCss = transformScaleKeyToCss(styleKey, breakpoints, className, options);
     } else {
       // Colors ------------------------------------------------------------------------------------
       const colorProperties = Object.keys(CssColorProperty) as ColorProperty[];

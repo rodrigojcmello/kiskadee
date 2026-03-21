@@ -3,7 +3,11 @@ import { type CSSProperties, useCallback, useEffect, useRef, useState } from 're
 import { resolveIndicatorClassName } from '../Tabs.class-names';
 import { useTabsVisualContext } from '../Tabs.context';
 import type { IndicatorRect } from '../Tabs.measurements';
-import { measureElementRectRelativeToBar, measureIndicatorRect } from '../Tabs.measurements';
+import {
+  measureElementRectRelativeToBar,
+  measureIndicatorRect,
+  resolveBarEdgeOffsetStyle
+} from '../Tabs.measurements';
 import { resolveStretchIndicatorRect, type TabsMotionEngineProps } from '../Tabs.motion.shared';
 import './Tabs.line.motion.scss';
 
@@ -228,9 +232,10 @@ export default function TabsLineMotionBarEnhancer({ children }: TabsMotionEngine
   const indicatorStyle = {
     ['--k-tab-y' as const]: '0px',
     ['--k-tab-h' as const]: '0px',
-    ...(indicator.position === 'top'
-      ? { top: 'calc(var(--k-bw, 0px) * -1)', bottom: 'auto' }
-      : { top: 'auto', bottom: 'calc(var(--k-bw, 0px) * -1)' })
+    ...resolveBarEdgeOffsetStyle({
+      barElement: barRef.current,
+      position: indicator.position
+    })
   } as CSSProperties;
 
   return (

@@ -3,7 +3,7 @@ import { type CSSProperties, useCallback, useEffect, useRef, useState } from 're
 import { resolveIndicatorClassName } from '../Tabs.class-names';
 import { useTabsVisualContext } from '../Tabs.context';
 import type { IndicatorRect } from '../Tabs.measurements';
-import { measureIndicatorRect } from '../Tabs.measurements';
+import { measureIndicatorRect, resolveBarEdgeOffsetStyle } from '../Tabs.measurements';
 import type { TabsMotionEngineProps } from '../Tabs.motion.shared';
 import './Tabs.dot.motion.scss';
 
@@ -127,9 +127,10 @@ export default function TabsDotMotionBarEnhancer({ children }: TabsMotionEngineP
       : {}),
     ['--k-tab-y' as const]: '0px',
     ['--k-tab-h' as const]: '0px',
-    ...(indicator.position === 'top'
-      ? { top: 'calc(var(--k-bw, 0px) * -1)', bottom: 'auto' }
-      : { top: 'auto', bottom: 'calc(var(--k-bw, 0px) * -1)' })
+    ...resolveBarEdgeOffsetStyle({
+      barElement: barRef.current,
+      position: indicator.position
+    })
   } as CSSProperties;
   const dotTransition: Record<string, unknown> =
     dotPhase === 'exit' ? { duration: 0.09, ease: 'easeIn' } : { duration: 0.14, ease: 'easeOut' };

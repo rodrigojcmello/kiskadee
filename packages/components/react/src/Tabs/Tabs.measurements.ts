@@ -94,3 +94,27 @@ export function measureIndicatorRect(options: {
 
   return measuredRect;
 }
+
+/**
+ * What
+ *     Resolves the negative offset needed to anchor an indicator against the bar border edge.
+ * Why
+ *     Tabs now allow raw border-width emission, so indicator placement must read the rendered
+ *     border size instead of relying on a generated CSS variable.
+ */
+export function resolveBarEdgeOffsetStyle(options: {
+  barElement: HTMLDivElement | null;
+  position: 'top' | 'bottom';
+}): { top: string; bottom: string } {
+  const { barElement, position } = options;
+  const borderWidth =
+    barElement == null
+      ? '0px'
+      : position === 'top'
+        ? getComputedStyle(barElement).borderTopWidth
+        : getComputedStyle(barElement).borderBottomWidth;
+
+  return position === 'top'
+    ? { top: `calc(${borderWidth} * -1)`, bottom: 'auto' }
+    : { top: 'auto', bottom: `calc(${borderWidth} * -1)` };
+}

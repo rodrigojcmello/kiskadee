@@ -15,9 +15,12 @@ import {
   generateCssRuleFromStyleKey
 } from './generateCss';
 import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
+import { resolveBoxModelBuildPolicy, type WebBuildPolicy } from '../web-build-policy';
+import { resolveWebStyleKeyIdentity } from '../web-style-key-identity';
 
 export type GenerateCssSplitOptions = {
   forceState?: boolean;
+  webBuildPolicy?: WebBuildPolicy;
 } & GenerateCssRuleFromStyleKeyOptions;
 
 export type SplitCssBundles = {
@@ -74,15 +77,32 @@ export async function generateCssSplit(
     return /\.-[a-z]\b/.test(rule);
   };
 
-  const consumeElements = (elements: Record<string, any>) => {
+  const consumeElements = (componentName: string, elements: Record<string, any>) => {
     for (const elementName in elements) {
       const el = elements[elementName];
+      const boxModelPolicy = resolveBoxModelBuildPolicy(
+        options?.webBuildPolicy,
+        componentName,
+        elementName
+      );
+      const resolveClassName = (key: string) => {
+        const identity = resolveWebStyleKeyIdentity(
+          key,
+          options?.webBuildPolicy,
+          componentName,
+          elementName
+        );
+        return shortenMap[identity] ?? key;
+      };
 
       // decorations: string[] — always-on, static styles (no state). Safe to emit into core.
       if (Array.isArray(el.decorations)) {
         for (const key of el.decorations) {
-          const cn = shortenMap[key] ?? key;
-          const rule = generateCssRuleFromStyleKey(key, cn, forceState, options);
+          const cn = resolveClassName(key);
+          const rule = generateCssRuleFromStyleKey(key, cn, forceState, {
+            ...options,
+            boxModelPolicy
+          });
           if (rule && rule.trim() !== '') coreRules.add(rule);
         }
       }
@@ -92,8 +112,11 @@ export async function generateCssSplit(
         for (const scaleKey in el.scales) {
           const arr: string[] = el.scales[scaleKey as ElementSizeValue | ElementAllSizeValue] ?? [];
           for (const key of arr) {
-            const cn = shortenMap[key] ?? key;
-            const rule = generateCssRuleFromStyleKey(key, cn, forceState, options);
+            const cn = resolveClassName(key);
+            const rule = generateCssRuleFromStyleKey(key, cn, forceState, {
+              ...options,
+              boxModelPolicy
+            });
             if (rule && rule.trim() !== '') coreRules.add(rule);
           }
         }
@@ -110,8 +133,11 @@ export async function generateCssSplit(
             const arr: string[] =
               bySizeRecord[scaleKey as ElementSizeValue | ElementAllSizeValue] ?? [];
             for (const key of arr) {
-              const cn = shortenMap[key] ?? key;
-              const rule = generateCssRuleFromStyleKey(key, cn, forceState, options);
+              const cn = resolveClassName(key);
+              const rule = generateCssRuleFromStyleKey(key, cn, forceState, {
+                ...options,
+                boxModelPolicy
+              });
               if (rule && rule.trim() !== '') coreRules.add(rule);
             }
           }
@@ -126,8 +152,11 @@ export async function generateCssSplit(
         for (const st in el.effects) {
           const arr: string[] = el.effects[st as InteractionState] ?? [];
           for (const key of arr) {
-            const cn = shortenMap[key] ?? key;
-            const rule = generateCssRuleFromStyleKey(key, cn, forceState, options);
+            const cn = resolveClassName(key);
+            const rule = generateCssRuleFromStyleKey(key, cn, forceState, {
+              ...options,
+              boxModelPolicy
+            });
             if (rule && rule.trim() !== '') {
               if (isComplexSelector(rule)) {
                 // Gated by class activator or native pseudo → goes to effects bundle
@@ -165,7 +194,7 @@ export async function generateCssSplit(
               for (const st in byState) {
                 const arr: string[] = byState[st as InteractionState] ?? [];
                 for (const key of arr) {
-                  const cn = shortenMap[key] ?? key;
+                  const cn = resolveClassName(key);
                   // Only color keys are expected here; call color transformer directly and pass the forceState flag
                   const rule = transformColorKeyToCss(key, cn, forceState, options);
                   if (rule && rule.trim() !== '') paletteRules[bundleKey].add(rule);
@@ -184,14 +213,14 @@ export async function generateCssSplit(
     if (!elements) continue;
 
     if (isElementMap(elements)) {
-      consumeElements(elements);
+      consumeElements(componentName, elements);
       continue;
     }
 
     for (const variantElements of Object.values(elements as Record<string, any>)) {
       if (!variantElements) continue;
       if (isElementMap(variantElements)) {
-        consumeElements(variantElements);
+        consumeElements(componentName, variantElements);
       }
     }
   }

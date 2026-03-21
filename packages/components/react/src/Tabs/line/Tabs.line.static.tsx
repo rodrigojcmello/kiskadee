@@ -1,7 +1,7 @@
 import { type CSSProperties, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { resolveIndicatorClassName } from '../Tabs.class-names';
 import { useTabsVisualContext } from '../Tabs.context';
-import { measureIndicatorRect } from '../Tabs.measurements';
+import { measureIndicatorRect, resolveBarEdgeOffsetStyle } from '../Tabs.measurements';
 
 type TabsLineStaticBarEnhancerProps = {
   children?: ReactNode;
@@ -73,9 +73,10 @@ function TabsLineStaticIndicator() {
           ['--k-tab-y' as const]: `${indicatorRect.y}px`,
           ['--k-tab-w' as const]: `${indicatorRect.width}px`,
           ['--k-tab-h' as const]: `${indicatorRect.height}px`,
-          ...(indicator.position === 'top'
-            ? { top: 'calc(var(--k-bw, 0px) * -1)', bottom: 'auto' }
-            : { top: 'auto', bottom: 'calc(var(--k-bw, 0px) * -1)' })
+          ...resolveBarEdgeOffsetStyle({
+            barElement: barRef.current,
+            position: indicator.position
+          })
         }
       : {}
   ) as CSSProperties;
