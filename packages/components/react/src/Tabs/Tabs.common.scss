@@ -33,15 +33,17 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   border: 0;
-  margin: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  user-select: none;
-  overflow: visible;
+
+  // TODO: remove these styles
+  //gap: 8px;
+  //margin: 0;
+  //background: transparent;
+  //color: inherit;
+  //font: inherit;
+  //cursor: pointer;
+  //user-select: none;
+  //overflow: visible;
 }
 
 /* `k-tab-e2a`: fixed-width trigger keeps its schema width without flex shrink. */
