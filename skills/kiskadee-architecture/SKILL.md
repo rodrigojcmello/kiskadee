@@ -40,6 +40,10 @@ Use this skill to make architecture decisions and implementation plans that stay
 - Keep visual implementation/composition in `packages/components`.
 - Keep inspection/demo integration in `packages/showcase`.
 - Treat schema declaration as necessary but not sufficient for "component done".
+- When evaluating architecture tradeoffs, distinguish build-time tooling/runtime-in-Node from
+  browser runtime. Prefer simplicity, correctness, and maintainability in build-only code even if
+  that means extra dependencies or heavier validation; optimize aggressively only for generated
+  artifacts and code that executes in the browser.
 - For structural classes in `packages/components/react`, use `k-<cmp>-e<n>` for schema elements (`cmp` = 3-letter id, e.g. `tab`) and short option suffixes (`-t`, `-b`); keep visual theming in generated artifacts/runtime, not hardcoded Sass.
 - Put behavioral switches in `components.<name>.options` and keep the corresponding numeric/visual values in `components.<name>.elements`.
 - If a schema value must exist but only apply when a runtime/component option enables it, do not assume the generic artifact scale bucket is enough; verify whether `packages/web-builder` needs a dedicated opt-in bucket.

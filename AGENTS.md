@@ -39,6 +39,10 @@
 
 ## Validation
 - For targeted code changes, prefer the narrowest relevant validation first.
+- Treat build-time/runtime-in-Node tooling costs differently from browser/runtime artifact costs:
+  extra validation libraries, heavier schemas, or more verbose logic are acceptable in build-only
+  flows when they improve correctness or maintainability. Optimize aggressively only for generated
+  artifacts and code that runs in the browser.
 - Useful commands:
   - `pnpm test`
   - `pnpm --filter @kiskadee/web-builder build`
