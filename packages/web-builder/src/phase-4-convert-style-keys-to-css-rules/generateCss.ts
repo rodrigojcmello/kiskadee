@@ -68,7 +68,7 @@ export function generateCssRuleFromStyleKey(
         generatedCss = transformColorKeyToCss(styleKey, className, forceState, options);
       } else if (isBorderRadiusEffectKey) {
         // Border-radius effect: supports native and forced selectors controlled by forceState.
-        generatedCss = transformBorderRadiusKeyToCss(styleKey, className, forceState);
+        generatedCss = transformBorderRadiusKeyToCss(styleKey, className, forceState, options);
       }
     }
   }

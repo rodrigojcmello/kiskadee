@@ -12,6 +12,7 @@ const BOX_MODEL_POLICY_SEPARATOR = '@@wbp:';
 
 function isBoxModelSensitiveStyleKey(styleKey: string): boolean {
   return (
+    styleKey.startsWith('borderRadius') ||
     styleKey.startsWith('borderWidth') ||
     styleKey.startsWith('paddingTop') ||
     styleKey.startsWith('paddingRight') ||
@@ -21,18 +22,19 @@ function isBoxModelSensitiveStyleKey(styleKey: string): boolean {
 }
 
 function serializeBoxModelBuildPolicy(policy: ResolvedBoxModelBuildPolicy): string {
-  return `bw:${policy.borderWidthMode};pad:${policy.paddingMode}`;
+  return `br:${policy.borderRadiusMode};bw:${policy.borderWidthMode};pad:${policy.paddingMode}`;
 }
 
 export function buildWebStyleKeyIdentity(
   styleKey: StyleKey,
   boxModelPolicy: ResolvedBoxModelBuildPolicy
 ): WebStyleKeyIdentity {
-  if (isBoxModelSensitiveStyleKey(styleKey) === false) {
+  if (!isBoxModelSensitiveStyleKey(styleKey)) {
     return styleKey;
   }
 
   const isDefaultPolicy =
+    boxModelPolicy.borderRadiusMode === DEFAULT_BOX_MODEL_BUILD_POLICY.borderRadiusMode &&
     boxModelPolicy.borderWidthMode === DEFAULT_BOX_MODEL_BUILD_POLICY.borderWidthMode &&
     boxModelPolicy.paddingMode === DEFAULT_BOX_MODEL_BUILD_POLICY.paddingMode;
 

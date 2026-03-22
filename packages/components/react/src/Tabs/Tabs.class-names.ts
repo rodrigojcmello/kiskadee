@@ -472,16 +472,23 @@ export function resolveIndicatorClassName(options: {
   className?: string;
 }): string | undefined {
   const indicatorRadiusMode = resolveIndicatorRadiusMode(options.indicator, options.radiusMode);
+  const indicatorRadiusClassName = resolveRadiusClassName(
+    options.elements.e5,
+    options.scale,
+    indicatorRadiusMode
+  );
   const indicatorVariantClass =
-    options.indicator.variant === 'rounded'
-      ? 'k-tab-e5e'
-      : options.indicator.variant === 'pill'
-        ? 'k-tab-e5f'
-        : options.indicator.variant === 'roundedClip' && options.type === 'line'
-          ? 'k-tab-e5g'
-          : options.indicator.variant === 'square'
-            ? 'k-tab-e5d'
-            : '';
+    options.indicator.variant === 'roundedClip' && options.type === 'line'
+      ? 'k-tab-e5g'
+      : indicatorRadiusClassName
+        ? ''
+        : options.indicator.variant === 'rounded'
+          ? 'k-tab-e5e'
+          : options.indicator.variant === 'pill'
+            ? 'k-tab-e5f'
+            : options.indicator.variant === 'square'
+              ? 'k-tab-e5d'
+              : '';
 
   return joinClassNames(
     resolveElementClassName(options.elements.e5, {
@@ -490,7 +497,7 @@ export function resolveIndicatorClassName(options: {
       emphasis: options.emphasis,
       selected: true
     }),
-    resolveRadiusClassName(options.elements.e5, options.scale, indicatorRadiusMode),
+    indicatorRadiusClassName,
     options.classNames.e5,
     'k-tab-e5',
     options.type !== 'box'

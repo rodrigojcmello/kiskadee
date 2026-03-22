@@ -7,7 +7,7 @@ import {
   type StyleKey,
   scaleProperties
 } from '@kiskadee/core';
-import { SEPARATORS } from '../../utils/buildStyleKey/buildStyleKey';
+import { SEPARATORS } from '../../utils';
 import {
   DEFAULT_BOX_MODEL_BUILD_POLICY,
   type ResolvedBoxModelBuildPolicy
@@ -70,6 +70,7 @@ const cssPropertyMap: Record<ScaleProperty, string> = {
  * @param styleKey - The scale key string to convert (must match one of the supported formats).
  * @param breakpoints - Object mapping breakpoint tokens to min-width pixel values.
  * @param className - CSS class name to use in the generated rule.
+ * @param options
  * @returns A single CSS rule string (optionally wrapped in a media query) for the provided key.
  */
 export function transformScaleKeyToCss(
@@ -82,21 +83,21 @@ export function transformScaleKeyToCss(
   let mediaQuery: string | undefined;
   let scaleValue: string = '';
 
-  const hasSizeSeparator = styleKey.includes(SEPARATORS.SIZE) === true;
-  const hasValueSeparator = styleKey.includes(SEPARATORS.VALUE) === true;
+  const hasSizeSeparator = styleKey.includes(SEPARATORS.SIZE);
+  const hasValueSeparator = styleKey.includes(SEPARATORS.VALUE);
 
-  if (hasSizeSeparator === true) {
+  if (hasSizeSeparator) {
     scaleProperty = scaleProperties.find((scaleProperty) => styleKey.startsWith(scaleProperty));
     const isScalePropertyValid = scaleProperty != null;
 
-    if (isScalePropertyValid === false) {
+    if (!isScalePropertyValid) {
       throw new Error(ERROR_NO_MATCHING_SCALE_PROPERTY);
     }
 
     const withoutPrefix = styleKey.slice(`${scaleProperty}${SEPARATORS.SIZE}`.length);
     const hasBreakpointSeparator = withoutPrefix.includes(SEPARATORS.BREAKPOINT);
 
-    if (hasBreakpointSeparator === true) {
+    if (hasBreakpointSeparator) {
       const [sizeToken, remainder] = withoutPrefix.split(SEPARATORS.BREAKPOINT) as [
         ElementSizeValue,
         string
@@ -109,13 +110,13 @@ export function transformScaleKeyToCss(
       const bpValue = breakpoints[mediaToken];
       const hasValidBreakpoint = bpValue != null;
 
-      if (hasValidBreakpoint === false) {
+      if (!hasValidBreakpoint) {
         throw new Error(ERROR_INVALID_MEDIA_TOKEN);
       }
 
       const isValidSizeToken = elementSizeValues.includes(sizeToken);
 
-      if (isValidSizeToken === false) {
+      if (!isValidSizeToken) {
         throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
       }
 
@@ -129,21 +130,21 @@ export function transformScaleKeyToCss(
       const isValidToken = sizeToken != null && elementSizeValues.includes(sizeToken);
       const hasValue = value != null;
 
-      if (isValidToken === false) {
+      if (!isValidToken) {
         throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
       }
 
-      if (hasValue === false) {
+      if (!hasValue) {
         throw new Error(ERROR_MISSING_VALUE);
       }
 
       scaleValue = value;
     }
-  } else if (hasValueSeparator === true) {
+  } else if (hasValueSeparator) {
     scaleProperty = scaleProperties.find((scaleProperty) => styleKey.startsWith(scaleProperty));
     const isScalePropertyValid = scaleProperty != null;
 
-    if (isScalePropertyValid === false) {
+    if (!isScalePropertyValid) {
       throw new Error(ERROR_NO_STANDARD_SCALE_KEY);
     }
 
@@ -180,7 +181,10 @@ export function transformScaleKeyToCss(
     scaleProperty === 'borderRadiusPill' ||
     scaleProperty === 'borderRadiusSquare'
   ) {
-    rule = `.${className} { --k-br: ${cssValue}; ${cssProperty}: ${cssValue} }`;
+    rule =
+      boxModelPolicy.borderRadiusMode === 'var'
+        ? `.${className} { --k-br: ${cssValue}; ${cssProperty}: ${cssValue} }`
+        : `.${className} { ${cssProperty}: ${cssValue} }`;
   } else if (
     scaleProperty === 'paddingTop' ||
     scaleProperty === 'paddingRight' ||
