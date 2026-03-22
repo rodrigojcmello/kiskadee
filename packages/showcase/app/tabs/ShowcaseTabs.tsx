@@ -2,6 +2,7 @@
 
 import {
   type TabsBoxIndicatorVariant,
+  type TabsIndicatorPosition,
   type TabsIndicatorWidthMode,
   type TabsLineIndicatorVariant,
   type TabsTabWidthMode,
@@ -18,6 +19,7 @@ import { Select } from '@/k-components';
 type TabsMode = 'animated' | 'static';
 type TabsSpring = TabsSpringPreset;
 type TabsIndicatorMotionStyleControl = TabsIndicatorMotionStyle;
+type TabsIndicatorPositionControl = 'default' | TabsIndicatorPosition;
 type TabsLineWidthModeControl = 'default' | TabsIndicatorWidthMode;
 type TabsTabWidthModeControl = 'default' | TabsTabWidthMode;
 type TabsExampleId = `line:${TabsLineIndicatorVariant}` | `box:${TabsBoxIndicatorVariant}` | 'dot';
@@ -64,6 +66,11 @@ const tabWidthModeLabels: Record<TabsTabWidthMode, string> = {
   fixed: 'Fixed'
 };
 
+const indicatorPositionLabels: Record<TabsIndicatorPosition, string> = {
+  bottom: 'Bottom',
+  top: 'Top'
+};
+
 const indicatorMotionStyleLabels: Record<TabsIndicatorMotionStyle, string> = {
   direct: 'Direct',
   stretch: 'Stretch'
@@ -105,7 +112,7 @@ type TabsExampleProps =
       tabWidthMode?: TabsTabWidthMode;
       type: 'line';
       indicator: {
-        position: 'bottom';
+        position: TabsIndicatorPosition;
         variant: TabsLineIndicatorVariant;
         widthMode?: TabsIndicatorWidthMode;
         motionStyle?: TabsIndicatorMotionStyle;
@@ -133,7 +140,7 @@ type TabsExampleProps =
       tabWidthMode?: TabsTabWidthMode;
       type: 'dot';
       indicator: {
-        position: 'bottom';
+        position: TabsIndicatorPosition;
       };
     };
 
@@ -243,6 +250,7 @@ export default function ShowcaseTabs() {
   const [spring, setSpring] = useState<TabsSpring>('snappy');
   const [indicatorMotionStyle, setIndicatorMotionStyle] =
     useState<TabsIndicatorMotionStyleControl>('direct');
+  const [indicatorPosition, setIndicatorPosition] = useState<TabsIndicatorPositionControl>('default');
   const [lineWidthMode, setLineWidthMode] = useState<TabsLineWidthModeControl>('default');
   const [tabWidthMode, setTabWidthMode] = useState<TabsTabWidthModeControl>('default');
   const [selectedTabsByExample, setSelectedTabsByExample] = useState<TabsSelectionByExample>({});
@@ -251,6 +259,7 @@ export default function ShowcaseTabs() {
     { value: 'stretch', label: indicatorMotionStyleLabels.stretch }
   ];
   const schemaLineWidthMode = global?.components?.tabs?.options?.indicatorWidthMode ?? 'tab';
+  const schemaIndicatorPosition = global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
   const schemaTabWidthMode = global?.components?.tabs?.options?.tabWidthMode ?? 'auto';
   const lineWidthModeOptions = [
     {
@@ -262,6 +271,16 @@ export default function ShowcaseTabs() {
     { value: 'fixed', label: lineIndicatorWidthModeLabels.fixed }
   ];
   const lineWidthModeProp = lineWidthMode === 'default' ? undefined : lineWidthMode;
+  const indicatorPositionOptions = [
+    {
+      value: 'default',
+      label: `Schema Default (${indicatorPositionLabels[schemaIndicatorPosition]})`
+    },
+    { value: 'bottom', label: indicatorPositionLabels.bottom },
+    { value: 'top', label: indicatorPositionLabels.top }
+  ];
+  const indicatorPositionProp =
+    indicatorPosition === 'default' ? schemaIndicatorPosition : indicatorPosition;
   const tabWidthModeOptions = [
     {
       value: 'default',
@@ -319,6 +338,14 @@ export default function ShowcaseTabs() {
         ) : null}
 
         <Select
+          label="Indicator Side"
+          width={220}
+          options={indicatorPositionOptions}
+          value={indicatorPosition}
+          onValueChange={(value) => setIndicatorPosition(value as TabsIndicatorPositionControl)}
+        />
+
+        <Select
           label="Line Width"
           width={220}
           options={lineWidthModeOptions}
@@ -356,7 +383,7 @@ export default function ShowcaseTabs() {
           tabWidthMode={tabWidthModeProp}
           type="line"
           indicator={{
-            position: 'bottom',
+            position: indicatorPositionProp,
             variant: example.indicatorVariant,
             motionStyle: indicatorMotionStyle,
             ...(lineWidthModeProp ? { widthMode: lineWidthModeProp } : {})
@@ -375,7 +402,7 @@ export default function ShowcaseTabs() {
         tabWidthMode={tabWidthModeProp}
         type="dot"
         indicator={{
-          position: 'bottom'
+          position: indicatorPositionProp
         }}
       />
 
