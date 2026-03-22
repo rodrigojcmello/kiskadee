@@ -188,6 +188,26 @@ export function resolveRadiusClassName(
 
 /**
  * What
+ *     Resolves which radius mode should be applied for the active indicator variant.
+ * Why
+ *     Box Tabs reuse the indicator variant to define the shape of the bar and tabs themselves,
+ *     so this mapping must stay consistent anywhere runtime radius decisions are made.
+ */
+export function resolveIndicatorRadiusMode(
+  indicator: Pick<TabsResolvedIndicator, 'variant'>,
+  fallback: RadiusMode
+): RadiusMode {
+  return indicator.variant === 'square'
+    ? 'square'
+    : indicator.variant === 'pill'
+      ? 'pill'
+      : indicator.variant === 'rounded'
+        ? 'rounded'
+        : fallback;
+}
+
+/**
+ * What
  *     Maps the current Tabs type and indicator width mode to the structural indicator
  *     modifier class.
  * Why
@@ -451,14 +471,7 @@ export function resolveIndicatorClassName(options: {
   type: TabsVisualContextValue['type'];
   className?: string;
 }): string | undefined {
-  const indicatorRadiusMode: RadiusMode =
-    options.indicator.variant === 'square'
-      ? 'square'
-      : options.indicator.variant === 'pill'
-        ? 'pill'
-        : options.indicator.variant === 'rounded'
-          ? 'rounded'
-          : options.radiusMode;
+  const indicatorRadiusMode = resolveIndicatorRadiusMode(options.indicator, options.radiusMode);
   const indicatorVariantClass =
     options.indicator.variant === 'rounded'
       ? 'k-tab-e5e'

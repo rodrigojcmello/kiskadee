@@ -356,9 +356,9 @@ export const schema: Schema = {
                 paddingRight: 4,
                 borderRadius: {
                   rounded: {
-                    's:sm:1': 10,
-                    's:md:1': 10,
-                    's:lg:1': 10
+                    's:sm:1': 8,
+                    's:md:1': 8,
+                    's:lg:1': 8
                   },
                   pill: {
                     's:sm:1': 999,
@@ -368,14 +368,7 @@ export const schema: Schema = {
                     },
                     's:lg:1': 999
                   },
-                  square: {
-                    's:sm:1': 0,
-                    's:md:1': {
-                      'bp:all': 0,
-                      'bp:lg:1': 0
-                    },
-                    's:lg:1': 0
-                  }
+                  square: 0
                 }
               },
               palettes: buildBySegment(segmentNames, (segmentName) => {
