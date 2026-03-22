@@ -23,11 +23,7 @@ export function createMaterial3GoogleTabsBoxVariant({
     elements: {
       // e1: bar
       e1: {
-        decorations: {
-          borderStyle: 'solid'
-        },
         scales: {
-          borderWidth: 1,
           paddingTop: 4,
           paddingBottom: 4,
           paddingLeft: 4,
@@ -47,13 +43,6 @@ export function createMaterial3GoogleTabsBoxVariant({
                     rest: c('default', 'l', 'neutral', 4)
                   }
                 }
-              },
-              borderColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'l', 'neutral', 10)
-                  }
-                }
               }
             },
             dark: {
@@ -61,13 +50,6 @@ export function createMaterial3GoogleTabsBoxVariant({
                 neutral: {
                   medium: {
                     rest: c('default', 'd', 'neutral', 90)
-                  }
-                }
-              },
-              borderColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'neutral', 80)
                   }
                 }
               }

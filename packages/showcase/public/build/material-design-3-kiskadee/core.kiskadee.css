@@ -2,23 +2,23 @@
 .mk-af { line-height: 20px }
 .mk-ag { font-size: 0.875rem }
 .mk-ah { --k-br: 20px; border-radius: 20px }
-.mk-ai { border-style: solid }
-.mk-au { font-weight: 500 }
-.mk-ax { border-width: 1px }
-.mk-bi { height: 18px }
-.mk-bj { width: 120px }
-.mk-bk { width: 144px }
-.mk-bl { width: 160px }
-.mk-bm { width: 18px }
-.mk-bn { padding-bottom: 10px }
-.mk-bo { padding-left: 14px }
-.mk-bp { padding-right: 14px }
-.mk-bq { padding-right: 8px }
-.mk-br { padding-top: 10px }
-.mk-ci { --k-br: 18px; border-radius: 18px }
-.mk-cj { --k-br: 28px; border-radius: 28px }
-.mk-ck { --k-br: 48px; border-radius: 48px }
-.mk-cl { --k-br: 68px; border-radius: 68px }
+.mk-at { font-weight: 500 }
+.mk-au { border-style: solid }
+.mk-bf { height: 18px }
+.mk-bg { width: 120px }
+.mk-bh { width: 144px }
+.mk-bi { width: 160px }
+.mk-bj { width: 18px }
+.mk-bk { padding-bottom: 10px }
+.mk-bl { padding-left: 14px }
+.mk-bm { padding-right: 14px }
+.mk-bn { padding-right: 8px }
+.mk-bo { padding-top: 10px }
+.mk-ch { --k-br: 18px; border-radius: 18px }
+.mk-ci { --k-br: 28px; border-radius: 28px }
+.mk-cj { --k-br: 48px; border-radius: 48px }
+.mk-ck { --k-br: 68px; border-radius: 68px }
+.mk-cl { border-width: 1px }
 .mk-dr { margin-top: 0px }
 .mk-fj { height: 5px }
 .mk-fk { height: 8px }

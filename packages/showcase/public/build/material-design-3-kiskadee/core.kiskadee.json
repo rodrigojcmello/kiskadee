@@ -2,7 +2,7 @@
   "$schema": "./core.kiskadee.schema.json",
   "button": {
     "e1": {
-      "d": "mk-ai",
+      "d": "mk-au",
       "e": {
         "h": "mk-gq mk-gt mk-gu mk-gs mk-gr",
         "ris": "mk-go",
@@ -21,18 +21,18 @@
         "lg:3": "mk-gk mk-fs mk-fz mk-gf mk-ad"
       },
       "r": {
-        "sm:1": "mk-ci",
+        "sm:1": "mk-ch",
         "md:1": "mk-ah",
-        "lg:1": "mk-cj",
-        "lg:2": "mk-ck",
-        "lg:3": "mk-cl"
+        "lg:1": "mk-ci",
+        "lg:2": "mk-cj",
+        "lg:3": "mk-ck"
       },
       "rp": {
-        "sm:1": "mk-ci",
+        "sm:1": "mk-ch",
         "md:1": "mk-ah",
-        "lg:1": "mk-cj",
-        "lg:2": "mk-ck",
-        "lg:3": "mk-cl"
+        "lg:1": "mk-ci",
+        "lg:2": "mk-cj",
+        "lg:3": "mk-ck"
       },
       "rs": {
         "sm:1": "mk-o",
@@ -43,7 +43,7 @@
       }
     },
     "e2": {
-      "d": "mk-au",
+      "d": "mk-at",
       "s": {
         "sm:1": "mk-ag mk-af",
         "md:1": "mk-ag mk-af",
@@ -56,30 +56,30 @@
   "tabs": {
     "line": {
       "e1": {
-        "d": "mk-ai",
+        "d": "mk-au",
         "s": {
-          "all": "mk-ax"
+          "all": "mk-cl"
         }
       },
       "e2": {
         "s": {
-          "all": "mk-br mk-bn mk-bo mk-bp"
+          "all": "mk-bo mk-bk mk-bl mk-bm"
         },
         "w": {
-          "sm:1": "mk-bj",
-          "md:1": "mk-bk",
-          "lg:1": "mk-bl"
+          "sm:1": "mk-bg",
+          "md:1": "mk-bh",
+          "lg:1": "mk-bi"
         }
       },
       "e3": {
-        "d": "mk-au",
+        "d": "mk-at",
         "s": {
           "all": "mk-ag mk-af"
         }
       },
       "e4": {
         "s": {
-          "all": "mk-bm mk-bi mk-bq"
+          "all": "mk-bj mk-bf mk-bn"
         }
       },
       "e5": {
@@ -90,30 +90,30 @@
     },
     "dot": {
       "e1": {
-        "d": "mk-ai",
+        "d": "mk-au",
         "s": {
-          "all": "mk-ax"
+          "all": "mk-cl"
         }
       },
       "e2": {
         "s": {
-          "all": "mk-br mk-bn mk-bo mk-bp"
+          "all": "mk-bo mk-bk mk-bl mk-bm"
         },
         "w": {
-          "sm:1": "mk-bj",
-          "md:1": "mk-bk",
-          "lg:1": "mk-bl"
+          "sm:1": "mk-bg",
+          "md:1": "mk-bh",
+          "lg:1": "mk-bi"
         }
       },
       "e3": {
-        "d": "mk-au",
+        "d": "mk-at",
         "s": {
           "all": "mk-ag mk-af"
         }
       },
       "e4": {
         "s": {
-          "all": "mk-bm mk-bi mk-bq"
+          "all": "mk-bj mk-bf mk-bn"
         }
       },
       "e5": {
@@ -124,9 +124,8 @@
     },
     "box": {
       "e1": {
-        "d": "mk-ai",
         "s": {
-          "all": "mk-ax mk-gj mk-fr mk-fx mk-gd"
+          "all": "mk-gj mk-fr mk-fx mk-gd"
         },
         "r": {
           "all": "mk-ah"
@@ -140,23 +139,23 @@
       },
       "e2": {
         "s": {
-          "all": "mk-br mk-bn mk-bo mk-bp"
+          "all": "mk-bo mk-bk mk-bl mk-bm"
         },
         "w": {
-          "sm:1": "mk-bj",
-          "md:1": "mk-bk",
-          "lg:1": "mk-bl"
+          "sm:1": "mk-bg",
+          "md:1": "mk-bh",
+          "lg:1": "mk-bi"
         }
       },
       "e3": {
-        "d": "mk-au",
+        "d": "mk-at",
         "s": {
           "all": "mk-ag mk-af"
         }
       },
       "e4": {
         "s": {
-          "all": "mk-bm mk-bi mk-bq"
+          "all": "mk-bj mk-bf mk-bn"
         }
       },
       "e5": {}

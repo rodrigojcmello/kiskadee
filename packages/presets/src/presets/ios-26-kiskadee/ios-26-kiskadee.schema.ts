@@ -341,7 +341,6 @@ export const schema: Schema = {
       options: {
         type: 'box',
         indicatorVariant: 'rounded',
-        indicatorPosition: 'bottom',
         tabWidthMode: 'auto',
         separator: true
       },
@@ -350,11 +349,7 @@ export const schema: Schema = {
           elements: {
             // e1: bar
             e1: {
-              decorations: {
-                borderStyle: 'solid'
-              },
               scales: {
-                borderWidth: 1,
                 paddingTop: 4,
                 paddingBottom: 4,
                 paddingLeft: 4,
@@ -390,13 +385,6 @@ export const schema: Schema = {
                       neutral: {
                         medium: {
                           rest: c(segmentName, 'l', 'neutral', 4)
-                        }
-                      }
-                    },
-                    borderColor: {
-                      neutral: {
-                        medium: {
-                          rest: c(segmentName, 'l', 'neutral', 10)
                         }
                       }
                     }

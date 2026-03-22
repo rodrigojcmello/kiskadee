@@ -2,12 +2,12 @@
 .mk-a { background: #0000 }
 .mk-aa { color: #C9C5CD }
 .mk-ab.-s.-a { color: #AFC6FF }
-.mk-ap.-s.-a { background: #7B6FAA }
-.mk-aq { color: #493E76 }
-.mk-av { border-color: #C9C5CD }
-.mk-ay { background: #E6E1E9 }
+.mk-ao.-s.-a { background: #7B6FAA }
+.mk-ap { color: #493E76 }
+.mk-av { background: #E6E1E9 }
 .mk-b { border-color: #0000 }
-.mk-bt { border-color: #493E76 }
+.mk-bq { border-color: #493E76 }
+.mk-bt { border-color: #C9C5CD }
 .mk-c.-d.-a { border-color: #0000 }
 .mk-co { background: #AFC6FF }
 .mk-cq { background: #493E76 }
@@ -17,20 +17,20 @@
 .mk-k.-d.-a { background: #1C1B201F }
 .mk-l { color: #000 }
 .mk-w.-s.-a { background: #0000 }
-.mk-ba:focus-visible, .mk-ba.-f.-a { background: #D7D3DB }
-.mk-by:focus-visible, .mk-by.-f.-a { border-color: #493E76 }
+.mk-ax:focus-visible, .mk-ax.-f.-a { background: #D7D3DB }
+.mk-bx:focus-visible, .mk-bx.-f.-a { border-color: #493E76 }
 .mk-cw:focus-visible, .mk-cw.-f.-a { background: #493E76 }
 .mk-d:focus-visible, .mk-d.-f.-a { border-color: #0000 }
 .mk-p:focus-visible, .mk-p.-f.-a { background: #1D1148 }
-.mk-am:hover:not(:active).-s, .mk-am.-s.-h.-a { background: #615690 }
-.mk-an:active.-s, .mk-an.-s.-p.-a { background: #9588C6 }
-.mk-ar:hover:not(:active), .mk-ar.-h.-a { color: #554A83 }
-.mk-as:active, .mk-as.-p.-a { color: #3E336A }
-.mk-bc:hover:not(:active), .mk-bc.-h.-a { background: #6E629D }
-.mk-bd:hover:not(:active), .mk-bd.-h.-a { background: #D7D3DB }
-.mk-bg:active, .mk-bg.-p.-a { background: #C9C5CD }
-.mk-cb:hover:not(:active), .mk-cb.-h.-a { border-color: #554A83 }
-.mk-ce:active, .mk-ce.-p.-a { border-color: #3E336A }
+.mk-al:hover:not(:active).-s, .mk-al.-s.-h.-a { background: #615690 }
+.mk-am:active.-s, .mk-am.-s.-p.-a { background: #9588C6 }
+.mk-aq:hover:not(:active), .mk-aq.-h.-a { color: #554A83 }
+.mk-ar:active, .mk-ar.-p.-a { color: #3E336A }
+.mk-az:hover:not(:active), .mk-az.-h.-a { background: #6E629D }
+.mk-ba:hover:not(:active), .mk-ba.-h.-a { background: #D7D3DB }
+.mk-bd:active, .mk-bd.-p.-a { background: #C9C5CD }
+.mk-ca:hover:not(:active), .mk-ca.-h.-a { border-color: #554A83 }
+.mk-cd:active, .mk-cd.-p.-a { border-color: #3E336A }
 .mk-da:hover:not(:active), .mk-da.-h.-a { background: #554A83 }
 .mk-dd:active, .mk-dd.-p.-a { background: #3E336A }
 .mk-de:hover:not(:active).-s, .mk-de.-s.-h.-a { background: #0000 }

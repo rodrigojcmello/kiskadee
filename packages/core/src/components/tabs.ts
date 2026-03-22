@@ -1,10 +1,11 @@
 import type { SegmentName } from '../types/colors/colors.types';
 import type {
   TabsBarElementStyleFromSchema,
+  TabsBoxBarElementStyleFromSchema,
+  TabsEdgeBarElementStyleFromSchema,
   TabsIconElementStyleFromSchema,
   TabsIndicatorElementStyleFromSchema,
   TabsLabelElementStyleFromSchema,
-  TabsLineBarElementStyleFromSchema,
   TabsOptionsFromSchema,
   TabsSeparatorElementStyleFromSchema,
   TabsTriggerElementStyleFromSchema
@@ -42,11 +43,13 @@ export type TabsOptions = TabsOptionsFromSchema;
 /**
  * e1 — bar
  * - boxColor
- * - border
+ * - padding
+ * - borderRadius or border, depending on tabs type
  *
  * NOTE:
- * The current schema supports border as a generic border color /width.
- * Side-specific border top/bottom is not yet modeled at schema level.
+ * `box` bars support container background + padding + borderRadius.
+ * `line` / `dot` bars support edge border styling + padding.
+ * The rendered edge still resolves to top or bottom from `indicatorPosition`.
  */
 export type TabsBarElementStyle<TSegmentName extends SegmentName = never> =
   TabsBarElementStyleFromSchema<TSegmentName>;
@@ -138,14 +141,36 @@ export type TabsElements<TSegmentName extends SegmentName = never> = {
 };
 
 type TabsLineBarElementStyle<TSegmentName extends SegmentName = never> =
-  TabsLineBarElementStyleFromSchema<TSegmentName>;
+  TabsEdgeBarElementStyleFromSchema<TSegmentName>;
+
+type TabsBoxBarElementStyle<TSegmentName extends SegmentName = never> =
+  TabsBoxBarElementStyleFromSchema<TSegmentName>;
+
+type TabsDotBarElementStyle<TSegmentName extends SegmentName = never> =
+  TabsEdgeBarElementStyleFromSchema<TSegmentName>;
 
 export type TabsLineElements<TSegmentName extends SegmentName = never> = Omit<
   TabsElements<TSegmentName>,
   'e1'
 > & {
-  // `line` bars must not define schema border radius.
+  // `line` bars support only edge-border styling, not container radius.
   e1?: TabsLineBarElementStyle<TSegmentName>;
+};
+
+export type TabsBoxElements<TSegmentName extends SegmentName = never> = Omit<
+  TabsElements<TSegmentName>,
+  'e1'
+> & {
+  // `box` bars model container chrome with background/padding/radius, not border.
+  e1?: TabsBoxBarElementStyle<TSegmentName>;
+};
+
+export type TabsDotElements<TSegmentName extends SegmentName = never> = Omit<
+  TabsElements<TSegmentName>,
+  'e1'
+> & {
+  // `dot` bars support only edge-border styling, like `line`.
+  e1?: TabsDotBarElementStyle<TSegmentName>;
 };
 
 export type TabsTypeConfig<
@@ -162,11 +187,13 @@ export type TabsLineTypeConfig<TSegmentName extends SegmentName = never> = TabsT
 >;
 
 export type TabsBoxTypeConfig<TSegmentName extends SegmentName = never> = TabsTypeConfig<
-  TSegmentName
+  TSegmentName,
+  TabsBoxElements<TSegmentName>
 >;
 
 export type TabsDotTypeConfig<TSegmentName extends SegmentName = never> = TabsTypeConfig<
-  TSegmentName
+  TSegmentName,
+  TabsDotElements<TSegmentName>
 >;
 
 export type TabsTypes<TSegmentName extends SegmentName = never> = Partial<{
