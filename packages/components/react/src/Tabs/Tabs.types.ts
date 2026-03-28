@@ -59,6 +59,14 @@ export type TabsBoxIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsInd
     widthMode?: never;
   };
 
+export type TabsSegmentedIndicatorConfig = {
+  variant?: never;
+  motion?: never;
+  motionStyle?: never;
+  position?: never;
+  widthMode?: never;
+};
+
 export type TabsDotIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsIndicatorMotion> =
   TabsIndicatorMotionConfig<TMotion> & {
     variant?: never;
@@ -101,16 +109,27 @@ export type TabsRootBoxProps = TabsRootBaseProps & {
   indicator?: TabsBoxIndicatorConfig;
 };
 
+export type TabsRootSegmentedProps = TabsRootBaseProps & {
+  type: 'segmented';
+  indicator?: TabsSegmentedIndicatorConfig;
+};
+
 export type TabsRootDotProps = TabsRootBaseProps & {
   type: 'dot';
   indicator?: TabsDotIndicatorConfig;
 };
 
-export type TabsRootProps = TabsRootLineProps | TabsRootBoxProps | TabsRootDotProps;
+export type TabsRootProps =
+  | TabsRootLineProps
+  | TabsRootBoxProps
+  | TabsRootSegmentedProps
+  | TabsRootDotProps;
 
 export type TabsLineRootProps = Omit<TabsRootLineProps, 'type'>;
 
 export type TabsBoxRootProps = Omit<TabsRootBoxProps, 'type'>;
+
+export type TabsSegmentedRootProps = Omit<TabsRootSegmentedProps, 'type'>;
 
 export type TabsDotRootProps = Omit<TabsRootDotProps, 'type'>;
 

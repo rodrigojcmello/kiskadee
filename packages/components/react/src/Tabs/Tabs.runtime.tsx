@@ -154,8 +154,8 @@ function TabsIndicator(_: TabsIndicatorProps) {
  * What
  *     Creates a typed Tabs compound component from shared runtime pieces and type-specific hooks.
  * Why
- *     Line, box, and dot should stay lean entrypoints, so this factory centralizes the common
- *     root, bar, slot, and lazy-motion wiring.
+ *     Line, box, segmented, and dot should stay lean entrypoints, so this factory centralizes
+ *     the common root, bar, slot, and lazy-motion wiring.
  */
 export function createTabsComponent<
   TRootProps extends TabsRootBaseProps & {

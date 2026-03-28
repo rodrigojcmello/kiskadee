@@ -7,6 +7,9 @@ import type {
   TabsIndicatorElementStyleFromSchema,
   TabsLabelElementStyleFromSchema,
   TabsOptionsFromSchema,
+  TabsSegmentedBarElementStyleFromSchema,
+  TabsSegmentedIndicatorElementStyleFromSchema,
+  TabsSegmentedTriggerElementStyleFromSchema,
   TabsSeparatorElementStyleFromSchema,
   TabsTriggerElementStyleFromSchema
 } from './tabs.zod';
@@ -21,21 +24,24 @@ import type {
  * - e6: separator
  */
 export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
-export type TabsType = 'line' | 'box' | 'dot';
+export type TabsType = 'line' | 'box' | 'segmented' | 'dot';
 export type TabsIndicatorPosition = 'top' | 'bottom';
 export type TabsIndicatorWidthMode = 'tab' | 'fixed' | 'content';
 export type TabsTabWidthMode = 'auto' | 'fixed';
 export const tabsIndicatorVariantsByType = {
   line: ['square', 'rounded', 'roundedClip'],
   box: ['square', 'rounded', 'pill'],
+  segmented: ['segmented'],
   dot: ['dot']
 } as const;
 export type TabsLineIndicatorVariant = (typeof tabsIndicatorVariantsByType.line)[number];
 export type TabsBoxIndicatorVariant = (typeof tabsIndicatorVariantsByType.box)[number];
+export type TabsSegmentedIndicatorVariant = (typeof tabsIndicatorVariantsByType.segmented)[number];
 export type TabsDotIndicatorVariant = (typeof tabsIndicatorVariantsByType.dot)[number];
 export type TabsIndicatorVariant =
   | TabsLineIndicatorVariant
   | TabsBoxIndicatorVariant
+  | TabsSegmentedIndicatorVariant
   | TabsDotIndicatorVariant;
 
 export type TabsOptions = TabsOptionsFromSchema;
@@ -47,7 +53,7 @@ export type TabsOptions = TabsOptionsFromSchema;
  * - borderRadius or border, depending on tabs type
  *
  * NOTE:
- * `box` bars support container background + padding + borderRadius.
+ * `box` / `segmented` bars support container background + padding + borderRadius.
  * `line` / `dot` bars support edge border styling + padding.
  * The rendered edge still resolves to top or bottom from `indicatorPosition`.
  */
@@ -105,15 +111,21 @@ export type TabsIconElementStyle<TSegmentName extends SegmentName = never> =
  * NOTE:
  * `boxWidth` is used by line indicators when `indicatorWidthMode` is `fixed`.
  * `content` width is measured from the rendered tab content by the visual component layer.
- * `boxHeight` is the line thickness for `line`, the diameter for `dot`, and the fill height for `box`.
+ * `boxHeight` is the line thickness for `line`, the diameter for `dot`, and the fill height for
+ * `box` / `segmented`.
  * `marginTop` / `marginBottom` define the gap between the indicator and the bar edge.
  *
  * `roundedClip` is a structural indicator variant handled by component styles (fixed geometry).
  * `dot` is a dedicated type handled by component styles (fixed circle geometry).
  * `rounded` / `pill` radius values must come from preset artifacts (JSON/CSS classes).
+ * `segmented` keeps its radius in schema artifacts and uses the component layer only to flatten
+ * inner corners structurally.
  */
 export type TabsIndicatorElementStyle<TSegmentName extends SegmentName = never> =
   TabsIndicatorElementStyleFromSchema<TSegmentName>;
+
+type TabsSegmentedIndicatorElementStyle<TSegmentName extends SegmentName = never> =
+  TabsSegmentedIndicatorElementStyleFromSchema<TSegmentName>;
 
 /**
  * e6 — separator (between tabs)
@@ -146,6 +158,12 @@ type TabsLineBarElementStyle<TSegmentName extends SegmentName = never> =
 type TabsBoxBarElementStyle<TSegmentName extends SegmentName = never> =
   TabsBoxBarElementStyleFromSchema<TSegmentName>;
 
+type TabsSegmentedBarElementStyle<TSegmentName extends SegmentName = never> =
+  TabsSegmentedBarElementStyleFromSchema<TSegmentName>;
+
+type TabsSegmentedTriggerElementStyle<TSegmentName extends SegmentName = never> =
+  TabsSegmentedTriggerElementStyleFromSchema<TSegmentName>;
+
 type TabsDotBarElementStyle<TSegmentName extends SegmentName = never> =
   TabsEdgeBarElementStyleFromSchema<TSegmentName>;
 
@@ -163,6 +181,18 @@ export type TabsBoxElements<TSegmentName extends SegmentName = never> = Omit<
 > & {
   // `box` bars model container chrome with background/padding/radius, not border.
   e1?: TabsBoxBarElementStyle<TSegmentName>;
+};
+
+export type TabsSegmentedElements<TSegmentName extends SegmentName = never> = Omit<
+  TabsElements<TSegmentName>,
+  'e1' | 'e2' | 'e5'
+> & {
+  // `segmented` bars keep their own rounded-only container radius contract.
+  e1?: TabsSegmentedBarElementStyle<TSegmentName>;
+  // `segmented` triggers keep their own rounded-only radius contract for outer shell corners.
+  e2?: TabsSegmentedTriggerElementStyle<TSegmentName>;
+  // `segmented` indicators keep their own rounded-only radius contract for selected edges.
+  e5?: TabsSegmentedIndicatorElementStyle<TSegmentName>;
 };
 
 export type TabsDotElements<TSegmentName extends SegmentName = never> = Omit<
@@ -191,6 +221,11 @@ export type TabsBoxTypeConfig<TSegmentName extends SegmentName = never> = TabsTy
   TabsBoxElements<TSegmentName>
 >;
 
+export type TabsSegmentedTypeConfig<TSegmentName extends SegmentName = never> = TabsTypeConfig<
+  TSegmentName,
+  TabsSegmentedElements<TSegmentName>
+>;
+
 export type TabsDotTypeConfig<TSegmentName extends SegmentName = never> = TabsTypeConfig<
   TSegmentName,
   TabsDotElements<TSegmentName>
@@ -199,6 +234,7 @@ export type TabsDotTypeConfig<TSegmentName extends SegmentName = never> = TabsTy
 export type TabsTypes<TSegmentName extends SegmentName = never> = Partial<{
   line: TabsLineTypeConfig<TSegmentName>;
   box: TabsBoxTypeConfig<TSegmentName>;
+  segmented: TabsSegmentedTypeConfig<TSegmentName>;
   dot: TabsDotTypeConfig<TSegmentName>;
 }>;
 export { validateTabsComponentContract } from './tabs.zod';

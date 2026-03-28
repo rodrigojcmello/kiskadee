@@ -191,7 +191,7 @@ export function resolveRadiusClassName(
  *     Resolves which radius mode should be applied for the active indicator variant.
  * Why
  *     Box Tabs reuse the indicator variant to define the shape of the bar and tabs themselves,
- *     so this mapping must stay consistent anywhere runtime radius decisions are made.
+ *     while other types either clamp variants or use a fixed structural shape.
  */
 export function resolveIndicatorRadiusMode(
   indicator: Pick<TabsResolvedIndicator, 'variant'>,
@@ -252,6 +252,10 @@ export function resolveIndicatorVariant(
     return candidate === 'rounded' || candidate === 'roundedClip' ? candidate : 'square';
   }
 
+  if (type === 'segmented') {
+    return 'segmented';
+  }
+
   return candidate === 'rounded' || candidate === 'pill' ? candidate : 'square';
 }
 
@@ -310,8 +314,16 @@ export function resolveListClassName(options: {
   return joinClassNames(
     'k-tab',
     'k-tab-e1',
-    options.type === 'box' ? 'k-tab-b' : options.type === 'dot' ? 'k-tab-d' : 'k-tab-l',
-    options.type !== 'box' ? (options.indicatorPosition === 'top' ? 'k-tab-e1b' : 'k-tab-e1a') : '',
+    options.type === 'box'
+      ? 'k-tab-b'
+      : options.type === 'segmented'
+        ? 'k-tab-s'
+        : options.type === 'dot'
+          ? 'k-tab-d'
+          : 'k-tab-l',
+    options.type === 'line' || options.type === 'dot'
+      ? (options.indicatorPosition === 'top' ? 'k-tab-e1b' : 'k-tab-e1a')
+      : '',
     resolveRadiusClassName(options.elements.e1, options.scale, options.radiusMode),
     resolveElementClassName(options.elements.e1, {
       scale: options.scale,
@@ -326,8 +338,8 @@ export function resolveListClassName(options: {
  * What
  *     Builds the final className for the optional separator element rendered between box tabs.
  * Why
- *     Box tabs can inject separators dynamically, so their renderer needs a dedicated
- *     resolver for that extra slot without special-casing raw class assembly inline.
+ *     Box and segmented tabs can inject separators dynamically, so their renderers need a
+ *     dedicated resolver for that extra slot without special-casing raw class assembly inline.
  */
 export function resolveSeparatorClassName(options: {
   elements: TabsClassesMap;
@@ -456,8 +468,8 @@ export function resolveIconClassName(options: {
  *     Builds the final className for the active indicator, including variant, position,
  *     motion, and type-specific modifiers.
  * Why
- *     Static and motion renderers for line, box, and dot all depend on the same indicator
- *     slot, so this keeps indicator class branching centralized and consistent across
+ *     Static and motion renderers for line, box, segmented, and dot all depend on the same
+ *     indicator slot, so this keeps indicator class branching centralized and consistent across
  *     implementations.
  */
 export function resolveIndicatorClassName(options: {
@@ -478,7 +490,9 @@ export function resolveIndicatorClassName(options: {
     indicatorRadiusMode
   );
   const indicatorVariantClass =
-    options.indicator.variant === 'roundedClip' && options.type === 'line'
+    options.type === 'segmented'
+      ? 'k-tab-e5l'
+      : options.indicator.variant === 'roundedClip' && options.type === 'line'
       ? 'k-tab-e5g'
       : indicatorRadiusClassName
         ? ''
@@ -500,7 +514,7 @@ export function resolveIndicatorClassName(options: {
     indicatorRadiusClassName,
     options.classNames.e5,
     'k-tab-e5',
-    options.type !== 'box'
+    options.type === 'line' || options.type === 'dot'
       ? options.indicator.position === 'top'
         ? 'k-tab-e5i'
         : 'k-tab-e5h'

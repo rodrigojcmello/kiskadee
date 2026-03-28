@@ -84,7 +84,8 @@ export function useTabsRuntimeRootState({
     variant
   );
   const resolvedTabWidthMode = resolveTabWidthMode(tabWidthMode, globalTabsOptions?.tabWidthMode);
-  const resolvedSeparator = separator ?? globalTabsOptions?.separator ?? false;
+  const resolvedSeparator =
+    separator ?? (variant === 'segmented' ? true : globalTabsOptions?.separator ?? false);
   const resolvedRadiusMode = (global?.radius ?? 'rounded') as RadiusMode;
 
   return useMemo(

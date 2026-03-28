@@ -36,70 +36,143 @@ const borderRadiusScaleSchema = z
   })
   .strict();
 
+const roundedOnlyBorderRadiusScaleSchema = z
+  .object({
+    rounded: scaleValueSchema.optional()
+  })
+  .strict();
+
 // TODO: Validate Tabs element.effects with type-specific restrictions before merging this feature.
 const elementEffectsSchema = z.custom<ElementEffects>();
 
-const tabsOptionsSchema = z
-  .object({
-    type: z.enum(['line', 'box', 'dot']).optional(),
-    indicatorPosition: z.enum(['top', 'bottom']).optional(),
-    indicatorVariant: z.enum(['square', 'rounded', 'roundedClip', 'dot', 'pill']).optional(),
-    indicatorWidthMode: z.enum(['tab', 'fixed', 'content']).optional(),
-    tabWidthMode: z.enum(['auto', 'fixed']).optional(),
-    separator: z.boolean().optional()
-  })
-  .strict()
-  .superRefine((value, ctx) => {
-    if (
-      value.type === 'line' &&
-      (value.indicatorVariant === 'pill' || value.indicatorVariant === 'dot')
-    ) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['indicatorVariant'],
-        message: '"line" supports only "square", "rounded", or "roundedClip"'
-      });
-    }
+const tabsTypeSchema = z.enum(['line', 'box', 'segmented', 'dot']);
+const tabsIndicatorPositionSchema = z.enum(['top', 'bottom']);
+const tabsIndicatorVariantSchema = z.enum([
+  'square',
+  'rounded',
+  'roundedClip',
+  'dot',
+  'pill',
+  'segmented'
+]);
+const tabsIndicatorWidthModeSchema = z.enum(['tab', 'fixed', 'content']);
+const tabsTabWidthModeSchema = z.enum(['auto', 'fixed']);
 
-    if (
-      value.type === 'box' &&
-      (value.indicatorVariant === 'roundedClip' || value.indicatorVariant === 'dot')
-    ) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['indicatorVariant'],
-        message: '"box" supports only "square", "rounded", or "pill"'
-      });
-    }
+type TabsTypeSchemaValue = z.infer<typeof tabsTypeSchema>;
 
-    if (value.type === 'box' && value.indicatorPosition !== undefined) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['indicatorPosition'],
-        message: '"box" does not support indicatorPosition'
-      });
-    }
+function refineTabsOptions(
+  value: {
+    type?: TabsTypeSchemaValue;
+    indicatorPosition?: z.infer<typeof tabsIndicatorPositionSchema>;
+    indicatorVariant?: z.infer<typeof tabsIndicatorVariantSchema>;
+    indicatorWidthMode?: z.infer<typeof tabsIndicatorWidthModeSchema>;
+    tabWidthMode?: z.infer<typeof tabsTabWidthModeSchema>;
+    separator?: boolean;
+  },
+  ctx: z.RefinementCtx,
+  expectedType?: TabsTypeSchemaValue
+) {
+  if (expectedType !== undefined && value.type !== undefined && value.type !== expectedType) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['type'],
+      message: `expected "${expectedType}" when used inside variants.${expectedType}`
+    });
+  }
 
-    if (
-      value.type === 'dot' &&
-      value.indicatorVariant !== undefined &&
-      value.indicatorVariant !== 'dot'
-    ) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['indicatorVariant'],
-        message: '"dot" does not accept alternate variants'
-      });
-    }
+  const resolvedType = value.type ?? expectedType;
 
-    if (value.type === 'dot' && value.indicatorWidthMode !== undefined) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['indicatorWidthMode'],
-        message: '"dot" does not support indicatorWidthMode'
-      });
-    }
-  });
+  if (
+    resolvedType === 'line' &&
+    (value.indicatorVariant === 'pill' || value.indicatorVariant === 'dot')
+  ) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['indicatorVariant'],
+      message: '"line" supports only "square", "rounded", or "roundedClip"'
+    });
+  }
+
+  if (
+    resolvedType === 'box' &&
+    (value.indicatorVariant === 'roundedClip' || value.indicatorVariant === 'dot')
+  ) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['indicatorVariant'],
+      message: '"box" supports only "square", "rounded", or "pill"'
+    });
+  }
+
+  if (
+    resolvedType === 'segmented' &&
+    value.indicatorVariant !== undefined &&
+    value.indicatorVariant !== 'segmented'
+  ) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['indicatorVariant'],
+      message: '"segmented" does not accept alternate variants'
+    });
+  }
+
+  if (
+    (resolvedType === 'box' || resolvedType === 'segmented') &&
+    value.indicatorPosition !== undefined
+  ) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['indicatorPosition'],
+      message: `"${resolvedType}" does not support indicatorPosition`
+    });
+  }
+
+  if (
+    resolvedType === 'dot' &&
+    value.indicatorVariant !== undefined &&
+    value.indicatorVariant !== 'dot'
+  ) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['indicatorVariant'],
+      message: '"dot" does not accept alternate variants'
+    });
+  }
+
+  if (resolvedType === 'dot' && value.indicatorWidthMode !== undefined) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['indicatorWidthMode'],
+      message: '"dot" does not support indicatorWidthMode'
+    });
+  }
+
+  if (resolvedType === 'segmented' && value.indicatorWidthMode !== undefined) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['indicatorWidthMode'],
+      message: '"segmented" does not support indicatorWidthMode'
+    });
+  }
+}
+
+function createTabsOptionsSchema(expectedType?: TabsTypeSchemaValue) {
+  return z
+    .object({
+      type: tabsTypeSchema.optional(),
+      indicatorPosition: tabsIndicatorPositionSchema.optional(),
+      indicatorVariant: tabsIndicatorVariantSchema.optional(),
+      indicatorWidthMode: tabsIndicatorWidthModeSchema.optional(),
+      tabWidthMode: tabsTabWidthModeSchema.optional(),
+      separator: z.boolean().optional()
+    })
+    .strict()
+    .superRefine((value, ctx) => {
+      refineTabsOptions(value, ctx, expectedType);
+    });
+}
+
+const tabsOptionsSchema = createTabsOptionsSchema();
 
 function createScalesSchema<const TKeys extends readonly StandardScaleProperty[]>(keys: TKeys) {
   const shape = Object.fromEntries(keys.map((key) => [key, scaleValueSchema.optional()])) as Record<
@@ -115,6 +188,16 @@ function createScalesSchemaWithBorderRadius<const TKeys extends readonly Standar
   return createScalesSchema(keys)
     .extend({
       borderRadius: borderRadiusScaleSchema.optional()
+    })
+    .strict();
+}
+
+function createScalesSchemaWithRoundedOnlyBorderRadius<
+  const TKeys extends readonly StandardScaleProperty[]
+>(keys: TKeys) {
+  return createScalesSchema(keys)
+    .extend({
+      borderRadius: roundedOnlyBorderRadiusScaleSchema.optional()
     })
     .strict();
 }
@@ -211,6 +294,22 @@ function createTabsBoxBarElementStyleSchema<TSegmentName extends SegmentName = n
     .strict();
 }
 
+function createTabsSegmentedBarElementStyleSchema<TSegmentName extends SegmentName = never>() {
+  return z
+    .object({
+      name: z.string().optional(),
+      scales: createScalesSchemaWithRoundedOnlyBorderRadius([
+        'paddingTop',
+        'paddingRight',
+        'paddingBottom',
+        'paddingLeft'
+      ]).optional(),
+      palettes: createPalettesSchema<TSegmentName, 'boxColor'>(['boxColor']).optional(),
+      effects: elementEffectsSchema.optional()
+    })
+    .strict();
+}
+
 function createTabsBarElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z.union([
     createTabsBoxBarElementStyleSchema<TSegmentName>(),
@@ -223,6 +322,23 @@ function createTabsTriggerElementStyleSchema<TSegmentName extends SegmentName = 
     .object({
       name: z.string().optional(),
       scales: createScalesSchemaWithBorderRadius([
+        'boxWidth',
+        'paddingTop',
+        'paddingRight',
+        'paddingBottom',
+        'paddingLeft'
+      ]).optional(),
+      palettes: createPalettesSchema<TSegmentName, 'boxColor'>(['boxColor']).optional(),
+      effects: elementEffectsSchema.optional()
+    })
+    .strict();
+}
+
+function createTabsSegmentedTriggerElementStyleSchema<TSegmentName extends SegmentName = never>() {
+  return z
+    .object({
+      name: z.string().optional(),
+      scales: createScalesSchemaWithRoundedOnlyBorderRadius([
         'boxWidth',
         'paddingTop',
         'paddingRight',
@@ -287,6 +403,22 @@ function createTabsIndicatorElementStyleSchema<TSegmentName extends SegmentName 
     .strict();
 }
 
+function createTabsSegmentedIndicatorElementStyleSchema<TSegmentName extends SegmentName = never>() {
+  return z
+    .object({
+      name: z.string().optional(),
+      scales: createScalesSchemaWithRoundedOnlyBorderRadius([
+        'boxWidth',
+        'boxHeight',
+        'marginTop',
+        'marginBottom'
+      ]).optional(),
+      palettes: createPalettesSchema<TSegmentName, 'boxColor'>(['boxColor']).optional(),
+      effects: elementEffectsSchema.optional()
+    })
+    .strict();
+}
+
 function createTabsSeparatorElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
@@ -315,9 +447,15 @@ export type TabsEdgeBarElementStyleFromSchema<TSegmentName extends SegmentName =
 export type TabsBoxBarElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
   ReturnType<typeof createTabsBoxBarElementStyleSchema<TSegmentName>>
 >;
+export type TabsSegmentedBarElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
+  ReturnType<typeof createTabsSegmentedBarElementStyleSchema<TSegmentName>>
+>;
 export type TabsTriggerElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
   ReturnType<typeof createTabsTriggerElementStyleSchema<TSegmentName>>
 >;
+export type TabsSegmentedTriggerElementStyleFromSchema<
+  TSegmentName extends SegmentName = never
+> = z.input<ReturnType<typeof createTabsSegmentedTriggerElementStyleSchema<TSegmentName>>>;
 export type TabsLabelElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
   ReturnType<typeof createTabsLabelElementStyleSchema<TSegmentName>>
 >;
@@ -327,6 +465,8 @@ export type TabsIconElementStyleFromSchema<TSegmentName extends SegmentName = ne
 export type TabsIndicatorElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
   ReturnType<typeof createTabsIndicatorElementStyleSchema<TSegmentName>>
 >;
+export type TabsSegmentedIndicatorElementStyleFromSchema<TSegmentName extends SegmentName = never> =
+  z.input<ReturnType<typeof createTabsSegmentedIndicatorElementStyleSchema<TSegmentName>>>;
 export type TabsSeparatorElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
   ReturnType<typeof createTabsSeparatorElementStyleSchema<TSegmentName>>
 >;
@@ -370,6 +510,19 @@ function createTabsBoxElementsSchema<TSegmentName extends SegmentName = never>()
     .strict();
 }
 
+function createTabsSegmentedElementsSchema<TSegmentName extends SegmentName = never>() {
+  return z
+    .object({
+      e1: createTabsSegmentedBarElementStyleSchema<TSegmentName>().optional(),
+      e2: createTabsSegmentedTriggerElementStyleSchema<TSegmentName>().optional(),
+      e3: createTabsLabelElementStyleSchema<TSegmentName>().optional(),
+      e4: createTabsIconElementStyleSchema<TSegmentName>().optional(),
+      e5: createTabsSegmentedIndicatorElementStyleSchema<TSegmentName>().optional(),
+      e6: createTabsSeparatorElementStyleSchema<TSegmentName>().optional()
+    })
+    .strict();
+}
+
 function createTabsDotElementsSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
@@ -383,11 +536,14 @@ function createTabsDotElementsSchema<TSegmentName extends SegmentName = never>()
     .strict();
 }
 
-function createTabsTypeConfigSchema(elementsSchema: z.ZodTypeAny) {
+function createTabsVariantTypeConfigSchema(
+  expectedType: TabsTypeSchemaValue,
+  elementsSchema: z.ZodTypeAny
+) {
   return z
     .object({
       elements: elementsSchema,
-      options: tabsOptionsSchema.optional()
+      options: createTabsOptionsSchema(expectedType).optional()
     })
     .strict();
 }
@@ -395,9 +551,22 @@ function createTabsTypeConfigSchema(elementsSchema: z.ZodTypeAny) {
 function createTabsTypesSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
-      line: createTabsTypeConfigSchema(createTabsLineElementsSchema<TSegmentName>()).optional(),
-      box: createTabsTypeConfigSchema(createTabsBoxElementsSchema<TSegmentName>()).optional(),
-      dot: createTabsTypeConfigSchema(createTabsDotElementsSchema<TSegmentName>()).optional()
+      line: createTabsVariantTypeConfigSchema(
+        'line',
+        createTabsLineElementsSchema<TSegmentName>()
+      ).optional(),
+      box: createTabsVariantTypeConfigSchema(
+        'box',
+        createTabsBoxElementsSchema<TSegmentName>()
+      ).optional(),
+      segmented: createTabsVariantTypeConfigSchema(
+        'segmented',
+        createTabsSegmentedElementsSchema<TSegmentName>()
+      ).optional(),
+      dot: createTabsVariantTypeConfigSchema(
+        'dot',
+        createTabsDotElementsSchema<TSegmentName>()
+      ).optional()
     })
     .strict();
 }
@@ -422,9 +591,11 @@ const tabsComponentContractSchema = z
         ? createTabsLineElementsSchema()
         : value.options?.type === 'box'
           ? createTabsBoxElementsSchema()
-          : value.options?.type === 'dot'
-            ? createTabsDotElementsSchema()
-            : undefined;
+          : value.options?.type === 'segmented'
+            ? createTabsSegmentedElementsSchema()
+            : value.options?.type === 'dot'
+              ? createTabsDotElementsSchema()
+              : undefined;
 
     if (elementsSchema !== undefined && value.elements !== undefined) {
       const result = elementsSchema.safeParse(value.elements);

@@ -1,6 +1,7 @@
 export { TabsBox } from './box/Tabs.box';
 export { TabsDot } from './dot/Tabs.dot';
 export { TabsLine } from './line/Tabs.line';
+export { TabsSegmented } from './segmented/Tabs.segmented';
 export type {
   TabsBarProps,
   TabsBoxIndicatorConfig,
@@ -20,6 +21,8 @@ export type {
   TabsLineIndicatorConfig,
   TabsLineRootProps,
   TabsRootProps,
+  TabsSegmentedIndicatorConfig,
+  TabsSegmentedRootProps,
   TabsSpringConfig,
   TabsSpringPreset,
   TabsTabProps

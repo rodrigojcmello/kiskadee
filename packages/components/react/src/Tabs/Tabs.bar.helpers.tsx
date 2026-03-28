@@ -8,20 +8,24 @@ type SeparatorState = {
 
 /**
  * What
- *     Builds a new children array with separator nodes inserted between adjacent box tabs.
+ *     Builds a new children array with separator nodes inserted between adjacent box-like tabs.
  * Why
- *     Box tabs render separators as runtime-only elements, so this keeps that injection logic
- *     out of the box renderers themselves.
+ *     Box and segmented tabs render separators as runtime-only elements, so this keeps that
+ *     injection logic out of those renderers themselves.
  */
 export function buildTabsChildrenWithSeparators(options: {
   children?: ReactNode;
-  type: 'line' | 'box' | 'dot';
+  type: 'line' | 'box' | 'segmented' | 'dot';
   separator: boolean;
   separatorClassName?: string;
   getSeparatorState?: (leftValue: string, rightValue: string) => SeparatorState;
 }): ReactNode[] {
   const items = Children.toArray(options.children);
-  if (options.type !== 'box' || !options.separator || items.length <= 1) {
+  if (
+    (options.type !== 'box' && options.type !== 'segmented') ||
+    !options.separator ||
+    items.length <= 1
+  ) {
     return items;
   }
 

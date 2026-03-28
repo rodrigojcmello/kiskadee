@@ -13,6 +13,7 @@ import { useKiskadee } from '@kiskadee/react-components';
 import { TabsBox } from '@kiskadee/react-components/tabs/box';
 import { TabsDot } from '@kiskadee/react-components/tabs/dot';
 import { TabsLine } from '@kiskadee/react-components/tabs/line';
+import { TabsSegmented } from '@kiskadee/react-components/tabs/segmented';
 import { useState } from 'react';
 import { Select } from '@/k-components';
 
@@ -22,7 +23,11 @@ type TabsIndicatorMotionStyleControl = TabsIndicatorMotionStyle;
 type TabsIndicatorPositionControl = 'default' | TabsIndicatorPosition;
 type TabsLineWidthModeControl = 'default' | TabsIndicatorWidthMode;
 type TabsTabWidthModeControl = 'default' | TabsTabWidthMode;
-type TabsExampleId = `line:${TabsLineIndicatorVariant}` | `box:${TabsBoxIndicatorVariant}` | 'dot';
+type TabsExampleId =
+  | `line:${TabsLineIndicatorVariant}`
+  | `box:${TabsBoxIndicatorVariant}`
+  | 'segmented'
+  | 'dot';
 type TabsSelectionByExample = Partial<Record<TabsExampleId, string>>;
 const DEFAULT_TAB_VALUE = 'locations';
 
@@ -100,6 +105,7 @@ const boxExamples: Array<{ title: string; indicatorVariant: TabsBoxIndicatorVari
     indicatorVariant
   }));
 
+const segmentedExample = { title: 'Segmented' } as const;
 const dotExample = { title: 'Dot' } as const;
 
 type TabsExampleProps =
@@ -138,6 +144,16 @@ type TabsExampleProps =
       selectedValue: string;
       onSelectedValueChange: (value: string) => void;
       tabWidthMode?: TabsTabWidthMode;
+      type: 'segmented';
+      indicator: {};
+    }
+  | {
+      title: string;
+      mode: TabsMode;
+      spring: TabsSpring;
+      selectedValue: string;
+      onSelectedValueChange: (value: string) => void;
+      tabWidthMode?: TabsTabWidthMode;
       type: 'dot';
       indicator: {
         position: TabsIndicatorPosition;
@@ -166,8 +182,12 @@ function renderTabsSlots(Component: TabsCompoundSlots, keyBase: string) {
 function TabsExample(props: TabsExampleProps) {
   const { title, mode, spring, selectedValue, onSelectedValueChange, tabWidthMode } = props;
   const type = props.type;
-  const indicator = props.indicator;
-  const tabVariantKey = 'variant' in indicator ? indicator.variant : 'dot';
+  const tabVariantKey =
+    props.type === 'line'
+      ? props.indicator.variant
+      : props.type === 'box'
+        ? props.indicator.variant
+        : props.type;
   const keyBase = `${type}-${tabVariantKey}`;
 
   if (props.type === 'line') {
@@ -216,6 +236,27 @@ function TabsExample(props: TabsExampleProps) {
           {tabs}
           {contents}
         </TabsBox.Root>
+      </div>
+    );
+  }
+
+  if (props.type === 'segmented') {
+    const { tabs, contents } = renderTabsSlots(TabsSegmented, keyBase);
+
+    return (
+      <div>
+        <h3>{title}</h3>
+        <TabsSegmented.Root
+          value={selectedValue}
+          onValueChange={onSelectedValueChange}
+          activationMode="manual"
+          tabWidthMode={tabWidthMode}
+          indicator={props.indicator}
+          spring={spring}
+        >
+          {tabs}
+          {contents}
+        </TabsSegmented.Root>
       </div>
     );
   }
@@ -425,6 +466,19 @@ export default function ShowcaseTabs() {
           }}
         />
       ))}
+
+      <h2 style={{ marginTop: 40 }}>Segmented</h2>
+      <TabsExample
+        key="segmented"
+        title={segmentedExample.title}
+        mode={mode}
+        spring={spring}
+        selectedValue={resolveSelectedTabValue('segmented')}
+        onSelectedValueChange={(value) => handleSelectedTabChange('segmented', value)}
+        tabWidthMode={tabWidthModeProp}
+        type="segmented"
+        indicator={{}}
+      />
     </section>
   );
 }

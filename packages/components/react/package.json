@@ -16,6 +16,9 @@
     "./tabs/box": {
       "default": "./src/Tabs/box/Tabs.box.tsx"
     },
+    "./tabs/segmented": {
+      "default": "./src/Tabs/segmented/Tabs.segmented.tsx"
+    },
     "./tabs/dot": {
       "default": "./src/Tabs/dot/Tabs.dot.tsx"
     }
