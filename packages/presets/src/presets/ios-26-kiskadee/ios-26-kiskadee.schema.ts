@@ -557,6 +557,188 @@ export const schema: Schema = {
             }
           }
         },
+        segmented: {
+          options: {
+            type: 'segmented',
+            indicatorVariant: 'segmented',
+            separator: true
+          },
+          elements: {
+            // e1: bar
+            e1: {
+              scales: {
+                paddingTop: 1,
+                paddingBottom: 1,
+                paddingLeft: 1,
+                paddingRight: 1,
+                borderRadius: {
+                  rounded: {
+                    's:sm:1': 8,
+                    's:md:1': 8,
+                    's:lg:1': 8
+                  }
+                }
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    boxColor: {
+                      neutral: {
+                        medium: {
+                          rest: c(segmentName, 'l', 'neutral', 4)
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            },
+            // e2: tab
+            e2: {
+              scales: {
+                boxWidth: {
+                  's:sm:1': 120,
+                  's:md:1': 144,
+                  's:lg:1': 160
+                },
+                paddingTop: 6,
+                paddingBottom: 6,
+                paddingLeft: 16,
+                paddingRight: 16,
+                borderRadius: {
+                  rounded: {
+                    's:sm:1': 7,
+                    's:md:1': 7,
+                    's:lg:1': 7
+                  }
+                }
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    boxColor: {
+                      neutral: {
+                        medium: {
+                          rest: transparent,
+                          hover: c(segmentName, 'l', 'neutral', 6),
+                          pressed: c(segmentName, 'l', 'neutral', 8),
+                          selected: {
+                            rest: transparent,
+                            hover: transparent,
+                            pressed: transparent
+                          }
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            },
+            // e3: label
+            e3: {
+              decorations: {
+                textWeight: 'medium'
+              },
+              scales: {
+                textSize: 14,
+                textHeight: 20
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    textColor: {
+                      neutral: {
+                        medium: {
+                          rest: c(segmentName, 'l', 'neutral', 70),
+                          selected: {
+                            rest: c(segmentName, 'l', 'neutral', 90)
+                          }
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            },
+            // e4: icon
+            e4: {
+              scales: {
+                boxWidth: 18,
+                boxHeight: 18,
+                paddingRight: 8
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    textColor: {
+                      neutral: {
+                        medium: {
+                          rest: c(segmentName, 'l', 'neutral', 70),
+                          selected: {
+                            rest: c(segmentName, 'l', 'neutral', 90)
+                          }
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            },
+            // e5: indicator (background)
+            e5: {
+              scales: {
+                borderRadius: {
+                  rounded: 7
+                }
+              },
+              effects: {
+                shadow: {
+                  x: { rest: 0 },
+                  y: { rest: 1 },
+                  blur: { rest: 3 },
+                  color: {
+                    rest: withAlpha([0, 0, 0, 1], 20)
+                  }
+                }
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    boxColor: {
+                      neutral: {
+                        medium: {
+                          rest: c(segmentName, 'l', 'neutral', 0),
+                          hover: c(segmentName, 'l', 'neutral', 2),
+                          pressed: c(segmentName, 'l', 'neutral', 6)
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            },
+            // e6: separator (between tabs)
+            e6: {
+              scales: {
+                boxWidth: 1,
+                boxHeight: 16
+              },
+              palettes: buildBySegment(segmentNames, (segmentName) => {
+                return {
+                  light: {
+                    boxColor: {
+                      neutral: {
+                        medium: {
+                          rest: c(segmentName, 'l', 'neutral', 100, 10)
+                        }
+                      }
+                    }
+                  }
+                };
+              })
+            }
+          }
+        },
         dot: {
           elements: {
             // e1: bar

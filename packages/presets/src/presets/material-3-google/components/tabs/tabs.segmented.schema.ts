@@ -33,10 +33,10 @@ export function createMaterial3GoogleTabsSegmentedVariant({
       // e1: bar
       e1: {
         scales: {
-          paddingTop: 1,
-          paddingBottom: 1,
-          paddingLeft: 1,
-          paddingRight: 1,
+          paddingTop: 2,
+          paddingBottom: 2,
+          paddingLeft: 2,
+          paddingRight: 2,
           borderRadius: {
             rounded: 12
           }
@@ -77,7 +77,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
           paddingLeft: 14,
           paddingRight: 14,
           borderRadius: {
-            rounded: 11
+            rounded: 10
           }
         },
         palettes: {
@@ -163,7 +163,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
       e5: {
         scales: {
           borderRadius: {
-            rounded: 11
+            rounded: 10
           }
         },
         palettes: {
@@ -196,7 +196,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
       // e6: separator
       e6: {
         scales: {
-          boxWidth: 1,
+          boxWidth: 2,
           boxHeight: 24,
           marginTop: 0,
           marginBottom: 0
