@@ -47,6 +47,12 @@ Use this skill to make architecture decisions and implementation plans that stay
 - For structural classes in `packages/components/react`, use `k-<cmp>-e<n>` for schema elements (`cmp` = 3-letter id, e.g. `tab`) and short option suffixes (`-t`, `-b`); keep visual theming in generated artifacts/runtime, not hardcoded Sass.
 - Put behavioral switches in `components.<name>.options` and keep the corresponding numeric/visual values in `components.<name>.elements`.
 - If a schema value must exist but only apply when a runtime/component option enables it, do not assume the generic artifact scale bucket is enough; verify whether `packages/web-builder` needs a dedicated opt-in bucket.
+- For fixed-geometry component types (for example `tabs.segmented`), keep the public type unique and
+  prefer narrowing generic schema keys via type-specific Zod/contracts over inventing ad hoc schema
+  properties or builder-only exceptions.
+- When a fixed-geometry type needs rounded shells/items, keep the radius values in the participating
+  schema elements themselves and let structural CSS only flatten the corners that must be straight;
+  avoid cross-element radius inheritance or arithmetic in the component layer.
 
 ## Comment pattern
 
