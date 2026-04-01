@@ -45,7 +45,8 @@ export function useResolvedTabsSegmentedRootState({
     emphasis: baseState.emphasis,
     radiusMode: resolvedRadiusMode,
     type: 'segmented',
-    indicatorPosition: resolvedIndicator.position
+    indicatorPosition: resolvedIndicator.position,
+    lowerCurveMode: 'curved'
   });
   const separatorClassName = resolveSeparatorClassName({
     elements: baseState.elements,
@@ -60,6 +61,7 @@ export function useResolvedTabsSegmentedRootState({
       ...baseState,
       resolvedRadiusMode,
       resolvedType: 'segmented' as const,
+      resolvedLowerCurveMode: 'curved' as const,
       listClassName,
       separatorClassName,
       resolvedIndicator

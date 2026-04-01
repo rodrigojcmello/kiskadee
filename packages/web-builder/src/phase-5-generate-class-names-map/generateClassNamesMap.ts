@@ -10,7 +10,7 @@ import type {
 import { componentEmphasisBuckets } from '@kiskadee/core';
 import type { ToneMetadataByPalette } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
-import type { WebBuildPolicy } from '../web-build-policy';
+import type { WebStyleEmissionPolicy } from '../web-build-policy';
 import { resolveWebStyleKeyIdentity } from '../web-style-key-identity';
 
 type ColorClasses = {
@@ -128,7 +128,7 @@ export function generateClassNamesMapSplit(
   shortenMap: ShortenCssClassNames,
   toneMetadataByPalette: ToneMetadataByPalette,
   options?: {
-    webBuildPolicy?: WebBuildPolicy;
+    webStyleEmissionPolicy?: WebStyleEmissionPolicy;
   }
 ): ComponentClassNameMapSplit {
   const core: ComponentClassNameMap = {};
@@ -147,6 +147,7 @@ export function generateClassNamesMapSplit(
     const componentEntry = palettes[bundleKey][componentName] as Record<string, unknown>;
     const target = variantName
       ? ((componentEntry[variantName] as Record<string, unknown> | undefined) ??
+        // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
         (componentEntry[variantName] = {}))
       : componentEntry;
     if (!target[elementName]) {
@@ -166,7 +167,7 @@ export function generateClassNamesMapSplit(
       const resolveClassName = (key: string) => {
         const identity = resolveWebStyleKeyIdentity(
           key,
-          options?.webBuildPolicy,
+          options?.webStyleEmissionPolicy,
           componentName,
           elementName
         );

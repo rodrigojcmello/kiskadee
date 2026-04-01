@@ -1,6 +1,7 @@
 import { HeadlessTabs } from '@kiskadee/react-headless';
 import { forwardRef, type ReactNode } from 'react';
 import {
+  resolvePanelClassName,
   joinClassNames,
   resolveIconClassName,
   resolveLabelClassName,
@@ -175,6 +176,15 @@ export const TabsIconBase = forwardRef<HTMLSpanElement, TabsIconProps>(function 
  *     visual type.
  */
 export function TabsContentBase(props: TabsContentProps) {
-  const panelClassName = joinClassNames('k-tab-p', props.className);
+  const { scale, intent, emphasis, classNames, elements, radiusMode } = useTabsVisualContext();
+  const panelClassName = resolvePanelClassName({
+    elements,
+    classNames,
+    scale,
+    intent,
+    emphasis,
+    radiusMode,
+    className: props.className
+  }) ?? joinClassNames('k-tab-p', props.className);
   return <HeadlessTabs.Content {...props} className={panelClassName} />;
 }

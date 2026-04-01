@@ -60,7 +60,8 @@ export function useResolvedTabsBoxRootState({
     emphasis: baseState.emphasis,
     radiusMode: resolvedRadiusMode,
     type: 'box',
-    indicatorPosition: resolvedIndicator.position
+    indicatorPosition: resolvedIndicator.position,
+    lowerCurveMode: 'curved'
   });
   const separatorClassName = resolveSeparatorClassName({
     elements: baseState.elements,
@@ -75,6 +76,7 @@ export function useResolvedTabsBoxRootState({
       ...baseState,
       resolvedRadiusMode,
       resolvedType: 'box' as const,
+      resolvedLowerCurveMode: 'curved' as const,
       listClassName,
       separatorClassName,
       resolvedIndicator

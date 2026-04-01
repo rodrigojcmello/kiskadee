@@ -1,0 +1,157 @@
+@mixin bridge-shape-curved {
+  clip-path: shape(
+    from bottom left,
+    curve to var(--k-br, 12px) calc(100% - var(--k-br, 12px)) with var(--k-br, 12px) 100%,
+    vline to var(--k-br, 12px),
+    curve to calc(var(--k-br, 12px) * 2) 0 with var(--k-br, 12px) 0,
+    hline to calc(100% - calc(var(--k-br, 12px) * 2)),
+    curve to calc(100% - var(--k-br, 12px)) var(--k-br, 12px) with calc(100% - var(--k-br, 12px)) 0,
+    vline to calc(100% - var(--k-br, 12px)),
+    curve to 100% 100% with calc(100% - var(--k-br, 12px)) 100%
+  );
+}
+
+@mixin bridge-shape-flush-start {
+  clip-path: shape(
+    from bottom left,
+    vline to var(--k-br, 12px),
+    curve to calc(var(--k-br, 12px) * 2) 0 with var(--k-br, 12px) 0,
+    hline to calc(100% - calc(var(--k-br, 12px) * 2)),
+    curve to calc(100% - var(--k-br, 12px)) var(--k-br, 12px) with calc(100% - var(--k-br, 12px)) 0,
+    vline to calc(100% - var(--k-br, 12px)),
+    curve to 100% 100% with calc(100% - var(--k-br, 12px)) 100%
+  );
+}
+
+@mixin bridge-shape-flush-end {
+  clip-path: shape(
+    from bottom left,
+    curve to var(--k-br, 12px) calc(100% - var(--k-br, 12px)) with var(--k-br, 12px) 100%,
+    vline to var(--k-br, 12px),
+    curve to calc(var(--k-br, 12px) * 2) 0 with var(--k-br, 12px) 0,
+    hline to 100%,
+    vline to 100%
+  );
+}
+
+@mixin bridge-shape-top-only {
+  clip-path: shape(
+    from bottom left,
+    vline to var(--k-br, 12px),
+    curve to calc(var(--k-br, 12px) * 2) 0 with var(--k-br, 12px) 0,
+    hline to calc(100% - calc(var(--k-br, 12px) * 2)),
+    curve to calc(100% - var(--k-br, 12px)) var(--k-br, 12px) with calc(100% - var(--k-br, 12px)) 0,
+    vline to 100%,
+    hline to 0
+  );
+}
+
+.k-tab.k-tab-br.k-tab-br-shell {
+  --k-br: 12px;
+  position: relative;
+  z-index: 1;
+  display: block;
+  overflow: hidden;
+}
+
+.k-tab.k-tab-br.k-tab-br-shell .k-tab-br-list {
+  display: flex;
+  align-items: flex-end;
+  margin: 0;
+  margin-inline-start: 1rem;
+  overflow-x: auto;
+  overflow-y: clip;
+  padding: 8px 8px 0;
+  scrollbar-width: thin;
+}
+
+.k-tab.k-tab-br.k-tab-br-shell .k-tab-e2w {
+  position: relative;
+  z-index: var(--k-tab-z, 1);
+  display: inline-flex;
+  flex: 0 0 auto;
+  overflow: visible;
+}
+
+.k-tab.k-tab-br.k-tab-br-shell .k-tab-e2w.-e {
+  filter: drop-shadow(
+    var(--k-sh-x, 0)
+    var(--k-sh-y, 0)
+    var(--k-sh-blur, 0)
+    var(--k-sh-color, transparent)
+  );
+}
+
+.k-tab.k-tab-br.k-tab-br-shell .k-tab-e2w + .k-tab-e2w {
+  margin-inline-start: calc(var(--k-br, 12px) * -2);
+}
+
+.k-tab.k-tab-br.k-tab-br-shell .k-tab-e2w.k-tab-e2ws {
+  z-index: 1000;
+}
+
+.k-tab.k-tab-br.k-tab-br-shell .k-tab-e2 {
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  white-space: nowrap;
+  overflow: visible;
+  z-index: 1;
+}
+
+.k-tab.k-tab-br.k-tab-br-shell .k-tab-e2:focus-visible {
+  outline-offset: -4px;
+}
+
+@supports not (clip-path: shape(from top left, hline to 0)) {
+  .k-tab.k-tab-br.k-tab-br-shell .k-tab-e2 {
+    border-start-start-radius: var(--k-br, 12px);
+    border-start-end-radius: var(--k-br, 12px);
+  }
+}
+
+@supports (clip-path: shape(from top left, hline to 0)) {
+  .k-tab.k-tab-br.k-tab-br-shell .k-tab-e2 {
+    @include bridge-shape-curved;
+  }
+
+  .k-tab.k-tab-br.k-tab-br-shell.k-tab-br-lc-flush-all .k-tab-e2 {
+    @include bridge-shape-top-only;
+  }
+
+  .k-tab.k-tab-br.k-tab-br-shell.k-tab-br-lc-flush-start
+    .k-tab-br-list
+    > .k-tab-e2w:first-of-type
+    > .k-tab-e2,
+  .k-tab.k-tab-br.k-tab-br-shell.k-tab-br-lc-flush-both
+    .k-tab-br-list
+    > .k-tab-e2w:first-of-type
+    > .k-tab-e2 {
+    @include bridge-shape-flush-start;
+  }
+
+  .k-tab.k-tab-br.k-tab-br-shell.k-tab-br-lc-flush-end
+    .k-tab-br-list
+    > .k-tab-e2w:last-of-type
+    > .k-tab-e2,
+  .k-tab.k-tab-br.k-tab-br-shell.k-tab-br-lc-flush-both
+    .k-tab-br-list
+    > .k-tab-e2w:last-of-type
+    > .k-tab-e2 {
+    @include bridge-shape-flush-end;
+  }
+}
+
+.k-tab-br-p {
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 640px) {
+  .k-tab.k-tab-br.k-tab-br-shell .k-tab-br-list {
+    margin-inline-start: 0;
+    padding-inline: 4px;
+  }
+}

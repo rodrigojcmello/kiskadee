@@ -15,7 +15,7 @@ type SeparatorState = {
  */
 export function buildTabsChildrenWithSeparators(options: {
   children?: ReactNode;
-  type: 'line' | 'box' | 'segmented' | 'dot';
+  type: 'line' | 'box' | 'segmented' | 'dot' | 'bridge';
   separator: boolean;
   separatorClassName?: string;
   getSeparatorState?: (leftValue: string, rightValue: string) => SeparatorState;

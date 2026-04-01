@@ -9,8 +9,8 @@ import {
 } from '@kiskadee/core';
 import { SEPARATORS } from '../../utils';
 import {
-  DEFAULT_BOX_MODEL_BUILD_POLICY,
-  type ResolvedBoxModelBuildPolicy
+  DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
+  type ResolvedElementStyleEmissionPolicy
 } from '../../web-build-policy';
 
 export const ERROR_NO_MATCHING_SCALE_PROPERTY = 'No matching scale key found.';
@@ -25,7 +25,7 @@ export const ERROR_INVALID_STANDARD_PATTERN =
 export const ERROR_INVALID_KEY_FORMAT = 'Invalid scale key format; missing required delimiters.';
 
 export type TransformScaleKeyToCssOptions = {
-  boxModelPolicy?: ResolvedBoxModelBuildPolicy;
+  styleEmissionPolicy?: ResolvedElementStyleEmissionPolicy;
 };
 
 /**
@@ -168,11 +168,12 @@ export function transformScaleKeyToCss(
     cssValue = `${scaleValue}px`;
   }
 
-  const boxModelPolicy = options?.boxModelPolicy ?? DEFAULT_BOX_MODEL_BUILD_POLICY;
+  const styleEmissionPolicy =
+    options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
   let rule: string;
   if (scaleProperty === 'borderWidth') {
     rule =
-      boxModelPolicy.borderWidthMode === 'var'
+      styleEmissionPolicy.borderWidthEmission === 'mirrored'
         ? `.${className} { --k-bw: ${cssValue}; ${cssProperty}: ${cssValue} }`
         : `.${className} { ${cssProperty}: ${cssValue} }`;
   } else if (
@@ -182,16 +183,18 @@ export function transformScaleKeyToCss(
     scaleProperty === 'borderRadiusSquare'
   ) {
     rule =
-      boxModelPolicy.borderRadiusMode === 'var'
+      styleEmissionPolicy.borderRadiusEmission === 'mirrored'
         ? `.${className} { --k-br: ${cssValue}; ${cssProperty}: ${cssValue} }`
-        : `.${className} { ${cssProperty}: ${cssValue} }`;
+        : styleEmissionPolicy.borderRadiusEmission === 'token'
+          ? `.${className} { --k-br: ${cssValue} }`
+          : `.${className} { ${cssProperty}: ${cssValue} }`;
   } else if (
     scaleProperty === 'paddingTop' ||
     scaleProperty === 'paddingRight' ||
     scaleProperty === 'paddingBottom' ||
     scaleProperty === 'paddingLeft'
   ) {
-    if (boxModelPolicy.paddingMode === 'compensated') {
+    if (styleEmissionPolicy.paddingEmission === 'compensated') {
       const paddingVar =
         scaleProperty === 'paddingTop'
           ? '--k-pt'

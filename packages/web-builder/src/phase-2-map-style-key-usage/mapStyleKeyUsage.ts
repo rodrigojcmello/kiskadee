@@ -1,5 +1,5 @@
 import type { ComponentStyleKeyMap, StyleKey } from '@kiskadee/core';
-import type { WebBuildPolicy } from '../web-build-policy';
+import type { WebStyleEmissionPolicy } from '../web-build-policy';
 import { resolveWebStyleKeyIdentity } from '../web-style-key-identity';
 
 export type StyleKeyUsageMap = Record<string, number>;
@@ -19,7 +19,7 @@ function isElementMap(value: unknown): value is Record<string, any> {
 export function mapStyleKeyUsage(
   styleKeysByComponent: ComponentStyleKeyMap,
   options?: {
-    webBuildPolicy?: WebBuildPolicy;
+    webStyleEmissionPolicy?: WebStyleEmissionPolicy;
   }
 ): StyleKeyUsageMap {
   const usage: StyleKeyUsageMap = {};
@@ -32,7 +32,7 @@ export function mapStyleKeyUsage(
     for (const [elementName, element] of Object.entries(elements)) {
       if (!element) continue;
       const resolveKey = (key: StyleKey) =>
-        resolveWebStyleKeyIdentity(key, options?.webBuildPolicy, componentName, elementName);
+        resolveWebStyleKeyIdentity(key, options?.webStyleEmissionPolicy, componentName, elementName);
 
       // 1) decorations
       if (Array.isArray(element.decorations)) {

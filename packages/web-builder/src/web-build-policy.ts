@@ -1,60 +1,81 @@
-export type BorderWidthMode = 'raw' | 'var';
-export type BorderRadiusMode = 'raw' | 'var';
-export type PaddingMode = 'raw' | 'compensated';
+export type BorderWidthEmission = 'direct' | 'mirrored';
+export type BorderRadiusEmission = 'direct' | 'mirrored' | 'token';
+export type PaddingEmission = 'direct' | 'compensated';
+export type ShadowEmission = 'direct' | 'token';
 
-export type BoxModelBuildPolicy = {
-  borderWidthMode?: BorderWidthMode;
-  borderRadiusMode?: BorderRadiusMode;
-  paddingMode?: PaddingMode;
+export type ElementStyleEmissionPolicy = {
+  borderWidthEmission?: BorderWidthEmission;
+  borderRadiusEmission?: BorderRadiusEmission;
+  paddingEmission?: PaddingEmission;
+  shadowEmission?: ShadowEmission;
 };
 
-export type ResolvedBoxModelBuildPolicy = {
-  borderWidthMode: BorderWidthMode;
-  borderRadiusMode: BorderRadiusMode;
-  paddingMode: PaddingMode;
+export type ResolvedElementStyleEmissionPolicy = {
+  borderWidthEmission: BorderWidthEmission;
+  borderRadiusEmission: BorderRadiusEmission;
+  paddingEmission: PaddingEmission;
+  shadowEmission: ShadowEmission;
 };
 
-export type ComponentWebBuildPolicy = {
-  elements?: Record<string, BoxModelBuildPolicy>;
+export type ComponentStyleEmissionPolicy = {
+  elements?: Record<string, ElementStyleEmissionPolicy>;
 };
 
-export type WebBuildPolicy = {
-  components?: Record<string, ComponentWebBuildPolicy>;
+export type WebStyleEmissionPolicy = {
+  components?: Record<string, ComponentStyleEmissionPolicy>;
 };
 
-export const DEFAULT_WEB_BUILD_POLICY: WebBuildPolicy = {
+export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
   components: {
     button: {
       elements: {
         e1: {
-          borderRadiusMode: 'var',
-          borderWidthMode: 'var',
-          paddingMode: 'compensated'
+          borderRadiusEmission: 'mirrored',
+          borderWidthEmission: 'mirrored',
+          paddingEmission: 'compensated'
+        }
+      }
+    },
+    tabs: {
+      elements: {
+        e2: {
+          borderRadiusEmission: 'token',
+          shadowEmission: 'token'
+        },
+        e5: {
+          borderRadiusEmission: 'token',
+          shadowEmission: 'token'
+        },
+        e7: {
+          borderRadiusEmission: 'direct'
         }
       }
     }
   }
 };
 
-export const DEFAULT_BOX_MODEL_BUILD_POLICY: ResolvedBoxModelBuildPolicy = {
-  borderRadiusMode: 'raw',
-  borderWidthMode: 'raw',
-  paddingMode: 'raw'
+export const DEFAULT_ELEMENT_STYLE_EMISSION_POLICY: ResolvedElementStyleEmissionPolicy = {
+  borderRadiusEmission: 'mirrored',
+  borderWidthEmission: 'direct',
+  paddingEmission: 'direct',
+  shadowEmission: 'direct'
 };
 
-export function resolveBoxModelBuildPolicy(
-  webBuildPolicy: WebBuildPolicy | undefined,
+export function resolveElementStyleEmissionPolicy(
+  webStyleEmissionPolicy: WebStyleEmissionPolicy | undefined,
   componentName: string,
   elementName: string
-): ResolvedBoxModelBuildPolicy {
-  const elementPolicy = webBuildPolicy?.components?.[componentName]?.elements?.[elementName];
+): ResolvedElementStyleEmissionPolicy {
+  const elementPolicy = webStyleEmissionPolicy?.components?.[componentName]?.elements?.[elementName];
 
   return {
-    borderRadiusMode:
-      elementPolicy?.borderRadiusMode ?? DEFAULT_BOX_MODEL_BUILD_POLICY.borderRadiusMode,
-    borderWidthMode:
-      elementPolicy?.borderWidthMode ?? DEFAULT_BOX_MODEL_BUILD_POLICY.borderWidthMode,
-    paddingMode:
-      elementPolicy?.paddingMode ?? DEFAULT_BOX_MODEL_BUILD_POLICY.paddingMode
+    borderRadiusEmission:
+      elementPolicy?.borderRadiusEmission ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.borderRadiusEmission,
+    borderWidthEmission:
+      elementPolicy?.borderWidthEmission ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.borderWidthEmission,
+    paddingEmission:
+      elementPolicy?.paddingEmission ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.paddingEmission,
+    shadowEmission:
+      elementPolicy?.shadowEmission ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.shadowEmission
   };
 }

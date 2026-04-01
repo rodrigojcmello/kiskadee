@@ -8,6 +8,34 @@ import {
 const className = 'abc';
 
 describe('transformBorderRadiusKeyToCss', () => {
+  describe('emission policy', () => {
+    it('emits token-only border-radius declarations when configured', () => {
+      const out = transformBorderRadiusKeyToCss('borderRadiusRounded__20', className, false, {
+        styleEmissionPolicy: {
+          borderRadiusEmission: 'token',
+          borderWidthEmission: 'direct',
+          paddingEmission: 'direct',
+          shadowEmission: 'direct'
+        }
+      });
+
+      expect(out).toEqual('.abc { --k-br: 20px }');
+    });
+
+    it('keeps mirrored border-radius declarations when configured', () => {
+      const out = transformBorderRadiusKeyToCss('borderRadiusRounded__20', className, false, {
+        styleEmissionPolicy: {
+          borderRadiusEmission: 'mirrored',
+          borderWidthEmission: 'direct',
+          paddingEmission: 'direct',
+          shadowEmission: 'direct'
+        }
+      });
+
+      expect(out).toEqual('.abc { --k-br: 20px; border-radius: 20px }');
+    });
+  });
+
   // -----------------------------------------------------------------------------------------------
   // responsive (++ styleKeys)
   // -----------------------------------------------------------------------------------------------

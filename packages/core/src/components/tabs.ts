@@ -2,11 +2,15 @@ import type { SegmentName } from '../types/colors/colors.types';
 import type {
   TabsBarElementStyleFromSchema,
   TabsBoxBarElementStyleFromSchema,
+  TabsBridgeBarElementStyleFromSchema,
+  TabsBridgeIndicatorElementStyleFromSchema,
+  TabsBridgeTriggerElementStyleFromSchema,
   TabsEdgeBarElementStyleFromSchema,
   TabsIconElementStyleFromSchema,
   TabsIndicatorElementStyleFromSchema,
   TabsLabelElementStyleFromSchema,
   TabsOptionsFromSchema,
+  TabsPanelElementStyleFromSchema,
   TabsSegmentedBarElementStyleFromSchema,
   TabsSegmentedIndicatorElementStyleFromSchema,
   TabsSegmentedTriggerElementStyleFromSchema,
@@ -20,29 +24,39 @@ import type {
  * - e2: tab
  * - e3: label
  * - e4: icon
- * - e5: indicator
+ * - e5: indicator / selected shell
  * - e6: separator
+ * - e7: panel
  */
-export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
-export type TabsType = 'line' | 'box' | 'segmented' | 'dot';
+export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6' | 'e7';
+export type TabsType = 'line' | 'box' | 'segmented' | 'dot' | 'bridge';
 export type TabsIndicatorPosition = 'top' | 'bottom';
 export type TabsIndicatorWidthMode = 'tab' | 'fixed' | 'content';
 export type TabsTabWidthMode = 'auto' | 'fixed';
+export type TabsBridgeLowerCurveMode =
+  | 'curved'
+  | 'flush-start'
+  | 'flush-end'
+  | 'flush-both'
+  | 'flush-all';
 export const tabsIndicatorVariantsByType = {
   line: ['square', 'rounded', 'roundedClip'],
   box: ['square', 'rounded', 'pill'],
   segmented: ['segmented'],
-  dot: ['dot']
+  dot: ['dot'],
+  bridge: ['bridge']
 } as const;
 export type TabsLineIndicatorVariant = (typeof tabsIndicatorVariantsByType.line)[number];
 export type TabsBoxIndicatorVariant = (typeof tabsIndicatorVariantsByType.box)[number];
 export type TabsSegmentedIndicatorVariant = (typeof tabsIndicatorVariantsByType.segmented)[number];
 export type TabsDotIndicatorVariant = (typeof tabsIndicatorVariantsByType.dot)[number];
+export type TabsBridgeIndicatorVariant = (typeof tabsIndicatorVariantsByType.bridge)[number];
 export type TabsIndicatorVariant =
   | TabsLineIndicatorVariant
   | TabsBoxIndicatorVariant
   | TabsSegmentedIndicatorVariant
-  | TabsDotIndicatorVariant;
+  | TabsDotIndicatorVariant
+  | TabsBridgeIndicatorVariant;
 
 export type TabsOptions = TabsOptionsFromSchema;
 
@@ -101,7 +115,7 @@ export type TabsIconElementStyle<TSegmentName extends SegmentName = never> =
   TabsIconElementStyleFromSchema<TSegmentName>;
 
 /**
- * e5 — indicator (line/background/pill)
+ * e5 — indicator / selected shell
  * - boxWidth
  * - boxHeight
  * - margins
@@ -120,12 +134,16 @@ export type TabsIconElementStyle<TSegmentName extends SegmentName = never> =
  * `rounded` / `pill` radius values must come from preset artifacts (JSON/CSS classes).
  * `segmented` keeps its radius in schema artifacts and uses the component layer only to flatten
  * inner corners structurally.
+ * `bridge` reuses this slot as the selected shell that reconnects into the content panel.
  */
 export type TabsIndicatorElementStyle<TSegmentName extends SegmentName = never> =
   TabsIndicatorElementStyleFromSchema<TSegmentName>;
 
 type TabsSegmentedIndicatorElementStyle<TSegmentName extends SegmentName = never> =
   TabsSegmentedIndicatorElementStyleFromSchema<TSegmentName>;
+
+type TabsBridgeIndicatorElementStyle<TSegmentName extends SegmentName = never> =
+  TabsBridgeIndicatorElementStyleFromSchema<TSegmentName>;
 
 /**
  * e6 — separator (between tabs)
@@ -136,6 +154,19 @@ type TabsSegmentedIndicatorElementStyle<TSegmentName extends SegmentName = never
  */
 export type TabsSeparatorElementStyle<TSegmentName extends SegmentName = never> =
   TabsSeparatorElementStyleFromSchema<TSegmentName>;
+
+/**
+ * e7 — panel
+ * - boxColor
+ * - padding
+ * - borderRadius
+ *
+ * NOTE:
+ * `bridge` uses this slot as part of its canonical visual shell, but the slot stays optional so
+ * other types can adopt panel tokens later without another schema expansion.
+ */
+export type TabsPanelElementStyle<TSegmentName extends SegmentName = never> =
+  TabsPanelElementStyleFromSchema<TSegmentName>;
 
 export type TabsElements<TSegmentName extends SegmentName = never> = {
   // e1: bar
@@ -150,6 +181,8 @@ export type TabsElements<TSegmentName extends SegmentName = never> = {
   e5?: TabsIndicatorElementStyle<TSegmentName>;
   // e6: separator
   e6?: TabsSeparatorElementStyle<TSegmentName>;
+  // e7: panel
+  e7?: TabsPanelElementStyle<TSegmentName>;
 };
 
 type TabsLineBarElementStyle<TSegmentName extends SegmentName = never> =
@@ -166,6 +199,21 @@ type TabsSegmentedTriggerElementStyle<TSegmentName extends SegmentName = never> 
 
 type TabsDotBarElementStyle<TSegmentName extends SegmentName = never> =
   TabsEdgeBarElementStyleFromSchema<TSegmentName>;
+
+type TabsBridgeBarElementStyle<TSegmentName extends SegmentName = never> =
+  TabsBridgeBarElementStyleFromSchema<TSegmentName>;
+
+type TabsBridgeTriggerElementStyle<TSegmentName extends SegmentName = never> =
+  TabsBridgeTriggerElementStyleFromSchema<TSegmentName>;
+
+/**
+ * Future review
+ *     Bridge currently reuses the same rounded border-radius token for both the upper corners
+ *     and the lower bridge shoulders.
+ * Why
+ *     This keeps V1 inside the current schema vocabulary. If real design-system demand appears,
+ *     we can later evaluate a runtime alias to a different existing radius token.
+ */
 
 export type TabsLineElements<TSegmentName extends SegmentName = never> = Omit<
   TabsElements<TSegmentName>,
@@ -203,6 +251,18 @@ export type TabsDotElements<TSegmentName extends SegmentName = never> = Omit<
   e1?: TabsDotBarElementStyle<TSegmentName>;
 };
 
+export type TabsBridgeElements<TSegmentName extends SegmentName = never> = Omit<
+  TabsElements<TSegmentName>,
+  'e1' | 'e2' | 'e5' | 'e6'
+> & {
+  // `bridge` bars act as the overlap/scroller shell and keep a rounded-only contract.
+  e1?: TabsBridgeBarElementStyle<TSegmentName>;
+  // `bridge` triggers keep a rounded-only radius contract that feeds the lower curve geometry.
+  e2?: TabsBridgeTriggerElementStyle<TSegmentName>;
+  // `bridge` selected shell reuses the indicator slot but keeps a rounded-only contract.
+  e5?: TabsBridgeIndicatorElementStyle<TSegmentName>;
+};
+
 export type TabsTypeConfig<
   TSegmentName extends SegmentName = never,
   TElements extends TabsElements<TSegmentName> = TabsElements<TSegmentName>
@@ -231,10 +291,16 @@ export type TabsDotTypeConfig<TSegmentName extends SegmentName = never> = TabsTy
   TabsDotElements<TSegmentName>
 >;
 
+export type TabsBridgeTypeConfig<TSegmentName extends SegmentName = never> = TabsTypeConfig<
+  TSegmentName,
+  TabsBridgeElements<TSegmentName>
+>;
+
 export type TabsTypes<TSegmentName extends SegmentName = never> = Partial<{
   line: TabsLineTypeConfig<TSegmentName>;
   box: TabsBoxTypeConfig<TSegmentName>;
   segmented: TabsSegmentedTypeConfig<TSegmentName>;
   dot: TabsDotTypeConfig<TSegmentName>;
+  bridge: TabsBridgeTypeConfig<TSegmentName>;
 }>;
 export { validateTabsComponentContract } from './tabs.zod';

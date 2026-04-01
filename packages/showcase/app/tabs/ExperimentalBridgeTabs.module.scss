@@ -1,0 +1,184 @@
+.section {
+  margin-top: 40px;
+}
+
+.demo {
+  padding: 0;
+}
+
+.tabs {
+  --tab-girth: 12px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.list {
+  display: flex;
+  margin: 0;
+  margin-inline-start: 1rem;
+  overflow-x: auto;
+  overflow-y: clip;
+  padding: 8px 8px 0;
+  scrollbar-width: thin;
+}
+
+.item {
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.2));
+  flex: 0 0 auto;
+  position: relative;
+
+  & + .item {
+    @supports (clip-path: shape(from top left, hline to 0)) {
+      margin-inline-start: calc(var(--tab-girth) * -2);
+    }
+  }
+}
+
+.activeItem {
+  z-index: 3;
+}
+
+.tab {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #ffa726;
+  border: 0;
+  color: #3c1800;
+  cursor: pointer;
+  display: inline-block;
+  font: inherit;
+  font-size: clamp(1rem, 0.95rem + 1vw, 1.45rem);
+  font-weight: 800;
+  padding: 10px 32px;
+  position: relative;
+  text-decoration: none;
+  transition: background-color 0.14s ease,
+    color 0.14s ease;
+  white-space: nowrap;
+  z-index: 1;
+
+  @supports not (clip-path: shape(from top left, hline to 0)) {
+    border-start-end-radius: var(--tab-girth);
+    border-start-start-radius: var(--tab-girth);
+    padding-inline: 16px;
+  }
+
+  @supports (clip-path: shape(from top left, hline to 0)) {
+    clip-path: shape(
+      from bottom left,
+      curve to var(--tab-girth) calc(100% - var(--tab-girth)) with var(--tab-girth) 100%,
+      vline to var(--tab-girth),
+      curve to calc(var(--tab-girth) * 2) 0 with var(--tab-girth) 0,
+      hline to calc(100% - calc(var(--tab-girth) * 2)),
+      curve to calc(100% - var(--tab-girth)) var(--tab-girth) with calc(100% - var(--tab-girth)) 0,
+      vline to calc(100% - var(--tab-girth)),
+      curve to 100% 100% with calc(100% - var(--tab-girth)) 100%
+    );
+  }
+
+  &:hover {
+    background: #ffb84d;
+  }
+
+  &[aria-selected='true'] {
+    background: #fffdf8;
+    color: #111111;
+  }
+
+  &[aria-selected='true']:hover {
+    background: #fff7e8;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(17, 17, 17, 0.55);
+    outline-offset: -4px;
+  }
+}
+
+.content {
+  background: #fffdf8;
+  border-radius: 11px 18px 18px 18px;
+  box-shadow: 0 5px 4px rgba(0, 0, 0, 0.2);
+  color: #111111;
+  min-height: 220px;
+  padding: clamp(1.25rem, 2vw, 2rem);
+  position: relative;
+  z-index: 2;
+}
+
+.panel {
+  h3 {
+    font-size: clamp(1.4rem, 1.15rem + 1vw, 2rem);
+    margin: 0 0 0.75rem;
+  }
+
+  p {
+    line-height: 1.6;
+    margin: 0;
+    max-width: 70ch;
+  }
+}
+
+.meta {
+  color: rgba(17, 17, 17, 0.58);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+}
+
+.featureCard {
+  background: linear-gradient(135deg, #fff1ca 0%, #ffd487 100%);
+  border: 1px solid rgba(60, 24, 0, 0.1);
+  border-radius: 18px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  margin-top: 1.25rem;
+  max-width: 32rem;
+  padding: 1rem 1.1rem;
+
+  strong {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+    margin: 0;
+  }
+}
+
+.featureBadge {
+  background: rgba(255, 167, 38, 0.22);
+  border-radius: 999px;
+  color: #8f4d00;
+  display: inline-flex;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+  padding: 0.3rem 0.55rem;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .demo {
+    padding: 0;
+  }
+
+  .list {
+    margin-inline-start: 0;
+    padding-inline: 4px;
+  }
+
+  .tab {
+    padding-inline: 16px;
+  }
+
+  .content {
+    border-radius: 14px;
+    min-height: 200px;
+  }
+}

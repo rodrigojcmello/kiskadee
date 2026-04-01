@@ -78,7 +78,8 @@ export function useResolvedTabsLineRootState({
     emphasis: baseState.emphasis,
     radiusMode: baseState.resolvedRadiusMode,
     type: 'line',
-    indicatorPosition: resolvedIndicator.position
+    indicatorPosition: resolvedIndicator.position,
+    lowerCurveMode: 'curved'
   });
   const separatorClassName = resolveSeparatorClassName({
     elements: baseState.elements,
@@ -92,6 +93,7 @@ export function useResolvedTabsLineRootState({
     () => ({
       ...baseState,
       resolvedType: 'line' as const,
+      resolvedLowerCurveMode: 'curved' as const,
       listClassName,
       separatorClassName,
       resolvedIndicator

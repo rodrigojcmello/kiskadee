@@ -3,6 +3,7 @@ import type {
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
+  TabsBridgeLowerCurveMode,
   TabsBoxIndicatorVariant,
   TabsIndicatorPosition,
   TabsIndicatorVariant,
@@ -24,7 +25,7 @@ import type { HTMLAttributes, ReactNode, RefObject } from 'react';
 // Public API
 // ============================================
 
-export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
+export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6' | 'e7';
 
 export type TabsClassNames = Partial<Record<TabsElementName, string>>;
 
@@ -75,6 +76,14 @@ export type TabsDotIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsInd
     widthMode?: never;
   };
 
+export type TabsBridgeIndicatorConfig = {
+  variant?: never;
+  motion?: never;
+  motionStyle?: never;
+  position?: never;
+  widthMode?: never;
+};
+
 export type TabsSpringPreset = 'snappy' | 'gentle' | 'debugSlow';
 
 export type TabsSpringConfig = Partial<{
@@ -119,11 +128,18 @@ export type TabsRootDotProps = TabsRootBaseProps & {
   indicator?: TabsDotIndicatorConfig;
 };
 
+export type TabsRootBridgeProps = TabsRootBaseProps & {
+  type: 'bridge';
+  indicator?: TabsBridgeIndicatorConfig;
+  lowerCurveMode?: TabsBridgeLowerCurveMode;
+};
+
 export type TabsRootProps =
   | TabsRootLineProps
   | TabsRootBoxProps
   | TabsRootSegmentedProps
-  | TabsRootDotProps;
+  | TabsRootDotProps
+  | TabsRootBridgeProps;
 
 export type TabsLineRootProps = Omit<TabsRootLineProps, 'type'>;
 
@@ -132,6 +148,8 @@ export type TabsBoxRootProps = Omit<TabsRootBoxProps, 'type'>;
 export type TabsSegmentedRootProps = Omit<TabsRootSegmentedProps, 'type'>;
 
 export type TabsDotRootProps = Omit<TabsRootDotProps, 'type'>;
+
+export type TabsBridgeRootProps = Omit<TabsRootBridgeProps, 'type'>;
 
 export type TabsIndicatorConfig = TabsRootProps['indicator'];
 
@@ -174,6 +192,7 @@ export type TabsVisualContextValue<TMotion extends TabsIndicatorMotion = TabsInd
   radiusMode: RadiusMode;
   barRef: RefObject<HTMLDivElement | null>;
   indicator: TabsResolvedIndicator<TMotion>;
+  lowerCurveMode: TabsBridgeLowerCurveMode;
   indicatorTransition?: Record<string, unknown>;
   separator: boolean;
   listClassName: string | undefined;

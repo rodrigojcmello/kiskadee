@@ -19,7 +19,7 @@ import { persistBuildArtifacts } from './phase-6-persist-build-artifacts/persist
 import { publishMetadata } from './phase-7-publish-metadata/publishMetadata';
 import { writeExtraArtifacts } from './phase-8-write-extra-artifacts/writeExtraArtifacts';
 import { loadPresetsToBuild } from './utils/loadPresetsToBuild';
-import { DEFAULT_WEB_BUILD_POLICY } from './web-build-policy';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from './web-build-policy';
 
 // Feature flag simples para controlar o uso de prefixo nos nomes de classes CSS
 // Ajuste para `false` caso queira desativar o prefixo sem alterar o restante do código.
@@ -78,7 +78,7 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
 
     // Phase 2 - Map style key usage
     const styleKeyUsage: StyleKeyUsageMap = mapStyleKeyUsage(styleKeys, {
-      webBuildPolicy: DEFAULT_WEB_BUILD_POLICY
+      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY
     });
     console.log('phase  2', { name: schema.name, styleKeyUsage });
 
@@ -101,7 +101,7 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
     const cssGenerated = await generateCssSplit(styleKeys, shortenCssClassNameMap, {
       forceState: ENABLE_FORCED_INTERACTION_STATES,
       enableSolidBoxColorAsGradient: ENABLE_SOLID_BOX_COLOR_AS_GRADIENT,
-      webBuildPolicy: DEFAULT_WEB_BUILD_POLICY
+      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY
     });
     console.log('phase 4', { name: schema.name, cssGenerated });
 
@@ -111,7 +111,7 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
       shortenCssClassNameMap,
       toneMetadataByPalette,
       {
-        webBuildPolicy: DEFAULT_WEB_BUILD_POLICY
+        webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY
       }
     );
     console.log('phrase 5', { name: schema.name, classNamesMapSplit });

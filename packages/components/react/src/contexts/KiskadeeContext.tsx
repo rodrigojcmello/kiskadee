@@ -2,6 +2,7 @@ import type {
   ComponentClassNameMapJSON,
   RadiusMode,
   RippleEffectSchema,
+  TabsBridgeLowerCurveMode,
   TabsType,
   TabsIndicatorVariant,
   TabsIndicatorPosition,
@@ -36,6 +37,7 @@ export type KiskadeeContextValue = {
           indicatorWidthMode?: TabsIndicatorWidthMode;
           tabWidthMode?: TabsTabWidthMode;
           separator?: boolean;
+          lowerCurveMode?: TabsBridgeLowerCurveMode;
           // Legacy aliases kept only for runtime fallback with stale artifacts.
           variant?: TabsType;
           indicatorShape?: TabsIndicatorVariant;

@@ -61,7 +61,8 @@ export function useResolvedTabsDotRootState({
     emphasis: baseState.emphasis,
     radiusMode: baseState.resolvedRadiusMode,
     type: 'dot',
-    indicatorPosition: resolvedIndicator.position
+    indicatorPosition: resolvedIndicator.position,
+    lowerCurveMode: 'curved'
   });
   const separatorClassName = resolveSeparatorClassName({
     elements: baseState.elements,
@@ -75,6 +76,7 @@ export function useResolvedTabsDotRootState({
     () => ({
       ...baseState,
       resolvedType: 'dot' as const,
+      resolvedLowerCurveMode: 'curved' as const,
       listClassName,
       separatorClassName,
       resolvedIndicator

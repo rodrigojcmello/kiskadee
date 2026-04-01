@@ -15,12 +15,15 @@ import {
   generateCssRuleFromStyleKey
 } from './generateCss';
 import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
-import { resolveBoxModelBuildPolicy, type WebBuildPolicy } from '../web-build-policy';
+import {
+  resolveElementStyleEmissionPolicy,
+  type WebStyleEmissionPolicy
+} from '../web-build-policy';
 import { resolveWebStyleKeyIdentity } from '../web-style-key-identity';
 
 export type GenerateCssSplitOptions = {
   forceState?: boolean;
-  webBuildPolicy?: WebBuildPolicy;
+  webStyleEmissionPolicy?: WebStyleEmissionPolicy;
 } & GenerateCssRuleFromStyleKeyOptions;
 
 export type SplitCssBundles = {
@@ -80,15 +83,15 @@ export async function generateCssSplit(
   const consumeElements = (componentName: string, elements: Record<string, any>) => {
     for (const elementName in elements) {
       const el = elements[elementName];
-      const boxModelPolicy = resolveBoxModelBuildPolicy(
-        options?.webBuildPolicy,
+      const styleEmissionPolicy = resolveElementStyleEmissionPolicy(
+        options?.webStyleEmissionPolicy,
         componentName,
         elementName
       );
       const resolveClassName = (key: string) => {
         const identity = resolveWebStyleKeyIdentity(
           key,
-          options?.webBuildPolicy,
+          options?.webStyleEmissionPolicy,
           componentName,
           elementName
         );
@@ -101,7 +104,7 @@ export async function generateCssSplit(
           const cn = resolveClassName(key);
           const rule = generateCssRuleFromStyleKey(key, cn, forceState, {
             ...options,
-            boxModelPolicy
+            styleEmissionPolicy
           });
           if (rule && rule.trim() !== '') coreRules.add(rule);
         }
@@ -115,7 +118,7 @@ export async function generateCssSplit(
             const cn = resolveClassName(key);
             const rule = generateCssRuleFromStyleKey(key, cn, forceState, {
               ...options,
-              boxModelPolicy
+              styleEmissionPolicy
             });
             if (rule && rule.trim() !== '') coreRules.add(rule);
           }
@@ -136,7 +139,7 @@ export async function generateCssSplit(
               const cn = resolveClassName(key);
               const rule = generateCssRuleFromStyleKey(key, cn, forceState, {
                 ...options,
-                boxModelPolicy
+                styleEmissionPolicy
               });
               if (rule && rule.trim() !== '') coreRules.add(rule);
             }
@@ -155,7 +158,7 @@ export async function generateCssSplit(
             const cn = resolveClassName(key);
             const rule = generateCssRuleFromStyleKey(key, cn, forceState, {
               ...options,
-              boxModelPolicy
+              styleEmissionPolicy
             });
             if (rule && rule.trim() !== '') {
               if (isComplexSelector(rule)) {

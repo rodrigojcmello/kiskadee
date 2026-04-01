@@ -86,6 +86,36 @@ export function resolveEffectClasses(element: TabsClassesMap['e1'] | undefined):
 
 /**
  * What
+ *     Resolves only the shadow effect class for one element, including the shadow activator.
+ * Why
+ *     Bridge projects tab shadow from an outer wrapper, so shadow needs to be movable
+ *     independently from other effect buckets like ripple.
+ */
+export function resolveShadowEffectClassName(
+  element: TabsClassesMap['e1'] | undefined
+): string {
+  return joinClassNames(element?.e?.h, element?.e?.h ? cn.shadow : '') ?? '';
+}
+
+/**
+ * What
+ *     Resolves every non-shadow effect class for one element.
+ * Why
+ *     Some components need to project shadow on a different DOM node while keeping the
+ *     remaining effects on the interactive element itself.
+ */
+export function resolveNonShadowEffectClasses(
+  element: TabsClassesMap['e1'] | undefined
+): string {
+  if (!element?.e) return '';
+  return Object.entries(element.e)
+    .filter(([bucket, value]) => bucket !== 'h' && typeof value === 'string' && value.length > 0)
+    .map(([, value]) => value)
+    .join(' ');
+}
+
+/**
+ * What
  *     Builds the base className for one schema element from its default, color, scale,
  *     effect, and selected-state classes.
  * Why
@@ -100,6 +130,7 @@ export function resolveElementClassName(
     intent: string;
     emphasis: TabsVisualContextValue['emphasis'];
     selected?: boolean;
+    includeEffects?: boolean;
   }
 ): string {
   if (!element) return '';
@@ -111,7 +142,8 @@ export function resolveElementClassName(
       resolveIntentClasses(element, options.intent, options.emphasis),
       element.s?.all,
       element.s?.[scaleKey],
-      resolveEffectClasses(element),
+      options.includeEffects === false ? '' : resolveEffectClasses(element),
+      options.includeEffects === false || !element.e?.h ? '' : cn.shadow,
       options.selected ? element.l : ''
     ) ?? ''
   );
@@ -256,6 +288,10 @@ export function resolveIndicatorVariant(
     return 'segmented';
   }
 
+  if (type === 'bridge') {
+    return 'bridge';
+  }
+
   return candidate === 'rounded' || candidate === 'pill' ? candidate : 'square';
 }
 
@@ -310,6 +346,7 @@ export function resolveListClassName(options: {
   radiusMode: RadiusMode;
   type: TabsVisualContextValue['type'];
   indicatorPosition: TabsResolvedIndicator['position'];
+  lowerCurveMode: TabsVisualContextValue['lowerCurveMode'];
 }): string | undefined {
   return joinClassNames(
     'k-tab',
@@ -320,7 +357,10 @@ export function resolveListClassName(options: {
         ? 'k-tab-s'
         : options.type === 'dot'
           ? 'k-tab-d'
+          : options.type === 'bridge'
+            ? 'k-tab-br'
           : 'k-tab-l',
+    options.type === 'bridge' ? `k-tab-br-lc-${options.lowerCurveMode}` : '',
     options.type === 'line' || options.type === 'dot'
       ? (options.indicatorPosition === 'top' ? 'k-tab-e1b' : 'k-tab-e1a')
       : '',
@@ -377,19 +417,99 @@ export function resolveTriggerClassName(options: {
   radiusMode: RadiusMode;
   selected: boolean;
   className?: string;
+  includeEffects?: boolean;
 }): string | undefined {
   return joinClassNames(
     resolveElementClassName(options.elements.e2, {
       scale: options.scale,
       intent: options.intent,
       emphasis: options.emphasis,
-      selected: options.selected
+      selected: options.selected,
+      includeEffects: options.includeEffects
     }),
     options.tabWidthMode === 'fixed'
       ? resolveWidthClassName(options.elements.e2, options.scale)
       : '',
     resolveRadiusClassName(options.elements.e2, options.scale, options.radiusMode),
     options.classNames.e2,
+    'k-tab-e2',
+    options.tabWidthMode === 'fixed' ? 'k-tab-e2a' : '',
+    'k-state',
+    cn.interactive,
+    cn.activator,
+    options.selected ? cn.selected : '',
+    options.className
+  );
+}
+
+/**
+ * What
+ *     Builds the bridge wrapper className that carries overlap geometry and selected stacking.
+ * Why
+ *     Bridge tabs need one outer layer separate from the semantic trigger so overlap and z-index
+ *     stay independent from the clipped interactive surface.
+ */
+export function resolveBridgeItemClassName(options: {
+  elements: TabsClassesMap;
+  classNames: TabsClassNames;
+  scale: string;
+  intent: string;
+  emphasis: TabsVisualContextValue['emphasis'];
+  radiusMode: RadiusMode;
+  selected: boolean;
+  className?: string;
+}): string | undefined {
+  const shadowElement = options.selected ? (options.elements.e5 ?? options.elements.e2) : options.elements.e2;
+  return joinClassNames(
+    resolveShadowEffectClassName(shadowElement),
+    'k-tab-e2w',
+    options.selected ? 'k-tab-e2ws' : '',
+    options.className
+  );
+}
+
+/**
+ * What
+ *     Builds the final bridge trigger className using the base tab slot plus the selected
+ *     bridge-shell color, radius, and effect overrides when active.
+ * Why
+ *     Bridge keeps overlap on the wrapper, but the visible shell still lives on the clipped
+ *     semantic trigger, so selected-state surface styles must swap from `e2` to `e5`.
+ */
+export function resolveBridgeTriggerClassName(options: {
+  elements: TabsClassesMap;
+  classNames: TabsClassNames;
+  scale: string;
+  intent: string;
+  emphasis: TabsVisualContextValue['emphasis'];
+  tabWidthMode: TabsVisualContextValue['tabWidthMode'];
+  radiusMode: RadiusMode;
+  selected: boolean;
+  className?: string;
+}): string | undefined {
+  const scaleKey = normalizeScaleKey(options.scale);
+  const triggerElement = options.elements.e2;
+  const selectedShellElement = options.elements.e5;
+  const activeEffectElement = options.selected ? (selectedShellElement ?? triggerElement) : triggerElement;
+  const activeColorClassName = options.selected
+    ? resolveIntentClasses(selectedShellElement, options.intent, options.emphasis)
+    : resolveIntentClasses(triggerElement, options.intent, options.emphasis);
+  const activeRadiusClassName = resolveRadiusClassName(
+    options.selected ? (selectedShellElement ?? triggerElement) : triggerElement,
+    options.scale,
+    options.radiusMode
+  );
+
+  return joinClassNames(
+    triggerElement?.d,
+    activeColorClassName,
+    triggerElement?.s?.all,
+    triggerElement?.s?.[scaleKey],
+    resolveNonShadowEffectClasses(activeEffectElement),
+    options.tabWidthMode === 'fixed' ? resolveWidthClassName(triggerElement, options.scale) : '',
+    activeRadiusClassName,
+    options.classNames.e2,
+    options.selected ? options.classNames.e5 : '',
     'k-tab-e2',
     options.tabWidthMode === 'fixed' ? 'k-tab-e2a' : '',
     'k-state',
@@ -459,6 +579,35 @@ export function resolveIconClassName(options: {
     'k-tab-e4',
     cn.activator,
     options.selected ? cn.selected : '',
+    options.className
+  );
+}
+
+/**
+ * What
+ *     Builds the final content-panel className for panel-aware Tabs variants.
+ * Why
+ *     Bridge models the content shell in schema as `e7`, so the shared content part needs one
+ *     resolver that can attach optional panel classes without affecting other types.
+ */
+export function resolvePanelClassName(options: {
+  elements: TabsClassesMap;
+  classNames: TabsClassNames;
+  scale: string;
+  intent: string;
+  emphasis: TabsVisualContextValue['emphasis'];
+  radiusMode: RadiusMode;
+  className?: string;
+}): string | undefined {
+  return joinClassNames(
+    resolveElementClassName(options.elements.e7, {
+      scale: options.scale,
+      intent: options.intent,
+      emphasis: options.emphasis
+    }),
+    resolveRadiusClassName(options.elements.e7, options.scale, options.radiusMode),
+    options.classNames.e7,
+    'k-tab-p',
     options.className
   );
 }

@@ -7,8 +7,8 @@ import {
   stateActivator
 } from '@kiskadee/core';
 import {
-  DEFAULT_BOX_MODEL_BUILD_POLICY,
-  type ResolvedBoxModelBuildPolicy
+  DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
+  type ResolvedElementStyleEmissionPolicy
 } from '../../../web-build-policy';
 
 export const ERROR_INVALID_NUMERIC_KEY_FORMAT =
@@ -17,7 +17,7 @@ export const ERROR_REF_REQUIRE_STATE_NUMERIC =
   'Invalid key format. Reference "==" requires a preceding non-rest interaction state.';
 
 export type TransformBorderRadiusKeyToCssOptions = {
-  boxModelPolicy?: ResolvedBoxModelBuildPolicy;
+  styleEmissionPolicy?: ResolvedElementStyleEmissionPolicy;
 };
 
 /**
@@ -209,11 +209,14 @@ export function transformBorderRadiusKeyToCss(
   // Assemble the final CSS rule: join selectors by comma and emit border-radius with the parsed px value.
   const selectors = isRef ? buildRefSelectors() : buildInlineSelectors();
   const selector = selectors.join(', ');
-  const boxModelPolicy = options?.boxModelPolicy ?? DEFAULT_BOX_MODEL_BUILD_POLICY;
+  const styleEmissionPolicy =
+    options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
   const declaration =
-    boxModelPolicy.borderRadiusMode === 'var'
+    styleEmissionPolicy.borderRadiusEmission === 'mirrored'
       ? `--k-br: ${px}px; border-radius: ${px}px`
-      : `border-radius: ${px}px`;
+      : styleEmissionPolicy.borderRadiusEmission === 'token'
+        ? `--k-br: ${px}px`
+        : `border-radius: ${px}px`;
   const rule = `${selector} { ${declaration} }`;
   return mediaQuery ? `${mediaQuery} { ${rule} }` : rule;
 }

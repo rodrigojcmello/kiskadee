@@ -1,56 +1,68 @@
 import type { StyleKey } from '@kiskadee/core';
 import {
-  DEFAULT_BOX_MODEL_BUILD_POLICY,
-  type ResolvedBoxModelBuildPolicy,
-  resolveBoxModelBuildPolicy,
-  type WebBuildPolicy
+  type ResolvedElementStyleEmissionPolicy,
+  resolveElementStyleEmissionPolicy,
+  type WebStyleEmissionPolicy
 } from './web-build-policy';
 
 export type WebStyleKeyIdentity = string;
 
-const BOX_MODEL_POLICY_SEPARATOR = '@@wbp:';
+const STYLE_KEY_MODE_SEPARATOR = '@@';
 
-function isBoxModelSensitiveStyleKey(styleKey: string): boolean {
-  return (
-    styleKey.startsWith('borderRadius') ||
-    styleKey.startsWith('borderWidth') ||
+function resolveStyleKeyEmissionMode(
+  styleKey: string,
+  styleEmissionPolicy: ResolvedElementStyleEmissionPolicy
+): 'm' | 't' | 'c' | undefined {
+  if (styleKey.startsWith('shadow')) {
+    return styleEmissionPolicy.shadowEmission === 'token' ? 't' : undefined;
+  }
+
+  if (styleKey.startsWith('borderRadius')) {
+    return styleEmissionPolicy.borderRadiusEmission === 'mirrored'
+      ? 'm'
+      : styleEmissionPolicy.borderRadiusEmission === 'token'
+        ? 't'
+        : undefined;
+  }
+
+  if (styleKey.startsWith('borderWidth')) {
+    return styleEmissionPolicy.borderWidthEmission === 'mirrored' ? 'm' : undefined;
+  }
+
+  if (
     styleKey.startsWith('paddingTop') ||
     styleKey.startsWith('paddingRight') ||
     styleKey.startsWith('paddingBottom') ||
     styleKey.startsWith('paddingLeft')
-  );
-}
+  ) {
+    return styleEmissionPolicy.paddingEmission === 'compensated' ? 'c' : undefined;
+  }
 
-function serializeBoxModelBuildPolicy(policy: ResolvedBoxModelBuildPolicy): string {
-  return `br:${policy.borderRadiusMode};bw:${policy.borderWidthMode};pad:${policy.paddingMode}`;
+  return undefined;
 }
 
 export function buildWebStyleKeyIdentity(
   styleKey: StyleKey,
-  boxModelPolicy: ResolvedBoxModelBuildPolicy
+  styleEmissionPolicy: ResolvedElementStyleEmissionPolicy
 ): WebStyleKeyIdentity {
-  if (!isBoxModelSensitiveStyleKey(styleKey)) {
+  const emissionMode = resolveStyleKeyEmissionMode(styleKey, styleEmissionPolicy);
+  if (!emissionMode) {
     return styleKey;
   }
 
-  const isDefaultPolicy =
-    boxModelPolicy.borderRadiusMode === DEFAULT_BOX_MODEL_BUILD_POLICY.borderRadiusMode &&
-    boxModelPolicy.borderWidthMode === DEFAULT_BOX_MODEL_BUILD_POLICY.borderWidthMode &&
-    boxModelPolicy.paddingMode === DEFAULT_BOX_MODEL_BUILD_POLICY.paddingMode;
-
-  if (isDefaultPolicy) {
-    return styleKey;
-  }
-
-  return `${styleKey}${BOX_MODEL_POLICY_SEPARATOR}${serializeBoxModelBuildPolicy(boxModelPolicy)}`;
+  return `${styleKey}${STYLE_KEY_MODE_SEPARATOR}${emissionMode}`;
 }
 
 export function resolveWebStyleKeyIdentity(
   styleKey: StyleKey,
-  webBuildPolicy: WebBuildPolicy | undefined,
+  webStyleEmissionPolicy: WebStyleEmissionPolicy | undefined,
   componentName: string,
   elementName: string
 ): WebStyleKeyIdentity {
-  const boxModelPolicy = resolveBoxModelBuildPolicy(webBuildPolicy, componentName, elementName);
-  return buildWebStyleKeyIdentity(styleKey, boxModelPolicy);
+  const styleEmissionPolicy = resolveElementStyleEmissionPolicy(
+    webStyleEmissionPolicy,
+    componentName,
+    elementName
+  );
+  return buildWebStyleKeyIdentity(styleKey, styleEmissionPolicy);
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  type TabsBridgeLowerCurveMode,
   type TabsBoxIndicatorVariant,
   type TabsIndicatorPosition,
   type TabsIndicatorWidthMode,
@@ -11,11 +12,13 @@ import {
 import type { TabsIndicatorMotionStyle, TabsSpringPreset } from '@kiskadee/react-components';
 import { useKiskadee } from '@kiskadee/react-components';
 import { TabsBox } from '@kiskadee/react-components/tabs/box';
+import { TabsBridge } from '@kiskadee/react-components/tabs/bridge';
 import { TabsDot } from '@kiskadee/react-components/tabs/dot';
 import { TabsLine } from '@kiskadee/react-components/tabs/line';
 import { TabsSegmented } from '@kiskadee/react-components/tabs/segmented';
 import { useState } from 'react';
 import { Select } from '@/k-components';
+import { ExperimentalBridgeTabs } from './ExperimentalBridgeTabs';
 
 type TabsMode = 'animated' | 'static';
 type TabsSpring = TabsSpringPreset;
@@ -27,7 +30,8 @@ type TabsExampleId =
   | `line:${TabsLineIndicatorVariant}`
   | `box:${TabsBoxIndicatorVariant}`
   | 'segmented'
-  | 'dot';
+  | 'dot'
+  | 'bridge';
 type TabsSelectionByExample = Partial<Record<TabsExampleId, string>>;
 const DEFAULT_TAB_VALUE = 'locations';
 
@@ -79,6 +83,14 @@ const indicatorPositionLabels: Record<TabsIndicatorPosition, string> = {
 const indicatorMotionStyleLabels: Record<TabsIndicatorMotionStyle, string> = {
   direct: 'Direct',
   stretch: 'Stretch'
+};
+
+const bridgeLowerCurveModeLabels: Record<TabsBridgeLowerCurveMode, string> = {
+  curved: 'Curved',
+  'flush-start': 'Flush Start',
+  'flush-end': 'Flush End',
+  'flush-both': 'Flush Both',
+  'flush-all': 'Flush All'
 };
 
 const lineIndicatorVariantTitles: Record<TabsLineIndicatorVariant, string> = {
@@ -294,6 +306,8 @@ export default function ShowcaseTabs() {
   const [indicatorPosition, setIndicatorPosition] = useState<TabsIndicatorPositionControl>('default');
   const [lineWidthMode, setLineWidthMode] = useState<TabsLineWidthModeControl>('default');
   const [tabWidthMode, setTabWidthMode] = useState<TabsTabWidthModeControl>('default');
+  const [bridgeLowerCurveMode, setBridgeLowerCurveMode] =
+    useState<TabsBridgeLowerCurveMode>('curved');
   const [selectedTabsByExample, setSelectedTabsByExample] = useState<TabsSelectionByExample>({});
   const indicatorMotionStyleOptions = [
     { value: 'direct', label: indicatorMotionStyleLabels.direct },
@@ -331,6 +345,14 @@ export default function ShowcaseTabs() {
     { value: 'fixed', label: tabWidthModeLabels.fixed }
   ];
   const tabWidthModeProp = tabWidthMode === 'default' ? undefined : tabWidthMode;
+  const bridgeLowerCurveModeOptions = [
+    { value: 'curved', label: bridgeLowerCurveModeLabels.curved },
+    { value: 'flush-start', label: bridgeLowerCurveModeLabels['flush-start'] },
+    { value: 'flush-end', label: bridgeLowerCurveModeLabels['flush-end'] },
+    { value: 'flush-both', label: bridgeLowerCurveModeLabels['flush-both'] },
+    { value: 'flush-all', label: bridgeLowerCurveModeLabels['flush-all'] }
+  ];
+  const bridgeRuntimeSlots = renderTabsSlots(TabsBridge, 'bridge-runtime');
   const resolveSelectedTabValue = (exampleId: TabsExampleId): string =>
     selectedTabsByExample[exampleId] ?? DEFAULT_TAB_VALUE;
   const handleSelectedTabChange = (exampleId: TabsExampleId, value: string) => {
@@ -479,6 +501,51 @@ export default function ShowcaseTabs() {
         type="segmented"
         indicator={{}}
       />
+
+      <h2 style={{ marginTop: 40 }}>Bridge</h2>
+      <p style={{ marginTop: 0, marginBottom: 20, maxWidth: 720 }}>
+        Bridge tabs are now running through the real schema, builder, runtime, and component flow.
+        The control below overrides the bridge-only `lowerCurveMode` prop so we can inspect each
+        structural mode without removing the prototype yet.
+      </p>
+      <div
+        style={{
+          display: 'flex',
+          gap: 12,
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          marginBottom: 20
+        }}
+      >
+        <Select
+          label="Lower Curve"
+          width={220}
+          options={bridgeLowerCurveModeOptions}
+          value={bridgeLowerCurveMode}
+          onValueChange={(value) => setBridgeLowerCurveMode(value as TabsBridgeLowerCurveMode)}
+        />
+      </div>
+      <div>
+        <h3>Bridge / Runtime</h3>
+        <TabsBridge.Root
+          value={resolveSelectedTabValue('bridge')}
+          onValueChange={(value: string) => handleSelectedTabChange('bridge', value)}
+          activationMode="manual"
+          tabWidthMode={tabWidthModeProp}
+          lowerCurveMode={bridgeLowerCurveMode}
+        >
+          {bridgeRuntimeSlots.tabs}
+          {bridgeRuntimeSlots.contents}
+        </TabsBridge.Root>
+      </div>
+
+      <h2 style={{ marginTop: 40 }}>Bridge Prototype</h2>
+      <p style={{ marginTop: 0, marginBottom: 20, maxWidth: 720 }}>
+        This is a static showcase-only experiment based directly on the reference HTML/CSS. It is
+        intentionally outside the Kiskadee tabs schema/runtime flow until the visual concept is
+        approved.
+      </p>
+      <ExperimentalBridgeTabs />
     </section>
   );
 }

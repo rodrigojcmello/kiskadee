@@ -146,5 +146,9 @@
 
 /* `k-tab-p`: content panel wrapper. */
 .k-tab-p {
-  display: block;
+  min-width: 0;
+}
+
+.k-tab-p[hidden] {
+  display: none !important;
 }

@@ -23,7 +23,14 @@ describe('transformScaleKeyToCss', () => {
       });
 
       it("should convert 'paddingTop__16' into a valid CSS rule", () => {
-        const result = transformScaleKeyToCss('paddingTop__16', breakpoints, 'abc');
+        const result = transformScaleKeyToCss('paddingTop__16', breakpoints, 'abc', {
+          styleEmissionPolicy: {
+            borderRadiusEmission: 'direct',
+            borderWidthEmission: 'direct',
+            paddingEmission: 'compensated',
+            shadowEmission: 'direct'
+          }
+        });
 
         expect(result).toContain('.abc {');
         expect(result).toContain('padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px)))');
@@ -56,6 +63,32 @@ describe('transformScaleKeyToCss', () => {
         expect(result).toContain('.abc {');
         expect(result).toContain('height: 16px');
       });
+
+      it('should emit only --k-br when border-radius emission is token', () => {
+        const result = transformScaleKeyToCss('borderRadius__16', breakpoints, 'abc', {
+          styleEmissionPolicy: {
+            borderRadiusEmission: 'token',
+            borderWidthEmission: 'direct',
+            paddingEmission: 'direct',
+            shadowEmission: 'direct'
+          }
+        });
+
+        expect(result).toBe('.abc { --k-br: 16px }');
+      });
+
+      it('should emit --k-br and border-radius when border-radius emission is mirrored', () => {
+        const result = transformScaleKeyToCss('borderRadius__16', breakpoints, 'abc', {
+          styleEmissionPolicy: {
+            borderRadiusEmission: 'mirrored',
+            borderWidthEmission: 'direct',
+            paddingEmission: 'direct',
+            shadowEmission: 'direct'
+          }
+        });
+
+        expect(result).toBe('.abc { --k-br: 16px; border-radius: 16px }');
+      });
     });
 
     describe('Valid Properties (Size Support)', () => {
@@ -67,7 +100,14 @@ describe('transformScaleKeyToCss', () => {
       });
 
       it("should convert 'paddingRight++s:sm:1__16' into a valid CSS rule", () => {
-        const result = transformScaleKeyToCss('paddingRight++s:sm:1__16', breakpoints, 'abc');
+        const result = transformScaleKeyToCss('paddingRight++s:sm:1__16', breakpoints, 'abc', {
+          styleEmissionPolicy: {
+            borderRadiusEmission: 'direct',
+            borderWidthEmission: 'direct',
+            paddingEmission: 'compensated',
+            shadowEmission: 'direct'
+          }
+        });
 
         expect(result).toContain('.abc {');
         expect(result).toContain('padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px)))');
@@ -107,7 +147,15 @@ describe('transformScaleKeyToCss', () => {
       const result = transformScaleKeyToCss(
         'paddingTop++s:sm:1::bp:lg:1__16',
         breakpoints,
-        'abc'
+        'abc',
+        {
+          styleEmissionPolicy: {
+            borderRadiusEmission: 'direct',
+            borderWidthEmission: 'direct',
+            paddingEmission: 'compensated',
+            shadowEmission: 'direct'
+          }
+        }
       );
 
       const bpValue = breakpoints['bp:lg:1'];

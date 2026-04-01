@@ -45,7 +45,7 @@ const roundedOnlyBorderRadiusScaleSchema = z
 // TODO: Validate Tabs element.effects with type-specific restrictions before merging this feature.
 const elementEffectsSchema = z.custom<ElementEffects>();
 
-const tabsTypeSchema = z.enum(['line', 'box', 'segmented', 'dot']);
+const tabsTypeSchema = z.enum(['line', 'box', 'segmented', 'dot', 'bridge']);
 const tabsIndicatorPositionSchema = z.enum(['top', 'bottom']);
 const tabsIndicatorVariantSchema = z.enum([
   'square',
@@ -53,10 +53,18 @@ const tabsIndicatorVariantSchema = z.enum([
   'roundedClip',
   'dot',
   'pill',
-  'segmented'
+  'segmented',
+  'bridge'
 ]);
 const tabsIndicatorWidthModeSchema = z.enum(['tab', 'fixed', 'content']);
 const tabsTabWidthModeSchema = z.enum(['auto', 'fixed']);
+const tabsBridgeLowerCurveModeSchema = z.enum([
+  'curved',
+  'flush-start',
+  'flush-end',
+  'flush-both',
+  'flush-all'
+]);
 
 type TabsTypeSchemaValue = z.infer<typeof tabsTypeSchema>;
 
@@ -68,6 +76,7 @@ function refineTabsOptions(
     indicatorWidthMode?: z.infer<typeof tabsIndicatorWidthModeSchema>;
     tabWidthMode?: z.infer<typeof tabsTabWidthModeSchema>;
     separator?: boolean;
+    lowerCurveMode?: z.infer<typeof tabsBridgeLowerCurveModeSchema>;
   },
   ctx: z.RefinementCtx,
   expectedType?: TabsTypeSchemaValue
@@ -154,6 +163,50 @@ function refineTabsOptions(
       message: '"segmented" does not support indicatorWidthMode'
     });
   }
+
+  if (
+    resolvedType === 'bridge' &&
+    value.indicatorVariant !== undefined &&
+    value.indicatorVariant !== 'bridge'
+  ) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['indicatorVariant'],
+      message: '"bridge" does not accept alternate variants'
+    });
+  }
+
+  if (resolvedType === 'bridge' && value.indicatorPosition !== undefined) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['indicatorPosition'],
+      message: '"bridge" does not support indicatorPosition'
+    });
+  }
+
+  if (resolvedType === 'bridge' && value.indicatorWidthMode !== undefined) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['indicatorWidthMode'],
+      message: '"bridge" does not support indicatorWidthMode'
+    });
+  }
+
+  if (resolvedType === 'bridge' && value.separator !== undefined) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['separator'],
+      message: '"bridge" does not support separator'
+    });
+  }
+
+  if (resolvedType !== 'bridge' && value.lowerCurveMode !== undefined) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['lowerCurveMode'],
+      message: '"lowerCurveMode" is only supported by "bridge"'
+    });
+  }
 }
 
 function createTabsOptionsSchema(expectedType?: TabsTypeSchemaValue) {
@@ -164,7 +217,8 @@ function createTabsOptionsSchema(expectedType?: TabsTypeSchemaValue) {
       indicatorVariant: tabsIndicatorVariantSchema.optional(),
       indicatorWidthMode: tabsIndicatorWidthModeSchema.optional(),
       tabWidthMode: tabsTabWidthModeSchema.optional(),
-      separator: z.boolean().optional()
+      separator: z.boolean().optional(),
+      lowerCurveMode: tabsBridgeLowerCurveModeSchema.optional()
     })
     .strict()
     .superRefine((value, ctx) => {
@@ -310,6 +364,22 @@ function createTabsSegmentedBarElementStyleSchema<TSegmentName extends SegmentNa
     .strict();
 }
 
+function createTabsBridgeBarElementStyleSchema<TSegmentName extends SegmentName = never>() {
+  return z
+    .object({
+      name: z.string().optional(),
+      scales: createScalesSchemaWithRoundedOnlyBorderRadius([
+        'paddingTop',
+        'paddingRight',
+        'paddingBottom',
+        'paddingLeft'
+      ]).optional(),
+      palettes: createPalettesSchema<TSegmentName, 'boxColor'>(['boxColor']).optional(),
+      effects: elementEffectsSchema.optional()
+    })
+    .strict();
+}
+
 function createTabsBarElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z.union([
     createTabsBoxBarElementStyleSchema<TSegmentName>(),
@@ -335,6 +405,23 @@ function createTabsTriggerElementStyleSchema<TSegmentName extends SegmentName = 
 }
 
 function createTabsSegmentedTriggerElementStyleSchema<TSegmentName extends SegmentName = never>() {
+  return z
+    .object({
+      name: z.string().optional(),
+      scales: createScalesSchemaWithRoundedOnlyBorderRadius([
+        'boxWidth',
+        'paddingTop',
+        'paddingRight',
+        'paddingBottom',
+        'paddingLeft'
+      ]).optional(),
+      palettes: createPalettesSchema<TSegmentName, 'boxColor'>(['boxColor']).optional(),
+      effects: elementEffectsSchema.optional()
+    })
+    .strict();
+}
+
+function createTabsBridgeTriggerElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
       name: z.string().optional(),
@@ -419,6 +506,22 @@ function createTabsSegmentedIndicatorElementStyleSchema<TSegmentName extends Seg
     .strict();
 }
 
+function createTabsBridgeIndicatorElementStyleSchema<TSegmentName extends SegmentName = never>() {
+  return z
+    .object({
+      name: z.string().optional(),
+      scales: createScalesSchemaWithRoundedOnlyBorderRadius([
+        'boxWidth',
+        'boxHeight',
+        'marginTop',
+        'marginBottom'
+      ]).optional(),
+      palettes: createPalettesSchema<TSegmentName, 'boxColor'>(['boxColor']).optional(),
+      effects: elementEffectsSchema.optional()
+    })
+    .strict();
+}
+
 function createTabsSeparatorElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
@@ -437,6 +540,22 @@ function createTabsSeparatorElementStyleSchema<TSegmentName extends SegmentName 
     .strict();
 }
 
+function createTabsPanelElementStyleSchema<TSegmentName extends SegmentName = never>() {
+  return z
+    .object({
+      name: z.string().optional(),
+      scales: createScalesSchemaWithRoundedOnlyBorderRadius([
+        'paddingTop',
+        'paddingRight',
+        'paddingBottom',
+        'paddingLeft'
+      ]).optional(),
+      palettes: createPalettesSchema<TSegmentName, 'boxColor'>(['boxColor']).optional(),
+      effects: elementEffectsSchema.optional()
+    })
+    .strict();
+}
+
 export type TabsOptionsFromSchema = z.input<typeof tabsOptionsSchema>;
 export type TabsBarElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
   ReturnType<typeof createTabsBarElementStyleSchema<TSegmentName>>
@@ -447,12 +566,18 @@ export type TabsEdgeBarElementStyleFromSchema<TSegmentName extends SegmentName =
 export type TabsBoxBarElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
   ReturnType<typeof createTabsBoxBarElementStyleSchema<TSegmentName>>
 >;
+export type TabsBridgeBarElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
+  ReturnType<typeof createTabsBridgeBarElementStyleSchema<TSegmentName>>
+>;
 export type TabsSegmentedBarElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
   ReturnType<typeof createTabsSegmentedBarElementStyleSchema<TSegmentName>>
 >;
 export type TabsTriggerElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
   ReturnType<typeof createTabsTriggerElementStyleSchema<TSegmentName>>
 >;
+export type TabsBridgeTriggerElementStyleFromSchema<
+  TSegmentName extends SegmentName = never
+> = z.input<ReturnType<typeof createTabsBridgeTriggerElementStyleSchema<TSegmentName>>>;
 export type TabsSegmentedTriggerElementStyleFromSchema<
   TSegmentName extends SegmentName = never
 > = z.input<ReturnType<typeof createTabsSegmentedTriggerElementStyleSchema<TSegmentName>>>;
@@ -465,10 +590,15 @@ export type TabsIconElementStyleFromSchema<TSegmentName extends SegmentName = ne
 export type TabsIndicatorElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
   ReturnType<typeof createTabsIndicatorElementStyleSchema<TSegmentName>>
 >;
+export type TabsBridgeIndicatorElementStyleFromSchema<TSegmentName extends SegmentName = never> =
+  z.input<ReturnType<typeof createTabsBridgeIndicatorElementStyleSchema<TSegmentName>>>;
 export type TabsSegmentedIndicatorElementStyleFromSchema<TSegmentName extends SegmentName = never> =
   z.input<ReturnType<typeof createTabsSegmentedIndicatorElementStyleSchema<TSegmentName>>>;
 export type TabsSeparatorElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
   ReturnType<typeof createTabsSeparatorElementStyleSchema<TSegmentName>>
+>;
+export type TabsPanelElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
+  ReturnType<typeof createTabsPanelElementStyleSchema<TSegmentName>>
 >;
 
 function createTabsElementsSchema<TSegmentName extends SegmentName = never>() {
@@ -479,7 +609,8 @@ function createTabsElementsSchema<TSegmentName extends SegmentName = never>() {
       e3: createTabsLabelElementStyleSchema<TSegmentName>().optional(),
       e4: createTabsIconElementStyleSchema<TSegmentName>().optional(),
       e5: createTabsIndicatorElementStyleSchema<TSegmentName>().optional(),
-      e6: createTabsSeparatorElementStyleSchema<TSegmentName>().optional()
+      e6: createTabsSeparatorElementStyleSchema<TSegmentName>().optional(),
+      e7: createTabsPanelElementStyleSchema<TSegmentName>().optional()
     })
     .strict();
 }
@@ -492,7 +623,8 @@ function createTabsLineElementsSchema<TSegmentName extends SegmentName = never>(
       e3: createTabsLabelElementStyleSchema<TSegmentName>().optional(),
       e4: createTabsIconElementStyleSchema<TSegmentName>().optional(),
       e5: createTabsIndicatorElementStyleSchema<TSegmentName>().optional(),
-      e6: createTabsSeparatorElementStyleSchema<TSegmentName>().optional()
+      e6: createTabsSeparatorElementStyleSchema<TSegmentName>().optional(),
+      e7: createTabsPanelElementStyleSchema<TSegmentName>().optional()
     })
     .strict();
 }
@@ -505,7 +637,8 @@ function createTabsBoxElementsSchema<TSegmentName extends SegmentName = never>()
       e3: createTabsLabelElementStyleSchema<TSegmentName>().optional(),
       e4: createTabsIconElementStyleSchema<TSegmentName>().optional(),
       e5: createTabsIndicatorElementStyleSchema<TSegmentName>().optional(),
-      e6: createTabsSeparatorElementStyleSchema<TSegmentName>().optional()
+      e6: createTabsSeparatorElementStyleSchema<TSegmentName>().optional(),
+      e7: createTabsPanelElementStyleSchema<TSegmentName>().optional()
     })
     .strict();
 }
@@ -518,7 +651,8 @@ function createTabsSegmentedElementsSchema<TSegmentName extends SegmentName = ne
       e3: createTabsLabelElementStyleSchema<TSegmentName>().optional(),
       e4: createTabsIconElementStyleSchema<TSegmentName>().optional(),
       e5: createTabsSegmentedIndicatorElementStyleSchema<TSegmentName>().optional(),
-      e6: createTabsSeparatorElementStyleSchema<TSegmentName>().optional()
+      e6: createTabsSeparatorElementStyleSchema<TSegmentName>().optional(),
+      e7: createTabsPanelElementStyleSchema<TSegmentName>().optional()
     })
     .strict();
 }
@@ -531,7 +665,21 @@ function createTabsDotElementsSchema<TSegmentName extends SegmentName = never>()
       e3: createTabsLabelElementStyleSchema<TSegmentName>().optional(),
       e4: createTabsIconElementStyleSchema<TSegmentName>().optional(),
       e5: createTabsIndicatorElementStyleSchema<TSegmentName>().optional(),
-      e6: createTabsSeparatorElementStyleSchema<TSegmentName>().optional()
+      e6: createTabsSeparatorElementStyleSchema<TSegmentName>().optional(),
+      e7: createTabsPanelElementStyleSchema<TSegmentName>().optional()
+    })
+    .strict();
+}
+
+function createTabsBridgeElementsSchema<TSegmentName extends SegmentName = never>() {
+  return z
+    .object({
+      e1: createTabsBridgeBarElementStyleSchema<TSegmentName>().optional(),
+      e2: createTabsBridgeTriggerElementStyleSchema<TSegmentName>().optional(),
+      e3: createTabsLabelElementStyleSchema<TSegmentName>().optional(),
+      e4: createTabsIconElementStyleSchema<TSegmentName>().optional(),
+      e5: createTabsBridgeIndicatorElementStyleSchema<TSegmentName>().optional(),
+      e7: createTabsPanelElementStyleSchema<TSegmentName>().optional()
     })
     .strict();
 }
@@ -566,6 +714,10 @@ function createTabsTypesSchema<TSegmentName extends SegmentName = never>() {
       dot: createTabsVariantTypeConfigSchema(
         'dot',
         createTabsDotElementsSchema<TSegmentName>()
+      ).optional(),
+      bridge: createTabsVariantTypeConfigSchema(
+        'bridge',
+        createTabsBridgeElementsSchema<TSegmentName>()
       ).optional()
     })
     .strict();
@@ -595,6 +747,8 @@ const tabsComponentContractSchema = z
             ? createTabsSegmentedElementsSchema()
             : value.options?.type === 'dot'
               ? createTabsDotElementsSchema()
+              : value.options?.type === 'bridge'
+                ? createTabsBridgeElementsSchema()
               : undefined;
 
     if (elementsSchema !== undefined && value.elements !== undefined) {

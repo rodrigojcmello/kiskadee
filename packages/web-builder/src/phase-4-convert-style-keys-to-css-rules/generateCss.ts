@@ -5,6 +5,7 @@ import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/sh
 import {
   transformBorderStyleKeyToCss,
   transformShadowKeyToCss,
+  type TransformShadowKeyToCssOptions,
   transformTextAlignKeyToCss,
   transformTextFontKeyToCss,
   transformTextItalicKeyToCss,
@@ -23,7 +24,8 @@ import {
 } from './scales/transformScaleKeyToCss';
 
 export type GenerateCssRuleFromStyleKeyOptions = TransformColorKeyToCssOptions &
-  TransformScaleKeyToCssOptions;
+  TransformScaleKeyToCssOptions &
+  TransformShadowKeyToCssOptions;
 
 export function generateCssRuleFromStyleKey(
   styleKey: string,
@@ -37,7 +39,7 @@ export function generateCssRuleFromStyleKey(
   if (styleKey.startsWith('borderStyle')) {
     generatedCss = transformBorderStyleKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('shadow')) {
-    generatedCss = transformShadowKeyToCss(styleKey, className, forceState);
+    generatedCss = transformShadowKeyToCss(styleKey, className, forceState, options);
   // [RIPPLE EFFECT 12] START: Route ripple style keys through ripple CSS transformer.
   } else if (styleKey.startsWith('ripple')) {
     generatedCss = transformRippleKeyToCss(styleKey, className);

@@ -1,6 +1,7 @@
 import type { Schema } from '@kiskadee/core';
 import type { PresetColorGetter } from '../../../utils/presetColor';
 import { createMaterial3GoogleTabsBoxVariant } from './tabs/tabs.box.schema';
+import { createMaterial3GoogleTabsBridgeVariant } from './tabs/tabs.bridge.schema';
 import { createMaterial3GoogleTabsDotVariant } from './tabs/tabs.dot.schema';
 import { createMaterial3GoogleTabsLineVariant } from './tabs/tabs.line.schema';
 import { createMaterial3GoogleTabsSegmentedVariant } from './tabs/tabs.segmented.schema';
@@ -39,6 +40,11 @@ export function createMaterial3GoogleTabsSchema({
       box: createMaterial3GoogleTabsBoxVariant({
         c,
         transparent
+      }),
+      bridge: createMaterial3GoogleTabsBridgeVariant({
+        c,
+        transparent,
+        white
       }),
       segmented: createMaterial3GoogleTabsSegmentedVariant({
         c,

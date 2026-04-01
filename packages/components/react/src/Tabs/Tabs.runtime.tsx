@@ -40,6 +40,9 @@ type CreateTabsComponentOptions<TRootProps> = {
   StaticEnhancer: TabsBarEnhancerComponent;
   loadMotionEnhancer?: TabsMotionLoader;
   useResolvedRootState: (props: TRootProps) => ResolvedTabsRootState;
+  BarComponent?: typeof TabsBar;
+  TabComponent?: typeof TabsTabBase;
+  ContentComponent?: typeof TabsContentBase;
 };
 
 const motionEnhancerCache = new Map<TabsMotionLoader, TabsBarEnhancerComponent>();
@@ -160,6 +163,7 @@ function TabsIndicator(_: TabsIndicatorProps) {
 export function createTabsComponent<
   TRootProps extends TabsRootBaseProps & {
     indicator?: unknown;
+    lowerCurveMode?: unknown;
     type?: unknown;
   }
 >(
@@ -180,6 +184,7 @@ export function createTabsComponent<
       emphasis: _emphasis,
       tabWidthMode: _tabWidthMode,
       separator: _separator,
+      lowerCurveMode: _lowerCurveMode,
       intent: _intent,
       indicator: _indicator,
       type: _type,
@@ -203,6 +208,7 @@ export function createTabsComponent<
         type: rootState.resolvedType,
         tabWidthMode: rootState.resolvedTabWidthMode,
         radiusMode: rootState.resolvedRadiusMode,
+        lowerCurveMode: rootState.resolvedLowerCurveMode,
         barRef: rootState.barRef,
         indicator: rootState.resolvedIndicator,
         indicatorTransition,
@@ -222,6 +228,7 @@ export function createTabsComponent<
         rootState.emphasis,
         rootState.intent,
         rootState.listClassName,
+        rootState.resolvedLowerCurveMode,
         rootState.resolvedIndicator,
         rootState.resolvedRadiusMode,
         rootState.resolvedSeparator,
@@ -249,14 +256,17 @@ export function createTabsComponent<
 
   const TabsRootMemo = memo(TabsRoot);
   TabsRootMemo.displayName = options.displayName;
+  const BarComponent = options.BarComponent ?? TabsBar;
+  const TabComponent = options.TabComponent ?? TabsTabBase;
+  const ContentComponent = options.ContentComponent ?? TabsContentBase;
 
   return Object.assign(TabsRootMemo, {
     Root: TabsRootMemo,
-    Bar: TabsBar,
-    Tab: TabsTabBase,
+    Bar: BarComponent,
+    Tab: TabComponent,
     Label: TabsLabelBase,
     Icon: TabsIconBase,
-    Content: TabsContentBase,
+    Content: ContentComponent,
     Indicator: TabsIndicator
   }) as TabsComponent & {
     Root: typeof TabsRootMemo;
