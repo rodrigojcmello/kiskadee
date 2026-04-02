@@ -69,9 +69,9 @@ export function createMaterial3GoogleTabsBridgeVariant({
           paddingRight: 32,
           borderRadius: {
             rounded: {
-              's:sm:1': 10,
+              's:sm:1': 12,
               's:md:1': 12,
-              's:lg:1': 14
+              's:lg:1': 12
             }
           }
         },
@@ -81,10 +81,10 @@ export function createMaterial3GoogleTabsBridgeVariant({
               boxColor: {
                 neutral: {
                   medium: {
-                    rest: [36, 100, 58, 1],
-                    hover: [36, 100, 64, 1],
-                    focus: [36, 100, 58, 1],
-                    pressed: [36, 100, 52, 1],
+                    rest: [36, 100, 57, 1],
+                    hover: [37, 100, 65, 1],
+                    focus: [36, 100, 57, 1],
+                    pressed: [35, 90, 50, 1],
                     selected: {
                       rest: transparent,
                       hover: transparent,
@@ -121,7 +121,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
             y: { rest: 0 },
             blur: { rest: 4 },
             color: {
-              rest: withAlpha([0, 0, 0, 1], 22)
+              rest: withAlpha([0, 0, 0, 1], 20)
             }
           }
         }
@@ -129,11 +129,11 @@ export function createMaterial3GoogleTabsBridgeVariant({
       // e3: label
       e3: {
         decorations: {
-          textWeight: 'medium'
+          textWeight: 'extraBold'
         },
         scales: {
-          textSize: 14,
-          textHeight: 20
+          textSize: 18,
+          textHeight: 22
         },
         palettes: {
           default: {
@@ -141,9 +141,9 @@ export function createMaterial3GoogleTabsBridgeVariant({
               textColor: {
                 neutral: {
                   medium: {
-                    rest: [24, 73, 18, 1],
+                    rest: [24, 100, 12, 1],
                     selected: {
-                      rest: c('default', 'l', 'neutral', 10)
+                      rest: [0, 0, 7, 1]
                     }
                   }
                 }
@@ -177,9 +177,9 @@ export function createMaterial3GoogleTabsBridgeVariant({
               textColor: {
                 neutral: {
                   medium: {
-                    rest: [24, 73, 18, 1],
+                    rest: [24, 100, 12, 1],
                     selected: {
-                      rest: c('default', 'l', 'neutral', 10)
+                      rest: [0, 0, 7, 1]
                     }
                   }
                 }
@@ -205,9 +205,9 @@ export function createMaterial3GoogleTabsBridgeVariant({
         scales: {
           borderRadius: {
             rounded: {
-              's:sm:1': 10,
+              's:sm:1': 12,
               's:md:1': 12,
-              's:lg:1': 14
+              's:lg:1': 12
             }
           }
         },
@@ -217,7 +217,10 @@ export function createMaterial3GoogleTabsBridgeVariant({
               boxColor: {
                 neutral: {
                   medium: {
-                    rest: white
+                    rest: [43, 100, 99, 1],
+                    hover: [39, 100, 95, 1],
+                    focus: [43, 100, 99, 1],
+                    pressed: [38, 100, 92, 1]
                   }
                 }
               }
@@ -237,9 +240,9 @@ export function createMaterial3GoogleTabsBridgeVariant({
           shadow: {
             x: { rest: 0 },
             y: { rest: 0 },
-            blur: { rest: 6 },
+            blur: { rest: 4 },
             color: {
-              rest: withAlpha([0, 0, 0, 1], 24)
+              rest: withAlpha([0, 0, 0, 1], 20)
             }
           }
         }
@@ -254,7 +257,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
           borderRadius: {
             rounded: {
               's:sm:1': 14,
-              's:md:1': 16,
+              's:md:1': 18,
               's:lg:1': 18
             }
           }
@@ -265,7 +268,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
               boxColor: {
                 neutral: {
                   medium: {
-                    rest: white
+                    rest: [43, 100, 99, 1]
                   }
                 }
               }
@@ -287,7 +290,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
             y: { rest: 5 },
             blur: { rest: 4 },
             color: {
-              rest: withAlpha([0, 0, 0, 1], 18)
+              rest: withAlpha([0, 0, 0, 1], 20)
             }
           }
         }

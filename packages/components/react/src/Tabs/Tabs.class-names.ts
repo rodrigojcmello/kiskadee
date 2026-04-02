@@ -459,9 +459,8 @@ export function resolveBridgeItemClassName(options: {
   selected: boolean;
   className?: string;
 }): string | undefined {
-  const shadowElement = options.selected ? (options.elements.e5 ?? options.elements.e2) : options.elements.e2;
   return joinClassNames(
-    resolveShadowEffectClassName(shadowElement),
+    resolveShadowEffectClassName(options.elements.e2),
     'k-tab-e2w',
     options.selected ? 'k-tab-e2ws' : '',
     options.className

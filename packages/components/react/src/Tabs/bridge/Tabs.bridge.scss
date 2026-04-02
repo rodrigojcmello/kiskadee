@@ -94,11 +94,19 @@
   -webkit-appearance: none;
   appearance: none;
   cursor: pointer;
-  display: inline-flex;
+  display: inline-block;
   font: inherit;
   white-space: nowrap;
   overflow: visible;
   z-index: 1;
+}
+
+.k-tab.k-tab-br.k-tab-br-shell .k-tab-e2 > .k-tab-c {
+  display: contents;
+}
+
+.k-tab.k-tab-br.k-tab-br-shell .k-tab-e2 .k-tab-e3 {
+  display: inline;
 }
 
 .k-tab.k-tab-br.k-tab-br-shell .k-tab-e2:focus-visible {

@@ -600,9 +600,9 @@ export const schema: Schema = {
                 paddingRight: 32,
                 borderRadius: {
                   rounded: {
-                    's:sm:1': 10,
+                    's:sm:1': 12,
                     's:md:1': 12,
-                    's:lg:1': 14
+                    's:lg:1': 12
                   }
                 }
               },
@@ -612,12 +612,14 @@ export const schema: Schema = {
                     boxColor: {
                       neutral: {
                         medium: {
-                          rest: c(segmentName, 'l', 'button.primary', 10),
-                          hover: c(segmentName, 'l', 'button.primary', 15),
-                          pressed: c(segmentName, 'l', 'button.primary', 20),
+                          rest: [36, 100, 57, 1],
+                          hover: [37, 100, 65, 1],
+                          focus: [36, 100, 57, 1],
+                          pressed: [35, 90, 50, 1],
                           selected: {
                             rest: transparent,
                             hover: transparent,
+                            focus: transparent,
                             pressed: transparent
                           }
                         }
@@ -632,7 +634,7 @@ export const schema: Schema = {
                   y: { rest: 0 },
                   blur: { rest: 4 },
                   color: {
-                    rest: withAlpha([0, 0, 0, 1], 18)
+                    rest: withAlpha([0, 0, 0, 1], 20)
                   }
                 }
               }
@@ -640,11 +642,11 @@ export const schema: Schema = {
             // e3: label
             e3: {
               decorations: {
-                textWeight: 'medium'
+                textWeight: 'extraBold'
               },
               scales: {
-                textSize: 14,
-                textHeight: 20
+                textSize: 18,
+                textHeight: 22
               },
               palettes: buildBySegment(segmentNames, (segmentName) => {
                 return {
@@ -652,9 +654,9 @@ export const schema: Schema = {
                     textColor: {
                       neutral: {
                         medium: {
-                          rest: c(segmentName, 'l', 'button.primary', 60),
+                          rest: [24, 100, 12, 1],
                           selected: {
-                            rest: c(segmentName, 'l', 'neutral', 90)
+                            rest: [0, 0, 7, 1]
                           }
                         }
                       }
@@ -676,9 +678,9 @@ export const schema: Schema = {
                     textColor: {
                       neutral: {
                         medium: {
-                          rest: c(segmentName, 'l', 'button.primary', 60),
+                          rest: [24, 100, 12, 1],
                           selected: {
-                            rest: c(segmentName, 'l', 'neutral', 90)
+                            rest: [0, 0, 7, 1]
                           }
                         }
                       }
@@ -692,9 +694,9 @@ export const schema: Schema = {
               scales: {
                 borderRadius: {
                   rounded: {
-                    's:sm:1': 10,
+                    's:sm:1': 12,
                     's:md:1': 12,
-                    's:lg:1': 14
+                    's:lg:1': 12
                   }
                 }
               },
@@ -704,7 +706,10 @@ export const schema: Schema = {
                     boxColor: {
                       neutral: {
                         medium: {
-                          rest: c(segmentName, 'l', 'neutral', 0)
+                          rest: [43, 100, 99, 1],
+                          hover: [39, 100, 95, 1],
+                          focus: [43, 100, 99, 1],
+                          pressed: [38, 100, 92, 1]
                         }
                       }
                     }
@@ -715,9 +720,9 @@ export const schema: Schema = {
                 shadow: {
                   x: { rest: 0 },
                   y: { rest: 0 },
-                  blur: { rest: 6 },
+                  blur: { rest: 4 },
                   color: {
-                    rest: withAlpha([0, 0, 0, 1], 18)
+                    rest: withAlpha([0, 0, 0, 1], 20)
                   }
                 }
               }
@@ -732,7 +737,7 @@ export const schema: Schema = {
                 borderRadius: {
                   rounded: {
                     's:sm:1': 14,
-                    's:md:1': 16,
+                    's:md:1': 18,
                     's:lg:1': 18
                   }
                 }
@@ -743,7 +748,7 @@ export const schema: Schema = {
                     boxColor: {
                       neutral: {
                         medium: {
-                          rest: c(segmentName, 'l', 'neutral', 0)
+                          rest: [43, 100, 99, 1]
                         }
                       }
                     }
@@ -753,10 +758,10 @@ export const schema: Schema = {
               effects: {
                 shadow: {
                   x: { rest: 0 },
-                  y: { rest: 8 },
-                  blur: { rest: 18 },
+                  y: { rest: 5 },
+                  blur: { rest: 4 },
                   color: {
-                    rest: withAlpha([0, 0, 0, 1], 14)
+                    rest: withAlpha([0, 0, 0, 1], 20)
                   }
                 }
               }

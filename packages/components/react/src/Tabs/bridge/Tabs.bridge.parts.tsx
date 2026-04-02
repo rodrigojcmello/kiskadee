@@ -8,6 +8,7 @@ import {
 } from 'react';
 import {
   joinClassNames,
+  resolveElementClassName,
   resolvePanelClassName,
   resolveBridgeItemClassName,
   resolveBridgeTriggerClassName
@@ -68,6 +69,7 @@ export function TabsBridgeTabBase({
   const { selected, scale, intent, emphasis, classNames, elements, tabWidthMode, radiusMode } =
     useTabsVisualContext();
   const isSelected = selected === value;
+  const isTextOnlyTab = children == null && icon == null && typeof label === 'string';
   const itemClassName = resolveBridgeItemClassName({
     elements,
     classNames,
@@ -88,6 +90,18 @@ export function TabsBridgeTabBase({
     selected: isSelected,
     className
   });
+  const textOnlyTriggerClassName = isTextOnlyTab
+    ? joinClassNames(
+        triggerClassName,
+        resolveElementClassName(elements.e3, {
+          scale,
+          intent,
+          emphasis,
+          selected: isSelected
+        }),
+        classNames.e3
+      )
+    : triggerClassName;
   const itemStyle =
     bridgeVisualOrder != null
       ? ({ '--k-tab-z': String(bridgeVisualOrder) } as CSSProperties)
@@ -99,13 +113,15 @@ export function TabsBridgeTabBase({
       data-selected={isSelected || undefined}
       style={itemStyle}
     >
-      <HeadlessTabs.Tab {...restProps} value={value} className={triggerClassName}>
-        {withTabsTabContext(
-          isSelected,
-          <TabsSlotContent label={label} icon={icon}>
-            {children}
-          </TabsSlotContent>
-        )}
+      <HeadlessTabs.Tab {...restProps} value={value} className={textOnlyTriggerClassName}>
+        {isTextOnlyTab
+          ? label
+          : withTabsTabContext(
+              isSelected,
+              <TabsSlotContent label={label} icon={icon}>
+                {children}
+              </TabsSlotContent>
+            )}
       </HeadlessTabs.Tab>
     </div>
   );
