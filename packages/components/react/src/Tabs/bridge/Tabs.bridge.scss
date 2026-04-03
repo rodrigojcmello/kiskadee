@@ -17,7 +17,7 @@
   clip-path: shape(
     from bottom left,
     vline to var(--k-br, 12px),
-    curve to calc(var(--k-br, 12px) * 2) 0 with var(--k-br, 12px) 0,
+    curve to var(--k-br, 12px) 0 with 0 0,
     hline to calc(100% - calc(var(--k-br, 12px) * 2)),
     curve to calc(100% - var(--k-br, 12px)) var(--k-br, 12px) with calc(100% - var(--k-br, 12px)) 0,
     vline to calc(100% - var(--k-br, 12px)),
@@ -31,7 +31,8 @@
     curve to var(--k-br, 12px) calc(100% - var(--k-br, 12px)) with var(--k-br, 12px) 100%,
     vline to var(--k-br, 12px),
     curve to calc(var(--k-br, 12px) * 2) 0 with var(--k-br, 12px) 0,
-    hline to 100%,
+    hline to calc(100% - var(--k-br, 12px)),
+    curve to 100% var(--k-br, 12px) with 100% 0,
     vline to 100%
   );
 }
@@ -40,9 +41,9 @@
   clip-path: shape(
     from bottom left,
     vline to var(--k-br, 12px),
-    curve to calc(var(--k-br, 12px) * 2) 0 with var(--k-br, 12px) 0,
-    hline to calc(100% - calc(var(--k-br, 12px) * 2)),
-    curve to calc(100% - var(--k-br, 12px)) var(--k-br, 12px) with calc(100% - var(--k-br, 12px)) 0,
+    curve to var(--k-br, 12px) 0 with 0 0,
+    hline to calc(100% - var(--k-br, 12px)),
+    curve to 100% var(--k-br, 12px) with 100% 0,
     vline to 100%,
     hline to 0
   );
