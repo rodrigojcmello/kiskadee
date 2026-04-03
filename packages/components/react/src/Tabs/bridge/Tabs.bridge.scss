@@ -70,21 +70,21 @@
   scrollbar-width: thin;
 }
 
-/* `k-tab-e1e-a`: flush-start removes the left outer bar padding. */
-.k-tab-e1e-a .k-tab-e1c-a {
-  padding-left: 0;
+/* `k-tab-e1e-a`: flush-start keeps shadow room inside and compensates visually on the left shell edge. */
+.k-tab-e1e-a {
+  margin-inline-start: calc(var(--k-pl, 0px) * -1);
 }
 
-/* `k-tab-e1f-a`: flush-end removes the right outer bar padding. */
-.k-tab-e1f-a .k-tab-e1c-a {
-  padding-right: 0;
+/* `k-tab-e1f-a`: flush-end keeps shadow room inside and compensates visually on the right shell edge. */
+.k-tab-e1f-a {
+  margin-inline-end: calc(var(--k-pr, 0px) * -1);
 }
 
-/* `k-tab-e1g-a` + `k-tab-e1d-a`: flush-both and flush-all remove both outer horizontal bar paddings. */
-.k-tab-e1g-a .k-tab-e1c-a,
-.k-tab-e1d-a .k-tab-e1c-a {
-  padding-left: 0;
-  padding-right: 0;
+/* `k-tab-e1g-a` + `k-tab-e1d-a`: flush-both and flush-all keep shadow room inside and compensate on both shell edges. */
+.k-tab-e1g-a,
+.k-tab-e1d-a {
+  margin-inline-start: calc(var(--k-pl, 0px) * -1);
+  margin-inline-end: calc(var(--k-pr, 0px) * -1);
 }
 
 /* `k-tab-e2b-a`: bridge wrapper that owns overlap, stacking, and shadow projection. */
@@ -105,7 +105,12 @@
 
 /* `k-tab-e2b-a + k-tab-e2b-a`: bridge wrappers overlap to build the connected shell effect. */
 .k-tab-e2b-a + .k-tab-e2b-a {
-  margin-inline-start: calc(var(--k-br, 12px) * -2);
+  margin-inline-start: calc(var(--k-br, 0px) * -2);
+}
+
+/* `k-tab-e1d-a`: flush-all removes wrapper overlap because tabs no longer have lower bridge curves. */
+.k-tab-e1d-a .k-tab-e2b-a + .k-tab-e2b-a {
+  margin-inline-start: 0;
 }
 
 /* `k-tab-e2b-a[data-selected]`: selected bridge wrapper stays above its siblings. */
