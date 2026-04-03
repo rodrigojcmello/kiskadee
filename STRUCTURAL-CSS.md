@@ -344,6 +344,51 @@ Examples:
 
 Structural CSS should not duplicate the visual values behind those artifacts.
 
+Important:
+
+- when a canonical emitted variable already exists, structural CSS must consume that variable directly,
+- structural CSS must not create local alias variables for emitted schema values just to rename or relay them,
+- prefer direct overrides such as `padding-left: 0` or `padding-right: calc(var(--k-pr) + var(--k-br))`
+  over ad hoc aliases like `--k-foo-left`,
+- create new local CSS variables only when they represent genuinely local structural state that cannot be
+  expressed directly and is reused enough to justify the indirection.
+
+## Runtime structural variables
+
+Structural CSS may also consume variables injected by runtime logic when those variables represent
+local structural state rather than schema-owned tokens.
+
+Example:
+
+- `--k-tab-z`
+
+Use this pattern when:
+
+- the value is produced by runtime logic,
+- the value is local to one component instance or subtree,
+- the value controls structural behavior such as stacking, geometry, or measurement,
+- and there is no schema-owned emitted variable that already represents the same concept.
+
+Important:
+
+- runtime structural variables are different from emitted schema variables,
+- emitted schema variables come from style emission and are the canonical source for token values,
+- runtime structural variables exist only to connect render-time state to structural CSS.
+
+Naming rule:
+
+- runtime structural variables should stay component-scoped,
+- prefer the form `--k-<cmp>-<purpose>`,
+- keep the purpose short and structural.
+
+Examples:
+
+- `--k-tab-z`
+- `--k-tab-x`
+- `--k-tab-w`
+
+Do not use runtime structural variables to relay schema tokens that already exist as emitted variables.
+
 ## Shared vs variant-specific structure
 
 For a component family such as Tabs:
