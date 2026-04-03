@@ -1,17 +1,17 @@
 import { HeadlessTabs } from '@kiskadee/react-headless';
 import {
   Children,
+  type CSSProperties,
   cloneElement,
   isValidElement,
-  type CSSProperties,
   type ReactElement
 } from 'react';
 import {
   joinClassNames,
-  resolveElementClassName,
-  resolvePanelClassName,
   resolveBridgeItemClassName,
-  resolveBridgeTriggerClassName
+  resolveBridgeTriggerClassName,
+  resolveElementClassName,
+  resolvePanelClassName
 } from '../Tabs.class-names';
 import { useTabsVisualContext } from '../Tabs.context';
 import { TabsSlotContent, withTabsTabContext } from '../Tabs.parts';
@@ -102,11 +102,7 @@ export function TabsBridgeTabBase({
       : undefined;
 
   return (
-    <div
-      className={itemClassName}
-      data-selected={isSelected || undefined}
-      style={itemStyle}
-    >
+    <div className={itemClassName} data-selected={isSelected || undefined} style={itemStyle}>
       <HeadlessTabs.Tab {...restProps} value={value} className={textOnlyTriggerClassName}>
         {isTextOnlyTab
           ? label
