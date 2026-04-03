@@ -75,10 +75,7 @@
 
 .k-tab.k-tab-br.k-tab-br-shell .k-tab-e2w.-e {
   filter: drop-shadow(
-    var(--k-sh-x, 0)
-    var(--k-sh-y, 0)
-    var(--k-sh-blur, 0)
-    var(--k-sh-color, transparent)
+    var(--k-sh-x, 0) var(--k-sh-y, 0) var(--k-sh-blur, 0) var(--k-sh-color, transparent)
   );
 }
 
@@ -125,29 +122,33 @@
     @include bridge-shape-curved;
   }
 
+  .k-os-macos.k-engine-blink .k-tab.k-tab-br.k-tab-br-shell .k-tab-e2 {
+    margin-block-end: -0.1px;
+  }
+
   .k-tab.k-tab-br.k-tab-br-shell.k-tab-br-lc-flush-all .k-tab-e2 {
     @include bridge-shape-top-only;
   }
 
   .k-tab.k-tab-br.k-tab-br-shell.k-tab-br-lc-flush-start
-    .k-tab-br-list
-    > .k-tab-e2w:first-of-type
-    > .k-tab-e2,
+  .k-tab-br-list
+  > .k-tab-e2w:first-of-type
+  > .k-tab-e2,
   .k-tab.k-tab-br.k-tab-br-shell.k-tab-br-lc-flush-both
-    .k-tab-br-list
-    > .k-tab-e2w:first-of-type
-    > .k-tab-e2 {
+  .k-tab-br-list
+  > .k-tab-e2w:first-of-type
+  > .k-tab-e2 {
     @include bridge-shape-flush-start;
   }
 
   .k-tab.k-tab-br.k-tab-br-shell.k-tab-br-lc-flush-end
-    .k-tab-br-list
-    > .k-tab-e2w:last-of-type
-    > .k-tab-e2,
+  .k-tab-br-list
+  > .k-tab-e2w:last-of-type
+  > .k-tab-e2,
   .k-tab.k-tab-br.k-tab-br-shell.k-tab-br-lc-flush-both
-    .k-tab-br-list
-    > .k-tab-e2w:last-of-type
-    > .k-tab-e2 {
+  .k-tab-br-list
+  > .k-tab-e2w:last-of-type
+  > .k-tab-e2 {
     @include bridge-shape-flush-end;
   }
 }

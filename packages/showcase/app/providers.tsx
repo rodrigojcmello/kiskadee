@@ -4,6 +4,7 @@ import { useClassMapLoader } from '@/hooks/use-class-map-loader';
 import { useDesignSystemSelection } from '@/hooks/use-design-system-selection';
 import { useFontPreference } from '@/hooks/use-font-preference';
 import { useGlobalThemeClasses } from '@/hooks/use-global-theme-classes';
+import { useRuntimePlatformClasses } from '@/hooks/use-runtime-platform-classes';
 import { useStylesheetManager } from '@/hooks/use-stylesheet-manager';
 import { useThemeExtras } from '@/hooks/use-theme-extras';
 import { designSystemList } from '@/registry/design-systems.registry';
@@ -91,6 +92,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   // 4. Manage global CSS and stylesheet injection (side effects)
   useStylesheetManager({ designSystem, segment, theme });
   useGlobalThemeClasses(theme);
+  useRuntimePlatformClasses();
 
   // 5. Manifest + font management for the currently selected design system
   const { manifest, fontName, setFontName } = useFontPreference({
