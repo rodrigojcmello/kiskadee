@@ -15,7 +15,7 @@ import { convertHslaToHex } from '../../utils/convertHslaToHex';
 import {
   DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
   type ResolvedElementStyleEmissionPolicy
-} from '../../../web-build-policy';
+} from '../../../style-emission/web-build-policy';
 
 export type TransformShadowKeyToCssOptions = {
   styleEmissionPolicy?: ResolvedElementStyleEmissionPolicy;

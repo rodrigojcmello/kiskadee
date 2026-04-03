@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from './web-build-policy';
-import { buildWebStyleKeyIdentity, resolveWebStyleKeyIdentity } from './web-style-key-identity';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from './style-emission/web-build-policy';
+import {
+  buildWebStyleKeyIdentity,
+  resolveWebStyleKeyIdentity
+} from './style-emission/web-style-key-identity';
 
 describe('web-style-key-identity', () => {
   describe('buildWebStyleKeyIdentity', () => {

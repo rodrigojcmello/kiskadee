@@ -42,8 +42,8 @@ export function TabsBridgeBarBase({ className, children, ...props }: TabsBarProp
   });
 
   return (
-    <div className={joinClassNames(listClassName, 'k-tab-br-shell', className)}>
-      <HeadlessTabs.Bar ref={barRef} {...props} className="k-tab-br-list">
+    <div className={joinClassNames(listClassName, className)}>
+      <HeadlessTabs.Bar ref={barRef} {...props} className="k-tab-e1c-a">
         {orderedChildren}
       </HeadlessTabs.Bar>
     </div>
@@ -71,13 +71,7 @@ export function TabsBridgeTabBase({
   const isSelected = selected === value;
   const isTextOnlyTab = children == null && icon == null && typeof label === 'string';
   const itemClassName = resolveBridgeItemClassName({
-    elements,
-    classNames,
-    scale,
-    intent,
-    emphasis,
-    radiusMode,
-    selected: isSelected
+    elements
   });
   const triggerClassName = resolveBridgeTriggerClassName({
     elements,
@@ -149,7 +143,7 @@ export function TabsBridgeContentBase({ className, ...props }: TabsContentProps)
   return (
     <HeadlessTabs.Content
       {...props}
-      className={joinClassNames(panelClassName, 'k-tab-br-p', className)}
+      className={joinClassNames(panelClassName, 'k-tab-e7-a', className)}
     />
   );
 }

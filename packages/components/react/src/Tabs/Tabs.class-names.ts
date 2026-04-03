@@ -358,9 +358,19 @@ export function resolveListClassName(options: {
         : options.type === 'dot'
           ? 'k-tab-d'
           : options.type === 'bridge'
-            ? 'k-tab-br'
+            ? 'k-tab-e1-a'
           : 'k-tab-l',
-    options.type === 'bridge' ? `k-tab-br-lc-${options.lowerCurveMode}` : '',
+    options.type === 'bridge'
+      ? options.lowerCurveMode === 'flush-all'
+        ? 'k-tab-e1d-a'
+        : options.lowerCurveMode === 'flush-start'
+          ? 'k-tab-e1e-a'
+          : options.lowerCurveMode === 'flush-end'
+            ? 'k-tab-e1f-a'
+            : options.lowerCurveMode === 'flush-both'
+              ? 'k-tab-e1g-a'
+              : ''
+      : '',
     options.type === 'line' || options.type === 'dot'
       ? (options.indicatorPosition === 'top' ? 'k-tab-e1b' : 'k-tab-e1a')
       : '',
@@ -451,18 +461,11 @@ export function resolveTriggerClassName(options: {
  */
 export function resolveBridgeItemClassName(options: {
   elements: TabsClassesMap;
-  classNames: TabsClassNames;
-  scale: string;
-  intent: string;
-  emphasis: TabsVisualContextValue['emphasis'];
-  radiusMode: RadiusMode;
-  selected: boolean;
   className?: string;
 }): string | undefined {
   return joinClassNames(
     resolveShadowEffectClassName(options.elements.e2),
-    'k-tab-e2w',
-    options.selected ? 'k-tab-e2ws' : '',
+    'k-tab-e2b-a',
     options.className
   );
 }
@@ -510,6 +513,7 @@ export function resolveBridgeTriggerClassName(options: {
     options.classNames.e2,
     options.selected ? options.classNames.e5 : '',
     'k-tab-e2',
+    'k-tab-e2-a',
     options.tabWidthMode === 'fixed' ? 'k-tab-e2a' : '',
     'k-state',
     cn.interactive,

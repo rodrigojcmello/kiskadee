@@ -19,7 +19,7 @@ import { persistBuildArtifacts } from './phase-6-persist-build-artifacts/persist
 import { publishMetadata } from './phase-7-publish-metadata/publishMetadata';
 import { writeExtraArtifacts } from './phase-8-write-extra-artifacts/writeExtraArtifacts';
 import { loadPresetsToBuild } from './utils/loadPresetsToBuild';
-import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from './web-build-policy';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from './style-emission/web-build-policy';
 
 // Feature flag simples para controlar o uso de prefixo nos nomes de classes CSS
 // Ajuste para `false` caso queira desativar o prefixo sem alterar o restante do código.

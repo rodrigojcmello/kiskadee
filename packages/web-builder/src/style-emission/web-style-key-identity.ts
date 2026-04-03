@@ -35,7 +35,13 @@ function resolveStyleKeyEmissionMode(
     styleKey.startsWith('paddingBottom') ||
     styleKey.startsWith('paddingLeft')
   ) {
-    return styleEmissionPolicy.paddingEmission === 'compensated' ? 'c' : undefined;
+    return styleEmissionPolicy.paddingEmission === 'token'
+      ? 't'
+      : styleEmissionPolicy.paddingEmission === 'mirrored'
+      ? 'm'
+      : styleEmissionPolicy.paddingEmission === 'compensated'
+        ? 'c'
+        : undefined;
   }
 
   return undefined;
@@ -57,12 +63,14 @@ export function resolveWebStyleKeyIdentity(
   styleKey: StyleKey,
   webStyleEmissionPolicy: WebStyleEmissionPolicy | undefined,
   componentName: string,
-  elementName: string
+  elementName: string,
+  variantName?: string
 ): WebStyleKeyIdentity {
   const styleEmissionPolicy = resolveElementStyleEmissionPolicy(
     webStyleEmissionPolicy,
     componentName,
-    elementName
+    elementName,
+    variantName
   );
   return buildWebStyleKeyIdentity(styleKey, styleEmissionPolicy);
 }

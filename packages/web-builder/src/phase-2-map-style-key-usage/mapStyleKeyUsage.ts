@@ -1,6 +1,6 @@
 import type { ComponentStyleKeyMap, StyleKey } from '@kiskadee/core';
-import type { WebStyleEmissionPolicy } from '../web-build-policy';
-import { resolveWebStyleKeyIdentity } from '../web-style-key-identity';
+import type { WebStyleEmissionPolicy } from '../style-emission/web-build-policy';
+import { resolveWebStyleKeyIdentity } from '../style-emission/web-style-key-identity';
 
 export type StyleKeyUsageMap = Record<string, number>;
 
@@ -28,11 +28,21 @@ export function mapStyleKeyUsage(
     usage[key] = (usage[key] ?? 0) + 1;
   };
 
-  const consumeElements = (componentName: string, elements: Record<string, any>) => {
+  const consumeElements = (
+    componentName: string,
+    elements: Record<string, any>,
+    variantName?: string
+  ) => {
     for (const [elementName, element] of Object.entries(elements)) {
       if (!element) continue;
       const resolveKey = (key: StyleKey) =>
-        resolveWebStyleKeyIdentity(key, options?.webStyleEmissionPolicy, componentName, elementName);
+        resolveWebStyleKeyIdentity(
+          key,
+          options?.webStyleEmissionPolicy,
+          componentName,
+          elementName,
+          variantName
+        );
 
       // 1) decorations
       if (Array.isArray(element.decorations)) {
@@ -96,10 +106,10 @@ export function mapStyleKeyUsage(
       continue;
     }
 
-    for (const variantElements of Object.values(elements as Record<string, any>)) {
+    for (const [variantName, variantElements] of Object.entries(elements as Record<string, any>)) {
       if (!variantElements) continue;
       if (isElementMap(variantElements)) {
-        consumeElements(componentName, variantElements);
+        consumeElements(componentName, variantElements, variantName);
       }
     }
   }

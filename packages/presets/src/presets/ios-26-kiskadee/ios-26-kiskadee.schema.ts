@@ -567,10 +567,10 @@ export const schema: Schema = {
             // e1: bar
             e1: {
               scales: {
-                paddingTop: 0,
-                paddingBottom: 0,
-                paddingLeft: 0,
-                paddingRight: 0
+                paddingTop: 8,
+                paddingBottom: 8,
+                paddingLeft: 8,
+                paddingRight: 8
               },
               palettes: buildBySegment(segmentNames, (segmentName) => {
                 return {

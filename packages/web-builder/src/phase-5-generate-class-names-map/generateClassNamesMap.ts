@@ -10,8 +10,8 @@ import type {
 import { componentEmphasisBuckets } from '@kiskadee/core';
 import type { ToneMetadataByPalette } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
-import type { WebStyleEmissionPolicy } from '../web-build-policy';
-import { resolveWebStyleKeyIdentity } from '../web-style-key-identity';
+import type { WebStyleEmissionPolicy } from '../style-emission/web-build-policy';
+import { resolveWebStyleKeyIdentity } from '../style-emission/web-style-key-identity';
 
 type ColorClasses = {
   h?: string; // high
@@ -169,7 +169,8 @@ export function generateClassNamesMapSplit(
           key,
           options?.webStyleEmissionPolicy,
           componentName,
-          elementName
+          elementName,
+          variantName
         );
         return shortenMap[identity] ?? key;
       };

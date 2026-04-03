@@ -7,11 +7,11 @@ import {
   type StyleKey,
   scaleProperties
 } from '@kiskadee/core';
-import { SEPARATORS } from '../../utils';
 import {
   DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
   type ResolvedElementStyleEmissionPolicy
-} from '../../web-build-policy';
+} from '../../style-emission/web-build-policy';
+import { SEPARATORS } from '../../utils';
 
 export const ERROR_NO_MATCHING_SCALE_PROPERTY = 'No matching scale key found.';
 export const ERROR_INVALID_MEDIA_QUERY_PATTERN =
@@ -168,8 +168,7 @@ export function transformScaleKeyToCss(
     cssValue = `${scaleValue}px`;
   }
 
-  const styleEmissionPolicy =
-    options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
+  const styleEmissionPolicy = options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
   let rule: string;
   if (scaleProperty === 'borderWidth') {
     rule =
@@ -194,17 +193,22 @@ export function transformScaleKeyToCss(
     scaleProperty === 'paddingBottom' ||
     scaleProperty === 'paddingLeft'
   ) {
+    const paddingVar =
+      scaleProperty === 'paddingTop'
+        ? '--k-pt'
+        : scaleProperty === 'paddingRight'
+          ? '--k-pr'
+          : scaleProperty === 'paddingBottom'
+            ? '--k-pb'
+            : '--k-pl';
+
     if (styleEmissionPolicy.paddingEmission === 'compensated') {
-      const paddingVar =
-        scaleProperty === 'paddingTop'
-          ? '--k-pt'
-          : scaleProperty === 'paddingRight'
-            ? '--k-pr'
-            : scaleProperty === 'paddingBottom'
-              ? '--k-pb'
-              : '--k-pl';
       const adjustedPadding = `max(0px, calc(var(${paddingVar}) - var(--k-bw, 0px)))`;
       rule = `.${className} { ${paddingVar}: ${cssValue}; ${cssProperty}: ${adjustedPadding} }`;
+    } else if (styleEmissionPolicy.paddingEmission === 'token') {
+      rule = `.${className} { ${paddingVar}: ${cssValue} }`;
+    } else if (styleEmissionPolicy.paddingEmission === 'mirrored') {
+      rule = `.${className} { ${paddingVar}: ${cssValue}; ${cssProperty}: ${cssValue} }`;
     } else {
       rule = `.${className} { ${cssProperty}: ${cssValue} }`;
     }

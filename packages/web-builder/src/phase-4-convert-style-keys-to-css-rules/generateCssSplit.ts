@@ -18,8 +18,8 @@ import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
 import {
   resolveElementStyleEmissionPolicy,
   type WebStyleEmissionPolicy
-} from '../web-build-policy';
-import { resolveWebStyleKeyIdentity } from '../web-style-key-identity';
+} from '../style-emission/web-build-policy';
+import { resolveWebStyleKeyIdentity } from '../style-emission/web-style-key-identity';
 
 export type GenerateCssSplitOptions = {
   forceState?: boolean;
@@ -80,20 +80,26 @@ export async function generateCssSplit(
     return /\.-[a-z]\b/.test(rule);
   };
 
-  const consumeElements = (componentName: string, elements: Record<string, any>) => {
+  const consumeElements = (
+    componentName: string,
+    elements: Record<string, any>,
+    variantName?: string
+  ) => {
     for (const elementName in elements) {
       const el = elements[elementName];
       const styleEmissionPolicy = resolveElementStyleEmissionPolicy(
         options?.webStyleEmissionPolicy,
         componentName,
-        elementName
+        elementName,
+        variantName
       );
       const resolveClassName = (key: string) => {
         const identity = resolveWebStyleKeyIdentity(
           key,
           options?.webStyleEmissionPolicy,
           componentName,
-          elementName
+          elementName,
+          variantName
         );
         return shortenMap[identity] ?? key;
       };
@@ -220,10 +226,10 @@ export async function generateCssSplit(
       continue;
     }
 
-    for (const variantElements of Object.values(elements as Record<string, any>)) {
+    for (const [variantName, variantElements] of Object.entries(elements as Record<string, any>)) {
       if (!variantElements) continue;
       if (isElementMap(variantElements)) {
-        consumeElements(componentName, variantElements);
+        consumeElements(componentName, variantElements, variantName);
       }
     }
   }

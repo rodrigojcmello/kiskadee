@@ -9,7 +9,7 @@ import {
 import {
   DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
   type ResolvedElementStyleEmissionPolicy
-} from '../../../web-build-policy';
+} from '../../../style-emission/web-build-policy';
 
 export const ERROR_INVALID_NUMERIC_KEY_FORMAT =
   'Invalid key format. Expected numeric value in square brackets at the end.';
