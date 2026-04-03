@@ -54,6 +54,7 @@
 - `package.json`
 - `pnpm-workspace.yaml`
 - `biome.jsonc`
+- `STRUCTURAL-CSS.md` when changing structural Sass in `packages/components/react`
 - package-local `package.json` and `tsconfig.json`
 - relevant package `README.md` files when changing public behavior
 

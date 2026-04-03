@@ -44,7 +44,11 @@ Use this skill to make architecture decisions and implementation plans that stay
   browser runtime. Prefer simplicity, correctness, and maintainability in build-only code even if
   that means extra dependencies or heavier validation; optimize aggressively only for generated
   artifacts and code that executes in the browser.
-- For structural classes in `packages/components/react`, use `k-<cmp>-e<n>` for schema elements (`cmp` = 3-letter id, e.g. `tab`) and short option suffixes (`-t`, `-b`); keep visual theming in generated artifacts/runtime, not hardcoded Sass.
+- For structural Sass in `packages/components/react`, follow [STRUCTURAL-CSS.md](../../STRUCTURAL-CSS.md):
+  keep shared schema elements in `k-<cmp>-e<n>` and shared modifiers in `k-<cmp>-e<n><a-z>`
+  only for common structural CSS, specialize variants with suffix forms such as
+  `k-<cmp>-e2-<variant>` and `k-<cmp>-e2a-<variant>`, and require short structural comments
+  above selectors.
 - Put behavioral switches in `components.<name>.options` and keep the corresponding numeric/visual values in `components.<name>.elements`.
 - If a schema value must exist but only apply when a runtime/component option enables it, do not assume the generic artifact scale bucket is enough; verify whether `packages/web-builder` needs a dedicated opt-in bucket.
 - For fixed-geometry component types (for example `tabs.segmented`), keep the public type unique and
@@ -129,3 +133,4 @@ When giving architecture recommendations, structure the output as:
 - `references/taxonomy-rules.md`
 - `references/headless-react-patterns.md`
 - `references/testing-checklist.md`
+- `../../STRUCTURAL-CSS.md`

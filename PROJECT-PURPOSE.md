@@ -119,20 +119,19 @@ Artifact note:
 
 ## Structural CSS naming convention (components layer)
 
-For structural classes in `packages/components/react`:
+Structural CSS conventions are documented canonically in [STRUCTURAL-CSS.md](STRUCTURAL-CSS.md).
 
-- Use prefix `k-` (Kiskadee namespace).
-- Use a 3-letter component id (example: `tab` for Tabs).
-- For schema-mapped elements, use `k-<cmp>-e<n>`:
-  - `k-tab-e1`, `k-tab-e2`, `k-tab-e3`, etc.
-- For option/variation suffixes, use short flags:
-  - `-t` for top, `-b` for bottom (example: `k-tab-e1-t`, `k-tab-e1-b`).
-- For non-schema helper nodes, keep short semantic suffixes (example: `k-tab-p` for panel).
+Short version:
 
-Scope rule:
-
-- Structural Sass should only define layout/behavior structure (display, positioning, flow, interaction basics).
-- Visual customization (colors, radius, sizes, emphasis/state styling) must come from schema build artifacts and runtime state classes, not hardcoded component Sass values.
+- use `k-` as the framework namespace,
+- use a 3-letter component id (`tab`, `btn`, etc.),
+- use `k-<cmp>-e<n>` for schema-owned elements,
+- keep shared element selectors such as `k-tab-e2` and `k-tab-e2a` only in common structural CSS,
+- specialize variants with a suffix such as `k-tab-e2-a` or `k-tab-e2a-a`,
+- use one-letter element-derived modifiers in alphabetical order,
+- keep structural Sass limited to DOM/layout/geometry/browser concerns,
+- require short structural comments above selectors because class names are intentionally compact,
+- keep design-token values in schema/build artifacts/runtime classes.
 
 ## New component rollout (end-to-end)
 
@@ -161,6 +160,9 @@ Practical rule:
 - [SCHEMA-BUILD-RUNTIME-RULES.md](SCHEMA-BUILD-RUNTIME-RULES.md)
   - Operational rules for deciding what belongs in schema, artifacts, runtime, and structural Sass.
   - Includes `components.<name>.options` vs `global` ownership and segment/theme/emphasis artifact mapping.
+
+- [STRUCTURAL-CSS.md](STRUCTURAL-CSS.md)
+  - Canonical naming, scope, and selector rules for structural Sass in `packages/components/react`.
 
 - [packages/web-builder/README.md](packages/web-builder/README.md)
   - Web-only details (border/padding compensation, gradients, states).
