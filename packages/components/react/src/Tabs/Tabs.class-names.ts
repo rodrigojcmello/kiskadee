@@ -669,7 +669,11 @@ export function resolveIndicatorClassName(options: {
       : '',
     resolveIndicatorModeClass(options.type, options.indicator.widthMode),
     indicatorVariantClass,
-    options.indicator.motion === 'none' ? 'k-tab-e5j' : '',
+    options.indicator.motion === 'none'
+      ? options.type === 'box'
+        ? 'k-tab-e5j-b'
+        : 'k-tab-e5j'
+      : '',
     options.elements.e5?.e?.h ? cn.shadow : '',
     'k-state',
     options.className
