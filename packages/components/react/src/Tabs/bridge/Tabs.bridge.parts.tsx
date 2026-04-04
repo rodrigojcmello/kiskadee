@@ -11,7 +11,9 @@ import {
   resolveBridgeItemClassName,
   resolveBridgeTriggerClassName,
   resolveElementClassName,
-  resolvePanelClassName
+  resolveNonShadowEffectClasses,
+  resolveRadiusClassName,
+  resolveShadowEffectClassName
 } from '../Tabs.class-names';
 import { useTabsVisualContext } from '../Tabs.context';
 import { TabsSlotContent, withTabsTabContext } from '../Tabs.parts';
@@ -124,22 +126,33 @@ export function TabsBridgeTabBase({
  *     Bridge treats the visible panel as part of the visual identity, so the shared
  *     headless panel needs one extra structural marker for bridge-only CSS.
  */
-export function TabsBridgeContentBase({ className, ...props }: TabsContentProps) {
+export function TabsBridgeContentBase({ className, children, ...props }: TabsContentProps) {
   const { scale, intent, emphasis, classNames, elements, radiusMode } = useTabsVisualContext();
-  const panelClassName =
-    resolvePanelClassName({
-      elements,
-      classNames,
+  const panelShadowClassName = joinClassNames(
+    resolveShadowEffectClassName(elements.e7),
+    'k-tab-e7a-a'
+  );
+  const panelShellClassName = joinClassNames(
+    resolveElementClassName(elements.e7, {
       scale,
       intent,
       emphasis,
-      radiusMode
-    }) ?? 'k-tab-p';
+      includeEffects: false
+    }),
+    resolveNonShadowEffectClasses(elements.e7),
+    resolveRadiusClassName(elements.e7, scale, radiusMode),
+    classNames.e7,
+    'k-tab-e7-a',
+    className
+  );
 
   return (
-    <HeadlessTabs.Content
-      {...props}
-      className={joinClassNames(panelClassName, 'k-tab-e7-a', className)}
-    />
+    <HeadlessTabs.Content {...props} className="k-tab-p">
+      <div className={panelShadowClassName}>
+        <div className={panelShellClassName}>
+          {children}
+        </div>
+      </div>
+    </HeadlessTabs.Content>
   );
 }

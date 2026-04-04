@@ -66,6 +66,9 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
             },
             e2: {
               paddingEmission: 'token'
+            },
+            e7: {
+              shadowEmission: 'token'
             }
           }
         }
