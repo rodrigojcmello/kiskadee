@@ -1,4 +1,5 @@
-.k-tab.k-tab-d .k-tab-e5 {
+/* `k-tab-e5-c`: dot indicator owns transition in the dot variant. */
+.k-tab-e5-c {
   transition:
     transform var(--k-tab-dur, 180ms) ease,
     width var(--k-tab-dur, 180ms) ease,
@@ -7,6 +8,7 @@
   will-change: transform, width, height, opacity;
 }
 
-.k-tab.k-tab-d .k-tab-e5.k-tab-e5j {
+/* `k-tab-e5-c.k-tab-e5j`: dot indicator disables transition in static mode. */
+.k-tab-e5-c.k-tab-e5j {
   transition: none;
 }

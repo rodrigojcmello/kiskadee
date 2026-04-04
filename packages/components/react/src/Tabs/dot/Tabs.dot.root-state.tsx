@@ -69,7 +69,8 @@ export function useResolvedTabsDotRootState({
     classNames: baseState.classNames,
     scale: baseState.scale,
     intent: baseState.intent,
-    emphasis: baseState.emphasis
+    emphasis: baseState.emphasis,
+    type: 'dot'
   });
 
   return useMemo(

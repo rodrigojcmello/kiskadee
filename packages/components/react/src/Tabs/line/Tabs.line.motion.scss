@@ -1,9 +1,11 @@
-.k-tab-m.k-tab-l .k-tab-c {
+/* `k-tab-m .k-tab-c-d`: line motion keeps the measured slot above the moving indicator. */
+.k-tab-m .k-tab-c-d {
   position: relative;
   z-index: 1;
 }
 
-.k-tab-m.k-tab-l .k-tab-e5 {
+/* `k-tab-m .k-tab-e5-d`: line motion disables CSS transition during JS-driven animation. */
+.k-tab-m .k-tab-e5-d {
   transition: none !important;
   will-change: auto;
 }

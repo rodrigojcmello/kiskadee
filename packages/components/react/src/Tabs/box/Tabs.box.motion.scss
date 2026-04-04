@@ -1,18 +1,22 @@
-.k-tab-m.k-tab-b {
+/* `k-tab-e1-b.k-tab-m`: box motion shell clips animated separators and indicator. */
+.k-tab-e1-b.k-tab-m {
   overflow: hidden;
 }
 
-.k-tab-m.k-tab-b .k-tab-c {
+/* `k-tab-m .k-tab-c-b`: box motion keeps measured content above the moving fill. */
+.k-tab-m .k-tab-c-b {
   position: relative;
   z-index: 3;
 }
 
-.k-tab-m.k-tab-b .k-tab-e5 {
+/* `k-tab-m .k-tab-e5-b`: box motion disables CSS transition during JS-driven animation. */
+.k-tab-m .k-tab-e5-b {
   transition: none !important;
   will-change: auto;
 }
 
-.k-tab-m.k-tab-b .k-tab-e6 {
+/* `k-tab-m .k-tab-e6-b`: box motion controls separator opacity entirely in runtime. */
+.k-tab-m .k-tab-e6-b {
   flex: 0 0 auto;
   align-self: center;
   pointer-events: none;
@@ -20,20 +24,24 @@
   transition: none;
 }
 
-.k-tab-m.k-tab-b .k-tab-e6.k-tab-e6a {
+/* `k-tab-m .k-tab-e6-b.k-tab-e6a-b`: box motion dims separators before they hide. */
+.k-tab-m .k-tab-e6-b.k-tab-e6a-b {
   opacity: 0.5;
   transition: opacity 200ms ease-out;
 }
 
-.k-tab-m.k-tab-b .k-tab-e6.k-tab-e6b {
+/* `k-tab-m .k-tab-e6-b.k-tab-e6b`: box motion fully hides separators beside the active tab. */
+.k-tab-m .k-tab-e6-b.k-tab-e6b {
   opacity: 0;
   transition: opacity 160ms ease;
 }
 
-.k-tab-m.k-tab-b .k-tab-e2 {
+/* `k-tab-m .k-tab-e2-b`: box motion removes z-index promotion to avoid flicker while animating. */
+.k-tab-m .k-tab-e2-b {
   z-index: auto;
 }
 
-.k-tab-m.k-tab-b .k-tab-e2[aria-selected='true'] {
+/* `k-tab-m .k-tab-e2-b[aria-selected='true']`: selected box trigger also resets z-index in motion mode. */
+.k-tab-m .k-tab-e2-b[aria-selected='true'] {
   z-index: auto;
 }

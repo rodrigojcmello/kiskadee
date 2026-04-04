@@ -352,14 +352,14 @@ export function resolveListClassName(options: {
     'k-tab',
     'k-tab-e1',
     options.type === 'box'
-      ? 'k-tab-b'
+      ? 'k-tab-e1-b'
       : options.type === 'segmented'
-        ? 'k-tab-s'
+        ? 'k-tab-e1-e'
         : options.type === 'dot'
-          ? 'k-tab-d'
+          ? 'k-tab-e1-c'
           : options.type === 'bridge'
             ? 'k-tab-e1-a'
-          : 'k-tab-l',
+            : 'k-tab-e1-d',
     options.type === 'bridge'
       ? options.lowerCurveMode === 'flush-all'
         ? 'k-tab-e1d-a'
@@ -397,6 +397,7 @@ export function resolveSeparatorClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
+  type: TabsVisualContextValue['type'];
 }): string | undefined {
   return joinClassNames(
     resolveElementClassName(options.elements.e6, {
@@ -405,7 +406,12 @@ export function resolveSeparatorClassName(options: {
       emphasis: options.emphasis
     }),
     options.classNames.e6,
-    'k-tab-e6'
+    'k-tab-e6',
+    options.type === 'box'
+      ? 'k-tab-e6-b'
+      : options.type === 'segmented'
+        ? 'k-tab-e6-e'
+        : ''
   );
 }
 
@@ -425,6 +431,7 @@ export function resolveTriggerClassName(options: {
   emphasis: TabsVisualContextValue['emphasis'];
   tabWidthMode: TabsVisualContextValue['tabWidthMode'];
   radiusMode: RadiusMode;
+  type: TabsVisualContextValue['type'];
   selected: boolean;
   className?: string;
   includeEffects?: boolean;
@@ -443,6 +450,15 @@ export function resolveTriggerClassName(options: {
     resolveRadiusClassName(options.elements.e2, options.scale, options.radiusMode),
     options.classNames.e2,
     'k-tab-e2',
+    options.type === 'box'
+      ? 'k-tab-e2-b'
+      : options.type === 'segmented'
+        ? 'k-tab-e2-e'
+        : options.type === 'dot'
+          ? 'k-tab-e2-c'
+          : options.type === 'line'
+            ? 'k-tab-e2-d'
+            : '',
     options.tabWidthMode === 'fixed' ? 'k-tab-e2a' : '',
     'k-state',
     cn.interactive,
@@ -614,7 +630,7 @@ export function resolveIndicatorClassName(options: {
   );
   const indicatorVariantClass =
     options.type === 'segmented'
-      ? 'k-tab-e5l'
+      ? 'k-tab-e5a-e'
       : options.indicator.variant === 'roundedClip' && options.type === 'line'
       ? 'k-tab-e5g'
       : indicatorRadiusClassName
@@ -637,6 +653,15 @@ export function resolveIndicatorClassName(options: {
     indicatorRadiusClassName,
     options.classNames.e5,
     'k-tab-e5',
+    options.type === 'box'
+      ? 'k-tab-e5-b'
+      : options.type === 'segmented'
+        ? 'k-tab-e5-e'
+        : options.type === 'dot'
+          ? 'k-tab-e5-c'
+          : options.type === 'line'
+            ? 'k-tab-e5-d'
+            : '',
     options.type === 'line' || options.type === 'dot'
       ? options.indicator.position === 'top'
         ? 'k-tab-e5i'

@@ -1,8 +1,10 @@
-.k-tab.k-tab-s {
+/* `k-tab-e1-e`: segmented bar clips the shared fill and inner corner resets. */
+.k-tab-e1-e {
   overflow: hidden;
 }
 
-.k-tab.k-tab-s .k-tab-e6 {
+/* `k-tab-e6-e`: segmented separator stays above the fill shell. */
+.k-tab-e6-e {
   flex: 0 0 auto;
   align-self: center;
   pointer-events: none;
@@ -13,11 +15,13 @@
   will-change: opacity;
 }
 
-.k-tab.k-tab-s .k-tab-e6.k-tab-e6b {
+/* `k-tab-e6-e.k-tab-e6b`: segmented separator hides when runtime marks it inactive. */
+.k-tab-e6-e.k-tab-e6b {
   opacity: 0;
 }
 
-.k-tab.k-tab-s .k-tab-e5 {
+/* `k-tab-e5-e`: segmented indicator owns motion-friendly size and transform transitions. */
+.k-tab-e5-e {
   transition:
     transform var(--k-tab-dur, 180ms) ease,
     width var(--k-tab-dur, 180ms) ease,
@@ -28,34 +32,41 @@
   width: var(--k-tab-w, 0px);
 }
 
-.k-tab.k-tab-s .k-tab-e5.k-tab-e5j {
+/* `k-tab-e5-e.k-tab-e5j`: segmented indicator disables transition in static mode. */
+.k-tab-e5-e.k-tab-e5j {
   transition: none;
 }
 
-.k-tab.k-tab-s > .k-tab-e2:not(:first-of-type) {
+/* `k-tab-e1-e > .k-tab-e2-e:not(:first-of-type)`: inner left corners flatten between segmented tabs. */
+.k-tab-e1-e > .k-tab-e2-e:not(:first-of-type) {
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
 }
 
-.k-tab.k-tab-s > .k-tab-e2:not(:last-of-type) {
+/* `k-tab-e1-e > .k-tab-e2-e:not(:last-of-type)`: inner right corners flatten between segmented tabs. */
+.k-tab-e1-e > .k-tab-e2-e:not(:last-of-type) {
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
 
-.k-tab.k-tab-s > [role='tab'][aria-selected='true']:not(:first-of-type) ~ .k-tab-e5.k-tab-e5l {
+/* `k-tab-e1-e > [role='tab'][aria-selected='true'] ~ .k-tab-e5-e.k-tab-e5a-e`: active fill flattens left inner corners when not first. */
+.k-tab-e1-e > [role='tab'][aria-selected='true']:not(:first-of-type) ~ .k-tab-e5-e.k-tab-e5a-e {
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
 }
 
-.k-tab.k-tab-s > [role='tab'][aria-selected='true']:not(:last-of-type) ~ .k-tab-e5.k-tab-e5l {
+/* `k-tab-e1-e > [role='tab'][aria-selected='true'] ~ .k-tab-e5-e.k-tab-e5a-e`: active fill flattens right inner corners when not last. */
+.k-tab-e1-e > [role='tab'][aria-selected='true']:not(:last-of-type) ~ .k-tab-e5-e.k-tab-e5a-e {
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
 
-.k-tab.k-tab-s .k-tab-e2 {
+/* `k-tab-e2-e`: segmented triggers stay below the selected fill. */
+.k-tab-e2-e {
   z-index: 1;
 }
 
-.k-tab.k-tab-s .k-tab-e2[aria-selected='true'] {
+/* `k-tab-e2-e[aria-selected='true']`: selected segmented trigger rises above siblings. */
+.k-tab-e2-e[aria-selected='true'] {
   z-index: 3;
 }

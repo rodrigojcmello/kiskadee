@@ -53,7 +53,8 @@ export function useResolvedTabsSegmentedRootState({
     classNames: baseState.classNames,
     scale: baseState.scale,
     intent: baseState.intent,
-    emphasis: baseState.emphasis
+    emphasis: baseState.emphasis,
+    type: 'segmented'
   });
 
   return useMemo(

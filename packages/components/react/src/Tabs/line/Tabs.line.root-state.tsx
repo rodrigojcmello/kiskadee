@@ -86,7 +86,8 @@ export function useResolvedTabsLineRootState({
     classNames: baseState.classNames,
     scale: baseState.scale,
     intent: baseState.intent,
-    emphasis: baseState.emphasis
+    emphasis: baseState.emphasis,
+    type: 'line'
   });
 
   return useMemo(

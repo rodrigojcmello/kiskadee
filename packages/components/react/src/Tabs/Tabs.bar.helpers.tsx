@@ -46,7 +46,7 @@ export function buildTabsChildrenWithSeparators(options: {
           className={joinClassNames(
             options.separatorClassName,
             state.hidden ? 'k-tab-e6b' : '',
-            state.dimmed ? 'k-tab-e6a' : ''
+            options.type === 'box' && state.dimmed ? 'k-tab-e6a-b' : ''
           )}
         />
       );

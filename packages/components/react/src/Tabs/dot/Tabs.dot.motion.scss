@@ -1,9 +1,11 @@
-.k-tab-m.k-tab-d .k-tab-c {
+/* `k-tab-m .k-tab-c-c`: dot motion keeps measured content above the moving indicator. */
+.k-tab-m .k-tab-c-c {
   position: relative;
   z-index: 1;
 }
 
-.k-tab-m.k-tab-d .k-tab-e5 {
+/* `k-tab-m .k-tab-e5-c`: dot motion disables CSS transition during JS-driven animation. */
+.k-tab-m .k-tab-e5-c {
   transition: none !important;
   will-change: auto;
 }

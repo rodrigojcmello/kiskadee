@@ -27,8 +27,25 @@ export function TabsSlotContent({
   label,
   icon
 }: Pick<TabsTabProps, 'children' | 'label' | 'icon'>) {
+  const { type } = useTabsVisualContext();
+
   return (
-    <span className="k-tab-c">
+    <span
+      className={joinClassNames(
+        'k-tab-c',
+        type === 'box'
+          ? 'k-tab-c-b'
+          : type === 'segmented'
+            ? 'k-tab-c-e'
+            : type === 'dot'
+              ? 'k-tab-c-c'
+              : type === 'line'
+                ? 'k-tab-c-d'
+                : type === 'bridge'
+                  ? 'k-tab-c-a'
+                  : ''
+      )}
+    >
       {children ? (
         children
       ) : (
@@ -49,7 +66,7 @@ export function TabsSlotContent({
  *     small reusable hook.
  */
 export function useTabsTabState(value: string, className?: string) {
-  const { selected, scale, intent, emphasis, classNames, elements, tabWidthMode, radiusMode } =
+  const { selected, scale, intent, emphasis, classNames, elements, tabWidthMode, radiusMode, type } =
     useTabsVisualContext();
   const isSelected = selected === value;
 
@@ -63,6 +80,7 @@ export function useTabsTabState(value: string, className?: string) {
       emphasis,
       tabWidthMode,
       radiusMode,
+      type,
       selected: isSelected,
       className
     })
