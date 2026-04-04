@@ -1,47 +1,53 @@
-/* `k-tab-e1-b.k-tab-m`: box motion shell clips animated separators and indicator. */
-.k-tab-e1-b.k-tab-m {
-  overflow: hidden;
-}
+.k-tab-m {
+  /* element: bar */
+  &.k-tab-e1-b {
+    overflow: hidden;
+  }
 
-/* `k-tab-m .k-tab-c-b`: box motion keeps measured content above the moving fill. */
-.k-tab-m .k-tab-c-b {
-  position: relative;
-  z-index: 3;
-}
+  /* helper: measured content slot */
+  .k-tab-c-b {
+    position: relative;
+    z-index: 3;
+  }
 
-/* `k-tab-m .k-tab-e5-b`: box motion disables CSS transition during JS-driven animation. */
-.k-tab-m .k-tab-e5-b {
-  transition: none !important;
-  will-change: auto;
-}
+  /* element: tab */
+  .k-tab-e2-b {
+    z-index: auto;
 
-/* `k-tab-m .k-tab-e6-b`: box motion controls separator opacity entirely in runtime. */
-.k-tab-m .k-tab-e6-b {
-  flex: 0 0 auto;
-  align-self: center;
-  pointer-events: none;
-  opacity: 1;
-  transition: none;
-}
+    /* selected state also resets z-index in motion mode */
+    &[aria-selected='true'] {
+      z-index: auto;
+    }
+  }
 
-/* `k-tab-m .k-tab-e6-b.k-tab-e6a-b`: box motion dims separators before they hide. */
-.k-tab-m .k-tab-e6-b.k-tab-e6a-b {
-  opacity: 0.5;
-  transition: opacity 200ms ease-out;
-}
+  /* element: indicator / selected shell */
+  .k-tab-e5 {
+    &-b {
+      transition: none !important;
+      will-change: auto;
+    }
+  }
 
-/* `k-tab-m .k-tab-e6-b.k-tab-e6b`: box motion fully hides separators beside the active tab. */
-.k-tab-m .k-tab-e6-b.k-tab-e6b {
-  opacity: 0;
-  transition: opacity 160ms ease;
-}
+  /* element: separator */
+  .k-tab-e6 {
+    &-b {
+      flex: 0 0 auto;
+      align-self: center;
+      pointer-events: none;
+      opacity: 1;
+      transition: none;
+    }
 
-/* `k-tab-m .k-tab-e2-b`: box motion removes z-index promotion to avoid flicker while animating. */
-.k-tab-m .k-tab-e2-b {
-  z-index: auto;
-}
+    /* modifier `a`: fully hides separators beside the active tab */
+    &a-b {
+      opacity: 0;
+      transition: opacity 160ms ease;
+    }
 
-/* `k-tab-m .k-tab-e2-b[aria-selected='true']`: selected box trigger also resets z-index in motion mode. */
-.k-tab-m .k-tab-e2-b[aria-selected='true'] {
-  z-index: auto;
+    /* modifier `b`: dims separators before they hide */
+    &b-b {
+      opacity: 0.5;
+      transition: opacity 200ms ease-out;
+    }
+  }
 }

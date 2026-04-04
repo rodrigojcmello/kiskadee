@@ -29,6 +29,41 @@ Examples:
 - `k-tab-e2-d`
 - `k-tab-e5a-e`
 
+## How to read the variant suffix
+
+The trailing variant letter in Tabs structural classes is defined by the registry above.
+
+Examples:
+
+- `k-tab-e5-b`
+  - `tab` = Tabs component
+  - `e5` = indicator / selected shell element
+  - `b` = box variant
+
+- `k-tab-e2-a`
+  - `tab` = Tabs component
+  - `e2` = tab element
+  - `a` = bridge variant
+
+- `k-tab-e5a-b`
+  - `tab` = Tabs component
+  - `e5` = indicator / selected shell element
+  - `a` = first modifier for `e5`
+  - `b` = box variant
+
+- `k-tab-e6b-b`
+  - `tab` = Tabs component
+  - `e6` = separator element
+  - `b` = second modifier for `e6`
+  - `b` = box variant
+
+Practical rule:
+
+- the last letter is the variant
+- the letter before the last hyphen belongs to the element modifier chain
+- for Tabs specifically, `a` always means `bridge`
+- for Tabs specifically, `b` always means `box`
+
 ## What `Tabs.common.scss` is
 
 `Tabs.common.scss` is the shared structural primitive layer for `Tabs`.

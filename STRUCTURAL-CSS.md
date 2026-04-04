@@ -254,6 +254,34 @@ Use this only when:
 - the helper has no clear schema-element owner,
 - and it still needs to be isolated to one variant.
 
+### 11. Component runtime state
+
+Use:
+
+```txt
+k-<cmp>-<state>
+```
+
+Example:
+
+- `k-tab-m`
+
+Use this only for runtime-controlled structural states that:
+
+- are applied at component root scope,
+- gate optional structural behavior,
+- and do not belong to one schema element.
+
+Current canonical state suffixes:
+
+- `m` = motion
+
+Important:
+
+- `k-<cmp>-m` is a runtime state gate, not an element class,
+- it exists to activate motion-specific structural CSS only when motion runtime is actually active,
+- do not use this shape for ordinary element styling or variant ownership.
+
 ## Selector scoping rules
 
 Prefer selectors that:
@@ -267,6 +295,7 @@ Good:
 - `.k-tab-e2-a`
 - `.k-tab-e2a-a`
 - `.k-tab-ha-a`
+- `.k-tab-m .k-tab-e5-b`
 
 Avoid:
 
@@ -288,27 +317,46 @@ Practical rule:
 
 ## Structural comments
 
-Because the naming system is intentionally compact, comments are mandatory for structural selectors.
+Because the naming system is intentionally compact, comments are mandatory for structural Sass.
 
-Each selector block in structural Sass should have one short English comment immediately above it.
+The preferred format is:
+
+- one block comment above each element section,
+- then short comments only for modifiers, states, or nested special cases.
 
 Format:
 
 ```scss
-/* `k-tab-e2a-a`: bridge trigger wrapper for overlap and shadow projection. */
-.k-tab-e2a-a {
+/* element: tab */
+.k-tab-e2-b {
   ...
+
+  /* selected state rises above sibling tabs */
+  &[aria-selected='true'] {
+    ...
+  }
+}
+
+/* element: indicator / selected shell */
+.k-tab-e5-b {
+  ...
+
+  /* modifier `j`: disables transition in static mode */
+  &.k-tab-e5j-b {
+    ...
+  }
 }
 ```
 
 Rules:
 
+- write the canonical element name in the block comment,
+- do not repeat the selector name in the comment,
 - keep comments structural, not visual,
 - explain role, not token values,
-- keep them short,
-- use the exact class name inside backticks,
-- add comments for helper selectors and variant-specific selectors,
-- shared selectors may use one comment for a small grouped block when the role is truly identical.
+- keep nested comments short,
+- describe modifiers and states only where they appear,
+- if a block is not tied to one schema element, use a short structural description instead of an element label.
 
 ## Structural CSS and runtime platform flags
 

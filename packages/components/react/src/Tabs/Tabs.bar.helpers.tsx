@@ -45,8 +45,8 @@ export function buildTabsChildrenWithSeparators(options: {
           aria-hidden="true"
           className={joinClassNames(
             options.separatorClassName,
-            state.hidden ? 'k-tab-e6b' : '',
-            options.type === 'box' && state.dimmed ? 'k-tab-e6a-b' : ''
+            state.hidden ? (options.type === 'box' ? 'k-tab-e6a-b' : 'k-tab-e6b') : '',
+            options.type === 'box' && state.dimmed ? 'k-tab-e6b-b' : ''
           )}
         />
       );

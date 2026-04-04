@@ -671,7 +671,7 @@ export function resolveIndicatorClassName(options: {
     indicatorVariantClass,
     options.indicator.motion === 'none'
       ? options.type === 'box'
-        ? 'k-tab-e5j-b'
+        ? 'k-tab-e5a-b'
         : 'k-tab-e5j'
       : '',
     options.elements.e5?.e?.h ? cn.shadow : '',
