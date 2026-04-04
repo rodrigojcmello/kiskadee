@@ -10,10 +10,7 @@ import {
   joinClassNames,
   resolveBridgeItemClassName,
   resolveBridgeTriggerClassName,
-  resolveElementClassName,
-  resolveNonShadowEffectClasses,
-  resolveRadiusClassName,
-  resolveShadowEffectClassName
+  resolveElementClassName
 } from '../Tabs.class-names';
 import { useTabsVisualContext } from '../Tabs.context';
 import { TabsSlotContent, withTabsTabContext } from '../Tabs.parts';
@@ -121,38 +118,15 @@ export function TabsBridgeTabBase({
 
 /**
  * What
- *     Renders the bridge content panel using the dedicated panel shell classes from `e7`.
+ *     Renders the bridge content panel on top of the shared headless `tabpanel`.
  * Why
- *     Bridge treats the visible panel as part of the visual identity, so the shared
- *     headless panel needs one extra structural marker for bridge-only CSS.
+ *     Bridge no longer consumes schema panel styling, so its content panel falls back to the
+ *     shared structural shell while keeping the bridge-specific tab stack above it.
  */
 export function TabsBridgeContentBase({ className, children, ...props }: TabsContentProps) {
-  const { scale, intent, emphasis, classNames, elements, radiusMode } = useTabsVisualContext();
-  const panelShadowClassName = joinClassNames(
-    resolveShadowEffectClassName(elements.e7),
-    'k-tab-e7a-a'
-  );
-  const panelShellClassName = joinClassNames(
-    resolveElementClassName(elements.e7, {
-      scale,
-      intent,
-      emphasis,
-      includeEffects: false
-    }),
-    resolveNonShadowEffectClasses(elements.e7),
-    resolveRadiusClassName(elements.e7, scale, radiusMode),
-    classNames.e7,
-    'k-tab-e7-a',
-    className
-  );
-
   return (
-    <HeadlessTabs.Content {...props} className="k-tab-p">
-      <div className={panelShadowClassName}>
-        <div className={panelShellClassName}>
-          {children}
-        </div>
-      </div>
+    <HeadlessTabs.Content {...props} className={joinClassNames('k-tab-p', className)}>
+      {children}
     </HeadlessTabs.Content>
   );
 }

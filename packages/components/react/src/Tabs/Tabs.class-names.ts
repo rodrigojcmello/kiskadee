@@ -588,10 +588,10 @@ export function resolveIconClassName(options: {
 
 /**
  * What
- *     Builds the final content-panel className for panel-aware Tabs variants.
+ *     Builds the final content-panel className when a Tabs variant opts into schema-driven panel styling.
  * Why
- *     Bridge models the content shell in schema as `e7`, so the shared content part needs one
- *     resolver that can attach optional panel classes without affecting other types.
+ *     Panel styling is optional in Tabs, so the shared content part needs one resolver that can
+ *     attach `e7` classes only when a variant actually uses that slot.
  */
 export function resolvePanelClassName(options: {
   elements: TabsClassesMap;

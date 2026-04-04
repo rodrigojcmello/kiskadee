@@ -196,23 +196,6 @@
 .k-tab-p {
   position: relative;
   z-index: 2;
-  overflow: hidden;
-}
-
-/* `k-tab-e7a-a.-e`: bridge panel shadow projects from a dedicated wrapper with side/bottom room and a clipped top edge. */
-.k-tab-e7a-a.-e {
-  margin-inline: calc(var(--k-sh-blur, 0px) * -1);
-  margin-block-end: calc((var(--k-sh-blur, 0px) + max(0px, var(--k-sh-y, 0px))) * -1);
-  padding-inline: var(--k-sh-blur, 0px);
-  padding-block-end: calc(var(--k-sh-blur, 0px) + max(0px, var(--k-sh-y, 0px)));
-  filter: drop-shadow(
-    var(--k-sh-x, 0) var(--k-sh-y, 0) var(--k-sh-blur, 0) var(--k-sh-color, transparent)
-  );
-}
-
-/* `k-tab-e7-a`: bridge visible panel shell keeps the surface separate from the shadow projection layer. */
-.k-tab-e7-a {
-  position: relative;
 }
 
 @media (max-width: 640px) {
