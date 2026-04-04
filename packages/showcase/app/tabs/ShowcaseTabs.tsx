@@ -18,7 +18,6 @@ import { TabsLine } from '@kiskadee/react-components/tabs/line';
 import { TabsSegmented } from '@kiskadee/react-components/tabs/segmented';
 import { useState } from 'react';
 import { Select } from '@/k-components';
-import { ExperimentalBridgeTabs } from './ExperimentalBridgeTabs';
 
 type TabsMode = 'animated' | 'static';
 type TabsSpring = TabsSpringPreset;
@@ -506,7 +505,7 @@ export default function ShowcaseTabs() {
       <p style={{ marginTop: 0, marginBottom: 20, maxWidth: 720 }}>
         Bridge tabs are now running through the real schema, builder, runtime, and component flow.
         The control below overrides the bridge-only `lowerCurveMode` prop so we can inspect each
-        structural mode without removing the prototype yet.
+        structural mode directly in the runtime implementation.
       </p>
       <div
         style={{
@@ -538,14 +537,6 @@ export default function ShowcaseTabs() {
           {bridgeRuntimeSlots.contents}
         </TabsBridge.Root>
       </div>
-
-      <h2 style={{ marginTop: 40 }}>Bridge Prototype</h2>
-      <p style={{ marginTop: 0, marginBottom: 20, maxWidth: 720 }}>
-        This is a static showcase-only experiment based directly on the reference HTML/CSS. It is
-        intentionally outside the Kiskadee tabs schema/runtime flow until the visual concept is
-        approved.
-      </p>
-      <ExperimentalBridgeTabs />
     </section>
   );
 }
