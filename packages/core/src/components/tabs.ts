@@ -10,7 +10,6 @@ import type {
   TabsIndicatorElementStyleFromSchema,
   TabsLabelElementStyleFromSchema,
   TabsOptionsFromSchema,
-  TabsPanelElementStyleFromSchema,
   TabsSegmentedBarElementStyleFromSchema,
   TabsSegmentedIndicatorElementStyleFromSchema,
   TabsSegmentedTriggerElementStyleFromSchema,
@@ -26,9 +25,8 @@ import type {
  * - e4: icon
  * - e5: indicator / selected shell
  * - e6: separator
- * - e7: panel
  */
-export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6' | 'e7';
+export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 export type TabsType = 'line' | 'box' | 'segmented' | 'dot' | 'bridge';
 export type TabsIndicatorPosition = 'top' | 'bottom';
 export type TabsIndicatorWidthMode = 'tab' | 'fixed' | 'content';
@@ -155,19 +153,6 @@ type TabsBridgeIndicatorElementStyle<TSegmentName extends SegmentName = never> =
 export type TabsSeparatorElementStyle<TSegmentName extends SegmentName = never> =
   TabsSeparatorElementStyleFromSchema<TSegmentName>;
 
-/**
- * e7 — panel
- * - boxColor
- * - padding
- * - borderRadius
- *
- * NOTE:
- * `bridge` uses this slot as part of its canonical visual shell, but the slot stays optional so
- * other types can adopt panel tokens later without another schema expansion.
- */
-export type TabsPanelElementStyle<TSegmentName extends SegmentName = never> =
-  TabsPanelElementStyleFromSchema<TSegmentName>;
-
 export type TabsElements<TSegmentName extends SegmentName = never> = {
   // e1: bar
   e1?: TabsBarElementStyle<TSegmentName>;
@@ -181,8 +166,6 @@ export type TabsElements<TSegmentName extends SegmentName = never> = {
   e5?: TabsIndicatorElementStyle<TSegmentName>;
   // e6: separator
   e6?: TabsSeparatorElementStyle<TSegmentName>;
-  // e7: panel
-  e7?: TabsPanelElementStyle<TSegmentName>;
 };
 
 type TabsLineBarElementStyle<TSegmentName extends SegmentName = never> =

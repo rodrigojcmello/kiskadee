@@ -588,35 +588,6 @@ export function resolveIconClassName(options: {
 
 /**
  * What
- *     Builds the final content-panel className when a Tabs variant opts into schema-driven panel styling.
- * Why
- *     Panel styling is optional in Tabs, so the shared content part needs one resolver that can
- *     attach `e7` classes only when a variant actually uses that slot.
- */
-export function resolvePanelClassName(options: {
-  elements: TabsClassesMap;
-  classNames: TabsClassNames;
-  scale: string;
-  intent: string;
-  emphasis: TabsVisualContextValue['emphasis'];
-  radiusMode: RadiusMode;
-  className?: string;
-}): string | undefined {
-  return joinClassNames(
-    resolveElementClassName(options.elements.e7, {
-      scale: options.scale,
-      intent: options.intent,
-      emphasis: options.emphasis
-    }),
-    resolveRadiusClassName(options.elements.e7, options.scale, options.radiusMode),
-    options.classNames.e7,
-    'k-tab-p',
-    options.className
-  );
-}
-
-/**
- * What
  *     Builds the final className for the active indicator, including variant, position,
  *     motion, and type-specific modifiers.
  * Why

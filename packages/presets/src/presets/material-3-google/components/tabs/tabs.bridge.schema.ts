@@ -246,54 +246,6 @@ export function createMaterial3GoogleTabsBridgeVariant({
             }
           }
         }
-      },
-      // e7: panel
-      e7: {
-        scales: {
-          paddingTop: 24,
-          paddingBottom: 24,
-          paddingLeft: 24,
-          paddingRight: 24,
-          borderRadius: {
-            rounded: {
-              's:sm:1': 14,
-              's:md:1': 18,
-              's:lg:1': 18
-            }
-          }
-        },
-        palettes: {
-          default: {
-            light: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: [43, 100, 99, 1]
-                  }
-                }
-              }
-            },
-            dark: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'neutral', 8)
-                  }
-                }
-              }
-            }
-          }
-        },
-        effects: {
-          shadow: {
-            x: { rest: 0 },
-            y: { rest: 5 },
-            blur: { rest: 4 },
-            color: {
-              rest: withAlpha([0, 0, 0, 1], 20)
-            }
-          }
-        }
       }
     }
   };

@@ -25,7 +25,7 @@ import type { HTMLAttributes, ReactNode, RefObject } from 'react';
 // Public API
 // ============================================
 
-export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6' | 'e7';
+export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 
 export type TabsClassNames = Partial<Record<TabsElementName, string>>;
 

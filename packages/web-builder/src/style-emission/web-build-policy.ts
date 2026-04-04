@@ -53,9 +53,6 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         e5: {
           borderRadiusEmission: 'token',
           shadowEmission: 'token'
-        },
-        e7: {
-          borderRadiusEmission: 'direct'
         }
       },
       variants: {
