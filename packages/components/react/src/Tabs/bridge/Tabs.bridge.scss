@@ -136,6 +136,7 @@
     display: inline-flex;
     flex: 0 0 auto;
     overflow: visible;
+    pointer-events: none;
 
     /* shadow effect bucket projects the tokenized shadow outside the clipped trigger */
     &.-e {
@@ -161,6 +162,7 @@
       calc(var(--k-pl, 0px) + var(--k-br, 12px));
     white-space: nowrap;
     overflow: visible;
+    pointer-events: auto;
     z-index: 1;
 
     /* derived node `b`: text-only tabs keep the inner slot paint-free */
