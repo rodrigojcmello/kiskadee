@@ -49,159 +49,167 @@
   );
 }
 
-/* `k-tab-e1-a`: bridge outer shell that owns clipping, stacking, and radius vars. */
-.k-tab-e1-a {
-  --k-br: 12px;
-  position: relative;
-  z-index: 1;
-  display: block;
-  overflow: hidden;
-  padding: 0 !important;
+/* element: bar */
+.k-tab-e1 {
+  /* variant `a`: outer shell owns clipping, stacking, and local radius geometry */
+  &-a {
+    --k-br: 12px;
+    position: relative;
+    z-index: 1;
+    display: block;
+    overflow: hidden;
+    padding: 0 !important;
+  }
+
+  /* derived node `c`: inner tablist owns horizontal scrolling and tab alignment */
+  &c-a {
+    display: flex;
+    align-items: flex-end;
+    margin: 0;
+    overflow-x: auto;
+    overflow-y: clip;
+    padding: var(--k-pt, 0px) var(--k-pr, 0px) 0 var(--k-pl, 0px);
+    scrollbar-width: thin;
+  }
+
+  /* modifier `e`: flush-start compensates the left shell edge while keeping shadow room inside */
+  &e-a {
+    margin-inline-start: calc(var(--k-pl, 0px) * -1);
+  }
+
+  /* modifier `f`: flush-end compensates the right shell edge while keeping shadow room inside */
+  &f-a {
+    margin-inline-end: calc(var(--k-pr, 0px) * -1);
+  }
+
+  /* modifiers `d` and `g`: flush-all and flush-both compensate both shell edges */
+  &d-a,
+  &g-a {
+    margin-inline-start: calc(var(--k-pl, 0px) * -1);
+    margin-inline-end: calc(var(--k-pr, 0px) * -1);
+  }
+
+  /* modifier `d`: flush-all removes wrapper overlap because tabs no longer curve below */
+  &d-a .k-tab-e2c-a + .k-tab-e2c-a {
+    margin-inline-start: 0;
+  }
+
+  @supports (clip-path: shape(from top left, hline to 0)) {
+    /* modifier `d`: flush-all removes lower-curve padding compensation and shape from every tab */
+    &d-a .k-tab-e2-a {
+      padding-right: var(--k-pr, 0px);
+      padding-left: var(--k-pl, 0px);
+      @include bridge-shape-top-only;
+    }
+
+    /* modifiers `e` and `g`: first tab drops the left lower curve */
+    &e-a .k-tab-e1c-a > .k-tab-e2c-a:first-of-type > .k-tab-e2-a,
+    &g-a .k-tab-e1c-a > .k-tab-e2c-a:first-of-type > .k-tab-e2-a {
+      padding-left: var(--k-pl, 0px);
+      padding-right: calc(var(--k-pr, 0px) + var(--k-br, 12px));
+      @include bridge-shape-flush-start;
+    }
+
+    /* modifiers `f` and `g`: last tab drops the right lower curve */
+    &f-a .k-tab-e1c-a > .k-tab-e2c-a:last-of-type > .k-tab-e2-a,
+    &g-a .k-tab-e1c-a > .k-tab-e2c-a:last-of-type > .k-tab-e2-a {
+      padding-left: calc(var(--k-pl, 0px) + var(--k-br, 12px));
+      padding-right: var(--k-pr, 0px);
+      @include bridge-shape-flush-end;
+    }
+  }
+
+  @media (max-width: 640px) {
+    &-a {
+      --k-pl: 4px;
+      --k-pr: 4px;
+    }
+  }
 }
 
-/* `k-tab-e1c-a`: bridge inner tablist that owns horizontal scrolling and tab alignment. */
-.k-tab-e1c-a {
-  display: flex;
-  align-items: flex-end;
-  margin: 0;
-  overflow-x: auto;
-  overflow-y: clip;
-  padding: var(--k-pt, 0px) var(--k-pr, 0px) 0 var(--k-pl, 0px);
-  scrollbar-width: thin;
+/* element: tab */
+.k-tab-e2 {
+  /* derived node `c`: wrapper owns overlap, stacking, and shadow projection */
+  &c-a {
+    position: relative;
+    z-index: var(--k-tab-z, 1);
+    display: inline-flex;
+    flex: 0 0 auto;
+    overflow: visible;
+
+    /* shadow effect bucket projects the tokenized shadow outside the clipped trigger */
+    &.-e {
+      filter: drop-shadow(
+        var(--k-sh-x, 0) var(--k-sh-y, 0) var(--k-sh-blur, 0) var(--k-sh-color, transparent)
+      );
+    }
+
+    /* selected state rises above sibling wrappers */
+    &[data-selected] {
+      z-index: 1000;
+    }
+  }
+
+  /* variant `a`: clipped trigger keeps the interactive shell isolated from the wrapper */
+  &-a {
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    display: inline-block;
+    font: inherit;
+    padding: var(--k-pt, 0px) calc(var(--k-pr, 0px) + var(--k-br, 12px)) var(--k-pb, 0px)
+      calc(var(--k-pl, 0px) + var(--k-br, 12px));
+    white-space: nowrap;
+    overflow: visible;
+    z-index: 1;
+
+    /* derived node `b`: text-only tabs keep the inner slot paint-free */
+    > .k-tab-e2b-a {
+      display: contents;
+    }
+
+    /* shared label stays inline to match the validated paint path */
+    .k-tab-e3 {
+      display: inline;
+    }
+
+    /* focus outline stays inside the clipped shell */
+    &:focus-visible {
+      outline-offset: -4px;
+    }
+  }
+
+  @supports not (clip-path: shape(from top left, hline to 0)) {
+    /* fallback: shape() unavailable keeps only the top corners rounded */
+    &-a {
+      border-start-start-radius: var(--k-br, 12px);
+      border-start-end-radius: var(--k-br, 12px);
+    }
+  }
+
+  @supports (clip-path: shape(from top left, hline to 0)) {
+    /* default geometry compensates both curved shoulders with the full bridge shape */
+    &-a {
+      @include bridge-shape-curved;
+    }
+  }
 }
 
-/* `k-tab-e1e-a`: flush-start keeps shadow room inside and compensates visually on the left shell edge. */
-.k-tab-e1e-a {
-  margin-inline-start: calc(var(--k-pl, 0px) * -1);
-}
-
-/* `k-tab-e1f-a`: flush-end keeps shadow room inside and compensates visually on the right shell edge. */
-.k-tab-e1f-a {
-  margin-inline-end: calc(var(--k-pr, 0px) * -1);
-}
-
-/* `k-tab-e1g-a` + `k-tab-e1d-a`: flush-both and flush-all keep shadow room inside and compensate on both shell edges. */
-.k-tab-e1g-a,
-.k-tab-e1d-a {
-  margin-inline-start: calc(var(--k-pl, 0px) * -1);
-  margin-inline-end: calc(var(--k-pr, 0px) * -1);
-}
-
-/* `k-tab-e2c-a`: bridge wrapper that owns overlap, stacking, and shadow projection. */
-.k-tab-e2c-a {
-  position: relative;
-  z-index: var(--k-tab-z, 1);
-  display: inline-flex;
-  flex: 0 0 auto;
-  overflow: visible;
-}
-
-/* `k-tab-e2c-a.-e`: bridge wrapper projects tokenized shadow outside the clipped trigger. */
-.k-tab-e2c-a.-e {
-  filter: drop-shadow(
-    var(--k-sh-x, 0) var(--k-sh-y, 0) var(--k-sh-blur, 0) var(--k-sh-color, transparent)
-  );
-}
-
-/* `k-tab-e2c-a + k-tab-e2c-a`: bridge wrappers overlap to build the connected shell effect. */
+/* element: tab */
+/* derived node `c`: adjacent wrappers overlap to build the connected bridge shell */
 .k-tab-e2c-a + .k-tab-e2c-a {
   margin-inline-start: calc(var(--k-br, 0px) * -2);
 }
 
-/* `k-tab-e1d-a`: flush-all removes wrapper overlap because tabs no longer have lower bridge curves. */
-.k-tab-e1d-a .k-tab-e2c-a + .k-tab-e2c-a {
-  margin-inline-start: 0;
-}
-
-/* `k-tab-e2c-a[data-selected]`: selected bridge wrapper stays above its siblings. */
-.k-tab-e2c-a[data-selected] {
-  z-index: 1000;
-}
-
-/* `k-tab-e2-a`: bridge trigger keeps the clipped interactive shell isolated from the wrapper. */
-.k-tab-e2-a {
-  -webkit-appearance: none;
-  appearance: none;
-  cursor: pointer;
-  display: inline-block;
-  font: inherit;
-  padding: var(--k-pt, 0px) calc(var(--k-pr, 0px) + var(--k-br, 12px)) var(--k-pb, 0px)
-    calc(var(--k-pl, 0px) + var(--k-br, 12px));
-  white-space: nowrap;
-  overflow: visible;
-  z-index: 1;
-}
-
-/* `k-tab-e2-a > .k-tab-e2b-a`: bridge text-only optimization keeps the inner slot paint-free. */
-.k-tab-e2-a > .k-tab-e2b-a {
-  display: contents;
-}
-
-/* `k-tab-e2-a .k-tab-e3`: bridge label stays inline to match the validated prototype paint path. */
-.k-tab-e2-a .k-tab-e3 {
-  display: inline;
-}
-
-/* `k-tab-e2-a:focus-visible`: focus outline stays inside the clipped bridge trigger shell. */
-.k-tab-e2-a:focus-visible {
-  outline-offset: -4px;
-}
-
-@supports not (clip-path: shape(from top left, hline to 0)) {
-  /* `k-tab-e2-a`: fallback shell keeps only the top corners rounded when shape() is unavailable. */
-  .k-tab-e2-a {
-    border-start-start-radius: var(--k-br, 12px);
-    border-start-end-radius: var(--k-br, 12px);
-  }
-}
-
 @supports (clip-path: shape(from top left, hline to 0)) {
-  /* `k-tab-e2-a`: default bridge trigger compensates both curved shoulders and uses the full bridge shape. */
-  .k-tab-e2-a {
-    @include bridge-shape-curved;
-  }
-
-  /* `k-tab-e1d-a`: lowerCurveMode `flush-all` removes lower-curve padding compensation and shape from every tab. */
-  .k-tab-e1d-a .k-tab-e2-a {
-    padding-right: var(--k-pr, 0px);
-    padding-left: var(--k-pl, 0px);
-    @include bridge-shape-top-only;
-  }
-
-  /* `k-tab-e1e-a`: lowerCurveMode `flush-start` keeps only the right-side bridge compensation on the first tab. */
-  .k-tab-e1e-a .k-tab-e1c-a > .k-tab-e2c-a:first-of-type > .k-tab-e2-a,
-    /* `k-tab-e1g-a`: lowerCurveMode `flush-both` also removes left-side bridge compensation on the first tab. */
-  .k-tab-e1g-a .k-tab-e1c-a > .k-tab-e2c-a:first-of-type > .k-tab-e2-a {
-    padding-left: var(--k-pl, 0px);
-    padding-right: calc(var(--k-pr, 0px) + var(--k-br, 12px));
-    @include bridge-shape-flush-start;
-  }
-
-  /* `k-tab-e1f-a`: lowerCurveMode `flush-end` keeps only the left-side bridge compensation on the last tab. */
-  .k-tab-e1f-a .k-tab-e1c-a > .k-tab-e2c-a:last-of-type > .k-tab-e2-a,
-    /* `k-tab-e1g-a`: lowerCurveMode `flush-both` also removes right-side bridge compensation on the last tab. */
-  .k-tab-e1g-a .k-tab-e1c-a > .k-tab-e2c-a:last-of-type > .k-tab-e2-a {
-    padding-left: calc(var(--k-pl, 0px) + var(--k-br, 12px));
-    padding-right: var(--k-pr, 0px);
-    @include bridge-shape-flush-end;
-  }
-
-  /* `k-os-macos.k-engine-blink .k-tab-e2-a`: Blink on macOS needs a tiny overlap to hide the hairline. */
+  /* platform fix: Blink on macOS needs a tiny overlap to hide the bridge hairline */
   .k-os-macos.k-engine-blink .k-tab-e2-a {
     margin-block-end: -0.1px;
   }
 }
 
-/* `k-tab-p`: bridge semantic panel stays above the tab stack. */
+/* element: panel */
 .k-tab-p {
   position: relative;
   z-index: 2;
-}
-
-@media (max-width: 640px) {
-  /* `k-tab-e1-a`: mobile bridge shell tightens the projected horizontal padding variables. */
-  .k-tab-e1-a {
-    --k-pl: 4px;
-    --k-pr: 4px;
-  }
 }
