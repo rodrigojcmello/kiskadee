@@ -53,7 +53,7 @@ const tabsIndicatorVariantSchema = z.enum([
   'bridge'
 ]);
 const tabsIndicatorWidthModeSchema = z.enum(['tab', 'fixed', 'content']);
-const tabsTabWidthModeSchema = z.enum(['auto', 'fixed']);
+const tabsTabWidthModeSchema = z.enum(['auto', 'fixed', 'distributed']);
 const tabsBridgeLowerCurveModeSchema = z.enum([
   'curved',
   'flush-start',

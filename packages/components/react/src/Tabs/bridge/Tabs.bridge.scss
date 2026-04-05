@@ -63,6 +63,30 @@
     padding: 0 !important;
   }
 
+  /* modifier `h`: distributed bridge fills the available width before inner scrolling takes over */
+  &-a.k-tab-e1h {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* modifier `h`: distributed inner tablist stretches with the shell until min widths cause overflow */
+  &-a.k-tab-e1h > .k-tab-e1c-a {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  /* modifier `h`: distributed bridge items grow evenly while keeping the shoulder compensation floor */
+  &-a.k-tab-e1h > .k-tab-e1c-a > .k-tab-e2c-a {
+    flex: 1 0 calc(var(--k-bxw) + (var(--k-bdr) * 2));
+    min-width: calc(var(--k-bxw) + (var(--k-bdr) * 2));
+  }
+
+  /* modifiers `h` + `d`: flush-all distributed items revert to the straight emitted width */
+  &-a.k-tab-e1h.k-tab-e1d-a > .k-tab-e1c-a > .k-tab-e2c-a {
+    flex-basis: var(--k-bxw);
+    min-width: var(--k-bxw);
+  }
+
   /* derived node `c`: inner tablist owns horizontal scrolling and tab alignment */
   &c-a {
     display: flex;
@@ -180,6 +204,11 @@
       @include bridge-shape-curved;
     }
   }
+}
+
+/* `k-tab-e1h` + `k-tab-e2c`: distributed bridge triggers fill the flex-grown wrapper width. */
+.k-tab-e1-a.k-tab-e1h > .k-tab-e1c-a > .k-tab-e2c-a > .k-tab-e2-a.k-tab-e2c {
+  width: 100%;
 }
 
 /* element: tab */

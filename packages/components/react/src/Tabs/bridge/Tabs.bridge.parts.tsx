@@ -73,7 +73,9 @@ export function TabsBridgeTabBase({
     useTabsVisualContext();
   const isSelected = selected === value;
   const itemClassName = resolveBridgeItemClassName({
-    elements
+    elements,
+    scale,
+    tabWidthMode
   });
   const triggerClassName = resolveBridgeTriggerClassName({
     elements,

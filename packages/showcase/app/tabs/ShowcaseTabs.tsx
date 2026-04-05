@@ -71,7 +71,8 @@ const lineIndicatorWidthModeLabels: Record<TabsIndicatorWidthMode, string> = {
 
 const tabWidthModeLabels: Record<TabsTabWidthMode, string> = {
   auto: 'Auto',
-  fixed: 'Fixed'
+  fixed: 'Fixed',
+  distributed: 'Distributed'
 };
 
 const indicatorPositionLabels: Record<TabsIndicatorPosition, string> = {
@@ -341,7 +342,8 @@ export default function ShowcaseTabs() {
       label: `Schema Default (${tabWidthModeLabels[schemaTabWidthMode]})`
     },
     { value: 'auto', label: tabWidthModeLabels.auto },
-    { value: 'fixed', label: tabWidthModeLabels.fixed }
+    { value: 'fixed', label: tabWidthModeLabels.fixed },
+    { value: 'distributed', label: tabWidthModeLabels.distributed }
   ];
   const tabWidthModeProp = tabWidthMode === 'default' ? undefined : tabWidthMode;
   const bridgeLowerCurveModeOptions = [
@@ -428,9 +430,10 @@ export default function ShowcaseTabs() {
       <p style={{ marginTop: 0, marginBottom: 20, maxWidth: 720 }}>
         Line tabs can use the schema default width mode or override it per component via the
         `indicator.widthMode` prop. Available modes are full tab width, rendered content width,
-        and fixed indicator width. Tab width itself can also stay automatic or use the schema
-        `e2.scales.boxWidth` when `tabWidthMode` is set to `fixed`. In animated mode, the
-        indicator can also switch between the direct transition and the new stretch transition.
+        and fixed indicator width. Tab width itself can stay automatic, lock to the schema
+        `e2.scales.boxWidth`, or distribute across the full bar width while still respecting that
+        same schema floor. In animated mode, the indicator can also switch between the direct
+        transition and the new stretch transition.
       </p>
       {lineExamples.map((example) => (
         <TabsExample

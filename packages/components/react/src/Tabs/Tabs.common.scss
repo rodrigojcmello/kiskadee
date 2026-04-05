@@ -25,6 +25,16 @@
   border-bottom-width: 0 !important;
 }
 
+/* `k-tab-e1h`: common distributed bars stretch to the available width and scroll only on overflow. */
+.k-tab-e1.k-tab-e1h:not(.k-tab-e1-a) {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: clip;
+  scrollbar-width: thin;
+}
+
 /* `k-tab-e2`: tab trigger button. */
 .k-tab-e2 {
   position: relative;
@@ -46,9 +56,22 @@
   //overflow: visible;
 }
 
-/* `k-tab-e2a`: fixed-width trigger keeps its schema width without flex shrink. */
+/* `k-tab-e2a`: fixed-width trigger keeps its emitted schema width without flex shrink. */
 .k-tab-e2.k-tab-e2a {
-  flex: 0 0 auto;
+  flex: 0 0 var(--k-bxw);
+  width: var(--k-bxw);
+  min-width: 0;
+}
+
+/* `k-tab-e1h > k-tab-e2c`: distributed tabs grow evenly but never shrink below the emitted width. */
+.k-tab-e1.k-tab-e1h > .k-tab-e2.k-tab-e2c {
+  flex: 1 0 var(--k-bxw);
+  min-width: var(--k-bxw);
+  width: auto;
+}
+
+/* `k-tab-e2c`: distributed trigger content can shrink inside the flex-grown shell. */
+.k-tab-e2.k-tab-e2c {
   min-width: 0;
 }
 
@@ -59,8 +82,8 @@
   gap: 8px;
 }
 
-/* `k-tab-e2a > k-tab-e2b`: fixed-width tabs constrain the measured content box. */
-.k-tab-e2.k-tab-e2a > .k-tab-e2b {
+/* `k-tab-e2a` / `k-tab-e2c` > `k-tab-e2b`: constrained-width tabs keep the measured content clipped. */
+.k-tab-e2:is(.k-tab-e2a, .k-tab-e2c) > .k-tab-e2b {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
@@ -76,8 +99,8 @@
   display: block;
 }
 
-/* `k-tab-e2a .k-tab-e3`: fixed-width labels truncate instead of overflowing the trigger. */
-.k-tab-e2.k-tab-e2a .k-tab-e3 {
+/* `k-tab-e2a` / `k-tab-e2c` .k-tab-e3: constrained-width labels truncate instead of overflowing. */
+.k-tab-e2:is(.k-tab-e2a, .k-tab-e2c) .k-tab-e3 {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;

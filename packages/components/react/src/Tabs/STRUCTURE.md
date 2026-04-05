@@ -79,9 +79,11 @@ Practical rule:
 It owns the base shape of shared slots such as:
 
 - `k-tab-e1`
+- `k-tab-e1h`
 - `k-tab-e2`
 - `k-tab-e2a`
 - `k-tab-e2b`
+- `k-tab-e2c`
 - `k-tab-e3`
 - `k-tab-e4`
 - `k-tab-e5` and its shared modifiers
@@ -115,6 +117,7 @@ In practice, `bridge` still reuses:
 - `k-tab-e1` as the shared base bar slot
 - `k-tab-e2` and `k-tab-e2a` as the shared trigger base
 - `k-tab-e2b`
+- `k-tab-e2c`
 - `k-tab-e3`
 - `k-tab-e4`
 - `k-tab-p`

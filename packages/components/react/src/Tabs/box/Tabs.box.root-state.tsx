@@ -58,6 +58,7 @@ export function useResolvedTabsBoxRootState({
     scale: baseState.scale,
     intent: baseState.intent,
     emphasis: baseState.emphasis,
+    tabWidthMode: baseState.resolvedTabWidthMode,
     radiusMode: resolvedRadiusMode,
     type: 'box',
     indicatorPosition: resolvedIndicator.position,

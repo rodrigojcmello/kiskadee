@@ -47,6 +47,7 @@ export function useResolvedTabsBridgeRootState({
     scale: baseState.scale,
     intent: baseState.intent,
     emphasis: baseState.emphasis,
+    tabWidthMode: baseState.resolvedTabWidthMode,
     radiusMode: resolvedRadiusMode,
     type: 'bridge',
     indicatorPosition: resolvedIndicator.position,

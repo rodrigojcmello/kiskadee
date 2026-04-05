@@ -43,6 +43,7 @@ export function useResolvedTabsSegmentedRootState({
     scale: baseState.scale,
     intent: baseState.intent,
     emphasis: baseState.emphasis,
+    tabWidthMode: baseState.resolvedTabWidthMode,
     radiusMode: resolvedRadiusMode,
     type: 'segmented',
     indicatorPosition: resolvedIndicator.position,

@@ -50,6 +50,7 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
     tabs: {
       elements: {
         e2: {
+          boxWidthEmission: 'token',
           borderRadiusEmission: 'token',
           shadowEmission: 'token'
         },
@@ -65,7 +66,6 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
               paddingEmission: 'token'
             },
             e2: {
-              boxWidthEmission: 'token',
               paddingEmission: 'token'
             }
           }

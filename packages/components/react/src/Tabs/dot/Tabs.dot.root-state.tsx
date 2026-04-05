@@ -59,6 +59,7 @@ export function useResolvedTabsDotRootState({
     scale: baseState.scale,
     intent: baseState.intent,
     emphasis: baseState.emphasis,
+    tabWidthMode: baseState.resolvedTabWidthMode,
     radiusMode: baseState.resolvedRadiusMode,
     type: 'dot',
     indicatorPosition: resolvedIndicator.position,

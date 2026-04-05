@@ -30,7 +30,7 @@ export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 export type TabsType = 'line' | 'box' | 'segmented' | 'dot' | 'bridge';
 export type TabsIndicatorPosition = 'top' | 'bottom';
 export type TabsIndicatorWidthMode = 'tab' | 'fixed' | 'content';
-export type TabsTabWidthMode = 'auto' | 'fixed';
+export type TabsTabWidthMode = 'auto' | 'fixed' | 'distributed';
 export type TabsBridgeLowerCurveMode =
   | 'curved'
   | 'flush-start'
@@ -80,7 +80,7 @@ export type TabsBarElementStyle<TSegmentName extends SegmentName = never> =
  * - borderRadius
  *
  * NOTE:
- * `boxWidth` is only applied when `tabWidthMode` is `fixed`.
+ * `boxWidth` is applied when `tabWidthMode` is `fixed` or `distributed`.
  */
 export type TabsTriggerElementStyle<TSegmentName extends SegmentName = never> =
   TabsTriggerElementStyleFromSchema<TSegmentName>;

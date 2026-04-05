@@ -335,6 +335,19 @@ export function resolveTabWidthMode(
 
 /**
  * What
+ *     Reports whether the current tab width mode consumes the schema `boxWidth` token.
+ * Why
+ *     Both `fixed` and `distributed` depend on width classes, while `auto` keeps the trigger
+ *     sized by content.
+ */
+function usesTabWidthScale(
+  tabWidthMode: TabsVisualContextValue['tabWidthMode']
+): boolean {
+  return tabWidthMode === 'fixed' || tabWidthMode === 'distributed';
+}
+
+/**
+ * What
  *     Builds the final className for the tab-list container by combining schema classes and
  *     type-specific structural modifiers.
  * Why
@@ -348,6 +361,7 @@ export function resolveListClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
+  tabWidthMode: TabsVisualContextValue['tabWidthMode'];
   radiusMode: RadiusMode;
   type: TabsVisualContextValue['type'];
   indicatorPosition: TabsResolvedIndicator['position'];
@@ -357,6 +371,7 @@ export function resolveListClassName(options: {
     'k-tab',
     'k-tab-e1',
     getTabsVariantElementClassName(options.type, 'e1'),
+    options.tabWidthMode === 'distributed' ? 'k-tab-e1h' : '',
     options.type === 'bridge' ? getTabsBridgeLowerCurveClassName(options.lowerCurveMode) : '',
     options.type === 'line' || options.type === 'dot'
       ? (options.indicatorPosition === 'top' ? 'k-tab-e1b' : 'k-tab-e1a')
@@ -427,7 +442,7 @@ export function resolveTriggerClassName(options: {
       selected: options.selected,
       includeEffects: options.includeEffects
     }),
-    options.tabWidthMode === 'fixed'
+    usesTabWidthScale(options.tabWidthMode)
       ? resolveWidthClassName(options.elements.e2, options.scale)
       : '',
     resolveRadiusClassName(options.elements.e2, options.scale, options.radiusMode),
@@ -435,6 +450,7 @@ export function resolveTriggerClassName(options: {
     'k-tab-e2',
     getTabsVariantElementClassName(options.type, 'e2'),
     options.tabWidthMode === 'fixed' ? 'k-tab-e2a' : '',
+    options.tabWidthMode === 'distributed' ? 'k-tab-e2c' : '',
     'k-state',
     cn.interactive,
     cn.activator,
@@ -452,10 +468,15 @@ export function resolveTriggerClassName(options: {
  */
 export function resolveBridgeItemClassName(options: {
   elements: TabsClassesMap;
+  scale: string;
+  tabWidthMode: TabsVisualContextValue['tabWidthMode'];
   className?: string;
 }): string | undefined {
   return joinClassNames(
     resolveShadowEffectClassName(options.elements.e2),
+    usesTabWidthScale(options.tabWidthMode)
+      ? resolveWidthClassName(options.elements.e2, options.scale)
+      : '',
     getTabsVariantElementClassName('bridge', 'e2c'),
     options.className
   );
@@ -483,7 +504,9 @@ export function resolveBridgeTriggerClassName(options: {
   const scaleKey = normalizeScaleKey(options.scale);
   const triggerElement = options.elements.e2;
   const selectedShellElement = options.elements.e5;
-  const activeEffectElement = options.selected ? (selectedShellElement ?? triggerElement) : triggerElement;
+  const activeEffectElement = options.selected
+    ? (selectedShellElement ?? triggerElement)
+    : triggerElement;
   const activeColorClassName = options.selected
     ? resolveIntentClasses(selectedShellElement, options.intent, options.emphasis)
     : resolveIntentClasses(triggerElement, options.intent, options.emphasis);
@@ -499,13 +522,16 @@ export function resolveBridgeTriggerClassName(options: {
     triggerElement?.s?.all,
     triggerElement?.s?.[scaleKey],
     resolveNonShadowEffectClasses(activeEffectElement),
-    options.tabWidthMode === 'fixed' ? resolveWidthClassName(triggerElement, options.scale) : '',
+    usesTabWidthScale(options.tabWidthMode)
+      ? resolveWidthClassName(triggerElement, options.scale)
+      : '',
     activeRadiusClassName,
     options.classNames.e2,
     options.selected ? options.classNames.e5 : '',
     'k-tab-e2',
     getTabsVariantElementClassName('bridge', 'e2'),
     options.tabWidthMode === 'fixed' ? 'k-tab-e2a' : '',
+    options.tabWidthMode === 'distributed' ? 'k-tab-e2c' : '',
     'k-state',
     cn.interactive,
     cn.activator,

@@ -76,6 +76,7 @@ export function useResolvedTabsLineRootState({
     scale: baseState.scale,
     intent: baseState.intent,
     emphasis: baseState.emphasis,
+    tabWidthMode: baseState.resolvedTabWidthMode,
     radiusMode: baseState.resolvedRadiusMode,
     type: 'line',
     indicatorPosition: resolvedIndicator.position,
