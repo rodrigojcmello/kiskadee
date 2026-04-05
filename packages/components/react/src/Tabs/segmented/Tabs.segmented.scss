@@ -20,6 +20,7 @@
   border-bottom-right-radius: max(0px, calc(var(--k-bdr) - var(--k-pdr))) max(0px, calc(var(--k-bdr) - var(--k-pdb)));
   border-bottom-left-radius: max(0px, calc(var(--k-bdr) - var(--k-pdl))) max(0px, calc(var(--k-bdr) - var(--k-pdb)));
   display: flex;
+  position: relative;
   width: 100%;
   min-width: 0;
   overflow-x: auto;

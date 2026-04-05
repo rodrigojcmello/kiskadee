@@ -12,7 +12,8 @@ import type { TabsBarProps } from '../Tabs.types';
  *     fixed or distributed widths overflow the available inline space.
  */
 export function TabsSegmentedBarBase({ className, children, ...props }: TabsBarProps) {
-  const { barRef, listClassName } = useTabsVisualContext();
+  const { barRef, listClassName, StaticEnhancer } = useTabsVisualContext();
+  const content = StaticEnhancer ? <StaticEnhancer>{children}</StaticEnhancer> : children;
 
   return (
     <div className={joinClassNames(listClassName, className)}>
@@ -21,7 +22,7 @@ export function TabsSegmentedBarBase({ className, children, ...props }: TabsBarP
         {...props}
         className={getTabsVariantElementClassName('segmented', 'e1c')}
       >
-        {children}
+        {content}
       </HeadlessTabs.Bar>
     </div>
   );
