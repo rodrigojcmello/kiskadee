@@ -1,14 +1,16 @@
-/* `k-tab-e5-c`: dot indicator owns transition in the dot variant. */
-.k-tab-e5-c {
-  transition:
-    transform var(--k-tab-dur, 180ms) ease,
-    width var(--k-tab-dur, 180ms) ease,
-    height var(--k-tab-dur, 180ms) ease,
-    opacity var(--k-tab-dur, 180ms) ease;
-  will-change: transform, width, height, opacity;
-}
+/* element: indicator / selected shell */
+.k-tab-e5 {
+  &-c {
+    transition:
+      transform var(--k-tab-dur, 180ms) ease,
+      width var(--k-tab-dur, 180ms) ease,
+      height var(--k-tab-dur, 180ms) ease,
+      opacity var(--k-tab-dur, 180ms) ease;
+    will-change: transform, width, height, opacity;
+  }
 
-/* `k-tab-e5-c.k-tab-e5j`: dot indicator disables transition in static mode. */
-.k-tab-e5-c.k-tab-e5j {
-  transition: none;
+  /* modifier `a`: disables transition in static mode */
+  &a-c {
+    transition: none;
+  }
 }

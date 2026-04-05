@@ -1,6 +1,6 @@
 import type { TabsVisualContextValue } from './Tabs.types';
 
-const TAB_CONTENT_SELECTOR = '.k-tab-c';
+const TAB_CONTENT_SELECTOR = '.k-tab-e2b';
 
 export type IndicatorRect = {
   x: number;

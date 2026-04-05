@@ -7,6 +7,7 @@ import {
   resolveTriggerClassName
 } from './Tabs.class-names';
 import { TabsTabContextProvider, useTabsTabContext, useTabsVisualContext } from './Tabs.context';
+import { getTabsVariantElementClassName } from './Tabs.structural-registry';
 import type {
   TabsContentProps,
   TabsIconProps,
@@ -32,18 +33,8 @@ export function TabsSlotContent({
   return (
     <span
       className={joinClassNames(
-        'k-tab-c',
-        type === 'box'
-          ? 'k-tab-c-b'
-          : type === 'segmented'
-            ? 'k-tab-c-e'
-            : type === 'dot'
-              ? 'k-tab-c-c'
-              : type === 'line'
-                ? 'k-tab-c-d'
-                : type === 'bridge'
-                  ? 'k-tab-c-a'
-                  : ''
+        'k-tab-e2b',
+        getTabsVariantElementClassName(type, 'e2b')
       )}
     >
       {children ? (

@@ -87,8 +87,8 @@
   margin-inline-end: calc(var(--k-pr, 0px) * -1);
 }
 
-/* `k-tab-e2b-a`: bridge wrapper that owns overlap, stacking, and shadow projection. */
-.k-tab-e2b-a {
+/* `k-tab-e2c-a`: bridge wrapper that owns overlap, stacking, and shadow projection. */
+.k-tab-e2c-a {
   position: relative;
   z-index: var(--k-tab-z, 1);
   display: inline-flex;
@@ -96,25 +96,25 @@
   overflow: visible;
 }
 
-/* `k-tab-e2b-a.-e`: bridge wrapper projects tokenized shadow outside the clipped trigger. */
-.k-tab-e2b-a.-e {
+/* `k-tab-e2c-a.-e`: bridge wrapper projects tokenized shadow outside the clipped trigger. */
+.k-tab-e2c-a.-e {
   filter: drop-shadow(
     var(--k-sh-x, 0) var(--k-sh-y, 0) var(--k-sh-blur, 0) var(--k-sh-color, transparent)
   );
 }
 
-/* `k-tab-e2b-a + k-tab-e2b-a`: bridge wrappers overlap to build the connected shell effect. */
-.k-tab-e2b-a + .k-tab-e2b-a {
+/* `k-tab-e2c-a + k-tab-e2c-a`: bridge wrappers overlap to build the connected shell effect. */
+.k-tab-e2c-a + .k-tab-e2c-a {
   margin-inline-start: calc(var(--k-br, 0px) * -2);
 }
 
 /* `k-tab-e1d-a`: flush-all removes wrapper overlap because tabs no longer have lower bridge curves. */
-.k-tab-e1d-a .k-tab-e2b-a + .k-tab-e2b-a {
+.k-tab-e1d-a .k-tab-e2c-a + .k-tab-e2c-a {
   margin-inline-start: 0;
 }
 
-/* `k-tab-e2b-a[data-selected]`: selected bridge wrapper stays above its siblings. */
-.k-tab-e2b-a[data-selected] {
+/* `k-tab-e2c-a[data-selected]`: selected bridge wrapper stays above its siblings. */
+.k-tab-e2c-a[data-selected] {
   z-index: 1000;
 }
 
@@ -132,8 +132,8 @@
   z-index: 1;
 }
 
-/* `k-tab-e2-a > .k-tab-c`: bridge text-only optimization keeps the inner slot paint-free. */
-.k-tab-e2-a > .k-tab-c {
+/* `k-tab-e2-a > .k-tab-e2b-a`: bridge text-only optimization keeps the inner slot paint-free. */
+.k-tab-e2-a > .k-tab-e2b-a {
   display: contents;
 }
 
@@ -169,18 +169,18 @@
   }
 
   /* `k-tab-e1e-a`: lowerCurveMode `flush-start` keeps only the right-side bridge compensation on the first tab. */
-  .k-tab-e1e-a .k-tab-e1c-a > .k-tab-e2b-a:first-of-type > .k-tab-e2-a,
+  .k-tab-e1e-a .k-tab-e1c-a > .k-tab-e2c-a:first-of-type > .k-tab-e2-a,
     /* `k-tab-e1g-a`: lowerCurveMode `flush-both` also removes left-side bridge compensation on the first tab. */
-  .k-tab-e1g-a .k-tab-e1c-a > .k-tab-e2b-a:first-of-type > .k-tab-e2-a {
+  .k-tab-e1g-a .k-tab-e1c-a > .k-tab-e2c-a:first-of-type > .k-tab-e2-a {
     padding-left: var(--k-pl, 0px);
     padding-right: calc(var(--k-pr, 0px) + var(--k-br, 12px));
     @include bridge-shape-flush-start;
   }
 
   /* `k-tab-e1f-a`: lowerCurveMode `flush-end` keeps only the left-side bridge compensation on the last tab. */
-  .k-tab-e1f-a .k-tab-e1c-a > .k-tab-e2b-a:last-of-type > .k-tab-e2-a,
+  .k-tab-e1f-a .k-tab-e1c-a > .k-tab-e2c-a:last-of-type > .k-tab-e2-a,
     /* `k-tab-e1g-a`: lowerCurveMode `flush-both` also removes right-side bridge compensation on the last tab. */
-  .k-tab-e1g-a .k-tab-e1c-a > .k-tab-e2b-a:last-of-type > .k-tab-e2-a {
+  .k-tab-e1g-a .k-tab-e1c-a > .k-tab-e2c-a:last-of-type > .k-tab-e2-a {
     padding-left: calc(var(--k-pl, 0px) + var(--k-br, 12px));
     padding-right: var(--k-pr, 0px);
     @include bridge-shape-flush-end;

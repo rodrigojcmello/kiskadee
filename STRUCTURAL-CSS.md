@@ -114,7 +114,7 @@ Important:
 - it exists for common structural files such as `Tabs.common.scss`,
 - it must stay genuinely shared across all variants for that component.
 
-### 5. Shared element-derived modifier or helper
+### 5. Shared element-derived modifier or derived node
 
 Use:
 
@@ -127,13 +127,25 @@ Examples:
 - `k-tab-e2a`
 - `k-tab-e5b`
 
-Use this only when the modifier or helper is truly shared across all variants of the component.
+Use this when the structural node clearly belongs to one schema element.
+
+This includes:
+
+- actual modifiers of that element,
+- derived wrappers around that element,
+- derived inner layers owned by that element.
+
+Example:
+
+- if a wrapper exists only to support the `tab` element, prefer `e2a`, `e2b`, and so on
+- do not create a generic helper for a node that can be clearly owned by `e2`
 
 Rules:
 
 - use one letter only,
 - assign letters in local alphabetical order,
 - keep this shape restricted to common structural CSS,
+- prefer this shape over helper syntax whenever the owner element is obvious,
 - if the selector is not truly shared, it must be specialized by variant.
 
 ### 6. Variant letter registry
@@ -181,7 +193,7 @@ This shape is preferred over root-level variant scoping such as:
 
 because it keeps the selector flatter and makes the element ownership explicit.
 
-### 8. Variant-specialized element modifier or helper
+### 8. Variant-specialized element modifier or derived node
 
 Use:
 
@@ -196,7 +208,7 @@ Examples:
 
 This is the preferred pattern when:
 
-- a helper belongs to one schema element,
+- a structural node belongs to one schema element,
 - and it should only exist for one variant,
 - or a structural modifier must not leak across variants.
 
@@ -211,12 +223,12 @@ because it reduces selector depth and prevents style leakage across variants.
 Use:
 
 ```txt
-k-<cmp>-h<a-z>
+k-<cmp>-h<n>
 ```
 
 Example:
 
-- `k-tab-ha`
+- `k-tab-h1`
 
 Use this only when a structural helper:
 
@@ -225,6 +237,9 @@ Use this only when a structural helper:
 - and cannot be cleanly owned by one schema element.
 
 This should be rare.
+
+If the helper can be reasonably treated as belonging to `e1`, `e2`, `e3`, and so on, do not use
+`h<n>`. Use an element-derived name instead.
 
 Do not use semantic helper names such as:
 
@@ -242,12 +257,12 @@ Important:
 Use:
 
 ```txt
-k-<cmp>-h<a-z>-<variant>
+k-<cmp>-h<n>-<variant>
 ```
 
 Example:
 
-- `k-tab-ha-a`
+- `k-tab-h1-a`
 
 Use this only when:
 
@@ -294,7 +309,7 @@ Good:
 
 - `.k-tab-e2-a`
 - `.k-tab-e2a-a`
-- `.k-tab-ha-a`
+- `.k-tab-h1-a`
 - `.k-tab-m .k-tab-e5-b`
 
 Avoid:
@@ -356,7 +371,28 @@ Rules:
 - explain role, not token values,
 - keep nested comments short,
 - describe modifiers and states only where they appear,
+- if a derived selector clearly belongs to one element, open the Sass block at the base element and
+  nest the derived selector inside it,
 - if a block is not tied to one schema element, use a short structural description instead of an element label.
+
+Preferred:
+
+```scss
+.k-tab-e2 {
+  /* derived content wrapper keeps the measured slot above the moving indicator */
+  &b-c {
+    ...
+  }
+}
+```
+
+Avoid when the owner element is obvious:
+
+```scss
+.k-tab-e2b-c {
+  ...
+}
+```
 
 ## Structural CSS and runtime platform flags
 

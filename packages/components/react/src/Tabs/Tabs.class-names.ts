@@ -6,6 +6,11 @@ import {
   type RadiusMode
 } from '@kiskadee/core';
 import { isValidElement, type ReactNode } from 'react';
+import {
+  getTabsBridgeLowerCurveClassName,
+  getTabsIndicatorStaticClassName,
+  getTabsVariantElementClassName
+} from './Tabs.structural-registry';
 import type {
   TabsClassesMap,
   TabsClassNames,
@@ -351,26 +356,8 @@ export function resolveListClassName(options: {
   return joinClassNames(
     'k-tab',
     'k-tab-e1',
-    options.type === 'box'
-      ? 'k-tab-e1-b'
-      : options.type === 'segmented'
-        ? 'k-tab-e1-e'
-        : options.type === 'dot'
-          ? 'k-tab-e1-c'
-          : options.type === 'bridge'
-            ? 'k-tab-e1-a'
-            : 'k-tab-e1-d',
-    options.type === 'bridge'
-      ? options.lowerCurveMode === 'flush-all'
-        ? 'k-tab-e1d-a'
-        : options.lowerCurveMode === 'flush-start'
-          ? 'k-tab-e1e-a'
-          : options.lowerCurveMode === 'flush-end'
-            ? 'k-tab-e1f-a'
-            : options.lowerCurveMode === 'flush-both'
-              ? 'k-tab-e1g-a'
-              : ''
-      : '',
+    getTabsVariantElementClassName(options.type, 'e1'),
+    options.type === 'bridge' ? getTabsBridgeLowerCurveClassName(options.lowerCurveMode) : '',
     options.type === 'line' || options.type === 'dot'
       ? (options.indicatorPosition === 'top' ? 'k-tab-e1b' : 'k-tab-e1a')
       : '',
@@ -407,11 +394,7 @@ export function resolveSeparatorClassName(options: {
     }),
     options.classNames.e6,
     'k-tab-e6',
-    options.type === 'box'
-      ? 'k-tab-e6-b'
-      : options.type === 'segmented'
-        ? 'k-tab-e6-e'
-        : ''
+    getTabsVariantElementClassName(options.type, 'e6')
   );
 }
 
@@ -450,15 +433,7 @@ export function resolveTriggerClassName(options: {
     resolveRadiusClassName(options.elements.e2, options.scale, options.radiusMode),
     options.classNames.e2,
     'k-tab-e2',
-    options.type === 'box'
-      ? 'k-tab-e2-b'
-      : options.type === 'segmented'
-        ? 'k-tab-e2-e'
-        : options.type === 'dot'
-          ? 'k-tab-e2-c'
-          : options.type === 'line'
-            ? 'k-tab-e2-d'
-            : '',
+    getTabsVariantElementClassName(options.type, 'e2'),
     options.tabWidthMode === 'fixed' ? 'k-tab-e2a' : '',
     'k-state',
     cn.interactive,
@@ -481,7 +456,7 @@ export function resolveBridgeItemClassName(options: {
 }): string | undefined {
   return joinClassNames(
     resolveShadowEffectClassName(options.elements.e2),
-    'k-tab-e2b-a',
+    getTabsVariantElementClassName('bridge', 'e2c'),
     options.className
   );
 }
@@ -529,7 +504,7 @@ export function resolveBridgeTriggerClassName(options: {
     options.classNames.e2,
     options.selected ? options.classNames.e5 : '',
     'k-tab-e2',
-    'k-tab-e2-a',
+    getTabsVariantElementClassName('bridge', 'e2'),
     options.tabWidthMode === 'fixed' ? 'k-tab-e2a' : '',
     'k-state',
     cn.interactive,
@@ -653,15 +628,7 @@ export function resolveIndicatorClassName(options: {
     indicatorRadiusClassName,
     options.classNames.e5,
     'k-tab-e5',
-    options.type === 'box'
-      ? 'k-tab-e5-b'
-      : options.type === 'segmented'
-        ? 'k-tab-e5-e'
-        : options.type === 'dot'
-          ? 'k-tab-e5-c'
-          : options.type === 'line'
-            ? 'k-tab-e5-d'
-            : '',
+    getTabsVariantElementClassName(options.type, 'e5'),
     options.type === 'line' || options.type === 'dot'
       ? options.indicator.position === 'top'
         ? 'k-tab-e5i'
@@ -670,9 +637,7 @@ export function resolveIndicatorClassName(options: {
     resolveIndicatorModeClass(options.type, options.indicator.widthMode),
     indicatorVariantClass,
     options.indicator.motion === 'none'
-      ? options.type === 'box'
-        ? 'k-tab-e5a-b'
-        : 'k-tab-e5j'
+      ? getTabsIndicatorStaticClassName(options.type) || 'k-tab-e5j'
       : '',
     options.elements.e5?.e?.h ? cn.shadow : '',
     'k-state',

@@ -1,13 +1,15 @@
-/* `k-tab-e5-d`: line indicator owns transition in the line variant. */
-.k-tab-e5-d {
-  transition:
-    transform var(--k-tab-dur, 180ms) ease,
-    width var(--k-tab-dur, 180ms) ease,
-    height var(--k-tab-dur, 180ms) ease;
-  will-change: transform, width, height;
-}
+/* element: indicator / selected shell */
+.k-tab-e5 {
+  &-d {
+    transition:
+      transform var(--k-tab-dur, 180ms) ease,
+      width var(--k-tab-dur, 180ms) ease,
+      height var(--k-tab-dur, 180ms) ease;
+    will-change: transform, width, height;
+  }
 
-/* `k-tab-e5-d.k-tab-e5j`: line indicator disables transition in static mode. */
-.k-tab-e5-d.k-tab-e5j {
-  transition: none;
+  /* modifier `a`: disables transition in static mode */
+  &a-d {
+    transition: none;
+  }
 }
