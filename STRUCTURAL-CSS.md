@@ -27,7 +27,7 @@ Structural CSS may define:
 - structural wrappers required by a component type,
 - structural motion plumbing,
 - platform-specific rendering fixes guarded by runtime classes,
-- geometry that consumes generated CSS variables such as `--k-br`.
+- geometry that consumes generated CSS variables such as `--k-bdr`.
 
 ## What structural CSS must not own
 
@@ -422,7 +422,7 @@ Structural CSS may consume:
 
 Examples:
 
-- use `var(--k-br)` to drive `clip-path`,
+- use `var(--k-bdr)` to drive `clip-path`,
 - use generated shadow variables in `filter: drop-shadow(...)`,
 - use runtime platform classes for engine-specific fixes.
 
@@ -432,7 +432,7 @@ Important:
 
 - when a canonical emitted variable already exists, structural CSS must consume that variable directly,
 - structural CSS must not create local alias variables for emitted schema values just to rename or relay them,
-- prefer direct overrides such as `padding-left: 0` or `padding-right: calc(var(--k-pr) + var(--k-br))`
+- prefer direct overrides such as `padding-left: 0` or `padding-right: calc(var(--k-pdr) + var(--k-bdr))`
   over ad hoc aliases like `--k-foo-left`,
 - create new local CSS variables only when they represent genuinely local structural state that cannot be
   expressed directly and is reused enough to justify the indirection.
@@ -445,8 +445,8 @@ prefer bare `var(--k-...)` references without a fallback.
 Examples:
 
 - prefer `width: var(--k-tab-w)` over `width: var(--k-tab-w, 0px)`
-- prefer `padding-right: calc(var(--k-pr) + var(--k-br))` over
-  `padding-right: calc(var(--k-pr, 0px) + var(--k-br, 12px))`
+- prefer `padding-right: calc(var(--k-pdr) + var(--k-bdr))` over
+  `padding-right: calc(var(--k-pdr, 0px) + var(--k-bdr, 12px))`
 
 Why:
 

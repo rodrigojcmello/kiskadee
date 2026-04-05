@@ -9,6 +9,7 @@ import {
   stateActivator
 } from '@kiskadee/core';
 import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages';
+import { EMITTED_SCALE_CSS_VARS } from '../../scales/transformScaleKeyToCss';
 
 // [RIPPLE EFFECT 13] START: Transform ripple style keys into CSS variable rules.
 type RippleValue = {
@@ -151,7 +152,7 @@ export function transformRippleKeyToCss(styleKey: string, className: string): st
     const pressedFadeDuration = toCssDuration(resolvedPressedProfile.fade?.durationToken, 100);
     const pressedFadeEase = toCssCurve(resolvedPressedProfile.fade?.curveToken, 'ease-out');
     const pressedOverflow = 'hidden';
-    const pressedClip = 'inset(0 round var(--k-br, 0px))';
+    const pressedClip = `inset(0 round var(${EMITTED_SCALE_CSS_VARS.borderRadius}, 0px))`;
     const pressedBorderWidth =
       resolvedPressedProfile.border?.width !== undefined
         ? `${resolvedPressedProfile.border.width}px`
@@ -193,7 +194,9 @@ export function transformRippleKeyToCss(styleKey: string, className: string): st
   const fillVars = FILL_TOKEN_TO_VARS[fillToken];
   const isOverflowMode = resolvedMode === 'overflow' || resolvedMode === 'overflow-static';
   const overflow = isOverflowMode ? 'visible' : 'hidden';
-  const clip = isOverflowMode ? 'none' : 'inset(0 round var(--k-br, 0px))';
+  const clip = isOverflowMode
+    ? 'none'
+    : `inset(0 round var(${EMITTED_SCALE_CSS_VARS.borderRadius}, 0px))`;
   const resolvedColor = `var(${fillVars.colorVar}, ${fillVars.colorFallback})`;
   const resolvedOpacity = `var(${fillVars.opacityVar}, ${fillVars.opacityFallback})`;
   const duration = toCssDuration(resolvedProfile.durationToken, 468);

@@ -29,6 +29,23 @@ export type TransformScaleKeyToCssOptions = {
 };
 
 /**
+ * Canonical emitted CSS custom property names for scale-derived structural tokens.
+ *
+ * Naming grammar:
+ * - first two letters identify the attribute group (`bd` = border, `bx` = box, `pd` = padding)
+ * - last letter identifies the concrete value or edge within that group
+ */
+export const EMITTED_SCALE_CSS_VARS = {
+  borderWidth: '--k-bdw',
+  borderRadius: '--k-bdr',
+  boxWidth: '--k-bxw',
+  paddingTop: '--k-pdt',
+  paddingRight: '--k-pdr',
+  paddingBottom: '--k-pdb',
+  paddingLeft: '--k-pdl'
+} as const;
+
+/**
  * Map of project scale keys to their corresponding CSS property names.
  */
 const cssPropertyMap: Record<ScaleProperty, string> = {
@@ -173,7 +190,12 @@ export function transformScaleKeyToCss(
   if (scaleProperty === 'borderWidth') {
     rule =
       styleEmissionPolicy.borderWidthEmission === 'mirrored'
-        ? `.${className} { --k-bw: ${cssValue}; ${cssProperty}: ${cssValue} }`
+        ? `.${className} { ${EMITTED_SCALE_CSS_VARS.borderWidth}: ${cssValue}; ${cssProperty}: ${cssValue} }`
+        : `.${className} { ${cssProperty}: ${cssValue} }`;
+  } else if (scaleProperty === 'boxWidth') {
+    rule =
+      styleEmissionPolicy.boxWidthEmission === 'token'
+        ? `.${className} { ${EMITTED_SCALE_CSS_VARS.boxWidth}: ${cssValue} }`
         : `.${className} { ${cssProperty}: ${cssValue} }`;
   } else if (
     scaleProperty === 'borderRadius' ||
@@ -183,9 +205,9 @@ export function transformScaleKeyToCss(
   ) {
     rule =
       styleEmissionPolicy.borderRadiusEmission === 'mirrored'
-        ? `.${className} { --k-br: ${cssValue}; ${cssProperty}: ${cssValue} }`
+        ? `.${className} { ${EMITTED_SCALE_CSS_VARS.borderRadius}: ${cssValue}; ${cssProperty}: ${cssValue} }`
         : styleEmissionPolicy.borderRadiusEmission === 'token'
-          ? `.${className} { --k-br: ${cssValue} }`
+          ? `.${className} { ${EMITTED_SCALE_CSS_VARS.borderRadius}: ${cssValue} }`
           : `.${className} { ${cssProperty}: ${cssValue} }`;
   } else if (
     scaleProperty === 'paddingTop' ||
@@ -195,15 +217,15 @@ export function transformScaleKeyToCss(
   ) {
     const paddingVar =
       scaleProperty === 'paddingTop'
-        ? '--k-pt'
+        ? EMITTED_SCALE_CSS_VARS.paddingTop
         : scaleProperty === 'paddingRight'
-          ? '--k-pr'
+          ? EMITTED_SCALE_CSS_VARS.paddingRight
           : scaleProperty === 'paddingBottom'
-            ? '--k-pb'
-            : '--k-pl';
+            ? EMITTED_SCALE_CSS_VARS.paddingBottom
+            : EMITTED_SCALE_CSS_VARS.paddingLeft;
 
     if (styleEmissionPolicy.paddingEmission === 'compensated') {
-      const adjustedPadding = `max(0px, calc(var(${paddingVar}) - var(--k-bw, 0px)))`;
+      const adjustedPadding = `max(0px, calc(var(${paddingVar}) - var(${EMITTED_SCALE_CSS_VARS.borderWidth}, 0px)))`;
       rule = `.${className} { ${paddingVar}: ${cssValue}; ${cssProperty}: ${adjustedPadding} }`;
     } else if (styleEmissionPolicy.paddingEmission === 'token') {
       rule = `.${className} { ${paddingVar}: ${cssValue} }`;

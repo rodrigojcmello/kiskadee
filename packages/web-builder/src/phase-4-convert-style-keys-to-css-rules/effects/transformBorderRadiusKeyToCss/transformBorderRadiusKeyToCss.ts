@@ -10,6 +10,7 @@ import {
   DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
   type ResolvedElementStyleEmissionPolicy
 } from '../../../style-emission/web-build-policy';
+import { EMITTED_SCALE_CSS_VARS } from '../../scales/transformScaleKeyToCss';
 
 export const ERROR_INVALID_NUMERIC_KEY_FORMAT =
   'Invalid key format. Expected numeric value in square brackets at the end.';
@@ -213,9 +214,9 @@ export function transformBorderRadiusKeyToCss(
     options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
   const declaration =
     styleEmissionPolicy.borderRadiusEmission === 'mirrored'
-      ? `--k-br: ${px}px; border-radius: ${px}px`
+      ? `${EMITTED_SCALE_CSS_VARS.borderRadius}: ${px}px; border-radius: ${px}px`
       : styleEmissionPolicy.borderRadiusEmission === 'token'
-        ? `--k-br: ${px}px`
+        ? `${EMITTED_SCALE_CSS_VARS.borderRadius}: ${px}px`
         : `border-radius: ${px}px`;
   const rule = `${selector} { ${declaration} }`;
   return mediaQuery ? `${mediaQuery} { ${rule} }` : rule;

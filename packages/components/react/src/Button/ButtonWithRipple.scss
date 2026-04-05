@@ -4,7 +4,7 @@
   z-index: 0;
   --k-ripple-overflow: hidden;
   overflow: var(--k-ripple-overflow);
-  clip-path: var(--k-ripple-clip, inset(0 round var(--k-br, 0px)));
+  clip-path: var(--k-ripple-clip, inset(0 round var(--k-bdr, 0px)));
 
   /*
    * clip-path clips outline painting on focused buttons.
