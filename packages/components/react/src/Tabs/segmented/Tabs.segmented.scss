@@ -22,6 +22,7 @@
 
 /* `k-tab-e5-e`: segmented indicator owns motion-friendly size and transform transitions. */
 .k-tab-e5-e {
+  border-radius: var(--k-bdr);
   transition:
     transform var(--k-tab-dur) ease,
     width var(--k-tab-dur) ease,
@@ -63,6 +64,7 @@
 
 /* `k-tab-e2-e`: segmented triggers stay below the selected fill. */
 .k-tab-e2-e {
+  border-radius: var(--k-bdr);
   z-index: 1;
 }
 

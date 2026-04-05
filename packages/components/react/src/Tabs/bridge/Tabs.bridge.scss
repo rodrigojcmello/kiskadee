@@ -153,11 +153,9 @@
   &-a {
     -webkit-appearance: none;
     appearance: none;
-    cursor: pointer;
     display: inline-block;
     font: inherit;
-    padding: var(--k-pdt) calc(var(--k-pdr) + var(--k-bdr)) var(--k-pdb)
-      calc(var(--k-pdl) + var(--k-bdr));
+    padding: var(--k-pdt) calc(var(--k-pdr) + var(--k-bdr)) var(--k-pdb) calc(var(--k-pdl) + var(--k-bdr));
     white-space: nowrap;
     overflow: visible;
     pointer-events: auto;
