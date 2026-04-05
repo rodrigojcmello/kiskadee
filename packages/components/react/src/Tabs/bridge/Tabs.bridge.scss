@@ -51,13 +51,15 @@
 
 /* element: bar */
 .k-tab-e1 {
-  /* variant `a`: outer shell owns clipping, stacking, and local radius geometry */
+  /* variant `a`: outer shell owns clipping, stacking, local radius geometry, and edge alignment */
   &-a {
     --k-bdr: 12px;
     position: relative;
     z-index: 1;
     display: block;
     overflow: hidden;
+    margin-inline-start: calc(var(--k-pdl) * -1);
+    margin-inline-end: calc(var(--k-pdr) * -1);
     padding: 0 !important;
   }
 
@@ -70,23 +72,6 @@
     overflow-y: clip;
     padding: var(--k-pdt) var(--k-pdr) 0 var(--k-pdl);
     scrollbar-width: thin;
-  }
-
-  /* modifier `e`: flush-start compensates the left shell edge while keeping shadow room inside */
-  &e-a {
-    margin-inline-start: calc(var(--k-pdl) * -1);
-  }
-
-  /* modifier `f`: flush-end compensates the right shell edge while keeping shadow room inside */
-  &f-a {
-    margin-inline-end: calc(var(--k-pdr) * -1);
-  }
-
-  /* modifiers `d` and `g`: flush-all and flush-both compensate both shell edges */
-  &d-a,
-  &g-a {
-    margin-inline-start: calc(var(--k-pdl) * -1);
-    margin-inline-end: calc(var(--k-pdr) * -1);
   }
 
   /* modifier `d`: flush-all removes wrapper overlap because tabs no longer curve below */
