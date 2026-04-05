@@ -163,16 +163,6 @@
     pointer-events: auto;
     z-index: 1;
 
-    /* derived node `b`: text-only tabs keep the inner slot paint-free */
-    > .k-tab-e2b-a {
-      display: contents;
-    }
-
-    /* shared label stays inline to match the validated paint path */
-    .k-tab-e3 {
-      display: inline;
-    }
-
     /* focus outline stays inside the clipped shell */
     &:focus-visible {
       outline-offset: -4px;

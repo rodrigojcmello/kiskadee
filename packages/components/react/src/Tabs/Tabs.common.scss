@@ -49,6 +49,7 @@
 /* `k-tab-e2a`: fixed-width trigger keeps its schema width without flex shrink. */
 .k-tab-e2.k-tab-e2a {
   flex: 0 0 auto;
+  min-width: 0;
 }
 
 /* `k-tab-e2b`: tab-derived inner content wrapper used for indicator measurements. */
@@ -58,6 +59,13 @@
   gap: 8px;
 }
 
+/* `k-tab-e2a > k-tab-e2b`: fixed-width tabs constrain the measured content box. */
+.k-tab-e2.k-tab-e2a > .k-tab-e2b {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
 /* `k-tab-e2`: disabled trigger cursor state. */
 .k-tab-e2[aria-disabled='true'] {
   cursor: not-allowed;
@@ -65,8 +73,16 @@
 
 /* `k-tab-e3`: tab label slot. */
 .k-tab-e3 {
-  display: inline-flex;
-  align-items: center;
+  display: block;
+}
+
+/* `k-tab-e2a .k-tab-e3`: fixed-width labels truncate instead of overflowing the trigger. */
+.k-tab-e2.k-tab-e2a .k-tab-e3 {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* `k-tab-e4`: tab icon slot. */
