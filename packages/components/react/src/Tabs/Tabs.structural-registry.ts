@@ -1,13 +1,6 @@
 import type { TabsBridgeLowerCurveMode, TabsType } from '@kiskadee/core';
 
-export type TabsStructuralElementKey =
-  | 'e1'
-  | 'e1c'
-  | 'e2'
-  | 'e2b'
-  | 'e2c'
-  | 'e5'
-  | 'e6';
+export type TabsStructuralElementKey = 'e1' | 'e1c' | 'e2' | 'e2b' | 'e2c' | 'e5' | 'e6';
 
 type TabsStructuralVariantEntry = {
   letter: string;
@@ -80,6 +73,7 @@ export const tabsStructuralRegistry = {
     letter: 'e',
     elements: {
       e1: 'k-tab-e1-e',
+      e1c: 'k-tab-e1c-e',
       e2: 'k-tab-e2-e',
       e2b: 'k-tab-e2b-e',
       e5: 'k-tab-e5-e',
@@ -120,9 +114,7 @@ export function getTabsVariantElementClassName(
  *     Bridge list geometry is variant-specific, so the runtime needs one table-backed source
  *     for these mode classes.
  */
-export function getTabsBridgeLowerCurveClassName(
-  mode: TabsBridgeLowerCurveMode
-): string {
+export function getTabsBridgeLowerCurveClassName(mode: TabsBridgeLowerCurveMode): string {
   return getTabsVariantRegistry('bridge').lowerCurveModeClassNames?.[mode] ?? '';
 }
 

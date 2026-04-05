@@ -1,6 +1,37 @@
-/* `k-tab-e1-e`: segmented bar clips the shared fill and inner corner resets. */
+/* `k-tab-e1-e`: segmented outer shell owns the fixed chrome and clips the scrolling interior. */
 .k-tab-e1-e {
+  display: inline-block;
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
   overflow: hidden;
+}
+
+/* `k-tab-e1-e.k-tab-e1h`: distributed segmented shell expands to the available width. */
+.k-tab-e1-e.k-tab-e1h {
+  display: block;
+  width: 100%;
+}
+
+/* `k-tab-e1c-e`: segmented inner bar owns horizontal scrolling inside the fixed shell. */
+.k-tab-e1c-e {
+  border-top-left-radius: max(0px, calc(var(--k-bdr) - var(--k-pdl))) max(0px, calc(var(--k-bdr) - var(--k-pdt)));
+  border-top-right-radius: max(0px, calc(var(--k-bdr) - var(--k-pdr))) max(0px, calc(var(--k-bdr) - var(--k-pdt)));
+  border-bottom-right-radius: max(0px, calc(var(--k-bdr) - var(--k-pdr))) max(0px, calc(var(--k-bdr) - var(--k-pdb)));
+  border-bottom-left-radius: max(0px, calc(var(--k-bdr) - var(--k-pdl))) max(0px, calc(var(--k-bdr) - var(--k-pdb)));
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: clip;
+  scrollbar-width: thin;
+}
+
+/* `k-tab-e1h > k-tab-e1c-e > k-tab-e2c`: distributed segmented tabs divide the available width. */
+.k-tab-e1-e.k-tab-e1h > .k-tab-e1c-e > .k-tab-e2-e.k-tab-e2c {
+  flex: 1 0 var(--k-bxw);
+  min-width: var(--k-bxw);
+  width: auto;
 }
 
 /* `k-tab-e6-e`: segmented separator stays above the fill shell. */
@@ -23,10 +54,9 @@
 /* `k-tab-e5-e`: segmented indicator owns motion-friendly size and transform transitions. */
 .k-tab-e5-e {
   border-radius: var(--k-bdr);
-  transition:
-    transform var(--k-tab-dur) ease,
-    width var(--k-tab-dur) ease,
-    height var(--k-tab-dur) ease;
+  transition: transform var(--k-tab-dur) ease,
+  width var(--k-tab-dur) ease,
+  height var(--k-tab-dur) ease;
   will-change: transform, width, height;
   height: var(--k-tab-h);
   transform: translate3d(var(--k-tab-x), var(--k-tab-y), 0px);
@@ -38,26 +68,26 @@
   transition: none;
 }
 
-/* `k-tab-e1-e > .k-tab-e2-e:not(:first-of-type)`: inner left corners flatten between segmented tabs. */
-.k-tab-e1-e > .k-tab-e2-e:not(:first-of-type) {
+/* `k-tab-e1c-e > .k-tab-e2-e:not(:first-of-type)`: inner left corners flatten between segmented tabs. */
+.k-tab-e1c-e > .k-tab-e2-e:not(:first-of-type) {
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
 }
 
-/* `k-tab-e1-e > .k-tab-e2-e:not(:last-of-type)`: inner right corners flatten between segmented tabs. */
-.k-tab-e1-e > .k-tab-e2-e:not(:last-of-type) {
+/* `k-tab-e1c-e > .k-tab-e2-e:not(:last-of-type)`: inner right corners flatten between segmented tabs. */
+.k-tab-e1c-e > .k-tab-e2-e:not(:last-of-type) {
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
 
-/* `k-tab-e1-e > [role='tab'][aria-selected='true'] ~ .k-tab-e5-e.k-tab-e5a-e`: active fill flattens left inner corners when not first. */
-.k-tab-e1-e > [role='tab'][aria-selected='true']:not(:first-of-type) ~ .k-tab-e5-e.k-tab-e5a-e {
+/* `k-tab-e1c-e > [role='tab'][aria-selected='true'] ~ .k-tab-e5-e.k-tab-e5a-e`: active fill flattens left inner corners when not first. */
+.k-tab-e1c-e > [role='tab'][aria-selected='true']:not(:first-of-type) ~ .k-tab-e5-e.k-tab-e5a-e {
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
 }
 
-/* `k-tab-e1-e > [role='tab'][aria-selected='true'] ~ .k-tab-e5-e.k-tab-e5a-e`: active fill flattens right inner corners when not last. */
-.k-tab-e1-e > [role='tab'][aria-selected='true']:not(:last-of-type) ~ .k-tab-e5-e.k-tab-e5a-e {
+/* `k-tab-e1c-e > [role='tab'][aria-selected='true'] ~ .k-tab-e5-e.k-tab-e5a-e`: active fill flattens right inner corners when not last. */
+.k-tab-e1c-e > [role='tab'][aria-selected='true']:not(:last-of-type) ~ .k-tab-e5-e.k-tab-e5a-e {
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }

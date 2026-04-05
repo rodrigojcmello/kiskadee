@@ -1,4 +1,5 @@
 import { createTabsComponent } from '../Tabs.runtime';
+import TabsSegmentedBarBase from './Tabs.segmented.parts';
 import TabsSegmentedStaticBarEnhancer from './Tabs.segmented.static';
 import { useResolvedTabsSegmentedRootState } from './Tabs.segmented.root-state';
 import type {
@@ -26,6 +27,7 @@ import './Tabs.segmented.scss';
  */
 export const TabsSegmented = createTabsComponent<TabsSegmentedRootProps>({
   displayName: 'TabsSegmented',
+  BarComponent: TabsSegmentedBarBase,
   StaticEnhancer: TabsSegmentedStaticBarEnhancer,
   useResolvedRootState: useResolvedTabsSegmentedRootState
 });

@@ -69,6 +69,14 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
               paddingEmission: 'token'
             }
           }
+        },
+        segmented: {
+          elements: {
+            e1: {
+              borderRadiusEmission: 'mirrored',
+              paddingEmission: 'mirrored'
+            }
+          }
         }
       }
     }
