@@ -2,9 +2,9 @@
 .k-tab-e5 {
   &-d {
     transition:
-      transform var(--k-tab-dur, 180ms) ease,
-      width var(--k-tab-dur, 180ms) ease,
-      height var(--k-tab-dur, 180ms) ease;
+      transform var(--k-tab-dur) ease,
+      width var(--k-tab-dur) ease,
+      height var(--k-tab-dur) ease;
     will-change: transform, width, height;
   }
 

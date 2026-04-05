@@ -437,6 +437,29 @@ Important:
 - create new local CSS variables only when they represent genuinely local structural state that cannot be
   expressed directly and is reused enough to justify the indirection.
 
+## Required custom properties
+
+When structural CSS consumes a custom property that is part of the expected component contract,
+prefer bare `var(--k-...)` references without a fallback.
+
+Examples:
+
+- prefer `width: var(--k-tab-w)` over `width: var(--k-tab-w, 0px)`
+- prefer `padding-right: calc(var(--k-pr) + var(--k-br))` over
+  `padding-right: calc(var(--k-pr, 0px) + var(--k-br, 12px))`
+
+Why:
+
+- a missing variable should surface as an obvious structural defect during development,
+- that visible defect is useful evidence that the variable was not emitted, not scoped, or not wired correctly,
+- a local fallback at the consumption site can hide that contract bug and make diagnosis harder.
+
+Practical rule:
+
+- if the variable is required, do not add a fallback in `var()`,
+- if a local default is genuinely intentional, define that custom property at the owning structural scope instead of
+  repeating a fallback at each consumption site.
+
 ## Runtime structural variables
 
 Structural CSS may also consume variables injected by runtime logic when those variables represent

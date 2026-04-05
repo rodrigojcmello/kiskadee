@@ -3,36 +3,36 @@
 @mixin bridge-shape-curved {
   clip-path: shape(
     from bottom left,
-    curve to var(--k-br, 12px) calc(100% - var(--k-br, 12px)) with var(--k-br, 12px) 100%,
-    vline to var(--k-br, 12px),
-    curve to calc(var(--k-br, 12px) * 2) 0 with var(--k-br, 12px) 0,
-    hline to calc(100% - calc(var(--k-br, 12px) * 2)),
-    curve to calc(100% - var(--k-br, 12px)) var(--k-br, 12px) with calc(100% - var(--k-br, 12px)) 0,
-    vline to calc(100% - var(--k-br, 12px)),
-    curve to 100% 100% with calc(100% - var(--k-br, 12px)) 100%
+    curve to var(--k-br) calc(100% - var(--k-br)) with var(--k-br) 100%,
+    vline to var(--k-br),
+    curve to calc(var(--k-br) * 2) 0 with var(--k-br) 0,
+    hline to calc(100% - calc(var(--k-br) * 2)),
+    curve to calc(100% - var(--k-br)) var(--k-br) with calc(100% - var(--k-br)) 0,
+    vline to calc(100% - var(--k-br)),
+    curve to 100% 100% with calc(100% - var(--k-br)) 100%
   );
 }
 
 @mixin bridge-shape-flush-start {
   clip-path: shape(
     from bottom left,
-    vline to var(--k-br, 12px),
-    curve to var(--k-br, 12px) 0 with 0 0,
-    hline to calc(100% - calc(var(--k-br, 12px) * 2)),
-    curve to calc(100% - var(--k-br, 12px)) var(--k-br, 12px) with calc(100% - var(--k-br, 12px)) 0,
-    vline to calc(100% - var(--k-br, 12px)),
-    curve to 100% 100% with calc(100% - var(--k-br, 12px)) 100%
+    vline to var(--k-br),
+    curve to var(--k-br) 0 with 0 0,
+    hline to calc(100% - calc(var(--k-br) * 2)),
+    curve to calc(100% - var(--k-br)) var(--k-br) with calc(100% - var(--k-br)) 0,
+    vline to calc(100% - var(--k-br)),
+    curve to 100% 100% with calc(100% - var(--k-br)) 100%
   );
 }
 
 @mixin bridge-shape-flush-end {
   clip-path: shape(
     from bottom left,
-    curve to var(--k-br, 12px) calc(100% - var(--k-br, 12px)) with var(--k-br, 12px) 100%,
-    vline to var(--k-br, 12px),
-    curve to calc(var(--k-br, 12px) * 2) 0 with var(--k-br, 12px) 0,
-    hline to calc(100% - var(--k-br, 12px)),
-    curve to 100% var(--k-br, 12px) with 100% 0,
+    curve to var(--k-br) calc(100% - var(--k-br)) with var(--k-br) 100%,
+    vline to var(--k-br),
+    curve to calc(var(--k-br) * 2) 0 with var(--k-br) 0,
+    hline to calc(100% - var(--k-br)),
+    curve to 100% var(--k-br) with 100% 0,
     vline to 100%
   );
 }
@@ -40,10 +40,10 @@
 @mixin bridge-shape-top-only {
   clip-path: shape(
     from bottom left,
-    vline to var(--k-br, 12px),
-    curve to var(--k-br, 12px) 0 with 0 0,
-    hline to calc(100% - var(--k-br, 12px)),
-    curve to 100% var(--k-br, 12px) with 100% 0,
+    vline to var(--k-br),
+    curve to var(--k-br) 0 with 0 0,
+    hline to calc(100% - var(--k-br)),
+    curve to 100% var(--k-br) with 100% 0,
     vline to 100%,
     hline to 0
   );
@@ -68,25 +68,25 @@
     margin: 0;
     overflow-x: auto;
     overflow-y: clip;
-    padding: var(--k-pt, 0px) var(--k-pr, 0px) 0 var(--k-pl, 0px);
+    padding: var(--k-pt) var(--k-pr) 0 var(--k-pl);
     scrollbar-width: thin;
   }
 
   /* modifier `e`: flush-start compensates the left shell edge while keeping shadow room inside */
   &e-a {
-    margin-inline-start: calc(var(--k-pl, 0px) * -1);
+    margin-inline-start: calc(var(--k-pl) * -1);
   }
 
   /* modifier `f`: flush-end compensates the right shell edge while keeping shadow room inside */
   &f-a {
-    margin-inline-end: calc(var(--k-pr, 0px) * -1);
+    margin-inline-end: calc(var(--k-pr) * -1);
   }
 
   /* modifiers `d` and `g`: flush-all and flush-both compensate both shell edges */
   &d-a,
   &g-a {
-    margin-inline-start: calc(var(--k-pl, 0px) * -1);
-    margin-inline-end: calc(var(--k-pr, 0px) * -1);
+    margin-inline-start: calc(var(--k-pl) * -1);
+    margin-inline-end: calc(var(--k-pr) * -1);
   }
 
   /* modifier `d`: flush-all removes wrapper overlap because tabs no longer curve below */
@@ -97,24 +97,24 @@
   @supports (clip-path: shape(from top left, hline to 0)) {
     /* modifier `d`: flush-all removes lower-curve padding compensation and shape from every tab */
     &d-a .k-tab-e2-a {
-      padding-right: var(--k-pr, 0px);
-      padding-left: var(--k-pl, 0px);
+      padding-right: var(--k-pr);
+      padding-left: var(--k-pl);
       @include bridge-shape-top-only;
     }
 
     /* modifiers `e` and `g`: first tab drops the left lower curve */
     &e-a .k-tab-e1c-a > .k-tab-e2c-a:first-of-type > .k-tab-e2-a,
     &g-a .k-tab-e1c-a > .k-tab-e2c-a:first-of-type > .k-tab-e2-a {
-      padding-left: var(--k-pl, 0px);
-      padding-right: calc(var(--k-pr, 0px) + var(--k-br, 12px));
+      padding-left: var(--k-pl);
+      padding-right: calc(var(--k-pr) + var(--k-br));
       @include bridge-shape-flush-start;
     }
 
     /* modifiers `f` and `g`: last tab drops the right lower curve */
     &f-a .k-tab-e1c-a > .k-tab-e2c-a:last-of-type > .k-tab-e2-a,
     &g-a .k-tab-e1c-a > .k-tab-e2c-a:last-of-type > .k-tab-e2-a {
-      padding-left: calc(var(--k-pl, 0px) + var(--k-br, 12px));
-      padding-right: var(--k-pr, 0px);
+      padding-left: calc(var(--k-pl) + var(--k-br));
+      padding-right: var(--k-pr);
       @include bridge-shape-flush-end;
     }
   }
@@ -132,7 +132,7 @@
   /* derived node `c`: wrapper owns overlap, stacking, and shadow projection */
   &c-a {
     position: relative;
-    z-index: var(--k-tab-z, 1);
+    z-index: var(--k-tab-z);
     display: inline-flex;
     flex: 0 0 auto;
     overflow: visible;
@@ -140,9 +140,7 @@
 
     /* shadow effect bucket projects the tokenized shadow outside the clipped trigger */
     &.-e {
-      filter: drop-shadow(
-        var(--k-sh-x, 0) var(--k-sh-y, 0) var(--k-sh-blur, 0) var(--k-sh-color, transparent)
-      );
+      filter: drop-shadow(var(--k-sh-x) var(--k-sh-y) var(--k-sh-blur) var(--k-sh-color));
     }
 
     /* selected state rises above sibling wrappers */
@@ -158,8 +156,7 @@
     cursor: pointer;
     display: inline-block;
     font: inherit;
-    padding: var(--k-pt, 0px) calc(var(--k-pr, 0px) + var(--k-br, 12px)) var(--k-pb, 0px)
-      calc(var(--k-pl, 0px) + var(--k-br, 12px));
+    padding: var(--k-pt) calc(var(--k-pr) + var(--k-br)) var(--k-pb) calc(var(--k-pl) + var(--k-br));
     white-space: nowrap;
     overflow: visible;
     pointer-events: auto;
@@ -184,8 +181,8 @@
   @supports not (clip-path: shape(from top left, hline to 0)) {
     /* fallback: shape() unavailable keeps only the top corners rounded */
     &-a {
-      border-start-start-radius: var(--k-br, 12px);
-      border-start-end-radius: var(--k-br, 12px);
+      border-start-start-radius: var(--k-br);
+      border-start-end-radius: var(--k-br);
     }
   }
 
@@ -200,7 +197,7 @@
 /* element: tab */
 /* derived node `c`: adjacent wrappers overlap to build the connected bridge shell */
 .k-tab-e2c-a + .k-tab-e2c-a {
-  margin-inline-start: calc(var(--k-br, 0px) * -2);
+  margin-inline-start: calc(var(--k-br) * -2);
 }
 
 @supports (clip-path: shape(from top left, hline to 0)) {

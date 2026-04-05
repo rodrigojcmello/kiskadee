@@ -12,13 +12,13 @@
 .k-tab-e5 {
   &-b {
     transition:
-      transform var(--k-tab-dur, 180ms) ease,
-      width var(--k-tab-dur, 180ms) ease,
-      height var(--k-tab-dur, 180ms) ease;
+      transform var(--k-tab-dur) ease,
+      width var(--k-tab-dur) ease,
+      height var(--k-tab-dur) ease;
     will-change: transform, width, height;
-    height: var(--k-tab-h, 0px);
-    transform: translate3d(var(--k-tab-x, 0px), var(--k-tab-y, 0px), 0px);
-    width: var(--k-tab-w, 0px);
+    height: var(--k-tab-h);
+    transform: translate3d(var(--k-tab-x), var(--k-tab-y), 0px);
+    width: var(--k-tab-w);
   }
 
   /* modifier `a`: disables transition in static mode */
