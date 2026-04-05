@@ -66,9 +66,11 @@ Practical rule:
 
 - the last letter is the variant
 - the letter before the last hyphen belongs to the element modifier chain
-- for Tabs specifically, `a` always means `bridge`
-- for Tabs specifically, `b` always means `box`
-- for Tabs specifically, `c` always means `dot`
+- for Tabs specifically, trailing `a` after the last hyphen always means `bridge`
+- for Tabs specifically, trailing `b` after the last hyphen always means `box`
+- for Tabs specifically, trailing `c` after the last hyphen always means `dot`
+- for Tabs specifically, trailing `d` after the last hyphen always means `line`
+- for Tabs specifically, trailing `e` after the last hyphen always means `segmented`
 
 ## What `Tabs.common.scss` is
 
