@@ -79,11 +79,20 @@
     margin-inline-start: 0;
   }
 
+  /* modifier `d`: flush-all no longer needs lower-curve horizontal compensation */
+  &d-a .k-tab-e2-a {
+    padding-right: var(--k-pdr);
+    padding-left: var(--k-pdl);
+  }
+
+  /* modifier `d`: fixed-width flush-all tabs keep the emitted width because shoulders are gone */
+  &d-a .k-tab-e2-a.k-tab-e2a {
+    width: var(--k-bxw);
+  }
+
   @supports (clip-path: shape(from top left, hline to 0)) {
-    /* modifier `d`: flush-all removes lower-curve padding compensation and shape from every tab */
+    /* modifier `d`: flush-all swaps the default bridge clip for the top-only shape */
     &d-a .k-tab-e2-a {
-      padding-right: var(--k-pdr);
-      padding-left: var(--k-pdl);
       @include bridge-shape-top-only;
     }
 
