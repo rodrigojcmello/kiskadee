@@ -16,8 +16,18 @@ type TabsSegmentedStaticBarEnhancerProps = {
  *     code.
  */
 function TabsSegmentedStaticIndicator() {
-  const { selected, scale, intent, emphasis, classNames, elements, indicator, radiusMode, barRef } =
-    useTabsVisualContext();
+  const {
+    selected,
+    scale,
+    intent,
+    emphasis,
+    classNames,
+    elements,
+    structural,
+    indicator,
+    radiusMode,
+    barRef
+  } = useTabsVisualContext();
   const [indicatorRect, setIndicatorRect] = useState<ReturnType<typeof measureIndicatorRect>>(null);
 
   const updateIndicatorRect = useCallback(() => {
@@ -59,6 +69,7 @@ function TabsSegmentedStaticIndicator() {
   }, [barRef, selected, updateIndicatorRect]);
 
   const indicatorClassName = resolveIndicatorClassName({
+    structural,
     elements,
     classNames,
     scale,
@@ -102,16 +113,17 @@ function TabsSegmentedStaticIndicator() {
 export function TabsSegmentedStaticBarEnhancer({
   children
 }: TabsSegmentedStaticBarEnhancerProps) {
-  const { separator, separatorClassName } = useTabsVisualContext();
+  const { structural, separator, separatorClassName } = useTabsVisualContext();
   const childrenWithSeparators = useMemo(
     () =>
       buildTabsChildrenWithSeparators({
         children,
         type: 'segmented',
+        structural,
         separator,
         separatorClassName
       }),
-    [children, separator, separatorClassName]
+    [children, separator, separatorClassName, structural]
   );
 
   return (

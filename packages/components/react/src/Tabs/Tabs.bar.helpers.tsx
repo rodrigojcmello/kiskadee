@@ -1,9 +1,10 @@
 import { Children, type ReactNode } from 'react';
 import { extractTabValue, joinClassNames } from './Tabs.class-names';
 import {
-  getTabsSeparatorDimmedClassName,
-  getTabsSeparatorHiddenClassName
-} from './Tabs.structural-registry';
+  getTabsStructuralSeparatorDimmedClassName,
+  getTabsStructuralSeparatorHiddenClassName
+} from './Tabs.structural';
+import type { TabsStructuralDescriptor } from './Tabs.structural';
 
 type SeparatorState = {
   hidden?: boolean;
@@ -20,6 +21,7 @@ type SeparatorState = {
 export function buildTabsChildrenWithSeparators(options: {
   children?: ReactNode;
   type: 'line' | 'box' | 'segmented' | 'dot' | 'bridge';
+  structural: TabsStructuralDescriptor;
   separator: boolean;
   separatorClassName?: string;
   getSeparatorState?: (leftValue: string, rightValue: string) => SeparatorState;
@@ -49,8 +51,8 @@ export function buildTabsChildrenWithSeparators(options: {
           aria-hidden="true"
           className={joinClassNames(
             options.separatorClassName,
-            state.hidden ? getTabsSeparatorHiddenClassName(options.type) : '',
-            state.dimmed ? getTabsSeparatorDimmedClassName(options.type) : ''
+            state.hidden ? getTabsStructuralSeparatorHiddenClassName(options.structural) : '',
+            state.dimmed ? getTabsStructuralSeparatorDimmedClassName(options.structural) : ''
           )}
         />
       );

@@ -14,8 +14,18 @@ type TabsLineStaticBarEnhancerProps = {
  *     The static line runtime needs a DOM-measured indicator without loading the motion layer.
  */
 function TabsLineStaticIndicator() {
-  const { selected, scale, intent, emphasis, classNames, elements, indicator, radiusMode, barRef } =
-    useTabsVisualContext();
+  const {
+    selected,
+    scale,
+    intent,
+    emphasis,
+    classNames,
+    elements,
+    structural,
+    indicator,
+    radiusMode,
+    barRef
+  } = useTabsVisualContext();
   const [indicatorRect, setIndicatorRect] = useState<ReturnType<typeof measureIndicatorRect>>(null);
 
   const updateIndicatorRect = useCallback(() => {
@@ -57,6 +67,7 @@ function TabsLineStaticIndicator() {
   }, [barRef, selected, updateIndicatorRect]);
 
   const indicatorClassName = resolveIndicatorClassName({
+    structural,
     elements,
     classNames,
     scale,

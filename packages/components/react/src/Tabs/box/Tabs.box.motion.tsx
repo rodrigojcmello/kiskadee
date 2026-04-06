@@ -28,6 +28,7 @@ export default function TabsBoxMotionBarEnhancer({ children }: TabsMotionEngineP
     indicatorTransition,
     classNames,
     elements,
+    structural,
     barRef,
     separator,
     separatorClassName
@@ -177,6 +178,7 @@ export default function TabsBoxMotionBarEnhancer({ children }: TabsMotionEngineP
       buildTabsChildrenWithSeparators({
         children,
         type: 'box',
+        structural,
         separator,
         separatorClassName,
         getSeparatorState: (leftValue, rightValue) => {
@@ -197,7 +199,8 @@ export default function TabsBoxMotionBarEnhancer({ children }: TabsMotionEngineP
       selected,
       separator,
       separatorClassName,
-      separatorSelected
+      separatorSelected,
+      structural
     ]
   );
 
@@ -205,6 +208,7 @@ export default function TabsBoxMotionBarEnhancer({ children }: TabsMotionEngineP
     ? (stretchDisplayRect ?? indicatorRect)
     : indicatorRect;
   const indicatorClassName = resolveIndicatorClassName({
+    structural,
     elements,
     classNames,
     scale,

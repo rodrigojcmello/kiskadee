@@ -26,6 +26,7 @@ export default function TabsDotMotionBarEnhancer({ children }: TabsMotionEngineP
     indicator,
     classNames,
     elements,
+    structural,
     barRef
   } = useTabsVisualContext();
   const [indicatorRect, setIndicatorRect] = useState<IndicatorRect | null>(null);
@@ -102,6 +103,7 @@ export default function TabsDotMotionBarEnhancer({ children }: TabsMotionEngineP
 
   const renderedIndicatorRect = dotDisplayRect ?? indicatorRect;
   const indicatorClassName = resolveIndicatorClassName({
+    structural,
     elements,
     classNames,
     scale,

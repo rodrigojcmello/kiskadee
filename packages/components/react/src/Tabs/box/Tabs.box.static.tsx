@@ -15,8 +15,18 @@ type TabsBoxStaticBarEnhancerProps = {
  *     The static box runtime needs a measured selection surface without pulling in motion code.
  */
 function TabsBoxStaticIndicator() {
-  const { selected, scale, intent, emphasis, classNames, elements, indicator, radiusMode, barRef } =
-    useTabsVisualContext();
+  const {
+    selected,
+    scale,
+    intent,
+    emphasis,
+    classNames,
+    elements,
+    structural,
+    indicator,
+    radiusMode,
+    barRef
+  } = useTabsVisualContext();
   const [indicatorRect, setIndicatorRect] = useState<ReturnType<typeof measureIndicatorRect>>(null);
 
   const updateIndicatorRect = useCallback(() => {
@@ -58,6 +68,7 @@ function TabsBoxStaticIndicator() {
   }, [barRef, selected, updateIndicatorRect]);
 
   const indicatorClassName = resolveIndicatorClassName({
+    structural,
     elements,
     classNames,
     scale,
@@ -99,19 +110,20 @@ function TabsBoxStaticIndicator() {
  *     composition and indicator rendering.
  */
 export function TabsBoxStaticBarEnhancer({ children }: TabsBoxStaticBarEnhancerProps) {
-  const { selected, separator, separatorClassName } = useTabsVisualContext();
+  const { selected, structural, separator, separatorClassName } = useTabsVisualContext();
   const childrenWithSeparators = useMemo(
     () =>
       buildTabsChildrenWithSeparators({
         children,
         type: 'box',
+        structural,
         separator,
         separatorClassName,
         getSeparatorState: (leftValue, rightValue) => ({
           hidden: selected !== undefined && (selected === leftValue || selected === rightValue)
         })
       }),
-    [children, selected, separator, separatorClassName]
+    [children, selected, separator, separatorClassName, structural]
   );
 
   return (

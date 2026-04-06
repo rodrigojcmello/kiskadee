@@ -14,8 +14,18 @@ type TabsDotStaticBarEnhancerProps = {
  *     The static dot runtime needs a measured dot position without loading the motion layer.
  */
 function TabsDotStaticIndicator() {
-  const { selected, scale, intent, emphasis, classNames, elements, indicator, radiusMode, barRef } =
-    useTabsVisualContext();
+  const {
+    selected,
+    scale,
+    intent,
+    emphasis,
+    classNames,
+    elements,
+    structural,
+    indicator,
+    radiusMode,
+    barRef
+  } = useTabsVisualContext();
   const [indicatorRect, setIndicatorRect] = useState<ReturnType<typeof measureIndicatorRect>>(null);
 
   const updateIndicatorRect = useCallback(() => {
@@ -57,6 +67,7 @@ function TabsDotStaticIndicator() {
   }, [barRef, selected, updateIndicatorRect]);
 
   const indicatorClassName = resolveIndicatorClassName({
+    structural,
     elements,
     classNames,
     scale,

@@ -4,6 +4,7 @@ import {
   TabsBridgeContentBase,
   TabsBridgeTabBase
 } from './Tabs.bridge.parts';
+import { tabsBridgeStructural } from './Tabs.bridge.structural';
 import TabsBridgeStaticBarEnhancer from './Tabs.bridge.static';
 import { useResolvedTabsBridgeRootState } from './Tabs.bridge.root-state';
 import type {
@@ -28,6 +29,7 @@ import './Tabs.bridge.scss';
  */
 export const TabsBridge = createTabsComponent<TabsBridgeRootProps>({
   displayName: 'TabsBridge',
+  structural: tabsBridgeStructural,
   StaticEnhancer: TabsBridgeStaticBarEnhancer,
   BarComponent: TabsBridgeBarBase,
   TabComponent: TabsBridgeTabBase,

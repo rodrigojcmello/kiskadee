@@ -1,10 +1,5 @@
 import { useMemo } from 'react';
-import {
-  resolveIndicatorVariant,
-  resolveIndicatorWidthMode,
-  resolveListClassName,
-  resolveSeparatorClassName
-} from '../Tabs.class-names';
+import { resolveIndicatorVariant, resolveIndicatorWidthMode } from '../Tabs.class-names';
 import {
   type ResolvedTabsRootState,
   useTabsRuntimeRootState
@@ -70,36 +65,14 @@ export function useResolvedTabsLineRootState({
       baseState.globalTabsOptions?.indicatorWidthMode
     )
   };
-  const listClassName = resolveListClassName({
-    elements: baseState.elements,
-    classNames: baseState.classNames,
-    scale: baseState.scale,
-    intent: baseState.intent,
-    emphasis: baseState.emphasis,
-    tabWidthMode: baseState.resolvedTabWidthMode,
-    radiusMode: baseState.resolvedRadiusMode,
-    type: 'line',
-    indicatorPosition: resolvedIndicator.position,
-    lowerCurveMode: 'curved'
-  });
-  const separatorClassName = resolveSeparatorClassName({
-    elements: baseState.elements,
-    classNames: baseState.classNames,
-    scale: baseState.scale,
-    intent: baseState.intent,
-    emphasis: baseState.emphasis,
-    type: 'line'
-  });
 
   return useMemo(
     () => ({
       ...baseState,
       resolvedType: 'line' as const,
       resolvedLowerCurveMode: 'curved' as const,
-      listClassName,
-      separatorClassName,
       resolvedIndicator
     }),
-    [baseState, listClassName, resolvedIndicator, separatorClassName]
+    [baseState, resolvedIndicator]
   );
 }

@@ -8,6 +8,7 @@ Current rule:
 
 - there is no `Tabs.common.scss`
 - each variant owns its structural CSS inside its own `.scss` file
+- each variant also owns its runtime structural descriptor in its own `.structural.ts` file
 - shared runtime slot names such as `k-tab-e1` and `k-tab-e2` still exist, but their layout rules now
   live in the variant files
 
@@ -81,6 +82,14 @@ Structural CSS is now fully local to each variant:
 - `segmented/Tabs.segmented.scss`
 - `bridge/Tabs.bridge.scss`
 
+Runtime structural descriptors are also local to each variant:
+
+- `line/Tabs.line.structural.ts`
+- `dot/Tabs.dot.structural.ts`
+- `box/Tabs.box.structural.ts`
+- `segmented/Tabs.segmented.structural.ts`
+- `bridge/Tabs.bridge.structural.ts`
+
 Each file is responsible for its own:
 
 - bar geometry
@@ -109,6 +118,7 @@ In practice:
 
 - the runtime keeps one semantic naming system
 - the structural ownership lives in the variant-local Sass files
+- the runtime-side structural lookup data also lives with each variant descriptor
 
 ## Why Tabs no longer has a common structural file
 

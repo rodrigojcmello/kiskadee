@@ -20,6 +20,7 @@ import type {
   TabsTabProps as HeadlessTabsTabProps
 } from '@kiskadee/react-headless';
 import type { HTMLAttributes, ReactNode, RefObject } from 'react';
+import type { TabsStructuralDescriptor } from './Tabs.structural';
 
 // ============================================
 // Public API
@@ -188,6 +189,7 @@ export type TabsVisualContextValue<TMotion extends TabsIndicatorMotion = TabsInd
   intent: string;
   emphasis: ComponentEmphasis | undefined;
   type: TabsType;
+  structural: TabsStructuralDescriptor;
   tabWidthMode: TabsTabWidthMode;
   radiusMode: RadiusMode;
   barRef: RefObject<HTMLDivElement | null>;

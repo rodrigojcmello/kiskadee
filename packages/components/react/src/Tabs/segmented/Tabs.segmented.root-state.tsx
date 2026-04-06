@@ -1,9 +1,5 @@
 import { useMemo } from 'react';
-import {
-  resolveIndicatorVariant,
-  resolveListClassName,
-  resolveSeparatorClassName
-} from '../Tabs.class-names';
+import { resolveIndicatorVariant } from '../Tabs.class-names';
 import {
   type ResolvedTabsRootState,
   useTabsRuntimeRootState
@@ -37,26 +33,6 @@ export function useResolvedTabsSegmentedRootState({
     widthMode: 'tab'
   };
   const resolvedRadiusMode = 'rounded' as const;
-  const listClassName = resolveListClassName({
-    elements: baseState.elements,
-    classNames: baseState.classNames,
-    scale: baseState.scale,
-    intent: baseState.intent,
-    emphasis: baseState.emphasis,
-    tabWidthMode: baseState.resolvedTabWidthMode,
-    radiusMode: resolvedRadiusMode,
-    type: 'segmented',
-    indicatorPosition: resolvedIndicator.position,
-    lowerCurveMode: 'curved'
-  });
-  const separatorClassName = resolveSeparatorClassName({
-    elements: baseState.elements,
-    classNames: baseState.classNames,
-    scale: baseState.scale,
-    intent: baseState.intent,
-    emphasis: baseState.emphasis,
-    type: 'segmented'
-  });
 
   return useMemo(
     () => ({
@@ -64,10 +40,8 @@ export function useResolvedTabsSegmentedRootState({
       resolvedRadiusMode,
       resolvedType: 'segmented' as const,
       resolvedLowerCurveMode: 'curved' as const,
-      listClassName,
-      separatorClassName,
       resolvedIndicator
     }),
-    [baseState, listClassName, resolvedIndicator, resolvedRadiusMode, separatorClassName]
+    [baseState, resolvedIndicator, resolvedRadiusMode]
   );
 }

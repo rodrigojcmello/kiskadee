@@ -7,10 +7,10 @@ import {
 } from '@kiskadee/core';
 import { isValidElement, type ReactNode } from 'react';
 import {
-  getTabsBridgeLowerCurveClassName,
-  getTabsIndicatorStaticClassName,
-  getTabsVariantElementClassName
-} from './Tabs.structural-registry';
+  getTabsStructuralElementClassName,
+  getTabsStructuralIndicatorStaticClassName,
+  getTabsStructuralLowerCurveClassName
+} from './Tabs.structural';
 import type {
   TabsClassesMap,
   TabsClassNames,
@@ -356,6 +356,7 @@ function usesTabWidthScale(
  *     class assembly.
  */
 export function resolveListClassName(options: {
+  structural: TabsVisualContextValue['structural'];
   elements: TabsClassesMap;
   classNames: TabsClassNames;
   scale: string;
@@ -370,9 +371,11 @@ export function resolveListClassName(options: {
   return joinClassNames(
     'k-tab',
     'k-tab-e1',
-    getTabsVariantElementClassName(options.type, 'e1'),
+    getTabsStructuralElementClassName(options.structural, 'e1'),
     options.tabWidthMode === 'distributed' ? 'k-tab-e1h' : '',
-    options.type === 'bridge' ? getTabsBridgeLowerCurveClassName(options.lowerCurveMode) : '',
+    options.type === 'bridge'
+      ? getTabsStructuralLowerCurveClassName(options.structural, options.lowerCurveMode)
+      : '',
     options.type === 'line' || options.type === 'dot'
       ? (options.indicatorPosition === 'top' ? 'k-tab-e1b' : 'k-tab-e1a')
       : '',
@@ -394,6 +397,7 @@ export function resolveListClassName(options: {
  *     dedicated resolver for that extra slot without special-casing raw class assembly inline.
  */
 export function resolveSeparatorClassName(options: {
+  structural: TabsVisualContextValue['structural'];
   elements: TabsClassesMap;
   classNames: TabsClassNames;
   scale: string;
@@ -409,7 +413,7 @@ export function resolveSeparatorClassName(options: {
     }),
     options.classNames.e6,
     'k-tab-e6',
-    getTabsVariantElementClassName(options.type, 'e6')
+    getTabsStructuralElementClassName(options.structural, 'e6')
   );
 }
 
@@ -422,6 +426,7 @@ export function resolveSeparatorClassName(options: {
  *     runtime can keep rendering logic separate from class-resolution rules.
  */
 export function resolveTriggerClassName(options: {
+  structural: TabsVisualContextValue['structural'];
   elements: TabsClassesMap;
   classNames: TabsClassNames;
   scale: string;
@@ -448,7 +453,7 @@ export function resolveTriggerClassName(options: {
     resolveRadiusClassName(options.elements.e2, options.scale, options.radiusMode),
     options.classNames.e2,
     'k-tab-e2',
-    getTabsVariantElementClassName(options.type, 'e2'),
+    getTabsStructuralElementClassName(options.structural, 'e2'),
     options.tabWidthMode === 'fixed' ? 'k-tab-e2a' : '',
     options.tabWidthMode === 'distributed' ? 'k-tab-e2c' : '',
     'k-state',
@@ -467,6 +472,7 @@ export function resolveTriggerClassName(options: {
  *     stay independent from the clipped interactive surface.
  */
 export function resolveBridgeItemClassName(options: {
+  structural: TabsVisualContextValue['structural'];
   elements: TabsClassesMap;
   scale: string;
   tabWidthMode: TabsVisualContextValue['tabWidthMode'];
@@ -477,7 +483,7 @@ export function resolveBridgeItemClassName(options: {
     usesTabWidthScale(options.tabWidthMode)
       ? resolveWidthClassName(options.elements.e2, options.scale)
       : '',
-    getTabsVariantElementClassName('bridge', 'e2c'),
+    getTabsStructuralElementClassName(options.structural, 'e2c'),
     options.className
   );
 }
@@ -491,6 +497,7 @@ export function resolveBridgeItemClassName(options: {
  *     semantic trigger, so selected-state surface styles must swap from `e2` to `e5`.
  */
 export function resolveBridgeTriggerClassName(options: {
+  structural: TabsVisualContextValue['structural'];
   elements: TabsClassesMap;
   classNames: TabsClassNames;
   scale: string;
@@ -529,7 +536,7 @@ export function resolveBridgeTriggerClassName(options: {
     options.classNames.e2,
     options.selected ? options.classNames.e5 : '',
     'k-tab-e2',
-    getTabsVariantElementClassName('bridge', 'e2'),
+    getTabsStructuralElementClassName(options.structural, 'e2'),
     options.tabWidthMode === 'fixed' ? 'k-tab-e2a' : '',
     options.tabWidthMode === 'distributed' ? 'k-tab-e2c' : '',
     'k-state',
@@ -613,6 +620,7 @@ export function resolveIconClassName(options: {
  *     implementations.
  */
 export function resolveIndicatorClassName(options: {
+  structural: TabsVisualContextValue['structural'];
   elements: TabsClassesMap;
   classNames: TabsClassNames;
   scale: string;
@@ -654,7 +662,7 @@ export function resolveIndicatorClassName(options: {
     indicatorRadiusClassName,
     options.classNames.e5,
     'k-tab-e5',
-    getTabsVariantElementClassName(options.type, 'e5'),
+    getTabsStructuralElementClassName(options.structural, 'e5'),
     options.type === 'line' || options.type === 'dot'
       ? options.indicator.position === 'top'
         ? 'k-tab-e5i'
@@ -663,7 +671,7 @@ export function resolveIndicatorClassName(options: {
     resolveIndicatorModeClass(options.type, options.indicator.widthMode),
     indicatorVariantClass,
     options.indicator.motion === 'none'
-      ? getTabsIndicatorStaticClassName(options.type) || 'k-tab-e5j'
+      ? getTabsStructuralIndicatorStaticClassName(options.structural) || 'k-tab-e5j'
       : '',
     options.elements.e5?.e?.h ? cn.shadow : '',
     'k-state',

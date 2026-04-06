@@ -1,5 +1,6 @@
 import { createTabsComponent } from '../Tabs.runtime';
 import TabsLineStaticBarEnhancer from './Tabs.line.static';
+import { tabsLineStructural } from './Tabs.line.structural';
 import { useResolvedTabsLineRootState } from './Tabs.line.root-state';
 import type {
   TabsBarProps,
@@ -24,6 +25,7 @@ import './Tabs.line.scss';
  */
 export const TabsLine = createTabsComponent<TabsLineRootProps>({
   displayName: 'TabsLine',
+  structural: tabsLineStructural,
   StaticEnhancer: TabsLineStaticBarEnhancer,
   loadMotionEnhancer: () => import('./Tabs.line.motion'),
   useResolvedRootState: useResolvedTabsLineRootState

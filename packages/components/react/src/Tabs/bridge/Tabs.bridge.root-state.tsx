@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { resolveListClassName, resolveSeparatorClassName } from '../Tabs.class-names';
 import {
   type ResolvedTabsRootState,
   useTabsRuntimeRootState
@@ -41,26 +40,6 @@ export function useResolvedTabsBridgeRootState({
     lowerCurveMode,
     baseState.globalTabsOptions?.lowerCurveMode
   );
-  const listClassName = resolveListClassName({
-    elements: baseState.elements,
-    classNames: baseState.classNames,
-    scale: baseState.scale,
-    intent: baseState.intent,
-    emphasis: baseState.emphasis,
-    tabWidthMode: baseState.resolvedTabWidthMode,
-    radiusMode: resolvedRadiusMode,
-    type: 'bridge',
-    indicatorPosition: resolvedIndicator.position,
-    lowerCurveMode: resolvedLowerCurveMode
-  });
-  const separatorClassName = resolveSeparatorClassName({
-    elements: baseState.elements,
-    classNames: baseState.classNames,
-    scale: baseState.scale,
-    intent: baseState.intent,
-    emphasis: baseState.emphasis,
-    type: 'bridge'
-  });
 
   return useMemo(
     () => ({
@@ -69,17 +48,8 @@ export function useResolvedTabsBridgeRootState({
       resolvedType: 'bridge' as const,
       resolvedLowerCurveMode,
       resolvedSeparator: false,
-      listClassName,
-      separatorClassName,
       resolvedIndicator
     }),
-    [
-      baseState,
-      listClassName,
-      resolvedIndicator,
-      resolvedLowerCurveMode,
-      resolvedRadiusMode,
-      separatorClassName
-    ]
+    [baseState, resolvedIndicator, resolvedLowerCurveMode, resolvedRadiusMode]
   );
 }

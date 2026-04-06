@@ -35,8 +35,6 @@ export type TabsRuntimeRootState = {
 export type ResolvedTabsRootState = TabsRuntimeRootState & {
   resolvedType: TabsVisualContextValue['type'];
   resolvedLowerCurveMode: TabsVisualContextValue['lowerCurveMode'];
-  listClassName: string | undefined;
-  separatorClassName: string | undefined;
   resolvedIndicator: TabsResolvedIndicator;
 };
 

@@ -13,7 +13,7 @@ import {
 } from '../Tabs.class-names';
 import { useTabsVisualContext } from '../Tabs.context';
 import { TabsSlotContent, withTabsTabContext } from '../Tabs.parts';
-import { getTabsVariantElementClassName } from '../Tabs.structural-registry';
+import { getTabsStructuralElementClassName } from '../Tabs.structural';
 import type { TabsBarProps, TabsContentProps, TabsTabProps } from '../Tabs.types';
 
 type TabsBridgeVisualOrderProps = {
@@ -28,7 +28,7 @@ type TabsBridgeVisualOrderProps = {
  *     one layer clips and stacks the shell, and the inner one owns horizontal scrolling.
  */
 export function TabsBridgeBarBase({ className, children, ...props }: TabsBarProps) {
-  const { barRef, listClassName } = useTabsVisualContext();
+  const { barRef, listClassName, structural } = useTabsVisualContext();
   const items = Children.toArray(children);
   const orderedChildren = items.map((child, index) => {
     if (!isValidElement(child)) {
@@ -45,7 +45,7 @@ export function TabsBridgeBarBase({ className, children, ...props }: TabsBarProp
       <HeadlessTabs.Bar
         ref={barRef}
         {...props}
-        className={getTabsVariantElementClassName('bridge', 'e1c')}
+        className={getTabsStructuralElementClassName(structural, 'e1c')}
       >
         {orderedChildren}
       </HeadlessTabs.Bar>
@@ -69,15 +69,17 @@ export function TabsBridgeTabBase({
   children,
   ...restProps
 }: TabsTabProps & TabsBridgeVisualOrderProps) {
-  const { selected, scale, intent, emphasis, classNames, elements, tabWidthMode, radiusMode } =
+  const { selected, scale, intent, emphasis, classNames, elements, structural, tabWidthMode, radiusMode } =
     useTabsVisualContext();
   const isSelected = selected === value;
   const itemClassName = resolveBridgeItemClassName({
+    structural,
     elements,
     scale,
     tabWidthMode
   });
   const triggerClassName = resolveBridgeTriggerClassName({
+    structural,
     elements,
     classNames,
     scale,

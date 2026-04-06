@@ -1,9 +1,7 @@
 import { useMemo } from 'react';
 import {
   resolveIndicatorRadiusMode,
-  resolveIndicatorVariant,
-  resolveListClassName,
-  resolveSeparatorClassName
+  resolveIndicatorVariant
 } from '../Tabs.class-names';
 import {
   type ResolvedTabsRootState,
@@ -52,26 +50,6 @@ export function useResolvedTabsBoxRootState({
     resolvedIndicator,
     baseState.resolvedRadiusMode
   );
-  const listClassName = resolveListClassName({
-    elements: baseState.elements,
-    classNames: baseState.classNames,
-    scale: baseState.scale,
-    intent: baseState.intent,
-    emphasis: baseState.emphasis,
-    tabWidthMode: baseState.resolvedTabWidthMode,
-    radiusMode: resolvedRadiusMode,
-    type: 'box',
-    indicatorPosition: resolvedIndicator.position,
-    lowerCurveMode: 'curved'
-  });
-  const separatorClassName = resolveSeparatorClassName({
-    elements: baseState.elements,
-    classNames: baseState.classNames,
-    scale: baseState.scale,
-    intent: baseState.intent,
-    emphasis: baseState.emphasis,
-    type: 'box'
-  });
 
   return useMemo(
     () => ({
@@ -79,10 +57,8 @@ export function useResolvedTabsBoxRootState({
       resolvedRadiusMode,
       resolvedType: 'box' as const,
       resolvedLowerCurveMode: 'curved' as const,
-      listClassName,
-      separatorClassName,
       resolvedIndicator
     }),
-    [baseState, listClassName, resolvedIndicator, resolvedRadiusMode, separatorClassName]
+    [baseState, resolvedIndicator, resolvedRadiusMode]
   );
 }

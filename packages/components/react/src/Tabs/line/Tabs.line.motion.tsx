@@ -31,6 +31,7 @@ export default function TabsLineMotionBarEnhancer({ children }: TabsMotionEngine
     indicatorTransition,
     classNames,
     elements,
+    structural,
     barRef
   } = useTabsVisualContext();
   const [indicatorRect, setIndicatorRect] = useState<IndicatorRect | null>(null);
@@ -209,6 +210,7 @@ export default function TabsLineMotionBarEnhancer({ children }: TabsMotionEngine
     ? (stretchDisplayRect ?? indicatorRect)
     : indicatorRect;
   const indicatorClassName = resolveIndicatorClassName({
+    structural,
     elements,
     classNames,
     scale,

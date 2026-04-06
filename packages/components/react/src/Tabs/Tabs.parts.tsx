@@ -7,7 +7,7 @@ import {
   resolveTriggerClassName
 } from './Tabs.class-names';
 import { TabsTabContextProvider, useTabsTabContext, useTabsVisualContext } from './Tabs.context';
-import { getTabsVariantElementClassName } from './Tabs.structural-registry';
+import { getTabsStructuralElementClassName } from './Tabs.structural';
 import type {
   TabsContentProps,
   TabsIconProps,
@@ -28,13 +28,13 @@ export function TabsSlotContent({
   label,
   icon
 }: Pick<TabsTabProps, 'children' | 'label' | 'icon'>) {
-  const { type } = useTabsVisualContext();
+  const { structural } = useTabsVisualContext();
 
   return (
     <span
       className={joinClassNames(
         'k-tab-e2b',
-        getTabsVariantElementClassName(type, 'e2b')
+        getTabsStructuralElementClassName(structural, 'e2b')
       )}
     >
       {children ? (
@@ -57,13 +57,25 @@ export function TabsSlotContent({
  *     small reusable hook.
  */
 export function useTabsTabState(value: string, className?: string) {
-  const { selected, scale, intent, emphasis, classNames, elements, tabWidthMode, radiusMode, type } =
+  const {
+    selected,
+    scale,
+    intent,
+    emphasis,
+    classNames,
+    elements,
+    structural,
+    tabWidthMode,
+    radiusMode,
+    type
+  } =
     useTabsVisualContext();
   const isSelected = selected === value;
 
   return {
     isSelected,
     triggerClassName: resolveTriggerClassName({
+      structural,
       elements,
       classNames,
       scale,

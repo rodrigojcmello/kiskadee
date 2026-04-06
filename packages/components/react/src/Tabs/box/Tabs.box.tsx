@@ -1,5 +1,6 @@
 import { createTabsComponent } from '../Tabs.runtime';
 import TabsBoxStaticBarEnhancer from './Tabs.box.static';
+import { tabsBoxStructural } from './Tabs.box.structural';
 import { useResolvedTabsBoxRootState } from './Tabs.box.root-state';
 import type {
   TabsBarProps,
@@ -24,6 +25,7 @@ import './Tabs.box.scss';
  */
 export const TabsBox = createTabsComponent<TabsBoxRootProps>({
   displayName: 'TabsBox',
+  structural: tabsBoxStructural,
   StaticEnhancer: TabsBoxStaticBarEnhancer,
   loadMotionEnhancer: () => import('./Tabs.box.motion'),
   useResolvedRootState: useResolvedTabsBoxRootState

@@ -1,7 +1,7 @@
 import { HeadlessTabs } from '@kiskadee/react-headless';
 import { joinClassNames } from '../Tabs.class-names';
 import { useTabsVisualContext } from '../Tabs.context';
-import { getTabsVariantElementClassName } from '../Tabs.structural-registry';
+import { getTabsStructuralElementClassName } from '../Tabs.structural';
 import type { TabsBarProps } from '../Tabs.types';
 
 /**
@@ -12,7 +12,7 @@ import type { TabsBarProps } from '../Tabs.types';
  *     fixed or distributed widths overflow the available inline space.
  */
 export function TabsSegmentedBarBase({ className, children, ...props }: TabsBarProps) {
-  const { barRef, listClassName, StaticEnhancer } = useTabsVisualContext();
+  const { barRef, listClassName, structural, StaticEnhancer } = useTabsVisualContext();
   const content = StaticEnhancer ? <StaticEnhancer>{children}</StaticEnhancer> : children;
 
   return (
@@ -20,7 +20,7 @@ export function TabsSegmentedBarBase({ className, children, ...props }: TabsBarP
       <HeadlessTabs.Bar
         ref={barRef}
         {...props}
-        className={getTabsVariantElementClassName('segmented', 'e1c')}
+        className={getTabsStructuralElementClassName(structural, 'e1c')}
       >
         {content}
       </HeadlessTabs.Bar>

@@ -1,5 +1,7 @@
 # Structural CSS in Kiskadee
 
+For structural TypeScript/runtime ownership patterns, see `STRUCTURAL-TS.md`.
+
 ## What structural CSS is
 
 Structural CSS is the layer in `packages/components/react` that defines:

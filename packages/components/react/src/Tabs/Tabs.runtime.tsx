@@ -1,10 +1,11 @@
 import { HeadlessTabs } from '@kiskadee/react-headless';
 import { memo, type ReactNode, useEffect, useMemo, useState } from 'react';
 import type { ResolvedTabsRootState } from './Tabs.runtime-state';
-import { joinClassNames } from './Tabs.class-names';
+import { joinClassNames, resolveListClassName, resolveSeparatorClassName } from './Tabs.class-names';
 import { TabsVisualContextProvider, useTabsVisualContext } from './Tabs.context';
 import { resolveSpringConfig } from './Tabs.motion.shared';
 import { TabsContentBase, TabsIconBase, TabsLabelBase, TabsTabBase } from './Tabs.parts';
+import type { TabsStructuralDescriptor } from './Tabs.structural';
 import type {
   TabsBarProps,
   TabsContentProps,
@@ -37,6 +38,7 @@ type TabsMotionLoader = () => Promise<{ default: TabsBarEnhancerComponent }>;
 
 type CreateTabsComponentOptions<TRootProps> = {
   displayName: string;
+  structural: TabsStructuralDescriptor;
   StaticEnhancer: TabsBarEnhancerComponent;
   loadMotionEnhancer?: TabsMotionLoader;
   useResolvedRootState: (props: TRootProps) => ResolvedTabsRootState;
@@ -198,6 +200,54 @@ export function createTabsComponent<
       () => resolveIndicatorTransition(rootState.resolvedIndicator.motion, spring),
       [rootState.resolvedIndicator.motion, spring]
     );
+    const listClassName = useMemo(
+      () =>
+        resolveListClassName({
+          structural: options.structural,
+          elements: rootState.elements,
+          classNames: rootState.classNames,
+          scale: rootState.scale,
+          intent: rootState.intent,
+          emphasis: rootState.emphasis,
+          tabWidthMode: rootState.resolvedTabWidthMode,
+          radiusMode: rootState.resolvedRadiusMode,
+          type: rootState.resolvedType,
+          indicatorPosition: rootState.resolvedIndicator.position,
+          lowerCurveMode: rootState.resolvedLowerCurveMode
+        }),
+      [
+        rootState.classNames,
+        rootState.elements,
+        rootState.emphasis,
+        rootState.intent,
+        rootState.resolvedIndicator.position,
+        rootState.resolvedLowerCurveMode,
+        rootState.resolvedRadiusMode,
+        rootState.resolvedTabWidthMode,
+        rootState.resolvedType,
+        rootState.scale
+      ]
+    );
+    const separatorClassName = useMemo(
+      () =>
+        resolveSeparatorClassName({
+          structural: options.structural,
+          elements: rootState.elements,
+          classNames: rootState.classNames,
+          scale: rootState.scale,
+          intent: rootState.intent,
+          emphasis: rootState.emphasis,
+          type: rootState.resolvedType
+        }),
+      [
+        rootState.classNames,
+        rootState.elements,
+        rootState.emphasis,
+        rootState.intent,
+        rootState.resolvedType,
+        rootState.scale
+      ]
+    );
 
     const visualContext = useMemo(
       () => ({
@@ -206,6 +256,7 @@ export function createTabsComponent<
         intent: rootState.intent,
         emphasis: rootState.emphasis,
         type: rootState.resolvedType,
+        structural: options.structural,
         tabWidthMode: rootState.resolvedTabWidthMode,
         radiusMode: rootState.resolvedRadiusMode,
         lowerCurveMode: rootState.resolvedLowerCurveMode,
@@ -213,8 +264,8 @@ export function createTabsComponent<
         indicator: rootState.resolvedIndicator,
         indicatorTransition,
         separator: rootState.resolvedSeparator,
-        listClassName: rootState.listClassName,
-        separatorClassName: rootState.separatorClassName,
+        listClassName,
+        separatorClassName,
         classNames: rootState.classNames,
         elements: rootState.elements,
         StaticEnhancer: options.StaticEnhancer,
@@ -222,12 +273,15 @@ export function createTabsComponent<
       }),
       [
         indicatorTransition,
+        listClassName,
+        options.StaticEnhancer,
+        options.loadMotionEnhancer,
+        options.structural,
         rootState.barRef,
         rootState.classNames,
         rootState.elements,
         rootState.emphasis,
         rootState.intent,
-        rootState.listClassName,
         rootState.resolvedLowerCurveMode,
         rootState.resolvedIndicator,
         rootState.resolvedRadiusMode,
@@ -236,7 +290,7 @@ export function createTabsComponent<
         rootState.resolvedType,
         rootState.scale,
         rootState.selected,
-        rootState.separatorClassName
+        separatorClassName
       ]
     );
 
