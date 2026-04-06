@@ -47,7 +47,7 @@
 
 /* `k-tab-e1c-e`: segmented inner bar owns horizontal scrolling inside the fixed shell. */
 .k-tab-e1c-e {
-  border-radius: max(0px, calc(var(--k-bdr) - var(--k-bdw)));
+  border-radius: inherit;
   display: flex;
   position: relative;
   width: 100%;

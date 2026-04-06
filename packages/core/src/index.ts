@@ -39,5 +39,4 @@ export * from './types/effects/shadow/shadow.types';
 export * from './types/scales/scales.types';
 export * from './utils/color';
 export * from './utils/convertHslaToHex';
-export * from './utils/validateComponentContracts';
 export * from './utils/withAlpha';

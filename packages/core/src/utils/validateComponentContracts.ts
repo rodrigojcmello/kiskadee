@@ -1,8 +1,8 @@
 import { validateButtonComponentContract } from '../components/button';
-import { validateTabsComponentContract } from '../components/tabs';
+import { validateTabsComponentContract } from '../components/tabs.zod';
 
 /**
- * Runtime validation for component contracts with strict, element-aware rules.
+ * Build-time validation for component contracts with strict, element-aware rules.
  *
  * Incremental scope:
  * - button

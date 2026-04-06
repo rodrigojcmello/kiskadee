@@ -44,13 +44,6 @@ export function createMaterial3GoogleTabsSegmentedVariant({
         palettes: {
           default: {
             light: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'l', 'primary.v2', 60)
-                  }
-                }
-              },
               borderColor: {
                 neutral: {
                   medium: {
@@ -60,13 +53,6 @@ export function createMaterial3GoogleTabsSegmentedVariant({
               }
             },
             dark: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'primary.v2', 50)
-                  }
-                }
-              },
               borderColor: {
                 neutral: {
                   medium: {
@@ -211,7 +197,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
       e6: {
         scales: {
           boxWidth: 2,
-          boxHeight: 24,
+          boxHeight: 40,
           marginTop: 0,
           marginBottom: 0
         },

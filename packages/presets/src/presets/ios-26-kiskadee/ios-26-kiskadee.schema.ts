@@ -754,13 +754,6 @@ export const schema: Schema = {
               palettes: buildBySegment(segmentNames, (segmentName) => {
                 return {
                   light: {
-                    boxColor: {
-                      neutral: {
-                        medium: {
-                          rest: c(segmentName, 'l', 'neutral', 4)
-                        }
-                      }
-                    },
                     borderColor: {
                       neutral: {
                         medium: {

@@ -60,14 +60,12 @@ export type TabsOptions = TabsOptionsFromSchema;
 
 /**
  * e1 — bar
- * - boxColor
+ * - boxColor or borderColor
  * - padding
  * - borderRadius or border, depending on tabs type
  *
  * NOTE:
  * `box` bars support container background + padding + borderRadius.
- * `segmented` bars support container background + border + borderRadius and may still expose
- * inner padding when a preset needs extra inset beyond the border thickness.
  * `line` / `dot` bars support edge border styling + padding.
  * The rendered edge still resolves to top or bottom from `indicatorPosition`.
  */
@@ -220,7 +218,7 @@ export type TabsSegmentedElements<TSegmentName extends SegmentName = never> = Om
   TabsElements<TSegmentName>,
   'e1' | 'e2' | 'e5'
 > & {
-  // `segmented` bars keep their own rounded-only container contract, including optional border.
+  // `segmented` bars keep their own rounded-only border contract and do not accept boxColor.
   e1?: TabsSegmentedBarElementStyle<TSegmentName>;
   // `segmented` triggers keep their own rounded-only radius contract for outer shell corners.
   e2?: TabsSegmentedTriggerElementStyle<TSegmentName>;
@@ -288,4 +286,3 @@ export type TabsTypes<TSegmentName extends SegmentName = never> = Partial<{
   dot: TabsDotTypeConfig<TSegmentName>;
   bridge: TabsBridgeTypeConfig<TSegmentName>;
 }>;
-export { validateTabsComponentContract } from './tabs.zod';
