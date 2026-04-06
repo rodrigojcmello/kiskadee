@@ -14,7 +14,6 @@ import type {
   TabsSpringPreset,
   TabsTabProps
 } from '../Tabs.types';
-import '../Tabs.common.scss';
 import './Tabs.segmented.scss';
 
 /**

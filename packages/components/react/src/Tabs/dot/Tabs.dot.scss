@@ -1,16 +1,134 @@
-/* element: indicator / selected shell */
-.k-tab-e5 {
-  &-c {
-    transition:
-      transform var(--k-tab-dur) ease,
-      width var(--k-tab-dur) ease,
-      height var(--k-tab-dur) ease,
-      opacity var(--k-tab-dur) ease;
-    will-change: transform, width, height, opacity;
+/* element: bar */
+.k-tab-e1-c {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  isolation: isolate;
+  overflow: visible;
+  border-left-width: 0 !important;
+  border-right-width: 0 !important;
+
+  /* modifier `a`: dot bar keeps only the bottom edge */
+  &.k-tab-e1a {
+    border-top-width: 0 !important;
   }
 
-  /* modifier `a`: disables transition in static mode */
-  &a-c {
-    transition: none;
+  /* modifier `b`: dot bar keeps only the top edge */
+  &.k-tab-e1b {
+    border-bottom-width: 0 !important;
   }
+
+  /* modifier `h`: distributed dot bars stretch and scroll only on overflow */
+  &.k-tab-e1h {
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: clip;
+    scrollbar-width: thin;
+  }
+}
+
+/* element: tab */
+.k-tab-e2-c {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+
+  &.k-tab-e2a {
+    flex: 0 0 var(--k-bxw);
+    width: var(--k-bxw);
+    min-width: 0;
+  }
+
+  &.k-tab-e2c {
+    min-width: 0;
+  }
+
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+}
+
+.k-tab-e1-c.k-tab-e1h > .k-tab-e2-c.k-tab-e2c {
+  flex: 1 0 var(--k-bxw);
+  min-width: var(--k-bxw);
+  width: auto;
+}
+
+.k-tab-e2b-c {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.k-tab-e2-c:is(.k-tab-e2a, .k-tab-e2c) > .k-tab-e2b-c {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.k-tab-e3 {
+  display: block;
+}
+
+.k-tab-e2-c:is(.k-tab-e2a, .k-tab-e2c) .k-tab-e3 {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.k-tab-e4 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+/* element: indicator / selected shell */
+.k-tab-e5-c {
+  position: absolute;
+  left: 0;
+  pointer-events: none;
+  z-index: 2;
+  --k-tab-x: 0px;
+  --k-tab-y: 0px;
+  --k-tab-w: 0px;
+  --k-tab-h: 0px;
+  transition:
+    transform var(--k-tab-dur) ease,
+    width var(--k-tab-dur) ease,
+    height var(--k-tab-dur) ease,
+    opacity var(--k-tab-dur) ease;
+  will-change: transform, width, height, opacity;
+}
+
+/* `k-tab-e5c`: dot indicator centered in the tab. */
+.k-tab-e5-c.k-tab-e5c {
+  left: calc(var(--k-tab-x) + var(--k-tab-w) / 2);
+  translate: -50% 0;
+  width: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  transform-origin: center;
+}
+
+/* modifier `a`: disables transition in static mode */
+.k-tab-e5a-c {
+  transition: none;
+}
+
+.k-tab-p {
+  min-width: 0;
+}
+
+.k-tab-p[hidden] {
+  display: none !important;
 }

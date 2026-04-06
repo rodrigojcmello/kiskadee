@@ -738,11 +738,11 @@ export const schema: Schema = {
           elements: {
             // e1: bar
             e1: {
+              decorations: {
+                borderStyle: 'solid'
+              },
               scales: {
-                paddingTop: 1,
-                paddingBottom: 1,
-                paddingLeft: 1,
-                paddingRight: 1,
+                borderWidth: 1,
                 borderRadius: {
                   rounded: {
                     's:sm:1': 8,
@@ -755,6 +755,13 @@ export const schema: Schema = {
                 return {
                   light: {
                     boxColor: {
+                      neutral: {
+                        medium: {
+                          rest: c(segmentName, 'l', 'neutral', 4)
+                        }
+                      }
+                    },
+                    borderColor: {
                       neutral: {
                         medium: {
                           rest: c(segmentName, 'l', 'neutral', 4)

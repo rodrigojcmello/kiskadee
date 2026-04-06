@@ -111,7 +111,7 @@ Use this for nodes that directly represent schema elements in shared structural 
 Important:
 
 - `k-<cmp>-e<n>` is the shared base element shape,
-- it exists for common structural files such as `Tabs.common.scss`,
+- it may be styled in a shared structural file or repeated across variant-local files,
 - it must stay genuinely shared across all variants for that component.
 
 ### 5. Shared element-derived modifier or derived node

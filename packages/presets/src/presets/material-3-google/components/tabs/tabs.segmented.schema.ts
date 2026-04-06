@@ -32,11 +32,11 @@ export function createMaterial3GoogleTabsSegmentedVariant({
     elements: {
       // e1: bar
       e1: {
+        decorations: {
+          borderStyle: 'solid'
+        },
         scales: {
-          paddingTop: 2,
-          paddingBottom: 2,
-          paddingLeft: 2,
-          paddingRight: 2,
+          borderWidth: 2,
           borderRadius: {
             rounded: 12
           }
@@ -50,10 +50,24 @@ export function createMaterial3GoogleTabsSegmentedVariant({
                     rest: c('default', 'l', 'primary.v2', 60)
                   }
                 }
+              },
+              borderColor: {
+                neutral: {
+                  medium: {
+                    rest: c('default', 'l', 'primary.v2', 60)
+                  }
+                }
               }
             },
             dark: {
               boxColor: {
+                neutral: {
+                  medium: {
+                    rest: c('default', 'd', 'primary.v2', 50)
+                  }
+                }
+              },
+              borderColor: {
                 neutral: {
                   medium: {
                     rest: c('default', 'd', 'primary.v2', 50)

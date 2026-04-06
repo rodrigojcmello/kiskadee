@@ -2,6 +2,7 @@
 .k-tab-e1-e {
   display: inline-block;
   position: relative;
+  isolation: isolate;
   width: fit-content;
   max-width: 100%;
   overflow: hidden;
@@ -13,12 +14,40 @@
   width: 100%;
 }
 
+/* element: tab */
+.k-tab-e2-e {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--k-bdr);
+
+  &.k-tab-e2a {
+    flex: 0 0 var(--k-bxw);
+    width: var(--k-bxw);
+    min-width: 0;
+  }
+
+  &.k-tab-e2c {
+    min-width: 0;
+  }
+
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+
+  /* selected segmented trigger rises above siblings */
+  &[aria-selected='true'] {
+    z-index: 3;
+  }
+}
+
 /* `k-tab-e1c-e`: segmented inner bar owns horizontal scrolling inside the fixed shell. */
 .k-tab-e1c-e {
-  border-top-left-radius: max(0px, calc(var(--k-bdr) - var(--k-pdl))) max(0px, calc(var(--k-bdr) - var(--k-pdt)));
-  border-top-right-radius: max(0px, calc(var(--k-bdr) - var(--k-pdr))) max(0px, calc(var(--k-bdr) - var(--k-pdt)));
-  border-bottom-right-radius: max(0px, calc(var(--k-bdr) - var(--k-pdr))) max(0px, calc(var(--k-bdr) - var(--k-pdb)));
-  border-bottom-left-radius: max(0px, calc(var(--k-bdr) - var(--k-pdl))) max(0px, calc(var(--k-bdr) - var(--k-pdb)));
+  border-radius: max(0px, calc(var(--k-bdr) - var(--k-bdw)));
   display: flex;
   position: relative;
   width: 100%;
@@ -33,6 +62,37 @@
   flex: 1 0 var(--k-bxw);
   min-width: var(--k-bxw);
   width: auto;
+}
+
+.k-tab-e2b-e {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.k-tab-e2-e:is(.k-tab-e2a, .k-tab-e2c) > .k-tab-e2b-e {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.k-tab-e3 {
+  display: block;
+}
+
+.k-tab-e2-e:is(.k-tab-e2a, .k-tab-e2c) .k-tab-e3 {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.k-tab-e4 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
 }
 
 /* `k-tab-e6-e`: segmented separator stays above the fill shell. */
@@ -54,6 +114,14 @@
 
 /* `k-tab-e5-e`: segmented indicator owns motion-friendly size and transform transitions. */
 .k-tab-e5-e {
+  position: absolute;
+  left: 0;
+  pointer-events: none;
+  z-index: 2;
+  --k-tab-x: 0px;
+  --k-tab-y: 0px;
+  --k-tab-w: 0px;
+  --k-tab-h: 0px;
   border-radius: var(--k-bdr);
   transition: transform var(--k-tab-dur) ease,
   width var(--k-tab-dur) ease,
@@ -93,13 +161,10 @@
   border-bottom-right-radius: 0 !important;
 }
 
-/* `k-tab-e2-e`: segmented triggers stay below the selected fill. */
-.k-tab-e2-e {
-  border-radius: var(--k-bdr);
-  z-index: 1;
+.k-tab-p {
+  min-width: 0;
 }
 
-/* `k-tab-e2-e[aria-selected='true']`: selected segmented trigger rises above siblings. */
-.k-tab-e2-e[aria-selected='true'] {
-  z-index: 3;
+.k-tab-p[hidden] {
+  display: none !important;
 }

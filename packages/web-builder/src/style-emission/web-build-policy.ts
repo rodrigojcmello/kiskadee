@@ -73,8 +73,9 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         segmented: {
           elements: {
             e1: {
+              borderWidthEmission: 'mirrored',
               borderRadiusEmission: 'mirrored',
-              paddingEmission: 'mirrored'
+              paddingEmission: 'compensated'
             }
           }
         }

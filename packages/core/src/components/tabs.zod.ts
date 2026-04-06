@@ -348,13 +348,23 @@ function createTabsSegmentedBarElementStyleSchema<TSegmentName extends SegmentNa
   return z
     .object({
       name: z.string().optional(),
+      decorations: z
+        .object({
+          borderStyle: z.custom<DecorationSchema['borderStyle']>().optional()
+        })
+        .strict()
+        .optional(),
       scales: createScalesSchemaWithRoundedOnlyBorderRadius([
+        'borderWidth',
         'paddingTop',
         'paddingRight',
         'paddingBottom',
         'paddingLeft'
       ]).optional(),
-      palettes: createPalettesSchema<TSegmentName, 'boxColor'>(['boxColor']).optional(),
+      palettes: createPalettesSchema<TSegmentName, 'boxColor' | 'borderColor'>([
+        'boxColor',
+        'borderColor'
+      ]).optional(),
       effects: elementEffectsSchema.optional()
     })
     .strict();

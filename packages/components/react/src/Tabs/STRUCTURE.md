@@ -2,13 +2,14 @@
 
 ## Purpose
 
-This document explains how structural CSS is split inside `Tabs`, especially the boundary between:
+This document explains how structural CSS is organized inside `Tabs`.
 
-- `Tabs.common.scss`
-- variant-specific structural files such as `line`, `box`, `dot`, `segmented`, and `bridge`
+Current rule:
 
-This file exists because `Tabs.common.scss` is shared by every variant at import time, but not every
-variant depends on it in the same way.
+- there is no `Tabs.common.scss`
+- each variant owns its structural CSS inside its own `.scss` file
+- shared runtime slot names such as `k-tab-e1` and `k-tab-e2` still exist, but their layout rules now
+  live in the variant files
 
 ## Variant letter registry
 
@@ -51,13 +52,11 @@ Examples:
   - `c` = dot variant
 
 - `k-tab-e5a-b`
-  - `tab` = Tabs component
   - `e5` = indicator / selected shell element
   - `a` = first modifier for `e5`
   - `b` = box variant
 
 - `k-tab-e6b-b`
-  - `tab` = Tabs component
   - `e6` = separator element
   - `b` = second modifier for `e6`
   - `b` = box variant
@@ -72,106 +71,84 @@ Practical rule:
 - for Tabs specifically, trailing `d` after the last hyphen always means `line`
 - for Tabs specifically, trailing `e` after the last hyphen always means `segmented`
 
-## What `Tabs.common.scss` is
+## Current file ownership
 
-`Tabs.common.scss` is the shared structural primitive layer for `Tabs`.
+Structural CSS is now fully local to each variant:
 
-It owns the base shape of shared slots such as:
+- `line/Tabs.line.scss`
+- `dot/Tabs.dot.scss`
+- `box/Tabs.box.scss`
+- `segmented/Tabs.segmented.scss`
+- `bridge/Tabs.bridge.scss`
+
+Each file is responsible for its own:
+
+- bar geometry
+- trigger layout
+- width-mode behavior
+- label and icon containment
+- indicator shell
+- separators, when the variant has them
+- panel wrapper, when the variant needs local layering
+
+## Shared runtime classes still exist
+
+The runtime still emits shared semantic slot classes such as:
 
 - `k-tab-e1`
-- `k-tab-e1h`
 - `k-tab-e2`
-- `k-tab-e2a`
-- `k-tab-e2b`
-- `k-tab-e2c`
 - `k-tab-e3`
 - `k-tab-e4`
-- `k-tab-e5` and its shared modifiers
+- `k-tab-e5`
+- `k-tab-e6`
 - `k-tab-p`
 
-These selectors are the common building blocks that all variants may reuse.
+Those classes are part of the runtime contract, not a requirement to keep a shared Sass file.
 
-Important:
+In practice:
 
-- `common` does not mean every variant uses every shared selector
-- `common` means the file defines structural primitives that are allowed to be shared
+- the runtime keeps one semantic naming system
+- the structural ownership lives in the variant-local Sass files
 
-## Variants that heavily depend on the common layer
+## Why Tabs no longer has a common structural file
 
-The following variants are built mostly on top of the shared `Tabs.common.scss` model:
+`Tabs.common.scss` started as a shared primitive layer, but the variants no longer shared enough
+truly universal layout behavior.
 
-- `line`
-- `box`
-- `dot`
-- `segmented`
+The main failure mode was this:
 
-These variants strongly depend on the shared bar, trigger, content, and indicator structure,
-especially the shared `k-tab-e5` indicator model.
+- a rule added to `common` looked generic
+- but it actually matched only some variants
+- another variant then had to override that shared rule
 
-## Bridge is an intentional exception
+That made the architecture harder to reason about.
 
-`bridge` imports `Tabs.common.scss`, but only consumes a subset of the shared layer.
+Current preference:
 
-In practice, `bridge` still reuses:
-
-- `k-tab-e1` as the shared base bar slot
-- `k-tab-e2` and `k-tab-e2a` as the shared trigger base
-- `k-tab-e2b`
-- `k-tab-e2c`
-- `k-tab-e3`
-- `k-tab-e4`
-- `k-tab-p`
-
-But `bridge` does not follow the shared indicator and bar structure used by the other variants.
-
-It owns its own structural geometry in `bridge/Tabs.bridge.scss`, including:
-
-- outer shell layering for the bar
-- inner scrolling bar
-- per-tab wrapper for overlap and shadow projection
-- clipped trigger geometry
-- lower-curve mode behavior
-
-So the correct mental model is:
-
-- `line`, `box`, `dot`, and `segmented` are primarily "common-first" variants
-- `bridge` is a "variant-first" implementation that reuses only selected common primitives
-
-## Structural rule
-
-When changing `Tabs.common.scss`, assume:
-
-- changes may affect every Tabs variant
-- but `bridge` may ignore large parts of that shared model
-
-When changing `bridge`, assume:
-
-- its unique geometry belongs in `bridge/Tabs.bridge.scss`
-- shared slot primitives should only stay in `Tabs.common.scss` if they are genuinely reusable
+- if a structural rule is not genuinely universal, keep it in the variant file
+- duplication across variants is acceptable when it prevents cross-variant leakage
 
 ## Practical guidance
 
-Use `Tabs.common.scss` for:
+When changing Tabs structural CSS:
 
-- shared slot primitives
-- shared trigger base behavior
-- shared content-slot behavior
-- shared label and icon slot behavior
-- shared indicator primitives used by more than one variant
+- start in the active variant file
+- only duplicate behavior into another variant if that variant truly needs the same structure
+- do not recreate a shared Tabs structural layer unless the behavior is universal enough to stay
+  stable across every variant
 
-Use variant files for:
+When adding new derived nodes:
 
-- variant-only geometry
-- variant-only wrappers
-- variant-only overlap, clipping, or stacking rules
-- variant-only motion or indicator behavior
+- keep using the shared semantic element lineage (`e1`, `e2`, `e5`, etc.)
+- attach the variant suffix at the end
+- keep wrappers and derived layers owned by the nearest schema element
 
-## Documentation note
+## Mental model
 
-If a future Tabs variant behaves like `bridge` and uses only a small subset of the common layer,
-that is acceptable.
+Tabs now follows this model:
 
-The requirement is not that every variant must use the same amount of `common`.
+- shared runtime contract
+- variant-local structural Sass
 
-The requirement is that `Tabs.common.scss` stays limited to genuinely shared primitives, and that
-variant files stay responsible for their own unique structure.
+That means layout bugs should usually be fixed in the active variant file, not in a shared Tabs
+stylesheet.
