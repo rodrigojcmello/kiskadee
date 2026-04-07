@@ -1,7 +1,6 @@
 /* `k-tab-e1-e`: segmented outer shell owns the fixed chrome and clips the scrolling interior. */
 .k-tab-e1-e {
   background: var(--k-bdc);
-  display: inline-block;
   position: relative;
   isolation: isolate;
   width: fit-content;
