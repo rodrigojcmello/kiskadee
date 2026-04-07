@@ -29,6 +29,10 @@ function resolveStyleKeyEmissionMode(
     return styleEmissionPolicy.borderWidthEmission === 'mirrored' ? 'm' : undefined;
   }
 
+  if (styleKey.startsWith('borderColor')) {
+    return styleEmissionPolicy.borderColorEmission === 'mirrored' ? 'm' : undefined;
+  }
+
   if (styleKey.startsWith('boxWidth')) {
     return styleEmissionPolicy.boxWidthEmission === 'token' ? 't' : undefined;
   }

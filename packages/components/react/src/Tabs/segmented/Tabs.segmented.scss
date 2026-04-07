@@ -1,5 +1,6 @@
 /* `k-tab-e1-e`: segmented outer shell owns the fixed chrome and clips the scrolling interior. */
 .k-tab-e1-e {
+  background: var(--k-bdc);
   display: inline-block;
   position: relative;
   isolation: isolate;
@@ -23,7 +24,7 @@
   align-items: center;
   justify-content: center;
   border: 0;
-  border-radius: var(--k-bdr);
+  border-radius: max(0px, calc(var(--k-bdr) - var(--k-bdw, 0px)));
 
   &.k-tab-e2a {
     flex: 0 0 var(--k-bxw);
@@ -47,7 +48,7 @@
 
 /* `k-tab-e1c-e`: segmented inner bar owns horizontal scrolling inside the fixed shell. */
 .k-tab-e1c-e {
-  border-radius: inherit;
+  border-radius: max(0px, calc(var(--k-bdr) - var(--k-bdw, 0px)));
   display: flex;
   position: relative;
   width: 100%;
@@ -122,7 +123,7 @@
   --k-tab-y: 0px;
   --k-tab-w: 0px;
   --k-tab-h: 0px;
-  border-radius: var(--k-bdr);
+  border-radius: max(0px, calc(var(--k-bdr) - var(--k-bdw, 0px)));
   transition: transform var(--k-tab-dur) ease,
   width var(--k-tab-dur) ease,
   height var(--k-tab-dur) ease;

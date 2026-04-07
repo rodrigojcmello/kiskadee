@@ -205,7 +205,10 @@ export async function generateCssSplit(
                 for (const key of arr) {
                   const cn = resolveClassName(key);
                   // Only color keys are expected here; call color transformer directly and pass the forceState flag
-                  const rule = transformColorKeyToCss(key, cn, forceState, options);
+                  const rule = transformColorKeyToCss(key, cn, forceState, {
+                    ...options,
+                    styleEmissionPolicy
+                  });
                   if (rule && rule.trim() !== '') paletteRules[bundleKey].add(rule);
                 }
               }

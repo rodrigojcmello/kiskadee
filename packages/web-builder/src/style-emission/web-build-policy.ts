@@ -1,5 +1,6 @@
 export type BorderWidthEmission = 'direct' | 'mirrored';
 export type BorderRadiusEmission = 'direct' | 'mirrored' | 'token';
+export type BorderColorEmission = 'direct' | 'mirrored';
 export type BoxWidthEmission = 'direct' | 'token';
 export type PaddingEmission = 'direct' | 'mirrored' | 'token' | 'compensated';
 export type ShadowEmission = 'direct' | 'token';
@@ -7,6 +8,7 @@ export type ShadowEmission = 'direct' | 'token';
 export type ElementStyleEmissionPolicy = {
   borderWidthEmission?: BorderWidthEmission;
   borderRadiusEmission?: BorderRadiusEmission;
+  borderColorEmission?: BorderColorEmission;
   boxWidthEmission?: BoxWidthEmission;
   paddingEmission?: PaddingEmission;
   shadowEmission?: ShadowEmission;
@@ -15,6 +17,7 @@ export type ElementStyleEmissionPolicy = {
 export type ResolvedElementStyleEmissionPolicy = {
   borderWidthEmission: BorderWidthEmission;
   borderRadiusEmission: BorderRadiusEmission;
+  borderColorEmission: BorderColorEmission;
   boxWidthEmission?: BoxWidthEmission;
   paddingEmission: PaddingEmission;
   shadowEmission: ShadowEmission;
@@ -73,6 +76,7 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         segmented: {
           elements: {
             e1: {
+              borderColorEmission: 'mirrored',
               borderWidthEmission: 'mirrored',
               paddingEmission: 'compensated'
             }
@@ -86,6 +90,7 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
 export const DEFAULT_ELEMENT_STYLE_EMISSION_POLICY: ResolvedElementStyleEmissionPolicy = {
   borderRadiusEmission: 'mirrored',
   borderWidthEmission: 'direct',
+  borderColorEmission: 'direct',
   boxWidthEmission: 'direct',
   paddingEmission: 'direct',
   shadowEmission: 'direct'
@@ -112,6 +117,10 @@ export function resolveElementStyleEmissionPolicy(
       variantElementPolicy?.borderWidthEmission ??
       elementPolicy?.borderWidthEmission ??
       DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.borderWidthEmission,
+    borderColorEmission:
+      variantElementPolicy?.borderColorEmission ??
+      elementPolicy?.borderColorEmission ??
+      DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.borderColorEmission,
     boxWidthEmission:
       variantElementPolicy?.boxWidthEmission ??
       elementPolicy?.boxWidthEmission ??
