@@ -69,14 +69,14 @@ export function TabsBridgeTabBase({
   children,
   ...restProps
 }: TabsTabProps & TabsBridgeVisualOrderProps) {
-  const { selected, scale, intent, emphasis, classNames, elements, structural, tabWidthMode, radiusMode } =
+  const { selected, scale, intent, emphasis, classNames, elements, structural, tabWidth, tabShape } =
     useTabsVisualContext();
   const isSelected = selected === value;
   const itemClassName = resolveBridgeItemClassName({
     structural,
     elements,
     scale,
-    tabWidthMode
+    tabWidth
   });
   const triggerClassName = resolveBridgeTriggerClassName({
     structural,
@@ -85,8 +85,8 @@ export function TabsBridgeTabBase({
     scale,
     intent,
     emphasis,
-    tabWidthMode,
-    radiusMode,
+    tabWidth,
+    tabShape,
     selected: isSelected,
     className
   });

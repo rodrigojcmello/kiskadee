@@ -2,10 +2,10 @@
 
 import {
   type TabsIndicatorPosition,
-  type TabsIndicatorWidthMode,
-  type TabsLineIndicatorVariant,
-  type TabsTabWidthMode,
-  tabsIndicatorVariantsByType
+  type TabsIndicatorWidth,
+  type TabsLineIndicatorShape,
+  type TabsTabWidth,
+  tabsIndicatorShapesByVariant
 } from '@kiskadee/core';
 import { useKiskadee } from '@kiskadee/react-components';
 import { TabsLine } from '@kiskadee/react-components/tabs/line';
@@ -15,19 +15,19 @@ import {
   DEFAULT_TAB_VALUE,
   type TabsIndicatorMotionStyleControl,
   type TabsIndicatorPositionControl,
-  type TabsLineWidthModeControl,
+  type TabsLineWidthControl,
   type TabsMode,
   type TabsSpring,
-  type TabsTabWidthModeControl,
+  type TabsTabWidthControl,
   indicatorMotionStyleLabels,
   indicatorPositionLabels,
-  lineIndicatorVariantLabels,
-  lineIndicatorWidthModeLabels,
+  lineIndicatorShapeLabels,
+  lineIndicatorWidthLabels,
   modeOptions,
   renderTabsSlots,
   springOptions,
   TabsShowcasePageShell,
-  tabWidthModeLabels
+  tabWidthLabels
 } from '../ShowcaseTabs.shared';
 
 export default function TabsLinePage() {
@@ -37,31 +37,31 @@ export default function TabsLinePage() {
   const [indicatorMotionStyle, setIndicatorMotionStyle] =
     useState<TabsIndicatorMotionStyleControl>('direct');
   const [indicatorPosition, setIndicatorPosition] = useState<TabsIndicatorPositionControl>('default');
-  const [lineWidthMode, setLineWidthMode] = useState<TabsLineWidthModeControl>('default');
-  const [tabWidthMode, setTabWidthMode] = useState<TabsTabWidthModeControl>('default');
-  const [indicatorVariant, setIndicatorVariant] = useState<TabsLineIndicatorVariant>('square');
+  const [lineWidth, setLineWidth] = useState<TabsLineWidthControl>('default');
+  const [tabWidth, setTabWidth] = useState<TabsTabWidthControl>('default');
+  const [indicatorShape, setIndicatorShape] = useState<TabsLineIndicatorShape>('square');
   const [selectedValue, setSelectedValue] = useState(DEFAULT_TAB_VALUE);
 
-  const schemaLineWidthMode = global?.components?.tabs?.options?.indicatorWidthMode ?? 'tab';
+  const schemaLineWidth = global?.components?.tabs?.options?.indicatorWidth ?? 'tab';
   const schemaIndicatorPosition = global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
-  const schemaTabWidthMode = global?.components?.tabs?.options?.tabWidthMode ?? 'auto';
+  const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'auto';
 
-  const lineVariantOptions = tabsIndicatorVariantsByType.line.map((value) => ({
+  const lineShapeOptions = tabsIndicatorShapesByVariant.line.map((value) => ({
     value,
-    label: lineIndicatorVariantLabels[value]
+    label: lineIndicatorShapeLabels[value]
   }));
   const indicatorMotionStyleOptions = [
     { value: 'direct', label: indicatorMotionStyleLabels.direct },
     { value: 'stretch', label: indicatorMotionStyleLabels.stretch }
   ];
-  const lineWidthModeOptions = [
+  const lineWidthOptions = [
     {
       value: 'default',
-      label: `Schema Default (${lineIndicatorWidthModeLabels[schemaLineWidthMode]})`
+      label: `Schema Default (${lineIndicatorWidthLabels[schemaLineWidth]})`
     },
-    { value: 'tab', label: lineIndicatorWidthModeLabels.tab },
-    { value: 'content', label: lineIndicatorWidthModeLabels.content },
-    { value: 'fixed', label: lineIndicatorWidthModeLabels.fixed }
+    { value: 'tab', label: lineIndicatorWidthLabels.tab },
+    { value: 'content', label: lineIndicatorWidthLabels.content },
+    { value: 'fixed', label: lineIndicatorWidthLabels.fixed }
   ];
   const indicatorPositionOptions = [
     {
@@ -71,29 +71,28 @@ export default function TabsLinePage() {
     { value: 'bottom', label: indicatorPositionLabels.bottom },
     { value: 'top', label: indicatorPositionLabels.top }
   ];
-  const tabWidthModeOptions = [
+  const tabWidthOptions = [
     {
       value: 'default',
-      label: `Schema Default (${tabWidthModeLabels[schemaTabWidthMode]})`
+      label: `Schema Default (${tabWidthLabels[schemaTabWidth]})`
     },
-    { value: 'auto', label: tabWidthModeLabels.auto },
-    { value: 'fixed', label: tabWidthModeLabels.fixed },
-    { value: 'distributed', label: tabWidthModeLabels.distributed }
+    { value: 'auto', label: tabWidthLabels.auto },
+    { value: 'fixed', label: tabWidthLabels.fixed },
+    { value: 'distributed', label: tabWidthLabels.distributed }
   ];
 
-  const lineWidthModeProp = lineWidthMode === 'default' ? undefined : lineWidthMode;
+  const lineWidthProp = lineWidth === 'default' ? undefined : lineWidth;
   const indicatorPositionProp: TabsIndicatorPosition =
     indicatorPosition === 'default' ? schemaIndicatorPosition : indicatorPosition;
-  const tabWidthModeProp: TabsTabWidthMode | undefined =
-    tabWidthMode === 'default' ? undefined : tabWidthMode;
+  const tabWidthProp: TabsTabWidth | undefined = tabWidth === 'default' ? undefined : tabWidth;
   const resolvedIndicator = {
     motion: mode === 'animated' ? ('auto' as const) : ('none' as const),
     motionStyle: indicatorMotionStyle,
     position: indicatorPositionProp,
-    variant: indicatorVariant,
-    ...(lineWidthModeProp ? { widthMode: lineWidthModeProp as TabsIndicatorWidthMode } : {})
+    shape: indicatorShape,
+    ...(lineWidthProp ? { width: lineWidthProp as TabsIndicatorWidth } : {})
   };
-  const { tabs, contents } = renderTabsSlots(TabsLine, `line-${indicatorVariant}`);
+  const { tabs, contents } = renderTabsSlots(TabsLine, `line-${indicatorShape}`);
 
   return (
     <TabsShowcasePageShell
@@ -130,11 +129,11 @@ export default function TabsLinePage() {
             />
           ) : null}
           <Select
-            label="Indicator Variant"
+            label="Indicator Shape"
             width={200}
-            options={lineVariantOptions}
-            value={indicatorVariant}
-            onValueChange={(value) => setIndicatorVariant(value as TabsLineIndicatorVariant)}
+            options={lineShapeOptions}
+            value={indicatorShape}
+            onValueChange={(value) => setIndicatorShape(value as TabsLineIndicatorShape)}
           />
           <Select
             label="Indicator Side"
@@ -146,16 +145,16 @@ export default function TabsLinePage() {
           <Select
             label="Line Width"
             width={220}
-            options={lineWidthModeOptions}
-            value={lineWidthMode}
-            onValueChange={(value) => setLineWidthMode(value as TabsLineWidthModeControl)}
+            options={lineWidthOptions}
+            value={lineWidth}
+            onValueChange={(value) => setLineWidth(value as TabsLineWidthControl)}
           />
           <Select
             label="Tab Width"
             width={220}
-            options={tabWidthModeOptions}
-            value={tabWidthMode}
-            onValueChange={(value) => setTabWidthMode(value as TabsTabWidthModeControl)}
+            options={tabWidthOptions}
+            value={tabWidth}
+            onValueChange={(value) => setTabWidth(value as TabsTabWidthControl)}
           />
         </>
       }
@@ -164,7 +163,7 @@ export default function TabsLinePage() {
         value={selectedValue}
         onValueChange={setSelectedValue}
         activationMode="manual"
-        tabWidthMode={tabWidthModeProp}
+        tabWidth={tabWidthProp}
         indicator={resolvedIndicator}
         spring={spring}
       >

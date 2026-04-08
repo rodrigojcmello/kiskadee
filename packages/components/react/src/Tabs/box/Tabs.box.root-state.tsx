@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import {
-  resolveIndicatorRadiusMode,
-  resolveIndicatorVariant
+  resolveIndicatorShape,
+  resolveIndicatorTabShape
 } from '../Tabs.class-names';
 import {
   type ResolvedTabsRootState,
@@ -39,26 +39,26 @@ export function useResolvedTabsBoxRootState({
     motion: resolveIndicatorMotion(indicator),
     motionStyle: indicator?.motionStyle ?? 'direct',
     position: 'bottom',
-    variant: resolveIndicatorVariant(
+    shape: resolveIndicatorShape(
       'box',
-      indicator?.variant,
-      baseState.globalTabsOptions?.indicatorVariant ?? baseState.globalTabsOptions?.indicatorShape
+      indicator?.shape,
+      baseState.globalTabsOptions?.indicatorShape
     ),
-    widthMode: 'tab'
+    width: 'tab'
   };
-  const resolvedRadiusMode = resolveIndicatorRadiusMode(
+  const resolvedTabShape = resolveIndicatorTabShape(
     resolvedIndicator,
-    baseState.resolvedRadiusMode
+    baseState.resolvedTabShape
   );
 
   return useMemo(
     () => ({
       ...baseState,
-      resolvedRadiusMode,
-      resolvedType: 'box' as const,
-      resolvedLowerCurveMode: 'curved' as const,
+      resolvedTabShape,
+      resolvedVariant: 'box' as const,
+      resolvedLowerCurve: 'curved' as const,
       resolvedIndicator
     }),
-    [baseState, resolvedIndicator, resolvedRadiusMode]
+    [baseState, resolvedIndicator, resolvedTabShape]
   );
 }

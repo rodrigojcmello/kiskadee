@@ -1,9 +1,9 @@
 'use client';
 
 import {
-  type TabsBoxIndicatorVariant,
-  type TabsTabWidthMode,
-  tabsIndicatorVariantsByType
+  type TabsBoxIndicatorShape,
+  type TabsTabWidth,
+  tabsIndicatorShapesByVariant
 } from '@kiskadee/core';
 import { useKiskadee } from '@kiskadee/react-components';
 import { TabsBox } from '@kiskadee/react-components/tabs/box';
@@ -14,14 +14,14 @@ import {
   type TabsIndicatorMotionStyleControl,
   type TabsMode,
   type TabsSpring,
-  type TabsTabWidthModeControl,
-  boxIndicatorVariantLabels,
+  type TabsTabWidthControl,
+  boxIndicatorShapeLabels,
   indicatorMotionStyleLabels,
   modeOptions,
   renderTabsSlots,
   springOptions,
   TabsShowcasePageShell,
-  tabWidthModeLabels
+  tabWidthLabels
 } from '../ShowcaseTabs.shared';
 
 export default function TabsBoxPage() {
@@ -30,32 +30,31 @@ export default function TabsBoxPage() {
   const [spring, setSpring] = useState<TabsSpring>('snappy');
   const [indicatorMotionStyle, setIndicatorMotionStyle] =
     useState<TabsIndicatorMotionStyleControl>('direct');
-  const [indicatorVariant, setIndicatorVariant] = useState<TabsBoxIndicatorVariant>('square');
-  const [tabWidthMode, setTabWidthMode] = useState<TabsTabWidthModeControl>('default');
+  const [indicatorShape, setIndicatorShape] = useState<TabsBoxIndicatorShape>('square');
+  const [tabWidth, setTabWidth] = useState<TabsTabWidthControl>('default');
   const [selectedValue, setSelectedValue] = useState(DEFAULT_TAB_VALUE);
 
-  const schemaTabWidthMode = global?.components?.tabs?.options?.tabWidthMode ?? 'auto';
-  const boxVariantOptions = tabsIndicatorVariantsByType.box.map((value) => ({
+  const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'auto';
+  const boxShapeOptions = tabsIndicatorShapesByVariant.box.map((value) => ({
     value,
-    label: boxIndicatorVariantLabels[value]
+    label: boxIndicatorShapeLabels[value]
   }));
   const indicatorMotionStyleOptions = [
     { value: 'direct', label: indicatorMotionStyleLabels.direct },
     { value: 'stretch', label: indicatorMotionStyleLabels.stretch }
   ];
-  const tabWidthModeOptions = [
+  const tabWidthOptions = [
     {
       value: 'default',
-      label: `Schema Default (${tabWidthModeLabels[schemaTabWidthMode]})`
+      label: `Schema Default (${tabWidthLabels[schemaTabWidth]})`
     },
-    { value: 'auto', label: tabWidthModeLabels.auto },
-    { value: 'fixed', label: tabWidthModeLabels.fixed },
-    { value: 'distributed', label: tabWidthModeLabels.distributed }
+    { value: 'auto', label: tabWidthLabels.auto },
+    { value: 'fixed', label: tabWidthLabels.fixed },
+    { value: 'distributed', label: tabWidthLabels.distributed }
   ];
 
-  const tabWidthModeProp: TabsTabWidthMode | undefined =
-    tabWidthMode === 'default' ? undefined : tabWidthMode;
-  const { tabs, contents } = renderTabsSlots(TabsBox, `box-${indicatorVariant}`);
+  const tabWidthProp: TabsTabWidth | undefined = tabWidth === 'default' ? undefined : tabWidth;
+  const { tabs, contents } = renderTabsSlots(TabsBox, `box-${indicatorShape}`);
 
   return (
     <TabsShowcasePageShell
@@ -92,18 +91,18 @@ export default function TabsBoxPage() {
             />
           ) : null}
           <Select
-            label="Indicator Variant"
+            label="Indicator Shape"
             width={200}
-            options={boxVariantOptions}
-            value={indicatorVariant}
-            onValueChange={(value) => setIndicatorVariant(value as TabsBoxIndicatorVariant)}
+            options={boxShapeOptions}
+            value={indicatorShape}
+            onValueChange={(value) => setIndicatorShape(value as TabsBoxIndicatorShape)}
           />
           <Select
             label="Tab Width"
             width={220}
-            options={tabWidthModeOptions}
-            value={tabWidthMode}
-            onValueChange={(value) => setTabWidthMode(value as TabsTabWidthModeControl)}
+            options={tabWidthOptions}
+            value={tabWidth}
+            onValueChange={(value) => setTabWidth(value as TabsTabWidthControl)}
           />
         </>
       }
@@ -112,11 +111,11 @@ export default function TabsBoxPage() {
         value={selectedValue}
         onValueChange={setSelectedValue}
         activationMode="manual"
-        tabWidthMode={tabWidthModeProp}
+        tabWidth={tabWidthProp}
         indicator={{
           motion: mode === 'animated' ? 'auto' : 'none',
           motionStyle: indicatorMotionStyle,
-          variant: indicatorVariant
+          shape: indicatorShape
         }}
         spring={spring}
       >

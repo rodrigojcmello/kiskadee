@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { resolveIndicatorVariant, resolveIndicatorWidthMode } from '../Tabs.class-names';
+import { resolveIndicatorShape, resolveIndicatorWidth } from '../Tabs.class-names';
 import {
   type ResolvedTabsRootState,
   useTabsRuntimeRootState
@@ -54,23 +54,23 @@ export function useResolvedTabsLineRootState({
     motion: resolveIndicatorMotion(indicator),
     motionStyle: indicator?.motionStyle ?? 'direct',
     position: resolvedIndicatorPosition,
-    variant: resolveIndicatorVariant(
+    shape: resolveIndicatorShape(
       'line',
-      indicator?.variant,
-      baseState.globalTabsOptions?.indicatorVariant ?? baseState.globalTabsOptions?.indicatorShape
+      indicator?.shape,
+      baseState.globalTabsOptions?.indicatorShape
     ),
-    widthMode: resolveIndicatorWidthMode(
+    width: resolveIndicatorWidth(
       'line',
-      indicator?.widthMode,
-      baseState.globalTabsOptions?.indicatorWidthMode
+      indicator?.width,
+      baseState.globalTabsOptions?.indicatorWidth
     )
   };
 
   return useMemo(
     () => ({
       ...baseState,
-      resolvedType: 'line' as const,
-      resolvedLowerCurveMode: 'curved' as const,
+      resolvedVariant: 'line' as const,
+      resolvedLowerCurve: 'curved' as const,
       resolvedIndicator
     }),
     [baseState, resolvedIndicator]

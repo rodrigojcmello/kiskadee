@@ -22,7 +22,7 @@ export default function TabsDotMotionBarEnhancer({ children }: TabsMotionEngineP
     scale,
     intent,
     emphasis,
-    radiusMode,
+    tabShape,
     indicator,
     classNames,
     elements,
@@ -40,10 +40,10 @@ export default function TabsDotMotionBarEnhancer({ children }: TabsMotionEngineP
       measureIndicatorRect({
         barElement: barRef.current,
         selected,
-        widthMode: indicator.widthMode
+        width: indicator.width
       })
     );
-  }, [barRef, indicator.widthMode, selected]);
+  }, [barRef, indicator.width, selected]);
 
   useEffect(() => {
     updateIndicatorRect();
@@ -109,9 +109,9 @@ export default function TabsDotMotionBarEnhancer({ children }: TabsMotionEngineP
     scale,
     intent,
     emphasis,
-    radiusMode,
+    tabShape,
     indicator,
-    type: 'dot'
+    variant: 'dot'
   });
   const indicatorAnimate =
     renderedIndicatorRect !== null

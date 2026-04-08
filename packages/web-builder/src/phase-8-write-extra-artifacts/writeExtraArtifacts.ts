@@ -9,12 +9,12 @@ import type {
   SchemaFonts,
   SegmentName,
   SolidColor,
-  TabsBridgeLowerCurveMode,
-  TabsIndicatorVariant,
+  TabsBridgeLowerCurve,
+  TabsIndicatorShape,
   TabsIndicatorPosition,
-  TabsIndicatorWidthMode,
-  TabsTabWidthMode,
-  TabsType,
+  TabsIndicatorWidth,
+  TabsTabWidth,
+  TabsVariant,
   ThemeMode
 } from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
@@ -154,17 +154,17 @@ export async function writeExtraArtifacts(params: {
   const ripple = schema.global?.effects?.ripple as RippleEffectSchema | undefined;
   const tabsIndicatorPosition = schema.components?.tabs?.options
     ?.indicatorPosition as TabsIndicatorPosition | undefined;
-  const tabsIndicatorVariant = schema.components?.tabs?.options
-    ?.indicatorVariant as TabsIndicatorVariant | undefined;
-  const tabsIndicatorWidthMode = schema.components?.tabs?.options
-    ?.indicatorWidthMode as TabsIndicatorWidthMode | undefined;
-  const tabsTabWidthMode = schema.components?.tabs?.options?.tabWidthMode as
-    | TabsTabWidthMode
+  const tabsIndicatorShape = schema.components?.tabs?.options
+    ?.indicatorShape as TabsIndicatorShape | undefined;
+  const tabsIndicatorWidth = schema.components?.tabs?.options
+    ?.indicatorWidth as TabsIndicatorWidth | undefined;
+  const tabsTabWidth = schema.components?.tabs?.options?.tabWidth as
+    | TabsTabWidth
     | undefined;
-  const tabsType = schema.components?.tabs?.options?.type as TabsType | undefined;
+  const tabsVariant = schema.components?.tabs?.options?.variant as TabsVariant | undefined;
   const tabsSeparator = schema.components?.tabs?.options?.separator as boolean | undefined;
-  const tabsLowerCurveMode = schema.components?.tabs?.options
-    ?.lowerCurveMode as TabsBridgeLowerCurveMode | undefined;
+  const tabsLowerCurve = schema.components?.tabs?.options
+    ?.lowerCurve as TabsBridgeLowerCurve | undefined;
 
   function toCssFontFamilyString(value: FontStack): string | null {
     const css = toCssFontFamily(value);
@@ -181,12 +181,12 @@ export async function writeExtraArtifacts(params: {
   const hasRipple = Boolean(ripple && Object.keys(ripple).length > 0);
   const hasTabsOptions = Boolean(
       tabsIndicatorPosition ||
-      tabsIndicatorVariant ||
-      tabsIndicatorWidthMode ||
-      tabsTabWidthMode ||
-      tabsType ||
+      tabsIndicatorShape ||
+      tabsIndicatorWidth ||
+      tabsTabWidth ||
+      tabsVariant ||
       tabsSeparator !== undefined ||
-      tabsLowerCurveMode
+      tabsLowerCurve
   );
 
   if (hasFonts || hasRadius || hasRipple || hasTabsOptions) {
@@ -200,13 +200,13 @@ export async function writeExtraArtifacts(params: {
       components?: {
         tabs?: {
           options?: {
-            type?: TabsType;
+            variant?: TabsVariant;
             indicatorPosition?: TabsIndicatorPosition;
-            indicatorVariant?: TabsIndicatorVariant;
-            indicatorWidthMode?: TabsIndicatorWidthMode;
-            tabWidthMode?: TabsTabWidthMode;
+            indicatorShape?: TabsIndicatorShape;
+            indicatorWidth?: TabsIndicatorWidth;
+            tabWidth?: TabsTabWidth;
             separator?: boolean;
-            lowerCurveMode?: TabsBridgeLowerCurveMode;
+            lowerCurve?: TabsBridgeLowerCurve;
           };
         };
       };
@@ -234,13 +234,13 @@ export async function writeExtraArtifacts(params: {
         ...(globalPayload.components ?? {}),
         tabs: {
           options: {
-            ...(tabsType ? { type: tabsType } : {}),
+            ...(tabsVariant ? { variant: tabsVariant } : {}),
             ...(tabsIndicatorPosition ? { indicatorPosition: tabsIndicatorPosition } : {}),
-            ...(tabsIndicatorVariant ? { indicatorVariant: tabsIndicatorVariant } : {}),
-            ...(tabsIndicatorWidthMode ? { indicatorWidthMode: tabsIndicatorWidthMode } : {}),
-            ...(tabsTabWidthMode ? { tabWidthMode: tabsTabWidthMode } : {}),
+            ...(tabsIndicatorShape ? { indicatorShape: tabsIndicatorShape } : {}),
+            ...(tabsIndicatorWidth ? { indicatorWidth: tabsIndicatorWidth } : {}),
+            ...(tabsTabWidth ? { tabWidth: tabsTabWidth } : {}),
             ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {}),
-            ...(tabsLowerCurveMode ? { lowerCurveMode: tabsLowerCurveMode } : {})
+            ...(tabsLowerCurve ? { lowerCurve: tabsLowerCurve } : {})
           }
         }
       };

@@ -339,9 +339,9 @@ export const schema: Schema = {
     },
     tabs: {
       options: {
-        type: 'box',
-        indicatorVariant: 'rounded',
-        tabWidthMode: 'auto',
+        variant: 'box',
+        indicatorShape: 'rounded',
+        tabWidth: 'auto',
         separator: true
       },
       variants: {
@@ -559,9 +559,9 @@ export const schema: Schema = {
         },
         bridge: {
           options: {
-            type: 'bridge',
-            indicatorVariant: 'bridge',
-            lowerCurveMode: 'curved'
+            variant: 'bridge',
+            indicatorShape: 'bridge',
+            lowerCurve: 'curved'
           },
           elements: {
             // e1: bar
@@ -731,8 +731,8 @@ export const schema: Schema = {
         },
         segmented: {
           options: {
-            type: 'segmented',
-            indicatorVariant: 'segmented',
+            variant: 'segmented',
+            indicatorShape: 'segmented',
             separator: true
           },
           elements: {

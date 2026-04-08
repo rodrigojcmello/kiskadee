@@ -23,7 +23,7 @@ function TabsLineStaticIndicator() {
     elements,
     structural,
     indicator,
-    radiusMode,
+    tabShape,
     barRef
   } = useTabsVisualContext();
   const [indicatorRect, setIndicatorRect] = useState<ReturnType<typeof measureIndicatorRect>>(null);
@@ -33,10 +33,10 @@ function TabsLineStaticIndicator() {
       measureIndicatorRect({
         barElement: barRef.current,
         selected,
-        widthMode: indicator.widthMode
+        width: indicator.width
       })
     );
-  }, [barRef, indicator.widthMode, selected]);
+  }, [barRef, indicator.width, selected]);
 
   useEffect(() => {
     updateIndicatorRect();
@@ -73,9 +73,9 @@ function TabsLineStaticIndicator() {
     scale,
     intent,
     emphasis,
-    radiusMode,
+    tabShape,
     indicator,
-    type: 'line'
+    variant: 'line'
   });
   const indicatorStyle = (
     indicatorRect !== null
@@ -107,7 +107,7 @@ function TabsLineStaticIndicator() {
  * What
  *     Wraps the line tab bar with the static indicator renderer.
  * Why
- *     The shared runtime expects one enhancer per type, and the line static path only needs to
+ *     The shared runtime expects one enhancer per variant, and the line static path only needs to
  *     append its measured indicator.
  */
 export function TabsLineStaticBarEnhancer({ children }: TabsLineStaticBarEnhancerProps) {

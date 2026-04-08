@@ -20,7 +20,7 @@ type SeparatorState = {
  */
 export function buildTabsChildrenWithSeparators(options: {
   children?: ReactNode;
-  type: 'line' | 'box' | 'segmented' | 'dot' | 'bridge';
+  variant: 'line' | 'box' | 'segmented' | 'dot' | 'bridge';
   structural: TabsStructuralDescriptor;
   separator: boolean;
   separatorClassName?: string;
@@ -28,7 +28,7 @@ export function buildTabsChildrenWithSeparators(options: {
 }): ReactNode[] {
   const items = Children.toArray(options.children);
   if (
-    (options.type !== 'box' && options.type !== 'segmented') ||
+    (options.variant !== 'box' && options.variant !== 'segmented') ||
     !options.separator ||
     items.length <= 1
   ) {

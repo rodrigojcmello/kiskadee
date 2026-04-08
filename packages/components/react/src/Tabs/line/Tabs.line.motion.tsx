@@ -26,7 +26,7 @@ export default function TabsLineMotionBarEnhancer({ children }: TabsMotionEngine
     scale,
     intent,
     emphasis,
-    radiusMode,
+    tabShape,
     indicator,
     indicatorTransition,
     classNames,
@@ -62,18 +62,18 @@ export default function TabsLineMotionBarEnhancer({ children }: TabsMotionEngine
         return null;
       }
 
-      if (indicator.widthMode !== 'fixed') {
+      if (indicator.width !== 'fixed') {
         return measureIndicatorRect({
           barElement,
           selected: nextValue,
-          widthMode: indicator.widthMode
+          width: indicator.width
         });
       }
 
       const tabRect = measureIndicatorRect({
         barElement,
         selected: nextValue,
-        widthMode: 'tab'
+        width: 'tab'
       });
 
       if (!tabRect) {
@@ -100,7 +100,7 @@ export default function TabsLineMotionBarEnhancer({ children }: TabsMotionEngine
         height: tabRect.height
       };
     },
-    [barRef, indicator.widthMode, measureRenderedIndicatorRect, stretchPhase]
+    [barRef, indicator.width, measureRenderedIndicatorRect, stretchPhase]
   );
 
   const updateIndicatorRect = useCallback(() => {
@@ -108,10 +108,10 @@ export default function TabsLineMotionBarEnhancer({ children }: TabsMotionEngine
       measureIndicatorRect({
         barElement: barRef.current,
         selected,
-        widthMode: indicator.widthMode
+        width: indicator.width
       })
     );
-  }, [barRef, indicator.widthMode, selected]);
+  }, [barRef, indicator.width, selected]);
 
   useEffect(() => {
     updateIndicatorRect();
@@ -216,11 +216,11 @@ export default function TabsLineMotionBarEnhancer({ children }: TabsMotionEngine
     scale,
     intent,
     emphasis,
-    radiusMode,
+    tabShape,
     indicator,
-    type: 'line',
+    variant: 'line',
     className:
-      indicator.widthMode === 'fixed' && supportsStretchMotion && stretchPhase !== 'idle'
+      indicator.width === 'fixed' && supportsStretchMotion && stretchPhase !== 'idle'
         ? 'k-tab-e5k'
         : undefined
   });

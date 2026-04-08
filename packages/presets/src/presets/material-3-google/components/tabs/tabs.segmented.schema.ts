@@ -25,8 +25,8 @@ export function createMaterial3GoogleTabsSegmentedVariant({
 
   return {
     options: {
-      type: 'segmented',
-      indicatorVariant: 'segmented',
+      variant: 'segmented',
+      indicatorShape: 'segmented',
       separator: true
     },
     elements: {

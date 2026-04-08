@@ -49,15 +49,15 @@ export function useResolvedTabsDotRootState({
     motion: resolveIndicatorMotion(indicator),
     motionStyle: 'direct',
     position: resolveIndicatorPosition(indicator, baseState.globalTabsOptions?.indicatorPosition),
-    variant: 'dot',
-    widthMode: 'tab'
+    shape: 'dot',
+    width: 'tab'
   };
 
   return useMemo(
     () => ({
       ...baseState,
-      resolvedType: 'dot' as const,
-      resolvedLowerCurveMode: 'curved' as const,
+      resolvedVariant: 'dot' as const,
+      resolvedLowerCurve: 'curved' as const,
       resolvedIndicator
     }),
     [baseState, resolvedIndicator]

@@ -20,7 +20,7 @@ import './Tabs.dot.scss';
  * What
  *     Exposes the dot Tabs entrypoint by binding the shared runtime to the dot resolvers.
  * Why
- *     Consumers that only need dot tabs should import one lean type-specific component rather
+ *     Consumers that only need dot tabs should import one lean variant-specific component rather
  *     than a generic runtime that carries every visual variant.
  */
 export const TabsDot = createTabsComponent<TabsDotRootProps>({

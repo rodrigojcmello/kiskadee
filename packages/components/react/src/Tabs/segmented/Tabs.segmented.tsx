@@ -22,7 +22,7 @@ import './Tabs.segmented.scss';
  *     Exposes the segmented Tabs entrypoint by binding the shared runtime to the segmented
  *     resolvers.
  * Why
- *     Consumers that only need segmented tabs should import one lean type-specific component
+ *     Consumers that only need segmented tabs should import one lean variant-specific component
  *     rather than a generic runtime that carries every visual variant.
  */
 export const TabsSegmented = createTabsComponent<TabsSegmentedRootProps>({

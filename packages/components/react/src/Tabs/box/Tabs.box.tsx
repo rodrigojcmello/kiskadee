@@ -20,7 +20,7 @@ import './Tabs.box.scss';
  * What
  *     Exposes the box Tabs entrypoint by binding the shared runtime to the box resolvers.
  * Why
- *     Consumers that only need box tabs should import one lean type-specific component rather
+ *     Consumers that only need box tabs should import one lean variant-specific component rather
  *     than a generic runtime that carries every visual variant.
  */
 export const TabsBox = createTabsComponent<TabsBoxRootProps>({

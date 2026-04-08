@@ -22,11 +22,11 @@ export function createMaterial3GoogleTabsSchema({
 }: CreateMaterial3GoogleTabsSchemaArgs): TabsComponent {
   return {
     options: {
-      type: 'line',
+      variant: 'line',
       indicatorPosition: 'bottom',
-      indicatorVariant: 'square',
-      indicatorWidthMode: 'tab',
-      tabWidthMode: 'auto'
+      indicatorShape: 'square',
+      indicatorWidth: 'tab',
+      tabWidth: 'auto'
     },
     variants: {
       line: createMaterial3GoogleTabsLineVariant({

@@ -1,7 +1,7 @@
 import type { TabsStructuralDescriptor } from '../Tabs.structural';
 
 export const tabsBridgeStructural = {
-  type: 'bridge',
+  variant: 'bridge',
   letter: 'a',
   elements: {
     e1: 'k-tab-e1-a',
@@ -10,7 +10,7 @@ export const tabsBridgeStructural = {
     e2b: 'k-tab-e2b-a',
     e2c: 'k-tab-e2c-a'
   },
-  lowerCurveModeClassNames: {
+  lowerCurveClassNames: {
     curved: '',
     'flush-all': 'k-tab-e1d-a',
     'flush-start': 'k-tab-e1e-a',

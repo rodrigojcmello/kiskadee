@@ -21,7 +21,7 @@ import type {
 export const DEFAULT_SCALE = 's:md:1';
 export const DEFAULT_EMPHASIS: TabsVisualContextValue['emphasis'] = 'medium';
 export const DEFAULT_INTENT = 'neutral';
-export const DEFAULT_TYPE: TabsVisualContextValue['type'] = 'line';
+export const DEFAULT_VARIANT: TabsVisualContextValue['variant'] = 'line';
 
 /**
  * What
@@ -225,75 +225,75 @@ export function resolveRadiusClassName(
 
 /**
  * What
- *     Resolves which radius mode should be applied for the active indicator variant.
+ *     Resolves which tab shape should be applied for the active indicator shape.
  * Why
- *     Box Tabs reuse the indicator variant to define the shape of the bar and tabs themselves,
- *     while other types either clamp variants or use a fixed structural shape.
+ *     Box Tabs reuse the indicator shape to define the shape of the bar and tabs themselves,
+ *     while other variants either clamp shapes or use a fixed structural shape.
  */
-export function resolveIndicatorRadiusMode(
-  indicator: Pick<TabsResolvedIndicator, 'variant'>,
+export function resolveIndicatorTabShape(
+  indicator: Pick<TabsResolvedIndicator, 'shape'>,
   fallback: RadiusMode
 ): RadiusMode {
-  return indicator.variant === 'square'
+  return indicator.shape === 'square'
     ? 'square'
-    : indicator.variant === 'pill'
+    : indicator.shape === 'pill'
       ? 'pill'
-      : indicator.variant === 'rounded'
+      : indicator.shape === 'rounded'
         ? 'rounded'
         : fallback;
 }
 
 /**
  * What
- *     Maps the current Tabs type and indicator width mode to the structural indicator
+ *     Maps the current Tabs variant and indicator width to the structural indicator
  *     modifier class.
  * Why
- *     The indicator CSS changes layout rules by type, and this keeps that branching in one
+ *     The indicator CSS changes layout rules by variant, and this keeps that branching in one
  *     small resolver instead of scattering hard-coded class names across renderers.
  */
-export function resolveIndicatorModeClass(
-  type: TabsVisualContextValue['type'],
-  indicatorWidthMode: TabsVisualContextValue['indicator']['widthMode']
+export function resolveIndicatorWidthClass(
+  variant: TabsVisualContextValue['variant'],
+  indicatorWidth: TabsVisualContextValue['indicator']['width']
 ): string {
-  if (type === 'dot') {
+  if (variant === 'dot') {
     return 'k-tab-e5c';
   }
 
-  if (type !== 'line') {
+  if (variant !== 'line') {
     return '';
   }
 
-  return indicatorWidthMode === 'fixed' ? 'k-tab-e5b' : 'k-tab-e5a';
+  return indicatorWidth === 'fixed' ? 'k-tab-e5b' : 'k-tab-e5a';
 }
 
 /**
  * What
- *     Resolves the final indicator variant allowed for the current Tabs type.
+ *     Resolves the final indicator shape allowed for the current Tabs variant.
  * Why
- *     Global options and local props can request variants that do not apply to every type,
+ *     Global options and local props can request shapes that do not apply to every variant,
  *     so this function clamps them to the supported set before rendering.
  */
-export function resolveIndicatorVariant(
-  type: TabsVisualContextValue['type'],
-  indicatorVariant: TabsResolvedIndicator['variant'] | undefined,
-  globalIndicatorVariant: string | undefined
-): TabsResolvedIndicator['variant'] {
+export function resolveIndicatorShape(
+  variant: TabsVisualContextValue['variant'],
+  indicatorShape: TabsResolvedIndicator['shape'] | undefined,
+  globalIndicatorShape: string | undefined
+): TabsResolvedIndicator['shape'] {
   const candidate =
-    typeof indicatorVariant === 'string' ? indicatorVariant : globalIndicatorVariant;
+    typeof indicatorShape === 'string' ? indicatorShape : globalIndicatorShape;
 
-  if (type === 'dot') {
+  if (variant === 'dot') {
     return 'dot';
   }
 
-  if (type === 'line') {
+  if (variant === 'line') {
     return candidate === 'rounded' || candidate === 'roundedClip' ? candidate : 'square';
   }
 
-  if (type === 'segmented') {
+  if (variant === 'segmented') {
     return 'segmented';
   }
 
-  if (type === 'bridge') {
+  if (variant === 'bridge') {
     return 'bridge';
   }
 
@@ -302,56 +302,56 @@ export function resolveIndicatorVariant(
 
 /**
  * What
- *     Resolves the effective indicator width mode from local and global settings.
+ *     Resolves the effective indicator width from local and global settings.
  * Why
  *     Only line tabs support alternate width behaviors, so this centralizes the fallback
- *     rules and the type-specific restriction in one place.
+ *     rules and the variant-specific restriction in one place.
  */
-export function resolveIndicatorWidthMode(
-  type: TabsVisualContextValue['type'],
-  indicatorWidthMode: TabsVisualContextValue['indicator']['widthMode'] | undefined,
-  globalIndicatorWidthMode: TabsVisualContextValue['indicator']['widthMode'] | undefined
-): TabsVisualContextValue['indicator']['widthMode'] {
-  if (type !== 'line') {
+export function resolveIndicatorWidth(
+  variant: TabsVisualContextValue['variant'],
+  indicatorWidth: TabsVisualContextValue['indicator']['width'] | undefined,
+  globalIndicatorWidth: TabsVisualContextValue['indicator']['width'] | undefined
+): TabsVisualContextValue['indicator']['width'] {
+  if (variant !== 'line') {
     return 'tab';
   }
 
-  return indicatorWidthMode ?? globalIndicatorWidthMode ?? 'tab';
+  return indicatorWidth ?? globalIndicatorWidth ?? 'tab';
 }
 
 /**
  * What
- *     Resolves the effective tab width mode from local props and global component defaults.
+ *     Resolves the effective tab width from local props and global component defaults.
  * Why
- *     Trigger class resolution needs one final width mode, so this avoids repeating the same
+ *     Trigger class resolution needs one final width value, so this avoids repeating the same
  *     fallback order wherever tab width affects styling.
  */
-export function resolveTabWidthMode(
-  tabWidthMode: TabsVisualContextValue['tabWidthMode'] | undefined,
-  globalTabWidthMode: TabsVisualContextValue['tabWidthMode'] | undefined
-): TabsVisualContextValue['tabWidthMode'] {
-  return tabWidthMode ?? globalTabWidthMode ?? 'auto';
+export function resolveTabWidth(
+  tabWidth: TabsVisualContextValue['tabWidth'] | undefined,
+  globalTabWidth: TabsVisualContextValue['tabWidth'] | undefined
+): TabsVisualContextValue['tabWidth'] {
+  return tabWidth ?? globalTabWidth ?? 'auto';
 }
 
 /**
  * What
- *     Reports whether the current tab width mode consumes the schema `boxWidth` token.
+ *     Reports whether the current tab width consumes the schema `boxWidth` token.
  * Why
  *     Both `fixed` and `distributed` depend on width classes, while `auto` keeps the trigger
  *     sized by content.
  */
 function usesTabWidthScale(
-  tabWidthMode: TabsVisualContextValue['tabWidthMode']
+  tabWidth: TabsVisualContextValue['tabWidth']
 ): boolean {
-  return tabWidthMode === 'fixed' || tabWidthMode === 'distributed';
+  return tabWidth === 'fixed' || tabWidth === 'distributed';
 }
 
 /**
  * What
  *     Builds the final className for the tab-list container by combining schema classes and
- *     type-specific structural modifiers.
+ *     variant-specific structural modifiers.
  * Why
- *     Each Tabs type reuses the same root slot but applies different structural markers, so
+ *     Each Tabs variant reuses the same root slot but applies different structural markers, so
  *     the runtime needs one resolver that expresses those differences without duplicating
  *     class assembly.
  */
@@ -362,24 +362,24 @@ export function resolveListClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
-  tabWidthMode: TabsVisualContextValue['tabWidthMode'];
-  radiusMode: RadiusMode;
-  type: TabsVisualContextValue['type'];
+  tabWidth: TabsVisualContextValue['tabWidth'];
+  tabShape: RadiusMode;
+  variant: TabsVisualContextValue['variant'];
   indicatorPosition: TabsResolvedIndicator['position'];
-  lowerCurveMode: TabsVisualContextValue['lowerCurveMode'];
+  lowerCurve: TabsVisualContextValue['lowerCurve'];
 }): string | undefined {
   return joinClassNames(
     'k-tab',
     'k-tab-e1',
     getTabsStructuralElementClassName(options.structural, 'e1'),
-    options.tabWidthMode === 'distributed' ? 'k-tab-e1h' : '',
-    options.type === 'bridge'
-      ? getTabsStructuralLowerCurveClassName(options.structural, options.lowerCurveMode)
+    options.tabWidth === 'distributed' ? 'k-tab-e1h' : '',
+    options.variant === 'bridge'
+      ? getTabsStructuralLowerCurveClassName(options.structural, options.lowerCurve)
       : '',
-    options.type === 'line' || options.type === 'dot'
+    options.variant === 'line' || options.variant === 'dot'
       ? (options.indicatorPosition === 'top' ? 'k-tab-e1b' : 'k-tab-e1a')
       : '',
-    resolveRadiusClassName(options.elements.e1, options.scale, options.radiusMode),
+    resolveRadiusClassName(options.elements.e1, options.scale, options.tabShape),
     resolveElementClassName(options.elements.e1, {
       scale: options.scale,
       intent: options.intent,
@@ -403,7 +403,7 @@ export function resolveSeparatorClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
-  type: TabsVisualContextValue['type'];
+  variant: TabsVisualContextValue['variant'];
 }): string | undefined {
   return joinClassNames(
     resolveElementClassName(options.elements.e6, {
@@ -432,9 +432,9 @@ export function resolveTriggerClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
-  tabWidthMode: TabsVisualContextValue['tabWidthMode'];
-  radiusMode: RadiusMode;
-  type: TabsVisualContextValue['type'];
+  tabWidth: TabsVisualContextValue['tabWidth'];
+  tabShape: RadiusMode;
+  variant: TabsVisualContextValue['variant'];
   selected: boolean;
   className?: string;
   includeEffects?: boolean;
@@ -447,15 +447,15 @@ export function resolveTriggerClassName(options: {
       selected: options.selected,
       includeEffects: options.includeEffects
     }),
-    usesTabWidthScale(options.tabWidthMode)
+    usesTabWidthScale(options.tabWidth)
       ? resolveWidthClassName(options.elements.e2, options.scale)
       : '',
-    resolveRadiusClassName(options.elements.e2, options.scale, options.radiusMode),
+    resolveRadiusClassName(options.elements.e2, options.scale, options.tabShape),
     options.classNames.e2,
     'k-tab-e2',
     getTabsStructuralElementClassName(options.structural, 'e2'),
-    options.tabWidthMode === 'fixed' ? 'k-tab-e2a' : '',
-    options.tabWidthMode === 'distributed' ? 'k-tab-e2c' : '',
+    options.tabWidth === 'fixed' ? 'k-tab-e2a' : '',
+    options.tabWidth === 'distributed' ? 'k-tab-e2c' : '',
     'k-state',
     cn.interactive,
     cn.activator,
@@ -475,12 +475,12 @@ export function resolveBridgeItemClassName(options: {
   structural: TabsVisualContextValue['structural'];
   elements: TabsClassesMap;
   scale: string;
-  tabWidthMode: TabsVisualContextValue['tabWidthMode'];
+  tabWidth: TabsVisualContextValue['tabWidth'];
   className?: string;
 }): string | undefined {
   return joinClassNames(
     resolveShadowEffectClassName(options.elements.e2),
-    usesTabWidthScale(options.tabWidthMode)
+    usesTabWidthScale(options.tabWidth)
       ? resolveWidthClassName(options.elements.e2, options.scale)
       : '',
     getTabsStructuralElementClassName(options.structural, 'e2c'),
@@ -503,8 +503,8 @@ export function resolveBridgeTriggerClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
-  tabWidthMode: TabsVisualContextValue['tabWidthMode'];
-  radiusMode: RadiusMode;
+  tabWidth: TabsVisualContextValue['tabWidth'];
+  tabShape: RadiusMode;
   selected: boolean;
   className?: string;
 }): string | undefined {
@@ -520,7 +520,7 @@ export function resolveBridgeTriggerClassName(options: {
   const activeRadiusClassName = resolveRadiusClassName(
     options.selected ? (selectedShellElement ?? triggerElement) : triggerElement,
     options.scale,
-    options.radiusMode
+    options.tabShape
   );
 
   return joinClassNames(
@@ -529,7 +529,7 @@ export function resolveBridgeTriggerClassName(options: {
     triggerElement?.s?.all,
     triggerElement?.s?.[scaleKey],
     resolveNonShadowEffectClasses(activeEffectElement),
-    usesTabWidthScale(options.tabWidthMode)
+    usesTabWidthScale(options.tabWidth)
       ? resolveWidthClassName(triggerElement, options.scale)
       : '',
     activeRadiusClassName,
@@ -537,8 +537,8 @@ export function resolveBridgeTriggerClassName(options: {
     options.selected ? options.classNames.e5 : '',
     'k-tab-e2',
     getTabsStructuralElementClassName(options.structural, 'e2'),
-    options.tabWidthMode === 'fixed' ? 'k-tab-e2a' : '',
-    options.tabWidthMode === 'distributed' ? 'k-tab-e2c' : '',
+    options.tabWidth === 'fixed' ? 'k-tab-e2a' : '',
+    options.tabWidth === 'distributed' ? 'k-tab-e2c' : '',
     'k-state',
     cn.interactive,
     cn.activator,
@@ -613,7 +613,7 @@ export function resolveIconClassName(options: {
 /**
  * What
  *     Builds the final className for the active indicator, including variant, position,
- *     motion, and type-specific modifiers.
+ *     motion, and variant-specific modifiers.
  * Why
  *     Static and motion renderers for line, box, segmented, and dot all depend on the same
  *     indicator slot, so this keeps indicator class branching centralized and consistent across
@@ -626,29 +626,29 @@ export function resolveIndicatorClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
-  radiusMode: RadiusMode;
+  tabShape: RadiusMode;
   indicator: TabsResolvedIndicator;
-  type: TabsVisualContextValue['type'];
+  variant: TabsVisualContextValue['variant'];
   className?: string;
 }): string | undefined {
-  const indicatorRadiusMode = resolveIndicatorRadiusMode(options.indicator, options.radiusMode);
+  const indicatorRadiusMode = resolveIndicatorTabShape(options.indicator, options.tabShape);
   const indicatorRadiusClassName = resolveRadiusClassName(
     options.elements.e5,
     options.scale,
     indicatorRadiusMode
   );
-  const indicatorVariantClass =
-    options.type === 'segmented'
+  const indicatorShapeClass =
+    options.variant === 'segmented'
       ? 'k-tab-e5a-e'
-      : options.indicator.variant === 'roundedClip' && options.type === 'line'
+      : options.indicator.shape === 'roundedClip' && options.variant === 'line'
       ? 'k-tab-e5g'
       : indicatorRadiusClassName
         ? ''
-        : options.indicator.variant === 'rounded'
+        : options.indicator.shape === 'rounded'
           ? 'k-tab-e5e'
-          : options.indicator.variant === 'pill'
+          : options.indicator.shape === 'pill'
             ? 'k-tab-e5f'
-            : options.indicator.variant === 'square'
+            : options.indicator.shape === 'square'
               ? 'k-tab-e5d'
               : '';
 
@@ -663,13 +663,13 @@ export function resolveIndicatorClassName(options: {
     options.classNames.e5,
     'k-tab-e5',
     getTabsStructuralElementClassName(options.structural, 'e5'),
-    options.type === 'line' || options.type === 'dot'
+    options.variant === 'line' || options.variant === 'dot'
       ? options.indicator.position === 'top'
         ? 'k-tab-e5i'
         : 'k-tab-e5h'
       : '',
-    resolveIndicatorModeClass(options.type, options.indicator.widthMode),
-    indicatorVariantClass,
+    resolveIndicatorWidthClass(options.variant, options.indicator.width),
+    indicatorShapeClass,
     options.indicator.motion === 'none'
       ? getTabsStructuralIndicatorStaticClassName(options.structural) || 'k-tab-e5j'
       : '',

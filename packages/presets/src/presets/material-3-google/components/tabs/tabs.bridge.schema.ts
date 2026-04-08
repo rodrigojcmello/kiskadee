@@ -19,9 +19,9 @@ export function createMaterial3GoogleTabsBridgeVariant({
 > {
   return {
     options: {
-      type: 'bridge',
-      indicatorVariant: 'bridge',
-      lowerCurveMode: 'curved'
+      variant: 'bridge',
+      indicatorShape: 'bridge',
+      lowerCurve: 'curved'
     },
     elements: {
       // e1: bar

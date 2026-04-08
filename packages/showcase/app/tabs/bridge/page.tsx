@@ -1,68 +1,67 @@
 'use client';
 
-import { type TabsBridgeLowerCurveMode, type TabsTabWidthMode } from '@kiskadee/core';
+import { type TabsBridgeLowerCurve, type TabsTabWidth } from '@kiskadee/core';
 import { useKiskadee } from '@kiskadee/react-components';
 import { TabsBridge } from '@kiskadee/react-components/tabs/bridge';
 import { useState } from 'react';
 import { Select } from '@/k-components';
 import {
-  bridgeLowerCurveModeLabels,
+  bridgeLowerCurveLabels,
   DEFAULT_TAB_VALUE,
-  type TabsTabWidthModeControl,
+  type TabsTabWidthControl,
   renderTabsSlots,
   TabsShowcasePageShell,
-  tabWidthModeLabels
+  tabWidthLabels
 } from '../ShowcaseTabs.shared';
 
 export default function TabsBridgePage() {
   const { global } = useKiskadee();
-  const [tabWidthMode, setTabWidthMode] = useState<TabsTabWidthModeControl>('default');
-  const [bridgeLowerCurveMode, setBridgeLowerCurveMode] =
-    useState<TabsBridgeLowerCurveMode>('curved');
+  const [tabWidth, setTabWidth] = useState<TabsTabWidthControl>('default');
+  const [bridgeLowerCurve, setBridgeLowerCurve] =
+    useState<TabsBridgeLowerCurve>('curved');
   const [selectedValue, setSelectedValue] = useState(DEFAULT_TAB_VALUE);
 
-  const schemaTabWidthMode = global?.components?.tabs?.options?.tabWidthMode ?? 'auto';
-  const tabWidthModeOptions = [
+  const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'auto';
+  const tabWidthOptions = [
     {
       value: 'default',
-      label: `Schema Default (${tabWidthModeLabels[schemaTabWidthMode]})`
+      label: `Schema Default (${tabWidthLabels[schemaTabWidth]})`
     },
-    { value: 'auto', label: tabWidthModeLabels.auto },
-    { value: 'fixed', label: tabWidthModeLabels.fixed },
-    { value: 'distributed', label: tabWidthModeLabels.distributed }
+    { value: 'auto', label: tabWidthLabels.auto },
+    { value: 'fixed', label: tabWidthLabels.fixed },
+    { value: 'distributed', label: tabWidthLabels.distributed }
   ];
-  const bridgeLowerCurveModeOptions = [
-    { value: 'curved', label: bridgeLowerCurveModeLabels.curved },
-    { value: 'flush-start', label: bridgeLowerCurveModeLabels['flush-start'] },
-    { value: 'flush-end', label: bridgeLowerCurveModeLabels['flush-end'] },
-    { value: 'flush-both', label: bridgeLowerCurveModeLabels['flush-both'] },
-    { value: 'flush-all', label: bridgeLowerCurveModeLabels['flush-all'] }
+  const bridgeLowerCurveOptions = [
+    { value: 'curved', label: bridgeLowerCurveLabels.curved },
+    { value: 'flush-start', label: bridgeLowerCurveLabels['flush-start'] },
+    { value: 'flush-end', label: bridgeLowerCurveLabels['flush-end'] },
+    { value: 'flush-both', label: bridgeLowerCurveLabels['flush-both'] },
+    { value: 'flush-all', label: bridgeLowerCurveLabels['flush-all'] }
   ];
 
-  const tabWidthModeProp: TabsTabWidthMode | undefined =
-    tabWidthMode === 'default' ? undefined : tabWidthMode;
+  const tabWidthProp: TabsTabWidth | undefined = tabWidth === 'default' ? undefined : tabWidth;
   const { tabs, contents } = renderTabsSlots(TabsBridge, 'bridge');
 
   return (
     <TabsShowcasePageShell
       activeVariant="bridge"
       title="Tabs / Bridge"
-      description="Bridge exposes only its structural controls: tab width and the bridge-only `lowerCurveMode`."
+      description="Bridge exposes only its structural controls: tab width and the bridge-only `lowerCurve`."
       controls={
         <>
           <Select
             label="Tab Width"
             width={220}
-            options={tabWidthModeOptions}
-            value={tabWidthMode}
-            onValueChange={(value) => setTabWidthMode(value as TabsTabWidthModeControl)}
+            options={tabWidthOptions}
+            value={tabWidth}
+            onValueChange={(value) => setTabWidth(value as TabsTabWidthControl)}
           />
           <Select
             label="Lower Curve"
             width={220}
-            options={bridgeLowerCurveModeOptions}
-            value={bridgeLowerCurveMode}
-            onValueChange={(value) => setBridgeLowerCurveMode(value as TabsBridgeLowerCurveMode)}
+            options={bridgeLowerCurveOptions}
+            value={bridgeLowerCurve}
+            onValueChange={(value) => setBridgeLowerCurve(value as TabsBridgeLowerCurve)}
           />
         </>
       }
@@ -71,8 +70,8 @@ export default function TabsBridgePage() {
         value={selectedValue}
         onValueChange={setSelectedValue}
         activationMode="manual"
-        tabWidthMode={tabWidthModeProp}
-        lowerCurveMode={bridgeLowerCurveMode}
+        tabWidth={tabWidthProp}
+        lowerCurve={bridgeLowerCurve}
       >
         {tabs}
         {contents}

@@ -5,11 +5,11 @@ import {
 } from '../Tabs.runtime-state';
 import type { TabsBridgeRootProps, TabsResolvedIndicator, TabsVisualContextValue } from '../Tabs.types';
 
-function resolveLowerCurveMode(
-  lowerCurveMode: TabsBridgeRootProps['lowerCurveMode'],
-  globalLowerCurveMode: TabsVisualContextValue['lowerCurveMode'] | undefined
-): TabsVisualContextValue['lowerCurveMode'] {
-  return lowerCurveMode ?? globalLowerCurveMode ?? 'curved';
+function resolveLowerCurve(
+  lowerCurve: TabsBridgeRootProps['lowerCurve'],
+  globalLowerCurve: TabsVisualContextValue['lowerCurve'] | undefined
+): TabsVisualContextValue['lowerCurve'] {
+  return lowerCurve ?? globalLowerCurve ?? 'curved';
 }
 
 /**
@@ -21,7 +21,7 @@ function resolveLowerCurveMode(
  */
 export function useResolvedTabsBridgeRootState({
   indicator: _indicator,
-  lowerCurveMode,
+  lowerCurve,
   ...props
 }: TabsBridgeRootProps): ResolvedTabsRootState {
   const baseState = useTabsRuntimeRootState({
@@ -32,24 +32,24 @@ export function useResolvedTabsBridgeRootState({
     motion: 'none',
     motionStyle: 'direct',
     position: 'bottom',
-    variant: 'bridge',
-    widthMode: 'tab'
+    shape: 'bridge',
+    width: 'tab'
   };
-  const resolvedRadiusMode = 'rounded' as const;
-  const resolvedLowerCurveMode = resolveLowerCurveMode(
-    lowerCurveMode,
-    baseState.globalTabsOptions?.lowerCurveMode
+  const resolvedTabShape = 'rounded' as const;
+  const resolvedLowerCurve = resolveLowerCurve(
+    lowerCurve,
+    baseState.globalTabsOptions?.lowerCurve
   );
 
   return useMemo(
     () => ({
       ...baseState,
-      resolvedRadiusMode,
-      resolvedType: 'bridge' as const,
-      resolvedLowerCurveMode,
+      resolvedTabShape,
+      resolvedVariant: 'bridge' as const,
+      resolvedLowerCurve,
       resolvedSeparator: false,
       resolvedIndicator
     }),
-    [baseState, resolvedIndicator, resolvedLowerCurveMode, resolvedRadiusMode]
+    [baseState, resolvedIndicator, resolvedLowerCurve, resolvedTabShape]
   );
 }

@@ -1,7 +1,7 @@
 import type { TabsStructuralDescriptor } from '../Tabs.structural';
 
 export const tabsLineStructural = {
-  type: 'line',
+  variant: 'line',
   letter: 'd',
   elements: {
     e1: 'k-tab-e1-d',

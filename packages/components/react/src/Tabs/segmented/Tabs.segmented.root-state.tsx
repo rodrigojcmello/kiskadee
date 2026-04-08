@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { resolveIndicatorVariant } from '../Tabs.class-names';
+import { resolveIndicatorShape } from '../Tabs.class-names';
 import {
   type ResolvedTabsRootState,
   useTabsRuntimeRootState
@@ -25,23 +25,23 @@ export function useResolvedTabsSegmentedRootState({
     motion: 'none',
     motionStyle: 'direct',
     position: 'bottom',
-    variant: resolveIndicatorVariant(
+    shape: resolveIndicatorShape(
       'segmented',
-      indicator?.variant,
-      baseState.globalTabsOptions?.indicatorVariant ?? baseState.globalTabsOptions?.indicatorShape
+      indicator?.shape,
+      baseState.globalTabsOptions?.indicatorShape
     ),
-    widthMode: 'tab'
+    width: 'tab'
   };
-  const resolvedRadiusMode = 'rounded' as const;
+  const resolvedTabShape = 'rounded' as const;
 
   return useMemo(
     () => ({
       ...baseState,
-      resolvedRadiusMode,
-      resolvedType: 'segmented' as const,
-      resolvedLowerCurveMode: 'curved' as const,
+      resolvedTabShape,
+      resolvedVariant: 'segmented' as const,
+      resolvedLowerCurve: 'curved' as const,
       resolvedIndicator
     }),
-    [baseState, resolvedIndicator, resolvedRadiusMode]
+    [baseState, resolvedIndicator, resolvedTabShape]
   );
 }

@@ -1,7 +1,7 @@
 import type { TabsStructuralDescriptor } from '../Tabs.structural';
 
 export const tabsSegmentedStructural = {
-  type: 'segmented',
+  variant: 'segmented',
   letter: 'e',
   elements: {
     e1: 'k-tab-e1-e',

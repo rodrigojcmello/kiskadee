@@ -25,7 +25,7 @@ function TabsSegmentedStaticIndicator() {
     elements,
     structural,
     indicator,
-    radiusMode,
+    tabShape,
     barRef
   } = useTabsVisualContext();
   const [indicatorRect, setIndicatorRect] = useState<ReturnType<typeof measureIndicatorRect>>(null);
@@ -35,10 +35,10 @@ function TabsSegmentedStaticIndicator() {
       measureIndicatorRect({
         barElement: barRef.current,
         selected,
-        widthMode: indicator.widthMode
+        width: indicator.width
       })
     );
-  }, [barRef, indicator.widthMode, selected]);
+  }, [barRef, indicator.width, selected]);
 
   useEffect(() => {
     updateIndicatorRect();
@@ -75,9 +75,9 @@ function TabsSegmentedStaticIndicator() {
     scale,
     intent,
     emphasis,
-    radiusMode,
+    tabShape,
     indicator,
-    type: 'segmented'
+    variant: 'segmented'
   });
   const indicatorStyle = (
     indicatorRect !== null
@@ -118,7 +118,7 @@ export function TabsSegmentedStaticBarEnhancer({
     () =>
       buildTabsChildrenWithSeparators({
         children,
-        type: 'segmented',
+        variant: 'segmented',
         structural,
         separator,
         separatorClassName

@@ -1,15 +1,15 @@
-import type { TabsBridgeLowerCurveMode, TabsType } from '@kiskadee/core';
+import type { TabsBridgeLowerCurve, TabsVariant } from '@kiskadee/core';
 
 export type TabsStructuralElementKey = 'e1' | 'e1c' | 'e2' | 'e2b' | 'e2c' | 'e5' | 'e6';
 
-export type TabsStructuralDescriptor<TType extends TabsType = TabsType> = {
-  type: TType;
+export type TabsStructuralDescriptor<TVariant extends TabsVariant = TabsVariant> = {
+  variant: TVariant;
   letter: string;
   elements: Partial<Record<TabsStructuralElementKey, string>>;
   indicatorStaticClassName?: string;
   separatorHiddenClassName?: string;
   separatorDimmedClassName?: string;
-  lowerCurveModeClassNames?: Partial<Record<TabsBridgeLowerCurveMode, string>>;
+  lowerCurveClassNames?: Partial<Record<TabsBridgeLowerCurve, string>>;
 };
 
 /**
@@ -17,7 +17,7 @@ export type TabsStructuralDescriptor<TType extends TabsType = TabsType> = {
  *     Looks up the structural class name for one variant-owned Tabs slot.
  * Why
  *     Shared renderers should receive one descriptor from the active variant instead of
- *     importing a registry that knows every Tabs type.
+ *     importing a registry that knows every Tabs variant.
  */
 export function getTabsStructuralElementClassName(
   structural: TabsStructuralDescriptor,
@@ -35,9 +35,9 @@ export function getTabsStructuralElementClassName(
  */
 export function getTabsStructuralLowerCurveClassName(
   structural: TabsStructuralDescriptor,
-  mode: TabsBridgeLowerCurveMode
+  curve: TabsBridgeLowerCurve
 ): string {
-  return structural.lowerCurveModeClassNames?.[mode] ?? '';
+  return structural.lowerCurveClassNames?.[curve] ?? '';
 }
 
 /**

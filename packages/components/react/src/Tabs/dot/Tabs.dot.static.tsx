@@ -23,7 +23,7 @@ function TabsDotStaticIndicator() {
     elements,
     structural,
     indicator,
-    radiusMode,
+    tabShape,
     barRef
   } = useTabsVisualContext();
   const [indicatorRect, setIndicatorRect] = useState<ReturnType<typeof measureIndicatorRect>>(null);
@@ -33,10 +33,10 @@ function TabsDotStaticIndicator() {
       measureIndicatorRect({
         barElement: barRef.current,
         selected,
-        widthMode: indicator.widthMode
+        width: indicator.width
       })
     );
-  }, [barRef, indicator.widthMode, selected]);
+  }, [barRef, indicator.width, selected]);
 
   useEffect(() => {
     updateIndicatorRect();
@@ -73,9 +73,9 @@ function TabsDotStaticIndicator() {
     scale,
     intent,
     emphasis,
-    radiusMode,
+    tabShape,
     indicator,
-    type: 'dot'
+    variant: 'dot'
   });
   const indicatorStyle = (
     indicatorRect !== null
@@ -107,7 +107,7 @@ function TabsDotStaticIndicator() {
  * What
  *     Wraps the dot tab bar with the static dot indicator renderer.
  * Why
- *     The shared runtime expects one enhancer per type, and the dot static path only needs to
+ *     The shared runtime expects one enhancer per variant, and the dot static path only needs to
  *     append its measured indicator.
  */
 export function TabsDotStaticBarEnhancer({ children }: TabsDotStaticBarEnhancerProps) {

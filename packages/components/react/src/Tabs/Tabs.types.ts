@@ -3,14 +3,14 @@ import type {
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
-  TabsBridgeLowerCurveMode,
-  TabsBoxIndicatorVariant,
+  TabsBridgeLowerCurve,
+  TabsBoxIndicatorShape,
   TabsIndicatorPosition,
-  TabsIndicatorVariant,
-  TabsIndicatorWidthMode,
-  TabsLineIndicatorVariant,
-  TabsTabWidthMode,
-  TabsType
+  TabsIndicatorShape,
+  TabsIndicatorWidth,
+  TabsLineIndicatorShape,
+  TabsTabWidth,
+  TabsVariant
 } from '@kiskadee/core';
 import type {
   TabsBarProps as HeadlessTabsBarProps,
@@ -45,8 +45,8 @@ type TabsLineIndicatorShared<TMotion extends TabsIndicatorMotion> = TabsIndicato
 
 type TabsLineIndicatorBarConfig<TMotion extends TabsIndicatorMotion> =
   TabsLineIndicatorShared<TMotion> & {
-    variant?: TabsLineIndicatorVariant;
-    widthMode?: TabsIndicatorWidthMode;
+    shape?: TabsLineIndicatorShape;
+    width?: TabsIndicatorWidth;
     motionStyle?: TabsIndicatorMotionStyle;
   };
 
@@ -55,34 +55,34 @@ export type TabsLineIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsIn
 
 export type TabsBoxIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsIndicatorMotion> =
   TabsIndicatorMotionConfig<TMotion> & {
-    variant?: TabsBoxIndicatorVariant;
+    shape?: TabsBoxIndicatorShape;
     motionStyle?: TabsIndicatorMotionStyle;
     position?: never;
-    widthMode?: never;
+    width?: never;
   };
 
 export type TabsSegmentedIndicatorConfig = {
-  variant?: never;
+  shape?: never;
   motion?: never;
   motionStyle?: never;
   position?: never;
-  widthMode?: never;
+  width?: never;
 };
 
 export type TabsDotIndicatorConfig<TMotion extends TabsIndicatorMotion = TabsIndicatorMotion> =
   TabsIndicatorMotionConfig<TMotion> & {
-    variant?: never;
+    shape?: never;
     motionStyle?: never;
     position?: TabsIndicatorPosition;
-    widthMode?: never;
+    width?: never;
   };
 
 export type TabsBridgeIndicatorConfig = {
-  variant?: never;
+  shape?: never;
   motion?: never;
   motionStyle?: never;
   position?: never;
-  widthMode?: never;
+  width?: never;
 };
 
 export type TabsSpringPreset = 'snappy' | 'gentle' | 'debugSlow';
@@ -99,7 +99,7 @@ export type TabsRootBaseProps = Omit<HeadlessTabsRootProps, 'classNames' | 'orie
   classNames?: TabsClassNames;
   scale?: ElementSizeValue;
   emphasis?: ComponentEmphasis;
-  tabWidthMode?: TabsTabWidthMode;
+  tabWidth?: TabsTabWidth;
   separator?: boolean;
   spring?: TabsSpringPreset | TabsSpringConfig;
   /**
@@ -110,29 +110,29 @@ export type TabsRootBaseProps = Omit<HeadlessTabsRootProps, 'classNames' | 'orie
 };
 
 export type TabsRootLineProps = TabsRootBaseProps & {
-  type?: 'line';
+  variant?: 'line';
   indicator?: TabsLineIndicatorConfig;
 };
 
 export type TabsRootBoxProps = TabsRootBaseProps & {
-  type: 'box';
+  variant: 'box';
   indicator?: TabsBoxIndicatorConfig;
 };
 
 export type TabsRootSegmentedProps = TabsRootBaseProps & {
-  type: 'segmented';
+  variant: 'segmented';
   indicator?: TabsSegmentedIndicatorConfig;
 };
 
 export type TabsRootDotProps = TabsRootBaseProps & {
-  type: 'dot';
+  variant: 'dot';
   indicator?: TabsDotIndicatorConfig;
 };
 
 export type TabsRootBridgeProps = TabsRootBaseProps & {
-  type: 'bridge';
+  variant: 'bridge';
   indicator?: TabsBridgeIndicatorConfig;
-  lowerCurveMode?: TabsBridgeLowerCurveMode;
+  lowerCurve?: TabsBridgeLowerCurve;
 };
 
 export type TabsRootProps =
@@ -142,15 +142,15 @@ export type TabsRootProps =
   | TabsRootDotProps
   | TabsRootBridgeProps;
 
-export type TabsLineRootProps = Omit<TabsRootLineProps, 'type'>;
+export type TabsLineRootProps = Omit<TabsRootLineProps, 'variant'>;
 
-export type TabsBoxRootProps = Omit<TabsRootBoxProps, 'type'>;
+export type TabsBoxRootProps = Omit<TabsRootBoxProps, 'variant'>;
 
-export type TabsSegmentedRootProps = Omit<TabsRootSegmentedProps, 'type'>;
+export type TabsSegmentedRootProps = Omit<TabsRootSegmentedProps, 'variant'>;
 
-export type TabsDotRootProps = Omit<TabsRootDotProps, 'type'>;
+export type TabsDotRootProps = Omit<TabsRootDotProps, 'variant'>;
 
-export type TabsBridgeRootProps = Omit<TabsRootBridgeProps, 'type'>;
+export type TabsBridgeRootProps = Omit<TabsRootBridgeProps, 'variant'>;
 
 export type TabsIndicatorConfig = TabsRootProps['indicator'];
 
@@ -179,8 +179,8 @@ export type TabsResolvedIndicator<TMotion extends TabsIndicatorMotion = TabsIndi
   motion: TMotion;
   motionStyle: TabsIndicatorMotionStyle;
   position: TabsIndicatorPosition;
-  variant: TabsIndicatorVariant;
-  widthMode: TabsIndicatorWidthMode;
+  shape: TabsIndicatorShape;
+  width: TabsIndicatorWidth;
 };
 
 export type TabsVisualContextValue<TMotion extends TabsIndicatorMotion = TabsIndicatorMotion> = {
@@ -188,13 +188,13 @@ export type TabsVisualContextValue<TMotion extends TabsIndicatorMotion = TabsInd
   scale: string;
   intent: string;
   emphasis: ComponentEmphasis | undefined;
-  type: TabsType;
+  variant: TabsVariant;
   structural: TabsStructuralDescriptor;
-  tabWidthMode: TabsTabWidthMode;
-  radiusMode: RadiusMode;
+  tabWidth: TabsTabWidth;
+  tabShape: RadiusMode;
   barRef: RefObject<HTMLDivElement | null>;
   indicator: TabsResolvedIndicator<TMotion>;
-  lowerCurveMode: TabsBridgeLowerCurveMode;
+  lowerCurve: TabsBridgeLowerCurve;
   indicatorTransition?: Record<string, unknown>;
   separator: boolean;
   listClassName: string | undefined;

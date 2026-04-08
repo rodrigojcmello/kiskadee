@@ -34,12 +34,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
     backgroundsByTheme,
     globalRadius,
     globalRipple,
-    tabsType,
+    tabsVariant,
     tabsIndicatorPosition,
-    tabsIndicatorVariant,
-    tabsIndicatorWidthMode,
-    tabsTabWidthMode,
-    tabsSeparator
+    tabsIndicatorShape,
+    tabsIndicatorWidth,
+    tabsTabWidth,
+    tabsSeparator,
+    tabsLowerCurve
   } = useThemeExtras({
     designSystem,
     segment
@@ -48,39 +49,42 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const globalConfig =
     globalRadius !== undefined ||
     globalRipple !== undefined ||
-    tabsType !== undefined ||
+    tabsVariant !== undefined ||
     tabsIndicatorPosition !== undefined ||
-    tabsIndicatorVariant !== undefined ||
-    tabsIndicatorWidthMode !== undefined ||
-    tabsTabWidthMode !== undefined ||
-    tabsSeparator !== undefined
+    tabsIndicatorShape !== undefined ||
+    tabsIndicatorWidth !== undefined ||
+    tabsTabWidth !== undefined ||
+    tabsSeparator !== undefined ||
+    tabsLowerCurve !== undefined
       ? {
           ...(globalRadius !== undefined ? { radius: globalRadius } : {}),
           ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {}),
-          ...(tabsType !== undefined ||
+          ...(tabsVariant !== undefined ||
           tabsIndicatorPosition !== undefined ||
-          tabsIndicatorVariant !== undefined ||
-          tabsIndicatorWidthMode !== undefined ||
-          tabsTabWidthMode !== undefined ||
-          tabsSeparator !== undefined
+          tabsIndicatorShape !== undefined ||
+          tabsIndicatorWidth !== undefined ||
+          tabsTabWidth !== undefined ||
+          tabsSeparator !== undefined ||
+          tabsLowerCurve !== undefined
             ? {
                 components: {
                   tabs: {
                     options: {
-                      ...(tabsType !== undefined ? { type: tabsType } : {}),
+                      ...(tabsVariant !== undefined ? { variant: tabsVariant } : {}),
                       ...(tabsIndicatorPosition !== undefined
                         ? { indicatorPosition: tabsIndicatorPosition }
                         : {}),
-                      ...(tabsIndicatorVariant !== undefined
-                        ? { indicatorVariant: tabsIndicatorVariant }
+                      ...(tabsIndicatorShape !== undefined
+                        ? { indicatorShape: tabsIndicatorShape }
                         : {}),
-                      ...(tabsIndicatorWidthMode !== undefined
-                        ? { indicatorWidthMode: tabsIndicatorWidthMode }
+                      ...(tabsIndicatorWidth !== undefined
+                        ? { indicatorWidth: tabsIndicatorWidth }
                         : {}),
-                      ...(tabsTabWidthMode !== undefined
-                        ? { tabWidthMode: tabsTabWidthMode }
+                      ...(tabsTabWidth !== undefined
+                        ? { tabWidth: tabsTabWidth }
                         : {}),
-                      ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {})
+                      ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {}),
+                      ...(tabsLowerCurve !== undefined ? { lowerCurve: tabsLowerCurve } : {})
                     }
                   }
                 }

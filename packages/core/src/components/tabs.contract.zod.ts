@@ -19,7 +19,7 @@ import {
 import {
   createTabsOptionsSchema,
   tabsOptionsSchema,
-  type TabsTypeSchemaValue
+  type TabsVariantSchemaValue
 } from './tabs.options.zod';
 import { formatZodIssue } from './tabs.zod.shared';
 
@@ -100,38 +100,38 @@ function createTabsBridgeElementsSchema<TSegmentName extends SegmentName = never
     .strict();
 }
 
-function createTabsVariantTypeConfigSchema(
-  expectedType: TabsTypeSchemaValue,
+function createTabsVariantConfigSchema(
+  expectedVariant: TabsVariantSchemaValue,
   elementsSchema: z.ZodTypeAny
 ) {
   return z
     .object({
       elements: elementsSchema,
-      options: createTabsOptionsSchema(expectedType).optional()
+      options: createTabsOptionsSchema(expectedVariant).optional()
     })
     .strict();
 }
 
-function createTabsTypesSchema<TSegmentName extends SegmentName = never>() {
+function createTabsVariantsSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
-      line: createTabsVariantTypeConfigSchema(
+      line: createTabsVariantConfigSchema(
         'line',
         createTabsLineElementsSchema<TSegmentName>()
       ).optional(),
-      box: createTabsVariantTypeConfigSchema(
+      box: createTabsVariantConfigSchema(
         'box',
         createTabsBoxElementsSchema<TSegmentName>()
       ).optional(),
-      segmented: createTabsVariantTypeConfigSchema(
+      segmented: createTabsVariantConfigSchema(
         'segmented',
         createTabsSegmentedElementsSchema<TSegmentName>()
       ).optional(),
-      dot: createTabsVariantTypeConfigSchema(
+      dot: createTabsVariantConfigSchema(
         'dot',
         createTabsDotElementsSchema<TSegmentName>()
       ).optional(),
-      bridge: createTabsVariantTypeConfigSchema(
+      bridge: createTabsVariantConfigSchema(
         'bridge',
         createTabsBridgeElementsSchema<TSegmentName>()
       ).optional()
@@ -143,7 +143,7 @@ const tabsComponentContractSchema = z
   .object({
     elements: createTabsElementsSchema().optional(),
     options: tabsOptionsSchema.optional(),
-    variants: createTabsTypesSchema().optional()
+    variants: createTabsVariantsSchema().optional()
   })
   .strict()
   .superRefine((value, ctx) => {
@@ -155,15 +155,15 @@ const tabsComponentContractSchema = z
     }
 
     const elementsSchema =
-      value.options?.type === 'line'
+      value.options?.variant === 'line'
         ? createTabsLineElementsSchema()
-        : value.options?.type === 'box'
+        : value.options?.variant === 'box'
           ? createTabsBoxElementsSchema()
-          : value.options?.type === 'segmented'
+          : value.options?.variant === 'segmented'
             ? createTabsSegmentedElementsSchema()
-            : value.options?.type === 'dot'
+            : value.options?.variant === 'dot'
               ? createTabsDotElementsSchema()
-              : value.options?.type === 'bridge'
+              : value.options?.variant === 'bridge'
                 ? createTabsBridgeElementsSchema()
                 : undefined;
 

@@ -23,7 +23,7 @@ export default function TabsBoxMotionBarEnhancer({ children }: TabsMotionEngineP
     scale,
     intent,
     emphasis,
-    radiusMode,
+    tabShape,
     indicator,
     indicatorTransition,
     classNames,
@@ -58,9 +58,9 @@ export default function TabsBoxMotionBarEnhancer({ children }: TabsMotionEngineP
       measureIndicatorRect({
         barElement: barRef.current,
         selected: nextValue,
-        widthMode: indicator.widthMode
+        width: indicator.width
       }),
-    [barRef, indicator.widthMode]
+    [barRef, indicator.width]
   );
 
   const updateIndicatorRect = useCallback(() => {
@@ -177,7 +177,7 @@ export default function TabsBoxMotionBarEnhancer({ children }: TabsMotionEngineP
     () =>
       buildTabsChildrenWithSeparators({
         children,
-        type: 'box',
+        variant: 'box',
         structural,
         separator,
         separatorClassName,
@@ -214,9 +214,9 @@ export default function TabsBoxMotionBarEnhancer({ children }: TabsMotionEngineP
     scale,
     intent,
     emphasis,
-    radiusMode,
+    tabShape,
     indicator,
-    type: 'box'
+    variant: 'box'
   });
   const indicatorAnimate =
     renderedIndicatorRect !== null

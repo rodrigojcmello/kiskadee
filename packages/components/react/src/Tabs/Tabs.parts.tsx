@@ -65,9 +65,9 @@ export function useTabsTabState(value: string, className?: string) {
     classNames,
     elements,
     structural,
-    tabWidthMode,
-    radiusMode,
-    type
+    tabWidth,
+    tabShape,
+    variant
   } =
     useTabsVisualContext();
   const isSelected = selected === value;
@@ -81,9 +81,9 @@ export function useTabsTabState(value: string, className?: string) {
       scale,
       intent,
       emphasis,
-      tabWidthMode,
-      radiusMode,
-      type,
+      tabWidth,
+      tabShape,
+      variant,
       selected: isSelected,
       className
     })
@@ -109,7 +109,7 @@ export function withTabsTabContext(
  * What
  *     Renders the shared visual tab trigger on top of the headless `Tab` primitive.
  * Why
- *     All Tabs types reuse the same trigger composition, so this keeps tab markup and state
+ *     All Tabs variants reuse the same trigger composition, so this keeps tab markup and state
  *     wiring in one shared part.
  */
 export function TabsTabBase({ value, className, label, icon, children, ...restProps }: TabsTabProps) {
@@ -130,7 +130,7 @@ export function TabsTabBase({ value, className, label, icon, children, ...restPr
  * What
  *     Renders the shared label slot with selection-aware classes.
  * Why
- *     Tabs types can style labels differently through schema classes, but the label markup and
+ *     Tabs variants can style labels differently through schema classes, but the label markup and
  *     selected-state wiring remain the same.
  */
 export const TabsLabelBase = forwardRef<HTMLSpanElement, TabsLabelProps>(function TabsLabelBase(
@@ -193,7 +193,7 @@ export const TabsIconBase = forwardRef<HTMLSpanElement, TabsIconProps>(function 
  *     Renders the shared content panel wrapper on top of the headless `Content` primitive.
  * Why
  *     Tabs panels share one structural class and one headless implementation regardless of the
- *     visual type.
+ *     active visual variant.
  */
 export function TabsContentBase(props: TabsContentProps) {
   return <HeadlessTabs.Content {...props} className={joinClassNames('k-tab-p', props.className)} />;

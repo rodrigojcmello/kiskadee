@@ -75,7 +75,7 @@ function resolveIndicatorTransition(
  * What
  *     Loads and caches the optional motion enhancer, or falls back to the static enhancer.
  * Why
- *     Tabs types ship static-first and lazy-load motion, so this hook manages that swap
+ *     Tabs variants ship static-first and lazy-load motion, so this hook manages that swap
  *     without spreading loader state into the visual components.
  */
 function useTabsBarEnhancer(options: {
@@ -122,7 +122,7 @@ function useTabsBarEnhancer(options: {
  * What
  *     Renders the shared tab bar and wraps its children with the selected enhancer.
  * Why
- *     Every Tabs type reuses the same headless bar wiring, while the enhancer decides whether
+ *     Every Tabs variant reuses the same headless bar wiring, while the enhancer decides whether
  *     the indicator is static or motion-driven.
  */
 function TabsBar({ className, children, ...props }: TabsBarProps) {
@@ -157,7 +157,7 @@ function TabsIndicator(_: TabsIndicatorProps) {
 
 /**
  * What
- *     Creates a typed Tabs compound component from shared runtime pieces and type-specific hooks.
+ *     Creates a typed Tabs compound component from shared runtime pieces and variant-specific hooks.
  * Why
  *     Line, box, segmented, and dot should stay lean entrypoints, so this factory centralizes
  *     the common root, bar, slot, and lazy-motion wiring.
@@ -165,8 +165,8 @@ function TabsIndicator(_: TabsIndicatorProps) {
 export function createTabsComponent<
   TRootProps extends TabsRootBaseProps & {
     indicator?: unknown;
-    lowerCurveMode?: unknown;
-    type?: unknown;
+    lowerCurve?: unknown;
+    variant?: unknown;
   }
 >(
   options: CreateTabsComponentOptions<TRootProps>
@@ -184,12 +184,12 @@ export function createTabsComponent<
       spring,
       scale: _scale,
       emphasis: _emphasis,
-      tabWidthMode: _tabWidthMode,
+      tabWidth: _tabWidth,
       separator: _separator,
-      lowerCurveMode: _lowerCurveMode,
+      lowerCurve: _lowerCurve,
       intent: _intent,
       indicator: _indicator,
-      type: _type,
+      variant: _variant,
       ...headlessRootProps
     } = props;
     const rootState = options.useResolvedRootState({
@@ -209,11 +209,11 @@ export function createTabsComponent<
           scale: rootState.scale,
           intent: rootState.intent,
           emphasis: rootState.emphasis,
-          tabWidthMode: rootState.resolvedTabWidthMode,
-          radiusMode: rootState.resolvedRadiusMode,
-          type: rootState.resolvedType,
+          tabWidth: rootState.resolvedTabWidth,
+          tabShape: rootState.resolvedTabShape,
+          variant: rootState.resolvedVariant,
           indicatorPosition: rootState.resolvedIndicator.position,
-          lowerCurveMode: rootState.resolvedLowerCurveMode
+          lowerCurve: rootState.resolvedLowerCurve
         }),
       [
         rootState.classNames,
@@ -221,10 +221,10 @@ export function createTabsComponent<
         rootState.emphasis,
         rootState.intent,
         rootState.resolvedIndicator.position,
-        rootState.resolvedLowerCurveMode,
-        rootState.resolvedRadiusMode,
-        rootState.resolvedTabWidthMode,
-        rootState.resolvedType,
+        rootState.resolvedLowerCurve,
+        rootState.resolvedTabShape,
+        rootState.resolvedTabWidth,
+        rootState.resolvedVariant,
         rootState.scale
       ]
     );
@@ -237,14 +237,14 @@ export function createTabsComponent<
           scale: rootState.scale,
           intent: rootState.intent,
           emphasis: rootState.emphasis,
-          type: rootState.resolvedType
+          variant: rootState.resolvedVariant
         }),
       [
         rootState.classNames,
         rootState.elements,
         rootState.emphasis,
         rootState.intent,
-        rootState.resolvedType,
+        rootState.resolvedVariant,
         rootState.scale
       ]
     );
@@ -255,11 +255,11 @@ export function createTabsComponent<
         scale: rootState.scale,
         intent: rootState.intent,
         emphasis: rootState.emphasis,
-        type: rootState.resolvedType,
+        variant: rootState.resolvedVariant,
         structural: options.structural,
-        tabWidthMode: rootState.resolvedTabWidthMode,
-        radiusMode: rootState.resolvedRadiusMode,
-        lowerCurveMode: rootState.resolvedLowerCurveMode,
+        tabWidth: rootState.resolvedTabWidth,
+        tabShape: rootState.resolvedTabShape,
+        lowerCurve: rootState.resolvedLowerCurve,
         barRef: rootState.barRef,
         indicator: rootState.resolvedIndicator,
         indicatorTransition,
@@ -282,12 +282,12 @@ export function createTabsComponent<
         rootState.elements,
         rootState.emphasis,
         rootState.intent,
-        rootState.resolvedLowerCurveMode,
+        rootState.resolvedLowerCurve,
         rootState.resolvedIndicator,
-        rootState.resolvedRadiusMode,
+        rootState.resolvedTabShape,
         rootState.resolvedSeparator,
-        rootState.resolvedTabWidthMode,
-        rootState.resolvedType,
+        rootState.resolvedTabWidth,
+        rootState.resolvedVariant,
         rootState.scale,
         rootState.selected,
         separatorClassName

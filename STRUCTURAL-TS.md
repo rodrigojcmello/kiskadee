@@ -13,6 +13,33 @@ Use this document when the problem is not CSS geometry itself, but rather:
 - how variant-owned wrappers are described to shared parts,
 - how to avoid coupling one variant to the structural names of every other variant.
 
+## Naming
+
+Use one term consistently for the top-level family of a component:
+
+- `variant`
+
+Do not mix `type` and `variant` for the same concept.
+
+For secondary option axes, prefer names that describe the axis itself instead of generic
+suffixes like `Mode` when a more concrete term exists.
+
+Preferred examples:
+
+- `variant`: primary family, such as `line`, `box`, `segmented`, `dot`, `bridge`
+- `shape`: geometry of a scoped part, such as an indicator or tab
+- `position`: location of a scoped part, such as an indicator
+- `width`: width behavior of a scoped part when the scope is already clear
+- `tabWidth`: width behavior of tabs in a flat API
+- `tabShape`: tab geometry in a flat API
+- `lowerCurve`: bridge-specific lower geometry
+
+Practical rule:
+
+- in flat component APIs, prefix the axis when needed to keep ownership obvious
+- inside scoped nested objects, shorter names such as `shape`, `position`, and `width` are
+  preferred
+
 ## Core rule
 
 When structural class metadata is variant-specific, the shared runtime must not own a global

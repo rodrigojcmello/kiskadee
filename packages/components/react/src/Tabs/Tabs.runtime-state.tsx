@@ -1,11 +1,11 @@
-import type { RadiusMode, TabsType } from '@kiskadee/core';
+import type { RadiusMode, TabsVariant } from '@kiskadee/core';
 import { type RefObject, useCallback, useMemo, useRef, useState } from 'react';
 import { useKiskadee } from '../contexts/KiskadeeContext';
 import {
   DEFAULT_EMPHASIS,
   DEFAULT_INTENT,
   DEFAULT_SCALE,
-  resolveTabWidthMode,
+  resolveTabWidth,
   resolveVariantElements
 } from './Tabs.class-names';
 import type {
@@ -23,9 +23,9 @@ export type TabsRuntimeRootState = {
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
   elements: TabsClassesMap;
-  resolvedTabWidthMode: TabsVisualContextValue['tabWidthMode'];
+  resolvedTabWidth: TabsVisualContextValue['tabWidth'];
   resolvedSeparator: boolean;
-  resolvedRadiusMode: RadiusMode;
+  resolvedTabShape: RadiusMode;
   classNames: NonNullable<TabsRootBaseProps['classNames']>;
   globalTabsOptions: NonNullable<
     NonNullable<NonNullable<ReturnType<typeof useKiskadee>['global']>['components']>['tabs']
@@ -33,14 +33,14 @@ export type TabsRuntimeRootState = {
 };
 
 export type ResolvedTabsRootState = TabsRuntimeRootState & {
-  resolvedType: TabsVisualContextValue['type'];
-  resolvedLowerCurveMode: TabsVisualContextValue['lowerCurveMode'];
+  resolvedVariant: TabsVisualContextValue['variant'];
+  resolvedLowerCurve: TabsVisualContextValue['lowerCurve'];
   resolvedIndicator: TabsResolvedIndicator;
 };
 
 /**
  * What
- *     Resolves the shared root state used by every Tabs type before type-specific decoration.
+ *     Resolves the shared root state used by every Tabs variant before variant-specific decoration.
  * Why
  *     Line, box, and dot all need the same controlled state, schema classes, and global option
  *     fallbacks before they specialize indicator behavior.
@@ -50,13 +50,13 @@ export function useTabsRuntimeRootState({
   scale = DEFAULT_SCALE,
   emphasis = DEFAULT_EMPHASIS,
   intent = DEFAULT_INTENT,
-  tabWidthMode,
+  tabWidth,
   separator,
   value,
   defaultValue,
   onValueChange,
   variant
-}: TabsRootBaseProps & { variant: TabsType }): TabsRuntimeRootState {
+}: TabsRootBaseProps & { variant: TabsVariant }): TabsRuntimeRootState {
   const isControlled = value !== undefined;
   const [uncontrolledValue, setUncontrolledValue] = useState<string | undefined>(defaultValue);
   const barRef = useRef<HTMLDivElement | null>(null);
@@ -82,10 +82,10 @@ export function useTabsRuntimeRootState({
     rawTabsMap as TabsClassesMap | Record<string, TabsClassesMap> | undefined,
     variant
   );
-  const resolvedTabWidthMode = resolveTabWidthMode(tabWidthMode, globalTabsOptions?.tabWidthMode);
+  const resolvedTabWidth = resolveTabWidth(tabWidth, globalTabsOptions?.tabWidth);
   const resolvedSeparator =
     separator ?? (variant === 'segmented' ? true : globalTabsOptions?.separator ?? false);
-  const resolvedRadiusMode = (global?.radius ?? 'rounded') as RadiusMode;
+  const resolvedTabShape = (global?.radius ?? 'rounded') as RadiusMode;
 
   return useMemo(
     () => ({
@@ -96,9 +96,9 @@ export function useTabsRuntimeRootState({
       intent,
       emphasis,
       elements,
-      resolvedTabWidthMode,
+      resolvedTabWidth,
       resolvedSeparator,
-      resolvedRadiusMode,
+      resolvedTabShape,
       classNames,
       globalTabsOptions
     }),
@@ -109,9 +109,9 @@ export function useTabsRuntimeRootState({
       globalTabsOptions,
       handleValueChange,
       intent,
-      resolvedRadiusMode,
+      resolvedTabShape,
       resolvedSeparator,
-      resolvedTabWidthMode,
+      resolvedTabWidth,
       scale,
       selected
     ]

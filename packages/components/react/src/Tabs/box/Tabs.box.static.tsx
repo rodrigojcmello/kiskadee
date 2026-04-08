@@ -24,7 +24,7 @@ function TabsBoxStaticIndicator() {
     elements,
     structural,
     indicator,
-    radiusMode,
+    tabShape,
     barRef
   } = useTabsVisualContext();
   const [indicatorRect, setIndicatorRect] = useState<ReturnType<typeof measureIndicatorRect>>(null);
@@ -34,10 +34,10 @@ function TabsBoxStaticIndicator() {
       measureIndicatorRect({
         barElement: barRef.current,
         selected,
-        widthMode: indicator.widthMode
+        width: indicator.width
       })
     );
-  }, [barRef, indicator.widthMode, selected]);
+  }, [barRef, indicator.width, selected]);
 
   useEffect(() => {
     updateIndicatorRect();
@@ -74,9 +74,9 @@ function TabsBoxStaticIndicator() {
     scale,
     intent,
     emphasis,
-    radiusMode,
+    tabShape,
     indicator,
-    type: 'box'
+    variant: 'box'
   });
   const indicatorStyle = (
     indicatorRect !== null
@@ -115,7 +115,7 @@ export function TabsBoxStaticBarEnhancer({ children }: TabsBoxStaticBarEnhancerP
     () =>
       buildTabsChildrenWithSeparators({
         children,
-        type: 'box',
+        variant: 'box',
         structural,
         separator,
         separatorClassName,

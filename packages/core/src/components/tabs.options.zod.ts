@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-export const tabsTypeSchema = z.enum(['line', 'box', 'segmented', 'dot', 'bridge']);
+export const tabsVariantSchema = z.enum(['line', 'box', 'segmented', 'dot', 'bridge']);
 export const tabsIndicatorPositionSchema = z.enum(['top', 'bottom']);
-export const tabsIndicatorVariantSchema = z.enum([
+export const tabsIndicatorShapeSchema = z.enum([
   'square',
   'rounded',
   'roundedClip',
@@ -11,9 +11,9 @@ export const tabsIndicatorVariantSchema = z.enum([
   'segmented',
   'bridge'
 ]);
-export const tabsIndicatorWidthModeSchema = z.enum(['tab', 'fixed', 'content']);
-export const tabsTabWidthModeSchema = z.enum(['auto', 'fixed', 'distributed']);
-export const tabsBridgeLowerCurveModeSchema = z.enum([
+export const tabsIndicatorWidthSchema = z.enum(['tab', 'fixed', 'content']);
+export const tabsTabWidthSchema = z.enum(['auto', 'fixed', 'distributed']);
+export const tabsBridgeLowerCurveSchema = z.enum([
   'curved',
   'flush-start',
   'flush-end',
@@ -21,119 +21,123 @@ export const tabsBridgeLowerCurveModeSchema = z.enum([
   'flush-all'
 ]);
 
-export type TabsTypeSchemaValue = z.infer<typeof tabsTypeSchema>;
+export type TabsVariantSchemaValue = z.infer<typeof tabsVariantSchema>;
 
 type TabsOptionsSchemaValue = {
-  type?: TabsTypeSchemaValue;
+  variant?: TabsVariantSchemaValue;
   indicatorPosition?: z.infer<typeof tabsIndicatorPositionSchema>;
-  indicatorVariant?: z.infer<typeof tabsIndicatorVariantSchema>;
-  indicatorWidthMode?: z.infer<typeof tabsIndicatorWidthModeSchema>;
-  tabWidthMode?: z.infer<typeof tabsTabWidthModeSchema>;
+  indicatorShape?: z.infer<typeof tabsIndicatorShapeSchema>;
+  indicatorWidth?: z.infer<typeof tabsIndicatorWidthSchema>;
+  tabWidth?: z.infer<typeof tabsTabWidthSchema>;
   separator?: boolean;
-  lowerCurveMode?: z.infer<typeof tabsBridgeLowerCurveModeSchema>;
+  lowerCurve?: z.infer<typeof tabsBridgeLowerCurveSchema>;
 };
 
 function refineTabsOptions(
   value: TabsOptionsSchemaValue,
   ctx: z.RefinementCtx,
-  expectedType?: TabsTypeSchemaValue
+  expectedVariant?: TabsVariantSchemaValue
 ) {
-  if (expectedType !== undefined && value.type !== undefined && value.type !== expectedType) {
-    ctx.addIssue({
-      code: 'custom',
-      path: ['type'],
-      message: `expected "${expectedType}" when used inside variants.${expectedType}`
-    });
-  }
-
-  const resolvedType = value.type ?? expectedType;
-
   if (
-    resolvedType === 'line' &&
-    (value.indicatorVariant === 'pill' || value.indicatorVariant === 'dot')
+    expectedVariant !== undefined &&
+    value.variant !== undefined &&
+    value.variant !== expectedVariant
   ) {
     ctx.addIssue({
       code: 'custom',
-      path: ['indicatorVariant'],
+      path: ['variant'],
+      message: `expected "${expectedVariant}" when used inside variants.${expectedVariant}`
+    });
+  }
+
+  const resolvedVariant = value.variant ?? expectedVariant;
+
+  if (
+    resolvedVariant === 'line' &&
+    (value.indicatorShape === 'pill' || value.indicatorShape === 'dot')
+  ) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['indicatorShape'],
       message: '"line" supports only "square", "rounded", or "roundedClip"'
     });
   }
 
   if (
-    resolvedType === 'box' &&
-    (value.indicatorVariant === 'roundedClip' || value.indicatorVariant === 'dot')
+    resolvedVariant === 'box' &&
+    (value.indicatorShape === 'roundedClip' || value.indicatorShape === 'dot')
   ) {
     ctx.addIssue({
       code: 'custom',
-      path: ['indicatorVariant'],
+      path: ['indicatorShape'],
       message: '"box" supports only "square", "rounded", or "pill"'
     });
   }
 
   if (
-    resolvedType === 'segmented' &&
-    value.indicatorVariant !== undefined &&
-    value.indicatorVariant !== 'segmented'
+    resolvedVariant === 'segmented' &&
+    value.indicatorShape !== undefined &&
+    value.indicatorShape !== 'segmented'
   ) {
     ctx.addIssue({
       code: 'custom',
-      path: ['indicatorVariant'],
-      message: '"segmented" does not accept alternate variants'
+      path: ['indicatorShape'],
+      message: '"segmented" does not accept alternate shapes'
     });
   }
 
   if (
-    (resolvedType === 'box' || resolvedType === 'segmented') &&
+    (resolvedVariant === 'box' || resolvedVariant === 'segmented') &&
     value.indicatorPosition !== undefined
   ) {
     ctx.addIssue({
       code: 'custom',
       path: ['indicatorPosition'],
-      message: `"${resolvedType}" does not support indicatorPosition`
+      message: `"${resolvedVariant}" does not support indicatorPosition`
     });
   }
 
   if (
-    resolvedType === 'dot' &&
-    value.indicatorVariant !== undefined &&
-    value.indicatorVariant !== 'dot'
+    resolvedVariant === 'dot' &&
+    value.indicatorShape !== undefined &&
+    value.indicatorShape !== 'dot'
   ) {
     ctx.addIssue({
       code: 'custom',
-      path: ['indicatorVariant'],
-      message: '"dot" does not accept alternate variants'
+      path: ['indicatorShape'],
+      message: '"dot" does not accept alternate shapes'
     });
   }
 
-  if (resolvedType === 'dot' && value.indicatorWidthMode !== undefined) {
+  if (resolvedVariant === 'dot' && value.indicatorWidth !== undefined) {
     ctx.addIssue({
       code: 'custom',
-      path: ['indicatorWidthMode'],
-      message: '"dot" does not support indicatorWidthMode'
+      path: ['indicatorWidth'],
+      message: '"dot" does not support indicatorWidth'
     });
   }
 
-  if (resolvedType === 'segmented' && value.indicatorWidthMode !== undefined) {
+  if (resolvedVariant === 'segmented' && value.indicatorWidth !== undefined) {
     ctx.addIssue({
       code: 'custom',
-      path: ['indicatorWidthMode'],
-      message: '"segmented" does not support indicatorWidthMode'
+      path: ['indicatorWidth'],
+      message: '"segmented" does not support indicatorWidth'
     });
   }
 
   if (
-    resolvedType === 'bridge' &&
-    value.indicatorVariant !== undefined &&
-    value.indicatorVariant !== 'bridge'
+    resolvedVariant === 'bridge' &&
+    value.indicatorShape !== undefined &&
+    value.indicatorShape !== 'bridge'
   ) {
     ctx.addIssue({
       code: 'custom',
-      path: ['indicatorVariant'],
-      message: '"bridge" does not accept alternate variants'
+      path: ['indicatorShape'],
+      message: '"bridge" does not accept alternate shapes'
     });
   }
 
-  if (resolvedType === 'bridge' && value.indicatorPosition !== undefined) {
+  if (resolvedVariant === 'bridge' && value.indicatorPosition !== undefined) {
     ctx.addIssue({
       code: 'custom',
       path: ['indicatorPosition'],
@@ -141,15 +145,15 @@ function refineTabsOptions(
     });
   }
 
-  if (resolvedType === 'bridge' && value.indicatorWidthMode !== undefined) {
+  if (resolvedVariant === 'bridge' && value.indicatorWidth !== undefined) {
     ctx.addIssue({
       code: 'custom',
-      path: ['indicatorWidthMode'],
-      message: '"bridge" does not support indicatorWidthMode'
+      path: ['indicatorWidth'],
+      message: '"bridge" does not support indicatorWidth'
     });
   }
 
-  if (resolvedType === 'bridge' && value.separator !== undefined) {
+  if (resolvedVariant === 'bridge' && value.separator !== undefined) {
     ctx.addIssue({
       code: 'custom',
       path: ['separator'],
@@ -157,29 +161,29 @@ function refineTabsOptions(
     });
   }
 
-  if (resolvedType !== 'bridge' && value.lowerCurveMode !== undefined) {
+  if (resolvedVariant !== 'bridge' && value.lowerCurve !== undefined) {
     ctx.addIssue({
       code: 'custom',
-      path: ['lowerCurveMode'],
-      message: '"lowerCurveMode" is only supported by "bridge"'
+      path: ['lowerCurve'],
+      message: '"lowerCurve" is only supported by "bridge"'
     });
   }
 }
 
-export function createTabsOptionsSchema(expectedType?: TabsTypeSchemaValue) {
+export function createTabsOptionsSchema(expectedVariant?: TabsVariantSchemaValue) {
   return z
     .object({
-      type: tabsTypeSchema.optional(),
+      variant: tabsVariantSchema.optional(),
       indicatorPosition: tabsIndicatorPositionSchema.optional(),
-      indicatorVariant: tabsIndicatorVariantSchema.optional(),
-      indicatorWidthMode: tabsIndicatorWidthModeSchema.optional(),
-      tabWidthMode: tabsTabWidthModeSchema.optional(),
+      indicatorShape: tabsIndicatorShapeSchema.optional(),
+      indicatorWidth: tabsIndicatorWidthSchema.optional(),
+      tabWidth: tabsTabWidthSchema.optional(),
       separator: z.boolean().optional(),
-      lowerCurveMode: tabsBridgeLowerCurveModeSchema.optional()
+      lowerCurve: tabsBridgeLowerCurveSchema.optional()
     })
     .strict()
     .superRefine((value, ctx) => {
-      refineTabsOptions(value, ctx, expectedType);
+      refineTabsOptions(value, ctx, expectedVariant);
     });
 }
 

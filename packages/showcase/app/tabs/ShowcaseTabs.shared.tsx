@@ -1,10 +1,10 @@
 import type {
-  TabsBridgeLowerCurveMode,
-  TabsBoxIndicatorVariant,
+  TabsBridgeLowerCurve,
+  TabsBoxIndicatorShape,
   TabsIndicatorPosition,
-  TabsIndicatorWidthMode,
-  TabsLineIndicatorVariant,
-  TabsTabWidthMode
+  TabsIndicatorWidth,
+  TabsLineIndicatorShape,
+  TabsTabWidth
 } from '@kiskadee/core';
 import type { TabsIndicatorMotionStyle, TabsSpringPreset } from '@kiskadee/react-components';
 import Link from 'next/link';
@@ -15,8 +15,8 @@ export type TabsMode = 'animated' | 'static';
 export type TabsSpring = TabsSpringPreset;
 export type TabsIndicatorMotionStyleControl = TabsIndicatorMotionStyle;
 export type TabsIndicatorPositionControl = 'default' | TabsIndicatorPosition;
-export type TabsLineWidthModeControl = 'default' | TabsIndicatorWidthMode;
-export type TabsTabWidthModeControl = 'default' | TabsTabWidthMode;
+export type TabsLineWidthControl = 'default' | TabsIndicatorWidth;
+export type TabsTabWidthControl = 'default' | TabsTabWidth;
 
 export const DEFAULT_TAB_VALUE = 'locations';
 
@@ -49,13 +49,13 @@ export const springOptions = [
   { value: 'debugSlow', label: 'Debug Slow' }
 ];
 
-export const lineIndicatorWidthModeLabels: Record<TabsIndicatorWidthMode, string> = {
+export const lineIndicatorWidthLabels: Record<TabsIndicatorWidth, string> = {
   tab: 'Tab',
   content: 'Content',
   fixed: 'Fixed'
 };
 
-export const tabWidthModeLabels: Record<TabsTabWidthMode, string> = {
+export const tabWidthLabels: Record<TabsTabWidth, string> = {
   auto: 'Auto',
   fixed: 'Fixed',
   distributed: 'Distributed'
@@ -71,7 +71,7 @@ export const indicatorMotionStyleLabels: Record<TabsIndicatorMotionStyle, string
   stretch: 'Stretch'
 };
 
-export const bridgeLowerCurveModeLabels: Record<TabsBridgeLowerCurveMode, string> = {
+export const bridgeLowerCurveLabels: Record<TabsBridgeLowerCurve, string> = {
   curved: 'Curved',
   'flush-start': 'Flush Start',
   'flush-end': 'Flush End',
@@ -79,13 +79,13 @@ export const bridgeLowerCurveModeLabels: Record<TabsBridgeLowerCurveMode, string
   'flush-all': 'Flush All'
 };
 
-export const lineIndicatorVariantLabels: Record<TabsLineIndicatorVariant, string> = {
+export const lineIndicatorShapeLabels: Record<TabsLineIndicatorShape, string> = {
   square: 'Square',
   rounded: 'Rounded',
   roundedClip: 'Rounded Clip'
 };
 
-export const boxIndicatorVariantLabels: Record<TabsBoxIndicatorVariant, string> = {
+export const boxIndicatorShapeLabels: Record<TabsBoxIndicatorShape, string> = {
   square: 'Square',
   rounded: 'Rounded',
   pill: 'Pill'

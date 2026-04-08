@@ -20,7 +20,7 @@ import './Tabs.line.scss';
  * What
  *     Exposes the line Tabs entrypoint by binding the shared runtime to the line resolvers.
  * Why
- *     Consumers that only need line tabs should import one lean type-specific component rather
+ *     Consumers that only need line tabs should import one lean variant-specific component rather
  *     than a generic runtime that carries every visual variant.
  */
 export const TabsLine = createTabsComponent<TabsLineRootProps>({

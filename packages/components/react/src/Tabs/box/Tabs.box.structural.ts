@@ -1,7 +1,7 @@
 import type { TabsStructuralDescriptor } from '../Tabs.structural';
 
 export const tabsBoxStructural = {
-  type: 'box',
+  variant: 'box',
   letter: 'b',
   elements: {
     e1: 'k-tab-e1-b',

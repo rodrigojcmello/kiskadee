@@ -1,6 +1,6 @@
 'use client';
 
-import { type TabsIndicatorPosition, type TabsTabWidthMode } from '@kiskadee/core';
+import { type TabsIndicatorPosition, type TabsTabWidth } from '@kiskadee/core';
 import { useKiskadee } from '@kiskadee/react-components';
 import { TabsDot } from '@kiskadee/react-components/tabs/dot';
 import { useState } from 'react';
@@ -9,23 +9,23 @@ import {
   DEFAULT_TAB_VALUE,
   type TabsIndicatorPositionControl,
   type TabsMode,
-  type TabsTabWidthModeControl,
+  type TabsTabWidthControl,
   indicatorPositionLabels,
   modeOptions,
   renderTabsSlots,
   TabsShowcasePageShell,
-  tabWidthModeLabels
+  tabWidthLabels
 } from '../ShowcaseTabs.shared';
 
 export default function TabsDotPage() {
   const { global } = useKiskadee();
   const [mode, setMode] = useState<TabsMode>('animated');
   const [indicatorPosition, setIndicatorPosition] = useState<TabsIndicatorPositionControl>('default');
-  const [tabWidthMode, setTabWidthMode] = useState<TabsTabWidthModeControl>('default');
+  const [tabWidth, setTabWidth] = useState<TabsTabWidthControl>('default');
   const [selectedValue, setSelectedValue] = useState(DEFAULT_TAB_VALUE);
 
   const schemaIndicatorPosition = global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
-  const schemaTabWidthMode = global?.components?.tabs?.options?.tabWidthMode ?? 'auto';
+  const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'auto';
   const indicatorPositionOptions = [
     {
       value: 'default',
@@ -34,20 +34,19 @@ export default function TabsDotPage() {
     { value: 'bottom', label: indicatorPositionLabels.bottom },
     { value: 'top', label: indicatorPositionLabels.top }
   ];
-  const tabWidthModeOptions = [
+  const tabWidthOptions = [
     {
       value: 'default',
-      label: `Schema Default (${tabWidthModeLabels[schemaTabWidthMode]})`
+      label: `Schema Default (${tabWidthLabels[schemaTabWidth]})`
     },
-    { value: 'auto', label: tabWidthModeLabels.auto },
-    { value: 'fixed', label: tabWidthModeLabels.fixed },
-    { value: 'distributed', label: tabWidthModeLabels.distributed }
+    { value: 'auto', label: tabWidthLabels.auto },
+    { value: 'fixed', label: tabWidthLabels.fixed },
+    { value: 'distributed', label: tabWidthLabels.distributed }
   ];
 
   const indicatorPositionProp: TabsIndicatorPosition =
     indicatorPosition === 'default' ? schemaIndicatorPosition : indicatorPosition;
-  const tabWidthModeProp: TabsTabWidthMode | undefined =
-    tabWidthMode === 'default' ? undefined : tabWidthMode;
+  const tabWidthProp: TabsTabWidth | undefined = tabWidth === 'default' ? undefined : tabWidth;
   const { tabs, contents } = renderTabsSlots(TabsDot, 'dot');
 
   return (
@@ -74,9 +73,9 @@ export default function TabsDotPage() {
           <Select
             label="Tab Width"
             width={220}
-            options={tabWidthModeOptions}
-            value={tabWidthMode}
-            onValueChange={(value) => setTabWidthMode(value as TabsTabWidthModeControl)}
+            options={tabWidthOptions}
+            value={tabWidth}
+            onValueChange={(value) => setTabWidth(value as TabsTabWidthControl)}
           />
         </>
       }
@@ -85,7 +84,7 @@ export default function TabsDotPage() {
         value={selectedValue}
         onValueChange={setSelectedValue}
         activationMode="manual"
-        tabWidthMode={tabWidthModeProp}
+        tabWidth={tabWidthProp}
         indicator={{
           motion: mode === 'animated' ? 'auto' : 'none',
           position: indicatorPositionProp

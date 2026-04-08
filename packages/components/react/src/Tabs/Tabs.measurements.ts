@@ -72,9 +72,9 @@ function findMeasuredTabContentElement(selectedTab: HTMLElement): HTMLElement | 
 export function measureIndicatorRect(options: {
   barElement: HTMLDivElement | null;
   selected: string | undefined;
-  widthMode: TabsVisualContextValue['indicator']['widthMode'];
+  width: TabsVisualContextValue['indicator']['width'];
 }): IndicatorRect | null {
-  const { barElement, selected, widthMode } = options;
+  const { barElement, selected, width } = options;
   const selectedTab = findTabElement(barElement, selected);
   if (!barElement || !selectedTab) {
     return null;
@@ -85,7 +85,7 @@ export function measureIndicatorRect(options: {
     element: selectedTab
   });
   const measuredRect =
-    widthMode === 'content'
+    width === 'content'
       ? measureElementRectRelativeToBar({
           barElement,
           element: findMeasuredTabContentElement(selectedTab)
