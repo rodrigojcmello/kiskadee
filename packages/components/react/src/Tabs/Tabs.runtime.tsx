@@ -1,10 +1,14 @@
 import { HeadlessTabs } from '@kiskadee/react-headless';
 import { memo, type ReactNode, useEffect, useMemo, useState } from 'react';
-import type { ResolvedTabsRootState } from './Tabs.runtime-state';
-import { joinClassNames, resolveListClassName, resolveSeparatorClassName } from './Tabs.class-names';
+import {
+  joinClassNames,
+  resolveListClassName,
+  resolveSeparatorClassName
+} from './Tabs.class-names';
 import { TabsVisualContextProvider, useTabsVisualContext } from './Tabs.context';
 import { resolveSpringConfig } from './Tabs.motion.shared';
 import { TabsContentBase, TabsIconBase, TabsLabelBase, TabsTabBase } from './Tabs.parts';
+import type { ResolvedTabsRootState } from './Tabs.runtime-state';
 import type { TabsStructuralDescriptor } from './Tabs.structural';
 import type {
   TabsBarProps,
@@ -126,7 +130,8 @@ function useTabsBarEnhancer(options: {
  *     the indicator is static or motion-driven.
  */
 function TabsBar({ className, children, ...props }: TabsBarProps) {
-  const { barRef, indicator, listClassName, loadMotionEnhancer, StaticEnhancer } = useTabsVisualContext();
+  const { barRef, indicator, listClassName, loadMotionEnhancer, StaticEnhancer } =
+    useTabsVisualContext();
   const { Enhancer, motionReady } = useTabsBarEnhancer({
     enabled: indicator.motion !== 'none',
     loader: loadMotionEnhancer,
@@ -168,9 +173,7 @@ export function createTabsComponent<
     lowerCurve?: unknown;
     variant?: unknown;
   }
->(
-  options: CreateTabsComponentOptions<TRootProps>
-) {
+>(options: CreateTabsComponentOptions<TRootProps>) {
   /**
    * What
    *     Resolves runtime state for one Tabs instance and bridges it into the headless root.

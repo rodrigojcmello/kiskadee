@@ -1,7 +1,4 @@
 import { createTabsComponent } from '../Tabs.runtime';
-import TabsBoxStaticBarEnhancer from './Tabs.box.static';
-import { tabsBoxStructural } from './Tabs.box.structural';
-import { useResolvedTabsBoxRootState } from './Tabs.box.root-state';
 import type {
   TabsBarProps,
   TabsBoxIndicatorConfig,
@@ -14,6 +11,9 @@ import type {
   TabsSpringPreset,
   TabsTabProps
 } from '../Tabs.types';
+import { useResolvedTabsBoxRootState } from './Tabs.box.root-state';
+import TabsBoxStaticBarEnhancer from './Tabs.box.static';
+import { tabsBoxStructural } from './Tabs.box.structural';
 import './Tabs.box.scss';
 
 /**
