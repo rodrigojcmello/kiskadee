@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from './style-emission/web-build-policy';
 import {
+  applyCanonicalStyleEmissionPolicy,
   buildWebStyleKeyIdentity,
+  canonicalizeWebStyleKeyIdentity,
   resolveWebStyleKeyIdentity
 } from './style-emission/web-style-key-identity';
 
@@ -12,6 +14,8 @@ describe('web-style-key-identity', () => {
         buildWebStyleKeyIdentity('paddingTop__12', {
           borderRadiusEmission: 'direct',
           borderWidthEmission: 'direct',
+          borderColorEmission: 'direct',
+          boxWidthEmission: 'direct',
           paddingEmission: 'direct',
           shadowEmission: 'direct'
         })
@@ -23,6 +27,8 @@ describe('web-style-key-identity', () => {
         buildWebStyleKeyIdentity('paddingTop__12', {
           borderRadiusEmission: 'direct',
           borderWidthEmission: 'direct',
+          borderColorEmission: 'direct',
+          boxWidthEmission: 'direct',
           paddingEmission: 'compensated',
           shadowEmission: 'direct'
         })
@@ -34,6 +40,8 @@ describe('web-style-key-identity', () => {
         buildWebStyleKeyIdentity('borderRadius__12', {
           borderRadiusEmission: 'mirrored',
           borderWidthEmission: 'direct',
+          borderColorEmission: 'direct',
+          boxWidthEmission: 'direct',
           paddingEmission: 'direct',
           shadowEmission: 'direct'
         })
@@ -45,6 +53,8 @@ describe('web-style-key-identity', () => {
         buildWebStyleKeyIdentity('borderRadius__12', {
           borderRadiusEmission: 'token',
           borderWidthEmission: 'direct',
+          borderColorEmission: 'direct',
+          boxWidthEmission: 'direct',
           paddingEmission: 'direct',
           shadowEmission: 'direct'
         })
@@ -56,6 +66,8 @@ describe('web-style-key-identity', () => {
         buildWebStyleKeyIdentity('borderWidth__2', {
           borderRadiusEmission: 'direct',
           borderWidthEmission: 'mirrored',
+          borderColorEmission: 'direct',
+          boxWidthEmission: 'direct',
           paddingEmission: 'direct',
           shadowEmission: 'direct'
         })
@@ -67,6 +79,8 @@ describe('web-style-key-identity', () => {
         buildWebStyleKeyIdentity('shadow__[0,0,4,[0,0,0,0.22]]', {
           borderRadiusEmission: 'mirrored',
           borderWidthEmission: 'mirrored',
+          borderColorEmission: 'direct',
+          boxWidthEmission: 'direct',
           paddingEmission: 'compensated',
           shadowEmission: 'direct'
         })
@@ -78,6 +92,8 @@ describe('web-style-key-identity', () => {
         buildWebStyleKeyIdentity('shadow__[0,0,4,[0,0,0,0.22]]', {
           borderRadiusEmission: 'direct',
           borderWidthEmission: 'direct',
+          borderColorEmission: 'direct',
+          boxWidthEmission: 'direct',
           paddingEmission: 'direct',
           shadowEmission: 'token'
         })
@@ -142,6 +158,67 @@ describe('web-style-key-identity', () => {
           'e1'
         )
       ).toBe('borderRadius__12@@m');
+    });
+  });
+
+  describe('canonical identities', () => {
+    it('keeps identities separated when mirrored collapsing is disabled', () => {
+      expect(
+        canonicalizeWebStyleKeyIdentity('borderWidth__2', new Set(['borderWidth__2@@m']))
+      ).toBe('borderWidth__2');
+    });
+
+    it('promotes a raw identity to mirrored when the mirrored class is the canonical one', () => {
+      expect(
+        canonicalizeWebStyleKeyIdentity('borderWidth__2', new Set(['borderWidth__2@@m']), {
+          collapseDirectIntoMirrored: true
+        })
+      ).toBe('borderWidth__2@@m');
+    });
+
+    it('keeps token identities isolated from raw ones', () => {
+      expect(
+        canonicalizeWebStyleKeyIdentity('boxWidth__120', new Set(['boxWidth__120@@t']), {
+          collapseDirectIntoMirrored: true
+        })
+      ).toBe('boxWidth__120');
+    });
+
+    it('keeps the local policy unchanged when mirrored collapsing is disabled', () => {
+      expect(
+        applyCanonicalStyleEmissionPolicy(
+          'borderWidth__2',
+          {
+            borderRadiusEmission: 'direct',
+            borderWidthEmission: 'direct',
+            borderColorEmission: 'direct',
+            boxWidthEmission: 'direct',
+            paddingEmission: 'direct',
+            shadowEmission: 'direct'
+          },
+          'borderWidth__2@@m'
+        ).borderWidthEmission
+      ).toBe('direct');
+    });
+
+    it('upgrades the local policy to mirrored when the canonical identity is mirrored', () => {
+      expect(
+        applyCanonicalStyleEmissionPolicy(
+          'borderWidth__2',
+          {
+            borderRadiusEmission: 'direct',
+            borderWidthEmission: 'direct',
+            borderColorEmission: 'direct',
+            boxWidthEmission: 'direct',
+            paddingEmission: 'direct',
+            shadowEmission: 'direct'
+          },
+          'borderWidth__2@@m',
+          {
+            collapseDirectIntoMirrored: true
+          }
+        ).borderWidthEmission
+      ).toBe('mirrored');
     });
   });
 });

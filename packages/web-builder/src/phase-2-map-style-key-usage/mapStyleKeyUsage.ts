@@ -4,6 +4,21 @@ import { resolveWebStyleKeyIdentity } from '../style-emission/web-style-key-iden
 
 export type StyleKeyUsageMap = Record<string, number>;
 
+function collapseRawUsageIntoMirroredUsage(usage: StyleKeyUsageMap): StyleKeyUsageMap {
+  const collapsedUsage: StyleKeyUsageMap = {};
+
+  for (const [identity, count] of Object.entries(usage)) {
+    const mirroredIdentity = `${identity}@@m`;
+    const shouldCollapseIntoMirrored =
+      !identity.includes('@@') && usage[mirroredIdentity] != null;
+    const targetIdentity = shouldCollapseIntoMirrored ? mirroredIdentity : identity;
+
+    collapsedUsage[targetIdentity] = (collapsedUsage[targetIdentity] ?? 0) + count;
+  }
+
+  return collapsedUsage;
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
@@ -20,6 +35,7 @@ export function mapStyleKeyUsage(
   styleKeysByComponent: ComponentStyleKeyMap,
   options?: {
     webStyleEmissionPolicy?: WebStyleEmissionPolicy;
+    collapseDirectIntoMirrored?: boolean;
   }
 ): StyleKeyUsageMap {
   const usage: StyleKeyUsageMap = {};
@@ -114,8 +130,11 @@ export function mapStyleKeyUsage(
     }
   }
 
+  const collapsedUsage =
+    options?.collapseDirectIntoMirrored === true ? collapseRawUsageIntoMirroredUsage(usage) : usage;
+
   // Sort entries: first by descending count, then by key alphabetically
-  const sortedEntries = Object.entries(usage).sort(([keyA, countA], [keyB, countB]) => {
+  const sortedEntries = Object.entries(collapsedUsage).sort(([keyA, countA], [keyB, countB]) => {
     if (countB !== countA) {
       return countB - countA;
     }

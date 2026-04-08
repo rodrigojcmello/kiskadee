@@ -1,9 +1,25 @@
-export type BorderWidthEmission = 'direct' | 'mirrored';
-export type BorderRadiusEmission = 'direct' | 'mirrored' | 'token';
-export type BorderColorEmission = 'direct' | 'mirrored';
-export type BoxWidthEmission = 'direct' | 'token';
-export type PaddingEmission = 'direct' | 'mirrored' | 'token' | 'compensated';
-export type ShadowEmission = 'direct' | 'token';
+export const STYLE_EMISSION_MODE = {
+  direct: 'direct',
+  mirrored: 'mirrored',
+  token: 'token',
+  compensated: 'compensated'
+} as const;
+
+type DirectEmission = typeof STYLE_EMISSION_MODE.direct;
+type MirroredEmission = typeof STYLE_EMISSION_MODE.mirrored;
+type TokenEmission = typeof STYLE_EMISSION_MODE.token;
+type CompensatedEmission = typeof STYLE_EMISSION_MODE.compensated;
+
+type DirectOrMirroredEmission = DirectEmission | MirroredEmission;
+type DirectOrTokenEmission = DirectEmission | TokenEmission;
+type DirectMirroredOrTokenEmission = DirectOrMirroredEmission | TokenEmission;
+
+export type BorderWidthEmission = DirectOrMirroredEmission;
+export type BorderRadiusEmission = DirectMirroredOrTokenEmission;
+export type BorderColorEmission = DirectOrMirroredEmission;
+export type BoxWidthEmission = DirectOrTokenEmission;
+export type PaddingEmission = DirectMirroredOrTokenEmission | CompensatedEmission;
+export type ShadowEmission = DirectOrTokenEmission;
 
 export type ElementStyleEmissionPolicy = {
   borderWidthEmission?: BorderWidthEmission;

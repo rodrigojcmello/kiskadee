@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { ToneMetadataByPalette } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
 import { generateClassNamesMapSplit } from './generateClassNamesMap';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy';
 
 describe('generateClassNamesMapSplit (ripple)', () => {
   it('maps ripple effect style keys into compact ripple buckets', () => {
@@ -61,5 +62,69 @@ describe('generateClassNamesMapSplit (ripple)', () => {
     expect(() => generateClassNamesMapSplit(styleKeys, shortenMap, toneMetadataByPalette)).toThrow(
       `Unable to resolve ripple bucket for style key "${invalidRippleKey}". Expected mode: surface|overflow|overflow-static.`
     );
+  });
+
+  it('reuses the mirrored canonical class name for raw and mirrored scale consumers', () => {
+    const styleKeys = {
+      button: {
+        e1: {
+          scales: {
+            's:md:1': ['borderWidth__2']
+          }
+        }
+      },
+      card: {
+        e1: {
+          scales: {
+            's:md:1': ['borderWidth__2']
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+
+    const shortenMap = {
+      'borderWidth__2@@m': 'bw1'
+    } as ShortenCssClassNames;
+
+    const toneMetadataByPalette = new Map() as ToneMetadataByPalette;
+    const out = generateClassNamesMapSplit(styleKeys, shortenMap, toneMetadataByPalette, {
+      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      collapseDirectIntoMirrored: true
+    });
+
+    expect(out.core.button?.e1?.s?.['md:1']).toBe('bw1');
+    expect(out.core.card?.e1?.s?.['md:1']).toBe('bw1');
+  });
+
+  it('keeps raw and mirrored class names separate when collapse is disabled', () => {
+    const styleKeys = {
+      button: {
+        e1: {
+          scales: {
+            's:md:1': ['borderWidth__2']
+          }
+        }
+      },
+      card: {
+        e1: {
+          scales: {
+            's:md:1': ['borderWidth__2']
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+
+    const shortenMap = {
+      borderWidth__2: 'bw0',
+      'borderWidth__2@@m': 'bw1'
+    } as ShortenCssClassNames;
+
+    const toneMetadataByPalette = new Map() as ToneMetadataByPalette;
+    const out = generateClassNamesMapSplit(styleKeys, shortenMap, toneMetadataByPalette, {
+      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY
+    });
+
+    expect(out.core.button?.e1?.s?.['md:1']).toBe('bw1');
+    expect(out.core.card?.e1?.s?.['md:1']).toBe('bw0');
   });
 });

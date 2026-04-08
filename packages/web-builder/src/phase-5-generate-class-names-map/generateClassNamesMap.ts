@@ -11,7 +11,11 @@ import { componentEmphasisBuckets } from '@kiskadee/core';
 import type { ToneMetadataByPalette } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
 import type { WebStyleEmissionPolicy } from '../style-emission/web-build-policy';
-import { resolveWebStyleKeyIdentity } from '../style-emission/web-style-key-identity';
+import {
+  canonicalizeWebStyleKeyIdentity,
+  resolveWebStyleKeyIdentity,
+  type WebStyleIdentityOptimizationOptions
+} from '../style-emission/web-style-key-identity';
 
 type ColorClasses = {
   h?: string; // high
@@ -129,10 +133,11 @@ export function generateClassNamesMapSplit(
   toneMetadataByPalette: ToneMetadataByPalette,
   options?: {
     webStyleEmissionPolicy?: WebStyleEmissionPolicy;
-  }
+  } & WebStyleIdentityOptimizationOptions
 ): ComponentClassNameMapSplit {
   const core: ComponentClassNameMap = {};
   const palettes: Record<string, ComponentClassNameMap> = {};
+  const knownIdentities = new Set(Object.keys(shortenMap));
 
   const ensurePaletteElement = (
     bundleKey: string,
@@ -165,14 +170,17 @@ export function generateClassNamesMapSplit(
     for (const elementName of Object.keys(elements)) {
       const el = elements[elementName];
       const resolveClassName = (key: string) => {
-        const identity = resolveWebStyleKeyIdentity(
+        const localIdentity = resolveWebStyleKeyIdentity(
           key,
           options?.webStyleEmissionPolicy,
           componentName,
           elementName,
           variantName
         );
-        return shortenMap[identity] ?? key;
+        const canonicalIdentity = canonicalizeWebStyleKeyIdentity(localIdentity, knownIdentities, {
+          collapseDirectIntoMirrored: options?.collapseDirectIntoMirrored
+        });
+        return shortenMap[canonicalIdentity] ?? key;
       };
 
       // Core (no palettes) — aggregate:

@@ -18,8 +18,8 @@ import {
 import { persistBuildArtifacts } from './phase-6-persist-build-artifacts/persistBuildArtifacts';
 import { publishMetadata } from './phase-7-publish-metadata/publishMetadata';
 import { writeExtraArtifacts } from './phase-8-write-extra-artifacts/writeExtraArtifacts';
-import { loadPresetsToBuild } from './utils/loadPresetsToBuild';
 import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from './style-emission/web-build-policy';
+import { loadPresetsToBuild } from './utils/loadPresetsToBuild';
 
 // Feature flag simples para controlar o uso de prefixo nos nomes de classes CSS
 // Ajuste para `false` caso queira desativar o prefixo sem alterar o restante do código.
@@ -37,6 +37,13 @@ const ENABLE_SOLID_BOX_COLOR_AS_GRADIENT = false;
 // When `true`, emits interaction state selectors using forced state classes (e.g. `.-h`, `.-f`)
 // so the showcase can simulate states via HTML classes.
 const ENABLE_FORCED_INTERACTION_STATES = true;
+
+// Feature flag: collapse raw and mirrored style-emission identities into one mirrored class
+//
+// When `true`, a shared direct+mirrored style key/value pair is emitted only once in mirrored form.
+// Keep this enabled for production artifacts, but disabled in lower-level helpers/tests by default
+// so raw builder inspection can still show the separation when needed.
+const ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED = false;
 
 function slugifyName(name: string): string {
   return name
@@ -78,7 +85,8 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
 
     // Phase 2 - Map style key usage
     const styleKeyUsage: StyleKeyUsageMap = mapStyleKeyUsage(styleKeys, {
-      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY
+      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      collapseDirectIntoMirrored: ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED
     });
     console.log('phase  2', { name: schema.name, styleKeyUsage });
 
@@ -101,7 +109,8 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
     const cssGenerated = await generateCssSplit(styleKeys, shortenCssClassNameMap, {
       forceState: ENABLE_FORCED_INTERACTION_STATES,
       enableSolidBoxColorAsGradient: ENABLE_SOLID_BOX_COLOR_AS_GRADIENT,
-      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY
+      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      collapseDirectIntoMirrored: ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED
     });
     console.log('phase 4', { name: schema.name, cssGenerated });
 
@@ -111,7 +120,8 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
       shortenCssClassNameMap,
       toneMetadataByPalette,
       {
-        webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY
+        webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
+        collapseDirectIntoMirrored: ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED
       }
     );
     console.log('phrase 5', { name: schema.name, classNamesMapSplit });

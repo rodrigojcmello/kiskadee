@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { mapStyleKeyUsage, type StyleKeyUsageMap } from './mapStyleKeyUsage';
 import type { ComponentStyleKeyMap } from '@kiskadee/core';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy';
 
 describe('mapStyleKeyUsage', () => {
   it('returns empty object for empty input', () => {
@@ -128,5 +129,61 @@ describe('mapStyleKeyUsage', () => {
     };
     expect(result).toEqual(expected);
     expect(Object.keys(result)).toEqual(['c', 'a', 'b']);
+  });
+
+  it('collapses raw and mirrored usage into the mirrored identity when both exist', () => {
+    const input = {
+      button: {
+        e1: {
+          scales: {
+            's:md:1': ['borderWidth__2']
+          }
+        }
+      },
+      card: {
+        e1: {
+          scales: {
+            's:md:1': ['borderWidth__2']
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+
+    const result = mapStyleKeyUsage(input, {
+      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      collapseDirectIntoMirrored: true
+    });
+
+    expect(result).toEqual({
+      'borderWidth__2@@m': 2
+    });
+  });
+
+  it('keeps raw and mirrored usage separate when collapse is disabled', () => {
+    const input = {
+      button: {
+        e1: {
+          scales: {
+            's:md:1': ['borderWidth__2']
+          }
+        }
+      },
+      card: {
+        e1: {
+          scales: {
+            's:md:1': ['borderWidth__2']
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+
+    const result = mapStyleKeyUsage(input, {
+      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY
+    });
+
+    expect(result).toEqual({
+      borderWidth__2: 1,
+      'borderWidth__2@@m': 1
+    });
   });
 });

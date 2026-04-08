@@ -19,12 +19,18 @@ import {
   resolveElementStyleEmissionPolicy,
   type WebStyleEmissionPolicy
 } from '../style-emission/web-build-policy';
-import { resolveWebStyleKeyIdentity } from '../style-emission/web-style-key-identity';
+import {
+  applyCanonicalStyleEmissionPolicy,
+  canonicalizeWebStyleKeyIdentity,
+  resolveWebStyleKeyIdentity,
+  type WebStyleIdentityOptimizationOptions
+} from '../style-emission/web-style-key-identity';
 
 export type GenerateCssSplitOptions = {
   forceState?: boolean;
   webStyleEmissionPolicy?: WebStyleEmissionPolicy;
-} & GenerateCssRuleFromStyleKeyOptions;
+} & GenerateCssRuleFromStyleKeyOptions &
+  WebStyleIdentityOptimizationOptions;
 
 export type SplitCssBundles = {
   coreCss: string;
@@ -63,6 +69,7 @@ export async function generateCssSplit(
   const coreRules: Set<string> = new Set();
   const effectsRules: Set<string> = new Set(); // collect effects separately
   const paletteRules: Record<string, Set<string>> = {};
+  const knownIdentities = new Set(Object.keys(shortenMap));
 
   // Helper: detect if a CSS rule is "gated" by interaction/state.
   // We consider a selector complex (i.e., gated) when:
@@ -87,28 +94,43 @@ export async function generateCssSplit(
   ) => {
     for (const elementName in elements) {
       const el = elements[elementName];
-      const styleEmissionPolicy = resolveElementStyleEmissionPolicy(
+      const localStyleEmissionPolicy = resolveElementStyleEmissionPolicy(
         options?.webStyleEmissionPolicy,
         componentName,
         elementName,
         variantName
       );
-      const resolveClassName = (key: string) => {
-        const identity = resolveWebStyleKeyIdentity(
+      const resolveCssClass = (key: string) => {
+        const localIdentity = resolveWebStyleKeyIdentity(
           key,
           options?.webStyleEmissionPolicy,
           componentName,
           elementName,
           variantName
         );
-        return shortenMap[identity] ?? key;
+        const canonicalIdentity = canonicalizeWebStyleKeyIdentity(localIdentity, knownIdentities, {
+          collapseDirectIntoMirrored: options?.collapseDirectIntoMirrored
+        });
+        const styleEmissionPolicy = applyCanonicalStyleEmissionPolicy(
+          key,
+          localStyleEmissionPolicy,
+          canonicalIdentity,
+          {
+            collapseDirectIntoMirrored: options?.collapseDirectIntoMirrored
+          }
+        );
+
+        return {
+          className: shortenMap[canonicalIdentity] ?? key,
+          styleEmissionPolicy
+        };
       };
 
       // decorations: string[] — always-on, static styles (no state). Safe to emit into core.
       if (Array.isArray(el.decorations)) {
         for (const key of el.decorations) {
-          const cn = resolveClassName(key);
-          const rule = generateCssRuleFromStyleKey(key, cn, forceState, {
+          const { className, styleEmissionPolicy } = resolveCssClass(key);
+          const rule = generateCssRuleFromStyleKey(key, className, forceState, {
             ...options,
             styleEmissionPolicy
           });
@@ -121,8 +143,8 @@ export async function generateCssSplit(
         for (const scaleKey in el.scales) {
           const arr: string[] = el.scales[scaleKey as ElementSizeValue | ElementAllSizeValue] ?? [];
           for (const key of arr) {
-            const cn = resolveClassName(key);
-            const rule = generateCssRuleFromStyleKey(key, cn, forceState, {
+            const { className, styleEmissionPolicy } = resolveCssClass(key);
+            const rule = generateCssRuleFromStyleKey(key, className, forceState, {
               ...options,
               styleEmissionPolicy
             });
@@ -142,8 +164,8 @@ export async function generateCssSplit(
             const arr: string[] =
               bySizeRecord[scaleKey as ElementSizeValue | ElementAllSizeValue] ?? [];
             for (const key of arr) {
-              const cn = resolveClassName(key);
-              const rule = generateCssRuleFromStyleKey(key, cn, forceState, {
+              const { className, styleEmissionPolicy } = resolveCssClass(key);
+              const rule = generateCssRuleFromStyleKey(key, className, forceState, {
                 ...options,
                 styleEmissionPolicy
               });
@@ -161,8 +183,8 @@ export async function generateCssSplit(
         for (const st in el.effects) {
           const arr: string[] = el.effects[st as InteractionState] ?? [];
           for (const key of arr) {
-            const cn = resolveClassName(key);
-            const rule = generateCssRuleFromStyleKey(key, cn, forceState, {
+            const { className, styleEmissionPolicy } = resolveCssClass(key);
+            const rule = generateCssRuleFromStyleKey(key, className, forceState, {
               ...options,
               styleEmissionPolicy
             });
@@ -203,9 +225,9 @@ export async function generateCssSplit(
               for (const st in byState) {
                 const arr: string[] = byState[st as InteractionState] ?? [];
                 for (const key of arr) {
-                  const cn = resolveClassName(key);
+                  const { className, styleEmissionPolicy } = resolveCssClass(key);
                   // Only color keys are expected here; call color transformer directly and pass the forceState flag
-                  const rule = transformColorKeyToCss(key, cn, forceState, {
+                  const rule = transformColorKeyToCss(key, className, forceState, {
                     ...options,
                     styleEmissionPolicy
                   });
