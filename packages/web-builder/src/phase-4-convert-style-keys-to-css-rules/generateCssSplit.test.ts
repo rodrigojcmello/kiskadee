@@ -2,6 +2,7 @@ import type { ComponentStyleKeyMap } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
 import { generateCssSplit } from './generateCssSplit';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy';
 
 describe('generateCssSplit', () => {
   it('returns empty bundles for empty input', async () => {
@@ -474,5 +475,68 @@ describe('generateCssSplit', () => {
     expect(result.palettes['ios.light']).toMatch(/\{/);
     expect(result.palettes['ios.light']).toMatch(/}/);
     expect(result.palettes['ios.light']).toMatch(/:/);
+  });
+
+  it('reuses one mirrored class when raw and mirrored consumers share the same scale value', async () => {
+    const input = {
+      button: {
+        e1: {
+          scales: {
+            's:md:1': ['borderWidth__2']
+          }
+        }
+      },
+      card: {
+        e1: {
+          scales: {
+            's:md:1': ['borderWidth__2']
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+
+    const shortenMap: ShortenCssClassNames = {
+      'borderWidth__2@@m': 'bw1'
+    };
+
+    const result = await generateCssSplit(input, shortenMap, {
+      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      collapseDirectIntoMirrored: true
+    });
+
+    expect(result.coreCss).toContain('.bw1');
+    expect(result.coreCss).toContain('--k-bdw: 2px; border-width: 2px');
+    expect(result.coreCss.match(/\.bw1 \{/g)).toHaveLength(1);
+  });
+
+  it('keeps raw and mirrored classes separate when collapse is disabled', async () => {
+    const input = {
+      button: {
+        e1: {
+          scales: {
+            's:md:1': ['borderWidth__2']
+          }
+        }
+      },
+      card: {
+        e1: {
+          scales: {
+            's:md:1': ['borderWidth__2']
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+
+    const shortenMap: ShortenCssClassNames = {
+      borderWidth__2: 'bw0',
+      'borderWidth__2@@m': 'bw1'
+    };
+
+    const result = await generateCssSplit(input, shortenMap, {
+      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY
+    });
+
+    expect(result.coreCss).toContain('.bw0 { border-width: 2px }');
+    expect(result.coreCss).toContain('.bw1 { --k-bdw: 2px; border-width: 2px }');
   });
 });

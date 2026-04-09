@@ -1,0 +1,285 @@
+/* Tabs structural variant registry: `a` = bridge. */
+
+@mixin bridge-shape-curved {
+  clip-path: shape(
+    from bottom left,
+    curve to var(--k-bdr) calc(100% - var(--k-bdr)) with var(--k-bdr) 100%,
+    vline to var(--k-bdr),
+    curve to calc(var(--k-bdr) * 2) 0 with var(--k-bdr) 0,
+    hline to calc(100% - calc(var(--k-bdr) * 2)),
+    curve to calc(100% - var(--k-bdr)) var(--k-bdr) with calc(100% - var(--k-bdr)) 0,
+    vline to calc(100% - var(--k-bdr)),
+    curve to 100% 100% with calc(100% - var(--k-bdr)) 100%
+  );
+}
+
+@mixin bridge-shape-flush-start {
+  clip-path: shape(
+    from bottom left,
+    vline to var(--k-bdr),
+    curve to var(--k-bdr) 0 with 0 0,
+    hline to calc(100% - calc(var(--k-bdr) * 2)),
+    curve to calc(100% - var(--k-bdr)) var(--k-bdr) with calc(100% - var(--k-bdr)) 0,
+    vline to calc(100% - var(--k-bdr)),
+    curve to 100% 100% with calc(100% - var(--k-bdr)) 100%
+  );
+}
+
+@mixin bridge-shape-flush-end {
+  clip-path: shape(
+    from bottom left,
+    curve to var(--k-bdr) calc(100% - var(--k-bdr)) with var(--k-bdr) 100%,
+    vline to var(--k-bdr),
+    curve to calc(var(--k-bdr) * 2) 0 with var(--k-bdr) 0,
+    hline to calc(100% - var(--k-bdr)),
+    curve to 100% var(--k-bdr) with 100% 0,
+    vline to 100%
+  );
+}
+
+@mixin bridge-shape-top-only {
+  clip-path: shape(
+    from bottom left,
+    vline to var(--k-bdr),
+    curve to var(--k-bdr) 0 with 0 0,
+    hline to calc(100% - var(--k-bdr)),
+    curve to 100% var(--k-bdr) with 100% 0,
+    vline to 100%,
+    hline to 0
+  );
+}
+
+/* element: bar */
+.k-tab-e1 {
+  /* variant `a`: outer shell owns clipping, stacking, local radius geometry, and edge alignment */
+  &-a {
+    --k-bdr: 12px;
+    position: relative;
+    z-index: 1;
+    display: block;
+    isolation: isolate;
+    overflow: hidden;
+    margin-inline-start: calc(var(--k-pdl) * -1);
+    margin-inline-end: calc(var(--k-pdr) * -1);
+    padding: 0 !important;
+  }
+
+  /* modifier `h`: distributed bridge fills the available width before inner scrolling takes over */
+  &-a.k-tab-e1h {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* modifier `h`: distributed inner tablist stretches with the shell until min widths cause overflow */
+  &-a.k-tab-e1h > .k-tab-e1c-a {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  /* modifier `h`: distributed bridge items grow evenly while keeping the shoulder compensation floor */
+  &-a.k-tab-e1h > .k-tab-e1c-a > .k-tab-e2c-a {
+    flex: 1 0 calc(var(--k-bxw) + (var(--k-bdr) * 2));
+    min-width: calc(var(--k-bxw) + (var(--k-bdr) * 2));
+  }
+
+  /* modifiers `h` + `d`: flush-all distributed items revert to the straight emitted width */
+  &-a.k-tab-e1h.k-tab-e1d-a > .k-tab-e1c-a > .k-tab-e2c-a {
+    flex-basis: var(--k-bxw);
+    min-width: var(--k-bxw);
+  }
+
+  /* derived node `c`: inner tablist owns horizontal scrolling and tab alignment */
+  &c-a {
+    display: flex;
+    align-items: flex-end;
+    margin: 0;
+    overflow-x: auto;
+    overflow-y: clip;
+    padding: var(--k-pdt) var(--k-pdr) 0 var(--k-pdl);
+    scrollbar-width: thin;
+  }
+
+  /* modifier `d`: flush-all removes wrapper overlap because tabs no longer curve below */
+  &d-a .k-tab-e2c-a + .k-tab-e2c-a {
+    margin-inline-start: 0;
+  }
+
+  /* modifier `d`: flush-all no longer needs lower-curve horizontal compensation */
+  &d-a .k-tab-e2-a {
+    padding-right: var(--k-pdr);
+    padding-left: var(--k-pdl);
+  }
+
+  /* modifier `d`: fixed-width flush-all tabs keep the emitted width because shoulders are gone */
+  &d-a .k-tab-e2-a.k-tab-e2a {
+    width: var(--k-bxw);
+  }
+
+  @supports (clip-path: shape(from top left, hline to 0)) {
+    /* modifier `d`: flush-all swaps the default bridge clip for the top-only shape */
+    &d-a .k-tab-e2-a {
+      @include bridge-shape-top-only;
+    }
+
+    /* modifiers `e` and `g`: first tab drops the left lower curve */
+    &e-a .k-tab-e1c-a > .k-tab-e2c-a:first-of-type > .k-tab-e2-a,
+    &g-a .k-tab-e1c-a > .k-tab-e2c-a:first-of-type > .k-tab-e2-a {
+      padding-left: var(--k-pdl);
+      padding-right: calc(var(--k-pdr) + var(--k-bdr));
+      @include bridge-shape-flush-start;
+    }
+
+    /* modifiers `f` and `g`: last tab drops the right lower curve */
+    &f-a .k-tab-e1c-a > .k-tab-e2c-a:last-of-type > .k-tab-e2-a,
+    &g-a .k-tab-e1c-a > .k-tab-e2c-a:last-of-type > .k-tab-e2-a {
+      padding-left: calc(var(--k-pdl) + var(--k-bdr));
+      padding-right: var(--k-pdr);
+      @include bridge-shape-flush-end;
+    }
+  }
+
+  @media (max-width: 640px) {
+    &-a {
+      --k-pdl: 4px;
+      --k-pdr: 4px;
+    }
+  }
+}
+
+/* element: tab */
+.k-tab-e2 {
+  /* derived node `c`: wrapper owns overlap, stacking, and shadow projection */
+  &c-a {
+    position: relative;
+    z-index: var(--k-tab-z);
+    display: inline-flex;
+    flex: 0 0 auto;
+    overflow: visible;
+    pointer-events: none;
+
+    /* shadow effect bucket projects the tokenized shadow outside the clipped trigger */
+    &.-e {
+      filter: drop-shadow(var(--k-sh-x) var(--k-sh-y) var(--k-sh-blur) var(--k-sh-color));
+    }
+
+    /* selected state rises above sibling wrappers */
+    &[data-selected] {
+      z-index: 1000;
+    }
+  }
+
+  /* variant `a`: clipped trigger keeps the interactive shell isolated from the wrapper */
+  &-a {
+    position: relative;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+    display: inline-block;
+    border: 0;
+    font: inherit;
+    padding: var(--k-pdt) calc(var(--k-pdr) + var(--k-bdr)) var(--k-pdb) calc(var(--k-pdl) + var(--k-bdr));
+    white-space: nowrap;
+    overflow: visible;
+    pointer-events: auto;
+    z-index: 1;
+
+    &[aria-disabled='true'] {
+      cursor: not-allowed;
+    }
+
+    /* focus outline stays inside the clipped shell */
+    &:focus-visible {
+      outline-offset: -4px;
+    }
+  }
+
+  /* modifier `a`: fixed-width bridge tabs add both curved shoulders back into the emitted width */
+  &-a.k-tab-e2a {
+    width: calc(var(--k-bxw) + (var(--k-bdr) * 2));
+  }
+
+  /* modifier `c`: distributed bridge trigger content can shrink inside the flex-grown shell */
+  &-a.k-tab-e2c {
+    min-width: 0;
+  }
+
+  @supports not (clip-path: shape(from top left, hline to 0)) {
+    /* fallback: shape() unavailable keeps only the top corners rounded */
+    &-a {
+      border-start-start-radius: var(--k-bdr);
+      border-start-end-radius: var(--k-bdr);
+    }
+  }
+
+  @supports (clip-path: shape(from top left, hline to 0)) {
+    /* default geometry compensates both curved shoulders with the full bridge shape */
+    &-a {
+      @include bridge-shape-curved;
+    }
+  }
+}
+
+/* `k-tab-e2b-a`: tab-derived inner content wrapper used for bridge label measurement. */
+.k-tab-e2b-a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* constrained-width bridge tabs keep the measured content clipped */
+.k-tab-e2-a:is(.k-tab-e2a, .k-tab-e2c) > .k-tab-e2b-a {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* `k-tab-e3`: tab label slot. */
+.k-tab-e3 {
+  display: block;
+}
+
+/* constrained-width bridge labels truncate instead of overflowing */
+.k-tab-e2-a:is(.k-tab-e2a, .k-tab-e2c) .k-tab-e3 {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* `k-tab-e4`: tab icon slot. */
+.k-tab-e4 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+/* `k-tab-e1h` + `k-tab-e2c`: distributed bridge triggers fill the flex-grown wrapper width. */
+.k-tab-e1-a.k-tab-e1h > .k-tab-e1c-a > .k-tab-e2c-a > .k-tab-e2-a.k-tab-e2c {
+  width: 100%;
+}
+
+/* element: tab */
+/* derived node `c`: adjacent wrappers overlap to build the connected bridge shell */
+.k-tab-e2c-a + .k-tab-e2c-a {
+  margin-inline-start: calc(var(--k-bdr) * -2);
+}
+
+@supports (clip-path: shape(from top left, hline to 0)) {
+  /* platform fix: Blink on macOS needs a tiny overlap to hide the bridge hairline */
+  .k-os-macos.k-engine-blink .k-tab-e2-a {
+    margin-block-end: -0.1px;
+  }
+}
+
+/* element: panel */
+.k-tab-p {
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.k-tab-p[hidden] {
+  display: none !important;
+}

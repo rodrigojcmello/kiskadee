@@ -2,6 +2,12 @@ import type {
   ComponentClassNameMapJSON,
   RadiusMode,
   RippleEffectSchema,
+  TabsBridgeLowerCurve,
+  TabsVariant,
+  TabsIndicatorShape,
+  TabsIndicatorPosition,
+  TabsIndicatorWidth,
+  TabsTabWidth,
   ThemeMode
 } from '@kiskadee/core';
 import { createContext, useContext } from 'react';
@@ -22,6 +28,19 @@ export type KiskadeeContextValue = {
       ripple?: RippleEffectSchema;
     };
     // [RIPPLE EFFECT 16] END: Global ripple config exposed to React components.
+    components?: {
+      tabs?: {
+        options?: {
+          variant?: TabsVariant;
+          indicatorPosition?: TabsIndicatorPosition;
+          indicatorShape?: TabsIndicatorShape;
+          indicatorWidth?: TabsIndicatorWidth;
+          tabWidth?: TabsTabWidth;
+          separator?: boolean;
+          lowerCurve?: TabsBridgeLowerCurve;
+        };
+      };
+    };
   };
 };
 

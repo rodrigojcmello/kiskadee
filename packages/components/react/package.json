@@ -9,7 +9,22 @@
     ".": {
       "default": "./src/index.ts"
     },
-    "./style": "./src/styles/style.kiskadee.scss"
+    "./style": "./src/styles/style.kiskadee.scss",
+    "./tabs/line": {
+      "default": "./src/Tabs/line/Tabs.line.tsx"
+    },
+    "./tabs/box": {
+      "default": "./src/Tabs/box/Tabs.box.tsx"
+    },
+    "./tabs/bridge": {
+      "default": "./src/Tabs/bridge/Tabs.bridge.tsx"
+    },
+    "./tabs/segmented": {
+      "default": "./src/Tabs/segmented/Tabs.segmented.tsx"
+    },
+    "./tabs/dot": {
+      "default": "./src/Tabs/dot/Tabs.dot.tsx"
+    }
   },
   "files": [
     "src",
@@ -27,20 +42,21 @@
   "dependencies": {
     "@kiskadee/core": "workspace:^",
     "@kiskadee/react-headless": "workspace:^",
-    "@kiskadee/web-builder": "workspace:^"
+    "@kiskadee/web-builder": "workspace:^",
+    "motion": "^12.34.3"
   },
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18"
   },
   "devDependencies": {
+    "@types/node": "^24.7.2",
+    "@types/react": "^19.2.7",
     "autoprefixer": "^10.4.21",
     "cssnano": "^7.1.1",
     "postcss": "^8.5.6",
     "postcss-cli": "^11.0.1",
     "sass": "^1.90.0",
-    "@types/node": "^24.7.2",
-    "@types/react": "^19.2.7",
     "typescript": "^5.9.2"
   }
 }

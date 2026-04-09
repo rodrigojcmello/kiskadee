@@ -12,9 +12,9 @@ bounds).
 To keep the schema platform‑agnostic while preserving the correct visual size on web, the
 web-builder **compensates padding by the border width** at CSS generation time:
 
-- `borderWidth` emits a CSS variable: `--k-bw`
-- each `padding*` emits a base var (`--k-pt`, `--k-pr`, `--k-pb`, `--k-pl`)
-- the actual CSS uses `max(0px, calc(var(--k-p*) - var(--k-bw, 0px)))`
+- `borderWidth` emits a CSS variable: `--k-bdw`
+- each `padding*` emits a base var (`--k-pdt`, `--k-pdr`, `--k-pdb`, `--k-pdl`)
+- the actual CSS uses `max(0px, calc(var(--k-pd*) - var(--k-bdw, 0px)))`
 
 This keeps layout stable across platforms without baking web-specific offsets into the schema.
 

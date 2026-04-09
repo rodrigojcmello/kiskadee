@@ -12,6 +12,14 @@ import {
   UNSUPPORTED_VALUE
 } from '../../errorMessages';
 import { convertHslaToHex } from '../../utils/convertHslaToHex';
+import {
+  DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
+  type ResolvedElementStyleEmissionPolicy
+} from '../../../style-emission/web-build-policy';
+
+export type TransformShadowKeyToCssOptions = {
+  styleEmissionPolicy?: ResolvedElementStyleEmissionPolicy;
+};
 
 /**
  * Builds CSS rule(s) that set the box-shadow property from a compact shadow style key.
@@ -30,7 +38,8 @@ import { convertHslaToHex } from '../../utils/convertHslaToHex';
 export function transformShadowKeyToCss(
   styleKey: string,
   className: string,
-  forceState?: boolean
+  forceState?: boolean,
+  options?: TransformShadowKeyToCssOptions
 ): string {
   // Extract the optional interaction state and the bracketed value.
   const regex = /^shadow(?:--(\w+))?__\[(.*)]$/;
@@ -70,7 +79,12 @@ export function transformShadowKeyToCss(
 
   // Optimize zero lengths: CSS allows omitting the unit for 0 values
   const formatPx = (n: number): string => (n === 0 ? '0' : `${n}px`);
-  const decl = `{ box-shadow: ${formatPx(x)} ${formatPx(y)} ${formatPx(blur)} ${hexColor} }`;
+  const styleEmissionPolicy =
+    options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
+  const decl =
+    styleEmissionPolicy.shadowEmission === 'token'
+      ? `{ --k-sh-x: ${formatPx(x)}; --k-sh-y: ${formatPx(y)}; --k-sh-blur: ${formatPx(blur)}; --k-sh-color: ${hexColor} }`
+      : `{ box-shadow: ${formatPx(x)} ${formatPx(y)} ${formatPx(blur)} ${hexColor} }`;
 
   // Build selectors
   const selectors: string[] = [];

@@ -23,10 +23,17 @@ describe('transformScaleKeyToCss', () => {
       });
 
       it("should convert 'paddingTop__16' into a valid CSS rule", () => {
-        const result = transformScaleKeyToCss('paddingTop__16', breakpoints, 'abc');
+        const result = transformScaleKeyToCss('paddingTop__16', breakpoints, 'abc', {
+          styleEmissionPolicy: {
+            borderRadiusEmission: 'direct',
+            borderWidthEmission: 'direct',
+            paddingEmission: 'compensated',
+            shadowEmission: 'direct'
+          }
+        });
 
         expect(result).toContain('.abc {');
-        expect(result).toContain('padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px)))');
+        expect(result).toContain('padding-top: max(0px, calc(var(--k-pdt) - var(--k-bdw, 0px)))');
       });
 
       it("should convert 'marginLeft__16' into a valid CSS rule", () => {
@@ -56,6 +63,32 @@ describe('transformScaleKeyToCss', () => {
         expect(result).toContain('.abc {');
         expect(result).toContain('height: 16px');
       });
+
+      it('should emit only --k-bdr when border-radius emission is token', () => {
+        const result = transformScaleKeyToCss('borderRadius__16', breakpoints, 'abc', {
+          styleEmissionPolicy: {
+            borderRadiusEmission: 'token',
+            borderWidthEmission: 'direct',
+            paddingEmission: 'direct',
+            shadowEmission: 'direct'
+          }
+        });
+
+        expect(result).toBe('.abc { --k-bdr: 16px }');
+      });
+
+      it('should emit --k-bdr and border-radius when border-radius emission is mirrored', () => {
+        const result = transformScaleKeyToCss('borderRadius__16', breakpoints, 'abc', {
+          styleEmissionPolicy: {
+            borderRadiusEmission: 'mirrored',
+            borderWidthEmission: 'direct',
+            paddingEmission: 'direct',
+            shadowEmission: 'direct'
+          }
+        });
+
+        expect(result).toBe('.abc { --k-bdr: 16px; border-radius: 16px }');
+      });
     });
 
     describe('Valid Properties (Size Support)', () => {
@@ -67,10 +100,17 @@ describe('transformScaleKeyToCss', () => {
       });
 
       it("should convert 'paddingRight++s:sm:1__16' into a valid CSS rule", () => {
-        const result = transformScaleKeyToCss('paddingRight++s:sm:1__16', breakpoints, 'abc');
+        const result = transformScaleKeyToCss('paddingRight++s:sm:1__16', breakpoints, 'abc', {
+          styleEmissionPolicy: {
+            borderRadiusEmission: 'direct',
+            borderWidthEmission: 'direct',
+            paddingEmission: 'compensated',
+            shadowEmission: 'direct'
+          }
+        });
 
         expect(result).toContain('.abc {');
-        expect(result).toContain('padding-right: max(0px, calc(var(--k-pr) - var(--k-bw, 0px)))');
+        expect(result).toContain('padding-right: max(0px, calc(var(--k-pdr) - var(--k-bdw, 0px)))');
       });
 
       it("should convert 'marginLeft++s:sm:1__16' into a valid CSS rule", () => {
@@ -107,13 +147,21 @@ describe('transformScaleKeyToCss', () => {
       const result = transformScaleKeyToCss(
         'paddingTop++s:sm:1::bp:lg:1__16',
         breakpoints,
-        'abc'
+        'abc',
+        {
+          styleEmissionPolicy: {
+            borderRadiusEmission: 'direct',
+            borderWidthEmission: 'direct',
+            paddingEmission: 'compensated',
+            shadowEmission: 'direct'
+          }
+        }
       );
 
       const bpValue = breakpoints['bp:lg:1'];
       expect(result).toContain(`@media (min-width: ${bpValue}px)`);
       expect(result).toContain('.abc {');
-      expect(result).toContain('padding-top: max(0px, calc(var(--k-pt) - var(--k-bw, 0px)))');
+      expect(result).toContain('padding-top: max(0px, calc(var(--k-pdt) - var(--k-bdw, 0px)))');
     });
 
       it("should convert 'textSize++s:sm:1::bp:lg:1__16' into a valid CSS rule with media query and rem unit", () => {

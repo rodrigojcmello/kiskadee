@@ -1,4 +1,6 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints';
+import type { ButtonElements } from './components/button';
+import type { TabsElements, TabsOptions, TabsVariants } from './components/tabs';
 import type {
   ElementPalettes,
   InteractionState,
@@ -68,10 +70,20 @@ export interface StyleKeyByElement<TSegmentName extends SegmentName = never> {
   >;
 }
 
+export type ComponentElementsStyleKeyMap<TSegmentName extends SegmentName = never> = Record<
+  ElementName,
+  StyleKeyByElement<TSegmentName>
+>;
+
+export type ComponentVariantsStyleKeyMap<TSegmentName extends SegmentName = never> = Record<
+  string,
+  ComponentElementsStyleKeyMap<TSegmentName>
+>;
+
 export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Partial<{
-  [componenteName in ComponentName]: {
-    [elementName: ElementName]: StyleKeyByElement<TSegmentName>;
-  };
+  [componenteName in ComponentName]:
+    | ComponentElementsStyleKeyMap<TSegmentName>
+    | ComponentVariantsStyleKeyMap<TSegmentName>;
 }>;
 
 // Legacy, delete it
@@ -83,9 +95,14 @@ export interface ClassNameMap {
 
 // -------------------------------------------------------------------------------------------------
 
-type Components<TSegmentName extends SegmentName = never> = Partial<
-  Record<ComponentName, { elements: Elements<TSegmentName> }>
->;
+type Components<TSegmentName extends SegmentName = never> = Partial<{
+  button: { elements: ButtonElements<TSegmentName> & Elements<TSegmentName> };
+  tabs: {
+    elements?: TabsElements<TSegmentName>;
+    options?: TabsOptions;
+    variants?: TabsVariants<TSegmentName>;
+  };
+}>;
 
 export type SchemaMetadata = {
   name: string;
@@ -199,7 +216,7 @@ export type ColorClasses = {
 
 // Types describing the JSON artifact produced by web-builder (classNamesMap.json)
 export type ClassNameByElementJSON = {
-  // d = decorations, e = effects (segregated), s = scales, c = colors (with h/m/l/ll sub-fields), l = control states
+  // d = decorations, e = effects (segregated), s = scales, w = width scales, c = colors (with h/m/l/ll sub-fields), l = control states
   // d: flattened into a single space-separated string of class names (always-on)
   d?: string;
   // e: effect buckets (each bucket is opt-in at component level).
@@ -213,6 +230,9 @@ export type ClassNameByElementJSON = {
   // s: values are pre-joined into a single space-separated string (no arrays) per size key.
   // For web payload optimization, keys are stored without the "s:" prefix (e.g. "s:md:1" -> "md:1", "s:all" -> "all").
   s?: Partial<Record<string, string>>;
+  // w: width-only scales, kept separate so components can opt into fixed-width behavior.
+  // Keys follow the same "s:" stripping as `s`.
+  w?: Partial<Record<string, string>>;
   // r: rounded border radius scales (size-aware, opt-in at component level).
   r?: Partial<Record<string, string>>;
   // rp: pill border radius scales (size-aware, opt-in at component level).
@@ -226,5 +246,5 @@ export type ClassNameByElementJSON = {
 };
 
 export type ComponentClassNameMapJSON = Partial<
-  Record<string, Record<string, ClassNameByElementJSON>>
+  Record<string, Record<string, ClassNameByElementJSON> | Record<string, Record<string, ClassNameByElementJSON>>>
 >;

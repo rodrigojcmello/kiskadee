@@ -7,7 +7,11 @@ import {
   type StyleKey,
   scaleProperties
 } from '@kiskadee/core';
-import { SEPARATORS } from '../../utils/buildStyleKey/buildStyleKey';
+import {
+  DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
+  type ResolvedElementStyleEmissionPolicy
+} from '../../style-emission/web-build-policy';
+import { SEPARATORS } from '../../utils';
 
 export const ERROR_NO_MATCHING_SCALE_PROPERTY = 'No matching scale key found.';
 export const ERROR_INVALID_MEDIA_QUERY_PATTERN =
@@ -19,6 +23,27 @@ export const ERROR_NO_STANDARD_SCALE_KEY = 'No matching standard scale key found
 export const ERROR_INVALID_STANDARD_PATTERN =
   'Invalid standard scale key format; unexpected number of parts.';
 export const ERROR_INVALID_KEY_FORMAT = 'Invalid scale key format; missing required delimiters.';
+
+export type TransformScaleKeyToCssOptions = {
+  styleEmissionPolicy?: ResolvedElementStyleEmissionPolicy;
+};
+
+/**
+ * Canonical emitted CSS custom property names for scale-derived structural tokens.
+ *
+ * Naming grammar:
+ * - first two letters identify the attribute group (`bd` = border, `bx` = box, `pd` = padding)
+ * - last letter identifies the concrete value or edge within that group
+ */
+export const EMITTED_SCALE_CSS_VARS = {
+  borderWidth: '--k-bdw',
+  borderRadius: '--k-bdr',
+  boxWidth: '--k-bxw',
+  paddingTop: '--k-pdt',
+  paddingRight: '--k-pdr',
+  paddingBottom: '--k-pdb',
+  paddingLeft: '--k-pdl'
+} as const;
 
 /**
  * Map of project scale keys to their corresponding CSS property names.
@@ -62,32 +87,34 @@ const cssPropertyMap: Record<ScaleProperty, string> = {
  * @param styleKey - The scale key string to convert (must match one of the supported formats).
  * @param breakpoints - Object mapping breakpoint tokens to min-width pixel values.
  * @param className - CSS class name to use in the generated rule.
+ * @param options
  * @returns A single CSS rule string (optionally wrapped in a media query) for the provided key.
  */
 export function transformScaleKeyToCss(
   styleKey: StyleKey,
   breakpoints: Breakpoints,
-  className: string
+  className: string,
+  options?: TransformScaleKeyToCssOptions
 ): string {
   let scaleProperty: ScaleProperty | undefined;
   let mediaQuery: string | undefined;
   let scaleValue: string = '';
 
-  const hasSizeSeparator = styleKey.includes(SEPARATORS.SIZE) === true;
-  const hasValueSeparator = styleKey.includes(SEPARATORS.VALUE) === true;
+  const hasSizeSeparator = styleKey.includes(SEPARATORS.SIZE);
+  const hasValueSeparator = styleKey.includes(SEPARATORS.VALUE);
 
-  if (hasSizeSeparator === true) {
+  if (hasSizeSeparator) {
     scaleProperty = scaleProperties.find((scaleProperty) => styleKey.startsWith(scaleProperty));
     const isScalePropertyValid = scaleProperty != null;
 
-    if (isScalePropertyValid === false) {
+    if (!isScalePropertyValid) {
       throw new Error(ERROR_NO_MATCHING_SCALE_PROPERTY);
     }
 
     const withoutPrefix = styleKey.slice(`${scaleProperty}${SEPARATORS.SIZE}`.length);
     const hasBreakpointSeparator = withoutPrefix.includes(SEPARATORS.BREAKPOINT);
 
-    if (hasBreakpointSeparator === true) {
+    if (hasBreakpointSeparator) {
       const [sizeToken, remainder] = withoutPrefix.split(SEPARATORS.BREAKPOINT) as [
         ElementSizeValue,
         string
@@ -100,13 +127,13 @@ export function transformScaleKeyToCss(
       const bpValue = breakpoints[mediaToken];
       const hasValidBreakpoint = bpValue != null;
 
-      if (hasValidBreakpoint === false) {
+      if (!hasValidBreakpoint) {
         throw new Error(ERROR_INVALID_MEDIA_TOKEN);
       }
 
       const isValidSizeToken = elementSizeValues.includes(sizeToken);
 
-      if (isValidSizeToken === false) {
+      if (!isValidSizeToken) {
         throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
       }
 
@@ -120,21 +147,21 @@ export function transformScaleKeyToCss(
       const isValidToken = sizeToken != null && elementSizeValues.includes(sizeToken);
       const hasValue = value != null;
 
-      if (isValidToken === false) {
+      if (!isValidToken) {
         throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
       }
 
-      if (hasValue === false) {
+      if (!hasValue) {
         throw new Error(ERROR_MISSING_VALUE);
       }
 
       scaleValue = value;
     }
-  } else if (hasValueSeparator === true) {
+  } else if (hasValueSeparator) {
     scaleProperty = scaleProperties.find((scaleProperty) => styleKey.startsWith(scaleProperty));
     const isScalePropertyValid = scaleProperty != null;
 
-    if (isScalePropertyValid === false) {
+    if (!isScalePropertyValid) {
       throw new Error(ERROR_NO_STANDARD_SCALE_KEY);
     }
 
@@ -158,16 +185,30 @@ export function transformScaleKeyToCss(
     cssValue = `${scaleValue}px`;
   }
 
+  const styleEmissionPolicy = options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
   let rule: string;
   if (scaleProperty === 'borderWidth') {
-    rule = `.${className} { --k-bw: ${cssValue}; ${cssProperty}: ${cssValue} }`;
+    rule =
+      styleEmissionPolicy.borderWidthEmission === 'mirrored'
+        ? `.${className} { ${EMITTED_SCALE_CSS_VARS.borderWidth}: ${cssValue}; ${cssProperty}: ${cssValue} }`
+        : `.${className} { ${cssProperty}: ${cssValue} }`;
+  } else if (scaleProperty === 'boxWidth') {
+    rule =
+      styleEmissionPolicy.boxWidthEmission === 'token'
+        ? `.${className} { ${EMITTED_SCALE_CSS_VARS.boxWidth}: ${cssValue} }`
+        : `.${className} { ${cssProperty}: ${cssValue} }`;
   } else if (
     scaleProperty === 'borderRadius' ||
     scaleProperty === 'borderRadiusRounded' ||
     scaleProperty === 'borderRadiusPill' ||
     scaleProperty === 'borderRadiusSquare'
   ) {
-    rule = `.${className} { --k-br: ${cssValue}; ${cssProperty}: ${cssValue} }`;
+    rule =
+      styleEmissionPolicy.borderRadiusEmission === 'mirrored'
+        ? `.${className} { ${EMITTED_SCALE_CSS_VARS.borderRadius}: ${cssValue}; ${cssProperty}: ${cssValue} }`
+        : styleEmissionPolicy.borderRadiusEmission === 'token'
+          ? `.${className} { ${EMITTED_SCALE_CSS_VARS.borderRadius}: ${cssValue} }`
+          : `.${className} { ${cssProperty}: ${cssValue} }`;
   } else if (
     scaleProperty === 'paddingTop' ||
     scaleProperty === 'paddingRight' ||
@@ -176,14 +217,23 @@ export function transformScaleKeyToCss(
   ) {
     const paddingVar =
       scaleProperty === 'paddingTop'
-        ? '--k-pt'
+        ? EMITTED_SCALE_CSS_VARS.paddingTop
         : scaleProperty === 'paddingRight'
-          ? '--k-pr'
+          ? EMITTED_SCALE_CSS_VARS.paddingRight
           : scaleProperty === 'paddingBottom'
-            ? '--k-pb'
-            : '--k-pl';
-    const adjustedPadding = `max(0px, calc(var(${paddingVar}) - var(--k-bw, 0px)))`;
-    rule = `.${className} { ${paddingVar}: ${cssValue}; ${cssProperty}: ${adjustedPadding} }`;
+            ? EMITTED_SCALE_CSS_VARS.paddingBottom
+            : EMITTED_SCALE_CSS_VARS.paddingLeft;
+
+    if (styleEmissionPolicy.paddingEmission === 'compensated') {
+      const adjustedPadding = `max(0px, calc(var(${paddingVar}) - var(${EMITTED_SCALE_CSS_VARS.borderWidth}, 0px)))`;
+      rule = `.${className} { ${paddingVar}: ${cssValue}; ${cssProperty}: ${adjustedPadding} }`;
+    } else if (styleEmissionPolicy.paddingEmission === 'token') {
+      rule = `.${className} { ${paddingVar}: ${cssValue} }`;
+    } else if (styleEmissionPolicy.paddingEmission === 'mirrored') {
+      rule = `.${className} { ${paddingVar}: ${cssValue}; ${cssProperty}: ${cssValue} }`;
+    } else {
+      rule = `.${className} { ${cssProperty}: ${cssValue} }`;
+    }
   } else {
     rule = `.${className} { ${cssProperty}: ${cssValue} }`;
   }

@@ -4,6 +4,7 @@ import { useClassMapLoader } from '@/hooks/use-class-map-loader';
 import { useDesignSystemSelection } from '@/hooks/use-design-system-selection';
 import { useFontPreference } from '@/hooks/use-font-preference';
 import { useGlobalThemeClasses } from '@/hooks/use-global-theme-classes';
+import { useRuntimePlatformClasses } from '@/hooks/use-runtime-platform-classes';
 import { useStylesheetManager } from '@/hooks/use-stylesheet-manager';
 import { useThemeExtras } from '@/hooks/use-theme-extras';
 import { designSystemList } from '@/registry/design-systems.registry';
@@ -29,22 +30,73 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const classesMap = useClassMapLoader({ designSystem, segment, theme });
 
   // 3. Load extra resources (background colors) and global radius/ripple metadata
-  const { backgroundsByTheme, globalRadius, globalRipple } = useThemeExtras({
+  const {
+    backgroundsByTheme,
+    globalRadius,
+    globalRipple,
+    tabsVariant,
+    tabsIndicatorPosition,
+    tabsIndicatorShape,
+    tabsIndicatorWidth,
+    tabsTabWidth,
+    tabsSeparator,
+    tabsLowerCurve
+  } = useThemeExtras({
     designSystem,
     segment
   });
 
   const globalConfig =
-    globalRadius !== undefined || globalRipple !== undefined
+    globalRadius !== undefined ||
+    globalRipple !== undefined ||
+    tabsVariant !== undefined ||
+    tabsIndicatorPosition !== undefined ||
+    tabsIndicatorShape !== undefined ||
+    tabsIndicatorWidth !== undefined ||
+    tabsTabWidth !== undefined ||
+    tabsSeparator !== undefined ||
+    tabsLowerCurve !== undefined
       ? {
           ...(globalRadius !== undefined ? { radius: globalRadius } : {}),
-          ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {})
+          ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {}),
+          ...(tabsVariant !== undefined ||
+          tabsIndicatorPosition !== undefined ||
+          tabsIndicatorShape !== undefined ||
+          tabsIndicatorWidth !== undefined ||
+          tabsTabWidth !== undefined ||
+          tabsSeparator !== undefined ||
+          tabsLowerCurve !== undefined
+            ? {
+                components: {
+                  tabs: {
+                    options: {
+                      ...(tabsVariant !== undefined ? { variant: tabsVariant } : {}),
+                      ...(tabsIndicatorPosition !== undefined
+                        ? { indicatorPosition: tabsIndicatorPosition }
+                        : {}),
+                      ...(tabsIndicatorShape !== undefined
+                        ? { indicatorShape: tabsIndicatorShape }
+                        : {}),
+                      ...(tabsIndicatorWidth !== undefined
+                        ? { indicatorWidth: tabsIndicatorWidth }
+                        : {}),
+                      ...(tabsTabWidth !== undefined
+                        ? { tabWidth: tabsTabWidth }
+                        : {}),
+                      ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {}),
+                      ...(tabsLowerCurve !== undefined ? { lowerCurve: tabsLowerCurve } : {})
+                    }
+                  }
+                }
+              }
+            : {})
         }
       : undefined;
 
   // 4. Manage global CSS and stylesheet injection (side effects)
   useStylesheetManager({ designSystem, segment, theme });
   useGlobalThemeClasses(theme);
+  useRuntimePlatformClasses();
 
   // 5. Manifest + font management for the currently selected design system
   const { manifest, fontName, setFontName } = useFontPreference({

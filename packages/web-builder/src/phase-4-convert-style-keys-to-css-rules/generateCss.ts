@@ -5,6 +5,7 @@ import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/sh
 import {
   transformBorderStyleKeyToCss,
   transformShadowKeyToCss,
+  type TransformShadowKeyToCssOptions,
   transformTextAlignKeyToCss,
   transformTextFontKeyToCss,
   transformTextItalicKeyToCss,
@@ -17,9 +18,14 @@ import {
   transformColorKeyToCss,
   type TransformColorKeyToCssOptions
 } from './palettes/transformColorKeyToCss';
-import { transformScaleKeyToCss } from './scales/transformScaleKeyToCss';
+import {
+  transformScaleKeyToCss,
+  type TransformScaleKeyToCssOptions
+} from './scales/transformScaleKeyToCss';
 
-export type GenerateCssRuleFromStyleKeyOptions = TransformColorKeyToCssOptions;
+export type GenerateCssRuleFromStyleKeyOptions = TransformColorKeyToCssOptions &
+  TransformScaleKeyToCssOptions &
+  TransformShadowKeyToCssOptions;
 
 export function generateCssRuleFromStyleKey(
   styleKey: string,
@@ -33,7 +39,7 @@ export function generateCssRuleFromStyleKey(
   if (styleKey.startsWith('borderStyle')) {
     generatedCss = transformBorderStyleKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('shadow')) {
-    generatedCss = transformShadowKeyToCss(styleKey, className, forceState);
+    generatedCss = transformShadowKeyToCss(styleKey, className, forceState, options);
   // [RIPPLE EFFECT 12] START: Route ripple style keys through ripple CSS transformer.
   } else if (styleKey.startsWith('ripple')) {
     generatedCss = transformRippleKeyToCss(styleKey, className);
@@ -53,7 +59,7 @@ export function generateCssRuleFromStyleKey(
       styleKey.startsWith('borderRadius') && (styleKey.includes('--') || styleKey.includes('=='));
     const matchScale = scaleProperties.find((scaleProperty) => styleKey.startsWith(scaleProperty));
     if (matchScale != null && !isBorderRadiusEffectKey) {
-      generatedCss = transformScaleKeyToCss(styleKey, breakpoints, className);
+      generatedCss = transformScaleKeyToCss(styleKey, breakpoints, className, options);
     } else {
       // Colors ------------------------------------------------------------------------------------
       const colorProperties = Object.keys(CssColorProperty) as ColorProperty[];
@@ -64,7 +70,7 @@ export function generateCssRuleFromStyleKey(
         generatedCss = transformColorKeyToCss(styleKey, className, forceState, options);
       } else if (isBorderRadiusEffectKey) {
         // Border-radius effect: supports native and forced selectors controlled by forceState.
-        generatedCss = transformBorderRadiusKeyToCss(styleKey, className, forceState);
+        generatedCss = transformBorderRadiusKeyToCss(styleKey, className, forceState, options);
       }
     }
   }

@@ -6,11 +6,20 @@ import {
   breakpoints as schemaBreakpoints,
   stateActivator
 } from '@kiskadee/core';
+import {
+  DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
+  type ResolvedElementStyleEmissionPolicy
+} from '../../../style-emission/web-build-policy';
+import { EMITTED_SCALE_CSS_VARS } from '../../scales/transformScaleKeyToCss';
 
 export const ERROR_INVALID_NUMERIC_KEY_FORMAT =
   'Invalid key format. Expected numeric value in square brackets at the end.';
 export const ERROR_REF_REQUIRE_STATE_NUMERIC =
   'Invalid key format. Reference "==" requires a preceding non-rest interaction state.';
+
+export type TransformBorderRadiusKeyToCssOptions = {
+  styleEmissionPolicy?: ResolvedElementStyleEmissionPolicy;
+};
 
 /**
  * Transform a borderRadius style key into a CSS rule string.
@@ -49,7 +58,8 @@ export const ERROR_REF_REQUIRE_STATE_NUMERIC =
 export function transformBorderRadiusKeyToCss(
   styleKey: StyleKey,
   className: string,
-  forceState?: boolean
+  forceState?: boolean,
+  options?: TransformBorderRadiusKeyToCssOptions
 ): string {
   // 1) Parse the numeric radius after "__". Accept both plain ("__18") and bracketed ("__[18]").
   const afterValueSep = styleKey.split('__')[1] ?? '';
@@ -58,7 +68,7 @@ export function transformBorderRadiusKeyToCss(
     raw = raw.slice(1, -1);
   }
   const px = Number(raw);
-  if (Number.isFinite(px) === false) throw new Error(ERROR_INVALID_NUMERIC_KEY_FORMAT);
+  if (!Number.isFinite(px)) throw new Error(ERROR_INVALID_NUMERIC_KEY_FORMAT);
 
   // Determine if the styleKey targets a parent state (reference) or the element itself (inline)
   const isRef = styleKey.includes('==');
@@ -200,6 +210,14 @@ export function transformBorderRadiusKeyToCss(
   // Assemble the final CSS rule: join selectors by comma and emit border-radius with the parsed px value.
   const selectors = isRef ? buildRefSelectors() : buildInlineSelectors();
   const selector = selectors.join(', ');
-  const rule = `${selector} { --k-br: ${px}px; border-radius: ${px}px }`;
+  const styleEmissionPolicy =
+    options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
+  const declaration =
+    styleEmissionPolicy.borderRadiusEmission === 'mirrored'
+      ? `${EMITTED_SCALE_CSS_VARS.borderRadius}: ${px}px; border-radius: ${px}px`
+      : styleEmissionPolicy.borderRadiusEmission === 'token'
+        ? `${EMITTED_SCALE_CSS_VARS.borderRadius}: ${px}px`
+        : `border-radius: ${px}px`;
+  const rule = `${selector} { ${declaration} }`;
   return mediaQuery ? `${mediaQuery} { ${rule} }` : rule;
 }

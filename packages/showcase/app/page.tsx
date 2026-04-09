@@ -8,6 +8,9 @@ export default function HomePage() {
         <li>
           <Link href="/button">/button</Link>
         </li>
+        <li>
+          <Link href="/tabs">/tabs</Link>
+        </li>
       </ul>
     </main>
   );

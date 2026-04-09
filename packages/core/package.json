@@ -4,6 +4,14 @@
   "type": "module",
   "description": "Core types and utilities for Kiskadee (schema types, color utils, breakpoints).",
   "main": "src/index.ts",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./build": {
+      "default": "./src/build/index.ts"
+    }
+  },
   "files": [
     "src"
   ],
@@ -14,5 +22,8 @@
   "devDependencies": {
     "@types/node": "^24.7.2",
     "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
   }
 }

@@ -8,6 +8,10 @@ import {
   type StyleKey,
   stateActivator
 } from '@kiskadee/core';
+import {
+  DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
+  type ResolvedElementStyleEmissionPolicy
+} from '../../style-emission/web-build-policy';
 import { convertHslaToHex } from '../utils/convertHslaToHex';
 
 export type TransformColorKeyToCssOptions = {
@@ -18,7 +22,12 @@ export type TransformColorKeyToCssOptions = {
    * Applies ONLY to `boxColor` (`background` on Web).
    */
   enableSolidBoxColorAsGradient?: boolean;
+  styleEmissionPolicy?: ResolvedElementStyleEmissionPolicy;
 };
+
+export const EMITTED_COLOR_CSS_VARS = {
+  borderColor: '--k-bdc'
+} as const;
 
 type ResolvedGradientLike = {
   kind: 'linear';
@@ -96,6 +105,13 @@ export function transformColorKeyToCss(
   const colorProperty = CssColorProperty[propertyName];
   // Optimization: use shorthand "background" instead of "background-color"
   const optimizedProperty = colorProperty === 'background-color' ? 'background' : colorProperty;
+  const styleEmissionPolicy = options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
+  const shouldMirrorBorderColor =
+    propertyName === 'borderColor' && styleEmissionPolicy.borderColorEmission === 'mirrored';
+  const buildColorDeclarations = (value: string) =>
+    shouldMirrorBorderColor
+      ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}; ${optimizedProperty}: ${value}`
+      : `${optimizedProperty}: ${value}`;
 
   let cssValue: string;
   let gradientVars: string | undefined;
@@ -213,7 +229,7 @@ export function transformColorKeyToCss(
         return `.${className} { ${gradientVars} ${optimizedProperty}: ${gradientBackground} }`;
       }
 
-      return `.${className} { ${optimizedProperty}: ${cssValue} }`;
+      return `.${className} { ${buildColorDeclarations(cssValue)} }`;
     }
 
     // Split states by availability of native pseudo
@@ -260,7 +276,7 @@ export function transformColorKeyToCss(
       return `${selector} { ${gradientVars} }`;
     }
 
-    return `${selector} { ${optimizedProperty}: ${cssValue} }`;
+    return `${selector} { ${buildColorDeclarations(cssValue)} }`;
   }
 
   // Ref (parent state gating child .className)
@@ -312,5 +328,5 @@ export function transformColorKeyToCss(
     // Ref rules do not have a guaranteed rest anchor, so emit vars + background together.
     return `${selector} { ${gradientVars} ${optimizedProperty}: ${gradientBackground} }`;
   }
-  return `${selector} { ${optimizedProperty}: ${cssValue} }`;
+  return `${selector} { ${buildColorDeclarations(cssValue)} }`;
 }

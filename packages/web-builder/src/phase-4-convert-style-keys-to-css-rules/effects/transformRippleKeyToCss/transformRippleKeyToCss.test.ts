@@ -23,7 +23,7 @@ describe('transformRippleKeyToCss', () => {
 
     expect(out.startsWith('.rk1.-i {')).toBe(true);
     expect(out).toContain('--k-ripple-overflow: hidden;');
-    expect(out).toContain('--k-ripple-clip: inset(0 round var(--k-br, 0px));');
+    expect(out).toContain('--k-ripple-clip: inset(0 round var(--k-bdr, 0px));');
     expect(out).toContain('--k-ripple-color: var(--k-ripple-surface-color, #000);');
     expect(out).toContain('--k-ripple-opacity: var(--k-ripple-surface-opacity, 0.12);');
     expect(out).toContain('--k-ripple-duration: 360ms;');
@@ -84,7 +84,7 @@ describe('transformRippleKeyToCss', () => {
 
     expect(out.startsWith('.rk1.-i {')).toBe(true);
     expect(out).toContain('--k-ripple-overflow: hidden;');
-    expect(out).toContain('--k-ripple-clip: inset(0 round var(--k-br, 0px));');
+    expect(out).toContain('--k-ripple-clip: inset(0 round var(--k-bdr, 0px));');
     expect(out).toContain('--k-ripple-color: var(--k-ripple-overflow-color, #0481FF);');
     expect(out).toContain('--k-ripple-opacity: var(--k-ripple-overflow-opacity, 0.15);');
     expect(out).toContain('--k-ripple-duration: 0ms;');

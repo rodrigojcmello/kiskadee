@@ -40,6 +40,9 @@ export const componentIntents = {
   button: {
     primary: 'primary',
     neutral: 'neutral'
+  },
+  tabs: {
+    neutral: 'neutral'
   }
 } as const satisfies ComponentIntents;
 

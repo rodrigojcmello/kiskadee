@@ -10,6 +10,12 @@ import type {
 import { componentEmphasisBuckets } from '@kiskadee/core';
 import type { ToneMetadataByPalette } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
+import type { WebStyleEmissionPolicy } from '../style-emission/web-build-policy';
+import {
+  canonicalizeWebStyleKeyIdentity,
+  resolveWebStyleKeyIdentity,
+  type WebStyleIdentityOptimizationOptions
+} from '../style-emission/web-style-key-identity';
 
 type ColorClasses = {
   h?: string; // high
@@ -22,6 +28,7 @@ type ColorClasses = {
 // d = decorations (always-on, flattened string)
 // e = effects by interaction state (arrays of classes, opt-in at component level)
 // s = scales (size variants only, flattened strings per size)
+// w = width-only scales (opt-in at component level, flattened strings per size)
 // c = color classes (organized by emphasis: h/m/l/ll)
 // cs = control states (selected)
 export type ClassNamesByInteractionState = Partial<Record<string, string[]>>; // legacy for reference
@@ -33,6 +40,8 @@ export type ClassNameByElement = {
   e?: Partial<Record<string, string>>;
   // Scales aggregated per size as flattened strings (size variants only, not effects)
   s?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
+  // Width-only scales aggregated per size (opt-in at component level)
+  w?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
   // Rounded radius scales aggregated per size (opt-in at component level)
   r?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
   // Pill radius scales aggregated per size (opt-in at component level)
@@ -44,19 +53,36 @@ export type ClassNameByElement = {
   // Control-state specific (selected) — flattened string of utility classes
   l?: string;
 };
-export type ComponentClassNameMap = Partial<Record<string, Record<string, ClassNameByElement>>>;
+export type ComponentClassNameMap = Partial<
+  Record<
+    string,
+    Record<string, ClassNameByElement> | Record<string, Record<string, ClassNameByElement>>
+  >
+>;
 
 export type ComponentClassNameMapSplit = {
   core: ComponentClassNameMap; // no palettes included
   palettes: Record<string, ComponentClassNameMap>; // each contains only flattened `p` for that palette
 };
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isElementMap(value: unknown): value is Record<string, any> {
+  if (!isRecord(value)) return false;
+  const first = Object.values(value).find(Boolean);
+  if (!isRecord(first)) return false;
+  const elementKeys = ['decorations', 'effects', 'scales', 'radiusScales', 'palettes'];
+  return elementKeys.some((key) => key in first);
+}
+
 function mapArray(
   keys: string[] | undefined,
-  shortenMap: ShortenCssClassNames
+  resolveClassName: (key: string) => string
 ): string[] | undefined {
   if (!keys) return undefined;
-  return keys.map((k) => shortenMap[k] ?? k);
+  return keys.map((k) => resolveClassName(k));
 }
 
 // Ripple buckets follow a compact 3-letter convention to keep artifact payloads small.
@@ -104,24 +130,67 @@ function rippleBucketForKey(key: string): string {
 export function generateClassNamesMapSplit(
   styleKeys: ComponentStyleKeyMap,
   shortenMap: ShortenCssClassNames,
-  toneMetadataByPalette: ToneMetadataByPalette
+  toneMetadataByPalette: ToneMetadataByPalette,
+  options?: {
+    webStyleEmissionPolicy?: WebStyleEmissionPolicy;
+  } & WebStyleIdentityOptimizationOptions
 ): ComponentClassNameMapSplit {
   const core: ComponentClassNameMap = {};
   const palettes: Record<string, ComponentClassNameMap> = {};
+  const knownIdentities = new Set(Object.keys(shortenMap));
 
-  for (const componentName of Object.keys(styleKeys)) {
-    const elements = styleKeys[componentName as ComponentName];
-    if (!elements) continue;
-    core[componentName] = {};
+  const ensurePaletteElement = (
+    bundleKey: string,
+    componentName: string,
+    variantName: string | undefined,
+    elementName: string
+  ): Record<string, unknown> => {
+    if (!palettes[bundleKey]) palettes[bundleKey] = {};
+    if (!palettes[bundleKey][componentName]) {
+      palettes[bundleKey][componentName] = variantName ? {} : {};
+    }
+    const componentEntry = palettes[bundleKey][componentName] as Record<string, unknown>;
+    const target = variantName
+      ? ((componentEntry[variantName] as Record<string, unknown> | undefined) ??
+        // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+        (componentEntry[variantName] = {}))
+      : componentEntry;
+    if (!target[elementName]) {
+      target[elementName] = {};
+    }
+    return target[elementName] as Record<string, unknown>;
+  };
+
+  const processElements = (
+    componentName: string,
+    elements: Record<string, any>,
+    coreTarget: Record<string, ClassNameByElement>,
+    variantName?: string
+  ) => {
     for (const elementName of Object.keys(elements)) {
       const el = elements[elementName];
+      const resolveClassName = (key: string) => {
+        const localIdentity = resolveWebStyleKeyIdentity(
+          key,
+          options?.webStyleEmissionPolicy,
+          componentName,
+          elementName,
+          variantName
+        );
+        const canonicalIdentity = canonicalizeWebStyleKeyIdentity(localIdentity, knownIdentities, {
+          collapseDirectIntoMirrored: options?.collapseDirectIntoMirrored
+        });
+        return shortenMap[canonicalIdentity] ?? key;
+      };
 
       // Core (no palettes) — aggregate:
       // - decorations into `d` (always-on),
       // - effects into `e` per interaction state (opt-in),
-      // - scales (size variants only) into `s`.
+      // - scales (size variants only) into `s`,
+      // - width-only scales into `w`.
       const dSet = new Set<string>();
       const sMap = new Map<string, Set<string>>();
+      const wMap = new Map<string, Set<string>>();
       const rMap = new Map<string, Set<string>>();
       const rpMap = new Map<string, Set<string>>();
       const rsMap = new Map<string, Set<string>>();
@@ -134,7 +203,7 @@ export function generateClassNamesMapSplit(
       const selectedSet = new Set<string>();
 
       // decorations → d
-      mapArray(el.decorations, shortenMap)?.forEach((c) => {
+      mapArray(el.decorations, resolveClassName)?.forEach((c) => {
         dSet.add(c);
       });
 
@@ -144,7 +213,7 @@ export function generateClassNamesMapSplit(
           const arr = (el.effects as any)[st] as string[] | undefined;
           if (!arr || arr.length === 0) continue;
           for (const key of arr) {
-            const cls = shortenMap[key] ?? key;
+            const cls = resolveClassName(key);
 
             // IMPORTANT:
             // Do not treat `selected*` interaction states as control-state (`l`).
@@ -169,18 +238,22 @@ export function generateClassNamesMapSplit(
         }
       }
 
-      // scales → s[size] (size-only variants)
+      // scales → s[size] (generic scale variants), width-only scales → w[size]
       if (el.scales) {
-        for (const [size, arr] of Object.entries(el.scales)) {
+        for (const [size, raw] of Object.entries(el.scales as Record<string, unknown>)) {
+          const arr = Array.isArray(raw) ? (raw as string[]) : undefined;
           // Web artifact optimization: strip "s:" prefix from size keys (e.g. "s:md:1" -> "md:1").
           const sizeKey = size.startsWith('s:') ? size.slice(2) : size;
-          const mapped = mapArray(arr, shortenMap);
-          if (!mapped || mapped.length === 0) continue;
-          if (!sMap.has(sizeKey)) sMap.set(sizeKey, new Set());
-          const set = sMap.get(sizeKey)!;
-          mapped.forEach((c) => {
-            set.add(c);
-          });
+          if (!arr || arr.length === 0) continue;
+
+          for (const key of arr) {
+            const cls = resolveClassName(key);
+            const isOptInWidthScale =
+              componentName === 'tabs' && elementName === 'e2' && key.startsWith('boxWidth');
+            const target = isOptInWidthScale ? wMap : sMap;
+            if (!target.has(sizeKey)) target.set(sizeKey, new Set());
+            target.get(sizeKey)!.add(cls);
+          }
         }
       }
 
@@ -193,7 +266,7 @@ export function generateClassNamesMapSplit(
           if (!bySize) return;
           for (const [size, arr] of Object.entries(bySize)) {
             const sizeKey = size.startsWith('s:') ? size.slice(2) : size;
-            const mapped = mapArray(arr, shortenMap);
+            const mapped = mapArray(arr, resolveClassName);
             if (!mapped || mapped.length === 0) continue;
             if (!target.has(sizeKey)) target.set(sizeKey, new Set());
             const set = target.get(sizeKey)!;
@@ -239,15 +312,12 @@ export function generateClassNamesMapSplit(
             // By resolving metadata through `bundleKey`, we keep CSS dedupe intact while producing
             // correct per-palette `c[semantic].h|m|l|ll` buckets.
             const toneMetaForPalette = toneMetadataByPalette.get(bundleKey);
-            if (!palettes[bundleKey]) palettes[bundleKey] = {};
-            if (!palettes[bundleKey][componentName]) {
-              palettes[bundleKey][componentName] = {};
-            }
-            // ensure element record exists (avoid assignment inside expression per Biome rule)
-            if (!palettes[bundleKey][componentName][elementName]) {
-              palettes[bundleKey][componentName][elementName] = {};
-            }
-            const elemRecord = palettes[bundleKey][componentName][elementName];
+            const elemRecord = ensurePaletteElement(
+              bundleKey,
+              componentName,
+              variantName,
+              elementName
+            );
 
             // Build color classes per semantic: c[semantic] = { h, m, l, ll }
             const colorBySemantic: Record<string, ColorClasses> = {};
@@ -263,7 +333,7 @@ export function generateClassNamesMapSplit(
                 const styleKeys = byState?.[interactionState] as string[] | undefined;
 
                 styleKeys?.forEach((styleKey: string) => {
-                  const shortenedClass = shortenMap[styleKey] ?? styleKey;
+                  const shortenedClass = resolveClassName(styleKey);
                   const metaKey = `${sem}::${styleKey}`;
                   const meta = toneMetaForPalette?.get(metaKey);
 
@@ -300,7 +370,7 @@ export function generateClassNamesMapSplit(
       }
 
       // After processing palettes, finalize the core element record so `cs` includes palette-derived selected classes
-      core[componentName][elementName] = {
+      coreTarget[elementName] = {
         d: dSet.size ? Array.from(dSet).join(' ') : undefined,
         e:
           eBuckets.size > 0
@@ -318,6 +388,15 @@ export function generateClassNamesMapSplit(
           sMap.size > 0
             ? Object.fromEntries(
                 Array.from(sMap.entries()).map(([k, set]) => [
+                  k,
+                  set.size ? Array.from(set).join(' ') : undefined
+                ])
+              )
+            : undefined,
+        w:
+          wMap.size > 0
+            ? Object.fromEntries(
+                Array.from(wMap.entries()).map(([k, set]) => [
                   k,
                   set.size ? Array.from(set).join(' ') : undefined
                 ])
@@ -351,6 +430,30 @@ export function generateClassNamesMapSplit(
               )
             : undefined
       };
+    }
+  };
+
+  for (const componentName of Object.keys(styleKeys)) {
+    const elements = styleKeys[componentName as ComponentName];
+    if (!elements) continue;
+
+    if (isElementMap(elements)) {
+      core[componentName] = {};
+      processElements(
+        componentName,
+        elements,
+        core[componentName] as Record<string, ClassNameByElement>
+      );
+      continue;
+    }
+
+    const variantMap = elements as Record<string, any>;
+    const coreVariants: Record<string, Record<string, ClassNameByElement>> = {};
+    core[componentName] = coreVariants;
+    for (const [variantName, variantElements] of Object.entries(variantMap)) {
+      if (!variantElements || !isElementMap(variantElements)) continue;
+      coreVariants[variantName] = {};
+      processElements(componentName, variantElements, coreVariants[variantName], variantName);
     }
   }
 

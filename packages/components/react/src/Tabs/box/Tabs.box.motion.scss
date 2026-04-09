@@ -1,0 +1,53 @@
+.k-tab-m {
+  /* element: bar */
+  &.k-tab-e1-b {
+    overflow: hidden;
+  }
+
+  /* element: tab derived content wrapper */
+  .k-tab-e2b-b {
+    position: relative;
+    z-index: 3;
+  }
+
+  /* element: tab */
+  .k-tab-e2-b {
+    z-index: auto;
+
+    /* selected state also resets z-index in motion mode */
+    &[aria-selected='true'] {
+      z-index: auto;
+    }
+  }
+
+  /* element: indicator / selected shell */
+  .k-tab-e5 {
+    &-b {
+      transition: none !important;
+      will-change: auto;
+    }
+  }
+
+  /* element: separator */
+  .k-tab-e6 {
+    &-b {
+      flex: 0 0 auto;
+      align-self: center;
+      pointer-events: none;
+      opacity: 1;
+      transition: none;
+    }
+
+    /* modifier `a`: fully hides separators beside the active tab */
+    &a-b {
+      opacity: 0;
+      transition: opacity 160ms ease;
+    }
+
+    /* modifier `b`: dims separators before they hide */
+    &b-b {
+      opacity: 0.5;
+      transition: opacity 200ms ease-out;
+    }
+  }
+}

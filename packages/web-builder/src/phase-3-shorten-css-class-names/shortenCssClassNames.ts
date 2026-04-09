@@ -1,8 +1,7 @@
-import type { StyleKey } from '@kiskadee/core';
 import type { StyleKeyUsageMap } from '../phase-2-map-style-key-usage/mapStyleKeyUsage';
 import { getToken } from '../utils';
 
-export type ShortenCssClassNames = Record<StyleKey, string>;
+export type ShortenCssClassNames = Record<string, string>;
 
 export interface ShortenCssClassNamesOptions {
   /**
@@ -22,7 +21,7 @@ export function shortenCssClassNames(
   let index = 0;
 
   // Assign tokens in order of descending usage (mapStyleKeyUsage already sorts it)
-  for (const key of Object.keys(usage) as StyleKey[]) {
+  for (const key of Object.keys(usage)) {
     const token = getToken(index++);
     result[key] = options?.prefix ? `${options.prefix}${token}` : token;
   }

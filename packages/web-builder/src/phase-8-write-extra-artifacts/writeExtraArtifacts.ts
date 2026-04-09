@@ -9,6 +9,12 @@ import type {
   SchemaFonts,
   SegmentName,
   SolidColor,
+  TabsBridgeLowerCurve,
+  TabsIndicatorShape,
+  TabsIndicatorPosition,
+  TabsIndicatorWidth,
+  TabsTabWidth,
+  TabsVariant,
   ThemeMode
 } from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
@@ -146,6 +152,19 @@ export async function writeExtraArtifacts(params: {
   const focus = schema.global?.focus as { width?: number; offset?: number } | undefined;
   const radius = schema.global?.radius as RadiusMode | undefined;
   const ripple = schema.global?.effects?.ripple as RippleEffectSchema | undefined;
+  const tabsIndicatorPosition = schema.components?.tabs?.options
+    ?.indicatorPosition as TabsIndicatorPosition | undefined;
+  const tabsIndicatorShape = schema.components?.tabs?.options
+    ?.indicatorShape as TabsIndicatorShape | undefined;
+  const tabsIndicatorWidth = schema.components?.tabs?.options
+    ?.indicatorWidth as TabsIndicatorWidth | undefined;
+  const tabsTabWidth = schema.components?.tabs?.options?.tabWidth as
+    | TabsTabWidth
+    | undefined;
+  const tabsVariant = schema.components?.tabs?.options?.variant as TabsVariant | undefined;
+  const tabsSeparator = schema.components?.tabs?.options?.separator as boolean | undefined;
+  const tabsLowerCurve = schema.components?.tabs?.options
+    ?.lowerCurve as TabsBridgeLowerCurve | undefined;
 
   function toCssFontFamilyString(value: FontStack): string | null {
     const css = toCssFontFamily(value);
@@ -160,8 +179,17 @@ export async function writeExtraArtifacts(params: {
   const hasFonts = Boolean(bodyCss);
   const hasRadius = Boolean(radius);
   const hasRipple = Boolean(ripple && Object.keys(ripple).length > 0);
+  const hasTabsOptions = Boolean(
+      tabsIndicatorPosition ||
+      tabsIndicatorShape ||
+      tabsIndicatorWidth ||
+      tabsTabWidth ||
+      tabsVariant ||
+      tabsSeparator !== undefined ||
+      tabsLowerCurve
+  );
 
-  if (hasFonts || hasRadius || hasRipple) {
+  if (hasFonts || hasRadius || hasRipple || hasTabsOptions) {
     await mkdir(buildDir, { recursive: true });
     const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
 
@@ -169,6 +197,19 @@ export async function writeExtraArtifacts(params: {
       fonts?: { body: string; heading?: string };
       radius?: RadiusMode;
       effects?: { ripple?: RippleEffectSchema };
+      components?: {
+        tabs?: {
+          options?: {
+            variant?: TabsVariant;
+            indicatorPosition?: TabsIndicatorPosition;
+            indicatorShape?: TabsIndicatorShape;
+            indicatorWidth?: TabsIndicatorWidth;
+            tabWidth?: TabsTabWidth;
+            separator?: boolean;
+            lowerCurve?: TabsBridgeLowerCurve;
+          };
+        };
+      };
     } = {};
 
     if (hasFonts && bodyCss) {
@@ -185,6 +226,23 @@ export async function writeExtraArtifacts(params: {
     if (hasRipple && ripple) {
       globalPayload.effects = {
         ripple
+      };
+    }
+
+    if (hasTabsOptions) {
+      globalPayload.components = {
+        ...(globalPayload.components ?? {}),
+        tabs: {
+          options: {
+            ...(tabsVariant ? { variant: tabsVariant } : {}),
+            ...(tabsIndicatorPosition ? { indicatorPosition: tabsIndicatorPosition } : {}),
+            ...(tabsIndicatorShape ? { indicatorShape: tabsIndicatorShape } : {}),
+            ...(tabsIndicatorWidth ? { indicatorWidth: tabsIndicatorWidth } : {}),
+            ...(tabsTabWidth ? { tabWidth: tabsTabWidth } : {}),
+            ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {}),
+            ...(tabsLowerCurve ? { lowerCurve: tabsLowerCurve } : {})
+          }
+        }
       };
     }
 

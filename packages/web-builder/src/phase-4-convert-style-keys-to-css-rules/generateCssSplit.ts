@@ -15,10 +15,22 @@ import {
   generateCssRuleFromStyleKey
 } from './generateCss';
 import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
+import {
+  resolveElementStyleEmissionPolicy,
+  type WebStyleEmissionPolicy
+} from '../style-emission/web-build-policy';
+import {
+  applyCanonicalStyleEmissionPolicy,
+  canonicalizeWebStyleKeyIdentity,
+  resolveWebStyleKeyIdentity,
+  type WebStyleIdentityOptimizationOptions
+} from '../style-emission/web-style-key-identity';
 
 export type GenerateCssSplitOptions = {
   forceState?: boolean;
-} & GenerateCssRuleFromStyleKeyOptions;
+  webStyleEmissionPolicy?: WebStyleEmissionPolicy;
+} & GenerateCssRuleFromStyleKeyOptions &
+  WebStyleIdentityOptimizationOptions;
 
 export type SplitCssBundles = {
   coreCss: string;
@@ -30,6 +42,18 @@ export type SplitCssBundles = {
 // Default false — effects must be gated by class activator (.-a, .-h, .-f, .-p, .-s, .-d, .-r)
 // or a native pseudo (:hover, :focus, :active, etc.). Passive effects are ignored to avoid dead CSS.
 const EMIT_PASSIVE_EFFECTS = false;
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isElementMap(value: unknown): value is Record<string, any> {
+  if (!isRecord(value)) return false;
+  const first = Object.values(value).find(Boolean);
+  if (!isRecord(first)) return false;
+  const elementKeys = ['decorations', 'effects', 'scales', 'radiusScales', 'palettes'];
+  return elementKeys.some((key) => key in first);
+}
 
 export async function generateCssSplit(
   styleKeys: ComponentStyleKeyMap,
@@ -45,6 +69,7 @@ export async function generateCssSplit(
   const coreRules: Set<string> = new Set();
   const effectsRules: Set<string> = new Set(); // collect effects separately
   const paletteRules: Record<string, Set<string>> = {};
+  const knownIdentities = new Set(Object.keys(shortenMap));
 
   // Helper: detect if a CSS rule is "gated" by interaction/state.
   // We consider a selector complex (i.e., gated) when:
@@ -62,17 +87,53 @@ export async function generateCssSplit(
     return /\.-[a-z]\b/.test(rule);
   };
 
-  // Walk through all style keys by component/element to preserve palette grouping
-  for (const componentName in styleKeys) {
-    const elements = styleKeys[componentName as ComponentName];
+  const consumeElements = (
+    componentName: string,
+    elements: Record<string, any>,
+    variantName?: string
+  ) => {
     for (const elementName in elements) {
       const el = elements[elementName];
+      const localStyleEmissionPolicy = resolveElementStyleEmissionPolicy(
+        options?.webStyleEmissionPolicy,
+        componentName,
+        elementName,
+        variantName
+      );
+      const resolveCssClass = (key: string) => {
+        const localIdentity = resolveWebStyleKeyIdentity(
+          key,
+          options?.webStyleEmissionPolicy,
+          componentName,
+          elementName,
+          variantName
+        );
+        const canonicalIdentity = canonicalizeWebStyleKeyIdentity(localIdentity, knownIdentities, {
+          collapseDirectIntoMirrored: options?.collapseDirectIntoMirrored
+        });
+        const styleEmissionPolicy = applyCanonicalStyleEmissionPolicy(
+          key,
+          localStyleEmissionPolicy,
+          canonicalIdentity,
+          {
+            collapseDirectIntoMirrored: options?.collapseDirectIntoMirrored
+          }
+        );
+
+        return {
+          className: shortenMap[canonicalIdentity] ?? key,
+          styleEmissionPolicy
+        };
+      };
 
       // decorations: string[] — always-on, static styles (no state). Safe to emit into core.
       if (Array.isArray(el.decorations)) {
         for (const key of el.decorations) {
-          const cn = shortenMap[key] ?? key;
-          const rule = generateCssRuleFromStyleKey(key, cn, forceState, options);
+          const { className, styleEmissionPolicy } = resolveCssClass(key);
+          const rule = generateCssRuleFromStyleKey(key, className, forceState, {
+            ...options,
+            styleEmissionPolicy
+          });
           if (rule && rule.trim() !== '') coreRules.add(rule);
         }
       }
@@ -82,8 +143,11 @@ export async function generateCssSplit(
         for (const scaleKey in el.scales) {
           const arr: string[] = el.scales[scaleKey as ElementSizeValue | ElementAllSizeValue] ?? [];
           for (const key of arr) {
-            const cn = shortenMap[key] ?? key;
-            const rule = generateCssRuleFromStyleKey(key, cn, forceState, options);
+            const { className, styleEmissionPolicy } = resolveCssClass(key);
+            const rule = generateCssRuleFromStyleKey(key, className, forceState, {
+              ...options,
+              styleEmissionPolicy
+            });
             if (rule && rule.trim() !== '') coreRules.add(rule);
           }
         }
@@ -91,13 +155,20 @@ export async function generateCssSplit(
 
       // radiusScales: border-radius scales by mode (size variants). Also go to the core.
       if (el.radiusScales) {
-        for (const bySize of Object.values(el.radiusScales)) {
-          for (const scaleKey in bySize ?? {}) {
+        for (const bySize of Object.values(el.radiusScales as Record<string, unknown>)) {
+          if (!isRecord(bySize)) continue;
+          const bySizeRecord = bySize as Partial<
+            Record<ElementSizeValue | ElementAllSizeValue, string[]>
+          >;
+          for (const scaleKey in bySizeRecord) {
             const arr: string[] =
-              bySize?.[scaleKey as ElementSizeValue | ElementAllSizeValue] ?? [];
+              bySizeRecord[scaleKey as ElementSizeValue | ElementAllSizeValue] ?? [];
             for (const key of arr) {
-              const cn = shortenMap[key] ?? key;
-              const rule = generateCssRuleFromStyleKey(key, cn, forceState, options);
+              const { className, styleEmissionPolicy } = resolveCssClass(key);
+              const rule = generateCssRuleFromStyleKey(key, className, forceState, {
+                ...options,
+                styleEmissionPolicy
+              });
               if (rule && rule.trim() !== '') coreRules.add(rule);
             }
           }
@@ -112,8 +183,11 @@ export async function generateCssSplit(
         for (const st in el.effects) {
           const arr: string[] = el.effects[st as InteractionState] ?? [];
           for (const key of arr) {
-            const cn = shortenMap[key] ?? key;
-            const rule = generateCssRuleFromStyleKey(key, cn, forceState, options);
+            const { className, styleEmissionPolicy } = resolveCssClass(key);
+            const rule = generateCssRuleFromStyleKey(key, className, forceState, {
+              ...options,
+              styleEmissionPolicy
+            });
             if (rule && rule.trim() !== '') {
               if (isComplexSelector(rule)) {
                 // Gated by class activator or native pseudo → goes to effects bundle
@@ -151,15 +225,36 @@ export async function generateCssSplit(
               for (const st in byState) {
                 const arr: string[] = byState[st as InteractionState] ?? [];
                 for (const key of arr) {
-                  const cn = shortenMap[key] ?? key;
+                  const { className, styleEmissionPolicy } = resolveCssClass(key);
                   // Only color keys are expected here; call color transformer directly and pass the forceState flag
-                  const rule = transformColorKeyToCss(key, cn, forceState, options);
+                  const rule = transformColorKeyToCss(key, className, forceState, {
+                    ...options,
+                    styleEmissionPolicy
+                  });
                   if (rule && rule.trim() !== '') paletteRules[bundleKey].add(rule);
                 }
               }
             }
           }
         }
+      }
+    }
+  };
+
+  // Walk through all style keys by component/element to preserve palette grouping
+  for (const componentName in styleKeys) {
+    const elements = styleKeys[componentName as ComponentName];
+    if (!elements) continue;
+
+    if (isElementMap(elements)) {
+      consumeElements(componentName, elements);
+      continue;
+    }
+
+    for (const [variantName, variantElements] of Object.entries(elements as Record<string, any>)) {
+      if (!variantElements) continue;
+      if (isElementMap(variantElements)) {
+        consumeElements(componentName, variantElements, variantName);
       }
     }
   }
