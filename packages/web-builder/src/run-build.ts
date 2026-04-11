@@ -1,6 +1,6 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { validateSchemaComponentContracts } from '@kiskadee/core/build';
+import { validateSchemaComponentContracts } from '@kiskadee/core';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys';
 import {
   mapStyleKeyUsage,

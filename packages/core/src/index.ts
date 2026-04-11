@@ -1,6 +1,7 @@
 export * from './breakpoints';
 export * from './components/button';
 export * from './components/tabs';
+export { validateSchemaComponentContracts } from './utils/validateComponentContracts';
 export * from './schema';
 export * from './types/colors/colors.types';
 export * from './types/decorations/decorations.types';
