@@ -5,7 +5,20 @@ description: Architecture specialist for the Kiskadee monorepo. Use when tasks i
 
 # Kiskadee Architecture Skill
 
-Use this skill to make architecture decisions and implementation plans that stay consistent with Kiskadee's package responsibilities.
+Use this skill to make architecture decisions and implementation plans that stay consistent with
+Kiskadee's package responsibilities.
+
+## Primary sources
+
+Read only what the task needs, in this order:
+
+1. `../../PROJECT-PURPOSE.md`
+2. `references/monorepo-map.md`
+3. `references/taxonomy-rules.md`
+4. `../../SCHEMA-BUILD-RUNTIME-RULES.md`
+5. `../../STRUCTURAL-CSS.md` when structural Sass is involved
+6. `references/headless-react-patterns.md` for headless React work
+7. `references/testing-checklist.md` for validation planning
 
 ## Follow this workflow
 
@@ -22,41 +35,38 @@ Use this skill to make architecture decisions and implementation plans that stay
 
 3. Validate taxonomy fit using `references/taxonomy-rules.md`.
 
-4. Validate package ownership using `references/monorepo-map.md`.
+4. Validate package ownership using `references/monorepo-map.md` and `../../PROJECT-PURPOSE.md`.
 
-5. If the task involves React headless components, apply `references/headless-react-patterns.md`.
+5. If the task involves schema/build/runtime placement, validate ownership using
+   `../../SCHEMA-BUILD-RUNTIME-RULES.md`.
 
-6. If the task is "new component", apply the rollout checklist below.
+6. If the task involves React headless components, apply `references/headless-react-patterns.md`.
 
-7. End with a verification plan from `references/testing-checklist.md`.
+7. If the task is "new component", apply the rollout checklist below.
+
+8. End with a verification plan from `references/testing-checklist.md`.
 
 ## Hard constraints
 
-- Keep platform-agnostic schema concerns in `packages/core`.
-- Keep adaptation/mapping decisions in `packages/presets`.
-- Keep schema-to-web artifact generation in `packages/web-builder`.
-- Keep dynamic color variable/runtime behavior in `packages/runtime`.
-- Keep unstyled semantics and accessibility in `packages/headless`.
-- Keep visual implementation/composition in `packages/components`.
-- Keep inspection/demo integration in `packages/showcase`.
+- Follow package ownership from `references/monorepo-map.md` and `../../PROJECT-PURPOSE.md`.
 - Treat schema declaration as necessary but not sufficient for "component done".
 - When evaluating architecture tradeoffs, distinguish build-time tooling/runtime-in-Node from
   browser runtime. Prefer simplicity, correctness, and maintainability in build-only code even if
   that means extra dependencies or heavier validation; optimize aggressively only for generated
   artifacts and code that executes in the browser.
-- For structural Sass in `packages/components/react`, follow [STRUCTURAL-CSS.md](../../STRUCTURAL-CSS.md):
-  keep shared schema elements in `k-<cmp>-e<n>` and shared modifiers in `k-<cmp>-e<n><a-z>`
-  only for common structural CSS, specialize variants with suffix forms such as
-  `k-<cmp>-e2-<variant>` and `k-<cmp>-e2a-<variant>`, and require short structural comments
-  above selectors.
-- Put behavioral switches in `components.<name>.options` and keep the corresponding numeric/visual values in `components.<name>.elements`.
-- If a schema value must exist but only apply when a runtime/component option enables it, do not assume the generic artifact scale bucket is enough; verify whether `packages/web-builder` needs a dedicated opt-in bucket.
-- For fixed-geometry component types (for example `tabs.segmented`), keep the public type unique and
-  prefer narrowing generic schema keys via type-specific Zod/contracts over inventing ad hoc schema
-  properties or builder-only exceptions.
-- When a fixed-geometry type needs rounded shells/items, keep the radius values in the participating
-  schema elements themselves and let structural CSS only flatten the corners that must be straight;
-  avoid cross-element radius inheritance or arithmetic in the component layer.
+- For structural Sass in `packages/components/react`, follow
+  [STRUCTURAL-CSS.md](../../STRUCTURAL-CSS.md).
+- Put behavioral switches in `components.<name>.options` and keep the corresponding numeric/visual
+  values in `components.<name>.elements`.
+- If a schema value must exist but only apply when a runtime/component option enables it, do not
+  assume the generic artifact scale bucket is enough; verify whether `packages/web-builder` needs a
+  dedicated opt-in bucket.
+- For fixed-geometry component types (for example `tabs.segmented`), keep the public type unique
+  and prefer narrowing generic schema keys via type-specific Zod/contracts over inventing ad hoc
+  schema properties or builder-only exceptions.
+- When a fixed-geometry type needs rounded shells/items, keep the radius values in the
+  participating schema elements themselves and let structural CSS only flatten the corners that
+  must be straight; avoid cross-element radius inheritance or arithmetic in the component layer.
 
 ## Comment pattern
 
@@ -80,18 +90,21 @@ When adding explanatory comments above functions, use this exact structure:
 
 ## Schema and artifact decision rules
 
-Use these rules before proposing a schema change:
+Use these rules before proposing a schema or builder change:
 
 1. If the change answers "which behavior/mode is active?", prefer `components.<name>.options`.
-2. If the change answers "what is the value for that behavior?", prefer the relevant element `scales/decorations/palettes/effects`.
+2. If the change answers "what is the value for that behavior?", prefer the relevant element
+   `scales/decorations/palettes/effects`.
 3. If the value is always-on once generated, the generic artifact bucket is usually enough.
-4. If the value must be generated but only conditionally applied by the visual layer, check whether the artifact needs a dedicated bucket instead of merging into generic `s`.
+4. If the value must be generated but only conditionally applied by the visual layer, check
+   whether the artifact needs a dedicated bucket instead of merging into generic `s`.
 
 Example:
 
 - `tabs.options.tabWidthMode` selects `auto` vs `fixed`.
 - `tabs.variants.<type>.elements.e2.scales.boxWidth` stores the fixed width token.
-- `packages/web-builder` may publish a dedicated width bucket so `packages/components` can opt in only when the mode is `fixed`.
+- `packages/web-builder` may publish a dedicated width bucket so `packages/components` can opt in
+  only when the mode is `fixed`.
 
 ## New component rollout checklist
 
@@ -129,8 +142,10 @@ When giving architecture recommendations, structure the output as:
 
 ## Reference files
 
+- `../../PROJECT-PURPOSE.md`
+- `../../SCHEMA-BUILD-RUNTIME-RULES.md`
+- `../../STRUCTURAL-CSS.md`
 - `references/monorepo-map.md`
 - `references/taxonomy-rules.md`
 - `references/headless-react-patterns.md`
 - `references/testing-checklist.md`
-- `../../STRUCTURAL-CSS.md`

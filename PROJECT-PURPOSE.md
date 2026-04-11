@@ -1,5 +1,10 @@
 # Kiskadee - Purpose and monorepo map
 
+This is the canonical architecture and product-context document for the repository.
+
+Use `CHAT-CONTEXT.md` as the lightweight entrypoint for new chats. Keep `AGENTS.md` focused on
+repo rules, and keep task workflows inside skills.
+
 ## Project purpose
 
 Kiskadee defines a platform-agnostic visual identity schema based on a formula of colors, scales, decorations, and effects, built to normalize entire design systems. It includes a headless component foundation with accessibility (still small today, but designed for dozens or hundreds of native, cross-platform components). The current focus is Web (utility CSS + class maps), with lean generation and style dedupe to minimize duplication and keep CSS light; for now, these web differentiators live here until other platforms exist. The monorepo separates visual identity, build, behavior, and UI composition to keep the system scalable.
