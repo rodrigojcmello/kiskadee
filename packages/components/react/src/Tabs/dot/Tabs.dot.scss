@@ -20,13 +20,18 @@
   }
 
   /* modifier `h`: distributed dot bars stretch and scroll only on overflow */
-  &.k-tab-e1h {
+  &.k-tab-e1h-c {
     display: flex;
     width: 100%;
     max-width: 100%;
     overflow-x: auto;
     overflow-y: clip;
-    scrollbar-width: thin;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 
@@ -55,7 +60,7 @@
   }
 }
 
-.k-tab-e1-c.k-tab-e1h > .k-tab-e2-c.k-tab-e2c {
+.k-tab-e1-c.k-tab-e1h-c > .k-tab-e2-c.k-tab-e2c {
   flex: 1 0 var(--k-bxw);
   min-width: var(--k-bxw);
   width: auto;

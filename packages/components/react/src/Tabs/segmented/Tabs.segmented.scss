@@ -8,8 +8,8 @@
   overflow: hidden;
 }
 
-/* `k-tab-e1-e.k-tab-e1h`: distributed segmented shell expands to the available width. */
-.k-tab-e1-e.k-tab-e1h {
+/* `k-tab-e1-e.k-tab-e1h-e`: distributed segmented shell expands to the available width. */
+.k-tab-e1-e.k-tab-e1h-e {
   display: block;
   width: 100%;
 }
@@ -54,11 +54,16 @@
   min-width: 0;
   overflow-x: auto;
   overflow-y: clip;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
-/* `k-tab-e1h > k-tab-e1c-e > k-tab-e2c`: distributed segmented tabs divide the available width. */
-.k-tab-e1-e.k-tab-e1h > .k-tab-e1c-e > .k-tab-e2-e.k-tab-e2c {
+/* `k-tab-e1h-e > k-tab-e1c-e > k-tab-e2c`: distributed segmented tabs divide the available width. */
+.k-tab-e1-e.k-tab-e1h-e > .k-tab-e1c-e > .k-tab-e2-e.k-tab-e2c {
   flex: 1 0 var(--k-bxw);
   min-width: var(--k-bxw);
   width: auto;

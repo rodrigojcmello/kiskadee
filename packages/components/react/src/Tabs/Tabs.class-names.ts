@@ -7,6 +7,7 @@ import {
 } from '@kiskadee/core';
 import { isValidElement, type ReactNode } from 'react';
 import {
+  getTabsStructuralDistributedBarClassName,
   getTabsStructuralElementClassName,
   getTabsStructuralIndicatorStaticClassName,
   getTabsStructuralLowerCurveClassName
@@ -372,7 +373,9 @@ export function resolveListClassName(options: {
     'k-tab',
     'k-tab-e1',
     getTabsStructuralElementClassName(options.structural, 'e1'),
-    options.tabWidth === 'distributed' ? 'k-tab-e1h' : '',
+    options.tabWidth === 'distributed'
+      ? getTabsStructuralDistributedBarClassName(options.structural)
+      : '',
     options.variant === 'bridge'
       ? getTabsStructuralLowerCurveClassName(options.structural, options.lowerCurve)
       : '',

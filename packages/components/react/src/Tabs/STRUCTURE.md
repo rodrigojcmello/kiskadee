@@ -57,6 +57,11 @@ Examples:
   - `a` = first modifier for `e5`
   - `b` = box variant
 
+- `k-tab-e1h-b`
+  - `e1` = bar element
+  - `h` = distributed-width modifier
+  - `b` = box variant
+
 - `k-tab-e6b-b`
   - `e6` = separator element
   - `b` = second modifier for `e6`
@@ -119,6 +124,7 @@ In practice:
 - the runtime keeps one semantic naming system
 - the structural ownership lives in the variant-local Sass files
 - the runtime-side structural lookup data also lives with each variant descriptor
+- variant-owned modifiers such as distributed bar width use the same trailing variant suffix
 
 ## Why Tabs no longer has a common structural file
 

@@ -65,25 +65,25 @@
   }
 
   /* modifier `h`: distributed bridge fills the available width before inner scrolling takes over */
-  &-a.k-tab-e1h {
+  &-a.k-tab-e1h-a {
     width: 100%;
     max-width: 100%;
   }
 
   /* modifier `h`: distributed inner tablist stretches with the shell until min widths cause overflow */
-  &-a.k-tab-e1h > .k-tab-e1c-a {
+  &-a.k-tab-e1h-a > .k-tab-e1c-a {
     width: 100%;
     min-width: 100%;
   }
 
   /* modifier `h`: distributed bridge items grow evenly while keeping the shoulder compensation floor */
-  &-a.k-tab-e1h > .k-tab-e1c-a > .k-tab-e2c-a {
+  &-a.k-tab-e1h-a > .k-tab-e1c-a > .k-tab-e2c-a {
     flex: 1 0 calc(var(--k-bxw) + (var(--k-bdr) * 2));
     min-width: calc(var(--k-bxw) + (var(--k-bdr) * 2));
   }
 
   /* modifiers `h` + `d`: flush-all distributed items revert to the straight emitted width */
-  &-a.k-tab-e1h.k-tab-e1d-a > .k-tab-e1c-a > .k-tab-e2c-a {
+  &-a.k-tab-e1h-a.k-tab-e1d-a > .k-tab-e1c-a > .k-tab-e2c-a {
     flex-basis: var(--k-bxw);
     min-width: var(--k-bxw);
   }
@@ -96,7 +96,12 @@
     overflow-x: auto;
     overflow-y: clip;
     padding: var(--k-pdt) var(--k-pdr) 0 var(--k-pdl);
-    scrollbar-width: thin;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   /* modifier `d`: flush-all removes wrapper overlap because tabs no longer curve below */
@@ -255,8 +260,8 @@
   line-height: 0;
 }
 
-/* `k-tab-e1h` + `k-tab-e2c`: distributed bridge triggers fill the flex-grown wrapper width. */
-.k-tab-e1-a.k-tab-e1h > .k-tab-e1c-a > .k-tab-e2c-a > .k-tab-e2-a.k-tab-e2c {
+/* `k-tab-e1h-a` + `k-tab-e2c`: distributed bridge triggers fill the flex-grown wrapper width. */
+.k-tab-e1-a.k-tab-e1h-a > .k-tab-e1c-a > .k-tab-e2c-a > .k-tab-e2-a.k-tab-e2c {
   width: 100%;
 }
 
@@ -269,7 +274,7 @@
 @supports (clip-path: shape(from top left, hline to 0)) {
   /* platform fix: Blink on macOS needs a tiny overlap to hide the bridge hairline */
   .k-os-macos.k-engine-blink .k-tab-e2-a {
-    margin-block-end: -0.1px;
+    margin-block-end: -0.2px;
   }
 }
 

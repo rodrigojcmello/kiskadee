@@ -10,6 +10,7 @@ export const tabsBridgeStructural = {
     e2b: 'k-tab-e2b-a',
     e2c: 'k-tab-e2c-a'
   },
+  distributedBarClassName: 'k-tab-e1h-a',
   lowerCurveClassNames: {
     curved: '',
     'flush-all': 'k-tab-e1d-a',

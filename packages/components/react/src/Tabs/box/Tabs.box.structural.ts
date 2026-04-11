@@ -10,6 +10,7 @@ export const tabsBoxStructural = {
     e5: 'k-tab-e5-b',
     e6: 'k-tab-e6-b'
   },
+  distributedBarClassName: 'k-tab-e1h-b',
   indicatorStaticClassName: 'k-tab-e5a-b',
   separatorHiddenClassName: 'k-tab-e6a-b',
   separatorDimmedClassName: 'k-tab-e6b-b'

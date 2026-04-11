@@ -4,6 +4,12 @@
     overflow: hidden;
   }
 
+  /* element: bar + modifier `h`: distributed bars must preserve horizontal scrolling in motion mode */
+  &.k-tab-e1h-b {
+    overflow-x: auto;
+    overflow-y: clip;
+  }
+
   /* element: tab derived content wrapper */
   .k-tab-e2b-b {
     position: relative;

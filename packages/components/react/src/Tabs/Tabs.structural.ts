@@ -6,6 +6,7 @@ export type TabsStructuralDescriptor<TVariant extends TabsVariant = TabsVariant>
   variant: TVariant;
   letter: string;
   elements: Partial<Record<TabsStructuralElementKey, string>>;
+  distributedBarClassName?: string;
   indicatorStaticClassName?: string;
   separatorHiddenClassName?: string;
   separatorDimmedClassName?: string;
@@ -24,6 +25,20 @@ export function getTabsStructuralElementClassName(
   element: TabsStructuralElementKey
 ): string {
   return structural.elements[element] ?? '';
+}
+
+/**
+ * What
+ *     Returns the distributed-width bar modifier declared by the active variant.
+ * Why
+ *     Tabs width distribution is a variant-owned structural concern, so shared runtime class
+ *     resolution should read the modifier from the descriptor instead of emitting one generic
+ *     class that leaks across every variant.
+ */
+export function getTabsStructuralDistributedBarClassName(
+  structural: TabsStructuralDescriptor
+): string {
+  return structural.distributedBarClassName ?? '';
 }
 
 /**
