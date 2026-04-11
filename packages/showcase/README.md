@@ -22,6 +22,7 @@ pnpm -C packages/web-builder run generate
 - `build`: generates artifacts into `packages/web-builder/build/<designSystemKey>/...`
 - `sync`: copies artifacts into Showcase at `packages/showcase/public/build/<designSystemKey>/...`
 - `generate`: generates Showcase TypeScript registries based on `manifest.json`
+- `packages/showcase build`: runs the full artifact pipeline before `next build`
 
 ### How to run
 
@@ -112,3 +113,5 @@ Shared utilities for Showcase.
 
 - Showcase is an artifact consumer: if something is “missing”, run `web-builder build-sync-generate`.
 - Generated registries are outputs: do not edit files under `registry/generated/` manually.
+- For deployment builds (for example on Vercel), `pnpm build` inside `packages/showcase`
+  already runs `@kiskadee/web-builder` `build-sync-generate` before `next build`.
