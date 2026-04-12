@@ -3,12 +3,12 @@ import type { TabsStructuralDescriptor } from '../Tabs.structural';
 export const tabsLineStructural = {
   variant: 'line',
   letter: 'd',
-  elements: {
+  slots: {
     e1: 'k-tab-e1-d',
     e2: 'k-tab-e2-d',
-    e2b: 'k-tab-e2b-d',
+    x1: 'k-tab-x1-d',
     e5: 'k-tab-e5-d'
   },
-  distributedBarClassName: 'k-tab-e1h-d',
+  distributedBarClassName: 'k-tab-e1c-d',
   indicatorStaticClassName: 'k-tab-e5a-d'
 } as const satisfies TabsStructuralDescriptor<'line'>;

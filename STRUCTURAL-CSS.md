@@ -116,7 +116,7 @@ Important:
 - it may be styled in a shared structural file or repeated across variant-local files,
 - it must stay genuinely shared across all variants for that component.
 
-### 5. Shared element-derived modifier or derived node
+### 5. Shared element modifier
 
 Use:
 
@@ -129,25 +129,22 @@ Examples:
 - `k-tab-e2a`
 - `k-tab-e5b`
 
-Use this when the structural node clearly belongs to one schema element.
+Use this when a structural modifier clearly belongs to one schema element.
 
-This includes:
-
-- actual modifiers of that element,
-- derived wrappers around that element,
-- derived inner layers owned by that element.
+This includes actual modifiers of that element.
 
 Example:
 
-- if a wrapper exists only to support the `tab` element, prefer `e2a`, `e2b`, and so on
-- do not create a generic helper for a node that can be clearly owned by `e2`
+- if a distributed-width modifier is the first modifier on the bar element, prefer `e1a`
+- if a selected-state modifier belongs to the indicator element, prefer `e5a`
 
 Rules:
 
 - use one letter only,
+- start at `a` and continue in local alphabetical order without gaps for that modifier family,
 - assign letters in local alphabetical order,
 - keep this shape restricted to common structural CSS,
-- prefer this shape over helper syntax whenever the owner element is obvious,
+- use this shape for modifiers, not for extra DOM layers,
 - if the selector is not truly shared, it must be specialized by variant.
 
 ### 6. Variant letter registry
@@ -195,7 +192,7 @@ This shape is preferred over root-level variant scoping such as:
 
 because it keeps the selector flatter and makes the element ownership explicit.
 
-### 8. Variant-specialized element modifier or derived node
+### 8. Variant-specialized element modifier
 
 Use:
 
@@ -210,9 +207,19 @@ Examples:
 
 This is the preferred pattern when:
 
-- a structural node belongs to one schema element,
+- a structural modifier belongs to one schema element,
 - and it should only exist for one variant,
 - or a structural modifier must not leak across variants.
+
+Rules:
+
+- use one letter only,
+- start at `a` and continue in local alphabetical order without gaps for that modifier family,
+- keep the modifier letter local to that element family before the trailing variant suffix,
+- if the first variant-local modifier on the bar is distributed width, prefer `e1a-<variant>`,
+- if a second variant-local modifier is added later to the same element family, continue with `b`,
+- do not skip to an arbitrary letter such as `h` unless `a` through the previous letter already
+  exist in that same modifier family.
 
 This pattern is preferred over deeper selectors such as:
 
@@ -220,28 +227,32 @@ This pattern is preferred over deeper selectors such as:
 
 because it reduces selector depth and prevents style leakage across variants.
 
-### 9. Shared helper without a clear element owner
+Do not use this shape for extra DOM layers. Use `x<n>` instead.
+
+### 9. Shared extra structural node
 
 Use:
 
 ```txt
-k-<cmp>-h<n>
+k-<cmp>-x<n>
+k-<cmp>-x<n><a-z>
 ```
 
-Example:
+Examples:
 
-- `k-tab-h1`
+- `k-tab-x1`
+- `k-tab-x1a`
 
-Use this only when a structural helper:
+Use this when an extra structural DOM node:
 
 - is stable,
 - is shared,
-- and cannot be cleanly owned by one schema element.
+- and is not itself a schema element.
 
 This should be rare.
 
-If the helper can be reasonably treated as belonging to `e1`, `e2`, `e3`, and so on, do not use
-`h<n>`. Use an element-derived name instead.
+If the need is only to modify one schema element, do not use `x<n>`. Use an element modifier
+instead.
 
 Do not use semantic helper names such as:
 
@@ -251,25 +262,28 @@ Do not use semantic helper names such as:
 
 Important:
 
-- shared helpers must stay truly shared across all variants,
-- if a helper has variant-specific behavior or geometry, it must be specialized by variant.
+- shared extras must stay truly shared across all variants,
+- if an extra has variant-specific behavior or geometry, it must be specialized by variant.
 
-### 10. Variant-specialized shared helper
+### 10. Variant-specialized extra structural node
 
 Use:
 
 ```txt
-k-<cmp>-h<n>-<variant>
+k-<cmp>-x<n>-<variant>
+k-<cmp>-x<n><a-z>-<variant>
 ```
 
-Example:
+Examples:
 
-- `k-tab-h1-a`
+- `k-tab-x1-a`
+- `k-tab-x1a-b`
 
 Use this only when:
 
-- the helper has no clear schema-element owner,
-- and it still needs to be isolated to one variant.
+- the extra node is not a schema element,
+- and it still needs to be isolated to one variant,
+- or a modifier on that extra node must stay variant-local.
 
 ### 11. Component runtime state
 
@@ -311,7 +325,7 @@ Good:
 
 - `.k-tab-e2-a`
 - `.k-tab-e2a-a`
-- `.k-tab-h1-a`
+- `.k-tab-x1-a`
 - `.k-tab-m .k-tab-e5-b`
 
 Avoid:
@@ -326,7 +340,7 @@ Bad:
 
 - `.k-tab-a .k-tab-e2`
 - `.k-tab-a .k-tab-e2a`
-- `.k-tab.k-tab-a > .k-tab-ha > .k-tab-e2a > .k-tab-e2`
+- `.k-tab.k-tab-a > .k-tab-x1-a > .k-tab-e2a > .k-tab-e2`
 
 Practical rule:
 
@@ -373,25 +387,26 @@ Rules:
 - explain role, not token values,
 - keep nested comments short,
 - describe modifiers and states only where they appear,
-- if a derived selector clearly belongs to one element, open the Sass block at the base element and
-  nest the derived selector inside it,
+- if a modifier clearly belongs to one element, open the Sass block at the base element and nest the
+  modifier selector inside it,
+- if a block is an extra structural node, name it with `x<n>` and describe that extra role directly,
 - if a block is not tied to one schema element, use a short structural description instead of an element label.
 
 Preferred:
 
 ```scss
 .k-tab-e2 {
-  /* derived content wrapper keeps the measured slot above the moving indicator */
-  &b-c {
+  /* modifier `a`: fixed-width trigger keeps the emitted schema width */
+  &a-c {
     ...
   }
 }
 ```
 
-Avoid when the owner element is obvious:
+Preferred for an extra layer:
 
 ```scss
-.k-tab-e2b-c {
+.k-tab-x1-c {
   ...
 }
 ```

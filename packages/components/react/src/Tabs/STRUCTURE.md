@@ -57,9 +57,9 @@ Examples:
   - `a` = first modifier for `e5`
   - `b` = box variant
 
-- `k-tab-e1h-b`
+- `k-tab-e1a-b`
   - `e1` = bar element
-  - `h` = distributed-width modifier
+  - `a` = first modifier for `e1`
   - `b` = box variant
 
 - `k-tab-e6b-b`
@@ -103,6 +103,7 @@ Each file is responsible for its own:
 - label and icon containment
 - indicator shell
 - separators, when the variant has them
+- extra structural nodes, when the variant needs them
 - panel wrapper, when the variant needs local layering
 
 ## Shared runtime classes still exist
@@ -115,6 +116,9 @@ The runtime still emits shared semantic slot classes such as:
 - `k-tab-e4`
 - `k-tab-e5`
 - `k-tab-e6`
+- `k-tab-x1`
+- `k-tab-x2`
+- `k-tab-x3`
 - `k-tab-p`
 
 Those classes are part of the runtime contract, not a requirement to keep a shared Sass file.
@@ -153,11 +157,12 @@ When changing Tabs structural CSS:
 - do not recreate a shared Tabs structural layer unless the behavior is universal enough to stay
   stable across every variant
 
-When adding new derived nodes:
+When adding new extra structural nodes:
 
-- keep using the shared semantic element lineage (`e1`, `e2`, `e5`, etc.)
+- keep `e*` for schema elements and their modifiers
+- use `x*` for extra DOM layers that are not schema elements
 - attach the variant suffix at the end
-- keep wrappers and derived layers owned by the nearest schema element
+- keep the numbering stable across the Tabs family when the same extra role repeats
 
 ## Mental model
 

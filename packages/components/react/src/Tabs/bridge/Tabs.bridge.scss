@@ -64,79 +64,63 @@
     padding: 0 !important;
   }
 
-  /* modifier `h`: distributed bridge fills the available width before inner scrolling takes over */
-  &-a.k-tab-e1h-a {
+  /* modifier `a`: distributed bridge fills the available width before inner scrolling takes over */
+  &-a.k-tab-e1a-a {
     width: 100%;
     max-width: 100%;
   }
 
-  /* modifier `h`: distributed inner tablist stretches with the shell until min widths cause overflow */
-  &-a.k-tab-e1h-a > .k-tab-e1c-a {
+  /* modifier `a`: distributed inner tablist stretches with the shell until min widths cause overflow */
+  &-a.k-tab-e1a-a > .k-tab-x2-a {
     width: 100%;
     min-width: 100%;
   }
 
-  /* modifier `h`: distributed bridge items grow evenly while keeping the shoulder compensation floor */
-  &-a.k-tab-e1h-a > .k-tab-e1c-a > .k-tab-e2c-a {
+  /* modifier `a`: distributed bridge items grow evenly while keeping the shoulder compensation floor */
+  &-a.k-tab-e1a-a > .k-tab-x2-a > .k-tab-x3-a {
     flex: 1 0 calc(var(--k-bxw) + (var(--k-bdr) * 2));
     min-width: calc(var(--k-bxw) + (var(--k-bdr) * 2));
   }
 
-  /* modifiers `h` + `d`: flush-all distributed items revert to the straight emitted width */
-  &-a.k-tab-e1h-a.k-tab-e1d-a > .k-tab-e1c-a > .k-tab-e2c-a {
+  /* modifiers `a` + `b`: flush-all distributed items revert to the straight emitted width */
+  &-a.k-tab-e1a-a.k-tab-e1b-a > .k-tab-x2-a > .k-tab-x3-a {
     flex-basis: var(--k-bxw);
     min-width: var(--k-bxw);
   }
 
-  /* derived node `c`: inner tablist owns horizontal scrolling and tab alignment */
-  &c-a {
-    display: flex;
-    align-items: flex-end;
-    margin: 0;
-    overflow-x: auto;
-    overflow-y: clip;
-    padding: var(--k-pdt) var(--k-pdr) 0 var(--k-pdl);
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-
-  /* modifier `d`: flush-all removes wrapper overlap because tabs no longer curve below */
-  &d-a .k-tab-e2c-a + .k-tab-e2c-a {
+  /* modifier `b`: flush-all removes wrapper overlap because tabs no longer curve below */
+  &b-a .k-tab-x3-a + .k-tab-x3-a {
     margin-inline-start: 0;
   }
 
-  /* modifier `d`: flush-all no longer needs lower-curve horizontal compensation */
-  &d-a .k-tab-e2-a {
+  /* modifier `b`: flush-all no longer needs lower-curve horizontal compensation */
+  &b-a .k-tab-e2-a {
     padding-right: var(--k-pdr);
     padding-left: var(--k-pdl);
   }
 
-  /* modifier `d`: fixed-width flush-all tabs keep the emitted width because shoulders are gone */
-  &d-a .k-tab-e2-a.k-tab-e2a {
+  /* modifier `b`: fixed-width flush-all tabs keep the emitted width because shoulders are gone */
+  &b-a .k-tab-e2-a.k-tab-e2a {
     width: var(--k-bxw);
   }
 
   @supports (clip-path: shape(from top left, hline to 0)) {
-    /* modifier `d`: flush-all swaps the default bridge clip for the top-only shape */
-    &d-a .k-tab-e2-a {
+    /* modifier `b`: flush-all swaps the default bridge clip for the top-only shape */
+    &b-a .k-tab-e2-a {
       @include bridge-shape-top-only;
     }
 
-    /* modifiers `e` and `g`: first tab drops the left lower curve */
-    &e-a .k-tab-e1c-a > .k-tab-e2c-a:first-of-type > .k-tab-e2-a,
-    &g-a .k-tab-e1c-a > .k-tab-e2c-a:first-of-type > .k-tab-e2-a {
+    /* modifiers `c` and `e`: first tab drops the left lower curve */
+    &c-a .k-tab-x2-a > .k-tab-x3-a:first-of-type > .k-tab-e2-a,
+    &e-a .k-tab-x2-a > .k-tab-x3-a:first-of-type > .k-tab-e2-a {
       padding-left: var(--k-pdl);
       padding-right: calc(var(--k-pdr) + var(--k-bdr));
       @include bridge-shape-flush-start;
     }
 
-    /* modifiers `f` and `g`: last tab drops the right lower curve */
-    &f-a .k-tab-e1c-a > .k-tab-e2c-a:last-of-type > .k-tab-e2-a,
-    &g-a .k-tab-e1c-a > .k-tab-e2c-a:last-of-type > .k-tab-e2-a {
+    /* modifiers `d` and `e`: last tab drops the right lower curve */
+    &d-a .k-tab-x2-a > .k-tab-x3-a:last-of-type > .k-tab-e2-a,
+    &e-a .k-tab-x2-a > .k-tab-x3-a:last-of-type > .k-tab-e2-a {
       padding-left: calc(var(--k-pdl) + var(--k-bdr));
       padding-right: var(--k-pdr);
       @include bridge-shape-flush-end;
@@ -153,26 +137,6 @@
 
 /* element: tab */
 .k-tab-e2 {
-  /* derived node `c`: wrapper owns overlap, stacking, and shadow projection */
-  &c-a {
-    position: relative;
-    z-index: var(--k-tab-z);
-    display: inline-flex;
-    flex: 0 0 auto;
-    overflow: visible;
-    pointer-events: none;
-
-    /* shadow effect bucket projects the tokenized shadow outside the clipped trigger */
-    &.-e {
-      filter: drop-shadow(var(--k-sh-x) var(--k-sh-y) var(--k-sh-blur) var(--k-sh-color));
-    }
-
-    /* selected state rises above sibling wrappers */
-    &[data-selected] {
-      z-index: 1000;
-    }
-  }
-
   /* variant `a`: clipped trigger keeps the interactive shell isolated from the wrapper */
   &-a {
     position: relative;
@@ -203,8 +167,8 @@
     width: calc(var(--k-bxw) + (var(--k-bdr) * 2));
   }
 
-  /* modifier `c`: distributed bridge trigger content can shrink inside the flex-grown shell */
-  &-a.k-tab-e2c {
+  /* modifier `b`: distributed bridge trigger content can shrink inside the flex-grown shell */
+  &-a.k-tab-e2b {
     min-width: 0;
   }
 
@@ -224,15 +188,15 @@
   }
 }
 
-/* `k-tab-e2b-a`: tab-derived inner content wrapper used for bridge label measurement. */
-.k-tab-e2b-a {
+/* extra node `x1`: bridge content wrapper used for label measurement. */
+.k-tab-x1-a {
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
 /* constrained-width bridge tabs keep the measured content clipped */
-.k-tab-e2-a:is(.k-tab-e2a, .k-tab-e2c) > .k-tab-e2b-a {
+.k-tab-e2-a:is(.k-tab-e2a, .k-tab-e2b) > .k-tab-x1-a {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
@@ -244,7 +208,7 @@
 }
 
 /* constrained-width bridge labels truncate instead of overflowing */
-.k-tab-e2-a:is(.k-tab-e2a, .k-tab-e2c) .k-tab-e3 {
+.k-tab-e2-a:is(.k-tab-e2a, .k-tab-e2b) .k-tab-e3 {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
@@ -260,14 +224,49 @@
   line-height: 0;
 }
 
-/* `k-tab-e1h-a` + `k-tab-e2c`: distributed bridge triggers fill the flex-grown wrapper width. */
-.k-tab-e1-a.k-tab-e1h-a > .k-tab-e1c-a > .k-tab-e2c-a > .k-tab-e2-a.k-tab-e2c {
+/* `k-tab-e1a-a` + `k-tab-x3-a`: distributed bridge triggers fill the flex-grown wrapper width. */
+.k-tab-e1-a.k-tab-e1a-a > .k-tab-x2-a > .k-tab-x3-a > .k-tab-e2-a.k-tab-e2b {
   width: 100%;
 }
 
-/* element: tab */
-/* derived node `c`: adjacent wrappers overlap to build the connected bridge shell */
-.k-tab-e2c-a + .k-tab-e2c-a {
+/* extra node `x2`: bridge inner tablist owns horizontal scrolling and tab alignment. */
+.k-tab-x2-a {
+  display: flex;
+  align-items: flex-end;
+  margin: 0;
+  overflow-x: auto;
+  overflow-y: clip;
+  padding: var(--k-pdt) var(--k-pdr) 0 var(--k-pdl);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* extra node `x3`: bridge tab wrapper owns overlap, stacking, and shadow projection. */
+.k-tab-x3-a {
+  position: relative;
+  z-index: var(--k-tab-z);
+  display: inline-flex;
+  flex: 0 0 auto;
+  overflow: visible;
+  pointer-events: none;
+
+  /* shadow effect bucket projects the tokenized shadow outside the clipped trigger */
+  &.-e {
+    filter: drop-shadow(var(--k-sh-x) var(--k-sh-y) var(--k-sh-blur) var(--k-sh-color));
+  }
+
+  /* selected state rises above sibling wrappers */
+  &[data-selected] {
+    z-index: 1000;
+  }
+}
+
+/* extra node `x3`: adjacent wrappers overlap to build the connected bridge shell. */
+.k-tab-x3-a + .k-tab-x3-a {
   margin-inline-start: calc(var(--k-bdr) * -2);
 }
 

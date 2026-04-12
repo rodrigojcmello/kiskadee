@@ -19,8 +19,8 @@
     border-bottom-width: 0 !important;
   }
 
-  /* modifier `h`: distributed line bars stretch and scroll only on overflow */
-  &.k-tab-e1h-d {
+  /* modifier `c`: distributed line bars stretch and scroll only on overflow */
+  &.k-tab-e1c-d {
     display: flex;
     width: 100%;
     max-width: 100%;
@@ -53,7 +53,7 @@
   }
 
   /* distributed trigger content can shrink inside the flex-grown shell */
-  &.k-tab-e2c {
+  &.k-tab-e2b {
     min-width: 0;
   }
 
@@ -63,22 +63,22 @@
   }
 }
 
-/* `k-tab-e1h-d > k-tab-e2c`: distributed tabs grow evenly but never shrink below the emitted width. */
-.k-tab-e1-d.k-tab-e1h-d > .k-tab-e2-d.k-tab-e2c {
+/* `k-tab-e1c-d > k-tab-e2b`: distributed tabs grow evenly but never shrink below the emitted width. */
+.k-tab-e1-d.k-tab-e1c-d > .k-tab-e2-d.k-tab-e2b {
   flex: 1 0 var(--k-bxw);
   min-width: var(--k-bxw);
   width: auto;
 }
 
-/* `k-tab-e2b-d`: tab-derived inner content wrapper used for indicator measurements. */
-.k-tab-e2b-d {
+/* `k-tab-x1-d`: extra content wrapper used for indicator measurements. */
+.k-tab-x1-d {
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
 /* constrained-width tabs keep the measured content clipped */
-.k-tab-e2-d:is(.k-tab-e2a, .k-tab-e2c) > .k-tab-e2b-d {
+.k-tab-e2-d:is(.k-tab-e2a, .k-tab-e2b) > .k-tab-x1-d {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
@@ -90,7 +90,7 @@
 }
 
 /* constrained-width labels truncate instead of overflowing */
-.k-tab-e2-d:is(.k-tab-e2a, .k-tab-e2c) .k-tab-e3 {
+.k-tab-e2-d:is(.k-tab-e2a, .k-tab-e2b) .k-tab-e3 {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;

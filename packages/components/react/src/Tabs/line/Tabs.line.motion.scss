@@ -1,11 +1,8 @@
 .k-tab-m {
-  /* element: tab */
-  .k-tab-e2 {
-    /* derived content wrapper keeps the measured slot above the moving indicator */
-    &b-d {
-      position: relative;
-      z-index: 1;
-    }
+  /* extra node `x1`: content wrapper keeps the measured slot above the moving indicator */
+  .k-tab-x1-d {
+    position: relative;
+    z-index: 1;
   }
 
   /* element: indicator / selected shell */

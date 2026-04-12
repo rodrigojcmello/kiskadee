@@ -1,11 +1,11 @@
 import type { TabsBridgeLowerCurve, TabsVariant } from '@kiskadee/core';
 
-export type TabsStructuralElementKey = 'e1' | 'e1c' | 'e2' | 'e2b' | 'e2c' | 'e5' | 'e6';
+export type TabsStructuralSlotKey = 'e1' | 'e2' | 'e5' | 'e6' | 'x1' | 'x2' | 'x3';
 
 export type TabsStructuralDescriptor<TVariant extends TabsVariant = TabsVariant> = {
   variant: TVariant;
   letter: string;
-  elements: Partial<Record<TabsStructuralElementKey, string>>;
+  slots: Partial<Record<TabsStructuralSlotKey, string>>;
   distributedBarClassName?: string;
   indicatorStaticClassName?: string;
   separatorHiddenClassName?: string;
@@ -20,11 +20,11 @@ export type TabsStructuralDescriptor<TVariant extends TabsVariant = TabsVariant>
  *     Shared renderers should receive one descriptor from the active variant instead of
  *     importing a registry that knows every Tabs variant.
  */
-export function getTabsStructuralElementClassName(
+export function getTabsStructuralSlotClassName(
   structural: TabsStructuralDescriptor,
-  element: TabsStructuralElementKey
+  slot: TabsStructuralSlotKey
 ): string {
-  return structural.elements[element] ?? '';
+  return structural.slots[slot] ?? '';
 }
 
 /**

@@ -8,9 +8,9 @@ import {
 import { isValidElement, type ReactNode } from 'react';
 import {
   getTabsStructuralDistributedBarClassName,
-  getTabsStructuralElementClassName,
   getTabsStructuralIndicatorStaticClassName,
-  getTabsStructuralLowerCurveClassName
+  getTabsStructuralLowerCurveClassName,
+  getTabsStructuralSlotClassName
 } from './Tabs.structural';
 import type {
   TabsClassesMap,
@@ -372,7 +372,7 @@ export function resolveListClassName(options: {
   return joinClassNames(
     'k-tab',
     'k-tab-e1',
-    getTabsStructuralElementClassName(options.structural, 'e1'),
+    getTabsStructuralSlotClassName(options.structural, 'e1'),
     options.tabWidth === 'distributed'
       ? getTabsStructuralDistributedBarClassName(options.structural)
       : '',
@@ -416,7 +416,7 @@ export function resolveSeparatorClassName(options: {
     }),
     options.classNames.e6,
     'k-tab-e6',
-    getTabsStructuralElementClassName(options.structural, 'e6')
+    getTabsStructuralSlotClassName(options.structural, 'e6')
   );
 }
 
@@ -456,9 +456,9 @@ export function resolveTriggerClassName(options: {
     resolveRadiusClassName(options.elements.e2, options.scale, options.tabShape),
     options.classNames.e2,
     'k-tab-e2',
-    getTabsStructuralElementClassName(options.structural, 'e2'),
+    getTabsStructuralSlotClassName(options.structural, 'e2'),
     options.tabWidth === 'fixed' ? 'k-tab-e2a' : '',
-    options.tabWidth === 'distributed' ? 'k-tab-e2c' : '',
+    options.tabWidth === 'distributed' ? 'k-tab-e2b' : '',
     'k-state',
     cn.interactive,
     cn.activator,
@@ -486,7 +486,8 @@ export function resolveBridgeItemClassName(options: {
     usesTabWidthScale(options.tabWidth)
       ? resolveWidthClassName(options.elements.e2, options.scale)
       : '',
-    getTabsStructuralElementClassName(options.structural, 'e2c'),
+    'k-tab-x3',
+    getTabsStructuralSlotClassName(options.structural, 'x3'),
     options.className
   );
 }
@@ -539,9 +540,9 @@ export function resolveBridgeTriggerClassName(options: {
     options.classNames.e2,
     options.selected ? options.classNames.e5 : '',
     'k-tab-e2',
-    getTabsStructuralElementClassName(options.structural, 'e2'),
+    getTabsStructuralSlotClassName(options.structural, 'e2'),
     options.tabWidth === 'fixed' ? 'k-tab-e2a' : '',
-    options.tabWidth === 'distributed' ? 'k-tab-e2c' : '',
+    options.tabWidth === 'distributed' ? 'k-tab-e2b' : '',
     'k-state',
     cn.interactive,
     cn.activator,
@@ -665,7 +666,7 @@ export function resolveIndicatorClassName(options: {
     indicatorRadiusClassName,
     options.classNames.e5,
     'k-tab-e5',
-    getTabsStructuralElementClassName(options.structural, 'e5'),
+    getTabsStructuralSlotClassName(options.structural, 'e5'),
     options.variant === 'line' || options.variant === 'dot'
       ? options.indicator.position === 'top'
         ? 'k-tab-e5i'

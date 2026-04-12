@@ -7,7 +7,7 @@ import {
   resolveTriggerClassName
 } from './Tabs.class-names';
 import { TabsTabContextProvider, useTabsTabContext, useTabsVisualContext } from './Tabs.context';
-import { getTabsStructuralElementClassName } from './Tabs.structural';
+import { getTabsStructuralSlotClassName } from './Tabs.structural';
 import type {
   TabsContentProps,
   TabsIconProps,
@@ -33,8 +33,8 @@ export function TabsSlotContent({
   return (
     <span
       className={joinClassNames(
-        'k-tab-e2b',
-        getTabsStructuralElementClassName(structural, 'e2b')
+        'k-tab-x1',
+        getTabsStructuralSlotClassName(structural, 'x1')
       )}
     >
       {children ? (

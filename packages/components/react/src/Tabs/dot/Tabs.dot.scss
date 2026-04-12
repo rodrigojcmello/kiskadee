@@ -19,8 +19,8 @@
     border-bottom-width: 0 !important;
   }
 
-  /* modifier `h`: distributed dot bars stretch and scroll only on overflow */
-  &.k-tab-e1h-c {
+  /* modifier `c`: distributed dot bars stretch and scroll only on overflow */
+  &.k-tab-e1c-c {
     display: flex;
     width: 100%;
     max-width: 100%;
@@ -51,7 +51,7 @@
     min-width: 0;
   }
 
-  &.k-tab-e2c {
+  &.k-tab-e2b {
     min-width: 0;
   }
 
@@ -60,19 +60,20 @@
   }
 }
 
-.k-tab-e1-c.k-tab-e1h-c > .k-tab-e2-c.k-tab-e2c {
+.k-tab-e1-c.k-tab-e1c-c > .k-tab-e2-c.k-tab-e2b {
   flex: 1 0 var(--k-bxw);
   min-width: var(--k-bxw);
   width: auto;
 }
 
-.k-tab-e2b-c {
+/* extra node `x1`: dot content wrapper keeps label and icon measured together. */
+.k-tab-x1-c {
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
-.k-tab-e2-c:is(.k-tab-e2a, .k-tab-e2c) > .k-tab-e2b-c {
+.k-tab-e2-c:is(.k-tab-e2a, .k-tab-e2b) > .k-tab-x1-c {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
@@ -82,7 +83,7 @@
   display: block;
 }
 
-.k-tab-e2-c:is(.k-tab-e2a, .k-tab-e2c) .k-tab-e3 {
+.k-tab-e2-c:is(.k-tab-e2a, .k-tab-e2b) .k-tab-e3 {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;

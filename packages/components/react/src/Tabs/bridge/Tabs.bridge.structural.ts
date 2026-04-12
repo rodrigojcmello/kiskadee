@@ -3,19 +3,19 @@ import type { TabsStructuralDescriptor } from '../Tabs.structural';
 export const tabsBridgeStructural = {
   variant: 'bridge',
   letter: 'a',
-  elements: {
+  slots: {
     e1: 'k-tab-e1-a',
-    e1c: 'k-tab-e1c-a',
+    x2: 'k-tab-x2-a',
     e2: 'k-tab-e2-a',
-    e2b: 'k-tab-e2b-a',
-    e2c: 'k-tab-e2c-a'
+    x1: 'k-tab-x1-a',
+    x3: 'k-tab-x3-a'
   },
-  distributedBarClassName: 'k-tab-e1h-a',
+  distributedBarClassName: 'k-tab-e1a-a',
   lowerCurveClassNames: {
     curved: '',
-    'flush-all': 'k-tab-e1d-a',
-    'flush-start': 'k-tab-e1e-a',
-    'flush-end': 'k-tab-e1f-a',
-    'flush-both': 'k-tab-e1g-a'
+    'flush-all': 'k-tab-e1b-a',
+    'flush-start': 'k-tab-e1c-a',
+    'flush-end': 'k-tab-e1d-a',
+    'flush-both': 'k-tab-e1e-a'
   }
 } as const satisfies TabsStructuralDescriptor<'bridge'>;

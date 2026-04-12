@@ -13,7 +13,7 @@ import {
 } from '../Tabs.class-names';
 import { useTabsVisualContext } from '../Tabs.context';
 import { TabsSlotContent, withTabsTabContext } from '../Tabs.parts';
-import { getTabsStructuralElementClassName } from '../Tabs.structural';
+import { getTabsStructuralSlotClassName } from '../Tabs.structural';
 import type { TabsBarProps, TabsContentProps, TabsTabProps } from '../Tabs.types';
 
 type TabsBridgeVisualOrderProps = {
@@ -45,7 +45,10 @@ export function TabsBridgeBarBase({ className, children, ...props }: TabsBarProp
       <HeadlessTabs.Bar
         ref={barRef}
         {...props}
-        className={getTabsStructuralElementClassName(structural, 'e1c')}
+        className={joinClassNames(
+          'k-tab-x2',
+          getTabsStructuralSlotClassName(structural, 'x2')
+        )}
       >
         {orderedChildren}
       </HeadlessTabs.Bar>

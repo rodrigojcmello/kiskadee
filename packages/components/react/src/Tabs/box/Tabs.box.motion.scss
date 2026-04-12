@@ -4,14 +4,14 @@
     overflow: hidden;
   }
 
-  /* element: bar + modifier `h`: distributed bars must preserve horizontal scrolling in motion mode */
-  &.k-tab-e1h-b {
+  /* element: bar + modifier `a`: distributed bars must preserve horizontal scrolling in motion mode */
+  &.k-tab-e1a-b {
     overflow-x: auto;
     overflow-y: clip;
   }
 
-  /* element: tab derived content wrapper */
-  .k-tab-e2b-b {
+  /* extra node `x1`: content wrapper keeps text and icon above the animated indicator */
+  .k-tab-x1-b {
     position: relative;
     z-index: 3;
   }

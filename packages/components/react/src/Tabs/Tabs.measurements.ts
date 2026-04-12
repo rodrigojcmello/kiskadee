@@ -1,6 +1,6 @@
 import type { TabsVisualContextValue } from './Tabs.types';
 
-const TAB_CONTENT_SELECTOR = '.k-tab-e2b';
+const TAB_CONTENT_SELECTOR = '.k-tab-x1';
 
 export type IndicatorRect = {
   x: number;
@@ -84,15 +84,12 @@ export function measureIndicatorRect(options: {
     barElement,
     element: selectedTab
   });
-  const measuredRect =
-    width === 'content'
-      ? measureElementRectRelativeToBar({
-          barElement,
-          element: findMeasuredTabContentElement(selectedTab)
-        }) ?? tabRect
-      : tabRect;
-
-  return measuredRect;
+  return width === 'content'
+    ? (measureElementRectRelativeToBar({
+        barElement,
+        element: findMeasuredTabContentElement(selectedTab)
+      }) ?? tabRect)
+    : tabRect;
 }
 
 /**
