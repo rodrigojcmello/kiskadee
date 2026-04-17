@@ -18,20 +18,20 @@
   &.k-tab-e1b {
     border-bottom-width: 0 !important;
   }
+}
 
-  /* modifier `c`: distributed line bars stretch and scroll only on overflow */
-  &.k-tab-e1c-d {
-    display: flex;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-    overflow-y: clip;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+/* modifier `c`: distributed line bars stretch and scroll only on overflow */
+.k-tab-e1c-d {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: clip;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 
-    &::-webkit-scrollbar {
-      display: none;
-    }
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -64,7 +64,7 @@
 }
 
 /* `k-tab-e1c-d > k-tab-e2b`: distributed tabs grow evenly but never shrink below the emitted width. */
-.k-tab-e1-d.k-tab-e1c-d > .k-tab-e2-d.k-tab-e2b {
+.k-tab-e1c-d > .k-tab-e2-d.k-tab-e2b {
   flex: 1 0 var(--k-bxw);
   min-width: var(--k-bxw);
   width: auto;
@@ -123,48 +123,43 @@
   will-change: transform, width, height;
 }
 
-/* `k-tab-e5a`: line indicator with automatic tab width. */
-.k-tab-e5-d.k-tab-e5a {
+/* `k-tab-e5b-d`: line indicator with automatic tab width. */
+.k-tab-e5-d.k-tab-e5b-d {
   width: var(--k-tab-w);
   transform: translate3d(var(--k-tab-x), 0px, 0px);
 }
 
-/* `k-tab-e5b`: line indicator with fixed width centered in the tab. */
-.k-tab-e5-d.k-tab-e5b {
+/* `k-tab-e5c-d`: line indicator with fixed width centered in the tab. */
+.k-tab-e5-d.k-tab-e5c-d {
   left: calc(var(--k-tab-x) + (var(--k-tab-w) / 2));
   translate: -50% 0;
 }
 
-/* `k-tab-e5k`: fixed-width line indicator switches to dynamic width during stretch motion. */
-.k-tab-e5-d.k-tab-e5b.k-tab-e5k {
+/* `k-tab-e5d-d`: fixed-width line indicator switches to dynamic width during stretch motion. */
+.k-tab-e5-d.k-tab-e5d-d {
   left: 0;
   width: var(--k-tab-w);
   translate: 0 0;
   transform: translate3d(var(--k-tab-x), 0px, 0px);
 }
 
-/* `k-tab-e5d`: square indicator fallback radius. */
-.k-tab-e5-d.k-tab-e5d {
+/* `k-tab-e5e-d`: square indicator fallback radius. */
+.k-tab-e5-d.k-tab-e5e-d {
   border-radius: 0;
 }
 
-/* `k-tab-e5e`: rounded indicator fallback radius. */
-.k-tab-e5-d.k-tab-e5e {
+/* `k-tab-e5f-d`: rounded indicator fallback radius. */
+.k-tab-e5-d.k-tab-e5f-d {
   border-radius: 999px;
 }
 
-/* `k-tab-e5f`: pill indicator fallback radius. */
-.k-tab-e5-d.k-tab-e5f {
-  border-radius: 999px;
-}
-
-/* `k-tab-e5g` + `k-tab-e5h`: rounded-clip indicator attached to the bottom edge. */
-.k-tab-e5-d.k-tab-e5g.k-tab-e5h {
+/* `k-tab-e5g-d`: rounded-clip indicator attached to the bottom edge. */
+.k-tab-e5-d.k-tab-e5g-d {
   border-radius: 20px 20px 0 0;
 }
 
-/* `k-tab-e5g` + `k-tab-e5i`: rounded-clip indicator attached to the top edge. */
-.k-tab-e5-d.k-tab-e5g.k-tab-e5i {
+/* `k-tab-e5h-d`: rounded-clip indicator attached to the top edge. */
+.k-tab-e5-d.k-tab-e5h-d {
   border-radius: 0 0 20px 20px;
 }
 
@@ -173,11 +168,11 @@
   transition: none;
 }
 
-/* `k-tab-p`: content panel wrapper. */
-.k-tab-p {
+/* extra node `x4`: shared content panel wrapper keeps the panel shrinkable below content width. */
+.k-tab-x4 {
   min-width: 0;
 }
 
-.k-tab-p[hidden] {
+.k-tab-x4[hidden] {
   display: none !important;
 }

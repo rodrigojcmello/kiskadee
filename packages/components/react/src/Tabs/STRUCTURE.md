@@ -119,7 +119,7 @@ The runtime still emits shared semantic slot classes such as:
 - `k-tab-x1`
 - `k-tab-x2`
 - `k-tab-x3`
-- `k-tab-p`
+- `k-tab-x4`
 
 Those classes are part of the runtime contract, not a requirement to keep a shared Sass file.
 

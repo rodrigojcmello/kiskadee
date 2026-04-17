@@ -8,8 +8,8 @@
   overflow: hidden;
 }
 
-/* `k-tab-e1-e.k-tab-e1a-e`: distributed segmented shell expands to the available width. */
-.k-tab-e1-e.k-tab-e1a-e {
+/* `k-tab-e1a-e`: distributed segmented shell expands to the available width. */
+.k-tab-e1a-e {
   display: block;
   width: 100%;
 }
@@ -63,7 +63,7 @@
 }
 
 /* `k-tab-e1a-e > k-tab-x2-e > k-tab-e2b`: distributed segmented tabs divide the available width. */
-.k-tab-e1-e.k-tab-e1a-e > .k-tab-x2-e > .k-tab-e2-e.k-tab-e2b {
+.k-tab-e1a-e > .k-tab-x2-e > .k-tab-e2-e.k-tab-e2b {
   flex: 1 0 var(--k-bxw);
   min-width: var(--k-bxw);
   width: auto;
@@ -113,8 +113,8 @@
   will-change: opacity;
 }
 
-/* `k-tab-e6-e.k-tab-e6a-e`: segmented separator hides when runtime marks it inactive. */
-.k-tab-e6-e.k-tab-e6a-e {
+/* `k-tab-e6a-e`: segmented separator hides when runtime marks it inactive. */
+.k-tab-e6a-e {
   opacity: 0;
 }
 
@@ -138,8 +138,8 @@
   width: var(--k-tab-w);
 }
 
-/* `k-tab-e5-e.k-tab-e5j`: segmented indicator disables transition in static mode. */
-.k-tab-e5-e.k-tab-e5j {
+/* `k-tab-e5b-e`: segmented indicator disables transition in static mode. */
+.k-tab-e5b-e {
   transition: none;
 }
 
@@ -155,22 +155,23 @@
   border-bottom-right-radius: 0 !important;
 }
 
-/* `k-tab-x2-e > [role='tab'][aria-selected='true'] ~ .k-tab-e5-e.k-tab-e5a-e`: active fill flattens left inner corners when not first. */
-.k-tab-x2-e > [role='tab'][aria-selected='true']:not(:first-of-type) ~ .k-tab-e5-e.k-tab-e5a-e {
+/* `k-tab-x2-e > [role='tab'][aria-selected='true'] ~ .k-tab-e5a-e`: active fill flattens left inner corners when not first. */
+.k-tab-x2-e > [role='tab'][aria-selected='true']:not(:first-of-type) ~ .k-tab-e5a-e {
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
 }
 
-/* `k-tab-x2-e > [role='tab'][aria-selected='true'] ~ .k-tab-e5-e.k-tab-e5a-e`: active fill flattens right inner corners when not last. */
-.k-tab-x2-e > [role='tab'][aria-selected='true']:not(:last-of-type) ~ .k-tab-e5-e.k-tab-e5a-e {
+/* `k-tab-x2-e > [role='tab'][aria-selected='true'] ~ .k-tab-e5a-e`: active fill flattens right inner corners when not last. */
+.k-tab-x2-e > [role='tab'][aria-selected='true']:not(:last-of-type) ~ .k-tab-e5a-e {
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
 
-.k-tab-p {
+/* extra node `x4`: shared content panel wrapper keeps the panel shrinkable below content width. */
+.k-tab-x4 {
   min-width: 0;
 }
 
-.k-tab-p[hidden] {
+.k-tab-x4[hidden] {
   display: none !important;
 }

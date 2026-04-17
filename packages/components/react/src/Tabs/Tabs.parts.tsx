@@ -196,5 +196,5 @@ export const TabsIconBase = forwardRef<HTMLSpanElement, TabsIconProps>(function 
  *     active visual variant.
  */
 export function TabsContentBase(props: TabsContentProps) {
-  return <HeadlessTabs.Content {...props} className={joinClassNames('k-tab-p', props.className)} />;
+  return <HeadlessTabs.Content {...props} className={joinClassNames('k-tab-x4', props.className)} />;
 }

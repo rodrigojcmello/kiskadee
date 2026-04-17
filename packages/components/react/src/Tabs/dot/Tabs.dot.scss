@@ -18,20 +18,20 @@
   &.k-tab-e1b {
     border-bottom-width: 0 !important;
   }
+}
 
-  /* modifier `c`: distributed dot bars stretch and scroll only on overflow */
-  &.k-tab-e1c-c {
-    display: flex;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-    overflow-y: clip;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+/* modifier `c`: distributed dot bars stretch and scroll only on overflow */
+.k-tab-e1c-c {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: clip;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 
-    &::-webkit-scrollbar {
-      display: none;
-    }
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -60,7 +60,7 @@
   }
 }
 
-.k-tab-e1-c.k-tab-e1c-c > .k-tab-e2-c.k-tab-e2b {
+.k-tab-e1c-c > .k-tab-e2-c.k-tab-e2b {
   flex: 1 0 var(--k-bxw);
   min-width: var(--k-bxw);
   width: auto;
@@ -116,8 +116,8 @@
   will-change: transform, width, height, opacity;
 }
 
-/* `k-tab-e5c`: dot indicator centered in the tab. */
-.k-tab-e5-c.k-tab-e5c {
+/* `k-tab-e5b-c`: dot indicator centered in the tab. */
+.k-tab-e5b-c {
   left: calc(var(--k-tab-x) + var(--k-tab-w) / 2);
   translate: -50% 0;
   width: auto;
@@ -131,10 +131,11 @@
   transition: none;
 }
 
-.k-tab-p {
+/* extra node `x4`: shared content panel wrapper keeps the panel shrinkable below content width. */
+.k-tab-x4 {
   min-width: 0;
 }
 
-.k-tab-p[hidden] {
+.k-tab-x4[hidden] {
   display: none !important;
 }

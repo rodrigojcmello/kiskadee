@@ -121,7 +121,7 @@ export function TabsBridgeTabBase({
  */
 export function TabsBridgeContentBase({ className, children, ...props }: TabsContentProps) {
   return (
-    <HeadlessTabs.Content {...props} className={joinClassNames('k-tab-p', className)}>
+    <HeadlessTabs.Content {...props} className={joinClassNames('k-tab-x4', className)}>
       {children}
     </HeadlessTabs.Content>
   );

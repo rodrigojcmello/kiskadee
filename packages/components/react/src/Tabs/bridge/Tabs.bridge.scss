@@ -65,25 +65,25 @@
   }
 
   /* modifier `a`: distributed bridge fills the available width before inner scrolling takes over */
-  &-a.k-tab-e1a-a {
+  &a-a {
     width: 100%;
     max-width: 100%;
   }
 
   /* modifier `a`: distributed inner tablist stretches with the shell until min widths cause overflow */
-  &-a.k-tab-e1a-a > .k-tab-x2-a {
+  &a-a > .k-tab-x2-a {
     width: 100%;
     min-width: 100%;
   }
 
   /* modifier `a`: distributed bridge items grow evenly while keeping the shoulder compensation floor */
-  &-a.k-tab-e1a-a > .k-tab-x2-a > .k-tab-x3-a {
+  &a-a > .k-tab-x2-a > .k-tab-x3-a {
     flex: 1 0 calc(var(--k-bxw) + (var(--k-bdr) * 2));
     min-width: calc(var(--k-bxw) + (var(--k-bdr) * 2));
   }
 
   /* modifiers `a` + `b`: flush-all distributed items revert to the straight emitted width */
-  &-a.k-tab-e1a-a.k-tab-e1b-a > .k-tab-x2-a > .k-tab-x3-a {
+  &a-a.k-tab-e1b-a > .k-tab-x2-a > .k-tab-x3-a {
     flex-basis: var(--k-bxw);
     min-width: var(--k-bxw);
   }
@@ -225,7 +225,7 @@
 }
 
 /* `k-tab-e1a-a` + `k-tab-x3-a`: distributed bridge triggers fill the flex-grown wrapper width. */
-.k-tab-e1-a.k-tab-e1a-a > .k-tab-x2-a > .k-tab-x3-a > .k-tab-e2-a.k-tab-e2b {
+.k-tab-e1a-a > .k-tab-x2-a > .k-tab-x3-a > .k-tab-e2-a.k-tab-e2b {
   width: 100%;
 }
 
@@ -277,13 +277,13 @@
   }
 }
 
-/* element: panel */
-.k-tab-p {
+/* extra node `x4`: shared content panel wrapper keeps the bridge panel layered below the tab stack. */
+.k-tab-x4 {
   min-width: 0;
   position: relative;
   z-index: 2;
 }
 
-.k-tab-p[hidden] {
+.k-tab-x4[hidden] {
   display: none !important;
 }

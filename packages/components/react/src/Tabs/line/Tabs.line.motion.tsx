@@ -221,7 +221,7 @@ export default function TabsLineMotionBarEnhancer({ children }: TabsMotionEngine
     variant: 'line',
     className:
       indicator.width === 'fixed' && supportsStretchMotion && stretchPhase !== 'idle'
-        ? 'k-tab-e5k'
+        ? 'k-tab-e5d-d'
         : undefined
   });
   const indicatorAnimate =

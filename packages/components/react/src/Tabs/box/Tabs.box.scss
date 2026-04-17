@@ -6,21 +6,21 @@
   gap: 0;
   isolation: isolate;
   overflow: visible;
+}
 
-  /* modifier `a`: distributed box bars stretch and scroll only on overflow */
-  &.k-tab-e1a-b {
-    display: flex;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-    overflow-y: clip;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+/* modifier `a`: distributed box bars stretch and scroll only on overflow */
+.k-tab-e1a-b {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: clip;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 
-    &::-webkit-scrollbar {
-      width: 0;
-      height: 0;
-    }
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
   }
 }
 
@@ -54,7 +54,7 @@
   }
 }
 
-.k-tab-e1-b.k-tab-e1a-b > .k-tab-e2-b.k-tab-e2b {
+.k-tab-e1a-b > .k-tab-e2-b.k-tab-e2b {
   flex: 1 0 var(--k-bxw);
   min-width: var(--k-bxw);
   width: auto;
@@ -112,18 +112,18 @@
   width: var(--k-tab-w);
 }
 
-/* `k-tab-e5d`: square indicator fallback radius. */
-.k-tab-e5-b.k-tab-e5d {
+/* `k-tab-e5b-b`: square indicator fallback radius. */
+.k-tab-e5b-b {
   border-radius: 0;
 }
 
-/* `k-tab-e5e`: rounded indicator fallback radius. */
-.k-tab-e5-b.k-tab-e5e {
+/* `k-tab-e5c-b`: rounded indicator fallback radius. */
+.k-tab-e5c-b {
   border-radius: 999px;
 }
 
-/* `k-tab-e5f`: pill indicator fallback radius. */
-.k-tab-e5-b.k-tab-e5f {
+/* `k-tab-e5d-b`: pill indicator fallback radius. */
+.k-tab-e5d-b {
   border-radius: 999px;
 }
 
@@ -147,10 +147,11 @@
   opacity: 0;
 }
 
-.k-tab-p {
+/* extra node `x4`: shared content panel wrapper keeps the panel shrinkable below content width. */
+.k-tab-x4 {
   min-width: 0;
 }
 
-.k-tab-p[hidden] {
+.k-tab-x4[hidden] {
   display: none !important;
 }

@@ -257,14 +257,52 @@ export function resolveIndicatorWidthClass(
   indicatorWidth: TabsVisualContextValue['indicator']['width']
 ): string {
   if (variant === 'dot') {
-    return 'k-tab-e5c';
+    return 'k-tab-e5b-c';
   }
 
   if (variant !== 'line') {
     return '';
   }
 
-  return indicatorWidth === 'fixed' ? 'k-tab-e5b' : 'k-tab-e5a';
+  return indicatorWidth === 'fixed' ? 'k-tab-e5c-d' : 'k-tab-e5b-d';
+}
+
+/**
+ * What
+ *     Resolves the variant-owned indicator shape modifier that is not covered by schema radius
+ *     classes.
+ * Why
+ *     Tabs variants encode some indicator geometry structurally, so these fallback classes need
+ *     one central mapping that stays aligned with the owning Sass files.
+ */
+export function resolveIndicatorShapeClass(options: {
+  variant: TabsVisualContextValue['variant'];
+  indicator: TabsResolvedIndicator;
+  hasRadiusClass: boolean;
+}): string {
+  if (options.variant === 'segmented') {
+    return 'k-tab-e5a-e';
+  }
+
+  if (options.variant === 'box') {
+    if (options.hasRadiusClass) return '';
+    return options.indicator.shape === 'rounded'
+      ? 'k-tab-e5c-b'
+      : options.indicator.shape === 'pill'
+        ? 'k-tab-e5d-b'
+        : 'k-tab-e5b-b';
+  }
+
+  if (options.variant !== 'line') {
+    return '';
+  }
+
+  if (options.indicator.shape === 'roundedClip') {
+    return options.indicator.position === 'top' ? 'k-tab-e5h-d' : 'k-tab-e5g-d';
+  }
+
+  if (options.hasRadiusClass) return '';
+  return options.indicator.shape === 'rounded' ? 'k-tab-e5f-d' : 'k-tab-e5e-d';
 }
 
 /**
@@ -641,20 +679,11 @@ export function resolveIndicatorClassName(options: {
     options.scale,
     indicatorRadiusMode
   );
-  const indicatorShapeClass =
-    options.variant === 'segmented'
-      ? 'k-tab-e5a-e'
-      : options.indicator.shape === 'roundedClip' && options.variant === 'line'
-      ? 'k-tab-e5g'
-      : indicatorRadiusClassName
-        ? ''
-        : options.indicator.shape === 'rounded'
-          ? 'k-tab-e5e'
-          : options.indicator.shape === 'pill'
-            ? 'k-tab-e5f'
-            : options.indicator.shape === 'square'
-              ? 'k-tab-e5d'
-              : '';
+  const indicatorShapeClass = resolveIndicatorShapeClass({
+    variant: options.variant,
+    indicator: options.indicator,
+    hasRadiusClass: indicatorRadiusClassName.length > 0
+  });
 
   return joinClassNames(
     resolveElementClassName(options.elements.e5, {
@@ -667,11 +696,6 @@ export function resolveIndicatorClassName(options: {
     options.classNames.e5,
     'k-tab-e5',
     getTabsStructuralSlotClassName(options.structural, 'e5'),
-    options.variant === 'line' || options.variant === 'dot'
-      ? options.indicator.position === 'top'
-        ? 'k-tab-e5i'
-        : 'k-tab-e5h'
-      : '',
     resolveIndicatorWidthClass(options.variant, options.indicator.width),
     indicatorShapeClass,
     options.indicator.motion === 'none'
