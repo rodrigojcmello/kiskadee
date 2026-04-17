@@ -102,10 +102,9 @@
   --k-tab-y: 0px;
   --k-tab-w: 0px;
   --k-tab-h: 0px;
-  transition:
-    transform var(--k-tab-dur) ease,
-    width var(--k-tab-dur) ease,
-    height var(--k-tab-dur) ease;
+  transition: transform var(--k-tab-dur) ease,
+  width var(--k-tab-dur) ease,
+  height var(--k-tab-dur) ease;
   will-change: transform, width, height;
   height: var(--k-tab-h);
   transform: translate3d(var(--k-tab-x), var(--k-tab-y), 0px);
@@ -150,8 +149,8 @@
 /* extra node `x4`: shared content panel wrapper keeps the panel shrinkable below content width. */
 .k-tab-x4 {
   min-width: 0;
-}
 
-.k-tab-x4[hidden] {
-  display: none !important;
+  &[hidden] {
+    display: none !important;
+  }
 }
