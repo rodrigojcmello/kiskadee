@@ -50,141 +50,137 @@
 }
 
 /* element: bar */
-.k-tab-e1 {
-  /* variant `a`: outer shell owns clipping, stacking, local radius geometry, and edge alignment */
-  &-a {
-    --k-bdr: 12px;
-    position: relative;
-    z-index: 1;
-    display: block;
-    isolation: isolate;
-    overflow: hidden;
-    margin-inline-start: calc(var(--k-pdl) * -1);
-    margin-inline-end: calc(var(--k-pdr) * -1);
-    padding: 0 !important;
-  }
+.k-tab-e1-a {
+  --k-bdr: 12px;
+  position: relative;
+  z-index: 1;
+  display: block;
+  isolation: isolate;
+  overflow: hidden;
+  margin-inline-start: calc(var(--k-pdl) * -1);
+  margin-inline-end: calc(var(--k-pdr) * -1);
+  padding: 0 !important;
+}
 
-  /* modifier `a`: distributed bridge fills the available width before inner scrolling takes over */
-  &a-a {
-    width: 100%;
-    max-width: 100%;
-  }
+/* modifier `a`: distributed bridge fills the available width before inner scrolling takes over */
+.k-tab-e1a-a {
+  width: 100%;
+  max-width: 100%;
 
   /* modifier `a`: distributed inner tablist stretches with the shell until min widths cause overflow */
-  &a-a > .k-tab-x2-a {
+  > .k-tab-x2-a {
     width: 100%;
     min-width: 100%;
-  }
 
-  /* modifier `a`: distributed bridge items grow evenly while keeping the shoulder compensation floor */
-  &a-a > .k-tab-x2-a > .k-tab-x3-a {
-    flex: 1 0 calc(var(--k-bxw) + (var(--k-bdr) * 2));
-    min-width: calc(var(--k-bxw) + (var(--k-bdr) * 2));
+    /* modifier `a`: distributed bridge items grow evenly while keeping the shoulder compensation floor */
+    > .k-tab-x3-a {
+      flex: 1 0 calc(var(--k-bxw) + (var(--k-bdr) * 2));
+      min-width: calc(var(--k-bxw) + (var(--k-bdr) * 2));
+    }
   }
 
   /* modifiers `a` + `b`: flush-all distributed items revert to the straight emitted width */
-  &a-a.k-tab-e1b-a > .k-tab-x2-a > .k-tab-x3-a {
+  &.k-tab-e1b-a > .k-tab-x2-a > .k-tab-x3-a {
     flex-basis: var(--k-bxw);
     min-width: var(--k-bxw);
   }
+}
 
+.k-tab-e1b-a {
   /* modifier `b`: flush-all removes wrapper overlap because tabs no longer curve below */
-  &b-a .k-tab-x3-a + .k-tab-x3-a {
+  .k-tab-x3-a + .k-tab-x3-a {
     margin-inline-start: 0;
   }
 
   /* modifier `b`: flush-all no longer needs lower-curve horizontal compensation */
-  &b-a .k-tab-e2-a {
+  .k-tab-e2-a {
     padding-right: var(--k-pdr);
     padding-left: var(--k-pdl);
   }
 
   /* modifier `b`: fixed-width flush-all tabs keep the emitted width because shoulders are gone */
-  &b-a .k-tab-e2-a.k-tab-e2a {
+  .k-tab-e2-a.k-tab-e2a {
     width: var(--k-bxw);
   }
+}
 
-  @supports (clip-path: shape(from top left, hline to 0)) {
+@supports (clip-path: shape(from top left, hline to 0)) {
+  .k-tab-e1b-a {
     /* modifier `b`: flush-all swaps the default bridge clip for the top-only shape */
-    &b-a .k-tab-e2-a {
+    .k-tab-e2-a {
       @include bridge-shape-top-only;
     }
+  }
 
+  .k-tab-e1c-a,
+  .k-tab-e1e-a {
     /* modifiers `c` and `e`: first tab drops the left lower curve */
-    &c-a .k-tab-x2-a > .k-tab-x3-a:first-of-type > .k-tab-e2-a,
-    &e-a .k-tab-x2-a > .k-tab-x3-a:first-of-type > .k-tab-e2-a {
+    .k-tab-x2-a > .k-tab-x3-a:first-of-type > .k-tab-e2-a {
       padding-left: var(--k-pdl);
       padding-right: calc(var(--k-pdr) + var(--k-bdr));
       @include bridge-shape-flush-start;
     }
+  }
 
+  .k-tab-e1d-a,
+  .k-tab-e1e-a {
     /* modifiers `d` and `e`: last tab drops the right lower curve */
-    &d-a .k-tab-x2-a > .k-tab-x3-a:last-of-type > .k-tab-e2-a,
-    &e-a .k-tab-x2-a > .k-tab-x3-a:last-of-type > .k-tab-e2-a {
+    .k-tab-x2-a > .k-tab-x3-a:last-of-type > .k-tab-e2-a {
       padding-left: calc(var(--k-pdl) + var(--k-bdr));
       padding-right: var(--k-pdr);
       @include bridge-shape-flush-end;
     }
   }
-
-  @media (max-width: 640px) {
-    &-a {
-      --k-pdl: 4px;
-      --k-pdr: 4px;
-    }
-  }
 }
 
+
 /* element: tab */
-.k-tab-e2 {
-  /* variant `a`: clipped trigger keeps the interactive shell isolated from the wrapper */
-  &-a {
-    position: relative;
-    box-sizing: border-box;
-    -webkit-appearance: none;
-    appearance: none;
-    display: inline-block;
-    border: 0;
-    font: inherit;
-    padding: var(--k-pdt) calc(var(--k-pdr) + var(--k-bdr)) var(--k-pdb) calc(var(--k-pdl) + var(--k-bdr));
-    white-space: nowrap;
-    overflow: visible;
-    pointer-events: auto;
-    z-index: 1;
+.k-tab-e2-a {
+  position: relative;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-block;
+  border: 0;
+  font: inherit;
+  padding: var(--k-pdt) calc(var(--k-pdr) + var(--k-bdr)) var(--k-pdb) calc(var(--k-pdl) + var(--k-bdr));
+  white-space: nowrap;
+  overflow: visible;
+  pointer-events: auto;
+  z-index: 1;
 
-    &[aria-disabled='true'] {
-      cursor: not-allowed;
-    }
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+  }
 
-    /* focus outline stays inside the clipped shell */
-    &:focus-visible {
-      outline-offset: -4px;
-    }
+  /* focus outline stays inside the clipped shell */
+  &:focus-visible {
+    outline-offset: -4px;
   }
 
   /* modifier `a`: fixed-width bridge tabs add both curved shoulders back into the emitted width */
-  &-a.k-tab-e2a {
+  &.k-tab-e2a {
     width: calc(var(--k-bxw) + (var(--k-bdr) * 2));
   }
 
   /* modifier `b`: distributed bridge trigger content can shrink inside the flex-grown shell */
-  &-a.k-tab-e2b {
+  &.k-tab-e2b {
     min-width: 0;
   }
+}
 
-  @supports not (clip-path: shape(from top left, hline to 0)) {
-    /* fallback: shape() unavailable keeps only the top corners rounded */
-    &-a {
-      border-start-start-radius: var(--k-bdr);
-      border-start-end-radius: var(--k-bdr);
-    }
+@supports not (clip-path: shape(from top left, hline to 0)) {
+  /* fallback: shape() unavailable keeps only the top corners rounded */
+  .k-tab-e2-a {
+    border-start-start-radius: var(--k-bdr);
+    border-start-end-radius: var(--k-bdr);
   }
+}
 
-  @supports (clip-path: shape(from top left, hline to 0)) {
-    /* default geometry compensates both curved shoulders with the full bridge shape */
-    &-a {
-      @include bridge-shape-curved;
-    }
+@supports (clip-path: shape(from top left, hline to 0)) {
+  /* default geometry compensates both curved shoulders with the full bridge shape */
+  .k-tab-e2-a {
+    @include bridge-shape-curved;
   }
 }
 
