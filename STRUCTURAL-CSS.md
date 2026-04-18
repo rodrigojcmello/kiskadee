@@ -437,41 +437,62 @@ Because the naming system is intentionally compact, comments are mandatory for s
 
 The preferred format is:
 
-- one block comment above each element section,
-- then short comments only for modifiers, states, or scoped special cases.
+- one block comment above each structural selector section,
+- comments for complex descendant selectors, state selectors, and support-gated selectors as well,
+- a two-line comment format that identifies ownership first and explains the selector shape second.
 
 Format:
 
 ```scss
-/* element: tab */
+/*
+ * element tab / e2
+ * Owns the tab shell and its structural width behavior.
+ */
 .k-tab-e2-b {
   ...
 }
 
-/* selected state rises above sibling tabs */
+/*
+ * element tab / e2
+ * The selected state rises above sibling tabs.
+ */
 .k-tab-e2-b[aria-selected='true'] {
   ...
 }
 
-/* element: indicator / selected shell */
+/*
+ * element indicator / e5
+ * Owns the selected shell and indicator geometry.
+ */
 .k-tab-e5-b {
   ...
 }
 
-/* modifier `j`: disables transition in static mode */
-.k-tab-e5j-b {
+/*
+ * element indicator modifier 'a' / e5a
+ * Disables transition in static mode.
+ */
+.k-tab-e5a-b {
   ...
 }
 ```
 
 Rules:
 
-- write the canonical element name in the block comment,
-- do not repeat the selector name in the comment,
+- every structural selector must have a comment immediately above it,
+- the first line must identify the owned target using the structural id,
+- for schema elements, use `element <name> / e<n>`,
+- for schema element modifiers, use `element <name> modifier '<a>' / e<n><a>`,
+- for extra structural elements, use `extra element for e<n> / x<n>`,
+- if one extra element primarily supports another extra element, still anchor it to the nearest
+  meaningful schema element rather than inventing a semantic helper name,
+- the second line must explain the selector purpose or why the selector needs to be this specific,
+- for descendant or positional selectors, explain the reason for the path, such as `first-of-type`,
+  `last-of-type`, `aria-selected`, or support-gated geometry,
 - keep comments structural, not visual,
 - explain role, not token values,
-- keep nested comments short,
-- describe modifiers and states only where they appear,
+- keep the second line short and specific,
+- describe modifiers, states, and scoped special cases only where they appear,
 - if a modifier clearly belongs to one explicit base selector, nesting is allowed when the nested
   selector still shows the full modifier or state clearly,
 - avoid nesting forms that hide the resulting class name behind opaque fragments such as `&-a`,
@@ -480,30 +501,44 @@ Rules:
   the inner selectors explicitly relative to that scope,
 - if nesting would silently turn a standalone emitted class into a compound selector, keep that
   rule outside the parent block,
-- if a block is an extra structural node, name it with `x<n>` and describe that extra role directly,
-- if a block is not tied to one schema element, use a short structural description instead of an element label.
+- if a selector is not tied to one schema element, use the closest structural ownership that makes
+  the relationship obvious instead of falling back to a generic label.
 
 Preferred:
 
 ```scss
-/* element: tab */
+/*
+ * element tab / e2
+ * Owns the trigger shell and its base structural behavior.
+ */
 .k-tab-e2-c {
   ...
 
-  /* modifier `a`: fixed-width trigger keeps the emitted schema width */
+  /*
+   * element tab modifier 'a' / e2a
+   * Fixed-width tabs keep the emitted schema width.
+   */
   &.k-tab-e2a {
     ...
   }
 
+  /*
+   * element tab / e2
+   * The selected state rises above sibling tabs.
+   */
   &[aria-selected='true'] {
     ...
   }
 }
 ```
 
-Preferred for an extra layer:
+Preferred for an extra structural element:
 
 ```scss
+/*
+ * extra element for e2 / x1
+ * Groups icon and label into one measured content slot.
+ */
 .k-tab-x1-c {
   ...
 }
