@@ -170,8 +170,8 @@
 /* extra node `x4`: shared content panel wrapper keeps the panel shrinkable below content width. */
 .k-tab-x4 {
   min-width: 0;
-}
 
-.k-tab-x4[hidden] {
-  display: none !important;
+  &[hidden] {
+    display: none !important;
+  }
 }
