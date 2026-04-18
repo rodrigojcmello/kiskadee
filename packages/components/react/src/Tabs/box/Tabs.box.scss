@@ -1,18 +1,13 @@
 /* element: bar */
 .k-tab-e1-b {
   position: relative;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 0;
   isolation: isolate;
-  overflow: visible;
-}
-
-/* modifier `a`: distributed box bars stretch and scroll only on overflow */
-.k-tab-e1a-b {
-  display: flex;
-  width: 100%;
+  width: fit-content;
   max-width: 100%;
+  min-width: 0;
   overflow-x: auto;
   overflow-y: clip;
   scrollbar-width: none;
@@ -22,6 +17,11 @@
     width: 0;
     height: 0;
   }
+}
+
+/* modifier `a`: distributed box bars stretch to the host width before scrolling. */
+.k-tab-e1a-b {
+  width: 100%;
 }
 
 /* element: tab */

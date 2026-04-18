@@ -1,13 +1,23 @@
 /* element: bar */
 .k-tab-e1-d {
   position: relative;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 0;
   isolation: isolate;
-  overflow: visible;
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: clip;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   border-left-width: 0 !important;
   border-right-width: 0 !important;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   /* modifier `a`: line bar keeps only the bottom edge */
   &.k-tab-e1a {
@@ -20,19 +30,9 @@
   }
 }
 
-/* modifier `c`: distributed line bars stretch and scroll only on overflow */
+/* modifier `c`: distributed line bars stretch to the host width before scrolling. */
 .k-tab-e1c-d {
-  display: flex;
   width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-  overflow-y: clip;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
 }
 
 /* element: tab */

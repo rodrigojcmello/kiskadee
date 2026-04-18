@@ -1,11 +1,6 @@
 .k-tab-m {
   /* element: bar */
   &.k-tab-e1-b {
-    overflow: hidden;
-  }
-
-  /* element: bar + modifier `a`: distributed bars must preserve horizontal scrolling in motion mode */
-  &.k-tab-e1a-b {
     overflow-x: auto;
     overflow-y: clip;
   }
