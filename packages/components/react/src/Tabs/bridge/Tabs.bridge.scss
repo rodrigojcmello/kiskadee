@@ -49,7 +49,10 @@
   );
 }
 
-/* element: bar */
+/*
+ * element bar / e1
+ * Owns the outer bridge shell, clipping the stack and carrying the inline compensation.
+ */
 .k-tab-e1-a {
   --k-bdr: 12px;
   position: relative;
@@ -62,79 +65,162 @@
   padding: 0 !important;
 }
 
-/* modifier `a`: distributed bridge fills the available width before inner scrolling takes over */
+/*
+ * element bar modifier 'a' / e1a
+ * Expands the distributed bridge shell to the host width before the inner scroller overflows.
+ */
 .k-tab-e1a-a {
   width: 100%;
   max-width: 100%;
 
-  /* modifier `a`: distributed inner tablist stretches with the shell until min widths cause overflow */
+  /*
+   * extra element for e1 / x2
+   * In distributed mode, the inner tablist stretches with the shell until min widths force overflow.
+   */
   > .k-tab-x2-a {
     width: 100%;
     min-width: 100%;
 
-    /* modifier `a`: distributed bridge items grow evenly while keeping the shoulder compensation floor */
+    /*
+     * extra element for e2 / x3
+     * Distributed bridge items grow evenly while keeping the two-shoulder compensation floor.
+     */
     > .k-tab-x3-a {
       flex: 1 0 calc(var(--k-bxw) + (var(--k-bdr) * 2));
       min-width: calc(var(--k-bxw) + (var(--k-bdr) * 2));
     }
   }
 
-  /* modifiers `a` + `b`: flush-all distributed items revert to the straight emitted width */
+  /*
+   * extra element for e2 / x3
+   * When distributed and flush-all are combined, wrapper widths revert to the straight emitted width.
+   */
   &.k-tab-e1b-a > .k-tab-x2-a > .k-tab-x3-a {
     flex-basis: var(--k-bxw);
     min-width: var(--k-bxw);
   }
 }
 
+/*
+ * element bar modifier 'b' / e1b
+ * Removes shared overlap and lower-curve width compensation when the bridge goes flush-all.
+ */
 .k-tab-e1b-a {
-  /* modifier `b`: flush-all removes wrapper overlap because tabs no longer curve below */
+  /*
+   * extra element for e2 / x3
+   * Adjacent wrappers stop overlapping because flush-all removes the lower reconnect geometry.
+   */
   .k-tab-x3-a + .k-tab-x3-a {
     margin-inline-start: 0;
   }
 
-  /* modifier `b`: flush-all no longer needs lower-curve horizontal compensation */
+  /*
+   * element tab / e2
+   * Flush-all tabs remove the lower-curve horizontal padding compensation from both sides.
+   */
   .k-tab-e2-a {
     padding-right: var(--k-pdr);
     padding-left: var(--k-pdl);
   }
 
-  /* modifier `b`: fixed-width flush-all tabs keep the emitted width because shoulders are gone */
+  /*
+   * element tab modifier 'a' / e2a
+   * Fixed-width flush-all tabs return to the emitted width because both lower shoulders are gone.
+   */
   .k-tab-e2-a.k-tab-e2a {
     width: var(--k-bxw);
   }
 }
 
 @supports (clip-path: shape(from top left, hline to 0)) {
+  /*
+   * element bar modifier 'b' / e1b
+   * In shape-capable engines, flush-all swaps the default bridge shell for the top-only clip.
+   */
   .k-tab-e1b-a {
-    /* modifier `b`: flush-all swaps the default bridge clip for the top-only shape */
+    /*
+     * element tab / e2
+     * The flush-all bar retargets every tab to the top-only bridge clip inside this support gate.
+     */
     .k-tab-e2-a {
       @include bridge-shape-top-only;
     }
   }
 
+  /*
+   * element bar modifiers 'c' + 'e' / e1c + e1e
+   * Flush-start modes only retune the first tab because the start edge is the one losing a lower curve.
+   */
   .k-tab-e1c-a,
   .k-tab-e1e-a {
-    /* modifiers `c` and `e`: first tab drops the left lower curve */
+    /*
+     * extra element for e2 / x3
+     * The first wrapper drops one shoulder of width compensation when the start edge goes flush.
+     */
+    .k-tab-x2-a > .k-tab-x3-a:first-of-type {
+      flex-basis: calc(var(--k-bxw) + var(--k-bdr));
+      min-width: calc(var(--k-bxw) + var(--k-bdr));
+    }
+
+    /*
+     * element tab / e2
+     * The first tab removes start-side lower-curve padding before the flush-start clip is applied.
+     */
     .k-tab-x2-a > .k-tab-x3-a:first-of-type > .k-tab-e2-a {
       padding-left: var(--k-pdl);
       padding-right: calc(var(--k-pdr) + var(--k-bdr));
       @include bridge-shape-flush-start;
     }
+
+    /*
+     * element tab modifier 'a' / e2a
+     * The first fixed-width tab sheds one shoulder of width compensation in flush-start modes.
+     */
+    .k-tab-x2-a > .k-tab-x3-a:first-of-type > .k-tab-e2-a.k-tab-e2a {
+      width: calc(var(--k-bxw) + var(--k-bdr));
+    }
   }
 
+  /*
+   * element bar modifiers 'd' + 'e' / e1d + e1e
+   * Flush-end modes only retune the last tab because the end edge is the one losing a lower curve.
+   */
   .k-tab-e1d-a,
   .k-tab-e1e-a {
-    /* modifiers `d` and `e`: last tab drops the right lower curve */
+    /*
+     * extra element for e2 / x3
+     * The last wrapper drops one shoulder of width compensation when the end edge goes flush.
+     */
+    .k-tab-x2-a > .k-tab-x3-a:last-of-type {
+      flex-basis: calc(var(--k-bxw) + var(--k-bdr));
+      min-width: calc(var(--k-bxw) + var(--k-bdr));
+    }
+
+    /*
+     * element tab / e2
+     * The last tab removes end-side lower-curve padding before the flush-end clip is applied.
+     */
     .k-tab-x2-a > .k-tab-x3-a:last-of-type > .k-tab-e2-a {
       padding-left: calc(var(--k-pdl) + var(--k-bdr));
       padding-right: var(--k-pdr);
       @include bridge-shape-flush-end;
     }
+
+    /*
+     * element tab modifier 'a' / e2a
+     * The last fixed-width tab sheds one shoulder of width compensation in flush-end modes.
+     */
+    .k-tab-x2-a > .k-tab-x3-a:last-of-type > .k-tab-e2-a.k-tab-e2a {
+      width: calc(var(--k-bxw) + var(--k-bdr));
+    }
   }
 }
 
 
-/* element: tab */
+/*
+ * element tab / e2
+ * Owns the bridge trigger shell, including padding, clipping support, and fixed/distributed width modes.
+ */
 .k-tab-e2-a {
   position: relative;
   box-sizing: border-box;
@@ -149,28 +235,44 @@
   pointer-events: auto;
   z-index: 1;
 
+  /*
+   * element tab / e2
+   * The disabled semantic tab exposes the not-allowed cursor through the bridge shell.
+   */
   &[aria-disabled='true'] {
     cursor: not-allowed;
   }
 
-  /* focus outline stays inside the clipped shell */
+  /*
+   * element tab / e2
+   * The focus-visible state keeps the outline inside the clipped bridge shell.
+   */
   &:focus-visible {
     outline-offset: -4px;
   }
 
-  /* modifier `a`: fixed-width bridge tabs add both curved shoulders back into the emitted width */
+  /*
+   * element tab modifier 'a' / e2a
+   * Fixed-width bridge tabs add both lower shoulders back into the emitted width.
+   */
   &.k-tab-e2a {
     width: calc(var(--k-bxw) + (var(--k-bdr) * 2));
   }
 
-  /* modifier `b`: distributed bridge trigger content can shrink inside the flex-grown shell */
+  /*
+   * element tab modifier 'b' / e2b
+   * Distributed bridge tabs allow the trigger content to shrink inside the flex-grown shell.
+   */
   &.k-tab-e2b {
     min-width: 0;
   }
 }
 
 @supports not (clip-path: shape(from top left, hline to 0)) {
-  /* fallback: shape() unavailable keeps only the top corners rounded */
+  /*
+   * element tab / e2
+   * When shape() is unavailable, tabs fall back to top-corner rounding instead of the bridge clip.
+   */
   .k-tab-e2-a {
     border-start-start-radius: var(--k-bdr);
     border-start-end-radius: var(--k-bdr);
@@ -178,32 +280,47 @@
 }
 
 @supports (clip-path: shape(from top left, hline to 0)) {
-  /* default geometry compensates both curved shoulders with the full bridge shape */
+  /*
+   * element tab / e2
+   * In shape-capable engines, tabs use the default bridge clip that compensates both lower shoulders.
+   */
   .k-tab-e2-a {
     @include bridge-shape-curved;
   }
 }
 
-/* extra node `x1`: bridge content wrapper used for label measurement. */
+/*
+ * extra element for e2 / x1
+ * Groups the bridge icon and label into one measured content slot.
+ */
 .k-tab-x1-a {
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
-/* constrained-width bridge tabs keep the measured content clipped */
+/*
+ * extra element for e2 / x1
+ * Constrained-width bridge tabs clip the measured content wrapper instead of letting it overflow.
+ */
 .k-tab-e2-a:is(.k-tab-e2a, .k-tab-e2b) > .k-tab-x1-a {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
 }
 
-/* `k-tab-e3`: tab label slot. */
+/*
+ * element label / e3
+ * Renders the bridge label slot as a block inside the measured content wrapper.
+ */
 .k-tab-e3 {
   display: block;
 }
 
-/* constrained-width bridge labels truncate instead of overflowing */
+/*
+ * element label / e3
+ * Labels inside constrained-width bridge tabs truncate instead of overflowing their shell.
+ */
 .k-tab-e2-a:is(.k-tab-e2a, .k-tab-e2b) .k-tab-e3 {
   min-width: 0;
   max-width: 100%;
@@ -212,7 +329,10 @@
   white-space: nowrap;
 }
 
-/* `k-tab-e4`: tab icon slot. */
+/*
+ * element icon / e4
+ * Centers the bridge icon slot and keeps its inline box locked to icon geometry.
+ */
 .k-tab-e4 {
   display: inline-flex;
   align-items: center;
@@ -220,12 +340,18 @@
   line-height: 0;
 }
 
-/* `k-tab-e1a-a` + `k-tab-x3-a`: distributed bridge triggers fill the flex-grown wrapper width. */
+/*
+ * element tab modifier 'b' / e2b
+ * In distributed mode, the trigger fills the flex-grown wrapper width instead of sizing to content.
+ */
 .k-tab-e1a-a > .k-tab-x2-a > .k-tab-x3-a > .k-tab-e2-a.k-tab-e2b {
   width: 100%;
 }
 
-/* extra node `x2`: bridge inner tablist owns horizontal scrolling and tab alignment. */
+/*
+ * extra element for e1 / x2
+ * Owns bridge scrolling, tab alignment, and the inset padding inside the outer shell.
+ */
 .k-tab-x2-a {
   display: flex;
   align-items: flex-end;
@@ -236,12 +362,19 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 
+  /*
+   * extra element for e1 / x2
+   * The WebKit scrollbar pseudo-element is hidden while horizontal scrolling stays enabled.
+   */
   &::-webkit-scrollbar {
     display: none;
   }
 }
 
-/* extra node `x3`: bridge tab wrapper owns overlap, stacking, and shadow projection. */
+/*
+ * extra element for e2 / x3
+ * Owns overlap, stacking, and effect projection outside the clipped bridge trigger.
+ */
 .k-tab-x3-a {
   position: relative;
   z-index: var(--k-tab-z);
@@ -250,36 +383,55 @@
   overflow: visible;
   pointer-events: none;
 
-  /* shadow effect bucket projects the tokenized shadow outside the clipped trigger */
+  /*
+   * extra element for e2 / x3
+   * The effect helper class projects the tokenized shadow outside the clipped trigger shell.
+   */
   &.-e {
     filter: drop-shadow(var(--k-sh-x) var(--k-sh-y) var(--k-sh-blur) var(--k-sh-color));
   }
 
-  /* selected state rises above sibling wrappers */
+  /*
+   * extra element for e2 / x3
+   * Selected wrappers rise above siblings so the active bridge shell keeps visual priority.
+   */
   &[data-selected] {
     z-index: 1000;
   }
 }
 
-/* extra node `x3`: adjacent wrappers overlap to build the connected bridge shell. */
+/*
+ * extra element for e2 / x3
+ * Adjacent wrappers overlap so separate tabs read as one connected bridge shell.
+ */
 .k-tab-x3-a + .k-tab-x3-a {
   margin-inline-start: calc(var(--k-bdr) * -2);
 }
 
 @supports (clip-path: shape(from top left, hline to 0)) {
-  /* platform fix: Blink on macOS needs a tiny overlap to hide the bridge hairline */
+  /*
+   * element tab / e2
+   * Blink on macOS needs a tiny block-end overlap to hide the bridge hairline between shells.
+   */
   .k-os-macos.k-engine-blink .k-tab-e2-a {
     margin-block-end: -0.2px;
   }
 }
 
-/* extra node `x4`: shared content panel wrapper keeps the bridge panel layered below the tab stack. */
+/*
+ * extra element for e2 / x4
+ * Keeps the bridge panel layered below the tab stack while still shrinkable in layout.
+ */
 .k-tab-x4 {
   min-width: 0;
   position: relative;
   z-index: 2;
 }
 
+/*
+ * extra element for e2 / x4
+ * The hidden state collapses the bridge panel out of layout when the headless runtime deactivates it.
+ */
 .k-tab-x4[hidden] {
   display: none !important;
 }
