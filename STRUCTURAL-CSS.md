@@ -39,6 +39,8 @@ Structural CSS must not become the source of truth for:
 - tokenized spacing values,
 - tokenized radius values,
 - tokenized shadow values,
+- responsive breakpoint thresholds,
+- responsive token substitutions that belong to schema scales,
 - intent/emphasis styling,
 - visual state styling that already exists in generated artifacts.
 
@@ -46,6 +48,8 @@ Practical rule:
 
 - structural CSS may consume schema-generated values,
 - structural CSS must not redefine schema-owned values as hardcoded design tokens.
+- if a component needs responsive structural changes, those changes must come from schema-emitted
+  classes and variables rather than handwritten viewport breakpoints in structural Sass.
 
 ## Core naming goals
 
@@ -345,6 +349,87 @@ Bad:
 Practical rule:
 
 - prefer the smallest selector that still protects the component and variant boundary.
+- prefer selectors that can be read linearly without mentally reconstructing the final class name.
+
+## Selector formatting
+
+Prefer explicit selectors in structural Sass.
+
+Good:
+
+- `.k-tab-e2-a.k-tab-e2b`
+- `.k-tab-e2-a[aria-selected='true']`
+- `.k-tab-e5-d.k-tab-e5c-d`
+- `.k-tab-e2-a { &.k-tab-e2b { ... } }`
+- `.k-tab-e2-a { &[aria-selected='true'] { ... } }`
+- `.k-tab-e1a-a { > .k-tab-x2-a { ... } }`
+- `.k-tab-m { &.k-tab-e1-b { ... } }`
+
+Avoid when readability is worse:
+
+- `&-a`
+- `&a-b`
+- `.k-tab-e5 { &-b { ... } }`
+- `.k-tab-e1 { &a-a { ... } }`
+
+Exception:
+
+- a shared scope gate such as `.k-tab-m` may wrap related rules once,
+- inside that block, keep the inner selector explicit relative to the scope gate.
+
+Practical rule:
+
+- keep nesting when it reuses one explicit base selector and the resulting selector can still be
+  read linearly,
+- do not flatten everything by default if the nested form is clearer,
+- only nest when the resulting selector is intentionally a descendant, state, or compound of that
+  explicit base selector,
+- if a selector is meant to remain standalone, keep it standalone instead of moving it into another
+  block and accidentally changing the match.
+
+Good:
+
+```scss
+.k-tab-m {
+  .k-tab-e5-b {
+    ...
+  }
+
+  .k-tab-e2-b[aria-selected='true'] {
+    ...
+  }
+}
+```
+
+Avoid:
+
+```scss
+.k-tab-m {
+  .k-tab-e5 {
+    &-b {
+      ...
+    }
+  }
+
+  .k-tab-e2-b {
+    &[aria-selected='true'] {
+      ...
+    }
+  }
+}
+```
+
+Also avoid:
+
+```scss
+.k-tab-e6-b {
+  &.k-tab-e6a-b {
+    ...
+  }
+}
+```
+
+when `k-tab-e6a-b` is emitted and matched as a standalone class rather than as a compound selector.
 
 ## Structural comments
 
@@ -353,7 +438,7 @@ Because the naming system is intentionally compact, comments are mandatory for s
 The preferred format is:
 
 - one block comment above each element section,
-- then short comments only for modifiers, states, or nested special cases.
+- then short comments only for modifiers, states, or scoped special cases.
 
 Format:
 
@@ -361,21 +446,21 @@ Format:
 /* element: tab */
 .k-tab-e2-b {
   ...
+}
 
-  /* selected state rises above sibling tabs */
-  &[aria-selected='true'] {
-    ...
-  }
+/* selected state rises above sibling tabs */
+.k-tab-e2-b[aria-selected='true'] {
+  ...
 }
 
 /* element: indicator / selected shell */
 .k-tab-e5-b {
   ...
+}
 
-  /* modifier `j`: disables transition in static mode */
-  &.k-tab-e5j-b {
-    ...
-  }
+/* modifier `j`: disables transition in static mode */
+.k-tab-e5j-b {
+  ...
 }
 ```
 
@@ -387,17 +472,30 @@ Rules:
 - explain role, not token values,
 - keep nested comments short,
 - describe modifiers and states only where they appear,
-- if a modifier clearly belongs to one element, open the Sass block at the base element and nest the
-  modifier selector inside it,
+- if a modifier clearly belongs to one explicit base selector, nesting is allowed when the nested
+  selector still shows the full modifier or state clearly,
+- avoid nesting forms that hide the resulting class name behind opaque fragments such as `&-a`,
+  `&a-b`, or `&-b`,
+- if a shared scope gate such as `.k-tab-m` improves grouping, keep that one outer block and write
+  the inner selectors explicitly relative to that scope,
+- if nesting would silently turn a standalone emitted class into a compound selector, keep that
+  rule outside the parent block,
 - if a block is an extra structural node, name it with `x<n>` and describe that extra role directly,
 - if a block is not tied to one schema element, use a short structural description instead of an element label.
 
 Preferred:
 
 ```scss
-.k-tab-e2 {
+/* element: tab */
+.k-tab-e2-c {
+  ...
+
   /* modifier `a`: fixed-width trigger keeps the emitted schema width */
-  &a-c {
+  &.k-tab-e2a {
+    ...
+  }
+
+  &[aria-selected='true'] {
     ...
   }
 }
@@ -453,6 +551,8 @@ Important:
   over ad hoc aliases like `--k-foo-left`,
 - create new local CSS variables only when they represent genuinely local structural state that cannot be
   expressed directly and is reused enough to justify the indirection.
+- do not handwrite responsive `@media` blocks with hardcoded viewport thresholds in structural Sass
+  when that behavior belongs to schema-emitted scales.
 
 ## Required custom properties
 
