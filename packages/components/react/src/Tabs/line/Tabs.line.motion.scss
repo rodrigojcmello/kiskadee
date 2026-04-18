@@ -6,10 +6,8 @@
   }
 
   /* element: indicator / selected shell */
-  .k-tab-e5 {
-    &-d {
-      transition: none !important;
-      will-change: auto;
-    }
+  .k-tab-e5-d {
+    transition: none !important;
+    will-change: auto;
   }
 }
