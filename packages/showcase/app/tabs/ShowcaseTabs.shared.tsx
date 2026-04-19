@@ -1,6 +1,6 @@
 import type {
-  TabsBridgeLowerCurve,
   TabsBoxIndicatorShape,
+  TabsBridgeLowerCurve,
   TabsIndicatorPosition,
   TabsIndicatorWidth,
   TabsLineIndicatorShape,
@@ -120,13 +120,14 @@ type TabsCompoundSlots = {
   Content: ComponentType<{ value: string; children?: ReactNode }>;
 };
 
-const tabsShowcaseMenuItems: Array<{ href: string; label: string; variant: TabsShowcaseVariant }> = [
-  { href: '/tabs/line', label: 'Line', variant: 'line' },
-  { href: '/tabs/dot', label: 'Dot', variant: 'dot' },
-  { href: '/tabs/box', label: 'Box', variant: 'box' },
-  { href: '/tabs/segmented', label: 'Segmented', variant: 'segmented' },
-  { href: '/tabs/bridge', label: 'Bridge', variant: 'bridge' }
-];
+const tabsShowcaseMenuItems: Array<{ href: string; label: string; variant: TabsShowcaseVariant }> =
+  [
+    { href: '/tabs/line', label: 'Line', variant: 'line' },
+    { href: '/tabs/dot', label: 'Dot', variant: 'dot' },
+    { href: '/tabs/box', label: 'Box', variant: 'box' },
+    { href: '/tabs/segmented', label: 'Segmented', variant: 'segmented' },
+    { href: '/tabs/bridge', label: 'Bridge', variant: 'bridge' }
+  ];
 
 export function renderTabsSlots(Component: TabsCompoundSlots, keyBase: string) {
   const tabs = (
@@ -150,11 +151,7 @@ export function renderTabsSlots(Component: TabsCompoundSlots, keyBase: string) {
   return { tabs, contents };
 }
 
-export function TabsShowcaseMenu({
-  activeVariant
-}: {
-  activeVariant?: TabsShowcaseVariant;
-}) {
+export function TabsShowcaseMenu({ activeVariant }: { activeVariant?: TabsShowcaseVariant }) {
   return (
     <nav aria-label="Tabs variants" style={{ marginBottom: 24 }}>
       <ul
