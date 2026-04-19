@@ -92,13 +92,13 @@ function useButtonClassNames({
     const radiusMode = radius ?? globalRadius ?? DEFAULT_RADIUS;
     const rAllE1 =
       radiusMode === 'rounded'
-        ? (e1?.r?.all ?? '')
+        ? (e1?.rr?.all ?? '')
         : radiusMode === 'pill'
           ? (e1?.rp?.all ?? '')
           : (e1?.rs?.all ?? '');
     const rScaleE1 =
       radiusMode === 'rounded'
-        ? (e1?.r?.[scaleKey] ?? '')
+        ? (e1?.rr?.[scaleKey] ?? '')
         : radiusMode === 'pill'
           ? (e1?.rp?.[scaleKey] ?? '')
           : (e1?.rs?.[scaleKey] ?? '');

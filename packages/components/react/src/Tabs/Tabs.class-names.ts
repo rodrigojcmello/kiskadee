@@ -97,9 +97,7 @@ export function resolveEffectClasses(element: TabsClassesMap['e1'] | undefined):
  *     Bridge projects tab shadow from an outer wrapper, so shadow needs to be movable
  *     independently from other effect buckets like ripple.
  */
-export function resolveShadowEffectClassName(
-  element: TabsClassesMap['e1'] | undefined
-): string {
+export function resolveShadowEffectClassName(element: TabsClassesMap['e1'] | undefined): string {
   return joinClassNames(element?.e?.h, element?.e?.h ? cn.shadow : '') ?? '';
 }
 
@@ -110,9 +108,7 @@ export function resolveShadowEffectClassName(
  *     Some components need to project shadow on a different DOM node while keeping the
  *     remaining effects on the interactive element itself.
  */
-export function resolveNonShadowEffectClasses(
-  element: TabsClassesMap['e1'] | undefined
-): string {
+export function resolveNonShadowEffectClasses(element: TabsClassesMap['e1'] | undefined): string {
   if (!element?.e) return '';
   return Object.entries(element.e)
     .filter(([bucket, value]) => bucket !== 'h' && typeof value === 'string' && value.length > 0)
@@ -207,7 +203,7 @@ export function resolveRadiusClassName(
   const scaleKey = normalizeScaleKey(scale);
   const all =
     radiusMode === 'rounded'
-      ? (element.r?.all ?? '')
+      ? (element.rr?.all ?? '')
       : radiusMode === 'pill'
         ? (element.rp?.all ?? '')
         : radiusMode === 'square'
@@ -215,13 +211,38 @@ export function resolveRadiusClassName(
           : '';
   const byScale =
     radiusMode === 'rounded'
-      ? (element.r?.[scaleKey] ?? '')
+      ? (element.rr?.[scaleKey] ?? '')
       : radiusMode === 'pill'
         ? (element.rp?.[scaleKey] ?? '')
         : radiusMode === 'square'
           ? (element.rs?.[scaleKey] ?? '')
           : '';
   return joinClassNames(all, byScale) ?? '';
+}
+
+/**
+ * What
+ *     Resolves the radius class for the tab-list shell, including bridge-specific fallback.
+ * Why
+ *     Bridge needs `--k-bdr` on `e1` for structural geometry, but current schema artifacts only
+ *     emit radius classes on `e2`, so the runtime mirrors that class only when `e1` has none.
+ */
+export function resolveListRadiusClassName(options: {
+  elements: TabsClassesMap;
+  scale: string;
+  radiusMode: RadiusMode;
+  variant: TabsVisualContextValue['variant'];
+}): string {
+  const listRadiusClassName = resolveRadiusClassName(
+    options.elements.e1,
+    options.scale,
+    options.radiusMode
+  );
+  if (listRadiusClassName || options.variant !== 'bridge') {
+    return listRadiusClassName;
+  }
+
+  return resolveRadiusClassName(options.elements.e2, options.scale, options.radiusMode);
 }
 
 /**
@@ -317,8 +338,7 @@ export function resolveIndicatorShape(
   indicatorShape: TabsResolvedIndicator['shape'] | undefined,
   globalIndicatorShape: string | undefined
 ): TabsResolvedIndicator['shape'] {
-  const candidate =
-    typeof indicatorShape === 'string' ? indicatorShape : globalIndicatorShape;
+  const candidate = typeof indicatorShape === 'string' ? indicatorShape : globalIndicatorShape;
 
   if (variant === 'dot') {
     return 'dot';
@@ -379,9 +399,7 @@ export function resolveTabWidth(
  *     Both `fixed` and `distributed` depend on width classes, while `auto` keeps the trigger
  *     sized by content.
  */
-function usesTabWidthScale(
-  tabWidth: TabsVisualContextValue['tabWidth']
-): boolean {
+function usesTabWidthScale(tabWidth: TabsVisualContextValue['tabWidth']): boolean {
   return tabWidth === 'fixed' || tabWidth === 'distributed';
 }
 
@@ -418,9 +436,16 @@ export function resolveListClassName(options: {
       ? getTabsStructuralLowerCurveClassName(options.structural, options.lowerCurve)
       : '',
     options.variant === 'line' || options.variant === 'dot'
-      ? (options.indicatorPosition === 'top' ? 'k-tab-e1b' : 'k-tab-e1a')
+      ? options.indicatorPosition === 'top'
+        ? 'k-tab-e1b'
+        : 'k-tab-e1a'
       : '',
-    resolveRadiusClassName(options.elements.e1, options.scale, options.tabShape),
+    resolveListRadiusClassName({
+      elements: options.elements,
+      scale: options.scale,
+      radiusMode: options.tabShape,
+      variant: options.variant
+    }),
     resolveElementClassName(options.elements.e1, {
       scale: options.scale,
       intent: options.intent,
@@ -571,9 +596,7 @@ export function resolveBridgeTriggerClassName(options: {
     triggerElement?.s?.all,
     triggerElement?.s?.[scaleKey],
     resolveNonShadowEffectClasses(activeEffectElement),
-    usesTabWidthScale(options.tabWidth)
-      ? resolveWidthClassName(triggerElement, options.scale)
-      : '',
+    usesTabWidthScale(options.tabWidth) ? resolveWidthClassName(triggerElement, options.scale) : '',
     activeRadiusClassName,
     options.classNames.e2,
     options.selected ? options.classNames.e5 : '',

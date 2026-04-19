@@ -8,9 +8,11 @@ export const SYSTEM_UI_FONT_STACK =
   'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
 
 export type {
-  ComponentClassNameMap,
-  ComponentClassNameMapSplit
-} from './src/phase-5-generate-class-names-map/generateClassNamesMap';
+  ClassNameByElementJSON,
+  ColorClasses,
+  ComponentClassNameMapJSON,
+  ComponentClassNameMapSplitJSON
+} from '@kiskadee/core';
 export type { FontStack } from './src/utils/fontFamily';
 export { toCssFontFamily } from './src/utils/fontFamily';
 

@@ -1,9 +1,11 @@
 import type {
+  ClassNameByElementJSON,
+  ColorClasses,
   ComponentEmphasis,
+  ComponentClassNameMapJSON,
+  ComponentClassNameMapSplitJSON,
   ComponentName,
   ComponentStyleKeyMap,
-  ElementAllSizeValue,
-  ElementSizeValue,
   InteractionState,
   SemanticColor
 } from '@kiskadee/core';
@@ -17,13 +19,6 @@ import {
   type WebStyleIdentityOptimizationOptions
 } from '../style-emission/web-style-key-identity';
 
-type ColorClasses = {
-  h?: string; // high
-  m?: string; // medium
-  l?: string; // low
-  ll?: string; // lowest
-};
-
 // Shortened keys for optimization (Phase 5 artifact schema):
 // d = decorations (always-on, flattened string)
 // e = effects by interaction state (arrays of classes, opt-in at component level)
@@ -31,39 +26,9 @@ type ColorClasses = {
 // w = width-only scales (opt-in at component level, flattened strings per size)
 // c = color classes (organized by emphasis: h/m/l/ll)
 // cs = control states (selected)
-export type ClassNamesByInteractionState = Partial<Record<string, string[]>>; // legacy for reference
-export type ClassNameByElement = {
-  // Flattened decorations only (always-on). Effects no longer merge here.
-  d?: string;
-  // Effects buckets (space-separated strings), opt-in at component level.
-  // Keys are short for web payload optimization (single letters).
-  e?: Partial<Record<string, string>>;
-  // Scales aggregated per size as flattened strings (size variants only, not effects)
-  s?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
-  // Width-only scales aggregated per size (opt-in at component level)
-  w?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
-  // Rounded radius scales aggregated per size (opt-in at component level)
-  r?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
-  // Pill radius scales aggregated per size (opt-in at component level)
-  rp?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
-  // Square radius scales aggregated per size (opt-in at component level)
-  rs?: Partial<Record<ElementSizeValue | ElementAllSizeValue, string>>;
-  // Color classes organized by emphasis (h/m/l/ll)
-  c?: ColorClasses;
-  // Control-state specific (selected) — flattened string of utility classes
-  l?: string;
-};
-export type ComponentClassNameMap = Partial<
-  Record<
-    string,
-    Record<string, ClassNameByElement> | Record<string, Record<string, ClassNameByElement>>
-  >
->;
-
-export type ComponentClassNameMapSplit = {
-  core: ComponentClassNameMap; // no palettes included
-  palettes: Record<string, ComponentClassNameMap>; // each contains only flattened `p` for that palette
-};
+export type ClassNameByElement = ClassNameByElementJSON;
+export type ComponentClassNameMap = ComponentClassNameMapJSON;
+export type ComponentClassNameMapSplit = ComponentClassNameMapSplitJSON;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -191,7 +156,7 @@ export function generateClassNamesMapSplit(
       const dSet = new Set<string>();
       const sMap = new Map<string, Set<string>>();
       const wMap = new Map<string, Set<string>>();
-      const rMap = new Map<string, Set<string>>();
+      const rrMap = new Map<string, Set<string>>();
       const rpMap = new Map<string, Set<string>>();
       const rsMap = new Map<string, Set<string>>();
       // Effects buckets (by effect kind), excluding selected/control-state.
@@ -257,7 +222,7 @@ export function generateClassNamesMapSplit(
         }
       }
 
-      // radiusScales → r/rp/rs[size] (rounded/pill/square radius)
+      // radiusScales → rr/rp/rs[size] (rounded/pill/square radius)
       if (el.radiusScales) {
         const applyRadiusMap = (
           target: Map<string, Set<string>>,
@@ -276,7 +241,7 @@ export function generateClassNamesMapSplit(
           }
         };
 
-        applyRadiusMap(rMap, el.radiusScales.rounded);
+        applyRadiusMap(rrMap, el.radiusScales.rounded);
         applyRadiusMap(rpMap, el.radiusScales.pill);
         applyRadiusMap(rsMap, el.radiusScales.square);
       }
@@ -402,10 +367,10 @@ export function generateClassNamesMapSplit(
                 ])
               )
             : undefined,
-        r:
-          rMap.size > 0
+        rr:
+          rrMap.size > 0
             ? Object.fromEntries(
-                Array.from(rMap.entries()).map(([k, set]) => [
+                Array.from(rrMap.entries()).map(([k, set]) => [
                   k,
                   set.size ? Array.from(set).join(' ') : undefined
                 ])

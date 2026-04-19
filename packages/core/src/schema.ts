@@ -233,8 +233,8 @@ export type ClassNameByElementJSON = {
   // w: width-only scales, kept separate so components can opt into fixed-width behavior.
   // Keys follow the same "s:" stripping as `s`.
   w?: Partial<Record<string, string>>;
-  // r: rounded border radius scales (size-aware, opt-in at component level).
-  r?: Partial<Record<string, string>>;
+  // rr: rounded border radius scales (size-aware, opt-in at component level).
+  rr?: Partial<Record<string, string>>;
   // rp: pill border radius scales (size-aware, opt-in at component level).
   rp?: Partial<Record<string, string>>;
   // rs: square border radius scales (size-aware, opt-in at component level).
@@ -245,6 +245,15 @@ export type ClassNameByElementJSON = {
   l?: string;
 };
 
+export type ComponentElementClassNameMapJSON = Record<string, ClassNameByElementJSON>;
+
+export type ComponentVariantClassNameMapJSON = Record<string, ComponentElementClassNameMapJSON>;
+
 export type ComponentClassNameMapJSON = Partial<
-  Record<string, Record<string, ClassNameByElementJSON> | Record<string, Record<string, ClassNameByElementJSON>>>
+  Record<string, ComponentElementClassNameMapJSON | ComponentVariantClassNameMapJSON>
 >;
+
+export type ComponentClassNameMapSplitJSON = {
+  core: ComponentClassNameMapJSON;
+  palettes: Record<string, ComponentClassNameMapJSON>;
+};

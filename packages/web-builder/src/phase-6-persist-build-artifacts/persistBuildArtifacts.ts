@@ -1,10 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type {
-  ComponentClassNameMap,
-  ComponentClassNameMapSplit
-} from '../phase-5-generate-class-names-map/generateClassNamesMap';
+import type { ComponentClassNameMapJSON, ComponentClassNameMapSplitJSON } from '@kiskadee/core';
 
 const coreClassMapSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
@@ -49,7 +46,7 @@ const coreClassMapSchema = {
           description: 'Scale classes by size key.',
           additionalProperties: { type: 'string' }
         },
-        r: {
+        rr: {
           type: 'object',
           description: 'Rounded border radius scales by size key.',
           additionalProperties: { type: 'string' }
@@ -107,7 +104,7 @@ export async function persistBuildArtifacts(
         effectsCss?: string;
         palettes: Record<string, string>;
       },
-  classNamesMap: ComponentClassNameMap | ComponentClassNameMapSplit,
+  classNamesMap: ComponentClassNameMapJSON | ComponentClassNameMapSplitJSON,
   outDirName?: string
 ): Promise<void> {
   const __filename = fileURLToPath(import.meta.url);
@@ -145,7 +142,7 @@ export async function persistBuildArtifacts(
   }
 
   // Persist classNamesMap as JSON (core + optional per-palette files)
-  const maybeSplit = classNamesMap as ComponentClassNameMapSplit;
+  const maybeSplit = classNamesMap as ComponentClassNameMapSplitJSON;
   if (maybeSplit && 'core' in maybeSplit && 'palettes' in maybeSplit) {
     const coreOut = resolve(buildDir, 'core.kiskadee.json');
     const schemaOut = resolve(buildDir, 'core.kiskadee.schema.json');
@@ -166,7 +163,7 @@ export async function persistBuildArtifacts(
     const classNamesOutFileJson = resolve(buildDir, 'core.kiskadee.json');
     const schemaOut = resolve(buildDir, 'core.kiskadee.schema.json');
     const classNamesJson = JSON.stringify(
-      { $schema: './core.kiskadee.schema.json', ...(classNamesMap as ComponentClassNameMap) },
+      { $schema: './core.kiskadee.schema.json', ...(classNamesMap as ComponentClassNameMapJSON) },
       null,
       2
     );
