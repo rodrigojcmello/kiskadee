@@ -155,8 +155,8 @@ export function createMaterial3GoogleTabsLineVariant({
       // e4: icon
       e4: {
         scales: {
-          boxWidth: 18,
-          boxHeight: 18,
+          boxWidth: 24,
+          boxHeight: 24,
           paddingRight: 8
         },
         palettes: {

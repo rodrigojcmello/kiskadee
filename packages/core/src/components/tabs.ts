@@ -103,9 +103,11 @@ export type TabsLabelElementStyle<TSegmentName extends SegmentName = never> =
  * e4 — icon
  * - iconSize
  * - iconColor
- * - padding
+ * - paddingRight
  *
  * NOTE:
+ * `paddingRight` currently acts as the inline gap between the icon and the label in the default
+ * icon-plus-label composition.
  * `iconColor` maps to `textColor` for now (for currentColor-driven icons).
  * Dedicated icon fill/stroke color channels are not yet modeled at schema level.
  */

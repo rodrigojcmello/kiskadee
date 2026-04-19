@@ -172,14 +172,7 @@ export function createTabsIconElementStyleSchema<TSegmentName extends SegmentNam
   return z
     .object({
       name: z.string().optional(),
-      scales: createScalesSchema([
-        'boxWidth',
-        'boxHeight',
-        'paddingTop',
-        'paddingRight',
-        'paddingBottom',
-        'paddingLeft'
-      ]).optional(),
+      scales: createScalesSchema(['boxWidth', 'boxHeight', 'paddingRight']).optional(),
       palettes: createPalettesSchema<TSegmentName, 'textColor'>(['textColor']).optional(),
       effects: elementEffectsSchema.optional()
     })
