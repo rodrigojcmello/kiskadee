@@ -9,6 +9,5 @@ export const tabsLineStructural = {
     x1: 'k-tab-x1-d',
     e5: 'k-tab-e5-d'
   },
-  distributedBarClassName: 'k-tab-e1c-d',
   indicatorStaticClassName: 'k-tab-e5a-d'
 } as const satisfies TabsStructuralDescriptor<'line'>;

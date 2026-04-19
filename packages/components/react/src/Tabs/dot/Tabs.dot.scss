@@ -5,7 +5,7 @@
   align-items: center;
   gap: 0;
   isolation: isolate;
-  width: fit-content;
+  width: 100%;
   max-width: 100%;
   min-width: 0;
   overflow-x: auto;
@@ -28,11 +28,6 @@
   &.k-tab-e1b {
     border-bottom-width: 0 !important;
   }
-}
-
-/* modifier `c`: distributed dot bars stretch to the host width before scrolling. */
-.k-tab-e1c-c {
-  width: 100%;
 }
 
 /* element: tab */
@@ -60,7 +55,8 @@
   }
 }
 
-.k-tab-e1c-c > .k-tab-e2-c.k-tab-e2b {
+/* `k-tab-e1-c > k-tab-e2b`: distributed tabs grow evenly but never shrink below the emitted width. */
+.k-tab-e1-c > .k-tab-e2-c.k-tab-e2b {
   flex: 1 0 var(--k-bxw);
   min-width: var(--k-bxw);
   width: auto;
