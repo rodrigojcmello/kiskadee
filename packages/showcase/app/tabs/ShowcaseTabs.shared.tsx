@@ -9,6 +9,7 @@ import type {
 import type { TabsIndicatorMotionStyle, TabsSpringPreset } from '@kiskadee/react-components';
 import Link from 'next/link';
 import type { ComponentType, CSSProperties, ReactNode } from 'react';
+import { Icon } from '@/components/Icon/Icon';
 
 export type TabsShowcaseVariant = 'line' | 'dot' | 'box' | 'segmented' | 'bridge';
 export type TabsMode = 'animated' | 'static';
@@ -29,8 +30,16 @@ export const loremByValue: Record<string, string> = {
   'fifteen-letters': `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean lacinia bibendum nulla sed consectetur. Curabitur blandit tempus porttitor. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Nulla vitae elit libero, a pharetra augue. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.`
 };
 
-export const tabItems = [
-  { value: 'home', label: 'Home' },
+export const tabItems: ReadonlyArray<{
+  value: string;
+  label: string;
+  icon?: ReactNode;
+}> = [
+  {
+    value: 'home',
+    label: 'Home',
+    icon: <Icon name="SunMax" aria-hidden="true" focusable="false" />
+  },
   { value: 'locations', label: 'Locations' },
   { value: 'forms', label: 'Forms' },
   { value: 'services', label: 'Services' },
@@ -107,7 +116,7 @@ export const tabsShowcaseDescriptionStyle: CSSProperties = {
 
 type TabsCompoundSlots = {
   Bar: ComponentType<{ children?: ReactNode }>;
-  Tab: ComponentType<{ value: string; label?: ReactNode }>;
+  Tab: ComponentType<{ value: string; label?: ReactNode; icon?: ReactNode }>;
   Content: ComponentType<{ value: string; children?: ReactNode }>;
 };
 
@@ -123,7 +132,12 @@ export function renderTabsSlots(Component: TabsCompoundSlots, keyBase: string) {
   const tabs = (
     <Component.Bar>
       {tabItems.map((tab) => (
-        <Component.Tab key={`${keyBase}-${tab.value}`} value={tab.value} label={tab.label} />
+        <Component.Tab
+          key={`${keyBase}-${tab.value}`}
+          value={tab.value}
+          label={tab.label}
+          icon={tab.icon}
+        />
       ))}
     </Component.Bar>
   );
