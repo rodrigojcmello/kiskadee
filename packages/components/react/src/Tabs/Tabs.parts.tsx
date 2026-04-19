@@ -192,9 +192,19 @@ export const TabsIconBase = forwardRef<HTMLSpanElement, TabsIconProps>(function 
  * What
  *     Renders the shared content panel wrapper on top of the headless `Content` primitive.
  * Why
- *     Tabs panels share one structural class and one headless implementation regardless of the
- *     active visual variant.
+ *     Tabs panels reuse one headless implementation, while the structural class now comes from
+ *     the active variant descriptor instead of a generic extra-node selector.
  */
 export function TabsContentBase(props: TabsContentProps) {
-  return <HeadlessTabs.Content {...props} className={joinClassNames('k-tab-x4', props.className)} />;
+  const { structural } = useTabsVisualContext();
+
+  return (
+    <HeadlessTabs.Content
+      {...props}
+      className={joinClassNames(
+        getTabsStructuralSlotClassName(structural, 'x4'),
+        props.className
+      )}
+    />
+  );
 }

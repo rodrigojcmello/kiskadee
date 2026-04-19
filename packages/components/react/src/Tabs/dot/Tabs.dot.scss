@@ -126,8 +126,8 @@
   transition: none;
 }
 
-/* extra node `x4`: shared content panel wrapper keeps the panel shrinkable below content width. */
-.k-tab-x4 {
+/* extra node `x4`: dot panel wrapper keeps the panel shrinkable below content width. */
+.k-tab-x4-c {
   min-width: 0;
 
   &[hidden] {

@@ -116,12 +116,20 @@ export function TabsBridgeTabBase({
  * What
  *     Renders the bridge content panel on top of the shared headless `tabpanel`.
  * Why
- *     Bridge no longer consumes schema panel styling, so its content panel falls back to the
- *     shared structural shell while keeping the bridge-specific tab stack above it.
+ *     Bridge no longer consumes schema panel styling, so its content panel keeps the shared
+ *     headless behavior while applying the bridge-owned structural shell for stacking.
  */
 export function TabsBridgeContentBase({ className, children, ...props }: TabsContentProps) {
+  const { structural } = useTabsVisualContext();
+
   return (
-    <HeadlessTabs.Content {...props} className={joinClassNames('k-tab-x4', className)}>
+    <HeadlessTabs.Content
+      {...props}
+      className={joinClassNames(
+        getTabsStructuralSlotClassName(structural, 'x4'),
+        className
+      )}
+    >
       {children}
     </HeadlessTabs.Content>
   );

@@ -421,16 +421,16 @@
  * extra element for e2 / x4
  * Keeps the bridge panel layered below the tab stack while still shrinkable in layout.
  */
-.k-tab-x4 {
+.k-tab-x4-a {
   min-width: 0;
   position: relative;
   z-index: 2;
-}
 
-/*
- * extra element for e2 / x4
- * The hidden state collapses the bridge panel out of layout when the headless runtime deactivates it.
- */
-.k-tab-x4[hidden] {
-  display: none !important;
+  /*
+   * extra element for e2 / x4
+   * The hidden state collapses the bridge panel out of layout when the headless runtime deactivates it.
+   */
+  &[hidden] {
+    display: none !important;
+  }
 }

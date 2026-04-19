@@ -8,7 +8,8 @@ export const tabsBridgeStructural = {
     x2: 'k-tab-x2-a',
     e2: 'k-tab-e2-a',
     x1: 'k-tab-x1-a',
-    x3: 'k-tab-x3-a'
+    x3: 'k-tab-x3-a',
+    x4: 'k-tab-x4-a'
   },
   distributedBarClassName: 'k-tab-e1a-a',
   lowerCurveClassNames: {

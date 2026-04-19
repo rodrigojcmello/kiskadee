@@ -1,6 +1,6 @@
 import type { TabsBridgeLowerCurve, TabsVariant } from '@kiskadee/core';
 
-export type TabsStructuralSlotKey = 'e1' | 'e2' | 'e5' | 'e6' | 'x1' | 'x2' | 'x3';
+export type TabsStructuralSlotKey = 'e1' | 'e2' | 'e5' | 'e6' | 'x1' | 'x2' | 'x3' | 'x4';
 
 export type TabsStructuralDescriptor<TVariant extends TabsVariant = TabsVariant> = {
   variant: TVariant;

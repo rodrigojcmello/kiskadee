@@ -7,6 +7,7 @@ export const tabsLineStructural = {
     e1: 'k-tab-e1-d',
     e2: 'k-tab-e2-d',
     x1: 'k-tab-x1-d',
+    x4: 'k-tab-x4-d',
     e5: 'k-tab-e5-d'
   },
   indicatorStaticClassName: 'k-tab-e5a-d'

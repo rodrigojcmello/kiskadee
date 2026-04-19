@@ -120,6 +120,12 @@ Important:
 - it may be styled in a shared structural file or repeated across variant-local files,
 - it must stay genuinely shared across all variants for that component.
 
+Practical rule:
+
+- the absence of a component-level shared Sass file does not forbid unsuffixed `e<n>` selectors,
+- but their ownership must still be intentionally shared across variants rather than inherited by
+  accident from copy-pasted rules.
+
 ### 5. Shared element modifier
 
 Use:
@@ -268,6 +274,9 @@ Important:
 
 - shared extras must stay truly shared across all variants,
 - if an extra has variant-specific behavior or geometry, it must be specialized by variant.
+- if a component family no longer keeps shared structural Sass, prefer variant-specialized extras
+  by default even when the DOM role is conceptually shared.
+- use unsuffixed `x<n>` only when one selector is intentionally reused unchanged across variants.
 
 ### 10. Variant-specialized extra structural node
 
@@ -288,6 +297,11 @@ Use this only when:
 - the extra node is not a schema element,
 - and it still needs to be isolated to one variant,
 - or a modifier on that extra node must stay variant-local.
+
+Practical rule:
+
+- when structural Sass is authored only in variant files, `x<n>-<variant>` is usually the correct
+  default for extra nodes that need styling.
 
 ### 11. Component runtime state
 
