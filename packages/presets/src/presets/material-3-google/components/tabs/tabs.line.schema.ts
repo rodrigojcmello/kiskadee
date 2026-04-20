@@ -121,7 +121,7 @@ export function createMaterial3GoogleTabsLineVariant({
         },
         scales: {
           textSize: 14,
-          textHeight: 20
+          textHeight: 24
         },
         palettes: {
           default: {

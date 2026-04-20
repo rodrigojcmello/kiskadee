@@ -116,7 +116,7 @@ export function createMaterial3GoogleTabsBoxVariant({
         },
         scales: {
           textSize: 14,
-          textHeight: 20
+          textHeight: 24
         },
         palettes: {
           default: {

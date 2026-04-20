@@ -133,7 +133,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
         },
         scales: {
           textSize: 18,
-          textHeight: 22
+          textHeight: 24
         },
         palettes: {
           default: {
