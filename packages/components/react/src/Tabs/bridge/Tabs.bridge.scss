@@ -129,6 +129,14 @@
   .k-tab-e2-a.k-tab-e2a {
     width: var(--k-bxw);
   }
+
+  /*
+   * element tab modifier 'c' / e2c
+   * Adaptive-width flush-all tabs keep the straight emitted width as their minimum once both shoulders are gone.
+   */
+  .k-tab-e2-a.k-tab-e2c {
+    min-width: var(--k-bxw);
+  }
 }
 
 @supports (clip-path: shape(from top left, hline to 0)) {
@@ -178,6 +186,14 @@
     .k-tab-x2-a > .k-tab-x3-a:first-of-type > .k-tab-e2-a.k-tab-e2a {
       width: calc(var(--k-bxw) + var(--k-bdr));
     }
+
+    /*
+     * element tab modifier 'c' / e2c
+     * The first adaptive-width tab keeps only one shoulder of minimum-width compensation in flush-start modes.
+     */
+    .k-tab-x2-a > .k-tab-x3-a:first-of-type > .k-tab-e2-a.k-tab-e2c {
+      min-width: calc(var(--k-bxw) + var(--k-bdr));
+    }
   }
 
   /*
@@ -211,6 +227,14 @@
      */
     .k-tab-x2-a > .k-tab-x3-a:last-of-type > .k-tab-e2-a.k-tab-e2a {
       width: calc(var(--k-bxw) + var(--k-bdr));
+    }
+
+    /*
+     * element tab modifier 'c' / e2c
+     * The last adaptive-width tab keeps only one shoulder of minimum-width compensation in flush-end modes.
+     */
+    .k-tab-x2-a > .k-tab-x3-a:last-of-type > .k-tab-e2-a.k-tab-e2c {
+      min-width: calc(var(--k-bxw) + var(--k-bdr));
     }
   }
 }
@@ -256,6 +280,15 @@
    */
   &.k-tab-e2a {
     width: calc(var(--k-bxw) + (var(--k-bdr) * 2));
+  }
+
+  /*
+   * element tab modifier 'c' / e2c
+   * Adaptive-width bridge tabs keep the emitted width plus both lower shoulders as a minimum, but grow with content.
+   */
+  &.k-tab-e2c {
+    width: auto;
+    min-width: calc(var(--k-bxw) + (var(--k-bdr) * 2));
   }
 
   /*

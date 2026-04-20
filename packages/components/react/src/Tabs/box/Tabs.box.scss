@@ -40,6 +40,13 @@
     min-width: 0;
   }
 
+  /* adaptive-width trigger keeps the emitted schema width as a floor but still grows to content */
+  &.k-tab-e2c {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: var(--k-bxw);
+  }
+
   &.k-tab-e2b {
     min-width: 0;
   }

@@ -26,6 +26,7 @@ export default function TabsSegmentedPage() {
     },
     { value: 'auto', label: tabWidthLabels.auto },
     { value: 'fixed', label: tabWidthLabels.fixed },
+    { value: 'adaptive', label: tabWidthLabels.adaptive },
     { value: 'distributed', label: tabWidthLabels.distributed }
   ];
   const tabWidthProp: TabsTabWidth | undefined = tabWidth === 'default' ? undefined : tabWidth;

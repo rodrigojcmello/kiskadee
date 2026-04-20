@@ -9,7 +9,7 @@ import type { TabsBarProps } from '../Tabs.types';
  *     Renders segmented tabs with a fixed outer shell and an inner scrolling bar.
  * Why
  *     The segmented chrome should stay visually fixed while the tab row scrolls inside it when
- *     fixed or distributed widths overflow the available inline space.
+ *     fixed, adaptive, or distributed widths overflow the available inline space.
  */
 export function TabsSegmentedBarBase({ className, children, ...props }: TabsBarProps) {
   const { barRef, listClassName, structural, StaticEnhancer } = useTabsVisualContext();

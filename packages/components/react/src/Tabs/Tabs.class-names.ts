@@ -396,11 +396,11 @@ export function resolveTabWidth(
  * What
  *     Reports whether the current tab width consumes the schema `boxWidth` token.
  * Why
- *     Both `fixed` and `distributed` depend on width classes, while `auto` keeps the trigger
- *     sized by content.
+ *     `fixed`, `adaptive`, and `distributed` depend on width classes, while `auto` keeps the
+ *     trigger sized by content.
  */
 function usesTabWidthScale(tabWidth: TabsVisualContextValue['tabWidth']): boolean {
-  return tabWidth === 'fixed' || tabWidth === 'distributed';
+  return tabWidth === 'fixed' || tabWidth === 'adaptive' || tabWidth === 'distributed';
 }
 
 /**
@@ -521,6 +521,7 @@ export function resolveTriggerClassName(options: {
     'k-tab-e2',
     getTabsStructuralSlotClassName(options.structural, 'e2'),
     options.tabWidth === 'fixed' ? 'k-tab-e2a' : '',
+    options.tabWidth === 'adaptive' ? 'k-tab-e2c' : '',
     options.tabWidth === 'distributed' ? 'k-tab-e2b' : '',
     'k-state',
     cn.interactive,
@@ -603,6 +604,7 @@ export function resolveBridgeTriggerClassName(options: {
     'k-tab-e2',
     getTabsStructuralSlotClassName(options.structural, 'e2'),
     options.tabWidth === 'fixed' ? 'k-tab-e2a' : '',
+    options.tabWidth === 'adaptive' ? 'k-tab-e2c' : '',
     options.tabWidth === 'distributed' ? 'k-tab-e2b' : '',
     'k-state',
     cn.interactive,

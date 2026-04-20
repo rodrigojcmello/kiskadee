@@ -29,6 +29,7 @@ export default function TabsBridgePage() {
     },
     { value: 'auto', label: tabWidthLabels.auto },
     { value: 'fixed', label: tabWidthLabels.fixed },
+    { value: 'adaptive', label: tabWidthLabels.adaptive },
     { value: 'distributed', label: tabWidthLabels.distributed }
   ];
   const bridgeLowerCurveOptions = [
