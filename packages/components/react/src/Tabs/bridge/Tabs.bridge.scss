@@ -123,6 +123,14 @@
   }
 
   /*
+   * element tab / e2
+   * Flush-all focus rings use the straight visible shell because no lower shoulders remain.
+   */
+  .k-tab-e2-a::after {
+    inset-inline: calc(var(--k-focus-width) * 1px);
+  }
+
+  /*
    * element tab modifier 'a' / e2a
    * Fixed-width flush-all tabs return to the emitted width because both lower shoulders are gone.
    */
@@ -180,6 +188,15 @@
     }
 
     /*
+     * element tab / e2
+     * Flush-start focus rings keep the start edge straight and compensate only the remaining end shoulder.
+     */
+    .k-tab-x2-a > .k-tab-x3-a:first-of-type > .k-tab-e2-a::after {
+      inset-inline-start: calc(var(--k-focus-width) * 1px);
+      inset-inline-end: calc(var(--k-bdr) + calc(var(--k-focus-width) * 1px));
+    }
+
+    /*
      * element tab modifier 'a' / e2a
      * The first fixed-width tab sheds one shoulder of width compensation in flush-start modes.
      */
@@ -222,6 +239,15 @@
     }
 
     /*
+     * element tab / e2
+     * Flush-end focus rings compensate only the remaining start shoulder.
+     */
+    .k-tab-x2-a > .k-tab-x3-a:last-of-type > .k-tab-e2-a::after {
+      inset-inline-start: calc(var(--k-bdr) + calc(var(--k-focus-width) * 1px));
+      inset-inline-end: calc(var(--k-focus-width) * 1px);
+    }
+
+    /*
      * element tab modifier 'a' / e2a
      * The last fixed-width tab sheds one shoulder of width compensation in flush-end modes.
      */
@@ -260,6 +286,24 @@
 
   /*
    * element tab / e2
+   * Bridge uses clip-path for its shell, so focus is drawn as an internal rounded ring instead of outline-offset.
+   */
+  &::after {
+    content: '';
+    position: absolute;
+    inset-block: calc(var(--k-focus-width) * 1px);
+    inset-inline: calc(var(--k-bdr) + calc(var(--k-focus-width) * 1px));
+    pointer-events: none;
+    border: calc(var(--k-focus-width) * 1px) solid var(--k-focus-color);
+    border-radius: max(
+      0px,
+      calc(var(--k-bdr) - calc(var(--k-focus-width) * 1px) - calc(var(--k-focus-offset) * 1px))
+    );
+    opacity: 0;
+  }
+
+  /*
+   * element tab / e2
    * The disabled semantic tab exposes the not-allowed cursor through the bridge shell.
    */
   &[aria-disabled='true'] {
@@ -268,10 +312,18 @@
 
   /*
    * element tab / e2
-   * The focus-visible state keeps the outline inside the clipped bridge shell.
+   * The focus-visible state hides the global outline because the clipped shell owns a local ring.
    */
   &:focus-visible {
-    outline-offset: -4px;
+    outline: none;
+  }
+
+  /*
+   * element tab / e2
+   * The internal ring stays inside the bridge shape and avoids native outline clipping artifacts.
+   */
+  &:focus-visible::after {
+    opacity: 1;
   }
 
   /*
