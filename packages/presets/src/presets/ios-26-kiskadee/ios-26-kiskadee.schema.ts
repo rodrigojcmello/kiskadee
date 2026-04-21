@@ -473,7 +473,7 @@ export const schema: Schema = {
               scales: {
                 boxWidth: 18,
                 boxHeight: 18,
-                paddingRight: 8
+                marginRight: 8
               },
               palettes: buildBySegment(segmentNames, (segmentName) => {
                 return {
@@ -670,7 +670,7 @@ export const schema: Schema = {
               scales: {
                 boxWidth: 18,
                 boxHeight: 18,
-                paddingRight: 8
+                marginRight: 8
               },
               palettes: buildBySegment(segmentNames, (segmentName) => {
                 return {
@@ -837,7 +837,7 @@ export const schema: Schema = {
               scales: {
                 boxWidth: 18,
                 boxHeight: 18,
-                paddingRight: 8
+                marginRight: 8
               },
               palettes: buildBySegment(segmentNames, (segmentName) => {
                 return {
@@ -1002,7 +1002,7 @@ export const schema: Schema = {
               scales: {
                 boxWidth: 18,
                 boxHeight: 18,
-                paddingRight: 8
+                marginRight: 8
               },
               palettes: buildBySegment(segmentNames, (segmentName) => {
                 return {

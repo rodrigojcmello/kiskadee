@@ -105,6 +105,13 @@
   align-items: center;
   justify-content: center;
   line-height: 0;
+
+  > svg {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    flex: 0 0 auto;
+  }
 }
 
 /* element: indicator / selected shell */

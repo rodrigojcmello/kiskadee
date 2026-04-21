@@ -157,7 +157,7 @@ export function createMaterial3GoogleTabsLineVariant({
         scales: {
           boxWidth: 24,
           boxHeight: 24,
-          paddingRight: 8
+          marginRight: 8
         },
         palettes: {
           default: {
