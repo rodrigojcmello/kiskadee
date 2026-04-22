@@ -1,7 +1,7 @@
 {
   "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "src",
+    "rootDir": ".",
     "jsx": "react-jsx",
 
     /* Bundler mode */
@@ -10,5 +10,5 @@
     "moduleDetection": "force",
     "noEmit": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "scripts/**/*.ts"]
 }

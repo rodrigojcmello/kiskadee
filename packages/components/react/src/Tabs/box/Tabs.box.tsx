@@ -1,3 +1,4 @@
+import './Tabs.box.css';
 import { createTabsComponent } from '../Tabs.runtime';
 import type {
   TabsBarProps,
@@ -14,7 +15,6 @@ import type {
 import { useResolvedTabsBoxRootState } from './Tabs.box.root-state';
 import TabsBoxStaticBarEnhancer from './Tabs.box.static';
 import { tabsBoxStructural } from './Tabs.box.structural';
-import './Tabs.box.scss';
 
 /**
  * What

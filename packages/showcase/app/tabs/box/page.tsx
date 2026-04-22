@@ -5,8 +5,7 @@ import {
   type TabsTabWidth,
   tabsIndicatorShapesByVariant
 } from '@kiskadee/core';
-import { useKiskadee } from '@kiskadee/react-components';
-import { TabsBox } from '@kiskadee/react-components/tabs/box';
+import { TabsBox, useKiskadee } from '@kiskadee/react-components';
 import { useState } from 'react';
 import { Select } from '@/k-components';
 import {

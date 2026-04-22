@@ -1,3 +1,4 @@
+import './Tabs.dot.motion.css';
 import { motion } from 'motion/react';
 import { type CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 import { resolveIndicatorClassName } from '../Tabs.class-names';
@@ -5,7 +6,6 @@ import { useTabsVisualContext } from '../Tabs.context';
 import type { IndicatorRect } from '../Tabs.measurements';
 import { measureIndicatorRect, resolveBarEdgeOffsetStyle } from '../Tabs.measurements';
 import type { TabsMotionEngineProps } from '../Tabs.motion.shared';
-import './Tabs.dot.motion.scss';
 
 type DotIndicatorPhase = 'idle' | 'exit' | 'enter';
 

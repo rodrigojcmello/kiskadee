@@ -1,6 +1,6 @@
+import './Button.css';
 import { Button as HeadlessButton } from '@kiskadee/react-headless';
 import { type ComponentType, type LazyExoticComponent, lazy, memo, Suspense, useMemo } from 'react';
-import './Button.scss';
 import { useKiskadee } from '../contexts/KiskadeeContext';
 import type { ButtonProps } from './Button.types';
 import { ButtonCore } from './ButtonCore';

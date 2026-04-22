@@ -1,3 +1,4 @@
+import './Tabs.bridge.css';
 import { createTabsComponent } from '../Tabs.runtime';
 import {
   TabsBridgeBarBase,
@@ -19,7 +20,6 @@ import type {
   TabsSpringPreset,
   TabsTabProps
 } from '../Tabs.types';
-import './Tabs.bridge.scss';
 
 /**
  * What

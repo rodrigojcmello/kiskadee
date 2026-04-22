@@ -1,8 +1,7 @@
 'use client';
 
 import { type TabsBridgeLowerCurve, type TabsTabWidth } from '@kiskadee/core';
-import { useKiskadee } from '@kiskadee/react-components';
-import { TabsBridge } from '@kiskadee/react-components/tabs/bridge';
+import { TabsBridge, useKiskadee } from '@kiskadee/react-components';
 import { useState } from 'react';
 import { Select } from '@/k-components';
 import {

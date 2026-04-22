@@ -18,6 +18,7 @@ import type {
   ThemeMode
 } from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
+import { minifyCss } from '@kiskadee/css-build';
 import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex';
 import { type FontStack, toCssFontFamily } from '../utils/fontFamily';
 
@@ -263,7 +264,7 @@ export async function writeExtraArtifacts(params: {
   if (globalTokensCss) {
     await mkdir(buildDir, { recursive: true });
     const globalTokensFilePath = resolve(buildDir, 'tokens.kiskadee.css');
-    await writeFile(globalTokensFilePath, globalTokensCss, 'utf8');
+    await writeFile(globalTokensFilePath, await minifyCss(globalTokensCss), 'utf8');
     console.log(`[web-builder] Global tokens CSS written to: ${globalTokensFilePath}`);
   }
 
@@ -344,7 +345,7 @@ export async function writeExtraArtifacts(params: {
       if (tokensCss) {
         const tokensFileName = `tokens.${segment}.${theme}.kiskadee.css`;
         const tokensFilePath = resolve(buildDir, tokensFileName);
-        await writeFile(tokensFilePath, tokensCss, 'utf8');
+        await writeFile(tokensFilePath, await minifyCss(tokensCss), 'utf8');
         console.log(`[web-builder] Theme tokens CSS written to: ${tokensFilePath}`);
       }
 

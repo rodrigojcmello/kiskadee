@@ -1,8 +1,7 @@
 'use client';
 
 import { type TabsTabWidth } from '@kiskadee/core';
-import { useKiskadee } from '@kiskadee/react-components';
-import { TabsSegmented } from '@kiskadee/react-components/tabs/segmented';
+import { TabsSegmented, useKiskadee } from '@kiskadee/react-components';
 import { useState } from 'react';
 import { Select } from '@/k-components';
 import {

@@ -1,3 +1,4 @@
+import './Tabs.segmented.css';
 import { createTabsComponent } from '../Tabs.runtime';
 import TabsSegmentedBarBase from './Tabs.segmented.parts';
 import TabsSegmentedStaticBarEnhancer from './Tabs.segmented.static';
@@ -15,7 +16,6 @@ import type {
   TabsSpringPreset,
   TabsTabProps
 } from '../Tabs.types';
-import './Tabs.segmented.scss';
 
 /**
  * What

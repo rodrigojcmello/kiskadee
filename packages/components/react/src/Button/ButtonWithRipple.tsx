@@ -1,3 +1,4 @@
+import './ButtonWithRipple.css';
 import type {
   RippleInputFeedback,
   RippleMode,
@@ -22,7 +23,6 @@ import {
   useButtonCommonProps,
   useTransientPressedState
 } from './useButtonBase';
-import './ButtonWithRipple.scss';
 
 // [RIPPLE EFFECT 23] START: Runtime helper utilities.
 const DEFAULT_RIPPLE_START_SIZE_PX = 18;

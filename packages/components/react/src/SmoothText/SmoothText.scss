@@ -1,5 +1,4 @@
-.wrapper {
-  /* Mirrors design tokens in styles/style.kiskadee.scss (2x --k-dur-int-slow). */
+.k-smooth-text {
   --smooth-text-duration: 480ms;
 
   display: inline-grid;
@@ -9,30 +8,23 @@
   vertical-align: inherit;
 
   &[data-speed="fast"] {
-    /* Mirrors design tokens in styles/style.kiskadee.scss (--k-dur-int-slow). */
     --smooth-text-duration: 240ms;
   }
 
   &[data-speed="slow"] {
-    /* Mirrors design tokens in styles/style.kiskadee.scss (2x --k-dur-int-slow). */
     --smooth-text-duration: 480ms;
   }
 
-  /* Alignment mode (opt-in via align prop) */
   &[data-align] {
     display: grid;
     width: 100%;
-    /* [Space] [Content(stack)] [Space] */
     grid-template-areas: ". stack .";
-    /* Default: Center (1fr auto 1fr) */
     grid-template-columns: 1fr auto 1fr;
     transition: grid-template-columns var(--k-dur-theme) var(--k-ease-emph);
-    /* Prevent layout thrashing hints */
     will-change: grid-template-columns;
   }
 
   &[data-align="left"] {
-    /* Left aligned: Collapse left space */
     grid-template-columns: 0fr auto 1fr;
   }
 
@@ -41,24 +33,24 @@
   }
 }
 
-.item {
+.k-smooth-text-item {
   grid-area: stack;
   white-space: nowrap;
   display: inline-block;
   text-align: center;
 }
 
-.exiting {
-  animation: fadeOut var(--smooth-text-duration) ease forwards;
+.k-smooth-text-exiting {
+  animation: k-smooth-text-fade-out var(--smooth-text-duration) ease forwards;
   pointer-events: none;
   user-select: none;
 }
 
-.entering {
-  animation: fadeIn var(--smooth-text-duration) ease forwards;
+.k-smooth-text-entering {
+  animation: k-smooth-text-fade-in var(--smooth-text-duration) ease forwards;
 }
 
-@keyframes fadeIn {
+@keyframes k-smooth-text-fade-in {
   from {
     opacity: 0;
   }
@@ -67,7 +59,7 @@
   }
 }
 
-@keyframes fadeOut {
+@keyframes k-smooth-text-fade-out {
   from {
     opacity: 1;
   }

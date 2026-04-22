@@ -1,5 +1,5 @@
+import './SmoothText.css';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
-import styles from './SmoothText.module.scss';
 
 interface SmoothTextProps {
   children: ReactNode;
@@ -15,9 +15,7 @@ interface SmoothTextProps {
 }
 
 const ANIMATION_DURATION_BY_SPEED = {
-  // Sourced from styles/style.kiskadee.scss (--k-dur-int-slow).
   fast: 240,
-  // Uses 2x --k-dur-int-slow for a calmer default.
   slow: 480
 } as const;
 
@@ -50,13 +48,15 @@ export function SmoothText({ children, fontName, align, speed = 'slow' }: Smooth
   }, [fontName, children, speed]);
 
   return (
-    <span className={styles.wrapper} data-align={align} data-speed={speed}>
+    <span className="k-smooth-text" data-align={align} data-speed={speed}>
       {previous && (
-        <span className={`${styles.item} ${styles.exiting}`} aria-hidden="true">
+        <span className="k-smooth-text-item k-smooth-text-exiting" aria-hidden="true">
           {previous}
         </span>
       )}
-      <span className={`${styles.item} ${isAnimating ? styles.entering : ''}`}>{current}</span>
+      <span className={`k-smooth-text-item ${isAnimating ? 'k-smooth-text-entering' : ''}`}>
+        {current}
+      </span>
     </span>
   );
 }

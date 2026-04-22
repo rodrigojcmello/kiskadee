@@ -2,6 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ComponentClassNameMapJSON, ComponentClassNameMapSplitJSON } from '@kiskadee/core';
+import { minifyCss } from '@kiskadee/css-build';
 
 const coreClassMapSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
@@ -118,17 +119,17 @@ export async function persistBuildArtifacts(
   // Persist CSS (core and optional palettes)
   if (typeof cssGenerated === 'string') {
     const outCssFile = resolve(buildDir, 'core.kiskadee.css');
-    await writeFile(outCssFile, cssGenerated, 'utf8');
+    await writeFile(outCssFile, await minifyCss(cssGenerated), 'utf8');
     console.log(`[web-builder] Core CSS written to: ${outCssFile}`);
   } else {
     const outCssFile = resolve(buildDir, 'core.kiskadee.css');
-    await writeFile(outCssFile, cssGenerated.coreCss, 'utf8');
+    await writeFile(outCssFile, await minifyCss(cssGenerated.coreCss), 'utf8');
     console.log(`[web-builder] Core CSS written to: ${outCssFile}`);
 
     // Optionally write effects CSS as a separate file to be imported last
     if (cssGenerated.effectsCss && cssGenerated.effectsCss.trim() !== '') {
       const effectsFile = resolve(buildDir, 'effects.kiskadee.css');
-      await writeFile(effectsFile, cssGenerated.effectsCss, 'utf8');
+      await writeFile(effectsFile, await minifyCss(cssGenerated.effectsCss), 'utf8');
       console.log(`[web-builder] Effects CSS written to: ${effectsFile}`);
     }
 
@@ -136,7 +137,7 @@ export async function persistBuildArtifacts(
     for (const paletteName in cssGenerated.palettes) {
       const paletteCss = cssGenerated.palettes[paletteName];
       const paletteFile = resolve(buildDir, `${paletteName}.kiskadee.css`);
-      await writeFile(paletteFile, paletteCss, 'utf8');
+      await writeFile(paletteFile, await minifyCss(paletteCss), 'utf8');
       console.log(`[web-builder] Palette CSS written to: ${paletteFile}`);
     }
   }

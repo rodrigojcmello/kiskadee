@@ -7,14 +7,9 @@ import type {
   SemanticColor,
   ThemeMode
 } from '@kiskadee/core';
+import { createKiskadeePostcssPlugins } from '@kiskadee/css-build';
 import postcss from 'postcss';
-import combineMq from 'postcss-combine-media-query';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
-import {
-  type GenerateCssRuleFromStyleKeyOptions,
-  generateCssRuleFromStyleKey
-} from './generateCss';
-import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
 import {
   resolveElementStyleEmissionPolicy,
   type WebStyleEmissionPolicy
@@ -25,6 +20,11 @@ import {
   resolveWebStyleKeyIdentity,
   type WebStyleIdentityOptimizationOptions
 } from '../style-emission/web-style-key-identity';
+import {
+  type GenerateCssRuleFromStyleKeyOptions,
+  generateCssRuleFromStyleKey
+} from './generateCss';
+import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
 
 export type GenerateCssSplitOptions = {
   forceState?: boolean;
@@ -261,7 +261,10 @@ export async function generateCssSplit(
 
   // Build strings, sort for stability, and post-process media queries per bundle
   const coreRaw = Array.from(coreRules).sort().join('\n');
-  const coreOut = await postcss([combineMq()]).process(coreRaw, { from: undefined });
+  const mediaQueryPostcssPlugins = createKiskadeePostcssPlugins({
+    combineMediaQueries: true
+  });
+  const coreOut = await postcss(mediaQueryPostcssPlugins).process(coreRaw, { from: undefined });
 
   // CSS emission order rules (critical for overlapping native states like :hover vs :active)
   //
@@ -298,7 +301,9 @@ export async function generateCssSplit(
       return a.localeCompare(b);
     })
     .join('\n');
-  const effectsOut = await postcss([combineMq()]).process(effectsRaw, { from: undefined });
+  const effectsOut = await postcss(mediaQueryPostcssPlugins).process(effectsRaw, {
+    from: undefined
+  });
 
   const palettes: Record<string, string> = {};
   for (const p in paletteRules) {
@@ -310,7 +315,7 @@ export async function generateCssSplit(
         return a.localeCompare(b);
       })
       .join('\n');
-    const out = await postcss([combineMq()]).process(raw, { from: undefined });
+    const out = await postcss(mediaQueryPostcssPlugins).process(raw, { from: undefined });
     palettes[p] = out.css;
   }
 

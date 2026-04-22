@@ -289,12 +289,12 @@ The monorepo uses scripts from this package to keep artifacts and the showcase i
   - Writes artifacts to `packages/web-builder/build/<template-key>`.
 
 - `pnpm --filter @kiskadee/web-builder run sync`
-  - Runs `scripts/sync-showcase-artifacts.cjs`.
+  - Runs `scripts/sync-showcase-artifacts.ts`.
   - Copies build output to `packages/showcase/public/build/**`.
 
 - `pnpm --filter @kiskadee/web-builder run generate`
-  - Runs `scripts/generate-showcase-registry.cjs`.
-  - Generates registries under `packages/showcase/app/registry`.
+  - Runs `scripts/generate-showcase-registry.ts`.
+  - Generates registries under `packages/showcase/registry/generated`.
 
 - `pnpm --filter @kiskadee/web-builder run build-sync-generate`
   - Convenience command to run build, sync and generate in sequence.

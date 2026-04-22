@@ -1,3 +1,4 @@
+import './Tabs.line.css';
 import { createTabsComponent } from '../Tabs.runtime';
 import TabsLineStaticBarEnhancer from './Tabs.line.static';
 import { tabsLineStructural } from './Tabs.line.structural';
@@ -14,7 +15,6 @@ import type {
   TabsSpringPreset,
   TabsTabProps
 } from '../Tabs.types';
-import './Tabs.line.scss';
 
 /**
  * What

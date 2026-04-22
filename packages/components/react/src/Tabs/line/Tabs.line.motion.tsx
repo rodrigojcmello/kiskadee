@@ -1,3 +1,4 @@
+import './Tabs.line.motion.css';
 import { motion } from 'motion/react';
 import { type CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 import { resolveIndicatorClassName } from '../Tabs.class-names';
@@ -9,7 +10,6 @@ import {
   resolveBarEdgeOffsetStyle
 } from '../Tabs.measurements';
 import { resolveStretchIndicatorRect, type TabsMotionEngineProps } from '../Tabs.motion.shared';
-import './Tabs.line.motion.scss';
 
 type StretchIndicatorPhase = 'idle' | 'stretch' | 'settle';
 

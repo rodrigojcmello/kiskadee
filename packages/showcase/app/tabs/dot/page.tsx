@@ -1,8 +1,7 @@
 'use client';
 
 import { type TabsIndicatorPosition, type TabsTabWidth } from '@kiskadee/core';
-import { useKiskadee } from '@kiskadee/react-components';
-import { TabsDot } from '@kiskadee/react-components/tabs/dot';
+import { TabsDot, useKiskadee } from '@kiskadee/react-components';
 import { useState } from 'react';
 import { Select } from '@/k-components';
 import {

@@ -1,0 +1,26 @@
+{
+  "name": "@kiskadee/css-build",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Shared CSS build pipeline for Kiskadee artifacts.",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": {
+      "types": "./index.ts",
+      "default": "./index.ts"
+    }
+  },
+  "files": [
+    "index.ts"
+  ],
+  "author": "Rodrigo J C Mello",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "autoprefixer": "^10.4.21",
+    "cssnano": "^7.1.1",
+    "postcss": "^8.5.6",
+    "postcss-combine-media-query": "^2.0.0"
+  }
+}

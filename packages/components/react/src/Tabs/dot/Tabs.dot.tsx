@@ -1,3 +1,4 @@
+import './Tabs.dot.css';
 import { createTabsComponent } from '../Tabs.runtime';
 import TabsDotStaticBarEnhancer from './Tabs.dot.static';
 import { tabsDotStructural } from './Tabs.dot.structural';
@@ -14,7 +15,6 @@ import type {
   TabsSpringPreset,
   TabsTabProps
 } from '../Tabs.types';
-import './Tabs.dot.scss';
 
 /**
  * What
