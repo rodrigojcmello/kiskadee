@@ -1,5 +1,6 @@
 import type { Schema, StyleKeyByElement } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
+import { buildScopedToneMetadataKey } from './colors/convertElementColorsToStyleKeys';
 import { convertElementSchemaToStyleKeys } from './convertElementSchemaToStyleKeys';
 
 function createSchema(components: Schema['components'], global?: Schema['global']): Schema {
@@ -85,9 +86,15 @@ describe('convertElementSchemaToStyleKeys', () => {
     expect(e1.effects).toEqual({
       rest: ['shadow__[0,2,4,[0,0,0,0.2]]']
     });
-    expect(
-      toneMetadataByPalette.get('default.light')?.get('primary::boxColor__[10,20,30,1]')
-    ).toEqual({
+    const metadataKey = buildScopedToneMetadataKey(
+      {
+        componentName: 'button',
+        elementName: 'e1'
+      },
+      'primary::boxColor__[10,20,30,1]'
+    );
+
+    expect(toneMetadataByPalette.get('default.light')?.get(metadataKey)).toEqual({
       tones: ['medium']
     });
   });
@@ -157,7 +164,13 @@ describe('convertElementSchemaToStyleKeys', () => {
     });
 
     const { toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
-    const metadataKey = 'primary::boxColor__[0,0,0,1]';
+    const metadataKey = buildScopedToneMetadataKey(
+      {
+        componentName: 'button',
+        elementName: 'e1'
+      },
+      'primary::boxColor__[0,0,0,1]'
+    );
 
     expect(toneMetadataByPalette.get('default.light')?.get(metadataKey)).toEqual({
       tones: ['high']

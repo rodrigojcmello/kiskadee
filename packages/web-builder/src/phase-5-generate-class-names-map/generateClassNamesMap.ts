@@ -1,16 +1,17 @@
 import type {
   ClassNameByElementJSON,
   ColorClasses,
-  ComponentEmphasis,
   ComponentClassNameMapJSON,
   ComponentClassNameMapSplitJSON,
+  ComponentEmphasis,
   ComponentName,
-  ComponentStyleKeyMap,
-  InteractionState,
-  SemanticColor
+  ComponentStyleKeyMap
 } from '@kiskadee/core';
 import { componentEmphasisBuckets } from '@kiskadee/core';
-import type { ToneMetadataByPalette } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
+import {
+  buildScopedToneMetadataKey,
+  type ToneMetadataByPalette
+} from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
 import type { WebStyleEmissionPolicy } from '../style-emission/web-build-policy';
 import {
@@ -30,16 +31,33 @@ export type ClassNameByElement = ClassNameByElementJSON;
 export type ComponentClassNameMap = ComponentClassNameMapJSON;
 export type ComponentClassNameMapSplit = ComponentClassNameMapSplitJSON;
 
+type ElementStyleKeyRecord = {
+  decorations?: string[];
+  effects?: Record<string, string[] | undefined>;
+  scales?: Record<string, unknown>;
+  radiusScales?: Partial<Record<string, Record<string, string[] | undefined>>>;
+  palettes?: Record<string, unknown>;
+};
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-function isElementMap(value: unknown): value is Record<string, any> {
+function isElementMap(value: unknown): value is Record<string, ElementStyleKeyRecord> {
   if (!isRecord(value)) return false;
   const first = Object.values(value).find(Boolean);
   if (!isRecord(first)) return false;
   const elementKeys = ['decorations', 'effects', 'scales', 'radiusScales', 'palettes'];
   return elementKeys.some((key) => key in first);
+}
+
+function getOrCreateSet(map: Map<string, Set<string>>, key: string): Set<string> {
+  let set = map.get(key);
+  if (!set) {
+    set = new Set();
+    map.set(key, set);
+  }
+  return set;
 }
 
 function mapArray(
@@ -109,7 +127,7 @@ export function generateClassNamesMapSplit(
     componentName: string,
     variantName: string | undefined,
     elementName: string
-  ): Record<string, unknown> => {
+  ): ClassNameByElement => {
     if (!palettes[bundleKey]) palettes[bundleKey] = {};
     if (!palettes[bundleKey][componentName]) {
       palettes[bundleKey][componentName] = variantName ? {} : {};
@@ -117,18 +135,18 @@ export function generateClassNamesMapSplit(
     const componentEntry = palettes[bundleKey][componentName] as Record<string, unknown>;
     const target = variantName
       ? ((componentEntry[variantName] as Record<string, unknown> | undefined) ??
-        // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+        // biome-ignore lint/suspicious/noAssignInExpressions: initializes the nested variant record inline
         (componentEntry[variantName] = {}))
       : componentEntry;
     if (!target[elementName]) {
       target[elementName] = {};
     }
-    return target[elementName] as Record<string, unknown>;
+    return target[elementName] as ClassNameByElement;
   };
 
   const processElements = (
     componentName: string,
-    elements: Record<string, any>,
+    elements: Record<string, ElementStyleKeyRecord>,
     coreTarget: Record<string, ClassNameByElement>,
     variantName?: string
   ) => {
@@ -175,7 +193,7 @@ export function generateClassNamesMapSplit(
       // effects → e (bucketized; never merge effects into d/s)
       if (el.effects) {
         for (const st of Object.keys(el.effects)) {
-          const arr = (el.effects as any)[st] as string[] | undefined;
+          const arr = el.effects[st];
           if (!arr || arr.length === 0) continue;
           for (const key of arr) {
             const cls = resolveClassName(key);
@@ -197,8 +215,7 @@ export function generateClassNamesMapSplit(
             // [RIPPLE EFFECT 15] END: Assign ripple style keys to compact ripple buckets.
             else bucket = 'x';
 
-            if (!eBuckets.has(bucket)) eBuckets.set(bucket, new Set());
-            eBuckets.get(bucket)!.add(cls);
+            getOrCreateSet(eBuckets, bucket).add(cls);
           }
         }
       }
@@ -216,8 +233,7 @@ export function generateClassNamesMapSplit(
             const isOptInWidthScale =
               componentName === 'tabs' && elementName === 'e2' && key.startsWith('boxWidth');
             const target = isOptInWidthScale ? wMap : sMap;
-            if (!target.has(sizeKey)) target.set(sizeKey, new Set());
-            target.get(sizeKey)!.add(cls);
+            getOrCreateSet(target, sizeKey).add(cls);
           }
         }
       }
@@ -233,8 +249,7 @@ export function generateClassNamesMapSplit(
             const sizeKey = size.startsWith('s:') ? size.slice(2) : size;
             const mapped = mapArray(arr, resolveClassName);
             if (!mapped || mapped.length === 0) continue;
-            if (!target.has(sizeKey)) target.set(sizeKey, new Set());
-            const set = target.get(sizeKey)!;
+            const set = getOrCreateSet(target, sizeKey);
             mapped.forEach((c) => {
               set.add(c);
             });
@@ -250,32 +265,32 @@ export function generateClassNamesMapSplit(
         // `el.palettes` is typed with a constrained key union in @kiskadee/core
         // but in practice schemas may use arbitrary segment keys. Treat it as a
         // string-keyed record for artifact generation.
-        const palettesBySegment = el.palettes as unknown as Record<string, any>;
+        const palettesBySegment = el.palettes;
 
         for (const segmentName of Object.keys(palettesBySegment)) {
-          const segmentThemes = palettesBySegment[segmentName] as Record<string, any> | undefined;
-          if (!segmentThemes) continue;
+          const segmentThemes = palettesBySegment[segmentName];
+          if (!isRecord(segmentThemes)) continue;
 
           for (const themeName of Object.keys(segmentThemes)) {
-            const bySemantic = segmentThemes[themeName] as Record<string, any> | undefined;
-            if (!bySemantic) continue;
+            const bySemantic = segmentThemes[themeName];
+            if (!isRecord(bySemantic)) continue;
 
             // Create a composite key: segment.theme (e.g., "ios.light", "ios.dark")
             const bundleKey = `${segmentName}.${themeName}`;
 
             // IMPORTANT:
-            // `toneMetadataByPalette` is scoped by palette (segment + theme) on purpose.
+            // `toneMetadataByPalette` is scoped by palette (segment + theme) and element ownership.
             //
             // Rationale:
             // - The same StyleKey can be used across multiple palettes because StyleKey encodes
             //   the final CSS rule/value and must remain globally deduplicable.
-            // - However, the emphasis bucket (subtle/vivid) is semantic metadata and is allowed
-            //   to differ per palette. If we used a single global metadata map keyed only by
-            //   StyleKey, emphasis could "leak" from one palette to another and make the JSON
-            //   artifact incorrectly classify high/medium/low/lowest classes.
+            // - However, the component emphasis bucket (high/medium/low/lowest) is semantic
+            //   metadata and is allowed to differ per palette and per component element. If we used a single global
+            //   metadata map keyed only by StyleKey, emphasis could "leak" from one consumer to
+            //   another and make the JSON artifact incorrectly classify high/medium/low/lowest classes.
             //
-            // By resolving metadata through `bundleKey`, we keep CSS dedupe intact while producing
-            // correct per-palette `c[semantic].h|m|l|ll` buckets.
+            // By resolving metadata through `bundleKey` plus the current component/variant/element,
+            // we keep CSS dedupe intact while producing correct `c[semantic].h|m|l|ll` buckets.
             const toneMetaForPalette = toneMetadataByPalette.get(bundleKey);
             const elemRecord = ensurePaletteElement(
               bundleKey,
@@ -288,26 +303,36 @@ export function generateClassNamesMapSplit(
             const colorBySemantic: Record<string, ColorClasses> = {};
 
             for (const sem of Object.keys(bySemantic)) {
-              const byState = bySemantic[sem as SemanticColor];
+              const byState = bySemantic[sem];
+              if (!isRecord(byState)) continue;
 
               // Segregate classes by emphasis (or unique if no emphasis) per semantic
               const emphasisSets = new Map<ComponentEmphasis, Set<string>>();
 
-              for (const stateKey of Object.keys(byState ?? {})) {
-                const interactionState = stateKey as InteractionState;
-                const styleKeys = byState?.[interactionState] as string[] | undefined;
+              for (const rawStyleKeys of Object.values(byState)) {
+                const styleKeys = Array.isArray(rawStyleKeys)
+                  ? rawStyleKeys.filter(
+                      (styleKey): styleKey is string => typeof styleKey === 'string'
+                    )
+                  : undefined;
 
                 styleKeys?.forEach((styleKey: string) => {
                   const shortenedClass = resolveClassName(styleKey);
-                  const metaKey = `${sem}::${styleKey}`;
+                  const metaKey = buildScopedToneMetadataKey(
+                    {
+                      componentName,
+                      variantName,
+                      elementName
+                    },
+                    `${sem}::${styleKey}`
+                  );
                   const meta = toneMetaForPalette?.get(metaKey);
 
                   const tones = meta?.tones ?? [];
 
                   // Do NOT move selected palette classes into core.cs. Always classify by emphasis/unique.
                   for (const tone of tones) {
-                    if (!emphasisSets.has(tone)) emphasisSets.set(tone, new Set());
-                    emphasisSets.get(tone)!.add(shortenedClass);
+                    getOrCreateSet(emphasisSets, tone).add(shortenedClass);
                   }
 
                   // No unique bucket; all component colors must declare emphasis.
@@ -327,8 +352,7 @@ export function generateClassNamesMapSplit(
 
             // Add to the element record only if we have color classes
             if (Object.keys(colorBySemantic).length > 0) {
-              // c is now a map of semantic -> ColorClasses
-              (elemRecord as any).c = colorBySemantic as any;
+              elemRecord.c = colorBySemantic;
             }
           }
         }
@@ -412,7 +436,7 @@ export function generateClassNamesMapSplit(
       continue;
     }
 
-    const variantMap = elements as Record<string, any>;
+    const variantMap = elements as Record<string, unknown>;
     const coreVariants: Record<string, Record<string, ClassNameByElement>> = {};
     core[componentName] = coreVariants;
     for (const [variantName, variantElements] of Object.entries(variantMap)) {

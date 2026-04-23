@@ -15,6 +15,7 @@ import type {
 } from '@kiskadee/core';
 import { buildStyleKey, deepUpdate } from '../utils';
 import {
+  buildScopedToneMetadataKey,
   convertElementColorsToStyleKeys,
   type ToneMetadataByPalette
 } from './colors/convertElementColorsToStyleKeys';
@@ -64,7 +65,15 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
   const rippleConfig = schema.global?.effects?.ripple;
   // [RIPPLE EFFECT 10] END: Read global ripple config for element-level ripple conversion.
 
-  const applyElement = (path: string[], element: ElementSchemaInput) => {
+  const applyElement = (
+    path: string[],
+    element: ElementSchemaInput,
+    metadataScope: {
+      componentName: string;
+      variantName?: string;
+      elementName: string;
+    }
+  ) => {
     deepUpdate<StyleKeyByElement>(styleKeysByComponent, path, (prev) => {
       const el: Partial<StyleKeyByElement> = prev ? { ...prev } : {};
       if (element.decorations) {
@@ -213,7 +222,9 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
         const { styleKeys: paletteKeys, toneMetadataByPalette: paletteToneMetadataByPalette } =
           convertElementColorsToStyleKeys(element.palettes);
         el.palettes = paletteKeys;
-        // Merge emphasis metadata from this element into the global map, keeping it scoped by palette.
+        // Merge element-local emphasis metadata into the global map.
+        // Style keys remain globally dedupable; metadata is additionally scoped by component,
+        // variant, and element so another consumer cannot change this element's h/m/l/ll buckets.
         for (const [paletteKey, byMetaKey] of paletteToneMetadataByPalette) {
           if (!toneMetadataByPalette.has(paletteKey)) {
             toneMetadataByPalette.set(paletteKey, new Map());
@@ -222,11 +233,12 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
           if (!target) continue;
 
           for (const [metaKey, meta] of byMetaKey) {
-            const existing = target.get(metaKey);
+            const scopedMetaKey = buildScopedToneMetadataKey(metadataScope, metaKey);
+            const existing = target.get(scopedMetaKey);
             const existingTones = existing?.tones ?? [];
             const incomingTones = meta?.tones ?? [];
             const mergedTones = Array.from(new Set([...existingTones, ...incomingTones]));
-            target.set(metaKey, mergedTones.length ? { tones: mergedTones } : {});
+            target.set(scopedMetaKey, mergedTones.length ? { tones: mergedTones } : {});
           }
         }
       }
@@ -296,7 +308,11 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
         if (!elements) continue;
         for (const [elementName, element] of Object.entries(elements)) {
           if (!element) continue;
-          applyElement([componentName, variantName, elementName], element);
+          applyElement([componentName, variantName, elementName], element, {
+            componentName,
+            variantName,
+            elementName
+          });
         }
       }
       continue;
@@ -306,7 +322,10 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
     if (!elements) continue;
     for (const [elementName, element] of Object.entries(elements)) {
       if (!element) continue;
-      applyElement([componentName, elementName], element);
+      applyElement([componentName, elementName], element, {
+        componentName,
+        elementName
+      });
     }
   }
 

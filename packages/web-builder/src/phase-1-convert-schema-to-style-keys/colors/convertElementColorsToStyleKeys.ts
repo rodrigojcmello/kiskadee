@@ -2,11 +2,10 @@ import type {
   Color,
   ColorProperty,
   ColorValue,
-  ElementPalettes,
   ComponentEmphasis,
+  ElementPalettes,
   InteractionState,
   InteractionStateColorMap,
-  SegmentName,
   SelectedInteractionStateToken,
   SelectedInteractionSubMap,
   SemanticColor,
@@ -19,8 +18,8 @@ import { buildStyleKey, deepUpdate } from '../../utils';
 // Metadata to track which emphasis track(s) generated each style key.
 //
 // Important: different tracks (high/medium/low/lowest) may legitimately produce the same StyleKey
-// when their resolved color values are identical. In that case we must retain BOTH
-// tracks; otherwise downstream bucketing (f/d) becomes order-dependent.
+// when their resolved color values are identical. In that case we must retain the local tracks
+// for the current consumer, otherwise downstream h/m/l/ll bucketing becomes order-dependent.
 export type ToneMetadata = {
   tones?: ComponentEmphasis[]; // undefined = color without emphasis (single/unique color)
 };
@@ -30,19 +29,32 @@ export type ToneMetadataKey = string;
 
 export type ToneMetadataByPalette = Map<PaletteKey, Map<ToneMetadataKey, ToneMetadata>>;
 
+export type ToneMetadataScope = {
+  componentName: string;
+  variantName?: string;
+  elementName: string;
+};
+
+export function buildScopedToneMetadataKey(
+  scope: ToneMetadataScope,
+  toneMetadataKey: ToneMetadataKey
+): ToneMetadataKey {
+  const variantPart = scope.variantName === undefined ? 'variant' : `variant:${scope.variantName}`;
+  return `component:${scope.componentName}::${variantPart}::element:${scope.elementName}::${toneMetadataKey}`;
+}
+
 function buildPaletteKey(segmentName: string, themeName: string): PaletteKey {
   // IMPORTANT:
-  // We scope tone/emphasis metadata by palette (segment + theme), NOT by StyleKey.
+  // This color converter scopes tone/emphasis metadata by palette (segment + theme).
+  // Schema-wide component/variant/element ownership is added by the phase 1 aggregator.
   //
   // Rationale:
   // - StyleKey is the identity of a CSS rule. It must remain global so Phase 3/4 can dedupe
   //   classes: same rule/value => same StyleKey => same CSS class.
-  // - The emphasis bucket in the JSON artifact (subtle/vivid) is palette-specific. The same
-  //   StyleKey can be subtle in one palette and vivid in another (because the tone calls differ).
-  //   If we store emphasis metadata globally, it can “leak” across palettes and make subtle
-  //   appear as vivid (or vice-versa) in a given palette.
+  // - The emphasis bucket in the JSON artifact is palette- and consumer-specific. The same StyleKey
+  //   can be high in one element and medium in another, or high in one palette and medium in another.
   //
-  // Therefore, we keep StyleKey global and move ONLY the metadata into a per-palette map.
+  // Therefore, we keep StyleKey global and move ONLY the metadata into scoped maps.
   return `${segmentName}.${themeName}`;
 }
 
@@ -51,9 +63,11 @@ function buildToneMetadataKey(params: {
   styleKey: StyleKey;
 }): ToneMetadataKey {
   const { semanticColor, styleKey } = params;
-  // IMPORTANT: do not include segment/theme here.
+  // IMPORTANT: do not include segment/theme or component/element ownership here.
   // StyleKey identity must remain global/deduplicable.
   // Palette scoping is handled by the outer ToneMetadataByPalette map.
+  // Element ownership is added by convertElementSchemaToStyleKeys when it merges
+  // this element-local metadata into the schema-wide metadata map.
   //
   // We still include `semanticColor` here because the same StyleKey may be reused under
   // different semantics within the same palette, and the artifact buckets are semantic-aware.
@@ -69,7 +83,8 @@ function addToneMetadataByPalette(
   if (!toneMetadataByPalette.has(paletteKey)) {
     toneMetadataByPalette.set(paletteKey, new Map());
   }
-  const byMetaKey = toneMetadataByPalette.get(paletteKey)!;
+  const byMetaKey = toneMetadataByPalette.get(paletteKey);
+  if (!byMetaKey) return;
 
   const existing = byMetaKey.get(toneMetadataKey);
   const tones = existing?.tones ?? [];
@@ -78,9 +93,9 @@ function addToneMetadataByPalette(
   }
 
   // NOTE:
-  // Different tracks (subtle/vivid) can legitimately produce the same StyleKey when their
+  // Different tracks (high/medium/low/lowest) can legitimately produce the same StyleKey when their
   // resolved color values are identical. In that case we must retain BOTH tones.
-  // Downstream, Phase 5 is allowed to put the same CSS class into both `s` and `v` buckets.
+  // Downstream, Phase 5 is allowed to put the same CSS class into multiple local h/m/l/ll buckets.
   byMetaKey.set(toneMetadataKey, { tones: [...tones, tone] });
 }
 
@@ -314,7 +329,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
           if (hasEmphasisTracks) {
             const tracks = ['high', 'medium', 'low', 'lowest'] as const;
             for (const t of tracks) {
-              const trackEntry = (entry as Record<typeof tracks[number], unknown>)[t];
+              const trackEntry = (entry as Record<(typeof tracks)[number], unknown>)[t];
               if (isInteractionStateColorMap(trackEntry)) {
                 processInteractionStateMap(semanticColor, trackEntry, t);
               }
