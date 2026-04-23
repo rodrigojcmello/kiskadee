@@ -26,6 +26,7 @@ describe('transformScaleKeyToCss', () => {
         const result = transformScaleKeyToCss('paddingTop__16', breakpoints, 'abc', {
           styleEmissionPolicy: {
             borderRadiusEmission: 'direct',
+            borderColorEmission: 'direct',
             borderWidthEmission: 'direct',
             paddingEmission: 'compensated',
             shadowEmission: 'direct'
@@ -68,6 +69,7 @@ describe('transformScaleKeyToCss', () => {
         const result = transformScaleKeyToCss('borderRadius__16', breakpoints, 'abc', {
           styleEmissionPolicy: {
             borderRadiusEmission: 'token',
+            borderColorEmission: 'direct',
             borderWidthEmission: 'direct',
             paddingEmission: 'direct',
             shadowEmission: 'direct'
@@ -81,6 +83,7 @@ describe('transformScaleKeyToCss', () => {
         const result = transformScaleKeyToCss('borderRadius__16', breakpoints, 'abc', {
           styleEmissionPolicy: {
             borderRadiusEmission: 'mirrored',
+            borderColorEmission: 'direct',
             borderWidthEmission: 'direct',
             paddingEmission: 'direct',
             shadowEmission: 'direct'
@@ -103,6 +106,7 @@ describe('transformScaleKeyToCss', () => {
         const result = transformScaleKeyToCss('paddingRight++s:sm:1__16', breakpoints, 'abc', {
           styleEmissionPolicy: {
             borderRadiusEmission: 'direct',
+            borderColorEmission: 'direct',
             borderWidthEmission: 'direct',
             paddingEmission: 'compensated',
             shadowEmission: 'direct'
@@ -143,26 +147,27 @@ describe('transformScaleKeyToCss', () => {
     });
 
     describe('Valid Properties (Media Query Support)', () => {
-    it("should convert 'paddingTop++s:sm:1::bp:lg:1__16' into a valid CSS rule with media query", () => {
-      const result = transformScaleKeyToCss(
-        'paddingTop++s:sm:1::bp:lg:1__16',
-        breakpoints,
-        'abc',
-        {
-          styleEmissionPolicy: {
-            borderRadiusEmission: 'direct',
-            borderWidthEmission: 'direct',
-            paddingEmission: 'compensated',
-            shadowEmission: 'direct'
+      it("should convert 'paddingTop++s:sm:1::bp:lg:1__16' into a valid CSS rule with media query", () => {
+        const result = transformScaleKeyToCss(
+          'paddingTop++s:sm:1::bp:lg:1__16',
+          breakpoints,
+          'abc',
+          {
+            styleEmissionPolicy: {
+              borderRadiusEmission: 'direct',
+              borderColorEmission: 'direct',
+              borderWidthEmission: 'direct',
+              paddingEmission: 'compensated',
+              shadowEmission: 'direct'
+            }
           }
-        }
-      );
+        );
 
-      const bpValue = breakpoints['bp:lg:1'];
-      expect(result).toContain(`@media (min-width: ${bpValue}px)`);
-      expect(result).toContain('.abc {');
-      expect(result).toContain('padding-top: max(0px, calc(var(--k-pdt) - var(--k-bdw, 0px)))');
-    });
+        const bpValue = breakpoints['bp:lg:1'];
+        expect(result).toContain(`@media (min-width: ${bpValue}px)`);
+        expect(result).toContain('.abc {');
+        expect(result).toContain('padding-top: max(0px, calc(var(--k-pdt) - var(--k-bdw, 0px)))');
+      });
 
       it("should convert 'textSize++s:sm:1::bp:lg:1__16' into a valid CSS rule with media query and rem unit", () => {
         const result = transformScaleKeyToCss('textSize++s:sm:1::bp:lg:1__16', breakpoints, 'abc');

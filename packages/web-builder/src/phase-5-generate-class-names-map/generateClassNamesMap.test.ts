@@ -1,9 +1,9 @@
-import type { ComponentStyleKeyMap } from '@kiskadee/core';
+import type { ClassNameByElementJSON, ComponentStyleKeyMap } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import type { ToneMetadataByPalette } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
-import { generateClassNamesMapSplit } from './generateClassNamesMap';
 import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy';
+import { generateClassNamesMapSplit } from './generateClassNamesMap';
 
 describe('generateClassNamesMapSplit (ripple)', () => {
   it('maps ripple effect style keys into compact ripple buckets', () => {
@@ -92,8 +92,11 @@ describe('generateClassNamesMapSplit (ripple)', () => {
       collapseDirectIntoMirrored: true
     });
 
-    expect(out.core.button?.e1?.s?.['md:1']).toBe('bw1');
-    expect(out.core.card?.e1?.s?.['md:1']).toBe('bw1');
+    const button = out.core.button as Record<string, ClassNameByElementJSON>;
+    const card = out.core.card as Record<string, ClassNameByElementJSON>;
+
+    expect(button.e1.s?.['md:1']).toBe('bw1');
+    expect(card.e1.s?.['md:1']).toBe('bw1');
   });
 
   it('keeps raw and mirrored class names separate when collapse is disabled', () => {
@@ -124,7 +127,10 @@ describe('generateClassNamesMapSplit (ripple)', () => {
       webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY
     });
 
-    expect(out.core.button?.e1?.s?.['md:1']).toBe('bw1');
-    expect(out.core.card?.e1?.s?.['md:1']).toBe('bw0');
+    const button = out.core.button as Record<string, ClassNameByElementJSON>;
+    const card = out.core.card as Record<string, ClassNameByElementJSON>;
+
+    expect(button.e1.s?.['md:1']).toBe('bw1');
+    expect(card.e1.s?.['md:1']).toBe('bw0');
   });
 });

@@ -210,7 +210,7 @@ This means:
 
 ## Web-builder pipeline (phases)
 
-Location: `packages/web-builder/src/index.ts`
+Location: `packages/web-builder/src/run-build.ts`
 
 1) Phase 1 - Convert schema to style keys
    - Function: `convertElementSchemaToStyleKeys(schema)`
@@ -227,20 +227,24 @@ Location: `packages/web-builder/src/index.ts`
 4) Phase 4 - Generate CSS rules (split core vs palettes)
    - Function: `generateCssSplit(styleKeys, shortenMap)`
    - Colors use `transformColorKeyToCss` with `forceState=true`.
-   - Results: `coreCss` and `palettes[paletteName]`.
+   - Results: `coreCss`, `effectsCss` and `palettes[paletteName]`.
 
 5) Phase 5 - Generate classNamesMap split
-   - Function: `generateClassNamesMapSplit(styleKeys, shortenMap)`
+   - Function: `generateClassNamesMapSplit(styleKeys, shortenMap, toneMetadataByPalette)`
    - Produces the class map per component/element/state/palette.
 
 6) Phase 6 - Persist artifacts
-   - Function: `persistBuildArtifacts(cssGenerated, classNamesMapSplit, schema.name)`
+   - Function: `persistBuildArtifacts(cssGenerated, classNamesMapSplit, outDirSlug)`
    - Writes CSS bundles and maps to disk by preset.
 
 7) Phase 7 - Publish metadata
    - Function: `publishMetadata({ schema, outDirSlug, schemaPath, baseBuildDir })`
    - Writes `manifest.json`, `schema.json` and `segments.json` under `build/<template-key>`.
    - `segments.json` is derived from `schema.colors.globalSemanticsBySegment`.
+
+8) Phase 8 - Write extra artifacts
+   - Function: `writeExtraArtifacts({ schema, outDirSlug })`
+   - Writes global and theme token artifacts such as `global.kiskadee.json` and tokens CSS.
 
 ## Style key and interaction state conventions
 
@@ -268,14 +272,16 @@ Location: `packages/web-builder/src/index.ts`
 
 ## Generated artifacts
 
-- Core CSS: utilities for decorations/scales/effects (palette-independent).
+- Core CSS: utilities for decorations/scales and palette-independent base rules.
+- Effects CSS: gated effect utilities such as shadows, ripple tokens, and stateful radius effects.
 - Per-palette CSS: color rules only.
 - `classNamesMapSplit`: maps classes per component/element/state/palette at runtime.
 
 Metadata per template (under `packages/web-builder/build/<template-key>`):
 
 - `manifest.json`: used by the showcase to discover templates, segments and themes.
-- `schema.json` / `segments.json`: raw schema and segment data for inspection or tooling.
+- `schema.json` / `segments.json`: schema and segment data for inspection or tooling.
+- `global.kiskadee.json`: global metadata consumed by runtime/components.
 
 ## Build, sync and showcase registry scripts
 
@@ -333,7 +339,7 @@ To keep behavior predictable and performance-oriented, Kiskadee follows this con
 
 ## Useful reference files
 
-- `packages/web-builder/src/index.ts` - orchestrates the pipeline phases.
+- `packages/web-builder/src/run-build.ts` - orchestrates the pipeline phases.
 - `packages/web-builder/src/phase-4-convert-style-keys-to-css-rules/palettes/transformColorKeyToCss.ts` - selector generation rules.
 - `packages/web-builder/src/phase-4-convert-style-keys-to-css-rules/generateCssSplit.ts` - core vs palettes split.
 - `packages/web-builder/src/phase-5-generate-class-names-map/generateClassNamesMap.ts` - classNamesMapSplit generation.
