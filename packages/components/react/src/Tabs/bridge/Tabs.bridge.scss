@@ -275,7 +275,9 @@
   box-sizing: border-box;
   -webkit-appearance: none;
   appearance: none;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 0;
   font: inherit;
   padding: var(--k-pdt) calc(var(--k-pdr) + var(--k-bdr)) var(--k-pdb) calc(var(--k-pdl) + var(--k-bdr));
