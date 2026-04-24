@@ -572,7 +572,7 @@ export const schema: Schema = {
                 paddingLeft: 8,
                 paddingRight: 8
               },
-              palettes: buildBySegment(segmentNames, (segmentName) => {
+              palettes: buildBySegment(segmentNames, () => {
                 return {
                   light: {
                     boxColor: {
@@ -612,10 +612,10 @@ export const schema: Schema = {
                     boxColor: {
                       neutral: {
                         medium: {
-                          rest: [36, 100, 57, 1],
-                          hover: [37, 100, 65, 1],
-                          focus: [36, 100, 57, 1],
-                          pressed: [35, 90, 50, 1],
+                          rest: [36, 100, 57, 1] as const,
+                          hover: [37, 100, 65, 1] as const,
+                          focus: [36, 100, 57, 1] as const,
+                          pressed: [35, 90, 50, 1] as const,
                           selected: {
                             rest: transparent,
                             hover: transparent,
@@ -648,15 +648,15 @@ export const schema: Schema = {
                 textSize: 18,
                 textHeight: 22
               },
-              palettes: buildBySegment(segmentNames, (segmentName) => {
+              palettes: buildBySegment(segmentNames, () => {
                 return {
                   light: {
                     textColor: {
                       neutral: {
                         medium: {
-                          rest: [24, 100, 12, 1],
+                          rest: [24, 100, 12, 1] as const,
                           selected: {
-                            rest: [0, 0, 7, 1]
+                            rest: [0, 0, 7, 1] as const
                           }
                         }
                       }
@@ -672,15 +672,15 @@ export const schema: Schema = {
                 boxHeight: 18,
                 marginRight: 8
               },
-              palettes: buildBySegment(segmentNames, (segmentName) => {
+              palettes: buildBySegment(segmentNames, () => {
                 return {
                   light: {
                     textColor: {
                       neutral: {
                         medium: {
-                          rest: [24, 100, 12, 1],
+                          rest: [24, 100, 12, 1] as const,
                           selected: {
-                            rest: [0, 0, 7, 1]
+                            rest: [0, 0, 7, 1] as const
                           }
                         }
                       }
@@ -700,16 +700,16 @@ export const schema: Schema = {
                   }
                 }
               },
-              palettes: buildBySegment(segmentNames, (segmentName) => {
+              palettes: buildBySegment(segmentNames, () => {
                 return {
                   light: {
                     boxColor: {
                       neutral: {
                         medium: {
-                          rest: [43, 100, 99, 1],
-                          hover: [39, 100, 95, 1],
-                          focus: [43, 100, 99, 1],
-                          pressed: [38, 100, 92, 1]
+                          rest: [43, 100, 99, 1] as const,
+                          hover: [39, 100, 95, 1] as const,
+                          focus: [43, 100, 99, 1] as const,
+                          pressed: [38, 100, 92, 1] as const
                         }
                       }
                     }

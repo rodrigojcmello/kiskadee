@@ -25,6 +25,17 @@ Practical chain:
 
 ## 3) What belongs in schema
 
+### 3.0 Architectural rule records
+
+Use this document for durable structural rules that should outlive a single implementation.
+
+Rule records should include:
+
+- context: where the rule applies;
+- decision: the invariant;
+- reason: why the invariant exists;
+- consequence: what code/build/runtime should do because of it.
+
 ### 3.1 `components.<name>.elements`
 
 Use `elements` for tokenizable visual values that may vary by design system and/or context.
@@ -39,6 +50,36 @@ Examples:
 Rule:
 
 - If it can vary by segment/theme/intent/emphasis/state, it belongs in schema elements.
+
+### 3.1.1 Tabs component topology
+
+Context:
+
+- `components.tabs` can model a single visual topology or a variant-driven family such as
+  `line`, `box`, `segmented`, `dot`, and `bridge`.
+- The Material 3 Google preset is the current source of truth for full Tabs coverage and uses
+  `variants`.
+
+Decision:
+
+- A Tabs schema must declare either top-level `elements` or `variants`, but not both.
+- `variants.<name>.elements` is the preferred shape for variant-driven Tabs.
+- Top-level `elements` remains valid only for a non-variant Tabs definition.
+
+Reason:
+
+- There is no implicit inheritance or merge between top-level `elements` and
+  `variants.<name>.elements`.
+- Keeping the two shapes mutually exclusive avoids silent build ambiguity, where shared-looking
+  top-level element values could be interpreted as base defaults by one layer and ignored by
+  another.
+
+Consequence:
+
+- The core Tabs contract rejects `elements + variants`.
+- The web builder may continue treating those shapes as separate artifact topologies.
+- If shared values across variants become necessary, model them explicitly in preset factories or
+  introduce a dedicated contract before relying on implicit schema inheritance.
 
 ### 3.2 `components.<name>.options`
 

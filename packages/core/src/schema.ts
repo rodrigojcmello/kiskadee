@@ -95,13 +95,25 @@ export interface ClassNameMap {
 
 // -------------------------------------------------------------------------------------------------
 
+type TabsComponentWithElements<TSegmentName extends SegmentName = never> = {
+  elements: TabsElements<TSegmentName>;
+  options?: TabsOptions;
+  variants?: never;
+};
+
+type TabsComponentWithVariants<TSegmentName extends SegmentName = never> = {
+  elements?: never;
+  options?: TabsOptions;
+  variants: TabsVariants<TSegmentName>;
+};
+
+type TabsComponent<TSegmentName extends SegmentName = never> =
+  | TabsComponentWithElements<TSegmentName>
+  | TabsComponentWithVariants<TSegmentName>;
+
 type Components<TSegmentName extends SegmentName = never> = Partial<{
   button: { elements: ButtonElements<TSegmentName> & Elements<TSegmentName> };
-  tabs: {
-    elements?: TabsElements<TSegmentName>;
-    options?: TabsOptions;
-    variants?: TabsVariants<TSegmentName>;
-  };
+  tabs: TabsComponent<TSegmentName>;
 }>;
 
 export type SchemaMetadata = {

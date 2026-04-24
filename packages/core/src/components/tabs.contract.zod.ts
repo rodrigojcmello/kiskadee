@@ -18,8 +18,8 @@ import {
 } from './tabs.elements.zod';
 import {
   createTabsOptionsSchema,
-  tabsOptionsSchema,
-  type TabsVariantSchemaValue
+  type TabsVariantSchemaValue,
+  tabsOptionsSchema
 } from './tabs.options.zod';
 import { formatZodIssue } from './tabs.zod.shared';
 
@@ -151,6 +151,13 @@ const tabsComponentContractSchema = z
       ctx.addIssue({
         code: 'custom',
         message: 'expected "elements" or "variants"'
+      });
+    }
+
+    if (value.elements !== undefined && value.variants !== undefined) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'expected either "elements" or "variants", not both'
       });
     }
 
