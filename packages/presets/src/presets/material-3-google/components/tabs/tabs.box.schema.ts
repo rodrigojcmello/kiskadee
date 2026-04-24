@@ -24,10 +24,22 @@ export function createMaterial3GoogleTabsBoxVariant({
       // e1: bar
       e1: {
         scales: {
-          paddingTop: 4,
-          paddingBottom: 4,
-          paddingLeft: 4,
-          paddingRight: 4,
+          paddingTop: {
+            's:sm:1': 3,
+            's:md:1': 4
+          },
+          paddingBottom: {
+            's:sm:1': 3,
+            's:md:1': 4
+          },
+          paddingLeft: {
+            's:sm:1': 3,
+            's:md:1': 4
+          },
+          paddingRight: {
+            's:sm:1': 3,
+            's:md:1': 4
+          },
           borderRadius: {
             rounded: 20,
             pill: 20,
@@ -61,14 +73,25 @@ export function createMaterial3GoogleTabsBoxVariant({
       e2: {
         scales: {
           boxWidth: {
-            's:sm:1': 120,
-            's:md:1': 144,
-            's:lg:1': 160
+            's:sm:1': 104,
+            's:md:1': 144
           },
-          paddingTop: 10,
-          paddingBottom: 10,
-          paddingLeft: 14,
-          paddingRight: 14
+          paddingTop: {
+            's:sm:1': 8,
+            's:md:1': 10
+          },
+          paddingBottom: {
+            's:sm:1': 8,
+            's:md:1': 10
+          },
+          paddingLeft: {
+            's:sm:1': 12,
+            's:md:1': 14
+          },
+          paddingRight: {
+            's:sm:1': 12,
+            's:md:1': 14
+          }
         },
         palettes: {
           default: {
@@ -115,8 +138,14 @@ export function createMaterial3GoogleTabsBoxVariant({
           textWeight: 'medium'
         },
         scales: {
-          textSize: 14,
-          textHeight: 24
+          textSize: {
+            's:sm:1': 13,
+            's:md:1': 14
+          },
+          textHeight: {
+            's:sm:1': 20,
+            's:md:1': 24
+          }
         },
         palettes: {
           default: {

@@ -12,10 +12,12 @@ import { useState } from 'react';
 import { Select } from '@/k-components';
 import {
   DEFAULT_TAB_VALUE,
+  DEFAULT_TAB_SIZE,
   type TabsIndicatorMotionStyleControl,
   type TabsIndicatorPositionControl,
   type TabsLineWidthControl,
   type TabsMode,
+  type TabsSizeControl,
   type TabsSpring,
   type TabsTabWidthControl,
   indicatorMotionStyleLabels,
@@ -25,6 +27,7 @@ import {
   modeOptions,
   renderTabsSlots,
   springOptions,
+  tabSizeOptions,
   TabsShowcasePageShell,
   tabWidthLabels
 } from '../ShowcaseTabs.shared';
@@ -38,6 +41,7 @@ export default function TabsLinePage() {
   const [indicatorPosition, setIndicatorPosition] = useState<TabsIndicatorPositionControl>('default');
   const [lineWidth, setLineWidth] = useState<TabsLineWidthControl>('default');
   const [tabWidth, setTabWidth] = useState<TabsTabWidthControl>('default');
+  const [tabSize, setTabSize] = useState<TabsSizeControl>(DEFAULT_TAB_SIZE);
   const [indicatorShape, setIndicatorShape] = useState<TabsLineIndicatorShape>('square');
   const [selectedValue, setSelectedValue] = useState(DEFAULT_TAB_VALUE);
 
@@ -102,6 +106,13 @@ export default function TabsLinePage() {
       controls={
         <>
           <Select
+            label="Size"
+            width={180}
+            options={tabSizeOptions}
+            value={tabSize}
+            onValueChange={(value) => setTabSize(value as TabsSizeControl)}
+          />
+          <Select
             label="Mode"
             width={180}
             options={modeOptions}
@@ -163,6 +174,7 @@ export default function TabsLinePage() {
         value={selectedValue}
         onValueChange={setSelectedValue}
         activationMode="manual"
+        scale={tabSize}
         tabWidth={tabWidthProp}
         indicator={resolvedIndicator}
         spring={spring}

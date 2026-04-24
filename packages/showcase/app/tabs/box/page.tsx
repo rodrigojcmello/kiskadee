@@ -10,8 +10,10 @@ import { useState } from 'react';
 import { Select } from '@/k-components';
 import {
   DEFAULT_TAB_VALUE,
+  DEFAULT_TAB_SIZE,
   type TabsIndicatorMotionStyleControl,
   type TabsMode,
+  type TabsSizeControl,
   type TabsSpring,
   type TabsTabWidthControl,
   boxIndicatorShapeLabels,
@@ -19,6 +21,7 @@ import {
   modeOptions,
   renderTabsSlots,
   springOptions,
+  tabSizeOptions,
   TabsShowcasePageShell,
   tabWidthLabels
 } from '../ShowcaseTabs.shared';
@@ -31,6 +34,7 @@ export default function TabsBoxPage() {
     useState<TabsIndicatorMotionStyleControl>('direct');
   const [indicatorShape, setIndicatorShape] = useState<TabsBoxIndicatorShape>('square');
   const [tabWidth, setTabWidth] = useState<TabsTabWidthControl>('default');
+  const [tabSize, setTabSize] = useState<TabsSizeControl>(DEFAULT_TAB_SIZE);
   const [selectedValue, setSelectedValue] = useState(DEFAULT_TAB_VALUE);
 
   const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'auto';
@@ -63,6 +67,13 @@ export default function TabsBoxPage() {
       description="Box exposes the indicator shape selector together with motion controls and tab width."
       controls={
         <>
+          <Select
+            label="Size"
+            width={180}
+            options={tabSizeOptions}
+            value={tabSize}
+            onValueChange={(value) => setTabSize(value as TabsSizeControl)}
+          />
           <Select
             label="Mode"
             width={180}
@@ -111,6 +122,7 @@ export default function TabsBoxPage() {
         value={selectedValue}
         onValueChange={setSelectedValue}
         activationMode="manual"
+        scale={tabSize}
         tabWidth={tabWidthProp}
         indicator={{
           motion: mode === 'animated' ? 'auto' : 'none',

@@ -18,8 +18,10 @@ export type TabsIndicatorMotionStyleControl = TabsIndicatorMotionStyle;
 export type TabsIndicatorPositionControl = 'default' | TabsIndicatorPosition;
 export type TabsLineWidthControl = 'default' | TabsIndicatorWidth;
 export type TabsTabWidthControl = 'default' | TabsTabWidth;
+export type TabsSizeControl = 's:md:1' | 's:sm:1';
 
 export const DEFAULT_TAB_VALUE = 'locations';
+export const DEFAULT_TAB_SIZE: TabsSizeControl = 's:md:1';
 
 export const loremByValue: Record<string, string> = {
   home: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Donec sed odio dui. Cras mattis consectetur purus sit amet fermentum. Maecenas faucibus mollis interdum. Vestibulum id ligula porta felis euismod semper.`,
@@ -56,6 +58,11 @@ export const springOptions = [
   { value: 'snappy', label: 'Snappy' },
   { value: 'gentle', label: 'Gentle' },
   { value: 'debugSlow', label: 'Debug Slow' }
+];
+
+export const tabSizeOptions = [
+  { value: 's:md:1', label: 'Medium' },
+  { value: 's:sm:1', label: 'Small' }
 ];
 
 export const lineIndicatorWidthLabels: Record<TabsIndicatorWidth, string> = {

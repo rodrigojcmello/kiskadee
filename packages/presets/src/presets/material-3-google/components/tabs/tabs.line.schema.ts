@@ -66,14 +66,25 @@ export function createMaterial3GoogleTabsLineVariant({
       e2: {
         scales: {
           boxWidth: {
-            's:sm:1': 120,
-            's:md:1': 144,
-            's:lg:1': 160
+            's:sm:1': 104,
+            's:md:1': 144
           },
-          paddingTop: 10,
-          paddingBottom: 10,
-          paddingLeft: 14,
-          paddingRight: 14
+          paddingTop: {
+            's:sm:1': 8,
+            's:md:1': 10
+          },
+          paddingBottom: {
+            's:sm:1': 8,
+            's:md:1': 10
+          },
+          paddingLeft: {
+            's:sm:1': 12,
+            's:md:1': 14
+          },
+          paddingRight: {
+            's:sm:1': 12,
+            's:md:1': 14
+          }
         },
         palettes: {
           default: {
@@ -120,8 +131,14 @@ export function createMaterial3GoogleTabsLineVariant({
           textWeight: 'medium'
         },
         scales: {
-          textSize: 14,
-          textHeight: 24
+          textSize: {
+            's:sm:1': 13,
+            's:md:1': 14
+          },
+          textHeight: {
+            's:sm:1': 20,
+            's:md:1': 24
+          }
         },
         palettes: {
           default: {
@@ -155,9 +172,18 @@ export function createMaterial3GoogleTabsLineVariant({
       // e4: icon
       e4: {
         scales: {
-          boxWidth: 24,
-          boxHeight: 24,
-          marginRight: 8
+          boxWidth: {
+            's:sm:1': 20,
+            's:md:1': 24
+          },
+          boxHeight: {
+            's:sm:1': 20,
+            's:md:1': 24
+          },
+          marginRight: {
+            's:sm:1': 6,
+            's:md:1': 8
+          }
         },
         palettes: {
           default: {
@@ -191,8 +217,14 @@ export function createMaterial3GoogleTabsLineVariant({
       // e5: indicator
       e5: {
         scales: {
-          boxWidth: 24,
-          boxHeight: 5,
+          boxWidth: {
+            's:sm:1': 20,
+            's:md:1': 24
+          },
+          boxHeight: {
+            's:sm:1': 4,
+            's:md:1': 5
+          },
           marginTop: 0,
           marginBottom: 0
         },

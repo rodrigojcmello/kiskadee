@@ -32,9 +32,15 @@ export function createMaterial3GoogleTabsDotVariant({
       // e5: indicator
       e5: {
         scales: {
-          boxHeight: 8,
+          boxHeight: {
+            's:sm:1': 6,
+            's:md:1': 8
+          },
           marginTop: 0,
-          marginBottom: 5
+          marginBottom: {
+            's:sm:1': 4,
+            's:md:1': 5
+          }
         },
         palettes: lineVariant.elements?.e5?.palettes
       }

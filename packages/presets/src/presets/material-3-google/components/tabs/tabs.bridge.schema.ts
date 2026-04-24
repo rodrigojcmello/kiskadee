@@ -27,10 +27,22 @@ export function createMaterial3GoogleTabsBridgeVariant({
       // e1: bar
       e1: {
         scales: {
-          paddingTop: 8,
-          paddingBottom: 8,
-          paddingLeft: 8,
-          paddingRight: 8
+          paddingTop: {
+            's:sm:1': 6,
+            's:md:1': 8
+          },
+          paddingBottom: {
+            's:sm:1': 6,
+            's:md:1': 8
+          },
+          paddingLeft: {
+            's:sm:1': 6,
+            's:md:1': 8
+          },
+          paddingRight: {
+            's:sm:1': 6,
+            's:md:1': 8
+          }
         },
         palettes: {
           default: {
@@ -59,19 +71,29 @@ export function createMaterial3GoogleTabsBridgeVariant({
       e2: {
         scales: {
           boxWidth: {
-            's:sm:1': 120,
-            's:md:1': 144,
-            's:lg:1': 160
+            's:sm:1': 104,
+            's:md:1': 144
           },
-          paddingTop: 10,
-          paddingBottom: 10,
-          paddingLeft: 32,
-          paddingRight: 32,
+          paddingTop: {
+            's:sm:1': 8,
+            's:md:1': 10
+          },
+          paddingBottom: {
+            's:sm:1': 8,
+            's:md:1': 10
+          },
+          paddingLeft: {
+            's:sm:1': 24,
+            's:md:1': 32
+          },
+          paddingRight: {
+            's:sm:1': 24,
+            's:md:1': 32
+          },
           borderRadius: {
             rounded: {
-              's:sm:1': 12,
-              's:md:1': 12,
-              's:lg:1': 12
+              's:sm:1': 10,
+              's:md:1': 12
             }
           }
         },
@@ -132,8 +154,14 @@ export function createMaterial3GoogleTabsBridgeVariant({
           textWeight: 'extraBold'
         },
         scales: {
-          textSize: 18,
-          textHeight: 24
+          textSize: {
+            's:sm:1': 16,
+            's:md:1': 18
+          },
+          textHeight: {
+            's:sm:1': 20,
+            's:md:1': 24
+          }
         },
         palettes: {
           default: {
@@ -167,9 +195,18 @@ export function createMaterial3GoogleTabsBridgeVariant({
       // e4: icon
       e4: {
         scales: {
-          boxWidth: 24,
-          boxHeight: 24,
-          marginRight: 8
+          boxWidth: {
+            's:sm:1': 20,
+            's:md:1': 24
+          },
+          boxHeight: {
+            's:sm:1': 20,
+            's:md:1': 24
+          },
+          marginRight: {
+            's:sm:1': 6,
+            's:md:1': 8
+          }
         },
         palettes: {
           default: {
@@ -205,9 +242,8 @@ export function createMaterial3GoogleTabsBridgeVariant({
         scales: {
           borderRadius: {
             rounded: {
-              's:sm:1': 12,
-              's:md:1': 12,
-              's:lg:1': 12
+              's:sm:1': 10,
+              's:md:1': 12
             }
           }
         },

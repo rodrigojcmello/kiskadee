@@ -6,8 +6,11 @@ import { useState } from 'react';
 import { Select } from '@/k-components';
 import {
   DEFAULT_TAB_VALUE,
+  DEFAULT_TAB_SIZE,
+  type TabsSizeControl,
   type TabsTabWidthControl,
   renderTabsSlots,
+  tabSizeOptions,
   TabsShowcasePageShell,
   tabWidthLabels
 } from '../ShowcaseTabs.shared';
@@ -15,6 +18,7 @@ import {
 export default function TabsSegmentedPage() {
   const { global } = useKiskadee();
   const [tabWidth, setTabWidth] = useState<TabsTabWidthControl>('default');
+  const [tabSize, setTabSize] = useState<TabsSizeControl>(DEFAULT_TAB_SIZE);
   const [selectedValue, setSelectedValue] = useState(DEFAULT_TAB_VALUE);
 
   const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'auto';
@@ -37,19 +41,29 @@ export default function TabsSegmentedPage() {
       title="Tabs / Segmented"
       description="Segmented does not expose indicator controls, so this page focuses only on tab width behavior."
       controls={
-        <Select
-          label="Tab Width"
-          width={220}
-          options={tabWidthOptions}
-          value={tabWidth}
-          onValueChange={(value) => setTabWidth(value as TabsTabWidthControl)}
-        />
+        <>
+          <Select
+            label="Size"
+            width={180}
+            options={tabSizeOptions}
+            value={tabSize}
+            onValueChange={(value) => setTabSize(value as TabsSizeControl)}
+          />
+          <Select
+            label="Tab Width"
+            width={220}
+            options={tabWidthOptions}
+            value={tabWidth}
+            onValueChange={(value) => setTabWidth(value as TabsTabWidthControl)}
+          />
+        </>
       }
     >
       <TabsSegmented.Root
         value={selectedValue}
         onValueChange={setSelectedValue}
         activationMode="manual"
+        scale={tabSize}
         tabWidth={tabWidthProp}
       >
         {tabs}

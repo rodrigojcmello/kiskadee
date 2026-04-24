@@ -6,12 +6,15 @@ import { useState } from 'react';
 import { Select } from '@/k-components';
 import {
   DEFAULT_TAB_VALUE,
+  DEFAULT_TAB_SIZE,
   type TabsIndicatorPositionControl,
   type TabsMode,
+  type TabsSizeControl,
   type TabsTabWidthControl,
   indicatorPositionLabels,
   modeOptions,
   renderTabsSlots,
+  tabSizeOptions,
   TabsShowcasePageShell,
   tabWidthLabels
 } from '../ShowcaseTabs.shared';
@@ -21,6 +24,7 @@ export default function TabsDotPage() {
   const [mode, setMode] = useState<TabsMode>('animated');
   const [indicatorPosition, setIndicatorPosition] = useState<TabsIndicatorPositionControl>('default');
   const [tabWidth, setTabWidth] = useState<TabsTabWidthControl>('default');
+  const [tabSize, setTabSize] = useState<TabsSizeControl>(DEFAULT_TAB_SIZE);
   const [selectedValue, setSelectedValue] = useState(DEFAULT_TAB_VALUE);
 
   const schemaIndicatorPosition = global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
@@ -57,6 +61,13 @@ export default function TabsDotPage() {
       controls={
         <>
           <Select
+            label="Size"
+            width={180}
+            options={tabSizeOptions}
+            value={tabSize}
+            onValueChange={(value) => setTabSize(value as TabsSizeControl)}
+          />
+          <Select
             label="Mode"
             width={180}
             options={modeOptions}
@@ -84,6 +95,7 @@ export default function TabsDotPage() {
         value={selectedValue}
         onValueChange={setSelectedValue}
         activationMode="manual"
+        scale={tabSize}
         tabWidth={tabWidthProp}
         indicator={{
           motion: mode === 'animated' ? 'auto' : 'none',

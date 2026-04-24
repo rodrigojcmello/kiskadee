@@ -7,8 +7,11 @@ import { Select } from '@/k-components';
 import {
   bridgeLowerCurveLabels,
   DEFAULT_TAB_VALUE,
+  DEFAULT_TAB_SIZE,
+  type TabsSizeControl,
   type TabsTabWidthControl,
   renderTabsSlots,
+  tabSizeOptions,
   TabsShowcasePageShell,
   tabWidthLabels
 } from '../ShowcaseTabs.shared';
@@ -16,8 +19,8 @@ import {
 export default function TabsBridgePage() {
   const { global } = useKiskadee();
   const [tabWidth, setTabWidth] = useState<TabsTabWidthControl>('default');
-  const [bridgeLowerCurve, setBridgeLowerCurve] =
-    useState<TabsBridgeLowerCurve>('curved');
+  const [tabSize, setTabSize] = useState<TabsSizeControl>(DEFAULT_TAB_SIZE);
+  const [bridgeLowerCurve, setBridgeLowerCurve] = useState<TabsBridgeLowerCurve>('curved');
   const [selectedValue, setSelectedValue] = useState(DEFAULT_TAB_VALUE);
 
   const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'auto';
@@ -50,6 +53,13 @@ export default function TabsBridgePage() {
       controls={
         <>
           <Select
+            label="Size"
+            width={180}
+            options={tabSizeOptions}
+            value={tabSize}
+            onValueChange={(value) => setTabSize(value as TabsSizeControl)}
+          />
+          <Select
             label="Tab Width"
             width={220}
             options={tabWidthOptions}
@@ -70,6 +80,7 @@ export default function TabsBridgePage() {
         value={selectedValue}
         onValueChange={setSelectedValue}
         activationMode="manual"
+        scale={tabSize}
         tabWidth={tabWidthProp}
         lowerCurve={bridgeLowerCurve}
       >
