@@ -15,7 +15,9 @@ describe('convertElementBorderRadiusToStyleKeys', () => {
       }
     };
 
-    const result = convertElementBorderRadiusToStyleKeys(schema.rounded!, 'borderRadiusRounded');
+    const rounded = schema.rounded;
+    if (!rounded) throw new Error('Expected rounded border radius effect');
+    const result = convertElementBorderRadiusToStyleKeys(rounded, 'borderRadiusRounded');
 
     expect(result).toEqual({
       rest: ['borderRadiusRounded__20'],
@@ -40,7 +42,9 @@ describe('convertElementBorderRadiusToStyleKeys', () => {
       }
     };
 
-    const result = convertElementBorderRadiusToStyleKeys(schema.rounded!, 'borderRadiusRounded');
+    const rounded = schema.rounded;
+    if (!rounded) throw new Error('Expected rounded border radius effect');
+    const result = convertElementBorderRadiusToStyleKeys(rounded, 'borderRadiusRounded');
 
     expect(result).toEqual({
       rest: ['borderRadiusRounded__20'],
@@ -61,9 +65,11 @@ describe('convertElementBorderRadiusToStyleKeys', () => {
       }
     };
 
-    const result = convertElementBorderRadiusToStyleKeys(schema.rounded!, 'borderRadiusRounded');
+    const rounded = schema.rounded;
+    if (!rounded) throw new Error('Expected rounded border radius effect');
+    const result = convertElementBorderRadiusToStyleKeys(rounded, 'borderRadiusRounded');
     expect(result).toEqual({
-      rest: ['borderRadiusRounded__20', 'borderRadiusRounded__18']
+      rest: ['borderRadiusRounded++s:sm:1__20', 'borderRadiusRounded++s:md:1__18']
     });
   });
 
@@ -76,7 +82,9 @@ describe('convertElementBorderRadiusToStyleKeys', () => {
       }
     };
 
-    const result = convertElementBorderRadiusToStyleKeys(schema.rounded!, 'borderRadiusRounded');
+    const rounded = schema.rounded;
+    if (!rounded) throw new Error('Expected rounded border radius effect');
+    const result = convertElementBorderRadiusToStyleKeys(rounded, 'borderRadiusRounded');
     expect(result).toEqual({
       rest: ['borderRadiusRounded__12']
     });
@@ -93,10 +101,12 @@ describe('convertElementBorderRadiusToStyleKeys', () => {
       }
     };
 
-    const result = convertElementBorderRadiusToStyleKeys(schema.rounded!, 'borderRadiusRounded');
+    const rounded = schema.rounded;
+    if (!rounded) throw new Error('Expected rounded border radius effect');
+    const result = convertElementBorderRadiusToStyleKeys(rounded, 'borderRadiusRounded');
 
     expect(result).toEqual({
-      'selected:hover': ['borderRadiusRounded--selected:hover__4']
+      'selected:hover': ['borderRadiusRounded--selected:hover++s:lg:1__4']
     });
   });
 });

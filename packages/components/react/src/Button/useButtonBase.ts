@@ -5,6 +5,7 @@ import {
   type ComponentEmphasis,
   stateActivator as cn,
   componentEmphasisBuckets,
+  type EffectClassBucketJSON,
   type RadiusMode
 } from '@kiskadee/core';
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
@@ -32,12 +33,11 @@ function collectStr(
   if (bySem) {
     const bucket = emphasis ? componentEmphasisBuckets[emphasis] : undefined;
     const bySemBuckets = bySem as Record<string, string | undefined>;
-    const color =
-      bucket
-        ? bySemBuckets[bucket] ?? ''
-        : !emphasis
-          ? bySem.h ?? bySem.m ?? bySem.l ?? bySem.ll ?? ''
-          : '';
+    const color = bucket
+      ? (bySemBuckets[bucket] ?? '')
+      : !emphasis
+        ? (bySem.h ?? bySem.m ?? bySem.l ?? bySem.ll ?? '')
+        : '';
 
     if (color) out = out ? `${out} ${color}` : color;
   }
@@ -46,6 +46,19 @@ function collectStr(
 }
 
 const normalizeScaleKey = (key: string): string => (key.startsWith('s:') ? key.slice(2) : key);
+
+function resolveEffectBucketClass(
+  bucket: EffectClassBucketJSON | undefined,
+  scaleKey: string
+): string {
+  if (!bucket) return '';
+  if (typeof bucket === 'string') return bucket;
+
+  const all = bucket.all ?? '';
+  const sized = bucket[scaleKey] ?? '';
+
+  return [all, sized].filter(Boolean).join(' ');
+}
 
 type UseButtonClassNamesArgs = {
   e1: ClassNameByElementJSON | undefined;
@@ -107,9 +120,9 @@ function useButtonClassNames({
     const shadowEffects = shadow ? (effects?.h ?? '') : '';
     const radiusEffects = radiusEffect
       ? radiusMode === 'rounded'
-        ? (effects?.rr ?? '')
+        ? resolveEffectBucketClass(effects?.rr, scaleKey)
         : radiusMode === 'pill'
-          ? (effects?.rp ?? '')
+          ? resolveEffectBucketClass(effects?.rp, scaleKey)
           : ''
       : '';
     const e1Effects = [shadowEffects, radiusEffects].filter(Boolean).join(' ');
@@ -201,7 +214,7 @@ function useButtonCommonProps(props: ButtonProps) {
     | Record<string, Record<string, ClassNameByElementJSON>>
     | undefined;
   const buttonElements =
-    buttonComponent && Object.prototype.hasOwnProperty.call(buttonComponent, 'e1')
+    buttonComponent && Object.hasOwn(buttonComponent, 'e1')
       ? (buttonComponent as Record<string, ClassNameByElementJSON>)
       : undefined;
   const { e1, e2, e3 } = buttonElements ?? {};

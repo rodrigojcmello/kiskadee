@@ -207,4 +207,37 @@ describe('generateClassNamesMapSplit (ripple)', () => {
       m: 'txt'
     });
   });
+
+  it('groups border radius effects by size inside effect buckets', () => {
+    const styleKeys = {
+      button: {
+        e1: {
+          effects: {
+            hover: [
+              'borderRadiusRounded--hover__20',
+              'borderRadiusRounded--hover++s:md:1__16',
+              'borderRadiusRounded--hover++s:lg:1__12'
+            ]
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+
+    const toneMetadataByPalette = new Map() as ToneMetadataByPalette;
+    const out = generateClassNamesMapSplit(
+      styleKeys,
+      {} as ShortenCssClassNames,
+      toneMetadataByPalette
+    );
+
+    const button = out.core.button as Record<string, ClassNameByElementJSON>;
+
+    expect(button.e1.e).toEqual({
+      rr: {
+        all: 'borderRadiusRounded--hover__20',
+        'md:1': 'borderRadiusRounded--hover++s:md:1__16',
+        'lg:1': 'borderRadiusRounded--hover++s:lg:1__12'
+      }
+    });
+  });
 });

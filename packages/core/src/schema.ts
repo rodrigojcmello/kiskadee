@@ -226,6 +226,9 @@ export type ColorClasses = {
   ll?: string; // lowest emphasis
 };
 
+export type EffectClassNamesBySizeJSON = Partial<Record<string, string>>;
+export type EffectClassBucketJSON = string | EffectClassNamesBySizeJSON;
+
 // Types describing the JSON artifact produced by web-builder (classNamesMap.json)
 export type ClassNameByElementJSON = {
   // d = decorations, e = effects (segregated), s = scales, w = width scales, c = colors (with h/m/l/ll sub-fields), l = control states
@@ -238,7 +241,8 @@ export type ClassNameByElementJSON = {
   // - rr: border radius (rounded)
   // - rp: border radius (pill)
   // - rs: border radius (square)
-  e?: Partial<Record<string, string>>;
+  // Radius effect buckets may be size-aware and therefore use { all, md:1, lg:1, ... }.
+  e?: Partial<Record<string, EffectClassBucketJSON>>;
   // s: values are pre-joined into a single space-separated string (no arrays) per size key.
   // For web payload optimization, keys are stored without the "s:" prefix (e.g. "s:md:1" -> "md:1", "s:all" -> "all").
   s?: Partial<Record<string, string>>;

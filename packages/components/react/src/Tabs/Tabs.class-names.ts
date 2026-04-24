@@ -98,7 +98,8 @@ export function resolveEffectClasses(element: TabsClassesMap['e1'] | undefined):
  *     independently from other effect buckets like ripple.
  */
 export function resolveShadowEffectClassName(element: TabsClassesMap['e1'] | undefined): string {
-  return joinClassNames(element?.e?.h, element?.e?.h ? cn.shadow : '') ?? '';
+  const shadowClass = typeof element?.e?.h === 'string' ? element.e.h : '';
+  return joinClassNames(shadowClass, shadowClass ? cn.shadow : '') ?? '';
 }
 
 /**
@@ -145,7 +146,9 @@ export function resolveElementClassName(
       element.s?.all,
       element.s?.[scaleKey],
       options.includeEffects === false ? '' : resolveEffectClasses(element),
-      options.includeEffects === false || !element.e?.h ? '' : cn.shadow,
+      options.includeEffects === false || typeof element.e?.h !== 'string' || !element.e.h
+        ? ''
+        : cn.shadow,
       options.selected ? element.l : ''
     ) ?? ''
   );
@@ -726,7 +729,7 @@ export function resolveIndicatorClassName(options: {
     options.indicator.motion === 'none'
       ? getTabsStructuralIndicatorStaticClassName(options.structural) || 'k-tab-e5j'
       : '',
-    options.elements.e5?.e?.h ? cn.shadow : '',
+    typeof options.elements.e5?.e?.h === 'string' && options.elements.e5.e.h ? cn.shadow : '',
     'k-state',
     options.className
   );

@@ -1,4 +1,5 @@
 import type {
+  ElementSizeValue,
   InteractionState,
   NumericByInteractionState,
   NumericWithSelected,
@@ -74,12 +75,12 @@ export function convertElementBorderRadiusToStyleKeys(
             continue;
           }
 
-          // For specific size tokens, DO NOT encode size in the style key; size is applied via class mapping later.
           const styleKey = buildStyleKey({
             propertyName,
             value: px,
             interactionState: interactionState,
-            controlState: controlState || undefined
+            controlState: controlState || undefined,
+            size: token as ElementSizeValue
           });
           deepUpdate(out, [stateLabel], (arr: string[] = []) => [...arr, styleKey]);
         }

@@ -217,4 +217,32 @@ describe('convertElementSchemaToStyleKeys', () => {
     expect(restEffects[0]).toContain('"size":88');
     expect(restEffects[1]?.startsWith('ripplePressed__')).toBe(true);
   });
+
+  it('preserves size tokens for border radius effects', () => {
+    const schema = createSchema({
+      button: {
+        elements: {
+          e1: {
+            effects: {
+              borderRadius: {
+                rounded: {
+                  hover: {
+                    's:sm:1': 24,
+                    's:md:1': 20
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+
+    const { styleKeys } = convertElementSchemaToStyleKeys(schema);
+    const button = styleKeys.button as Record<string, StyleKeyByElement>;
+
+    expect(button.e1.effects).toEqual({
+      hover: ['borderRadiusRounded--hover++s:sm:1__24', 'borderRadiusRounded--hover++s:md:1__20']
+    });
+  });
 });

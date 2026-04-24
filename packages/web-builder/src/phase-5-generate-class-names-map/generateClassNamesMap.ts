@@ -68,6 +68,17 @@ function mapArray(
   return keys.map((k) => resolveClassName(k));
 }
 
+function extractSizeKeyFromStyleKey(styleKey: string): string | undefined {
+  const head = styleKey.split('__')[0] ?? '';
+  const sizeIndex = head.indexOf('++');
+  if (sizeIndex === -1) return undefined;
+
+  const rawSize = head.slice(sizeIndex + 2).split('::')[0];
+  if (!rawSize) return undefined;
+
+  return rawSize.startsWith('s:') ? rawSize.slice(2) : rawSize;
+}
+
 // Ripple buckets follow a compact 3-letter convention to keep artifact payloads small.
 // This is not a universal rule for every bucket, but for ripple we intentionally
 // cap the key size at 3 characters: ris/rio/rix/rip.
@@ -179,6 +190,7 @@ export function generateClassNamesMapSplit(
       const rsMap = new Map<string, Set<string>>();
       // Effects buckets (by effect kind), excluding selected/control-state.
       const eBuckets = new Map<string, Set<string>>();
+      const eSizedBuckets = new Map<string, Map<string, Set<string>>>();
       // Control-state: selected — kept as a dedicated field (`l`) but must NOT include effects.
       // Control-state is expressed via runtime activators (e.g. `-s -a`) and palette/state rules.
       // Effects that happen to be authored under `selected*` interaction states must remain effects
@@ -214,6 +226,18 @@ export function generateClassNamesMapSplit(
             else if (key.startsWith('ripple')) bucket = rippleBucketForKey(key);
             // [RIPPLE EFFECT 15] END: Assign ripple style keys to compact ripple buckets.
             else bucket = 'x';
+
+            const sizeKey = extractSizeKeyFromStyleKey(key);
+            const isRadiusEffectBucket = bucket === 'rr' || bucket === 'rp' || bucket === 'rs';
+
+            if (isRadiusEffectBucket) {
+              const bySize = eSizedBuckets.get(bucket) ?? new Map<string, Set<string>>();
+              if (!eSizedBuckets.has(bucket)) {
+                eSizedBuckets.set(bucket, bySize);
+              }
+              getOrCreateSet(bySize, sizeKey ?? 'all').add(cls);
+              continue;
+            }
 
             getOrCreateSet(eBuckets, bucket).add(cls);
           }
@@ -362,13 +386,26 @@ export function generateClassNamesMapSplit(
       coreTarget[elementName] = {
         d: dSet.size ? Array.from(dSet).join(' ') : undefined,
         e:
-          eBuckets.size > 0
-            ? Object.fromEntries(
-                Array.from(eBuckets.entries()).map(([k, set]) => [
-                  k,
-                  set.size ? Array.from(set).join(' ') : undefined
-                ])
-              )
+          eBuckets.size > 0 || eSizedBuckets.size > 0
+            ? {
+                ...Object.fromEntries(
+                  Array.from(eBuckets.entries()).map(([k, set]) => [
+                    k,
+                    set.size ? Array.from(set).join(' ') : undefined
+                  ])
+                ),
+                ...Object.fromEntries(
+                  Array.from(eSizedBuckets.entries()).map(([bucket, bySize]) => [
+                    bucket,
+                    Object.fromEntries(
+                      Array.from(bySize.entries()).map(([sizeKey, set]) => [
+                        sizeKey,
+                        set.size ? Array.from(set).join(' ') : undefined
+                      ])
+                    )
+                  ])
+                )
+              }
             : undefined,
         // Intentionally empty until we have a dedicated source of control-state-only classes.
         // Do not backfill this from `effects.selected*`.
