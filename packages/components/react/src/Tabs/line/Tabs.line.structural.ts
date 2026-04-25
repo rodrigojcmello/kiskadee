@@ -4,13 +4,13 @@ export const tabsLineStructural = {
   variant: 'line',
   letter: 'd',
   slots: {
-    e1: 'k-tab-e1-d',
-    e2: 'k-tab-e2-d',
-    e3: 'k-tab-e3-d',
-    e4: 'k-tab-e4-d',
-    x1: 'k-tab-x1-d',
-    x4: 'k-tab-x4-d',
-    e5: 'k-tab-e5-d'
+    e1: 'e1',
+    e2: 'e2',
+    e3: 'e3',
+    e4: 'e4',
+    x1: 'x1',
+    x4: 'x4',
+    e5: 'e5'
   },
-  indicatorStatic: 'k-tab-e5a-d'
+  indicatorStatic: 'e5a'
 } as const satisfies TabsStructuralDescriptor<'line'>;

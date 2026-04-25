@@ -4,17 +4,17 @@ export const tabsBoxStructural = {
   variant: 'box',
   letter: 'b',
   slots: {
-    e1: 'k-tab-e1-b',
-    e2: 'k-tab-e2-b',
-    e3: 'k-tab-e3-b',
-    e4: 'k-tab-e4-b',
-    x1: 'k-tab-x1-b',
-    x4: 'k-tab-x4-b',
-    e5: 'k-tab-e5-b',
-    e6: 'k-tab-e6-b'
+    e1: 'e1',
+    e2: 'e2',
+    e3: 'e3',
+    e4: 'e4',
+    x1: 'x1',
+    x4: 'x4',
+    e5: 'e5',
+    e6: 'e6'
   },
-  distributedBar: 'k-tab-e1a-b',
-  indicatorStatic: 'k-tab-e5a-b',
-  separatorHidden: 'k-tab-e6a-b',
-  separatorDimmed: 'k-tab-e6b-b'
+  distributedBar: 'e1a',
+  indicatorStatic: 'e5a',
+  separatorHidden: 'e6a',
+  separatorDimmed: 'e6b'
 } as const satisfies TabsStructuralDescriptor<'box'>;

@@ -4,21 +4,21 @@ export const tabsBridgeStructural = {
   variant: 'bridge',
   letter: 'a',
   slots: {
-    e1: 'k-tab-e1-a',
-    x2: 'k-tab-x2-a',
-    e2: 'k-tab-e2-a',
-    e3: 'k-tab-e3-a',
-    e4: 'k-tab-e4-a',
-    x1: 'k-tab-x1-a',
-    x3: 'k-tab-x3-a',
-    x4: 'k-tab-x4-a'
+    e1: 'e1',
+    x2: 'x2',
+    e2: 'e2',
+    e3: 'e3',
+    e4: 'e4',
+    x1: 'x1',
+    x3: 'x3',
+    x4: 'x4'
   },
-  distributedBar: 'k-tab-e1a-a',
+  distributedBar: 'e1a',
   lowerCurve: {
     curved: '',
-    'flush-all': 'k-tab-e1b-a',
-    'flush-start': 'k-tab-e1c-a',
-    'flush-end': 'k-tab-e1d-a',
-    'flush-both': 'k-tab-e1e-a'
+    'flush-all': 'e1b',
+    'flush-start': 'e1c',
+    'flush-end': 'e1d',
+    'flush-both': 'e1e'
   }
 } as const satisfies TabsStructuralDescriptor<'bridge'>;

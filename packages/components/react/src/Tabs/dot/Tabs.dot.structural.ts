@@ -4,13 +4,13 @@ export const tabsDotStructural = {
   variant: 'dot',
   letter: 'c',
   slots: {
-    e1: 'k-tab-e1-c',
-    e2: 'k-tab-e2-c',
-    e3: 'k-tab-e3-c',
-    e4: 'k-tab-e4-c',
-    x1: 'k-tab-x1-c',
-    x4: 'k-tab-x4-c',
-    e5: 'k-tab-e5-c'
+    e1: 'e1',
+    e2: 'e2',
+    e3: 'e3',
+    e4: 'e4',
+    x1: 'x1',
+    x4: 'x4',
+    e5: 'e5'
   },
-  indicatorStatic: 'k-tab-e5a-c'
+  indicatorStatic: 'e5a'
 } as const satisfies TabsStructuralDescriptor<'dot'>;

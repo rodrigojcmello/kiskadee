@@ -1,17 +1,26 @@
 import type { TabsBridgeLowerCurve, TabsVariant } from '@kiskadee/core';
 
 export type TabsStructuralSlotKey = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6' | 'x1' | 'x2' | 'x3' | 'x4';
+export type TabsStructuralToken = `${TabsStructuralSlotKey}${string}` | '';
 
 export type TabsStructuralDescriptor<TVariant extends TabsVariant = TabsVariant> = {
   variant: TVariant;
   letter: string;
-  slots: Partial<Record<TabsStructuralSlotKey, string>>;
-  distributedBar?: string;
-  indicatorStatic?: string;
-  separatorHidden?: string;
-  separatorDimmed?: string;
-  lowerCurve?: Partial<Record<TabsBridgeLowerCurve, string>>;
+  slots: Partial<Record<TabsStructuralSlotKey, TabsStructuralToken>>;
+  distributedBar?: TabsStructuralToken;
+  indicatorStatic?: TabsStructuralToken;
+  separatorHidden?: TabsStructuralToken;
+  separatorDimmed?: TabsStructuralToken;
+  lowerCurve?: Partial<Record<TabsBridgeLowerCurve, TabsStructuralToken>>;
 };
+
+function resolveTabsStructuralClassName(
+  letter: string,
+  token: TabsStructuralToken | undefined
+): string {
+  if (!token) return '';
+  return `k-tab-${token}-${letter}`;
+}
 
 /**
  * What
@@ -21,10 +30,10 @@ export type TabsStructuralDescriptor<TVariant extends TabsVariant = TabsVariant>
  *     importing a registry that knows every Tabs variant.
  */
 export function getTabsSlot(
-  { slots }: Pick<TabsStructuralDescriptor, 'slots'>,
+  structural: Pick<TabsStructuralDescriptor, 'slots' | 'letter'>,
   slot: TabsStructuralSlotKey
 ): string {
-  return slots[slot] ?? '';
+  return resolveTabsStructuralClassName(structural.letter, structural.slots[slot]);
 }
 
 /**
@@ -36,9 +45,9 @@ export function getTabsSlot(
  *     class that leaks across every variant.
  */
 export function getTabsDistributedBar(
-  { distributedBar }: Pick<TabsStructuralDescriptor, 'distributedBar'>
+  structural: Pick<TabsStructuralDescriptor, 'distributedBar' | 'letter'>
 ): string {
-  return distributedBar ?? '';
+  return resolveTabsStructuralClassName(structural.letter, structural.distributedBar);
 }
 
 /**
@@ -49,10 +58,10 @@ export function getTabsDistributedBar(
  *     modifiers without forcing a global variant table.
  */
 export function getTabsLowerCurve(
-  { lowerCurve }: Pick<TabsStructuralDescriptor, 'lowerCurve'>,
+  structural: Pick<TabsStructuralDescriptor, 'lowerCurve' | 'letter'>,
   curve: TabsBridgeLowerCurve
 ): string {
-  return lowerCurve?.[curve] ?? '';
+  return resolveTabsStructuralClassName(structural.letter, structural.lowerCurve?.[curve]);
 }
 
 /**
@@ -63,9 +72,9 @@ export function getTabsLowerCurve(
  *     shared fallback, so callers need one safe lookup point.
  */
 export function getTabsIndicatorStatic(
-  { indicatorStatic }: Pick<TabsStructuralDescriptor, 'indicatorStatic'>
+  structural: Pick<TabsStructuralDescriptor, 'indicatorStatic' | 'letter'>
 ): string {
-  return indicatorStatic ?? '';
+  return resolveTabsStructuralClassName(structural.letter, structural.indicatorStatic);
 }
 
 /**
@@ -76,9 +85,9 @@ export function getTabsIndicatorStatic(
  *     them from the variant descriptor rather than hard-code names.
  */
 export function getTabsSeparatorHidden(
-  { separatorHidden }: Pick<TabsStructuralDescriptor, 'separatorHidden'>
+  structural: Pick<TabsStructuralDescriptor, 'separatorHidden' | 'letter'>
 ): string {
-  return separatorHidden ?? '';
+  return resolveTabsStructuralClassName(structural.letter, structural.separatorHidden);
 }
 
 /**
@@ -89,7 +98,7 @@ export function getTabsSeparatorHidden(
  *     optional state local to the owning variant.
  */
 export function getTabsSeparatorDimmed(
-  { separatorDimmed }: Pick<TabsStructuralDescriptor, 'separatorDimmed'>
+  structural: Pick<TabsStructuralDescriptor, 'separatorDimmed' | 'letter'>
 ): string {
-  return separatorDimmed ?? '';
+  return resolveTabsStructuralClassName(structural.letter, structural.separatorDimmed);
 }

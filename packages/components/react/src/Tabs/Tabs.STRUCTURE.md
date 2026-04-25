@@ -95,6 +95,9 @@ Runtime structural descriptors are also local to each variant:
 - `segmented/Tabs.segmented.structural.ts`
 - `bridge/Tabs.bridge.structural.ts`
 
+Those descriptors now map structural tokens such as `e1`, `e5a`, and `x2`.
+The runtime composes the final class name as `k-tab-${token}-${letter}`.
+
 Each file is responsible for its own:
 
 - bar geometry
