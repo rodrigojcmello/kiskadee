@@ -73,6 +73,11 @@
   align-items: center;
 }
 
+/* icon-only tabs cancel the icon trailing gap because no label follows. */
+.k-tab-x1-b > .k-tab-e4:only-child {
+  margin-right: 0;
+}
+
 .k-tab-e2-b:is(.k-tab-e2a, .k-tab-e2b) > .k-tab-x1-b {
   min-width: 0;
   max-width: 100%;

@@ -386,6 +386,14 @@
 
 /*
  * extra element for e2 / x1
+ * Icon-only bridge tabs cancel the icon trailing gap because no label follows.
+ */
+.k-tab-x1-a > .k-tab-e4:only-child {
+  margin-right: 0;
+}
+
+/*
+ * extra element for e2 / x1
  * Constrained-width bridge tabs clip the measured content wrapper instead of letting it overflow.
  */
 .k-tab-e2-a:is(.k-tab-e2a, .k-tab-e2b) > .k-tab-x1-a {
