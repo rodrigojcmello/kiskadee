@@ -180,10 +180,7 @@ export function createMaterial3GoogleTabsLineVariant({
             's:sm:1': 20,
             's:md:1': 24
           },
-          marginRight: {
-            's:sm:1': 6,
-            's:md:1': 8
-          }
+          marginRight: 4
         },
         palettes: {
           default: {
