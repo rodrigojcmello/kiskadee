@@ -216,7 +216,7 @@ export function TabsShowcasePageShell({
   children?: ReactNode;
 }) {
   return (
-    <section style={{ marginTop: 106 }}>
+    <section>
       <TabsShowcaseMenu activeVariant={activeVariant} />
       <h2>{title}</h2>
       {description ? <div style={tabsShowcaseDescriptionStyle}>{description}</div> : null}

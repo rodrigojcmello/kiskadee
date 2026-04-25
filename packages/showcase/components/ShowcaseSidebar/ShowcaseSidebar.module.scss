@@ -1,0 +1,71 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.header {
+  padding: 0 12px;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.48);
+}
+
+.title {
+  margin: 4px 0 0;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.link {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.link:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.active {
+  background: rgba(0, 145, 255, 0.12);
+  color: #005eb8;
+}
+
+.linkLabel {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+@media (max-width: 960px) {
+  .nav {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav {
+    gap: 4px;
+  }
+}

@@ -3,6 +3,7 @@ import './globals.scss';
 import '@kiskadee/react-components/style';
 import AppHead from '@/components/AppHead/AppHead';
 import DesignSystemToolbarWithColorScale from '@/components/DesignSystemToolbar/DesignSystemToolbarWithColorScale';
+import ShowcaseShell from './ShowcaseShell';
 import style from './layout.module.scss';
 import { Providers } from './providers';
 
@@ -13,8 +14,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <AppHead />
       <body>
         <Providers>
-          <DesignSystemToolbarWithColorScale />
-          <div className={style.container}>{children}</div>
+          <div className={style.layout}>
+            <DesignSystemToolbarWithColorScale />
+            <ShowcaseShell>{children}</ShowcaseShell>
+          </div>
         </Providers>
       </body>
     </html>
