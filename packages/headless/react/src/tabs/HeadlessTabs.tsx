@@ -48,11 +48,15 @@ export type TabsBarProps = {
   className?: string;
 };
 
-export type TabsTabProps = {
+export type TabsTabProps = Omit<
+  ComponentPropsWithoutRef<'button'>,
+  'children' | 'className' | 'type' | 'role' | 'aria-label'
+> & {
   value: string;
   children?: ReactNode;
   className?: string;
   disabled?: boolean;
+  accessibilityLabel?: string;
 };
 
 export type TabsContentProps = {
@@ -345,7 +349,14 @@ const TabsBar = forwardRef<HTMLDivElement, TabsBarProps>(function TabsBar(
 // Tab Element
 // -------------------------------------------------------------------------------------------------
 
-function TabsTab({ value, children, className, disabled = false }: TabsTabProps) {
+function TabsTab({
+  value,
+  children,
+  className,
+  disabled = false,
+  accessibilityLabel,
+  ...buttonProps
+}: TabsTabProps) {
   const {
     selected,
     setSelected,
@@ -377,6 +388,7 @@ function TabsTab({ value, children, className, disabled = false }: TabsTabProps)
 
   return (
     <button
+      {...buttonProps}
       ref={(el) => {
         tabRefs.current.set(value, el);
       }}
@@ -385,6 +397,7 @@ function TabsTab({ value, children, className, disabled = false }: TabsTabProps)
       role="tab"
       type="button"
       className={triggerClassName}
+      aria-label={accessibilityLabel}
       aria-selected={isSelected}
       aria-controls={`${baseId}-panel-${value}`}
       aria-disabled={disabled || undefined}

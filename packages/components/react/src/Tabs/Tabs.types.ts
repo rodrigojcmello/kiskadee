@@ -3,8 +3,8 @@ import type {
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
-  TabsBridgeLowerCurve,
   TabsBoxIndicatorShape,
+  TabsBridgeLowerCurve,
   TabsIndicatorPosition,
   TabsIndicatorShape,
   TabsIndicatorWidth,
@@ -39,9 +39,10 @@ type TabsIndicatorMotionConfig<TMotion extends TabsIndicatorMotion> = {
   motion?: TMotion;
 };
 
-type TabsLineIndicatorShared<TMotion extends TabsIndicatorMotion> = TabsIndicatorMotionConfig<TMotion> & {
-  position?: TabsIndicatorPosition;
-};
+type TabsLineIndicatorShared<TMotion extends TabsIndicatorMotion> =
+  TabsIndicatorMotionConfig<TMotion> & {
+    position?: TabsIndicatorPosition;
+  };
 
 type TabsLineIndicatorBarConfig<TMotion extends TabsIndicatorMotion> =
   TabsLineIndicatorShared<TMotion> & {
@@ -159,8 +160,9 @@ export type TabsBarProps = HeadlessTabsBarProps;
 export type TabsTabProps = Omit<HeadlessTabsTabProps, 'children' | 'className'> & {
   className?: string;
   children?: ReactNode;
-  label?: ReactNode;
   icon?: ReactNode;
+  label?: ReactNode;
+  accessibilityLabel?: string;
 };
 
 export type TabsContentProps = HeadlessTabsContentProps;

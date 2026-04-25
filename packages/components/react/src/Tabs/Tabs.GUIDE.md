@@ -18,6 +18,7 @@ Default tab composition supports:
 
 - `label`
 - `icon`
+- `accessibilityLabel`
 - fully custom children inside `Tabs.Tab`
 
 ## Current Contract
@@ -26,6 +27,9 @@ Default tab composition supports:
 - Labels use truncation with `ellipsis` in constrained width modes.
 - `Tabs` currently support icons inline with the label.
 - `Tabs` do not model icon-above-label layouts.
+- Icon-only tabs should provide `accessibilityLabel` so the trigger still has an accessible name.
+- When both `label` and `accessibilityLabel` exist, `accessibilityLabel` overrides the accessible
+  name while `label` remains visual content.
 
 ## Shared Configuration
 

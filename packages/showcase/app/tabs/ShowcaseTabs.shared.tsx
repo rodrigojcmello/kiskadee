@@ -28,14 +28,16 @@ export const loremByValue: Record<string, string> = {
   locations: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean lacinia bibendum nulla sed consectetur. Curabitur blandit tempus porttitor. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Nulla vitae elit libero, a pharetra augue. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.`,
   forms: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit. Etiam porta sem malesuada magna mollis euismod. Donec ullamcorper nulla non metus auctor fringilla. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.`,
   services: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec ullamcorper nulla non metus auctor fringilla.`,
+  'icon-only': `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Donec sed odio dui. Cras mattis consectetur purus sit amet fermentum. Maecenas faucibus mollis interdum. Vestibulum id ligula porta felis euismod semper.`,
   'single-letter': `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Donec sed odio dui. Cras mattis consectetur purus sit amet fermentum. Maecenas faucibus mollis interdum. Vestibulum id ligula porta felis euismod semper.`,
   'fifteen-letters': `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean lacinia bibendum nulla sed consectetur. Curabitur blandit tempus porttitor. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Nulla vitae elit libero, a pharetra augue. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.`
 };
 
 export const tabItems: ReadonlyArray<{
   value: string;
-  label: string;
   icon?: ReactNode;
+  label?: string;
+  accessibilityLabel?: string;
 }> = [
   {
     value: 'home',
@@ -45,6 +47,11 @@ export const tabItems: ReadonlyArray<{
   { value: 'locations', label: 'Locations' },
   { value: 'forms', label: 'Forms' },
   { value: 'services', label: 'Services' },
+  {
+    value: 'icon-only',
+    icon: <Icon name="SunMax" aria-hidden="true" focusable="false" />,
+    accessibilityLabel: 'Home'
+  },
   { value: 'single-letter', label: 'A' },
   { value: 'fifteen-letters', label: 'ABCDEFGHIJKLMNO' }
 ] as const;
@@ -124,7 +131,12 @@ export const tabsShowcaseDescriptionStyle: CSSProperties = {
 
 type TabsCompoundSlots = {
   Bar: ComponentType<{ children?: ReactNode }>;
-  Tab: ComponentType<{ value: string; label?: ReactNode; icon?: ReactNode }>;
+  Tab: ComponentType<{
+    value: string;
+    label?: ReactNode;
+    icon?: ReactNode;
+    accessibilityLabel?: string;
+  }>;
   Content: ComponentType<{ value: string; children?: ReactNode }>;
 };
 
@@ -146,6 +158,7 @@ export function renderTabsSlots(Component: TabsCompoundSlots, keyBase: string) {
           value={tab.value}
           label={tab.label}
           icon={tab.icon}
+          accessibilityLabel={tab.accessibilityLabel}
         />
       ))}
     </Component.Bar>
