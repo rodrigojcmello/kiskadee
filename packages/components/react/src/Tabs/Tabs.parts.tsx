@@ -138,9 +138,10 @@ export const TabsLabelBase = forwardRef<HTMLSpanElement, TabsLabelProps>(functio
   ref
 ) {
   const { isSelected } = useTabsTabContext();
-  const { scale, intent, emphasis, classNames, elements } = useTabsVisualContext();
+  const { scale, intent, emphasis, classNames, elements, structural } = useTabsVisualContext();
 
   const labelClassName = resolveLabelClassName({
+    structural,
     elements,
     classNames,
     scale,
@@ -169,9 +170,10 @@ export const TabsIconBase = forwardRef<HTMLSpanElement, TabsIconProps>(function 
   ref
 ) {
   const { isSelected } = useTabsTabContext();
-  const { scale, intent, emphasis, classNames, elements } = useTabsVisualContext();
+  const { scale, intent, emphasis, classNames, elements, structural } = useTabsVisualContext();
 
   const iconClassName = resolveIconClassName({
+    structural,
     elements,
     classNames,
     scale,

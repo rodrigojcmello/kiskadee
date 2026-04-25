@@ -21,7 +21,6 @@ export function TabsSegmentedBarBase({ className, children, ...props }: TabsBarP
         ref={barRef}
         {...props}
         className={joinClassNames(
-          'k-tab-x2',
           getTabsStructuralSlotClassName(structural, 'x2')
         )}
       >

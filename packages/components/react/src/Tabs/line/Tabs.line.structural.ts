@@ -6,6 +6,8 @@ export const tabsLineStructural = {
   slots: {
     e1: 'k-tab-e1-d',
     e2: 'k-tab-e2-d',
+    e3: 'k-tab-e3-d',
+    e4: 'k-tab-e4-d',
     x1: 'k-tab-x1-d',
     x4: 'k-tab-x4-d',
     e5: 'k-tab-e5-d'

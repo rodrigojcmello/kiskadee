@@ -79,7 +79,7 @@
 }
 
 /* icon-only tabs cancel the icon trailing gap because no label follows. */
-.k-tab-x1-d > .k-tab-e4:only-child {
+.k-tab-e4-d:only-child {
   margin-right: 0;
 }
 
@@ -91,12 +91,12 @@
 }
 
 /* `k-tab-e3`: tab label slot. */
-.k-tab-e3 {
+.k-tab-e3-d {
   display: block;
 }
 
 /* constrained-width labels truncate instead of overflowing */
-.k-tab-e2-d:is(.k-tab-e2a, .k-tab-e2b) .k-tab-e3 {
+.k-tab-e2-d:is(.k-tab-e2a, .k-tab-e2b) .k-tab-e3-d {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
@@ -105,7 +105,7 @@
 }
 
 /* `k-tab-e4`: tab icon slot. */
-.k-tab-e4 {
+.k-tab-e4-d {
   display: inline-flex;
   align-items: center;
   justify-content: center;

@@ -6,6 +6,8 @@ export const tabsBoxStructural = {
   slots: {
     e1: 'k-tab-e1-b',
     e2: 'k-tab-e2-b',
+    e3: 'k-tab-e3-b',
+    e4: 'k-tab-e4-b',
     x1: 'k-tab-x1-b',
     x4: 'k-tab-x4-b',
     e5: 'k-tab-e5-b',

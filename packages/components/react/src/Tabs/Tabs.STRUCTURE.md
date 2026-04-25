@@ -110,22 +110,14 @@ Each file is responsible for its own:
 
 The runtime still emits shared semantic slot classes such as:
 
-- `k-tab-e1`
-- `k-tab-e2`
-- `k-tab-e3`
-- `k-tab-e4`
-- `k-tab-e5`
-- `k-tab-e6`
 - `k-tab-x1`
-- `k-tab-x2`
-- `k-tab-x3`
-- `k-tab-x4`
 
-Those classes are part of the runtime contract, not a requirement to keep a shared Sass file.
+Currently `k-tab-x1` remains shared because indicator content measurement still queries that wrapper
+across variants. The remaining structural ownership stays variant-local.
 
 In practice:
 
-- the runtime keeps one semantic naming system
+- the runtime keeps one shared measurement hook where it is still useful
 - the structural ownership lives in the variant-local Sass files
 - the runtime-side structural lookup data also lives with each variant descriptor
 - variant-owned modifiers such as distributed bar width use the same trailing variant suffix

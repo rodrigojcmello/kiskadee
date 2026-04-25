@@ -430,7 +430,6 @@ export function resolveListClassName(options: {
 }): string | undefined {
   return joinClassNames(
     'k-tab',
-    'k-tab-e1',
     getTabsStructuralSlotClassName(options.structural, 'e1'),
     options.tabWidth === 'distributed'
       ? getTabsStructuralDistributedBarClassName(options.structural)
@@ -481,7 +480,6 @@ export function resolveSeparatorClassName(options: {
       emphasis: options.emphasis
     }),
     options.classNames.e6,
-    'k-tab-e6',
     getTabsStructuralSlotClassName(options.structural, 'e6')
   );
 }
@@ -521,7 +519,6 @@ export function resolveTriggerClassName(options: {
       : '',
     resolveRadiusClassName(options.elements.e2, options.scale, options.tabShape),
     options.classNames.e2,
-    'k-tab-e2',
     getTabsStructuralSlotClassName(options.structural, 'e2'),
     options.tabWidth === 'fixed' ? 'k-tab-e2a' : '',
     options.tabWidth === 'adaptive' ? 'k-tab-e2c' : '',
@@ -553,7 +550,6 @@ export function resolveBridgeItemClassName(options: {
     usesTabWidthScale(options.tabWidth)
       ? resolveWidthClassName(options.elements.e2, options.scale)
       : '',
-    'k-tab-x3',
     getTabsStructuralSlotClassName(options.structural, 'x3'),
     options.className
   );
@@ -604,7 +600,6 @@ export function resolveBridgeTriggerClassName(options: {
     activeRadiusClassName,
     options.classNames.e2,
     options.selected ? options.classNames.e5 : '',
-    'k-tab-e2',
     getTabsStructuralSlotClassName(options.structural, 'e2'),
     options.tabWidth === 'fixed' ? 'k-tab-e2a' : '',
     options.tabWidth === 'adaptive' ? 'k-tab-e2c' : '',
@@ -625,6 +620,7 @@ export function resolveBridgeTriggerClassName(options: {
  *     inherit the current selected state and still allow schema and consumer overrides.
  */
 export function resolveLabelClassName(options: {
+  structural: TabsVisualContextValue['structural'];
   elements: TabsClassesMap;
   classNames: TabsClassNames;
   scale: string;
@@ -641,7 +637,7 @@ export function resolveLabelClassName(options: {
       selected: options.selected
     }),
     options.classNames.e3,
-    'k-tab-e3',
+    getTabsStructuralSlotClassName(options.structural, 'e3'),
     cn.activator,
     options.selected ? cn.selected : '',
     options.className
@@ -657,6 +653,7 @@ export function resolveLabelClassName(options: {
  *     classes.
  */
 export function resolveIconClassName(options: {
+  structural: TabsVisualContextValue['structural'];
   elements: TabsClassesMap;
   classNames: TabsClassNames;
   scale: string;
@@ -673,7 +670,7 @@ export function resolveIconClassName(options: {
       selected: options.selected
     }),
     options.classNames.e4,
-    'k-tab-e4',
+    getTabsStructuralSlotClassName(options.structural, 'e4'),
     cn.activator,
     options.selected ? cn.selected : '',
     options.className
@@ -722,7 +719,6 @@ export function resolveIndicatorClassName(options: {
     }),
     indicatorRadiusClassName,
     options.classNames.e5,
-    'k-tab-e5',
     getTabsStructuralSlotClassName(options.structural, 'e5'),
     resolveIndicatorWidthClass(options.variant, options.indicator.width),
     indicatorShapeClass,

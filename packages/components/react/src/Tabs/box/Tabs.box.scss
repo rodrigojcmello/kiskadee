@@ -74,7 +74,7 @@
 }
 
 /* icon-only tabs cancel the icon trailing gap because no label follows. */
-.k-tab-x1-b > .k-tab-e4:only-child {
+.k-tab-e4-b:only-child {
   margin-right: 0;
 }
 
@@ -84,11 +84,11 @@
   overflow: hidden;
 }
 
-.k-tab-e3 {
+.k-tab-e3-b {
   display: block;
 }
 
-.k-tab-e2-b:is(.k-tab-e2a, .k-tab-e2b) .k-tab-e3 {
+.k-tab-e2-b:is(.k-tab-e2a, .k-tab-e2b) .k-tab-e3-b {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
@@ -96,7 +96,7 @@
   white-space: nowrap;
 }
 
-.k-tab-e4 {
+.k-tab-e4-b {
   display: inline-flex;
   align-items: center;
   justify-content: center;

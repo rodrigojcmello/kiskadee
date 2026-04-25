@@ -6,6 +6,8 @@ export const tabsDotStructural = {
   slots: {
     e1: 'k-tab-e1-c',
     e2: 'k-tab-e2-c',
+    e3: 'k-tab-e3-c',
+    e4: 'k-tab-e4-c',
     x1: 'k-tab-x1-c',
     x4: 'k-tab-x4-c',
     e5: 'k-tab-e5-c'

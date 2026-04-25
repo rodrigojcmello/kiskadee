@@ -46,7 +46,6 @@ export function TabsBridgeBarBase({ className, children, ...props }: TabsBarProp
         ref={barRef}
         {...props}
         className={joinClassNames(
-          'k-tab-x2',
           getTabsStructuralSlotClassName(structural, 'x2')
         )}
       >

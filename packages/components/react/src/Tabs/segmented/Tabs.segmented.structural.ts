@@ -7,6 +7,8 @@ export const tabsSegmentedStructural = {
     e1: 'k-tab-e1-e',
     x2: 'k-tab-x2-e',
     e2: 'k-tab-e2-e',
+    e3: 'k-tab-e3-e',
+    e4: 'k-tab-e4-e',
     x1: 'k-tab-x1-e',
     x4: 'k-tab-x4-e',
     e5: 'k-tab-e5-e',

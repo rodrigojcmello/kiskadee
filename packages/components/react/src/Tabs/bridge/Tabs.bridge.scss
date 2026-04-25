@@ -388,7 +388,7 @@
  * extra element for e2 / x1
  * Icon-only bridge tabs cancel the icon trailing gap because no label follows.
  */
-.k-tab-x1-a > .k-tab-e4:only-child {
+.k-tab-e4-a:only-child {
   margin-right: 0;
 }
 
@@ -406,7 +406,7 @@
  * element label / e3
  * Renders the bridge label slot as a block inside the measured content wrapper.
  */
-.k-tab-e3 {
+.k-tab-e3-a {
   display: block;
 }
 
@@ -414,7 +414,7 @@
  * element label / e3
  * Labels inside constrained-width bridge tabs truncate instead of overflowing their shell.
  */
-.k-tab-e2-a:is(.k-tab-e2a, .k-tab-e2b) .k-tab-e3 {
+.k-tab-e2-a:is(.k-tab-e2a, .k-tab-e2b) .k-tab-e3-a {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
@@ -426,7 +426,7 @@
  * element icon / e4
  * Centers the bridge icon slot and keeps its inline box locked to icon geometry.
  */
-.k-tab-e4 {
+.k-tab-e4-a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
