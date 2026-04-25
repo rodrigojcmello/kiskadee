@@ -6,11 +6,11 @@ export type TabsStructuralDescriptor<TVariant extends TabsVariant = TabsVariant>
   variant: TVariant;
   letter: string;
   slots: Partial<Record<TabsStructuralSlotKey, string>>;
-  distributedBarClassName?: string;
-  indicatorStaticClassName?: string;
-  separatorHiddenClassName?: string;
-  separatorDimmedClassName?: string;
-  lowerCurveClassNames?: Partial<Record<TabsBridgeLowerCurve, string>>;
+  distributedBar?: string;
+  indicatorStatic?: string;
+  separatorHidden?: string;
+  separatorDimmed?: string;
+  lowerCurve?: Partial<Record<TabsBridgeLowerCurve, string>>;
 };
 
 /**
@@ -20,11 +20,11 @@ export type TabsStructuralDescriptor<TVariant extends TabsVariant = TabsVariant>
  *     Shared renderers should receive one descriptor from the active variant instead of
  *     importing a registry that knows every Tabs variant.
  */
-export function getTabsStructuralSlotClassName(
-  structural: TabsStructuralDescriptor,
+export function getTabsSlot(
+  { slots }: Pick<TabsStructuralDescriptor, 'slots'>,
   slot: TabsStructuralSlotKey
 ): string {
-  return structural.slots[slot] ?? '';
+  return slots[slot] ?? '';
 }
 
 /**
@@ -35,10 +35,10 @@ export function getTabsStructuralSlotClassName(
  *     resolution should read the modifier from the descriptor instead of emitting one generic
  *     class that leaks across every variant.
  */
-export function getTabsStructuralDistributedBarClassName(
-  structural: TabsStructuralDescriptor
+export function getTabsDistributedBar(
+  { distributedBar }: Pick<TabsStructuralDescriptor, 'distributedBar'>
 ): string {
-  return structural.distributedBarClassName ?? '';
+  return distributedBar ?? '';
 }
 
 /**
@@ -48,11 +48,11 @@ export function getTabsStructuralDistributedBarClassName(
  *     Only bridge exposes lower-curve geometry, so the descriptor carries these optional
  *     modifiers without forcing a global variant table.
  */
-export function getTabsStructuralLowerCurveClassName(
-  structural: TabsStructuralDescriptor,
+export function getTabsLowerCurve(
+  { lowerCurve }: Pick<TabsStructuralDescriptor, 'lowerCurve'>,
   curve: TabsBridgeLowerCurve
 ): string {
-  return structural.lowerCurveClassNames?.[curve] ?? '';
+  return lowerCurve?.[curve] ?? '';
 }
 
 /**
@@ -62,10 +62,10 @@ export function getTabsStructuralLowerCurveClassName(
  *     Some variants define a dedicated static indicator modifier while others rely on the
  *     shared fallback, so callers need one safe lookup point.
  */
-export function getTabsStructuralIndicatorStaticClassName(
-  structural: TabsStructuralDescriptor
+export function getTabsIndicatorStatic(
+  { indicatorStatic }: Pick<TabsStructuralDescriptor, 'indicatorStatic'>
 ): string {
-  return structural.indicatorStaticClassName ?? '';
+  return indicatorStatic ?? '';
 }
 
 /**
@@ -75,10 +75,10 @@ export function getTabsStructuralIndicatorStaticClassName(
  *     Separator state classes differ by variant, so runtime separator injection should read
  *     them from the variant descriptor rather than hard-code names.
  */
-export function getTabsStructuralSeparatorHiddenClassName(
-  structural: TabsStructuralDescriptor
+export function getTabsSeparatorHidden(
+  { separatorHidden }: Pick<TabsStructuralDescriptor, 'separatorHidden'>
 ): string {
-  return structural.separatorHiddenClassName ?? '';
+  return separatorHidden ?? '';
 }
 
 /**
@@ -88,8 +88,8 @@ export function getTabsStructuralSeparatorHiddenClassName(
  *     Only some variants define a dimmed separator treatment, so the descriptor keeps that
  *     optional state local to the owning variant.
  */
-export function getTabsStructuralSeparatorDimmedClassName(
-  structural: TabsStructuralDescriptor
+export function getTabsSeparatorDimmed(
+  { separatorDimmed }: Pick<TabsStructuralDescriptor, 'separatorDimmed'>
 ): string {
-  return structural.separatorDimmedClassName ?? '';
+  return separatorDimmed ?? '';
 }

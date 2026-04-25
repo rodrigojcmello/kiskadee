@@ -7,7 +7,7 @@ import {
   resolveTriggerClassName
 } from './Tabs.class-names';
 import { TabsTabContextProvider, useTabsTabContext, useTabsVisualContext } from './Tabs.context';
-import { getTabsStructuralSlotClassName } from './Tabs.structural';
+import { getTabsSlot } from './Tabs.structural';
 import type {
   TabsContentProps,
   TabsIconProps,
@@ -34,7 +34,7 @@ export function TabsSlotContent({
     <span
       className={joinClassNames(
         'k-tab-x1',
-        getTabsStructuralSlotClassName(structural, 'x1')
+        getTabsSlot(structural, 'x1')
       )}
     >
       {children ? (
@@ -204,7 +204,7 @@ export function TabsContentBase(props: TabsContentProps) {
     <HeadlessTabs.Content
       {...props}
       className={joinClassNames(
-        getTabsStructuralSlotClassName(structural, 'x4'),
+        getTabsSlot(structural, 'x4'),
         props.className
       )}
     />

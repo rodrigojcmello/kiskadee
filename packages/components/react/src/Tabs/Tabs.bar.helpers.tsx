@@ -1,8 +1,8 @@
 import { Children, type ReactNode } from 'react';
 import { extractTabValue, joinClassNames } from './Tabs.class-names';
 import {
-  getTabsStructuralSeparatorDimmedClassName,
-  getTabsStructuralSeparatorHiddenClassName
+  getTabsSeparatorDimmed,
+  getTabsSeparatorHidden
 } from './Tabs.structural';
 import type { TabsStructuralDescriptor } from './Tabs.structural';
 
@@ -51,8 +51,8 @@ export function buildTabsChildrenWithSeparators(options: {
           aria-hidden="true"
           className={joinClassNames(
             options.separatorClassName,
-            state.hidden ? getTabsStructuralSeparatorHiddenClassName(options.structural) : '',
-            state.dimmed ? getTabsStructuralSeparatorDimmedClassName(options.structural) : ''
+            state.hidden ? getTabsSeparatorHidden(options.structural) : '',
+            state.dimmed ? getTabsSeparatorDimmed(options.structural) : ''
           )}
         />
       );

@@ -1,7 +1,7 @@
 import { HeadlessTabs } from '@kiskadee/react-headless';
 import { joinClassNames } from '../Tabs.class-names';
 import { useTabsVisualContext } from '../Tabs.context';
-import { getTabsStructuralSlotClassName } from '../Tabs.structural';
+import { getTabsSlot } from '../Tabs.structural';
 import type { TabsBarProps } from '../Tabs.types';
 
 /**
@@ -20,9 +20,7 @@ export function TabsSegmentedBarBase({ className, children, ...props }: TabsBarP
       <HeadlessTabs.Bar
         ref={barRef}
         {...props}
-        className={joinClassNames(
-          getTabsStructuralSlotClassName(structural, 'x2')
-        )}
+        className={joinClassNames(getTabsSlot(structural, 'x2'))}
       >
         {content}
       </HeadlessTabs.Bar>

@@ -14,7 +14,7 @@ export const tabsSegmentedStructural = {
     e5: 'k-tab-e5-e',
     e6: 'k-tab-e6-e'
   },
-  distributedBarClassName: 'k-tab-e1a-e',
-  indicatorStaticClassName: 'k-tab-e5b-e',
-  separatorHiddenClassName: 'k-tab-e6a-e'
+  distributedBar: 'k-tab-e1a-e',
+  indicatorStatic: 'k-tab-e5b-e',
+  separatorHidden: 'k-tab-e6a-e'
 } as const satisfies TabsStructuralDescriptor<'segmented'>;

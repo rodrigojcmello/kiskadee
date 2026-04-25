@@ -13,8 +13,8 @@ export const tabsBoxStructural = {
     e5: 'k-tab-e5-b',
     e6: 'k-tab-e6-b'
   },
-  distributedBarClassName: 'k-tab-e1a-b',
-  indicatorStaticClassName: 'k-tab-e5a-b',
-  separatorHiddenClassName: 'k-tab-e6a-b',
-  separatorDimmedClassName: 'k-tab-e6b-b'
+  distributedBar: 'k-tab-e1a-b',
+  indicatorStatic: 'k-tab-e5a-b',
+  separatorHidden: 'k-tab-e6a-b',
+  separatorDimmed: 'k-tab-e6b-b'
 } as const satisfies TabsStructuralDescriptor<'box'>;

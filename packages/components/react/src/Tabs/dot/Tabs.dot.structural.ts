@@ -12,5 +12,5 @@ export const tabsDotStructural = {
     x4: 'k-tab-x4-c',
     e5: 'k-tab-e5-c'
   },
-  indicatorStaticClassName: 'k-tab-e5a-c'
+  indicatorStatic: 'k-tab-e5a-c'
 } as const satisfies TabsStructuralDescriptor<'dot'>;
