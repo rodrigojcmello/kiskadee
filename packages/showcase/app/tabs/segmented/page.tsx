@@ -21,13 +21,13 @@ export default function TabsSegmentedPage() {
   const [tabSize, setTabSize] = useState<TabsSizeControl>(DEFAULT_TAB_SIZE);
   const [selectedValue, setSelectedValue] = useState(DEFAULT_TAB_VALUE);
 
-  const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'auto';
+  const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'content';
   const tabWidthOptions = [
     {
       value: 'default',
       label: `Schema Default (${tabWidthLabels[schemaTabWidth]})`
     },
-    { value: 'auto', label: tabWidthLabels.auto },
+    { value: 'content', label: tabWidthLabels.content },
     { value: 'fixed', label: tabWidthLabels.fixed },
     { value: 'adaptive', label: tabWidthLabels.adaptive },
     { value: 'distributed', label: tabWidthLabels.distributed }

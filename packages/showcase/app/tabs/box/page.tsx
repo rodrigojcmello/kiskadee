@@ -37,7 +37,7 @@ export default function TabsBoxPage() {
   const [tabSize, setTabSize] = useState<TabsSizeControl>(DEFAULT_TAB_SIZE);
   const [selectedValue, setSelectedValue] = useState(DEFAULT_TAB_VALUE);
 
-  const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'auto';
+  const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'content';
   const boxShapeOptions = tabsIndicatorShapesByVariant.box.map((value) => ({
     value,
     label: boxIndicatorShapeLabels[value]
@@ -51,7 +51,7 @@ export default function TabsBoxPage() {
       value: 'default',
       label: `Schema Default (${tabWidthLabels[schemaTabWidth]})`
     },
-    { value: 'auto', label: tabWidthLabels.auto },
+    { value: 'content', label: tabWidthLabels.content },
     { value: 'fixed', label: tabWidthLabels.fixed },
     { value: 'adaptive', label: tabWidthLabels.adaptive },
     { value: 'distributed', label: tabWidthLabels.distributed }

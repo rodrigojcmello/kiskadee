@@ -341,7 +341,7 @@ export const schema: Schema = {
       options: {
         variant: 'box',
         indicatorShape: 'rounded',
-        tabWidth: 'auto',
+        tabWidth: 'content',
         separator: true
       },
       variants: {

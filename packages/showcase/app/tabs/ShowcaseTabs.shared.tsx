@@ -72,7 +72,7 @@ export const lineIndicatorWidthLabels: Record<TabsIndicatorWidth, string> = {
 };
 
 export const tabWidthLabels: Record<TabsTabWidth, string> = {
-  auto: 'Auto',
+  content: 'Content',
   fixed: 'Fixed',
   adaptive: 'Adaptive',
   distributed: 'Distributed'

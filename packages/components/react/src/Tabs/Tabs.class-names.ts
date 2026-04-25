@@ -392,14 +392,14 @@ export function resolveTabWidth(
   tabWidth: TabsVisualContextValue['tabWidth'] | undefined,
   globalTabWidth: TabsVisualContextValue['tabWidth'] | undefined
 ): TabsVisualContextValue['tabWidth'] {
-  return tabWidth ?? globalTabWidth ?? 'auto';
+  return tabWidth ?? globalTabWidth ?? 'content';
 }
 
 /**
  * What
  *     Reports whether the current tab width consumes the schema `boxWidth` token.
  * Why
- *     `fixed`, `adaptive`, and `distributed` depend on width classes, while `auto` keeps the
+ *     `fixed`, `adaptive`, and `distributed` depend on width classes, while `content` keeps the
  *     trigger sized by content.
  */
 function usesTabWidthScale(tabWidth: TabsVisualContextValue['tabWidth']): boolean {

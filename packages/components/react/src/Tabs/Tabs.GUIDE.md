@@ -35,7 +35,7 @@ These options are shared across the component family, but not every variant uses
 
 Supported by all variants.
 
-- `auto`: tab width follows content.
+- `content`: tab width follows content.
 - `fixed`: tab width uses the emitted `e2.boxWidth`.
 - `adaptive`: `e2.boxWidth` is a minimum width and the tab may grow with content.
 - `distributed`: tabs divide the available inline space while preserving emitted minimum width.

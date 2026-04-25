@@ -47,7 +47,7 @@ export default function TabsLinePage() {
 
   const schemaLineWidth = global?.components?.tabs?.options?.indicatorWidth ?? 'tab';
   const schemaIndicatorPosition = global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
-  const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'auto';
+  const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'content';
 
   const lineShapeOptions = tabsIndicatorShapesByVariant.line.map((value) => ({
     value,
@@ -79,7 +79,7 @@ export default function TabsLinePage() {
       value: 'default',
       label: `Schema Default (${tabWidthLabels[schemaTabWidth]})`
     },
-    { value: 'auto', label: tabWidthLabels.auto },
+    { value: 'content', label: tabWidthLabels.content },
     { value: 'fixed', label: tabWidthLabels.fixed },
     { value: 'adaptive', label: tabWidthLabels.adaptive },
     { value: 'distributed', label: tabWidthLabels.distributed }

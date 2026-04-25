@@ -30,7 +30,7 @@ export type TabsElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 export type TabsVariant = 'line' | 'box' | 'segmented' | 'dot' | 'bridge';
 export type TabsIndicatorPosition = 'top' | 'bottom';
 export type TabsIndicatorWidth = 'tab' | 'fixed' | 'content';
-export type TabsTabWidth = 'auto' | 'fixed' | 'adaptive' | 'distributed';
+export type TabsTabWidth = 'content' | 'fixed' | 'adaptive' | 'distributed';
 export type TabsBridgeLowerCurve =
   | 'curved'
   | 'flush-start'

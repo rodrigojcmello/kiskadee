@@ -28,7 +28,7 @@ export default function TabsDotPage() {
   const [selectedValue, setSelectedValue] = useState(DEFAULT_TAB_VALUE);
 
   const schemaIndicatorPosition = global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
-  const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'auto';
+  const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'content';
   const indicatorPositionOptions = [
     {
       value: 'default',
@@ -42,7 +42,7 @@ export default function TabsDotPage() {
       value: 'default',
       label: `Schema Default (${tabWidthLabels[schemaTabWidth]})`
     },
-    { value: 'auto', label: tabWidthLabels.auto },
+    { value: 'content', label: tabWidthLabels.content },
     { value: 'fixed', label: tabWidthLabels.fixed },
     { value: 'adaptive', label: tabWidthLabels.adaptive },
     { value: 'distributed', label: tabWidthLabels.distributed }

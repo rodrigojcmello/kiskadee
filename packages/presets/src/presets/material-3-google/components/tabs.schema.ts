@@ -26,7 +26,7 @@ export function createMaterial3GoogleTabsSchema({
       indicatorPosition: 'bottom',
       indicatorShape: 'square',
       indicatorWidth: 'tab',
-      tabWidth: 'auto'
+      tabWidth: 'content'
     },
     variants: {
       line: createMaterial3GoogleTabsLineVariant({

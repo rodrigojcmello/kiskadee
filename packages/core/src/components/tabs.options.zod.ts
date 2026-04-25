@@ -12,7 +12,7 @@ export const tabsIndicatorShapeSchema = z.enum([
   'bridge'
 ]);
 export const tabsIndicatorWidthSchema = z.enum(['tab', 'fixed', 'content']);
-export const tabsTabWidthSchema = z.enum(['auto', 'fixed', 'adaptive', 'distributed']);
+export const tabsTabWidthSchema = z.enum(['content', 'fixed', 'adaptive', 'distributed']);
 export const tabsBridgeLowerCurveSchema = z.enum([
   'curved',
   'flush-start',
