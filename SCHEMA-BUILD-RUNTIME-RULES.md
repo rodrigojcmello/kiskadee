@@ -135,6 +135,67 @@ Consequence:
 - TextField currently has no variant-local options beyond the redundant variant name, so its
   variant branches should keep only `elements` until real branch-local options exist.
 
+### 3.2.2 `variant` vs `mode`
+
+Context:
+
+- As the system grows, some components need two levels of named presentation decisions:
+  a primary public family and a secondary named style inside that family.
+- `TextField` is the current reference case:
+  - primary families: `standard`, `floating`
+  - secondary standard presentations: `outline`, `underline`, `borderless`
+  - secondary floating presentations: `notched`, `inside`
+- Future components may face the same pattern, where the second level is too important to be left
+  unnamed, but too small to justify promoting every choice into a top-level variant.
+
+Decision:
+
+- Use `variant` for the primary public family of a component.
+- Use `mode` for the secondary named presentation inside a variant.
+- Do not use `sub-variant` as the canonical term in docs or APIs.
+- A mode may be implemented by structural Sass, by small local runtime branching, or by both.
+- A mode does not need to become a top-level variant only because its implementation uses slightly
+  different structure or positioning rules.
+
+Reason:
+
+- The main distinction is conceptual, not whether the DOM or CSS changes a little.
+- Promoting every small presentation difference into a top-level variant creates a noisy API and
+  weakens the meaning of `variant`.
+- Hiding every meaningful secondary presentation as an unnamed internal trick makes the system hard
+  to reason about and hard to scale across dozens of components.
+- `mode` gives the system a stable second-level term for named, documented presentations without
+  forcing premature schema explosion.
+- This is acceptable as long as the complexity stays local, small, and readable inside the
+  component/runtime/structural Sass that owns the mode.
+
+Rule:
+
+- A choice should be a `variant` when it defines the primary public family or mental model of the
+  component.
+- A choice should be a `mode` when it is a named presentation inside a variant and we want it to
+  be stable, documented, and reusable.
+- A choice should remain implicit styling freedom when naming it would add more ceremony than
+  clarity.
+- Do not create a new top-level variant only to encode a tiny positional difference that the local
+  component can absorb cleanly.
+- If supporting a mode would require special-case build extraction, hidden schema semantics, or
+  hard-to-follow runtime branching, re-evaluate whether that mode should instead become more
+  explicit in the contract.
+
+Consequence:
+
+- Components may have a small amount of mode-specific structural Sass or runtime logic without that
+  automatically implying a new top-level variant.
+- When evaluating future components, the first question is not "did the structure change?" but
+  "is this a primary family (`variant`), a named secondary presentation (`mode`), or just styling
+  freedom?".
+- `TextField` remains modeled as two real variants (`standard`, `floating`).
+- `TextField.standard` may expose named modes such as `outline`, `underline`, and `borderless`.
+- `TextField.floating` may expose named modes such as `notched` and `inside`.
+- Those named presentations should be described and evaluated as modes, not as extra top-level
+  variants by default.
+
 ### 3.3 `global`
 
 Use `global` only for cross-component defaults/shared system behavior.
