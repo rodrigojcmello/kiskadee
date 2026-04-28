@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import type { SegmentName } from '../types/colors/colors.types';
 import {
-  createTabsBarElementStyleSchema,
   createTabsBoxBarElementStyleSchema,
   createTabsBridgeBarElementStyleSchema,
   createTabsBridgeIndicatorElementStyleSchema,
@@ -17,24 +16,11 @@ import {
   createTabsTriggerElementStyleSchema
 } from './tabs.elements.zod';
 import {
-  createTabsOptionsSchema,
+  createTabsVariantOptionsSchema,
   type TabsVariantSchemaValue,
   tabsOptionsSchema
 } from './tabs.options.zod';
 import { formatZodIssue } from './tabs.zod.shared';
-
-function createTabsElementsSchema<TSegmentName extends SegmentName = never>() {
-  return z
-    .object({
-      e1: createTabsBarElementStyleSchema<TSegmentName>().optional(),
-      e2: createTabsTriggerElementStyleSchema<TSegmentName>().optional(),
-      e3: createTabsLabelElementStyleSchema<TSegmentName>().optional(),
-      e4: createTabsIconElementStyleSchema<TSegmentName>().optional(),
-      e5: createTabsIndicatorElementStyleSchema<TSegmentName>().optional(),
-      e6: createTabsSeparatorElementStyleSchema<TSegmentName>().optional()
-    })
-    .strict();
-}
 
 function createTabsLineElementsSchema<TSegmentName extends SegmentName = never>() {
   return z
@@ -107,7 +93,7 @@ function createTabsVariantConfigSchema(
   return z
     .object({
       elements: elementsSchema,
-      options: createTabsOptionsSchema(expectedVariant).optional()
+      options: createTabsVariantOptionsSchema(expectedVariant).optional()
     })
     .strict();
 }
@@ -141,50 +127,26 @@ function createTabsVariantsSchema<TSegmentName extends SegmentName = never>() {
 
 const tabsComponentContractSchema = z
   .object({
-    elements: createTabsElementsSchema().optional(),
+    elements: z.unknown().optional(),
     options: tabsOptionsSchema.optional(),
     variants: createTabsVariantsSchema().optional()
   })
   .strict()
   .superRefine((value, ctx) => {
-    if (value.elements === undefined && value.variants === undefined) {
+    if (value.elements !== undefined) {
       ctx.addIssue({
         code: 'custom',
-        message: 'expected "elements" or "variants"'
+        path: ['elements'],
+        message: 'top-level "elements" is not allowed; use "variants.<name>.elements"'
       });
     }
 
-    if (value.elements !== undefined && value.variants !== undefined) {
+    if (value.variants === undefined) {
       ctx.addIssue({
         code: 'custom',
-        message: 'expected either "elements" or "variants", not both'
+        path: ['variants'],
+        message: 'expected "variants"'
       });
-    }
-
-    const elementsSchema =
-      value.options?.variant === 'line'
-        ? createTabsLineElementsSchema()
-        : value.options?.variant === 'box'
-          ? createTabsBoxElementsSchema()
-          : value.options?.variant === 'segmented'
-            ? createTabsSegmentedElementsSchema()
-            : value.options?.variant === 'dot'
-              ? createTabsDotElementsSchema()
-              : value.options?.variant === 'bridge'
-                ? createTabsBridgeElementsSchema()
-                : undefined;
-
-    if (elementsSchema !== undefined && value.elements !== undefined) {
-      const result = elementsSchema.safeParse(value.elements);
-      if (!result.success) {
-        for (const issue of result.error.issues) {
-          ctx.addIssue({
-            code: 'custom',
-            path: ['elements', ...issue.path],
-            message: issue.message
-          });
-        }
-      }
     }
   });
 

@@ -34,6 +34,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     backgroundsByTheme,
     globalRadius,
     globalRipple,
+    textFieldVariant,
     tabsVariant,
     tabsIndicatorPosition,
     tabsIndicatorShape,
@@ -49,6 +50,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const globalConfig =
     globalRadius !== undefined ||
     globalRipple !== undefined ||
+    textFieldVariant !== undefined ||
     tabsVariant !== undefined ||
     tabsIndicatorPosition !== undefined ||
     tabsIndicatorShape !== undefined ||
@@ -59,7 +61,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
       ? {
           ...(globalRadius !== undefined ? { radius: globalRadius } : {}),
           ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {}),
-          ...(tabsVariant !== undefined ||
+          ...(textFieldVariant !== undefined ||
+          tabsVariant !== undefined ||
           tabsIndicatorPosition !== undefined ||
           tabsIndicatorShape !== undefined ||
           tabsIndicatorWidth !== undefined ||
@@ -68,25 +71,44 @@ export function Providers({ children }: { children: React.ReactNode }) {
           tabsLowerCurve !== undefined
             ? {
                 components: {
-                  tabs: {
-                    options: {
-                      ...(tabsVariant !== undefined ? { variant: tabsVariant } : {}),
-                      ...(tabsIndicatorPosition !== undefined
-                        ? { indicatorPosition: tabsIndicatorPosition }
-                        : {}),
-                      ...(tabsIndicatorShape !== undefined
-                        ? { indicatorShape: tabsIndicatorShape }
-                        : {}),
-                      ...(tabsIndicatorWidth !== undefined
-                        ? { indicatorWidth: tabsIndicatorWidth }
-                        : {}),
-                      ...(tabsTabWidth !== undefined
-                        ? { tabWidth: tabsTabWidth }
-                        : {}),
-                      ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {}),
-                      ...(tabsLowerCurve !== undefined ? { lowerCurve: tabsLowerCurve } : {})
-                    }
-                  }
+                  ...(textFieldVariant !== undefined
+                    ? {
+                        textField: {
+                          options: {
+                            variant: textFieldVariant
+                          }
+                        }
+                      }
+                    : {}),
+                  ...(tabsVariant !== undefined ||
+                  tabsIndicatorPosition !== undefined ||
+                  tabsIndicatorShape !== undefined ||
+                  tabsIndicatorWidth !== undefined ||
+                  tabsTabWidth !== undefined ||
+                  tabsSeparator !== undefined ||
+                  tabsLowerCurve !== undefined
+                    ? {
+                        tabs: {
+                          options: {
+                            ...(tabsVariant !== undefined ? { variant: tabsVariant } : {}),
+                            ...(tabsIndicatorPosition !== undefined
+                              ? { indicatorPosition: tabsIndicatorPosition }
+                              : {}),
+                            ...(tabsIndicatorShape !== undefined
+                              ? { indicatorShape: tabsIndicatorShape }
+                              : {}),
+                            ...(tabsIndicatorWidth !== undefined
+                              ? { indicatorWidth: tabsIndicatorWidth }
+                              : {}),
+                            ...(tabsTabWidth !== undefined ? { tabWidth: tabsTabWidth } : {}),
+                            ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {}),
+                            ...(tabsLowerCurve !== undefined
+                              ? { lowerCurve: tabsLowerCurve }
+                              : {})
+                          }
+                        }
+                      }
+                    : {})
                 }
               }
             : {})

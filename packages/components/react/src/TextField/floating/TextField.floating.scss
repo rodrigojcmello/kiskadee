@@ -1,0 +1,114 @@
+/*
+ * TextField variant registry:
+ * a = floating
+ * b = stacked
+ */
+
+/* component root: floating TextField wrapper. */
+.k-txf-e1-a {
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  max-inline-size: 100%;
+}
+
+/* element control / e3: positioned shell that lets the label float inside it. */
+.k-txf-e3-a {
+  position: relative;
+  display: grid;
+  align-items: stretch;
+  inline-size: 100%;
+  box-sizing: border-box;
+  cursor: text;
+  overflow: visible;
+  --k-txf-floating-inline-padding: 16px;
+  --k-txf-floating-surface-background: #fff;
+  --k-txf-floating-label-background: var(--k-txf-floating-surface-background);
+}
+
+/* element label / e2: placeholder-like label in the resting floating state. */
+.k-txf-e2-a {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: var(--k-txf-floating-inline-padding);
+  z-index: 1;
+  max-inline-size: calc(100% - (var(--k-txf-floating-inline-padding) * 2));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  padding-inline: 0;
+  background: transparent;
+  transform: translateY(-50%);
+  transform-origin: left top;
+  transition:
+    transform var(--k-dur-int) var(--k-ease-out),
+    inset-block-start var(--k-dur-int) var(--k-ease-out),
+    color var(--k-dur-int) var(--k-ease-out);
+}
+
+/* Focus state colors may be forced on the label, but the visible ring belongs to the control. */
+.k-txf-e2-a.-f.-a {
+  position: absolute;
+  outline: 0;
+}
+
+/* element label / e2: focused or filled fields promote the label above the input text. */
+.k-txf-e3-a[data-focused] .k-txf-e2-a,
+.k-txf-e3-a[data-filled] .k-txf-e2-a {
+  inset-block-start: 0;
+  padding-inline: 4px;
+  background: var(--k-txf-floating-label-background);
+  transform: translate(-4px, -50%) scale(0.75);
+}
+
+/* element input / e4: native input reset while preserving schema typography classes. */
+.k-txf-e4-a {
+  grid-area: 1 / 1;
+  align-self: stretch;
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  inline-size: 100%;
+  block-size: 100%;
+  min-inline-size: 0;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  appearance: none;
+  background: transparent;
+  background-clip: padding-box;
+  font-family: inherit;
+}
+
+.k-txf-e4-a:-webkit-autofill,
+.k-txf-e4-a:-webkit-autofill:hover,
+.k-txf-e4-a:-webkit-autofill:focus {
+  box-shadow: 0 0 0 1000px var(--k-txf-floating-surface-background) inset;
+  caret-color: currentColor;
+  -webkit-text-fill-color: currentColor;
+}
+
+/* The wrapper mirrors input focus, so the native input must not draw a second ring. */
+.k-txf-e1-a .k-txf-e4-a:is(.-f.-a, :focus-visible) {
+  outline: 0;
+}
+
+/* element input / e4: the floating label owns placeholder-like behavior. */
+.k-txf-e4-a::placeholder {
+  color: currentColor;
+  opacity: 0.52;
+}
+
+/* element message / e5: supporting and validation copy. */
+.k-txf-e5-a {
+  display: block;
+  margin-block-end: 0;
+}
+
+/* disabled state: mirror native disabled affordance on structural wrappers. */
+.k-txf-e1-a[data-disabled],
+.k-txf-e1-a[data-disabled] .k-txf-e2-a,
+.k-txf-e1-a[data-disabled] .k-txf-e3-a,
+.k-txf-e1-a[data-disabled] .k-txf-e4-a {
+  cursor: not-allowed;
+}

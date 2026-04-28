@@ -125,9 +125,8 @@ function discoverSegmentsThemesFromPalettes(
 
   const components = (schema as any).components as Record<string, any> | undefined;
   if (components) {
-    for (const component of Object.values(components)) {
-      const elements = (component as any)?.elements as Record<string, any> | undefined;
-      if (!elements) continue;
+    const visitElements = (elements: Record<string, any> | undefined) => {
+      if (!elements) return;
       for (const el of Object.values(elements)) {
         const palettes = (el as any)?.palettes as Record<string, Record<string, unknown>> | undefined;
         if (!palettes) continue;
@@ -137,6 +136,17 @@ function discoverSegmentsThemesFromPalettes(
             add(seg, theme);
           }
         }
+      }
+    };
+
+    for (const component of Object.values(components)) {
+      const elements = (component as any)?.elements as Record<string, any> | undefined;
+      visitElements(elements);
+
+      const variants = (component as any)?.variants as Record<string, any> | undefined;
+      if (!variants) continue;
+      for (const variant of Object.values(variants)) {
+        visitElements((variant as any)?.elements as Record<string, any> | undefined);
       }
     }
   }

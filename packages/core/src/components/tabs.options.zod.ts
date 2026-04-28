@@ -170,10 +170,26 @@ function refineTabsOptions(
   }
 }
 
-export function createTabsOptionsSchema(expectedVariant?: TabsVariantSchemaValue) {
+export function createTabsOptionsSchema() {
   return z
     .object({
       variant: tabsVariantSchema.optional(),
+      indicatorPosition: tabsIndicatorPositionSchema.optional(),
+      indicatorShape: tabsIndicatorShapeSchema.optional(),
+      indicatorWidth: tabsIndicatorWidthSchema.optional(),
+      tabWidth: tabsTabWidthSchema.optional(),
+      separator: z.boolean().optional(),
+      lowerCurve: tabsBridgeLowerCurveSchema.optional()
+    })
+    .strict()
+    .superRefine((value, ctx) => {
+      refineTabsOptions(value, ctx);
+    });
+}
+
+export function createTabsVariantOptionsSchema(expectedVariant: TabsVariantSchemaValue) {
+  return z
+    .object({
       indicatorPosition: tabsIndicatorPositionSchema.optional(),
       indicatorShape: tabsIndicatorShapeSchema.optional(),
       indicatorWidth: tabsIndicatorWidthSchema.optional(),

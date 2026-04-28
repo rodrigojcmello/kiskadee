@@ -294,8 +294,10 @@ describe('generateCssSplit', () => {
         }
       },
       tabs: {
-        e1: {
-          decorations: ['textWeight__bold']
+        line: {
+          e1: {
+            decorations: ['textWeight__bold']
+          }
         }
       }
     } as unknown as ComponentStyleKeyMap;

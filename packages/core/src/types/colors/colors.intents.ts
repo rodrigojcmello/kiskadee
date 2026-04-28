@@ -44,3 +44,29 @@ export type ButtonIntent = keyof typeof ButtonIntentKeys;
 
 /** Qualified role identifier for `button` intents (e.g. `button.primary`). */
 export type RoleButton = `button.${ButtonIntent}`;
+
+/**
+ * Supported intent keys for the `textField` component.
+ */
+export const TextFieldIntentKeys = {
+  /**
+   * Default form-field chrome and text.
+   */
+  neutral: 'neutral',
+
+  /**
+   * Invalid form values that block submission or need correction.
+   */
+  error: 'error',
+
+  /**
+   * Non-blocking validation attention, such as recommended corrections.
+   */
+  warning: 'warning'
+} as const;
+
+/** Supported intent keys for the `textField` component (Layer 3). */
+export type TextFieldIntent = keyof typeof TextFieldIntentKeys;
+
+/** Qualified role identifier for `textField` intents (e.g. `textField.error`). */
+export type RoleTextField = `textField.${TextFieldIntent}`;

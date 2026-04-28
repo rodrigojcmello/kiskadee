@@ -11,6 +11,7 @@ import {
 import type {
   TabsResolvedIndicator,
   TabsClassesMap,
+  TabsVariantClassesMap,
   TabsVisualContextValue
 } from './Tabs.types';
 import type { TabsRootBaseProps } from './Tabs.types';
@@ -79,7 +80,7 @@ export function useTabsRuntimeRootState({
 
   const globalTabsOptions = global?.components?.tabs?.options;
   const elements = resolveVariantElements(
-    rawTabsMap as TabsClassesMap | Record<string, TabsClassesMap> | undefined,
+    rawTabsMap as TabsVariantClassesMap | undefined,
     variant
   );
   const resolvedTabWidth = resolveTabWidth(tabWidth, globalTabsOptions?.tabWidth);

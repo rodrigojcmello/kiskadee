@@ -2,6 +2,7 @@ import type {
   ComponentClassNameMapJSON,
   RadiusMode,
   RippleEffectSchema,
+  TextFieldVariant,
   TabsBridgeLowerCurve,
   TabsVariant,
   TabsIndicatorShape,
@@ -29,6 +30,11 @@ export type KiskadeeContextValue = {
     };
     // [RIPPLE EFFECT 16] END: Global ripple config exposed to React components.
     components?: {
+      textField?: {
+        options?: {
+          variant?: TextFieldVariant;
+        };
+      };
       tabs?: {
         options?: {
           variant?: TabsVariant;

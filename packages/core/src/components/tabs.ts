@@ -57,6 +57,7 @@ export type TabsIndicatorShape =
   | TabsBridgeIndicatorShape;
 
 export type TabsOptions = TabsOptionsFromSchema;
+export type TabsVariantOptions = Omit<TabsOptions, 'variant'>;
 
 /**
  * e1 — bar
@@ -253,7 +254,7 @@ export type TabsVariantConfig<
   TElements extends TabsElements<TSegmentName> = TabsElements<TSegmentName>
 > = {
   elements: TElements;
-  options?: TabsOptions;
+  options?: TabsVariantOptions;
 };
 
 export type TabsLineVariantConfig<TSegmentName extends SegmentName = never> = TabsVariantConfig<

@@ -19,6 +19,10 @@
     "./button": {
       "types": "./src/button/Button.tsx",
       "import": "./src/button/Button.tsx"
+    },
+    "./text-field": {
+      "types": "./src/text-field/HeadlessTextField.tsx",
+      "import": "./src/text-field/HeadlessTextField.tsx"
     }
   },
   "peerDependencies": {

@@ -7,6 +7,17 @@ export type {
 } from './tabs/HeadlessTabs';
 export { HeadlessTabs } from './tabs/HeadlessTabs';
 
+export type {
+  TextFieldClassNames,
+  TextFieldControlProps,
+  TextFieldInputProps,
+  TextFieldLabelProps,
+  TextFieldMessageProps,
+  TextFieldRootProps,
+  TextFieldValidationStatus
+} from './text-field/HeadlessTextField';
+export { HeadlessTextField } from './text-field/HeadlessTextField';
+
 export type { ButtonProps } from './button/Button';
 export { Button } from './button/Button';
 

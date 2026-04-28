@@ -559,7 +559,6 @@ export const schema: Schema = {
         },
         bridge: {
           options: {
-            variant: 'bridge',
             indicatorShape: 'bridge',
             lowerCurve: 'curved'
           },
@@ -731,7 +730,6 @@ export const schema: Schema = {
         },
         segmented: {
           options: {
-            variant: 'segmented',
             indicatorShape: 'segmented',
             separator: true
           },

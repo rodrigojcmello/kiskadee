@@ -43,6 +43,11 @@ export const componentIntents = {
   },
   tabs: {
     neutral: 'neutral'
+  },
+  textField: {
+    neutral: 'neutral',
+    error: 'redLike',
+    warning: 'yellowLike'
   }
 } as const satisfies ComponentIntents;
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { validateTabsComponentContract } from './tabs.contract.zod';
 
 describe('validateTabsComponentContract', () => {
-  it('rejects components that declare both top-level elements and variants', () => {
+  it('rejects top-level elements because Tabs is variant-driven', () => {
     const issues = validateTabsComponentContract({
       elements: {
         e1: {}
@@ -16,6 +16,8 @@ describe('validateTabsComponentContract', () => {
       }
     });
 
-    expect(issues).toContain('components.tabs: expected either "elements" or "variants", not both');
+    expect(issues).toContain(
+      'components.tabs.elements: top-level "elements" is not allowed; use "variants.<name>.elements"'
+    );
   });
 });

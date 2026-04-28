@@ -1,5 +1,6 @@
 import { validateButtonComponentContract } from '../components/button';
 import { validateTabsComponentContract } from '../components/tabs.zod';
+import { validateTextFieldComponentContract } from '../components/text-field.zod';
 
 /**
  * Build-time validation for component contracts with strict, element-aware rules.
@@ -7,6 +8,7 @@ import { validateTabsComponentContract } from '../components/tabs.zod';
  * Incremental scope:
  * - button
  * - tabs
+ * - textField
  *
  * Other components remain unchecked for now.
  */
@@ -32,6 +34,15 @@ export function validateSchemaComponentContracts(schemaLike: {
     if (issues.length > 0) {
       throw new Error(
         `Invalid component contract for tabs. Review element/property mapping.\n${issues.join('\n')}`
+      );
+    }
+  }
+
+  if (byName.textField !== undefined) {
+    const issues = validateTextFieldComponentContract(byName.textField, 'components.textField');
+    if (issues.length > 0) {
+      throw new Error(
+        `Invalid component contract for textField. Review element/property mapping.\n${issues.join('\n')}`
       );
     }
   }

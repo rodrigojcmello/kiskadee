@@ -9,6 +9,7 @@ import type {
   SchemaFonts,
   SegmentName,
   SolidColor,
+  TextFieldVariant,
   TabsBridgeLowerCurve,
   TabsIndicatorShape,
   TabsIndicatorPosition,
@@ -166,6 +167,9 @@ export async function writeExtraArtifacts(params: {
   const tabsSeparator = schema.components?.tabs?.options?.separator as boolean | undefined;
   const tabsLowerCurve = schema.components?.tabs?.options
     ?.lowerCurve as TabsBridgeLowerCurve | undefined;
+  const textFieldVariant = schema.components?.textField?.options?.variant as
+    | TextFieldVariant
+    | undefined;
 
   function toCssFontFamilyString(value: FontStack): string | null {
     const css = toCssFontFamily(value);
@@ -189,8 +193,9 @@ export async function writeExtraArtifacts(params: {
       tabsSeparator !== undefined ||
       tabsLowerCurve
   );
+  const hasTextFieldOptions = Boolean(textFieldVariant);
 
-  if (hasFonts || hasRadius || hasRipple || hasTabsOptions) {
+  if (hasFonts || hasRadius || hasRipple || hasTabsOptions || hasTextFieldOptions) {
     await mkdir(buildDir, { recursive: true });
     const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
 
@@ -208,6 +213,11 @@ export async function writeExtraArtifacts(params: {
             tabWidth?: TabsTabWidth;
             separator?: boolean;
             lowerCurve?: TabsBridgeLowerCurve;
+          };
+        };
+        textField?: {
+          options?: {
+            variant?: TextFieldVariant;
           };
         };
       };
@@ -230,23 +240,36 @@ export async function writeExtraArtifacts(params: {
       };
     }
 
-    if (hasTabsOptions) {
+    if (hasTabsOptions || hasTextFieldOptions) {
       globalPayload.components = {
         ...(globalPayload.components ?? {}),
-        tabs: {
-          options: {
-            ...(tabsVariant ? { variant: tabsVariant } : {}),
-            ...(tabsIndicatorPosition ? { indicatorPosition: tabsIndicatorPosition } : {}),
-            ...(tabsIndicatorShape ? { indicatorShape: tabsIndicatorShape } : {}),
-            ...(tabsIndicatorWidth ? { indicatorWidth: tabsIndicatorWidth } : {}),
-            ...(tabsTabWidth ? { tabWidth: tabsTabWidth } : {}),
-            ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {}),
-            ...(tabsLowerCurve ? { lowerCurve: tabsLowerCurve } : {})
-          }
-        }
+        ...(hasTabsOptions
+          ? {
+              tabs: {
+                options: {
+                  ...(tabsVariant ? { variant: tabsVariant } : {}),
+                  ...(tabsIndicatorPosition ? { indicatorPosition: tabsIndicatorPosition } : {}),
+                  ...(tabsIndicatorShape ? { indicatorShape: tabsIndicatorShape } : {}),
+                  ...(tabsIndicatorWidth ? { indicatorWidth: tabsIndicatorWidth } : {}),
+                  ...(tabsTabWidth ? { tabWidth: tabsTabWidth } : {}),
+                  ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {}),
+                  ...(tabsLowerCurve ? { lowerCurve: tabsLowerCurve } : {})
+                }
+              }
+            }
+          : {}),
+        ...(hasTextFieldOptions
+          ? {
+              textField: {
+                options: {
+                  ...(textFieldVariant ? { variant: textFieldVariant } : {})
+                }
+              }
+            }
+          : {})
       };
     }
-
+    
     await writeFile(globalFilePath, JSON.stringify(globalPayload, null, 2), 'utf8');
     console.log(`[web-builder] Global artifact written to: ${globalFilePath}`);
   }

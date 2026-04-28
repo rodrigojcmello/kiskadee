@@ -12,6 +12,10 @@ const entries = [
   {
     href: '/tabs',
     label: 'Tabs'
+  },
+  {
+    href: '/text-field',
+    label: 'TextField'
   }
 ] as const;
 
@@ -26,8 +30,7 @@ export default function ShowcaseSidebar({ onNavigate }: { onNavigate?: () => voi
       </div>
       <nav className={style.nav}>
         {entries.map((entry) => {
-          const isActive =
-            pathname === entry.href || pathname.startsWith(`${entry.href}/`);
+          const isActive = pathname === entry.href || pathname.startsWith(`${entry.href}/`);
 
           return (
             <Link

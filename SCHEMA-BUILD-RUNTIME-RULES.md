@@ -36,9 +36,12 @@ Rule records should include:
 - reason: why the invariant exists;
 - consequence: what code/build/runtime should do because of it.
 
-### 3.1 `components.<name>.elements`
+### 3.1 Schema elements
 
-Use `elements` for tokenizable visual values that may vary by design system and/or context.
+Use schema `elements` for tokenizable visual values that may vary by design system and/or context.
+The exact location is defined by each component topology: some components use top-level
+`components.<name>.elements`, while variant-driven components use
+`components.<name>.variants.<variantName>.elements`.
 
 Examples:
 
@@ -51,20 +54,26 @@ Rule:
 
 - If it can vary by segment/theme/intent/emphasis/state, it belongs in schema elements.
 
-### 3.1.1 Tabs component topology
+### 3.1.1 Component topology: `elements` vs `variants`
 
 Context:
 
-- `components.tabs` can model a single visual topology or a variant-driven family such as
-  `line`, `box`, `segmented`, `dot`, and `bridge`.
-- The Material 3 Google preset is the current source of truth for full Tabs coverage and uses
-  `variants`.
+- Some components have one stable visual topology, while others are variant-driven families whose
+  variants have different structural needs.
+- `button` has one stable topology.
+- `tabs` is a variant-driven family (`line`, `box`, `segmented`, `dot`, `bridge`).
+- `textField` is a variant-driven family (`stacked`, `floating`).
 
 Decision:
 
-- A Tabs schema must declare either top-level `elements` or `variants`, but not both.
-- `variants.<name>.elements` is the preferred shape for variant-driven Tabs.
-- Top-level `elements` remains valid only for a non-variant Tabs definition.
+- Component topology is fixed per component contract.
+- `components.button` must declare top-level `elements`.
+- `components.tabs` must declare `variants`; top-level `elements` is not valid.
+- `components.textField` must declare `variants`; top-level `elements` is not valid.
+- Variant-driven components put tokenizable visual values under
+  `components.<name>.variants.<variantName>.elements`.
+- Top-level `options` may still exist on a variant-driven component as shared runtime defaults, but
+  top-level `elements` must not be used as shared/base styling.
 
 Reason:
 
@@ -72,12 +81,15 @@ Reason:
   `variants.<name>.elements`.
 - Keeping the two shapes mutually exclusive avoids silent build ambiguity, where shared-looking
   top-level element values could be interpreted as base defaults by one layer and ignored by
-  another.
+- Variant structures are not interchangeable. For example, Tabs `line` and `box`, or TextField
+  `stacked` and `floating`, need independent element contracts and runtime class-map branches.
 
 Consequence:
 
-- The core Tabs contract rejects `elements + variants`.
-- The web builder may continue treating those shapes as separate artifact topologies.
+- The core contracts reject top-level `components.tabs.elements` and
+  `components.textField.elements`.
+- Web artifacts use a direct element map for Button and variant-indexed maps for Tabs/TextField.
+- Tabs/TextField runtime should resolve classes only from the active variant branch.
 - If shared values across variants become necessary, model them explicitly in preset factories or
   introduce a dedicated contract before relying on implicit schema inheritance.
 
@@ -94,6 +106,34 @@ Rule:
 
 - `options` values should map to structural behavior/classes at runtime (usually structural Sass selectors + small runtime branching).
 - `options` are defaults; component props may override when that override is intentionally supported.
+
+### 3.2.1 Variant defaults vs variant-local options
+
+Context:
+
+- Variant-driven components may expose a recommended default variant for DS consumers.
+- Variant-specific options may still exist for rules that only apply inside one variant branch.
+
+Decision:
+
+- `components.<name>.options.variant` is the place for the design system's recommended default variant.
+- `components.<name>.variants.<variantName>.options` must not repeat the `variant` name.
+- Inside a variant branch, the variant key itself is the source of truth for that branch identity.
+
+Reason:
+
+- Repeating `variant: "stacked"` inside `variants.stacked`, or `variant: "bridge"` inside
+  `variants.bridge`, adds no new information and creates noisy artifacts.
+- Keeping the default variant only at the component root makes it easier for tooling and
+  convenience consumers to answer "which variant does this DS recommend?" from one place.
+
+Consequence:
+
+- `global.kiskadee.json` may expose `components.<name>.options.variant` as descriptive DS metadata.
+- Variant-local `options` should contain only additional settings that are meaningful within that
+  branch (for example Tabs `indicatorShape`, `separator`, `lowerCurve`).
+- TextField currently has no variant-local options beyond the redundant variant name, so its
+  variant branches should keep only `elements` until real branch-local options exist.
 
 ### 3.3 `global`
 
@@ -141,6 +181,29 @@ Main outputs per design system:
 - `<segment>.<theme>.kiskadee.css` / `<segment>.<theme>.kiskadee.json`
 - `global.kiskadee.json`
 - `segments.json`, `manifest.json`, `schema.json`
+
+### 5.0 Artifact responsibilities
+
+Use each artifact for a different level of responsibility:
+
+- `schema.json`: serializable reference snapshot of the authored schema structure, excluding the
+  `colors` tree. This is the best artifact for inspection, tooling, debugging, and answering
+  "what did this preset author actually declare?"
+- `manifest.json`: compact discovery metadata. Use it to list design systems, segments, themes,
+  fonts, and high-level component capabilities without loading the full schema.
+- `global.kiskadee.json`: descriptive runtime-friendly defaults and DS intentions that are useful
+  without traversing full component branches. Use it for global defaults such as fonts, radius,
+  ripple, and recommended component options like a default variant.
+- `segments.json`: segment registry materialized for tooling and UIs that need segment names and
+  theme availability.
+- `extra.<segment>.<theme>.kiskadee.json`: lightweight per-palette metadata that complements the
+  class maps, such as resolved background information used by consumers like Showcase.
+
+Rule:
+
+- Do not treat `manifest.json` as a substitute for `schema.json`.
+- Do not treat `global.kiskadee.json` as the structural source of truth for variant branches.
+- Use `global.kiskadee.json` for convenience defaults; use `schema.json` when structural fidelity matters.
 
 ### 5.1 Segment and theme representation
 
@@ -203,7 +266,8 @@ Runtime should not:
 Use this before implementing any new value:
 
 1. Does it vary by segment/theme/intent/emphasis/state?
-- Yes -> `components.<name>.elements`.
+- Yes -> the component's canonical elements location (`components.button.elements` or
+  `components.<name>.variants.<variantName>.elements` for variant-driven components).
 - No -> continue.
 
 2. Is it shared by multiple components?

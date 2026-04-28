@@ -1,6 +1,7 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints';
 import type { ButtonElements } from './components/button';
-import type { TabsElements, TabsOptions, TabsVariants } from './components/tabs';
+import type { TabsOptions, TabsVariants } from './components/tabs';
+import type { TextFieldOptions, TextFieldVariants } from './components/text-field';
 import type {
   ElementPalettes,
   InteractionState,
@@ -19,7 +20,7 @@ import type { RippleEffectSchema } from './types/effects/ripple/ripple.types';
 import type { ScaleSchema } from './types/scales/scales.types';
 
 // Names of all supported components
-export type ComponentName = 'button' | 'tabs';
+export type ComponentName = 'button' | 'tabs' | 'textField';
 
 export type ElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   name?: string; // for example "element-element-element-element"
@@ -81,9 +82,9 @@ export type ComponentVariantsStyleKeyMap<TSegmentName extends SegmentName = neve
 >;
 
 export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Partial<{
-  [componenteName in ComponentName]:
-    | ComponentElementsStyleKeyMap<TSegmentName>
-    | ComponentVariantsStyleKeyMap<TSegmentName>;
+  button: ComponentElementsStyleKeyMap<TSegmentName>;
+  tabs: ComponentVariantsStyleKeyMap<TSegmentName>;
+  textField: ComponentVariantsStyleKeyMap<TSegmentName>;
 }>;
 
 // Legacy, delete it
@@ -95,25 +96,22 @@ export interface ClassNameMap {
 
 // -------------------------------------------------------------------------------------------------
 
-type TabsComponentWithElements<TSegmentName extends SegmentName = never> = {
-  elements: TabsElements<TSegmentName>;
-  options?: TabsOptions;
-  variants?: never;
-};
-
-type TabsComponentWithVariants<TSegmentName extends SegmentName = never> = {
+type TabsComponent<TSegmentName extends SegmentName = never> = {
   elements?: never;
   options?: TabsOptions;
   variants: TabsVariants<TSegmentName>;
 };
 
-type TabsComponent<TSegmentName extends SegmentName = never> =
-  | TabsComponentWithElements<TSegmentName>
-  | TabsComponentWithVariants<TSegmentName>;
+type TextFieldComponent<TSegmentName extends SegmentName = never> = {
+  elements?: never;
+  options?: TextFieldOptions;
+  variants: TextFieldVariants<TSegmentName>;
+};
 
 type Components<TSegmentName extends SegmentName = never> = Partial<{
   button: { elements: ButtonElements<TSegmentName> & Elements<TSegmentName> };
   tabs: TabsComponent<TSegmentName>;
+  textField: TextFieldComponent<TSegmentName>;
 }>;
 
 export type SchemaMetadata = {

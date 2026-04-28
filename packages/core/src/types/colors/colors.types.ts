@@ -1,7 +1,7 @@
-import type { ButtonIntent, RoleButton } from './colors.intents';
+import type { ButtonIntent, RoleButton, RoleTextField, TextFieldIntent } from './colors.intents';
 
-export type { ButtonIntent, RoleButton } from './colors.intents';
-export { ButtonIntentKeys } from './colors.intents';
+export type { ButtonIntent, RoleButton, RoleTextField, TextFieldIntent } from './colors.intents';
+export { ButtonIntentKeys, TextFieldIntentKeys } from './colors.intents';
 
 // Unique identifier for each segment (brand/product identity) within a design system.
 // Defined here to avoid circular type dependencies between schema and color types.
@@ -229,7 +229,7 @@ export type IntentValue = SemanticColor | PrimitiveRole;
  * NOTE: This is intentionally extensible. Each component can introduce its own
  * typed role union later (e.g. `RoleBadge`) and be merged into `Role`.
  */
-export type Role = RoleButton | `${string}.${string}`;
+export type Role = RoleButton | RoleTextField | `${string}.${string}`;
 
 /**
  * Qualified role identifier used by the new `color()` API.
@@ -241,6 +241,7 @@ export type Role = RoleButton | `${string}.${string}`;
  */
 export type RoleWithPaint =
   | RoleButton
+  | RoleTextField
   | `${string}.${string}`
   | `${string}.${string}.solid`
   | `${string}.${string}.gradient`;
@@ -322,6 +323,7 @@ export type ComponentIntents = {
    * All intents are optional so presets can override selectively.
    */
   button?: Partial<Record<ButtonIntent, IntentValue>>;
+  textField?: Partial<Record<TextFieldIntent, IntentValue>>;
 } & Partial<Record<string, Record<string, IntentValue>>>;
 
 export type SchemaColors = Partial<{

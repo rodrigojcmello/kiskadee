@@ -2,6 +2,7 @@ import { breakpoints, type Schema } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor';
 import { createMaterial3GoogleButtonSchema } from './components/button.schema';
 import { createMaterial3GoogleTabsSchema } from './components/tabs.schema';
+import { createMaterial3GoogleTextFieldSchema } from './components/text-field.schema';
 import { schemaColors } from './material-3-google.colors';
 
 /**
@@ -166,6 +167,11 @@ export const schema: Schema<Segments> = {
       c,
       transparent,
       white
+    }),
+    textField: createMaterial3GoogleTextFieldSchema({
+      c,
+      segmentNames,
+      transparent
     })
   }
 };

@@ -32,6 +32,8 @@ export type TabsClassNames = Partial<Record<TabsElementName, string>>;
 
 export type TabsClassesMap = Partial<Record<TabsElementName, ClassNameByElementJSON>>;
 
+export type TabsVariantClassesMap = Partial<Record<TabsVariant, TabsClassesMap>>;
+
 export type TabsIndicatorMotion = 'auto' | 'none';
 export type TabsIndicatorMotionStyle = 'direct' | 'stretch';
 

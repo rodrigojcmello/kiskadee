@@ -16,6 +16,7 @@ import type {
   TabsClassesMap,
   TabsClassNames,
   TabsResolvedIndicator,
+  TabsVariantClassesMap,
   TabsVisualContextValue
 } from './Tabs.types';
 
@@ -175,19 +176,16 @@ export function resolveWidthClassName(
  * What
  *     Selects the class-map branch that corresponds to the current Tabs variant.
  * Why
- *     The runtime accepts either a direct element map or a variant-indexed map. Tabs variants
- *     are not interchangeable, so when the requested variant is missing we must return an empty
- *     map instead of borrowing styles from another variant branch.
+ *     Tabs artifacts are variant-indexed. Variants are not interchangeable, so when the requested
+ *     variant is missing we must return an empty map instead of borrowing styles from another
+ *     branch.
  */
 export function resolveVariantElements(
-  map: TabsClassesMap | Record<string, TabsClassesMap> | undefined,
+  map: TabsVariantClassesMap | undefined,
   variant: string
 ): TabsClassesMap {
   if (!map) return {};
-  const asRecord = map as Record<string, TabsClassesMap>;
-  const isElementMap = Object.hasOwn(asRecord, 'e1');
-  if (isElementMap) return map as TabsClassesMap;
-  return asRecord[variant] ?? {};
+  return map[variant as keyof TabsVariantClassesMap] ?? {};
 }
 
 /**

@@ -1,12 +1,13 @@
 import type {
   RadiusMode,
   RippleEffectSchema,
+  TabsBridgeLowerCurve,
   TabsIndicatorPosition,
   TabsIndicatorShape,
   TabsIndicatorWidth,
   TabsTabWidth,
   TabsVariant,
-  TabsBridgeLowerCurve,
+  TextFieldVariant,
   ThemeMode
 } from '@kiskadee/core';
 import { useEffect, useState } from 'react';
@@ -19,6 +20,7 @@ type BackgroundTones = Partial<Record<ThemeMode, string | undefined>>;
 // Cache for global radius/ripple metadata loaded from <ds>/global.kiskadee.json
 const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
 const rippleGlobalCache: Partial<Record<string, RippleEffectSchema | null>> = {};
+const textFieldVariantCache: Partial<Record<string, TextFieldVariant | null>> = {};
 const tabsVariantCache: Partial<Record<string, TabsVariant | null>> = {};
 const tabsIndicatorPositionCache: Partial<Record<string, TabsIndicatorPosition | null>> = {};
 const tabsIndicatorShapeCache: Partial<Record<string, TabsIndicatorShape | null>> = {};
@@ -37,21 +39,18 @@ export function useThemeExtras({
   const [backgroundsByTheme, setBackgroundsByTheme] = useState<BackgroundTones>({});
   const [globalRadius, setGlobalRadius] = useState<RadiusMode | undefined>(undefined);
   const [globalRipple, setGlobalRipple] = useState<RippleEffectSchema | undefined>(undefined);
+  const [textFieldVariant, setTextFieldVariant] = useState<TextFieldVariant | undefined>(undefined);
   const [tabsVariant, setTabsVariant] = useState<TabsVariant | undefined>(undefined);
   const [tabsIndicatorPosition, setTabsIndicatorPosition] = useState<
     TabsIndicatorPosition | undefined
   >(undefined);
-  const [tabsIndicatorShape, setTabsIndicatorShape] = useState<
-    TabsIndicatorShape | undefined
-  >(
+  const [tabsIndicatorShape, setTabsIndicatorShape] = useState<TabsIndicatorShape | undefined>(
     undefined
   );
-  const [tabsIndicatorWidth, setTabsIndicatorWidth] = useState<
-    TabsIndicatorWidth | undefined
-  >(undefined);
-  const [tabsTabWidth, setTabsTabWidth] = useState<TabsTabWidth | undefined>(
+  const [tabsIndicatorWidth, setTabsIndicatorWidth] = useState<TabsIndicatorWidth | undefined>(
     undefined
   );
+  const [tabsTabWidth, setTabsTabWidth] = useState<TabsTabWidth | undefined>(undefined);
   const [tabsSeparator, setTabsSeparator] = useState<boolean | undefined>(undefined);
   const [tabsLowerCurve, setTabsLowerCurve] = useState<TabsBridgeLowerCurve | undefined>(undefined);
 
@@ -67,6 +66,8 @@ export function useThemeExtras({
       let radius = radiusGlobalCache[dsKey] ?? undefined;
       const hasRipple = Object.prototype.hasOwnProperty.call(rippleGlobalCache, dsKey);
       let ripple = rippleGlobalCache[dsKey] ?? undefined;
+      const hasTextFieldVariant = Object.hasOwn(textFieldVariantCache, dsKey);
+      let textFieldVariantValue = textFieldVariantCache[dsKey] ?? undefined;
       const hasTabsVariant = Object.hasOwn(tabsVariantCache, dsKey);
       let variant = tabsVariantCache[dsKey] ?? undefined;
       const hasTabsIndicatorPosition = Object.prototype.hasOwnProperty.call(
@@ -90,6 +91,7 @@ export function useThemeExtras({
       if (
         !hasRadius ||
         !hasRipple ||
+        !hasTextFieldVariant ||
         !hasTabsVariant ||
         !hasTabsIndicatorPosition ||
         !hasTabsIndicatorShape ||
@@ -119,18 +121,24 @@ export function useThemeExtras({
                   lowerCurveMode?: TabsBridgeLowerCurve;
                 };
               };
+              textField?: {
+                options?: {
+                  variant?: TextFieldVariant;
+                };
+              };
             };
           }>(`${dsKey}/global.kiskadee.json`, { required: false, fallback: {} });
           radius = json.radius;
           radiusGlobalCache[dsKey] = radius ?? null;
           ripple = json.effects?.ripple;
           rippleGlobalCache[dsKey] = ripple ?? null;
+          textFieldVariantValue = json.components?.textField?.options?.variant;
+          textFieldVariantCache[dsKey] = textFieldVariantValue ?? null;
           variant = json.components?.tabs?.options?.variant ?? json.components?.tabs?.options?.type;
           tabsVariantCache[dsKey] = variant ?? null;
           indicatorPosition = json.components?.tabs?.options?.indicatorPosition;
           tabsIndicatorPositionCache[dsKey] = indicatorPosition ?? null;
-          indicatorShape =
-            json.components?.tabs?.options?.indicatorShape;
+          indicatorShape = json.components?.tabs?.options?.indicatorShape;
           if (indicatorShape === undefined) {
             indicatorShape = json.components?.tabs?.options?.indicatorVariant;
           }
@@ -163,6 +171,7 @@ export function useThemeExtras({
       if (cancelled) return;
       setGlobalRadius(radius);
       setGlobalRipple(ripple);
+      setTextFieldVariant(textFieldVariantValue);
       setTabsVariant(variant);
       setTabsIndicatorPosition(indicatorPosition);
       setTabsIndicatorShape(indicatorShape);
@@ -236,6 +245,7 @@ export function useThemeExtras({
     backgroundsByTheme,
     globalRadius,
     globalRipple,
+    textFieldVariant,
     tabsVariant,
     tabsIndicatorPosition,
     tabsIndicatorShape,
