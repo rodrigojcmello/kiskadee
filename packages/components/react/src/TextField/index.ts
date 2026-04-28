@@ -1,9 +1,11 @@
-export { TextFieldFloating } from './floating/TextField.floating';
-export { TextFieldStacked } from './stacked/TextField.stacked';
+export { TextFieldFloatingInside } from './floating-inside/TextField.floating-inside';
+export { TextFieldFloatingNotched } from './floating-notched/TextField.floating-notched';
+export { TextFieldStandard } from './standard/TextField.standard';
 export type {
   TextFieldClassNames,
   TextFieldElementName,
-  TextFieldFloatingProps,
+  TextFieldFloatingInsideProps,
+  TextFieldFloatingNotchedProps,
   TextFieldProps,
-  TextFieldStackedProps
+  TextFieldStandardProps
 } from './TextField.types';

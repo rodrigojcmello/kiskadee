@@ -19,7 +19,7 @@ export type TextFieldClassNames = Partial<Record<TextFieldElementName, string>>;
 export type TextFieldClassesMap = Partial<Record<TextFieldElementName, ClassNameByElementJSON>>;
 
 export type TextFieldVariantClassesMap = Partial<
-  Record<'stacked' | 'floating', TextFieldClassesMap>
+  Record<'standard' | 'floating', TextFieldClassesMap>
 >;
 
 export type TextFieldProps = Omit<
@@ -41,6 +41,8 @@ export type TextFieldProps = Omit<
   radius?: RadiusMode;
 };
 
-export type TextFieldStackedProps = TextFieldProps;
+export type TextFieldStandardProps = TextFieldProps;
 
-export type TextFieldFloatingProps = TextFieldProps;
+export type TextFieldFloatingNotchedProps = TextFieldProps;
+
+export type TextFieldFloatingInsideProps = TextFieldProps;

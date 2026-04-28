@@ -12,16 +12,17 @@ import {
 import type { TextFieldStructuralDescriptor } from './TextField.structural';
 import type {
   TextFieldClassesMap,
-  TextFieldFloatingProps,
+  TextFieldFloatingInsideProps,
+  TextFieldFloatingNotchedProps,
   TextFieldProps,
-  TextFieldStackedProps,
+  TextFieldStandardProps,
   TextFieldVariantClassesMap
 } from './TextField.types';
 
 type CreateTextFieldComponentOptions = {
   displayName: string;
   structural: TextFieldStructuralDescriptor;
-  layout: 'stacked' | 'floating';
+  layout: 'standard' | 'floating';
 };
 
 function resolveTextFieldElements(
@@ -123,7 +124,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
         validationStatus={validationStatus}
         classNames={resolvedClassNames}
       >
-        {options.layout === 'stacked' ? (
+        {options.layout === 'standard' ? (
           <>
             <HeadlessTextField.Label>{label}</HeadlessTextField.Label>
             <HeadlessTextField.Control>{input}</HeadlessTextField.Control>
@@ -144,4 +145,8 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
   return MemoTextField;
 }
 
-export type { TextFieldFloatingProps, TextFieldStackedProps };
+export type {
+  TextFieldFloatingInsideProps,
+  TextFieldFloatingNotchedProps,
+  TextFieldStandardProps
+};
