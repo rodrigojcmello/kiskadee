@@ -17,7 +17,7 @@ import type {
  * - e5: validation/supporting message
  */
 export type TextFieldElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
-export type TextFieldVariant = 'stacked' | 'floating';
+export type TextFieldVariant = 'standard' | 'floating';
 export type TextFieldValidationStatus = 'error' | 'warning';
 
 export type TextFieldOptions = TextFieldOptionsFromSchema;
@@ -32,7 +32,7 @@ export type TextFieldRootElementStyle = TextFieldRootElementStyleFromSchema;
  * e2 — label
  * - textColor
  * - textSize / textHeight
- * - marginBottom for stacked spacing
+ * - marginBottom for standard spacing
  */
 export type TextFieldLabelElementStyle<TSegmentName extends SegmentName = never> =
   TextFieldLabelElementStyleFromSchema<TSegmentName>;
@@ -80,6 +80,6 @@ export type TextFieldVariantConfig<TSegmentName extends SegmentName = never> = {
 };
 
 export type TextFieldVariants<TSegmentName extends SegmentName = never> = Partial<{
-  stacked: TextFieldVariantConfig<TSegmentName>;
+  standard: TextFieldVariantConfig<TSegmentName>;
   floating: TextFieldVariantConfig<TSegmentName>;
 }>;

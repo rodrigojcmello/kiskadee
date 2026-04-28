@@ -62,7 +62,7 @@ Context:
   variants have different structural needs.
 - `button` has one stable topology.
 - `tabs` is a variant-driven family (`line`, `box`, `segmented`, `dot`, `bridge`).
-- `textField` is a variant-driven family (`stacked`, `floating`).
+- `textField` is a variant-driven family (`standard`, `floating`).
 
 Decision:
 
@@ -82,7 +82,7 @@ Reason:
 - Keeping the two shapes mutually exclusive avoids silent build ambiguity, where shared-looking
   top-level element values could be interpreted as base defaults by one layer and ignored by
 - Variant structures are not interchangeable. For example, Tabs `line` and `box`, or TextField
-  `stacked` and `floating`, need independent element contracts and runtime class-map branches.
+  `standard` and `floating`, need independent element contracts and runtime class-map branches.
 
 Consequence:
 
@@ -122,7 +122,7 @@ Decision:
 
 Reason:
 
-- Repeating `variant: "stacked"` inside `variants.stacked`, or `variant: "bridge"` inside
+- Repeating `variant: "standard"` inside `variants.standard`, or `variant: "bridge"` inside
   `variants.bridge`, adds no new information and creates noisy artifacts.
 - Keeping the default variant only at the component root makes it easier for tooling and
   convenience consumers to answer "which variant does this DS recommend?" from one place.

@@ -35,7 +35,7 @@ function createTextFieldVariantConfigSchema() {
 function createTextFieldVariantsSchema() {
   return z
     .object({
-      stacked: createTextFieldVariantConfigSchema().optional(),
+      standard: createTextFieldVariantConfigSchema().optional(),
       floating: createTextFieldVariantConfigSchema().optional()
     })
     .strict();

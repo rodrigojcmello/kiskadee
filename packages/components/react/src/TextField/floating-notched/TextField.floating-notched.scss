@@ -1,10 +1,10 @@
 /*
  * TextField variant registry:
- * a = floating
- * b = stacked
+ * a = floating notched
+ * b = standard
  */
 
-/* component root: floating TextField wrapper. */
+/* component root: floating notched TextField wrapper. */
 .k-txf-e1-a {
   display: flex;
   flex-direction: column;

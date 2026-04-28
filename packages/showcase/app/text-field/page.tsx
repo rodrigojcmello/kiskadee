@@ -1,7 +1,11 @@
 'use client';
 
 import type { RadiusMode } from '@kiskadee/core';
-import { TextFieldFloating, TextFieldStacked } from '@kiskadee/react-components';
+import {
+  TextFieldFloatingInside,
+  TextFieldFloatingNotched,
+  TextFieldStandard
+} from '@kiskadee/react-components';
 import { useState } from 'react';
 import { Select } from '@/k-components';
 
@@ -32,16 +36,17 @@ const radiusOptions: Array<{ value: RadiusMode; label: string }> = [
 ];
 
 export default function TextFieldPage() {
-  const [stackedName, setStackedName] = useState('');
-  const [floatingProject, setFloatingProject] = useState('');
+  const [standardName, setStandardName] = useState('');
+  const [floatingNotchedProject, setFloatingNotchedProject] = useState('');
+  const [floatingInsideProject, setFloatingInsideProject] = useState('');
   const [borderRadius, setBorderRadius] = useState<RadiusMode>('rounded');
 
   return (
     <section className="k-root">
       <h2>TextField</h2>
       <p style={{ marginTop: 0, maxWidth: 760 }}>
-        Traditional stacked fields keep the label outside the input shell. Floating fields let the
-        label start inside the shell and promote it when the field is focused or filled.
+        Standard fields keep the label outside the input shell. Floating fields let the label
+        start inside the shell and promote it when the field is focused or filled.
       </p>
 
       <div style={controlsStyle}>
@@ -56,34 +61,34 @@ export default function TextFieldPage() {
 
       <div style={sectionStyle}>
         <div style={groupStyle}>
-          <h3>Stacked</h3>
-          <TextFieldStacked
-            id="stacked-name"
+          <h3>Standard</h3>
+          <TextFieldStandard
+            id="standard-name"
             label="Full name"
-            value={stackedName}
-            onValueChange={setStackedName}
+            value={standardName}
+            onValueChange={setStandardName}
             placeholder="Ada Lovelace"
             message="This is a traditional form label."
             radius={borderRadius}
           />
-          <TextFieldStacked
-            id="stacked-email"
+          <TextFieldStandard
+            id="standard-email"
             label="Email"
             defaultValue="ada@"
             validationStatus="error"
             message="Enter a valid email address."
             radius={borderRadius}
           />
-          <TextFieldStacked
-            id="stacked-tax-id"
+          <TextFieldStandard
+            id="standard-tax-id"
             label="Tax ID"
             defaultValue="123"
             validationStatus="warning"
             message="This value looks short for the selected country."
             radius={borderRadius}
           />
-          <TextFieldStacked
-            id="stacked-disabled"
+          <TextFieldStandard
+            id="standard-disabled"
             label="Disabled"
             defaultValue="Locked value"
             message="Disabled fields keep their message available."
@@ -93,33 +98,69 @@ export default function TextFieldPage() {
         </div>
 
         <div style={groupStyle}>
-          <h3>Floating</h3>
-          <TextFieldFloating
-            id="floating-project"
+          <h3>Floating Notched</h3>
+          <TextFieldFloatingNotched
+            id="floating-notched-project"
             label="Project name"
-            value={floatingProject}
-            onValueChange={setFloatingProject}
+            value={floatingNotchedProject}
+            onValueChange={setFloatingNotchedProject}
             message="Focus or type to see the floating label."
             radius={borderRadius}
           />
-          <TextFieldFloating
-            id="floating-email"
+          <TextFieldFloatingNotched
+            id="floating-notched-email"
             label="Email"
             defaultValue="ada@"
             validationStatus="error"
             message="Enter a valid email address."
             radius={borderRadius}
           />
-          <TextFieldFloating
-            id="floating-budget"
+          <TextFieldFloatingNotched
+            id="floating-notched-budget"
             label="Budget"
             defaultValue="12"
             validationStatus="warning"
             message="Budget may be lower than the project minimum."
             radius={borderRadius}
           />
-          <TextFieldFloating
-            id="floating-readonly"
+          <TextFieldFloatingNotched
+            id="floating-notched-readonly"
+            label="Read only"
+            defaultValue="Generated automatically"
+            message="Read-only fields can still be focused and copied."
+            radius={borderRadius}
+            readOnly
+          />
+        </div>
+
+        <div style={groupStyle}>
+          <h3>Floating Inside</h3>
+          <TextFieldFloatingInside
+            id="floating-inside-project"
+            label="Project name"
+            value={floatingInsideProject}
+            onValueChange={setFloatingInsideProject}
+            message="The label stays inside the outline when it floats."
+            radius={borderRadius}
+          />
+          <TextFieldFloatingInside
+            id="floating-inside-email"
+            label="Email"
+            defaultValue="ada@"
+            validationStatus="error"
+            message="Enter a valid email address."
+            radius={borderRadius}
+          />
+          <TextFieldFloatingInside
+            id="floating-inside-budget"
+            label="Budget"
+            defaultValue="12"
+            validationStatus="warning"
+            message="Budget may be lower than the project minimum."
+            radius={borderRadius}
+          />
+          <TextFieldFloatingInside
+            id="floating-inside-readonly"
             label="Read only"
             defaultValue="Generated automatically"
             message="Read-only fields can still be focused and copied."

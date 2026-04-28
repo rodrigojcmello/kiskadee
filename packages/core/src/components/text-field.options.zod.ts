@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const textFieldVariantSchema = z.enum(['stacked', 'floating']);
+export const textFieldVariantSchema = z.enum(['standard', 'floating']);
 
 export type TextFieldVariantSchemaValue = z.infer<typeof textFieldVariantSchema>;
 

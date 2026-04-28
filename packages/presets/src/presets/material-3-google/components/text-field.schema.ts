@@ -320,10 +320,10 @@ export function createMaterial3GoogleTextFieldSchema(
 
   return {
     options: {
-      variant: 'stacked'
+      variant: 'standard'
     },
     variants: {
-      stacked: {
+      standard: {
         elements: {
           e1: {
             scales: {
