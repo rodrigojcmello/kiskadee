@@ -1,9 +1,9 @@
 import type { TextFieldStructuralDescriptor } from '../TextField.structural';
 
-export const textFieldStandardStructural = {
+export const textFieldStandardUnderlineStructural = {
   variant: 'standard',
-  mode: 'outline',
-  letter: 'b',
+  mode: 'underline',
+  letter: 'd',
   slots: {
     e1: 'e1',
     e2: 'e2',

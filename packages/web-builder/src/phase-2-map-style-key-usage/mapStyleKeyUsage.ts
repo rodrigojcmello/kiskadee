@@ -31,6 +31,13 @@ function isElementMap(value: unknown): value is Record<string, any> {
   return elementKeys.some((key) => key in first);
 }
 
+function isNestedVariantModeMap(value: unknown): value is Record<string, Record<string, any>> {
+  if (!isRecord(value)) return false;
+  const first = Object.values(value).find(Boolean);
+  if (!isRecord(first)) return false;
+  return isElementMap(first);
+}
+
 export function mapStyleKeyUsage(
   styleKeysByComponent: ComponentStyleKeyMap,
   options?: {
@@ -126,6 +133,13 @@ export function mapStyleKeyUsage(
       if (!variantElements) continue;
       if (isElementMap(variantElements)) {
         consumeElements(componentName, variantElements, variantName);
+        continue;
+      }
+
+      if (!isNestedVariantModeMap(variantElements)) continue;
+      for (const modeElements of Object.values(variantElements)) {
+        if (!modeElements || !isElementMap(modeElements)) continue;
+        consumeElements(componentName, modeElements, variantName);
       }
     }
   }

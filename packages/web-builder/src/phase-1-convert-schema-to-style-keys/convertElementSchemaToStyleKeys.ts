@@ -36,6 +36,13 @@ type ComponentSchemaInput = {
     string,
     | {
         elements?: Record<string, ElementSchemaInput | undefined>;
+        modes?: Record<
+          string,
+          | {
+              elements?: Record<string, ElementSchemaInput | undefined>;
+            }
+          | undefined
+        >;
       }
     | undefined
   >;
@@ -71,6 +78,7 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
     metadataScope: {
       componentName: string;
       variantName?: string;
+      modeName?: string;
       elementName: string;
     }
   ) => {
@@ -305,14 +313,31 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
     if (variants && typeof variants === 'object') {
       for (const [variantName, variant] of Object.entries(variants)) {
         const elements = variant?.elements;
-        if (!elements) continue;
-        for (const [elementName, element] of Object.entries(elements)) {
-          if (!element) continue;
-          applyElement([componentName, variantName, elementName], element, {
-            componentName,
-            variantName,
-            elementName
-          });
+        if (elements) {
+          for (const [elementName, element] of Object.entries(elements)) {
+            if (!element) continue;
+            applyElement([componentName, variantName, elementName], element, {
+              componentName,
+              variantName,
+              elementName
+            });
+          }
+        }
+
+        const modes = variant?.modes;
+        if (!modes) continue;
+        for (const [modeName, mode] of Object.entries(modes)) {
+          const modeElements = mode?.elements;
+          if (!modeElements) continue;
+          for (const [elementName, element] of Object.entries(modeElements)) {
+            if (!element) continue;
+            applyElement([componentName, variantName, modeName, elementName], element, {
+              componentName,
+              variantName,
+              modeName,
+              elementName
+            });
+          }
         }
       }
       continue;

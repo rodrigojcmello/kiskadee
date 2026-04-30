@@ -1,4 +1,11 @@
-import type { Schema } from '@kiskadee/core';
+import type {
+  Schema,
+  TextFieldControlElementStyle,
+  TextFieldInputElementStyle,
+  TextFieldLabelElementStyle,
+  TextFieldMessageElementStyle,
+  TextFieldRootElementStyle
+} from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment';
 import type { PresetColorGetter } from '../../../utils/presetColor';
 
@@ -143,6 +150,128 @@ function createTextFieldElementPalettes({
               focus: c(s, 'd', 'textField.warning', 80),
               disabled: c(s, 'd', 'neutral', 30, 38),
               readOnly: c(s, 'd', 'textField.warning', 75)
+            }
+          }
+        }
+      }
+    })),
+    controlBorderless: buildBySegment(segmentNames, (s) => ({
+      light: {
+        boxColor: {
+          neutral: {
+            medium: {
+              rest: c(s, 'l', 'neutral', 98),
+              hover: c(s, 'l', 'neutral', 96),
+              focus: c(s, 'l', 'primary', 95),
+              disabled: c(s, 'l', 'neutral', 90, 8),
+              readOnly: c(s, 'l', 'neutral', 97)
+            }
+          },
+          error: {
+            medium: {
+              rest: c(s, 'l', 'redLike', 98),
+              hover: c(s, 'l', 'redLike', 96),
+              focus: c(s, 'l', 'redLike', 94),
+              disabled: c(s, 'l', 'neutral', 90, 8),
+              readOnly: c(s, 'l', 'redLike', 97)
+            }
+          },
+          warning: {
+            medium: {
+              rest: c(s, 'l', 'yellowLike', 97),
+              hover: c(s, 'l', 'yellowLike', 95),
+              focus: c(s, 'l', 'yellowLike', 92),
+              disabled: c(s, 'l', 'neutral', 90, 8),
+              readOnly: c(s, 'l', 'yellowLike', 96)
+            }
+          }
+        },
+        borderColor: {
+          neutral: {
+            medium: {
+              rest: transparent,
+              hover: transparent,
+              focus: transparent,
+              disabled: transparent,
+              readOnly: transparent
+            }
+          },
+          error: {
+            medium: {
+              rest: transparent,
+              hover: transparent,
+              focus: transparent,
+              disabled: transparent,
+              readOnly: transparent
+            }
+          },
+          warning: {
+            medium: {
+              rest: transparent,
+              hover: transparent,
+              focus: transparent,
+              disabled: transparent,
+              readOnly: transparent
+            }
+          }
+        }
+      },
+      dark: {
+        boxColor: {
+          neutral: {
+            medium: {
+              rest: c(s, 'd', 'neutral', 14),
+              hover: c(s, 'd', 'neutral', 18),
+              focus: c(s, 'd', 'primary', 20),
+              disabled: c(s, 'd', 'neutral', 10, 16),
+              readOnly: c(s, 'd', 'neutral', 16)
+            }
+          },
+          error: {
+            medium: {
+              rest: c(s, 'd', 'redLike', 18),
+              hover: c(s, 'd', 'redLike', 22),
+              focus: c(s, 'd', 'redLike', 28),
+              disabled: c(s, 'd', 'neutral', 10, 16),
+              readOnly: c(s, 'd', 'redLike', 20)
+            }
+          },
+          warning: {
+            medium: {
+              rest: c(s, 'd', 'yellowLike', 18),
+              hover: c(s, 'd', 'yellowLike', 24),
+              focus: c(s, 'd', 'yellowLike', 28),
+              disabled: c(s, 'd', 'neutral', 10, 16),
+              readOnly: c(s, 'd', 'yellowLike', 20)
+            }
+          }
+        },
+        borderColor: {
+          neutral: {
+            medium: {
+              rest: transparent,
+              hover: transparent,
+              focus: transparent,
+              disabled: transparent,
+              readOnly: transparent
+            }
+          },
+          error: {
+            medium: {
+              rest: transparent,
+              hover: transparent,
+              focus: transparent,
+              disabled: transparent,
+              readOnly: transparent
+            }
+          },
+          warning: {
+            medium: {
+              rest: transparent,
+              hover: transparent,
+              focus: transparent,
+              disabled: transparent,
+              readOnly: transparent
             }
           }
         }
@@ -317,213 +446,335 @@ export function createMaterial3GoogleTextFieldSchema(
   args: CreateMaterial3GoogleTextFieldSchemaArgs
 ): TextFieldComponent {
   const palettes = createTextFieldElementPalettes(args);
+  const rootElement: TextFieldRootElementStyle = {
+    scales: {
+      boxWidth: {
+        's:sm:1': 280,
+        's:md:1': 320
+      }
+    }
+  };
+  const standardLabel: TextFieldLabelElementStyle<Material3GoogleSegmentName> = {
+    decorations: {
+      textFont: 'body',
+      textWeight: 'medium'
+    },
+    scales: {
+      textSize: {
+        's:sm:1': 12,
+        's:md:1': 14
+      },
+      textHeight: {
+        's:sm:1': 16,
+        's:md:1': 20
+      },
+      marginBottom: {
+        's:sm:1': 4,
+        's:md:1': 6
+      }
+    },
+    palettes: palettes.label
+  };
+  const standardInput: TextFieldInputElementStyle<Material3GoogleSegmentName> = {
+    decorations: {
+      textFont: 'body',
+      textWeight: 'normal'
+    },
+    scales: {
+      textSize: {
+        's:sm:1': 14,
+        's:md:1': 16
+      },
+      textHeight: {
+        's:sm:1': 20,
+        's:md:1': 24
+      }
+    },
+    palettes: palettes.input
+  };
+  const messageElement: TextFieldMessageElementStyle<Material3GoogleSegmentName> = {
+    decorations: {
+      textFont: 'body',
+      textWeight: 'normal'
+    },
+    scales: {
+      textSize: {
+        's:sm:1': 11,
+        's:md:1': 12
+      },
+      textHeight: {
+        's:sm:1': 16,
+        's:md:1': 16
+      },
+      marginTop: {
+        's:sm:1': 4,
+        's:md:1': 6
+      }
+    },
+    palettes: palettes.message
+  };
+  const standardOutlineControl: TextFieldControlElementStyle<Material3GoogleSegmentName> = {
+    decorations: {
+      borderStyle: 'solid'
+    },
+    scales: {
+      boxHeight: {
+        's:sm:1': 36,
+        's:md:1': 40
+      },
+      borderWidth: {
+        's:sm:1': 1,
+        's:md:1': 1
+      },
+      borderRadius: controlRadius,
+      paddingTop: {
+        's:sm:1': 8,
+        's:md:1': 8
+      },
+      paddingRight: {
+        's:sm:1': 10,
+        's:md:1': 12
+      },
+      paddingBottom: {
+        's:sm:1': 8,
+        's:md:1': 8
+      },
+      paddingLeft: {
+        's:sm:1': 10,
+        's:md:1': 12
+      }
+    },
+    palettes: palettes.control
+  };
+  const standardUnderlineControl: TextFieldControlElementStyle<Material3GoogleSegmentName> = {
+    decorations: {
+      borderStyle: 'solid'
+    },
+    scales: {
+      boxHeight: {
+        's:sm:1': 34,
+        's:md:1': 38
+      },
+      borderWidth: {
+        's:sm:1': 1,
+        's:md:1': 1
+      },
+      borderRadius: controlRadius,
+      paddingTop: {
+        's:sm:1': 8,
+        's:md:1': 8
+      },
+      paddingRight: {
+        's:sm:1': 0,
+        's:md:1': 0
+      },
+      paddingBottom: {
+        's:sm:1': 8,
+        's:md:1': 8
+      },
+      paddingLeft: {
+        's:sm:1': 0,
+        's:md:1': 0
+      }
+    },
+    palettes: palettes.control
+  };
+  const standardBorderlessControl: TextFieldControlElementStyle<Material3GoogleSegmentName> = {
+    decorations: {
+      borderStyle: 'solid'
+    },
+    scales: {
+      boxHeight: {
+        's:sm:1': 36,
+        's:md:1': 40
+      },
+      borderWidth: {
+        's:sm:1': 0,
+        's:md:1': 0
+      },
+      borderRadius: controlRadius,
+      paddingTop: {
+        's:sm:1': 8,
+        's:md:1': 8
+      },
+      paddingRight: {
+        's:sm:1': 10,
+        's:md:1': 12
+      },
+      paddingBottom: {
+        's:sm:1': 8,
+        's:md:1': 8
+      },
+      paddingLeft: {
+        's:sm:1': 10,
+        's:md:1': 12
+      }
+    },
+    palettes: palettes.controlBorderless
+  };
+  const floatingLabel: TextFieldLabelElementStyle<Material3GoogleSegmentName> = {
+    decorations: {
+      textFont: 'body',
+      textWeight: 'normal'
+    },
+    scales: {
+      textSize: {
+        's:sm:1': 14,
+        's:md:1': 16
+      },
+      textHeight: {
+        's:sm:1': 20,
+        's:md:1': 24
+      }
+    },
+    palettes: palettes.label
+  };
+  const floatingControl: TextFieldControlElementStyle<Material3GoogleSegmentName> = {
+    decorations: {
+      borderStyle: 'solid'
+    },
+    scales: {
+      boxHeight: {
+        's:sm:1': 48,
+        's:md:1': 56
+      },
+      borderWidth: {
+        's:sm:1': 1,
+        's:md:1': 1
+      },
+      borderRadius: controlRadius,
+      paddingTop: {
+        's:sm:1': 8,
+        's:md:1': 8
+      },
+      paddingRight: {
+        's:sm:1': 12,
+        's:md:1': 16
+      },
+      paddingBottom: {
+        's:sm:1': 8,
+        's:md:1': 8
+      },
+      paddingLeft: {
+        's:sm:1': 12,
+        's:md:1': 16
+      }
+    },
+    palettes: palettes.control
+  };
+  const floatingInsideControl: TextFieldControlElementStyle<Material3GoogleSegmentName> = {
+    decorations: {
+      borderStyle: 'solid'
+    },
+    scales: {
+      boxHeight: {
+        's:sm:1': 52,
+        's:md:1': 60
+      },
+      borderWidth: {
+        's:sm:1': 1,
+        's:md:1': 1
+      },
+      borderRadius: controlRadius,
+      paddingTop: {
+        's:sm:1': 10,
+        's:md:1': 10
+      },
+      paddingRight: {
+        's:sm:1': 12,
+        's:md:1': 16
+      },
+      paddingBottom: {
+        's:sm:1': 6,
+        's:md:1': 8
+      },
+      paddingLeft: {
+        's:sm:1': 12,
+        's:md:1': 16
+      }
+    },
+    palettes: palettes.control
+  };
+  const floatingInput: TextFieldInputElementStyle<Material3GoogleSegmentName> = {
+    decorations: {
+      textFont: 'body',
+      textWeight: 'normal'
+    },
+    scales: {
+      textSize: {
+        's:sm:1': 14,
+        's:md:1': 16
+      },
+      textHeight: {
+        's:sm:1': 20,
+        's:md:1': 24
+      }
+    },
+    palettes: palettes.input
+  };
 
   return {
     options: {
-      variant: 'standard'
+      variant: 'standard',
+      mode: 'outline'
     },
     variants: {
       standard: {
-        elements: {
-          e1: {
-            scales: {
-              boxWidth: {
-                's:sm:1': 280,
-                's:md:1': 320
-              }
+        options: {
+          mode: 'outline'
+        },
+        modes: {
+          outline: {
+            elements: {
+              e1: rootElement,
+              e2: standardLabel,
+              e3: standardOutlineControl,
+              e4: standardInput,
+              e5: messageElement
             }
           },
-          e2: {
-            decorations: {
-              textFont: 'body',
-              textWeight: 'medium'
-            },
-            scales: {
-              textSize: {
-                's:sm:1': 12,
-                's:md:1': 14
-              },
-              textHeight: {
-                's:sm:1': 16,
-                's:md:1': 20
-              },
-              marginBottom: {
-                's:sm:1': 4,
-                's:md:1': 6
-              }
-            },
-            palettes: palettes.label
+          underline: {
+            elements: {
+              e1: rootElement,
+              e2: standardLabel,
+              e3: standardUnderlineControl,
+              e4: standardInput,
+              e5: messageElement
+            }
           },
-          e3: {
-            decorations: {
-              borderStyle: 'solid'
-            },
-            scales: {
-              boxHeight: {
-                's:sm:1': 36,
-                's:md:1': 40
-              },
-              borderWidth: {
-                's:sm:1': 1,
-                's:md:1': 1
-              },
-              borderRadius: controlRadius,
-              paddingTop: {
-                's:sm:1': 8,
-                's:md:1': 8
-              },
-              paddingRight: {
-                's:sm:1': 10,
-                's:md:1': 12
-              },
-              paddingBottom: {
-                's:sm:1': 8,
-                's:md:1': 8
-              },
-              paddingLeft: {
-                's:sm:1': 10,
-                's:md:1': 12
-              }
-            },
-            palettes: palettes.control
-          },
-          e4: {
-            decorations: {
-              textFont: 'body',
-              textWeight: 'normal'
-            },
-            scales: {
-              textSize: {
-                's:sm:1': 14,
-                's:md:1': 16
-              },
-              textHeight: {
-                's:sm:1': 20,
-                's:md:1': 24
-              }
-            },
-            palettes: palettes.input
-          },
-          e5: {
-            decorations: {
-              textFont: 'body',
-              textWeight: 'normal'
-            },
-            scales: {
-              textSize: {
-                's:sm:1': 11,
-                's:md:1': 12
-              },
-              textHeight: {
-                's:sm:1': 16,
-                's:md:1': 16
-              },
-              marginTop: {
-                's:sm:1': 4,
-                's:md:1': 6
-              }
-            },
-            palettes: palettes.message
+          borderless: {
+            elements: {
+              e1: rootElement,
+              e2: standardLabel,
+              e3: standardBorderlessControl,
+              e4: standardInput,
+              e5: messageElement
+            }
           }
         }
       },
       floating: {
-        elements: {
-          e1: {
-            scales: {
-              boxWidth: {
-                's:sm:1': 280,
-                's:md:1': 320
-              }
+        options: {
+          mode: 'notched'
+        },
+        modes: {
+          notched: {
+            elements: {
+              e1: rootElement,
+              e2: floatingLabel,
+              e3: floatingControl,
+              e4: floatingInput,
+              e5: messageElement
             }
           },
-          e2: {
-            decorations: {
-              textFont: 'body',
-              textWeight: 'normal'
-            },
-            scales: {
-              textSize: {
-                's:sm:1': 14,
-                's:md:1': 16
-              },
-              textHeight: {
-                's:sm:1': 20,
-                's:md:1': 24
-              }
-            },
-            palettes: palettes.label
-          },
-          e3: {
-            decorations: {
-              borderStyle: 'solid'
-            },
-            scales: {
-              boxHeight: {
-                's:sm:1': 48,
-                's:md:1': 56
-              },
-              borderWidth: {
-                's:sm:1': 1,
-                's:md:1': 1
-              },
-              borderRadius: controlRadius,
-              paddingTop: {
-                's:sm:1': 8,
-                's:md:1': 8
-              },
-              paddingRight: {
-                's:sm:1': 12,
-                's:md:1': 16
-              },
-              paddingBottom: {
-                's:sm:1': 8,
-                's:md:1': 8
-              },
-              paddingLeft: {
-                's:sm:1': 12,
-                's:md:1': 16
-              }
-            },
-            palettes: palettes.control
-          },
-          e4: {
-            decorations: {
-              textFont: 'body',
-              textWeight: 'normal'
-            },
-            scales: {
-              textSize: {
-                's:sm:1': 14,
-                's:md:1': 16
-              },
-              textHeight: {
-                's:sm:1': 20,
-                's:md:1': 24
-              }
-            },
-            palettes: palettes.input
-          },
-          e5: {
-            decorations: {
-              textFont: 'body',
-              textWeight: 'normal'
-            },
-            scales: {
-              textSize: {
-                's:sm:1': 11,
-                's:md:1': 12
-              },
-              textHeight: {
-                's:sm:1': 16,
-                's:md:1': 16
-              },
-              marginTop: {
-                's:sm:1': 4,
-                's:md:1': 6
-              }
-            },
-            palettes: palettes.message
+          inside: {
+            elements: {
+              e1: rootElement,
+              e2: floatingLabel,
+              e3: floatingInsideControl,
+              e4: floatingInput,
+              e5: messageElement
+            }
           }
         }
       }

@@ -38,52 +38,38 @@ const mergeElementMaps = (
   return out;
 };
 
-// Deep merge: preserve core baseline (d/e/s) and overlay palette colors (c) and selected (cs)
+const mergeClassMapNode = (coreNode: unknown, paletteNode: unknown): Record<string, unknown> => {
+  const cIsElement = isElementMap(coreNode);
+  const pIsElement = isElementMap(paletteNode);
+
+  if (cIsElement || pIsElement) {
+    return mergeElementMaps(
+      cIsElement ? coreNode : undefined,
+      pIsElement ? paletteNode : undefined
+    );
+  }
+
+  const cNode = isRecord(coreNode) ? coreNode : {};
+  const pNode = isRecord(paletteNode) ? paletteNode : {};
+  const keys = new Set<string>([
+    ...Object.keys(cNode),
+    ...Object.keys(pNode)
+  ]);
+  const out: Record<string, unknown> = {};
+
+  for (const key of keys) {
+    if (key === '$schema') continue;
+    out[key] = mergeClassMapNode(cNode[key], pNode[key]);
+  }
+
+  return out;
+};
+
+// Deep merge: preserve core baseline (d/e/s) and overlay palette colors (c) and selected (cs).
+// The recursion supports components with plain elements, variants, or variant modes.
 export const mergeMaps = (
   coreMap: ComponentClassNameMapJSON,
   paletteMap: ComponentClassNameMapJSON
 ): ComponentClassNameMapJSON => {
-  const out: Record<string, Record<string, unknown>> = {};
-  const compKeys = new Set<string>([
-    ...Object.keys(coreMap || {}),
-    ...Object.keys(paletteMap || {})
-  ]);
-  for (const comp of compKeys) {
-    if (comp === '$schema') continue;
-    const cComp = (coreMap as unknown as Record<string, unknown>)?.[comp] as
-      | Record<string, unknown>
-      | undefined;
-    const pComp = (paletteMap as unknown as Record<string, unknown>)?.[comp] as
-      | Record<string, unknown>
-      | undefined;
-
-    const cIsElement = isElementMap(cComp);
-    const pIsElement = isElementMap(pComp);
-
-    if (cIsElement && pIsElement) {
-      out[comp] = mergeElementMaps(
-        cComp as Record<string, Record<string, unknown>>,
-        pComp as Record<string, Record<string, unknown>>
-      ) as Record<string, unknown>;
-      continue;
-    }
-
-    const cVariants = cIsElement ? {} : (cComp as Record<string, Record<string, unknown>> | undefined);
-    const pVariants = pIsElement ? {} : (pComp as Record<string, Record<string, unknown>> | undefined);
-    const variantKeys = new Set<string>([
-      ...Object.keys(cVariants || {}),
-      ...Object.keys(pVariants || {})
-    ]);
-    out[comp] = {};
-    for (const variant of variantKeys) {
-      const cVariant = cIsElement
-        ? (cComp as Record<string, Record<string, unknown>>)
-        : (cVariants?.[variant] as Record<string, Record<string, unknown>> | undefined);
-      const pVariant = pIsElement
-        ? (pComp as Record<string, Record<string, unknown>>)
-        : (pVariants?.[variant] as Record<string, Record<string, unknown>> | undefined);
-      (out[comp] as Record<string, unknown>)[variant] = mergeElementMaps(cVariant, pVariant);
-    }
-  }
-  return out as unknown as ComponentClassNameMapJSON;
+  return mergeClassMapNode(coreMap, paletteMap) as unknown as ComponentClassNameMapJSON;
 };

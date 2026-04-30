@@ -7,6 +7,7 @@ import type {
   TabsIndicatorWidth,
   TabsTabWidth,
   TabsVariant,
+  TextFieldMode,
   TextFieldVariant,
   ThemeMode
 } from '@kiskadee/core';
@@ -21,6 +22,7 @@ type BackgroundTones = Partial<Record<ThemeMode, string | undefined>>;
 const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
 const rippleGlobalCache: Partial<Record<string, RippleEffectSchema | null>> = {};
 const textFieldVariantCache: Partial<Record<string, TextFieldVariant | null>> = {};
+const textFieldModeCache: Partial<Record<string, TextFieldMode | null>> = {};
 const tabsVariantCache: Partial<Record<string, TabsVariant | null>> = {};
 const tabsIndicatorPositionCache: Partial<Record<string, TabsIndicatorPosition | null>> = {};
 const tabsIndicatorShapeCache: Partial<Record<string, TabsIndicatorShape | null>> = {};
@@ -40,6 +42,7 @@ export function useThemeExtras({
   const [globalRadius, setGlobalRadius] = useState<RadiusMode | undefined>(undefined);
   const [globalRipple, setGlobalRipple] = useState<RippleEffectSchema | undefined>(undefined);
   const [textFieldVariant, setTextFieldVariant] = useState<TextFieldVariant | undefined>(undefined);
+  const [textFieldMode, setTextFieldMode] = useState<TextFieldMode | undefined>(undefined);
   const [tabsVariant, setTabsVariant] = useState<TabsVariant | undefined>(undefined);
   const [tabsIndicatorPosition, setTabsIndicatorPosition] = useState<
     TabsIndicatorPosition | undefined
@@ -68,6 +71,8 @@ export function useThemeExtras({
       let ripple = rippleGlobalCache[dsKey] ?? undefined;
       const hasTextFieldVariant = Object.hasOwn(textFieldVariantCache, dsKey);
       let textFieldVariantValue = textFieldVariantCache[dsKey] ?? undefined;
+      const hasTextFieldMode = Object.hasOwn(textFieldModeCache, dsKey);
+      let textFieldModeValue = textFieldModeCache[dsKey] ?? undefined;
       const hasTabsVariant = Object.hasOwn(tabsVariantCache, dsKey);
       let variant = tabsVariantCache[dsKey] ?? undefined;
       const hasTabsIndicatorPosition = Object.prototype.hasOwnProperty.call(
@@ -92,6 +97,7 @@ export function useThemeExtras({
         !hasRadius ||
         !hasRipple ||
         !hasTextFieldVariant ||
+        !hasTextFieldMode ||
         !hasTabsVariant ||
         !hasTabsIndicatorPosition ||
         !hasTabsIndicatorShape ||
@@ -124,6 +130,7 @@ export function useThemeExtras({
               textField?: {
                 options?: {
                   variant?: TextFieldVariant;
+                  mode?: TextFieldMode;
                 };
               };
             };
@@ -134,6 +141,8 @@ export function useThemeExtras({
           rippleGlobalCache[dsKey] = ripple ?? null;
           textFieldVariantValue = json.components?.textField?.options?.variant;
           textFieldVariantCache[dsKey] = textFieldVariantValue ?? null;
+          textFieldModeValue = json.components?.textField?.options?.mode;
+          textFieldModeCache[dsKey] = textFieldModeValue ?? null;
           variant = json.components?.tabs?.options?.variant ?? json.components?.tabs?.options?.type;
           tabsVariantCache[dsKey] = variant ?? null;
           indicatorPosition = json.components?.tabs?.options?.indicatorPosition;
@@ -172,6 +181,7 @@ export function useThemeExtras({
       setGlobalRadius(radius);
       setGlobalRipple(ripple);
       setTextFieldVariant(textFieldVariantValue);
+      setTextFieldMode(textFieldModeValue);
       setTabsVariant(variant);
       setTabsIndicatorPosition(indicatorPosition);
       setTabsIndicatorShape(indicatorShape);
@@ -246,6 +256,7 @@ export function useThemeExtras({
     globalRadius,
     globalRipple,
     textFieldVariant,
+    textFieldMode,
     tabsVariant,
     tabsIndicatorPosition,
     tabsIndicatorShape,

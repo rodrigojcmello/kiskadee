@@ -9,6 +9,7 @@ import type {
   SchemaFonts,
   SegmentName,
   SolidColor,
+  TextFieldMode,
   TextFieldVariant,
   TabsBridgeLowerCurve,
   TabsIndicatorShape,
@@ -170,6 +171,7 @@ export async function writeExtraArtifacts(params: {
   const textFieldVariant = schema.components?.textField?.options?.variant as
     | TextFieldVariant
     | undefined;
+  const textFieldMode = schema.components?.textField?.options?.mode as TextFieldMode | undefined;
 
   function toCssFontFamilyString(value: FontStack): string | null {
     const css = toCssFontFamily(value);
@@ -193,7 +195,7 @@ export async function writeExtraArtifacts(params: {
       tabsSeparator !== undefined ||
       tabsLowerCurve
   );
-  const hasTextFieldOptions = Boolean(textFieldVariant);
+  const hasTextFieldOptions = Boolean(textFieldVariant || textFieldMode);
 
   if (hasFonts || hasRadius || hasRipple || hasTabsOptions || hasTextFieldOptions) {
     await mkdir(buildDir, { recursive: true });
@@ -218,6 +220,7 @@ export async function writeExtraArtifacts(params: {
         textField?: {
           options?: {
             variant?: TextFieldVariant;
+            mode?: TextFieldMode;
           };
         };
       };
@@ -262,7 +265,8 @@ export async function writeExtraArtifacts(params: {
           ? {
               textField: {
                 options: {
-                  ...(textFieldVariant ? { variant: textFieldVariant } : {})
+                  ...(textFieldVariant ? { variant: textFieldVariant } : {}),
+                  ...(textFieldMode ? { mode: textFieldMode } : {})
                 }
               }
             }

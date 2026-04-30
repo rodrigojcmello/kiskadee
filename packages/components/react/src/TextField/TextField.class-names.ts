@@ -6,6 +6,7 @@ import {
   componentEmphasisBuckets,
   type RadiusMode,
   type TextFieldIntent,
+  type TextFieldMode,
   type TextFieldVariant
 } from '@kiskadee/core';
 import type { TextFieldStructuralDescriptor } from './TextField.structural';
@@ -33,10 +34,11 @@ export const normalizeScaleKey = (key: string): string =>
 
 export function resolveVariantElements(
   map: TextFieldVariantClassesMap | undefined,
-  variant: TextFieldVariant
+  variant: TextFieldVariant,
+  mode: TextFieldMode
 ): TextFieldClassesMap {
   if (!map) return {};
-  return map[variant] ?? {};
+  return map[variant]?.[mode] ?? {};
 }
 
 export function resolveIntentClasses(

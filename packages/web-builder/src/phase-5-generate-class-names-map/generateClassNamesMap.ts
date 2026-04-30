@@ -60,6 +60,13 @@ function getOrCreateSet(map: Map<string, Set<string>>, key: string): Set<string>
   return set;
 }
 
+function isNestedVariantModeMap(value: unknown): value is Record<string, Record<string, ElementStyleKeyRecord>> {
+  if (!isRecord(value)) return false;
+  const first = Object.values(value).find(Boolean);
+  if (!isRecord(first)) return false;
+  return isElementMap(first);
+}
+
 function mapArray(
   keys: string[] | undefined,
   resolveClassName: (key: string) => string
@@ -137,6 +144,7 @@ export function generateClassNamesMapSplit(
     bundleKey: string,
     componentName: string,
     variantName: string | undefined,
+    modeName: string | undefined,
     elementName: string
   ): ClassNameByElement => {
     if (!palettes[bundleKey]) palettes[bundleKey] = {};
@@ -144,11 +152,16 @@ export function generateClassNamesMapSplit(
       palettes[bundleKey][componentName] = variantName ? {} : {};
     }
     const componentEntry = palettes[bundleKey][componentName] as Record<string, unknown>;
-    const target = variantName
+    const variantTarget = variantName
       ? ((componentEntry[variantName] as Record<string, unknown> | undefined) ??
         // biome-ignore lint/suspicious/noAssignInExpressions: initializes the nested variant record inline
         (componentEntry[variantName] = {}))
       : componentEntry;
+    const target = modeName
+      ? ((variantTarget[modeName] as Record<string, unknown> | undefined) ??
+        // biome-ignore lint/suspicious/noAssignInExpressions: initializes the nested mode record inline
+        (variantTarget[modeName] = {}))
+      : variantTarget;
     if (!target[elementName]) {
       target[elementName] = {};
     }
@@ -159,7 +172,8 @@ export function generateClassNamesMapSplit(
     componentName: string,
     elements: Record<string, ElementStyleKeyRecord>,
     coreTarget: Record<string, ClassNameByElement>,
-    variantName?: string
+    variantName?: string,
+    modeName?: string
   ) => {
     for (const elementName of Object.keys(elements)) {
       const el = elements[elementName];
@@ -320,6 +334,7 @@ export function generateClassNamesMapSplit(
               bundleKey,
               componentName,
               variantName,
+              modeName,
               elementName
             );
 
@@ -346,6 +361,7 @@ export function generateClassNamesMapSplit(
                     {
                       componentName,
                       variantName,
+                      modeName,
                       elementName
                     },
                     `${sem}::${styleKey}`
@@ -474,12 +490,31 @@ export function generateClassNamesMapSplit(
     }
 
     const variantMap = elements as Record<string, unknown>;
-    const coreVariants: Record<string, Record<string, ClassNameByElement>> = {};
+    const coreVariants: Record<string, Record<string, ClassNameByElement> | Record<string, Record<string, ClassNameByElement>>> = {};
     core[componentName] = coreVariants;
     for (const [variantName, variantElements] of Object.entries(variantMap)) {
-      if (!variantElements || !isElementMap(variantElements)) continue;
-      coreVariants[variantName] = {};
-      processElements(componentName, variantElements, coreVariants[variantName], variantName);
+      if (!variantElements) continue;
+
+      if (isElementMap(variantElements)) {
+        coreVariants[variantName] = {};
+        processElements(
+          componentName,
+          variantElements,
+          coreVariants[variantName] as Record<string, ClassNameByElement>,
+          variantName
+        );
+        continue;
+      }
+
+      if (!isNestedVariantModeMap(variantElements)) continue;
+      const modeMap = variantElements as Record<string, Record<string, ElementStyleKeyRecord>>;
+      const coreModes: Record<string, Record<string, ClassNameByElement>> = {};
+      coreVariants[variantName] = coreModes;
+      for (const [modeName, modeElements] of Object.entries(modeMap)) {
+        if (!modeElements || !isElementMap(modeElements)) continue;
+        coreModes[modeName] = {};
+        processElements(componentName, modeElements, coreModes[modeName], variantName, modeName);
+      }
     }
   }
 

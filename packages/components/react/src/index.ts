@@ -7,10 +7,16 @@ export { TabsBox, TabsBridge, TabsDot, TabsLine, TabsSegmented } from './Tabs';
 export type {
   TextFieldFloatingInsideProps,
   TextFieldFloatingNotchedProps,
-  TextFieldStandardProps
+  TextFieldStandardBorderlessProps,
+  TextFieldStandardOutlineProps,
+  TextFieldStandardProps,
+  TextFieldStandardUnderlineProps
 } from './TextField';
 export {
   TextFieldFloatingInside,
   TextFieldFloatingNotched,
-  TextFieldStandard
+  TextFieldStandard,
+  TextFieldStandardBorderless,
+  TextFieldStandardOutline,
+  TextFieldStandardUnderline
 } from './TextField';

@@ -2,13 +2,14 @@ import type {
   ComponentClassNameMapJSON,
   RadiusMode,
   RippleEffectSchema,
-  TextFieldVariant,
   TabsBridgeLowerCurve,
-  TabsVariant,
-  TabsIndicatorShape,
   TabsIndicatorPosition,
+  TabsIndicatorShape,
   TabsIndicatorWidth,
   TabsTabWidth,
+  TabsVariant,
+  TextFieldMode,
+  TextFieldVariant,
   ThemeMode
 } from '@kiskadee/core';
 import { createContext, useContext } from 'react';
@@ -33,6 +34,7 @@ export type KiskadeeContextValue = {
       textField?: {
         options?: {
           variant?: TextFieldVariant;
+          mode?: TextFieldMode;
         };
       };
       tabs?: {

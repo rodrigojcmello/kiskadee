@@ -1,8 +1,10 @@
 /*
- * TextField variant registry:
+ * TextField mode registry:
  * a = floating (notched label)
- * b = standard
+ * b = standard outline
  * c = floating inside
+ * d = standard underline
+ * e = standard borderless
  */
 
 .k-txf-e1-c {
@@ -22,7 +24,7 @@
   overflow: visible;
   --k-txf-floating-inside-inline-padding: 16px;
   --k-txf-floating-inside-rest-top: 16px;
-  --k-txf-floating-inside-active-top: 8px;
+  --k-txf-floating-inside-active-top: 6px;
   --k-txf-floating-inside-input-top-padding: 16px;
 }
 

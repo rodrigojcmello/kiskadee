@@ -41,7 +41,8 @@ Rule records should include:
 Use schema `elements` for tokenizable visual values that may vary by design system and/or context.
 The exact location is defined by each component topology: some components use top-level
 `components.<name>.elements`, while variant-driven components use
-`components.<name>.variants.<variantName>.elements`.
+`components.<name>.variants.<variantName>.elements`, and when a variant has named modes,
+`components.<name>.variants.<variantName>.modes.<modeName>.elements`.
 
 Examples:
 
@@ -71,14 +72,16 @@ Decision:
 - `components.tabs` must declare `variants`; top-level `elements` is not valid.
 - `components.textField` must declare `variants`; top-level `elements` is not valid.
 - Variant-driven components put tokenizable visual values under
-  `components.<name>.variants.<variantName>.elements`.
+  `components.<name>.variants.<variantName>.elements`, or under
+  `components.<name>.variants.<variantName>.modes.<modeName>.elements` when that variant exposes
+  named modes.
 - Top-level `options` may still exist on a variant-driven component as shared runtime defaults, but
   top-level `elements` must not be used as shared/base styling.
 
 Reason:
 
-- There is no implicit inheritance or merge between top-level `elements` and
-  `variants.<name>.elements`.
+- There is no implicit inheritance or merge between top-level `elements` and variant-owned element
+  branches such as `variants.<name>.elements` or `variants.<name>.modes.<mode>.elements`.
 - Keeping the two shapes mutually exclusive avoids silent build ambiguity, where shared-looking
   top-level element values could be interpreted as base defaults by one layer and ignored by
 - Variant structures are not interchangeable. For example, Tabs `line` and `box`, or TextField
@@ -132,8 +135,8 @@ Consequence:
 - `global.kiskadee.json` may expose `components.<name>.options.variant` as descriptive DS metadata.
 - Variant-local `options` should contain only additional settings that are meaningful within that
   branch (for example Tabs `indicatorShape`, `separator`, `lowerCurve`).
-- TextField currently has no variant-local options beyond the redundant variant name, so its
-  variant branches should keep only `elements` until real branch-local options exist.
+- TextField now uses variant-local `options.mode` as the default named presentation for a given
+  variant branch (for example `standard -> outline`, `floating -> notched`).
 
 ### 3.2.2 `variant` vs `mode`
 
@@ -328,7 +331,9 @@ Use this before implementing any new value:
 
 1. Does it vary by segment/theme/intent/emphasis/state?
 - Yes -> the component's canonical elements location (`components.button.elements` or
-  `components.<name>.variants.<variantName>.elements` for variant-driven components).
+  `components.<name>.variants.<variantName>.elements` for variant-driven components, or
+  `components.<name>.variants.<variantName>.modes.<modeName>.elements` when the active variant is
+  mode-driven).
 - No -> continue.
 
 2. Is it shared by multiple components?

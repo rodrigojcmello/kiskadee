@@ -1,9 +1,9 @@
 import type { TextFieldStructuralDescriptor } from '../TextField.structural';
 
-export const textFieldStandardStructural = {
+export const textFieldStandardBorderlessStructural = {
   variant: 'standard',
-  mode: 'outline',
-  letter: 'b',
+  mode: 'borderless',
+  letter: 'e',
   slots: {
     e1: 'e1',
     e2: 'e2',

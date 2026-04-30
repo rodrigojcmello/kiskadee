@@ -81,10 +81,15 @@ export type ComponentVariantsStyleKeyMap<TSegmentName extends SegmentName = neve
   ComponentElementsStyleKeyMap<TSegmentName>
 >;
 
+export type ComponentVariantModesStyleKeyMap<TSegmentName extends SegmentName = never> = Record<
+  string,
+  ComponentVariantsStyleKeyMap<TSegmentName>
+>;
+
 export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Partial<{
   button: ComponentElementsStyleKeyMap<TSegmentName>;
   tabs: ComponentVariantsStyleKeyMap<TSegmentName>;
-  textField: ComponentVariantsStyleKeyMap<TSegmentName>;
+  textField: ComponentVariantModesStyleKeyMap<TSegmentName>;
 }>;
 
 // Legacy, delete it
@@ -263,8 +268,18 @@ export type ComponentElementClassNameMapJSON = Record<string, ClassNameByElement
 
 export type ComponentVariantClassNameMapJSON = Record<string, ComponentElementClassNameMapJSON>;
 
+export type ComponentVariantModeClassNameMapJSON = Record<
+  string,
+  ComponentVariantClassNameMapJSON
+>;
+
 export type ComponentClassNameMapJSON = Partial<
-  Record<string, ComponentElementClassNameMapJSON | ComponentVariantClassNameMapJSON>
+  Record<
+    string,
+    | ComponentElementClassNameMapJSON
+    | ComponentVariantClassNameMapJSON
+    | ComponentVariantModeClassNameMapJSON
+  >
 >;
 
 export type ComponentClassNameMapSplitJSON = {

@@ -1,7 +1,10 @@
 /*
- * TextField variant registry:
+ * TextField mode registry:
  * a = floating notched
- * b = standard
+ * b = standard outline
+ * c = floating inside
+ * d = standard underline
+ * e = standard borderless
  */
 
 /* component root: floating notched TextField wrapper. */
@@ -59,7 +62,7 @@
   inset-block-start: 0;
   padding-inline: 4px;
   background: var(--k-txf-floating-label-background);
-  transform: translate(-4px, -50%) scale(0.75);
+  transform: translate(-4px, -54%) scale(0.75);
 }
 
 /* element input / e4: native input reset while preserving schema typography classes. */

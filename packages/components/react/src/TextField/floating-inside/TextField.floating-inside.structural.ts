@@ -2,6 +2,7 @@ import type { TextFieldStructuralDescriptor } from '../TextField.structural';
 
 export const textFieldFloatingInsideStructural = {
   variant: 'floating',
+  mode: 'inside',
   letter: 'c',
   slots: {
     e1: 'e1',

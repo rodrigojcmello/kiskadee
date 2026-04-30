@@ -15,7 +15,10 @@ import type {
   TextFieldFloatingInsideProps,
   TextFieldFloatingNotchedProps,
   TextFieldProps,
+  TextFieldStandardBorderlessProps,
+  TextFieldStandardOutlineProps,
   TextFieldStandardProps,
+  TextFieldStandardUnderlineProps,
   TextFieldVariantClassesMap
 } from './TextField.types';
 
@@ -27,9 +30,13 @@ type CreateTextFieldComponentOptions = {
 
 function resolveTextFieldElements(
   map: unknown,
-  variant: TextFieldStructuralDescriptor['variant']
+  structural: TextFieldStructuralDescriptor
 ): TextFieldClassesMap {
-  return resolveVariantElements(map as TextFieldVariantClassesMap | undefined, variant);
+  return resolveVariantElements(
+    map as TextFieldVariantClassesMap | undefined,
+    structural.variant,
+    structural.mode
+  );
 }
 
 export function createTextFieldComponent<TProps extends TextFieldProps>(
@@ -55,7 +62,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
     const [focused, setFocused] = useState(false);
     const resolvedIntent = intent ?? validationStatus ?? DEFAULT_TEXT_FIELD_INTENT;
     const resolvedRadius = radius ?? global?.radius ?? DEFAULT_TEXT_FIELD_RADIUS;
-    const elements = resolveTextFieldElements(classesMap.textField, options.structural.variant);
+    const elements = resolveTextFieldElements(classesMap.textField, options.structural);
 
     const resolvedClassNames = useMemo(
       () =>
@@ -148,5 +155,8 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
 export type {
   TextFieldFloatingInsideProps,
   TextFieldFloatingNotchedProps,
-  TextFieldStandardProps
+  TextFieldStandardBorderlessProps,
+  TextFieldStandardOutlineProps,
+  TextFieldStandardProps,
+  TextFieldStandardUnderlineProps
 };

@@ -32,6 +32,7 @@ export type ToneMetadataByPalette = Map<PaletteKey, Map<ToneMetadataKey, ToneMet
 export type ToneMetadataScope = {
   componentName: string;
   variantName?: string;
+  modeName?: string;
   elementName: string;
 };
 
@@ -40,7 +41,8 @@ export function buildScopedToneMetadataKey(
   toneMetadataKey: ToneMetadataKey
 ): ToneMetadataKey {
   const variantPart = scope.variantName === undefined ? 'variant' : `variant:${scope.variantName}`;
-  return `component:${scope.componentName}::${variantPart}::element:${scope.elementName}::${toneMetadataKey}`;
+  const modePart = scope.modeName === undefined ? 'mode' : `mode:${scope.modeName}`;
+  return `component:${scope.componentName}::${variantPart}::${modePart}::element:${scope.elementName}::${toneMetadataKey}`;
 }
 
 function buildPaletteKey(segmentName: string, themeName: string): PaletteKey {

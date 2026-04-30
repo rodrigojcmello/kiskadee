@@ -35,6 +35,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     globalRadius,
     globalRipple,
     textFieldVariant,
+    textFieldMode,
     tabsVariant,
     tabsIndicatorPosition,
     tabsIndicatorShape,
@@ -51,6 +52,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     globalRadius !== undefined ||
     globalRipple !== undefined ||
     textFieldVariant !== undefined ||
+    textFieldMode !== undefined ||
     tabsVariant !== undefined ||
     tabsIndicatorPosition !== undefined ||
     tabsIndicatorShape !== undefined ||
@@ -62,6 +64,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           ...(globalRadius !== undefined ? { radius: globalRadius } : {}),
           ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {}),
           ...(textFieldVariant !== undefined ||
+          textFieldMode !== undefined ||
           tabsVariant !== undefined ||
           tabsIndicatorPosition !== undefined ||
           tabsIndicatorShape !== undefined ||
@@ -71,11 +74,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
           tabsLowerCurve !== undefined
             ? {
                 components: {
-                  ...(textFieldVariant !== undefined
+                  ...(textFieldVariant !== undefined || textFieldMode !== undefined
                     ? {
                         textField: {
                           options: {
-                            variant: textFieldVariant
+                            ...(textFieldVariant !== undefined ? { variant: textFieldVariant } : {}),
+                            ...(textFieldMode !== undefined ? { mode: textFieldMode } : {})
                           }
                         }
                       }

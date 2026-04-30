@@ -2,6 +2,7 @@ import type { TextFieldStructuralDescriptor } from '../TextField.structural';
 
 export const textFieldFloatingNotchedStructural = {
   variant: 'floating',
+  mode: 'notched',
   letter: 'a',
   slots: {
     e1: 'e1',

@@ -4,7 +4,9 @@ import type { RadiusMode } from '@kiskadee/core';
 import {
   TextFieldFloatingInside,
   TextFieldFloatingNotched,
-  TextFieldStandard
+  TextFieldStandardBorderless,
+  TextFieldStandardOutline,
+  TextFieldStandardUnderline
 } from '@kiskadee/react-components';
 import { useState } from 'react';
 import { Select } from '@/k-components';
@@ -36,7 +38,9 @@ const radiusOptions: Array<{ value: RadiusMode; label: string }> = [
 ];
 
 export default function TextFieldPage() {
-  const [standardName, setStandardName] = useState('');
+  const [standardOutlineName, setStandardOutlineName] = useState('');
+  const [standardUnderlineName, setStandardUnderlineName] = useState('');
+  const [standardBorderlessName, setStandardBorderlessName] = useState('');
   const [floatingNotchedProject, setFloatingNotchedProject] = useState('');
   const [floatingInsideProject, setFloatingInsideProject] = useState('');
   const [borderRadius, setBorderRadius] = useState<RadiusMode>('rounded');
@@ -45,8 +49,8 @@ export default function TextFieldPage() {
     <section className="k-root">
       <h2>TextField</h2>
       <p style={{ marginTop: 0, maxWidth: 760 }}>
-        Standard fields keep the label outside the input shell. Floating fields let the label
-        start inside the shell and promote it when the field is focused or filled.
+        TextField now exposes two variants with named modes. Standard covers outline, underline,
+        and borderless shells. Floating covers notched and inside label behavior.
       </p>
 
       <div style={controlsStyle}>
@@ -61,34 +65,26 @@ export default function TextFieldPage() {
 
       <div style={sectionStyle}>
         <div style={groupStyle}>
-          <h3>Standard</h3>
-          <TextFieldStandard
-            id="standard-name"
+          <h3>Standard / Outline</h3>
+          <TextFieldStandardOutline
+            id="standard-outline-name"
             label="Full name"
-            value={standardName}
-            onValueChange={setStandardName}
+            value={standardOutlineName}
+            onValueChange={setStandardOutlineName}
             placeholder="Ada Lovelace"
-            message="This is a traditional form label."
+            message="Classic outlined field."
             radius={borderRadius}
           />
-          <TextFieldStandard
-            id="standard-email"
+          <TextFieldStandardOutline
+            id="standard-outline-email"
             label="Email"
             defaultValue="ada@"
             validationStatus="error"
             message="Enter a valid email address."
             radius={borderRadius}
           />
-          <TextFieldStandard
-            id="standard-tax-id"
-            label="Tax ID"
-            defaultValue="123"
-            validationStatus="warning"
-            message="This value looks short for the selected country."
-            radius={borderRadius}
-          />
-          <TextFieldStandard
-            id="standard-disabled"
+          <TextFieldStandardOutline
+            id="standard-outline-disabled"
             label="Disabled"
             defaultValue="Locked value"
             message="Disabled fields keep their message available."
@@ -98,13 +94,71 @@ export default function TextFieldPage() {
         </div>
 
         <div style={groupStyle}>
-          <h3>Floating Notched</h3>
+          <h3>Standard / Underline</h3>
+          <TextFieldStandardUnderline
+            id="standard-underline-name"
+            label="Project name"
+            value={standardUnderlineName}
+            onValueChange={setStandardUnderlineName}
+            placeholder="Odette"
+            message="Minimal shell with an underline."
+            radius={borderRadius}
+          />
+          <TextFieldStandardUnderline
+            id="standard-underline-tax-id"
+            label="Tax ID"
+            defaultValue="123"
+            validationStatus="warning"
+            message="This value looks short for the selected country."
+            radius={borderRadius}
+          />
+          <TextFieldStandardUnderline
+            id="standard-underline-readonly"
+            label="Read only"
+            defaultValue="Generated automatically"
+            message="Read-only fields can still be focused and copied."
+            radius={borderRadius}
+            readOnly
+          />
+        </div>
+
+        <div style={groupStyle}>
+          <h3>Standard / Borderless</h3>
+          <TextFieldStandardBorderless
+            id="standard-borderless-name"
+            label="Search"
+            value={standardBorderlessName}
+            onValueChange={setStandardBorderlessName}
+            placeholder="Find a record"
+            message="Filled shell without a visible border."
+            radius={borderRadius}
+          />
+          <TextFieldStandardBorderless
+            id="standard-borderless-email"
+            label="Email"
+            defaultValue="ada@"
+            validationStatus="error"
+            message="Enter a valid email address."
+            radius={borderRadius}
+          />
+          <TextFieldStandardBorderless
+            id="standard-borderless-budget"
+            label="Budget"
+            defaultValue="12"
+            validationStatus="warning"
+            message="Budget may be lower than the project minimum."
+            radius={borderRadius}
+          />
+        </div>
+
+        <div style={groupStyle}>
+          <h3>Floating / Notched</h3>
           <TextFieldFloatingNotched
             id="floating-notched-project"
             label="Project name"
             value={floatingNotchedProject}
             onValueChange={setFloatingNotchedProject}
-            message="Focus or type to see the floating label."
+            message="Label cuts through the outline when active."
             radius={borderRadius}
           />
           <TextFieldFloatingNotched
@@ -113,14 +167,6 @@ export default function TextFieldPage() {
             defaultValue="ada@"
             validationStatus="error"
             message="Enter a valid email address."
-            radius={borderRadius}
-          />
-          <TextFieldFloatingNotched
-            id="floating-notched-budget"
-            label="Budget"
-            defaultValue="12"
-            validationStatus="warning"
-            message="Budget may be lower than the project minimum."
             radius={borderRadius}
           />
           <TextFieldFloatingNotched
@@ -134,13 +180,13 @@ export default function TextFieldPage() {
         </div>
 
         <div style={groupStyle}>
-          <h3>Floating Inside</h3>
+          <h3>Floating / Inside</h3>
           <TextFieldFloatingInside
             id="floating-inside-project"
             label="Project name"
             value={floatingInsideProject}
             onValueChange={setFloatingInsideProject}
-            message="The label stays inside the outline when it floats."
+            message="Label stays inside the shell when active."
             radius={borderRadius}
           />
           <TextFieldFloatingInside
@@ -158,14 +204,6 @@ export default function TextFieldPage() {
             validationStatus="warning"
             message="Budget may be lower than the project minimum."
             radius={borderRadius}
-          />
-          <TextFieldFloatingInside
-            id="floating-inside-readonly"
-            label="Read only"
-            defaultValue="Generated automatically"
-            message="Read-only fields can still be focused and copied."
-            radius={borderRadius}
-            readOnly
           />
         </div>
       </div>

@@ -3,7 +3,10 @@ import type {
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
+  TextFieldFloatingMode,
   TextFieldIntent,
+  TextFieldMode,
+  TextFieldStandardMode,
   TextFieldValidationStatus
 } from '@kiskadee/core';
 import type {
@@ -18,8 +21,10 @@ export type TextFieldClassNames = Partial<Record<TextFieldElementName, string>>;
 
 export type TextFieldClassesMap = Partial<Record<TextFieldElementName, ClassNameByElementJSON>>;
 
+export type TextFieldModeClassesMap = Partial<Record<TextFieldMode, TextFieldClassesMap>>;
+
 export type TextFieldVariantClassesMap = Partial<
-  Record<'standard' | 'floating', TextFieldClassesMap>
+  Record<'standard' | 'floating', TextFieldModeClassesMap>
 >;
 
 export type TextFieldProps = Omit<
@@ -42,7 +47,15 @@ export type TextFieldProps = Omit<
 };
 
 export type TextFieldStandardProps = TextFieldProps;
+export type TextFieldStandardOutlineProps = TextFieldProps;
+export type TextFieldStandardUnderlineProps = TextFieldProps;
+export type TextFieldStandardBorderlessProps = TextFieldProps;
 
 export type TextFieldFloatingNotchedProps = TextFieldProps;
 
 export type TextFieldFloatingInsideProps = TextFieldProps;
+
+export type TextFieldModeByVariant = {
+  standard: TextFieldStandardMode;
+  floating: TextFieldFloatingMode;
+};

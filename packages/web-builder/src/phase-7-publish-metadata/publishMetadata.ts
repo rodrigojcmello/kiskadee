@@ -147,6 +147,11 @@ function discoverSegmentsThemesFromPalettes(
       if (!variants) continue;
       for (const variant of Object.values(variants)) {
         visitElements((variant as any)?.elements as Record<string, any> | undefined);
+        const modes = (variant as any)?.modes as Record<string, any> | undefined;
+        if (!modes) continue;
+        for (const mode of Object.values(modes)) {
+          visitElements((mode as any)?.elements as Record<string, any> | undefined);
+        }
       }
     }
   }
