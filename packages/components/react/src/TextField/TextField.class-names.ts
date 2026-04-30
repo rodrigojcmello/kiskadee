@@ -135,6 +135,15 @@ export function resolveTextFieldClassNames(options: {
   readOnly?: boolean;
 }): Required<TextFieldClassNames> {
   const stateClass = resolveStateActivatorClassName(options);
+  const indicatorClassName = options.elements.e6
+    ? (joinClassNames(
+        getTextFieldSlot(options.structural, 'e6'),
+        resolveElementClassName(options.elements.e6, options),
+        stateClass,
+        'k-state',
+        options.classNames.e6
+      ) ?? '')
+    : '';
 
   return {
     e1:
@@ -177,6 +186,8 @@ export function resolveTextFieldClassNames(options: {
         options.disabled ? `${cn.disabled} ${cn.activator}` : '',
         'k-state',
         options.classNames.e5
-      ) ?? ''
+      ) ?? '',
+    e6:
+      indicatorClassName
   };
 }

@@ -25,14 +25,18 @@
 }
 
 .k-txf-e3-e {
+  position: relative;
   display: flex;
   align-items: center;
   inline-size: 100%;
   box-sizing: border-box;
   border-width: 0;
+  isolation: isolate;
 }
 
 .k-txf-e4-e {
+  position: relative;
+  z-index: 1;
   flex: 1 1 auto;
   inline-size: 100%;
   min-inline-size: 0;
@@ -55,6 +59,18 @@
 .k-txf-e5-e {
   display: block;
   margin-block-end: 0;
+}
+
+.k-txf-e6-e {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+  border-end-start-radius: inherit;
+  border-end-end-radius: inherit;
 }
 
 .k-txf-e1-e[data-disabled],

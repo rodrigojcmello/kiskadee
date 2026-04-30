@@ -1,7 +1,7 @@
 import type { TextFieldVariant } from '@kiskadee/core';
 import type { TextFieldModeByVariant } from './TextField.types';
 
-export type TextFieldStructuralSlot = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
+export type TextFieldStructuralSlot = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 
 export type TextFieldStructuralDescriptor<TVariant extends TextFieldVariant = TextFieldVariant> = {
   variant: TVariant;

@@ -1,6 +1,7 @@
 export { validateTextFieldComponentContract } from './text-field.contract.zod';
 export type {
   TextFieldControlElementStyleFromSchema,
+  TextFieldIndicatorElementStyleFromSchema,
   TextFieldInputElementStyleFromSchema,
   TextFieldLabelElementStyleFromSchema,
   TextFieldMessageElementStyleFromSchema,

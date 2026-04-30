@@ -1,6 +1,7 @@
 import type { SegmentName } from '../types/colors/colors.types';
 import type {
   TextFieldControlElementStyleFromSchema,
+  TextFieldIndicatorElementStyleFromSchema,
   TextFieldInputElementStyleFromSchema,
   TextFieldLabelElementStyleFromSchema,
   TextFieldMessageElementStyleFromSchema,
@@ -15,8 +16,9 @@ import type {
  * - e3: control shell
  * - e4: input
  * - e5: validation/supporting message
+ * - e6: indicator layer
  */
-export type TextFieldElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
+export type TextFieldElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 export type TextFieldVariant = 'standard' | 'floating';
 export type TextFieldStandardMode = 'outline' | 'underline' | 'borderless';
 export type TextFieldFloatingMode = 'notched' | 'inside';
@@ -65,6 +67,18 @@ export type TextFieldInputElementStyle<TSegmentName extends SegmentName = never>
 export type TextFieldMessageElementStyle<TSegmentName extends SegmentName = never> =
   TextFieldMessageElementStyleFromSchema<TSegmentName>;
 
+/**
+ * e6 — indicator layer
+ * - boxHeight
+ * - boxColor
+ *
+ * NOTE:
+ * This is a visual layer inside the control shell. It is intended for underline/focus treatments
+ * that must not compete with input padding or layout geometry.
+ */
+export type TextFieldIndicatorElementStyle<TSegmentName extends SegmentName = never> =
+  TextFieldIndicatorElementStyleFromSchema<TSegmentName>;
+
 export type TextFieldElements<TSegmentName extends SegmentName = never> = {
   // e1: root wrapper
   e1?: TextFieldRootElementStyle;
@@ -76,6 +90,8 @@ export type TextFieldElements<TSegmentName extends SegmentName = never> = {
   e4?: TextFieldInputElementStyle<TSegmentName>;
   // e5: validation/supporting message
   e5?: TextFieldMessageElementStyle<TSegmentName>;
+  // e6: indicator layer
+  e6?: TextFieldIndicatorElementStyle<TSegmentName>;
 };
 
 export type TextFieldVariantConfig<TSegmentName extends SegmentName = never> = {

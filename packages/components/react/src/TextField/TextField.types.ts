@@ -15,7 +15,7 @@ import type {
 } from '@kiskadee/react-headless';
 import type { ReactNode } from 'react';
 
-export type TextFieldElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
+export type TextFieldElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 
 export type TextFieldClassNames = Partial<Record<TextFieldElementName, string>>;
 

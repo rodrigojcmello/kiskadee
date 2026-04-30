@@ -30,14 +30,18 @@
 
 /* element control / e3: classic input shell around the native input. */
 .k-txf-e3-b {
+  position: relative;
   display: flex;
   align-items: center;
   inline-size: 100%;
   box-sizing: border-box;
+  isolation: isolate;
 }
 
 /* element input / e4: native input reset while preserving schema typography classes. */
 .k-txf-e4-b {
+  position: relative;
+  z-index: 1;
   flex: 1 1 auto;
   inline-size: 100%;
   min-inline-size: 0;
@@ -63,6 +67,18 @@
 .k-txf-e5-b {
   display: block;
   margin-block-end: 0;
+}
+
+.k-txf-e6-b {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+  border-end-start-radius: inherit;
+  border-end-end-radius: inherit;
 }
 
 /* disabled state: mirror native disabled affordance on structural wrappers. */

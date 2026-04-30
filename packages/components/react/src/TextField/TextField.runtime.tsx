@@ -122,6 +122,10 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
       />
     );
 
+    const indicator = resolvedClassNames.e6 ? (
+      <span aria-hidden="true" className={resolvedClassNames.e6} />
+    ) : null;
+
     return (
       <HeadlessTextField.Root
         {...rootProps}
@@ -134,12 +138,16 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
         {options.layout === 'standard' ? (
           <>
             <HeadlessTextField.Label>{label}</HeadlessTextField.Label>
-            <HeadlessTextField.Control>{input}</HeadlessTextField.Control>
+            <HeadlessTextField.Control>
+              {input}
+              {indicator}
+            </HeadlessTextField.Control>
           </>
         ) : (
           <HeadlessTextField.Control>
             <HeadlessTextField.Label>{label}</HeadlessTextField.Label>
             {input}
+            {indicator}
           </HeadlessTextField.Control>
         )}
         <HeadlessTextField.Message />

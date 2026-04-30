@@ -1,6 +1,7 @@
 import type {
   Schema,
   TextFieldControlElementStyle,
+  TextFieldIndicatorElementStyle,
   TextFieldInputElementStyle,
   TextFieldLabelElementStyle,
   TextFieldMessageElementStyle,
@@ -438,6 +439,70 @@ function createTextFieldElementPalettes({
           }
         }
       }
+    })),
+    indicatorUnderline: buildBySegment(segmentNames, (s) => ({
+      light: {
+        boxColor: {
+          neutral: {
+            medium: {
+              rest: c(s, 'l', 'neutral.v2', 45),
+              hover: c(s, 'l', 'neutral.v2', 30),
+              focus: c(s, 'l', 'primary', 60),
+              disabled: c(s, 'l', 'neutral', 90, 20),
+              readOnly: c(s, 'l', 'neutral.v2', 60)
+            }
+          },
+          error: {
+            medium: {
+              rest: c(s, 'l', 'textField.error', 60),
+              hover: c(s, 'l', 'textField.error', 55),
+              focus: c(s, 'l', 'textField.error', 60),
+              disabled: c(s, 'l', 'neutral', 90, 20),
+              readOnly: c(s, 'l', 'textField.error', 65)
+            }
+          },
+          warning: {
+            medium: {
+              rest: c(s, 'l', 'textField.warning', 60),
+              hover: c(s, 'l', 'textField.warning', 55),
+              focus: c(s, 'l', 'textField.warning', 60),
+              disabled: c(s, 'l', 'neutral', 90, 20),
+              readOnly: c(s, 'l', 'textField.warning', 65)
+            }
+          }
+        }
+      },
+      dark: {
+        boxColor: {
+          neutral: {
+            medium: {
+              rest: c(s, 'd', 'neutral.v2', 55),
+              hover: c(s, 'd', 'neutral.v2', 70),
+              focus: c(s, 'd', 'primary', 80),
+              disabled: c(s, 'd', 'neutral', 30, 38),
+              readOnly: c(s, 'd', 'neutral.v2', 45)
+            }
+          },
+          error: {
+            medium: {
+              rest: c(s, 'd', 'textField.error', 80),
+              hover: c(s, 'd', 'textField.error', 85),
+              focus: c(s, 'd', 'textField.error', 80),
+              disabled: c(s, 'd', 'neutral', 30, 38),
+              readOnly: c(s, 'd', 'textField.error', 75)
+            }
+          },
+          warning: {
+            medium: {
+              rest: c(s, 'd', 'textField.warning', 80),
+              hover: c(s, 'd', 'textField.warning', 85),
+              focus: c(s, 'd', 'textField.warning', 80),
+              disabled: c(s, 'd', 'neutral', 30, 38),
+              readOnly: c(s, 'd', 'textField.warning', 75)
+            }
+          }
+        }
+      }
     }))
   };
 }
@@ -513,6 +578,15 @@ export function createMaterial3GoogleTextFieldSchema(
     },
     palettes: palettes.message
   };
+  const underlineIndicator: TextFieldIndicatorElementStyle<Material3GoogleSegmentName> = {
+    scales: {
+      boxHeight: {
+        's:sm:1': 1,
+        's:md:1': 1
+      }
+    },
+    palettes: palettes.indicatorUnderline
+  };
   const standardOutlineControl: TextFieldControlElementStyle<Material3GoogleSegmentName> = {
     decorations: {
       borderStyle: 'solid'
@@ -556,8 +630,8 @@ export function createMaterial3GoogleTextFieldSchema(
         's:md:1': 38
       },
       borderWidth: {
-        's:sm:1': 1,
-        's:md:1': 1
+        's:sm:1': 0,
+        's:md:1': 0
       },
       borderRadius: controlRadius,
       paddingTop: {
@@ -739,7 +813,8 @@ export function createMaterial3GoogleTextFieldSchema(
               e2: standardLabel,
               e3: standardUnderlineControl,
               e4: standardInput,
-              e5: messageElement
+              e5: messageElement,
+              e6: underlineIndicator
             }
           },
           borderless: {

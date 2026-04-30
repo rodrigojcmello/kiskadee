@@ -3,6 +3,7 @@ import type { SegmentName } from '../types/colors/colors.types';
 import { formatZodIssue } from './tabs.zod.shared';
 import {
   createTextFieldControlElementStyleSchema,
+  createTextFieldIndicatorElementStyleSchema,
   createTextFieldInputElementStyleSchema,
   createTextFieldLabelElementStyleSchema,
   createTextFieldMessageElementStyleSchema,
@@ -31,7 +32,8 @@ function createTextFieldElementsSchema<TSegmentName extends SegmentName = never>
       e2: createTextFieldLabelElementStyleSchema<TSegmentName>().optional(),
       e3: createTextFieldControlElementStyleSchema<TSegmentName>().optional(),
       e4: createTextFieldInputElementStyleSchema<TSegmentName>().optional(),
-      e5: createTextFieldMessageElementStyleSchema<TSegmentName>().optional()
+      e5: createTextFieldMessageElementStyleSchema<TSegmentName>().optional(),
+      e6: createTextFieldIndicatorElementStyleSchema<TSegmentName>().optional()
     })
     .strict();
 }

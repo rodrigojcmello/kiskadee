@@ -103,6 +103,19 @@ export function createTextFieldMessageElementStyleSchema<
     .strict();
 }
 
+export function createTextFieldIndicatorElementStyleSchema<
+  TSegmentName extends SegmentName = never
+>() {
+  return z
+    .object({
+      name: z.string().optional(),
+      scales: createScalesSchema(['boxHeight']).optional(),
+      palettes: createPalettesSchema<TSegmentName, 'boxColor'>(['boxColor']).optional(),
+      effects: elementEffectsSchema.optional()
+    })
+    .strict();
+}
+
 export type TextFieldRootElementStyleFromSchema = z.input<
   ReturnType<typeof createTextFieldRootElementStyleSchema>
 >;
@@ -118,3 +131,6 @@ export type TextFieldInputElementStyleFromSchema<TSegmentName extends SegmentNam
 
 export type TextFieldMessageElementStyleFromSchema<TSegmentName extends SegmentName = never> =
   z.input<ReturnType<typeof createTextFieldMessageElementStyleSchema<TSegmentName>>>;
+
+export type TextFieldIndicatorElementStyleFromSchema<TSegmentName extends SegmentName = never> =
+  z.input<ReturnType<typeof createTextFieldIndicatorElementStyleSchema<TSegmentName>>>;

@@ -18,7 +18,9 @@ import {
 
 export type TextFieldValidationStatus = 'error' | 'warning';
 
-export type TextFieldClassNames = Partial<Record<'e1' | 'e2' | 'e3' | 'e4' | 'e5', string>>;
+export type TextFieldClassNames = Partial<
+  Record<'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6', string>
+>;
 
 type TextFieldRootDivProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'className'>;
 
