@@ -7,7 +7,10 @@
  * e = standard borderless
  */
 
-/* component root: floating notched TextField wrapper. */
+/*
+ * element root / e1
+ * Owns the outer TextField stack for floating label, control, and message flow.
+ */
 .k-txf-e1-a {
   display: flex;
   flex-direction: column;
@@ -15,7 +18,10 @@
   max-inline-size: 100%;
 }
 
-/* element control / e3: positioned shell that lets the label float inside it. */
+/*
+ * element control / e3
+ * Owns the floating shell grid so the label and input can share the same visual lane.
+ */
 .k-txf-e3-a {
   position: relative;
   display: grid;
@@ -33,12 +39,19 @@
   --k-txf-floating-label-background: var(--k-txf-floating-surface-background);
 }
 
+/*
+ * element control / e3
+ * Expands the shell outline on focused fields while keeping shell geometry on the wrapper.
+ */
 .k-txf-e3-a[data-focused] {
   outline-color: var(--k-bdc);
   outline-width: max(var(--k-bdw), calc(var(--k-focus-width) * 1px));
 }
 
-/* element label / e2: placeholder-like label in the resting floating state. */
+/*
+ * element label / e2
+ * Owns the resting floating label that occupies the same lane as the input content.
+ */
 .k-txf-e2-a {
   position: absolute;
   inset-block-start: 50%;
@@ -58,13 +71,19 @@
   color var(--k-dur-int) var(--k-ease-out);
 }
 
-/* Focus state colors may be forced on the label, but the visible ring belongs to the control. */
+/*
+ * element label / e2
+ * Clears forced focus outlines because the shell, not the label, owns the focused perimeter.
+ */
 .k-txf-e2-a.-f.-a {
   position: absolute;
   outline: 0;
 }
 
-/* element label / e2: focused or filled fields promote the label above the input text. */
+/*
+ * element label / e2
+ * Promotes the label when the shell is focused or filled so input text keeps its own lane.
+ */
 .k-txf-e3-a[data-focused] .k-txf-e2-a,
 .k-txf-e3-a[data-filled] .k-txf-e2-a {
   inset-block-start: 0;
@@ -73,7 +92,10 @@
   transform: translate(-4px, -54%) scale(0.75);
 }
 
-/* element input / e4: native input reset while preserving schema typography classes. */
+/*
+ * element input / e4
+ * Resets the native input box so the floating shell and label define the shared geometry.
+ */
 .k-txf-e4-a {
   grid-area: 1 / 1;
   position: relative;
@@ -94,6 +116,10 @@
   font-family: inherit;
 }
 
+/*
+ * element input / e4
+ * Repaints autofill inside the shell because the input and label share one stacked lane.
+ */
 .k-txf-e4-a:-webkit-autofill,
 .k-txf-e4-a:-webkit-autofill:hover,
 .k-txf-e4-a:-webkit-autofill:focus {
@@ -102,23 +128,36 @@
   -webkit-text-fill-color: currentColor;
 }
 
-/* The wrapper mirrors input focus, so the native input must not draw a second ring. */
+/*
+ * element input / e4
+ * Suppresses the native focus outline because the shell mirrors focused state for the field.
+ */
 .k-txf-e1-a .k-txf-e4-a:is(.-f.-a, :focus-visible) {
   outline: 0;
 }
 
-/* element input / e4: the floating label owns placeholder-like behavior. */
+/*
+ * element input / e4
+ * Keeps placeholder text subordinate because the floating label already owns the resting prompt lane.
+ */
 .k-txf-e4-a::placeholder {
   color: currentColor;
   opacity: 0.52;
 }
 
-/* element message / e5: supporting and validation copy. */
+/*
+ * element message / e5
+ * Owns the supporting message row below the floating shell.
+ */
 .k-txf-e5-a {
   display: block;
   margin-block-end: 0;
 }
 
+/*
+ * element indicator / e6
+ * Preserves the bottom overlay lane shared with other TextField modes.
+ */
 .k-txf-e6-a {
   position: absolute;
   inset-inline: 0;
@@ -131,7 +170,10 @@
   border-end-end-radius: inherit;
 }
 
-/* disabled state: mirror native disabled affordance on structural wrappers. */
+/*
+ * element root / e1
+ * Mirrors disabled cursor state across wrappers because the shell distributes the field affordance.
+ */
 .k-txf-e1-a[data-disabled],
 .k-txf-e1-a[data-disabled] .k-txf-e2-a,
 .k-txf-e1-a[data-disabled] .k-txf-e3-a,

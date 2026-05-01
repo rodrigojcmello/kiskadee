@@ -7,7 +7,10 @@
  * e = standard borderless
  */
 
-/* component root: standard TextField wrapper. */
+/*
+ * element root / e1
+ * Owns the outer TextField stack for label, control, and message flow.
+ */
 .k-txf-e1-b {
   display: flex;
   flex-direction: column;
@@ -15,20 +18,29 @@
   max-inline-size: 100%;
 }
 
-/* element label / e2: traditional label above the input shell. */
+/*
+ * element label / e2
+ * Owns the standalone label row that sits above the outlined control shell.
+ */
 .k-txf-e2-b {
   display: block;
   cursor: default;
   user-select: none;
 }
 
-/* Focus state colors may be forced on the label, but the visible ring belongs to the control. */
+/*
+ * element label / e2
+ * Clears forced focus outlines because the control shell owns the visible focus treatment.
+ */
 .k-txf-e2-b.-f.-a {
   position: static;
   outline: 0;
 }
 
-/* element control / e3: classic input shell around the native input. */
+/*
+ * element control / e3
+ * Owns the outlined shell that wraps the native input and carries emitted border variables.
+ */
 .k-txf-e3-b {
   position: relative;
   display: flex;
@@ -41,12 +53,19 @@
   outline-offset: 0;
 }
 
+/*
+ * element control / e3
+ * Expands the shell outline on focused fields without moving layout ownership to the input.
+ */
 .k-txf-e3-b[data-focused] {
   outline-color: var(--k-bdc);
   outline-width: max(var(--k-bdw), calc(var(--k-focus-width) * 1px));
 }
 
-/* element input / e4: native input reset while preserving schema typography classes. */
+/*
+ * element input / e4
+ * Resets the native input box so schema classes and the outer shell control geometry.
+ */
 .k-txf-e4-b {
   position: relative;
   z-index: 1;
@@ -61,23 +80,36 @@
   font-family: inherit;
 }
 
-/* The wrapper mirrors input focus, so the native input must not draw a second ring. */
+/*
+ * element input / e4
+ * Suppresses the native focus outline because the wrapper mirrors focus on the shell.
+ */
 .k-txf-e1-b .k-txf-e4-b:is(.-f.-a, :focus-visible) {
   outline: 0;
 }
 
-/* element input / e4: keep placeholder subtle without introducing a new token. */
+/*
+ * element input / e4
+ * Keeps placeholder text inside the input box without introducing extra structural nodes.
+ */
 .k-txf-e4-b::placeholder {
   color: currentColor;
   opacity: 0.62;
 }
 
-/* element message / e5: supporting and validation copy. */
+/*
+ * element message / e5
+ * Owns the supporting message row below the control shell.
+ */
 .k-txf-e5-b {
   display: block;
   margin-block-end: 0;
 }
 
+/*
+ * element indicator / e6
+ * Preserves the bottom overlay lane shared with other TextField modes.
+ */
 .k-txf-e6-b {
   position: absolute;
   inset-inline: 0;
@@ -90,7 +122,10 @@
   border-end-end-radius: inherit;
 }
 
-/* disabled state: mirror native disabled affordance on structural wrappers. */
+/*
+ * element root / e1
+ * Mirrors disabled cursor state across wrappers because focusable ownership stays on the input.
+ */
 .k-txf-e1-b[data-disabled],
 .k-txf-e1-b[data-disabled] .k-txf-e2-b,
 .k-txf-e1-b[data-disabled] .k-txf-e3-b,

@@ -6,6 +6,10 @@
  * e = standard borderless
  */
 
+/*
+ * element root / e1
+ * Owns the outer TextField stack for label, control, and message flow.
+ */
 .k-txf-e1-e {
   display: flex;
   flex-direction: column;
@@ -13,17 +17,29 @@
   max-inline-size: 100%;
 }
 
+/*
+ * element label / e2
+ * Owns the standalone label row that sits above the borderless control shell.
+ */
 .k-txf-e2-e {
   display: block;
   cursor: default;
   user-select: none;
 }
 
+/*
+ * element label / e2
+ * Clears forced focus outlines because the control shell owns the visible focus treatment.
+ */
 .k-txf-e2-e.-f.-a {
   position: static;
   outline: 0;
 }
 
+/*
+ * element control / e3
+ * Owns the borderless shell wrapper that still carries emitted outline variables for focus.
+ */
 .k-txf-e3-e {
   position: relative;
   display: flex;
@@ -36,11 +52,19 @@
   outline-offset: 0;
 }
 
+/*
+ * element control / e3
+ * Expands the shell outline on focused fields without moving focus geometry to the input.
+ */
 .k-txf-e3-e[data-focused] {
   outline-color: var(--k-bdc);
   outline-width: max(var(--k-bdw), calc(var(--k-focus-width) * 1px));
 }
 
+/*
+ * element input / e4
+ * Resets the native input box so the shell wrapper defines the control geometry.
+ */
 .k-txf-e4-e {
   position: relative;
   z-index: 1;
@@ -55,20 +79,36 @@
   font-family: inherit;
 }
 
+/*
+ * element input / e4
+ * Suppresses the native focus outline because the wrapper mirrors focus on the shell.
+ */
 .k-txf-e1-e .k-txf-e4-e:is(.-f.-a, :focus-visible) {
   outline: 0;
 }
 
+/*
+ * element input / e4
+ * Keeps placeholder text inside the input box without adding extra prompt structure.
+ */
 .k-txf-e4-e::placeholder {
   color: currentColor;
   opacity: 0.62;
 }
 
+/*
+ * element message / e5
+ * Owns the supporting message row below the borderless shell.
+ */
 .k-txf-e5-e {
   display: block;
   margin-block-end: 0;
 }
 
+/*
+ * element indicator / e6
+ * Preserves the bottom overlay lane shared with other TextField modes.
+ */
 .k-txf-e6-e {
   position: absolute;
   inset-inline: 0;
@@ -81,6 +121,10 @@
   border-end-end-radius: inherit;
 }
 
+/*
+ * element root / e1
+ * Mirrors disabled cursor state across wrappers because focusable ownership stays on the input.
+ */
 .k-txf-e1-e[data-disabled],
 .k-txf-e1-e[data-disabled] .k-txf-e2-e,
 .k-txf-e1-e[data-disabled] .k-txf-e3-e,

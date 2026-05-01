@@ -7,6 +7,10 @@
  * e = standard borderless
  */
 
+/*
+ * element root / e1
+ * Owns the outer TextField stack for floating label, control, and message flow.
+ */
 .k-txf-e1-c {
   display: flex;
   flex-direction: column;
@@ -14,6 +18,10 @@
   max-inline-size: 100%;
 }
 
+/*
+ * element control / e3
+ * Owns the stacked shell so the inside label and input can share one control lane.
+ */
 .k-txf-e3-c {
   position: relative;
   display: grid;
@@ -32,11 +40,19 @@
   --k-txf-floating-inside-input-top-padding: 16px;
 }
 
+/*
+ * element control / e3
+ * Expands the shell outline on focused fields while keeping focus ownership on the wrapper.
+ */
 .k-txf-e3-c[data-focused] {
   outline-color: var(--k-bdc);
   outline-width: max(var(--k-bdw), calc(var(--k-focus-width) * 1px));
 }
 
+/*
+ * element label / e2
+ * Owns the resting inside label that reserves the upper text lane inside the shell.
+ */
 .k-txf-e2-c {
   position: absolute;
   inset-block-start: var(--k-txf-floating-inside-rest-top);
@@ -53,17 +69,29 @@
   color var(--k-dur-int) var(--k-ease-out);
 }
 
+/*
+ * element label / e2
+ * Clears forced focus outlines because the shell owns the focused perimeter for the field.
+ */
 .k-txf-e2-c.-f.-a {
   position: absolute;
   outline: 0;
 }
 
+/*
+ * element label / e2
+ * Promotes the label when the shell is focused or filled so input text keeps the lower lane.
+ */
 .k-txf-e3-c[data-focused] .k-txf-e2-c,
 .k-txf-e3-c[data-filled] .k-txf-e2-c {
   inset-block-start: var(--k-txf-floating-inside-active-top);
   transform: scale(0.75);
 }
 
+/*
+ * element input / e4
+ * Resets the native input box so the shell and inside label define the shared control geometry.
+ */
 .k-txf-e4-c {
   grid-area: 1 / 1;
   position: relative;
@@ -86,6 +114,10 @@
   font-family: inherit;
 }
 
+/*
+ * element input / e4
+ * Repaints autofill inside the shared shell without introducing a second painted surface.
+ */
 .k-txf-e4-c:-webkit-autofill,
 .k-txf-e4-c:-webkit-autofill:hover,
 .k-txf-e4-c:-webkit-autofill:focus {
@@ -94,19 +126,35 @@
   -webkit-text-fill-color: currentColor;
 }
 
+/*
+ * element input / e4
+ * Suppresses the native focus outline because the shell mirrors focused state for the field.
+ */
 .k-txf-e1-c .k-txf-e4-c:is(.-f.-a, :focus-visible) {
   outline: 0;
 }
 
+/*
+ * element input / e4
+ * Hides placeholder text because the inside label already owns the resting prompt lane.
+ */
 .k-txf-e4-c::placeholder {
   color: transparent;
 }
 
+/*
+ * element message / e5
+ * Owns the supporting message row below the inside-label shell.
+ */
 .k-txf-e5-c {
   display: block;
   margin-block-end: 0;
 }
 
+/*
+ * element indicator / e6
+ * Preserves the bottom overlay lane shared with other TextField modes.
+ */
 .k-txf-e6-c {
   position: absolute;
   inset-inline: 0;
@@ -119,6 +167,10 @@
   border-end-end-radius: inherit;
 }
 
+/*
+ * element root / e1
+ * Mirrors disabled cursor state across wrappers because the shell distributes the field affordance.
+ */
 .k-txf-e1-c[data-disabled],
 .k-txf-e1-c[data-disabled] .k-txf-e2-c,
 .k-txf-e1-c[data-disabled] .k-txf-e3-c,
