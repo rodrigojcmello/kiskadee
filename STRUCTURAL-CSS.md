@@ -180,6 +180,27 @@ Rules:
   documentation,
 - new variants append in alphabetical order.
 
+Some component families need more than one structural branch axis, such as `variant + mode`.
+
+Example:
+
+```txt
+TextField
+    a = floating / notched
+    b = standard / outline
+    c = floating / inside
+    d = standard / underline
+    e = standard / borderless
+```
+
+In those cases:
+
+- the trailing letter still represents one concrete structural branch,
+- the branch may be defined by a compound registry entry rather than by `variant` alone,
+- the registry must document every axis needed to resolve that branch,
+- structural selectors continue to use the same suffix position even when the registry entry maps to
+  `variant + mode`.
+
 ### 7. Variant-specialized element
 
 Use:
@@ -193,6 +214,9 @@ Example:
 - `k-tab-e2-a`
 
 Use this when a shared schema element needs a selector that is safely restricted to one variant.
+
+If a component uses a compound branch registry such as `variant + mode`, the trailing suffix still
+uses the concrete branch letter selected by that registry.
 
 This is the preferred base for variant-owned structural rules.
 
@@ -220,6 +244,9 @@ This is the preferred pattern when:
 - a structural modifier belongs to one schema element,
 - and it should only exist for one variant,
 - or a structural modifier must not leak across variants.
+
+If a component uses a compound branch registry such as `variant + mode`, the trailing suffix still
+uses the concrete branch letter selected by that registry.
 
 Rules:
 
