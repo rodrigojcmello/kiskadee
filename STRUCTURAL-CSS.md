@@ -609,11 +609,13 @@ Structural CSS may consume:
 - generated utility classes,
 - generated effect classes,
 - generated CSS variables,
+- shared global motion tokens,
 - shared runtime state classes.
 
 Examples:
 
 - use `var(--k-bdr)` to drive `clip-path`,
+- use shared motion tokens such as `var(--k-dur-int)` and `var(--k-ease-out)` for structural transitions,
 - use generated shadow variables in `filter: drop-shadow(...)`,
 - use runtime platform classes for engine-specific fixes.
 
@@ -622,6 +624,8 @@ Structural CSS should not duplicate the visual values behind those artifacts.
 Important:
 
 - when a canonical emitted variable already exists, structural CSS must consume that variable directly,
+- when a shared framework motion token already exists, structural CSS should consume that token
+  instead of hardcoding a new duration or easing value,
 - structural CSS must not create local alias variables for emitted schema values just to rename or relay them,
 - prefer direct overrides such as `padding-left: 0` or `padding-right: calc(var(--k-pdr) + var(--k-bdr))`
   over ad hoc aliases like `--k-foo-left`,
@@ -629,6 +633,18 @@ Important:
   expressed directly and is reused enough to justify the indirection.
 - do not handwrite responsive `@media` blocks with hardcoded viewport thresholds in structural Sass
   when that behavior belongs to schema-emitted scales.
+
+This includes structural motion plumbing such as:
+
+- `transition-duration: var(--k-dur-int)`
+- `transition-timing-function: var(--k-ease-out)`
+
+These shared motion tokens are currently defined in the framework root stylesheet:
+
+- `packages/components/react/src/styles/style.kiskadee.scss`
+
+Use these as shared framework motion contracts, not as a signal that arbitrary global variables are
+implicitly approved for structural use.
 
 ## Required custom properties
 
