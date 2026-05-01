@@ -26,13 +26,16 @@
   isolation: isolate;
   overflow: visible;
   border: 0;
-  outline-color: var(--k-bdc, transparent);
-  outline-style: solid;
-  outline-width: var(--k-bdw, 0px);
+  outline: var(--k-bdc) solid var(--k-bdw);
   outline-offset: 0;
   --k-txf-floating-inline-padding: 16px;
   --k-txf-floating-surface-background: #fff;
   --k-txf-floating-label-background: var(--k-txf-floating-surface-background);
+}
+
+.k-txf-e3-a[data-focused] {
+  outline-color: var(--k-bdc);
+  outline-width: max(var(--k-bdw), calc(var(--k-focus-width) * 1px));
 }
 
 /* element label / e2: placeholder-like label in the resting floating state. */
@@ -50,10 +53,9 @@
   background: transparent;
   transform: translateY(-50%);
   transform-origin: left top;
-  transition:
-    transform var(--k-dur-int) var(--k-ease-out),
-    inset-block-start var(--k-dur-int) var(--k-ease-out),
-    color var(--k-dur-int) var(--k-ease-out);
+  transition: transform var(--k-dur-int) var(--k-ease-out),
+  inset-block-start var(--k-dur-int) var(--k-ease-out),
+  color var(--k-dur-int) var(--k-ease-out);
 }
 
 /* Focus state colors may be forced on the label, but the visible ring belongs to the control. */

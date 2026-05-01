@@ -32,10 +32,13 @@
   box-sizing: border-box;
   isolation: isolate;
   border: 0;
-  outline-color: var(--k-bdc, transparent);
-  outline-style: solid;
-  outline-width: var(--k-bdw, 0px);
+  outline: var(--k-bdc) solid var(--k-bdw);
   outline-offset: 0;
+}
+
+.k-txf-e3-e[data-focused] {
+  outline-color: var(--k-bdc);
+  outline-width: max(var(--k-bdw), calc(var(--k-focus-width) * 1px));
 }
 
 .k-txf-e4-e {

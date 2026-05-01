@@ -24,14 +24,17 @@
   isolation: isolate;
   overflow: visible;
   border: 0;
-  outline-color: var(--k-bdc, transparent);
-  outline-style: solid;
-  outline-width: var(--k-bdw, 0px);
+  outline: var(--k-bdc) solid var(--k-bdw);
   outline-offset: 0;
   --k-txf-floating-inside-inline-padding: 16px;
   --k-txf-floating-inside-rest-top: 16px;
   --k-txf-floating-inside-active-top: 6px;
   --k-txf-floating-inside-input-top-padding: 16px;
+}
+
+.k-txf-e3-c[data-focused] {
+  outline-color: var(--k-bdc);
+  outline-width: max(var(--k-bdw), calc(var(--k-focus-width) * 1px));
 }
 
 .k-txf-e2-c {
@@ -45,10 +48,9 @@
   white-space: nowrap;
   pointer-events: none;
   transform-origin: left top;
-  transition:
-    transform var(--k-dur-int) var(--k-ease-out),
-    inset-block-start var(--k-dur-int) var(--k-ease-out),
-    color var(--k-dur-int) var(--k-ease-out);
+  transition: transform var(--k-dur-int) var(--k-ease-out),
+  inset-block-start var(--k-dur-int) var(--k-ease-out),
+  color var(--k-dur-int) var(--k-ease-out);
 }
 
 .k-txf-e2-c.-f.-a {
