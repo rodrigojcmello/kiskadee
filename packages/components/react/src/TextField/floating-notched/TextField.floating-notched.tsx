@@ -1,7 +1,7 @@
 import './TextField.floating-notched.css';
 import { createTextFieldComponent } from '../TextField.runtime';
+import { textFieldFloatingNotchedStructural } from '../TextField.structural';
 import type { TextFieldFloatingNotchedProps } from '../TextField.types';
-import { textFieldFloatingNotchedStructural } from './TextField.floating-notched.structural';
 
 export const TextFieldFloatingNotched = createTextFieldComponent<TextFieldFloatingNotchedProps>({
   displayName: 'TextFieldFloatingNotched',

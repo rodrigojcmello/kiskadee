@@ -1,7 +1,7 @@
 import './TextField.standard-underline.css';
 import { createTextFieldComponent } from '../TextField.runtime';
+import { textFieldStandardUnderlineStructural } from '../TextField.structural';
 import type { TextFieldStandardUnderlineProps } from '../TextField.types';
-import { textFieldStandardUnderlineStructural } from './TextField.standard-underline.structural';
 
 export const TextFieldStandardUnderline = createTextFieldComponent<TextFieldStandardUnderlineProps>({
   displayName: 'TextFieldStandardUnderline',

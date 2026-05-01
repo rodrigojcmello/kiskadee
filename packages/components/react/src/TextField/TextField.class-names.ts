@@ -10,7 +10,6 @@ import {
   type TextFieldVariant
 } from '@kiskadee/core';
 import type { TextFieldStructuralDescriptor } from './TextField.structural';
-import { getTextFieldSlot } from './TextField.structural';
 import type {
   TextFieldClassesMap,
   TextFieldClassNames,
@@ -22,9 +21,10 @@ export const DEFAULT_TEXT_FIELD_EMPHASIS: ComponentEmphasis = 'medium';
 export const DEFAULT_TEXT_FIELD_INTENT: TextFieldIntent = 'neutral';
 export const DEFAULT_TEXT_FIELD_RADIUS: RadiusMode = 'rounded';
 
-export function joinClassNames(
-  ...parts: Array<string | undefined | false | null>
-): string | undefined {
+/**
+ * Joins optional class fragments into one trimmed className string.
+ */
+export function join(...parts: Array<string | undefined | false | null>): string | undefined {
   const joined = parts.filter(Boolean).join(' ').trim();
   return joined.length > 0 ? joined : undefined;
 }
@@ -59,7 +59,10 @@ export function resolveIntentClasses(
   return buckets[bucket] ?? chosen.m ?? chosen.h ?? chosen.l ?? chosen.ll ?? '';
 }
 
-export function resolveElementClassName(
+/**
+ * Resolves the schema-driven classes for one TextField element.
+ */
+export function elem(
   element: ClassNameByElementJSON | undefined,
   options: {
     scale: string;
@@ -71,7 +74,7 @@ export function resolveElementClassName(
 
   const scaleKey = normalizeScaleKey(options.scale);
   return (
-    joinClassNames(
+    join(
       element.d,
       resolveIntentClasses(element, options.intent, options.emphasis),
       element.s?.all,
@@ -103,7 +106,7 @@ export function resolveRadiusClassName(
         : radiusMode === 'square'
           ? (element.rs?.[scaleKey] ?? '')
           : '';
-  return joinClassNames(all, byScale) ?? '';
+  return join(all, byScale) ?? '';
 }
 
 export function resolveStateActivatorClassName(options: {
@@ -135,59 +138,59 @@ export function resolveTextFieldClassNames(options: {
   readOnly?: boolean;
 }): Required<TextFieldClassNames> {
   const stateClass = resolveStateActivatorClassName(options);
-  const indicatorClassName = options.elements.e6
-    ? (joinClassNames(
-        getTextFieldSlot(options.structural, 'e6'),
-        resolveElementClassName(options.elements.e6, options),
-        stateClass,
-        'k-state',
-        options.classNames.e6
-      ) ?? '')
-    : '';
+  const elements = options.elements;
+  const letter = options.structural.letter;
 
   return {
     e1:
-      joinClassNames(
+      join(
         'k-txf',
-        `k-txf-${options.structural.letter}`,
-        getTextFieldSlot(options.structural, 'e1'),
-        resolveElementClassName(options.elements.e1, options),
+        `k-txf-${letter}`,
+        `k-txf-e1-${letter}`,
+        elem(elements.e1, options),
         options.classNames.e1
       ) ?? '',
     e2:
-      joinClassNames(
-        getTextFieldSlot(options.structural, 'e2'),
-        resolveElementClassName(options.elements.e2, options),
+      join(
+        `k-txf-e2-${letter}`,
+        elem(elements.e2, options),
         stateClass,
         'k-state',
         options.classNames.e2
       ) ?? '',
     e3:
-      joinClassNames(
-        getTextFieldSlot(options.structural, 'e3'),
-        resolveElementClassName(options.elements.e3, options),
-        resolveRadiusClassName(options.elements.e3, options.scale, options.radius),
+      join(
+        `k-txf-e3-${letter}`,
+        elem(elements.e3, options),
+        resolveRadiusClassName(elements.e3, options.scale, options.radius),
         stateClass,
         'k-state',
         options.classNames.e3
       ) ?? '',
     e4:
-      joinClassNames(
-        getTextFieldSlot(options.structural, 'e4'),
-        resolveElementClassName(options.elements.e4, options),
+      join(
+        `k-txf-e4-${letter}`,
+        elem(elements.e4, options),
         stateClass,
         'k-state',
         options.classNames.e4
       ) ?? '',
     e5:
-      joinClassNames(
-        getTextFieldSlot(options.structural, 'e5'),
-        resolveElementClassName(options.elements.e5, options),
+      join(
+        `k-txf-e5-${letter}`,
+        elem(elements.e5, options),
         options.disabled ? `${cn.disabled} ${cn.activator}` : '',
         'k-state',
         options.classNames.e5
       ) ?? '',
-    e6:
-      indicatorClassName
+    e6: elements.e6
+      ? (join(
+          `k-txf-e6-${letter}`,
+          elem(elements.e6, options),
+          stateClass,
+          'k-state',
+          options.classNames.e6
+        ) ?? '')
+      : ''
   };
 }
