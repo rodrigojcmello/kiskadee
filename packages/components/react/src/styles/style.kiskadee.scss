@@ -114,8 +114,8 @@ background-color var(--k-dur-int-xfast) var(--k-ease-in);
  * artifacts like extra.<segment>.<theme>.kiskadee.json. The fallback keeps
  * backward-compatible behavior when the variable is not defined.
  */
-:focus-visible,
-.-f.-a {
+.k-foc:focus-visible,
+.k-foc.-f.-a {
   outline-color: var(--k-focus-color, #0059b1);
   outline-style: solid;
   outline-width: calc(var(--k-focus-width, 2) * 1px);
