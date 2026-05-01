@@ -74,6 +74,32 @@ describe('web-style-key-identity', () => {
       ).toBe('borderWidth__2@@m');
     });
 
+    it('appends the compact token suffix for border-width token emission', () => {
+      expect(
+        buildWebStyleKeyIdentity('borderWidth__2', {
+          borderRadiusEmission: 'direct',
+          borderWidthEmission: 'token',
+          borderColorEmission: 'direct',
+          boxWidthEmission: 'direct',
+          paddingEmission: 'direct',
+          shadowEmission: 'direct'
+        })
+      ).toBe('borderWidth__2@@t');
+    });
+
+    it('appends the compact token suffix for border-color token emission', () => {
+      expect(
+        buildWebStyleKeyIdentity('borderColor__[0,0,0,1]', {
+          borderRadiusEmission: 'direct',
+          borderWidthEmission: 'direct',
+          borderColorEmission: 'token',
+          boxWidthEmission: 'direct',
+          paddingEmission: 'direct',
+          shadowEmission: 'direct'
+        })
+      ).toBe('borderColor__[0,0,0,1]@@t');
+    });
+
     it('keeps shadow keys unchanged when shadow emission stays raw', () => {
       expect(
         buildWebStyleKeyIdentity('shadow__[0,0,4,[0,0,0,0.22]]', {
@@ -158,6 +184,28 @@ describe('web-style-key-identity', () => {
           'e1'
         )
       ).toBe('borderRadius__12@@m');
+    });
+
+    it('uses the textField e3 policy from the builder config for border width', () => {
+      expect(
+        resolveWebStyleKeyIdentity(
+          'borderWidth__2',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'textField',
+          'e3'
+        )
+      ).toBe('borderWidth__2@@t');
+    });
+
+    it('uses the textField e3 policy from the builder config for border color', () => {
+      expect(
+        resolveWebStyleKeyIdentity(
+          'borderColor__[0,0,0,1]',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'textField',
+          'e3'
+        )
+      ).toBe('borderColor__[0,0,0,1]@@t');
     });
   });
 

@@ -25,6 +25,11 @@
   cursor: text;
   isolation: isolate;
   overflow: visible;
+  border: 0;
+  outline-color: var(--k-bdc, transparent);
+  outline-style: solid;
+  outline-width: var(--k-bdw, 0px);
+  outline-offset: 0;
   --k-txf-floating-inline-padding: 16px;
   --k-txf-floating-surface-background: #fff;
   --k-txf-floating-label-background: var(--k-txf-floating-surface-background);

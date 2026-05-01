@@ -23,6 +23,11 @@
   cursor: text;
   isolation: isolate;
   overflow: visible;
+  border: 0;
+  outline-color: var(--k-bdc, transparent);
+  outline-style: solid;
+  outline-width: var(--k-bdw, 0px);
+  outline-offset: 0;
   --k-txf-floating-inside-inline-padding: 16px;
   --k-txf-floating-inside-rest-top: 16px;
   --k-txf-floating-inside-active-top: 6px;

@@ -14,9 +14,9 @@ type DirectOrMirroredEmission = DirectEmission | MirroredEmission;
 type DirectOrTokenEmission = DirectEmission | TokenEmission;
 type DirectMirroredOrTokenEmission = DirectOrMirroredEmission | TokenEmission;
 
-export type BorderWidthEmission = DirectOrMirroredEmission;
+export type BorderWidthEmission = DirectMirroredOrTokenEmission;
 export type BorderRadiusEmission = DirectMirroredOrTokenEmission;
-export type BorderColorEmission = DirectOrMirroredEmission;
+export type BorderColorEmission = DirectMirroredOrTokenEmission;
 export type BoxWidthEmission = DirectOrTokenEmission;
 export type PaddingEmission = DirectMirroredOrTokenEmission | CompensatedEmission;
 export type ShadowEmission = DirectOrTokenEmission;
@@ -63,6 +63,14 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
           borderRadiusEmission: 'mirrored',
           borderWidthEmission: 'mirrored',
           paddingEmission: 'compensated'
+        }
+      }
+    },
+    textField: {
+      elements: {
+        e3: {
+          borderWidthEmission: 'token',
+          borderColorEmission: 'token'
         }
       }
     },

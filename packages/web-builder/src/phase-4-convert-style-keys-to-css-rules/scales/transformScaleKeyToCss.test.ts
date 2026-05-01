@@ -51,6 +51,20 @@ describe('transformScaleKeyToCss', () => {
         expect(result).toContain('border-width: 16px');
       });
 
+      it('should emit only --k-bdw when border-width emission is token', () => {
+        const result = transformScaleKeyToCss('borderWidth__16', breakpoints, 'abc', {
+          styleEmissionPolicy: {
+            borderRadiusEmission: 'direct',
+            borderColorEmission: 'direct',
+            borderWidthEmission: 'token',
+            paddingEmission: 'direct',
+            shadowEmission: 'direct'
+          }
+        });
+
+        expect(result).toBe('.abc { --k-bdw: 16px }');
+      });
+
       it("should convert 'boxWidth__16' into a valid CSS rule", () => {
         const result = transformScaleKeyToCss('boxWidth__16', breakpoints, 'abc');
 

@@ -191,6 +191,8 @@ export function transformScaleKeyToCss(
     rule =
       styleEmissionPolicy.borderWidthEmission === 'mirrored'
         ? `.${className} { ${EMITTED_SCALE_CSS_VARS.borderWidth}: ${cssValue}; ${cssProperty}: ${cssValue} }`
+        : styleEmissionPolicy.borderWidthEmission === 'token'
+          ? `.${className} { ${EMITTED_SCALE_CSS_VARS.borderWidth}: ${cssValue} }`
         : `.${className} { ${cssProperty}: ${cssValue} }`;
   } else if (scaleProperty === 'boxWidth') {
     rule =

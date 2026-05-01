@@ -108,9 +108,13 @@ export function transformColorKeyToCss(
   const styleEmissionPolicy = options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
   const shouldMirrorBorderColor =
     propertyName === 'borderColor' && styleEmissionPolicy.borderColorEmission === 'mirrored';
+  const shouldTokenizeBorderColor =
+    propertyName === 'borderColor' && styleEmissionPolicy.borderColorEmission === 'token';
   const buildColorDeclarations = (value: string) =>
     shouldMirrorBorderColor
       ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}; ${optimizedProperty}: ${value}`
+      : shouldTokenizeBorderColor
+        ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}`
       : `${optimizedProperty}: ${value}`;
 
   let cssValue: string;

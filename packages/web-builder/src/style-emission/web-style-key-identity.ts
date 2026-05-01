@@ -30,11 +30,19 @@ function resolveStyleKeyEmissionMode(
   }
 
   if (styleKey.startsWith('borderWidth')) {
-    return styleEmissionPolicy.borderWidthEmission === 'mirrored' ? 'm' : undefined;
+    return styleEmissionPolicy.borderWidthEmission === 'mirrored'
+      ? 'm'
+      : styleEmissionPolicy.borderWidthEmission === 'token'
+        ? 't'
+        : undefined;
   }
 
   if (styleKey.startsWith('borderColor')) {
-    return styleEmissionPolicy.borderColorEmission === 'mirrored' ? 'm' : undefined;
+    return styleEmissionPolicy.borderColorEmission === 'mirrored'
+      ? 'm'
+      : styleEmissionPolicy.borderColorEmission === 'token'
+        ? 't'
+        : undefined;
   }
 
   if (styleKey.startsWith('boxWidth')) {

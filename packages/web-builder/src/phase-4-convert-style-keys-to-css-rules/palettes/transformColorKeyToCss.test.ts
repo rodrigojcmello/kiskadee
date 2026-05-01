@@ -26,6 +26,21 @@ describe('transformColorKeyToCss', () => {
           const result = transformColorKeyToCss(styleKey, className, force);
           expect(result).toEqual('.abc { color: #40BF40 }');
         });
+
+        it('emits only --k-bdc when border-color emission is token', () => {
+          const force = false as const;
+          const result = transformColorKeyToCss('borderColor__[120,50,50,1]', className, force, {
+            styleEmissionPolicy: {
+              borderRadiusEmission: 'direct',
+              borderColorEmission: 'token',
+              borderWidthEmission: 'direct',
+              paddingEmission: 'direct',
+              shadowEmission: 'direct'
+            }
+          });
+
+          expect(result).toEqual('.abc { --k-bdc: #40BF40 }');
+        });
       });
 
       describe('hover', () => {

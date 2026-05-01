@@ -31,7 +31,11 @@
   inline-size: 100%;
   box-sizing: border-box;
   isolation: isolate;
-  border-width: 0;
+  border: 0;
+  outline-color: var(--k-bdc, transparent);
+  outline-style: solid;
+  outline-width: var(--k-bdw, 0px);
+  outline-offset: 0;
 }
 
 .k-txf-e4-d {
