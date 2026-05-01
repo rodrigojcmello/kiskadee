@@ -1,4 +1,4 @@
-import './TextField.standard-underline.css';
+import './TextField.standard-underline.structural.css';
 import { createTextFieldComponent } from '../TextField.runtime';
 import { textFieldStandardUnderlineStructural } from '../TextField.structural';
 import type { TextFieldStandardUnderlineProps } from '../TextField.types';

@@ -75,6 +75,7 @@
   appearance: none;
   background: transparent;
   background-clip: padding-box;
+  caret-color: var(--k-focus-color);
   font-family: inherit;
 }
 
@@ -82,7 +83,7 @@
 .k-txf-e4-c:-webkit-autofill:hover,
 .k-txf-e4-c:-webkit-autofill:focus {
   box-shadow: 0 0 0 1000px transparent inset;
-  caret-color: currentColor;
+  caret-color: var(--k-focus-color);
   -webkit-text-fill-color: currentColor;
 }
 

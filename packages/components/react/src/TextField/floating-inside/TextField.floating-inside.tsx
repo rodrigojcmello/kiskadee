@@ -1,4 +1,4 @@
-import './TextField.floating-inside.css';
+import './TextField.floating-inside.structural.css';
 import { createTextFieldComponent } from '../TextField.runtime';
 import { textFieldFloatingInsideStructural } from '../TextField.structural';
 import type { TextFieldFloatingInsideProps } from '../TextField.types';

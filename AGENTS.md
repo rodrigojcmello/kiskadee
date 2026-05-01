@@ -38,6 +38,8 @@ keep task-specific workflows inside skills.
 - Do not add or modify unit tests unless the user explicitly asks for it.
 - Prefer `rg` / `rg --files` for search. If unavailable, use the closest fallback.
 - Prefer minimal edits over broad rewrites.
+- Before editing any `*.structural.scss` file, or any structural Sass/CSS in `packages/components/react`, read
+  `STRUCTURAL-CSS.md` and treat it as the source of truth for structural styling rules.
 
 ## Package Guidance
 

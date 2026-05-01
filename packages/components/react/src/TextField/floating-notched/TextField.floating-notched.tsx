@@ -1,4 +1,4 @@
-import './TextField.floating-notched.css';
+import './TextField.floating-notched.structural.css';
 import { createTextFieldComponent } from '../TextField.runtime';
 import { textFieldFloatingNotchedStructural } from '../TextField.structural';
 import type { TextFieldFloatingNotchedProps } from '../TextField.types';

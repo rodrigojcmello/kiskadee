@@ -1,4 +1,4 @@
-import './TextField.standard-outline.css';
+import './TextField.standard-outline.structural.css';
 import { createTextFieldComponent } from '../TextField.runtime';
 import { textFieldStandardOutlineStructural } from '../TextField.structural';
 import type { TextFieldStandardOutlineProps } from '../TextField.types';

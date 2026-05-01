@@ -1,4 +1,4 @@
-import './TextField.standard-borderless.css';
+import './TextField.standard-borderless.structural.css';
 import { createTextFieldComponent } from '../TextField.runtime';
 import { textFieldStandardBorderlessStructural } from '../TextField.structural';
 import type { TextFieldStandardBorderlessProps } from '../TextField.types';
