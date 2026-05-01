@@ -13,6 +13,7 @@ type CompensatedEmission = typeof STYLE_EMISSION_MODE.compensated;
 type DirectOrMirroredEmission = DirectEmission | MirroredEmission;
 type DirectOrTokenEmission = DirectEmission | TokenEmission;
 type DirectMirroredOrTokenEmission = DirectOrMirroredEmission | TokenEmission;
+type BoxColorEmission = DirectOrMirroredEmission;
 
 export type BorderWidthEmission = DirectMirroredOrTokenEmission;
 export type BorderRadiusEmission = DirectMirroredOrTokenEmission;
@@ -22,6 +23,7 @@ export type PaddingEmission = DirectMirroredOrTokenEmission | CompensatedEmissio
 export type ShadowEmission = DirectOrTokenEmission;
 
 export type ElementStyleEmissionPolicy = {
+  boxColorEmission?: BoxColorEmission;
   borderWidthEmission?: BorderWidthEmission;
   borderRadiusEmission?: BorderRadiusEmission;
   borderColorEmission?: BorderColorEmission;
@@ -31,6 +33,7 @@ export type ElementStyleEmissionPolicy = {
 };
 
 export type ResolvedElementStyleEmissionPolicy = {
+  boxColorEmission?: BoxColorEmission;
   borderWidthEmission: BorderWidthEmission;
   borderRadiusEmission: BorderRadiusEmission;
   borderColorEmission: BorderColorEmission;
@@ -69,6 +72,7 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
     textField: {
       elements: {
         e3: {
+          boxColorEmission: 'mirrored',
           borderWidthEmission: 'token',
           borderColorEmission: 'token'
         }
@@ -112,6 +116,7 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
 };
 
 export const DEFAULT_ELEMENT_STYLE_EMISSION_POLICY: ResolvedElementStyleEmissionPolicy = {
+  boxColorEmission: 'direct',
   borderRadiusEmission: 'mirrored',
   borderWidthEmission: 'direct',
   borderColorEmission: 'direct',
@@ -133,6 +138,10 @@ export function resolveElementStyleEmissionPolicy(
     : undefined;
 
   return {
+    boxColorEmission:
+      variantElementPolicy?.boxColorEmission ??
+      elementPolicy?.boxColorEmission ??
+      DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.boxColorEmission,
     borderRadiusEmission:
       variantElementPolicy?.borderRadiusEmission ??
       elementPolicy?.borderRadiusEmission ??

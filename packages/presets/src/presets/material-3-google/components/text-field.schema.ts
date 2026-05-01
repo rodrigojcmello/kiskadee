@@ -156,6 +156,122 @@ function createTextFieldElementPalettes({
         }
       }
     })),
+    controlFloatingNotched: buildBySegment(segmentNames, (s) => ({
+      light: {
+        boxColor: {
+          neutral: {
+            medium: {
+              rest: c(s, 'l', 'neutral', 0),
+              focus: c(s, 'l', 'neutral', 0),
+              disabled: c(s, 'l', 'neutral', 90, 8),
+              readOnly: c(s, 'l', 'neutral', 0)
+            }
+          },
+          error: {
+            medium: {
+              rest: c(s, 'l', 'neutral', 0),
+              focus: c(s, 'l', 'neutral', 0),
+              disabled: c(s, 'l', 'neutral', 90, 8),
+              readOnly: c(s, 'l', 'neutral', 0)
+            }
+          },
+          warning: {
+            medium: {
+              rest: c(s, 'l', 'neutral', 0),
+              focus: c(s, 'l', 'neutral', 0),
+              disabled: c(s, 'l', 'neutral', 90, 8),
+              readOnly: c(s, 'l', 'neutral', 0)
+            }
+          }
+        },
+        borderColor: {
+          neutral: {
+            medium: {
+              rest: c(s, 'l', 'neutral.v2', 45),
+              hover: c(s, 'l', 'neutral.v2', 30),
+              focus: c(s, 'l', 'primary', 60),
+              disabled: c(s, 'l', 'neutral', 90, 20),
+              readOnly: c(s, 'l', 'neutral.v2', 60)
+            }
+          },
+          error: {
+            medium: {
+              rest: c(s, 'l', 'textField.error', 60),
+              hover: c(s, 'l', 'textField.error', 55),
+              focus: c(s, 'l', 'textField.error', 60),
+              disabled: c(s, 'l', 'neutral', 90, 20),
+              readOnly: c(s, 'l', 'textField.error', 65)
+            }
+          },
+          warning: {
+            medium: {
+              rest: c(s, 'l', 'textField.warning', 60),
+              hover: c(s, 'l', 'textField.warning', 55),
+              focus: c(s, 'l', 'textField.warning', 60),
+              disabled: c(s, 'l', 'neutral', 90, 20),
+              readOnly: c(s, 'l', 'textField.warning', 65)
+            }
+          }
+        }
+      },
+      dark: {
+        boxColor: {
+          neutral: {
+            medium: {
+              rest: c(s, 'd', 'neutral', 8),
+              focus: c(s, 'd', 'neutral', 8),
+              disabled: c(s, 'd', 'neutral', 10, 16),
+              readOnly: c(s, 'd', 'neutral', 8)
+            }
+          },
+          error: {
+            medium: {
+              rest: c(s, 'd', 'redLike', 10),
+              focus: c(s, 'd', 'redLike', 10),
+              disabled: c(s, 'd', 'neutral', 10, 16),
+              readOnly: c(s, 'd', 'redLike', 10)
+            }
+          },
+          warning: {
+            medium: {
+              rest: c(s, 'd', 'yellowLike', 10),
+              focus: c(s, 'd', 'yellowLike', 10),
+              disabled: c(s, 'd', 'neutral', 10, 16),
+              readOnly: c(s, 'd', 'yellowLike', 10)
+            }
+          }
+        },
+        borderColor: {
+          neutral: {
+            medium: {
+              rest: c(s, 'd', 'neutral.v2', 55),
+              hover: c(s, 'd', 'neutral.v2', 70),
+              focus: c(s, 'd', 'primary', 80),
+              disabled: c(s, 'd', 'neutral', 30, 38),
+              readOnly: c(s, 'd', 'neutral.v2', 45)
+            }
+          },
+          error: {
+            medium: {
+              rest: c(s, 'd', 'textField.error', 80),
+              hover: c(s, 'd', 'textField.error', 85),
+              focus: c(s, 'd', 'textField.error', 80),
+              disabled: c(s, 'd', 'neutral', 30, 38),
+              readOnly: c(s, 'd', 'textField.error', 75)
+            }
+          },
+          warning: {
+            medium: {
+              rest: c(s, 'd', 'textField.warning', 80),
+              hover: c(s, 'd', 'textField.warning', 85),
+              focus: c(s, 'd', 'textField.warning', 80),
+              disabled: c(s, 'd', 'neutral', 30, 38),
+              readOnly: c(s, 'd', 'textField.warning', 75)
+            }
+          }
+        }
+      }
+    })),
     controlBorderless: buildBySegment(segmentNames, (s) => ({
       light: {
         boxColor: {
@@ -734,7 +850,7 @@ export function createMaterial3GoogleTextFieldSchema(
         's:md:1': 16
       }
     },
-    palettes: palettes.control
+    palettes: palettes.controlFloatingNotched
   };
   const floatingInsideControl: TextFieldControlElementStyle<Material3GoogleSegmentName> = {
     decorations: {

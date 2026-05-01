@@ -61,6 +61,37 @@ Those live in `packages/components/react/src/styles/style.kiskadee.scss`.
 - Animation is enabled only for gradients with **2 or 3 stops**.
 - For other gradients (or unsupported browsers), the output remains correct, but transitions may be skipped (progressive enhancement).
 
+### Mirrored `boxColor` for structural reuse
+
+Some components need to reuse the emitted `boxColor` inside structural CSS, for example when a
+floating label needs a local background patch that follows the control surface.
+
+For those cases, the web-builder may emit a mirrored background variable alongside `background`:
+
+```css
+.myClass {
+  --k-bgc: #AABBCC;
+  background: #AABBCC;
+}
+```
+
+For gradients, the mirrored variable carries the full emitted background expression:
+
+```css
+.myClass {
+  --k-bgc: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%);
+  --k-bg0: #AABBCC;
+  --k-bg1: #DDEEFF;
+  background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%);
+}
+```
+
+Important limitation:
+
+- This mirrored value is safe only when the structural consumer can reuse the same background paint semantics.
+- Small overlay patches, such as TextField floating label cutouts, may not visually match a transparent or gradient shell background.
+- In those cases, a dedicated surface token may still be needed instead of mirroring `boxColor`.
+
 ### Feature flag: force solid `boxColor` as gradient (showcase)
 
 When switching between Design Systems, CSS cannot interpolate between `background-color` (a color) and

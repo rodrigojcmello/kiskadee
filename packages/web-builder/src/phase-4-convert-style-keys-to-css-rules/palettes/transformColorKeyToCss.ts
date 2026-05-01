@@ -26,6 +26,7 @@ export type TransformColorKeyToCssOptions = {
 };
 
 export const EMITTED_COLOR_CSS_VARS = {
+  boxColor: '--k-bgc',
   borderColor: '--k-bdc'
 } as const;
 
@@ -106,12 +107,16 @@ export function transformColorKeyToCss(
   // Optimization: use shorthand "background" instead of "background-color"
   const optimizedProperty = colorProperty === 'background-color' ? 'background' : colorProperty;
   const styleEmissionPolicy = options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
+  const shouldMirrorBoxColor =
+    propertyName === 'boxColor' && styleEmissionPolicy.boxColorEmission === 'mirrored';
   const shouldMirrorBorderColor =
     propertyName === 'borderColor' && styleEmissionPolicy.borderColorEmission === 'mirrored';
   const shouldTokenizeBorderColor =
     propertyName === 'borderColor' && styleEmissionPolicy.borderColorEmission === 'token';
   const buildColorDeclarations = (value: string) =>
-    shouldMirrorBorderColor
+    shouldMirrorBoxColor
+      ? `${EMITTED_COLOR_CSS_VARS.boxColor}: ${value}; ${optimizedProperty}: ${value}`
+      : shouldMirrorBorderColor
       ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}; ${optimizedProperty}: ${value}`
       : shouldTokenizeBorderColor
         ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}`
@@ -230,6 +235,10 @@ export function transformColorKeyToCss(
   if (!isRef) {
     if (filteredStates.length === 0) {
       if (gradientVars && gradientBackground && optimizedProperty === 'background') {
+        if (shouldMirrorBoxColor) {
+          return `.${className} { ${EMITTED_COLOR_CSS_VARS.boxColor}: ${gradientBackground}; ${gradientVars} ${optimizedProperty}: ${gradientBackground} }`;
+        }
+
         return `.${className} { ${gradientVars} ${optimizedProperty}: ${gradientBackground} }`;
       }
 
@@ -277,6 +286,10 @@ export function transformColorKeyToCss(
     if (gradientVars && optimizedProperty === 'background') {
       // Non-rest state: override only variables.
       // The background expression is expected to be provided by the rest (base) rule.
+      if (shouldMirrorBoxColor && gradientBackground) {
+        return `${selector} { ${EMITTED_COLOR_CSS_VARS.boxColor}: ${gradientBackground}; ${gradientVars} }`;
+      }
+
       return `${selector} { ${gradientVars} }`;
     }
 
@@ -330,6 +343,10 @@ export function transformColorKeyToCss(
   const selector = parentSelectors.join(', ');
   if (gradientVars && gradientBackground && optimizedProperty === 'background') {
     // Ref rules do not have a guaranteed rest anchor, so emit vars + background together.
+    if (shouldMirrorBoxColor) {
+      return `${selector} { ${EMITTED_COLOR_CSS_VARS.boxColor}: ${gradientBackground}; ${gradientVars} ${optimizedProperty}: ${gradientBackground} }`;
+    }
+
     return `${selector} { ${gradientVars} ${optimizedProperty}: ${gradientBackground} }`;
   }
   return `${selector} { ${buildColorDeclarations(cssValue)} }`;

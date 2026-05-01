@@ -17,6 +17,10 @@ function resolveStyleKeyEmissionMode(
   styleKey: string,
   styleEmissionPolicy: ResolvedElementStyleEmissionPolicy
 ): 'm' | 't' | 'c' | undefined {
+  if (styleKey.startsWith('boxColor')) {
+    return styleEmissionPolicy.boxColorEmission === 'mirrored' ? 'm' : undefined;
+  }
+
   if (styleKey.startsWith('shadow')) {
     return styleEmissionPolicy.shadowEmission === 'token' ? 't' : undefined;
   }
@@ -69,7 +73,11 @@ function resolveStyleKeyEmissionMode(
 
 function resolveStyleKeyEmissionFamily(
   styleKey: string
-): 'borderRadius' | 'borderWidth' | 'borderColor' | 'padding' | undefined {
+): 'boxColor' | 'borderRadius' | 'borderWidth' | 'borderColor' | 'padding' | undefined {
+  if (styleKey.startsWith('boxColor')) {
+    return 'boxColor';
+  }
+
   if (styleKey.startsWith('borderRadius')) {
     return 'borderRadius';
   }
@@ -163,6 +171,10 @@ export function applyCanonicalStyleEmissionPolicy(
   const family = resolveStyleKeyEmissionFamily(styleKey);
   if (family === 'borderRadius') {
     return { ...styleEmissionPolicy, borderRadiusEmission: 'mirrored' };
+  }
+
+  if (family === 'boxColor') {
+    return { ...styleEmissionPolicy, boxColorEmission: 'mirrored' };
   }
 
   if (family === 'borderWidth') {

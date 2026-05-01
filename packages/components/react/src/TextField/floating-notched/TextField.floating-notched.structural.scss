@@ -36,7 +36,6 @@
   outline-offset: 0;
   --k-txf-floating-inline-padding: 16px;
   --k-txf-floating-surface-background: #fff;
-  --k-txf-floating-label-background: var(--k-txf-floating-surface-background);
 }
 
 /*
@@ -88,7 +87,7 @@
 .k-txf-e3-a[data-filled] .k-txf-e2-a {
   inset-block-start: 0;
   padding-inline: 4px;
-  background: var(--k-txf-floating-label-background);
+  background: var(--k-bgc);
   transform: translate(-4px, -54%) scale(0.75);
 }
 
