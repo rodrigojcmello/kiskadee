@@ -34,10 +34,6 @@
   border: 0;
   outline: var(--k-bdc) solid var(--k-bdw);
   outline-offset: 0;
-  --k-txf-floating-inside-inline-padding: 16px;
-  --k-txf-floating-inside-rest-top: 16px;
-  --k-txf-floating-inside-active-top: 6px;
-  --k-txf-floating-inside-input-top-padding: 16px;
 }
 
 /*
@@ -55,18 +51,37 @@
  */
 .k-txf-e2-c {
   position: absolute;
-  inset-block-start: var(--k-txf-floating-inside-rest-top);
-  inset-inline-start: var(--k-txf-floating-inside-inline-padding);
+  inset-block-start: 0;
+  inset-inline-start: 0;
   z-index: 1;
-  max-inline-size: calc(100% - (var(--k-txf-floating-inside-inline-padding) * 2));
+  box-sizing: border-box;
+  max-inline-size: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   pointer-events: none;
+  background: transparent;
   transform-origin: left top;
-  transition: transform var(--k-dur-int) var(--k-ease-out),
-  inset-block-start var(--k-dur-int) var(--k-ease-out),
-  color var(--k-dur-int) var(--k-ease-out);
+  transition-property: inset-block-start, inset-inline-start, max-inline-size, margin, padding,
+  font-size, line-height, color;
+  transition-duration: var(--k-dur-int);
+  transition-timing-function: var(--k-ease-out);
+}
+
+/*
+ * element label / e2
+ * Temporarily turns the label into a placeholder mirror while the field is empty and unfocused.
+ */
+.k-txf-e3-c:not([data-focused]):not([data-filled]) .k-txf-e2-c[data-rest-placeholder] {
+  inset-block-start: var(--k-txf-rbt);
+  inset-inline-start: var(--k-txf-ris);
+  max-inline-size: var(--k-txf-riw);
+  font-size: var(--k-txf-rts);
+  line-height: var(--k-txf-rth);
+  margin-top: 0;
+  margin-left: 0;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 /*
@@ -84,8 +99,7 @@
  */
 .k-txf-e3-c[data-focused] .k-txf-e2-c,
 .k-txf-e3-c[data-filled] .k-txf-e2-c {
-  inset-block-start: var(--k-txf-floating-inside-active-top);
-  transform: scale(0.75);
+  transform: none;
 }
 
 /*
@@ -104,7 +118,6 @@
   min-inline-size: 0;
   border: 0;
   outline: 0;
-  padding-block-start: var(--k-txf-floating-inside-input-top-padding);
   padding-block-end: 0;
   padding-inline: 0;
   appearance: none;
@@ -112,6 +125,14 @@
   background-clip: padding-box;
   caret-color: var(--k-focus-color);
   font-family: inherit;
+}
+
+/*
+ * element input / e4
+ * Keeps the empty field vertically centered until the label leaves the placeholder role.
+ */
+.k-txf-e3-c:not([data-focused]):not([data-filled]) .k-txf-e4-c {
+  padding-top: 0;
 }
 
 /*

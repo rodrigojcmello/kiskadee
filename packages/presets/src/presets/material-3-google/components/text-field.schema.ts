@@ -802,7 +802,7 @@ export function createMaterial3GoogleTextFieldSchema(
     },
     palettes: palettes.controlBorderless
   };
-  const floatingLabel: TextFieldLabelElementStyle<Material3GoogleSegmentName> = {
+  const floatingLabelTypography: TextFieldLabelElementStyle<Material3GoogleSegmentName> = {
     decorations: {
       textFont: 'body',
       textWeight: 'normal'
@@ -816,9 +816,20 @@ export function createMaterial3GoogleTextFieldSchema(
         's:sm:1': 14,
         's:md:1': 14
       },
+    },
+    palettes: palettes.label
+  };
+  const floatingNotchedLabel: TextFieldLabelElementStyle<Material3GoogleSegmentName> = {
+    ...floatingLabelTypography,
+    scales: {
+      ...floatingLabelTypography.scales,
       marginTop: {
         's:sm:1': -7,
         's:md:1': -7
+      },
+      marginLeft: {
+        's:sm:1': 4,
+        's:md:1': 4
       },
       paddingRight: {
         's:sm:1': 4,
@@ -828,16 +839,19 @@ export function createMaterial3GoogleTextFieldSchema(
         's:sm:1': 4,
         's:md:1': 4
       }
-    },
-    palettes: palettes.label
+    }
   };
-  const floatingNotchedLabel: TextFieldLabelElementStyle<Material3GoogleSegmentName> = {
-    ...floatingLabel,
+  const floatingInsideLabel: TextFieldLabelElementStyle<Material3GoogleSegmentName> = {
+    ...floatingLabelTypography,
     scales: {
-      ...floatingLabel.scales,
+      ...floatingLabelTypography.scales,
+      marginTop: {
+        's:sm:1': 6,
+        's:md:1': 6
+      },
       marginLeft: {
-        's:sm:1': 4,
-        's:md:1': 4
+        's:sm:1': 12,
+        's:md:1': 16
       }
     }
   };
@@ -907,7 +921,7 @@ export function createMaterial3GoogleTextFieldSchema(
     },
     palettes: palettes.control
   };
-  const floatingInput: TextFieldInputElementStyle<Material3GoogleSegmentName> = {
+  const floatingNotchedInput: TextFieldInputElementStyle<Material3GoogleSegmentName> = {
     decorations: {
       textFont: 'body',
       textWeight: 'normal'
@@ -923,6 +937,16 @@ export function createMaterial3GoogleTextFieldSchema(
       }
     },
     palettes: palettes.input
+  };
+  const floatingInsideInput: TextFieldInputElementStyle<Material3GoogleSegmentName> = {
+    ...floatingNotchedInput,
+    scales: {
+      ...floatingNotchedInput.scales,
+      paddingTop: {
+        's:sm:1': 16,
+        's:md:1': 16
+      }
+    }
   };
 
   return {
@@ -976,16 +1000,16 @@ export function createMaterial3GoogleTextFieldSchema(
               e1: rootElement,
               e2: floatingNotchedLabel,
               e3: floatingControl,
-              e4: floatingInput,
+              e4: floatingNotchedInput,
               e5: messageElement
             }
           },
           inside: {
             elements: {
               e1: rootElement,
-              e2: floatingLabel,
+              e2: floatingInsideLabel,
               e3: floatingInsideControl,
-              e4: floatingInput,
+              e4: floatingInsideInput,
               e5: messageElement
             }
           }

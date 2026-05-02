@@ -84,7 +84,7 @@ export function createTextFieldInputElementStyleSchema<TSegmentName extends Segm
         })
         .strict()
         .optional(),
-      scales: createScalesSchema(['textSize', 'textHeight']).optional(),
+      scales: createScalesSchema(['textSize', 'textHeight', 'paddingTop']).optional(),
       palettes: createPalettesSchema<TSegmentName, 'textColor'>(['textColor']).optional(),
       effects: elementEffectsSchema.optional()
     })

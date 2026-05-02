@@ -62,16 +62,10 @@
   pointer-events: none;
   background: transparent;
   transform-origin: left top;
-  transition: inset-block-start var(--k-dur-int) var(--k-ease-out),
-  inset-inline-start var(--k-dur-int) var(--k-ease-out),
-  max-inline-size var(--k-dur-int) var(--k-ease-out),
-  margin-top var(--k-dur-int) var(--k-ease-out),
-  margin-left var(--k-dur-int) var(--k-ease-out),
-  padding-right var(--k-dur-int) var(--k-ease-out),
-  padding-left var(--k-dur-int) var(--k-ease-out),
-  font-size var(--k-dur-int) var(--k-ease-out),
-  line-height var(--k-dur-int) var(--k-ease-out),
-  color var(--k-dur-int) var(--k-ease-out);
+  transition-property: inset-block-start, inset-inline-start, max-inline-size, margin, padding,
+  font-size, line-height, color;
+  transition-duration: var(--k-dur-int);
+  transition-timing-function: var(--k-ease-out);
 }
 
 /*

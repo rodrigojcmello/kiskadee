@@ -1,7 +1,6 @@
 import { HeadlessTextField } from '@kiskadee/react-headless';
 import { type FocusEvent, memo, useCallback, useMemo, useRef, useState } from 'react';
 import { useKiskadee } from '../contexts/KiskadeeContext';
-import { useLazyFloatingNotchedRestTypography } from './floating-notched/useLazyFloatingNotchedRestTypography';
 import {
   DEFAULT_TEXT_FIELD_EMPHASIS,
   DEFAULT_TEXT_FIELD_INTENT,
@@ -22,12 +21,23 @@ import type {
   TextFieldStandardUnderlineProps,
   TextFieldVariantClassesMap
 } from './TextField.types';
+import { useLazyFloatingRestTypography } from './useLazyFloatingRestTypography';
 
 type CreateTextFieldComponentOptions = {
   displayName: string;
   structural: TextFieldStructuralDescriptor;
   layout: 'standard' | 'floating';
 };
+
+const loadFloatingNotchedRestTypography = () =>
+  import('./floating-notched/floatingNotchedRestTypography.runtime').then(
+    (module) => module.bindFloatingNotchedRestTypography
+  );
+
+const loadFloatingInsideRestTypography = () =>
+  import('./floating-inside/floatingInsideRestTypography.runtime').then(
+    (module) => module.bindFloatingInsideRestTypography
+  );
 
 function resolveTextFieldElements(
   map: unknown,
@@ -66,8 +76,13 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
     const resolvedIntent = intent ?? validationStatus ?? DEFAULT_TEXT_FIELD_INTENT;
     const resolvedRadius = radius ?? global?.radius ?? DEFAULT_TEXT_FIELD_RADIUS;
     const elements = resolveTextFieldElements(classesMap.textField, options.structural);
-    const shouldMirrorFloatingTypography =
-      options.structural.variant === 'floating' && options.structural.mode === 'notched';
+    const shouldMirrorFloatingTypography = options.structural.variant === 'floating';
+    const floatingRestTypographyLoader =
+      options.structural.mode === 'notched'
+        ? loadFloatingNotchedRestTypography
+        : options.structural.mode === 'inside'
+          ? loadFloatingInsideRestTypography
+          : undefined;
 
     const resolvedClassNames = useMemo(
       () =>
@@ -113,10 +128,11 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
       [inputProps]
     );
 
-    useLazyFloatingNotchedRestTypography({
-      enabled: shouldMirrorFloatingTypography,
+    useLazyFloatingRestTypography({
+      enabled: shouldMirrorFloatingTypography && floatingRestTypographyLoader !== undefined,
       labelRef,
-      inputRef
+      inputRef,
+      loadBinder: floatingRestTypographyLoader ?? loadFloatingNotchedRestTypography
     });
 
     const { className: inputClassName, onBlur, onFocus, ...restInputProps } = inputProps ?? {};

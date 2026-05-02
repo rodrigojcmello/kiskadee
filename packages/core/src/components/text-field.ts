@@ -55,6 +55,7 @@ export type TextFieldControlElementStyle<TSegmentName extends SegmentName = neve
  * e4 — input text
  * - textColor
  * - textSize / textHeight
+ * - optional paddingTop for floating inside input positioning
  */
 export type TextFieldInputElementStyle<TSegmentName extends SegmentName = never> =
   TextFieldInputElementStyleFromSchema<TSegmentName>;
