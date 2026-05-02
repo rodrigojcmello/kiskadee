@@ -59,6 +59,14 @@ function createTextFieldStandardVariantConfigSchema() {
             });
           }
 
+          if (value.labelRadiusOffset !== undefined) {
+            ctx.addIssue({
+              code: 'custom',
+              path: ['labelRadiusOffset'],
+              message: 'labelRadiusOffset must be defined at components.textField.options'
+            });
+          }
+
           if (value.mode && !isStandardMode(value.mode)) {
             ctx.addIssue({
               code: 'custom',
@@ -98,6 +106,14 @@ function createTextFieldFloatingVariantConfigSchema() {
               code: 'custom',
               path: ['variant'],
               message: 'variant must not be repeated inside a variant branch'
+            });
+          }
+
+          if (value.labelRadiusOffset !== undefined) {
+            ctx.addIssue({
+              code: 'custom',
+              path: ['labelRadiusOffset'],
+              message: 'labelRadiusOffset must be defined at components.textField.options'
             });
           }
 

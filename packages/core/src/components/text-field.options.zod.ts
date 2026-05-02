@@ -31,7 +31,8 @@ export function createTextFieldOptionsSchema() {
   return z
     .object({
       variant: textFieldVariantSchema.optional(),
-      mode: textFieldModeSchema.optional()
+      mode: textFieldModeSchema.optional(),
+      labelRadiusOffset: z.boolean().optional()
     })
     .strict()
     .superRefine((value, ctx) => {

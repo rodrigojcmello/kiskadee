@@ -36,6 +36,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     globalRipple,
     textFieldVariant,
     textFieldMode,
+    textFieldLabelRadiusOffset,
     tabsVariant,
     tabsIndicatorPosition,
     tabsIndicatorShape,
@@ -53,6 +54,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     globalRipple !== undefined ||
     textFieldVariant !== undefined ||
     textFieldMode !== undefined ||
+    textFieldLabelRadiusOffset !== undefined ||
     tabsVariant !== undefined ||
     tabsIndicatorPosition !== undefined ||
     tabsIndicatorShape !== undefined ||
@@ -65,6 +67,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {}),
           ...(textFieldVariant !== undefined ||
           textFieldMode !== undefined ||
+          textFieldLabelRadiusOffset !== undefined ||
           tabsVariant !== undefined ||
           tabsIndicatorPosition !== undefined ||
           tabsIndicatorShape !== undefined ||
@@ -74,12 +77,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
           tabsLowerCurve !== undefined
             ? {
                 components: {
-                  ...(textFieldVariant !== undefined || textFieldMode !== undefined
+                  ...(textFieldVariant !== undefined ||
+                  textFieldMode !== undefined ||
+                  textFieldLabelRadiusOffset !== undefined
                     ? {
                         textField: {
                           options: {
-                            ...(textFieldVariant !== undefined ? { variant: textFieldVariant } : {}),
-                            ...(textFieldMode !== undefined ? { mode: textFieldMode } : {})
+                            ...(textFieldVariant !== undefined
+                              ? { variant: textFieldVariant }
+                              : {}),
+                            ...(textFieldMode !== undefined ? { mode: textFieldMode } : {}),
+                            ...(textFieldLabelRadiusOffset !== undefined
+                              ? { labelRadiusOffset: textFieldLabelRadiusOffset }
+                              : {})
                           }
                         }
                       }
@@ -106,9 +116,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
                               : {}),
                             ...(tabsTabWidth !== undefined ? { tabWidth: tabsTabWidth } : {}),
                             ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {}),
-                            ...(tabsLowerCurve !== undefined
-                              ? { lowerCurve: tabsLowerCurve }
-                              : {})
+                            ...(tabsLowerCurve !== undefined ? { lowerCurve: tabsLowerCurve } : {})
                           }
                         }
                       }

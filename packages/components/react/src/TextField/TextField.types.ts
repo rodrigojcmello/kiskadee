@@ -44,6 +44,8 @@ export type TextFieldProps = Omit<
   validationStatus?: TextFieldValidationStatus;
   /** Border radius mode. Uses schema radius scales for square, rounded, and pill. */
   radius?: RadiusMode;
+  /** Offset the label by the active border radius when it is larger than the schema margin. */
+  labelRadiusOffset?: boolean;
 };
 
 export type TextFieldStandardProps = TextFieldProps;

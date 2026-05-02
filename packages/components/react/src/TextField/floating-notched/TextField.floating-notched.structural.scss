@@ -104,6 +104,15 @@
 }
 
 /*
+ * element label modifier 'a' / e2a
+ * Keeps the promoted label start at least as far from the edge as the active control radius.
+ */
+.k-txf-e3-a[data-focused] .k-txf-e2-a.k-txf-e2a,
+.k-txf-e3-a[data-filled] .k-txf-e2-a.k-txf-e2a {
+  margin-inline-start: max(var(--k-mgl, 0px), var(--k-bdr, 0px));
+}
+
+/*
  * element input / e4
  * Resets the native input box so the floating shell and label define the shared geometry.
  */

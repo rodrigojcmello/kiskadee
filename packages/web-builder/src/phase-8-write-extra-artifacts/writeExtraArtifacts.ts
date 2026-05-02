@@ -9,14 +9,14 @@ import type {
   SchemaFonts,
   SegmentName,
   SolidColor,
-  TextFieldMode,
-  TextFieldVariant,
   TabsBridgeLowerCurve,
-  TabsIndicatorShape,
   TabsIndicatorPosition,
+  TabsIndicatorShape,
   TabsIndicatorWidth,
   TabsTabWidth,
   TabsVariant,
+  TextFieldMode,
+  TextFieldVariant,
   ThemeMode
 } from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
@@ -155,23 +155,28 @@ export async function writeExtraArtifacts(params: {
   const focus = schema.global?.focus as { width?: number; offset?: number } | undefined;
   const radius = schema.global?.radius as RadiusMode | undefined;
   const ripple = schema.global?.effects?.ripple as RippleEffectSchema | undefined;
-  const tabsIndicatorPosition = schema.components?.tabs?.options
-    ?.indicatorPosition as TabsIndicatorPosition | undefined;
-  const tabsIndicatorShape = schema.components?.tabs?.options
-    ?.indicatorShape as TabsIndicatorShape | undefined;
-  const tabsIndicatorWidth = schema.components?.tabs?.options
-    ?.indicatorWidth as TabsIndicatorWidth | undefined;
-  const tabsTabWidth = schema.components?.tabs?.options?.tabWidth as
-    | TabsTabWidth
+  const tabsIndicatorPosition = schema.components?.tabs?.options?.indicatorPosition as
+    | TabsIndicatorPosition
     | undefined;
+  const tabsIndicatorShape = schema.components?.tabs?.options?.indicatorShape as
+    | TabsIndicatorShape
+    | undefined;
+  const tabsIndicatorWidth = schema.components?.tabs?.options?.indicatorWidth as
+    | TabsIndicatorWidth
+    | undefined;
+  const tabsTabWidth = schema.components?.tabs?.options?.tabWidth as TabsTabWidth | undefined;
   const tabsVariant = schema.components?.tabs?.options?.variant as TabsVariant | undefined;
   const tabsSeparator = schema.components?.tabs?.options?.separator as boolean | undefined;
-  const tabsLowerCurve = schema.components?.tabs?.options
-    ?.lowerCurve as TabsBridgeLowerCurve | undefined;
+  const tabsLowerCurve = schema.components?.tabs?.options?.lowerCurve as
+    | TabsBridgeLowerCurve
+    | undefined;
   const textFieldVariant = schema.components?.textField?.options?.variant as
     | TextFieldVariant
     | undefined;
   const textFieldMode = schema.components?.textField?.options?.mode as TextFieldMode | undefined;
+  const textFieldLabelRadiusOffset = schema.components?.textField?.options?.labelRadiusOffset as
+    | boolean
+    | undefined;
 
   function toCssFontFamilyString(value: FontStack): string | null {
     const css = toCssFontFamily(value);
@@ -187,7 +192,7 @@ export async function writeExtraArtifacts(params: {
   const hasRadius = Boolean(radius);
   const hasRipple = Boolean(ripple && Object.keys(ripple).length > 0);
   const hasTabsOptions = Boolean(
-      tabsIndicatorPosition ||
+    tabsIndicatorPosition ||
       tabsIndicatorShape ||
       tabsIndicatorWidth ||
       tabsTabWidth ||
@@ -195,7 +200,9 @@ export async function writeExtraArtifacts(params: {
       tabsSeparator !== undefined ||
       tabsLowerCurve
   );
-  const hasTextFieldOptions = Boolean(textFieldVariant || textFieldMode);
+  const hasTextFieldOptions = Boolean(
+    textFieldVariant || textFieldMode || textFieldLabelRadiusOffset !== undefined
+  );
 
   if (hasFonts || hasRadius || hasRipple || hasTabsOptions || hasTextFieldOptions) {
     await mkdir(buildDir, { recursive: true });
@@ -221,6 +228,7 @@ export async function writeExtraArtifacts(params: {
           options?: {
             variant?: TextFieldVariant;
             mode?: TextFieldMode;
+            labelRadiusOffset?: boolean;
           };
         };
       };
@@ -266,14 +274,17 @@ export async function writeExtraArtifacts(params: {
               textField: {
                 options: {
                   ...(textFieldVariant ? { variant: textFieldVariant } : {}),
-                  ...(textFieldMode ? { mode: textFieldMode } : {})
+                  ...(textFieldMode ? { mode: textFieldMode } : {}),
+                  ...(textFieldLabelRadiusOffset !== undefined
+                    ? { labelRadiusOffset: textFieldLabelRadiusOffset }
+                    : {})
                 }
               }
             }
           : {})
       };
     }
-    
+
     await writeFile(globalFilePath, JSON.stringify(globalPayload, null, 2), 'utf8');
     console.log(`[web-builder] Global artifact written to: ${globalFilePath}`);
   }

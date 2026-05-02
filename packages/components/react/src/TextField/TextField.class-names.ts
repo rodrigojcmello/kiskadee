@@ -133,6 +133,7 @@ export function resolveTextFieldClassNames(options: {
   intent: TextFieldIntent;
   emphasis: ComponentEmphasis | undefined;
   radius: RadiusMode;
+  labelRadiusOffset: boolean;
   focused: boolean;
   disabled?: boolean;
   readOnly?: boolean;
@@ -147,12 +148,16 @@ export function resolveTextFieldClassNames(options: {
         'k-txf',
         `k-txf-${letter}`,
         `k-txf-e1-${letter}`,
+        options.labelRadiusOffset
+          ? resolveRadiusClassName(elements.e3, options.scale, options.radius)
+          : '',
         elem(elements.e1, options),
         options.classNames.e1
       ) ?? '',
     e2:
       join(
         `k-txf-e2-${letter}`,
+        options.labelRadiusOffset ? 'k-txf-e2a' : '',
         elem(elements.e2, options),
         stateClass,
         'k-state',

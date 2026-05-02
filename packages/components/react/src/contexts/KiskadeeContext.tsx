@@ -35,6 +35,7 @@ export type KiskadeeContextValue = {
         options?: {
           variant?: TextFieldVariant;
           mode?: TextFieldMode;
+          labelRadiusOffset?: boolean;
         };
       };
       tabs?: {

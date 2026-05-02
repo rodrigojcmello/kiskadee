@@ -23,6 +23,7 @@ const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
 const rippleGlobalCache: Partial<Record<string, RippleEffectSchema | null>> = {};
 const textFieldVariantCache: Partial<Record<string, TextFieldVariant | null>> = {};
 const textFieldModeCache: Partial<Record<string, TextFieldMode | null>> = {};
+const textFieldLabelRadiusOffsetCache: Partial<Record<string, boolean | null>> = {};
 const tabsVariantCache: Partial<Record<string, TabsVariant | null>> = {};
 const tabsIndicatorPositionCache: Partial<Record<string, TabsIndicatorPosition | null>> = {};
 const tabsIndicatorShapeCache: Partial<Record<string, TabsIndicatorShape | null>> = {};
@@ -43,6 +44,9 @@ export function useThemeExtras({
   const [globalRipple, setGlobalRipple] = useState<RippleEffectSchema | undefined>(undefined);
   const [textFieldVariant, setTextFieldVariant] = useState<TextFieldVariant | undefined>(undefined);
   const [textFieldMode, setTextFieldMode] = useState<TextFieldMode | undefined>(undefined);
+  const [textFieldLabelRadiusOffset, setTextFieldLabelRadiusOffset] = useState<boolean | undefined>(
+    undefined
+  );
   const [tabsVariant, setTabsVariant] = useState<TabsVariant | undefined>(undefined);
   const [tabsIndicatorPosition, setTabsIndicatorPosition] = useState<
     TabsIndicatorPosition | undefined
@@ -65,39 +69,36 @@ export function useThemeExtras({
       const dsKey = String(designSystem);
       if (!dsKey) return;
 
-      const hasRadius = Object.prototype.hasOwnProperty.call(radiusGlobalCache, dsKey);
+      const hasRadius = Object.hasOwn(radiusGlobalCache, dsKey);
       let radius = radiusGlobalCache[dsKey] ?? undefined;
-      const hasRipple = Object.prototype.hasOwnProperty.call(rippleGlobalCache, dsKey);
+      const hasRipple = Object.hasOwn(rippleGlobalCache, dsKey);
       let ripple = rippleGlobalCache[dsKey] ?? undefined;
       const hasTextFieldVariant = Object.hasOwn(textFieldVariantCache, dsKey);
       let textFieldVariantValue = textFieldVariantCache[dsKey] ?? undefined;
       const hasTextFieldMode = Object.hasOwn(textFieldModeCache, dsKey);
       let textFieldModeValue = textFieldModeCache[dsKey] ?? undefined;
+      const hasTextFieldLabelRadiusOffset = Object.hasOwn(textFieldLabelRadiusOffsetCache, dsKey);
+      let textFieldLabelRadiusOffsetValue = textFieldLabelRadiusOffsetCache[dsKey] ?? undefined;
       const hasTabsVariant = Object.hasOwn(tabsVariantCache, dsKey);
       let variant = tabsVariantCache[dsKey] ?? undefined;
-      const hasTabsIndicatorPosition = Object.prototype.hasOwnProperty.call(
-        tabsIndicatorPositionCache,
-        dsKey
-      );
+      const hasTabsIndicatorPosition = Object.hasOwn(tabsIndicatorPositionCache, dsKey);
       let indicatorPosition = tabsIndicatorPositionCache[dsKey] ?? undefined;
       const hasTabsIndicatorShape = Object.hasOwn(tabsIndicatorShapeCache, dsKey);
       let indicatorShape = tabsIndicatorShapeCache[dsKey] ?? undefined;
-      const hasTabsIndicatorWidth = Object.prototype.hasOwnProperty.call(
-        tabsIndicatorWidthCache,
-        dsKey
-      );
+      const hasTabsIndicatorWidth = Object.hasOwn(tabsIndicatorWidthCache, dsKey);
       let indicatorWidth = tabsIndicatorWidthCache[dsKey] ?? undefined;
-      const hasTabsTabWidth = Object.prototype.hasOwnProperty.call(tabsTabWidthCache, dsKey);
+      const hasTabsTabWidth = Object.hasOwn(tabsTabWidthCache, dsKey);
       let tabWidth = tabsTabWidthCache[dsKey] ?? undefined;
-      const hasTabsSeparator = Object.prototype.hasOwnProperty.call(tabsSeparatorCache, dsKey);
+      const hasTabsSeparator = Object.hasOwn(tabsSeparatorCache, dsKey);
       let separator = tabsSeparatorCache[dsKey] ?? undefined;
-      const hasTabsLowerCurve = Object.prototype.hasOwnProperty.call(tabsLowerCurveCache, dsKey);
+      const hasTabsLowerCurve = Object.hasOwn(tabsLowerCurveCache, dsKey);
       let lowerCurve = tabsLowerCurveCache[dsKey] ?? undefined;
       if (
         !hasRadius ||
         !hasRipple ||
         !hasTextFieldVariant ||
         !hasTextFieldMode ||
+        !hasTextFieldLabelRadiusOffset ||
         !hasTabsVariant ||
         !hasTabsIndicatorPosition ||
         !hasTabsIndicatorShape ||
@@ -131,6 +132,7 @@ export function useThemeExtras({
                 options?: {
                   variant?: TextFieldVariant;
                   mode?: TextFieldMode;
+                  labelRadiusOffset?: boolean;
                 };
               };
             };
@@ -143,6 +145,8 @@ export function useThemeExtras({
           textFieldVariantCache[dsKey] = textFieldVariantValue ?? null;
           textFieldModeValue = json.components?.textField?.options?.mode;
           textFieldModeCache[dsKey] = textFieldModeValue ?? null;
+          textFieldLabelRadiusOffsetValue = json.components?.textField?.options?.labelRadiusOffset;
+          textFieldLabelRadiusOffsetCache[dsKey] = textFieldLabelRadiusOffsetValue ?? null;
           variant = json.components?.tabs?.options?.variant ?? json.components?.tabs?.options?.type;
           tabsVariantCache[dsKey] = variant ?? null;
           indicatorPosition = json.components?.tabs?.options?.indicatorPosition;
@@ -182,6 +186,7 @@ export function useThemeExtras({
       setGlobalRipple(ripple);
       setTextFieldVariant(textFieldVariantValue);
       setTextFieldMode(textFieldModeValue);
+      setTextFieldLabelRadiusOffset(textFieldLabelRadiusOffsetValue);
       setTabsVariant(variant);
       setTabsIndicatorPosition(indicatorPosition);
       setTabsIndicatorShape(indicatorShape);
@@ -257,6 +262,7 @@ export function useThemeExtras({
     globalRipple,
     textFieldVariant,
     textFieldMode,
+    textFieldLabelRadiusOffset,
     tabsVariant,
     tabsIndicatorPosition,
     tabsIndicatorShape,

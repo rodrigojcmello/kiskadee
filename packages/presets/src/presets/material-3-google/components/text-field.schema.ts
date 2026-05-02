@@ -815,7 +815,7 @@ export function createMaterial3GoogleTextFieldSchema(
       textHeight: {
         's:sm:1': 14,
         's:md:1': 14
-      },
+      }
     },
     palettes: palettes.label
   };
@@ -952,7 +952,8 @@ export function createMaterial3GoogleTextFieldSchema(
   return {
     options: {
       variant: 'standard',
-      mode: 'outline'
+      mode: 'outline',
+      labelRadiusOffset: true
     },
     variants: {
       standard: {

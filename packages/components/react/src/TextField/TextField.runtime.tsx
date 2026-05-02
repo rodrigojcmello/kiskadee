@@ -58,6 +58,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
       intent,
       validationStatus,
       radius,
+      labelRadiusOffset,
       disabled,
       readOnly,
       ...rootProps
@@ -68,6 +69,8 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
     const inputRef = useRef<HTMLInputElement | null>(null);
     const resolvedIntent = intent ?? validationStatus ?? DEFAULT_TEXT_FIELD_INTENT;
     const resolvedRadius = radius ?? global?.radius ?? DEFAULT_TEXT_FIELD_RADIUS;
+    const resolvedLabelRadiusOffset =
+      labelRadiusOffset ?? global?.components?.textField?.options?.labelRadiusOffset ?? false;
     const elements = resolveTextFieldElements(classesMap.textField, options.structural);
     const shouldMirrorFloatingTypography = options.structural.variant === 'floating';
 
@@ -81,6 +84,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
           intent: resolvedIntent,
           emphasis,
           radius: resolvedRadius,
+          labelRadiusOffset: resolvedLabelRadiusOffset,
           focused,
           disabled,
           readOnly
@@ -93,6 +97,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
         focused,
         radius,
         readOnly,
+        resolvedLabelRadiusOffset,
         resolvedIntent,
         resolvedRadius,
         scale

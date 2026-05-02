@@ -32,13 +32,14 @@ export type TransformScaleKeyToCssOptions = {
  * Canonical emitted CSS custom property names for scale-derived structural tokens.
  *
  * Naming grammar:
- * - first two letters identify the attribute group (`bd` = border, `bx` = box, `pd` = padding)
+ * - first two letters identify the attribute group (`bd` = border, `bx` = box, `mg` = margin, `pd` = padding)
  * - last letter identifies the concrete value or edge within that group
  */
 export const EMITTED_SCALE_CSS_VARS = {
   borderWidth: '--k-bdw',
   borderRadius: '--k-bdr',
   boxWidth: '--k-bxw',
+  marginLeft: '--k-mgl',
   paddingTop: '--k-pdt',
   paddingRight: '--k-pdr',
   paddingBottom: '--k-pdb',
@@ -193,7 +194,7 @@ export function transformScaleKeyToCss(
         ? `.${className} { ${EMITTED_SCALE_CSS_VARS.borderWidth}: ${cssValue}; ${cssProperty}: ${cssValue} }`
         : styleEmissionPolicy.borderWidthEmission === 'token'
           ? `.${className} { ${EMITTED_SCALE_CSS_VARS.borderWidth}: ${cssValue} }`
-        : `.${className} { ${cssProperty}: ${cssValue} }`;
+          : `.${className} { ${cssProperty}: ${cssValue} }`;
   } else if (scaleProperty === 'boxWidth') {
     rule =
       styleEmissionPolicy.boxWidthEmission === 'token'
@@ -236,6 +237,8 @@ export function transformScaleKeyToCss(
     } else {
       rule = `.${className} { ${cssProperty}: ${cssValue} }`;
     }
+  } else if (scaleProperty === 'marginLeft') {
+    rule = `.${className} { ${EMITTED_SCALE_CSS_VARS.marginLeft}: ${cssValue}; ${cssProperty}: ${cssValue} }`;
   } else {
     rule = `.${className} { ${cssProperty}: ${cssValue} }`;
   }
