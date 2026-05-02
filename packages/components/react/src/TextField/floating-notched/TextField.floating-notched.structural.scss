@@ -67,7 +67,18 @@
   transform-origin: left top;
   transition: transform var(--k-dur-int) var(--k-ease-out),
   inset-block-start var(--k-dur-int) var(--k-ease-out),
+  font-size var(--k-dur-int) var(--k-ease-out),
+  line-height var(--k-dur-int) var(--k-ease-out),
   color var(--k-dur-int) var(--k-ease-out);
+}
+
+/*
+ * element label / e2
+ * Mirrors the input typography only while the field is empty and unfocused so the prompt lane matches typed text.
+ */
+.k-txf-e3-a:not([data-focused]):not([data-filled]) .k-txf-e2-a[data-rest-typography] {
+  font-size: var(--k-txf-rts);
+  line-height: var(--k-txf-rth);
 }
 
 /*
@@ -88,7 +99,7 @@
   inset-block-start: 0;
   padding-inline: 4px;
   background: var(--k-bgc);
-  transform: translate(-4px, -54%) scale(0.75);
+  transform: translate(-4px, -54%);
 }
 
 /*

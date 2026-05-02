@@ -809,12 +809,12 @@ export function createMaterial3GoogleTextFieldSchema(
     },
     scales: {
       textSize: {
-        's:sm:1': 14,
-        's:md:1': 16
+        's:sm:1': 12,
+        's:md:1': 12
       },
       textHeight: {
-        's:sm:1': 20,
-        's:md:1': 24
+        's:sm:1': 14,
+        's:md:1': 14
       }
     },
     palettes: palettes.label

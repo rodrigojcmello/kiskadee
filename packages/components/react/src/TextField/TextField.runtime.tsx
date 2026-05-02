@@ -1,6 +1,7 @@
 import { HeadlessTextField } from '@kiskadee/react-headless';
-import { type FocusEvent, memo, useCallback, useMemo, useState } from 'react';
+import { type FocusEvent, memo, useCallback, useMemo, useRef, useState } from 'react';
 import { useKiskadee } from '../contexts/KiskadeeContext';
+import { useLazyFloatingNotchedRestTypography } from './floating-notched/useLazyFloatingNotchedRestTypography';
 import {
   DEFAULT_TEXT_FIELD_EMPHASIS,
   DEFAULT_TEXT_FIELD_INTENT,
@@ -60,9 +61,13 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
     } = props;
     const { classesMap, global } = useKiskadee();
     const [focused, setFocused] = useState(false);
+    const labelRef = useRef<HTMLLabelElement | null>(null);
+    const inputRef = useRef<HTMLInputElement | null>(null);
     const resolvedIntent = intent ?? validationStatus ?? DEFAULT_TEXT_FIELD_INTENT;
     const resolvedRadius = radius ?? global?.radius ?? DEFAULT_TEXT_FIELD_RADIUS;
     const elements = resolveTextFieldElements(classesMap.textField, options.structural);
+    const shouldMirrorFloatingTypography =
+      options.structural.variant === 'floating' && options.structural.mode === 'notched';
 
     const resolvedClassNames = useMemo(
       () =>
@@ -108,12 +113,19 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
       [inputProps]
     );
 
+    useLazyFloatingNotchedRestTypography({
+      enabled: shouldMirrorFloatingTypography,
+      labelRef,
+      inputRef
+    });
+
     const { className: inputClassName, onBlur, onFocus, ...restInputProps } = inputProps ?? {};
     void onBlur;
     void onFocus;
 
     const input = (
       <HeadlessTextField.Input
+        ref={inputRef}
         {...restInputProps}
         placeholder={placeholder}
         className={inputClassName}
@@ -137,7 +149,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
       >
         {options.layout === 'standard' ? (
           <>
-            <HeadlessTextField.Label>{label}</HeadlessTextField.Label>
+            <HeadlessTextField.Label ref={labelRef}>{label}</HeadlessTextField.Label>
             <HeadlessTextField.Control>
               {input}
               {indicator}
@@ -145,7 +157,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
           </>
         ) : (
           <HeadlessTextField.Control>
-            <HeadlessTextField.Label>{label}</HeadlessTextField.Label>
+            <HeadlessTextField.Label ref={labelRef}>{label}</HeadlessTextField.Label>
             {input}
             {indicator}
           </HeadlessTextField.Control>

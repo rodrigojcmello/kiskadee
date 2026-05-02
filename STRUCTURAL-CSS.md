@@ -702,6 +702,16 @@ Examples:
 - `--k-tab-z`
 - `--k-tab-x`
 - `--k-tab-w`
+- `--k-txf-rts`
+- `--k-txf-rth`
+
+For compact purpose suffixes, prefer short structural abbreviations that stay understandable in the
+owning branch.
+
+Example:
+
+- `--k-txf-rts` = `textField` / `rest text size`
+- `--k-txf-rth` = `textField` / `rest text height`
 
 Do not use runtime structural variables to relay schema tokens that already exist as emitted variables.
 
