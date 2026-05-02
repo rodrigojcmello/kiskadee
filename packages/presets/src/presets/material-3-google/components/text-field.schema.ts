@@ -815,9 +815,31 @@ export function createMaterial3GoogleTextFieldSchema(
       textHeight: {
         's:sm:1': 14,
         's:md:1': 14
+      },
+      marginTop: {
+        's:sm:1': -7,
+        's:md:1': -7
+      },
+      paddingRight: {
+        's:sm:1': 4,
+        's:md:1': 4
+      },
+      paddingLeft: {
+        's:sm:1': 4,
+        's:md:1': 4
       }
     },
     palettes: palettes.label
+  };
+  const floatingNotchedLabel: TextFieldLabelElementStyle<Material3GoogleSegmentName> = {
+    ...floatingLabel,
+    scales: {
+      ...floatingLabel.scales,
+      marginLeft: {
+        's:sm:1': 4,
+        's:md:1': 4
+      }
+    }
   };
   const floatingControl: TextFieldControlElementStyle<Material3GoogleSegmentName> = {
     decorations: {
@@ -952,7 +974,7 @@ export function createMaterial3GoogleTextFieldSchema(
           notched: {
             elements: {
               e1: rootElement,
-              e2: floatingLabel,
+              e2: floatingNotchedLabel,
               e3: floatingControl,
               e4: floatingInput,
               e5: messageElement

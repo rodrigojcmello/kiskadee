@@ -29,7 +29,15 @@ export function createTextFieldLabelElementStyleSchema<TSegmentName extends Segm
         })
         .strict()
         .optional(),
-      scales: createScalesSchema(['textSize', 'textHeight', 'marginBottom']).optional(),
+      scales: createScalesSchema([
+        'textSize',
+        'textHeight',
+        'marginBottom',
+        'marginTop',
+        'marginLeft',
+        'paddingRight',
+        'paddingLeft'
+      ]).optional(),
       palettes: createPalettesSchema<TSegmentName, 'textColor'>(['textColor']).optional(),
       effects: elementEffectsSchema.optional()
     })

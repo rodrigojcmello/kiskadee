@@ -38,6 +38,7 @@ export type TextFieldRootElementStyle = TextFieldRootElementStyleFromSchema;
  * - textColor
  * - textSize / textHeight
  * - marginBottom for standard spacing
+ * - optional marginTop / marginLeft / paddingRight / paddingLeft for floating label geometry
  */
 export type TextFieldLabelElementStyle<TSegmentName extends SegmentName = never> =
   TextFieldLabelElementStyleFromSchema<TSegmentName>;

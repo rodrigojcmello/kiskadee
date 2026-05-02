@@ -702,6 +702,9 @@ Examples:
 - `--k-tab-z`
 - `--k-tab-x`
 - `--k-tab-w`
+- `--k-txf-rbt`
+- `--k-txf-ris`
+- `--k-txf-riw`
 - `--k-txf-rts`
 - `--k-txf-rth`
 
@@ -712,6 +715,9 @@ Example:
 
 - `--k-txf-rts` = `textField` / `rest text size`
 - `--k-txf-rth` = `textField` / `rest text height`
+- `--k-txf-rbt` = `textField` / `rest block top`
+- `--k-txf-ris` = `textField` / `rest inline start`
+- `--k-txf-riw` = `textField` / `rest inline width`
 
 Do not use runtime structural variables to relay schema tokens that already exist as emitted variables.
 
