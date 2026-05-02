@@ -29,15 +29,8 @@ type CreateTextFieldComponentOptions = {
   layout: 'standard' | 'floating';
 };
 
-const loadFloatingNotchedRestTypography = () =>
-  import('./floating-notched/floatingNotchedRestTypography.runtime').then(
-    (module) => module.bindFloatingNotchedRestTypography
-  );
-
-const loadFloatingInsideRestTypography = () =>
-  import('./floating-inside/floatingInsideRestTypography.runtime').then(
-    (module) => module.bindFloatingInsideRestTypography
-  );
+const loadFloatingRestTypography = () =>
+  import('./floatingRestTypography.runtime').then((module) => module.bindFloatingRestTypography);
 
 function resolveTextFieldElements(
   map: unknown,
@@ -77,12 +70,6 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
     const resolvedRadius = radius ?? global?.radius ?? DEFAULT_TEXT_FIELD_RADIUS;
     const elements = resolveTextFieldElements(classesMap.textField, options.structural);
     const shouldMirrorFloatingTypography = options.structural.variant === 'floating';
-    const floatingRestTypographyLoader =
-      options.structural.mode === 'notched'
-        ? loadFloatingNotchedRestTypography
-        : options.structural.mode === 'inside'
-          ? loadFloatingInsideRestTypography
-          : undefined;
 
     const resolvedClassNames = useMemo(
       () =>
@@ -129,10 +116,10 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
     );
 
     useLazyFloatingRestTypography({
-      enabled: shouldMirrorFloatingTypography && floatingRestTypographyLoader !== undefined,
+      enabled: shouldMirrorFloatingTypography,
       labelRef,
       inputRef,
-      loadBinder: floatingRestTypographyLoader ?? loadFloatingNotchedRestTypography
+      loadBinder: loadFloatingRestTypography
     });
 
     const { className: inputClassName, onBlur, onFocus, ...restInputProps } = inputProps ?? {};

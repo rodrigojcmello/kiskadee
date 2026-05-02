@@ -1,10 +1,12 @@
-export function bindFloatingNotchedRestTypography(options: {
+export function bindFloatingRestTypography(options: {
   labelElement: HTMLLabelElement;
   inputElement: HTMLInputElement;
 }): () => void {
   const { labelElement, inputElement } = options;
   const controlElement =
-    inputElement.offsetParent instanceof HTMLElement ? inputElement.offsetParent : inputElement.parentElement;
+    inputElement.offsetParent instanceof HTMLElement
+      ? inputElement.offsetParent
+      : inputElement.parentElement;
 
   if (!controlElement) {
     return () => {};
@@ -14,7 +16,9 @@ export function bindFloatingNotchedRestTypography(options: {
     const inputStyles = getComputedStyle(inputElement);
     const parsedLineHeight = Number.parseFloat(inputStyles.lineHeight);
     const parsedFontSize = Number.parseFloat(inputStyles.fontSize);
-    const effectiveLineHeight = Number.isFinite(parsedLineHeight) ? parsedLineHeight : parsedFontSize;
+    const effectiveLineHeight = Number.isFinite(parsedLineHeight)
+      ? parsedLineHeight
+      : parsedFontSize;
     const restBlockTop = Math.max(
       0,
       inputElement.offsetTop + (inputElement.clientHeight - effectiveLineHeight) / 2
