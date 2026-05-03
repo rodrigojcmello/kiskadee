@@ -30,7 +30,7 @@ export type TextFieldModeByVariant = {
   standard: TextFieldStandardMode;
   floating: TextFieldFloatingMode;
 };
-export type TextFieldLabelOffsetStrategy = 'schema' | 'radius' | 'input-start';
+export type TextFieldLabelOffsetStrategy = 'schema' | 'radius' | 'input-start' | 'none';
 export type TextFieldLabelOffsetByRadius = Partial<
   Record<RadiusMode, TextFieldLabelOffsetStrategy>
 >;

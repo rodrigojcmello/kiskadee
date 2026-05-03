@@ -10,7 +10,12 @@ export const textFieldModeSchema = z.enum([
   'notched',
   'inside'
 ]);
-export const textFieldLabelOffsetStrategySchema = z.enum(['schema', 'radius', 'input-start']);
+export const textFieldLabelOffsetStrategySchema = z.enum([
+  'schema',
+  'radius',
+  'input-start',
+  'none'
+]);
 export const textFieldLabelOffsetByRadiusSchema = z
   .object({
     square: textFieldLabelOffsetStrategySchema.optional(),

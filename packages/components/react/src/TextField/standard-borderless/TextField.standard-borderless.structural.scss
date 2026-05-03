@@ -45,6 +45,14 @@
 }
 
 /*
+ * element label modifier 'c' / e2c
+ * Forces the label start to ignore schema-authored margin.
+ */
+.k-txf-e2-e.k-txf-e2c {
+  margin-inline-start: 0;
+}
+
+/*
  * element label / e2
  * Clears forced focus outlines because the control shell owns the visible focus treatment.
  */

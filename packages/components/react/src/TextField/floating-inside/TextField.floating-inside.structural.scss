@@ -121,6 +121,15 @@
 }
 
 /*
+ * element label modifier 'c' / e2c
+ * Forces the promoted label start to ignore schema-authored margin.
+ */
+.k-txf-e3-c[data-focused] .k-txf-e2-c.k-txf-e2c,
+.k-txf-e3-c[data-filled] .k-txf-e2-c.k-txf-e2c {
+  margin-inline-start: 0;
+}
+
+/*
  * element input / e4
  * Resets the native input box so the shell and inside label define the shared control geometry.
  */

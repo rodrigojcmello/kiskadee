@@ -43,7 +43,8 @@ const labelOffsetOptions: Array<{ value: LabelOffsetSelection; label: string }> 
   { value: 'auto', label: 'Auto' },
   { value: 'schema', label: 'Schema' },
   { value: 'radius', label: 'Radius' },
-  { value: 'input-start', label: 'Input start' }
+  { value: 'input-start', label: 'Input start' },
+  { value: 'none', label: 'None' }
 ];
 
 export default function TextFieldPage() {

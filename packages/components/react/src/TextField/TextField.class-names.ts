@@ -162,7 +162,9 @@ export function resolveTextFieldClassNames(options: {
           ? 'k-txf-e2a'
           : options.labelOffsetStrategy === 'input-start'
             ? 'k-txf-e2b'
-            : '',
+            : options.labelOffsetStrategy === 'none'
+              ? 'k-txf-e2c'
+              : '',
         elem(elements.e2, options),
         stateClass,
         'k-state',

@@ -619,7 +619,7 @@ export function createMaterial3GoogleTextFieldSchema(
           outline: {
             options: {
               labelOffset: {
-                square: 'schema',
+                square: 'none',
                 rounded: 'schema',
                 pill: 'radius'
               }
@@ -743,7 +743,7 @@ export function createMaterial3GoogleTextFieldSchema(
           underline: {
             options: {
               labelOffset: {
-                square: 'schema',
+                square: 'none',
                 rounded: 'schema',
                 pill: 'schema'
               }
@@ -876,7 +876,7 @@ export function createMaterial3GoogleTextFieldSchema(
           borderless: {
             options: {
               labelOffset: {
-                square: 'schema',
+                square: 'none',
                 rounded: 'schema',
                 pill: 'input-start'
               }
@@ -1007,7 +1007,7 @@ export function createMaterial3GoogleTextFieldSchema(
           notched: {
             options: {
               labelOffset: {
-                square: 'schema',
+                square: 'none',
                 rounded: 'radius',
                 pill: 'input-start'
               }
@@ -1143,7 +1143,7 @@ export function createMaterial3GoogleTextFieldSchema(
           inside: {
             options: {
               labelOffset: {
-                square: 'schema',
+                square: 'input-start',
                 rounded: 'input-start',
                 pill: 'schema'
               }
