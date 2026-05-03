@@ -1,12 +1,4 @@
-import type {
-  Schema,
-  TextFieldControlElementStyle,
-  TextFieldIndicatorElementStyle,
-  TextFieldInputElementStyle,
-  TextFieldLabelElementStyle,
-  TextFieldMessageElementStyle,
-  TextFieldRootElementStyle
-} from '@kiskadee/core';
+import type { Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment';
 import type { PresetColorGetter } from '../../../utils/presetColor';
 
@@ -17,37 +9,6 @@ type CreateMaterial3GoogleTextFieldSchemaArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;
   segmentNames: readonly Material3GoogleSegmentName[];
   transparent: readonly [number, number, number, number];
-};
-
-const standardControlRadius = {
-  rounded: {
-    's:sm:1': 6,
-    's:md:1': 8
-  },
-  pill: {
-    's:sm:1': 18,
-    's:md:1': 20
-  },
-  square: {
-    's:sm:1': 0,
-    's:md:1': 0
-  }
-};
-
-const floatingControlRadius = {
-  ...standardControlRadius,
-  pill: {
-    's:sm:1': 24,
-    's:md:1': 28
-  }
-};
-
-const floatingInsideControlRadius = {
-  ...standardControlRadius,
-  pill: {
-    's:sm:1': 26,
-    's:md:1': 30
-  }
 };
 
 function createTextFieldElementPalettes({
@@ -643,327 +604,6 @@ export function createMaterial3GoogleTextFieldSchema(
   args: CreateMaterial3GoogleTextFieldSchemaArgs
 ): TextFieldComponent {
   const palettes = createTextFieldElementPalettes(args);
-  const rootElement: TextFieldRootElementStyle = {
-    scales: {
-      boxWidth: {
-        's:sm:1': 280,
-        's:md:1': 320
-      }
-    }
-  };
-  const standardLabel: TextFieldLabelElementStyle<Material3GoogleSegmentName> = {
-    decorations: {
-      textFont: 'body',
-      textWeight: 'medium'
-    },
-    scales: {
-      textSize: {
-        's:sm:1': 12,
-        's:md:1': 14
-      },
-      textHeight: {
-        's:sm:1': 16,
-        's:md:1': 20
-      },
-      marginBottom: {
-        's:sm:1': 4,
-        's:md:1': 6
-      }
-    },
-    palettes: palettes.label
-  };
-  const standardInput: TextFieldInputElementStyle<Material3GoogleSegmentName> = {
-    decorations: {
-      textFont: 'body',
-      textWeight: 'normal'
-    },
-    scales: {
-      textSize: {
-        's:sm:1': 14,
-        's:md:1': 16
-      },
-      textHeight: {
-        's:sm:1': 20,
-        's:md:1': 24
-      }
-    },
-    palettes: palettes.input
-  };
-  const messageElement: TextFieldMessageElementStyle<Material3GoogleSegmentName> = {
-    decorations: {
-      textFont: 'body',
-      textWeight: 'normal'
-    },
-    scales: {
-      textSize: {
-        's:sm:1': 11,
-        's:md:1': 12
-      },
-      textHeight: {
-        's:sm:1': 16,
-        's:md:1': 16
-      },
-      marginTop: {
-        's:sm:1': 4,
-        's:md:1': 6
-      }
-    },
-    palettes: palettes.message
-  };
-  const underlineIndicator: TextFieldIndicatorElementStyle<Material3GoogleSegmentName> = {
-    scales: {
-      boxHeight: {
-        's:sm:1': 1,
-        's:md:1': 1
-      }
-    },
-    palettes: palettes.indicatorUnderline
-  };
-  const standardOutlineControl: TextFieldControlElementStyle<Material3GoogleSegmentName> = {
-    decorations: {
-      borderStyle: 'solid'
-    },
-    scales: {
-      boxHeight: {
-        's:sm:1': 36,
-        's:md:1': 40
-      },
-      borderWidth: {
-        's:sm:1': 1,
-        's:md:1': 1
-      },
-      borderRadius: standardControlRadius,
-      paddingTop: {
-        's:sm:1': 8,
-        's:md:1': 8
-      },
-      paddingRight: {
-        's:sm:1': 10,
-        's:md:1': 12
-      },
-      paddingBottom: {
-        's:sm:1': 8,
-        's:md:1': 8
-      },
-      paddingLeft: {
-        's:sm:1': 10,
-        's:md:1': 12
-      }
-    },
-    palettes: palettes.control
-  };
-  const standardUnderlineControl: TextFieldControlElementStyle<Material3GoogleSegmentName> = {
-    decorations: {
-      borderStyle: 'solid'
-    },
-    scales: {
-      boxHeight: {
-        's:sm:1': 34,
-        's:md:1': 38
-      },
-      borderWidth: {
-        's:sm:1': 0,
-        's:md:1': 0
-      },
-      borderRadius: standardControlRadius,
-      paddingTop: {
-        's:sm:1': 8,
-        's:md:1': 8
-      },
-      paddingRight: {
-        's:sm:1': 0,
-        's:md:1': 0
-      },
-      paddingBottom: {
-        's:sm:1': 8,
-        's:md:1': 8
-      },
-      paddingLeft: {
-        's:sm:1': 0,
-        's:md:1': 0
-      }
-    },
-    palettes: palettes.control
-  };
-  const standardBorderlessControl: TextFieldControlElementStyle<Material3GoogleSegmentName> = {
-    decorations: {
-      borderStyle: 'solid'
-    },
-    scales: {
-      boxHeight: {
-        's:sm:1': 36,
-        's:md:1': 40
-      },
-      borderWidth: {
-        's:sm:1': 0,
-        's:md:1': 0
-      },
-      borderRadius: standardControlRadius,
-      paddingTop: {
-        's:sm:1': 8,
-        's:md:1': 8
-      },
-      paddingRight: {
-        's:sm:1': 10,
-        's:md:1': 12
-      },
-      paddingBottom: {
-        's:sm:1': 8,
-        's:md:1': 8
-      },
-      paddingLeft: {
-        's:sm:1': 10,
-        's:md:1': 12
-      }
-    },
-    palettes: palettes.controlBorderless
-  };
-  const floatingLabelTypography: TextFieldLabelElementStyle<Material3GoogleSegmentName> = {
-    decorations: {
-      textFont: 'body',
-      textWeight: 'normal'
-    },
-    scales: {
-      textSize: {
-        's:sm:1': 12,
-        's:md:1': 12
-      },
-      textHeight: {
-        's:sm:1': 14,
-        's:md:1': 14
-      }
-    },
-    palettes: palettes.label
-  };
-  const floatingNotchedLabel: TextFieldLabelElementStyle<Material3GoogleSegmentName> = {
-    ...floatingLabelTypography,
-    scales: {
-      ...floatingLabelTypography.scales,
-      marginTop: {
-        's:sm:1': -7,
-        's:md:1': -7
-      },
-      marginLeft: {
-        's:sm:1': 4,
-        's:md:1': 4
-      },
-      paddingRight: {
-        's:sm:1': 4,
-        's:md:1': 4
-      },
-      paddingLeft: {
-        's:sm:1': 4,
-        's:md:1': 4
-      }
-    }
-  };
-  const floatingInsideLabel: TextFieldLabelElementStyle<Material3GoogleSegmentName> = {
-    ...floatingLabelTypography,
-    scales: {
-      ...floatingLabelTypography.scales,
-      marginTop: {
-        's:sm:1': 6,
-        's:md:1': 6
-      },
-      marginLeft: {
-        's:sm:1': 12,
-        's:md:1': 16
-      }
-    }
-  };
-  const floatingControl: TextFieldControlElementStyle<Material3GoogleSegmentName> = {
-    decorations: {
-      borderStyle: 'solid'
-    },
-    scales: {
-      boxHeight: {
-        's:sm:1': 48,
-        's:md:1': 56
-      },
-      borderWidth: {
-        's:sm:1': 1,
-        's:md:1': 1
-      },
-      borderRadius: floatingControlRadius,
-      paddingTop: {
-        's:sm:1': 8,
-        's:md:1': 8
-      },
-      paddingRight: {
-        's:sm:1': 12,
-        's:md:1': 16
-      },
-      paddingBottom: {
-        's:sm:1': 8,
-        's:md:1': 8
-      },
-      paddingLeft: {
-        's:sm:1': 12,
-        's:md:1': 16
-      }
-    },
-    palettes: palettes.controlFloatingNotched
-  };
-  const floatingInsideControl: TextFieldControlElementStyle<Material3GoogleSegmentName> = {
-    decorations: {
-      borderStyle: 'solid'
-    },
-    scales: {
-      boxHeight: {
-        's:sm:1': 52,
-        's:md:1': 60
-      },
-      borderWidth: {
-        's:sm:1': 1,
-        's:md:1': 1
-      },
-      borderRadius: floatingInsideControlRadius,
-      paddingTop: {
-        's:sm:1': 10,
-        's:md:1': 10
-      },
-      paddingRight: {
-        's:sm:1': 12,
-        's:md:1': 16
-      },
-      paddingBottom: {
-        's:sm:1': 6,
-        's:md:1': 8
-      },
-      paddingLeft: {
-        's:sm:1': 12,
-        's:md:1': 16
-      }
-    },
-    palettes: palettes.control
-  };
-  const floatingNotchedInput: TextFieldInputElementStyle<Material3GoogleSegmentName> = {
-    decorations: {
-      textFont: 'body',
-      textWeight: 'normal'
-    },
-    scales: {
-      textSize: {
-        's:sm:1': 14,
-        's:md:1': 16
-      },
-      textHeight: {
-        's:sm:1': 20,
-        's:md:1': 24
-      }
-    },
-    palettes: palettes.input
-  };
-  const floatingInsideInput: TextFieldInputElementStyle<Material3GoogleSegmentName> = {
-    ...floatingNotchedInput,
-    scales: {
-      ...floatingNotchedInput.scales,
-      paddingTop: {
-        's:sm:1': 16,
-        's:md:1': 16
-      }
-    }
-  };
 
   return {
     options: {
@@ -985,11 +625,119 @@ export function createMaterial3GoogleTextFieldSchema(
               }
             },
             elements: {
-              e1: rootElement,
-              e2: standardLabel,
-              e3: standardOutlineControl,
-              e4: standardInput,
-              e5: messageElement
+              e1: {
+                scales: {
+                  boxWidth: {
+                    's:sm:1': 280,
+                    's:md:1': 320
+                  }
+                }
+              },
+              e2: {
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'medium'
+                },
+                scales: {
+                  textSize: {
+                    's:sm:1': 12,
+                    's:md:1': 14
+                  },
+                  textHeight: {
+                    's:sm:1': 16,
+                    's:md:1': 20
+                  },
+                  marginBottom: {
+                    's:sm:1': 4,
+                    's:md:1': 6
+                  }
+                },
+                palettes: palettes.label
+              },
+              e3: {
+                decorations: {
+                  borderStyle: 'solid'
+                },
+                scales: {
+                  boxHeight: {
+                    's:sm:1': 36,
+                    's:md:1': 40
+                  },
+                  borderWidth: {
+                    's:sm:1': 1,
+                    's:md:1': 1
+                  },
+                  borderRadius: {
+                    rounded: {
+                      's:sm:1': 6,
+                      's:md:1': 8
+                    },
+                    pill: {
+                      's:sm:1': 18,
+                      's:md:1': 20
+                    },
+                    square: {
+                      's:sm:1': 0,
+                      's:md:1': 0
+                    }
+                  },
+                  paddingTop: {
+                    's:sm:1': 8,
+                    's:md:1': 8
+                  },
+                  paddingRight: {
+                    's:sm:1': 10,
+                    's:md:1': 12
+                  },
+                  paddingBottom: {
+                    's:sm:1': 8,
+                    's:md:1': 8
+                  },
+                  paddingLeft: {
+                    's:sm:1': 10,
+                    's:md:1': 12
+                  }
+                },
+                palettes: palettes.control
+              },
+              e4: {
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'normal'
+                },
+                scales: {
+                  textSize: {
+                    's:sm:1': 14,
+                    's:md:1': 16
+                  },
+                  textHeight: {
+                    's:sm:1': 20,
+                    's:md:1': 24
+                  }
+                },
+                palettes: palettes.input
+              },
+              e5: {
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'normal'
+                },
+                scales: {
+                  textSize: {
+                    's:sm:1': 11,
+                    's:md:1': 12
+                  },
+                  textHeight: {
+                    's:sm:1': 16,
+                    's:md:1': 16
+                  },
+                  marginTop: {
+                    's:sm:1': 4,
+                    's:md:1': 6
+                  }
+                },
+                palettes: palettes.message
+              }
             }
           },
           underline: {
@@ -1001,12 +749,128 @@ export function createMaterial3GoogleTextFieldSchema(
               }
             },
             elements: {
-              e1: rootElement,
-              e2: standardLabel,
-              e3: standardUnderlineControl,
-              e4: standardInput,
-              e5: messageElement,
-              e6: underlineIndicator
+              e1: {
+                scales: {
+                  boxWidth: {
+                    's:sm:1': 280,
+                    's:md:1': 320
+                  }
+                }
+              },
+              e2: {
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'medium'
+                },
+                scales: {
+                  textSize: {
+                    's:sm:1': 12,
+                    's:md:1': 14
+                  },
+                  textHeight: {
+                    's:sm:1': 16,
+                    's:md:1': 20
+                  },
+                  marginBottom: {
+                    's:sm:1': 4,
+                    's:md:1': 6
+                  }
+                },
+                palettes: palettes.label
+              },
+              e3: {
+                decorations: {
+                  borderStyle: 'solid'
+                },
+                scales: {
+                  boxHeight: {
+                    's:sm:1': 34,
+                    's:md:1': 38
+                  },
+                  borderWidth: {
+                    's:sm:1': 0,
+                    's:md:1': 0
+                  },
+                  borderRadius: {
+                    rounded: {
+                      's:sm:1': 6,
+                      's:md:1': 8
+                    },
+                    pill: {
+                      's:sm:1': 18,
+                      's:md:1': 20
+                    },
+                    square: {
+                      's:sm:1': 0,
+                      's:md:1': 0
+                    }
+                  },
+                  paddingTop: {
+                    's:sm:1': 8,
+                    's:md:1': 8
+                  },
+                  paddingRight: {
+                    's:sm:1': 0,
+                    's:md:1': 0
+                  },
+                  paddingBottom: {
+                    's:sm:1': 8,
+                    's:md:1': 8
+                  },
+                  paddingLeft: {
+                    's:sm:1': 0,
+                    's:md:1': 0
+                  }
+                },
+                palettes: palettes.control
+              },
+              e4: {
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'normal'
+                },
+                scales: {
+                  textSize: {
+                    's:sm:1': 14,
+                    's:md:1': 16
+                  },
+                  textHeight: {
+                    's:sm:1': 20,
+                    's:md:1': 24
+                  }
+                },
+                palettes: palettes.input
+              },
+              e5: {
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'normal'
+                },
+                scales: {
+                  textSize: {
+                    's:sm:1': 11,
+                    's:md:1': 12
+                  },
+                  textHeight: {
+                    's:sm:1': 16,
+                    's:md:1': 16
+                  },
+                  marginTop: {
+                    's:sm:1': 4,
+                    's:md:1': 6
+                  }
+                },
+                palettes: palettes.message
+              },
+              e6: {
+                scales: {
+                  boxHeight: {
+                    's:sm:1': 1,
+                    's:md:1': 1
+                  }
+                },
+                palettes: palettes.indicatorUnderline
+              }
             }
           },
           borderless: {
@@ -1018,11 +882,119 @@ export function createMaterial3GoogleTextFieldSchema(
               }
             },
             elements: {
-              e1: rootElement,
-              e2: standardLabel,
-              e3: standardBorderlessControl,
-              e4: standardInput,
-              e5: messageElement
+              e1: {
+                scales: {
+                  boxWidth: {
+                    's:sm:1': 280,
+                    's:md:1': 320
+                  }
+                }
+              },
+              e2: {
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'medium'
+                },
+                scales: {
+                  textSize: {
+                    's:sm:1': 12,
+                    's:md:1': 14
+                  },
+                  textHeight: {
+                    's:sm:1': 16,
+                    's:md:1': 20
+                  },
+                  marginBottom: {
+                    's:sm:1': 4,
+                    's:md:1': 6
+                  }
+                },
+                palettes: palettes.label
+              },
+              e3: {
+                decorations: {
+                  borderStyle: 'solid'
+                },
+                scales: {
+                  boxHeight: {
+                    's:sm:1': 36,
+                    's:md:1': 40
+                  },
+                  borderWidth: {
+                    's:sm:1': 0,
+                    's:md:1': 0
+                  },
+                  borderRadius: {
+                    rounded: {
+                      's:sm:1': 6,
+                      's:md:1': 8
+                    },
+                    pill: {
+                      's:sm:1': 18,
+                      's:md:1': 20
+                    },
+                    square: {
+                      's:sm:1': 0,
+                      's:md:1': 0
+                    }
+                  },
+                  paddingTop: {
+                    's:sm:1': 8,
+                    's:md:1': 8
+                  },
+                  paddingRight: {
+                    's:sm:1': 10,
+                    's:md:1': 12
+                  },
+                  paddingBottom: {
+                    's:sm:1': 8,
+                    's:md:1': 8
+                  },
+                  paddingLeft: {
+                    's:sm:1': 10,
+                    's:md:1': 12
+                  }
+                },
+                palettes: palettes.controlBorderless
+              },
+              e4: {
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'normal'
+                },
+                scales: {
+                  textSize: {
+                    's:sm:1': 14,
+                    's:md:1': 16
+                  },
+                  textHeight: {
+                    's:sm:1': 20,
+                    's:md:1': 24
+                  }
+                },
+                palettes: palettes.input
+              },
+              e5: {
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'normal'
+                },
+                scales: {
+                  textSize: {
+                    's:sm:1': 11,
+                    's:md:1': 12
+                  },
+                  textHeight: {
+                    's:sm:1': 16,
+                    's:md:1': 16
+                  },
+                  marginTop: {
+                    's:sm:1': 4,
+                    's:md:1': 6
+                  }
+                },
+                palettes: palettes.message
+              }
             }
           }
         }
@@ -1041,11 +1013,131 @@ export function createMaterial3GoogleTextFieldSchema(
               }
             },
             elements: {
-              e1: rootElement,
-              e2: floatingNotchedLabel,
-              e3: floatingControl,
-              e4: floatingNotchedInput,
-              e5: messageElement
+              e1: {
+                scales: {
+                  boxWidth: {
+                    's:sm:1': 280,
+                    's:md:1': 320
+                  }
+                }
+              },
+              e2: {
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'normal'
+                },
+                scales: {
+                  textSize: {
+                    's:sm:1': 12,
+                    's:md:1': 12
+                  },
+                  textHeight: {
+                    's:sm:1': 14,
+                    's:md:1': 14
+                  },
+                  marginTop: {
+                    's:sm:1': -7,
+                    's:md:1': -7
+                  },
+                  marginLeft: {
+                    's:sm:1': 4,
+                    's:md:1': 4
+                  },
+                  paddingRight: {
+                    's:sm:1': 4,
+                    's:md:1': 4
+                  },
+                  paddingLeft: {
+                    's:sm:1': 4,
+                    's:md:1': 4
+                  }
+                },
+                palettes: palettes.label
+              },
+              e3: {
+                decorations: {
+                  borderStyle: 'solid'
+                },
+                scales: {
+                  boxHeight: {
+                    's:sm:1': 48,
+                    's:md:1': 56
+                  },
+                  borderWidth: {
+                    's:sm:1': 1,
+                    's:md:1': 1
+                  },
+                  borderRadius: {
+                    rounded: {
+                      's:sm:1': 6,
+                      's:md:1': 8
+                    },
+                    pill: {
+                      's:sm:1': 24,
+                      's:md:1': 28
+                    },
+                    square: {
+                      's:sm:1': 0,
+                      's:md:1': 0
+                    }
+                  },
+                  paddingTop: {
+                    's:sm:1': 8,
+                    's:md:1': 8
+                  },
+                  paddingRight: {
+                    's:sm:1': 12,
+                    's:md:1': 16
+                  },
+                  paddingBottom: {
+                    's:sm:1': 8,
+                    's:md:1': 8
+                  },
+                  paddingLeft: {
+                    's:sm:1': 12,
+                    's:md:1': 16
+                  }
+                },
+                palettes: palettes.controlFloatingNotched
+              },
+              e4: {
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'normal'
+                },
+                scales: {
+                  textSize: {
+                    's:sm:1': 14,
+                    's:md:1': 16
+                  },
+                  textHeight: {
+                    's:sm:1': 20,
+                    's:md:1': 24
+                  }
+                },
+                palettes: palettes.input
+              },
+              e5: {
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'normal'
+                },
+                scales: {
+                  textSize: {
+                    's:sm:1': 11,
+                    's:md:1': 12
+                  },
+                  textHeight: {
+                    's:sm:1': 16,
+                    's:md:1': 16
+                  },
+                  marginTop: {
+                    's:sm:1': 4,
+                    's:md:1': 6
+                  }
+                },
+                palettes: palettes.message
+              }
             }
           },
           inside: {
@@ -1057,11 +1149,121 @@ export function createMaterial3GoogleTextFieldSchema(
               }
             },
             elements: {
-              e1: rootElement,
-              e2: floatingInsideLabel,
-              e3: floatingInsideControl,
-              e4: floatingInsideInput,
-              e5: messageElement
+              e1: {
+                scales: {
+                  boxWidth: {
+                    's:sm:1': 280,
+                    's:md:1': 320
+                  }
+                }
+              },
+              e2: {
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'normal'
+                },
+                scales: {
+                  textSize: {
+                    's:sm:1': 12,
+                    's:md:1': 12
+                  },
+                  textHeight: {
+                    's:sm:1': 14,
+                    's:md:1': 14
+                  },
+                  marginTop: 6,
+                  marginLeft: 22
+                },
+                palettes: palettes.label
+              },
+              e3: {
+                decorations: {
+                  borderStyle: 'solid'
+                },
+                scales: {
+                  boxHeight: {
+                    's:sm:1': 52,
+                    's:md:1': 60
+                  },
+                  borderWidth: {
+                    's:sm:1': 1,
+                    's:md:1': 1
+                  },
+                  borderRadius: {
+                    rounded: {
+                      's:sm:1': 6,
+                      's:md:1': 8
+                    },
+                    pill: {
+                      's:sm:1': 26,
+                      's:md:1': 30
+                    },
+                    square: {
+                      's:sm:1': 0,
+                      's:md:1': 0
+                    }
+                  },
+                  paddingTop: {
+                    's:sm:1': 10,
+                    's:md:1': 10
+                  },
+                  paddingRight: {
+                    's:sm:1': 12,
+                    's:md:1': 16
+                  },
+                  paddingBottom: {
+                    's:sm:1': 6,
+                    's:md:1': 8
+                  },
+                  paddingLeft: {
+                    's:sm:1': 12,
+                    's:md:1': 16
+                  }
+                },
+                palettes: palettes.control
+              },
+              e4: {
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'normal'
+                },
+                scales: {
+                  textSize: {
+                    's:sm:1': 14,
+                    's:md:1': 16
+                  },
+                  textHeight: {
+                    's:sm:1': 20,
+                    's:md:1': 24
+                  },
+                  paddingTop: {
+                    's:sm:1': 16,
+                    's:md:1': 16
+                  }
+                },
+                palettes: palettes.input
+              },
+              e5: {
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'normal'
+                },
+                scales: {
+                  textSize: {
+                    's:sm:1': 11,
+                    's:md:1': 12
+                  },
+                  textHeight: {
+                    's:sm:1': 16,
+                    's:md:1': 16
+                  },
+                  marginTop: {
+                    's:sm:1': 4,
+                    's:md:1': 6
+                  }
+                },
+                palettes: palettes.message
+              }
             }
           }
         }
