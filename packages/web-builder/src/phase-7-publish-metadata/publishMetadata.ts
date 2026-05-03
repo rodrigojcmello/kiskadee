@@ -535,5 +535,5 @@ export async function publishMetadata(params: {
   }
   await writeFile(resolve(buildDir, 'schema.json'), JSON.stringify(schemaArtifact, null, 2), 'utf8');
 
-  console.log('[web-builder] Phase 7: metadata published to', buildDir);
+  // console.log('[web-builder] Phase 7: metadata published to', buildDir);
 }

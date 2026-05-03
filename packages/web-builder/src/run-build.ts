@@ -79,16 +79,21 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
       );
     }
 
+    // One concise log per preset, e.g. "[web-builder] Material Design 3.0.0 by Google"
+    const presetVersion = Array.isArray(schema.version) ? schema.version.join('.') : '';
+    const presetAuthor = schema.author ? ` by ${schema.author}` : '';
+    console.log(`[web-builder] ${schema.name} ${presetVersion}${presetAuthor}`);
+
     // Phase 1 - Convert Element Schema to Style Keys
     const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
-    console.log('phase 1', { name: schema.name, styleKeys: JSON.stringify(styleKeys, null, 2) });
+    // console.log('phase 1', { name: schema.name, styleKeys: JSON.stringify(styleKeys, null, 2) });
 
     // Phase 2 - Map style key usage
     const styleKeyUsage: StyleKeyUsageMap = mapStyleKeyUsage(styleKeys, {
       webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
       collapseDirectIntoMirrored: ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED
     });
-    console.log('phase  2', { name: schema.name, styleKeyUsage });
+    // console.log('phase  2', { name: schema.name, styleKeyUsage });
 
     // Phase 3 - Shorten class names
     // Optionally prefixes classes using the schema's configured prefix
@@ -103,7 +108,7 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
     const shortenCssClassNameMap: ShortenCssClassNames = shortenCssClassNames(styleKeyUsage, {
       prefix: classNamePrefix ? `${classNamePrefix}-` : undefined
     });
-    console.log('phase 3', { name: schema.name, shortenCssClassNameMap });
+    // console.log('phase 3', { name: schema.name, shortenCssClassNameMap });
 
     // Phase 4 - Generate CSS split
     const cssGenerated = await generateCssSplit(styleKeys, shortenCssClassNameMap, {
@@ -112,7 +117,7 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
       webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
       collapseDirectIntoMirrored: ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED
     });
-    console.log('phase 4', { name: schema.name, cssGenerated });
+    // console.log('phase 4', { name: schema.name, cssGenerated });
 
     // Phase 5 - Generate class names map split
     const classNamesMapSplit: ComponentClassNameMapSplit = generateClassNamesMapSplit(
@@ -124,7 +129,7 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
         collapseDirectIntoMirrored: ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED
       }
     );
-    console.log('phrase 5', { name: schema.name, classNamesMapSplit });
+    // console.log('phrase 5', { name: schema.name, classNamesMapSplit });
 
     // Compute out dir
     const major = schema.version[0];

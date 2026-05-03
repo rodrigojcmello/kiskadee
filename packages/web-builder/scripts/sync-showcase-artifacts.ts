@@ -60,14 +60,14 @@ async function main(): Promise<void> {
     return;
   }
 
-  console.log('[sync-showcase-artifacts] Source:', srcDir);
-  console.log('[sync-showcase-artifacts] Target:', dstDir);
+  // console.log('[sync-showcase-artifacts] Source:', srcDir);
+  // console.log('[sync-showcase-artifacts] Target:', dstDir);
 
   await mkdir(dstDir, { recursive: true });
   await removeDirContents(dstDir);
   await copyRecursive(srcDir, dstDir);
 
-  console.log('[sync-showcase-artifacts] Artifacts synchronized successfully.');
+  // console.log('[sync-showcase-artifacts] Artifacts synchronized successfully.');
 }
 
 main().catch((error) => {

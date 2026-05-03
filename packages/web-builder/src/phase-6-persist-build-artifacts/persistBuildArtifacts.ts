@@ -120,17 +120,17 @@ export async function persistBuildArtifacts(
   if (typeof cssGenerated === 'string') {
     const outCssFile = resolve(buildDir, 'core.kiskadee.css');
     await writeFile(outCssFile, await minifyCss(cssGenerated), 'utf8');
-    console.log(`[web-builder] Core CSS written to: ${outCssFile}`);
+    // console.log(`[web-builder] Core CSS written to: ${outCssFile}`);
   } else {
     const outCssFile = resolve(buildDir, 'core.kiskadee.css');
     await writeFile(outCssFile, await minifyCss(cssGenerated.coreCss), 'utf8');
-    console.log(`[web-builder] Core CSS written to: ${outCssFile}`);
+    // console.log(`[web-builder] Core CSS written to: ${outCssFile}`);
 
     // Optionally write effects CSS as a separate file to be imported last
     if (cssGenerated.effectsCss && cssGenerated.effectsCss.trim() !== '') {
       const effectsFile = resolve(buildDir, 'effects.kiskadee.css');
       await writeFile(effectsFile, await minifyCss(cssGenerated.effectsCss), 'utf8');
-      console.log(`[web-builder] Effects CSS written to: ${effectsFile}`);
+      // console.log(`[web-builder] Effects CSS written to: ${effectsFile}`);
     }
 
     // Write palette CSS files as <segment>.<theme>.kiskadee.css
@@ -138,7 +138,7 @@ export async function persistBuildArtifacts(
       const paletteCss = cssGenerated.palettes[paletteName];
       const paletteFile = resolve(buildDir, `${paletteName}.kiskadee.css`);
       await writeFile(paletteFile, await minifyCss(paletteCss), 'utf8');
-      console.log(`[web-builder] Palette CSS written to: ${paletteFile}`);
+      // console.log(`[web-builder] Palette CSS written to: ${paletteFile}`);
     }
   }
 
@@ -153,12 +153,12 @@ export async function persistBuildArtifacts(
     };
     await writeFile(coreOut, JSON.stringify(corePayload, null, 2), 'utf8');
     await writeFile(schemaOut, JSON.stringify(coreClassMapSchema, null, 2), 'utf8');
-    console.log(`[web-builder] Class names core map written to: ${coreOut}`);
+    // console.log(`[web-builder] Class names core map written to: ${coreOut}`);
 
     for (const paletteName in maybeSplit.palettes) {
       const pOut = resolve(buildDir, `${paletteName}.kiskadee.json`);
       await writeFile(pOut, JSON.stringify(maybeSplit.palettes[paletteName], null, 2), 'utf8');
-      console.log(`[web-builder] Class names palette map written to: ${pOut}`);
+      // console.log(`[web-builder] Class names palette map written to: ${pOut}`);
     }
   } else {
     const classNamesOutFileJson = resolve(buildDir, 'core.kiskadee.json');
@@ -170,6 +170,6 @@ export async function persistBuildArtifacts(
     );
     await writeFile(classNamesOutFileJson, classNamesJson, 'utf8');
     await writeFile(schemaOut, JSON.stringify(coreClassMapSchema, null, 2), 'utf8');
-    console.log(`[web-builder] Class names map written to: ${classNamesOutFileJson}`);
+    // console.log(`[web-builder] Class names map written to: ${classNamesOutFileJson}`);
   }
 }

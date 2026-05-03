@@ -33,14 +33,14 @@ export function extractCssClassName(cssRule: string): string | null {
 }
 
 // Examples to test:
-console.log(
-  extractCssClassName(
-    '.shadow--hover__[4,4,4,[0,0,0,0.5]]:hover { box-shadow: 4px 4px 4px #00000080; }'
-  )
-);
+// console.log(
+//   extractCssClassName(
+//     '.shadow--hover__[4,4,4,[0,0,0,0.5]]:hover { box-shadow: 4px 4px 4px #00000080; }'
+//   )
+// );
 // Output: shadow--hover__[4,4,4,[0,0,0,0.5]]
 
-console.log(
-  extractCssClassName('@media (max-width: 600px) { .my-class__test:hover { color: red; } }')
-);
+// console.log(
+//   extractCssClassName('@media (max-width: 600px) { .my-class__test:hover { color: red; } }')
+// );
 // Output: my-class__test

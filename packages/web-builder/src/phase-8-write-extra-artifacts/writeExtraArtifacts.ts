@@ -331,7 +331,7 @@ export async function writeExtraArtifacts(params: {
     }
 
     await writeFile(globalFilePath, JSON.stringify(globalPayload, null, 2), 'utf8');
-    console.log(`[web-builder] Global artifact written to: ${globalFilePath}`);
+    // console.log(`[web-builder] Global artifact written to: ${globalFilePath}`);
   }
 
   // Global design tokens consumed directly by CSS (no runtime setProperty/removeProperty).
@@ -348,7 +348,7 @@ export async function writeExtraArtifacts(params: {
     await mkdir(buildDir, { recursive: true });
     const globalTokensFilePath = resolve(buildDir, 'tokens.kiskadee.css');
     await writeFile(globalTokensFilePath, await minifyCss(globalTokensCss), 'utf8');
-    console.log(`[web-builder] Global tokens CSS written to: ${globalTokensFilePath}`);
+    // console.log(`[web-builder] Global tokens CSS written to: ${globalTokensFilePath}`);
   }
 
   if (!schema.themeTokens || !schema.themeTokens.palettes) {
@@ -429,7 +429,7 @@ export async function writeExtraArtifacts(params: {
         const tokensFileName = `tokens.${segment}.${theme}.kiskadee.css`;
         const tokensFilePath = resolve(buildDir, tokensFileName);
         await writeFile(tokensFilePath, await minifyCss(tokensCss), 'utf8');
-        console.log(`[web-builder] Theme tokens CSS written to: ${tokensFilePath}`);
+        // console.log(`[web-builder] Theme tokens CSS written to: ${tokensFilePath}`);
       }
 
       if (!background) {
@@ -442,7 +442,7 @@ export async function writeExtraArtifacts(params: {
       const extraFileName = `extra.${segment}.${theme}.kiskadee.json`;
       const extraFilePath = resolve(buildDir, extraFileName);
       await writeFile(extraFilePath, JSON.stringify(extraData, null, 2), 'utf8');
-      console.log(`[web-builder] Extra artifact written to: ${extraFilePath}`);
+      // console.log(`[web-builder] Extra artifact written to: ${extraFilePath}`);
     }
   }
 }

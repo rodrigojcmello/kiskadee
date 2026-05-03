@@ -339,7 +339,7 @@ async function writeFileIfChanged(targetPath: string, content: string): Promise<
 
   await mkdir(path.dirname(targetPath), { recursive: true });
   await writeFile(targetPath, content, 'utf8');
-  console.log('[generate-showcase-registry] Wrote', path.relative(repoRoot, targetPath));
+  // console.log('[generate-showcase-registry] Wrote', path.relative(repoRoot, targetPath));
 }
 
 async function main(): Promise<void> {
