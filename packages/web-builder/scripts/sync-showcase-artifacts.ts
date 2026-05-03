@@ -52,25 +52,16 @@ async function copyRecursive(src: string, dst: string): Promise<void> {
   }
 }
 
-async function main(): Promise<void> {
+export async function syncShowcaseArtifacts(): Promise<void> {
   if (!(await existsDir(srcDir))) {
-    console.error('[sync-showcase-artifacts] Source directory not found:', srcDir);
-    console.error('Make sure you have run the @kiskadee/web-builder build beforehand.');
-    process.exitCode = 1;
-    return;
+    const err = new Error(
+      `[sync-showcase-artifacts] Source directory not found: ${srcDir}. ` +
+        'Make sure you have run the @kiskadee/web-builder build beforehand.'
+    );
+    throw err;
   }
-
-  // console.log('[sync-showcase-artifacts] Source:', srcDir);
-  // console.log('[sync-showcase-artifacts] Target:', dstDir);
 
   await mkdir(dstDir, { recursive: true });
   await removeDirContents(dstDir);
   await copyRecursive(srcDir, dstDir);
-
-  // console.log('[sync-showcase-artifacts] Artifacts synchronized successfully.');
 }
-
-main().catch((error) => {
-  console.error('[sync-showcase-artifacts] Unexpected error:', error);
-  process.exitCode = 1;
-});

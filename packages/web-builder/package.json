@@ -9,10 +9,11 @@
     "./types": "./types.ts"
   },
   "scripts": {
-    "build": "node --experimental-strip-types --no-warnings ./src/run-build.ts",
-    "sync": "node --experimental-strip-types --no-warnings ./scripts/sync-showcase-artifacts.ts",
-    "generate": "node --experimental-strip-types --no-warnings ./scripts/generate-showcase-registry.ts",
-    "build-sync-generate": "pnpm run build && pnpm run sync && pnpm run generate",
+    "compile": "node --experimental-strip-types --no-warnings ./scripts/build.ts",
+    "build": "node ./scripts/run-build.entry.bundled.js",
+    "sync": "node ./scripts/sync-showcase-artifacts.entry.bundled.js",
+    "generate": "node ./scripts/generate-showcase-registry.entry.bundled.js",
+    "build-sync-generate": "node ./scripts/build-sync-generate.bundled.js",
     "vitest-ui": "vitest --ui"
   },
   "keywords": [],

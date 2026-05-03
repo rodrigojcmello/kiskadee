@@ -65,7 +65,7 @@ const __dirname = dirname(__filename);
 // build     -> packages/web-builder/build
 const baseBuildDir = resolve(__dirname, '..', 'build');
 
-(async () => {
+export async function runBuild(): Promise<void> {
   const presetsToBuild = await loadPresetsToBuild(__dirname);
   for (const t of presetsToBuild) {
     const { schema, schemaPath } = t;
@@ -152,4 +152,4 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
       outDirSlug
     });
   }
-})();
+}

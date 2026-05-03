@@ -342,7 +342,7 @@ async function writeFileIfChanged(targetPath: string, content: string): Promise<
   // console.log('[generate-showcase-registry] Wrote', path.relative(repoRoot, targetPath));
 }
 
-async function main(): Promise<void> {
+export async function generateShowcaseRegistry(): Promise<void> {
   const manifests = await discoverManifests();
   if (!manifests.length) {
     console.warn('[generate-showcase-registry] No manifests found under', webBuilderBuildDir);
@@ -364,8 +364,3 @@ async function main(): Promise<void> {
   await writeFileIfChanged(cssTarget, cssTs);
   await writeFileIfChanged(colorsTarget, colorsTs);
 }
-
-main().catch((error) => {
-  console.error('[generate-showcase-registry] Unexpected error:', error);
-  process.exitCode = 1;
-});

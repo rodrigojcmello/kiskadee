@@ -5,6 +5,8 @@
     "declaration": true,
     "emitDeclarationOnly": false,
     "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "strict": true,
     "esModuleInterop": true,
     "isolatedModules": true,
