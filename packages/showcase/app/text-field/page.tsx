@@ -1,6 +1,6 @@
 'use client';
 
-import type { RadiusMode } from '@kiskadee/core';
+import type { RadiusMode, TextFieldLabelOffsetStrategy } from '@kiskadee/core';
 import {
   TextFieldFloatingInside,
   TextFieldFloatingNotched,
@@ -37,6 +37,15 @@ const radiusOptions: Array<{ value: RadiusMode; label: string }> = [
   { value: 'pill', label: 'Pill' }
 ];
 
+type LabelOffsetSelection = 'auto' | TextFieldLabelOffsetStrategy;
+
+const labelOffsetOptions: Array<{ value: LabelOffsetSelection; label: string }> = [
+  { value: 'auto', label: 'Auto' },
+  { value: 'schema', label: 'Schema' },
+  { value: 'radius', label: 'Radius' },
+  { value: 'input-start', label: 'Input start' }
+];
+
 export default function TextFieldPage() {
   const [standardOutlineName, setStandardOutlineName] = useState('');
   const [standardUnderlineName, setStandardUnderlineName] = useState('');
@@ -44,13 +53,15 @@ export default function TextFieldPage() {
   const [floatingNotchedProject, setFloatingNotchedProject] = useState('');
   const [floatingInsideProject, setFloatingInsideProject] = useState('');
   const [borderRadius, setBorderRadius] = useState<RadiusMode>('rounded');
+  const [labelOffsetSelection, setLabelOffsetSelection] = useState<LabelOffsetSelection>('auto');
+  const labelOffset = labelOffsetSelection === 'auto' ? undefined : labelOffsetSelection;
 
   return (
     <section className="k-root">
       <h2>TextField</h2>
       <p style={{ marginTop: 0, maxWidth: 760 }}>
-        TextField now exposes two variants with named modes. Standard covers outline, underline,
-        and borderless shells. Floating covers notched and inside label behavior.
+        TextField now exposes two variants with named modes. Standard covers outline, underline, and
+        borderless shells. Floating covers notched and inside label behavior.
       </p>
 
       <div style={controlsStyle}>
@@ -60,6 +71,13 @@ export default function TextFieldPage() {
           options={radiusOptions}
           value={borderRadius}
           onValueChange={(value) => setBorderRadius(value as RadiusMode)}
+        />
+        <Select
+          label="Label Offset"
+          width={220}
+          options={labelOffsetOptions}
+          value={labelOffsetSelection}
+          onValueChange={(value) => setLabelOffsetSelection(value as LabelOffsetSelection)}
         />
       </div>
 
@@ -74,6 +92,7 @@ export default function TextFieldPage() {
             placeholder="Ada Lovelace"
             message="Classic outlined field."
             radius={borderRadius}
+            labelOffset={labelOffset}
           />
           <TextFieldStandardOutline
             id="standard-outline-email"
@@ -82,6 +101,7 @@ export default function TextFieldPage() {
             validationStatus="error"
             message="Enter a valid email address."
             radius={borderRadius}
+            labelOffset={labelOffset}
           />
           <TextFieldStandardOutline
             id="standard-outline-disabled"
@@ -89,6 +109,7 @@ export default function TextFieldPage() {
             defaultValue="Locked value"
             message="Disabled fields keep their message available."
             radius={borderRadius}
+            labelOffset={labelOffset}
             disabled
           />
         </div>
@@ -103,6 +124,7 @@ export default function TextFieldPage() {
             placeholder="Odette"
             message="Minimal shell with an underline."
             radius={borderRadius}
+            labelOffset={labelOffset}
           />
           <TextFieldStandardUnderline
             id="standard-underline-tax-id"
@@ -111,6 +133,7 @@ export default function TextFieldPage() {
             validationStatus="warning"
             message="This value looks short for the selected country."
             radius={borderRadius}
+            labelOffset={labelOffset}
           />
           <TextFieldStandardUnderline
             id="standard-underline-readonly"
@@ -118,6 +141,7 @@ export default function TextFieldPage() {
             defaultValue="Generated automatically"
             message="Read-only fields can still be focused and copied."
             radius={borderRadius}
+            labelOffset={labelOffset}
             readOnly
           />
         </div>
@@ -132,6 +156,7 @@ export default function TextFieldPage() {
             placeholder="Find a record"
             message="Filled shell without a visible border."
             radius={borderRadius}
+            labelOffset={labelOffset}
           />
           <TextFieldStandardBorderless
             id="standard-borderless-email"
@@ -140,6 +165,7 @@ export default function TextFieldPage() {
             validationStatus="error"
             message="Enter a valid email address."
             radius={borderRadius}
+            labelOffset={labelOffset}
           />
           <TextFieldStandardBorderless
             id="standard-borderless-budget"
@@ -148,6 +174,7 @@ export default function TextFieldPage() {
             validationStatus="warning"
             message="Budget may be lower than the project minimum."
             radius={borderRadius}
+            labelOffset={labelOffset}
           />
         </div>
 
@@ -160,6 +187,7 @@ export default function TextFieldPage() {
             onValueChange={setFloatingNotchedProject}
             message="Label cuts through the outline when active."
             radius={borderRadius}
+            labelOffset={labelOffset}
           />
           <TextFieldFloatingNotched
             id="floating-notched-email"
@@ -168,6 +196,7 @@ export default function TextFieldPage() {
             validationStatus="error"
             message="Enter a valid email address."
             radius={borderRadius}
+            labelOffset={labelOffset}
           />
           <TextFieldFloatingNotched
             id="floating-notched-readonly"
@@ -175,6 +204,7 @@ export default function TextFieldPage() {
             defaultValue="Generated automatically"
             message="Read-only fields can still be focused and copied."
             radius={borderRadius}
+            labelOffset={labelOffset}
             readOnly
           />
         </div>
@@ -188,6 +218,7 @@ export default function TextFieldPage() {
             onValueChange={setFloatingInsideProject}
             message="Label stays inside the shell when active."
             radius={borderRadius}
+            labelOffset={labelOffset}
           />
           <TextFieldFloatingInside
             id="floating-inside-email"
@@ -196,6 +227,7 @@ export default function TextFieldPage() {
             validationStatus="error"
             message="Enter a valid email address."
             radius={borderRadius}
+            labelOffset={labelOffset}
           />
           <TextFieldFloatingInside
             id="floating-inside-budget"
@@ -204,6 +236,7 @@ export default function TextFieldPage() {
             validationStatus="warning"
             message="Budget may be lower than the project minimum."
             radius={borderRadius}
+            labelOffset={labelOffset}
           />
         </div>
       </div>
