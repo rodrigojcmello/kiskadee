@@ -1145,7 +1145,7 @@ export function createMaterial3GoogleTextFieldSchema(
               labelOffset: {
                 square: 'schema',
                 rounded: 'input-start',
-                pill: 'input-start'
+                pill: 'schema'
               }
             },
             elements: {
@@ -1171,7 +1171,7 @@ export function createMaterial3GoogleTextFieldSchema(
                     's:sm:1': 14,
                     's:md:1': 14
                   },
-                  marginTop: 6,
+                  marginTop: 8,
                   marginLeft: 22
                 },
                 palettes: palettes.label
@@ -1236,10 +1236,7 @@ export function createMaterial3GoogleTextFieldSchema(
                     's:sm:1': 20,
                     's:md:1': 24
                   },
-                  paddingTop: {
-                    's:sm:1': 16,
-                    's:md:1': 16
-                  }
+                  paddingTop: 10
                 },
                 palettes: palettes.input
               },
