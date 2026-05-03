@@ -19,11 +19,13 @@
     "dist"
   ],
   "scripts": {
-    "clean": "tsx ./scripts/clean-dist.ts",
-    "build:ts": "tsc -p tsconfig.build.json",
-    "build:styles": "tsx ./scripts/build-styles.ts",
-    "dev:styles": "tsx ./scripts/watch-styles.ts",
-    "build": "pnpm run clean && pnpm run build:ts && pnpm run build:styles"
+    "clean": "node --experimental-strip-types ./scripts/clean-dist.ts",
+    "build:js": "node --experimental-strip-types ./scripts/build-js.ts",
+    "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "build:styles": "node --experimental-strip-types ./scripts/build-styles.ts",
+    "dev:styles": "node --experimental-strip-types ./scripts/watch-styles.ts",
+    "build:dev": "node --experimental-strip-types ./scripts/build.ts --skip-types",
+    "build": "node --experimental-strip-types ./scripts/build.ts"
   },
   "author": "Rodrigo J C Mello",
   "license": "MIT",
@@ -45,8 +47,8 @@
     "@kiskadee/css-build": "workspace:^",
     "@types/node": "^24.7.2",
     "@types/react": "^19.2.7",
+    "esbuild": "^0.25.9",
     "sass": "^1.90.0",
-    "tsx": "^4.19.0",
     "typescript": "^5.9.2"
   }
 }
