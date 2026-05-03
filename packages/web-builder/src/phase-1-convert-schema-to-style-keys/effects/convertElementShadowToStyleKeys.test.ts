@@ -1,6 +1,6 @@
 import type { ShadowSchema } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
-import { convertElementShadowToStyleKeys } from './convertElementShadowToStyleKeys';
+import { convertElementShadowToStyleKeys } from './convertElementShadowToStyleKeys.ts';
 
 describe('convertElementShadowToStyleKeys', () => {
   describe('shadow handling', () => {

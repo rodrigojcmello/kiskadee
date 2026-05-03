@@ -1,17 +1,17 @@
-import blackV1Dark from './colors/black.v1.dark';
-import blackV1Light from './colors/black.v1.light';
-import blackV2Dark from './colors/black.v2.dark';
-import blackV2Light from './colors/black.v2.light';
-import blueV1Dark from './colors/blue.v1.dark';
-import blueV1Light from './colors/blue.v1.light';
-import pinkV1Dark from './colors/pink.v1.dark';
-import pinkV1Light from './colors/pink.v1.light';
-import purpleV1Dark from './colors/purple.v1.dark';
-import purpleV1Light from './colors/purple.v1.light';
-import redV1Dark from './colors/red.v1.dark';
-import redV1Light from './colors/red.v1.light';
-import yellowV1Dark from './colors/yellow.v1.dark';
-import yellowV1Light from './colors/yellow.v1.light';
+import blackV1Dark from './colors/black.v1.dark.ts';
+import blackV1Light from './colors/black.v1.light.ts';
+import blackV2Dark from './colors/black.v2.dark.ts';
+import blackV2Light from './colors/black.v2.light.ts';
+import blueV1Dark from './colors/blue.v1.dark.ts';
+import blueV1Light from './colors/blue.v1.light.ts';
+import pinkV1Dark from './colors/pink.v1.dark.ts';
+import pinkV1Light from './colors/pink.v1.light.ts';
+import purpleV1Dark from './colors/purple.v1.dark.ts';
+import purpleV1Light from './colors/purple.v1.light.ts';
+import redV1Dark from './colors/red.v1.dark.ts';
+import redV1Light from './colors/red.v1.light.ts';
+import yellowV1Dark from './colors/yellow.v1.dark.ts';
+import yellowV1Light from './colors/yellow.v1.light.ts';
 
 export const primitiveColors = {
   black: {

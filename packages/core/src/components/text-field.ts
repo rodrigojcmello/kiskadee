@@ -1,5 +1,5 @@
-import type { RadiusMode } from '../schema';
-import type { SegmentName } from '../types/colors/colors.types';
+import type { RadiusMode } from '../schema.ts';
+import type { SegmentName } from '../types/colors/colors.types.ts';
 import type {
   TextFieldControlElementStyleFromSchema,
   TextFieldIndicatorElementStyleFromSchema,
@@ -9,7 +9,7 @@ import type {
   TextFieldModeOptionsFromSchema,
   TextFieldOptionsFromSchema,
   TextFieldRootElementStyleFromSchema
-} from './text-field.zod';
+} from './text-field.zod.ts';
 
 /**
  * TextField elements canonical mapping:

@@ -11,8 +11,8 @@ import {
 import {
   DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
   type ResolvedElementStyleEmissionPolicy
-} from '../../style-emission/web-build-policy';
-import { convertHslaToHex } from '../utils/convertHslaToHex';
+} from '../../style-emission/web-build-policy.ts';
+import { convertHslaToHex } from '../utils/convertHslaToHex.ts';
 
 export type TransformColorKeyToCssOptions = {
   /**

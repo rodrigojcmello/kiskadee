@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import type { SegmentName } from '../types/colors/colors.types';
-import { formatZodIssue } from './tabs.zod.shared';
+import type { SegmentName } from '../types/colors/colors.types.ts';
+import { formatZodIssue } from './tabs.zod.shared.ts';
 import {
   createTextFieldControlElementStyleSchema,
   createTextFieldIndicatorElementStyleSchema,
@@ -8,13 +8,13 @@ import {
   createTextFieldLabelElementStyleSchema,
   createTextFieldMessageElementStyleSchema,
   createTextFieldRootElementStyleSchema
-} from './text-field.elements.zod';
+} from './text-field.elements.zod.ts';
 import {
   createTextFieldModeOptionsSchema,
   createTextFieldOptionsSchema,
   type TextFieldModeSchemaValue,
   textFieldOptionsSchema
-} from './text-field.options.zod';
+} from './text-field.options.zod.ts';
 
 function isStandardMode(
   value: TextFieldModeSchemaValue

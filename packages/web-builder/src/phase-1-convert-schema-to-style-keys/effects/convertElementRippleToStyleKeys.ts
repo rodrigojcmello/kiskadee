@@ -7,7 +7,7 @@ import {
   resolvePressedRippleProfile,
   resolveRippleProfile
 } from '@kiskadee/core';
-import { buildStyleKey } from '../../utils';
+import { buildStyleKey } from '../../utils/index.ts';
 
 // [RIPPLE EFFECT 9] START: Convert ripple config into style-key buckets.
 type ConvertRippleOptions = {

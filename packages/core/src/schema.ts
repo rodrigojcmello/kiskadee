@@ -1,7 +1,7 @@
-import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints';
-import type { ButtonElements } from './components/button';
-import type { TabsOptions, TabsVariants } from './components/tabs';
-import type { TextFieldOptions, TextFieldVariants } from './components/text-field';
+import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints.ts';
+import type { ButtonElements } from './components/button.ts';
+import type { TabsOptions, TabsVariants } from './components/tabs.ts';
+import type { TextFieldOptions, TextFieldVariants } from './components/text-field.ts';
 import type {
   ElementPalettes,
   InteractionState,
@@ -11,13 +11,13 @@ import type {
   SemanticColor,
   SolidColor,
   ThemeMode
-} from './types/colors/colors.types';
-import type { DecorationSchema } from './types/decorations/decorations.types';
-import type { ElementEffects } from './types/effects';
+} from './types/colors/colors.types.ts';
+import type { DecorationSchema } from './types/decorations/decorations.types.ts';
+import type { ElementEffects } from './types/effects/index.ts';
 // [RIPPLE EFFECT 1] START: Schema-level ripple types.
-import type { RippleEffectSchema } from './types/effects/ripple/ripple.types';
+import type { RippleEffectSchema } from './types/effects/ripple/ripple.types.ts';
 // [RIPPLE EFFECT 1] END: Schema-level ripple types.
-import type { ScaleSchema } from './types/scales/scales.types';
+import type { ScaleSchema } from './types/scales/scales.types.ts';
 
 // Names of all supported components
 export type ComponentName = 'button' | 'tabs' | 'textField';

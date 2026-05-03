@@ -1,10 +1,10 @@
 import type { Schema } from '@kiskadee/core';
-import type { PresetColorGetter } from '../../../utils/presetColor';
-import { createMaterial3GoogleTabsBoxVariant } from './tabs/tabs.box.schema';
-import { createMaterial3GoogleTabsBridgeVariant } from './tabs/tabs.bridge.schema';
-import { createMaterial3GoogleTabsDotVariant } from './tabs/tabs.dot.schema';
-import { createMaterial3GoogleTabsLineVariant } from './tabs/tabs.line.schema';
-import { createMaterial3GoogleTabsSegmentedVariant } from './tabs/tabs.segmented.schema';
+import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { createMaterial3GoogleTabsBoxVariant } from './tabs/tabs.box.schema.ts';
+import { createMaterial3GoogleTabsBridgeVariant } from './tabs/tabs.bridge.schema.ts';
+import { createMaterial3GoogleTabsDotVariant } from './tabs/tabs.dot.schema.ts';
+import { createMaterial3GoogleTabsLineVariant } from './tabs/tabs.line.schema.ts';
+import { createMaterial3GoogleTabsSegmentedVariant } from './tabs/tabs.segmented.schema.ts';
 
 type TabsComponent = NonNullable<Schema<never>['components']['tabs']>;
 type Material3GoogleSegmentName = 'default' | 'dynamic';

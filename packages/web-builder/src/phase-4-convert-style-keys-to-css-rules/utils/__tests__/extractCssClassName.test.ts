@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { extractCssClassName } from '../extractCssClassName';
+import { extractCssClassName } from '../extractCssClassName.ts';
 
 describe('extractCssClassName', () => {
   it('should extract simple class name', () => {

@@ -2,7 +2,7 @@ import type {
   RippleMode,
   RippleMotionDurationToken,
   RippleProfile
-} from './ripple.types';
+} from './ripple.types.ts';
 
 // [RIPPLE EFFECT 6] START: Default ripple constants and profiles.
 export const RIPPLE_DURATION_TOKEN_TO_MS: Readonly<Record<RippleMotionDurationToken, number>> = {

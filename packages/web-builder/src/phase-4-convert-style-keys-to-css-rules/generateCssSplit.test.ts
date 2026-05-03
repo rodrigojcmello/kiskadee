@@ -1,8 +1,8 @@
 import type { ComponentStyleKeyMap } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
-import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
-import { generateCssSplit } from './generateCssSplit';
-import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy';
+import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
+import { generateCssSplit } from './generateCssSplit.ts';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
 
 describe('generateCssSplit', () => {
   it('returns empty bundles for empty input', async () => {

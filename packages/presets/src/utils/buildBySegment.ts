@@ -1,4 +1,4 @@
-import { type DeepOverride, deepMerge } from './deepMerge';
+import { type DeepOverride, deepMerge } from './deepMerge.ts';
 
 export type SegmentOverride<T, S extends string> =
   | DeepOverride<T>

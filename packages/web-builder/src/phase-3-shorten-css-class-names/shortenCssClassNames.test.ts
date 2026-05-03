@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { shortenCssClassNames } from './shortenCssClassNames';
-import type { StyleKeyUsageMap } from '../phase-2-map-style-key-usage/mapStyleKeyUsage';
-import { getToken } from '../utils';
+import { shortenCssClassNames } from './shortenCssClassNames.ts';
+import type { StyleKeyUsageMap } from '../phase-2-map-style-key-usage/mapStyleKeyUsage.ts';
+import { getToken } from '../utils/index.ts';
 
 describe('shortenCssClassNames', () => {
   it('should return an empty object when usage map is empty', () => {

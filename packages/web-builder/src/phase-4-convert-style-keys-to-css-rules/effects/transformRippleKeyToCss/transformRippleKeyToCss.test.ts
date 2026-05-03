@@ -1,8 +1,8 @@
 import { type RippleProfile } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
-import { buildStyleKey } from '../../../utils';
-import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages';
-import { transformRippleKeyToCss } from './transformRippleKeyToCss';
+import { buildStyleKey } from '../../../utils/index.ts';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages.ts';
+import { transformRippleKeyToCss } from './transformRippleKeyToCss.ts';
 
 const className = 'rk1';
 

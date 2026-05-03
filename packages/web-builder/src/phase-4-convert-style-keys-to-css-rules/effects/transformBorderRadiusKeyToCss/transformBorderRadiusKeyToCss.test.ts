@@ -3,7 +3,7 @@ import {
   ERROR_INVALID_NUMERIC_KEY_FORMAT,
   ERROR_REF_REQUIRE_STATE_NUMERIC,
   transformBorderRadiusKeyToCss
-} from './transformBorderRadiusKeyToCss';
+} from './transformBorderRadiusKeyToCss.ts';
 
 const className = 'abc';
 

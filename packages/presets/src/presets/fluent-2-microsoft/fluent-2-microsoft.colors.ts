@@ -5,9 +5,9 @@ import type {
   PrimitiveColors,
   SchemaColors
 } from '@kiskadee/core';
-import neutralDark from './colors/neutral.dark';
-import neutralLight from './colors/neutral.light';
-import primaryUnique from './colors/primary.unique';
+import neutralDark from './colors/neutral.dark.ts';
+import neutralLight from './colors/neutral.light.ts';
+import primaryUnique from './colors/primary.unique.ts';
 
 // -------------------------------------------------------------------------------------------------
 // 3-layer color architecture (Primitive → Global semantics → Component intents)

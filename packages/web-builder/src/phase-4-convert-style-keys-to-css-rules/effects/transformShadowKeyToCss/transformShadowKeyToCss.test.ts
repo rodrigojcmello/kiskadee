@@ -4,8 +4,8 @@ import {
   UNSUPPORTED_INTERACTION_STATE,
   UNSUPPORTED_PROPERTY_NAME,
   UNSUPPORTED_VALUE
-} from '../../errorMessages';
-import { transformShadowKeyToCss } from './transformShadowKeyToCss';
+} from '../../errorMessages.ts';
+import { transformShadowKeyToCss } from './transformShadowKeyToCss.ts';
 
 const className = 'abc';
 

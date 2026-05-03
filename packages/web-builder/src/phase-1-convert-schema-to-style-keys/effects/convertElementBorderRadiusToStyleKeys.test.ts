@@ -1,6 +1,6 @@
 import type { BorderRadiusEffectSchema } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
-import { convertElementBorderRadiusToStyleKeys } from './convertElementBorderRadiusToStyleKeys';
+import { convertElementBorderRadiusToStyleKeys } from './convertElementBorderRadiusToStyleKeys.ts';
 
 describe('convertElementBorderRadiusToStyleKeys', () => {
   it('generates style keys for basic numeric states (rest, hover, pressed, focus, disabled, readOnly)', () => {

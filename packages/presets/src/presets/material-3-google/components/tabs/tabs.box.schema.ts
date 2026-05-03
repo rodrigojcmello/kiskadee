@@ -1,6 +1,6 @@
 import type { Schema } from '@kiskadee/core';
-import type { PresetColorGetter } from '../../../../utils/presetColor';
-import { createMaterial3GoogleTabsLineVariant } from './tabs.line.schema';
+import type { PresetColorGetter } from '../../../../utils/presetColor.ts';
+import { createMaterial3GoogleTabsLineVariant } from './tabs.line.schema.ts';
 
 type TabsComponent = NonNullable<Schema<never>['components']['tabs']>;
 type Material3GoogleSegmentName = 'default' | 'dynamic';

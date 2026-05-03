@@ -3,7 +3,7 @@ import {
   ERROR_INVALID_KEY_FORMAT,
   ERROR_REF_REQUIRE_STATE,
   transformColorKeyToCss
-} from './transformColorKeyToCss';
+} from './transformColorKeyToCss.ts';
 
 const className = 'abc';
 

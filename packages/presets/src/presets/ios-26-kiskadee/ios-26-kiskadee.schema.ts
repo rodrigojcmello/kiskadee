@@ -1,12 +1,12 @@
 import { breakpoints, type Schema, type SchemaColors, withAlpha } from '@kiskadee/core';
-import { buildBySegment } from '../../utils/buildBySegment';
-import { createPresetColorGetter } from '../../utils/presetColor';
+import { buildBySegment } from '../../utils/buildBySegment.ts';
+import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import {
   componentIntents,
   globalSemantics,
   globalSemanticsBySegment,
   primitiveColors
-} from './ios-26-kiskadee.colors';
+} from './ios-26-kiskadee.colors.ts';
 
 // Kiskadee iOS 26: starts as a copy of Apple iOS 26; can evolve with Kiskadee opinions later
 

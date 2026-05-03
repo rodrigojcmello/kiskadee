@@ -1,6 +1,6 @@
-import { validateButtonComponentContract } from '../components/button';
-import { validateTabsComponentContract } from '../components/tabs.zod';
-import { validateTextFieldComponentContract } from '../components/text-field.zod';
+import { validateButtonComponentContract } from '../components/button.ts';
+import { validateTabsComponentContract } from '../components/tabs.zod.ts';
+import { validateTextFieldComponentContract } from '../components/text-field.zod.ts';
 
 /**
  * Build-time validation for component contracts with strict, element-aware rules.

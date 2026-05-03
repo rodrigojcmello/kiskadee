@@ -1,6 +1,6 @@
 import type { Hex, HSLA } from '@kiskadee/core';
 import { convertHslaToHex as coreConvertHslaToHex } from '@kiskadee/core';
-import { toShortHex } from './toShortHex';
+import { toShortHex } from './toShortHex.ts';
 
 /**
  * Converts an HSLA array into a hexadecimal color string.

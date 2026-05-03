@@ -1,9 +1,9 @@
 // Responsive numeric value compatible with `scales`: either a single pixel value or
 // a map keyed by element size/breakpoint tokens like 's:md:1'.
 
-import type { ElementAllSizeValue, ElementSizeValue } from '../../../breakpoints';
-import type { InteractionState } from '../../colors/colors.types';
-import type { PixelValue } from '../../scales/scales.types';
+import type { ElementAllSizeValue, ElementSizeValue } from '../../../breakpoints.ts';
+import type { InteractionState } from '../../colors/colors.types.ts';
+import type { PixelValue } from '../../scales/scales.types.ts';
 
 export type ResponsiveNumeric =
   | PixelValue

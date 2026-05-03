@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { transformBorderStyleKeyToCss } from './transformBorderStyleKeyToCss';
+import { transformBorderStyleKeyToCss } from './transformBorderStyleKeyToCss.ts';
 
 const className = 'abc';
 

@@ -1,5 +1,5 @@
 import type { ComponentIntents, GlobalSemanticsBySegment, SchemaColors } from '@kiskadee/core';
-import { globalSemantics, primitiveColors } from './color.layers';
+import { globalSemantics, primitiveColors } from './color.layers.ts';
 
 // -------------------------------------------------------------------------------------------------
 // 3-layer color architecture (Primitive → Global semantics → Component intents)

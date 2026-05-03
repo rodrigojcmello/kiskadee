@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { convertHslaToHex } from '@kiskadee/core';
 import type { MockInstance } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { generateColorScale, generateColorScaleArtifact } from './generate-color-scale';
+import { generateColorScale, generateColorScaleArtifact } from './generate-color-scale.ts';
 
 function expectHsla(value: unknown): asserts value is [number, number, number, number] {
   expect(Array.isArray(value)).toBe(true);

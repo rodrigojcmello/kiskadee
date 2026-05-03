@@ -8,8 +8,8 @@ import {
   resolveRippleProfile,
   stateActivator
 } from '@kiskadee/core';
-import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages';
-import { EMITTED_SCALE_CSS_VARS } from '../../scales/transformScaleKeyToCss';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages.ts';
+import { EMITTED_SCALE_CSS_VARS } from '../../scales/transformScaleKeyToCss.ts';
 
 // [RIPPLE EFFECT 13] START: Transform ripple style keys into CSS variable rules.
 type RippleValue = {

@@ -1,2 +1,2 @@
-export * from './ios-26-kiskadee.colors';
-export * from './ios-26-kiskadee.schema';
+export * from './ios-26-kiskadee.colors.ts';
+export * from './ios-26-kiskadee.schema.ts';

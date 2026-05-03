@@ -1,6 +1,6 @@
 import type { Color, ElementPalettes } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
-import { convertElementColorsToStyleKeys } from './convertElementColorsToStyleKeys';
+import { convertElementColorsToStyleKeys } from './convertElementColorsToStyleKeys.ts';
 
 /*------------------------------------------------------------------------------------------------*/
 /* There is no error handling here; errors were handled during the style key to CSS conversion in

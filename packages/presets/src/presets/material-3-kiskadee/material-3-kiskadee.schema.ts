@@ -1,8 +1,8 @@
 import { primitive, type Schema } from '@kiskadee/core';
-import { type DeepOverride, deepMerge } from '../../utils/deepMerge';
-import { createPresetColorGetter } from '../../utils/presetColor';
-import { schema as baseSchema } from '../material-3-google/material-3-google.schema';
-import { schemaColors } from './material-3-kiskadee.colors';
+import { type DeepOverride, deepMerge } from '../../utils/deepMerge.ts';
+import { createPresetColorGetter } from '../../utils/presetColor.ts';
+import { schema as baseSchema } from '../material-3-google/material-3-google.schema.ts';
+import { schemaColors } from './material-3-kiskadee.colors.ts';
 
 const segmentNames = ['default', 'modern', 'dynamic'] as const;
 type SegmentName = (typeof segmentNames)[number];

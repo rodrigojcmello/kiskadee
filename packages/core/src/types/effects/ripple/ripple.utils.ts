@@ -2,13 +2,13 @@ import {
   DEFAULT_PRESSED_RIPPLE_PROFILE,
   DEFAULT_RIPPLE_PROFILES,
   RIPPLE_DURATION_TOKEN_TO_MS
-} from './ripple.constants';
+} from './ripple.constants.ts';
 import type {
   RippleEffectSchema,
   RippleMode,
   RippleMotionDurationToken,
   RippleProfile
-} from './ripple.types';
+} from './ripple.types.ts';
 
 // [RIPPLE EFFECT 7] START: Ripple profile and duration resolution helpers.
 type ResolveRippleProfileOptions = {

@@ -1,6 +1,6 @@
 import type { CssFontStyleValue, TextItalicKeyToken } from '@kiskadee/core';
-import { SEPARATORS } from '../../../utils';
-import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages';
+import { SEPARATORS } from '../../../utils/index.ts';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages.ts';
 
 /**
  * Builds a CSS rule that sets the font-style property from a textItalic style key.

@@ -11,14 +11,14 @@ import type {
   ThemeMode
 } from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
-import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex';
+import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex.ts';
 import type {
   Manifest,
   ManifestComponent,
   ManifestComponentState,
   ManifestFontStack,
   ManifestFonts
-} from './manifestTypes';
+} from './manifestTypes.ts';
 
 function majorVersionFromTuple(v: [number, number, number] | number[]): number {
   return Array.isArray(v) && v.length > 0 ? Number(v[0]) : 0;

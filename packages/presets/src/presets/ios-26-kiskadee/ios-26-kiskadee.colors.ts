@@ -4,10 +4,10 @@ import type {
   GlobalSemanticsByTheme,
   PrimitiveColors
 } from '@kiskadee/core';
-import dynamicColor from '../dynamic.color';
-import neutralLight from './colors/neutral.light';
-import primaryLight from './colors/primary.light';
-import redLikeLight from './colors/red-like.light';
+import dynamicColor from '../dynamic.color.ts';
+import neutralLight from './colors/neutral.light.ts';
+import primaryLight from './colors/primary.light.ts';
+import redLikeLight from './colors/red-like.light.ts';
 
 // Kiskadee iOS 26: starts as a copy of Apple iOS 26; can evolve with Kiskadee opinions later
 

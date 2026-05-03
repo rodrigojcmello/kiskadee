@@ -3,7 +3,7 @@ import {
   type ResolvedElementStyleEmissionPolicy,
   resolveElementStyleEmissionPolicy,
   type WebStyleEmissionPolicy
-} from './web-build-policy';
+} from './web-build-policy.ts';
 
 export type WebStyleKeyIdentity = string;
 export type WebStyleIdentityOptimizationOptions = {

@@ -4,15 +4,15 @@ import type {
   PrimitiveColors,
   SchemaColors
 } from '@kiskadee/core';
-import { type DeepOverride, deepMerge } from '../../utils/deepMerge';
+import { type DeepOverride, deepMerge } from '../../utils/deepMerge.ts';
 import {
   primitiveColors as basePrimitiveColors,
   globalSemantics
-} from '../material-3-google/color.layers';
+} from '../material-3-google/color.layers.ts';
 import {
   componentIntents as baseComponentIntents,
   globalSemanticsBySegment as baseGlobalSemanticsBySegment
-} from '../material-3-google/material-3-google.colors';
+} from '../material-3-google/material-3-google.colors.ts';
 
 // Material 3 (Kiskadee): derived from the official Google preset with minimal overrides.
 // This preset is allowed to introduce non-official intents (e.g. `destructive`).

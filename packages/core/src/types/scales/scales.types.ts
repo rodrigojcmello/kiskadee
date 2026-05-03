@@ -1,4 +1,4 @@
-import type { BreakpointValue, ElementSizeValue } from '../../breakpoints';
+import type { BreakpointValue, ElementSizeValue } from '../../breakpoints.ts';
 
 export type PixelValue = number; // px
 

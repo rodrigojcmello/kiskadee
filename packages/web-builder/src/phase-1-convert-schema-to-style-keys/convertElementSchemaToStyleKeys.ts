@@ -13,20 +13,20 @@ import type {
   StyleKeyByElement,
   StyleKeysByInteractionState
 } from '@kiskadee/core';
-import { buildStyleKey, deepUpdate } from '../utils';
+import { buildStyleKey, deepUpdate } from '../utils/index.ts';
 import {
   buildScopedToneMetadataKey,
   convertElementColorsToStyleKeys,
   type ToneMetadataByPalette
-} from './colors/convertElementColorsToStyleKeys';
-import { convertElementDecorationsToStyleKeys } from './decoration/convertElementDecorationsToStyleKeys';
-import { convertElementBorderRadiusToStyleKeys } from './effects/convertElementBorderRadiusToStyleKeys';
-import { convertElementRippleToStyleKeys } from './effects/convertElementRippleToStyleKeys';
-import { convertElementShadowToStyleKeys } from './effects/convertElementShadowToStyleKeys';
+} from './colors/convertElementColorsToStyleKeys.ts';
+import { convertElementDecorationsToStyleKeys } from './decoration/convertElementDecorationsToStyleKeys.ts';
+import { convertElementBorderRadiusToStyleKeys } from './effects/convertElementBorderRadiusToStyleKeys.ts';
+import { convertElementRippleToStyleKeys } from './effects/convertElementRippleToStyleKeys.ts';
+import { convertElementShadowToStyleKeys } from './effects/convertElementShadowToStyleKeys.ts';
 import {
   convertElementScalesToStyleKeys,
   type ScaleValue
-} from './scales/convertElementScalesToStyleKeys';
+} from './scales/convertElementScalesToStyleKeys.ts';
 
 type ElementSchemaInput = Pick<ElementStyle, 'decorations' | 'effects' | 'palettes' | 'scales'>;
 

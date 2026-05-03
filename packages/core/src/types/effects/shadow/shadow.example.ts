@@ -1,4 +1,4 @@
-import type { ElementEffects } from '../index';
+import type { ElementEffects } from '../index.ts';
 
 const buttonEffects: ElementEffects = {
   shadow: {

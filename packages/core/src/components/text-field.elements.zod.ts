@@ -1,12 +1,12 @@
 import { z } from 'zod';
-import type { SegmentName } from '../types/colors/colors.types';
-import type { DecorationSchema } from '../types/decorations/decorations.types';
+import type { SegmentName } from '../types/colors/colors.types.ts';
+import type { DecorationSchema } from '../types/decorations/decorations.types.ts';
 import {
   createPalettesSchema,
   createScalesSchema,
   createScalesSchemaWithBorderRadius,
   elementEffectsSchema
-} from './tabs.zod.shared';
+} from './tabs.zod.shared.ts';
 
 export function createTextFieldRootElementStyleSchema() {
   return z

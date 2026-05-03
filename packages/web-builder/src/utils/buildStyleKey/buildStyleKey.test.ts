@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { type BuildStyleKeyParams, buildStyleKey } from './buildStyleKey';
+import { type BuildStyleKeyParams, buildStyleKey } from './buildStyleKey.ts';
 
 describe('buildStyleKey', () => {
   describe('selected control via controlState + interactionState', () => {

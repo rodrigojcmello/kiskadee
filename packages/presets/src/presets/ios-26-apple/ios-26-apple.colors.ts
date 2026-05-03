@@ -5,8 +5,8 @@ import type {
   PrimitiveColors,
   SchemaColors
 } from '@kiskadee/core';
-import neutralLight from './colors/neutral.light';
-import primaryLight from './colors/primary.light';
+import neutralLight from './colors/neutral.light.ts';
+import primaryLight from './colors/primary.light.ts';
 
 // iOS 26 - https://www.sketch.com/s/f63aa308-1f82-498c-8019-530f3b846db9
 // iOS 18 - https://www.sketch.com/s/bb57439f-19da-4c7a-bfd2-a196cf51f766/symbols

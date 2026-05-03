@@ -9,22 +9,22 @@ import type {
 } from '@kiskadee/core';
 import { createKiskadeePostcssPlugins } from '@kiskadee/css-build';
 import postcss from 'postcss';
-import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
+import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
 import {
   resolveElementStyleEmissionPolicy,
   type WebStyleEmissionPolicy
-} from '../style-emission/web-build-policy';
+} from '../style-emission/web-build-policy.ts';
 import {
   applyCanonicalStyleEmissionPolicy,
   canonicalizeWebStyleKeyIdentity,
   resolveWebStyleKeyIdentity,
   type WebStyleIdentityOptimizationOptions
-} from '../style-emission/web-style-key-identity';
+} from '../style-emission/web-style-key-identity.ts';
 import {
   type GenerateCssRuleFromStyleKeyOptions,
   generateCssRuleFromStyleKey
-} from './generateCss';
-import { transformColorKeyToCss } from './palettes/transformColorKeyToCss';
+} from './generateCss.ts';
+import { transformColorKeyToCss } from './palettes/transformColorKeyToCss.ts';
 
 export type GenerateCssSplitOptions = {
   forceState?: boolean;

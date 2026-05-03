@@ -1,5 +1,5 @@
-import type { StyleKeyUsageMap } from '../phase-2-map-style-key-usage/mapStyleKeyUsage';
-import { getToken } from '../utils';
+import type { StyleKeyUsageMap } from '../phase-2-map-style-key-usage/mapStyleKeyUsage.ts';
+import { getToken } from '../utils/index.ts';
 
 export type ShortenCssClassNames = Record<string, string>;
 

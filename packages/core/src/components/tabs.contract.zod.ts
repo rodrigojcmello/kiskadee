@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { SegmentName } from '../types/colors/colors.types';
+import type { SegmentName } from '../types/colors/colors.types.ts';
 import {
   createTabsBoxBarElementStyleSchema,
   createTabsBridgeBarElementStyleSchema,
@@ -14,13 +14,13 @@ import {
   createTabsSegmentedTriggerElementStyleSchema,
   createTabsSeparatorElementStyleSchema,
   createTabsTriggerElementStyleSchema
-} from './tabs.elements.zod';
+} from './tabs.elements.zod.ts';
 import {
   createTabsVariantOptionsSchema,
   type TabsVariantSchemaValue,
   tabsOptionsSchema
-} from './tabs.options.zod';
-import { formatZodIssue } from './tabs.zod.shared';
+} from './tabs.options.zod.ts';
+import { formatZodIssue } from './tabs.zod.shared.ts';
 
 function createTabsLineElementsSchema<TSegmentName extends SegmentName = never>() {
   return z

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { generateColorScaleFromSubtleVivid } from './generate-color-scale-from-subtle-vivid';
+import { generateColorScaleFromSubtleVivid } from './generate-color-scale-from-subtle-vivid.ts';
 
 type HSLA = [number, number, number, number];
 

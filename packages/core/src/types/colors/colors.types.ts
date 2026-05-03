@@ -1,7 +1,7 @@
-import type { ButtonIntent, RoleButton, RoleTextField, TextFieldIntent } from './colors.intents';
+import type { ButtonIntent, RoleButton, RoleTextField, TextFieldIntent } from './colors.intents.ts';
 
-export type { ButtonIntent, RoleButton, RoleTextField, TextFieldIntent } from './colors.intents';
-export { ButtonIntentKeys, TextFieldIntentKeys } from './colors.intents';
+export type { ButtonIntent, RoleButton, RoleTextField, TextFieldIntent } from './colors.intents.ts';
+export { ButtonIntentKeys, TextFieldIntentKeys } from './colors.intents.ts';
 
 // Unique identifier for each segment (brand/product identity) within a design system.
 // Defined here to avoid circular type dependencies between schema and color types.
@@ -356,11 +356,11 @@ export type SemanticColorMap = Partial<
   Record<SemanticColor, Partial<Record<ComponentEmphasis, InteractionStateColorMap>>>
 >;
 
-export enum CssColorProperty {
-  textColor = 'color',
-  boxColor = 'background-color',
-  borderColor = 'border-color'
-}
+export const CssColorProperty = {
+  textColor: 'color',
+  boxColor: 'background-color',
+  borderColor: 'border-color'
+} as const;
 
 export type ColorProperty = keyof typeof CssColorProperty;
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages';
-import { transformTextAlignKeyToCss } from './transformTextAlignKeyToCss';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages.ts';
+import { transformTextAlignKeyToCss } from './transformTextAlignKeyToCss.ts';
 
 const className = 'abc';
 

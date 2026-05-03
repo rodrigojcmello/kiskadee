@@ -20,17 +20,17 @@ export type CssFontStyleValue = 'normal' | 'italic';
 export type TextWeightValue = keyof typeof CssTextWeightValue;
 
 /** Maps human-readable font weight names to their corresponding numeric CSS `font-weight` values. */
-export enum CssTextWeightValue {
-  thin = '100',
-  extraLight = '200',
-  light = '300',
-  normal = '400',
-  medium = '500',
-  semiBold = '600',
-  bold = '700',
-  extraBold = '800',
-  black = '900'
-}
+export const CssTextWeightValue = {
+  thin: '100',
+  extraLight: '200',
+  light: '300',
+  normal: '400',
+  medium: '500',
+  semiBold: '600',
+  bold: '700',
+  extraBold: '800',
+  black: '900'
+} as const;
 
 // Text Decoration ---------------------------------------------------------------------------------
 
@@ -41,11 +41,11 @@ export type TextLineTypeProperty = 'textLineType';
 export type TextLineTypeValue = keyof typeof CssTextDecorationValue;
 
 /** Maps custom text decoration values to the standard CSS `text-decoration` property values. */
-export enum CssTextDecorationValue {
-  none = 'none', // Default
-  underline = 'underline',
-  lineThrough = 'line-through'
-}
+export const CssTextDecorationValue = {
+  none: 'none', // Default
+  underline: 'underline',
+  lineThrough: 'line-through'
+} as const;
 
 // Text Align --------------------------------------------------------------------------------------
 
@@ -57,12 +57,12 @@ export enum CssTextDecorationValue {
 export type TextAlignValue = keyof typeof CssTextAlignValue;
 
 /** Maps text alignment values to the standard CSS `text-align` property values. */
-export enum CssTextAlignValue {
-  left = 'left', // Default
-  center = 'center',
-  right = 'right',
-  justify = 'justify'
-}
+export const CssTextAlignValue = {
+  left: 'left', // Default
+  center: 'center',
+  right: 'right',
+  justify: 'justify'
+} as const;
 
 // Border Style ------------------------------------------------------------------------------------
 
@@ -70,23 +70,23 @@ export enum CssTextAlignValue {
 export type BorderStyleValue = keyof typeof CssBorderStyleValue;
 
 /** Maps border style values to the standard CSS `border-style` property values. */
-export enum CssBorderStyleValue {
-  none = 'none', // Default
-  dotted = 'dotted',
-  dashed = 'dashed',
-  solid = 'solid'
-}
+export const CssBorderStyleValue = {
+  none: 'none', // Default
+  dotted: 'dotted',
+  dashed: 'dashed',
+  solid: 'solid'
+} as const;
 
 // Appearance --------------------------------------------------------------------------------------
 
-export enum CssDecorationProperty {
-  textFont = 'font-family',
-  textItalic = 'font-style',
-  textWeight = 'font-weight',
-  textLineType = 'text-decoration',
-  textAlign = 'text-align',
-  borderStyle = 'border-style'
-}
+export const CssDecorationProperty = {
+  textFont: 'font-family',
+  textItalic: 'font-style',
+  textWeight: 'font-weight',
+  textLineType: 'text-decoration',
+  textAlign: 'text-align',
+  borderStyle: 'border-style'
+} as const;
 
 export type DecorationProperty = keyof typeof CssDecorationProperty;
 

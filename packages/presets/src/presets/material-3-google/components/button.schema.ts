@@ -1,6 +1,6 @@
 import { primitive, type Schema } from '@kiskadee/core';
-import { buildBySegment } from '../../../utils/buildBySegment';
-import type { PresetColorGetter } from '../../../utils/presetColor';
+import { buildBySegment } from '../../../utils/buildBySegment.ts';
+import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
 type Material3GoogleSegmentName = 'default' | 'dynamic';
 type ButtonComponent = NonNullable<Schema<never>['components']['button']>;

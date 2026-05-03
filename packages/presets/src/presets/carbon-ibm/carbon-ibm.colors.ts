@@ -5,8 +5,8 @@ import type {
   PrimitiveColors,
   SchemaColors
 } from '@kiskadee/core';
-import blackLight from './colors/black.light';
-import blueLight from './colors/blue.light';
+import blackLight from './colors/black.light.ts';
+import blueLight from './colors/blue.light.ts';
 
 // Layer 1: Primitive colors
 export const primitiveColors = {

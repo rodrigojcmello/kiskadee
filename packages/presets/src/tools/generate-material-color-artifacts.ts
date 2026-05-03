@@ -25,7 +25,7 @@ import {
   SchemeTonalSpot,
   SchemeVibrant
 } from '@material/material-color-utilities';
-import { resolveHueNameFromHsla } from '../utils/resolveHueName';
+import { resolveHueNameFromHsla } from '../utils/resolveHueName.ts';
 
 type MaterialTonalPalette = {
   tone: (tone: number) => number;

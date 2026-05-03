@@ -1,4 +1,4 @@
-import type { SegmentName } from '../types/colors/colors.types';
+import type { SegmentName } from '../types/colors/colors.types.ts';
 import type {
   TabsBarElementStyleFromSchema,
   TabsBoxBarElementStyleFromSchema,
@@ -15,7 +15,7 @@ import type {
   TabsSegmentedTriggerElementStyleFromSchema,
   TabsSeparatorElementStyleFromSchema,
   TabsTriggerElementStyleFromSchema
-} from './tabs.zod';
+} from './tabs.zod.ts';
 
 /**
  * Tabs elements canonical mapping:

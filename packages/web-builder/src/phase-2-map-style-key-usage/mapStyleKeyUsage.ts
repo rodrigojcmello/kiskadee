@@ -1,6 +1,6 @@
 import type { ComponentStyleKeyMap, StyleKey } from '@kiskadee/core';
-import type { WebStyleEmissionPolicy } from '../style-emission/web-build-policy';
-import { resolveWebStyleKeyIdentity } from '../style-emission/web-style-key-identity';
+import type { WebStyleEmissionPolicy } from '../style-emission/web-build-policy.ts';
+import { resolveWebStyleKeyIdentity } from '../style-emission/web-style-key-identity.ts';
 
 export type StyleKeyUsageMap = Record<string, number>;
 

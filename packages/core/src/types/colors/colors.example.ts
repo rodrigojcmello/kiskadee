@@ -1,4 +1,4 @@
-import type { ColorSchema, GlobalSemanticsBySegment } from './colors.types';
+import type { ColorSchema, GlobalSemanticsBySegment } from './colors.types.ts';
 
 // Example of ColorSchema (element-level colors for a component)
 const color: ColorSchema = {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { validateTabsComponentContract } from './tabs.contract.zod';
+import { validateTabsComponentContract } from './tabs.contract.zod.ts';
 
 describe('validateTabsComponentContract', () => {
   it('rejects top-level elements because Tabs is variant-driven', () => {

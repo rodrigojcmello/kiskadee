@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages';
-import { transformTextFontKeyToCss } from './transformTextFontKeyToCss';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages.ts';
+import { transformTextFontKeyToCss } from './transformTextFontKeyToCss.ts';
 
 const propertyName = 'textFont';
 

@@ -10,12 +10,12 @@ import {
   UNSUPPORTED_INTERACTION_STATE,
   UNSUPPORTED_PROPERTY_NAME,
   UNSUPPORTED_VALUE
-} from '../../errorMessages';
-import { convertHslaToHex } from '../../utils/convertHslaToHex';
+} from '../../errorMessages.ts';
+import { convertHslaToHex } from '../../utils/convertHslaToHex.ts';
 import {
   DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
   type ResolvedElementStyleEmissionPolicy
-} from '../../../style-emission/web-build-policy';
+} from '../../../style-emission/web-build-policy.ts';
 
 export type TransformShadowKeyToCssOptions = {
   styleEmissionPolicy?: ResolvedElementStyleEmissionPolicy;

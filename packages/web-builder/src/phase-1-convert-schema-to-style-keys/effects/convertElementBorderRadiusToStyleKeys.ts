@@ -8,7 +8,7 @@ import type {
   SelectedInteractionStateToken,
   StyleKeysByInteractionState
 } from '@kiskadee/core';
-import { buildStyleKey, deepUpdate } from '../../utils';
+import { buildStyleKey, deepUpdate } from '../../utils/index.ts';
 
 /**
  * Converts the borderRadius effect schema into StyleKey lists grouped by interaction state.

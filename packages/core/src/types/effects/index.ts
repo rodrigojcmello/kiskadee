@@ -1,6 +1,6 @@
-// import type { SolidColor } from '../colors/colors.types';
-import type { BorderRadiusEffectSchema } from './border-radius/border-radius.types';
-import type { ShadowSchema } from './shadow/shadow.types';
+// import type { SolidColor } from '../colors/colors.types.ts';
+import type { BorderRadiusEffectSchema } from './border-radius/border-radius.types.ts';
+import type { ShadowSchema } from './shadow/shadow.types.ts';
 
 export type ElementEffects = Partial<{
   shadow: Partial<ShadowSchema>;

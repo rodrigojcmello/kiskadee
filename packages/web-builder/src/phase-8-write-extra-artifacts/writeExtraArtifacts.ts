@@ -23,8 +23,8 @@ import type {
 } from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
 import { minifyCss } from '@kiskadee/css-build';
-import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex';
-import { type FontStack, toCssFontFamily } from '../utils/fontFamily';
+import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex.ts';
+import { type FontStack, toCssFontFamily } from '../utils/fontFamily.ts';
 
 type ExtractableSchema = Schema;
 

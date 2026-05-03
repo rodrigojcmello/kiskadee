@@ -8,17 +8,17 @@ import {
   transformTextItalicKeyToCss,
   transformTextLineTypeKeyToCss,
   transformTextWeightKeyToCss
-} from './decorations';
-import { transformBorderRadiusKeyToCss } from './effects/transformBorderRadiusKeyToCss/transformBorderRadiusKeyToCss';
-import { transformRippleKeyToCss } from './effects/transformRippleKeyToCss/transformRippleKeyToCss';
+} from './decorations/index.ts';
+import { transformBorderRadiusKeyToCss } from './effects/transformBorderRadiusKeyToCss/transformBorderRadiusKeyToCss.ts';
+import { transformRippleKeyToCss } from './effects/transformRippleKeyToCss/transformRippleKeyToCss.ts';
 import {
   type TransformColorKeyToCssOptions,
   transformColorKeyToCss
-} from './palettes/transformColorKeyToCss';
+} from './palettes/transformColorKeyToCss.ts';
 import {
   type TransformScaleKeyToCssOptions,
   transformScaleKeyToCss
-} from './scales/transformScaleKeyToCss';
+} from './scales/transformScaleKeyToCss.ts';
 
 export type GenerateCssRuleFromStyleKeyOptions = TransformColorKeyToCssOptions &
   TransformScaleKeyToCssOptions &

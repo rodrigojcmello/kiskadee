@@ -1,5 +1,5 @@
 import { breakpoints, color, primitive, type Schema, withAlpha } from '@kiskadee/core';
-import { schemaColors } from './fluent-2-microsoft.colors';
+import { schemaColors } from './fluent-2-microsoft.colors.ts';
 
 // Reference: https://www.figma.com/design/iEmab9I4qGqbUJlFSxRORE/Microsoft-Fluent-2-Web--Community-?node-id=1-840&p=f&t=M4w8UKqwRiqJgq8i-0
 

@@ -1,5 +1,5 @@
 import { breakpoints, color, primitive, type Schema, withAlpha } from '@kiskadee/core';
-import { schemaColors } from './carbon-ibm.colors';
+import { schemaColors } from './carbon-ibm.colors.ts';
 
 // Reference: https://www.figma.com/community/file/1157761560874207208 copied to "ds-refs/(v11) Carbon Design System (Community).fig"
 

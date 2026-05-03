@@ -10,8 +10,8 @@ import {
 import {
   DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
   type ResolvedElementStyleEmissionPolicy
-} from '../../style-emission/web-build-policy';
-import { SEPARATORS } from '../../utils';
+} from '../../style-emission/web-build-policy.ts';
+import { SEPARATORS } from '../../utils/index.ts';
 
 export const ERROR_NO_MATCHING_SCALE_PROPERTY = 'No matching scale key found.';
 export const ERROR_INVALID_MEDIA_QUERY_PATTERN =

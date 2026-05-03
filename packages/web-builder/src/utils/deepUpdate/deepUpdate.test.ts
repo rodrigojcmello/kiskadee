@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { deepUpdate } from './deepUpdate';
+import { deepUpdate } from './deepUpdate.ts';
 
 describe('deepUpdate', () => {
   it('updates a top-level property', () => {

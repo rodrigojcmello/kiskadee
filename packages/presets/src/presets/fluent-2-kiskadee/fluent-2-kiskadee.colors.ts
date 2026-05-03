@@ -5,12 +5,12 @@ import type {
   PrimitiveColors,
   SchemaColors
 } from '@kiskadee/core';
-import dynamicColor from '../dynamic.color';
-import neutralDark from './colors/neutral.dark';
-import neutralLight from './colors/neutral.light';
-import primaryUnique from './colors/primary.unique';
-import purpleLight from './colors/purple.light';
-import purple2Light from './colors/purple-2.light';
+import dynamicColor from '../dynamic.color.ts';
+import neutralDark from './colors/neutral.dark.ts';
+import neutralLight from './colors/neutral.light.ts';
+import primaryUnique from './colors/primary.unique.ts';
+import purpleLight from './colors/purple.light.ts';
+import purple2Light from './colors/purple-2.light.ts';
 
 // -------------------------------------------------------------------------------------------------
 // 3-layer color architecture (Primitive → Global semantics → Component intents)

@@ -1,4 +1,4 @@
-import type { DecorationSchema } from './decorations.types';
+import type { DecorationSchema } from './decorations.types.ts';
 
 const decoration: DecorationSchema = {
   textFont: 'body',

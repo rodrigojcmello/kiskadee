@@ -1,4 +1,4 @@
-export { validateTextFieldComponentContract } from './text-field.contract.zod';
+export { validateTextFieldComponentContract } from './text-field.contract.zod.ts';
 export type {
   TextFieldControlElementStyleFromSchema,
   TextFieldIndicatorElementStyleFromSchema,
@@ -6,8 +6,8 @@ export type {
   TextFieldLabelElementStyleFromSchema,
   TextFieldMessageElementStyleFromSchema,
   TextFieldRootElementStyleFromSchema
-} from './text-field.elements.zod';
+} from './text-field.elements.zod.ts';
 export type {
   TextFieldModeOptionsFromSchema,
   TextFieldOptionsFromSchema
-} from './text-field.options.zod';
+} from './text-field.options.zod.ts';

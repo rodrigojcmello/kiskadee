@@ -4,7 +4,7 @@ import type {
   SolidColor,
   StyleKeysByInteractionState
 } from '@kiskadee/core';
-import { buildStyleKey, deepUpdate } from '../../utils';
+import { buildStyleKey, deepUpdate } from '../../utils/index.ts';
 
 /**
  * Gets a shadow property value for the given interaction state, falling back to 'rest' then to a

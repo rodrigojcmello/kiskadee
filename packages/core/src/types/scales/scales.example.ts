@@ -1,4 +1,4 @@
-import type { ScaleSchema } from './scales.types';
+import type { ScaleSchema } from './scales.types.ts';
 
 const scale: ScaleSchema = {
   textSize: {

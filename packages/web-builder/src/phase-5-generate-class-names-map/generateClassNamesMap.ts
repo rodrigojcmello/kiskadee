@@ -11,14 +11,14 @@ import { componentEmphasisBuckets } from '@kiskadee/core';
 import {
   buildScopedToneMetadataKey,
   type ToneMetadataByPalette
-} from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
-import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
-import type { WebStyleEmissionPolicy } from '../style-emission/web-build-policy';
+} from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys.ts';
+import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
+import type { WebStyleEmissionPolicy } from '../style-emission/web-build-policy.ts';
 import {
   canonicalizeWebStyleKeyIdentity,
   resolveWebStyleKeyIdentity,
   type WebStyleIdentityOptimizationOptions
-} from '../style-emission/web-style-key-identity';
+} from '../style-emission/web-style-key-identity.ts';
 
 // Shortened keys for optimization (Phase 5 artifact schema):
 // d = decorations (always-on, flattened string)

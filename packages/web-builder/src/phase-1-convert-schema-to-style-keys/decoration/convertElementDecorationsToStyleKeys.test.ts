@@ -1,6 +1,6 @@
 import type { DecorationSchema } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
-import { convertElementDecorationsToStyleKeys } from './convertElementDecorationsToStyleKeys';
+import { convertElementDecorationsToStyleKeys } from './convertElementDecorationsToStyleKeys.ts';
 
 describe('convertElementDecorationsToStyleKeys', () => {
   describe('textFont style key generation', () => {

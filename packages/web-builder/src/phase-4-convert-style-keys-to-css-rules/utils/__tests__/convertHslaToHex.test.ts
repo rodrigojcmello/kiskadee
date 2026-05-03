@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { convertHslaToHex } from '../convertHslaToHex';
+import { convertHslaToHex } from '../convertHslaToHex.ts';
 import type { HSLA } from '@kiskadee/core';
 
 describe('convertHslaToHex', () => {

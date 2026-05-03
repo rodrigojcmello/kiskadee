@@ -1,6 +1,6 @@
 import type { StyleKeyByElement } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
-import { convertElementScalesToStyleKeys } from './convertElementScalesToStyleKeys';
+import { convertElementScalesToStyleKeys } from './convertElementScalesToStyleKeys.ts';
 
 describe('convertElementScalesToStyleKeys', () => {
   it('should generate paddingTop 10 style key for numeric value', () => {

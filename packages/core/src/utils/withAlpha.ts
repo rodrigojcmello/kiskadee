@@ -1,4 +1,4 @@
-import type { HSLA, SolidColor } from '../types/colors/colors.types';
+import type { HSLA, SolidColor } from '../types/colors/colors.types.ts';
 
 /**
  * Applies visibility (opacity) to an HSLA color.

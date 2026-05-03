@@ -9,8 +9,8 @@ import {
 import {
   DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
   type ResolvedElementStyleEmissionPolicy
-} from '../../../style-emission/web-build-policy';
-import { EMITTED_SCALE_CSS_VARS } from '../../scales/transformScaleKeyToCss';
+} from '../../../style-emission/web-build-policy.ts';
+import { EMITTED_SCALE_CSS_VARS } from '../../scales/transformScaleKeyToCss.ts';
 
 export const ERROR_INVALID_NUMERIC_KEY_FORMAT =
   'Invalid key format. Expected numeric value in square brackets at the end.';

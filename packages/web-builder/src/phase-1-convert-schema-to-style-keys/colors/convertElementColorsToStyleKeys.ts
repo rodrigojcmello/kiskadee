@@ -13,7 +13,7 @@ import type {
   StyleKeyByElement,
   ThemeMode
 } from '@kiskadee/core';
-import { buildStyleKey, deepUpdate } from '../../utils';
+import { buildStyleKey, deepUpdate } from '../../utils/index.ts';
 
 // Metadata to track which emphasis track(s) generated each style key.
 //

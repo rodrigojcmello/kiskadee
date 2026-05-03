@@ -1,3 +1,3 @@
-export * from './buildStyleKey/buildStyleKey';
-export * from './deepUpdate/deepUpdate';
-export * from './getToken/getToken';
+export * from './buildStyleKey/buildStyleKey.ts';
+export * from './deepUpdate/deepUpdate.ts';
+export * from './getToken/getToken.ts';

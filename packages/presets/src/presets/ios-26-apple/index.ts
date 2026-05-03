@@ -1,2 +1,2 @@
-export * from './ios-26-apple.colors';
-export * from './ios-26-apple.schema';
+export * from './ios-26-apple.colors.ts';
+export * from './ios-26-apple.schema.ts';

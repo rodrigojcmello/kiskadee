@@ -15,8 +15,8 @@ import type {
   SolidColor,
   ThemeName,
   ThemeShortcut
-} from '../types/colors/colors.types';
-import { withAlpha } from './withAlpha';
+} from '../types/colors/colors.types.ts';
+import { withAlpha } from './withAlpha.ts';
 
 function resolveSeriesAndKey(
   tone: number

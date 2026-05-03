@@ -4,7 +4,7 @@ import type {
   ScaleProperty,
   StyleKeyByElement
 } from '@kiskadee/core';
-import { deepUpdate, buildStyleKey } from '../../utils';
+import { deepUpdate, buildStyleKey } from '../../utils/index.ts';
 
 export type ScaleValue = Partial<Record<ElementSizeValue, Record<string, number> | number>> | number;
 

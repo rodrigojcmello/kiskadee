@@ -1,4 +1,4 @@
-import type { Hex, HSLA } from '../types/colors/colors.types';
+import type { Hex, HSLA } from '../types/colors/colors.types.ts';
 
 /**
  * Converts an HSLA array into a hexadecimal color string.

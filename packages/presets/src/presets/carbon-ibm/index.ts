@@ -1,2 +1,2 @@
-export * from './carbon-ibm.colors';
-export * from './carbon-ibm.schema';
+export * from './carbon-ibm.colors.ts';
+export * from './carbon-ibm.schema.ts';

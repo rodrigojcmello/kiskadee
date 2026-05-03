@@ -1,7 +1,7 @@
 import type { Schema, StyleKeyByElement } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
-import { buildScopedToneMetadataKey } from './colors/convertElementColorsToStyleKeys';
-import { convertElementSchemaToStyleKeys } from './convertElementSchemaToStyleKeys';
+import { buildScopedToneMetadataKey } from './colors/convertElementColorsToStyleKeys.ts';
+import { convertElementSchemaToStyleKeys } from './convertElementSchemaToStyleKeys.ts';
 
 function createSchema(components: Schema['components'], global?: Schema['global']): Schema {
   return {

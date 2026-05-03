@@ -1,4 +1,4 @@
-import type { ElementEffects } from '../index';
+import type { ElementEffects } from '../index.ts';
 
 // Example usage of the borderRadius effect schema following the same style as shadow.example.ts
 // This demonstrates:

@@ -16,7 +16,9 @@ export async function loadPresetsToBuild(baseDir: string): Promise<PresetToBuild
   const items: PresetToBuild[] = [];
 
   for (const dir of dirs) {
-    const mod = (await import(`@kiskadee/presets/src/presets/${dir}`)) as { schema?: Schema };
+    const mod = (await import(`@kiskadee/presets/src/presets/${dir}/index.ts`)) as {
+      schema?: Schema;
+    };
 
     if (!mod?.schema) {
       console.warn(`[web-builder] Skipping preset "${dir}": missing schema export.`);

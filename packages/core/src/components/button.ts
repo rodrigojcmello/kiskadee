@@ -3,10 +3,10 @@ import type {
   ColorSchema,
   SegmentName,
   ThemeMode
-} from '../types/colors/colors.types';
-import type { DecorationSchema } from '../types/decorations/decorations.types';
-import type { ElementEffects } from '../types/effects';
-import type { ScaleBySize, StandardScaleProperty } from '../types/scales/scales.types';
+} from '../types/colors/colors.types.ts';
+import type { DecorationSchema } from '../types/decorations/decorations.types.ts';
+import type { ElementEffects } from '../types/effects/index.ts';
+import type { ScaleBySize, StandardScaleProperty } from '../types/scales/scales.types.ts';
 
 type ElementPalettesByColor<
   TSegmentName extends SegmentName,

@@ -1,7 +1,7 @@
 import { breakpoints, color, primitive, type Schema, withAlpha } from '@kiskadee/core';
-import { buildBySegment } from '../../utils/buildBySegment';
-import { createPresetColorGetter } from '../../utils/presetColor';
-import { schemaColors } from './fluent-2-kiskadee.colors';
+import { buildBySegment } from '../../utils/buildBySegment.ts';
+import { createPresetColorGetter } from '../../utils/presetColor.ts';
+import { schemaColors } from './fluent-2-kiskadee.colors.ts';
 
 // Reference: https://www.figma.com/design/iEmab9I4qGqbUJlFSxRORE/Microsoft-Fluent-2-Web--Community-?node-id=1-840&p=f&t=M4w8UKqwRiqJgq8i-0
 

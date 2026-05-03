@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getToken } from '../utils';
+import { getToken } from '../utils/index.ts';
 
 describe('getToken', () => {
   it('should return "a" for index 0', () => {

@@ -1,6 +1,6 @@
 import type { RippleEffectSchema } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
-import { convertElementRippleToStyleKeys } from './convertElementRippleToStyleKeys';
+import { convertElementRippleToStyleKeys } from './convertElementRippleToStyleKeys.ts';
 
 const parseStyleKeyValue = <T>(key: string): T => {
   const index = key.indexOf('__');

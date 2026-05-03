@@ -1,7 +1,7 @@
 import type { TextWeightValue } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
-import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages';
-import { transformTextWeightKeyToCss } from './transformTextWeightKeyToCss';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages.ts';
+import { transformTextWeightKeyToCss } from './transformTextWeightKeyToCss.ts';
 
 const propertyName = 'textWeight';
 

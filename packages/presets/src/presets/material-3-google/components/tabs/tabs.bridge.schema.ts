@@ -1,5 +1,5 @@
 import { type Schema, withAlpha } from '@kiskadee/core';
-import type { PresetColorGetter } from '../../../../utils/presetColor';
+import type { PresetColorGetter } from '../../../../utils/presetColor.ts';
 
 type TabsComponent = NonNullable<Schema<never>['components']['tabs']>;
 type Material3GoogleSegmentName = 'default' | 'dynamic';

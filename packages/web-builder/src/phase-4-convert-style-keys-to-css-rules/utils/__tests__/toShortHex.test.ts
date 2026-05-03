@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { toShortHex } from '../toShortHex';
+import { toShortHex } from '../toShortHex.ts';
 import type { Hex } from '@kiskadee/core';
 
 describe('toShortHex', () => {

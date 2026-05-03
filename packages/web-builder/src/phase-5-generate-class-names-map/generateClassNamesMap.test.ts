@@ -5,11 +5,11 @@ import type {
   Schema
 } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
-import type { ToneMetadataByPalette } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys';
-import { convertElementSchemaToStyleKeys } from '../phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys';
-import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames';
-import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy';
-import { generateClassNamesMapSplit } from './generateClassNamesMap';
+import type { ToneMetadataByPalette } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys.ts';
+import { convertElementSchemaToStyleKeys } from '../phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
+import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
+import { generateClassNamesMapSplit } from './generateClassNamesMap.ts';
 
 describe('generateClassNamesMapSplit (ripple)', () => {
   it('maps ripple effect style keys into compact ripple buckets', () => {

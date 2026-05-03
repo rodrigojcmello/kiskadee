@@ -1,24 +1,24 @@
-export * from './breakpoints';
-export * from './components/button';
-export * from './components/tabs';
-export * from './components/text-field';
-export { validateSchemaComponentContracts } from './utils/validateComponentContracts';
-export * from './schema';
-export * from './types/colors/colors.types';
-export * from './types/decorations/decorations.types';
-export * from './types/effects';
+export * from './breakpoints.ts';
+export * from './components/button.ts';
+export * from './components/tabs.ts';
+export * from './components/text-field.ts';
+export { validateSchemaComponentContracts } from './utils/validateComponentContracts.ts';
+export * from './schema.ts';
+export * from './types/colors/colors.types.ts';
+export * from './types/decorations/decorations.types.ts';
+export * from './types/effects/index.ts';
 export type {
   BorderRadiusEffectMode,
   BorderRadiusEffectSchema,
   NumericByInteractionState,
   NumericWithSelected,
   ResponsiveNumeric
-} from './types/effects/border-radius/border-radius.types';
+} from './types/effects/border-radius/border-radius.types.ts';
 export {
   DEFAULT_PRESSED_RIPPLE_PROFILE,
   DEFAULT_RIPPLE_PROFILES,
   RIPPLE_DURATION_TOKEN_TO_MS
-} from './types/effects/ripple/ripple.constants';
+} from './types/effects/ripple/ripple.constants.ts';
 // [RIPPLE EFFECT 8] START: Public ripple type exports.
 export type {
   RippleEffectSchema,
@@ -29,16 +29,16 @@ export type {
   RipplePressedVisual,
   RippleProfile,
   RippleOrigin
-} from './types/effects/ripple/ripple.types';
+} from './types/effects/ripple/ripple.types.ts';
 export {
   resolvePressedRippleProfile,
   resolveRippleDurationMs,
   resolveRippleProfile,
   resolveRippleProfileKey
-} from './types/effects/ripple/ripple.utils';
+} from './types/effects/ripple/ripple.utils.ts';
 // [RIPPLE EFFECT 8] END: Public ripple type exports.
-export * from './types/effects/shadow/shadow.types';
-export * from './types/scales/scales.types';
-export * from './utils/color';
-export * from './utils/convertHslaToHex';
-export * from './utils/withAlpha';
+export * from './types/effects/shadow/shadow.types.ts';
+export * from './types/scales/scales.types.ts';
+export * from './utils/color.ts';
+export * from './utils/convertHslaToHex.ts';
+export * from './utils/withAlpha.ts';

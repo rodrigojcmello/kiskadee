@@ -10,7 +10,7 @@ import {
   ERROR_NO_MATCHING_SCALE_PROPERTY,
   ERROR_NO_STANDARD_SCALE_KEY,
   transformScaleKeyToCss
-} from './transformScaleKeyToCss';
+} from './transformScaleKeyToCss.ts';
 
 describe('transformScaleKeyToCss', () => {
   describe('Successful operation', () => {

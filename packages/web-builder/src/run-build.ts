@@ -1,25 +1,25 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateSchemaComponentContracts } from '@kiskadee/core';
-import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys';
+import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
 import {
   mapStyleKeyUsage,
   type StyleKeyUsageMap
-} from './phase-2-map-style-key-usage/mapStyleKeyUsage';
+} from './phase-2-map-style-key-usage/mapStyleKeyUsage.ts';
 import {
   type ShortenCssClassNames,
   shortenCssClassNames
-} from './phase-3-shorten-css-class-names/shortenCssClassNames';
-import { generateCssSplit } from './phase-4-convert-style-keys-to-css-rules/generateCssSplit';
+} from './phase-3-shorten-css-class-names/shortenCssClassNames.ts';
+import { generateCssSplit } from './phase-4-convert-style-keys-to-css-rules/generateCssSplit.ts';
 import {
   type ComponentClassNameMapSplit,
   generateClassNamesMapSplit
-} from './phase-5-generate-class-names-map/generateClassNamesMap';
-import { persistBuildArtifacts } from './phase-6-persist-build-artifacts/persistBuildArtifacts';
-import { publishMetadata } from './phase-7-publish-metadata/publishMetadata';
-import { writeExtraArtifacts } from './phase-8-write-extra-artifacts/writeExtraArtifacts';
-import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from './style-emission/web-build-policy';
-import { loadPresetsToBuild } from './utils/loadPresetsToBuild';
+} from './phase-5-generate-class-names-map/generateClassNamesMap.ts';
+import { persistBuildArtifacts } from './phase-6-persist-build-artifacts/persistBuildArtifacts.ts';
+import { publishMetadata } from './phase-7-publish-metadata/publishMetadata.ts';
+import { writeExtraArtifacts } from './phase-8-write-extra-artifacts/writeExtraArtifacts.ts';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from './style-emission/web-build-policy.ts';
+import { loadPresetsToBuild } from './utils/loadPresetsToBuild.ts';
 
 // Feature flag simples para controlar o uso de prefixo nos nomes de classes CSS
 // Ajuste para `false` caso queira desativar o prefixo sem alterar o restante do código.

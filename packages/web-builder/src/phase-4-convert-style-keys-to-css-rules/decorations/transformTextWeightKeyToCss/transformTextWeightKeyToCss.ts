@@ -1,5 +1,5 @@
 import { CssTextWeightValue, type TextWeightValue } from '@kiskadee/core';
-import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages.ts';
 
 /**
  * Converts a textWeight style key into a CSS rule string.

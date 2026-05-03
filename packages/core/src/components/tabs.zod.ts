@@ -1,4 +1,4 @@
-export { validateTabsComponentContract } from './tabs.contract.zod';
+export { validateTabsComponentContract } from './tabs.contract.zod.ts';
 export type {
   TabsBarElementStyleFromSchema,
   TabsBoxBarElementStyleFromSchema,
@@ -14,5 +14,5 @@ export type {
   TabsSegmentedTriggerElementStyleFromSchema,
   TabsSeparatorElementStyleFromSchema,
   TabsTriggerElementStyleFromSchema
-} from './tabs.elements.zod';
-export type { TabsOptionsFromSchema } from './tabs.options.zod';
+} from './tabs.elements.zod.ts';
+export type { TabsOptionsFromSchema } from './tabs.options.zod.ts';

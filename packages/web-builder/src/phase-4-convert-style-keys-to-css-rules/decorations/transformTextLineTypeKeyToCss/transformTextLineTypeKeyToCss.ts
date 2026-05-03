@@ -4,7 +4,7 @@ import {
   type DecorationProperty,
   type TextLineTypeValue
 } from '@kiskadee/core';
-import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages';
+import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages.ts';
 
 const { textLineType }: typeof CssDecorationProperty = CssDecorationProperty;
 
