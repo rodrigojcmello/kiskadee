@@ -19,14 +19,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@kiskadee/css-build": "workspace:^",
     "@kiskadee/core": "workspace:^",
+    "@kiskadee/css-build": "workspace:^",
     "@kiskadee/presets": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^24.7.2",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
+    "esbuild": "^0.25.9",
     "postcss": "^8.5.6",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
