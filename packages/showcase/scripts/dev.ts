@@ -1,4 +1,4 @@
-import { spawn, type ChildProcess } from 'node:child_process';
+import { type ChildProcess, spawn } from 'node:child_process';
 
 const commandByPlatform = (command: string): string =>
   process.platform === 'win32' ? `${command}.cmd` : command;
@@ -21,7 +21,9 @@ function runOnce(command: string, args: string[]): Promise<void> {
         return;
       }
 
-      reject(new Error(`${command} ${args.join(' ')} failed with ${signal ?? `exit code ${code}`}`));
+      reject(
+        new Error(`${command} ${args.join(' ')} failed with ${signal ?? `exit code ${code}`}`)
+      );
     });
   });
 }
@@ -54,7 +56,10 @@ function stopChildren(signal: NodeJS.Signals): void {
 }
 
 async function main(): Promise<void> {
-  await runOnce(pnpm, ['--filter', '@kiskadee/react-components', 'run', 'build']);
+  await Promise.all([
+    runOnce(pnpm, ['--filter', '@kiskadee/react-components', 'run', 'build:dev']),
+    runOnce(pnpm, ['--filter', '@kiskadee/web-builder', 'run', 'build-sync-generate'])
+  ]);
 
   start(pnpm, [
     '--filter',
