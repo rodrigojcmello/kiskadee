@@ -19,18 +19,34 @@ type CreateMaterial3GoogleTextFieldSchemaArgs = {
   transparent: readonly [number, number, number, number];
 };
 
-const controlRadius = {
+const standardControlRadius = {
   rounded: {
     's:sm:1': 6,
     's:md:1': 8
   },
   pill: {
-    's:sm:1': 20,
-    's:md:1': 28
+    's:sm:1': 18,
+    's:md:1': 20
   },
   square: {
     's:sm:1': 0,
     's:md:1': 0
+  }
+};
+
+const floatingControlRadius = {
+  ...standardControlRadius,
+  pill: {
+    's:sm:1': 24,
+    's:md:1': 28
+  }
+};
+
+const floatingInsideControlRadius = {
+  ...standardControlRadius,
+  pill: {
+    's:sm:1': 26,
+    's:md:1': 30
   }
 };
 
@@ -716,7 +732,7 @@ export function createMaterial3GoogleTextFieldSchema(
         's:sm:1': 1,
         's:md:1': 1
       },
-      borderRadius: controlRadius,
+      borderRadius: standardControlRadius,
       paddingTop: {
         's:sm:1': 8,
         's:md:1': 8
@@ -749,7 +765,7 @@ export function createMaterial3GoogleTextFieldSchema(
         's:sm:1': 0,
         's:md:1': 0
       },
-      borderRadius: controlRadius,
+      borderRadius: standardControlRadius,
       paddingTop: {
         's:sm:1': 8,
         's:md:1': 8
@@ -782,7 +798,7 @@ export function createMaterial3GoogleTextFieldSchema(
         's:sm:1': 0,
         's:md:1': 0
       },
-      borderRadius: controlRadius,
+      borderRadius: standardControlRadius,
       paddingTop: {
         's:sm:1': 8,
         's:md:1': 8
@@ -868,7 +884,7 @@ export function createMaterial3GoogleTextFieldSchema(
         's:sm:1': 1,
         's:md:1': 1
       },
-      borderRadius: controlRadius,
+      borderRadius: floatingControlRadius,
       paddingTop: {
         's:sm:1': 8,
         's:md:1': 8
@@ -901,7 +917,7 @@ export function createMaterial3GoogleTextFieldSchema(
         's:sm:1': 1,
         's:md:1': 1
       },
-      borderRadius: controlRadius,
+      borderRadius: floatingInsideControlRadius,
       paddingTop: {
         's:sm:1': 10,
         's:md:1': 10
