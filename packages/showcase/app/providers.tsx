@@ -36,7 +36,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     globalRipple,
     textFieldVariant,
     textFieldMode,
-    textFieldLabelRadiusOffset,
+    textFieldVariants,
     tabsVariant,
     tabsIndicatorPosition,
     tabsIndicatorShape,
@@ -54,7 +54,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     globalRipple !== undefined ||
     textFieldVariant !== undefined ||
     textFieldMode !== undefined ||
-    textFieldLabelRadiusOffset !== undefined ||
+    textFieldVariants !== undefined ||
     tabsVariant !== undefined ||
     tabsIndicatorPosition !== undefined ||
     tabsIndicatorShape !== undefined ||
@@ -67,7 +67,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {}),
           ...(textFieldVariant !== undefined ||
           textFieldMode !== undefined ||
-          textFieldLabelRadiusOffset !== undefined ||
+          textFieldVariants !== undefined ||
           tabsVariant !== undefined ||
           tabsIndicatorPosition !== undefined ||
           tabsIndicatorShape !== undefined ||
@@ -79,18 +79,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
                 components: {
                   ...(textFieldVariant !== undefined ||
                   textFieldMode !== undefined ||
-                  textFieldLabelRadiusOffset !== undefined
+                  textFieldVariants !== undefined
                     ? {
                         textField: {
                           options: {
                             ...(textFieldVariant !== undefined
                               ? { variant: textFieldVariant }
                               : {}),
-                            ...(textFieldMode !== undefined ? { mode: textFieldMode } : {}),
-                            ...(textFieldLabelRadiusOffset !== undefined
-                              ? { labelRadiusOffset: textFieldLabelRadiusOffset }
-                              : {})
-                          }
+                            ...(textFieldMode !== undefined ? { mode: textFieldMode } : {})
+                          },
+                          ...(textFieldVariants !== undefined
+                            ? { variants: textFieldVariants }
+                            : {})
                         }
                       }
                     : {}),

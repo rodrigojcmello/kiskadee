@@ -7,7 +7,9 @@ import type {
   TabsIndicatorWidth,
   TabsTabWidth,
   TabsVariant,
+  TextFieldLabelOffsetByRadius,
   TextFieldMode,
+  TextFieldModeByVariant,
   TextFieldVariant,
   ThemeMode
 } from '@kiskadee/core';
@@ -17,13 +19,27 @@ import type { DesignSystemKey } from '@/registry/registry-utils';
 import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 
 type BackgroundTones = Partial<Record<ThemeMode, string | undefined>>;
+type TextFieldVariantsConfig = {
+  [TVariant in TextFieldVariant]?: {
+    modes?: Partial<
+      Record<
+        TextFieldModeByVariant[TVariant],
+        {
+          options?: {
+            labelOffset?: TextFieldLabelOffsetByRadius;
+          };
+        }
+      >
+    >;
+  };
+};
 
 // Cache for global radius/ripple metadata loaded from <ds>/global.kiskadee.json
 const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
 const rippleGlobalCache: Partial<Record<string, RippleEffectSchema | null>> = {};
 const textFieldVariantCache: Partial<Record<string, TextFieldVariant | null>> = {};
 const textFieldModeCache: Partial<Record<string, TextFieldMode | null>> = {};
-const textFieldLabelRadiusOffsetCache: Partial<Record<string, boolean | null>> = {};
+const textFieldVariantsCache: Partial<Record<string, TextFieldVariantsConfig | null>> = {};
 const tabsVariantCache: Partial<Record<string, TabsVariant | null>> = {};
 const tabsIndicatorPositionCache: Partial<Record<string, TabsIndicatorPosition | null>> = {};
 const tabsIndicatorShapeCache: Partial<Record<string, TabsIndicatorShape | null>> = {};
@@ -44,7 +60,7 @@ export function useThemeExtras({
   const [globalRipple, setGlobalRipple] = useState<RippleEffectSchema | undefined>(undefined);
   const [textFieldVariant, setTextFieldVariant] = useState<TextFieldVariant | undefined>(undefined);
   const [textFieldMode, setTextFieldMode] = useState<TextFieldMode | undefined>(undefined);
-  const [textFieldLabelRadiusOffset, setTextFieldLabelRadiusOffset] = useState<boolean | undefined>(
+  const [textFieldVariants, setTextFieldVariants] = useState<TextFieldVariantsConfig | undefined>(
     undefined
   );
   const [tabsVariant, setTabsVariant] = useState<TabsVariant | undefined>(undefined);
@@ -77,8 +93,8 @@ export function useThemeExtras({
       let textFieldVariantValue = textFieldVariantCache[dsKey] ?? undefined;
       const hasTextFieldMode = Object.hasOwn(textFieldModeCache, dsKey);
       let textFieldModeValue = textFieldModeCache[dsKey] ?? undefined;
-      const hasTextFieldLabelRadiusOffset = Object.hasOwn(textFieldLabelRadiusOffsetCache, dsKey);
-      let textFieldLabelRadiusOffsetValue = textFieldLabelRadiusOffsetCache[dsKey] ?? undefined;
+      const hasTextFieldVariants = Object.hasOwn(textFieldVariantsCache, dsKey);
+      let textFieldVariantsValue = textFieldVariantsCache[dsKey] ?? undefined;
       const hasTabsVariant = Object.hasOwn(tabsVariantCache, dsKey);
       let variant = tabsVariantCache[dsKey] ?? undefined;
       const hasTabsIndicatorPosition = Object.hasOwn(tabsIndicatorPositionCache, dsKey);
@@ -98,7 +114,7 @@ export function useThemeExtras({
         !hasRipple ||
         !hasTextFieldVariant ||
         !hasTextFieldMode ||
-        !hasTextFieldLabelRadiusOffset ||
+        !hasTextFieldVariants ||
         !hasTabsVariant ||
         !hasTabsIndicatorPosition ||
         !hasTabsIndicatorShape ||
@@ -132,8 +148,8 @@ export function useThemeExtras({
                 options?: {
                   variant?: TextFieldVariant;
                   mode?: TextFieldMode;
-                  labelRadiusOffset?: boolean;
                 };
+                variants?: TextFieldVariantsConfig;
               };
             };
           }>(`${dsKey}/global.kiskadee.json`, { required: false, fallback: {} });
@@ -145,8 +161,8 @@ export function useThemeExtras({
           textFieldVariantCache[dsKey] = textFieldVariantValue ?? null;
           textFieldModeValue = json.components?.textField?.options?.mode;
           textFieldModeCache[dsKey] = textFieldModeValue ?? null;
-          textFieldLabelRadiusOffsetValue = json.components?.textField?.options?.labelRadiusOffset;
-          textFieldLabelRadiusOffsetCache[dsKey] = textFieldLabelRadiusOffsetValue ?? null;
+          textFieldVariantsValue = json.components?.textField?.variants;
+          textFieldVariantsCache[dsKey] = textFieldVariantsValue ?? null;
           variant = json.components?.tabs?.options?.variant ?? json.components?.tabs?.options?.type;
           tabsVariantCache[dsKey] = variant ?? null;
           indicatorPosition = json.components?.tabs?.options?.indicatorPosition;
@@ -186,7 +202,7 @@ export function useThemeExtras({
       setGlobalRipple(ripple);
       setTextFieldVariant(textFieldVariantValue);
       setTextFieldMode(textFieldModeValue);
-      setTextFieldLabelRadiusOffset(textFieldLabelRadiusOffsetValue);
+      setTextFieldVariants(textFieldVariantsValue);
       setTabsVariant(variant);
       setTabsIndicatorPosition(indicatorPosition);
       setTabsIndicatorShape(indicatorShape);
@@ -262,7 +278,7 @@ export function useThemeExtras({
     globalRipple,
     textFieldVariant,
     textFieldMode,
-    textFieldLabelRadiusOffset,
+    textFieldVariants,
     tabsVariant,
     tabsIndicatorPosition,
     tabsIndicatorShape,

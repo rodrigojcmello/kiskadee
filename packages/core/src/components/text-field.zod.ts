@@ -7,4 +7,7 @@ export type {
   TextFieldMessageElementStyleFromSchema,
   TextFieldRootElementStyleFromSchema
 } from './text-field.elements.zod';
-export type { TextFieldOptionsFromSchema } from './text-field.options.zod';
+export type {
+  TextFieldModeOptionsFromSchema,
+  TextFieldOptionsFromSchema
+} from './text-field.options.zod';

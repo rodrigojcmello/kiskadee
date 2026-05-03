@@ -10,6 +10,14 @@ export const textFieldModeSchema = z.enum([
   'notched',
   'inside'
 ]);
+export const textFieldLabelOffsetStrategySchema = z.enum(['schema', 'radius', 'input-start']);
+export const textFieldLabelOffsetByRadiusSchema = z
+  .object({
+    square: textFieldLabelOffsetStrategySchema.optional(),
+    rounded: textFieldLabelOffsetStrategySchema.optional(),
+    pill: textFieldLabelOffsetStrategySchema.optional()
+  })
+  .strict();
 
 export type TextFieldStandardModeSchemaValue = z.infer<typeof textFieldStandardModeSchema>;
 export type TextFieldFloatingModeSchemaValue = z.infer<typeof textFieldFloatingModeSchema>;
@@ -31,8 +39,7 @@ export function createTextFieldOptionsSchema() {
   return z
     .object({
       variant: textFieldVariantSchema.optional(),
-      mode: textFieldModeSchema.optional(),
-      labelRadiusOffset: z.boolean().optional()
+      mode: textFieldModeSchema.optional()
     })
     .strict()
     .superRefine((value, ctx) => {
@@ -56,6 +63,16 @@ export function createTextFieldOptionsSchema() {
     });
 }
 
+export function createTextFieldModeOptionsSchema() {
+  return z
+    .object({
+      labelOffset: textFieldLabelOffsetByRadiusSchema.optional()
+    })
+    .strict();
+}
+
 export const textFieldOptionsSchema = createTextFieldOptionsSchema();
+export const textFieldModeOptionsSchema = createTextFieldModeOptionsSchema();
 
 export type TextFieldOptionsFromSchema = z.input<typeof textFieldOptionsSchema>;
+export type TextFieldModeOptionsFromSchema = z.input<typeof textFieldModeOptionsSchema>;

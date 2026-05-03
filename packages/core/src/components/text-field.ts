@@ -1,3 +1,4 @@
+import type { RadiusMode } from '../schema';
 import type { SegmentName } from '../types/colors/colors.types';
 import type {
   TextFieldControlElementStyleFromSchema,
@@ -5,6 +6,7 @@ import type {
   TextFieldInputElementStyleFromSchema,
   TextFieldLabelElementStyleFromSchema,
   TextFieldMessageElementStyleFromSchema,
+  TextFieldModeOptionsFromSchema,
   TextFieldOptionsFromSchema,
   TextFieldRootElementStyleFromSchema
 } from './text-field.zod';
@@ -24,8 +26,17 @@ export type TextFieldStandardMode = 'outline' | 'underline' | 'borderless';
 export type TextFieldFloatingMode = 'notched' | 'inside';
 export type TextFieldMode = TextFieldStandardMode | TextFieldFloatingMode;
 export type TextFieldValidationStatus = 'error' | 'warning';
+export type TextFieldModeByVariant = {
+  standard: TextFieldStandardMode;
+  floating: TextFieldFloatingMode;
+};
+export type TextFieldLabelOffsetStrategy = 'schema' | 'radius' | 'input-start';
+export type TextFieldLabelOffsetByRadius = Partial<
+  Record<RadiusMode, TextFieldLabelOffsetStrategy>
+>;
 
 export type TextFieldOptions = TextFieldOptionsFromSchema;
+export type TextFieldModeOptions = TextFieldModeOptionsFromSchema;
 
 /**
  * e1 — root wrapper
@@ -96,18 +107,19 @@ export type TextFieldElements<TSegmentName extends SegmentName = never> = {
   e6?: TextFieldIndicatorElementStyle<TSegmentName>;
 };
 
-export type TextFieldVariantConfig<TSegmentName extends SegmentName = never> = {
+export type TextFieldVariantConfig = {
   options?: {
     mode?: TextFieldMode;
   };
 };
 
 export type TextFieldModeConfig<TSegmentName extends SegmentName = never> = {
+  options?: TextFieldModeOptions;
   elements: TextFieldElements<TSegmentName>;
 };
 
 export type TextFieldStandardVariantConfig<TSegmentName extends SegmentName = never> =
-  TextFieldVariantConfig<TSegmentName> & {
+  TextFieldVariantConfig & {
     options?: {
       mode?: TextFieldStandardMode;
     };
@@ -119,7 +131,7 @@ export type TextFieldStandardVariantConfig<TSegmentName extends SegmentName = ne
   };
 
 export type TextFieldFloatingVariantConfig<TSegmentName extends SegmentName = never> =
-  TextFieldVariantConfig<TSegmentName> & {
+  TextFieldVariantConfig & {
     options?: {
       mode?: TextFieldFloatingMode;
     };

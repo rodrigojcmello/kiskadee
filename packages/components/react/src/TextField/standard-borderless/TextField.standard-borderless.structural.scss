@@ -37,6 +37,14 @@
 }
 
 /*
+ * element label modifier 'b' / e2b
+ * Aligns the label text start with the measured input text lane.
+ */
+.k-txf-e2-e.k-txf-e2b {
+  margin-inline-start: max(0px, calc(var(--k-txf-iis, 0px) - var(--k-txf-lps, 0px)));
+}
+
+/*
  * element label / e2
  * Clears forced focus outlines because the control shell owns the visible focus treatment.
  */

@@ -1,5 +1,21 @@
+import type {
+  RadiusMode,
+  TextFieldFloatingMode,
+  TextFieldLabelOffsetByRadius,
+  TextFieldLabelOffsetStrategy,
+  TextFieldStandardMode
+} from '@kiskadee/core';
 import { HeadlessTextField } from '@kiskadee/react-headless';
-import { type FocusEvent, memo, useCallback, useMemo, useRef, useState } from 'react';
+import {
+  type FocusEvent,
+  memo,
+  type RefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import { useKiskadee } from '../contexts/KiskadeeContext';
 import {
   DEFAULT_TEXT_FIELD_EMPHASIS,
@@ -32,6 +48,64 @@ type CreateTextFieldComponentOptions = {
 const loadFloatingRestTypography = () =>
   import('./floatingRestTypography.runtime').then((module) => module.bindFloatingRestTypography);
 
+function resolveLabelOffsetStrategy(
+  labelOffset: TextFieldLabelOffsetStrategy | TextFieldLabelOffsetByRadius | undefined,
+  radius: RadiusMode
+): TextFieldLabelOffsetStrategy {
+  if (!labelOffset) return 'schema';
+  if (typeof labelOffset === 'string') return labelOffset;
+  return labelOffset[radius] ?? 'schema';
+}
+
+function useInputStartLabelOffset(options: {
+  enabled: boolean;
+  labelRef: RefObject<HTMLLabelElement | null>;
+  inputRef: RefObject<HTMLInputElement | null>;
+  controlRef: RefObject<HTMLDivElement | null>;
+}) {
+  useEffect(() => {
+    const labelElement = options.labelRef.current;
+    const inputElement = options.inputRef.current;
+    const controlElement = options.controlRef.current;
+
+    if (!options.enabled || !labelElement || !inputElement || !controlElement) {
+      labelElement?.style.removeProperty('--k-txf-iis');
+      labelElement?.style.removeProperty('--k-txf-lps');
+      return;
+    }
+
+    const syncInputStart = () => {
+      const labelStyles = getComputedStyle(labelElement);
+      const inputRect = inputElement.getBoundingClientRect();
+      const controlRect = controlElement.getBoundingClientRect();
+      const inputInlineStart = Math.max(0, inputRect.left - controlRect.left);
+      const labelPaddingStart = Number.parseFloat(labelStyles.paddingInlineStart);
+
+      labelElement.style.setProperty('--k-txf-iis', `${inputInlineStart}px`);
+      labelElement.style.setProperty(
+        '--k-txf-lps',
+        `${Number.isFinite(labelPaddingStart) ? labelPaddingStart : 0}px`
+      );
+    };
+
+    syncInputStart();
+
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(syncInputStart) : null;
+    resizeObserver?.observe(labelElement);
+    resizeObserver?.observe(inputElement);
+    resizeObserver?.observe(controlElement);
+    window.addEventListener('resize', syncInputStart);
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', syncInputStart);
+      labelElement.style.removeProperty('--k-txf-iis');
+      labelElement.style.removeProperty('--k-txf-lps');
+    };
+  }, [options.controlRef, options.enabled, options.inputRef, options.labelRef]);
+}
+
 function resolveTextFieldElements(
   map: unknown,
   structural: TextFieldStructuralDescriptor
@@ -58,7 +132,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
       intent,
       validationStatus,
       radius,
-      labelRadiusOffset,
+      labelOffset,
       disabled,
       readOnly,
       ...rootProps
@@ -67,10 +141,22 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
     const [focused, setFocused] = useState(false);
     const labelRef = useRef<HTMLLabelElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const controlRef = useRef<HTMLDivElement | null>(null);
     const resolvedIntent = intent ?? validationStatus ?? DEFAULT_TEXT_FIELD_INTENT;
     const resolvedRadius = radius ?? global?.radius ?? DEFAULT_TEXT_FIELD_RADIUS;
-    const resolvedLabelRadiusOffset =
-      labelRadiusOffset ?? global?.components?.textField?.options?.labelRadiusOffset ?? false;
+    const textFieldGlobalConfig = global?.components?.textField;
+    const modeLabelOffset =
+      options.structural.variant === 'standard'
+        ? textFieldGlobalConfig?.variants?.standard?.modes?.[
+            options.structural.mode as TextFieldStandardMode
+          ]?.options?.labelOffset
+        : textFieldGlobalConfig?.variants?.floating?.modes?.[
+            options.structural.mode as TextFieldFloatingMode
+          ]?.options?.labelOffset;
+    const resolvedLabelOffsetStrategy = resolveLabelOffsetStrategy(
+      labelOffset ?? modeLabelOffset,
+      resolvedRadius
+    );
     const elements = resolveTextFieldElements(classesMap.textField, options.structural);
     const shouldMirrorFloatingTypography = options.structural.variant === 'floating';
 
@@ -84,7 +170,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
           intent: resolvedIntent,
           emphasis,
           radius: resolvedRadius,
-          labelRadiusOffset: resolvedLabelRadiusOffset,
+          labelOffsetStrategy: resolvedLabelOffsetStrategy,
           focused,
           disabled,
           readOnly
@@ -97,7 +183,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
         focused,
         radius,
         readOnly,
-        resolvedLabelRadiusOffset,
+        resolvedLabelOffsetStrategy,
         resolvedIntent,
         resolvedRadius,
         scale
@@ -125,6 +211,13 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
       labelRef,
       inputRef,
       loadBinder: loadFloatingRestTypography
+    });
+
+    useInputStartLabelOffset({
+      enabled: resolvedLabelOffsetStrategy === 'input-start',
+      labelRef,
+      inputRef,
+      controlRef
     });
 
     const { className: inputClassName, onBlur, onFocus, ...restInputProps } = inputProps ?? {};
@@ -158,13 +251,13 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
         {options.layout === 'standard' ? (
           <>
             <HeadlessTextField.Label ref={labelRef}>{label}</HeadlessTextField.Label>
-            <HeadlessTextField.Control>
+            <HeadlessTextField.Control ref={controlRef}>
               {input}
               {indicator}
             </HeadlessTextField.Control>
           </>
         ) : (
-          <HeadlessTextField.Control>
+          <HeadlessTextField.Control ref={controlRef}>
             <HeadlessTextField.Label ref={labelRef}>{label}</HeadlessTextField.Label>
             {input}
             {indicator}

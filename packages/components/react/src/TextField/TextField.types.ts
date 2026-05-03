@@ -3,10 +3,11 @@ import type {
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
-  TextFieldFloatingMode,
   TextFieldIntent,
+  TextFieldLabelOffsetByRadius,
+  TextFieldLabelOffsetStrategy,
   TextFieldMode,
-  TextFieldStandardMode,
+  TextFieldModeByVariant,
   TextFieldValidationStatus
 } from '@kiskadee/core';
 import type {
@@ -44,8 +45,8 @@ export type TextFieldProps = Omit<
   validationStatus?: TextFieldValidationStatus;
   /** Border radius mode. Uses schema radius scales for square, rounded, and pill. */
   radius?: RadiusMode;
-  /** Offset the label by the active border radius when it is larger than the schema margin. */
-  labelRadiusOffset?: boolean;
+  /** Label inline-start offset strategy, or a strategy map keyed by the active radius mode. */
+  labelOffset?: TextFieldLabelOffsetStrategy | TextFieldLabelOffsetByRadius;
 };
 
 export type TextFieldStandardProps = TextFieldProps;
@@ -57,7 +58,4 @@ export type TextFieldFloatingNotchedProps = TextFieldProps;
 
 export type TextFieldFloatingInsideProps = TextFieldProps;
 
-export type TextFieldModeByVariant = {
-  standard: TextFieldStandardMode;
-  floating: TextFieldFloatingMode;
-};
+export type { TextFieldModeByVariant };

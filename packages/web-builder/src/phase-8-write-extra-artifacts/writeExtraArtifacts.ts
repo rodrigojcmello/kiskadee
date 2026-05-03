@@ -15,7 +15,9 @@ import type {
   TabsIndicatorWidth,
   TabsTabWidth,
   TabsVariant,
+  TextFieldLabelOffsetByRadius,
   TextFieldMode,
+  TextFieldModeByVariant,
   TextFieldVariant,
   ThemeMode
 } from '@kiskadee/core';
@@ -27,6 +29,17 @@ import { type FontStack, toCssFontFamily } from '../utils/fontFamily';
 type ExtractableSchema = Schema;
 
 type SegmentKey = SegmentName | string;
+type TextFieldModeOptionsPayload = {
+  labelOffset?: TextFieldLabelOffsetByRadius;
+};
+type TextFieldModePayload<TMode extends TextFieldMode = TextFieldMode> = Partial<
+  Record<TMode, { options?: TextFieldModeOptionsPayload }>
+>;
+type TextFieldVariantsPayload = {
+  [TVariant in TextFieldVariant]?: {
+    modes?: TextFieldModePayload<TextFieldModeByVariant[TVariant]>;
+  };
+};
 
 function hasErrnoCode(error: unknown, code: string): boolean {
   return (
@@ -43,6 +56,41 @@ function getBuildDir(outDirSlug: string): string {
   const baseBuildDir = resolve(__dirname, '..', '..', 'build');
 
   return resolve(baseBuildDir, outDirSlug);
+}
+
+function pickTextFieldModeOptions(options: unknown): TextFieldModeOptionsPayload | undefined {
+  const labelOffset = (options as { labelOffset?: TextFieldLabelOffsetByRadius } | undefined)
+    ?.labelOffset;
+  return labelOffset ? { labelOffset } : undefined;
+}
+
+function buildTextFieldVariantsPayload(schema: ExtractableSchema): TextFieldVariantsPayload {
+  const textField = schema.components?.textField;
+  const standardModes = textField?.variants?.standard?.modes;
+  const floatingModes = textField?.variants?.floating?.modes;
+  const variants: TextFieldVariantsPayload = {};
+
+  const standard: TextFieldModePayload<TextFieldModeByVariant['standard']> = {};
+  const outlineOptions = pickTextFieldModeOptions(standardModes?.outline?.options);
+  const underlineOptions = pickTextFieldModeOptions(standardModes?.underline?.options);
+  const borderlessOptions = pickTextFieldModeOptions(standardModes?.borderless?.options);
+  if (outlineOptions) standard.outline = { options: outlineOptions };
+  if (underlineOptions) standard.underline = { options: underlineOptions };
+  if (borderlessOptions) standard.borderless = { options: borderlessOptions };
+  if (Object.keys(standard).length > 0) {
+    variants.standard = { modes: standard };
+  }
+
+  const floating: TextFieldModePayload<TextFieldModeByVariant['floating']> = {};
+  const notchedOptions = pickTextFieldModeOptions(floatingModes?.notched?.options);
+  const insideOptions = pickTextFieldModeOptions(floatingModes?.inside?.options);
+  if (notchedOptions) floating.notched = { options: notchedOptions };
+  if (insideOptions) floating.inside = { options: insideOptions };
+  if (Object.keys(floating).length > 0) {
+    variants.floating = { modes: floating };
+  }
+
+  return variants;
 }
 
 function getSegmentKeys(schema: ExtractableSchema): SegmentKey[] {
@@ -174,9 +222,7 @@ export async function writeExtraArtifacts(params: {
     | TextFieldVariant
     | undefined;
   const textFieldMode = schema.components?.textField?.options?.mode as TextFieldMode | undefined;
-  const textFieldLabelRadiusOffset = schema.components?.textField?.options?.labelRadiusOffset as
-    | boolean
-    | undefined;
+  const textFieldVariants = buildTextFieldVariantsPayload(schema);
 
   function toCssFontFamilyString(value: FontStack): string | null {
     const css = toCssFontFamily(value);
@@ -184,8 +230,7 @@ export async function writeExtraArtifacts(params: {
   }
 
   const bodyCss = fonts ? toCssFontFamilyString(fonts.body as FontStack) : null;
-  const headingCssRaw =
-    fonts && fonts.heading ? toCssFontFamilyString(fonts.heading as FontStack) : null;
+  const headingCssRaw = fonts?.heading ? toCssFontFamilyString(fonts.heading as FontStack) : null;
   const headingCss = headingCssRaw ?? bodyCss;
 
   const hasFonts = Boolean(bodyCss);
@@ -201,7 +246,7 @@ export async function writeExtraArtifacts(params: {
       tabsLowerCurve
   );
   const hasTextFieldOptions = Boolean(
-    textFieldVariant || textFieldMode || textFieldLabelRadiusOffset !== undefined
+    textFieldVariant || textFieldMode || Object.keys(textFieldVariants).length > 0
   );
 
   if (hasFonts || hasRadius || hasRipple || hasTabsOptions || hasTextFieldOptions) {
@@ -228,8 +273,8 @@ export async function writeExtraArtifacts(params: {
           options?: {
             variant?: TextFieldVariant;
             mode?: TextFieldMode;
-            labelRadiusOffset?: boolean;
           };
+          variants?: TextFieldVariantsPayload;
         };
       };
     } = {};
@@ -274,11 +319,11 @@ export async function writeExtraArtifacts(params: {
               textField: {
                 options: {
                   ...(textFieldVariant ? { variant: textFieldVariant } : {}),
-                  ...(textFieldMode ? { mode: textFieldMode } : {}),
-                  ...(textFieldLabelRadiusOffset !== undefined
-                    ? { labelRadiusOffset: textFieldLabelRadiusOffset }
-                    : {})
-                }
+                  ...(textFieldMode ? { mode: textFieldMode } : {})
+                },
+                ...(Object.keys(textFieldVariants).length > 0
+                  ? { variants: textFieldVariants }
+                  : {})
               }
             }
           : {})

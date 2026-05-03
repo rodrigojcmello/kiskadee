@@ -8,7 +8,9 @@ import type {
   TabsIndicatorWidth,
   TabsTabWidth,
   TabsVariant,
+  TextFieldLabelOffsetByRadius,
   TextFieldMode,
+  TextFieldModeByVariant,
   TextFieldVariant,
   ThemeMode
 } from '@kiskadee/core';
@@ -35,7 +37,17 @@ export type KiskadeeContextValue = {
         options?: {
           variant?: TextFieldVariant;
           mode?: TextFieldMode;
-          labelRadiusOffset?: boolean;
+        };
+        variants?: {
+          [TVariant in TextFieldVariant]?: {
+            modes?: {
+              [TMode in TextFieldModeByVariant[TVariant]]?: {
+                options?: {
+                  labelOffset?: TextFieldLabelOffsetByRadius;
+                };
+              };
+            };
+          };
         };
       };
       tabs?: {

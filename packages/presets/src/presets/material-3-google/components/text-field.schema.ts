@@ -952,8 +952,7 @@ export function createMaterial3GoogleTextFieldSchema(
   return {
     options: {
       variant: 'standard',
-      mode: 'outline',
-      labelRadiusOffset: true
+      mode: 'outline'
     },
     variants: {
       standard: {
@@ -962,6 +961,13 @@ export function createMaterial3GoogleTextFieldSchema(
         },
         modes: {
           outline: {
+            options: {
+              labelOffset: {
+                square: 'schema',
+                rounded: 'schema',
+                pill: 'radius'
+              }
+            },
             elements: {
               e1: rootElement,
               e2: standardLabel,
@@ -971,6 +977,13 @@ export function createMaterial3GoogleTextFieldSchema(
             }
           },
           underline: {
+            options: {
+              labelOffset: {
+                square: 'schema',
+                rounded: 'schema',
+                pill: 'schema'
+              }
+            },
             elements: {
               e1: rootElement,
               e2: standardLabel,
@@ -981,6 +994,13 @@ export function createMaterial3GoogleTextFieldSchema(
             }
           },
           borderless: {
+            options: {
+              labelOffset: {
+                square: 'schema',
+                rounded: 'schema',
+                pill: 'input-start'
+              }
+            },
             elements: {
               e1: rootElement,
               e2: standardLabel,
@@ -997,6 +1017,13 @@ export function createMaterial3GoogleTextFieldSchema(
         },
         modes: {
           notched: {
+            options: {
+              labelOffset: {
+                square: 'schema',
+                rounded: 'radius',
+                pill: 'input-start'
+              }
+            },
             elements: {
               e1: rootElement,
               e2: floatingNotchedLabel,
@@ -1006,6 +1033,13 @@ export function createMaterial3GoogleTextFieldSchema(
             }
           },
           inside: {
+            options: {
+              labelOffset: {
+                square: 'schema',
+                rounded: 'input-start',
+                pill: 'input-start'
+              }
+            },
             elements: {
               e1: rootElement,
               e2: floatingInsideLabel,

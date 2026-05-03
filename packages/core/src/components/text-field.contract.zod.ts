@@ -10,6 +10,7 @@ import {
   createTextFieldRootElementStyleSchema
 } from './text-field.elements.zod';
 import {
+  createTextFieldModeOptionsSchema,
   createTextFieldOptionsSchema,
   type TextFieldModeSchemaValue,
   textFieldOptionsSchema
@@ -41,6 +42,7 @@ function createTextFieldElementsSchema<TSegmentName extends SegmentName = never>
 function createTextFieldModeConfigSchema() {
   return z
     .object({
+      options: createTextFieldModeOptionsSchema().optional(),
       elements: createTextFieldElementsSchema()
     })
     .strict();
@@ -56,14 +58,6 @@ function createTextFieldStandardVariantConfigSchema() {
               code: 'custom',
               path: ['variant'],
               message: 'variant must not be repeated inside a variant branch'
-            });
-          }
-
-          if (value.labelRadiusOffset !== undefined) {
-            ctx.addIssue({
-              code: 'custom',
-              path: ['labelRadiusOffset'],
-              message: 'labelRadiusOffset must be defined at components.textField.options'
             });
           }
 
@@ -106,14 +100,6 @@ function createTextFieldFloatingVariantConfigSchema() {
               code: 'custom',
               path: ['variant'],
               message: 'variant must not be repeated inside a variant branch'
-            });
-          }
-
-          if (value.labelRadiusOffset !== undefined) {
-            ctx.addIssue({
-              code: 'custom',
-              path: ['labelRadiusOffset'],
-              message: 'labelRadiusOffset must be defined at components.textField.options'
             });
           }
 

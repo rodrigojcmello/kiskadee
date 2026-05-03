@@ -6,6 +6,7 @@ import {
   componentEmphasisBuckets,
   type RadiusMode,
   type TextFieldIntent,
+  type TextFieldLabelOffsetStrategy,
   type TextFieldMode,
   type TextFieldVariant
 } from '@kiskadee/core';
@@ -133,7 +134,7 @@ export function resolveTextFieldClassNames(options: {
   intent: TextFieldIntent;
   emphasis: ComponentEmphasis | undefined;
   radius: RadiusMode;
-  labelRadiusOffset: boolean;
+  labelOffsetStrategy: TextFieldLabelOffsetStrategy;
   focused: boolean;
   disabled?: boolean;
   readOnly?: boolean;
@@ -148,7 +149,7 @@ export function resolveTextFieldClassNames(options: {
         'k-txf',
         `k-txf-${letter}`,
         `k-txf-e1-${letter}`,
-        options.labelRadiusOffset
+        options.labelOffsetStrategy === 'radius'
           ? resolveRadiusClassName(elements.e3, options.scale, options.radius)
           : '',
         elem(elements.e1, options),
@@ -157,7 +158,11 @@ export function resolveTextFieldClassNames(options: {
     e2:
       join(
         `k-txf-e2-${letter}`,
-        options.labelRadiusOffset ? 'k-txf-e2a' : '',
+        options.labelOffsetStrategy === 'radius'
+          ? 'k-txf-e2a'
+          : options.labelOffsetStrategy === 'input-start'
+            ? 'k-txf-e2b'
+            : '',
         elem(elements.e2, options),
         stateClass,
         'k-state',
