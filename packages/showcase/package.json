@@ -2,8 +2,9 @@
   "name": "@kiskadee/showcase",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "tsx ./scripts/dev.ts",
+    "dev": "node ./scripts/dev.ts",
     "clean:dev": "pnpm --filter @kiskadee/react-headless run clean && pnpm --filter @kiskadee/react-components run clean && pnpm --filter @kiskadee/web-builder run clean",
     "dev:fresh": "pnpm run clean:dev && pnpm run dev",
     "build:headless": "pnpm --filter @kiskadee/react-headless run build",
@@ -27,7 +28,6 @@
     "@types/node": "^20.19.27",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
-    "tsx": "^4.19.0",
     "typescript": "^5.9.3"
   }
 }
