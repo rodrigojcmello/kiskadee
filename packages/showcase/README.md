@@ -18,7 +18,7 @@ pnpm --filter @kiskadee/showcase dev
 This command is the local development entrypoint. It runs this sequence:
 
 ```txt
-1. Build @kiskadee/react-components once.
+1. Build @kiskadee/react-headless and @kiskadee/react-components once.
 2. Start the @kiskadee/react-components structural style watcher.
 3. Start next dev for the showcase.
 ```
@@ -53,6 +53,8 @@ This command runs the publication build sequence:
 
 ```txt
 1. pnpm run build:components
+   -> runs build:headless
+   -> builds @kiskadee/react-headless JS/types into dist
    -> builds @kiskadee/react-components JS, types, and component CSS into dist
 
 2. pnpm run build:artifacts

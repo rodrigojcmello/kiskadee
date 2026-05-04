@@ -2,9 +2,9 @@
   "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "outDir": "dist",
-    "rootDir": "src",
-    "module": "ES2022"
+    "rootDir": ".",
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force"
   },
-  "include": ["src"]
+  "include": ["src/**/*", "scripts/**/*.ts"]
 }

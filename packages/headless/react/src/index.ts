@@ -4,8 +4,8 @@ export type {
   TabsTabProps,
   TabsContentProps,
   TabsIndicatorProps
-} from './tabs/HeadlessTabs';
-export { HeadlessTabs } from './tabs/HeadlessTabs';
+} from './tabs/HeadlessTabs.tsx';
+export { HeadlessTabs } from './tabs/HeadlessTabs.tsx';
 
 export type {
   TextFieldClassNames,
@@ -15,11 +15,11 @@ export type {
   TextFieldMessageProps,
   TextFieldRootProps,
   TextFieldValidationStatus
-} from './text-field/HeadlessTextField';
-export { HeadlessTextField } from './text-field/HeadlessTextField';
+} from './text-field/HeadlessTextField.tsx';
+export { HeadlessTextField } from './text-field/HeadlessTextField.tsx';
 
-export type { ButtonProps } from './button/Button';
-export { Button } from './button/Button';
+export type { ButtonProps } from './button/Button.tsx';
+export { Button } from './button/Button.tsx';
 
 export type {
   SelectOption,
@@ -27,20 +27,20 @@ export type {
   SelectTriggerProps,
   SelectContentProps,
   SelectOptionProps
-} from './select/Select';
-export { Select } from './select/Select';
+} from './select/Select.tsx';
+export { Select } from './select/Select.tsx';
 
 export type {
   ColorRadioItem,
   ColorRadioGroupClassNames,
   ColorRadioGroupProps
-} from './color-radio-group/ColorRadioGroup';
-export { ColorRadioGroup } from './color-radio-group/ColorRadioGroup';
+} from './color-radio-group/ColorRadioGroup.tsx';
+export { ColorRadioGroup } from './color-radio-group/ColorRadioGroup.tsx';
 
 export type {
   SwatchRadioItem,
   SwatchRadioGroupClassNames,
   SwatchRadioGroupProps,
   SwatchRadioGroupRenderSwatchArgs
-} from './swatch-radio-group/SwatchRadioGroup';
-export { SwatchRadioGroup } from './swatch-radio-group/SwatchRadioGroup';
+} from './swatch-radio-group/SwatchRadioGroup.tsx';
+export { SwatchRadioGroup } from './swatch-radio-group/SwatchRadioGroup.tsx';

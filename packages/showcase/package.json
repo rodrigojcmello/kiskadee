@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "tsx ./scripts/dev.ts",
-    "build:components": "pnpm --filter @kiskadee/react-components run build",
+    "build:headless": "pnpm --filter @kiskadee/react-headless run build",
+    "build:components": "pnpm run build:headless && pnpm --filter @kiskadee/react-components run build:self",
     "build:artifacts": "pnpm --filter @kiskadee/web-builder run build-sync-generate",
     "build": "pnpm run build:components && pnpm run build:artifacts && next build",
     "start": "next start"

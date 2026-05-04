@@ -24,8 +24,10 @@
     "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
     "build:styles": "node ./scripts/build-styles.ts",
     "dev:styles": "node ./scripts/watch-styles.ts",
-    "build:dev": "node ./scripts/build.ts --skip-types",
-    "build": "node ./scripts/build.ts"
+    "build:dev:self": "node ./scripts/build.ts --skip-types",
+    "build:self": "node ./scripts/build.ts",
+    "build:dev": "pnpm --filter @kiskadee/react-headless run build:dev && pnpm run build:dev:self",
+    "build": "pnpm --filter @kiskadee/react-headless run build && pnpm run build:self"
   },
   "author": "Rodrigo J C Mello",
   "license": "MIT",

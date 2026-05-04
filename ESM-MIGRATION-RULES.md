@@ -22,9 +22,8 @@ Tool responsibilities are intentionally split:
   `--emitDeclarationOnly` for public `.d.ts` files.
 
 This decision exposes two upstream gaps in the current ecosystem (TS
-5.9.x, esbuild 0.25.x). The `react-components` build is the only place
-that is impacted by both gaps simultaneously, because it is the only
-package that emits both runtime `.js` and distributable `.d.ts`.
+5.9.x, esbuild 0.25.x). Packages that emit both runtime `.js` and
+distributable `.d.ts` are impacted by both gaps simultaneously.
 
 ## Convention
 
@@ -65,9 +64,10 @@ Packages that need to emit declaration files override `noEmit` and
 | `@kiskadee/web-builder`  | Node executes TS scripts; emits CSS/JSON artifacts | adopted; no esbuild needed |
 | `@kiskadee/react-components` | Node executes TS scripts; esbuild emits JS; tsc emits `.d.ts`; Sass emits CSS | adopted |
 | `@kiskadee/showcase`     | Next.js app; internal dev script still uses `tsx` | should migrate script execution to Node |
-| `@kiskadee/react-headless` | exports source TS today, but package metadata still points at `dist` | needs ownership decision before adopting |
+| `@kiskadee/react-headless` | Node executes TS scripts; esbuild emits JS; tsc emits `.d.ts` | adopted |
 
-Only `react-components` needs the workaround described below today.
+Only packages that emit both runtime `.js` and distributable `.d.ts`
+need the workaround described below today.
 
 ## The two upstream gaps
 
@@ -112,7 +112,8 @@ every emitted artifact.
   `export * from`, side-effect `import './x.ts'`, dynamic
   `import('./x.ts')`.
 
-The script is invoked at the end of the orchestrated build:
+The script is invoked at the end of each orchestrated JS/declaration
+build:
 
 ```ts
 // scripts/build.ts

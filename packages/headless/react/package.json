@@ -4,26 +4,40 @@
   "private": true,
   "type": "module",
   "sideEffects": false,
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./tabs": {
-      "types": "./src/tabs/HeadlessTabs.tsx",
-      "import": "./src/tabs/HeadlessTabs.tsx"
+      "types": "./dist/tabs/HeadlessTabs.d.ts",
+      "import": "./dist/tabs/HeadlessTabs.js",
+      "default": "./dist/tabs/HeadlessTabs.js"
     },
     "./button": {
-      "types": "./src/button/Button.tsx",
-      "import": "./src/button/Button.tsx"
+      "types": "./dist/button/Button.d.ts",
+      "import": "./dist/button/Button.js",
+      "default": "./dist/button/Button.js"
     },
     "./text-field": {
-      "types": "./src/text-field/HeadlessTextField.tsx",
-      "import": "./src/text-field/HeadlessTextField.tsx"
+      "types": "./dist/text-field/HeadlessTextField.d.ts",
+      "import": "./dist/text-field/HeadlessTextField.js",
+      "default": "./dist/text-field/HeadlessTextField.js"
     }
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "scripts": {
+    "clean": "node ./scripts/clean-dist.ts",
+    "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "build:dev": "node ./scripts/build.ts --skip-types",
+    "build": "node ./scripts/build.ts"
   },
   "peerDependencies": {
     "react": ">=18",
@@ -32,10 +46,12 @@
   "devDependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
+    "@types/node": "^24.7.2",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "esbuild": "^0.25.9",
     "jsdom": "^28.1.0",
-    "typescript": "^5.0.0",
+    "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   },
   "dependencies": {
