@@ -41,6 +41,16 @@ KISKADEE_STYLE_WATCH_INTERVAL_MS=250 pnpm --filter @kiskadee/showcase dev
 
 Open `http://localhost:3000`.
 
+For a fully clean local start, use:
+
+```bash
+pnpm --filter @kiskadee/showcase dev:fresh
+```
+
+This first runs `clean:dev`, which clears `@kiskadee/react-headless` dist output,
+`@kiskadee/react-components` dist output, and generated `@kiskadee/web-builder` / Showcase
+artifacts before starting the normal `dev` flow.
+
 ### Production build / publishing
 
 Build the Next.js showcase from the monorepo root:

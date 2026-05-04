@@ -9,6 +9,7 @@
     "./types": "./types.ts"
   },
   "scripts": {
+    "clean": "node ./scripts/clean-generated-artifacts.ts",
     "build": "node ./src/run-build.ts",
     "sync": "node ./scripts/sync-showcase-artifacts.ts",
     "generate": "node ./scripts/generate-showcase-registry.ts",
