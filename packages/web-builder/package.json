@@ -13,6 +13,7 @@
     "build": "node ./scripts/run-build.entry.bundled.js",
     "sync": "node ./scripts/sync-showcase-artifacts.entry.bundled.js",
     "generate": "node ./scripts/generate-showcase-registry.entry.bundled.js",
+    "prebuild-sync-generate": "pnpm run compile",
     "build-sync-generate": "node ./scripts/build-sync-generate.bundled.js",
     "vitest-ui": "vitest --ui"
   },

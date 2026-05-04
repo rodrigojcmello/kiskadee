@@ -4,6 +4,9 @@
   "description": "",
   "author": "Rodrigo J C Mello",
   "license": "ISC",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "test": "vitest run",
     "commitlint": "commitlint --edit"
