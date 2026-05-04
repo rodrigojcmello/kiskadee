@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import type { IndicatorRect } from './Tabs.measurements';
-import type { TabsSpringConfig, TabsSpringPreset } from './Tabs.types';
+import type { IndicatorRect } from './Tabs.measurements.ts';
+import type { TabsSpringConfig, TabsSpringPreset } from './Tabs.types.ts';
 
 export type TabsMotionEngineProps = {
   children?: ReactNode;

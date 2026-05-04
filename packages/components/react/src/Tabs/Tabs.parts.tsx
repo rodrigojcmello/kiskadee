@@ -6,8 +6,8 @@ import {
   resolveLabelClassName,
   resolveTriggerClassName
 } from './Tabs.class-names';
-import { TabsTabContextProvider, useTabsTabContext, useTabsVisualContext } from './Tabs.context';
-import { getTabsSlot } from './Tabs.structural';
+import { TabsTabContextProvider, useTabsTabContext, useTabsVisualContext } from './Tabs.context.ts';
+import { getTabsSlot } from './Tabs.structural.ts';
 import type {
   TabsContentProps,
   TabsIconProps,

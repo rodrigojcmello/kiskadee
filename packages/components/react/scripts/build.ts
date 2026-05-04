@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 import { buildAllJavaScript } from './build-js.ts';
 import { buildAllStyles } from './build-styles.ts';
 import { cleanDist } from './clean-dist.ts';
+import { rewriteDistExtensions } from './rewrite-dist-extensions.ts';
 
 const args = new Set(process.argv.slice(2));
 const skipTypes = args.has('--skip-types');
@@ -38,6 +39,8 @@ async function build(): Promise<void> {
       ? [buildAllJavaScript(), buildAllStyles()]
       : [buildAllJavaScript(), buildAllStyles(), buildTypes()]
   );
+
+  await rewriteDistExtensions();
 }
 
 build().catch((error) => {

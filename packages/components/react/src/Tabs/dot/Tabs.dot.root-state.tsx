@@ -3,7 +3,7 @@ import {
   type ResolvedTabsRootState,
   useTabsRuntimeRootState
 } from '../Tabs.runtime-state';
-import type { TabsDotRootProps, TabsResolvedIndicator } from '../Tabs.types';
+import type { TabsDotRootProps, TabsResolvedIndicator } from '../Tabs.types.ts';
 
 /**
  * What

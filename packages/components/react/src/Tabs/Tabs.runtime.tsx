@@ -5,11 +5,11 @@ import {
   resolveListClassName,
   resolveSeparatorClassName
 } from './Tabs.class-names';
-import { TabsVisualContextProvider, useTabsVisualContext } from './Tabs.context';
-import { resolveSpringConfig } from './Tabs.motion.shared';
-import { TabsContentBase, TabsIconBase, TabsLabelBase, TabsTabBase } from './Tabs.parts';
-import type { ResolvedTabsRootState } from './Tabs.runtime-state';
-import type { TabsStructuralDescriptor } from './Tabs.structural';
+import { TabsVisualContextProvider, useTabsVisualContext } from './Tabs.context.ts';
+import { resolveSpringConfig } from './Tabs.motion.shared.ts';
+import { TabsContentBase, TabsIconBase, TabsLabelBase, TabsTabBase } from './Tabs.parts.tsx';
+import type { ResolvedTabsRootState } from './Tabs.runtime-state.tsx';
+import type { TabsStructuralDescriptor } from './Tabs.structural.ts';
 import type {
   TabsBarProps,
   TabsContentProps,

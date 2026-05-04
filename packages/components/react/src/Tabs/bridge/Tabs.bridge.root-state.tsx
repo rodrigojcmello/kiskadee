@@ -3,7 +3,7 @@ import {
   type ResolvedTabsRootState,
   useTabsRuntimeRootState
 } from '../Tabs.runtime-state';
-import type { TabsBridgeRootProps, TabsResolvedIndicator, TabsVisualContextValue } from '../Tabs.types';
+import type { TabsBridgeRootProps, TabsResolvedIndicator, TabsVisualContextValue } from '../Tabs.types.ts';
 
 function resolveLowerCurve(
   lowerCurve: TabsBridgeRootProps['lowerCurve'],

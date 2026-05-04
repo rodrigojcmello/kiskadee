@@ -3,12 +3,8 @@
   "compilerOptions": {
     "rootDir": ".",
     "jsx": "react-jsx",
-
-    /* Bundler mode */
-    "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
-    "noEmit": true
+    "moduleDetection": "force"
   },
   "include": ["src/**/*", "scripts/**/*.ts"]
 }

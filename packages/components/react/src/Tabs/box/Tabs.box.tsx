@@ -1,5 +1,5 @@
 import './Tabs.box.css';
-import { createTabsComponent } from '../Tabs.runtime';
+import { createTabsComponent } from '../Tabs.runtime.tsx';
 import type {
   TabsBarProps,
   TabsBoxIndicatorConfig,
@@ -12,9 +12,9 @@ import type {
   TabsSpringPreset,
   TabsTabProps
 } from '../Tabs.types';
-import { useResolvedTabsBoxRootState } from './Tabs.box.root-state';
-import TabsBoxStaticBarEnhancer from './Tabs.box.static';
-import { tabsBoxStructural } from './Tabs.box.structural';
+import { useResolvedTabsBoxRootState } from './Tabs.box.root-state.tsx';
+import TabsBoxStaticBarEnhancer from './Tabs.box.static.tsx';
+import { tabsBoxStructural } from './Tabs.box.structural.ts';
 
 /**
  * What
@@ -27,7 +27,7 @@ export const TabsBox = createTabsComponent<TabsBoxRootProps>({
   displayName: 'TabsBox',
   structural: tabsBoxStructural,
   StaticEnhancer: TabsBoxStaticBarEnhancer,
-  loadMotionEnhancer: () => import('./Tabs.box.motion'),
+  loadMotionEnhancer: () => import('./Tabs.box.motion.tsx'),
   useResolvedRootState: useResolvedTabsBoxRootState
 });
 

@@ -1,7 +1,7 @@
 import { type CSSProperties, type ReactNode, useCallback, useEffect, useState } from 'react';
-import { resolveIndicatorClassName } from '../Tabs.class-names';
-import { useTabsVisualContext } from '../Tabs.context';
-import { measureIndicatorRect, resolveBarEdgeOffsetStyle } from '../Tabs.measurements';
+import { resolveIndicatorClassName } from '../Tabs.class-names.ts';
+import { useTabsVisualContext } from '../Tabs.context.ts';
+import { measureIndicatorRect, resolveBarEdgeOffsetStyle } from '../Tabs.measurements.ts';
 
 type TabsDotStaticBarEnhancerProps = {
   children?: ReactNode;

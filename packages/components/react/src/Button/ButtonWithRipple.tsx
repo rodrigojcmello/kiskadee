@@ -14,9 +14,9 @@ import {
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
 import { Button as HeadlessButton } from '@kiskadee/react-headless';
 import { memo, useMemo } from 'react';
-import type { ButtonProps } from './Button.types';
-import { type RippleEffectBuckets, resolveRippleModeAvailability } from './rippleModeAvailability';
-import { type RippleRuntimeConfig, useRippleStateMachine } from './useRippleStateMachine';
+import type { ButtonProps } from './Button.types.ts';
+import { type RippleEffectBuckets, resolveRippleModeAvailability } from './rippleModeAvailability.ts';
+import { type RippleRuntimeConfig, useRippleStateMachine } from './useRippleStateMachine.ts';
 import {
   resolveButtonAccessibilityFromCommon,
   useButtonClassNamesFromCommon,

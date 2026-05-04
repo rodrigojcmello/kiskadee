@@ -1,7 +1,7 @@
 import './TextField.standard-borderless.structural.css';
-import { createTextFieldComponent } from '../TextField.runtime';
-import { textFieldStandardBorderlessStructural } from '../TextField.structural';
-import type { TextFieldStandardBorderlessProps } from '../TextField.types';
+import { createTextFieldComponent } from '../TextField.runtime.tsx';
+import { textFieldStandardBorderlessStructural } from '../TextField.structural.ts';
+import type { TextFieldStandardBorderlessProps } from '../TextField.types.ts';
 
 export const TextFieldStandardBorderless = createTextFieldComponent<TextFieldStandardBorderlessProps>({
   displayName: 'TextFieldStandardBorderless',

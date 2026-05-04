@@ -1,8 +1,8 @@
 import { HeadlessTabs } from '@kiskadee/react-headless';
-import { joinClassNames } from '../Tabs.class-names';
-import { useTabsVisualContext } from '../Tabs.context';
-import { getTabsSlot } from '../Tabs.structural';
-import type { TabsBarProps } from '../Tabs.types';
+import { joinClassNames } from '../Tabs.class-names.ts';
+import { useTabsVisualContext } from '../Tabs.context.ts';
+import { getTabsSlot } from '../Tabs.structural.ts';
+import type { TabsBarProps } from '../Tabs.types.ts';
 
 /**
  * What

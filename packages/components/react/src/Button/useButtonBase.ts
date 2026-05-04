@@ -10,8 +10,8 @@ import {
 } from '@kiskadee/core';
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useKiskadee } from '../contexts/KiskadeeContext';
-import type { ButtonProps, ButtonStatus } from './Button.types';
+import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
+import type { ButtonProps, ButtonStatus } from './Button.types.ts';
 
 const DEFAULT_SCALE = 's:md:1';
 const DEFAULT_RADIUS: RadiusMode = 'rounded';

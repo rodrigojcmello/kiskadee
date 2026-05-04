@@ -1,12 +1,12 @@
 import './Tabs.box.motion.css';
 import { motion } from 'motion/react';
 import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { buildTabsChildrenWithSeparators } from '../Tabs.bar.helpers';
-import { resolveIndicatorClassName } from '../Tabs.class-names';
-import { useTabsVisualContext } from '../Tabs.context';
-import type { IndicatorRect } from '../Tabs.measurements';
-import { measureElementRectRelativeToBar, measureIndicatorRect } from '../Tabs.measurements';
-import { resolveStretchIndicatorRect, type TabsMotionEngineProps } from '../Tabs.motion.shared';
+import { buildTabsChildrenWithSeparators } from '../Tabs.bar.helpers.tsx';
+import { resolveIndicatorClassName } from '../Tabs.class-names.ts';
+import { useTabsVisualContext } from '../Tabs.context.ts';
+import type { IndicatorRect } from '../Tabs.measurements.ts';
+import { measureElementRectRelativeToBar, measureIndicatorRect } from '../Tabs.measurements.ts';
+import { resolveStretchIndicatorRect, type TabsMotionEngineProps } from '../Tabs.motion.shared.ts';
 
 type StretchIndicatorPhase = 'idle' | 'stretch' | 'settle';
 

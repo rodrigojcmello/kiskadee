@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { TabsTabContextValue, TabsVisualContextValue } from './Tabs.types';
+import type { TabsTabContextValue, TabsVisualContextValue } from './Tabs.types.ts';
 
 const TabsVisualContext = createContext<TabsVisualContextValue | null>(null);
 const TabsTabContext = createContext<TabsTabContextValue | null>(null);

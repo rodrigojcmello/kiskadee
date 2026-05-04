@@ -10,7 +10,7 @@ import {
   type TextFieldMode,
   type TextFieldVariant
 } from '@kiskadee/core';
-import type { TextFieldStructuralDescriptor } from './TextField.structural';
+import type { TextFieldStructuralDescriptor } from './TextField.structural.ts';
 import type {
   TextFieldClassesMap,
   TextFieldClassNames,

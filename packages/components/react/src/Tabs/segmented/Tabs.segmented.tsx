@@ -1,9 +1,9 @@
 import './Tabs.segmented.css';
-import { createTabsComponent } from '../Tabs.runtime';
-import TabsSegmentedBarBase from './Tabs.segmented.parts';
-import TabsSegmentedStaticBarEnhancer from './Tabs.segmented.static';
-import { tabsSegmentedStructural } from './Tabs.segmented.structural';
-import { useResolvedTabsSegmentedRootState } from './Tabs.segmented.root-state';
+import { createTabsComponent } from '../Tabs.runtime.tsx';
+import TabsSegmentedBarBase from './Tabs.segmented.parts.tsx';
+import TabsSegmentedStaticBarEnhancer from './Tabs.segmented.static.tsx';
+import { tabsSegmentedStructural } from './Tabs.segmented.structural.ts';
+import { useResolvedTabsSegmentedRootState } from './Tabs.segmented.root-state.tsx';
 import type {
   TabsBarProps,
   TabsContentProps,

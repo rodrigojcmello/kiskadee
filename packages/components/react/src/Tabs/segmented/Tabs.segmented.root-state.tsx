@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { resolveIndicatorShape } from '../Tabs.class-names';
+import { resolveIndicatorShape } from '../Tabs.class-names.ts';
 import {
   type ResolvedTabsRootState,
   useTabsRuntimeRootState
 } from '../Tabs.runtime-state';
-import type { TabsResolvedIndicator, TabsSegmentedRootProps } from '../Tabs.types';
+import type { TabsResolvedIndicator, TabsSegmentedRootProps } from '../Tabs.types.ts';
 
 /**
  * What

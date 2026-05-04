@@ -1,7 +1,7 @@
 import './TextField.standard-outline.structural.css';
-import { createTextFieldComponent } from '../TextField.runtime';
-import { textFieldStandardOutlineStructural } from '../TextField.structural';
-import type { TextFieldStandardOutlineProps } from '../TextField.types';
+import { createTextFieldComponent } from '../TextField.runtime.tsx';
+import { textFieldStandardOutlineStructural } from '../TextField.structural.ts';
+import type { TextFieldStandardOutlineProps } from '../TextField.types.ts';
 
 export const TextFieldStandardOutline = createTextFieldComponent<TextFieldStandardOutlineProps>({
   displayName: 'TextFieldStandardOutline',

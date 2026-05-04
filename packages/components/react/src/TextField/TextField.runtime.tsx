@@ -16,7 +16,7 @@ import {
   useRef,
   useState
 } from 'react';
-import { useKiskadee } from '../contexts/KiskadeeContext';
+import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
 import {
   DEFAULT_TEXT_FIELD_EMPHASIS,
   DEFAULT_TEXT_FIELD_INTENT,
@@ -25,7 +25,7 @@ import {
   resolveTextFieldClassNames,
   resolveVariantElements
 } from './TextField.class-names';
-import type { TextFieldStructuralDescriptor } from './TextField.structural';
+import type { TextFieldStructuralDescriptor } from './TextField.structural.ts';
 import type {
   TextFieldClassesMap,
   TextFieldFloatingInsideProps,
@@ -37,7 +37,7 @@ import type {
   TextFieldStandardUnderlineProps,
   TextFieldVariantClassesMap
 } from './TextField.types';
-import { useLazyFloatingRestTypography } from './useLazyFloatingRestTypography';
+import { useLazyFloatingRestTypography } from './useLazyFloatingRestTypography.ts';
 
 type CreateTextFieldComponentOptions = {
   displayName: string;
@@ -46,7 +46,7 @@ type CreateTextFieldComponentOptions = {
 };
 
 const loadFloatingRestTypography = () =>
-  import('./floatingRestTypography.runtime').then((module) => module.bindFloatingRestTypography);
+  import('./floatingRestTypography.runtime.ts').then((module) => module.bindFloatingRestTypography);
 
 function resolveLabelOffsetStrategy(
   labelOffset: TextFieldLabelOffsetStrategy | TextFieldLabelOffsetByRadius | undefined,

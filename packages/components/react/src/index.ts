@@ -1,9 +1,9 @@
-export { Button } from './Button/Button';
-export { KiskadeeContext, useKiskadee } from './contexts/KiskadeeContext';
-export { ShowcaseContext, useShowcase } from './contexts/ShowcaseContext';
-export { SmoothText } from './SmoothText/SmoothText';
-export type { TabsIndicatorMotionStyle, TabsSpringPreset } from './Tabs';
-export { TabsBox, TabsBridge, TabsDot, TabsLine, TabsSegmented } from './Tabs';
+export { Button } from './Button/Button.tsx';
+export { KiskadeeContext, useKiskadee } from './contexts/KiskadeeContext.tsx';
+export { ShowcaseContext, useShowcase } from './contexts/ShowcaseContext.tsx';
+export { SmoothText } from './SmoothText/SmoothText.tsx';
+export type { TabsIndicatorMotionStyle, TabsSpringPreset } from './Tabs/index.ts';
+export { TabsBox, TabsBridge, TabsDot, TabsLine, TabsSegmented } from './Tabs/index.ts';
 export type {
   TextFieldFloatingInsideProps,
   TextFieldFloatingNotchedProps,

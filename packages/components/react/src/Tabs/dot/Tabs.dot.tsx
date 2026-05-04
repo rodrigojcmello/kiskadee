@@ -1,8 +1,8 @@
 import './Tabs.dot.css';
-import { createTabsComponent } from '../Tabs.runtime';
-import TabsDotStaticBarEnhancer from './Tabs.dot.static';
-import { tabsDotStructural } from './Tabs.dot.structural';
-import { useResolvedTabsDotRootState } from './Tabs.dot.root-state';
+import { createTabsComponent } from '../Tabs.runtime.tsx';
+import TabsDotStaticBarEnhancer from './Tabs.dot.static.tsx';
+import { tabsDotStructural } from './Tabs.dot.structural.ts';
+import { useResolvedTabsDotRootState } from './Tabs.dot.root-state.tsx';
 import type {
   TabsBarProps,
   TabsContentProps,
@@ -27,7 +27,7 @@ export const TabsDot = createTabsComponent<TabsDotRootProps>({
   displayName: 'TabsDot',
   structural: tabsDotStructural,
   StaticEnhancer: TabsDotStaticBarEnhancer,
-  loadMotionEnhancer: () => import('./Tabs.dot.motion'),
+  loadMotionEnhancer: () => import('./Tabs.dot.motion.tsx'),
   useResolvedRootState: useResolvedTabsDotRootState
 });
 

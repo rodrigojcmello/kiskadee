@@ -1,4 +1,4 @@
-import type { TabsVisualContextValue } from './Tabs.types';
+import type { TabsVisualContextValue } from './Tabs.types.ts';
 
 const TAB_CONTENT_SELECTOR = '.k-tab-x1';
 

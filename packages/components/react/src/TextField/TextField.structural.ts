@@ -1,5 +1,5 @@
 import type { TextFieldVariant } from '@kiskadee/core';
-import type { TextFieldModeByVariant } from './TextField.types';
+import type { TextFieldModeByVariant } from './TextField.types.ts';
 
 export type TextFieldStructuralSlot = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 

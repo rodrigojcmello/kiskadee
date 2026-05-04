@@ -1,7 +1,7 @@
 import './TextField.floating-inside.structural.css';
-import { createTextFieldComponent } from '../TextField.runtime';
-import { textFieldFloatingInsideStructural } from '../TextField.structural';
-import type { TextFieldFloatingInsideProps } from '../TextField.types';
+import { createTextFieldComponent } from '../TextField.runtime.tsx';
+import { textFieldFloatingInsideStructural } from '../TextField.structural.ts';
+import type { TextFieldFloatingInsideProps } from '../TextField.types.ts';
 
 export const TextFieldFloatingInside = createTextFieldComponent<TextFieldFloatingInsideProps>({
   displayName: 'TextFieldFloatingInside',

@@ -11,10 +11,10 @@ import {
   resolveBridgeItemClassName,
   resolveBridgeTriggerClassName
 } from '../Tabs.class-names';
-import { useTabsVisualContext } from '../Tabs.context';
-import { TabsSlotContent, withTabsTabContext } from '../Tabs.parts';
-import { getTabsSlot } from '../Tabs.structural';
-import type { TabsBarProps, TabsContentProps, TabsTabProps } from '../Tabs.types';
+import { useTabsVisualContext } from '../Tabs.context.ts';
+import { TabsSlotContent, withTabsTabContext } from '../Tabs.parts.tsx';
+import { getTabsSlot } from '../Tabs.structural.ts';
+import type { TabsBarProps, TabsContentProps, TabsTabProps } from '../Tabs.types.ts';
 
 type TabsBridgeVisualOrderProps = {
   bridgeVisualOrder?: number;

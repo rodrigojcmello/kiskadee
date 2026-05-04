@@ -1,8 +1,8 @@
-export { TabsBox } from './box/Tabs.box';
-export { TabsBridge } from './bridge/Tabs.bridge';
-export { TabsDot } from './dot/Tabs.dot';
-export { TabsLine } from './line/Tabs.line';
-export { TabsSegmented } from './segmented/Tabs.segmented';
+export { TabsBox } from './box/Tabs.box.tsx';
+export { TabsBridge } from './bridge/Tabs.bridge.tsx';
+export { TabsDot } from './dot/Tabs.dot.tsx';
+export { TabsLine } from './line/Tabs.line.tsx';
+export { TabsSegmented } from './segmented/Tabs.segmented.tsx';
 export type {
   TabsBarProps,
   TabsBoxIndicatorConfig,

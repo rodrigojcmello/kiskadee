@@ -1,4 +1,4 @@
-import type { TabsStructuralDescriptor } from '../Tabs.structural';
+import type { TabsStructuralDescriptor } from '../Tabs.structural.ts';
 
 export const tabsSegmentedStructural = {
   variant: 'segmented',

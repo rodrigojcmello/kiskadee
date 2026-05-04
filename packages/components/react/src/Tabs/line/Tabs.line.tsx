@@ -1,8 +1,8 @@
 import './Tabs.line.css';
-import { createTabsComponent } from '../Tabs.runtime';
-import TabsLineStaticBarEnhancer from './Tabs.line.static';
-import { tabsLineStructural } from './Tabs.line.structural';
-import { useResolvedTabsLineRootState } from './Tabs.line.root-state';
+import { createTabsComponent } from '../Tabs.runtime.tsx';
+import TabsLineStaticBarEnhancer from './Tabs.line.static.tsx';
+import { tabsLineStructural } from './Tabs.line.structural.ts';
+import { useResolvedTabsLineRootState } from './Tabs.line.root-state.tsx';
 import type {
   TabsBarProps,
   TabsContentProps,
@@ -27,7 +27,7 @@ export const TabsLine = createTabsComponent<TabsLineRootProps>({
   displayName: 'TabsLine',
   structural: tabsLineStructural,
   StaticEnhancer: TabsLineStaticBarEnhancer,
-  loadMotionEnhancer: () => import('./Tabs.line.motion'),
+  loadMotionEnhancer: () => import('./Tabs.line.motion.tsx'),
   useResolvedRootState: useResolvedTabsLineRootState
 });
 

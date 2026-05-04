@@ -7,7 +7,7 @@ import {
   type ResolvedTabsRootState,
   useTabsRuntimeRootState
 } from '../Tabs.runtime-state';
-import type { TabsBoxRootProps, TabsResolvedIndicator } from '../Tabs.types';
+import type { TabsBoxRootProps, TabsResolvedIndicator } from '../Tabs.types.ts';
 
 /**
  * What

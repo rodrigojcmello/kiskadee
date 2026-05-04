@@ -1,13 +1,13 @@
 import './Tabs.bridge.css';
-import { createTabsComponent } from '../Tabs.runtime';
+import { createTabsComponent } from '../Tabs.runtime.tsx';
 import {
   TabsBridgeBarBase,
   TabsBridgeContentBase,
   TabsBridgeTabBase
 } from './Tabs.bridge.parts';
-import { tabsBridgeStructural } from './Tabs.bridge.structural';
-import TabsBridgeStaticBarEnhancer from './Tabs.bridge.static';
-import { useResolvedTabsBridgeRootState } from './Tabs.bridge.root-state';
+import { tabsBridgeStructural } from './Tabs.bridge.structural.ts';
+import TabsBridgeStaticBarEnhancer from './Tabs.bridge.static.tsx';
+import { useResolvedTabsBridgeRootState } from './Tabs.bridge.root-state.tsx';
 import type {
   TabsBarProps,
   TabsBridgeIndicatorConfig,

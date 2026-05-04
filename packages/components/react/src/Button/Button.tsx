@@ -1,16 +1,16 @@
 import './Button.css';
 import { Button as HeadlessButton } from '@kiskadee/react-headless';
 import { type ComponentType, type LazyExoticComponent, lazy, memo, Suspense, useMemo } from 'react';
-import { useKiskadee } from '../contexts/KiskadeeContext';
-import type { ButtonProps } from './Button.types';
-import { ButtonCore } from './ButtonCore';
-import type { ButtonWithRippleProps } from './ButtonWithRipple';
-import { resolveRippleModeAvailability } from './rippleModeAvailability';
+import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
+import type { ButtonProps } from './Button.types.ts';
+import { ButtonCore } from './ButtonCore.tsx';
+import type { ButtonWithRippleProps } from './ButtonWithRipple.tsx';
+import { resolveRippleModeAvailability } from './rippleModeAvailability.ts';
 
-export type { ButtonProps, ButtonRippleEffect, ButtonStatus } from './Button.types';
+export type { ButtonProps, ButtonRippleEffect, ButtonStatus } from './Button.types.ts';
 
 // [RIPPLE EFFECT 20] START: Lazy-load and availability gate.
-const LazyButtonWithRipple = lazy(() => import('./ButtonWithRipple')) as LazyExoticComponent<
+const LazyButtonWithRipple = lazy(() => import('./ButtonWithRipple.tsx')) as LazyExoticComponent<
   ComponentType<ButtonWithRippleProps>
 >;
 

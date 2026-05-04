@@ -1,6 +1,6 @@
 import type { RadiusMode, TabsVariant } from '@kiskadee/core';
 import { type RefObject, useCallback, useMemo, useRef, useState } from 'react';
-import { useKiskadee } from '../contexts/KiskadeeContext';
+import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
 import {
   DEFAULT_EMPHASIS,
   DEFAULT_INTENT,
@@ -14,7 +14,7 @@ import type {
   TabsVariantClassesMap,
   TabsVisualContextValue
 } from './Tabs.types';
-import type { TabsRootBaseProps } from './Tabs.types';
+import type { TabsRootBaseProps } from './Tabs.types.ts';
 
 export type TabsRuntimeRootState = {
   selected: string | undefined;

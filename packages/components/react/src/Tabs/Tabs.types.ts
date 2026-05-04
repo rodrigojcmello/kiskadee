@@ -20,7 +20,7 @@ import type {
   TabsTabProps as HeadlessTabsTabProps
 } from '@kiskadee/react-headless';
 import type { HTMLAttributes, ReactNode, RefObject } from 'react';
-import type { TabsStructuralDescriptor } from './Tabs.structural';
+import type { TabsStructuralDescriptor } from './Tabs.structural.ts';
 
 // ============================================
 // Public API

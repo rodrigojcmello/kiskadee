@@ -2,7 +2,7 @@ import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headles
 import { Button as HeadlessButton } from '@kiskadee/react-headless';
 import type { MouseEvent } from 'react';
 import { memo, useCallback, useMemo } from 'react';
-import type { ButtonProps } from './Button.types';
+import type { ButtonProps } from './Button.types.ts';
 import {
   resolveButtonAccessibilityFromCommon,
   useButtonClassNamesFromCommon,
