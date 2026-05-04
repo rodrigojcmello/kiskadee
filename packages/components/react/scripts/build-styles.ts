@@ -76,8 +76,6 @@ export async function buildStyle(
 
   await mkdir(path.dirname(outputFile), { recursive: true });
   await writeFile(outputFile, processed.css.trim(), 'utf8');
-
-  console.log(`[react-components] CSS written: ${path.relative(packageRoot, outputFile)}`);
 }
 
 export async function buildAllStyles(): Promise<void> {
@@ -85,6 +83,8 @@ export async function buildAllStyles(): Promise<void> {
   const processor = createKiskadeePostcssProcessor(structuralCssOptions);
 
   await Promise.all(scssFiles.map((file) => buildStyle(file, processor)));
+
+  console.log(`[react-components] CSS built: ${scssFiles.length} files`);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
