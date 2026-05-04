@@ -6,12 +6,20 @@ extensions, plus the workarounds required at build time.
 
 ## Why this exists
 
-The monorepo runs TypeScript directly under Node 22+ via
-`node --experimental-strip-types` and uses `esbuild` to emit production
-artifacts. Both paths require a single, consistent module convention
-across packages. We picked **native ESM with explicit TS extensions on
-relative imports**, aligning with Deno/Bun and the direction of Node's
+The monorepo runs TypeScript tooling scripts directly under Node 24+
+with native type stripping and uses dedicated build tools only when a
+package must emit artifacts. Both paths require a single, consistent
+module convention across packages. We picked **native ESM with explicit
+TS extensions on relative imports**, aligning with Deno/Bun and Node's
 type-stripping support.
+
+Tool responsibilities are intentionally split:
+
+- `node`: execute local `.ts`/`.js` tooling scripts.
+- `esbuild`: emit runtime `.js` artifacts when a package publishes a
+  browser/library `dist`.
+- `tsc`: type-check and/or emit declarations, especially
+  `--emitDeclarationOnly` for public `.d.ts` files.
 
 This decision exposes two upstream gaps in the current ecosystem (TS
 5.9.x, esbuild 0.25.x). The `react-components` build is the only place
@@ -48,15 +56,18 @@ Packages that need to emit declaration files override `noEmit` and
 
 ## Runtime split per package
 
-| Package                  | Runtime                                | Emits to `dist/`?         |
+| Package                  | Current build role                     | Pattern status            |
 |--------------------------|----------------------------------------|---------------------------|
-| `@kiskadee/core`         | imported by others                     | no (consumed as `src/`)   |
-| `@kiskadee/css-build`    | imported by others                     | no                        |
-| `@kiskadee/presets`      | imported by others                     | no                        |
-| `@kiskadee/web-builder`  | esbuild bundle (`*.bundled.js`)        | no (internal scripts)     |
-| `@kiskadee/react-components` | esbuild (`bundle: false`) + `tsc`  | yes (`.js`, `.d.ts`, CSS) |
+| `@kiskadee/core`         | consumed as source TS                  | no JS emit needed         |
+| `@kiskadee/css-build`    | consumed as source TS                  | no JS emit needed         |
+| `@kiskadee/presets`      | consumed as source TS                  | no JS emit needed         |
+| `@kiskadee/runtime`      | consumed as source TS                  | no JS emit needed         |
+| `@kiskadee/web-builder`  | Node executes TS scripts; emits CSS/JSON artifacts | adopted; no esbuild needed |
+| `@kiskadee/react-components` | Node executes TS scripts; esbuild emits JS; tsc emits `.d.ts`; Sass emits CSS | adopted |
+| `@kiskadee/showcase`     | Next.js app; internal dev script still uses `tsx` | should migrate script execution to Node |
+| `@kiskadee/react-headless` | exports source TS today, but package metadata still points at `dist` | needs ownership decision before adopting |
 
-Only the last package needs the workaround described below.
+Only `react-components` needs the workaround described below today.
 
 ## The two upstream gaps
 
@@ -136,8 +147,9 @@ the `react-components` setup:
    into a shared helper if a second package needs it.
 
 If a package does **not** emit `dist/` (it is consumed as source by
-other workspace packages), no workaround is needed — Node strip-types
-and esbuild bundling both handle the `.ts` specifiers natively.
+other workspace packages, or it emits non-JS artifacts only), no
+`esbuild` step is needed. Use Node to execute TS scripts and keep
+`esbuild` out unless the package must emit runtime JS.
 
 ## When this workaround can be removed
 

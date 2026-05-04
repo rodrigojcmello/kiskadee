@@ -36,6 +36,8 @@ headless + visual React components with a Next.js showcase.
 - Read `PROJECT-PURPOSE.md` for architecture, taxonomy, package boundaries, and delivery flow.
 - Read `SCHEMA-BUILD-RUNTIME-RULES.md` when deciding whether something belongs in schema, runtime,
   generated artifacts, or structural Sass.
+- Read `ESM-MIGRATION-RULES.md` before changing package build scripts, TS/ESM import conventions,
+  or JS/declaration emission.
 - Read `STRUCTURAL-CSS.md` before changing structural Sass in `packages/components/react`.
 - Apply `skills/kiskadee-architecture/SKILL.md` for architecture-heavy or cross-package tasks.
 - Check package-local `package.json`, `tsconfig.json`, and relevant `README.md` files before bigger

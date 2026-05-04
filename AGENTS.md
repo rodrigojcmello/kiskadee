@@ -24,6 +24,9 @@ keep task-specific workflows inside skills.
 
 - Package manager: `pnpm`.
 - Runtime baseline: Node version from `.nvmrc`.
+- Build convention: `node` executes TS/JS tooling scripts, `esbuild` emits runtime JS only for
+  packages that publish JS artifacts, and `tsc` owns type checking/declaration output. See
+  `ESM-MIGRATION-RULES.md`.
 - Test runner: `vitest` via root `pnpm test`.
 - Formatter/linter: `biome` configured in `biome.jsonc`.
 - Commit messages: `commitlint` via Husky `commit-msg`.

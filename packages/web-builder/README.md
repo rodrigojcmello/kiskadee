@@ -321,7 +321,7 @@ The monorepo uses scripts from this package to keep artifacts and the showcase i
 ### Package scripts (packages/web-builder/package.json)
 
 - `pnpm --filter @kiskadee/web-builder run build`
-  - Runs `src/run-build.ts` using `tsx`.
+  - Runs `src/run-build.ts` using Node's native TypeScript support.
   - Builds all presets under `packages/presets/src/**`.
   - Writes artifacts to `packages/web-builder/build/<template-key>`.
 

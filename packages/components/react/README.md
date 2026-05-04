@@ -13,8 +13,8 @@ specific stages. In normal use you only need `build` (or `build:dev` for fast it
 
 | Script      | Command                                                | What it does                                                                  |
 |-------------|--------------------------------------------------------|-------------------------------------------------------------------------------|
-| `build` ⭐   | `node --experimental-strip-types ./scripts/build.ts`   | Full production build: clean → JS + styles + types in parallel → rewrite ext. |
-| `build:dev` | `node --experimental-strip-types ./scripts/build.ts --skip-types` | Same as `build` but skips `tsc` (much faster; no `.d.ts` emitted).  |
+| `build` ⭐   | `node ./scripts/build.ts`   | Full production build: clean → JS + styles + types in parallel → rewrite ext. |
+| `build:dev` | `node ./scripts/build.ts --skip-types` | Same as `build` but skips `tsc` (much faster; no `.d.ts` emitted).  |
 
 Run with:
 
@@ -48,11 +48,11 @@ for `build` — running them individually does not produce a complete `dist/`.
 
 | Script         | Command                                                            | Purpose                                             |
 |----------------|--------------------------------------------------------------------|-----------------------------------------------------|
-| `clean`        | `node --experimental-strip-types ./scripts/clean-dist.ts`          | Wipe `dist/` only.                                  |
-| `build:js`     | `node --experimental-strip-types ./scripts/build-js.ts`            | Run esbuild only (no styles, no types, no rewrite). |
+| `clean`        | `node ./scripts/clean-dist.ts`          | Wipe `dist` only.                                   |
+| `build:js`     | `node ./scripts/build-js.ts`            | Run esbuild only (no styles, no types, no rewrite). |
 | `build:types`  | `tsc -p tsconfig.build.json --emitDeclarationOnly`                 | Emit `.d.ts` only.                                  |
-| `build:styles` | `node --experimental-strip-types ./scripts/build-styles.ts`        | Compile Sass only.                                  |
-| `dev:styles`   | `node --experimental-strip-types ./scripts/watch-styles.ts`        | Watch Sass during visual development.               |
+| `build:styles` | `node ./scripts/build-styles.ts`        | Compile Sass only.                                  |
+| `dev:styles`   | `node ./scripts/watch-styles.ts`        | Watch Sass during visual development.               |
 
 ### Quick decision guide
 
@@ -63,6 +63,6 @@ for `build` — running them individually does not produce a complete `dist/`.
 
 ## Runtime / toolchain
 
-- ESM-only (`"type": "module"`), Node 22 with `--experimental-strip-types` for scripts.
+- ESM-only (`"type": "module"`), Node 24+ with native type stripping for scripts.
 - Imports use explicit `.ts` / `.tsx` extensions (see `ESM-MIGRATION-RULES.md`).
 - esbuild for JS, `tsc` for `.d.ts`, Sass for CSS.
