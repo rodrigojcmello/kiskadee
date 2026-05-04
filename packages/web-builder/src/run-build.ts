@@ -153,3 +153,8 @@ export async function runBuild(): Promise<void> {
     });
   }
 }
+
+// Standalone execution: `node ./src/run-build.ts`
+if (import.meta.url === `file://${process.argv[1]}`) {
+  await runBuild();
+}

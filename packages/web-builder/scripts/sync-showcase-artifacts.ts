@@ -64,4 +64,10 @@ export async function syncShowcaseArtifacts(): Promise<void> {
   await mkdir(dstDir, { recursive: true });
   await removeDirContents(dstDir);
   await copyRecursive(srcDir, dstDir);
+  console.log('[web-builder] Showcase artifacts synced');
+}
+
+// Standalone execution: `node ./scripts/sync-showcase-artifacts.ts`
+if (import.meta.url === `file://${process.argv[1]}`) {
+  await syncShowcaseArtifacts();
 }

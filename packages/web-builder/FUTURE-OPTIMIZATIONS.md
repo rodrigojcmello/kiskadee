@@ -82,7 +82,7 @@ them is in the 10–30 ms range). The real wins are architectural:
 ### Why it is not done yet
 
 Changing `runBuild()` from `void` to a typed return value touches every caller
-(`run-build.entry.ts`, `build-sync-generate.ts`, and any future consumer). The
+(`src/run-build.ts` standalone runner, `build-sync-generate.ts`, and any future consumer). The
 isolated payoff (<30 ms) does not justify the churn on its own. It pays off
 when bundled with another pipeline change.
 
@@ -153,8 +153,8 @@ Pull the trigger when at least one of these becomes true:
    ```
 
 5. **Keep the standalone entry points working**:
-   - `scripts/run-build.entry.ts`: `await runBuild()` (ignore the return).
-   - `scripts/generate-showcase-registry.entry.ts`: call without args; the
+   - `src/run-build.ts`: standalone IIFE-guard calls `await runBuild()` (ignore the return).
+   - `scripts/generate-showcase-registry.ts`: standalone IIFE-guard calls without args; the
      function falls back to reading from disk.
 
 6. **Update tests**: at least one new unit test for

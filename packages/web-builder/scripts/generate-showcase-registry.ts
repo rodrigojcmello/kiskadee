@@ -363,4 +363,10 @@ export async function generateShowcaseRegistry(): Promise<void> {
   await writeFileIfChanged(templatesTarget, templatesTs);
   await writeFileIfChanged(cssTarget, cssTs);
   await writeFileIfChanged(colorsTarget, colorsTs);
+  console.log('[web-builder] Showcase registry generated');
+}
+
+// Standalone execution: `node ./scripts/generate-showcase-registry.ts`
+if (import.meta.url === `file://${process.argv[1]}`) {
+  await generateShowcaseRegistry();
 }
