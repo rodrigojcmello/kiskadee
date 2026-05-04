@@ -9,7 +9,7 @@
     "./types": "./types.ts"
   },
   "scripts": {
-    "compile": "node --experimental-strip-types --no-warnings ./scripts/build.ts",
+    "compile": "node ./scripts/build.ts",
     "build": "node ./scripts/run-build.entry.bundled.js",
     "sync": "node ./scripts/sync-showcase-artifacts.entry.bundled.js",
     "generate": "node ./scripts/generate-showcase-registry.entry.bundled.js",

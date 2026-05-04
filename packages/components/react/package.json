@@ -19,13 +19,13 @@
     "dist"
   ],
   "scripts": {
-    "clean": "node --experimental-strip-types ./scripts/clean-dist.ts",
-    "build:js": "node --experimental-strip-types ./scripts/build-js.ts",
+    "clean": "node ./scripts/clean-dist.ts",
+    "build:js": "node ./scripts/build-js.ts",
     "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
-    "build:styles": "node --experimental-strip-types ./scripts/build-styles.ts",
-    "dev:styles": "node --experimental-strip-types ./scripts/watch-styles.ts",
-    "build:dev": "node --experimental-strip-types ./scripts/build.ts --skip-types",
-    "build": "node --experimental-strip-types ./scripts/build.ts"
+    "build:styles": "node ./scripts/build-styles.ts",
+    "dev:styles": "node ./scripts/watch-styles.ts",
+    "build:dev": "node ./scripts/build.ts --skip-types",
+    "build": "node ./scripts/build.ts"
   },
   "author": "Rodrigo J C Mello",
   "license": "MIT",
