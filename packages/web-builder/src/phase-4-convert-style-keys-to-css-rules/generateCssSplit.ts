@@ -280,30 +280,33 @@ export async function generateCssSplit(
   });
   const coreOut = await postcss(mediaQueryPostcssPlugins).process(coreRaw, { from: undefined });
 
-  // CSS emission order rules (critical for overlapping native states like :hover vs :active)
+  // CSS emission order rules (critical for overlapping native states)
   //
   // Rationale:
   // - Browsers keep :hover active while :active is also true during mouse press.
+  // - Browsers also keep :hover active while a hovered control is focused.
   // - Our selectors for parent-ref colors (.-i:hover .child and .-i:active .child) often have
   //   identical specificity. When both match, the one that appears LAST in the file wins.
-  // - Design intent: pressed (:active) should take precedence over hover when both are active.
+  // - Design intent: focus should take precedence over hover, and pressed (:active) should still
+  //   take precedence over both.
   //
   // Strategy:
   // - Always emit forced-only class rules (no native pseudos) first.
-  // - Then emit native pseudo rules ordered by ascending precedence: focus < hover < active.
-  //   This guarantees :active rules are printed last and therefore win ties in specificity.
+  // - Then emit native pseudo rules ordered by ascending precedence: hover < focus < active.
+  //   This guarantees focus and active rules are printed later and therefore win ties in specificity.
   // - If multiple pseudos appear in the same selector, take the highest-precedence one.
   //
   // Note: This ordering is applied identically to both effects and palette bundles.
   const precedenceOf = (rule: string): number => {
-    // 0 = forced-only/no native; 1 = focus; 2 = hover; 3 = active (printed last)
+    // 0 = forced-only/no native; 1 = hover; 2 = focus; 3 = active (printed last)
     // We match within @media wrappers as well.
-    const isActive = /:(active)\b/.test(rule);
+    const ruleForPrecedence = rule.replace(/:not\([^)]*\)/g, '');
+    const isActive = /:(active)\b/.test(ruleForPrecedence);
     if (isActive) return 3;
-    const isHover = /:(hover)\b/.test(rule);
-    if (isHover) return 2;
-    const isFocus = /:(focus|focus-visible|focus-within)\b/.test(rule);
-    if (isFocus) return 1;
+    const isFocus = /:(focus|focus-visible|focus-within)\b/.test(ruleForPrecedence);
+    if (isFocus) return 2;
+    const isHover = /:(hover)\b/.test(ruleForPrecedence);
+    if (isHover) return 1;
     return 0;
   };
 
@@ -325,7 +328,7 @@ export async function generateCssSplit(
       .sort((a, b) => {
         const wa = precedenceOf(a);
         const wb = precedenceOf(b);
-        if (wa !== wb) return wa - wb; // forced/no-native first; then focus < hover < active
+        if (wa !== wb) return wa - wb; // forced/no-native first; then hover < focus < active
         return a.localeCompare(b);
       })
       .join('\n');
