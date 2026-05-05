@@ -521,7 +521,7 @@ export function resolveTriggerClassName(options: {
     options.tabWidth === 'fixed' ? 'k-tab-e2a' : '',
     options.tabWidth === 'adaptive' ? 'k-tab-e2c' : '',
     options.tabWidth === 'distributed' ? 'k-tab-e2b' : '',
-    'k-state',
+    'k-trn',
     cn.interactive,
     cn.activator,
     options.selected ? cn.selected : '',
@@ -602,7 +602,7 @@ export function resolveBridgeTriggerClassName(options: {
     options.tabWidth === 'fixed' ? 'k-tab-e2a' : '',
     options.tabWidth === 'adaptive' ? 'k-tab-e2c' : '',
     options.tabWidth === 'distributed' ? 'k-tab-e2b' : '',
-    'k-state',
+    'k-trn',
     cn.interactive,
     cn.activator,
     options.selected ? cn.selected : '',
@@ -724,7 +724,7 @@ export function resolveIndicatorClassName(options: {
       ? getTabsIndicatorStatic(options.structural) || 'k-tab-e5j'
       : '',
     typeof options.elements.e5?.e?.h === 'string' && options.elements.e5.e.h ? cn.shadow : '',
-    'k-state',
+    'k-trn',
     options.className
   );
 }

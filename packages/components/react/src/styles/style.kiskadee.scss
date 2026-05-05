@@ -78,20 +78,20 @@ box-shadow var(--k-dur-int) var(--k-ease-out),
 --k-bg1 var(--k-dur-int) var(--k-ease-out),
 --k-bg2 var(--k-dur-int) var(--k-ease-out);
 
-$transition-focus: outline-color 30ms var(--k-ease-out),
-outline-width 30ms var(--k-ease-out),
+$transition-focus-ring: outline-color var(--k-dur-int-xfast) var(--k-ease-out),
+outline-width var(--k-dur-int-xfast) var(--k-ease-out),
 outline-offset 0ms;
 
-$transition-state: $transition-base,
-$transition-focus,
+$transition-interaction: $transition-base,
+$transition-focus-ring,
 background-color var(--k-dur-int) var(--k-ease-out);
 
 $transition-pressed: $transition-base,
-$transition-focus,
+$transition-focus-ring,
 background-color var(--k-dur-int-xfast) var(--k-ease-in);
 
-.k-state {
-  transition: $transition-state;
+.k-trn {
+  transition: $transition-interaction;
 }
 
 /* Pressed state is a short-lived click feedback for non-toggle buttons (toggles use selected styles). */

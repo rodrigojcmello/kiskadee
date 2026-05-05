@@ -170,7 +170,7 @@ export function resolveTextFieldClassNames(options: {
               : '',
         elem(elements.e2, options),
         stateClass,
-        'k-state',
+        'k-trn',
         options.classNames.e2
       ) ?? '',
     e3:
@@ -181,7 +181,7 @@ export function resolveTextFieldClassNames(options: {
         options.focusRingColorSource === 'component' ? 'k-txf-e3a' : '',
         cn.interactive,
         stateClass,
-        'k-state',
+        'k-trn',
         options.classNames.e3
       ) ?? '',
     e4:
@@ -189,7 +189,7 @@ export function resolveTextFieldClassNames(options: {
         `k-txf-e4-${letter}`,
         elem(elements.e4, options),
         stateClass,
-        'k-state',
+        'k-trn',
         options.classNames.e4
       ) ?? '',
     e5:
@@ -197,7 +197,7 @@ export function resolveTextFieldClassNames(options: {
         `k-txf-e5-${letter}`,
         elem(elements.e5, options),
         options.disabled ? `${cn.disabled} ${cn.activator}` : '',
-        'k-state',
+        'k-trn',
         options.classNames.e5
       ) ?? '',
     e6: elements.e6
@@ -205,7 +205,7 @@ export function resolveTextFieldClassNames(options: {
           `k-txf-e6-${letter}`,
           elem(elements.e6, options),
           stateClass,
-          'k-state',
+          'k-trn',
           options.classNames.e6
         ) ?? '')
       : ''
