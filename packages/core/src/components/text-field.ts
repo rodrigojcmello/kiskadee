@@ -2,6 +2,7 @@ import type { RadiusMode } from '../schema.ts';
 import type { SegmentName } from '../types/colors/colors.types.ts';
 import type {
   TextFieldControlElementStyleFromSchema,
+  TextFieldFocusRingColorSourceFromSchema,
   TextFieldIndicatorElementStyleFromSchema,
   TextFieldInputElementStyleFromSchema,
   TextFieldLabelElementStyleFromSchema,
@@ -34,6 +35,7 @@ export type TextFieldLabelOffsetStrategy = 'schema' | 'radius' | 'input-start' |
 export type TextFieldLabelOffsetByRadius = Partial<
   Record<RadiusMode, TextFieldLabelOffsetStrategy>
 >;
+export type TextFieldFocusRingColorSource = TextFieldFocusRingColorSourceFromSchema;
 
 export type TextFieldOptions = TextFieldOptionsFromSchema;
 export type TextFieldModeOptions = TextFieldModeOptionsFromSchema;
@@ -110,6 +112,7 @@ export type TextFieldElements<TSegmentName extends SegmentName = never> = {
 export type TextFieldVariantConfig = {
   options?: {
     mode?: TextFieldMode;
+    focusRingColorSource?: TextFieldFocusRingColorSource;
   };
 };
 
@@ -122,6 +125,7 @@ export type TextFieldStandardVariantConfig<TSegmentName extends SegmentName = ne
   TextFieldVariantConfig & {
     options?: {
       mode?: TextFieldStandardMode;
+      focusRingColorSource?: TextFieldFocusRingColorSource;
     };
     modes: Partial<{
       outline: TextFieldModeConfig<TSegmentName>;
@@ -134,6 +138,7 @@ export type TextFieldFloatingVariantConfig<TSegmentName extends SegmentName = ne
   TextFieldVariantConfig & {
     options?: {
       mode?: TextFieldFloatingMode;
+      focusRingColorSource?: TextFieldFocusRingColorSource;
     };
     modes: Partial<{
       notched: TextFieldModeConfig<TSegmentName>;

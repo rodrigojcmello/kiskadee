@@ -608,7 +608,8 @@ export function createMaterial3GoogleTextFieldSchema(
   return {
     options: {
       variant: 'standard',
-      mode: 'outline'
+      mode: 'outline',
+      focusRingColorSource: 'component'
     },
     variants: {
       standard: {

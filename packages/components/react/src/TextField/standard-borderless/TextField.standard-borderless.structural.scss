@@ -81,9 +81,17 @@
  * element control / e3
  * Expands the shell outline on focused fields without moving focus geometry to the input.
  */
-.k-txf-e3-e[data-focused] {
-  outline-color: var(--k-bdc);
+.k-txf-e3-e:is([data-focused], .-f.-a) {
+  outline-color: var(--k-focus-color);
   outline-width: max(var(--k-bdw), calc(var(--k-focus-width) * 1px));
+}
+
+/*
+ * element control modifier 'a' / e3a
+ * Uses the schema-emitted control border color for the focused outline.
+ */
+.k-txf-e3-e.k-txf-e3a:is([data-focused], .-f.-a) {
+  outline-color: var(--k-bdc);
 }
 
 /*

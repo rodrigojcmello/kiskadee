@@ -3,6 +3,7 @@ import type {
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
+  TextFieldFocusRingColorSource,
   TextFieldIntent,
   TextFieldLabelOffsetByRadius,
   TextFieldLabelOffsetStrategy,
@@ -47,6 +48,8 @@ export type TextFieldProps = Omit<
   radius?: RadiusMode;
   /** Label inline-start offset strategy, or a strategy map keyed by the active radius mode. */
   labelOffset?: TextFieldLabelOffsetStrategy | TextFieldLabelOffsetByRadius;
+  /** Focus outline color policy. `global` uses --k-focus-color; `component` uses e3 borderColor. */
+  focusRingColorSource?: TextFieldFocusRingColorSource;
 };
 
 export type TextFieldStandardProps = TextFieldProps;

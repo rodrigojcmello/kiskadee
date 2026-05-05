@@ -16,6 +16,7 @@ export const textFieldLabelOffsetStrategySchema = z.enum([
   'input-start',
   'none'
 ]);
+export const textFieldFocusRingColorSourceSchema = z.enum(['global', 'component']);
 export const textFieldLabelOffsetByRadiusSchema = z
   .object({
     square: textFieldLabelOffsetStrategySchema.optional(),
@@ -44,7 +45,8 @@ export function createTextFieldOptionsSchema() {
   return z
     .object({
       variant: textFieldVariantSchema.optional(),
-      mode: textFieldModeSchema.optional()
+      mode: textFieldModeSchema.optional(),
+      focusRingColorSource: textFieldFocusRingColorSourceSchema.optional()
     })
     .strict()
     .superRefine((value, ctx) => {
@@ -71,7 +73,8 @@ export function createTextFieldOptionsSchema() {
 export function createTextFieldModeOptionsSchema() {
   return z
     .object({
-      labelOffset: textFieldLabelOffsetByRadiusSchema.optional()
+      labelOffset: textFieldLabelOffsetByRadiusSchema.optional(),
+      focusRingColorSource: textFieldFocusRingColorSourceSchema.optional()
     })
     .strict();
 }
@@ -81,3 +84,6 @@ export const textFieldModeOptionsSchema = createTextFieldModeOptionsSchema();
 
 export type TextFieldOptionsFromSchema = z.input<typeof textFieldOptionsSchema>;
 export type TextFieldModeOptionsFromSchema = z.input<typeof textFieldModeOptionsSchema>;
+export type TextFieldFocusRingColorSourceFromSchema = z.input<
+  typeof textFieldFocusRingColorSourceSchema
+>;

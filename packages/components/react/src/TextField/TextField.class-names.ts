@@ -5,6 +5,7 @@ import {
   stateActivator as cn,
   componentEmphasisBuckets,
   type RadiusMode,
+  type TextFieldFocusRingColorSource,
   type TextFieldIntent,
   type TextFieldLabelOffsetStrategy,
   type TextFieldMode,
@@ -21,6 +22,7 @@ export const DEFAULT_TEXT_FIELD_SCALE = 's:md:1';
 export const DEFAULT_TEXT_FIELD_EMPHASIS: ComponentEmphasis = 'medium';
 export const DEFAULT_TEXT_FIELD_INTENT: TextFieldIntent = 'neutral';
 export const DEFAULT_TEXT_FIELD_RADIUS: RadiusMode = 'rounded';
+export const DEFAULT_TEXT_FIELD_FOCUS_RING_COLOR_SOURCE: TextFieldFocusRingColorSource = 'global';
 
 /**
  * Joins optional class fragments into one trimmed className string.
@@ -135,6 +137,7 @@ export function resolveTextFieldClassNames(options: {
   emphasis: ComponentEmphasis | undefined;
   radius: RadiusMode;
   labelOffsetStrategy: TextFieldLabelOffsetStrategy;
+  focusRingColorSource: TextFieldFocusRingColorSource;
   focused: boolean;
   disabled?: boolean;
   readOnly?: boolean;
@@ -175,6 +178,8 @@ export function resolveTextFieldClassNames(options: {
         `k-txf-e3-${letter}`,
         elem(elements.e3, options),
         resolveRadiusClassName(elements.e3, options.scale, options.radius),
+        options.focusRingColorSource === 'component' ? 'k-txf-e3a' : '',
+        cn.interactive,
         stateClass,
         'k-state',
         options.classNames.e3

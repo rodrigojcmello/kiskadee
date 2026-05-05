@@ -8,6 +8,7 @@ import type {
   TabsIndicatorWidth,
   TabsTabWidth,
   TabsVariant,
+  TextFieldFocusRingColorSource,
   TextFieldLabelOffsetByRadius,
   TextFieldMode,
   TextFieldModeByVariant,
@@ -37,13 +38,18 @@ export type KiskadeeContextValue = {
         options?: {
           variant?: TextFieldVariant;
           mode?: TextFieldMode;
+          focusRingColorSource?: TextFieldFocusRingColorSource;
         };
         variants?: {
           [TVariant in TextFieldVariant]?: {
+            options?: {
+              focusRingColorSource?: TextFieldFocusRingColorSource;
+            };
             modes?: {
               [TMode in TextFieldModeByVariant[TVariant]]?: {
                 options?: {
                   labelOffset?: TextFieldLabelOffsetByRadius;
+                  focusRingColorSource?: TextFieldFocusRingColorSource;
                 };
               };
             };

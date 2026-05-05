@@ -7,6 +7,7 @@ import type {
   TabsIndicatorWidth,
   TabsTabWidth,
   TabsVariant,
+  TextFieldFocusRingColorSource,
   TextFieldLabelOffsetByRadius,
   TextFieldMode,
   TextFieldModeByVariant,
@@ -21,12 +22,16 @@ import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 type BackgroundTones = Partial<Record<ThemeMode, string | undefined>>;
 type TextFieldVariantsConfig = {
   [TVariant in TextFieldVariant]?: {
+    options?: {
+      focusRingColorSource?: TextFieldFocusRingColorSource;
+    };
     modes?: Partial<
       Record<
         TextFieldModeByVariant[TVariant],
         {
           options?: {
             labelOffset?: TextFieldLabelOffsetByRadius;
+            focusRingColorSource?: TextFieldFocusRingColorSource;
           };
         }
       >
@@ -39,6 +44,9 @@ const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
 const rippleGlobalCache: Partial<Record<string, RippleEffectSchema | null>> = {};
 const textFieldVariantCache: Partial<Record<string, TextFieldVariant | null>> = {};
 const textFieldModeCache: Partial<Record<string, TextFieldMode | null>> = {};
+const textFieldFocusRingColorSourceCache: Partial<
+  Record<string, TextFieldFocusRingColorSource | null>
+> = {};
 const textFieldVariantsCache: Partial<Record<string, TextFieldVariantsConfig | null>> = {};
 const tabsVariantCache: Partial<Record<string, TabsVariant | null>> = {};
 const tabsIndicatorPositionCache: Partial<Record<string, TabsIndicatorPosition | null>> = {};
@@ -60,6 +68,9 @@ export function useThemeExtras({
   const [globalRipple, setGlobalRipple] = useState<RippleEffectSchema | undefined>(undefined);
   const [textFieldVariant, setTextFieldVariant] = useState<TextFieldVariant | undefined>(undefined);
   const [textFieldMode, setTextFieldMode] = useState<TextFieldMode | undefined>(undefined);
+  const [textFieldFocusRingColorSource, setTextFieldFocusRingColorSource] = useState<
+    TextFieldFocusRingColorSource | undefined
+  >(undefined);
   const [textFieldVariants, setTextFieldVariants] = useState<TextFieldVariantsConfig | undefined>(
     undefined
   );
@@ -93,6 +104,12 @@ export function useThemeExtras({
       let textFieldVariantValue = textFieldVariantCache[dsKey] ?? undefined;
       const hasTextFieldMode = Object.hasOwn(textFieldModeCache, dsKey);
       let textFieldModeValue = textFieldModeCache[dsKey] ?? undefined;
+      const hasTextFieldFocusRingColorSource = Object.hasOwn(
+        textFieldFocusRingColorSourceCache,
+        dsKey
+      );
+      let textFieldFocusRingColorSourceValue =
+        textFieldFocusRingColorSourceCache[dsKey] ?? undefined;
       const hasTextFieldVariants = Object.hasOwn(textFieldVariantsCache, dsKey);
       let textFieldVariantsValue = textFieldVariantsCache[dsKey] ?? undefined;
       const hasTabsVariant = Object.hasOwn(tabsVariantCache, dsKey);
@@ -114,6 +131,7 @@ export function useThemeExtras({
         !hasRipple ||
         !hasTextFieldVariant ||
         !hasTextFieldMode ||
+        !hasTextFieldFocusRingColorSource ||
         !hasTextFieldVariants ||
         !hasTabsVariant ||
         !hasTabsIndicatorPosition ||
@@ -148,6 +166,7 @@ export function useThemeExtras({
                 options?: {
                   variant?: TextFieldVariant;
                   mode?: TextFieldMode;
+                  focusRingColorSource?: TextFieldFocusRingColorSource;
                 };
                 variants?: TextFieldVariantsConfig;
               };
@@ -161,6 +180,9 @@ export function useThemeExtras({
           textFieldVariantCache[dsKey] = textFieldVariantValue ?? null;
           textFieldModeValue = json.components?.textField?.options?.mode;
           textFieldModeCache[dsKey] = textFieldModeValue ?? null;
+          textFieldFocusRingColorSourceValue =
+            json.components?.textField?.options?.focusRingColorSource;
+          textFieldFocusRingColorSourceCache[dsKey] = textFieldFocusRingColorSourceValue ?? null;
           textFieldVariantsValue = json.components?.textField?.variants;
           textFieldVariantsCache[dsKey] = textFieldVariantsValue ?? null;
           variant = json.components?.tabs?.options?.variant ?? json.components?.tabs?.options?.type;
@@ -202,6 +224,7 @@ export function useThemeExtras({
       setGlobalRipple(ripple);
       setTextFieldVariant(textFieldVariantValue);
       setTextFieldMode(textFieldModeValue);
+      setTextFieldFocusRingColorSource(textFieldFocusRingColorSourceValue);
       setTextFieldVariants(textFieldVariantsValue);
       setTabsVariant(variant);
       setTabsIndicatorPosition(indicatorPosition);
@@ -278,6 +301,7 @@ export function useThemeExtras({
     globalRipple,
     textFieldVariant,
     textFieldMode,
+    textFieldFocusRingColorSource,
     textFieldVariants,
     tabsVariant,
     tabsIndicatorPosition,

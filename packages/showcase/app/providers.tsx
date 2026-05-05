@@ -36,6 +36,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     globalRipple,
     textFieldVariant,
     textFieldMode,
+    textFieldFocusRingColorSource,
     textFieldVariants,
     tabsVariant,
     tabsIndicatorPosition,
@@ -54,6 +55,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     globalRipple !== undefined ||
     textFieldVariant !== undefined ||
     textFieldMode !== undefined ||
+    textFieldFocusRingColorSource !== undefined ||
     textFieldVariants !== undefined ||
     tabsVariant !== undefined ||
     tabsIndicatorPosition !== undefined ||
@@ -67,6 +69,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {}),
           ...(textFieldVariant !== undefined ||
           textFieldMode !== undefined ||
+          textFieldFocusRingColorSource !== undefined ||
           textFieldVariants !== undefined ||
           tabsVariant !== undefined ||
           tabsIndicatorPosition !== undefined ||
@@ -79,6 +82,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
                 components: {
                   ...(textFieldVariant !== undefined ||
                   textFieldMode !== undefined ||
+                  textFieldFocusRingColorSource !== undefined ||
                   textFieldVariants !== undefined
                     ? {
                         textField: {
@@ -86,7 +90,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
                             ...(textFieldVariant !== undefined
                               ? { variant: textFieldVariant }
                               : {}),
-                            ...(textFieldMode !== undefined ? { mode: textFieldMode } : {})
+                            ...(textFieldMode !== undefined ? { mode: textFieldMode } : {}),
+                            ...(textFieldFocusRingColorSource !== undefined
+                              ? { focusRingColorSource: textFieldFocusRingColorSource }
+                              : {})
                           },
                           ...(textFieldVariants !== undefined
                             ? { variants: textFieldVariants }

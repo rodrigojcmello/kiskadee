@@ -117,10 +117,10 @@ export function transformColorKeyToCss(
     shouldMirrorBoxColor
       ? `${EMITTED_COLOR_CSS_VARS.boxColor}: ${value}; ${optimizedProperty}: ${value}`
       : shouldMirrorBorderColor
-      ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}; ${optimizedProperty}: ${value}`
-      : shouldTokenizeBorderColor
-        ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}`
-      : `${optimizedProperty}: ${value}`;
+        ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}; ${optimizedProperty}: ${value}`
+        : shouldTokenizeBorderColor
+          ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}`
+          : `${optimizedProperty}: ${value}`;
 
   let cssValue: string;
   let gradientVars: string | undefined;

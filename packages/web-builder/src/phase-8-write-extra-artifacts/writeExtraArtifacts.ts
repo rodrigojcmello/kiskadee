@@ -15,6 +15,7 @@ import type {
   TabsIndicatorWidth,
   TabsTabWidth,
   TabsVariant,
+  TextFieldFocusRingColorSource,
   TextFieldLabelOffsetByRadius,
   TextFieldMode,
   TextFieldModeByVariant,
@@ -29,14 +30,24 @@ import { type FontStack, toCssFontFamily } from '../utils/fontFamily.ts';
 type ExtractableSchema = Schema;
 
 type SegmentKey = SegmentName | string;
+type TextFieldOptionsPayload = {
+  variant?: TextFieldVariant;
+  mode?: TextFieldMode;
+  focusRingColorSource?: TextFieldFocusRingColorSource;
+};
 type TextFieldModeOptionsPayload = {
   labelOffset?: TextFieldLabelOffsetByRadius;
+  focusRingColorSource?: TextFieldFocusRingColorSource;
 };
 type TextFieldModePayload<TMode extends TextFieldMode = TextFieldMode> = Partial<
   Record<TMode, { options?: TextFieldModeOptionsPayload }>
 >;
+type TextFieldVariantOptionsPayload = {
+  focusRingColorSource?: TextFieldFocusRingColorSource;
+};
 type TextFieldVariantsPayload = {
   [TVariant in TextFieldVariant]?: {
+    options?: TextFieldVariantOptionsPayload;
     modes?: TextFieldModePayload<TextFieldModeByVariant[TVariant]>;
   };
 };
@@ -61,15 +72,35 @@ function getBuildDir(outDirSlug: string): string {
 function pickTextFieldModeOptions(options: unknown): TextFieldModeOptionsPayload | undefined {
   const labelOffset = (options as { labelOffset?: TextFieldLabelOffsetByRadius } | undefined)
     ?.labelOffset;
-  return labelOffset ? { labelOffset } : undefined;
+  const focusRingColorSource = (
+    options as { focusRingColorSource?: TextFieldFocusRingColorSource } | undefined
+  )?.focusRingColorSource;
+  return labelOffset || focusRingColorSource
+    ? {
+        ...(labelOffset ? { labelOffset } : {}),
+        ...(focusRingColorSource ? { focusRingColorSource } : {})
+      }
+    : undefined;
+}
+
+function pickTextFieldVariantOptions(
+  options: unknown
+): TextFieldVariantOptionsPayload | undefined {
+  const focusRingColorSource = (
+    options as { focusRingColorSource?: TextFieldFocusRingColorSource } | undefined
+  )?.focusRingColorSource;
+  return focusRingColorSource ? { focusRingColorSource } : undefined;
 }
 
 function buildTextFieldVariantsPayload(schema: ExtractableSchema): TextFieldVariantsPayload {
   const textField = schema.components?.textField;
+  const standardVariant = textField?.variants?.standard;
+  const floatingVariant = textField?.variants?.floating;
   const standardModes = textField?.variants?.standard?.modes;
   const floatingModes = textField?.variants?.floating?.modes;
   const variants: TextFieldVariantsPayload = {};
 
+  const standardOptions = pickTextFieldVariantOptions(standardVariant?.options);
   const standard: TextFieldModePayload<TextFieldModeByVariant['standard']> = {};
   const outlineOptions = pickTextFieldModeOptions(standardModes?.outline?.options);
   const underlineOptions = pickTextFieldModeOptions(standardModes?.underline?.options);
@@ -77,17 +108,24 @@ function buildTextFieldVariantsPayload(schema: ExtractableSchema): TextFieldVari
   if (outlineOptions) standard.outline = { options: outlineOptions };
   if (underlineOptions) standard.underline = { options: underlineOptions };
   if (borderlessOptions) standard.borderless = { options: borderlessOptions };
-  if (Object.keys(standard).length > 0) {
-    variants.standard = { modes: standard };
+  if (standardOptions || Object.keys(standard).length > 0) {
+    variants.standard = {
+      ...(standardOptions ? { options: standardOptions } : {}),
+      ...(Object.keys(standard).length > 0 ? { modes: standard } : {})
+    };
   }
 
+  const floatingOptions = pickTextFieldVariantOptions(floatingVariant?.options);
   const floating: TextFieldModePayload<TextFieldModeByVariant['floating']> = {};
   const notchedOptions = pickTextFieldModeOptions(floatingModes?.notched?.options);
   const insideOptions = pickTextFieldModeOptions(floatingModes?.inside?.options);
   if (notchedOptions) floating.notched = { options: notchedOptions };
   if (insideOptions) floating.inside = { options: insideOptions };
-  if (Object.keys(floating).length > 0) {
-    variants.floating = { modes: floating };
+  if (floatingOptions || Object.keys(floating).length > 0) {
+    variants.floating = {
+      ...(floatingOptions ? { options: floatingOptions } : {}),
+      ...(Object.keys(floating).length > 0 ? { modes: floating } : {})
+    };
   }
 
   return variants;
@@ -222,6 +260,8 @@ export async function writeExtraArtifacts(params: {
     | TextFieldVariant
     | undefined;
   const textFieldMode = schema.components?.textField?.options?.mode as TextFieldMode | undefined;
+  const textFieldFocusRingColorSource = schema.components?.textField?.options
+    ?.focusRingColorSource as TextFieldFocusRingColorSource | undefined;
   const textFieldVariants = buildTextFieldVariantsPayload(schema);
 
   function toCssFontFamilyString(value: FontStack): string | null {
@@ -246,7 +286,10 @@ export async function writeExtraArtifacts(params: {
       tabsLowerCurve
   );
   const hasTextFieldOptions = Boolean(
-    textFieldVariant || textFieldMode || Object.keys(textFieldVariants).length > 0
+    textFieldVariant ||
+      textFieldMode ||
+      textFieldFocusRingColorSource ||
+      Object.keys(textFieldVariants).length > 0
   );
 
   if (hasFonts || hasRadius || hasRipple || hasTabsOptions || hasTextFieldOptions) {
@@ -270,10 +313,7 @@ export async function writeExtraArtifacts(params: {
           };
         };
         textField?: {
-          options?: {
-            variant?: TextFieldVariant;
-            mode?: TextFieldMode;
-          };
+          options?: TextFieldOptionsPayload;
           variants?: TextFieldVariantsPayload;
         };
       };
@@ -319,7 +359,10 @@ export async function writeExtraArtifacts(params: {
               textField: {
                 options: {
                   ...(textFieldVariant ? { variant: textFieldVariant } : {}),
-                  ...(textFieldMode ? { mode: textFieldMode } : {})
+                  ...(textFieldMode ? { mode: textFieldMode } : {}),
+                  ...(textFieldFocusRingColorSource
+                    ? { focusRingColorSource: textFieldFocusRingColorSource }
+                    : {})
                 },
                 ...(Object.keys(textFieldVariants).length > 0
                   ? { variants: textFieldVariants }

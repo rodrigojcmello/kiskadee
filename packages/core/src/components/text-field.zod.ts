@@ -8,6 +8,7 @@ export type {
   TextFieldRootElementStyleFromSchema
 } from './text-field.elements.zod.ts';
 export type {
+  TextFieldFocusRingColorSourceFromSchema,
   TextFieldModeOptionsFromSchema,
   TextFieldOptionsFromSchema
 } from './text-field.options.zod.ts';

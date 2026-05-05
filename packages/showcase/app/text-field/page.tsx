@@ -1,14 +1,19 @@
 'use client';
 
-import type { RadiusMode, TextFieldLabelOffsetStrategy } from '@kiskadee/core';
+import type {
+  RadiusMode,
+  TextFieldFocusRingColorSource,
+  TextFieldLabelOffsetStrategy
+} from '@kiskadee/core';
 import {
   TextFieldFloatingInside,
   TextFieldFloatingNotched,
   TextFieldStandardBorderless,
   TextFieldStandardOutline,
-  TextFieldStandardUnderline
+  TextFieldStandardUnderline,
+  useKiskadee
 } from '@kiskadee/react-components';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Select } from '@/k-components';
 
 const sectionStyle = {
@@ -48,6 +53,7 @@ const labelOffsetOptions: Array<{ value: LabelOffsetSelection; label: string }> 
 ];
 
 export default function TextFieldPage() {
+  const { designSystem, global } = useKiskadee();
   const [standardOutlineName, setStandardOutlineName] = useState('');
   const [standardUnderlineName, setStandardUnderlineName] = useState('');
   const [standardBorderlessName, setStandardBorderlessName] = useState('');
@@ -55,7 +61,34 @@ export default function TextFieldPage() {
   const [floatingInsideProject, setFloatingInsideProject] = useState('');
   const [borderRadius, setBorderRadius] = useState<RadiusMode>('rounded');
   const [labelOffsetSelection, setLabelOffsetSelection] = useState<LabelOffsetSelection>('auto');
+  const [focusRingColorSourceOverride, setFocusRingColorSourceOverride] = useState<
+    TextFieldFocusRingColorSource | undefined
+  >(undefined);
   const labelOffset = labelOffsetSelection === 'auto' ? undefined : labelOffsetSelection;
+  const schemaFocusRingColorSource =
+    global?.components?.textField?.options?.focusRingColorSource ?? 'global';
+  const focusRingColorSourceSelection =
+    focusRingColorSourceOverride ?? schemaFocusRingColorSource;
+  const focusRingColorSourceOptions = useMemo(
+    () =>
+      (
+        [
+          { value: 'global', label: 'Global' },
+          { value: 'component', label: 'Component' }
+        ] as const
+      ).map((option) => ({
+        ...option,
+        label:
+          option.value === schemaFocusRingColorSource
+            ? `${option.label} (default)`
+            : option.label
+      })),
+    [schemaFocusRingColorSource]
+  );
+
+  useEffect(() => {
+    setFocusRingColorSourceOverride(undefined);
+  }, [designSystem]);
 
   return (
     <section className="k-root">
@@ -80,6 +113,18 @@ export default function TextFieldPage() {
           value={labelOffsetSelection}
           onValueChange={(value) => setLabelOffsetSelection(value as LabelOffsetSelection)}
         />
+        <Select
+          label="Focus Ring Color"
+          width={240}
+          options={focusRingColorSourceOptions}
+          value={focusRingColorSourceSelection}
+          onValueChange={(value) => {
+            const next = value as TextFieldFocusRingColorSource;
+            setFocusRingColorSourceOverride(
+              next === schemaFocusRingColorSource ? undefined : next
+            );
+          }}
+        />
       </div>
 
       <div style={sectionStyle}>
@@ -94,6 +139,7 @@ export default function TextFieldPage() {
             message="Classic outlined field."
             radius={borderRadius}
             labelOffset={labelOffset}
+            focusRingColorSource={focusRingColorSourceOverride}
           />
           <TextFieldStandardOutline
             id="standard-outline-email"
@@ -103,6 +149,7 @@ export default function TextFieldPage() {
             message="Enter a valid email address."
             radius={borderRadius}
             labelOffset={labelOffset}
+            focusRingColorSource={focusRingColorSourceOverride}
           />
           <TextFieldStandardOutline
             id="standard-outline-disabled"
@@ -111,6 +158,7 @@ export default function TextFieldPage() {
             message="Disabled fields keep their message available."
             radius={borderRadius}
             labelOffset={labelOffset}
+            focusRingColorSource={focusRingColorSourceOverride}
             disabled
           />
         </div>
@@ -126,6 +174,7 @@ export default function TextFieldPage() {
             message="Minimal shell with an underline."
             radius={borderRadius}
             labelOffset={labelOffset}
+            focusRingColorSource={focusRingColorSourceOverride}
           />
           <TextFieldStandardUnderline
             id="standard-underline-tax-id"
@@ -135,6 +184,7 @@ export default function TextFieldPage() {
             message="This value looks short for the selected country."
             radius={borderRadius}
             labelOffset={labelOffset}
+            focusRingColorSource={focusRingColorSourceOverride}
           />
           <TextFieldStandardUnderline
             id="standard-underline-readonly"
@@ -143,6 +193,7 @@ export default function TextFieldPage() {
             message="Read-only fields can still be focused and copied."
             radius={borderRadius}
             labelOffset={labelOffset}
+            focusRingColorSource={focusRingColorSourceOverride}
             readOnly
           />
         </div>
@@ -158,6 +209,7 @@ export default function TextFieldPage() {
             message="Filled shell without a visible border."
             radius={borderRadius}
             labelOffset={labelOffset}
+            focusRingColorSource={focusRingColorSourceOverride}
           />
           <TextFieldStandardBorderless
             id="standard-borderless-email"
@@ -167,6 +219,7 @@ export default function TextFieldPage() {
             message="Enter a valid email address."
             radius={borderRadius}
             labelOffset={labelOffset}
+            focusRingColorSource={focusRingColorSourceOverride}
           />
           <TextFieldStandardBorderless
             id="standard-borderless-budget"
@@ -176,6 +229,7 @@ export default function TextFieldPage() {
             message="Budget may be lower than the project minimum."
             radius={borderRadius}
             labelOffset={labelOffset}
+            focusRingColorSource={focusRingColorSourceOverride}
           />
         </div>
 
@@ -189,6 +243,7 @@ export default function TextFieldPage() {
             message="Label cuts through the outline when active."
             radius={borderRadius}
             labelOffset={labelOffset}
+            focusRingColorSource={focusRingColorSourceOverride}
           />
           <TextFieldFloatingNotched
             id="floating-notched-email"
@@ -198,6 +253,7 @@ export default function TextFieldPage() {
             message="Enter a valid email address."
             radius={borderRadius}
             labelOffset={labelOffset}
+            focusRingColorSource={focusRingColorSourceOverride}
           />
           <TextFieldFloatingNotched
             id="floating-notched-readonly"
@@ -206,6 +262,7 @@ export default function TextFieldPage() {
             message="Read-only fields can still be focused and copied."
             radius={borderRadius}
             labelOffset={labelOffset}
+            focusRingColorSource={focusRingColorSourceOverride}
             readOnly
           />
         </div>
@@ -220,6 +277,7 @@ export default function TextFieldPage() {
             message="Label stays inside the shell when active."
             radius={borderRadius}
             labelOffset={labelOffset}
+            focusRingColorSource={focusRingColorSourceOverride}
           />
           <TextFieldFloatingInside
             id="floating-inside-email"
@@ -229,6 +287,7 @@ export default function TextFieldPage() {
             message="Enter a valid email address."
             radius={borderRadius}
             labelOffset={labelOffset}
+            focusRingColorSource={focusRingColorSourceOverride}
           />
           <TextFieldFloatingInside
             id="floating-inside-budget"
@@ -238,6 +297,7 @@ export default function TextFieldPage() {
             message="Budget may be lower than the project minimum."
             radius={borderRadius}
             labelOffset={labelOffset}
+            focusRingColorSource={focusRingColorSourceOverride}
           />
         </div>
       </div>
