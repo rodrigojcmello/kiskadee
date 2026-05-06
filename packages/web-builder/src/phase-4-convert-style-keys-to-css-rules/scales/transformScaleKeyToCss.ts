@@ -238,7 +238,12 @@ export function transformScaleKeyToCss(
       rule = `.${className} { ${cssProperty}: ${cssValue} }`;
     }
   } else if (scaleProperty === 'marginLeft') {
-    rule = `.${className} { ${EMITTED_SCALE_CSS_VARS.marginLeft}: ${cssValue}; ${cssProperty}: ${cssValue} }`;
+    // Emission shape must be decided by the element policy. Do not mirror
+    // marginLeft based only on the property name; --k-mgl is a structural contract.
+    rule =
+      styleEmissionPolicy.marginLeftEmission === 'mirrored'
+        ? `.${className} { ${EMITTED_SCALE_CSS_VARS.marginLeft}: ${cssValue}; ${cssProperty}: ${cssValue} }`
+        : `.${className} { ${cssProperty}: ${cssValue} }`;
   } else {
     rule = `.${className} { ${cssProperty}: ${cssValue} }`;
   }

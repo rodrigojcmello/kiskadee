@@ -41,7 +41,23 @@ describe('transformScaleKeyToCss', () => {
         const result = transformScaleKeyToCss('marginLeft__16', breakpoints, 'abc');
 
         expect(result).toContain('.abc {');
+        expect(result).not.toContain('--k-mgl');
         expect(result).toContain('margin-left: 16px');
+      });
+
+      it('should emit --k-mgl and margin-left when margin-left emission is mirrored', () => {
+        const result = transformScaleKeyToCss('marginLeft__16', breakpoints, 'abc', {
+          styleEmissionPolicy: {
+            marginLeftEmission: 'mirrored',
+            borderRadiusEmission: 'direct',
+            borderColorEmission: 'direct',
+            borderWidthEmission: 'direct',
+            paddingEmission: 'direct',
+            shadowEmission: 'direct'
+          }
+        });
+
+        expect(result).toBe('.abc { --k-mgl: 16px; margin-left: 16px }');
       });
 
       it("should convert 'borderWidth__16' into a valid CSS rule", () => {
@@ -135,6 +151,7 @@ describe('transformScaleKeyToCss', () => {
         const result = transformScaleKeyToCss('marginLeft++s:sm:1__16', breakpoints, 'abc');
 
         expect(result).toContain('.abc {');
+        expect(result).not.toContain('--k-mgl');
         expect(result).toContain('margin-left: 16px');
       });
 

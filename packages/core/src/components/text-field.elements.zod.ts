@@ -64,9 +64,10 @@ export function createTextFieldControlElementStyleSchema<
         'paddingBottom',
         'paddingLeft'
       ]).optional(),
-      palettes: createPalettesSchema<TSegmentName, 'boxColor' | 'borderColor'>([
+      palettes: createPalettesSchema<TSegmentName, 'boxColor' | 'borderColor' | 'textColor'>([
         'boxColor',
-        'borderColor'
+        'borderColor',
+        'textColor'
       ]).optional(),
       effects: elementEffectsSchema.optional()
     })

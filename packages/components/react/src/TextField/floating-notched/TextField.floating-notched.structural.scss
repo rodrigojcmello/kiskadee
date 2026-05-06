@@ -34,6 +34,7 @@
   border: 0;
   outline: var(--k-bdc) solid var(--k-bdw);
   outline-offset: 0;
+  --k-txf-phc: var(--k-txc);
 }
 
 /*
@@ -90,6 +91,7 @@
   margin-left: 0;
   padding-left: 0;
   padding-right: 0;
+  color: var(--k-txf-phc);
 }
 
 /*
@@ -187,7 +189,7 @@
  * Keeps placeholder text subordinate because the floating label already owns the resting prompt lane.
  */
 .k-txf-e4-a::placeholder {
-  color: currentColor;
+  color: var(--k-txf-phc);
   opacity: 0.52;
 }
 

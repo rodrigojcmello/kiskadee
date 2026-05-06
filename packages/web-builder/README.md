@@ -2,6 +2,10 @@
 
 Build pipeline that converts a Kiskadee `Schema` into Web artifacts (utility CSS + JSON maps).
 
+For CSS output rules that differ by component element, see
+[`docs/style-emission-policy.md`](docs/style-emission-policy.md). Emission shape is always an
+element-level policy decision.
+
 ## Border width vs padding (web-only compensation)
 
 On the web, borders contribute to the rendered box size when height/width are `auto`. That means a

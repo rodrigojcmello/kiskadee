@@ -59,6 +59,7 @@ export type TextFieldLabelElementStyle<TSegmentName extends SegmentName = never>
 /**
  * e3 — control shell
  * - boxColor / borderColor
+ * - optional textColor.rest for placeholder color
  * - padding, boxHeight, borderWidth, borderRadius
  */
 export type TextFieldControlElementStyle<TSegmentName extends SegmentName = never> =

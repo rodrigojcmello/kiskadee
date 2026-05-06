@@ -2,42 +2,53 @@ export const STYLE_EMISSION_MODE = {
   direct: 'direct',
   mirrored: 'mirrored',
   token: 'token',
+  interpolated: 'interpolated',
   compensated: 'compensated'
 } as const;
 
 type DirectEmission = typeof STYLE_EMISSION_MODE.direct;
 type MirroredEmission = typeof STYLE_EMISSION_MODE.mirrored;
 type TokenEmission = typeof STYLE_EMISSION_MODE.token;
+type InterpolatedEmission = typeof STYLE_EMISSION_MODE.interpolated;
 type CompensatedEmission = typeof STYLE_EMISSION_MODE.compensated;
 
 type DirectOrMirroredEmission = DirectEmission | MirroredEmission;
 type DirectOrTokenEmission = DirectEmission | TokenEmission;
 type DirectMirroredOrTokenEmission = DirectOrMirroredEmission | TokenEmission;
 type BoxColorEmission = DirectOrMirroredEmission;
+type BoxColorGradientEmission = DirectEmission | InterpolatedEmission;
+type TextColorEmission = DirectOrMirroredEmission;
 
 export type BorderWidthEmission = DirectMirroredOrTokenEmission;
 export type BorderRadiusEmission = DirectMirroredOrTokenEmission;
 export type BorderColorEmission = DirectMirroredOrTokenEmission;
 export type BoxWidthEmission = DirectOrTokenEmission;
+export type MarginLeftEmission = DirectOrMirroredEmission;
 export type PaddingEmission = DirectMirroredOrTokenEmission | CompensatedEmission;
 export type ShadowEmission = DirectOrTokenEmission;
 
 export type ElementStyleEmissionPolicy = {
   boxColorEmission?: BoxColorEmission;
+  boxColorGradientEmission?: BoxColorGradientEmission;
+  textColorEmission?: TextColorEmission;
   borderWidthEmission?: BorderWidthEmission;
   borderRadiusEmission?: BorderRadiusEmission;
   borderColorEmission?: BorderColorEmission;
   boxWidthEmission?: BoxWidthEmission;
+  marginLeftEmission?: MarginLeftEmission;
   paddingEmission?: PaddingEmission;
   shadowEmission?: ShadowEmission;
 };
 
 export type ResolvedElementStyleEmissionPolicy = {
   boxColorEmission?: BoxColorEmission;
+  boxColorGradientEmission?: BoxColorGradientEmission;
+  textColorEmission?: TextColorEmission;
   borderWidthEmission: BorderWidthEmission;
   borderRadiusEmission: BorderRadiusEmission;
   borderColorEmission: BorderColorEmission;
   boxWidthEmission?: BoxWidthEmission;
+  marginLeftEmission?: MarginLeftEmission;
   paddingEmission: PaddingEmission;
   shadowEmission: ShadowEmission;
 };
@@ -63,6 +74,7 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
     button: {
       elements: {
         e1: {
+          boxColorGradientEmission: 'interpolated',
           borderRadiusEmission: 'mirrored',
           borderWidthEmission: 'mirrored',
           paddingEmission: 'compensated'
@@ -71,8 +83,12 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
     },
     textField: {
       elements: {
+        e2: {
+          marginLeftEmission: 'mirrored'
+        },
         e3: {
           boxColorEmission: 'mirrored',
+          textColorEmission: 'mirrored',
           borderWidthEmission: 'token',
           borderColorEmission: 'token'
         }
@@ -117,10 +133,13 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
 
 export const DEFAULT_ELEMENT_STYLE_EMISSION_POLICY: ResolvedElementStyleEmissionPolicy = {
   boxColorEmission: 'direct',
+  boxColorGradientEmission: 'direct',
+  textColorEmission: 'direct',
   borderRadiusEmission: 'mirrored',
   borderWidthEmission: 'direct',
   borderColorEmission: 'direct',
   boxWidthEmission: 'direct',
+  marginLeftEmission: 'direct',
   paddingEmission: 'direct',
   shadowEmission: 'direct'
 };
@@ -142,6 +161,14 @@ export function resolveElementStyleEmissionPolicy(
       variantElementPolicy?.boxColorEmission ??
       elementPolicy?.boxColorEmission ??
       DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.boxColorEmission,
+    boxColorGradientEmission:
+      variantElementPolicy?.boxColorGradientEmission ??
+      elementPolicy?.boxColorGradientEmission ??
+      DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.boxColorGradientEmission,
+    textColorEmission:
+      variantElementPolicy?.textColorEmission ??
+      elementPolicy?.textColorEmission ??
+      DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.textColorEmission,
     borderRadiusEmission:
       variantElementPolicy?.borderRadiusEmission ??
       elementPolicy?.borderRadiusEmission ??
@@ -158,6 +185,10 @@ export function resolveElementStyleEmissionPolicy(
       variantElementPolicy?.boxWidthEmission ??
       elementPolicy?.boxWidthEmission ??
       DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.boxWidthEmission,
+    marginLeftEmission:
+      variantElementPolicy?.marginLeftEmission ??
+      elementPolicy?.marginLeftEmission ??
+      DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.marginLeftEmission,
     paddingEmission:
       variantElementPolicy?.paddingEmission ??
       elementPolicy?.paddingEmission ??

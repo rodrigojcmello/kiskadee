@@ -16,9 +16,17 @@ const MIRRORED_STYLE_KEY_IDENTITY_SUFFIX = `${STYLE_KEY_MODE_SEPARATOR}m`;
 function resolveStyleKeyEmissionMode(
   styleKey: string,
   styleEmissionPolicy: ResolvedElementStyleEmissionPolicy
-): 'm' | 't' | 'c' | undefined {
+): 'm' | 't' | 'c' | 'i' | 'mi' | undefined {
   if (styleKey.startsWith('boxColor')) {
-    return styleEmissionPolicy.boxColorEmission === 'mirrored' ? 'm' : undefined;
+    const isMirrored = styleEmissionPolicy.boxColorEmission === 'mirrored';
+    const isInterpolated = styleEmissionPolicy.boxColorGradientEmission === 'interpolated';
+    if (isMirrored && isInterpolated) return 'mi';
+    if (isMirrored) return 'm';
+    return isInterpolated ? 'i' : undefined;
+  }
+
+  if (styleKey.startsWith('textColor')) {
+    return styleEmissionPolicy.textColorEmission === 'mirrored' ? 'm' : undefined;
   }
 
   if (styleKey.startsWith('shadow')) {
@@ -53,6 +61,10 @@ function resolveStyleKeyEmissionMode(
     return styleEmissionPolicy.boxWidthEmission === 'token' ? 't' : undefined;
   }
 
+  if (styleKey.startsWith('marginLeft')) {
+    return styleEmissionPolicy.marginLeftEmission === 'mirrored' ? 'm' : undefined;
+  }
+
   if (
     styleKey.startsWith('paddingTop') ||
     styleKey.startsWith('paddingRight') ||
@@ -73,9 +85,21 @@ function resolveStyleKeyEmissionMode(
 
 function resolveStyleKeyEmissionFamily(
   styleKey: string
-): 'boxColor' | 'borderRadius' | 'borderWidth' | 'borderColor' | 'padding' | undefined {
+):
+  | 'boxColor'
+  | 'textColor'
+  | 'borderRadius'
+  | 'borderWidth'
+  | 'borderColor'
+  | 'marginLeft'
+  | 'padding'
+  | undefined {
   if (styleKey.startsWith('boxColor')) {
     return 'boxColor';
+  }
+
+  if (styleKey.startsWith('textColor')) {
+    return 'textColor';
   }
 
   if (styleKey.startsWith('borderRadius')) {
@@ -88,6 +112,10 @@ function resolveStyleKeyEmissionFamily(
 
   if (styleKey.startsWith('borderColor')) {
     return 'borderColor';
+  }
+
+  if (styleKey.startsWith('marginLeft')) {
+    return 'marginLeft';
   }
 
   if (
@@ -177,12 +205,20 @@ export function applyCanonicalStyleEmissionPolicy(
     return { ...styleEmissionPolicy, boxColorEmission: 'mirrored' };
   }
 
+  if (family === 'textColor') {
+    return { ...styleEmissionPolicy, textColorEmission: 'mirrored' };
+  }
+
   if (family === 'borderWidth') {
     return { ...styleEmissionPolicy, borderWidthEmission: 'mirrored' };
   }
 
   if (family === 'borderColor') {
     return { ...styleEmissionPolicy, borderColorEmission: 'mirrored' };
+  }
+
+  if (family === 'marginLeft') {
+    return { ...styleEmissionPolicy, marginLeftEmission: 'mirrored' };
   }
 
   if (family === 'padding') {

@@ -100,6 +100,20 @@ describe('web-style-key-identity', () => {
       ).toBe('borderColor__[0,0,0,1]@@t');
     });
 
+    it('appends the compact interpolation suffix for box-color gradient emission', () => {
+      expect(
+        buildWebStyleKeyIdentity('boxColor__[0,0,0,1]', {
+          boxColorGradientEmission: 'interpolated',
+          borderRadiusEmission: 'direct',
+          borderWidthEmission: 'direct',
+          borderColorEmission: 'direct',
+          boxWidthEmission: 'direct',
+          paddingEmission: 'direct',
+          shadowEmission: 'direct'
+        })
+      ).toBe('boxColor__[0,0,0,1]@@i');
+    });
+
     it('keeps shadow keys unchanged when shadow emission stays raw', () => {
       expect(
         buildWebStyleKeyIdentity('shadow__[0,0,4,[0,0,0,0.22]]', {
@@ -137,6 +151,17 @@ describe('web-style-key-identity', () => {
           'e1'
         )
       ).toBe('paddingTop__12@@c');
+    });
+
+    it('uses the button e1 policy from the builder config for box-color interpolation', () => {
+      expect(
+        resolveWebStyleKeyIdentity(
+          'boxColor__[0,0,0,1]',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'button',
+          'e1'
+        )
+      ).toBe('boxColor__[0,0,0,1]@@i');
     });
 
     it('uses the tabs e2 policy from the builder config for border-radius', () => {
@@ -206,6 +231,28 @@ describe('web-style-key-identity', () => {
           'e3'
         )
       ).toBe('borderColor__[0,0,0,1]@@t');
+    });
+
+    it('uses the textField e3 policy from the builder config for text color', () => {
+      expect(
+        resolveWebStyleKeyIdentity(
+          'textColor__[0,0,0,1]',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'textField',
+          'e3'
+        )
+      ).toBe('textColor__[0,0,0,1]@@m');
+    });
+
+    it('uses the textField e2 policy from the builder config for margin left', () => {
+      expect(
+        resolveWebStyleKeyIdentity(
+          'marginLeft__4',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'textField',
+          'e2'
+        )
+      ).toBe('marginLeft__4@@m');
     });
   });
 

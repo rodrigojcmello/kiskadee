@@ -75,6 +75,7 @@
   border: 0;
   outline: var(--k-bdc) solid var(--k-bdw);
   outline-offset: 0;
+  --k-txf-phc: var(--k-txc);
 }
 
 /*
@@ -125,7 +126,7 @@
  * Keeps placeholder text inside the input box without introducing extra structural nodes.
  */
 .k-txf-e4-b::placeholder {
-  color: currentColor;
+  color: var(--k-txf-phc);
   opacity: 0.62;
 }
 

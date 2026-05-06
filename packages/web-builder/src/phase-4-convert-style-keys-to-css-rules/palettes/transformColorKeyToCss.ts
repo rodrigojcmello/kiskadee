@@ -26,6 +26,7 @@ export type TransformColorKeyToCssOptions = {
 };
 
 export const EMITTED_COLOR_CSS_VARS = {
+  textColor: '--k-txc',
   boxColor: '--k-bgc',
   borderColor: '--k-bdc'
 } as const;
@@ -109,6 +110,13 @@ export function transformColorKeyToCss(
   const styleEmissionPolicy = options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
   const shouldMirrorBoxColor =
     propertyName === 'boxColor' && styleEmissionPolicy.boxColorEmission === 'mirrored';
+  const shouldInterpolateBoxColor =
+    propertyName === 'boxColor' &&
+    styleEmissionPolicy.boxColorGradientEmission === 'interpolated';
+  // Emission shape must be decided by the element policy. Do not mirror textColor
+  // based only on the property name; that leaks --k-txc into unrelated elements.
+  const shouldMirrorTextColor =
+    propertyName === 'textColor' && styleEmissionPolicy.textColorEmission === 'mirrored';
   const shouldMirrorBorderColor =
     propertyName === 'borderColor' && styleEmissionPolicy.borderColorEmission === 'mirrored';
   const shouldTokenizeBorderColor =
@@ -116,6 +124,8 @@ export function transformColorKeyToCss(
   const buildColorDeclarations = (value: string) =>
     shouldMirrorBoxColor
       ? `${EMITTED_COLOR_CSS_VARS.boxColor}: ${value}; ${optimizedProperty}: ${value}`
+      : shouldMirrorTextColor
+        ? `${EMITTED_COLOR_CSS_VARS.textColor}: ${value}; ${optimizedProperty}: ${value}`
       : shouldMirrorBorderColor
         ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}; ${optimizedProperty}: ${value}`
         : shouldTokenizeBorderColor
@@ -139,11 +149,12 @@ export function transformColorKeyToCss(
     const hsla = parts as unknown as HSLA;
     const solidHex = convertHslaToHex(hsla);
 
-    // Feature flag: force solid `boxColor` to be emitted as a 2-stop gradient
-    // so we can transition between different Design Systems (gradient <-> solid)
-    // without swapping `background-color` vs `background-image`.
+    // Gradient interpolation is also an element-level emission policy. The global
+    // flag only enables the experiment; the element policy decides where it applies.
     const shouldForceSolidAsGradient =
-      options?.enableSolidBoxColorAsGradient === true && optimizedProperty === 'background';
+      options?.enableSolidBoxColorAsGradient === true &&
+      optimizedProperty === 'background' &&
+      shouldInterpolateBoxColor;
 
     if (shouldForceSolidAsGradient) {
       gradientVars = `--k-bg0: ${solidHex}; --k-bg1: ${solidHex};`;
@@ -185,7 +196,7 @@ export function transformColorKeyToCss(
     // - Background is expressed in terms of CSS custom properties (--k-bg0/1/2)
     // - Interaction states only override the variables, allowing browsers that support
     //   `@property` to interpolate colors (progressive enhancement).
-    if (resolvedStops.length === 2 || resolvedStops.length === 3) {
+    if (shouldInterpolateBoxColor && (resolvedStops.length === 2 || resolvedStops.length === 3)) {
       const varNames = ['--k-bg0', '--k-bg1', '--k-bg2'] as const;
 
       gradientVars = resolvedStops.map((s, i) => `${varNames[i]}: ${s.color};`).join(' ');

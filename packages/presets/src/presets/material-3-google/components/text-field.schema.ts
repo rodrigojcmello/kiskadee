@@ -11,6 +11,32 @@ type CreateMaterial3GoogleTextFieldSchemaArgs = {
   transparent: readonly [number, number, number, number];
 };
 
+type PaletteBundle = Record<string, Record<string, Record<string, unknown>>>;
+
+function withPlaceholderPalette<TControl extends PaletteBundle>(
+  control: TControl,
+  placeholder: PaletteBundle
+): TControl {
+  const merged: PaletteBundle = {};
+  const segmentNames = new Set([...Object.keys(control), ...Object.keys(placeholder)]);
+
+  for (const segmentName of segmentNames) {
+    const controlThemes = control[segmentName] ?? {};
+    const placeholderThemes = placeholder[segmentName] ?? {};
+    const themeNames = new Set([...Object.keys(controlThemes), ...Object.keys(placeholderThemes)]);
+    merged[segmentName] = {};
+
+    for (const themeName of themeNames) {
+      merged[segmentName][themeName] = {
+        ...(controlThemes[themeName] ?? {}),
+        ...(placeholderThemes[themeName] ?? {})
+      };
+    }
+  }
+
+  return merged as TControl;
+}
+
 function createTextFieldElementPalettes({
   c,
   segmentNames,
@@ -371,6 +397,46 @@ function createTextFieldElementPalettes({
         }
       }
     })),
+    placeholder: buildBySegment(segmentNames, (s) => ({
+      light: {
+        textColor: {
+          neutral: {
+            medium: {
+              rest: c(s, 'l', 'neutral.v2', 45)
+            }
+          },
+          error: {
+            medium: {
+              rest: c(s, 'l', 'textField.error', 60)
+            }
+          },
+          warning: {
+            medium: {
+              rest: c(s, 'l', 'textField.warning', 60)
+            }
+          }
+        }
+      },
+      dark: {
+        textColor: {
+          neutral: {
+            medium: {
+              rest: c(s, 'd', 'neutral.v2', 70)
+            }
+          },
+          error: {
+            medium: {
+              rest: c(s, 'd', 'textField.error', 80)
+            }
+          },
+          warning: {
+            medium: {
+              rest: c(s, 'd', 'textField.warning', 80)
+            }
+          }
+        }
+      }
+    })),
     label: buildBySegment(segmentNames, (s) => ({
       light: {
         textColor: {
@@ -699,7 +765,7 @@ export function createMaterial3GoogleTextFieldSchema(
                     's:md:1': 12
                   }
                 },
-                palettes: palettes.control
+                palettes: withPlaceholderPalette(palettes.control, palettes.placeholder)
               },
               e4: {
                 decorations: {
@@ -823,7 +889,7 @@ export function createMaterial3GoogleTextFieldSchema(
                     's:md:1': 0
                   }
                 },
-                palettes: palettes.control
+                palettes: withPlaceholderPalette(palettes.control, palettes.placeholder)
               },
               e4: {
                 decorations: {
@@ -956,7 +1022,7 @@ export function createMaterial3GoogleTextFieldSchema(
                     's:md:1': 12
                   }
                 },
-                palettes: palettes.controlBorderless
+                palettes: withPlaceholderPalette(palettes.controlBorderless, palettes.placeholder)
               },
               e4: {
                 decorations: {
@@ -1099,7 +1165,10 @@ export function createMaterial3GoogleTextFieldSchema(
                     's:md:1': 16
                   }
                 },
-                palettes: palettes.controlFloatingNotched
+                palettes: withPlaceholderPalette(
+                  palettes.controlFloatingNotched,
+                  palettes.placeholder
+                )
               },
               e4: {
                 decorations: {
@@ -1221,7 +1290,7 @@ export function createMaterial3GoogleTextFieldSchema(
                     's:md:1': 16
                   }
                 },
-                palettes: palettes.control
+                palettes: withPlaceholderPalette(palettes.control, palettes.placeholder)
               },
               e4: {
                 decorations: {

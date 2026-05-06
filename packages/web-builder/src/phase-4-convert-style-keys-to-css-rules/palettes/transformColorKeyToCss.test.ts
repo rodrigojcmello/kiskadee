@@ -6,6 +6,14 @@ import {
 } from './transformColorKeyToCss.ts';
 
 const className = 'abc';
+const interpolatedBoxColorStyleEmissionPolicy = {
+  boxColorGradientEmission: 'interpolated',
+  borderRadiusEmission: 'direct',
+  borderColorEmission: 'direct',
+  borderWidthEmission: 'direct',
+  paddingEmission: 'direct',
+  shadowEmission: 'direct'
+} as const;
 
 describe('transformColorKeyToCss', () => {
   // -----------------------------------------------------------------------------------------------
@@ -25,6 +33,22 @@ describe('transformColorKeyToCss', () => {
           const styleKey = 'textColor__[120,50,50,1]';
           const result = transformColorKeyToCss(styleKey, className, force);
           expect(result).toEqual('.abc { color: #40BF40 }');
+        });
+
+        it('emits --k-txc and color when text-color emission is mirrored', () => {
+          const force = false as const;
+          const result = transformColorKeyToCss('textColor__[120,50,50,1]', className, force, {
+            styleEmissionPolicy: {
+              textColorEmission: 'mirrored',
+              borderRadiusEmission: 'direct',
+              borderColorEmission: 'direct',
+              borderWidthEmission: 'direct',
+              paddingEmission: 'direct',
+              shadowEmission: 'direct'
+            }
+          });
+
+          expect(result).toEqual('.abc { --k-txc: #40BF40; color: #40BF40 }');
         });
 
         it('emits only --k-bdc when border-color emission is token', () => {
@@ -69,7 +93,8 @@ describe('transformColorKeyToCss', () => {
         it('rest emits vars + background when enabled', () => {
           const force = false as const;
           const result = transformColorKeyToCss('boxColor__[240,50,50,0.5]', className, force, {
-            enableSolidBoxColorAsGradient: true
+            enableSolidBoxColorAsGradient: true,
+            styleEmissionPolicy: interpolatedBoxColorStyleEmissionPolicy
           });
 
           expect(result).toEqual(
@@ -84,7 +109,8 @@ describe('transformColorKeyToCss', () => {
             className,
             force,
             {
-              enableSolidBoxColorAsGradient: true
+              enableSolidBoxColorAsGradient: true,
+              styleEmissionPolicy: interpolatedBoxColorStyleEmissionPolicy
             }
           );
 
@@ -93,7 +119,7 @@ describe('transformColorKeyToCss', () => {
           );
         });
 
-        it('does not affect non-boxColor properties', () => {
+        it('does not force non-boxColor properties into gradients', () => {
           const force = false as const;
           const result = transformColorKeyToCss('textColor__[240,50,50,0.5]', className, force, {
             enableSolidBoxColorAsGradient: true
@@ -160,7 +186,8 @@ describe('transformColorKeyToCss', () => {
           const result = transformColorKeyToCss(
             `boxColor__${JSON.stringify(gradient)}`,
             className,
-            force
+            force,
+            { styleEmissionPolicy: interpolatedBoxColorStyleEmissionPolicy }
           );
           expect(result).toEqual(
             '.abc { --k-bg0: #4040BF80; --k-bg1: var(--x); background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }'
@@ -181,7 +208,8 @@ describe('transformColorKeyToCss', () => {
           const result = transformColorKeyToCss(
             `boxColor--hover__${JSON.stringify(gradient)}`,
             className,
-            force
+            force,
+            { styleEmissionPolicy: interpolatedBoxColorStyleEmissionPolicy }
           );
 
           // Non-rest rules only override the variables.
@@ -205,7 +233,8 @@ describe('transformColorKeyToCss', () => {
           const result = transformColorKeyToCss(
             `boxColor__${JSON.stringify(gradient)}`,
             className,
-            force
+            force,
+            { styleEmissionPolicy: interpolatedBoxColorStyleEmissionPolicy }
           );
           expect(result).toEqual(
             '.abc { --k-bg0: #40BF40; --k-bg1: #000; --k-bg2: var(--x); background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 50%, var(--k-bg2) 100%) }'
@@ -370,7 +399,8 @@ describe('transformColorKeyToCss', () => {
           const result = transformColorKeyToCss(
             `boxColor==hover__${JSON.stringify(gradient)}`,
             className,
-            force
+            force,
+            { styleEmissionPolicy: interpolatedBoxColorStyleEmissionPolicy }
           );
 
           // Ref rules do not have a guaranteed rest anchor, so they must include background.

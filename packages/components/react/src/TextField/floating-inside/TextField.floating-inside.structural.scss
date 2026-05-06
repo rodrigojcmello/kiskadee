@@ -34,6 +34,7 @@
   border: 0;
   outline: var(--k-bdc) solid var(--k-bdw);
   outline-offset: 0;
+  --k-txf-phc: var(--k-txc);
 }
 
 /*
@@ -90,6 +91,7 @@
   margin-left: 0;
   padding-left: 0;
   padding-right: 0;
+  color: var(--k-txf-phc);
 }
 
 /*
