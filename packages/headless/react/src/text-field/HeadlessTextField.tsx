@@ -15,18 +15,45 @@ import {
   useMemo,
   useState
 } from 'react';
+import type {
+  StateProjectionRule,
+  StateProjectionSlotProps,
+  StateProjectionStateValue,
+  UseStateProjectionOptions
+} from '../state-projection/useStateProjection.ts';
+import {
+  mergeStateProjectionSlotProps,
+  useStateProjection
+} from '../state-projection/useStateProjection.ts';
 
 export type TextFieldValidationStatus = 'error' | 'warning';
 
-export type TextFieldClassNames = Partial<
-  Record<'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6', string>
+export type TextFieldElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
+
+export type TextFieldStateName =
+  | 'focused'
+  | 'filled'
+  | 'disabled'
+  | 'readOnly'
+  | 'invalid'
+  | 'validationStatus';
+
+export type TextFieldClassNames = Partial<Record<TextFieldElementName, string>>;
+
+export type TextFieldStateProjectionOptions = Omit<
+  UseStateProjectionOptions<TextFieldElementName, TextFieldStateName>,
+  'classNames' | 'states'
 >;
+
+type TextFieldProjectionStates = Partial<Record<TextFieldStateName, StateProjectionStateValue>>;
+type TextFieldSlotProps = StateProjectionSlotProps<TextFieldElementName>;
 
 type TextFieldRootDivProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'className'>;
 
 export type TextFieldRootProps = TextFieldRootDivProps & {
   children?: ReactNode;
   classNames?: TextFieldClassNames;
+  stateProjection?: TextFieldStateProjectionOptions;
   inputId?: string;
   value?: string;
   defaultValue?: string;
@@ -57,7 +84,7 @@ export type TextFieldInputProps = Omit<
 };
 
 type TextFieldContextValue = {
-  classNames: TextFieldClassNames;
+  slotProps: TextFieldSlotProps;
   inputId: string;
   labelId: string;
   messageId: string;
@@ -87,6 +114,32 @@ function mergeClassNames(...parts: Array<string | undefined | null | false>): st
   return joined.length > 0 ? joined : undefined;
 }
 
+const textFieldDataAttributeProjections = {
+  focused: {
+    attribute: 'data-focused'
+  },
+  filled: {
+    attribute: 'data-filled'
+  },
+  disabled: {
+    attribute: 'data-disabled'
+  },
+  readOnly: {
+    attribute: 'data-readonly'
+  },
+  invalid: {
+    attribute: 'data-invalid'
+  },
+  validationStatus: {
+    attribute: {
+      name: 'data-validation-status',
+      value: (status) => String(status)
+    }
+  }
+} satisfies Partial<
+  Record<TextFieldStateName, StateProjectionRule<TextFieldElementName, TextFieldStateName>>
+>;
+
 function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
   if (!ref) return;
   if (typeof ref === 'function') {
@@ -96,22 +149,10 @@ function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
   ref.current = value;
 }
 
-function resolveDataAttributes(context: TextFieldContextValue) {
-  const filled = context.value.length > 0;
-
-  return {
-    'data-focused': context.focused ? '' : undefined,
-    'data-filled': filled ? '' : undefined,
-    'data-disabled': context.disabled ? '' : undefined,
-    'data-readonly': context.readOnly ? '' : undefined,
-    'data-invalid': context.validationStatus === 'error' ? '' : undefined,
-    'data-validation-status': context.validationStatus
-  };
-}
-
 function TextFieldRoot({
   children,
   classNames = {},
+  stateProjection,
   inputId,
   value,
   defaultValue = '',
@@ -130,6 +171,46 @@ function TextFieldRoot({
   const resolvedValue = isControlled ? value : uncontrolledValue;
   const [focused, setFocused] = useState(false);
 
+  const projectionStates = useMemo<TextFieldProjectionStates>(
+    () => ({
+      focused,
+      filled: resolvedValue.length > 0,
+      disabled,
+      readOnly,
+      invalid: validationStatus === 'error',
+      validationStatus
+    }),
+    [disabled, focused, readOnly, resolvedValue, validationStatus]
+  );
+
+  const projectedSlotProps = useStateProjection<TextFieldElementName, TextFieldStateName>({
+    ...(stateProjection ?? {}),
+    classNames,
+    states: projectionStates
+  });
+
+  const rootDataSlotProps = useStateProjection<TextFieldElementName, TextFieldStateName>({
+    states: projectionStates,
+    target: 'e1',
+    projections: textFieldDataAttributeProjections
+  });
+
+  const controlDataSlotProps = useStateProjection<TextFieldElementName, TextFieldStateName>({
+    states: projectionStates,
+    target: 'e3',
+    projections: textFieldDataAttributeProjections
+  });
+
+  const slotProps = useMemo<TextFieldSlotProps>(
+    () =>
+      mergeStateProjectionSlotProps(
+        projectedSlotProps.slotProps,
+        rootDataSlotProps.slotProps,
+        controlDataSlotProps.slotProps
+      ),
+    [controlDataSlotProps.slotProps, projectedSlotProps.slotProps, rootDataSlotProps.slotProps]
+  );
+
   const setValue = useCallback(
     (nextValue: string) => {
       if (!isControlled) {
@@ -142,7 +223,7 @@ function TextFieldRoot({
 
   const contextValue = useMemo<TextFieldContextValue>(
     () => ({
-      classNames,
+      slotProps,
       inputId: resolvedInputId,
       labelId: `${resolvedInputId}-label`,
       messageId: `${resolvedInputId}-message`,
@@ -157,7 +238,6 @@ function TextFieldRoot({
       setFocused
     }),
     [
-      classNames,
       disabled,
       focused,
       message,
@@ -166,13 +246,15 @@ function TextFieldRoot({
       resolvedInputId,
       resolvedValue,
       setValue,
+      slotProps,
       validationStatus
     ]
   );
+  const { className: rootClassName, ...rootSlotProps } = slotProps.e1 ?? {};
 
   return (
     <TextFieldContext.Provider value={contextValue}>
-      <div className={classNames.e1} {...resolveDataAttributes(contextValue)} {...rootProps}>
+      <div {...rootSlotProps} className={rootClassName} {...rootProps}>
         {children}
       </div>
     </TextFieldContext.Provider>
@@ -184,13 +266,15 @@ const TextFieldLabel = forwardRef<HTMLLabelElement, TextFieldLabelProps>(functio
   ref
 ) {
   const context = useTextFieldContext();
+  const { className: slotClassName, ...slotProps } = context.slotProps.e2 ?? {};
 
   return (
     <label
+      {...slotProps}
       ref={ref}
       id={context.labelId}
       htmlFor={context.inputId}
-      className={mergeClassNames(context.classNames.e2, className)}
+      className={mergeClassNames(slotClassName, className)}
       {...props}
     >
       {children}
@@ -201,12 +285,13 @@ const TextFieldLabel = forwardRef<HTMLLabelElement, TextFieldLabelProps>(functio
 const TextFieldControl = forwardRef<HTMLDivElement, TextFieldControlProps>(
   function TextFieldControl({ className, children, ...props }, ref) {
     const context = useTextFieldContext();
+    const { className: slotClassName, ...slotProps } = context.slotProps.e3 ?? {};
 
     return (
       <div
+        {...slotProps}
         ref={ref}
-        className={mergeClassNames(context.classNames.e3, className)}
-        {...resolveDataAttributes(context)}
+        className={mergeClassNames(slotClassName, className)}
         {...props}
       >
         {children}
@@ -228,6 +313,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(functio
   ref
 ) {
   const context = useTextFieldContext();
+  const { className: slotClassName, ...slotProps } = context.slotProps.e4 ?? {};
   const describedBy = mergeClassNames(
     ariaDescribedBy,
     context.message ? context.messageId : undefined
@@ -259,6 +345,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(functio
 
   return (
     <input
+      {...slotProps}
       {...props}
       ref={(node) => assignRef(ref, node)}
       id={context.inputId}
@@ -269,7 +356,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(functio
       required={context.required}
       aria-invalid={context.validationStatus === 'error' ? true : undefined}
       aria-describedby={describedBy}
-      className={mergeClassNames(context.classNames.e4, className)}
+      className={mergeClassNames(slotClassName, className)}
       onChange={handleChange}
       onFocus={handleFocus}
       onBlur={handleBlur}
@@ -280,15 +367,17 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(functio
 const TextFieldMessage = forwardRef<HTMLParagraphElement, TextFieldMessageProps>(
   function TextFieldMessage({ className, children, ...props }, ref) {
     const context = useTextFieldContext();
+    const { className: slotClassName, ...slotProps } = context.slotProps.e5 ?? {};
     const content = children ?? context.message;
 
     if (!content) return null;
 
     return (
       <p
+        {...slotProps}
         ref={ref}
         id={context.messageId}
-        className={mergeClassNames(context.classNames.e5, className)}
+        className={mergeClassNames(slotClassName, className)}
         role={context.validationStatus === 'error' ? 'alert' : undefined}
         aria-live={context.validationStatus === 'warning' ? 'polite' : undefined}
         {...props}

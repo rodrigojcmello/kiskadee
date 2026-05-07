@@ -6,16 +6,7 @@ import type {
   TextFieldStandardMode
 } from '@kiskadee/core';
 import { HeadlessTextField } from '@kiskadee/react-headless';
-import {
-  type FocusEvent,
-  memo,
-  type RefObject,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import { memo, type RefObject, useEffect, useMemo, useRef } from 'react';
 import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
 import {
   DEFAULT_TEXT_FIELD_EMPHASIS,
@@ -24,7 +15,8 @@ import {
   DEFAULT_TEXT_FIELD_RADIUS,
   DEFAULT_TEXT_FIELD_SCALE,
   resolveTextFieldClassNames,
-  resolveVariantElements
+  resolveVariantElements,
+  TEXT_FIELD_STATE_PROJECTION
 } from './TextField.class-names';
 import type { TextFieldStructuralDescriptor } from './TextField.structural.ts';
 import type {
@@ -140,7 +132,6 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
       ...rootProps
     } = props;
     const { classesMap, global } = useKiskadee();
-    const [focused, setFocused] = useState(false);
     const labelRef = useRef<HTMLLabelElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
     const controlRef = useRef<HTMLDivElement | null>(null);
@@ -183,41 +174,19 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
           emphasis,
           radius: resolvedRadius,
           labelOffsetStrategy: resolvedLabelOffsetStrategy,
-          focusRingColorSource: resolvedFocusRingColorSource,
-          focused,
-          disabled,
-          readOnly
+          focusRingColorSource: resolvedFocusRingColorSource
         }),
       [
         classNames,
-        disabled,
         elements,
         emphasis,
-        focused,
         radius,
-        readOnly,
         resolvedFocusRingColorSource,
         resolvedLabelOffsetStrategy,
         resolvedIntent,
         resolvedRadius,
         scale
       ]
-    );
-
-    const handleInputFocus = useCallback(
-      (event: FocusEvent<HTMLInputElement>) => {
-        setFocused(true);
-        inputProps?.onFocus?.(event);
-      },
-      [inputProps]
-    );
-
-    const handleInputBlur = useCallback(
-      (event: FocusEvent<HTMLInputElement>) => {
-        setFocused(false);
-        inputProps?.onBlur?.(event);
-      },
-      [inputProps]
     );
 
     useLazyFloatingRestTypography({
@@ -234,9 +203,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
       controlRef
     });
 
-    const { className: inputClassName, onBlur, onFocus, ...restInputProps } = inputProps ?? {};
-    void onBlur;
-    void onFocus;
+    const { className: inputClassName, ...restInputProps } = inputProps ?? {};
 
     const input = (
       <HeadlessTextField.Input
@@ -244,8 +211,6 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
         {...restInputProps}
         placeholder={placeholder}
         className={inputClassName}
-        onFocus={handleInputFocus}
-        onBlur={handleInputBlur}
       />
     );
 
@@ -261,6 +226,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
         readOnly={readOnly}
         validationStatus={validationStatus}
         classNames={resolvedClassNames}
+        stateProjection={TEXT_FIELD_STATE_PROJECTION}
       >
         {options.layout === 'standard' ? (
           <>
