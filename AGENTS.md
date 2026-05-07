@@ -39,6 +39,10 @@ keep task-specific workflows inside skills.
 - Keep code, identifiers, comments, and logs in English.
 - Keep chat responses in Portuguese.
 - Do not add or modify unit tests unless the user explicitly asks for it.
+- If `docs/in-progress.md` exists, treat it as the active feature handoff: read it before continuing
+  work, and update it after implementation changes with the current status, relevant decisions, files
+  changed, and validations run. If the file is missing or empty, assume there is no active handoff and
+  the current task starts a new context if the user asks for one.
 - Prefer `rg` / `rg --files` for search. If unavailable, use the closest fallback.
 - Prefer minimal edits over broad rewrites.
 - Before editing any `*.structural.scss` file, or any structural Sass/CSS in `packages/components/react`, read
