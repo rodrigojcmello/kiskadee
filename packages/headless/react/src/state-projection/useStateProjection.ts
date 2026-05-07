@@ -42,7 +42,7 @@ export type StateProjectionSlotProps<TSlot extends string> = Partial<
 export type UseStateProjectionOptions<TSlot extends string, TState extends string> = {
   classNames?: Partial<Record<TSlot, string>>;
   states: Partial<Record<TState, StateProjectionStateValue>>;
-  target?: TSlot;
+  target: TSlot;
   projections?: Partial<Record<TState, StateProjectionRule<TSlot, TState>>>;
   activatorClassName?: string;
   interactiveClassName?: string;
@@ -140,8 +140,6 @@ export function useStateProjection<TSlot extends string, TState extends string>(
   activatorClassName,
   interactiveClassName
 }: UseStateProjectionOptions<TSlot, TState>): UseStateProjectionResult<TSlot> {
-  const defaultTarget = target ?? ('e1' as TSlot);
-
   return useMemo(() => {
     const slotProps: StateProjectionSlotProps<TSlot> = {};
     const activeClassTargets = new Set<TSlot>();
@@ -155,7 +153,7 @@ export function useStateProjection<TSlot extends string, TState extends string>(
     }
 
     if (interactiveClassName) {
-      const props = ensureSlot(slotProps, defaultTarget);
+      const props = ensureSlot(slotProps, target);
       props.className = mergeClassNames(props.className, interactiveClassName);
     }
 
@@ -164,7 +162,7 @@ export function useStateProjection<TSlot extends string, TState extends string>(
       if (!rule) continue;
 
       const stateValue = states[state];
-      const projectionTarget = rule.target ?? defaultTarget;
+      const projectionTarget = rule.target ?? target;
       const context: StateProjectionContext<TSlot, TState> = {
         state,
         target: projectionTarget
@@ -201,5 +199,5 @@ export function useStateProjection<TSlot extends string, TState extends string>(
     }
 
     return { slotProps };
-  }, [activatorClassName, classNames, defaultTarget, interactiveClassName, projections, states]);
+  }, [activatorClassName, classNames, interactiveClassName, projections, states, target]);
 }

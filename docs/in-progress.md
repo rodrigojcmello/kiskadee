@@ -62,7 +62,7 @@ Exemplo conceitual para TextField:
 
 ## Status Atual
 
-Estamos antes da etapa 6.
+Estamos antes da etapa 7.
 
 Etapas ja feitas:
 
@@ -83,6 +83,9 @@ Etapas ja feitas:
   foco, preenchimento e disabled. Seletores estruturais baseados em `data-focused`, `data-filled`,
   `data-disabled` e estado direto nos filhos foram removidos. O `data-rest-placeholder` permanece
   porque e marcador estrutural/medicao do label flutuante, nao estado de interacao.
+- Etapa 6 concluida: o hook de projection foi revisado apos o piloto TextField. O hook generico agora
+  exige `target` explicito; o default `e1` ficou no wrapper/preset do TextField. Cobertura focada foi
+  adicionada para classes, atributos, target por regra, predicate customizado e merge de slot props.
 
 Validacoes rodadas na etapa 3:
 
@@ -116,6 +119,19 @@ Validacoes rodadas na etapa 5:
 Observacao: os comandos passaram, com o mesmo aviso conhecido de engine (`Node v22.22.1` no ambiente,
 repo esperando `>=24`).
 
+Validacoes rodadas na etapa 6:
+
+- `pnpm --filter @kiskadee/react-headless exec tsc --noEmit -p tsconfig.json`
+- `pnpm --filter @kiskadee/react-headless run build`
+- `pnpm --filter @kiskadee/react-components exec tsc --noEmit -p tsconfig.json`
+- `pnpm --filter @kiskadee/react-components run build`
+- `pnpm --filter @kiskadee/react-headless exec vitest run src/state-projection/useStateProjection.test.tsx src/text-field/HeadlessTextField.test.tsx`
+- `pnpm exec biome check packages/headless/react/src/state-projection/useStateProjection.ts packages/headless/react/src/state-projection/useStateProjection.test.tsx packages/headless/react/src/text-field/HeadlessTextField.tsx`
+- `git diff --check`
+
+Observacao: os comandos passaram, com o mesmo aviso conhecido de engine (`Node v22.22.1` no ambiente,
+repo esperando `>=24`).
+
 ## Plano De Execucao
 
 1. Formalizar projected states: adicionar `filled`/`-v` e separar/clarificar tipos de estado vs
@@ -125,20 +141,19 @@ repo esperando `>=24`).
 4. Ajustar runtime TextField: projetar estado no `e1` e remover state classes dos filhos.
 5. Ajustar Sass estrutural TextField: usar `e1` como state scope owner e remover seletores `data-*`
    duplicados quando nao forem parte de contrato publico necessario.
-6. Criar/adaptar projection hook: default `target: 'e1'`, usando slot names `e1`/`e2`/`e3` e evitando
-   array de targets no primeiro desenho.
+6. Criar/adaptar projection hook: usar slot names `e1`/`e2`/`e3`, evitar array de targets no primeiro
+   desenho e manter o default `e1` no componente/preset, nao no hook generico.
 7. Revisar Button: corrigir estados de label/icon que devem depender de `e1`.
 8. Revisar Tabs: alinhar label/icon selected com o tab item/trigger como scope owner.
 9. Atualizar docs finais/migracao: registrar excecoes e decisoes encontradas.
 
 ## Proxima Etapa
 
-A proxima etapa e a etapa 6: revisar/adaptar o hook de projection depois do piloto TextField passar
-por runtime e Sass estrutural.
+A proxima etapa e a etapa 7: revisar Button e corrigir estados de label/icon que devem depender de
+`e1`.
 
-Como o hook ja foi criado na etapa 4, a etapa 6 nao deve recria-lo do zero. Ela deve revisar a API
-real contra o que o TextField provou ate agora e decidir se algum ajuste pequeno ainda e necessario
-antes de Button/Tabs.
+Button esta mais perto do padrao que TextField, mas ainda precisa de uma auditoria fina para separar
+o que pode continuar com pseudo-seletor nativo do que precisa usar projection/ref a partir do root.
 
 Decisoes ja tomadas na etapa 4:
 
@@ -161,6 +176,17 @@ Decisoes tomadas na etapa 5:
 - `data-rest-placeholder` permanece nos floating modes porque representa o papel temporario do label
   como placeholder de repouso e depende da medicao feita pelo runtime.
 - `:focus-visible` permanece no input (`e4`) porque e pseudo-seletor nativo, nao projection forcada.
+
+Decisoes tomadas na etapa 6:
+
+- O hook generico `useStateProjection` exige `target` explicito.
+- TextField continua com `e1` como default, mas esse default agora pertence ao componente, nao ao
+  hook generico.
+- `rule.target` continua opcional; quando omitido, usa o `target` explicito da chamada.
+- `activatorClassName` so e anexado em slots que receberam classe de estado ativa.
+- `interactiveClassName` e anexado ao target explicito, preservando o uso de pseudo-seletores
+  nativos a partir do scope owner.
+- Multi-target continua fora do escopo ate Button/Tabs provarem necessidade concreta.
 
 Arquivos alterados na etapa 4:
 
@@ -191,6 +217,13 @@ Arquivos alterados na etapa 5:
 - `packages/components/react/src/TextField/standard-outline/TextField.standard-outline.structural.scss`
 - `packages/components/react/src/TextField/standard-underline/TextField.standard-underline.structural.scss`
 - `packages/components/react/src/TextField/standard-borderless/TextField.standard-borderless.structural.scss`
+
+Arquivos alterados na etapa 6:
+
+- `packages/headless/react/src/state-projection/useStateProjection.ts`
+- `packages/headless/react/src/state-projection/useStateProjection.test.tsx`
+- `packages/headless/react/src/text-field/HeadlessTextField.tsx`
+- `packages/headless/react/docs/concepts/interaction-state-projection-hook.md`
 
 ## Arquivos Relevantes
 

@@ -42,8 +42,10 @@ export type TextFieldClassNames = Partial<Record<TextFieldElementName, string>>;
 
 export type TextFieldStateProjectionOptions = Omit<
   UseStateProjectionOptions<TextFieldElementName, TextFieldStateName>,
-  'classNames' | 'states'
->;
+  'classNames' | 'states' | 'target'
+> & {
+  target?: TextFieldElementName;
+};
 
 type TextFieldProjectionStates = Partial<Record<TextFieldStateName, StateProjectionStateValue>>;
 type TextFieldSlotProps = StateProjectionSlotProps<TextFieldElementName>;
@@ -170,6 +172,7 @@ function TextFieldRoot({
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
   const resolvedValue = isControlled ? value : uncontrolledValue;
   const [focused, setFocused] = useState(false);
+  const { target: stateProjectionTarget = 'e1', ...stateProjectionOptions } = stateProjection ?? {};
 
   const projectionStates = useMemo<TextFieldProjectionStates>(
     () => ({
@@ -184,9 +187,10 @@ function TextFieldRoot({
   );
 
   const projectedSlotProps = useStateProjection<TextFieldElementName, TextFieldStateName>({
-    ...(stateProjection ?? {}),
+    ...stateProjectionOptions,
     classNames,
-    states: projectionStates
+    states: projectionStates,
+    target: stateProjectionTarget
   });
 
   const rootDataSlotProps = useStateProjection<TextFieldElementName, TextFieldStateName>({

@@ -55,7 +55,8 @@ visual selector:   .k-txf-e1.-f.-a .k-txf-e2
 
 The first implementation intentionally keeps the API small:
 
-- default target is `e1`;
+- the generic hook requires an explicit default `target`;
+- TextField provides `e1` as its component-level default;
 - projection targets use slot names;
 - one target per rule;
 - supports class projection;
@@ -85,6 +86,14 @@ native hover anchor -> -i
 ```
 
 The styled runtime no longer owns a duplicate `focused` state.
+
+## Target Defaults
+
+The generic hook must not silently invent a slot name. It requires a default `target` so callers make
+slot ownership explicit.
+
+Component integrations can still provide their own defaults. TextField defaults to `e1` because its
+root is the stable state scope owner for label, control, input, indicator, and message descendants.
 
 ## Non-goals
 
