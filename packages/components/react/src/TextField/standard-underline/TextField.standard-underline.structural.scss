@@ -53,15 +53,6 @@
 }
 
 /*
- * element label / e2
- * Clears forced focus outlines because the control shell owns the visible focus treatment.
- */
-.k-txf-e2-d.-f.-a {
-  position: static;
-  outline: 0;
-}
-
-/*
  * element control / e3
  * Owns the underlined shell wrapper that carries emitted border variables and input layout.
  */
@@ -80,9 +71,9 @@
 
 /*
  * element control / e3
- * Expands the shell outline on focused fields without moving focus geometry to the input.
+ * Expands the shell outline when the root projects focused state.
  */
-.k-txf-e3-d:is([data-focused], .-f.-a) {
+.k-txf-e1-d.-f.-a .k-txf-e3-d {
   outline-color: var(--k-focus-color);
   outline-width: max(var(--k-bdw), calc(var(--k-focus-width) * 1px));
 }
@@ -91,7 +82,7 @@
  * element control modifier 'a' / e3a
  * Uses the schema-emitted control border color for the focused outline.
  */
-.k-txf-e3-d.k-txf-e3a:is([data-focused], .-f.-a) {
+.k-txf-e1-d.-f.-a .k-txf-e3-d.k-txf-e3a {
   outline-color: var(--k-bdc);
 }
 
@@ -117,7 +108,7 @@
  * element input / e4
  * Suppresses the native focus outline because the wrapper mirrors focus on the shell.
  */
-.k-txf-e1-d .k-txf-e4-d:is(.-f.-a, :focus-visible) {
+.k-txf-e1-d .k-txf-e4-d:focus-visible {
   outline: 0;
 }
 
@@ -159,9 +150,9 @@
  * element root / e1
  * Mirrors disabled cursor state across wrappers because focusable ownership stays on the input.
  */
-.k-txf-e1-d[data-disabled],
-.k-txf-e1-d[data-disabled] .k-txf-e2-d,
-.k-txf-e1-d[data-disabled] .k-txf-e3-d,
-.k-txf-e1-d[data-disabled] .k-txf-e4-d {
+.k-txf-e1-d.-d.-a,
+.k-txf-e1-d.-d.-a .k-txf-e2-d,
+.k-txf-e1-d.-d.-a .k-txf-e3-d,
+.k-txf-e1-d.-d.-a .k-txf-e4-d {
   cursor: not-allowed;
 }

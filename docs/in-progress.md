@@ -62,7 +62,7 @@ Exemplo conceitual para TextField:
 
 ## Status Atual
 
-Estamos antes da etapa 5.
+Estamos antes da etapa 6.
 
 Etapas ja feitas:
 
@@ -79,6 +79,10 @@ Etapas ja feitas:
   TextField headless passou a usa-lo tanto para `data-*` quanto para projection configuravel por
   slot. `components/react` agora fornece a configuracao Kiskadee (`-f`, `-v`, `-d`, `-r`, `-a`, `-i`)
   e deixou de duplicar o estado `focused`.
+- Etapa 5 concluida: o Sass estrutural do TextField passou a usar `e1` como state scope owner para
+  foco, preenchimento e disabled. Seletores estruturais baseados em `data-focused`, `data-filled`,
+  `data-disabled` e estado direto nos filhos foram removidos. O `data-rest-placeholder` permanece
+  porque e marcador estrutural/medicao do label flutuante, nao estado de interacao.
 
 Validacoes rodadas na etapa 3:
 
@@ -103,6 +107,15 @@ Validacoes rodadas na etapa 4:
 Observacao: os comandos passaram, com o mesmo aviso conhecido de engine (`Node v22.22.1` no ambiente,
 repo esperando `>=24`).
 
+Validacoes rodadas na etapa 5:
+
+- `pnpm --filter @kiskadee/react-components run build:styles`
+- `pnpm --filter @kiskadee/react-components run build`
+- `git diff --check`
+
+Observacao: os comandos passaram, com o mesmo aviso conhecido de engine (`Node v22.22.1` no ambiente,
+repo esperando `>=24`).
+
 ## Plano De Execucao
 
 1. Formalizar projected states: adicionar `filled`/`-v` e separar/clarificar tipos de estado vs
@@ -120,11 +133,12 @@ repo esperando `>=24`).
 
 ## Proxima Etapa
 
-A proxima etapa e a etapa 5: ajustar o Sass estrutural do TextField para usar `e1` como state scope
-owner e remover seletores duplicados baseados em `data-*` quando eles nao forem parte de contrato
-publico necessario.
+A proxima etapa e a etapa 6: revisar/adaptar o hook de projection depois do piloto TextField passar
+por runtime e Sass estrutural.
 
-Antes de mexer em Sass estrutural, ler `STRUCTURAL-CSS.md`.
+Como o hook ja foi criado na etapa 4, a etapa 6 nao deve recria-lo do zero. Ela deve revisar a API
+real contra o que o TextField provou ate agora e decidir se algum ajuste pequeno ainda e necessario
+antes de Button/Tabs.
 
 Decisoes ja tomadas na etapa 4:
 
@@ -137,6 +151,16 @@ Decisoes ja tomadas na etapa 4:
   nativo quando possivel; para TextField, `-i` fica em `e1` para permitir seletores descendentes.
 - A etapa 6 deixa de ser "criar do zero" e passa a ser revisar/adaptar o hook depois que o piloto
   TextField passar pelo Sass estrutural.
+
+Decisoes tomadas na etapa 5:
+
+- Sass estrutural do TextField consome `.-f.-a`, `.-v.-a` e `.-d.-a` no `e1`.
+- O outline do control (`e3`), a promocao do label (`e2`) e o cursor disabled dos descendentes agora
+  dependem do estado projetado no root.
+- Os seletores `data-focused`, `data-filled` e `data-disabled` foram removidos do Sass estrutural.
+- `data-rest-placeholder` permanece nos floating modes porque representa o papel temporario do label
+  como placeholder de repouso e depende da medicao feita pelo runtime.
+- `:focus-visible` permanece no input (`e4`) porque e pseudo-seletor nativo, nao projection forcada.
 
 Arquivos alterados na etapa 4:
 
@@ -159,6 +183,14 @@ Documentacao de debito tecnico mantida apenas para o que e debito real:
 - `packages/headless/react/docs/technical-debt/source-structure-split.md`
 - `packages/web-builder/docs/technical-debt/README.md`
 - `packages/web-builder/README.md`
+
+Arquivos alterados na etapa 5:
+
+- `packages/components/react/src/TextField/floating-notched/TextField.floating-notched.structural.scss`
+- `packages/components/react/src/TextField/floating-inside/TextField.floating-inside.structural.scss`
+- `packages/components/react/src/TextField/standard-outline/TextField.standard-outline.structural.scss`
+- `packages/components/react/src/TextField/standard-underline/TextField.standard-underline.structural.scss`
+- `packages/components/react/src/TextField/standard-borderless/TextField.standard-borderless.structural.scss`
 
 ## Arquivos Relevantes
 
