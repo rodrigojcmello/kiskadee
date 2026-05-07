@@ -16,8 +16,10 @@ optimized selectors for generated CSS and showcase/static previews.
 - **Headless semantic helpers** are optional `data-*` attributes on headless primitives for state
   that is useful to consumers and is not always expressible as one native pseudo on the styled
   element, such as `data-filled`, wrapper-level `data-focused`, or `data-selected`.
-- **Projected state classes** are the compact Kiskadee runtime/generated classes from
-  `stateActivator`, such as `.-h`, `.-f`, `.-s`, and `.-a`.
+- **Projected state classes** are the compact Kiskadee runtime/generated state classes from
+  `projectedStateActivator`, such as `.-h`, `.-f`, `.-s`, and `.-v`.
+- **Selector/effect meta classes** are compact classes that modify selector behavior or opt into
+  effects, such as `.-a`, `.-i`, and `.-e`.
 - **Forced state** is one use of projected state classes: a showcase or snapshot can opt into a
   state class to simulate an interaction state without relying on browser pseudos.
 - **State scope owner** is the element that carries a component state for styling. It is not
@@ -68,7 +70,9 @@ public structural contract.
 
 ## Projected State Classes
 
-Projected classes come from `stateActivator` in `@kiskadee/core`:
+Projected classes come from `projectedStateActivator` in `@kiskadee/core`. The combined
+`stateActivator` export keeps these state classes together with selector/effect meta classes for
+existing runtime call sites:
 
 - `-h`: hover
 - `-p`: pressed
@@ -76,9 +80,17 @@ Projected classes come from `stateActivator` in `@kiskadee/core`:
 - `-f`: focus
 - `-d`: disabled
 - `-r`: read-only
+- `-v`: filled / has value
 - `-a`: activator gate for projected state selectors
 - `-i`: interactive anchor for native parent-to-child selectors
 - `-e`: shadow/elevation effect activator, not an interaction state
+
+The projected state keys are intentionally separate from the meta classes:
+
+- Projected states describe component or interaction state: hover, pressed, selected, focus,
+  disabled, read-only, and filled.
+- Meta classes modify selector behavior or opt into effects: activator, interactive anchor, and
+  shadow/elevation.
 
 The activator gate prevents projected state selectors from applying accidentally. A forced hover
 selector uses both the state class and the activator class:

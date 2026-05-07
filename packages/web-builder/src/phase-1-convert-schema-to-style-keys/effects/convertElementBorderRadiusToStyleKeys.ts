@@ -8,6 +8,7 @@ import type {
   SelectedInteractionStateToken,
   StyleKeysByInteractionState
 } from '@kiskadee/core';
+import { nonSelectedInteractionStateKeys } from '@kiskadee/core';
 import { buildStyleKey, deepUpdate } from '../../utils/index.ts';
 
 /**
@@ -21,6 +22,7 @@ import { buildStyleKey, deepUpdate } from '../../utils/index.ts';
  *     focus?: number | ResponsiveNumeric,
  *     disabled?: number | ResponsiveNumeric,
  *     readOnly?: number | ResponsiveNumeric,
+ *     filled?: number | ResponsiveNumeric,
  *     selected?: {
  *       rest: number | ResponsiveNumeric,
  *       hover?: number | ResponsiveNumeric,
@@ -102,16 +104,8 @@ export function convertElementBorderRadiusToStyleKeys(
     deepUpdate(out, [stateLabel], (arr: string[] = []) => [...arr, styleKey]);
   };
 
-  // Collect base states present on valueMap
-  const baseStates: Exclude<InteractionState, 'selected'>[] = [
-    'rest',
-    'hover',
-    'pressed',
-    'focus',
-    'disabled',
-    'readOnly'
-  ];
-  for (const st of baseStates) {
+  // Collect base states present on valueMap.
+  for (const st of nonSelectedInteractionStateKeys) {
     const v = valueMap[st];
     if (v !== undefined) emit(false, st, v);
   }

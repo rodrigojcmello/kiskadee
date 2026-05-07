@@ -25,9 +25,9 @@ export interface BuildStyleKeyParams {
   controlState?: boolean | undefined;
 
   /**
-   * Optional interaction state.
+   * Optional interaction/component state.
    * - If controlState is true: must be 'rest' | 'hover' | 'pressed' | 'focus'.
-   * - Otherwise: a base InteractionState (e.g., 'rest' | 'hover' | 'pressed' | 'focus' | 'disabled' | 'readOnly' | 'selected').
+   * - Otherwise: a base InteractionState (e.g., 'rest' | 'hover' | 'pressed' | 'focus' | 'disabled' | 'readOnly' | 'filled' | 'selected').
    * Required when isRef is true (and must not be a rest variant: 'rest' or, when controlState is true, 'rest').
    */
   interactionState?: InteractionState | undefined;
@@ -70,7 +70,7 @@ export const SEPARATORS = {
 /**
  * Builds a single style key string representing a combination of:
  *   - CSS property name
- *   - optional interaction state (hover, focus, etc.)
+ *   - optional interaction/component state (hover, focus, filled, etc.)
  *   - optional size (+ optional breakpoint)
  *   - property value (primitive stringified, non-primitive JSON stringified)
  *
@@ -92,7 +92,8 @@ export const SEPARATORS = {
  *                         'selected:rest' | 'selected:hover' | 'selected:pressed' | 'selected:focus'.
  *                         Otherwise, it must be a base InteractionState (e.g., 'rest', 'hover').
  * @param controlState
- * @param isRef            Indicates a reference key; requires a non-'rest' variant ('hover', 'pressed', 'focus', or 'selected:hover/pressed/focus')
+ * @param isRef            Indicates a reference key; requires a non-'rest' variant
+ *                         (for example 'hover', 'disabled', 'filled', or a selected:* state)
  * @param size             Size identifier (e.g., "s:md:1", "s:lg:1")
  * @param breakpoint       Breakpoint identifier (e.g., "bp:sm:1")
  * @returns A unique style key string

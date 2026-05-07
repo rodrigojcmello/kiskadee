@@ -3,8 +3,9 @@ import {
   CssColorProperty,
   type HSLA,
   InteractionStateCssPseudoSelector,
+  type ProjectedStateKeys,
   type PseudoSelectorKeys,
-  type StateActivatorKeys,
+  projectedStateActivator,
   type StyleKey,
   stateActivator
 } from '@kiskadee/core';
@@ -63,6 +64,12 @@ export const ERROR_INVALID_KEY_FORMAT =
 export const ERROR_REF_REQUIRE_STATE =
   'Invalid key format. Reference "==" requires a preceding non-rest interaction state.';
 
+function getProjectedStateSuffix(state: string): string {
+  return Object.hasOwn(projectedStateActivator, state)
+    ? projectedStateActivator[state as ProjectedStateKeys]
+    : '';
+}
+
 /**
  * Transform a style key into its corresponding CSS rule representation.
  *
@@ -77,12 +84,11 @@ export const ERROR_REF_REQUIRE_STATE =
  * @param className - the CSS class name to use for the generated rule (without the leading dot).
  *                    Usually this is the shortened token assigned to the styleKey (for example "a"
  *                    or "abc"). The function will emit selectors using `.${className}`.
- * @param forceState - when true and a pseudo-class is present, also include the corresponding
- *                     "forced" CSS class selector (from classNameCssPseudoSelector) alongside
- *                     the native pseudo-class so the same style can be applied by adding that
- *                     class in HTML. Example: if pseudo-class is "hover" and its forced suffix
- *                     is "-h", the generated selector list will include ".abc:hover, .abc.-h" for
- *                     inline rules or ".-a:hover .abc, .-a.-h .abc" for parent-ref rules.
+ * @param forceState - when true and a state has a projected class, also include the corresponding
+ *                     projected selector from projectedStateActivator. Example: if the state is
+ *                     "hover" and its projected suffix is "-h", the generated selector list can
+ *                     include ".abc:hover, .abc.-h.-a" for inline rules or
+ *                     ".-i:hover .abc, .-a.-h .abc" for parent-ref rules.
  * @param options
  * @returns GeneratedCss containing:
  *   - className: token without a dot prefix, for use in HTML
@@ -111,8 +117,7 @@ export function transformColorKeyToCss(
   const shouldMirrorBoxColor =
     propertyName === 'boxColor' && styleEmissionPolicy.boxColorEmission === 'mirrored';
   const shouldInterpolateBoxColor =
-    propertyName === 'boxColor' &&
-    styleEmissionPolicy.boxColorGradientEmission === 'interpolated';
+    propertyName === 'boxColor' && styleEmissionPolicy.boxColorGradientEmission === 'interpolated';
   // Emission shape must be decided by the element policy. Do not mirror textColor
   // based only on the property name; that leaks --k-txc into unrelated elements.
   const shouldMirrorTextColor =
@@ -126,11 +131,11 @@ export function transformColorKeyToCss(
       ? `${EMITTED_COLOR_CSS_VARS.boxColor}: ${value}; ${optimizedProperty}: ${value}`
       : shouldMirrorTextColor
         ? `${EMITTED_COLOR_CSS_VARS.textColor}: ${value}; ${optimizedProperty}: ${value}`
-      : shouldMirrorBorderColor
-        ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}; ${optimizedProperty}: ${value}`
-        : shouldTokenizeBorderColor
-          ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}`
-          : `${optimizedProperty}: ${value}`;
+        : shouldMirrorBorderColor
+          ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}; ${optimizedProperty}: ${value}`
+          : shouldTokenizeBorderColor
+            ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}`
+            : `${optimizedProperty}: ${value}`;
 
   let cssValue: string;
   let gradientVars: string | undefined;
@@ -263,11 +268,9 @@ export function transformColorKeyToCss(
       .filter((v) => v !== '');
     const nonNativeForcedSuffixes = filteredStates
       .filter((s) => !InteractionStateCssPseudoSelector[s as PseudoSelectorKeys])
-      .map((s) => stateActivator[s as StateActivatorKeys] || '')
+      .map(getProjectedStateSuffix)
       .filter((v) => v !== '');
-    const allForcedSuffixes = filteredStates
-      .map((s) => stateActivator[s as StateActivatorKeys] || '')
-      .filter((v) => v !== '');
+    const allForcedSuffixes = filteredStates.map(getProjectedStateSuffix).filter((v) => v !== '');
 
     const selectors: string[] = [];
 
@@ -320,15 +323,13 @@ export function transformColorKeyToCss(
     .filter((v) => v !== '');
   const nonNativeForcedSuffixes = parentStates
     .filter((s) => !InteractionStateCssPseudoSelector[s as PseudoSelectorKeys])
-    .map((s) => stateActivator[s as StateActivatorKeys] || '')
+    .map(getProjectedStateSuffix)
     .filter((v) => v !== '');
-  const allForcedSuffixes = parentStates
-    .map((s) => stateActivator[s as StateActivatorKeys] || '')
-    .filter((v) => v !== '');
+  const allForcedSuffixes = parentStates.map(getProjectedStateSuffix).filter((v) => v !== '');
 
   const parentSelectors: string[] = [];
 
-  // Native parent branch: parent always gated by activator; add pseudos and non-native class suffixes
+  // Native parent branch: parent uses interactive anchor; add pseudos and non-native state suffixes.
   // Only emit this branch when there is at least one native pseudo; otherwise it duplicates the forced-only case.
   if (nativeTokens.length > 0) {
     const nativeChunk = nativeTokens.join('');

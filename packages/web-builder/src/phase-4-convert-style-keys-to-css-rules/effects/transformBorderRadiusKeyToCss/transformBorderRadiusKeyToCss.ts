@@ -1,7 +1,8 @@
 import {
   InteractionStateCssPseudoSelector,
+  type ProjectedStateKeys,
   type PseudoSelectorKeys,
-  type StateActivatorKeys,
+  projectedStateActivator,
   type StyleKey,
   breakpoints as schemaBreakpoints,
   stateActivator
@@ -21,6 +22,12 @@ export type TransformBorderRadiusKeyToCssOptions = {
   styleEmissionPolicy?: ResolvedElementStyleEmissionPolicy;
 };
 
+function getProjectedStateSuffix(state: string): string {
+  return Object.hasOwn(projectedStateActivator, state)
+    ? projectedStateActivator[state as ProjectedStateKeys]
+    : '';
+}
+
 /**
  * Transform a borderRadius style key into a CSS rule string.
  *
@@ -36,7 +43,8 @@ export type TransformBorderRadiusKeyToCssOptions = {
  *
  * States use two kinds of selectors:
  * - Native pseudo-classes (hover, focus, active for "pressed"), sourced from InteractionStateCssPseudoSelector
- * - Forced class suffixes (e.g., -h for hover, -f for focus, -s for selected), sourced from classNameStateClassMap (which also exposes the global activator and other utility classes)
+ * - Projected state class suffixes (e.g., -h for hover, -f for focus, -s for selected), sourced
+ *   from projectedStateActivator. Selector meta classes such as -a and -i stay separate.
  *
  * Selector emission rules (aligned with transformColorKeyToCss):
  * - Inline (no "==")
@@ -44,13 +52,13 @@ export type TransformBorderRadiusKeyToCssOptions = {
  *     Never add the activator class (.-a) in this branch.
  *   • Forced branch: emits .<className>.<all forced suffixes>.-a when forceState === true OR when one state is "disabled".
  * - Reference (with "==")
- *   • Native parent branch: emits .-a<pseudo(s)><non-native classes> .<className> when there is at least one native pseudo.
+ *   • Native parent branch: emits .-i<pseudo(s)><non-native classes> .<className> when there is at least one native pseudo.
  *   • Forced parent branch: emits .-a.<all forced suffixes> .<className> when forceState === true OR when one state is "disabled".
  *
  * Examples (simplified for className="abc"):
  * - "--hover__10" => ".abc:hover, .abc.-h.-a { border-radius: 10px }" (when forceState=true)
  * - "--selected:hover__8" => ".abc:hover.-s, .abc.-s.-h.-a { border-radius: 8px }" (when forceState=true)
- * - "==hover__4" => ".-a:hover .abc, .-a.-h .abc { border-radius: 4px }" (when forceState=true)
+ * - "==hover__4" => ".-i:hover .abc, .-a.-h .abc { border-radius: 4px }" (when forceState=true)
  *
  * The function only constructs selectors and the "border-radius" declaration; it does not validate
  * whether specific state combinations are semantically meaningful.
@@ -116,11 +124,9 @@ export function transformBorderRadiusKeyToCss(
       .filter((v) => v !== '');
     const nonNativeForcedSuffixes = states
       .filter((s) => !InteractionStateCssPseudoSelector[s as PseudoSelectorKeys])
-      .map((s) => stateActivator[s as StateActivatorKeys] || '')
+      .map(getProjectedStateSuffix)
       .filter((v) => v !== '');
-    const allForcedSuffixes = states
-      .map((s) => stateActivator[s as StateActivatorKeys] || '')
-      .filter((v) => v !== '');
+    const allForcedSuffixes = states.map(getProjectedStateSuffix).filter((v) => v !== '');
 
     const selectors: string[] = [];
 
@@ -154,15 +160,13 @@ export function transformBorderRadiusKeyToCss(
       .filter((v) => v !== '');
     const nonNativeForcedSuffixes = parentStates
       .filter((s) => !InteractionStateCssPseudoSelector[s as PseudoSelectorKeys])
-      .map((s) => stateActivator[s as StateActivatorKeys] || '')
+      .map(getProjectedStateSuffix)
       .filter((v) => v !== '');
-    const allForcedSuffixes = parentStates
-      .map((s) => stateActivator[s as StateActivatorKeys] || '')
-      .filter((v) => v !== '');
+    const allForcedSuffixes = parentStates.map(getProjectedStateSuffix).filter((v) => v !== '');
 
     const parentSelectors: string[] = [];
 
-    // Native parent branch: .-a:hover[.nonNative] .abc
+    // Native parent branch: .-i:hover[.nonNative] .abc
     if (nativeTokens.length > 0) {
       const nativeChunk = nativeTokens.join('');
       const nonNativeChunk =
@@ -210,8 +214,7 @@ export function transformBorderRadiusKeyToCss(
   // Assemble the final CSS rule: join selectors by comma and emit border-radius with the parsed px value.
   const selectors = isRef ? buildRefSelectors() : buildInlineSelectors();
   const selector = selectors.join(', ');
-  const styleEmissionPolicy =
-    options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
+  const styleEmissionPolicy = options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
   const declaration =
     styleEmissionPolicy.borderRadiusEmission === 'mirrored'
       ? `${EMITTED_SCALE_CSS_VARS.borderRadius}: ${px}px; border-radius: ${px}px`

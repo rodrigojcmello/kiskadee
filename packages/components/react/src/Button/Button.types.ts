@@ -2,14 +2,14 @@ import type {
   ButtonIntent,
   ComponentEmphasis,
   ElementSizeValue,
+  ProjectedStateKeys,
   RadiusMode,
   RippleMode,
-  RippleOrigin,
-  StateActivatorKeys
+  RippleOrigin
 } from '@kiskadee/core';
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
 
-export type ButtonStatus = Exclude<StateActivatorKeys, 'selected' | 'shadow'>;
+export type ButtonStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
 
 // [RIPPLE EFFECT 17] START: Button ripple props contract.
 export type ButtonRippleEffect = {
