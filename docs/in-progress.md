@@ -62,7 +62,7 @@ Exemplo conceitual para TextField:
 
 ## Status Atual
 
-Estamos antes da etapa 8.
+Estamos antes da etapa 9.
 
 Etapas ja feitas:
 
@@ -91,6 +91,11 @@ Etapas ja feitas:
   `e1`. O runtime do Button nao precisou de hook novo porque o proprio `e1` ja e o elemento
   interativo/root e ja recebe `-i` sempre, alem de `-h`/`-p`/`-d`/`-s` + `-a` quando o estado e
   forcado/controlado.
+- Etapa 8 concluida: Tabs foi revisado. Os estados `selected` de label/icon (`e3`/`e4`) que
+  dependiam do tab trigger passaram para `ref`, emitindo `==selected:rest` a partir do trigger
+  (`e2`). O runtime de `components/react` deixou de aplicar `-s`/`-a` diretamente nos slots
+  `Tabs.Label` e `Tabs.Icon`; o trigger continua como scope owner e segue recebendo `-i`, `-a` e
+  `-s` quando selecionado.
 
 Validacoes rodadas na etapa 3:
 
@@ -164,6 +169,21 @@ Validacoes rodadas na etapa 7:
 - `pnpm --filter @kiskadee/web-builder run build`
 - `pnpm --filter @kiskadee/showcase build`
 
+Validacoes rodadas na etapa 8:
+
+- `pnpm --filter @kiskadee/web-builder exec tsx -e '...'` para confirmar `textColor==selected:rest`
+  em `tabs.<variant>.e3/e4`
+- `pnpm exec biome check packages/presets/src/presets/material-3-google/components/tabs/tabs.line.schema.ts packages/presets/src/presets/material-3-google/components/tabs/tabs.box.schema.ts packages/presets/src/presets/material-3-google/components/tabs/tabs.segmented.schema.ts packages/presets/src/presets/material-3-google/components/tabs/tabs.bridge.schema.ts packages/components/react/src/Tabs/Tabs.class-names.ts packages/components/react/src/Tabs/Tabs.parts.tsx packages/components/react/src/Tabs/Tabs.context.ts`
+- `pnpm --filter @kiskadee/presets exec tsc --noEmit -p tsconfig.json`
+- `pnpm --filter @kiskadee/react-components exec tsc --noEmit -p tsconfig.json`
+- `pnpm --filter @kiskadee/web-builder exec vitest run src/phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys.test.ts src/utils/buildStyleKey/buildStyleKey.test.ts src/phase-4-convert-style-keys-to-css-rules/palettes/transformColorKeyToCss.test.ts src/phase-4-convert-style-keys-to-css-rules/generateCssSplit.test.ts`
+- `pnpm --filter @kiskadee/web-builder run build`
+- CSS gerado conferido em `packages/web-builder/build/material-design-3-google/default.light.kiskadee.css`:
+  label/icon selecionados aparecem como `.-a.-s .<class>`, nao como `.<class>.-s.-a`
+- `pnpm --filter @kiskadee/react-components run build`
+- `pnpm --filter @kiskadee/showcase build`
+- `git diff --check`
+
 ## Plano De Execucao
 
 1. Formalizar projected states: adicionar `filled`/`-v` e separar/clarificar tipos de estado vs
@@ -181,13 +201,11 @@ Validacoes rodadas na etapa 7:
 
 ## Proxima Etapa
 
-A proxima etapa e a etapa 8: revisar Tabs e alinhar `selected` de label/icon com o tab item/trigger
-como state scope owner.
+A proxima etapa e a etapa 9: atualizar a documentacao final/migracao.
 
-Tabs funciona hoje, mas ainda precisa de auditoria fina porque label/icon recebem `.-s.-a`
-diretamente em alguns pontos. Pelo novo modelo, se esses filhos apenas reagem ao estado selecionado
-do item/trigger da aba, o schema deve usar `ref`/`==selected` a partir desse scope owner em vez de
-marcar cada filho como dono do estado.
+O foco agora e consolidar o padrao depois dos tres componentes revisados: TextField como piloto de
+estado composto projetado em `e1`, Button preservando pseudo-seletores nativos com filhos por `ref`,
+e Tabs usando o tab trigger (`e2`) como scope owner para `selected` de label/icon.
 
 Decisoes ja tomadas na etapa 4:
 
@@ -235,6 +253,19 @@ Decisoes tomadas na etapa 7:
 - O schema Material 3 Google nao tinha `e3` com palette de icone nesta etapa, portanto nao havia
   self-state de icone para migrar; a correcao concreta ficou em `e2`.
 
+Decisoes tomadas na etapa 8:
+
+- Em Tabs, o scope owner de `selected` e o tab trigger (`e2`), nao o root da colecao.
+- `e3` label e `e4` icon reagem ao selected do trigger por `ref`/`==selected:rest`.
+- O trigger continua carregando `stateActivator.interactive`, `stateActivator.activator` e
+  `stateActivator.selected` quando selecionado.
+- `Tabs.Label` e `Tabs.Icon` nao recebem mais `stateActivator.selected` nem
+  `stateActivator.activator`; os seletores gerados os alcancam por ancestor.
+- O contexto por tab foi mantido para preservar o escopo composto de `Tabs.Label`/`Tabs.Icon`, mas
+  a selecao visual desses slots agora vem do trigger.
+- Dot/Box/Segmented reaproveitam parte do schema Line para `e4`, entao a migracao do icone em Line
+  cobre esses variants tambem.
+
 Arquivos alterados na etapa 4:
 
 - `packages/headless/react/src/state-projection/useStateProjection.ts`
@@ -280,6 +311,16 @@ Arquivos alterados na correcao pos-etapa 6:
 Arquivos alterados na etapa 7:
 
 - `packages/presets/src/presets/material-3-google/components/button.schema.ts`
+
+Arquivos alterados na etapa 8:
+
+- `packages/presets/src/presets/material-3-google/components/tabs/tabs.line.schema.ts`
+- `packages/presets/src/presets/material-3-google/components/tabs/tabs.box.schema.ts`
+- `packages/presets/src/presets/material-3-google/components/tabs/tabs.segmented.schema.ts`
+- `packages/presets/src/presets/material-3-google/components/tabs/tabs.bridge.schema.ts`
+- `packages/components/react/src/Tabs/Tabs.class-names.ts`
+- `packages/components/react/src/Tabs/Tabs.parts.tsx`
+- `packages/components/react/src/Tabs/Tabs.context.ts`
 
 ## Arquivos Relevantes
 

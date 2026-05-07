@@ -170,7 +170,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
                   medium: {
                     rest: [24, 100, 12, 1],
                     selected: {
-                      rest: [0, 0, 7, 1]
+                      rest: { ref: [0, 0, 7, 1] }
                     }
                   }
                 }
@@ -182,7 +182,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
                   medium: {
                     rest: [38, 100, 88, 1],
                     selected: {
-                      rest: white
+                      rest: { ref: white }
                     }
                   }
                 }
@@ -212,7 +212,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
                   medium: {
                     rest: [24, 100, 12, 1],
                     selected: {
-                      rest: [0, 0, 7, 1]
+                      rest: { ref: [0, 0, 7, 1] }
                     }
                   }
                 }
@@ -224,7 +224,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
                   medium: {
                     rest: [38, 100, 88, 1],
                     selected: {
-                      rest: white
+                      rest: { ref: white }
                     }
                   }
                 }

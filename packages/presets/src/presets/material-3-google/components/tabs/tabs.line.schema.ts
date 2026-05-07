@@ -148,7 +148,7 @@ export function createMaterial3GoogleTabsLineVariant({
                   medium: {
                     rest: c('default', 'l', 'neutral', 40),
                     selected: {
-                      rest: c('default', 'l', 'primary.v2', 40)
+                      rest: { ref: c('default', 'l', 'primary.v2', 40) }
                     }
                   }
                 }
@@ -160,7 +160,7 @@ export function createMaterial3GoogleTabsLineVariant({
                   medium: {
                     rest: c('default', 'd', 'neutral', 80),
                     selected: {
-                      rest: c('default', 'd', 'primary.v2', 80)
+                      rest: { ref: c('default', 'd', 'primary.v2', 80) }
                     }
                   }
                 }
@@ -190,7 +190,7 @@ export function createMaterial3GoogleTabsLineVariant({
                   medium: {
                     rest: c('default', 'l', 'neutral', 40),
                     selected: {
-                      rest: c('default', 'l', 'primary.v2', 40)
+                      rest: { ref: c('default', 'l', 'primary.v2', 40) }
                     }
                   }
                 }
@@ -202,7 +202,7 @@ export function createMaterial3GoogleTabsLineVariant({
                   medium: {
                     rest: c('default', 'd', 'neutral', 80),
                     selected: {
-                      rest: c('default', 'd', 'primary.v2', 80)
+                      rest: { ref: c('default', 'd', 'primary.v2', 80) }
                     }
                   }
                 }

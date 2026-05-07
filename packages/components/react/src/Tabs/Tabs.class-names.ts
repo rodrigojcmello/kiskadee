@@ -121,7 +121,7 @@ export function resolveNonShadowEffectClasses(element: TabsClassesMap['e1'] | un
 /**
  * What
  *     Builds the base className for one schema element from its default, color, scale,
- *     effect, and selected-state classes.
+ *     effect, and optional element-owned selected classes.
  * Why
  *     Most Tabs slots share this same assembly pattern, so higher-level resolvers can
  *     compose on top of one common element resolver instead of rebuilding the same stack
@@ -429,12 +429,8 @@ export function resolveListClassName(options: {
   return joinClassNames(
     'k-tab',
     getTabsSlot(options.structural, 'e1'),
-    options.tabWidth === 'distributed'
-      ? getTabsDistributedBar(options.structural)
-      : '',
-    options.variant === 'bridge'
-      ? getTabsLowerCurve(options.structural, options.lowerCurve)
-      : '',
+    options.tabWidth === 'distributed' ? getTabsDistributedBar(options.structural) : '',
+    options.variant === 'bridge' ? getTabsLowerCurve(options.structural, options.lowerCurve) : '',
     options.variant === 'line' || options.variant === 'dot'
       ? options.indicatorPosition === 'top'
         ? 'k-tab-e1b'
@@ -614,8 +610,8 @@ export function resolveBridgeTriggerClassName(options: {
  * What
  *     Builds the final className for the tab label slot.
  * Why
- *     Tabs.Label is rendered inside the trigger context, so it needs its own resolver to
- *     inherit the current selected state and still allow schema and consumer overrides.
+ *     Tabs.Label is rendered inside the trigger context, so selected-dependent schema classes
+ *     should react through the trigger scope instead of receiving state classes directly.
  */
 export function resolveLabelClassName(options: {
   structural: TabsVisualContextValue['structural'];
@@ -624,20 +620,16 @@ export function resolveLabelClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
-  selected: boolean;
   className?: string;
 }): string | undefined {
   return joinClassNames(
     resolveElementClassName(options.elements.e3, {
       scale: options.scale,
       intent: options.intent,
-      emphasis: options.emphasis,
-      selected: options.selected
+      emphasis: options.emphasis
     }),
     options.classNames.e3,
     getTabsSlot(options.structural, 'e3'),
-    cn.activator,
-    options.selected ? cn.selected : '',
     options.className
   );
 }
@@ -657,20 +649,16 @@ export function resolveIconClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
-  selected: boolean;
   className?: string;
 }): string | undefined {
   return joinClassNames(
     resolveElementClassName(options.elements.e4, {
       scale: options.scale,
       intent: options.intent,
-      emphasis: options.emphasis,
-      selected: options.selected
+      emphasis: options.emphasis
     }),
     options.classNames.e4,
     getTabsSlot(options.structural, 'e4'),
-    cn.activator,
-    options.selected ? cn.selected : '',
     options.className
   );
 }

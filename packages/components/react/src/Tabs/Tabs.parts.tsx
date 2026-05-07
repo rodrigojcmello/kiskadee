@@ -31,12 +31,7 @@ export function TabsSlotContent({
   const { structural } = useTabsVisualContext();
 
   return (
-    <span
-      className={joinClassNames(
-        'k-tab-x1',
-        getTabsSlot(structural, 'x1')
-      )}
-    >
+    <span className={joinClassNames('k-tab-x1', getTabsSlot(structural, 'x1'))}>
       {children ? (
         children
       ) : (
@@ -68,8 +63,7 @@ export function useTabsTabState(value: string, className?: string) {
     tabWidth,
     tabShape,
     variant
-  } =
-    useTabsVisualContext();
+  } = useTabsVisualContext();
   const isSelected = selected === value;
 
   return {
@@ -94,13 +88,10 @@ export function useTabsTabState(value: string, className?: string) {
  * What
  *     Wraps tab children with the per-tab selected-state context provider.
  * Why
- *     Label and icon slots need lightweight access to `isSelected` without every caller wiring
- *     that prop by hand.
+ *     Tab descendants need a trigger scope. The selected state stays available for tab-owned
+ *     descendants, while label/icon styling now reacts through the trigger's projected state.
  */
-export function withTabsTabContext(
-  isSelected: boolean,
-  children: ReactNode
-) {
+export function withTabsTabContext(isSelected: boolean, children: ReactNode) {
   const tabContext = { isSelected } satisfies TabsTabContextValue;
   return <TabsTabContextProvider value={tabContext}>{children}</TabsTabContextProvider>;
 }
@@ -112,32 +103,40 @@ export function withTabsTabContext(
  *     All Tabs variants reuse the same trigger composition, so this keeps tab markup and state
  *     wiring in one shared part.
  */
-export function TabsTabBase({ value, className, label, icon, children, ...restProps }: TabsTabProps) {
+export function TabsTabBase({
+  value,
+  className,
+  label,
+  icon,
+  children,
+  ...restProps
+}: TabsTabProps) {
   const { isSelected, triggerClassName } = useTabsTabState(value, className);
 
   return (
     <HeadlessTabs.Tab {...restProps} value={value} className={triggerClassName}>
-      {withTabsTabContext(isSelected, (
+      {withTabsTabContext(
+        isSelected,
         <TabsSlotContent label={label} icon={icon}>
           {children}
         </TabsSlotContent>
-      ))}
+      )}
     </HeadlessTabs.Tab>
   );
 }
 
 /**
  * What
- *     Renders the shared label slot with selection-aware classes.
+ *     Renders the shared label slot.
  * Why
- *     Tabs variants can style labels differently through schema classes, but the label markup and
- *     selected-state wiring remain the same.
+ *     Tabs variants can style labels differently through schema classes, while selected styling
+ *     flows from the trigger scope instead of marking the label as selected.
  */
 export const TabsLabelBase = forwardRef<HTMLSpanElement, TabsLabelProps>(function TabsLabelBase(
   { className, children, ...props },
   ref
 ) {
-  const { isSelected } = useTabsTabContext();
+  useTabsTabContext();
   const { scale, intent, emphasis, classNames, elements, structural } = useTabsVisualContext();
 
   const labelClassName = resolveLabelClassName({
@@ -147,7 +146,6 @@ export const TabsLabelBase = forwardRef<HTMLSpanElement, TabsLabelProps>(functio
     scale,
     intent,
     emphasis,
-    selected: isSelected,
     className
   });
 
@@ -160,16 +158,16 @@ export const TabsLabelBase = forwardRef<HTMLSpanElement, TabsLabelProps>(functio
 
 /**
  * What
- *     Renders the shared icon slot with selection-aware classes.
+ *     Renders the shared icon slot.
  * Why
- *     Icons follow the same compound contract across line, box, and dot, so this keeps that
- *     slot implementation consistent and reusable.
+ *     Icons follow the same compound contract across line, box, and dot, while selected styling
+ *     flows from the trigger scope instead of marking the icon as selected.
  */
 export const TabsIconBase = forwardRef<HTMLSpanElement, TabsIconProps>(function TabsIconBase(
   { className, children, 'aria-hidden': ariaHidden = true, ...props },
   ref
 ) {
-  const { isSelected } = useTabsTabContext();
+  useTabsTabContext();
   const { scale, intent, emphasis, classNames, elements, structural } = useTabsVisualContext();
 
   const iconClassName = resolveIconClassName({
@@ -179,7 +177,6 @@ export const TabsIconBase = forwardRef<HTMLSpanElement, TabsIconProps>(function 
     scale,
     intent,
     emphasis,
-    selected: isSelected,
     className
   });
 
@@ -203,10 +200,7 @@ export function TabsContentBase(props: TabsContentProps) {
   return (
     <HeadlessTabs.Content
       {...props}
-      className={joinClassNames(
-        getTabsSlot(structural, 'x4'),
-        props.className
-      )}
+      className={joinClassNames(getTabsSlot(structural, 'x4'), props.className)}
     />
   );
 }
