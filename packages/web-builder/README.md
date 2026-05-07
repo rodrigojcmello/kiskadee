@@ -20,4 +20,5 @@ Build pipeline that converts a Kiskadee `Schema` into Web artifacts (utility CSS
 - [Runtime CSS contract](docs/runtime-css-contract.md) - ownership split between JSON runtime data and
   CSS presentation.
 - [Reference files](docs/reference-files.md) - implementation entry points for the build pipeline.
+- [Technical debt](docs/technical-debt/README.md) - deferred cleanup and follow-up work.
 - [Future optimizations](docs/technical-debt/future-optimizations.md) - deferred optimization debt.

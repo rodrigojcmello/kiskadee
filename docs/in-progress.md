@@ -62,7 +62,7 @@ Exemplo conceitual para TextField:
 
 ## Status Atual
 
-Estamos antes da etapa 4.
+Estamos antes da etapa 5.
 
 Etapas ja feitas:
 
@@ -74,6 +74,11 @@ Etapas ja feitas:
 - Etapa 3 concluida: o schema do TextField foi migrado para usar `ref` nos estados dependentes. Os
   estados `hover`, `focus`, `disabled` e `readOnly` dos slots dependentes agora emitem `==state`, nao
   `--state`.
+- Etapa 4 concluida: o runtime do TextField foi ajustado para projetar estado no `e1`. O hook
+  `useStateProjection` foi criado em `packages/headless/react`, sem dependencia de Kiskadee CSS, e o
+  TextField headless passou a usa-lo tanto para `data-*` quanto para projection configuravel por
+  slot. `components/react` agora fornece a configuracao Kiskadee (`-f`, `-v`, `-d`, `-r`, `-a`, `-i`)
+  e deixou de duplicar o estado `focused`.
 
 Validacoes rodadas na etapa 3:
 
@@ -84,6 +89,19 @@ Validacoes rodadas na etapa 3:
 
 Observacao: os comandos passaram, com o aviso conhecido de engine porque o repo espera Node `>=24` e
 o ambiente estava em Node `v22.22.1`.
+
+Validacoes rodadas na etapa 4:
+
+- `pnpm --filter @kiskadee/react-headless exec tsc --noEmit -p tsconfig.json`
+- `pnpm --filter @kiskadee/react-headless run build`
+- `pnpm --filter @kiskadee/react-components exec tsc --noEmit -p tsconfig.json`
+- `pnpm --filter @kiskadee/react-headless exec vitest run src/text-field/HeadlessTextField.test.tsx`
+- `pnpm --filter @kiskadee/react-components run build`
+- `pnpm exec biome check packages/headless/react/src/state-projection/useStateProjection.ts packages/headless/react/src/text-field/HeadlessTextField.tsx packages/headless/react/src/index.ts packages/components/react/src/TextField/TextField.class-names.ts packages/components/react/src/TextField/TextField.runtime.tsx packages/components/react/src/TextField/TextField.types.ts`
+- `git diff --check`
+
+Observacao: os comandos passaram, com o mesmo aviso conhecido de engine (`Node v22.22.1` no ambiente,
+repo esperando `>=24`).
 
 ## Plano De Execucao
 
@@ -102,15 +120,45 @@ o ambiente estava em Node `v22.22.1`.
 
 ## Proxima Etapa
 
-A proxima etapa e a etapa 4, mas ela deve ser executada com uma decisao explicita: nao basta mover
-classes para `e1`; TextField deve ser o piloto da regra de projection.
+A proxima etapa e a etapa 5: ajustar o Sass estrutural do TextField para usar `e1` como state scope
+owner e remover seletores duplicados baseados em `data-*` quando eles nao forem parte de contrato
+publico necessario.
 
-Antes de implementar, confirmar:
+Antes de mexer em Sass estrutural, ler `STRUCTURAL-CSS.md`.
 
-- se o headless continua expondo `data-*` semanticos durante a migracao;
-- quais estados o styled TextField deve projetar como classes Kiskadee em `e1`;
-- se `filled` entra ja na projection runtime ou fica apenas preparado pelo modelo ate o ajuste Sass;
-- como evitar que `focused` seja mantido de forma duplicada entre headless e styled runtime.
+Decisoes ja tomadas na etapa 4:
+
+- `data-*` semanticos continuam expostos pelo headless durante a migracao.
+- `focused`, `filled`, `disabled` e `readOnly` sao projetados como classes Kiskadee em `e1`.
+- `filled` entrou na projection runtime agora, como `-v`.
+- `focused` e calculado apenas pelo headless; `components/react` nao mantem mais estado local
+  duplicado.
+- `hover` nao foi forcado por JS/classe nesta etapa. O padrao continua preservando pseudo-seletor
+  nativo quando possivel; para TextField, `-i` fica em `e1` para permitir seletores descendentes.
+- A etapa 6 deixa de ser "criar do zero" e passa a ser revisar/adaptar o hook depois que o piloto
+  TextField passar pelo Sass estrutural.
+
+Arquivos alterados na etapa 4:
+
+- `packages/headless/react/src/state-projection/useStateProjection.ts`
+- `packages/headless/react/src/text-field/HeadlessTextField.tsx`
+- `packages/headless/react/src/index.ts`
+- `packages/components/react/src/TextField/TextField.class-names.ts`
+- `packages/components/react/src/TextField/TextField.runtime.tsx`
+- `packages/components/react/src/TextField/TextField.types.ts`
+
+Documentacao de conceito adicionada apos a etapa 4:
+
+- `packages/headless/react/docs/concepts/interaction-state-projection-hook.md`
+- `packages/headless/react/docs/concepts/README.md`
+- `packages/headless/react/README.md`
+
+Documentacao de debito tecnico mantida apenas para o que e debito real:
+
+- `packages/headless/react/docs/technical-debt/README.md`
+- `packages/headless/react/docs/technical-debt/source-structure-split.md`
+- `packages/web-builder/docs/technical-debt/README.md`
+- `packages/web-builder/README.md`
 
 ## Arquivos Relevantes
 
