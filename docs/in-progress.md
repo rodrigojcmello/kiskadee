@@ -62,7 +62,7 @@ Exemplo conceitual para TextField:
 
 ## Status Atual
 
-Estamos antes da etapa 7.
+Estamos antes da etapa 8.
 
 Etapas ja feitas:
 
@@ -86,6 +86,11 @@ Etapas ja feitas:
 - Etapa 6 concluida: o hook de projection foi revisado apos o piloto TextField. O hook generico agora
   exige `target` explicito; o default `e1` ficou no wrapper/preset do TextField. Cobertura focada foi
   adicionada para classes, atributos, target por regra, predicate customizado e merge de slot props.
+- Etapa 7 concluida: Button foi revisado. Os estados de `textColor` do label (`e2`) que dependiam
+  do estado do root passaram de self-state para `ref`, emitindo `==hover`/`==pressed` a partir do
+  `e1`. O runtime do Button nao precisou de hook novo porque o proprio `e1` ja e o elemento
+  interativo/root e ja recebe `-i` sempre, alem de `-h`/`-p`/`-d`/`-s` + `-a` quando o estado e
+  forcado/controlado.
 
 Validacoes rodadas na etapa 3:
 
@@ -149,6 +154,16 @@ Validacoes rodadas nessa correcao:
 - `rg "\\.ts['\\\"]" packages/headless/react/dist packages/components/react/dist -n`
 - `pnpm --filter @kiskadee/showcase build`
 
+Validacoes rodadas na etapa 7:
+
+- `pnpm --filter @kiskadee/web-builder exec tsx -e '...'` para confirmar `textColor==hover` e
+  `textColor==pressed` em `button.e2`
+- `pnpm exec biome check packages/presets/src/presets/material-3-google/components/button.schema.ts`
+- `pnpm --filter @kiskadee/presets exec tsc --noEmit -p tsconfig.json`
+- `pnpm --filter @kiskadee/web-builder exec vitest run src/phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys.test.ts src/utils/buildStyleKey/buildStyleKey.test.ts src/phase-4-convert-style-keys-to-css-rules/palettes/transformColorKeyToCss.test.ts`
+- `pnpm --filter @kiskadee/web-builder run build`
+- `pnpm --filter @kiskadee/showcase build`
+
 ## Plano De Execucao
 
 1. Formalizar projected states: adicionar `filled`/`-v` e separar/clarificar tipos de estado vs
@@ -166,11 +181,13 @@ Validacoes rodadas nessa correcao:
 
 ## Proxima Etapa
 
-A proxima etapa e a etapa 7: revisar Button e corrigir estados de label/icon que devem depender de
-`e1`.
+A proxima etapa e a etapa 8: revisar Tabs e alinhar `selected` de label/icon com o tab item/trigger
+como state scope owner.
 
-Button esta mais perto do padrao que TextField, mas ainda precisa de uma auditoria fina para separar
-o que pode continuar com pseudo-seletor nativo do que precisa usar projection/ref a partir do root.
+Tabs funciona hoje, mas ainda precisa de auditoria fina porque label/icon recebem `.-s.-a`
+diretamente em alguns pontos. Pelo novo modelo, se esses filhos apenas reagem ao estado selecionado
+do item/trigger da aba, o schema deve usar `ref`/`==selected` a partir desse scope owner em vez de
+marcar cada filho como dono do estado.
 
 Decisoes ja tomadas na etapa 4:
 
@@ -204,6 +221,19 @@ Decisoes tomadas na etapa 6:
 - `interactiveClassName` e anexado ao target explicito, preservando o uso de pseudo-seletores
   nativos a partir do scope owner.
 - Multi-target continua fora do escopo ate Button/Tabs provarem necessidade concreta.
+
+Decisoes tomadas na etapa 7:
+
+- Button preserva pseudo-seletor nativo para hover/pressed sempre que possivel.
+- O `e1` do Button e o state scope owner natural porque tambem e o elemento interativo nativo.
+- `components/react` ja aplica `stateActivator.interactive` em `e1`, entao filhos com `==hover` e
+  `==pressed` recebem a branch nativa via `.-i:hover`/`.-i:active`.
+- Estados forcados/controlados continuam funcionando porque `components/react` aplica o estado
+  projetado e `stateActivator.activator` no `e1`.
+- O hook `useStateProjection` nao foi introduzido em Button nesta etapa; nao havia estado composto
+  cruzando slots como no TextField.
+- O schema Material 3 Google nao tinha `e3` com palette de icone nesta etapa, portanto nao havia
+  self-state de icone para migrar; a correcao concreta ficou em `e2`.
 
 Arquivos alterados na etapa 4:
 
@@ -246,6 +276,10 @@ Arquivos alterados na correcao pos-etapa 6:
 
 - `packages/headless/react/scripts/rewrite-dist-extensions.ts`
 - `packages/components/react/scripts/rewrite-dist-extensions.ts`
+
+Arquivos alterados na etapa 7:
+
+- `packages/presets/src/presets/material-3-google/components/button.schema.ts`
 
 ## Arquivos Relevantes
 
