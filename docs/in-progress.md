@@ -132,6 +132,23 @@ Validacoes rodadas na etapa 6:
 Observacao: os comandos passaram, com o mesmo aviso conhecido de engine (`Node v22.22.1` no ambiente,
 repo esperando `>=24`).
 
+Correcao apos teste manual no Showcase:
+
+- A rota `/text-field` do Showcase quebrou porque `packages/headless/react/dist/text-field/HeadlessTextField.js`
+  ainda importava `../state-projection/useStateProjection.ts`.
+- A causa nao era o hook, mas o script `rewrite-dist-extensions.ts`: ele reescrevia imports estaticos
+  de uma linha, mas nao imports estaticos quebrados em multiplas linhas.
+- O rewriter foi ajustado em `react-headless` e `react-components` para cobrir imports/exportacoes
+  estaticas multiline antes do pacote ser consumido pelo Showcase.
+- A validacao foi refeita com Node `v24.15.0`.
+
+Validacoes rodadas nessa correcao:
+
+- `pnpm --filter @kiskadee/react-headless run build`
+- `pnpm --filter @kiskadee/react-components run build`
+- `rg "\\.ts['\\\"]" packages/headless/react/dist packages/components/react/dist -n`
+- `pnpm --filter @kiskadee/showcase build`
+
 ## Plano De Execucao
 
 1. Formalizar projected states: adicionar `filled`/`-v` e separar/clarificar tipos de estado vs
@@ -224,6 +241,11 @@ Arquivos alterados na etapa 6:
 - `packages/headless/react/src/state-projection/useStateProjection.test.tsx`
 - `packages/headless/react/src/text-field/HeadlessTextField.tsx`
 - `packages/headless/react/docs/concepts/interaction-state-projection-hook.md`
+
+Arquivos alterados na correcao pos-etapa 6:
+
+- `packages/headless/react/scripts/rewrite-dist-extensions.ts`
+- `packages/components/react/scripts/rewrite-dist-extensions.ts`
 
 ## Arquivos Relevantes
 
