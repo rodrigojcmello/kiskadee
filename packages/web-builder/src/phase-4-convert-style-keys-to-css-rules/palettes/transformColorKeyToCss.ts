@@ -247,8 +247,9 @@ export function transformColorKeyToCss(
 
   const states = extractStates();
   const filteredStates = states.filter((s) => s !== 'rest' && s !== '');
+  // Preserve the "hover does not compete with active" rule without increasing hover specificity.
   const normalizeNativePseudo = (pseudo: string): string =>
-    pseudo === ':hover' ? ':hover:not(:active)' : pseudo;
+    pseudo === ':hover' ? ':hover:where(:not(:active))' : pseudo;
   const hasAlwaysProjectedState = (stateList: string[]): boolean =>
     stateList.some((state) => state === 'disabled' || state === 'readOnly');
 

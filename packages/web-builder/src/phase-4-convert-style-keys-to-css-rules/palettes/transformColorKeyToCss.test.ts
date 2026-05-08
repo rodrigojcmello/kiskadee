@@ -75,7 +75,7 @@ describe('transformColorKeyToCss', () => {
             className,
             force
           );
-          expect(result).toEqual('.abc:hover:not(:active) { background: #4040BF80 }');
+          expect(result).toEqual('.abc:hover:where(:not(:active)) { background: #4040BF80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
@@ -85,7 +85,7 @@ describe('transformColorKeyToCss', () => {
             force
           );
           // expects both :hover and forced class (.-h) gated by activator (.-a) applied to the same element (i.e. .abc.-h.-a)
-          expect(result).toEqual('.abc:hover:not(:active), .abc.-h.-a { background: #4040BF80 }');
+          expect(result).toEqual('.abc:hover:where(:not(:active)), .abc.-h.-a { background: #4040BF80 }');
         });
       });
 
@@ -115,7 +115,7 @@ describe('transformColorKeyToCss', () => {
           );
 
           expect(result).toEqual(
-            '.abc:hover:not(:active), .abc.-h.-a { --k-bg0: #4040BF80; --k-bg1: #4040BF80; }'
+            '.abc:hover:where(:not(:active)), .abc.-h.-a { --k-bg0: #4040BF80; --k-bg1: #4040BF80; }'
           );
         });
 
@@ -136,7 +136,7 @@ describe('transformColorKeyToCss', () => {
             className,
             force
           );
-          expect(result).toEqual('.abc:hover:not(:active).-s { background: #4040BF80 }');
+          expect(result).toEqual('.abc:hover:where(:not(:active)).-s { background: #4040BF80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
@@ -146,7 +146,7 @@ describe('transformColorKeyToCss', () => {
             force
           );
           // native selector must NOT include activator (-a); forced selector remains gated by activator (-a)
-          expect(result).toEqual('.abc:hover:not(:active).-s, .abc.-s.-h.-a { background: #4040BF80 }');
+          expect(result).toEqual('.abc:hover:where(:not(:active)).-s, .abc.-s.-h.-a { background: #4040BF80 }');
         });
       });
 
@@ -214,7 +214,7 @@ describe('transformColorKeyToCss', () => {
 
           // Non-rest rules only override the variables.
           expect(result).toEqual(
-            '.abc:hover:not(:active), .abc.-h.-a { --k-bg0: #4040BF80; --k-bg1: var(--x); }'
+            '.abc:hover:where(:not(:active)), .abc.-h.-a { --k-bg0: #4040BF80; --k-bg1: var(--x); }'
           );
         });
 
@@ -302,7 +302,7 @@ describe('transformColorKeyToCss', () => {
             className,
             force
           );
-          expect(result).toEqual('.-i:hover:not(:active) .abc { background: #4040BF80 }');
+          expect(result).toEqual('.-i:hover:where(:not(:active)) .abc { background: #4040BF80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
@@ -312,7 +312,7 @@ describe('transformColorKeyToCss', () => {
             force
           );
           // expects both parent :hover and forced parent class (.-h) to be combined as selectors
-          expect(result).toEqual('.-i:hover:not(:active) .abc, .-a.-h .abc { background: #4040BF80 }');
+          expect(result).toEqual('.-i:hover:where(:not(:active)) .abc, .-a.-h .abc { background: #4040BF80 }');
         });
       });
 
@@ -349,7 +349,7 @@ describe('transformColorKeyToCss', () => {
             className,
             force
           );
-          expect(result).toEqual('.-i:hover:not(:active).-s .abc { background: #4040BF80 }');
+          expect(result).toEqual('.-i:hover:where(:not(:active)).-s .abc { background: #4040BF80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
@@ -359,7 +359,7 @@ describe('transformColorKeyToCss', () => {
             force
           );
           // parent gets interactive anchor -i for native, activator -a only for forced branch
-          expect(result).toEqual('.-i:hover:not(:active).-s .abc, .-a.-s.-h .abc { background: #4040BF80 }');
+          expect(result).toEqual('.-i:hover:where(:not(:active)).-s .abc, .-a.-s.-h .abc { background: #4040BF80 }');
         });
       });
 
@@ -405,7 +405,7 @@ describe('transformColorKeyToCss', () => {
 
           // Ref rules do not have a guaranteed rest anchor, so they must include background.
           expect(result).toEqual(
-            '.-i:hover:not(:active) .abc, .-a.-h .abc { --k-bg0: #4040BF80; --k-bg1: var(--x); background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }'
+            '.-i:hover:where(:not(:active)) .abc, .-a.-h .abc { --k-bg0: #4040BF80; --k-bg1: var(--x); background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }'
           );
         });
       });
