@@ -1,6 +1,6 @@
 # Interaction State Projection Hook
 
-Status: active concept.
+Status: stable TextField pilot; reusable helper with narrow adoption.
 
 ## Context
 
@@ -17,6 +17,10 @@ state model started separating:
 
 The hook lives in `packages/headless/react` because the headless package owns the real interaction
 state for its primitives. It does not know the Kiskadee CSS vocabulary.
+
+After the first migration pass, TextField is the only component in this plan that adopts the hook.
+Button and Tabs were aligned through correct schema references and runtime state ownership, without a
+new projection hook call.
 
 ## Ownership
 
@@ -53,7 +57,7 @@ visual selector:   .k-txf-e1.-f.-a .k-txf-e2
 
 ## Current Hook Shape
 
-The first implementation intentionally keeps the API small:
+The current implementation intentionally keeps the API small:
 
 - the generic hook requires an explicit default `target`;
 - TextField provides `e1` as its component-level default;
@@ -87,6 +91,17 @@ native hover anchor -> -i
 
 The styled runtime no longer owns a duplicate `focused` state.
 
+## Post-pilot Outcome
+
+The Button and Tabs review did not require broader hook adoption:
+
+- Button already has `e1` as both native interactive element and state scope owner, so native hover
+  and pressed selectors can remain native.
+- Tabs selected state belongs to the trigger/item scope, so label and icon styles can depend on the
+  trigger through generated reference selectors.
+- The hook remains a compositional helper for state projection, not a mandatory state layer for every
+  component.
+
 ## Target Defaults
 
 The generic hook must not silently invent a slot name. It requires a default `target` so callers make
@@ -104,6 +119,9 @@ root is the stable state scope owner for label, control, input, indicator, and m
 
 ## When To Revisit
 
-Revisit the API after TextField Sass, Button, and Tabs have all gone through the projection model.
-Those components should tell us whether the generic hook shape is stable or whether each component
-needs a narrower preset/helper.
+Revisit the API when another composed component proves a concrete need that TextField does not cover,
+such as a second component preset, a state projected outside the default owner, or a real multi-target
+case.
+
+Do not broaden the hook just because a component has hover, active, or selected styling. Schema
+references plus the correct state scope owner may be enough.

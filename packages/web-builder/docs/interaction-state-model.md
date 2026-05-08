@@ -223,6 +223,50 @@ Examples:
 - Tabs selected state belongs to each tab item/trigger scope, not to the global tabs root, because
   only one repeated item and its descendants should receive selected styling.
 
+## Component Applications
+
+The first migration pass established these component decisions:
+
+### TextField
+
+- The field root (`e1`) is the state scope owner.
+- Focus can originate in the input (`e4`), but visual state is projected to `e1`.
+- Filled, disabled, and read-only can remain exposed as headless semantic `data-*` helpers, but
+  Kiskadee generated CSS and structural Sass should use projected classes on `e1`, such as
+  `.-v.-a`, `.-d.-a`, and `.-r.-a`.
+- Descendant slots that react to field state should use reference keys, not self-state classes.
+- Native `:focus-visible` can remain on the input when the style belongs to the input itself.
+- Hover should stay native when possible; `-i` on `e1` is the parent-to-child native hover anchor,
+  not a signal to force hover through JavaScript.
+
+### Button
+
+- The button root (`e1`) is both the native interactive element and the state scope owner.
+- Label/icon styles that react to root hover, pressed, selected, or disabled state should use
+  reference keys from `e1`.
+- Runtime hover and pressed styling should preserve native pseudos. Projected state classes are for
+  forced, controlled, or non-native states.
+- `useStateProjection` is not required unless a future Button behavior creates real composed state
+  that originates outside the root.
+
+### Tabs
+
+- Selected state belongs to each tab trigger/item scope, not to the collection root.
+- In the current styled Tabs structure, the trigger (`e2`) is the selected state scope owner.
+- Label (`e3`) and icon (`e4`) selected styles should use reference keys such as
+  `==selected:rest`.
+- The trigger carries `-s`, `-a`, and `-i`; label and icon should not receive selected or activator
+  classes directly.
+
+### Hook Adoption
+
+Use `useStateProjection` when real component state must be projected to a slot different from where
+that state originates, or when a headless primitive needs to merge semantic attributes with an
+external projection config.
+
+Do not introduce the hook just to mirror native hover, active, or selected behavior when the schema
+and runtime already have a clear state scope owner.
+
 ## Generation Rules
 
 - Rest state emits a base class selector with no state suffix.
