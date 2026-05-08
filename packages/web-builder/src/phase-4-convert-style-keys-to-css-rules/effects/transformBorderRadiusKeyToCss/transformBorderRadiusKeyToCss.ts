@@ -50,10 +50,10 @@ function getProjectedStateSuffix(state: string): string {
  * - Inline (no "==")
  *   • Native branch: emits .<className><pseudo(s)> plus any non-native forced suffixes as classes on the same element.
  *     Never add the activator class (.-a) in this branch.
- *   • Forced branch: emits .<className>.<all forced suffixes>.-a when forceState === true OR when one state is "disabled".
+ *   • Forced branch: emits .<className>.<all forced suffixes>.-a when forceState === true OR when one state is "disabled" or "readOnly".
  * - Reference (with "==")
  *   • Native parent branch: emits .-i<pseudo(s)><non-native classes> .<className> when there is at least one native pseudo.
- *   • Forced parent branch: emits .-a.<all forced suffixes> .<className> when forceState === true OR when one state is "disabled".
+ *   • Forced parent branch: emits .-a.<all forced suffixes> .<className> when forceState === true OR when one state is "disabled" or "readOnly".
  *
  * Examples (simplified for className="abc"):
  * - "--hover__10" => ".abc:hover, .abc.-h.-a { border-radius: 10px }" (when forceState=true)
@@ -113,6 +113,8 @@ export function transformBorderRadiusKeyToCss(
 
   // Remove explicit "rest" and empty tokens if provided.
   const states = extractStates().filter((s) => s !== 'rest' && s !== '');
+  const hasAlwaysProjectedState = (stateList: string[]): boolean =>
+    stateList.some((state) => state === 'disabled' || state === 'readOnly');
 
   // Build selectors that apply to the same element (.abc ...)
   const buildInlineSelectors = (): string[] => {
@@ -141,7 +143,7 @@ export function transformBorderRadiusKeyToCss(
 
     // Forced branch: .abc.-s.-h.-a (when allowed)
     const allowForced =
-      allForcedSuffixes.length > 0 && (forceState === true || states.includes('disabled'));
+      allForcedSuffixes.length > 0 && (forceState === true || hasAlwaysProjectedState(states));
     const activator = stateActivator.activator;
     if (allowForced) selectors.push(`.${className}.${allForcedSuffixes.join('.')}.${activator}`);
 
@@ -181,7 +183,7 @@ export function transformBorderRadiusKeyToCss(
     // Forced parent branch: .-a.-s.-h .abc (when allowed)
     if (
       allForcedSuffixes.length > 0 &&
-      (forceState === true || parentStates.includes('disabled'))
+      (forceState === true || hasAlwaysProjectedState(parentStates))
     ) {
       const activator = stateActivator.activator;
       parentSelectors.push(`.${activator}.${allForcedSuffixes.join('.')} .${className}`);

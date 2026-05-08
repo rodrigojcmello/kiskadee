@@ -105,7 +105,9 @@ export function transformShadowKeyToCss(
 
   // Projected branch uses projectedStateActivator + activator (.-a), and is also gated by shadow activation.
   const suffix = getProjectedStateSuffix(interactionState);
-  const allowForced = suffix !== '' && (forceState === true || interactionState === 'disabled');
+  const allowForced =
+    suffix !== '' &&
+    (forceState === true || interactionState === 'disabled' || interactionState === 'readOnly');
   if (allowForced) {
     const activator = stateActivator.activator;
     selectors.push(`.${className}.${eSuffix}.${suffix}.${activator}`);

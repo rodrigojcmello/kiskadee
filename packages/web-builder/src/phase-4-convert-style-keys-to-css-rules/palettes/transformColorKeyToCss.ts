@@ -88,7 +88,9 @@ function getProjectedStateSuffix(state: string): string {
  *                     projected selector from projectedStateActivator. Example: if the state is
  *                     "hover" and its projected suffix is "-h", the generated selector list can
  *                     include ".abc:hover, .abc.-h.-a" for inline rules or
- *                     ".-i:hover .abc, .-a.-h .abc" for parent-ref rules.
+ *                     ".-i:hover .abc, .-a.-h .abc" for parent-ref rules. Component states
+ *                     without a safe native pseudo, such as disabled/readOnly, always emit the
+ *                     projected selector.
  * @param options
  * @returns GeneratedCss containing:
  *   - className: token without a dot prefix, for use in HTML
@@ -247,6 +249,8 @@ export function transformColorKeyToCss(
   const filteredStates = states.filter((s) => s !== 'rest' && s !== '');
   const normalizeNativePseudo = (pseudo: string): string =>
     pseudo === ':hover' ? ':hover:not(:active)' : pseudo;
+  const hasAlwaysProjectedState = (stateList: string[]): boolean =>
+    stateList.some((state) => state === 'disabled' || state === 'readOnly');
 
   if (!isRef) {
     if (filteredStates.length === 0) {
@@ -285,7 +289,8 @@ export function transformColorKeyToCss(
 
     // Forced branch: include all forced classes for every state, gated by activator
     const allowForced =
-      allForcedSuffixes.length > 0 && (forceState === true || filteredStates.includes('disabled'));
+      allForcedSuffixes.length > 0 &&
+      (forceState === true || hasAlwaysProjectedState(filteredStates));
     if (allowForced) {
       const activator = stateActivator.activator;
       selectors.push(`.${className}.${allForcedSuffixes.join('.')}.${activator}`);
@@ -343,7 +348,10 @@ export function transformColorKeyToCss(
   }
 
   // Forced parent branch: activator + all forced suffixes
-  if (allForcedSuffixes.length > 0 && (forceState === true || parentStates.includes('disabled'))) {
+  if (
+    allForcedSuffixes.length > 0 &&
+    (forceState === true || hasAlwaysProjectedState(parentStates))
+  ) {
     const activator = stateActivator.activator;
     parentSelectors.push(`.${activator}.${allForcedSuffixes.join('.')} .${className}`);
   }

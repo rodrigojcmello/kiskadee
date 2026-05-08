@@ -116,7 +116,7 @@ export const InteractionStateCssPseudoSelector: Record<InteractionState, string>
   selected: '',
   focus: ':focus-visible',
   disabled: '',
-  readOnly: ':read-only',
+  readOnly: '',
   filled: ''
 };
 
