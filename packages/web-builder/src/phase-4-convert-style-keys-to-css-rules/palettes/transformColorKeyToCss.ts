@@ -118,6 +118,8 @@ export function transformColorKeyToCss(
   const styleEmissionPolicy = options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
   const shouldMirrorBoxColor =
     propertyName === 'boxColor' && styleEmissionPolicy.boxColorEmission === 'mirrored';
+  const shouldTokenizeBoxColor =
+    propertyName === 'boxColor' && styleEmissionPolicy.boxColorEmission === 'token';
   const shouldInterpolateBoxColor =
     propertyName === 'boxColor' && styleEmissionPolicy.boxColorGradientEmission === 'interpolated';
   // Emission shape must be decided by the element policy. Do not mirror textColor
@@ -131,6 +133,8 @@ export function transformColorKeyToCss(
   const buildColorDeclarations = (value: string) =>
     shouldMirrorBoxColor
       ? `${EMITTED_COLOR_CSS_VARS.boxColor}: ${value}; ${optimizedProperty}: ${value}`
+      : shouldTokenizeBoxColor
+        ? `${EMITTED_COLOR_CSS_VARS.boxColor}: ${value}`
       : shouldMirrorTextColor
         ? `${EMITTED_COLOR_CSS_VARS.textColor}: ${value}; ${optimizedProperty}: ${value}`
         : shouldMirrorBorderColor

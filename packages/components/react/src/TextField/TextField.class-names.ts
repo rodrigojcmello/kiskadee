@@ -187,8 +187,17 @@ export function resolveTextFieldClassNames(options: {
     e5:
       join(`k-txf-e5-${letter}`, elem(elements.e5, options), 'k-trn', options.classNames.e5) ?? '',
     e6: elements.e6
-      ? (join(`k-txf-e6-${letter}`, elem(elements.e6, options), 'k-trn', options.classNames.e6) ??
-        '')
+      ? (join(
+          `k-txf-e6-${letter}`,
+          elem(elements.e6, options),
+          options.structural.variant === 'standard' &&
+            options.structural.mode === 'underline' &&
+            options.focusRingColorSource === 'component'
+            ? 'k-txf-e6a'
+            : '',
+          'k-trn',
+          options.classNames.e6
+        ) ?? '')
       : ''
   };
 }

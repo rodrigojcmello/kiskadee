@@ -15,7 +15,7 @@ type CompensatedEmission = typeof STYLE_EMISSION_MODE.compensated;
 type DirectOrMirroredEmission = DirectEmission | MirroredEmission;
 type DirectOrTokenEmission = DirectEmission | TokenEmission;
 type DirectMirroredOrTokenEmission = DirectOrMirroredEmission | TokenEmission;
-type BoxColorEmission = DirectOrMirroredEmission;
+type BoxColorEmission = DirectMirroredOrTokenEmission;
 type BoxColorGradientEmission = DirectEmission | InterpolatedEmission;
 type TextColorEmission = DirectOrMirroredEmission;
 
@@ -91,6 +91,9 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
           textColorEmission: 'mirrored',
           borderWidthEmission: 'token',
           borderColorEmission: 'token'
+        },
+        e6: {
+          boxColorEmission: 'token'
         }
       }
     },
