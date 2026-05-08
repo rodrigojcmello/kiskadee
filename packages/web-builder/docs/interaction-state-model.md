@@ -199,6 +199,41 @@ In schema terms, a color value with `{ ref: ... }` means "this child style depen
 ancestor/scope state." That reference is what produces a `==` key and allows a component to project
 state once on the state scope owner instead of duplicating state classes across every child.
 
+## Native Pseudo Eligibility
+
+Native pseudo selectors are only safe when they describe the same element that owns the native
+state.
+
+For inline keys, the generated class is the state owner, so a native branch such as `.abc:hover` or
+`.abc:focus-visible` can be correct when that class is applied to the native interactive element.
+
+For reference keys, the native branch targets the state scope owner through `-i`:
+
+```css
+.-i:hover .abc {
+  background: red;
+}
+```
+
+That branch must only be emitted for native pseudos whose meaning is reliable on the scope owner.
+If the pseudo can match ordinary wrappers or otherwise does not prove that the component state is
+active, the reference key must use only the projected branch:
+
+```css
+.-a.-r .abc {
+  border-color: gray;
+}
+```
+
+`readOnly` is the motivating case. CSS `:read-only` is broad and can match common wrapper elements
+that are not user-editable, even when the component's input is not actually read-only. A selector
+such as `.-i:read-only .abc` can therefore leak read-only styling into a normal rest field.
+Generated parent-reference read-only styles must rely on the projected `.-r.-a` state instead.
+
+The same rule applies to any future state whose native pseudo is not a trustworthy signal on the
+state scope owner. Do not add a native parent-reference branch just because the platform exposes a
+pseudo selector with the same name.
+
 ## State Hierarchy
 
 State placement follows the hierarchy of ownership, not the native event target:
