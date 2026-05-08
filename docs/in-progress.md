@@ -11,6 +11,10 @@ TextField control padding focus fix
   `docs/` directory is reserved for cross-project or cross-package documentation, and project-local docs
   should use `docs/definitions/`, `docs/proposals/`, and `docs/rejected/`. Each project should keep only one
   `docs/in-progress.md`, always at the root of that project's `docs/` directory.
+- Documentation standardization:
+  - `packages/web-builder/docs/*.md` definitions moved into `packages/web-builder/docs/definitions/`
+  - `packages/web-builder/docs/technical-debt/future-optimizations.md` moved into `packages/web-builder/docs/proposals/`
+  - repository root `docs/future-ideas/` and `docs/discarded-ideas/` moved to `docs/proposals/` and `docs/rejected/`
 - Structural affordance: TextField standard outline, underline, and borderless structural Sass now use `cursor: text` on the control shell.
 - Validation:
   - `pnpm --filter @kiskadee/react-headless exec vitest run src/text-field/HeadlessTextField.test.tsx`
