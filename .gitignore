@@ -18,6 +18,7 @@ packages/showcase/public/build/
 
 # AI Agents
 .output.txt
+docs/in-progress.md
 
 # Tests
 coverage
