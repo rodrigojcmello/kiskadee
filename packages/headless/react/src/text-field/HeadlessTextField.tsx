@@ -3,8 +3,10 @@ import type {
   ComponentPropsWithoutRef,
   FocusEvent,
   HTMLAttributes,
+  MouseEvent,
   ReactNode,
-  Ref
+  Ref,
+  RefObject
 } from 'react';
 import {
   createContext,
@@ -13,6 +15,7 @@ import {
   useContext,
   useId,
   useMemo,
+  useRef,
   useState
 } from 'react';
 import type {
@@ -92,6 +95,7 @@ type TextFieldContextValue = {
   messageId: string;
   value: string;
   setValue: (value: string) => void;
+  inputRef: RefObject<HTMLInputElement | null>;
   disabled: boolean | undefined;
   readOnly: boolean | undefined;
   required: boolean | undefined;
@@ -172,6 +176,7 @@ function TextFieldRoot({
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
   const resolvedValue = isControlled ? value : uncontrolledValue;
   const [focused, setFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const { target: stateProjectionTarget = 'e1', ...stateProjectionOptions } = stateProjection ?? {};
 
   const projectionStates = useMemo<TextFieldProjectionStates>(
@@ -233,6 +238,7 @@ function TextFieldRoot({
       messageId: `${resolvedInputId}-message`,
       value: resolvedValue,
       setValue,
+      inputRef,
       disabled,
       readOnly,
       required,
@@ -250,6 +256,7 @@ function TextFieldRoot({
       resolvedInputId,
       resolvedValue,
       setValue,
+      inputRef,
       slotProps,
       validationStatus
     ]
@@ -287,15 +294,31 @@ const TextFieldLabel = forwardRef<HTMLLabelElement, TextFieldLabelProps>(functio
 });
 
 const TextFieldControl = forwardRef<HTMLDivElement, TextFieldControlProps>(
-  function TextFieldControl({ className, children, ...props }, ref) {
+  function TextFieldControl({ className, children, onClick, ...props }, ref) {
     const context = useTextFieldContext();
     const { className: slotClassName, ...slotProps } = context.slotProps.e3 ?? {};
+    const { disabled, inputRef } = context;
+
+    const handleClick = useCallback(
+      (event: MouseEvent<HTMLDivElement>) => {
+        onClick?.(event);
+
+        const inputElement = inputRef.current;
+        if (!inputElement || event.defaultPrevented || disabled || event.target === inputElement) {
+          return;
+        }
+
+        inputElement.focus();
+      },
+      [disabled, inputRef, onClick]
+    );
 
     return (
       <div
         {...slotProps}
         ref={ref}
         className={mergeClassNames(slotClassName, className)}
+        onClick={handleClick}
         {...props}
       >
         {children}
@@ -351,7 +374,10 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(functio
     <input
       {...slotProps}
       {...props}
-      ref={(node) => assignRef(ref, node)}
+      ref={(node) => {
+        context.inputRef.current = node;
+        assignRef(ref, node);
+      }}
       id={context.inputId}
       type={type}
       value={context.value}
