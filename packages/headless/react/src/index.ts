@@ -1,6 +1,11 @@
 export type { ButtonProps } from './button/Button.tsx';
 export { Button } from './button/Button.tsx';
 export type {
+  UseCheckedStateOptions,
+  UseCheckedStateResult
+} from './checked-state/useCheckedState.ts';
+export { useCheckedState } from './checked-state/useCheckedState.ts';
+export type {
   ColorRadioGroupClassNames,
   ColorRadioGroupProps,
   ColorRadioItem
@@ -37,6 +42,19 @@ export type {
   SwatchRadioItem
 } from './swatch-radio-group/SwatchRadioGroup.tsx';
 export { SwatchRadioGroup } from './swatch-radio-group/SwatchRadioGroup.tsx';
+export type {
+  SwitchClassNames,
+  SwitchElementName,
+  SwitchInputProps,
+  SwitchLabelProps,
+  SwitchRootProps,
+  SwitchStateName,
+  SwitchStateProjectionOptions,
+  SwitchStateProps,
+  SwitchThumbProps,
+  SwitchTrackProps
+} from './switch/HeadlessSwitch.tsx';
+export { HeadlessSwitch } from './switch/HeadlessSwitch.tsx';
 export type {
   TabsBarProps,
   TabsContentProps,

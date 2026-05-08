@@ -27,6 +27,11 @@
       "types": "./dist/text-field/HeadlessTextField.d.ts",
       "import": "./dist/text-field/HeadlessTextField.js",
       "default": "./dist/text-field/HeadlessTextField.js"
+    },
+    "./switch": {
+      "types": "./dist/switch/HeadlessSwitch.d.ts",
+      "import": "./dist/switch/HeadlessSwitch.js",
+      "default": "./dist/switch/HeadlessSwitch.js"
     }
   },
   "files": [
