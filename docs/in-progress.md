@@ -16,7 +16,11 @@ TextField control padding focus fix
   - `packages/web-builder/docs/technical-debt/future-optimizations.md` moved into `packages/web-builder/docs/proposals/`
   - repository root `docs/future-ideas/` and `docs/discarded-ideas/` moved to `docs/proposals/` and `docs/rejected/`
 - Structural affordance: TextField standard outline, underline, and borderless structural Sass now use `cursor: text` on the control shell.
+- Underline focus affordance: `TextField` standard underline no longer paints a focus outline around `e3`; focused state now thickens only `e6`, which is the dedicated underline indicator lane for this mode.
+- Files changed:
+  - `packages/components/react/src/TextField/standard-underline/TextField.standard-underline.structural.scss`
 - Validation:
   - `pnpm --filter @kiskadee/react-headless exec vitest run src/text-field/HeadlessTextField.test.tsx`
   - `pnpm --filter @kiskadee/react-components run build`
   - Manual showcase validation confirmed by the user on `http://localhost:3000/text-field`.
+  - Not run for this latest underline-only structural adjustment in the current session.

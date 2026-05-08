@@ -65,26 +65,27 @@
   cursor: text;
   isolation: isolate;
   border: 0;
-  outline: var(--k-bdc) solid var(--k-bdw);
+  outline: 0;
   outline-offset: 0;
   --k-txf-phc: var(--k-txc);
 }
 
 /*
  * element control / e3
- * Expands the shell outline when the root projects focused state.
+ * Keeps the shell itself free of a focus outline because underline mode delegates focus affordance
+ * to the bottom indicator element.
  */
 .k-txf-e1-d.-f.-a .k-txf-e3-d {
-  outline-color: var(--k-focus-color);
-  outline-width: max(var(--k-bdw), calc(var(--k-focus-width) * 1px));
+  outline: 0;
 }
 
 /*
  * element control modifier 'a' / e3a
- * Uses the schema-emitted control border color for the focused outline.
+ * Keeps the component focus color source override inert for underline mode because focus is drawn
+ * by the indicator element instead of the shell outline.
  */
 .k-txf-e1-d.-f.-a .k-txf-e3-d.k-txf-e3a {
-  outline-color: var(--k-bdc);
+  outline: 0;
 }
 
 /*
@@ -145,6 +146,14 @@
   border-start-end-radius: 0;
   border-end-start-radius: inherit;
   border-end-end-radius: inherit;
+}
+
+/*
+ * element indicator / e6
+ * Thickens only the underline lane when the root projects focused state.
+ */
+.k-txf-e1-d.-f.-a .k-txf-e6-d {
+  block-size: calc(var(--k-focus-width) * 1px);
 }
 
 /*
