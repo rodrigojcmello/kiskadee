@@ -14,6 +14,10 @@ const entries = [
     label: 'Tabs'
   },
   {
+    href: '/switch',
+    label: 'Switch'
+  },
+  {
     href: '/text-field',
     label: 'TextField'
   }

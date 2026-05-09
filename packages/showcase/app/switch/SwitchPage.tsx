@@ -1,0 +1,235 @@
+'use client';
+
+import type { ElementSizeValue, RadiusMode } from '@kiskadee/core';
+import { Switch, useKiskadee, useShowcase } from '@kiskadee/react-components';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
+import { Select } from '@/k-components';
+import s from './Switch.module.scss';
+
+const scaleOptions: Array<{ value: ElementSizeValue; label: string }> = [
+  { value: 's:sm:1', label: 'Small' },
+  { value: 's:md:1', label: 'Medium' }
+];
+
+const radiusOptions: Array<{ value: RadiusMode; label: string }> = [
+  { value: 'rounded', label: 'Rounded' },
+  { value: 'pill', label: 'Pill' },
+  { value: 'square', label: 'Square' }
+];
+
+function StateTile({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div className={s.stateTile}>
+      <div className={s.stateTitle}>{title}</div>
+      <div className={s.stateControl}>{children}</div>
+    </div>
+  );
+}
+
+export default function SwitchPage() {
+  const { designSystem } = useKiskadee();
+  const { manifest } = useShowcase();
+  const [checked, setChecked] = useState(true);
+  const [scale, setScale] = useState<ElementSizeValue>('s:md:1');
+  const [radius, setRadius] = useState<RadiusMode>('rounded');
+  const switchMeta = manifest?.components?.switch;
+  const isSwitchAvailable = Boolean(switchMeta);
+  const isScaleSupported = (value: ElementSizeValue) =>
+    !switchMeta?.scale || Boolean(switchMeta.scale[value]);
+
+  return (
+    <section className={`${s.page} k-root`}>
+      <header className={s.header}>
+        <div>
+          <h2>Switch</h2>
+          <p className={s.summary}>
+            Binary control scenarios for the generated `standard/base` switch contract.
+          </p>
+        </div>
+        <div className={s.controls}>
+          <Select
+            label="Scale"
+            width={160}
+            options={scaleOptions.map((option) => ({
+              ...option,
+              disabled: !isScaleSupported(option.value)
+            }))}
+            value={scale}
+            onValueChange={(value) => setScale(value as ElementSizeValue)}
+            disabled={!isSwitchAvailable}
+          />
+          <Select
+            label="Radius"
+            width={160}
+            options={radiusOptions}
+            value={radius}
+            onValueChange={(value) => setRadius(value as RadiusMode)}
+            disabled={!isSwitchAvailable}
+          />
+        </div>
+      </header>
+
+      {!isSwitchAvailable ? (
+        <div className={s.emptyState}>
+          Switch is not available for the selected design system: {designSystem}.
+        </div>
+      ) : (
+        <>
+          <section className={s.section}>
+            <h3>Interactive</h3>
+            <div className={s.interactivePanel}>
+              <Switch
+                id="switch-notifications"
+                label="Notifications"
+                checked={checked}
+                onCheckedChange={setChecked}
+                scale={scale}
+                radius={radius}
+              />
+              <span className={s.valueLabel}>{checked ? 'On' : 'Off'}</span>
+            </div>
+          </section>
+
+          <section className={s.section}>
+            <h3>States</h3>
+            <div className={s.stateGrid}>
+              <StateTile title="Unchecked">
+                <Switch
+                  id="switch-state-unchecked"
+                  label="Rest"
+                  checked={false}
+                  scale={scale}
+                  radius={radius}
+                  readOnly
+                />
+              </StateTile>
+              <StateTile title="Checked">
+                <Switch
+                  id="switch-state-checked"
+                  label="Selected"
+                  checked
+                  scale={scale}
+                  radius={radius}
+                  readOnly
+                />
+              </StateTile>
+              <StateTile title="Hover">
+                <Switch
+                  id="switch-state-hover"
+                  label="Hover"
+                  checked={false}
+                  className="-h -a"
+                  scale={scale}
+                  radius={radius}
+                  readOnly
+                />
+              </StateTile>
+              <StateTile title="Focus">
+                <Switch
+                  id="switch-state-focus"
+                  label="Focus"
+                  checked={false}
+                  className="-f -a"
+                  scale={scale}
+                  radius={radius}
+                  readOnly
+                />
+              </StateTile>
+              <StateTile title="Checked Hover">
+                <Switch
+                  id="switch-state-checked-hover"
+                  label="Selected hover"
+                  checked
+                  className="-h"
+                  scale={scale}
+                  radius={radius}
+                  readOnly
+                />
+              </StateTile>
+              <StateTile title="Checked Focus">
+                <Switch
+                  id="switch-state-checked-focus"
+                  label="Selected focus"
+                  checked
+                  className="-f"
+                  scale={scale}
+                  radius={radius}
+                  readOnly
+                />
+              </StateTile>
+            </div>
+          </section>
+
+          <section className={s.section}>
+            <h3>Disabled</h3>
+            <div className={s.stateGrid}>
+              <StateTile title="Disabled">
+                <Switch
+                  id="switch-disabled-off"
+                  label="Unavailable"
+                  checked={false}
+                  scale={scale}
+                  radius={radius}
+                  disabled
+                />
+              </StateTile>
+              <StateTile title="Checked Disabled">
+                <Switch
+                  id="switch-disabled-on"
+                  label="Locked on"
+                  checked
+                  scale={scale}
+                  radius={radius}
+                  disabled
+                />
+              </StateTile>
+            </div>
+          </section>
+
+          <section className={s.section}>
+            <h3>Labels</h3>
+            <div className={s.stateGrid}>
+              <StateTile title="Label Start">
+                <Switch
+                  id="switch-label-start"
+                  label="Airplane mode"
+                  labelPosition="start"
+                  checked
+                  scale={scale}
+                  radius={radius}
+                  readOnly
+                />
+              </StateTile>
+              <StateTile title="Custom Label">
+                <Switch
+                  id="switch-label-custom"
+                  label={
+                    <span className={s.customLabel}>
+                      <strong>Sync</strong>
+                      <span>Background updates</span>
+                    </span>
+                  }
+                  checked
+                  scale={scale}
+                  radius={radius}
+                  readOnly
+                />
+              </StateTile>
+              <StateTile title="No Visible Label">
+                <Switch
+                  id="switch-label-hidden"
+                  inputProps={{ 'aria-label': 'No visible label switch' }}
+                  checked
+                  scale={scale}
+                  radius={radius}
+                  readOnly
+                />
+              </StateTile>
+            </div>
+          </section>
+        </>
+      )}
+    </section>
+  );
+}

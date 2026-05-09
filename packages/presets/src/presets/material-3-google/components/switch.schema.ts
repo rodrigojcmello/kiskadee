@@ -164,8 +164,8 @@ function createSwitchElementPalettes({
         textColor: {
           neutral: {
             medium: {
-              rest: c(s, 'l', 'neutral', 10),
-              disabled: switchStateRef(c(s, 'l', 'neutral', 10, 38))
+              rest: c(s, 'l', 'neutral', 90),
+              disabled: switchStateRef(c(s, 'l', 'neutral', 90, 38))
             }
           }
         }
