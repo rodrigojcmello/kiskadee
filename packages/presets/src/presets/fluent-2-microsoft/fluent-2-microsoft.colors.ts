@@ -57,6 +57,9 @@ export const componentIntents = {
     neutral: 'neutral',
     destructive: 'redLike',
     positive: 'greenLike'
+  },
+  switch: {
+    neutral: 'primary'
   }
 } as const satisfies ComponentIntents;
 

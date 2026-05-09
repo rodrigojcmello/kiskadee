@@ -1,9 +1,14 @@
 import { breakpoints, color, primitive, type Schema, withAlpha } from '@kiskadee/core';
+import { createPresetColorGetter } from '../../utils/presetColor.ts';
+import { createFluent2MicrosoftSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './fluent-2-microsoft.colors.ts';
 
 // Reference: https://www.figma.com/design/iEmab9I4qGqbUJlFSxRORE/Microsoft-Fluent-2-Web--Community-?node-id=1-840&p=f&t=M4w8UKqwRiqJgq8i-0
 
 const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
+const c = createPresetColorGetter<'default'>(schemaContext);
+const transparent = [0, 0, 0, 0] as const;
+const white = [0, 0, 100, 1] as const;
 
 // The `Schema` generic represents extra segment names beyond the built-ins (`default` and optional `dynamic`).
 type Segments = never;
@@ -23,10 +28,6 @@ export const schema: Schema<Segments> = {
       default: {
         light: {
           focusColor: color(schemaContext, 'default', 'l', primitive('black', 'v1'), 100)
-        },
-        dark: {
-          focusColor: color(schemaContext, 'default', 'd', primitive('black', 'v1'), 100),
-          background: [0, 0, 12, 1]
         }
       }
     }
@@ -97,24 +98,6 @@ export const schema: Schema<Segments> = {
                     }
                   }
                 }
-              },
-              dark: {
-                boxColor: {
-                  primary: {
-                    high: {
-                      rest: color(schemaContext, 'default', 'd', 'button.primary', 70),
-                      hover: color(schemaContext, 'default', 'd', 'button.primary', 60),
-                      focus: color(schemaContext, 'default', 'd', 'button.primary', 70),
-                      pressed: color(schemaContext, 'default', 'd', 'button.primary', 90),
-                      disabled: color(schemaContext, 'default', 'd', 'button.neutral', 8),
-                      selected: {
-                        rest: color(schemaContext, 'default', 'd', 'button.primary', 80),
-                        hover: color(schemaContext, 'default', 'd', 'button.primary', 70),
-                        pressed: color(schemaContext, 'default', 'd', 'button.primary', 90)
-                      }
-                    }
-                  }
-                }
               }
             }
           },
@@ -151,18 +134,6 @@ export const schema: Schema<Segments> = {
                     }
                   }
                 }
-              },
-              dark: {
-                textColor: {
-                  primary: {
-                    high: {
-                      rest: color(schemaContext, 'default', 'd', 'button.neutral', 0),
-                      disabled: {
-                        ref: color(schemaContext, 'default', 'd', 'button.neutral', 40)
-                      }
-                    }
-                  }
-                }
               }
             }
           },
@@ -180,6 +151,11 @@ export const schema: Schema<Segments> = {
           }
         }
       }
-    }
+    },
+    switch: createFluent2MicrosoftSwitchSchema({
+      c,
+      transparent,
+      white
+    })
   }
 };
