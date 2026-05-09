@@ -12,6 +12,9 @@ export default function HomePage() {
           <Link href="/tabs">/tabs</Link>
         </li>
         <li>
+          <Link href="/switch">/switch</Link>
+        </li>
+        <li>
           <Link href="/text-field">/text-field</Link>
         </li>
       </ul>

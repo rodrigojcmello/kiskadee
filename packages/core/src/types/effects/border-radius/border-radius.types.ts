@@ -2,7 +2,7 @@
 // a map keyed by element size/breakpoint tokens like 's:md:1'.
 
 import type { ElementAllSizeValue, ElementSizeValue } from '../../../breakpoints.ts';
-import type { InteractionState } from '../../colors/colors.types.ts';
+import type { NonSelectedInteractionState } from '../../colors/colors.types.ts';
 import type { PixelValue } from '../../scales/scales.types.ts';
 
 export type ResponsiveNumeric =
@@ -11,7 +11,7 @@ export type ResponsiveNumeric =
 
 // Numeric values by interaction state (excluding the compound 'selected' container)
 export type NumericByInteractionState = Partial<
-  Record<Exclude<InteractionState, 'selected'>, ResponsiveNumeric>
+  Record<NonSelectedInteractionState, ResponsiveNumeric>
 >;
 
 // Allows a nested `selected` block mirroring the palette structure

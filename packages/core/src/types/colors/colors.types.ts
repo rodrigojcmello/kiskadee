@@ -63,7 +63,7 @@ export type Color = SolidColor | ResolvedGradient;
 export type ColorValue = Color | { ref?: Color | undefined };
 
 /**
- * Interaction states.
+ * Interaction and component states that can be encoded in style keys.
  */
 export type InteractionState =
   | 'rest'
@@ -72,7 +72,42 @@ export type InteractionState =
   | 'selected'
   | 'focus'
   | 'disabled'
-  | 'readOnly';
+  | 'readOnly'
+  | 'filled';
+
+export type NonSelectedInteractionState = Exclude<InteractionState, 'selected'>;
+export type ProjectedStateKeys = Exclude<InteractionState, 'rest'>;
+
+export const interactionStateKeys = [
+  'rest',
+  'hover',
+  'pressed',
+  'selected',
+  'focus',
+  'disabled',
+  'readOnly',
+  'filled'
+] as const satisfies readonly InteractionState[];
+
+export const nonSelectedInteractionStateKeys = [
+  'rest',
+  'hover',
+  'pressed',
+  'focus',
+  'disabled',
+  'readOnly',
+  'filled'
+] as const satisfies readonly NonSelectedInteractionState[];
+
+export const projectedStateKeys = [
+  'hover',
+  'pressed',
+  'selected',
+  'focus',
+  'disabled',
+  'readOnly',
+  'filled'
+] as const satisfies readonly ProjectedStateKeys[];
 
 export const InteractionStateCssPseudoSelector: Record<InteractionState, string> = {
   rest: '',
@@ -81,22 +116,34 @@ export const InteractionStateCssPseudoSelector: Record<InteractionState, string>
   selected: '',
   focus: ':focus-visible',
   disabled: '',
-  readOnly: ':read-only'
+  readOnly: '',
+  filled: ''
 };
 
 export type PseudoSelectorKeys = keyof typeof InteractionStateCssPseudoSelector;
 
-export const stateActivator = {
+export const projectedStateActivator = {
   hover: '-h',
   pressed: '-p',
   selected: '-s',
   focus: '-f',
   disabled: '-d',
   readOnly: '-r',
+  filled: '-v'
+} as const satisfies Record<ProjectedStateKeys, string>;
+
+export const stateActivatorMeta = {
   shadow: '-e',
   activator: '-a',
   interactive: '-i'
-};
+} as const;
+
+export type StateActivatorMetaKeys = keyof typeof stateActivatorMeta;
+
+export const stateActivator = {
+  ...projectedStateActivator,
+  ...stateActivatorMeta
+} as const satisfies Record<ProjectedStateKeys | StateActivatorMetaKeys, string>;
 
 export type StateActivatorKeys = keyof typeof stateActivator;
 
@@ -118,6 +165,7 @@ export type InteractionStateColorMap = {
   selected?: SelectedInteractionSubMap;
   disabled?: ColorValue;
   readOnly?: ColorValue;
+  filled?: ColorValue;
 };
 
 /**

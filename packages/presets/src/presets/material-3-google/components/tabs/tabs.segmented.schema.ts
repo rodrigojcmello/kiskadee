@@ -152,7 +152,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
                   medium: {
                     rest: c('default', 'l', 'primary.v2', 60),
                     selected: {
-                      rest: white
+                      rest: { ref: white }
                     }
                   }
                 }
@@ -164,7 +164,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
                   medium: {
                     rest: c('default', 'd', 'primary.v2', 50),
                     selected: {
-                      rest: white
+                      rest: { ref: white }
                     }
                   }
                 }

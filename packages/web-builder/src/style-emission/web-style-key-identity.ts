@@ -19,9 +19,11 @@ function resolveStyleKeyEmissionMode(
 ): 'm' | 't' | 'c' | 'i' | 'mi' | undefined {
   if (styleKey.startsWith('boxColor')) {
     const isMirrored = styleEmissionPolicy.boxColorEmission === 'mirrored';
+    const isToken = styleEmissionPolicy.boxColorEmission === 'token';
     const isInterpolated = styleEmissionPolicy.boxColorGradientEmission === 'interpolated';
     if (isMirrored && isInterpolated) return 'mi';
     if (isMirrored) return 'm';
+    if (isToken) return 't';
     return isInterpolated ? 'i' : undefined;
   }
 

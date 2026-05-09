@@ -1,5 +1,6 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints.ts';
 import type { ButtonElements } from './components/button.ts';
+import type { SwitchOptions, SwitchVariants } from './components/switch.ts';
 import type { TabsOptions, TabsVariants } from './components/tabs.ts';
 import type { TextFieldOptions, TextFieldVariants } from './components/text-field.ts';
 import type {
@@ -20,7 +21,7 @@ import type { RippleEffectSchema } from './types/effects/ripple/ripple.types.ts'
 import type { ScaleSchema } from './types/scales/scales.types.ts';
 
 // Names of all supported components
-export type ComponentName = 'button' | 'tabs' | 'textField';
+export type ComponentName = 'button' | 'switch' | 'tabs' | 'textField';
 
 export type ElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   name?: string; // for example "element-element-element-element"
@@ -88,6 +89,7 @@ export type ComponentVariantModesStyleKeyMap<TSegmentName extends SegmentName = 
 
 export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Partial<{
   button: ComponentElementsStyleKeyMap<TSegmentName>;
+  switch: ComponentVariantModesStyleKeyMap<TSegmentName>;
   tabs: ComponentVariantsStyleKeyMap<TSegmentName>;
   textField: ComponentVariantModesStyleKeyMap<TSegmentName>;
 }>;
@@ -113,8 +115,15 @@ type TextFieldComponent<TSegmentName extends SegmentName = never> = {
   variants: TextFieldVariants<TSegmentName>;
 };
 
+type SwitchComponent<TSegmentName extends SegmentName = never> = {
+  elements?: never;
+  options?: SwitchOptions;
+  variants: SwitchVariants<TSegmentName>;
+};
+
 type Components<TSegmentName extends SegmentName = never> = Partial<{
   button: { elements: ButtonElements<TSegmentName> & Elements<TSegmentName> };
+  switch: SwitchComponent<TSegmentName>;
   tabs: TabsComponent<TSegmentName>;
   textField: TextFieldComponent<TSegmentName>;
 }>;
@@ -268,10 +277,7 @@ export type ComponentElementClassNameMapJSON = Record<string, ClassNameByElement
 
 export type ComponentVariantClassNameMapJSON = Record<string, ComponentElementClassNameMapJSON>;
 
-export type ComponentVariantModeClassNameMapJSON = Record<
-  string,
-  ComponentVariantClassNameMapJSON
->;
+export type ComponentVariantModeClassNameMapJSON = Record<string, ComponentVariantClassNameMapJSON>;
 
 export type ComponentClassNameMapJSON = Partial<
   Record<

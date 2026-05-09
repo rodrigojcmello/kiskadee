@@ -44,6 +44,9 @@ export const componentIntents = {
   tabs: {
     neutral: 'neutral'
   },
+  switch: {
+    neutral: 'primary'
+  },
   textField: {
     neutral: 'neutral',
     error: 'redLike',

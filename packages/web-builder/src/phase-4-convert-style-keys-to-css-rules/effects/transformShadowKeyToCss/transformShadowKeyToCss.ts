@@ -1,10 +1,15 @@
 import {
   type HSLA,
   InteractionStateCssPseudoSelector,
+  type ProjectedStateKeys,
   type PseudoSelectorKeys,
-  type StateActivatorKeys,
+  projectedStateActivator,
   stateActivator
 } from '@kiskadee/core';
+import {
+  DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
+  type ResolvedElementStyleEmissionPolicy
+} from '../../../style-emission/web-build-policy.ts';
 import {
   INVALID_SHADOW_COLOR_VALUE,
   UNSUPPORTED_INTERACTION_STATE,
@@ -12,20 +17,22 @@ import {
   UNSUPPORTED_VALUE
 } from '../../errorMessages.ts';
 import { convertHslaToHex } from '../../utils/convertHslaToHex.ts';
-import {
-  DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
-  type ResolvedElementStyleEmissionPolicy
-} from '../../../style-emission/web-build-policy.ts';
 
 export type TransformShadowKeyToCssOptions = {
   styleEmissionPolicy?: ResolvedElementStyleEmissionPolicy;
 };
 
+function getProjectedStateSuffix(state: string): string {
+  return Object.hasOwn(projectedStateActivator, state)
+    ? projectedStateActivator[state as ProjectedStateKeys]
+    : '';
+}
+
 /**
  * Builds CSS rule(s) that set the box-shadow property from a compact shadow style key.
  *
  * Supports inline interaction states and emits both native pseudo selectors and
- * forced-by-class selectors (using the activator class "-a"), similar to border-radius.
+ * projected state selectors (using the activator class "-a"), similar to border-radius.
  *
  * Accepted keys:
  * - "shadow__[x,y,blur,[h,l,s,a]]"                 — default (rest)
@@ -45,11 +52,11 @@ export function transformShadowKeyToCss(
   const regex = /^shadow(?:--(\w+))?__\[(.*)]$/;
   const match = styleKey.match(regex);
 
-  const isUnsupportedProperty = match === null;
-  if (isUnsupportedProperty) throw new Error(UNSUPPORTED_PROPERTY_NAME('shadow', styleKey));
+  if (match === null) throw new Error(UNSUPPORTED_PROPERTY_NAME('shadow', styleKey));
 
   // Determine interaction state or default to "rest".
-  const interactionState = match![1] ?? 'rest';
+  const [, rawInteractionState = 'rest', shadowValue = ''] = match;
+  const interactionState = rawInteractionState;
   const hasUnsupportedInteractionState = !(interactionState in InteractionStateCssPseudoSelector);
   if (hasUnsupportedInteractionState) {
     throw new Error(UNSUPPORTED_INTERACTION_STATE(interactionState, styleKey));
@@ -59,7 +66,6 @@ export function transformShadowKeyToCss(
   const cssPseudo = InteractionStateCssPseudoSelector[interactionState as PseudoSelectorKeys] || '';
 
   // Parse value: x,y,blur,color
-  const shadowValue = match![2];
   const parts = shadowValue.match(/^([\d.]+),([\d.]+),([\d.]+),(.*)$/);
   if (parts === null) throw new Error(UNSUPPORTED_VALUE('shadow', shadowValue, styleKey));
 
@@ -79,8 +85,7 @@ export function transformShadowKeyToCss(
 
   // Optimize zero lengths: CSS allows omitting the unit for 0 values
   const formatPx = (n: number): string => (n === 0 ? '0' : `${n}px`);
-  const styleEmissionPolicy =
-    options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
+  const styleEmissionPolicy = options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
   const decl =
     styleEmissionPolicy.shadowEmission === 'token'
       ? `{ --k-sh-x: ${formatPx(x)}; --k-sh-y: ${formatPx(y)}; --k-sh-blur: ${formatPx(blur)}; --k-sh-color: ${hexColor} }`
@@ -98,9 +103,11 @@ export function transformShadowKeyToCss(
     selectors.push(`.${className}.${eSuffix}`);
   }
 
-  // Forced branch uses classNameCssPseudoSelector + activator (.-a), and is also gated by shadow activation
-  const suffix = stateActivator[interactionState as StateActivatorKeys] || '';
-  const allowForced = suffix !== '' && (forceState === true || interactionState === 'disabled');
+  // Projected branch uses projectedStateActivator + activator (.-a), and is also gated by shadow activation.
+  const suffix = getProjectedStateSuffix(interactionState);
+  const allowForced =
+    suffix !== '' &&
+    (forceState === true || interactionState === 'disabled' || interactionState === 'readOnly');
   if (allowForced) {
     const activator = stateActivator.activator;
     selectors.push(`.${className}.${eSuffix}.${suffix}.${activator}`);

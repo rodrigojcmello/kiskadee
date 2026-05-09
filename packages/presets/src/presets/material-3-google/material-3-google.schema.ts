@@ -1,6 +1,7 @@
 import { breakpoints, type Schema } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import { createMaterial3GoogleButtonSchema } from './components/button.schema.ts';
+import { createMaterial3GoogleSwitchSchema } from './components/switch.schema.ts';
 import { createMaterial3GoogleTabsSchema } from './components/tabs.schema.ts';
 import { createMaterial3GoogleTextFieldSchema } from './components/text-field.schema.ts';
 import { schemaColors } from './material-3-google.colors.ts';
@@ -162,6 +163,12 @@ export const schema: Schema<Segments> = {
       c,
       segmentNames,
       transparent
+    }),
+    switch: createMaterial3GoogleSwitchSchema({
+      c,
+      segmentNames,
+      transparent,
+      white
     }),
     tabs: createMaterial3GoogleTabsSchema({
       c,

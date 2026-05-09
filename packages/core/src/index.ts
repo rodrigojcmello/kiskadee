@@ -1,12 +1,11 @@
 export * from './breakpoints.ts';
 export * from './components/button.ts';
+export * from './components/switch.ts';
 export * from './components/tabs.ts';
 export * from './components/text-field.ts';
-export { validateSchemaComponentContracts } from './utils/validateComponentContracts.ts';
 export * from './schema.ts';
 export * from './types/colors/colors.types.ts';
 export * from './types/decorations/decorations.types.ts';
-export * from './types/effects/index.ts';
 export type {
   BorderRadiusEffectMode,
   BorderRadiusEffectSchema,
@@ -14,6 +13,7 @@ export type {
   NumericWithSelected,
   ResponsiveNumeric
 } from './types/effects/border-radius/border-radius.types.ts';
+export * from './types/effects/index.ts';
 export {
   DEFAULT_PRESSED_RIPPLE_PROFILE,
   DEFAULT_RIPPLE_PROFILES,
@@ -23,12 +23,12 @@ export {
 export type {
   RippleEffectSchema,
   RippleInputFeedback,
+  RippleMode,
   RippleMotionCurveToken,
   RippleMotionDurationToken,
-  RippleMode,
+  RippleOrigin,
   RipplePressedVisual,
-  RippleProfile,
-  RippleOrigin
+  RippleProfile
 } from './types/effects/ripple/ripple.types.ts';
 export {
   resolvePressedRippleProfile,
@@ -41,4 +41,5 @@ export * from './types/effects/shadow/shadow.types.ts';
 export * from './types/scales/scales.types.ts';
 export * from './utils/color.ts';
 export * from './utils/convertHslaToHex.ts';
+export { validateSchemaComponentContracts } from './utils/validateComponentContracts.ts';
 export * from './utils/withAlpha.ts';

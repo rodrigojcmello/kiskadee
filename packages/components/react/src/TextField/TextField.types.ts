@@ -31,7 +31,7 @@ export type TextFieldVariantClassesMap = Partial<
 
 export type TextFieldProps = Omit<
   HeadlessTextFieldRootProps,
-  'children' | 'classNames' | 'inputId' | 'validationStatus'
+  'children' | 'classNames' | 'inputId' | 'stateProjection' | 'validationStatus'
 > & {
   id?: string;
   label: ReactNode;

@@ -64,7 +64,7 @@ function rewriteSpecifier(specifier: string): string {
   return specifier;
 }
 
-const STATIC_RE = /((?:^|[\n;])\s*(?:import|export)\b[^'"\n]*?\bfrom\s+)(['"])(\.\.?\/[^'"\n]+)\2/g;
+const STATIC_RE = /((?:^|[\n;])\s*(?:import|export)\b[\s\S]*?\bfrom\s+)(['"])(\.\.?\/[^'"\n]+)\2/g;
 const SIDE_EFFECT_RE = /((?:^|[\n;])\s*import\s+)(['"])(\.\.?\/[^'"\n]+)\2/g;
 const DYNAMIC_RE = /(\bimport\s*\(\s*)(['"])(\.\.?\/[^'"\n]+)\2(\s*\))/g;
 const EXPORT_BARE_RE = /((?:^|[\n;])\s*export\s+\*\s+from\s+)(['"])(\.\.?\/[^'"\n]+)\2/g;

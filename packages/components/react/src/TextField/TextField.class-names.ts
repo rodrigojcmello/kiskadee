@@ -11,6 +11,7 @@ import {
   type TextFieldMode,
   type TextFieldVariant
 } from '@kiskadee/core';
+import type { TextFieldStateProjectionOptions } from '@kiskadee/react-headless';
 import type { TextFieldStructuralDescriptor } from './TextField.structural.ts';
 import type {
   TextFieldClassesMap,
@@ -23,6 +24,26 @@ export const DEFAULT_TEXT_FIELD_EMPHASIS: ComponentEmphasis = 'medium';
 export const DEFAULT_TEXT_FIELD_INTENT: TextFieldIntent = 'neutral';
 export const DEFAULT_TEXT_FIELD_RADIUS: RadiusMode = 'rounded';
 export const DEFAULT_TEXT_FIELD_FOCUS_RING_COLOR_SOURCE: TextFieldFocusRingColorSource = 'global';
+
+export const TEXT_FIELD_STATE_PROJECTION = {
+  target: 'e1',
+  activatorClassName: cn.activator,
+  interactiveClassName: cn.interactive,
+  projections: {
+    focused: {
+      className: cn.focus
+    },
+    filled: {
+      className: cn.filled
+    },
+    disabled: {
+      className: cn.disabled
+    },
+    readOnly: {
+      className: cn.readOnly
+    }
+  }
+} satisfies TextFieldStateProjectionOptions;
 
 /**
  * Joins optional class fragments into one trimmed className string.
@@ -112,22 +133,6 @@ export function resolveRadiusClassName(
   return join(all, byScale) ?? '';
 }
 
-export function resolveStateActivatorClassName(options: {
-  focused: boolean;
-  disabled?: boolean;
-  readOnly?: boolean;
-}): string {
-  const state = options.disabled
-    ? cn.disabled
-    : options.readOnly
-      ? cn.readOnly
-      : options.focused
-        ? cn.focus
-        : '';
-
-  return state ? `${state} ${cn.activator}` : '';
-}
-
 export function resolveTextFieldClassNames(options: {
   structural: TextFieldStructuralDescriptor;
   elements: TextFieldClassesMap;
@@ -138,11 +143,7 @@ export function resolveTextFieldClassNames(options: {
   radius: RadiusMode;
   labelOffsetStrategy: TextFieldLabelOffsetStrategy;
   focusRingColorSource: TextFieldFocusRingColorSource;
-  focused: boolean;
-  disabled?: boolean;
-  readOnly?: boolean;
 }): Required<TextFieldClassNames> {
-  const stateClass = resolveStateActivatorClassName(options);
   const elements = options.elements;
   const letter = options.structural.letter;
 
@@ -169,7 +170,6 @@ export function resolveTextFieldClassNames(options: {
               ? 'k-txf-e2c'
               : '',
         elem(elements.e2, options),
-        stateClass,
         'k-trn',
         options.classNames.e2
       ) ?? '',
@@ -179,32 +179,22 @@ export function resolveTextFieldClassNames(options: {
         elem(elements.e3, options),
         resolveRadiusClassName(elements.e3, options.scale, options.radius),
         options.focusRingColorSource === 'component' ? 'k-txf-e3a' : '',
-        cn.interactive,
-        stateClass,
         'k-trn',
         options.classNames.e3
       ) ?? '',
     e4:
-      join(
-        `k-txf-e4-${letter}`,
-        elem(elements.e4, options),
-        stateClass,
-        'k-trn',
-        options.classNames.e4
-      ) ?? '',
+      join(`k-txf-e4-${letter}`, elem(elements.e4, options), 'k-trn', options.classNames.e4) ?? '',
     e5:
-      join(
-        `k-txf-e5-${letter}`,
-        elem(elements.e5, options),
-        options.disabled ? `${cn.disabled} ${cn.activator}` : '',
-        'k-trn',
-        options.classNames.e5
-      ) ?? '',
+      join(`k-txf-e5-${letter}`, elem(elements.e5, options), 'k-trn', options.classNames.e5) ?? '',
     e6: elements.e6
       ? (join(
           `k-txf-e6-${letter}`,
           elem(elements.e6, options),
-          stateClass,
+          options.structural.variant === 'standard' &&
+            options.structural.mode === 'underline' &&
+            options.focusRingColorSource === 'component'
+            ? 'k-txf-e6a'
+            : '',
           'k-trn',
           options.classNames.e6
         ) ?? '')

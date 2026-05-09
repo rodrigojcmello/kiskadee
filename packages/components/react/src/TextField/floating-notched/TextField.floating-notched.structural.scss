@@ -39,9 +39,9 @@
 
 /*
  * element control / e3
- * Expands the shell outline on focused fields while keeping shell geometry on the wrapper.
+ * Expands the shell outline when the root projects focused state.
  */
-.k-txf-e3-a:is([data-focused], .-f.-a) {
+.k-txf-e1-a.-f.-a .k-txf-e3-a {
   outline-color: var(--k-focus-color);
   outline-width: max(var(--k-bdw), calc(var(--k-focus-width) * 1px));
 }
@@ -50,7 +50,7 @@
  * element control modifier 'a' / e3a
  * Uses the schema-emitted control border color for the focused outline.
  */
-.k-txf-e3-a.k-txf-e3a:is([data-focused], .-f.-a) {
+.k-txf-e1-a.-f.-a .k-txf-e3-a.k-txf-e3a {
   outline-color: var(--k-bdc);
 }
 
@@ -81,7 +81,7 @@
  * element label / e2
  * Temporarily turns the label into a placeholder mirror while the field is empty and unfocused.
  */
-.k-txf-e3-a:not([data-focused]):not(.-f.-a):not([data-filled]) .k-txf-e2-a[data-rest-placeholder] {
+.k-txf-e1-a:not(.-f):not(.-v) .k-txf-e2-a[data-rest-placeholder] {
   inset-block-start: var(--k-txf-rbt);
   inset-inline-start: var(--k-txf-ris);
   max-inline-size: var(--k-txf-riw);
@@ -96,19 +96,10 @@
 
 /*
  * element label / e2
- * Clears forced focus outlines because the shell, not the label, owns the focused perimeter.
+ * Promotes the label when the root projects focused or filled state.
  */
-.k-txf-e2-a.-f.-a {
-  position: absolute;
-  outline: 0;
-}
-
-/*
- * element label / e2
- * Promotes the label when the shell is focused or filled so input text keeps its own lane.
- */
-.k-txf-e3-a:is([data-focused], .-f.-a) .k-txf-e2-a,
-.k-txf-e3-a[data-filled] .k-txf-e2-a {
+.k-txf-e1-a.-f.-a .k-txf-e2-a,
+.k-txf-e1-a.-v.-a .k-txf-e2-a {
   background: var(--k-bgc);
   transform: none;
 }
@@ -117,8 +108,8 @@
  * element label modifier 'a' / e2a
  * Keeps the promoted label start at least as far from the edge as the active control radius.
  */
-.k-txf-e3-a:is([data-focused], .-f.-a) .k-txf-e2-a.k-txf-e2a,
-.k-txf-e3-a[data-filled] .k-txf-e2-a.k-txf-e2a {
+.k-txf-e1-a.-f.-a .k-txf-e2-a.k-txf-e2a,
+.k-txf-e1-a.-v.-a .k-txf-e2-a.k-txf-e2a {
   margin-inline-start: max(var(--k-mgl, 0px), var(--k-bdr, 0px));
 }
 
@@ -126,8 +117,8 @@
  * element label modifier 'b' / e2b
  * Aligns the promoted label text start with the measured input text lane.
  */
-.k-txf-e3-a:is([data-focused], .-f.-a) .k-txf-e2-a.k-txf-e2b,
-.k-txf-e3-a[data-filled] .k-txf-e2-a.k-txf-e2b {
+.k-txf-e1-a.-f.-a .k-txf-e2-a.k-txf-e2b,
+.k-txf-e1-a.-v.-a .k-txf-e2-a.k-txf-e2b {
   margin-inline-start: max(0px, calc(var(--k-txf-iis, 0px) - var(--k-txf-lps, 0px)));
 }
 
@@ -135,8 +126,8 @@
  * element label modifier 'c' / e2c
  * Forces the promoted label start to ignore schema-authored margin.
  */
-.k-txf-e3-a:is([data-focused], .-f.-a) .k-txf-e2-a.k-txf-e2c,
-.k-txf-e3-a[data-filled] .k-txf-e2-a.k-txf-e2c {
+.k-txf-e1-a.-f.-a .k-txf-e2-a.k-txf-e2c,
+.k-txf-e1-a.-v.-a .k-txf-e2-a.k-txf-e2c {
   margin-inline-start: 0;
 }
 
@@ -180,7 +171,7 @@
  * element input / e4
  * Suppresses the native focus outline because the shell mirrors focused state for the field.
  */
-.k-txf-e1-a .k-txf-e4-a:is(.-f.-a, :focus-visible) {
+.k-txf-e1-a .k-txf-e4-a:focus-visible {
   outline: 0;
 }
 
@@ -222,9 +213,9 @@
  * element root / e1
  * Mirrors disabled cursor state across wrappers because the shell distributes the field affordance.
  */
-.k-txf-e1-a[data-disabled],
-.k-txf-e1-a[data-disabled] .k-txf-e2-a,
-.k-txf-e1-a[data-disabled] .k-txf-e3-a,
-.k-txf-e1-a[data-disabled] .k-txf-e4-a {
+.k-txf-e1-a.-d.-a,
+.k-txf-e1-a.-d.-a .k-txf-e2-a,
+.k-txf-e1-a.-d.-a .k-txf-e3-a,
+.k-txf-e1-a.-d.-a .k-txf-e4-a {
   cursor: not-allowed;
 }

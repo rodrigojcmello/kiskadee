@@ -3,6 +3,12 @@
 Headless React primitives for the Kiskadee design-system framework. Ships compiled JavaScript
 (`dist/**/*.js`) and TypeScript declarations (`dist/**/*.d.ts`) with no CSS output.
 
+## Docs
+
+- [Interaction state projection hook](docs/concepts/interaction-state-projection-hook.md) - state
+  projection ownership and TextField pilot rules.
+- [Technical debt](docs/technical-debt/README.md) - deferred cleanup and follow-up work.
+
 ## Build Scripts
 
 The package exposes one official build script plus a faster development variant. In normal use you

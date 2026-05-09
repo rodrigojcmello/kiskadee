@@ -16,8 +16,10 @@ optimized selectors for generated CSS and showcase/static previews.
 - **Headless semantic helpers** are optional `data-*` attributes on headless primitives for state
   that is useful to consumers and is not always expressible as one native pseudo on the styled
   element, such as `data-filled`, wrapper-level `data-focused`, or `data-selected`.
-- **Projected state classes** are the compact Kiskadee runtime/generated classes from
-  `stateActivator`, such as `.-h`, `.-f`, `.-s`, and `.-a`.
+- **Projected state classes** are the compact Kiskadee runtime/generated state classes from
+  `projectedStateActivator`, such as `.-h`, `.-f`, `.-s`, and `.-v`.
+- **Selector/effect meta classes** are compact classes that modify selector behavior or opt into
+  effects, such as `.-a`, `.-i`, and `.-e`.
 - **Forced state** is one use of projected state classes: a showcase or snapshot can opt into a
   state class to simulate an interaction state without relying on browser pseudos.
 - **State scope owner** is the element that carries a component state for styling. It is not
@@ -68,7 +70,9 @@ public structural contract.
 
 ## Projected State Classes
 
-Projected classes come from `stateActivator` in `@kiskadee/core`:
+Projected classes come from `projectedStateActivator` in `@kiskadee/core`. The combined
+`stateActivator` export keeps these state classes together with selector/effect meta classes for
+existing runtime call sites:
 
 - `-h`: hover
 - `-p`: pressed
@@ -76,9 +80,17 @@ Projected classes come from `stateActivator` in `@kiskadee/core`:
 - `-f`: focus
 - `-d`: disabled
 - `-r`: read-only
+- `-v`: filled / has value
 - `-a`: activator gate for projected state selectors
 - `-i`: interactive anchor for native parent-to-child selectors
 - `-e`: shadow/elevation effect activator, not an interaction state
+
+The projected state keys are intentionally separate from the meta classes:
+
+- Projected states describe component or interaction state: hover, pressed, selected, focus,
+  disabled, read-only, and filled.
+- Meta classes modify selector behavior or opt into effects: activator, interactive anchor, and
+  shadow/elevation.
 
 The activator gate prevents projected state selectors from applying accidentally. A forced hover
 selector uses both the state class and the activator class:
@@ -187,6 +199,41 @@ In schema terms, a color value with `{ ref: ... }` means "this child style depen
 ancestor/scope state." That reference is what produces a `==` key and allows a component to project
 state once on the state scope owner instead of duplicating state classes across every child.
 
+## Native Pseudo Eligibility
+
+Native pseudo selectors are only safe when they describe the same element that owns the native
+state.
+
+For inline keys, the generated class is the state owner, so a native branch such as `.abc:hover` or
+`.abc:focus-visible` can be correct when that class is applied to the native interactive element.
+
+For reference keys, the native branch targets the state scope owner through `-i`:
+
+```css
+.-i:hover .abc {
+  background: red;
+}
+```
+
+That branch must only be emitted for native pseudos whose meaning is reliable on the scope owner.
+If the pseudo can match ordinary wrappers or otherwise does not prove that the component state is
+active, the reference key must use only the projected branch:
+
+```css
+.-a.-r .abc {
+  border-color: gray;
+}
+```
+
+`readOnly` is the motivating case. CSS `:read-only` is broad and can match common wrapper elements
+that are not user-editable, even when the component's input is not actually read-only. A selector
+such as `.-i:read-only .abc` can therefore leak read-only styling into a normal rest field.
+Generated parent-reference read-only styles must rely on the projected `.-r.-a` state instead.
+
+The same rule applies to any future state whose native pseudo is not a trustworthy signal on the
+state scope owner. Do not add a native parent-reference branch just because the platform exposes a
+pseudo selector with the same name.
+
 ## State Hierarchy
 
 State placement follows the hierarchy of ownership, not the native event target:
@@ -210,6 +257,50 @@ Examples:
   owner (`e1`) because label, shell, input, indicator, and message can all react to it.
 - Tabs selected state belongs to each tab item/trigger scope, not to the global tabs root, because
   only one repeated item and its descendants should receive selected styling.
+
+## Component Applications
+
+The first migration pass established these component decisions:
+
+### TextField
+
+- The field root (`e1`) is the state scope owner.
+- Focus can originate in the input (`e4`), but visual state is projected to `e1`.
+- Filled, disabled, and read-only can remain exposed as headless semantic `data-*` helpers, but
+  Kiskadee generated CSS and structural Sass should use projected classes on `e1`, such as
+  `.-v.-a`, `.-d.-a`, and `.-r.-a`.
+- Descendant slots that react to field state should use reference keys, not self-state classes.
+- Native `:focus-visible` can remain on the input when the style belongs to the input itself.
+- Hover should stay native when possible; `-i` on `e1` is the parent-to-child native hover anchor,
+  not a signal to force hover through JavaScript.
+
+### Button
+
+- The button root (`e1`) is both the native interactive element and the state scope owner.
+- Label/icon styles that react to root hover, pressed, selected, or disabled state should use
+  reference keys from `e1`.
+- Runtime hover and pressed styling should preserve native pseudos. Projected state classes are for
+  forced, controlled, or non-native states.
+- `useStateProjection` is not required unless a future Button behavior creates real composed state
+  that originates outside the root.
+
+### Tabs
+
+- Selected state belongs to each tab trigger/item scope, not to the collection root.
+- In the current styled Tabs structure, the trigger (`e2`) is the selected state scope owner.
+- Label (`e3`) and icon (`e4`) selected styles should use reference keys such as
+  `==selected:rest`.
+- The trigger carries `-s`, `-a`, and `-i`; label and icon should not receive selected or activator
+  classes directly.
+
+### Hook Adoption
+
+Use `useStateProjection` when real component state must be projected to a slot different from where
+that state originates, or when a headless primitive needs to merge semantic attributes with an
+external projection config.
+
+Do not introduce the hook just to mirror native hover, active, or selected behavior when the schema
+and runtime already have a clear state scope owner.
 
 ## Generation Rules
 

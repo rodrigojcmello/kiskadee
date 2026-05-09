@@ -9,6 +9,8 @@ import type {
   SchemaFonts,
   SegmentName,
   SolidColor,
+  SwitchMode,
+  SwitchVariant,
   TabsBridgeLowerCurve,
   TabsIndicatorPosition,
   TabsIndicatorShape,
@@ -30,6 +32,17 @@ import { type FontStack, toCssFontFamily } from '../utils/fontFamily.ts';
 type ExtractableSchema = Schema;
 
 type SegmentKey = SegmentName | string;
+type SwitchOptionsPayload = {
+  variant?: SwitchVariant;
+};
+type SwitchVariantOptionsPayload = {
+  mode?: SwitchMode;
+};
+type SwitchVariantsPayload = {
+  [TVariant in SwitchVariant]?: {
+    options?: SwitchVariantOptionsPayload;
+  };
+};
 type TextFieldOptionsPayload = {
   variant?: TextFieldVariant;
   mode?: TextFieldMode;
@@ -83,13 +96,30 @@ function pickTextFieldModeOptions(options: unknown): TextFieldModeOptionsPayload
     : undefined;
 }
 
-function pickTextFieldVariantOptions(
-  options: unknown
-): TextFieldVariantOptionsPayload | undefined {
+function pickTextFieldVariantOptions(options: unknown): TextFieldVariantOptionsPayload | undefined {
   const focusRingColorSource = (
     options as { focusRingColorSource?: TextFieldFocusRingColorSource } | undefined
   )?.focusRingColorSource;
   return focusRingColorSource ? { focusRingColorSource } : undefined;
+}
+
+function pickSwitchVariantOptions(options: unknown): SwitchVariantOptionsPayload | undefined {
+  const mode = (options as { mode?: SwitchMode } | undefined)?.mode;
+  return mode ? { mode } : undefined;
+}
+
+function buildSwitchVariantsPayload(schema: ExtractableSchema): SwitchVariantsPayload {
+  const variants: SwitchVariantsPayload = {};
+  const standardOptions = pickSwitchVariantOptions(
+    schema.components?.switch?.variants?.standard?.options
+  );
+  if (standardOptions) {
+    variants.standard = {
+      options: standardOptions
+    };
+  }
+
+  return variants;
 }
 
 function buildTextFieldVariantsPayload(schema: ExtractableSchema): TextFieldVariantsPayload {
@@ -256,6 +286,8 @@ export async function writeExtraArtifacts(params: {
   const tabsLowerCurve = schema.components?.tabs?.options?.lowerCurve as
     | TabsBridgeLowerCurve
     | undefined;
+  const switchVariant = schema.components?.switch?.options?.variant as SwitchVariant | undefined;
+  const switchVariants = buildSwitchVariantsPayload(schema);
   const textFieldVariant = schema.components?.textField?.options?.variant as
     | TextFieldVariant
     | undefined;
@@ -285,6 +317,7 @@ export async function writeExtraArtifacts(params: {
       tabsSeparator !== undefined ||
       tabsLowerCurve
   );
+  const hasSwitchOptions = Boolean(switchVariant || Object.keys(switchVariants).length > 0);
   const hasTextFieldOptions = Boolean(
     textFieldVariant ||
       textFieldMode ||
@@ -292,7 +325,14 @@ export async function writeExtraArtifacts(params: {
       Object.keys(textFieldVariants).length > 0
   );
 
-  if (hasFonts || hasRadius || hasRipple || hasTabsOptions || hasTextFieldOptions) {
+  if (
+    hasFonts ||
+    hasRadius ||
+    hasRipple ||
+    hasTabsOptions ||
+    hasSwitchOptions ||
+    hasTextFieldOptions
+  ) {
     await mkdir(buildDir, { recursive: true });
     const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
 
@@ -311,6 +351,10 @@ export async function writeExtraArtifacts(params: {
             separator?: boolean;
             lowerCurve?: TabsBridgeLowerCurve;
           };
+        };
+        switch?: {
+          options?: SwitchOptionsPayload;
+          variants?: SwitchVariantsPayload;
         };
         textField?: {
           options?: TextFieldOptionsPayload;
@@ -336,7 +380,7 @@ export async function writeExtraArtifacts(params: {
       };
     }
 
-    if (hasTabsOptions || hasTextFieldOptions) {
+    if (hasTabsOptions || hasSwitchOptions || hasTextFieldOptions) {
       globalPayload.components = {
         ...(globalPayload.components ?? {}),
         ...(hasTabsOptions
@@ -351,6 +395,16 @@ export async function writeExtraArtifacts(params: {
                   ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {}),
                   ...(tabsLowerCurve ? { lowerCurve: tabsLowerCurve } : {})
                 }
+              }
+            }
+          : {}),
+        ...(hasSwitchOptions
+          ? {
+              switch: {
+                options: {
+                  ...(switchVariant ? { variant: switchVariant } : {})
+                },
+                ...(Object.keys(switchVariants).length > 0 ? { variants: switchVariants } : {})
               }
             }
           : {}),

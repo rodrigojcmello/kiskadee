@@ -36,11 +36,9 @@ export const cssPaths = {
     effects: '/build/fluent-2-microsoft/effects.kiskadee.css',
     tokens: null,
     palettes: {
-      'default|dark': '/build/fluent-2-microsoft/default.dark.kiskadee.css',
       'default|light': '/build/fluent-2-microsoft/default.light.kiskadee.css',
     },
     tokenPalettes: {
-      'default|dark': '/build/fluent-2-microsoft/tokens.default.dark.kiskadee.css',
       'default|light': '/build/fluent-2-microsoft/tokens.default.light.kiskadee.css',
     }
   },

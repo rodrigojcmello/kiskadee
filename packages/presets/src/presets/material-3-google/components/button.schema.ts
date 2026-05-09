@@ -422,8 +422,8 @@ export function createMaterial3GoogleButtonSchema({
                   // verified: 2026-02-01 | Figma v1.23
                   low: {
                     rest: c(s, 'l', 'button.primary', 60),
-                    hover: c(s, 'l', 'button.primary', 55),
-                    pressed: c(s, 'l', 'button.primary', 70),
+                    hover: { ref: c(s, 'l', 'button.primary', 55) },
+                    pressed: { ref: c(s, 'l', 'button.primary', 70) },
                     disabled: {
                       ref: c(s, 'l', 'button.neutral', 90, 38) // match
                     },
@@ -469,16 +469,16 @@ export function createMaterial3GoogleButtonSchema({
                   },
                   low: {
                     rest: c(s, 'd', 'button.primary', 30),
-                    hover: c(s, 'd', 'button.primary', 35),
-                    pressed: c(s, 'd', 'button.primary', 25),
+                    hover: { ref: c(s, 'd', 'button.primary', 35) },
+                    pressed: { ref: c(s, 'd', 'button.primary', 25) },
                     disabled: {
                       ref: c(s, 'd', 'button.neutral', 60)
                     }
                   },
                   lowest: {
                     rest: c(s, 'd', 'button.primary', 30),
-                    hover: c(s, 'd', 'button.primary', 35),
-                    pressed: c(s, 'd', 'button.primary', 25),
+                    hover: { ref: c(s, 'd', 'button.primary', 35) },
+                    pressed: { ref: c(s, 'd', 'button.primary', 25) },
                     disabled: {
                       ref: c(s, 'd', 'button.neutral', 60)
                     }

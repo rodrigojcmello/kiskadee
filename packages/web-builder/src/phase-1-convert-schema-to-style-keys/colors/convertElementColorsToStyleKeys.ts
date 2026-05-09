@@ -13,6 +13,7 @@ import type {
   StyleKeyByElement,
   ThemeMode
 } from '@kiskadee/core';
+import { interactionStateKeys } from '@kiskadee/core';
 import { buildStyleKey, deepUpdate } from '../../utils/index.ts';
 
 // Metadata to track which emphasis track(s) generated each style key.
@@ -119,15 +120,7 @@ function isSelectedSubMap(val: unknown): val is SelectedInteractionSubMap {
 function isInteractionStateColorMap(val: unknown): val is InteractionStateColorMap {
   // Detect by presence of any known keys; rest is now optional
   if (!isPlainObject(val)) return false;
-  return (
-    'rest' in val ||
-    'hover' in val ||
-    'pressed' in val ||
-    'focus' in val ||
-    'selected' in val ||
-    'disabled' in val ||
-    'readOnly' in val
-  );
+  return interactionStateKeys.some((state) => state in val);
 }
 
 /**
@@ -195,25 +188,15 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
         const semanticColorMap: Partial<Record<SemanticColor, SemanticEntry>> =
           colorEntry as Partial<Record<SemanticColor, SemanticEntry>>;
 
-        // Helper that processes a plain interaction-state map (rest/hover/pressed/focus/selected)
+        // Helper that processes a plain interaction/component-state map.
         const processInteractionStateMap = (
           semanticColor: SemanticColor,
           interactionStateMap: InteractionStateColorMap,
           tone?: ComponentEmphasis
         ) => {
           const paletteKey = buildPaletteKey(segmentName, themeName);
-          const keys: (keyof InteractionStateColorMap)[] = [
-            'rest',
-            'hover',
-            'pressed',
-            'focus',
-            'selected',
-            'disabled',
-            'readOnly'
-          ];
-          for (const interactionState of keys) {
-            const rawValue =
-              interactionStateMap[interactionState as keyof InteractionStateColorMap];
+          for (const interactionState of interactionStateKeys) {
+            const rawValue = interactionStateMap[interactionState];
             if (rawValue === undefined) continue;
 
             // Handle the enriched "selected" submap shape: { rest, hover?, pressed?, focus? }.

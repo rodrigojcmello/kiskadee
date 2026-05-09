@@ -13,7 +13,9 @@ type CreateMaterial3GoogleTabsVariantArgs = {
 export function createMaterial3GoogleTabsBoxVariant({
   c,
   transparent
-}: CreateMaterial3GoogleTabsVariantArgs): NonNullable<NonNullable<TabsComponent['variants']>['box']> {
+}: CreateMaterial3GoogleTabsVariantArgs): NonNullable<
+  NonNullable<TabsComponent['variants']>['box']
+> {
   const lineVariant = createMaterial3GoogleTabsLineVariant({
     c,
     transparent
@@ -155,7 +157,7 @@ export function createMaterial3GoogleTabsBoxVariant({
                   medium: {
                     rest: c('default', 'l', 'neutral', 40),
                     selected: {
-                      rest: c('default', 'l', 'primary.v2', 0)
+                      rest: { ref: c('default', 'l', 'primary.v2', 0) }
                     }
                   }
                 }
@@ -167,7 +169,7 @@ export function createMaterial3GoogleTabsBoxVariant({
                   medium: {
                     rest: c('default', 'd', 'neutral', 80),
                     selected: {
-                      rest: c('default', 'd', 'primary.v2', 80)
+                      rest: { ref: c('default', 'd', 'primary.v2', 80) }
                     }
                   }
                 }

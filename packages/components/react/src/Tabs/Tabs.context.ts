@@ -23,8 +23,8 @@ export function useTabsVisualContext(): TabsVisualContextValue {
  * What
  *     Reads the per-tab context that exposes whether the current tab is selected.
  * Why
- *     `Tabs.Label` and `Tabs.Icon` need selection-aware styling without re-deriving state from
- *     the root context every time they render.
+ *     `Tabs.Label` and `Tabs.Icon` must stay scoped to one trigger even though selected styling now
+ *     flows through the trigger as the state owner.
  */
 export function useTabsTabContext(): TabsTabContextValue {
   const context = useContext(TabsTabContext);
