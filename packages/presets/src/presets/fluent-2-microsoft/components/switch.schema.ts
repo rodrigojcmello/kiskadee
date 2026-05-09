@@ -44,45 +44,35 @@ export function createFluent2MicrosoftSwitchSchema({
                 },
                 scales: {
                   boxWidth: {
-                    's:sm:1': 32,
                     's:md:1': 40
                   },
                   boxHeight: {
-                    's:sm:1': 16,
                     's:md:1': 20
                   },
                   borderWidth: {
-                    's:sm:1': 1,
                     's:md:1': 1
                   },
                   borderRadius: {
                     rounded: {
-                      's:sm:1': 8,
                       's:md:1': 10
                     },
                     pill: {
-                      's:sm:1': 8,
                       's:md:1': 10
                     },
                     square: {
-                      's:sm:1': 0,
                       's:md:1': 0
                     }
                   },
                   paddingTop: {
-                    's:sm:1': 1,
                     's:md:1': 1
                   },
                   paddingRight: {
-                    's:sm:1': 1,
                     's:md:1': 1
                   },
                   paddingBottom: {
-                    's:sm:1': 1,
                     's:md:1': 1
                   },
                   paddingLeft: {
-                    's:sm:1': 1,
                     's:md:1': 1
                   }
                 },
@@ -130,24 +120,19 @@ export function createFluent2MicrosoftSwitchSchema({
               e4: {
                 scales: {
                   boxWidth: {
-                    's:sm:1': 14,
                     's:md:1': 18
                   },
                   boxHeight: {
-                    's:sm:1': 14,
                     's:md:1': 18
                   },
                   borderRadius: {
                     rounded: {
-                      's:sm:1': 7,
                       's:md:1': 9
                     },
                     pill: {
-                      's:sm:1': 7,
                       's:md:1': 9
                     },
                     square: {
-                      's:sm:1': 0,
                       's:md:1': 0
                     }
                   }
@@ -194,19 +179,15 @@ export function createFluent2MicrosoftSwitchSchema({
                 },
                 scales: {
                   textSize: {
-                    's:sm:1': 12,
                     's:md:1': 14
                   },
                   textHeight: {
-                    's:sm:1': 16,
                     's:md:1': 20
                   },
                   marginLeft: {
-                    's:sm:1': 8,
                     's:md:1': 8
                   },
                   marginRight: {
-                    's:sm:1': 8,
                     's:md:1': 8
                   }
                 },
