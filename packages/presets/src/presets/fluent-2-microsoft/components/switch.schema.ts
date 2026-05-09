@@ -67,13 +67,13 @@ export function createFluent2MicrosoftSwitchSchema({
                     's:md:1': 1
                   },
                   paddingRight: {
-                    's:md:1': 1
+                    's:md:1': 3
                   },
                   paddingBottom: {
                     's:md:1': 1
                   },
                   paddingLeft: {
-                    's:md:1': 1
+                    's:md:1': 3
                   }
                 },
                 palettes: {
@@ -120,17 +120,17 @@ export function createFluent2MicrosoftSwitchSchema({
               e4: {
                 scales: {
                   boxWidth: {
-                    's:md:1': 18
+                    's:md:1': 14
                   },
                   boxHeight: {
-                    's:md:1': 18
+                    's:md:1': 14
                   },
                   borderRadius: {
                     rounded: {
-                      's:md:1': 9
+                      's:md:1': 4
                     },
                     pill: {
-                      's:md:1': 9
+                      's:md:1': 7
                     },
                     square: {
                       's:md:1': 0

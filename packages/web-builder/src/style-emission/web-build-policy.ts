@@ -97,6 +97,18 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         }
       }
     },
+    switch: {
+      variants: {
+        standard: {
+          elements: {
+            e3: {
+              borderWidthEmission: 'mirrored',
+              paddingEmission: 'compensated'
+            }
+          }
+        }
+      }
+    },
     tabs: {
       elements: {
         e2: {
