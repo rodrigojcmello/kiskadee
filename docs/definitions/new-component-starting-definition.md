@@ -12,20 +12,80 @@ A new component should start with the smallest honest contract that can represen
 component well. Early implementation work should favor visual fidelity, artifact correctness, and
 clear schema shape over broad option coverage.
 
+This definition is cross-package because a new component can touch `packages/headless/react`,
+`packages/components/react`, `packages/presets`, `packages/web-builder`, and `packages/showcase`.
+Package-specific implementation details should stay local when they are only local, but the starting
+recipe belongs here.
+
 ## Required Starting Decisions
 
 Before implementation starts, decide and record:
 
 - whether the component is truly new or should be a variant of an existing component;
 - the canonical component name;
-- the initial variant and mode names;
 - the element map and each element's meaning;
+- the accessible headless contract that must exist before styling;
 - which themes are in scope;
-- which sizes are in scope;
 - whether radius modes are in scope;
 - which interaction and control states are required for the first usable version;
 - which preset is the visual reference for the first implementation;
 - which showcase scenarios are required for validation.
+
+The initial styled schema should start from the default Kiskadee shape:
+
+```ts
+variant: 'standard';
+mode: 'base';
+intent: 'neutral';
+emphasis: 'medium';
+```
+
+This default shape is a starting grammar, not a requirement to design every possible option before
+the component exists.
+
+## Headless First
+
+Create or update the headless primitive before styling when the component owns interaction,
+accessibility, native form behavior, keyboard behavior, or semantic state.
+
+The headless layer should own:
+
+- roles, ARIA attributes, and native semantics;
+- focus and keyboard behavior;
+- controlled and uncontrolled state contracts when relevant;
+- event composition;
+- state projection hooks or helpers that can be reused by styled components.
+
+The styled React component in `packages/components/react` should compose the headless primitive and
+own generated class consumption, structural CSS, visual layout, and design-system presentation.
+
+## Styled React Package
+
+When the component belongs in `@kiskadee/react-components`, keep these package-local expectations in
+scope:
+
+- public exports must stay stable from `src/index.ts`;
+- runtime components should consume generated classes and CSS variables instead of inventing token
+  values;
+- generated artifacts come from schema and web-builder, while React components compose those
+  artifacts;
+- `className` should merge into the root slot without replacing generated classes;
+- per-slot `classNames` should remain explicit and typed;
+- root IDs, input IDs, labels, and accessibility props must have a clear ownership model;
+- public props for `variant`, `mode`, `intent`, `emphasis`, size, radius, and motion should only be
+  exposed when the component actually supports those options.
+
+Use this default file layout unless the component has a concrete reason to split extra runtime
+helpers:
+
+```txt
+src/<Component>/
+  <Component>.tsx
+  <Component>.types.ts
+  <Component>.class-names.ts
+  <Component>.structural.scss
+  index.ts
+```
 
 ## Theme Scope
 
@@ -41,19 +101,6 @@ Rationale:
 Do not add dark palettes mechanically. Add dark theme only when there is a clear reference, a real
 consumer need, and enough confidence that the component's element map will not immediately change.
 
-## Size Scope
-
-Do not assume every new component needs small, medium, and large sizes.
-
-Before adding size scales, decide whether:
-
-- medium alone is enough for the first implementation;
-- small is required by the design-system reference or by a real compact UI use case;
-- large is required by the reference or by a real prominent UI use case;
-- adding multiple sizes would create useful coverage or just multiply tuning work.
-
-If the answer is unclear, start with medium and document the deferred size question.
-
 ## Radius Scope
 
 Do not assume every new component needs `rounded`, `pill`, and `square`.
@@ -68,30 +115,22 @@ Before adding radius modes, decide whether:
 If radius variation is not an intentional part of the component, keep a single radius behavior and
 document why the extra modes were deferred.
 
-## Variant Scope
+## Intent And Emphasis
 
-Define variant names before implementation, not after the DOM and schema already exist.
+The first color branch should be `neutral.medium`.
 
-For each variant, document:
+Treat this as a default, not as a complete design matrix:
 
-- the variant name;
-- the mode name or names under that variant;
-- which elements exist;
-- what each element means;
-- how those element names stay coherent with other variants;
-- whether the variant changes only visuals or also changes structure.
+- a component starts with the single component intent `neutral`;
+- a component starts with the single emphasis level `medium`;
+- extra component intents should describe product or component meaning, not raw color families;
+- raw semantic colors such as `redLike` or `greenLike` are preset mappings, not public component
+  intent names;
+- extra emphasis levels such as `high`, `low`, and `lowest` should be added only when the design
+  has real visual hierarchy for them.
 
-Element names should remain semantically coherent across variants. For example, if `e3` is the
-track in one Switch variant, another Switch variant should not use `e3` for unrelated content.
-
-If a proposed variant needs a very different structure or a different element vocabulary, consider a
-new component instead of a variant. Examples:
-
-- `checkbox` should not be forced into `switch`;
-- `navbar` should not be forced into `tabs`.
-
-Variants should share enough component identity that a user can understand them as the same public
-component with different presentations.
+Other intents and emphasis buckets belong in the follow-up decision pass, not in the default
+component birth.
 
 ## Element Map
 
@@ -126,6 +165,31 @@ At minimum, decide which of these states are required:
 For persistent binary controls, prefer the existing `selected` control state for checked/on visuals.
 Do not encode persistent state as `pressed`; pressed is an interaction state.
 
+## Generated Class Consumption
+
+A styled component should consume generated artifacts consistently:
+
+- resolve the correct component branch from `classesMap`;
+- normalize scale keys before reading `s`, `w`, `rr`, `rp`, or `rs` buckets;
+- choose intent and emphasis classes from generated color buckets;
+- project state through shared activator classes when generated CSS expects them;
+- consume generated CSS variables directly in structural CSS when they are part of the contract;
+- avoid local token fallbacks that hide missing generated values.
+
+## Structural Sass
+
+Before editing structural Sass/CSS in `packages/components/react`, read `STRUCTURAL-CSS.md`.
+
+For new styled components:
+
+- use `*.structural.scss` for structural source files;
+- import the compiled `*.structural.css` from the component entry;
+- use compact component-scoped structural class names;
+- document variant or variant/mode branch letters near the structural CSS when branches exist;
+- keep structural CSS focused on layout, geometry, DOM composition, motion plumbing, and rendering
+  workarounds;
+- do not encode semantic colors, tokenized spacing, or visual state values in Sass.
+
 ## Preset Scope
 
 Use one reference preset as the first fidelity target.
@@ -157,6 +221,49 @@ The first showcase pass should include the smallest set of scenarios needed to v
 
 If a scenario reveals a schema or builder limitation, fix the actual contract or record a technical
 debt item. Avoid hiding the limitation with local showcase CSS.
+
+## Validation
+
+Match validation to the blast radius:
+
+- run formatting/checks for touched source files;
+- run `pnpm --filter @kiskadee/react-components build` when React component source or structural
+  Sass changes;
+- run web-builder validation when class-map shape, schema consumption, or generated artifacts are
+  involved;
+- run `pnpm --filter @kiskadee/showcase build` when the component is exposed in the showcase;
+- do not add or modify unit tests unless explicitly requested.
+
+## What Next?
+
+After the `standard.base.neutral.medium` version works end to end, decide which optional axes
+deserve to exist.
+
+Ask these questions before adding more surface area:
+
+- Does the component need sizes beyond medium?
+- Does the component need component intents beyond `neutral`?
+- Does the component need emphasis levels beyond `medium`?
+- Does the component need variants beyond `standard`?
+- Does the component need modes beyond `base`?
+- Does the component need motion or transition behavior?
+- Can CSS own that motion, or does React need to coordinate measurement, layout, or state?
+- Should the API offer both CSS-only and runtime-motion paths, as `Tabs` does?
+- Which logic belongs in the headless primitive?
+- Which logic belongs in the styled React component?
+- Should any headless logic be extracted into a reusable hook, like `useStateProjection`?
+
+When adding variants or modes, keep element names coherent across branches. For example, if `e3` is
+the track in one Switch branch, another Switch branch should not use `e3` for unrelated content.
+
+If a proposed variant needs a very different structure or a different element vocabulary, consider a
+new component instead of a variant. Examples:
+
+- `checkbox` should not be forced into `switch`;
+- `navbar` should not be forced into `tabs`.
+
+Variants should share enough component identity that a user can understand them as the same public
+component with different presentations.
 
 ## Documentation Updates
 
