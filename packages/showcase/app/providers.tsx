@@ -34,6 +34,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     backgroundsByTheme,
     globalRadius,
     globalRipple,
+    switchVariant,
+    switchRadius,
+    switchVariants,
     textFieldVariant,
     textFieldMode,
     textFieldFocusRingColorSource,
@@ -53,6 +56,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const globalConfig =
     globalRadius !== undefined ||
     globalRipple !== undefined ||
+    switchVariant !== undefined ||
+    switchRadius !== undefined ||
+    switchVariants !== undefined ||
     textFieldVariant !== undefined ||
     textFieldMode !== undefined ||
     textFieldFocusRingColorSource !== undefined ||
@@ -68,6 +74,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
           ...(globalRadius !== undefined ? { radius: globalRadius } : {}),
           ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {}),
           ...(textFieldVariant !== undefined ||
+          switchVariant !== undefined ||
+          switchRadius !== undefined ||
+          switchVariants !== undefined ||
           textFieldMode !== undefined ||
           textFieldFocusRingColorSource !== undefined ||
           textFieldVariants !== undefined ||
@@ -80,6 +89,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
           tabsLowerCurve !== undefined
             ? {
                 components: {
+                  ...(switchVariant !== undefined ||
+                  switchRadius !== undefined ||
+                  switchVariants !== undefined
+                    ? {
+                        switch: {
+                          options: {
+                            ...(switchVariant !== undefined ? { variant: switchVariant } : {}),
+                            ...(switchRadius !== undefined ? { radius: switchRadius } : {})
+                          },
+                          ...(switchVariants !== undefined ? { variants: switchVariants } : {})
+                        }
+                      }
+                    : {}),
                   ...(textFieldVariant !== undefined ||
                   textFieldMode !== undefined ||
                   textFieldFocusRingColorSource !== undefined ||

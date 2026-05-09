@@ -14,6 +14,20 @@ keeps the base geometry cross-platform and allows effects to be opt-in.
 The default mode comes from `schema.global.radius` and is exported in the build artifact
 `global.kiskadee.json`.
 
+Components may define an intrinsic default radius when their official shape should not follow
+`schema.global.radius`. In that case, the component default is exported under
+`global.kiskadee.json` as `components.<component>.options.radius`.
+
+Runtime resolution order is:
+
+1. the component instance `radius` prop;
+2. the component default radius, when present;
+3. `schema.global.radius`;
+4. the renderer fallback.
+
+Do not add a public `global` radius value. Omitting the prop is the canonical way to use the
+resolved default.
+
 All three modes are explicit in the schema, so the web-builder emits concrete classes for each mode
 with no runtime hacks like `9999px`.
 

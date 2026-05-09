@@ -78,7 +78,8 @@ function SwitchRoot(props: SwitchProps) {
     ...rootProps
   } = props;
   const { classesMap, global } = useKiskadee();
-  const resolvedRadius = radius ?? global?.radius ?? DEFAULT_SWITCH_RADIUS;
+  const resolvedRadius =
+    radius ?? global?.components?.switch?.options?.radius ?? global?.radius ?? DEFAULT_SWITCH_RADIUS;
   const elements = resolveVariantElements(
     classesMap.switch as SwitchVariantClassesMap | undefined,
     variant,

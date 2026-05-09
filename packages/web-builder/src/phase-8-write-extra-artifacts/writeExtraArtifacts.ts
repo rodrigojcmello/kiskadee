@@ -34,6 +34,7 @@ type ExtractableSchema = Schema;
 type SegmentKey = SegmentName | string;
 type SwitchOptionsPayload = {
   variant?: SwitchVariant;
+  radius?: RadiusMode;
 };
 type SwitchVariantOptionsPayload = {
   mode?: SwitchMode;
@@ -287,6 +288,7 @@ export async function writeExtraArtifacts(params: {
     | TabsBridgeLowerCurve
     | undefined;
   const switchVariant = schema.components?.switch?.options?.variant as SwitchVariant | undefined;
+  const switchRadius = schema.components?.switch?.options?.radius as RadiusMode | undefined;
   const switchVariants = buildSwitchVariantsPayload(schema);
   const textFieldVariant = schema.components?.textField?.options?.variant as
     | TextFieldVariant
@@ -317,7 +319,9 @@ export async function writeExtraArtifacts(params: {
       tabsSeparator !== undefined ||
       tabsLowerCurve
   );
-  const hasSwitchOptions = Boolean(switchVariant || Object.keys(switchVariants).length > 0);
+  const hasSwitchOptions = Boolean(
+    switchVariant || switchRadius || Object.keys(switchVariants).length > 0
+  );
   const hasTextFieldOptions = Boolean(
     textFieldVariant ||
       textFieldMode ||
@@ -402,7 +406,8 @@ export async function writeExtraArtifacts(params: {
           ? {
               switch: {
                 options: {
-                  ...(switchVariant ? { variant: switchVariant } : {})
+                  ...(switchVariant ? { variant: switchVariant } : {}),
+                  ...(switchRadius ? { radius: switchRadius } : {})
                 },
                 ...(Object.keys(switchVariants).length > 0 ? { variants: switchVariants } : {})
               }

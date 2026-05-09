@@ -3,7 +3,7 @@
 import type { ElementSizeValue, RadiusMode } from '@kiskadee/core';
 import { Switch, useKiskadee, useShowcase } from '@kiskadee/react-components';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Select } from '@/k-components';
 import s from './Switch.module.scss';
 
@@ -28,15 +28,31 @@ function StateTile({ title, children }: { title: string; children: ReactNode }) 
 }
 
 export default function SwitchPage() {
-  const { designSystem } = useKiskadee();
+  const { designSystem, global } = useKiskadee();
   const { manifest } = useShowcase();
   const [checked, setChecked] = useState(true);
   const [scale, setScale] = useState<ElementSizeValue>('s:md:1');
   const [radius, setRadius] = useState<RadiusMode>('rounded');
   const switchMeta = manifest?.components?.switch;
   const isSwitchAvailable = Boolean(switchMeta);
+  const defaultRadius = global?.components?.switch?.options?.radius ?? global?.radius ?? 'rounded';
   const isScaleSupported = (value: ElementSizeValue) =>
     !switchMeta?.scale || Boolean(switchMeta.scale[value]);
+  const isRadiusSupported = (value: RadiusMode) =>
+    !switchMeta?.scale || Boolean(switchMeta.scale[value]);
+  const radiusSelectOptions = useMemo(
+    () =>
+      radiusOptions.map((option) => ({
+        ...option,
+        label: option.value === defaultRadius ? `${option.label} (default)` : option.label,
+        disabled: !isRadiusSupported(option.value)
+      })),
+    [defaultRadius, isRadiusSupported]
+  );
+
+  useEffect(() => {
+    setRadius(defaultRadius);
+  }, [defaultRadius]);
 
   return (
     <section className={`${s.page} k-root`}>
@@ -62,7 +78,7 @@ export default function SwitchPage() {
           <Select
             label="Radius"
             width={160}
-            options={radiusOptions}
+            options={radiusSelectOptions}
             value={radius}
             onValueChange={(value) => setRadius(value as RadiusMode)}
             disabled={!isSwitchAvailable}

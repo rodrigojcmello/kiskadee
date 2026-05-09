@@ -2,6 +2,8 @@ import type {
   ComponentClassNameMapJSON,
   RadiusMode,
   RippleEffectSchema,
+  SwitchMode,
+  SwitchVariant,
   TabsBridgeLowerCurve,
   TabsIndicatorPosition,
   TabsIndicatorShape,
@@ -65,6 +67,19 @@ export type KiskadeeContextValue = {
           tabWidth?: TabsTabWidth;
           separator?: boolean;
           lowerCurve?: TabsBridgeLowerCurve;
+        };
+      };
+      switch?: {
+        options?: {
+          variant?: SwitchVariant;
+          radius?: RadiusMode;
+        };
+        variants?: {
+          standard?: {
+            options?: {
+              mode?: SwitchMode;
+            };
+          };
         };
       };
     };

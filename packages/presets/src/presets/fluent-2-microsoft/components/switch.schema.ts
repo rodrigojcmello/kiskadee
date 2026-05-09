@@ -28,7 +28,8 @@ export function createFluent2MicrosoftSwitchSchema({
 
   return {
     options: {
-      variant: 'standard'
+      variant: 'standard',
+      radius: 'pill'
     },
     variants: {
       standard: {
