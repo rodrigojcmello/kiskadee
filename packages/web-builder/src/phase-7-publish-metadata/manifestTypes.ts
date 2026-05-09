@@ -24,7 +24,7 @@ export type ManifestComponentState = Record<
 
 export type ManifestComponent = {
   /**
-   * Interaction states supported by the Button component, grouped by
+   * Interaction states supported by the component, grouped by
    * semantic (primary/neutral/...) and emphasis (high/medium/low/lowest).
    *
    * Only positive information is stored: if a state key is present
@@ -35,11 +35,10 @@ export type ManifestComponent = {
   state?: ManifestComponentState;
 
   /**
-   * Scales (sizes) used by any Button element (e1, e2, ...).
+   * Scales (sizes) used by any component element (e1, e2, ...).
    *
-   * Keys are scale identifiers like "s:md:1" and values are always
-   * true. If a scale is absent from this map, the Button never uses
-   * it in the schema.
+   * Keys are scale identifiers like "s:md:1" and values are always true. If a scale is absent
+   * from this map, the component never uses it in the schema.
    */
   scale?: Record<string, true>;
 };

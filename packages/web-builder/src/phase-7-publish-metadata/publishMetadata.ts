@@ -1,6 +1,7 @@
 import { mkdir, readdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import type {
+  ComponentName,
   EmphasisLevel,
   GlobalSemanticsBySegment,
   GlobalSemanticsByTheme,
@@ -27,7 +28,9 @@ function majorVersionFromTuple(v: [number, number, number] | number[]): number {
 function requireSegmentRegistry(colors: SchemaColors | undefined): GlobalSemanticsBySegment {
   const bySegment = colors?.globalSemanticsBySegment as GlobalSemanticsBySegment | undefined;
   if (!bySegment || typeof bySegment !== 'object') {
-    throw new Error('[web-builder] Schema is missing `colors.globalSemanticsBySegment` segment registry');
+    throw new Error(
+      '[web-builder] Schema is missing `colors.globalSemanticsBySegment` segment registry'
+    );
   }
   return bySegment;
 }
@@ -128,7 +131,9 @@ function discoverSegmentsThemesFromPalettes(
     const visitElements = (elements: Record<string, any> | undefined) => {
       if (!elements) return;
       for (const el of Object.values(elements)) {
-        const palettes = (el as any)?.palettes as Record<string, Record<string, unknown>> | undefined;
+        const palettes = (el as any)?.palettes as
+          | Record<string, Record<string, unknown>>
+          | undefined;
         if (!palettes) continue;
         for (const seg of Object.keys(palettes)) {
           const byTheme = palettes[seg];
@@ -164,21 +169,53 @@ function discoverSegmentsThemesFromPalettes(
   return { segments: segmentKeys, themes };
 }
 
-function buildButtonScale(schema: Schema): ManifestComponent['scale'] | undefined {
+function collectComponentElements(
+  schema: Schema,
+  componentName: ComponentName
+): Record<string, any>[] {
   const components = (schema as any).components as Record<string, any> | undefined;
-  const button = components?.button;
-  const elements = button?.elements as Record<string, any> | undefined;
-  if (!elements) return undefined;
+  const component = components?.[componentName];
+  if (!component) return [];
 
+  const componentElements: Record<string, any>[] = [];
+  const addElements = (elements: Record<string, any> | undefined) => {
+    if (!elements) return;
+    componentElements.push(elements);
+  };
+
+  addElements(component.elements as Record<string, any> | undefined);
+
+  const variants = component.variants as Record<string, any> | undefined;
+  if (!variants) return componentElements;
+
+  for (const variant of Object.values(variants)) {
+    addElements((variant as any)?.elements as Record<string, any> | undefined);
+
+    const modes = (variant as any)?.modes as Record<string, any> | undefined;
+    if (!modes) continue;
+    for (const mode of Object.values(modes)) {
+      addElements((mode as any)?.elements as Record<string, any> | undefined);
+    }
+  }
+
+  return componentElements;
+}
+
+function buildComponentScale(
+  schema: Schema,
+  componentName: ComponentName
+): ManifestComponent['scale'] | undefined {
   const scaleKeys = new Set<string>();
 
-  for (const el of Object.values(elements)) {
-    const scales = (el as any).scales as Record<string, Record<string, number>> | undefined;
-    if (!scales) continue;
+  for (const elements of collectComponentElements(schema, componentName)) {
+    for (const el of Object.values(elements)) {
+      const scales = (el as any).scales as Record<string, Record<string, number>> | undefined;
+      if (!scales) continue;
 
-    for (const scaleMap of Object.values(scales)) {
-      for (const key of Object.keys(scaleMap)) {
-        scaleKeys.add(key);
+      for (const scaleMap of Object.values(scales)) {
+        for (const key of Object.keys(scaleMap)) {
+          scaleKeys.add(key);
+        }
       }
     }
   }
@@ -192,12 +229,10 @@ function buildButtonScale(schema: Schema): ManifestComponent['scale'] | undefine
   return out;
 }
 
-function buildButtonState(schema: Schema): ManifestComponentState | undefined {
-  const components = (schema as any).components as Record<string, any> | undefined;
-  const button = components?.button;
-  const elements = button?.elements as Record<string, any> | undefined;
-  if (!elements) return undefined;
-
+function buildComponentState(
+  schema: Schema,
+  componentName: ComponentName
+): ManifestComponentState | undefined {
   const stateMap: ManifestComponentState = {};
 
   // Temporary accumulator so we can use Set semantics while
@@ -212,34 +247,27 @@ function buildButtonState(schema: Schema): ManifestComponentState | undefined {
     tmp[semantic]![emphasis]!.add(stateKey);
   };
 
-  for (const el of Object.values(elements)) {
-    const palettes = (el as any).palettes as
-      | Record<string, Record<string, { boxColor?: any; textColor?: any }>>
-      | undefined;
-    if (!palettes) continue;
+  for (const elements of collectComponentElements(schema, componentName)) {
+    for (const el of Object.values(elements)) {
+      const palettes = (el as any).palettes as
+        | Record<string, Record<string, { boxColor?: any; textColor?: any }>>
+        | undefined;
+      if (!palettes) continue;
 
-    for (const seg of Object.values(palettes)) {
-      for (const theme of Object.values(seg)) {
-        const boxColor = (theme as any).boxColor as Record<string, any> | undefined;
-        const textColor = (theme as any).textColor as Record<string, any> | undefined;
+      for (const seg of Object.values(palettes)) {
+        for (const theme of Object.values(seg)) {
+          const colorMaps = [
+            (theme as any).boxColor as Record<string, any> | undefined,
+            (theme as any).textColor as Record<string, any> | undefined
+          ];
 
-        // boxColor: semantic -> emphasis -> { stateKey: value }
-        if (boxColor) {
-          for (const [semantic, byTone] of Object.entries(boxColor)) {
-            for (const [tone, statesObj] of Object.entries(byTone as Record<string, any>)) {
-              for (const stateKey of Object.keys(statesObj as Record<string, any>)) {
-                addState(semantic, tone, stateKey);
-              }
-            }
-          }
-        }
-
-        // textColor: semantic -> emphasis -> { stateKey: value }
-        if (textColor) {
-          for (const [semantic, byTone] of Object.entries(textColor)) {
-            for (const [tone, statesObj] of Object.entries(byTone as Record<string, any>)) {
-              for (const stateKey of Object.keys(statesObj as Record<string, any>)) {
-                addState(semantic, tone, stateKey);
+          for (const colorMap of colorMaps) {
+            if (!colorMap) continue;
+            for (const [semantic, byTone] of Object.entries(colorMap)) {
+              for (const [tone, statesObj] of Object.entries(byTone as Record<string, any>)) {
+                for (const stateKey of Object.keys(statesObj as Record<string, any>)) {
+                  addState(semantic, tone, stateKey);
+                }
               }
             }
           }
@@ -354,7 +382,10 @@ function collectPrimitiveSolidScales(colors: SchemaColors): Array<{
   return result;
 }
 
-function buildColorsArtifact(colors: SchemaColors, scaleFileNameByRef: WeakMap<object, string>): SchemaColors {
+function buildColorsArtifact(
+  colors: SchemaColors,
+  scaleFileNameByRef: WeakMap<object, string>
+): SchemaColors {
   const primitiveColorsSrc = (colors as any).primitiveColors as Record<string, unknown> | undefined;
   const primitiveColorsOut: Record<string, unknown> = {};
 
@@ -442,16 +473,19 @@ export async function publishMetadata(params: {
   // manifest focused on high-level capabilities instead of duplicating
   // the full schema structure. Absence of keys means the information is
   // not defined or not applicable.
-  const buttonScale = buildButtonScale(schema);
-  const buttonState = buildButtonState(schema);
+  const manifestComponentNames = ['button', 'switch'] as const satisfies readonly ComponentName[];
+  for (const componentName of manifestComponentNames) {
+    const componentScale = buildComponentScale(schema, componentName);
+    const componentState = buildComponentState(schema, componentName);
 
-  if (buttonScale || buttonState) {
-    manifest.components = manifest.components ?? {};
-    manifest.components.button = {
-      ...(manifest.components.button ?? {}),
-      ...(buttonScale ? { scale: buttonScale } : {}),
-      ...(buttonState ? { state: buttonState } : {})
-    };
+    if (componentScale || componentState) {
+      manifest.components = manifest.components ?? {};
+      manifest.components[componentName] = {
+        ...(manifest.components[componentName] ?? {}),
+        ...(componentScale ? { scale: componentScale } : {}),
+        ...(componentState ? { state: componentState } : {})
+      };
+    }
   }
 
   const buildDir = resolve(baseBuildDir, outDirSlug);
@@ -460,7 +494,11 @@ export async function publishMetadata(params: {
   // Write metadata files
   await writeFile(resolve(buildDir, 'manifest.json'), JSON.stringify(manifest, null, 2), 'utf8');
   const segmentsArtifact = materializeSegmentThemesArtifact(colors, segmentRegistry);
-  await writeFile(resolve(buildDir, 'segments.json'), JSON.stringify(segmentsArtifact, null, 2), 'utf8');
+  await writeFile(
+    resolve(buildDir, 'segments.json'),
+    JSON.stringify(segmentsArtifact, null, 2),
+    'utf8'
+  );
 
   // ---------------------------------------------------------------------------
   // Colors artifacts
@@ -524,7 +562,11 @@ export async function publishMetadata(params: {
   }
 
   const colorsArtifact = buildColorsArtifact(colors, scaleFileNameByRef);
-  await writeFile(resolve(buildDir, 'colors.json'), JSON.stringify(colorsArtifact, null, 2), 'utf8');
+  await writeFile(
+    resolve(buildDir, 'colors.json'),
+    JSON.stringify(colorsArtifact, null, 2),
+    'utf8'
+  );
 
   // Write schema.json without `colors`
   const schemaArtifact: any = structuredClone(schema as any);
@@ -533,7 +575,11 @@ export async function publishMetadata(params: {
   if (schemaArtifact.components) {
     schemaArtifact.components = deepConvertHslaTuplesToHex(schemaArtifact.components);
   }
-  await writeFile(resolve(buildDir, 'schema.json'), JSON.stringify(schemaArtifact, null, 2), 'utf8');
+  await writeFile(
+    resolve(buildDir, 'schema.json'),
+    JSON.stringify(schemaArtifact, null, 2),
+    'utf8'
+  );
 
   // console.log('[web-builder] Phase 7: metadata published to', buildDir);
 }
