@@ -269,12 +269,12 @@ When extending a component after the first version, align the supported attribut
 changing the schema. Each `e<n>` slot should expose only the attributes that match its real job.
 Avoid leaving element schemas broad or inherited by accident. For example, a headless root that
 groups a label and an internal control may still be the correct state scope owner, but it should not
-automatically own `boxWidth`, margin, padding, effects, or visual palettes. A hidden native input may
-need a name and technical effects, but it should not receive visual palettes or scale tokens unless
-it becomes a real visual surface.
+automatically own `boxWidth`, margin, padding, effects, or visual palettes. A hidden native input is
+usually an internal semantic target; if it is represented in the schema at all, keep that contract
+narrow and non-visual unless it becomes a real public surface.
 
-When adding variants or modes, keep element names coherent across branches. For example, if `e3` is
-the track in one Switch branch, another Switch branch should not use `e3` for unrelated content.
+When adding variants or modes, keep element names coherent across branches. For example, if `e2` is
+the track in one Switch branch, another Switch branch should not use `e2` for unrelated content.
 
 If a proposed variant needs a very different structure or a different element vocabulary, consider a
 new component instead of a variant. Examples:
