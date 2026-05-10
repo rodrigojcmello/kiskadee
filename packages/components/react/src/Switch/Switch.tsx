@@ -79,7 +79,10 @@ function SwitchRoot(props: SwitchProps) {
   } = props;
   const { classesMap, global } = useKiskadee();
   const resolvedRadius =
-    radius ?? global?.components?.switch?.options?.radius ?? global?.radius ?? DEFAULT_SWITCH_RADIUS;
+    radius ??
+    global?.components?.switch?.options?.radius ??
+    global?.radius ??
+    DEFAULT_SWITCH_RADIUS;
   const elements = resolveVariantElements(
     classesMap.switch as SwitchVariantClassesMap | undefined,
     variant,
@@ -122,18 +125,16 @@ function SwitchRoot(props: SwitchProps) {
     ]
   );
 
-  const { className: inputClassName, ...restInputProps } = inputProps ?? {};
-
   return (
     <HeadlessSwitch.Root
       {...rootProps}
       inputId={id}
+      inputProps={inputProps}
       disabled={disabled}
       readOnly={readOnly}
       classNames={resolvedClassNames}
       stateProjection={SWITCH_STATE_PROJECTION}
     >
-      <HeadlessSwitch.Input {...restInputProps} className={inputClassName} />
       <HeadlessSwitch.Track ref={trackRef}>
         {hasState ? <HeadlessSwitch.State>{state}</HeadlessSwitch.State> : null}
         <HeadlessSwitch.Thumb ref={thumbRef} />

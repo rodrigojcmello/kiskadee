@@ -16,15 +16,6 @@ export function createSwitchRootElementStyleSchema() {
     .strict();
 }
 
-export function createSwitchInputElementStyleSchema() {
-  return z
-    .object({
-      name: z.string().optional(),
-      effects: elementEffectsSchema.optional()
-    })
-    .strict();
-}
-
 export function createSwitchTrackElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
@@ -135,10 +126,6 @@ export function createSwitchStateElementStyleSchema<TSegmentName extends Segment
 
 export type SwitchRootElementStyleFromSchema = z.input<
   ReturnType<typeof createSwitchRootElementStyleSchema>
->;
-
-export type SwitchInputElementStyleFromSchema = z.input<
-  ReturnType<typeof createSwitchInputElementStyleSchema>
 >;
 
 export type SwitchTrackElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<

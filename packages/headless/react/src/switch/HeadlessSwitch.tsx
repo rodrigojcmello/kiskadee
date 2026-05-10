@@ -1,3 +1,4 @@
+import './HeadlessSwitch.structural.css';
 import type {
   ChangeEvent,
   ComponentPropsWithoutRef,
@@ -27,7 +28,7 @@ import {
   useStateProjection
 } from '../state-projection/useStateProjection.ts';
 
-export type SwitchElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
+export type SwitchElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
 
 export type SwitchStateName = 'checked' | 'focused' | 'disabled' | 'readOnly' | 'required';
 
@@ -53,6 +54,8 @@ export type SwitchRootProps = SwitchRootLabelProps & {
   classNames?: SwitchClassNames;
   stateProjection?: SwitchStateProjectionOptions;
   inputId?: string;
+  inputProps?: SwitchInputProps;
+  inputRef?: Ref<HTMLInputElement>;
   checked?: boolean;
   defaultChecked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
@@ -88,18 +91,10 @@ export type SwitchThumbProps = HTMLAttributes<HTMLSpanElement>;
 export type SwitchLabelProps = HTMLAttributes<HTMLSpanElement>;
 export type SwitchStateProps = HTMLAttributes<HTMLSpanElement>;
 
+const SWITCH_INTERNAL_INPUT_CLASS_NAME = 'k-swt-x1';
+
 type SwitchContextValue = {
   slotProps: SwitchSlotProps;
-  inputId: string;
-  checked: boolean;
-  setChecked: (checked: boolean) => void;
-  disabled: boolean | undefined;
-  readOnly: boolean | undefined;
-  required: boolean | undefined;
-  name: string | undefined;
-  value: string | undefined;
-  focused: boolean;
-  setFocused: (focused: boolean) => void;
 };
 
 const SwitchContext = createContext<SwitchContextValue | null>(null);
@@ -152,6 +147,8 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
     classNames = {},
     stateProjection,
     inputId,
+    inputProps,
+    inputRef,
     checked: checkedProp,
     defaultChecked,
     onCheckedChange,
@@ -202,7 +199,7 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
 
   const trackDataSlotProps = useStateProjection<SwitchElementName, SwitchStateName>({
     states: projectionStates,
-    target: 'e3',
+    target: 'e2',
     projections: switchDataAttributeProjections
   });
 
@@ -218,32 +215,48 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
 
   const contextValue = useMemo<SwitchContextValue>(
     () => ({
-      slotProps,
-      inputId: resolvedInputId,
-      checked,
-      setChecked,
-      disabled,
-      readOnly,
-      required,
-      name,
-      value,
-      focused,
-      setFocused
+      slotProps
     }),
-    [
-      checked,
-      disabled,
-      focused,
-      name,
-      readOnly,
-      required,
-      resolvedInputId,
-      setChecked,
-      slotProps,
-      value
-    ]
+    [slotProps]
   );
   const { className: rootClassName, ...rootSlotProps } = slotProps.e1 ?? {};
+  const {
+    className: inputClassName,
+    onBlur,
+    onChange,
+    onFocus,
+    ...restInputProps
+  } = inputProps ?? {};
+
+  const handleChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      if (readOnly) {
+        event.preventDefault();
+        onChange?.(event);
+        return;
+      }
+
+      setChecked(event.currentTarget.checked);
+      onChange?.(event);
+    },
+    [onChange, readOnly, setChecked]
+  );
+
+  const handleFocus = useCallback(
+    (event: FocusEvent<HTMLInputElement>) => {
+      setFocused(true);
+      onFocus?.(event);
+    },
+    [onFocus]
+  );
+
+  const handleBlur = useCallback(
+    (event: FocusEvent<HTMLInputElement>) => {
+      setFocused(false);
+      onBlur?.(event);
+    },
+    [onBlur]
+  );
 
   return (
     <SwitchContext.Provider value={contextValue}>
@@ -254,72 +267,30 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
         className={rootClassName}
         {...rootProps}
       >
+        <input
+          {...restInputProps}
+          ref={(node) => {
+            assignRef(inputRef, node);
+          }}
+          id={resolvedInputId}
+          type="checkbox"
+          role="switch"
+          checked={checked}
+          disabled={disabled}
+          readOnly={readOnly}
+          required={required}
+          name={name}
+          value={value}
+          aria-checked={checked}
+          aria-readonly={readOnly || undefined}
+          className={mergeClassNames(SWITCH_INTERNAL_INPUT_CLASS_NAME, inputClassName)}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+        />
         {children}
       </label>
     </SwitchContext.Provider>
-  );
-});
-
-const SwitchInput = forwardRef<HTMLInputElement, SwitchInputProps>(function SwitchInput(
-  { className, onBlur, onChange, onFocus, ...props },
-  ref
-) {
-  const context = useSwitchContext();
-  const { className: slotClassName, ...slotProps } = context.slotProps.e2 ?? {};
-
-  const handleChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      if (context.readOnly) {
-        event.preventDefault();
-        onChange?.(event);
-        return;
-      }
-
-      context.setChecked(event.currentTarget.checked);
-      onChange?.(event);
-    },
-    [context, onChange]
-  );
-
-  const handleFocus = useCallback(
-    (event: FocusEvent<HTMLInputElement>) => {
-      context.setFocused(true);
-      onFocus?.(event);
-    },
-    [context, onFocus]
-  );
-
-  const handleBlur = useCallback(
-    (event: FocusEvent<HTMLInputElement>) => {
-      context.setFocused(false);
-      onBlur?.(event);
-    },
-    [context, onBlur]
-  );
-
-  return (
-    <input
-      {...slotProps}
-      {...props}
-      ref={(node) => {
-        assignRef(ref, node);
-      }}
-      id={context.inputId}
-      type="checkbox"
-      role="switch"
-      checked={context.checked}
-      disabled={context.disabled}
-      readOnly={context.readOnly}
-      required={context.required}
-      name={context.name}
-      value={context.value}
-      aria-checked={context.checked}
-      aria-readonly={context.readOnly || undefined}
-      className={mergeClassNames(slotClassName, className)}
-      onChange={handleChange}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-    />
   );
 });
 
@@ -328,7 +299,7 @@ const SwitchTrack = forwardRef<HTMLSpanElement, SwitchTrackProps>(function Switc
   ref
 ) {
   const context = useSwitchContext();
-  const { className: slotClassName, ...slotProps } = context.slotProps.e3 ?? {};
+  const { className: slotClassName, ...slotProps } = context.slotProps.e2 ?? {};
 
   return (
     <span
@@ -348,7 +319,7 @@ const SwitchThumb = forwardRef<HTMLSpanElement, SwitchThumbProps>(function Switc
   ref
 ) {
   const context = useSwitchContext();
-  const { className: slotClassName, ...slotProps } = context.slotProps.e4 ?? {};
+  const { className: slotClassName, ...slotProps } = context.slotProps.e3 ?? {};
 
   return (
     <span
@@ -368,7 +339,7 @@ const SwitchLabel = forwardRef<HTMLSpanElement, SwitchLabelProps>(function Switc
   ref
 ) {
   const context = useSwitchContext();
-  const { className: slotClassName, ...slotProps } = context.slotProps.e5 ?? {};
+  const { className: slotClassName, ...slotProps } = context.slotProps.e4 ?? {};
 
   return (
     <span {...slotProps} ref={ref} className={mergeClassNames(slotClassName, className)} {...props}>
@@ -382,7 +353,7 @@ const SwitchState = forwardRef<HTMLSpanElement, SwitchStateProps>(function Switc
   ref
 ) {
   const context = useSwitchContext();
-  const { className: slotClassName, ...slotProps } = context.slotProps.e6 ?? {};
+  const { className: slotClassName, ...slotProps } = context.slotProps.e5 ?? {};
 
   return (
     <span
@@ -399,7 +370,6 @@ const SwitchState = forwardRef<HTMLSpanElement, SwitchStateProps>(function Switc
 
 export const HeadlessSwitch = Object.assign(SwitchRoot, {
   Root: SwitchRoot,
-  Input: SwitchInput,
   Track: SwitchTrack,
   Thumb: SwitchThumb,
   Label: SwitchLabel,

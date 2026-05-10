@@ -1,6 +1,5 @@
 export { validateSwitchComponentContract } from './switch.contract.zod.ts';
 export type {
-  SwitchInputElementStyleFromSchema,
   SwitchLabelElementStyleFromSchema,
   SwitchRootElementStyleFromSchema,
   SwitchStateElementStyleFromSchema,

@@ -24,30 +24,15 @@
  * element root modifier 'a' / e1a
  * Moves the optional label before the visual control without changing DOM semantics.
  */
-.k-swt-e1-a.k-swt-e1a-a .k-swt-e5-a {
+.k-swt-e1-a.k-swt-e1a-a .k-swt-e4-a {
   order: -1;
 }
 
 /*
- * element input / e2
- * Keeps the native checkbox accessible while the visual track owns rendered geometry.
- */
-.k-swt-e2-a {
-  position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
-  margin: 0;
-  border: 0;
-  padding: 0;
-  opacity: 0;
-  pointer-events: none;
-}
-
-/*
- * element track / e3
+ * element track / e2
  * Owns the visual switch rail and provides the measurement scope for thumb translation.
  */
-.k-swt-e3-a {
+.k-swt-e2-a {
   position: relative;
   display: flex;
   align-items: center;
@@ -58,10 +43,10 @@
 }
 
 /*
- * element track / e3
+ * element track / e2
  * Projects keyboard focus from the visually hidden native input to the rendered control.
  */
-.k-swt-e1-a.-f.-a .k-swt-e3-a {
+.k-swt-e1-a.-f.-a .k-swt-e2-a {
   outline-color: var(--k-focus-color);
   outline-offset: calc(var(--k-focus-offset) * 1px);
   outline-style: solid;
@@ -69,10 +54,10 @@
 }
 
 /*
- * element thumb / e4
+ * element thumb / e3
  * Moves inside the track using a runtime structural distance derived from generated geometry.
  */
-.k-swt-e4-a {
+.k-swt-e3-a {
   position: relative;
   z-index: 1;
   display: block;
@@ -94,36 +79,36 @@
 }
 
 /*
- * element thumb / e4
+ * element thumb / e3
  * Mirrors the persistent checked state through the shared selected activator class.
  */
-.k-swt-e1-a.-s.-a .k-swt-e4-a {
+.k-swt-e1-a.-s.-a .k-swt-e3-a {
   transform: translateX(calc(var(--k-swt-tx) * var(--k-swt-dx)));
 }
 
 /*
- * element thumb / e4
+ * element thumb / e3
  * Reverses inline movement in right-to-left contexts.
  */
-.k-swt-e1-a:dir(rtl) .k-swt-e4-a {
+.k-swt-e1-a:dir(rtl) .k-swt-e3-a {
   --k-swt-dx: -1;
 }
 
 /*
- * element label / e5
+ * element label / e4
  * Keeps optional text label in normal inline flow while generated typography owns text visuals.
  */
-.k-swt-e5-a {
+.k-swt-e4-a {
   display: block;
   min-inline-size: 0;
   cursor: inherit;
 }
 
 /*
- * element state / e6
+ * element state / e5
  * Provides an optional non-interactive overlay lane for icons or on/off text inside the track.
  */
-.k-swt-e6-a {
+.k-swt-e5-a {
   position: absolute;
   inset: 0;
   z-index: 0;

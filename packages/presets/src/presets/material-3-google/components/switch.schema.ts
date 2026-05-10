@@ -201,7 +201,7 @@ export function createMaterial3GoogleSwitchSchema(
         modes: {
           base: {
             elements: {
-              e3: {
+              e2: {
                 decorations: {
                   borderStyle: 'solid'
                 },
@@ -251,7 +251,7 @@ export function createMaterial3GoogleSwitchSchema(
                 },
                 palettes: palettes.track
               },
-              e4: {
+              e3: {
                 scales: {
                   boxWidth: {
                     's:sm:1': 16,
@@ -278,7 +278,7 @@ export function createMaterial3GoogleSwitchSchema(
                 },
                 palettes: palettes.thumb
               },
-              e5: {
+              e4: {
                 decorations: {
                   textFont: 'body',
                   textWeight: 'normal'

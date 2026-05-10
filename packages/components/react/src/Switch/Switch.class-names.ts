@@ -149,7 +149,14 @@ export function resolveSwitchClassNames(options: {
         elem(elements.e1, options),
         options.classNames.e1
       ) ?? '',
-    e2: join('k-swt-e2-a', elem(elements.e2, options), options.classNames.e2) ?? '',
+    e2:
+      join(
+        'k-swt-e2-a',
+        elem(elements.e2, options),
+        resolveRadiusClassName(elements.e2, options.scale, options.radius),
+        'k-trn',
+        options.classNames.e2
+      ) ?? '',
     e3:
       join(
         'k-swt-e3-a',
@@ -158,19 +165,11 @@ export function resolveSwitchClassNames(options: {
         'k-trn',
         options.classNames.e3
       ) ?? '',
-    e4:
-      join(
-        'k-swt-e4-a',
-        elem(elements.e4, options),
-        resolveRadiusClassName(elements.e4, options.scale, options.radius),
-        'k-trn',
-        options.classNames.e4
-      ) ?? '',
-    e5: options.hasLabel
+    e4: options.hasLabel
+      ? (join('k-swt-e4-a', elem(elements.e4, options), 'k-trn', options.classNames.e4) ?? '')
+      : (options.classNames.e4 ?? ''),
+    e5: options.hasState
       ? (join('k-swt-e5-a', elem(elements.e5, options), 'k-trn', options.classNames.e5) ?? '')
-      : (options.classNames.e5 ?? ''),
-    e6: options.hasState
-      ? (join('k-swt-e6-a', elem(elements.e6, options), 'k-trn', options.classNames.e6) ?? '')
-      : (options.classNames.e6 ?? '')
+      : (options.classNames.e5 ?? '')
   };
 }

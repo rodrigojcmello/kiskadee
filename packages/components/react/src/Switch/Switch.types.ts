@@ -12,7 +12,7 @@ import type {
 } from '@kiskadee/react-headless';
 import type { ReactNode } from 'react';
 
-export type SwitchElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
+export type SwitchElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
 
 export type SwitchClassNames = Partial<Record<SwitchElementName, string>>;
 
@@ -26,7 +26,7 @@ export type SwitchLabelPosition = 'start' | 'end';
 
 export type SwitchProps = Omit<
   HeadlessSwitchRootProps,
-  'children' | 'classNames' | 'inputId' | 'stateProjection'
+  'children' | 'classNames' | 'inputId' | 'inputProps' | 'stateProjection'
 > & {
   id?: string;
   label?: ReactNode;

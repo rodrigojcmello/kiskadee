@@ -101,7 +101,7 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
       variants: {
         standard: {
           elements: {
-            e3: {
+            e2: {
               borderWidthEmission: 'mirrored',
               paddingEmission: 'compensated'
             }

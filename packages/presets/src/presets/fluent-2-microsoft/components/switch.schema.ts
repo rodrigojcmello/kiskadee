@@ -39,7 +39,7 @@ export function createFluent2MicrosoftSwitchSchema({
         modes: {
           base: {
             elements: {
-              e3: {
+              e2: {
                 decorations: {
                   borderStyle: 'solid'
                 },
@@ -118,7 +118,7 @@ export function createFluent2MicrosoftSwitchSchema({
                   }
                 }
               },
-              e4: {
+              e3: {
                 scales: {
                   boxWidth: {
                     's:md:1': 14
@@ -173,7 +173,7 @@ export function createFluent2MicrosoftSwitchSchema({
                   }
                 }
               },
-              e5: {
+              e4: {
                 decorations: {
                   textFont: 'body',
                   textWeight: 'normal'

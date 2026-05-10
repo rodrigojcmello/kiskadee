@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
 import { buildAllJavaScript } from './build-js.ts';
+import { buildAllStyles } from './build-styles.ts';
 import { cleanDist } from './clean-dist.ts';
 import { rewriteDistExtensions } from './rewrite-dist-extensions.ts';
 
@@ -33,7 +34,11 @@ async function build(): Promise<void> {
     await cleanDist();
   }
 
-  await Promise.all(skipTypes ? [buildAllJavaScript()] : [buildAllJavaScript(), buildTypes()]);
+  await Promise.all(
+    skipTypes
+      ? [buildAllJavaScript(), buildAllStyles()]
+      : [buildAllJavaScript(), buildAllStyles(), buildTypes()]
+  );
   await rewriteDistExtensions();
 }
 
