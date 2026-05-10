@@ -59,7 +59,7 @@ export const componentIntents = {
     positive: 'greenLike'
   },
   switch: {
-    neutral: 'primary'
+    neutral: 'neutral'
   }
 } as const satisfies ComponentIntents;
 

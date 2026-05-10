@@ -7,8 +7,6 @@ import { schemaColors } from './fluent-2-microsoft.colors.ts';
 
 const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
 const c = createPresetColorGetter<'default'>(schemaContext);
-const transparent = [0, 0, 0, 0] as const;
-const white = [0, 0, 100, 1] as const;
 
 // The `Schema` generic represents extra segment names beyond the built-ins (`default` and optional `dynamic`).
 type Segments = never;
@@ -153,9 +151,7 @@ export const schema: Schema<Segments> = {
       }
     },
     switch: createFluent2MicrosoftSwitchSchema({
-      c,
-      transparent,
-      white
+      c
     })
   }
 };

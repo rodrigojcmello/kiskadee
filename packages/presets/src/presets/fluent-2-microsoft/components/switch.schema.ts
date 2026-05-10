@@ -1,4 +1,4 @@
-import type { Color, Schema } from '@kiskadee/core';
+import { type Schema, withAlpha } from '@kiskadee/core';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
 type SwitchComponent = NonNullable<Schema<never>['components']['switch']>;
@@ -6,25 +6,23 @@ type Fluent2MicrosoftSegmentName = 'default';
 
 type CreateFluent2MicrosoftSwitchSchemaArgs = {
   c: PresetColorGetter<Fluent2MicrosoftSegmentName>;
-  transparent: readonly [number, number, number, number];
-  white: readonly [number, number, number, number];
 };
 
-function switchStateRef(color: Color): { ref: Color } {
-  return { ref: color };
-}
-
 export function createFluent2MicrosoftSwitchSchema({
-  c,
-  transparent,
-  white
+  c
 }: CreateFluent2MicrosoftSwitchSchemaArgs): SwitchComponent {
-  const neutralBackgroundDisabled = c('default', 'l', 'neutral.v1', 6);
-  const neutralForegroundDisabled = c('default', 'l', 'neutral.v1', 25);
-  const neutralStrokeAccessiblePressed = c('default', 'l', 'neutral.v1', 70);
-  const brandBackground = c('default', 'l', 'switch.neutral', 60);
-  const brandBackgroundHover = c('default', 'l', 'switch.neutral', 70);
-  const brandBackgroundPressed = c('default', 'l', 'switch.neutral', 80);
+  const white = c('default', 'l', 'switch.neutral', 0);
+  const transparent = withAlpha(c('default', 'l', 'switch.neutral', 100), 0);
+  const neutral6 = c('default', 'l', 'switch.neutral', 6);
+  const neutral25 = c('default', 'l', 'switch.neutral', 25);
+  const neutral70 = c('default', 'l', 'switch.neutral', 70);
+  const primary60 = c('default', 'l', 'primary', 60);
+  const primary70 = c('default', 'l', 'primary', 70);
+  const primary80 = c('default', 'l', 'primary', 80);
+
+  if (transparent === undefined) {
+    throw new Error('Expected Fluent switch.neutral tone 100 before applying transparent alpha.');
+  }
 
   return {
     options: {
@@ -45,38 +43,18 @@ export function createFluent2MicrosoftSwitchSchema({
                   borderStyle: 'solid'
                 },
                 scales: {
-                  boxWidth: {
-                    's:md:1': 40
-                  },
-                  boxHeight: {
-                    's:md:1': 20
-                  },
-                  borderWidth: {
-                    's:md:1': 1
-                  },
+                  boxWidth: { 's:md:1': 40 },
+                  boxHeight: { 's:md:1': 20 },
+                  borderWidth: { 's:md:1': 1 },
                   borderRadius: {
-                    rounded: {
-                      's:md:1': 10
-                    },
-                    pill: {
-                      's:md:1': 10
-                    },
-                    square: {
-                      's:md:1': 0
-                    }
+                    rounded: { 's:md:1': 10 },
+                    pill: { 's:md:1': 10 },
+                    square: { 's:md:1': 0 }
                   },
-                  paddingTop: {
-                    's:md:1': 1
-                  },
-                  paddingRight: {
-                    's:md:1': 3
-                  },
-                  paddingBottom: {
-                    's:md:1': 1
-                  },
-                  paddingLeft: {
-                    's:md:1': 3
-                  }
+                  paddingTop: { 's:md:1': 1 },
+                  paddingRight: { 's:md:1': 3 },
+                  paddingBottom: { 's:md:1': 1 },
+                  paddingLeft: { 's:md:1': 3 }
                 },
                 palettes: {
                   default: {
@@ -85,16 +63,16 @@ export function createFluent2MicrosoftSwitchSchema({
                         neutral: {
                           medium: {
                             rest: white,
-                            hover: switchStateRef(white),
-                            focus: switchStateRef(white),
-                            pressed: switchStateRef(white),
+                            hover: { ref: white },
+                            focus: { ref: white },
+                            pressed: { ref: white },
                             selected: {
-                              rest: switchStateRef(brandBackground),
-                              hover: switchStateRef(brandBackgroundHover),
-                              focus: switchStateRef(brandBackground),
-                              pressed: switchStateRef(brandBackgroundPressed)
+                              rest: { ref: primary60 },
+                              hover: { ref: primary70 },
+                              focus: { ref: primary60 },
+                              pressed: { ref: primary80 }
                             },
-                            disabled: switchStateRef(neutralBackgroundDisabled)
+                            disabled: { ref: neutral6 }
                           }
                         }
                       },
@@ -102,16 +80,16 @@ export function createFluent2MicrosoftSwitchSchema({
                         neutral: {
                           medium: {
                             rest: '#616161',
-                            hover: switchStateRef('#575757'),
-                            focus: switchStateRef('#616161'),
-                            pressed: switchStateRef(neutralStrokeAccessiblePressed),
+                            hover: { ref: '#575757' },
+                            focus: { ref: '#616161' },
+                            pressed: { ref: neutral70 },
                             selected: {
-                              rest: switchStateRef(transparent),
-                              hover: switchStateRef(transparent),
-                              focus: switchStateRef(transparent),
-                              pressed: switchStateRef(transparent)
+                              rest: { ref: transparent },
+                              hover: { ref: transparent },
+                              focus: { ref: transparent },
+                              pressed: { ref: transparent }
                             },
-                            disabled: switchStateRef('#D1D1D1')
+                            disabled: { ref: '#D1D1D1' }
                           }
                         }
                       }
@@ -122,22 +100,12 @@ export function createFluent2MicrosoftSwitchSchema({
               e3: {
                 name: 'thumb',
                 scales: {
-                  boxWidth: {
-                    's:md:1': 14
-                  },
-                  boxHeight: {
-                    's:md:1': 14
-                  },
+                  boxWidth: { 's:md:1': 14 },
+                  boxHeight: { 's:md:1': 14 },
                   borderRadius: {
-                    rounded: {
-                      's:md:1': 4
-                    },
-                    pill: {
-                      's:md:1': 7
-                    },
-                    square: {
-                      's:md:1': 0
-                    }
+                    rounded: { 's:md:1': 4 },
+                    pill: { 's:md:1': 7 },
+                    square: { 's:md:1': 0 }
                   }
                 },
                 palettes: {
@@ -147,16 +115,16 @@ export function createFluent2MicrosoftSwitchSchema({
                         neutral: {
                           medium: {
                             rest: '#616161',
-                            hover: switchStateRef('#424242'),
-                            focus: switchStateRef('#616161'),
-                            pressed: switchStateRef('#424242'),
+                            hover: { ref: '#424242' },
+                            focus: { ref: '#616161' },
+                            pressed: { ref: '#424242' },
                             selected: {
-                              rest: switchStateRef(white),
-                              hover: switchStateRef(white),
-                              focus: switchStateRef(white),
-                              pressed: switchStateRef(white)
+                              rest: { ref: white },
+                              hover: { ref: white },
+                              focus: { ref: white },
+                              pressed: { ref: white }
                             },
-                            disabled: switchStateRef(neutralForegroundDisabled)
+                            disabled: { ref: neutral25 }
                           }
                         }
                       },
@@ -165,9 +133,9 @@ export function createFluent2MicrosoftSwitchSchema({
                           medium: {
                             rest: transparent,
                             selected: {
-                              rest: switchStateRef(transparent)
+                              rest: { ref: transparent }
                             },
-                            disabled: switchStateRef(transparent)
+                            disabled: { ref: transparent }
                           }
                         }
                       }
@@ -182,18 +150,10 @@ export function createFluent2MicrosoftSwitchSchema({
                   textWeight: 'normal'
                 },
                 scales: {
-                  textSize: {
-                    's:md:1': 14
-                  },
-                  textHeight: {
-                    's:md:1': 20
-                  },
-                  marginLeft: {
-                    's:md:1': 8
-                  },
-                  marginRight: {
-                    's:md:1': 8
-                  }
+                  textSize: { 's:md:1': 14 },
+                  textHeight: { 's:md:1': 20 },
+                  marginLeft: { 's:md:1': 8 },
+                  marginRight: { 's:md:1': 8 }
                 },
                 palettes: {
                   default: {
@@ -202,7 +162,7 @@ export function createFluent2MicrosoftSwitchSchema({
                         neutral: {
                           medium: {
                             rest: '#242424',
-                            disabled: switchStateRef(neutralForegroundDisabled)
+                            disabled: { ref: neutral25 }
                           }
                         }
                       }
