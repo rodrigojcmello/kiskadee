@@ -13,7 +13,9 @@ type CreateMaterial3GoogleTabsVariantArgs = {
 export function createMaterial3GoogleTabsDotVariant({
   c,
   transparent
-}: CreateMaterial3GoogleTabsVariantArgs): NonNullable<NonNullable<TabsComponent['variants']>['dot']> {
+}: CreateMaterial3GoogleTabsVariantArgs): NonNullable<
+  NonNullable<TabsComponent['variants']>['dot']
+> {
   const lineVariant = createMaterial3GoogleTabsLineVariant({
     c,
     transparent
@@ -31,6 +33,7 @@ export function createMaterial3GoogleTabsDotVariant({
       e4: lineVariant.elements?.e4,
       // e5: indicator
       e5: {
+        name: 'indicator',
         scales: {
           boxHeight: {
             's:sm:1': 6,

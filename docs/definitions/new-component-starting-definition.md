@@ -139,10 +139,17 @@ Every new component must define a canonical element map before schema authoring 
 For each element, document:
 
 - its short key, such as `e1`, `e2`, or `e3`;
+- its required schema `name`, written as the first property inside the element object;
 - its semantic role;
 - whether it is required or optional;
 - whether it owns layout, generated visuals, text, native semantics, or state projection;
 - which generated properties it is allowed to consume.
+
+The short key is the technical slot identity used by artifacts and runtime APIs. The required
+`name` is the human-readable layer label used while authoring and reviewing schema. Keep it short
+and local to the component, for example `track`, `thumb`, `label`, `control`, or `button-text`.
+Do not replace generated artifact keys or state-projection targets with `name`; those stay on
+`e1`, `e2`, and later slots.
 
 Avoid adding placeholder elements just because a future design might need them. Optional elements
 are useful only when their expected purpose is already clear.

@@ -31,6 +31,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
     elements: {
       // e1: bar
       e1: {
+        name: 'bar',
         decorations: {
           borderStyle: 'solid'
         },
@@ -65,6 +66,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
       },
       // e2: tab
       e2: {
+        name: 'tab',
         scales: {
           boxWidth: {
             's:sm:1': 104,
@@ -131,6 +133,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
       },
       // e3: label
       e3: {
+        name: 'label',
         decorations: {
           textWeight: 'medium'
         },
@@ -177,6 +180,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
       e4: lineVariant.elements?.e4,
       // e5: indicator
       e5: {
+        name: 'indicator',
         scales: {
           borderRadius: {
             rounded: 10
@@ -211,6 +215,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
       },
       // e6: separator
       e6: {
+        name: 'separator',
         scales: {
           boxWidth: 2,
           boxHeight: {

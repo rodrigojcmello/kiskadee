@@ -40,6 +40,7 @@ export function createFluent2MicrosoftSwitchSchema({
           base: {
             elements: {
               e2: {
+                name: 'track',
                 decorations: {
                   borderStyle: 'solid'
                 },
@@ -119,6 +120,7 @@ export function createFluent2MicrosoftSwitchSchema({
                 }
               },
               e3: {
+                name: 'thumb',
                 scales: {
                   boxWidth: {
                     's:md:1': 14
@@ -174,6 +176,7 @@ export function createFluent2MicrosoftSwitchSchema({
                 }
               },
               e4: {
+                name: 'label',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'normal'

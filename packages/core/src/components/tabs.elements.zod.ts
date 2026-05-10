@@ -12,7 +12,7 @@ import {
 export function createTabsEdgeBarElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       decorations: z
         .object({
           borderStyle: z.custom<DecorationSchema['borderStyle']>().optional()
@@ -38,7 +38,7 @@ export function createTabsEdgeBarElementStyleSchema<TSegmentName extends Segment
 export function createTabsBoxBarElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       scales: createScalesSchemaWithBorderRadius([
         'paddingTop',
         'paddingRight',
@@ -51,10 +51,12 @@ export function createTabsBoxBarElementStyleSchema<TSegmentName extends SegmentN
     .strict();
 }
 
-export function createTabsSegmentedBarElementStyleSchema<TSegmentName extends SegmentName = never>() {
+export function createTabsSegmentedBarElementStyleSchema<
+  TSegmentName extends SegmentName = never
+>() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       decorations: z
         .object({
           borderStyle: z.custom<DecorationSchema['borderStyle']>().optional()
@@ -77,7 +79,7 @@ export function createTabsSegmentedBarElementStyleSchema<TSegmentName extends Se
 export function createTabsBridgeBarElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       scales: createScalesSchemaWithRoundedOnlyBorderRadius([
         'paddingTop',
         'paddingRight',
@@ -100,7 +102,7 @@ export function createTabsBarElementStyleSchema<TSegmentName extends SegmentName
 export function createTabsTriggerElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       scales: createScalesSchemaWithBorderRadius([
         'boxWidth',
         'paddingTop',
@@ -119,7 +121,7 @@ export function createTabsSegmentedTriggerElementStyleSchema<
 >() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       scales: createScalesSchemaWithRoundedOnlyBorderRadius([
         'boxWidth',
         'paddingTop',
@@ -133,10 +135,12 @@ export function createTabsSegmentedTriggerElementStyleSchema<
     .strict();
 }
 
-export function createTabsBridgeTriggerElementStyleSchema<TSegmentName extends SegmentName = never>() {
+export function createTabsBridgeTriggerElementStyleSchema<
+  TSegmentName extends SegmentName = never
+>() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       scales: createScalesSchemaWithRoundedOnlyBorderRadius([
         'boxWidth',
         'paddingTop',
@@ -153,7 +157,7 @@ export function createTabsBridgeTriggerElementStyleSchema<TSegmentName extends S
 export function createTabsLabelElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       decorations: z
         .object({
           textFont: z.custom<DecorationSchema['textFont']>().optional(),
@@ -171,7 +175,7 @@ export function createTabsLabelElementStyleSchema<TSegmentName extends SegmentNa
 export function createTabsIconElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       scales: createScalesSchema(['boxWidth', 'boxHeight', 'marginRight']).optional(),
       palettes: createPalettesSchema<TSegmentName, 'textColor'>(['textColor']).optional(),
       effects: elementEffectsSchema.optional()
@@ -182,7 +186,7 @@ export function createTabsIconElementStyleSchema<TSegmentName extends SegmentNam
 export function createTabsIndicatorElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       scales: createScalesSchemaWithBorderRadius([
         'boxWidth',
         'boxHeight',
@@ -200,7 +204,7 @@ export function createTabsSegmentedIndicatorElementStyleSchema<
 >() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       scales: createScalesSchemaWithRoundedOnlyBorderRadius([
         'boxWidth',
         'boxHeight',
@@ -218,7 +222,7 @@ export function createTabsBridgeIndicatorElementStyleSchema<
 >() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       scales: createScalesSchemaWithRoundedOnlyBorderRadius([
         'boxWidth',
         'boxHeight',
@@ -234,7 +238,7 @@ export function createTabsBridgeIndicatorElementStyleSchema<
 export function createTabsSeparatorElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       scales: createScalesSchema([
         'boxWidth',
         'boxHeight',

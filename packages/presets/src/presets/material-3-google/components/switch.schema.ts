@@ -202,6 +202,7 @@ export function createMaterial3GoogleSwitchSchema(
           base: {
             elements: {
               e2: {
+                name: 'track',
                 decorations: {
                   borderStyle: 'solid'
                 },
@@ -252,6 +253,7 @@ export function createMaterial3GoogleSwitchSchema(
                 palettes: palettes.track
               },
               e3: {
+                name: 'thumb',
                 scales: {
                   boxWidth: {
                     's:sm:1': 16,
@@ -279,6 +281,7 @@ export function createMaterial3GoogleSwitchSchema(
                 palettes: palettes.thumb
               },
               e4: {
+                name: 'label',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'normal'

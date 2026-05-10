@@ -349,6 +349,7 @@ export const schema: Schema = {
           elements: {
             // e1: bar
             e1: {
+              name: 'bar',
               scales: {
                 paddingTop: 4,
                 paddingBottom: 4,
@@ -387,6 +388,7 @@ export const schema: Schema = {
             },
             // e2: tab
             e2: {
+              name: 'tab',
               scales: {
                 boxWidth: {
                   's:sm:1': 120,
@@ -444,6 +446,7 @@ export const schema: Schema = {
             },
             // e3: label
             e3: {
+              name: 'label',
               decorations: {
                 textWeight: 'medium'
               },
@@ -470,6 +473,7 @@ export const schema: Schema = {
             },
             // e4: icon
             e4: {
+              name: 'icon',
               scales: {
                 boxWidth: 18,
                 boxHeight: 18,
@@ -494,6 +498,7 @@ export const schema: Schema = {
             },
             // e5: indicator (background)
             e5: {
+              name: 'indicator',
               scales: {
                 borderRadius: {
                   // box uses square or rounded in runtime; "pill" keeps full capsule as schema option.
@@ -537,6 +542,7 @@ export const schema: Schema = {
             },
             // e6: separator (between tabs)
             e6: {
+              name: 'separator',
               scales: {
                 boxWidth: 1,
                 boxHeight: 16
@@ -565,6 +571,7 @@ export const schema: Schema = {
           elements: {
             // e1: bar
             e1: {
+              name: 'bar',
               scales: {
                 paddingTop: 8,
                 paddingBottom: 8,
@@ -587,6 +594,7 @@ export const schema: Schema = {
             },
             // e2: tab
             e2: {
+              name: 'tab',
               scales: {
                 boxWidth: {
                   's:sm:1': 120,
@@ -640,6 +648,7 @@ export const schema: Schema = {
             },
             // e3: label
             e3: {
+              name: 'label',
               decorations: {
                 textWeight: 'extraBold'
               },
@@ -666,6 +675,7 @@ export const schema: Schema = {
             },
             // e4: icon
             e4: {
+              name: 'icon',
               scales: {
                 boxWidth: 18,
                 boxHeight: 18,
@@ -690,6 +700,7 @@ export const schema: Schema = {
             },
             // e5: selected shell
             e5: {
+              name: 'selected-shell',
               scales: {
                 borderRadius: {
                   rounded: {
@@ -736,6 +747,7 @@ export const schema: Schema = {
           elements: {
             // e1: bar
             e1: {
+              name: 'bar',
               decorations: {
                 borderStyle: 'solid'
               },
@@ -765,6 +777,7 @@ export const schema: Schema = {
             },
             // e2: tab
             e2: {
+              name: 'tab',
               scales: {
                 boxWidth: {
                   's:sm:1': 120,
@@ -806,6 +819,7 @@ export const schema: Schema = {
             },
             // e3: label
             e3: {
+              name: 'label',
               decorations: {
                 textWeight: 'medium'
               },
@@ -832,6 +846,7 @@ export const schema: Schema = {
             },
             // e4: icon
             e4: {
+              name: 'icon',
               scales: {
                 boxWidth: 18,
                 boxHeight: 18,
@@ -856,6 +871,7 @@ export const schema: Schema = {
             },
             // e5: indicator (background)
             e5: {
+              name: 'indicator',
               scales: {
                 borderRadius: {
                   rounded: 7
@@ -889,6 +905,7 @@ export const schema: Schema = {
             },
             // e6: separator (between tabs)
             e6: {
+              name: 'separator',
               scales: {
                 boxWidth: 1,
                 boxHeight: 16
@@ -913,6 +930,7 @@ export const schema: Schema = {
           elements: {
             // e1: bar
             e1: {
+              name: 'bar',
               decorations: {
                 borderStyle: 'solid'
               },
@@ -942,6 +960,7 @@ export const schema: Schema = {
             },
             // e2: tab
             e2: {
+              name: 'tab',
               scales: {
                 paddingTop: 6,
                 paddingBottom: 6,
@@ -971,6 +990,7 @@ export const schema: Schema = {
             },
             // e3: label
             e3: {
+              name: 'label',
               decorations: {
                 textWeight: 'medium'
               },
@@ -997,6 +1017,7 @@ export const schema: Schema = {
             },
             // e4: icon
             e4: {
+              name: 'icon',
               scales: {
                 boxWidth: 18,
                 boxHeight: 18,
@@ -1021,6 +1042,7 @@ export const schema: Schema = {
             },
             // e5: indicator (dot)
             e5: {
+              name: 'indicator',
               scales: {
                 boxHeight: 8,
                 marginTop: 0,

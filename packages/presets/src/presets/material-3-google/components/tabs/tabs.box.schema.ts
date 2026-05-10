@@ -25,6 +25,7 @@ export function createMaterial3GoogleTabsBoxVariant({
     elements: {
       // e1: bar
       e1: {
+        name: 'bar',
         scales: {
           paddingTop: {
             's:sm:1': 3,
@@ -73,6 +74,7 @@ export function createMaterial3GoogleTabsBoxVariant({
       },
       // e2: tab
       e2: {
+        name: 'tab',
         scales: {
           boxWidth: {
             's:sm:1': 104,
@@ -136,6 +138,7 @@ export function createMaterial3GoogleTabsBoxVariant({
       },
       // e3: label
       e3: {
+        name: 'label',
         decorations: {
           textWeight: 'medium'
         },
@@ -182,6 +185,7 @@ export function createMaterial3GoogleTabsBoxVariant({
       e4: lineVariant.elements?.e4,
       // e5: indicator
       e5: {
+        name: 'indicator',
         palettes: {
           default: {
             light: {

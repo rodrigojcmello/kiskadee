@@ -25,6 +25,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
     elements: {
       // e1: bar
       e1: {
+        name: 'bar',
         scales: {
           paddingTop: {
             's:sm:1': 6,
@@ -68,6 +69,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
       },
       // e2: tab
       e2: {
+        name: 'tab',
         scales: {
           boxWidth: {
             's:sm:1': 104,
@@ -149,6 +151,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
       },
       // e3: label
       e3: {
+        name: 'label',
         decorations: {
           textWeight: 'extraBold'
         },
@@ -193,6 +196,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
       },
       // e4: icon
       e4: {
+        name: 'icon',
         scales: {
           boxWidth: {
             's:sm:1': 20,
@@ -235,6 +239,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
       },
       // e5: selected shell
       e5: {
+        name: 'selected-shell',
         scales: {
           borderRadius: {
             rounded: {

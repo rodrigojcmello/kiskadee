@@ -19,6 +19,7 @@ export function createMaterial3GoogleButtonSchema({
   return {
     elements: {
       e1: {
+        name: 'button',
         decorations: {
           borderStyle: 'solid'
         },
@@ -389,6 +390,7 @@ export function createMaterial3GoogleButtonSchema({
         }
       },
       e2: {
+        name: 'button-text',
         decorations: {
           textWeight: 'medium'
         },

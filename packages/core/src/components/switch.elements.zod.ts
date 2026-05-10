@@ -11,7 +11,7 @@ import {
 export function createSwitchRootElementStyleSchema() {
   return z
     .object({
-      name: z.string().optional()
+      name: z.string()
     })
     .strict();
 }
@@ -19,7 +19,7 @@ export function createSwitchRootElementStyleSchema() {
 export function createSwitchTrackElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       decorations: z
         .object({
           borderStyle: z.custom<DecorationSchema['borderStyle']>().optional()
@@ -47,7 +47,7 @@ export function createSwitchTrackElementStyleSchema<TSegmentName extends Segment
 export function createSwitchThumbElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       decorations: z
         .object({
           borderStyle: z.custom<DecorationSchema['borderStyle']>().optional()
@@ -75,7 +75,7 @@ export function createSwitchThumbElementStyleSchema<TSegmentName extends Segment
 export function createSwitchLabelElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       decorations: z
         .object({
           textFont: z.custom<DecorationSchema['textFont']>().optional(),
@@ -100,7 +100,7 @@ export function createSwitchLabelElementStyleSchema<TSegmentName extends Segment
 export function createSwitchStateElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       decorations: z
         .object({
           textFont: z.custom<DecorationSchema['textFont']>().optional(),

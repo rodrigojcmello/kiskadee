@@ -38,6 +38,7 @@ const patch = {
     button: {
       elements: {
         e1: {
+          name: 'button',
           palettes: {
             // modern: {
             //   light: {
@@ -219,6 +220,7 @@ const patch = {
           }
         },
         e2: {
+          name: 'button-text',
           palettes: {
             modern: {
               light: {

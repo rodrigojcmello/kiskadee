@@ -11,7 +11,7 @@ import {
 export function createTextFieldRootElementStyleSchema() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       scales: createScalesSchema(['boxWidth']).optional(),
       effects: elementEffectsSchema.optional()
     })
@@ -21,7 +21,7 @@ export function createTextFieldRootElementStyleSchema() {
 export function createTextFieldLabelElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       decorations: z
         .object({
           textFont: z.custom<DecorationSchema['textFont']>().optional(),
@@ -49,7 +49,7 @@ export function createTextFieldControlElementStyleSchema<
 >() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       decorations: z
         .object({
           borderStyle: z.custom<DecorationSchema['borderStyle']>().optional()
@@ -77,7 +77,7 @@ export function createTextFieldControlElementStyleSchema<
 export function createTextFieldInputElementStyleSchema<TSegmentName extends SegmentName = never>() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       decorations: z
         .object({
           textFont: z.custom<DecorationSchema['textFont']>().optional(),
@@ -97,7 +97,7 @@ export function createTextFieldMessageElementStyleSchema<
 >() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       decorations: z
         .object({
           textFont: z.custom<DecorationSchema['textFont']>().optional(),
@@ -117,7 +117,7 @@ export function createTextFieldIndicatorElementStyleSchema<
 >() {
   return z
     .object({
-      name: z.string().optional(),
+      name: z.string(),
       scales: createScalesSchema(['boxHeight']).optional(),
       palettes: createPalettesSchema<TSegmentName, 'boxColor'>(['boxColor']).optional(),
       effects: elementEffectsSchema.optional()

@@ -697,6 +697,7 @@ export function createMaterial3GoogleTextFieldSchema(
             },
             elements: {
               e1: {
+                name: 'root',
                 scales: {
                   boxWidth: {
                     's:sm:1': 280,
@@ -705,6 +706,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 }
               },
               e2: {
+                name: 'label',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'medium'
@@ -726,6 +728,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 palettes: palettes.label
               },
               e3: {
+                name: 'control',
                 decorations: {
                   borderStyle: 'solid'
                 },
@@ -772,6 +775,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 palettes: withPlaceholderPalette(palettes.control, palettes.placeholder)
               },
               e4: {
+                name: 'input',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'normal'
@@ -789,6 +793,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 palettes: palettes.input
               },
               e5: {
+                name: 'message',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'normal'
@@ -821,6 +826,7 @@ export function createMaterial3GoogleTextFieldSchema(
             },
             elements: {
               e1: {
+                name: 'root',
                 scales: {
                   boxWidth: {
                     's:sm:1': 280,
@@ -829,6 +835,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 }
               },
               e2: {
+                name: 'label',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'medium'
@@ -850,6 +857,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 palettes: palettes.label
               },
               e3: {
+                name: 'control',
                 decorations: {
                   borderStyle: 'solid'
                 },
@@ -896,6 +904,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 palettes: withPlaceholderPalette(palettes.control, palettes.placeholder)
               },
               e4: {
+                name: 'input',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'normal'
@@ -913,6 +922,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 palettes: palettes.input
               },
               e5: {
+                name: 'message',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'normal'
@@ -934,6 +944,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 palettes: palettes.message
               },
               e6: {
+                name: 'indicator',
                 scales: {
                   boxHeight: {
                     's:sm:1': 1,
@@ -954,6 +965,7 @@ export function createMaterial3GoogleTextFieldSchema(
             },
             elements: {
               e1: {
+                name: 'root',
                 scales: {
                   boxWidth: {
                     's:sm:1': 280,
@@ -962,6 +974,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 }
               },
               e2: {
+                name: 'label',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'medium'
@@ -983,6 +996,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 palettes: palettes.label
               },
               e3: {
+                name: 'control',
                 decorations: {
                   borderStyle: 'solid'
                 },
@@ -1029,6 +1043,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 palettes: withPlaceholderPalette(palettes.controlBorderless, palettes.placeholder)
               },
               e4: {
+                name: 'input',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'normal'
@@ -1046,6 +1061,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 palettes: palettes.input
               },
               e5: {
+                name: 'message',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'normal'
@@ -1085,6 +1101,7 @@ export function createMaterial3GoogleTextFieldSchema(
             },
             elements: {
               e1: {
+                name: 'root',
                 scales: {
                   boxWidth: {
                     's:sm:1': 280,
@@ -1093,6 +1110,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 }
               },
               e2: {
+                name: 'label',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'normal'
@@ -1126,6 +1144,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 palettes: palettes.label
               },
               e3: {
+                name: 'control',
                 decorations: {
                   borderStyle: 'solid'
                 },
@@ -1175,6 +1194,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 )
               },
               e4: {
+                name: 'input',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'normal'
@@ -1192,6 +1212,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 palettes: palettes.input
               },
               e5: {
+                name: 'message',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'normal'
@@ -1224,6 +1245,7 @@ export function createMaterial3GoogleTextFieldSchema(
             },
             elements: {
               e1: {
+                name: 'root',
                 scales: {
                   boxWidth: {
                     's:sm:1': 280,
@@ -1232,6 +1254,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 }
               },
               e2: {
+                name: 'label',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'normal'
@@ -1251,6 +1274,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 palettes: palettes.label
               },
               e3: {
+                name: 'control',
                 decorations: {
                   borderStyle: 'solid'
                 },
@@ -1297,6 +1321,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 palettes: withPlaceholderPalette(palettes.control, palettes.placeholder)
               },
               e4: {
+                name: 'input',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'normal'
@@ -1315,6 +1340,7 @@ export function createMaterial3GoogleTextFieldSchema(
                 palettes: palettes.input
               },
               e5: {
+                name: 'message',
                 decorations: {
                   textFont: 'body',
                   textWeight: 'normal'

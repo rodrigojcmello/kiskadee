@@ -22,6 +22,10 @@ type ElementScalesByProperty<TScaleProperty extends StandardScaleProperty> = Par
   Record<TScaleProperty, ScaleBySize | number>
 >;
 
+type ElementNameMetadata = {
+  name: string;
+};
+
 /**
  * Button elements canonical mapping:
  * - e1: button container/surface
@@ -34,7 +38,6 @@ export type ButtonElementName = 'e1' | 'e2' | 'e3';
  * e1 — button container/surface
  */
 export type ButtonContainerElementStyle<TSegmentName extends SegmentName = never> = Partial<{
-  name?: string;
   decorations: Pick<DecorationSchema, 'borderStyle' | 'textAlign'>;
   scales: ElementScalesByProperty<
     'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft' | 'borderWidth'
@@ -47,18 +50,19 @@ export type ButtonContainerElementStyle<TSegmentName extends SegmentName = never
   };
   palettes: ElementPalettesByColor<TSegmentName, 'boxColor' | 'borderColor'>;
   effects: ElementEffects;
-}>;
+}> &
+  ElementNameMetadata;
 
 /**
  * e2 — button label
  */
 export type ButtonLabelElementStyle<TSegmentName extends SegmentName = never> = Partial<{
-  name?: string;
   decorations: Pick<DecorationSchema, 'textFont' | 'textWeight' | 'textItalic' | 'textLineType'>;
   scales: ElementScalesByProperty<'textSize' | 'textHeight'>;
   palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
   effects: ElementEffects;
-}>;
+}> &
+  ElementNameMetadata;
 
 /**
  * e3 — button icon
@@ -67,13 +71,13 @@ export type ButtonLabelElementStyle<TSegmentName extends SegmentName = never> = 
  * `iconColor` maps to `textColor` in the current schema model.
  */
 export type ButtonIconElementStyle<TSegmentName extends SegmentName = never> = Partial<{
-  name?: string;
   scales: ElementScalesByProperty<
     'boxWidth' | 'boxHeight' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'
   >;
   palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
   effects: ElementEffects;
-}>;
+}> &
+  ElementNameMetadata;
 
 export type ButtonElements<TSegmentName extends SegmentName = never> = {
   e1?: ButtonContainerElementStyle<TSegmentName>;
@@ -178,6 +182,10 @@ function validateElementContract(
   }
 
   validateAllowedKeys(value, BUTTON_ELEMENT_BASE_KEYS, path, issues);
+
+  if (typeof value.name !== 'string') {
+    issues.push(`${path}.name: expected string`);
+  }
 
   if (value.decorations !== undefined) {
     if (!rules.decorations) {

@@ -23,8 +23,9 @@ import type { ScaleSchema } from './types/scales/scales.types.ts';
 // Names of all supported components
 export type ComponentName = 'button' | 'switch' | 'tabs' | 'textField';
 
-export type ElementStyle<TSegmentName extends SegmentName = never> = Partial<{
-  name?: string; // for example "element-element-element-element"
+export type ElementStyle<TSegmentName extends SegmentName = never> = {
+  name: string; // human-readable element label, for example "button-text"
+} & Partial<{
   decorations: DecorationSchema;
   scales: ScaleSchema;
   // Palettes follow the structure: segmentName → theme → ColorSchema.

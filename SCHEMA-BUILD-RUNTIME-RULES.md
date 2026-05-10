@@ -96,6 +96,36 @@ Consequence:
 - If shared values across variants become necessary, model them explicitly in preset factories or
   introduce a dedicated contract before relying on implicit schema inheritance.
 
+### 3.1.2 Element `name`
+
+Context:
+
+- Schema element keys such as `e1`, `e2`, and `e3` are stable technical slot identifiers.
+- Those short keys are intentionally compact for artifacts and runtime APIs, but they are hard to
+  read when authoring preset schemas by hand.
+
+Decision:
+
+- Every declared schema element must include a human-readable `name`.
+- Put `name` as the first property inside the element object.
+- Keep the technical key stable even when the readable name explains the layer.
+- Use short, component-local names such as `track`, `thumb`, `label`, `control`, or
+  `button-text`.
+
+Reason:
+
+- The schema should remain readable without requiring comments beside every `e<n>` key.
+- Comments drift away from the validated contract; `name` stays in the schema object and is checked
+  by the component contract.
+- The readable name is metadata for humans and tooling. It must not be used to replace the stable
+  `e<n>` key in generated class maps or runtime state projection APIs.
+
+Consequence:
+
+- Component element contracts require `name` whenever an element object is declared.
+- A non-visual but meaningful schema element should still be represented as `name` only.
+- Web-builder style generation continues to use the `e<n>` key as the artifact identity.
+
 ### 3.2 `components.<name>.options`
 
 Use `options` for component-specific behavior/structure defaults that are not a DS color/scale token.
