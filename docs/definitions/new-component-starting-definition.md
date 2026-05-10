@@ -123,11 +123,17 @@ Treat this as a default, not as a complete design matrix:
 
 - a component starts with the single component intent `neutral`;
 - a component starts with the single emphasis level `medium`;
-- extra component intents should describe product or component meaning, not raw color families;
+- extra Layer 3 component intents should describe product or component meaning, not raw color
+  families;
+- extra Layer 3 component intents should not be added only to name internal state colors;
 - raw semantic colors such as `redLike` or `greenLike` are preset mappings, not public component
   intent names;
 - extra emphasis levels such as `high`, `low`, and `lowest` should be added only when the design
   has real visual hierarchy for them.
+
+For binary controls, selected/on and unchecked/off are control states inside the same intent. A
+default Switch should remain `neutral.medium`; it can still use Layer 2 global `primary` directly
+for selected/on activation without exposing a separate Layer 3 `primary` component intent.
 
 Other intents and emphasis buckets belong in the follow-up decision pass, not in the default
 component birth.
