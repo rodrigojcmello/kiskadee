@@ -32,7 +32,8 @@ export type SwitchVariantOptions = SwitchVariantOptionsFromSchema;
 
 /**
  * e1 — root label/control wrapper
- * - optional width and external margins
+ * - non-visual headless root and state scope owner
+ * - schema is intentionally name-only
  */
 export type SwitchRootElementStyle = SwitchRootElementStyleFromSchema;
 

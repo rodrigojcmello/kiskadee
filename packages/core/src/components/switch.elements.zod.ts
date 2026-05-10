@@ -11,15 +11,7 @@ import {
 export function createSwitchRootElementStyleSchema() {
   return z
     .object({
-      name: z.string().optional(),
-      scales: createScalesSchema([
-        'boxWidth',
-        'marginTop',
-        'marginRight',
-        'marginBottom',
-        'marginLeft'
-      ]).optional(),
-      effects: elementEffectsSchema.optional()
+      name: z.string().optional()
     })
     .strict();
 }
