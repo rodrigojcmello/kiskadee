@@ -177,8 +177,8 @@ Practical rule:
   - Web-only details (border/padding compensation, gradients, states).
   - Radius rules (modes vs effects) and segments.
 
-- [packages/presets/README.md](packages/presets/README-PRESETS.md)
-  - Color philosophy, semantic layers, and adaptation rules.
+- [packages/presets/docs/definitions/](packages/presets/docs/definitions/)
+  - Preset package definitions, color philosophy, semantic layers, and adaptation rules.
   - Fidelity notes between Figma and Kiskadee.
 
 - [packages/showcase/README.md](packages/showcase/README.md)
