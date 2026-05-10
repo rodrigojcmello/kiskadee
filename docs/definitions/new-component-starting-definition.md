@@ -249,9 +249,17 @@ Ask these questions before adding more surface area:
 - Does the component need motion or transition behavior?
 - Can CSS own that motion, or does React need to coordinate measurement, layout, or state?
 - Should the API offer both CSS-only and runtime-motion paths, as `Tabs` does?
+- Which generated attributes should each element support?
 - Which logic belongs in the headless primitive?
 - Which logic belongs in the styled React component?
 - Should any headless logic be extracted into a reusable hook, like `useStateProjection`?
+
+When extending a component after the first version, align the supported attributes per element before
+changing the schema. Each `e<n>` slot should expose only the attributes that match its real job.
+Avoid leaving element schemas broad or inherited by accident. For example, a root wrapper may need
+internal padding for hit area or composition, but that does not automatically mean it should own
+`boxWidth` or external margin controls. A hidden native input may need a name and technical effects,
+but it should not receive visual palettes or scale tokens unless it becomes a real visual surface.
 
 When adding variants or modes, keep element names coherent across branches. For example, if `e3` is
 the track in one Switch branch, another Switch branch should not use `e3` for unrelated content.
