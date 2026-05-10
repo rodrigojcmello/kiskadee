@@ -147,6 +147,16 @@ For each element, document:
 Avoid adding placeholder elements just because a future design might need them. Optional elements
 are useful only when their expected purpose is already clear.
 
+Do not create a schema element that is merely decorative, structural, or present only to keep a
+numbered slot alive. If a DOM wrapper does not own generated style, native semantics, state
+projection, or a durable public styling contract, keep it as structural implementation detail rather
+than promoting it to `e<n>`.
+
+Avoid using the component root to encode external visual spacing around the real component. Root
+padding or margin can make a component carry layout decisions that should belong to its parent,
+container, or surrounding composition. Add root spacing attributes only when the root itself is a
+real visual or interactive surface and the spacing is part of that surface's intrinsic geometry.
+
 ## State Model
 
 Define the state model explicitly.
@@ -256,10 +266,10 @@ Ask these questions before adding more surface area:
 
 When extending a component after the first version, align the supported attributes per element before
 changing the schema. Each `e<n>` slot should expose only the attributes that match its real job.
-Avoid leaving element schemas broad or inherited by accident. For example, a root wrapper may need
-internal padding for hit area or composition, but that does not automatically mean it should own
-`boxWidth` or external margin controls. A hidden native input may need a name and technical effects,
-but it should not receive visual palettes or scale tokens unless it becomes a real visual surface.
+Avoid leaving element schemas broad or inherited by accident. For example, a root wrapper that only
+groups a label and an internal control should not automatically own `boxWidth`, margin, padding, or
+visual palettes. A hidden native input may need a name and technical effects, but it should not
+receive visual palettes or scale tokens unless it becomes a real visual surface.
 
 When adding variants or modes, keep element names coherent across branches. For example, if `e3` is
 the track in one Switch branch, another Switch branch should not use `e3` for unrelated content.
