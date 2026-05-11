@@ -3,18 +3,30 @@
 import type { CSSProperties } from 'react';
 import { useMemo, useState } from 'react';
 import {
-  BASE_TONE,
-  type CurveControls,
-  DEFAULT_CURVE_CONTROLS,
+  DEFAULT_TONAL_PROFILE_ID,
   FLUENT_BLUE_HEX,
-  FLUENT_BLUE_REFERENCE_HEX_BY_TONE,
-  FLUENT_BLUE_REFERENCE_SCALE,
+  resolveTonalProfile,
+  TONAL_PROFILES,
+  type TonalProfileId
+} from '@/src/tonal-profiles';
+import {
+  type CurveControls,
+  contrastRatio,
+  createHexByTone,
+  DEFAULT_SCALE_DISTRIBUTION_ID,
   formatHsl,
   generateTonalScale,
   type HslColor,
   normalizeHexColor,
+  resolveProfileReferenceScale,
+  resolveScaleDistribution,
   rgbDistance,
-  type TonalScaleColor
+  SCALE_DISTRIBUTIONS,
+  type ScaleDistributionId,
+  type ScaleTone,
+  type TonalProfileMode,
+  type TonalScaleColor,
+  type VividContrastRule
 } from '@/src/tonal-scale';
 
 type ControlKey = keyof CurveControls;
@@ -26,12 +38,13 @@ type RangeControl = {
   max: number;
   step: number;
   suffix?: string;
+  modes?: TonalProfileMode[];
 };
 
 const RANGE_CONTROLS: RangeControl[] = [
   {
     key: 'darkFloorLightness',
-    label: 'L10',
+    label: 'K100 L',
     min: 0,
     max: 24,
     step: 0.25,
@@ -39,7 +52,7 @@ const RANGE_CONTROLS: RangeControl[] = [
   },
   {
     key: 'lightCeilingLightness',
-    label: 'L160',
+    label: 'K0 L',
     min: 80,
     max: 100,
     step: 0.25,
@@ -71,21 +84,24 @@ const RANGE_CONTROLS: RangeControl[] = [
     label: 'S escuro',
     min: 0.45,
     max: 1.65,
-    step: 0.01
+    step: 0.01,
+    modes: ['reference-curve']
   },
   {
     key: 'lightSaturationBias',
     label: 'S claro',
     min: 0.45,
     max: 1.65,
-    step: 0.01
+    step: 0.01,
+    modes: ['reference-curve']
   },
   {
     key: 'hueDriftStrength',
     label: 'Deriva H',
     min: 0,
     max: 1.8,
-    step: 0.01
+    step: 0.01,
+    modes: ['reference-curve']
   }
 ];
 
@@ -94,22 +110,56 @@ const CHART_HEIGHT = 360;
 const CHART_PADDING = 42;
 
 export default function TonalScaleLabPage() {
+  const [profileId, setProfileId] = useState<TonalProfileId>(DEFAULT_TONAL_PROFILE_ID);
+  const [distributionId, setDistributionId] = useState<ScaleDistributionId>(
+    DEFAULT_SCALE_DISTRIBUTION_ID
+  );
+  const selectedProfile = resolveTonalProfile(profileId);
+  const selectedDistribution = resolveScaleDistribution(distributionId);
   const [hexInput, setHexInput] = useState(FLUENT_BLUE_HEX);
-  const [controls, setControls] = useState<CurveControls>(DEFAULT_CURVE_CONTROLS);
+  const [controls, setControls] = useState<CurveControls>(selectedProfile.defaultControls);
   const normalizedHex = normalizeHexColor(hexInput);
   const baseHex = normalizedHex ?? FLUENT_BLUE_HEX;
-  const generatedScale = useMemo(() => generateTonalScale(baseHex, controls), [baseHex, controls]);
-  const baseColor = generatedScale.find((entry) => entry.tone === BASE_TONE) ?? generatedScale[7];
+  const referenceScale = useMemo(
+    () => resolveProfileReferenceScale(baseHex, selectedProfile, selectedDistribution),
+    [baseHex, selectedProfile, selectedDistribution]
+  );
+  const referenceHexByTone = useMemo(() => createHexByTone(referenceScale), [referenceScale]);
+  const generatedScale = useMemo(
+    () => generateTonalScale(baseHex, controls, selectedProfile, selectedDistribution),
+    [baseHex, controls, selectedProfile, selectedDistribution]
+  );
+  const baseColor =
+    generatedScale.find((entry) => entry.tone === selectedProfile.baseTone) ?? generatedScale[0];
+  const activeVividContrast =
+    selectedProfile.vividContrast &&
+    generatedScale.some((entry) => entry.tone === selectedProfile.vividContrast?.startTone)
+      ? selectedProfile.vividContrast
+      : undefined;
   const meanDistance = useMemo(() => {
     const total = generatedScale.reduce(
-      (sum, entry) => sum + rgbDistance(entry.hex, FLUENT_BLUE_REFERENCE_HEX_BY_TONE[entry.tone]),
+      (sum, entry) => sum + rgbDistance(entry.hex, referenceHexByTone[entry.tone]),
       0
     );
     return total / generatedScale.length;
-  }, [generatedScale]);
+  }, [generatedScale, referenceHexByTone]);
+  const visibleRangeControls = RANGE_CONTROLS.filter(
+    (control) => !control.modes || control.modes.includes(selectedProfile.mode)
+  );
 
   const updateControl = (key: ControlKey, value: number) => {
     setControls((current) => ({ ...current, [key]: value }));
+  };
+
+  const updateProfile = (id: TonalProfileId) => {
+    const nextProfile = resolveTonalProfile(id);
+    setProfileId(nextProfile.id as TonalProfileId);
+    setControls(nextProfile.defaultControls);
+  };
+
+  const updateDistribution = (id: ScaleDistributionId) => {
+    const nextDistribution = resolveScaleDistribution(id);
+    setDistributionId(nextDistribution.id as ScaleDistributionId);
   };
 
   return (
@@ -117,9 +167,35 @@ export default function TonalScaleLabPage() {
       <section className="topbar" aria-label="Tonal scale controls">
         <div>
           <h1>Tonal Scale Lab</h1>
-          <p>Fluent 2 blue reference curve</p>
+          <p>Flexible scale distributions with selectable tonal profiles</p>
         </div>
-        <label className="hex-field">
+        <label className="field">
+          <span>Scale distribution</span>
+          <select
+            value={selectedDistribution.id}
+            onChange={(event) => updateDistribution(event.target.value as ScaleDistributionId)}
+          >
+            {SCALE_DISTRIBUTIONS.map((distribution) => (
+              <option key={distribution.id} value={distribution.id}>
+                {distribution.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="field">
+          <span>Tonal profile</span>
+          <select
+            value={selectedProfile.id}
+            onChange={(event) => updateProfile(event.target.value as TonalProfileId)}
+          >
+            {TONAL_PROFILES.map((profile) => (
+              <option key={profile.id} value={profile.id}>
+                {profile.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="field">
           <span>Base hex</span>
           <input
             value={hexInput}
@@ -130,18 +206,20 @@ export default function TonalScaleLabPage() {
         </label>
         <div className="base-chip" style={{ '--chip-color': baseHex } as CSSProperties}>
           <span>{baseColor.hex}</span>
-          <strong>{formatHsl(baseColor.hsl)}</strong>
+          <strong>
+            {formatScaleLabel(baseColor)} · {formatHsl(baseColor.hsl)}
+          </strong>
         </div>
       </section>
 
       <section className="scale-section" aria-label="Generated tonal scale">
         <div className="section-heading">
-          <h2>Generated</h2>
+          <h2>Generated Scale</h2>
           <span className={normalizedHex ? 'status ok' : 'status error'}>
             {normalizedHex ? 'valid hex' : 'invalid hex'}
           </span>
         </div>
-        <ScaleStrip colors={generatedScale} />
+        <ScaleStrip colors={generatedScale} vividContrast={activeVividContrast} />
       </section>
 
       <section className="workspace-grid">
@@ -150,18 +228,24 @@ export default function TonalScaleLabPage() {
             <h2>Curve</h2>
             <span>S/L plane</span>
           </div>
-          <CurveChart generated={generatedScale} reference={FLUENT_BLUE_REFERENCE_SCALE} />
+          <CurveChart
+            baseTone={selectedProfile.baseTone}
+            generated={generatedScale}
+            reference={referenceScale}
+            bridgeStartTone={selectedDistribution.vividBridgeStartTone}
+            vividStartTone={activeVividContrast?.startTone}
+          />
         </div>
 
         <div className="controls-panel">
           <div className="section-heading">
             <h2>Curve Controls</h2>
-            <button type="button" onClick={() => setControls(DEFAULT_CURVE_CONTROLS)}>
+            <button type="button" onClick={() => setControls(selectedProfile.defaultControls)}>
               Reset
             </button>
           </div>
           <div className="range-grid">
-            {RANGE_CONTROLS.map((control) => (
+            {visibleRangeControls.map((control) => (
               <label className="range-row" key={control.key}>
                 <span>{control.label}</span>
                 <input
@@ -184,35 +268,85 @@ export default function TonalScaleLabPage() {
 
       <section className="comparison-section" aria-label="Reference comparison">
         <div className="section-heading">
-          <h2>Fluent Reference</h2>
-          <span>mean RGB delta {meanDistance.toFixed(2)}</span>
+          <h2>{selectedProfile.label} Reference</h2>
+          <span>
+            {generatedScale.length} slots · {selectedDistribution.label} · mean RGB delta{' '}
+            {meanDistance.toFixed(2)}
+          </span>
         </div>
-        <ScaleStrip colors={FLUENT_BLUE_REFERENCE_SCALE} />
-        <ScaleTable generated={generatedScale} />
+        {activeVividContrast ? (
+          <p className="profile-note">
+            Vivid guard: K{activeVividContrast.startTone}-K100 keeps {activeVividContrast.minRatio}
+            :1 contrast with white text. Bridge starts at K
+            {selectedDistribution.vividBridgeStartTone ?? activeVividContrast.bridgeStartTone}.
+          </p>
+        ) : null}
+        <ScaleStrip colors={referenceScale} vividContrast={activeVividContrast} />
+        <ScaleTable
+          generated={generatedScale}
+          referenceHexByTone={referenceHexByTone}
+          vividContrast={activeVividContrast}
+        />
       </section>
     </main>
   );
 }
 
-function ScaleStrip({ colors }: { colors: TonalScaleColor[] }) {
+function ScaleStrip({
+  colors,
+  vividContrast
+}: {
+  colors: TonalScaleColor[];
+  vividContrast?: VividContrastRule;
+}) {
   return (
-    <div className="scale-strip">
-      {colors.map((color) => (
-        <div className="swatch" key={color.tone} style={{ backgroundColor: color.hex }}>
-          <span>{color.tone}</span>
-          <strong>{color.hex}</strong>
-        </div>
-      ))}
+    <div className="scale-strip" style={{ '--scale-columns': colors.length } as CSSProperties}>
+      {colors.map((color) => {
+        const foregroundColor = resolveSwatchForeground(color, vividContrast);
+        const useDarkText = foregroundColor !== '#ffffff';
+        const style = {
+          backgroundColor: color.hex,
+          color: foregroundColor,
+          textShadow: useDarkText
+            ? '0 1px 2px rgb(255 255 255 / 40%)'
+            : '0 1px 2px rgb(0 0 0 / 35%)'
+        } as CSSProperties;
+
+        return (
+          <div className="swatch" key={color.id} style={style} title={color.label}>
+            <span>{color.label}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }
 
+function resolveSwatchForeground(
+  color: TonalScaleColor,
+  vividContrast: VividContrastRule | undefined
+): '#111827' | '#ffffff' {
+  if (vividContrast) {
+    return color.tone >= vividContrast.startTone ? '#ffffff' : '#111827';
+  }
+
+  return contrastRatio(color.hex, '#111827') >= contrastRatio(color.hex, '#ffffff')
+    ? '#111827'
+    : '#ffffff';
+}
+
 function CurveChart({
+  baseTone,
   generated,
-  reference
+  reference,
+  bridgeStartTone,
+  vividStartTone
 }: {
+  baseTone: ScaleTone;
   generated: TonalScaleColor[];
   reference: TonalScaleColor[];
+  bridgeStartTone?: ScaleTone;
+  vividStartTone?: ScaleTone;
 }) {
   const generatedPath = createPath(generated);
   const referencePath = createPath(reference);
@@ -252,58 +386,105 @@ function CurveChart({
       <path className="reference-path" d={referencePath} />
       <path className="generated-path" d={generatedPath} />
       {reference.map((color) => (
-        <circle
-          className="reference-point"
-          key={`r-${color.tone}`}
-          {...pointFor(color.hsl)}
-          r="4"
-        />
+        <circle className="reference-point" key={`r-${color.id}`} {...pointFor(color.hsl)} r="4" />
       ))}
       {generated.map((color) => (
-        <g key={color.tone}>
+        <g key={color.id}>
           <circle className="generated-point" {...pointFor(color.hsl)} r="5" />
-          <text
-            className="point-label"
-            x={pointFor(color.hsl).cx + 7}
-            y={pointFor(color.hsl).cy - 7}
-          >
-            {color.tone}
-          </text>
+          {shouldLabelPoint(color, baseTone, bridgeStartTone, vividStartTone, generated.length) ? (
+            <text
+              className="point-label"
+              x={pointFor(color.hsl).cx + 7}
+              y={pointFor(color.hsl).cy - 7}
+            >
+              {color.label}
+            </text>
+          ) : null}
         </g>
       ))}
     </svg>
   );
 }
 
-function ScaleTable({ generated }: { generated: TonalScaleColor[] }) {
+function shouldLabelPoint(
+  color: TonalScaleColor,
+  baseTone: ScaleTone,
+  bridgeStartTone: ScaleTone | undefined,
+  vividStartTone: ScaleTone | undefined,
+  pointCount: number
+): boolean {
+  if (pointCount <= 16) {
+    return true;
+  }
+
+  const tone = color.tone;
+
+  return (
+    tone === 0 ||
+    tone === baseTone ||
+    tone === 100 ||
+    tone === bridgeStartTone ||
+    tone === vividStartTone ||
+    tone % 10 === 0
+  );
+}
+
+function ScaleTable({
+  generated,
+  referenceHexByTone,
+  vividContrast
+}: {
+  generated: TonalScaleColor[];
+  referenceHexByTone: Record<ScaleTone, string>;
+  vividContrast?: VividContrastRule;
+}) {
   return (
     <div className="table-wrap">
       <table>
         <thead>
           <tr>
-            <th>tone</th>
+            <th>slot</th>
             <th>generated</th>
             <th>generated HSL</th>
             <th>reference</th>
+            <th>white contrast</th>
+            <th>vivid guard</th>
             <th>RGB delta</th>
           </tr>
         </thead>
         <tbody>
           {generated.map((color) => (
-            <tr key={color.tone}>
-              <td>{color.tone}</td>
+            <tr key={color.id}>
+              <td>{color.label}</td>
               <td>{color.hex}</td>
               <td>{formatHsl(color.hsl)}</td>
-              <td>{FLUENT_BLUE_REFERENCE_HEX_BY_TONE[color.tone]}</td>
-              <td>
-                {rgbDistance(color.hex, FLUENT_BLUE_REFERENCE_HEX_BY_TONE[color.tone]).toFixed(2)}
-              </td>
+              <td>{referenceHexByTone[color.tone]}</td>
+              <td>{contrastRatio(color.hex, '#ffffff').toFixed(2)}</td>
+              <td>{formatVividGuardStatus(color, vividContrast)}</td>
+              <td>{rgbDistance(color.hex, referenceHexByTone[color.tone]).toFixed(2)}</td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
   );
+}
+
+function formatVividGuardStatus(
+  color: TonalScaleColor,
+  vividContrast: VividContrastRule | undefined
+): string {
+  if (!vividContrast) {
+    return '-';
+  }
+
+  if (color.tone < vividContrast.startTone) {
+    return 'not checked';
+  }
+
+  return contrastRatio(color.hex, vividContrast.foregroundHex) >= vividContrast.minRatio
+    ? 'pass'
+    : 'fail';
 }
 
 function createPath(colors: TonalScaleColor[]): string {
@@ -332,4 +513,8 @@ function yForSaturation(saturation: number): number {
 
 function formatControlValue(value: number): string {
   return Number(value.toFixed(2)).toString();
+}
+
+function formatScaleLabel(color: TonalScaleColor): string {
+  return color.label === `${color.tone}` ? `K${color.label}` : color.label;
 }

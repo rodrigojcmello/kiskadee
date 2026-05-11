@@ -29,7 +29,8 @@ body {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -55,7 +56,10 @@ button:hover {
 
 .topbar {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) minmax(220px, 320px) minmax(240px, 360px);
+  grid-template-columns: minmax(200px, 1fr) minmax(200px, 260px) minmax(200px, 280px) minmax(
+      160px,
+      220px
+    ) minmax(240px, 360px);
   gap: 16px;
   align-items: end;
   padding-bottom: 18px;
@@ -79,19 +83,21 @@ h2 {
 
 p,
 .section-heading span,
-.hex-field span,
+.field span,
 .range-row span,
-.range-row output {
+.range-row output,
+.profile-note {
   color: var(--muted);
   font-size: 13px;
 }
 
-.hex-field {
+.field {
   display: grid;
   gap: 6px;
 }
 
-.hex-field input {
+.field input,
+.field select {
   height: 42px;
   width: 100%;
   border: 1px solid var(--border);
@@ -102,7 +108,11 @@ p,
   font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
-.hex-field input[aria-invalid="true"] {
+.field select {
+  font-family: inherit;
+}
+
+.field input[aria-invalid="true"] {
   border-color: var(--danger);
 }
 
@@ -160,6 +170,10 @@ p,
   margin-top: 16px;
 }
 
+.profile-note {
+  margin: -4px 0 12px;
+}
+
 .section-heading {
   display: flex;
   min-height: 36px;
@@ -188,7 +202,7 @@ p,
 
 .scale-strip {
   display: grid;
-  grid-template-columns: repeat(16, minmax(62px, 1fr));
+  grid-template-columns: repeat(var(--scale-columns), minmax(0, 1fr));
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -196,32 +210,17 @@ p,
 
 .swatch {
   display: grid;
-  min-height: 92px;
+  min-width: 0;
+  min-height: 96px;
   align-content: end;
-  gap: 4px;
-  padding: 10px 8px;
-  color: #fff;
-  text-shadow: 0 1px 2px rgb(0 0 0 / 35%);
-}
-
-.swatch:nth-last-child(-n + 5) {
-  color: #111827;
-  text-shadow: 0 1px 2px rgb(255 255 255 / 30%);
-}
-
-.swatch span,
-.swatch strong {
-  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  padding: 9px 5px;
 }
 
 .swatch span {
-  font-size: 11px;
-  opacity: 0.9;
-}
-
-.swatch strong {
-  overflow-wrap: anywhere;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   font-size: 12px;
+  font-weight: 700;
+  opacity: 0.9;
 }
 
 .curve-chart {
@@ -349,7 +348,7 @@ td {
   }
 
   .scale-strip {
-    grid-template-columns: repeat(8, minmax(70px, 1fr));
+    grid-template-columns: repeat(11, minmax(62px, 1fr));
   }
 }
 
