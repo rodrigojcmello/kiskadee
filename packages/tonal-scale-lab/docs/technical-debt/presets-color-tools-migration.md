@@ -9,10 +9,14 @@ definitions and exploratory color tooling.
 Candidate files to move or retire after the tonal-scale lab stabilizes:
 
 - `packages/presets/src/tools/generate-material-color-artifacts.ts`;
-- `packages/presets/src/tools/generate-fast-color-scale.ts`;
 - `packages/presets/src/tools/legacy/generate-color-scale.ts`;
 - `packages/presets/src/tools/legacy/generate-color-scale-from-subtle-vivid.ts`;
 - `packages/presets/src/tools/legacy/generate-color-scale-material-like.ts`.
+
+Already retired:
+
+- `packages/presets/src/tools/generate-fast-color-scale.ts`: replaced by the tonal-scale lab
+  exploration path.
 
 Target direction:
 

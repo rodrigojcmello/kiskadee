@@ -209,6 +209,31 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  packages/tonal-scale-lab:
+    dependencies:
+      next:
+        specifier: 16.2.1
+        version: 16.2.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(sass@1.97.1)
+      react:
+        specifier: 19.2.0
+        version: 19.2.0
+      react-dom:
+        specifier: 19.2.0
+        version: 19.2.0(react@19.2.0)
+    devDependencies:
+      '@types/node':
+        specifier: ^20.19.27
+        version: 20.19.27
+      '@types/react':
+        specifier: ^19.2.7
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.7)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/web-builder:
     dependencies:
       '@kiskadee/core':
@@ -3423,6 +3448,14 @@ snapshots:
       chai: 5.3.3
       tinyrainbow: 2.0.0
 
+  '@vitest/mocker@3.2.4(vite@7.1.5(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.97.1)(tsx@4.20.6)(yaml@2.8.2))':
+    dependencies:
+      '@vitest/spy': 3.2.4
+      estree-walker: 3.0.3
+      magic-string: 0.30.21
+    optionalDependencies:
+      vite: 7.1.5(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.97.1)(tsx@4.20.6)(yaml@2.8.2)
+
   '@vitest/mocker@3.2.4(vite@7.1.5(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.97.1)(tsx@4.20.6)(yaml@2.8.2))':
     dependencies:
       '@vitest/spy': 3.2.4
@@ -3460,7 +3493,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@25.0.3)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@28.1.0)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.97.1)(tsx@4.20.6)(yaml@2.8.2)
+      vitest: 3.2.4(@types/node@24.7.2)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@28.1.0)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.97.1)(tsx@4.20.6)(yaml@2.8.2)
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -4893,7 +4926,7 @@ snapshots:
     dependencies:
       '@types/chai': 5.2.2
       '@vitest/expect': 3.2.4
-      '@vitest/mocker': 3.2.4(vite@7.1.5(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.97.1)(tsx@4.20.6)(yaml@2.8.2))
+      '@vitest/mocker': 3.2.4(vite@7.1.5(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.97.1)(tsx@4.20.6)(yaml@2.8.2))
       '@vitest/pretty-format': 3.2.4
       '@vitest/runner': 3.2.4
       '@vitest/snapshot': 3.2.4
