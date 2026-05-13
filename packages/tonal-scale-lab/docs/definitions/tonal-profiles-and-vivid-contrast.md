@@ -165,6 +165,21 @@ resolved ratio so the visual result is not mistaken for a universal accessibilit
 The guarded profile is experimental. It exists so the lab can show the visual cost and benefit of
 making `vivid` a real foreground-safe contract instead of only a numeric range.
 
+## Commercial Profile Names
+
+The auto-anchor experimental profiles have UI-facing commercial names in addition to their technical
+labels:
+
+- `Striking` maps to `Auto Linear + Adaptive Vivid`.
+- `Balanced` maps to `Auto Soft Dark + Adaptive Vivid`.
+- `Sophisticated` maps to `Auto Mid Peak + Adaptive Vivid`.
+
+These names are display labels only. The technical profile labels and ids remain the stable
+implementation language until the lab promotes a final naming contract.
+
+`Balanced - Auto Soft Dark + Adaptive Vivid` is the current default profile shown when the lab UI
+loads.
+
 ## Saturation-Shaped Vivid Profiles
 
 The saturation-shaped vivid profiles still derive lightness from the same auto linear model used by

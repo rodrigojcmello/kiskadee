@@ -37,15 +37,20 @@ Current profiles:
   `55`.
 - `Linear Lightness`: keeps hue and saturation constant and maps lightness directly from tone
   position, so tone `0` is `L=100`, tone `5` is `L=95`, and tone `100` is `L=0`.
-- `Auto Linear + Adaptive Vivid`: places the input color in the emitted scale according to its
-  contrast behavior, uses the pre-vivid middle tones as a bridge into vivid, then applies an adaptive
-  white-text contrast target from tone `35` through tone `100`.
-- `Auto Soft Dark + Adaptive Vivid`: follows the same auto-anchor and vivid-contrast behavior as
-  `Auto Linear + Adaptive Vivid`, but reduces saturation on the dark side so deep tones feel closer
-  to the softer Fluent dark blues.
-- `Auto Mid Peak + Adaptive Vivid`: follows the same vivid-contrast behavior, but treats the
-  resolved input anchor as the saturation peak. Both very light and very dark tones become less
-  saturated.
+- `Striking - Auto Linear + Adaptive Vivid`: places the input color in the emitted scale according
+  to its contrast behavior, uses the pre-vivid middle tones as a bridge into vivid, then applies an
+  adaptive white-text contrast target from tone `35` through tone `100`.
+- `Balanced - Auto Soft Dark + Adaptive Vivid`: follows the same auto-anchor and vivid-contrast
+  behavior as `Striking - Auto Linear + Adaptive Vivid`, but reduces saturation on the dark side so
+  deep tones feel closer to the softer Fluent dark blues.
+- `Sophisticated - Auto Mid Peak + Adaptive Vivid`: follows the same vivid-contrast behavior, but
+  treats the resolved input anchor as the saturation peak. Both very light and very dark tones become
+  less saturated.
+
+For the auto-anchor experimental profiles, the first word is a UI-facing commercial name. The
+technical profile label after the dash remains the algorithmic description used for implementation
+and documentation. The lab UI currently opens with `Balanced - Auto Soft Dark + Adaptive Vivid`
+selected by default.
 
 The contrast-gated Kiskadee profiles use `auto-anchor`. If the input color cannot support white text
 at the vivid contrast threshold, it is anchored before tone `35` instead of being forced into the

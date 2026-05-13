@@ -148,6 +148,7 @@ export type VividContrastRule = {
 export type TonalProfile = {
   id: string;
   label: string;
+  commercialName?: string;
   mode: TonalProfileMode;
   inputStrategy: InputColorStrategy;
   baseTone: ScaleTone;

@@ -196,7 +196,7 @@ export default function TonalScaleLabPage() {
           >
             {TONAL_PROFILES.map((profile) => (
               <option key={profile.id} value={profile.id}>
-                {profile.label}
+                {formatProfileSelectLabel(profile)}
               </option>
             ))}
           </select>
@@ -520,6 +520,10 @@ function formatControlValue(value: number): string {
 
 function formatScaleLabel(color: TonalScaleColor): string {
   return color.label === `${color.tone}` ? `K${color.label}` : color.label;
+}
+
+function formatProfileSelectLabel(profile: { label: string; commercialName?: string }): string {
+  return profile.commercialName ? `${profile.commercialName} - ${profile.label}` : profile.label;
 }
 
 function formatInputStrategy(strategy: string): string {

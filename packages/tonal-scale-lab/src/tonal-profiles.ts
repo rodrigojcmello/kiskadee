@@ -92,6 +92,7 @@ const LINEAR_LIGHTNESS_PROFILE = {
 const LINEAR_WCAG_VIVID_PROFILE = {
   id: 'linear-wcag-vivid',
   label: 'Auto Linear + Adaptive Vivid',
+  commercialName: 'Striking',
   mode: 'linear-lightness',
   inputStrategy: 'auto-anchor',
   baseTone: KISKADEE_BASE_TONE,
@@ -103,6 +104,7 @@ const LINEAR_WCAG_VIVID_PROFILE = {
 const SOFT_DARK_WCAG_VIVID_PROFILE = {
   id: 'soft-dark-wcag-vivid',
   label: 'Auto Soft Dark + Adaptive Vivid',
+  commercialName: 'Balanced',
   mode: 'linear-lightness',
   inputStrategy: 'auto-anchor',
   baseTone: KISKADEE_BASE_TONE,
@@ -115,6 +117,7 @@ const SOFT_DARK_WCAG_VIVID_PROFILE = {
 const MID_PEAK_WCAG_VIVID_PROFILE = {
   id: 'mid-peak-wcag-vivid',
   label: 'Auto Mid Peak + Adaptive Vivid',
+  commercialName: 'Sophisticated',
   mode: 'linear-lightness',
   inputStrategy: 'auto-anchor',
   baseTone: KISKADEE_BASE_TONE,
@@ -134,10 +137,10 @@ export const TONAL_PROFILES = [
 
 export type TonalProfileId = (typeof TONAL_PROFILES)[number]['id'];
 
-export const DEFAULT_TONAL_PROFILE_ID: TonalProfileId = FLUENT_2_BLUE_PROFILE.id;
+export const DEFAULT_TONAL_PROFILE_ID: TonalProfileId = SOFT_DARK_WCAG_VIVID_PROFILE.id;
 
 export function resolveTonalProfile(id: string): TonalProfile {
-  return TONAL_PROFILES.find((profile) => profile.id === id) ?? FLUENT_2_BLUE_PROFILE;
+  return TONAL_PROFILES.find((profile) => profile.id === id) ?? SOFT_DARK_WCAG_VIVID_PROFILE;
 }
 
 function resolveKiskadeeReferencePosition(hex: string): number {
