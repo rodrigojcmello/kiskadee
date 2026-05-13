@@ -18,6 +18,8 @@ import {
   generateTonalScale,
   type HslColor,
   normalizeHexColor,
+  resolveAppliedVividContrastRule,
+  resolveInputAnchorTone,
   resolveProfileReferenceScale,
   resolveScaleDistribution,
   rgbDistance,
@@ -129,13 +131,17 @@ export default function TonalScaleLabPage() {
     () => generateTonalScale(baseHex, controls, selectedProfile, selectedDistribution),
     [baseHex, controls, selectedProfile, selectedDistribution]
   );
+  const inputAnchorTone = useMemo(
+    () => resolveInputAnchorTone(baseHex, selectedProfile, selectedDistribution),
+    [baseHex, selectedProfile, selectedDistribution]
+  );
   const baseColor =
-    generatedScale.find((entry) => entry.tone === selectedProfile.baseTone) ?? generatedScale[0];
-  const activeVividContrast =
-    selectedProfile.vividContrast &&
-    generatedScale.some((entry) => entry.tone === selectedProfile.vividContrast?.startTone)
-      ? selectedProfile.vividContrast
-      : undefined;
+    generatedScale.find((entry) => entry.tone === inputAnchorTone) ?? generatedScale[0];
+  const activeVividContrast = resolveAppliedVividContrastRule(
+    baseHex,
+    selectedProfile,
+    selectedDistribution
+  );
   const meanDistance = useMemo(() => {
     const total = generatedScale.reduce(
       (sum, entry) => sum + rgbDistance(entry.hex, referenceHexByTone[entry.tone]),
@@ -204,10 +210,11 @@ export default function TonalScaleLabPage() {
             aria-invalid={!normalizedHex}
           />
         </label>
-        <div className="base-chip" style={{ '--chip-color': baseHex } as CSSProperties}>
+        <div className="base-chip" style={{ '--chip-color': baseColor.hex } as CSSProperties}>
           <span>{baseColor.hex}</span>
           <strong>
-            {formatScaleLabel(baseColor)} · {formatHsl(baseColor.hsl)}
+            {formatInputStrategy(selectedProfile.inputStrategy)} · {formatScaleLabel(baseColor)} ·{' '}
+            {formatHsl(baseColor.hsl)}
           </strong>
         </div>
       </section>
@@ -229,7 +236,7 @@ export default function TonalScaleLabPage() {
             <span>S/L plane</span>
           </div>
           <CurveChart
-            baseTone={selectedProfile.baseTone}
+            baseTone={inputAnchorTone}
             generated={generatedScale}
             reference={referenceScale}
             bridgeStartTone={selectedDistribution.vividBridgeStartTone}
@@ -303,13 +310,9 @@ function ScaleStrip({
     <div className="scale-strip" style={{ '--scale-columns': colors.length } as CSSProperties}>
       {colors.map((color) => {
         const foregroundColor = resolveSwatchForeground(color, vividContrast);
-        const useDarkText = foregroundColor !== '#ffffff';
         const style = {
           backgroundColor: color.hex,
-          color: foregroundColor,
-          textShadow: useDarkText
-            ? '0 1px 2px rgb(255 255 255 / 40%)'
-            : '0 1px 2px rgb(0 0 0 / 35%)'
+          color: foregroundColor
         } as CSSProperties;
 
         return (
@@ -517,4 +520,16 @@ function formatControlValue(value: number): string {
 
 function formatScaleLabel(color: TonalScaleColor): string {
   return color.label === `${color.tone}` ? `K${color.label}` : color.label;
+}
+
+function formatInputStrategy(strategy: string): string {
+  if (strategy === 'auto-anchor') {
+    return 'auto anchor';
+  }
+
+  if (strategy === 'fixed-anchor') {
+    return 'fixed anchor';
+  }
+
+  return 'seed';
 }

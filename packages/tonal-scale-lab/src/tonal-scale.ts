@@ -121,20 +121,39 @@ export type CurveControls = {
 
 export type TonalProfileMode = 'reference-curve' | 'linear-lightness';
 
+export type InputColorStrategy = 'seed' | 'fixed-anchor' | 'auto-anchor';
+
+export type SaturationCurve =
+  | {
+      type: 'soft-dark';
+      darkMinRatio: number;
+      darkGamma: number;
+    }
+  | {
+      type: 'mid-peak';
+      lightMinRatio: number;
+      lightGamma: number;
+      darkMinRatio: number;
+      darkGamma: number;
+    };
+
 export type VividContrastRule = {
   bridgeStartTone?: ScaleTone;
   startTone: ScaleTone;
   foregroundHex: string;
   minRatio: number;
+  luminousMinRatio?: number;
 };
 
 export type TonalProfile = {
   id: string;
   label: string;
   mode: TonalProfileMode;
+  inputStrategy: InputColorStrategy;
   baseTone: ScaleTone;
   referenceScale: TonalScaleColor[];
   defaultControls: CurveControls;
+  saturationCurve?: SaturationCurve;
   vividContrast?: VividContrastRule;
 };
 
@@ -151,19 +170,54 @@ export function generateTonalScale(
   profile: TonalProfile,
   distribution: ScaleDistribution = DEFAULT_SCALE_DISTRIBUTION
 ): TonalScaleColor[] {
+  const inputAnchorTone = resolveInputAnchorTone(baseHex, profile, distribution);
+
   if (profile.mode === 'linear-lightness') {
     return applyVividContrastRule(
-      generateLinearLightnessScale(baseHex, controls, profile, distribution),
+      generateLinearLightnessScale(baseHex, controls, profile, distribution, inputAnchorTone),
       profile,
-      distribution
+      distribution,
+      inputAnchorTone
     );
   }
 
   return applyVividContrastRule(
     generateReferenceCurveScale(baseHex, controls, profile, distribution),
     profile,
-    distribution
+    distribution,
+    inputAnchorTone
   );
+}
+
+export function resolveInputAnchorTone(
+  baseHex: string,
+  profile: Pick<TonalProfile, 'baseTone' | 'inputStrategy' | 'vividContrast'>,
+  distribution: ScaleDistribution = DEFAULT_SCALE_DISTRIBUTION
+): ScaleTone {
+  if (profile.inputStrategy !== 'auto-anchor') {
+    return profile.baseTone;
+  }
+
+  return resolveNearestScaleTone(resolveAutoInputAnchorTone(baseHex, profile), distribution);
+}
+
+export function resolveAppliedVividContrastRule(
+  baseHex: string,
+  profile: Pick<TonalProfile, 'vividContrast'>,
+  distribution: ScaleDistribution = DEFAULT_SCALE_DISTRIBUTION
+): VividContrastRule | undefined {
+  const vividContrast = resolveVividContrastRule(profile.vividContrast, distribution, baseHex);
+
+  if (!vividContrast) {
+    return undefined;
+  }
+
+  const hasVividStart = distribution.slots.some(
+    (slot) => slot.position === vividContrast.startTone
+  );
+  const hasDarkEnd = distribution.slots.some((slot) => slot.position === 100);
+
+  return hasVividStart && hasDarkEnd ? vividContrast : undefined;
 }
 
 export function createReferenceScaleFromAnchors(
@@ -226,7 +280,8 @@ export function resolveProfileReferenceScale(
   return applyVividContrastRule(
     createReferenceScaleFromScale(profile.referenceScale, distribution),
     profile,
-    distribution
+    distribution,
+    resolveInputAnchorTone(baseHex, profile, distribution)
   );
 }
 
@@ -395,15 +450,23 @@ function generateLinearLightnessScale(
   baseHex: string,
   controls: CurveControls,
   profile: TonalProfile,
-  distribution: ScaleDistribution
+  distribution: ScaleDistribution,
+  inputAnchorTone: ScaleTone
 ): TonalScaleColor[] {
   const baseHsl = hexToHsl(baseHex);
+  const anchorLightness = profile.inputStrategy === 'seed' ? 100 - profile.baseTone : baseHsl.l;
 
   return distribution.slots.map((slot) => {
     const hsl = {
       h: baseHsl.h,
-      s: clamp(baseHsl.s * controls.saturationScale, 0, 100),
-      l: resolveLinearLightness(slot.position, profile.baseTone, controls)
+      s: clamp(
+        baseHsl.s *
+          controls.saturationScale *
+          resolveLinearSaturationMultiplier(slot.position, profile, inputAnchorTone),
+        0,
+        100
+      ),
+      l: resolveLinearLightness(slot.position, inputAnchorTone, anchorLightness, controls)
     };
 
     return {
@@ -419,9 +482,15 @@ function generateLinearLightnessScale(
 function applyVividContrastRule(
   scale: TonalScaleColor[],
   profile: Pick<TonalProfile, 'vividContrast'>,
-  distribution: ScaleDistribution
+  distribution: ScaleDistribution,
+  inputAnchorTone: ScaleTone
 ): TonalScaleColor[] {
-  const vividContrast = resolveVividContrastRule(profile.vividContrast, distribution);
+  const inputAnchor = scale.find((color) => color.tone === inputAnchorTone);
+  const vividContrast = resolveVividContrastRule(
+    profile.vividContrast,
+    distribution,
+    inputAnchor?.hex
+  );
 
   if (!vividContrast) {
     return scale;
@@ -444,13 +513,31 @@ function applyVividContrastRule(
     resolveMaxLightnessForContrast(vividEnd.hsl, foregroundHex, minRatio)
   );
 
+  const shouldPreserveAnchor =
+    inputAnchor &&
+    inputAnchor.tone >= startTone &&
+    contrastRatio(inputAnchor.hex, foregroundHex) >= minRatio;
+
   const adjustedScale = scale.map((color) => {
     if (color.tone < startTone) {
       return color;
     }
 
-    const vividProgress = normalizedProgress(color.tone, startTone, 100);
-    const targetLightness = interpolate(vividStartLightness, vividEndLightness, vividProgress);
+    const targetLightness = shouldPreserveAnchor
+      ? resolveAnchoredVividLightness({
+          tone: color.tone,
+          startTone,
+          endTone: 100,
+          startLightness: vividStartLightness,
+          anchorTone: inputAnchor.tone,
+          anchorLightness: inputAnchor.hsl.l,
+          endLightness: vividEndLightness
+        })
+      : interpolate(
+          vividStartLightness,
+          vividEndLightness,
+          normalizedProgress(color.tone, startTone, 100)
+        );
     const maxAccessibleLightness = resolveMaxLightnessForContrast(
       color.hsl,
       foregroundHex,
@@ -470,12 +557,13 @@ function applyVividContrastRule(
     };
   });
 
-  return applyPreVividBridge(adjustedScale, vividContrast);
+  return applyPreVividBridge(adjustedScale, vividContrast, inputAnchorTone);
 }
 
 function resolveVividContrastRule(
   rule: VividContrastRule | undefined,
-  distribution: ScaleDistribution
+  distribution: ScaleDistribution,
+  inputHex?: string
 ): VividContrastRule | undefined {
   if (!rule) {
     return undefined;
@@ -483,11 +571,16 @@ function resolveVividContrastRule(
 
   return {
     ...rule,
-    bridgeStartTone: distribution.vividBridgeStartTone ?? rule.bridgeStartTone
+    bridgeStartTone: distribution.vividBridgeStartTone ?? rule.bridgeStartTone,
+    minRatio: inputHex ? resolveAdaptiveVividMinRatio(inputHex, rule) : rule.minRatio
   };
 }
 
-function applyPreVividBridge(scale: TonalScaleColor[], rule: VividContrastRule): TonalScaleColor[] {
+function applyPreVividBridge(
+  scale: TonalScaleColor[],
+  rule: VividContrastRule,
+  inputAnchorTone: ScaleTone
+): TonalScaleColor[] {
   const { bridgeStartTone, startTone } = rule;
 
   if (bridgeStartTone === undefined) {
@@ -498,9 +591,20 @@ function applyPreVividBridge(scale: TonalScaleColor[], rule: VividContrastRule):
   const vividStartIndex = scale.findIndex((color) => color.tone === startTone);
   const bridgeStart = scale[bridgeStartIndex];
   const vividStart = scale[vividStartIndex];
+  const inputAnchorIndex = scale.findIndex((color) => color.tone === inputAnchorTone);
+  const inputAnchor = scale[inputAnchorIndex];
 
   if (!bridgeStart || !vividStart || bridgeStartIndex >= vividStartIndex) {
     return scale;
+  }
+
+  if (inputAnchor && inputAnchorIndex > bridgeStartIndex && inputAnchorIndex < vividStartIndex) {
+    return interpolateBridgeAroundAnchor({
+      scale,
+      bridgeStartIndex,
+      inputAnchorIndex,
+      vividStartIndex
+    });
   }
 
   return scale.map((color, index) => {
@@ -523,6 +627,66 @@ function applyPreVividBridge(scale: TonalScaleColor[], rule: VividContrastRule):
       hsl
     };
   });
+}
+
+function interpolateBridgeAroundAnchor(params: {
+  scale: TonalScaleColor[];
+  bridgeStartIndex: number;
+  inputAnchorIndex: number;
+  vividStartIndex: number;
+}): TonalScaleColor[] {
+  const { scale, bridgeStartIndex, inputAnchorIndex, vividStartIndex } = params;
+  const bridgeStart = scale[bridgeStartIndex];
+  const inputAnchor = scale[inputAnchorIndex];
+  const vividStart = scale[vividStartIndex];
+
+  return scale.map((color, index) => {
+    if (index <= bridgeStartIndex || index === inputAnchorIndex || index >= vividStartIndex) {
+      return color;
+    }
+
+    const segmentStart = index < inputAnchorIndex ? bridgeStart : inputAnchor;
+    const segmentEnd = index < inputAnchorIndex ? inputAnchor : vividStart;
+    const segmentStartIndex = index < inputAnchorIndex ? bridgeStartIndex : inputAnchorIndex;
+    const segmentEndIndex = index < inputAnchorIndex ? inputAnchorIndex : vividStartIndex;
+    const progress = normalizedProgress(index, segmentStartIndex, segmentEndIndex);
+    const hsl = {
+      h: interpolateHue(segmentStart.hsl, segmentEnd.hsl, progress),
+      s: interpolate(segmentStart.hsl.s, segmentEnd.hsl.s, progress),
+      l: interpolate(segmentStart.hsl.l, segmentEnd.hsl.l, progress)
+    };
+
+    return {
+      id: color.id,
+      label: color.label,
+      tone: color.tone,
+      hex: hslToHex(hsl),
+      hsl
+    };
+  });
+}
+
+function resolveAnchoredVividLightness(params: {
+  tone: ScaleTone;
+  startTone: ScaleTone;
+  endTone: ScaleTone;
+  startLightness: number;
+  anchorTone: ScaleTone;
+  anchorLightness: number;
+  endLightness: number;
+}): number {
+  const { tone, startTone, endTone, startLightness, anchorTone, anchorLightness, endLightness } =
+    params;
+
+  if (tone <= anchorTone) {
+    return interpolate(
+      startLightness,
+      anchorLightness,
+      normalizedProgress(tone, startTone, anchorTone)
+    );
+  }
+
+  return interpolate(anchorLightness, endLightness, normalizedProgress(tone, anchorTone, endTone));
 }
 
 function resolveMaxLightnessForContrast(
@@ -619,30 +783,105 @@ function resolveReferenceSideProgress(params: {
 
 function resolveLinearLightness(
   tone: ScaleTone,
-  baseTone: ScaleTone,
+  anchorTone: ScaleTone,
+  anchorLightness: number,
   controls: CurveControls
 ): number {
-  const baseLightness = 100 - baseTone;
-
-  if (tone === baseTone) {
-    return baseLightness;
+  if (tone === anchorTone) {
+    return anchorLightness;
   }
 
-  if (tone < baseTone) {
-    const progress = normalizedProgress(baseTone - tone, 0, baseTone);
+  if (tone < anchorTone) {
+    const progress = normalizedProgress(anchorTone - tone, 0, anchorTone);
     return interpolate(
-      baseLightness,
+      anchorLightness,
       controls.lightCeilingLightness,
       progress ** controls.lightLightnessGamma
     );
   }
 
-  const progress = normalizedProgress(tone - baseTone, 0, 100 - baseTone);
+  const progress = normalizedProgress(tone - anchorTone, 0, 100 - anchorTone);
   return interpolate(
-    baseLightness,
+    anchorLightness,
     controls.darkFloorLightness,
     progress ** controls.darkLightnessGamma
   );
+}
+
+function resolveLinearSaturationMultiplier(
+  tone: ScaleTone,
+  profile: TonalProfile,
+  inputAnchorTone: ScaleTone
+): number {
+  const curve = profile.saturationCurve;
+
+  if (!curve) {
+    return 1;
+  }
+
+  if (curve.type === 'soft-dark') {
+    if (tone <= inputAnchorTone) {
+      return 1;
+    }
+
+    const darkProgress = normalizedProgress(tone, inputAnchorTone, 100);
+    return interpolate(1, curve.darkMinRatio, darkProgress ** curve.darkGamma);
+  }
+
+  if (tone < inputAnchorTone) {
+    const lightProgress = normalizedProgress(inputAnchorTone - tone, 0, inputAnchorTone);
+    return interpolate(1, curve.lightMinRatio, lightProgress ** curve.lightGamma);
+  }
+
+  const darkProgress = normalizedProgress(tone, inputAnchorTone, 100);
+  return interpolate(1, curve.darkMinRatio, darkProgress ** curve.darkGamma);
+}
+
+function resolveAutoInputAnchorTone(
+  baseHex: string,
+  profile: Pick<TonalProfile, 'vividContrast'>
+): ScaleTone {
+  const minContrast = profile.vividContrast?.minRatio ?? 4.5;
+  const vividStartTone = profile.vividContrast?.startTone ?? 35;
+  const whiteContrast = contrastRatio(baseHex, '#ffffff');
+
+  if (whiteContrast < minContrast) {
+    return clamp((1 - relativeLuminance(baseHex)) * 100, 1, vividStartTone - 5);
+  }
+
+  const contrastProgress = normalizedProgress(
+    Math.log(whiteContrast),
+    Math.log(minContrast),
+    Math.log(21)
+  );
+  return interpolate(vividStartTone, 100, contrastProgress ** 0.55);
+}
+
+function resolveAdaptiveVividMinRatio(inputHex: string, rule: VividContrastRule): number {
+  if (rule.luminousMinRatio === undefined) {
+    return rule.minRatio;
+  }
+
+  const inputContrast = contrastRatio(inputHex, rule.foregroundHex);
+  return roundChannel(clamp(inputContrast, rule.luminousMinRatio, rule.minRatio));
+}
+
+function resolveNearestScaleTone(
+  targetTone: ScaleTone,
+  distribution: ScaleDistribution
+): ScaleTone {
+  const candidates = distribution.slots.filter(
+    (slot) => slot.position !== 0 && slot.position !== 100
+  );
+  const nearest = candidates.reduce(
+    (current, slot) =>
+      Math.abs(slot.position - targetTone) < Math.abs(current.position - targetTone)
+        ? slot
+        : current,
+    candidates[0] ?? distribution.slots[0]
+  );
+
+  return nearest.position;
 }
 
 function createHslByTone(scale: TonalScaleColor[]): Record<ScaleTone, HslColor> {

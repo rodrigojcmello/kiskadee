@@ -47,17 +47,33 @@ const FLUENT_2_BLUE_REFERENCE_SCALE = createReferenceAnchorScale([
 
 const LINEAR_LIGHTNESS_REFERENCE_SCALE = createLinearReferenceScale(FLUENT_BLUE_HEX);
 
-const VIVID_WHITE_TEXT_CONTRAST = {
+const ADAPTIVE_VIVID_WHITE_TEXT_CONTRAST = {
   bridgeStartTone: 15,
   startTone: 35,
   foregroundHex: '#ffffff',
-  minRatio: 4.5
+  minRatio: 4.5,
+  luminousMinRatio: 3
+} as const;
+
+const SOFT_DARK_SATURATION_CURVE = {
+  type: 'soft-dark',
+  darkMinRatio: 0.64,
+  darkGamma: 0.8
+} as const;
+
+const MID_PEAK_SATURATION_CURVE = {
+  type: 'mid-peak',
+  lightMinRatio: 0.42,
+  lightGamma: 1.15,
+  darkMinRatio: 0.64,
+  darkGamma: 0.8
 } as const;
 
 const FLUENT_2_BLUE_PROFILE = {
   id: 'fluent-2-blue',
   label: 'Fluent 2 Blue',
   mode: 'reference-curve',
+  inputStrategy: 'fixed-anchor',
   baseTone: KISKADEE_BASE_TONE,
   referenceScale: FLUENT_2_BLUE_REFERENCE_SCALE,
   defaultControls: createDefaultCurveControls({ referenceScale: FLUENT_2_BLUE_REFERENCE_SCALE })
@@ -67,6 +83,7 @@ const LINEAR_LIGHTNESS_PROFILE = {
   id: 'linear-lightness',
   label: 'Linear Lightness',
   mode: 'linear-lightness',
+  inputStrategy: 'seed',
   baseTone: KISKADEE_BASE_TONE,
   referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE,
   defaultControls: createDefaultCurveControls({ referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE })
@@ -74,18 +91,45 @@ const LINEAR_LIGHTNESS_PROFILE = {
 
 const LINEAR_WCAG_VIVID_PROFILE = {
   id: 'linear-wcag-vivid',
-  label: 'Linear + WCAG Vivid',
+  label: 'Auto Linear + Adaptive Vivid',
   mode: 'linear-lightness',
+  inputStrategy: 'auto-anchor',
   baseTone: KISKADEE_BASE_TONE,
   referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE,
   defaultControls: createDefaultCurveControls({ referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE }),
-  vividContrast: VIVID_WHITE_TEXT_CONTRAST
+  vividContrast: ADAPTIVE_VIVID_WHITE_TEXT_CONTRAST
+} satisfies TonalProfile;
+
+const SOFT_DARK_WCAG_VIVID_PROFILE = {
+  id: 'soft-dark-wcag-vivid',
+  label: 'Auto Soft Dark + Adaptive Vivid',
+  mode: 'linear-lightness',
+  inputStrategy: 'auto-anchor',
+  baseTone: KISKADEE_BASE_TONE,
+  referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE,
+  defaultControls: createDefaultCurveControls({ referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE }),
+  saturationCurve: SOFT_DARK_SATURATION_CURVE,
+  vividContrast: ADAPTIVE_VIVID_WHITE_TEXT_CONTRAST
+} satisfies TonalProfile;
+
+const MID_PEAK_WCAG_VIVID_PROFILE = {
+  id: 'mid-peak-wcag-vivid',
+  label: 'Auto Mid Peak + Adaptive Vivid',
+  mode: 'linear-lightness',
+  inputStrategy: 'auto-anchor',
+  baseTone: KISKADEE_BASE_TONE,
+  referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE,
+  defaultControls: createDefaultCurveControls({ referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE }),
+  saturationCurve: MID_PEAK_SATURATION_CURVE,
+  vividContrast: ADAPTIVE_VIVID_WHITE_TEXT_CONTRAST
 } satisfies TonalProfile;
 
 export const TONAL_PROFILES = [
   FLUENT_2_BLUE_PROFILE,
   LINEAR_LIGHTNESS_PROFILE,
-  LINEAR_WCAG_VIVID_PROFILE
+  LINEAR_WCAG_VIVID_PROFILE,
+  SOFT_DARK_WCAG_VIVID_PROFILE,
+  MID_PEAK_WCAG_VIVID_PROFILE
 ] as const;
 
 export type TonalProfileId = (typeof TONAL_PROFILES)[number]['id'];
