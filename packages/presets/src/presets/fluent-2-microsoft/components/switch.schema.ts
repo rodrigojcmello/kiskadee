@@ -79,9 +79,9 @@ export function createFluent2MicrosoftSwitchSchema({
                       borderColor: {
                         neutral: {
                           medium: {
-                            rest: '#616161',
-                            hover: { ref: '#575757' },
-                            focus: { ref: '#616161' },
+                            rest: '#616161', // cinza carvão (tom escuro)
+                            hover: { ref: '#575757' }, // cinza carvão (tom muito escuro)
+                            focus: { ref: '#616161' }, // cinza carvão (tom escuro)
                             pressed: { ref: neutral70 },
                             selected: {
                               rest: { ref: transparent },
@@ -89,7 +89,7 @@ export function createFluent2MicrosoftSwitchSchema({
                               focus: { ref: transparent },
                               pressed: { ref: transparent }
                             },
-                            disabled: { ref: '#D1D1D1' }
+                            disabled: { ref: '#D1D1D1' } // cinza claro
                           }
                         }
                       }
@@ -114,10 +114,10 @@ export function createFluent2MicrosoftSwitchSchema({
                       boxColor: {
                         neutral: {
                           medium: {
-                            rest: '#616161',
-                            hover: { ref: '#424242' },
-                            focus: { ref: '#616161' },
-                            pressed: { ref: '#424242' },
+                            rest: '#616161', // cinza carvão (tom escuro)
+                            hover: { ref: '#424242' }, // cinza grafite (tom bem escuro)
+                            focus: { ref: '#616161' }, // cinza carvão (tom escuro)
+                            pressed: { ref: '#424242' }, // cinza grafite (tom bem escuro)
                             selected: {
                               rest: { ref: white },
                               hover: { ref: white },
@@ -161,7 +161,7 @@ export function createFluent2MicrosoftSwitchSchema({
                       textColor: {
                         neutral: {
                           medium: {
-                            rest: '#242424',
+                            rest: '#242424', // preto acinzentado (quase preto)
                             disabled: { ref: neutral25 }
                           }
                         }
