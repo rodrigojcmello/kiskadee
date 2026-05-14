@@ -84,14 +84,19 @@ contrast and bridge adjustments:
 
 - Default chromatic spacing: at least `1.5` OKL lightness points from the previous emitted slot
   through the active chromatic range.
-- Luminous inputs, currently input white contrast `<= 2.4:1`: at least `2` OKL lightness points
-  through `K16`, then the same `1.5` default used by the rest of the chromatic range.
 - `K0` is still an absolute light cap, but the transition into `K1` uses the active spacing
   threshold so the first chromatic color does not visually merge into white.
 - `K100` is an absolute dark cap; the `K95 -> K100` jump is a cap transition, not a chromatic
   spacing target.
 - This is a lightness-spacing rule, not a contrast rule, and it can be revised or removed if the
   visual result proves too rigid.
+
+Luminous inputs, currently input white contrast `<= 2.4:1`, no longer receive a stronger lightness
+step. They keep the same `1.5` OKL lightness spacing as every other hue. Instead, the commercial
+OKLCH profiles cap the initial chroma ramp through `K10`: chroma starts at `30%` of the input OKL
+chroma and eases toward `90%` by `K10` with `progressGamma: 0.55`. This replaced the earlier
+`2`-point luminous lightness step because very saturated yellow became too vivid too early in
+`K1..K3`, while non-luminous colors such as the reference blue were already reading well.
 
 Current color findings:
 

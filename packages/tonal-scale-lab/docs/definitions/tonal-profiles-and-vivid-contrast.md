@@ -169,25 +169,17 @@ uses uneven numeric gaps.
 
 The current commercial auto-fit profiles also enforce a minimum OKL lightness step between
 neighboring emitted Kiskadee slots after the contrast guard and pre-vivid bridge have run. The rule
-is intentionally simple: one luminous exception for the beginning of the chromatic scale, and one
-default threshold for the rest of the chromatic scale. It does not define separate medium, dark,
-medium-luminous, or dark-luminous categories.
+is intentionally simple: one default threshold for the full chromatic scale. It does not define
+separate light, medium, dark, luminous-medium, or luminous-dark categories.
 
 Current experimental thresholds:
 
 - every chromatic target from the first non-cap slot through the last non-cap slot uses at least
   `1.5` OKL lightness points from the previous emitted slot;
-- luminous inputs use `2` OKL lightness points through `K16`, then fall back to the same `1.5`
-  default used by every other chromatic target;
 - the transition from absolute `K0` into `K1` also uses the active spacing threshold so the first
   chromatic color does not visually merge into white;
 - `K100` remains an absolute dark cap; the `K95 -> K100` jump is a cap transition and is not used as
   a chromatic-spacing target.
-
-An input is treated as luminous when its contrast against white is less than or equal to `2.4:1`.
-This currently catches colors such as yellow, cyan, lime, and orange, whose high relative luminance
-makes the first light slots look too much like a soft gradient even when HSL lightness deltas are
-already larger than `1`.
 
 This rule measures OKL lightness delta in the commercial OKLCH profiles, not contrast ratio. Its job
 is to reduce visually compressed ramps where adjacent slots look like a single gradient. The contrast
@@ -197,6 +189,31 @@ The rule is intentionally experimental and reversible. In `auto-fit` profiles, i
 an emitted slot away from the exact input color because the input fit is only reported after spacing
 has finished. `fixed-anchor` profiles remain the exception when an external reference scale requires
 the input color to survive at a known slot.
+
+## Luminous Chroma Ramp Experiment
+
+The commercial OKLCH profiles also have a luminous-only chroma ramp for the first light slots. This
+replaces the earlier luminous lightness exception that forced `2` OKL lightness points through
+`K16`.
+
+The old lightness exception helped avoid foggy light ramps, but very saturated yellow showed a new
+failure mode: sRGB gamut fitting reduced `K1` chroma heavily, then allowed `K2` and `K3` to jump
+toward high chroma too quickly. The result felt over-contrasted and neon in the light range even
+though the rest of the `Balanced` scale was working.
+
+Current luminous chroma-ramp thresholds:
+
+- an input is luminous when its contrast against white is less than or equal to `2.4:1`;
+- the ramp applies only in OKLCH commercial profiles;
+- it runs from the first chromatic slot through `K10`;
+- it caps initial chroma at `30%` of the input OKL chroma;
+- it eases toward `90%` of the input OKL chroma by `K10`;
+- it uses `progressGamma: 0.55` so chroma returns early without recreating the abrupt `K1..K3`
+  jump.
+
+This currently catches colors such as yellow, cyan, lime, and orange. Non-luminous colors, including
+the reference blue `#0f6cbd`, keep the same lightness and chroma behavior they had before this
+experiment.
 
 ## Source Scale, Profile, And Output Distribution
 
@@ -221,8 +238,9 @@ then resolves a contrast-safe lightness range:
 5. If configured, interpolate the pre-vivid bridge from the preserved light range into the safe vivid
    start.
 6. If configured, enforce the minimum lightness step threshold in the profile's interpolation space,
-   with the luminous initial-range exception when applicable.
-7. Resolve the input color's displayed fit from the final generated scale. This final fit is not used
+   using the same threshold for the full chromatic range.
+7. If configured, cap the initial chroma ramp for luminous OKLCH inputs.
+8. Resolve the input color's displayed fit from the final generated scale. This final fit is not used
    to regenerate the scale.
 
 This makes the vivid track testable while keeping the fine light range stable and using the sparse

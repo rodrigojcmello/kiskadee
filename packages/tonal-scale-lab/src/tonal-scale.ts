@@ -171,11 +171,14 @@ export type VividContrastRule = {
 
 export type MinimumLightnessStepRule = {
   chromaticMinStep: number;
-  luminousInitialRange?: {
-    maxWhiteContrast: number;
-    endTone: ScaleTone;
-    minStep: number;
-  };
+};
+
+export type LuminousChromaRampRule = {
+  maxWhiteContrast: number;
+  endTone: ScaleTone;
+  startChromaRatio: number;
+  endChromaRatio: number;
+  progressGamma: number;
 };
 
 export type TonalProfile = {
@@ -191,6 +194,7 @@ export type TonalProfile = {
   saturationCurve?: SaturationCurve;
   vividContrast?: VividContrastRule;
   minimumLightnessStep?: MinimumLightnessStepRule;
+  luminousChromaRamp?: LuminousChromaRampRule;
 };
 
 export type TonalAnchor = {
@@ -242,10 +246,18 @@ export function generateTonalScale(
           )
       : generateReferenceCurveScale(baseHex, controls, profile, distribution);
 
-  return applyMinimumLightnessSteps(
-    applyVividContrastRule(scale, profile, distribution, baseHex),
+  const vividScale = applyVividContrastRule(scale, profile, distribution, baseHex);
+  const steppedScale = applyMinimumLightnessSteps(
+    vividScale,
     distribution,
     profile.minimumLightnessStep,
+    colorSpace
+  );
+
+  return applyLuminousChromaRamp(
+    steppedScale,
+    distribution,
+    profile.luminousChromaRamp,
     colorSpace,
     baseHex
   );
@@ -544,8 +556,7 @@ function generateReferenceCurveScale(
     .sort((left, right) => left.tone - right.tone);
   const profileReferenceHslByTone = createHslByTone(profile.referenceScale);
   const referenceBaseHsl = profileReferenceHslByTone[profile.baseTone];
-  const referenceLightHsl =
-    chromaticProfileReferenceScale[0]?.hsl ?? profileReferenceHslByTone[0];
+  const referenceLightHsl = chromaticProfileReferenceScale[0]?.hsl ?? profileReferenceHslByTone[0];
   const referenceDarkHsl =
     chromaticProfileReferenceScale[chromaticProfileReferenceScale.length - 1]?.hsl ??
     profileReferenceHslByTone[100];
@@ -762,11 +773,11 @@ function applyVividContrastRule(
           anchorLightness: resolveScaleColorLightness(preservedAnchor, colorSpace),
           endLightness: vividEndLightness
         })
-        : interpolate(
-            vividStartLightness,
-            vividEndLightness,
-            normalizedProgress(color.tone, startTone, chromaticDarkEndTone)
-          );
+      : interpolate(
+          vividStartLightness,
+          vividEndLightness,
+          normalizedProgress(color.tone, startTone, chromaticDarkEndTone)
+        );
     const maxAccessibleLightness = resolveMaxLightnessForContrast(
       color,
       colorSpace,
@@ -903,14 +914,12 @@ function applyMinimumLightnessSteps(
   scale: TonalScaleColor[],
   distribution: ScaleDistribution,
   rule: MinimumLightnessStepRule | undefined,
-  colorSpace: ColorInterpolationSpace,
-  inputHex: string
+  colorSpace: ColorInterpolationSpace
 ): TonalScaleColor[] {
   if (!rule) {
     return scale;
   }
 
-  const inputWhiteContrast = contrastRatio(inputHex, '#ffffff');
   const chromaticLightEndTone = resolveChromaticLightEndTone(distribution);
   const chromaticDarkEndTone = resolveChromaticDarkEndTone(distribution);
   const adjustedById = new Map<string, TonalScaleColor>();
@@ -921,10 +930,7 @@ function applyMinimumLightnessSteps(
       !isAbsoluteScaleCapTone(color.tone) &&
       color.tone >= chromaticLightEndTone &&
       color.tone <= chromaticDarkEndTone;
-    const minStep =
-      previous && isChromaticStepTarget
-        ? resolveMinimumLightnessStep(color.tone, rule, inputWhiteContrast)
-        : undefined;
+    const minStep = previous && isChromaticStepTarget ? rule.chromaticMinStep : undefined;
     const targetLightness =
       previous && minStep !== undefined
         ? Math.min(
@@ -946,20 +952,54 @@ function applyMinimumLightnessSteps(
   return scale.map((color) => adjustedById.get(color.id) ?? color);
 }
 
-function resolveMinimumLightnessStep(
-  currentTone: ScaleTone,
-  rule: MinimumLightnessStepRule,
-  inputWhiteContrast: number
-): number | undefined {
+function applyLuminousChromaRamp(
+  scale: TonalScaleColor[],
+  distribution: ScaleDistribution,
+  rule: LuminousChromaRampRule | undefined,
+  colorSpace: ColorInterpolationSpace,
+  inputHex: string
+): TonalScaleColor[] {
   if (
-    rule.luminousInitialRange &&
-    inputWhiteContrast <= rule.luminousInitialRange.maxWhiteContrast &&
-    currentTone <= rule.luminousInitialRange.endTone
+    !rule ||
+    colorSpace !== 'oklch' ||
+    contrastRatio(inputHex, '#ffffff') > rule.maxWhiteContrast
   ) {
-    return rule.luminousInitialRange.minStep;
+    return scale;
   }
 
-  return rule.chromaticMinStep;
+  const inputOklch = hexToOklch(inputHex);
+
+  if (inputOklch.c === 0) {
+    return scale;
+  }
+
+  const chromaticLightEndTone = resolveChromaticLightEndTone(distribution);
+  const rampEndTone = Math.min(rule.endTone, resolveChromaticDarkEndTone(distribution));
+
+  return scale.map((color) => {
+    if (
+      isAbsoluteScaleCapTone(color.tone) ||
+      color.tone < chromaticLightEndTone ||
+      color.tone > rampEndTone
+    ) {
+      return color;
+    }
+
+    const progress = normalizedProgress(color.tone, chromaticLightEndTone, rampEndTone);
+    const chromaRatio = interpolate(
+      rule.startChromaRatio,
+      rule.endChromaRatio,
+      progress ** rule.progressGamma
+    );
+    const maxChroma = inputOklch.c * chromaRatio;
+    const oklch = hexToOklch(color.hex);
+
+    if (oklch.c <= maxChroma) {
+      return color;
+    }
+
+    return createScaleColorFromHex(color, oklchToHex({ ...oklch, c: maxChroma }));
+  });
 }
 
 function resolveScaleColorLightness(

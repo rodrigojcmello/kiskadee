@@ -1,10 +1,11 @@
 import {
+  type ColorInterpolationSpace,
   createDefaultCurveControls,
   DEFAULT_SCALE_DISTRIBUTION,
   hexToHsl,
   hslToHex,
   KISKADEE_BASE_TONE,
-  type ColorInterpolationSpace,
+  type LuminousChromaRampRule,
   type MinimumLightnessStepRule,
   type TonalProfile,
   type TonalScaleColor
@@ -58,13 +59,16 @@ const FIXED_VIVID_WHITE_TEXT_CONTRAST = {
 } as const;
 
 const EXPERIMENTAL_MINIMUM_LIGHTNESS_STEP = {
-  chromaticMinStep: 1.5,
-  luminousInitialRange: {
-    maxWhiteContrast: 2.4,
-    endTone: 16,
-    minStep: 2
-  }
+  chromaticMinStep: 1.5
 } as const satisfies MinimumLightnessStepRule;
+
+const EXPERIMENTAL_LUMINOUS_CHROMA_RAMP = {
+  maxWhiteContrast: 2.4,
+  endTone: 10,
+  startChromaRatio: 0.3,
+  endChromaRatio: 0.9,
+  progressGamma: 0.55
+} as const satisfies LuminousChromaRampRule;
 
 const SOFT_DARK_SATURATION_CURVE = {
   type: 'soft-dark',
@@ -111,6 +115,7 @@ const LINEAR_WCAG_VIVID_PROFILE = {
   referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE,
   defaultControls: createDefaultCurveControls({ referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE }),
   minimumLightnessStep: EXPERIMENTAL_MINIMUM_LIGHTNESS_STEP,
+  luminousChromaRamp: EXPERIMENTAL_LUMINOUS_CHROMA_RAMP,
   vividContrast: FIXED_VIVID_WHITE_TEXT_CONTRAST
 } satisfies TonalProfile;
 
@@ -132,6 +137,7 @@ const SOFT_DARK_WCAG_VIVID_PROFILE = {
   },
   saturationCurve: SOFT_DARK_SATURATION_CURVE,
   minimumLightnessStep: EXPERIMENTAL_MINIMUM_LIGHTNESS_STEP,
+  luminousChromaRamp: EXPERIMENTAL_LUMINOUS_CHROMA_RAMP,
   vividContrast: FIXED_VIVID_WHITE_TEXT_CONTRAST
 } satisfies TonalProfile;
 
@@ -147,6 +153,7 @@ const MID_PEAK_WCAG_VIVID_PROFILE = {
   defaultControls: createDefaultCurveControls({ referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE }),
   saturationCurve: MID_PEAK_SATURATION_CURVE,
   minimumLightnessStep: EXPERIMENTAL_MINIMUM_LIGHTNESS_STEP,
+  luminousChromaRamp: EXPERIMENTAL_LUMINOUS_CHROMA_RAMP,
   vividContrast: FIXED_VIVID_WHITE_TEXT_CONTRAST
 } satisfies TonalProfile;
 

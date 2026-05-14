@@ -53,7 +53,8 @@ For a commercial auto-fit profile:
 5. The pre-vivid bridge interpolates through OKLCH from the preserved bridge start to the adjusted
    vivid start.
 6. The minimum lightness step uses OKL lightness, not HSL lightness.
-7. The input fit is resolved only after the scale is complete.
+7. If the input is luminous, the initial chroma ramp caps only the first light chromatic slots.
+8. The input fit is resolved only after the scale is complete.
 
 Contrast is still measured with WCAG relative luminance against the configured foreground. OKLCH is
 the generation and interpolation space; it does not replace the contrast formula.
@@ -68,11 +69,29 @@ The commercial profiles keep the same simple spacing policy, but the unit is now
 Current commercial thresholds:
 
 - every chromatic target from the first non-cap slot through the last non-cap slot uses at least
-  `1.5` OKL lightness points from the previous emitted slot;
-- luminous inputs use `2` OKL lightness points through `K16`, then fall back to the same `1.5`
-  default.
+  `1.5` OKL lightness points from the previous emitted slot.
+
+Earlier tests used a stronger luminous lightness exception: `2` OKL lightness points through `K16`.
+That avoided foggy light ramps, but very saturated yellow exposed the cost: the light tones dropped
+too quickly while sRGB gamut fitting allowed chroma to jump abruptly between `K1`, `K2`, and `K3`.
+
+## Luminous Initial Chroma Ramp
 
 An input is treated as luminous when its contrast against white is less than or equal to `2.4:1`.
+For those inputs, the commercial profiles now keep the same `1.5` OKL lightness spacing as every
+other hue and instead cap the initial OKL chroma ramp.
+
+Current luminous chroma-ramp experiment:
+
+- active only for OKLCH commercial profiles;
+- applies from the first chromatic slot through `K10`;
+- caps chroma to `30%` of input OKL chroma at the first chromatic slot;
+- eases toward `90%` of input OKL chroma by `K10`;
+- uses `progressGamma: 0.55` so chroma returns early without recreating the abrupt `K1..K3` jump.
+
+This is intentionally a chroma rule, not another lightness rule. The goal is to preserve the blue
+and non-luminous behavior that already works while preventing luminous yellows from becoming
+neon too early in the light range.
 
 ## Balanced Dark Endpoint
 
