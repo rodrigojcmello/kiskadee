@@ -10,9 +10,10 @@ replace blue with red, orange, green, or another generated scale without rewriti
 
 `K<n>` names a Kiskadee tonal slot.
 
-- `K0` is the light end of the scale.
-- `K100` is the dark end of the scale.
-- Intermediate values such as `K1`, `K30`, and `K55` are normalized public positions.
+- `K0` is the absolute light cap of the scale.
+- `K100` is the absolute dark cap of the scale.
+- Intermediate values such as `K1`, `K30`, `K55`, and `K95` are normalized public positions in the
+  generated chromatic family.
 
 The `K` prefix is only slot language. It does not mean primary, green, red, brand, or any other
 semantic color family by itself.
@@ -144,4 +145,3 @@ This means:
 
 The stable preset contract should be a named tonal profile plus named tonal anchors and state
 mappings. The lab can remain flexible; shipped presets should be explicit.
-

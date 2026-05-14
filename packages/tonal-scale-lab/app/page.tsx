@@ -19,9 +19,11 @@ import {
   type HslColor,
   normalizeHexColor,
   resolveAppliedVividContrastRule,
-  resolveInputAnchorTone,
+  resolveChromaticDarkEndTone,
+  resolveInputFitTone,
   resolveProfileReferenceScale,
   resolveScaleDistribution,
+  isAbsoluteScaleCapTone,
   rgbDistance,
   SCALE_DISTRIBUTIONS,
   type ScaleDistributionId,
@@ -46,7 +48,7 @@ type RangeControl = {
 const RANGE_CONTROLS: RangeControl[] = [
   {
     key: 'darkFloorLightness',
-    label: 'K100 L',
+    label: 'Dark floor L',
     min: 0,
     max: 24,
     step: 0.25,
@@ -54,7 +56,7 @@ const RANGE_CONTROLS: RangeControl[] = [
   },
   {
     key: 'lightCeilingLightness',
-    label: 'K0 L',
+    label: 'Light ceiling L',
     min: 80,
     max: 100,
     step: 0.25,
@@ -131,17 +133,18 @@ export default function TonalScaleLabPage() {
     () => generateTonalScale(baseHex, controls, selectedProfile, selectedDistribution),
     [baseHex, controls, selectedProfile, selectedDistribution]
   );
-  const inputAnchorTone = useMemo(
-    () => resolveInputAnchorTone(baseHex, selectedProfile, selectedDistribution),
-    [baseHex, selectedProfile, selectedDistribution]
+  const inputFitTone = useMemo(
+    () => resolveInputFitTone(baseHex, selectedProfile, generatedScale),
+    [baseHex, selectedProfile, generatedScale]
   );
   const baseColor =
-    generatedScale.find((entry) => entry.tone === inputAnchorTone) ?? generatedScale[0];
+    generatedScale.find((entry) => entry.tone === inputFitTone) ?? generatedScale[0];
   const activeVividContrast = resolveAppliedVividContrastRule(
     baseHex,
     selectedProfile,
     selectedDistribution
   );
+  const chromaticDarkEndTone = resolveChromaticDarkEndTone(selectedDistribution);
   const meanDistance = useMemo(() => {
     const total = generatedScale.reduce(
       (sum, entry) => sum + rgbDistance(entry.hex, referenceHexByTone[entry.tone]),
@@ -226,7 +229,7 @@ export default function TonalScaleLabPage() {
             {normalizedHex ? 'valid hex' : 'invalid hex'}
           </span>
         </div>
-        <ScaleStrip colors={generatedScale} vividContrast={activeVividContrast} />
+        <ScaleStrip colors={generatedScale} />
       </section>
 
       <section className="workspace-grid">
@@ -236,7 +239,7 @@ export default function TonalScaleLabPage() {
             <span>S/L plane</span>
           </div>
           <CurveChart
-            baseTone={inputAnchorTone}
+            baseTone={inputFitTone}
             generated={generatedScale}
             reference={referenceScale}
             bridgeStartTone={selectedDistribution.vividBridgeStartTone}
@@ -283,12 +286,12 @@ export default function TonalScaleLabPage() {
         </div>
         {activeVividContrast ? (
           <p className="profile-note">
-            Vivid guard: K{activeVividContrast.startTone}-K100 keeps {activeVividContrast.minRatio}
-            :1 contrast with white text. Bridge starts at K
+            Vivid guard: K{activeVividContrast.startTone}-K{chromaticDarkEndTone} keeps{' '}
+            {activeVividContrast.minRatio}:1 contrast with white text. Bridge starts at K
             {selectedDistribution.vividBridgeStartTone ?? activeVividContrast.bridgeStartTone}.
           </p>
         ) : null}
-        <ScaleStrip colors={referenceScale} vividContrast={activeVividContrast} />
+        <ScaleStrip colors={referenceScale} />
         <ScaleTable
           generated={generatedScale}
           referenceHexByTone={referenceHexByTone}
@@ -299,17 +302,11 @@ export default function TonalScaleLabPage() {
   );
 }
 
-function ScaleStrip({
-  colors,
-  vividContrast
-}: {
-  colors: TonalScaleColor[];
-  vividContrast?: VividContrastRule;
-}) {
+function ScaleStrip({ colors }: { colors: TonalScaleColor[] }) {
   return (
     <div className="scale-strip" style={{ '--scale-columns': colors.length } as CSSProperties}>
       {colors.map((color) => {
-        const foregroundColor = resolveSwatchForeground(color, vividContrast);
+        const foregroundColor = resolveSwatchForeground(color);
         const style = {
           backgroundColor: color.hex,
           color: foregroundColor
@@ -325,17 +322,8 @@ function ScaleStrip({
   );
 }
 
-function resolveSwatchForeground(
-  color: TonalScaleColor,
-  vividContrast: VividContrastRule | undefined
-): '#111827' | '#ffffff' {
-  if (vividContrast) {
-    return color.tone >= vividContrast.startTone ? '#ffffff' : '#111827';
-  }
-
-  return contrastRatio(color.hex, '#111827') >= contrastRatio(color.hex, '#ffffff')
-    ? '#111827'
-    : '#ffffff';
+function resolveSwatchForeground(color: TonalScaleColor): '#111827' | '#ffffff' {
+  return contrastRatio(color.hex, '#ffffff') >= 3 ? '#ffffff' : '#111827';
 }
 
 function CurveChart({
@@ -351,8 +339,10 @@ function CurveChart({
   bridgeStartTone?: ScaleTone;
   vividStartTone?: ScaleTone;
 }) {
-  const generatedPath = createPath(generated);
-  const referencePath = createPath(reference);
+  const chartGenerated = generated.filter((color) => !isAbsoluteScaleCapTone(color.tone));
+  const chartReference = reference.filter((color) => !isAbsoluteScaleCapTone(color.tone));
+  const generatedPath = createPath(chartGenerated);
+  const referencePath = createPath(chartReference);
 
   return (
     <svg className="curve-chart" viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`} role="img">
@@ -388,13 +378,19 @@ function CurveChart({
       </text>
       <path className="reference-path" d={referencePath} />
       <path className="generated-path" d={generatedPath} />
-      {reference.map((color) => (
+      {chartReference.map((color) => (
         <circle className="reference-point" key={`r-${color.id}`} {...pointFor(color.hsl)} r="4" />
       ))}
-      {generated.map((color) => (
+      {chartGenerated.map((color) => (
         <g key={color.id}>
           <circle className="generated-point" {...pointFor(color.hsl)} r="5" />
-          {shouldLabelPoint(color, baseTone, bridgeStartTone, vividStartTone, generated.length) ? (
+          {shouldLabelPoint(
+            color,
+            baseTone,
+            bridgeStartTone,
+            vividStartTone,
+            chartGenerated.length
+          ) ? (
             <text
               className="point-label"
               x={pointFor(color.hsl).cx + 7}
@@ -423,9 +419,7 @@ function shouldLabelPoint(
   const tone = color.tone;
 
   return (
-    tone === 0 ||
     tone === baseTone ||
-    tone === 100 ||
     tone === bridgeStartTone ||
     tone === vividStartTone ||
     tone % 10 === 0
@@ -441,6 +435,10 @@ function ScaleTable({
   referenceHexByTone: Record<ScaleTone, string>;
   vividContrast?: VividContrastRule;
 }) {
+  const chromaticDarkEndTone = generated
+    .filter((color) => !isAbsoluteScaleCapTone(color.tone))
+    .reduce((current, color) => Math.max(current, color.tone), 0);
+
   return (
     <div className="table-wrap">
       <table>
@@ -449,6 +447,7 @@ function ScaleTable({
             <th>slot</th>
             <th>generated</th>
             <th>generated HSL</th>
+            <th>L delta</th>
             <th>reference</th>
             <th>white contrast</th>
             <th>vivid guard</th>
@@ -456,14 +455,15 @@ function ScaleTable({
           </tr>
         </thead>
         <tbody>
-          {generated.map((color) => (
+          {generated.map((color, index) => (
             <tr key={color.id}>
               <td>{color.label}</td>
               <td>{color.hex}</td>
               <td>{formatHsl(color.hsl)}</td>
+              <td>{formatLightnessDelta(color, generated[index - 1])}</td>
               <td>{referenceHexByTone[color.tone]}</td>
               <td>{contrastRatio(color.hex, '#ffffff').toFixed(2)}</td>
-              <td>{formatVividGuardStatus(color, vividContrast)}</td>
+              <td>{formatVividGuardStatus(color, vividContrast, chromaticDarkEndTone)}</td>
               <td>{rgbDistance(color.hex, referenceHexByTone[color.tone]).toFixed(2)}</td>
             </tr>
           ))}
@@ -473,15 +473,24 @@ function ScaleTable({
   );
 }
 
+function formatLightnessDelta(color: TonalScaleColor, previous?: TonalScaleColor): string {
+  return previous ? (previous.hsl.l - color.hsl.l).toFixed(2) : '-';
+}
+
 function formatVividGuardStatus(
   color: TonalScaleColor,
-  vividContrast: VividContrastRule | undefined
+  vividContrast: VividContrastRule | undefined,
+  chromaticDarkEndTone: ScaleTone
 ): string {
   if (!vividContrast) {
     return '-';
   }
 
-  if (color.tone < vividContrast.startTone) {
+  if (isAbsoluteScaleCapTone(color.tone)) {
+    return 'absolute cap';
+  }
+
+  if (color.tone < vividContrast.startTone || color.tone > chromaticDarkEndTone) {
     return 'not checked';
   }
 
@@ -527,8 +536,8 @@ function formatProfileSelectLabel(profile: { label: string; commercialName?: str
 }
 
 function formatInputStrategy(strategy: string): string {
-  if (strategy === 'auto-anchor') {
-    return 'auto anchor';
+  if (strategy === 'auto-fit') {
+    return 'auto fit';
   }
 
   if (strategy === 'fixed-anchor') {

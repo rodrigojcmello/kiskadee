@@ -4,52 +4,64 @@ This lab separates tonal profiles from scale distributions.
 
 - A tonal profile is the stored recipe for turning one input color into a color curve.
 - A scale distribution defines which public slots are emitted for that curve.
-- An input strategy defines how the user-provided color is placed into the curve before the rest of
-  the scale is generated.
+- An input strategy defines whether the user-provided color is preserved, used only as a seed, or
+  fitted after the scale has already been generated.
 
 ## Current Distributions
 
-- `Kiskadee Official (33)` has 33 generated chromatic slots plus fixed `0` and `100` anchors. Its
+- `Kiskadee Official (33)` has 33 generated chromatic slots plus absolute `0` and `100` caps. Its
   subtle track is `0..10`, then `12`, `14`, `16`, `18`, `20`, `22`, `24`, `26`, `28`, and `30`.
 - `Fluent 2 Official (16)` has the official Fluent public slots:
   `10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160`.
 - `Kiskadee Legacy (31)` preserves the earlier lab distribution. Its subtle track is `0..15`,
   `20`, `25`, and `30`.
-- The Kiskadee distributions use the same vivid track:
-  `35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100`.
+- The Kiskadee distributions use the same chromatic vivid track:
+  `35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95`, plus `100` as the
+  absolute dark cap.
 
 The numeric split alone does not prove that a tone is visually or functionally vivid. It only
 defines the two scale tracks. A tonal profile may add a stronger vivid contract when it wants the
 vivid track to be safe for foreground text.
+
+## Absolute Caps And Chromatic Curve
+
+`K0` and `K100` are absolute neutral caps in the Kiskadee distributions:
+
+- `K0` is emitted as absolute white;
+- `K100` is emitted as absolute black;
+- they are kept in the scale strip and table so the public slot language still spans the full
+  `0..100` range;
+- they are not used as chromatic curve endpoints and are not plotted in the curve chart.
+
+The chromatic curve is generated between the first and last non-cap slots. In
+`Kiskadee Official (33)`, that means `K1..K95`. This prevents the absolute white and black caps from
+pulling the family color toward pure white at the light end or pure black at the dark end. It also
+keeps `K95` available as the final very-dark chromatic color instead of making it a near-black
+prelude to `K100`.
 
 ## Contrast-Gated Vivid
 
 A profile can opt into `vividContrast`. When enabled, the lab treats vivid as a functional track:
 
 - tones below the configured `startTone` are not contrast-corrected;
-- tones from `startTone` through `100` must meet the configured contrast ratio against the configured
-  foreground;
+- chromatic tones from `startTone` through the last non-cap tone must meet the configured contrast
+  ratio against the configured foreground;
 - the current experimental rule uses `startTone: 35`, `foregroundHex: '#ffffff'`, and
-  `minRatio: 4.5`;
-- for luminous input colors, the current experimental rule may soften the active target down to
-  `luminousMinRatio: 3`.
+  `minRatio: 3`.
 
-The upper target follows the WCAG 2.2 Contrast (Minimum) AA threshold for normal text. The softened
-`3:1` target follows the WCAG threshold used for large text and graphical objects, and is only an
-experimental expressive-color compromise. The profile uses the contrast formula based on relative
-luminance, not HSL lightness. HSL lightness remains useful for editing the curve, but it does not
-describe perceived luminance well enough to define accessibility.
+The fixed `3:1` target follows the WCAG threshold used for large text and graphical objects, and is
+only an experimental expressive-color compromise. It is not the WCAG 2.2 Contrast (Minimum) AA
+threshold for normal text. The profile uses the contrast formula based on relative luminance, not HSL
+lightness. HSL lightness remains useful for editing the curve, but it does not describe perceived
+luminance well enough to define accessibility.
 
-The active contrast target is resolved per input color by clamping the input color's contrast against
-the configured foreground between `luminousMinRatio` and `minRatio`. This keeps blue/red/green colors
-that can naturally support a stronger vivid contrast near `4.5:1`, while preventing yellow, orange,
-and cyan ramps from becoming brown or overly dark at the first vivid slot.
+The current experiment uses the same `3:1` vivid target for every input color. The previous
+adaptive experiment used `minRatio: 4.5` with `luminousMinRatio: 3`, which kept darker colors near a
+stronger target while softening luminous colors such as yellow, orange, and cyan.
 
-The auto-anchor gate and the vivid contrast target are intentionally different decisions. The current
-auto-anchor placement still uses the stronger `minRatio` as the gate for deciding whether an input
-color belongs inside the vivid range. The adaptive target is only used after placement, when the
-profile resolves how dark the protected vivid tones need to become. This lets a luminous orange stay
-anchored before vivid while still allowing `K35` to be expressive instead of collapsing into brown.
+The input-fit reading and the vivid contrast target are related but separate decisions. The current
+contrast target decides which vivid tones are adjusted for the active foreground. It does not decide
+where the input color belongs, and it does not move the profile's structural generation pivot.
 
 ## Input Strategies
 
@@ -59,20 +71,44 @@ Profiles must make the role of the input color explicit:
   base tone, so the exact input color is not guaranteed to appear in the emitted scale.
 - `fixed-anchor` preserves the input at the profile's configured base tone. This is useful when the
   profile represents an external reference scale and the reference color has a known slot.
-- `auto-anchor` places the input in the emitted distribution according to its contrast behavior.
-  Colors that do not meet the vivid white-text contrast threshold are placed before `35`; colors
-  that do meet it are placed in the vivid range according to their white contrast.
+- `auto-fit` uses the input as a chromatic seed, generates the scale from the profile's structural
+  pivot, and only then reports the emitted slot closest to the original input color.
 
-The current auto-anchor rule uses the WCAG contrast ratio against white as the primary gate. If the
-input does not reach the vivid threshold, it cannot be placed in the vivid range, even if its HSL
-lightness looks like a middle color. This matters for luminous hues such as yellow and cyan: they
-can have a medium HSL lightness while still being too bright for white foreground text.
+The current auto-fit rule uses nearest RGB distance on the final emitted scale. The fit is a
+diagnostic reading, not a generation input. It may land inside the vivid track or the pre-vivid
+track depending on the finished colors.
 
-When a non-vivid input color lands inside the pre-vivid bridge, the bridge is split around that
-anchor. This keeps the input color intact while still connecting the preserved light/subtle range to
-the contrast-safe vivid start. When a vivid input color lands inside the vivid range and already
-passes the contrast rule, the vivid range is split around that anchor too, so the contrast guard does
-not unnecessarily replace the original color.
+## Input Fit Comes Last
+
+The lab deliberately separates the profile pivot from the input fit:
+
+- the profile pivot is a structural tone, currently the profile's `baseTone`;
+- the input color provides hue and saturation for the generated family;
+- vivid contrast adjusts the generated vivid track;
+- the pre-vivid bridge connects the light range to the adjusted vivid start;
+- minimum lightness spacing may further separate neighboring emitted slots;
+- only after those steps does the lab ask which emitted slot is closest to the original input color.
+
+The final input fit must not feed back into lightness generation, saturation shaping, vivid contrast,
+or bridge interpolation. Earlier experiments let contrast-derived auto anchors move the generation
+pivot. That made the input color appear intentionally placed, but it also distorted the rest of the
+scale: luminous inputs could collide with the `K35` contrast boundary, while vivid blue could move
+the pivot to `K70` and stretch the `K40..K70` region into a nearly linear lightness ramp. The current
+rule treats that placement as metadata after the scale is finished.
+
+## Structural Pivot Caveat
+
+The commercial auto-fit profiles currently use `K55` as their structural base tone. This is a weak
+and deliberately provisional argument:
+
+- `K55` matches the current `vividRest` working point used by the state-mapping notes;
+- it also matches where `Fluent 2 Blue` places its base blue when projected into Kiskadee slots;
+- those facts make `K55` convenient for comparison, but they do not prove that `K55` is the correct
+  perceptual pivot for the final Kiskadee scale.
+
+The only durable conclusion from the current experiments is that the input fit should not choose the
+generation pivot. `K55` may move later if practical testing shows that `K50`, `K60`, or another
+structural point produces a better family-wide scale.
 
 ## Color Findings
 
@@ -87,15 +123,18 @@ The current model came from comparing the same profile across darker and more lu
   while still having high relative luminance.
 - `vivid` should therefore be treated as an expressive color track, not as a guaranteed alias for
   normal-text foreground safety in every hue family.
-- Foreground safety is still measured and displayed, but the expressive profiles intentionally allow
-  the vivid target to soften for luminous colors.
+- Foreground safety is still measured and displayed, but the current expressive profiles intentionally
+  use a fixed `3:1` target instead of forcing every vivid tone to normal-text foreground safety.
 
-Two example observations currently define the adaptive behavior:
+Example observations for the fixed `3:1` experiment:
 
-- `#388e4a` resolves to `K30`; the adaptive vivid target stays close to the input's white contrast,
-  and `K35` remains visually green.
-- `#ff990a` also resolves to `K30`; a fixed `4.5:1` vivid target makes the first vivid tone feel
-  brown, so the adaptive target softens toward `3:1` and keeps `K35` orange.
+- `#0f6cbd` fits at `K55` in `Balanced - Auto Soft Dark + 3:1 Vivid` after the scale is generated.
+- `#09b83e` fits at `K35` in `Balanced - Auto Soft Dark + 3:1 Vivid`; its first white-label slot
+  is still `K40` under the shared `3:1` swatch reading rule.
+- `#ff990a` fits at `K28`; it does not pass the fixed `3:1` gate, but `K35` no longer has to darken
+  toward `4.5:1`.
+- `#25d366` fits at `K28`; it is a final nearest-fit reading, not a hard `K30` anchor before `K35`
+  is resolved.
 
 ## Adjustment Strategy
 
@@ -111,10 +150,47 @@ between tone `15` and the contrast-safe tone `35`. In the official Kiskadee dist
 and the contrast-safe tone `35`. These bridge tones still do not promise white-text contrast; their
 job is to reduce the visual jump into vivid.
 
+The bridge is generated from the resolved vivid boundary, not from a forced non-vivid input fit. This
+keeps `K30` from becoming a collision point between a preserved input color and the `K35` contrast
+rule.
+
 The bridge uses emitted-step progress, not numeric tone distance. For example, the distance from
 `30` to `35` in `Kiskadee Official (33)` is treated as one visual step, even though the numeric
 tone jump is five positions. This keeps the curve spacing visually balanced when the distribution
 uses uneven numeric gaps.
+
+## Minimum Lightness Step Experiment
+
+The current commercial auto-fit profiles also enforce a minimum HSL lightness step between
+neighboring emitted Kiskadee slots after the contrast guard and pre-vivid bridge have run. The rule
+is intentionally simple: one luminous exception for the beginning of the chromatic scale, and one
+default threshold for the rest of the chromatic scale. It does not define separate medium, dark,
+medium-luminous, or dark-luminous categories.
+
+Current experimental thresholds:
+
+- every chromatic target from the first non-cap slot through the last non-cap slot uses at least
+  `1.5` HSL lightness points from the previous emitted slot;
+- luminous inputs use `2` HSL lightness points through `K16`, then fall back to the same `1.5`
+  default used by every other chromatic target;
+- the transition from absolute `K0` into `K1` also uses the active spacing threshold so the first
+  chromatic color does not visually merge into white;
+- `K100` remains an absolute dark cap; the `K95 -> K100` jump is a cap transition and is not used as
+  a chromatic-spacing target.
+
+An input is treated as luminous when its contrast against white is less than or equal to `2.4:1`.
+This currently catches colors such as yellow, cyan, lime, and orange, whose high relative luminance
+makes the first light slots look too much like a soft gradient even when HSL lightness deltas are
+already larger than `1`.
+
+This rule measures HSL lightness delta, not contrast ratio. Its job is to reduce visually compressed
+ramps where adjacent slots look like a single gradient. The contrast rule still decides whether
+vivid tones are safe for the active foreground target.
+
+The rule is intentionally experimental and reversible. In `auto-fit` profiles, it is allowed to move
+an emitted slot away from the exact input color because the input fit is only reported after spacing
+has finished. `fixed-anchor` profiles remain the exception when an external reference scale requires
+the input color to survive at a known slot.
 
 ## Source Scale, Profile, And Output Distribution
 
@@ -131,19 +207,25 @@ This means the same Fluent-derived profile can be read in two ways:
 For guarded vivid tones, the generator preserves hue and saturation, then resolves a contrast-safe
 lightness range:
 
-1. Generate the scale from the active profile.
+1. Generate the provisional scale from the active profile and its structural base tone.
 2. Find the highest lightness at the vivid start tone that passes the contrast rule.
-3. Rescale only `startTone..100` from that safe lightness down to the final dark endpoint.
+3. Rescale only `startTone` through the last non-cap tone from that safe lightness down to the final
+   chromatic dark endpoint.
 4. Clamp each vivid tone again if its hue/saturation needs a lower lightness to pass.
 5. If configured, interpolate the pre-vivid bridge from the preserved light range into the safe vivid
    start.
+6. If configured, enforce the minimum HSL lightness step threshold across the chromatic range, with
+   the luminous initial-range exception when applicable.
+7. Resolve the input color's displayed fit from the final generated scale. This final fit is not used
+   to regenerate the scale.
 
 This makes the vivid track testable while keeping the fine light range stable and using the sparse
 middle positions as a transition into vivid.
 
-With adaptive vivid, the phrase `contrast-safe` means safe for the active profile target, not always
-safe for WCAG AA normal text. If a profile sets `luminousMinRatio`, the table and UI should show the
-resolved ratio so the visual result is not mistaken for a universal accessibility guarantee.
+With the fixed `3:1` vivid experiment, the phrase `contrast-safe` means safe for the active profile
+target, not safe for WCAG AA normal text. If a future profile reintroduces `luminousMinRatio`, the
+table and UI should show the resolved ratio so the visual result is not mistaken for a universal
+accessibility guarantee.
 
 ## Current Profiles
 
@@ -153,13 +235,17 @@ resolved ratio so the visual result is not mistaken for a universal accessibilit
 - `Linear Lightness` is the pure baseline. It maps lightness directly from tone position and does not
   opt into `vividContrast`. It uses `seed` so it stays a simple baseline instead of a color-preserving
   recipe.
-- `Auto Linear + Adaptive Vivid` keeps the distribution's fine light range linear around the resolved
-  input anchor, uses the distribution's bridge tones as a pre-vivid transition, then applies the
-  adaptive contrast-gated vivid contract from tone `35` onward.
-- `Auto Soft Dark + Adaptive Vivid` keeps the auto linear lightness model and vivid guard, but bends
-  saturation down only after the resolved input anchor. This is the closest experiment to Fluent's
-  softer dark blues while preserving a linear light side.
-- `Auto Mid Peak + Adaptive Vivid` keeps the vivid guard, but uses the resolved input anchor as the
+- `Auto Linear + 3:1 Vivid` keeps the distribution's fine light range linear around the profile base
+  tone, uses the distribution's bridge tones as a pre-vivid transition, then applies the fixed
+  `3:1` contrast-gated vivid contract from tone `35` onward.
+- `Auto Soft Dark + 3:1 Vivid` keeps the auto linear lightness model and vivid guard, but bends
+  saturation down only after the profile base tone. Its current default lightness controls are
+  `lightCeilingLightness: 98.8`, `darkFloorLightness: 8`, `lightLightnessGamma: 1.2`, and
+  `darkLightnessGamma: 0.8`: the light gamma gives `K1..K10` more individuality than the previous
+  one-point linear ramp, while the shared `1.5` lightness-spacing guard prevents the middle and dark
+  chromatic slots from collapsing into a soft gradient. The dark floor keeps `K95` visibly chromatic
+  before the absolute `K100` black cap.
+- `Auto Mid Peak + 3:1 Vivid` keeps the vivid guard, but uses the profile base tone as the
   saturation peak. Saturation bends down toward both the light and dark ends of the scale.
 
 The guarded profile is experimental. It exists so the lab can show the visual cost and benefit of
@@ -167,28 +253,27 @@ making `vivid` a real foreground-safe contract instead of only a numeric range.
 
 ## Commercial Profile Names
 
-The auto-anchor experimental profiles have UI-facing commercial names in addition to their technical
+The auto-fit experimental profiles have UI-facing commercial names in addition to their technical
 labels:
 
-- `Striking` maps to `Auto Linear + Adaptive Vivid`.
-- `Balanced` maps to `Auto Soft Dark + Adaptive Vivid`.
-- `Sophisticated` maps to `Auto Mid Peak + Adaptive Vivid`.
+- `Striking` maps to `Auto Linear + 3:1 Vivid`.
+- `Balanced` maps to `Auto Soft Dark + 3:1 Vivid`.
+- `Sophisticated` maps to `Auto Mid Peak + 3:1 Vivid`.
 
 These names are display labels only. The technical profile labels and ids remain the stable
 implementation language until the lab promotes a final naming contract.
 
-`Balanced - Auto Soft Dark + Adaptive Vivid` is the current default profile shown when the lab UI
-loads.
+`Balanced - Auto Soft Dark + 3:1 Vivid` is the current default profile shown when the lab UI loads.
 
 ## Saturation-Shaped Vivid Profiles
 
 The saturation-shaped vivid profiles still derive lightness from the same auto linear model used by
-`Auto Linear + Adaptive Vivid`; only saturation changes before the contrast guard is applied.
+`Auto Linear + 3:1 Vivid`; only saturation changes before the contrast guard is applied.
 
-- `Auto Soft Dark + Adaptive Vivid` leaves tones at or above the light side unchanged, then reduces
-  saturation from the resolved input anchor toward the dark end.
-- `Auto Mid Peak + Adaptive Vivid` reduces saturation toward both ends, making the resolved input anchor
-  the top of the saturation curve.
+- `Auto Soft Dark + 3:1 Vivid` leaves tones at or above the light side unchanged, then reduces
+  saturation from the profile base tone toward the dark end.
+- `Auto Mid Peak + 3:1 Vivid` reduces saturation toward both ends, making the profile base tone the top
+  of the saturation curve.
 
 These profiles are intended as visual experiments, not final Kiskadee contracts. They let the lab
 compare a strict linear saturation baseline against curves that feel closer to design systems whose
@@ -196,10 +281,20 @@ deep tones are less chromatic than their middle tones.
 
 ## UI Reading
 
-When a profile has `vividContrast`, swatch labels intentionally use dark text before the vivid start
-and white text from the vivid start onward. This mirrors the profile contract instead of picking the
-most legible foreground for every tone.
+Swatch labels use one visual reading rule across every profile: white text appears on the first
+emitted slot that reaches `3:1` contrast against white, and on every darker slot after that. Earlier
+slots use dark text. This does not change the generated colors; it only makes the visual scale
+comparison use the same white-text threshold for every tonal profile.
 
 Swatch labels do not use text shadow. The lab is meant to reveal the raw relationship between the
 foreground label color and the generated background color; shadows would make weak contrast look more
 comfortable than it really is.
+
+The comparison table shows `L delta` as the HSL lightness difference from the previous emitted slot.
+This is the same lightness-step dimension used by the minimum lightness step experiment, not a
+contrast-ratio measurement.
+
+The curve chart excludes `K0` and `K100` because those slots are absolute caps rather than generated
+chromatic colors. The scale strip and comparison table still show them so cap behavior remains
+visible. In the comparison table, their vivid-guard status is reported as `absolute cap` instead of
+`pass` or `fail`.

@@ -4,6 +4,7 @@ import {
   hexToHsl,
   hslToHex,
   KISKADEE_BASE_TONE,
+  type MinimumLightnessStepRule,
   type TonalProfile,
   type TonalScaleColor
 } from './tonal-scale.ts';
@@ -47,13 +48,21 @@ const FLUENT_2_BLUE_REFERENCE_SCALE = createReferenceAnchorScale([
 
 const LINEAR_LIGHTNESS_REFERENCE_SCALE = createLinearReferenceScale(FLUENT_BLUE_HEX);
 
-const ADAPTIVE_VIVID_WHITE_TEXT_CONTRAST = {
+const FIXED_VIVID_WHITE_TEXT_CONTRAST = {
   bridgeStartTone: 15,
   startTone: 35,
   foregroundHex: '#ffffff',
-  minRatio: 4.5,
-  luminousMinRatio: 3
+  minRatio: 3
 } as const;
+
+const EXPERIMENTAL_MINIMUM_LIGHTNESS_STEP = {
+  chromaticMinStep: 1.5,
+  luminousInitialRange: {
+    maxWhiteContrast: 2.4,
+    endTone: 16,
+    minStep: 2
+  }
+} as const satisfies MinimumLightnessStepRule;
 
 const SOFT_DARK_SATURATION_CURVE = {
   type: 'soft-dark',
@@ -91,40 +100,49 @@ const LINEAR_LIGHTNESS_PROFILE = {
 
 const LINEAR_WCAG_VIVID_PROFILE = {
   id: 'linear-wcag-vivid',
-  label: 'Auto Linear + Adaptive Vivid',
+  label: 'Auto Linear + 3:1 Vivid',
   commercialName: 'Striking',
   mode: 'linear-lightness',
-  inputStrategy: 'auto-anchor',
+  inputStrategy: 'auto-fit',
   baseTone: KISKADEE_BASE_TONE,
   referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE,
   defaultControls: createDefaultCurveControls({ referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE }),
-  vividContrast: ADAPTIVE_VIVID_WHITE_TEXT_CONTRAST
+  minimumLightnessStep: EXPERIMENTAL_MINIMUM_LIGHTNESS_STEP,
+  vividContrast: FIXED_VIVID_WHITE_TEXT_CONTRAST
 } satisfies TonalProfile;
 
 const SOFT_DARK_WCAG_VIVID_PROFILE = {
   id: 'soft-dark-wcag-vivid',
-  label: 'Auto Soft Dark + Adaptive Vivid',
+  label: 'Auto Soft Dark + 3:1 Vivid',
   commercialName: 'Balanced',
   mode: 'linear-lightness',
-  inputStrategy: 'auto-anchor',
+  inputStrategy: 'auto-fit',
   baseTone: KISKADEE_BASE_TONE,
   referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE,
-  defaultControls: createDefaultCurveControls({ referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE }),
+  defaultControls: {
+    ...createDefaultCurveControls({ referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE }),
+    darkFloorLightness: 8,
+    lightCeilingLightness: 98.8,
+    lightLightnessGamma: 1.2,
+    darkLightnessGamma: 0.8
+  },
   saturationCurve: SOFT_DARK_SATURATION_CURVE,
-  vividContrast: ADAPTIVE_VIVID_WHITE_TEXT_CONTRAST
+  minimumLightnessStep: EXPERIMENTAL_MINIMUM_LIGHTNESS_STEP,
+  vividContrast: FIXED_VIVID_WHITE_TEXT_CONTRAST
 } satisfies TonalProfile;
 
 const MID_PEAK_WCAG_VIVID_PROFILE = {
   id: 'mid-peak-wcag-vivid',
-  label: 'Auto Mid Peak + Adaptive Vivid',
+  label: 'Auto Mid Peak + 3:1 Vivid',
   commercialName: 'Sophisticated',
   mode: 'linear-lightness',
-  inputStrategy: 'auto-anchor',
+  inputStrategy: 'auto-fit',
   baseTone: KISKADEE_BASE_TONE,
   referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE,
   defaultControls: createDefaultCurveControls({ referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE }),
   saturationCurve: MID_PEAK_SATURATION_CURVE,
-  vividContrast: ADAPTIVE_VIVID_WHITE_TEXT_CONTRAST
+  minimumLightnessStep: EXPERIMENTAL_MINIMUM_LIGHTNESS_STEP,
+  vividContrast: FIXED_VIVID_WHITE_TEXT_CONTRAST
 } satisfies TonalProfile;
 
 export const TONAL_PROFILES = [
@@ -166,6 +184,26 @@ function createLinearReferenceScale(baseHex: string): TonalScaleColor[] {
   const baseHsl = hexToHsl(baseHex);
 
   return DEFAULT_SCALE_DISTRIBUTION.slots.map((slot) => {
+    if (slot.position === 0) {
+      return {
+        id: slot.id,
+        label: slot.label,
+        tone: slot.position,
+        hex: '#ffffff',
+        hsl: { h: 0, s: 0, l: 100 }
+      };
+    }
+
+    if (slot.position === 100) {
+      return {
+        id: slot.id,
+        label: slot.label,
+        tone: slot.position,
+        hex: '#000000',
+        hsl: { h: 0, s: 0, l: 0 }
+      };
+    }
+
     const hsl = {
       h: baseHsl.h,
       s: baseHsl.s,
