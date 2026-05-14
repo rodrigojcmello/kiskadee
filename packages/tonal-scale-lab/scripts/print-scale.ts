@@ -6,7 +6,9 @@ import {
 import {
   DEFAULT_SCALE_DISTRIBUTION_ID,
   formatHsl,
+  formatOklch,
   generateTonalScale,
+  hexToOklch,
   normalizeHexColor,
   resolveScaleDistribution,
   type ScaleDistributionId
@@ -23,5 +25,7 @@ if (!inputHex) {
 }
 
 for (const color of generateTonalScale(inputHex, profile.defaultControls, profile, distribution)) {
-  console.log(`${color.label}: ${color.hex} ${formatHsl(color.hsl)}`);
+  console.log(
+    `${color.label}: ${color.hex} ${formatHsl(color.hsl)} ${formatOklch(hexToOklch(color.hex))}`
+  );
 }

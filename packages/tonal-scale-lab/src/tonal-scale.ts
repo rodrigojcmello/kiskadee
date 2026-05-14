@@ -117,6 +117,12 @@ export type HslColor = {
   l: number;
 };
 
+export type OklchColor = {
+  l: number;
+  c: number;
+  h: number;
+};
+
 export type TonalScaleColor = {
   id: string;
   label: string;
@@ -137,6 +143,7 @@ export type CurveControls = {
 };
 
 export type TonalProfileMode = 'reference-curve' | 'linear-lightness';
+export type ColorInterpolationSpace = 'hsl' | 'oklch';
 
 export type InputColorStrategy = 'seed' | 'fixed-anchor' | 'auto-fit';
 
@@ -176,6 +183,7 @@ export type TonalProfile = {
   label: string;
   commercialName?: string;
   mode: TonalProfileMode;
+  colorSpace?: ColorInterpolationSpace;
   inputStrategy: InputColorStrategy;
   baseTone: ScaleTone;
   referenceScale: TonalScaleColor[];
@@ -206,6 +214,12 @@ export function resolveChromaticDarkEndTone(distribution: ScaleDistribution): Sc
   return resolveChromaticEndpointSlots(distribution).dark.position;
 }
 
+function resolveProfileColorSpace(
+  profile: Pick<TonalProfile, 'colorSpace'>
+): ColorInterpolationSpace {
+  return profile.colorSpace ?? 'hsl';
+}
+
 export function generateTonalScale(
   baseHex: string,
   controls: CurveControls,
@@ -213,16 +227,26 @@ export function generateTonalScale(
   distribution: ScaleDistribution = DEFAULT_SCALE_DISTRIBUTION
 ): TonalScaleColor[] {
   const generationAnchorTone = profile.baseTone;
+  const colorSpace = resolveProfileColorSpace(profile);
 
   const scale =
     profile.mode === 'linear-lightness'
-      ? generateLinearLightnessScale(baseHex, controls, profile, distribution, generationAnchorTone)
+      ? colorSpace === 'oklch'
+        ? generateLinearOklchScale(baseHex, controls, profile, distribution, generationAnchorTone)
+        : generateLinearLightnessScale(
+            baseHex,
+            controls,
+            profile,
+            distribution,
+            generationAnchorTone
+          )
       : generateReferenceCurveScale(baseHex, controls, profile, distribution);
 
   return applyMinimumLightnessSteps(
     applyVividContrastRule(scale, profile, distribution, baseHex),
     distribution,
     profile.minimumLightnessStep,
+    colorSpace,
     baseHex
   );
 }
@@ -422,6 +446,38 @@ export function formatHsl(hsl: HslColor): string {
   return `hsl(${roundChannel(hsl.h)}, ${roundChannel(hsl.s)}%, ${roundChannel(hsl.l)}%)`;
 }
 
+export function hexToOklch(hex: string): OklchColor {
+  const [r, g, b] = hexToLinearRgb(hex);
+  const l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
+  const m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
+  const s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
+  const lRoot = Math.cbrt(l);
+  const mRoot = Math.cbrt(m);
+  const sRoot = Math.cbrt(s);
+  const oklabL = 0.2104542553 * lRoot + 0.793617785 * mRoot - 0.0040720468 * sRoot;
+  const oklabA = 1.9779984951 * lRoot - 2.428592205 * mRoot + 0.4505937099 * sRoot;
+  const oklabB = 0.0259040371 * lRoot + 0.7827717662 * mRoot - 0.808675766 * sRoot;
+  const chroma = Math.sqrt(oklabA ** 2 + oklabB ** 2);
+  const hue = chroma < 0.000001 ? 0 : normalizeHue((Math.atan2(oklabB, oklabA) * 180) / Math.PI);
+
+  return {
+    l: oklabL * 100,
+    c: chroma,
+    h: hue
+  };
+}
+
+export function oklchToHex(oklch: OklchColor): string {
+  const fittedOklch = fitOklchToSrgb(oklch);
+  const [r, g, b] = oklchToSrgbChannels(fittedOklch);
+
+  return `#${toHexChannel(r)}${toHexChannel(g)}${toHexChannel(b)}`;
+}
+
+export function formatOklch(oklch: OklchColor): string {
+  return `oklch(${roundChannel(oklch.l)}%, ${oklch.c.toFixed(4)}, ${roundChannel(oklch.h)})`;
+}
+
 export function rgbDistance(leftHex: string, rightHex: string): number {
   const left = hexToRgb(leftHex);
   const right = hexToRgb(rightHex);
@@ -459,6 +515,19 @@ function createAbsoluteCapColor(slot: ScaleSlot): TonalScaleColor | undefined {
   }
 
   return undefined;
+}
+
+function createScaleColorFromHex(
+  slot: ScaleSlot | Pick<TonalScaleColor, 'id' | 'label' | 'tone'>,
+  hex: string
+): TonalScaleColor {
+  return {
+    id: slot.id,
+    label: slot.label,
+    tone: 'position' in slot ? slot.position : slot.tone,
+    hex,
+    hsl: hexToHsl(hex)
+  };
 }
 
 function generateReferenceCurveScale(
@@ -589,9 +658,57 @@ function generateLinearLightnessScale(
   });
 }
 
+function generateLinearOklchScale(
+  baseHex: string,
+  controls: CurveControls,
+  profile: TonalProfile,
+  distribution: ScaleDistribution,
+  generationAnchorTone: ScaleTone
+): TonalScaleColor[] {
+  const baseOklch = hexToOklch(baseHex);
+  const anchorLightness =
+    profile.inputStrategy === 'fixed-anchor' ? baseOklch.l : 100 - profile.baseTone;
+  const { light, dark } = resolveChromaticEndpointSlots(distribution);
+
+  return distribution.slots.map((slot) => {
+    const absoluteCap = createAbsoluteCapColor(slot);
+
+    if (absoluteCap) {
+      return absoluteCap;
+    }
+
+    const oklch = {
+      h: baseOklch.h,
+      c: clamp(
+        baseOklch.c *
+          controls.saturationScale *
+          resolveLinearSaturationMultiplier(
+            slot.position,
+            profile,
+            generationAnchorTone,
+            light.position,
+            dark.position
+          ),
+        0,
+        0.5
+      ),
+      l: resolveLinearLightness(
+        slot.position,
+        generationAnchorTone,
+        anchorLightness,
+        controls,
+        light.position,
+        dark.position
+      )
+    };
+
+    return createScaleColorFromHex(slot, oklchToHex(oklch));
+  });
+}
+
 function applyVividContrastRule(
   scale: TonalScaleColor[],
-  profile: Pick<TonalProfile, 'baseTone' | 'inputStrategy' | 'vividContrast'>,
+  profile: Pick<TonalProfile, 'baseTone' | 'colorSpace' | 'inputStrategy' | 'vividContrast'>,
   distribution: ScaleDistribution,
   inputHex: string
 ): TonalScaleColor[] {
@@ -602,6 +719,7 @@ function applyVividContrastRule(
   }
 
   const { foregroundHex, minRatio, startTone } = vividContrast;
+  const colorSpace = resolveProfileColorSpace(profile);
   const chromaticDarkEndTone = resolveChromaticDarkEndTone(distribution);
   const vividStart = scale.find((color) => color.tone === startTone);
   const vividEnd = scale.find((color) => color.tone === chromaticDarkEndTone);
@@ -611,12 +729,12 @@ function applyVividContrastRule(
   }
 
   const vividStartLightness = Math.min(
-    vividStart.hsl.l,
-    resolveMaxLightnessForContrast(vividStart.hsl, foregroundHex, minRatio)
+    resolveScaleColorLightness(vividStart, colorSpace),
+    resolveMaxLightnessForContrast(vividStart, colorSpace, foregroundHex, minRatio)
   );
   const vividEndLightness = Math.min(
-    vividEnd.hsl.l,
-    resolveMaxLightnessForContrast(vividEnd.hsl, foregroundHex, minRatio)
+    resolveScaleColorLightness(vividEnd, colorSpace),
+    resolveMaxLightnessForContrast(vividEnd, colorSpace, foregroundHex, minRatio)
   );
   const preservedAnchor =
     profile.inputStrategy === 'fixed-anchor'
@@ -641,7 +759,7 @@ function applyVividContrastRule(
           endTone: chromaticDarkEndTone,
           startLightness: vividStartLightness,
           anchorTone: preservedAnchor.tone,
-          anchorLightness: preservedAnchor.hsl.l,
+          anchorLightness: resolveScaleColorLightness(preservedAnchor, colorSpace),
           endLightness: vividEndLightness
         })
         : interpolate(
@@ -650,25 +768,20 @@ function applyVividContrastRule(
             normalizedProgress(color.tone, startTone, chromaticDarkEndTone)
           );
     const maxAccessibleLightness = resolveMaxLightnessForContrast(
-      color.hsl,
+      color,
+      colorSpace,
       foregroundHex,
       minRatio
     );
-    const hsl = {
-      ...color.hsl,
-      l: Math.min(targetLightness, maxAccessibleLightness)
-    };
 
-    return {
-      id: color.id,
-      label: color.label,
-      tone: color.tone,
-      hex: hslToHex(hsl),
-      hsl
-    };
+    return createScaleColorWithLightness(
+      color,
+      colorSpace,
+      Math.min(targetLightness, maxAccessibleLightness)
+    );
   });
 
-  return applyPreVividBridge(adjustedScale, vividContrast, preservedAnchor?.tone);
+  return applyPreVividBridge(adjustedScale, vividContrast, colorSpace, preservedAnchor?.tone);
 }
 
 function resolveVividContrastRule(
@@ -690,6 +803,7 @@ function resolveVividContrastRule(
 function applyPreVividBridge(
   scale: TonalScaleColor[],
   rule: VividContrastRule,
+  colorSpace: ColorInterpolationSpace,
   preservedAnchorTone?: ScaleTone
 ): TonalScaleColor[] {
   const { bridgeStartTone, startTone } = rule;
@@ -721,7 +835,8 @@ function applyPreVividBridge(
       scale,
       bridgeStartIndex,
       inputAnchorIndex: preservedAnchorIndex,
-      vividStartIndex
+      vividStartIndex,
+      colorSpace
     });
   }
 
@@ -731,19 +846,7 @@ function applyPreVividBridge(
     }
 
     const progress = normalizedProgress(index, bridgeStartIndex, vividStartIndex);
-    const hsl = {
-      h: interpolateHue(bridgeStart.hsl, vividStart.hsl, progress),
-      s: interpolate(bridgeStart.hsl.s, vividStart.hsl.s, progress),
-      l: interpolate(bridgeStart.hsl.l, vividStart.hsl.l, progress)
-    };
-
-    return {
-      id: color.id,
-      label: color.label,
-      tone: color.tone,
-      hex: hslToHex(hsl),
-      hsl
-    };
+    return createInterpolatedScaleColor(color, bridgeStart, vividStart, progress, colorSpace);
   });
 }
 
@@ -752,8 +855,9 @@ function interpolateBridgeAroundAnchor(params: {
   bridgeStartIndex: number;
   inputAnchorIndex: number;
   vividStartIndex: number;
+  colorSpace: ColorInterpolationSpace;
 }): TonalScaleColor[] {
-  const { scale, bridgeStartIndex, inputAnchorIndex, vividStartIndex } = params;
+  const { scale, bridgeStartIndex, inputAnchorIndex, vividStartIndex, colorSpace } = params;
   const bridgeStart = scale[bridgeStartIndex];
   const inputAnchor = scale[inputAnchorIndex];
   const vividStart = scale[vividStartIndex];
@@ -768,19 +872,7 @@ function interpolateBridgeAroundAnchor(params: {
     const segmentStartIndex = index < inputAnchorIndex ? bridgeStartIndex : inputAnchorIndex;
     const segmentEndIndex = index < inputAnchorIndex ? inputAnchorIndex : vividStartIndex;
     const progress = normalizedProgress(index, segmentStartIndex, segmentEndIndex);
-    const hsl = {
-      h: interpolateHue(segmentStart.hsl, segmentEnd.hsl, progress),
-      s: interpolate(segmentStart.hsl.s, segmentEnd.hsl.s, progress),
-      l: interpolate(segmentStart.hsl.l, segmentEnd.hsl.l, progress)
-    };
-
-    return {
-      id: color.id,
-      label: color.label,
-      tone: color.tone,
-      hex: hslToHex(hsl),
-      hsl
-    };
+    return createInterpolatedScaleColor(color, segmentStart, segmentEnd, progress, colorSpace);
   });
 }
 
@@ -811,6 +903,7 @@ function applyMinimumLightnessSteps(
   scale: TonalScaleColor[],
   distribution: ScaleDistribution,
   rule: MinimumLightnessStepRule | undefined,
+  colorSpace: ColorInterpolationSpace,
   inputHex: string
 ): TonalScaleColor[] {
   if (!rule) {
@@ -834,21 +927,17 @@ function applyMinimumLightnessSteps(
         : undefined;
     const targetLightness =
       previous && minStep !== undefined
-        ? Math.min(color.hsl.l, previous.hsl.l - minStep)
-        : color.hsl.l;
+        ? Math.min(
+            resolveScaleColorLightness(color, colorSpace),
+            resolveScaleColorLightness(previous, colorSpace) - minStep
+          )
+        : resolveScaleColorLightness(color, colorSpace);
     const nextLightness = roundChannel(clamp(targetLightness, 0, 100));
 
     const adjusted =
-      nextLightness === color.hsl.l
+      nextLightness === resolveScaleColorLightness(color, colorSpace)
         ? color
-        : {
-            ...color,
-            hex: hslToHex({ ...color.hsl, l: nextLightness }),
-            hsl: {
-              ...color.hsl,
-              l: nextLightness
-            }
-          };
+        : createScaleColorWithLightness(color, colorSpace, nextLightness);
 
     adjustedById.set(color.id, adjusted);
     previous = adjusted;
@@ -873,21 +962,76 @@ function resolveMinimumLightnessStep(
   return rule.chromaticMinStep;
 }
 
+function resolveScaleColorLightness(
+  color: TonalScaleColor,
+  colorSpace: ColorInterpolationSpace
+): number {
+  return colorSpace === 'oklch' ? hexToOklch(color.hex).l : color.hsl.l;
+}
+
+function createScaleColorWithLightness(
+  color: TonalScaleColor,
+  colorSpace: ColorInterpolationSpace,
+  lightness: number
+): TonalScaleColor {
+  const hex =
+    colorSpace === 'oklch'
+      ? oklchToHex({ ...hexToOklch(color.hex), l: lightness })
+      : hslToHex({ ...color.hsl, l: lightness });
+
+  return {
+    ...color,
+    hex,
+    hsl: colorSpace === 'hsl' ? { ...color.hsl, l: lightness } : hexToHsl(hex)
+  };
+}
+
+function createInterpolatedScaleColor(
+  target: TonalScaleColor,
+  start: TonalScaleColor,
+  end: TonalScaleColor,
+  progress: number,
+  colorSpace: ColorInterpolationSpace
+): TonalScaleColor {
+  if (colorSpace === 'oklch') {
+    return createScaleColorFromHex(
+      target,
+      oklchToHex(interpolateOklch(hexToOklch(start.hex), hexToOklch(end.hex), progress))
+    );
+  }
+
+  const hsl = {
+    h: interpolateHue(start.hsl, end.hsl, progress),
+    s: interpolate(start.hsl.s, end.hsl.s, progress),
+    l: interpolate(start.hsl.l, end.hsl.l, progress)
+  };
+
+  return {
+    ...target,
+    hex: hslToHex(hsl),
+    hsl
+  };
+}
+
 function resolveMaxLightnessForContrast(
-  hsl: HslColor,
+  color: TonalScaleColor,
+  colorSpace: ColorInterpolationSpace,
   foregroundHex: string,
   minRatio: number
 ): number {
-  if (contrastRatio(hslToHex({ ...hsl, l: hsl.l }), foregroundHex) >= minRatio) {
-    return hsl.l;
+  if (contrastRatio(color.hex, foregroundHex) >= minRatio) {
+    return resolveScaleColorLightness(color, colorSpace);
   }
 
   let low = 0;
-  let high = hsl.l;
+  let high = resolveScaleColorLightness(color, colorSpace);
 
   for (let index = 0; index < 24; index += 1) {
     const candidateLightness = (low + high) / 2;
-    const candidateHex = hslToHex({ ...hsl, l: candidateLightness });
+    const candidateHex =
+      colorSpace === 'oklch'
+        ? oklchToHex({ ...hexToOklch(color.hex), l: candidateLightness })
+        : hslToHex({ ...color.hsl, l: candidateLightness });
 
     if (contrastRatio(candidateHex, foregroundHex) >= minRatio) {
       low = candidateLightness;
@@ -1081,6 +1225,17 @@ function interpolateHue(start: HslColor, end: HslColor, progress: number): numbe
   return normalizeHue(startHue + shortestHueDelta(startHue, endHue) * clamp(progress, 0, 1));
 }
 
+function interpolateOklch(start: OklchColor, end: OklchColor, progress: number): OklchColor {
+  const startHue = start.c < 0.000001 ? end.h : start.h;
+  const endHue = end.c < 0.000001 ? start.h : end.h;
+
+  return {
+    l: interpolate(start.l, end.l, progress),
+    c: interpolate(start.c, end.c, progress),
+    h: normalizeHue(startHue + shortestHueDelta(startHue, endHue) * clamp(progress, 0, 1))
+  };
+}
+
 function normalizedProgress(value: number, start: number, end: number): number {
   if (start === end) {
     return 0;
@@ -1115,13 +1270,78 @@ function hexToRgb(hex: string): [number, number, number] {
   ];
 }
 
+function hexToLinearRgb(hex: string): [number, number, number] {
+  return hexToRgb(hex).map((channel) => srgbToLinear(channel / 255)) as [number, number, number];
+}
+
+function fitOklchToSrgb(oklch: OklchColor): OklchColor {
+  const normalizedOklch = {
+    l: clamp(oklch.l, 0, 100),
+    c: Math.max(0, oklch.c),
+    h: normalizeHue(oklch.h)
+  };
+
+  if (isSrgbInGamut(oklchToSrgbChannels(normalizedOklch))) {
+    return normalizedOklch;
+  }
+
+  let low = 0;
+  let high = normalizedOklch.c;
+
+  for (let index = 0; index < 24; index += 1) {
+    const candidateChroma = (low + high) / 2;
+    const candidate = { ...normalizedOklch, c: candidateChroma };
+
+    if (isSrgbInGamut(oklchToSrgbChannels(candidate))) {
+      low = candidateChroma;
+    } else {
+      high = candidateChroma;
+    }
+  }
+
+  return {
+    ...normalizedOklch,
+    c: low
+  };
+}
+
+function oklchToSrgbChannels(oklch: OklchColor): [number, number, number] {
+  const hueRadians = (normalizeHue(oklch.h) * Math.PI) / 180;
+  const oklabL = clamp(oklch.l, 0, 100) / 100;
+  const oklabA = Math.max(0, oklch.c) * Math.cos(hueRadians);
+  const oklabB = Math.max(0, oklch.c) * Math.sin(hueRadians);
+  const lRoot = oklabL + 0.3963377774 * oklabA + 0.2158037573 * oklabB;
+  const mRoot = oklabL - 0.1055613458 * oklabA - 0.0638541728 * oklabB;
+  const sRoot = oklabL - 0.0894841775 * oklabA - 1.291485548 * oklabB;
+  const l = lRoot ** 3;
+  const m = mRoot ** 3;
+  const s = sRoot ** 3;
+
+  return [
+    linearToSrgb(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s),
+    linearToSrgb(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s),
+    linearToSrgb(-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s)
+  ];
+}
+
+function isSrgbInGamut(rgb: [number, number, number]): boolean {
+  return rgb.every((channel) => channel >= 0 && channel <= 1);
+}
+
 function relativeLuminance(hex: string): number {
   const [r, g, b] = hexToRgb(hex).map((channel) => {
-    const value = channel / 255;
-    return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+    return srgbToLinear(channel / 255);
   });
 
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+function srgbToLinear(value: number): number {
+  return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+}
+
+function linearToSrgb(value: number): number {
+  return value <= 0.0031308 ? 12.92 * value : 1.055 * value ** (1 / 2.4) - 0.055;
 }
 
 function toHexChannel(value: number): string {

@@ -52,8 +52,8 @@ A profile can opt into `vividContrast`. When enabled, the lab treats vivid as a 
 The fixed `3:1` target follows the WCAG threshold used for large text and graphical objects, and is
 only an experimental expressive-color compromise. It is not the WCAG 2.2 Contrast (Minimum) AA
 threshold for normal text. The profile uses the contrast formula based on relative luminance, not HSL
-lightness. HSL lightness remains useful for editing the curve, but it does not describe perceived
-luminance well enough to define accessibility.
+or OKL lightness. OKLCH is the generation space for commercial profiles, but it does not replace the
+contrast formula.
 
 The current experiment uses the same `3:1` vivid target for every input color. The previous
 adaptive experiment used `minRatio: 4.5` with `luminousMinRatio: 3`, which kept darker colors near a
@@ -67,8 +67,8 @@ where the input color belongs, and it does not move the profile's structural gen
 
 Profiles must make the role of the input color explicit:
 
-- `seed` treats the input as the hue/saturation source. The profile decides the lightness at the
-  base tone, so the exact input color is not guaranteed to appear in the emitted scale.
+- `seed` treats the input as the hue and chroma/saturation source. The profile decides the lightness
+  at the base tone, so the exact input color is not guaranteed to appear in the emitted scale.
 - `fixed-anchor` preserves the input at the profile's configured base tone. This is useful when the
   profile represents an external reference scale and the reference color has a known slot.
 - `auto-fit` uses the input as a chromatic seed, generates the scale from the profile's structural
@@ -83,7 +83,7 @@ track depending on the finished colors.
 The lab deliberately separates the profile pivot from the input fit:
 
 - the profile pivot is a structural tone, currently the profile's `baseTone`;
-- the input color provides hue and saturation for the generated family;
+- the input color provides hue and chroma for the generated family;
 - vivid contrast adjusts the generated vivid track;
 - the pre-vivid bridge connects the light range to the adjusted vivid start;
 - minimum lightness spacing may further separate neighboring emitted slots;
@@ -121,20 +121,21 @@ The current model came from comparing the same profile across darker and more lu
   a vivid version of the original color.
 - HSL lightness is not enough to classify this behavior. A color can look like a middle HSL value
   while still having high relative luminance.
+- HSL interpolation is also not reliable enough for luminous pre-vivid bridges. Equal HSL lightness
+  movement can create uneven OKL lightness, RGB, and contrast movement before `K35`.
 - `vivid` should therefore be treated as an expressive color track, not as a guaranteed alias for
   normal-text foreground safety in every hue family.
 - Foreground safety is still measured and displayed, but the current expressive profiles intentionally
   use a fixed `3:1` target instead of forcing every vivid tone to normal-text foreground safety.
 
-Example observations for the fixed `3:1` experiment:
+Example observations for the fixed `3:1` and OKLCH commercial experiment:
 
-- `#0f6cbd` fits at `K55` in `Balanced - Auto Soft Dark + 3:1 Vivid` after the scale is generated.
-- `#09b83e` fits at `K35` in `Balanced - Auto Soft Dark + 3:1 Vivid`; its first white-label slot
-  is still `K40` under the shared `3:1` swatch reading rule.
-- `#ff990a` fits at `K28`; it does not pass the fixed `3:1` gate, but `K35` no longer has to darken
-  toward `4.5:1`.
-- `#25d366` fits at `K28`; it is a final nearest-fit reading, not a hard `K30` anchor before `K35`
-  is resolved.
+- `#0f6cbd` remains the reference blue for comparison. `Fluent 2 Blue` keeps it at `K55`, while
+  commercial OKLCH profiles are allowed to report a different final auto-fit slot.
+- `#d4e157` exposed the HSL bridge problem: `K35` was contrast-adjusted, but `K12..K30` reached it
+  through HSL interpolation, causing abrupt contrast movement before `K35`.
+- `#09b83e`, `#ff990a`, `#25d366`, `#00bcd4`, and `#ffeb3b` are useful regression inputs for
+  checking whether luminous hues keep their identity under the fixed `3:1` vivid target.
 
 ## Adjustment Strategy
 
@@ -150,6 +151,11 @@ between tone `15` and the contrast-safe tone `35`. In the official Kiskadee dist
 and the contrast-safe tone `35`. These bridge tones still do not promise white-text contrast; their
 job is to reduce the visual jump into vivid.
 
+The interpolation space is profile-specific. Reference profiles keep the previous HSL behavior so
+they remain useful comparison baselines. Commercial auto-fit profiles interpolate this bridge in
+OKLCH, which keeps the bridge in the same perceptual foundation used by their generated chromatic
+curve.
+
 The bridge is generated from the resolved vivid boundary, not from a forced non-vivid input fit. This
 keeps `K30` from becoming a collision point between a preserved input color and the `K35` contrast
 rule.
@@ -161,7 +167,7 @@ uses uneven numeric gaps.
 
 ## Minimum Lightness Step Experiment
 
-The current commercial auto-fit profiles also enforce a minimum HSL lightness step between
+The current commercial auto-fit profiles also enforce a minimum OKL lightness step between
 neighboring emitted Kiskadee slots after the contrast guard and pre-vivid bridge have run. The rule
 is intentionally simple: one luminous exception for the beginning of the chromatic scale, and one
 default threshold for the rest of the chromatic scale. It does not define separate medium, dark,
@@ -170,8 +176,8 @@ medium-luminous, or dark-luminous categories.
 Current experimental thresholds:
 
 - every chromatic target from the first non-cap slot through the last non-cap slot uses at least
-  `1.5` HSL lightness points from the previous emitted slot;
-- luminous inputs use `2` HSL lightness points through `K16`, then fall back to the same `1.5`
+  `1.5` OKL lightness points from the previous emitted slot;
+- luminous inputs use `2` OKL lightness points through `K16`, then fall back to the same `1.5`
   default used by every other chromatic target;
 - the transition from absolute `K0` into `K1` also uses the active spacing threshold so the first
   chromatic color does not visually merge into white;
@@ -183,9 +189,9 @@ This currently catches colors such as yellow, cyan, lime, and orange, whose high
 makes the first light slots look too much like a soft gradient even when HSL lightness deltas are
 already larger than `1`.
 
-This rule measures HSL lightness delta, not contrast ratio. Its job is to reduce visually compressed
-ramps where adjacent slots look like a single gradient. The contrast rule still decides whether
-vivid tones are safe for the active foreground target.
+This rule measures OKL lightness delta in the commercial OKLCH profiles, not contrast ratio. Its job
+is to reduce visually compressed ramps where adjacent slots look like a single gradient. The contrast
+rule still decides whether vivid tones are safe for the active foreground target.
 
 The rule is intentionally experimental and reversible. In `auto-fit` profiles, it is allowed to move
 an emitted slot away from the exact input color because the input fit is only reported after spacing
@@ -204,18 +210,18 @@ This means the same Fluent-derived profile can be read in two ways:
 - `Fluent 2 Blue` plus `Kiskadee Official (33)` projects the Fluent curve into the official
   Kiskadee slot language.
 
-For guarded vivid tones, the generator preserves hue and saturation, then resolves a contrast-safe
-lightness range:
+For guarded vivid tones, the generator preserves the profile's hue and chroma/saturation behavior,
+then resolves a contrast-safe lightness range:
 
 1. Generate the provisional scale from the active profile and its structural base tone.
 2. Find the highest lightness at the vivid start tone that passes the contrast rule.
 3. Rescale only `startTone` through the last non-cap tone from that safe lightness down to the final
    chromatic dark endpoint.
-4. Clamp each vivid tone again if its hue/saturation needs a lower lightness to pass.
+4. Clamp each vivid tone again if its hue and chroma/saturation need a lower lightness to pass.
 5. If configured, interpolate the pre-vivid bridge from the preserved light range into the safe vivid
    start.
-6. If configured, enforce the minimum HSL lightness step threshold across the chromatic range, with
-   the luminous initial-range exception when applicable.
+6. If configured, enforce the minimum lightness step threshold in the profile's interpolation space,
+   with the luminous initial-range exception when applicable.
 7. Resolve the input color's displayed fit from the final generated scale. This final fit is not used
    to regenerate the scale.
 
@@ -236,17 +242,17 @@ accessibility guarantee.
   opt into `vividContrast`. It uses `seed` so it stays a simple baseline instead of a color-preserving
   recipe.
 - `Auto Linear + 3:1 Vivid` keeps the distribution's fine light range linear around the profile base
-  tone, uses the distribution's bridge tones as a pre-vivid transition, then applies the fixed
-  `3:1` contrast-gated vivid contract from tone `35` onward.
+  tone in OKLCH, uses the distribution's bridge tones as a pre-vivid transition, then applies the
+  fixed `3:1` contrast-gated vivid contract from tone `35` onward.
 - `Auto Soft Dark + 3:1 Vivid` keeps the auto linear lightness model and vivid guard, but bends
-  saturation down only after the profile base tone. Its current default lightness controls are
+  OKL chroma down only after the profile base tone. Its current default lightness controls are
   `lightCeilingLightness: 98.8`, `darkFloorLightness: 8`, `lightLightnessGamma: 1.2`, and
   `darkLightnessGamma: 0.8`: the light gamma gives `K1..K10` more individuality than the previous
   one-point linear ramp, while the shared `1.5` lightness-spacing guard prevents the middle and dark
   chromatic slots from collapsing into a soft gradient. The dark floor keeps `K95` visibly chromatic
   before the absolute `K100` black cap.
 - `Auto Mid Peak + 3:1 Vivid` keeps the vivid guard, but uses the profile base tone as the
-  saturation peak. Saturation bends down toward both the light and dark ends of the scale.
+  chroma peak. Chroma bends down toward both the light and dark ends of the scale.
 
 The guarded profile is experimental. It exists so the lab can show the visual cost and benefit of
 making `vivid` a real foreground-safe contract instead of only a numeric range.
@@ -265,18 +271,19 @@ implementation language until the lab promotes a final naming contract.
 
 `Balanced - Auto Soft Dark + 3:1 Vivid` is the current default profile shown when the lab UI loads.
 
-## Saturation-Shaped Vivid Profiles
+## OKLCH-Shaped Vivid Profiles
 
-The saturation-shaped vivid profiles still derive lightness from the same auto linear model used by
-`Auto Linear + 3:1 Vivid`; only saturation changes before the contrast guard is applied.
+The commercial vivid profiles use the OKLCH generation engine documented in
+`oklch-generation-engine.md`. They still derive lightness from the same auto linear model used by
+`Auto Linear + 3:1 Vivid`; only OKL chroma changes before the contrast guard is applied.
 
 - `Auto Soft Dark + 3:1 Vivid` leaves tones at or above the light side unchanged, then reduces
-  saturation from the profile base tone toward the dark end.
-- `Auto Mid Peak + 3:1 Vivid` reduces saturation toward both ends, making the profile base tone the top
-  of the saturation curve.
+  chroma from the profile base tone toward the dark end.
+- `Auto Mid Peak + 3:1 Vivid` reduces chroma toward both ends, making the profile base tone the top
+  of the chroma curve.
 
 These profiles are intended as visual experiments, not final Kiskadee contracts. They let the lab
-compare a strict linear saturation baseline against curves that feel closer to design systems whose
+compare a strict linear chroma baseline against curves that feel closer to design systems whose
 deep tones are less chromatic than their middle tones.
 
 ## UI Reading
@@ -290,11 +297,16 @@ Swatch labels do not use text shadow. The lab is meant to reveal the raw relatio
 foreground label color and the generated background color; shadows would make weak contrast look more
 comfortable than it really is.
 
-The comparison table shows `L delta` as the HSL lightness difference from the previous emitted slot.
-This is the same lightness-step dimension used by the minimum lightness step experiment, not a
-contrast-ratio measurement.
+The comparison table shows generated HSL for quick familiarity, generated OKLCH for the active
+commercial engine, and `OKL L delta` as the OKL lightness difference from the previous emitted slot.
+This is the same lightness-step dimension used by the commercial minimum lightness step experiment,
+not a contrast-ratio measurement.
 
 The curve chart excludes `K0` and `K100` because those slots are absolute caps rather than generated
 chromatic colors. The scale strip and comparison table still show them so cap behavior remains
 visible. In the comparison table, their vivid-guard status is reported as `absolute cap` instead of
 `pass` or `fail`.
+
+The curve chart uses the OKLCH plane: horizontal position is OKL lightness and vertical position is
+OKL chroma. This makes the chart useful for judging the commercial OKLCH profiles while still
+keeping the reference profiles visible as comparison curves.

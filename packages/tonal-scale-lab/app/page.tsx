@@ -15,8 +15,9 @@ import {
   createHexByTone,
   DEFAULT_SCALE_DISTRIBUTION_ID,
   formatHsl,
+  formatOklch,
   generateTonalScale,
-  type HslColor,
+  hexToOklch,
   normalizeHexColor,
   resolveAppliedVividContrastRule,
   resolveChromaticDarkEndTone,
@@ -112,6 +113,7 @@ const RANGE_CONTROLS: RangeControl[] = [
 const CHART_WIDTH = 720;
 const CHART_HEIGHT = 360;
 const CHART_PADDING = 42;
+const CHART_CHROMA_MAX = 0.4;
 
 export default function TonalScaleLabPage() {
   const [profileId, setProfileId] = useState<TonalProfileId>(DEFAULT_TONAL_PROFILE_ID);
@@ -236,7 +238,7 @@ export default function TonalScaleLabPage() {
         <div className="chart-panel">
           <div className="section-heading">
             <h2>Curve</h2>
-            <span>S/L plane</span>
+            <span>OKLCH plane</span>
           </div>
           <CurveChart
             baseTone={inputFitTone}
@@ -351,39 +353,43 @@ function CurveChart({
       {[0, 25, 50, 75, 100].map((value) => (
         <g key={value}>
           <line
-            x1={xForLightness(value)}
-            x2={xForLightness(value)}
+            x1={xForOklLightness(value)}
+            x2={xForOklLightness(value)}
             y1={CHART_PADDING}
             y2={CHART_HEIGHT - CHART_PADDING}
           />
-          <line
-            x1={CHART_PADDING}
-            x2={CHART_WIDTH - CHART_PADDING}
-            y1={yForSaturation(value)}
-            y2={yForSaturation(value)}
-          />
-          <text x={xForLightness(value)} y={CHART_HEIGHT - 14}>
-            {value}
-          </text>
-          <text x="14" y={yForSaturation(value) + 4}>
+          <text x={xForOklLightness(value)} y={CHART_HEIGHT - 14}>
             {value}
           </text>
         </g>
       ))}
+      {[0, 0.1, 0.2, 0.3, 0.4].map((value) => (
+        <g key={value}>
+          <line
+            x1={CHART_PADDING}
+            x2={CHART_WIDTH - CHART_PADDING}
+            y1={yForOklChroma(value)}
+            y2={yForOklChroma(value)}
+          />
+          <text x="14" y={yForOklChroma(value) + 4}>
+            {value.toFixed(1)}
+          </text>
+        </g>
+      ))}
       <text className="axis-label" x={CHART_WIDTH / 2} y={CHART_HEIGHT - 4}>
-        lightness
+        OKL lightness
       </text>
       <text className="axis-label" x="12" y="24">
-        saturation
+        OKL chroma
       </text>
       <path className="reference-path" d={referencePath} />
       <path className="generated-path" d={generatedPath} />
       {chartReference.map((color) => (
-        <circle className="reference-point" key={`r-${color.id}`} {...pointFor(color.hsl)} r="4" />
+        <circle className="reference-point" key={`r-${color.id}`} {...pointFor(color)} r="4" />
       ))}
       {chartGenerated.map((color) => (
         <g key={color.id}>
-          <circle className="generated-point" {...pointFor(color.hsl)} r="5" />
+          <circle className="generated-point" {...pointFor(color)} r="5" />
           {shouldLabelPoint(
             color,
             baseTone,
@@ -393,8 +399,8 @@ function CurveChart({
           ) ? (
             <text
               className="point-label"
-              x={pointFor(color.hsl).cx + 7}
-              y={pointFor(color.hsl).cy - 7}
+              x={pointFor(color).cx + 7}
+              y={pointFor(color).cy - 7}
             >
               {color.label}
             </text>
@@ -447,7 +453,8 @@ function ScaleTable({
             <th>slot</th>
             <th>generated</th>
             <th>generated HSL</th>
-            <th>L delta</th>
+            <th>generated OKLCH</th>
+            <th>OKL L delta</th>
             <th>reference</th>
             <th>white contrast</th>
             <th>vivid guard</th>
@@ -460,7 +467,8 @@ function ScaleTable({
               <td>{color.label}</td>
               <td>{color.hex}</td>
               <td>{formatHsl(color.hsl)}</td>
-              <td>{formatLightnessDelta(color, generated[index - 1])}</td>
+              <td>{formatOklch(hexToOklch(color.hex))}</td>
+              <td>{formatOklLightnessDelta(color, generated[index - 1])}</td>
               <td>{referenceHexByTone[color.tone]}</td>
               <td>{contrastRatio(color.hex, '#ffffff').toFixed(2)}</td>
               <td>{formatVividGuardStatus(color, vividContrast, chromaticDarkEndTone)}</td>
@@ -473,8 +481,8 @@ function ScaleTable({
   );
 }
 
-function formatLightnessDelta(color: TonalScaleColor, previous?: TonalScaleColor): string {
-  return previous ? (previous.hsl.l - color.hsl.l).toFixed(2) : '-';
+function formatOklLightnessDelta(color: TonalScaleColor, previous?: TonalScaleColor): string {
+  return previous ? (hexToOklch(previous.hex).l - hexToOklch(color.hex).l).toFixed(2) : '-';
 }
 
 function formatVividGuardStatus(
@@ -502,25 +510,35 @@ function formatVividGuardStatus(
 function createPath(colors: TonalScaleColor[]): string {
   return colors
     .map((color, index) => {
-      const { cx, cy } = pointFor(color.hsl);
+      const { cx, cy } = pointFor(color);
       return `${index === 0 ? 'M' : 'L'} ${cx} ${cy}`;
     })
     .join(' ');
 }
 
-function pointFor(hsl: HslColor): { cx: number; cy: number } {
+function pointFor(color: TonalScaleColor): { cx: number; cy: number } {
+  const oklch = hexToOklch(color.hex);
+
   return {
-    cx: xForLightness(hsl.l),
-    cy: yForSaturation(hsl.s)
+    cx: xForOklLightness(oklch.l),
+    cy: yForOklChroma(oklch.c)
   };
 }
 
-function xForLightness(lightness: number): number {
+function xForOklLightness(lightness: number): number {
   return CHART_PADDING + (lightness / 100) * (CHART_WIDTH - CHART_PADDING * 2);
 }
 
-function yForSaturation(saturation: number): number {
-  return CHART_PADDING + ((100 - saturation) / 100) * (CHART_HEIGHT - CHART_PADDING * 2);
+function yForOklChroma(chroma: number): number {
+  return (
+    CHART_PADDING +
+    ((CHART_CHROMA_MAX - clampChartChroma(chroma)) / CHART_CHROMA_MAX) *
+      (CHART_HEIGHT - CHART_PADDING * 2)
+  );
+}
+
+function clampChartChroma(chroma: number): number {
+  return Math.min(CHART_CHROMA_MAX, Math.max(0, chroma));
 }
 
 function formatControlValue(value: number): string {

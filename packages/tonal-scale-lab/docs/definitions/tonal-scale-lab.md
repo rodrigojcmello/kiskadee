@@ -26,6 +26,8 @@ Tonal profiles live in `src/tonal-profiles.ts`. A profile is the stored curve mo
 generator and the UI selector. Scale distributions live in `src/tonal-scale.ts`. The durable profile,
 distribution, input-strategy, and contrast definitions live in
 `docs/definitions/tonal-profiles-and-vivid-contrast.md`.
+The current OKLCH generation experiment is documented in
+`docs/definitions/oklch-generation-engine.md`.
 
 Tonal anchors and state mapping are documented separately in
 `docs/definitions/tonal-anchors-and-state-mapping.md`. That document defines the contract between
@@ -40,20 +42,20 @@ Current profiles:
 - `Linear Lightness`: keeps hue and saturation constant across the chromatic slots and maps
   lightness directly from tone position. `K0` and `K100` remain absolute neutral caps rather than
   chromatic endpoints.
-- `Striking - Auto Linear + 3:1 Vivid`: uses the input color as a chromatic seed, uses the
-  pre-vivid middle tones as a bridge into vivid, applies a fixed `3:1` white-text contrast target
-  from tone `35` through the last chromatic dark slot, and reports the closest input fit after the
-  scale is finished.
+- `Striking - Auto Linear + 3:1 Vivid`: uses the input color as a chromatic seed in the commercial
+  OKLCH engine, uses the pre-vivid middle tones as a bridge into vivid, applies a fixed `3:1`
+  white-text contrast target from tone `35` through the last chromatic dark slot, and reports the
+  closest input fit after the scale is finished.
 - `Balanced - Auto Soft Dark + 3:1 Vivid`: follows the same auto-fit and vivid-contrast behavior as
-  `Striking - Auto Linear + 3:1 Vivid`, but reduces saturation on the dark side so deep tones feel
-  closer to the softer Fluent dark blues. Its current default lightness experiment uses
+  `Striking - Auto Linear + 3:1 Vivid`, but reduces OKL chroma on the dark side so deep tones feel
+  closer to the softer Fluent dark blues. Its current default OKL lightness experiment uses
   `lightCeilingLightness: 98.8`, `darkFloorLightness: 8`, `lightLightnessGamma: 1.2`, and
   `darkLightnessGamma: 0.8` so `K1..K10` separate from the absolute white cap, the shared
   lightness-spacing guard keeps middle and dark chromatic slots from collapsing into a soft
   gradient, and `K95` remains visibly chromatic before the absolute black cap.
 - `Sophisticated - Auto Mid Peak + 3:1 Vivid`: follows the same vivid-contrast behavior, but treats
-  the profile base tone as the saturation peak. Both very light and very dark tones become less
-  saturated.
+  the profile base tone as the OKL chroma peak. Both very light and very dark tones become less
+  chromatic.
 
 For the auto-fit experimental profiles, the first word is a UI-facing commercial name. The
 technical profile label after the dash remains the algorithmic description used for implementation
@@ -75,13 +77,13 @@ The current vivid target experiment uses a fixed `3:1` contrast target for every
 replaces the earlier adaptive experiment that used a stronger `4.5:1` target for darker colors and
 softened luminous colors down to `3:1`.
 
-The commercial auto-fit profiles also enforce experimental minimum HSL lightness steps after the
+The commercial auto-fit profiles also enforce experimental minimum OKL lightness steps after the
 contrast and bridge adjustments:
 
-- Default chromatic spacing: at least `1.5` lightness points from the previous emitted slot through
-  the active chromatic range.
-- Luminous inputs, currently input white contrast `<= 2.4:1`: at least `2` lightness points through
-  `K16`, then the same `1.5` default used by the rest of the chromatic range.
+- Default chromatic spacing: at least `1.5` OKL lightness points from the previous emitted slot
+  through the active chromatic range.
+- Luminous inputs, currently input white contrast `<= 2.4:1`: at least `2` OKL lightness points
+  through `K16`, then the same `1.5` default used by the rest of the chromatic range.
 - `K0` is still an absolute light cap, but the transition into `K1` uses the active spacing
   threshold so the first chromatic color does not visually merge into white.
 - `K100` is an absolute dark cap; the `K95 -> K100` jump is a cap transition, not a chromatic
@@ -91,11 +93,12 @@ contrast and bridge adjustments:
 
 Current color findings:
 
-- `#0f6cbd` fits at `K55` in `Balanced - Auto Soft Dark + 3:1 Vivid`; the previous contrast-derived
-  `K70` anchor stretched `K40..K70` too much.
-- `#09b83e` fits at `K35` in `Balanced - Auto Soft Dark + 3:1 Vivid`.
-- `#ff990a` fits at `K28` because it does not pass the fixed `3:1` gate.
-- `#25d366` fits at `K28`; it no longer becomes a hard `K30` anchor before `K35` is resolved.
+- `#0f6cbd` is the reference blue. `Fluent 2 Blue` still preserves it at `K55`, while the commercial
+  OKLCH profiles are allowed to fit it wherever the finished generated scale is nearest.
+- `#d4e157`, yellow, lime, and cyan motivated the OKLCH engine because HSL interpolation produced
+  uneven contrast jumps before the `K35` vivid boundary.
+- `#09b83e`, `#ff990a`, and `#25d366` remain useful regression colors for checking whether luminous
+  hues still read as their original hue family after the fixed `3:1` vivid target.
 - The green ramp remains visually coherent when moving into `K35`.
 - The orange ramp becomes brown if `K35` is forced to `4.5:1` against white, which motivated the
   fixed `3:1` experiment.
@@ -123,8 +126,11 @@ The reference-curve algorithm derives a reusable HSL curve from the active profi
 - saturation follows the reference ratio relative to the base tone;
 - hue follows the reference hue drift relative to the base tone.
 
+The commercial auto-fit profiles use OKLCH instead: OKL lightness is the lightness axis, OKL chroma
+is the chromatic-strength axis, and OKLCH hue interpolation is used for chromatic bridges.
+
 The Next.js UI is the primary feedback surface for this project. It shows the generated scale, the
-active profile reference scale, and a saturation/lightness chart so curve changes are visible
+active profile reference scale, and an OKLCH lightness/chroma chart so curve changes are visible
 immediately.
 The app uses port `3001` by default so it can run alongside `@kiskadee/showcase` on port `3000`.
 
@@ -140,6 +146,6 @@ It also accepts an optional scale distribution id after the profile id:
 pnpm --filter @kiskadee/tonal-scale-lab run generate ffcc00 linear-wcag-vivid kiskadee-official
 ```
 
-Future work should decide whether the generated scale itself should move from HSL editing internals
-to a more perceptual color space such as OKLCH. Input fit should remain a final observation unless a
-future profile explicitly defines a stronger color-preservation contract.
+Future work should decide whether the OKLCH commercial engine should replace more of the reference
+pipeline or remain scoped to the Kiskadee commercial profiles. Input fit should remain a final
+observation unless a future profile explicitly defines a stronger color-preservation contract.

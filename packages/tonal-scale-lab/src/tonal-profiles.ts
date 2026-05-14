@@ -4,6 +4,7 @@ import {
   hexToHsl,
   hslToHex,
   KISKADEE_BASE_TONE,
+  type ColorInterpolationSpace,
   type MinimumLightnessStepRule,
   type TonalProfile,
   type TonalScaleColor
@@ -47,6 +48,7 @@ const FLUENT_2_BLUE_REFERENCE_SCALE = createReferenceAnchorScale([
 ]);
 
 const LINEAR_LIGHTNESS_REFERENCE_SCALE = createLinearReferenceScale(FLUENT_BLUE_HEX);
+const COMMERCIAL_COLOR_SPACE = 'oklch' as const satisfies ColorInterpolationSpace;
 
 const FIXED_VIVID_WHITE_TEXT_CONTRAST = {
   bridgeStartTone: 15,
@@ -103,6 +105,7 @@ const LINEAR_WCAG_VIVID_PROFILE = {
   label: 'Auto Linear + 3:1 Vivid',
   commercialName: 'Striking',
   mode: 'linear-lightness',
+  colorSpace: COMMERCIAL_COLOR_SPACE,
   inputStrategy: 'auto-fit',
   baseTone: KISKADEE_BASE_TONE,
   referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE,
@@ -116,6 +119,7 @@ const SOFT_DARK_WCAG_VIVID_PROFILE = {
   label: 'Auto Soft Dark + 3:1 Vivid',
   commercialName: 'Balanced',
   mode: 'linear-lightness',
+  colorSpace: COMMERCIAL_COLOR_SPACE,
   inputStrategy: 'auto-fit',
   baseTone: KISKADEE_BASE_TONE,
   referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE,
@@ -136,6 +140,7 @@ const MID_PEAK_WCAG_VIVID_PROFILE = {
   label: 'Auto Mid Peak + 3:1 Vivid',
   commercialName: 'Sophisticated',
   mode: 'linear-lightness',
+  colorSpace: COMMERCIAL_COLOR_SPACE,
   inputStrategy: 'auto-fit',
   baseTone: KISKADEE_BASE_TONE,
   referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE,

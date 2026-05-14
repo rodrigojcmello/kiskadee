@@ -1,0 +1,93 @@
+# OKLCH Generation Engine
+
+The commercial auto-fit profiles now use OKLCH as their chromatic generation space.
+
+This is a deliberate foundation change, not a new per-tone exception. The goal is to avoid a scale
+where light, middle, and dark slots each use unrelated rules. The active experiment keeps one color
+space for the commercial chromatic curve and then applies functional constraints inside that same
+space.
+
+## Why HSL Was Replaced For Commercial Profiles
+
+HSL lightness is easy to edit, but it is not perceptual lightness. Equal HSL lightness steps can
+produce uneven contrast and uneven RGB movement, especially in luminous hues such as yellow, lime,
+and cyan.
+
+The failure that motivated this change appeared in the pre-vivid bridge. `K35` was adjusted to meet
+the vivid contrast target, then `K12..K30` were interpolated toward that adjusted `K35` in HSL. For
+luminous hues, this produced abrupt contrast movement before `K35`, even when the HSL lightness
+delta looked regular.
+
+OKLCH gives the lab a better foundation:
+
+- `OKL L` is used as the lightness axis for generated chromatic slots;
+- `OKL C` is used as the chroma axis for commercial profiles;
+- OKLCH hue interpolation is used for chromatic bridges;
+- generated colors are gamut-fitted back into sRGB by reducing chroma when needed.
+
+## Profile Scope
+
+The OKLCH engine is currently enabled only for the commercial auto-fit profiles:
+
+- `Striking - Auto Linear + 3:1 Vivid`;
+- `Balanced - Auto Soft Dark + 3:1 Vivid`;
+- `Sophisticated - Auto Mid Peak + 3:1 Vivid`.
+
+The two reference profiles intentionally remain functional comparison tools:
+
+- `Fluent 2 Blue` remains the projected Microsoft reference scale.
+- `Linear Lightness` remains the simplest HSL baseline.
+
+This means profile differences are intentional. The reference profiles show useful north stars; the
+commercial profiles are where the Kiskadee experiment is allowed to change foundations.
+
+## Current OKLCH Pipeline
+
+For a commercial auto-fit profile:
+
+1. The input color is converted to OKLCH.
+2. The chromatic scale is generated from the profile base tone using OKL lightness and OKL chroma.
+3. Absolute `K0` and `K100` are emitted as neutral caps and are not used as chromatic endpoints.
+4. The vivid contrast guard adjusts `K35..K95` by lowering OKL lightness until the active contrast
+   target is reached.
+5. The pre-vivid bridge interpolates through OKLCH from the preserved bridge start to the adjusted
+   vivid start.
+6. The minimum lightness step uses OKL lightness, not HSL lightness.
+7. The input fit is resolved only after the scale is complete.
+
+Contrast is still measured with WCAG relative luminance against the configured foreground. OKLCH is
+the generation and interpolation space; it does not replace the contrast formula.
+
+## Minimum Lightness Step
+
+The commercial profiles keep the same simple spacing policy, but the unit is now profile-dependent:
+
+- in OKLCH commercial profiles, the rule measures OKL lightness;
+- in HSL reference/baseline profiles, the rule would measure HSL lightness if enabled.
+
+Current commercial thresholds:
+
+- every chromatic target from the first non-cap slot through the last non-cap slot uses at least
+  `1.5` OKL lightness points from the previous emitted slot;
+- luminous inputs use `2` OKL lightness points through `K16`, then fall back to the same `1.5`
+  default.
+
+An input is treated as luminous when its contrast against white is less than or equal to `2.4:1`.
+
+## UI Reading
+
+The curve chart now uses an OKLCH plane:
+
+- horizontal axis: OKL lightness;
+- vertical axis: OKL chroma.
+
+The comparison table still shows generated HSL because it is familiar for quick reading, but it also
+shows generated OKLCH and `OKL L delta`. The OKL value is the one that should be used when judging
+spacing in the commercial OKLCH profiles.
+
+## Naming Caveat
+
+Some UI controls still use older labels such as saturation and gamma. In the commercial OKLCH
+profiles, those controls are now applied to OKL chroma and OKL lightness. The names remain for
+continuity while the lab is experimental, but future UI cleanup should rename them once the OKLCH
+contract stabilizes.
