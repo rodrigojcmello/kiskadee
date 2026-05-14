@@ -74,6 +74,19 @@ Current commercial thresholds:
 
 An input is treated as luminous when its contrast against white is less than or equal to `2.4:1`.
 
+## Balanced Dark Endpoint
+
+`Balanced - Auto Soft Dark + 3:1 Vivid` uses `darkFloorLightness: 20` and
+`darkLightnessGamma: 0.95`.
+
+This keeps `K95` as the final chromatic dark color instead of letting it collapse toward near-black.
+Very low OKL lightness values leave little sRGB gamut for chroma, so tones below roughly `OKL L 20`
+can look like a foggy sequence of almost-black colors even when their lightness deltas are still
+large. The absolute black role belongs to `K100`; `K95` should remain visibly colored.
+
+The current floor intentionally stays close to the final dark slot of the Fluent 2 blue reference,
+which is dark but still distinguishable from black.
+
 ## UI Reading
 
 The curve chart now uses an OKLCH plane:

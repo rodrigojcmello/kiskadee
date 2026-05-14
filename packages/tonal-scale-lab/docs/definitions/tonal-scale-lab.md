@@ -49,10 +49,12 @@ Current profiles:
 - `Balanced - Auto Soft Dark + 3:1 Vivid`: follows the same auto-fit and vivid-contrast behavior as
   `Striking - Auto Linear + 3:1 Vivid`, but reduces OKL chroma on the dark side so deep tones feel
   closer to the softer Fluent dark blues. Its current default OKL lightness experiment uses
-  `lightCeilingLightness: 98.8`, `darkFloorLightness: 8`, `lightLightnessGamma: 1.2`, and
-  `darkLightnessGamma: 0.8` so `K1..K10` separate from the absolute white cap, the shared
+  `lightCeilingLightness: 98.8`, `darkFloorLightness: 20`, `lightLightnessGamma: 1.2`, and
+  `darkLightnessGamma: 0.95` so `K1..K10` separate from the absolute white cap, the shared
   lightness-spacing guard keeps middle and dark chromatic slots from collapsing into a soft
-  gradient, and `K95` remains visibly chromatic before the absolute black cap.
+  gradient, and `K95` remains visibly chromatic before the absolute black cap. The dark floor is
+  intentionally closer to Fluent's final dark blue than to absolute black because `K100` already owns
+  the black cap.
 - `Sophisticated - Auto Mid Peak + 3:1 Vivid`: follows the same vivid-contrast behavior, but treats
   the profile base tone as the OKL chroma peak. Both very light and very dark tones become less
   chromatic.

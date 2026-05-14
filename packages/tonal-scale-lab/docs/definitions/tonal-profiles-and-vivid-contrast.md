@@ -246,11 +246,12 @@ accessibility guarantee.
   fixed `3:1` contrast-gated vivid contract from tone `35` onward.
 - `Auto Soft Dark + 3:1 Vivid` keeps the auto linear lightness model and vivid guard, but bends
   OKL chroma down only after the profile base tone. Its current default lightness controls are
-  `lightCeilingLightness: 98.8`, `darkFloorLightness: 8`, `lightLightnessGamma: 1.2`, and
-  `darkLightnessGamma: 0.8`: the light gamma gives `K1..K10` more individuality than the previous
+  `lightCeilingLightness: 98.8`, `darkFloorLightness: 20`, `lightLightnessGamma: 1.2`, and
+  `darkLightnessGamma: 0.95`: the light gamma gives `K1..K10` more individuality than the previous
   one-point linear ramp, while the shared `1.5` lightness-spacing guard prevents the middle and dark
   chromatic slots from collapsing into a soft gradient. The dark floor keeps `K95` visibly chromatic
-  before the absolute `K100` black cap.
+  before the absolute `K100` black cap; it deliberately keeps the last chromatic dark slot closer to
+  Fluent's final dark blue than to absolute black.
 - `Auto Mid Peak + 3:1 Vivid` keeps the vivid guard, but uses the profile base tone as the
   chroma peak. Chroma bends down toward both the light and dark ends of the scale.
 

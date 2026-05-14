@@ -125,10 +125,10 @@ const SOFT_DARK_WCAG_VIVID_PROFILE = {
   referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE,
   defaultControls: {
     ...createDefaultCurveControls({ referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE }),
-    darkFloorLightness: 8,
+    darkFloorLightness: 20,
     lightCeilingLightness: 98.8,
     lightLightnessGamma: 1.2,
-    darkLightnessGamma: 0.8
+    darkLightnessGamma: 0.95
   },
   saturationCurve: SOFT_DARK_SATURATION_CURVE,
   minimumLightnessStep: EXPERIMENTAL_MINIMUM_LIGHTNESS_STEP,
