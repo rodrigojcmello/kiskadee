@@ -166,6 +166,7 @@ export type VividContrastRule = {
   startTone: ScaleTone;
   foregroundHex: string;
   minRatio: number;
+  lightnessProgressGamma?: number;
   luminousMinRatio?: number;
 };
 
@@ -734,11 +735,17 @@ function applyVividContrastRule(
   const chromaticDarkEndTone = resolveChromaticDarkEndTone(distribution);
   const vividStart = scale.find((color) => color.tone === startTone);
   const vividEnd = scale.find((color) => color.tone === chromaticDarkEndTone);
+  const vividColors = scale.filter(
+    (color) => color.tone >= startTone && color.tone <= chromaticDarkEndTone
+  );
 
-  if (!vividStart || !vividEnd) {
+  if (!vividStart || !vividEnd || vividColors.length < 2) {
     return scale;
   }
 
+  const vividIndexById = new Map(vividColors.map((color, index) => [color.id, index]));
+  const vividEndIndex = vividColors.length - 1;
+  const vividLightnessProgressGamma = vividContrast.lightnessProgressGamma ?? 1;
   const vividStartLightness = Math.min(
     resolveScaleColorLightness(vividStart, colorSpace),
     resolveMaxLightnessForContrast(vividStart, colorSpace, foregroundHex, minRatio)
@@ -759,24 +766,27 @@ function applyVividContrastRule(
     contrastRatio(preservedAnchor.hex, foregroundHex) >= minRatio;
 
   const adjustedScale = scale.map((color) => {
-    if (color.tone < startTone || color.tone > chromaticDarkEndTone) {
+    const vividIndex = vividIndexById.get(color.id);
+
+    if (vividIndex === undefined) {
       return color;
     }
 
     const targetLightness = shouldPreserveAnchor
       ? resolveAnchoredVividLightness({
-          tone: color.tone,
-          startTone,
-          endTone: chromaticDarkEndTone,
+          index: vividIndex,
+          startIndex: 0,
+          endIndex: vividEndIndex,
           startLightness: vividStartLightness,
-          anchorTone: preservedAnchor.tone,
+          anchorIndex: vividIndexById.get(preservedAnchor.id) ?? 0,
           anchorLightness: resolveScaleColorLightness(preservedAnchor, colorSpace),
-          endLightness: vividEndLightness
+          endLightness: vividEndLightness,
+          progressGamma: vividLightnessProgressGamma
         })
       : interpolate(
           vividStartLightness,
           vividEndLightness,
-          normalizedProgress(color.tone, startTone, chromaticDarkEndTone)
+          resolveEmittedSlotProgress(vividIndex, 0, vividEndIndex, vividLightnessProgressGamma)
         );
     const maxAccessibleLightness = resolveMaxLightnessForContrast(
       color,
@@ -888,26 +898,48 @@ function interpolateBridgeAroundAnchor(params: {
 }
 
 function resolveAnchoredVividLightness(params: {
-  tone: ScaleTone;
-  startTone: ScaleTone;
-  endTone: ScaleTone;
+  index: number;
+  startIndex: number;
+  endIndex: number;
   startLightness: number;
-  anchorTone: ScaleTone;
+  anchorIndex: number;
   anchorLightness: number;
   endLightness: number;
+  progressGamma: number;
 }): number {
-  const { tone, startTone, endTone, startLightness, anchorTone, anchorLightness, endLightness } =
-    params;
+  const {
+    index,
+    startIndex,
+    endIndex,
+    startLightness,
+    anchorIndex,
+    anchorLightness,
+    endLightness,
+    progressGamma
+  } = params;
 
-  if (tone <= anchorTone) {
+  if (index <= anchorIndex) {
     return interpolate(
       startLightness,
       anchorLightness,
-      normalizedProgress(tone, startTone, anchorTone)
+      resolveEmittedSlotProgress(index, startIndex, anchorIndex, progressGamma)
     );
   }
 
-  return interpolate(anchorLightness, endLightness, normalizedProgress(tone, anchorTone, endTone));
+  return interpolate(
+    anchorLightness,
+    endLightness,
+    resolveEmittedSlotProgress(index, anchorIndex, endIndex, progressGamma)
+  );
+}
+
+function resolveEmittedSlotProgress(
+  index: number,
+  startIndex: number,
+  endIndex: number,
+  gamma: number
+): number {
+  return normalizedProgress(index, startIndex, endIndex) ** gamma;
 }
 
 function applyMinimumLightnessSteps(
@@ -1059,12 +1091,8 @@ function resolveMaxLightnessForContrast(
   foregroundHex: string,
   minRatio: number
 ): number {
-  if (contrastRatio(color.hex, foregroundHex) >= minRatio) {
-    return resolveScaleColorLightness(color, colorSpace);
-  }
-
   let low = 0;
-  let high = resolveScaleColorLightness(color, colorSpace);
+  let high = 100;
 
   for (let index = 0; index < 24; index += 1) {
     const candidateLightness = (low + high) / 2;

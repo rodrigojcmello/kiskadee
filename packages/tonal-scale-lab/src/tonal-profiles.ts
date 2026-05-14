@@ -55,7 +55,8 @@ const FIXED_VIVID_WHITE_TEXT_CONTRAST = {
   bridgeStartTone: 15,
   startTone: 35,
   foregroundHex: '#ffffff',
-  minRatio: 3
+  minRatio: 3,
+  lightnessProgressGamma: 1.1
 } as const;
 
 const EXPERIMENTAL_MINIMUM_LIGHTNESS_STEP = {

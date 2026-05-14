@@ -165,6 +165,15 @@ The bridge uses emitted-step progress, not numeric tone distance. For example, t
 tone jump is five positions. This keeps the curve spacing visually balanced when the distribution
 uses uneven numeric gaps.
 
+The vivid range now follows the same emitted-step principle. `K35`, `K40`, `K45`, and the remaining
+vivid slots are resolved as neighboring emitted steps instead of using raw numeric tone distance.
+This avoids switching from the bridge's visual-step ruler to a numeric-tone ruler at exactly `K35`.
+
+The current commercial vivid rule uses `lightnessProgressGamma: 1.1`. This deliberately softens the
+first vivid step so `K35 -> K40` does not carry a much larger OKL lightness and contrast jump than
+`K30 -> K35`. Each vivid slot is still clamped to the maximum OKL lightness that satisfies the
+active contrast target.
+
 ## Minimum Lightness Step Experiment
 
 The current commercial auto-fit profiles also enforce a minimum OKL lightness step between
@@ -232,8 +241,8 @@ then resolves a contrast-safe lightness range:
 
 1. Generate the provisional scale from the active profile and its structural base tone.
 2. Find the highest lightness at the vivid start tone that passes the contrast rule.
-3. Rescale only `startTone` through the last non-cap tone from that safe lightness down to the final
-   chromatic dark endpoint.
+3. Rescale only `startTone` through the last non-cap tone by emitted-slot progress from that safe
+   lightness down to the final chromatic dark endpoint.
 4. Clamp each vivid tone again if its hue and chroma/saturation need a lower lightness to pass.
 5. If configured, interpolate the pre-vivid bridge from the preserved light range into the safe vivid
    start.

@@ -48,8 +48,8 @@ For a commercial auto-fit profile:
 1. The input color is converted to OKLCH.
 2. The chromatic scale is generated from the profile base tone using OKL lightness and OKL chroma.
 3. Absolute `K0` and `K100` are emitted as neutral caps and are not used as chromatic endpoints.
-4. The vivid contrast guard adjusts `K35..K95` by lowering OKL lightness until the active contrast
-   target is reached.
+4. The vivid contrast guard resolves `K35..K95` with emitted-slot progress and lowers OKL lightness
+   only as needed to keep the active contrast target.
 5. The pre-vivid bridge interpolates through OKLCH from the preserved bridge start to the adjusted
    vivid start.
 6. The minimum lightness step uses OKL lightness, not HSL lightness.
@@ -58,6 +58,17 @@ For a commercial auto-fit profile:
 
 Contrast is still measured with WCAG relative luminance against the configured foreground. OKLCH is
 the generation and interpolation space; it does not replace the contrast formula.
+
+## Vivid Lightness Progress
+
+The vivid range uses emitted-slot progress, not numeric tone distance. In `Kiskadee Official (33)`,
+the vivid slots are read as `K35`, `K40`, `K45`, and so on through `K95`; each emitted slot is one
+step even though the numeric tone labels jump by five.
+
+The current commercial vivid rule also uses `lightnessProgressGamma: 1.1`. This is an experimental
+ease-in for `K35..K95`: the first vivid step no longer drops as aggressively from `K35` to `K40`,
+while the deeper vivid range still has room to separate. The contrast guard still clamps each slot
+to the maximum OKL lightness that satisfies the active foreground contrast target.
 
 ## Minimum Lightness Step
 

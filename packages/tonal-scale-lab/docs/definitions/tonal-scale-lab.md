@@ -44,8 +44,9 @@ Current profiles:
   chromatic endpoints.
 - `Striking - Auto Linear + 3:1 Vivid`: uses the input color as a chromatic seed in the commercial
   OKLCH engine, uses the pre-vivid middle tones as a bridge into vivid, applies a fixed `3:1`
-  white-text contrast target from tone `35` through the last chromatic dark slot, and reports the
-  closest input fit after the scale is finished.
+  white-text contrast target from tone `35` through the last chromatic dark slot, eases the vivid
+  lightness progression with `lightnessProgressGamma: 1.1`, and reports the closest input fit after
+  the scale is finished.
 - `Balanced - Auto Soft Dark + 3:1 Vivid`: follows the same auto-fit and vivid-contrast behavior as
   `Striking - Auto Linear + 3:1 Vivid`, but reduces OKL chroma on the dark side so deep tones feel
   closer to the softer Fluent dark blues. Its current default OKL lightness experiment uses
