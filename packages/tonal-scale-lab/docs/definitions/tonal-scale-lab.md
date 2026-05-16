@@ -45,20 +45,23 @@ Current profiles:
 - `Striking - Auto Linear + 3:1 Vivid`: uses the input color as a chromatic seed in the commercial
   OKLCH engine, uses the pre-vivid middle tones as a bridge into vivid, applies a fixed `3:1`
   white-text contrast target from tone `35` through the last chromatic dark slot, eases the vivid
-  lightness progression with `lightnessProgressGamma: 1.1`, and reports the closest input fit after
-  the scale is finished.
+  lightness progression with `lightnessProgressGamma: 1.1`, uses `darkFloorLightness: 26` so the
+  darkest chromatic slots keep more visible chroma, and reports the closest input fit after the
+  scale is finished.
 - `Balanced - Auto Soft Dark + 3:1 Vivid`: follows the same auto-fit and vivid-contrast behavior as
   `Striking - Auto Linear + 3:1 Vivid`, but reduces OKL chroma on the dark side so deep tones feel
   closer to the softer Fluent dark blues. Its current default OKL lightness experiment uses
   `lightCeilingLightness: 98.8`, `darkFloorLightness: 20`, `lightLightnessGamma: 1.2`, and
   `darkLightnessGamma: 0.95` so `K1..K10` separate from the absolute white cap, the shared
   lightness-spacing guard keeps middle and dark chromatic slots from collapsing into a soft
-  gradient, and `K95` remains visibly chromatic before the absolute black cap. The dark floor is
-  intentionally closer to Fluent's final dark blue than to absolute black because `K100` already owns
-  the black cap.
+  gradient, and `K95` remains visibly chromatic before the absolute black cap. Its current dark
+  chroma experiment uses `darkMinRatio: 0.25` from the profile base tone toward the dark end, so the
+  final dark slots move closer to Fluent's softer low-chroma dark blue without copying the exact
+  Fluent hex values.
 - `Sophisticated - Auto Mid Peak + 3:1 Vivid`: follows the same vivid-contrast behavior, but treats
   the profile base tone as the OKL chroma peak. Both very light and very dark tones become less
-  chromatic.
+  chromatic. This profile should be recalibrated again after the `Balanced` dark-chroma experiment
+  stabilizes.
 
 For the auto-fit experimental profiles, the first word is a UI-facing commercial name. The
 technical profile label after the dash remains the algorithmic description used for implementation

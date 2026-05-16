@@ -73,7 +73,7 @@ const EXPERIMENTAL_LUMINOUS_CHROMA_RAMP = {
 
 const SOFT_DARK_SATURATION_CURVE = {
   type: 'soft-dark',
-  darkMinRatio: 0.64,
+  darkMinRatio: 0.25,
   darkGamma: 0.8
 } as const;
 
@@ -81,7 +81,7 @@ const MID_PEAK_SATURATION_CURVE = {
   type: 'mid-peak',
   lightMinRatio: 0.42,
   lightGamma: 1.15,
-  darkMinRatio: 0.64,
+  darkMinRatio: 0.3,
   darkGamma: 0.8
 } as const;
 
@@ -105,6 +105,13 @@ const LINEAR_LIGHTNESS_PROFILE = {
   defaultControls: createDefaultCurveControls({ referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE })
 } satisfies TonalProfile;
 
+const COMMERCIAL_LIGHTNESS_CONTROLS = {
+  ...createDefaultCurveControls({ referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE }),
+  lightCeilingLightness: 98.8,
+  lightLightnessGamma: 1.2,
+  darkLightnessGamma: 0.95
+};
+
 const LINEAR_WCAG_VIVID_PROFILE = {
   id: 'linear-wcag-vivid',
   label: 'Auto Linear + 3:1 Vivid',
@@ -114,7 +121,10 @@ const LINEAR_WCAG_VIVID_PROFILE = {
   inputStrategy: 'auto-fit',
   baseTone: KISKADEE_BASE_TONE,
   referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE,
-  defaultControls: createDefaultCurveControls({ referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE }),
+  defaultControls: {
+    ...COMMERCIAL_LIGHTNESS_CONTROLS,
+    darkFloorLightness: 26
+  },
   minimumLightnessStep: EXPERIMENTAL_MINIMUM_LIGHTNESS_STEP,
   luminousChromaRamp: EXPERIMENTAL_LUMINOUS_CHROMA_RAMP,
   vividContrast: FIXED_VIVID_WHITE_TEXT_CONTRAST
@@ -130,11 +140,8 @@ const SOFT_DARK_WCAG_VIVID_PROFILE = {
   baseTone: KISKADEE_BASE_TONE,
   referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE,
   defaultControls: {
-    ...createDefaultCurveControls({ referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE }),
-    darkFloorLightness: 20,
-    lightCeilingLightness: 98.8,
-    lightLightnessGamma: 1.2,
-    darkLightnessGamma: 0.95
+    ...COMMERCIAL_LIGHTNESS_CONTROLS,
+    darkFloorLightness: 20
   },
   saturationCurve: SOFT_DARK_SATURATION_CURVE,
   minimumLightnessStep: EXPERIMENTAL_MINIMUM_LIGHTNESS_STEP,
@@ -151,7 +158,10 @@ const MID_PEAK_WCAG_VIVID_PROFILE = {
   inputStrategy: 'auto-fit',
   baseTone: KISKADEE_BASE_TONE,
   referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE,
-  defaultControls: createDefaultCurveControls({ referenceScale: LINEAR_LIGHTNESS_REFERENCE_SCALE }),
+  defaultControls: {
+    ...COMMERCIAL_LIGHTNESS_CONTROLS,
+    darkFloorLightness: 20
+  },
   saturationCurve: MID_PEAK_SATURATION_CURVE,
   minimumLightnessStep: EXPERIMENTAL_MINIMUM_LIGHTNESS_STEP,
   luminousChromaRamp: EXPERIMENTAL_LUMINOUS_CHROMA_RAMP,

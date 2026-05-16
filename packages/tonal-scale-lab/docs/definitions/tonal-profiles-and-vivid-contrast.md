@@ -270,17 +270,22 @@ accessibility guarantee.
   recipe.
 - `Auto Linear + 3:1 Vivid` keeps the distribution's fine light range linear around the profile base
   tone in OKLCH, uses the distribution's bridge tones as a pre-vivid transition, then applies the
-  fixed `3:1` contrast-gated vivid contract from tone `35` onward.
+  fixed `3:1` contrast-gated vivid contract from tone `35` onward. Its current dark floor is
+  `darkFloorLightness: 26`, which keeps the darkest chromatic slots more colorful and less
+  black-adjacent than `Balanced`.
 - `Auto Soft Dark + 3:1 Vivid` keeps the auto linear lightness model and vivid guard, but bends
   OKL chroma down only after the profile base tone. Its current default lightness controls are
   `lightCeilingLightness: 98.8`, `darkFloorLightness: 20`, `lightLightnessGamma: 1.2`, and
   `darkLightnessGamma: 0.95`: the light gamma gives `K1..K10` more individuality than the previous
   one-point linear ramp, while the shared `1.5` lightness-spacing guard prevents the middle and dark
   chromatic slots from collapsing into a soft gradient. The dark floor keeps `K95` visibly chromatic
-  before the absolute `K100` black cap; it deliberately keeps the last chromatic dark slot closer to
-  Fluent's final dark blue than to absolute black.
+  before the absolute `K100` black cap. Its current dark chroma target is `darkMinRatio: 0.25`,
+  chosen as an experiment to move the final dark slots closer to Fluent's softer low-chroma dark
+  behavior without copying Fluent's exact colors.
 - `Auto Mid Peak + 3:1 Vivid` keeps the vivid guard, but uses the profile base tone as the
-  chroma peak. Chroma bends down toward both the light and dark ends of the scale.
+  chroma peak. Chroma bends down toward both the light and dark ends of the scale. It now shares the
+  healthy `darkFloorLightness: 20` endpoint with `Balanced`, but still needs a follow-up calibration
+  pass once the new `Balanced` dark-chroma experiment stabilizes.
 
 The guarded profile is experimental. It exists so the lab can show the visual cost and benefit of
 making `vivid` a real foreground-safe contract instead of only a numeric range.
@@ -306,9 +311,11 @@ The commercial vivid profiles use the OKLCH generation engine documented in
 `Auto Linear + 3:1 Vivid`; only OKL chroma changes before the contrast guard is applied.
 
 - `Auto Soft Dark + 3:1 Vivid` leaves tones at or above the light side unchanged, then reduces
-  chroma from the profile base tone toward the dark end.
+  chroma from the profile base tone toward the dark end. The current dark endpoint uses
+  `darkMinRatio: 0.25`, intentionally closer to Fluent's low-chroma dark behavior.
 - `Auto Mid Peak + 3:1 Vivid` reduces chroma toward both ends, making the profile base tone the top
-  of the chroma curve.
+  of the chroma curve. Its exact relationship to `Balanced` is provisional until the balanced
+  dark-chroma experiment is validated across practical colors.
 
 These profiles are intended as visual experiments, not final Kiskadee contracts. They let the lab
 compare a strict linear chroma baseline against curves that feel closer to design systems whose
