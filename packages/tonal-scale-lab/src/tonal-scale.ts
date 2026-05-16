@@ -182,6 +182,17 @@ export type LuminousChromaRampRule = {
   progressGamma: number;
 };
 
+export type InputPreservationRule = {
+  lightZoneEndTone: ScaleTone;
+};
+
+export type NodeContinuityRule = {
+  nodeTones: readonly ScaleTone[];
+  maxNeighborRatio: number;
+  tolerance: number;
+  maxIterations: number;
+};
+
 export type TonalProfile = {
   id: string;
   label: string;
@@ -196,6 +207,8 @@ export type TonalProfile = {
   vividContrast?: VividContrastRule;
   minimumLightnessStep?: MinimumLightnessStepRule;
   luminousChromaRamp?: LuminousChromaRampRule;
+  inputPreservation?: InputPreservationRule;
+  nodeContinuity?: NodeContinuityRule;
 };
 
 export type TonalAnchor = {
@@ -255,13 +268,15 @@ export function generateTonalScale(
     colorSpace
   );
 
-  return applyLuminousChromaRamp(
+  const luminousScale = applyLuminousChromaRamp(
     steppedScale,
     distribution,
     profile.luminousChromaRamp,
     colorSpace,
     baseHex
   );
+
+  return applyInputPreservation(luminousScale, profile, distribution, colorSpace, baseHex);
 }
 
 export function resolveInputFitTone(
@@ -1034,11 +1049,720 @@ function applyLuminousChromaRamp(
   });
 }
 
+function applyInputPreservation(
+  scale: TonalScaleColor[],
+  profile: Pick<
+    TonalProfile,
+    'inputPreservation' | 'inputStrategy' | 'nodeContinuity' | 'vividContrast'
+  >,
+  distribution: ScaleDistribution,
+  colorSpace: ColorInterpolationSpace,
+  inputHex: string
+): TonalScaleColor[] {
+  const inputPreservation = profile.inputPreservation;
+  const normalizedInputHex = normalizeHexColor(inputHex);
+
+  if (!inputPreservation || profile.inputStrategy !== 'auto-fit' || !normalizedInputHex) {
+    return scale;
+  }
+
+  const vividContrast = resolveVividContrastRule(
+    profile.vividContrast,
+    distribution,
+    normalizedInputHex
+  );
+  const preservedAnchor = resolvePreservedInputAnchor({
+    scale,
+    distribution,
+    colorSpace,
+    inputPreservation,
+    vividContrast,
+    inputHex: normalizedInputHex
+  });
+
+  if (!preservedAnchor) {
+    return scale;
+  }
+
+  const anchoredScale = interpolateScaleThroughPreservedInput({
+    scale,
+    distribution,
+    colorSpace,
+    inputPreservation,
+    inputAnchor: preservedAnchor,
+    inputHex: normalizedInputHex,
+    vividStartTone: vividContrast?.startTone
+  });
+
+  const vividSafeScale = applyPreservedInputVividContrast(
+    anchoredScale,
+    distribution,
+    vividContrast,
+    colorSpace,
+    preservedAnchor.tone
+  );
+
+  return applyNodeContinuityGuard(
+    vividSafeScale,
+    distribution,
+    profile.nodeContinuity,
+    vividContrast,
+    colorSpace,
+    preservedAnchor.tone
+  );
+}
+
+function resolvePreservedInputAnchor(params: {
+  scale: TonalScaleColor[];
+  distribution: ScaleDistribution;
+  colorSpace: ColorInterpolationSpace;
+  inputPreservation: InputPreservationRule;
+  vividContrast: VividContrastRule | undefined;
+  inputHex: string;
+}): TonalScaleColor | undefined {
+  const { scale, distribution, colorSpace, inputPreservation, vividContrast, inputHex } = params;
+  const chromaticLightEndTone = resolveChromaticLightEndTone(distribution);
+  const chromaticDarkEndTone = resolveChromaticDarkEndTone(distribution);
+  const lightZoneEnd =
+    scale[resolveClosestScaleColorIndex(scale, inputPreservation.lightZoneEndTone)];
+  const inputIsLightZoneColor =
+    lightZoneEnd !== undefined &&
+    resolveHexLightness(inputHex, colorSpace) >=
+      resolveScaleColorLightness(lightZoneEnd, colorSpace);
+  const inputBreaksVivid =
+    vividContrast !== undefined &&
+    contrastRatio(inputHex, vividContrast.foregroundHex) < vividContrast.minRatio;
+  const candidates = scale.filter(
+    (color) =>
+      color.tone >= chromaticLightEndTone &&
+      color.tone <= chromaticDarkEndTone &&
+      !isAbsoluteScaleCapTone(color.tone) &&
+      (!inputIsLightZoneColor || color.tone <= lightZoneEnd.tone) &&
+      (!inputBreaksVivid || color.tone < vividContrast.startTone)
+  );
+  const fallbackCandidates = scale.filter((color) => !isAbsoluteScaleCapTone(color.tone));
+  const availableCandidates = candidates.length > 0 ? candidates : fallbackCandidates;
+
+  return availableCandidates.reduce<TonalScaleColor | undefined>(
+    (current, color) =>
+      !current || rgbDistance(color.hex, inputHex) < rgbDistance(current.hex, inputHex)
+        ? color
+        : current,
+    undefined
+  );
+}
+
+function interpolateScaleThroughPreservedInput(params: {
+  scale: TonalScaleColor[];
+  distribution: ScaleDistribution;
+  colorSpace: ColorInterpolationSpace;
+  inputPreservation: InputPreservationRule;
+  inputAnchor: TonalScaleColor;
+  inputHex: string;
+  vividStartTone?: ScaleTone;
+}): TonalScaleColor[] {
+  const {
+    scale,
+    distribution,
+    colorSpace,
+    inputPreservation,
+    inputAnchor,
+    inputHex,
+    vividStartTone
+  } = params;
+  const anchorByIndex = new Map<number, TonalScaleColor>();
+  const structuralAnchorTones = [
+    resolveChromaticLightEndTone(distribution),
+    inputPreservation.lightZoneEndTone,
+    vividStartTone,
+    resolveChromaticDarkEndTone(distribution)
+  ];
+
+  for (const tone of structuralAnchorTones) {
+    if (tone === undefined) {
+      continue;
+    }
+
+    const anchorIndex = resolveClosestScaleColorIndex(scale, tone);
+    const anchorColor = scale[anchorIndex];
+
+    if (anchorColor && !isAbsoluteScaleCapTone(anchorColor.tone)) {
+      anchorByIndex.set(anchorIndex, anchorColor);
+    }
+  }
+
+  const inputAnchorIndex = scale.findIndex((color) => color.id === inputAnchor.id);
+
+  if (inputAnchorIndex === -1) {
+    return scale;
+  }
+
+  anchorByIndex.set(inputAnchorIndex, createScaleColorFromHex(inputAnchor, inputHex));
+
+  const anchors = [...anchorByIndex.entries()]
+    .map(([index, color]) => ({ index, color }))
+    .sort((left, right) => left.index - right.index);
+
+  return scale.map((color, index) => {
+    if (isAbsoluteScaleCapTone(color.tone)) {
+      return color;
+    }
+
+    const anchor = anchorByIndex.get(index);
+
+    if (anchor) {
+      return anchor;
+    }
+
+    const previousAnchor = [...anchors].reverse().find((candidate) => candidate.index < index);
+    const nextAnchor = anchors.find((candidate) => candidate.index > index);
+
+    if (!previousAnchor || !nextAnchor) {
+      return color;
+    }
+
+    return createInterpolatedScaleColor(
+      color,
+      previousAnchor.color,
+      nextAnchor.color,
+      normalizedProgress(index, previousAnchor.index, nextAnchor.index),
+      colorSpace
+    );
+  });
+}
+
+function applyPreservedInputVividContrast(
+  scale: TonalScaleColor[],
+  distribution: ScaleDistribution,
+  vividContrast: VividContrastRule | undefined,
+  colorSpace: ColorInterpolationSpace,
+  preservedInputTone: ScaleTone
+): TonalScaleColor[] {
+  if (!vividContrast) {
+    return scale;
+  }
+
+  const chromaticDarkEndTone = resolveChromaticDarkEndTone(distribution);
+
+  return scale.map((color) => {
+    if (
+      color.tone < vividContrast.startTone ||
+      color.tone > chromaticDarkEndTone ||
+      isAbsoluteScaleCapTone(color.tone)
+    ) {
+      return color;
+    }
+
+    if (
+      color.tone === preservedInputTone &&
+      contrastRatio(color.hex, vividContrast.foregroundHex) >= vividContrast.minRatio
+    ) {
+      return color;
+    }
+
+    const currentLightness = resolveScaleColorLightness(color, colorSpace);
+    const maxLightness = resolveMaxLightnessForContrast(
+      color,
+      colorSpace,
+      vividContrast.foregroundHex,
+      vividContrast.minRatio
+    );
+
+    return currentLightness <= maxLightness
+      ? color
+      : createScaleColorWithLightness(color, colorSpace, maxLightness);
+  });
+}
+
+type NodeContinuityIssue = {
+  nodeIndex: number;
+  side: 'entry' | 'exit';
+  limit: number;
+  overshoot: number;
+};
+
+function applyNodeContinuityGuard(
+  scale: TonalScaleColor[],
+  distribution: ScaleDistribution,
+  rule: NodeContinuityRule | undefined,
+  vividContrast: VividContrastRule | undefined,
+  colorSpace: ColorInterpolationSpace,
+  preservedInputTone: ScaleTone
+): TonalScaleColor[] {
+  if (!rule) {
+    return scale;
+  }
+
+  let currentScale = scale;
+
+  for (let iteration = 0; iteration < rule.maxIterations; iteration += 1) {
+    let changed = false;
+
+    for (const nodeTone of rule.nodeTones) {
+      const nodeIndex = currentScale.findIndex((color) => color.tone === nodeTone);
+
+      if (nodeIndex === -1) {
+        continue;
+      }
+
+      const issue = resolveNodeContinuityIssue(currentScale, nodeIndex, rule, colorSpace);
+
+      if (!issue) {
+        continue;
+      }
+
+      const adjustedScale = smoothNodeContinuityIssue({
+        scale: currentScale,
+        distribution,
+        rule,
+        issue,
+        vividContrast,
+        colorSpace,
+        preservedInputTone
+      });
+
+      if (adjustedScale !== currentScale) {
+        currentScale = applyPreservedInputVividContrast(
+          adjustedScale,
+          distribution,
+          vividContrast,
+          colorSpace,
+          preservedInputTone
+        );
+        changed = true;
+      }
+    }
+
+    if (!changed) {
+      break;
+    }
+  }
+
+  return applyPreservedInputVividContrast(
+    currentScale,
+    distribution,
+    vividContrast,
+    colorSpace,
+    preservedInputTone
+  );
+}
+
+function resolveNodeContinuityIssue(
+  scale: TonalScaleColor[],
+  nodeIndex: number,
+  rule: NodeContinuityRule,
+  colorSpace: ColorInterpolationSpace
+): NodeContinuityIssue | undefined {
+  const entryDelta = resolveStepLightnessDelta(scale, nodeIndex, colorSpace);
+  const entryBeforeDelta = resolveStepLightnessDelta(scale, nodeIndex - 1, colorSpace);
+  const entryAfterDelta = resolveStepLightnessDelta(scale, nodeIndex + 1, colorSpace);
+  const exitDelta = resolveStepLightnessDelta(scale, nodeIndex + 1, colorSpace);
+  const exitBeforeDelta = resolveStepLightnessDelta(scale, nodeIndex, colorSpace);
+  const exitAfterDelta = resolveStepLightnessDelta(scale, nodeIndex + 2, colorSpace);
+  const issues = [
+    createNodeContinuityIssue({
+      nodeIndex,
+      side: 'entry',
+      delta: entryDelta,
+      previousDelta: entryBeforeDelta,
+      nextDelta: entryAfterDelta,
+      rule
+    }),
+    createNodeContinuityIssue({
+      nodeIndex,
+      side: 'exit',
+      delta: exitDelta,
+      previousDelta: exitBeforeDelta,
+      nextDelta: exitAfterDelta,
+      rule
+    })
+  ].filter((issue): issue is NodeContinuityIssue => issue !== undefined);
+
+  return issues.sort((left, right) => right.overshoot - left.overshoot)[0];
+}
+
+function createNodeContinuityIssue(params: {
+  nodeIndex: number;
+  side: NodeContinuityIssue['side'];
+  delta: number | undefined;
+  previousDelta: number | undefined;
+  nextDelta: number | undefined;
+  rule: NodeContinuityRule;
+}): NodeContinuityIssue | undefined {
+  const { nodeIndex, side, delta, previousDelta, nextDelta, rule } = params;
+
+  if (delta === undefined || previousDelta === undefined || nextDelta === undefined) {
+    return undefined;
+  }
+
+  const absoluteDelta = Math.abs(delta);
+  const limit =
+    Math.max(Math.abs(previousDelta), Math.abs(nextDelta)) * rule.maxNeighborRatio + rule.tolerance;
+  const overshoot = absoluteDelta - limit;
+
+  return overshoot > 0.01 ? { nodeIndex, side, limit, overshoot } : undefined;
+}
+
+function smoothNodeContinuityIssue(params: {
+  scale: TonalScaleColor[];
+  distribution: ScaleDistribution;
+  rule: NodeContinuityRule;
+  issue: NodeContinuityIssue;
+  vividContrast: VividContrastRule | undefined;
+  colorSpace: ColorInterpolationSpace;
+  preservedInputTone: ScaleTone;
+}): TonalScaleColor[] {
+  return params.issue.side === 'entry'
+    ? smoothNodeEntryContinuity(params)
+    : smoothNodeExitContinuity(params);
+}
+
+function smoothNodeEntryContinuity(params: {
+  scale: TonalScaleColor[];
+  distribution: ScaleDistribution;
+  rule: NodeContinuityRule;
+  issue: NodeContinuityIssue;
+  vividContrast: VividContrastRule | undefined;
+  colorSpace: ColorInterpolationSpace;
+  preservedInputTone: ScaleTone;
+}): TonalScaleColor[] {
+  const { scale, distribution, rule, issue, vividContrast, colorSpace, preservedInputTone } =
+    params;
+  const node = scale[issue.nodeIndex];
+  const previous = scale[issue.nodeIndex - 1];
+
+  if (!node || !previous) {
+    return scale;
+  }
+
+  if (canAdjustContinuityColor(node, preservedInputTone)) {
+    const targetLightness = resolveContinuityLightnessTarget(
+      node,
+      resolveScaleColorLightness(previous, colorSpace) - issue.limit,
+      distribution,
+      vividContrast,
+      colorSpace
+    );
+    const adjustedNode = createContinuityAdjustedColor(node, colorSpace, targetLightness);
+    const nextBoundaryIndex = resolveNextContinuityBoundaryIndex(
+      scale,
+      issue.nodeIndex,
+      distribution,
+      rule
+    );
+
+    if (adjustedNode !== node && nextBoundaryIndex > issue.nodeIndex) {
+      return interpolateContinuitySegment({
+        scale,
+        startIndex: issue.nodeIndex,
+        startColor: adjustedNode,
+        endIndex: nextBoundaryIndex,
+        endColor: scale[nextBoundaryIndex],
+        colorSpace,
+        preservedInputTone
+      });
+    }
+  }
+
+  if (!canAdjustContinuityColor(previous, preservedInputTone)) {
+    return scale;
+  }
+
+  const targetPrevious = createContinuityAdjustedColor(
+    previous,
+    colorSpace,
+    resolveScaleColorLightness(node, colorSpace) + issue.limit
+  );
+  const previousBoundaryIndex = resolvePreviousContinuityBoundaryIndex(
+    scale,
+    issue.nodeIndex,
+    distribution,
+    rule
+  );
+
+  return targetPrevious !== previous && previousBoundaryIndex < issue.nodeIndex - 1
+    ? interpolateContinuitySegment({
+        scale,
+        startIndex: previousBoundaryIndex,
+        startColor: scale[previousBoundaryIndex],
+        endIndex: issue.nodeIndex - 1,
+        endColor: targetPrevious,
+        colorSpace,
+        preservedInputTone
+      })
+    : scale;
+}
+
+function smoothNodeExitContinuity(params: {
+  scale: TonalScaleColor[];
+  distribution: ScaleDistribution;
+  rule: NodeContinuityRule;
+  issue: NodeContinuityIssue;
+  vividContrast: VividContrastRule | undefined;
+  colorSpace: ColorInterpolationSpace;
+  preservedInputTone: ScaleTone;
+}): TonalScaleColor[] {
+  const { scale, distribution, rule, issue, vividContrast, colorSpace, preservedInputTone } =
+    params;
+  const node = scale[issue.nodeIndex];
+  const next = scale[issue.nodeIndex + 1];
+
+  if (!node || !next) {
+    return scale;
+  }
+
+  if (canAdjustContinuityColor(next, preservedInputTone)) {
+    const targetNextLightness = resolveContinuityLightnessTarget(
+      next,
+      resolveScaleColorLightness(node, colorSpace) - issue.limit,
+      distribution,
+      vividContrast,
+      colorSpace
+    );
+    const adjustedNext = createContinuityAdjustedColor(next, colorSpace, targetNextLightness);
+    const nextBoundaryIndex = resolveNextContinuityBoundaryIndex(
+      scale,
+      issue.nodeIndex,
+      distribution,
+      rule
+    );
+
+    if (adjustedNext !== next && nextBoundaryIndex > issue.nodeIndex + 1) {
+      return interpolateContinuitySegment({
+        scale,
+        startIndex: issue.nodeIndex,
+        startColor: node,
+        endIndex: nextBoundaryIndex,
+        endColor: scale[nextBoundaryIndex],
+        extraAnchors: [{ index: issue.nodeIndex + 1, color: adjustedNext }],
+        colorSpace,
+        preservedInputTone
+      });
+    }
+  }
+
+  if (!canAdjustContinuityColor(node, preservedInputTone)) {
+    return scale;
+  }
+
+  const targetNodeLightness = resolveContinuityLightnessTarget(
+    node,
+    resolveScaleColorLightness(next, colorSpace) + issue.limit,
+    distribution,
+    vividContrast,
+    colorSpace
+  );
+  const adjustedNode = createContinuityAdjustedColor(node, colorSpace, targetNodeLightness);
+  const previousBoundaryIndex = resolvePreviousContinuityBoundaryIndex(
+    scale,
+    issue.nodeIndex,
+    distribution,
+    rule
+  );
+
+  return adjustedNode !== node && previousBoundaryIndex < issue.nodeIndex
+    ? interpolateContinuitySegment({
+        scale,
+        startIndex: previousBoundaryIndex,
+        startColor: scale[previousBoundaryIndex],
+        endIndex: issue.nodeIndex,
+        endColor: adjustedNode,
+        colorSpace,
+        preservedInputTone
+      })
+    : scale;
+}
+
+function resolveContinuityLightnessTarget(
+  color: TonalScaleColor,
+  targetLightness: number,
+  distribution: ScaleDistribution,
+  vividContrast: VividContrastRule | undefined,
+  colorSpace: ColorInterpolationSpace
+): number {
+  if (
+    vividContrast &&
+    color.tone >= vividContrast.startTone &&
+    color.tone <= resolveChromaticDarkEndTone(distribution)
+  ) {
+    return Math.min(
+      targetLightness,
+      resolveMaxLightnessForContrast(
+        color,
+        colorSpace,
+        vividContrast.foregroundHex,
+        vividContrast.minRatio
+      )
+    );
+  }
+
+  return targetLightness;
+}
+
+function createContinuityAdjustedColor(
+  color: TonalScaleColor,
+  colorSpace: ColorInterpolationSpace,
+  targetLightness: number
+): TonalScaleColor {
+  const currentLightness = resolveScaleColorLightness(color, colorSpace);
+
+  if (Math.abs(currentLightness - targetLightness) < 0.01) {
+    return color;
+  }
+
+  return createScaleColorWithLightness(color, colorSpace, clamp(targetLightness, 0, 100));
+}
+
+function interpolateContinuitySegment(params: {
+  scale: TonalScaleColor[];
+  startIndex: number;
+  startColor: TonalScaleColor;
+  endIndex: number;
+  endColor: TonalScaleColor;
+  extraAnchors?: Array<{ index: number; color: TonalScaleColor }>;
+  colorSpace: ColorInterpolationSpace;
+  preservedInputTone: ScaleTone;
+}): TonalScaleColor[] {
+  const {
+    scale,
+    startIndex,
+    startColor,
+    endIndex,
+    endColor,
+    extraAnchors = [],
+    colorSpace,
+    preservedInputTone
+  } = params;
+  const anchorByIndex = new Map<number, TonalScaleColor>([
+    [startIndex, startColor],
+    [endIndex, endColor]
+  ]);
+  const preservedInputIndex = scale.findIndex((color) => color.tone === preservedInputTone);
+
+  if (preservedInputIndex > startIndex && preservedInputIndex < endIndex) {
+    anchorByIndex.set(preservedInputIndex, scale[preservedInputIndex]);
+  }
+
+  for (const { index, color } of extraAnchors) {
+    anchorByIndex.set(index, color);
+  }
+
+  const anchors = [...anchorByIndex.entries()]
+    .map(([index, color]) => ({ index, color }))
+    .sort((left, right) => left.index - right.index);
+
+  return scale.map((color, index) => {
+    if (index < startIndex || index > endIndex || isAbsoluteScaleCapTone(color.tone)) {
+      return color;
+    }
+
+    const anchor = anchorByIndex.get(index);
+
+    if (anchor) {
+      return anchor;
+    }
+
+    const previousAnchor = [...anchors].reverse().find((candidate) => candidate.index < index);
+    const nextAnchor = anchors.find((candidate) => candidate.index > index);
+
+    if (!previousAnchor || !nextAnchor) {
+      return color;
+    }
+
+    return createInterpolatedScaleColor(
+      color,
+      previousAnchor.color,
+      nextAnchor.color,
+      normalizedProgress(index, previousAnchor.index, nextAnchor.index),
+      colorSpace
+    );
+  });
+}
+
+function resolvePreviousContinuityBoundaryIndex(
+  scale: TonalScaleColor[],
+  nodeIndex: number,
+  distribution: ScaleDistribution,
+  rule: NodeContinuityRule
+): number {
+  return (
+    resolveContinuityBoundaryIndexes(scale, distribution, rule)
+      .filter((index) => index < nodeIndex)
+      .at(-1) ?? 0
+  );
+}
+
+function resolveNextContinuityBoundaryIndex(
+  scale: TonalScaleColor[],
+  nodeIndex: number,
+  distribution: ScaleDistribution,
+  rule: NodeContinuityRule
+): number {
+  return (
+    resolveContinuityBoundaryIndexes(scale, distribution, rule).find(
+      (index) => index > nodeIndex
+    ) ?? scale.length - 1
+  );
+}
+
+function resolveContinuityBoundaryIndexes(
+  scale: TonalScaleColor[],
+  distribution: ScaleDistribution,
+  rule: NodeContinuityRule
+): number[] {
+  return [
+    resolveChromaticLightEndTone(distribution),
+    ...rule.nodeTones,
+    resolveChromaticDarkEndTone(distribution)
+  ]
+    .map((tone) => scale.findIndex((color) => color.tone === tone))
+    .filter((index) => index >= 0)
+    .sort((left, right) => left - right);
+}
+
+function canAdjustContinuityColor(color: TonalScaleColor, preservedInputTone: ScaleTone): boolean {
+  return color.tone !== preservedInputTone && !isAbsoluteScaleCapTone(color.tone);
+}
+
+function resolveStepLightnessDelta(
+  scale: TonalScaleColor[],
+  index: number,
+  colorSpace: ColorInterpolationSpace
+): number | undefined {
+  const previous = scale[index - 1];
+  const current = scale[index];
+
+  if (!previous || !current) {
+    return undefined;
+  }
+
+  return (
+    resolveScaleColorLightness(previous, colorSpace) -
+    resolveScaleColorLightness(current, colorSpace)
+  );
+}
+
+function resolveClosestScaleColorIndex(scale: TonalScaleColor[], tone: ScaleTone): number {
+  return scale.reduce((closestIndex, color, index) => {
+    const closest = scale[closestIndex];
+
+    if (!closest || Math.abs(color.tone - tone) < Math.abs(closest.tone - tone)) {
+      return index;
+    }
+
+    return closestIndex;
+  }, 0);
+}
+
 function resolveScaleColorLightness(
   color: TonalScaleColor,
   colorSpace: ColorInterpolationSpace
 ): number {
   return colorSpace === 'oklch' ? hexToOklch(color.hex).l : color.hsl.l;
+}
+
+function resolveHexLightness(hex: string, colorSpace: ColorInterpolationSpace): number {
+  return colorSpace === 'oklch' ? hexToOklch(hex).l : hexToHsl(hex).l;
 }
 
 function createScaleColorWithLightness(

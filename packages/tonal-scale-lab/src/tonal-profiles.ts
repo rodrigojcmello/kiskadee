@@ -4,9 +4,11 @@ import {
   DEFAULT_SCALE_DISTRIBUTION,
   hexToHsl,
   hslToHex,
+  type InputPreservationRule,
   KISKADEE_BASE_TONE,
   type LuminousChromaRampRule,
   type MinimumLightnessStepRule,
+  type NodeContinuityRule,
   type TonalProfile,
   type TonalScaleColor
 } from './tonal-scale.ts';
@@ -70,6 +72,17 @@ const EXPERIMENTAL_LUMINOUS_CHROMA_RAMP = {
   endChromaRatio: 0.9,
   progressGamma: 0.55
 } as const satisfies LuminousChromaRampRule;
+
+const BALANCED_INPUT_PRESERVATION = {
+  lightZoneEndTone: 10
+} as const satisfies InputPreservationRule;
+
+const BALANCED_NODE_CONTINUITY = {
+  nodeTones: [10, 35],
+  maxNeighborRatio: 1.25,
+  tolerance: 0.25,
+  maxIterations: 5
+} as const satisfies NodeContinuityRule;
 
 const SOFT_DARK_SATURATION_CURVE = {
   type: 'soft-dark',
@@ -146,6 +159,8 @@ const SOFT_DARK_WCAG_VIVID_PROFILE = {
   saturationCurve: SOFT_DARK_SATURATION_CURVE,
   minimumLightnessStep: EXPERIMENTAL_MINIMUM_LIGHTNESS_STEP,
   luminousChromaRamp: EXPERIMENTAL_LUMINOUS_CHROMA_RAMP,
+  inputPreservation: BALANCED_INPUT_PRESERVATION,
+  nodeContinuity: BALANCED_NODE_CONTINUITY,
   vividContrast: FIXED_VIVID_WHITE_TEXT_CONTRAST
 } satisfies TonalProfile;
 

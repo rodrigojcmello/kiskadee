@@ -78,6 +78,10 @@ The current auto-fit rule uses nearest RGB distance on the final emitted scale. 
 diagnostic reading, not a generation input. It may land inside the vivid track or the pre-vivid
 track depending on the finished colors.
 
+`Balanced` is the current exception because it opts into input preservation. It still starts from the
+auto-fit model, but after the functional scale is resolved it inserts the exact input hex at the
+nearest legal chromatic slot and re-interpolates the surrounding curve through that point.
+
 ## Input Fit Comes Last
 
 The lab deliberately separates the profile pivot from the input fit:
@@ -87,14 +91,34 @@ The lab deliberately separates the profile pivot from the input fit:
 - vivid contrast adjusts the generated vivid track;
 - the pre-vivid bridge connects the light range to the adjusted vivid start;
 - minimum lightness spacing may further separate neighboring emitted slots;
-- only after those steps does the lab ask which emitted slot is closest to the original input color.
+- only after those steps does the lab ask which emitted slot is closest to the original input color;
+- a profile may then opt into preserving that input at a legal fit slot, as `Balanced` does now.
 
-The final input fit must not feed back into lightness generation, saturation shaping, vivid contrast,
-or bridge interpolation. Earlier experiments let contrast-derived auto anchors move the generation
-pivot. That made the input color appear intentionally placed, but it also distorted the rest of the
-scale: luminous inputs could collide with the `K35` contrast boundary, while vivid blue could move
-the pivot to `K70` and stretch the `K40..K70` region into a nearly linear lightness ramp. The current
-rule treats that placement as metadata after the scale is finished.
+The final input fit must not choose the profile pivot. Earlier experiments let contrast-derived auto
+anchors move the generation pivot. That made the input color appear intentionally placed, but it also
+distorted the rest of the scale: luminous inputs could collide with the `K35` contrast boundary,
+while vivid blue could move the pivot to `K70` and stretch the `K40..K70` region into a nearly
+linear lightness ramp.
+
+The current `Balanced` preservation model is different: the profile still resolves its structural
+scale first, then uses fixed structural points plus the exact input as a local interpolation anchor.
+The current structural points are `K1`, `K10`, `K35`, and `K95` for `Kiskadee Official (33)`. `K10`
+defines the light-zone boundary for this experiment; `K16` may be tested later if `K10` proves too
+tight for luminous brand colors.
+
+The preserved input cannot break the vivid contract. If the input does not reach `3:1` against
+white, it is only allowed before `K35`. If the input is lighter than the generated `K10` boundary, it
+is only allowed inside the `K1..K10` light zone. After preservation, the vivid range is checked
+again.
+
+`Balanced` also applies a node continuity guard after input preservation. The current nodes are
+`K10` and `K35`. For each node seam, the guard compares the seam's OKL lightness delta with the
+larger of the two neighboring emitted-step deltas. The seam fails when it exceeds that local
+reference by more than `1.25x + 0.25` OKL lightness points.
+
+When a seam fails, the generator redistributes the excess through the adjacent segment and validates
+again, up to `5` iterations. The exact input anchor remains fixed. The vivid range is reclamped after
+redistribution so the `K35..K95` `3:1` contract remains true.
 
 ## Structural Pivot Caveat
 
@@ -131,7 +155,8 @@ The current model came from comparing the same profile across darker and more lu
 Example observations for the fixed `3:1` and OKLCH commercial experiment:
 
 - `#0f6cbd` remains the reference blue for comparison. `Fluent 2 Blue` keeps it at `K55`, while
-  commercial OKLCH profiles are allowed to report a different final auto-fit slot.
+  `Balanced` now preserves it exactly at the nearest legal fit. `Striking` and `Sophisticated` still
+  only report their nearest final auto-fit slot.
 - `#d4e157` exposed the HSL bridge problem: `K35` was contrast-adjusted, but `K12..K30` reached it
   through HSL interpolation, causing abrupt contrast movement before `K35`.
 - `#09b83e`, `#ff990a`, `#25d366`, `#00bcd4`, and `#ffeb3b` are useful regression inputs for
@@ -194,10 +219,11 @@ This rule measures OKL lightness delta in the commercial OKLCH profiles, not con
 is to reduce visually compressed ramps where adjacent slots look like a single gradient. The contrast
 rule still decides whether vivid tones are safe for the active foreground target.
 
-The rule is intentionally experimental and reversible. In `auto-fit` profiles, it is allowed to move
-an emitted slot away from the exact input color because the input fit is only reported after spacing
-has finished. `fixed-anchor` profiles remain the exception when an external reference scale requires
-the input color to survive at a known slot.
+The rule is intentionally experimental and reversible. In auto-fit profiles without input
+preservation, it is allowed to move an emitted slot away from the exact input color because the input
+fit is only reported after spacing has finished. `Balanced` is now the scoped exception: its exact
+input can locally win over the spacing rule after the functional scale is resolved. `fixed-anchor`
+profiles remain the external-reference exception when a known slot must survive unchanged.
 
 ## Luminous Chroma Ramp Experiment
 
@@ -249,8 +275,11 @@ then resolves a contrast-safe lightness range:
 6. If configured, enforce the minimum lightness step threshold in the profile's interpolation space,
    using the same threshold for the full chromatic range.
 7. If configured, cap the initial chroma ramp for luminous OKLCH inputs.
-8. Resolve the input color's displayed fit from the final generated scale. This final fit is not used
-   to regenerate the scale.
+8. If configured, preserve the exact input hex at the nearest legal chromatic fit and interpolate
+   the surrounding curve through that point.
+9. If configured, apply the node continuity guard to smooth structural seams such as `K10` and
+   `K35`.
+10. Resolve the input color's displayed fit from the final generated scale.
 
 This makes the vivid track testable while keeping the fine light range stable and using the sparse
 middle positions as a transition into vivid.
@@ -281,7 +310,11 @@ accessibility guarantee.
   chromatic slots from collapsing into a soft gradient. The dark floor keeps `K95` visibly chromatic
   before the absolute `K100` black cap. Its current dark chroma target is `darkMinRatio: 0.25`,
   chosen as an experiment to move the final dark slots closer to Fluent's softer low-chroma dark
-  behavior without copying Fluent's exact colors.
+  behavior without copying Fluent's exact colors. It is also the only current profile with input
+  preservation enabled: the exact input hex becomes a local anchor after the structural scale is
+  resolved. For now, the light-zone boundary is `K10`. `Balanced` also guards the `K10` and `K35`
+  seams with the node continuity rule so preserved inputs and contrast boundaries do not create
+  abrupt local jumps.
 - `Auto Mid Peak + 3:1 Vivid` keeps the vivid guard, but uses the profile base tone as the
   chroma peak. Chroma bends down toward both the light and dark ends of the scale. It now shares the
   healthy `darkFloorLightness: 20` endpoint with `Balanced`, but still needs a follow-up calibration

@@ -33,6 +33,10 @@ The OKLCH engine is currently enabled only for the commercial auto-fit profiles:
 - `Balanced - Auto Soft Dark + 3:1 Vivid`;
 - `Sophisticated - Auto Mid Peak + 3:1 Vivid`.
 
+`Balanced` is currently the only commercial profile with input preservation enabled. `Striking` and
+`Sophisticated` remain useful comparison profiles and should not inherit this behavior until they are
+recalibrated intentionally.
+
 The two reference profiles intentionally remain functional comparison tools:
 
 - `Fluent 2 Blue` remains the projected Microsoft reference scale.
@@ -54,10 +58,78 @@ For a commercial auto-fit profile:
    vivid start.
 6. The minimum lightness step uses OKL lightness, not HSL lightness.
 7. If the input is luminous, the initial chroma ramp caps only the first light chromatic slots.
-8. The input fit is resolved only after the scale is complete.
+8. If the profile opts into input preservation, the finished chromatic scale is re-interpolated
+   through the exact input hex as a real local anchor.
+9. If the profile opts into node continuity, structural seams are smoothed and vivid tones are
+   clamped again.
+10. The input fit is resolved only after the scale is complete.
 
 Contrast is still measured with WCAG relative luminance against the configured foreground. OKLCH is
 the generation and interpolation space; it does not replace the contrast formula.
+
+## Balanced Input Preservation
+
+`Balanced` now treats the input hex as something that should survive in the emitted scale by
+default. This is deliberately scoped to `Balanced` while the lab tests the behavior.
+
+The rule does not return to the old contrast-derived anchor model. The input still does not choose
+the profile's structural base tone. Instead, `Balanced` first resolves the functional scale, then
+chooses a legal chromatic slot for the exact input color and interpolates the surrounding curve
+through that point.
+
+Current structural anchors for this experiment:
+
+- `K1`: first chromatic light endpoint in `Kiskadee Official (33)`;
+- `K10`: current light-zone boundary;
+- `K35`: vivid boundary with the active `3:1` white-text contrast target;
+- `K95`: final chromatic dark endpoint;
+- the exact input hex at the nearest legal chromatic fit.
+
+`K0` and `K100` remain absolute white and black caps. They are visible in the scale, but they are not
+used as chromatic anchors.
+
+The legal-fit guards are intentionally simple:
+
+- if the input is lighter than the generated `K10` boundary, it must be preserved inside `K1..K10`;
+- if the input does not pass the vivid `3:1` white-text target, it cannot be preserved at `K35` or
+  darker;
+- after the input anchor is inserted, `K35..K95` is clamped again so the vivid contract remains true.
+
+This means a luminous brand color such as cyan or yellow can survive exactly, but it will usually
+land at `K10` for now. Testing `K16` as a wider light-zone boundary remains a valid future
+experiment.
+
+The exact input can locally win over the minimum lightness-step experiment. That trade-off is
+intentional: preserving the source color is now part of `Balanced`'s contract, while the `1.5` OKL
+lightness spacing remains a visual guard that may need revision after this preservation model is
+tested.
+
+## Balanced Node Continuity Guard
+
+`Balanced` now also guards the structural seams at `K10` and `K35`.
+
+This is a maximum-delta rule, not a minimum-spacing rule. The existing minimum lightness step avoids
+foggy adjacent colors when deltas are too small. The node continuity guard avoids abrupt walls when a
+zone boundary has a much larger OKL lightness delta than its local neighbors.
+
+Current rule:
+
+- nodes: `K10` and `K35`;
+- measurement: emitted-step OKL lightness delta;
+- limit: the node seam may not exceed the larger neighboring delta by more than `1.25x + 0.25`
+  OKL lightness points;
+- max iterations: `5`.
+
+For an entry seam such as `K9 -> K10`, the guard compares that delta with `K8 -> K9` and `K10 ->
+K12`. For an entry seam such as `K30 -> K35`, it compares with `K28 -> K30` and `K35 -> K40`.
+
+When a seam fails, the guard adjusts the nearest adjustable color and re-interpolates the adjacent
+segment so the excess is distributed instead of being hidden in one slot. The exact input anchor is
+kept unchanged. After each redistribution, `K35..K95` is clamped again to preserve the active
+`3:1` vivid contract.
+
+The guard is intentionally scoped to `Balanced` while this model is tested. `Striking` and
+`Sophisticated` remain comparison profiles until they are recalibrated deliberately.
 
 ## Vivid Lightness Progress
 

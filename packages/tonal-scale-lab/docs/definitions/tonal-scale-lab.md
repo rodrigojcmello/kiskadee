@@ -57,7 +57,13 @@ Current profiles:
   gradient, and `K95` remains visibly chromatic before the absolute black cap. Its current dark
   chroma experiment uses `darkMinRatio: 0.25` from the profile base tone toward the dark end, so the
   final dark slots move closer to Fluent's softer low-chroma dark blue without copying the exact
-  Fluent hex values.
+  Fluent hex values. `Balanced` also preserves the exact input hex by default: after the functional
+  scale is resolved, the input is inserted at the nearest legal chromatic fit and the local curve is
+  interpolated through it. The current light-zone boundary for this preservation experiment is
+  `K10`; luminous inputs that are lighter than the generated `K10` boundary stay inside `K1..K10`.
+  It also applies a node continuity guard at `K10` and `K35`: each seam is compared against the
+  larger neighboring OKL lightness delta and cannot exceed that local reference by more than
+  `1.25x + 0.25` OKL lightness points without redistributing the excess through the adjacent segment.
 - `Sophisticated - Auto Mid Peak + 3:1 Vivid`: follows the same vivid-contrast behavior, but treats
   the profile base tone as the OKL chroma peak. Both very light and very dark tones become less
   chromatic. This profile should be recalibrated again after the `Balanced` dark-chroma experiment
@@ -71,8 +77,16 @@ by default.
 The contrast-gated Kiskadee profiles use `auto-fit`. The input color does not choose the generation
 pivot. The profile generates the scale from its structural base tone, resolves the contrast-safe
 vivid range and pre-vivid bridge, applies any spacing rules, and only then reports the closest
-emitted fit for the input color. This keeps contrast and nearest-color metadata from distorting the
-curve itself.
+emitted fit for the input color. This keeps contrast and nearest-color metadata from moving the
+profile pivot.
+
+`Balanced` now adds one more scoped step after that functional scale is resolved: it preserves the
+exact input hex at the nearest legal chromatic slot and re-interpolates the surrounding curve through
+that anchor. The legal-fit rules are: inputs that fail the `3:1` white-text vivid target cannot be
+preserved at `K35` or darker, and inputs lighter than the generated `K10` boundary must remain inside
+the current `K1..K10` light zone. The node continuity guard then smooths the `K10` and `K35`
+connections and reclamps the vivid range. `Striking` and `Sophisticated` do not use this
+preservation or continuity rule yet.
 
 The current commercial profiles use `K55` as that structural base tone, but this is intentionally a
 weak and provisional choice. It is convenient because it matches the current `vividRest` working
@@ -104,8 +118,8 @@ chroma and eases toward `90%` by `K10` with `progressGamma: 0.55`. This replaced
 
 Current color findings:
 
-- `#0f6cbd` is the reference blue. `Fluent 2 Blue` still preserves it at `K55`, while the commercial
-  OKLCH profiles are allowed to fit it wherever the finished generated scale is nearest.
+- `#0f6cbd` is the reference blue. `Fluent 2 Blue` still preserves it at `K55`, while `Balanced`
+  currently preserves it exactly at its nearest legal generated fit.
 - `#d4e157`, yellow, lime, and cyan motivated the OKLCH engine because HSL interpolation produced
   uneven contrast jumps before the `K35` vivid boundary.
 - `#09b83e`, `#ff990a`, and `#25d366` remain useful regression colors for checking whether luminous
@@ -158,5 +172,7 @@ pnpm --filter @kiskadee/tonal-scale-lab run generate ffcc00 linear-wcag-vivid ki
 ```
 
 Future work should decide whether the OKLCH commercial engine should replace more of the reference
-pipeline or remain scoped to the Kiskadee commercial profiles. Input fit should remain a final
-observation unless a future profile explicitly defines a stronger color-preservation contract.
+pipeline or remain scoped to the Kiskadee commercial profiles. `Balanced` is now the scoped
+color-preservation experiment; future work should decide whether that contract belongs only to
+`Balanced`, should become available as a profile option, or should be adapted for `Striking` and
+`Sophisticated` after they are recalibrated.
