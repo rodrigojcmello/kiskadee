@@ -1,4 +1,5 @@
 import {
+  type ChromaPeakRule,
   type ColorInterpolationSpace,
   createDefaultCurveControls,
   DEFAULT_SCALE_DISTRIBUTION,
@@ -74,7 +75,20 @@ const EXPERIMENTAL_LUMINOUS_CHROMA_RAMP = {
 } as const satisfies LuminousChromaRampRule;
 
 const BALANCED_INPUT_PRESERVATION = {
-  lightZoneEndTone: 10
+  lightZoneEndTone: 10,
+  vividBoundaryBuffer: {
+    rewindSlots: 1
+  },
+  anchorContinuity: {
+    sampleSize: 2,
+    maxSlopeRatio: 3,
+    tolerance: 0.25,
+    maxRewindSlots: 2,
+    adjacentVividBoundary: {
+      maxSlopeRatio: 1.75,
+      tolerance: 0.25
+    }
+  }
 } as const satisfies InputPreservationRule;
 
 const BALANCED_NODE_CONTINUITY = {
@@ -83,6 +97,29 @@ const BALANCED_NODE_CONTINUITY = {
   tolerance: 0.25,
   maxIterations: 5
 } as const satisfies NodeContinuityRule;
+
+const BALANCED_CHROMA_PEAK_GUARD = {
+  prominenceThreshold: 0.012,
+  allowedDropMin: 0.008,
+  allowedDropRatio: 0.04,
+  maxRadius: 2,
+  nearVividBoundary: {
+    maxDistance: 2,
+    prominenceThreshold: 0.008,
+    allowedDropMin: 0.004,
+    allowedDropRatio: 0.025,
+    maxRadius: 2,
+    allowVividSide: true
+  },
+  dominantPlateau: {
+    equalityTolerance: 0.012,
+    prominenceThreshold: 0.009,
+    allowedDropMin: 0.016,
+    allowedDropRatio: 0.08,
+    maxRadius: 2,
+    maxPlateauSlots: 3
+  }
+} as const satisfies ChromaPeakRule;
 
 const SOFT_DARK_SATURATION_CURVE = {
   type: 'soft-dark',
@@ -161,6 +198,7 @@ const SOFT_DARK_WCAG_VIVID_PROFILE = {
   luminousChromaRamp: EXPERIMENTAL_LUMINOUS_CHROMA_RAMP,
   inputPreservation: BALANCED_INPUT_PRESERVATION,
   nodeContinuity: BALANCED_NODE_CONTINUITY,
+  chromaPeak: BALANCED_CHROMA_PEAK_GUARD,
   vividContrast: FIXED_VIVID_WHITE_TEXT_CONTRAST
 } satisfies TonalProfile;
 

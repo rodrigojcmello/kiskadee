@@ -61,9 +61,25 @@ Current profiles:
   scale is resolved, the input is inserted at the nearest legal chromatic fit and the local curve is
   interpolated through it. The current light-zone boundary for this preservation experiment is
   `K10`; luminous inputs that are lighter than the generated `K10` boundary stay inside `K1..K10`.
+  If a non-vivid-safe input would otherwise land on the last pre-vivid emitted slot, `Balanced`
+  rewinds the exact input by one emitted slot so that last pre-vivid slot can bridge into the
+  contrast-safe `K35`; when this happens, `K35` is resolved as the lightest vivid-start color that
+  still passes `3:1` against white.
+  Its preserved-anchor continuity guard can then rewind that pre-vivid anchor by up to `2` more
+  emitted slots when the average OKL lightness delta after the anchor is more than `3x + 0.25`
+  larger than the average before it. If the preserved input is immediately before the vivid start,
+  the same guard uses a stricter `1.75x + 0.25` limit to avoid a direct hard edge between the input
+  anchor and `K35`.
   It also applies a node continuity guard at `K10` and `K35`: each seam is compared against the
   larger neighboring OKL lightness delta and cannot exceed that local reference by more than
   `1.25x + 0.25` OKL lightness points without redistributing the excess through the adjacent segment.
+  Finally, its chroma shape guard checks the preserved input anchor: when the anchor is a sharp OKL
+  chroma summit, nearby emitted slots are raised locally with radius `1` and, only if needed, radius
+  `2`, while the input hex remains exact. Near the vivid boundary, this guard uses a lower chroma
+  prominence threshold, a smaller allowed chroma drop, and a directional radius into `K35` so small
+  pre-vivid chroma spikes become shoulders instead of visible peaks. It also detects narrow dominant
+  plateaus around the input, such as red-like `K30/K35` tops, and raises the plateau shoulders so the
+  preserved input is less visually obvious without changing the exact input hex.
 - `Sophisticated - Auto Mid Peak + 3:1 Vivid`: follows the same vivid-contrast behavior, but treats
   the profile base tone as the OKL chroma peak. Both very light and very dark tones become less
   chromatic. This profile should be recalibrated again after the `Balanced` dark-chroma experiment
@@ -84,9 +100,14 @@ profile pivot.
 exact input hex at the nearest legal chromatic slot and re-interpolates the surrounding curve through
 that anchor. The legal-fit rules are: inputs that fail the `3:1` white-text vivid target cannot be
 preserved at `K35` or darker, and inputs lighter than the generated `K10` boundary must remain inside
-the current `K1..K10` light zone. The node continuity guard then smooths the `K10` and `K35`
-connections and reclamps the vivid range. `Striking` and `Sophisticated` do not use this
-preservation or continuity rule yet.
+the current `K1..K10` light zone. If a non-vivid-safe input would collide with the last pre-vivid
+slot, the input is buffered one emitted slot earlier and the last pre-vivid slot becomes bridge
+material. If that still leaves a steep post-anchor lightness slope, the preserved-anchor continuity
+guard can rewind the input again and regenerate the local bridge. The node continuity guard then
+smooths the `K10` and `K35` connections and reclamps the vivid range. The chroma shape guard then
+smooths sharp local chroma summits and short dominant chroma plateaus around the preserved input.
+`Striking` and `Sophisticated` do not use these preservation, boundary-buffer, anchor-continuity,
+node-continuity, or chroma-shape rules yet.
 
 The current commercial profiles use `K55` as that structural base tone, but this is intentionally a
 weak and provisional choice. It is convenient because it matches the current `vividRest` working

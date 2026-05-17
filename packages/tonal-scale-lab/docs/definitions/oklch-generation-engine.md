@@ -59,10 +59,15 @@ For a commercial auto-fit profile:
 6. The minimum lightness step uses OKL lightness, not HSL lightness.
 7. If the input is luminous, the initial chroma ramp caps only the first light chromatic slots.
 8. If the profile opts into input preservation, the finished chromatic scale is re-interpolated
-   through the exact input hex as a real local anchor.
-9. If the profile opts into node continuity, structural seams are smoothed and vivid tones are
+   through the exact input hex as a real local anchor. `Balanced` also applies a vivid-boundary
+   buffer when a non-vivid-safe input would otherwise be preserved at the last pre-vivid slot.
+9. If the profile opts into preserved-anchor continuity, the pre-vivid input anchor may rewind until
+   the post-anchor OKL lightness slope is not abruptly steeper than the pre-anchor slope.
+10. If the profile opts into node continuity, structural seams are smoothed and vivid tones are
    clamped again.
-10. The input fit is resolved only after the scale is complete.
+11. If the profile opts into chroma shape smoothing, sharp local chroma peaks and narrow dominant
+    chroma plateaus around the preserved input are softened without changing the input hex.
+12. The input fit is resolved only after the scale is complete.
 
 Contrast is still measured with WCAG relative luminance against the configured foreground. OKLCH is
 the generation and interpolation space; it does not replace the contrast formula.
@@ -93,6 +98,8 @@ The legal-fit guards are intentionally simple:
 - if the input is lighter than the generated `K10` boundary, it must be preserved inside `K1..K10`;
 - if the input does not pass the vivid `3:1` white-text target, it cannot be preserved at `K35` or
   darker;
+- if that non-vivid-safe input would otherwise land on the last pre-vivid slot, `Balanced` rewinds
+  the preserved input by one emitted slot so the last pre-vivid slot can remain a bridge into `K35`;
 - after the input anchor is inserted, `K35..K95` is clamped again so the vivid contract remains true.
 
 This means a luminous brand color such as cyan or yellow can survive exactly, but it will usually
@@ -103,6 +110,65 @@ The exact input can locally win over the minimum lightness-step experiment. That
 intentional: preserving the source color is now part of `Balanced`'s contract, while the `1.5` OKL
 lightness spacing remains a visual guard that may need revision after this preservation model is
 tested.
+
+## Balanced Vivid Boundary Buffer
+
+`Balanced` now protects the transition into vivid when the preserved input sits immediately before
+`K35`.
+
+The failure case is specific but important: a saturated input can fail the `3:1` white-text vivid
+target, be legally barred from `K35`, and still have its nearest legal fit at `K30`. If `K30` keeps
+the exact input while `K35` must become contrast-safe, the transition can form a visible chroma and
+lightness peak at `K30`.
+
+Current buffer rule:
+
+- applies only to `Balanced`;
+- applies only when the input fails the active vivid contrast target;
+- applies only when the nearest legal input fit is the last pre-vivid emitted slot;
+- rewinds the exact input by `1` emitted slot, so `K30` can become a generated bridge in
+  `Kiskadee Official (33)`;
+- keeps the vivid contract unchanged: `K35..K95` must still pass `3:1` against white.
+
+When this buffer is active, the `K35` structural anchor is resolved as the lightest version of the
+generated vivid-start color that still passes the active `3:1` target. That keeps the bridge from
+being pulled toward an unnecessarily dark `K35` while still preserving the functional vivid
+contract.
+
+## Balanced Preserved Anchor Continuity Guard
+
+`Balanced` now also treats the preserved input as a local lightness-continuity node when that input
+is preserved in the pre-vivid middle range.
+
+The vivid-boundary buffer can move a non-vivid-safe input away from the last pre-vivid slot, but a
+single rewind is not always enough. Orange exposed the failure: preserving `#ff9800` at `K28` kept
+the exact input, but the OKL lightness delta immediately after the anchor was much larger than the
+delta before it. Visually, the curve still changed rhythm too abruptly.
+
+Current preserved-anchor continuity rule:
+
+- applies only to `Balanced`;
+- applies only when the preserved input sits after the light-zone boundary and before the vivid
+  boundary;
+- measurement: emitted-step OKL lightness delta;
+- sample size: average `2` deltas before the preserved input and `2` deltas after it;
+- limit: the post-anchor average may not exceed the pre-anchor average by more than `3x + 0.25`
+  OKL lightness points;
+- adjacent vivid-boundary limit: if the next emitted slot after the preserved input is the vivid
+  start, the post-anchor average may not exceed the pre-anchor average by more than `1.75x + 0.25`
+  OKL lightness points;
+- max additional rewinds: `2` emitted slots.
+
+When the post-anchor slope fails that limit, the exact input rewinds by one emitted slot and the
+scale is regenerated through the new anchor. The guard then checks the new slope again. This turns a
+hard transition such as `K28 -> K30 -> K35` into a longer bridge such as `K26 -> K28 -> K30 -> K35`.
+The adjacent vivid-boundary limit handles a related case: if an input is contrast-safe enough to sit
+at `K30`, but `K30 -> K35` becomes much steeper than the pre-anchor rhythm, the input can still
+rewind to `K28` so `K30` becomes bridge material.
+
+This rule is intentionally directional for now: it protects the exit from a pre-vivid preserved
+input into the vivid boundary. It does not yet rebalance every possible anchor shape in both
+directions.
 
 ## Balanced Node Continuity Guard
 
@@ -130,6 +196,63 @@ kept unchanged. After each redistribution, `K35..K95` is clamped again to preser
 
 The guard is intentionally scoped to `Balanced` while this model is tested. `Striking` and
 `Sophisticated` remain comparison profiles until they are recalibrated deliberately.
+
+## Balanced Chroma Shape Guard
+
+`Balanced` also guards the preserved input anchor against becoming a visibly dominant OKL chroma
+feature.
+
+This is a local chroma rule, not a lightness rule. It does not change the exact input color and it
+does not regenerate the whole scale. Its job is to avoid a visible "summit" or narrow high-chroma
+plateau where the preserved input is much easier to identify than the surrounding emitted slots.
+
+Current peak rule:
+
+- anchor: the preserved input slot;
+- measurement: OKL chroma;
+- peak criterion: the anchor must be higher than both immediate neighbors, and the smaller of the two
+  chroma drops must exceed `0.012`;
+- near vivid-boundary peak criterion: if the preserved input is within `2` emitted slots before the
+  vivid start, the smaller chroma drop threshold is `0.008`;
+- allowed drop around the anchor: `max(0.008, anchorChroma * 0.04)`;
+- near vivid-boundary allowed drop: `max(0.004, anchorChroma * 0.025)`;
+- radius: try radius `1` first, then radius `2` only if the peak remains.
+- near vivid-boundary radius: complete radius `2` when a peak is detected, even if radius `1`
+  already softened the immediate neighbors.
+
+Radius is counted by emitted slots, not numeric tone distance. If the preserved input is `K35`, then
+radius `1` means `K30, K35, K40`, while radius `2` means `K28, K30, K35, K40, K45`.
+
+When the guard triggers, it raises only neighbors whose chroma is below the local target. It never
+lowers the preserved input, never lets neighbors exceed the anchor chroma, and never changes OKL
+lightness intentionally. The goal is to turn a sharp chroma summit into a small shoulder or plateau,
+similar to the natural behavior currently seen in the reference blue.
+
+The near-boundary threshold exists because small chroma peaks are more visible when the preserved
+input is close to the vivid transition. For example, cyan can preserve the exact input at `K28` with
+healthy OKL lightness deltas around `K28`, `K30`, and `K35`, while still showing a small chroma spike
+at the preserved input. In that case, the correct adjustment is to raise nearby chroma, not to move
+the input to `K30`.
+
+Near the vivid boundary, radius `1` still adjusts both immediate neighbors. Extra radius is
+directional: it expands toward the vivid side so `K35` can join the chroma shoulder, but it does not
+pull lighter pre-vivid slots such as `K24` into the same stronger chroma plateau. After that
+adjustment, `K35..K95` are clamped again so raising vivid-side chroma cannot break the active
+`3:1` contrast contract.
+
+The same guard also detects narrow dominant chroma plateaus. This covers cases where the preserved
+input is not a single-point peak because the next structural point has almost the same chroma, such
+as a saturated red where `K30` and `K35` form a short top shelf. The plateau rule activates when:
+
+- the preserved input belongs to a contiguous plateau of at most `3` emitted slots;
+- neighboring plateau slots are within `0.012` OKL chroma of the preserved input;
+- the smaller drop from the plateau to its two shoulders is greater than `0.009` OKL chroma.
+
+When this happens, the guard raises the plateau shoulders toward a controlled drop of
+`max(0.016, plateauChroma * 0.08)`. Radius `1` adjusts the immediate shoulders on both sides. Radius
+`2` may extend on the vivid side, but it does not pull an extra lighter pre-vivid slot into the
+plateau. This keeps the exact input color intact while making a red-like top read as a broader
+shoulder instead of an obvious brand-color marker.
 
 ## Vivid Lightness Progress
 

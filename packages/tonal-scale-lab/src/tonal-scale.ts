@@ -182,8 +182,25 @@ export type LuminousChromaRampRule = {
   progressGamma: number;
 };
 
+export type VividBoundaryBufferRule = {
+  rewindSlots: number;
+};
+
+export type PreservedAnchorContinuityRule = {
+  sampleSize: number;
+  maxSlopeRatio: number;
+  tolerance: number;
+  maxRewindSlots: number;
+  adjacentVividBoundary?: {
+    maxSlopeRatio: number;
+    tolerance: number;
+  };
+};
+
 export type InputPreservationRule = {
   lightZoneEndTone: ScaleTone;
+  vividBoundaryBuffer?: VividBoundaryBufferRule;
+  anchorContinuity?: PreservedAnchorContinuityRule;
 };
 
 export type NodeContinuityRule = {
@@ -191,6 +208,29 @@ export type NodeContinuityRule = {
   maxNeighborRatio: number;
   tolerance: number;
   maxIterations: number;
+};
+
+export type ChromaPeakRule = {
+  prominenceThreshold: number;
+  allowedDropMin: number;
+  allowedDropRatio: number;
+  maxRadius: number;
+  nearVividBoundary?: {
+    maxDistance: number;
+    prominenceThreshold: number;
+    allowedDropMin: number;
+    allowedDropRatio: number;
+    maxRadius: number;
+    allowVividSide: boolean;
+  };
+  dominantPlateau?: {
+    equalityTolerance: number;
+    prominenceThreshold: number;
+    allowedDropMin: number;
+    allowedDropRatio: number;
+    maxRadius: number;
+    maxPlateauSlots: number;
+  };
 };
 
 export type TonalProfile = {
@@ -209,6 +249,7 @@ export type TonalProfile = {
   luminousChromaRamp?: LuminousChromaRampRule;
   inputPreservation?: InputPreservationRule;
   nodeContinuity?: NodeContinuityRule;
+  chromaPeak?: ChromaPeakRule;
 };
 
 export type TonalAnchor = {
@@ -1053,7 +1094,7 @@ function applyInputPreservation(
   scale: TonalScaleColor[],
   profile: Pick<
     TonalProfile,
-    'inputPreservation' | 'inputStrategy' | 'nodeContinuity' | 'vividContrast'
+    'chromaPeak' | 'inputPreservation' | 'inputStrategy' | 'nodeContinuity' | 'vividContrast'
   >,
   distribution: ScaleDistribution,
   colorSpace: ColorInterpolationSpace,
@@ -1071,7 +1112,7 @@ function applyInputPreservation(
     distribution,
     normalizedInputHex
   );
-  const preservedAnchor = resolvePreservedInputAnchor({
+  const initialPreservedInputAnchor = resolvePreservedInputAnchor({
     scale,
     distribution,
     colorSpace,
@@ -1080,10 +1121,20 @@ function applyInputPreservation(
     inputHex: normalizedInputHex
   });
 
-  if (!preservedAnchor) {
+  if (!initialPreservedInputAnchor) {
     return scale;
   }
 
+  const preservedInputAnchor = resolveAnchorContinuityGuardedAnchor({
+    scale,
+    distribution,
+    colorSpace,
+    inputPreservation,
+    vividContrast,
+    inputHex: normalizedInputHex,
+    initialAnchor: initialPreservedInputAnchor
+  });
+  const preservedAnchor = preservedInputAnchor.color;
   const anchoredScale = interpolateScaleThroughPreservedInput({
     scale,
     distribution,
@@ -1091,7 +1142,8 @@ function applyInputPreservation(
     inputPreservation,
     inputAnchor: preservedAnchor,
     inputHex: normalizedInputHex,
-    vividStartTone: vividContrast?.startTone
+    vividContrast,
+    useLightestVividStart: preservedInputAnchor.bufferedFromVividBoundary
   });
 
   const vividSafeScale = applyPreservedInputVividContrast(
@@ -1102,7 +1154,7 @@ function applyInputPreservation(
     preservedAnchor.tone
   );
 
-  return applyNodeContinuityGuard(
+  const continuityScale = applyNodeContinuityGuard(
     vividSafeScale,
     distribution,
     profile.nodeContinuity,
@@ -1110,7 +1162,28 @@ function applyInputPreservation(
     colorSpace,
     preservedAnchor.tone
   );
+
+  const chromaSafeScale = applyChromaPeakGuard(
+    continuityScale,
+    profile.chromaPeak,
+    colorSpace,
+    preservedAnchor.tone,
+    vividContrast?.startTone
+  );
+
+  return applyPreservedInputVividContrast(
+    chromaSafeScale,
+    distribution,
+    vividContrast,
+    colorSpace,
+    preservedAnchor.tone
+  );
 }
+
+type PreservedInputAnchor = {
+  color: TonalScaleColor;
+  bufferedFromVividBoundary: boolean;
+};
 
 function resolvePreservedInputAnchor(params: {
   scale: TonalScaleColor[];
@@ -1119,7 +1192,7 @@ function resolvePreservedInputAnchor(params: {
   inputPreservation: InputPreservationRule;
   vividContrast: VividContrastRule | undefined;
   inputHex: string;
-}): TonalScaleColor | undefined {
+}): PreservedInputAnchor | undefined {
   const { scale, distribution, colorSpace, inputPreservation, vividContrast, inputHex } = params;
   const chromaticLightEndTone = resolveChromaticLightEndTone(distribution);
   const chromaticDarkEndTone = resolveChromaticDarkEndTone(distribution);
@@ -1143,13 +1216,251 @@ function resolvePreservedInputAnchor(params: {
   const fallbackCandidates = scale.filter((color) => !isAbsoluteScaleCapTone(color.tone));
   const availableCandidates = candidates.length > 0 ? candidates : fallbackCandidates;
 
-  return availableCandidates.reduce<TonalScaleColor | undefined>(
+  const nearestAnchor = availableCandidates.reduce<TonalScaleColor | undefined>(
     (current, color) =>
       !current || rgbDistance(color.hex, inputHex) < rgbDistance(current.hex, inputHex)
         ? color
         : current,
     undefined
   );
+
+  return nearestAnchor
+    ? resolveVividBoundaryBufferedAnchor({
+        scale,
+        inputPreservation,
+        vividContrast,
+        inputBreaksVivid,
+        chromaticLightEndTone,
+        nearestAnchor
+      })
+    : undefined;
+}
+
+function resolveVividBoundaryBufferedAnchor(params: {
+  scale: TonalScaleColor[];
+  inputPreservation: InputPreservationRule;
+  vividContrast: VividContrastRule | undefined;
+  inputBreaksVivid: boolean;
+  chromaticLightEndTone: ScaleTone;
+  nearestAnchor: TonalScaleColor;
+}): PreservedInputAnchor {
+  const {
+    scale,
+    inputPreservation,
+    vividContrast,
+    inputBreaksVivid,
+    chromaticLightEndTone,
+    nearestAnchor
+  } = params;
+  const buffer = inputPreservation.vividBoundaryBuffer;
+
+  if (!buffer || !vividContrast || !inputBreaksVivid) {
+    return { color: nearestAnchor, bufferedFromVividBoundary: false };
+  }
+
+  const nearestAnchorIndex = scale.findIndex((color) => color.id === nearestAnchor.id);
+  const lastPreVividIndex = scale.reduce(
+    (lastIndex, color, index) =>
+      !isAbsoluteScaleCapTone(color.tone) &&
+      color.tone >= chromaticLightEndTone &&
+      color.tone < vividContrast.startTone
+        ? index
+        : lastIndex,
+    -1
+  );
+
+  if (nearestAnchorIndex !== lastPreVividIndex) {
+    return { color: nearestAnchor, bufferedFromVividBoundary: false };
+  }
+
+  const bufferedAnchor = scale[Math.max(0, nearestAnchorIndex - buffer.rewindSlots)];
+
+  return bufferedAnchor && !isAbsoluteScaleCapTone(bufferedAnchor.tone)
+    ? { color: bufferedAnchor, bufferedFromVividBoundary: true }
+    : { color: nearestAnchor, bufferedFromVividBoundary: false };
+}
+
+function resolveAnchorContinuityGuardedAnchor(params: {
+  scale: TonalScaleColor[];
+  distribution: ScaleDistribution;
+  colorSpace: ColorInterpolationSpace;
+  inputPreservation: InputPreservationRule;
+  vividContrast: VividContrastRule | undefined;
+  inputHex: string;
+  initialAnchor: PreservedInputAnchor;
+}): PreservedInputAnchor {
+  const { inputPreservation, vividContrast, colorSpace } = params;
+  const rule = inputPreservation.anchorContinuity;
+
+  if (!rule || !vividContrast || colorSpace !== 'oklch') {
+    return params.initialAnchor;
+  }
+
+  let currentAnchor = params.initialAnchor;
+
+  for (let iteration = 0; iteration < rule.maxRewindSlots; iteration += 1) {
+    if (!canGuardPreservedAnchorExit(currentAnchor.color, inputPreservation, vividContrast)) {
+      return currentAnchor;
+    }
+
+    const candidateScale = createVividSafePreservedInputScale({
+      scale: params.scale,
+      distribution: params.distribution,
+      colorSpace,
+      inputPreservation,
+      inputAnchor: currentAnchor,
+      inputHex: params.inputHex,
+      vividContrast
+    });
+    const issue = resolvePreservedAnchorExitContinuityIssue(
+      candidateScale,
+      currentAnchor.color.tone,
+      rule,
+      vividContrast.startTone,
+      colorSpace
+    );
+
+    if (!issue) {
+      return currentAnchor;
+    }
+
+    const previousAnchor = resolvePreviousPreservedAnchorCandidate({
+      scale: params.scale,
+      currentAnchor: currentAnchor.color,
+      inputPreservation,
+      vividContrast
+    });
+
+    if (!previousAnchor) {
+      return currentAnchor;
+    }
+
+    currentAnchor = {
+      color: previousAnchor,
+      bufferedFromVividBoundary: currentAnchor.bufferedFromVividBoundary
+    };
+  }
+
+  return currentAnchor;
+}
+
+function createVividSafePreservedInputScale(params: {
+  scale: TonalScaleColor[];
+  distribution: ScaleDistribution;
+  colorSpace: ColorInterpolationSpace;
+  inputPreservation: InputPreservationRule;
+  inputAnchor: PreservedInputAnchor;
+  inputHex: string;
+  vividContrast: VividContrastRule | undefined;
+}): TonalScaleColor[] {
+  const anchoredScale = interpolateScaleThroughPreservedInput({
+    scale: params.scale,
+    distribution: params.distribution,
+    colorSpace: params.colorSpace,
+    inputPreservation: params.inputPreservation,
+    inputAnchor: params.inputAnchor.color,
+    inputHex: params.inputHex,
+    vividContrast: params.vividContrast,
+    useLightestVividStart: params.inputAnchor.bufferedFromVividBoundary
+  });
+
+  return applyPreservedInputVividContrast(
+    anchoredScale,
+    params.distribution,
+    params.vividContrast,
+    params.colorSpace,
+    params.inputAnchor.color.tone
+  );
+}
+
+function canGuardPreservedAnchorExit(
+  anchor: TonalScaleColor,
+  inputPreservation: InputPreservationRule,
+  vividContrast: VividContrastRule
+): boolean {
+  return anchor.tone > inputPreservation.lightZoneEndTone && anchor.tone < vividContrast.startTone;
+}
+
+function resolvePreviousPreservedAnchorCandidate(params: {
+  scale: TonalScaleColor[];
+  currentAnchor: TonalScaleColor;
+  inputPreservation: InputPreservationRule;
+  vividContrast: VividContrastRule;
+}): TonalScaleColor | undefined {
+  const { scale, currentAnchor, inputPreservation, vividContrast } = params;
+  const currentAnchorIndex = scale.findIndex((color) => color.id === currentAnchor.id);
+
+  if (currentAnchorIndex <= 0) {
+    return undefined;
+  }
+
+  for (let index = currentAnchorIndex - 1; index >= 0; index -= 1) {
+    const candidate = scale[index];
+
+    if (
+      candidate &&
+      !isAbsoluteScaleCapTone(candidate.tone) &&
+      candidate.tone > inputPreservation.lightZoneEndTone &&
+      candidate.tone < vividContrast.startTone
+    ) {
+      return candidate;
+    }
+  }
+
+  return undefined;
+}
+
+function resolvePreservedAnchorExitContinuityIssue(
+  scale: TonalScaleColor[],
+  anchorTone: ScaleTone,
+  rule: PreservedAnchorContinuityRule,
+  vividStartTone: ScaleTone,
+  colorSpace: ColorInterpolationSpace
+): boolean {
+  const anchorIndex = scale.findIndex((color) => color.tone === anchorTone);
+
+  if (anchorIndex === -1) {
+    return false;
+  }
+
+  const beforeAverage = averageDefinedNumbers(
+    Array.from({ length: rule.sampleSize }, (_, offset) =>
+      resolveStepLightnessDelta(scale, anchorIndex - offset, colorSpace)
+    )
+  );
+  const afterAverage = averageDefinedNumbers(
+    Array.from({ length: rule.sampleSize }, (_, offset) =>
+      resolveStepLightnessDelta(scale, anchorIndex + offset + 1, colorSpace)
+    )
+  );
+
+  if (beforeAverage === undefined || afterAverage === undefined) {
+    return false;
+  }
+
+  const threshold = resolvePreservedAnchorContinuityThreshold(
+    scale,
+    anchorIndex,
+    vividStartTone,
+    rule
+  );
+
+  return (
+    Math.abs(afterAverage) > Math.abs(beforeAverage) * threshold.maxSlopeRatio + threshold.tolerance
+  );
+}
+
+function resolvePreservedAnchorContinuityThreshold(
+  scale: TonalScaleColor[],
+  anchorIndex: number,
+  vividStartTone: ScaleTone,
+  rule: PreservedAnchorContinuityRule
+): { maxSlopeRatio: number; tolerance: number } {
+  const next = scale[anchorIndex + 1];
+
+  return next?.tone === vividStartTone && rule.adjacentVividBoundary
+    ? rule.adjacentVividBoundary
+    : rule;
 }
 
 function interpolateScaleThroughPreservedInput(params: {
@@ -1159,7 +1470,8 @@ function interpolateScaleThroughPreservedInput(params: {
   inputPreservation: InputPreservationRule;
   inputAnchor: TonalScaleColor;
   inputHex: string;
-  vividStartTone?: ScaleTone;
+  vividContrast?: VividContrastRule;
+  useLightestVividStart: boolean;
 }): TonalScaleColor[] {
   const {
     scale,
@@ -1168,13 +1480,14 @@ function interpolateScaleThroughPreservedInput(params: {
     inputPreservation,
     inputAnchor,
     inputHex,
-    vividStartTone
+    vividContrast,
+    useLightestVividStart
   } = params;
   const anchorByIndex = new Map<number, TonalScaleColor>();
   const structuralAnchorTones = [
     resolveChromaticLightEndTone(distribution),
     inputPreservation.lightZoneEndTone,
-    vividStartTone,
+    vividContrast?.startTone,
     resolveChromaticDarkEndTone(distribution)
   ];
 
@@ -1187,7 +1500,12 @@ function interpolateScaleThroughPreservedInput(params: {
     const anchorColor = scale[anchorIndex];
 
     if (anchorColor && !isAbsoluteScaleCapTone(anchorColor.tone)) {
-      anchorByIndex.set(anchorIndex, anchorColor);
+      anchorByIndex.set(
+        anchorIndex,
+        useLightestVividStart && vividContrast && anchorColor.tone === vividContrast.startTone
+          ? createLightestVividStartColor(anchorColor, vividContrast, colorSpace)
+          : anchorColor
+      );
     }
   }
 
@@ -1229,6 +1547,23 @@ function interpolateScaleThroughPreservedInput(params: {
       colorSpace
     );
   });
+}
+
+function createLightestVividStartColor(
+  color: TonalScaleColor,
+  vividContrast: VividContrastRule,
+  colorSpace: ColorInterpolationSpace
+): TonalScaleColor {
+  return createScaleColorWithLightness(
+    color,
+    colorSpace,
+    resolveMaxLightnessForContrast(
+      color,
+      colorSpace,
+      vividContrast.foregroundHex,
+      vividContrast.minRatio
+    )
+  );
 }
 
 function applyPreservedInputVividContrast(
@@ -1724,6 +2059,413 @@ function canAdjustContinuityColor(color: TonalScaleColor, preservedInputTone: Sc
   return color.tone !== preservedInputTone && !isAbsoluteScaleCapTone(color.tone);
 }
 
+function applyChromaPeakGuard(
+  scale: TonalScaleColor[],
+  rule: ChromaPeakRule | undefined,
+  colorSpace: ColorInterpolationSpace,
+  preservedInputTone: ScaleTone,
+  vividStartTone?: ScaleTone
+): TonalScaleColor[] {
+  if (!rule || colorSpace !== 'oklch') {
+    return scale;
+  }
+
+  const anchorIndex = scale.findIndex((color) => color.tone === preservedInputTone);
+
+  if (anchorIndex === -1 || isAbsoluteScaleCapTone(scale[anchorIndex].tone)) {
+    return scale;
+  }
+
+  let currentScale = scale;
+
+  if (resolveChromaPeakIssue(currentScale, rule, anchorIndex, vividStartTone)) {
+    const maxRadius = resolveChromaPeakMaxRadius(scale, rule, anchorIndex, vividStartTone);
+    const shouldCompleteNearVividBoundaryRadius =
+      resolveNearVividBoundaryChromaRule(scale, rule, anchorIndex, vividStartTone) !== undefined;
+
+    for (let radius = 1; radius <= maxRadius; radius += 1) {
+      currentScale = applyChromaPeakRadius(
+        currentScale,
+        rule,
+        anchorIndex,
+        radius,
+        vividStartTone,
+        shouldCompleteNearVividBoundaryRadius
+      );
+
+      if (
+        !shouldCompleteNearVividBoundaryRadius &&
+        !resolveChromaPeakIssue(currentScale, rule, anchorIndex, vividStartTone)
+      ) {
+        break;
+      }
+    }
+  }
+
+  return applyDominantChromaPlateauGuard(currentScale, rule, anchorIndex);
+}
+
+function applyChromaPeakRadius(
+  scale: TonalScaleColor[],
+  rule: ChromaPeakRule,
+  anchorIndex: number,
+  radius: number,
+  vividStartTone?: ScaleTone,
+  force = false
+): TonalScaleColor[] {
+  const issue = resolveChromaPeakIssue(scale, rule, anchorIndex, vividStartTone);
+
+  if (!issue && !force) {
+    return scale;
+  }
+
+  const anchorChroma = hexToOklch(scale[anchorIndex].hex).c;
+  const allowedDrop = resolveAllowedChromaPeakDrop(
+    scale,
+    rule,
+    anchorIndex,
+    anchorChroma,
+    vividStartTone
+  );
+  const adjustedByIndex = new Map<number, TonalScaleColor>();
+
+  for (let distance = 1; distance <= radius; distance += 1) {
+    const targetChroma = Math.max(0, anchorChroma - allowedDrop * distance);
+    const leftIndex = anchorIndex - distance;
+    const rightIndex = anchorIndex + distance;
+
+    for (const index of [leftIndex, rightIndex]) {
+      const color = scale[index];
+
+      if (!color || isAbsoluteScaleCapTone(color.tone)) {
+        continue;
+      }
+
+      if (
+        shouldSkipNearVividBoundaryChromaShoulderExpansion(
+          scale,
+          rule,
+          anchorIndex,
+          index,
+          distance,
+          vividStartTone
+        )
+      ) {
+        continue;
+      }
+
+      if (shouldSkipChromaPeakAdjustment(scale, rule, anchorIndex, index, vividStartTone)) {
+        continue;
+      }
+
+      const currentChroma = hexToOklch(color.hex).c;
+
+      if (currentChroma >= targetChroma) {
+        continue;
+      }
+
+      adjustedByIndex.set(index, createScaleColorWithChroma(color, targetChroma));
+    }
+  }
+
+  return adjustedByIndex.size === 0
+    ? scale
+    : scale.map((color, index) => adjustedByIndex.get(index) ?? color);
+}
+
+function shouldSkipNearVividBoundaryChromaShoulderExpansion(
+  scale: TonalScaleColor[],
+  rule: ChromaPeakRule,
+  anchorIndex: number,
+  targetIndex: number,
+  distance: number,
+  vividStartTone?: ScaleTone
+): boolean {
+  const nearVividBoundary = resolveNearVividBoundaryChromaRule(
+    scale,
+    rule,
+    anchorIndex,
+    vividStartTone
+  );
+
+  return nearVividBoundary !== undefined && distance > 1 && targetIndex < anchorIndex;
+}
+
+function shouldSkipChromaPeakAdjustment(
+  scale: TonalScaleColor[],
+  rule: ChromaPeakRule,
+  anchorIndex: number,
+  targetIndex: number,
+  vividStartTone?: ScaleTone
+): boolean {
+  const anchor = scale[anchorIndex];
+  const target = scale[targetIndex];
+
+  if (!anchor || !target || vividStartTone === undefined) {
+    return false;
+  }
+
+  if (anchor.tone >= vividStartTone || target.tone < vividStartTone) {
+    return false;
+  }
+
+  const nearVividBoundary = resolveNearVividBoundaryChromaRule(
+    scale,
+    rule,
+    anchorIndex,
+    vividStartTone
+  );
+
+  return !nearVividBoundary?.allowVividSide;
+}
+
+function resolveChromaPeakIssue(
+  scale: TonalScaleColor[],
+  rule: ChromaPeakRule,
+  anchorIndex: number,
+  vividStartTone?: ScaleTone
+): boolean {
+  const previous = scale[anchorIndex - 1];
+  const anchor = scale[anchorIndex];
+  const next = scale[anchorIndex + 1];
+
+  if (!previous || !anchor || !next) {
+    return false;
+  }
+
+  const anchorChroma = hexToOklch(anchor.hex).c;
+  const previousChroma = hexToOklch(previous.hex).c;
+  const nextChroma = hexToOklch(next.hex).c;
+  const leftDrop = anchorChroma - previousChroma;
+  const rightDrop = anchorChroma - nextChroma;
+  const peakDrop = Math.min(leftDrop, rightDrop);
+  const prominenceThreshold = resolveChromaPeakProminenceThreshold(
+    scale,
+    rule,
+    anchorIndex,
+    vividStartTone
+  );
+
+  return leftDrop > 0 && rightDrop > 0 && peakDrop > prominenceThreshold;
+}
+
+function resolveChromaPeakProminenceThreshold(
+  scale: TonalScaleColor[],
+  rule: ChromaPeakRule,
+  anchorIndex: number,
+  vividStartTone?: ScaleTone
+): number {
+  return (
+    resolveNearVividBoundaryChromaRule(scale, rule, anchorIndex, vividStartTone)
+      ?.prominenceThreshold ?? rule.prominenceThreshold
+  );
+}
+
+function resolveChromaPeakMaxRadius(
+  scale: TonalScaleColor[],
+  rule: ChromaPeakRule,
+  anchorIndex: number,
+  vividStartTone?: ScaleTone
+): number {
+  return (
+    resolveNearVividBoundaryChromaRule(scale, rule, anchorIndex, vividStartTone)?.maxRadius ??
+    rule.maxRadius
+  );
+}
+
+function resolveAllowedChromaPeakDrop(
+  scale: TonalScaleColor[],
+  rule: ChromaPeakRule,
+  anchorIndex: number,
+  anchorChroma: number,
+  vividStartTone?: ScaleTone
+): number {
+  const nearVividBoundary = resolveNearVividBoundaryChromaRule(
+    scale,
+    rule,
+    anchorIndex,
+    vividStartTone
+  );
+  const allowedDropMin = nearVividBoundary?.allowedDropMin ?? rule.allowedDropMin;
+  const allowedDropRatio = nearVividBoundary?.allowedDropRatio ?? rule.allowedDropRatio;
+
+  return Math.max(allowedDropMin, anchorChroma * allowedDropRatio);
+}
+
+function resolveNearVividBoundaryChromaRule(
+  scale: TonalScaleColor[],
+  rule: ChromaPeakRule,
+  anchorIndex: number,
+  vividStartTone?: ScaleTone
+): NonNullable<ChromaPeakRule['nearVividBoundary']> | undefined {
+  const nearVividBoundary = rule.nearVividBoundary;
+
+  if (!nearVividBoundary || vividStartTone === undefined) {
+    return undefined;
+  }
+
+  const anchor = scale[anchorIndex];
+  const vividStartIndex = scale.findIndex((color) => color.tone === vividStartTone);
+
+  return anchor &&
+    anchor.tone < vividStartTone &&
+    vividStartIndex > anchorIndex &&
+    vividStartIndex - anchorIndex <= nearVividBoundary.maxDistance
+    ? nearVividBoundary
+    : undefined;
+}
+
+type DominantChromaPlateauIssue = {
+  startIndex: number;
+  endIndex: number;
+  chroma: number;
+};
+
+function applyDominantChromaPlateauGuard(
+  scale: TonalScaleColor[],
+  rule: ChromaPeakRule,
+  anchorIndex: number
+): TonalScaleColor[] {
+  const plateauRule = rule.dominantPlateau;
+
+  if (!plateauRule) {
+    return scale;
+  }
+
+  let currentScale = scale;
+
+  for (let radius = 1; radius <= plateauRule.maxRadius; radius += 1) {
+    const issue = resolveDominantChromaPlateauIssue(currentScale, rule, anchorIndex);
+
+    if (!issue) {
+      break;
+    }
+
+    currentScale = applyDominantChromaPlateauRadius(currentScale, rule, issue, anchorIndex, radius);
+  }
+
+  return currentScale;
+}
+
+function applyDominantChromaPlateauRadius(
+  scale: TonalScaleColor[],
+  rule: ChromaPeakRule,
+  issue: DominantChromaPlateauIssue,
+  anchorIndex: number,
+  radius: number
+): TonalScaleColor[] {
+  const plateauRule = rule.dominantPlateau;
+
+  if (!plateauRule) {
+    return scale;
+  }
+
+  const allowedDrop = resolveAllowedDominantPlateauDrop(plateauRule, issue.chroma);
+  const adjustedByIndex = new Map<number, TonalScaleColor>();
+
+  for (let distance = 1; distance <= radius; distance += 1) {
+    const targetChroma = Math.max(0, issue.chroma - allowedDrop * distance);
+    const leftIndex = issue.startIndex - distance;
+    const rightIndex = issue.endIndex + distance;
+
+    for (const index of [leftIndex, rightIndex]) {
+      const color = scale[index];
+
+      if (!color || isAbsoluteScaleCapTone(color.tone)) {
+        continue;
+      }
+
+      if (distance > 1 && index < anchorIndex) {
+        continue;
+      }
+
+      const currentChroma = hexToOklch(color.hex).c;
+
+      if (currentChroma >= targetChroma) {
+        continue;
+      }
+
+      adjustedByIndex.set(index, createScaleColorWithChroma(color, targetChroma));
+    }
+  }
+
+  return adjustedByIndex.size === 0
+    ? scale
+    : scale.map((color, index) => adjustedByIndex.get(index) ?? color);
+}
+
+function resolveDominantChromaPlateauIssue(
+  scale: TonalScaleColor[],
+  rule: ChromaPeakRule,
+  anchorIndex: number
+): DominantChromaPlateauIssue | undefined {
+  const plateauRule = rule.dominantPlateau;
+  const anchor = scale[anchorIndex];
+
+  if (!plateauRule || !anchor) {
+    return undefined;
+  }
+
+  const anchorChroma = hexToOklch(anchor.hex).c;
+  const plateauFloor = anchorChroma - plateauRule.equalityTolerance;
+  let startIndex = anchorIndex;
+  let endIndex = anchorIndex;
+
+  while (startIndex > 0 && resolveScaleColorChroma(scale[startIndex - 1]) >= plateauFloor) {
+    startIndex -= 1;
+  }
+
+  while (
+    endIndex < scale.length - 1 &&
+    resolveScaleColorChroma(scale[endIndex + 1]) >= plateauFloor
+  ) {
+    endIndex += 1;
+  }
+
+  if (endIndex - startIndex + 1 > plateauRule.maxPlateauSlots) {
+    return undefined;
+  }
+
+  const leftShoulder = scale[startIndex - 1];
+  const rightShoulder = scale[endIndex + 1];
+
+  if (!leftShoulder || !rightShoulder) {
+    return undefined;
+  }
+
+  const plateauChroma = Math.max(
+    ...scale.slice(startIndex, endIndex + 1).map((color) => hexToOklch(color.hex).c)
+  );
+  const leftDrop = plateauChroma - hexToOklch(leftShoulder.hex).c;
+  const rightDrop = plateauChroma - hexToOklch(rightShoulder.hex).c;
+  const plateauDrop = Math.min(leftDrop, rightDrop);
+
+  return leftDrop > 0 && rightDrop > 0 && plateauDrop > plateauRule.prominenceThreshold
+    ? { startIndex, endIndex, chroma: plateauChroma }
+    : undefined;
+}
+
+function resolveAllowedDominantPlateauDrop(
+  plateauRule: NonNullable<ChromaPeakRule['dominantPlateau']>,
+  plateauChroma: number
+): number {
+  return Math.max(plateauRule.allowedDropMin, plateauChroma * plateauRule.allowedDropRatio);
+}
+
+function resolveScaleColorChroma(color: TonalScaleColor | undefined): number {
+  return color && !isAbsoluteScaleCapTone(color.tone) ? hexToOklch(color.hex).c : -Infinity;
+}
+
+function createScaleColorWithChroma(color: TonalScaleColor, targetChroma: number): TonalScaleColor {
+  const oklch = hexToOklch(color.hex);
+
+  if (Math.abs(oklch.c - targetChroma) < 0.0001) {
+    return color;
+  }
+
+  return createScaleColorFromHex(color, oklchToHex({ ...oklch, c: clamp(targetChroma, 0, 0.5) }));
+}
+
 function resolveStepLightnessDelta(
   scale: TonalScaleColor[],
   index: number,
@@ -1740,6 +2482,16 @@ function resolveStepLightnessDelta(
     resolveScaleColorLightness(previous, colorSpace) -
     resolveScaleColorLightness(current, colorSpace)
   );
+}
+
+function averageDefinedNumbers(values: Array<number | undefined>): number | undefined {
+  const definedValues = values.filter((value): value is number => value !== undefined);
+
+  if (definedValues.length === 0) {
+    return undefined;
+  }
+
+  return definedValues.reduce((total, value) => total + value, 0) / definedValues.length;
 }
 
 function resolveClosestScaleColorIndex(scale: TonalScaleColor[], tone: ScaleTone): number {

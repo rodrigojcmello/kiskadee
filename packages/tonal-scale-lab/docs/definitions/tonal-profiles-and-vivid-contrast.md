@@ -111,6 +111,25 @@ white, it is only allowed before `K35`. If the input is lighter than the generat
 is only allowed inside the `K1..K10` light zone. After preservation, the vivid range is checked
 again.
 
+`Balanced` also keeps a one-emitted-slot buffer before the vivid boundary. If an input fails the
+`3:1` vivid target and its nearest legal fit would be the last pre-vivid slot, the exact input is
+rewound one emitted slot. In `Kiskadee Official (33)`, that means the input can move from `K30` to
+`K28`, leaving `K30` free to become a generated bridge into the contrast-safe `K35`.
+
+When that buffer is active, `K35` is resolved as the lightest generated vivid-start color that still
+passes the active `3:1` target. This avoids replacing the old `K30` peak with an unnecessarily dark
+`K35` wall.
+
+`Balanced` then checks the preserved input as a pre-vivid lightness-continuity node. This guard
+compares the average of `2` OKL lightness deltas before the preserved input with the average of `2`
+deltas after it. If the post-anchor average exceeds the pre-anchor average by more than `3x + 0.25`
+OKL lightness points, the exact input rewinds by one emitted slot and the scale is regenerated
+through that new anchor. When the preserved input is immediately before the vivid start, the same
+guard uses a stricter `1.75x + 0.25` limit because two strong nodes are adjacent. The guard can
+rewind at most `2` additional emitted slots. This is why a color that first buffers to `K28` may
+settle at `K26` when `K28 -> K30 -> K35` would still be too abrupt, and why a contrast-safe `K30`
+input may still move to `K28` if `K30 -> K35` is too steep.
+
 `Balanced` also applies a node continuity guard after input preservation. The current nodes are
 `K10` and `K35`. For each node seam, the guard compares the seam's OKL lightness delta with the
 larger of the two neighboring emitted-step deltas. The seam fails when it exceeds that local
@@ -119,6 +138,25 @@ reference by more than `1.25x + 0.25` OKL lightness points.
 When a seam fails, the generator redistributes the excess through the adjacent segment and validates
 again, up to `5` iterations. The exact input anchor remains fixed. The vivid range is reclamped after
 redistribution so the `K35..K95` `3:1` contract remains true.
+
+After node continuity, `Balanced` also checks whether the preserved input became a dominant OKL
+chroma feature. The peak guard activates when the input anchor is higher in OKL chroma than both
+immediate neighbors and the smaller local drop is greater than `0.012`. When the preserved input is
+within `2` emitted slots before the vivid start, the threshold becomes `0.008` because small chroma
+spikes are more visible near the vivid transition. In that near-boundary case, it uses a smaller
+allowed drop, `max(0.004, anchorChroma * 0.025)`, completes radius `2`, and may raise the vivid-side
+bridge at `K35`. Extra radius expands toward the vivid side only, so lighter pre-vivid slots are not
+pulled into the same stronger chroma plateau.
+
+The same chroma guard now also handles short dominant plateaus. This catches cases where the input
+is not technically a local peak because the next structural point has nearly the same chroma, such
+as saturated red preserving the exact input around `K30` while `K35` starts the vivid range. A
+plateau is considered risky when it has at most `3` emitted slots, neighboring plateau slots are
+within `0.012` OKL chroma of the preserved input, and the smaller shoulder drop is greater than
+`0.009`. The guard then raises the shoulders toward `max(0.016, plateauChroma * 0.08)`: radius `1`
+adjusts both sides, while radius `2` expands only on the vivid side. The input hex remains
+unchanged, and the vivid range is clamped again afterward so `K35..K95` still respect the active
+`3:1` contract.
 
 ## Structural Pivot Caveat
 
@@ -277,9 +315,12 @@ then resolves a contrast-safe lightness range:
 7. If configured, cap the initial chroma ramp for luminous OKLCH inputs.
 8. If configured, preserve the exact input hex at the nearest legal chromatic fit and interpolate
    the surrounding curve through that point.
-9. If configured, apply the node continuity guard to smooth structural seams such as `K10` and
+9. If configured, apply the preserved-anchor continuity guard so a pre-vivid input anchor does not
+   leave an abrupt post-anchor lightness slope into `K35`.
+10. If configured, apply the node continuity guard to smooth structural seams such as `K10` and
    `K35`.
-10. Resolve the input color's displayed fit from the final generated scale.
+11. If configured, apply the chroma shape guard around the preserved input anchor.
+12. Resolve the input color's displayed fit from the final generated scale.
 
 This makes the vivid track testable while keeping the fine light range stable and using the sparse
 middle positions as a transition into vivid.
@@ -314,7 +355,10 @@ accessibility guarantee.
   preservation enabled: the exact input hex becomes a local anchor after the structural scale is
   resolved. For now, the light-zone boundary is `K10`. `Balanced` also guards the `K10` and `K35`
   seams with the node continuity rule so preserved inputs and contrast boundaries do not create
-  abrupt local jumps.
+  abrupt local jumps. Its preserved-anchor continuity guard may rewind a pre-vivid input anchor when
+  the post-anchor OKL lightness slope is still too steep. Its chroma shape guard smooths sharp local
+  OKL chroma summits and short dominant chroma plateaus around the preserved input without changing
+  the input hex.
 - `Auto Mid Peak + 3:1 Vivid` keeps the vivid guard, but uses the profile base tone as the
   chroma peak. Chroma bends down toward both the light and dark ends of the scale. It now shares the
   healthy `darkFloorLightness: 20` endpoint with `Balanced`, but still needs a follow-up calibration
