@@ -84,6 +84,11 @@ const BALANCED_INPUT_PRESERVATION = {
     maxSlopeRatio: 3,
     tolerance: 0.25,
     maxRewindSlots: 2,
+    nearVividBoundary: {
+      maxDistance: 2,
+      maxSlopeRatio: 2.4,
+      tolerance: 0.25
+    },
     adjacentVividBoundary: {
       maxSlopeRatio: 1.75,
       tolerance: 0.25
@@ -95,7 +100,12 @@ const BALANCED_NODE_CONTINUITY = {
   nodeTones: [10, 35],
   maxNeighborRatio: 1.25,
   tolerance: 0.25,
-  maxIterations: 5
+  maxIterations: 5,
+  preservedInputEntry: {
+    nodeTones: [10],
+    maxPreviousRatio: 1.25,
+    tolerance: 0.25
+  }
 } as const satisfies NodeContinuityRule;
 
 const BALANCED_CHROMA_PEAK_GUARD = {

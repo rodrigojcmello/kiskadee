@@ -191,6 +191,11 @@ export type PreservedAnchorContinuityRule = {
   maxSlopeRatio: number;
   tolerance: number;
   maxRewindSlots: number;
+  nearVividBoundary?: {
+    maxDistance: number;
+    maxSlopeRatio: number;
+    tolerance: number;
+  };
   adjacentVividBoundary?: {
     maxSlopeRatio: number;
     tolerance: number;
@@ -208,6 +213,11 @@ export type NodeContinuityRule = {
   maxNeighborRatio: number;
   tolerance: number;
   maxIterations: number;
+  preservedInputEntry?: {
+    nodeTones: readonly ScaleTone[];
+    maxPreviousRatio: number;
+    tolerance: number;
+  };
 };
 
 export type ChromaPeakRule = {
@@ -1296,6 +1306,8 @@ function resolveAnchorContinuityGuardedAnchor(params: {
     return params.initialAnchor;
   }
 
+  const inputBreaksVivid =
+    contrastRatio(params.inputHex, vividContrast.foregroundHex) < vividContrast.minRatio;
   let currentAnchor = params.initialAnchor;
 
   for (let iteration = 0; iteration < rule.maxRewindSlots; iteration += 1) {
@@ -1317,7 +1329,8 @@ function resolveAnchorContinuityGuardedAnchor(params: {
       currentAnchor.color.tone,
       rule,
       vividContrast.startTone,
-      colorSpace
+      colorSpace,
+      inputBreaksVivid
     );
 
     if (!issue) {
@@ -1415,7 +1428,8 @@ function resolvePreservedAnchorExitContinuityIssue(
   anchorTone: ScaleTone,
   rule: PreservedAnchorContinuityRule,
   vividStartTone: ScaleTone,
-  colorSpace: ColorInterpolationSpace
+  colorSpace: ColorInterpolationSpace,
+  inputBreaksVivid: boolean
 ): boolean {
   const anchorIndex = scale.findIndex((color) => color.tone === anchorTone);
 
@@ -1442,7 +1456,8 @@ function resolvePreservedAnchorExitContinuityIssue(
     scale,
     anchorIndex,
     vividStartTone,
-    rule
+    rule,
+    inputBreaksVivid
   );
 
   return (
@@ -1454,12 +1469,23 @@ function resolvePreservedAnchorContinuityThreshold(
   scale: TonalScaleColor[],
   anchorIndex: number,
   vividStartTone: ScaleTone,
-  rule: PreservedAnchorContinuityRule
+  rule: PreservedAnchorContinuityRule,
+  inputBreaksVivid: boolean
 ): { maxSlopeRatio: number; tolerance: number } {
   const next = scale[anchorIndex + 1];
 
-  return next?.tone === vividStartTone && rule.adjacentVividBoundary
-    ? rule.adjacentVividBoundary
+  if (next?.tone === vividStartTone && rule.adjacentVividBoundary) {
+    return rule.adjacentVividBoundary;
+  }
+
+  const vividStartIndex = scale.findIndex((color) => color.tone === vividStartTone);
+  const emittedDistanceToVividStart = vividStartIndex - anchorIndex;
+
+  return inputBreaksVivid &&
+    rule.nearVividBoundary &&
+    emittedDistanceToVividStart > 0 &&
+    emittedDistanceToVividStart <= rule.nearVividBoundary.maxDistance
+    ? rule.nearVividBoundary
     : rule;
 }
 
@@ -1640,7 +1666,13 @@ function applyNodeContinuityGuard(
         continue;
       }
 
-      const issue = resolveNodeContinuityIssue(currentScale, nodeIndex, rule, colorSpace);
+      const issue = resolveNodeContinuityIssue(
+        currentScale,
+        nodeIndex,
+        rule,
+        colorSpace,
+        preservedInputTone
+      );
 
       if (!issue) {
         continue;
@@ -1686,7 +1718,8 @@ function resolveNodeContinuityIssue(
   scale: TonalScaleColor[],
   nodeIndex: number,
   rule: NodeContinuityRule,
-  colorSpace: ColorInterpolationSpace
+  colorSpace: ColorInterpolationSpace,
+  preservedInputTone: ScaleTone
 ): NodeContinuityIssue | undefined {
   const entryDelta = resolveStepLightnessDelta(scale, nodeIndex, colorSpace);
   const entryBeforeDelta = resolveStepLightnessDelta(scale, nodeIndex - 1, colorSpace);
@@ -1701,7 +1734,9 @@ function resolveNodeContinuityIssue(
       delta: entryDelta,
       previousDelta: entryBeforeDelta,
       nextDelta: entryAfterDelta,
-      rule
+      rule,
+      scale,
+      preservedInputTone
     }),
     createNodeContinuityIssue({
       nodeIndex,
@@ -1709,7 +1744,9 @@ function resolveNodeContinuityIssue(
       delta: exitDelta,
       previousDelta: exitBeforeDelta,
       nextDelta: exitAfterDelta,
-      rule
+      rule,
+      scale,
+      preservedInputTone
     })
   ].filter((issue): issue is NodeContinuityIssue => issue !== undefined);
 
@@ -1723,19 +1760,58 @@ function createNodeContinuityIssue(params: {
   previousDelta: number | undefined;
   nextDelta: number | undefined;
   rule: NodeContinuityRule;
+  scale: TonalScaleColor[];
+  preservedInputTone: ScaleTone;
 }): NodeContinuityIssue | undefined {
-  const { nodeIndex, side, delta, previousDelta, nextDelta, rule } = params;
+  const { nodeIndex, side, delta, previousDelta, nextDelta } = params;
 
   if (delta === undefined || previousDelta === undefined || nextDelta === undefined) {
     return undefined;
   }
 
   const absoluteDelta = Math.abs(delta);
-  const limit =
-    Math.max(Math.abs(previousDelta), Math.abs(nextDelta)) * rule.maxNeighborRatio + rule.tolerance;
+  const limit = resolveNodeContinuityLimit({
+    nodeIndex,
+    side,
+    previousDelta,
+    nextDelta,
+    rule: params.rule,
+    scale: params.scale,
+    preservedInputTone: params.preservedInputTone
+  });
   const overshoot = absoluteDelta - limit;
 
   return overshoot > 0.01 ? { nodeIndex, side, limit, overshoot } : undefined;
+}
+
+function resolveNodeContinuityLimit(params: {
+  nodeIndex: number;
+  side: NodeContinuityIssue['side'];
+  previousDelta: number;
+  nextDelta: number;
+  rule: NodeContinuityRule;
+  scale: TonalScaleColor[];
+  preservedInputTone: ScaleTone;
+}): number {
+  const { nodeIndex, side, previousDelta, nextDelta, rule, scale, preservedInputTone } = params;
+  const node = scale[nodeIndex];
+  const previous = scale[nodeIndex - 1];
+  const preservedInputEntry = rule.preservedInputEntry;
+
+  if (
+    side === 'entry' &&
+    node &&
+    previous?.tone === preservedInputTone &&
+    preservedInputEntry?.nodeTones.includes(node.tone)
+  ) {
+    return (
+      Math.abs(previousDelta) * preservedInputEntry.maxPreviousRatio + preservedInputEntry.tolerance
+    );
+  }
+
+  return (
+    Math.max(Math.abs(previousDelta), Math.abs(nextDelta)) * rule.maxNeighborRatio + rule.tolerance
+  );
 }
 
 function smoothNodeContinuityIssue(params: {

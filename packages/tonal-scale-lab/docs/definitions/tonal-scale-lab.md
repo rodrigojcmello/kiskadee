@@ -69,10 +69,16 @@ Current profiles:
   emitted slots when the average OKL lightness delta after the anchor is more than `3x + 0.25`
   larger than the average before it. If the preserved input is immediately before the vivid start,
   the same guard uses a stricter `1.75x + 0.25` limit to avoid a direct hard edge between the input
-  anchor and `K35`.
+  anchor and `K35`. If a non-vivid-safe preserved input is within `2` emitted slots before the vivid
+  start, the guard also uses a near-vivid limit of `2.4x + 0.25`; this lets luminous colors such as
+  `#00bcd4` settle at `K26` instead of holding the exact color at `K28` and forcing `K28` and `K30`
+  to carry the whole bridge into `K35`.
   It also applies a node continuity guard at `K10` and `K35`: each seam is compared against the
   larger neighboring OKL lightness delta and cannot exceed that local reference by more than
   `1.25x + 0.25` OKL lightness points without redistributing the excess through the adjacent segment.
+  `K10` has one additional preserved-input entry rule: when the exact input lands immediately before
+  `K10`, the seam is judged from the previous light-zone delta rather than the wider `K10..K35`
+  bridge rhythm.
   Finally, its chroma shape guard checks the preserved input anchor: when the anchor is a sharp OKL
   chroma summit, nearby emitted slots are raised locally with radius `1` and, only if needed, radius
   `2`, while the input hex remains exact. Near the vivid boundary, this guard uses a lower chroma

@@ -124,16 +124,21 @@ passes the active `3:1` target. This avoids replacing the old `K30` peak with an
 compares the average of `2` OKL lightness deltas before the preserved input with the average of `2`
 deltas after it. If the post-anchor average exceeds the pre-anchor average by more than `3x + 0.25`
 OKL lightness points, the exact input rewinds by one emitted slot and the scale is regenerated
-through that new anchor. When the preserved input is immediately before the vivid start, the same
-guard uses a stricter `1.75x + 0.25` limit because two strong nodes are adjacent. The guard can
-rewind at most `2` additional emitted slots. This is why a color that first buffers to `K28` may
-settle at `K26` when `K28 -> K30 -> K35` would still be too abrupt, and why a contrast-safe `K30`
-input may still move to `K28` if `K30 -> K35` is too steep.
+through that new anchor. When a non-vivid-safe preserved input sits within `2` emitted slots before
+the vivid start, the guard uses a near-boundary `2.4x + 0.25` limit so colors such as `#00bcd4` can
+settle at `K26` and leave `K28` and `K30` as bridge material. When the preserved input is
+immediately before the vivid start, the same guard uses a stricter `1.75x + 0.25` limit because two
+strong nodes are adjacent. The guard can rewind at most `2` additional emitted slots. This is why a
+color that first buffers to `K28` may settle at `K26` when `K28 -> K30 -> K35` would still be too
+abrupt, and why a contrast-safe `K30` input may still move to `K28` if `K30 -> K35` is too steep.
 
 `Balanced` also applies a node continuity guard after input preservation. The current nodes are
-`K10` and `K35`. For each node seam, the guard compares the seam's OKL lightness delta with the
-larger of the two neighboring emitted-step deltas. The seam fails when it exceeds that local
-reference by more than `1.25x + 0.25` OKL lightness points.
+`K10` and `K35`. By default, each node seam compares its OKL lightness delta with the larger of the
+two neighboring emitted-step deltas. The seam fails when it exceeds that local reference by more
+than `1.25x + 0.25` OKL lightness points. `K10` also has a preserved-input entry exception: if the
+previous emitted slot is the exact preserved input, the entry seam is compared only with the
+previous light-zone delta. This prevents a `K9` input anchor such as `#dce775` from borrowing the
+wider `K10 -> K12` bridge rhythm and creating a visible `K9 -> K10` wall.
 
 When a seam fails, the generator redistributes the excess through the adjacent segment and validates
 again, up to `5` iterations. The exact input anchor remains fixed. The vivid range is reclamped after

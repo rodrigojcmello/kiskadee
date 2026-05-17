@@ -154,6 +154,9 @@ Current preserved-anchor continuity rule:
 - sample size: average `2` deltas before the preserved input and `2` deltas after it;
 - limit: the post-anchor average may not exceed the pre-anchor average by more than `3x + 0.25`
   OKL lightness points;
+- near vivid-boundary limit: if the input fails the active vivid contrast target and the preserved
+  input is within `2` emitted slots before the vivid start, the post-anchor average may not exceed
+  the pre-anchor average by more than `2.4x + 0.25` OKL lightness points;
 - adjacent vivid-boundary limit: if the next emitted slot after the preserved input is the vivid
   start, the post-anchor average may not exceed the pre-anchor average by more than `1.75x + 0.25`
   OKL lightness points;
@@ -162,9 +165,11 @@ Current preserved-anchor continuity rule:
 When the post-anchor slope fails that limit, the exact input rewinds by one emitted slot and the
 scale is regenerated through the new anchor. The guard then checks the new slope again. This turns a
 hard transition such as `K28 -> K30 -> K35` into a longer bridge such as `K26 -> K28 -> K30 -> K35`.
-The adjacent vivid-boundary limit handles a related case: if an input is contrast-safe enough to sit
-at `K30`, but `K30 -> K35` becomes much steeper than the pre-anchor rhythm, the input can still
-rewind to `K28` so `K30` becomes bridge material.
+For `#00bcd4`, the near vivid-boundary limit moves the preserved input from `K28` to `K26`, letting
+`K28` and `K30` become bridge material before the `3:1` `K35` vivid start. The adjacent
+vivid-boundary limit handles a related case: if an input is contrast-safe enough to sit at `K30`,
+but `K30 -> K35` becomes much steeper than the pre-anchor rhythm, the input can still rewind to
+`K28` so `K30` becomes bridge material.
 
 This rule is intentionally directional for now: it protects the exit from a pre-vivid preserved
 input into the vivid boundary. It does not yet rebalance every possible anchor shape in both
@@ -182,12 +187,19 @@ Current rule:
 
 - nodes: `K10` and `K35`;
 - measurement: emitted-step OKL lightness delta;
-- limit: the node seam may not exceed the larger neighboring delta by more than `1.25x + 0.25`
-  OKL lightness points;
+- default limit: the node seam may not exceed the larger neighboring delta by more than
+  `1.25x + 0.25` OKL lightness points;
+- preserved-input entry limit: when the previous emitted slot is the exact preserved input and the
+  node is `K10`, the entry seam is judged from the previous light-zone delta instead of the larger
+  bridge-side delta, using `1.25x + 0.25`;
 - max iterations: `5`.
 
-For an entry seam such as `K9 -> K10`, the guard compares that delta with `K8 -> K9` and `K10 ->
-K12`. For an entry seam such as `K30 -> K35`, it compares with `K28 -> K30` and `K35 -> K40`.
+For a normal entry seam such as `K30 -> K35`, the guard compares that delta with `K28 -> K30` and
+`K35 -> K40`. The `K10` preserved-input entry exception exists because `K10` separates two rhythms:
+the fine `K1..K10` light zone and the wider `K10..K35` bridge. If the input is preserved at `K9`,
+letting `K10 -> K12` set the reference makes `K9 -> K10` too permissive. For `#dce775`, this
+exception keeps the exact input at `K9` while reducing `K9 -> K10` from roughly `3.16` to `1.64`
+OKL lightness points.
 
 When a seam fails, the guard adjusts the nearest adjustable color and re-interpolates the adjacent
 segment so the excess is distributed instead of being hidden in one slot. The exact input anchor is
@@ -229,10 +241,10 @@ lightness intentionally. The goal is to turn a sharp chroma summit into a small 
 similar to the natural behavior currently seen in the reference blue.
 
 The near-boundary threshold exists because small chroma peaks are more visible when the preserved
-input is close to the vivid transition. For example, cyan can preserve the exact input at `K28` with
-healthy OKL lightness deltas around `K28`, `K30`, and `K35`, while still showing a small chroma spike
-at the preserved input. In that case, the correct adjustment is to raise nearby chroma, not to move
-the input to `K30`.
+input is close to the vivid transition. When the lightness rhythm is already healthy, the correct
+adjustment is to raise nearby chroma, not to move the input to `K30`. When the rhythm is not
+healthy, as with `#00bcd4` before the near vivid-boundary continuity limit, the lightness guard owns
+the rewind first and the chroma guard only smooths the resulting local shape.
 
 Near the vivid boundary, radius `1` still adjusts both immediate neighbors. Extra radius is
 directional: it expands toward the vivid side so `K35` can join the chroma shoulder, but it does not
