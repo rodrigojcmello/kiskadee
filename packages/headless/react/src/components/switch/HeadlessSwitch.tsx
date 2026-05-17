@@ -16,17 +16,7 @@ import {
   useMemo,
   useState
 } from 'react';
-import { useCheckedState } from '../checked-state/useCheckedState.ts';
-import type {
-  StateProjectionRule,
-  StateProjectionSlotProps,
-  StateProjectionStateValue,
-  UseStateProjectionOptions
-} from '../state-projection/useStateProjection.ts';
-import {
-  mergeStateProjectionSlotProps,
-  useStateProjection
-} from '../state-projection/useStateProjection.ts';
+import { useCheckedState } from '../../hooks/checked-state/useCheckedState.ts';
 
 export type SwitchElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
 
@@ -34,15 +24,11 @@ export type SwitchStateName = 'checked' | 'focused' | 'disabled' | 'readOnly' | 
 
 export type SwitchClassNames = Partial<Record<SwitchElementName, string>>;
 
-export type SwitchStateProjectionOptions = Omit<
-  UseStateProjectionOptions<SwitchElementName, SwitchStateName>,
-  'classNames' | 'states' | 'target'
-> & {
-  target?: SwitchElementName;
-};
+type SwitchSlotPropsValue = {
+  className?: string;
+} & Record<string, string | number | boolean | undefined>;
 
-type SwitchProjectionStates = Partial<Record<SwitchStateName, StateProjectionStateValue>>;
-type SwitchSlotProps = StateProjectionSlotProps<SwitchElementName>;
+type SwitchSlotProps = Partial<Record<SwitchElementName, SwitchSlotPropsValue>>;
 
 type SwitchRootLabelProps = Omit<
   ComponentPropsWithoutRef<'label'>,
@@ -52,7 +38,6 @@ type SwitchRootLabelProps = Omit<
 export type SwitchRootProps = SwitchRootLabelProps & {
   children?: ReactNode;
   classNames?: SwitchClassNames;
-  stateProjection?: SwitchStateProjectionOptions;
   inputId?: string;
   inputProps?: SwitchInputProps;
   inputRef?: Ref<HTMLInputElement>;
@@ -121,31 +106,26 @@ function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
   ref.current = value;
 }
 
-const switchDataAttributeProjections = {
-  checked: {
-    attribute: 'data-checked'
-  },
-  focused: {
-    attribute: 'data-focused'
-  },
-  disabled: {
-    attribute: 'data-disabled'
-  },
-  readOnly: {
-    attribute: 'data-readonly'
-  },
-  required: {
-    attribute: 'data-required'
-  }
-} satisfies Partial<
-  Record<SwitchStateName, StateProjectionRule<SwitchElementName, SwitchStateName>>
->;
+function switchStateAttributes(states: {
+  checked: boolean;
+  focused: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
+  required?: boolean;
+}): Record<string, '' | undefined> {
+  return {
+    'data-checked': states.checked ? '' : undefined,
+    'data-focused': states.focused ? '' : undefined,
+    'data-disabled': states.disabled ? '' : undefined,
+    'data-readonly': states.readOnly ? '' : undefined,
+    'data-required': states.required ? '' : undefined
+  };
+}
 
 const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function SwitchRoot(
   {
     children,
     classNames = {},
-    stateProjection,
     inputId,
     inputProps,
     inputRef,
@@ -164,7 +144,6 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
   const generatedId = useId();
   const resolvedInputId = inputId ?? `switch-${generatedId}`;
   const [focused, setFocused] = useState(false);
-  const { target: stateProjectionTarget = 'e1', ...stateProjectionOptions } = stateProjection ?? {};
   const { checked, setChecked } = useCheckedState({
     checked: checkedProp,
     defaultChecked,
@@ -173,45 +152,35 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
     onCheckedChange
   });
 
-  const projectionStates = useMemo<SwitchProjectionStates>(
-    () => ({
+  const slotProps = useMemo<SwitchSlotProps>(() => {
+    const stateAttributes = switchStateAttributes({
       checked,
       focused,
       disabled,
       readOnly,
       required
-    }),
-    [checked, disabled, focused, readOnly, required]
-  );
+    });
 
-  const projectedSlotProps = useStateProjection<SwitchElementName, SwitchStateName>({
-    ...stateProjectionOptions,
-    classNames,
-    states: projectionStates,
-    target: stateProjectionTarget
-  });
-
-  const rootDataSlotProps = useStateProjection<SwitchElementName, SwitchStateName>({
-    states: projectionStates,
-    target: 'e1',
-    projections: switchDataAttributeProjections
-  });
-
-  const trackDataSlotProps = useStateProjection<SwitchElementName, SwitchStateName>({
-    states: projectionStates,
-    target: 'e2',
-    projections: switchDataAttributeProjections
-  });
-
-  const slotProps = useMemo<SwitchSlotProps>(
-    () =>
-      mergeStateProjectionSlotProps(
-        projectedSlotProps.slotProps,
-        rootDataSlotProps.slotProps,
-        trackDataSlotProps.slotProps
-      ),
-    [projectedSlotProps.slotProps, rootDataSlotProps.slotProps, trackDataSlotProps.slotProps]
-  );
+    return {
+      e1: {
+        className: classNames.e1,
+        ...stateAttributes
+      },
+      e2: {
+        className: classNames.e2,
+        ...stateAttributes
+      },
+      e3: {
+        className: classNames.e3
+      },
+      e4: {
+        className: classNames.e4
+      },
+      e5: {
+        className: classNames.e5
+      }
+    };
+  }, [checked, classNames, disabled, focused, readOnly, required]);
 
   const contextValue = useMemo<SwitchContextValue>(
     () => ({

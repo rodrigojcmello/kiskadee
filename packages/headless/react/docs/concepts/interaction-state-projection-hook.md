@@ -15,8 +15,8 @@ state model started separating:
 - Kiskadee projected state classes;
 - selector/effect metaclasses such as `-a` and `-i`.
 
-The hook lives in `packages/headless/react` because the headless package owns the real interaction
-state for its primitives. It does not know the Kiskadee CSS vocabulary.
+The hook lives in `packages/headless/react/src/hooks/state-projection` because the headless package
+owns the real interaction state for its primitives. It does not know the Kiskadee CSS vocabulary.
 
 After the first migration pass, TextField is the only component in this plan that adopts the hook.
 Button and Tabs were aligned through correct schema references and runtime state ownership, without a

@@ -1,13 +1,13 @@
 # Source Structure Split
 
-Status: deferred cleanup.
+Status: completed.
 
 ## Context
 
-`@kiskadee/react-headless` currently keeps component folders and reusable hook/helper folders side by
+`@kiskadee/react-headless` used to keep component folders and reusable hook/helper folders side by
 side under `src`.
 
-Current shape:
+Old shape:
 
 ```txt
 src/
@@ -24,20 +24,20 @@ src/
 That shape became less clear after `useStateProjection` was introduced. The `state-projection`
 folder is hook/runtime infrastructure, while the neighboring folders are headless components.
 
-## Debt
+## Resolved Debt
 
-The package does not clearly separate component ownership from reusable hook ownership.
+The package now separates component ownership from reusable hook ownership.
 
-This makes it harder to answer basic maintenance questions:
+That keeps these maintenance questions explicit:
 
 - which folders expose component primitives;
 - which folders expose reusable hooks or runtime utilities;
 - where new headless hooks should live;
 - whether a folder should be considered part of component API surface or shared infrastructure.
 
-## Desired Shape
+## Current Shape
 
-Move toward an explicit source layout:
+The source layout is:
 
 ```txt
 src/
@@ -46,29 +46,28 @@ src/
     color-radio-group/
     select/
     swatch-radio-group/
+    switch/
     tabs/
     text-field/
   hooks/
+    checked-state/
     state-projection/
   index.ts
 ```
 
-The exact folder names can still be revisited, but the important split is:
-
 - components live under `src/components`;
 - reusable hooks/runtime helpers live under `src/hooks`.
 
-## Implementation Constraints
+## Implementation Notes
 
-- Preserve public package exports.
-- Preserve generated `dist` entrypoints or provide compatibility shims if entrypoint paths change.
-- Update internal imports with explicit `.ts` / `.tsx` extensions.
-- Update package build scripts only if the existing glob behavior stops being enough.
-- Update tests and focused validation commands after the move.
-- Avoid bundling this cleanup into behavior changes.
+- Public package subpaths are preserved through `package.json` exports, for example
+  `@kiskadee/react-headless/switch` now points to `dist/components/switch/HeadlessSwitch.js`.
+- The root `src/index.ts` remains the package aggregation entrypoint.
+- Internal imports keep explicit `.ts` / `.tsx` extensions.
+- Existing build globs still work because they traverse `src/**/*` and mirror the new folder shape
+  into `dist/`.
 
 ## Trigger
 
-Do this cleanup when the headless package gets another reusable hook, or when Button/Tabs begin using
-the state projection model and the distinction between component folders and hook folders becomes
-more important.
+This cleanup was triggered when the Switch migration made the boundary between semantic headless
+state and reusable projection hooks more visible.

@@ -8,10 +8,11 @@ import {
   type SwitchMode,
   type SwitchVariant
 } from '@kiskadee/core';
-import type { SwitchStateProjectionOptions } from '@kiskadee/react-headless';
+import type { UseStateProjectionOptions } from '../state-projection/useStateProjection.ts';
 import type {
   SwitchClassesMap,
   SwitchClassNames,
+  SwitchElementName,
   SwitchLabelPosition,
   SwitchVariantClassesMap
 } from './Switch.types.ts';
@@ -24,6 +25,8 @@ export const DEFAULT_SWITCH_VARIANT: SwitchVariant = 'standard';
 export const DEFAULT_SWITCH_MODE: SwitchMode = 'base';
 export const DEFAULT_SWITCH_LABEL_POSITION: SwitchLabelPosition = 'end';
 
+export type SwitchProjectedStateName = 'checked' | 'focusVisible' | 'disabled' | 'readOnly';
+
 export const SWITCH_STATE_PROJECTION = {
   target: 'e1',
   activatorClassName: cn.activator,
@@ -32,7 +35,7 @@ export const SWITCH_STATE_PROJECTION = {
     checked: {
       className: cn.selected
     },
-    focused: {
+    focusVisible: {
       className: cn.focus
     },
     disabled: {
@@ -42,7 +45,10 @@ export const SWITCH_STATE_PROJECTION = {
       className: cn.readOnly
     }
   }
-} satisfies SwitchStateProjectionOptions;
+} satisfies Omit<
+  UseStateProjectionOptions<SwitchElementName, SwitchProjectedStateName>,
+  'classNames' | 'states'
+>;
 
 export function join(...parts: Array<string | undefined | false | null>): string | undefined {
   const joined = parts.filter(Boolean).join(' ').trim();

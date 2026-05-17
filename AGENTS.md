@@ -51,11 +51,17 @@ keep task-specific workflows inside skills.
   with that package or feature when it has its own documentation root.
 - The repository root `docs/` directory is for cross-project or cross-package documentation only, and should be
   updated with care.
-- Use exactly one `docs/in-progress.md` per project, always at the root of that project's `docs/` directory.
-  Do not create nested or additional `in-progress` files for the same project.
-- Use that single `docs/in-progress.md` as the active feature handoff when it exists: read it before continuing
+- Use named handoff files for active work: `docs/<demand-slug>.in-progress.md`, always at the root of
+  the owning project's `docs/` directory. Use lowercase kebab-case slugs that identify the demand, such as
+  `switch-component.in-progress.md`.
+- Do not create new generic `docs/in-progress.md` files. Existing generic `in-progress` files are legacy
+  context only; prefer the named handoff that matches the current demand, or create one if the user asks for
+  a new handoff.
+- Multiple named handoffs may coexist in the same `docs/` root so parallel agents can work without
+  overwriting each other's "what am I doing?" context.
+- Use the matching named handoff as the active feature handoff when it exists: read it before continuing
   work, and update it after implementation changes with the current status, relevant decisions, files changed,
-  and validations run. If that file is missing or empty, assume there is no active handoff for that project and
+  and validations run. If that file is missing or empty, assume there is no active handoff for that demand and
   the current task starts a new context if the user asks for one.
 - Within a project's `docs/` root, use `docs/definitions/` for durable definitions, terminology, and concepts that
   should stay stable over time.

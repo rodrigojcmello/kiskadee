@@ -1,7 +1,14 @@
 # @kiskadee/react-headless
 
 Headless React primitives for the Kiskadee design-system framework. Ships compiled JavaScript
-(`dist/**/*.js`) and TypeScript declarations (`dist/**/*.d.ts`) with no CSS output.
+(`dist/**/*.js`), TypeScript declarations (`dist/**/*.d.ts`), and structural CSS
+(`dist/**/*.css`) for primitives that need internal browser-control styling.
+
+## Source Layout
+
+- `src/components/`: headless React primitives.
+- `src/hooks/`: reusable hooks and runtime helpers shared by primitives or styled consumers.
+- `src/index.ts`: package aggregation entrypoint.
 
 ## Docs
 
@@ -38,8 +45,12 @@ Implemented in `scripts/build.ts`:
 
 1. `cleanDist()` wipes `dist/` and the incremental `tsc` build info.
 2. `Promise.all([...])` in parallel:
-   - `buildAllJavaScript()` uses esbuild to transpile `src/**/*.{ts,tsx}` to ESM `.js` (no bundling, test files excluded).
-   - `buildTypes()` runs `tsc -p tsconfig.build.json --emitDeclarationOnly` to emit `.d.ts` files (skipped when `--skip-types`).
+   - `buildAllJavaScript()` uses esbuild to transpile `src/**/*.{ts,tsx}` to ESM `.js`
+     (no bundling, test files excluded).
+   - `buildAllStyles()` compiles buildable structural Sass files under `src/` to mirrored
+     `dist/**/*.css`.
+   - `buildTypes()` runs `tsc -p tsconfig.build.json --emitDeclarationOnly` to emit `.d.ts` files
+     (skipped when `--skip-types`).
 3. `rewriteDistExtensions()` post-processes `dist/**/*.{js,d.ts}` rewriting relative `.ts/.tsx` specifiers to `.js`.
 
 See `ESM-MIGRATION-RULES.md` at the repo root for the full ESM/import-extension rationale.
@@ -64,5 +75,4 @@ substitute for `build`.
 
 - ESM-only (`"type": "module"`), Node 24+ with native type stripping for scripts.
 - Imports use explicit `.ts` / `.tsx` extensions (see `ESM-MIGRATION-RULES.md`).
-- esbuild emits JS, `tsc` emits `.d.ts`.
-- No Sass/CSS is emitted by this package.
+- esbuild emits JS, Sass/PostCSS emits structural CSS, and `tsc` emits `.d.ts`.

@@ -1,24 +1,24 @@
-export type { ButtonProps } from './button/Button.tsx';
-export { Button } from './button/Button.tsx';
+export type { ButtonProps } from './components/button/Button.tsx';
+export { Button } from './components/button/Button.tsx';
 export type {
   UseCheckedStateOptions,
   UseCheckedStateResult
-} from './checked-state/useCheckedState.ts';
-export { useCheckedState } from './checked-state/useCheckedState.ts';
+} from './hooks/checked-state/useCheckedState.ts';
+export { useCheckedState } from './hooks/checked-state/useCheckedState.ts';
 export type {
   ColorRadioGroupClassNames,
   ColorRadioGroupProps,
   ColorRadioItem
-} from './color-radio-group/ColorRadioGroup.tsx';
-export { ColorRadioGroup } from './color-radio-group/ColorRadioGroup.tsx';
+} from './components/color-radio-group/ColorRadioGroup.tsx';
+export { ColorRadioGroup } from './components/color-radio-group/ColorRadioGroup.tsx';
 export type {
   SelectContentProps,
   SelectOption,
   SelectOptionProps,
   SelectProps,
   SelectTriggerProps
-} from './select/Select.tsx';
-export { Select } from './select/Select.tsx';
+} from './components/select/Select.tsx';
+export { Select } from './components/select/Select.tsx';
 export type {
   StateProjectionAttribute,
   StateProjectionContext,
@@ -30,18 +30,18 @@ export type {
   StateProjectionStateValue,
   UseStateProjectionOptions,
   UseStateProjectionResult
-} from './state-projection/useStateProjection.ts';
+} from './hooks/state-projection/useStateProjection.ts';
 export {
   mergeStateProjectionSlotProps,
   useStateProjection
-} from './state-projection/useStateProjection.ts';
+} from './hooks/state-projection/useStateProjection.ts';
 export type {
   SwatchRadioGroupClassNames,
   SwatchRadioGroupProps,
   SwatchRadioGroupRenderSwatchArgs,
   SwatchRadioItem
-} from './swatch-radio-group/SwatchRadioGroup.tsx';
-export { SwatchRadioGroup } from './swatch-radio-group/SwatchRadioGroup.tsx';
+} from './components/swatch-radio-group/SwatchRadioGroup.tsx';
+export { SwatchRadioGroup } from './components/swatch-radio-group/SwatchRadioGroup.tsx';
 export type {
   SwitchClassNames,
   SwitchElementName,
@@ -49,20 +49,19 @@ export type {
   SwitchLabelProps,
   SwitchRootProps,
   SwitchStateName,
-  SwitchStateProjectionOptions,
   SwitchStateProps,
   SwitchThumbProps,
   SwitchTrackProps
-} from './switch/HeadlessSwitch.tsx';
-export { HeadlessSwitch } from './switch/HeadlessSwitch.tsx';
+} from './components/switch/HeadlessSwitch.tsx';
+export { HeadlessSwitch } from './components/switch/HeadlessSwitch.tsx';
 export type {
   TabsBarProps,
   TabsContentProps,
   TabsIndicatorProps,
   TabsRootProps,
   TabsTabProps
-} from './tabs/HeadlessTabs.tsx';
-export { HeadlessTabs } from './tabs/HeadlessTabs.tsx';
+} from './components/tabs/HeadlessTabs.tsx';
+export { HeadlessTabs } from './components/tabs/HeadlessTabs.tsx';
 export type {
   TextFieldClassNames,
   TextFieldControlProps,
@@ -74,5 +73,5 @@ export type {
   TextFieldStateName,
   TextFieldStateProjectionOptions,
   TextFieldValidationStatus
-} from './text-field/HeadlessTextField.tsx';
-export { HeadlessTextField } from './text-field/HeadlessTextField.tsx';
+} from './components/text-field/HeadlessTextField.tsx';
+export { HeadlessTextField } from './components/text-field/HeadlessTextField.tsx';

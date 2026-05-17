@@ -15,13 +15,18 @@ optimized selectors for generated CSS and showcase/static previews.
   `:active`, `:focus-visible`, `:read-only`, native `disabled`, and ARIA state.
 - **Headless semantic helpers** are optional `data-*` attributes on headless primitives for state
   that is useful to consumers and is not always expressible as one native pseudo on the styled
-  element, such as `data-filled`, wrapper-level `data-focused`, or `data-selected`.
+  element, such as `data-filled`, wrapper-level `data-focused`, or `data-selected`. These helpers
+  describe component facts; they do not automatically mean a Kiskadee visual state should be active.
 - **Projected state classes** are the compact Kiskadee runtime/generated state classes from
-  `projectedStateActivator`, such as `.-h`, `.-f`, `.-s`, and `.-v`.
+  `projectedStateActivator`, such as `.-h`, `.-f`, `.-s`, and `.-v`. These classes activate the
+  Kiskadee styling channel for that state.
 - **Selector/effect meta classes** are compact classes that modify selector behavior or opt into
   effects, such as `.-a`, `.-i`, and `.-e`.
 - **Forced state** is one use of projected state classes: a showcase or snapshot can opt into a
   state class to simulate an interaction state without relying on browser pseudos.
+- **Visual focus state** is the Kiskadee focus styling channel. It should match native
+  `:focus-visible` behavior or an explicit forced/snapshot focus request, not every semantic
+  "contains focus" signal.
 - **State scope owner** is the element that carries a component state for styling. It is not
   necessarily the DOM element that receives the native event. For composed controls, it is usually
   the smallest stable ancestor that represents the component state and contains every child that
@@ -53,6 +58,8 @@ depend on. Examples:
   focus is inside the field rather than on one specific wrapper.
 - Select or Tabs can expose selected/focused helpers when the rendered element is a custom ARIA
   primitive and the state is useful outside Kiskadee styling.
+- Switch can expose `data-focused` when its internal input has focus. That can be true after pointer
+  focus and still be valid semantic headless information.
 
 Use `stateActivator` classes when the state is part of Kiskadee's optimized styling pipeline.
 Examples:
@@ -62,11 +69,26 @@ Examples:
 - Tabs projects `.-s.-a` for selected styling while still using `aria-selected` for accessibility.
 - TextField can project focus, filled, disabled, and read-only state on the field scope owner while
   child selectors react through that ancestor.
+- Switch should not map a generic semantic `focused` flag directly to `.-f`. `.-f` activates the
+  complete Kiskadee visual focus state, including generated `focus` styles and structural focus
+  treatments such as outlines.
 
 Generated style-key CSS should target native pseudos and projected classes, not headless `data-*`
 helpers. Kiskadee structural Sass should prefer projected classes on the state scope owner. `data-*`
 selectors are exceptional and should only be used when they are intentionally part of a component's
 public structural contract.
+
+For focus specifically, keep the channels separate:
+
+- `data-focused` or equivalent headless state can mean "this component currently contains DOM focus."
+- `:focus-visible` means the platform thinks visible focus indication is appropriate.
+- `.-f.-a` means "activate Kiskadee's visual focus state now." It may be used for forced showcase
+  states, static previews, or a styled runtime state that intentionally mirrors focus-visible
+  behavior.
+
+Do not derive `.-f` from every truthy semantic focus flag. If a component needs both pieces of
+information, model both pieces explicitly: one semantic focus helper for headless consumers and one
+visual focus condition for Kiskadee styling.
 
 ## Projected State Classes
 
@@ -296,8 +318,13 @@ The first migration pass established these component decisions:
 ### Hook Adoption
 
 Use `useStateProjection` when real component state must be projected to a slot different from where
-that state originates, or when a headless primitive needs to merge semantic attributes with an
-external projection config.
+that state originates. For Kiskadee visual classes, call it from `@kiskadee/react-components` or an
+equivalent styled/runtime layer so the headless primitive does not execute external
+`stateActivator` config.
+
+Headless primitives can still expose semantic attributes through local helpers, such as
+`data-focused` or `data-filled`, but that semantic channel should remain separate from projected
+visual classes like `.-f`, `.-v`, and `.-a`.
 
 Do not introduce the hook just to mirror native hover, active, or selected behavior when the schema
 and runtime already have a clear state scope owner.
@@ -335,6 +362,8 @@ concept; the styled runtime can also use the same compact classes to project rea
 - Add headless `data-*` helpers only when they are semantic, useful outside Kiskadee styling, and
   intentionally part of the headless DOM contract.
 - Keep Kiskadee projected class composition inside `@kiskadee/react-components`.
+- Keep semantic component state separate from projected visual state. In particular, do not map
+  `focused` to `.-f` unless the state represents the visual focus channel, not merely DOM focus.
 - Project component state on the state scope owner, usually `e1` for composed components.
 - Use `e1`, `e2`, `e3`, and later slots as the stable slot names for any state projection target API.
 - Prefer shared runtime helpers for resolving projected state classes so Button, Tabs, TextField, and

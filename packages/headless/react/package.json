@@ -16,24 +16,24 @@
       "default": "./dist/index.js"
     },
     "./tabs": {
-      "types": "./dist/tabs/HeadlessTabs.d.ts",
-      "import": "./dist/tabs/HeadlessTabs.js",
-      "default": "./dist/tabs/HeadlessTabs.js"
+      "types": "./dist/components/tabs/HeadlessTabs.d.ts",
+      "import": "./dist/components/tabs/HeadlessTabs.js",
+      "default": "./dist/components/tabs/HeadlessTabs.js"
     },
     "./button": {
-      "types": "./dist/button/Button.d.ts",
-      "import": "./dist/button/Button.js",
-      "default": "./dist/button/Button.js"
+      "types": "./dist/components/button/Button.d.ts",
+      "import": "./dist/components/button/Button.js",
+      "default": "./dist/components/button/Button.js"
     },
     "./text-field": {
-      "types": "./dist/text-field/HeadlessTextField.d.ts",
-      "import": "./dist/text-field/HeadlessTextField.js",
-      "default": "./dist/text-field/HeadlessTextField.js"
+      "types": "./dist/components/text-field/HeadlessTextField.d.ts",
+      "import": "./dist/components/text-field/HeadlessTextField.js",
+      "default": "./dist/components/text-field/HeadlessTextField.js"
     },
     "./switch": {
-      "types": "./dist/switch/HeadlessSwitch.d.ts",
-      "import": "./dist/switch/HeadlessSwitch.js",
-      "default": "./dist/switch/HeadlessSwitch.js"
+      "types": "./dist/components/switch/HeadlessSwitch.d.ts",
+      "import": "./dist/components/switch/HeadlessSwitch.js",
+      "default": "./dist/components/switch/HeadlessSwitch.js"
     }
   },
   "files": [

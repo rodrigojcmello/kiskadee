@@ -23,11 +23,11 @@ import type {
   StateProjectionSlotProps,
   StateProjectionStateValue,
   UseStateProjectionOptions
-} from '../state-projection/useStateProjection.ts';
+} from '../../hooks/state-projection/useStateProjection.ts';
 import {
   mergeStateProjectionSlotProps,
   useStateProjection
-} from '../state-projection/useStateProjection.ts';
+} from '../../hooks/state-projection/useStateProjection.ts';
 
 export type TextFieldValidationStatus = 'error' | 'warning';
 

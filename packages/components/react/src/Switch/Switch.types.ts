@@ -26,7 +26,7 @@ export type SwitchLabelPosition = 'start' | 'end';
 
 export type SwitchProps = Omit<
   HeadlessSwitchRootProps,
-  'children' | 'classNames' | 'inputId' | 'inputProps' | 'stateProjection'
+  'children' | 'classNames' | 'inputId' | 'inputProps'
 > & {
   id?: string;
   label?: ReactNode;
