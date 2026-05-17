@@ -192,6 +192,9 @@ Current rule:
 - preserved-input entry limit: when the previous emitted slot is the exact preserved input and the
   node is `K10`, the entry seam is judged from the previous light-zone delta instead of the larger
   bridge-side delta, using `1.25x + 0.25`;
+- preserved-input exit limit: when the node itself is the exact preserved input and the node is
+  `K35`, the exit seam is judged from the entry delta instead of the larger dark-side delta, using
+  `1.25x + 0.25`;
 - max iterations: `5`.
 
 For a normal entry seam such as `K30 -> K35`, the guard compares that delta with `K28 -> K30` and
@@ -200,11 +203,20 @@ the fine `K1..K10` light zone and the wider `K10..K35` bridge. If the input is p
 letting `K10 -> K12` set the reference makes `K9 -> K10` too permissive. For `#dce775`, this
 exception keeps the exact input at `K9` while reducing `K9 -> K10` from roughly `3.16` to `1.64`
 OKL lightness points.
+The `K35` preserved-input exit exception handles the mirrored problem after chroma-shape smoothing:
+if `K35` is the exact input, `K35 -> K40` must not borrow the wider dark-side rhythm from
+`K40 -> K45`. For `#ff1744`, this reduces `K35 -> K40` from roughly `3.75` to `1.75` OKL lightness
+points.
 
 When a seam fails, the guard adjusts the nearest adjustable color and re-interpolates the adjacent
 segment so the excess is distributed instead of being hidden in one slot. The exact input anchor is
 kept unchanged. After each redistribution, `K35..K95` is clamped again to preserve the active
 `3:1` vivid contract.
+
+Node continuity runs both before and after the chroma-shape guard. The first pass smooths the
+preserved-input scale before chroma shoulders are added. The second pass catches new lightness seams
+created by chroma-shape rules, such as a vivid-start shoulder that slightly lowers `K30` to gain
+sRGB chroma.
 
 The guard is intentionally scoped to `Balanced` while this model is tested. `Striking` and
 `Sophisticated` remain comparison profiles until they are recalibrated deliberately.
@@ -214,9 +226,11 @@ The guard is intentionally scoped to `Balanced` while this model is tested. `Str
 `Balanced` also guards the preserved input anchor against becoming a visibly dominant OKL chroma
 feature.
 
-This is a local chroma rule, not a lightness rule. It does not change the exact input color and it
-does not regenerate the whole scale. Its job is to avoid a visible "summit" or narrow high-chroma
-plateau where the preserved input is much easier to identify than the surrounding emitted slots.
+This is primarily a local chroma rule. It does not change the exact input color and it does not
+regenerate the whole scale. Its job is to avoid a visible "summit", narrow high-chroma plateau, or
+broken chroma tangent where the preserved input is much easier to identify than the surrounding
+emitted slots. The vivid-start shoulder may also lower a pre-vivid shoulder by a small OKL lightness
+amount when sRGB gamut cannot provide the requested chroma at the original lightness.
 
 Current peak rule:
 
@@ -235,10 +249,10 @@ Current peak rule:
 Radius is counted by emitted slots, not numeric tone distance. If the preserved input is `K35`, then
 radius `1` means `K30, K35, K40`, while radius `2` means `K28, K30, K35, K40, K45`.
 
-When the guard triggers, it raises only neighbors whose chroma is below the local target. It never
-lowers the preserved input, never lets neighbors exceed the anchor chroma, and never changes OKL
-lightness intentionally. The goal is to turn a sharp chroma summit into a small shoulder or plateau,
-similar to the natural behavior currently seen in the reference blue.
+When the peak guard triggers, it raises only neighbors whose chroma is below the local target. It
+never lowers the preserved input, never lets neighbors exceed the anchor chroma, and does not change
+OKL lightness intentionally. The goal is to turn a sharp chroma summit into a small shoulder or
+plateau, similar to the natural behavior currently seen in the reference blue.
 
 The near-boundary threshold exists because small chroma peaks are more visible when the preserved
 input is close to the vivid transition. When the lightness rhythm is already healthy, the correct
@@ -265,6 +279,34 @@ When this happens, the guard raises the plateau shoulders toward a controlled dr
 `2` may extend on the vivid side, but it does not pull an extra lighter pre-vivid slot into the
 plateau. This keeps the exact input color intact while making a red-like top read as a broader
 shoulder instead of an obvious brand-color marker.
+
+`Balanced` also has a preserved-vivid-start shoulder rule for cases where the exact input lands at
+`K35`. This is stricter than the generic peak and plateau rules because `K35` is both the preserved
+input and the vivid boundary. The rule:
+
+- applies only when the preserved input is the vivid start;
+- uses a controlled shoulder drop of `max(0.006, anchorChroma * 0.024)`;
+- reaches radius `2`;
+- allows the pre-vivid shoulder to lower OKL lightness by up to `0.75` points if that is needed to
+  reach more sRGB chroma.
+
+For `#ff1744`, this keeps the exact input at `K35` while raising the local shoulders: `K30` moves to
+roughly `0.2374` OKL chroma and `K40` to roughly `0.2412`, so `K35` is less isolated as the only
+high-chroma point.
+
+Finally, `Balanced` has a light-zone chroma tangent rule for luminous inputs preserved before `K10`.
+This handles cases that are not technically local peaks. If the preserved light-zone input is the end
+of a steep incoming chroma ramp, the following slots can rise above the preserved input before
+easing back toward `K35`. The current rule:
+
+- applies only when the preserved input is at or before `K10`;
+- samples the previous `2` emitted chroma deltas;
+- requires an average incoming chroma increase of at least `0.012`;
+- lifts the forward shoulder by `55%` of that incoming delta, eased by emitted progress toward
+  `K35` with gamma `1.2`.
+
+For `#fff59d`, this lets `K6` and the following light-to-middle slots form a shallow chroma shoulder
+instead of making `K5` the visible tip of a one-point spike.
 
 ## Vivid Lightness Progress
 

@@ -105,6 +105,11 @@ const BALANCED_NODE_CONTINUITY = {
     nodeTones: [10],
     maxPreviousRatio: 1.25,
     tolerance: 0.25
+  },
+  preservedInputExit: {
+    nodeTones: [35],
+    maxPreviousRatio: 1.25,
+    tolerance: 0.25
   }
 } as const satisfies NodeContinuityRule;
 
@@ -113,6 +118,19 @@ const BALANCED_CHROMA_PEAK_GUARD = {
   allowedDropMin: 0.008,
   allowedDropRatio: 0.04,
   maxRadius: 2,
+  vividStartShoulder: {
+    allowedDropMin: 0.006,
+    allowedDropRatio: 0.024,
+    maxRadius: 2,
+    preVividMaxLightnessDrop: 0.75
+  },
+  lightZoneTangent: {
+    maxAnchorTone: 10,
+    sampleSize: 2,
+    minIncomingDelta: 0.012,
+    liftRatio: 0.55,
+    progressGamma: 1.2
+  },
   nearVividBoundary: {
     maxDistance: 2,
     prominenceThreshold: 0.008,

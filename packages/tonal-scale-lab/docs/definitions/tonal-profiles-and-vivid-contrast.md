@@ -139,6 +139,11 @@ than `1.25x + 0.25` OKL lightness points. `K10` also has a preserved-input entry
 previous emitted slot is the exact preserved input, the entry seam is compared only with the
 previous light-zone delta. This prevents a `K9` input anchor such as `#dce775` from borrowing the
 wider `K10 -> K12` bridge rhythm and creating a visible `K9 -> K10` wall.
+`K35` has the matching preserved-input exit exception: if the node itself is the exact preserved
+input, the exit seam is compared with the entry delta rather than the larger dark-side delta. This
+prevents a `K35` input anchor such as `#ff1744` from keeping a small `K30 -> K35` step and a much
+larger `K35 -> K40` step after chroma shoulders have been applied. Node continuity is checked again
+after chroma-shape smoothing so those later shoulder adjustments cannot leave a new lightness seam.
 
 When a seam fails, the generator redistributes the excess through the adjacent segment and validates
 again, up to `5` iterations. The exact input anchor remains fixed. The vivid range is reclamped after
@@ -162,6 +167,14 @@ within `0.012` OKL chroma of the preserved input, and the smaller shoulder drop 
 adjusts both sides, while radius `2` expands only on the vivid side. The input hex remains
 unchanged, and the vivid range is clamped again afterward so `K35..K95` still respect the active
 `3:1` contract.
+
+Two additional shape guards cover cases the peak and plateau tests do not express well. If the exact
+input lands at `K35`, `Balanced` applies a preserved-vivid-start shoulder with a stricter drop,
+`max(0.006, anchorChroma * 0.024)`, and may lower the pre-vivid shoulder by up to `0.75` OKL
+lightness points to reach more available sRGB chroma. This is what makes `#ff1744` less visibly
+singled out at `K35`. If a luminous input lands in the light zone after a steep incoming chroma
+rise, `Balanced` applies chroma tangent continuity: forward slots may rise above the preserved input
+and then ease back toward `K35`. This keeps `#fff59d` from forming a one-point tip at `K5`.
 
 ## Structural Pivot Caveat
 

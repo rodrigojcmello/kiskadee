@@ -218,6 +218,11 @@ export type NodeContinuityRule = {
     maxPreviousRatio: number;
     tolerance: number;
   };
+  preservedInputExit?: {
+    nodeTones: readonly ScaleTone[];
+    maxPreviousRatio: number;
+    tolerance: number;
+  };
 };
 
 export type ChromaPeakRule = {
@@ -225,6 +230,19 @@ export type ChromaPeakRule = {
   allowedDropMin: number;
   allowedDropRatio: number;
   maxRadius: number;
+  vividStartShoulder?: {
+    allowedDropMin: number;
+    allowedDropRatio: number;
+    maxRadius: number;
+    preVividMaxLightnessDrop: number;
+  };
+  lightZoneTangent?: {
+    maxAnchorTone: ScaleTone;
+    sampleSize: number;
+    minIncomingDelta: number;
+    liftRatio: number;
+    progressGamma: number;
+  };
   nearVividBoundary?: {
     maxDistance: number;
     prominenceThreshold: number;
@@ -1180,9 +1198,17 @@ function applyInputPreservation(
     preservedAnchor.tone,
     vividContrast?.startTone
   );
+  const finalContinuityScale = applyNodeContinuityGuard(
+    chromaSafeScale,
+    distribution,
+    profile.nodeContinuity,
+    vividContrast,
+    colorSpace,
+    preservedAnchor.tone
+  );
 
   return applyPreservedInputVividContrast(
-    chromaSafeScale,
+    finalContinuityScale,
     distribution,
     vividContrast,
     colorSpace,
@@ -1797,6 +1823,7 @@ function resolveNodeContinuityLimit(params: {
   const node = scale[nodeIndex];
   const previous = scale[nodeIndex - 1];
   const preservedInputEntry = rule.preservedInputEntry;
+  const preservedInputExit = rule.preservedInputExit;
 
   if (
     side === 'entry' &&
@@ -1806,6 +1833,16 @@ function resolveNodeContinuityLimit(params: {
   ) {
     return (
       Math.abs(previousDelta) * preservedInputEntry.maxPreviousRatio + preservedInputEntry.tolerance
+    );
+  }
+
+  if (
+    side === 'exit' &&
+    node?.tone === preservedInputTone &&
+    preservedInputExit?.nodeTones.includes(node.tone)
+  ) {
+    return (
+      Math.abs(previousDelta) * preservedInputExit.maxPreviousRatio + preservedInputExit.tolerance
     );
   }
 
@@ -2178,7 +2215,15 @@ function applyChromaPeakGuard(
     }
   }
 
-  return applyDominantChromaPlateauGuard(currentScale, rule, anchorIndex);
+  currentScale = applyDominantChromaPlateauGuard(currentScale, rule, anchorIndex);
+  currentScale = applyVividStartChromaShoulderGuard(
+    currentScale,
+    rule,
+    anchorIndex,
+    vividStartTone
+  );
+
+  return applyLightZoneChromaTangentGuard(currentScale, rule, anchorIndex, vividStartTone);
 }
 
 function applyChromaPeakRadius(
@@ -2423,6 +2468,140 @@ function applyDominantChromaPlateauGuard(
   return currentScale;
 }
 
+function applyVividStartChromaShoulderGuard(
+  scale: TonalScaleColor[],
+  rule: ChromaPeakRule,
+  anchorIndex: number,
+  vividStartTone?: ScaleTone
+): TonalScaleColor[] {
+  const shoulderRule = rule.vividStartShoulder;
+  const anchor = scale[anchorIndex];
+
+  if (!shoulderRule || !anchor || anchor.tone !== vividStartTone) {
+    return scale;
+  }
+
+  const anchorChroma = hexToOklch(anchor.hex).c;
+  const allowedDrop = Math.max(
+    shoulderRule.allowedDropMin,
+    anchorChroma * shoulderRule.allowedDropRatio
+  );
+  const adjustedByIndex = new Map<number, TonalScaleColor>();
+
+  for (let distance = 1; distance <= shoulderRule.maxRadius; distance += 1) {
+    const targetChroma = Math.max(0, anchorChroma - allowedDrop * distance);
+    const leftIndex = anchorIndex - distance;
+    const rightIndex = anchorIndex + distance;
+
+    for (const index of [leftIndex, rightIndex]) {
+      const color = scale[index];
+
+      if (!color || isAbsoluteScaleCapTone(color.tone)) {
+        continue;
+      }
+
+      const currentChroma = hexToOklch(color.hex).c;
+
+      if (currentChroma >= targetChroma) {
+        continue;
+      }
+
+      adjustedByIndex.set(
+        index,
+        createScaleColorWithChromaShoulder(
+          color,
+          targetChroma,
+          index < anchorIndex ? shoulderRule.preVividMaxLightnessDrop : 0
+        )
+      );
+    }
+  }
+
+  return adjustedByIndex.size === 0
+    ? scale
+    : scale.map((color, index) => adjustedByIndex.get(index) ?? color);
+}
+
+function applyLightZoneChromaTangentGuard(
+  scale: TonalScaleColor[],
+  rule: ChromaPeakRule,
+  anchorIndex: number,
+  vividStartTone?: ScaleTone
+): TonalScaleColor[] {
+  const tangentRule = rule.lightZoneTangent;
+  const anchor = scale[anchorIndex];
+  const vividStartIndex =
+    vividStartTone === undefined ? -1 : scale.findIndex((color) => color.tone === vividStartTone);
+
+  if (
+    !tangentRule ||
+    !anchor ||
+    anchor.tone > tangentRule.maxAnchorTone ||
+    vividStartIndex <= anchorIndex
+  ) {
+    return scale;
+  }
+
+  const incomingDelta = resolveIncomingChromaDelta(scale, anchorIndex, tangentRule.sampleSize);
+
+  if (incomingDelta === undefined || incomingDelta < tangentRule.minIncomingDelta) {
+    return scale;
+  }
+
+  const anchorChroma = hexToOklch(anchor.hex).c;
+  const adjustedByIndex = new Map<number, TonalScaleColor>();
+
+  for (let index = anchorIndex + 1; index < vividStartIndex; index += 1) {
+    const color = scale[index];
+
+    if (!color || isAbsoluteScaleCapTone(color.tone)) {
+      continue;
+    }
+
+    const progress = normalizedProgress(index, anchorIndex, vividStartIndex);
+    const targetChroma =
+      anchorChroma +
+      incomingDelta * tangentRule.liftRatio * (1 - progress) ** tangentRule.progressGamma;
+    const currentChroma = hexToOklch(color.hex).c;
+
+    if (currentChroma >= targetChroma) {
+      continue;
+    }
+
+    adjustedByIndex.set(index, createScaleColorWithChroma(color, targetChroma));
+  }
+
+  return adjustedByIndex.size === 0
+    ? scale
+    : scale.map((color, index) => adjustedByIndex.get(index) ?? color);
+}
+
+function resolveIncomingChromaDelta(
+  scale: TonalScaleColor[],
+  anchorIndex: number,
+  sampleSize: number
+): number | undefined {
+  const deltas = Array.from({ length: sampleSize }, (_, offset) => {
+    const left = scale[anchorIndex - offset - 1];
+    const right = scale[anchorIndex - offset];
+
+    if (
+      !left ||
+      !right ||
+      isAbsoluteScaleCapTone(left.tone) ||
+      isAbsoluteScaleCapTone(right.tone)
+    ) {
+      return undefined;
+    }
+
+    const delta = hexToOklch(right.hex).c - hexToOklch(left.hex).c;
+
+    return delta > 0 ? delta : undefined;
+  });
+
+  return averageDefinedNumbers(deltas);
+}
+
 function applyDominantChromaPlateauRadius(
   scale: TonalScaleColor[],
   rule: ChromaPeakRule,
@@ -2540,6 +2719,38 @@ function createScaleColorWithChroma(color: TonalScaleColor, targetChroma: number
   }
 
   return createScaleColorFromHex(color, oklchToHex({ ...oklch, c: clamp(targetChroma, 0, 0.5) }));
+}
+
+function createScaleColorWithChromaShoulder(
+  color: TonalScaleColor,
+  targetChroma: number,
+  maxLightnessDrop: number
+): TonalScaleColor {
+  const directColor = createScaleColorWithChroma(color, targetChroma);
+
+  if (maxLightnessDrop <= 0) {
+    return directColor;
+  }
+
+  const initialOklch = hexToOklch(color.hex);
+  let bestColor = directColor;
+  let bestChroma = hexToOklch(directColor.hex).c;
+
+  for (let step = 1; step <= 8; step += 1) {
+    const lightness = initialOklch.l - (maxLightnessDrop * step) / 8;
+    const candidate = createScaleColorFromHex(
+      color,
+      oklchToHex({ ...initialOklch, l: lightness, c: clamp(targetChroma, 0, 0.5) })
+    );
+    const candidateChroma = hexToOklch(candidate.hex).c;
+
+    if (candidateChroma > bestChroma + 0.0001) {
+      bestColor = candidate;
+      bestChroma = candidateChroma;
+    }
+  }
+
+  return bestColor;
 }
 
 function resolveStepLightnessDelta(

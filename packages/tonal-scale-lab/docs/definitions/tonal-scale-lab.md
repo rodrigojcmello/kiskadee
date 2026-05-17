@@ -78,14 +78,21 @@ Current profiles:
   `1.25x + 0.25` OKL lightness points without redistributing the excess through the adjacent segment.
   `K10` has one additional preserved-input entry rule: when the exact input lands immediately before
   `K10`, the seam is judged from the previous light-zone delta rather than the wider `K10..K35`
-  bridge rhythm.
+  bridge rhythm. `K35` has the mirrored preserved-input exit rule: when the exact input lands on the
+  vivid-start node, the exit seam is judged from the entry delta rather than the wider dark-side
+  rhythm. Node continuity is checked again after chroma-shape smoothing so chroma shoulders cannot
+  leave a new lightness seam behind.
   Finally, its chroma shape guard checks the preserved input anchor: when the anchor is a sharp OKL
   chroma summit, nearby emitted slots are raised locally with radius `1` and, only if needed, radius
   `2`, while the input hex remains exact. Near the vivid boundary, this guard uses a lower chroma
   prominence threshold, a smaller allowed chroma drop, and a directional radius into `K35` so small
   pre-vivid chroma spikes become shoulders instead of visible peaks. It also detects narrow dominant
   plateaus around the input, such as red-like `K30/K35` tops, and raises the plateau shoulders so the
-  preserved input is less visually obvious without changing the exact input hex.
+  preserved input is less visually obvious without changing the exact input hex. If the exact input
+  lands at `K35`, `Balanced` applies a stricter vivid-start shoulder so red-like anchors do not read
+  as a one-point chroma summit. If a luminous input lands inside `K1..K10` after a steep chroma rise,
+  `Balanced` can lift the following slots into a forward chroma shoulder, so yellow-like anchors do
+  not have to remain the local chroma maximum.
 - `Sophisticated - Auto Mid Peak + 3:1 Vivid`: follows the same vivid-contrast behavior, but treats
   the profile base tone as the OKL chroma peak. Both very light and very dark tones become less
   chromatic. This profile should be recalibrated again after the `Balanced` dark-chroma experiment
