@@ -76,6 +76,8 @@ const EXPERIMENTAL_LUMINOUS_CHROMA_RAMP = {
 
 const BALANCED_INPUT_PRESERVATION = {
   lightZoneEndTone: 10,
+  anchorFit: 'input-lightness',
+  generationBase: 'preserved-input-anchor',
   vividBoundaryBuffer: {
     rewindSlots: 1
   },
@@ -101,14 +103,8 @@ const BALANCED_NODE_CONTINUITY = {
   maxNeighborRatio: 1.25,
   tolerance: 0.25,
   maxIterations: 5,
-  preservedInputEntry: {
-    nodeTones: [10],
-    maxPreviousRatio: 1.25,
-    tolerance: 0.25
-  },
-  preservedInputExit: {
-    nodeTones: [35],
-    maxPreviousRatio: 1.25,
+  protectedAnchorAdjacentSeam: {
+    maxNeighborRatio: 1.25,
     tolerance: 0.25
   }
 } as const satisfies NodeContinuityRule;

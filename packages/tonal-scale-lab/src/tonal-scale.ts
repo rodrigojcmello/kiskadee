@@ -204,8 +204,15 @@ export type PreservedAnchorContinuityRule = {
 
 export type InputPreservationRule = {
   lightZoneEndTone: ScaleTone;
+  anchorFit?: 'nearest-color' | 'input-lightness';
+  generationBase?: 'profile-base-tone' | 'preserved-input-anchor';
   vividBoundaryBuffer?: VividBoundaryBufferRule;
   anchorContinuity?: PreservedAnchorContinuityRule;
+};
+
+export type ProtectedAnchorAdjacentSeamRule = {
+  maxNeighborRatio: number;
+  tolerance: number;
 };
 
 export type NodeContinuityRule = {
@@ -213,16 +220,7 @@ export type NodeContinuityRule = {
   maxNeighborRatio: number;
   tolerance: number;
   maxIterations: number;
-  preservedInputEntry?: {
-    nodeTones: readonly ScaleTone[];
-    maxPreviousRatio: number;
-    tolerance: number;
-  };
-  preservedInputExit?: {
-    nodeTones: readonly ScaleTone[];
-    maxPreviousRatio: number;
-    tolerance: number;
-  };
+  protectedAnchorAdjacentSeam?: ProtectedAnchorAdjacentSeamRule;
 };
 
 export type ChromaPeakRule = {
@@ -313,8 +311,13 @@ export function generateTonalScale(
   profile: TonalProfile,
   distribution: ScaleDistribution = DEFAULT_SCALE_DISTRIBUTION
 ): TonalScaleColor[] {
-  const generationAnchorTone = profile.baseTone;
   const colorSpace = resolveProfileColorSpace(profile);
+  const generationAnchorTone = resolveGenerationAnchorTone(
+    baseHex,
+    profile,
+    distribution,
+    colorSpace
+  );
 
   const scale =
     profile.mode === 'linear-lightness'
@@ -346,6 +349,42 @@ export function generateTonalScale(
   );
 
   return applyInputPreservation(luminousScale, profile, distribution, colorSpace, baseHex);
+}
+
+function resolveGenerationAnchorTone(
+  baseHex: string,
+  profile: TonalProfile,
+  distribution: ScaleDistribution,
+  colorSpace: ColorInterpolationSpace
+): ScaleTone {
+  if (
+    profile.inputStrategy !== 'auto-fit' ||
+    profile.inputPreservation?.generationBase !== 'preserved-input-anchor'
+  ) {
+    return profile.baseTone;
+  }
+
+  const vividContrast = resolveVividContrastRule(profile.vividContrast, distribution, baseHex);
+  const anchor = resolveInputLightnessAnchor({
+    distribution,
+    colorSpace,
+    inputPreservation: profile.inputPreservation,
+    vividContrast,
+    inputHex: baseHex
+  });
+
+  return anchor?.tone ?? profile.baseTone;
+}
+
+function resolveGenerationAnchorLightness(
+  baseHex: string,
+  profile: Pick<TonalProfile, 'inputPreservation' | 'inputStrategy' | 'baseTone'>,
+  colorSpace: ColorInterpolationSpace
+): number {
+  return profile.inputStrategy === 'fixed-anchor' ||
+    profile.inputPreservation?.generationBase === 'preserved-input-anchor'
+    ? resolveHexLightness(baseHex, colorSpace)
+    : 100 - profile.baseTone;
 }
 
 export function resolveInputFitTone(
@@ -708,8 +747,7 @@ function generateLinearLightnessScale(
   generationAnchorTone: ScaleTone
 ): TonalScaleColor[] {
   const baseHsl = hexToHsl(baseHex);
-  const anchorLightness =
-    profile.inputStrategy === 'fixed-anchor' ? baseHsl.l : 100 - profile.baseTone;
+  const anchorLightness = resolveGenerationAnchorLightness(baseHex, profile, 'hsl');
   const { light, dark } = resolveChromaticEndpointSlots(distribution);
 
   return distribution.slots.map((slot) => {
@@ -762,8 +800,7 @@ function generateLinearOklchScale(
   generationAnchorTone: ScaleTone
 ): TonalScaleColor[] {
   const baseOklch = hexToOklch(baseHex);
-  const anchorLightness =
-    profile.inputStrategy === 'fixed-anchor' ? baseOklch.l : 100 - profile.baseTone;
+  const anchorLightness = resolveGenerationAnchorLightness(baseHex, profile, 'oklch');
   const { light, dark } = resolveChromaticEndpointSlots(distribution);
 
   return distribution.slots.map((slot) => {
@@ -1221,6 +1258,11 @@ type PreservedInputAnchor = {
   bufferedFromVividBoundary: boolean;
 };
 
+type InputLightnessAnchor = {
+  tone: ScaleTone;
+  bufferedFromVividBoundary: boolean;
+};
+
 function resolvePreservedInputAnchor(params: {
   scale: TonalScaleColor[];
   distribution: ScaleDistribution;
@@ -1230,6 +1272,28 @@ function resolvePreservedInputAnchor(params: {
   inputHex: string;
 }): PreservedInputAnchor | undefined {
   const { scale, distribution, colorSpace, inputPreservation, vividContrast, inputHex } = params;
+  const inputLightnessAnchor =
+    inputPreservation.anchorFit === 'input-lightness'
+      ? resolveInputLightnessAnchor({
+          distribution,
+          colorSpace,
+          inputPreservation,
+          vividContrast,
+          inputHex
+        })
+      : undefined;
+
+  if (inputLightnessAnchor) {
+    const anchorColor = scale.find((color) => color.tone === inputLightnessAnchor.tone);
+
+    if (anchorColor && !isAbsoluteScaleCapTone(anchorColor.tone)) {
+      return {
+        color: anchorColor,
+        bufferedFromVividBoundary: inputLightnessAnchor.bufferedFromVividBoundary
+      };
+    }
+  }
+
   const chromaticLightEndTone = resolveChromaticLightEndTone(distribution);
   const chromaticDarkEndTone = resolveChromaticDarkEndTone(distribution);
   const lightZoneEnd =
@@ -1270,6 +1334,91 @@ function resolvePreservedInputAnchor(params: {
         nearestAnchor
       })
     : undefined;
+}
+
+function resolveInputLightnessAnchor(params: {
+  distribution: ScaleDistribution;
+  colorSpace: ColorInterpolationSpace;
+  inputPreservation: InputPreservationRule;
+  vividContrast: VividContrastRule | undefined;
+  inputHex: string;
+}): InputLightnessAnchor | undefined {
+  const { distribution, colorSpace, inputPreservation, vividContrast, inputHex } = params;
+  const chromaticLightEndTone = resolveChromaticLightEndTone(distribution);
+  const chromaticDarkEndTone = resolveChromaticDarkEndTone(distribution);
+  const inputTone = clamp(
+    100 - resolveHexLightness(inputHex, colorSpace),
+    chromaticLightEndTone,
+    chromaticDarkEndTone
+  );
+  const inputBreaksVivid =
+    vividContrast !== undefined &&
+    contrastRatio(inputHex, vividContrast.foregroundHex) < vividContrast.minRatio;
+  const inputIsLightZoneColor = inputTone <= inputPreservation.lightZoneEndTone;
+  const chromaticSlots = [...distribution.slots]
+    .filter(
+      (slot) =>
+        slot.position >= chromaticLightEndTone &&
+        slot.position <= chromaticDarkEndTone &&
+        !isAbsoluteScaleCapTone(slot.position)
+    )
+    .sort((left, right) => left.position - right.position);
+  const candidates = chromaticSlots.filter(
+    (slot) =>
+      (!inputIsLightZoneColor || slot.position <= inputPreservation.lightZoneEndTone) &&
+      (!inputBreaksVivid || !vividContrast || slot.position < vividContrast.startTone)
+  );
+  const availableCandidates = candidates.length > 0 ? candidates : chromaticSlots;
+  const nearestSlot = availableCandidates.reduce<ScaleSlot | undefined>(
+    (current, slot) =>
+      !current || Math.abs(slot.position - inputTone) < Math.abs(current.position - inputTone)
+        ? slot
+        : current,
+    undefined
+  );
+
+  if (!nearestSlot) {
+    return undefined;
+  }
+
+  return resolveInputLightnessBoundaryBuffer({
+    slots: chromaticSlots,
+    inputPreservation,
+    vividContrast,
+    inputBreaksVivid,
+    nearestSlot
+  });
+}
+
+function resolveInputLightnessBoundaryBuffer(params: {
+  slots: ScaleSlot[];
+  inputPreservation: InputPreservationRule;
+  vividContrast: VividContrastRule | undefined;
+  inputBreaksVivid: boolean;
+  nearestSlot: ScaleSlot;
+}): InputLightnessAnchor {
+  const { slots, inputPreservation, vividContrast, inputBreaksVivid, nearestSlot } = params;
+  const buffer = inputPreservation.vividBoundaryBuffer;
+
+  if (!buffer || !vividContrast || !inputBreaksVivid) {
+    return { tone: nearestSlot.position, bufferedFromVividBoundary: false };
+  }
+
+  const nearestSlotIndex = slots.findIndex((slot) => slot.id === nearestSlot.id);
+  const lastPreVividIndex = slots.reduce(
+    (lastIndex, slot, index) => (slot.position < vividContrast.startTone ? index : lastIndex),
+    -1
+  );
+
+  if (nearestSlotIndex !== lastPreVividIndex) {
+    return { tone: nearestSlot.position, bufferedFromVividBoundary: false };
+  }
+
+  const bufferedSlot = slots[Math.max(0, nearestSlotIndex - buffer.rewindSlots)];
+
+  return bufferedSlot
+    ? { tone: bufferedSlot.position, bufferedFromVividBoundary: true }
+    : { tone: nearestSlot.position, bufferedFromVividBoundary: false };
 }
 
 function resolveVividBoundaryBufferedAnchor(params: {
@@ -1820,35 +1969,48 @@ function resolveNodeContinuityLimit(params: {
   preservedInputTone: ScaleTone;
 }): number {
   const { nodeIndex, side, previousDelta, nextDelta, rule, scale, preservedInputTone } = params;
-  const node = scale[nodeIndex];
-  const previous = scale[nodeIndex - 1];
-  const preservedInputEntry = rule.preservedInputEntry;
-  const preservedInputExit = rule.preservedInputExit;
+  const protectedAnchorLimit = resolveProtectedAnchorAdjacentSeamLimit({
+    nodeIndex,
+    side,
+    previousDelta,
+    rule,
+    scale,
+    preservedInputTone
+  });
 
-  if (
-    side === 'entry' &&
-    node &&
-    previous?.tone === preservedInputTone &&
-    preservedInputEntry?.nodeTones.includes(node.tone)
-  ) {
-    return (
-      Math.abs(previousDelta) * preservedInputEntry.maxPreviousRatio + preservedInputEntry.tolerance
-    );
-  }
-
-  if (
-    side === 'exit' &&
-    node?.tone === preservedInputTone &&
-    preservedInputExit?.nodeTones.includes(node.tone)
-  ) {
-    return (
-      Math.abs(previousDelta) * preservedInputExit.maxPreviousRatio + preservedInputExit.tolerance
-    );
+  if (protectedAnchorLimit !== undefined) {
+    return protectedAnchorLimit;
   }
 
   return (
     Math.max(Math.abs(previousDelta), Math.abs(nextDelta)) * rule.maxNeighborRatio + rule.tolerance
   );
+}
+
+function resolveProtectedAnchorAdjacentSeamLimit(params: {
+  nodeIndex: number;
+  side: NodeContinuityIssue['side'];
+  previousDelta: number;
+  rule: NodeContinuityRule;
+  scale: TonalScaleColor[];
+  preservedInputTone: ScaleTone;
+}): number | undefined {
+  const { nodeIndex, side, previousDelta, rule, scale, preservedInputTone } = params;
+  const seamRule = rule.protectedAnchorAdjacentSeam;
+
+  if (!seamRule) {
+    return undefined;
+  }
+
+  const node = scale[nodeIndex];
+  const previous = scale[nodeIndex - 1];
+  const seamTouchesProtectedAnchor =
+    (side === 'entry' && previous?.tone === preservedInputTone) ||
+    (side === 'exit' && node?.tone === preservedInputTone);
+
+  return seamTouchesProtectedAnchor
+    ? Math.abs(previousDelta) * seamRule.maxNeighborRatio + seamRule.tolerance
+    : undefined;
 }
 
 function smoothNodeContinuityIssue(params: {

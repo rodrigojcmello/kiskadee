@@ -50,7 +50,9 @@ commercial profiles are where the Kiskadee experiment is allowed to change found
 For a commercial auto-fit profile:
 
 1. The input color is converted to OKLCH.
-2. The chromatic scale is generated from the profile base tone using OKL lightness and OKL chroma.
+2. The chromatic scale is generated from the profile's generation base using OKL lightness and
+   OKL chroma. Most commercial profiles use their stored base tone; `Balanced` uses the legal
+   preserved-input tone fitted by OKL lightness.
 3. Absolute `K0` and `K100` are emitted as neutral caps and are not used as chromatic endpoints.
 4. The vivid contrast guard resolves `K35..K95` with emitted-slot progress and lowers OKL lightness
    only as needed to keep the active contrast target.
@@ -77,10 +79,10 @@ the generation and interpolation space; it does not replace the contrast formula
 `Balanced` now treats the input hex as something that should survive in the emitted scale by
 default. This is deliberately scoped to `Balanced` while the lab tests the behavior.
 
-The rule does not return to the old contrast-derived anchor model. The input still does not choose
-the profile's structural base tone. Instead, `Balanced` first resolves the functional scale, then
-chooses a legal chromatic slot for the exact input color and interpolates the surrounding curve
-through that point.
+The rule does not return to the old contrast-derived anchor model. Instead of letting contrast move
+the anchor, `Balanced` fits the input by OKL lightness, applies the legal-fit constraints, and uses
+that protected input tone as the generation base. The exact input hex is then preserved at that slot
+while the surrounding curve is resolved.
 
 Current structural anchors for this experiment:
 
@@ -189,24 +191,16 @@ Current rule:
 - measurement: emitted-step OKL lightness delta;
 - default limit: the node seam may not exceed the larger neighboring delta by more than
   `1.25x + 0.25` OKL lightness points;
-- preserved-input entry limit: when the previous emitted slot is the exact preserved input and the
-  node is `K10`, the entry seam is judged from the previous light-zone delta instead of the larger
-  bridge-side delta, using `1.25x + 0.25`;
-- preserved-input exit limit: when the node itself is the exact preserved input and the node is
-  `K35`, the exit seam is judged from the entry delta instead of the larger dark-side delta, using
+- protected-anchor adjacent seam: when the seam touches the exact preserved input anchor, the seam
+  is judged from the anchor-side delta instead of the wider rhythm from the other side, using
   `1.25x + 0.25`;
 - max iterations: `5`.
 
 For a normal entry seam such as `K30 -> K35`, the guard compares that delta with `K28 -> K30` and
-`K35 -> K40`. The `K10` preserved-input entry exception exists because `K10` separates two rhythms:
-the fine `K1..K10` light zone and the wider `K10..K35` bridge. If the input is preserved at `K9`,
-letting `K10 -> K12` set the reference makes `K9 -> K10` too permissive. For `#dce775`, this
-exception keeps the exact input at `K9` while reducing `K9 -> K10` from roughly `3.16` to `1.64`
-OKL lightness points.
-The `K35` preserved-input exit exception handles the mirrored problem after chroma-shape smoothing:
-if `K35` is the exact input, `K35 -> K40` must not borrow the wider dark-side rhythm from
-`K40 -> K45`. For `#ff1744`, this reduces `K35 -> K40` from roughly `3.75` to `1.75` OKL lightness
-points.
+`K35 -> K40`. The protected-anchor adjacent-seam rule exists because the preserved input can sit
+immediately beside a structural node or directly on it. In those cases, the seam should respect the
+anchor-side rhythm instead of borrowing a wider rhythm across the node. This is intentionally generic
+and replaces the earlier separate `K10` entry and `K35` exit branches.
 
 When a seam fails, the guard adjusts the nearest adjustable color and re-interpolates the adjacent
 segment so the excess is distributed instead of being hidden in one slot. The exact input anchor is
@@ -305,8 +299,10 @@ easing back toward `K35`. The current rule:
 - lifts the forward shoulder by `55%` of that incoming delta, eased by emitted progress toward
   `K35` with gamma `1.2`.
 
-For `#fff59d`, this lets `K6` and the following light-to-middle slots form a shallow chroma shoulder
-instead of making `K5` the visible tip of a one-point spike.
+For `#fff59d`, this lets the following light-to-middle slots form a shallow chroma shoulder instead
+of making the preserved light anchor the visible tip of a one-point spike. With anchor-driven
+generation, this color now fits at `K4`; the earlier `K5` placement is still the case that motivated
+the tangent rule.
 
 ## Vivid Lightness Progress
 
@@ -373,8 +369,9 @@ which is dark but still distinguishable from black. `Striking` uses a higher flo
 commercial intent is to keep as much visible chroma as the sRGB gamut allows across the scale.
 
 `Balanced` also uses a dark-side chroma target of `darkMinRatio: 0.25`. The goal is to start the
-chroma decline from the profile base tone and make `K95` read closer to Fluent's subtle dark blue:
-still chromatic, but no longer pushed to the saturated edge of the sRGB gamut.
+chroma decline from the generation base and make `K95` read closer to Fluent's subtle dark blue:
+still chromatic, but no longer pushed to the saturated edge of the sRGB gamut. For `Balanced`, that
+generation base is now the preserved input anchor rather than `K55`.
 
 ## UI Reading
 

@@ -55,12 +55,13 @@ Current profiles:
   `darkLightnessGamma: 0.95` so `K1..K10` separate from the absolute white cap, the shared
   lightness-spacing guard keeps middle and dark chromatic slots from collapsing into a soft
   gradient, and `K95` remains visibly chromatic before the absolute black cap. Its current dark
-  chroma experiment uses `darkMinRatio: 0.25` from the profile base tone toward the dark end, so the
+  chroma experiment uses `darkMinRatio: 0.25` from the generation base toward the dark end, so the
   final dark slots move closer to Fluent's softer low-chroma dark blue without copying the exact
-  Fluent hex values. `Balanced` also preserves the exact input hex by default: after the functional
-  scale is resolved, the input is inserted at the nearest legal chromatic fit and the local curve is
-  interpolated through it. The current light-zone boundary for this preservation experiment is
-  `K10`; luminous inputs that are lighter than the generated `K10` boundary stay inside `K1..K10`.
+  Fluent hex values. `Balanced` also preserves the exact input hex by default: it fits the input by
+  OKL lightness, uses the legal preserved-input tone as the generation base, and keeps the exact
+  input at that slot while the surrounding curve is resolved. The current light-zone boundary for
+  this preservation experiment is `K10`; luminous inputs that are lighter than that boundary stay
+  inside `K1..K10`.
   If a non-vivid-safe input would otherwise land on the last pre-vivid emitted slot, `Balanced`
   rewinds the exact input by one emitted slot so that last pre-vivid slot can bridge into the
   contrast-safe `K35`; when this happens, `K35` is resolved as the lightest vivid-start color that
@@ -76,12 +77,10 @@ Current profiles:
   It also applies a node continuity guard at `K10` and `K35`: each seam is compared against the
   larger neighboring OKL lightness delta and cannot exceed that local reference by more than
   `1.25x + 0.25` OKL lightness points without redistributing the excess through the adjacent segment.
-  `K10` has one additional preserved-input entry rule: when the exact input lands immediately before
-  `K10`, the seam is judged from the previous light-zone delta rather than the wider `K10..K35`
-  bridge rhythm. `K35` has the mirrored preserved-input exit rule: when the exact input lands on the
-  vivid-start node, the exit seam is judged from the entry delta rather than the wider dark-side
-  rhythm. Node continuity is checked again after chroma-shape smoothing so chroma shoulders cannot
-  leave a new lightness seam behind.
+  If the seam touches the protected preserved-input anchor, the same generic rule judges it from the
+  anchor-side rhythm instead of borrowing the wider rhythm from the other side. Node continuity is
+  checked again after chroma-shape smoothing so chroma shoulders cannot leave a new lightness seam
+  behind.
   Finally, its chroma shape guard checks the preserved input anchor: when the anchor is a sharp OKL
   chroma summit, nearby emitted slots are raised locally with radius `1` and, only if needed, radius
   `2`, while the input hex remains exact. Near the vivid boundary, this guard uses a lower chroma
@@ -103,29 +102,25 @@ technical profile label after the dash remains the algorithmic description used 
 and documentation. The lab UI currently opens with `Balanced - Auto Soft Dark + 3:1 Vivid` selected
 by default.
 
-The contrast-gated Kiskadee profiles use `auto-fit`. The input color does not choose the generation
-pivot. The profile generates the scale from its structural base tone, resolves the contrast-safe
-vivid range and pre-vivid bridge, applies any spacing rules, and only then reports the closest
-emitted fit for the input color. This keeps contrast and nearest-color metadata from moving the
-profile pivot.
+The contrast-gated Kiskadee profiles use `auto-fit`. `Striking` and `Sophisticated` generate the
+scale from their structural base tone, resolve the contrast-safe vivid range and pre-vivid bridge,
+apply any spacing rules, and only then report the closest emitted fit for the input color.
 
-`Balanced` now adds one more scoped step after that functional scale is resolved: it preserves the
-exact input hex at the nearest legal chromatic slot and re-interpolates the surrounding curve through
-that anchor. The legal-fit rules are: inputs that fail the `3:1` white-text vivid target cannot be
-preserved at `K35` or darker, and inputs lighter than the generated `K10` boundary must remain inside
-the current `K1..K10` light zone. If a non-vivid-safe input would collide with the last pre-vivid
-slot, the input is buffered one emitted slot earlier and the last pre-vivid slot becomes bridge
-material. If that still leaves a steep post-anchor lightness slope, the preserved-anchor continuity
-guard can rewind the input again and regenerate the local bridge. The node continuity guard then
-smooths the `K10` and `K35` connections and reclamps the vivid range. The chroma shape guard then
-smooths sharp local chroma summits and short dominant chroma plateaus around the preserved input.
+`Balanced` is the scoped exception: it fits the input by OKL lightness before generation, uses that
+legal preserved-input tone as the generation base, and keeps the exact input hex at that anchor. The
+legal-fit rules are: inputs that fail the `3:1` white-text vivid target cannot be preserved at `K35`
+or darker, and inputs lighter than the `K10` boundary must remain inside the current `K1..K10` light
+zone. If a non-vivid-safe input would collide with the last pre-vivid slot, the input is buffered one
+emitted slot earlier and the last pre-vivid slot becomes bridge material. If that still leaves a
+steep post-anchor lightness slope, the preserved-anchor continuity guard can rewind the input again
+and regenerate the local bridge. The node continuity guard then smooths the `K10` and `K35`
+connections and reclamps the vivid range. The chroma shape guard then smooths sharp local chroma
+summits and short dominant chroma plateaus around the preserved input.
 `Striking` and `Sophisticated` do not use these preservation, boundary-buffer, anchor-continuity,
 node-continuity, or chroma-shape rules yet.
 
-The current commercial profiles use `K55` as that structural base tone, but this is intentionally a
-weak and provisional choice. It is convenient because it matches the current `vividRest` working
-point and the projected `Fluent 2 Blue` base slot, not because the lab has proven `K55` to be the
-final perceptual pivot. Future experiments may move that structural point.
+`K55` remains a useful state-mapping default such as `vividRest`, and it is still the projected base
+slot for the `Fluent 2 Blue` reference. It is no longer the hidden generation center for `Balanced`.
 
 The current vivid target experiment uses a fixed `3:1` contrast target for every input color. This
 replaces the earlier adaptive experiment that used a stronger `4.5:1` target for darker colors and
