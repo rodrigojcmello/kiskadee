@@ -1,7 +1,7 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   DEFAULT_TONAL_PROFILE_ID,
   FLUENT_BLUE_HEX,
@@ -10,23 +10,26 @@ import {
   type TonalProfileId
 } from '@/src/tonal-profiles';
 import {
+  type ChromaCurveProjection,
   type CurveControls,
   contrastRatio,
   createHexByTone,
   DEFAULT_SCALE_DISTRIBUTION_ID,
   formatHsl,
   formatOklch,
-  generateTonalScale,
+  generateTonalScaleWithDiagnostics,
   hexToOklch,
+  isAbsoluteScaleCapTone,
   normalizeHexColor,
   resolveAppliedVividContrastRule,
   resolveChromaticDarkEndTone,
+  resolveChromaticLightEndTone,
   resolveInputFitTone,
   resolveProfileReferenceScale,
   resolveScaleDistribution,
-  isAbsoluteScaleCapTone,
   rgbDistance,
   SCALE_DISTRIBUTIONS,
+  type ScaleDistribution,
   type ScaleDistributionId,
   type ScaleTone,
   type TonalProfileMode,
@@ -114,6 +117,8 @@ const CHART_WIDTH = 720;
 const CHART_HEIGHT = 360;
 const CHART_PADDING = 42;
 const CHART_CHROMA_MAX = 0.4;
+const CHART_POINT_RADIUS = 4;
+const COLOR_QUERY_PARAM = 'color';
 
 export default function TonalScaleLabPage() {
   const [profileId, setProfileId] = useState<TonalProfileId>(DEFAULT_TONAL_PROFILE_ID);
@@ -123,6 +128,8 @@ export default function TonalScaleLabPage() {
   const selectedProfile = resolveTonalProfile(profileId);
   const selectedDistribution = resolveScaleDistribution(distributionId);
   const [hexInput, setHexInput] = useState(FLUENT_BLUE_HEX);
+  const lastUrlColorRef = useRef<string | null>(null);
+  const skipNextUrlUpdateRef = useRef(false);
   const [controls, setControls] = useState<CurveControls>(selectedProfile.defaultControls);
   const normalizedHex = normalizeHexColor(hexInput);
   const baseHex = normalizedHex ?? FLUENT_BLUE_HEX;
@@ -131,21 +138,29 @@ export default function TonalScaleLabPage() {
     [baseHex, selectedProfile, selectedDistribution]
   );
   const referenceHexByTone = useMemo(() => createHexByTone(referenceScale), [referenceScale]);
-  const generatedScale = useMemo(
-    () => generateTonalScale(baseHex, controls, selectedProfile, selectedDistribution),
+  const generatedResult = useMemo(
+    () =>
+      generateTonalScaleWithDiagnostics(baseHex, controls, selectedProfile, selectedDistribution),
     [baseHex, controls, selectedProfile, selectedDistribution]
   );
+  const generatedScale = generatedResult.scale;
+  const plannedChromaCurve = generatedResult.diagnostics.plannedChromaCurve;
   const inputFitTone = useMemo(
     () => resolveInputFitTone(baseHex, selectedProfile, generatedScale),
     [baseHex, selectedProfile, generatedScale]
   );
-  const baseColor =
-    generatedScale.find((entry) => entry.tone === inputFitTone) ?? generatedScale[0];
   const activeVividContrast = resolveAppliedVividContrastRule(
     baseHex,
     selectedProfile,
     selectedDistribution
   );
+  const structuralNodeTones = resolveChartStructuralNodeTones(
+    selectedDistribution,
+    activeVividContrast,
+    inputFitTone
+  );
+  const baseColor =
+    generatedScale.find((entry) => entry.tone === inputFitTone) ?? generatedScale[0];
   const chromaticDarkEndTone = resolveChromaticDarkEndTone(selectedDistribution);
   const meanDistance = useMemo(() => {
     const total = generatedScale.reduce(
@@ -157,6 +172,44 @@ export default function TonalScaleLabPage() {
   const visibleRangeControls = RANGE_CONTROLS.filter(
     (control) => !control.modes || control.modes.includes(selectedProfile.mode)
   );
+
+  useEffect(() => {
+    const applyColorFromUrl = () => {
+      const urlColor = readUrlColor();
+      const nextHex = urlColor ?? FLUENT_BLUE_HEX;
+
+      lastUrlColorRef.current = urlColor ? serializeColorParam(urlColor) : null;
+      skipNextUrlUpdateRef.current = true;
+      setHexInput(nextHex);
+    };
+
+    applyColorFromUrl();
+    window.addEventListener('popstate', applyColorFromUrl);
+
+    return () => window.removeEventListener('popstate', applyColorFromUrl);
+  }, []);
+
+  useEffect(() => {
+    if (skipNextUrlUpdateRef.current) {
+      skipNextUrlUpdateRef.current = false;
+      return;
+    }
+
+    if (!normalizedHex) {
+      return;
+    }
+
+    const nextUrlColor = serializeColorParam(normalizedHex);
+
+    if (lastUrlColorRef.current === nextUrlColor) {
+      return;
+    }
+
+    const nextUrl = new URL(window.location.href);
+    nextUrl.searchParams.set(COLOR_QUERY_PARAM, nextUrlColor);
+    window.history.pushState(null, '', `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`);
+    lastUrlColorRef.current = nextUrlColor;
+  }, [normalizedHex]);
 
   const updateControl = (key: ControlKey, value: number) => {
     setControls((current) => ({ ...current, [key]: value }));
@@ -243,8 +296,10 @@ export default function TonalScaleLabPage() {
           <CurveChart
             baseTone={inputFitTone}
             generated={generatedScale}
+            plannedChromaCurve={plannedChromaCurve}
             reference={referenceScale}
             bridgeStartTone={selectedDistribution.vividBridgeStartTone}
+            structuralNodeTones={structuralNodeTones}
             vividStartTone={activeVividContrast?.startTone}
           />
         </div>
@@ -328,23 +383,38 @@ function resolveSwatchForeground(color: TonalScaleColor): '#111827' | '#ffffff' 
   return contrastRatio(color.hex, '#ffffff') >= 3 ? '#ffffff' : '#111827';
 }
 
+function readUrlColor(): string | null {
+  const rawColor = new URLSearchParams(window.location.search).get(COLOR_QUERY_PARAM);
+
+  return rawColor ? normalizeHexColor(rawColor) : null;
+}
+
+function serializeColorParam(hex: string): string {
+  return hex.replace(/^#/, '').toLowerCase();
+}
+
 function CurveChart({
   baseTone,
   generated,
+  plannedChromaCurve,
   reference,
   bridgeStartTone,
+  structuralNodeTones,
   vividStartTone
 }: {
   baseTone: ScaleTone;
   generated: TonalScaleColor[];
+  plannedChromaCurve?: ChromaCurveProjection;
   reference: TonalScaleColor[];
   bridgeStartTone?: ScaleTone;
+  structuralNodeTones: readonly ScaleTone[];
   vividStartTone?: ScaleTone;
 }) {
   const chartGenerated = generated.filter((color) => !isAbsoluteScaleCapTone(color.tone));
   const chartReference = reference.filter((color) => !isAbsoluteScaleCapTone(color.tone));
   const generatedPath = createPath(chartGenerated);
   const referencePath = createPath(chartReference);
+  const plannedPath = plannedChromaCurve ? createProjectionPath(plannedChromaCurve.samples) : '';
 
   return (
     <svg className="curve-chart" viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`} role="img">
@@ -383,38 +453,74 @@ function CurveChart({
         OKL chroma
       </text>
       <path className="reference-path" d={referencePath} />
+      {plannedPath ? <path className="planned-curve-path" d={plannedPath} /> : null}
       <path className="generated-path" d={generatedPath} />
+      {plannedChromaCurve?.points.map((point) => (
+        <circle
+          className="planned-curve-point"
+          key={point.role}
+          {...projectionPointFor(point)}
+          r={CHART_POINT_RADIUS}
+        />
+      ))}
       {chartReference.map((color) => (
-        <circle className="reference-point" key={`r-${color.id}`} {...pointFor(color)} r="4" />
+        <circle
+          className="reference-point"
+          key={`r-${color.id}`}
+          {...pointFor(color)}
+          r={CHART_POINT_RADIUS}
+        />
       ))}
-      {chartGenerated.map((color) => (
-        <g key={color.id}>
-          <circle className="generated-point" {...pointFor(color)} r="5" />
-          {shouldLabelPoint(
-            color,
-            baseTone,
-            bridgeStartTone,
-            vividStartTone,
-            chartGenerated.length
-          ) ? (
-            <text
-              className="point-label"
-              x={pointFor(color).cx + 7}
-              y={pointFor(color).cy - 7}
-            >
-              {color.label}
-            </text>
-          ) : null}
-        </g>
-      ))}
+      {chartGenerated.map((color) => {
+        const isStructuralNodePoint = structuralNodeTones.includes(color.tone);
+
+        return (
+          <g key={color.id}>
+            <circle
+              className={isStructuralNodePoint ? 'generated-node-point' : 'generated-point'}
+              {...pointFor(color)}
+              r={CHART_POINT_RADIUS}
+            />
+            {shouldLabelPoint(
+              color,
+              baseTone,
+              bridgeStartTone,
+              structuralNodeTones,
+              vividStartTone,
+              chartGenerated.length
+            ) ? (
+              <text className="point-label" x={pointFor(color).cx + 7} y={pointFor(color).cy - 7}>
+                {color.label}
+              </text>
+            ) : null}
+          </g>
+        );
+      })}
     </svg>
   );
+}
+
+function resolveChartStructuralNodeTones(
+  distribution: ScaleDistribution,
+  vividContrast: VividContrastRule | undefined,
+  inputFitTone: ScaleTone
+): ScaleTone[] {
+  const tones = [
+    resolveChromaticLightEndTone(distribution),
+    distribution.vividBridgeStartTone,
+    vividContrast?.startTone,
+    resolveChromaticDarkEndTone(distribution),
+    inputFitTone
+  ].filter((tone): tone is ScaleTone => tone !== undefined && !isAbsoluteScaleCapTone(tone));
+
+  return Array.from(new Set(tones));
 }
 
 function shouldLabelPoint(
   color: TonalScaleColor,
   baseTone: ScaleTone,
   bridgeStartTone: ScaleTone | undefined,
+  structuralNodeTones: readonly ScaleTone[],
   vividStartTone: ScaleTone | undefined,
   pointCount: number
 ): boolean {
@@ -427,6 +533,7 @@ function shouldLabelPoint(
   return (
     tone === baseTone ||
     tone === bridgeStartTone ||
+    structuralNodeTones.includes(tone) ||
     tone === vividStartTone ||
     tone % 10 === 0
   );
@@ -516,12 +623,31 @@ function createPath(colors: TonalScaleColor[]): string {
     .join(' ');
 }
 
+function createProjectionPath(points: readonly { lightness: number; chroma: number }[]): string {
+  return points
+    .map((point, index) => {
+      const { cx, cy } = projectionPointFor(point);
+      return `${index === 0 ? 'M' : 'L'} ${cx} ${cy}`;
+    })
+    .join(' ');
+}
+
 function pointFor(color: TonalScaleColor): { cx: number; cy: number } {
   const oklch = hexToOklch(color.hex);
 
+  return projectionPointFor({
+    lightness: oklch.l,
+    chroma: oklch.c
+  });
+}
+
+function projectionPointFor(point: { lightness: number; chroma: number }): {
+  cx: number;
+  cy: number;
+} {
   return {
-    cx: xForOklLightness(oklch.l),
-    cy: yForOklChroma(oklch.c)
+    cx: xForOklLightness(point.lightness),
+    cy: yForOklChroma(point.chroma)
   };
 }
 

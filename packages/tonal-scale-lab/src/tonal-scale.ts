@@ -131,6 +131,40 @@ export type TonalScaleColor = {
   hsl: HslColor;
 };
 
+export type ChromaCurveProjectionRole =
+  | 'dark-graph-end'
+  | 'dark-arc-base'
+  | 'apex'
+  | 'light-arc-base'
+  | 'light-zone-exit'
+  | 'light-zone-shoulder'
+  | 'light-graph-end';
+
+export type ChromaCurveProjectionPoint = {
+  role: ChromaCurveProjectionRole;
+  lightness: number;
+  chroma: number;
+};
+
+export type ChromaCurveProjectionSample = {
+  lightness: number;
+  chroma: number;
+};
+
+export type ChromaCurveProjection = {
+  points: readonly ChromaCurveProjectionPoint[];
+  samples: readonly ChromaCurveProjectionSample[];
+};
+
+export type TonalScaleDiagnostics = {
+  plannedChromaCurve?: ChromaCurveProjection;
+};
+
+export type TonalScaleGenerationResult = {
+  scale: TonalScaleColor[];
+  diagnostics: TonalScaleDiagnostics;
+};
+
 export type CurveControls = {
   darkFloorLightness: number;
   lightCeilingLightness: number;
@@ -259,6 +293,120 @@ export type ChromaPeakRule = {
   };
 };
 
+export type ChromaCurveShapePoint =
+  | {
+      kind: 'chromatic-light-end';
+    }
+  | {
+      kind: 'chromatic-dark-end';
+    }
+  | {
+      kind: 'dynamic-apex';
+    }
+  | {
+      kind: 'tone';
+      tone: ScaleTone;
+    };
+
+export type ChromaCurveShapeSegment = {
+  from: ChromaCurveShapePoint;
+  to: ChromaCurveShapePoint;
+  easing: 'ease-in' | 'ease-out' | 'smoothstep';
+  strength?: number;
+  maxChromaAdjustment?: number;
+  maxLightnessDrop?: number;
+  midpointLift?: number;
+  midpointLiftCenter?: number;
+  midpointLiftRadius?: number;
+};
+
+export type ChromaCurveBellRule = {
+  darkBaseProgress: number;
+  lightBaseProgress: number;
+  darkBaseChromaRatio: number;
+  lightBaseChromaRatio: number;
+  lightZoneShoulder?: {
+    endTone: ScaleTone;
+    shoulderProgress: number;
+  };
+  minimumArcLift?: {
+    lightSideMinBowRatio: number;
+    darkSideMinBowRatio: number;
+    lightSideMaxBaseChromaRatio: number;
+    darkSideMaxBaseChromaRatio: number;
+  };
+  strength: number;
+  maxChromaAdjustment: number;
+  maxLightnessDrop: number;
+  lightSideMaxLightnessDrop?: number;
+  darkSideMaxLightnessDrop?: number;
+};
+
+export type ChromaCurveShapeRule = {
+  applyBeforeInputPreservation?: boolean;
+  strength: number;
+  maxChromaAdjustment: number;
+  minSegmentSlots: number;
+  fairing?: {
+    iterations: number;
+    strength: number;
+    maxChromaAdjustment: number;
+  };
+  bellCurve?: ChromaCurveBellRule;
+  segments?: readonly ChromaCurveShapeSegment[];
+};
+
+export type ChromaCurveLightnessRhythmRange = {
+  startTone: ScaleTone;
+  endTone: ScaleTone;
+  strength: number;
+  maxLightnessShift: number;
+};
+
+export type ChromaCurveLightnessSpacingRange = {
+  startTone: ScaleTone;
+  endTone: ScaleTone;
+  minDelta: number;
+  maxLightnessDrop: number;
+};
+
+export type ChromaCurveContinuityRule = {
+  maxTurnDegrees: number;
+  maxIterations: number;
+  visualChromaMax: number;
+  minSegmentLength: number;
+  smoothingStrength: number;
+  finalLightnessMonotonicity?: {
+    minDelta: number;
+    maxLightnessDrop: number;
+  };
+  finalLightnessRhythm?: {
+    ranges: readonly ChromaCurveLightnessRhythmRange[];
+  };
+  finalLightnessSpacing?: {
+    maxIterations: number;
+    ranges: readonly ChromaCurveLightnessSpacingRange[];
+  };
+  curveShape?: ChromaCurveShapeRule;
+  protectedApexShoulder: {
+    radius: number;
+    dropMin: number;
+    dropRatio: number;
+    dropGamma: number;
+    lightSideMaxLightnessDrop: number;
+  };
+  forwardApexShoulder: {
+    sampleSize: number;
+    minIncomingDelta: number;
+    maxExitDeltaRatio: number;
+    liftRatio: number;
+    peakProgress: number;
+    progressGamma: number;
+    maxLightnessDrop: number;
+    maxHueDrift: number;
+  };
+};
+
 export type TonalProfile = {
   id: string;
   label: string;
@@ -276,6 +424,7 @@ export type TonalProfile = {
   inputPreservation?: InputPreservationRule;
   nodeContinuity?: NodeContinuityRule;
   chromaPeak?: ChromaPeakRule;
+  chromaCurveContinuity?: ChromaCurveContinuityRule;
 };
 
 export type TonalAnchor = {
@@ -311,7 +460,17 @@ export function generateTonalScale(
   profile: TonalProfile,
   distribution: ScaleDistribution = DEFAULT_SCALE_DISTRIBUTION
 ): TonalScaleColor[] {
+  return generateTonalScaleWithDiagnostics(baseHex, controls, profile, distribution).scale;
+}
+
+export function generateTonalScaleWithDiagnostics(
+  baseHex: string,
+  controls: CurveControls,
+  profile: TonalProfile,
+  distribution: ScaleDistribution = DEFAULT_SCALE_DISTRIBUTION
+): TonalScaleGenerationResult {
   const colorSpace = resolveProfileColorSpace(profile);
+  const diagnostics: TonalScaleDiagnostics = {};
   const generationAnchorTone = resolveGenerationAnchorTone(
     baseHex,
     profile,
@@ -348,7 +507,17 @@ export function generateTonalScale(
     baseHex
   );
 
-  return applyInputPreservation(luminousScale, profile, distribution, colorSpace, baseHex);
+  return {
+    scale: applyInputPreservation(
+      luminousScale,
+      profile,
+      distribution,
+      colorSpace,
+      baseHex,
+      diagnostics
+    ),
+    diagnostics
+  };
 }
 
 function resolveGenerationAnchorTone(
@@ -1159,11 +1328,17 @@ function applyInputPreservation(
   scale: TonalScaleColor[],
   profile: Pick<
     TonalProfile,
-    'chromaPeak' | 'inputPreservation' | 'inputStrategy' | 'nodeContinuity' | 'vividContrast'
+    | 'chromaCurveContinuity'
+    | 'chromaPeak'
+    | 'inputPreservation'
+    | 'inputStrategy'
+    | 'nodeContinuity'
+    | 'vividContrast'
   >,
   distribution: ScaleDistribution,
   colorSpace: ColorInterpolationSpace,
-  inputHex: string
+  inputHex: string,
+  diagnostics?: TonalScaleDiagnostics
 ): TonalScaleColor[] {
   const inputPreservation = profile.inputPreservation;
   const normalizedInputHex = normalizeHexColor(inputHex);
@@ -1177,8 +1352,14 @@ function applyInputPreservation(
     distribution,
     normalizedInputHex
   );
-  const initialPreservedInputAnchor = resolvePreservedInputAnchor({
+  const plannedScale = applyPreInputChromaCurveShapeModel(
     scale,
+    profile.chromaCurveContinuity,
+    colorSpace
+  );
+
+  const initialPreservedInputAnchor = resolvePreservedInputAnchor({
+    scale: plannedScale,
     distribution,
     colorSpace,
     inputPreservation,
@@ -1191,7 +1372,7 @@ function applyInputPreservation(
   }
 
   const preservedInputAnchor = resolveAnchorContinuityGuardedAnchor({
-    scale,
+    scale: plannedScale,
     distribution,
     colorSpace,
     inputPreservation,
@@ -1201,14 +1382,16 @@ function applyInputPreservation(
   });
   const preservedAnchor = preservedInputAnchor.color;
   const anchoredScale = interpolateScaleThroughPreservedInput({
-    scale,
+    scale: plannedScale,
     distribution,
     colorSpace,
     inputPreservation,
     inputAnchor: preservedAnchor,
     inputHex: normalizedInputHex,
     vividContrast,
-    useLightestVividStart: preservedInputAnchor.bufferedFromVividBoundary
+    useLightestVividStart: preservedInputAnchor.bufferedFromVividBoundary,
+    preservePlannedStructuralCurve:
+      profile.chromaCurveContinuity?.curveShape?.applyBeforeInputPreservation === true
   });
 
   const vividSafeScale = applyPreservedInputVividContrast(
@@ -1235,8 +1418,15 @@ function applyInputPreservation(
     preservedAnchor.tone,
     vividContrast?.startTone
   );
-  const finalContinuityScale = applyNodeContinuityGuard(
+  const curveSafeScale = applyChromaCurveContinuityGuard(
     chromaSafeScale,
+    profile.chromaCurveContinuity,
+    colorSpace,
+    preservedAnchor.tone,
+    vividContrast?.startTone
+  );
+  const finalContinuityScale = applyNodeContinuityGuard(
+    curveSafeScale,
     distribution,
     profile.nodeContinuity,
     vividContrast,
@@ -1244,13 +1434,47 @@ function applyInputPreservation(
     preservedAnchor.tone
   );
 
-  return applyPreservedInputVividContrast(
+  const vividFinalScale = applyPreservedInputVividContrast(
     finalContinuityScale,
     distribution,
     vividContrast,
     colorSpace,
     preservedAnchor.tone
   );
+  const rhythmScale = applyFinalLightnessRhythmRedistribution(
+    vividFinalScale,
+    profile.chromaCurveContinuity,
+    colorSpace,
+    preservedAnchor.tone
+  );
+  const contrastRhythmScale = applyPreservedInputVividContrast(
+    rhythmScale,
+    distribution,
+    vividContrast,
+    colorSpace,
+    preservedAnchor.tone
+  );
+  const monotonicScale = applyFinalLightnessMonotonicityGuard(
+    contrastRhythmScale,
+    profile.chromaCurveContinuity,
+    colorSpace,
+    preservedAnchor.tone
+  );
+  const finalScale = applyFinalLightnessSpacingGuard(
+    monotonicScale,
+    profile.chromaCurveContinuity,
+    colorSpace,
+    preservedAnchor.tone
+  );
+
+  if (diagnostics) {
+    diagnostics.plannedChromaCurve = resolveChromaCurveProjection(
+      finalScale,
+      profile.chromaCurveContinuity
+    );
+  }
+
+  return finalScale;
 }
 
 type PreservedInputAnchor = {
@@ -1673,6 +1897,7 @@ function interpolateScaleThroughPreservedInput(params: {
   inputHex: string;
   vividContrast?: VividContrastRule;
   useLightestVividStart: boolean;
+  preservePlannedStructuralCurve?: boolean;
 }): TonalScaleColor[] {
   const {
     scale,
@@ -1682,7 +1907,8 @@ function interpolateScaleThroughPreservedInput(params: {
     inputAnchor,
     inputHex,
     vividContrast,
-    useLightestVividStart
+    useLightestVividStart,
+    preservePlannedStructuralCurve
   } = params;
   const anchorByIndex = new Map<number, TonalScaleColor>();
   const structuralAnchorTones = [
@@ -1716,11 +1942,23 @@ function interpolateScaleThroughPreservedInput(params: {
     return scale;
   }
 
+  const inputAnchorIsStructural = anchorByIndex.has(inputAnchorIndex);
   anchorByIndex.set(inputAnchorIndex, createScaleColorFromHex(inputAnchor, inputHex));
 
   const anchors = [...anchorByIndex.entries()]
     .map(([index, color]) => ({ index, color }))
     .sort((left, right) => left.index - right.index);
+
+  if (preservePlannedStructuralCurve) {
+    return interpolateOnlyPreservedInputSegment({
+      scale,
+      anchorByIndex,
+      anchors,
+      inputAnchorIndex,
+      inputAnchorIsStructural,
+      colorSpace
+    });
+  }
 
   return scale.map((color, index) => {
     if (isAbsoluteScaleCapTone(color.tone)) {
@@ -1745,6 +1983,61 @@ function interpolateScaleThroughPreservedInput(params: {
       previousAnchor.color,
       nextAnchor.color,
       normalizedProgress(index, previousAnchor.index, nextAnchor.index),
+      colorSpace
+    );
+  });
+}
+
+function interpolateOnlyPreservedInputSegment(params: {
+  scale: TonalScaleColor[];
+  anchorByIndex: Map<number, TonalScaleColor>;
+  anchors: { index: number; color: TonalScaleColor }[];
+  inputAnchorIndex: number;
+  inputAnchorIsStructural: boolean;
+  colorSpace: ColorInterpolationSpace;
+}): TonalScaleColor[] {
+  const { scale, anchorByIndex, anchors, inputAnchorIndex, inputAnchorIsStructural, colorSpace } =
+    params;
+  const inputAnchor = anchors.find((candidate) => candidate.index === inputAnchorIndex);
+  const previousAnchor = [...anchors]
+    .reverse()
+    .find((candidate) => candidate.index < inputAnchorIndex);
+  const nextAnchor = anchors.find((candidate) => candidate.index > inputAnchorIndex);
+
+  return scale.map((color, index) => {
+    if (isAbsoluteScaleCapTone(color.tone)) {
+      return color;
+    }
+
+    const anchor = anchorByIndex.get(index);
+
+    if (anchor) {
+      return anchor;
+    }
+
+    if (
+      inputAnchorIsStructural ||
+      !inputAnchor ||
+      !previousAnchor ||
+      !nextAnchor ||
+      index <= previousAnchor.index ||
+      index >= nextAnchor.index
+    ) {
+      return color;
+    }
+
+    const segmentStart = index < inputAnchorIndex ? previousAnchor : inputAnchor;
+    const segmentEnd = index < inputAnchorIndex ? inputAnchor : nextAnchor;
+
+    if (!segmentStart || !segmentEnd) {
+      return color;
+    }
+
+    return createInterpolatedScaleColor(
+      color,
+      segmentStart.color,
+      segmentEnd.color,
+      normalizedProgress(index, segmentStart.index, segmentEnd.index),
       colorSpace
     );
   });
@@ -2334,6 +2627,1494 @@ function canAdjustContinuityColor(color: TonalScaleColor, preservedInputTone: Sc
   return color.tone !== preservedInputTone && !isAbsoluteScaleCapTone(color.tone);
 }
 
+type ChromaCurveContinuityIssue = {
+  index: number;
+  turnDegrees: number;
+  overshoot: number;
+};
+
+function applyChromaCurveContinuityGuard(
+  scale: TonalScaleColor[],
+  rule: ChromaCurveContinuityRule | undefined,
+  colorSpace: ColorInterpolationSpace,
+  preservedInputTone: ScaleTone,
+  vividStartTone?: ScaleTone
+): TonalScaleColor[] {
+  if (!rule || colorSpace !== 'oklch') {
+    return scale;
+  }
+
+  let currentScale = scale;
+
+  for (let iteration = 0; iteration < rule.maxIterations; iteration += 1) {
+    const issue = resolveChromaCurveContinuityIssue(currentScale, rule);
+
+    if (!issue) {
+      break;
+    }
+
+    const issueColor = currentScale[issue.index];
+    const nextScale =
+      issueColor.tone === preservedInputTone
+        ? smoothProtectedChromaCurveIssue(
+            currentScale,
+            rule,
+            issue.index,
+            preservedInputTone,
+            vividStartTone
+          )
+        : smoothAdjustableChromaCurveIssue(currentScale, rule, issue.index, preservedInputTone);
+
+    if (nextScale === currentScale) {
+      break;
+    }
+
+    currentScale = nextScale;
+  }
+
+  const protectedAnchorIndex = currentScale.findIndex((color) => color.tone === preservedInputTone);
+  const shoulderScale =
+    protectedAnchorIndex >= 0
+      ? applyForwardApexShoulder(
+          currentScale,
+          rule,
+          protectedAnchorIndex,
+          preservedInputTone,
+          vividStartTone
+        )
+      : currentScale;
+
+  return applyChromaCurveShapeModel(shoulderScale, rule, preservedInputTone);
+}
+
+function applyPreInputChromaCurveShapeModel(
+  scale: TonalScaleColor[],
+  rule: ChromaCurveContinuityRule | undefined,
+  colorSpace: ColorInterpolationSpace
+): TonalScaleColor[] {
+  if (!rule?.curveShape?.applyBeforeInputPreservation || colorSpace !== 'oklch') {
+    return scale;
+  }
+
+  return applyChromaCurveShapeModel(scale, rule);
+}
+
+function resolveChromaCurveContinuityIssue(
+  scale: TonalScaleColor[],
+  rule: ChromaCurveContinuityRule
+): ChromaCurveContinuityIssue | undefined {
+  const issues = scale
+    .map((color, index) => {
+      if (isAbsoluteScaleCapTone(color.tone)) {
+        return undefined;
+      }
+
+      const previous = scale[index - 1];
+      const next = scale[index + 1];
+
+      if (
+        !previous ||
+        !next ||
+        isAbsoluteScaleCapTone(previous.tone) ||
+        isAbsoluteScaleCapTone(next.tone)
+      ) {
+        return undefined;
+      }
+
+      const previousPoint = resolveVisualCurvePoint(previous, rule);
+      const currentPoint = resolveVisualCurvePoint(color, rule);
+      const nextPoint = resolveVisualCurvePoint(next, rule);
+      const incoming = {
+        x: currentPoint.x - previousPoint.x,
+        y: currentPoint.y - previousPoint.y
+      };
+      const outgoing = {
+        x: nextPoint.x - currentPoint.x,
+        y: nextPoint.y - currentPoint.y
+      };
+
+      if (
+        resolveVectorLength(incoming) < rule.minSegmentLength ||
+        resolveVectorLength(outgoing) < rule.minSegmentLength
+      ) {
+        return undefined;
+      }
+
+      const turnDegrees = resolveTurnDegrees(incoming, outgoing);
+      const overshoot = turnDegrees - rule.maxTurnDegrees;
+
+      return overshoot > 0 ? { index, turnDegrees, overshoot } : undefined;
+    })
+    .filter((issue): issue is ChromaCurveContinuityIssue => issue !== undefined);
+
+  return issues.sort((left, right) => right.overshoot - left.overshoot)[0];
+}
+
+function smoothAdjustableChromaCurveIssue(
+  scale: TonalScaleColor[],
+  rule: ChromaCurveContinuityRule,
+  issueIndex: number,
+  preservedInputTone: ScaleTone
+): TonalScaleColor[] {
+  const previous = scale[issueIndex - 1];
+  const color = scale[issueIndex];
+  const next = scale[issueIndex + 1];
+
+  if (!previous || !color || !next || color.tone === preservedInputTone) {
+    return scale;
+  }
+
+  const previousChroma = hexToOklch(previous.hex).c;
+  const currentChroma = hexToOklch(color.hex).c;
+  const nextChroma = hexToOklch(next.hex).c;
+  const targetChroma = interpolate(
+    currentChroma,
+    (previousChroma + nextChroma) / 2,
+    rule.smoothingStrength
+  );
+  const adjustedColor = createScaleColorWithChroma(color, targetChroma);
+
+  return adjustedColor === color
+    ? scale
+    : scale.map((entry, index) => (index === issueIndex ? adjustedColor : entry));
+}
+
+function smoothProtectedChromaCurveIssue(
+  scale: TonalScaleColor[],
+  rule: ChromaCurveContinuityRule,
+  protectedAnchorIndex: number,
+  preservedInputTone: ScaleTone,
+  vividStartTone?: ScaleTone
+): TonalScaleColor[] {
+  const forwardShoulderScale = applyForwardApexShoulder(
+    scale,
+    rule,
+    protectedAnchorIndex,
+    preservedInputTone,
+    vividStartTone
+  );
+
+  return forwardShoulderScale !== scale
+    ? forwardShoulderScale
+    : applyProtectedApexShoulder(scale, rule, protectedAnchorIndex, preservedInputTone);
+}
+
+function applyForwardApexShoulder(
+  scale: TonalScaleColor[],
+  rule: ChromaCurveContinuityRule,
+  protectedAnchorIndex: number,
+  preservedInputTone: ScaleTone,
+  vividStartTone?: ScaleTone
+): TonalScaleColor[] {
+  const anchor = scale[protectedAnchorIndex];
+  const vividStartIndex =
+    vividStartTone === undefined ? -1 : scale.findIndex((color) => color.tone === vividStartTone);
+
+  if (
+    !anchor ||
+    vividStartTone === undefined ||
+    vividStartIndex <= protectedAnchorIndex ||
+    anchor.tone >= vividStartTone
+  ) {
+    return scale;
+  }
+
+  const incomingDelta = resolveIncomingChromaMomentum(
+    scale,
+    protectedAnchorIndex,
+    rule.forwardApexShoulder.sampleSize
+  );
+  const next = scale[protectedAnchorIndex + 1];
+  const outgoingDelta = next ? hexToOklch(next.hex).c - hexToOklch(anchor.hex).c : undefined;
+
+  if (
+    incomingDelta === undefined ||
+    outgoingDelta === undefined ||
+    incomingDelta < rule.forwardApexShoulder.minIncomingDelta ||
+    outgoingDelta > incomingDelta * rule.forwardApexShoulder.maxExitDeltaRatio
+  ) {
+    return scale;
+  }
+
+  const anchorChroma = hexToOklch(anchor.hex).c;
+  const anchorHue = hexToOklch(anchor.hex).h;
+  const hueDriftSign = resolveForwardApexHueDriftSign(
+    scale,
+    rule,
+    protectedAnchorIndex,
+    vividStartIndex,
+    incomingDelta
+  );
+  const adjustedByIndex = new Map<number, TonalScaleColor>();
+
+  for (let index = protectedAnchorIndex + 1; index < vividStartIndex; index += 1) {
+    const color = scale[index];
+
+    if (!color || color.tone === preservedInputTone || isAbsoluteScaleCapTone(color.tone)) {
+      continue;
+    }
+
+    const progress = normalizedProgress(index, protectedAnchorIndex, vividStartIndex);
+    const shoulderProgress = resolveForwardApexShoulderProgress(
+      progress,
+      rule.forwardApexShoulder.peakProgress,
+      rule.forwardApexShoulder.progressGamma
+    );
+    const targetChroma =
+      anchorChroma + incomingDelta * rule.forwardApexShoulder.liftRatio * shoulderProgress;
+    const hueDrift =
+      hueDriftSign *
+      rule.forwardApexShoulder.maxHueDrift *
+      (1 - progress) ** rule.forwardApexShoulder.progressGamma;
+    const currentChroma = hexToOklch(color.hex).c;
+
+    if (currentChroma >= targetChroma) {
+      continue;
+    }
+
+    adjustedByIndex.set(
+      index,
+      createScaleColorWithForwardChromaShoulder(
+        color,
+        targetChroma,
+        rule.forwardApexShoulder.maxLightnessDrop,
+        hueDrift,
+        anchorHue,
+        rule.forwardApexShoulder.maxHueDrift
+      )
+    );
+  }
+
+  return adjustedByIndex.size === 0
+    ? scale
+    : scale.map((color, index) => adjustedByIndex.get(index) ?? color);
+}
+
+function applyProtectedApexShoulder(
+  scale: TonalScaleColor[],
+  rule: ChromaCurveContinuityRule,
+  protectedAnchorIndex: number,
+  preservedInputTone: ScaleTone
+): TonalScaleColor[] {
+  const anchor = scale[protectedAnchorIndex];
+
+  if (!anchor) {
+    return scale;
+  }
+
+  const anchorChroma = hexToOklch(anchor.hex).c;
+  const baseDrop = Math.max(
+    rule.protectedApexShoulder.dropMin,
+    anchorChroma * rule.protectedApexShoulder.dropRatio
+  );
+  const adjustedByIndex = new Map<number, TonalScaleColor>();
+
+  for (let distance = 1; distance <= rule.protectedApexShoulder.radius; distance += 1) {
+    const targetChroma = Math.max(
+      0,
+      anchorChroma - baseDrop * distance ** rule.protectedApexShoulder.dropGamma
+    );
+
+    for (const index of [protectedAnchorIndex - distance, protectedAnchorIndex + distance]) {
+      const color = scale[index];
+
+      if (!color || color.tone === preservedInputTone || isAbsoluteScaleCapTone(color.tone)) {
+        continue;
+      }
+
+      const currentChroma = hexToOklch(color.hex).c;
+
+      if (currentChroma >= targetChroma) {
+        continue;
+      }
+
+      adjustedByIndex.set(
+        index,
+        createScaleColorWithChromaShoulder(
+          color,
+          targetChroma,
+          index < protectedAnchorIndex ? rule.protectedApexShoulder.lightSideMaxLightnessDrop : 0
+        )
+      );
+    }
+  }
+
+  return adjustedByIndex.size === 0
+    ? scale
+    : scale.map((color, index) => adjustedByIndex.get(index) ?? color);
+}
+
+type ChromaCurveResolvedShapeSegment = {
+  startIndex: number;
+  endIndex: number;
+};
+
+type ChromaCurveBellPoint = ChromaCurveProjectionPoint & {
+  sourceIndex?: number;
+};
+
+type ChromaCurveBellSpline = {
+  points: ChromaCurveBellPoint[];
+  tangents: number[];
+  apexLightness: number;
+};
+
+function applyChromaCurveShapeModel(
+  scale: TonalScaleColor[],
+  rule: ChromaCurveContinuityRule,
+  preservedInputTone?: ScaleTone
+): TonalScaleColor[] {
+  const curveShape = rule.curveShape;
+
+  if (!curveShape) {
+    return scale;
+  }
+
+  const chromaticIndexes = scale
+    .map((color, index) => (isAbsoluteScaleCapTone(color.tone) ? undefined : index))
+    .filter((index): index is number => index !== undefined);
+  const apexIndex = resolveChromaCurveApexIndex(scale, chromaticIndexes);
+
+  if (apexIndex === undefined) {
+    return scale;
+  }
+
+  const firstIndex = chromaticIndexes[0];
+  const lastIndex = chromaticIndexes[chromaticIndexes.length - 1];
+
+  if (firstIndex === undefined || lastIndex === undefined) {
+    return scale;
+  }
+
+  if (curveShape.bellCurve) {
+    return applyChromaCurveBellModel(
+      scale,
+      rule,
+      curveShape.bellCurve,
+      firstIndex,
+      apexIndex,
+      lastIndex,
+      preservedInputTone
+    );
+  }
+
+  const segments = curveShape.segments ?? [];
+
+  if (segments.length === 0 || curveShape.strength <= 0 || curveShape.maxChromaAdjustment <= 0) {
+    return scale;
+  }
+
+  const adjustedByIndex = new Map<number, TonalScaleColor>();
+  const protectedIndexes = new Set<number>([firstIndex, apexIndex, lastIndex]);
+
+  for (const segment of segments) {
+    const resolvedSegment = resolveChromaCurveShapeSegment(
+      scale,
+      segment,
+      apexIndex,
+      firstIndex,
+      lastIndex
+    );
+
+    if (!resolvedSegment) {
+      continue;
+    }
+
+    applyChromaCurveShapeSegment(
+      scale,
+      rule,
+      segment,
+      resolvedSegment,
+      preservedInputTone,
+      adjustedByIndex
+    );
+
+    protectedIndexes.add(resolvedSegment.startIndex);
+    protectedIndexes.add(resolvedSegment.endIndex);
+  }
+
+  const shapedScale =
+    adjustedByIndex.size === 0
+      ? scale
+      : scale.map((color, index) => adjustedByIndex.get(index) ?? color);
+
+  return applyChromaCurveFairing(shapedScale, rule, protectedIndexes, preservedInputTone);
+}
+
+function resolveChromaCurveProjection(
+  scale: TonalScaleColor[],
+  rule: ChromaCurveContinuityRule | undefined
+): ChromaCurveProjection | undefined {
+  const bellRule = rule?.curveShape?.bellCurve;
+
+  if (!bellRule) {
+    return undefined;
+  }
+
+  const chromaticIndexes = scale
+    .map((color, index) => (isAbsoluteScaleCapTone(color.tone) ? undefined : index))
+    .filter((index): index is number => index !== undefined);
+  const apexIndex = resolveChromaCurveApexIndex(scale, chromaticIndexes);
+  const firstIndex = chromaticIndexes[0];
+  const lastIndex = chromaticIndexes[chromaticIndexes.length - 1];
+
+  if (apexIndex === undefined || firstIndex === undefined || lastIndex === undefined) {
+    return undefined;
+  }
+
+  const spline = resolveChromaCurveBellSpline(scale, bellRule, firstIndex, apexIndex, lastIndex, {
+    includeLightZoneShoulder: true
+  });
+
+  return spline ? createChromaCurveProjection(spline) : undefined;
+}
+
+function createChromaCurveProjection(spline: ChromaCurveBellSpline): ChromaCurveProjection {
+  const firstPoint = spline.points[0];
+  const lastPoint = spline.points[spline.points.length - 1];
+  const sampleCount: number = 96;
+  const samples = Array.from({ length: sampleCount }, (_, index) => {
+    const progress = sampleCount === 1 ? 0 : index / (sampleCount - 1);
+    const lightness = interpolate(firstPoint.lightness, lastPoint.lightness, progress);
+
+    return {
+      lightness,
+      chroma: resolveChromaCurveBellSplineChroma(spline, lightness)
+    };
+  });
+
+  return {
+    points: spline.points.map(({ role, lightness, chroma }) => ({ role, lightness, chroma })),
+    samples
+  };
+}
+
+function applyChromaCurveBellModel(
+  scale: TonalScaleColor[],
+  rule: ChromaCurveContinuityRule,
+  bellRule: ChromaCurveBellRule,
+  firstIndex: number,
+  apexIndex: number,
+  lastIndex: number,
+  preservedInputTone?: ScaleTone
+): TonalScaleColor[] {
+  if (
+    bellRule.strength <= 0 ||
+    bellRule.maxChromaAdjustment <= 0 ||
+    firstIndex >= lastIndex ||
+    apexIndex <= firstIndex ||
+    apexIndex >= lastIndex
+  ) {
+    return scale;
+  }
+
+  const spline = resolveChromaCurveBellSpline(scale, bellRule, firstIndex, apexIndex, lastIndex);
+
+  if (!spline) {
+    return scale;
+  }
+
+  const protectedIndexes = new Set<number>([firstIndex, apexIndex, lastIndex]);
+  for (const point of spline.points) {
+    if (point.sourceIndex !== undefined) {
+      protectedIndexes.add(point.sourceIndex);
+    }
+  }
+  const adjustedByIndex = new Map<number, TonalScaleColor>();
+
+  for (let index = firstIndex + 1; index < lastIndex; index += 1) {
+    const color = scale[index];
+
+    if (
+      !color ||
+      protectedIndexes.has(index) ||
+      (preservedInputTone !== undefined && color.tone === preservedInputTone) ||
+      isAbsoluteScaleCapTone(color.tone)
+    ) {
+      continue;
+    }
+
+    const currentOklch = hexToOklch(color.hex);
+    const targetChroma = resolveChromaCurveBellSplineChroma(spline, currentOklch.l);
+    const adjustment = clamp(
+      (targetChroma - currentOklch.c) * bellRule.strength,
+      -bellRule.maxChromaAdjustment,
+      bellRule.maxChromaAdjustment
+    );
+
+    if (Math.abs(adjustment) < 0.0001) {
+      continue;
+    }
+
+    const adjustedColor = createScaleColorWithChromaShoulder(
+      color,
+      currentOklch.c + adjustment,
+      resolveBellCurveMaxLightnessDrop(bellRule, spline, currentOklch.l)
+    );
+
+    if (adjustedColor !== color) {
+      adjustedByIndex.set(index, adjustedColor);
+    }
+  }
+
+  const shapedScale =
+    adjustedByIndex.size === 0
+      ? scale
+      : scale.map((color, index) => adjustedByIndex.get(index) ?? color);
+
+  return applyChromaCurveFairing(shapedScale, rule, protectedIndexes, preservedInputTone);
+}
+
+function resolveChromaCurveBellSpline(
+  scale: TonalScaleColor[],
+  bellRule: ChromaCurveBellRule,
+  firstIndex: number,
+  apexIndex: number,
+  lastIndex: number,
+  options: { includeLightZoneShoulder?: boolean } = {}
+): ChromaCurveBellSpline | undefined {
+  const lightEnd = scale[firstIndex];
+  const apex = scale[apexIndex];
+  const darkEnd = scale[lastIndex];
+
+  if (!lightEnd || !apex || !darkEnd) {
+    return undefined;
+  }
+
+  const lightEndOklch = hexToOklch(lightEnd.hex);
+  const apexOklch = hexToOklch(apex.hex);
+  const darkEndOklch = hexToOklch(darkEnd.hex);
+
+  if (darkEndOklch.l >= apexOklch.l || apexOklch.l >= lightEndOklch.l || apexOklch.c <= 0.0001) {
+    return undefined;
+  }
+
+  const points = normalizeChromaCurveBellPoints([
+    {
+      role: 'dark-graph-end',
+      lightness: darkEndOklch.l,
+      chroma: darkEndOklch.c,
+      sourceIndex: lastIndex
+    },
+    {
+      role: 'dark-arc-base',
+      lightness: interpolate(darkEndOklch.l, apexOklch.l, clamp(bellRule.darkBaseProgress, 0, 1)),
+      chroma: resolveLiftedBellBaseChroma({
+        endpointChroma: darkEndOklch.c,
+        apexChroma: apexOklch.c,
+        progressFromEndpointToApex: clamp(bellRule.darkBaseProgress, 0, 1),
+        baseChromaRatio: bellRule.darkBaseChromaRatio,
+        minBowRatio: bellRule.minimumArcLift?.darkSideMinBowRatio ?? 0,
+        maxBaseChromaRatio: bellRule.minimumArcLift?.darkSideMaxBaseChromaRatio ?? 1
+      })
+    },
+    {
+      role: 'apex',
+      lightness: apexOklch.l,
+      chroma: apexOklch.c,
+      sourceIndex: apexIndex
+    },
+    {
+      role: 'light-arc-base',
+      lightness: interpolate(apexOklch.l, lightEndOklch.l, clamp(bellRule.lightBaseProgress, 0, 1)),
+      chroma: resolveLiftedBellBaseChroma({
+        endpointChroma: lightEndOklch.c,
+        apexChroma: apexOklch.c,
+        progressFromEndpointToApex: 1 - clamp(bellRule.lightBaseProgress, 0, 1),
+        baseChromaRatio: bellRule.lightBaseChromaRatio,
+        minBowRatio: bellRule.minimumArcLift?.lightSideMinBowRatio ?? 0,
+        maxBaseChromaRatio: bellRule.minimumArcLift?.lightSideMaxBaseChromaRatio ?? 1
+      })
+    },
+    ...(options.includeLightZoneShoulder
+      ? resolveLightZoneShoulderBellPoints(scale, bellRule, firstIndex)
+      : []),
+    {
+      role: 'light-graph-end',
+      lightness: lightEndOklch.l,
+      chroma: lightEndOklch.c,
+      sourceIndex: firstIndex
+    }
+  ]);
+
+  if (points.length < 3) {
+    return undefined;
+  }
+
+  return {
+    points,
+    tangents: resolveMonotoneCubicTangents(points),
+    apexLightness: apexOklch.l
+  };
+}
+
+function resolveLightZoneShoulderBellPoints(
+  scale: TonalScaleColor[],
+  bellRule: ChromaCurveBellRule,
+  firstIndex: number
+): ChromaCurveBellPoint[] {
+  const shoulderRule = bellRule.lightZoneShoulder;
+
+  if (!shoulderRule) {
+    return [];
+  }
+
+  const endIndex = resolveClosestScaleColorIndex(scale, shoulderRule.endTone);
+
+  if (endIndex <= firstIndex + 1) {
+    return [];
+  }
+
+  const shoulderIndex = Math.round(
+    interpolate(firstIndex, endIndex, clamp(shoulderRule.shoulderProgress, 0, 1))
+  );
+  const clampedShoulderIndex = Math.round(clamp(shoulderIndex, firstIndex + 1, endIndex - 1));
+  const shoulder = scale[clampedShoulderIndex];
+  const end = scale[endIndex];
+
+  if (
+    !shoulder ||
+    !end ||
+    isAbsoluteScaleCapTone(shoulder.tone) ||
+    isAbsoluteScaleCapTone(end.tone)
+  ) {
+    return [];
+  }
+
+  const shoulderOklch = hexToOklch(shoulder.hex);
+  const endOklch = hexToOklch(end.hex);
+
+  return [
+    {
+      role: 'light-zone-shoulder',
+      lightness: shoulderOklch.l,
+      chroma: shoulderOklch.c,
+      sourceIndex: clampedShoulderIndex
+    },
+    {
+      role: 'light-zone-exit',
+      lightness: endOklch.l,
+      chroma: endOklch.c,
+      sourceIndex: endIndex
+    }
+  ];
+}
+
+function resolveBellCurveMaxLightnessDrop(
+  bellRule: ChromaCurveBellRule,
+  spline: ChromaCurveBellSpline,
+  lightness: number
+): number {
+  return lightness > spline.apexLightness
+    ? (bellRule.lightSideMaxLightnessDrop ?? bellRule.maxLightnessDrop)
+    : (bellRule.darkSideMaxLightnessDrop ?? bellRule.maxLightnessDrop);
+}
+
+function resolveLiftedBellBaseChroma(params: {
+  endpointChroma: number;
+  apexChroma: number;
+  progressFromEndpointToApex: number;
+  baseChromaRatio: number;
+  minBowRatio: number;
+  maxBaseChromaRatio: number;
+}): number {
+  const {
+    endpointChroma,
+    apexChroma,
+    progressFromEndpointToApex,
+    baseChromaRatio,
+    minBowRatio,
+    maxBaseChromaRatio
+  } = params;
+  const progress = clamp(progressFromEndpointToApex, 0, 1);
+  const chromaSpan = Math.max(0, apexChroma - endpointChroma);
+  const baseChroma = interpolate(endpointChroma, apexChroma, clamp(baseChromaRatio, 0, 1));
+  const straightChroma = interpolate(endpointChroma, apexChroma, progress);
+  const bowInfluence = 4 * progress * (1 - progress);
+  const liftedChroma = straightChroma + chromaSpan * Math.max(0, minBowRatio) * bowInfluence;
+  const maxBaseChroma = interpolate(endpointChroma, apexChroma, clamp(maxBaseChromaRatio, 0, 1));
+
+  return clamp(Math.max(baseChroma, liftedChroma), 0, maxBaseChroma);
+}
+
+function normalizeChromaCurveBellPoints(
+  points: readonly ChromaCurveBellPoint[]
+): ChromaCurveBellPoint[] {
+  const sortedPoints = [...points].sort((left, right) => left.lightness - right.lightness);
+  const normalizedPoints: ChromaCurveBellPoint[] = [];
+
+  for (const point of sortedPoints) {
+    const previous = normalizedPoints[normalizedPoints.length - 1];
+
+    if (previous && Math.abs(previous.lightness - point.lightness) < 0.0001) {
+      const selectedPoint = previous.chroma >= point.chroma ? previous : point;
+      normalizedPoints[normalizedPoints.length - 1] = {
+        role: selectedPoint.role,
+        lightness: previous.lightness,
+        chroma: Math.max(previous.chroma, point.chroma),
+        sourceIndex: selectedPoint.sourceIndex
+      };
+      continue;
+    }
+
+    normalizedPoints.push(point);
+  }
+
+  return normalizedPoints;
+}
+
+function resolveMonotoneCubicTangents(points: readonly ChromaCurveBellPoint[]): number[] {
+  const segmentCount = points.length - 1;
+  const deltas: number[] = [];
+  const distances: number[] = [];
+
+  for (let index = 0; index < segmentCount; index += 1) {
+    const left = points[index];
+    const right = points[index + 1];
+    const distance = Math.max(0.0001, right.lightness - left.lightness);
+
+    distances.push(distance);
+    deltas.push((right.chroma - left.chroma) / distance);
+  }
+
+  const tangents = new Array<number>(points.length).fill(0);
+
+  for (let index = 1; index < segmentCount; index += 1) {
+    const previousDelta = deltas[index - 1];
+    const nextDelta = deltas[index];
+
+    if (previousDelta * nextDelta <= 0) {
+      tangents[index] = 0;
+      continue;
+    }
+
+    const previousDistance = distances[index - 1];
+    const nextDistance = distances[index];
+    const leftWeight = 2 * nextDistance + previousDistance;
+    const rightWeight = nextDistance + 2 * previousDistance;
+
+    tangents[index] =
+      (leftWeight + rightWeight) / (leftWeight / previousDelta + rightWeight / nextDelta);
+  }
+
+  for (let index = 0; index < segmentCount; index += 1) {
+    const delta = deltas[index];
+
+    if (Math.abs(delta) < 0.0001) {
+      tangents[index] = 0;
+      tangents[index + 1] = 0;
+      continue;
+    }
+
+    const alpha = tangents[index] / delta;
+    const beta = tangents[index + 1] / delta;
+    const sum = alpha ** 2 + beta ** 2;
+
+    if (sum > 9) {
+      const tau = 3 / Math.sqrt(sum);
+      tangents[index] = tau * alpha * delta;
+      tangents[index + 1] = tau * beta * delta;
+    }
+  }
+
+  return tangents;
+}
+
+function resolveChromaCurveBellSplineChroma(
+  spline: ChromaCurveBellSpline,
+  lightness: number
+): number {
+  const { points, tangents } = spline;
+  const firstPoint = points[0];
+  const lastPoint = points[points.length - 1];
+
+  if (lightness <= firstPoint.lightness) {
+    return firstPoint.chroma;
+  }
+
+  if (lightness >= lastPoint.lightness) {
+    return lastPoint.chroma;
+  }
+
+  const segmentIndex = points.findIndex(
+    (point, index) =>
+      index < points.length - 1 &&
+      lightness >= point.lightness &&
+      lightness <= points[index + 1].lightness
+  );
+  const resolvedSegmentIndex = segmentIndex >= 0 ? segmentIndex : points.length - 2;
+  const left = points[resolvedSegmentIndex];
+  const right = points[resolvedSegmentIndex + 1];
+  const distance = Math.max(0.0001, right.lightness - left.lightness);
+  const progress = clamp((lightness - left.lightness) / distance, 0, 1);
+  const progress2 = progress ** 2;
+  const progress3 = progress ** 3;
+  const leftWeight = 2 * progress3 - 3 * progress2 + 1;
+  const leftTangentWeight = progress3 - 2 * progress2 + progress;
+  const rightWeight = -2 * progress3 + 3 * progress2;
+  const rightTangentWeight = progress3 - progress2;
+
+  return (
+    leftWeight * left.chroma +
+    leftTangentWeight * distance * tangents[resolvedSegmentIndex] +
+    rightWeight * right.chroma +
+    rightTangentWeight * distance * tangents[resolvedSegmentIndex + 1]
+  );
+}
+
+function applyChromaCurveFairing(
+  scale: TonalScaleColor[],
+  rule: ChromaCurveContinuityRule,
+  protectedIndexes: ReadonlySet<number>,
+  preservedInputTone?: ScaleTone
+): TonalScaleColor[] {
+  const fairing = rule.curveShape?.fairing;
+
+  if (!fairing || fairing.iterations <= 0 || fairing.strength <= 0) {
+    return scale;
+  }
+
+  let currentScale = scale;
+
+  for (let iteration = 0; iteration < fairing.iterations; iteration += 1) {
+    const adjustedByIndex = new Map<number, TonalScaleColor>();
+
+    for (let index = 1; index < currentScale.length - 1; index += 1) {
+      const previous = currentScale[index - 1];
+      const color = currentScale[index];
+      const next = currentScale[index + 1];
+
+      if (
+        !previous ||
+        !color ||
+        !next ||
+        protectedIndexes.has(index) ||
+        (preservedInputTone !== undefined && color.tone === preservedInputTone) ||
+        isAbsoluteScaleCapTone(previous.tone) ||
+        isAbsoluteScaleCapTone(color.tone) ||
+        isAbsoluteScaleCapTone(next.tone)
+      ) {
+        continue;
+      }
+
+      const currentChroma = hexToOklch(color.hex).c;
+      const targetChroma = (hexToOklch(previous.hex).c + hexToOklch(next.hex).c) / 2;
+      const adjustment = clamp(
+        (targetChroma - currentChroma) * fairing.strength,
+        -fairing.maxChromaAdjustment,
+        fairing.maxChromaAdjustment
+      );
+
+      if (Math.abs(adjustment) < 0.0001) {
+        continue;
+      }
+
+      const adjustedColor = createScaleColorWithChroma(color, currentChroma + adjustment);
+
+      if (adjustedColor !== color) {
+        adjustedByIndex.set(index, adjustedColor);
+      }
+    }
+
+    if (adjustedByIndex.size === 0) {
+      break;
+    }
+
+    currentScale = currentScale.map((color, index) => adjustedByIndex.get(index) ?? color);
+  }
+
+  return currentScale;
+}
+
+function applyFinalLightnessMonotonicityGuard(
+  scale: TonalScaleColor[],
+  rule: ChromaCurveContinuityRule | undefined,
+  colorSpace: ColorInterpolationSpace,
+  preservedInputTone: ScaleTone
+): TonalScaleColor[] {
+  const monotonicity = rule?.finalLightnessMonotonicity;
+
+  if (!monotonicity || colorSpace !== 'oklch') {
+    return scale;
+  }
+
+  let changed = false;
+  const nextScale = [...scale];
+
+  for (let index = 1; index < nextScale.length; index += 1) {
+    const previous = nextScale[index - 1];
+    const color = nextScale[index];
+
+    if (
+      !previous ||
+      !color ||
+      color.tone === preservedInputTone ||
+      isAbsoluteScaleCapTone(previous.tone) ||
+      isAbsoluteScaleCapTone(color.tone)
+    ) {
+      continue;
+    }
+
+    const next = nextScale[index + 1];
+    const previousLightness = hexToOklch(previous.hex).l;
+    const currentLightness = hexToOklch(color.hex).l;
+    const maxLightness = previousLightness - monotonicity.minDelta;
+
+    if (currentLightness <= maxLightness) {
+      continue;
+    }
+
+    const nextLightness =
+      next && !isAbsoluteScaleCapTone(next.tone) && next.tone !== preservedInputTone
+        ? hexToOklch(next.hex).l
+        : undefined;
+    const targetLightness =
+      nextLightness !== undefined && nextLightness < maxLightness - monotonicity.minDelta
+        ? Math.min(maxLightness, (previousLightness + nextLightness) / 2)
+        : maxLightness;
+
+    nextScale[index] = createScaleColorWithLightness(
+      color,
+      colorSpace,
+      Math.max(targetLightness, currentLightness - monotonicity.maxLightnessDrop)
+    );
+    changed = true;
+  }
+
+  return changed ? nextScale : scale;
+}
+
+function applyFinalLightnessRhythmRedistribution(
+  scale: TonalScaleColor[],
+  rule: ChromaCurveContinuityRule | undefined,
+  colorSpace: ColorInterpolationSpace,
+  preservedInputTone: ScaleTone
+): TonalScaleColor[] {
+  const rhythm = rule?.finalLightnessRhythm;
+
+  if (!rhythm || colorSpace !== 'oklch') {
+    return scale;
+  }
+
+  let currentScale = scale;
+
+  for (const range of rhythm.ranges) {
+    currentScale = applyFinalLightnessRhythmRange(
+      currentScale,
+      range,
+      colorSpace,
+      preservedInputTone
+    );
+  }
+
+  return currentScale;
+}
+
+function applyFinalLightnessRhythmRange(
+  scale: TonalScaleColor[],
+  range: ChromaCurveLightnessRhythmRange,
+  colorSpace: ColorInterpolationSpace,
+  preservedInputTone: ScaleTone
+): TonalScaleColor[] {
+  const rangeIndexes = scale
+    .map((color, index) =>
+      color.tone >= range.startTone &&
+      color.tone <= range.endTone &&
+      !isAbsoluteScaleCapTone(color.tone)
+        ? index
+        : undefined
+    )
+    .filter((index): index is number => index !== undefined);
+
+  if (rangeIndexes.length < 3) {
+    return scale;
+  }
+
+  const protectedIndexes = new Set<number>([
+    rangeIndexes[0],
+    rangeIndexes[rangeIndexes.length - 1]
+  ]);
+  const preservedIndex = scale.findIndex((color) => color.tone === preservedInputTone);
+
+  if (rangeIndexes.includes(preservedIndex)) {
+    protectedIndexes.add(preservedIndex);
+  }
+
+  let nextScale = scale;
+
+  for (const [startIndex, endIndex] of resolveProtectedLightnessRhythmSegments(
+    rangeIndexes,
+    protectedIndexes
+  )) {
+    nextScale = redistributeLightnessRhythmSegment(
+      nextScale,
+      rangeIndexes,
+      startIndex,
+      endIndex,
+      range,
+      colorSpace,
+      protectedIndexes
+    );
+  }
+
+  return nextScale;
+}
+
+function resolveProtectedLightnessRhythmSegments(
+  rangeIndexes: number[],
+  protectedIndexes: Set<number>
+): Array<[number, number]> {
+  const protectedRangeIndexes = rangeIndexes.filter((index) => protectedIndexes.has(index));
+  const segments: Array<[number, number]> = [];
+
+  for (let index = 0; index < protectedRangeIndexes.length - 1; index += 1) {
+    const startIndex = protectedRangeIndexes[index];
+    const endIndex = protectedRangeIndexes[index + 1];
+
+    if (rangeIndexes.indexOf(endIndex) - rangeIndexes.indexOf(startIndex) >= 2) {
+      segments.push([startIndex, endIndex]);
+    }
+  }
+
+  return segments;
+}
+
+function redistributeLightnessRhythmSegment(
+  scale: TonalScaleColor[],
+  rangeIndexes: number[],
+  startIndex: number,
+  endIndex: number,
+  range: ChromaCurveLightnessRhythmRange,
+  colorSpace: ColorInterpolationSpace,
+  protectedIndexes: Set<number>
+): TonalScaleColor[] {
+  const startColor = scale[startIndex];
+  const endColor = scale[endIndex];
+
+  if (!startColor || !endColor) {
+    return scale;
+  }
+
+  const startLightness = hexToOklch(startColor.hex).l;
+  const endLightness = hexToOklch(endColor.hex).l;
+
+  if (startLightness <= endLightness) {
+    return scale;
+  }
+
+  const startRangeIndex = rangeIndexes.indexOf(startIndex);
+  const endRangeIndex = rangeIndexes.indexOf(endIndex);
+  const intervalCount = endRangeIndex - startRangeIndex;
+  const adjustedByIndex = new Map<number, TonalScaleColor>();
+
+  for (let rangeIndex = startRangeIndex + 1; rangeIndex < endRangeIndex; rangeIndex += 1) {
+    const scaleIndex = rangeIndexes[rangeIndex];
+    const color = scale[scaleIndex];
+
+    if (!color || protectedIndexes.has(scaleIndex)) {
+      continue;
+    }
+
+    const progress = (rangeIndex - startRangeIndex) / intervalCount;
+    const targetLightness = interpolate(startLightness, endLightness, progress);
+    const currentLightness = hexToOklch(color.hex).l;
+    const adjustedLightness =
+      currentLightness + (targetLightness - currentLightness) * range.strength;
+    const boundedLightness = clamp(
+      adjustedLightness,
+      currentLightness - range.maxLightnessShift,
+      currentLightness + range.maxLightnessShift
+    );
+    const adjusted = createScaleColorWithLightness(color, colorSpace, boundedLightness);
+
+    if (adjusted.hex !== color.hex) {
+      adjustedByIndex.set(scaleIndex, adjusted);
+    }
+  }
+
+  return adjustedByIndex.size === 0
+    ? scale
+    : scale.map((color, index) => adjustedByIndex.get(index) ?? color);
+}
+
+function applyFinalLightnessSpacingGuard(
+  scale: TonalScaleColor[],
+  rule: ChromaCurveContinuityRule | undefined,
+  colorSpace: ColorInterpolationSpace,
+  preservedInputTone: ScaleTone
+): TonalScaleColor[] {
+  const spacing = rule?.finalLightnessSpacing;
+
+  if (!spacing || colorSpace !== 'oklch') {
+    return scale;
+  }
+
+  let changed = false;
+  const nextScale = [...scale];
+  const originalLightnessByIndex = scale.map((color) => hexToOklch(color.hex).l);
+
+  for (let iteration = 0; iteration < spacing.maxIterations; iteration += 1) {
+    let iterationChanged = false;
+
+    for (let index = 1; index < nextScale.length; index += 1) {
+      const previous = nextScale[index - 1];
+      const color = nextScale[index];
+
+      if (!previous || !color || color.tone === preservedInputTone) {
+        continue;
+      }
+
+      const range = resolveFinalLightnessSpacingRange(previous, color, spacing);
+
+      if (!range) {
+        continue;
+      }
+
+      const previousLightness = hexToOklch(previous.hex).l;
+      const currentLightness = hexToOklch(color.hex).l;
+      const targetLightness = previousLightness - range.minDelta;
+
+      if (currentLightness <= targetLightness) {
+        continue;
+      }
+
+      const minimumLightness = originalLightnessByIndex[index] - range.maxLightnessDrop;
+      const adjusted = createScaleColorWithLightness(
+        color,
+        colorSpace,
+        Math.max(targetLightness, minimumLightness)
+      );
+
+      if (adjusted.hex === color.hex) {
+        continue;
+      }
+
+      nextScale[index] = adjusted;
+      changed = true;
+      iterationChanged = true;
+    }
+
+    if (!iterationChanged) {
+      break;
+    }
+  }
+
+  return changed ? nextScale : scale;
+}
+
+function resolveFinalLightnessSpacingRange(
+  previous: TonalScaleColor,
+  color: TonalScaleColor,
+  spacing: NonNullable<ChromaCurveContinuityRule['finalLightnessSpacing']>
+): ChromaCurveLightnessSpacingRange | undefined {
+  if (isAbsoluteScaleCapTone(previous.tone) || isAbsoluteScaleCapTone(color.tone)) {
+    return undefined;
+  }
+
+  return spacing.ranges.find(
+    (range) => previous.tone >= range.startTone && color.tone <= range.endTone
+  );
+}
+
+function resolveChromaCurveShapeSegment(
+  scale: TonalScaleColor[],
+  segment: ChromaCurveShapeSegment,
+  apexIndex: number,
+  firstChromaticIndex: number,
+  lastChromaticIndex: number
+): ChromaCurveResolvedShapeSegment | undefined {
+  const startIndex = resolveChromaCurveShapePointIndex(
+    scale,
+    segment.from,
+    apexIndex,
+    firstChromaticIndex,
+    lastChromaticIndex
+  );
+  const endIndex = resolveChromaCurveShapePointIndex(
+    scale,
+    segment.to,
+    apexIndex,
+    firstChromaticIndex,
+    lastChromaticIndex
+  );
+
+  return startIndex !== undefined && endIndex !== undefined && endIndex > startIndex
+    ? { startIndex, endIndex }
+    : undefined;
+}
+
+function resolveChromaCurveShapePointIndex(
+  scale: TonalScaleColor[],
+  point: ChromaCurveShapePoint,
+  apexIndex: number,
+  firstChromaticIndex: number,
+  lastChromaticIndex: number
+): number | undefined {
+  switch (point.kind) {
+    case 'chromatic-light-end':
+      return firstChromaticIndex;
+    case 'chromatic-dark-end':
+      return lastChromaticIndex;
+    case 'dynamic-apex':
+      return apexIndex;
+    case 'tone': {
+      const index = scale.findIndex((color) => color.tone === point.tone);
+
+      return index >= 0 ? index : undefined;
+    }
+  }
+}
+
+function resolveChromaCurveApexIndex(
+  scale: TonalScaleColor[],
+  chromaticIndexes: readonly number[]
+): number | undefined {
+  return chromaticIndexes.reduce<number | undefined>((bestIndex, index) => {
+    if (bestIndex === undefined) {
+      return index;
+    }
+
+    return hexToOklch(scale[index].hex).c > hexToOklch(scale[bestIndex].hex).c ? index : bestIndex;
+  }, undefined);
+}
+
+function applyChromaCurveShapeSegment(
+  scale: TonalScaleColor[],
+  rule: ChromaCurveContinuityRule,
+  segmentRule: ChromaCurveShapeSegment,
+  segment: ChromaCurveResolvedShapeSegment,
+  preservedInputTone: ScaleTone | undefined,
+  adjustedByIndex: Map<number, TonalScaleColor>
+): void {
+  const curveShape = rule.curveShape;
+  const { startIndex, endIndex } = segment;
+
+  if (
+    !curveShape ||
+    endIndex <= startIndex ||
+    endIndex - startIndex + 1 < curveShape.minSegmentSlots
+  ) {
+    return;
+  }
+
+  const startColor = scale[startIndex];
+  const endColor = scale[endIndex];
+
+  if (!startColor || !endColor) {
+    return;
+  }
+
+  const startOklch = hexToOklch(startColor.hex);
+  const endOklch = hexToOklch(endColor.hex);
+
+  for (let index = startIndex + 1; index < endIndex; index += 1) {
+    const color = scale[index];
+
+    if (
+      !color ||
+      (preservedInputTone !== undefined && color.tone === preservedInputTone) ||
+      isAbsoluteScaleCapTone(color.tone)
+    ) {
+      continue;
+    }
+
+    const currentOklch = hexToOklch(color.hex);
+    const lightnessProgress = normalizedProgress(currentOklch.l, startOklch.l, endOklch.l);
+    const targetProgress = resolveChromaCurveShapeProgress(
+      lightnessProgress,
+      segmentRule.easing,
+      segmentRule.midpointLift,
+      segmentRule.midpointLiftCenter,
+      segmentRule.midpointLiftRadius
+    );
+    const targetChroma = interpolate(startOklch.c, endOklch.c, targetProgress);
+    const segmentStrength = segmentRule.strength ?? curveShape.strength;
+    const maxChromaAdjustment = segmentRule.maxChromaAdjustment ?? curveShape.maxChromaAdjustment;
+    const adjustment = clamp(
+      (targetChroma - currentOklch.c) * segmentStrength,
+      -maxChromaAdjustment,
+      maxChromaAdjustment
+    );
+
+    if (Math.abs(adjustment) < 0.0001) {
+      continue;
+    }
+
+    const adjustedColor = createScaleColorWithChromaShoulder(
+      color,
+      currentOklch.c + adjustment,
+      segmentRule.maxLightnessDrop ?? 0
+    );
+
+    if (adjustedColor !== color) {
+      adjustedByIndex.set(index, adjustedColor);
+    }
+  }
+}
+
+function resolveChromaCurveShapeProgress(
+  progress: number,
+  easing: ChromaCurveShapeSegment['easing'],
+  midpointLift = 0,
+  midpointLiftCenter = 0.5,
+  midpointLiftRadius = 0.5
+): number {
+  const clampedProgress = clamp(progress, 0, 1);
+  const liftDistance = Math.abs(clampedProgress - clamp(midpointLiftCenter, 0, 1));
+  const liftRadius = Math.max(0.01, midpointLiftRadius);
+  const liftInfluence =
+    liftDistance >= liftRadius ? 0 : (1 - (liftDistance / liftRadius) ** 2) ** 2;
+  const liftedProgress =
+    midpointLift === 0
+      ? clampedProgress
+      : clamp(clampedProgress + midpointLift * liftInfluence, 0, 1);
+
+  switch (easing) {
+    case 'ease-in':
+      return liftedProgress ** 2;
+    case 'ease-out':
+      return 1 - (1 - liftedProgress) ** 2;
+    case 'smoothstep':
+      return smoothstep(liftedProgress);
+  }
+}
+
+function resolveVisualCurvePoint(
+  color: TonalScaleColor,
+  rule: ChromaCurveContinuityRule
+): { x: number; y: number } {
+  const oklch = hexToOklch(color.hex);
+
+  return {
+    x: oklch.l / 100,
+    y: oklch.c / rule.visualChromaMax
+  };
+}
+
+function resolveVectorLength(vector: { x: number; y: number }): number {
+  return Math.sqrt(vector.x ** 2 + vector.y ** 2);
+}
+
+function resolveTurnDegrees(
+  incoming: { x: number; y: number },
+  outgoing: { x: number; y: number }
+): number {
+  const incomingAngle = Math.atan2(incoming.y, incoming.x);
+  const outgoingAngle = Math.atan2(outgoing.y, outgoing.x);
+  const rawTurn = Math.abs(outgoingAngle - incomingAngle);
+  const normalizedTurn = rawTurn > Math.PI ? Math.PI * 2 - rawTurn : rawTurn;
+
+  return (normalizedTurn * 180) / Math.PI;
+}
+
+function resolveIncomingChromaMomentum(
+  scale: TonalScaleColor[],
+  anchorIndex: number,
+  sampleSize: number
+): number | undefined {
+  const positiveDeltas = Array.from({ length: sampleSize }, (_, offset) => {
+    const left = scale[anchorIndex - offset - 1];
+    const right = scale[anchorIndex - offset];
+
+    if (
+      !left ||
+      !right ||
+      isAbsoluteScaleCapTone(left.tone) ||
+      isAbsoluteScaleCapTone(right.tone)
+    ) {
+      return undefined;
+    }
+
+    const delta = hexToOklch(right.hex).c - hexToOklch(left.hex).c;
+
+    return delta > 0 ? delta : undefined;
+  }).filter((delta): delta is number => delta !== undefined);
+
+  return positiveDeltas.length === 0 ? undefined : Math.max(...positiveDeltas);
+}
+
+function resolveForwardApexHueDriftSign(
+  scale: TonalScaleColor[],
+  rule: ChromaCurveContinuityRule,
+  protectedAnchorIndex: number,
+  vividStartIndex: number,
+  incomingDelta: number
+): -1 | 0 | 1 {
+  const first = scale[protectedAnchorIndex + 1];
+
+  if (!first || rule.forwardApexShoulder.maxHueDrift <= 0) {
+    return 0;
+  }
+
+  const anchorChroma = hexToOklch(scale[protectedAnchorIndex].hex).c;
+  const progress = normalizedProgress(
+    protectedAnchorIndex + 1,
+    protectedAnchorIndex,
+    vividStartIndex
+  );
+  const shoulderProgress = resolveForwardApexShoulderProgress(
+    progress,
+    rule.forwardApexShoulder.peakProgress,
+    rule.forwardApexShoulder.progressGamma
+  );
+  const targetChroma =
+    anchorChroma + incomingDelta * rule.forwardApexShoulder.liftRatio * shoulderProgress;
+  const positiveChroma = resolveForwardHueDriftCandidateChroma(
+    first,
+    targetChroma,
+    rule.forwardApexShoulder.maxLightnessDrop,
+    rule.forwardApexShoulder.maxHueDrift,
+    hexToOklch(scale[protectedAnchorIndex].hex).h,
+    rule.forwardApexShoulder.maxHueDrift
+  );
+  const negativeChroma = resolveForwardHueDriftCandidateChroma(
+    first,
+    targetChroma,
+    rule.forwardApexShoulder.maxLightnessDrop,
+    -rule.forwardApexShoulder.maxHueDrift,
+    hexToOklch(scale[protectedAnchorIndex].hex).h,
+    rule.forwardApexShoulder.maxHueDrift
+  );
+
+  if (Math.abs(positiveChroma - negativeChroma) < 0.0001) {
+    return 0;
+  }
+
+  return positiveChroma > negativeChroma ? 1 : -1;
+}
+
+function resolveForwardApexShoulderProgress(
+  progress: number,
+  peakProgress: number,
+  progressGamma: number
+): number {
+  const safePeakProgress = clamp(peakProgress, 0.05, 0.95);
+
+  return progress <= safePeakProgress
+    ? progress / safePeakProgress
+    : ((1 - progress) / (1 - safePeakProgress)) ** progressGamma;
+}
+
+function resolveForwardHueDriftCandidateChroma(
+  color: TonalScaleColor,
+  targetChroma: number,
+  maxLightnessDrop: number,
+  hueDrift: number,
+  referenceHue: number,
+  maxActualHueDrift: number
+): number {
+  return hexToOklch(
+    createScaleColorWithForwardChromaShoulder(
+      color,
+      targetChroma,
+      maxLightnessDrop,
+      hueDrift,
+      referenceHue,
+      maxActualHueDrift
+    ).hex
+  ).c;
+}
+
 function applyChromaPeakGuard(
   scale: TonalScaleColor[],
   rule: ChromaPeakRule | undefined,
@@ -2915,6 +4696,57 @@ function createScaleColorWithChromaShoulder(
   return bestColor;
 }
 
+function createScaleColorWithForwardChromaShoulder(
+  color: TonalScaleColor,
+  targetChroma: number,
+  maxLightnessDrop: number,
+  hueDrift: number,
+  referenceHue: number,
+  maxActualHueDrift: number
+): TonalScaleColor {
+  const directColor = createScaleColorWithChromaShoulder(color, targetChroma, maxLightnessDrop);
+  const directChroma = hexToOklch(directColor.hex).c;
+
+  if (directChroma >= targetChroma - 0.0001 || Math.abs(hueDrift) <= 0.0001) {
+    return directColor;
+  }
+
+  const initialOklch = hexToOklch(color.hex);
+  let bestColor = directColor;
+  let bestChroma = directChroma;
+
+  for (let lightnessStep = 0; lightnessStep <= 4; lightnessStep += 1) {
+    const lightness = initialOklch.l - (maxLightnessDrop * lightnessStep) / 4;
+
+    const candidate = createScaleColorFromHex(
+      color,
+      oklchToHex({
+        ...initialOklch,
+        l: lightness,
+        c: clamp(targetChroma, 0, 0.5),
+        h: normalizeHue(initialOklch.h + hueDrift)
+      })
+    );
+    const candidateOklch = hexToOklch(candidate.hex);
+    const candidateChroma = candidateOklch.c;
+
+    if (resolveHueDistance(referenceHue, candidateOklch.h) > maxActualHueDrift + 0.5) {
+      continue;
+    }
+
+    if (candidateChroma > bestChroma + 0.0001) {
+      bestColor = candidate;
+      bestChroma = candidateChroma;
+    }
+  }
+
+  return bestColor;
+}
+
+function resolveHueDistance(left: number, right: number): number {
+  return Math.abs(shortestHueDelta(left, right));
+}
+
 function resolveStepLightnessDelta(
   scale: TonalScaleColor[],
   index: number,
@@ -3234,6 +5066,12 @@ function normalizedProgress(value: number, start: number, end: number): number {
     return 0;
   }
   return clamp((value - start) / (end - start), 0, 1);
+}
+
+function smoothstep(progress: number): number {
+  const clampedProgress = clamp(progress, 0, 1);
+
+  return clampedProgress * clampedProgress * (3 - 2 * clampedProgress);
 }
 
 function shortestHueDelta(from: number, to: number): number {

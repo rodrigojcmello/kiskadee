@@ -1,5 +1,5 @@
 import {
-  type ChromaPeakRule,
+  type ChromaCurveContinuityRule,
   type ColorInterpolationSpace,
   createDefaultCurveControls,
   DEFAULT_SCALE_DISTRIBUTION,
@@ -9,7 +9,6 @@ import {
   KISKADEE_BASE_TONE,
   type LuminousChromaRampRule,
   type MinimumLightnessStepRule,
-  type NodeContinuityRule,
   type TonalProfile,
   type TonalScaleColor
 } from './tonal-scale.ts';
@@ -77,73 +76,109 @@ const EXPERIMENTAL_LUMINOUS_CHROMA_RAMP = {
 const BALANCED_INPUT_PRESERVATION = {
   lightZoneEndTone: 10,
   anchorFit: 'input-lightness',
-  generationBase: 'preserved-input-anchor',
-  vividBoundaryBuffer: {
-    rewindSlots: 1
-  },
-  anchorContinuity: {
-    sampleSize: 2,
-    maxSlopeRatio: 3,
-    tolerance: 0.25,
-    maxRewindSlots: 2,
-    nearVividBoundary: {
-      maxDistance: 2,
-      maxSlopeRatio: 2.4,
-      tolerance: 0.25
-    },
-    adjacentVividBoundary: {
-      maxSlopeRatio: 1.75,
-      tolerance: 0.25
-    }
-  }
+  generationBase: 'preserved-input-anchor'
 } as const satisfies InputPreservationRule;
 
-const BALANCED_NODE_CONTINUITY = {
-  nodeTones: [10, 35],
-  maxNeighborRatio: 1.25,
-  tolerance: 0.25,
-  maxIterations: 5,
-  protectedAnchorAdjacentSeam: {
-    maxNeighborRatio: 1.25,
-    tolerance: 0.25
+const BALANCED_CHROMA_CURVE_CONTINUITY = {
+  maxTurnDegrees: 60,
+  maxIterations: 10,
+  visualChromaMax: 0.4,
+  minSegmentLength: 0.01,
+  smoothingStrength: 0.65,
+  finalLightnessMonotonicity: {
+    minDelta: 0.2,
+    maxLightnessDrop: 1.2
+  },
+  finalLightnessRhythm: {
+    ranges: [
+      {
+        startTone: 1,
+        endTone: 10,
+        strength: 0.7,
+        maxLightnessShift: 1
+      },
+      {
+        startTone: 10,
+        endTone: 30,
+        strength: 1,
+        maxLightnessShift: 1.5
+      },
+      {
+        startTone: 35,
+        endTone: 95,
+        strength: 0.4,
+        maxLightnessShift: 1.2
+      }
+    ]
+  },
+  finalLightnessSpacing: {
+    // Final guardrail only. Zone rhythm redistribution should own normal lightness spacing.
+    maxIterations: 3,
+    ranges: [
+      {
+        startTone: 1,
+        endTone: 10,
+        minDelta: 1.35,
+        maxLightnessDrop: 1.2
+      },
+      {
+        startTone: 10,
+        endTone: 30,
+        minDelta: 1.35,
+        maxLightnessDrop: 1.2
+      }
+    ]
+  },
+  curveShape: {
+    applyBeforeInputPreservation: true,
+    strength: 0.5,
+    minSegmentSlots: 4,
+    maxChromaAdjustment: 0.016,
+    bellCurve: {
+      darkBaseProgress: 0.78,
+      lightBaseProgress: 0.4,
+      darkBaseChromaRatio: 0.84,
+      lightBaseChromaRatio: 0.68,
+      lightZoneShoulder: {
+        endTone: 10,
+        shoulderProgress: 0.56
+      },
+      minimumArcLift: {
+        lightSideMinBowRatio: 0.13,
+        darkSideMinBowRatio: 0.16,
+        lightSideMaxBaseChromaRatio: 0.88,
+        darkSideMaxBaseChromaRatio: 0.94
+      },
+      strength: 1,
+      maxChromaAdjustment: 0.03,
+      maxLightnessDrop: 0.4,
+      lightSideMaxLightnessDrop: 1.1,
+      darkSideMaxLightnessDrop: 0.45
+    },
+    fairing: {
+      iterations: 2,
+      strength: 0.35,
+      maxChromaAdjustment: 0.006
+    }
+  },
+  protectedApexShoulder: {
+    radius: 3,
+    dropMin: 0.004,
+    dropRatio: 0.025,
+    dropGamma: 1.45,
+    lightSideMaxLightnessDrop: 0.75
+  },
+  forwardApexShoulder: {
+    sampleSize: 4,
+    minIncomingDelta: 0.004,
+    maxExitDeltaRatio: 0.4,
+    liftRatio: 0.72,
+    peakProgress: 0.25,
+    progressGamma: 1.2,
+    maxLightnessDrop: 0,
+    maxHueDrift: 24
   }
-} as const satisfies NodeContinuityRule;
-
-const BALANCED_CHROMA_PEAK_GUARD = {
-  prominenceThreshold: 0.012,
-  allowedDropMin: 0.008,
-  allowedDropRatio: 0.04,
-  maxRadius: 2,
-  vividStartShoulder: {
-    allowedDropMin: 0.006,
-    allowedDropRatio: 0.024,
-    maxRadius: 2,
-    preVividMaxLightnessDrop: 0.75
-  },
-  lightZoneTangent: {
-    maxAnchorTone: 10,
-    sampleSize: 2,
-    minIncomingDelta: 0.012,
-    liftRatio: 0.55,
-    progressGamma: 1.2
-  },
-  nearVividBoundary: {
-    maxDistance: 2,
-    prominenceThreshold: 0.008,
-    allowedDropMin: 0.004,
-    allowedDropRatio: 0.025,
-    maxRadius: 2,
-    allowVividSide: true
-  },
-  dominantPlateau: {
-    equalityTolerance: 0.012,
-    prominenceThreshold: 0.009,
-    allowedDropMin: 0.016,
-    allowedDropRatio: 0.08,
-    maxRadius: 2,
-    maxPlateauSlots: 3
-  }
-} as const satisfies ChromaPeakRule;
+} as const satisfies ChromaCurveContinuityRule;
 
 const SOFT_DARK_SATURATION_CURVE = {
   type: 'soft-dark',
@@ -218,11 +253,8 @@ const SOFT_DARK_WCAG_VIVID_PROFILE = {
     darkFloorLightness: 20
   },
   saturationCurve: SOFT_DARK_SATURATION_CURVE,
-  minimumLightnessStep: EXPERIMENTAL_MINIMUM_LIGHTNESS_STEP,
-  luminousChromaRamp: EXPERIMENTAL_LUMINOUS_CHROMA_RAMP,
   inputPreservation: BALANCED_INPUT_PRESERVATION,
-  nodeContinuity: BALANCED_NODE_CONTINUITY,
-  chromaPeak: BALANCED_CHROMA_PEAK_GUARD,
+  chromaCurveContinuity: BALANCED_CHROMA_CURVE_CONTINUITY,
   vividContrast: FIXED_VIVID_WHITE_TEXT_CONTRAST
 } satisfies TonalProfile;
 

@@ -265,6 +265,13 @@ p,
   stroke-width: 3;
 }
 
+.planned-curve-path {
+  fill: none;
+  stroke: #ef4444;
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
 .reference-point {
   fill: #ffffff;
   stroke: #7b8794;
@@ -273,6 +280,18 @@ p,
 
 .generated-point {
   fill: var(--accent);
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+
+.generated-node-point {
+  fill: #26c6da;
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+
+.planned-curve-point {
+  fill: #ef4444;
   stroke: #ffffff;
   stroke-width: 2;
 }

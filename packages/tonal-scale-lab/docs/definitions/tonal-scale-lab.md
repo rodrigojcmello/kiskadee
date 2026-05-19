@@ -62,36 +62,41 @@ Current profiles:
   input at that slot while the surrounding curve is resolved. The current light-zone boundary for
   this preservation experiment is `K10`; luminous inputs that are lighter than that boundary stay
   inside `K1..K10`.
-  If a non-vivid-safe input would otherwise land on the last pre-vivid emitted slot, `Balanced`
-  rewinds the exact input by one emitted slot so that last pre-vivid slot can bridge into the
-  contrast-safe `K35`; when this happens, `K35` is resolved as the lightest vivid-start color that
-  still passes `3:1` against white.
-  Its preserved-anchor continuity guard can then rewind that pre-vivid anchor by up to `2` more
-  emitted slots when the average OKL lightness delta after the anchor is more than `3x + 0.25`
-  larger than the average before it. If the preserved input is immediately before the vivid start,
-  the same guard uses a stricter `1.75x + 0.25` limit to avoid a direct hard edge between the input
-  anchor and `K35`. If a non-vivid-safe preserved input is within `2` emitted slots before the vivid
-  start, the guard also uses a near-vivid limit of `2.4x + 0.25`; this lets luminous colors such as
-  `#00bcd4` settle at `K26` instead of holding the exact color at `K28` and forcing `K28` and `K30`
-  to carry the whole bridge into `K35`.
-  It also applies a node continuity guard at `K10` and `K35`: each seam is compared against the
-  larger neighboring OKL lightness delta and cannot exceed that local reference by more than
-  `1.25x + 0.25` OKL lightness points without redistributing the excess through the adjacent segment.
-  If the seam touches the protected preserved-input anchor, the same generic rule judges it from the
-  anchor-side rhythm instead of borrowing the wider rhythm from the other side. Node continuity is
-  checked again after chroma-shape smoothing so chroma shoulders cannot leave a new lightness seam
-  behind.
-  Finally, its chroma shape guard checks the preserved input anchor: when the anchor is a sharp OKL
-  chroma summit, nearby emitted slots are raised locally with radius `1` and, only if needed, radius
-  `2`, while the input hex remains exact. Near the vivid boundary, this guard uses a lower chroma
-  prominence threshold, a smaller allowed chroma drop, and a directional radius into `K35` so small
-  pre-vivid chroma spikes become shoulders instead of visible peaks. It also detects narrow dominant
-  plateaus around the input, such as red-like `K30/K35` tops, and raises the plateau shoulders so the
-  preserved input is less visually obvious without changing the exact input hex. If the exact input
-  lands at `K35`, `Balanced` applies a stricter vivid-start shoulder so red-like anchors do not read
-  as a one-point chroma summit. If a luminous input lands inside `K1..K10` after a steep chroma rise,
-  `Balanced` can lift the following slots into a forward chroma shoulder, so yellow-like anchors do
-  not have to remain the local chroma maximum.
+  Its current simplification pass keeps the exact input anchor and vivid contrast active while
+  leaving the older boundary-buffer, preserved-anchor continuity, early minimum lightness step,
+  luminous chroma ramp, and node-continuity repairs disabled. The active shape repair is
+  `chromaCurveContinuity`: it reads the OKLCH chart as a curve, detects abrupt turn angles, smooths
+  adjustable points by local relaxation, keeps the exact input anchor protected, and then applies
+  either a rounded protected-apex shoulder or a forward-apex shoulder. Red and blue inputs at `K35`
+  may still use `K35` as the top of the chroma curve, but nearby generated slots are lifted into a
+  rounded shoulder. Luminous inputs can keep rising after the exact input anchor before bending back
+  toward the vivid range. Because saturated yellow often sits on the sRGB gamut cusp, the forward
+  shoulder has a bounded hue-drift rescue so generated slots can gain chroma without changing the
+  exact input hex. The current experiment also runs an explicit `curveShape` model based on five
+  virtual graph points rather than existing `K<n>` nodes: graph entry, dark-side arc base, rounded
+  chroma apex, light-side arc base, and graph exit. Those virtual points are resolved from the
+  chromatic endpoints and dynamic apex in the OKLCH chart, then connected with monotone cubic
+  Hermite interpolation so the tails and apex are curved instead of segmented into long straight
+  runs or pointed summits. `K10`, `K20`, `K50`, and `K55` are emitted samples on that line, not
+  curve-shape nodes. The model can use a small bounded lightness drop so colors that are already at
+  their same-L sRGB chroma limit can still follow the intended curve. It also applies a minimum
+  arc-lift rule: each virtual arc base must sit above the straight chord between its endpoint and
+  apex by a configured bow ratio, with separate light-side and dark-side lightness-drop budgets.
+  That raises conservative near-straight runs without making `K20`, `K45`, or `K55` special-case
+  nodes. The planned curve projection can also insert a local `K1..K10` light-zone shoulder and a
+  `K10` exit point, making the extra chroma needed by luminous light tones visible without turning
+  that shoulder into the global apex. `Balanced` applies this shape once before exact input
+  preservation to define the base structural curve, then again after the exact input is inserted as
+  a protected dynamic point. If the exact input already lands on a structural node, that preservation
+  step keeps the planned curve
+  instead of redrawing the whole surrounding interval. A bounded fairing pass smooths generated
+  interior points that would otherwise create one-point subcurves. Final lightness handling is split
+  into three layers: a monotonicity guard fixes generated slots that become locally inverted after
+  sRGB fitting, `finalLightnessRhythm` redistributes the configured `K1..K10`, `K10..K30`, and
+  `K35..K95` zones from protected endpoints, and final spacing ranges for `K1..K10` and `K10..K30`
+  remain as bounded guardrails. The spacing check can iterate within a bounded lightness-drop budget
+  to account for OKLCH-to-sRGB quantization, but the desired normal distribution now belongs to the
+  zone-rhythm pass rather than to one-point minimum-delta repairs.
 - `Sophisticated - Auto Mid Peak + 3:1 Vivid`: follows the same vivid-contrast behavior, but treats
   the profile base tone as the OKL chroma peak. Both very light and very dark tones become less
   chromatic. This profile should be recalibrated again after the `Balanced` dark-chroma experiment
@@ -110,14 +115,14 @@ apply any spacing rules, and only then report the closest emitted fit for the in
 legal preserved-input tone as the generation base, and keeps the exact input hex at that anchor. The
 legal-fit rules are: inputs that fail the `3:1` white-text vivid target cannot be preserved at `K35`
 or darker, and inputs lighter than the `K10` boundary must remain inside the current `K1..K10` light
-zone. If a non-vivid-safe input would collide with the last pre-vivid slot, the input is buffered one
-emitted slot earlier and the last pre-vivid slot becomes bridge material. If that still leaves a
-steep post-anchor lightness slope, the preserved-anchor continuity guard can rewind the input again
-and regenerate the local bridge. The node continuity guard then smooths the `K10` and `K35`
-connections and reclamps the vivid range. The chroma shape guard then smooths sharp local chroma
-summits and short dominant chroma plateaus around the preserved input.
+zone. In the current simplification pass, the older boundary buffer, preserved-anchor continuity
+guard, node continuity guard, minimum lightness step, and luminous chroma ramp are intentionally
+inactive for `Balanced`, and their old commented snippets are not kept beside the active profile
+configuration. The active chroma-curve continuity guard then smooths sharp local curve turns around
+the preserved input, including protected apexes, luminous forward apexes, and the configured
+five-point virtual `curveShape` used to avoid longer nearly-straight runs.
 `Striking` and `Sophisticated` do not use these preservation, boundary-buffer, anchor-continuity,
-node-continuity, or chroma-shape rules yet.
+node-continuity, or chroma-curve continuity rules yet.
 
 `K55` remains a useful state-mapping default such as `vividRest`, and it is still the projected base
 slot for the `Fluent 2 Blue` reference. It is no longer the hidden generation center for `Balanced`.
@@ -126,7 +131,7 @@ The current vivid target experiment uses a fixed `3:1` contrast target for every
 replaces the earlier adaptive experiment that used a stronger `4.5:1` target for darker colors and
 softened luminous colors down to `3:1`.
 
-The commercial auto-fit profiles also enforce experimental minimum OKL lightness steps after the
+`Striking` and `Sophisticated` also enforce experimental minimum OKL lightness steps after the
 contrast and bridge adjustments:
 
 - Default chromatic spacing: at least `1.5` OKL lightness points from the previous emitted slot
@@ -138,12 +143,12 @@ contrast and bridge adjustments:
 - This is a lightness-spacing rule, not a contrast rule, and it can be revised or removed if the
   visual result proves too rigid.
 
-Luminous inputs, currently input white contrast `<= 2.4:1`, no longer receive a stronger lightness
-step. They keep the same `1.5` OKL lightness spacing as every other hue. Instead, the commercial
-OKLCH profiles cap the initial chroma ramp through `K10`: chroma starts at `30%` of the input OKL
-chroma and eases toward `90%` by `K10` with `progressGamma: 0.55`. This replaced the earlier
-`2`-point luminous lightness step because very saturated yellow became too vivid too early in
-`K1..K3`, while non-luminous colors such as the reference blue were already reading well.
+Luminous inputs in those profiles, currently input white contrast `<= 2.4:1`, no longer receive a
+stronger lightness step. They keep the same `1.5` OKL lightness spacing as every other hue. Instead,
+the commercial OKLCH profiles cap the initial chroma ramp through `K10`: chroma starts at `30%` of
+the input OKL chroma and eases toward `90%` by `K10` with `progressGamma: 0.55`. This replaced the
+earlier `2`-point luminous lightness step because very saturated yellow became too vivid too early
+in `K1..K3`, while non-luminous colors such as the reference blue were already reading well.
 
 Current color findings:
 
@@ -186,6 +191,17 @@ is the chromatic-strength axis, and OKLCH hue interpolation is used for chromati
 The Next.js UI is the primary feedback surface for this project. It shows the generated scale, the
 active profile reference scale, and an OKLCH lightness/chroma chart so curve changes are visible
 immediately.
+For profiles with a planned chroma curve, the chart also renders the planned curve as a red
+diagnostic overlay. The red line and red virtual points show the post-preservation curve target,
+including optional local constraints such as the `K1..K10` light-zone shoulder. The blue points
+remain the final generated `K<n>` colors.
+Structural chromatic nodes are highlighted with `#26C6DA` on top of the generated points. For the
+current `Balanced` model this means `K1`, `K10`, `K35`, `K95`, and the dynamic preserved input
+anchor. `K55` is not highlighted because it is not a generation node in this model. All chart point
+markers use the same `r=4` radius so node status is communicated by color, not marker size.
+The UI persists the current base color in `?color=<hex>` without the `#` prefix. When that query
+parameter is missing or invalid, the lab falls back to the default Fluent blue; when the user changes
+to another valid color, browser refresh and back/forward navigation preserve the color state.
 The app uses port `3001` by default so it can run alongside `@kiskadee/showcase` on port `3000`.
 
 The CLI helper accepts an optional profile id after the hex value:
