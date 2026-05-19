@@ -241,11 +241,15 @@ collisions after rhythm, contrast, curve shape, and sRGB fitting have already ru
 `Balanced` also guards the preserved input anchor against becoming a visibly dominant OKL chroma
 feature.
 
-This is primarily a local chroma rule. It does not change the exact input color and it does not
-regenerate the whole scale. Its job is to avoid a visible "summit", narrow high-chroma plateau, or
-broken chroma tangent where the preserved input is much easier to identify than the surrounding
-emitted slots. The vivid-start shoulder may also lower a pre-vivid shoulder by a small OKL lightness
-amount when sRGB gamut cannot provide the requested chroma at the original lightness.
+This is primarily a local chroma rule. It does not change the exact input color. When the explicit
+`curveShape` model is active, the preserved input also becomes a `preserved-input-anchor` graph
+constraint after exact input preservation and wins duplicate-lightness collisions with other virtual
+points, so the final planned red curve is recalculated through the fixed input instead of treating
+that input as a post-curve deviation. The guard's job is then to avoid a visible "summit", narrow
+high-chroma plateau, or broken chroma tangent where the preserved input is much easier to identify
+than the surrounding emitted slots. The vivid-start shoulder may also lower a pre-vivid shoulder by a
+small OKL lightness amount when sRGB gamut cannot provide the requested chroma at the original
+lightness.
 
 Current peak rule:
 

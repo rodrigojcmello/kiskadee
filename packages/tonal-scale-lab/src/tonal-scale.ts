@@ -135,6 +135,7 @@ export type ChromaCurveProjectionRole =
   | 'dark-graph-end'
   | 'dark-arc-base'
   | 'apex'
+  | 'preserved-input-anchor'
   | 'light-arc-base'
   | 'light-zone-exit'
   | 'light-zone-shoulder'
@@ -1481,7 +1482,8 @@ function applyInputPreservation(
   if (diagnostics) {
     diagnostics.plannedChromaCurve = resolveChromaCurveProjection(
       finalScale,
-      profile.chromaCurveContinuity
+      profile.chromaCurveContinuity,
+      preservedAnchor.tone
     );
   }
 
@@ -3054,7 +3056,8 @@ function applyChromaCurveShapeModel(
 
 function resolveChromaCurveProjection(
   scale: TonalScaleColor[],
-  rule: ChromaCurveContinuityRule | undefined
+  rule: ChromaCurveContinuityRule | undefined,
+  preservedInputTone?: ScaleTone
 ): ChromaCurveProjection | undefined {
   const bellRule = rule?.curveShape?.bellCurve;
 
@@ -3074,7 +3077,8 @@ function resolveChromaCurveProjection(
   }
 
   const spline = resolveChromaCurveBellSpline(scale, bellRule, firstIndex, apexIndex, lastIndex, {
-    includeLightZoneShoulder: true
+    includeLightZoneShoulder: true,
+    preservedInputTone
   });
 
   return spline ? createChromaCurveProjection(spline) : undefined;
@@ -3119,7 +3123,9 @@ function applyChromaCurveBellModel(
     return scale;
   }
 
-  const spline = resolveChromaCurveBellSpline(scale, bellRule, firstIndex, apexIndex, lastIndex);
+  const spline = resolveChromaCurveBellSpline(scale, bellRule, firstIndex, apexIndex, lastIndex, {
+    preservedInputTone
+  });
 
   if (!spline) {
     return scale;
@@ -3182,7 +3188,10 @@ function resolveChromaCurveBellSpline(
   firstIndex: number,
   apexIndex: number,
   lastIndex: number,
-  options: { includeLightZoneShoulder?: boolean } = {}
+  options: {
+    includeLightZoneShoulder?: boolean;
+    preservedInputTone?: ScaleTone;
+  } = {}
 ): ChromaCurveBellSpline | undefined {
   const lightEnd = scale[firstIndex];
   const apex = scale[apexIndex];
@@ -3225,6 +3234,7 @@ function resolveChromaCurveBellSpline(
       chroma: apexOklch.c,
       sourceIndex: apexIndex
     },
+    ...resolvePreservedInputAnchorBellPoint(scale, options.preservedInputTone),
     {
       role: 'light-arc-base',
       lightness: interpolate(apexOklch.l, lightEndOklch.l, clamp(bellRule.lightBaseProgress, 0, 1)),
@@ -3257,6 +3267,33 @@ function resolveChromaCurveBellSpline(
     tangents: resolveMonotoneCubicTangents(points),
     apexLightness: apexOklch.l
   };
+}
+
+function resolvePreservedInputAnchorBellPoint(
+  scale: TonalScaleColor[],
+  preservedInputTone: ScaleTone | undefined
+): ChromaCurveBellPoint[] {
+  if (preservedInputTone === undefined) {
+    return [];
+  }
+
+  const anchorIndex = scale.findIndex((color) => color.tone === preservedInputTone);
+  const anchor = scale[anchorIndex];
+
+  if (!anchor || isAbsoluteScaleCapTone(anchor.tone)) {
+    return [];
+  }
+
+  const anchorOklch = hexToOklch(anchor.hex);
+
+  return [
+    {
+      role: 'preserved-input-anchor',
+      lightness: anchorOklch.l,
+      chroma: anchorOklch.c,
+      sourceIndex: anchorIndex
+    }
+  ];
 }
 
 function resolveLightZoneShoulderBellPoints(
@@ -3358,11 +3395,21 @@ function normalizeChromaCurveBellPoints(
     const previous = normalizedPoints[normalizedPoints.length - 1];
 
     if (previous && Math.abs(previous.lightness - point.lightness) < 0.0001) {
-      const selectedPoint = previous.chroma >= point.chroma ? previous : point;
+      const selectedPoint =
+        previous.role === 'preserved-input-anchor'
+          ? previous
+          : point.role === 'preserved-input-anchor'
+            ? point
+            : previous.chroma >= point.chroma
+              ? previous
+              : point;
       normalizedPoints[normalizedPoints.length - 1] = {
         role: selectedPoint.role,
         lightness: previous.lightness,
-        chroma: Math.max(previous.chroma, point.chroma),
+        chroma:
+          selectedPoint.role === 'preserved-input-anchor'
+            ? selectedPoint.chroma
+            : Math.max(previous.chroma, point.chroma),
         sourceIndex: selectedPoint.sourceIndex
       };
       continue;

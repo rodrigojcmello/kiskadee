@@ -140,10 +140,11 @@ current `Balanced` shape has graph entry, dark-side arc base, rounded chroma ape
 base, and graph exit. Those points are resolved from the chromatic endpoints and the dynamic apex in
 the OKLCH chart, then connected with monotone cubic Hermite interpolation. The apex tangent is
 rounded, the tails ease into the curve, and long straight runs are avoided without letting `K10`,
-`K20`, `K50`, or `K55` become accidental sub-nodes. The exact input anchor remains fixed; only
-generated interior points receive bounded chroma adjustments toward the virtual curve. The model may
-allow a small bounded lightness drop when a color is already at the sRGB chroma limit for its current
-hue and lightness.
+`K20`, `K50`, or `K55` become accidental sub-nodes. After input preservation, the exact input anchor
+is added to that graph as a `preserved-input-anchor` constraint and wins duplicate-lightness
+collisions with other virtual points. The anchor remains fixed; generated interior points receive
+bounded chroma adjustments toward the virtual curve. The model may allow a small bounded lightness
+drop when a color is already at the sRGB chroma limit for its current hue and lightness.
 
 The virtual bases also have a minimum arc-lift rule. Each side compares its virtual arc base against
 the straight chord from endpoint to apex; if the base would sit too close to that chord, the base
@@ -164,17 +165,19 @@ curve is visible in the red line.
 
 `Balanced` applies that shape in two passes. The first pass runs before exact input preservation and
 creates an anchorless base curve from the chromatic endpoints and dynamic apex. The second pass runs
-after the exact input has been inserted as a protected dynamic point. The input color still defines
-the hue/chroma/gamut family for the plan; the hex-exact anchor is what is delayed. When the exact
-input lands on an existing structural node, the preservation step keeps the planned curve instead of
+after the exact input has been inserted as a protected dynamic point, then promotes that protected
+anchor into the spline as a real `preserved-input-anchor` point. The input color still defines the
+hue/chroma/gamut family for the plan; the hex-exact anchor is what is delayed. When the exact input
+lands on an existing structural node, the preservation step keeps the planned curve instead of
 redrawing the whole surrounding interval as a straight OKLCH interpolation.
 
 The lab exposes this planned curve as chart diagnostics. The red chart line is the sampled curve
 target captured after exact input preservation, contrast, and curve-shape continuity. The red points
-are the virtual graph constraints, including the optional local light-zone shoulder points. The
-generated blue points are still the final emitted scale, which makes it possible to see whether a
-sample is following the planned model or still drifting because of gamut fitting, contrast,
-lightness-drop budgets, or fairing.
+are the virtual graph constraints, including the optional local light-zone shoulder points and the
+preserved input anchor when that anchor is part of the final spline. The generated blue points are
+still the final emitted scale, which makes it possible to see whether a sample is following the
+planned model or still drifting because of gamut fitting, contrast, lightness-drop budgets, or
+fairing.
 
 After the final contrast pass, `Balanced` also applies a small OKL lightness monotonicity guard.
 This guard is not a curve-shaping tool; it is a sanity pass for generated slots that become locally

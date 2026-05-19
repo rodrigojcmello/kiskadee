@@ -78,18 +78,21 @@ Current profiles:
   chromatic endpoints and dynamic apex in the OKLCH chart, then connected with monotone cubic
   Hermite interpolation so the tails and apex are curved instead of segmented into long straight
   runs or pointed summits. `K10`, `K20`, `K50`, and `K55` are emitted samples on that line, not
-  curve-shape nodes. The model can use a small bounded lightness drop so colors that are already at
-  their same-L sRGB chroma limit can still follow the intended curve. It also applies a minimum
-  arc-lift rule: each virtual arc base must sit above the straight chord between its endpoint and
-  apex by a configured bow ratio, with separate light-side and dark-side lightness-drop budgets.
+  curve-shape nodes. After input preservation, the exact input anchor is promoted into the spline as
+  a `preserved-input-anchor` virtual point and wins duplicate-lightness collisions, so the final red
+  curve passes through the fixed input instead of treating it as a later deviation. The model can use
+  a small bounded lightness drop so colors that are already at their same-L sRGB chroma limit can
+  still follow the intended curve. It also applies a minimum arc-lift rule: each virtual arc base
+  must sit above the straight chord between its endpoint and apex by a configured bow ratio, with
+  separate light-side and dark-side lightness-drop budgets.
   That raises conservative near-straight runs without making `K20`, `K45`, or `K55` special-case
   nodes. The planned curve projection can also insert a local `K1..K10` light-zone shoulder and a
   `K10` exit point, making the extra chroma needed by luminous light tones visible without turning
   that shoulder into the global apex. `Balanced` applies this shape once before exact input
   preservation to define the base structural curve, then again after the exact input is inserted as
-  a protected dynamic point. If the exact input already lands on a structural node, that preservation
-  step keeps the planned curve
-  instead of redrawing the whole surrounding interval. A bounded fairing pass smooths generated
+  a protected dynamic point and graph constraint. If the exact input already lands on a structural
+  node, that preservation step keeps the planned curve instead of redrawing the whole surrounding
+  interval. A bounded fairing pass smooths generated
   interior points that would otherwise create one-point subcurves. Final lightness handling is split
   into three layers: a monotonicity guard fixes generated slots that become locally inverted after
   sRGB fitting, `finalLightnessRhythm` redistributes the configured `K1..K10`, `K10..K30`, and
@@ -194,8 +197,8 @@ active profile reference scale, and an OKLCH lightness/chroma chart so curve cha
 immediately.
 For profiles with a planned chroma curve, the chart also renders the planned curve as a red
 diagnostic overlay. The red line and red virtual points show the post-preservation curve target,
-including optional local constraints such as the `K1..K10` light-zone shoulder. The blue points
-remain the final generated `K<n>` colors.
+including optional local constraints such as the `K1..K10` light-zone shoulder and the exact
+preserved input anchor. The blue points remain the final generated `K<n>` colors.
 Structural chromatic nodes are highlighted with `#26C6DA` on top of the generated points. For the
 current `Balanced` model this means `K1`, `K10`, `K35`, `K95`, and the dynamic preserved input
 anchor. `K55` is not highlighted because it is not a generation node in this model. All chart point
