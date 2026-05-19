@@ -189,6 +189,15 @@ deliberately different from adjusting only the collapsed interval; if `K22/K24` 
 whole `K10..K30` neighborhood is redistributed from its endpoints so the fix does not simply push
 the compression into `K24/K26`.
 
+`finalLightnessRhythm` also owns the first transition-delta solver between adjacent rhythm zones.
+When one zone ends and another begins with a gap between them, such as `K30 -> K35`, the boundary
+delta is resolved from the average outgoing rhythm before the boundary and the average incoming
+rhythm after it. If the boundary interval is too compressed, the solver widens that interval and then
+redistributes a short local window on the adjusted side. This keeps `K30 -> K35` from being much
+smaller than both `K28 -> K30` and `K35 -> K40` without turning the final spacing guard into the
+normal distribution mechanism. The first implementation intentionally handles separated zone
+boundaries; shared-boundary nodes such as `K10` still belong to the broader generic node model.
+
 `Balanced` still keeps final lightness spacing guards, but they are now an airbag rather than the
 normal steering mechanism. Neighboring slots in sensitive ranges must keep enough OKL lightness
 distance to remain individually readable after input preservation, contrast, curve shaping, gamut
@@ -197,11 +206,6 @@ lightness points for `K1..K10` and `K10..K30`. The exact preserved input anchor 
 so this guard may only move generated slots. The pass is intentionally iterative with a bounded
 total lightness-drop budget per slot, because converting a requested OKLCH lightness back to sRGB can
 land slightly above the requested value.
-
-The remaining rhythm step is transition-delta solving between zones. When a structural boundary sits
-between different rhythms, such as a `1.5` average-delta zone next to a `4` average-delta zone, the
-boundary delta should be resolved from both neighboring rhythms and the surrounding zone should be
-recalculated together.
 
 Saturated yellow can expose an sRGB gamut cusp where keeping the same hue makes higher post-anchor
 OKL chroma physically unavailable. For that case, the forward shoulder has a bounded hue-drift
@@ -412,7 +416,10 @@ accessibility guarantee.
   the post-anchor OKL lightness slope is still too steep. In the current simplification pass those
   older lightness and node repair passes are disabled for `Balanced`; its active shape repair is the
   chroma curve-continuity guard and the five-point virtual curve-shape model, which smooth abrupt
-  OKLCH chart turns around the exact input without changing the input hex.
+  OKLCH chart turns around the exact input without changing the input hex. Normal emitted-slot
+  lightness spacing is handled by `finalLightnessRhythm`, including the transition-delta solver for
+  separated rhythm-zone boundaries such as `K30 -> K35`; the final spacing guard remains a bounded
+  fallback for residual collisions.
 - `Auto Mid Peak + 3:1 Vivid` keeps the vivid guard, but uses the profile base tone as the
   chroma peak. Chroma bends down toward both the light and dark ends of the scale. It now shares the
   healthy `darkFloorLightness: 20` endpoint with `Balanced`, but still needs a follow-up calibration

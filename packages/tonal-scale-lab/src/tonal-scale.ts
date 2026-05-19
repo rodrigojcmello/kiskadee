@@ -363,6 +363,16 @@ export type ChromaCurveLightnessRhythmRange = {
   maxLightnessShift: number;
 };
 
+export type ChromaCurveLightnessRhythmTransitionRule = {
+  sampleSize: number;
+  targetMix: number;
+  tolerance: number;
+  strength: number;
+  maxLightnessShift: number;
+  redistributionSlots: number;
+  redistributionStrength: number;
+};
+
 export type ChromaCurveLightnessSpacingRange = {
   startTone: ScaleTone;
   endTone: ScaleTone;
@@ -382,6 +392,7 @@ export type ChromaCurveContinuityRule = {
   };
   finalLightnessRhythm?: {
     ranges: readonly ChromaCurveLightnessRhythmRange[];
+    transitionDeltas?: ChromaCurveLightnessRhythmTransitionRule;
   };
   finalLightnessSpacing?: {
     maxIterations: number;
@@ -3607,7 +3618,13 @@ function applyFinalLightnessRhythmRedistribution(
     );
   }
 
-  return currentScale;
+  return applyFinalLightnessRhythmTransitions(
+    currentScale,
+    rhythm.ranges,
+    rhythm.transitionDeltas,
+    colorSpace,
+    preservedInputTone
+  );
 }
 
 function applyFinalLightnessRhythmRange(
@@ -3735,6 +3752,227 @@ function redistributeLightnessRhythmSegment(
   return adjustedByIndex.size === 0
     ? scale
     : scale.map((color, index) => adjustedByIndex.get(index) ?? color);
+}
+
+function applyFinalLightnessRhythmTransitions(
+  scale: TonalScaleColor[],
+  ranges: readonly ChromaCurveLightnessRhythmRange[],
+  transitionRule: ChromaCurveLightnessRhythmTransitionRule | undefined,
+  colorSpace: ColorInterpolationSpace,
+  preservedInputTone: ScaleTone
+): TonalScaleColor[] {
+  if (!transitionRule || ranges.length < 2) {
+    return scale;
+  }
+
+  const sortedRanges = [...ranges].sort((left, right) => left.startTone - right.startTone);
+  let currentScale = scale;
+
+  for (let index = 0; index < sortedRanges.length - 1; index += 1) {
+    currentScale = applyFinalLightnessRhythmTransition(
+      currentScale,
+      sortedRanges[index],
+      sortedRanges[index + 1],
+      transitionRule,
+      colorSpace,
+      preservedInputTone
+    );
+  }
+
+  return currentScale;
+}
+
+function applyFinalLightnessRhythmTransition(
+  scale: TonalScaleColor[],
+  leftRange: ChromaCurveLightnessRhythmRange,
+  rightRange: ChromaCurveLightnessRhythmRange,
+  transitionRule: ChromaCurveLightnessRhythmTransitionRule,
+  colorSpace: ColorInterpolationSpace,
+  preservedInputTone: ScaleTone
+): TonalScaleColor[] {
+  const leftBoundaryIndex = scale.findIndex((color) => color.tone === leftRange.endTone);
+  const rightBoundaryIndex = scale.findIndex((color) => color.tone === rightRange.startTone);
+
+  if (
+    leftBoundaryIndex === -1 ||
+    rightBoundaryIndex === -1 ||
+    rightBoundaryIndex <= leftBoundaryIndex
+  ) {
+    return scale;
+  }
+
+  const leftRhythm = resolveAverageLightnessRhythmDelta(
+    scale,
+    leftBoundaryIndex,
+    -1,
+    transitionRule.sampleSize
+  );
+  const rightRhythm = resolveAverageLightnessRhythmDelta(
+    scale,
+    rightBoundaryIndex,
+    1,
+    transitionRule.sampleSize
+  );
+
+  if (leftRhythm === undefined || rightRhythm === undefined) {
+    return scale;
+  }
+
+  const leftBoundary = scale[leftBoundaryIndex];
+  const rightBoundary = scale[rightBoundaryIndex];
+
+  if (!leftBoundary || !rightBoundary) {
+    return scale;
+  }
+
+  const targetDelta = interpolate(leftRhythm, rightRhythm, clamp(transitionRule.targetMix, 0, 1));
+  const leftLightness = hexToOklch(leftBoundary.hex).l;
+  const rightLightness = hexToOklch(rightBoundary.hex).l;
+  const currentDelta = leftLightness - rightLightness;
+  const missingDelta = targetDelta - currentDelta;
+
+  if (missingDelta <= transitionRule.tolerance) {
+    return scale;
+  }
+
+  const requestedShift = Math.min(
+    missingDelta * transitionRule.strength,
+    transitionRule.maxLightnessShift
+  );
+  const rightCanMove = canAdjustFinalLightnessRhythmBoundary(rightBoundary, preservedInputTone);
+  const leftCanMove = canAdjustFinalLightnessRhythmBoundary(leftBoundary, preservedInputTone);
+
+  if (!rightCanMove && !leftCanMove) {
+    return scale;
+  }
+
+  const nextScale = [...scale];
+
+  if (rightCanMove) {
+    nextScale[rightBoundaryIndex] = createScaleColorWithLightness(
+      rightBoundary,
+      colorSpace,
+      rightLightness - requestedShift
+    );
+    return redistributeLightnessRhythmWindow(
+      nextScale,
+      rightBoundaryIndex,
+      Math.min(rightBoundaryIndex + transitionRule.redistributionSlots, scale.length - 1),
+      transitionRule,
+      colorSpace,
+      preservedInputTone
+    );
+  }
+
+  nextScale[leftBoundaryIndex] = createScaleColorWithLightness(
+    leftBoundary,
+    colorSpace,
+    leftLightness + requestedShift
+  );
+  return redistributeLightnessRhythmWindow(
+    nextScale,
+    Math.max(leftBoundaryIndex - transitionRule.redistributionSlots, 0),
+    leftBoundaryIndex,
+    transitionRule,
+    colorSpace,
+    preservedInputTone
+  );
+}
+
+function resolveAverageLightnessRhythmDelta(
+  scale: TonalScaleColor[],
+  boundaryIndex: number,
+  direction: -1 | 1,
+  sampleSize: number
+): number | undefined {
+  const deltas: number[] = [];
+
+  for (let offset = 0; offset < sampleSize; offset += 1) {
+    const leftIndex = direction === -1 ? boundaryIndex - offset - 1 : boundaryIndex + offset;
+    const rightIndex = direction === -1 ? boundaryIndex - offset : boundaryIndex + offset + 1;
+    const left = scale[leftIndex];
+    const right = scale[rightIndex];
+
+    if (
+      !left ||
+      !right ||
+      isAbsoluteScaleCapTone(left.tone) ||
+      isAbsoluteScaleCapTone(right.tone)
+    ) {
+      continue;
+    }
+
+    const delta = hexToOklch(left.hex).l - hexToOklch(right.hex).l;
+
+    if (delta > 0) {
+      deltas.push(delta);
+    }
+  }
+
+  return averageDefinedNumbers(deltas);
+}
+
+function canAdjustFinalLightnessRhythmBoundary(
+  color: TonalScaleColor,
+  preservedInputTone: ScaleTone
+): boolean {
+  return color.tone !== preservedInputTone && !isAbsoluteScaleCapTone(color.tone);
+}
+
+function redistributeLightnessRhythmWindow(
+  scale: TonalScaleColor[],
+  startIndex: number,
+  endIndex: number,
+  transitionRule: ChromaCurveLightnessRhythmTransitionRule,
+  colorSpace: ColorInterpolationSpace,
+  preservedInputTone: ScaleTone
+): TonalScaleColor[] {
+  const windowIndexes = scale
+    .map((color, index) =>
+      index >= startIndex && index <= endIndex && !isAbsoluteScaleCapTone(color.tone)
+        ? index
+        : undefined
+    )
+    .filter((index): index is number => index !== undefined);
+
+  if (windowIndexes.length < 3) {
+    return scale;
+  }
+
+  const protectedIndexes = new Set<number>([
+    windowIndexes[0],
+    windowIndexes[windowIndexes.length - 1]
+  ]);
+  const preservedInputIndex = scale.findIndex((color) => color.tone === preservedInputTone);
+
+  if (windowIndexes.includes(preservedInputIndex)) {
+    protectedIndexes.add(preservedInputIndex);
+  }
+
+  let nextScale = scale;
+  const redistributionRange: ChromaCurveLightnessRhythmRange = {
+    startTone: scale[windowIndexes[0]].tone,
+    endTone: scale[windowIndexes[windowIndexes.length - 1]].tone,
+    strength: transitionRule.redistributionStrength,
+    maxLightnessShift: transitionRule.maxLightnessShift
+  };
+
+  for (const [segmentStartIndex, segmentEndIndex] of resolveProtectedLightnessRhythmSegments(
+    windowIndexes,
+    protectedIndexes
+  )) {
+    nextScale = redistributeLightnessRhythmSegment(
+      nextScale,
+      windowIndexes,
+      segmentStartIndex,
+      segmentEndIndex,
+      redistributionRange,
+      colorSpace,
+      protectedIndexes
+    );
+  }
+
+  return nextScale;
 }
 
 function applyFinalLightnessSpacingGuard(

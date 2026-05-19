@@ -69,7 +69,11 @@ For a commercial auto-fit profile:
    clamped again.
 11. If the profile opts into chroma shape smoothing, sharp local chroma peaks and narrow dominant
     chroma plateaus around the preserved input are softened without changing the input hex.
-12. The input fit is resolved only after the scale is complete.
+12. If the profile opts into final lightness rhythm, normal emitted-slot distribution is solved by
+    rhythm zones before minimum-spacing guards run. `Balanced` uses this layer for `K1..K10`,
+    `K10..K30`, and `K35..K95`, plus a transition-delta solver for separated zone boundaries such
+    as `K30 -> K35`.
+13. The input fit is resolved only after the scale is complete.
 
 Contrast is still measured with WCAG relative luminance against the configured foreground. OKLCH is
 the generation and interpolation space; it does not replace the contrast formula.
@@ -214,6 +218,23 @@ sRGB chroma.
 
 The guard is intentionally scoped to `Balanced` while this model is tested. `Striking` and
 `Sophisticated` remain comparison profiles until they are recalibrated deliberately.
+
+## Balanced Final Lightness Rhythm
+
+`Balanced` now treats normal OKL lightness distribution as a zone-rhythm problem rather than as a
+series of one-point minimum-delta repairs.
+
+The configured rhythm zones are `K1..K10`, `K10..K30`, and `K35..K95`. Each zone protects its
+endpoints and the exact input anchor, then redistributes interior generated slots toward a steady OKL
+lightness rhythm. This means a local collision such as `K22/K24` is handled by recalculating the
+surrounding zone, not by moving a single slot and risking a new collision at `K24/K26`.
+
+The same layer also resolves separated transition boundaries between rhythm zones. For a boundary
+such as `K30 -> K35`, the solver measures the average outgoing rhythm before `K30` and the average
+incoming rhythm after `K35`, mixes those rhythms into a transition target, widens a collapsed
+boundary if needed, and redistributes a short local window on the adjusted side. The final
+minimum-spacing guard still exists, but it is intentionally a bounded fallback for residual
+collisions after rhythm, contrast, curve shape, and sRGB fitting have already run.
 
 ## Balanced Chroma Shape Guard
 

@@ -109,7 +109,16 @@ const BALANCED_CHROMA_CURVE_CONTINUITY = {
         strength: 0.4,
         maxLightnessShift: 1.2
       }
-    ]
+    ],
+    transitionDeltas: {
+      sampleSize: 2,
+      targetMix: 0.5,
+      tolerance: 0.2,
+      strength: 1,
+      maxLightnessShift: 1.4,
+      redistributionSlots: 2,
+      redistributionStrength: 1
+    }
   },
   finalLightnessSpacing: {
     // Final guardrail only. Zone rhythm redistribution should own normal lightness spacing.

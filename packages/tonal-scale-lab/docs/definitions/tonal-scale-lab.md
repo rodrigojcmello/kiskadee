@@ -93,10 +93,11 @@ Current profiles:
   interior points that would otherwise create one-point subcurves. Final lightness handling is split
   into three layers: a monotonicity guard fixes generated slots that become locally inverted after
   sRGB fitting, `finalLightnessRhythm` redistributes the configured `K1..K10`, `K10..K30`, and
-  `K35..K95` zones from protected endpoints, and final spacing ranges for `K1..K10` and `K10..K30`
-  remain as bounded guardrails. The spacing check can iterate within a bounded lightness-drop budget
-  to account for OKLCH-to-sRGB quantization, but the desired normal distribution now belongs to the
-  zone-rhythm pass rather than to one-point minimum-delta repairs.
+  `K35..K95` zones from protected endpoints, and the same rhythm layer resolves transition deltas
+  between separated zone boundaries such as `K30 -> K35`. Final spacing ranges for `K1..K10` and
+  `K10..K30` remain as bounded guardrails. The spacing check can iterate within a bounded
+  lightness-drop budget to account for OKLCH-to-sRGB quantization, but the desired normal
+  distribution now belongs to the zone-rhythm pass rather than to one-point minimum-delta repairs.
 - `Sophisticated - Auto Mid Peak + 3:1 Vivid`: follows the same vivid-contrast behavior, but treats
   the profile base tone as the OKL chroma peak. Both very light and very dark tones become less
   chromatic. This profile should be recalibrated again after the `Balanced` dark-chroma experiment
