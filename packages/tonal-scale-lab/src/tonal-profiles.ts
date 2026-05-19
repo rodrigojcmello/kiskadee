@@ -185,7 +185,8 @@ const BALANCED_CHROMA_CURVE_CONTINUITY = {
     peakProgress: 0.25,
     progressGamma: 1.2,
     maxLightnessDrop: 0,
-    maxHueDrift: 24
+    maxHueDrift: 8,
+    minHueDriftChromaGain: 0.004
   }
 } as const satisfies ChromaCurveContinuityRule;
 

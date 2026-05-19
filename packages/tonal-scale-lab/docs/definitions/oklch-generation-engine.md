@@ -273,6 +273,12 @@ never lowers the preserved input, never lets neighbors exceed the anchor chroma,
 OKL lightness intentionally. The goal is to turn a sharp chroma summit into a small shoulder or
 plateau, similar to the natural behavior currently seen in the reference blue.
 
+The forward-apex shoulder may drift hue only as a bounded gamut rescue. `Balanced` caps that drift at
+`8deg` and accepts the drifted candidate only when it gains at least `0.004` OKL chroma over the
+same-hue candidate. If the drift buys only a marginal chroma increase, the same-hue candidate wins.
+This keeps saturated yellows from turning greenish around the first generated slots after the exact
+input anchor, and prevents a drift-created point from becoming the planned curve apex.
+
 The near-boundary threshold exists because small chroma peaks are more visible when the preserved
 input is close to the vivid transition. When the lightness rhythm is already healthy, the correct
 adjustment is to raise nearby chroma, not to move the input to `K30`. When the rhythm is not

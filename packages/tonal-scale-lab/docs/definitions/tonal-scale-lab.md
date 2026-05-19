@@ -72,7 +72,9 @@ Current profiles:
   rounded shoulder. Luminous inputs can keep rising after the exact input anchor before bending back
   toward the vivid range. Because saturated yellow often sits on the sRGB gamut cusp, the forward
   shoulder has a bounded hue-drift rescue so generated slots can gain chroma without changing the
-  exact input hex. The current experiment also runs an explicit `curveShape` model based on five
+  exact input hex. In `Balanced`, that rescue is intentionally narrow: hue drift is capped at
+  `8deg`, and the drifted candidate must gain at least `0.004` OKL chroma over the same-hue
+  candidate. The current experiment also runs an explicit `curveShape` model based on five
   virtual graph points rather than existing `K<n>` nodes: graph entry, dark-side arc base, rounded
   chroma apex, light-side arc base, and graph exit. Those virtual points are resolved from the
   chromatic endpoints and dynamic apex in the OKLCH chart, then connected with monotone cubic

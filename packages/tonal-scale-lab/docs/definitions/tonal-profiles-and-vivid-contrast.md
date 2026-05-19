@@ -211,9 +211,12 @@ total lightness-drop budget per slot, because converting a requested OKLCH light
 land slightly above the requested value.
 
 Saturated yellow can expose an sRGB gamut cusp where keeping the same hue makes higher post-anchor
-OKL chroma physically unavailable. For that case, the forward shoulder has a bounded hue-drift
+OKL chroma physically unavailable. For that case, the forward shoulder has a conservative hue-drift
 rescue. The drift direction is chosen once for the local shoulder, decays across the shoulder, and
-the exact input hex remains unchanged.
+the exact input hex remains unchanged. `Balanced` keeps that rescue narrow: the current maximum is
+`8deg`, and a drifted candidate is accepted only when it gains at least `0.004` OKL chroma over the
+same-hue candidate. Marginal chroma gains must keep hue continuity, which avoids cases such as
+`#ffc107` pushing `K18/K20` into a greenish yellow just to chase a tiny chroma increase.
 
 ## `K55` Caveat
 

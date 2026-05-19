@@ -416,6 +416,7 @@ export type ChromaCurveContinuityRule = {
     progressGamma: number;
     maxLightnessDrop: number;
     maxHueDrift: number;
+    minHueDriftChromaGain: number;
   };
 };
 
@@ -2893,7 +2894,8 @@ function applyForwardApexShoulder(
         rule.forwardApexShoulder.maxLightnessDrop,
         hueDrift,
         anchorHue,
-        rule.forwardApexShoulder.maxHueDrift
+        rule.forwardApexShoulder.maxHueDrift,
+        rule.forwardApexShoulder.minHueDriftChromaGain
       )
     );
   }
@@ -4350,7 +4352,8 @@ function resolveForwardApexHueDriftSign(
     rule.forwardApexShoulder.maxLightnessDrop,
     rule.forwardApexShoulder.maxHueDrift,
     hexToOklch(scale[protectedAnchorIndex].hex).h,
-    rule.forwardApexShoulder.maxHueDrift
+    rule.forwardApexShoulder.maxHueDrift,
+    rule.forwardApexShoulder.minHueDriftChromaGain
   );
   const negativeChroma = resolveForwardHueDriftCandidateChroma(
     first,
@@ -4358,7 +4361,8 @@ function resolveForwardApexHueDriftSign(
     rule.forwardApexShoulder.maxLightnessDrop,
     -rule.forwardApexShoulder.maxHueDrift,
     hexToOklch(scale[protectedAnchorIndex].hex).h,
-    rule.forwardApexShoulder.maxHueDrift
+    rule.forwardApexShoulder.maxHueDrift,
+    rule.forwardApexShoulder.minHueDriftChromaGain
   );
 
   if (Math.abs(positiveChroma - negativeChroma) < 0.0001) {
@@ -4386,7 +4390,8 @@ function resolveForwardHueDriftCandidateChroma(
   maxLightnessDrop: number,
   hueDrift: number,
   referenceHue: number,
-  maxActualHueDrift: number
+  maxActualHueDrift: number,
+  minHueDriftChromaGain = 0
 ): number {
   return hexToOklch(
     createScaleColorWithForwardChromaShoulder(
@@ -4395,7 +4400,8 @@ function resolveForwardHueDriftCandidateChroma(
       maxLightnessDrop,
       hueDrift,
       referenceHue,
-      maxActualHueDrift
+      maxActualHueDrift,
+      minHueDriftChromaGain
     ).hex
   ).c;
 }
@@ -4987,7 +4993,8 @@ function createScaleColorWithForwardChromaShoulder(
   maxLightnessDrop: number,
   hueDrift: number,
   referenceHue: number,
-  maxActualHueDrift: number
+  maxActualHueDrift: number,
+  minHueDriftChromaGain: number
 ): TonalScaleColor {
   const directColor = createScaleColorWithChromaShoulder(color, targetChroma, maxLightnessDrop);
   const directChroma = hexToOklch(directColor.hex).c;
@@ -5025,7 +5032,7 @@ function createScaleColorWithForwardChromaShoulder(
     }
   }
 
-  return bestColor;
+  return bestChroma >= directChroma + minHueDriftChromaGain ? bestColor : directColor;
 }
 
 function resolveHueDistance(left: number, right: number): number {
