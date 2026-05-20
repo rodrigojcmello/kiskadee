@@ -3082,8 +3082,11 @@ function resolveChromaCurveProjection(
     includeLightZoneShoulder: true,
     preservedInputTone
   });
+  const projectionSpline = spline
+    ? resolveDiagnosticChromaCurveProjectionSpline(spline)
+    : undefined;
 
-  return spline ? createChromaCurveProjection(spline) : undefined;
+  return projectionSpline ? createChromaCurveProjection(projectionSpline) : undefined;
 }
 
 function createChromaCurveProjection(spline: ChromaCurveBellSpline): ChromaCurveProjection {
@@ -3104,6 +3107,45 @@ function createChromaCurveProjection(spline: ChromaCurveBellSpline): ChromaCurve
     points: spline.points.map(({ role, lightness, chroma }) => ({ role, lightness, chroma })),
     samples
   };
+}
+
+function resolveDiagnosticChromaCurveProjectionSpline(
+  spline: ChromaCurveBellSpline
+): ChromaCurveBellSpline {
+  const points = removeOverlappingLightArcBaseFromProjection(spline.points);
+
+  if (points === spline.points) {
+    return spline;
+  }
+
+  return {
+    ...spline,
+    points,
+    tangents: resolveMonotoneCubicTangents(points)
+  };
+}
+
+function removeOverlappingLightArcBaseFromProjection(
+  points: ChromaCurveBellPoint[]
+): ChromaCurveBellPoint[] {
+  const lightArcBase = points.find((point) => point.role === 'light-arc-base');
+  const lightZoneExit = points.find((point) => point.role === 'light-zone-exit');
+  const lightZoneShoulder = points.find((point) => point.role === 'light-zone-shoulder');
+
+  if (!lightArcBase || !lightZoneExit || !lightZoneShoulder) {
+    return points;
+  }
+
+  const localLightnessMin = Math.min(lightZoneExit.lightness, lightZoneShoulder.lightness);
+  const localLightnessMax = Math.max(lightZoneExit.lightness, lightZoneShoulder.lightness);
+  const overlapsLocalLightZone =
+    lightArcBase.lightness > localLightnessMin && lightArcBase.lightness < localLightnessMax;
+
+  if (!overlapsLocalLightZone) {
+    return points;
+  }
+
+  return points.filter((point) => point !== lightArcBase);
 }
 
 function applyChromaCurveBellModel(

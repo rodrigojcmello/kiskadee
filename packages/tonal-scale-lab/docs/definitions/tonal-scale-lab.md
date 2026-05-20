@@ -90,7 +90,10 @@ Current profiles:
   That raises conservative near-straight runs without making `K20`, `K45`, or `K55` special-case
   nodes. The planned curve projection can also insert a local `K1..K10` light-zone shoulder and a
   `K10` exit point, making the extra chroma needed by luminous light tones visible without turning
-  that shoulder into the global apex. `Balanced` applies this shape once before exact input
+  that shoulder into the global apex. If the global `light-arc-base` falls inside that local
+  light-zone shoulder interval, the diagnostic projection omits it so the red line does not show a
+  false extra bend around `K10`; this does not change the generated scale. `Balanced` applies this
+  shape once before exact input
   preservation to define the base structural curve, then again after the exact input is inserted as
   a protected dynamic point and graph constraint. If the exact input already lands on a structural
   node, that preservation step keeps the planned curve instead of redrawing the whole surrounding

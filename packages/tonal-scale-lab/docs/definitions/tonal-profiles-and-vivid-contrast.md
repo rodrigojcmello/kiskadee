@@ -179,6 +179,12 @@ still the final emitted scale, which makes it possible to see whether a sample i
 planned model or still drifting because of gamut fitting, contrast, lightness-drop budgets, or
 fairing.
 
+The diagnostic projection has one display-only cleanup for luminous light-zone cases. When the
+global `light-arc-base` point falls inside the local `K1..K10` shoulder interval, the projection
+omits that base point and lets `light-zone-exit` and `light-zone-shoulder` describe the local shape.
+This avoids a false red "V" around `K10` without changing the generated scale or the generation
+spline.
+
 After the final contrast pass, `Balanced` also applies a small OKL lightness monotonicity guard.
 This guard is not a curve-shaping tool; it is a sanity pass for generated slots that become locally
 inverted after OKLCH-to-sRGB fitting. It keeps the exact input anchor fixed and only darkens an

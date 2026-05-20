@@ -279,6 +279,12 @@ same-hue candidate. If the drift buys only a marginal chroma increase, the same-
 This keeps saturated yellows from turning greenish around the first generated slots after the exact
 input anchor, and prevents a drift-created point from becoming the planned curve apex.
 
+The projected diagnostics also have one display-only cleanup. If the global `light-arc-base` falls
+inside the local `K1..K10` shoulder interval, the red projection omits that global base point and
+lets `light-zone-exit` plus `light-zone-shoulder` describe the local light-zone shape. This removes
+a false red bend around `K10` for luminous colors without changing the generated scale or the spline
+used for generation.
+
 The near-boundary threshold exists because small chroma peaks are more visible when the preserved
 input is close to the vivid transition. When the lightness rhythm is already healthy, the correct
 adjustment is to raise nearby chroma, not to move the input to `K30`. When the rhythm is not
