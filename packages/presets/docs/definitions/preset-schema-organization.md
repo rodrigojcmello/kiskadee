@@ -51,4 +51,5 @@ borderWidth: 0
 Prefer exact cross-platform geometry over web-only shortcuts. A large radius such as `999` is a CSS
 pill hack, not a portable schema value. When a component has known dimensions, express pill radius as
 the exact half-height for each size. Reserve `rounded` for a modest fixed rounding when there is no
-official platform value; `6px` is the current default for extra/bonus rounded Switch variants.
+official platform value, and choose the smallest value that preserves a visibly rounded but
+non-pill shape for that preset's geometry.

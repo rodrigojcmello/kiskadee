@@ -27,7 +27,8 @@ export function createFluent2MicrosoftSwitchSchema({
   return {
     options: {
       variant: 'standard',
-      radius: 'pill'
+      radius: 'pill',
+      activationMotion: 'slow'
     },
     variants: {
       standard: {
@@ -45,11 +46,11 @@ export function createFluent2MicrosoftSwitchSchema({
                 scales: {
                   boxWidth: { 's:md:1': 40 },
                   boxHeight: { 's:md:1': 20 },
-                  borderWidth: { 's:md:1': 1 },
+                  borderWidth: 1,
                   borderRadius: {
-                    rounded: { 's:md:1': 10 },
-                    pill: { 's:md:1': 10 },
-                    square: { 's:md:1': 0 }
+                    rounded: 4,
+                    pill: 10,
+                    square: 0
                   },
                   paddingTop: { 's:md:1': 1 },
                   paddingRight: { 's:md:1': 3 },
@@ -103,9 +104,9 @@ export function createFluent2MicrosoftSwitchSchema({
                   boxWidth: { 's:md:1': 14 },
                   boxHeight: { 's:md:1': 14 },
                   borderRadius: {
-                    rounded: { 's:md:1': 4 },
-                    pill: { 's:md:1': 7 },
-                    square: { 's:md:1': 0 }
+                    rounded: 4,
+                    pill: 7,
+                    square: 0
                   }
                 },
                 palettes: {

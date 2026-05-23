@@ -1,5 +1,6 @@
 import type { SegmentName } from '../types/colors/colors.types.ts';
 import type {
+  SwitchActivationMotionSchemaValue,
   SwitchLabelElementStyleFromSchema,
   SwitchOptionsFromSchema,
   SwitchRootElementStyleFromSchema,
@@ -21,6 +22,7 @@ export type SwitchElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
 export type SwitchVariant = 'standard';
 export type SwitchStandardMode = 'base';
 export type SwitchMode = SwitchStandardMode;
+export type SwitchActivationMotion = SwitchActivationMotionSchemaValue;
 export type SwitchModeByVariant = {
   standard: SwitchStandardMode;
 };

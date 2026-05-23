@@ -24,7 +24,8 @@ export function createIos26AppleSwitchSchema({
   return {
     options: {
       variant: 'standard',
-      radius: 'pill'
+      radius: 'pill',
+      activationMotion: 'standard'
     },
     variants: {
       standard: {

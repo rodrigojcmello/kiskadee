@@ -10,6 +10,7 @@
 .k-swt-e1-a {
   --k-swt-dx: 1;
   --k-swt-tx: 0px;
+  --k-swt-dur: var(--k-dur-int);
 
   position: relative;
   display: inline-flex;
@@ -29,6 +30,14 @@
 }
 
 /*
+ * element root modifier 'b' / e1b
+ * Uses the slow activation motion profile for compact switch thumbs.
+ */
+.k-swt-e1-a.k-swt-e1b-a {
+  --k-swt-dur: var(--k-dur-int-slow);
+}
+
+/*
  * element track / e2
  * Owns the visual switch rail and provides the measurement scope for thumb translation.
  */
@@ -40,6 +49,15 @@
   flex: 0 0 auto;
   overflow: hidden;
   cursor: inherit;
+  transition:
+    border-color var(--k-swt-dur) var(--k-ease-out),
+    border-radius var(--k-swt-dur) var(--k-ease-out),
+    color var(--k-swt-dur) var(--k-ease-out),
+    box-shadow var(--k-swt-dur) var(--k-ease-out),
+    --k-bg0 var(--k-swt-dur) var(--k-ease-out),
+    --k-bg1 var(--k-swt-dur) var(--k-ease-out),
+    --k-bg2 var(--k-swt-dur) var(--k-ease-out),
+    background-color var(--k-swt-dur) var(--k-ease-out);
 }
 
 /*
@@ -66,15 +84,15 @@
   pointer-events: none;
   transform: translateX(0);
   transition:
-    transform var(--k-dur-int) var(--k-ease-out),
-    border-color var(--k-dur-int) var(--k-ease-out),
-    border-radius var(--k-dur-int) var(--k-ease-out),
-    color var(--k-dur-int) var(--k-ease-out),
-    box-shadow var(--k-dur-int) var(--k-ease-out),
-    --k-bg0 var(--k-dur-int) var(--k-ease-out),
-    --k-bg1 var(--k-dur-int) var(--k-ease-out),
-    --k-bg2 var(--k-dur-int) var(--k-ease-out),
-    background-color var(--k-dur-int) var(--k-ease-out);
+    transform var(--k-swt-dur) var(--k-ease-out),
+    border-color var(--k-swt-dur) var(--k-ease-out),
+    border-radius var(--k-swt-dur) var(--k-ease-out),
+    color var(--k-swt-dur) var(--k-ease-out),
+    box-shadow var(--k-swt-dur) var(--k-ease-out),
+    --k-bg0 var(--k-swt-dur) var(--k-ease-out),
+    --k-bg1 var(--k-swt-dur) var(--k-ease-out),
+    --k-bg2 var(--k-swt-dur) var(--k-ease-out),
+    background-color var(--k-swt-dur) var(--k-ease-out);
   will-change: transform;
 }
 

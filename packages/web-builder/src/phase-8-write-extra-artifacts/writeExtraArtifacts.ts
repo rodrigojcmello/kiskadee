@@ -9,6 +9,7 @@ import type {
   SchemaFonts,
   SegmentName,
   SolidColor,
+  SwitchActivationMotion,
   SwitchMode,
   SwitchVariant,
   TabsBridgeLowerCurve,
@@ -35,6 +36,7 @@ type SegmentKey = SegmentName | string;
 type SwitchOptionsPayload = {
   variant?: SwitchVariant;
   radius?: RadiusMode;
+  activationMotion?: SwitchActivationMotion;
 };
 type SwitchVariantOptionsPayload = {
   mode?: SwitchMode;
@@ -289,6 +291,9 @@ export async function writeExtraArtifacts(params: {
     | undefined;
   const switchVariant = schema.components?.switch?.options?.variant as SwitchVariant | undefined;
   const switchRadius = schema.components?.switch?.options?.radius as RadiusMode | undefined;
+  const switchActivationMotion = schema.components?.switch?.options?.activationMotion as
+    | SwitchActivationMotion
+    | undefined;
   const switchVariants = buildSwitchVariantsPayload(schema);
   const textFieldVariant = schema.components?.textField?.options?.variant as
     | TextFieldVariant
@@ -320,7 +325,10 @@ export async function writeExtraArtifacts(params: {
       tabsLowerCurve
   );
   const hasSwitchOptions = Boolean(
-    switchVariant || switchRadius || Object.keys(switchVariants).length > 0
+    switchVariant ||
+      switchRadius ||
+      switchActivationMotion ||
+      Object.keys(switchVariants).length > 0
   );
   const hasTextFieldOptions = Boolean(
     textFieldVariant ||
@@ -407,7 +415,8 @@ export async function writeExtraArtifacts(params: {
               switch: {
                 options: {
                   ...(switchVariant ? { variant: switchVariant } : {}),
-                  ...(switchRadius ? { radius: switchRadius } : {})
+                  ...(switchRadius ? { radius: switchRadius } : {}),
+                  ...(switchActivationMotion ? { activationMotion: switchActivationMotion } : {})
                 },
                 ...(Object.keys(switchVariants).length > 0 ? { variants: switchVariants } : {})
               }

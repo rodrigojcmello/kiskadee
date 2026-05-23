@@ -5,6 +5,57 @@ profile, preserved input anchors, node transitions, and chroma-shape smoothing.
 
 ## Current Improvement List
 
+- [x] Persist the lab input color in the URL.
+  The Next.js lab now reads `?color=<hex>` on load and on browser back/forward navigation. When
+  the user enters a valid color, the app pushes that normalized color into the URL without the `#`
+  prefix, so refreshes and history navigation preserve the selected input color. If the parameter is
+  missing or invalid, the lab falls back to the default Fluent blue.
+
+- [x] Project the planned chroma curve in the chart.
+  The lab now preserves the planned chroma curve as generation diagnostics and projects it into the
+  OKLCH chart as a red line. The red projection is captured after exact input preservation, contrast,
+  and curve-shape continuity so it reflects the current final curve contract rather than only the
+  anchorless first-pass curve. Red points render the virtual graph constraints. The blue generated
+  scale points remain the final emitted colors, so the chart can still expose where emitted samples
+  sit above or below the planned line.
+
+- [x] Highlight structural graph nodes in the chart.
+  Generated chart points now use `#26C6DA` for the structural chromatic nodes `K1`, `K10`, `K35`,
+  `K95`, plus the dynamic preserved input anchor. `K55` is intentionally not highlighted for
+  `Balanced`, because it is not a generation node in the current model. All chart point markers use
+  the same `r=4` radius so node status is communicated by color, not by marker size.
+
+- [x] Include the vivid boundary in the planned red projection.
+  The generated blue chart already highlights `K35` as a structural node, but the red planned curve
+  did not include `K35` unless it happened to be the chroma apex or preserved input anchor. That made
+  the red line read as disconnected from the vivid boundary even though `K35` starts the
+  contrast-gated vivid track. The projection now adds `vivid-boundary` from the active
+  `vividContrast.startTone`; in the Kiskadee distributions this is `K35`. For `#ffc107`, the red
+  projection now includes the emitted `K35` point at roughly `L 66.3 / C 0.1359` without changing the
+  generated blue scale.
+
+- [x] Round preserved-input apexes in the planned red projection.
+  `#ffc107` exposed that adding `K35` to the red graph made another issue easier to see: the exact
+  preserved input at `K16` became a one-point summit, with the red line dropping almost directly into
+  the `K10` light-zone exit. The desired plan is a broad rounded cume, not a peak or an extra red
+  point beside the anchor. The first attempt inserted projection-only shoulders from the immediate
+  emitted neighbors, but that created visual noise instead of the requested arc. The projection now
+  keeps the graph nodes unchanged and raises the incoming tangent from the previous graph point when
+  the preserved input anchor is higher than both neighboring graph points. For `#ffc107`, the
+  `dark-arc-base -> K16` samples now climb as a broad arc (`C 0.1587 -> 0.1721`) before flattening
+  into the exact `K16` anchor, while the blue generated scale is unchanged.
+
+- [x] Analyze the raw anchor-driven `Balanced` curve without curve repair rules.
+  The raw pass showed that red, blue, yellow, and lime failures share one shape problem: abrupt
+  tangent changes in the OKLCH chart. The old `chromaPeak` model was too narrow because it only
+  reasoned about local peaks and then accumulated special guards for plateaus, vivid-start
+  shoulders, and light-zone tangents. The replacement is `chromaCurveContinuity`: a generic OKLCH
+  curve rule that detects turn angle in the normalized chart, smooths adjustable points by local
+  relaxation, keeps the exact input anchor protected, rounds protected apex shoulders, and allows a
+  protected luminous/pre-vivid anchor to keep rising into a generated forward apex before curving
+  back down. Other repair passes remain disabled for now: vivid-boundary buffer,
+  preserved-anchor continuity, minimum lightness step, luminous chroma ramp, and node continuity.
+
 - [x] Remove `K55` as the `Balanced` generation base.
   `Balanced` now fits the preserved input by OKL lightness and uses that preserved input anchor as
   the generation base. `K55` may still be useful as a default state-mapping slot for common primary
@@ -20,8 +71,38 @@ profile, preserved input anchors, node transitions, and chroma-shape smoothing.
   the wider rhythm from the other side.
 
 - [ ] Define a true generic node transition model.
-  The remaining follow-up is a true transition-delta model, where every structural node gets a
-  target delta between the rhythm before the node and the rhythm after the node.
+  `Balanced` now has a first transition-delta solver for gaps between adjacent lightness-rhythm
+  ranges, but this is not yet the full generic node model. The remaining follow-up is to make every
+  structural node, including shared-boundary nodes such as `K10`, resolve a target delta between the
+  rhythm before the node and the rhythm after the node.
+
+- [x] Add the first zone rhythm redistribution pass.
+  Delta minimum rules should be final guardrails, not the main mechanism for shaping the scale.
+  When one interval inside a zone collapses, adjusting a single point only moves the problem into
+  the next interval. `Balanced` now has `finalLightnessRhythm`: it protects the zone endpoints and
+  the exact input anchor, redistributes each affected subzone from those endpoints, and only then
+  lets the final spacing guard act as an airbag. The first configured zones are `K1..K10`,
+  `K10..K30`, and `K35..K95`. This changed cases like `#3f51b5`, where `K22/K24/K26` now follow a
+  steadier zone rhythm instead of needing a one-off local delta fix.
+
+- [x] Add a transition-delta solver between rhythm zones.
+  `K30 -> K35` exposed the gap between `K10..K30` and `K35..K95`: each zone could be internally
+  coherent while the boundary interval stayed too small. `Balanced` now measures the average
+  outgoing rhythm before a boundary and the average incoming rhythm after it, resolves a target
+  transition delta from those two rhythms, and widens a collapsed boundary before redistributing a
+  short local window. For `#0f6cbd`, `K30 -> K35` moved from roughly `1.67` OKL lightness points to
+  roughly `3.17`. The next vivid-zone intervals are larger (`K35 -> K40` roughly `4.37` and
+  `K40 -> K45` roughly `4.22`) because the exact input is preserved at `K45`; the important fix is
+  that the boundary no longer carries the smaller pre-vivid rhythm into the vivid zone. This is
+  intentionally a zone-boundary rule, not a hardcoded `K30/K35` exception.
+
+- [ ] Reassess local apex shoulders after zone rhythm exists.
+  `curveShape.bellCurve` is the desired primary model for the chroma curve, but `protectedApexShoulder`
+  and `forwardApexShoulder` still run as local protected-anchor helpers. The exact input anchor now
+  becomes a graph constraint and wins duplicate-lightness collisions with other virtual points, but
+  these shoulder rules may still be needed to soften the immediately adjacent generated samples.
+  Reassess whether they can be folded into the graph model once lightness rhythm redistribution stops
+  creating compressed or abrupt neighborhoods around the apex.
 
 - [ ] Treat every structural anchor with the same node mechanics.
   The intended structural anchor set for `Kiskadee Official (33)` is `K1`, `K10`, `K35`, `K95`, and
@@ -30,11 +111,149 @@ profile, preserved input anchors, node transitions, and chroma-shape smoothing.
   structural anchors. Special cases should be expressed as configuration, such as protected anchors,
   nearby-node clusters, minimum/maximum transition windows, or contrast-locked ranges.
 
-- [ ] Generalize curve-shape smoothing beyond local peaks.
-  The current red failure is a visible summit near `K35`, but the yellow failure is different: chroma
-  rises quickly into the preserved anchor and then turns into a shallow straight line, creating a
-  diagonal kink rather than a classic peak. The future rule should detect abrupt tangent changes and
-  construct a curve shoulder, even when the preserved anchor is not the local chroma maximum.
+- [x] Generalize curve-shape smoothing beyond local peaks.
+  Implemented as `ChromaCurveContinuityRule`. The detector works on the rendered OKLCH chart plane
+  instead of checking only whether the anchor is higher than both neighbors. It uses a configurable
+  turn-angle limit, local smoothing for adjustable points, a protected-apex shoulder for cases such
+  as red/blue at `K35`, and a forward-apex shoulder for luminous anchors such as lime/yellow where
+  the generated curve may need to keep rising after the exact input.
+
+- [x] Replace segment polish with a five-point virtual graph model.
+  Local shoulder repair can still leave longer runs that read as straight lines in the OKLCH chart,
+  such as the red `K10..K28` ascent or the dark side from `K95` back toward the apex. The new
+  `curveShape` model now makes the intended line explicit through five virtual graph points, not
+  through existing `K<n>` nodes: graph entry, dark-side arc base, rounded chroma apex, light-side
+  arc base, and graph exit. Those points are resolved in the OKLCH chart from the chromatic
+  endpoints and the dynamic apex, then connected with monotone cubic Hermite interpolation so the
+  apex has a rounded tangent and the tails ease into the curve. `K10`, `K20`, `K50`, and `K55` are
+  only emitted samples on that line; they are not curve-shape nodes. The exact input anchor remains
+  protected while generated interior points receive bounded chroma adjustments toward the virtual
+  curve. A bounded lightness drop is allowed because saturated reds and yellows can already be at
+  the sRGB chroma limit for their current hue/lightness; without that permission, asking for more
+  chroma would produce no real movement. The bell model also has a minimum arc-lift rule: each
+  virtual arc base must sit above the straight chord between its endpoint and the apex by a minimum
+  bow ratio. This lets colors such as red raise the `K10..K35` side of the graph without hardcoding
+  `K20`, and lets apex-centered colors such as purple keep higher `K45/K55` shoulders without
+  turning those emitted slots into new nodes. The light side and dark side have separate lightness
+  drop budgets so the light-side mid-arc can gain real sRGB chroma without over-darkening the dark
+  shoulder. `Balanced` runs this shape twice: first as an anchorless base curve before exact input
+  preservation, then again after the exact input is inserted as a protected dynamic point. If the
+  exact input lands on an existing structural node, the interpolation step preserves the planned
+  curve instead of redrawing the whole surrounding interval as a straight OKLCH interpolation. A
+  small fairing pass then smooths generated interior points that drift into one-point subcurves,
+  while preserving the chromatic endpoints, apex, and exact input anchor.
+
+- [x] Promote the preserved input anchor into the planned curve.
+  `#34c759` exposed that the exact input could be protected in the emitted scale while still sitting
+  above the red planned curve. `K26` had OKL chroma around `0.1944`, while the projected curve at the
+  same OKL lightness expected roughly `0.1868`. The second `curveShape` pass now inserts the exact
+  preserved input as a `preserved-input-anchor` virtual graph point, gives it priority over other
+  virtual points at the same OKL lightness, then recalculates the spline and generated samples
+  against that curve. For `#34c759`, the post-change projection expects roughly `0.19435` at `K26`,
+  so the preserved input is part of the curve contract instead of a protected point floating above it.
+
+- [x] Make the light-zone shoulder explicit in the planned curve projection.
+  `K1..K10` is allowed to have a local light-zone shoulder because very light greens, yellows, and
+  limes need more chroma than the global bell curve would otherwise give them. This shoulder is not
+  a new global apex and should not force the whole `K10..apex` arc upward. The current projection
+  inserts two local virtual points into the red diagnostic line: a shoulder sample inside the light
+  zone and the `K10` light-zone exit. The actual scale adjustment is intentionally conservative for
+  now; the new points mainly make the existing light-zone contract visible so the chart no longer
+  presents the light-zone lift as an unexplained deviation from the global curve.
+
+- [x] Remove the false `K10` red-line bend for luminous projections.
+  `#34c759`, `#cddc39`, and `#ffc107` exposed a diagnostics-only issue: the generated scale and the
+  local `K1..K10` shoulder could be visually coherent, but the red projection still inserted the
+  global `light-arc-base` inside the local light-zone interval. That point is not the original `K10`;
+  `K10` is represented by `light-zone-exit`. The projection now suppresses `light-arc-base` only
+  when it overlaps the `light-zone-exit -> light-zone-shoulder` interval, removing the false red
+  bend without changing the generated blue scale or the generation spline.
+
+- [x] Keep the light-zone red projection lifted through preserved luminous anchors.
+  `#fff59d` exposed that the red planned curve could still inherit too much from generated sample
+  repairs. The exact input is preserved at `K4`, but the projected `light-zone-shoulder` around `K6`
+  sat below the chord from the preserved input anchor into the `K10` exit, making the red line show a
+  small downward belly where the desired plan should be an upward arc toward the chroma apex. The
+  diagnostic projection now lifts that shoulder with a dedicated
+  `lightZoneShoulder.projectionBowRatio`, capped by the higher endpoint chroma. The first conservative
+  lift still read as nearly straight, so the current ratio is `0.5`; for `#fff59d`, the projected
+  shoulder is now roughly `0.124` OKL chroma while generated `K6` remains roughly `0.113`. This does
+  not change the generated blue scale; it makes the red line state the intended geometry first so
+  future work can decide which emitted samples should follow it.
+
+- [x] Restore the original light-side lightness-drop budget.
+  The `Balanced` bell curve is back to `lightSideMaxLightnessDrop: 1.1`. Experiments with `1.35`
+  and `1.75` changed the generated values but did not materially solve the `K10..K35` visual gap;
+  larger values began to create local compression instead of a cleaner arc.
+
+- [x] Add a final OKL lightness monotonicity guard.
+  The `#f44336` red exposed `K7/K8` as a local inversion: `K8` could become lighter than `K7`
+  after OKLCH-to-sRGB fitting. `Balanced` now applies a small final monotonicity pass after the
+  last contrast guard. The pass keeps the exact input anchor protected, only darkens offending
+  generated slots, and uses the neighboring slot when available so a local inversion becomes a
+  real interval rather than just a barely-lower point.
+
+- [x] Restore final lightness spacing invariants.
+  `#0f6cbd` exposed that the monotonicity guard only fixed ordering; it did not replace the older
+  minimum lightness-step rule. `K4/K5`, `K6/K7`, and `K8/K9` could remain around `0.7..0.8` OKL
+  lightness points apart, making the generated light slots read as blended. `#f44336` then exposed
+  the same failure near the vivid bridge: `K28/K30` could sit around `0.8` OKL lightness points
+  apart. `Balanced` now has a final spacing guard with two conservative `1.35` OKL lightness ranges:
+  `K1..K10` for the light zone and `K10..K30` for the pre-vivid bridge. The guard is iterative,
+  because OKLCH-to-sRGB quantization can leave a one-pass adjustment slightly short of the requested
+  spacing. It runs after input preservation, contrast, curve shaping, and the final monotonicity
+  guard, so later repairs cannot silently collapse either rhythm again. The exact preserved input
+  anchor remains protected, and each generated slot has a bounded total lightness-drop budget.
+
+- [x] Add protected-anchor subzone expansion for compressed pre-vivid anchors.
+  `#ffc107` exposed a different failure mode from ordinary minimum spacing: the exact input anchor
+  at `K16` was protected, so the final spacing guard could not open `K14 -> K16` directly. The
+  previous interval fell to roughly `0.47` OKL lightness points, making `K14/K16` read like a soft
+  blend. `Balanced` now has a `protectedAnchorExpansions` pass after final spacing for exact anchors
+  in `K1..K30`. When the immediate pre-anchor delta is below `1.05`, the pass redistributes the
+  generated `K1..anchor` subzone, keeps the exact input fixed, and bounds each generated slot's
+  lightness movement. The pass now uses a slight `1.08` progress gamma toward the anchor, so the
+  final pre-anchor interval gets a little more room than a purely linear subdivision. For `#ffc107`,
+  `K14 -> K16` now lands near `1.37` OKL lightness points while `K16` remains exactly `#ffc107`.
+
+- [x] Add protected-anchor exit rhythm for abrupt pre-vivid exits.
+  After `K14 -> K16` improved, `#ffc107` still exposed a visible elbow on the other side of the
+  exact anchor: `K16 -> K18` dropped around `2.29` OKL lightness points, much steeper than the
+  incoming `K14 -> K16` rhythm. `Balanced` now has a `protectedAnchorExits` pass for exact anchors
+  in `K10..K35`. The rule activates from geometry, not from hue or a hardcoded `K16`: if the first
+  outgoing delta is greater than `incoming * 1.25 + 0.15`, it redistributes the generated
+  `anchor..K35` subzone with a slow-start `1.22` progress gamma, `0.9` strength, and a `0.65` OKL
+  lightness lift budget per slot. The exact input stays fixed. For `#ffc107`, `K16 -> K18` softens
+  to roughly `1.68` OKL lightness points while `K18..K35` keeps the darker bridge role.
+
+- [x] Add a light-zone chroma valley floor.
+  `#ffe082` and `#fff59d` exposed the same light-zone shape: the exact input can be preserved at a
+  very light tone while the first generated slot after it dips in OKL chroma before returning toward
+  the light-zone exit. This is not a `K4`, `K9`, or hue-specific rule. `Balanced` now has
+  `lightZoneChromaValleyFloor`, scoped to preserved inputs before `K14`. It keeps the exact
+  input fixed and lifts only generated slots below the interpolated chroma floor from the anchor to
+  `K14`, with a `0.0015` trigger and a `0.012` OKL chroma cap per slot. In the current measurement,
+  `#ffe082` moves `K10/K12` from roughly `0.111/0.118` to `0.122/0.126` OKL chroma, while `#fff59d`
+  moves `K5/K6` from roughly `0.105` to `0.111/0.113`.
+
+- [x] Remove commented legacy `Balanced` rules from the active profile.
+  The old commented `vividBoundaryBuffer`, preserved-anchor continuity, `minimumLightnessStep`,
+  `luminousChromaRamp`, and `nodeContinuity` snippets made the profile look like it was half
+  configured through disabled local repairs. They are no longer kept beside the active `Balanced`
+  recipe. The concepts remain in the generator for other profiles or future reference, but
+  `Balanced` should expose only the rules it actually runs. This keeps the current contract easier
+  to reason about while the next architecture moves spacing responsibility into zone rhythm
+  redistribution.
+
+- [x] Constrain the luminous forward-apex hue drift.
+  Some luminous yellows sit on the sRGB gamut cusp: keeping the same hue can make it physically
+  impossible for darker generated slots to exceed the exact input's OKL chroma. The forward shoulder
+  still has a hue-drift rescue, but it must be a real rescue rather than a chroma chase. `Balanced`
+  now caps the forward drift at `8deg` and accepts a drifted candidate only when it gains at least
+  `0.004` OKL chroma over the same-hue candidate. `#ffc107` was the regression case: before this
+  guard, `K18` became `#d5c900` (`hsl 56.62`, OKL hue `105.28`), which created a visible greenish
+  shift and let the drifted point distort the planned red curve. After the guard, `K18` stays near
+  the input hue as `#f6ba02` (`hsl 45.25`, OKL hue `84.99`).
 
 - [ ] Consolidate luminous-color handling instead of removing it.
   Luminous color rules remain important because yellow, lime, cyan, and light green expose failures
@@ -46,7 +265,10 @@ profile, preserved input anchors, node transitions, and chroma-shape smoothing.
   The current pipeline has several repair-like passes: vivid contrast, minimum lightness step,
   luminous chroma ramp, input preservation, node continuity, chroma shape smoothing, node continuity
   again, and contrast again. The next design should name final invariants first, then decide which
-  pass owns each invariant. This should reduce "fix the fix" behavior.
+  pass owns each invariant. The current direction is that `finalLightnessRhythm` owns normal zone
+  distribution and separated zone-boundary transition deltas, while `finalLightnessSpacing` is only
+  a bounded final guardrail. This should reduce "fix the fix" behavior and keep minimum deltas as
+  exceptions rather than the main layout mechanism.
 
 - [ ] Keep absolute caps and chromatic endpoints distinct.
   `K0` and `K100` should remain absolute white and black caps. `K1` and `K95` should remain the

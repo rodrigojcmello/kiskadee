@@ -36,6 +36,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     globalRipple,
     switchVariant,
     switchRadius,
+    switchActivationMotion,
     switchVariants,
     textFieldVariant,
     textFieldMode,
@@ -58,6 +59,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     globalRipple !== undefined ||
     switchVariant !== undefined ||
     switchRadius !== undefined ||
+    switchActivationMotion !== undefined ||
     switchVariants !== undefined ||
     textFieldVariant !== undefined ||
     textFieldMode !== undefined ||
@@ -76,6 +78,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           ...(textFieldVariant !== undefined ||
           switchVariant !== undefined ||
           switchRadius !== undefined ||
+          switchActivationMotion !== undefined ||
           switchVariants !== undefined ||
           textFieldMode !== undefined ||
           textFieldFocusRingColorSource !== undefined ||
@@ -91,12 +94,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
                 components: {
                   ...(switchVariant !== undefined ||
                   switchRadius !== undefined ||
+                  switchActivationMotion !== undefined ||
                   switchVariants !== undefined
                     ? {
                         switch: {
                           options: {
                             ...(switchVariant !== undefined ? { variant: switchVariant } : {}),
-                            ...(switchRadius !== undefined ? { radius: switchRadius } : {})
+                            ...(switchRadius !== undefined ? { radius: switchRadius } : {}),
+                            ...(switchActivationMotion !== undefined
+                              ? { activationMotion: switchActivationMotion }
+                              : {})
                           },
                           ...(switchVariants !== undefined ? { variants: switchVariants } : {})
                         }

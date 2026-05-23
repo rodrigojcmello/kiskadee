@@ -3,6 +3,7 @@ import { HeadlessSwitch } from '@kiskadee/react-headless';
 import { memo, type RefObject, useEffect, useMemo, useRef } from 'react';
 import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
 import {
+  DEFAULT_SWITCH_ACTIVATION_MOTION,
   DEFAULT_SWITCH_EMPHASIS,
   DEFAULT_SWITCH_INTENT,
   DEFAULT_SWITCH_LABEL_POSITION,
@@ -69,6 +70,7 @@ function SwitchRoot(props: SwitchProps) {
     emphasis = DEFAULT_SWITCH_EMPHASIS,
     intent = DEFAULT_SWITCH_INTENT,
     radius,
+    activationMotion,
     variant = DEFAULT_SWITCH_VARIANT,
     mode = DEFAULT_SWITCH_MODE,
     labelPosition = DEFAULT_SWITCH_LABEL_POSITION,
@@ -82,6 +84,10 @@ function SwitchRoot(props: SwitchProps) {
     global?.components?.switch?.options?.radius ??
     global?.radius ??
     DEFAULT_SWITCH_RADIUS;
+  const resolvedActivationMotion =
+    activationMotion ??
+    global?.components?.switch?.options?.activationMotion ??
+    DEFAULT_SWITCH_ACTIVATION_MOTION;
   const elements = resolveVariantElements(
     classesMap.switch as SwitchVariantClassesMap | undefined,
     variant,
@@ -106,6 +112,7 @@ function SwitchRoot(props: SwitchProps) {
         intent,
         emphasis,
         radius: resolvedRadius,
+        activationMotion: resolvedActivationMotion,
         labelPosition,
         hasLabel,
         hasState
@@ -119,6 +126,7 @@ function SwitchRoot(props: SwitchProps) {
       hasState,
       intent,
       labelPosition,
+      resolvedActivationMotion,
       resolvedRadius,
       scale
     ]

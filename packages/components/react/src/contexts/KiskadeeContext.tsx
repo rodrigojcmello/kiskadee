@@ -2,6 +2,7 @@ import type {
   ComponentClassNameMapJSON,
   RadiusMode,
   RippleEffectSchema,
+  SwitchActivationMotion,
   SwitchMode,
   SwitchVariant,
   TabsBridgeLowerCurve,
@@ -73,6 +74,7 @@ export type KiskadeeContextValue = {
         options?: {
           variant?: SwitchVariant;
           radius?: RadiusMode;
+          activationMotion?: SwitchActivationMotion;
         };
         variants?: {
           standard?: {

@@ -30,3 +30,23 @@ transparent or very light.
 
 This is a recommended authoring guideline in schema design, not a technical
 engine constraint.
+
+## Switch Activation Motion
+
+Switch activation motion is a component-level preset decision expressed through
+`components.switch.options.activationMotion`.
+
+Supported values:
+
+- `standard`: the default interaction duration for Switch activation.
+- `slow`: a slightly slower activation profile for Switch geometries that feel
+  too fast with the standard duration.
+
+Use this option as semantic preset intent, not as a direct CSS duration. Web
+currently maps `standard` to the default Switch interaction duration and `slow`
+to the slow interaction token. Other platforms should translate the same intent
+to their native motion system.
+
+Prefer `standard` when the thumb is wider or visually heavier, as in the iOS 26
+Apple Switch. Prefer `slow` when a compact circular thumb makes the same
+distance feel too abrupt, as in Fluent 2 Microsoft.

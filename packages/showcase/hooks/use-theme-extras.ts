@@ -1,6 +1,7 @@
 import type {
   RadiusMode,
   RippleEffectSchema,
+  SwitchActivationMotion,
   SwitchMode,
   SwitchVariant,
   TabsBridgeLowerCurve,
@@ -53,6 +54,7 @@ const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
 const rippleGlobalCache: Partial<Record<string, RippleEffectSchema | null>> = {};
 const switchVariantCache: Partial<Record<string, SwitchVariant | null>> = {};
 const switchRadiusCache: Partial<Record<string, RadiusMode | null>> = {};
+const switchActivationMotionCache: Partial<Record<string, SwitchActivationMotion | null>> = {};
 const switchVariantsCache: Partial<Record<string, SwitchVariantsConfig | null>> = {};
 const textFieldVariantCache: Partial<Record<string, TextFieldVariant | null>> = {};
 const textFieldModeCache: Partial<Record<string, TextFieldMode | null>> = {};
@@ -80,9 +82,10 @@ export function useThemeExtras({
   const [globalRipple, setGlobalRipple] = useState<RippleEffectSchema | undefined>(undefined);
   const [switchVariant, setSwitchVariant] = useState<SwitchVariant | undefined>(undefined);
   const [switchRadius, setSwitchRadius] = useState<RadiusMode | undefined>(undefined);
-  const [switchVariants, setSwitchVariants] = useState<SwitchVariantsConfig | undefined>(
-    undefined
-  );
+  const [switchActivationMotion, setSwitchActivationMotion] = useState<
+    SwitchActivationMotion | undefined
+  >(undefined);
+  const [switchVariants, setSwitchVariants] = useState<SwitchVariantsConfig | undefined>(undefined);
   const [textFieldVariant, setTextFieldVariant] = useState<TextFieldVariant | undefined>(undefined);
   const [textFieldMode, setTextFieldMode] = useState<TextFieldMode | undefined>(undefined);
   const [textFieldFocusRingColorSource, setTextFieldFocusRingColorSource] = useState<
@@ -121,6 +124,8 @@ export function useThemeExtras({
       let switchVariantValue = switchVariantCache[dsKey] ?? undefined;
       const hasSwitchRadius = Object.hasOwn(switchRadiusCache, dsKey);
       let switchRadiusValue = switchRadiusCache[dsKey] ?? undefined;
+      const hasSwitchActivationMotion = Object.hasOwn(switchActivationMotionCache, dsKey);
+      let switchActivationMotionValue = switchActivationMotionCache[dsKey] ?? undefined;
       const hasSwitchVariants = Object.hasOwn(switchVariantsCache, dsKey);
       let switchVariantsValue = switchVariantsCache[dsKey] ?? undefined;
       const hasTextFieldVariant = Object.hasOwn(textFieldVariantCache, dsKey);
@@ -154,6 +159,7 @@ export function useThemeExtras({
         !hasRipple ||
         !hasSwitchVariant ||
         !hasSwitchRadius ||
+        !hasSwitchActivationMotion ||
         !hasSwitchVariants ||
         !hasTextFieldVariant ||
         !hasTextFieldMode ||
@@ -192,6 +198,7 @@ export function useThemeExtras({
                 options?: {
                   variant?: SwitchVariant;
                   radius?: RadiusMode;
+                  activationMotion?: SwitchActivationMotion;
                 };
                 variants?: SwitchVariantsConfig;
               };
@@ -213,6 +220,8 @@ export function useThemeExtras({
           switchVariantCache[dsKey] = switchVariantValue ?? null;
           switchRadiusValue = json.components?.switch?.options?.radius;
           switchRadiusCache[dsKey] = switchRadiusValue ?? null;
+          switchActivationMotionValue = json.components?.switch?.options?.activationMotion;
+          switchActivationMotionCache[dsKey] = switchActivationMotionValue ?? null;
           switchVariantsValue = json.components?.switch?.variants;
           switchVariantsCache[dsKey] = switchVariantsValue ?? null;
           textFieldVariantValue = json.components?.textField?.options?.variant;
@@ -263,6 +272,7 @@ export function useThemeExtras({
       setGlobalRipple(ripple);
       setSwitchVariant(switchVariantValue);
       setSwitchRadius(switchRadiusValue);
+      setSwitchActivationMotion(switchActivationMotionValue);
       setSwitchVariants(switchVariantsValue);
       setTextFieldVariant(textFieldVariantValue);
       setTextFieldMode(textFieldModeValue);
@@ -343,6 +353,7 @@ export function useThemeExtras({
     globalRipple,
     switchVariant,
     switchRadius,
+    switchActivationMotion,
     switchVariants,
     textFieldVariant,
     textFieldMode,
