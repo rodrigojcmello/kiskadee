@@ -28,16 +28,16 @@ function createSwitchElementPalettes({
         boxColor: {
           neutral: {
             medium: {
-              rest: c(s, 'l', 'neutral.v2', 90),
-              hover: switchStateRef(c(s, 'l', 'neutral.v2', 85)),
-              focus: switchStateRef(c(s, 'l', 'neutral.v2', 90)),
-              pressed: switchStateRef(c(s, 'l', 'neutral.v2', 80)),
+              rest: c(s, 'l', 'neutral.v2', 10),
+              hover: switchStateRef(c(s, 'l', 'neutral.v2', 10)),
+              focus: switchStateRef(c(s, 'l', 'neutral.v2', 10)),
+              pressed: switchStateRef(c(s, 'l', 'neutral.v2', 10)),
               disabled: switchStateRef(c(s, 'l', 'neutral', 90, 12)),
               selected: {
                 rest: switchStateRef(c(s, 'l', 'switch.neutral', 60)),
-                hover: switchStateRef(c(s, 'l', 'switch.neutral', 55)),
+                hover: switchStateRef(c(s, 'l', 'switch.neutral', 60)),
                 focus: switchStateRef(c(s, 'l', 'switch.neutral', 60)),
-                pressed: switchStateRef(c(s, 'l', 'switch.neutral', 50))
+                pressed: switchStateRef(c(s, 'l', 'switch.neutral', 60))
               }
             }
           }
@@ -45,10 +45,10 @@ function createSwitchElementPalettes({
         borderColor: {
           neutral: {
             medium: {
-              rest: c(s, 'l', 'neutral.v2', 45),
-              hover: switchStateRef(c(s, 'l', 'neutral.v2', 35)),
-              focus: switchStateRef(c(s, 'l', 'neutral.v2', 45)),
-              pressed: switchStateRef(c(s, 'l', 'neutral.v2', 30)),
+              rest: c(s, 'l', 'neutral.v2', 50),
+              hover: switchStateRef(c(s, 'l', 'neutral.v2', 50)),
+              focus: switchStateRef(c(s, 'l', 'neutral.v2', 50)),
+              pressed: switchStateRef(c(s, 'l', 'neutral.v2', 50)),
               disabled: switchStateRef(c(s, 'l', 'neutral', 90, 12)),
               selected: {
                 rest: switchStateRef(transparent),
@@ -102,16 +102,16 @@ function createSwitchElementPalettes({
         boxColor: {
           neutral: {
             medium: {
-              rest: c(s, 'l', 'neutral.v2', 45),
-              hover: switchStateRef(c(s, 'l', 'neutral.v2', 35)),
-              focus: switchStateRef(c(s, 'l', 'neutral.v2', 45)),
+              rest: c(s, 'l', 'neutral.v2', 50),
+              hover: switchStateRef(c(s, 'l', 'neutral.v2', 40)),
+              focus: switchStateRef(c(s, 'l', 'neutral.v2', 50)),
               pressed: switchStateRef(c(s, 'l', 'neutral.v2', 30)),
               disabled: switchStateRef(c(s, 'l', 'neutral', 90, 38)),
               selected: {
                 rest: switchStateRef(white),
-                hover: switchStateRef(white),
-                focus: switchStateRef(white),
-                pressed: switchStateRef(white)
+                hover: switchStateRef(c(s, 'l', 'switch.neutral', 10)),
+                focus: switchStateRef(c(s, 'l', 'switch.neutral', 10)),
+                pressed: switchStateRef(c(s, 'l', 'switch.neutral', 10))
               }
             }
           }
@@ -208,46 +208,30 @@ export function createMaterial3GoogleSwitchSchema(
                 },
                 scales: {
                   boxWidth: {
-                    's:sm:1': 44,
                     's:md:1': 52
                   },
                   boxHeight: {
-                    's:sm:1': 28,
                     's:md:1': 32
                   },
-                  borderWidth: {
-                    's:sm:1': 2,
-                    's:md:1': 2
-                  },
+                  borderWidth: 2,
                   borderRadius: {
-                    rounded: {
-                      's:sm:1': 14,
-                      's:md:1': 16
-                    },
+                    rounded: 6,
                     pill: {
-                      's:sm:1': 14,
                       's:md:1': 16
                     },
-                    square: {
-                      's:sm:1': 0,
-                      's:md:1': 0
-                    }
+                    square: 0
                   },
                   paddingTop: {
-                    's:sm:1': 2,
-                    's:md:1': 2
+                    's:md:1': 4
                   },
                   paddingRight: {
-                    's:sm:1': 2,
-                    's:md:1': 2
+                    's:md:1': 4
                   },
                   paddingBottom: {
-                    's:sm:1': 2,
-                    's:md:1': 2
+                    's:md:1': 4
                   },
                   paddingLeft: {
-                    's:sm:1': 2,
-                    's:md:1': 2
+                    's:md:1': 4
                   }
                 },
                 palettes: palettes.track
@@ -256,26 +240,17 @@ export function createMaterial3GoogleSwitchSchema(
                 name: 'thumb',
                 scales: {
                   boxWidth: {
-                    's:sm:1': 16,
-                    's:md:1': 20
+                    's:md:1': 24
                   },
                   boxHeight: {
-                    's:sm:1': 16,
-                    's:md:1': 20
+                    's:md:1': 24
                   },
                   borderRadius: {
-                    rounded: {
-                      's:sm:1': 8,
-                      's:md:1': 10
-                    },
+                    rounded: 6,
                     pill: {
-                      's:sm:1': 8,
-                      's:md:1': 10
+                      's:md:1': 12
                     },
-                    square: {
-                      's:sm:1': 0,
-                      's:md:1': 0
-                    }
+                    square: 0
                   }
                 },
                 palettes: palettes.thumb
@@ -288,19 +263,15 @@ export function createMaterial3GoogleSwitchSchema(
                 },
                 scales: {
                   textSize: {
-                    's:sm:1': 14,
                     's:md:1': 14
                   },
                   textHeight: {
-                    's:sm:1': 20,
                     's:md:1': 20
                   },
                   marginLeft: {
-                    's:sm:1': 8,
                     's:md:1': 12
                   },
                   marginRight: {
-                    's:sm:1': 8,
                     's:md:1': 12
                   }
                 },

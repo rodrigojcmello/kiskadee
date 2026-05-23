@@ -375,6 +375,12 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
   should be revisited before treating the palette as final. The showcase Switch page exposes an
   `Emphasis` select derived from the selected design system manifest, so presets without `high` do
   not show a misleading option.
+- Material 3 Google Switch was refreshed from the Material 3 Design Kit Community Switch component
+  set (`Peqe9lNMsuQHLIUZsiTZNg`, node `54446:25289`). The Figma set exposes one external Switch
+  size (`52 x 32`), not multiple size variants. Kiskadee now keeps only `s:md:1` for this preset,
+  uses the captured `24 x 24` selected/default thumb size, and documents unsupported Figma details
+  such as the `16 x 16` off thumb, `28 x 28` pressed thumb, `40 x 40` state layer, `48 x 48` target,
+  focus indicator, and icons.
 
 ## Relevant Files
 
@@ -614,6 +620,21 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
   confirmed the new docs match the actual Switch policy: `switch.standard.e2` overrides
   `borderWidthEmission` and `paddingEmission`, while `borderRadiusEmission` remains the default
   `mirrored` policy.
+- Figma MCP inspection of Material 3 Design Kit Community node `54446:25289` captured the Switch
+  component set geometry and variants in one successful read. A follow-up compact read hit the Figma
+  MCP call limit, so the implementation uses the captured first-pass data plus existing schema
+  constraints.
+- `pnpm exec biome check packages/presets/src/presets/material-3-google/components/switch.schema.ts`
+  passed after refreshing Material 3 Google Switch geometry and palette values.
+- `git diff --check -- packages/presets/src/presets/material-3-google/components/switch.schema.ts packages/presets/src/presets/material-3-google/ds-ref/DS-REF.md docs/switch-component.in-progress.md`
+  passed after the Material 3 Google Switch reference update.
+- `pnpm --filter @kiskadee/presets exec tsc --noEmit` passed after the Material 3 Google Switch
+  schema update.
+- `pnpm --filter @kiskadee/showcase build` passed and regenerated showcase artifacts after the
+  Material 3 Google Switch schema update.
+- `rg -n "material-design-3-google.*switch|width:52px|height:32px|width:24px|height:24px|#e6e1e9|#79747e|#615690|#e7deff" packages/showcase/registry/generated/design-systems.registry.generated.ts packages/web-builder/build/material-design-3-google/core.kiskadee.css packages/web-builder/build/material-design-3-google/default.light.kiskadee.css`
+  confirmed the generated registry exposes only `s:md:1` for Material 3 Google Switch and generated
+  CSS includes the refreshed `52 x 32` track, `24 x 24` thumb, and Material colors.
 
 Future broader validation, only if showcase/generated artifacts are touched:
 
