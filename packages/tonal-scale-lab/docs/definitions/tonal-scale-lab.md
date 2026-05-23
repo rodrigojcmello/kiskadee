@@ -99,13 +99,22 @@ Current profiles:
   node, that preservation step keeps the planned curve instead of redrawing the whole surrounding
   interval. A bounded fairing pass smooths generated
   interior points that would otherwise create one-point subcurves. Final lightness handling is split
-  into three layers: a monotonicity guard fixes generated slots that become locally inverted after
-  sRGB fitting, `finalLightnessRhythm` redistributes the configured `K1..K10`, `K10..K30`, and
-  `K35..K95` zones from protected endpoints, and the same rhythm layer resolves transition deltas
-  between separated zone boundaries such as `K30 -> K35`. Final spacing ranges for `K1..K10` and
-  `K10..K30` remain as bounded guardrails. The spacing check can iterate within a bounded
-  lightness-drop budget to account for OKLCH-to-sRGB quantization, but the desired normal
-  distribution now belongs to the zone-rhythm pass rather than to one-point minimum-delta repairs.
+  into layered responsibilities: a monotonicity guard fixes generated slots that become locally
+  inverted after sRGB fitting, `finalLightnessRhythm` redistributes the configured `K1..K10`,
+  `K10..K30`, and `K35..K95` zones from protected endpoints, and the same rhythm layer resolves
+  transition deltas between separated zone boundaries such as `K30 -> K35`. Final spacing ranges for
+  `K1..K10` and `K10..K30` remain as bounded guardrails. After that spacing guard, a
+  protected-anchor expansion can rebalance `K1..anchor` when a light/pre-vivid exact input anchor
+  makes the interval immediately before it collapse. The exact input still stays fixed; generated
+  slots receive bounded OKL lightness movement with a slight eased progress toward the anchor, so
+  the surrounding zone, not the anchor, absorbs the compression. A companion protected-anchor exit
+  rhythm can also soften `anchor..K35` when the first post-anchor lightness delta is much sharper
+  than the incoming rhythm. Very light preserved anchors also get a bounded chroma-valley floor:
+  generated slots between the exact input and the light-zone exit are lifted only when they fall
+  below the interpolated OKL chroma line toward the early pre-vivid bridge, so cases such as
+  `#ffe082` and `#fff59d` do not show a small dip immediately after the preserved input. The desired
+  normal distribution now belongs to zone-rhythm passes rather than to one-point minimum-delta
+  repairs.
 - `Sophisticated - Auto Mid Peak + 3:1 Vivid`: follows the same vivid-contrast behavior, but treats
   the profile base tone as the OKL chroma peak. Both very light and very dark tones become less
   chromatic. This profile should be recalibrated again after the `Balanced` dark-chroma experiment
@@ -202,8 +211,16 @@ active profile reference scale, and an OKLCH lightness/chroma chart so curve cha
 immediately.
 For profiles with a planned chroma curve, the chart also renders the planned curve as a red
 diagnostic overlay. The red line and red virtual points show the post-preservation curve target,
-including optional local constraints such as the `K1..K10` light-zone shoulder and the exact
-preserved input anchor. The blue points remain the final generated `K<n>` colors.
+including the `K35` vivid boundary, optional local constraints such as the `K1..K10` light-zone
+shoulder, and the exact preserved input anchor. The red line is allowed to be a cleaner geometric
+target than the final emitted samples. For very light preserved anchors such as `#fff59d` at `K4`,
+the diagnostic light-zone shoulder is lifted above the chord into the `K10` exit so the red
+projection keeps the expected upward arc toward the apex instead of showing a local downward belly
+caused by generated sample repairs. This projection lift has its own bow ratio because the lower
+generation arc floor was too subtle to communicate the intended curve. When the exact preserved
+input is itself the local chroma apex, such as `#ffc107` at `K16`, the projection also adds
+projection-only tangent shaping from the previous graph point so the red curve bows into a rounded
+cume instead of showing a one-point summit. The blue points remain the final generated `K<n>` colors.
 Structural chromatic nodes are highlighted with `#26C6DA` on top of the generated points. For the
 current `Balanced` model this means `K1`, `K10`, `K35`, `K95`, and the dynamic preserved input
 anchor. `K55` is not highlighted because it is not a generation node in this model. All chart point

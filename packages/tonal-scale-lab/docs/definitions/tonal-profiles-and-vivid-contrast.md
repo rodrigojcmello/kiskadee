@@ -173,11 +173,13 @@ redrawing the whole surrounding interval as a straight OKLCH interpolation.
 
 The lab exposes this planned curve as chart diagnostics. The red chart line is the sampled curve
 target captured after exact input preservation, contrast, and curve-shape continuity. The red points
-are the virtual graph constraints, including the optional local light-zone shoulder points and the
-preserved input anchor when that anchor is part of the final spline. The generated blue points are
-still the final emitted scale, which makes it possible to see whether a sample is following the
-planned model or still drifting because of gamut fitting, contrast, lightness-drop budgets, or
-fairing.
+are the virtual graph constraints, including the `K35` vivid boundary when the active profile has a
+vivid start, the optional local light-zone shoulder points, and the preserved input anchor when that
+anchor is part of the final spline. `K35` is included because it is a functional structural node, not
+just another emitted sample: it is where the vivid contrast contract begins. The generated blue
+points are still the final emitted scale, which makes it possible to see whether a sample is
+following the planned model or still drifting because of gamut fitting, contrast, lightness-drop
+budgets, or fairing.
 
 The diagnostic projection has one display-only cleanup for luminous light-zone cases. When the
 global `light-arc-base` point falls inside the local `K1..K10` shoulder interval, the projection
@@ -185,18 +187,37 @@ omits that base point and lets `light-zone-exit` and `light-zone-shoulder` descr
 This avoids a false red "V" around `K10` without changing the generated scale or the generation
 spline.
 
+The red planned curve should remain the best geometric intention, not a justification for every
+post-generation repair in the emitted scale. For luminous colors with a very light preserved input,
+such as `#fff59d` at `K4`, the local `light-zone-shoulder` can sit below the straight chord from the
+preserved input anchor into the light-zone exit. That makes the red projection show a small downward
+belly exactly where the intended light-side curve should stay lifted toward the apex. The diagnostic
+projection now lifts that shoulder above the local chord using the stronger
+`lightZoneShoulder.projectionBowRatio`, capped by the higher endpoint chroma. This is
+projection-only: it keeps the exact input anchor and generated blue samples unchanged while making
+the red line state the desired arc before later work decides which emitted samples should follow it.
+
+The same principle applies when the preserved input anchor is the local chroma apex. The red
+projection should not turn that exact input into a one-point summit followed by a straight drop into
+the next structural node. When the preserved anchor is higher than both neighboring graph points,
+the projection raises the incoming tangent from the previous graph point toward the protected apex,
+bounded by the monotone cubic limit. For `#ffc107`, this makes the segment from `dark-arc-base` to
+`K16` bow upward and flatten into the exact input without adding another visible graph point. This is
+still projection-only: it communicates the intended rounded cume without moving the exact input or
+the generated samples.
+
 After the final contrast pass, `Balanced` also applies a small OKL lightness monotonicity guard.
 This guard is not a curve-shaping tool; it is a sanity pass for generated slots that become locally
 inverted after OKLCH-to-sRGB fitting. It keeps the exact input anchor fixed and only darkens an
 offending generated slot enough to restore the expected light-to-dark order.
 
-`Balanced` then applies `finalLightnessRhythm` before the last spacing guard. This is the first
-implementation of the zone-rhythm model: each configured range protects its endpoints and the exact
-input anchor, splits around those protected points, and redistributes each interior subzone toward a
-steady OKL lightness rhythm. The first ranges are `K1..K10`, `K10..K30`, and `K35..K95`. This is
-deliberately different from adjusting only the collapsed interval; if `K22/K24` are too close, the
-whole `K10..K30` neighborhood is redistributed from its endpoints so the fix does not simply push
-the compression into `K24/K26`.
+`Balanced` then applies the normal `finalLightnessRhythm` ranges before the last spacing guard. This
+is the first implementation of the zone-rhythm model: each configured range protects its endpoints
+and the exact input anchor, splits around those protected points, and redistributes each interior
+subzone toward a steady OKL lightness rhythm. The first ranges are `K1..K10`, `K10..K30`, and
+`K35..K95`. This is deliberately different from adjusting only the collapsed interval; if
+`K22/K24` are too close, the whole `K10..K30` neighborhood is redistributed from its endpoints so
+the fix does not simply push the compression into `K24/K26`.
 
 `finalLightnessRhythm` also owns the first transition-delta solver between adjacent rhythm zones.
 When one zone ends and another begins with a gap between them, such as `K30 -> K35`, the boundary
@@ -216,6 +237,25 @@ so this guard may only move generated slots. The pass is intentionally iterative
 total lightness-drop budget per slot, because converting a requested OKLCH lightness back to sRGB can
 land slightly above the requested value.
 
+After that spacing guard, `Balanced` has one protected-anchor expansion for exact anchors inside
+`K1..K30`. This pass handles the case where the protected input itself creates a compressed
+pre-anchor interval, such as `#ffc107` at `K16` making `K14 -> K16` too small. Because the exact
+anchor cannot move, the pass does not try to force a single minimum delta. It redistributes the
+generated `K1..anchor` subzone toward a steadier rhythm, keeps the input hex exact, and bounds each
+generated slot's OKL lightness movement. The current trigger is `1.05` OKL lightness points for the
+interval immediately before the anchor. The expansion uses a small `1.08` progress gamma toward the
+anchor so the last pre-anchor interval can breathe a little more without turning the rule into a
+single-slot minimum-delta repair.
+
+`Balanced` also applies a protected-anchor exit rhythm for exact anchors in `K10..K35`. This rule is
+not tied to `K16` or to yellow hues. It activates when the first post-anchor OKL lightness delta is
+too abrupt compared with the incoming delta before the anchor. The current trigger is
+`outgoing > incoming * 1.25 + 0.15`. When it triggers, the generated `anchor..K35` subzone receives a
+slow-start lightness redistribution with `progressGamma: 1.22`, `strength: 0.9`, and a `0.65` OKL
+lightness lift budget per slot. The exact input anchor remains fixed. This gives luminous
+pre-vivid anchors a softer exit into the bridge without making hue or color-family checks part of
+the activation criteria.
+
 Saturated yellow can expose an sRGB gamut cusp where keeping the same hue makes higher post-anchor
 OKL chroma physically unavailable. For that case, the forward shoulder has a conservative hue-drift
 rescue. The drift direction is chosen once for the local shoulder, decays across the shoulder, and
@@ -223,6 +263,17 @@ the exact input hex remains unchanged. `Balanced` keeps that rescue narrow: the 
 `8deg`, and a drifted candidate is accepted only when it gains at least `0.004` OKL chroma over the
 same-hue candidate. Marginal chroma gains must keep hue continuity, which avoids cases such as
 `#ffc107` pushing `K18/K20` into a greenish yellow just to chase a tiny chroma increase.
+
+Very light preserved anchors have one additional chroma guard. When an exact input lands before the
+light-zone exit, the generated slots after it may dip below the natural chroma line toward the early
+pre-vivid bridge.
+That creates a small chart valley and makes neighboring light tones read like a stall even though
+their OKL lightness rhythm is valid. `Balanced` treats this as a light-zone geometry problem, not as
+a hue or fixed-tone exception: `lightZoneChromaValleyFloor` applies only when the preserved input is
+from `K1` up to, but not including, `K14`. It keeps that exact input fixed and lifts only generated
+slots below the interpolated OKL chroma floor between the input and `K14`. The current guard starts
+at a `0.0015` OKL chroma dip and caps each lift to `0.012`. The activation window ends before `K14`,
+so `K14` is the floor target rather than another protected input slot.
 
 ## `K55` Caveat
 

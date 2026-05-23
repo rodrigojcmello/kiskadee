@@ -118,7 +118,28 @@ const BALANCED_CHROMA_CURVE_CONTINUITY = {
       maxLightnessShift: 1.4,
       redistributionSlots: 2,
       redistributionStrength: 1
-    }
+    },
+    protectedAnchorExpansions: [
+      {
+        startTone: 1,
+        endTone: 30,
+        minAdjacentDelta: 1.05,
+        strength: 1,
+        maxLightnessShift: 1.2,
+        progressGamma: 1.08
+      }
+    ],
+    protectedAnchorExits: [
+      {
+        startTone: 10,
+        endTone: 35,
+        maxFirstDeltaRatio: 1.25,
+        tolerance: 0.15,
+        strength: 0.9,
+        maxLightnessLift: 0.65,
+        progressGamma: 1.22
+      }
+    ]
   },
   finalLightnessSpacing: {
     // Final guardrail only. Zone rhythm redistribution should own normal lightness spacing.
@@ -138,6 +159,13 @@ const BALANCED_CHROMA_CURVE_CONTINUITY = {
       }
     ]
   },
+  lightZoneChromaValleyFloor: {
+    startTone: 1,
+    endTone: 14,
+    minChromaDip: 0.0015,
+    strength: 0.9,
+    maxChromaLift: 0.012
+  },
   curveShape: {
     applyBeforeInputPreservation: true,
     strength: 0.5,
@@ -150,7 +178,8 @@ const BALANCED_CHROMA_CURVE_CONTINUITY = {
       lightBaseChromaRatio: 0.68,
       lightZoneShoulder: {
         endTone: 10,
-        shoulderProgress: 0.56
+        shoulderProgress: 0.56,
+        projectionBowRatio: 0.5
       },
       minimumArcLift: {
         lightSideMinBowRatio: 0.13,
@@ -175,7 +204,8 @@ const BALANCED_CHROMA_CURVE_CONTINUITY = {
     dropMin: 0.004,
     dropRatio: 0.025,
     dropGamma: 1.45,
-    lightSideMaxLightnessDrop: 0.75
+    lightSideMaxLightnessDrop: 0.75,
+    projectionIncomingTangentRatio: 2.6
   },
   forwardApexShoulder: {
     sampleSize: 4,
