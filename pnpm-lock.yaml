@@ -94,6 +94,9 @@ importers:
 
   packages/headless/react:
     dependencies:
+      '@kiskadee/core':
+        specifier: workspace:^
+        version: link:../../core
       '@floating-ui/react':
         specifier: ^0.27.16
         version: 0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
