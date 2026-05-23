@@ -201,6 +201,28 @@ Inline projected selectors include all projected state classes plus `-a`:
 Do not use inline state for a child element that is merely reacting to a parent/component state. For
 that case, author the schema value as a reference so the generated key uses `==`.
 
+For binary controls, `selected` is usually owned by the component state scope
+owner rather than by every child slot. A Switch track or thumb that changes when
+the root is selected should use a reference value in the `selected` submap so
+the generated selector targets the child from the selected root:
+
+```ts
+boxColor: {
+  neutral: {
+    high: {
+      rest: offTrack,
+      selected: {
+        rest: { ref: onTrack }
+      }
+    }
+  }
+}
+```
+
+This keeps the meaning as "selected root + resting interaction changes the
+child." A direct value under `selected.rest` means the generated class itself is
+the selected state owner.
+
 ### Reference Keys (`==`)
 
 Reference keys apply child styles from parent or component scope state.

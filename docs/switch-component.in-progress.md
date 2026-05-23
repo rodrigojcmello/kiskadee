@@ -143,6 +143,12 @@ keyboard-visible focus. The new Switch runtime avoids that ambiguity by tracking
 - Stage 4 removed the production `ENABLE_FORCED_INTERACTION_STATES` flag from web-builder. Projected
   state selector branches are now documented as normal runtime CSS output rather than showcase-only
   forced-state output.
+- `packages/presets/docs/definitions/component-intents.md` now records that `rest` is an
+  interaction state, not an off/disabled value. For binary controls, base `rest` means off +
+  resting interaction, while `selected.rest` means on + resting interaction.
+- `packages/web-builder/docs/definitions/interaction-state-model.md` now records that child slots
+  reacting to a selected root should use reference values under `selected` so generated CSS targets
+  the child from the selected state scope owner.
 
 ## Preset Reference Capture
 
@@ -362,6 +368,13 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
   `borderWidthEmission: mirrored` and `paddingEmission: compensated`. `borderRadius` is important
   to Switch geometry, but it uses the builder default `mirrored` emission rather than a
   Switch-specific override.
+- Fluent 2 Microsoft Switch has a temporary `neutral.high` emphasis bucket for visual testing. The
+  unchecked/off rest track remains white, the checked/on rest track is green (`#107C10`), the
+  unchecked/off thumb is red (`#C50F1F`), and the checked/on thumb remains white. The bucket
+  intentionally avoids custom hover/focus/pressed values. These colors are placeholder values and
+  should be revisited before treating the palette as final. The showcase Switch page exposes an
+  `Emphasis` select derived from the selected design system manifest, so presets without `high` do
+  not show a misleading option.
 
 ## Relevant Files
 
@@ -552,6 +565,45 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
 - `git diff --check -- packages/showcase/app/switch/SwitchPage.tsx docs/switch-component.in-progress.md`
   passed after the same showcase radius transition update.
 - `pnpm --filter @kiskadee/showcase build` passed after the showcase radius transition update.
+- `pnpm exec biome check packages/presets/src/presets/fluent-2-microsoft/components/switch.schema.ts packages/showcase/app/switch/SwitchPage.tsx`
+  passed after adding the temporary Fluent Switch `high` emphasis bucket and the showcase emphasis
+  selector.
+- `git diff --check -- packages/presets/src/presets/fluent-2-microsoft/components/switch.schema.ts packages/showcase/app/switch/SwitchPage.tsx`
+  passed after the same emphasis update.
+- `pnpm --filter @kiskadee/presets exec tsc --noEmit` passed after the Fluent Switch emphasis
+  schema update.
+- `pnpm --filter @kiskadee/showcase build` passed after the emphasis update and regenerated the
+  showcase registry/artifacts.
+- `rg -n "high|C50F1F|107C10|c50f1f|107c10|neutral" packages/showcase/registry/generated/design-systems.registry.generated.ts packages/web-builder/build/fluent-2-microsoft/core.kiskadee.json packages/showcase/public/build/fluent-2-microsoft/core.kiskadee.json packages/web-builder/build/fluent-2-microsoft/core.kiskadee.css packages/showcase/public/build/fluent-2-microsoft/core.kiskadee.css`
+  confirmed the generated registry exposes `fluent-2-microsoft.switch.state.neutral.high`.
+- `rg -n "C50F1F|107C10|c50f1f|107c10|high" packages/web-builder/build/fluent-2-microsoft packages/showcase/public/build/fluent-2-microsoft`
+  confirmed the temporary red/green values are present in generated schema/CSS artifacts.
+- `pnpm exec biome check packages/presets/src/presets/fluent-2-microsoft/components/switch.schema.ts`
+  passed after moving Fluent Switch `neutral.high` track green to rest and keeping off red thumb.
+- `git diff --check -- packages/presets/src/presets/fluent-2-microsoft/components/switch.schema.ts`
+  passed after the same emphasis palette adjustment.
+- `pnpm --filter @kiskadee/presets exec tsc --noEmit` passed after the rest-green emphasis palette.
+- `pnpm --filter @kiskadee/showcase build` passed and regenerated the registry/artifacts after the
+  rest-green emphasis palette.
+- `rg -n "C50F1F|107C10|c50f1f|107c10|high" packages/web-builder/build/fluent-2-microsoft/schema.json packages/showcase/public/build/fluent-2-microsoft/schema.json packages/web-builder/build/fluent-2-microsoft/default.light.kiskadee.css packages/showcase/public/build/fluent-2-microsoft/default.light.kiskadee.css packages/showcase/registry/generated/design-systems.registry.generated.ts`
+  previously confirmed generated Fluent Switch high emphasis emitted direct green track rest and
+  direct red thumb rest classes. That schema shape was superseded by the selected/rest correction
+  below because green represents the on state, not off/rest.
+- `pnpm exec biome check packages/presets/src/presets/fluent-2-microsoft/components/switch.schema.ts packages/showcase/app/switch/SwitchPage.tsx`
+  passed after correcting Fluent Switch `neutral.high` so green is `selected.rest` and off/rest
+  track is white.
+- `pnpm --filter @kiskadee/web-builder run build-sync-generate` passed and regenerated the
+  showcase registry/artifacts after the selected/rest correction.
+- `pnpm --filter @kiskadee/presets exec tsc --noEmit` passed after the selected/rest correction.
+- `pnpm --filter @kiskadee/showcase build` passed after the selected/rest correction.
+- `rg -n "#107c10|#c50f1f|\\.-a\\.\\-s \\.fm-[a-z]+\\{background:#107c10\\}" packages/showcase/public/build/fluent-2-microsoft/default.light.kiskadee.css packages/web-builder/build/fluent-2-microsoft/default.light.kiskadee.css packages/showcase/registry/generated/design-systems.registry.generated.ts`
+  confirmed generated CSS now emits the green track as a selected-root descendant selector
+  (`.-a.-s .fm-ax`) while the red off thumb remains a direct rest class.
+- Browser/dev-server verification was not completed because an existing `next dev` process for
+  `packages/showcase` is already running on port `3000`; a fresh `pnpm --filter @kiskadee/showcase
+  dev` attempt selected `3001` but Next aborted with its same-project dev-server lock. The running
+  `3000` instance appeared stale/inconsistent, so the current verification relies on build and
+  artifact checks instead of visual browser confirmation.
 - `git diff --check -- packages/web-builder/docs/definitions/component-style-emission-overrides.md packages/web-builder/docs/definitions/style-emission-policy.md packages/web-builder/README.md docs/switch-component.in-progress.md`
   passed after documenting Switch style-emission overrides.
 - `pnpm exec biome check packages/web-builder/README.md packages/web-builder/docs/definitions/style-emission-policy.md packages/web-builder/docs/definitions/component-style-emission-overrides.md docs/switch-component.in-progress.md`

@@ -19,6 +19,8 @@ export function createFluent2MicrosoftSwitchSchema({
   const primary60 = c('default', 'l', 'primary', 60);
   const primary70 = c('default', 'l', 'primary', 70);
   const primary80 = c('default', 'l', 'primary', 80);
+  const emphasisOffThumb = '#C50F1F';
+  const emphasisOnTrack = '#107C10';
 
   if (transparent === undefined) {
     throw new Error('Expected Fluent switch.neutral tone 100 before applying transparent alpha.');
@@ -74,6 +76,12 @@ export function createFluent2MicrosoftSwitchSchema({
                               pressed: { ref: primary80 }
                             },
                             disabled: { ref: neutral6 }
+                          },
+                          high: {
+                            rest: white,
+                            selected: {
+                              rest: { ref: emphasisOnTrack }
+                            }
                           }
                         }
                       },
@@ -91,6 +99,12 @@ export function createFluent2MicrosoftSwitchSchema({
                               pressed: { ref: transparent }
                             },
                             disabled: { ref: '#D1D1D1' } // cinza claro
+                          },
+                          high: {
+                            rest: '#616161',
+                            selected: {
+                              rest: { ref: transparent }
+                            }
                           }
                         }
                       }
@@ -126,6 +140,12 @@ export function createFluent2MicrosoftSwitchSchema({
                               pressed: { ref: white }
                             },
                             disabled: { ref: neutral25 }
+                          },
+                          high: {
+                            rest: emphasisOffThumb,
+                            selected: {
+                              rest: { ref: white }
+                            }
                           }
                         }
                       },

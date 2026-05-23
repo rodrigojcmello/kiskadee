@@ -1,6 +1,6 @@
 'use client';
 
-import type { ElementSizeValue, RadiusMode } from '@kiskadee/core';
+import type { ComponentEmphasis, ElementSizeValue, RadiusMode } from '@kiskadee/core';
 import { Switch, useKiskadee, useShowcase } from '@kiskadee/react-components';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
@@ -22,6 +22,13 @@ const radiusOptions: Array<{ value: RadiusMode; label: string }> = [
   { value: 'square', label: 'Square' }
 ];
 
+const emphasisOptions: Array<{ value: ComponentEmphasis; label: string }> = [
+  { value: 'medium', label: 'Medium' },
+  { value: 'high', label: 'High' },
+  { value: 'low', label: 'Low' },
+  { value: 'lowest', label: 'Lowest' }
+];
+
 function StateTile({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className={s.stateTile}>
@@ -37,13 +44,19 @@ export default function SwitchPage() {
   const [checked, setChecked] = useState(true);
   const [scale, setScale] = useState<ElementSizeValue>('s:md:1');
   const [radius, setRadius] = useState<RadiusMode>('rounded');
+  const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
   const switchMeta = manifest?.components?.switch;
   const isSwitchAvailable = Boolean(switchMeta);
   const defaultRadius = global?.components?.switch?.options?.radius ?? global?.radius ?? 'rounded';
   const supportedSwitchScales = switchMeta?.scale;
+  const supportedSwitchStates = switchMeta?.state?.neutral;
   const scaleSelectOptions = useMemo(
     () => switchScaleOptions.filter((option) => Boolean(supportedSwitchScales?.[option.value])),
     [supportedSwitchScales]
+  );
+  const emphasisSelectOptions = useMemo(
+    () => emphasisOptions.filter((option) => Boolean(supportedSwitchStates?.[option.value])),
+    [supportedSwitchStates]
   );
   const radiusSelectOptions = useMemo(
     () =>
@@ -58,6 +71,18 @@ export default function SwitchPage() {
   useEffect(() => {
     setRadius(defaultRadius);
   }, [defaultRadius]);
+
+  useEffect(() => {
+    if (
+      !emphasisSelectOptions.length ||
+      emphasisSelectOptions.some((option) => option.value === emphasis)
+    ) {
+      return;
+    }
+
+    const preferredEmphasis = emphasisSelectOptions.find((option) => option.value === 'medium');
+    setEmphasis(preferredEmphasis?.value ?? emphasisSelectOptions[0].value);
+  }, [emphasis, emphasisSelectOptions]);
 
   useEffect(() => {
     if (!scaleSelectOptions.length || scaleSelectOptions.some((option) => option.value === scale)) {
@@ -104,6 +129,19 @@ export default function SwitchPage() {
             }}
             disabled={!isSwitchAvailable}
           />
+          <Select
+            label="Emphasis"
+            width={160}
+            options={emphasisSelectOptions}
+            value={emphasis}
+            onValueChange={(value) => {
+              const nextEmphasis = value as ComponentEmphasis;
+              if (nextEmphasis === emphasis) return;
+              playWowTransition();
+              setEmphasis(nextEmphasis);
+            }}
+            disabled={!isSwitchAvailable || emphasisSelectOptions.length <= 1}
+          />
         </div>
       </header>
 
@@ -123,6 +161,7 @@ export default function SwitchPage() {
                 onCheckedChange={setChecked}
                 scale={scale}
                 radius={radius}
+                emphasis={emphasis}
               />
               <span className={s.valueLabel}>{checked ? 'On' : 'Off'}</span>
             </div>
@@ -138,6 +177,7 @@ export default function SwitchPage() {
                   checked={false}
                   scale={scale}
                   radius={radius}
+                  emphasis={emphasis}
                   readOnly
                 />
               </StateTile>
@@ -148,6 +188,7 @@ export default function SwitchPage() {
                   checked
                   scale={scale}
                   radius={radius}
+                  emphasis={emphasis}
                   readOnly
                 />
               </StateTile>
@@ -159,6 +200,7 @@ export default function SwitchPage() {
                   className="-h -a"
                   scale={scale}
                   radius={radius}
+                  emphasis={emphasis}
                   readOnly
                 />
               </StateTile>
@@ -170,6 +212,7 @@ export default function SwitchPage() {
                   className="-f -a"
                   scale={scale}
                   radius={radius}
+                  emphasis={emphasis}
                   readOnly
                 />
               </StateTile>
@@ -181,6 +224,7 @@ export default function SwitchPage() {
                   className="-h"
                   scale={scale}
                   radius={radius}
+                  emphasis={emphasis}
                   readOnly
                 />
               </StateTile>
@@ -192,6 +236,7 @@ export default function SwitchPage() {
                   className="-f"
                   scale={scale}
                   radius={radius}
+                  emphasis={emphasis}
                   readOnly
                 />
               </StateTile>
@@ -208,6 +253,7 @@ export default function SwitchPage() {
                   checked={false}
                   scale={scale}
                   radius={radius}
+                  emphasis={emphasis}
                   disabled
                 />
               </StateTile>
@@ -218,6 +264,7 @@ export default function SwitchPage() {
                   checked
                   scale={scale}
                   radius={radius}
+                  emphasis={emphasis}
                   disabled
                 />
               </StateTile>
@@ -235,6 +282,7 @@ export default function SwitchPage() {
                   checked
                   scale={scale}
                   radius={radius}
+                  emphasis={emphasis}
                   readOnly
                 />
               </StateTile>
@@ -250,6 +298,7 @@ export default function SwitchPage() {
                   checked
                   scale={scale}
                   radius={radius}
+                  emphasis={emphasis}
                   readOnly
                 />
               </StateTile>
@@ -260,6 +309,7 @@ export default function SwitchPage() {
                   checked
                   scale={scale}
                   radius={radius}
+                  emphasis={emphasis}
                   readOnly
                 />
               </StateTile>

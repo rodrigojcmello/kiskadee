@@ -59,6 +59,33 @@ componentIntents: {
 // - selected/on activation can use primary from Layer 2
 ```
 
+### Binary Control State And Interaction State
+
+Binary controls have two independent axes:
+
+- Control state: unchecked/off versus selected/on.
+- Interaction state: `rest`, `hover`, `focus`, `pressed`, `disabled`, and
+  related states.
+
+`rest` means the control is not currently being hovered, focused, pressed, or
+otherwise interacted with. It does not mean off or disabled.
+
+For Switch, Checkbox, Radio, and similar binary controls, the base branch is the
+unchecked/off control state. The nested `selected` branch is the checked/on
+control state. Therefore:
+
+```txt
+neutral.medium.rest           = off + rest
+neutral.medium.hover          = off + hover
+neutral.medium.selected.rest  = on + rest
+neutral.medium.selected.hover = on + hover
+```
+
+When authoring presets, put persistent on/checked visuals under
+`selected.<interaction>`, not in the base interaction state. For example, a
+Switch track that turns green when on should define the green value in
+`selected.rest`; putting it in `rest` would make green the off/rest visual.
+
 If a component repeatedly needs named internal color roles, model that as a
 dedicated component contract later. Do not overload Layer 3 component intents to
 mean internal state color roles.
