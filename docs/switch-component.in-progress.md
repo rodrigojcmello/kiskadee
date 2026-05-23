@@ -357,6 +357,11 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
   rule, not a web-builder or global emission-policy change. The structural selector is the direct
   element modifier `.k-swt-e3a-a`, and it intentionally uses contract variables without local
   `var()` fallbacks so missing generated values remain visible as bugs.
+- Switch style-emission policy was reviewed and documented in the web-builder docs. The only
+  Switch-specific overrides today are on `switch.standard.e2` / track:
+  `borderWidthEmission: mirrored` and `paddingEmission: compensated`. `borderRadius` is important
+  to Switch geometry, but it uses the builder default `mirrored` emission rather than a
+  Switch-specific override.
 
 ## Relevant Files
 
@@ -384,6 +389,8 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
 - `packages/components/react/src/TextField/standard-borderless/TextField.standard-borderless.structural.scss`
 - `packages/web-builder/docs/definitions/interaction-state-model.md`
 - `packages/web-builder/docs/definitions/pipeline.md`
+- `packages/web-builder/docs/definitions/style-emission-policy.md`
+- `packages/web-builder/docs/definitions/component-style-emission-overrides.md`
 - `packages/web-builder/src/phase-8-write-extra-artifacts/writeExtraArtifacts.ts`
 - `packages/core/src/components/switch.options.zod.ts`
 - `packages/core/src/components/switch.ts`
@@ -545,6 +552,16 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
 - `git diff --check -- packages/showcase/app/switch/SwitchPage.tsx docs/switch-component.in-progress.md`
   passed after the same showcase radius transition update.
 - `pnpm --filter @kiskadee/showcase build` passed after the showcase radius transition update.
+- `git diff --check -- packages/web-builder/docs/definitions/component-style-emission-overrides.md packages/web-builder/docs/definitions/style-emission-policy.md packages/web-builder/README.md docs/switch-component.in-progress.md`
+  passed after documenting Switch style-emission overrides.
+- `pnpm exec biome check packages/web-builder/README.md packages/web-builder/docs/definitions/style-emission-policy.md packages/web-builder/docs/definitions/component-style-emission-overrides.md docs/switch-component.in-progress.md`
+  processed zero files because Markdown docs are ignored by the current Biome config.
+- `rg -n "[ \t]$" packages/web-builder/docs/definitions/component-style-emission-overrides.md packages/web-builder/docs/definitions/style-emission-policy.md packages/web-builder/README.md docs/switch-component.in-progress.md`
+  returned no matches after the style-emission documentation update.
+- `rg -n "switch:|borderWidthEmission|paddingEmission|borderRadiusEmission|component-style-emission-overrides|Switch-specific overrides" packages/web-builder/src/style-emission/web-build-policy.ts packages/web-builder/docs/definitions/component-style-emission-overrides.md packages/web-builder/docs/definitions/style-emission-policy.md docs/switch-component.in-progress.md`
+  confirmed the new docs match the actual Switch policy: `switch.standard.e2` overrides
+  `borderWidthEmission` and `paddingEmission`, while `borderRadiusEmission` remains the default
+  `mirrored` policy.
 
 Future broader validation, only if showcase/generated artifacts are touched:
 

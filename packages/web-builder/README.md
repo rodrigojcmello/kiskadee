@@ -5,6 +5,8 @@ Build pipeline that converts a Kiskadee `Schema` into Web artifacts (utility CSS
 ## Docs
 
 - [Style emission policy](docs/definitions/style-emission-policy.md) - element-level rules for CSS output shape.
+- [Component style emission overrides](docs/definitions/component-style-emission-overrides.md) - component/element
+  emission overrides and their structural reasons.
 - [Border width padding compensation](docs/definitions/border-width-padding-compensation.md) - web-only padding
   adjustment for border widths.
 - [Gradients](docs/definitions/gradients.md) - `ResolvedGradient` CSS emission, interpolation variables, mirrored

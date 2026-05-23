@@ -39,3 +39,9 @@ Current element-specific contracts include:
   placeholder color through `--k-txc`.
 - `button.e1.boxColorGradientEmission = 'interpolated'` so button gradients can expose `--k-bg*`
   interpolation variables without making every `boxColor` class use that CSS shape.
+- `switch.standard.e2.borderWidthEmission = 'mirrored'` and
+  `switch.standard.e2.paddingEmission = 'compensated'` so the web track can preserve
+  cross-platform visual geometry when a border is present.
+
+For component-by-component notes, see
+[`component-style-emission-overrides.md`](./component-style-emission-overrides.md).
