@@ -3,7 +3,6 @@ import type {
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
-  SwitchActivationMotion,
   SwitchMode,
   SwitchVariant
 } from '@kiskadee/core';
@@ -41,7 +40,6 @@ export type SwitchProps = Omit<
   emphasis?: ComponentEmphasis;
   intent?: string;
   radius?: RadiusMode;
-  activationMotion?: SwitchActivationMotion;
   variant?: SwitchVariant;
   mode?: SwitchMode;
   labelPosition?: SwitchLabelPosition;

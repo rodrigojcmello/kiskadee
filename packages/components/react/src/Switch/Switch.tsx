@@ -70,7 +70,6 @@ function SwitchRoot(props: SwitchProps) {
     emphasis = DEFAULT_SWITCH_EMPHASIS,
     intent = DEFAULT_SWITCH_INTENT,
     radius,
-    activationMotion,
     variant = DEFAULT_SWITCH_VARIANT,
     mode = DEFAULT_SWITCH_MODE,
     labelPosition = DEFAULT_SWITCH_LABEL_POSITION,
@@ -85,9 +84,7 @@ function SwitchRoot(props: SwitchProps) {
     global?.radius ??
     DEFAULT_SWITCH_RADIUS;
   const resolvedActivationMotion =
-    activationMotion ??
-    global?.components?.switch?.options?.activationMotion ??
-    DEFAULT_SWITCH_ACTIVATION_MOTION;
+    global?.components?.switch?.options?.activationMotion ?? DEFAULT_SWITCH_ACTIVATION_MOTION;
   const elements = resolveVariantElements(
     classesMap.switch as SwitchVariantClassesMap | undefined,
     variant,

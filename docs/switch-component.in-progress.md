@@ -342,6 +342,11 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
   maps them to a Switch-local motion variable instead of changing global interaction duration.
   `ios-26-apple` uses `standard`, while `fluent-2-microsoft` uses `slow` because its compact
   circular thumb felt too abrupt with the standard activation timing.
+- `activationMotion` is intentionally not exposed as a public `Switch` prop. Schema options do not
+  automatically become per-instance React overrides; each option needs an explicit API decision.
+  The current Switch alignment keeps `variant`, `mode`, and `radius` overrideable, while
+  `activationMotion` remains a preset-level fidelity decision read from the generated global
+  artifact.
 
 ## Relevant Files
 
@@ -355,6 +360,7 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
 - `packages/components/react/src/Switch/Switch.types.ts`
 - `packages/components/react/src/Switch/Switch.structural.scss`
 - `packages/components/react/src/contexts/KiskadeeContext.tsx`
+- `packages/components/react/docs/definitions/schema-option-overrides.md`
 - `packages/components/react/src/styles/style.kiskadee.scss`
 - `packages/components/react/src/Button/ButtonWithRipple.scss`
 - `packages/components/react/src/Button/useButtonBase.ts`
@@ -493,6 +499,18 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
   confirmed Fluent 2 Microsoft artifacts publish `activationMotion: "slow"`, iOS 26 Apple artifacts
   publish `activationMotion: "standard"`, and React component CSS/JS contains the slow Switch
   modifier `k-swt-e1b-a` plus the local `--k-swt-dur` variable.
+- `pnpm exec biome check packages/components/react/src/Switch/Switch.types.ts packages/components/react/src/Switch/Switch.tsx packages/components/react/docs/definitions/schema-option-overrides.md packages/presets/docs/definitions/interaction-feedback.md docs/switch-component.in-progress.md`
+  passed for processed files after removing the public `Switch` `activationMotion` prop. Markdown
+  docs are ignored by the current Biome config.
+- `git diff --check -- packages/components/react/src/Switch/Switch.types.ts packages/components/react/src/Switch/Switch.tsx packages/components/react/docs/definitions/schema-option-overrides.md packages/presets/docs/definitions/interaction-feedback.md docs/switch-component.in-progress.md`
+  passed after documenting schema option override policy.
+- `pnpm --filter @kiskadee/react-components run build` passed after removing the public
+  `activationMotion` prop and regenerating React component artifacts.
+- `pnpm --filter @kiskadee/showcase build` passed after the same removal; generated global artifacts
+  still provide `activationMotion` through schema/default preset metadata.
+- `rg -n "activationMotion?:|activationMotion|SwitchActivationMotion|k-swt-e1b-a|--k-swt-dur" packages/components/react/dist/Switch packages/components/react/dist/contexts packages/web-builder/build/fluent-2-microsoft/global.kiskadee.json packages/showcase/public/build/fluent-2-microsoft/global.kiskadee.json packages/web-builder/build/ios-26-apple/global.kiskadee.json packages/showcase/public/build/ios-26-apple/global.kiskadee.json`
+  confirmed `SwitchProps` no longer exposes `activationMotion`, while context artifacts still expose
+  the preset-level option and Switch CSS/JS still apply the slow modifier internally.
 
 Future broader validation, only if showcase/generated artifacts are touched:
 

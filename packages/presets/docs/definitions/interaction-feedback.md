@@ -47,6 +47,9 @@ currently maps `standard` to the default Switch interaction duration and `slow`
 to the slow interaction token. Other platforms should translate the same intent
 to their native motion system.
 
+`activationMotion` is not intended as a per-instance React component override.
+It captures preset fidelity for the selected design system.
+
 Prefer `standard` when the thumb is wider or visually heavier, as in the iOS 26
 Apple Switch. Prefer `slow` when a compact circular thumb makes the same
 distance feel too abrupt, as in Fluent 2 Microsoft.
