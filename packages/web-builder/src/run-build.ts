@@ -32,12 +32,6 @@ const ENABLE_CLASSNAME_PREFIX = true;
 // Por padrão fica `false` para não aumentar CSS nem alterar o output atual.
 const ENABLE_SOLID_BOX_COLOR_AS_GRADIENT = false;
 
-// Feature flag: force interaction states as class-based selectors (showcase)
-//
-// When `true`, emits interaction state selectors using forced state classes (e.g. `.-h`, `.-f`)
-// so the showcase can simulate states via HTML classes.
-const ENABLE_FORCED_INTERACTION_STATES = true;
-
 // Feature flag: collapse raw and mirrored style-emission identities into one mirrored class
 //
 // When `true`, a shared direct+mirrored style key/value pair is emitted only once in mirrored form.
@@ -112,7 +106,8 @@ export async function runBuild(): Promise<void> {
 
     // Phase 4 - Generate CSS split
     const cssGenerated = await generateCssSplit(styleKeys, shortenCssClassNameMap, {
-      forceState: ENABLE_FORCED_INTERACTION_STATES,
+      // Projected state selectors are production runtime selectors, not showcase-only output.
+      forceState: true,
       enableSolidBoxColorAsGradient: ENABLE_SOLID_BOX_COLOR_AS_GRADIENT,
       webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
       collapseDirectIntoMirrored: ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED

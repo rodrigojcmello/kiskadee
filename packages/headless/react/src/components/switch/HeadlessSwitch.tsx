@@ -1,9 +1,11 @@
 import './HeadlessSwitch.structural.css';
+import { stateActivator as cn } from '@kiskadee/core';
 import type {
   ChangeEvent,
   ComponentPropsWithoutRef,
   FocusEvent,
   HTMLAttributes,
+  KeyboardEvent,
   ReactNode,
   Ref
 } from 'react';
@@ -20,13 +22,19 @@ import { useCheckedState } from '../../hooks/checked-state/useCheckedState.ts';
 
 export type SwitchElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
 
-export type SwitchStateName = 'checked' | 'focused' | 'disabled' | 'readOnly' | 'required';
+export type SwitchStateName =
+  | 'checked'
+  | 'focused'
+  | 'focusVisible'
+  | 'disabled'
+  | 'readOnly'
+  | 'required';
 
 export type SwitchClassNames = Partial<Record<SwitchElementName, string>>;
 
 type SwitchSlotPropsValue = {
   className?: string;
-} & Record<string, string | number | boolean | undefined>;
+};
 
 type SwitchSlotProps = Partial<Record<SwitchElementName, SwitchSlotPropsValue>>;
 
@@ -106,20 +114,25 @@ function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
   ref.current = value;
 }
 
-function switchStateAttributes(states: {
+function switchStateClassName(states: {
   checked: boolean;
   focused: boolean;
+  focusVisible: boolean;
   disabled?: boolean;
   readOnly?: boolean;
-  required?: boolean;
-}): Record<string, '' | undefined> {
-  return {
-    'data-checked': states.checked ? '' : undefined,
-    'data-focused': states.focused ? '' : undefined,
-    'data-disabled': states.disabled ? '' : undefined,
-    'data-readonly': states.readOnly ? '' : undefined,
-    'data-required': states.required ? '' : undefined
-  };
+}): string | undefined {
+  const highlightedFocus = states.focused && states.focusVisible;
+  const hasProjectedState = states.checked || states.focused || states.disabled || states.readOnly;
+
+  return mergeClassNames(
+    cn.interactive,
+    states.checked && cn.selected,
+    states.focused && cn.focus,
+    highlightedFocus && cn.focusVisible,
+    states.disabled && cn.disabled,
+    states.readOnly && cn.readOnly,
+    hasProjectedState && cn.activator
+  );
 }
 
 const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function SwitchRoot(
@@ -144,6 +157,7 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
   const generatedId = useId();
   const resolvedInputId = inputId ?? `switch-${generatedId}`;
   const [focused, setFocused] = useState(false);
+  const [focusVisible, setFocusVisible] = useState(false);
   const { checked, setChecked } = useCheckedState({
     checked: checkedProp,
     defaultChecked,
@@ -153,22 +167,20 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
   });
 
   const slotProps = useMemo<SwitchSlotProps>(() => {
-    const stateAttributes = switchStateAttributes({
+    const stateClassName = switchStateClassName({
       checked,
       focused,
       disabled,
       readOnly,
-      required
+      focusVisible
     });
 
     return {
       e1: {
-        className: classNames.e1,
-        ...stateAttributes
+        className: mergeClassNames(classNames.e1, stateClassName)
       },
       e2: {
-        className: classNames.e2,
-        ...stateAttributes
+        className: classNames.e2
       },
       e3: {
         className: classNames.e3
@@ -180,7 +192,7 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
         className: classNames.e5
       }
     };
-  }, [checked, classNames, disabled, focused, readOnly, required]);
+  }, [checked, classNames, disabled, focused, focusVisible, readOnly]);
 
   const contextValue = useMemo<SwitchContextValue>(
     () => ({
@@ -194,6 +206,7 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
     onBlur,
     onChange,
     onFocus,
+    onKeyDown,
     ...restInputProps
   } = inputProps ?? {};
 
@@ -214,6 +227,7 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
   const handleFocus = useCallback(
     (event: FocusEvent<HTMLInputElement>) => {
       setFocused(true);
+      setFocusVisible(event.currentTarget.matches(':focus-visible'));
       onFocus?.(event);
     },
     [onFocus]
@@ -222,9 +236,18 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
   const handleBlur = useCallback(
     (event: FocusEvent<HTMLInputElement>) => {
       setFocused(false);
+      setFocusVisible(false);
       onBlur?.(event);
     },
     [onBlur]
+  );
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLInputElement>) => {
+      setFocusVisible(true);
+      onKeyDown?.(event);
+    },
+    [onKeyDown]
   );
 
   return (
@@ -256,6 +279,7 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
         />
         {children}
       </label>

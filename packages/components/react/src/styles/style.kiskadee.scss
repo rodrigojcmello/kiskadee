@@ -64,7 +64,7 @@ body {
   // Safari and Firefox (macOS) did not reproduce the issue.
   // TODO: Test `outline-offset` transitions on Windows, Linux, Android, and iOS.
   // If this is macOS-only, consider re-enabling it and/or reporting a bug to the Chrome team.
-  transition-property: background-color, padding, margin, border-color, border-width, color, font-size, border-radius, box-shadow, outline-color, outline-width, outline-offset, grid-template-columns, --k-bg0, --k-bg1, --k-bg2 !important;
+  transition-property: background-color, width, height, padding, margin, border-color, border-width, color, font-size, border-radius, box-shadow, outline-color, outline-width, outline-offset, grid-template-columns, --k-bg0, --k-bg1, --k-bg2 !important;
   transition-duration: var(--k-dur-theme) !important;
   transition-timing-function: var(--k-ease-out) !important;
 }
@@ -115,7 +115,7 @@ background-color var(--k-dur-int-xfast) var(--k-ease-in);
  * backward-compatible behavior when the variable is not defined.
  */
 .k-foc:focus-visible,
-.k-foc.-f.-a {
+.k-foc.-f.-k.-a {
   outline-color: var(--k-focus-color, #0059b1);
   outline-style: solid;
   outline-width: calc(var(--k-focus-width, 2) * 1px);

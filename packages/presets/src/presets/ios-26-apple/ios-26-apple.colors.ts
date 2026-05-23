@@ -5,6 +5,7 @@ import type {
   PrimitiveColors,
   SchemaColors
 } from '@kiskadee/core';
+import greenLight from './colors/green.light.ts';
 import neutralLight from './colors/neutral.light.ts';
 import primaryLight from './colors/primary.light.ts';
 
@@ -33,17 +34,27 @@ export const primitiveColors = {
         dark: neutralLight
       }
     }
+  },
+  green: {
+    v1: {
+      solid: {
+        light: greenLight,
+        dark: greenLight
+      }
+    }
   }
 } as const satisfies PrimitiveColors;
 
 export const globalSemantics = {
   light: {
     primary: { v1: 'primitive.blue.v1' },
-    neutral: { v1: 'primitive.black.v1' }
+    neutral: { v1: 'primitive.black.v1' },
+    greenLike: { v1: 'primitive.green.v1' }
   },
   dark: {
     primary: { v1: 'primitive.blue.v1' },
-    neutral: { v1: 'primitive.black.v1' }
+    neutral: { v1: 'primitive.black.v1' },
+    greenLike: { v1: 'primitive.green.v1' }
   }
 } as const satisfies GlobalSemanticsByTheme;
 
@@ -71,6 +82,9 @@ export const componentIntents = {
     neutral: 'neutral',
     destructive: 'redLike',
     positive: 'greenLike'
+  },
+  switch: {
+    neutral: 'greenLike'
   }
 } as const satisfies ComponentIntents;
 

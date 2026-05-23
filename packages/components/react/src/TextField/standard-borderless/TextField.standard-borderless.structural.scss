@@ -72,18 +72,18 @@
 
 /*
  * element control / e3
- * Expands the shell outline when the root projects focused state.
+ * Expands the shell outline when the root projects highlighted focus.
  */
-.k-txf-e1-e.-f.-a .k-txf-e3-e {
+.k-txf-e1-e.-f.-k.-a .k-txf-e3-e {
   outline-color: var(--k-focus-color);
   outline-width: max(var(--k-bdw), calc(var(--k-focus-width) * 1px));
 }
 
 /*
  * element control modifier 'a' / e3a
- * Uses the schema-emitted control border color for the focused outline.
+ * Uses the schema-emitted control border color for the highlighted focus outline.
  */
-.k-txf-e1-e.-f.-a .k-txf-e3-e.k-txf-e3a {
+.k-txf-e1-e.-f.-k.-a .k-txf-e3-e.k-txf-e3a {
   outline-color: var(--k-bdc);
 }
 

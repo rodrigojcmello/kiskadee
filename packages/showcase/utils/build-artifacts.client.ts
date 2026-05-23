@@ -18,7 +18,7 @@ export async function loadJsonFromBuild<T>(
   relativePath: string,
   options: BuildJsonOptions<T>
 ): Promise<T> {
-  const response = await fetch(`/build/${relativePath}`);
+  const response = await fetch(`/build/${relativePath}`, { cache: 'no-store' });
 
   if (!response.ok) {
     if (response.status === 404 && !options.required) {

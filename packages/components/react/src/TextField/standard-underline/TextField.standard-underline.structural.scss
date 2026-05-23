@@ -151,9 +151,9 @@
 /*
  * element indicator / e6
  * Thickens the underline lane and uses the global focus color by default when the root projects
- * focused state.
+ * highlighted focus.
  */
-.k-txf-e1-d.-f.-a .k-txf-e6-d {
+.k-txf-e1-d.-f.-k.-a .k-txf-e6-d {
   block-size: calc(var(--k-focus-width) * 1px);
   background: var(--k-focus-color);
 }
@@ -163,7 +163,7 @@
  * Restores the schema-driven component focus color when underline mode opts into component-owned
  * focus ring color.
  */
-.k-txf-e1-d.-f.-a .k-txf-e6-d.k-txf-e6a {
+.k-txf-e1-d.-f.-k.-a .k-txf-e6-d.k-txf-e6a {
   background: var(--k-bgc);
 }
 

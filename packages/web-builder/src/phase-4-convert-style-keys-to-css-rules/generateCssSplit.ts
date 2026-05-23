@@ -82,15 +82,15 @@ export async function generateCssSplit(
   // We consider a selector complex (i.e., gated) when:
   // - It uses native interaction pseudos like :hover, :focus, :focus-visible, :focus-within, :active,
   //   :disabled, :read-only. These represent runtime UI states and must live outside the core bundle.
-  // - It uses our forced state classes (.-a, .-h, .-f, .-p, .-s, .-d, .-r), which act as explicit activators
-  //   to simulate states or opt-in effects via class toggling. Examples:
+  // - It uses projected state classes (.-a, .-h, .-f, .-p, .-s, .-d, .-r), which act as explicit
+  //   activators for runtime state or static previews via class toggling. Examples:
   //   .btn.-h:hover, .card.-a, .chip.-s.-a .icon, etc.
   // If neither applies, the selector is "simple" (passive): no activation, always-on if emitted.
   const isComplexSelector = (rule: string): boolean => {
     // Native pseudos
     if (/:(hover|focus|focus-visible|focus-within|active|disabled|read-only)\b/.test(rule))
       return true;
-    // Forced state classes (activation gate via class names)
+    // Projected state classes (activation gate via class names)
     return /\.-[a-z]\b/.test(rule);
   };
 
@@ -184,7 +184,7 @@ export async function generateCssSplit(
 
       // effects: by interaction state -> string[]
       // Policy: effects are opt-in (activatable). We only emit rules that are gated by native
-      // pseudos or forced state classes. Simple (passive) effects are ignored by default to avoid
+      // pseudos or projected state classes. Simple (passive) effects are ignored by default to avoid
       // shipping dead CSS; they should live under `decorations` instead if always-on.
       if (el.effects) {
         for (const st in el.effects) {
@@ -233,7 +233,8 @@ export async function generateCssSplit(
                 const arr: string[] = byState[st as InteractionState] ?? [];
                 for (const key of arr) {
                   const { className, styleEmissionPolicy } = resolveCssClass(key);
-                  // Only color keys are expected here; call color transformer directly and pass the forceState flag
+                  // Only color keys are expected here; call color transformer directly with the
+                  // projected-state selector option.
                   const rule = transformColorKeyToCss(key, className, forceState, {
                     ...options,
                     styleEmissionPolicy

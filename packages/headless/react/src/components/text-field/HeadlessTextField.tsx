@@ -3,6 +3,7 @@ import type {
   ComponentPropsWithoutRef,
   FocusEvent,
   HTMLAttributes,
+  KeyboardEvent,
   MouseEvent,
   ReactNode,
   Ref,
@@ -35,6 +36,7 @@ export type TextFieldElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 
 export type TextFieldStateName =
   | 'focused'
+  | 'focusVisible'
   | 'filled'
   | 'disabled'
   | 'readOnly'
@@ -103,6 +105,8 @@ type TextFieldContextValue = {
   message: ReactNode;
   focused: boolean;
   setFocused: (focused: boolean) => void;
+  focusVisible: boolean;
+  setFocusVisible: (focusVisible: boolean) => void;
 };
 
 const TextFieldContext = createContext<TextFieldContextValue | null>(null);
@@ -176,19 +180,21 @@ function TextFieldRoot({
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
   const resolvedValue = isControlled ? value : uncontrolledValue;
   const [focused, setFocused] = useState(false);
+  const [focusVisible, setFocusVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { target: stateProjectionTarget = 'e1', ...stateProjectionOptions } = stateProjection ?? {};
 
   const projectionStates = useMemo<TextFieldProjectionStates>(
     () => ({
       focused,
+      focusVisible: focused && focusVisible,
       filled: resolvedValue.length > 0,
       disabled,
       readOnly,
       invalid: validationStatus === 'error',
       validationStatus
     }),
-    [disabled, focused, readOnly, resolvedValue, validationStatus]
+    [disabled, focusVisible, focused, readOnly, resolvedValue, validationStatus]
   );
 
   const projectedSlotProps = useStateProjection<TextFieldElementName, TextFieldStateName>({
@@ -245,10 +251,13 @@ function TextFieldRoot({
       validationStatus,
       message,
       focused,
-      setFocused
+      setFocused,
+      focusVisible,
+      setFocusVisible
     }),
     [
       disabled,
+      focusVisible,
       focused,
       message,
       readOnly,
@@ -314,6 +323,8 @@ const TextFieldControl = forwardRef<HTMLDivElement, TextFieldControlProps>(
     );
 
     return (
+      // biome-ignore lint/a11y/noStaticElementInteractions: the shell delegates pointer focus to the native input.
+      // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard access remains owned by the native input.
       <div
         {...slotProps}
         ref={ref}
@@ -333,6 +344,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(functio
     onBlur,
     onChange,
     onFocus,
+    onKeyDown,
     type = 'text',
     'aria-describedby': ariaDescribedBy,
     ...props
@@ -357,6 +369,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(functio
   const handleFocus = useCallback(
     (event: FocusEvent<HTMLInputElement>) => {
       context.setFocused(true);
+      context.setFocusVisible(event.currentTarget.matches(':focus-visible'));
       onFocus?.(event);
     },
     [context, onFocus]
@@ -365,9 +378,18 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(functio
   const handleBlur = useCallback(
     (event: FocusEvent<HTMLInputElement>) => {
       context.setFocused(false);
+      context.setFocusVisible(false);
       onBlur?.(event);
     },
     [context, onBlur]
+  );
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLInputElement>) => {
+      context.setFocusVisible(true);
+      onKeyDown?.(event);
+    },
+    [context, onKeyDown]
   );
 
   return (
@@ -390,6 +412,7 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(functio
       onChange={handleChange}
       onFocus={handleFocus}
       onBlur={handleBlur}
+      onKeyDown={handleKeyDown}
     />
   );
 });

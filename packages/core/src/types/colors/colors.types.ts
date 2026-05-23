@@ -135,7 +135,12 @@ export const projectedStateActivator = {
 export const stateActivatorMeta = {
   shadow: '-e',
   activator: '-a',
-  interactive: '-i'
+  interactive: '-i',
+  /**
+   * Focus qualifier for keyboard-visible / outline-worthy focus.
+   * Use with projected focus (`-f`), not as a standalone interaction state.
+   */
+  focusVisible: '-k'
 } as const;
 
 export type StateActivatorMetaKeys = keyof typeof stateActivatorMeta;

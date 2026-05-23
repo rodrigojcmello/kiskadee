@@ -5,11 +5,15 @@ import { Switch, useKiskadee, useShowcase } from '@kiskadee/react-components';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Select } from '@/k-components';
+import { playWowTransition } from '@/utils/playWowTransition';
 import s from './Switch.module.scss';
 
-const scaleOptions: Array<{ value: ElementSizeValue; label: string }> = [
+const switchScaleOptions: Array<{ value: ElementSizeValue; label: string }> = [
+  { value: 's:sm:3', label: 'Small 3' },
+  { value: 's:sm:2', label: 'Small 2' },
   { value: 's:sm:1', label: 'Small' },
-  { value: 's:md:1', label: 'Medium' }
+  { value: 's:md:1', label: 'Medium' },
+  { value: 's:lg:1', label: 'Large' }
 ];
 
 const radiusOptions: Array<{ value: RadiusMode; label: string }> = [
@@ -36,23 +40,33 @@ export default function SwitchPage() {
   const switchMeta = manifest?.components?.switch;
   const isSwitchAvailable = Boolean(switchMeta);
   const defaultRadius = global?.components?.switch?.options?.radius ?? global?.radius ?? 'rounded';
-  const isScaleSupported = (value: ElementSizeValue) =>
-    !switchMeta?.scale || Boolean(switchMeta.scale[value]);
-  const isRadiusSupported = (value: RadiusMode) =>
-    !switchMeta?.scale || Boolean(switchMeta.scale[value]);
+  const supportedSwitchScales = switchMeta?.scale;
+  const scaleSelectOptions = useMemo(
+    () => switchScaleOptions.filter((option) => Boolean(supportedSwitchScales?.[option.value])),
+    [supportedSwitchScales]
+  );
   const radiusSelectOptions = useMemo(
     () =>
       radiusOptions.map((option) => ({
         ...option,
         label: option.value === defaultRadius ? `${option.label} (default)` : option.label,
-        disabled: !isRadiusSupported(option.value)
+        disabled: supportedSwitchScales ? !supportedSwitchScales[option.value] : false
       })),
-    [defaultRadius, isRadiusSupported]
+    [defaultRadius, supportedSwitchScales]
   );
 
   useEffect(() => {
     setRadius(defaultRadius);
   }, [defaultRadius]);
+
+  useEffect(() => {
+    if (!scaleSelectOptions.length || scaleSelectOptions.some((option) => option.value === scale)) {
+      return;
+    }
+
+    const preferredScale = scaleSelectOptions.find((option) => option.value === 's:md:1');
+    setScale(preferredScale?.value ?? scaleSelectOptions[0].value);
+  }, [scale, scaleSelectOptions]);
 
   return (
     <section className={`${s.page} k-root`}>
@@ -67,13 +81,15 @@ export default function SwitchPage() {
           <Select
             label="Scale"
             width={160}
-            options={scaleOptions.map((option) => ({
-              ...option,
-              disabled: !isScaleSupported(option.value)
-            }))}
+            options={scaleSelectOptions}
             value={scale}
-            onValueChange={(value) => setScale(value as ElementSizeValue)}
-            disabled={!isSwitchAvailable}
+            onValueChange={(value) => {
+              const nextScale = value as ElementSizeValue;
+              if (nextScale === scale) return;
+              playWowTransition();
+              setScale(nextScale);
+            }}
+            disabled={!isSwitchAvailable || scaleSelectOptions.length <= 1}
           />
           <Select
             label="Radius"

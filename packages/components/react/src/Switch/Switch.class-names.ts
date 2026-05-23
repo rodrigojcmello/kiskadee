@@ -2,17 +2,14 @@ import {
   type ClassNameByElementJSON,
   type ColorClasses,
   type ComponentEmphasis,
-  stateActivator as cn,
   componentEmphasisBuckets,
   type RadiusMode,
   type SwitchMode,
   type SwitchVariant
 } from '@kiskadee/core';
-import type { UseStateProjectionOptions } from '../state-projection/useStateProjection.ts';
 import type {
   SwitchClassesMap,
   SwitchClassNames,
-  SwitchElementName,
   SwitchLabelPosition,
   SwitchVariantClassesMap
 } from './Switch.types.ts';
@@ -24,31 +21,6 @@ export const DEFAULT_SWITCH_RADIUS: RadiusMode = 'rounded';
 export const DEFAULT_SWITCH_VARIANT: SwitchVariant = 'standard';
 export const DEFAULT_SWITCH_MODE: SwitchMode = 'base';
 export const DEFAULT_SWITCH_LABEL_POSITION: SwitchLabelPosition = 'end';
-
-export type SwitchProjectedStateName = 'checked' | 'focusVisible' | 'disabled' | 'readOnly';
-
-export const SWITCH_STATE_PROJECTION = {
-  target: 'e1',
-  activatorClassName: cn.activator,
-  interactiveClassName: cn.interactive,
-  projections: {
-    checked: {
-      className: cn.selected
-    },
-    focusVisible: {
-      className: cn.focus
-    },
-    disabled: {
-      className: cn.disabled
-    },
-    readOnly: {
-      className: cn.readOnly
-    }
-  }
-} satisfies Omit<
-  UseStateProjectionOptions<SwitchElementName, SwitchProjectedStateName>,
-  'classNames' | 'states'
->;
 
 export function join(...parts: Array<string | undefined | false | null>): string | undefined {
   const joined = parts.filter(Boolean).join(' ').trim();

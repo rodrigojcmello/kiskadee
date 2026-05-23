@@ -33,6 +33,9 @@ export const TEXT_FIELD_STATE_PROJECTION = {
     focused: {
       className: cn.focus
     },
+    focusVisible: {
+      className: cn.focusVisible
+    },
     filled: {
       className: cn.filled
     },

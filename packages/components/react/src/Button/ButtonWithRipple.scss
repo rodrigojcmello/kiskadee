@@ -8,10 +8,11 @@
 
   /*
    * clip-path clips outline painting on focused buttons.
-   * During focus-visible we disable clip-path so outline-offset can render outside.
+   * During focus-visible or forced highlighted focus we disable clip-path so outline-offset can
+   * render outside.
    */
   &:focus-visible,
-  &.-f.-a {
+  &.-f.-k.-a {
     clip-path: none;
     overflow: hidden;
   }

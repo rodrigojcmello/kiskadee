@@ -150,6 +150,7 @@ function useButtonClassNames({
     if (status !== 'rest') {
       const forced = cn[status];
       if (forced) activation += ` ${forced}`;
+      if (status === 'focus') activation += ` ${cn.focusVisible}`;
     }
     if (controlState) activation += ` ${cn.selected}`;
     if (activation) activation += ` ${cn.activator}`;

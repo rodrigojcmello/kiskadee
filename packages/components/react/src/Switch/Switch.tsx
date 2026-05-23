@@ -1,17 +1,7 @@
 import './Switch.structural.css';
-import { HeadlessSwitch, useCheckedState } from '@kiskadee/react-headless';
-import {
-  type FocusEvent,
-  type KeyboardEvent,
-  memo,
-  type RefObject,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import { HeadlessSwitch } from '@kiskadee/react-headless';
+import { memo, type RefObject, useEffect, useMemo, useRef } from 'react';
 import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
-import { useStateProjection } from '../state-projection/useStateProjection.ts';
 import {
   DEFAULT_SWITCH_EMPHASIS,
   DEFAULT_SWITCH_INTENT,
@@ -22,16 +12,9 @@ import {
   DEFAULT_SWITCH_VARIANT,
   join,
   resolveSwitchClassNames,
-  resolveVariantElements,
-  type SwitchProjectedStateName,
-  SWITCH_STATE_PROJECTION
+  resolveVariantElements
 } from './Switch.class-names.ts';
-import type {
-  SwitchClassNames,
-  SwitchElementName,
-  SwitchProps,
-  SwitchVariantClassesMap
-} from './Switch.types.ts';
+import type { SwitchProps, SwitchVariantClassesMap } from './Switch.types.ts';
 
 function parsePixelValue(value: string): number {
   const parsed = Number.parseFloat(value);
@@ -91,9 +74,6 @@ function SwitchRoot(props: SwitchProps) {
     labelPosition = DEFAULT_SWITCH_LABEL_POSITION,
     disabled,
     readOnly,
-    checked: checkedProp,
-    defaultChecked,
-    onCheckedChange,
     ...rootProps
   } = props;
   const { classesMap, global } = useKiskadee();
@@ -109,14 +89,6 @@ function SwitchRoot(props: SwitchProps) {
   );
   const trackRef = useRef<HTMLSpanElement | null>(null);
   const thumbRef = useRef<HTMLSpanElement | null>(null);
-  const [focusVisible, setFocusVisible] = useState(false);
-  const { checked, setChecked } = useCheckedState({
-    checked: checkedProp,
-    defaultChecked,
-    disabled,
-    readOnly,
-    onCheckedChange
-  });
   const hasLabel = label !== undefined && label !== null;
   const hasState = state !== undefined && state !== null;
 
@@ -152,62 +124,14 @@ function SwitchRoot(props: SwitchProps) {
     ]
   );
 
-  const projectedSlotProps = useStateProjection<SwitchElementName, SwitchProjectedStateName>({
-    ...SWITCH_STATE_PROJECTION,
-    classNames: resolvedClassNames,
-    states: {
-      checked,
-      focusVisible,
-      disabled,
-      readOnly
-    }
-  });
-
-  const projectedClassNames = useMemo<SwitchClassNames>(
-    () => ({
-      e1: projectedSlotProps.slotProps.e1?.className,
-      e2: projectedSlotProps.slotProps.e2?.className,
-      e3: projectedSlotProps.slotProps.e3?.className,
-      e4: projectedSlotProps.slotProps.e4?.className,
-      e5: projectedSlotProps.slotProps.e5?.className
-    }),
-    [projectedSlotProps.slotProps]
-  );
-
-  const switchInputProps = useMemo(() => {
-    const handleFocus = (event: FocusEvent<HTMLInputElement>) => {
-      setFocusVisible(event.currentTarget.matches(':focus-visible'));
-      inputProps?.onFocus?.(event);
-    };
-
-    const handleBlur = (event: FocusEvent<HTMLInputElement>) => {
-      setFocusVisible(false);
-      inputProps?.onBlur?.(event);
-    };
-
-    const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-      setFocusVisible(true);
-      inputProps?.onKeyDown?.(event);
-    };
-
-    return {
-      ...inputProps,
-      onFocus: handleFocus,
-      onBlur: handleBlur,
-      onKeyDown: handleKeyDown
-    };
-  }, [inputProps]);
-
   return (
     <HeadlessSwitch.Root
       {...rootProps}
       inputId={id}
-      inputProps={switchInputProps}
+      inputProps={inputProps}
       disabled={disabled}
       readOnly={readOnly}
-      checked={checked}
-      onCheckedChange={setChecked}
-      classNames={projectedClassNames}
+      classNames={resolvedClassNames}
     >
       <HeadlessSwitch.Track ref={trackRef}>
         {hasState ? <HeadlessSwitch.State>{state}</HeadlessSwitch.State> : null}

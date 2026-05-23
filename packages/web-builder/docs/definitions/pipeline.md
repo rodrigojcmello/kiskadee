@@ -18,7 +18,8 @@ Location: `packages/web-builder/src/run-build.ts`
 
 4. Phase 4 - Generate CSS rules (split core vs palettes)
    - Function: `generateCssSplit(styleKeys, shortenMap)`.
-   - Colors use `transformColorKeyToCss` with `forceState=true`.
+   - Production builds always emit projected state selector branches such as `.-h.-a`,
+     `.-f.-a`, and `.-s.-a` alongside native branches where applicable.
    - Results: `coreCss`, `effectsCss` and `palettes[paletteName]`.
 
 5. Phase 5 - Generate classNamesMap split
