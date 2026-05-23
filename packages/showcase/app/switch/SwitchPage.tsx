@@ -96,7 +96,12 @@ export default function SwitchPage() {
             width={160}
             options={radiusSelectOptions}
             value={radius}
-            onValueChange={(value) => setRadius(value as RadiusMode)}
+            onValueChange={(value) => {
+              const nextRadius = value as RadiusMode;
+              if (nextRadius === radius) return;
+              playWowTransition();
+              setRadius(nextRadius);
+            }}
             disabled={!isSwitchAvailable}
           />
         </div>

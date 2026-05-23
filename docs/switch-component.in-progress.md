@@ -204,6 +204,9 @@ Comparison with the iOS 26 Switch reference:
   system manifest. Unsupported sizes are hidden rather than shown disabled, and changing the Switch
   scale runs `playWowTransition()` so geometry changes animate through the showcase-only `k-wow`
   macro transition.
+- Showcase radius decision: changing the Switch radius selector also runs `playWowTransition()`,
+  because radius is a showcase geometry change just like scale and needs the same `k-wow` macro
+  transition to make rounded/pill/square comparisons readable.
 - Showcase artifact-loading decision: JSON artifacts loaded by the client use `cache: 'no-store'`
   so a live showcase session does not combine a fresh manifest with a stale class-name map after
   schema/build artifact changes.
@@ -347,6 +350,13 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
   The current Switch alignment keeps `variant`, `mode`, and `radius` overrideable, while
   `activationMotion` remains a preset-level fidelity decision read from the generated global
   artifact.
+- React Switch now treats `rounded` thumb radius as local structural geometry. The track still uses
+  its generated `rounded` radius class, but the thumb applies a Switch-local modifier that derives
+  radius from inherited generated variables: `--k-bdr - max(--k-pdt, --k-pdb)`. `pill` and `square`
+  still use explicit generated radius classes for the thumb. This is a component-local consumption
+  rule, not a web-builder or global emission-policy change. The structural selector is the direct
+  element modifier `.k-swt-e3a-a`, and it intentionally uses contract variables without local
+  `var()` fallbacks so missing generated values remain visible as bugs.
 
 ## Relevant Files
 
@@ -361,6 +371,7 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
 - `packages/components/react/src/Switch/Switch.structural.scss`
 - `packages/components/react/src/contexts/KiskadeeContext.tsx`
 - `packages/components/react/docs/definitions/schema-option-overrides.md`
+- `packages/components/react/docs/definitions/switch/switch-geometry.md`
 - `packages/components/react/src/styles/style.kiskadee.scss`
 - `packages/components/react/src/Button/ButtonWithRipple.scss`
 - `packages/components/react/src/Button/useButtonBase.ts`
@@ -511,6 +522,29 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
 - `rg -n "activationMotion?:|activationMotion|SwitchActivationMotion|k-swt-e1b-a|--k-swt-dur" packages/components/react/dist/Switch packages/components/react/dist/contexts packages/web-builder/build/fluent-2-microsoft/global.kiskadee.json packages/showcase/public/build/fluent-2-microsoft/global.kiskadee.json packages/web-builder/build/ios-26-apple/global.kiskadee.json packages/showcase/public/build/ios-26-apple/global.kiskadee.json`
   confirmed `SwitchProps` no longer exposes `activationMotion`, while context artifacts still expose
   the preset-level option and Switch CSS/JS still apply the slow modifier internally.
+- `pnpm exec biome check packages/components/react/src/Switch/Switch.class-names.ts packages/components/react/docs/definitions/switch/switch-geometry.md docs/switch-component.in-progress.md`
+  passed after adding the local rounded-thumb geometry rule. Markdown docs are ignored by the
+  current Biome config, so the command checked the Switch TypeScript file.
+- `git diff --check -- packages/components/react/src/Switch/Switch.class-names.ts packages/components/react/src/Switch/Switch.structural.scss packages/components/react/docs/definitions/switch/switch-geometry.md docs/switch-component.in-progress.md`
+  passed after the same rounded-thumb geometry update.
+- `pnpm --filter @kiskadee/react-components run build` passed after the rounded-thumb geometry
+  update and regenerated React component CSS/JS artifacts.
+- `rg -n "k-swt-e3a-a|--k-bdr|max\\(var\\(--k-pdt|radius === 'rounded'" packages/components/react/src/Switch packages/components/react/dist/Switch packages/components/react/dist/style.kiskadee.css`
+  confirmed rounded Switch thumbs now use `k-swt-e3a-a` and the dist CSS contains the local
+  derived-radius formula.
+- `git diff --check -- packages/components/react/src/Switch/Switch.structural.scss packages/components/react/docs/definitions/switch/switch-geometry.md docs/switch-component.in-progress.md`
+  passed after simplifying the rounded-thumb selector to `.k-swt-e3a-a` and removing local `var()`
+  fallbacks from contract variables.
+- `pnpm --filter @kiskadee/react-components run build` passed after the selector/fallback cleanup.
+- `rg -n "\\.k-swt-e3-a\\.k-swt-e3a-a|var\\(--k-bdr,|var\\(--k-pdt,|var\\(--k-pdb,|\\.k-swt-e3a-a" packages/components/react/src/Switch packages/components/react/dist/Switch packages/components/react/dist/style.kiskadee.css`
+  confirmed the generated Switch CSS uses the single `.k-swt-e3a-a` selector and no longer contains
+  fallbacks for `--k-bdr`, `--k-pdt`, or `--k-pdb` in the rounded-thumb rule.
+- `pnpm exec biome check packages/showcase/app/switch/SwitchPage.tsx docs/switch-component.in-progress.md`
+  passed after adding `playWowTransition()` to the Switch radius selector. Markdown docs are ignored
+  by the current Biome config, so the command checked the Switch showcase page.
+- `git diff --check -- packages/showcase/app/switch/SwitchPage.tsx docs/switch-component.in-progress.md`
+  passed after the same showcase radius transition update.
+- `pnpm --filter @kiskadee/showcase build` passed after the showcase radius transition update.
 
 Future broader validation, only if showcase/generated artifacts are touched:
 

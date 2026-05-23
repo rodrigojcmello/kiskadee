@@ -97,6 +97,14 @@
 }
 
 /*
+ * element thumb modifier 'a' / e3a
+ * Derives rounded thumb corners from the track radius and block spacing.
+ */
+.k-swt-e3a-a {
+  border-radius: max(0px, calc(var(--k-bdr) - max(var(--k-pdt), var(--k-pdb))));
+}
+
+/*
  * element thumb / e3
  * Mirrors the persistent checked state through the shared selected activator class.
  */

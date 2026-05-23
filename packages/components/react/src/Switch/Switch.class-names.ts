@@ -143,7 +143,9 @@ export function resolveSwitchClassNames(options: {
       join(
         'k-swt-e3-a',
         elem(elements.e3, options),
-        resolveRadiusClassName(elements.e3, options.scale, options.radius),
+        options.radius === 'rounded'
+          ? 'k-swt-e3a-a'
+          : resolveRadiusClassName(elements.e3, options.scale, options.radius),
         'k-trn',
         options.classNames.e3
       ) ?? '',
