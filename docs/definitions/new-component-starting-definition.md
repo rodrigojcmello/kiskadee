@@ -189,6 +189,11 @@ At minimum, decide which of these states are required:
 For persistent binary controls, prefer the existing `selected` control state for checked/on visuals.
 Do not encode persistent state as `pressed`; pressed is an interaction state.
 
+For public component APIs, use `controlState`, `defaultControlState`, and `onControlStateChange` for
+persistent binary state. This keeps the Kiskadee contract cross-platform; platform-native names such
+as web `checked` are adapter details. The schema/style branch still remains `selected` because it
+describes the visual state consumed when `controlState` is active.
+
 ## Generated Class Consumption
 
 A styled component should consume generated artifacts consistently:

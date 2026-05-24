@@ -6,7 +6,8 @@ export type {
   SwitchClassNames,
   SwitchElementName,
   SwitchLabelPosition,
-  SwitchProps
+  SwitchProps,
+  SwitchStatus
 } from './Switch';
 export { Switch } from './Switch';
 export type { TabsIndicatorMotionStyle, TabsSpringPreset } from './Tabs/index.ts';

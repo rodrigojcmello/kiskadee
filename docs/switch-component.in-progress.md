@@ -94,7 +94,7 @@ composition directly:
   and were not kept as a public headless DOM contract;
 - styled Switch no longer runs `useStateProjection` for Switch-specific state classes;
 - `HeadlessSwitch` applies state activators on the root state owner:
-  - checked -> `-s`
+  - controlState -> `-s`
   - focused -> `-f`
   - focus-visible / keyboard-highlighted -> `-k` in addition to `-f`
   - disabled -> `-d`
@@ -105,6 +105,12 @@ composition directly:
 This reduces duplicate runtime paths and keeps one state vocabulary for Kiskadee-owned components.
 The tradeoff is that `@kiskadee/react-headless` becomes a Kiskadee state-runtime package rather than
 a fully styling-agnostic headless package.
+
+Follow-up decision: because headless now emits `projectedStateActivator`, Kiskadee-owned headless
+components should use the cross-platform Kiskadee public contract. For Switch, persistent binary
+state is exposed as `controlState`, `defaultControlState`, and `onControlStateChange`; web
+`checked` is only the internal input adapter detail. Forced visual states use `status`, matching
+Button, and `status="focus"` means highlighted outline-visible focus (`-f -k -a`).
 
 The canonical docs now allow Kiskadee-owned headless primitives to emit compact activators directly
 when that removes a duplicate styled-component projection layer. `data-*` remains valid only for
@@ -288,9 +294,9 @@ headless `stateProjection` prop to receive internal states such as `focused` and
 - [x] If implementing the full contract, update `packages/headless/react/src/components/switch/HeadlessSwitch.tsx`
   and the styled Switch state contract, then verify generated focus selectors still behave as
   intended.
-- [x] Preserve showcase/static forced simple focus examples such as `className="-f -a"` without
-  making real pointer focus show the outline. Outline-visible forced focus should use
-  `className="-f -k -a"`.
+- [x] Preserve the simple focus versus highlighted focus distinction without asking showcase
+  consumers to pass raw activator classes. Superseded implementation detail: outline-visible focus
+  was first proven with `-f -k -a`; the public Switch API now uses `status="focus"`.
 - [x] After implementation, update this handoff with files changed, validations run, and any durable
   decisions that were promoted into canonical docs.
 - [ ] Migrate TextField projected-class composition out of `HeadlessTextField`; tracked separately in
@@ -308,18 +314,19 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
 - `e1` always receives `-i` as the interaction anchor. It receives `-a` only when at least one
   projected state is active.
 - Runtime state mapping is now:
-  - checked -> `-s`
+  - controlState -> `-s`
   - focused -> `-f`
   - focus-visible / keyboard-highlighted -> `-k` in addition to `-f`
   - disabled -> `-d`
   - read-only -> `-r`
-- Styled `Switch` no longer imports `useCheckedState`, `useStateProjection`,
-  `SWITCH_STATE_PROJECTION`, or `SwitchProjectedStateName`. It passes checked/default/on-change
-  ownership through to `HeadlessSwitch`.
+- Styled `Switch` does not import the control-state hook, `useStateProjection`,
+  `SWITCH_STATE_PROJECTION`, or `SwitchProjectedStateName`. `HeadlessSwitch` owns
+  `controlState/defaultControlState/onControlStateChange` and maps the web input `checked` field
+  internally.
 - Switch structural outline now requires `.k-swt-e1-a.-f.-k.-a .k-swt-e2-a`, so pointer focus can
   expose simple `-f` without showing the outline.
-- External forced simple focus classes such as `className="-f -a"` still land on the Switch root.
-  Forced outline-visible focus should now include `-k`.
+- External root `className` remains an escape hatch, but showcase/static Switch states should use
+  `status` and `controlState` instead of raw activator classes.
 - Web-builder production output now always emits projected selector branches. The removed
   `ENABLE_FORCED_INTERACTION_STATES` flag is documented as historical terminology because projected
   state selectors are required by runtime components, not just showcase snapshots.
@@ -635,6 +642,27 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
 - `rg -n "material-design-3-google.*switch|width:52px|height:32px|width:24px|height:24px|#e6e1e9|#79747e|#615690|#e7deff" packages/showcase/registry/generated/design-systems.registry.generated.ts packages/web-builder/build/material-design-3-google/core.kiskadee.css packages/web-builder/build/material-design-3-google/default.light.kiskadee.css`
   confirmed the generated registry exposes only `s:md:1` for Material 3 Google Switch and generated
   CSS includes the refreshed `52 x 32` track, `24 x 24` thumb, and Material colors.
+- Switch showcase focus examples were first corrected by forcing highlighted focus instead of simple
+  focus. That raw-class patch was superseded by the `status="focus"` API normalization below.
+- `pnpm exec biome check packages/showcase/app/switch/SwitchPage.tsx` passed after the Switch
+  showcase focus examples started emitting `-k` for outline-visible focus.
+- Switch API normalization changed `HeadlessSwitch` and styled `Switch` to expose
+  `controlState`, `defaultControlState`, and `onControlStateChange` for persistent binary state.
+  The internal web input still receives `checked={controlState}` and `aria-checked={controlState}`.
+- Switch now exposes `status` for forced visual states, matching Button. `status="focus"` emits
+  highlighted focus (`-f -k -a`), so the showcase no longer passes raw state activator classes such
+  as `className="-h -a"` or `className="-f -k -a"`.
+- Switch showcase state examples now use `Rest` and `Selected` labels/ids instead of `Checked`
+  terminology, keeping the visible examples aligned with `controlState` and the schema `selected`
+  branch.
+- `pnpm exec biome check packages/headless/react/src/components/switch/HeadlessSwitch.tsx packages/headless/react/src/hooks/control-state/useControlState.ts packages/headless/react/src/index.ts packages/components/react/src/Switch/Switch.types.ts packages/components/react/src/Switch/index.ts packages/components/react/src/index.ts packages/showcase/app/switch/SwitchPage.tsx`
+  passed after the Switch `controlState` / `status` API normalization.
+- `pnpm --filter @kiskadee/react-components run build` passed after rebuilding headless and React
+  component artifacts.
+- `pnpm --filter @kiskadee/showcase build` passed after rebuilding headless, React components,
+  web-builder artifacts, and the Next showcase.
+- `git diff --check -- packages/headless/react/src/components/switch/HeadlessSwitch.tsx packages/headless/react/src/hooks/control-state/useControlState.ts packages/headless/react/src/index.ts packages/components/react/src/Switch/Switch.types.ts packages/components/react/src/Switch/Switch.structural.scss packages/components/react/src/Switch/index.ts packages/components/react/src/index.ts packages/showcase/app/switch/SwitchPage.tsx packages/web-builder/docs/definitions/interaction-state-model.md packages/web-builder/docs/definitions/control-state-effects.md docs/definitions/new-component-starting-definition.md docs/switch-component.in-progress.md`
+  passed after the same normalization.
 
 Future broader validation, only if showcase/generated artifacts are touched:
 

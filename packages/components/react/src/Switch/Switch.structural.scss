@@ -106,7 +106,7 @@
 
 /*
  * element thumb / e3
- * Mirrors the persistent checked state through the shared selected activator class.
+ * Mirrors the persistent control state through the shared selected activator class.
  */
 .k-swt-e1-a.-s.-a .k-swt-e3-a {
   transform: translateX(calc(var(--k-swt-tx) * var(--k-swt-dx)));

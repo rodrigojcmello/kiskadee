@@ -1,11 +1,6 @@
 export type { ButtonProps } from './components/button/Button.tsx';
 export { Button } from './components/button/Button.tsx';
 export type {
-  UseCheckedStateOptions,
-  UseCheckedStateResult
-} from './hooks/checked-state/useCheckedState.ts';
-export { useCheckedState } from './hooks/checked-state/useCheckedState.ts';
-export type {
   ColorRadioGroupClassNames,
   ColorRadioGroupProps,
   ColorRadioItem
@@ -19,22 +14,6 @@ export type {
   SelectTriggerProps
 } from './components/select/Select.tsx';
 export { Select } from './components/select/Select.tsx';
-export type {
-  StateProjectionAttribute,
-  StateProjectionContext,
-  StateProjectionDomAttributeValue,
-  StateProjectionResolver,
-  StateProjectionRule,
-  StateProjectionSlotProps,
-  StateProjectionSlotPropsValue,
-  StateProjectionStateValue,
-  UseStateProjectionOptions,
-  UseStateProjectionResult
-} from './hooks/state-projection/useStateProjection.ts';
-export {
-  mergeStateProjectionSlotProps,
-  useStateProjection
-} from './hooks/state-projection/useStateProjection.ts';
 export type {
   SwatchRadioGroupClassNames,
   SwatchRadioGroupProps,
@@ -50,6 +29,7 @@ export type {
   SwitchRootProps,
   SwitchStateName,
   SwitchStateProps,
+  SwitchStatus,
   SwitchThumbProps,
   SwitchTrackProps
 } from './components/switch/HeadlessSwitch.tsx';
@@ -75,3 +55,24 @@ export type {
   TextFieldValidationStatus
 } from './components/text-field/HeadlessTextField.tsx';
 export { HeadlessTextField } from './components/text-field/HeadlessTextField.tsx';
+export type {
+  UseControlStateOptions,
+  UseControlStateResult
+} from './hooks/control-state/useControlState.ts';
+export { useControlState } from './hooks/control-state/useControlState.ts';
+export type {
+  StateProjectionAttribute,
+  StateProjectionContext,
+  StateProjectionDomAttributeValue,
+  StateProjectionResolver,
+  StateProjectionRule,
+  StateProjectionSlotProps,
+  StateProjectionSlotPropsValue,
+  StateProjectionStateValue,
+  UseStateProjectionOptions,
+  UseStateProjectionResult
+} from './hooks/state-projection/useStateProjection.ts';
+export {
+  mergeStateProjectionSlotProps,
+  useStateProjection
+} from './hooks/state-projection/useStateProjection.ts';

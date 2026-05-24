@@ -5,6 +5,8 @@ stateful `borderRadius`, as separate opt-in concerns.
 
 - `controlState` is a semantic toggle state that is activated by the runtime, such as
   `controlState={true}` on React components.
+- `controlState` is the cross-platform Kiskadee API name for persistent binary control state, even
+  when a specific platform adapter maps it to terms such as web `checked` or native `isOn`.
 - Effects are optional, component-level features and must only be applied when the consumer
   explicitly opts in, such as `radiusEffect={true}` or `shadow={true}`.
 

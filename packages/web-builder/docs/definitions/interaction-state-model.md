@@ -52,6 +52,11 @@ When a headless primitive emits `stateActivator` classes, it must use the shared
 directly. It must not execute styled-package projection presets or accept arbitrary Kiskadee class
 configuration from `@kiskadee/react-components`.
 
+Kiskadee-owned headless primitives are allowed to be biased toward cross-platform Kiskadee contracts
+when they emit `stateActivator` classes. For persistent binary state, expose
+`controlState`, `defaultControlState`, and `onControlStateChange` as the public API. Platform-native
+terms such as web `checked` stay adapter details at the DOM/native bridge.
+
 ## `data-*` vs. `stateActivator`
 
 Use `data-*` when the state is semantic/component information that a headless consumer can
@@ -75,6 +80,9 @@ Examples:
 - Tabs projects `.-s.-a` for selected styling while still using `aria-selected` for accessibility.
 - TextField can project focus, filled, disabled, and read-only state on the field scope owner while
   child selectors react through that ancestor.
+- Switch projects `controlState` to `.-s.-a` for selected/on styling. The internal web input may
+  still use `checked` and `aria-checked`, but those names are adapter details, not the Kiskadee
+  component contract.
 - Switch can map a generic focused flag to `.-f` when `.-f` means simple focus. It must only add
   `.-k` when the internal input is focus-visible or the component is explicitly forced into
   highlighted focus.
@@ -420,14 +428,15 @@ state lives on a scope owner and generated styles need to reach descendants or n
 
 - TextField projects focus, filled, disabled, and read-only state from the component root so shell,
   label, input, and support slots can stay visually coherent.
-- Switch projects selected, focus, highlighted focus, disabled, and read-only state from its root so
-  track, thumb, and state slots react through one owner.
+- Switch projects control state (`.-s.-a`), forced visual status, focus, highlighted focus, disabled,
+  and read-only state from its root so track, thumb, and state slots react through one owner.
 - Tabs and other composed controls project selected or custom state that has no reliable native
   pseudo on every reacting child.
 
 Because of that, production builds no longer expose an `ENABLE_FORCED_INTERACTION_STATES` switch.
-Projected selector branches are emitted as normal CSS artifacts. Manual showcase classes are only one
-consumer of the same runtime contract.
+Projected selector branches are emitted as normal CSS artifacts. Public component props such as
+`controlState` and `status` should activate those branches instead of requiring consumers to pass raw
+state activator classes.
 
 The `forceState` name may still appear in lower-level transformer APIs and tests as historical
 terminology. Treat it as an implementation detail for comparing native-only output against projected

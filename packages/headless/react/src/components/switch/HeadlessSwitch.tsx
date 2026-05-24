@@ -1,5 +1,5 @@
 import './HeadlessSwitch.structural.css';
-import { stateActivator as cn } from '@kiskadee/core';
+import { stateActivator as cn, type ProjectedStateKeys } from '@kiskadee/core';
 import type {
   ChangeEvent,
   ComponentPropsWithoutRef,
@@ -18,12 +18,14 @@ import {
   useMemo,
   useState
 } from 'react';
-import { useCheckedState } from '../../hooks/checked-state/useCheckedState.ts';
+import { useControlState } from '../../hooks/control-state/useControlState.ts';
 
 export type SwitchElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
 
+export type SwitchStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
+
 export type SwitchStateName =
-  | 'checked'
+  | 'controlState'
   | 'focused'
   | 'focusVisible'
   | 'disabled'
@@ -49,9 +51,10 @@ export type SwitchRootProps = SwitchRootLabelProps & {
   inputId?: string;
   inputProps?: SwitchInputProps;
   inputRef?: Ref<HTMLInputElement>;
-  checked?: boolean;
-  defaultChecked?: boolean;
-  onCheckedChange?: (checked: boolean) => void;
+  controlState?: boolean;
+  defaultControlState?: boolean;
+  onControlStateChange?: (controlState: boolean) => void;
+  status?: SwitchStatus;
   disabled?: boolean;
   readOnly?: boolean;
   required?: boolean;
@@ -115,22 +118,31 @@ function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
 }
 
 function switchStateClassName(states: {
-  checked: boolean;
+  controlState: boolean;
+  status?: SwitchStatus;
   focused: boolean;
   focusVisible: boolean;
   disabled?: boolean;
   readOnly?: boolean;
 }): string | undefined {
-  const highlightedFocus = states.focused && states.focusVisible;
-  const hasProjectedState = states.checked || states.focused || states.disabled || states.readOnly;
+  const isHovered = states.status === 'hover';
+  const isPressed = states.status === 'pressed';
+  const isFocused = states.focused || states.status === 'focus';
+  const isFocusVisible = isFocused && (states.focusVisible || states.status === 'focus');
+  const isDisabled = states.disabled || states.status === 'disabled';
+  const isReadOnly = states.readOnly || states.status === 'readOnly';
+  const hasProjectedState =
+    states.controlState || isHovered || isPressed || isFocused || isDisabled || isReadOnly;
 
   return mergeClassNames(
     cn.interactive,
-    states.checked && cn.selected,
-    states.focused && cn.focus,
-    highlightedFocus && cn.focusVisible,
-    states.disabled && cn.disabled,
-    states.readOnly && cn.readOnly,
+    isHovered && cn.hover,
+    isPressed && cn.pressed,
+    states.controlState && cn.selected,
+    isFocused && cn.focus,
+    isFocusVisible && cn.focusVisible,
+    isDisabled && cn.disabled,
+    isReadOnly && cn.readOnly,
     hasProjectedState && cn.activator
   );
 }
@@ -142,9 +154,10 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
     inputId,
     inputProps,
     inputRef,
-    checked: checkedProp,
-    defaultChecked,
-    onCheckedChange,
+    controlState: controlStateProp,
+    defaultControlState,
+    onControlStateChange,
+    status,
     disabled,
     readOnly,
     required,
@@ -158,17 +171,18 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
   const resolvedInputId = inputId ?? `switch-${generatedId}`;
   const [focused, setFocused] = useState(false);
   const [focusVisible, setFocusVisible] = useState(false);
-  const { checked, setChecked } = useCheckedState({
-    checked: checkedProp,
-    defaultChecked,
+  const { controlState, setControlState } = useControlState({
+    controlState: controlStateProp,
+    defaultControlState,
     disabled,
     readOnly,
-    onCheckedChange
+    onControlStateChange
   });
 
   const slotProps = useMemo<SwitchSlotProps>(() => {
     const stateClassName = switchStateClassName({
-      checked,
+      controlState,
+      status,
       focused,
       disabled,
       readOnly,
@@ -192,7 +206,7 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
         className: classNames.e5
       }
     };
-  }, [checked, classNames, disabled, focused, focusVisible, readOnly]);
+  }, [classNames, controlState, disabled, focused, focusVisible, readOnly, status]);
 
   const contextValue = useMemo<SwitchContextValue>(
     () => ({
@@ -218,10 +232,10 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
         return;
       }
 
-      setChecked(event.currentTarget.checked);
+      setControlState(event.currentTarget.checked);
       onChange?.(event);
     },
-    [onChange, readOnly, setChecked]
+    [onChange, readOnly, setControlState]
   );
 
   const handleFocus = useCallback(
@@ -267,13 +281,13 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
           id={resolvedInputId}
           type="checkbox"
           role="switch"
-          checked={checked}
+          checked={controlState}
           disabled={disabled}
           readOnly={readOnly}
           required={required}
           name={name}
           value={value}
-          aria-checked={checked}
+          aria-checked={controlState}
           aria-readonly={readOnly || undefined}
           className={mergeClassNames(SWITCH_INTERNAL_INPUT_CLASS_NAME, inputClassName)}
           onChange={handleChange}

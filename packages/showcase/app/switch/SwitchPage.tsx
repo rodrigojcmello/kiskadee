@@ -41,7 +41,7 @@ function StateTile({ title, children }: { title: string; children: ReactNode }) 
 export default function SwitchPage() {
   const { designSystem, global } = useKiskadee();
   const { manifest } = useShowcase();
-  const [checked, setChecked] = useState(true);
+  const [controlState, setControlState] = useState(true);
   const [scale, setScale] = useState<ElementSizeValue>('s:md:1');
   const [radius, setRadius] = useState<RadiusMode>('rounded');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
@@ -157,35 +157,35 @@ export default function SwitchPage() {
               <Switch
                 id="switch-notifications"
                 label="Notifications"
-                checked={checked}
-                onCheckedChange={setChecked}
+                controlState={controlState}
+                onControlStateChange={setControlState}
                 scale={scale}
                 radius={radius}
                 emphasis={emphasis}
               />
-              <span className={s.valueLabel}>{checked ? 'On' : 'Off'}</span>
+              <span className={s.valueLabel}>{controlState ? 'On' : 'Off'}</span>
             </div>
           </section>
 
           <section className={s.section}>
             <h3>States</h3>
             <div className={s.stateGrid}>
-              <StateTile title="Unchecked">
+              <StateTile title="Rest">
                 <Switch
-                  id="switch-state-unchecked"
+                  id="switch-state-rest"
                   label="Rest"
-                  checked={false}
+                  controlState={false}
                   scale={scale}
                   radius={radius}
                   emphasis={emphasis}
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Checked">
+              <StateTile title="Selected">
                 <Switch
-                  id="switch-state-checked"
+                  id="switch-state-selected"
                   label="Selected"
-                  checked
+                  controlState
                   scale={scale}
                   radius={radius}
                   emphasis={emphasis}
@@ -196,8 +196,8 @@ export default function SwitchPage() {
                 <Switch
                   id="switch-state-hover"
                   label="Hover"
-                  checked={false}
-                  className="-h -a"
+                  controlState={false}
+                  status="hover"
                   scale={scale}
                   radius={radius}
                   emphasis={emphasis}
@@ -208,32 +208,32 @@ export default function SwitchPage() {
                 <Switch
                   id="switch-state-focus"
                   label="Focus"
-                  checked={false}
-                  className="-f -a"
+                  controlState={false}
+                  status="focus"
                   scale={scale}
                   radius={radius}
                   emphasis={emphasis}
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Checked Hover">
+              <StateTile title="Selected Hover">
                 <Switch
-                  id="switch-state-checked-hover"
+                  id="switch-state-selected-hover"
                   label="Selected hover"
-                  checked
-                  className="-h"
+                  controlState
+                  status="hover"
                   scale={scale}
                   radius={radius}
                   emphasis={emphasis}
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Checked Focus">
+              <StateTile title="Selected Focus">
                 <Switch
-                  id="switch-state-checked-focus"
+                  id="switch-state-selected-focus"
                   label="Selected focus"
-                  checked
-                  className="-f"
+                  controlState
+                  status="focus"
                   scale={scale}
                   radius={radius}
                   emphasis={emphasis}
@@ -250,18 +250,18 @@ export default function SwitchPage() {
                 <Switch
                   id="switch-disabled-off"
                   label="Unavailable"
-                  checked={false}
+                  controlState={false}
                   scale={scale}
                   radius={radius}
                   emphasis={emphasis}
                   disabled
                 />
               </StateTile>
-              <StateTile title="Checked Disabled">
+              <StateTile title="Selected Disabled">
                 <Switch
-                  id="switch-disabled-on"
+                  id="switch-disabled-selected"
                   label="Locked on"
-                  checked
+                  controlState
                   scale={scale}
                   radius={radius}
                   emphasis={emphasis}
@@ -279,7 +279,7 @@ export default function SwitchPage() {
                   id="switch-label-start"
                   label="Airplane mode"
                   labelPosition="start"
-                  checked
+                  controlState
                   scale={scale}
                   radius={radius}
                   emphasis={emphasis}
@@ -295,7 +295,7 @@ export default function SwitchPage() {
                       <span>Background updates</span>
                     </span>
                   }
-                  checked
+                  controlState
                   scale={scale}
                   radius={radius}
                   emphasis={emphasis}
@@ -306,7 +306,7 @@ export default function SwitchPage() {
                 <Switch
                   id="switch-label-hidden"
                   inputProps={{ 'aria-label': 'No visible label switch' }}
-                  checked
+                  controlState
                   scale={scale}
                   radius={radius}
                   emphasis={emphasis}

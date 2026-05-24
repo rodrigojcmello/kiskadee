@@ -3,5 +3,6 @@ export type {
   SwitchClassNames,
   SwitchElementName,
   SwitchLabelPosition,
-  SwitchProps
+  SwitchProps,
+  SwitchStatus
 } from './Switch.types.ts';

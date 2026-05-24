@@ -8,7 +8,8 @@ import type {
 } from '@kiskadee/core';
 import type {
   SwitchInputProps as HeadlessSwitchInputProps,
-  SwitchRootProps as HeadlessSwitchRootProps
+  SwitchRootProps as HeadlessSwitchRootProps,
+  SwitchStatus as HeadlessSwitchStatus
 } from '@kiskadee/react-headless';
 import type { ReactNode } from 'react';
 
@@ -23,6 +24,8 @@ export type SwitchModeClassesMap = Partial<Record<SwitchMode, SwitchClassesMap>>
 export type SwitchVariantClassesMap = Partial<Record<SwitchVariant, SwitchModeClassesMap>>;
 
 export type SwitchLabelPosition = 'start' | 'end';
+
+export type SwitchStatus = HeadlessSwitchStatus;
 
 export type SwitchProps = Omit<
   HeadlessSwitchRootProps,
