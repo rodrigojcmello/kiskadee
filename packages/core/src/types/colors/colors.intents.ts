@@ -70,3 +70,29 @@ export type TextFieldIntent = keyof typeof TextFieldIntentKeys;
 
 /** Qualified role identifier for `textField` intents (e.g. `textField.error`). */
 export type RoleTextField = `textField.${TextFieldIntent}`;
+
+/**
+ * Supported intent keys for the `switch` component.
+ */
+export const SwitchIntentKeys = {
+  /**
+   * Default switch presentation for the selected preset.
+   */
+  neutral: 'neutral',
+
+  /**
+   * Brand/primary activation presentation.
+   */
+  primary: 'primary',
+
+  /**
+   * Explicit negative/positive poles: off is negative, on is positive.
+   */
+  polarity: 'polarity'
+} as const;
+
+/** Supported intent keys for the `switch` component (Layer 3). */
+export type SwitchIntent = keyof typeof SwitchIntentKeys;
+
+/** Qualified role identifier for `switch` intents (e.g. `switch.primary`). */
+export type RoleSwitch = `switch.${SwitchIntent}`;

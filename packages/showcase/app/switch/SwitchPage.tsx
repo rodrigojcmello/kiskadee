@@ -1,6 +1,6 @@
 'use client';
 
-import type { ComponentEmphasis, ElementSizeValue, RadiusMode } from '@kiskadee/core';
+import type { ComponentEmphasis, ElementSizeValue, RadiusMode, SwitchIntent } from '@kiskadee/core';
 import { Switch, useKiskadee, useShowcase } from '@kiskadee/react-components';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
@@ -29,6 +29,12 @@ const emphasisOptions: Array<{ value: ComponentEmphasis; label: string }> = [
   { value: 'lowest', label: 'Lowest' }
 ];
 
+const switchIntentLabels: Record<string, string> = {
+  neutral: 'Neutral',
+  primary: 'Primary',
+  polarity: 'Polarity'
+};
+
 function StateTile({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className={s.stateTile}>
@@ -44,15 +50,25 @@ export default function SwitchPage() {
   const [controlState, setControlState] = useState(true);
   const [scale, setScale] = useState<ElementSizeValue>('s:md:1');
   const [radius, setRadius] = useState<RadiusMode>('rounded');
+  const [intent, setIntent] = useState<SwitchIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
   const switchMeta = manifest?.components?.switch;
   const isSwitchAvailable = Boolean(switchMeta);
   const defaultRadius = global?.components?.switch?.options?.radius ?? global?.radius ?? 'rounded';
   const supportedSwitchScales = switchMeta?.scale;
-  const supportedSwitchStates = switchMeta?.state?.neutral;
+  const supportedSwitchIntents = switchMeta?.state;
+  const supportedSwitchStates = supportedSwitchIntents?.[intent];
   const scaleSelectOptions = useMemo(
     () => switchScaleOptions.filter((option) => Boolean(supportedSwitchScales?.[option.value])),
     [supportedSwitchScales]
+  );
+  const intentSelectOptions = useMemo(
+    () =>
+      Object.keys(supportedSwitchIntents ?? {}).map((value) => ({
+        value: value as SwitchIntent,
+        label: switchIntentLabels[value] ?? value
+      })),
+    [supportedSwitchIntents]
   );
   const emphasisSelectOptions = useMemo(
     () => emphasisOptions.filter((option) => Boolean(supportedSwitchStates?.[option.value])),
@@ -71,6 +87,18 @@ export default function SwitchPage() {
   useEffect(() => {
     setRadius(defaultRadius);
   }, [defaultRadius]);
+
+  useEffect(() => {
+    if (
+      !intentSelectOptions.length ||
+      intentSelectOptions.some((option) => option.value === intent)
+    ) {
+      return;
+    }
+
+    const preferredIntent = intentSelectOptions.find((option) => option.value === 'neutral');
+    setIntent(preferredIntent?.value ?? intentSelectOptions[0].value);
+  }, [intent, intentSelectOptions]);
 
   useEffect(() => {
     if (
@@ -130,6 +158,19 @@ export default function SwitchPage() {
             disabled={!isSwitchAvailable}
           />
           <Select
+            label="Intent"
+            width={160}
+            options={intentSelectOptions}
+            value={intent}
+            onValueChange={(value) => {
+              const nextIntent = value as SwitchIntent;
+              if (nextIntent === intent) return;
+              playWowTransition();
+              setIntent(nextIntent);
+            }}
+            disabled={!isSwitchAvailable || intentSelectOptions.length <= 1}
+          />
+          <Select
             label="Emphasis"
             width={160}
             options={emphasisSelectOptions}
@@ -161,6 +202,7 @@ export default function SwitchPage() {
                 onControlStateChange={setControlState}
                 scale={scale}
                 radius={radius}
+                intent={intent}
                 emphasis={emphasis}
               />
               <span className={s.valueLabel}>{controlState ? 'On' : 'Off'}</span>
@@ -177,6 +219,7 @@ export default function SwitchPage() {
                   controlState={false}
                   scale={scale}
                   radius={radius}
+                  intent={intent}
                   emphasis={emphasis}
                   readOnly
                 />
@@ -188,6 +231,7 @@ export default function SwitchPage() {
                   controlState
                   scale={scale}
                   radius={radius}
+                  intent={intent}
                   emphasis={emphasis}
                   readOnly
                 />
@@ -200,6 +244,7 @@ export default function SwitchPage() {
                   status="hover"
                   scale={scale}
                   radius={radius}
+                  intent={intent}
                   emphasis={emphasis}
                   readOnly
                 />
@@ -212,6 +257,7 @@ export default function SwitchPage() {
                   status="focus"
                   scale={scale}
                   radius={radius}
+                  intent={intent}
                   emphasis={emphasis}
                   readOnly
                 />
@@ -224,6 +270,7 @@ export default function SwitchPage() {
                   status="hover"
                   scale={scale}
                   radius={radius}
+                  intent={intent}
                   emphasis={emphasis}
                   readOnly
                 />
@@ -236,6 +283,7 @@ export default function SwitchPage() {
                   status="focus"
                   scale={scale}
                   radius={radius}
+                  intent={intent}
                   emphasis={emphasis}
                   readOnly
                 />
@@ -253,6 +301,7 @@ export default function SwitchPage() {
                   controlState={false}
                   scale={scale}
                   radius={radius}
+                  intent={intent}
                   emphasis={emphasis}
                   disabled
                 />
@@ -264,6 +313,7 @@ export default function SwitchPage() {
                   controlState
                   scale={scale}
                   radius={radius}
+                  intent={intent}
                   emphasis={emphasis}
                   disabled
                 />
@@ -282,6 +332,7 @@ export default function SwitchPage() {
                   controlState
                   scale={scale}
                   radius={radius}
+                  intent={intent}
                   emphasis={emphasis}
                   readOnly
                 />
@@ -298,6 +349,7 @@ export default function SwitchPage() {
                   controlState
                   scale={scale}
                   radius={radius}
+                  intent={intent}
                   emphasis={emphasis}
                   readOnly
                 />
@@ -309,6 +361,7 @@ export default function SwitchPage() {
                   controlState
                   scale={scale}
                   radius={radius}
+                  intent={intent}
                   emphasis={emphasis}
                   readOnly
                 />

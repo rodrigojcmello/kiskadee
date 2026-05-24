@@ -59,6 +59,50 @@ componentIntents: {
 // - selected/on activation can use primary from Layer 2
 ```
 
+### Switch Intent, Emphasis, And Control State Example
+
+Switch is the canonical example for keeping the axes separate:
+
+```txt
+intent  = public semantic presentation
+emphasis = visual strength within the same presentation
+selected = persistent on/checked control state
+```
+
+For `ios-26-apple`, the default official presentation is still `neutral.medium`
+even though the selected/on track is green:
+
+```txt
+neutral.medium.rest          = off + default iOS neutral treatment
+neutral.medium.selected.rest = on + official iOS green activation treatment
+```
+
+That green is not the `neutral` intent itself. Keep
+`componentIntents.switch.neutral` mapped to `neutral`, and consume Layer 2
+`greenLike` directly inside the `selected.*` palette values when the design
+system uses green as its on color.
+
+Additional Switch intents should represent user-selectable semantic
+presentations:
+
+```txt
+neutral.medium  = default preset presentation
+primary.medium  = brand/primary on treatment
+polarity.medium = negative off pole + positive on pole
+```
+
+`polarity` is not `high` emphasis. It changes meaning by making the two control
+states semantically opposed. `high` should remain available for stronger visual
+presence inside a single intent, without changing the meaning of the colors.
+
+If a composite intent such as `polarity` needs more than one Layer 2 color, the
+component palette should compose those colors explicitly in the relevant control
+states.
+
+Do not add `components.switch.options.intent` only because a preset exposes more
+than one Switch intent. The public default remains `neutral.medium`; consumers
+choose another intent through the component API when they need it.
+
 ### Binary Control State And Interaction State
 
 Binary controls have two independent axes:

@@ -8,6 +8,7 @@ import type {
 import greenLight from './colors/green.light.ts';
 import neutralLight from './colors/neutral.light.ts';
 import primaryLight from './colors/primary.light.ts';
+import redLight from './colors/red.light.ts';
 
 // iOS 26 - https://www.sketch.com/s/f63aa308-1f82-498c-8019-530f3b846db9
 // iOS 18 - https://www.sketch.com/s/bb57439f-19da-4c7a-bfd2-a196cf51f766/symbols
@@ -42,6 +43,14 @@ export const primitiveColors = {
         dark: greenLight
       }
     }
+  },
+  red: {
+    v1: {
+      solid: {
+        light: redLight,
+        dark: redLight
+      }
+    }
   }
 } as const satisfies PrimitiveColors;
 
@@ -49,11 +58,13 @@ export const globalSemantics = {
   light: {
     primary: { v1: 'primitive.blue.v1' },
     neutral: { v1: 'primitive.black.v1' },
+    redLike: { v1: 'primitive.red.v1' },
     greenLike: { v1: 'primitive.green.v1' }
   },
   dark: {
     primary: { v1: 'primitive.blue.v1' },
     neutral: { v1: 'primitive.black.v1' },
+    redLike: { v1: 'primitive.red.v1' },
     greenLike: { v1: 'primitive.green.v1' }
   }
 } as const satisfies GlobalSemanticsByTheme;
@@ -84,7 +95,10 @@ export const componentIntents = {
     positive: 'greenLike'
   },
   switch: {
-    neutral: 'greenLike'
+    neutral: 'neutral',
+    primary: 'primary',
+    // Composite intent: role lookup points at the positive/on pole; off uses redLike in the palette.
+    polarity: 'greenLike'
   }
 } as const satisfies ComponentIntents;
 

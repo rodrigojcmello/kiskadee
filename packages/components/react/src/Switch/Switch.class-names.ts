@@ -5,6 +5,7 @@ import {
   componentEmphasisBuckets,
   type RadiusMode,
   type SwitchActivationMotion,
+  type SwitchIntent,
   type SwitchMode,
   type SwitchVariant
 } from '@kiskadee/core';
@@ -18,7 +19,7 @@ import type {
 export const DEFAULT_SWITCH_SCALE = 's:md:1';
 export const DEFAULT_SWITCH_ACTIVATION_MOTION: SwitchActivationMotion = 'standard';
 export const DEFAULT_SWITCH_EMPHASIS: ComponentEmphasis = 'medium';
-export const DEFAULT_SWITCH_INTENT = 'neutral';
+export const DEFAULT_SWITCH_INTENT: SwitchIntent = 'neutral';
 export const DEFAULT_SWITCH_RADIUS: RadiusMode = 'rounded';
 export const DEFAULT_SWITCH_VARIANT: SwitchVariant = 'standard';
 export const DEFAULT_SWITCH_MODE: SwitchMode = 'base';
@@ -43,7 +44,7 @@ export function resolveVariantElements(
 
 export function resolveIntentClasses(
   element: ClassNameByElementJSON | undefined,
-  intent: string,
+  intent: SwitchIntent,
   emphasis: ComponentEmphasis | undefined
 ): string {
   if (!element?.c) return '';
@@ -63,7 +64,7 @@ export function elem(
   element: ClassNameByElementJSON | undefined,
   options: {
     scale: string;
-    intent: string;
+    intent: SwitchIntent;
     emphasis: ComponentEmphasis | undefined;
   }
 ): string {
@@ -110,7 +111,7 @@ export function resolveSwitchClassNames(options: {
   elements: SwitchClassesMap;
   classNames: SwitchClassNames;
   scale: string;
-  intent: string;
+  intent: SwitchIntent;
   emphasis: ComponentEmphasis | undefined;
   radius: RadiusMode;
   activationMotion: SwitchActivationMotion;

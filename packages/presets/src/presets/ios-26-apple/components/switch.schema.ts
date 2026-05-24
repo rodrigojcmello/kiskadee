@@ -19,7 +19,10 @@ export function createIos26AppleSwitchSchema({
   segmentNames,
   transparent
 }: CreateIos26AppleSwitchSchemaArgs): SwitchComponent {
-  const iosSwitchOnTrack = c('default', 'l', 'switch.neutral', 50);
+  const iosSwitchNeutralOnTrack = c('default', 'l', 'greenLike', 50);
+  const iosSwitchPrimaryOnTrack = c('default', 'l', 'primary', 50);
+  const iosSwitchPolarityOffTrack = c('default', 'l', 'redLike', 50);
+  const iosSwitchLabelText = c('default', 'l', 'button.neutral', 100);
 
   return {
     options: {
@@ -106,10 +109,38 @@ export function createIos26AppleSwitchSchema({
                           focus: { ref: iosSwitchOffTrack },
                           pressed: { ref: iosSwitchOffTrack },
                           selected: {
-                            rest: { ref: iosSwitchOnTrack },
-                            hover: { ref: iosSwitchOnTrack },
-                            focus: { ref: iosSwitchOnTrack },
-                            pressed: { ref: iosSwitchOnTrack }
+                            rest: { ref: iosSwitchNeutralOnTrack },
+                            hover: { ref: iosSwitchNeutralOnTrack },
+                            focus: { ref: iosSwitchNeutralOnTrack },
+                            pressed: { ref: iosSwitchNeutralOnTrack }
+                          }
+                        }
+                      },
+                      primary: {
+                        medium: {
+                          rest: iosSwitchOffTrack,
+                          hover: { ref: iosSwitchOffTrack },
+                          focus: { ref: iosSwitchOffTrack },
+                          pressed: { ref: iosSwitchOffTrack },
+                          selected: {
+                            rest: { ref: iosSwitchPrimaryOnTrack },
+                            hover: { ref: iosSwitchPrimaryOnTrack },
+                            focus: { ref: iosSwitchPrimaryOnTrack },
+                            pressed: { ref: iosSwitchPrimaryOnTrack }
+                          }
+                        }
+                      },
+                      polarity: {
+                        medium: {
+                          rest: iosSwitchPolarityOffTrack,
+                          hover: { ref: iosSwitchPolarityOffTrack },
+                          focus: { ref: iosSwitchPolarityOffTrack },
+                          pressed: { ref: iosSwitchPolarityOffTrack },
+                          selected: {
+                            rest: { ref: iosSwitchNeutralOnTrack },
+                            hover: { ref: iosSwitchNeutralOnTrack },
+                            focus: { ref: iosSwitchNeutralOnTrack },
+                            pressed: { ref: iosSwitchNeutralOnTrack }
                           }
                         }
                       }
@@ -126,6 +157,22 @@ export function createIos26AppleSwitchSchema({
                             hover: { ref: transparent },
                             focus: { ref: transparent },
                             pressed: { ref: transparent }
+                          }
+                        }
+                      },
+                      primary: {
+                        medium: {
+                          rest: transparent,
+                          selected: {
+                            rest: { ref: transparent }
+                          }
+                        }
+                      },
+                      polarity: {
+                        medium: {
+                          rest: transparent,
+                          selected: {
+                            rest: { ref: transparent }
                           }
                         }
                       }
@@ -178,10 +225,48 @@ export function createIos26AppleSwitchSchema({
                             pressed: { ref: iosSwitchThumb }
                           }
                         }
+                      },
+                      primary: {
+                        medium: {
+                          rest: iosSwitchThumb,
+                          selected: {
+                            rest: { ref: iosSwitchThumb }
+                          }
+                        }
+                      },
+                      polarity: {
+                        medium: {
+                          rest: iosSwitchThumb,
+                          hover: { ref: iosSwitchThumb },
+                          focus: { ref: iosSwitchThumb },
+                          pressed: { ref: iosSwitchThumb },
+                          selected: {
+                            rest: { ref: iosSwitchThumb },
+                            hover: { ref: iosSwitchThumb },
+                            focus: { ref: iosSwitchThumb },
+                            pressed: { ref: iosSwitchThumb }
+                          }
+                        }
                       }
                     },
                     borderColor: {
                       neutral: {
+                        medium: {
+                          rest: transparent,
+                          selected: {
+                            rest: { ref: transparent }
+                          }
+                        }
+                      },
+                      primary: {
+                        medium: {
+                          rest: transparent,
+                          selected: {
+                            rest: { ref: transparent }
+                          }
+                        }
+                      },
+                      polarity: {
                         medium: {
                           rest: transparent,
                           selected: {
@@ -218,7 +303,17 @@ export function createIos26AppleSwitchSchema({
                     textColor: {
                       neutral: {
                         medium: {
-                          rest: c('default', 'l', 'button.neutral', 100)
+                          rest: iosSwitchLabelText
+                        }
+                      },
+                      primary: {
+                        medium: {
+                          rest: iosSwitchLabelText
+                        }
+                      },
+                      polarity: {
+                        medium: {
+                          rest: iosSwitchLabelText
                         }
                       }
                     }

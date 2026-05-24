@@ -682,6 +682,42 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
   confirmed Fluent 2 Microsoft now emits `--k-focus-width:2` and `--k-focus-offset:1`.
 - `git diff --check -- packages/presets/src/presets/fluent-2-microsoft/fluent-2-microsoft.schema.ts packages/showcase/registry/generated/css.registry.generated.ts packages/components/react/docs/definitions/switch/switch-geometry.md docs/switch-component.in-progress.md`
   passed after the focus-token update.
+- Switch intent/emphasis semantics were consolidated: the public default remains
+  `neutral.medium`, `intent` changes the semantic presentation, `emphasis` changes visual strength
+  within that same presentation, and `controlState`/`selected.*` owns the persistent on/off state.
+- `ios-26-apple` Switch no longer maps `componentIntents.switch.neutral` to `greenLike`. The
+  default Switch intent is neutral, while the official iOS green on color is now authored directly
+  in `neutral.medium.selected.*`.
+- `ios-26-apple` Switch now also defines `primary.medium` for a non-official blue/brand on
+  treatment and `polarity.medium` for explicit negative/off and positive/on poles.
+- `packages/presets/docs/definitions/component-intents.md` now uses this Switch case as the
+  canonical example separating `intent`, `emphasis`, and `selected` control state.
+- `pnpm exec biome check --write packages/core/src/types/colors/colors.intents.ts packages/core/src/types/colors/colors.types.ts packages/components/react/src/Switch/Switch.types.ts packages/components/react/src/Switch/Switch.class-names.ts packages/presets/src/presets/ios-26-apple/ios-26-apple.colors.ts packages/presets/src/presets/ios-26-apple/components/switch.schema.ts packages/presets/src/presets/ios-26-apple/colors/red.light.ts packages/showcase/app/switch/SwitchPage.tsx`
+  formatted the Switch intent source changes.
+- `pnpm --filter @kiskadee/presets exec tsc --noEmit` passed after adding `SwitchIntent`, iOS
+  `redLike`, and the iOS Switch `primary`/`polarity` palettes.
+- `pnpm --filter @kiskadee/react-components run build` passed after typing Switch `intent` as
+  `SwitchIntent`.
+- `pnpm --filter @kiskadee/web-builder run build-sync-generate` passed and regenerated the iOS 26
+  Apple manifest/showcase artifacts with `neutral`, `primary`, and `polarity` Switch states.
+- `pnpm --filter @kiskadee/showcase build` passed after the Switch showcase added the intent
+  selector.
+- `pnpm exec biome check packages/core/src/types/colors/colors.intents.ts packages/core/src/types/colors/colors.types.ts packages/components/react/src/Switch/Switch.types.ts packages/components/react/src/Switch/Switch.class-names.ts packages/presets/src/presets/ios-26-apple/ios-26-apple.colors.ts packages/presets/src/presets/ios-26-apple/components/switch.schema.ts packages/presets/src/presets/ios-26-apple/colors/red.light.ts packages/showcase/app/switch/SwitchPage.tsx`
+  passed after formatting.
+- `git diff --check -- docs/switch-component.in-progress.md packages/core/src/types/colors/colors.intents.ts packages/core/src/types/colors/colors.types.ts packages/components/react/src/Switch/Switch.types.ts packages/components/react/src/Switch/Switch.class-names.ts packages/presets/docs/definitions/component-intents.md packages/presets/src/presets/ios-26-apple/ios-26-apple.colors.ts packages/presets/src/presets/ios-26-apple/components/switch.schema.ts packages/presets/src/presets/ios-26-apple/colors/red.light.ts packages/showcase/app/switch/SwitchPage.tsx packages/showcase/registry/generated/design-systems.registry.generated.ts`
+  passed after the same update.
+- Fluent 2 Microsoft Switch was aligned with the new intent model: the former green/red
+  `neutral.high` experiment is now `polarity.medium`, while `neutral.medium` remains the official
+  primary-blue selected/on treatment.
+- iOS 26 Apple `polarity.medium` now paints the off track red and keeps the thumb white. Fluent keeps
+  its existing polarity shape with a red off thumb and green selected track.
+- `pnpm exec biome check --write packages/presets/src/presets/fluent-2-microsoft/components/switch.schema.ts packages/presets/src/presets/ios-26-apple/components/switch.schema.ts`
+  passed after the Fluent/iOS polarity adjustment.
+- `pnpm --filter @kiskadee/presets exec tsc --noEmit` passed after the Fluent/iOS polarity
+  adjustment.
+- `pnpm --filter @kiskadee/web-builder run build-sync-generate` passed and regenerated manifests
+  with Fluent 2 Microsoft exposing `neutral.medium` and `polarity.medium` for Switch.
+- `pnpm --filter @kiskadee/showcase build` passed after the regenerated Switch intent artifacts.
 
 Future broader validation, only if showcase/generated artifacts are touched:
 
