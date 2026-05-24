@@ -19,6 +19,10 @@ export const schema: Schema<Segments> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    focus: {
+      width: 2,
+      offset: 1
+    },
     radius: 'rounded'
   },
   themeTokens: {

@@ -655,6 +655,13 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
 - Switch showcase state examples now use `Rest` and `Selected` labels/ids instead of `Checked`
   terminology, keeping the visible examples aligned with `controlState` and the schema `selected`
   branch.
+- Fluent 2 Microsoft now emits the global focus contract (`width: 2`, `offset: 1`) from the root
+  preset schema. Switch structural CSS already consumed `--k-focus-offset` without fallback; the
+  missing token made the browser fall back to the initial zero offset, so the focus ring appeared to
+  ignore the expected gap.
+- Switch geometry docs now record that the structural focus ring requires `--k-focus-color`,
+  `--k-focus-width`, and `--k-focus-offset`, and that presets expecting a focus gap must emit
+  `global.focus.offset`.
 - `pnpm exec biome check packages/headless/react/src/components/switch/HeadlessSwitch.tsx packages/headless/react/src/hooks/control-state/useControlState.ts packages/headless/react/src/index.ts packages/components/react/src/Switch/Switch.types.ts packages/components/react/src/Switch/index.ts packages/components/react/src/index.ts packages/showcase/app/switch/SwitchPage.tsx`
   passed after the Switch `controlState` / `status` API normalization.
 - `pnpm --filter @kiskadee/react-components run build` passed after rebuilding headless and React
@@ -663,6 +670,18 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
   web-builder artifacts, and the Next showcase.
 - `git diff --check -- packages/headless/react/src/components/switch/HeadlessSwitch.tsx packages/headless/react/src/hooks/control-state/useControlState.ts packages/headless/react/src/index.ts packages/components/react/src/Switch/Switch.types.ts packages/components/react/src/Switch/Switch.structural.scss packages/components/react/src/Switch/index.ts packages/components/react/src/index.ts packages/showcase/app/switch/SwitchPage.tsx packages/web-builder/docs/definitions/interaction-state-model.md packages/web-builder/docs/definitions/control-state-effects.md docs/definitions/new-component-starting-definition.md docs/switch-component.in-progress.md`
   passed after the same normalization.
+- `pnpm --filter @kiskadee/presets exec tsc --noEmit` passed after adding Fluent 2 Microsoft
+  `global.focus`.
+- `pnpm --filter @kiskadee/web-builder run build-sync-generate` passed and generated
+  `/build/fluent-2-microsoft/tokens.kiskadee.css` in the showcase registry.
+- `pnpm exec biome check packages/presets/src/presets/fluent-2-microsoft/fluent-2-microsoft.schema.ts`
+  passed after the preset update.
+- `pnpm --filter @kiskadee/showcase build` passed after the registry started pointing Fluent 2
+  Microsoft to `tokens.kiskadee.css`.
+- `rg -n -- "--k-focus-width|--k-focus-offset|fluent-2-microsoft.*tokens" packages/web-builder/build/fluent-2-microsoft packages/showcase/public/build/fluent-2-microsoft packages/showcase/registry/generated/css.registry.generated.ts`
+  confirmed Fluent 2 Microsoft now emits `--k-focus-width:2` and `--k-focus-offset:1`.
+- `git diff --check -- packages/presets/src/presets/fluent-2-microsoft/fluent-2-microsoft.schema.ts packages/showcase/registry/generated/css.registry.generated.ts packages/components/react/docs/definitions/switch/switch-geometry.md docs/switch-component.in-progress.md`
+  passed after the focus-token update.
 
 Future broader validation, only if showcase/generated artifacts are touched:
 

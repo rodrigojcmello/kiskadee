@@ -34,7 +34,7 @@ export const cssPaths = {
   'fluent-2-microsoft': {
     core: '/build/fluent-2-microsoft/core.kiskadee.css',
     effects: '/build/fluent-2-microsoft/effects.kiskadee.css',
-    tokens: null,
+    tokens: '/build/fluent-2-microsoft/tokens.kiskadee.css',
     palettes: {
       'default|light': '/build/fluent-2-microsoft/default.light.kiskadee.css',
     },

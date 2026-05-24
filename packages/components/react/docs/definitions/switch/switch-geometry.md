@@ -33,3 +33,16 @@ emission-policy change.
 These variables are contract variables from generated classes, so the structural selector must not
 provide local `var()` fallbacks. Missing variables should surface as broken geometry during
 development instead of being hidden by default values.
+
+## Focus Ring
+
+The Switch track draws keyboard-visible focus from structural CSS because the native input is
+visually hidden. The selector consumes the global focus contract directly:
+
+- `--k-focus-color` for the outline color.
+- `--k-focus-width` for outline thickness.
+- `--k-focus-offset` for the gap between the track edge and outline.
+
+These are required contract variables for design systems that expose Switch focus rings. Structural
+CSS must not provide local `var()` fallbacks; if a preset expects a focus gap, its root schema must
+emit `global.focus.offset`.
