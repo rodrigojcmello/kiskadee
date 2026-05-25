@@ -388,6 +388,13 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
   uses the captured `24 x 24` selected/default thumb size, and documents unsupported Figma details
   such as the `16 x 16` off thumb, `28 x 28` pressed thumb, `40 x 40` state layer, `48 x 48` target,
   focus indicator, and icons.
+- Switch motion discussion remains deferred. The current Switch should be treated as the default
+  `static` path even though it uses CSS transitions: `static` means no dedicated animation engine,
+  not zero animation. A future `motion` path would be justified by drag support, interruptible
+  retargeting on rapid clicks, and spring/runtime animation behavior.
+- `packages/components/react/docs/definitions/motion-strategy.md` now documents the broader
+  static-vs-motion vocabulary. `docs/definitions/new-component-starting-definition.md` points to it
+  so future components start lightweight and only add runtime motion when behavior requires it.
 
 ## Relevant Files
 

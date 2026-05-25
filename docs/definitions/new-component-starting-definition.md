@@ -283,6 +283,12 @@ Ask these questions before adding more surface area:
 - Which logic belongs in the styled React component?
 - Should any headless logic be extracted into a reusable hook, like `useStateProjection`?
 
+For motion decisions, use `static` and `motion` as the default vocabulary. `static` means the
+lightweight path without a dedicated animation engine; it may still use CSS transitions or direct
+runtime measurement. `motion` means a runtime animation or gesture path, usually justified by
+interruptible movement, spring behavior, drag, or other behavior CSS transitions cannot own well.
+See `packages/components/react/docs/definitions/motion-strategy.md`.
+
 When extending a component after the first version, align the supported attributes per element before
 changing the schema. Each `e<n>` slot should expose only the attributes that match its real job.
 Avoid leaving element schemas broad or inherited by accident. For example, a headless root that
