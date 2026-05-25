@@ -53,3 +53,23 @@ It captures preset fidelity for the selected design system.
 Prefer `standard` when the thumb is wider or visually heavier, as in the iOS 26
 Apple Switch. Prefer `slow` when a compact circular thumb makes the same
 distance feel too abrupt, as in Fluent 2 Microsoft.
+
+## Switch Control Text Visibility
+
+Switch control text is the optional visual `On` / `Off` style text that
+represents `controlState`. It is separate from the control `label`, which names
+the field or setting.
+
+Presets control the default display policy through
+`components.switch.options.controlTextVisibility`.
+
+Supported values:
+
+- `none`: hide control text even when the React component receives
+  `controlText`.
+- `largeOnly`: show control text only on large web viewports, matching desktop
+  settings patterns.
+- `always`: show control text whenever the component receives `controlText`.
+
+The default is `none`. Use `largeOnly` for design systems where explicit
+on/off text is appropriate on desktop surfaces but noisy on compact surfaces.

@@ -28,13 +28,18 @@ export type SwitchLabelPosition = 'start' | 'end';
 
 export type SwitchStatus = HeadlessSwitchStatus;
 
+export type SwitchControlText = {
+  on: ReactNode;
+  off: ReactNode;
+};
+
 export type SwitchProps = Omit<
   HeadlessSwitchRootProps,
   'children' | 'classNames' | 'inputId' | 'inputProps'
 > & {
   id?: string;
   label?: ReactNode;
-  state?: ReactNode;
+  controlText?: SwitchControlText;
   className?: string;
   classNames?: SwitchClassNames;
   inputProps?: Omit<HeadlessSwitchInputProps, 'className'> & {

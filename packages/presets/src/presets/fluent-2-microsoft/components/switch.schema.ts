@@ -30,7 +30,8 @@ export function createFluent2MicrosoftSwitchSchema({
     options: {
       variant: 'standard',
       radius: 'pill',
-      activationMotion: 'slow'
+      activationMotion: 'slow',
+      controlTextVisibility: 'largeOnly'
     },
     variants: {
       standard: {
@@ -203,6 +204,38 @@ export function createFluent2MicrosoftSwitchSchema({
                         polarity: {
                           medium: {
                             rest: '#242424' // preto acinzentado (quase preto)
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              e5: {
+                name: 'control text',
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'normal'
+                },
+                scales: {
+                  textSize: { 's:md:1': 14 },
+                  textHeight: { 's:md:1': 20 },
+                  marginLeft: { 's:md:1': 8 },
+                  marginRight: { 's:md:1': 8 }
+                },
+                palettes: {
+                  default: {
+                    light: {
+                      textColor: {
+                        neutral: {
+                          medium: {
+                            rest: '#242424',
+                            disabled: { ref: neutral25 }
+                          }
+                        },
+                        polarity: {
+                          medium: {
+                            rest: '#242424'
                           }
                         }
                       }

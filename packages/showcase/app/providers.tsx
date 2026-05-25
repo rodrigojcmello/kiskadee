@@ -37,6 +37,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     switchVariant,
     switchRadius,
     switchActivationMotion,
+    switchControlTextVisibility,
     switchVariants,
     textFieldVariant,
     textFieldMode,
@@ -60,6 +61,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     switchVariant !== undefined ||
     switchRadius !== undefined ||
     switchActivationMotion !== undefined ||
+    switchControlTextVisibility !== undefined ||
     switchVariants !== undefined ||
     textFieldVariant !== undefined ||
     textFieldMode !== undefined ||
@@ -79,6 +81,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           switchVariant !== undefined ||
           switchRadius !== undefined ||
           switchActivationMotion !== undefined ||
+          switchControlTextVisibility !== undefined ||
           switchVariants !== undefined ||
           textFieldMode !== undefined ||
           textFieldFocusRingColorSource !== undefined ||
@@ -95,6 +98,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
                   ...(switchVariant !== undefined ||
                   switchRadius !== undefined ||
                   switchActivationMotion !== undefined ||
+                  switchControlTextVisibility !== undefined ||
                   switchVariants !== undefined
                     ? {
                         switch: {
@@ -103,6 +107,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
                             ...(switchRadius !== undefined ? { radius: switchRadius } : {}),
                             ...(switchActivationMotion !== undefined
                               ? { activationMotion: switchActivationMotion }
+                              : {}),
+                            ...(switchControlTextVisibility !== undefined
+                              ? { controlTextVisibility: switchControlTextVisibility }
                               : {})
                           },
                           ...(switchVariants !== undefined ? { variants: switchVariants } : {})

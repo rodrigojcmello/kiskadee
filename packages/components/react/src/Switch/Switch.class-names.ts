@@ -5,6 +5,7 @@ import {
   componentEmphasisBuckets,
   type RadiusMode,
   type SwitchActivationMotion,
+  type SwitchControlTextVisibility,
   type SwitchIntent,
   type SwitchMode,
   type SwitchVariant
@@ -23,7 +24,8 @@ export const DEFAULT_SWITCH_INTENT: SwitchIntent = 'neutral';
 export const DEFAULT_SWITCH_RADIUS: RadiusMode = 'rounded';
 export const DEFAULT_SWITCH_VARIANT: SwitchVariant = 'standard';
 export const DEFAULT_SWITCH_MODE: SwitchMode = 'base';
-export const DEFAULT_SWITCH_LABEL_POSITION: SwitchLabelPosition = 'end';
+export const DEFAULT_SWITCH_LABEL_POSITION: SwitchLabelPosition = 'start';
+export const DEFAULT_SWITCH_CONTROL_TEXT_VISIBILITY: SwitchControlTextVisibility = 'none';
 
 export function join(...parts: Array<string | undefined | false | null>): string | undefined {
   const joined = parts.filter(Boolean).join(' ').trim();
@@ -117,7 +119,7 @@ export function resolveSwitchClassNames(options: {
   activationMotion: SwitchActivationMotion;
   labelPosition: SwitchLabelPosition;
   hasLabel: boolean;
-  hasState: boolean;
+  hasControlText: boolean;
 }): Required<SwitchClassNames> {
   const elements = options.elements;
 
@@ -153,7 +155,7 @@ export function resolveSwitchClassNames(options: {
     e4: options.hasLabel
       ? (join('k-swt-e4-a', elem(elements.e4, options), 'k-trn', options.classNames.e4) ?? '')
       : (options.classNames.e4 ?? ''),
-    e5: options.hasState
+    e5: options.hasControlText
       ? (join('k-swt-e5-a', elem(elements.e5, options), 'k-trn', options.classNames.e5) ?? '')
       : (options.classNames.e5 ?? '')
   };

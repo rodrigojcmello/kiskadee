@@ -8,6 +8,7 @@ export type {
 } from './switch.elements.zod.ts';
 export type {
   SwitchActivationMotionSchemaValue,
+  SwitchControlTextVisibilitySchemaValue,
   SwitchOptionsFromSchema,
   SwitchVariantOptionsFromSchema
 } from './switch.options.zod.ts';

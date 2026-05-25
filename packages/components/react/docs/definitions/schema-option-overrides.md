@@ -25,3 +25,6 @@ Current Switch decisions:
 - `activationMotion` is not a public Switch prop. It is read from
   `components.switch.options.activationMotion` in the generated global artifact and applied
   consistently for the selected preset.
+- `controlTextVisibility` is not a public Switch prop. Consumers may provide `controlText` content,
+  but the selected design system decides whether that content is hidden, shown only on large
+  viewports, or always shown through `components.switch.options.controlTextVisibility`.

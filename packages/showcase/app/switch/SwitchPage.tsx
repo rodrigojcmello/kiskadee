@@ -35,6 +35,11 @@ const switchIntentLabels: Record<string, string> = {
   polarity: 'Polarity'
 };
 
+const switchControlText = {
+  on: 'On',
+  off: 'Off'
+};
+
 function StateTile({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className={s.stateTile}>
@@ -198,6 +203,7 @@ export default function SwitchPage() {
               <Switch
                 id="switch-notifications"
                 label="Notifications"
+                controlText={switchControlText}
                 controlState={controlState}
                 onControlStateChange={setControlState}
                 scale={scale}
@@ -205,17 +211,17 @@ export default function SwitchPage() {
                 intent={intent}
                 emphasis={emphasis}
               />
-              <span className={s.valueLabel}>{controlState ? 'On' : 'Off'}</span>
             </div>
           </section>
 
           <section className={s.section}>
             <h3>States</h3>
-            <div className={s.stateGrid}>
+            <div className={`${s.stateGrid} ${s.statesGrid}`}>
               <StateTile title="Rest">
                 <Switch
                   id="switch-state-rest"
                   label="Rest"
+                  controlText={switchControlText}
                   controlState={false}
                   scale={scale}
                   radius={radius}
@@ -228,6 +234,7 @@ export default function SwitchPage() {
                 <Switch
                   id="switch-state-selected"
                   label="Selected"
+                  controlText={switchControlText}
                   controlState
                   scale={scale}
                   radius={radius}
@@ -240,6 +247,7 @@ export default function SwitchPage() {
                 <Switch
                   id="switch-state-hover"
                   label="Hover"
+                  controlText={switchControlText}
                   controlState={false}
                   status="hover"
                   scale={scale}
@@ -253,6 +261,7 @@ export default function SwitchPage() {
                 <Switch
                   id="switch-state-focus"
                   label="Focus"
+                  controlText={switchControlText}
                   controlState={false}
                   status="focus"
                   scale={scale}
@@ -266,6 +275,7 @@ export default function SwitchPage() {
                 <Switch
                   id="switch-state-selected-hover"
                   label="Selected hover"
+                  controlText={switchControlText}
                   controlState
                   status="hover"
                   scale={scale}
@@ -279,6 +289,7 @@ export default function SwitchPage() {
                 <Switch
                   id="switch-state-selected-focus"
                   label="Selected focus"
+                  controlText={switchControlText}
                   controlState
                   status="focus"
                   scale={scale}
@@ -298,6 +309,7 @@ export default function SwitchPage() {
                 <Switch
                   id="switch-disabled-off"
                   label="Unavailable"
+                  controlText={switchControlText}
                   controlState={false}
                   scale={scale}
                   radius={radius}
@@ -310,6 +322,7 @@ export default function SwitchPage() {
                 <Switch
                   id="switch-disabled-selected"
                   label="Locked on"
+                  controlText={switchControlText}
                   controlState
                   scale={scale}
                   radius={radius}
@@ -324,28 +337,11 @@ export default function SwitchPage() {
           <section className={s.section}>
             <h3>Labels</h3>
             <div className={s.stateGrid}>
-              <StateTile title="Label Start">
+              <StateTile title="Visible Label">
                 <Switch
                   id="switch-label-start"
                   label="Airplane mode"
-                  labelPosition="start"
-                  controlState
-                  scale={scale}
-                  radius={radius}
-                  intent={intent}
-                  emphasis={emphasis}
-                  readOnly
-                />
-              </StateTile>
-              <StateTile title="Custom Label">
-                <Switch
-                  id="switch-label-custom"
-                  label={
-                    <span className={s.customLabel}>
-                      <strong>Sync</strong>
-                      <span>Background updates</span>
-                    </span>
-                  }
+                  controlText={switchControlText}
                   controlState
                   scale={scale}
                   radius={radius}
@@ -358,6 +354,7 @@ export default function SwitchPage() {
                 <Switch
                   id="switch-label-hidden"
                   inputProps={{ 'aria-label': 'No visible label switch' }}
+                  controlText={switchControlText}
                   controlState
                   scale={scale}
                   radius={radius}

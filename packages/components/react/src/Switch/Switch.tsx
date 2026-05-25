@@ -1,9 +1,11 @@
 import './Switch.structural.css';
+import { breakpoints } from '@kiskadee/core';
 import { HeadlessSwitch } from '@kiskadee/react-headless';
-import { memo, type RefObject, useEffect, useMemo, useRef } from 'react';
+import { memo, type RefObject, useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
 import {
   DEFAULT_SWITCH_ACTIVATION_MOTION,
+  DEFAULT_SWITCH_CONTROL_TEXT_VISIBILITY,
   DEFAULT_SWITCH_EMPHASIS,
   DEFAULT_SWITCH_INTENT,
   DEFAULT_SWITCH_LABEL_POSITION,
@@ -17,9 +19,47 @@ import {
 } from './Switch.class-names.ts';
 import type { SwitchProps, SwitchVariantClassesMap } from './Switch.types.ts';
 
+const SWITCH_CONTROL_SIDE_CLASS_NAME = 'k-swt-x2';
+const SWITCH_CONTROL_TEXT_OFF_CLASS_NAME = 'k-swt-x3';
+const SWITCH_CONTROL_TEXT_ON_CLASS_NAME = 'k-swt-x4';
+const SWITCH_CONTROL_TEXT_LARGE_QUERY = `(min-width: ${breakpoints['bp:lg:1']}px)`;
+
 function parsePixelValue(value: string): number {
   const parsed = Number.parseFloat(value);
   return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function subscribeToLargeControlTextViewport(onStoreChange: () => void): () => void {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+    return () => {};
+  }
+
+  const mediaQueryList = window.matchMedia(SWITCH_CONTROL_TEXT_LARGE_QUERY);
+  mediaQueryList.addEventListener('change', onStoreChange);
+
+  return () => {
+    mediaQueryList.removeEventListener('change', onStoreChange);
+  };
+}
+
+function getLargeControlTextViewportSnapshot(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia(SWITCH_CONTROL_TEXT_LARGE_QUERY).matches
+  );
+}
+
+function getLargeControlTextViewportServerSnapshot(): boolean {
+  return false;
+}
+
+function useLargeControlTextViewport(): boolean {
+  return useSyncExternalStore(
+    subscribeToLargeControlTextViewport,
+    getLargeControlTextViewportSnapshot,
+    getLargeControlTextViewportServerSnapshot
+  );
 }
 
 function useSwitchThumbTranslation(options: {
@@ -62,7 +102,7 @@ function SwitchRoot(props: SwitchProps) {
   const {
     id,
     label,
-    state,
+    controlText,
     className,
     classNames = {},
     inputProps,
@@ -85,6 +125,9 @@ function SwitchRoot(props: SwitchProps) {
     DEFAULT_SWITCH_RADIUS;
   const resolvedActivationMotion =
     global?.components?.switch?.options?.activationMotion ?? DEFAULT_SWITCH_ACTIVATION_MOTION;
+  const resolvedControlTextVisibility =
+    global?.components?.switch?.options?.controlTextVisibility ??
+    DEFAULT_SWITCH_CONTROL_TEXT_VISIBILITY;
   const elements = resolveVariantElements(
     classesMap.switch as SwitchVariantClassesMap | undefined,
     variant,
@@ -92,8 +135,13 @@ function SwitchRoot(props: SwitchProps) {
   );
   const trackRef = useRef<HTMLSpanElement | null>(null);
   const thumbRef = useRef<HTMLSpanElement | null>(null);
+  const isLargeControlTextViewport = useLargeControlTextViewport();
   const hasLabel = label !== undefined && label !== null;
-  const hasState = state !== undefined && state !== null;
+  const hasControlText = controlText !== undefined && controlText !== null;
+  const shouldRenderControlText =
+    hasControlText &&
+    (resolvedControlTextVisibility === 'always' ||
+      (resolvedControlTextVisibility === 'largeOnly' && isLargeControlTextViewport));
 
   useSwitchThumbTranslation({ trackRef, thumbRef });
 
@@ -112,7 +160,7 @@ function SwitchRoot(props: SwitchProps) {
         activationMotion: resolvedActivationMotion,
         labelPosition,
         hasLabel,
-        hasState
+        hasControlText: shouldRenderControlText
       }),
     [
       classNames,
@@ -120,10 +168,11 @@ function SwitchRoot(props: SwitchProps) {
       elements,
       emphasis,
       hasLabel,
-      hasState,
+      shouldRenderControlText,
       intent,
       labelPosition,
       resolvedActivationMotion,
+      resolvedControlTextVisibility,
       resolvedRadius,
       scale
     ]
@@ -138,10 +187,17 @@ function SwitchRoot(props: SwitchProps) {
       readOnly={readOnly}
       classNames={resolvedClassNames}
     >
-      <HeadlessSwitch.Track ref={trackRef}>
-        {hasState ? <HeadlessSwitch.State>{state}</HeadlessSwitch.State> : null}
-        <HeadlessSwitch.Thumb ref={thumbRef} />
-      </HeadlessSwitch.Track>
+      <span className={SWITCH_CONTROL_SIDE_CLASS_NAME}>
+        {shouldRenderControlText && controlText ? (
+          <HeadlessSwitch.State>
+            <span className={SWITCH_CONTROL_TEXT_OFF_CLASS_NAME}>{controlText.off}</span>
+            <span className={SWITCH_CONTROL_TEXT_ON_CLASS_NAME}>{controlText.on}</span>
+          </HeadlessSwitch.State>
+        ) : null}
+        <HeadlessSwitch.Track ref={trackRef}>
+          <HeadlessSwitch.Thumb ref={thumbRef} />
+        </HeadlessSwitch.Track>
+      </span>
       {hasLabel ? <HeadlessSwitch.Label>{label}</HeadlessSwitch.Label> : null}
     </HeadlessSwitch.Root>
   );

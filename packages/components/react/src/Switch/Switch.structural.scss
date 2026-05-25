@@ -121,6 +121,17 @@
 }
 
 /*
+ * extra control side / x2
+ * Groups optional control text with the rendered track as one visual flex item.
+ */
+.k-swt-x2 {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  cursor: inherit;
+}
+
+/*
  * element label / e4
  * Keeps optional text label in normal inline flow while generated typography owns text visuals.
  */
@@ -131,16 +142,32 @@
 }
 
 /*
- * element state / e5
- * Provides an optional non-interactive overlay lane for icons or on/off text inside the track.
+ * element control text / e5
+ * Provides optional visual on/off text next to the rendered control.
  */
 .k-swt-e5-a {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  display: grid;
-  place-items: center;
+  display: inline-flex;
+  align-items: center;
+  min-inline-size: 0;
+  cursor: inherit;
   pointer-events: none;
+}
+
+/*
+ * internal control-text parts / x3 and x4
+ * Mirrors the persistent control state through the shared selected activator class.
+ */
+.k-swt-x3 {
+  display: inline;
+}
+
+.k-swt-x4,
+.k-swt-e1-a.-s.-a .k-swt-x3 {
+  display: none;
+}
+
+.k-swt-e1-a.-s.-a .k-swt-x4 {
+  display: inline;
 }
 
 /*

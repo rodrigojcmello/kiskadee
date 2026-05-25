@@ -3,6 +3,7 @@ import type {
   RadiusMode,
   RippleEffectSchema,
   SwitchActivationMotion,
+  SwitchControlTextVisibility,
   SwitchMode,
   SwitchVariant,
   TabsBridgeLowerCurve,
@@ -75,6 +76,7 @@ export type KiskadeeContextValue = {
           variant?: SwitchVariant;
           radius?: RadiusMode;
           activationMotion?: SwitchActivationMotion;
+          controlTextVisibility?: SwitchControlTextVisibility;
         };
         variants?: {
           standard?: {

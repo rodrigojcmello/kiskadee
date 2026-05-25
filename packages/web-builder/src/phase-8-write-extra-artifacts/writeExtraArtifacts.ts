@@ -10,6 +10,7 @@ import type {
   SegmentName,
   SolidColor,
   SwitchActivationMotion,
+  SwitchControlTextVisibility,
   SwitchMode,
   SwitchVariant,
   TabsBridgeLowerCurve,
@@ -37,6 +38,7 @@ type SwitchOptionsPayload = {
   variant?: SwitchVariant;
   radius?: RadiusMode;
   activationMotion?: SwitchActivationMotion;
+  controlTextVisibility?: SwitchControlTextVisibility;
 };
 type SwitchVariantOptionsPayload = {
   mode?: SwitchMode;
@@ -294,6 +296,9 @@ export async function writeExtraArtifacts(params: {
   const switchActivationMotion = schema.components?.switch?.options?.activationMotion as
     | SwitchActivationMotion
     | undefined;
+  const switchControlTextVisibility = schema.components?.switch?.options?.controlTextVisibility as
+    | SwitchControlTextVisibility
+    | undefined;
   const switchVariants = buildSwitchVariantsPayload(schema);
   const textFieldVariant = schema.components?.textField?.options?.variant as
     | TextFieldVariant
@@ -328,6 +333,7 @@ export async function writeExtraArtifacts(params: {
     switchVariant ||
       switchRadius ||
       switchActivationMotion ||
+      switchControlTextVisibility ||
       Object.keys(switchVariants).length > 0
   );
   const hasTextFieldOptions = Boolean(
@@ -416,7 +422,10 @@ export async function writeExtraArtifacts(params: {
                 options: {
                   ...(switchVariant ? { variant: switchVariant } : {}),
                   ...(switchRadius ? { radius: switchRadius } : {}),
-                  ...(switchActivationMotion ? { activationMotion: switchActivationMotion } : {})
+                  ...(switchActivationMotion ? { activationMotion: switchActivationMotion } : {}),
+                  ...(switchControlTextVisibility
+                    ? { controlTextVisibility: switchControlTextVisibility }
+                    : {})
                 },
                 ...(Object.keys(switchVariants).length > 0 ? { variants: switchVariants } : {})
               }

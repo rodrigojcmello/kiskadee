@@ -1,6 +1,7 @@
 import type { SegmentName } from '../types/colors/colors.types.ts';
 import type {
   SwitchActivationMotionSchemaValue,
+  SwitchControlTextVisibilitySchemaValue,
   SwitchLabelElementStyleFromSchema,
   SwitchOptionsFromSchema,
   SwitchRootElementStyleFromSchema,
@@ -16,13 +17,14 @@ import type {
  * - e2: track / surface
  * - e3: thumb / handle
  * - e4: optional label text
- * - e5: optional state text / icon layer
+ * - e5: optional control text
  */
 export type SwitchElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
 export type SwitchVariant = 'standard';
 export type SwitchStandardMode = 'base';
 export type SwitchMode = SwitchStandardMode;
 export type SwitchActivationMotion = SwitchActivationMotionSchemaValue;
+export type SwitchControlTextVisibility = SwitchControlTextVisibilitySchemaValue;
 export type SwitchModeByVariant = {
   standard: SwitchStandardMode;
 };
@@ -63,7 +65,7 @@ export type SwitchLabelElementStyle<TSegmentName extends SegmentName = never> =
   SwitchLabelElementStyleFromSchema<TSegmentName>;
 
 /**
- * e5 — optional state text / icon layer
+ * e5 — optional control text
  * - textColor
  * - boxWidth / boxHeight
  * - textSize / textHeight
@@ -81,7 +83,7 @@ export type SwitchElements<TSegmentName extends SegmentName = never> = {
   e3?: SwitchThumbElementStyle<TSegmentName>;
   // e4: optional label text
   e4?: SwitchLabelElementStyle<TSegmentName>;
-  // e5: optional state text / icon layer
+  // e5: optional control text
   e5?: SwitchStateElementStyle<TSegmentName>;
 };
 
