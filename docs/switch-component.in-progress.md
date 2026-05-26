@@ -58,6 +58,13 @@ owning project docs root:
 - Follow-up adjustment: the drag path keeps the post-drag click suppression active for a short
   explicit window. A zero-timeout window can clear before the browser dispatches the synthetic
   label/input click after drag release, causing a duplicate toggle and mismatched state visuals.
+- KIS-14 direction: Switch thumb-size reduction is an off/rest effect, not an alternate selected
+  size. `switch.e3.scales.boxWidth` and `boxHeight` remain the normal and selected/on thumb size.
+  A future `effects.thumbSize.rest` contract should use the same responsive numeric shape as
+  `scales`, not percentages or ratios, and may specify width, height, or both. Height-only effects
+  must keep width intact and preserve vertical alignment. This is intended for circular-thumb
+  Switch designs; enabling it on iOS 26-style rounded-rectangle thumbs may look odd and that is an
+  expected result. Static `Switch` and `SwitchMotion` must both consume the same effect contract.
 
 ## Original Diagnosis
 

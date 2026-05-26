@@ -19,3 +19,68 @@ Rule: interaction keys under `selected:*` remain effects and stay inside the ele
 
 Practical implication for consumers: if a DS wants selected + animated corners, the component must be
 rendered with both `controlState={true}` and `radiusEffect={true}`.
+
+## Switch Thumb-Size Effect Direction
+
+The Switch thumb-size effect is a state-based geometry effect, not a replacement for the normal
+thumb scale contract.
+
+Normal Switch thumb geometry stays owned by `scales` on `switch.e3`:
+
+- `scales.boxWidth` and `scales.boxHeight` define the base thumb size.
+- The base thumb size is also the selected/on size.
+- The effect must not restate selected/on geometry just to preserve the base size.
+
+The effect exists only to describe an off/rest visual reduction. It should use the same responsive
+numeric contract shape as `scales`, not percentages or ratios:
+
+```ts
+effects: {
+  thumbSize: {
+    rest: {
+      boxWidth: {
+        's:md:1': 16
+      },
+      boxHeight: {
+        's:md:1': 16
+      }
+    }
+  }
+}
+```
+
+Rules:
+
+- `effects.thumbSize.rest` means the thumb is visually smaller while the Switch is off/resting.
+- `selected.rest` is intentionally absent because selected/on uses the normal `scales` size.
+- `rest` here means off/rest, not disabled. `disabled` still means unavailable and is a separate
+  interaction state.
+- Missing `boxWidth` means the effect does not change width.
+- Missing `boxHeight` means the effect does not change height.
+- Width and height must be independently expressible because some design systems shrink only one
+  axis.
+- The effect must support the same size-aware authoring model as scales, so values can vary by
+  `s:*` size tokens.
+- The effect must work for both React structural branches: static `Switch` and motion
+  `SwitchMotion`.
+
+This effect is primarily intended for Switch designs with circular thumbs. It can technically be
+enabled for designs such as iOS 26, where the on/default thumb may be a rounded rectangle instead
+of a circle, but the result can look intentionally odd. For example, a height-only off/rest effect
+on a rounded-rectangle thumb should keep the selected/on width intact while reducing height and
+preserving vertical alignment:
+
+```ts
+effects: {
+  thumbSize: {
+    rest: {
+      boxHeight: {
+        's:md:1': 16
+      }
+    }
+  }
+}
+```
+
+That behavior is expected. The effect should not infer a width change from a height change, and it
+should not reinterpret a rectangular thumb as a circular one.
