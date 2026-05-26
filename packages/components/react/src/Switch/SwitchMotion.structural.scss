@@ -1,13 +1,13 @@
 /*
  * Switch structural branch registry:
- * a = static
+ * b = motion
  */
 
 /*
  * element root / e1
  * Owns inline flow for the semantic input, visual track, thumb, and optional label.
  */
-.k-swt-e1-a {
+.k-swt-e1-b {
   --k-swt-dx: 1;
   --k-swt-tx: 0px;
   --k-swt-dur: var(--k-dur-int);
@@ -25,7 +25,7 @@
  * element root modifier 'a' / e1a
  * Moves the optional label before the visual control without changing DOM semantics.
  */
-.k-swt-e1-a.k-swt-e1a-a .k-swt-e4-a {
+.k-swt-e1-b.k-swt-e1a-b .k-swt-e4-b {
   order: -1;
 }
 
@@ -33,7 +33,7 @@
  * element root modifier 'b' / e1b
  * Uses the slow activation motion profile for compact switch thumbs.
  */
-.k-swt-e1-a.k-swt-e1b-a {
+.k-swt-e1-b.k-swt-e1b-b {
   --k-swt-dur: var(--k-dur-int-slow);
 }
 
@@ -41,7 +41,7 @@
  * element track / e2
  * Owns the visual switch rail and provides the measurement scope for thumb translation.
  */
-.k-swt-e2-a {
+.k-swt-e2-b {
   position: relative;
   display: flex;
   align-items: center;
@@ -64,7 +64,7 @@
  * element track / e2
  * Projects keyboard focus from the visually hidden native input to the rendered control.
  */
-.k-swt-e1-a.-f.-k.-a .k-swt-e2-a {
+.k-swt-e1-b.-f.-k.-a .k-swt-e2-b {
   outline-color: var(--k-focus-color);
   outline-offset: calc(var(--k-focus-offset) * 1px);
   outline-style: solid;
@@ -73,18 +73,18 @@
 
 /*
  * element thumb / e3
- * Moves inside the track using a runtime structural distance derived from generated geometry.
+ * Lets the runtime motion engine own transform and drag hit testing.
  */
-.k-swt-e3-a {
+.k-swt-e3-b {
   position: relative;
   z-index: 1;
   display: block;
   box-sizing: border-box;
   flex: 0 0 auto;
-  pointer-events: none;
-  transform: translateX(0);
+  pointer-events: auto;
+  touch-action: pan-y;
+  transform: none;
   transition:
-    transform var(--k-swt-dur) var(--k-ease-out),
     border-color var(--k-swt-dur) var(--k-ease-out),
     border-radius var(--k-swt-dur) var(--k-ease-out),
     color var(--k-swt-dur) var(--k-ease-out),
@@ -100,23 +100,15 @@
  * element thumb modifier 'a' / e3a
  * Derives rounded thumb corners from the track radius and block spacing.
  */
-.k-swt-e3a-a {
+.k-swt-e3a-b {
   border-radius: max(0px, calc(var(--k-bdr) - max(var(--k-pdt), var(--k-pdb))));
 }
 
 /*
- * element thumb / e3
- * Mirrors the persistent control state through the shared selected activator class.
+ * element root / e1
+ * Reverses local direction variables for right-to-left structural descendants.
  */
-.k-swt-e1-a.-s.-a .k-swt-e3-a {
-  transform: translateX(calc(var(--k-swt-tx) * var(--k-swt-dx)));
-}
-
-/*
- * element thumb / e3
- * Reverses inline movement in right-to-left contexts.
- */
-.k-swt-e1-a:dir(rtl) .k-swt-e3-a {
+.k-swt-e1-b:dir(rtl) {
   --k-swt-dx: -1;
 }
 
@@ -124,7 +116,7 @@
  * extra control side / x2
  * Groups optional control text with the rendered track as one visual flex item.
  */
-.k-swt-x2-a {
+.k-swt-x2-b {
   display: inline-flex;
   align-items: center;
   flex: 0 0 auto;
@@ -135,7 +127,7 @@
  * element label / e4
  * Keeps optional text label in normal inline flow while generated typography owns text visuals.
  */
-.k-swt-e4-a {
+.k-swt-e4-b {
   display: block;
   min-inline-size: 0;
   cursor: inherit;
@@ -145,7 +137,7 @@
  * element control text / e5
  * Provides optional visual on/off text next to the rendered control.
  */
-.k-swt-e5-a {
+.k-swt-e5-b {
   display: inline-flex;
   align-items: center;
   min-inline-size: 0;
@@ -154,10 +146,10 @@
 }
 
 /*
- * internal control-text parts / x3 and x4
- * Mirrors the persistent control state through the shared selected activator class.
+ * internal control-text part / x3
+ * Shows resting text until the selected activator is present.
  */
-.k-swt-x3-a {
+.k-swt-x3-b {
   display: inline;
 }
 
@@ -165,8 +157,8 @@
  * internal control-text part / x4
  * Hides selected text until the selected activator is present.
  */
-.k-swt-x4-a,
-.k-swt-e1-a.-s.-a .k-swt-x3-a {
+.k-swt-x4-b,
+.k-swt-e1-b.-s.-a .k-swt-x3-b {
   display: none;
 }
 
@@ -174,7 +166,7 @@
  * internal control-text part / x4
  * Reveals selected text while the selected activator is present.
  */
-.k-swt-e1-a.-s.-a .k-swt-x4-a {
+.k-swt-e1-b.-s.-a .k-swt-x4-b {
   display: inline;
 }
 
@@ -182,7 +174,7 @@
  * element root / e1
  * Mirrors non-interactive cursor state across visual slots because the input is visually hidden.
  */
-.k-swt-e1-a.-d.-a,
-.k-swt-e1-a.-r.-a {
+.k-swt-e1-b.-d.-a,
+.k-swt-e1-b.-r.-a {
   cursor: not-allowed;
 }

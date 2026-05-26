@@ -26,6 +26,7 @@ export const DEFAULT_SWITCH_VARIANT: SwitchVariant = 'standard';
 export const DEFAULT_SWITCH_MODE: SwitchMode = 'base';
 export const DEFAULT_SWITCH_LABEL_POSITION: SwitchLabelPosition = 'start';
 export const DEFAULT_SWITCH_CONTROL_TEXT_VISIBILITY: SwitchControlTextVisibility = 'none';
+type SwitchStructuralBranch = 'a' | 'b';
 
 export function join(...parts: Array<string | undefined | false | null>): string | undefined {
   const joined = parts.filter(Boolean).join(' ').trim();
@@ -112,6 +113,7 @@ export function resolveRadiusClassName(
 export function resolveSwitchClassNames(options: {
   elements: SwitchClassesMap;
   classNames: SwitchClassNames;
+  structuralBranch: SwitchStructuralBranch;
   scale: string;
   intent: SwitchIntent;
   emphasis: ComponentEmphasis | undefined;
@@ -122,21 +124,22 @@ export function resolveSwitchClassNames(options: {
   hasControlText: boolean;
 }): Required<SwitchClassNames> {
   const elements = options.elements;
+  const branch = options.structuralBranch;
 
   return {
     e1:
       join(
         'k-swt',
-        'k-swt-a',
-        'k-swt-e1-a',
-        options.labelPosition === 'start' ? 'k-swt-e1a-a' : '',
-        options.activationMotion === 'slow' ? 'k-swt-e1b-a' : '',
+        `k-swt-${branch}`,
+        `k-swt-e1-${branch}`,
+        options.labelPosition === 'start' ? `k-swt-e1a-${branch}` : '',
+        options.activationMotion === 'slow' ? `k-swt-e1b-${branch}` : '',
         elem(elements.e1, options),
         options.classNames.e1
       ) ?? '',
     e2:
       join(
-        'k-swt-e2-a',
+        `k-swt-e2-${branch}`,
         elem(elements.e2, options),
         resolveRadiusClassName(elements.e2, options.scale, options.radius),
         'k-trn',
@@ -144,19 +147,21 @@ export function resolveSwitchClassNames(options: {
       ) ?? '',
     e3:
       join(
-        'k-swt-e3-a',
+        `k-swt-e3-${branch}`,
         elem(elements.e3, options),
         options.radius === 'rounded'
-          ? 'k-swt-e3a-a'
+          ? `k-swt-e3a-${branch}`
           : resolveRadiusClassName(elements.e3, options.scale, options.radius),
         'k-trn',
         options.classNames.e3
       ) ?? '',
     e4: options.hasLabel
-      ? (join('k-swt-e4-a', elem(elements.e4, options), 'k-trn', options.classNames.e4) ?? '')
+      ? (join(`k-swt-e4-${branch}`, elem(elements.e4, options), 'k-trn', options.classNames.e4) ??
+        '')
       : (options.classNames.e4 ?? ''),
     e5: options.hasControlText
-      ? (join('k-swt-e5-a', elem(elements.e5, options), 'k-trn', options.classNames.e5) ?? '')
+      ? (join(`k-swt-e5-${branch}`, elem(elements.e5, options), 'k-trn', options.classNames.e5) ??
+        '')
       : (options.classNames.e5 ?? '')
   };
 }

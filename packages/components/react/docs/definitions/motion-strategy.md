@@ -47,6 +47,11 @@ Avoid adding a third public vocabulary such as `css` unless a component has a st
 transitions are part of the static path, not a separate engine category. The important distinction is
 whether the component uses a dedicated runtime motion engine, not whether CSS transitions exist.
 
+`motion` is Kiskadee vocabulary, not a dependency name. It means a component path that uses a
+dedicated animation or gesture runtime to own movement that CSS cannot own well. The implementation
+may use `motion/react` today, but public Kiskadee names should never imply that the project is
+coupled to that library.
+
 ## Default Rule
 
 New components should start with the static path when it can produce acceptable fidelity.
@@ -55,17 +60,63 @@ Add a motion path only after the static path is stable and a concrete behavior r
 keeps the first implementation smaller and prevents runtime animation from becoming the default
 answer for ordinary state transitions.
 
+When both paths become public, prefer separate components over a mode prop on the lightweight
+component:
+
+- `Component` is the canonical, lightweight static-path component;
+- `ComponentMotion` is the explicit runtime-motion component;
+- an optional lazy orchestrator may switch between the two for demos or consumers that need dynamic
+  selection, but it should be treated as a helper, not the canonical component.
+
+This naming intentionally biases usage toward the smaller default. Consumers who need drag,
+interruptible animation, spring behavior, or other runtime-owned movement can opt into the heavier
+component explicitly.
+
 ## Switch Direction
 
-The current Switch thumb movement is a static-path behavior: React measures the travel distance and
-CSS transitions the thumb between off and selected positions.
+The default Switch thumb movement is a static-path behavior: React measures the travel distance and
+CSS transitions the thumb between off and selected positions. This remains the default because the
+ordinary Switch path should stay lightweight.
 
-A future Switch motion path is justified if it adds behavior such as:
+Switch should expose this distinction as separate public components:
+
+- `Switch` is the lightweight static-path component;
+- `SwitchMotion` is the explicit runtime-motion component for drag, interruptible animation, and
+  spring-like movement.
+
+If a consumer or showcase needs to switch dynamically between static and motion behavior, use a
+separate lazy helper that renders `Switch` first and lazy-loads `SwitchMotion` only when needed. That
+helper is a convenience layer; it should not make `Switch` itself aware of the heavier motion path.
+
+Use the Switch motion path for behavior such as:
 
 - dragging the thumb to toggle the control,
 - interrupting and reversing the thumb animation from its current position during rapid clicks,
 - using spring-like motion instead of a fixed CSS transition.
 
-That motion path should not replace the default static path. It should be isolated behind an
-explicit implementation branch, and the structural CSS should use a root motion gate such as
-`k-swt-m` only when the runtime motion path is active.
+That motion path does not replace the default static path. It is isolated behind an explicit
+component boundary.
+
+Static and motion may also be separate structural CSS branches when their DOM, pointer behavior, or
+animation ownership would otherwise force one path to undo the other. For Switch, the intended
+structural branch registry is:
+
+```txt
+Switch
+    a = static
+    b = motion
+```
+
+That branch split is structural only. It does not mean `static` or `motion` should become schema
+variants or a `Switch` mode prop. Branch-specific selectors should carry the isolation, even if that
+duplicates structural CSS between `Switch` and `SwitchMotion`.
+
+`activationMotion`, `Switch`, and `SwitchMotion` are different layers:
+
+- `activationMotion` is a preset/schema timing profile for activation movement and CSS visual
+  transitions.
+- `Switch` is the lightweight component that may still use CSS transitions.
+- `SwitchMotion` is the explicit component that uses a dedicated runtime animation/gesture engine.
+- In `SwitchMotion`, CSS still uses `activationMotion` for non-transform visual transitions, while
+  horizontal thumb displacement maps the same `activationMotion` value to an internal runtime spring
+  profile.

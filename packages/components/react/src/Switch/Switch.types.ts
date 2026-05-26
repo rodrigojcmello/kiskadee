@@ -53,3 +53,5 @@ export type SwitchProps = Omit<
   mode?: SwitchMode;
   labelPosition?: SwitchLabelPosition;
 };
+
+export type SwitchMotionProps = SwitchProps;

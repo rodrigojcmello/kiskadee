@@ -32,6 +32,29 @@ owning project docs root:
   `-k` qualifier for keyboard-visible / highlighted focus. Highlighted focus should be represented
   as `-f.-k.-a`, not as a replacement for `-f`.
 
+## Current Status
+
+- Switch and SwitchMotion are now separate public component boundaries. `Switch` is the canonical
+  lightweight static component and no longer accepts a `motion` prop; `SwitchMotion` owns the
+  runtime animation and drag path.
+- CSS isolation uses separate structural branches, not public schema variants. For Switch,
+  `a = static` and `b = motion`; both paths may duplicate structural Sass so their selectors do not
+  depend on cascade order or root gates to undo each other.
+- Latest verification: `@kiskadee/react-components` build, showcase build, and browser check on
+  `/switch` confirming static branch `a`, motion branch `b`, no `.k-swt-m` dependency, runtime thumb
+  transform ownership, and LTR drag-to-off behavior.
+- Follow-up adjustment: the motion drag path now projects a temporary visual control state in the
+  styled Switch shell during drag when the thumb reaches either extremity. This keeps track/selected
+  visuals responsive before pointer release without calling persistent `onControlStateChange` while
+  the gesture is active. Persistent state still commits on release.
+- Follow-up adjustment: the motion thumb now treats scale/geometry changes as position rebasing.
+  When `thumbTranslation` or inline direction changes without a control-state change, the motion
+  value is set directly to the new selected/off target so the thumb stays anchored after a Scale
+  change, including after drag.
+- Follow-up adjustment: the drag path keeps the post-drag click suppression active for a short
+  explicit window. A zero-timeout window can clear before the browser dispatches the synthetic
+  label/input click after drag release, causing a duplicate toggle and mismatched state visuals.
+
 ## Original Diagnosis
 
 Switch projected the old, overloaded Kiskadee focus marker too broadly:
@@ -388,10 +411,30 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
   uses the captured `24 x 24` selected/default thumb size, and documents unsupported Figma details
   such as the `16 x 16` off thumb, `28 x 28` pressed thumb, `40 x 40` state layer, `48 x 48` target,
   focus indicator, and icons.
-- Switch motion discussion remains deferred. The current Switch should be treated as the default
-  `static` path even though it uses CSS transitions: `static` means no dedicated animation engine,
-  not zero animation. A future `motion` path would be justified by drag support, interruptible
-  retargeting on rapid clicks, and spring/runtime animation behavior.
+- Switch should move from a single public API with internal renderer paths to separate public
+  component boundaries: `Switch` for the default lightweight CSS-transition path and `SwitchMotion`
+  for the runtime animation/gesture path.
+- `motion` remains valid Kiskadee vocabulary, but it is a design-system concept, not a dependency
+  name. It means a dedicated runtime animation or gesture path; it does not canonically bind
+  Kiskadee to `motion/react`.
+- A lazy orchestrator can render `Switch` first and lazy-load `SwitchMotion` when dynamic selection
+  is needed. This should be treated as a helper for showcase/demos/advanced consumers, not as the
+  canonical component contract.
+- Styled `SwitchMotion` resolves `controlState` with `useControlState` from
+  `@kiskadee/react-headless` and passes a controlled `controlState` back into `HeadlessSwitch.Root`.
+  This keeps click and keyboard behavior in the native input/headless layer while allowing the
+  motion thumb runtime to call the same setter on drag release.
+- `SwitchMotion` enables drag as part of the runtime-motion path. Drag is blocked through the same
+  `disabled` and `readOnly` guards as click/keyboard state changes.
+- The previous lazy-renderer shape used the structural gate `k-swt-m` only after the lazy module had
+  loaded. That shape is now superseded by branch-owned structural CSS: static uses branch `a`, and
+  motion uses branch `b`.
+- In the motion branch, structural CSS lets the runtime own thumb `transform` and removes the static
+  transform transition from the thumb. Generated visual transitions still apply to colors, radius,
+  shadows, and related CSS variables.
+- `activationMotion` remains a schema/preset timing profile and does not select the animation
+  engine. In the motion path, it affects non-transform visual CSS transitions and also maps to an
+  internal runtime spring profile for horizontal thumb displacement.
 - `packages/components/react/docs/definitions/motion-strategy.md` now documents the broader
   static-vs-motion vocabulary. `docs/definitions/new-component-starting-definition.md` points to it
   so future components start lightweight and only add runtime motion when behavior requires it.
@@ -405,8 +448,10 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
 - `packages/components/react/src/state-projection/useStateProjection.ts`
 - `packages/components/react/src/Switch/Switch.class-names.ts`
 - `packages/components/react/src/Switch/Switch.tsx`
+- `packages/components/react/src/Switch/SwitchMotion.tsx`
 - `packages/components/react/src/Switch/Switch.types.ts`
 - `packages/components/react/src/Switch/Switch.structural.scss`
+- `packages/components/react/src/Switch/SwitchMotion.structural.scss`
 - `packages/components/react/src/contexts/KiskadeeContext.tsx`
 - `packages/components/react/docs/definitions/schema-option-overrides.md`
 - `packages/components/react/docs/definitions/switch/switch-geometry.md`

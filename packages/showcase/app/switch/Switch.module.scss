@@ -67,13 +67,17 @@
 }
 
 .interactivePanel :global(.k-swt-e1-a),
-.statesGrid .stateControl :global(.k-swt-e1-a) {
+.interactivePanel :global(.k-swt-e1-b),
+.statesGrid .stateControl :global(.k-swt-e1-a),
+.statesGrid .stateControl :global(.k-swt-e1-b) {
   inline-size: 100%;
   justify-content: space-between;
 }
 
-.interactivePanel :global(.k-swt-x2),
-.statesGrid .stateControl :global(.k-swt-x2) {
+.interactivePanel :global(.k-swt-x2-a),
+.interactivePanel :global(.k-swt-x2-b),
+.statesGrid .stateControl :global(.k-swt-x2-a),
+.statesGrid .stateControl :global(.k-swt-x2-b) {
   margin-inline-start: auto;
 }
 

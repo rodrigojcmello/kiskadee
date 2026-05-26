@@ -117,13 +117,13 @@ Use this for nodes that directly represent schema elements in shared structural 
 Important:
 
 - `k-<cmp>-e<n>` is the shared base element shape,
-- it may be styled in a shared structural file or repeated across variant-local files,
-- it must stay genuinely shared across all variants for that component.
+- it may be styled in a shared structural file or repeated across branch-local files,
+- it must stay genuinely shared across all structural branches for that component.
 
 Practical rule:
 
 - the absence of a component-level shared Sass file does not forbid unsuffixed `e<n>` selectors,
-- but their ownership must still be intentionally shared across variants rather than inherited by
+- but their ownership must still be intentionally shared across branches rather than inherited by
   accident from copy-pasted rules.
 
 ### 5. Shared element modifier
@@ -155,11 +155,20 @@ Rules:
 - assign letters in local alphabetical order,
 - keep this shape restricted to common structural CSS,
 - use this shape for modifiers, not for extra DOM layers,
-- if the selector is not truly shared, it must be specialized by variant.
+- if the selector is not truly shared, it must be specialized by branch.
 
-### 6. Variant letter registry
+### 6. Structural branch letter registry
 
-Variant letters are intentionally compact and local to each component family.
+Structural branch letters are intentionally compact and local to each component family.
+
+A branch letter may represent:
+
+- a public visual `variant`,
+- a compound branch such as `variant + mode`,
+- or an implementation boundary such as `static + motion`.
+
+The branch letter is a structural CSS boundary. It does not automatically create or imply a public
+schema variant, component prop, or generated artifact dimension.
 
 Example:
 
@@ -178,7 +187,7 @@ Rules:
 - letters are component-local, not global across the framework,
 - the registry must be documented near the component structural CSS or in component-local
   documentation,
-- new variants append in alphabetical order.
+- new branches append in alphabetical order.
 
 Some component families need more than one structural branch axis, such as `variant + mode`.
 
@@ -201,37 +210,58 @@ In those cases:
 - structural selectors continue to use the same suffix position even when the registry entry maps to
   `variant + mode`.
 
-### 7. Variant-specialized element
+Runtime model can also be a structural branch axis when it changes DOM ownership, pointer behavior,
+or the animation engine enough that shared selectors would need to undo each other.
+
+Example:
+
+```txt
+Switch
+    a = static
+    b = motion
+```
+
+In this case:
+
+- `static` and `motion` are implementation paths, not public schema variants,
+- `Switch` and `SwitchMotion` may share the semantic component contract while using different
+  structural branches,
+- branch-specific selectors such as `k-swt-e3-a` and `k-swt-e3-b` are preferred over shared element
+  selectors plus root gates when the two paths should not cascade into each other,
+- duplicated structural CSS is acceptable when it keeps the branch boundary explicit.
+
+### 7. Branch-specialized element
 
 Use:
 
 ```txt
-k-<cmp>-e<n>-<variant>
+k-<cmp>-e<n>-<branch>
 ```
 
 Example:
 
 - `k-tab-e2-a`
 
-Use this when a shared schema element needs a selector that is safely restricted to one variant.
+Use this when a shared schema element needs a selector that is safely restricted to one structural
+branch.
 
 If a component uses a compound branch registry such as `variant + mode`, the trailing suffix still
 uses the concrete branch letter selected by that registry.
 
-This is the preferred base for variant-owned structural rules.
+This is the preferred base for branch-owned structural rules.
 
-This shape is preferred over root-level variant scoping such as:
+This shape is preferred over root-level branch scoping such as:
 
 - `.k-tab-a .k-tab-e2`
 
 because it keeps the selector flatter and makes the element ownership explicit.
 
-### 8. Variant-specialized element modifier
+### 8. Branch-specialized element modifier
 
 Use:
 
 ```txt
-k-<cmp>-e<n><a-z>-<variant>
+k-<cmp>-e<n><a-z>-<branch>
 ```
 
 Examples:
@@ -242,8 +272,8 @@ Examples:
 This is the preferred pattern when:
 
 - a structural modifier belongs to one schema element,
-- and it should only exist for one variant,
-- or a structural modifier must not leak across variants.
+- and it should only exist for one structural branch,
+- or a structural modifier must not leak across branches.
 
 If a component uses a compound branch registry such as `variant + mode`, the trailing suffix still
 uses the concrete branch letter selected by that registry.
@@ -252,9 +282,9 @@ Rules:
 
 - use one letter only,
 - start at `a` and continue in local alphabetical order without gaps for that modifier family,
-- keep the modifier letter local to that element family before the trailing variant suffix,
-- if the first variant-local modifier on the bar is distributed width, prefer `e1a-<variant>`,
-- if a second variant-local modifier is added later to the same element family, continue with `b`,
+- keep the modifier letter local to that element family before the trailing branch suffix,
+- if the first branch-local modifier on the bar is distributed width, prefer `e1a-<branch>`,
+- if a second branch-local modifier is added later to the same element family, continue with `b`,
 - do not skip to an arbitrary letter such as `h` unless `a` through the previous letter already
   exist in that same modifier family.
 
@@ -262,7 +292,7 @@ This pattern is preferred over deeper selectors such as:
 
 - `.k-tab-a .k-tab-e2a`
 
-because it reduces selector depth and prevents style leakage across variants.
+because it reduces selector depth and prevents style leakage across structural branches.
 
 Do not use this shape for extra DOM layers. Use `x<n>` instead.
 
@@ -299,19 +329,19 @@ Do not use semantic helper names such as:
 
 Important:
 
-- shared extras must stay truly shared across all variants,
-- if an extra has variant-specific behavior or geometry, it must be specialized by variant.
-- if a component family no longer keeps shared structural Sass, prefer variant-specialized extras
+- shared extras must stay truly shared across all branches,
+- if an extra has branch-specific behavior or geometry, it must be specialized by branch.
+- if a component family no longer keeps shared structural Sass, prefer branch-specialized extras
   by default even when the DOM role is conceptually shared.
-- use unsuffixed `x<n>` only when one selector is intentionally reused unchanged across variants.
+- use unsuffixed `x<n>` only when one selector is intentionally reused unchanged across branches.
 
-### 10. Variant-specialized extra structural node
+### 10. Branch-specialized extra structural node
 
 Use:
 
 ```txt
-k-<cmp>-x<n>-<variant>
-k-<cmp>-x<n><a-z>-<variant>
+k-<cmp>-x<n>-<branch>
+k-<cmp>-x<n><a-z>-<branch>
 ```
 
 Examples:
@@ -322,12 +352,12 @@ Examples:
 Use this only when:
 
 - the extra node is not a schema element,
-- and it still needs to be isolated to one variant,
-- or a modifier on that extra node must stay variant-local.
+- and it still needs to be isolated to one structural branch,
+- or a modifier on that extra node must stay branch-local.
 
 Practical rule:
 
-- when structural Sass is authored only in variant files, `x<n>-<variant>` is usually the correct
+- when structural Sass is authored only in branch files, `x<n>-<branch>` is usually the correct
   default for extra nodes that need styling.
 
 ### 11. Component runtime state
@@ -346,24 +376,27 @@ Use this only for runtime-controlled structural states that:
 
 - are applied at component root scope,
 - gate optional structural behavior,
-- and do not belong to one schema element.
+- do not belong to one schema element,
+- and are not stable branch ownership.
 
 Current canonical state suffixes:
 
-- `m` = motion
+- `m` = runtime motion gate
 
 Important:
 
 - `k-<cmp>-m` is a runtime state gate, not an element class,
 - it exists to activate motion-specific structural CSS only when motion runtime is actually active,
-- do not use this shape for ordinary element styling or variant ownership.
+- do not use this shape for ordinary element styling or branch ownership,
+- when `static` and `motion` are separate component boundaries, prefer structural branch selectors
+  such as `k-<cmp>-e<n>-a` and `k-<cmp>-e<n>-b` over a root motion gate.
 
 ## Selector scoping rules
 
 Prefer selectors that:
 
 - are scoped by component,
-- are scoped by variant only when needed,
+- are scoped by branch only when needed,
 - and are no deeper than necessary.
 
 Good:
@@ -377,9 +410,9 @@ Avoid:
 
 - selectors that repeat the full DOM path,
 - selectors that depend on semantic helper names,
-- selectors that rely on broad unscoped shared element modifiers when a variant-specific class is
+- selectors that rely on broad unscoped shared element modifiers when a branch-specific class is
   available,
-- root-level variant scoping when a suffix form can express the same ownership.
+- root-level branch scoping when a suffix form can express the same ownership.
 
 Bad:
 
@@ -721,18 +754,19 @@ Example:
 
 Do not use runtime structural variables to relay schema tokens that already exist as emitted variables.
 
-## Shared vs variant-specific structure
+## Shared vs branch-specific structure
 
 For a component family such as Tabs:
 
 - shared structure stays in shared files,
-- variant-specific structure stays in variant files,
-- variant letters define the boundary between those layers.
+- branch-specific structure stays in branch files,
+- branch letters define the boundary between those layers.
 
 Practical rule:
 
-- if the rule applies to every variant, keep it shared,
-- if the rule exists because one variant has unique geometry or DOM needs, keep it variant-specific.
+- if the rule applies to every structural branch, keep it shared,
+- if the rule exists because one branch has unique geometry, DOM, runtime, or pointer needs, keep it
+  branch-specific.
 
 ## Normative direction
 

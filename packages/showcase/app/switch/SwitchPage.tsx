@@ -1,7 +1,7 @@
 'use client';
 
 import type { ComponentEmphasis, ElementSizeValue, RadiusMode, SwitchIntent } from '@kiskadee/core';
-import { Switch, useKiskadee, useShowcase } from '@kiskadee/react-components';
+import { Switch, SwitchMotion, useKiskadee, useShowcase } from '@kiskadee/react-components';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Select } from '@/k-components';
@@ -27,6 +27,13 @@ const emphasisOptions: Array<{ value: ComponentEmphasis; label: string }> = [
   { value: 'high', label: 'High' },
   { value: 'low', label: 'Low' },
   { value: 'lowest', label: 'Lowest' }
+];
+
+type SwitchMotionMode = 'static' | 'motion';
+
+const switchMotionOptions: Array<{ value: SwitchMotionMode; label: string }> = [
+  { value: 'static', label: 'Static' },
+  { value: 'motion', label: 'Motion' }
 ];
 
 const switchIntentLabels: Record<string, string> = {
@@ -57,6 +64,8 @@ export default function SwitchPage() {
   const [radius, setRadius] = useState<RadiusMode>('rounded');
   const [intent, setIntent] = useState<SwitchIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
+  const [switchMotion, setSwitchMotion] = useState<SwitchMotionMode>('static');
+  const SwitchComponent = switchMotion === 'motion' ? SwitchMotion : Switch;
   const switchMeta = manifest?.components?.switch;
   const isSwitchAvailable = Boolean(switchMeta);
   const defaultRadius = global?.components?.switch?.options?.radius ?? global?.radius ?? 'rounded';
@@ -188,6 +197,16 @@ export default function SwitchPage() {
             }}
             disabled={!isSwitchAvailable || emphasisSelectOptions.length <= 1}
           />
+          <Select
+            label="Motion"
+            width={160}
+            options={switchMotionOptions}
+            value={switchMotion}
+            onValueChange={(value) => {
+              setSwitchMotion(value as SwitchMotionMode);
+            }}
+            disabled={!isSwitchAvailable}
+          />
         </div>
       </header>
 
@@ -200,7 +219,7 @@ export default function SwitchPage() {
           <section className={s.section}>
             <h3>Interactive</h3>
             <div className={s.interactivePanel}>
-              <Switch
+              <SwitchComponent
                 id="switch-notifications"
                 label="Notifications"
                 controlText={switchControlText}
@@ -218,7 +237,7 @@ export default function SwitchPage() {
             <h3>States</h3>
             <div className={`${s.stateGrid} ${s.statesGrid}`}>
               <StateTile title="Rest">
-                <Switch
+                <SwitchComponent
                   id="switch-state-rest"
                   label="Rest"
                   controlText={switchControlText}
@@ -231,7 +250,7 @@ export default function SwitchPage() {
                 />
               </StateTile>
               <StateTile title="Selected">
-                <Switch
+                <SwitchComponent
                   id="switch-state-selected"
                   label="Selected"
                   controlText={switchControlText}
@@ -244,7 +263,7 @@ export default function SwitchPage() {
                 />
               </StateTile>
               <StateTile title="Hover">
-                <Switch
+                <SwitchComponent
                   id="switch-state-hover"
                   label="Hover"
                   controlText={switchControlText}
@@ -258,7 +277,7 @@ export default function SwitchPage() {
                 />
               </StateTile>
               <StateTile title="Focus">
-                <Switch
+                <SwitchComponent
                   id="switch-state-focus"
                   label="Focus"
                   controlText={switchControlText}
@@ -272,7 +291,7 @@ export default function SwitchPage() {
                 />
               </StateTile>
               <StateTile title="Selected Hover">
-                <Switch
+                <SwitchComponent
                   id="switch-state-selected-hover"
                   label="Selected hover"
                   controlText={switchControlText}
@@ -286,7 +305,7 @@ export default function SwitchPage() {
                 />
               </StateTile>
               <StateTile title="Selected Focus">
-                <Switch
+                <SwitchComponent
                   id="switch-state-selected-focus"
                   label="Selected focus"
                   controlText={switchControlText}
@@ -306,7 +325,7 @@ export default function SwitchPage() {
             <h3>Disabled</h3>
             <div className={s.stateGrid}>
               <StateTile title="Disabled">
-                <Switch
+                <SwitchComponent
                   id="switch-disabled-off"
                   label="Unavailable"
                   controlText={switchControlText}
@@ -319,7 +338,7 @@ export default function SwitchPage() {
                 />
               </StateTile>
               <StateTile title="Selected Disabled">
-                <Switch
+                <SwitchComponent
                   id="switch-disabled-selected"
                   label="Locked on"
                   controlText={switchControlText}
@@ -338,7 +357,7 @@ export default function SwitchPage() {
             <h3>Labels</h3>
             <div className={s.stateGrid}>
               <StateTile title="Visible Label">
-                <Switch
+                <SwitchComponent
                   id="switch-label-start"
                   label="Airplane mode"
                   controlText={switchControlText}
@@ -351,7 +370,7 @@ export default function SwitchPage() {
                 />
               </StateTile>
               <StateTile title="No Visible Label">
-                <Switch
+                <SwitchComponent
                   id="switch-label-hidden"
                   inputProps={{ 'aria-label': 'No visible label switch' }}
                   controlText={switchControlText}

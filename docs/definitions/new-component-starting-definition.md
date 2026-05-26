@@ -277,7 +277,7 @@ Ask these questions before adding more surface area:
 - Does the component need modes beyond `base`?
 - Does the component need motion or transition behavior?
 - Can CSS own that motion, or does React need to coordinate measurement, layout, or state?
-- Should the API offer both CSS-only and runtime-motion paths, as `Tabs` does?
+- Should the API offer both lightweight static and runtime-motion components?
 - Which generated attributes should each element support?
 - Which logic belongs in the headless primitive?
 - Which logic belongs in the styled React component?
@@ -287,7 +287,10 @@ For motion decisions, use `static` and `motion` as the default vocabulary. `stat
 lightweight path without a dedicated animation engine; it may still use CSS transitions or direct
 runtime measurement. `motion` means a runtime animation or gesture path, usually justified by
 interruptible movement, spring behavior, drag, or other behavior CSS transitions cannot own well.
-See `packages/components/react/docs/definitions/motion-strategy.md`.
+When both paths become public, prefer `Component` for the lightweight static path and
+`ComponentMotion` for the explicit runtime-motion path. A lazy orchestrator may exist as a helper for
+dynamic switching, but it should not be the canonical component contract. See
+`packages/components/react/docs/definitions/motion-strategy.md`.
 
 When extending a component after the first version, align the supported attributes per element before
 changing the schema. Each `e<n>` slot should expose only the attributes that match its real job.

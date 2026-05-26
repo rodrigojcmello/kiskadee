@@ -19,9 +19,9 @@ import {
 } from './Switch.class-names.ts';
 import type { SwitchProps, SwitchVariantClassesMap } from './Switch.types.ts';
 
-const SWITCH_CONTROL_SIDE_CLASS_NAME = 'k-swt-x2';
-const SWITCH_CONTROL_TEXT_OFF_CLASS_NAME = 'k-swt-x3';
-const SWITCH_CONTROL_TEXT_ON_CLASS_NAME = 'k-swt-x4';
+const SWITCH_CONTROL_SIDE_CLASS_NAME = 'k-swt-x2-a';
+const SWITCH_CONTROL_TEXT_OFF_CLASS_NAME = 'k-swt-x3-a';
+const SWITCH_CONTROL_TEXT_ON_CLASS_NAME = 'k-swt-x4-a';
 const SWITCH_CONTROL_TEXT_LARGE_QUERY = `(min-width: ${breakpoints['bp:lg:1']}px)`;
 
 function parsePixelValue(value: string): number {
@@ -153,6 +153,7 @@ function SwitchRoot(props: SwitchProps) {
           ...classNames,
           e1: join(classNames.e1, className)
         },
+        structuralBranch: 'a',
         scale,
         intent,
         emphasis,
