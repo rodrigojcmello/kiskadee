@@ -40,6 +40,10 @@ owning project docs root:
 - CSS isolation uses separate structural branches, not public schema variants. For Switch,
   `a = static` and `b = motion`; both paths may duplicate structural Sass so their selectors do not
   depend on cascade order or root gates to undo each other.
+- Structural selector cleanup now relies on branch-specific element modifier classes such as
+  `k-swt-e1a-a` and `k-swt-e1b-b` without repeating the root class in the same selector. Generic
+  state activators still stay root-scoped. The static branch keeps RTL movement through root-owned
+  `--k-swt-dx`; the motion branch dropped that CSS variable because runtime motion owns direction.
 - Latest verification: `@kiskadee/react-components` build, showcase build, and browser check on
   `/switch` confirming static branch `a`, motion branch `b`, no `.k-swt-m` dependency, runtime thumb
   transform ownership, and LTR drag-to-off behavior.

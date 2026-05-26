@@ -25,7 +25,7 @@
  * element root modifier 'a' / e1a
  * Moves the optional label before the visual control without changing DOM semantics.
  */
-.k-swt-e1-a.k-swt-e1a-a .k-swt-e4-a {
+.k-swt-e1a-a .k-swt-e4-a {
   order: -1;
 }
 
@@ -33,7 +33,7 @@
  * element root modifier 'b' / e1b
  * Uses the slow activation motion profile for compact switch thumbs.
  */
-.k-swt-e1-a.k-swt-e1b-a {
+.k-swt-e1b-a {
   --k-swt-dur: var(--k-dur-int-slow);
 }
 
@@ -113,10 +113,10 @@
 }
 
 /*
- * element thumb / e3
- * Reverses inline movement in right-to-left contexts.
+ * element root / e1
+ * Reverses inherited inline movement for right-to-left static geometry.
  */
-.k-swt-e1-a:dir(rtl) .k-swt-e3-a {
+.k-swt-e1-a:dir(rtl) {
   --k-swt-dx: -1;
 }
 

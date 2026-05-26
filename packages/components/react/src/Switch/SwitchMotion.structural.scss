@@ -8,7 +8,6 @@
  * Owns inline flow for the semantic input, visual track, thumb, and optional label.
  */
 .k-swt-e1-b {
-  --k-swt-dx: 1;
   --k-swt-tx: 0px;
   --k-swt-dur: var(--k-dur-int);
 
@@ -25,7 +24,7 @@
  * element root modifier 'a' / e1a
  * Moves the optional label before the visual control without changing DOM semantics.
  */
-.k-swt-e1-b.k-swt-e1a-b .k-swt-e4-b {
+.k-swt-e1a-b .k-swt-e4-b {
   order: -1;
 }
 
@@ -33,7 +32,7 @@
  * element root modifier 'b' / e1b
  * Uses the slow activation motion profile for compact switch thumbs.
  */
-.k-swt-e1-b.k-swt-e1b-b {
+.k-swt-e1b-b {
   --k-swt-dur: var(--k-dur-int-slow);
 }
 
@@ -102,14 +101,6 @@
  */
 .k-swt-e3a-b {
   border-radius: max(0px, calc(var(--k-bdr) - max(var(--k-pdt), var(--k-pdb))));
-}
-
-/*
- * element root / e1
- * Reverses local direction variables for right-to-left structural descendants.
- */
-.k-swt-e1-b:dir(rtl) {
-  --k-swt-dx: -1;
 }
 
 /*
