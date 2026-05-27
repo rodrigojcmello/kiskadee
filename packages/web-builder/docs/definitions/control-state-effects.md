@@ -63,6 +63,18 @@ Rules:
   `s:*` size tokens.
 - The effect must work for both React structural branches: static `Switch` and motion
   `SwitchMotion`.
+- Generated artifacts store the Switch thumb-size effect in the `e.ts` bucket. The bucket is
+  size-aware, so consumers should resolve `all` plus the current size key when present.
+- Web CSS emits the effect as an off/rest selector, for example:
+
+```css
+.k-swt:not(.-s) .<thumb-size-class> {
+  width: 16px;
+}
+```
+
+The selector intentionally uses the root selected activator as the gate. Selected/on uses the normal
+thumb size from `scales`, so no selected effect class is needed.
 
 This effect is primarily intended for Switch designs with circular thumbs. It can technically be
 enabled for designs such as iOS 26, where the on/default thumb may be a rounded rectangle instead

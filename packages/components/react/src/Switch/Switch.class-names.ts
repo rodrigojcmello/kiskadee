@@ -3,6 +3,7 @@ import {
   type ColorClasses,
   type ComponentEmphasis,
   componentEmphasisBuckets,
+  type EffectClassBucketJSON,
   type RadiusMode,
   type SwitchActivationMotion,
   type SwitchControlTextVisibility,
@@ -110,6 +111,49 @@ export function resolveRadiusClassName(
   return join(all, byScale) ?? '';
 }
 
+function resolveEffectBucketClassName(
+  bucket: EffectClassBucketJSON | undefined,
+  scale: string
+): string {
+  if (!bucket) return '';
+  if (typeof bucket === 'string') return bucket;
+
+  const scaleKey = normalizeScaleKey(scale);
+  return join(bucket.all, bucket[scaleKey]) ?? '';
+}
+
+export function hasSwitchThumbSizeEffect(
+  element: ClassNameByElementJSON | undefined,
+  scale: string
+): boolean {
+  return resolveSwitchThumbSizeEffectClassName(element, scale).length > 0;
+}
+
+export function resolveSwitchThumbSizeEffectClassName(
+  element: ClassNameByElementJSON | undefined,
+  scale: string
+): string {
+  return resolveEffectBucketClassName(element?.e?.ts, scale);
+}
+
+function resolveScaleClassName(element: ClassNameByElementJSON | undefined, scale: string): string {
+  if (!element) return '';
+  const scaleKey = normalizeScaleKey(scale);
+  return join(element.s?.all, element.s?.[scaleKey]) ?? '';
+}
+
+function resolveVisualClassName(
+  element: ClassNameByElementJSON | undefined,
+  options: {
+    scale: string;
+    intent: SwitchIntent;
+    emphasis: ComponentEmphasis | undefined;
+  }
+): string {
+  if (!element) return '';
+  return join(element.d, resolveIntentClasses(element, options.intent, options.emphasis)) ?? '';
+}
+
 export function resolveSwitchClassNames(options: {
   elements: SwitchClassesMap;
   classNames: SwitchClassNames;
@@ -163,5 +207,44 @@ export function resolveSwitchClassNames(options: {
       ? (join(`k-swt-e5-${branch}`, elem(elements.e5, options), 'k-trn', options.classNames.e5) ??
         '')
       : (options.classNames.e5 ?? '')
+  };
+}
+
+export function resolveSwitchThumbSizeClassNames(options: {
+  elements: SwitchClassesMap;
+  classNames: SwitchClassNames;
+  structuralBranch: SwitchStructuralBranch;
+  scale: string;
+  intent: SwitchIntent;
+  emphasis: ComponentEmphasis | undefined;
+  radius: RadiusMode;
+  activationMotion: SwitchActivationMotion;
+  labelPosition: SwitchLabelPosition;
+  hasLabel: boolean;
+  hasControlText: boolean;
+}): Required<SwitchClassNames> & { x5: string } {
+  const base = resolveSwitchClassNames(options);
+  const elements = options.elements;
+  const branch = options.structuralBranch;
+
+  return {
+    ...base,
+    e3:
+      join(
+        `k-swt-e3-${branch}`,
+        resolveScaleClassName(elements.e3, options.scale),
+        'k-trn',
+        options.classNames.e3
+      ) ?? '',
+    x5:
+      join(
+        `k-swt-x5-${branch}`,
+        resolveVisualClassName(elements.e3, options),
+        options.radius === 'rounded'
+          ? `k-swt-e3a-${branch}`
+          : resolveRadiusClassName(elements.e3, options.scale, options.radius),
+        resolveSwitchThumbSizeEffectClassName(elements.e3, options.scale),
+        'k-trn'
+      ) ?? ''
   };
 }

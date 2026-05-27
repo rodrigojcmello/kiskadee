@@ -69,6 +69,12 @@ owning project docs root:
   `packages/components/react/docs/definitions/effect-runtime-strategy.md`: effects should stay
   modular, lazy when they add runtime/DOM cost, and split into separate static and motion lazy
   modules when those paths own different DOM, measurement, transform, drag, or animation concerns.
+- KIS-14 implementation update: `effects.thumbSize.rest` is now planned/implemented as a
+  Switch-only `e.ts` effect bucket generated from `thumbSizeBoxWidth` and `thumbSizeBoxHeight`
+  style keys. React consumes it through separate lazy modules, `SwitchWithThumbSize` and
+  `SwitchMotionWithThumbSize`, where the external `e3` remains the stable measured carrier and an
+  internal `x5` visual receives colors, radius, and the thumb-size effect classes. Material 3 opts
+  into a `16 x 16` off/rest visual thumb at `s:md:1`; iOS and Fluent remain unchanged.
 
 ## Original Diagnosis
 

@@ -1,0 +1,31 @@
+/*
+ * Switch thumb-size effect structural branch registry:
+ * b = motion
+ */
+
+/*
+ * internal thumb visual / x5
+ * Keeps effect-driven visual geometry centered inside the stable measured and draggable carrier.
+ */
+.k-swt-x5-b {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition:
+    width var(--k-swt-dur) var(--k-ease-out),
+    height var(--k-swt-dur) var(--k-ease-out),
+    border-color var(--k-swt-dur) var(--k-ease-out),
+    border-radius var(--k-swt-dur) var(--k-ease-out),
+    color var(--k-swt-dur) var(--k-ease-out),
+    box-shadow var(--k-swt-dur) var(--k-ease-out),
+    --k-bg0 var(--k-swt-dur) var(--k-ease-out),
+    --k-bg1 var(--k-swt-dur) var(--k-ease-out),
+    --k-bg2 var(--k-swt-dur) var(--k-ease-out),
+    background-color var(--k-swt-dur) var(--k-ease-out);
+}

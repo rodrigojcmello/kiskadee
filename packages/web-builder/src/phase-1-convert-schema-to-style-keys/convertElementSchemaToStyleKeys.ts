@@ -11,7 +11,8 @@ import type {
   ScaleSchema,
   Schema,
   StyleKeyByElement,
-  StyleKeysByInteractionState
+  StyleKeysByInteractionState,
+  ThumbSizeEffectSchema
 } from '@kiskadee/core';
 import { buildStyleKey, deepUpdate } from '../utils/index.ts';
 import {
@@ -23,6 +24,7 @@ import { convertElementDecorationsToStyleKeys } from './decoration/convertElemen
 import { convertElementBorderRadiusToStyleKeys } from './effects/convertElementBorderRadiusToStyleKeys.ts';
 import { convertElementRippleToStyleKeys } from './effects/convertElementRippleToStyleKeys.ts';
 import { convertElementShadowToStyleKeys } from './effects/convertElementShadowToStyleKeys.ts';
+import { convertElementThumbSizeToStyleKeys } from './effects/convertElementThumbSizeToStyleKeys.ts';
 import {
   convertElementScalesToStyleKeys,
   type ScaleValue
@@ -293,6 +295,15 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
             const brMap = convertElementBorderRadiusToStyleKeys(square, 'borderRadiusSquare');
             appendEffectMap(brMap);
           }
+        }
+        if (
+          element.effects.thumbSize &&
+          metadataScope.componentName === 'switch' &&
+          metadataScope.elementName === 'e3'
+        ) {
+          const thumbSize: ThumbSizeEffectSchema = element.effects.thumbSize;
+          const thumbSizeMap = convertElementThumbSizeToStyleKeys(thumbSize);
+          appendEffectMap(thumbSizeMap);
         }
         if (Object.keys(effectsMap).length > 0) {
           el.effects = effectsMap;

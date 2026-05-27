@@ -79,5 +79,16 @@ This prevents the off/rest visual reduction from changing the measured draggable
 When `thumbSize` is absent, neither Switch path should render the internal visual node or load the
 thumb-size effect module.
 
+React resolves the generated `e.ts` bucket before choosing a path:
+
+- without `e.ts` for the current size, `Switch` renders `SwitchCore`;
+- with `e.ts`, `Switch` lazy-loads `SwitchWithThumbSize`;
+- without `e.ts` for the current size, `SwitchMotion` renders its core motion path;
+- with `e.ts`, `SwitchMotion` lazy-loads `SwitchMotionWithThumbSize`.
+
+The carrier keeps `classNames.e3` so the existing escape hatch remains attached to the public thumb
+element. The internal visual receives generated visual classes, radius classes, and the `e.ts`
+classes.
+
 For the schema and generated artifact side of control-state effects, see
 [`control-state-effects.md`](../../../../web-builder/docs/definitions/control-state-effects.md).

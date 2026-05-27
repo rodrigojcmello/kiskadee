@@ -1,15 +1,11 @@
-import './SwitchMotion.structural.css';
+import './SwitchMotionWithThumbSize.structural.css';
 import { breakpoints, type SwitchActivationMotion } from '@kiskadee/core';
 import { HeadlessSwitch, useControlState } from '@kiskadee/react-headless';
 import { animate, motion, useMotionValue } from 'motion/react';
 import {
-  type ComponentType,
-  type LazyExoticComponent,
   type MouseEvent,
-  lazy,
   memo,
   type RefObject,
-  Suspense,
   useCallback,
   useEffect,
   useMemo,
@@ -28,17 +24,13 @@ import {
   DEFAULT_SWITCH_RADIUS,
   DEFAULT_SWITCH_SCALE,
   DEFAULT_SWITCH_VARIANT,
-  hasSwitchThumbSizeEffect,
   join,
-  resolveSwitchClassNames,
+  resolveSwitchThumbSizeClassNames,
   resolveVariantElements
 } from './Switch.class-names.ts';
 import type { SwitchMotionProps, SwitchVariantClassesMap } from './Switch.types.ts';
-import type { SwitchMotionWithThumbSizeProps } from './SwitchMotionWithThumbSize.tsx';
 
-const LazySwitchMotionWithThumbSize = lazy(
-  () => import('./SwitchMotionWithThumbSize.tsx')
-) as LazyExoticComponent<ComponentType<SwitchMotionWithThumbSizeProps>>;
+export type SwitchMotionWithThumbSizeProps = SwitchMotionProps;
 
 type InlineDirection = 1 | -1;
 
@@ -53,6 +45,7 @@ type SwitchMotionThumbProps = {
   thumbClassName: string;
   thumbRef: RefObject<HTMLSpanElement | null>;
   thumbTranslation: number;
+  thumbVisualClassName: string;
   trackRef: RefObject<HTMLSpanElement | null>;
 };
 
@@ -205,6 +198,7 @@ function SwitchMotionThumb({
   thumbClassName,
   thumbRef,
   thumbTranslation,
+  thumbVisualClassName,
   trackRef
 }: SwitchMotionThumbProps) {
   const [inlineDirection, setInlineDirection] = useState<InlineDirection>(() =>
@@ -338,11 +332,13 @@ function SwitchMotionThumb({
         setDragPreviewControlState(null);
         animateThumbTo(resolveThumbTarget(nextControlState, thumbTranslation, inlineDirection));
       }}
-    />
+    >
+      <span className={thumbVisualClassName} />
+    </motion.span>
   );
 }
 
-function SwitchMotionCoreRoot(props: SwitchMotionProps) {
+function SwitchMotionWithThumbSizeRoot(props: SwitchMotionWithThumbSizeProps) {
   const {
     id,
     label,
@@ -449,7 +445,7 @@ function SwitchMotionCoreRoot(props: SwitchMotionProps) {
 
   const resolvedClassNames = useMemo(
     () =>
-      resolveSwitchClassNames({
+      resolveSwitchThumbSizeClassNames({
         elements,
         classNames: {
           ...classNames,
@@ -480,6 +476,7 @@ function SwitchMotionCoreRoot(props: SwitchMotionProps) {
       scale
     ]
   );
+  const { x5: thumbVisualClassName, ...headlessClassNames } = resolvedClassNames;
 
   return (
     <HeadlessSwitch.Root
@@ -491,7 +488,7 @@ function SwitchMotionCoreRoot(props: SwitchMotionProps) {
       controlState={projectedControlState}
       onControlStateChange={setControlState}
       onClickCapture={handleClickCapture}
-      classNames={resolvedClassNames}
+      classNames={headlessClassNames}
     >
       <span className={SWITCH_CONTROL_SIDE_CLASS_NAME}>
         {shouldRenderControlText && controlText ? (
@@ -509,9 +506,10 @@ function SwitchMotionCoreRoot(props: SwitchMotionProps) {
             requestSuppressNextClick={requestSuppressNextClick}
             setDragPreviewControlState={setDragPreviewControlState}
             setControlState={setControlState}
-            thumbClassName={resolvedClassNames.e3}
+            thumbClassName={headlessClassNames.e3}
             thumbRef={thumbRef}
             thumbTranslation={thumbTranslation}
+            thumbVisualClassName={thumbVisualClassName}
             trackRef={trackRef}
           />
         </HeadlessSwitch.Track>
@@ -521,34 +519,4 @@ function SwitchMotionCoreRoot(props: SwitchMotionProps) {
   );
 }
 
-const SwitchMotionCore = memo(SwitchMotionCoreRoot);
-
-function SwitchMotionRoot(props: SwitchMotionProps) {
-  const {
-    scale = DEFAULT_SWITCH_SCALE,
-    variant = DEFAULT_SWITCH_VARIANT,
-    mode = DEFAULT_SWITCH_MODE
-  } = props;
-  const { classesMap } = useKiskadee();
-  const elements = resolveVariantElements(
-    classesMap.switch as SwitchVariantClassesMap | undefined,
-    variant,
-    mode
-  );
-  const hasThumbSize = useMemo(
-    () => hasSwitchThumbSizeEffect(elements.e3, scale),
-    [elements.e3, scale]
-  );
-
-  if (hasThumbSize) {
-    return (
-      <Suspense fallback={<SwitchMotionCore {...props} />}>
-        <LazySwitchMotionWithThumbSize {...props} />
-      </Suspense>
-    );
-  }
-
-  return <SwitchMotionCore {...props} />;
-}
-
-export const SwitchMotion = memo(SwitchMotionRoot);
+export default memo(SwitchMotionWithThumbSizeRoot);

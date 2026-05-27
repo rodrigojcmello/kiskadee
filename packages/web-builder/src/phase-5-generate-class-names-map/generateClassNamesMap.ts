@@ -236,15 +236,17 @@ export function generateClassNamesMapSplit(
             else if (key.startsWith('borderRadiusRounded')) bucket = 'rr';
             else if (key.startsWith('borderRadiusPill')) bucket = 'rp';
             else if (key.startsWith('borderRadiusSquare')) bucket = 'rs';
+            else if (key.startsWith('thumbSize')) bucket = 'ts';
             // [RIPPLE EFFECT 15] START: Assign ripple style keys to compact ripple buckets.
             else if (key.startsWith('ripple')) bucket = rippleBucketForKey(key);
             // [RIPPLE EFFECT 15] END: Assign ripple style keys to compact ripple buckets.
             else bucket = 'x';
 
             const sizeKey = extractSizeKeyFromStyleKey(key);
-            const isRadiusEffectBucket = bucket === 'rr' || bucket === 'rp' || bucket === 'rs';
+            const isSizeAwareEffectBucket =
+              bucket === 'rr' || bucket === 'rp' || bucket === 'rs' || bucket === 'ts';
 
-            if (isRadiusEffectBucket) {
+            if (isSizeAwareEffectBucket) {
               const bySize = eSizedBuckets.get(bucket) ?? new Map<string, Set<string>>();
               if (!eSizedBuckets.has(bucket)) {
                 eSizedBuckets.set(bucket, bySize);

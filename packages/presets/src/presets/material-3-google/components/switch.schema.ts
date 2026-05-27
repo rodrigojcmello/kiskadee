@@ -253,6 +253,18 @@ export function createMaterial3GoogleSwitchSchema(
                     square: 0
                   }
                 },
+                effects: {
+                  thumbSize: {
+                    rest: {
+                      boxWidth: {
+                        's:md:1': 16
+                      },
+                      boxHeight: {
+                        's:md:1': 16
+                      }
+                    }
+                  }
+                },
                 palettes: palettes.thumb
               },
               e4: {

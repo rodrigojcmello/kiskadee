@@ -87,6 +87,7 @@ export async function generateCssSplit(
   //   .btn.-h:hover, .card.-a, .chip.-s.-a .icon, etc.
   // If neither applies, the selector is "simple" (passive): no activation, always-on if emitted.
   const isComplexSelector = (rule: string): boolean => {
+    if (/\.k-swt:not\(\.-s\)/.test(rule)) return true;
     // Native pseudos
     if (/:(hover|focus|focus-visible|focus-within|active|disabled|read-only)\b/.test(rule))
       return true;
