@@ -65,6 +65,10 @@ owning project docs root:
   must keep width intact and preserve vertical alignment. This is intended for circular-thumb
   Switch designs; enabling it on iOS 26-style rounded-rectangle thumbs may look odd and that is an
   expected result. Static `Switch` and `SwitchMotion` must both consume the same effect contract.
+- KIS-14 runtime direction is documented in
+  `packages/components/react/docs/definitions/effect-runtime-strategy.md`: effects should stay
+  modular, lazy when they add runtime/DOM cost, and split into separate static and motion lazy
+  modules when those paths own different DOM, measurement, transform, drag, or animation concerns.
 
 ## Original Diagnosis
 

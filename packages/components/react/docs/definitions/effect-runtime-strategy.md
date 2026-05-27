@@ -1,0 +1,83 @@
+# Effect Runtime Strategy
+
+Kiskadee effects should be modular. A component should not pay runtime, DOM, or dependency cost for
+an effect that is not present in the generated schema/class map.
+
+Some effects are pure styling concerns and can be consumed directly through generated classes. Other
+effects require extra runtime behavior, auxiliary DOM, gesture coordination, or lazy-loaded code.
+Those effects must stay isolated from the component's core path.
+
+## Runtime Cost Rule
+
+When an effect is absent, the component must render its cheapest core implementation.
+
+The core path should avoid:
+
+- extra DOM created only for the effect;
+- effect-specific hooks;
+- effect-specific runtime state;
+- effect-specific dependencies;
+- eager imports of effect implementation modules.
+
+A small availability check against the resolved class map is acceptable. The check decides whether
+the effect path is needed.
+
+## Lazy Effect Rule
+
+When an effect adds meaningful runtime cost, it should live behind a lazy module.
+
+The public component may act as a lightweight gate:
+
+- resolve the component's generated classes;
+- check whether the effect bucket exists;
+- render the core component when the effect is absent;
+- lazy-load the effect implementation when the effect is present;
+- use the core component as the lazy fallback.
+
+This keeps preset-driven effects modular without adding public props only to protect runtime cost.
+
+Pure CSS effects do not need this shape. For example, a shadow-like effect can stay as generated
+classes when it does not require extra runtime behavior. A ripple-like effect is a better fit for a
+lazy module because it owns event handling, runtime state, and auxiliary visuals.
+
+## Static And Motion Paths
+
+`static` and `motion` may consume the same public effect contract, but they should not be forced to
+share the same runtime implementation.
+
+If the static and motion paths differ in DOM ownership, measurement, transform ownership, drag,
+gesture handling, or animation engine ownership, each path should have its own lazy effect module.
+
+A shared lazy module should only be used when both paths truly share the same runtime structure.
+Otherwise, separate lazies preserve isolation and avoid making one path load code for the other.
+
+This follows the broader static-vs-motion vocabulary in
+[`motion-strategy.md`](./motion-strategy.md): static is the lightweight component path, and motion
+is the explicit runtime animation or gesture path.
+
+## Switch Thumb-Size Effect
+
+`effects.thumbSize.rest` is a state-based geometry effect. It should be lazy and path-specific when
+implemented in React.
+
+The public contract is shared by both Switch paths:
+
+- `effects.thumbSize.rest.boxWidth`
+- `effects.thumbSize.rest.boxHeight`
+
+The runtime implementation should be separate:
+
+- `SwitchWithThumbSize` handles the static `Switch` path.
+- `SwitchMotionWithThumbSize` handles the motion and drag `SwitchMotion` path.
+
+The external thumb element remains the stable carrier. It owns base geometry, measurement, travel,
+and drag constraints. The thumb-size effect applies to an internal visual thumb node.
+
+This prevents the off/rest visual reduction from changing the measured draggable width in
+`SwitchMotion`, while keeping the normal `scales` size as the selected/on size.
+
+When `thumbSize` is absent, neither Switch path should render the internal visual node or load the
+thumb-size effect module.
+
+For the schema and generated artifact side of control-state effects, see
+[`control-state-effects.md`](../../../../web-builder/docs/definitions/control-state-effects.md).
