@@ -81,6 +81,9 @@ owning project docs root:
   and motion implementation pair. The durable effect runtime doc now states that lazy modules should
   be scoped to runtime structure, and that Switch should be revisited if future components or future
   Switch effects adopt a broader composable effect-runtime strategy.
+- Touch highlight adjustment: static and motion structural roots now suppress the native WebKit/Blink
+  tap highlight. This removes the browser-painted blue touch overlay from the full clickable Switch
+  label row while preserving Kiskadee keyboard focus styling through `-f.-k`.
 
 ## Original Diagnosis
 
