@@ -55,6 +55,49 @@ This follows the broader static-vs-motion vocabulary in
 [`motion-strategy.md`](./motion-strategy.md): static is the lightweight component path, and motion
 is the explicit runtime animation or gesture path.
 
+## Effect Combination Rule
+
+Lazy modules should be scoped to runtime structure, not blindly to every individual effect.
+
+One effect may justify a dedicated lazy module when it introduces the first alternate DOM or runtime
+shape for a component. That does not mean each future effect should create another full component
+implementation for every static and motion combination.
+
+If a component gains multiple combinable effects, avoid materializing the full matrix of
+implementations:
+
+- `static + effectA`
+- `static + effectB`
+- `static + effectA + effectB`
+- `motion + effectA`
+- `motion + effectB`
+- `motion + effectA + effectB`
+
+That pattern turns modular effects into duplicated runtime variants and becomes hard to keep
+consistent.
+
+When a second structural/runtime effect appears for the same component, prefer reevaluating whether
+the component needs a broader effect runtime per path, such as:
+
+- static core;
+- motion core;
+- static with visual/runtime effects;
+- motion with visual/runtime effects.
+
+Inside those broader effect runtimes, individual effects can stay schema-driven and independently
+enabled by their generated buckets/classes. Effect-specific hooks, slots, or adapters should be
+composed only when their corresponding bucket exists.
+
+The current Switch thumb-size implementation is acceptable as the first structural effect because it
+preserves the cheapest core path and isolates the drag-sensitive motion path. It should be treated as
+a cautious first case, not as a permanent rule that every future Switch effect gets its own full
+static and motion component pair.
+
+If another component adopts a more general effect-runtime strategy for multiple effects, revisit the
+Switch strategy and align it where appropriate. Kiskadee should improve this architecture through
+new use cases and refactor older component-specific choices when consistency becomes more valuable
+than keeping the first implementation shape.
+
 ## Switch Thumb-Size Effect
 
 `effects.thumbSize.rest` is a state-based geometry effect. It should be lazy and path-specific when

@@ -75,6 +75,12 @@ owning project docs root:
   `SwitchMotionWithThumbSize`, where the external `e3` remains the stable measured carrier and an
   internal `x5` visual receives colors, radius, and the thumb-size effect classes. Material 3 opts
   into a `16 x 16` off/rest visual thumb at `s:md:1`; iOS and Fluent remain unchanged.
+- KIS-14 architecture caution: the four Switch render paths (`SwitchCore`, core motion,
+  `SwitchWithThumbSize`, and `SwitchMotionWithThumbSize`) are acceptable for this first structural
+  effect, but should not become a blanket precedent where each future effect creates a full static
+  and motion implementation pair. The durable effect runtime doc now states that lazy modules should
+  be scoped to runtime structure, and that Switch should be revisited if future components or future
+  Switch effects adopt a broader composable effect-runtime strategy.
 
 ## Original Diagnosis
 
