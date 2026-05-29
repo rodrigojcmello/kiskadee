@@ -18,8 +18,8 @@ owning project docs root:
 
 - Chat title is not available to the agent in the current Codex context.
 - Demand slug: `switch-component`.
-- Current user goal: diagnose and then adjust Switch focus outline so it appears only for
-  keyboard-derived focus, matching Button behavior.
+- Current user goal: refine KIS-27 and apply the Switch cursor policy so interactive Switch controls
+  use native/default cursor behavior instead of web-style pointer affordance.
 - The user asked to replace the generic `docs/in-progress.md` workflow with named
   `<demand>.in-progress.md` handoffs so multiple agents can work in parallel without colliding over
   the same active-context file.
@@ -84,6 +84,18 @@ owning project docs root:
 - Touch highlight adjustment: static and motion structural roots now suppress the native WebKit/Blink
   tap highlight. This removes the browser-painted blue touch overlay from the full clickable Switch
   label row while preserving Kiskadee keyboard focus styling through `-f.-k`.
+- KIS-27 cursor policy: static and motion structural roots now set `cursor: default` instead of
+  `cursor: pointer`. This prevents accidental inherited pointer affordance while preserving
+  `cursor: not-allowed` for disabled/read-only states. The durable policy is documented in
+  `packages/components/react/docs/definitions/switch/switch-cursor-policy.md`.
+- KIS-27 validation: `node packages/components/react/scripts/build.ts --skip-types`,
+  `node packages/headless/react/scripts/build.ts --skip-types`,
+  `./packages/headless/react/node_modules/.bin/tsc -p packages/headless/react/tsconfig.build.json --emitDeclarationOnly`,
+  and
+  `./packages/components/react/node_modules/.bin/tsc -p packages/components/react/tsconfig.build.json --noEmit`.
+  The normal `pnpm --filter @kiskadee/react-components build` path was attempted first but stopped
+  at pnpm's dependency build-approval guard for native packages after the sandboxed registry request
+  failed.
 
 ## Original Diagnosis
 
@@ -352,6 +364,8 @@ headless `stateProjection` prop to receive internal states such as `focused` and
   was first proven with `-f -k -a`; the public Switch API now uses `status="focus"`.
 - [x] After implementation, update this handoff with files changed, validations run, and any durable
   decisions that were promoted into canonical docs.
+- [x] KIS-27: Define and apply the Switch cursor policy. Interactive static and motion branches use
+  `cursor: default`; disabled/read-only still override to `cursor: not-allowed`.
 - [ ] Migrate TextField projected-class composition out of `HeadlessTextField`; tracked separately in
   `docs/component-textfield.in-progress.md`.
 
