@@ -1,0 +1,31 @@
+.k-af::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: var(--k-af-z, 2);
+  display: block;
+  border-radius: inherit;
+  box-shadow: 0 0 0 var(--k-af-thickness, 3px) var(--k-af-color, currentColor);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--k-af-fade-duration, 180ms) var(--k-af-ease, ease-out);
+}
+
+.k-af-active::after {
+  opacity: var(--k-af-opacity, 0.16);
+  transition-duration: 0ms;
+}
+
+.k-swt-e3-a.k-af,
+.k-swt-e3-b.k-af {
+  isolation: isolate;
+}
+
+.k-swt-e3-a.k-af::after,
+.k-swt-e3-b.k-af::after {
+  inset: calc(var(--k-af-thickness, 3px) * -1);
+  z-index: -1;
+  border-radius: 999px;
+  background: var(--k-af-color, currentColor);
+  box-shadow: none;
+}

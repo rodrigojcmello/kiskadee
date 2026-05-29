@@ -1,4 +1,5 @@
 import type {
+  ActivationFeedbackEffectSchema,
   ComponentClassNameMapJSON,
   RadiusMode,
   RippleEffectSchema,
@@ -34,6 +35,7 @@ export type KiskadeeContextValue = {
     radius?: RadiusMode;
     // [RIPPLE EFFECT 16] START: Global ripple config exposed to React components.
     effects?: {
+      activationFeedback?: ActivationFeedbackEffectSchema;
       ripple?: RippleEffectSchema;
     };
     // [RIPPLE EFFECT 16] END: Global ripple config exposed to React components.

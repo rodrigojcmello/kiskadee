@@ -1,4 +1,4 @@
-import type { Color, Schema } from '@kiskadee/core';
+import { type Color, type Schema, type SolidColor, withAlpha } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
@@ -9,18 +9,37 @@ type CreateMaterial3GoogleSwitchSchemaArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;
   segmentNames: readonly Material3GoogleSegmentName[];
   transparent: readonly [number, number, number, number];
-  white: readonly [number, number, number, number];
 };
 
 function switchStateRef(color: Color): { ref: Color } {
   return { ref: color };
 }
 
+function switchColorWithAlpha(color: SolidColor, visibility: number): SolidColor {
+  const alphaColor = withAlpha(color, visibility);
+  if (alphaColor === undefined) {
+    throw new Error('Expected Material switch color before applying alpha.');
+  }
+  return alphaColor;
+}
+
+const figmaSwitchColor = {
+  offTrack: '#E6E1E9',
+  offTrackDisabled: switchColorWithAlpha([275, 24, 90.2, 1], 10),
+  offTrackOutline: '#C9C4CF',
+  offTrackOutlineDisabled: switchColorWithAlpha([264, 8.47, 11.57, 1], 10),
+  offThumb: '#79757F',
+  offThumbInteractive: '#48454E',
+  offThumbDisabled: switchColorWithAlpha([252, 8.47, 11.57, 1], 38),
+  onTrack: '#615690',
+  onThumb: '#FFFFFF',
+  onThumbInteractive: '#E7DEFF'
+} as const;
+
 function createSwitchElementPalettes({
   c,
   segmentNames,
-  transparent,
-  white
+  transparent
 }: CreateMaterial3GoogleSwitchSchemaArgs) {
   return {
     track: buildBySegment(segmentNames, (s) => ({
@@ -28,16 +47,16 @@ function createSwitchElementPalettes({
         boxColor: {
           neutral: {
             medium: {
-              rest: c(s, 'l', 'neutral.v2', 10),
-              hover: switchStateRef(c(s, 'l', 'neutral.v2', 10)),
-              focus: switchStateRef(c(s, 'l', 'neutral.v2', 10)),
-              pressed: switchStateRef(c(s, 'l', 'neutral.v2', 10)),
-              disabled: switchStateRef(c(s, 'l', 'neutral', 90, 12)),
+              rest: figmaSwitchColor.offTrack,
+              hover: switchStateRef(figmaSwitchColor.offTrack),
+              focus: switchStateRef(figmaSwitchColor.offTrack),
+              pressed: switchStateRef(figmaSwitchColor.offTrack),
+              disabled: switchStateRef(figmaSwitchColor.offTrackDisabled),
               selected: {
-                rest: switchStateRef(c(s, 'l', 'switch.neutral', 60)),
-                hover: switchStateRef(c(s, 'l', 'switch.neutral', 60)),
-                focus: switchStateRef(c(s, 'l', 'switch.neutral', 60)),
-                pressed: switchStateRef(c(s, 'l', 'switch.neutral', 60))
+                rest: switchStateRef(figmaSwitchColor.onTrack),
+                hover: switchStateRef(figmaSwitchColor.onTrack),
+                focus: switchStateRef(figmaSwitchColor.onTrack),
+                pressed: switchStateRef(figmaSwitchColor.onTrack)
               }
             }
           }
@@ -45,11 +64,11 @@ function createSwitchElementPalettes({
         borderColor: {
           neutral: {
             medium: {
-              rest: c(s, 'l', 'neutral.v2', 50),
-              hover: switchStateRef(c(s, 'l', 'neutral.v2', 50)),
-              focus: switchStateRef(c(s, 'l', 'neutral.v2', 50)),
-              pressed: switchStateRef(c(s, 'l', 'neutral.v2', 50)),
-              disabled: switchStateRef(c(s, 'l', 'neutral', 90, 12)),
+              rest: figmaSwitchColor.offTrackOutline,
+              hover: switchStateRef(figmaSwitchColor.offTrackOutline),
+              focus: switchStateRef(figmaSwitchColor.offTrackOutline),
+              pressed: switchStateRef(figmaSwitchColor.offTrackOutline),
+              disabled: switchStateRef(figmaSwitchColor.offTrackOutlineDisabled),
               selected: {
                 rest: switchStateRef(transparent),
                 hover: switchStateRef(transparent),
@@ -102,16 +121,16 @@ function createSwitchElementPalettes({
         boxColor: {
           neutral: {
             medium: {
-              rest: c(s, 'l', 'neutral.v2', 50),
-              hover: switchStateRef(c(s, 'l', 'neutral.v2', 40)),
-              focus: switchStateRef(c(s, 'l', 'neutral.v2', 50)),
-              pressed: switchStateRef(c(s, 'l', 'neutral.v2', 30)),
-              disabled: switchStateRef(c(s, 'l', 'neutral', 90, 38)),
+              rest: figmaSwitchColor.offThumb,
+              hover: switchStateRef(figmaSwitchColor.offThumbInteractive),
+              focus: switchStateRef(figmaSwitchColor.offThumbInteractive),
+              pressed: switchStateRef(figmaSwitchColor.offThumbInteractive),
+              disabled: switchStateRef(figmaSwitchColor.offThumbDisabled),
               selected: {
-                rest: switchStateRef(white),
-                hover: switchStateRef(c(s, 'l', 'switch.neutral', 10)),
-                focus: switchStateRef(c(s, 'l', 'switch.neutral', 10)),
-                pressed: switchStateRef(c(s, 'l', 'switch.neutral', 10))
+                rest: switchStateRef(figmaSwitchColor.onThumb),
+                hover: switchStateRef(figmaSwitchColor.onThumbInteractive),
+                focus: switchStateRef(figmaSwitchColor.onThumbInteractive),
+                pressed: switchStateRef(figmaSwitchColor.onThumbInteractive)
               }
             }
           }
@@ -254,6 +273,7 @@ export function createMaterial3GoogleSwitchSchema(
                   }
                 },
                 effects: {
+                  activationFeedback: true,
                   thumbSize: {
                     rest: {
                       boxWidth: {

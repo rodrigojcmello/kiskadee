@@ -200,6 +200,9 @@ export async function generateCssSplit(
               if (isComplexSelector(rule)) {
                 // Gated by class activator or native pseudo → goes to effects bundle
                 effectsRules.add(rule);
+              } else if (key.startsWith('activationFeedback')) {
+                // Activation feedback is opt-in through the element effect bucket class itself.
+                effectsRules.add(rule);
               } else if (EMIT_PASSIVE_EFFECTS) {
                 // Debug/override: still emit passive effects, but keep them in effects bundle
                 // to avoid polluting core with stateful semantics.

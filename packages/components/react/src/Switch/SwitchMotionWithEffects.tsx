@@ -1,4 +1,6 @@
+import './SwitchMotion.structural.css';
 import './SwitchMotionWithThumbSize.structural.css';
+import './SwitchActivationFeedback.css';
 import { breakpoints, type SwitchActivationMotion } from '@kiskadee/core';
 import { HeadlessSwitch, useControlState } from '@kiskadee/react-headless';
 import { animate, motion, useMotionValue } from 'motion/react';
@@ -14,6 +16,7 @@ import {
   useSyncExternalStore
 } from 'react';
 import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
+import { useActivationFeedback } from '../effects/activation-feedback/useActivationFeedback.ts';
 import {
   DEFAULT_SWITCH_ACTIVATION_MOTION,
   DEFAULT_SWITCH_CONTROL_TEXT_VISIBILITY,
@@ -24,13 +27,17 @@ import {
   DEFAULT_SWITCH_RADIUS,
   DEFAULT_SWITCH_SCALE,
   DEFAULT_SWITCH_VARIANT,
+  hasSwitchActivationFeedbackEffect,
+  hasSwitchThumbSizeEffect,
   join,
+  resolveSwitchActivationFeedbackEffectClassName,
+  resolveSwitchClassNames,
   resolveSwitchThumbSizeClassNames,
   resolveVariantElements
 } from './Switch.class-names.ts';
 import type { SwitchMotionProps, SwitchVariantClassesMap } from './Switch.types.ts';
 
-export type SwitchMotionWithThumbSizeProps = SwitchMotionProps;
+export type SwitchMotionWithEffectsProps = SwitchMotionProps;
 
 type InlineDirection = 1 | -1;
 
@@ -45,13 +52,15 @@ type SwitchMotionThumbProps = {
   thumbClassName: string;
   thumbRef: RefObject<HTMLSpanElement | null>;
   thumbTranslation: number;
-  thumbVisualClassName: string;
+  thumbVisualClassName?: string;
   trackRef: RefObject<HTMLSpanElement | null>;
+  onActivationFeedbackCancel?: () => void;
 };
 
 const SWITCH_CONTROL_SIDE_CLASS_NAME = 'k-swt-x2-b';
 const SWITCH_CONTROL_TEXT_OFF_CLASS_NAME = 'k-swt-x3-b';
 const SWITCH_CONTROL_TEXT_ON_CLASS_NAME = 'k-swt-x4-b';
+const SWITCH_CONTROL_VISUAL_CLASS_NAME = 'k-swt-x6-b';
 const SWITCH_CONTROL_TEXT_LARGE_QUERY = `(min-width: ${breakpoints['bp:lg:1']}px)`;
 const SWITCH_DRAG_CLICK_SUPPRESSION_MS = 450;
 const SWITCH_MOTION_DRAG_THRESHOLD = 3;
@@ -132,11 +141,30 @@ function useSwitchMotionThumbTranslation(options: {
       const trackStyles = getComputedStyle(trackElement);
       const paddingInlineStart = parsePixelValue(trackStyles.paddingInlineStart);
       const paddingInlineEnd = parsePixelValue(trackStyles.paddingInlineEnd);
+      const paddingBlockStart = parsePixelValue(trackStyles.paddingBlockStart);
+      const paddingBlockEnd = parsePixelValue(trackStyles.paddingBlockEnd);
+      const borderInlineStart = parsePixelValue(
+        trackStyles.getPropertyValue('border-inline-start-width')
+      );
+      const borderBlockStart = parsePixelValue(
+        trackStyles.getPropertyValue('border-block-start-width')
+      );
       const trackContentWidth = trackElement.clientWidth - paddingInlineStart - paddingInlineEnd;
+      const trackContentHeight = trackElement.clientHeight - paddingBlockStart - paddingBlockEnd;
       const thumbWidth = thumbElement.offsetWidth;
+      const thumbHeight = thumbElement.offsetHeight;
       const translation = Math.max(0, trackContentWidth - thumbWidth);
+      const inlineStart = borderInlineStart + paddingInlineStart;
+      const blockStart =
+        borderBlockStart + paddingBlockStart + Math.max(0, (trackContentHeight - thumbHeight) / 2);
+      const scopeElement = trackElement.parentElement ?? trackElement;
 
       trackElement.style.setProperty('--k-swt-tx', `${translation}px`);
+      trackElement.style.setProperty('--k-swt-ti', `${inlineStart}px`);
+      trackElement.style.setProperty('--k-swt-ty', `${blockStart}px`);
+      scopeElement.style.setProperty('--k-swt-tx', `${translation}px`);
+      scopeElement.style.setProperty('--k-swt-ti', `${inlineStart}px`);
+      scopeElement.style.setProperty('--k-swt-ty', `${blockStart}px`);
       options.onTranslationChange(translation);
     };
 
@@ -152,6 +180,11 @@ function useSwitchMotionThumbTranslation(options: {
       resizeObserver?.disconnect();
       window.removeEventListener('resize', syncThumbTranslation);
       trackElement.style.removeProperty('--k-swt-tx');
+      trackElement.style.removeProperty('--k-swt-ti');
+      trackElement.style.removeProperty('--k-swt-ty');
+      trackElement.parentElement?.style.removeProperty('--k-swt-tx');
+      trackElement.parentElement?.style.removeProperty('--k-swt-ti');
+      trackElement.parentElement?.style.removeProperty('--k-swt-ty');
     };
   }, [options.onTranslationChange, options.trackRef, options.thumbRef]);
 }
@@ -199,7 +232,8 @@ function SwitchMotionThumb({
   thumbRef,
   thumbTranslation,
   thumbVisualClassName,
-  trackRef
+  trackRef,
+  onActivationFeedbackCancel
 }: SwitchMotionThumbProps) {
   const [inlineDirection, setInlineDirection] = useState<InlineDirection>(() =>
     resolveInlineDirection(trackRef.current)
@@ -283,6 +317,7 @@ function SwitchMotionThumb({
       onDragStart={() => {
         if (!canDrag) return;
         isDraggingRef.current = true;
+        onActivationFeedbackCancel?.();
         hasDraggedRef.current = false;
         setDragPreviewControlState(null);
         latestDragControlStateRef.current = controlState;
@@ -313,6 +348,7 @@ function SwitchMotionThumb({
 
         if (Math.abs(info.offset.x) > SWITCH_MOTION_DRAG_THRESHOLD) {
           hasDraggedRef.current = true;
+          onActivationFeedbackCancel?.();
         }
       }}
       onDragEnd={(_, info) => {
@@ -333,12 +369,12 @@ function SwitchMotionThumb({
         animateThumbTo(resolveThumbTarget(nextControlState, thumbTranslation, inlineDirection));
       }}
     >
-      <span className={thumbVisualClassName} />
+      {thumbVisualClassName ? <span className={thumbVisualClassName} /> : null}
     </motion.span>
   );
 }
 
-function SwitchMotionWithThumbSizeRoot(props: SwitchMotionWithThumbSizeProps) {
+function SwitchMotionWithEffectsRoot(props: SwitchMotionWithEffectsProps) {
   const {
     id,
     label,
@@ -359,6 +395,9 @@ function SwitchMotionWithThumbSizeRoot(props: SwitchMotionWithThumbSizeProps) {
     defaultControlState,
     onControlStateChange,
     onClickCapture,
+    onPointerDown,
+    onPointerCancel,
+    onBlur,
     ...rootProps
   } = props;
   const { classesMap, global } = useKiskadee();
@@ -391,6 +430,8 @@ function SwitchMotionWithThumbSizeRoot(props: SwitchMotionWithThumbSizeProps) {
   const [thumbTranslation, setThumbTranslation] = useState(0);
   const [dragPreviewControlState, setDragPreviewControlState] = useState<boolean | null>(null);
   const projectedControlState = dragPreviewControlState ?? controlState;
+  const hasThumbSize = hasSwitchThumbSizeEffect(elements.e3, scale);
+  const hasActivationFeedback = hasSwitchActivationFeedbackEffect(elements.e3);
   const isLargeControlTextViewport = useLargeControlTextViewport();
   const hasLabel = label !== undefined && label !== null;
   const hasControlText = controlText !== undefined && controlText !== null;
@@ -415,6 +456,25 @@ function SwitchMotionWithThumbSizeRoot(props: SwitchMotionWithThumbSizeProps) {
       suppressNextClickTimeoutRef.current = null;
     }, SWITCH_DRAG_CLICK_SUPPRESSION_MS);
   }, []);
+
+  const {
+    cancel: cancelActivationFeedback,
+    handleBlur,
+    handleInputBlur,
+    handleInputKeyDown,
+    handlePointerCancel,
+    handlePointerDown,
+    isActive: isActivationFeedbackActive
+  } = useActivationFeedback<HTMLLabelElement, HTMLInputElement>({
+    config: global?.effects?.activationFeedback,
+    disabled,
+    readOnly,
+    onPointerDown,
+    onPointerCancel,
+    onBlur,
+    onInputKeyDown: inputProps?.onKeyDown,
+    onInputBlur: inputProps?.onBlur
+  });
 
   useEffect(
     () => () => {
@@ -444,8 +504,9 @@ function SwitchMotionWithThumbSizeRoot(props: SwitchMotionWithThumbSizeProps) {
   );
 
   const resolvedClassNames = useMemo(
-    () =>
-      resolveSwitchThumbSizeClassNames({
+    () => {
+      const resolveBase = hasThumbSize ? resolveSwitchThumbSizeClassNames : resolveSwitchClassNames;
+      return resolveBase({
         elements,
         classNames: {
           ...classNames,
@@ -460,7 +521,8 @@ function SwitchMotionWithThumbSizeRoot(props: SwitchMotionWithThumbSizeProps) {
         labelPosition,
         hasLabel,
         hasControlText: shouldRenderControlText
-      }),
+      });
+    },
     [
       classNames,
       className,
@@ -473,22 +535,48 @@ function SwitchMotionWithThumbSizeRoot(props: SwitchMotionWithThumbSizeProps) {
       resolvedActivationMotion,
       resolvedControlTextVisibility,
       resolvedRadius,
-      scale
+      scale,
+      hasThumbSize
     ]
   );
-  const { x5: thumbVisualClassName, ...headlessClassNames } = resolvedClassNames;
+  const activationFeedbackClassName = hasActivationFeedback
+    ? join(
+        resolveSwitchActivationFeedbackEffectClassName(elements.e3),
+        'k-af',
+        isActivationFeedbackActive ? 'k-af-active' : ''
+      )
+    : '';
+  const hasThumbVisual = 'x5' in resolvedClassNames;
+  const { x5: resolvedThumbVisualClassName, ...headlessClassNames } = resolvedClassNames as
+    | ReturnType<typeof resolveSwitchThumbSizeClassNames>
+    | (ReturnType<typeof resolveSwitchClassNames> & { x5?: undefined });
+  const thumbVisualClassName = resolvedThumbVisualClassName;
+  const directThumbClassNames = {
+    ...headlessClassNames,
+    e3: join(headlessClassNames.e3, activationFeedbackClassName) ?? ''
+  };
+  const activationFeedbackInputProps = hasActivationFeedback
+    ? {
+        ...inputProps,
+        onKeyDown: handleInputKeyDown,
+        onBlur: handleInputBlur
+      }
+    : inputProps;
 
   return (
     <HeadlessSwitch.Root
       {...rootProps}
       inputId={id}
-      inputProps={inputProps}
+      inputProps={activationFeedbackInputProps}
       disabled={disabled}
       readOnly={readOnly}
       controlState={projectedControlState}
       onControlStateChange={setControlState}
       onClickCapture={handleClickCapture}
-      classNames={headlessClassNames}
+      onPointerDown={hasActivationFeedback ? handlePointerDown : onPointerDown}
+      onPointerCancel={hasActivationFeedback ? handlePointerCancel : onPointerCancel}
+      onBlur={hasActivationFeedback ? handleBlur : onBlur}
+      classNames={directThumbClassNames}
     >
       <span className={SWITCH_CONTROL_SIDE_CLASS_NAME}>
         {shouldRenderControlText && controlText ? (
@@ -497,7 +585,8 @@ function SwitchMotionWithThumbSizeRoot(props: SwitchMotionWithThumbSizeProps) {
             <span className={SWITCH_CONTROL_TEXT_ON_CLASS_NAME}>{controlText.on}</span>
           </HeadlessSwitch.State>
         ) : null}
-        <HeadlessSwitch.Track ref={trackRef}>
+        <span className={SWITCH_CONTROL_VISUAL_CLASS_NAME}>
+          <HeadlessSwitch.Track ref={trackRef} />
           <SwitchMotionThumb
             activationMotion={resolvedActivationMotion}
             controlState={projectedControlState}
@@ -506,17 +595,18 @@ function SwitchMotionWithThumbSizeRoot(props: SwitchMotionWithThumbSizeProps) {
             requestSuppressNextClick={requestSuppressNextClick}
             setDragPreviewControlState={setDragPreviewControlState}
             setControlState={setControlState}
-            thumbClassName={headlessClassNames.e3}
+            thumbClassName={directThumbClassNames.e3}
             thumbRef={thumbRef}
             thumbTranslation={thumbTranslation}
-            thumbVisualClassName={thumbVisualClassName}
+            thumbVisualClassName={hasThumbVisual ? thumbVisualClassName : undefined}
             trackRef={trackRef}
+            onActivationFeedbackCancel={hasActivationFeedback ? cancelActivationFeedback : undefined}
           />
-        </HeadlessSwitch.Track>
+        </span>
       </span>
       {hasLabel ? <HeadlessSwitch.Label>{label}</HeadlessSwitch.Label> : null}
     </HeadlessSwitch.Root>
   );
 }
 
-export default memo(SwitchMotionWithThumbSizeRoot);
+export default memo(SwitchMotionWithEffectsRoot);

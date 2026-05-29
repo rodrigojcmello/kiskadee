@@ -16,6 +16,7 @@ import {
   type TransformColorKeyToCssOptions,
   transformColorKeyToCss
 } from './palettes/transformColorKeyToCss.ts';
+import { transformActivationFeedbackKeyToCss } from './effects/transformActivationFeedbackKeyToCss/transformActivationFeedbackKeyToCss.ts';
 import {
   type TransformScaleKeyToCssOptions,
   transformScaleKeyToCss
@@ -36,6 +37,8 @@ export function generateCssRuleFromStyleKey(
   // Appearances ---------------------------------------------------------------------------------
   if (styleKey.startsWith('borderStyle')) {
     generatedCss = transformBorderStyleKeyToCss(styleKey, className);
+  } else if (styleKey.startsWith('activationFeedback')) {
+    generatedCss = transformActivationFeedbackKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('thumbSize')) {
     generatedCss = transformThumbSizeKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('shadow')) {

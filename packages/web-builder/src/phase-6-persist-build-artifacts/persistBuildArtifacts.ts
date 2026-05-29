@@ -35,6 +35,7 @@ const coreClassMapSchema = {
           type: 'object',
           description: 'Effect buckets (opt-in).',
           properties: {
+            af: { type: 'string', description: 'Activation feedback effect.' },
             h: { type: 'string', description: 'Shadow effects.' },
             rr: { type: 'string', description: 'Border radius effects for rounded mode.' },
             rp: { type: 'string', description: 'Border radius effects for pill mode.' },

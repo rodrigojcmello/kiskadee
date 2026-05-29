@@ -7,6 +7,20 @@ export * from './schema.ts';
 export * from './types/colors/colors.types.ts';
 export * from './types/decorations/decorations.types.ts';
 export type {
+  ActivationFeedbackEffectSchema,
+  ActivationFeedbackMotionCurveToken,
+  ActivationFeedbackMotionDurationToken,
+  ActivationFeedbackThemeTokens
+} from './types/effects/activation-feedback/activation-feedback.types.ts';
+export {
+  ACTIVATION_FEEDBACK_DURATION_TOKEN_TO_MS,
+  DEFAULT_ACTIVATION_FEEDBACK
+} from './types/effects/activation-feedback/activation-feedback.constants.ts';
+export {
+  resolveActivationFeedbackConfig,
+  resolveActivationFeedbackDurationMs
+} from './types/effects/activation-feedback/activation-feedback.utils.ts';
+export type {
   BorderRadiusEffectMode,
   BorderRadiusEffectSchema,
   NumericByInteractionState,

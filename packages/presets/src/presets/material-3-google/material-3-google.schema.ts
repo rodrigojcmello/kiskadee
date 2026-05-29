@@ -45,6 +45,12 @@ export const schema: Schema<Segments> = {
     },
     radius: 'pill',
     effects: {
+      activationFeedback: {
+        thickness: 8,
+        holdDurationToken: 'interaction.hold.short',
+        fadeDurationToken: 'interaction.fade.long',
+        curveToken: 'motion.standard.out'
+      },
       ripple: {
         mode: 'surface',
         origin: 'pointer',
@@ -121,6 +127,10 @@ export const schema: Schema<Segments> = {
           // verified: 2026-02-02 | Figma v1.23
           focusColor: c('default', 'l', 'primary.v2', 60), // =
           effects: {
+            activationFeedback: {
+              color: '#1D1B20',
+              opacity: 0.1
+            },
             ripple: {
               surface: {
                 color: '#000000',
@@ -167,8 +177,7 @@ export const schema: Schema<Segments> = {
     switch: createMaterial3GoogleSwitchSchema({
       c,
       segmentNames,
-      transparent,
-      white
+      transparent
     }),
     tabs: createMaterial3GoogleTabsSchema({
       c,

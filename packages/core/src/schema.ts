@@ -14,6 +14,10 @@ import type {
   ThemeMode
 } from './types/colors/colors.types.ts';
 import type { DecorationSchema } from './types/decorations/decorations.types.ts';
+import type {
+  ActivationFeedbackEffectSchema,
+  ActivationFeedbackThemeTokens
+} from './types/effects/activation-feedback/activation-feedback.types.ts';
 import type { ElementEffects } from './types/effects/index.ts';
 // [RIPPLE EFFECT 1] START: Schema-level ripple types.
 import type { RippleEffectSchema } from './types/effects/ripple/ripple.types.ts';
@@ -150,11 +154,12 @@ export type SchemaFonts = {
   heading?: SchemaFontStack;
 };
 
-// [RIPPLE EFFECT 2] START: Global ripple schema section.
+// [EFFECTS] START: Global effect schema section.
 export type SchemaGlobalEffects = {
+  activationFeedback?: ActivationFeedbackEffectSchema;
   ripple?: RippleEffectSchema;
 };
-// [RIPPLE EFFECT 2] END: Global ripple schema section.
+// [EFFECTS] END: Global effect schema section.
 
 export type FocusGlobalTokens = {
   /** Outline width in px (unitless number in schema/artifacts; consumers append px). */
@@ -182,8 +187,9 @@ export type ThemeTokens<TSegmentName extends SegmentName = never> = Partial<{
           {
             focusColor?: SolidColor;
             background?: SolidColor;
-            // [RIPPLE EFFECT 3] START: Theme ripple token overrides.
+            // [EFFECTS] START: Theme effect token overrides.
             effects?: {
+              activationFeedback?: ActivationFeedbackThemeTokens;
               ripple?: {
                 surface?: {
                   color?: SolidColor;
@@ -203,7 +209,7 @@ export type ThemeTokens<TSegmentName extends SegmentName = never> = Partial<{
                 };
               };
             };
-            // [RIPPLE EFFECT 3] END: Theme ripple token overrides.
+            // [EFFECTS] END: Theme effect token overrides.
           }
         >
       >
@@ -250,6 +256,7 @@ export type ClassNameByElementJSON = {
   // e: effect buckets (each bucket is opt-in at component level).
   // Each bucket value is a space-separated string of class names.
   // Example buckets (not exhaustive):
+  // - af: activation feedback
   // - h: shadow
   // - rr: border radius (rounded)
   // - rp: border radius (pill)

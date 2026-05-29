@@ -28,17 +28,18 @@ import {
   DEFAULT_SWITCH_RADIUS,
   DEFAULT_SWITCH_SCALE,
   DEFAULT_SWITCH_VARIANT,
+  hasSwitchActivationFeedbackEffect,
   hasSwitchThumbSizeEffect,
   join,
   resolveSwitchClassNames,
   resolveVariantElements
 } from './Switch.class-names.ts';
 import type { SwitchMotionProps, SwitchVariantClassesMap } from './Switch.types.ts';
-import type { SwitchMotionWithThumbSizeProps } from './SwitchMotionWithThumbSize.tsx';
+import type { SwitchMotionWithEffectsProps } from './SwitchMotionWithEffects.tsx';
 
-const LazySwitchMotionWithThumbSize = lazy(
-  () => import('./SwitchMotionWithThumbSize.tsx')
-) as LazyExoticComponent<ComponentType<SwitchMotionWithThumbSizeProps>>;
+const LazySwitchMotionWithEffects = lazy(
+  () => import('./SwitchMotionWithEffects.tsx')
+) as LazyExoticComponent<ComponentType<SwitchMotionWithEffectsProps>>;
 
 type InlineDirection = 1 | -1;
 
@@ -59,6 +60,7 @@ type SwitchMotionThumbProps = {
 const SWITCH_CONTROL_SIDE_CLASS_NAME = 'k-swt-x2-b';
 const SWITCH_CONTROL_TEXT_OFF_CLASS_NAME = 'k-swt-x3-b';
 const SWITCH_CONTROL_TEXT_ON_CLASS_NAME = 'k-swt-x4-b';
+const SWITCH_CONTROL_VISUAL_CLASS_NAME = 'k-swt-x6-b';
 const SWITCH_CONTROL_TEXT_LARGE_QUERY = `(min-width: ${breakpoints['bp:lg:1']}px)`;
 const SWITCH_DRAG_CLICK_SUPPRESSION_MS = 450;
 const SWITCH_MOTION_DRAG_THRESHOLD = 3;
@@ -139,11 +141,30 @@ function useSwitchMotionThumbTranslation(options: {
       const trackStyles = getComputedStyle(trackElement);
       const paddingInlineStart = parsePixelValue(trackStyles.paddingInlineStart);
       const paddingInlineEnd = parsePixelValue(trackStyles.paddingInlineEnd);
+      const paddingBlockStart = parsePixelValue(trackStyles.paddingBlockStart);
+      const paddingBlockEnd = parsePixelValue(trackStyles.paddingBlockEnd);
+      const borderInlineStart = parsePixelValue(
+        trackStyles.getPropertyValue('border-inline-start-width')
+      );
+      const borderBlockStart = parsePixelValue(
+        trackStyles.getPropertyValue('border-block-start-width')
+      );
       const trackContentWidth = trackElement.clientWidth - paddingInlineStart - paddingInlineEnd;
+      const trackContentHeight = trackElement.clientHeight - paddingBlockStart - paddingBlockEnd;
       const thumbWidth = thumbElement.offsetWidth;
+      const thumbHeight = thumbElement.offsetHeight;
       const translation = Math.max(0, trackContentWidth - thumbWidth);
+      const inlineStart = borderInlineStart + paddingInlineStart;
+      const blockStart =
+        borderBlockStart + paddingBlockStart + Math.max(0, (trackContentHeight - thumbHeight) / 2);
+      const scopeElement = trackElement.parentElement ?? trackElement;
 
       trackElement.style.setProperty('--k-swt-tx', `${translation}px`);
+      trackElement.style.setProperty('--k-swt-ti', `${inlineStart}px`);
+      trackElement.style.setProperty('--k-swt-ty', `${blockStart}px`);
+      scopeElement.style.setProperty('--k-swt-tx', `${translation}px`);
+      scopeElement.style.setProperty('--k-swt-ti', `${inlineStart}px`);
+      scopeElement.style.setProperty('--k-swt-ty', `${blockStart}px`);
       options.onTranslationChange(translation);
     };
 
@@ -159,6 +180,11 @@ function useSwitchMotionThumbTranslation(options: {
       resizeObserver?.disconnect();
       window.removeEventListener('resize', syncThumbTranslation);
       trackElement.style.removeProperty('--k-swt-tx');
+      trackElement.style.removeProperty('--k-swt-ti');
+      trackElement.style.removeProperty('--k-swt-ty');
+      trackElement.parentElement?.style.removeProperty('--k-swt-tx');
+      trackElement.parentElement?.style.removeProperty('--k-swt-ti');
+      trackElement.parentElement?.style.removeProperty('--k-swt-ty');
     };
   }, [options.onTranslationChange, options.trackRef, options.thumbRef]);
 }
@@ -500,7 +526,8 @@ function SwitchMotionCoreRoot(props: SwitchMotionProps) {
             <span className={SWITCH_CONTROL_TEXT_ON_CLASS_NAME}>{controlText.on}</span>
           </HeadlessSwitch.State>
         ) : null}
-        <HeadlessSwitch.Track ref={trackRef}>
+        <span className={SWITCH_CONTROL_VISUAL_CLASS_NAME}>
+          <HeadlessSwitch.Track ref={trackRef} />
           <SwitchMotionThumb
             activationMotion={resolvedActivationMotion}
             controlState={projectedControlState}
@@ -514,7 +541,7 @@ function SwitchMotionCoreRoot(props: SwitchMotionProps) {
             thumbTranslation={thumbTranslation}
             trackRef={trackRef}
           />
-        </HeadlessSwitch.Track>
+        </span>
       </span>
       {hasLabel ? <HeadlessSwitch.Label>{label}</HeadlessSwitch.Label> : null}
     </HeadlessSwitch.Root>
@@ -539,11 +566,15 @@ function SwitchMotionRoot(props: SwitchMotionProps) {
     () => hasSwitchThumbSizeEffect(elements.e3, scale),
     [elements.e3, scale]
   );
+  const hasActivationFeedback = useMemo(
+    () => hasSwitchActivationFeedbackEffect(elements.e3),
+    [elements.e3]
+  );
 
-  if (hasThumbSize) {
+  if (hasThumbSize || hasActivationFeedback) {
     return (
       <Suspense fallback={<SwitchMotionCore {...props} />}>
-        <LazySwitchMotionWithThumbSize {...props} />
+        <LazySwitchMotionWithEffects {...props} />
       </Suspense>
     );
   }

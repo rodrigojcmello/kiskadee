@@ -191,24 +191,20 @@ Toggle button (no shadow):
 
 #### 3.6. Switch component geometry
 
-The Material 3 Design Kit Community Switch component set inspected on 2026-05-23 is:
+The durable Switch extraction from the Material 3 Design Kit Community is documented in:
 
-- File: `Peqe9lNMsuQHLIUZsiTZNg`
-- Node: `54446:25289`
-- Component set: `Switch`
-- Variant axes: `Selected=True|False`, `State=Enabled|Hovered|Focused|Pressed|Disabled`,
-  `Icon=True|False`.
+- [`switch-figma-reference.md`](./switch-figma-reference.md)
 
-Observed geometry:
+Summary:
 
 | Part | Size |
 | --- | ---: |
 | Track | `52 x 32` |
-| Selected/default handle shape | `24 x 24` |
-| Pressed handle shape | `28 x 28` |
 | Unselected/default handle shape | `16 x 16` |
-| Target | `48 x 48` |
+| Selected/default handle shape | `24 x 24` |
 | State layer | `40 x 40` |
+| Pressed handle shape | `28 x 28` |
+| Target | `48 x 48` |
 | Focus indicator | `56 x 36`, `3px` stroke |
 
 The inspected component set does not expose multiple Switch sizes. Kiskadee therefore keeps only
@@ -217,10 +213,10 @@ The inspected component set does not expose multiple Switch sizes. Kiskadee ther
 Kiskadee adaptation:
 
 - The schema uses the canonical track size `52 x 32`.
-- The schema uses `24 x 24` as the thumb size because the current Switch schema does not support
-  different thumb sizes by selected/off/pressed state.
-- Material's `28 x 28` pressed handle, `16 x 16` unselected handle, state-layer overlay, target
-  layer, focus-indicator instance, and optional on/off icons are known visual gaps in the current
-  Kiskadee Switch model.
+- The schema uses a stable `24 x 24` thumb carrier plus the `thumbSize` effect for the unselected
+  `16 x 16` visual handle.
+- The V0 `activationFeedback` halo uses an `8px` shadow around the stable thumb carrier to reach
+  the Figma `40 x 40` state-layer size.
+- Material's `28 x 28` pressed handle and optional on/off icons are reference-only for now.
 - Selected/on track colors stay in `selected.<interaction>` and use references, because selected
   state is owned by the Switch root and track/thumb are child slots.

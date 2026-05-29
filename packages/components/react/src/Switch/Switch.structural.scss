@@ -10,6 +10,8 @@
 .k-swt-e1-a {
   --k-swt-dx: 1;
   --k-swt-tx: 0px;
+  --k-swt-ti: 0px;
+  --k-swt-ty: 0px;
   --k-swt-dur: var(--k-dur-int);
 
   position: relative;
@@ -74,14 +76,15 @@
 
 /*
  * element thumb / e3
- * Moves inside the track using a runtime structural distance derived from generated geometry.
+ * Overlays the visual control shell so activation feedback can escape track clipping.
  */
 .k-swt-e3-a {
-  position: relative;
+  position: absolute;
+  inset-block-start: var(--k-swt-ty);
+  inset-inline-start: var(--k-swt-ti);
   z-index: 1;
   display: block;
   box-sizing: border-box;
-  flex: 0 0 auto;
   pointer-events: none;
   transform: translateX(0);
   transition:
@@ -126,6 +129,18 @@
  * Groups optional control text with the rendered track as one visual flex item.
  */
 .k-swt-x2-a {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  cursor: inherit;
+}
+
+/*
+ * extra element for e2 / x6
+ * Positions the track and overlaid thumb as one unclipped visual control.
+ */
+.k-swt-x6-a {
+  position: relative;
   display: inline-flex;
   align-items: center;
   flex: 0 0 auto;

@@ -129,6 +129,19 @@ export function hasSwitchThumbSizeEffect(
   return resolveSwitchThumbSizeEffectClassName(element, scale).length > 0;
 }
 
+export function hasSwitchActivationFeedbackEffect(
+  element: ClassNameByElementJSON | undefined
+): boolean {
+  return resolveSwitchActivationFeedbackEffectClassName(element).length > 0;
+}
+
+export function resolveSwitchActivationFeedbackEffectClassName(
+  element: ClassNameByElementJSON | undefined
+): string {
+  const bucket = element?.e?.af;
+  return typeof bucket === 'string' ? bucket : '';
+}
+
 export function resolveSwitchThumbSizeEffectClassName(
   element: ClassNameByElementJSON | undefined,
   scale: string
@@ -233,6 +246,9 @@ export function resolveSwitchThumbSizeClassNames(options: {
       join(
         `k-swt-e3-${branch}`,
         resolveScaleClassName(elements.e3, options.scale),
+        options.radius === 'rounded'
+          ? `k-swt-e3a-${branch}`
+          : resolveRadiusClassName(elements.e3, options.scale, options.radius),
         'k-trn',
         options.classNames.e3
       ) ?? '',

@@ -232,7 +232,8 @@ export function generateClassNamesMapSplit(
             // Bucket by effect family inferred from the style key prefix.
             // Keep compact bucket keys (1-3 chars) for minimal payload.
             let bucket: string;
-            if (key.startsWith('shadow')) bucket = 'h';
+            if (key.startsWith('activationFeedback')) bucket = 'af';
+            else if (key.startsWith('shadow')) bucket = 'h';
             else if (key.startsWith('borderRadiusRounded')) bucket = 'rr';
             else if (key.startsWith('borderRadiusPill')) bucket = 'rp';
             else if (key.startsWith('borderRadiusSquare')) bucket = 'rs';

@@ -7,6 +7,7 @@ export type ElementEffects = Partial<{
   shadow: Partial<ShadowSchema>;
   borderRadius: BorderRadiusEffectSchema;
   thumbSize: ThumbSizeEffectSchema;
+  activationFeedback: boolean;
   // [RIPPLE EFFECT 4] START: Element-level ripple opt-in flag.
   ripple: boolean;
   // [RIPPLE EFFECT 4] END: Element-level ripple opt-in flag.

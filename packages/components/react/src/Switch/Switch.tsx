@@ -4,16 +4,17 @@ import {
   DEFAULT_SWITCH_MODE,
   DEFAULT_SWITCH_SCALE,
   DEFAULT_SWITCH_VARIANT,
+  hasSwitchActivationFeedbackEffect,
   hasSwitchThumbSizeEffect,
   resolveVariantElements
 } from './Switch.class-names.ts';
 import { SwitchCore } from './SwitchCore.tsx';
 import type { SwitchProps, SwitchVariantClassesMap } from './Switch.types.ts';
-import type { SwitchWithThumbSizeProps } from './SwitchWithThumbSize.tsx';
+import type { SwitchWithEffectsProps } from './SwitchWithEffects.tsx';
 
-const LazySwitchWithThumbSize = lazy(
-  () => import('./SwitchWithThumbSize.tsx')
-) as LazyExoticComponent<ComponentType<SwitchWithThumbSizeProps>>;
+const LazySwitchWithEffects = lazy(
+  () => import('./SwitchWithEffects.tsx')
+) as LazyExoticComponent<ComponentType<SwitchWithEffectsProps>>;
 
 function SwitchRoot(props: SwitchProps) {
   const {
@@ -31,11 +32,15 @@ function SwitchRoot(props: SwitchProps) {
     () => hasSwitchThumbSizeEffect(elements.e3, scale),
     [elements.e3, scale]
   );
+  const hasActivationFeedback = useMemo(
+    () => hasSwitchActivationFeedbackEffect(elements.e3),
+    [elements.e3]
+  );
 
-  if (hasThumbSize) {
+  if (hasThumbSize || hasActivationFeedback) {
     return (
       <Suspense fallback={<SwitchCore {...props} />}>
-        <LazySwitchWithThumbSize {...props} />
+        <LazySwitchWithEffects {...props} />
       </Suspense>
     );
   }

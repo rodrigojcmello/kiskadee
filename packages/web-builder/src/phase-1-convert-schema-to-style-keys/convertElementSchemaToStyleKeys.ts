@@ -21,6 +21,7 @@ import {
   type ToneMetadataByPalette
 } from './colors/convertElementColorsToStyleKeys.ts';
 import { convertElementDecorationsToStyleKeys } from './decoration/convertElementDecorationsToStyleKeys.ts';
+import { convertElementActivationFeedbackToStyleKeys } from './effects/convertElementActivationFeedbackToStyleKeys.ts';
 import { convertElementBorderRadiusToStyleKeys } from './effects/convertElementBorderRadiusToStyleKeys.ts';
 import { convertElementRippleToStyleKeys } from './effects/convertElementRippleToStyleKeys.ts';
 import { convertElementShadowToStyleKeys } from './effects/convertElementShadowToStyleKeys.ts';
@@ -70,6 +71,7 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
 } {
   const styleKeysByComponent: ComponentStyleKeyMap = {};
   const toneMetadataByPalette: ToneMetadataByPalette = new Map();
+  const activationFeedbackConfig = schema.global?.effects?.activationFeedback;
   // [RIPPLE EFFECT 10] START: Read global ripple config for element-level ripple conversion.
   const rippleConfig = schema.global?.effects?.ripple;
   // [RIPPLE EFFECT 10] END: Read global ripple config for element-level ripple conversion.
@@ -267,6 +269,12 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
         if (element.effects.shadow) {
           const shadowMap = convertElementShadowToStyleKeys(element.effects.shadow);
           appendEffectMap(shadowMap);
+        }
+        if (element.effects.activationFeedback) {
+          const activationFeedbackMap = convertElementActivationFeedbackToStyleKeys({
+            config: activationFeedbackConfig
+          });
+          appendEffectMap(activationFeedbackMap);
         }
         // [RIPPLE EFFECT 11] START: Emit ripple style keys from global ripple config.
         if (element.effects.ripple) {

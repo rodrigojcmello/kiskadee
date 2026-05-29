@@ -2,6 +2,8 @@ import { mkdir, readdir, unlink, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type {
+  ActivationFeedbackEffectSchema,
+  ActivationFeedbackThemeTokens,
   HSLA,
   RadiusMode,
   RippleEffectSchema,
@@ -270,11 +272,14 @@ export async function writeExtraArtifacts(params: {
   // 1) Global artifact (global.kiskadee.json)
   //
   //    This file is optional and only written when the schema defines
-  //    any global metadata (fonts, radius, ripple behavior...). It is meant as descriptive
+  //    any global metadata (fonts, radius, effect behavior...). It is meant as descriptive
   //    metadata capturing global design system intentions.
   const fonts = schema.global?.fonts as SchemaFonts | undefined;
   const focus = schema.global?.focus as { width?: number; offset?: number } | undefined;
   const radius = schema.global?.radius as RadiusMode | undefined;
+  const activationFeedback = schema.global?.effects?.activationFeedback as
+    | ActivationFeedbackEffectSchema
+    | undefined;
   const ripple = schema.global?.effects?.ripple as RippleEffectSchema | undefined;
   const tabsIndicatorPosition = schema.components?.tabs?.options?.indicatorPosition as
     | TabsIndicatorPosition
@@ -319,6 +324,9 @@ export async function writeExtraArtifacts(params: {
 
   const hasFonts = Boolean(bodyCss);
   const hasRadius = Boolean(radius);
+  const hasActivationFeedback = Boolean(
+    activationFeedback && Object.keys(activationFeedback).length > 0
+  );
   const hasRipple = Boolean(ripple && Object.keys(ripple).length > 0);
   const hasTabsOptions = Boolean(
     tabsIndicatorPosition ||
@@ -346,6 +354,7 @@ export async function writeExtraArtifacts(params: {
   if (
     hasFonts ||
     hasRadius ||
+    hasActivationFeedback ||
     hasRipple ||
     hasTabsOptions ||
     hasSwitchOptions ||
@@ -357,7 +366,10 @@ export async function writeExtraArtifacts(params: {
     const globalPayload: {
       fonts?: { body: string; heading?: string };
       radius?: RadiusMode;
-      effects?: { ripple?: RippleEffectSchema };
+      effects?: {
+        activationFeedback?: ActivationFeedbackEffectSchema;
+        ripple?: RippleEffectSchema;
+      };
       components?: {
         tabs?: {
           options?: {
@@ -392,8 +404,16 @@ export async function writeExtraArtifacts(params: {
       globalPayload.radius = radius;
     }
 
+    if (hasActivationFeedback && activationFeedback) {
+      globalPayload.effects = {
+        ...(globalPayload.effects ?? {}),
+        activationFeedback
+      };
+    }
+
     if (hasRipple && ripple) {
       globalPayload.effects = {
+        ...(globalPayload.effects ?? {}),
         ripple
       };
     }
@@ -494,6 +514,7 @@ export async function writeExtraArtifacts(params: {
                     focusColor?: SolidColor;
                     background?: SolidColor;
                     effects?: {
+                      activationFeedback?: ActivationFeedbackThemeTokens;
                       ripple?: {
                         surface?: {
                           color?: SolidColor;
@@ -523,9 +544,12 @@ export async function writeExtraArtifacts(params: {
       const themeTokens = palettes?.[segment]?.[theme];
       const color = themeTokens?.focusColor;
       const background = themeTokens?.background;
+      const activationFeedback = themeTokens?.effects?.activationFeedback;
       const ripple = themeTokens?.effects?.ripple;
       const tokensCss = buildRootTokensCss([
         { name: '--k-focus-color', value: toCssColor(color) },
+        { name: '--k-af-token-color', value: toCssColor(activationFeedback?.color) },
+        { name: '--k-af-token-opacity', value: activationFeedback?.opacity },
         { name: '--k-ripple-surface-color', value: toCssColor(ripple?.surface?.color) },
         { name: '--k-ripple-surface-opacity', value: ripple?.surface?.opacity },
         { name: '--k-ripple-overflow-color', value: toCssColor(ripple?.overflow?.color) },
