@@ -3,7 +3,16 @@ import './SwitchWithThumbSize.structural.css';
 import './SwitchActivationFeedback.css';
 import { breakpoints } from '@kiskadee/core';
 import { HeadlessSwitch } from '@kiskadee/react-headless';
-import { memo, type RefObject, useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
+import {
+  memo,
+  type PointerEvent,
+  type RefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useSyncExternalStore
+} from 'react';
 import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
 import { useActivationFeedback } from '../effects/activation-feedback/useActivationFeedback.ts';
 import {
@@ -172,6 +181,7 @@ function SwitchWithEffectsRoot(props: SwitchWithEffectsProps) {
   );
   const trackRef = useRef<HTMLSpanElement | null>(null);
   const thumbRef = useRef<HTMLSpanElement | null>(null);
+  const controlVisualRef = useRef<HTMLSpanElement | null>(null);
   const isLargeControlTextViewport = useLargeControlTextViewport();
   const hasThumbSize = hasSwitchThumbSizeEffect(elements.e3, scale);
   const hasActivationFeedback = hasSwitchActivationFeedbackEffect(elements.e3);
@@ -183,6 +193,15 @@ function SwitchWithEffectsRoot(props: SwitchWithEffectsProps) {
       (resolvedControlTextVisibility === 'largeOnly' && isLargeControlTextViewport));
 
   useSwitchThumbTranslation({ trackRef, thumbRef });
+
+  const shouldStartPointerFeedback = useCallback((event: PointerEvent<HTMLLabelElement>) => {
+    const controlVisualElement = controlVisualRef.current;
+    const target = event.target;
+
+    return controlVisualElement !== null && target instanceof Node
+      ? controlVisualElement.contains(target)
+      : false;
+  }, []);
 
   const {
     handleBlur,
@@ -199,45 +218,43 @@ function SwitchWithEffectsRoot(props: SwitchWithEffectsProps) {
     onPointerCancel,
     onBlur,
     onInputKeyDown: inputProps?.onKeyDown,
-    onInputBlur: inputProps?.onBlur
+    onInputBlur: inputProps?.onBlur,
+    shouldStartPointerFeedback
   });
 
-  const resolvedClassNames = useMemo(
-    () => {
-      const resolveBase = hasThumbSize ? resolveSwitchThumbSizeClassNames : resolveSwitchClassNames;
-      return resolveBase({
-        elements,
-        classNames: {
-          ...classNames,
-          e1: join(classNames.e1, className)
-        },
-        structuralBranch: 'a',
-        scale,
-        intent,
-        emphasis,
-        radius: resolvedRadius,
-        activationMotion: resolvedActivationMotion,
-        labelPosition,
-        hasLabel,
-        hasControlText: shouldRenderControlText
-      });
-    },
-    [
-      classNames,
-      className,
+  const resolvedClassNames = useMemo(() => {
+    const resolveBase = hasThumbSize ? resolveSwitchThumbSizeClassNames : resolveSwitchClassNames;
+    return resolveBase({
       elements,
-      emphasis,
-      hasLabel,
-      shouldRenderControlText,
-      intent,
-      labelPosition,
-      resolvedActivationMotion,
-      resolvedControlTextVisibility,
-      resolvedRadius,
+      classNames: {
+        ...classNames,
+        e1: join(classNames.e1, className)
+      },
+      structuralBranch: 'a',
       scale,
-      hasThumbSize
-    ]
-  );
+      intent,
+      emphasis,
+      radius: resolvedRadius,
+      activationMotion: resolvedActivationMotion,
+      labelPosition,
+      hasLabel,
+      hasControlText: shouldRenderControlText
+    });
+  }, [
+    classNames,
+    className,
+    elements,
+    emphasis,
+    hasLabel,
+    shouldRenderControlText,
+    intent,
+    labelPosition,
+    resolvedActivationMotion,
+    resolvedControlTextVisibility,
+    resolvedRadius,
+    scale,
+    hasThumbSize
+  ]);
   const activationFeedbackClassName = hasActivationFeedback
     ? join(
         resolveSwitchActivationFeedbackEffectClassName(elements.e3),
@@ -281,7 +298,7 @@ function SwitchWithEffectsRoot(props: SwitchWithEffectsProps) {
             <span className={SWITCH_CONTROL_TEXT_ON_CLASS_NAME}>{controlText.on}</span>
           </HeadlessSwitch.State>
         ) : null}
-        <span className={SWITCH_CONTROL_VISUAL_CLASS_NAME}>
+        <span ref={controlVisualRef} className={SWITCH_CONTROL_VISUAL_CLASS_NAME}>
           <HeadlessSwitch.Track ref={trackRef} />
           <HeadlessSwitch.Thumb ref={thumbRef}>
             {hasThumbVisual ? <span className={thumbVisualClassName} /> : null}

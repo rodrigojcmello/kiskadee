@@ -7,6 +7,7 @@ import { animate, motion, useMotionValue } from 'motion/react';
 import {
   type MouseEvent,
   memo,
+  type PointerEvent,
   type RefObject,
   useCallback,
   useEffect,
@@ -425,6 +426,7 @@ function SwitchMotionWithEffectsRoot(props: SwitchMotionWithEffectsProps) {
   });
   const trackRef = useRef<HTMLSpanElement | null>(null);
   const thumbRef = useRef<HTMLSpanElement | null>(null);
+  const controlVisualRef = useRef<HTMLSpanElement | null>(null);
   const suppressNextClickRef = useRef(false);
   const suppressNextClickTimeoutRef = useRef<number | null>(null);
   const [thumbTranslation, setThumbTranslation] = useState(0);
@@ -457,6 +459,15 @@ function SwitchMotionWithEffectsRoot(props: SwitchMotionWithEffectsProps) {
     }, SWITCH_DRAG_CLICK_SUPPRESSION_MS);
   }, []);
 
+  const shouldStartPointerFeedback = useCallback((event: PointerEvent<HTMLLabelElement>) => {
+    const controlVisualElement = controlVisualRef.current;
+    const target = event.target;
+
+    return controlVisualElement !== null && target instanceof Node
+      ? controlVisualElement.contains(target)
+      : false;
+  }, []);
+
   const {
     cancel: cancelActivationFeedback,
     handleBlur,
@@ -473,7 +484,8 @@ function SwitchMotionWithEffectsRoot(props: SwitchMotionWithEffectsProps) {
     onPointerCancel,
     onBlur,
     onInputKeyDown: inputProps?.onKeyDown,
-    onInputBlur: inputProps?.onBlur
+    onInputBlur: inputProps?.onBlur,
+    shouldStartPointerFeedback
   });
 
   useEffect(
@@ -503,42 +515,39 @@ function SwitchMotionWithEffectsRoot(props: SwitchMotionWithEffectsProps) {
     [onClickCapture]
   );
 
-  const resolvedClassNames = useMemo(
-    () => {
-      const resolveBase = hasThumbSize ? resolveSwitchThumbSizeClassNames : resolveSwitchClassNames;
-      return resolveBase({
-        elements,
-        classNames: {
-          ...classNames,
-          e1: join(classNames.e1, className)
-        },
-        structuralBranch: 'b',
-        scale,
-        intent,
-        emphasis,
-        radius: resolvedRadius,
-        activationMotion: resolvedActivationMotion,
-        labelPosition,
-        hasLabel,
-        hasControlText: shouldRenderControlText
-      });
-    },
-    [
-      classNames,
-      className,
+  const resolvedClassNames = useMemo(() => {
+    const resolveBase = hasThumbSize ? resolveSwitchThumbSizeClassNames : resolveSwitchClassNames;
+    return resolveBase({
       elements,
-      emphasis,
-      hasLabel,
-      shouldRenderControlText,
-      intent,
-      labelPosition,
-      resolvedActivationMotion,
-      resolvedControlTextVisibility,
-      resolvedRadius,
+      classNames: {
+        ...classNames,
+        e1: join(classNames.e1, className)
+      },
+      structuralBranch: 'b',
       scale,
-      hasThumbSize
-    ]
-  );
+      intent,
+      emphasis,
+      radius: resolvedRadius,
+      activationMotion: resolvedActivationMotion,
+      labelPosition,
+      hasLabel,
+      hasControlText: shouldRenderControlText
+    });
+  }, [
+    classNames,
+    className,
+    elements,
+    emphasis,
+    hasLabel,
+    shouldRenderControlText,
+    intent,
+    labelPosition,
+    resolvedActivationMotion,
+    resolvedControlTextVisibility,
+    resolvedRadius,
+    scale,
+    hasThumbSize
+  ]);
   const activationFeedbackClassName = hasActivationFeedback
     ? join(
         resolveSwitchActivationFeedbackEffectClassName(elements.e3),
@@ -585,7 +594,7 @@ function SwitchMotionWithEffectsRoot(props: SwitchMotionWithEffectsProps) {
             <span className={SWITCH_CONTROL_TEXT_ON_CLASS_NAME}>{controlText.on}</span>
           </HeadlessSwitch.State>
         ) : null}
-        <span className={SWITCH_CONTROL_VISUAL_CLASS_NAME}>
+        <span ref={controlVisualRef} className={SWITCH_CONTROL_VISUAL_CLASS_NAME}>
           <HeadlessSwitch.Track ref={trackRef} />
           <SwitchMotionThumb
             activationMotion={resolvedActivationMotion}
@@ -600,7 +609,9 @@ function SwitchMotionWithEffectsRoot(props: SwitchMotionWithEffectsProps) {
             thumbTranslation={thumbTranslation}
             thumbVisualClassName={hasThumbVisual ? thumbVisualClassName : undefined}
             trackRef={trackRef}
-            onActivationFeedbackCancel={hasActivationFeedback ? cancelActivationFeedback : undefined}
+            onActivationFeedbackCancel={
+              hasActivationFeedback ? cancelActivationFeedback : undefined
+            }
           />
         </span>
       </span>

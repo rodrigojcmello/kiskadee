@@ -25,6 +25,7 @@ type UseActivationFeedbackOptions<
   onBlur?: (event: FocusEvent<TRootElement>) => void;
   onInputKeyDown?: (event: KeyboardEvent<TInputElement>) => void;
   onInputBlur?: (event: FocusEvent<TInputElement>) => void;
+  shouldStartPointerFeedback?: (event: PointerEvent<TRootElement>) => boolean;
 };
 
 function isPrimaryPointer(event: PointerEvent<HTMLElement>): boolean {
@@ -42,17 +43,15 @@ export function useActivationFeedback<
   onPointerCancel,
   onBlur,
   onInputKeyDown,
-  onInputBlur
+  onInputBlur,
+  shouldStartPointerFeedback
 }: UseActivationFeedbackOptions<TRootElement, TInputElement>) {
   const [isActive, setIsActive] = useState(false);
   const isActiveRef = useRef(false);
   const holdTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const frameRef = useRef<number | null>(null);
   const resolvedConfig = resolveActivationFeedbackConfig(config);
-  const holdDurationMs = resolveActivationFeedbackDurationMs(
-    resolvedConfig.holdDurationToken,
-    50
-  );
+  const holdDurationMs = resolveActivationFeedbackDurationMs(resolvedConfig.holdDurationToken, 50);
 
   const clearScheduled = useCallback(() => {
     if (holdTimeoutRef.current) {
@@ -105,9 +104,10 @@ export function useActivationFeedback<
     (event: PointerEvent<TRootElement>) => {
       onPointerDown?.(event);
       if (event.defaultPrevented || !isPrimaryPointer(event)) return;
+      if (shouldStartPointerFeedback?.(event) === false) return;
       start();
     },
-    [onPointerDown, start]
+    [onPointerDown, shouldStartPointerFeedback, start]
   );
 
   const handlePointerCancel = useCallback(

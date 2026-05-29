@@ -96,6 +96,15 @@ owning project docs root:
   The normal `pnpm --filter @kiskadee/react-components build` path was attempted first but stopped
   at pnpm's dependency build-approval guard for native packages after the sandboxed registry request
   failed.
+- KIS-21 adjustment: Switch `activationFeedback` now starts from pointer input only when the event
+  target is inside the visual control wrapper (`track`/`thumb`) in the static and motion effect
+  paths. Pointer activation on the textual label still preserves native label/input toggling but no
+  longer starts thumb feedback. Keyboard `Space` remains handled through the internal input path.
+  Files changed: `useActivationFeedback.ts`, `SwitchWithEffects.tsx`, and
+  `SwitchMotionWithEffects.tsx`. Validation run: Biome check on touched files, React components
+  declaration build, headless/react-components local build scripts with `--skip-types`, web-builder
+  artifact sync for showcase smoke, and browser smoke on `/switch` for static/motion label vs.
+  control clicks.
 
 ## Original Diagnosis
 
