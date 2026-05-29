@@ -76,6 +76,8 @@ keep task-specific workflows inside skills.
 - `SCHEMA-BUILD-RUNTIME-RULES.md`: ownership rules for schema, build artifacts, runtime, and Sass.
 - `STRUCTURAL-CSS.md`: structural Sass naming and scope rules.
 - `skills/kiskadee-architecture/SKILL.md`: architecture workflow for cross-package decisions.
+- `skills/kiskadee-linear/SKILL.md`: Linear issue workflow, including title/description language
+  and label rules.
 
 ## Package Guidance
 
