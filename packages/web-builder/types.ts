@@ -15,6 +15,7 @@ export type {
 } from '@kiskadee/core';
 export type { FontStack } from './src/utils/fontFamily';
 export { toCssFontFamily } from './src/utils/fontFamily';
+export type { SwitchComponentArtifactJSON } from './src/component-artifacts/switchComponentArtifact';
 
 export type DesignSystemListEntry = {
   key: string;

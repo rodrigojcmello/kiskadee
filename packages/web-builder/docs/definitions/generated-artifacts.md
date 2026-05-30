@@ -14,6 +14,9 @@ Metadata is written per template under `packages/web-builder/build/<template-key
 - `manifest.json`: used by the showcase to discover templates, segments and themes.
 - `schema.json` / `segments.json`: schema and segment data for inspection or tooling.
 - `global.kiskadee.json`: global metadata consumed by runtime/components.
+- `components/<component>.kiskadee.json`: component-scoped semantic metadata loaded on demand by
+  component runtime hooks. `components/switch.kiskadee.json` is the first emitted artifact in this
+  family.
 
 ## Typical usage
 

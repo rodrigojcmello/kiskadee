@@ -33,7 +33,8 @@ The styled React Switch accepts `controlText` as content:
 ```
 
 Providing `controlText` does not guarantee that it is visible. Visibility is a
-design-system policy controlled by `components.switch.options.controlTextVisibility`.
+design-system policy controlled by the generated Switch component artifact option
+`controlTextVisibility`.
 
 Supported visibility values:
 

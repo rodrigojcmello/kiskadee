@@ -1,5 +1,6 @@
 'use client';
 import { KiskadeeContext, ShowcaseContext } from '@kiskadee/react-components';
+import { useCallback } from 'react';
 import { useClassMapLoader } from '@/hooks/use-class-map-loader';
 import { useDesignSystemSelection } from '@/hooks/use-design-system-selection';
 import { useFontPreference } from '@/hooks/use-font-preference';
@@ -8,6 +9,7 @@ import { useRuntimePlatformClasses } from '@/hooks/use-runtime-platform-classes'
 import { useStylesheetManager } from '@/hooks/use-stylesheet-manager';
 import { useThemeExtras } from '@/hooks/use-theme-extras';
 import { designSystemList } from '@/registry/design-systems.registry';
+import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 
 // Client-side provider that mirrors legacy App.tsx/main.tsx responsibilities
 // Refactored to use custom hooks for separation of concerns.
@@ -34,12 +36,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
     backgroundsByTheme,
     globalRadius,
     globalRipple,
-    switchVariant,
-    switchRadius,
-    switchActivationMotion,
-    switchControlTextVisibility,
-    switchEffects,
-    switchVariants,
     textFieldVariant,
     textFieldMode,
     textFieldFocusRingColorSource,
@@ -59,12 +55,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const globalConfig =
     globalRadius !== undefined ||
     globalRipple !== undefined ||
-    switchVariant !== undefined ||
-    switchRadius !== undefined ||
-    switchActivationMotion !== undefined ||
-    switchControlTextVisibility !== undefined ||
-    switchEffects !== undefined ||
-    switchVariants !== undefined ||
     textFieldVariant !== undefined ||
     textFieldMode !== undefined ||
     textFieldFocusRingColorSource !== undefined ||
@@ -80,12 +70,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
           ...(globalRadius !== undefined ? { radius: globalRadius } : {}),
           ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {}),
           ...(textFieldVariant !== undefined ||
-          switchVariant !== undefined ||
-          switchRadius !== undefined ||
-          switchActivationMotion !== undefined ||
-          switchControlTextVisibility !== undefined ||
-          switchEffects !== undefined ||
-          switchVariants !== undefined ||
           textFieldMode !== undefined ||
           textFieldFocusRingColorSource !== undefined ||
           textFieldVariants !== undefined ||
@@ -98,29 +82,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
           tabsLowerCurve !== undefined
             ? {
                 components: {
-                  ...(switchVariant !== undefined ||
-                  switchRadius !== undefined ||
-                  switchActivationMotion !== undefined ||
-                  switchControlTextVisibility !== undefined ||
-                  switchEffects !== undefined ||
-                  switchVariants !== undefined
-                    ? {
-                        switch: {
-                          options: {
-                            ...(switchVariant !== undefined ? { variant: switchVariant } : {}),
-                            ...(switchRadius !== undefined ? { radius: switchRadius } : {}),
-                            ...(switchActivationMotion !== undefined
-                              ? { activationMotion: switchActivationMotion }
-                              : {}),
-                            ...(switchControlTextVisibility !== undefined
-                              ? { controlTextVisibility: switchControlTextVisibility }
-                              : {})
-                          },
-                          ...(switchEffects !== undefined ? { effects: switchEffects } : {}),
-                          ...(switchVariants !== undefined ? { variants: switchVariants } : {})
-                        }
-                      }
-                    : {}),
                   ...(textFieldVariant !== undefined ||
                   textFieldMode !== undefined ||
                   textFieldFocusRingColorSource !== undefined ||
@@ -184,6 +145,34 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const { manifest, fontName, setFontName } = useFontPreference({
     designSystemKey: String(designSystem)
   });
+  const activeManifest = manifest?.key === String(designSystem) ? manifest : undefined;
+  const loadComponentArtifact = useCallback(
+    <T,>(componentName: string): Promise<T | undefined> => {
+      const artifactPath = (
+        activeManifest?.components as
+          | Record<string, { artifacts?: { metadata?: string } } | undefined>
+          | undefined
+      )?.[componentName]?.artifacts?.metadata;
+
+      if (!artifactPath) {
+        return Promise.resolve(undefined);
+      }
+
+      return loadJsonFromBuild<T | undefined>(`${String(designSystem)}/${artifactPath}`, {
+        required: false,
+        fallback: undefined
+      }).catch((error) => {
+        console.warn(
+          `[showcase] Failed to load component artifact "${componentName}" for "${String(
+            designSystem
+          )}". Falling back to legacy/default config.`,
+          error
+        );
+        return undefined;
+      });
+    },
+    [activeManifest?.components, designSystem]
+  );
 
   return (
     <KiskadeeContext.Provider
@@ -195,6 +184,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
         setTheme,
         designSystem: String(designSystem),
         setDesignSystem: (v) => setDesignSystem(v),
+        artifactVersion: activeManifest?.version ?? undefined,
+        loadComponentArtifact: activeManifest ? loadComponentArtifact : undefined,
         global: globalConfig
       }}
     >
@@ -204,7 +195,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           availableSegments,
           availableThemes,
           designSystemList,
-          manifest,
+          manifest: activeManifest,
           backgroundsByTheme,
           fontName,
           setFontName

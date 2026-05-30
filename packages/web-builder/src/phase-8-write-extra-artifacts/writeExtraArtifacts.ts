@@ -11,10 +11,6 @@ import type {
   SchemaFonts,
   SegmentName,
   SolidColor,
-  SwitchActivationMotion,
-  SwitchControlTextVisibility,
-  SwitchMode,
-  SwitchVariant,
   TabsBridgeLowerCurve,
   TabsIndicatorPosition,
   TabsIndicatorShape,
@@ -30,29 +26,18 @@ import type {
 } from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
 import { minifyCss } from '@kiskadee/css-build';
+import {
+  buildLegacySwitchGlobalConfig,
+  buildSwitchComponentArtifact,
+  SWITCH_COMPONENT_ARTIFACT_PATH,
+  type LegacySwitchGlobalConfig
+} from '../component-artifacts/switchComponentArtifact.ts';
 import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex.ts';
 import { type FontStack, toCssFontFamily } from '../utils/fontFamily.ts';
 
 type ExtractableSchema = Schema;
 
 type SegmentKey = SegmentName | string;
-type SwitchOptionsPayload = {
-  variant?: SwitchVariant;
-  radius?: RadiusMode;
-  activationMotion?: SwitchActivationMotion;
-  controlTextVisibility?: SwitchControlTextVisibility;
-};
-type SwitchEffectsPayload = {
-  thumbSize?: true;
-};
-type SwitchVariantOptionsPayload = {
-  mode?: SwitchMode;
-};
-type SwitchVariantsPayload = {
-  [TVariant in SwitchVariant]?: {
-    options?: SwitchVariantOptionsPayload;
-  };
-};
 type TextFieldOptionsPayload = {
   variant?: TextFieldVariant;
   mode?: TextFieldMode;
@@ -111,66 +96,6 @@ function pickTextFieldVariantOptions(options: unknown): TextFieldVariantOptionsP
     options as { focusRingColorSource?: TextFieldFocusRingColorSource } | undefined
   )?.focusRingColorSource;
   return focusRingColorSource ? { focusRingColorSource } : undefined;
-}
-
-function pickSwitchVariantOptions(options: unknown): SwitchVariantOptionsPayload | undefined {
-  const mode = (options as { mode?: SwitchMode } | undefined)?.mode;
-  return mode ? { mode } : undefined;
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null;
-}
-
-function hasDeclaredThumbSizeEffect(element: unknown): boolean {
-  if (!isRecord(element) || !isRecord(element.effects)) return false;
-  const thumbSize = element.effects.thumbSize;
-  return (
-    Object.hasOwn(element.effects, 'thumbSize') &&
-    thumbSize !== undefined &&
-    thumbSize !== null &&
-    thumbSize !== false
-  );
-}
-
-function elementsHaveThumbSizeEffect(elements: unknown): boolean {
-  return isRecord(elements) && Object.values(elements).some(hasDeclaredThumbSizeEffect);
-}
-
-function switchBranchHasThumbSizeEffect(branch: unknown): boolean {
-  if (!isRecord(branch)) return false;
-  if (elementsHaveThumbSizeEffect(branch.elements)) return true;
-
-  const modes = branch.modes;
-  return isRecord(modes)
-    ? Object.values(modes).some((mode) =>
-        isRecord(mode) ? elementsHaveThumbSizeEffect(mode.elements) : false
-      )
-    : false;
-}
-
-function buildSwitchEffectsPayload(schema: ExtractableSchema): SwitchEffectsPayload {
-  const switchSchema = schema.components?.switch;
-  if (!isRecord(switchSchema)) return {};
-  if (switchBranchHasThumbSizeEffect(switchSchema)) return { thumbSize: true };
-
-  const variants = switchSchema.variants;
-  if (!isRecord(variants)) return {};
-  return Object.values(variants).some(switchBranchHasThumbSizeEffect) ? { thumbSize: true } : {};
-}
-
-function buildSwitchVariantsPayload(schema: ExtractableSchema): SwitchVariantsPayload {
-  const variants: SwitchVariantsPayload = {};
-  const standardOptions = pickSwitchVariantOptions(
-    schema.components?.switch?.variants?.standard?.options
-  );
-  if (standardOptions) {
-    variants.standard = {
-      options: standardOptions
-    };
-  }
-
-  return variants;
 }
 
 function buildTextFieldVariantsPayload(schema: ExtractableSchema): TextFieldVariantsPayload {
@@ -271,6 +196,29 @@ function buildRootTokensCss(
   return `:root {\n${lines.join('\n')}\n}\n`;
 }
 
+async function cleanStaleComponentArtifacts(buildDir: string): Promise<void> {
+  const componentsDir = resolve(buildDir, 'components');
+
+  try {
+    const existingFiles = await readdir(componentsDir);
+    await Promise.all(
+      existingFiles
+        .filter((fileName) => fileName.endsWith('.kiskadee.json'))
+        .map(async (fileName) => {
+          try {
+            await unlink(resolve(componentsDir, fileName));
+          } catch (error) {
+            if (hasErrnoCode(error, 'ENOENT')) return;
+            throw error;
+          }
+        })
+    );
+  } catch (error) {
+    if (hasErrnoCode(error, 'ENOENT')) return;
+    throw error;
+  }
+}
+
 export async function writeExtraArtifacts(params: {
   schema: Schema;
   outDirSlug: string;
@@ -304,6 +252,7 @@ export async function writeExtraArtifacts(params: {
           }
         })
     );
+    await cleanStaleComponentArtifacts(buildDir);
   } catch (error) {
     // Ignore only missing build directory; files are recreated below.
     if (hasErrnoCode(error, 'ENOENT')) {
@@ -340,16 +289,10 @@ export async function writeExtraArtifacts(params: {
   const tabsLowerCurve = schema.components?.tabs?.options?.lowerCurve as
     | TabsBridgeLowerCurve
     | undefined;
-  const switchVariant = schema.components?.switch?.options?.variant as SwitchVariant | undefined;
-  const switchRadius = schema.components?.switch?.options?.radius as RadiusMode | undefined;
-  const switchActivationMotion = schema.components?.switch?.options?.activationMotion as
-    | SwitchActivationMotion
-    | undefined;
-  const switchControlTextVisibility = schema.components?.switch?.options?.controlTextVisibility as
-    | SwitchControlTextVisibility
-    | undefined;
-  const switchEffects = buildSwitchEffectsPayload(schema);
-  const switchVariants = buildSwitchVariantsPayload(schema);
+  const switchComponentArtifact = buildSwitchComponentArtifact(schema);
+  const switchGlobalConfig = switchComponentArtifact
+    ? buildLegacySwitchGlobalConfig(switchComponentArtifact)
+    : undefined;
   const textFieldVariant = schema.components?.textField?.options?.variant as
     | TextFieldVariant
     | undefined;
@@ -383,12 +326,7 @@ export async function writeExtraArtifacts(params: {
       tabsLowerCurve
   );
   const hasSwitchOptions = Boolean(
-    switchVariant ||
-      switchRadius ||
-      switchActivationMotion ||
-      switchControlTextVisibility ||
-      Object.keys(switchEffects).length > 0 ||
-      Object.keys(switchVariants).length > 0
+    switchGlobalConfig && Object.keys(switchGlobalConfig).length > 0
   );
   const hasTextFieldOptions = Boolean(
     textFieldVariant ||
@@ -428,11 +366,7 @@ export async function writeExtraArtifacts(params: {
             lowerCurve?: TabsBridgeLowerCurve;
           };
         };
-        switch?: {
-          options?: SwitchOptionsPayload;
-          effects?: SwitchEffectsPayload;
-          variants?: SwitchVariantsPayload;
-        };
+        switch?: LegacySwitchGlobalConfig;
         textField?: {
           options?: TextFieldOptionsPayload;
           variants?: TextFieldVariantsPayload;
@@ -485,18 +419,7 @@ export async function writeExtraArtifacts(params: {
           : {}),
         ...(hasSwitchOptions
           ? {
-              switch: {
-                options: {
-                  ...(switchVariant ? { variant: switchVariant } : {}),
-                  ...(switchRadius ? { radius: switchRadius } : {}),
-                  ...(switchActivationMotion ? { activationMotion: switchActivationMotion } : {}),
-                  ...(switchControlTextVisibility
-                    ? { controlTextVisibility: switchControlTextVisibility }
-                    : {})
-                },
-                ...(Object.keys(switchEffects).length > 0 ? { effects: switchEffects } : {}),
-                ...(Object.keys(switchVariants).length > 0 ? { variants: switchVariants } : {})
-              }
+              switch: switchGlobalConfig!
             }
           : {}),
         ...(hasTextFieldOptions
@@ -520,6 +443,13 @@ export async function writeExtraArtifacts(params: {
 
     await writeFile(globalFilePath, JSON.stringify(globalPayload, null, 2), 'utf8');
     // console.log(`[web-builder] Global artifact written to: ${globalFilePath}`);
+  }
+
+  if (switchComponentArtifact) {
+    const componentArtifactPath = resolve(buildDir, SWITCH_COMPONENT_ARTIFACT_PATH);
+    await mkdir(dirname(componentArtifactPath), { recursive: true });
+    await writeFile(componentArtifactPath, JSON.stringify(switchComponentArtifact, null, 2), 'utf8');
+    // console.log(`[web-builder] Switch component artifact written to: ${componentArtifactPath}`);
   }
 
   // Global design tokens consumed directly by CSS (no runtime setProperty/removeProperty).

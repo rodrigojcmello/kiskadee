@@ -70,8 +70,8 @@ higher-level adaptive component, or separate composed components that share stat
 
 ## Switch `controlTextVisibility`
 
-The current styled React Switch supports `components.switch.options.controlTextVisibility` with
-`none`, `largeOnly`, and `always`.
+The current styled React Switch supports the generated Switch component artifact option
+`controlTextVisibility` with `none`, `largeOnly`, and `always`.
 
 The `largeOnly` implementation uses `matchMedia` through `useSyncExternalStore` so the React
 component can decide whether to render `controlText` at large viewports. This is acceptable as the

@@ -92,8 +92,8 @@ These properties are intentionally not overridden for Switch today:
 
 These Switch decisions are adjacent, but they are not style-emission policy:
 
-- `components.switch.options.activationMotion`: preset-level runtime metadata exported through
-  `global.kiskadee.json`; React maps it to a Switch-local motion class/variable.
+- `components.switch.options.activationMotion`: preset-level runtime metadata exported through the
+  generated Switch component artifact; React maps it to a Switch-local motion class/variable.
 - `k-wow`: showcase-only macro transition used when changing visible geometry controls such as
   scale or radius.
 - `stateActivator` classes such as `-s`, `-f`, `-k`, and `-a`: runtime state selector vocabulary,

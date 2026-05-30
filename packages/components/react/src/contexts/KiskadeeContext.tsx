@@ -31,6 +31,8 @@ export type KiskadeeContextValue = {
 
   designSystem: string;
   setDesignSystem: (value: string) => void;
+  artifactVersion?: string;
+  loadComponentArtifact?: <T>(componentName: string) => Promise<T | undefined>;
   global?: {
     radius?: RadiusMode;
     // [RIPPLE EFFECT 16] START: Global ripple config exposed to React components.

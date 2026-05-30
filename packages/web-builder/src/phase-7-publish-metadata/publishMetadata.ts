@@ -12,6 +12,10 @@ import type {
   ThemeMode
 } from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
+import {
+  buildSwitchComponentArtifact,
+  SWITCH_COMPONENT_ARTIFACT_PATH
+} from '../component-artifacts/switchComponentArtifact.ts';
 import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex.ts';
 import type {
   Manifest,
@@ -486,6 +490,17 @@ export async function publishMetadata(params: {
         ...(componentState ? { state: componentState } : {})
       };
     }
+  }
+
+  if (buildSwitchComponentArtifact(schema)) {
+    manifest.components = manifest.components ?? {};
+    manifest.components.switch = {
+      ...(manifest.components.switch ?? {}),
+      artifacts: {
+        ...(manifest.components.switch?.artifacts ?? {}),
+        metadata: SWITCH_COMPONENT_ARTIFACT_PATH
+      }
+    };
   }
 
   const buildDir = resolve(baseBuildDir, outDirSlug);

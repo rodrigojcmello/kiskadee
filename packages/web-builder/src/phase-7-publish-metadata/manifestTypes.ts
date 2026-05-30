@@ -41,6 +41,15 @@ export type ManifestComponent = {
    * from this map, the component never uses it in the schema.
    */
   scale?: Record<string, true>;
+
+  /**
+   * Generated artifact paths for component-scoped metadata.
+   *
+   * Paths are relative to the design-system build directory.
+   */
+  artifacts?: {
+    metadata?: string;
+  };
 };
 
 export type Manifest = {
