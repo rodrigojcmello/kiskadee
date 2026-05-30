@@ -5,9 +5,9 @@ export type SwitchGeometry = {
   thumbRadius: number;
 };
 
-function parsePixelValue(value: string): number {
+function parsePixelValue(value: string, fallback = 0): number {
   const parsed = Number.parseFloat(value);
-  return Number.isFinite(parsed) ? parsed : 0;
+  return Number.isFinite(parsed) ? parsed : fallback;
 }
 
 export function calculateSwitchGeometry(
@@ -19,6 +19,14 @@ export function calculateSwitchGeometry(
   const paddingInlineEnd = parsePixelValue(trackStyles.paddingInlineEnd);
   const paddingBlockStart = parsePixelValue(trackStyles.paddingBlockStart);
   const paddingBlockEnd = parsePixelValue(trackStyles.paddingBlockEnd);
+  const declaredPaddingBlockStart = parsePixelValue(
+    trackStyles.getPropertyValue('--k-pdt'),
+    paddingBlockStart
+  );
+  const declaredPaddingBlockEnd = parsePixelValue(
+    trackStyles.getPropertyValue('--k-pdb'),
+    paddingBlockEnd
+  );
   const borderInlineStart = parsePixelValue(
     trackStyles.getPropertyValue('border-inline-start-width')
   );
@@ -39,11 +47,17 @@ export function calculateSwitchGeometry(
   const inlineStart = borderInlineStart + paddingInlineStart;
   const blockStart =
     borderBlockStart + paddingBlockStart + Math.max(0, (trackContentHeight - thumbHeight) / 2);
-  const blockInset = Math.max(
+  const radiusInsetStart = Math.max(
     borderBlockStart + paddingBlockStart,
-    borderBlockEnd + paddingBlockEnd
+    declaredPaddingBlockStart,
+    borderBlockStart * 2
   );
-  const thumbRadius = Math.max(0, trackRadius - blockInset);
+  const radiusInsetEnd = Math.max(
+    borderBlockEnd + paddingBlockEnd,
+    declaredPaddingBlockEnd,
+    borderBlockEnd * 2
+  );
+  const thumbRadius = Math.max(0, trackRadius - Math.max(radiusInsetStart, radiusInsetEnd));
 
   return {
     translation,

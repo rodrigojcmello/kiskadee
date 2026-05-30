@@ -12,9 +12,11 @@ same variables by inheritance.
 - `pill` and `square` use the explicit generated radius classes for both track and thumb. Presets
   should provide exact values for each mode instead of relying on web-only large-number hacks.
 - `rounded` uses the generated radius class on the track, then the Switch runtime reads the track
-  radius variable plus rendered block inset (`border + padding`) and projects the derived thumb
-  radius as `--k-swt-tr` on the shared control wrapper. The thumb consumes that projected value
-  through the branch-local `k-swt-e3a-*` structural modifier.
+  radius variable and projects the derived thumb radius as `--k-swt-tr` on the shared control
+  wrapper. Layout still uses rendered DOM padding, but the rounded radius inset uses the visual
+  Switch padding contract: rendered inset, emitted `--k-pdt`/`--k-pdb`, and block border width are
+  all considered so compensated padding does not hide the border contribution. The thumb consumes
+  that projected value through the branch-local `k-swt-e3a-*` structural modifier.
 - When the Switch uses the `thumbSize` effect, the internal `x5` thumb visual consumes the same
   projected `--k-swt-tr` value as the normal `e3` thumb. The effect may reduce visual
   `width`/`height`, but it does not recalculate or replace border radius.
