@@ -167,6 +167,18 @@ function resolveVisualClassName(
   return join(element.d, resolveIntentClasses(element, options.intent, options.emphasis)) ?? '';
 }
 
+function resolveThumbRadiusClassName(
+  element: ClassNameByElementJSON | undefined,
+  scale: string,
+  radiusMode: RadiusMode,
+  branch: SwitchStructuralBranch
+): string {
+  return join(
+    resolveRadiusClassName(element, scale, radiusMode),
+    radiusMode === 'rounded' ? `k-swt-e3a-${branch}` : ''
+  ) ?? '';
+}
+
 export function resolveSwitchClassNames(options: {
   elements: SwitchClassesMap;
   classNames: SwitchClassNames;
@@ -206,9 +218,7 @@ export function resolveSwitchClassNames(options: {
       join(
         `k-swt-e3-${branch}`,
         elem(elements.e3, options),
-        options.radius === 'rounded'
-          ? `k-swt-e3a-${branch}`
-          : resolveRadiusClassName(elements.e3, options.scale, options.radius),
+        resolveThumbRadiusClassName(elements.e3, options.scale, options.radius, branch),
         'k-trn',
         options.classNames.e3
       ) ?? '',
@@ -246,9 +256,7 @@ export function resolveSwitchThumbSizeClassNames(options: {
       join(
         `k-swt-e3-${branch}`,
         resolveScaleClassName(elements.e3, options.scale),
-        options.radius === 'rounded'
-          ? `k-swt-e3a-${branch}`
-          : resolveRadiusClassName(elements.e3, options.scale, options.radius),
+        resolveThumbRadiusClassName(elements.e3, options.scale, options.radius, branch),
         'k-trn',
         options.classNames.e3
       ) ?? '',
@@ -256,9 +264,7 @@ export function resolveSwitchThumbSizeClassNames(options: {
       join(
         `k-swt-x5-${branch}`,
         resolveVisualClassName(elements.e3, options),
-        options.radius === 'rounded'
-          ? `k-swt-e3a-${branch}`
-          : resolveRadiusClassName(elements.e3, options.scale, options.radius),
+        resolveThumbRadiusClassName(elements.e3, options.scale, options.radius, branch),
         resolveSwitchThumbSizeEffectClassName(elements.e3, options.scale),
         'k-trn'
       ) ?? ''

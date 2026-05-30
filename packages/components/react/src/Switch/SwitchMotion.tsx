@@ -34,6 +34,11 @@ import {
   resolveSwitchClassNames,
   resolveVariantElements
 } from './Switch.class-names.ts';
+import {
+  applySwitchGeometry,
+  calculateSwitchGeometry,
+  clearSwitchGeometry
+} from './Switch.geometry.ts';
 import type { SwitchMotionProps, SwitchVariantClassesMap } from './Switch.types.ts';
 import type { SwitchMotionWithEffectsProps } from './SwitchMotionWithEffects.tsx';
 
@@ -89,11 +94,6 @@ const SWITCH_MOTION_THUMB_TRANSITIONS = {
   }
 >;
 
-function parsePixelValue(value: string): number {
-  const parsed = Number.parseFloat(value);
-  return Number.isFinite(parsed) ? parsed : 0;
-}
-
 function subscribeToLargeControlTextViewport(onStoreChange: () => void): () => void {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
     return () => {};
@@ -131,44 +131,26 @@ function useSwitchMotionThumbTranslation(options: {
   trackRef: RefObject<HTMLSpanElement | null>;
   thumbRef: RefObject<HTMLSpanElement | null>;
   onTranslationChange: (translation: number) => void;
+  geometryKey: string;
 }) {
-  useEffect(() => {
+  const syncThumbTranslation = useCallback(() => {
     const trackElement = options.trackRef.current;
     const thumbElement = options.thumbRef.current;
     if (!trackElement || !thumbElement) return;
 
-    const syncThumbTranslation = () => {
-      const trackStyles = getComputedStyle(trackElement);
-      const paddingInlineStart = parsePixelValue(trackStyles.paddingInlineStart);
-      const paddingInlineEnd = parsePixelValue(trackStyles.paddingInlineEnd);
-      const paddingBlockStart = parsePixelValue(trackStyles.paddingBlockStart);
-      const paddingBlockEnd = parsePixelValue(trackStyles.paddingBlockEnd);
-      const borderInlineStart = parsePixelValue(
-        trackStyles.getPropertyValue('border-inline-start-width')
-      );
-      const borderBlockStart = parsePixelValue(
-        trackStyles.getPropertyValue('border-block-start-width')
-      );
-      const trackContentWidth = trackElement.clientWidth - paddingInlineStart - paddingInlineEnd;
-      const trackContentHeight = trackElement.clientHeight - paddingBlockStart - paddingBlockEnd;
-      const thumbWidth = thumbElement.offsetWidth;
-      const thumbHeight = thumbElement.offsetHeight;
-      const translation = Math.max(0, trackContentWidth - thumbWidth);
-      const inlineStart = borderInlineStart + paddingInlineStart;
-      const blockStart =
-        borderBlockStart + paddingBlockStart + Math.max(0, (trackContentHeight - thumbHeight) / 2);
-      const scopeElement = trackElement.parentElement ?? trackElement;
+    const geometry = calculateSwitchGeometry(trackElement, thumbElement);
+    applySwitchGeometry(trackElement, geometry);
+    options.onTranslationChange(geometry.translation);
+  }, [options.onTranslationChange, options.trackRef, options.thumbRef]);
 
-      trackElement.style.setProperty('--k-swt-tx', `${translation}px`);
-      trackElement.style.setProperty('--k-swt-ti', `${inlineStart}px`);
-      trackElement.style.setProperty('--k-swt-ty', `${blockStart}px`);
-      scopeElement.style.setProperty('--k-swt-tx', `${translation}px`);
-      scopeElement.style.setProperty('--k-swt-ti', `${inlineStart}px`);
-      scopeElement.style.setProperty('--k-swt-ty', `${blockStart}px`);
-      options.onTranslationChange(translation);
-    };
-
+  useEffect(() => {
     syncThumbTranslation();
+  }, [options.geometryKey, syncThumbTranslation]);
+
+  useEffect(() => {
+    const trackElement = options.trackRef.current;
+    const thumbElement = options.thumbRef.current;
+    if (!trackElement || !thumbElement) return;
 
     const resizeObserver =
       typeof ResizeObserver !== 'undefined' ? new ResizeObserver(syncThumbTranslation) : null;
@@ -179,14 +161,9 @@ function useSwitchMotionThumbTranslation(options: {
     return () => {
       resizeObserver?.disconnect();
       window.removeEventListener('resize', syncThumbTranslation);
-      trackElement.style.removeProperty('--k-swt-tx');
-      trackElement.style.removeProperty('--k-swt-ti');
-      trackElement.style.removeProperty('--k-swt-ty');
-      trackElement.parentElement?.style.removeProperty('--k-swt-tx');
-      trackElement.parentElement?.style.removeProperty('--k-swt-ti');
-      trackElement.parentElement?.style.removeProperty('--k-swt-ty');
+      clearSwitchGeometry(trackElement);
     };
-  }, [options.onTranslationChange, options.trackRef, options.thumbRef]);
+  }, [options.trackRef, options.thumbRef, syncThumbTranslation]);
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -429,12 +406,6 @@ function SwitchMotionCoreRoot(props: SwitchMotionProps) {
     (resolvedControlTextVisibility === 'always' ||
       (resolvedControlTextVisibility === 'largeOnly' && isLargeControlTextViewport));
 
-  useSwitchMotionThumbTranslation({
-    trackRef,
-    thumbRef,
-    onTranslationChange: setThumbTranslation
-  });
-
   const requestSuppressNextClick = useCallback(() => {
     suppressNextClickRef.current = true;
     if (suppressNextClickTimeoutRef.current !== null) {
@@ -506,6 +477,13 @@ function SwitchMotionCoreRoot(props: SwitchMotionProps) {
       scale
     ]
   );
+
+  useSwitchMotionThumbTranslation({
+    trackRef,
+    thumbRef,
+    onTranslationChange: setThumbTranslation,
+    geometryKey: `${resolvedClassNames.e2}|${resolvedClassNames.e3}`
+  });
 
   return (
     <HeadlessSwitch.Root

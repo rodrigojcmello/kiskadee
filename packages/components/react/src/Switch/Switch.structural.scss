@@ -102,10 +102,11 @@
 
 /*
  * element thumb modifier 'a' / e3a
- * Derives rounded thumb corners from the track radius and block spacing.
+ * Receives the track-derived rounded radius projected on the shared control wrapper.
  */
-.k-swt-e3a-a {
-  border-radius: max(0px, calc(var(--k-bdr) - max(var(--k-pdt), var(--k-pdb))));
+.k-swt-e3-a.k-swt-e3a-a,
+.k-swt-x5-a.k-swt-e3a-a {
+  border-radius: var(--k-swt-tr, var(--k-bdr));
 }
 
 /*

@@ -62,22 +62,19 @@ The builder default is:
 | --- | --- | --- |
 | `borderRadius` / `borderRadiusRounded` / `borderRadiusPill` / `borderRadiusSquare` | `mirrored` | `--k-bdr: <value>; border-radius: <value>` |
 
-Switch relies on that default in two different ways:
+Switch relies on that default as input:
 
 - Track `e2` uses the generated radius class for all radius modes.
-- Thumb `e3` uses generated radius classes for `pill` and `square`.
-- For `rounded`, React Switch intentionally does not apply the generated `e3` rounded radius class.
-  Instead, it applies the local structural modifier `.k-swt-e3a-a`, which derives the thumb radius
-  from the track's inherited generated variables:
+- Thumb `e3` uses generated radius classes directly for `pill` and `square`.
+- For `rounded`, React Switch derives the rendered thumb radius from the generated track radius
+  variable and the rendered track block inset (`border + padding`), then projects that value as
+  `--k-swt-tr` on the shared visual wrapper. The track values still come from normal generated
+  mirrored/compensated CSS; the runtime only bridges the sibling DOM boundary.
+- When the React Switch renders the `thumbSize` effect, the internal `x5` visual uses the same
+  projected rounded radius as `e3`. The effect changes visual dimensions, not the radius source.
 
-```scss
-.k-swt-e3a-a {
-  border-radius: max(0px, calc(var(--k-bdr) - max(var(--k-pdt), var(--k-pdb))));
-}
-```
-
-That rounded-thumb behavior is a local React Switch structural rule. It is not a web-builder
-emission-policy override.
+This is still not a Switch-specific emission override. The web-builder emits the normal mirrored
+radius class, and React applies or derives the final visual thumb radius from generated values.
 
 ### Reviewed Properties Without Switch Overrides
 

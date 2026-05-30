@@ -5,34 +5,24 @@ actual DOM shape.
 
 ## Radius
 
-The public `radius` prop chooses one radius mode for the visual Switch. Track and thumb do not always
-consume that mode in the same way:
+The public `radius` prop chooses one radius mode for the visual Switch. React keeps schema-generated
+artifacts as the source of truth, but the DOM shape means track and thumb cannot always consume the
+same variables by inheritance.
 
-- `pill` uses the explicit generated radius classes for both track and thumb. Presets should provide
-  exact half-height values instead of web-only large-number hacks.
-- `square` uses the explicit generated radius classes for both track and thumb.
-- `rounded` uses the explicit generated radius class on the track, but the thumb derives its radius
-  locally from the inherited track radius and generated block spacing variables.
+- `pill` and `square` use the explicit generated radius classes for both track and thumb. Presets
+  should provide exact values for each mode instead of relying on web-only large-number hacks.
+- `rounded` uses the generated radius class on the track, then the Switch runtime reads the track
+  radius variable plus rendered block inset (`border + padding`) and projects the derived thumb
+  radius as `--k-swt-tr` on the shared control wrapper. The thumb consumes that projected value
+  through the branch-local `k-swt-e3a-*` structural modifier.
+- When the Switch uses the `thumbSize` effect, the internal `x5` thumb visual consumes the same
+  projected `--k-swt-tr` value as the normal `e3` thumb. The effect may reduce visual
+  `width`/`height`, but it does not recalculate or replace border radius.
 
-For `rounded`, the thumb formula is:
-
-```txt
-max(0px, track border radius - max(track padding top, track padding bottom))
-```
-
-In CSS this consumes the existing generated variables inherited from the track:
-
-- `--k-bdr` for the track border radius.
-- `--k-pdt` for generated top padding.
-- `--k-pdb` for generated bottom padding.
-
-This keeps the thumb curvature visually related to the track without making the schema duplicate a
-derived value for every Switch scale. This is a local React Switch structural rule, not a web-builder
-emission-policy change.
-
-These variables are contract variables from generated classes, so the structural selector must not
-provide local `var()` fallbacks. Missing variables should surface as broken geometry during
-development instead of being hidden by default values.
+This bridge is needed because the rendered track `e2` and thumb `e3` are siblings. CSS custom
+properties emitted on the track do not inherit into the thumb directly, so the runtime that already
+measures track/thumb geometry reads the generated track radius variable and carries the derived
+rounded radius to the common wrapper.
 
 ## Focus Ring
 

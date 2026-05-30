@@ -75,6 +75,18 @@ owning project docs root:
   `SwitchMotionWithThumbSize`, where the external `e3` remains the stable measured carrier and an
   internal `x5` visual receives colors, radius, and the thumb-size effect classes. Material 3 opts
   into a `16 x 16` off/rest visual thumb at `s:md:1`; iOS and Fluent remain unchanged.
+- KIS-17 correction: `rounded` thumb radius now derives from the generated track radius variable
+  minus the rendered block inset (`border + padding`). Because track `e2` and thumb `e3` are
+  siblings, the runtime projects the value as `--k-swt-tr` on the shared control wrapper, and the
+  branch-local `k-swt-e3a-*` modifier applies it to `e3` and the `thumbSize` `x5` visual.
+  `thumbSize` remains a dimension-only effect: `x5` may shrink visually, but it keeps the same
+  projected rounded radius as the normal-size thumb.
+- KIS-17 performance follow-up: the runtime geometry sync is keyed by the effective track/thumb
+  class names instead of running after every render. `ResizeObserver` still covers real size changes,
+  while class-key changes cover radius/scale/design-system changes that do not resize the DOM.
+- KIS-17 geometry maintenance follow-up: shared DOM measurement/application logic now lives in
+  `packages/components/react/src/Switch/Switch.geometry.ts`, so all four Switch render paths use the
+  same `--k-swt-tx`, `--k-swt-ti`, `--k-swt-ty`, and `--k-swt-tr` calculations.
 - KIS-14 architecture caution: the four Switch render paths (`SwitchCore`, core motion,
   `SwitchWithThumbSize`, and `SwitchMotionWithThumbSize`) are acceptable for this first structural
   effect, but should not become a blanket precedent where each future effect creates a full static
@@ -439,13 +451,10 @@ Stage 3 made Switch the first pilot for the single compact state runtime:
   The current Switch alignment keeps `variant`, `mode`, and `radius` overrideable, while
   `activationMotion` remains a preset-level fidelity decision read from the generated global
   artifact.
-- React Switch now treats `rounded` thumb radius as local structural geometry. The track still uses
-  its generated `rounded` radius class, but the thumb applies a Switch-local modifier that derives
-  radius from inherited generated variables: `--k-bdr - max(--k-pdt, --k-pdb)`. `pill` and `square`
-  still use explicit generated radius classes for the thumb. This is a component-local consumption
-  rule, not a web-builder or global emission-policy change. The structural selector is the direct
-  element modifier `.k-swt-e3a-a`, and it intentionally uses contract variables without local
-  `var()` fallbacks so missing generated values remain visible as bugs.
+- KIS-17 keeps `pill` and `square` on explicit generated thumb radius classes. For `rounded`, React
+  Switch now uses the generated track radius variable and rendered track inset to project
+  `--k-swt-tr` onto the shared wrapper; `e3` and the `thumbSize` `x5` visual consume that same
+  projected radius through branch-local structural modifiers.
 - Switch style-emission policy was reviewed and documented in the web-builder docs. The only
   Switch-specific overrides today are on `switch.standard.e2` / track:
   `borderWidthEmission: mirrored` and `paddingEmission: compensated`. `borderRadius` is important
