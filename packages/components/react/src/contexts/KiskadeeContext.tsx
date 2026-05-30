@@ -22,6 +22,10 @@ import type {
 } from '@kiskadee/core';
 import { createContext, useContext } from 'react';
 
+export type ComponentClassMapScope =
+  | { kind: 'core' }
+  | { kind: 'palette'; segment: string; theme: ThemeMode };
+
 export type KiskadeeContextValue = {
   classesMap: ComponentClassNameMapJSON;
   segment: string;
@@ -33,6 +37,10 @@ export type KiskadeeContextValue = {
   setDesignSystem: (value: string) => void;
   artifactVersion?: string;
   loadComponentArtifact?: <T>(componentName: string) => Promise<T | undefined>;
+  loadComponentClassMap?: <T>(
+    componentName: string,
+    scope: ComponentClassMapScope
+  ) => Promise<T | undefined>;
   global?: {
     radius?: RadiusMode;
     // [RIPPLE EFFECT 16] START: Global ripple config exposed to React components.

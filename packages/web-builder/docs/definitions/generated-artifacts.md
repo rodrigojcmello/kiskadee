@@ -5,7 +5,10 @@
 - Core CSS: utilities for decorations/scales and palette-independent base rules.
 - Effects CSS: gated effect utilities such as shadows, ripple tokens, and stateful radius effects.
 - Per-palette CSS: color rules only.
-- `classNamesMapSplit`: maps classes per component/element/state/palette at runtime.
+- `core.kiskadee.json` and `<segment>.<theme>.kiskadee.json`: aggregate class maps kept for
+  compatibility while component hooks migrate to smaller artifacts.
+- `class-maps/core/<component>.kiskadee.json`: component-scoped core class map.
+- `class-maps/<segment>.<theme>/<component>.kiskadee.json`: component-scoped palette class map.
 
 ## Metadata
 
@@ -17,6 +20,8 @@ Metadata is written per template under `packages/web-builder/build/<template-key
 - `components/<component>.kiskadee.json`: component-scoped semantic metadata loaded on demand by
   component runtime hooks. `components/switch.kiskadee.json` is the first emitted artifact in this
   family.
+- `class-maps/**/<component>.kiskadee.json`: component-scoped class maps loaded on demand by
+  component runtime hooks. These are class resolution artifacts, not semantic metadata.
 
 ## Typical usage
 

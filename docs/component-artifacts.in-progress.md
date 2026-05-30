@@ -116,6 +116,98 @@ Blocked/partial validation:
   reason. A direct `next build` attempt was started but did not finish in useful time, so the final
   Showcase validation used TypeScript plus browser verification against `next dev`.
 
+## Phase 2 Implementation Status
+
+Status: implemented locally for component-scoped class-map JSON, with Switch as the first runtime
+consumer.
+
+Implemented decisions:
+
+- Aggregate class-map files remain as compatibility outputs:
+  - `core.kiskadee.json`
+  - `<segment>.<theme>.kiskadee.json`
+- New component-scoped class-map artifacts are emitted for every generated component branch:
+  - `class-maps/core/<component>.kiskadee.json`
+  - `class-maps/<segment>.<theme>/<component>.kiskadee.json`
+- Component file names use kebab-case slugs, so `textField` becomes `text-field.kiskadee.json`.
+- Component class-map artifact shape is:
+
+  ```json
+  {
+    "component": "switch",
+    "classMap": {}
+  }
+  ```
+
+- `manifest.components.<name>.artifacts.classMaps` indexes the core and palette class-map paths
+  when those artifacts exist.
+- `KiskadeeContext` now exposes optional `loadComponentClassMap`.
+- `useSwitchArtifactConfig` loads and merges Switch core/palette class maps on demand, then falls
+  back to `classesMap.switch` if component artifacts are unavailable.
+- Showcase resolves component class-map paths from the active manifest.
+- Showcase skips the aggregate class-map loader on `/switch`, so the Switch route can validate the
+  on-demand class-map path while other routes keep aggregate compatibility.
+- CSS remains aggregated; this phase changes JSON class-map loading only.
+
+Changed files:
+
+- `packages/web-builder/src/component-artifacts/componentClassMapArtifacts.ts`
+- `packages/web-builder/src/phase-6-persist-build-artifacts/persistBuildArtifacts.ts`
+- `packages/web-builder/src/phase-7-publish-metadata/manifestTypes.ts`
+- `packages/web-builder/src/phase-7-publish-metadata/publishMetadata.ts`
+- `packages/web-builder/src/run-build.ts`
+- `packages/web-builder/types.ts`
+- `packages/components/react/src/contexts/KiskadeeContext.tsx`
+- `packages/components/react/src/contexts/componentArtifactCache.ts`
+- `packages/components/react/src/Switch/useSwitchArtifactConfig.ts`
+- `packages/components/react/src/index.ts`
+- `packages/showcase/app/providers.tsx`
+- `packages/showcase/hooks/use-class-map-loader.ts`
+- `packages/showcase/registry/generated/design-systems.registry.generated.ts`
+- Artifact contract docs under `SCHEMA-BUILD-RUNTIME-RULES.md` and
+  `packages/web-builder/docs/definitions/generated-artifacts.md`.
+
+Validation notes:
+
+- `node packages/web-builder/src/run-build.ts` completed successfully.
+- Generated output inspection confirmed:
+  - aggregate `core.kiskadee.json` and palette JSON files still exist;
+  - `class-maps/core/switch.kiskadee.json` exists;
+  - `class-maps/default.light/switch.kiskadee.json` exists;
+  - `manifest.components.switch.artifacts.classMaps` points to the new files;
+  - other generated component branches such as `button`, `tabs`, and `text-field` also receive
+    component-scoped class-map artifacts when class maps exist.
+- `node packages/web-builder/scripts/sync-showcase-artifacts.ts` completed successfully.
+- `node packages/web-builder/scripts/generate-showcase-registry.ts` completed successfully.
+- `node packages/headless/react/scripts/build.ts --skip-types` completed successfully.
+- `node packages/components/react/scripts/build.ts --skip-types` completed successfully.
+- `./packages/headless/react/node_modules/.bin/tsc -p packages/headless/react/tsconfig.build.json --emitDeclarationOnly`
+  completed successfully.
+- `./packages/components/react/node_modules/.bin/tsc -p packages/components/react/tsconfig.build.json --noEmit`
+  completed successfully.
+- `./packages/components/react/node_modules/.bin/tsc -p packages/components/react/tsconfig.build.json --emitDeclarationOnly`
+  completed successfully.
+- `./packages/showcase/node_modules/.bin/tsc -p packages/showcase/tsconfig.json --noEmit`
+  completed successfully.
+- Showcase `/switch` was validated in the browser against an existing dev server at
+  `http://localhost:3000`:
+  - Material Design 3 by Google rendered Switch defaults and states correctly.
+  - Observed runtime assets included `components/switch.kiskadee.json`,
+    `class-maps/core/switch.kiskadee.json`, and
+    `class-maps/default.light/switch.kiskadee.json`.
+  - Observed runtime assets did not include Material aggregate class-map JSON
+    `core.kiskadee.json` or `default.light.kiskadee.json` for `/switch`.
+  - Carbon by IBM, which has no Switch class-map artifact, fell back without loading
+    `class-maps/**/switch.kiskadee.json`.
+
+Blocked/partial validation:
+
+- `pnpm --filter ... build` commands remain subject to the local pnpm
+  `ERR_PNPM_IGNORED_BUILDS` guard. Direct package scripts and local `tsc` commands were used
+  instead.
+- Starting a new Showcase dev server on port `3014` was not needed because an existing Showcase dev
+  server was already running on `3000`.
+
 ## Current Artifact Model
 
 The current web-builder output is emitted per design system under
@@ -127,8 +219,10 @@ The current web-builder output is emitted per design system under
 | Artifact | Current role | Component-split impact |
 | --- | --- | --- |
 | `global.kiskadee.json` | Runtime-friendly global metadata plus `components.<name>` options/effects for components such as Tabs, Switch, and TextField. | High. First split target. Keep only truly global data here and move component metadata into component artifacts. |
-| `core.kiskadee.json` | Palette-independent class map for all components. | High. Should eventually become component-scoped class-map artifacts. |
-| `<segment>.<theme>.kiskadee.json` | Palette/theme class map for all components. | High. Should eventually become component-scoped palette class-map artifacts. |
+| `core.kiskadee.json` | Palette-independent class map for all components. | High. Kept as compatibility output while component hooks move to `class-maps/core/<component>.kiskadee.json`. |
+| `<segment>.<theme>.kiskadee.json` | Palette/theme class map for all components. | High. Kept as compatibility output while component hooks move to `class-maps/<segment>.<theme>/<component>.kiskadee.json`. |
+| `class-maps/core/<component>.kiskadee.json` | Palette-independent class map for one component. | Implemented in Phase 2. First runtime consumer is Switch. |
+| `class-maps/<segment>.<theme>/<component>.kiskadee.json` | Palette/theme class map for one component. | Implemented in Phase 2. First runtime consumer is Switch. |
 | `manifest.json` | Compact design-system discovery metadata: key, display name, fonts, segments, themes, and high-level component capabilities. | Medium. It should remain small, but gain artifact index information for component-level chunks. |
 | `schema.json` | Serializable schema snapshot without `colors`, useful for inspection/tooling. | Medium/low for runtime. Keep aggregated initially unless runtime consumers start loading it eagerly. |
 | `core.kiskadee.schema.json` | JSON Schema for `core.kiskadee.json`. | Low/medium. Update only if the class-map artifact shape changes. |

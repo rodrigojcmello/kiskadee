@@ -1,6 +1,7 @@
 import { mkdir, readdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import type {
+  ComponentClassNameMapSplitJSON,
   ComponentName,
   EmphasisLevel,
   GlobalSemanticsBySegment,
@@ -12,6 +13,10 @@ import type {
   ThemeMode
 } from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
+import {
+  getComponentCoreClassMapArtifactPath,
+  getComponentPaletteClassMapArtifactPath
+} from '../component-artifacts/componentClassMapArtifacts.ts';
 import {
   buildSwitchComponentArtifact,
   SWITCH_COMPONENT_ARTIFACT_PATH
@@ -302,6 +307,65 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object';
 }
 
+function isComponentName(value: string): value is ComponentName {
+  return value === 'button' || value === 'switch' || value === 'tabs' || value === 'textField';
+}
+
+function hasEntries(value: unknown): value is Record<string, unknown> {
+  return isRecord(value) && Object.keys(value).length > 0;
+}
+
+function addComponentClassMapArtifactsToManifest(
+  manifest: Manifest,
+  classNamesMap: ComponentClassNameMapSplitJSON | undefined
+): void {
+  if (!classNamesMap) return;
+
+  const componentNames = new Set<ComponentName>();
+
+  for (const [componentName, componentClassMap] of Object.entries(classNamesMap.core)) {
+    if (!isComponentName(componentName) || !hasEntries(componentClassMap)) continue;
+    componentNames.add(componentName);
+  }
+
+  for (const paletteMap of Object.values(classNamesMap.palettes)) {
+    if (!hasEntries(paletteMap)) continue;
+    for (const [componentName, componentClassMap] of Object.entries(paletteMap)) {
+      if (!isComponentName(componentName) || !hasEntries(componentClassMap)) continue;
+      componentNames.add(componentName);
+    }
+  }
+
+  for (const componentName of componentNames) {
+    const coreClassMap = classNamesMap.core[componentName];
+    const palettes: Record<string, string> = {};
+
+    for (const [paletteName, paletteMap] of Object.entries(classNamesMap.palettes)) {
+      const componentClassMap = paletteMap[componentName];
+      if (!hasEntries(componentClassMap)) continue;
+      palettes[paletteName] = getComponentPaletteClassMapArtifactPath(paletteName, componentName);
+    }
+
+    const classMaps = {
+      ...(hasEntries(coreClassMap)
+        ? { core: getComponentCoreClassMapArtifactPath(componentName) }
+        : {}),
+      ...(Object.keys(palettes).length > 0 ? { palettes } : {})
+    };
+
+    if (!Object.keys(classMaps).length) continue;
+
+    manifest.components = manifest.components ?? {};
+    manifest.components[componentName] = {
+      ...(manifest.components[componentName] ?? {}),
+      artifacts: {
+        ...(manifest.components[componentName]?.artifacts ?? {}),
+        classMaps
+      }
+    };
+  }
+}
+
 function convertEmphasisLevelToJson(scale: EmphasisLevel): Record<string, Record<string, string>> {
   const convertedScale: Record<string, Record<string, string>> = {};
 
@@ -438,8 +502,9 @@ export async function publishMetadata(params: {
   outDirSlug: string;
   schemaPath: string;
   baseBuildDir: string;
+  classNamesMap?: ComponentClassNameMapSplitJSON;
 }): Promise<void> {
-  const { schema, outDirSlug, schemaPath, baseBuildDir } = params;
+  const { schema, outDirSlug, schemaPath, baseBuildDir, classNamesMap } = params;
 
   // `Schema.colors` is required by presets, but the public type allows it to be optional.
   // At this point we already depend on it (segments, artifacts), so we assert it.
@@ -502,6 +567,8 @@ export async function publishMetadata(params: {
       }
     };
   }
+
+  addComponentClassMapArtifactsToManifest(manifest, classNamesMap);
 
   const buildDir = resolve(baseBuildDir, outDirSlug);
   await mkdir(buildDir, { recursive: true });

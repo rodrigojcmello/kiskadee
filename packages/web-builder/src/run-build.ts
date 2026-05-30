@@ -138,7 +138,8 @@ export async function runBuild(): Promise<void> {
       schema,
       outDirSlug,
       schemaPath: schemaPath,
-      baseBuildDir
+      baseBuildDir,
+      classNamesMap: classNamesMapSplit
     });
 
     // Phase 8 - Write extra artifacts

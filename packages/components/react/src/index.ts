@@ -1,5 +1,9 @@
 export { Button } from './Button/Button.tsx';
 export { KiskadeeContext, useKiskadee } from './contexts/KiskadeeContext.tsx';
+export type {
+  ComponentClassMapScope,
+  KiskadeeContextValue
+} from './contexts/KiskadeeContext.tsx';
 export { ShowcaseContext, useShowcase } from './contexts/ShowcaseContext.tsx';
 export { SmoothText } from './SmoothText/SmoothText.tsx';
 export type {

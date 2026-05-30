@@ -1,5 +1,10 @@
 'use client';
-import { KiskadeeContext, ShowcaseContext } from '@kiskadee/react-components';
+import {
+  KiskadeeContext,
+  ShowcaseContext,
+  type ComponentClassMapScope
+} from '@kiskadee/react-components';
+import { usePathname } from 'next/navigation';
 import { useCallback } from 'react';
 import { useClassMapLoader } from '@/hooks/use-class-map-loader';
 import { useDesignSystemSelection } from '@/hooks/use-design-system-selection';
@@ -15,6 +20,7 @@ import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 // Refactored to use custom hooks for separation of concerns.
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   // 1. Manage selection state (designSystem, segment, theme) and persistence
   const {
     designSystem,
@@ -29,7 +35,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
   } = useDesignSystemSelection();
 
   // 2. Load class maps (core + palette) dynamically
-  const classesMap = useClassMapLoader({ designSystem, segment, theme });
+  const shouldLoadAggregateClassMap = pathname !== '/switch';
+  const classesMap = useClassMapLoader({
+    designSystem,
+    segment,
+    theme,
+    enabled: shouldLoadAggregateClassMap
+  });
 
   // 3. Load extra resources (background colors) and global radius/ripple metadata
   const {
@@ -173,6 +185,47 @@ export function Providers({ children }: { children: React.ReactNode }) {
     },
     [activeManifest?.components, designSystem]
   );
+  const loadComponentClassMap = useCallback(
+    <T,>(componentName: string, scope: ComponentClassMapScope): Promise<T | undefined> => {
+      const classMaps = (
+        activeManifest?.components as
+          | Record<
+              string,
+              {
+                artifacts?: {
+                  classMaps?: {
+                    core?: string;
+                    palettes?: Record<string, string>;
+                  };
+                };
+              } | undefined
+            >
+          | undefined
+      )?.[componentName]?.artifacts?.classMaps;
+      const artifactPath =
+        scope.kind === 'core'
+          ? classMaps?.core
+          : classMaps?.palettes?.[`${scope.segment}.${scope.theme}`];
+
+      if (!artifactPath) {
+        return Promise.resolve(undefined);
+      }
+
+      return loadJsonFromBuild<T | undefined>(`${String(designSystem)}/${artifactPath}`, {
+        required: false,
+        fallback: undefined
+      }).catch((error) => {
+        console.warn(
+          `[showcase] Failed to load component class map "${componentName}" for "${String(
+            designSystem
+          )}". Falling back to aggregate/default classes.`,
+          error
+        );
+        return undefined;
+      });
+    },
+    [activeManifest?.components, designSystem]
+  );
 
   return (
     <KiskadeeContext.Provider
@@ -186,6 +239,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         setDesignSystem: (v) => setDesignSystem(v),
         artifactVersion: activeManifest?.version ?? undefined,
         loadComponentArtifact: activeManifest ? loadComponentArtifact : undefined,
+        loadComponentClassMap: activeManifest ? loadComponentClassMap : undefined,
         global: globalConfig
       }}
     >

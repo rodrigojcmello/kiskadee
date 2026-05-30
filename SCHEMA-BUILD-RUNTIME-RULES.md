@@ -290,6 +290,10 @@ Use each artifact for a different level of responsibility:
   and ripple. Component-specific semantic metadata should move toward component artifacts such as
   `components/switch.kiskadee.json`; `global.components.<name>` may exist temporarily only as a
   compatibility output.
+- `class-maps/core/<component>.kiskadee.json` and
+  `class-maps/<segment>.<theme>/<component>.kiskadee.json`: component-scoped class resolution
+  artifacts. They mirror the component branch from the aggregate class-map files so runtime hooks
+  can load only the class data they need.
 - `segments.json`: segment registry materialized for tooling and UIs that need segment names and
   theme availability.
 - `extra.<segment>.<theme>.kiskadee.json`: lightweight per-palette metadata that complements the
@@ -300,7 +304,9 @@ Rule:
 - Do not treat `manifest.json` as a substitute for `schema.json`.
 - Do not treat `global.kiskadee.json` as the structural source of truth for variant branches.
 - Do not treat `core.kiskadee.json` as semantic capability metadata for UI controls; it remains the
-  generated class map used by runtime class resolution.
+  aggregate generated class map used by legacy/runtime fallback class resolution.
+- Do not put semantic component defaults into component class-map artifacts. Class maps carry class
+  names only; use component metadata artifacts for options, effects, and variant defaults.
 - Runtime components and Showcase controls must use the same component semantic metadata when
   deciding whether a component effect exists.
 - Use `global.kiskadee.json` for convenience defaults; use `schema.json` when structural fidelity matters.

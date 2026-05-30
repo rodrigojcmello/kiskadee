@@ -49,6 +49,10 @@ export type ManifestComponent = {
    */
   artifacts?: {
     metadata?: string;
+    classMaps?: {
+      core?: string;
+      palettes?: Record<string, string>;
+    };
   };
 };
 

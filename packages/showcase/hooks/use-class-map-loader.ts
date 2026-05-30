@@ -11,15 +11,22 @@ const paletteMapCache: Partial<Record<string, ComponentClassNameMapJSON>> = {};
 export function useClassMapLoader({
   designSystem,
   segment,
-  theme
+  theme,
+  enabled = true
 }: {
   designSystem: DesignSystemKey;
   segment: string;
   theme: ThemeMode;
+  enabled?: boolean;
 }) {
   const [classesMap, setClassesMap] = useState<ComponentClassNameMapJSON>({});
 
   const ensureLoaded = useCallback(async () => {
+    if (!enabled) {
+      setClassesMap({});
+      return;
+    }
+
     // Load core map via dynamic import registry (guard if not registered),
     // reusing cached results to avoid repeated imports.
     let core: ComponentClassNameMapJSON = coreMapCache[designSystem] ?? {};
@@ -58,7 +65,7 @@ export function useClassMapLoader({
         root.classList.remove('no-transitions');
       }, 300);
     }
-  }, [designSystem, segment, theme]);
+  }, [designSystem, enabled, segment, theme]);
 
   useEffect(() => {
     void ensureLoaded();
