@@ -49,6 +49,9 @@ type SwitchVariantsConfig = {
     };
   };
 };
+type SwitchEffectsConfig = {
+  thumbSize?: true;
+};
 
 // Cache for global radius/ripple metadata loaded from <ds>/global.kiskadee.json
 const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
@@ -59,6 +62,7 @@ const switchActivationMotionCache: Partial<Record<string, SwitchActivationMotion
 const switchControlTextVisibilityCache: Partial<
   Record<string, SwitchControlTextVisibility | null>
 > = {};
+const switchEffectsCache: Partial<Record<string, SwitchEffectsConfig | null>> = {};
 const switchVariantsCache: Partial<Record<string, SwitchVariantsConfig | null>> = {};
 const textFieldVariantCache: Partial<Record<string, TextFieldVariant | null>> = {};
 const textFieldModeCache: Partial<Record<string, TextFieldMode | null>> = {};
@@ -92,6 +96,7 @@ export function useThemeExtras({
   const [switchControlTextVisibility, setSwitchControlTextVisibility] = useState<
     SwitchControlTextVisibility | undefined
   >(undefined);
+  const [switchEffects, setSwitchEffects] = useState<SwitchEffectsConfig | undefined>(undefined);
   const [switchVariants, setSwitchVariants] = useState<SwitchVariantsConfig | undefined>(undefined);
   const [textFieldVariant, setTextFieldVariant] = useState<TextFieldVariant | undefined>(undefined);
   const [textFieldMode, setTextFieldMode] = useState<TextFieldMode | undefined>(undefined);
@@ -135,6 +140,8 @@ export function useThemeExtras({
       let switchActivationMotionValue = switchActivationMotionCache[dsKey] ?? undefined;
       const hasSwitchControlTextVisibility = Object.hasOwn(switchControlTextVisibilityCache, dsKey);
       let switchControlTextVisibilityValue = switchControlTextVisibilityCache[dsKey] ?? undefined;
+      const hasSwitchEffects = Object.hasOwn(switchEffectsCache, dsKey);
+      let switchEffectsValue = switchEffectsCache[dsKey] ?? undefined;
       const hasSwitchVariants = Object.hasOwn(switchVariantsCache, dsKey);
       let switchVariantsValue = switchVariantsCache[dsKey] ?? undefined;
       const hasTextFieldVariant = Object.hasOwn(textFieldVariantCache, dsKey);
@@ -170,6 +177,7 @@ export function useThemeExtras({
         !hasSwitchRadius ||
         !hasSwitchActivationMotion ||
         !hasSwitchControlTextVisibility ||
+        !hasSwitchEffects ||
         !hasSwitchVariants ||
         !hasTextFieldVariant ||
         !hasTextFieldMode ||
@@ -211,6 +219,7 @@ export function useThemeExtras({
                   activationMotion?: SwitchActivationMotion;
                   controlTextVisibility?: SwitchControlTextVisibility;
                 };
+                effects?: SwitchEffectsConfig;
                 variants?: SwitchVariantsConfig;
               };
               textField?: {
@@ -236,6 +245,8 @@ export function useThemeExtras({
           switchControlTextVisibilityValue =
             json.components?.switch?.options?.controlTextVisibility;
           switchControlTextVisibilityCache[dsKey] = switchControlTextVisibilityValue ?? null;
+          switchEffectsValue = json.components?.switch?.effects;
+          switchEffectsCache[dsKey] = switchEffectsValue ?? null;
           switchVariantsValue = json.components?.switch?.variants;
           switchVariantsCache[dsKey] = switchVariantsValue ?? null;
           textFieldVariantValue = json.components?.textField?.options?.variant;
@@ -288,6 +299,7 @@ export function useThemeExtras({
       setSwitchRadius(switchRadiusValue);
       setSwitchActivationMotion(switchActivationMotionValue);
       setSwitchControlTextVisibility(switchControlTextVisibilityValue);
+      setSwitchEffects(switchEffectsValue);
       setSwitchVariants(switchVariantsValue);
       setTextFieldVariant(textFieldVariantValue);
       setTextFieldMode(textFieldModeValue);
@@ -370,6 +382,7 @@ export function useThemeExtras({
     switchRadius,
     switchActivationMotion,
     switchControlTextVisibility,
+    switchEffects,
     switchVariants,
     textFieldVariant,
     textFieldMode,

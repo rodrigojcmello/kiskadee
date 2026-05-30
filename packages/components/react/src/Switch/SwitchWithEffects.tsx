@@ -13,20 +13,15 @@ import {
   useRef,
   useSyncExternalStore
 } from 'react';
-import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
 import { useActivationFeedback } from '../effects/activation-feedback/useActivationFeedback.ts';
 import {
-  DEFAULT_SWITCH_ACTIVATION_MOTION,
-  DEFAULT_SWITCH_CONTROL_TEXT_VISIBILITY,
   DEFAULT_SWITCH_EMPHASIS,
   DEFAULT_SWITCH_INTENT,
   DEFAULT_SWITCH_LABEL_POSITION,
   DEFAULT_SWITCH_MODE,
-  DEFAULT_SWITCH_RADIUS,
   DEFAULT_SWITCH_SCALE,
   DEFAULT_SWITCH_VARIANT,
   hasSwitchActivationFeedbackEffect,
-  hasSwitchThumbSizeEffect,
   join,
   resolveSwitchActivationFeedbackEffectClassName,
   resolveSwitchClassNames,
@@ -38,7 +33,8 @@ import {
   calculateSwitchGeometry,
   clearSwitchGeometry
 } from './Switch.geometry.ts';
-import type { SwitchProps, SwitchVariantClassesMap } from './Switch.types.ts';
+import type { SwitchProps } from './Switch.types.ts';
+import { useSwitchArtifactConfig } from './useSwitchArtifactConfig.ts';
 
 export type SwitchWithEffectsProps = SwitchProps;
 
@@ -132,6 +128,7 @@ function SwitchWithEffectsRoot(props: SwitchWithEffectsProps) {
     emphasis = DEFAULT_SWITCH_EMPHASIS,
     intent = DEFAULT_SWITCH_INTENT,
     radius,
+    thumbSize,
     variant = DEFAULT_SWITCH_VARIANT,
     mode = DEFAULT_SWITCH_MODE,
     labelPosition = DEFAULT_SWITCH_LABEL_POSITION,
@@ -139,27 +136,15 @@ function SwitchWithEffectsRoot(props: SwitchWithEffectsProps) {
     readOnly,
     ...rootProps
   } = props;
-  const { classesMap, global } = useKiskadee();
-  const resolvedRadius =
-    radius ??
-    global?.components?.switch?.options?.radius ??
-    global?.radius ??
-    DEFAULT_SWITCH_RADIUS;
-  const resolvedActivationMotion =
-    global?.components?.switch?.options?.activationMotion ?? DEFAULT_SWITCH_ACTIVATION_MOTION;
-  const resolvedControlTextVisibility =
-    global?.components?.switch?.options?.controlTextVisibility ??
-    DEFAULT_SWITCH_CONTROL_TEXT_VISIBILITY;
-  const elements = resolveVariantElements(
-    classesMap.switch as SwitchVariantClassesMap | undefined,
-    variant,
-    mode
-  );
+  const { switchClassesMap, options, effects, globalEffects } = useSwitchArtifactConfig();
+  const resolvedRadius = radius ?? options.radius;
+  const resolvedActivationMotion = options.activationMotion;
+  const resolvedControlTextVisibility = options.controlTextVisibility;
+  const elements = resolveVariantElements(switchClassesMap, variant, mode);
   const trackRef = useRef<HTMLSpanElement | null>(null);
   const thumbRef = useRef<HTMLSpanElement | null>(null);
   const controlVisualRef = useRef<HTMLSpanElement | null>(null);
   const isLargeControlTextViewport = useLargeControlTextViewport();
-  const hasThumbSize = hasSwitchThumbSizeEffect(elements.e3, scale);
   const hasActivationFeedback = hasSwitchActivationFeedbackEffect(elements.e3);
   const hasLabel = label !== undefined && label !== null;
   const hasControlText = controlText !== undefined && controlText !== null;
@@ -167,6 +152,7 @@ function SwitchWithEffectsRoot(props: SwitchWithEffectsProps) {
     hasControlText &&
     (resolvedControlTextVisibility === 'always' ||
       (resolvedControlTextVisibility === 'largeOnly' && isLargeControlTextViewport));
+  const shouldUseThumbSize = thumbSize !== false && effects.thumbSize;
 
   const shouldStartPointerFeedback = useCallback((event: PointerEvent<HTMLLabelElement>) => {
     const controlVisualElement = controlVisualRef.current;
@@ -185,7 +171,7 @@ function SwitchWithEffectsRoot(props: SwitchWithEffectsProps) {
     handlePointerDown,
     isActive: isActivationFeedbackActive
   } = useActivationFeedback<HTMLLabelElement, HTMLInputElement>({
-    config: global?.effects?.activationFeedback,
+    config: globalEffects.activationFeedback,
     disabled,
     readOnly,
     onPointerDown,
@@ -197,7 +183,9 @@ function SwitchWithEffectsRoot(props: SwitchWithEffectsProps) {
   });
 
   const resolvedClassNames = useMemo(() => {
-    const resolveBase = hasThumbSize ? resolveSwitchThumbSizeClassNames : resolveSwitchClassNames;
+    const resolveBase = shouldUseThumbSize
+      ? resolveSwitchThumbSizeClassNames
+      : resolveSwitchClassNames;
     return resolveBase({
       elements,
       classNames: {
@@ -227,7 +215,7 @@ function SwitchWithEffectsRoot(props: SwitchWithEffectsProps) {
     resolvedControlTextVisibility,
     resolvedRadius,
     scale,
-    hasThumbSize
+    shouldUseThumbSize
   ]);
   const activationFeedbackClassName = hasActivationFeedback
     ? join(

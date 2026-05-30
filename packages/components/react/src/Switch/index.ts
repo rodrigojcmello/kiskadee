@@ -1,5 +1,4 @@
 export { Switch } from './Switch.tsx';
-export { SwitchMotion } from './SwitchMotion.tsx';
 export type {
   SwitchClassNames,
   SwitchElementName,
@@ -8,3 +7,6 @@ export type {
   SwitchProps,
   SwitchStatus
 } from './Switch.types.ts';
+export { SwitchMotion } from './SwitchMotion.tsx';
+export type { SwitchArtifactConfig } from './useSwitchArtifactConfig.ts';
+export { useSwitchArtifactConfig } from './useSwitchArtifactConfig.ts';

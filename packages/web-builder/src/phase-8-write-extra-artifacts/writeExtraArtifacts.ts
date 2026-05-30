@@ -42,6 +42,9 @@ type SwitchOptionsPayload = {
   activationMotion?: SwitchActivationMotion;
   controlTextVisibility?: SwitchControlTextVisibility;
 };
+type SwitchEffectsPayload = {
+  thumbSize?: true;
+};
 type SwitchVariantOptionsPayload = {
   mode?: SwitchMode;
 };
@@ -113,6 +116,47 @@ function pickTextFieldVariantOptions(options: unknown): TextFieldVariantOptionsP
 function pickSwitchVariantOptions(options: unknown): SwitchVariantOptionsPayload | undefined {
   const mode = (options as { mode?: SwitchMode } | undefined)?.mode;
   return mode ? { mode } : undefined;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function hasDeclaredThumbSizeEffect(element: unknown): boolean {
+  if (!isRecord(element) || !isRecord(element.effects)) return false;
+  const thumbSize = element.effects.thumbSize;
+  return (
+    Object.hasOwn(element.effects, 'thumbSize') &&
+    thumbSize !== undefined &&
+    thumbSize !== null &&
+    thumbSize !== false
+  );
+}
+
+function elementsHaveThumbSizeEffect(elements: unknown): boolean {
+  return isRecord(elements) && Object.values(elements).some(hasDeclaredThumbSizeEffect);
+}
+
+function switchBranchHasThumbSizeEffect(branch: unknown): boolean {
+  if (!isRecord(branch)) return false;
+  if (elementsHaveThumbSizeEffect(branch.elements)) return true;
+
+  const modes = branch.modes;
+  return isRecord(modes)
+    ? Object.values(modes).some((mode) =>
+        isRecord(mode) ? elementsHaveThumbSizeEffect(mode.elements) : false
+      )
+    : false;
+}
+
+function buildSwitchEffectsPayload(schema: ExtractableSchema): SwitchEffectsPayload {
+  const switchSchema = schema.components?.switch;
+  if (!isRecord(switchSchema)) return {};
+  if (switchBranchHasThumbSizeEffect(switchSchema)) return { thumbSize: true };
+
+  const variants = switchSchema.variants;
+  if (!isRecord(variants)) return {};
+  return Object.values(variants).some(switchBranchHasThumbSizeEffect) ? { thumbSize: true } : {};
 }
 
 function buildSwitchVariantsPayload(schema: ExtractableSchema): SwitchVariantsPayload {
@@ -304,6 +348,7 @@ export async function writeExtraArtifacts(params: {
   const switchControlTextVisibility = schema.components?.switch?.options?.controlTextVisibility as
     | SwitchControlTextVisibility
     | undefined;
+  const switchEffects = buildSwitchEffectsPayload(schema);
   const switchVariants = buildSwitchVariantsPayload(schema);
   const textFieldVariant = schema.components?.textField?.options?.variant as
     | TextFieldVariant
@@ -342,6 +387,7 @@ export async function writeExtraArtifacts(params: {
       switchRadius ||
       switchActivationMotion ||
       switchControlTextVisibility ||
+      Object.keys(switchEffects).length > 0 ||
       Object.keys(switchVariants).length > 0
   );
   const hasTextFieldOptions = Boolean(
@@ -384,6 +430,7 @@ export async function writeExtraArtifacts(params: {
         };
         switch?: {
           options?: SwitchOptionsPayload;
+          effects?: SwitchEffectsPayload;
           variants?: SwitchVariantsPayload;
         };
         textField?: {
@@ -447,6 +494,7 @@ export async function writeExtraArtifacts(params: {
                     ? { controlTextVisibility: switchControlTextVisibility }
                     : {})
                 },
+                ...(Object.keys(switchEffects).length > 0 ? { effects: switchEffects } : {}),
                 ...(Object.keys(switchVariants).length > 0 ? { variants: switchVariants } : {})
               }
             }

@@ -80,6 +80,9 @@ export type KiskadeeContextValue = {
           activationMotion?: SwitchActivationMotion;
           controlTextVisibility?: SwitchControlTextVisibility;
         };
+        effects?: {
+          thumbSize?: true;
+        };
         variants?: {
           standard?: {
             options?: {

@@ -5,8 +5,8 @@ import { animate, motion, useMotionValue } from 'motion/react';
 import {
   type ComponentType,
   type LazyExoticComponent,
-  type MouseEvent,
   lazy,
+  type MouseEvent,
   memo,
   type RefObject,
   Suspense,
@@ -17,19 +17,14 @@ import {
   useState,
   useSyncExternalStore
 } from 'react';
-import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
 import {
-  DEFAULT_SWITCH_ACTIVATION_MOTION,
-  DEFAULT_SWITCH_CONTROL_TEXT_VISIBILITY,
   DEFAULT_SWITCH_EMPHASIS,
   DEFAULT_SWITCH_INTENT,
   DEFAULT_SWITCH_LABEL_POSITION,
   DEFAULT_SWITCH_MODE,
-  DEFAULT_SWITCH_RADIUS,
   DEFAULT_SWITCH_SCALE,
   DEFAULT_SWITCH_VARIANT,
   hasSwitchActivationFeedbackEffect,
-  hasSwitchThumbSizeEffect,
   join,
   resolveSwitchClassNames,
   resolveVariantElements
@@ -39,8 +34,9 @@ import {
   calculateSwitchGeometry,
   clearSwitchGeometry
 } from './Switch.geometry.ts';
-import type { SwitchMotionProps, SwitchVariantClassesMap } from './Switch.types.ts';
+import type { SwitchMotionProps } from './Switch.types.ts';
 import type { SwitchMotionWithEffectsProps } from './SwitchMotionWithEffects.tsx';
+import { useSwitchArtifactConfig } from './useSwitchArtifactConfig.ts';
 
 const LazySwitchMotionWithEffects = lazy(
   () => import('./SwitchMotionWithEffects.tsx')
@@ -357,6 +353,7 @@ function SwitchMotionCoreRoot(props: SwitchMotionProps) {
     emphasis = DEFAULT_SWITCH_EMPHASIS,
     intent = DEFAULT_SWITCH_INTENT,
     radius,
+    thumbSize: _thumbSize,
     variant = DEFAULT_SWITCH_VARIANT,
     mode = DEFAULT_SWITCH_MODE,
     labelPosition = DEFAULT_SWITCH_LABEL_POSITION,
@@ -368,22 +365,11 @@ function SwitchMotionCoreRoot(props: SwitchMotionProps) {
     onClickCapture,
     ...rootProps
   } = props;
-  const { classesMap, global } = useKiskadee();
-  const resolvedRadius =
-    radius ??
-    global?.components?.switch?.options?.radius ??
-    global?.radius ??
-    DEFAULT_SWITCH_RADIUS;
-  const resolvedActivationMotion =
-    global?.components?.switch?.options?.activationMotion ?? DEFAULT_SWITCH_ACTIVATION_MOTION;
-  const resolvedControlTextVisibility =
-    global?.components?.switch?.options?.controlTextVisibility ??
-    DEFAULT_SWITCH_CONTROL_TEXT_VISIBILITY;
-  const elements = resolveVariantElements(
-    classesMap.switch as SwitchVariantClassesMap | undefined,
-    variant,
-    mode
-  );
+  const { switchClassesMap, options } = useSwitchArtifactConfig();
+  const resolvedRadius = radius ?? options.radius;
+  const resolvedActivationMotion = options.activationMotion;
+  const resolvedControlTextVisibility = options.controlTextVisibility;
+  const elements = resolveVariantElements(switchClassesMap, variant, mode);
   const { controlState, setControlState } = useControlState({
     controlState: controlStateProp,
     defaultControlState,
@@ -529,27 +515,16 @@ function SwitchMotionCoreRoot(props: SwitchMotionProps) {
 const SwitchMotionCore = memo(SwitchMotionCoreRoot);
 
 function SwitchMotionRoot(props: SwitchMotionProps) {
-  const {
-    scale = DEFAULT_SWITCH_SCALE,
-    variant = DEFAULT_SWITCH_VARIANT,
-    mode = DEFAULT_SWITCH_MODE
-  } = props;
-  const { classesMap } = useKiskadee();
-  const elements = resolveVariantElements(
-    classesMap.switch as SwitchVariantClassesMap | undefined,
-    variant,
-    mode
-  );
-  const hasThumbSize = useMemo(
-    () => hasSwitchThumbSizeEffect(elements.e3, scale),
-    [elements.e3, scale]
-  );
+  const { variant = DEFAULT_SWITCH_VARIANT, mode = DEFAULT_SWITCH_MODE, thumbSize } = props;
+  const { switchClassesMap, effects } = useSwitchArtifactConfig();
+  const elements = resolveVariantElements(switchClassesMap, variant, mode);
+  const shouldUseThumbSize = thumbSize !== false && effects.thumbSize;
   const hasActivationFeedback = useMemo(
     () => hasSwitchActivationFeedbackEffect(elements.e3),
     [elements.e3]
   );
 
-  if (hasThumbSize || hasActivationFeedback) {
+  if (shouldUseThumbSize || hasActivationFeedback) {
     return (
       <Suspense fallback={<SwitchMotionCore {...props} />}>
         <LazySwitchMotionWithEffects {...props} />

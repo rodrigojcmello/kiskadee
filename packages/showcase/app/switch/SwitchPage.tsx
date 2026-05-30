@@ -1,10 +1,16 @@
 'use client';
 
 import type { ComponentEmphasis, ElementSizeValue, RadiusMode, SwitchIntent } from '@kiskadee/core';
-import { Switch, SwitchMotion, useKiskadee, useShowcase } from '@kiskadee/react-components';
+import {
+  Switch as KSwitch,
+  SwitchMotion,
+  useKiskadee,
+  useShowcase,
+  useSwitchArtifactConfig
+} from '@kiskadee/react-components';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { Select } from '@/k-components';
+import { Switch as ControlSwitch, Select } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
 import s from './Switch.module.scss';
 
@@ -57,7 +63,9 @@ function StateTile({ title, children }: { title: string; children: ReactNode }) 
 }
 
 export default function SwitchPage() {
-  const { designSystem, global } = useKiskadee();
+  const { designSystem } = useKiskadee();
+  const { effects: switchArtifactEffects, options: switchArtifactOptions } =
+    useSwitchArtifactConfig();
   const { manifest } = useShowcase();
   const [controlState, setControlState] = useState(true);
   const [scale, setScale] = useState<ElementSizeValue>('s:md:1');
@@ -65,10 +73,14 @@ export default function SwitchPage() {
   const [intent, setIntent] = useState<SwitchIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
   const [switchMotion, setSwitchMotion] = useState<SwitchMotionMode>('static');
-  const SwitchComponent = switchMotion === 'motion' ? SwitchMotion : Switch;
+  const [thumbSizeEnabled, setThumbSizeEnabled] = useState(true);
+  const SwitchComponent = switchMotion === 'motion' ? SwitchMotion : KSwitch;
   const switchMeta = manifest?.components?.switch;
   const isSwitchAvailable = Boolean(switchMeta);
-  const defaultRadius = global?.components?.switch?.options?.radius ?? global?.radius ?? 'rounded';
+  const defaultRadius = switchArtifactOptions.radius;
+  const hasThumbSizeEffect = switchArtifactEffects.thumbSize;
+  const isThumbSizeEnabled = hasThumbSizeEffect && thumbSizeEnabled;
+  const thumbSizeOverride = isThumbSizeEnabled ? undefined : false;
   const supportedSwitchScales = switchMeta?.scale;
   const supportedSwitchIntents = switchMeta?.state;
   const supportedSwitchStates = supportedSwitchIntents?.[intent];
@@ -207,6 +219,16 @@ export default function SwitchPage() {
             }}
             disabled={!isSwitchAvailable}
           />
+          <ControlSwitch
+            label="Thumb size"
+            controlState={isThumbSizeEnabled}
+            onControlStateChange={(nextControlState) => {
+              if (!hasThumbSizeEffect || nextControlState === isThumbSizeEnabled) return;
+              playWowTransition();
+              setThumbSizeEnabled(nextControlState);
+            }}
+            disabled={!isSwitchAvailable || !hasThumbSizeEffect}
+          />
         </div>
       </header>
 
@@ -227,6 +249,7 @@ export default function SwitchPage() {
                 onControlStateChange={setControlState}
                 scale={scale}
                 radius={radius}
+                thumbSize={thumbSizeOverride}
                 intent={intent}
                 emphasis={emphasis}
               />
@@ -244,6 +267,7 @@ export default function SwitchPage() {
                   controlState={false}
                   scale={scale}
                   radius={radius}
+                  thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -257,6 +281,7 @@ export default function SwitchPage() {
                   controlState
                   scale={scale}
                   radius={radius}
+                  thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -271,6 +296,7 @@ export default function SwitchPage() {
                   status="hover"
                   scale={scale}
                   radius={radius}
+                  thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -285,6 +311,7 @@ export default function SwitchPage() {
                   status="focus"
                   scale={scale}
                   radius={radius}
+                  thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -299,6 +326,7 @@ export default function SwitchPage() {
                   status="hover"
                   scale={scale}
                   radius={radius}
+                  thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -313,6 +341,7 @@ export default function SwitchPage() {
                   status="focus"
                   scale={scale}
                   radius={radius}
+                  thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -332,6 +361,7 @@ export default function SwitchPage() {
                   controlState={false}
                   scale={scale}
                   radius={radius}
+                  thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   disabled
@@ -345,6 +375,7 @@ export default function SwitchPage() {
                   controlState
                   scale={scale}
                   radius={radius}
+                  thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   disabled
@@ -364,6 +395,7 @@ export default function SwitchPage() {
                   controlState
                   scale={scale}
                   radius={radius}
+                  thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -377,6 +409,7 @@ export default function SwitchPage() {
                   controlState
                   scale={scale}
                   radius={radius}
+                  thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly

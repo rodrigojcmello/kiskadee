@@ -287,7 +287,8 @@ Use each artifact for a different level of responsibility:
   fonts, and high-level component capabilities without loading the full schema.
 - `global.kiskadee.json`: descriptive runtime-friendly defaults and DS intentions that are useful
   without traversing full component branches. Use it for global defaults such as fonts, radius,
-  ripple, and recommended component options like a default variant.
+  ripple, recommended component options like a default variant, and semantic component effect
+  availability such as `components.switch.effects.thumbSize`.
 - `segments.json`: segment registry materialized for tooling and UIs that need segment names and
   theme availability.
 - `extra.<segment>.<theme>.kiskadee.json`: lightweight per-palette metadata that complements the
@@ -297,7 +298,13 @@ Rule:
 
 - Do not treat `manifest.json` as a substitute for `schema.json`.
 - Do not treat `global.kiskadee.json` as the structural source of truth for variant branches.
+- Do not treat `core.kiskadee.json` as semantic capability metadata for UI controls; it remains the
+  generated class map used by runtime class resolution.
+- Runtime components and Showcase controls must use the same `global.kiskadee.json` metadata when
+  deciding whether a semantic component effect exists.
 - Use `global.kiskadee.json` for convenience defaults; use `schema.json` when structural fidelity matters.
+- Omit unsupported component effects from `global.kiskadee.json`; do not emit explicit `false`
+  values for absent effects.
 
 ### 5.1 Segment and theme representation
 

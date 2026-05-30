@@ -1,0 +1,59 @@
+.container {
+  display: inline-grid;
+  gap: 6px;
+  color: var(--neutral-100);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+}
+
+.label {
+  display: block;
+}
+
+.track {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  inline-size: 56px;
+  block-size: 40px;
+  padding: 4px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), inset 0 0 0 1px hsl(0deg 0% 100% / 5%);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.thumb {
+  display: block;
+  inline-size: 24px;
+  block-size: 24px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.56);
+  transform: translateX(0);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.container:has(input:checked) .track {
+  background: var(--primary-50);
+}
+
+.container:has(input:checked) .thumb {
+  background: #fff;
+  transform: translateX(24px);
+}
+
+.container:has(input:focus-visible) .track {
+  outline: 2px solid var(--primary-50);
+  outline-offset: 2px;
+}
+
+.container:has(input:disabled) {
+  cursor: not-allowed;
+}
+
+.container:has(input:disabled) .track {
+  opacity: 0.5;
+}

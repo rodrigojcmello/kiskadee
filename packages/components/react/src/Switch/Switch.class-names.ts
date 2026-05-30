@@ -122,13 +122,6 @@ function resolveEffectBucketClassName(
   return join(bucket.all, bucket[scaleKey]) ?? '';
 }
 
-export function hasSwitchThumbSizeEffect(
-  element: ClassNameByElementJSON | undefined,
-  scale: string
-): boolean {
-  return resolveSwitchThumbSizeEffectClassName(element, scale).length > 0;
-}
-
 export function hasSwitchActivationFeedbackEffect(
   element: ClassNameByElementJSON | undefined
 ): boolean {
@@ -173,10 +166,12 @@ function resolveThumbRadiusClassName(
   radiusMode: RadiusMode,
   branch: SwitchStructuralBranch
 ): string {
-  return join(
-    resolveRadiusClassName(element, scale, radiusMode),
-    radiusMode === 'rounded' ? `k-swt-e3a-${branch}` : ''
-  ) ?? '';
+  return (
+    join(
+      resolveRadiusClassName(element, scale, radiusMode),
+      radiusMode === 'rounded' ? `k-swt-e3a-${branch}` : ''
+    ) ?? ''
+  );
 }
 
 export function resolveSwitchClassNames(options: {

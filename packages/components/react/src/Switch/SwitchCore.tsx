@@ -10,15 +10,11 @@ import {
   useRef,
   useSyncExternalStore
 } from 'react';
-import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
 import {
-  DEFAULT_SWITCH_ACTIVATION_MOTION,
-  DEFAULT_SWITCH_CONTROL_TEXT_VISIBILITY,
   DEFAULT_SWITCH_EMPHASIS,
   DEFAULT_SWITCH_INTENT,
   DEFAULT_SWITCH_LABEL_POSITION,
   DEFAULT_SWITCH_MODE,
-  DEFAULT_SWITCH_RADIUS,
   DEFAULT_SWITCH_SCALE,
   DEFAULT_SWITCH_VARIANT,
   join,
@@ -30,7 +26,8 @@ import {
   calculateSwitchGeometry,
   clearSwitchGeometry
 } from './Switch.geometry.ts';
-import type { SwitchProps, SwitchVariantClassesMap } from './Switch.types.ts';
+import type { SwitchProps } from './Switch.types.ts';
+import { useSwitchArtifactConfig } from './useSwitchArtifactConfig.ts';
 
 const SWITCH_CONTROL_SIDE_CLASS_NAME = 'k-swt-x2-a';
 const SWITCH_CONTROL_TEXT_OFF_CLASS_NAME = 'k-swt-x3-a';
@@ -119,6 +116,7 @@ function SwitchRoot(props: SwitchProps) {
     emphasis = DEFAULT_SWITCH_EMPHASIS,
     intent = DEFAULT_SWITCH_INTENT,
     radius,
+    thumbSize: _thumbSize,
     variant = DEFAULT_SWITCH_VARIANT,
     mode = DEFAULT_SWITCH_MODE,
     labelPosition = DEFAULT_SWITCH_LABEL_POSITION,
@@ -126,22 +124,11 @@ function SwitchRoot(props: SwitchProps) {
     readOnly,
     ...rootProps
   } = props;
-  const { classesMap, global } = useKiskadee();
-  const resolvedRadius =
-    radius ??
-    global?.components?.switch?.options?.radius ??
-    global?.radius ??
-    DEFAULT_SWITCH_RADIUS;
-  const resolvedActivationMotion =
-    global?.components?.switch?.options?.activationMotion ?? DEFAULT_SWITCH_ACTIVATION_MOTION;
-  const resolvedControlTextVisibility =
-    global?.components?.switch?.options?.controlTextVisibility ??
-    DEFAULT_SWITCH_CONTROL_TEXT_VISIBILITY;
-  const elements = resolveVariantElements(
-    classesMap.switch as SwitchVariantClassesMap | undefined,
-    variant,
-    mode
-  );
+  const { switchClassesMap, options } = useSwitchArtifactConfig();
+  const resolvedRadius = radius ?? options.radius;
+  const resolvedActivationMotion = options.activationMotion;
+  const resolvedControlTextVisibility = options.controlTextVisibility;
+  const elements = resolveVariantElements(switchClassesMap, variant, mode);
   const trackRef = useRef<HTMLSpanElement | null>(null);
   const thumbRef = useRef<HTMLSpanElement | null>(null);
   const isLargeControlTextViewport = useLargeControlTextViewport();

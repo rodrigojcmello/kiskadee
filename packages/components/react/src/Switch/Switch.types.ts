@@ -49,6 +49,7 @@ export type SwitchProps = Omit<
   emphasis?: ComponentEmphasis;
   intent?: SwitchIntent;
   radius?: RadiusMode;
+  thumbSize?: false;
   variant?: SwitchVariant;
   mode?: SwitchMode;
   labelPosition?: SwitchLabelPosition;
