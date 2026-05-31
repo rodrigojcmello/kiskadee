@@ -176,25 +176,19 @@ function SwitchV2Root(props: SwitchV2Props) {
       onClickCapture={motionController.handleClickCapture}
       classNames={resolvedClassNames}
     >
-      <HeadlessSwitch.Track ref={motionController.trackRef}>
+      <HeadlessSwitch.Track ref={motionController.thumbProps.trackRef}>
         {MotionThumb ? (
           <MotionThumb
             activationMotion={options.activationMotion}
-            controlState={motionController.projectedControlState}
-            disabled={disabled}
-            readOnly={readOnly}
-            requestSuppressNextClick={motionController.requestSuppressNextClick}
-            setControlState={motionController.setControlState}
-            setDragPreviewControlState={motionController.setDragPreviewControlState}
             thumbClassName={resolvedClassNames.e3}
-            thumbRef={motionController.thumbRef}
-            thumbTranslation={motionController.thumbTranslation}
-            trackRef={motionController.trackRef}
+            {...motionController.thumbProps}
           >
             {thumbVisual}
           </MotionThumb>
         ) : (
-          <HeadlessSwitch.Thumb ref={motionController.thumbRef}>{thumbVisual}</HeadlessSwitch.Thumb>
+          <HeadlessSwitch.Thumb ref={motionController.thumbProps.thumbRef}>
+            {thumbVisual}
+          </HeadlessSwitch.Thumb>
         )}
       </HeadlessSwitch.Track>
       {hasLabel ? <HeadlessSwitch.Label>{label}</HeadlessSwitch.Label> : null}

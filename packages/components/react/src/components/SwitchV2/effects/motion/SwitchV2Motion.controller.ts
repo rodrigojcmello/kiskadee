@@ -17,15 +17,23 @@ type SwitchV2MotionControllerOptions = {
   readOnly?: boolean;
 };
 
-type SwitchV2MotionControllerResult = {
-  handleClickCapture: (event: MouseEvent<HTMLLabelElement>) => void;
-  projectedControlState: boolean;
+type SwitchV2MotionThumbRuntimeProps = {
+  controlState: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
   requestSuppressNextClick: () => void;
   setControlState: (controlState: boolean) => void;
   setDragPreviewControlState: (controlState: boolean | null) => void;
   thumbRef: RefObject<HTMLSpanElement | null>;
   thumbTranslation: number;
   trackRef: RefObject<HTMLSpanElement | null>;
+};
+
+type SwitchV2MotionControllerResult = {
+  handleClickCapture: (event: MouseEvent<HTMLLabelElement>) => void;
+  projectedControlState: boolean;
+  setControlState: (controlState: boolean) => void;
+  thumbProps: SwitchV2MotionThumbRuntimeProps;
 };
 
 const SWITCH_V2_MOTION_DRAG_CLICK_SUPPRESSION_MS = 450;
@@ -148,11 +156,17 @@ export function useSwitchV2MotionController({
   return {
     handleClickCapture,
     projectedControlState,
-    requestSuppressNextClick,
     setControlState,
-    setDragPreviewControlState,
-    thumbRef,
-    thumbTranslation,
-    trackRef
+    thumbProps: {
+      controlState: projectedControlState,
+      disabled,
+      readOnly,
+      requestSuppressNextClick,
+      setControlState,
+      setDragPreviewControlState,
+      thumbRef,
+      thumbTranslation,
+      trackRef
+    }
   };
 }
