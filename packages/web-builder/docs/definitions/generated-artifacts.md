@@ -5,6 +5,8 @@
 - Core CSS: utilities for decorations/scales and palette-independent base rules.
 - Effects CSS: gated effect utilities such as shadows, ripple tokens, and stateful radius effects.
 - Per-palette CSS: color rules only.
+- Generated CSS remains aggregated by design. It behaves like a shared utility layer with maximum
+  class reuse across components, while structural CSS remains owned by the component packages.
 - `core.kiskadee.json` and `<segment>.<theme>.kiskadee.json`: aggregate class maps kept for
   compatibility while component hooks migrate to smaller artifacts.
 - `class-maps/core/<component>.kiskadee.json`: component-scoped core class map.
@@ -16,7 +18,8 @@ Metadata is written per template under `packages/web-builder/build/<template-key
 
 - `manifest.json`: used by the showcase to discover templates, segments and themes.
 - `schema.json` / `segments.json`: schema and segment data for inspection or tooling.
-- `global.kiskadee.json`: global metadata consumed by runtime/components.
+- `global.kiskadee.json`: global metadata consumed by runtime/components, such as fonts, radius,
+  and global effects. Component semantic metadata should live in component artifacts.
 - `components/<component>.kiskadee.json`: component-scoped semantic metadata loaded on demand by
   component runtime hooks. `components/switch.kiskadee.json` is the first emitted artifact in this
   family.

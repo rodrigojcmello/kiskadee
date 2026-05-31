@@ -35,12 +35,6 @@ export type SwitchComponentArtifactJSON = {
   variants: SwitchComponentVariantsPayload;
 };
 
-export type LegacySwitchGlobalConfig = {
-  options: SwitchComponentOptionsPayload;
-  effects?: SwitchComponentEffectsPayload;
-  variants?: SwitchComponentVariantsPayload;
-};
-
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
@@ -133,15 +127,5 @@ export function buildSwitchComponentArtifact(schema: Schema): SwitchComponentArt
     options,
     effects,
     variants
-  };
-}
-
-export function buildLegacySwitchGlobalConfig(
-  artifact: SwitchComponentArtifactJSON
-): LegacySwitchGlobalConfig {
-  return {
-    options: artifact.options,
-    ...(Object.keys(artifact.effects).length > 0 ? { effects: artifact.effects } : {}),
-    ...(Object.keys(artifact.variants).length > 0 ? { variants: artifact.variants } : {})
   };
 }

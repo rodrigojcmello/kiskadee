@@ -162,7 +162,8 @@ Reason:
 
 Consequence:
 
-- `global.kiskadee.json` may expose `components.<name>.options.variant` as descriptive DS metadata.
+- Component metadata artifacts may expose `components.<name>.options.variant`-equivalent data as
+  descriptive DS metadata.
 - Variant-local `options` should contain only additional settings that are meaningful within that
   branch (for example Tabs `indicatorShape`, `separator`, `lowerCurve`).
 - TextField now uses variant-local `options.mode` as the default named presentation for a given
@@ -288,8 +289,8 @@ Use each artifact for a different level of responsibility:
 - `global.kiskadee.json`: descriptive runtime-friendly defaults and DS intentions that are useful
   without traversing full component branches. Use it for global defaults such as fonts, radius,
   and ripple. Component-specific semantic metadata should move toward component artifacts such as
-  `components/switch.kiskadee.json`; `global.components.<name>` may exist temporarily only as a
-  compatibility output.
+  `components/switch.kiskadee.json`; new artifacts should not add component semantic payloads under
+  `global.components.<name>`.
 - `class-maps/core/<component>.kiskadee.json` and
   `class-maps/<segment>.<theme>/<component>.kiskadee.json`: component-scoped class resolution
   artifacts. They mirror the component branch from the aggregate class-map files so runtime hooks
@@ -298,6 +299,9 @@ Use each artifact for a different level of responsibility:
   theme availability.
 - `extra.<segment>.<theme>.kiskadee.json`: lightweight per-palette metadata that complements the
   class maps, such as resolved background information used by consumers like Showcase.
+- `core.kiskadee.css`, `<segment>.<theme>.kiskadee.css`, `effects.kiskadee.css`, and token CSS:
+  shared utility-style CSS bundles. Keep these aggregated unless measurements prove a component CSS
+  split beats the current class reuse/dedupe model.
 
 Rule:
 
@@ -307,6 +311,8 @@ Rule:
   aggregate generated class map used by legacy/runtime fallback class resolution.
 - Do not put semantic component defaults into component class-map artifacts. Class maps carry class
   names only; use component metadata artifacts for options, effects, and variant defaults.
+- Do not split generated CSS by component as a default next step. The generated CSS is intentionally
+  utility-like and reusable across components, while structural CSS belongs to component packages.
 - Runtime components and Showcase controls must use the same component semantic metadata when
   deciding whether a component effect exists.
 - Use `global.kiskadee.json` for convenience defaults; use `schema.json` when structural fidelity matters.

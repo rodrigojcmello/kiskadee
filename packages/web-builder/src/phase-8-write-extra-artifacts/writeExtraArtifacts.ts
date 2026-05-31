@@ -27,10 +27,8 @@ import type {
 import { convertHslaToHex } from '@kiskadee/core';
 import { minifyCss } from '@kiskadee/css-build';
 import {
-  buildLegacySwitchGlobalConfig,
   buildSwitchComponentArtifact,
-  SWITCH_COMPONENT_ARTIFACT_PATH,
-  type LegacySwitchGlobalConfig
+  SWITCH_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/switchComponentArtifact.ts';
 import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex.ts';
 import { type FontStack, toCssFontFamily } from '../utils/fontFamily.ts';
@@ -290,9 +288,6 @@ export async function writeExtraArtifacts(params: {
     | TabsBridgeLowerCurve
     | undefined;
   const switchComponentArtifact = buildSwitchComponentArtifact(schema);
-  const switchGlobalConfig = switchComponentArtifact
-    ? buildLegacySwitchGlobalConfig(switchComponentArtifact)
-    : undefined;
   const textFieldVariant = schema.components?.textField?.options?.variant as
     | TextFieldVariant
     | undefined;
@@ -325,9 +320,6 @@ export async function writeExtraArtifacts(params: {
       tabsSeparator !== undefined ||
       tabsLowerCurve
   );
-  const hasSwitchOptions = Boolean(
-    switchGlobalConfig && Object.keys(switchGlobalConfig).length > 0
-  );
   const hasTextFieldOptions = Boolean(
     textFieldVariant ||
       textFieldMode ||
@@ -341,7 +333,6 @@ export async function writeExtraArtifacts(params: {
     hasActivationFeedback ||
     hasRipple ||
     hasTabsOptions ||
-    hasSwitchOptions ||
     hasTextFieldOptions
   ) {
     await mkdir(buildDir, { recursive: true });
@@ -366,7 +357,6 @@ export async function writeExtraArtifacts(params: {
             lowerCurve?: TabsBridgeLowerCurve;
           };
         };
-        switch?: LegacySwitchGlobalConfig;
         textField?: {
           options?: TextFieldOptionsPayload;
           variants?: TextFieldVariantsPayload;
@@ -399,7 +389,7 @@ export async function writeExtraArtifacts(params: {
       };
     }
 
-    if (hasTabsOptions || hasSwitchOptions || hasTextFieldOptions) {
+    if (hasTabsOptions || hasTextFieldOptions) {
       globalPayload.components = {
         ...(globalPayload.components ?? {}),
         ...(hasTabsOptions
@@ -415,11 +405,6 @@ export async function writeExtraArtifacts(params: {
                   ...(tabsLowerCurve ? { lowerCurve: tabsLowerCurve } : {})
                 }
               }
-            }
-          : {}),
-        ...(hasSwitchOptions
-          ? {
-              switch: switchGlobalConfig!
             }
           : {}),
         ...(hasTextFieldOptions

@@ -15,8 +15,8 @@ The default mode comes from `schema.global.radius` and is exported in the build 
 `global.kiskadee.json`.
 
 Components may define an intrinsic default radius when their official shape should not follow
-`schema.global.radius`. In that case, the component default is exported under
-`global.kiskadee.json` as `components.<component>.options.radius`.
+`schema.global.radius`. In that case, the component default is exported through the component
+metadata artifact, such as `components/switch.kiskadee.json`.
 
 Runtime resolution order is:
 

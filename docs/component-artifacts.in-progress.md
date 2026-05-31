@@ -39,7 +39,8 @@ Implemented decisions:
 
 - Switch semantic metadata now has a canonical component artifact:
   `components/switch.kiskadee.json`.
-- `global.kiskadee.json` still publishes `components.switch` as a temporary compatibility output.
+- `global.kiskadee.json` initially published `components.switch` as a temporary compatibility
+  output; Phase 3 removes this legacy output for newly generated artifacts.
 - The new Switch artifact shape is:
 
   ```json
@@ -54,7 +55,8 @@ Implemented decisions:
 - `manifest.components.switch.artifacts.metadata` points to
   `components/switch.kiskadee.json` when the artifact exists.
 - `useSwitchArtifactConfig` remains the public Switch API. It still returns synchronously, prefers
-  the component artifact after it loads, and falls back to `global.components.switch` or defaults.
+  the component artifact after it loads, and keeps a `global.components.switch` fallback only for
+  older generated artifacts.
 - `KiskadeeContext` now exposes optional infrastructure fields:
   `artifactVersion` and `loadComponentArtifact`.
 - React Components uses a small internal promise cache keyed by design system, artifact version, and
@@ -85,8 +87,8 @@ Validation notes:
 - Generated output inspection confirmed:
   - `global.kiskadee.json` still exists for every design system.
   - `components/switch.kiskadee.json` exists for design systems with Switch metadata.
-  - `global.components.switch` and the component artifact are semantically equivalent during dual
-    output; the component artifact keeps required empty `effects`/`variants` objects.
+  - `global.components.switch` and the component artifact were semantically equivalent during dual
+    output; Phase 3 removes the legacy `global.components.switch` output.
   - `manifest.components.switch.artifacts.metadata` is present when the Switch artifact exists.
 - `node packages/headless/react/scripts/build.ts --skip-types` completed successfully.
 - `node packages/components/react/scripts/build.ts --skip-types` completed successfully.
@@ -208,6 +210,74 @@ Blocked/partial validation:
 - Starting a new Showcase dev server on port `3014` was not needed because an existing Showcase dev
   server was already running on `3000`.
 
+## Phase 3 Implementation Status
+
+Status: implemented locally for revised Phase 3.
+
+Implemented decisions:
+
+- Phase 3 is no longer a CSS split phase.
+- Generated CSS remains aggregated because it is utility-like and optimized for cross-component
+  class reuse, similar to Tailwind. Component structural CSS remains owned by component packages.
+- Keep these CSS artifacts shared:
+  - `core.kiskadee.css`
+  - `<segment>.<theme>.kiskadee.css`
+  - `effects.kiskadee.css`
+  - `tokens.kiskadee.css`
+  - `tokens.<segment>.<theme>.kiskadee.css`
+- Stop emitting the Switch semantic metadata compatibility payload at
+  `global.components.switch`.
+- Continue emitting `components/switch.kiskadee.json` as the canonical Switch metadata artifact.
+- Keep the runtime fallback in `useSwitchArtifactConfig` for older generated artifacts that still
+  contain `global.components.switch`.
+- Keep aggregate class-map JSON outputs for compatibility while Switch validates the component
+  class-map path.
+
+Changed files:
+
+- `packages/web-builder/src/component-artifacts/switchComponentArtifact.ts`
+- `packages/web-builder/src/phase-8-write-extra-artifacts/writeExtraArtifacts.ts`
+- `SCHEMA-BUILD-RUNTIME-RULES.md`
+- `packages/web-builder/docs/definitions/generated-artifacts.md`
+- `packages/web-builder/docs/definitions/border-radius.md`
+- `docs/component-artifacts.in-progress.md`
+
+Validation notes:
+
+- `node packages/web-builder/src/run-build.ts` completed successfully.
+- `node packages/web-builder/scripts/sync-showcase-artifacts.ts` completed successfully.
+- `node packages/web-builder/scripts/generate-showcase-registry.ts` completed successfully.
+- Generated output inspection confirmed:
+  - `global.kiskadee.json` still exists for every design system.
+  - `global.components.switch` is absent from generated global artifacts.
+  - `components/switch.kiskadee.json` still exists for design systems with Switch metadata.
+  - non-migrated component metadata, such as Tabs/TextField where still used, remains under
+    `global.components`.
+- `node packages/headless/react/scripts/build.ts --skip-types` completed successfully.
+- `node packages/components/react/scripts/build.ts --skip-types` completed successfully.
+- `./packages/headless/react/node_modules/.bin/tsc -p packages/headless/react/tsconfig.build.json --emitDeclarationOnly`
+  completed successfully.
+- `./packages/components/react/node_modules/.bin/tsc -p packages/components/react/tsconfig.build.json --noEmit`
+  completed successfully.
+- `./packages/components/react/node_modules/.bin/tsc -p packages/components/react/tsconfig.build.json --emitDeclarationOnly`
+  completed successfully.
+- `./packages/showcase/node_modules/.bin/tsc -p packages/showcase/tsconfig.json --noEmit`
+  completed successfully.
+- Local HTTP validation against the existing Showcase dev server at `http://localhost:3000`
+  confirmed:
+  - `/switch` returns `200`.
+  - `/build/material-design-3-google/components/switch.kiskadee.json` returns `200`.
+  - `/build/material-design-3-google/global.kiskadee.json` returns `200` and has no
+    `components.switch`.
+
+Blocked/partial validation:
+
+- Browser validation could not be completed in this pass because the Codex Browser session reported
+  that no browser route was available. HTTP and artifact inspection covered the output contract.
+- `pnpm --filter ... build` commands remain subject to the local pnpm
+  `ERR_PNPM_IGNORED_BUILDS` guard. Direct package scripts and local `tsc` commands were used
+  instead.
+
 ## Current Artifact Model
 
 The current web-builder output is emitted per design system under
@@ -218,7 +288,7 @@ The current web-builder output is emitted per design system under
 
 | Artifact | Current role | Component-split impact |
 | --- | --- | --- |
-| `global.kiskadee.json` | Runtime-friendly global metadata plus `components.<name>` options/effects for components such as Tabs, Switch, and TextField. | High. First split target. Keep only truly global data here and move component metadata into component artifacts. |
+| `global.kiskadee.json` | Runtime-friendly global metadata, plus legacy component metadata for components not yet migrated. | High. Switch metadata has moved out; newly generated artifacts should not include `global.components.switch`. |
 | `core.kiskadee.json` | Palette-independent class map for all components. | High. Kept as compatibility output while component hooks move to `class-maps/core/<component>.kiskadee.json`. |
 | `<segment>.<theme>.kiskadee.json` | Palette/theme class map for all components. | High. Kept as compatibility output while component hooks move to `class-maps/<segment>.<theme>/<component>.kiskadee.json`. |
 | `class-maps/core/<component>.kiskadee.json` | Palette-independent class map for one component. | Implemented in Phase 2. First runtime consumer is Switch. |
@@ -235,9 +305,9 @@ The current web-builder output is emitted per design system under
 
 | Artifact | Current role | Component-split impact |
 | --- | --- | --- |
-| `core.kiskadee.css` | Palette-independent CSS for all generated component utilities. | High, but later. Splitting too early can break global dedupe or create too many requests. |
-| `<segment>.<theme>.kiskadee.css` | Palette/theme CSS for all generated component color utilities. | High, but later. Useful payload target, with request/waterfall risk. |
-| `effects.kiskadee.css` | Effect utilities such as shadow, ripple, and stateful radius effects. | Medium/high. May need shared global effects plus component chunks. |
+| `core.kiskadee.css` | Palette-independent CSS for all generated utility classes. | Keep aggregated. The CSS layer is utility-like and benefits from cross-component class reuse/dedupe. |
+| `<segment>.<theme>.kiskadee.css` | Palette/theme CSS for generated utility classes. | Keep aggregated unless measurements prove a split is better. |
+| `effects.kiskadee.css` | Effect utilities such as shadow, ripple, and stateful radius effects. | Keep shared for now. Effects can be reused and have ordering/runtime implications. |
 | `tokens.kiskadee.css` | Truly global CSS variables such as focus width/offset and ripple alpha values. | Low. Keep global unless component-specific tokens appear. |
 | `tokens.<segment>.<theme>.kiskadee.css` | Theme CSS variables such as focus color, activation feedback, and ripple colors. | Low/medium. Keep theme-global unless component-specific tokens appear. |
 
@@ -323,23 +393,23 @@ Acceptance notes:
 - Merging class maps should happen per component, not by merging all components into one store.
 - Existing aggregate files may stay temporarily for compatibility during migration.
 
-### Phase 3 - Split CSS by component where the performance model proves it helps
+### Phase 3 - Consolidate JSON contract and keep CSS aggregated
 
-Goal: reduce CSS loaded for unrelated components without losing the current dedupe benefits.
+Goal: finish the Switch JSON migration while preserving the current generated CSS model.
 
 Candidate output:
 
-- Explore component-scoped `core` and palette CSS chunks.
-- Decide whether `effects.kiskadee.css` remains shared, splits by component, or splits by effect
-  family plus component.
-- Keep `tokens.kiskadee.css` and `tokens.<segment>.<theme>.kiskadee.css` global unless a specific
-  component-scoped token need appears.
+- Remove `global.components.switch` from newly generated artifacts.
+- Keep `components/switch.kiskadee.json` as the canonical Switch semantic metadata source.
+- Keep aggregate class-map JSON as compatibility while component hooks migrate one by one.
+- Explicitly document that generated CSS remains aggregated because it is utility-like and
+  intentionally reused across components.
 
 Acceptance notes:
 
-- Avoid blindly multiplying chunks by every variant/effect permutation.
-- Avoid trading one large payload for excessive request waterfalls.
-- Measure or at least inspect output size before making CSS split the default.
+- `global.kiskadee.json` no longer grows with Switch semantic metadata.
+- Switch still renders through the canonical component metadata and class-map artifacts.
+- CSS artifacts are not split by component in this phase.
 
 ### Phase 4 - Update registries, sync, and compatibility strategy
 
@@ -360,9 +430,9 @@ Acceptance notes:
 
 ## Current Reference Implementation
 
-`useSwitchArtifactConfig` is still the best API shape reference, but its current data source is not
-the final model. Today it reads from `global.components.switch` and the already-loaded full
-`classesMap`.
+`useSwitchArtifactConfig` is still the best API shape reference. It now prefers the Switch
+component metadata artifact and Switch component class-map artifacts, with fallbacks for older or
+aggregate-only artifact sets.
 
 The target direction is:
 
@@ -371,13 +441,15 @@ The target direction is:
 - later move Switch class maps into component class-map artifacts;
 - use shared cache semantics so multiple Switch instances do not duplicate network work;
 - keep class maps as class resolution artifacts, not semantic capability metadata.
+- keep generated CSS aggregated unless later measurements clearly justify a split.
 
 ## Non-Goals
 
 - Do not create separate Linear issues for every phase unless the user explicitly asks later.
 - Do not make Showcase-specific hooks the canonical component metadata API.
 - Do not move all schema data into per-component runtime artifacts.
-- Do not split CSS first.
+- Do not split CSS by component without measurements that beat the current utility-like shared CSS
+  output.
 - Do not remove aggregate artifacts until a compatibility path is decided.
 - Do not use `core.kiskadee.json` as the semantic source of truth for component capabilities.
 
@@ -390,8 +462,8 @@ Validation should scale with the phase being implemented:
 - Components/runtime hook changes: run `pnpm --filter @kiskadee/react-components run build`.
 - Showcase loading changes: run `pnpm --filter @kiskadee/showcase build` and validate at least the
   Switch route in the browser.
-- CSS split: inspect emitted CSS sizes and verify ordering/loading in Showcase before declaring the
-  split successful.
+- CSS split: deferred. First measure payload and ordering impact; do not assume component CSS chunks
+  are better than the current utility-like shared CSS output.
 
 ## Open Questions
 
