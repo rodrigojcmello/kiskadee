@@ -27,9 +27,6 @@ export function calculateSwitchV2MotionGeometry(
     trackStyles.getPropertyValue('--k-pdb'),
     paddingBlockEnd
   );
-  const borderInlineStart = parsePixelValue(
-    trackStyles.getPropertyValue('border-inline-start-width')
-  );
   const borderBlockStart = parsePixelValue(
     trackStyles.getPropertyValue('border-block-start-width')
   );
@@ -44,9 +41,8 @@ export function calculateSwitchV2MotionGeometry(
   const thumbWidth = thumbElement.offsetWidth;
   const thumbHeight = thumbElement.offsetHeight;
   const translation = Math.max(0, trackContentWidth - thumbWidth);
-  const inlineStart = borderInlineStart + paddingInlineStart;
-  const blockStart =
-    borderBlockStart + paddingBlockStart + Math.max(0, (trackContentHeight - thumbHeight) / 2);
+  const inlineStart = paddingInlineStart;
+  const blockStart = paddingBlockStart + Math.max(0, (trackContentHeight - thumbHeight) / 2);
   const radiusInsetStart = Math.max(
     borderBlockStart + paddingBlockStart,
     declaredPaddingBlockStart,
