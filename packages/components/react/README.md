@@ -33,7 +33,7 @@ Implemented in `scripts/build.ts`:
 1. `cleanDist()` — wipes `dist/`.
 2. `Promise.all([...])` in parallel:
    - `buildAllJavaScript()` — esbuild transpiles `src/**/*.{ts,tsx}` to ESM `.js` (no bundling, preserves tree-shaking).
-   - `buildAllStyles()` — Sass compiles `src/styles/style.kiskadee.scss` to `dist/style.kiskadee.css`.
+   - `buildAllStyles()` — Sass compiles `src/shared/styles/style.kiskadee.scss` to `dist/style.kiskadee.css`.
    - `buildTypes()` — `tsc -p tsconfig.build.json --emitDeclarationOnly` emits `.d.ts` files (skipped when `--skip-types`).
 3. `rewriteDistExtensions()` — post-processes `dist/**/*.{js,d.ts}` rewriting relative `.ts/.tsx` specifiers to `.js`. Required because:
    - esbuild with `bundle: false` keeps import specifiers literal.

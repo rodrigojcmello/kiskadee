@@ -11,9 +11,9 @@ import { useEffect, useState } from 'react';
 import {
   getComponentArtifactCacheKey,
   loadCachedComponentArtifact
-} from '../contexts/componentArtifactCache.ts';
-import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
-import { useComponentClassMap } from '../contexts/useComponentClassMap.ts';
+} from '../../shared/contexts/componentArtifactCache.ts';
+import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
+import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import type { TabsVariantClassesMap } from './Tabs.types.ts';
 
 export type TabsArtifactConfig = {

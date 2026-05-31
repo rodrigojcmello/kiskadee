@@ -16,7 +16,7 @@ import {
   useState,
   useSyncExternalStore
 } from 'react';
-import { useActivationFeedback } from '../effects/activation-feedback/useActivationFeedback.ts';
+import { useActivationFeedback } from '../../hooks/effects/activation-feedback/useActivationFeedback.ts';
 import {
   DEFAULT_SWITCH_EMPHASIS,
   DEFAULT_SWITCH_INTENT,

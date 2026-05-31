@@ -7,7 +7,7 @@ import type {
 } from '@kiskadee/core';
 import { HeadlessTextField } from '@kiskadee/react-headless';
 import { memo, type RefObject, useEffect, useMemo, useRef } from 'react';
-import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
+import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import {
   DEFAULT_TEXT_FIELD_EMPHASIS,
   DEFAULT_TEXT_FIELD_FOCUS_RING_COLOR_SOURCE,

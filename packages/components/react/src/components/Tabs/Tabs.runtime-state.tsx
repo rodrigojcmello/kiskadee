@@ -1,6 +1,6 @@
 import type { RadiusMode, TabsVariant } from '@kiskadee/core';
 import { type RefObject, useCallback, useMemo, useRef, useState } from 'react';
-import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
+import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import {
   DEFAULT_EMPHASIS,
   DEFAULT_INTENT,

@@ -11,7 +11,7 @@ export const packageRoot = path.resolve(__dirname, '..');
 export const srcDir = path.resolve(packageRoot, 'src');
 export const distDir = path.resolve(packageRoot, 'dist');
 
-const rootStyleInput = path.join('styles', 'style.kiskadee.scss');
+const rootStyleInput = path.join('shared', 'styles', 'style.kiskadee.scss');
 const structuralCssOptions: KiskadeePostcssOptions = {
   autoprefix: true,
   combineMediaQueries: true,

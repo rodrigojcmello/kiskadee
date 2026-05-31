@@ -1,5 +1,5 @@
-import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
-import { useComponentClassMap } from '../contexts/useComponentClassMap.ts';
+import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
+import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import type { ButtonClassesMap } from './Button.types.ts';
 
 export type ButtonArtifactConfig = {

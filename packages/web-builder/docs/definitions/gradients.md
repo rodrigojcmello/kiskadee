@@ -34,7 +34,7 @@ For `boxColor` gradients, the web-builder emits a CSS-only strategy with no Java
    - `@property --k-bg1`
    - `@property --k-bg2`
 
-Those registrations live in `packages/components/react/src/styles/style.kiskadee.scss`.
+Those registrations live in `packages/components/react/src/shared/styles/style.kiskadee.scss`.
 
 ## Constraints and fallbacks
 

@@ -1,12 +1,6 @@
-export type { ButtonArtifactConfig } from './Button';
-export { Button, useButtonArtifactConfig } from './Button';
-export type {
-  ComponentClassMapScope,
-  KiskadeeContextValue
-} from './contexts/KiskadeeContext.tsx';
-export { KiskadeeContext, useKiskadee } from './contexts/KiskadeeContext.tsx';
-export { ShowcaseContext, useShowcase } from './contexts/ShowcaseContext.tsx';
-export { SmoothText } from './SmoothText/SmoothText.tsx';
+export type { ButtonArtifactConfig } from './components/Button';
+export { Button, useButtonArtifactConfig } from './components/Button';
+export { SmoothText } from './components/SmoothText/SmoothText.tsx';
 export type {
   SwitchArtifactConfig,
   SwitchClassNames,
@@ -15,13 +9,13 @@ export type {
   SwitchMotionProps,
   SwitchProps,
   SwitchStatus
-} from './Switch';
-export { Switch, SwitchMotion, useSwitchArtifactConfig } from './Switch';
+} from './components/Switch';
+export { Switch, SwitchMotion, useSwitchArtifactConfig } from './components/Switch';
 export type {
   TabsArtifactConfig,
   TabsIndicatorMotionStyle,
   TabsSpringPreset
-} from './Tabs/index.ts';
+} from './components/Tabs/index.ts';
 export {
   TabsBox,
   TabsBridge,
@@ -29,7 +23,7 @@ export {
   TabsLine,
   TabsSegmented,
   useTabsArtifactConfig
-} from './Tabs/index.ts';
+} from './components/Tabs/index.ts';
 export type {
   TextFieldArtifactConfig,
   TextFieldFloatingInsideProps,
@@ -38,7 +32,7 @@ export type {
   TextFieldStandardOutlineProps,
   TextFieldStandardProps,
   TextFieldStandardUnderlineProps
-} from './TextField';
+} from './components/TextField';
 export {
   TextFieldFloatingInside,
   TextFieldFloatingNotched,
@@ -47,4 +41,10 @@ export {
   TextFieldStandardOutline,
   TextFieldStandardUnderline,
   useTextFieldArtifactConfig
-} from './TextField';
+} from './components/TextField';
+export type {
+  ComponentClassMapScope,
+  KiskadeeContextValue
+} from './shared/contexts/KiskadeeContext.tsx';
+export { KiskadeeContext, useKiskadee } from './shared/contexts/KiskadeeContext.tsx';
+export { ShowcaseContext, useShowcase } from './shared/contexts/ShowcaseContext.tsx';
