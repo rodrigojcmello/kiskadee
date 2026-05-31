@@ -1,0 +1,31 @@
+/*
+ * SwitchV2 thumb-size effect structural branch registry:
+ * a = static proof of concept
+ */
+
+/*
+ * extra element for e3 / x5
+ * Hosts effect-driven visual geometry inside the static thumb carrier.
+ */
+.k-sw2-x5-a {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition:
+    width var(--k-dur-int) var(--k-ease-out),
+    height var(--k-dur-int) var(--k-ease-out),
+    border-color var(--k-dur-int) var(--k-ease-out),
+    border-radius var(--k-dur-int) var(--k-ease-out),
+    color var(--k-dur-int) var(--k-ease-out),
+    box-shadow var(--k-dur-int) var(--k-ease-out),
+    --k-bg0 var(--k-dur-int) var(--k-ease-out),
+    --k-bg1 var(--k-dur-int) var(--k-ease-out),
+    --k-bg2 var(--k-dur-int) var(--k-ease-out),
+    background-color var(--k-dur-int) var(--k-ease-out);
+}

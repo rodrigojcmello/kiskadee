@@ -14,9 +14,11 @@ import {
   resolveVariantElements
 } from '../Switch/Switch.class-names.ts';
 import type { SwitchClassNames, SwitchProps } from '../Switch/Switch.types.ts';
-import { useSwitchArtifactConfig } from '../Switch/useSwitchArtifactConfig.ts';
+import { useSwitchV2ArtifactConfig } from './hooks/useSwitchV2ArtifactConfig.ts';
 
-export type SwitchV2Props = Omit<SwitchProps, 'controlText' | 'thumbSize'>;
+export type SwitchV2Props = Omit<SwitchProps, 'controlText'>;
+
+const EMPTY_SWITCH_V2_CLASS_NAMES: SwitchClassNames = {};
 
 function resolveSwitchV2ClassNames(options: {
   elements: ReturnType<typeof resolveVariantElements>;
@@ -65,12 +67,13 @@ function SwitchV2Root(props: SwitchV2Props) {
     id,
     label,
     className,
-    classNames = {},
+    classNames = EMPTY_SWITCH_V2_CLASS_NAMES,
     inputProps,
     scale = DEFAULT_SWITCH_SCALE,
     emphasis = DEFAULT_SWITCH_EMPHASIS,
     intent = DEFAULT_SWITCH_INTENT,
     radius,
+    thumbSize,
     variant = DEFAULT_SWITCH_VARIANT,
     mode = DEFAULT_SWITCH_MODE,
     labelPosition = DEFAULT_SWITCH_LABEL_POSITION,
@@ -78,38 +81,55 @@ function SwitchV2Root(props: SwitchV2Props) {
     readOnly,
     ...rootProps
   } = props;
-  const { switchClassesMap, options } = useSwitchArtifactConfig();
+  const { switchClassesMap, options, effects } = useSwitchV2ArtifactConfig(thumbSize);
   const resolvedRadius = radius ?? options.radius;
   const elements = resolveVariantElements(switchClassesMap, variant, mode);
   const hasLabel = label !== undefined && label !== null;
+  const thumbSizeEffect = effects.thumbSizeEffect;
 
-  const resolvedClassNames = useMemo(
-    () =>
-      resolveSwitchV2ClassNames({
-        elements,
-        classNames: {
-          ...classNames,
-          e1: join(classNames.e1, className)
-        },
-        scale,
-        intent,
-        emphasis,
-        radius: resolvedRadius,
-        labelPosition,
-        hasLabel
-      }),
-    [
-      className,
-      classNames,
+  const { classNames: resolvedClassNames, thumbVisualClassName } = useMemo(() => {
+    const baseClassNames = resolveSwitchV2ClassNames({
       elements,
-      emphasis,
-      hasLabel,
+      classNames: {
+        ...classNames,
+        e1: join(classNames.e1, className)
+      },
+      scale,
       intent,
+      emphasis,
+      radius: resolvedRadius,
       labelPosition,
-      resolvedRadius,
-      scale
-    ]
-  );
+      hasLabel
+    });
+
+    if (!thumbSizeEffect) {
+      return {
+        classNames: baseClassNames,
+        thumbVisualClassName: undefined
+      };
+    }
+
+    return thumbSizeEffect.resolveSwitchV2ThumbSizeEffect({
+      baseClassNames,
+      elements,
+      classNames,
+      scale,
+      intent,
+      emphasis,
+      radius: resolvedRadius
+    });
+  }, [
+    className,
+    classNames,
+    elements,
+    emphasis,
+    hasLabel,
+    intent,
+    labelPosition,
+    resolvedRadius,
+    scale,
+    thumbSizeEffect
+  ]);
 
   return (
     <HeadlessSwitch.Root
@@ -121,7 +141,9 @@ function SwitchV2Root(props: SwitchV2Props) {
       classNames={resolvedClassNames}
     >
       <HeadlessSwitch.Track>
-        <HeadlessSwitch.Thumb />
+        <HeadlessSwitch.Thumb>
+          {thumbVisualClassName ? <span className={thumbVisualClassName} /> : null}
+        </HeadlessSwitch.Thumb>
       </HeadlessSwitch.Track>
       {hasLabel ? <HeadlessSwitch.Label>{label}</HeadlessSwitch.Label> : null}
     </HeadlessSwitch.Root>

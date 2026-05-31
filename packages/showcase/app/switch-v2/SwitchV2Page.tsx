@@ -5,11 +5,11 @@ import {
   SwitchV2,
   useKiskadee,
   useShowcase,
-  useSwitchArtifactConfig
+  useSwitchV2ArtifactConfig
 } from '@kiskadee/react-components';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { Select } from '@/k-components';
+import { Switch as ControlSwitch, Select } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
 import s from './SwitchV2.module.scss';
 
@@ -51,16 +51,20 @@ function StateTile({ title, children }: { title: string; children: ReactNode }) 
 
 export default function SwitchV2Page() {
   const { designSystem } = useKiskadee();
-  const { options: switchOptions } = useSwitchArtifactConfig();
+  const { effects: switchEffects, options: switchOptions } = useSwitchV2ArtifactConfig();
   const { manifest } = useShowcase();
   const [controlState, setControlState] = useState(true);
   const [scale, setScale] = useState<ElementSizeValue>('s:md:1');
   const [radius, setRadius] = useState<RadiusMode>('rounded');
   const [intent, setIntent] = useState<SwitchIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
+  const [thumbSizeEnabled, setThumbSizeEnabled] = useState(true);
   const switchMeta = manifest?.components?.switch;
   const isSwitchAvailable = Boolean(switchMeta);
   const defaultRadius = switchOptions.radius;
+  const hasThumbSizeEffect = Boolean(switchEffects.thumbSizeEffect);
+  const isThumbSizeEnabled = hasThumbSizeEffect && thumbSizeEnabled;
+  const thumbSizeOverride = isThumbSizeEnabled ? undefined : false;
   const supportedScales = switchMeta?.scale;
   const supportedIntents = switchMeta?.state;
   const supportedStates = supportedIntents?.[intent];
@@ -196,6 +200,16 @@ export default function SwitchV2Page() {
             }}
             disabled={!isSwitchAvailable || emphasisSelectOptions.length <= 1}
           />
+          <ControlSwitch
+            label="Thumb size"
+            controlState={isThumbSizeEnabled}
+            onControlStateChange={(nextControlState) => {
+              if (!hasThumbSizeEffect || nextControlState === isThumbSizeEnabled) return;
+              playWowTransition();
+              setThumbSizeEnabled(nextControlState);
+            }}
+            disabled={!isSwitchAvailable || !hasThumbSizeEffect}
+          />
         </div>
       </header>
 
@@ -215,6 +229,7 @@ export default function SwitchV2Page() {
                 onControlStateChange={setControlState}
                 scale={scale}
                 radius={radius}
+                thumbSize={thumbSizeOverride}
                 intent={intent}
                 emphasis={emphasis}
               />
@@ -231,6 +246,7 @@ export default function SwitchV2Page() {
                   controlState={false}
                   scale={scale}
                   radius={radius}
+                  thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -243,6 +259,7 @@ export default function SwitchV2Page() {
                   controlState
                   scale={scale}
                   radius={radius}
+                  thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -256,6 +273,7 @@ export default function SwitchV2Page() {
                   status="hover"
                   scale={scale}
                   radius={radius}
+                  thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -269,6 +287,7 @@ export default function SwitchV2Page() {
                   status="focus"
                   scale={scale}
                   radius={radius}
+                  thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -281,6 +300,7 @@ export default function SwitchV2Page() {
                   controlState={false}
                   scale={scale}
                   radius={radius}
+                  thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   disabled
@@ -293,6 +313,7 @@ export default function SwitchV2Page() {
                   controlState
                   scale={scale}
                   radius={radius}
+                  thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
