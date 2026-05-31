@@ -1,0 +1,63 @@
+/*
+ * SwitchV2 motion effect structural branch registry:
+ * m = runtime motion gate for static proof of concept
+ */
+
+/*
+ * element root runtime state / m
+ * Exposes runtime geometry variables while the motion module is active.
+ */
+.k-sw2-m.k-sw2-e1-a {
+  --k-sw2-tx: 0px;
+  --k-sw2-ti: 0px;
+  --k-sw2-ty: 0px;
+  --k-sw2-tr: var(--k-bdr);
+  --k-sw2-dur: var(--k-dur-int);
+}
+
+/*
+ * element root modifier 'b' / e1b
+ * Uses the slow activation motion profile for runtime-owned thumb movement.
+ */
+.k-sw2-m.k-sw2-e1b-a {
+  --k-sw2-dur: var(--k-dur-int-slow);
+}
+
+/*
+ * element thumb / e3
+ * Lets the runtime motion engine own horizontal movement and drag interaction.
+ */
+.k-sw2-m .k-sw2-e3-a {
+  inset-block-start: var(--k-sw2-ty);
+  inset-inline-start: var(--k-sw2-ti);
+  pointer-events: auto;
+  touch-action: pan-y;
+  transform: none;
+  transition:
+    border-color var(--k-sw2-dur) var(--k-ease-out),
+    border-radius var(--k-sw2-dur) var(--k-ease-out),
+    color var(--k-sw2-dur) var(--k-ease-out),
+    box-shadow var(--k-sw2-dur) var(--k-ease-out),
+    --k-bg0 var(--k-sw2-dur) var(--k-ease-out),
+    --k-bg1 var(--k-sw2-dur) var(--k-ease-out),
+    --k-bg2 var(--k-sw2-dur) var(--k-ease-out),
+    background-color var(--k-sw2-dur) var(--k-ease-out);
+  will-change: transform;
+}
+
+/*
+ * element thumb / e3
+ * Suppresses static selected translation while runtime motion is active.
+ */
+.k-sw2-m.k-sw2-e1-a.-s.-a .k-sw2-e3-a {
+  inset-inline-start: var(--k-sw2-ti);
+  transform: none;
+}
+
+/*
+ * extra element for e3 / x5
+ * Receives the track-derived rounded radius while nested inside the motion thumb.
+ */
+.k-sw2-m .k-sw2-x5-a {
+  border-radius: var(--k-sw2-tr);
+}

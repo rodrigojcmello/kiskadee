@@ -14,9 +14,12 @@ import {
   resolveVariantElements
 } from '../Switch/Switch.class-names.ts';
 import type { SwitchClassNames, SwitchProps } from '../Switch/Switch.types.ts';
+import { useSwitchV2MotionController, useSwitchV2MotionEffect } from './effects/motion/index.ts';
 import { useSwitchV2ArtifactConfig } from './hooks/useSwitchV2ArtifactConfig.ts';
 
-export type SwitchV2Props = Omit<SwitchProps, 'controlText'>;
+export type SwitchV2Props = Omit<SwitchProps, 'controlText'> & {
+  motion?: false;
+};
 
 const EMPTY_SWITCH_V2_CLASS_NAMES: SwitchClassNames = {};
 
@@ -73,18 +76,24 @@ function SwitchV2Root(props: SwitchV2Props) {
     emphasis = DEFAULT_SWITCH_EMPHASIS,
     intent = DEFAULT_SWITCH_INTENT,
     radius,
+    motion,
     thumbSize,
     variant = DEFAULT_SWITCH_VARIANT,
     mode = DEFAULT_SWITCH_MODE,
     labelPosition = DEFAULT_SWITCH_LABEL_POSITION,
     disabled,
     readOnly,
+    controlState: controlStateProp,
+    defaultControlState,
+    onControlStateChange,
+    onClickCapture,
     ...rootProps
   } = props;
   const { switchClassesMap, options, effects } = useSwitchV2ArtifactConfig(thumbSize);
   const resolvedRadius = radius ?? options.radius;
   const elements = resolveVariantElements(switchClassesMap, variant, mode);
   const hasLabel = label !== undefined && label !== null;
+  const motionEffect = useSwitchV2MotionEffect(motion !== false);
   const thumbSizeEffect = effects.thumbSizeEffect;
 
   const { classNames: resolvedClassNames, thumbVisualClassName } = useMemo(() => {
@@ -102,22 +111,32 @@ function SwitchV2Root(props: SwitchV2Props) {
       hasLabel
     });
 
-    if (!thumbSizeEffect) {
-      return {
-        classNames: baseClassNames,
-        thumbVisualClassName: undefined
-      };
+    const withThumbSize = thumbSizeEffect
+      ? thumbSizeEffect.resolveSwitchV2ThumbSizeEffect({
+          baseClassNames,
+          elements,
+          classNames,
+          scale,
+          intent,
+          emphasis,
+          radius: resolvedRadius
+        })
+      : {
+          classNames: baseClassNames,
+          thumbVisualClassName: undefined
+        };
+
+    if (!motionEffect) {
+      return withThumbSize;
     }
 
-    return thumbSizeEffect.resolveSwitchV2ThumbSizeEffect({
-      baseClassNames,
-      elements,
-      classNames,
-      scale,
-      intent,
-      emphasis,
-      radius: resolvedRadius
-    });
+    return {
+      ...withThumbSize,
+      ...motionEffect.resolveSwitchV2MotionEffect({
+        classNames: withThumbSize.classNames,
+        activationMotion: options.activationMotion
+      })
+    };
   }, [
     className,
     classNames,
@@ -126,10 +145,24 @@ function SwitchV2Root(props: SwitchV2Props) {
     hasLabel,
     intent,
     labelPosition,
+    motionEffect,
+    options.activationMotion,
     resolvedRadius,
     scale,
     thumbSizeEffect
   ]);
+  const motionController = useSwitchV2MotionController({
+    enabled: Boolean(motionEffect),
+    controlState: controlStateProp,
+    defaultControlState,
+    disabled,
+    readOnly,
+    onControlStateChange,
+    onClickCapture,
+    geometryKey: `${resolvedClassNames.e2}|${resolvedClassNames.e3}|${thumbVisualClassName ?? ''}`
+  });
+  const MotionThumb = motionEffect?.SwitchV2MotionThumb;
+  const thumbVisual = thumbVisualClassName ? <span className={thumbVisualClassName} /> : null;
 
   return (
     <HeadlessSwitch.Root
@@ -138,12 +171,31 @@ function SwitchV2Root(props: SwitchV2Props) {
       inputProps={inputProps}
       disabled={disabled}
       readOnly={readOnly}
+      controlState={motionController.projectedControlState}
+      onControlStateChange={motionController.setControlState}
+      onClickCapture={motionController.handleClickCapture}
       classNames={resolvedClassNames}
     >
-      <HeadlessSwitch.Track>
-        <HeadlessSwitch.Thumb>
-          {thumbVisualClassName ? <span className={thumbVisualClassName} /> : null}
-        </HeadlessSwitch.Thumb>
+      <HeadlessSwitch.Track ref={motionController.trackRef}>
+        {MotionThumb ? (
+          <MotionThumb
+            activationMotion={options.activationMotion}
+            controlState={motionController.projectedControlState}
+            disabled={disabled}
+            readOnly={readOnly}
+            requestSuppressNextClick={motionController.requestSuppressNextClick}
+            setControlState={motionController.setControlState}
+            setDragPreviewControlState={motionController.setDragPreviewControlState}
+            thumbClassName={resolvedClassNames.e3}
+            thumbRef={motionController.thumbRef}
+            thumbTranslation={motionController.thumbTranslation}
+            trackRef={motionController.trackRef}
+          >
+            {thumbVisual}
+          </MotionThumb>
+        ) : (
+          <HeadlessSwitch.Thumb ref={motionController.thumbRef}>{thumbVisual}</HeadlessSwitch.Thumb>
+        )}
       </HeadlessSwitch.Track>
       {hasLabel ? <HeadlessSwitch.Label>{label}</HeadlessSwitch.Label> : null}
     </HeadlessSwitch.Root>

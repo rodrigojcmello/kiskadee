@@ -9,7 +9,7 @@ import {
 } from '@kiskadee/react-components';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { Switch as ControlSwitch, Select } from '@/k-components';
+import { Select } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
 import s from './SwitchV2.module.scss';
 
@@ -32,6 +32,11 @@ const emphasisOptions: Array<{ value: ComponentEmphasis; label: string }> = [
   { value: 'high', label: 'High' },
   { value: 'low', label: 'Low' },
   { value: 'lowest', label: 'Lowest' }
+];
+
+const effectToggleOptions = [
+  { value: 'on', label: 'Ligado' },
+  { value: 'off', label: 'Desligado' }
 ];
 
 const intentLabels: Record<string, string> = {
@@ -58,11 +63,13 @@ export default function SwitchV2Page() {
   const [radius, setRadius] = useState<RadiusMode>('rounded');
   const [intent, setIntent] = useState<SwitchIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
+  const [motionEnabled, setMotionEnabled] = useState(true);
   const [thumbSizeEnabled, setThumbSizeEnabled] = useState(true);
   const switchMeta = manifest?.components?.switch;
   const isSwitchAvailable = Boolean(switchMeta);
   const defaultRadius = switchOptions.radius;
   const hasThumbSizeEffect = Boolean(switchEffects.thumbSizeEffect);
+  const motionOverride = motionEnabled ? undefined : false;
   const isThumbSizeEnabled = hasThumbSizeEffect && thumbSizeEnabled;
   const thumbSizeOverride = isThumbSizeEnabled ? undefined : false;
   const supportedScales = switchMeta?.scale;
@@ -200,13 +207,29 @@ export default function SwitchV2Page() {
             }}
             disabled={!isSwitchAvailable || emphasisSelectOptions.length <= 1}
           />
-          <ControlSwitch
-            label="Thumb size"
-            controlState={isThumbSizeEnabled}
-            onControlStateChange={(nextControlState) => {
-              if (!hasThumbSizeEffect || nextControlState === isThumbSizeEnabled) return;
+          <Select
+            label="Motion"
+            width={140}
+            options={effectToggleOptions}
+            value={motionEnabled ? 'on' : 'off'}
+            onValueChange={(value) => {
+              const nextMotionEnabled = value === 'on';
+              if (nextMotionEnabled === motionEnabled) return;
               playWowTransition();
-              setThumbSizeEnabled(nextControlState);
+              setMotionEnabled(nextMotionEnabled);
+            }}
+            disabled={!isSwitchAvailable}
+          />
+          <Select
+            label="Thumb size"
+            width={140}
+            options={effectToggleOptions}
+            value={isThumbSizeEnabled ? 'on' : 'off'}
+            onValueChange={(value) => {
+              const nextThumbSizeEnabled = value === 'on';
+              if (!hasThumbSizeEffect || nextThumbSizeEnabled === isThumbSizeEnabled) return;
+              playWowTransition();
+              setThumbSizeEnabled(nextThumbSizeEnabled);
             }}
             disabled={!isSwitchAvailable || !hasThumbSizeEffect}
           />
@@ -229,6 +252,7 @@ export default function SwitchV2Page() {
                 onControlStateChange={setControlState}
                 scale={scale}
                 radius={radius}
+                motion={motionOverride}
                 thumbSize={thumbSizeOverride}
                 intent={intent}
                 emphasis={emphasis}
@@ -246,6 +270,7 @@ export default function SwitchV2Page() {
                   controlState={false}
                   scale={scale}
                   radius={radius}
+                  motion={motionOverride}
                   thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
@@ -259,6 +284,7 @@ export default function SwitchV2Page() {
                   controlState
                   scale={scale}
                   radius={radius}
+                  motion={motionOverride}
                   thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
@@ -273,6 +299,7 @@ export default function SwitchV2Page() {
                   status="hover"
                   scale={scale}
                   radius={radius}
+                  motion={motionOverride}
                   thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
@@ -287,6 +314,7 @@ export default function SwitchV2Page() {
                   status="focus"
                   scale={scale}
                   radius={radius}
+                  motion={motionOverride}
                   thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
@@ -300,6 +328,7 @@ export default function SwitchV2Page() {
                   controlState={false}
                   scale={scale}
                   radius={radius}
+                  motion={motionOverride}
                   thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
@@ -313,6 +342,7 @@ export default function SwitchV2Page() {
                   controlState
                   scale={scale}
                   radius={radius}
+                  motion={motionOverride}
                   thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
