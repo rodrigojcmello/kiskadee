@@ -11,6 +11,8 @@ export type {
   SwitchStatus
 } from './components/Switch';
 export { Switch, SwitchMotion, useSwitchArtifactConfig } from './components/Switch';
+export type { SwitchV2Props } from './components/SwitchV2';
+export { SwitchV2 } from './components/SwitchV2';
 export type {
   TabsArtifactConfig,
   TabsIndicatorMotionStyle,

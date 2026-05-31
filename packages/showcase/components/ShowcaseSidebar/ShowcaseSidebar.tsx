@@ -18,6 +18,10 @@ const entries = [
     label: 'Switch'
   },
   {
+    href: '/switch-v2',
+    label: 'Switch V2'
+  },
+  {
     href: '/text-field',
     label: 'TextField'
   }

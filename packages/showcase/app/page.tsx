@@ -15,6 +15,9 @@ export default function HomePage() {
           <Link href="/switch">/switch</Link>
         </li>
         <li>
+          <Link href="/switch-v2">/switch-v2</Link>
+        </li>
+        <li>
           <Link href="/text-field">/text-field</Link>
         </li>
       </ul>

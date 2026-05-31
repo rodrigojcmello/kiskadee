@@ -1,0 +1,139 @@
+/*
+ * SwitchV2 structural branch registry:
+ * a = static proof of concept
+ */
+
+/*
+ * element root / e1
+ * Owns the compact inline label/control wrapper for the static proof of concept.
+ */
+.k-sw2-e1-a {
+  --k-sw2-dx: 1;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  max-inline-size: 100%;
+  cursor: default;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  isolation: isolate;
+}
+
+/*
+ * element root modifier 'a' / e1a
+ * Moves the optional label before the visual control without changing DOM semantics.
+ */
+.k-sw2-e1a-a .k-sw2-e4-a {
+  order: -1;
+}
+
+/*
+ * element root / e1
+ * Reverses the selected thumb transform for right-to-left static geometry.
+ */
+.k-sw2-e1-a:dir(rtl) {
+  --k-sw2-dx: -1;
+}
+
+/*
+ * element track / e2
+ * Owns the rail measurement scope and exposes generated padding as logical geometry.
+ */
+.k-sw2-e2-a {
+  --k-sw2-pis: max(0px, calc(var(--k-pdl, 0px) - var(--k-bdw, 0px)));
+  --k-sw2-pie: max(0px, calc(var(--k-pdr, 0px) - var(--k-bdw, 0px)));
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  overflow: hidden;
+  cursor: inherit;
+  transition:
+    border-color var(--k-dur-int) var(--k-ease-out),
+    border-radius var(--k-dur-int) var(--k-ease-out),
+    color var(--k-dur-int) var(--k-ease-out),
+    box-shadow var(--k-dur-int) var(--k-ease-out),
+    --k-bg0 var(--k-dur-int) var(--k-ease-out),
+    --k-bg1 var(--k-dur-int) var(--k-ease-out),
+    --k-bg2 var(--k-dur-int) var(--k-ease-out),
+    background-color var(--k-dur-int) var(--k-ease-out);
+}
+
+/*
+ * element track / e2
+ * Swaps generated physical padding variables into logical start/end geometry in RTL.
+ */
+.k-sw2-e2-a:dir(rtl) {
+  --k-sw2-pis: max(0px, calc(var(--k-pdr, 0px) - var(--k-bdw, 0px)));
+  --k-sw2-pie: max(0px, calc(var(--k-pdl, 0px) - var(--k-bdw, 0px)));
+}
+
+/*
+ * element track / e2
+ * Projects keyboard focus from the visually hidden native input to the rendered control.
+ */
+.k-sw2-e1-a.-f.-k.-a .k-sw2-e2-a {
+  outline-color: var(--k-focus-color);
+  outline-offset: calc(var(--k-focus-offset) * 1px);
+  outline-style: solid;
+  outline-width: calc(var(--k-focus-width) * 1px);
+}
+
+/*
+ * element thumb / e3
+ * Moves inside the track using CSS-only geometry, with no observer or transform runtime.
+ */
+.k-sw2-e3-a {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: var(--k-sw2-pis);
+  z-index: 1;
+  display: block;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  pointer-events: none;
+  transform: translate(0, -50%);
+  transition:
+    inset-inline-start var(--k-dur-int) var(--k-ease-out),
+    transform var(--k-dur-int) var(--k-ease-out),
+    border-color var(--k-dur-int) var(--k-ease-out),
+    border-radius var(--k-dur-int) var(--k-ease-out),
+    color var(--k-dur-int) var(--k-ease-out),
+    box-shadow var(--k-dur-int) var(--k-ease-out),
+    --k-bg0 var(--k-dur-int) var(--k-ease-out),
+    --k-bg1 var(--k-dur-int) var(--k-ease-out),
+    --k-bg2 var(--k-dur-int) var(--k-ease-out),
+    background-color var(--k-dur-int) var(--k-ease-out);
+  will-change: inset-inline-start, transform;
+}
+
+/*
+ * element thumb / e3
+ * Mirrors selected state by moving the thumb to the inline end of the rail.
+ */
+.k-sw2-e1-a.-s.-a .k-sw2-e3-a {
+  inset-inline-start: calc(100% - var(--k-sw2-pie));
+  transform: translate(calc(var(--k-sw2-dx) * -100%), -50%);
+}
+
+/*
+ * element label / e4
+ * Keeps optional text label in normal inline flow while generated typography owns text visuals.
+ */
+.k-sw2-e4-a {
+  display: block;
+  min-inline-size: 0;
+  cursor: inherit;
+}
+
+/*
+ * element root / e1
+ * Mirrors non-interactive cursor state across visual slots because the input is visually hidden.
+ */
+.k-sw2-e1-a.-d.-a,
+.k-sw2-e1-a.-r.-a {
+  cursor: not-allowed;
+}
