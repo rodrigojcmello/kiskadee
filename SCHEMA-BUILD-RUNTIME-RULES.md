@@ -275,6 +275,9 @@ Main outputs per design system:
 - `effects.kiskadee.css`
 - `<segment>.<theme>.kiskadee.css` / `<segment>.<theme>.kiskadee.json`
 - `global.kiskadee.json`
+- `components/<component>.kiskadee.json`
+- `class-maps/core/<component>.kiskadee.json`
+- `class-maps/<segment>.<theme>/<component>.kiskadee.json`
 - `segments.json`, `manifest.json`, `schema.json`
 
 ### 5.0 Artifact responsibilities
@@ -289,8 +292,9 @@ Use each artifact for a different level of responsibility:
 - `global.kiskadee.json`: descriptive runtime-friendly defaults and DS intentions that are useful
   without traversing full component branches. Use it for global defaults such as fonts, radius,
   and ripple. Component-specific semantic metadata should move toward component artifacts such as
-  `components/switch.kiskadee.json`; new artifacts should not add component semantic payloads under
-  `global.components.<name>`.
+  `components/switch.kiskadee.json`, `components/tabs.kiskadee.json`, and
+  `components/text-field.kiskadee.json`; new artifacts should not add component semantic payloads
+  under `global.components.<name>`.
 - `class-maps/core/<component>.kiskadee.json` and
   `class-maps/<segment>.<theme>/<component>.kiskadee.json`: component-scoped class resolution
   artifacts. They mirror the component branch from the aggregate class-map files so runtime hooks

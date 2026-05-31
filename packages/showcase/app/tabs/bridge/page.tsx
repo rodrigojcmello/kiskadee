@@ -1,29 +1,29 @@
 'use client';
 
-import { type TabsBridgeLowerCurve, type TabsTabWidth } from '@kiskadee/core';
-import { TabsBridge, useKiskadee } from '@kiskadee/react-components';
+import type { TabsBridgeLowerCurve, TabsTabWidth } from '@kiskadee/core';
+import { TabsBridge, useTabsArtifactConfig } from '@kiskadee/react-components';
 import { useState } from 'react';
 import { Select } from '@/k-components';
 import {
   bridgeLowerCurveLabels,
-  DEFAULT_TAB_VALUE,
   DEFAULT_TAB_SIZE,
+  DEFAULT_TAB_VALUE,
+  renderTabsSlots,
+  TabsShowcasePageShell,
   type TabsSizeControl,
   type TabsTabWidthControl,
-  renderTabsSlots,
   tabSizeOptions,
-  TabsShowcasePageShell,
   tabWidthLabels
 } from '../ShowcaseTabs.shared';
 
 export default function TabsBridgePage() {
-  const { global } = useKiskadee();
+  const { options: tabsArtifactOptions } = useTabsArtifactConfig();
   const [tabWidth, setTabWidth] = useState<TabsTabWidthControl>('default');
   const [tabSize, setTabSize] = useState<TabsSizeControl>(DEFAULT_TAB_SIZE);
   const [bridgeLowerCurve, setBridgeLowerCurve] = useState<TabsBridgeLowerCurve>('curved');
   const [selectedValue, setSelectedValue] = useState(DEFAULT_TAB_VALUE);
 
-  const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'content';
+  const schemaTabWidth = tabsArtifactOptions.tabWidth ?? 'content';
   const tabWidthOptions = [
     {
       value: 'default',

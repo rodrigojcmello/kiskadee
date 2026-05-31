@@ -2,8 +2,8 @@
 
 ## Scope
 
-This handoff tracks KIS-13: splitting Kiskadee generated artifacts by component and loading them
-on demand.
+This handoff tracks the component artifact refactor started in KIS-13 and continued in KIS-31:
+splitting Kiskadee generated artifacts by component and loading them on demand.
 
 It lives in the repository root `docs/` because the demand crosses package boundaries:
 
@@ -23,8 +23,11 @@ Durable artifact rules should later be promoted into:
 ## Window Context
 
 - Demand slug: `component-artifacts`.
-- Linear issue: `KIS-13`.
-- Current direction: use this file as the working source of truth for the refactor plan.
+- Foundation Linear issue: `KIS-13` (closed as the Switch reference implementation and artifact
+  architecture foundation).
+- Current rollout Linear issue: `KIS-31`.
+- Current direction: use this file as the working source of truth for the remaining component
+  artifact rollout.
 - The problem is not the current number of components. The current payload is small.
 - The problem is that the current artifact model does not scale to hundreds or thousands of
   components if every page loads metadata, class maps, or CSS for unrelated components.
@@ -278,6 +281,88 @@ Blocked/partial validation:
   `ERR_PNPM_IGNORED_BUILDS` guard. Direct package scripts and local `tsc` commands were used
   instead.
 
+## KIS-31 Rollout Implementation Status
+
+Status: implemented locally for Tabs/TextField metadata artifacts and Button/Tabs/TextField
+component class-map consumption.
+
+Implemented decisions:
+
+- KIS-13 was closed in Linear as the architecture foundation and Switch reference implementation.
+- KIS-31 now tracks the remaining rollout: `Migrar componentes restantes para artefatos sob
+  demanda`.
+- Tabs semantic metadata now has a canonical component artifact:
+  `components/tabs.kiskadee.json`.
+- TextField semantic metadata now has a canonical component artifact:
+  `components/text-field.kiskadee.json`.
+- `manifest.components.tabs.artifacts.metadata` and
+  `manifest.components.textField.artifacts.metadata` point to the new component metadata artifacts
+  when they exist.
+- Newly generated `global.kiskadee.json` no longer emits `global.components.tabs` or
+  `global.components.textField`.
+- The runtime still keeps legacy `global.components.tabs/textField` fallback support for older
+  generated artifacts or external consumers that still provide those fields.
+- Button has a component-local `useButtonArtifactConfig` hook for class-map access, but no metadata
+  artifact in this phase because Button has no component-specific semantic metadata to split out of
+  `global.kiskadee.json`.
+- Button, Tabs, and TextField now consume component-scoped class maps through the shared component
+  class-map loader/cache.
+- Switch now also uses the shared component class-map loader/cache, replacing the earlier local
+  class-map merge helper from the first reference implementation.
+- Showcase no longer loads aggregate class maps on `/button`, `/text-field`, `/switch`, or
+  `/tabs/*`.
+- Showcase no longer models Tabs/TextField component metadata in `useThemeExtras`; pages that need
+  schema defaults use `useTabsArtifactConfig` or `useTextFieldArtifactConfig`.
+- Generated CSS remains aggregated/shared; this rollout is JSON metadata and JSON class-map only.
+
+Changed files:
+
+- `packages/web-builder/src/component-artifacts/tabsComponentArtifact.ts`
+- `packages/web-builder/src/component-artifacts/textFieldComponentArtifact.ts`
+- `packages/web-builder/src/phase-8-write-extra-artifacts/writeExtraArtifacts.ts`
+- `packages/web-builder/src/phase-7-publish-metadata/publishMetadata.ts`
+- `packages/components/react/src/contexts/useComponentClassMap.ts`
+- `packages/components/react/src/Tabs/useTabsArtifactConfig.ts`
+- `packages/components/react/src/TextField/useTextFieldArtifactConfig.ts`
+- Button, Tabs, and TextField runtime files in `packages/components/react/src/`
+- Showcase providers/routes/hooks that previously depended on aggregate component metadata
+- `packages/showcase/registry/generated/design-systems.registry.generated.ts`
+
+Validation notes:
+
+- `pnpm --filter @kiskadee/web-builder run build` completed successfully.
+- `pnpm --filter @kiskadee/react-components run build` completed successfully after restoring the
+  TextField class-map type import.
+- `pnpm --filter @kiskadee/web-builder run sync` completed successfully.
+- `pnpm --filter @kiskadee/web-builder run generate` completed successfully.
+- `pnpm --filter @kiskadee/showcase build` completed successfully, including
+  `web-builder build-sync-generate`, React component builds, TypeScript, and Next static route
+  generation.
+- Generated output inspection confirmed:
+  - `components/tabs.kiskadee.json` exists when Tabs metadata exists.
+  - `components/text-field.kiskadee.json` exists when TextField metadata exists.
+  - `manifest.components.tabs.artifacts.metadata` points to `components/tabs.kiskadee.json`.
+  - `manifest.components.textField.artifacts.metadata` points to
+    `components/text-field.kiskadee.json`.
+  - `global.kiskadee.json` has no `components` payload for Material Design 3 by Google.
+- HTTP validation against the existing Showcase dev server at `http://localhost:3000` confirmed
+  `200 OK` for:
+  - `components/tabs.kiskadee.json`
+  - `components/text-field.kiskadee.json`
+  - `class-maps/core/button.kiskadee.json`
+  - `class-maps/core/tabs.kiskadee.json`
+  - `class-maps/core/text-field.kiskadee.json`
+- Browser validation against the same dev server confirmed the expected route headings rendered for:
+  `/button`, `/text-field`, `/tabs/line`, `/tabs/dot`, `/tabs/box`, `/tabs/bridge`,
+  `/tabs/segmented`, and `/switch`.
+
+Blocked/partial validation:
+
+- The Codex Browser runtime did not expose `window.performance`, so direct resource-entry
+  inspection of loaded network artifacts was not available. The no-aggregate behavior was validated
+  through code path inspection, generated manifest/artifact inspection, successful route rendering,
+  and HTTP artifact availability.
+
 ## Current Artifact Model
 
 The current web-builder output is emitted per design system under
@@ -288,11 +373,11 @@ The current web-builder output is emitted per design system under
 
 | Artifact | Current role | Component-split impact |
 | --- | --- | --- |
-| `global.kiskadee.json` | Runtime-friendly global metadata, plus legacy component metadata for components not yet migrated. | High. Switch metadata has moved out; newly generated artifacts should not include `global.components.switch`. |
+| `global.kiskadee.json` | Runtime-friendly global metadata. | High. Switch, Tabs, and TextField metadata have moved out; newly generated artifacts should not include `global.components.switch`, `global.components.tabs`, or `global.components.textField`. |
 | `core.kiskadee.json` | Palette-independent class map for all components. | High. Kept as compatibility output while component hooks move to `class-maps/core/<component>.kiskadee.json`. |
 | `<segment>.<theme>.kiskadee.json` | Palette/theme class map for all components. | High. Kept as compatibility output while component hooks move to `class-maps/<segment>.<theme>/<component>.kiskadee.json`. |
-| `class-maps/core/<component>.kiskadee.json` | Palette-independent class map for one component. | Implemented in Phase 2. First runtime consumer is Switch. |
-| `class-maps/<segment>.<theme>/<component>.kiskadee.json` | Palette/theme class map for one component. | Implemented in Phase 2. First runtime consumer is Switch. |
+| `class-maps/core/<component>.kiskadee.json` | Palette-independent class map for one component. | Implemented in Phase 2. Runtime consumers now include Switch, Button, Tabs, and TextField. |
+| `class-maps/<segment>.<theme>/<component>.kiskadee.json` | Palette/theme class map for one component. | Implemented in Phase 2. Runtime consumers now include Switch, Button, Tabs, and TextField. |
 | `manifest.json` | Compact design-system discovery metadata: key, display name, fonts, segments, themes, and high-level component capabilities. | Medium. It should remain small, but gain artifact index information for component-level chunks. |
 | `schema.json` | Serializable schema snapshot without `colors`, useful for inspection/tooling. | Medium/low for runtime. Keep aggregated initially unless runtime consumers start loading it eagerly. |
 | `core.kiskadee.schema.json` | JSON Schema for `core.kiskadee.json`. | Low/medium. Update only if the class-map artifact shape changes. |
@@ -313,14 +398,15 @@ The current web-builder output is emitted per design system under
 
 ### Showcase Generated Registries
 
-These are not design-system artifacts, but they will need to understand any new artifact layout:
+These are not design-system artifacts, but they need to understand the component artifact layout:
 
 - `packages/showcase/registry/generated/design-systems.registry.generated.ts`
 - `packages/showcase/registry/generated/css.registry.generated.ts`
 - `packages/showcase/registry/generated/colors.registry.generated.ts`
 
-`colors.registry.generated.ts` probably stays mostly unchanged. The design-system and CSS
-registries will need component artifact loaders/URLs as JSON and CSS are split.
+`design-systems.registry.generated.ts` now carries component metadata/class-map paths from
+`manifest.json`. `css.registry.generated.ts` and `colors.registry.generated.ts` stay mostly
+unchanged while generated CSS remains aggregated.
 
 ## Target Model
 
@@ -330,8 +416,9 @@ The target model is component-demand-driven artifact loading:
 2. A page with 10 component families should load only the 10 component artifact sets it needs.
 3. Multiple instances of the same component should share one cached artifact load.
 4. Component hooks, such as `useSwitchArtifactConfig`, are the component-facing API.
-5. The cache should be shared above individual component instances, likely through React Query or
-   an equivalent artifact cache keyed by design system, segment, theme, artifact type, and component.
+5. The cache is shared above individual component instances through the internal artifact cache,
+   keyed by design system, segment, theme, artifact type, and component. React Query can still be
+   adopted by consumers later, but it is not a runtime dependency now.
 6. `KiskadeeContext` should keep environment-level data, not a growing store of all component
    artifacts. Good context data includes selected design system, segment, theme, artifact base path,
    version/hash, and global defaults.
@@ -347,12 +434,11 @@ Potential future paths:
 <designSystem>/class-maps/core/switch.kiskadee.json
 <designSystem>/class-maps/default.light/switch.kiskadee.json
 
-<designSystem>/css/core/switch.kiskadee.css
-<designSystem>/css/default.light/switch.kiskadee.css
+CSS stays in shared aggregate artifacts for now.
 ```
 
-The exact paths are still open. The invariant is more important than the path: component-specific
-runtime data should not force every page to load every component.
+The JSON paths above are now the implemented convention. The invariant remains more important than
+the path: component-specific runtime data should not force every page to load every component.
 
 ## Refactor Phases
 
@@ -415,12 +501,14 @@ Acceptance notes:
 
 Goal: make the generated artifact layout consumable by Showcase and external apps.
 
-Candidate output:
+Status: implemented for the current JSON rollout.
 
-- Update `generate-showcase-registry.ts` to emit component artifact loaders/URLs.
-- Update `sync-showcase-artifacts.ts` only if the folder layout requires it.
-- Decide whether aggregate artifacts remain as compatibility outputs for one or more releases.
-- Document the stable artifact contract in web-builder docs.
+Implemented output:
+
+- `generate-showcase-registry.ts` emits manifest-backed component artifact paths.
+- `sync-showcase-artifacts.ts` copies the component artifact folders without special casing.
+- Aggregate class-map JSON remains as a compatibility output while consumers migrate.
+- Stable generated artifact rules are documented in web-builder docs.
 
 Acceptance notes:
 
@@ -430,22 +518,23 @@ Acceptance notes:
 
 ## Current Reference Implementation
 
-`useSwitchArtifactConfig` is still the best API shape reference. It now prefers the Switch
-component metadata artifact and Switch component class-map artifacts, with fallbacks for older or
-aggregate-only artifact sets.
+`useSwitchArtifactConfig` is still the best API shape reference. Tabs and TextField now have the
+same component-local metadata hook pattern, and Button/Tabs/TextField share the component class-map
+loader/cache path.
 
 The target direction is:
 
-- keep the hook as the Switch-local entry point;
-- move semantic Switch metadata into a Switch component artifact;
-- later move Switch class maps into component class-map artifacts;
-- use shared cache semantics so multiple Switch instances do not duplicate network work;
+- keep component hooks as local entry points, such as `useSwitchArtifactConfig`,
+  `useTabsArtifactConfig`, and `useTextFieldArtifactConfig`;
+- keep semantic component metadata in component metadata artifacts;
+- keep component class maps in component class-map artifacts;
+- use shared cache semantics so multiple component instances do not duplicate network work;
 - keep class maps as class resolution artifacts, not semantic capability metadata.
 - keep generated CSS aggregated unless later measurements clearly justify a split.
 
 ## Non-Goals
 
-- Do not create separate Linear issues for every phase unless the user explicitly asks later.
+- Do not create separate Linear issues for every component unless the user explicitly asks later.
 - Do not make Showcase-specific hooks the canonical component metadata API.
 - Do not move all schema data into per-component runtime artifacts.
 - Do not split CSS by component without measurements that beat the current utility-like shared CSS
@@ -469,9 +558,7 @@ Validation should scale with the phase being implemented:
 
 - Should component metadata artifacts be keyed by component name only, or by component plus variant
   when variant metadata grows?
-- Should React Query be a hard dependency for runtime artifact caching, or should Kiskadee expose a
-  small framework-agnostic artifact cache and let apps adapt it to React Query?
 - What compatibility period is needed for aggregate `global.kiskadee.json`, `core.kiskadee.json`,
   and palette class-map files?
-- Should `manifest.json` directly list component artifact URLs, or should it point to a separate
-  artifact index file?
+- Should React Query remain only a consumer-level integration option, or should a later package add
+  an adapter on top of the current internal cache?

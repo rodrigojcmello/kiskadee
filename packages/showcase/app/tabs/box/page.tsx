@@ -5,29 +5,29 @@ import {
   type TabsTabWidth,
   tabsIndicatorShapesByVariant
 } from '@kiskadee/core';
-import { TabsBox, useKiskadee } from '@kiskadee/react-components';
+import { TabsBox, useTabsArtifactConfig } from '@kiskadee/react-components';
 import { useState } from 'react';
 import { Select } from '@/k-components';
 import {
-  DEFAULT_TAB_VALUE,
-  DEFAULT_TAB_SIZE,
-  type TabsIndicatorMotionStyleControl,
-  type TabsMode,
-  type TabsSizeControl,
-  type TabsSpring,
-  type TabsTabWidthControl,
   boxIndicatorShapeLabels,
+  DEFAULT_TAB_SIZE,
+  DEFAULT_TAB_VALUE,
   indicatorMotionStyleLabels,
   modeOptions,
   renderTabsSlots,
   springOptions,
-  tabSizeOptions,
+  type TabsIndicatorMotionStyleControl,
+  type TabsMode,
   TabsShowcasePageShell,
+  type TabsSizeControl,
+  type TabsSpring,
+  type TabsTabWidthControl,
+  tabSizeOptions,
   tabWidthLabels
 } from '../ShowcaseTabs.shared';
 
 export default function TabsBoxPage() {
-  const { global } = useKiskadee();
+  const { options: tabsArtifactOptions } = useTabsArtifactConfig();
   const [mode, setMode] = useState<TabsMode>('animated');
   const [spring, setSpring] = useState<TabsSpring>('snappy');
   const [indicatorMotionStyle, setIndicatorMotionStyle] =
@@ -37,7 +37,7 @@ export default function TabsBoxPage() {
   const [tabSize, setTabSize] = useState<TabsSizeControl>(DEFAULT_TAB_SIZE);
   const [selectedValue, setSelectedValue] = useState(DEFAULT_TAB_VALUE);
 
-  const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'content';
+  const schemaTabWidth = tabsArtifactOptions.tabWidth ?? 'content';
   const boxShapeOptions = tabsIndicatorShapesByVariant.box.map((value) => ({
     value,
     label: boxIndicatorShapeLabels[value]

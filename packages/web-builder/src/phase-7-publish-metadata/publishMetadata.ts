@@ -21,6 +21,14 @@ import {
   buildSwitchComponentArtifact,
   SWITCH_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/switchComponentArtifact.ts';
+import {
+  buildTabsComponentArtifact,
+  TABS_COMPONENT_ARTIFACT_PATH
+} from '../component-artifacts/tabsComponentArtifact.ts';
+import {
+  buildTextFieldComponentArtifact,
+  TEXT_FIELD_COMPONENT_ARTIFACT_PATH
+} from '../component-artifacts/textFieldComponentArtifact.ts';
 import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex.ts';
 import type {
   Manifest,
@@ -564,6 +572,28 @@ export async function publishMetadata(params: {
       artifacts: {
         ...(manifest.components.switch?.artifacts ?? {}),
         metadata: SWITCH_COMPONENT_ARTIFACT_PATH
+      }
+    };
+  }
+
+  if (buildTabsComponentArtifact(schema)) {
+    manifest.components = manifest.components ?? {};
+    manifest.components.tabs = {
+      ...(manifest.components.tabs ?? {}),
+      artifacts: {
+        ...(manifest.components.tabs?.artifacts ?? {}),
+        metadata: TABS_COMPONENT_ARTIFACT_PATH
+      }
+    };
+  }
+
+  if (buildTextFieldComponentArtifact(schema)) {
+    manifest.components = manifest.components ?? {};
+    manifest.components.textField = {
+      ...(manifest.components.textField ?? {}),
+      artifacts: {
+        ...(manifest.components.textField?.artifacts ?? {}),
+        metadata: TEXT_FIELD_COMPONENT_ARTIFACT_PATH
       }
     };
   }

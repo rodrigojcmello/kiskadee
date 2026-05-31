@@ -1,11 +1,11 @@
 import './Button.css';
 import { Button as HeadlessButton } from '@kiskadee/react-headless';
 import { type ComponentType, type LazyExoticComponent, lazy, memo, Suspense, useMemo } from 'react';
-import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
 import type { ButtonProps } from './Button.types.ts';
 import { ButtonCore } from './ButtonCore.tsx';
 import type { ButtonWithRippleProps } from './ButtonWithRipple.tsx';
 import { resolveRippleModeAvailability } from './rippleModeAvailability.ts';
+import { useButtonArtifactConfig } from './useButtonArtifactConfig.ts';
 
 export type { ButtonProps, ButtonRippleEffect, ButtonStatus } from './Button.types.ts';
 
@@ -25,9 +25,8 @@ function shouldRenderRippleButton(
 // [RIPPLE EFFECT 20] END: Lazy-load and availability gate.
 
 function Button(props: ButtonProps) {
-  const {
-    classesMap: { button: { e1 } = {} }
-  } = useKiskadee();
+  const { buttonClassesMap } = useButtonArtifactConfig();
+  const e1 = buttonClassesMap?.e1;
   const availableRippleModes = useMemo(() => resolveRippleModeAvailability(e1), [e1]);
 
   // [RIPPLE EFFECT 21] START: Runtime path selection (Core vs. WithRipple).

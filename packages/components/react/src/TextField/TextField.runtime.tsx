@@ -31,6 +31,7 @@ import type {
   TextFieldVariantClassesMap
 } from './TextField.types';
 import { useLazyFloatingRestTypography } from './useLazyFloatingRestTypography.ts';
+import { useTextFieldArtifactConfig } from './useTextFieldArtifactConfig.ts';
 
 type CreateTextFieldComponentOptions = {
   displayName: string;
@@ -131,25 +132,25 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
       readOnly,
       ...rootProps
     } = props;
-    const { classesMap, global } = useKiskadee();
+    const { global } = useKiskadee();
+    const {
+      textFieldClassesMap,
+      options: textFieldOptions,
+      variants
+    } = useTextFieldArtifactConfig();
     const labelRef = useRef<HTMLLabelElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
     const controlRef = useRef<HTMLDivElement | null>(null);
     const resolvedIntent = intent ?? validationStatus ?? DEFAULT_TEXT_FIELD_INTENT;
     const resolvedRadius = radius ?? global?.radius ?? DEFAULT_TEXT_FIELD_RADIUS;
-    const textFieldGlobalConfig = global?.components?.textField;
     const modeOptions =
       options.structural.variant === 'standard'
-        ? textFieldGlobalConfig?.variants?.standard?.modes?.[
-            options.structural.mode as TextFieldStandardMode
-          ]?.options
-        : textFieldGlobalConfig?.variants?.floating?.modes?.[
-            options.structural.mode as TextFieldFloatingMode
-          ]?.options;
+        ? variants.standard?.modes?.[options.structural.mode as TextFieldStandardMode]?.options
+        : variants.floating?.modes?.[options.structural.mode as TextFieldFloatingMode]?.options;
     const variantOptions =
       options.structural.variant === 'standard'
-        ? textFieldGlobalConfig?.variants?.standard?.options
-        : textFieldGlobalConfig?.variants?.floating?.options;
+        ? variants.standard?.options
+        : variants.floating?.options;
     const resolvedLabelOffsetStrategy = resolveLabelOffsetStrategy(
       labelOffset ?? modeOptions?.labelOffset,
       resolvedRadius
@@ -158,9 +159,9 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
       focusRingColorSource ??
       modeOptions?.focusRingColorSource ??
       variantOptions?.focusRingColorSource ??
-      textFieldGlobalConfig?.options?.focusRingColorSource ??
+      textFieldOptions.focusRingColorSource ??
       DEFAULT_TEXT_FIELD_FOCUS_RING_COLOR_SOURCE;
-    const elements = resolveTextFieldElements(classesMap.textField, options.structural);
+    const elements = resolveTextFieldElements(textFieldClassesMap, options.structural);
     const shouldMirrorFloatingTypography = options.structural.variant === 'floating';
 
     const resolvedClassNames = useMemo(

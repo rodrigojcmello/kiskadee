@@ -1,34 +1,35 @@
 'use client';
 
-import { type TabsIndicatorPosition, type TabsTabWidth } from '@kiskadee/core';
-import { TabsDot, useKiskadee } from '@kiskadee/react-components';
+import type { TabsIndicatorPosition, TabsTabWidth } from '@kiskadee/core';
+import { TabsDot, useTabsArtifactConfig } from '@kiskadee/react-components';
 import { useState } from 'react';
 import { Select } from '@/k-components';
 import {
-  DEFAULT_TAB_VALUE,
   DEFAULT_TAB_SIZE,
-  type TabsIndicatorPositionControl,
-  type TabsMode,
-  type TabsSizeControl,
-  type TabsTabWidthControl,
+  DEFAULT_TAB_VALUE,
   indicatorPositionLabels,
   modeOptions,
   renderTabsSlots,
-  tabSizeOptions,
+  type TabsIndicatorPositionControl,
+  type TabsMode,
   TabsShowcasePageShell,
+  type TabsSizeControl,
+  type TabsTabWidthControl,
+  tabSizeOptions,
   tabWidthLabels
 } from '../ShowcaseTabs.shared';
 
 export default function TabsDotPage() {
-  const { global } = useKiskadee();
+  const { options: tabsArtifactOptions } = useTabsArtifactConfig();
   const [mode, setMode] = useState<TabsMode>('animated');
-  const [indicatorPosition, setIndicatorPosition] = useState<TabsIndicatorPositionControl>('default');
+  const [indicatorPosition, setIndicatorPosition] =
+    useState<TabsIndicatorPositionControl>('default');
   const [tabWidth, setTabWidth] = useState<TabsTabWidthControl>('default');
   const [tabSize, setTabSize] = useState<TabsSizeControl>(DEFAULT_TAB_SIZE);
   const [selectedValue, setSelectedValue] = useState(DEFAULT_TAB_VALUE);
 
-  const schemaIndicatorPosition = global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
-  const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'content';
+  const schemaIndicatorPosition = tabsArtifactOptions.indicatorPosition ?? 'bottom';
+  const schemaTabWidth = tabsArtifactOptions.tabWidth ?? 'content';
   const indicatorPositionOptions = [
     {
       value: 'default',

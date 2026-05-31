@@ -1,5 +1,6 @@
 import type {
   ButtonIntent,
+  ClassNameByElementJSON,
   ComponentEmphasis,
   ElementSizeValue,
   ProjectedStateKeys,
@@ -10,6 +11,10 @@ import type {
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
 
 export type ButtonStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
+
+export type ButtonElementName = 'e1' | 'e2' | 'e3';
+
+export type ButtonClassesMap = Partial<Record<ButtonElementName, ClassNameByElementJSON>>;
 
 // [RIPPLE EFFECT 17] START: Button ripple props contract.
 export type ButtonRippleEffect = {

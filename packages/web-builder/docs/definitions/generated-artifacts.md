@@ -21,8 +21,9 @@ Metadata is written per template under `packages/web-builder/build/<template-key
 - `global.kiskadee.json`: global metadata consumed by runtime/components, such as fonts, radius,
   and global effects. Component semantic metadata should live in component artifacts.
 - `components/<component>.kiskadee.json`: component-scoped semantic metadata loaded on demand by
-  component runtime hooks. `components/switch.kiskadee.json` is the first emitted artifact in this
-  family.
+  component runtime hooks. Current emitted metadata artifacts include
+  `components/switch.kiskadee.json`, `components/tabs.kiskadee.json`, and
+  `components/text-field.kiskadee.json`.
 - `class-maps/**/<component>.kiskadee.json`: component-scoped class maps loaded on demand by
   component runtime hooks. These are class resolution artifacts, not semantic metadata.
 

@@ -3,6 +3,8 @@ export { TabsBridge } from './bridge/Tabs.bridge.tsx';
 export { TabsDot } from './dot/Tabs.dot.tsx';
 export { TabsLine } from './line/Tabs.line.tsx';
 export { TabsSegmented } from './segmented/Tabs.segmented.tsx';
+export type { TabsArtifactConfig } from './useTabsArtifactConfig.ts';
+export { useTabsArtifactConfig } from './useTabsArtifactConfig.ts';
 export type {
   TabsBarProps,
   TabsBoxIndicatorConfig,

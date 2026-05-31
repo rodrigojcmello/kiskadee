@@ -11,17 +11,6 @@ import type {
   SchemaFonts,
   SegmentName,
   SolidColor,
-  TabsBridgeLowerCurve,
-  TabsIndicatorPosition,
-  TabsIndicatorShape,
-  TabsIndicatorWidth,
-  TabsTabWidth,
-  TabsVariant,
-  TextFieldFocusRingColorSource,
-  TextFieldLabelOffsetByRadius,
-  TextFieldMode,
-  TextFieldModeByVariant,
-  TextFieldVariant,
   ThemeMode
 } from '@kiskadee/core';
 import { convertHslaToHex } from '@kiskadee/core';
@@ -30,33 +19,20 @@ import {
   buildSwitchComponentArtifact,
   SWITCH_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/switchComponentArtifact.ts';
+import {
+  buildTabsComponentArtifact,
+  TABS_COMPONENT_ARTIFACT_PATH
+} from '../component-artifacts/tabsComponentArtifact.ts';
+import {
+  buildTextFieldComponentArtifact,
+  TEXT_FIELD_COMPONENT_ARTIFACT_PATH
+} from '../component-artifacts/textFieldComponentArtifact.ts';
 import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex.ts';
 import { type FontStack, toCssFontFamily } from '../utils/fontFamily.ts';
 
 type ExtractableSchema = Schema;
 
 type SegmentKey = SegmentName | string;
-type TextFieldOptionsPayload = {
-  variant?: TextFieldVariant;
-  mode?: TextFieldMode;
-  focusRingColorSource?: TextFieldFocusRingColorSource;
-};
-type TextFieldModeOptionsPayload = {
-  labelOffset?: TextFieldLabelOffsetByRadius;
-  focusRingColorSource?: TextFieldFocusRingColorSource;
-};
-type TextFieldModePayload<TMode extends TextFieldMode = TextFieldMode> = Partial<
-  Record<TMode, { options?: TextFieldModeOptionsPayload }>
->;
-type TextFieldVariantOptionsPayload = {
-  focusRingColorSource?: TextFieldFocusRingColorSource;
-};
-type TextFieldVariantsPayload = {
-  [TVariant in TextFieldVariant]?: {
-    options?: TextFieldVariantOptionsPayload;
-    modes?: TextFieldModePayload<TextFieldModeByVariant[TVariant]>;
-  };
-};
 
 function hasErrnoCode(error: unknown, code: string): boolean {
   return (
@@ -73,66 +49,6 @@ function getBuildDir(outDirSlug: string): string {
   const baseBuildDir = resolve(__dirname, '..', '..', 'build');
 
   return resolve(baseBuildDir, outDirSlug);
-}
-
-function pickTextFieldModeOptions(options: unknown): TextFieldModeOptionsPayload | undefined {
-  const labelOffset = (options as { labelOffset?: TextFieldLabelOffsetByRadius } | undefined)
-    ?.labelOffset;
-  const focusRingColorSource = (
-    options as { focusRingColorSource?: TextFieldFocusRingColorSource } | undefined
-  )?.focusRingColorSource;
-  return labelOffset || focusRingColorSource
-    ? {
-        ...(labelOffset ? { labelOffset } : {}),
-        ...(focusRingColorSource ? { focusRingColorSource } : {})
-      }
-    : undefined;
-}
-
-function pickTextFieldVariantOptions(options: unknown): TextFieldVariantOptionsPayload | undefined {
-  const focusRingColorSource = (
-    options as { focusRingColorSource?: TextFieldFocusRingColorSource } | undefined
-  )?.focusRingColorSource;
-  return focusRingColorSource ? { focusRingColorSource } : undefined;
-}
-
-function buildTextFieldVariantsPayload(schema: ExtractableSchema): TextFieldVariantsPayload {
-  const textField = schema.components?.textField;
-  const standardVariant = textField?.variants?.standard;
-  const floatingVariant = textField?.variants?.floating;
-  const standardModes = textField?.variants?.standard?.modes;
-  const floatingModes = textField?.variants?.floating?.modes;
-  const variants: TextFieldVariantsPayload = {};
-
-  const standardOptions = pickTextFieldVariantOptions(standardVariant?.options);
-  const standard: TextFieldModePayload<TextFieldModeByVariant['standard']> = {};
-  const outlineOptions = pickTextFieldModeOptions(standardModes?.outline?.options);
-  const underlineOptions = pickTextFieldModeOptions(standardModes?.underline?.options);
-  const borderlessOptions = pickTextFieldModeOptions(standardModes?.borderless?.options);
-  if (outlineOptions) standard.outline = { options: outlineOptions };
-  if (underlineOptions) standard.underline = { options: underlineOptions };
-  if (borderlessOptions) standard.borderless = { options: borderlessOptions };
-  if (standardOptions || Object.keys(standard).length > 0) {
-    variants.standard = {
-      ...(standardOptions ? { options: standardOptions } : {}),
-      ...(Object.keys(standard).length > 0 ? { modes: standard } : {})
-    };
-  }
-
-  const floatingOptions = pickTextFieldVariantOptions(floatingVariant?.options);
-  const floating: TextFieldModePayload<TextFieldModeByVariant['floating']> = {};
-  const notchedOptions = pickTextFieldModeOptions(floatingModes?.notched?.options);
-  const insideOptions = pickTextFieldModeOptions(floatingModes?.inside?.options);
-  if (notchedOptions) floating.notched = { options: notchedOptions };
-  if (insideOptions) floating.inside = { options: insideOptions };
-  if (floatingOptions || Object.keys(floating).length > 0) {
-    variants.floating = {
-      ...(floatingOptions ? { options: floatingOptions } : {}),
-      ...(Object.keys(floating).length > 0 ? { modes: floating } : {})
-    };
-  }
-
-  return variants;
 }
 
 function getSegmentKeys(schema: ExtractableSchema): SegmentKey[] {
@@ -272,29 +188,9 @@ export async function writeExtraArtifacts(params: {
     | ActivationFeedbackEffectSchema
     | undefined;
   const ripple = schema.global?.effects?.ripple as RippleEffectSchema | undefined;
-  const tabsIndicatorPosition = schema.components?.tabs?.options?.indicatorPosition as
-    | TabsIndicatorPosition
-    | undefined;
-  const tabsIndicatorShape = schema.components?.tabs?.options?.indicatorShape as
-    | TabsIndicatorShape
-    | undefined;
-  const tabsIndicatorWidth = schema.components?.tabs?.options?.indicatorWidth as
-    | TabsIndicatorWidth
-    | undefined;
-  const tabsTabWidth = schema.components?.tabs?.options?.tabWidth as TabsTabWidth | undefined;
-  const tabsVariant = schema.components?.tabs?.options?.variant as TabsVariant | undefined;
-  const tabsSeparator = schema.components?.tabs?.options?.separator as boolean | undefined;
-  const tabsLowerCurve = schema.components?.tabs?.options?.lowerCurve as
-    | TabsBridgeLowerCurve
-    | undefined;
   const switchComponentArtifact = buildSwitchComponentArtifact(schema);
-  const textFieldVariant = schema.components?.textField?.options?.variant as
-    | TextFieldVariant
-    | undefined;
-  const textFieldMode = schema.components?.textField?.options?.mode as TextFieldMode | undefined;
-  const textFieldFocusRingColorSource = schema.components?.textField?.options
-    ?.focusRingColorSource as TextFieldFocusRingColorSource | undefined;
-  const textFieldVariants = buildTextFieldVariantsPayload(schema);
+  const tabsComponentArtifact = buildTabsComponentArtifact(schema);
+  const textFieldComponentArtifact = buildTextFieldComponentArtifact(schema);
 
   function toCssFontFamilyString(value: FontStack): string | null {
     const css = toCssFontFamily(value);
@@ -311,30 +207,7 @@ export async function writeExtraArtifacts(params: {
     activationFeedback && Object.keys(activationFeedback).length > 0
   );
   const hasRipple = Boolean(ripple && Object.keys(ripple).length > 0);
-  const hasTabsOptions = Boolean(
-    tabsIndicatorPosition ||
-      tabsIndicatorShape ||
-      tabsIndicatorWidth ||
-      tabsTabWidth ||
-      tabsVariant ||
-      tabsSeparator !== undefined ||
-      tabsLowerCurve
-  );
-  const hasTextFieldOptions = Boolean(
-    textFieldVariant ||
-      textFieldMode ||
-      textFieldFocusRingColorSource ||
-      Object.keys(textFieldVariants).length > 0
-  );
-
-  if (
-    hasFonts ||
-    hasRadius ||
-    hasActivationFeedback ||
-    hasRipple ||
-    hasTabsOptions ||
-    hasTextFieldOptions
-  ) {
+  if (hasFonts || hasRadius || hasActivationFeedback || hasRipple) {
     await mkdir(buildDir, { recursive: true });
     const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
 
@@ -344,23 +217,6 @@ export async function writeExtraArtifacts(params: {
       effects?: {
         activationFeedback?: ActivationFeedbackEffectSchema;
         ripple?: RippleEffectSchema;
-      };
-      components?: {
-        tabs?: {
-          options?: {
-            variant?: TabsVariant;
-            indicatorPosition?: TabsIndicatorPosition;
-            indicatorShape?: TabsIndicatorShape;
-            indicatorWidth?: TabsIndicatorWidth;
-            tabWidth?: TabsTabWidth;
-            separator?: boolean;
-            lowerCurve?: TabsBridgeLowerCurve;
-          };
-        };
-        textField?: {
-          options?: TextFieldOptionsPayload;
-          variants?: TextFieldVariantsPayload;
-        };
       };
     } = {};
 
@@ -389,52 +245,21 @@ export async function writeExtraArtifacts(params: {
       };
     }
 
-    if (hasTabsOptions || hasTextFieldOptions) {
-      globalPayload.components = {
-        ...(globalPayload.components ?? {}),
-        ...(hasTabsOptions
-          ? {
-              tabs: {
-                options: {
-                  ...(tabsVariant ? { variant: tabsVariant } : {}),
-                  ...(tabsIndicatorPosition ? { indicatorPosition: tabsIndicatorPosition } : {}),
-                  ...(tabsIndicatorShape ? { indicatorShape: tabsIndicatorShape } : {}),
-                  ...(tabsIndicatorWidth ? { indicatorWidth: tabsIndicatorWidth } : {}),
-                  ...(tabsTabWidth ? { tabWidth: tabsTabWidth } : {}),
-                  ...(tabsSeparator !== undefined ? { separator: tabsSeparator } : {}),
-                  ...(tabsLowerCurve ? { lowerCurve: tabsLowerCurve } : {})
-                }
-              }
-            }
-          : {}),
-        ...(hasTextFieldOptions
-          ? {
-              textField: {
-                options: {
-                  ...(textFieldVariant ? { variant: textFieldVariant } : {}),
-                  ...(textFieldMode ? { mode: textFieldMode } : {}),
-                  ...(textFieldFocusRingColorSource
-                    ? { focusRingColorSource: textFieldFocusRingColorSource }
-                    : {})
-                },
-                ...(Object.keys(textFieldVariants).length > 0
-                  ? { variants: textFieldVariants }
-                  : {})
-              }
-            }
-          : {})
-      };
-    }
-
     await writeFile(globalFilePath, JSON.stringify(globalPayload, null, 2), 'utf8');
     // console.log(`[web-builder] Global artifact written to: ${globalFilePath}`);
   }
 
-  if (switchComponentArtifact) {
-    const componentArtifactPath = resolve(buildDir, SWITCH_COMPONENT_ARTIFACT_PATH);
+  const componentArtifacts = [
+    { artifact: switchComponentArtifact, path: SWITCH_COMPONENT_ARTIFACT_PATH },
+    { artifact: tabsComponentArtifact, path: TABS_COMPONENT_ARTIFACT_PATH },
+    { artifact: textFieldComponentArtifact, path: TEXT_FIELD_COMPONENT_ARTIFACT_PATH }
+  ];
+
+  for (const { artifact, path } of componentArtifacts) {
+    if (!artifact) continue;
+    const componentArtifactPath = resolve(buildDir, path);
     await mkdir(dirname(componentArtifactPath), { recursive: true });
-    await writeFile(componentArtifactPath, JSON.stringify(switchComponentArtifact, null, 2), 'utf8');
-    // console.log(`[web-builder] Switch component artifact written to: ${componentArtifactPath}`);
+    await writeFile(componentArtifactPath, JSON.stringify(artifact, null, 2), 'utf8');
   }
 
   // Global design tokens consumed directly by CSS (no runtime setProperty/removeProperty).

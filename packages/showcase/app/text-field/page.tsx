@@ -11,7 +11,8 @@ import {
   TextFieldStandardBorderless,
   TextFieldStandardOutline,
   TextFieldStandardUnderline,
-  useKiskadee
+  useKiskadee,
+  useTextFieldArtifactConfig
 } from '@kiskadee/react-components';
 import { useEffect, useMemo, useState } from 'react';
 import { Select } from '@/k-components';
@@ -53,7 +54,8 @@ const labelOffsetOptions: Array<{ value: LabelOffsetSelection; label: string }> 
 ];
 
 export default function TextFieldPage() {
-  const { designSystem, global } = useKiskadee();
+  const { designSystem } = useKiskadee();
+  const { options: textFieldArtifactOptions } = useTextFieldArtifactConfig();
   const [standardOutlineName, setStandardOutlineName] = useState('');
   const [standardUnderlineName, setStandardUnderlineName] = useState('');
   const [standardBorderlessName, setStandardBorderlessName] = useState('');
@@ -65,10 +67,8 @@ export default function TextFieldPage() {
     TextFieldFocusRingColorSource | undefined
   >(undefined);
   const labelOffset = labelOffsetSelection === 'auto' ? undefined : labelOffsetSelection;
-  const schemaFocusRingColorSource =
-    global?.components?.textField?.options?.focusRingColorSource ?? 'global';
-  const focusRingColorSourceSelection =
-    focusRingColorSourceOverride ?? schemaFocusRingColorSource;
+  const schemaFocusRingColorSource = textFieldArtifactOptions.focusRingColorSource ?? 'global';
+  const focusRingColorSourceSelection = focusRingColorSourceOverride ?? schemaFocusRingColorSource;
   const focusRingColorSourceOptions = useMemo(
     () =>
       (
@@ -79,9 +79,7 @@ export default function TextFieldPage() {
       ).map((option) => ({
         ...option,
         label:
-          option.value === schemaFocusRingColorSource
-            ? `${option.label} (default)`
-            : option.label
+          option.value === schemaFocusRingColorSource ? `${option.label} (default)` : option.label
       })),
     [schemaFocusRingColorSource]
   );
@@ -120,9 +118,7 @@ export default function TextFieldPage() {
           value={focusRingColorSourceSelection}
           onValueChange={(value) => {
             const next = value as TextFieldFocusRingColorSource;
-            setFocusRingColorSourceOverride(
-              next === schemaFocusRingColorSource ? undefined : next
-            );
+            setFocusRingColorSourceOverride(next === schemaFocusRingColorSource ? undefined : next);
           }}
         />
       </div>

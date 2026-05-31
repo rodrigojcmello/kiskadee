@@ -17,6 +17,8 @@ export type { FontStack } from './src/utils/fontFamily';
 export { toCssFontFamily } from './src/utils/fontFamily';
 export type { ComponentClassMapArtifactJSON } from './src/component-artifacts/componentClassMapArtifacts';
 export type { SwitchComponentArtifactJSON } from './src/component-artifacts/switchComponentArtifact';
+export type { TabsComponentArtifactJSON } from './src/component-artifacts/tabsComponentArtifact';
+export type { TextFieldComponentArtifactJSON } from './src/component-artifacts/textFieldComponentArtifact';
 
 export type DesignSystemListEntry = {
   key: string;

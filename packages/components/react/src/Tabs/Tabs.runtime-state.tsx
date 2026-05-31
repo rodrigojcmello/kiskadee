@@ -8,13 +8,9 @@ import {
   resolveTabWidth,
   resolveVariantElements
 } from './Tabs.class-names';
-import type {
-  TabsResolvedIndicator,
-  TabsClassesMap,
-  TabsVariantClassesMap,
-  TabsVisualContextValue
-} from './Tabs.types';
+import type { TabsClassesMap, TabsResolvedIndicator, TabsVisualContextValue } from './Tabs.types';
 import type { TabsRootBaseProps } from './Tabs.types.ts';
+import { type TabsArtifactConfig, useTabsArtifactConfig } from './useTabsArtifactConfig.ts';
 
 export type TabsRuntimeRootState = {
   selected: string | undefined;
@@ -28,9 +24,7 @@ export type TabsRuntimeRootState = {
   resolvedSeparator: boolean;
   resolvedTabShape: RadiusMode;
   classNames: NonNullable<TabsRootBaseProps['classNames']>;
-  globalTabsOptions: NonNullable<
-    NonNullable<NonNullable<ReturnType<typeof useKiskadee>['global']>['components']>['tabs']
-  >['options'] | undefined;
+  globalTabsOptions: TabsArtifactConfig['options'] | undefined;
 };
 
 export type ResolvedTabsRootState = TabsRuntimeRootState & {
@@ -73,19 +67,13 @@ export function useTabsRuntimeRootState({
     [isControlled, onValueChange]
   );
 
-  const {
-    classesMap: { tabs: rawTabsMap },
-    global
-  } = useKiskadee();
+  const { global } = useKiskadee();
+  const { tabsClassesMap, options: globalTabsOptions } = useTabsArtifactConfig();
 
-  const globalTabsOptions = global?.components?.tabs?.options;
-  const elements = resolveVariantElements(
-    rawTabsMap as TabsVariantClassesMap | undefined,
-    variant
-  );
+  const elements = resolveVariantElements(tabsClassesMap, variant);
   const resolvedTabWidth = resolveTabWidth(tabWidth, globalTabsOptions?.tabWidth);
   const resolvedSeparator =
-    separator ?? (variant === 'segmented' ? true : globalTabsOptions?.separator ?? false);
+    separator ?? (variant === 'segmented' ? true : (globalTabsOptions?.separator ?? false));
   const resolvedTabShape = (global?.radius ?? 'rounded') as RadiusMode;
 
   return useMemo(

@@ -7,19 +7,12 @@ import {
   type TabsTabWidth,
   tabsIndicatorShapesByVariant
 } from '@kiskadee/core';
-import { TabsLine, useKiskadee } from '@kiskadee/react-components';
+import { TabsLine, useTabsArtifactConfig } from '@kiskadee/react-components';
 import { useState } from 'react';
 import { Select } from '@/k-components';
 import {
-  DEFAULT_TAB_VALUE,
   DEFAULT_TAB_SIZE,
-  type TabsIndicatorMotionStyleControl,
-  type TabsIndicatorPositionControl,
-  type TabsLineWidthControl,
-  type TabsMode,
-  type TabsSizeControl,
-  type TabsSpring,
-  type TabsTabWidthControl,
+  DEFAULT_TAB_VALUE,
   indicatorMotionStyleLabels,
   indicatorPositionLabels,
   lineIndicatorShapeLabels,
@@ -27,27 +20,35 @@ import {
   modeOptions,
   renderTabsSlots,
   springOptions,
-  tabSizeOptions,
+  type TabsIndicatorMotionStyleControl,
+  type TabsIndicatorPositionControl,
+  type TabsLineWidthControl,
+  type TabsMode,
   TabsShowcasePageShell,
+  type TabsSizeControl,
+  type TabsSpring,
+  type TabsTabWidthControl,
+  tabSizeOptions,
   tabWidthLabels
 } from '../ShowcaseTabs.shared';
 
 export default function TabsLinePage() {
-  const { global } = useKiskadee();
+  const { options: tabsArtifactOptions } = useTabsArtifactConfig();
   const [mode, setMode] = useState<TabsMode>('animated');
   const [spring, setSpring] = useState<TabsSpring>('snappy');
   const [indicatorMotionStyle, setIndicatorMotionStyle] =
     useState<TabsIndicatorMotionStyleControl>('direct');
-  const [indicatorPosition, setIndicatorPosition] = useState<TabsIndicatorPositionControl>('default');
+  const [indicatorPosition, setIndicatorPosition] =
+    useState<TabsIndicatorPositionControl>('default');
   const [lineWidth, setLineWidth] = useState<TabsLineWidthControl>('default');
   const [tabWidth, setTabWidth] = useState<TabsTabWidthControl>('default');
   const [tabSize, setTabSize] = useState<TabsSizeControl>(DEFAULT_TAB_SIZE);
   const [indicatorShape, setIndicatorShape] = useState<TabsLineIndicatorShape>('square');
   const [selectedValue, setSelectedValue] = useState(DEFAULT_TAB_VALUE);
 
-  const schemaLineWidth = global?.components?.tabs?.options?.indicatorWidth ?? 'tab';
-  const schemaIndicatorPosition = global?.components?.tabs?.options?.indicatorPosition ?? 'bottom';
-  const schemaTabWidth = global?.components?.tabs?.options?.tabWidth ?? 'content';
+  const schemaLineWidth = tabsArtifactOptions.indicatorWidth ?? 'tab';
+  const schemaIndicatorPosition = tabsArtifactOptions.indicatorPosition ?? 'bottom';
+  const schemaTabWidth = tabsArtifactOptions.tabWidth ?? 'content';
 
   const lineShapeOptions = tabsIndicatorShapesByVariant.line.map((value) => ({
     value,

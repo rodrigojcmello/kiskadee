@@ -12,6 +12,7 @@ import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headles
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useKiskadee } from '../contexts/KiskadeeContext.tsx';
 import type { ButtonProps, ButtonStatus } from './Button.types.ts';
+import { useButtonArtifactConfig } from './useButtonArtifactConfig.ts';
 
 const DEFAULT_SCALE = 's:md:1';
 const DEFAULT_RADIUS: RadiusMode = 'rounded';
@@ -209,16 +210,9 @@ function useButtonCommonProps(props: ButtonProps) {
     ...restProps
   } = props;
 
-  const { classesMap, global } = useKiskadee();
-  const buttonComponent = classesMap.button as
-    | Record<string, ClassNameByElementJSON>
-    | Record<string, Record<string, ClassNameByElementJSON>>
-    | undefined;
-  const buttonElements =
-    buttonComponent && Object.hasOwn(buttonComponent, 'e1')
-      ? (buttonComponent as Record<string, ClassNameByElementJSON>)
-      : undefined;
-  const { e1, e2, e3 } = buttonElements ?? {};
+  const { global } = useKiskadee();
+  const { buttonClassesMap } = useButtonArtifactConfig();
+  const { e1, e2, e3 } = buttonClassesMap ?? {};
   const status: ButtonStatus | 'rest' = statusProp;
 
   return {
