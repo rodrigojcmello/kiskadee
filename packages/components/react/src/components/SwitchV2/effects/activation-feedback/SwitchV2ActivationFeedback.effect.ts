@@ -6,17 +6,15 @@ import {
 import type { SwitchClassesMap, SwitchClassNames } from '../../../Switch/Switch.types.ts';
 
 export type SwitchV2ActivationFeedbackEffectOptions = {
-  classNames: Required<SwitchClassNames>;
   elements: SwitchClassesMap;
   isActive: boolean;
 };
 
 export type SwitchV2ActivationFeedbackEffectResult = {
-  classNames: Required<SwitchClassNames>;
+  classNamePatch: SwitchClassNames;
 };
 
 export function resolveSwitchV2ActivationFeedbackEffect({
-  classNames,
   elements,
   isActive
 }: SwitchV2ActivationFeedbackEffectOptions): SwitchV2ActivationFeedbackEffectResult {
@@ -24,21 +22,14 @@ export function resolveSwitchV2ActivationFeedbackEffect({
 
   if (!activationFeedbackClassName) {
     return {
-      classNames
+      classNamePatch: {}
     };
   }
 
   return {
-    classNames: {
-      ...classNames,
-      e2: join(classNames.e2, 'k-sw2-af-track') ?? '',
-      e3:
-        join(
-          classNames.e3,
-          activationFeedbackClassName,
-          'k-sw2-af',
-          isActive ? 'k-sw2-af-active' : ''
-        ) ?? ''
+    classNamePatch: {
+      e2: 'k-sw2-af-track',
+      e3: join(activationFeedbackClassName, 'k-sw2-af', isActive ? 'k-sw2-af-active' : '') ?? ''
     }
   };
 }

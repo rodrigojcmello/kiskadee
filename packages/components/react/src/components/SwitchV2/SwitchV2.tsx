@@ -70,6 +70,22 @@ function resolveSwitchV2ClassNames(options: {
   };
 }
 
+function mergeSwitchV2ClassNames(
+  baseClassNames: Required<SwitchClassNames>,
+  ...classNamePatches: Array<SwitchClassNames | null | undefined>
+): Required<SwitchClassNames> {
+  const patch = (elementName: keyof Required<SwitchClassNames>) =>
+    classNamePatches.map((classNamePatch) => classNamePatch?.[elementName]);
+
+  return {
+    e1: join(baseClassNames.e1, ...patch('e1')) ?? '',
+    e2: join(baseClassNames.e2, ...patch('e2')) ?? '',
+    e3: join(baseClassNames.e3, ...patch('e3')) ?? '',
+    e4: join(baseClassNames.e4, ...patch('e4')) ?? '',
+    e5: join(baseClassNames.e5, ...patch('e5')) ?? ''
+  };
+}
+
 function SwitchV2Root(props: SwitchV2Props) {
   const {
     id,
@@ -123,7 +139,7 @@ function SwitchV2Root(props: SwitchV2Props) {
       hasLabel
     });
 
-    const withThumbSize = thumbSizeEffect
+    const thumbSizeStructure = thumbSizeEffect
       ? thumbSizeEffect.resolveSwitchV2ThumbSizeEffect({
           baseClassNames,
           elements,
@@ -138,16 +154,15 @@ function SwitchV2Root(props: SwitchV2Props) {
           thumbVisualClassName: undefined
         };
 
-    if (!motionEffect) {
-      return withThumbSize;
-    }
+    const motionClassNamePatch = motionEffect
+      ? motionEffect.resolveSwitchV2MotionEffect({
+          activationMotion: options.activationMotion
+        }).classNamePatch
+      : undefined;
 
     return {
-      ...withThumbSize,
-      ...motionEffect.resolveSwitchV2MotionEffect({
-        classNames: withThumbSize.classNames,
-        activationMotion: options.activationMotion
-      })
+      ...thumbSizeStructure,
+      classNames: mergeSwitchV2ClassNames(thumbSizeStructure.classNames, motionClassNamePatch)
     };
   }, [
     className,
@@ -185,22 +200,22 @@ function SwitchV2Root(props: SwitchV2Props) {
     onBlur,
     trackRef: motionController.thumbProps.trackRef
   });
-  const resolvedClassNames = useMemo(
-    () =>
-      activationFeedbackEffect
-        ? activationFeedbackEffect.resolveSwitchV2ActivationFeedbackEffect({
-            classNames: structuralClassNames,
-            elements,
-            isActive: activationFeedbackController.isActive
-          }).classNames
-        : structuralClassNames,
-    [
-      activationFeedbackController.isActive,
-      activationFeedbackEffect,
-      elements,
-      structuralClassNames
-    ]
-  );
+  const resolvedClassNames = useMemo(() => {
+    if (!activationFeedbackEffect) return structuralClassNames;
+
+    return mergeSwitchV2ClassNames(
+      structuralClassNames,
+      activationFeedbackEffect.resolveSwitchV2ActivationFeedbackEffect({
+        elements,
+        isActive: activationFeedbackController.isActive
+      }).classNamePatch
+    );
+  }, [
+    activationFeedbackController.isActive,
+    activationFeedbackEffect,
+    elements,
+    structuralClassNames
+  ]);
   const MotionThumb = motionEffect?.SwitchV2MotionThumb;
   const thumbVisual = thumbVisualClassName ? <span className={thumbVisualClassName} /> : null;
 

@@ -9,11 +9,10 @@ type InlineDirection = 1 | -1;
 
 export type SwitchV2MotionEffectOptions = {
   activationMotion: SwitchActivationMotion;
-  classNames: Required<SwitchClassNames>;
 };
 
 export type SwitchV2MotionEffectResult = {
-  classNames: Required<SwitchClassNames>;
+  classNamePatch: SwitchClassNames;
 };
 
 export type SwitchV2MotionThumbProps = {
@@ -93,14 +92,8 @@ export function resolveSwitchV2MotionEffect(
   options: SwitchV2MotionEffectOptions
 ): SwitchV2MotionEffectResult {
   return {
-    classNames: {
-      ...options.classNames,
-      e1:
-        join(
-          options.classNames.e1,
-          'k-sw2-m',
-          options.activationMotion === 'slow' ? 'k-sw2-e1b-a' : ''
-        ) ?? ''
+    classNamePatch: {
+      e1: join('k-sw2-m', options.activationMotion === 'slow' ? 'k-sw2-e1b-a' : '') ?? ''
     }
   };
 }
