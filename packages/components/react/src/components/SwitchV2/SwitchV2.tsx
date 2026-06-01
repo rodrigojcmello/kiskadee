@@ -14,6 +14,11 @@ import {
   resolveVariantElements
 } from '../Switch/Switch.class-names.ts';
 import type { SwitchClassNames, SwitchProps } from '../Switch/Switch.types.ts';
+import {
+  hasSwitchV2ActivationFeedbackEffect,
+  useSwitchV2ActivationFeedbackController,
+  useSwitchV2ActivationFeedbackEffect
+} from './effects/activation-feedback/index.ts';
 import { useSwitchV2MotionController, useSwitchV2MotionEffect } from './effects/motion/index.ts';
 import { useSwitchV2ArtifactConfig } from './hooks/useSwitchV2ArtifactConfig.ts';
 
@@ -87,16 +92,23 @@ function SwitchV2Root(props: SwitchV2Props) {
     defaultControlState,
     onControlStateChange,
     onClickCapture,
+    onPointerDown,
+    onPointerCancel,
+    onBlur,
     ...rootProps
   } = props;
-  const { switchClassesMap, options, effects } = useSwitchV2ArtifactConfig(thumbSize);
+  const { switchClassesMap, options, effects, globalEffects } =
+    useSwitchV2ArtifactConfig(thumbSize);
   const resolvedRadius = radius ?? options.radius;
   const elements = resolveVariantElements(switchClassesMap, variant, mode);
   const hasLabel = label !== undefined && label !== null;
   const motionEffect = useSwitchV2MotionEffect(motion !== false);
   const thumbSizeEffect = effects.thumbSizeEffect;
+  const activationFeedbackEffect = useSwitchV2ActivationFeedbackEffect(
+    hasSwitchV2ActivationFeedbackEffect(elements)
+  );
 
-  const { classNames: resolvedClassNames, thumbVisualClassName } = useMemo(() => {
+  const { classNames: structuralClassNames, thumbVisualClassName } = useMemo(() => {
     const baseClassNames = resolveSwitchV2ClassNames({
       elements,
       classNames: {
@@ -151,6 +163,7 @@ function SwitchV2Root(props: SwitchV2Props) {
     scale,
     thumbSizeEffect
   ]);
+
   const motionController = useSwitchV2MotionController({
     enabled: Boolean(motionEffect),
     controlState: controlStateProp,
@@ -159,8 +172,35 @@ function SwitchV2Root(props: SwitchV2Props) {
     readOnly,
     onControlStateChange,
     onClickCapture,
-    geometryKey: `${resolvedClassNames.e2}|${resolvedClassNames.e3}|${thumbVisualClassName ?? ''}`
+    geometryKey: `${structuralClassNames.e2}|${structuralClassNames.e3}|${thumbVisualClassName ?? ''}`
   });
+  const activationFeedbackController = useSwitchV2ActivationFeedbackController({
+    enabled: Boolean(activationFeedbackEffect),
+    config: globalEffects.activationFeedback,
+    disabled,
+    readOnly,
+    inputProps,
+    onPointerDown,
+    onPointerCancel,
+    onBlur,
+    trackRef: motionController.thumbProps.trackRef
+  });
+  const resolvedClassNames = useMemo(
+    () =>
+      activationFeedbackEffect
+        ? activationFeedbackEffect.resolveSwitchV2ActivationFeedbackEffect({
+            classNames: structuralClassNames,
+            elements,
+            isActive: activationFeedbackController.isActive
+          }).classNames
+        : structuralClassNames,
+    [
+      activationFeedbackController.isActive,
+      activationFeedbackEffect,
+      elements,
+      structuralClassNames
+    ]
+  );
   const MotionThumb = motionEffect?.SwitchV2MotionThumb;
   const thumbVisual = thumbVisualClassName ? <span className={thumbVisualClassName} /> : null;
 
@@ -168,12 +208,15 @@ function SwitchV2Root(props: SwitchV2Props) {
     <HeadlessSwitch.Root
       {...rootProps}
       inputId={id}
-      inputProps={inputProps}
+      inputProps={activationFeedbackController.inputProps}
       disabled={disabled}
       readOnly={readOnly}
       controlState={motionController.projectedControlState}
       onControlStateChange={motionController.setControlState}
       onClickCapture={motionController.handleClickCapture}
+      onPointerDown={activationFeedbackController.rootHandlers.onPointerDown}
+      onPointerCancel={activationFeedbackController.rootHandlers.onPointerCancel}
+      onBlur={activationFeedbackController.rootHandlers.onBlur}
       classNames={resolvedClassNames}
     >
       <HeadlessSwitch.Track ref={motionController.thumbProps.trackRef}>
@@ -181,6 +224,7 @@ function SwitchV2Root(props: SwitchV2Props) {
           <MotionThumb
             activationMotion={options.activationMotion}
             thumbClassName={resolvedClassNames.e3}
+            onActivationFeedbackCancel={activationFeedbackController.cancel}
             {...motionController.thumbProps}
           >
             {thumbVisual}

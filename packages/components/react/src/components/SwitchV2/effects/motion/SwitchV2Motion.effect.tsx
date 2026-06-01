@@ -29,6 +29,7 @@ export type SwitchV2MotionThumbProps = {
   thumbRef: RefObject<HTMLSpanElement | null>;
   thumbTranslation: number;
   trackRef: RefObject<HTMLSpanElement | null>;
+  onActivationFeedbackCancel?: () => void;
 };
 
 const SWITCH_V2_MOTION_DRAG_THRESHOLD = 3;
@@ -116,7 +117,8 @@ export function SwitchV2MotionThumb({
   thumbClassName,
   thumbRef,
   thumbTranslation,
-  trackRef
+  trackRef,
+  onActivationFeedbackCancel
 }: SwitchV2MotionThumbProps) {
   const [inlineDirection, setInlineDirection] = useState<InlineDirection>(() =>
     resolveInlineDirection(trackRef.current)
@@ -200,6 +202,7 @@ export function SwitchV2MotionThumb({
       onDragStart={() => {
         if (!canDrag) return;
         isDraggingRef.current = true;
+        onActivationFeedbackCancel?.();
         hasDraggedRef.current = false;
         setDragPreviewControlState(null);
         latestDragControlStateRef.current = controlState;
@@ -230,6 +233,7 @@ export function SwitchV2MotionThumb({
 
         if (Math.abs(info.offset.x) > SWITCH_V2_MOTION_DRAG_THRESHOLD) {
           hasDraggedRef.current = true;
+          onActivationFeedbackCancel?.();
         }
       }}
       onDragEnd={(_, info) => {
