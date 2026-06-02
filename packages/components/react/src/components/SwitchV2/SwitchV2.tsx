@@ -1,6 +1,6 @@
 import './SwitchV2.structural.css';
 import { HeadlessSwitch } from '@kiskadee/react-headless';
-import { memo, useMemo } from 'react';
+import { type ElementType, memo, useMemo } from 'react';
 import {
   DEFAULT_SWITCH_EMPHASIS,
   DEFAULT_SWITCH_INTENT,
@@ -217,6 +217,17 @@ function SwitchV2Root(props: SwitchV2Props) {
     structuralClassNames
   ]);
   const MotionThumb = motionEffect?.SwitchV2MotionThumb;
+  const Thumb: ElementType = MotionThumb ?? HeadlessSwitch.Thumb;
+  const thumbProps = MotionThumb
+    ? {
+        activationMotion: options.activationMotion,
+        thumbClassName: resolvedClassNames.e3,
+        onActivationFeedbackCancel: activationFeedbackController.cancel,
+        ...motionController.thumbProps
+      }
+    : {
+        ref: motionController.thumbProps.thumbRef
+      };
   const thumbVisual = thumbVisualClassName ? <span className={thumbVisualClassName} /> : null;
 
   return (
@@ -235,20 +246,7 @@ function SwitchV2Root(props: SwitchV2Props) {
       classNames={resolvedClassNames}
     >
       <HeadlessSwitch.Track ref={motionController.thumbProps.trackRef}>
-        {MotionThumb ? (
-          <MotionThumb
-            activationMotion={options.activationMotion}
-            thumbClassName={resolvedClassNames.e3}
-            onActivationFeedbackCancel={activationFeedbackController.cancel}
-            {...motionController.thumbProps}
-          >
-            {thumbVisual}
-          </MotionThumb>
-        ) : (
-          <HeadlessSwitch.Thumb ref={motionController.thumbProps.thumbRef}>
-            {thumbVisual}
-          </HeadlessSwitch.Thumb>
-        )}
+        <Thumb {...thumbProps}>{thumbVisual}</Thumb>
       </HeadlessSwitch.Track>
       {hasLabel ? <HeadlessSwitch.Label>{label}</HeadlessSwitch.Label> : null}
     </HeadlessSwitch.Root>
