@@ -34,6 +34,20 @@ Material Design 3 is the reference implementation for this pattern. Smaller or l
 still be monolithic, but new work should prefer the split before the root schema becomes difficult to
 review.
 
+## Component Schema Rule Ledgers
+
+Durable component-specific schema authoring rules should live in:
+
+```text
+packages/presets/docs/definitions/schema-rules/<component>.schema-rules.md
+```
+
+Use the `.schema-rules.md` suffix for rules that must stay visible across future schema, builder,
+runtime, and showcase work. These files are the place for component-specific schema decisions that
+would otherwise be scattered across temporary handoffs or package docs.
+
+The first component ledger is `schema-rules/switch.schema-rules.md`.
+
 ## Numeric Values
 
 Use the simplest schema shape that preserves meaning:

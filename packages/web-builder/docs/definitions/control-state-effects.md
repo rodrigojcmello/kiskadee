@@ -25,6 +25,10 @@ rendered with both `controlState={true}` and `radiusEffect={true}`.
 The Switch thumb-size effect is a state-based geometry effect, not a replacement for the normal
 thumb scale contract.
 
+Preset schema authoring rules for this effect live in
+`packages/presets/docs/definitions/schema-rules/switch.schema-rules.md`. In particular, per-scale
+thumb-size intent should be expressed by schema values, not by adding runtime availability gates.
+
 Normal Switch thumb geometry stays owned by `scales` on `switch.e3`:
 
 - `scales.boxWidth` and `scales.boxHeight` define the base thumb size.
