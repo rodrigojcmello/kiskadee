@@ -45,6 +45,7 @@ function useSwitchV2MotionThumbTranslation(options: {
   thumbRef: RefObject<HTMLSpanElement | null>;
   trackRef: RefObject<HTMLSpanElement | null>;
 }) {
+  const syncAnimationFrameRef = useRef<number | null>(null);
   const syncThumbTranslation = useCallback(() => {
     if (!options.enabled) return;
 
@@ -56,6 +57,27 @@ function useSwitchV2MotionThumbTranslation(options: {
     applySwitchV2MotionGeometry(trackElement, geometry);
     options.onTranslationChange(geometry.translation);
   }, [options.enabled, options.onTranslationChange, options.trackRef, options.thumbRef]);
+  const cancelScheduledThumbTranslationSync = useCallback(() => {
+    if (syncAnimationFrameRef.current === null) return;
+
+    window.cancelAnimationFrame(syncAnimationFrameRef.current);
+    syncAnimationFrameRef.current = null;
+  }, []);
+  const scheduleThumbTranslationSync = useCallback(() => {
+    if (!options.enabled || syncAnimationFrameRef.current !== null) return;
+
+    syncAnimationFrameRef.current = window.requestAnimationFrame(() => {
+      syncAnimationFrameRef.current = null;
+      syncThumbTranslation();
+    });
+  }, [options.enabled, syncThumbTranslation]);
+
+  useEffect(
+    () => () => {
+      cancelScheduledThumbTranslationSync();
+    },
+    [cancelScheduledThumbTranslationSync]
+  );
 
   useEffect(() => {
     syncThumbTranslation();
@@ -69,17 +91,26 @@ function useSwitchV2MotionThumbTranslation(options: {
     if (!trackElement || !thumbElement) return;
 
     const resizeObserver =
-      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(syncThumbTranslation) : null;
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(scheduleThumbTranslationSync)
+        : null;
     resizeObserver?.observe(trackElement);
     resizeObserver?.observe(thumbElement);
-    window.addEventListener('resize', syncThumbTranslation);
+    window.addEventListener('resize', scheduleThumbTranslationSync);
 
     return () => {
       resizeObserver?.disconnect();
-      window.removeEventListener('resize', syncThumbTranslation);
+      window.removeEventListener('resize', scheduleThumbTranslationSync);
+      cancelScheduledThumbTranslationSync();
       clearSwitchV2MotionGeometry(trackElement);
     };
-  }, [options.enabled, options.trackRef, options.thumbRef, syncThumbTranslation]);
+  }, [
+    cancelScheduledThumbTranslationSync,
+    options.enabled,
+    options.trackRef,
+    options.thumbRef,
+    scheduleThumbTranslationSync
+  ]);
 }
 
 export function useSwitchV2MotionController({

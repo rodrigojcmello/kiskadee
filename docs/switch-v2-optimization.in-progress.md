@@ -74,10 +74,12 @@ Status legend:
 
 ### Motion Runtime
 
-- [ ] Preserve runtime DOM measurement for motion geometry.
-- [ ] Keep the motion controller internal to `SwitchV2`; do not create a separate public motion
+- [x] Preserve runtime DOM measurement for motion geometry.
+- [x] Coalesce `ResizeObserver` and `window.resize` geometry resyncs through `requestAnimationFrame`
+  so resize bursts do not recalculate geometry more than once per frame.
+- [x] Keep the motion controller internal to `SwitchV2`; do not create a separate public motion
   component.
-- [ ] Continue using the existing `activationMotion` contract for thumb animation behavior instead
+- [x] Continue using the existing `activationMotion` contract for thumb animation behavior instead
   of adding another motion-speed API.
 
 ### Class Names
