@@ -145,4 +145,15 @@ Browser validation should confirm:
 - This handoff was created after an optimization proposal accidentally moved `SwitchV2` back toward
   the original v1 render-path matrix.
 - The current worktree was rolled back by the user before this handoff was created.
-- No implementation is active in this file yet.
+- `SwitchV2` now accepts `controlText` again through the single component boundary.
+- `controlText` is isolated in `packages/components/react/src/components/SwitchV2/features/control-text`
+  so viewport gating, state-text rendering, `e5` class patching, and structural CSS do not live in
+  the core `SwitchV2.tsx` body.
+- The restored `controlText` structure uses a `k-sw2-x2-a` wrapper to keep state text and the
+  rendered control together as one visual flex item, while preserving the current V2 track/thumb
+  nesting used by static and motion paths.
+- The Showcase `/switch-v2` route passes `On` / `Off` control text to the interactive and state
+  examples so the user can validate this before the future v1 removal step.
+- Validation passed:
+  - `pnpm --filter @kiskadee/react-components run build`
+  - `pnpm --filter @kiskadee/showcase build`

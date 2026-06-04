@@ -45,6 +45,11 @@ const intentLabels: Record<string, string> = {
   polarity: 'Polarity'
 };
 
+const switchV2ControlText = {
+  on: 'On',
+  off: 'Off'
+};
+
 function StateTile({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className={s.stateTile}>
@@ -248,6 +253,7 @@ export default function SwitchV2Page() {
               <SwitchV2
                 id="switch-v2-notifications"
                 label="Notifications"
+                controlText={switchV2ControlText}
                 controlState={controlState}
                 onControlStateChange={setControlState}
                 scale={scale}
@@ -267,6 +273,7 @@ export default function SwitchV2Page() {
                 <SwitchV2
                   id="switch-v2-state-rest"
                   label="Rest"
+                  controlText={switchV2ControlText}
                   controlState={false}
                   scale={scale}
                   radius={radius}
@@ -281,6 +288,7 @@ export default function SwitchV2Page() {
                 <SwitchV2
                   id="switch-v2-state-selected"
                   label="Selected"
+                  controlText={switchV2ControlText}
                   controlState
                   scale={scale}
                   radius={radius}
@@ -295,6 +303,7 @@ export default function SwitchV2Page() {
                 <SwitchV2
                   id="switch-v2-state-hover"
                   label="Hover"
+                  controlText={switchV2ControlText}
                   controlState={false}
                   status="hover"
                   scale={scale}
@@ -310,6 +319,7 @@ export default function SwitchV2Page() {
                 <SwitchV2
                   id="switch-v2-state-focus"
                   label="Focus"
+                  controlText={switchV2ControlText}
                   controlState={false}
                   status="focus"
                   scale={scale}
@@ -325,6 +335,7 @@ export default function SwitchV2Page() {
                 <SwitchV2
                   id="switch-v2-disabled"
                   label="Disabled"
+                  controlText={switchV2ControlText}
                   controlState={false}
                   scale={scale}
                   radius={radius}
@@ -339,6 +350,7 @@ export default function SwitchV2Page() {
                 <SwitchV2
                   id="switch-v2-label-hidden"
                   inputProps={{ 'aria-label': 'No visible label switch' }}
+                  controlText={switchV2ControlText}
                   controlState
                   scale={scale}
                   radius={radius}

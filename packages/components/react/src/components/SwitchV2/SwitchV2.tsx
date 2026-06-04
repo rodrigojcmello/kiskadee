@@ -20,9 +20,14 @@ import {
   useSwitchV2ActivationFeedbackEffect
 } from './effects/activation-feedback/index.ts';
 import { useSwitchV2MotionController, useSwitchV2MotionEffect } from './effects/motion/index.ts';
+import {
+  resolveSwitchV2ControlTextFeature,
+  SwitchV2ControlSide,
+  useSwitchV2ControlTextFeature
+} from './features/control-text/index.ts';
 import { useSwitchV2ArtifactConfig } from './hooks/useSwitchV2ArtifactConfig.ts';
 
-export type SwitchV2Props = Omit<SwitchProps, 'controlText'> & {
+export type SwitchV2Props = SwitchProps & {
   motion?: false;
 };
 
@@ -90,6 +95,7 @@ function SwitchV2Root(props: SwitchV2Props) {
   const {
     id,
     label,
+    controlText,
     className,
     classNames = EMPTY_SWITCH_V2_CLASS_NAMES,
     inputProps,
@@ -118,6 +124,10 @@ function SwitchV2Root(props: SwitchV2Props) {
   const resolvedRadius = radius ?? options.radius;
   const elements = resolveVariantElements(switchClassesMap, variant, mode);
   const hasLabel = label !== undefined && label !== null;
+  const shouldRenderControlText = useSwitchV2ControlTextFeature({
+    controlText,
+    visibility: options.controlTextVisibility
+  });
   const motionEffect = useSwitchV2MotionEffect(motion !== false);
   const thumbSizeEffect = effects.thumbSizeEffect;
   const activationFeedbackEffect = useSwitchV2ActivationFeedbackEffect(
@@ -159,10 +169,23 @@ function SwitchV2Root(props: SwitchV2Props) {
           activationMotion: options.activationMotion
         }).classNamePatch
       : undefined;
+    const controlTextClassNamePatch = shouldRenderControlText
+      ? resolveSwitchV2ControlTextFeature({
+          elements,
+          classNames,
+          scale,
+          intent,
+          emphasis
+        }).classNamePatch
+      : undefined;
 
     return {
       ...thumbSizeStructure,
-      classNames: mergeSwitchV2ClassNames(thumbSizeStructure.classNames, motionClassNamePatch)
+      classNames: mergeSwitchV2ClassNames(
+        thumbSizeStructure.classNames,
+        motionClassNamePatch,
+        controlTextClassNamePatch
+      )
     };
   }, [
     className,
@@ -171,6 +194,7 @@ function SwitchV2Root(props: SwitchV2Props) {
     emphasis,
     hasLabel,
     intent,
+    shouldRenderControlText,
     labelPosition,
     motionEffect,
     options.activationMotion,
@@ -245,9 +269,14 @@ function SwitchV2Root(props: SwitchV2Props) {
       onBlur={activationFeedbackController.rootHandlers.onBlur}
       classNames={resolvedClassNames}
     >
-      <HeadlessSwitch.Track ref={motionController.thumbProps.trackRef}>
-        <Thumb {...thumbProps}>{thumbVisual}</Thumb>
-      </HeadlessSwitch.Track>
+      <SwitchV2ControlSide
+        controlText={controlText}
+        shouldRenderControlText={shouldRenderControlText}
+      >
+        <HeadlessSwitch.Track ref={motionController.thumbProps.trackRef}>
+          <Thumb {...thumbProps}>{thumbVisual}</Thumb>
+        </HeadlessSwitch.Track>
+      </SwitchV2ControlSide>
       {hasLabel ? <HeadlessSwitch.Label>{label}</HeadlessSwitch.Label> : null}
     </HeadlessSwitch.Root>
   );
