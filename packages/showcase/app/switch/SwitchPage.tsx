@@ -335,12 +335,45 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
+              <StateTile title="Pressed Selected">
+                <Switch
+                  id="switch-state-pressed-selected"
+                  label="Pressed selected"
+                  controlText={switchControlText}
+                  controlState
+                  status="pressed"
+                  scale={scale}
+                  radius={radius}
+                  motion={motionOverride}
+                  thumbSize={thumbSizeOverride}
+                  intent={intent}
+                  emphasis={emphasis}
+                  readOnly
+                />
+              </StateTile>
               <StateTile title="Activation Feedback">
                 <Switch
                   id="switch-state-activation-feedback"
                   label="Activation feedback"
                   controlText={switchControlText}
                   controlState={false}
+                  status="pressed"
+                  classNames={switchActivationFeedbackActiveClassNames}
+                  scale={scale}
+                  radius={radius}
+                  motion={motionOverride}
+                  thumbSize={thumbSizeOverride}
+                  intent={intent}
+                  emphasis={emphasis}
+                  readOnly
+                />
+              </StateTile>
+              <StateTile title="Activation Feedback Selected">
+                <Switch
+                  id="switch-state-activation-feedback-selected"
+                  label="Activation feedback selected"
+                  controlText={switchControlText}
+                  controlState
                   status="pressed"
                   classNames={switchActivationFeedbackActiveClassNames}
                   scale={scale}
