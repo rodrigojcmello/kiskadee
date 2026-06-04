@@ -5,7 +5,7 @@ import {
   ShowcaseContext
 } from '@kiskadee/react-components';
 import { usePathname } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useClassMapLoader } from '@/hooks/use-class-map-loader';
 import { useDesignSystemSelection } from '@/hooks/use-design-system-selection';
 import { useFontPreference } from '@/hooks/use-font-preference';
@@ -19,8 +19,22 @@ import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 // Client-side provider that mirrors legacy App.tsx/main.tsx responsibilities
 // Refactored to use custom hooks for separation of concerns.
 
+function useInitialTransitionGate() {
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      document.documentElement.classList.remove('no-transitions');
+    }, 300);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, []);
+}
+
 export function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  useInitialTransitionGate();
+
   // 1. Manage selection state (designSystem, segment, theme) and persistence
   const {
     designSystem,

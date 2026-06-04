@@ -55,16 +55,6 @@ export function useClassMapLoader({
 
     const merged = mergeMaps(core, palette);
     setClassesMap(merged);
-
-    // Stylesheets are managed via <Head> (css.registry). Here we only
-    // re-enable animations after a small delay to ensure the first
-    // paint happens without transitions.
-    if (typeof document !== 'undefined') {
-      const root = document.documentElement;
-      window.setTimeout(() => {
-        root.classList.remove('no-transitions');
-      }, 300);
-    }
   }, [designSystem, enabled, segment, theme]);
 
   useEffect(() => {
