@@ -32,6 +32,10 @@ import { useSwitchArtifactConfig } from './hooks/useSwitchArtifactConfig.ts';
 
 const EMPTY_SWITCH_CLASS_NAMES: SwitchClassNames = {};
 
+function resolveRoundedThumbClassName(radius: NonNullable<SwitchProps['radius']>): string {
+  return radius === 'rounded' ? 'k-swt-e3a-a' : '';
+}
+
 function resolveSwitchClassNames(options: {
   elements: ReturnType<typeof resolveVariantElements>;
   classNames: SwitchClassNames;
@@ -64,6 +68,7 @@ function resolveSwitchClassNames(options: {
         'k-swt-e3-a',
         elem(options.elements.e3, options),
         resolveRadiusClassName(options.elements.e3, options.scale, options.radius),
+        resolveRoundedThumbClassName(options.radius),
         options.classNames.e3
       ) ?? '',
     e4: options.hasLabel

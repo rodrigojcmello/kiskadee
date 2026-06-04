@@ -41,8 +41,16 @@
  * Owns the rail measurement scope and exposes generated padding as logical geometry.
  */
 .k-swt-e2-a {
+  --k-swt-ri: max(
+    var(--k-pdt, 0px),
+    var(--k-pdr, 0px),
+    var(--k-pdb, 0px),
+    var(--k-pdl, 0px),
+    calc(var(--k-bdw, 0px) * 2)
+  );
   --k-swt-pis: max(0px, calc(var(--k-pdl, 0px) - var(--k-bdw, 0px)));
   --k-swt-pie: max(0px, calc(var(--k-pdr, 0px) - var(--k-bdw, 0px)));
+  --k-swt-tr: max(0px, calc(var(--k-bdr, 0px) - var(--k-swt-ri)));
 
   position: relative;
   display: inline-flex;
@@ -108,6 +116,15 @@
     --k-bg2 var(--k-dur-int) var(--k-ease-out),
     background-color var(--k-dur-int) var(--k-ease-out);
   will-change: inset-inline-start, transform;
+}
+
+/*
+ * element thumb modifier 'a' / e3a
+ * Uses the track inner radius for rounded thumbs so the thumb follows the track curve.
+ */
+.k-swt-e3-a.k-swt-e3a-a,
+.k-swt-x5-a.k-swt-e3a-a {
+  border-radius: var(--k-swt-tr);
 }
 
 /*

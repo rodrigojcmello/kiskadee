@@ -41,6 +41,10 @@ function resolveVisualClassName(
   return join(element.d, resolveIntentClasses(element, options.intent, options.emphasis)) ?? '';
 }
 
+function resolveRoundedThumbClassName(radius: RadiusMode): string {
+  return radius === 'rounded' ? 'k-swt-e3a-a' : '';
+}
+
 export function resolveSwitchThumbSizeEffect(
   options: SwitchThumbSizeEffectOptions
 ): SwitchThumbSizeEffectResult {
@@ -53,6 +57,7 @@ export function resolveSwitchThumbSizeEffect(
           'k-swt-e3-a',
           resolveScaleClassName(options.elements.e3, options.scale),
           resolveRadiusClassName(options.elements.e3, options.scale, options.radius),
+          resolveRoundedThumbClassName(options.radius),
           options.classNames.e3
         ) ?? ''
     },
@@ -61,6 +66,7 @@ export function resolveSwitchThumbSizeEffect(
         'k-swt-x5-a',
         resolveVisualClassName(options.elements.e3, options),
         resolveRadiusClassName(options.elements.e3, options.scale, options.radius),
+        resolveRoundedThumbClassName(options.radius),
         resolveSwitchThumbSizeEffectClassName(options.elements.e3, options.scale),
         'k-trn'
       ) ?? ''

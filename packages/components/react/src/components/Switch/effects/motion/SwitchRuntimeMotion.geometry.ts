@@ -72,6 +72,7 @@ export function applySwitchRuntimeMotionGeometry(
   trackElement.style.setProperty('--k-swt-tx', `${geometry.translation}px`);
   trackElement.style.setProperty('--k-swt-ti', `${geometry.inlineStart}px`);
   trackElement.style.setProperty('--k-swt-ty', `${geometry.blockStart}px`);
+  trackElement.style.setProperty('--k-swt-tr', `${geometry.thumbRadius}px`);
   scopeElement.style.setProperty('--k-swt-tx', `${geometry.translation}px`);
   scopeElement.style.setProperty('--k-swt-ti', `${geometry.inlineStart}px`);
   scopeElement.style.setProperty('--k-swt-ty', `${geometry.blockStart}px`);
