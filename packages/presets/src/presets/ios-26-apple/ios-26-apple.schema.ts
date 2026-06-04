@@ -28,7 +28,29 @@ export const schema: Schema<Segment> = {
       width: 2,
       offset: 0
     },
+    effects: {
+      activationFeedback: {
+        thickness: 8,
+        holdDurationToken: 'interaction.hold.short',
+        fadeDurationToken: 'interaction.fade.long',
+        curveToken: 'motion.standard.out'
+      }
+    },
     radius: 'rounded'
+  },
+  themeTokens: {
+    palettes: {
+      default: {
+        light: {
+          effects: {
+            activationFeedback: {
+              color: '#000000',
+              opacity: 0.12
+            }
+          }
+        }
+      }
+    }
   },
   components: {
     button: createIos26AppleButtonSchema({

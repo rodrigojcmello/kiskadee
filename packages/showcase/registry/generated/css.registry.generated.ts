@@ -50,6 +50,7 @@ export const cssPaths = {
       'default|light': '/build/ios-26-apple/default.light.kiskadee.css',
     },
     tokenPalettes: {
+      'default|light': '/build/ios-26-apple/tokens.default.light.kiskadee.css',
     }
   },
   'ios-26-kiskadee': {

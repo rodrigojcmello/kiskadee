@@ -23,13 +23,27 @@ export const schema: Schema<Segments> = {
       width: 2,
       offset: 1
     },
+    effects: {
+      activationFeedback: {
+        thickness: 8,
+        holdDurationToken: 'interaction.hold.short',
+        fadeDurationToken: 'interaction.fade.long',
+        curveToken: 'motion.standard.out'
+      }
+    },
     radius: 'rounded'
   },
   themeTokens: {
     palettes: {
       default: {
         light: {
-          focusColor: color(schemaContext, 'default', 'l', primitive('black', 'v1'), 100)
+          focusColor: color(schemaContext, 'default', 'l', primitive('black', 'v1'), 100),
+          effects: {
+            activationFeedback: {
+              color: '#242424',
+              opacity: 0.12
+            }
+          }
         }
       }
     }

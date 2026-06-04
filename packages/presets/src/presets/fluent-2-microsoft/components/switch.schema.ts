@@ -128,6 +128,9 @@ export function createFluent2MicrosoftSwitchSchema({
                     square: 0
                   }
                 },
+                effects: {
+                  activationFeedback: true
+                },
                 palettes: {
                   default: {
                     light: {

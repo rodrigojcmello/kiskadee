@@ -209,6 +209,9 @@ export function createIos26AppleSwitchSchema({
                     square: 0
                   }
                 },
+                effects: {
+                  activationFeedback: true
+                },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
                     boxColor: {
