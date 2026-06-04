@@ -50,6 +50,10 @@ const switchControlText = {
   off: 'Off'
 };
 
+const switchActivationFeedbackActiveClassNames = {
+  e3: 'k-swt-af-active'
+};
+
 function StateTile({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className={s.stateTile}>
@@ -322,6 +326,23 @@ export default function SwitchPage() {
                   controlText={switchControlText}
                   controlState={false}
                   status="pressed"
+                  scale={scale}
+                  radius={radius}
+                  motion={motionOverride}
+                  thumbSize={thumbSizeOverride}
+                  intent={intent}
+                  emphasis={emphasis}
+                  readOnly
+                />
+              </StateTile>
+              <StateTile title="Activation Feedback">
+                <Switch
+                  id="switch-state-activation-feedback"
+                  label="Activation feedback"
+                  controlText={switchControlText}
+                  controlState={false}
+                  status="pressed"
+                  classNames={switchActivationFeedbackActiveClassNames}
                   scale={scale}
                   radius={radius}
                   motion={motionOverride}
