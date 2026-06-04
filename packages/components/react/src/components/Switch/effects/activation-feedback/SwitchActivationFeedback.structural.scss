@@ -15,14 +15,19 @@
  * element thumb modifier 'b' / e3b
  * Hosts activation feedback on the thumb carrier.
  */
+.k-swt-e3b-a {
+  isolation: isolate;
+}
+
 .k-swt-e3b-a::after {
   content: '';
   position: absolute;
-  inset: 0;
-  z-index: var(--k-af-z, 2);
+  inset: calc(var(--k-af-thickness, 3px) * -1);
+  z-index: -1;
   display: block;
-  border-radius: inherit;
-  box-shadow: 0 0 0 var(--k-af-thickness, 3px) var(--k-af-color, currentColor);
+  border-radius: 999px;
+  background: var(--k-af-color, currentColor);
+  box-shadow: none;
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--k-af-fade-duration, 180ms) var(--k-af-ease, ease-out);
@@ -35,20 +40,4 @@
 .k-swt-e3c-a::after {
   opacity: var(--k-af-opacity, 0.16);
   transition-duration: 0ms;
-}
-
-/*
- * element thumb / e3
- * Adapts the generic state layer into the Switch filled thumb feedback shape.
- */
-.k-swt-e3-a.k-swt-e3b-a {
-  isolation: isolate;
-}
-
-.k-swt-e3-a.k-swt-e3b-a::after {
-  inset: calc(var(--k-af-thickness, 3px) * -1);
-  z-index: -1;
-  border-radius: 999px;
-  background: var(--k-af-color, currentColor);
-  box-shadow: none;
 }

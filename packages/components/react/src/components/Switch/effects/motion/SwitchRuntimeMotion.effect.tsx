@@ -93,7 +93,8 @@ export function resolveSwitchRuntimeMotionEffect(
 ): SwitchRuntimeMotionEffectResult {
   return {
     classNamePatch: {
-      e1: join('k-swt-m', options.activationMotion === 'slow' ? 'k-swt-e1b-a' : '') ?? ''
+      e1: join('k-swt-m', options.activationMotion === 'slow' ? 'k-swt-e1b-a' : '') ?? '',
+      e3: 'k-swt-e3d-a'
     }
   };
 }

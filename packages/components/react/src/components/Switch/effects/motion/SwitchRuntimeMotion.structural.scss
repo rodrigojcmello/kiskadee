@@ -7,7 +7,7 @@
  * element root runtime state / m
  * Exposes runtime geometry variables while the motion module is active.
  */
-.k-swt-m.k-swt-e1-a {
+.k-swt-m {
   --k-swt-tx: 0px;
   --k-swt-ti: 0px;
   --k-swt-ty: 0px;
@@ -19,15 +19,15 @@
  * element root modifier 'b' / e1b
  * Uses the slow activation motion profile for runtime-owned thumb movement.
  */
-.k-swt-m.k-swt-e1b-a {
+.k-swt-e1b-a {
   --k-swt-dur: var(--k-dur-int-slow);
 }
 
 /*
- * element thumb / e3
+ * element thumb modifier 'd' / e3d
  * Lets the runtime motion engine own horizontal movement and drag interaction.
  */
-.k-swt-m .k-swt-e3-a {
+.k-swt-e3d-a {
   inset-block-start: var(--k-swt-ty);
   inset-inline-start: var(--k-swt-ti);
   pointer-events: auto;
@@ -46,18 +46,9 @@
 }
 
 /*
- * element thumb / e3
- * Suppresses static selected translation while runtime motion is active.
- */
-.k-swt-m.k-swt-e1-a.-s.-a .k-swt-e3-a {
-  inset-inline-start: var(--k-swt-ti);
-  transform: none;
-}
-
-/*
- * extra element for e3 / x5
+ * extra element for e3 modifier 'a' / x5a
  * Receives the track-derived rounded radius while nested inside the motion thumb.
  */
-.k-swt-m .k-swt-x5-a {
+.k-swt-x5a-a {
   border-radius: var(--k-swt-tr);
 }

@@ -34,12 +34,15 @@ export type SwitchControlTextFeatureResult = {
 type SwitchControlSideProps = {
   children: ReactNode;
   controlText: SwitchControlText | undefined;
+  controlState: boolean;
   shouldRenderControlText: boolean;
 };
 
 const SWITCH_CONTROL_SIDE_CLASS_NAME = 'k-swt-x2-a';
 const SWITCH_CONTROL_TEXT_OFF_CLASS_NAME = 'k-swt-x3-a';
+const SWITCH_CONTROL_TEXT_OFF_SELECTED_CLASS_NAME = 'k-swt-x3a-a';
 const SWITCH_CONTROL_TEXT_ON_CLASS_NAME = 'k-swt-x4-a';
+const SWITCH_CONTROL_TEXT_ON_SELECTED_CLASS_NAME = 'k-swt-x4a-a';
 const SWITCH_CONTROL_VISUAL_CLASS_NAME = 'k-swt-x6-a';
 const SWITCH_CONTROL_TEXT_LARGE_QUERY = `(min-width: ${breakpoints['bp:lg:1']}px)`;
 
@@ -113,14 +116,29 @@ export function resolveSwitchControlTextFeature(
 export function SwitchControlSide({
   children,
   controlText,
+  controlState,
   shouldRenderControlText
 }: SwitchControlSideProps) {
   return (
     <span className={SWITCH_CONTROL_SIDE_CLASS_NAME}>
       {shouldRenderControlText && controlText ? (
         <HeadlessSwitch.State>
-          <span className={SWITCH_CONTROL_TEXT_OFF_CLASS_NAME}>{controlText.off}</span>
-          <span className={SWITCH_CONTROL_TEXT_ON_CLASS_NAME}>{controlText.on}</span>
+          <span
+            className={join(
+              SWITCH_CONTROL_TEXT_OFF_CLASS_NAME,
+              controlState ? SWITCH_CONTROL_TEXT_OFF_SELECTED_CLASS_NAME : ''
+            )}
+          >
+            {controlText.off}
+          </span>
+          <span
+            className={join(
+              SWITCH_CONTROL_TEXT_ON_CLASS_NAME,
+              controlState ? SWITCH_CONTROL_TEXT_ON_SELECTED_CLASS_NAME : ''
+            )}
+          >
+            {controlText.on}
+          </span>
         </HeadlessSwitch.State>
       ) : null}
       <span className={SWITCH_CONTROL_VISUAL_CLASS_NAME}>{children}</span>

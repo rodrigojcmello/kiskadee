@@ -21,10 +21,10 @@
 }
 
 /*
- * element root modifier 'a' / e1a
+ * element label modifier 'a' / e4a
  * Moves the optional label before the visual control without changing DOM semantics.
  */
-.k-swt-e1a-a .k-swt-e4-a {
+.k-swt-e4a-a {
   order: -1;
 }
 
@@ -122,16 +122,15 @@
  * element thumb modifier 'a' / e3a
  * Uses the track inner radius for rounded thumbs so the thumb follows the track curve.
  */
-.k-swt-e3-a.k-swt-e3a-a,
-.k-swt-x5-a.k-swt-e3a-a {
+.k-swt-e3a-a {
   border-radius: var(--k-swt-tr);
 }
 
 /*
- * element thumb / e3
+ * element thumb modifier 'e' / e3e
  * Mirrors selected state by moving the thumb to the inline end of the rail.
  */
-.k-swt-e1-a.-s.-a .k-swt-e3-a {
+.k-swt-e3e-a {
   inset-inline-start: calc(100% - var(--k-swt-pie));
   transform: translate(calc(var(--k-swt-dx) * -100%), -50%);
 }

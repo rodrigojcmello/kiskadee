@@ -40,7 +40,7 @@
 
 /*
  * internal control-text part / x3
- * Shows the resting control text until the selected activator is present.
+ * Shows resting text until its selected modifier is present.
  */
 .k-swt-x3-a {
   display: inline;
@@ -48,17 +48,24 @@
 
 /*
  * internal control-text part / x4
- * Hides selected text until the selected activator is present.
+ * Hides selected text until its selected modifier is present.
  */
-.k-swt-x4-a,
-.k-swt-e1-a.-s.-a .k-swt-x3-a {
+.k-swt-x4-a {
   display: none;
 }
 
 /*
- * internal control-text part / x4
- * Reveals selected text while the selected activator is present.
+ * internal control-text part modifier 'a' / x3a
+ * Hides resting text while the selected control-text state is active.
  */
-.k-swt-e1-a.-s.-a .k-swt-x4-a {
+.k-swt-x3a-a {
+  display: none;
+}
+
+/*
+ * internal control-text part modifier 'a' / x4a
+ * Reveals selected text while the selected control-text modifier is present.
+ */
+.k-swt-x4a-a {
   display: inline;
 }

@@ -51,7 +51,6 @@ function resolveSwitchClassNames(options: {
       join(
         'k-swt',
         'k-swt-e1-a',
-        options.labelPosition === 'start' ? 'k-swt-e1a-a' : '',
         elem(options.elements.e1, options),
         options.classNames.e1
       ) ?? '',
@@ -72,8 +71,13 @@ function resolveSwitchClassNames(options: {
         options.classNames.e3
       ) ?? '',
     e4: options.hasLabel
-      ? (join('k-swt-e4-a', elem(options.elements.e4, options), 'k-trn', options.classNames.e4) ??
-        '')
+      ? (join(
+          'k-swt-e4-a',
+          options.labelPosition === 'start' ? 'k-swt-e4a-a' : '',
+          elem(options.elements.e4, options),
+          'k-trn',
+          options.classNames.e4
+        ) ?? '')
       : (options.classNames.e4 ?? ''),
     e5: options.classNames.e5 ?? ''
   };
@@ -207,6 +211,10 @@ function SwitchRoot(props: SwitchProps) {
     thumbSizeEffect
   ]);
 
+  const resolvedThumbVisualClassName = join(
+    thumbVisualClassName,
+    thumbVisualClassName && motionEffect ? 'k-swt-x5a-a' : ''
+  );
   const motionController = useSwitchRuntimeMotionController({
     enabled: Boolean(motionEffect),
     controlState: controlStateProp,
@@ -215,7 +223,7 @@ function SwitchRoot(props: SwitchProps) {
     readOnly,
     onControlStateChange,
     onClickCapture,
-    geometryKey: `${structuralClassNames.e2}|${structuralClassNames.e3}|${thumbVisualClassName ?? ''}`
+    geometryKey: `${structuralClassNames.e2}|${structuralClassNames.e3}|${resolvedThumbVisualClassName ?? ''}`
   });
   const activationFeedbackController = useSwitchActivationFeedbackController({
     enabled: Boolean(activationFeedbackEffect),
@@ -228,11 +236,21 @@ function SwitchRoot(props: SwitchProps) {
     onBlur,
     trackRef: motionController.thumbProps.trackRef
   });
+  const statefulClassNames = useMemo(
+    () =>
+      mergeSwitchClassNames(
+        structuralClassNames,
+        !motionEffect && motionController.projectedControlState
+          ? { e3: 'k-swt-e3e-a' }
+          : undefined
+      ),
+    [motionController.projectedControlState, motionEffect, structuralClassNames]
+  );
   const resolvedClassNames = useMemo(() => {
-    if (!activationFeedbackEffect) return structuralClassNames;
+    if (!activationFeedbackEffect) return statefulClassNames;
 
     return mergeSwitchClassNames(
-      structuralClassNames,
+      statefulClassNames,
       activationFeedbackEffect.resolveSwitchActivationFeedbackEffect({
         elements,
         isActive: activationFeedbackController.isActive
@@ -242,7 +260,7 @@ function SwitchRoot(props: SwitchProps) {
     activationFeedbackController.isActive,
     activationFeedbackEffect,
     elements,
-    structuralClassNames
+    statefulClassNames
   ]);
   const MotionThumb = motionEffect?.SwitchRuntimeMotionThumb;
   const Thumb: ElementType = MotionThumb ?? HeadlessSwitch.Thumb;
@@ -256,7 +274,9 @@ function SwitchRoot(props: SwitchProps) {
     : {
         ref: motionController.thumbProps.thumbRef
       };
-  const thumbVisual = thumbVisualClassName ? <span className={thumbVisualClassName} /> : null;
+  const thumbVisual = resolvedThumbVisualClassName ? (
+    <span className={resolvedThumbVisualClassName} />
+  ) : null;
 
   return (
     <HeadlessSwitch.Root
@@ -275,6 +295,7 @@ function SwitchRoot(props: SwitchProps) {
     >
       <SwitchControlSide
         controlText={controlText}
+        controlState={motionController.projectedControlState}
         shouldRenderControlText={shouldRenderControlText}
       >
         <HeadlessSwitch.Track ref={motionController.thumbProps.trackRef}>

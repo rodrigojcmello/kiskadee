@@ -196,7 +196,6 @@ export function resolveSwitchClassNames(options: {
         'k-swt',
         `k-swt-${branch}`,
         `k-swt-e1-${branch}`,
-        options.labelPosition === 'start' ? `k-swt-e1a-${branch}` : '',
         options.activationMotion === 'slow' ? `k-swt-e1b-${branch}` : '',
         elem(elements.e1, options),
         options.classNames.e1
@@ -218,8 +217,13 @@ export function resolveSwitchClassNames(options: {
         options.classNames.e3
       ) ?? '',
     e4: options.hasLabel
-      ? (join(`k-swt-e4-${branch}`, elem(elements.e4, options), 'k-trn', options.classNames.e4) ??
-        '')
+      ? (join(
+          `k-swt-e4-${branch}`,
+          options.labelPosition === 'start' ? `k-swt-e4a-${branch}` : '',
+          elem(elements.e4, options),
+          'k-trn',
+          options.classNames.e4
+        ) ?? '')
       : (options.classNames.e4 ?? ''),
     e5: options.hasControlText
       ? (join(`k-swt-e5-${branch}`, elem(elements.e5, options), 'k-trn', options.classNames.e5) ??
