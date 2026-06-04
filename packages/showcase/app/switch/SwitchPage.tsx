@@ -315,6 +315,22 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
+              <StateTile title="Pressed">
+                <Switch
+                  id="switch-state-pressed"
+                  label="Pressed"
+                  controlText={switchControlText}
+                  controlState={false}
+                  status="pressed"
+                  scale={scale}
+                  radius={radius}
+                  motion={motionOverride}
+                  thumbSize={thumbSizeOverride}
+                  intent={intent}
+                  emphasis={emphasis}
+                  readOnly
+                />
+              </StateTile>
               <StateTile title="Focus">
                 <Switch
                   id="switch-state-focus"
