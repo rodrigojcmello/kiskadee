@@ -28,8 +28,8 @@ export function resolveSwitchActivationFeedbackEffect({
 
   return {
     classNamePatch: {
-      e2: 'k-swt-af-track',
-      e3: join(activationFeedbackClassName, 'k-swt-af', isActive ? 'k-swt-af-active' : '') ?? ''
+      e2: 'k-swt-e2a-a',
+      e3: join(activationFeedbackClassName, 'k-swt-e3b-a', isActive ? 'k-swt-e3c-a' : '') ?? ''
     }
   };
 }

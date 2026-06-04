@@ -4,18 +4,18 @@
  */
 
 /*
- * effect track modifier / af-track
+ * element track modifier 'a' / e2a
  * Lets the thumb-hosted state layer escape the rail clipping area.
  */
-.k-swt-af-track {
+.k-swt-e2a-a {
   overflow: visible;
 }
 
 /*
- * effect state layer / af
+ * element thumb modifier 'b' / e3b
  * Hosts activation feedback on the thumb carrier.
  */
-.k-swt-af::after {
+.k-swt-e3b-a::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -29,10 +29,10 @@
 }
 
 /*
- * effect active state / af-active
+ * element thumb modifier 'c' / e3c
  * Keeps the feedback visible for the duration controlled by the React effect hook.
  */
-.k-swt-af-active::after {
+.k-swt-e3c-a::after {
   opacity: var(--k-af-opacity, 0.16);
   transition-duration: 0ms;
 }
@@ -41,11 +41,11 @@
  * element thumb / e3
  * Adapts the generic state layer into the Switch filled thumb feedback shape.
  */
-.k-swt-e3-a.k-swt-af {
+.k-swt-e3-a.k-swt-e3b-a {
   isolation: isolate;
 }
 
-.k-swt-e3-a.k-swt-af::after {
+.k-swt-e3-a.k-swt-e3b-a::after {
   inset: calc(var(--k-af-thickness, 3px) * -1);
   z-index: -1;
   border-radius: 999px;

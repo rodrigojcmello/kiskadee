@@ -51,7 +51,7 @@ const switchControlText = {
 };
 
 const switchActivationFeedbackActiveClassNames = {
-  e3: 'k-swt-af-active'
+  e3: 'k-swt-e3c-a'
 };
 
 function StateTile({ title, children }: { title: string; children: ReactNode }) {
