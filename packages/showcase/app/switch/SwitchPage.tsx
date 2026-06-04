@@ -22,9 +22,9 @@ const scaleOptions: Array<{ value: ElementSizeValue; label: string }> = [
 ];
 
 const radiusOptions: Array<{ value: RadiusMode; label: string }> = [
+  { value: 'square', label: 'Square' },
   { value: 'rounded', label: 'Rounded' },
-  { value: 'pill', label: 'Pill' },
-  { value: 'square', label: 'Square' }
+  { value: 'pill', label: 'Pill' }
 ];
 
 const emphasisOptions: Array<{ value: ComponentEmphasis; label: string }> = [
