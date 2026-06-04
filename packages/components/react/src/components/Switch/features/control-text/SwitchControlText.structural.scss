@@ -1,0 +1,64 @@
+/*
+ * Switch control-text feature structural branch registry:
+ * a = static proof of concept
+ */
+
+/*
+ * extra control side / x2
+ * Groups optional control text with the rendered track as one visual flex item.
+ */
+.k-swt-x2-a {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  cursor: inherit;
+}
+
+/*
+ * extra element for e2 / x6
+ * Groups the track/thumb visual control without changing the track measurement scope.
+ */
+.k-swt-x6-a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  cursor: inherit;
+}
+
+/*
+ * element control text / e5
+ * Provides optional visual on/off text next to the rendered control.
+ */
+.k-swt-e5-a {
+  display: inline-flex;
+  align-items: center;
+  min-inline-size: 0;
+  cursor: inherit;
+  pointer-events: none;
+}
+
+/*
+ * internal control-text part / x3
+ * Shows the resting control text until the selected activator is present.
+ */
+.k-swt-x3-a {
+  display: inline;
+}
+
+/*
+ * internal control-text part / x4
+ * Hides selected text until the selected activator is present.
+ */
+.k-swt-x4-a,
+.k-swt-e1-a.-s.-a .k-swt-x3-a {
+  display: none;
+}
+
+/*
+ * internal control-text part / x4
+ * Reveals selected text while the selected activator is present.
+ */
+.k-swt-e1-a.-s.-a .k-swt-x4-a {
+  display: inline;
+}

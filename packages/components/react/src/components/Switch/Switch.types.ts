@@ -50,9 +50,8 @@ export type SwitchProps = Omit<
   intent?: SwitchIntent;
   radius?: RadiusMode;
   thumbSize?: false;
+  motion?: false;
   variant?: SwitchVariant;
   mode?: SwitchMode;
   labelPosition?: SwitchLabelPosition;
 };
-
-export type SwitchMotionProps = SwitchProps;

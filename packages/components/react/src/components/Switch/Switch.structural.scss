@@ -1,18 +1,14 @@
 /*
  * Switch structural branch registry:
- * a = static
+ * a = static proof of concept
  */
 
 /*
  * element root / e1
- * Owns inline flow for the semantic input, visual track, thumb, and optional label.
+ * Owns the compact inline label/control wrapper for the static proof of concept.
  */
 .k-swt-e1-a {
   --k-swt-dx: 1;
-  --k-swt-tx: 0px;
-  --k-swt-ti: 0px;
-  --k-swt-ty: 0px;
-  --k-swt-dur: var(--k-dur-int);
 
   position: relative;
   display: inline-flex;
@@ -33,34 +29,46 @@
 }
 
 /*
- * element root modifier 'b' / e1b
- * Uses the slow activation motion profile for compact switch thumbs.
+ * element root / e1
+ * Reverses the selected thumb transform for right-to-left static geometry.
  */
-.k-swt-e1b-a {
-  --k-swt-dur: var(--k-dur-int-slow);
+.k-swt-e1-a:dir(rtl) {
+  --k-swt-dx: -1;
 }
 
 /*
  * element track / e2
- * Owns the visual switch rail and provides the measurement scope for thumb translation.
+ * Owns the rail measurement scope and exposes generated padding as logical geometry.
  */
 .k-swt-e2-a {
+  --k-swt-pis: max(0px, calc(var(--k-pdl, 0px) - var(--k-bdw, 0px)));
+  --k-swt-pie: max(0px, calc(var(--k-pdr, 0px) - var(--k-bdw, 0px)));
+
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   box-sizing: border-box;
   flex: 0 0 auto;
   overflow: hidden;
   cursor: inherit;
   transition:
-    border-color var(--k-swt-dur) var(--k-ease-out),
-    border-radius var(--k-swt-dur) var(--k-ease-out),
-    color var(--k-swt-dur) var(--k-ease-out),
-    box-shadow var(--k-swt-dur) var(--k-ease-out),
-    --k-bg0 var(--k-swt-dur) var(--k-ease-out),
-    --k-bg1 var(--k-swt-dur) var(--k-ease-out),
-    --k-bg2 var(--k-swt-dur) var(--k-ease-out),
-    background-color var(--k-swt-dur) var(--k-ease-out);
+    border-color var(--k-dur-int) var(--k-ease-out),
+    border-radius var(--k-dur-int) var(--k-ease-out),
+    color var(--k-dur-int) var(--k-ease-out),
+    box-shadow var(--k-dur-int) var(--k-ease-out),
+    --k-bg0 var(--k-dur-int) var(--k-ease-out),
+    --k-bg1 var(--k-dur-int) var(--k-ease-out),
+    --k-bg2 var(--k-dur-int) var(--k-ease-out),
+    background-color var(--k-dur-int) var(--k-ease-out);
+}
+
+/*
+ * element track / e2
+ * Swaps generated physical padding variables into logical start/end geometry in RTL.
+ */
+.k-swt-e2-a:dir(rtl) {
+  --k-swt-pis: max(0px, calc(var(--k-pdr, 0px) - var(--k-bdw, 0px)));
+  --k-swt-pie: max(0px, calc(var(--k-pdl, 0px) - var(--k-bdw, 0px)));
 }
 
 /*
@@ -76,76 +84,39 @@
 
 /*
  * element thumb / e3
- * Overlays the visual control shell so activation feedback can escape track clipping.
+ * Moves inside the track using CSS-only geometry, with no observer or transform runtime.
  */
 .k-swt-e3-a {
   position: absolute;
-  inset-block-start: var(--k-swt-ty);
-  inset-inline-start: var(--k-swt-ti);
+  inset-block-start: 50%;
+  inset-inline-start: var(--k-swt-pis);
   z-index: 1;
   display: block;
   box-sizing: border-box;
+  flex: 0 0 auto;
   pointer-events: none;
-  transform: translateX(0);
+  transform: translate(0, -50%);
   transition:
-    transform var(--k-swt-dur) var(--k-ease-out),
-    border-color var(--k-swt-dur) var(--k-ease-out),
-    border-radius var(--k-swt-dur) var(--k-ease-out),
-    color var(--k-swt-dur) var(--k-ease-out),
-    box-shadow var(--k-swt-dur) var(--k-ease-out),
-    --k-bg0 var(--k-swt-dur) var(--k-ease-out),
-    --k-bg1 var(--k-swt-dur) var(--k-ease-out),
-    --k-bg2 var(--k-swt-dur) var(--k-ease-out),
-    background-color var(--k-swt-dur) var(--k-ease-out);
-  will-change: transform;
-}
-
-/*
- * element thumb modifier 'a' / e3a
- * Receives the track-derived rounded radius projected on the shared control wrapper.
- */
-.k-swt-e3-a.k-swt-e3a-a,
-.k-swt-x5-a.k-swt-e3a-a {
-  border-radius: var(--k-swt-tr, var(--k-bdr));
+    inset-inline-start var(--k-dur-int) var(--k-ease-out),
+    transform var(--k-dur-int) var(--k-ease-out),
+    border-color var(--k-dur-int) var(--k-ease-out),
+    border-radius var(--k-dur-int) var(--k-ease-out),
+    color var(--k-dur-int) var(--k-ease-out),
+    box-shadow var(--k-dur-int) var(--k-ease-out),
+    --k-bg0 var(--k-dur-int) var(--k-ease-out),
+    --k-bg1 var(--k-dur-int) var(--k-ease-out),
+    --k-bg2 var(--k-dur-int) var(--k-ease-out),
+    background-color var(--k-dur-int) var(--k-ease-out);
+  will-change: inset-inline-start, transform;
 }
 
 /*
  * element thumb / e3
- * Mirrors the persistent control state through the shared selected activator class.
+ * Mirrors selected state by moving the thumb to the inline end of the rail.
  */
 .k-swt-e1-a.-s.-a .k-swt-e3-a {
-  transform: translateX(calc(var(--k-swt-tx) * var(--k-swt-dx)));
-}
-
-/*
- * element root / e1
- * Reverses inherited inline movement for right-to-left static geometry.
- */
-.k-swt-e1-a:dir(rtl) {
-  --k-swt-dx: -1;
-}
-
-/*
- * extra control side / x2
- * Groups optional control text with the rendered track as one visual flex item.
- */
-.k-swt-x2-a {
-  display: inline-flex;
-  align-items: center;
-  flex: 0 0 auto;
-  cursor: inherit;
-}
-
-/*
- * extra element for e2 / x6
- * Positions the track and overlaid thumb as one unclipped visual control.
- */
-.k-swt-x6-a {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  flex: 0 0 auto;
-  cursor: inherit;
+  inset-inline-start: calc(100% - var(--k-swt-pie));
+  transform: translate(calc(var(--k-swt-dx) * -100%), -50%);
 }
 
 /*
@@ -156,43 +127,6 @@
   display: block;
   min-inline-size: 0;
   cursor: inherit;
-}
-
-/*
- * element control text / e5
- * Provides optional visual on/off text next to the rendered control.
- */
-.k-swt-e5-a {
-  display: inline-flex;
-  align-items: center;
-  min-inline-size: 0;
-  cursor: inherit;
-  pointer-events: none;
-}
-
-/*
- * internal control-text parts / x3 and x4
- * Mirrors the persistent control state through the shared selected activator class.
- */
-.k-swt-x3-a {
-  display: inline;
-}
-
-/*
- * internal control-text part / x4
- * Hides selected text until the selected activator is present.
- */
-.k-swt-x4-a,
-.k-swt-e1-a.-s.-a .k-swt-x3-a {
-  display: none;
-}
-
-/*
- * internal control-text part / x4
- * Reveals selected text while the selected activator is present.
- */
-.k-swt-e1-a.-s.-a .k-swt-x4-a {
-  display: inline;
 }
 
 /*

@@ -68,25 +68,14 @@ component:
 - an optional lazy orchestrator may switch between the two for demos or consumers that need dynamic
   selection, but it should be treated as a helper, not the canonical component.
 
-This naming intentionally biases usage toward the smaller default. Consumers who need drag,
-interruptible animation, spring behavior, or other runtime-owned movement can opt into the heavier
-component explicitly.
+This naming intentionally biases usage toward the smaller default. Components that need drag,
+interruptible animation, spring behavior, or other runtime-owned movement should keep that behavior
+behind explicit internal runtime modules.
 
 ## Switch Direction
 
-The default Switch thumb movement is a static-path behavior: React measures the travel distance and
-CSS transitions the thumb between off and selected positions. This remains the default because the
-ordinary Switch path should stay lightweight.
-
-Switch should expose this distinction as separate public components:
-
-- `Switch` is the lightweight static-path component;
-- `SwitchMotion` is the explicit runtime-motion component for drag, interruptible animation, and
-  spring-like movement.
-
-If a consumer or showcase needs to switch dynamically between static and motion behavior, use a
-separate lazy helper that renders `Switch` first and lazy-loads `SwitchMotion` only when needed. That
-helper is a convenience layer; it should not make `Switch` itself aware of the heavier motion path.
+Switch is a single public component. Runtime motion is an internal module activated by default and
+can be disabled per instance with `motion?: false`.
 
 Use the Switch motion path for behavior such as:
 
@@ -94,29 +83,26 @@ Use the Switch motion path for behavior such as:
 - interrupting and reversing the thumb animation from its current position during rapid clicks,
 - using spring-like motion instead of a fixed CSS transition.
 
-That motion path does not replace the default static path. It is isolated behind an explicit
-component boundary.
+That motion path is not a separate public component. It stays isolated behind the internal Switch
+motion module.
 
-Static and motion may also be separate structural CSS branches when their DOM, pointer behavior, or
-animation ownership would otherwise force one path to undo the other. For Switch, the intended
-structural branch registry is:
+Static and motion may still use structural gates when pointer behavior or animation ownership would
+otherwise force one path to undo the other. For Switch, the current public component uses:
 
 ```txt
 Switch
-    a = static
-    b = motion
+    a = single public component structure
+    m = runtime motion gate
 ```
 
-That branch split is structural only. It does not mean `static` or `motion` should become schema
-variants or a `Switch` mode prop. Branch-specific selectors should carry the isolation, even if that
-duplicates structural CSS between `Switch` and `SwitchMotion`.
+That split is structural only. It does not mean `static` or `motion` should become schema variants.
 
-`activationMotion`, `Switch`, and `SwitchMotion` are different layers:
+`activationMotion`, `Switch`, and the internal motion module are different layers:
 
 - `activationMotion` is a preset/schema timing profile for activation movement and CSS visual
   transitions.
-- `Switch` is the lightweight component that may still use CSS transitions.
-- `SwitchMotion` is the explicit component that uses a dedicated runtime animation/gesture engine.
-- In `SwitchMotion`, CSS still uses `activationMotion` for non-transform visual transitions, while
-  horizontal thumb displacement maps the same `activationMotion` value to an internal runtime spring
-  profile.
+- `Switch` is the single public styled component.
+- The internal motion module owns drag and runtime animation when enabled.
+- In the motion module, CSS still uses `activationMotion` for non-transform visual transitions,
+  while horizontal thumb displacement maps the same `activationMotion` value to an internal runtime
+  spring profile.

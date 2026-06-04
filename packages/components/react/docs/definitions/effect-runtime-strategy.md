@@ -103,31 +103,23 @@ than keeping the first implementation shape.
 `effects.thumbSize.rest` is a state-based geometry effect. It should be lazy and path-specific when
 implemented in React.
 
-The public contract is shared by both Switch paths:
+The public contract is owned by `Switch`:
 
 - `effects.thumbSize.rest.boxWidth`
 - `effects.thumbSize.rest.boxHeight`
 
-The runtime implementation should be separate:
-
-- `SwitchWithThumbSize` handles the static `Switch` path.
-- `SwitchMotionWithThumbSize` handles the motion and drag `SwitchMotion` path.
+The runtime implementation should stay modular inside `Switch`.
 
 The external thumb element remains the stable carrier. It owns base geometry, measurement, travel,
 and drag constraints. The thumb-size effect applies to an internal visual thumb node.
 
-This prevents the off/rest visual reduction from changing the measured draggable width in
-`SwitchMotion`, while keeping the normal `scales` size as the selected/on size.
+This prevents the off/rest visual reduction from changing the measured draggable width in the
+internal motion path, while keeping the normal `scales` size as the selected/on size.
 
-When `thumbSize` is absent, neither Switch path should render the internal visual node or load the
+When `thumbSize` is absent, `Switch` should not render the internal visual node or load the
 thumb-size effect module.
 
-React resolves the generated `e.ts` bucket before choosing a path:
-
-- without `e.ts` for the current size, `Switch` renders `SwitchCore`;
-- with `e.ts`, `Switch` lazy-loads `SwitchWithThumbSize`;
-- without `e.ts` for the current size, `SwitchMotion` renders its core motion path;
-- with `e.ts`, `SwitchMotion` lazy-loads `SwitchMotionWithThumbSize`.
+React resolves the generated `e.ts` bucket before activating the thumb-size module.
 
 The carrier keeps `classNames.e3` so the existing escape hatch remains attached to the public thumb
 element. The internal visual receives generated visual classes, radius classes, and the `e.ts`

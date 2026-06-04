@@ -2,19 +2,18 @@
 
 import type { ComponentEmphasis, ElementSizeValue, RadiusMode, SwitchIntent } from '@kiskadee/core';
 import {
-  Switch as KSwitch,
-  SwitchMotion,
+  Switch,
   useKiskadee,
   useShowcase,
   useSwitchArtifactConfig
 } from '@kiskadee/react-components';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { Switch as ControlSwitch, Select } from '@/k-components';
+import { Select } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
 import s from './Switch.module.scss';
 
-const switchScaleOptions: Array<{ value: ElementSizeValue; label: string }> = [
+const scaleOptions: Array<{ value: ElementSizeValue; label: string }> = [
   { value: 's:sm:3', label: 'Small 3' },
   { value: 's:sm:2', label: 'Small 2' },
   { value: 's:sm:1', label: 'Small' },
@@ -35,14 +34,12 @@ const emphasisOptions: Array<{ value: ComponentEmphasis; label: string }> = [
   { value: 'lowest', label: 'Lowest' }
 ];
 
-type SwitchMotionMode = 'static' | 'motion';
-
-const switchMotionOptions: Array<{ value: SwitchMotionMode; label: string }> = [
-  { value: 'static', label: 'Static' },
-  { value: 'motion', label: 'Motion' }
+const effectToggleOptions = [
+  { value: 'on', label: 'Ligado' },
+  { value: 'off', label: 'Desligado' }
 ];
 
-const switchIntentLabels: Record<string, string> = {
+const intentLabels: Record<string, string> = {
   neutral: 'Neutral',
   primary: 'Primary',
   polarity: 'Polarity'
@@ -64,55 +61,66 @@ function StateTile({ title, children }: { title: string; children: ReactNode }) 
 
 export default function SwitchPage() {
   const { designSystem } = useKiskadee();
-  const { effects: switchArtifactEffects, options: switchArtifactOptions } =
-    useSwitchArtifactConfig();
+  const { effects: switchEffects, options: switchOptions } = useSwitchArtifactConfig();
   const { manifest } = useShowcase();
   const [controlState, setControlState] = useState(true);
   const [scale, setScale] = useState<ElementSizeValue>('s:md:1');
   const [radius, setRadius] = useState<RadiusMode>('rounded');
   const [intent, setIntent] = useState<SwitchIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
-  const [switchMotion, setSwitchMotion] = useState<SwitchMotionMode>('static');
+  const [motionEnabled, setMotionEnabled] = useState(true);
   const [thumbSizeEnabled, setThumbSizeEnabled] = useState(true);
-  const SwitchComponent = switchMotion === 'motion' ? SwitchMotion : KSwitch;
   const switchMeta = manifest?.components?.switch;
   const isSwitchAvailable = Boolean(switchMeta);
-  const defaultRadius = switchArtifactOptions.radius;
-  const hasThumbSizeEffect = switchArtifactEffects.thumbSize;
+  const defaultRadius = switchOptions.radius;
+  const hasThumbSizeEffect = Boolean(switchEffects.thumbSizeEffect);
+  const motionOverride = motionEnabled ? undefined : false;
   const isThumbSizeEnabled = hasThumbSizeEffect && thumbSizeEnabled;
   const thumbSizeOverride = isThumbSizeEnabled ? undefined : false;
-  const supportedSwitchScales = switchMeta?.scale;
-  const supportedSwitchIntents = switchMeta?.state;
-  const supportedSwitchStates = supportedSwitchIntents?.[intent];
+  const supportedScales = switchMeta?.scale;
+  const supportedIntents = switchMeta?.state;
+  const supportedStates = supportedIntents?.[intent];
+
   const scaleSelectOptions = useMemo(
-    () => switchScaleOptions.filter((option) => Boolean(supportedSwitchScales?.[option.value])),
-    [supportedSwitchScales]
-  );
-  const intentSelectOptions = useMemo(
-    () =>
-      Object.keys(supportedSwitchIntents ?? {}).map((value) => ({
-        value: value as SwitchIntent,
-        label: switchIntentLabels[value] ?? value
-      })),
-    [supportedSwitchIntents]
-  );
-  const emphasisSelectOptions = useMemo(
-    () => emphasisOptions.filter((option) => Boolean(supportedSwitchStates?.[option.value])),
-    [supportedSwitchStates]
+    () => scaleOptions.filter((option) => Boolean(supportedScales?.[option.value])),
+    [supportedScales]
   );
   const radiusSelectOptions = useMemo(
     () =>
       radiusOptions.map((option) => ({
         ...option,
         label: option.value === defaultRadius ? `${option.label} (default)` : option.label,
-        disabled: supportedSwitchScales ? !supportedSwitchScales[option.value] : false
+        disabled: supportedScales ? !supportedScales[option.value] : false
       })),
-    [defaultRadius, supportedSwitchScales]
+    [defaultRadius, supportedScales]
+  );
+  const intentSelectOptions = useMemo(
+    () =>
+      Object.keys(supportedIntents ?? {}).map((value) => ({
+        value: value as SwitchIntent,
+        label: intentLabels[value] ?? value
+      })),
+    [supportedIntents]
+  );
+  const emphasisSelectOptions = useMemo(
+    () => emphasisOptions.filter((option) => Boolean(supportedStates?.[option.value])),
+    [supportedStates]
   );
 
   useEffect(() => {
     setRadius(defaultRadius);
   }, [defaultRadius]);
+
+  useEffect(() => {
+    if (!scaleSelectOptions.length || scaleSelectOptions.some((option) => option.value === scale)) {
+      return;
+    }
+
+    setScale(
+      scaleSelectOptions.find((option) => option.value === 's:md:1')?.value ??
+        scaleSelectOptions[0].value
+    );
+  }, [scale, scaleSelectOptions]);
 
   useEffect(() => {
     if (
@@ -122,8 +130,10 @@ export default function SwitchPage() {
       return;
     }
 
-    const preferredIntent = intentSelectOptions.find((option) => option.value === 'neutral');
-    setIntent(preferredIntent?.value ?? intentSelectOptions[0].value);
+    setIntent(
+      intentSelectOptions.find((option) => option.value === 'neutral')?.value ??
+        intentSelectOptions[0].value
+    );
   }, [intent, intentSelectOptions]);
 
   useEffect(() => {
@@ -134,26 +144,19 @@ export default function SwitchPage() {
       return;
     }
 
-    const preferredEmphasis = emphasisSelectOptions.find((option) => option.value === 'medium');
-    setEmphasis(preferredEmphasis?.value ?? emphasisSelectOptions[0].value);
+    setEmphasis(
+      emphasisSelectOptions.find((option) => option.value === 'medium')?.value ??
+        emphasisSelectOptions[0].value
+    );
   }, [emphasis, emphasisSelectOptions]);
-
-  useEffect(() => {
-    if (!scaleSelectOptions.length || scaleSelectOptions.some((option) => option.value === scale)) {
-      return;
-    }
-
-    const preferredScale = scaleSelectOptions.find((option) => option.value === 's:md:1');
-    setScale(preferredScale?.value ?? scaleSelectOptions[0].value);
-  }, [scale, scaleSelectOptions]);
 
   return (
     <section className={`${s.page} k-root`}>
       <header className={s.header}>
         <div>
-          <h2>Switch</h2>
+          <h2>Switch V2</h2>
           <p className={s.summary}>
-            Binary control scenarios for the generated `standard/base` switch contract.
+            Static proof of concept for the generated `standard/base` switch contract.
           </p>
         </div>
         <div className={s.controls}>
@@ -211,21 +214,27 @@ export default function SwitchPage() {
           />
           <Select
             label="Motion"
-            width={160}
-            options={switchMotionOptions}
-            value={switchMotion}
+            width={140}
+            options={effectToggleOptions}
+            value={motionEnabled ? 'on' : 'off'}
             onValueChange={(value) => {
-              setSwitchMotion(value as SwitchMotionMode);
+              const nextMotionEnabled = value === 'on';
+              if (nextMotionEnabled === motionEnabled) return;
+              playWowTransition();
+              setMotionEnabled(nextMotionEnabled);
             }}
             disabled={!isSwitchAvailable}
           />
-          <ControlSwitch
+          <Select
             label="Thumb size"
-            controlState={isThumbSizeEnabled}
-            onControlStateChange={(nextControlState) => {
-              if (!hasThumbSizeEffect || nextControlState === isThumbSizeEnabled) return;
+            width={140}
+            options={effectToggleOptions}
+            value={isThumbSizeEnabled ? 'on' : 'off'}
+            onValueChange={(value) => {
+              const nextThumbSizeEnabled = value === 'on';
+              if (!hasThumbSizeEffect || nextThumbSizeEnabled === isThumbSizeEnabled) return;
               playWowTransition();
-              setThumbSizeEnabled(nextControlState);
+              setThumbSizeEnabled(nextThumbSizeEnabled);
             }}
             disabled={!isSwitchAvailable || !hasThumbSizeEffect}
           />
@@ -241,7 +250,7 @@ export default function SwitchPage() {
           <section className={s.section}>
             <h3>Interactive</h3>
             <div className={s.interactivePanel}>
-              <SwitchComponent
+              <Switch
                 id="switch-notifications"
                 label="Notifications"
                 controlText={switchControlText}
@@ -249,6 +258,7 @@ export default function SwitchPage() {
                 onControlStateChange={setControlState}
                 scale={scale}
                 radius={radius}
+                motion={motionOverride}
                 thumbSize={thumbSizeOverride}
                 intent={intent}
                 emphasis={emphasis}
@@ -258,15 +268,16 @@ export default function SwitchPage() {
 
           <section className={s.section}>
             <h3>States</h3>
-            <div className={`${s.stateGrid} ${s.statesGrid}`}>
+            <div className={s.stateGrid}>
               <StateTile title="Rest">
-                <SwitchComponent
+                <Switch
                   id="switch-state-rest"
                   label="Rest"
                   controlText={switchControlText}
                   controlState={false}
                   scale={scale}
                   radius={radius}
+                  motion={motionOverride}
                   thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
@@ -274,13 +285,14 @@ export default function SwitchPage() {
                 />
               </StateTile>
               <StateTile title="Selected">
-                <SwitchComponent
+                <Switch
                   id="switch-state-selected"
                   label="Selected"
                   controlText={switchControlText}
                   controlState
                   scale={scale}
                   radius={radius}
+                  motion={motionOverride}
                   thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
@@ -288,7 +300,7 @@ export default function SwitchPage() {
                 />
               </StateTile>
               <StateTile title="Hover">
-                <SwitchComponent
+                <Switch
                   id="switch-state-hover"
                   label="Hover"
                   controlText={switchControlText}
@@ -296,6 +308,7 @@ export default function SwitchPage() {
                   status="hover"
                   scale={scale}
                   radius={radius}
+                  motion={motionOverride}
                   thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
@@ -303,7 +316,7 @@ export default function SwitchPage() {
                 />
               </StateTile>
               <StateTile title="Focus">
-                <SwitchComponent
+                <Switch
                   id="switch-state-focus"
                   label="Focus"
                   controlText={switchControlText}
@@ -311,104 +324,37 @@ export default function SwitchPage() {
                   status="focus"
                   scale={scale}
                   radius={radius}
+                  motion={motionOverride}
                   thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Selected Hover">
-                <SwitchComponent
-                  id="switch-state-selected-hover"
-                  label="Selected hover"
-                  controlText={switchControlText}
-                  controlState
-                  status="hover"
-                  scale={scale}
-                  radius={radius}
-                  thumbSize={thumbSizeOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  readOnly
-                />
-              </StateTile>
-              <StateTile title="Selected Focus">
-                <SwitchComponent
-                  id="switch-state-selected-focus"
-                  label="Selected focus"
-                  controlText={switchControlText}
-                  controlState
-                  status="focus"
-                  scale={scale}
-                  radius={radius}
-                  thumbSize={thumbSizeOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  readOnly
-                />
-              </StateTile>
-            </div>
-          </section>
-
-          <section className={s.section}>
-            <h3>Disabled</h3>
-            <div className={s.stateGrid}>
               <StateTile title="Disabled">
-                <SwitchComponent
-                  id="switch-disabled-off"
-                  label="Unavailable"
+                <Switch
+                  id="switch-disabled"
+                  label="Disabled"
                   controlText={switchControlText}
                   controlState={false}
                   scale={scale}
                   radius={radius}
+                  motion={motionOverride}
                   thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
                   disabled
-                />
-              </StateTile>
-              <StateTile title="Selected Disabled">
-                <SwitchComponent
-                  id="switch-disabled-selected"
-                  label="Locked on"
-                  controlText={switchControlText}
-                  controlState
-                  scale={scale}
-                  radius={radius}
-                  thumbSize={thumbSizeOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  disabled
-                />
-              </StateTile>
-            </div>
-          </section>
-
-          <section className={s.section}>
-            <h3>Labels</h3>
-            <div className={s.stateGrid}>
-              <StateTile title="Visible Label">
-                <SwitchComponent
-                  id="switch-label-start"
-                  label="Airplane mode"
-                  controlText={switchControlText}
-                  controlState
-                  scale={scale}
-                  radius={radius}
-                  thumbSize={thumbSizeOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  readOnly
                 />
               </StateTile>
               <StateTile title="No Visible Label">
-                <SwitchComponent
+                <Switch
                   id="switch-label-hidden"
                   inputProps={{ 'aria-label': 'No visible label switch' }}
                   controlText={switchControlText}
                   controlState
                   scale={scale}
                   radius={radius}
+                  motion={motionOverride}
                   thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}

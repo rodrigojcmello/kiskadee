@@ -1,0 +1,54 @@
+/*
+ * Switch activation-feedback effect structural branch registry:
+ * a = static proof of concept
+ */
+
+/*
+ * effect track modifier / af-track
+ * Lets the thumb-hosted state layer escape the rail clipping area.
+ */
+.k-swt-af-track {
+  overflow: visible;
+}
+
+/*
+ * effect state layer / af
+ * Hosts activation feedback on the thumb carrier.
+ */
+.k-swt-af::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: var(--k-af-z, 2);
+  display: block;
+  border-radius: inherit;
+  box-shadow: 0 0 0 var(--k-af-thickness, 3px) var(--k-af-color, currentColor);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--k-af-fade-duration, 180ms) var(--k-af-ease, ease-out);
+}
+
+/*
+ * effect active state / af-active
+ * Keeps the feedback visible for the duration controlled by the React effect hook.
+ */
+.k-swt-af-active::after {
+  opacity: var(--k-af-opacity, 0.16);
+  transition-duration: 0ms;
+}
+
+/*
+ * element thumb / e3
+ * Adapts the generic state layer into the Switch filled thumb feedback shape.
+ */
+.k-swt-e3-a.k-swt-af {
+  isolation: isolate;
+}
+
+.k-swt-e3-a.k-swt-af::after {
+  inset: calc(var(--k-af-thickness, 3px) * -1);
+  z-index: -1;
+  border-radius: 999px;
+  background: var(--k-af-color, currentColor);
+  box-shadow: none;
+}

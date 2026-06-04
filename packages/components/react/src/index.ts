@@ -6,13 +6,10 @@ export type {
   SwitchClassNames,
   SwitchElementName,
   SwitchLabelPosition,
-  SwitchMotionProps,
   SwitchProps,
   SwitchStatus
 } from './components/Switch';
-export { Switch, SwitchMotion, useSwitchArtifactConfig } from './components/Switch';
-export type { SwitchV2ArtifactConfig, SwitchV2Props } from './components/SwitchV2';
-export { SwitchV2, useSwitchV2ArtifactConfig } from './components/SwitchV2';
+export { Switch, useSwitchArtifactConfig } from './components/Switch';
 export type {
   TabsArtifactConfig,
   TabsIndicatorMotionStyle,

@@ -65,8 +65,7 @@ Rules:
   axis.
 - The effect must support the same size-aware authoring model as scales, so values can vary by
   `s:*` size tokens.
-- The effect must work for both React structural branches: static `Switch` and motion
-  `SwitchMotion`.
+- The effect must work for `Switch` with runtime motion enabled or disabled.
 - Generated artifacts store the Switch thumb-size effect in the `e.ts` bucket. The bucket is
   size-aware, so consumers should resolve `all` plus the current size key when present.
 - Web CSS emits the effect as an off/rest selector, for example:

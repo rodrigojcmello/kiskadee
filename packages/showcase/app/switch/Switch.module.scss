@@ -54,30 +54,18 @@
 
 .stateGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 
-.statesGrid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.statesGrid .stateControl {
-  inline-size: 100%;
-}
-
 .interactivePanel :global(.k-swt-e1-a),
-.interactivePanel :global(.k-swt-e1-b),
-.statesGrid .stateControl :global(.k-swt-e1-a),
-.statesGrid .stateControl :global(.k-swt-e1-b) {
+.stateControl :global(.k-swt-e1-a) {
   inline-size: 100%;
   justify-content: space-between;
 }
 
-.interactivePanel :global(.k-swt-x2-a),
-.interactivePanel :global(.k-swt-x2-b),
-.statesGrid .stateControl :global(.k-swt-x2-a),
-.statesGrid .stateControl :global(.k-swt-x2-b) {
+.interactivePanel :global(.k-swt-e2-a),
+.stateControl :global(.k-swt-e2-a) {
   margin-inline-start: auto;
 }
 
@@ -124,7 +112,7 @@
     justify-content: flex-start;
   }
 
-  .statesGrid {
+  .stateGrid {
     grid-template-columns: 1fr;
   }
 

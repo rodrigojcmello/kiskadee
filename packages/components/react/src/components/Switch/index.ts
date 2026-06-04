@@ -3,10 +3,8 @@ export type {
   SwitchClassNames,
   SwitchElementName,
   SwitchLabelPosition,
-  SwitchMotionProps,
   SwitchProps,
   SwitchStatus
 } from './Switch.types.ts';
-export { SwitchMotion } from './SwitchMotion.tsx';
-export type { SwitchArtifactConfig } from './useSwitchArtifactConfig.ts';
-export { useSwitchArtifactConfig } from './useSwitchArtifactConfig.ts';
+export type { SwitchArtifactConfig } from './hooks/useSwitchArtifactConfig.ts';
+export { useSwitchArtifactConfig } from './hooks/useSwitchArtifactConfig.ts';
