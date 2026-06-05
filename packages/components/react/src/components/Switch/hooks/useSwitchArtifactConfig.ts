@@ -58,9 +58,15 @@ export function useSwitchArtifactConfig(thumbSize?: false): SwitchArtifactConfig
     componentName: 'switch'
   });
   const [artifactState, setArtifactState] = useState<SwitchArtifactState | undefined>(undefined);
-  const switchComponentArtifact =
+  const currentSwitchComponentArtifact =
     artifactState?.cacheKey === switchArtifactCacheKey ? artifactState.artifact : undefined;
-  const switchGlobalConfig = switchComponentArtifact ?? global?.components?.switch;
+  const previousLoadedSwitchComponentArtifact =
+    artifactState?.cacheKey !== switchArtifactCacheKey ? artifactState?.artifact : undefined;
+  // Preserve component metadata while a provider swaps manifests/design systems.
+  const switchGlobalConfig =
+    currentSwitchComponentArtifact ??
+    previousLoadedSwitchComponentArtifact ??
+    global?.components?.switch;
   const aggregateSwitchClassesMap = classesMap.switch as SwitchVariantClassesMap | undefined;
   const switchClassesMap = useComponentClassMap('switch', aggregateSwitchClassesMap);
   const shouldLoadThumbSizeEffect =
@@ -71,7 +77,6 @@ export function useSwitchArtifactConfig(thumbSize?: false): SwitchArtifactConfig
     let cancelled = false;
 
     if (!loadComponentArtifact) {
-      setArtifactState(undefined);
       return () => {
         cancelled = true;
       };

@@ -103,14 +103,15 @@ export function useComponentClassMap<TClassMap>(
   const [classMapState, setClassMapState] = useState<ComponentClassMapState<TClassMap> | undefined>(
     undefined
   );
-  const componentClassMap =
+  const currentComponentClassMap =
     classMapState?.cacheKey === classMapCacheKey ? classMapState.classMap : undefined;
+  const previousLoadedComponentClassMap =
+    classMapState?.cacheKey !== classMapCacheKey ? classMapState?.classMap : undefined;
 
   useEffect(() => {
     let cancelled = false;
 
     if (!loadComponentClassMap) {
-      setClassMapState(undefined);
       return () => {
         cancelled = true;
       };
@@ -172,5 +173,6 @@ export function useComponentClassMap<TClassMap>(
     theme
   ]);
 
-  return componentClassMap ?? aggregateClassMap;
+  // Preserve the last loaded component map while a provider swaps manifests/design systems.
+  return currentComponentClassMap ?? aggregateClassMap ?? previousLoadedComponentClassMap;
 }

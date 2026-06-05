@@ -177,7 +177,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           availableSegments,
           availableThemes,
           designSystemList,
-          manifest: activeManifest,
+          manifest: activeManifest ?? manifest,
           backgroundsByTheme,
           fontName,
           setFontName

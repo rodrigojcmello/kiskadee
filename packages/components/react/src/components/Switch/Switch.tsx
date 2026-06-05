@@ -8,9 +8,8 @@ import {
   DEFAULT_SWITCH_MODE,
   DEFAULT_SWITCH_SCALE,
   DEFAULT_SWITCH_VARIANT,
-  elem,
   join,
-  resolveRadiusClassName,
+  resolveSwitchClassNames as resolveSwitchStructuralClassNames,
   resolveVariantElements
 } from './Switch.class-names.ts';
 import type { SwitchClassNames, SwitchProps } from './Switch.types.ts';
@@ -31,57 +30,6 @@ import {
 import { useSwitchArtifactConfig } from './hooks/useSwitchArtifactConfig.ts';
 
 const EMPTY_SWITCH_CLASS_NAMES: SwitchClassNames = {};
-
-function resolveRoundedThumbClassName(radius: NonNullable<SwitchProps['radius']>): string {
-  return radius === 'rounded' ? 'k-swt-e3a-a' : '';
-}
-
-function resolveSwitchClassNames(options: {
-  elements: ReturnType<typeof resolveVariantElements>;
-  classNames: SwitchClassNames;
-  scale: string;
-  intent: NonNullable<SwitchProps['intent']>;
-  emphasis: NonNullable<SwitchProps['emphasis']>;
-  radius: NonNullable<SwitchProps['radius']>;
-  labelPosition: NonNullable<SwitchProps['labelPosition']>;
-  hasLabel: boolean;
-}): Required<SwitchClassNames> {
-  return {
-    e1:
-      join(
-        'k-swt',
-        'k-swt-e1-a',
-        elem(options.elements.e1, options),
-        options.classNames.e1
-      ) ?? '',
-    e2:
-      join(
-        'k-swt-e2-a',
-        elem(options.elements.e2, options),
-        resolveRadiusClassName(options.elements.e2, options.scale, options.radius),
-        'k-trn',
-        options.classNames.e2
-      ) ?? '',
-    e3:
-      join(
-        'k-swt-e3-a',
-        elem(options.elements.e3, options),
-        resolveRadiusClassName(options.elements.e3, options.scale, options.radius),
-        resolveRoundedThumbClassName(options.radius),
-        options.classNames.e3
-      ) ?? '',
-    e4: options.hasLabel
-      ? (join(
-          'k-swt-e4-a',
-          options.labelPosition === 'start' ? 'k-swt-e4a-a' : '',
-          elem(options.elements.e4, options),
-          'k-trn',
-          options.classNames.e4
-        ) ?? '')
-      : (options.classNames.e4 ?? ''),
-    e5: options.classNames.e5 ?? ''
-  };
-}
 
 function mergeSwitchClassNames(
   baseClassNames: Required<SwitchClassNames>,
@@ -143,29 +91,36 @@ function SwitchRoot(props: SwitchProps) {
   );
 
   const { classNames: structuralClassNames, thumbVisualClassName } = useMemo(() => {
-    const baseClassNames = resolveSwitchClassNames({
+    const classNamesWithRoot = {
+      ...classNames,
+      e1: join(classNames.e1, className)
+    };
+    const baseClassNames = resolveSwitchStructuralClassNames({
       elements,
-      classNames: {
-        ...classNames,
-        e1: join(classNames.e1, className)
-      },
+      classNames: classNamesWithRoot,
+      structuralBranch: 'a',
       scale,
       intent,
       emphasis,
       radius: resolvedRadius,
+      activationMotion: options.activationMotion,
       labelPosition,
-      hasLabel
+      hasLabel,
+      hasControlText: false
     });
 
     const thumbSizeStructure = thumbSizeEffect
       ? thumbSizeEffect.resolveSwitchThumbSizeEffect({
           baseClassNames,
           elements,
-          classNames,
+          classNames: classNamesWithRoot,
           scale,
           intent,
           emphasis,
-          radius: resolvedRadius
+          radius: resolvedRadius,
+          activationMotion: options.activationMotion,
+          labelPosition,
+          hasLabel
         })
       : {
           classNames: baseClassNames,
