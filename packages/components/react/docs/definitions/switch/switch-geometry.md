@@ -6,25 +6,26 @@ actual DOM shape.
 ## Radius
 
 The public `radius` prop chooses one radius mode for the visual Switch. React keeps schema-generated
-artifacts as the source of truth, but the DOM shape means track and thumb cannot always consume the
-same variables by inheritance.
+artifacts as the source of truth, while structural CSS adapts the generated track values to the
+actual nested DOM shape.
 
 - `pill` and `square` use the explicit generated radius classes for both track and thumb. Presets
   should provide exact values for each mode instead of relying on web-only large-number hacks.
-- `rounded` uses the generated radius class on the track, then the Switch runtime reads the track
-  radius variable and projects the derived thumb radius as `--k-swt-tr` on the shared control
-  wrapper. Layout still uses rendered DOM padding, but the rounded radius inset uses the visual
-  Switch padding contract: rendered inset, emitted `--k-pdt`/`--k-pdb`, and block border width are
-  all considered so compensated padding does not hide the border contribution. The thumb consumes
-  that projected value through the branch-local `k-swt-e3a-*` structural modifier.
+- `rounded` uses the generated radius class on the track and does not apply the generated rounded
+  radius class to the thumb. The track computes `--k-swt-tr` from emitted CSS variables:
+  `--k-bdr` minus the maximum visual inset from `--k-pdt`, `--k-pdr`, `--k-pdb`, `--k-pdl`, and
+  `--k-bdw`. This matches the `switch.standard.e2` emission contract: border width is mirrored and
+  padding is compensated, so structural CSS can use the declared visual padding variables without a
+  radius runtime.
+- The thumb consumes that track-derived value through the branch-local `k-swt-e3a-*` structural
+  modifier. This works by normal CSS inheritance because the rendered track wraps the thumb.
 - When the Switch uses the `thumbSize` effect, the internal `x5` thumb visual consumes the same
-  projected `--k-swt-tr` value as the normal `e3` thumb. The effect may reduce visual
-  `width`/`height`, but it does not recalculate or replace border radius.
+  `--k-swt-tr` value as the normal `e3` thumb. The effect may reduce visual `width`/`height`, but it
+  does not recalculate or replace border radius.
 
-This bridge is needed because the rendered track `e2` and thumb `e3` are siblings. CSS custom
-properties emitted on the track do not inherit into the thumb directly, so the runtime that already
-measures track/thumb geometry reads the generated track radius variable and carries the derived
-rounded radius to the common wrapper.
+The runtime motion path may still measure track/thumb dimensions to compute thumb travel. It must
+not project rounded radius values; rounded radius is a structural CSS calculation based on the
+emitted track variables.
 
 ## Focus Ring
 

@@ -166,10 +166,7 @@ function SwitchRoot(props: SwitchProps) {
     thumbSizeEffect
   ]);
 
-  const resolvedThumbVisualClassName = join(
-    thumbVisualClassName,
-    thumbVisualClassName && motionEffect ? 'k-swt-x5a-a' : ''
-  );
+  const resolvedThumbVisualClassName = thumbVisualClassName;
   const motionController = useSwitchRuntimeMotionController({
     enabled: Boolean(motionEffect),
     controlState: controlStateProp,

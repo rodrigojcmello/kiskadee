@@ -5,13 +5,12 @@
 
 /*
  * element root runtime state / m
- * Exposes runtime geometry variables while the motion module is active.
+ * Exposes runtime position variables while the motion module is active.
  */
 .k-swt-m {
   --k-swt-tx: 0px;
   --k-swt-ti: 0px;
   --k-swt-ty: 0px;
-  --k-swt-tr: var(--k-bdr);
   --k-swt-dur: var(--k-dur-int);
 }
 
@@ -43,12 +42,4 @@
     --k-bg2 var(--k-swt-dur) var(--k-ease-out),
     background-color var(--k-swt-dur) var(--k-ease-out);
   will-change: transform;
-}
-
-/*
- * extra element for e3 modifier 'a' / x5a
- * Receives the track-derived rounded radius while nested inside the motion thumb.
- */
-.k-swt-x5a-a {
-  border-radius: var(--k-swt-tr);
 }

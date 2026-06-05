@@ -66,17 +66,16 @@ Switch relies on that default as input:
 
 - Track `e2` uses the generated radius class for all radius modes.
 - Thumb `e3` uses generated radius classes directly for `pill` and `square`.
-- For `rounded`, React Switch derives the rendered thumb radius from the generated track radius
-  variable, then projects that value as `--k-swt-tr` on the shared visual wrapper. Position and
-  travel use rendered DOM padding; rounded radius uses a radius-specific visual inset that also
-  reads emitted `--k-pdt`/`--k-pdb` and block border width so compensated padding does not erase the
-  border contribution. The track values still come from normal generated mirrored/compensated CSS;
-  the runtime only bridges the sibling DOM boundary.
+- For `rounded`, React Switch does not apply the generated rounded radius class to thumb `e3`.
+  Structural CSS computes `--k-swt-tr` on track `e2` from the generated `--k-bdr`, `--k-bdw`, and
+  `--k-pd*` variables, then `e3` consumes it by inheritance through `k-swt-e3a-*`.
 - When the React Switch renders the `thumbSize` effect, the internal `x5` visual uses the same
-  projected rounded radius as `e3`. The effect changes visual dimensions, not the radius source.
+  track-derived rounded radius as `e3`. The effect changes visual dimensions, not the radius
+  source.
 
 This is still not a Switch-specific emission override. The web-builder emits the normal mirrored
-radius class, and React applies or derives the final visual thumb radius from generated values.
+radius class for the track, and React derives the final visual thumb radius from generated values in
+structural CSS.
 
 ### Reviewed Properties Without Switch Overrides
 

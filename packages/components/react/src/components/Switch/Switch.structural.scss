@@ -46,7 +46,7 @@
     var(--k-pdr, 0px),
     var(--k-pdb, 0px),
     var(--k-pdl, 0px),
-    calc(var(--k-bdw, 0px) * 2)
+    var(--k-bdw, 0px)
   );
   --k-swt-pis: max(0px, calc(var(--k-pdl, 0px) - var(--k-bdw, 0px)));
   --k-swt-pie: max(0px, calc(var(--k-pdr, 0px) - var(--k-bdw, 0px)));
@@ -120,7 +120,7 @@
 
 /*
  * element thumb modifier 'a' / e3a
- * Uses the track inner radius for rounded thumbs so the thumb follows the track curve.
+ * Uses the generated track radius minus the visual inset from padding/border variables.
  */
 .k-swt-e3a-a {
   border-radius: var(--k-swt-tr);

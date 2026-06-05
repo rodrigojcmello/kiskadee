@@ -168,8 +168,22 @@ function resolveThumbRadiusClassName(
 ): string {
   return (
     join(
-      resolveRadiusClassName(element, scale, radiusMode),
+      radiusMode === 'rounded' ? '' : resolveRadiusClassName(element, scale, radiusMode),
       radiusMode === 'rounded' ? `k-swt-e3a-${branch}` : ''
+    ) ?? ''
+  );
+}
+
+function resolveThumbVisualRadiusClassName(
+  element: ClassNameByElementJSON | undefined,
+  scale: string,
+  radiusMode: RadiusMode,
+  branch: SwitchStructuralBranch
+): string {
+  return (
+    join(
+      radiusMode === 'rounded' ? '' : resolveRadiusClassName(element, scale, radiusMode),
+      radiusMode === 'rounded' ? `k-swt-x5a-${branch}` : ''
     ) ?? ''
   );
 }
@@ -263,7 +277,7 @@ export function resolveSwitchThumbSizeClassNames(options: {
       join(
         `k-swt-x5-${branch}`,
         resolveVisualClassName(elements.e3, options),
-        resolveThumbRadiusClassName(elements.e3, options.scale, options.radius, branch),
+        resolveThumbVisualRadiusClassName(elements.e3, options.scale, options.radius, branch),
         resolveSwitchThumbSizeEffectClassName(elements.e3, options.scale),
         'k-trn'
       ) ?? ''

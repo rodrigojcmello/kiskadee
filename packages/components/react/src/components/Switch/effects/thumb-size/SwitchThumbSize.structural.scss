@@ -29,3 +29,11 @@
     --k-bg2 var(--k-dur-int) var(--k-ease-out),
     background-color var(--k-dur-int) var(--k-ease-out);
 }
+
+/*
+ * extra element for e3 modifier 'a' / x5a
+ * Uses the track-derived rounded radius for thumb-size visual layers.
+ */
+.k-swt-x5a-a {
+  border-radius: var(--k-swt-tr);
+}

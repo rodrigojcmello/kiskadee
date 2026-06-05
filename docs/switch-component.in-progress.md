@@ -24,8 +24,19 @@ optimized single-component implementation was promoted into
 - `controlText` is isolated under `features/control-text`.
 - The Showcase uses only `/switch`.
 - The second-version Showcase route was removed.
+- `radius="rounded"` is resolved from generated track variables, not from a runtime radius
+  measurement. The track keeps the generated radius class, computes `--k-swt-tr` from `--k-bdr`,
+  `--k-bdw`, and compensated padding vars, and the thumb/thumb-size visual consume that structural
+  value through `k-swt-e3a-a` / `k-swt-x5a-a`.
+- Do not apply the generated rounded radius class from `e3` to the thumb or `x5`; that reintroduces
+  the raw track-radius bug. `pill` and `square` still use generated thumb radius classes directly.
 
 ## Validation
 
 - `pnpm --filter @kiskadee/react-components run build`
 - `pnpm --filter @kiskadee/showcase build`
+
+## Latest Validation
+
+- 2026-06-05: `pnpm --filter @kiskadee/react-components run build:styles`
+- 2026-06-05: `pnpm --filter @kiskadee/react-components run build`
