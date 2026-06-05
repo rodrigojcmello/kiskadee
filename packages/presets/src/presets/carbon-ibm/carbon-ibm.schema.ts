@@ -1,5 +1,6 @@
-import { breakpoints, color, primitive, type Schema, withAlpha } from '@kiskadee/core';
+import { breakpoints, color, type Schema, withAlpha } from '@kiskadee/core';
 import { schemaColors } from './carbon-ibm.colors.ts';
+import { createCarbonIbmSwitchSchema } from './components/switch.schema.ts';
 
 // Reference: https://www.figma.com/community/file/1157761560874207208 copied to "ds-refs/(v11) Carbon Design System (Community).fig"
 
@@ -19,8 +20,8 @@ export const schema: Schema<Segments> = {
       body: ['IBM Plex Sans', 'sans-serif']
     },
     focus: {
-      width: 1,
-      offset: -3
+      width: 2,
+      offset: 1
     },
     radius: 'square'
   },
@@ -30,7 +31,7 @@ export const schema: Schema<Segments> = {
         light: {
           // Global theme tokens can reference primitive colors directly.
           background: color(schemaContext, 'default', 'l', 'primitive.black.v1', 4),
-          focusColor: color(schemaContext, 'default', 'l', 'primitive.black.v1', 0)
+          focusColor: '#0F62FE'
         }
       }
     }
@@ -152,6 +153,7 @@ export const schema: Schema<Segments> = {
           }
         }
       }
-    }
+    },
+    switch: createCarbonIbmSwitchSchema()
   }
 };
