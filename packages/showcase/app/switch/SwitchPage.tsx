@@ -319,6 +319,22 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
+              <StateTile title="Hover Selected">
+                <Switch
+                  id="switch-state-hover-selected"
+                  label="Hover selected"
+                  controlText={switchControlText}
+                  controlState
+                  status="hover"
+                  scale={scale}
+                  radius={radius}
+                  motion={motionOverride}
+                  thumbSize={thumbSizeOverride}
+                  intent={intent}
+                  emphasis={emphasis}
+                  readOnly
+                />
+              </StateTile>
               <StateTile title="Pressed">
                 <Switch
                   id="switch-state-pressed"
@@ -401,6 +417,22 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
+              <StateTile title="Focus Selected">
+                <Switch
+                  id="switch-state-focus-selected"
+                  label="Focus selected"
+                  controlText={switchControlText}
+                  controlState
+                  status="focus"
+                  scale={scale}
+                  radius={radius}
+                  motion={motionOverride}
+                  thumbSize={thumbSizeOverride}
+                  intent={intent}
+                  emphasis={emphasis}
+                  readOnly
+                />
+              </StateTile>
               <StateTile title="Disabled">
                 <Switch
                   id="switch-disabled"
@@ -416,10 +448,10 @@ export default function SwitchPage() {
                   disabled
                 />
               </StateTile>
-              <StateTile title="No Visible Label">
+              <StateTile title="Disabled Selected">
                 <Switch
-                  id="switch-label-hidden"
-                  inputProps={{ 'aria-label': 'No visible label switch' }}
+                  id="switch-disabled-selected"
+                  label="Disabled selected"
                   controlText={switchControlText}
                   controlState
                   scale={scale}
@@ -428,7 +460,7 @@ export default function SwitchPage() {
                   thumbSize={thumbSizeOverride}
                   intent={intent}
                   emphasis={emphasis}
-                  readOnly
+                  disabled
                 />
               </StateTile>
             </div>
