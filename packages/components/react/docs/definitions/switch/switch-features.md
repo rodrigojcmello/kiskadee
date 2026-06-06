@@ -1,0 +1,388 @@
+# Switch Feature Inventory
+
+This file is a reverse specification for the current styled React `Switch`.
+It records the features and preservation rules that already exist in the
+component so future work can reason from a single document instead of chat
+history or scattered issues.
+
+Use this format as an experiment for future components: the ideal version may
+start as a feature inventory for an existing component, then become a
+before-implementation specification for new components.
+
+## Scope
+
+This document covers the public styled component exported by
+`@kiskadee/react-components`.
+
+- Public component: `Switch`.
+- Public hook: `useSwitchArtifactConfig`.
+- Public props/type exports: `SwitchProps`, `SwitchStatus`,
+  `SwitchClassNames`, `SwitchElementName`, `SwitchLabelPosition`, and
+  `SwitchArtifactConfig`.
+- There is no separate public `SwitchMotion` component in the current contract.
+- Runtime motion is an internal `Switch` effect path, enabled by default and
+  disabled per instance with `motion={false}`.
+
+This document does not redefine broad architecture. For cross-cutting rules,
+prefer the canonical docs:
+
+- [`motion-strategy.md`](../motion-strategy.md)
+- [`effect-runtime-strategy.md`](../effect-runtime-strategy.md)
+- [`switch-label-and-control-text.md`](./switch-label-and-control-text.md)
+- [`switch-geometry.md`](./switch-geometry.md)
+- [`switch-cursor-policy.md`](./switch-cursor-policy.md)
+- [`switch.schema-rules.md`](../../../../../presets/docs/definitions/schema-rules/switch.schema-rules.md)
+
+## Public API
+
+### State And Behavior Props
+
+`Switch` inherits its semantic state model from the headless switch primitive.
+
+| Prop | Current rule |
+| --- | --- |
+| `controlState` | Controlled boolean state. |
+| `defaultControlState` | Initial uncontrolled state. Defaults to `false` through the headless state hook. |
+| `onControlStateChange` | Called when the semantic state changes. It is not called for no-op changes, disabled controls, or read-only controls. |
+| `status` | Optional projected visual status. Supported values come from `SwitchStatus`: `hover`, `pressed`, `focus`, `disabled`, and `readOnly`. `selected` and `filled` are excluded because selection is owned by `controlState`. |
+| `disabled` | Disables the native input and blocks state changes, drag, and activation feedback. |
+| `readOnly` | Keeps the control focusable/readable, blocks state changes, drag, and activation feedback, and sets `aria-readonly`. |
+| `required`, `name`, `value` | Forwarded to the native checkbox input. |
+| `inputProps` | Forwards allowed input props to the internal native input, with Kiskadee preserving ownership of `type`, `role`, `checked`, `disabled`, `readOnly`, `required`, `name`, `value`, `aria-checked`, and `id`. |
+
+The rendered input is a native checkbox with `role="switch"` and
+`aria-checked` synchronized to `controlState`. If no `id` is provided, the
+headless root generates one and connects the wrapping label to the input.
+
+### Visual And Artifact Props
+
+| Prop | Current rule |
+| --- | --- |
+| `scale` | Selects generated size classes. Default: `s:md:1`. |
+| `emphasis` | Selects the color emphasis bucket. Default: `medium`. |
+| `intent` | Selects the Switch intent. Default: `neutral`. |
+| `radius` | Per-instance override for the component artifact/global radius. Supported values are `rounded`, `square`, and `pill`. |
+| `variant` | Current public variant. Default: `standard`. |
+| `mode` | Current public mode inside `standard`. Default: `base`. |
+| `labelPosition` | Places the optional label before or after the visual control. Default: `start`. |
+| `motion` | `false` disables the runtime motion path. Any other value keeps runtime motion eligible. |
+| `thumbSize` | `false` disables the thumb-size effect for the instance. Any other value keeps artifact-driven thumb size eligible. |
+| `className` | Merged into the root `e1` slot. |
+| `classNames` | Escape hatch for the schema element slots `e1` through `e5`. |
+
+`radius`, `activationMotion`, and `controlTextVisibility` are component
+artifact options. Props may override only the options intentionally exposed in
+`SwitchProps`.
+
+## Schema And Artifact Contract
+
+### Elements
+
+Switch uses five canonical schema element slots:
+
+| Element | Meaning |
+| --- | --- |
+| `e1` | Root label/control wrapper and projected state scope. |
+| `e2` | Track / surface. |
+| `e3` | Thumb / handle. |
+| `e4` | Optional label text. |
+| `e5` | Optional control-state text. |
+
+Current Switch topology is variant-driven:
+
+- `variant`: `standard`
+- `mode`: `base`
+
+The current schema option values are:
+
+- `radius`: `rounded`, `square`, `pill`
+- `activationMotion`: `standard`, `slow`
+- `controlTextVisibility`: `none`, `largeOnly`, `always`
+
+### Component Artifact
+
+`web-builder` may emit `components/switch.kiskadee.json` with:
+
+- component options: `variant`, `radius`, `activationMotion`,
+  `controlTextVisibility`;
+- component effects: currently `thumbSize?: true`;
+- variant-local options: currently `standard.options.mode`.
+
+`useSwitchArtifactConfig` loads this component artifact by current design system
+and artifact version. While provider data changes, it preserves the previously
+loaded component artifact until the next one resolves, so a manifest swap does
+not immediately drop Switch metadata.
+
+Fallback order for component options:
+
+1. current loaded Switch component artifact;
+2. previous loaded Switch component artifact during a provider swap;
+3. `global.components.switch`;
+4. global radius for `radius`;
+5. local defaults from `Switch.class-names.ts`.
+
+The generated class map remains the source of truth for visual styling. The
+React component resolves classes from `classesMap.switch` and
+`useComponentClassMap('switch', ...)`, then composes structural classes and
+effect-specific patches around that generated map.
+
+## Rendering Model
+
+The styled `Switch` composes the headless switch primitive:
+
+```txt
+HeadlessSwitch.Root
+  SwitchControlSide
+    HeadlessSwitch.Track
+      HeadlessSwitch.Thumb or SwitchRuntimeMotionThumb
+        optional x5 thumb visual
+  optional HeadlessSwitch.Label
+```
+
+Rules to preserve:
+
+- The root is a label wrapper and the input is owned by the headless primitive.
+- The visual track and thumb are `aria-hidden`; the native input owns the
+  accessible switch semantics.
+- `label` is the control name, not the on/off value.
+- `controlText` is optional visual state text derived from `controlState`.
+- The wrapper around `controlText` plus the visual control is internal React DOM,
+  not a schema element and not part of the headless API.
+- `classNames.e3` stays attached to the external thumb carrier even when the
+  thumb-size effect renders an internal visual thumb.
+
+## States
+
+Switch projects visual states through the root state class model:
+
+- `hover`
+- `pressed`
+- `selected`
+- `focus`
+- `focusVisible`
+- `disabled`
+- `readOnly`
+
+`selected` is derived from `controlState`. `focusVisible` is a qualifier used for
+keyboard-visible focus styling.
+
+The component must preserve both controlled and uncontrolled state:
+
+- uncontrolled state starts from `defaultControlState`;
+- controlled state follows `controlState`;
+- `onControlStateChange` is the semantic change callback in both modes;
+- disabled and read-only controls do not change state.
+
+## Label And Control Text
+
+`label` and `controlText` are separate concepts.
+
+- `label` describes what the control changes.
+- `controlText` describes the current boolean value.
+- `labelPosition="start"` moves the label before the visual control with
+  structural ordering.
+- `labelPosition="end"` leaves the label after the visual control.
+
+`controlText` accepts `{ on, off }`, but visibility is controlled by the Switch
+component artifact:
+
+- `none`: never render visual control text.
+- `largeOnly`: render visual control text only at the large breakpoint
+  (`bp:lg:1`) and above.
+- `always`: render visual control text whenever `controlText` is provided.
+
+For the durable label/control-text distinction, see
+[`switch-label-and-control-text.md`](./switch-label-and-control-text.md).
+
+## Runtime Motion
+
+Runtime motion is a feature of `Switch`, not a separate public component.
+
+Current rules:
+
+- The runtime motion module is lazy-loaded through
+  `useSwitchRuntimeMotionEffect`.
+- Runtime motion is enabled by default and disabled with `motion={false}`.
+- Until the module is available, the component can render through the static
+  CSS path.
+- The runtime module owns horizontal thumb movement with `motion/react`.
+- `activationMotion` maps to runtime spring profiles:
+  - `standard`: stiffer spring.
+  - `slow`: slower spring.
+- The motion path measures track/thumb geometry and writes local CSS variables
+  for thumb travel.
+- Measurement updates on geometry-key changes, `ResizeObserver`, and window
+  resize.
+- RTL direction is supported by resolving inline direction at runtime.
+
+Runtime motion also enables drag:
+
+- The thumb can be dragged on the x axis.
+- Drag is disabled when the switch is disabled or read-only.
+- Drag uses the measured track/thumb travel as its constraint.
+- Drag preview may project a temporary visual `controlState` before semantic
+  state changes.
+- Release position and velocity decide the next semantic state.
+- A drag suppresses the next click for a short window so the label click does
+  not immediately undo the drag result.
+- Drag cancels activation feedback once the user starts moving the thumb.
+
+## Static Path
+
+The static path is the lightweight fallback and opt-out path.
+
+Current rules:
+
+- `motion={false}` keeps the component on the static path.
+- Static thumb movement is CSS-owned through the selected-state structural
+  modifier.
+- The static path keeps the same semantic state and generated class-map
+  contract as the motion path.
+- Static selected movement supports RTL through the root direction variable.
+
+Static does not mean "no visual transition". It means the component does not
+load or run a dedicated runtime animation/gesture engine for thumb movement.
+
+## Thumb-Size Effect
+
+`thumbSize` is an artifact-driven effect for presets where the off/rest visual
+thumb should be smaller than the selected thumb.
+
+Current rules:
+
+- The effect is eligible only when the Switch component artifact says
+  `effects.thumbSize === true`.
+- The effect can be disabled per instance with `thumbSize={false}`.
+- The effect module is lazy-loaded through `useSwitchThumbSizeEffect`.
+- When absent or disabled, no internal visual thumb node is rendered.
+- When active, the external `e3` thumb remains the stable carrier for
+  measurement, drag, and escape-hatch class names.
+- The internal `x5` visual thumb receives generated visual classes, radius
+  classes, and thumb-size effect classes.
+- Off/rest effect dimensions belong in schema. Runtime must not decide per-scale
+  effect availability.
+
+For preset authoring requirements, see
+[`switch.schema-rules.md`](../../../../../presets/docs/definitions/schema-rules/switch.schema-rules.md).
+
+## Activation Feedback
+
+Activation feedback is a schema/global effect combination:
+
+- The global effect config comes from `global.effects.activationFeedback`.
+- Switch enables the effect only when the generated `e3` class map contains an
+  activation-feedback effect class.
+- The effect module is lazy-loaded through `useSwitchActivationFeedbackEffect`.
+- Pointer feedback starts only for primary pointer down events that target the
+  visual track area.
+- Keyboard feedback starts from the space key on the native input.
+- Feedback is canceled on pointer cancel, blur, unmount, and drag movement.
+- Disabled and read-only switches do not start feedback.
+
+Current visual behavior:
+
+- The track may allow overflow so the feedback layer can extend outside the
+  rail.
+- The thumb carrier hosts the feedback state layer.
+- `thickness` currently behaves as outward expansion of a filled feedback layer,
+  not as a literal border width.
+
+## Geometry, Radius, And Focus
+
+The Switch owns local structural geometry that adapts generated schema classes
+to the actual DOM.
+
+Preserve these rules:
+
+- `rounded`, `square`, and `pill` are public radius modes.
+- `pill` and `square` use explicit generated radius classes for track and
+  thumb.
+- `rounded` uses the generated track radius and computes the thumb radius from
+  track variables, padding, and border width.
+- Do not apply the generated rounded `e3` radius class directly to the thumb or
+  `x5`; that can reintroduce raw track-radius bugs.
+- The runtime motion path may measure track/thumb travel, but it must not
+  project rounded radius values.
+- Keyboard-visible focus is drawn on the rendered track because the native input
+  is visually hidden.
+- Focus ring structural CSS consumes the global focus contract:
+  `--k-focus-color`, `--k-focus-width`, and `--k-focus-offset`.
+
+For detailed radius/focus rules, see
+[`switch-geometry.md`](./switch-geometry.md).
+
+## Cursor And Touch Policy
+
+Switch cursor behavior is component-specific.
+
+Current rules:
+
+- Interactive roots use `cursor: default`.
+- Internal visual slots inherit the root cursor.
+- Disabled and read-only roots use `cursor: not-allowed`.
+- The root disables text selection and browser tap highlight.
+- The runtime motion thumb uses `touch-action: pan-y` so horizontal drag can be
+  owned by the motion runtime while vertical page panning remains available.
+
+For the cursor rationale, see
+[`switch-cursor-policy.md`](./switch-cursor-policy.md).
+
+## Current Internal Structural Names
+
+These names are implementation details, but they are useful when auditing
+generated markup, structural CSS, or regressions.
+
+| Name | Meaning |
+| --- | --- |
+| `k-swt` | Switch structural namespace/root. |
+| `k-swt-e1-a` | Root structural branch. |
+| `k-swt-e2-a` | Track. |
+| `k-swt-e3-a` | Thumb carrier. |
+| `k-swt-e4-a` | Label text. |
+| `k-swt-e5-a` | Control text. |
+| `k-swt-m` | Runtime motion gate. |
+| `k-swt-x2-a` | Internal wrapper grouping control text and visual control. |
+| `k-swt-x3-a` / `k-swt-x4-a` | Internal off/on control-text parts. |
+| `k-swt-x5-a` | Internal thumb-size visual. |
+| `k-swt-x6-a` | Internal visual-control wrapper. |
+
+The structural branch registry currently uses `a` for the single public Switch
+structure and `m` for the runtime motion gate. These suffixes do not create
+public variants or modes.
+
+## Public Contracts Vs Internal Details
+
+### Public Contracts
+
+- `Switch` as the single public styled component.
+- `useSwitchArtifactConfig` as the component-local artifact hook.
+- `SwitchProps` public props listed in this document.
+- Headless switch semantics: native checkbox input, `role="switch"`,
+  controlled/uncontrolled state, `disabled`, `readOnly`, and form props.
+- Schema elements `e1` through `e5`.
+- Current schema options and values for `variant`, `mode`, `radius`,
+  `activationMotion`, and `controlTextVisibility`.
+- Generated artifacts and class maps as the source of truth for visual tokens.
+
+### Internal Details
+
+- Exact structural class names.
+- Internal wrappers `x2`, `x3`, `x4`, `x5`, and `x6`.
+- Lazy module names and loader implementation details.
+- Motion spring constants, drag threshold, velocity projection, and click
+  suppression duration.
+- The current choice of `motion/react` as the runtime animation library.
+
+Internal details can change, but only if the public behavior and schema/artifact
+contracts remain intact or are explicitly migrated.
+
+### Pending Or Follow-Up Areas
+
+- This file does not define a new test plan. It identifies the highest-risk
+  public behaviors that future tests should cover: controlled/uncontrolled
+  state, disabled/read-only blocking, motion opt-out, control text visibility,
+  thumb-size artifact gating, activation feedback gating, and radius behavior.
+- Activation-feedback naming still carries semantic overload: `thickness` is a
+  filled state-layer expansion today, not a true border width.
+- Future components may use this inventory format before implementation instead
+  of after implementation.

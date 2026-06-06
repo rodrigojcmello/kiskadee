@@ -20,6 +20,8 @@ optimized single-component implementation was promoted into
 ## Implementation Notes
 
 - Structural namespace is `k-swt`.
+- KIS-28 feature inventory lives at
+  `packages/components/react/docs/definitions/switch/switch-features.md`.
 - Runtime motion, `thumbSize`, `activationFeedback`, and `controlText` remain internal modules.
 - `controlText` is isolated under `features/control-text`.
 - The Showcase uses only `/switch`.
@@ -38,5 +40,6 @@ optimized single-component implementation was promoted into
 
 ## Latest Validation
 
+- 2026-06-05: KIS-28 docs-only feature inventory added; link/name review passed.
 - 2026-06-05: `pnpm --filter @kiskadee/react-components run build:styles`
 - 2026-06-05: `pnpm --filter @kiskadee/react-components run build`
