@@ -19,9 +19,9 @@ import {
 } from '.././Switch.class-names.ts';
 import type { SwitchVariantClassesMap } from '.././Switch.types.ts';
 import {
-  type SwitchThumbSizeEffectModule,
-  useSwitchThumbSizeEffect
-} from '../effects/thumb-size/index.ts';
+  type SwitchThumbShrinkEffectModule,
+  useSwitchThumbShrinkEffect
+} from '../effects/thumb-shrink/index.ts';
 
 export type SwitchArtifactConfig = {
   switchClassesMap: SwitchVariantClassesMap | undefined;
@@ -31,7 +31,7 @@ export type SwitchArtifactConfig = {
     controlTextVisibility: SwitchControlTextVisibility;
   };
   effects: {
-    thumbSizeEffect: SwitchThumbSizeEffectModule | null;
+    thumbShrinkEffect: SwitchThumbShrinkEffectModule | null;
   };
   globalEffects: {
     activationFeedback?: ActivationFeedbackEffectSchema;
@@ -49,7 +49,7 @@ function isSwitchComponentArtifact(
   return artifact?.component === 'switch';
 }
 
-export function useSwitchArtifactConfig(thumbSize?: false): SwitchArtifactConfig {
+export function useSwitchArtifactConfig(thumbShrink?: false): SwitchArtifactConfig {
   const { artifactVersion, classesMap, designSystem, global, loadComponentArtifact } =
     useKiskadee();
   const switchArtifactCacheKey = getComponentArtifactCacheKey({
@@ -69,9 +69,9 @@ export function useSwitchArtifactConfig(thumbSize?: false): SwitchArtifactConfig
     global?.components?.switch;
   const aggregateSwitchClassesMap = classesMap.switch as SwitchVariantClassesMap | undefined;
   const switchClassesMap = useComponentClassMap('switch', aggregateSwitchClassesMap);
-  const shouldLoadThumbSizeEffect =
-    thumbSize !== false && switchGlobalConfig?.effects?.thumbSize === true;
-  const thumbSizeEffect = useSwitchThumbSizeEffect(shouldLoadThumbSizeEffect);
+  const shouldLoadThumbShrinkEffect =
+    thumbShrink !== false && switchGlobalConfig?.effects?.thumbShrink === true;
+  const thumbShrinkEffect = useSwitchThumbShrinkEffect(shouldLoadThumbShrinkEffect);
 
   useEffect(() => {
     let cancelled = false;
@@ -109,7 +109,7 @@ export function useSwitchArtifactConfig(thumbSize?: false): SwitchArtifactConfig
         switchGlobalConfig?.options?.controlTextVisibility ?? DEFAULT_SWITCH_CONTROL_TEXT_VISIBILITY
     },
     effects: {
-      thumbSizeEffect
+      thumbShrinkEffect
     },
     globalEffects: {
       activationFeedback: global?.effects?.activationFeedback

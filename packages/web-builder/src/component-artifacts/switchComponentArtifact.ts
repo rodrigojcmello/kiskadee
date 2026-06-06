@@ -17,7 +17,7 @@ export type SwitchComponentOptionsPayload = {
 };
 
 export type SwitchComponentEffectsPayload = {
-  thumbSize?: true;
+  thumbShrink?: true;
 };
 
 export type SwitchComponentVariantsPayload = {
@@ -46,29 +46,29 @@ function pickSwitchVariantOptions(
   return mode ? { mode } : undefined;
 }
 
-function hasDeclaredThumbSizeEffect(element: unknown): boolean {
+function hasDeclaredThumbShrinkEffect(element: unknown): boolean {
   if (!isRecord(element) || !isRecord(element.effects)) return false;
-  const thumbSize = element.effects.thumbSize;
+  const thumbShrink = element.effects.thumbShrink;
   return (
-    Object.hasOwn(element.effects, 'thumbSize') &&
-    thumbSize !== undefined &&
-    thumbSize !== null &&
-    thumbSize !== false
+    Object.hasOwn(element.effects, 'thumbShrink') &&
+    thumbShrink !== undefined &&
+    thumbShrink !== null &&
+    thumbShrink !== false
   );
 }
 
-function elementsHaveThumbSizeEffect(elements: unknown): boolean {
-  return isRecord(elements) && Object.values(elements).some(hasDeclaredThumbSizeEffect);
+function elementsHaveThumbShrinkEffect(elements: unknown): boolean {
+  return isRecord(elements) && Object.values(elements).some(hasDeclaredThumbShrinkEffect);
 }
 
-function switchBranchHasThumbSizeEffect(branch: unknown): boolean {
+function switchBranchHasThumbShrinkEffect(branch: unknown): boolean {
   if (!isRecord(branch)) return false;
-  if (elementsHaveThumbSizeEffect(branch.elements)) return true;
+  if (elementsHaveThumbShrinkEffect(branch.elements)) return true;
 
   const modes = branch.modes;
   return isRecord(modes)
     ? Object.values(modes).some((mode) =>
-        isRecord(mode) ? elementsHaveThumbSizeEffect(mode.elements) : false
+        isRecord(mode) ? elementsHaveThumbShrinkEffect(mode.elements) : false
       )
     : false;
 }
@@ -76,11 +76,11 @@ function switchBranchHasThumbSizeEffect(branch: unknown): boolean {
 function buildSwitchEffectsPayload(schema: Schema): SwitchComponentEffectsPayload {
   const switchSchema = schema.components?.switch;
   if (!isRecord(switchSchema)) return {};
-  if (switchBranchHasThumbSizeEffect(switchSchema)) return { thumbSize: true };
+  if (switchBranchHasThumbShrinkEffect(switchSchema)) return { thumbShrink: true };
 
   const variants = switchSchema.variants;
   if (!isRecord(variants)) return {};
-  return Object.values(variants).some(switchBranchHasThumbSizeEffect) ? { thumbSize: true } : {};
+  return Object.values(variants).some(switchBranchHasThumbShrinkEffect) ? { thumbShrink: true } : {};
 }
 
 function buildSwitchVariantsPayload(schema: Schema): SwitchComponentVariantsPayload {

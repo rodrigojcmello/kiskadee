@@ -261,7 +261,7 @@ export type ClassNameByElementJSON = {
   // - rr: border radius (rounded)
   // - rp: border radius (pill)
   // - rs: border radius (square)
-  // - ts: Switch thumb-size effect
+  // - ts: Switch thumb-shrink effect
   // Size-aware effect buckets use { all, md:1, lg:1, ... }.
   e?: Partial<Record<string, EffectClassBucketJSON>>;
   // s: values are pre-joined into a single space-separated string (no arrays) per size key.

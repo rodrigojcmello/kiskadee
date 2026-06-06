@@ -20,14 +20,14 @@ Rule: interaction keys under `selected:*` remain effects and stay inside the ele
 Practical implication for consumers: if a DS wants selected + animated corners, the component must be
 rendered with both `controlState={true}` and `radiusEffect={true}`.
 
-## Switch Thumb-Size Effect Direction
+## Switch Thumb Shrink Effect Direction
 
-The Switch thumb-size effect is a state-based geometry effect, not a replacement for the normal
+The Switch thumb-shrink effect is a state-based geometry effect, not a replacement for the normal
 thumb scale contract.
 
 Preset schema authoring rules for this effect live in
 `packages/presets/docs/definitions/schema-rules/switch.schema-rules.md`. In particular, per-scale
-thumb-size intent should be expressed by schema values, not by adding runtime availability gates.
+thumb-shrink intent should be expressed by schema values, not by adding runtime availability gates.
 
 Normal Switch thumb geometry stays owned by `scales` on `switch.e3`:
 
@@ -40,7 +40,7 @@ numeric contract shape as `scales`, not percentages or ratios:
 
 ```ts
 effects: {
-  thumbSize: {
+  thumbShrink: {
     rest: {
       boxWidth: {
         's:md:1': 16
@@ -55,7 +55,7 @@ effects: {
 
 Rules:
 
-- `effects.thumbSize.rest` means the thumb is visually smaller while the Switch is off/resting.
+- `effects.thumbShrink.rest` means the thumb is visually smaller while the Switch is off/resting.
 - `selected.rest` is intentionally absent because selected/on uses the normal `scales` size.
 - `rest` here means off/rest, not disabled. `disabled` still means unavailable and is a separate
   interaction state.
@@ -66,12 +66,12 @@ Rules:
 - The effect must support the same size-aware authoring model as scales, so values can vary by
   `s:*` size tokens.
 - The effect must work for `Switch` with runtime motion enabled or disabled.
-- Generated artifacts store the Switch thumb-size effect in the `e.ts` bucket. The bucket is
+- Generated artifacts store the Switch thumb-shrink effect in the `e.ts` bucket. The bucket is
   size-aware, so consumers should resolve `all` plus the current size key when present.
 - Web CSS emits the effect as an off/rest selector, for example:
 
 ```css
-.k-swt:not(.-s) .<thumb-size-class> {
+.k-swt:not(.-s) .<thumb-shrink-class> {
   width: 16px;
 }
 ```
@@ -87,7 +87,7 @@ preserving vertical alignment:
 
 ```ts
 effects: {
-  thumbSize: {
+  thumbShrink: {
     rest: {
       boxHeight: {
         's:md:1': 16

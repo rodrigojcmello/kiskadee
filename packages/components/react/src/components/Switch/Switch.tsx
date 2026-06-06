@@ -1,5 +1,5 @@
 import './Switch.structural.css';
-import './effects/thumb-size/SwitchThumbSize.structural.css';
+import './effects/thumb-shrink/SwitchThumbShrink.structural.css';
 import { HeadlessSwitch } from '@kiskadee/react-headless';
 import { type ElementType, memo, useMemo } from 'react';
 import {
@@ -62,7 +62,7 @@ function SwitchRoot(props: SwitchProps) {
     intent = DEFAULT_SWITCH_INTENT,
     radius,
     motion,
-    thumbSize,
+    thumbShrink,
     variant = DEFAULT_SWITCH_VARIANT,
     mode = DEFAULT_SWITCH_MODE,
     labelPosition = DEFAULT_SWITCH_LABEL_POSITION,
@@ -78,7 +78,7 @@ function SwitchRoot(props: SwitchProps) {
     ...rootProps
   } = props;
   const { switchClassesMap, options, effects, globalEffects } =
-    useSwitchArtifactConfig(thumbSize);
+    useSwitchArtifactConfig(thumbShrink);
   const resolvedRadius = radius ?? options.radius;
   const elements = resolveVariantElements(switchClassesMap, variant, mode);
   const hasLabel = label !== undefined && label !== null;
@@ -87,7 +87,7 @@ function SwitchRoot(props: SwitchProps) {
     visibility: options.controlTextVisibility
   });
   const motionEffect = useSwitchRuntimeMotionEffect(motion !== false);
-  const thumbSizeEffect = effects.thumbSizeEffect;
+  const thumbShrinkEffect = effects.thumbShrinkEffect;
   const activationFeedbackEffect = useSwitchActivationFeedbackEffect(
     hasSwitchActivationFeedbackEffect(elements)
   );
@@ -111,8 +111,8 @@ function SwitchRoot(props: SwitchProps) {
       hasControlText: false
     });
 
-    const thumbSizeStructure = thumbSizeEffect
-      ? thumbSizeEffect.resolveSwitchThumbSizeEffect({
+    const thumbShrinkStructure = thumbShrinkEffect
+      ? thumbShrinkEffect.resolveSwitchThumbShrinkEffect({
           baseClassNames,
           elements,
           classNames: classNamesWithRoot,
@@ -152,9 +152,9 @@ function SwitchRoot(props: SwitchProps) {
       : undefined;
 
     return {
-      ...thumbSizeStructure,
+      ...thumbShrinkStructure,
       classNames: mergeSwitchClassNames(
-        thumbSizeStructure.classNames,
+        thumbShrinkStructure.classNames,
         motionClassNamePatch,
         controlTextClassNamePatch
       )
@@ -172,7 +172,7 @@ function SwitchRoot(props: SwitchProps) {
     options.activationMotion,
     resolvedRadius,
     scale,
-    thumbSizeEffect
+    thumbShrinkEffect
   ]);
 
   const resolvedThumbVisualClassName = thumbVisualClassName;

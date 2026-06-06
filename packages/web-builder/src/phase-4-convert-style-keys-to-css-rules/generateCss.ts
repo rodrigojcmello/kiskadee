@@ -11,7 +11,7 @@ import {
 } from './decorations/index.ts';
 import { transformBorderRadiusKeyToCss } from './effects/transformBorderRadiusKeyToCss/transformBorderRadiusKeyToCss.ts';
 import { transformRippleKeyToCss } from './effects/transformRippleKeyToCss/transformRippleKeyToCss.ts';
-import { transformThumbSizeKeyToCss } from './effects/transformThumbSizeKeyToCss/transformThumbSizeKeyToCss.ts';
+import { transformThumbShrinkKeyToCss } from './effects/transformThumbShrinkKeyToCss/transformThumbShrinkKeyToCss.ts';
 import {
   type TransformColorKeyToCssOptions,
   transformColorKeyToCss
@@ -39,8 +39,8 @@ export function generateCssRuleFromStyleKey(
     generatedCss = transformBorderStyleKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('activationFeedback')) {
     generatedCss = transformActivationFeedbackKeyToCss(styleKey, className);
-  } else if (styleKey.startsWith('thumbSize')) {
-    generatedCss = transformThumbSizeKeyToCss(styleKey, className);
+  } else if (styleKey.startsWith('thumbShrink')) {
+    generatedCss = transformThumbShrinkKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('shadow')) {
     generatedCss = transformShadowKeyToCss(styleKey, className, forceState, options);
     // [RIPPLE EFFECT 12] START: Route ripple style keys through ripple CSS transformer.

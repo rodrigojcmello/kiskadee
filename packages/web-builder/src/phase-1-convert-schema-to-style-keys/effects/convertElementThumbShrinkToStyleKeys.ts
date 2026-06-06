@@ -4,18 +4,18 @@ import type {
   ElementSizeValue,
   ScaleBySize,
   StyleKeysByInteractionState,
-  ThumbSizeEffectSchema,
-  ThumbSizeEffectValue
+  ThumbShrinkEffectSchema,
+  ThumbShrinkEffectValue
 } from '@kiskadee/core';
 import { buildStyleKey, deepUpdate } from '../../utils/index.ts';
 
-type ThumbSizePropertyName = 'thumbSizeBoxWidth' | 'thumbSizeBoxHeight';
-type ThumbSizeToken = ElementSizeValue | ElementAllSizeValue;
+type ThumbShrinkPropertyName = 'thumbShrinkBoxWidth' | 'thumbShrinkBoxHeight';
+type ThumbShrinkToken = ElementSizeValue | ElementAllSizeValue;
 
-function emitThumbSizeValue(
+function emitThumbShrinkValue(
   out: StyleKeysByInteractionState,
-  propertyName: ThumbSizePropertyName,
-  value: ThumbSizeEffectValue
+  propertyName: ThumbShrinkPropertyName,
+  value: ThumbShrinkEffectValue
 ): void {
   if (typeof value === 'number') {
     const styleKey = buildStyleKey({ propertyName, value });
@@ -24,7 +24,7 @@ function emitThumbSizeValue(
   }
 
   for (const [rawSize, rawSizeValue] of Object.entries(value as ScaleBySize)) {
-    const size = rawSize as ThumbSizeToken;
+    const size = rawSize as ThumbShrinkToken;
 
     if (typeof rawSizeValue === 'number') {
       const styleKey =
@@ -55,19 +55,19 @@ function emitThumbSizeValue(
   }
 }
 
-export function convertElementThumbSizeToStyleKeys(
-  thumbSize: ThumbSizeEffectSchema
+export function convertElementThumbShrinkToStyleKeys(
+  thumbShrink: ThumbShrinkEffectSchema
 ): StyleKeysByInteractionState {
   const styleKeys: StyleKeysByInteractionState = {};
-  const rest = thumbSize.rest;
+  const rest = thumbShrink.rest;
   if (!rest) return styleKeys;
 
   if (rest.boxWidth !== undefined) {
-    emitThumbSizeValue(styleKeys, 'thumbSizeBoxWidth', rest.boxWidth);
+    emitThumbShrinkValue(styleKeys, 'thumbShrinkBoxWidth', rest.boxWidth);
   }
 
   if (rest.boxHeight !== undefined) {
-    emitThumbSizeValue(styleKeys, 'thumbSizeBoxHeight', rest.boxHeight);
+    emitThumbShrinkValue(styleKeys, 'thumbShrinkBoxHeight', rest.boxHeight);
   }
 
   return styleKeys;

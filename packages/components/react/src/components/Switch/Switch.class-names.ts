@@ -135,7 +135,7 @@ export function resolveSwitchActivationFeedbackEffectClassName(
   return typeof bucket === 'string' ? bucket : '';
 }
 
-export function resolveSwitchThumbSizeEffectClassName(
+export function resolveSwitchThumbShrinkEffectClassName(
   element: ClassNameByElementJSON | undefined,
   scale: string
 ): string {
@@ -281,7 +281,7 @@ export function resolveSwitchThumbVisualClassName(options: {
   );
 }
 
-export function resolveSwitchThumbSizeClassNames(options: {
+export function resolveSwitchThumbShrinkClassNames(options: {
   elements: SwitchClassesMap;
   classNames: SwitchClassNames;
   structuralBranch: SwitchStructuralBranch;
@@ -302,7 +302,7 @@ export function resolveSwitchThumbSizeClassNames(options: {
     x5:
       join(
         resolveSwitchThumbVisualClassName(options),
-        resolveSwitchThumbSizeEffectClassName(elements.e3, options.scale)
+        resolveSwitchThumbShrinkEffectClassName(elements.e3, options.scale)
       ) ?? ''
   };
 }

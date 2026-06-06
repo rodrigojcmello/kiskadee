@@ -88,7 +88,7 @@ Inside those broader effect runtimes, individual effects can stay schema-driven 
 enabled by their generated buckets/classes. Effect-specific hooks, slots, or adapters should be
 composed only when their corresponding bucket exists.
 
-The current Switch thumb-size implementation is acceptable as the first structural effect because it
+The current Switch thumb-shrink implementation is acceptable as the first structural effect because it
 preserves the cheapest core path and isolates the drag-sensitive motion path. It should be treated as
 a cautious first case, not as a permanent rule that every future Switch effect gets its own full
 static and motion component pair.
@@ -98,28 +98,28 @@ Switch strategy and align it where appropriate. Kiskadee should improve this arc
 new use cases and refactor older component-specific choices when consistency becomes more valuable
 than keeping the first implementation shape.
 
-## Switch Thumb-Size Effect
+## Switch Thumb Shrink Effect
 
-`effects.thumbSize.rest` is a state-based geometry effect. It should be lazy and path-specific when
+`effects.thumbShrink.rest` is a state-based geometry effect. It should be lazy and path-specific when
 implemented in React.
 
 The public contract is owned by `Switch`:
 
-- `effects.thumbSize.rest.boxWidth`
-- `effects.thumbSize.rest.boxHeight`
+- `effects.thumbShrink.rest.boxWidth`
+- `effects.thumbShrink.rest.boxHeight`
 
 The runtime implementation should stay modular inside `Switch`.
 
 The external thumb element remains the stable carrier. It owns base geometry, measurement, travel,
-and drag constraints. The thumb-size effect applies to an internal visual thumb node.
+and drag constraints. The thumb-shrink effect applies to an internal visual thumb node.
 
 This prevents the off/rest visual reduction from changing the measured draggable width in the
 internal motion path, while keeping the normal `scales` size as the selected/on size.
 
-When `thumbSize` is absent, `Switch` should not render the internal visual node or load the
-thumb-size effect module.
+When `thumbShrink` is absent, `Switch` should not render the internal visual node or load the
+thumb-shrink effect module.
 
-React resolves the generated `e.ts` bucket before activating the thumb-size module.
+React resolves the generated `e.ts` bucket before activating the thumb-shrink module.
 
 The carrier keeps `classNames.e3` so the existing escape hatch remains attached to the public thumb
 element. The internal visual receives generated visual classes, radius classes, and the `e.ts`

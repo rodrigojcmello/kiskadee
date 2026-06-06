@@ -274,7 +274,7 @@ export function createMaterial3GoogleSwitchSchema(
                 },
                 effects: {
                   activationFeedback: true,
-                  thumbSize: {
+                  thumbShrink: {
                     rest: {
                       boxWidth: {
                         's:md:1': 16

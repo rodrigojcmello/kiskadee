@@ -19,7 +19,7 @@ actual nested DOM shape.
   radius runtime.
 - The thumb consumes that track-derived value through the branch-local `k-swt-e3a-*` structural
   modifier. This works by normal CSS inheritance because the rendered track wraps the thumb.
-- When the Switch uses the `thumbSize` effect, the internal `x5` thumb visual consumes the same
+- When the Switch uses the `thumbShrink` effect, the internal `x5` thumb visual consumes the same
   `--k-swt-tr` value as the normal `e3` thumb. The effect may reduce visual `width`/`height`, but it
   does not recalculate or replace border radius.
 

@@ -49,7 +49,7 @@ export type SwitchProps = Omit<
   emphasis?: ComponentEmphasis;
   intent?: SwitchIntent;
   radius?: RadiusMode;
-  thumbSize?: false;
+  thumbShrink?: false;
   motion?: false;
   variant?: SwitchVariant;
   mode?: SwitchMode;

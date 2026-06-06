@@ -69,7 +69,7 @@ Switch relies on that default as input:
 - For `rounded`, React Switch does not apply the generated rounded radius class to thumb `e3`.
   Structural CSS computes `--k-swt-tr` on track `e2` from the generated `--k-bdr`, `--k-bdw`, and
   `--k-pd*` variables, then `e3` consumes it by inheritance through `k-swt-e3a-*`.
-- When the React Switch renders the `thumbSize` effect, the internal `x5` visual uses the same
+- When the React Switch renders the `thumbShrink` effect, the internal `x5` visual uses the same
   track-derived rounded radius as `e3`. The effect changes visual dimensions, not the radius
   source.
 

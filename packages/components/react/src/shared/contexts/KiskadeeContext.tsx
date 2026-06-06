@@ -91,7 +91,7 @@ export type KiskadeeContextValue = {
           controlTextVisibility?: SwitchControlTextVisibility;
         };
         effects?: {
-          thumbSize?: true;
+          thumbShrink?: true;
         };
         variants?: {
           standard?: {

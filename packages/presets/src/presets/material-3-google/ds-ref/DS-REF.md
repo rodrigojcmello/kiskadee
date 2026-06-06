@@ -213,7 +213,7 @@ The inspected component set does not expose multiple Switch sizes. Kiskadee ther
 Kiskadee adaptation:
 
 - The schema uses the canonical track size `52 x 32`.
-- The schema uses a stable `24 x 24` thumb carrier plus the `thumbSize` effect for the unselected
+- The schema uses a stable `24 x 24` thumb carrier plus the `thumbShrink` effect for the unselected
   `16 x 16` visual handle.
 - The V0 `activationFeedback` halo uses an `8px` shadow around the stable thumb carrier to reach
   the Figma `40 x 40` state-layer size.

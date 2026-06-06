@@ -22,12 +22,12 @@ Current Switch decisions:
 
 - `variant`, `mode`, and `radius` are public Switch props because consumers may choose supported
   generated branches per instance.
-- `thumbSize` is an optional Switch override for disabling the preset-provided
-  `effects.thumbSize` path per instance. `undefined` inherits the generated artifact behavior;
-  `false` disables the effect for that instance. It does not synthesize a thumb-size effect when the
+- `thumbShrink` is an optional Switch override for disabling the preset-provided
+  `effects.thumbShrink` path per instance. `undefined` inherits the generated artifact behavior;
+  `false` disables the effect for that instance. It does not synthesize a thumb-shrink effect when the
   selected design system does not emit one. The effect availability source is
   the Switch component artifact through `components/switch.kiskadee.json` and
-  `effects.thumbSize`; the class map is only used after that decision to resolve generated classes.
+  `effects.thumbShrink`; the class map is only used after that decision to resolve generated classes.
 - `activationMotion` is not a public Switch prop. It is read from
   `options.activationMotion` in the generated Switch component artifact and applied
   consistently for the selected preset.

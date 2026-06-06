@@ -1,23 +1,23 @@
 import { breakpoints as schemaBreakpoints, type StyleKey } from '@kiskadee/core';
 
 export const ERROR_INVALID_THUMB_SIZE_KEY_FORMAT =
-  'Invalid thumb-size key format. Expected numeric value after "__".';
+  'Invalid thumb-shrink key format. Expected numeric value after "__".';
 export const ERROR_INVALID_THUMB_SIZE_PROPERTY =
-  'Invalid thumb-size property. Expected thumbSizeBoxWidth or thumbSizeBoxHeight.';
+  'Invalid thumb-shrink property. Expected thumbShrinkBoxWidth or thumbShrinkBoxHeight.';
 
-function parseThumbSizeProperty(styleKey: StyleKey): {
+function parseThumbShrinkProperty(styleKey: StyleKey): {
   cssProperty: 'width' | 'height';
   cssVariable?: '--k-swt-thh';
 } {
   const propertyName = styleKey.split(/\+\+|__/)[0];
-  if (propertyName === 'thumbSizeBoxWidth') return { cssProperty: 'width' };
-  if (propertyName === 'thumbSizeBoxHeight') {
+  if (propertyName === 'thumbShrinkBoxWidth') return { cssProperty: 'width' };
+  if (propertyName === 'thumbShrinkBoxHeight') {
     return { cssProperty: 'height', cssVariable: '--k-swt-thh' };
   }
   throw new Error(ERROR_INVALID_THUMB_SIZE_PROPERTY);
 }
 
-function parseThumbSizeValue(styleKey: StyleKey): number {
+function parseThumbShrinkValue(styleKey: StyleKey): number {
   const raw = styleKey.split('__')[1]?.trim() ?? '';
   const px = Number(raw);
   if (!Number.isFinite(px)) throw new Error(ERROR_INVALID_THUMB_SIZE_KEY_FORMAT);
@@ -40,9 +40,9 @@ function resolveMediaQuery(styleKey: StyleKey): string | undefined {
   return `@media (min-width: ${breakpointValue}px)`;
 }
 
-export function transformThumbSizeKeyToCss(styleKey: StyleKey, className: string): string {
-  const { cssProperty, cssVariable } = parseThumbSizeProperty(styleKey);
-  const px = parseThumbSizeValue(styleKey);
+export function transformThumbShrinkKeyToCss(styleKey: StyleKey, className: string): string {
+  const { cssProperty, cssVariable } = parseThumbShrinkProperty(styleKey);
+  const px = parseThumbShrinkValue(styleKey);
   const mediaQuery = resolveMediaQuery(styleKey);
   const cssValue = `${px}px`;
   const declarations = cssVariable

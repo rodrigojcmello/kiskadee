@@ -8,7 +8,7 @@ schema rules, not temporary implementation notes.
 
 ## Thumb Size Is Schema-Owned
 
-Loud rule: `effects.thumbSize` is a generic Switch capability. Per-scale visual behavior belongs in
+Loud rule: `effects.thumbShrink` is a generic Switch capability. Per-scale visual behavior belongs in
 the schema values, not in runtime availability gates.
 
 The component artifact may say:
@@ -16,17 +16,17 @@ The component artifact may say:
 ```json
 {
   "effects": {
-    "thumbSize": true
+    "thumbShrink": true
   }
 }
 ```
 
-That means the selected preset has a Switch thumb-size effect. It does not need to say which scales
+That means the selected preset has a Switch thumb-shrink effect. It does not need to say which scales
 should visually shrink.
 
-When a Switch preset supports multiple thumb scales, the schema must make the thumb-size effect
+When a Switch preset supports multiple thumb scales, the schema must make the thumb-shrink effect
 intent explicit for those scales. If a very small Switch should not shrink further, repeat the normal
-thumb size in `effects.thumbSize.rest` for that scale instead of adding a runtime condition.
+thumb size in `effects.thumbShrink.rest` for that scale instead of adding a runtime condition.
 
 Example:
 
@@ -45,7 +45,7 @@ e3: {
     }
   },
   effects: {
-    thumbSize: {
+    thumbShrink: {
       rest: {
         boxWidth: {
           's:sm:1': 20,
@@ -75,21 +75,21 @@ scale should not visually shrink."
 
 ## Authoring Requirements
 
-- If `effects.thumbSize.rest.boxWidth` participates in a multi-scale Switch preset, define its value
+- If `effects.thumbShrink.rest.boxWidth` participates in a multi-scale Switch preset, define its value
   for every supported thumb scale.
-- If `effects.thumbSize.rest.boxHeight` participates in a multi-scale Switch preset, define its value
+- If `effects.thumbShrink.rest.boxHeight` participates in a multi-scale Switch preset, define its value
   for every supported thumb scale.
 - Missing width or height means that axis is not changed by the effect.
 - Do not omit a scale merely to neutralize the effect. Use the normal `scales` value for that scale.
-- Use a scalar value only when the same thumb-size effect value is intentionally correct for every
+- Use a scalar value only when the same thumb-shrink effect value is intentionally correct for every
   supported Switch scale.
 - The runtime should apply the generated classes for the current scale. It should not re-decide
   design intent by scale when the schema already expresses it.
 
 ## Why This Rule Exists
 
-Switch thumb-size is tightly coupled to normal thumb geometry. The schema already owns both normal
-thumb geometry and off/rest effect geometry, and the builder already emits size-aware thumb-size
+Switch thumb-shrink is tightly coupled to normal thumb geometry. The schema already owns both normal
+thumb geometry and off/rest effect geometry, and the builder already emits size-aware thumb-shrink
 classes. Adding per-scale runtime capability metadata would create a second source of truth for a
 decision that can be represented directly in schema.
 

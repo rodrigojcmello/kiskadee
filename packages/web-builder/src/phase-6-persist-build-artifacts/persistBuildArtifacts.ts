@@ -45,7 +45,7 @@ const coreClassMapSchema = {
             rr: { type: 'string', description: 'Border radius effects for rounded mode.' },
             rp: { type: 'string', description: 'Border radius effects for pill mode.' },
             rs: { type: 'string', description: 'Border radius effects for square mode.' },
-            ts: { type: 'object', description: 'Switch thumb-size effect by size key.' }
+            ts: { type: 'object', description: 'Switch thumb-shrink effect by size key.' }
           },
           additionalProperties: { type: 'string' }
         },

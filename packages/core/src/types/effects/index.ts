@@ -1,12 +1,12 @@
 // import type { SolidColor } from '../colors/colors.types.ts';
 import type { BorderRadiusEffectSchema } from './border-radius/border-radius.types.ts';
 import type { ShadowSchema } from './shadow/shadow.types.ts';
-import type { ThumbSizeEffectSchema } from './thumb-size/thumb-size.types.ts';
+import type { ThumbShrinkEffectSchema } from './thumb-shrink/thumb-shrink.types.ts';
 
 export type ElementEffects = Partial<{
   shadow: Partial<ShadowSchema>;
   borderRadius: BorderRadiusEffectSchema;
-  thumbSize: ThumbSizeEffectSchema;
+  thumbShrink: ThumbShrinkEffectSchema;
   activationFeedback: boolean;
   // [RIPPLE EFFECT 4] START: Element-level ripple opt-in flag.
   ripple: boolean;

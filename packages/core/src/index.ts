@@ -52,7 +52,7 @@ export {
 } from './types/effects/ripple/ripple.utils.ts';
 // [RIPPLE EFFECT 8] END: Public ripple type exports.
 export * from './types/effects/shadow/shadow.types.ts';
-export * from './types/effects/thumb-size/thumb-size.types.ts';
+export * from './types/effects/thumb-shrink/thumb-shrink.types.ts';
 export * from './types/scales/scales.types.ts';
 export * from './utils/color.ts';
 export * from './utils/convertHslaToHex.ts';

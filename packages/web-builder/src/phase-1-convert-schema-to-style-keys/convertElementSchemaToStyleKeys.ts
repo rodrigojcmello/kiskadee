@@ -12,7 +12,7 @@ import type {
   Schema,
   StyleKeyByElement,
   StyleKeysByInteractionState,
-  ThumbSizeEffectSchema
+  ThumbShrinkEffectSchema
 } from '@kiskadee/core';
 import { buildStyleKey, deepUpdate } from '../utils/index.ts';
 import {
@@ -25,7 +25,7 @@ import { convertElementActivationFeedbackToStyleKeys } from './effects/convertEl
 import { convertElementBorderRadiusToStyleKeys } from './effects/convertElementBorderRadiusToStyleKeys.ts';
 import { convertElementRippleToStyleKeys } from './effects/convertElementRippleToStyleKeys.ts';
 import { convertElementShadowToStyleKeys } from './effects/convertElementShadowToStyleKeys.ts';
-import { convertElementThumbSizeToStyleKeys } from './effects/convertElementThumbSizeToStyleKeys.ts';
+import { convertElementThumbShrinkToStyleKeys } from './effects/convertElementThumbShrinkToStyleKeys.ts';
 import {
   convertElementScalesToStyleKeys,
   type ScaleValue
@@ -305,13 +305,13 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
           }
         }
         if (
-          element.effects.thumbSize &&
+          element.effects.thumbShrink &&
           metadataScope.componentName === 'switch' &&
           metadataScope.elementName === 'e3'
         ) {
-          const thumbSize: ThumbSizeEffectSchema = element.effects.thumbSize;
-          const thumbSizeMap = convertElementThumbSizeToStyleKeys(thumbSize);
-          appendEffectMap(thumbSizeMap);
+          const thumbShrink: ThumbShrinkEffectSchema = element.effects.thumbShrink;
+          const thumbShrinkMap = convertElementThumbShrinkToStyleKeys(thumbShrink);
+          appendEffectMap(thumbShrinkMap);
         }
         if (Object.keys(effectsMap).length > 0) {
           el.effects = effectsMap;

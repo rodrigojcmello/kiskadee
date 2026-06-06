@@ -8,7 +8,7 @@ import {
   useSwitchArtifactConfig
 } from '@kiskadee/react-components';
 import type { ReactNode } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Select } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
 import s from './Switch.module.scss';
@@ -54,6 +54,8 @@ const switchActivationFeedbackActiveClassNames = {
   e3: 'k-swt-e3c-a'
 };
 
+const THUMB_SHRINK_CHANGE_DELAY_MS = 400;
+
 function StateTile({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className={s.stateTile}>
@@ -73,14 +75,15 @@ export default function SwitchPage() {
   const [intent, setIntent] = useState<SwitchIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
   const [motionEnabled, setMotionEnabled] = useState(true);
-  const [thumbSizeEnabled, setThumbSizeEnabled] = useState(true);
+  const [thumbShrinkEnabled, setThumbShrinkEnabled] = useState(true);
+  const thumbShrinkChangeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const switchMeta = manifest?.components?.switch;
   const isSwitchAvailable = Boolean(switchMeta);
   const defaultRadius = switchOptions.radius;
-  const hasThumbSizeEffect = Boolean(switchEffects.thumbSizeEffect);
+  const hasThumbShrinkEffect = Boolean(switchEffects.thumbShrinkEffect);
   const motionOverride = motionEnabled ? undefined : false;
-  const isThumbSizeEnabled = hasThumbSizeEffect && thumbSizeEnabled;
-  const thumbSizeOverride = isThumbSizeEnabled ? undefined : false;
+  const isThumbShrinkEnabled = hasThumbShrinkEffect && thumbShrinkEnabled;
+  const thumbShrinkOverride = isThumbShrinkEnabled ? undefined : false;
   const supportedScales = switchMeta?.scale;
   const supportedIntents = switchMeta?.state;
   const supportedStates = supportedIntents?.[intent];
@@ -153,6 +156,14 @@ export default function SwitchPage() {
         emphasisSelectOptions[0].value
     );
   }, [emphasis, emphasisSelectOptions]);
+
+  useEffect(() => {
+    return () => {
+      if (thumbShrinkChangeTimeoutRef.current) {
+        clearTimeout(thumbShrinkChangeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <section className={`${s.page} k-root`}>
@@ -230,17 +241,32 @@ export default function SwitchPage() {
             disabled={!isSwitchAvailable}
           />
           <Select
-            label="Thumb size"
+            label="Thumb shrink"
             width={140}
             options={effectToggleOptions}
-            value={isThumbSizeEnabled ? 'on' : 'off'}
+            value={isThumbShrinkEnabled ? 'on' : 'off'}
             onValueChange={(value) => {
-              const nextThumbSizeEnabled = value === 'on';
-              if (!hasThumbSizeEffect || nextThumbSizeEnabled === isThumbSizeEnabled) return;
-              playWowTransition();
-              setThumbSizeEnabled(nextThumbSizeEnabled);
+              const nextThumbShrinkEnabled = value === 'on';
+              if (!hasThumbShrinkEffect || nextThumbShrinkEnabled === isThumbShrinkEnabled) return;
+              if (thumbShrinkChangeTimeoutRef.current) {
+                clearTimeout(thumbShrinkChangeTimeoutRef.current);
+              }
+
+              if (!controlState) {
+                playWowTransition();
+                setThumbShrinkEnabled(nextThumbShrinkEnabled);
+                thumbShrinkChangeTimeoutRef.current = null;
+                return;
+              }
+
+              setControlState(false);
+              thumbShrinkChangeTimeoutRef.current = setTimeout(() => {
+                playWowTransition();
+                setThumbShrinkEnabled(nextThumbShrinkEnabled);
+                thumbShrinkChangeTimeoutRef.current = null;
+              }, THUMB_SHRINK_CHANGE_DELAY_MS);
             }}
-            disabled={!isSwitchAvailable || !hasThumbSizeEffect}
+            disabled={!isSwitchAvailable || !hasThumbShrinkEffect}
           />
         </div>
       </header>
@@ -263,7 +289,7 @@ export default function SwitchPage() {
                 scale={scale}
                 radius={radius}
                 motion={motionOverride}
-                thumbSize={thumbSizeOverride}
+                thumbShrink={thumbShrinkOverride}
                 intent={intent}
                 emphasis={emphasis}
               />
@@ -282,7 +308,7 @@ export default function SwitchPage() {
                   scale={scale}
                   radius={radius}
                   motion={motionOverride}
-                  thumbSize={thumbSizeOverride}
+                  thumbShrink={thumbShrinkOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -297,7 +323,7 @@ export default function SwitchPage() {
                   scale={scale}
                   radius={radius}
                   motion={motionOverride}
-                  thumbSize={thumbSizeOverride}
+                  thumbShrink={thumbShrinkOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -313,7 +339,7 @@ export default function SwitchPage() {
                   scale={scale}
                   radius={radius}
                   motion={motionOverride}
-                  thumbSize={thumbSizeOverride}
+                  thumbShrink={thumbShrinkOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -329,7 +355,7 @@ export default function SwitchPage() {
                   scale={scale}
                   radius={radius}
                   motion={motionOverride}
-                  thumbSize={thumbSizeOverride}
+                  thumbShrink={thumbShrinkOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -345,7 +371,7 @@ export default function SwitchPage() {
                   scale={scale}
                   radius={radius}
                   motion={motionOverride}
-                  thumbSize={thumbSizeOverride}
+                  thumbShrink={thumbShrinkOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -361,7 +387,7 @@ export default function SwitchPage() {
                   scale={scale}
                   radius={radius}
                   motion={motionOverride}
-                  thumbSize={thumbSizeOverride}
+                  thumbShrink={thumbShrinkOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -378,7 +404,7 @@ export default function SwitchPage() {
                   scale={scale}
                   radius={radius}
                   motion={motionOverride}
-                  thumbSize={thumbSizeOverride}
+                  thumbShrink={thumbShrinkOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -395,7 +421,7 @@ export default function SwitchPage() {
                   scale={scale}
                   radius={radius}
                   motion={motionOverride}
-                  thumbSize={thumbSizeOverride}
+                  thumbShrink={thumbShrinkOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -411,7 +437,7 @@ export default function SwitchPage() {
                   scale={scale}
                   radius={radius}
                   motion={motionOverride}
-                  thumbSize={thumbSizeOverride}
+                  thumbShrink={thumbShrinkOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -427,7 +453,7 @@ export default function SwitchPage() {
                   scale={scale}
                   radius={radius}
                   motion={motionOverride}
-                  thumbSize={thumbSizeOverride}
+                  thumbShrink={thumbShrinkOverride}
                   intent={intent}
                   emphasis={emphasis}
                   readOnly
@@ -442,7 +468,7 @@ export default function SwitchPage() {
                   scale={scale}
                   radius={radius}
                   motion={motionOverride}
-                  thumbSize={thumbSizeOverride}
+                  thumbShrink={thumbShrinkOverride}
                   intent={intent}
                   emphasis={emphasis}
                   disabled
@@ -457,7 +483,7 @@ export default function SwitchPage() {
                   scale={scale}
                   radius={radius}
                   motion={motionOverride}
-                  thumbSize={thumbSizeOverride}
+                  thumbShrink={thumbShrinkOverride}
                   intent={intent}
                   emphasis={emphasis}
                   disabled

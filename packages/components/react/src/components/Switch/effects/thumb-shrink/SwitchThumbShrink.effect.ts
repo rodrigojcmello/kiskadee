@@ -5,7 +5,7 @@ import type {
   SwitchIntent
 } from '@kiskadee/core';
 import {
-  resolveSwitchThumbSizeClassNames
+  resolveSwitchThumbShrinkClassNames
 } from '../.././Switch.class-names.ts';
 import type {
   SwitchClassesMap,
@@ -13,7 +13,7 @@ import type {
   SwitchLabelPosition
 } from '../.././Switch.types.ts';
 
-export type SwitchThumbSizeEffectOptions = {
+export type SwitchThumbShrinkEffectOptions = {
   baseClassNames: Required<SwitchClassNames>;
   elements: SwitchClassesMap;
   classNames: SwitchClassNames;
@@ -26,15 +26,15 @@ export type SwitchThumbSizeEffectOptions = {
   hasLabel: boolean;
 };
 
-export type SwitchThumbSizeEffectResult = {
+export type SwitchThumbShrinkEffectResult = {
   classNames: Required<SwitchClassNames>;
   thumbVisualClassName: string;
 };
 
-export function resolveSwitchThumbSizeEffect(
-  options: SwitchThumbSizeEffectOptions
-): SwitchThumbSizeEffectResult {
-  const { x5, ...classNames } = resolveSwitchThumbSizeClassNames({
+export function resolveSwitchThumbShrinkEffect(
+  options: SwitchThumbShrinkEffectOptions
+): SwitchThumbShrinkEffectResult {
+  const { x5, ...classNames } = resolveSwitchThumbShrinkClassNames({
     elements: options.elements,
     classNames: options.classNames,
     structuralBranch: 'a',

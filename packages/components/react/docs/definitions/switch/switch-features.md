@@ -66,7 +66,7 @@ headless root generates one and connects the wrapping label to the input.
 | `mode` | Current public mode inside `standard`. Default: `base`. |
 | `labelPosition` | Places the optional label before or after the visual control. Default: `start`. |
 | `motion` | `false` disables the runtime motion path. Any other value keeps runtime motion eligible. |
-| `thumbSize` | `false` disables the thumb-size effect for the instance. Any other value keeps artifact-driven thumb size eligible. |
+| `thumbShrink` | `false` disables the thumb-shrink effect for the instance. Any other value keeps artifact-driven thumb size eligible. |
 | `className` | Merged into the root `e1` slot. |
 | `classNames` | Escape hatch for the schema element slots `e1` through `e5`. |
 
@@ -105,7 +105,7 @@ The current schema option values are:
 
 - component options: `variant`, `radius`, `activationMotion`,
   `controlTextVisibility`;
-- component effects: currently `thumbSize?: true`;
+- component effects: currently `thumbShrink?: true`;
 - variant-local options: currently `standard.options.mode`.
 
 `useSwitchArtifactConfig` loads this component artifact by current design system
@@ -149,7 +149,7 @@ Rules to preserve:
 - The wrapper around `controlText` plus the visual control is internal React DOM,
   not a schema element and not part of the headless API.
 - `classNames.e3` stays attached to the external thumb carrier even when the
-  thumb-size effect renders an internal visual thumb.
+  thumb-shrink effect renders an internal visual thumb.
 
 ## States
 
@@ -243,22 +243,22 @@ Current rules:
 Static does not mean "no visual transition". It means the component does not
 load or run a dedicated runtime animation/gesture engine for thumb movement.
 
-## Thumb-Size Effect
+## Thumb Shrink Effect
 
-`thumbSize` is an artifact-driven effect for presets where the off/rest visual
+`thumbShrink` is an artifact-driven effect for presets where the off/rest visual
 thumb should be smaller than the selected thumb.
 
 Current rules:
 
 - The effect is eligible only when the Switch component artifact says
-  `effects.thumbSize === true`.
-- The effect can be disabled per instance with `thumbSize={false}`.
-- The effect module is lazy-loaded through `useSwitchThumbSizeEffect`.
+  `effects.thumbShrink === true`.
+- The effect can be disabled per instance with `thumbShrink={false}`.
+- The effect module is lazy-loaded through `useSwitchThumbShrinkEffect`.
 - When absent or disabled, no internal visual thumb node is rendered.
 - When active, the external `e3` thumb remains the stable carrier for
   measurement, drag, and escape-hatch class names.
 - The internal `x5` visual thumb receives generated visual classes, radius
-  classes, and thumb-size effect classes.
+  classes, and thumb-shrink effect classes.
 - Off/rest effect dimensions belong in schema. Runtime must not decide per-scale
   effect availability.
 
@@ -343,7 +343,7 @@ generated markup, structural CSS, or regressions.
 | `k-swt-m` | Runtime motion gate. |
 | `k-swt-x2-a` | Internal wrapper grouping control text and visual control. |
 | `k-swt-x3-a` / `k-swt-x4-a` | Internal off/on control-text parts. |
-| `k-swt-x5-a` | Internal thumb-size visual. |
+| `k-swt-x5-a` | Internal thumb-shrink visual. |
 | `k-swt-x6-a` | Internal visual-control wrapper. |
 
 The structural branch registry currently uses `a` for the single public Switch
@@ -381,7 +381,7 @@ contracts remain intact or are explicitly migrated.
 - This file does not define a new test plan. It identifies the highest-risk
   public behaviors that future tests should cover: controlled/uncontrolled
   state, disabled/read-only blocking, motion opt-out, control text visibility,
-  thumb-size artifact gating, activation feedback gating, and radius behavior.
+  thumb-shrink artifact gating, activation feedback gating, and radius behavior.
 - Activation-feedback naming still carries semantic overload: `thickness` is a
   filled state-layer expansion today, not a true border width.
 - Future components may use this inventory format before implementation instead

@@ -1,5 +1,5 @@
 /*
- * Switch thumb-size effect structural branch registry:
+ * Switch thumb-shrink effect structural branch registry:
  * a = static proof of concept
  */
 
@@ -31,7 +31,7 @@
 }
 
 /*
- * Caps pill/square visual radius from the reduced thumb-size height.
+ * Caps pill/square visual radius from the reduced thumb-shrink height.
  * Rounded uses the dedicated x5a modifier and keeps the track-derived radius.
  */
 .k-swt:not(.-s) .k-swt-x5-a:not(.k-swt-x5a-a) {
@@ -44,7 +44,7 @@
 
 /*
  * extra element for e3 modifier 'a' / x5a
- * Uses the track-derived rounded radius for thumb-size visual layers.
+ * Uses the track-derived rounded radius for thumb-shrink visual layers.
  */
 .k-swt-x5a-a {
   border-radius: var(--k-swt-tr);

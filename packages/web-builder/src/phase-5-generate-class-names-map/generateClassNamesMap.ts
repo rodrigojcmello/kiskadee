@@ -237,7 +237,7 @@ export function generateClassNamesMapSplit(
             else if (key.startsWith('borderRadiusRounded')) bucket = 'rr';
             else if (key.startsWith('borderRadiusPill')) bucket = 'rp';
             else if (key.startsWith('borderRadiusSquare')) bucket = 'rs';
-            else if (key.startsWith('thumbSize')) bucket = 'ts';
+            else if (key.startsWith('thumbShrink')) bucket = 'ts';
             // [RIPPLE EFFECT 15] START: Assign ripple style keys to compact ripple buckets.
             else if (key.startsWith('ripple')) bucket = rippleBucketForKey(key);
             // [RIPPLE EFFECT 15] END: Assign ripple style keys to compact ripple buckets.
