@@ -188,6 +188,27 @@ function resolveThumbVisualRadiusClassName(
   );
 }
 
+function resolveThumbCarrierClassName(options: {
+  elements: SwitchClassesMap;
+  classNames: SwitchClassNames;
+  structuralBranch: SwitchStructuralBranch;
+  scale: string;
+  radius: RadiusMode;
+}): string {
+  const elements = options.elements;
+  const branch = options.structuralBranch;
+
+  return (
+    join(
+      `k-swt-e3-${branch}`,
+      resolveScaleClassName(elements.e3, options.scale),
+      resolveThumbRadiusClassName(elements.e3, options.scale, options.radius, branch),
+      'k-trn',
+      options.classNames.e3
+    ) ?? ''
+  );
+}
+
 export function resolveSwitchClassNames(options: {
   elements: SwitchClassesMap;
   classNames: SwitchClassNames;
@@ -222,14 +243,7 @@ export function resolveSwitchClassNames(options: {
         'k-trn',
         options.classNames.e2
       ) ?? '',
-    e3:
-      join(
-        `k-swt-e3-${branch}`,
-        elem(elements.e3, options),
-        resolveThumbRadiusClassName(elements.e3, options.scale, options.radius, branch),
-        'k-trn',
-        options.classNames.e3
-      ) ?? '',
+    e3: resolveThumbCarrierClassName(options),
     e4: options.hasLabel
       ? (join(
           `k-swt-e4-${branch}`,
@@ -244,6 +258,27 @@ export function resolveSwitchClassNames(options: {
         '')
       : (options.classNames.e5 ?? '')
   };
+}
+
+export function resolveSwitchThumbVisualClassName(options: {
+  elements: SwitchClassesMap;
+  structuralBranch: SwitchStructuralBranch;
+  scale: string;
+  intent: SwitchIntent;
+  emphasis: ComponentEmphasis | undefined;
+  radius: RadiusMode;
+}): string {
+  const elements = options.elements;
+  const branch = options.structuralBranch;
+
+  return (
+    join(
+      `k-swt-x5-${branch}`,
+      resolveVisualClassName(elements.e3, options),
+      resolveThumbVisualRadiusClassName(elements.e3, options.scale, options.radius, branch),
+      'k-trn'
+    ) ?? ''
+  );
 }
 
 export function resolveSwitchThumbSizeClassNames(options: {
@@ -261,25 +296,13 @@ export function resolveSwitchThumbSizeClassNames(options: {
 }): Required<SwitchClassNames> & { x5: string } {
   const base = resolveSwitchClassNames(options);
   const elements = options.elements;
-  const branch = options.structuralBranch;
 
   return {
     ...base,
-    e3:
-      join(
-        `k-swt-e3-${branch}`,
-        resolveScaleClassName(elements.e3, options.scale),
-        resolveThumbRadiusClassName(elements.e3, options.scale, options.radius, branch),
-        'k-trn',
-        options.classNames.e3
-      ) ?? '',
     x5:
       join(
-        `k-swt-x5-${branch}`,
-        resolveVisualClassName(elements.e3, options),
-        resolveThumbVisualRadiusClassName(elements.e3, options.scale, options.radius, branch),
-        resolveSwitchThumbSizeEffectClassName(elements.e3, options.scale),
-        'k-trn'
+        resolveSwitchThumbVisualClassName(options),
+        resolveSwitchThumbSizeEffectClassName(elements.e3, options.scale)
       ) ?? ''
   };
 }

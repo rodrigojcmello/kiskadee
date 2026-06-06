@@ -1,4 +1,3 @@
-import './SwitchThumbSize.structural.css';
 import type {
   ComponentEmphasis,
   RadiusMode,

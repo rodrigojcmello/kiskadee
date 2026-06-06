@@ -1,4 +1,5 @@
 import './Switch.structural.css';
+import './effects/thumb-size/SwitchThumbSize.structural.css';
 import { HeadlessSwitch } from '@kiskadee/react-headless';
 import { type ElementType, memo, useMemo } from 'react';
 import {
@@ -10,6 +11,7 @@ import {
   DEFAULT_SWITCH_VARIANT,
   join,
   resolveSwitchClassNames as resolveSwitchStructuralClassNames,
+  resolveSwitchThumbVisualClassName,
   resolveVariantElements
 } from './Switch.class-names.ts';
 import type { SwitchClassNames, SwitchProps } from './Switch.types.ts';
@@ -124,7 +126,14 @@ function SwitchRoot(props: SwitchProps) {
         })
       : {
           classNames: baseClassNames,
-          thumbVisualClassName: undefined
+          thumbVisualClassName: resolveSwitchThumbVisualClassName({
+            elements,
+            structuralBranch: 'a',
+            scale,
+            intent,
+            emphasis,
+            radius: resolvedRadius
+          })
         };
 
     const motionClassNamePatch = motionEffect
