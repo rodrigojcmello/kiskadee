@@ -31,6 +31,18 @@
 }
 
 /*
+ * Caps pill/square visual radius from the reduced thumb-size height.
+ * Rounded uses the dedicated x5a modifier and keeps the track-derived radius.
+ */
+.k-swt:not(.-s) .k-swt-x5-a:not(.k-swt-x5a-a) {
+  border-radius: clamp(
+    0px,
+    var(--k-bdr, 0px),
+    calc(var(--k-swt-thh, calc(var(--k-bdr, 0px) * 2)) / 2)
+  );
+}
+
+/*
  * extra element for e3 modifier 'a' / x5a
  * Uses the track-derived rounded radius for thumb-size visual layers.
  */

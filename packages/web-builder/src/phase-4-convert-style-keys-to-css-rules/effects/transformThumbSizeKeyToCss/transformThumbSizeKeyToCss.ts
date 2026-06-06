@@ -5,10 +5,15 @@ export const ERROR_INVALID_THUMB_SIZE_KEY_FORMAT =
 export const ERROR_INVALID_THUMB_SIZE_PROPERTY =
   'Invalid thumb-size property. Expected thumbSizeBoxWidth or thumbSizeBoxHeight.';
 
-function parseThumbSizeProperty(styleKey: StyleKey): 'width' | 'height' {
+function parseThumbSizeProperty(styleKey: StyleKey): {
+  cssProperty: 'width' | 'height';
+  cssVariable?: '--k-swt-thh';
+} {
   const propertyName = styleKey.split(/\+\+|__/)[0];
-  if (propertyName === 'thumbSizeBoxWidth') return 'width';
-  if (propertyName === 'thumbSizeBoxHeight') return 'height';
+  if (propertyName === 'thumbSizeBoxWidth') return { cssProperty: 'width' };
+  if (propertyName === 'thumbSizeBoxHeight') {
+    return { cssProperty: 'height', cssVariable: '--k-swt-thh' };
+  }
   throw new Error(ERROR_INVALID_THUMB_SIZE_PROPERTY);
 }
 
@@ -36,10 +41,14 @@ function resolveMediaQuery(styleKey: StyleKey): string | undefined {
 }
 
 export function transformThumbSizeKeyToCss(styleKey: StyleKey, className: string): string {
-  const property = parseThumbSizeProperty(styleKey);
+  const { cssProperty, cssVariable } = parseThumbSizeProperty(styleKey);
   const px = parseThumbSizeValue(styleKey);
   const mediaQuery = resolveMediaQuery(styleKey);
-  const rule = `.k-swt:not(.-s) .${className} { ${property}: ${px}px }`;
+  const cssValue = `${px}px`;
+  const declarations = cssVariable
+    ? `${cssVariable}: ${cssValue}; ${cssProperty}: ${cssValue}`
+    : `${cssProperty}: ${cssValue}`;
+  const rule = `.k-swt:not(.-s) .${className} { ${declarations} }`;
 
   return mediaQuery ? `${mediaQuery} { ${rule} }` : rule;
 }
