@@ -20,8 +20,8 @@
   "private": true,
   "scripts": {},
   "devDependencies": {
-    "@types/node": "^24.7.2",
-    "typescript": "^5.9.2"
+    "@types/node": "^25.9.2",
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "zod": "^4.4.3"

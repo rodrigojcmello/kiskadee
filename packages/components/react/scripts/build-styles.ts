@@ -76,6 +76,14 @@ export async function buildStyle(
 
   await mkdir(path.dirname(outputFile), { recursive: true });
   await writeFile(outputFile, processed.css.trim(), 'utf8');
+
+  if (outputFile === path.resolve(distDir, 'style.kiskadee.css')) {
+    await writeFile(
+      `${outputFile}.d.ts`,
+      'declare const stylesheet: string;\nexport default stylesheet;\n',
+      'utf8'
+    );
+  }
 }
 
 export async function buildAllStyles(): Promise<void> {
