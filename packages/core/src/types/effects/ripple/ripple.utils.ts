@@ -49,9 +49,7 @@ export function resolveRippleProfile(
   mode: RippleMode,
   options: ResolveRippleProfileOptions = {}
 ): RippleProfile {
-  const configured =
-    options.profile ??
-    options.config?.profiles?.[resolveRippleProfileKey(mode)];
+  const configured = options.profile ?? options.config?.profiles?.[resolveRippleProfileKey(mode)];
 
   return mergeRippleProfile(DEFAULT_RIPPLE_PROFILES[mode], configured);
 }

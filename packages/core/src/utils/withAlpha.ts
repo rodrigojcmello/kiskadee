@@ -1,4 +1,4 @@
-import type { HSLA, SolidColor } from '../types/colors/colors.types.ts';
+import type { SolidColor } from '../types/colors/colors.types.ts';
 
 /**
  * Applies visibility (opacity) to an HSLA color.
@@ -22,7 +22,10 @@ import type { HSLA, SolidColor } from '../types/colors/colors.types.ts';
  * // Result: 'hsl(var(--k-p-50) / 0.5)'
  * ```
  */
-export function withAlpha(color: SolidColor | undefined, visibility: number): SolidColor | undefined {
+export function withAlpha(
+  color: SolidColor | undefined,
+  visibility: number
+): SolidColor | undefined {
   // Return undefined if the color is undefined
   if (color === undefined) {
     return undefined;
@@ -32,7 +35,7 @@ export function withAlpha(color: SolidColor | undefined, visibility: number): So
     if (color.startsWith('hsl(') && color.endsWith(')')) {
       const clampedVisibility = Math.max(0, Math.min(100, visibility));
       const alpha = clampedVisibility / 100;
-      return color.slice(0, -1) + ` / ${alpha})`;
+      return `${color.slice(0, -1)} / ${alpha})`;
     }
     return color;
   }

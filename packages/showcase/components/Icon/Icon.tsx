@@ -5,13 +5,9 @@ import type { SVGProps } from 'react';
 
 // Define dynamic imports statically to avoid recreating components on every render
 const icons = {
-  ChevronDown: dynamic(() =>
-    import('./icons/IconChevronDown').then((mod) => mod.IconChevronDown)
-  ),
+  ChevronDown: dynamic(() => import('./icons/IconChevronDown').then((mod) => mod.IconChevronDown)),
   Moon: dynamic(() => import('./icons/IconMoon').then((mod) => mod.IconMoon)),
-  MoonStars: dynamic(() =>
-    import('./icons/IconMoonStars').then((mod) => mod.IconMoonStars)
-  ),
+  MoonStars: dynamic(() => import('./icons/IconMoonStars').then((mod) => mod.IconMoonStars)),
   NoSign: dynamic(() => import('./icons/IconNoSign').then((mod) => mod.IconNoSign)),
   SunMax: dynamic(() => import('./icons/IconSunMax').then((mod) => mod.IconSunMax))
 };

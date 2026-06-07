@@ -31,8 +31,12 @@ describe('generateMaterialColorArtifacts', () => {
       expect(files).toContain('red.v1.light.ts');
 
       const layerFile = readFileSync(join(outDir, 'color.layers.ts'), 'utf8');
-      expect(layerFile).toMatch(/primary:\s*{[\s\S]*v1:\s*'primitive\.[^']+\.v1',[\s\S]*v2:\s*'primitive\.[^']+\.v2'[\s\S]*}/);
-      expect(layerFile).toMatch(/neutral:\s*{[\s\S]*v1:\s*'primitive\.[^']+\.v1',[\s\S]*v2:\s*'primitive\.[^']+\.v2'[\s\S]*}/);
+      expect(layerFile).toMatch(
+        /primary:\s*{[\s\S]*v1:\s*'primitive\.[^']+\.v1',[\s\S]*v2:\s*'primitive\.[^']+\.v2'[\s\S]*}/
+      );
+      expect(layerFile).toMatch(
+        /neutral:\s*{[\s\S]*v1:\s*'primitive\.[^']+\.v1',[\s\S]*v2:\s*'primitive\.[^']+\.v2'[\s\S]*}/
+      );
     } finally {
       rmSync(outDir, { recursive: true, force: true });
     }

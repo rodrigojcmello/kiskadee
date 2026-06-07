@@ -1,8 +1,8 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import ShowcaseSidebar from '@/components/ShowcaseSidebar/ShowcaseSidebar';
 import style from './layout.module.scss';
 

@@ -60,7 +60,9 @@ function getOrCreateSet(map: Map<string, Set<string>>, key: string): Set<string>
   return set;
 }
 
-function isNestedVariantModeMap(value: unknown): value is Record<string, Record<string, ElementStyleKeyRecord>> {
+function isNestedVariantModeMap(
+  value: unknown
+): value is Record<string, Record<string, ElementStyleKeyRecord>> {
   if (!isRecord(value)) return false;
   const first = Object.values(value).find(Boolean);
   if (!isRecord(first)) return false;
@@ -493,7 +495,10 @@ export function generateClassNamesMapSplit(
     }
 
     const variantMap = elements as Record<string, unknown>;
-    const coreVariants: Record<string, Record<string, ClassNameByElement> | Record<string, Record<string, ClassNameByElement>>> = {};
+    const coreVariants: Record<
+      string,
+      Record<string, ClassNameByElement> | Record<string, Record<string, ClassNameByElement>>
+    > = {};
     core[componentName] = coreVariants;
     for (const [variantName, variantElements] of Object.entries(variantMap)) {
       if (!variantElements) continue;

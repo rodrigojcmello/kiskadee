@@ -47,6 +47,7 @@ export const textFieldStructuralRegistry = {
 
 export const textFieldStandardOutlineStructural = textFieldStructuralRegistry.standard.outline;
 export const textFieldStandardUnderlineStructural = textFieldStructuralRegistry.standard.underline;
-export const textFieldStandardBorderlessStructural = textFieldStructuralRegistry.standard.borderless;
+export const textFieldStandardBorderlessStructural =
+  textFieldStructuralRegistry.standard.borderless;
 export const textFieldFloatingNotchedStructural = textFieldStructuralRegistry.floating.notched;
 export const textFieldFloatingInsideStructural = textFieldStructuralRegistry.floating.inside;

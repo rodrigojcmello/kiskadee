@@ -8,7 +8,6 @@ import type {
   PrimitiveColorRef,
   PrimitiveRole,
   ResolvedGradient,
-  Role,
   RoleWithPaint,
   SchemaColors,
   SemanticColor,
@@ -294,7 +293,13 @@ export function resolveColor(
 
   const resolvedStops: ResolvedGradient['stops'] = template.stops.map((stop, idx) => {
     const stopRef = parsePrimitiveRole(stop.primitive as PrimitiveRole);
-    const stopColor = resolveSolidFromPrimitiveRef(colors, themeName, stopRef, tones[idx]!);
+    const stopTone = tones[idx];
+    if (typeof stopTone !== 'number') {
+      throw new Error(
+        `Invalid gradient tone at index ${idx}. Expected number (role=${roleOrPrimitive})`
+      );
+    }
+    const stopColor = resolveSolidFromPrimitiveRef(colors, themeName, stopRef, stopTone);
     const finalColor =
       typeof alpha === 'number' ? (withAlpha(stopColor, alpha) as SolidColor) : stopColor;
     return { color: finalColor, position: stop.position };

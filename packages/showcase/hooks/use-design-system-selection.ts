@@ -1,6 +1,6 @@
 import type { ThemeMode } from '@kiskadee/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { coreMaps, paletteIndex, designSystemList } from '@/registry/design-systems.registry';
+import { coreMaps, designSystemList, paletteIndex } from '@/registry/design-systems.registry';
 import {
   type DesignSystemKey,
   getDefaultSegmentAndThemeForDesignSystem
@@ -23,7 +23,7 @@ function readPersistedSelection(): {
     const storedDesignSystem = window.localStorage.getItem(STORAGE_KEYS.designSystem);
     if (!storedDesignSystem) return null;
 
-    if (!Object.prototype.hasOwnProperty.call(coreMaps, storedDesignSystem)) {
+    if (!Object.hasOwn(coreMaps, storedDesignSystem)) {
       return null;
     }
 
@@ -64,7 +64,9 @@ function persistSelection(designSystem: DesignSystemKey, segment: string, theme:
   }
 }
 
-const designSystemKeysFromRegistry = designSystemList.map((entry) => entry.key) as DesignSystemKey[];
+const designSystemKeysFromRegistry = designSystemList.map(
+  (entry) => entry.key
+) as DesignSystemKey[];
 
 if (!designSystemKeysFromRegistry.length) {
   throw new Error('No design systems registered in coreMaps.');

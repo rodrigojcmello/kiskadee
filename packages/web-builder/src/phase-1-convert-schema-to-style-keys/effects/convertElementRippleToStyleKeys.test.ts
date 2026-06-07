@@ -24,7 +24,9 @@ describe('convertElementRippleToStyleKeys', () => {
     expect(surfaceKey.startsWith('ripple__')).toBe(true);
     expect(pressedKey.startsWith('ripplePressed__')).toBe(true);
 
-    const surface = parseStyleKeyValue<{ mode: string; profile: { fillToken: string } }>(surfaceKey);
+    const surface = parseStyleKeyValue<{ mode: string; profile: { fillToken: string } }>(
+      surfaceKey
+    );
     const pressed = parseStyleKeyValue<{ profile: { fillToken: string } }>(pressedKey);
 
     expect(surface.mode).toBe('surface');
@@ -83,7 +85,9 @@ describe('convertElementRippleToStyleKeys', () => {
     const overflowStatic = parseStyleKeyValue<{ profile: { size: number; fillToken: string } }>(
       overflowStaticKey!
     );
-    const pressed = parseStyleKeyValue<{ profile: { size: number; fillToken: string } }>(pressedKey!);
+    const pressed = parseStyleKeyValue<{ profile: { size: number; fillToken: string } }>(
+      pressedKey!
+    );
 
     expect(overflowStatic.profile.size).toBe(321);
     expect(overflowStatic.profile.fillToken).toBe('overflowStatic');

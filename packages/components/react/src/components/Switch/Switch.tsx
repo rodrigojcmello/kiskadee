@@ -3,19 +3,6 @@ import './effects/thumb-shrink/SwitchThumbShrink.structural.scss';
 import { HeadlessSwitch } from '@kiskadee/react-headless';
 import { type ElementType, memo, useMemo } from 'react';
 import {
-  DEFAULT_SWITCH_EMPHASIS,
-  DEFAULT_SWITCH_INTENT,
-  DEFAULT_SWITCH_LABEL_POSITION,
-  DEFAULT_SWITCH_MODE,
-  DEFAULT_SWITCH_SCALE,
-  DEFAULT_SWITCH_VARIANT,
-  join,
-  resolveSwitchClassNames as resolveSwitchStructuralClassNames,
-  resolveSwitchThumbVisualClassName,
-  resolveVariantElements
-} from './Switch.class-names.ts';
-import type { SwitchClassNames, SwitchProps } from './Switch.types.ts';
-import {
   hasSwitchActivationFeedbackEffect,
   useSwitchActivationFeedbackController,
   useSwitchActivationFeedbackEffect
@@ -30,6 +17,19 @@ import {
   useSwitchControlTextFeature
 } from './features/control-text/index.ts';
 import { useSwitchArtifactConfig } from './hooks/useSwitchArtifactConfig.ts';
+import {
+  DEFAULT_SWITCH_EMPHASIS,
+  DEFAULT_SWITCH_INTENT,
+  DEFAULT_SWITCH_LABEL_POSITION,
+  DEFAULT_SWITCH_MODE,
+  DEFAULT_SWITCH_SCALE,
+  DEFAULT_SWITCH_VARIANT,
+  join,
+  resolveSwitchClassNames as resolveSwitchStructuralClassNames,
+  resolveSwitchThumbVisualClassName,
+  resolveVariantElements
+} from './Switch.class-names.ts';
+import type { SwitchClassNames, SwitchProps } from './Switch.types.ts';
 
 const EMPTY_SWITCH_CLASS_NAMES: SwitchClassNames = {};
 
@@ -201,9 +201,7 @@ function SwitchRoot(props: SwitchProps) {
     () =>
       mergeSwitchClassNames(
         structuralClassNames,
-        !motionEffect && motionController.projectedControlState
-          ? { e3: 'k-swt-e3e-a' }
-          : undefined
+        !motionEffect && motionController.projectedControlState ? { e3: 'k-swt-e3e-a' } : undefined
       ),
     [motionController.projectedControlState, motionEffect, structuralClassNames]
   );

@@ -1,8 +1,5 @@
 import './Tabs.line.css';
 import { createTabsComponent } from '../Tabs.runtime.tsx';
-import TabsLineStaticBarEnhancer from './Tabs.line.static.tsx';
-import { tabsLineStructural } from './Tabs.line.structural.ts';
-import { useResolvedTabsLineRootState } from './Tabs.line.root-state.tsx';
 import type {
   TabsBarProps,
   TabsContentProps,
@@ -15,6 +12,9 @@ import type {
   TabsSpringPreset,
   TabsTabProps
 } from '../Tabs.types';
+import { useResolvedTabsLineRootState } from './Tabs.line.root-state.tsx';
+import TabsLineStaticBarEnhancer from './Tabs.line.static.tsx';
+import { tabsLineStructural } from './Tabs.line.structural.ts';
 
 /**
  * What

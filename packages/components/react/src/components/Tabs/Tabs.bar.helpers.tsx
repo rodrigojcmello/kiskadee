@@ -1,9 +1,6 @@
 import { Children, type ReactNode } from 'react';
 import { extractTabValue, joinClassNames } from './Tabs.class-names.ts';
-import {
-  getTabsSeparatorDimmed,
-  getTabsSeparatorHidden
-} from './Tabs.structural';
+import { getTabsSeparatorDimmed, getTabsSeparatorHidden } from './Tabs.structural';
 import type { TabsStructuralDescriptor } from './Tabs.structural.ts';
 
 type SeparatorState = {

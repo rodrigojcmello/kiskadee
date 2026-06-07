@@ -15,14 +15,17 @@ import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headles
 import { Button as HeadlessButton } from '@kiskadee/react-headless';
 import { memo, useMemo } from 'react';
 import type { ButtonProps } from './Button.types.ts';
-import { type RippleEffectBuckets, resolveRippleModeAvailability } from './rippleModeAvailability.ts';
-import { type RippleRuntimeConfig, useRippleStateMachine } from './useRippleStateMachine.ts';
+import {
+  type RippleEffectBuckets,
+  resolveRippleModeAvailability
+} from './rippleModeAvailability.ts';
 import {
   resolveButtonAccessibilityFromCommon,
   useButtonClassNamesFromCommon,
   useButtonCommonProps,
   useTransientPressedState
 } from './useButtonBase';
+import { type RippleRuntimeConfig, useRippleStateMachine } from './useRippleStateMachine.ts';
 
 // [RIPPLE EFFECT 23] START: Runtime helper utilities.
 const DEFAULT_RIPPLE_START_SIZE_PX = 18;
@@ -133,14 +136,12 @@ function Button(inputProps: ButtonWithRippleProps) {
   ]);
 
   const forceRippleFeedback = localRippleEffect?.mode !== undefined;
-  const mouseInputFeedback: RippleInputFeedback =
-    forceRippleFeedback
-      ? 'ripple'
-      : (global?.effects?.ripple?.inputFeedback?.mouse ?? 'ripple');
-  const keyboardInputFeedback: RippleInputFeedback =
-    forceRippleFeedback
-      ? 'ripple'
-      : (global?.effects?.ripple?.inputFeedback?.keyboard ?? mouseInputFeedback);
+  const mouseInputFeedback: RippleInputFeedback = forceRippleFeedback
+    ? 'ripple'
+    : (global?.effects?.ripple?.inputFeedback?.mouse ?? 'ripple');
+  const keyboardInputFeedback: RippleInputFeedback = forceRippleFeedback
+    ? 'ripple'
+    : (global?.effects?.ripple?.inputFeedback?.keyboard ?? mouseInputFeedback);
   const pressedVisual: RipplePressedVisual =
     rippleMode && global?.effects?.ripple?.pressedVisual === 'overlay' ? 'overlay' : 'state';
   const globalRippleOrigin: RippleOrigin = global?.effects?.ripple?.origin ?? 'center';
@@ -173,15 +174,7 @@ function Button(inputProps: ButtonWithRippleProps) {
       pressedBucket: resolveRipplePressedBucketClass(e1?.e),
       emphasisClass: resolveRippleEmphasisClass(emphasis, controlState)
     };
-  }, [
-    rippleMode,
-    emphasis,
-    controlState,
-    e1?.e?.ris,
-    e1?.e?.rio,
-    e1?.e?.rix,
-    e1?.e?.rip
-  ]);
+  }, [rippleMode, emphasis, controlState, e1?.e?.ris, e1?.e?.rio, e1?.e?.rix, e1?.e?.rip]);
   // [RIPPLE EFFECT 26] END: Compose ripple-only classes in ripple component.
 
   const baseClassNames = useButtonClassNamesFromCommon(common, {
@@ -230,7 +223,9 @@ function Button(inputProps: ButtonWithRippleProps) {
     e1: `${baseClassNames.e1}${rippleClasses ? ` ${rippleClasses}` : ''}${
       shouldUsePressedFeedback ? ' k-pressed' : ''
     }${shouldRenderRippleActive ? ' k-ripple-active' : ''}${
-      rippleMachine.isRippleFading && rippleMode && !shouldForceOverlayPressed ? ' k-ripple-fade' : ''
+      rippleMachine.isRippleFading && rippleMode && !shouldForceOverlayPressed
+        ? ' k-ripple-fade'
+        : ''
     }`
   };
 

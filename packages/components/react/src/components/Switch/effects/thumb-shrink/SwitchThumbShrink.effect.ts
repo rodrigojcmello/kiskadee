@@ -4,9 +4,7 @@ import type {
   SwitchActivationMotion,
   SwitchIntent
 } from '@kiskadee/core';
-import {
-  resolveSwitchThumbShrinkClassNames
-} from '../.././Switch.class-names.ts';
+import { resolveSwitchThumbShrinkClassNames } from '../.././Switch.class-names.ts';
 import type {
   SwitchClassesMap,
   SwitchClassNames,

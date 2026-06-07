@@ -1,7 +1,4 @@
-import type {
-  ActivationFeedbackEffectSchema,
-  StyleKeysByInteractionState
-} from '@kiskadee/core';
+import type { ActivationFeedbackEffectSchema, StyleKeysByInteractionState } from '@kiskadee/core';
 import { resolveActivationFeedbackConfig } from '@kiskadee/core';
 import { buildStyleKey } from '../../utils/index.ts';
 

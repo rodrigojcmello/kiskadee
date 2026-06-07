@@ -36,10 +36,13 @@ function createContextValue(
 
 function renderSwitch(node: ReactElement, controlTextVisibility: ControlTextVisibility = 'none') {
   return render(
-    h(KiskadeeContext.Provider, {
-      value: createContextValue(controlTextVisibility),
-      children: node
-    })
+    h(
+      KiskadeeContext.Provider,
+      {
+        value: createContextValue(controlTextVisibility)
+      },
+      node
+    )
   );
 }
 

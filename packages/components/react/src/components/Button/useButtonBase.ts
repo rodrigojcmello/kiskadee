@@ -362,8 +362,8 @@ export {
   DEFAULT_PRESSED_DURATION_MS,
   resolveButtonAccessibilityFromCommon,
   resolveButtonAccessibilityState,
-  useButtonClassNamesFromCommon,
   useButtonClassNames,
+  useButtonClassNamesFromCommon,
   useButtonCommonProps,
   useTransientPressedState
 };

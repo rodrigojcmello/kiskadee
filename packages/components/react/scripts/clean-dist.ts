@@ -6,7 +6,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const packageRoot = path.resolve(__dirname, '..');
 const distDir = path.resolve(packageRoot, 'dist');
-const tsBuildInfoPath = path.resolve(packageRoot, 'node_modules', '.cache', 'tsc', 'build.tsbuildinfo');
+const tsBuildInfoPath = path.resolve(
+  packageRoot,
+  'node_modules',
+  '.cache',
+  'tsc',
+  'build.tsbuildinfo'
+);
 
 if (path.basename(distDir) !== 'dist' || path.dirname(distDir) !== packageRoot) {
   throw new Error(`Refusing to clean unexpected directory: ${distDir}`);

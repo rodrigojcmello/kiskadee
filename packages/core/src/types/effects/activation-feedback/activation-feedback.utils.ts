@@ -15,10 +15,8 @@ export function resolveActivationFeedbackConfig(
       typeof config?.thickness === 'number' && config.thickness >= 0
         ? config.thickness
         : DEFAULT_ACTIVATION_FEEDBACK.thickness,
-    holdDurationToken:
-      config?.holdDurationToken ?? DEFAULT_ACTIVATION_FEEDBACK.holdDurationToken,
-    fadeDurationToken:
-      config?.fadeDurationToken ?? DEFAULT_ACTIVATION_FEEDBACK.fadeDurationToken,
+    holdDurationToken: config?.holdDurationToken ?? DEFAULT_ACTIVATION_FEEDBACK.holdDurationToken,
+    fadeDurationToken: config?.fadeDurationToken ?? DEFAULT_ACTIVATION_FEEDBACK.fadeDurationToken,
     curveToken: config?.curveToken ?? DEFAULT_ACTIVATION_FEEDBACK.curveToken
   };
 }

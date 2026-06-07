@@ -16,7 +16,9 @@ export function loadSwitchRuntimeMotionEffect(): Promise<SwitchRuntimeMotionEffe
   return switchRuntimeMotionEffectPromise;
 }
 
-export function useSwitchRuntimeMotionEffect(enabled = true): SwitchRuntimeMotionEffectModule | null {
+export function useSwitchRuntimeMotionEffect(
+  enabled = true
+): SwitchRuntimeMotionEffectModule | null {
   const [module, setModule] = useState<SwitchRuntimeMotionEffectModule | null>(
     switchRuntimeMotionEffectModule
   );

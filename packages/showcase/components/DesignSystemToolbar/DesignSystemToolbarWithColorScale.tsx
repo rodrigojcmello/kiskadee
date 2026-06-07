@@ -9,10 +9,7 @@ export default function DesignSystemToolbarWithColorScale() {
 
   return (
     <>
-      <DesignSystemToolbar
-        showColorScale={showColorScale}
-        onToggleColorScale={setShowColorScale}
-      />
+      <DesignSystemToolbar showColorScale={showColorScale} onToggleColorScale={setShowColorScale} />
       {showColorScale ? <ColorScaleViewer /> : null}
     </>
   );

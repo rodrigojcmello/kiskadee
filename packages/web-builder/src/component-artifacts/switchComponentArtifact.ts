@@ -80,7 +80,9 @@ function buildSwitchEffectsPayload(schema: Schema): SwitchComponentEffectsPayloa
 
   const variants = switchSchema.variants;
   if (!isRecord(variants)) return {};
-  return Object.values(variants).some(switchBranchHasThumbShrinkEffect) ? { thumbShrink: true } : {};
+  return Object.values(variants).some(switchBranchHasThumbShrinkEffect)
+    ? { thumbShrink: true }
+    : {};
 }
 
 function buildSwitchVariantsPayload(schema: Schema): SwitchComponentVariantsPayload {

@@ -1,8 +1,8 @@
 import type { ComponentStyleKeyMap } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
-import { generateCssSplit } from './generateCssSplit.ts';
 import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
+import { generateCssSplit } from './generateCssSplit.ts';
 
 describe('generateCssSplit', () => {
   it('returns empty bundles for empty input', async () => {
@@ -25,7 +25,7 @@ describe('generateCssSplit', () => {
     } as unknown as ComponentStyleKeyMap;
     const shortenMap: ShortenCssClassNames = {
       borderStyle__none: 'bs1',
-      'textWeight__bold': 'tw1'
+      textWeight__bold: 'tw1'
     };
     const result = await generateCssSplit(input, shortenMap);
 
@@ -278,7 +278,7 @@ describe('generateCssSplit', () => {
     } as unknown as ComponentStyleKeyMap;
     const shortenMap: ShortenCssClassNames = {
       borderStyle__none: 'bs1',
-      'textWeight__bold': 'tw1'
+      textWeight__bold: 'tw1'
     };
     const result = await generateCssSplit(input, shortenMap);
 
@@ -303,7 +303,7 @@ describe('generateCssSplit', () => {
     } as unknown as ComponentStyleKeyMap;
     const shortenMap: ShortenCssClassNames = {
       borderStyle__none: 'bs1',
-      'textWeight__bold': 'tw1'
+      textWeight__bold: 'tw1'
     };
     const result = await generateCssSplit(input, shortenMap);
 

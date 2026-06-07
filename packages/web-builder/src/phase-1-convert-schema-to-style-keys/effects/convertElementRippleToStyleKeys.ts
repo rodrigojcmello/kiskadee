@@ -1,12 +1,5 @@
-import type {
-  RippleEffectSchema,
-  RippleMode,
-  StyleKeysByInteractionState
-} from '@kiskadee/core';
-import {
-  resolvePressedRippleProfile,
-  resolveRippleProfile
-} from '@kiskadee/core';
+import type { RippleEffectSchema, RippleMode, StyleKeysByInteractionState } from '@kiskadee/core';
+import { resolvePressedRippleProfile, resolveRippleProfile } from '@kiskadee/core';
 import { buildStyleKey } from '../../utils/index.ts';
 
 // [RIPPLE EFFECT 9] START: Convert ripple config into style-key buckets.
@@ -23,7 +16,9 @@ function resolveAvailableModes(config?: RippleEffectSchema): RippleMode[] {
   return modes;
 }
 
-export function convertElementRippleToStyleKeys({ config }: ConvertRippleOptions): StyleKeysByInteractionState {
+export function convertElementRippleToStyleKeys({
+  config
+}: ConvertRippleOptions): StyleKeysByInteractionState {
   const defaultMode: RippleMode = config?.mode ?? 'surface';
   const declaredModes = resolveAvailableModes(config);
   const modes = declaredModes.length ? [...declaredModes] : [defaultMode];

@@ -16,10 +16,7 @@ const mergeElementMaps = (
   pComp: Record<string, Record<string, unknown>> | undefined
 ): Record<string, unknown> => {
   const out: Record<string, unknown> = {};
-  const elKeys = new Set<string>([
-    ...Object.keys(cComp || {}),
-    ...Object.keys(pComp || {})
-  ]);
+  const elKeys = new Set<string>([...Object.keys(cComp || {}), ...Object.keys(pComp || {})]);
   for (const el of elKeys) {
     const cEl = (cComp?.[el] as Record<string, unknown> | undefined) ?? {};
     const pEl = (pComp?.[el] as Record<string, unknown> | undefined) ?? {};
@@ -51,10 +48,7 @@ const mergeClassMapNode = (coreNode: unknown, paletteNode: unknown): Record<stri
 
   const cNode = isRecord(coreNode) ? coreNode : {};
   const pNode = isRecord(paletteNode) ? paletteNode : {};
-  const keys = new Set<string>([
-    ...Object.keys(cNode),
-    ...Object.keys(pNode)
-  ]);
+  const keys = new Set<string>([...Object.keys(cNode), ...Object.keys(pNode)]);
   const out: Record<string, unknown> = {};
 
   for (const key of keys) {

@@ -104,10 +104,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
 ) {
   const { e1, e2, e3 } = classNames;
 
-  const contextValue = useMemo<ButtonContextValue>(
-    () => ({ classNames: { e2, e3 } }),
-    [e2, e3]
-  );
+  const contextValue = useMemo<ButtonContextValue>(() => ({ classNames: { e2, e3 } }), [e2, e3]);
 
   return (
     <ButtonContext.Provider value={contextValue}>

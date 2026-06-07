@@ -107,8 +107,7 @@ export function resolveSwitchControlTextFeature(
   return {
     classNamePatch: {
       e5:
-        join('k-swt-e5-a', elem(options.elements.e5, options), 'k-trn', options.classNames.e5) ??
-        ''
+        join('k-swt-e5-a', elem(options.elements.e5, options), 'k-trn', options.classNames.e5) ?? ''
     }
   };
 }

@@ -248,8 +248,8 @@ describe('generateColorScaleArtifact', () => {
     expectHsla(c90Hue);
     const h60 = c60Hue[0];
     const h70 = c70Hue[0];
-    const h80 = c80Hue[0];
-    const h90 = c90Hue[0];
+    const _h80 = c80Hue[0];
+    const _h90 = c90Hue[0];
 
     expect(h60).toBe(h60Base);
     // At least the first darker emphasis must differ from the base hue to prove

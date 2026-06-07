@@ -3,9 +3,9 @@ import './globals.scss';
 import '@kiskadee/react-components/style';
 import AppHead from '@/components/AppHead/AppHead';
 import DesignSystemToolbarWithColorScale from '@/components/DesignSystemToolbar/DesignSystemToolbarWithColorScale';
-import ShowcaseShell from './ShowcaseShell';
 import style from './layout.module.scss';
 import { Providers } from './providers';
+import ShowcaseShell from './ShowcaseShell';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (

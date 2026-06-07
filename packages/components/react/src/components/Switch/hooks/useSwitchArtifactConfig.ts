@@ -13,15 +13,15 @@ import {
 import { useKiskadee } from '../../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../../shared/contexts/useComponentClassMap.ts';
 import {
+  type SwitchThumbShrinkEffectModule,
+  useSwitchThumbShrinkEffect
+} from '../effects/thumb-shrink/index.ts';
+import {
   DEFAULT_SWITCH_ACTIVATION_MOTION,
   DEFAULT_SWITCH_CONTROL_TEXT_VISIBILITY,
   DEFAULT_SWITCH_RADIUS
 } from '.././Switch.class-names.ts';
 import type { SwitchVariantClassesMap } from '.././Switch.types.ts';
-import {
-  type SwitchThumbShrinkEffectModule,
-  useSwitchThumbShrinkEffect
-} from '../effects/thumb-shrink/index.ts';
 
 export type SwitchArtifactConfig = {
   switchClassesMap: SwitchVariantClassesMap | undefined;

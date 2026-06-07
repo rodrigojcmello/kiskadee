@@ -1,5 +1,4 @@
 export function deepUpdate<T>(
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   obj: any,
   path: Array<string | number>,
   updater: (prev: T | undefined) => T

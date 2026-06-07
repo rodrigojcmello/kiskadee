@@ -3272,10 +3272,7 @@ function liftLightZoneProjectionArc(
   const lightnessMin = Math.min(preservedAnchor.lightness, lightZoneExit.lightness);
   const lightnessMax = Math.max(preservedAnchor.lightness, lightZoneExit.lightness);
 
-  if (
-    lightZoneShoulder.lightness <= lightnessMin ||
-    lightZoneShoulder.lightness >= lightnessMax
-  ) {
+  if (lightZoneShoulder.lightness <= lightnessMin || lightZoneShoulder.lightness >= lightnessMax) {
     return points;
   }
 

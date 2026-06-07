@@ -2,14 +2,14 @@
 
 import type {
   SwatchRadioGroupProps as HeadlessSwatchRadioGroupProps,
-  SwatchRadioItem,
-  SwatchRadioGroupRenderSwatchArgs
+  SwatchRadioGroupRenderSwatchArgs,
+  SwatchRadioItem
 } from '@kiskadee/react-headless';
 import { SwatchRadioGroup as HeadlessSwatchRadioGroup } from '@kiskadee/react-headless';
 import type { CSSProperties, ReactNode } from 'react';
 import styles from './SwatchRadioGroup.module.scss';
 
-export type { SwatchRadioItem, SwatchRadioGroupRenderSwatchArgs };
+export type { SwatchRadioGroupRenderSwatchArgs, SwatchRadioItem };
 
 export type SwatchRadioGroupProps = {
   groupLabel?: ReactNode;
@@ -44,7 +44,9 @@ export function SwatchRadioGroup({
         renderSwatch={(item, args) => (
           <span
             className={args.selected ? `${styles.dot} ${styles.selected}` : styles.dot}
-            style={item.swatch?.color ? ({ backgroundColor: item.swatch.color } as const) : undefined}
+            style={
+              item.swatch?.color ? ({ backgroundColor: item.swatch.color } as const) : undefined
+            }
             aria-hidden="true"
           >
             {renderSwatch ? renderSwatch(item, args) : null}

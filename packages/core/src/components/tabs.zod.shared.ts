@@ -44,7 +44,9 @@ export const roundedOnlyBorderRadiusScaleSchema = z
 // TODO: Validate Tabs element.effects with type-specific restrictions before merging this feature.
 export const elementEffectsSchema = z.custom<ElementEffects>();
 
-export function createScalesSchema<const TKeys extends readonly StandardScaleProperty[]>(keys: TKeys) {
+export function createScalesSchema<const TKeys extends readonly StandardScaleProperty[]>(
+  keys: TKeys
+) {
   const shape = Object.fromEntries(keys.map((key) => [key, scaleValueSchema.optional()])) as Record<
     TKeys[number],
     z.ZodOptional<typeof scaleValueSchema>

@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
-import { shortenCssClassNames } from './shortenCssClassNames.ts';
+import { describe, expect, it } from 'vitest';
 import type { StyleKeyUsageMap } from '../phase-2-map-style-key-usage/mapStyleKeyUsage.ts';
 import { getToken } from '../utils/index.ts';
+import { shortenCssClassNames } from './shortenCssClassNames.ts';
 
 describe('shortenCssClassNames', () => {
   it('should return an empty object when usage map is empty', () => {
@@ -21,8 +21,7 @@ describe('shortenCssClassNames', () => {
     const usage: StyleKeyUsageMap = {};
     // simulate a sorted usage map by insertion order
     for (const k of keys) {
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      usage[k as any] = 1;
+      usage[k] = 1;
     }
 
     const result = shortenCssClassNames(usage);
@@ -39,8 +38,7 @@ describe('shortenCssClassNames', () => {
     const usage: StyleKeyUsageMap = {};
     // create 28 dummy keys k0...k27
     for (let i = 0; i < count; i++) {
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      usage[`k${i}` as any] = 1;
+      usage[`k${i}`] = 1;
     }
 
     const result = shortenCssClassNames(usage);

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { deepUpdate } from './deepUpdate.ts';
 
 describe('deepUpdate', () => {
@@ -9,14 +9,12 @@ describe('deepUpdate', () => {
   });
 
   it('creates nested objects if they do not exist', () => {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const obj: any = {};
     deepUpdate<string>(obj, ['foo', 'bar'], () => 'baz');
     expect(obj).toEqual({ foo: { bar: 'baz' } });
   });
 
   it('overwrites non-object with object along the path', () => {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const obj: any = { foo: 1 };
     deepUpdate<string>(obj, ['foo', 'bar'], () => 'x');
     expect(obj.foo).toEqual({ bar: 'x' });
@@ -35,14 +33,12 @@ describe('deepUpdate', () => {
   });
 
   it('works with mixed object and array paths', () => {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const obj: any = { a: [] };
     deepUpdate<string>(obj, ['a', 0, 'b'], () => 'x');
     expect(obj.a[0].b).toBe('x');
   });
 
   it('handles empty path by assigning to undefined key', () => {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const obj: any = {};
     deepUpdate<number>(obj, [], () => 42);
     expect(obj.undefined).toBe(42);

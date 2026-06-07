@@ -1,9 +1,5 @@
 import './Tabs.segmented.css';
 import { createTabsComponent } from '../Tabs.runtime.tsx';
-import TabsSegmentedBarBase from './Tabs.segmented.parts.tsx';
-import TabsSegmentedStaticBarEnhancer from './Tabs.segmented.static.tsx';
-import { tabsSegmentedStructural } from './Tabs.segmented.structural.ts';
-import { useResolvedTabsSegmentedRootState } from './Tabs.segmented.root-state.tsx';
 import type {
   TabsBarProps,
   TabsContentProps,
@@ -16,6 +12,10 @@ import type {
   TabsSpringPreset,
   TabsTabProps
 } from '../Tabs.types';
+import TabsSegmentedBarBase from './Tabs.segmented.parts.tsx';
+import { useResolvedTabsSegmentedRootState } from './Tabs.segmented.root-state.tsx';
+import TabsSegmentedStaticBarEnhancer from './Tabs.segmented.static.tsx';
+import { tabsSegmentedStructural } from './Tabs.segmented.structural.ts';
 
 /**
  * What

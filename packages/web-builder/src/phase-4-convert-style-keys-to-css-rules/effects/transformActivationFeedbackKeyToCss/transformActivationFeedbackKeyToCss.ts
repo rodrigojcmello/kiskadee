@@ -34,10 +34,7 @@ function toCssCurve(token: ActivationFeedbackMotionCurveToken): string {
   return CURVE_TOKEN_TO_CSS[token] ?? 'ease-out';
 }
 
-export function transformActivationFeedbackKeyToCss(
-  styleKey: string,
-  className: string
-): string {
+export function transformActivationFeedbackKeyToCss(styleKey: string, className: string): string {
   const resolved = resolveActivationFeedbackConfig(parseActivationFeedbackValue(styleKey));
   const fadeDuration = resolveActivationFeedbackDurationMs(resolved.fadeDurationToken, 360);
 

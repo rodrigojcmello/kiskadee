@@ -9,8 +9,7 @@ function collapseRawUsageIntoMirroredUsage(usage: StyleKeyUsageMap): StyleKeyUsa
 
   for (const [identity, count] of Object.entries(usage)) {
     const mirroredIdentity = `${identity}@@m`;
-    const shouldCollapseIntoMirrored =
-      !identity.includes('@@') && usage[mirroredIdentity] != null;
+    const shouldCollapseIntoMirrored = !identity.includes('@@') && usage[mirroredIdentity] != null;
     const targetIdentity = shouldCollapseIntoMirrored ? mirroredIdentity : identity;
 
     collapsedUsage[targetIdentity] = (collapsedUsage[targetIdentity] ?? 0) + count;

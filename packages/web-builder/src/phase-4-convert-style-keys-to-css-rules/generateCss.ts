@@ -9,6 +9,7 @@ import {
   transformTextLineTypeKeyToCss,
   transformTextWeightKeyToCss
 } from './decorations/index.ts';
+import { transformActivationFeedbackKeyToCss } from './effects/transformActivationFeedbackKeyToCss/transformActivationFeedbackKeyToCss.ts';
 import { transformBorderRadiusKeyToCss } from './effects/transformBorderRadiusKeyToCss/transformBorderRadiusKeyToCss.ts';
 import { transformRippleKeyToCss } from './effects/transformRippleKeyToCss/transformRippleKeyToCss.ts';
 import { transformThumbShrinkKeyToCss } from './effects/transformThumbShrinkKeyToCss/transformThumbShrinkKeyToCss.ts';
@@ -16,7 +17,6 @@ import {
   type TransformColorKeyToCssOptions,
   transformColorKeyToCss
 } from './palettes/transformColorKeyToCss.ts';
-import { transformActivationFeedbackKeyToCss } from './effects/transformActivationFeedbackKeyToCss/transformActivationFeedbackKeyToCss.ts';
 import {
   type TransformScaleKeyToCssOptions,
   transformScaleKeyToCss

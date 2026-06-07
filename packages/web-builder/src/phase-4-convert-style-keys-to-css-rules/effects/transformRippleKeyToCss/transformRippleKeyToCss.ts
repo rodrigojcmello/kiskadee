@@ -1,10 +1,10 @@
 import {
+  type RippleMode,
   type RippleMotionCurveToken,
   type RippleMotionDurationToken,
-  type RippleMode,
   type RippleProfile,
-  resolveRippleDurationMs,
   resolvePressedRippleProfile,
+  resolveRippleDurationMs,
   resolveRippleProfile,
   stateActivator
 } from '@kiskadee/core';
@@ -71,11 +71,7 @@ const BORDER_OPACITY_TOKEN_TO_VAR = {
   overflowStaticBorder: '--k-ripple-overflow-static-border-opacity'
 } as const;
 
-function parseRippleValue(
-  rawValue: string,
-  propertyName: 'ripple',
-  styleKey: string
-): RippleValue {
+function parseRippleValue(rawValue: string, propertyName: 'ripple', styleKey: string): RippleValue {
   if (!rawValue.startsWith('{')) {
     throw new Error(UNSUPPORTED_VALUE(propertyName, rawValue, styleKey));
   }
@@ -203,7 +199,8 @@ export function transformRippleKeyToCss(styleKey: string, className: string): st
   const easing = toCssCurve(resolvedProfile.curveToken, 'ease-out');
   const fadeDuration = toCssDuration(resolvedProfile.fade?.durationToken, 100);
   const fadeEase = toCssCurve(resolvedProfile.fade?.curveToken, 'ease-out');
-  const borderWidth = resolvedProfile.border?.width !== undefined ? `${resolvedProfile.border.width}px` : '0';
+  const borderWidth =
+    resolvedProfile.border?.width !== undefined ? `${resolvedProfile.border.width}px` : '0';
   const borderColorVar = resolvedProfile.border?.colorToken
     ? BORDER_COLOR_TOKEN_TO_VAR[resolvedProfile.border.colorToken]
     : undefined;

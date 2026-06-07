@@ -26,7 +26,6 @@ export default function ColorScaleViewer() {
 
   // Always reset selection when switching design systems.
   // Not every design system supports every primitive color; "primary" is the safest default.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: ...
   useEffect(() => {
     setSelection('semantic:primary');
   }, [designSystemKey]);

@@ -11,27 +11,7 @@ export function generatePrimaryScale(h: number, s: number): Record<string, strin
   const vars: Record<string, string> = {};
 
   // Soft tones: 0–15 (step 1), then 20, 25, 30
-  const softTones = [
-    0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    20,
-    25,
-    30
-  ];
+  const softTones = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 25, 30];
   // Solid tones: 35–100 (step 5)
   const solidTones = [35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
 

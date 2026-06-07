@@ -1,12 +1,6 @@
 import { useMemo } from 'react';
-import {
-  resolveIndicatorShape,
-  resolveIndicatorTabShape
-} from '../Tabs.class-names';
-import {
-  type ResolvedTabsRootState,
-  useTabsRuntimeRootState
-} from '../Tabs.runtime-state';
+import { resolveIndicatorShape, resolveIndicatorTabShape } from '../Tabs.class-names';
+import { type ResolvedTabsRootState, useTabsRuntimeRootState } from '../Tabs.runtime-state';
 import type { TabsBoxRootProps, TabsResolvedIndicator } from '../Tabs.types.ts';
 
 /**
@@ -16,7 +10,9 @@ import type { TabsBoxRootProps, TabsResolvedIndicator } from '../Tabs.types.ts';
  *     Box root-state assembly should work from one normalized motion value before building the
  *     resolved indicator config.
  */
-function resolveIndicatorMotion(indicator: TabsBoxRootProps['indicator']): TabsResolvedIndicator['motion'] {
+function resolveIndicatorMotion(
+  indicator: TabsBoxRootProps['indicator']
+): TabsResolvedIndicator['motion'] {
   return indicator?.motion ?? 'none';
 }
 
@@ -46,10 +42,7 @@ export function useResolvedTabsBoxRootState({
     ),
     width: 'tab'
   };
-  const resolvedTabShape = resolveIndicatorTabShape(
-    resolvedIndicator,
-    baseState.resolvedTabShape
-  );
+  const resolvedTabShape = resolveIndicatorTabShape(resolvedIndicator, baseState.resolvedTabShape);
 
   return useMemo(
     () => ({

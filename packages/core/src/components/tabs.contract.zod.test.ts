@@ -18,7 +18,9 @@ describe('validateTabsComponentContract', () => {
       }
     });
 
-    const issue = issues.find((value) => value.includes('components.tabs') && value.includes('elements'));
+    const issue = issues.find(
+      (value) => value.includes('components.tabs') && value.includes('elements')
+    );
     expect(issue).toBeDefined();
     expect(issue).toContain('elements');
   });

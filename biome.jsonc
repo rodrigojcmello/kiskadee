@@ -11,6 +11,17 @@
     "indentStyle": "space",
     "lineWidth": 100
   },
+  "files": {
+    "includes": [
+      "**",
+      "!**/.next",
+      "!**/.turbo",
+      "!**/coverage",
+      "!**/dist",
+      "!**/node_modules",
+      "!**/registry/generated"
+    ]
+  },
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
@@ -24,8 +35,18 @@
   },
   "linter": {
     "rules": {
+      "complexity": {
+        "noArguments": "off"
+      },
       "correctness": {
         "useExhaustiveDependencies": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noTemplateCurlyInString": "off"
       }
     }
   }

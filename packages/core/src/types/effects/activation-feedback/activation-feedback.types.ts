@@ -8,9 +8,7 @@ export type ActivationFeedbackMotionDurationToken =
   | 'interaction.fade.short'
   | 'interaction.fade.long';
 
-export type ActivationFeedbackMotionCurveToken =
-  | 'motion.standard.out'
-  | 'motion.emphasized.out';
+export type ActivationFeedbackMotionCurveToken = 'motion.standard.out' | 'motion.emphasized.out';
 
 export type ActivationFeedbackEffectSchema = {
   thickness?: number;

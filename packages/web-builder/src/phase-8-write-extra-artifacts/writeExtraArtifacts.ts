@@ -84,7 +84,7 @@ function getThemesForSegment(schema: ExtractableSchema, segment: SegmentKey): Th
       >
     | undefined;
 
-  if (!palettes || !palettes[segment]) {
+  if (!palettes?.[segment]) {
     return [];
   }
 
@@ -279,7 +279,7 @@ export async function writeExtraArtifacts(params: {
     // console.log(`[web-builder] Global tokens CSS written to: ${globalTokensFilePath}`);
   }
 
-  if (!schema.themeTokens || !schema.themeTokens.palettes) {
+  if (!schema.themeTokens?.palettes) {
     return;
   }
 

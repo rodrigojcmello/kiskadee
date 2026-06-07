@@ -19,10 +19,7 @@ export type ColorsJson = {
       }
     >
   >;
-  globalSemantics?: Record<
-    ThemeKey,
-    Record<string, string | { v1: string; v2?: string }>
-  >;
+  globalSemantics?: Record<ThemeKey, Record<string, string | { v1: string; v2?: string }>>;
 };
 
 export type SelectionValue = `semantic:${string}` | `primitive:${string}.${string}`;
@@ -59,7 +56,9 @@ function loadColorsJsonCached(designSystemKey: string): Promise<ColorsJson> {
   const loader = getColorsLoader(designSystemKey);
   if (!loader) {
     // Keep the promise shape stable.
-    const p = Promise.reject(new Error(`No colors registry found for designSystem="${designSystemKey}"`));
+    const p = Promise.reject(
+      new Error(`No colors registry found for designSystem="${designSystemKey}"`)
+    );
     colorsPromiseCache.set(designSystemKey, p);
     return p;
   }
@@ -69,7 +68,10 @@ function loadColorsJsonCached(designSystemKey: string): Promise<ColorsJson> {
   return p;
 }
 
-function loadScaleJsonCached(designSystemKey: string, scaleFileName: string): Promise<ColorScaleJson> {
+function loadScaleJsonCached(
+  designSystemKey: string,
+  scaleFileName: string
+): Promise<ColorScaleJson> {
   const key = `${designSystemKey}|${scaleFileName}`;
   const cached = scalePromiseCache.get(key);
   if (cached) return cached;

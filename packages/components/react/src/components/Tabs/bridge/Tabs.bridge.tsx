@@ -1,13 +1,5 @@
 import './Tabs.bridge.css';
 import { createTabsComponent } from '../Tabs.runtime.tsx';
-import {
-  TabsBridgeBarBase,
-  TabsBridgeContentBase,
-  TabsBridgeTabBase
-} from './Tabs.bridge.parts';
-import { tabsBridgeStructural } from './Tabs.bridge.structural.ts';
-import TabsBridgeStaticBarEnhancer from './Tabs.bridge.static.tsx';
-import { useResolvedTabsBridgeRootState } from './Tabs.bridge.root-state.tsx';
 import type {
   TabsBarProps,
   TabsBridgeIndicatorConfig,
@@ -20,6 +12,10 @@ import type {
   TabsSpringPreset,
   TabsTabProps
 } from '../Tabs.types';
+import { TabsBridgeBarBase, TabsBridgeContentBase, TabsBridgeTabBase } from './Tabs.bridge.parts';
+import { useResolvedTabsBridgeRootState } from './Tabs.bridge.root-state.tsx';
+import TabsBridgeStaticBarEnhancer from './Tabs.bridge.static.tsx';
+import { tabsBridgeStructural } from './Tabs.bridge.structural.ts';
 
 /**
  * What

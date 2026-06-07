@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
-import {
-  type ResolvedTabsRootState,
-  useTabsRuntimeRootState
-} from '../Tabs.runtime-state';
-import type { TabsBridgeRootProps, TabsResolvedIndicator, TabsVisualContextValue } from '../Tabs.types.ts';
+import { type ResolvedTabsRootState, useTabsRuntimeRootState } from '../Tabs.runtime-state';
+import type {
+  TabsBridgeRootProps,
+  TabsResolvedIndicator,
+  TabsVisualContextValue
+} from '../Tabs.types.ts';
 
 function resolveLowerCurve(
   lowerCurve: TabsBridgeRootProps['lowerCurve'],
@@ -36,10 +37,7 @@ export function useResolvedTabsBridgeRootState({
     width: 'tab'
   };
   const resolvedTabShape = 'rounded' as const;
-  const resolvedLowerCurve = resolveLowerCurve(
-    lowerCurve,
-    baseState.globalTabsOptions?.lowerCurve
-  );
+  const resolvedLowerCurve = resolveLowerCurve(lowerCurve, baseState.globalTabsOptions?.lowerCurve);
 
   return useMemo(
     () => ({

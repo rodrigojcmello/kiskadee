@@ -45,9 +45,7 @@ export function TabsBridgeBarBase({ className, children, ...props }: TabsBarProp
       <HeadlessTabs.Bar
         ref={barRef}
         {...props}
-        className={joinClassNames(
-          getTabsSlot(structural, 'x2')
-        )}
+        className={joinClassNames(getTabsSlot(structural, 'x2'))}
       >
         {orderedChildren}
       </HeadlessTabs.Bar>
@@ -71,8 +69,17 @@ export function TabsBridgeTabBase({
   children,
   ...restProps
 }: TabsTabProps & TabsBridgeVisualOrderProps) {
-  const { selected, scale, intent, emphasis, classNames, elements, structural, tabWidth, tabShape } =
-    useTabsVisualContext();
+  const {
+    selected,
+    scale,
+    intent,
+    emphasis,
+    classNames,
+    elements,
+    structural,
+    tabWidth,
+    tabShape
+  } = useTabsVisualContext();
   const isSelected = selected === value;
   const itemClassName = resolveBridgeItemClassName({
     structural,
@@ -124,10 +131,7 @@ export function TabsBridgeContentBase({ className, children, ...props }: TabsCon
   return (
     <HeadlessTabs.Content
       {...props}
-      className={joinClassNames(
-        getTabsSlot(structural, 'x4'),
-        className
-      )}
+      className={joinClassNames(getTabsSlot(structural, 'x4'), className)}
     >
       {children}
     </HeadlessTabs.Content>

@@ -1,5 +1,5 @@
-/** biome-ignore-all lint/a11y/noSvgWithoutTitle: <explanation> */
-/** biome-ignore-all lint/correctness/useUniqueElementIds: <explanation> */
+/** biome-ignore-all lint/a11y/noSvgWithoutTitle: decorative icon receives its accessible name from the control. */
+/** biome-ignore-all lint/correctness/useUniqueElementIds: static icon asset mirrors exported SVG ids. */
 import type { SVGProps } from 'react';
 
 export function IconMoon(props: SVGProps<SVGSVGElement>) {

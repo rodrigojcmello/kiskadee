@@ -1,4 +1,4 @@
-import { breakpoints as schemaBreakpoints, type StyleKey } from '@kiskadee/core';
+import { type StyleKey, breakpoints as schemaBreakpoints } from '@kiskadee/core';
 
 export const ERROR_INVALID_THUMB_SIZE_KEY_FORMAT =
   'Invalid thumb-shrink key format. Expected numeric value after "__".';

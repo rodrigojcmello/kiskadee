@@ -1,8 +1,8 @@
 import {
   type ChangeEvent,
   type CSSProperties,
-  type InputHTMLAttributes,
   forwardRef,
+  type InputHTMLAttributes,
   useCallback,
   useId,
   useState
@@ -86,9 +86,7 @@ export const ColorRadioGroup = forwardRef<HTMLFieldSetElement, ColorRadioGroupPr
     );
 
     // Merge root className
-    const rootClass = classNames?.e1
-      ? `${classNames.e1} ${className || ''}`.trim()
-      : className;
+    const rootClass = classNames?.e1 ? `${classNames.e1} ${className || ''}`.trim() : className;
 
     return (
       <fieldset
@@ -104,8 +102,10 @@ export const ColorRadioGroup = forwardRef<HTMLFieldSetElement, ColorRadioGroupPr
 
             // e5 combined with e5a if selected
             const swatchClass = isSelected
-                ? (classNames?.e5a ? `${classNames.e5 ?? ''} ${classNames.e5a}`.trim() : (classNames?.e5 ?? ''))
-                : (classNames?.e5 ?? '');
+              ? classNames?.e5a
+                ? `${classNames.e5 ?? ''} ${classNames.e5a}`.trim()
+                : (classNames?.e5 ?? '')
+              : (classNames?.e5 ?? '');
 
             return (
               <label

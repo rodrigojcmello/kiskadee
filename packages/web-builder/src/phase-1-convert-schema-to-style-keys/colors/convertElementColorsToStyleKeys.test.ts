@@ -121,7 +121,6 @@ describe('convertElementColorsToStyleKeys', () => {
           boxColor: {
             rest: [0, 128, 255, 1],
             hover: { ref: [0, 128, 255, 0.5] }
-            // biome-ignore lint/suspicious/noExplicitAny: required for supporting legacy format
           } as any
         }
       }

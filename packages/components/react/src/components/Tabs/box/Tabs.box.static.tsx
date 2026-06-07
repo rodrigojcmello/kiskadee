@@ -1,4 +1,11 @@
-import { type CSSProperties, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  type CSSProperties,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import { buildTabsChildrenWithSeparators } from '../Tabs.bar.helpers.tsx';
 import { resolveIndicatorClassName } from '../Tabs.class-names.ts';
 import { useTabsVisualContext } from '../Tabs.context.ts';

@@ -29,7 +29,7 @@ type TabsBarEnhancerProps = {
 type TabsBarEnhancerComponent = (props: TabsBarEnhancerProps) => ReactNode;
 
 type TabsComponent = {
-  Root: (props: any) => ReactNode;
+  Root: (props: unknown) => ReactNode;
   Bar: typeof TabsBar;
   Tab: typeof TabsTabBase;
   Label: typeof TabsLabelBase;
@@ -98,16 +98,17 @@ function useTabsBarEnhancer(options: {
       return;
     }
 
-    const cached = motionEnhancerCache.get(options.loader);
+    const loader = options.loader;
+    const cached = motionEnhancerCache.get(loader);
     if (cached) {
       setEnhancer(() => cached);
       return;
     }
 
     let cancelled = false;
-    void options.loader().then((module) => {
+    void loader().then((module) => {
       if (cancelled) return;
-      motionEnhancerCache.set(options.loader!, module.default);
+      motionEnhancerCache.set(loader, module.default);
       setEnhancer(() => module.default);
     });
 

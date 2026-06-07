@@ -33,4 +33,4 @@ export function applyDynamicTheme(
   }
 }
 
-export { hexToHsl, generatePrimaryScale };
+export { generatePrimaryScale, hexToHsl };

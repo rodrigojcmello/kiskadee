@@ -4,9 +4,11 @@ import type {
   ScaleProperty,
   StyleKeyByElement
 } from '@kiskadee/core';
-import { deepUpdate, buildStyleKey } from '../../utils/index.ts';
+import { buildStyleKey, deepUpdate } from '../../utils/index.ts';
 
-export type ScaleValue = Partial<Record<ElementSizeValue, Record<string, number> | number>> | number;
+export type ScaleValue =
+  | Partial<Record<ElementSizeValue, Record<string, number> | number>>
+  | number;
 
 /**
  * Converts an element's scale schema into style keys organized by size and breakpoint.

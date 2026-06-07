@@ -14,7 +14,7 @@
  */
 
 import { existsSync } from 'node:fs';
-import { mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -107,9 +107,7 @@ function generateTemplatesRegistrySource(manifests: Manifest[]): string {
   lines.push(
     "import type { ComponentClassNameMapJSON, ExtraArtifactsJSON } from '@kiskadee/web-builder/types';"
   );
-  lines.push(
-    "import { loadJsonFromBuild } from '@/utils/build-artifacts.client';"
-  );
+  lines.push("import { loadJsonFromBuild } from '@/utils/build-artifacts.client';");
   lines.push('');
   lines.push('type ClassNamesModuleLike = { default: ComponentClassNameMapJSON };');
   lines.push('');
@@ -144,7 +142,7 @@ function generateTemplatesRegistrySource(manifests: Manifest[]): string {
   for (const m of manifests) {
     for (const segment of m.segments || []) {
       const themes = m.themes?.[segment];
-      if (!themes || !themes.length) continue;
+      if (!themes?.length) continue;
       for (const theme of themes) {
         const key = `${m.key}|${segment}|${theme}`;
         const file = `${segment}.${theme}.kiskadee.json`;
@@ -161,7 +159,7 @@ function generateTemplatesRegistrySource(manifests: Manifest[]): string {
   for (const m of manifests) {
     for (const segment of m.segments || []) {
       const themes = m.themes?.[segment];
-      if (!themes || !themes.length) continue;
+      if (!themes?.length) continue;
       for (const theme of themes) {
         const key = `${m.key}|${segment}|${theme}`;
         const file = `extra.${segment}.${theme}.kiskadee.json`;
@@ -206,7 +204,9 @@ function generateTemplatesRegistrySource(manifests: Manifest[]): string {
   lines.push('');
 
   // designSystemList (simplified manifest: key + displayName)
-  lines.push('export type DesignSystemListEntry = import(\'@kiskadee/web-builder/types\').DesignSystemListEntry;');
+  lines.push(
+    "export type DesignSystemListEntry = import('@kiskadee/web-builder/types').DesignSystemListEntry;"
+  );
   lines.push('');
   lines.push('export const designSystemList: DesignSystemListEntry[] = [');
   for (const m of manifests) {
@@ -317,7 +317,9 @@ function generateColorsRegistrySource(manifests: Manifest[]): string {
 
   lines.push('// Helper to load a primitive color scale file referenced by colors.json');
   lines.push('// (e.g. fileName = "purple.light.json" -> /build/<ds>/colors/purple.light.json)');
-  lines.push('export function loadColorScaleFromBuild(designSystemKey: string, fileName: string) {');
+  lines.push(
+    'export function loadColorScaleFromBuild(designSystemKey: string, fileName: string) {'
+  );
   lines.push(
     '  return loadJsonFromBuild<ColorScaleJson>(`${designSystemKey}/colors/${fileName}`, { required: true });'
   );

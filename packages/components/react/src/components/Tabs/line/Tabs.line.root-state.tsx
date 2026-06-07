@@ -1,9 +1,6 @@
 import { useMemo } from 'react';
 import { resolveIndicatorShape, resolveIndicatorWidth } from '../Tabs.class-names.ts';
-import {
-  type ResolvedTabsRootState,
-  useTabsRuntimeRootState
-} from '../Tabs.runtime-state';
+import { type ResolvedTabsRootState, useTabsRuntimeRootState } from '../Tabs.runtime-state';
 import type { TabsLineRootProps, TabsResolvedIndicator } from '../Tabs.types.ts';
 
 /**
@@ -27,7 +24,9 @@ function resolveIndicatorPosition(
  *     Line root-state assembly should work with one final motion value before it builds the
  *     resolved indicator object.
  */
-function resolveIndicatorMotion(indicator: TabsLineRootProps['indicator']): TabsResolvedIndicator['motion'] {
+function resolveIndicatorMotion(
+  indicator: TabsLineRootProps['indicator']
+): TabsResolvedIndicator['motion'] {
   return indicator?.motion ?? 'none';
 }
 

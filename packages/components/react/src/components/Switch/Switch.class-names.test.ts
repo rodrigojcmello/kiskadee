@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { resolveSwitchThumbShrinkClassNames, resolveVariantElements, hasSwitchActivationFeedbackEffect, resolveSwitchActivationFeedbackEffectClassName, resolveSwitchClassNames } from './Switch.class-names.ts';
+import {
+  hasSwitchActivationFeedbackEffect,
+  resolveSwitchActivationFeedbackEffectClassName,
+  resolveSwitchClassNames,
+  resolveSwitchThumbShrinkClassNames,
+  resolveVariantElements
+} from './Switch.class-names.ts';
 import type { SwitchVariantClassesMap } from './Switch.types.ts';
 
 const variantMap: SwitchVariantClassesMap = {

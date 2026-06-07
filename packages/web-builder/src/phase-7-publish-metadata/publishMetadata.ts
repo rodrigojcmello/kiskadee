@@ -128,7 +128,7 @@ function discoverSegmentsThemesFromPalettes(
 
   const add = (seg: string, theme: string) => {
     if (!themesBySegment[seg]) themesBySegment[seg] = new Set<string>();
-    themesBySegment[seg]!.add(theme);
+    themesBySegment[seg]?.add(theme);
   };
 
   const themeTokensPalettes = (schema.themeTokens as any)?.palettes as
@@ -260,8 +260,8 @@ function buildComponentState(
   const addState = (semantic: string, tone: string, stateKey: string) => {
     const emphasis = tone;
     if (!tmp[semantic]) tmp[semantic] = {};
-    if (!tmp[semantic]![emphasis]) tmp[semantic]![emphasis] = new Set<string>();
-    tmp[semantic]![emphasis]!.add(stateKey);
+    if (!tmp[semantic]?.[emphasis]) tmp[semantic]![emphasis] = new Set<string>();
+    tmp[semantic]?.[emphasis]?.add(stateKey);
   };
 
   for (const elements of collectComponentElements(schema, componentName)) {

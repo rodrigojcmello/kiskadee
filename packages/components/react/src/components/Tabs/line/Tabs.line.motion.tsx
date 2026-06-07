@@ -3,12 +3,12 @@ import { motion } from 'motion/react';
 import { type CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 import { resolveIndicatorClassName } from '../Tabs.class-names.ts';
 import { useTabsVisualContext } from '../Tabs.context.ts';
-import type { IndicatorRect } from '../Tabs.measurements.ts';
 import {
   measureElementRectRelativeToBar,
   measureIndicatorRect,
   resolveBarEdgeOffsetStyle
 } from '../Tabs.measurements';
+import type { IndicatorRect } from '../Tabs.measurements.ts';
 import { resolveStretchIndicatorRect, type TabsMotionEngineProps } from '../Tabs.motion.shared.ts';
 
 type StretchIndicatorPhase = 'idle' | 'stretch' | 'settle';
@@ -82,12 +82,12 @@ export default function TabsLineMotionBarEnhancer({ children }: TabsMotionEngine
 
       const fixedWidth =
         stretchPhase === 'idle'
-          ? currentRenderedRect?.width ??
+          ? (currentRenderedRect?.width ??
             measureRenderedIndicatorRect()?.width ??
-            lastSettledIndicatorRectRef.current?.width
-          : lastSettledIndicatorRectRef.current?.width ??
+            lastSettledIndicatorRectRef.current?.width)
+          : (lastSettledIndicatorRectRef.current?.width ??
             currentRenderedRect?.width ??
-            measureRenderedIndicatorRect()?.width;
+            measureRenderedIndicatorRect()?.width);
 
       if (!fixedWidth) {
         return tabRect;

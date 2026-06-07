@@ -267,10 +267,8 @@ export type TabsBoxVariantConfig<TSegmentName extends SegmentName = never> = Tab
   TabsBoxElements<TSegmentName>
 >;
 
-export type TabsSegmentedVariantConfig<TSegmentName extends SegmentName = never> = TabsVariantConfig<
-  TSegmentName,
-  TabsSegmentedElements<TSegmentName>
->;
+export type TabsSegmentedVariantConfig<TSegmentName extends SegmentName = never> =
+  TabsVariantConfig<TSegmentName, TabsSegmentedElements<TSegmentName>>;
 
 export type TabsDotVariantConfig<TSegmentName extends SegmentName = never> = TabsVariantConfig<
   TSegmentName,

@@ -177,15 +177,30 @@ describe('web-style-key-identity', () => {
 
     it('does not append unrelated policy data to raw padding keys', () => {
       expect(
-        resolveWebStyleKeyIdentity('paddingTop__12', DEFAULT_WEB_STYLE_EMISSION_POLICY, 'tabs', 'e2')
+        resolveWebStyleKeyIdentity(
+          'paddingTop__12',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'tabs',
+          'e2'
+        )
       ).toBe('paddingTop__12');
     });
 
     it('reuses the same raw padding identity across different raw elements', () => {
       expect(
-        resolveWebStyleKeyIdentity('paddingTop__12', DEFAULT_WEB_STYLE_EMISSION_POLICY, 'tabs', 'e2')
+        resolveWebStyleKeyIdentity(
+          'paddingTop__12',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'tabs',
+          'e2'
+        )
       ).toBe(
-        resolveWebStyleKeyIdentity('paddingTop__12', DEFAULT_WEB_STYLE_EMISSION_POLICY, 'tabs', 'e5')
+        resolveWebStyleKeyIdentity(
+          'paddingTop__12',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'tabs',
+          'e5'
+        )
       );
     });
 

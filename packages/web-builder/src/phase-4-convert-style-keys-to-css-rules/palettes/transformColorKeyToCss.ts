@@ -135,13 +135,13 @@ export function transformColorKeyToCss(
       ? `${EMITTED_COLOR_CSS_VARS.boxColor}: ${value}; ${optimizedProperty}: ${value}`
       : shouldTokenizeBoxColor
         ? `${EMITTED_COLOR_CSS_VARS.boxColor}: ${value}`
-      : shouldMirrorTextColor
-        ? `${EMITTED_COLOR_CSS_VARS.textColor}: ${value}; ${optimizedProperty}: ${value}`
-        : shouldMirrorBorderColor
-          ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}; ${optimizedProperty}: ${value}`
-          : shouldTokenizeBorderColor
-            ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}`
-            : `${optimizedProperty}: ${value}`;
+        : shouldMirrorTextColor
+          ? `${EMITTED_COLOR_CSS_VARS.textColor}: ${value}; ${optimizedProperty}: ${value}`
+          : shouldMirrorBorderColor
+            ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}; ${optimizedProperty}: ${value}`
+            : shouldTokenizeBorderColor
+              ? `${EMITTED_COLOR_CSS_VARS.borderColor}: ${value}`
+              : `${optimizedProperty}: ${value}`;
 
   let cssValue: string;
   let gradientVars: string | undefined;

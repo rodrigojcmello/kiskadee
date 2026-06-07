@@ -229,7 +229,7 @@ function resolvePaletteSet(params: {
   tertiaryHex?: string;
 }): MaterialPaletteSet {
   const { primaryHex, mode, secondaryHex, tertiaryHex } = params;
-  const primaryArgb = argbFromHex(primaryHex);
+  const _primaryArgb = argbFromHex(primaryHex);
 
   const resolveCorePalette = (hex: string) =>
     mode === 'static' ? CorePalette.of(argbFromHex(hex)) : CorePalette.contentOf(argbFromHex(hex));

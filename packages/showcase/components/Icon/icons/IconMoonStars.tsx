@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/a11y/noSvgWithoutTitle: decorative icon receives its accessible name from the control. */
+/** biome-ignore-all lint/correctness/useUniqueElementIds: static icon asset mirrors exported SVG ids. */
 import type { SVGProps } from 'react';
 
 export function IconMoonStars(props: SVGProps<SVGSVGElement>) {

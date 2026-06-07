@@ -1,4 +1,11 @@
-import { type CSSProperties, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  type CSSProperties,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import { buildTabsChildrenWithSeparators } from '../Tabs.bar.helpers.tsx';
 import { resolveIndicatorClassName } from '../Tabs.class-names.ts';
 import { useTabsVisualContext } from '../Tabs.context.ts';
@@ -110,9 +117,7 @@ function TabsSegmentedStaticIndicator() {
  *     Segmented tabs inject separator nodes at runtime, so the static enhancer owns both
  *     separator composition and indicator rendering.
  */
-export function TabsSegmentedStaticBarEnhancer({
-  children
-}: TabsSegmentedStaticBarEnhancerProps) {
+export function TabsSegmentedStaticBarEnhancer({ children }: TabsSegmentedStaticBarEnhancerProps) {
   const { structural, separator, separatorClassName } = useTabsVisualContext();
   const childrenWithSeparators = useMemo(
     () =>

@@ -1,8 +1,5 @@
 import { useMemo } from 'react';
-import {
-  type ResolvedTabsRootState,
-  useTabsRuntimeRootState
-} from '../Tabs.runtime-state';
+import { type ResolvedTabsRootState, useTabsRuntimeRootState } from '../Tabs.runtime-state';
 import type { TabsDotRootProps, TabsResolvedIndicator } from '../Tabs.types.ts';
 
 /**
@@ -26,7 +23,9 @@ function resolveIndicatorPosition(
  *     Dot root-state assembly needs one normalized motion value before it builds the resolved
  *     indicator config.
  */
-function resolveIndicatorMotion(indicator: TabsDotRootProps['indicator']): TabsResolvedIndicator['motion'] {
+function resolveIndicatorMotion(
+  indicator: TabsDotRootProps['indicator']
+): TabsResolvedIndicator['motion'] {
   return indicator?.motion ?? 'none';
 }
 

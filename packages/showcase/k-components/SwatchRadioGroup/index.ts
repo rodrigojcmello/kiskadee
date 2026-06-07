@@ -1,6 +1,6 @@
 export type {
   SwatchRadioGroupProps,
-  SwatchRadioItem,
-  SwatchRadioGroupRenderSwatchArgs
+  SwatchRadioGroupRenderSwatchArgs,
+  SwatchRadioItem
 } from './SwatchRadioGroup';
 export { SwatchRadioGroup } from './SwatchRadioGroup';

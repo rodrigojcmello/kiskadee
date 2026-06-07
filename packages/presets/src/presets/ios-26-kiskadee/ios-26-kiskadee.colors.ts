@@ -34,8 +34,6 @@ export const primitiveColors = {
   }
 } as const satisfies PrimitiveColors;
 
-type GlobalSemanticKey = 'primary' | 'neutral' | 'redLike';
-
 export const globalSemantics = {
   light: {
     primary: { v1: 'primitive.blue.v1' },

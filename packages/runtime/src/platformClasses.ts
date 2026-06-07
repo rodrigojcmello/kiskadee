@@ -27,7 +27,14 @@ type NavigatorLike = Pick<Navigator, 'userAgent' | 'platform' | 'maxTouchPoints'
 
 const runtimeOsValues = ['macos', 'ios', 'android', 'windows', 'linux', 'unknown'] as const;
 const runtimeEngineValues = ['blink', 'webkit', 'gecko', 'unknown'] as const;
-const legacyRuntimeBrowserValues = ['chrome', 'safari', 'firefox', 'edge', 'opera', 'unknown'] as const;
+const legacyRuntimeBrowserValues = [
+  'chrome',
+  'safari',
+  'firefox',
+  'edge',
+  'opera',
+  'unknown'
+] as const;
 
 type RuntimeBrowser = 'chrome' | 'safari' | 'firefox' | 'edge' | 'opera' | 'unknown';
 
@@ -50,14 +57,16 @@ function detectRuntimeOs(navigatorLike: NavigatorLike): RuntimeOs {
   if (includesOneOf(platform, ['mac']) || includesOneOf(userAgent, ['mac os x', 'macintosh'])) {
     return 'macos';
   }
-  if (includesOneOf(platform, ['linux']) || includesOneOf(userAgent, ['linux', 'x11'])) return 'linux';
+  if (includesOneOf(platform, ['linux']) || includesOneOf(userAgent, ['linux', 'x11']))
+    return 'linux';
 
   return 'unknown';
 }
 
 function detectRuntimeBrowser(navigatorLike: NavigatorLike): RuntimeBrowser {
   const userAgent = navigatorLike.userAgent.toLowerCase();
-  const brands = navigatorLike.userAgentData?.brands?.map((brand) => normalizeBrand(brand.brand)) ?? [];
+  const brands =
+    navigatorLike.userAgentData?.brands?.map((brand) => normalizeBrand(brand.brand)) ?? [];
 
   if (brands.some((brand) => brand.includes('opera'))) return 'opera';
   if (brands.some((brand) => brand.includes('microsoft edge'))) return 'edge';
@@ -69,7 +78,10 @@ function detectRuntimeBrowser(navigatorLike: NavigatorLike): RuntimeBrowser {
   if (includesOneOf(userAgent, ['edg/', 'edge/'])) return 'edge';
   if (includesOneOf(userAgent, ['firefox/', 'fxios/'])) return 'firefox';
   if (includesOneOf(userAgent, ['crios/', 'chrome/', 'chromium/'])) return 'chrome';
-  if (userAgent.includes('safari/') && !includesOneOf(userAgent, ['chrome/', 'chromium/', 'crios/', 'opr/', 'edg/'])) {
+  if (
+    userAgent.includes('safari/') &&
+    !includesOneOf(userAgent, ['chrome/', 'chromium/', 'crios/', 'opr/', 'edg/'])
+  ) {
     return 'safari';
   }
 

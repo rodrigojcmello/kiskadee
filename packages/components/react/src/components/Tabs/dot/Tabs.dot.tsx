@@ -1,8 +1,5 @@
 import './Tabs.dot.css';
 import { createTabsComponent } from '../Tabs.runtime.tsx';
-import TabsDotStaticBarEnhancer from './Tabs.dot.static.tsx';
-import { tabsDotStructural } from './Tabs.dot.structural.ts';
-import { useResolvedTabsDotRootState } from './Tabs.dot.root-state.tsx';
 import type {
   TabsBarProps,
   TabsContentProps,
@@ -15,6 +12,9 @@ import type {
   TabsSpringPreset,
   TabsTabProps
 } from '../Tabs.types';
+import { useResolvedTabsDotRootState } from './Tabs.dot.root-state.tsx';
+import TabsDotStaticBarEnhancer from './Tabs.dot.static.tsx';
+import { tabsDotStructural } from './Tabs.dot.structural.ts';
 
 /**
  * What

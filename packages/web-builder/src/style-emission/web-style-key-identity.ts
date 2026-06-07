@@ -76,10 +76,10 @@ function resolveStyleKeyEmissionMode(
     return styleEmissionPolicy.paddingEmission === 'token'
       ? 't'
       : styleEmissionPolicy.paddingEmission === 'mirrored'
-      ? 'm'
-      : styleEmissionPolicy.paddingEmission === 'compensated'
-        ? 'c'
-        : undefined;
+        ? 'm'
+        : styleEmissionPolicy.paddingEmission === 'compensated'
+          ? 'c'
+          : undefined;
   }
 
   return undefined;

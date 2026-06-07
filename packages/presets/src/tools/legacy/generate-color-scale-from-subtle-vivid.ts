@@ -274,12 +274,19 @@ export function generateColorScaleFromColors(hexColors: string[]): EmphasisLevel
 
     // Single-stop mode: keep hue/saturation constant across the scale.
     if (inputs.length === 1) {
-      const [h, s, , a] = inputs[0]!.hsla;
+      const onlyInput = inputs[0];
+      if (!onlyInput) {
+        throw new Error('Invalid scale stops: expected a single input.');
+      }
+      const [h, s, , a] = onlyInput.hsla;
       return [h, s, lightness, a];
     }
 
-    const first = inputs[0]!;
-    const last = inputs[inputs.length - 1]!;
+    const first = inputs[0];
+    const last = inputs[inputs.length - 1];
+    if (!first || !last) {
+      throw new Error('Invalid scale stops: expected at least one input.');
+    }
 
     if (tone <= (first.tone as number)) {
       const [h, s, , a] = first.hsla;
@@ -295,8 +302,9 @@ export function generateColorScaleFromColors(hexColors: string[]): EmphasisLevel
     let left = first;
     let right = last;
     for (let i = 0; i < inputs.length - 1; i += 1) {
-      const a = inputs[i]!;
-      const b = inputs[i + 1]!;
+      const a = inputs[i];
+      const b = inputs[i + 1];
+      if (!a || !b) continue;
       const aTone = a.tone as number;
       const bTone = b.tone as number;
       if (tone >= aTone && tone <= bTone) {
@@ -338,7 +346,7 @@ export function generateColorScaleFromColors(hexColors: string[]): EmphasisLevel
   }
 
   // Absolute extremes (use alpha from the first stop for consistency)
-  const alpha = inputs[0]!.hsla[3];
+  const alpha = inputs[0]?.hsla[3];
   subtle[0] = [0, 0, 100, alpha];
   vivid[100] = [0, 0, 0, alpha];
 

@@ -27,16 +27,7 @@ export async function loadPresetsToBuild(baseDir: string): Promise<PresetToBuild
 
     items.push({
       schema: mod.schema,
-      schemaPath: resolve(
-        baseDir,
-        '..',
-        '..',
-        'presets',
-        'src',
-        'presets',
-        dir,
-        `${dir}.schema.ts`
-      )
+      schemaPath: resolve(baseDir, '..', '..', 'presets', 'src', 'presets', dir, `${dir}.schema.ts`)
     });
   }
 

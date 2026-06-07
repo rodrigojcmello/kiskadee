@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
-import { mapStyleKeyUsage, type StyleKeyUsageMap } from './mapStyleKeyUsage.ts';
 import type { ComponentStyleKeyMap } from '@kiskadee/core';
+import { describe, expect, it } from 'vitest';
 import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
+import { mapStyleKeyUsage, type StyleKeyUsageMap } from './mapStyleKeyUsage.ts';
 
 describe('mapStyleKeyUsage', () => {
   it('returns empty object for empty input', () => {

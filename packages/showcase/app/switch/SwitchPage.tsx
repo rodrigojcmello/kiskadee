@@ -212,13 +212,15 @@ export default function SwitchPage() {
           swatchColor = backgroundTone?.displayColor ?? swatchColor;
         }
 
-        return [{
-          value,
-          label: surfaceLabels[value],
-          swatch: {
-            color: swatchColor
+        return [
+          {
+            value,
+            label: surfaceLabels[value],
+            swatch: {
+              color: swatchColor
+            }
           }
-        }];
+        ];
       }),
     [backgroundToneByKey, isSwitchAvailable, primarySurface.color, supportedStates]
   );

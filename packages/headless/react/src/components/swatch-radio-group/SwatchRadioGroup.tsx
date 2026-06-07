@@ -1,8 +1,8 @@
 import {
   type ChangeEvent,
+  forwardRef,
   type InputHTMLAttributes,
   type ReactNode,
-  forwardRef,
   useCallback,
   useId,
   useState
@@ -103,9 +103,7 @@ export const SwatchRadioGroup = forwardRef<HTMLFieldSetElement, SwatchRadioGroup
       [isControlled, onBeforeValueChange, onValueChange, selected]
     );
 
-    const rootClass = classNames?.e1
-      ? `${classNames.e1} ${className || ''}`.trim()
-      : className;
+    const rootClass = classNames?.e1 ? `${classNames.e1} ${className || ''}`.trim() : className;
 
     return (
       <fieldset
@@ -122,15 +120,17 @@ export const SwatchRadioGroup = forwardRef<HTMLFieldSetElement, SwatchRadioGroup
             const swatchClass = isSelected
               ? classNames?.e5a
                 ? `${classNames.e5 ?? ''} ${classNames.e5a}`.trim()
-                : classNames?.e5 ?? ''
-              : classNames?.e5 ?? '';
+                : (classNames?.e5 ?? '')
+              : (classNames?.e5 ?? '');
 
             const swatchNode = renderSwatch ? (
               renderSwatch(item, { selected: isSelected })
             ) : (
               <span
                 className={swatchClass}
-                style={item.swatch?.color ? ({ backgroundColor: item.swatch.color } as const) : undefined}
+                style={
+                  item.swatch?.color ? ({ backgroundColor: item.swatch.color } as const) : undefined
+                }
                 aria-hidden="true"
               />
             );
