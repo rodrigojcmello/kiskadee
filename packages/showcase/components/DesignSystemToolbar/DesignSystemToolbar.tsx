@@ -1,6 +1,5 @@
 'use client';
 
-import BackgroundTonePicker from '@/components/BackgroundTonePicker/BackgroundTonePicker';
 import DesignSystemControls from '@/components/DesignSystemControls/DesignSystemControls';
 import ThemeModePicker from '@/components/ThemeModePicker/ThemeModePicker';
 import styles from './DesignSystemToolbar.module.scss';
@@ -21,7 +20,6 @@ export default function DesignSystemToolbar({
       </div>
       <div>
         <ThemeModePicker />
-        <BackgroundTonePicker />
         <label>
           <input
             type="checkbox"

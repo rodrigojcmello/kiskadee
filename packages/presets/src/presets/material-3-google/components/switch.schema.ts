@@ -58,6 +58,19 @@ function createSwitchElementPalettes({
                 focus: switchStateRef(figmaSwitchColor.onTrack),
                 pressed: switchStateRef(figmaSwitchColor.onTrack)
               }
+            },
+            low: {
+              rest: switchColorWithAlpha([0, 0, 100, 1], 24),
+              hover: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 32)),
+              focus: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 24)),
+              pressed: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 40)),
+              disabled: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 12)),
+              selected: {
+                rest: switchStateRef(c(s, 'l', 'primary', 5)),
+                hover: switchStateRef(c(s, 'l', 'primary', 10)),
+                focus: switchStateRef(c(s, 'l', 'primary', 5)),
+                pressed: switchStateRef(c(s, 'l', 'primary', 15))
+              }
             }
           }
         },
@@ -69,6 +82,19 @@ function createSwitchElementPalettes({
               focus: switchStateRef(figmaSwitchColor.offTrackOutline),
               pressed: switchStateRef(figmaSwitchColor.offTrackOutline),
               disabled: switchStateRef(figmaSwitchColor.offTrackOutlineDisabled),
+              selected: {
+                rest: switchStateRef(transparent),
+                hover: switchStateRef(transparent),
+                focus: switchStateRef(transparent),
+                pressed: switchStateRef(transparent)
+              }
+            },
+            low: {
+              rest: switchColorWithAlpha([0, 0, 100, 1], 64),
+              hover: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 80)),
+              focus: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 64)),
+              pressed: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 88)),
+              disabled: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 20)),
               selected: {
                 rest: switchStateRef(transparent),
                 hover: switchStateRef(transparent),
@@ -94,6 +120,19 @@ function createSwitchElementPalettes({
                 focus: switchStateRef(c(s, 'd', 'switch.neutral', 80)),
                 pressed: switchStateRef(c(s, 'd', 'switch.neutral', 90))
               }
+            },
+            low: {
+              rest: switchColorWithAlpha([0, 0, 100, 1], 24),
+              hover: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 32)),
+              focus: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 24)),
+              pressed: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 40)),
+              disabled: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 12)),
+              selected: {
+                rest: switchStateRef(c(s, 'd', 'primary', 90)),
+                hover: switchStateRef(c(s, 'd', 'primary', 85)),
+                focus: switchStateRef(c(s, 'd', 'primary', 90)),
+                pressed: switchStateRef(c(s, 'd', 'primary', 80))
+              }
             }
           }
         },
@@ -105,6 +144,19 @@ function createSwitchElementPalettes({
               focus: switchStateRef(c(s, 'd', 'neutral.v2', 70)),
               pressed: switchStateRef(c(s, 'd', 'neutral.v2', 85)),
               disabled: switchStateRef(c(s, 'd', 'neutral', 30, 12)),
+              selected: {
+                rest: switchStateRef(transparent),
+                hover: switchStateRef(transparent),
+                focus: switchStateRef(transparent),
+                pressed: switchStateRef(transparent)
+              }
+            },
+            low: {
+              rest: switchColorWithAlpha([0, 0, 100, 1], 64),
+              hover: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 80)),
+              focus: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 64)),
+              pressed: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 88)),
+              disabled: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 20)),
               selected: {
                 rest: switchStateRef(transparent),
                 hover: switchStateRef(transparent),
@@ -132,12 +184,32 @@ function createSwitchElementPalettes({
                 focus: switchStateRef(figmaSwitchColor.onThumbInteractive),
                 pressed: switchStateRef(figmaSwitchColor.onThumbInteractive)
               }
+            },
+            low: {
+              rest: figmaSwitchColor.onThumb,
+              hover: switchStateRef(c(s, 'l', 'primary', 5)),
+              focus: switchStateRef(c(s, 'l', 'primary', 5)),
+              pressed: switchStateRef(c(s, 'l', 'primary', 10)),
+              disabled: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 38)),
+              selected: {
+                rest: switchStateRef(c(s, 'l', 'primary', 70)),
+                hover: switchStateRef(c(s, 'l', 'primary', 75)),
+                focus: switchStateRef(c(s, 'l', 'primary', 70)),
+                pressed: switchStateRef(c(s, 'l', 'primary', 80))
+              }
             }
           }
         },
         borderColor: {
           neutral: {
             medium: {
+              rest: transparent,
+              disabled: switchStateRef(transparent),
+              selected: {
+                rest: switchStateRef(transparent)
+              }
+            },
+            low: {
               rest: transparent,
               disabled: switchStateRef(transparent),
               selected: {
@@ -162,12 +234,32 @@ function createSwitchElementPalettes({
                 focus: switchStateRef(c(s, 'd', 'switch.neutral', 20)),
                 pressed: switchStateRef(c(s, 'd', 'switch.neutral', 10))
               }
+            },
+            low: {
+              rest: figmaSwitchColor.onThumb,
+              hover: switchStateRef(c(s, 'd', 'primary', 90)),
+              focus: switchStateRef(c(s, 'd', 'primary', 90)),
+              pressed: switchStateRef(c(s, 'd', 'primary', 80)),
+              disabled: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 38)),
+              selected: {
+                rest: switchStateRef(c(s, 'd', 'primary', 30)),
+                hover: switchStateRef(c(s, 'd', 'primary', 25)),
+                focus: switchStateRef(c(s, 'd', 'primary', 30)),
+                pressed: switchStateRef(c(s, 'd', 'primary', 20))
+              }
             }
           }
         },
         borderColor: {
           neutral: {
             medium: {
+              rest: transparent,
+              disabled: switchStateRef(transparent),
+              selected: {
+                rest: switchStateRef(transparent)
+              }
+            },
+            low: {
               rest: transparent,
               disabled: switchStateRef(transparent),
               selected: {
@@ -185,6 +277,10 @@ function createSwitchElementPalettes({
             medium: {
               rest: c(s, 'l', 'neutral', 90),
               disabled: switchStateRef(c(s, 'l', 'neutral', 90, 38))
+            },
+            low: {
+              rest: c(s, 'l', 'neutral', 0),
+              disabled: switchStateRef(c(s, 'l', 'neutral', 0, 38))
             }
           }
         }
@@ -195,6 +291,10 @@ function createSwitchElementPalettes({
             medium: {
               rest: c(s, 'd', 'neutral', 90),
               disabled: switchStateRef(c(s, 'd', 'neutral', 90, 38))
+            },
+            low: {
+              rest: c(s, 'd', 'neutral', 0),
+              disabled: switchStateRef(c(s, 'd', 'neutral', 0, 38))
             }
           }
         }

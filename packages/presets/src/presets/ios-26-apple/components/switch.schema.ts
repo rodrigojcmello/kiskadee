@@ -13,6 +13,11 @@ type CreateIos26AppleSwitchSchemaArgs = {
 
 const iosSwitchOffTrack = [0, 0, 47.059, 0.2] as const;
 const iosSwitchThumb = [0, 0, 100, 1] as const;
+const iosSwitchOnPrimaryTrack = [0, 0, 100, 0.32] as const;
+const iosSwitchOnPrimaryTrackHover = [0, 0, 100, 0.4] as const;
+const iosSwitchOnPrimaryTrackPressed = [0, 0, 100, 0.48] as const;
+const iosSwitchOnPrimaryTrackDisabled = [0, 0, 100, 0.12] as const;
+const iosSwitchOnPrimaryTrackSelected = [0, 0, 100, 1] as const;
 
 export function createIos26AppleSwitchSchema({
   c,
@@ -114,6 +119,19 @@ export function createIos26AppleSwitchSchema({
                             focus: { ref: iosSwitchNeutralOnTrack },
                             pressed: { ref: iosSwitchNeutralOnTrack }
                           }
+                        },
+                        low: {
+                          rest: iosSwitchOnPrimaryTrack,
+                          hover: { ref: iosSwitchOnPrimaryTrackHover },
+                          focus: { ref: iosSwitchOnPrimaryTrack },
+                          pressed: { ref: iosSwitchOnPrimaryTrackPressed },
+                          disabled: { ref: iosSwitchOnPrimaryTrackDisabled },
+                          selected: {
+                            rest: { ref: iosSwitchOnPrimaryTrackSelected },
+                            hover: { ref: iosSwitchOnPrimaryTrackSelected },
+                            focus: { ref: iosSwitchOnPrimaryTrackSelected },
+                            pressed: { ref: iosSwitchOnPrimaryTrackSelected }
+                          }
                         }
                       },
                       primary: {
@@ -128,6 +146,19 @@ export function createIos26AppleSwitchSchema({
                             focus: { ref: iosSwitchPrimaryOnTrack },
                             pressed: { ref: iosSwitchPrimaryOnTrack }
                           }
+                        },
+                        low: {
+                          rest: iosSwitchOnPrimaryTrack,
+                          hover: { ref: iosSwitchOnPrimaryTrackHover },
+                          focus: { ref: iosSwitchOnPrimaryTrack },
+                          pressed: { ref: iosSwitchOnPrimaryTrackPressed },
+                          disabled: { ref: iosSwitchOnPrimaryTrackDisabled },
+                          selected: {
+                            rest: { ref: iosSwitchOnPrimaryTrackSelected },
+                            hover: { ref: iosSwitchOnPrimaryTrackSelected },
+                            focus: { ref: iosSwitchOnPrimaryTrackSelected },
+                            pressed: { ref: iosSwitchOnPrimaryTrackSelected }
+                          }
                         }
                       },
                       polarity: {
@@ -141,6 +172,19 @@ export function createIos26AppleSwitchSchema({
                             hover: { ref: iosSwitchNeutralOnTrack },
                             focus: { ref: iosSwitchNeutralOnTrack },
                             pressed: { ref: iosSwitchNeutralOnTrack }
+                          }
+                        },
+                        low: {
+                          rest: iosSwitchOnPrimaryTrack,
+                          hover: { ref: iosSwitchOnPrimaryTrackHover },
+                          focus: { ref: iosSwitchOnPrimaryTrack },
+                          pressed: { ref: iosSwitchOnPrimaryTrackPressed },
+                          disabled: { ref: iosSwitchOnPrimaryTrackDisabled },
+                          selected: {
+                            rest: { ref: iosSwitchOnPrimaryTrackSelected },
+                            hover: { ref: iosSwitchOnPrimaryTrackSelected },
+                            focus: { ref: iosSwitchOnPrimaryTrackSelected },
+                            pressed: { ref: iosSwitchOnPrimaryTrackSelected }
                           }
                         }
                       }
@@ -158,6 +202,19 @@ export function createIos26AppleSwitchSchema({
                             focus: { ref: transparent },
                             pressed: { ref: transparent }
                           }
+                        },
+                        low: {
+                          rest: transparent,
+                          hover: { ref: transparent },
+                          focus: { ref: transparent },
+                          pressed: { ref: transparent },
+                          disabled: { ref: transparent },
+                          selected: {
+                            rest: { ref: transparent },
+                            hover: { ref: transparent },
+                            focus: { ref: transparent },
+                            pressed: { ref: transparent }
+                          }
                         }
                       },
                       primary: {
@@ -166,10 +223,22 @@ export function createIos26AppleSwitchSchema({
                           selected: {
                             rest: { ref: transparent }
                           }
+                        },
+                        low: {
+                          rest: transparent,
+                          selected: {
+                            rest: { ref: transparent }
+                          }
                         }
                       },
                       polarity: {
                         medium: {
+                          rest: transparent,
+                          selected: {
+                            rest: { ref: transparent }
+                          }
+                        },
+                        low: {
                           rest: transparent,
                           selected: {
                             rest: { ref: transparent }
@@ -227,6 +296,19 @@ export function createIos26AppleSwitchSchema({
                             focus: { ref: iosSwitchThumb },
                             pressed: { ref: iosSwitchThumb }
                           }
+                        },
+                        low: {
+                          rest: iosSwitchThumb,
+                          hover: { ref: iosSwitchThumb },
+                          focus: { ref: iosSwitchThumb },
+                          pressed: { ref: iosSwitchThumb },
+                          disabled: { ref: iosSwitchOnPrimaryTrackDisabled },
+                          selected: {
+                            rest: { ref: iosSwitchNeutralOnTrack },
+                            hover: { ref: iosSwitchNeutralOnTrack },
+                            focus: { ref: iosSwitchNeutralOnTrack },
+                            pressed: { ref: iosSwitchNeutralOnTrack }
+                          }
                         }
                       },
                       primary: {
@@ -234,6 +316,12 @@ export function createIos26AppleSwitchSchema({
                           rest: iosSwitchThumb,
                           selected: {
                             rest: { ref: iosSwitchThumb }
+                          }
+                        },
+                        low: {
+                          rest: iosSwitchThumb,
+                          selected: {
+                            rest: { ref: iosSwitchPrimaryOnTrack }
                           }
                         }
                       },
@@ -249,12 +337,30 @@ export function createIos26AppleSwitchSchema({
                             focus: { ref: iosSwitchThumb },
                             pressed: { ref: iosSwitchThumb }
                           }
+                        },
+                        low: {
+                          rest: iosSwitchThumb,
+                          hover: { ref: iosSwitchThumb },
+                          focus: { ref: iosSwitchThumb },
+                          pressed: { ref: iosSwitchThumb },
+                          selected: {
+                            rest: { ref: iosSwitchNeutralOnTrack },
+                            hover: { ref: iosSwitchNeutralOnTrack },
+                            focus: { ref: iosSwitchNeutralOnTrack },
+                            pressed: { ref: iosSwitchNeutralOnTrack }
+                          }
                         }
                       }
                     },
                     borderColor: {
                       neutral: {
                         medium: {
+                          rest: transparent,
+                          selected: {
+                            rest: { ref: transparent }
+                          }
+                        },
+                        low: {
                           rest: transparent,
                           selected: {
                             rest: { ref: transparent }
@@ -267,10 +373,22 @@ export function createIos26AppleSwitchSchema({
                           selected: {
                             rest: { ref: transparent }
                           }
+                        },
+                        low: {
+                          rest: transparent,
+                          selected: {
+                            rest: { ref: transparent }
+                          }
                         }
                       },
                       polarity: {
                         medium: {
+                          rest: transparent,
+                          selected: {
+                            rest: { ref: transparent }
+                          }
+                        },
+                        low: {
                           rest: transparent,
                           selected: {
                             rest: { ref: transparent }
@@ -307,16 +425,25 @@ export function createIos26AppleSwitchSchema({
                       neutral: {
                         medium: {
                           rest: iosSwitchLabelText
+                        },
+                        low: {
+                          rest: iosSwitchThumb
                         }
                       },
                       primary: {
                         medium: {
                           rest: iosSwitchLabelText
+                        },
+                        low: {
+                          rest: iosSwitchThumb
                         }
                       },
                       polarity: {
                         medium: {
                           rest: iosSwitchLabelText
+                        },
+                        low: {
+                          rest: iosSwitchThumb
                         }
                       }
                     }

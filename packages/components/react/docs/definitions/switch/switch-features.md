@@ -70,6 +70,11 @@ headless root generates one and connects the wrapping label to the input.
 | `className` | Merged into the root `e1` slot. |
 | `classNames` | Escape hatch for the schema element slots `e1` through `e5`. |
 
+`emphasis="low"` is the Switch treatment for strong local surfaces such as a
+primary Showcase card. It keeps the same intent semantics and adapts contrast
+inside the existing emphasis bucket; it is not a dark-mode switch and does not
+create a new public emphasis value.
+
 `radius`, `activationMotion`, and `controlTextVisibility` are component
 artifact options. Props may override only the options intentionally exposed in
 `SwitchProps`.

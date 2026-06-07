@@ -7,9 +7,15 @@ import {
   useShowcase,
   useSwitchArtifactConfig
 } from '@kiskadee/react-components';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Select } from '@/k-components';
+import {
+  type BackgroundToneKey,
+  type ResolvedBackgroundTone,
+  useBackgroundTones,
+  usePrimarySurfaceTone
+} from '@/hooks/use-background-tones';
+import { Select, SwatchRadioGroup } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
 import s from './Switch.module.scss';
 
@@ -39,6 +45,53 @@ const effectToggleOptions = [
   { value: 'off', label: 'Desligado' }
 ];
 
+type SwitchSurface = 'default' | 'primary' | Exclude<BackgroundToneKey, 'white'>;
+
+const surfaceToneOrder: SwitchSurface[] = [
+  'default',
+  'gray',
+  'light-primary',
+  'primary',
+  'dark-gray',
+  'dark-primary',
+  'black'
+];
+
+const surfaceLabels: Record<SwitchSurface, string> = {
+  default: 'Default',
+  gray: 'Gray',
+  'light-primary': 'Light primary',
+  primary: 'Primary',
+  'dark-gray': 'Dark gray',
+  'dark-primary': 'Dark primary',
+  black: 'Black'
+};
+
+const darkSurfaceValues: SwitchSurface[] = ['primary', 'dark-gray', 'dark-primary', 'black'];
+
+function isDarkSurface(surface: SwitchSurface) {
+  return darkSurfaceValues.includes(surface);
+}
+
+function getSurfaceEmphasis(surface: SwitchSurface): ComponentEmphasis {
+  return isDarkSurface(surface) ? 'low' : 'medium';
+}
+
+function getSurfaceForEmphasis(emphasis: ComponentEmphasis): SwitchSurface {
+  return emphasis === 'low' ? 'primary' : 'default';
+}
+
+function getSurfaceClassName(baseClassName: string, surface: SwitchSurface) {
+  if (surface === 'default') return baseClassName;
+
+  const surfaceClassNames = [baseClassName, s.surfaceTone];
+  if (isDarkSurface(surface)) {
+    surfaceClassNames.push(s.darkSurface);
+  }
+
+  return surfaceClassNames.join(' ');
+}
+
 const intentLabels: Record<string, string> = {
   neutral: 'Neutral',
   primary: 'Primary',
@@ -56,9 +109,19 @@ const switchActivationFeedbackActiveClassNames = {
 
 const THUMB_SHRINK_CHANGE_DELAY_MS = 400;
 
-function StateTile({ title, children }: { title: string; children: ReactNode }) {
+function StateTile({
+  children,
+  surface,
+  title
+}: {
+  children: ReactNode;
+  surface: SwitchSurface;
+  title: string;
+}) {
+  const className = getSurfaceClassName(s.stateTile, surface);
+
   return (
-    <div className={s.stateTile}>
+    <div className={className}>
       <div className={s.stateTitle}>{title}</div>
       <div className={s.stateControl}>{children}</div>
     </div>
@@ -69,11 +132,14 @@ export default function SwitchPage() {
   const { designSystem } = useKiskadee();
   const { effects: switchEffects, options: switchOptions } = useSwitchArtifactConfig();
   const { manifest } = useShowcase();
+  const backgroundTones = useBackgroundTones();
+  const primarySurface = usePrimarySurfaceTone();
   const [controlState, setControlState] = useState(true);
   const [scale, setScale] = useState<ElementSizeValue>('s:md:1');
   const [radius, setRadius] = useState<RadiusMode>('rounded');
   const [intent, setIntent] = useState<SwitchIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
+  const [surface, setSurface] = useState<SwitchSurface>('default');
   const [motionEnabled, setMotionEnabled] = useState(true);
   const [thumbShrinkEnabled, setThumbShrinkEnabled] = useState(true);
   const thumbShrinkChangeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -87,6 +153,23 @@ export default function SwitchPage() {
   const supportedScales = switchMeta?.scale;
   const supportedIntents = switchMeta?.state;
   const supportedStates = supportedIntents?.[intent];
+  const backgroundToneByKey = useMemo(
+    () =>
+      new Map<BackgroundToneKey, ResolvedBackgroundTone>(
+        backgroundTones.tones.map((tone) => [tone.key, tone])
+      ),
+    [backgroundTones.tones]
+  );
+  const selectedSurfaceColor =
+    surface === 'default'
+      ? undefined
+      : surface === 'primary'
+        ? primarySurface.color
+        : backgroundToneByKey.get(surface)?.resolvedColor;
+  const pageStyle = {
+    '--switch-surface-primary': primarySurface.color,
+    '--switch-card-surface': selectedSurfaceColor ?? '#ffffff'
+  } as CSSProperties;
 
   const scaleSelectOptions = useMemo(
     () => scaleOptions.filter((option) => Boolean(supportedScales?.[option.value])),
@@ -112,6 +195,32 @@ export default function SwitchPage() {
   const emphasisSelectOptions = useMemo(
     () => emphasisOptions.filter((option) => Boolean(supportedStates?.[option.value])),
     [supportedStates]
+  );
+  const surfaceItems = useMemo(
+    () =>
+      surfaceToneOrder.flatMap((value) => {
+        if (!isSwitchAvailable || !supportedStates?.[getSurfaceEmphasis(value)]) {
+          return [];
+        }
+
+        let swatchColor = '#ffffff';
+
+        if (value === 'primary') {
+          swatchColor = primarySurface.color;
+        } else if (value !== 'default') {
+          const backgroundTone = backgroundToneByKey.get(value as BackgroundToneKey);
+          swatchColor = backgroundTone?.displayColor ?? swatchColor;
+        }
+
+        return [{
+          value,
+          label: surfaceLabels[value],
+          swatch: {
+            color: swatchColor
+          }
+        }];
+      }),
+    [backgroundToneByKey, isSwitchAvailable, primarySurface.color, supportedStates]
   );
 
   useEffect(() => {
@@ -158,6 +267,27 @@ export default function SwitchPage() {
   }, [emphasis, emphasisSelectOptions]);
 
   useEffect(() => {
+    if (!isSwitchAvailable) {
+      return;
+    }
+
+    const currentSurfaceEmphasis = getSurfaceEmphasis(surface);
+    if (supportedStates?.[currentSurfaceEmphasis]) {
+      return;
+    }
+
+    const nextSurface =
+      surfaceToneOrder.find((value) => Boolean(supportedStates?.[getSurfaceEmphasis(value)])) ??
+      'default';
+    setSurface(nextSurface);
+
+    const nextEmphasis = getSurfaceEmphasis(nextSurface);
+    if (supportedStates?.[nextEmphasis] && emphasis !== nextEmphasis) {
+      setEmphasis(nextEmphasis);
+    }
+  }, [emphasis, isSwitchAvailable, supportedStates, surface]);
+
+  useEffect(() => {
     return () => {
       if (thumbShrinkChangeTimeoutRef.current) {
         clearTimeout(thumbShrinkChangeTimeoutRef.current);
@@ -165,8 +295,38 @@ export default function SwitchPage() {
     };
   }, []);
 
+  const handleSurfaceChange = (value: string) => {
+    const nextSurface = value as SwitchSurface;
+    if (nextSurface === surface) return;
+
+    const nextEmphasis = getSurfaceEmphasis(nextSurface);
+    if (!supportedStates?.[nextEmphasis]) return;
+
+    playWowTransition();
+    setSurface(nextSurface);
+    if (emphasis !== nextEmphasis) {
+      setEmphasis(nextEmphasis);
+    }
+  };
+
+  const handleEmphasisChange = (value: string) => {
+    const nextEmphasis = value as ComponentEmphasis;
+    if (nextEmphasis === emphasis) return;
+
+    const nextSurface = getSurfaceForEmphasis(nextEmphasis);
+    if (!supportedStates?.[nextEmphasis]) return;
+
+    playWowTransition();
+    setEmphasis(nextEmphasis);
+    if (surface !== nextSurface && supportedStates?.[getSurfaceEmphasis(nextSurface)]) {
+      setSurface(nextSurface);
+    }
+  };
+
+  const interactivePanelClassName = getSurfaceClassName(s.interactivePanel, surface);
+
   return (
-    <section className={`${s.page} k-root`}>
+    <section className={`${s.page} k-root`} style={pageStyle}>
       <header className={s.header}>
         <div>
           <h2>Switch V2</h2>
@@ -219,13 +379,16 @@ export default function SwitchPage() {
             width={160}
             options={emphasisSelectOptions}
             value={emphasis}
-            onValueChange={(value) => {
-              const nextEmphasis = value as ComponentEmphasis;
-              if (nextEmphasis === emphasis) return;
-              playWowTransition();
-              setEmphasis(nextEmphasis);
-            }}
+            onValueChange={handleEmphasisChange}
             disabled={!isSwitchAvailable || emphasisSelectOptions.length <= 1}
+          />
+          <SwatchRadioGroup
+            groupLabel="Surface"
+            value={surface}
+            onValueChange={handleSurfaceChange}
+            items={surfaceItems}
+            aria-label="Switch example surface"
+            className={s.surfaceControl}
           />
           <Select
             label="Motion"
@@ -279,7 +442,7 @@ export default function SwitchPage() {
         <>
           <section className={s.section}>
             <h3>Interactive</h3>
-            <div className={s.interactivePanel}>
+            <div className={interactivePanelClassName}>
               <Switch
                 id="switch-notifications"
                 label="Notifications"
@@ -299,7 +462,7 @@ export default function SwitchPage() {
           <section className={s.section}>
             <h3>States</h3>
             <div className={s.stateGrid}>
-              <StateTile title="Rest">
+              <StateTile title="Rest" surface={surface}>
                 <Switch
                   id="switch-state-rest"
                   label="Rest"
@@ -314,7 +477,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Selected">
+              <StateTile title="Selected" surface={surface}>
                 <Switch
                   id="switch-state-selected"
                   label="Selected"
@@ -329,7 +492,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Hover">
+              <StateTile title="Hover" surface={surface}>
                 <Switch
                   id="switch-state-hover"
                   label="Hover"
@@ -345,7 +508,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Hover Selected">
+              <StateTile title="Hover Selected" surface={surface}>
                 <Switch
                   id="switch-state-hover-selected"
                   label="Hover selected"
@@ -361,7 +524,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Pressed">
+              <StateTile title="Pressed" surface={surface}>
                 <Switch
                   id="switch-state-pressed"
                   label="Pressed"
@@ -377,7 +540,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Pressed Selected">
+              <StateTile title="Pressed Selected" surface={surface}>
                 <Switch
                   id="switch-state-pressed-selected"
                   label="Pressed selected"
@@ -393,7 +556,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Activation Feedback">
+              <StateTile title="Activation Feedback" surface={surface}>
                 <Switch
                   id="switch-state-activation-feedback"
                   label="Activation feedback"
@@ -410,7 +573,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Activation Feedback Selected">
+              <StateTile title="Activation Feedback Selected" surface={surface}>
                 <Switch
                   id="switch-state-activation-feedback-selected"
                   label="Activation feedback selected"
@@ -427,7 +590,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Focus">
+              <StateTile title="Focus" surface={surface}>
                 <Switch
                   id="switch-state-focus"
                   label="Focus"
@@ -443,7 +606,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Focus Selected">
+              <StateTile title="Focus Selected" surface={surface}>
                 <Switch
                   id="switch-state-focus-selected"
                   label="Focus selected"
@@ -459,7 +622,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Disabled">
+              <StateTile title="Disabled" surface={surface}>
                 <Switch
                   id="switch-disabled"
                   label="Disabled"
@@ -474,7 +637,7 @@ export default function SwitchPage() {
                   disabled
                 />
               </StateTile>
-              <StateTile title="Disabled Selected">
+              <StateTile title="Disabled Selected" surface={surface}>
                 <Switch
                   id="switch-disabled-selected"
                   label="Disabled selected"

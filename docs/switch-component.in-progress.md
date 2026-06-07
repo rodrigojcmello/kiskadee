@@ -32,6 +32,20 @@ optimized single-component implementation was promoted into
   value through `k-swt-e3a-a` / `k-swt-x5a-a`.
 - Do not apply the generated rounded radius class from `e3` to the thumb or `x5`; that reintroduces
   the raw track-radius bug. `pill` and `square` still use generated thumb radius classes directly.
+- KIS-33 keeps Switch-on-primary-surface inside the existing `emphasis="low"` contract. It does not
+  add a `ComponentEmphasis` value, does not reinterpret `intent="primary"`, and does not model this
+  as dark mode.
+- KIS-33 adds Switch `low` palettes to the Material 3 Google, iOS 26 Apple, and Fluent 2 Microsoft
+  presets. The low treatment is for strong local surfaces such as a primary example card surface.
+- The `/switch` Showcase owns a local `Surface` control. It keeps the previous visual-test
+  backgrounds as card-local surfaces: default, gray, light primary, primary, dark gray, dark
+  primary, and black. The Surface and Emphasis controls are intentionally tied: default, gray, and
+  light primary select `emphasis="medium"`; primary, dark gray, dark primary, and black select
+  `emphasis="low"` when supported. If the current preset/intent does not expose the required
+  emphasis, the matching Surface options are omitted. Changing Emphasis also moves the Surface
+  back to the matching pedagogical surface.
+- Showcase background tone resolution is reusable through `use-background-tones`; the Switch flow no
+  longer paints `document.body` or `document.documentElement`.
 
 ## Validation
 
@@ -49,3 +63,23 @@ optimized single-component implementation was promoted into
 - 2026-06-06: `pnpm --filter @kiskadee/react-components build`
 - 2026-06-06: `pnpm --filter @kiskadee/showcase run build:components`
 - 2026-06-06: `pnpm --filter @kiskadee/showcase run build:artifacts`
+- 2026-06-07: KIS-33 Switch `low` on primary local surfaces implemented for Material 3 Google, iOS
+  26 Apple, and Fluent 2 Microsoft.
+- 2026-06-07: `pnpm --filter @kiskadee/web-builder run build-sync-generate`
+- 2026-06-07: `pnpm --filter @kiskadee/react-components build`
+- 2026-06-07: `pnpm --filter @kiskadee/showcase build`
+- 2026-06-07: `git diff --check`
+- 2026-06-07: Visual validation on `/switch` passed for Material 3 Google, iOS 26 Apple, and Fluent
+  2 Microsoft by toggling `Surface: Default/Primary`; card surfaces changed locally, `body/html`
+  stayed unpainted, and emphasis followed `Medium`/`Low`.
+- 2026-06-07: KIS-33 Showcase surface control restored the historical contrast backgrounds as local
+  card surfaces without restoring the global `body/html` background side effect.
+- 2026-06-07: `pnpm --filter @kiskadee/showcase build`
+- 2026-06-07: `git diff --check`
+- 2026-06-07: Browser validation on `/switch` confirmed seven local Surface swatches, black and
+  primary card surfaces, no `body/html` background paint, and `Primary`/`Default` emphasis sync.
+- 2026-06-07: KIS-33 Showcase Surface and Emphasis controls were tied together so dark/strong
+  surfaces cannot leave the Switch on an incoherent emphasis.
+- 2026-06-07: `pnpm --filter @kiskadee/showcase build`
+- 2026-06-07: Carbon by IBM validation confirmed dark/strong Surface options are omitted because
+  Carbon only exposes `emphasis="medium"` for Switch.

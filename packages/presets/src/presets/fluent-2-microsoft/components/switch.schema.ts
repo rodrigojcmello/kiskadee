@@ -1,4 +1,4 @@
-import { type Schema, withAlpha } from '@kiskadee/core';
+import { type Schema, type SolidColor, withAlpha } from '@kiskadee/core';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
 type SwitchComponent = NonNullable<Schema<never>['components']['switch']>;
@@ -7,6 +7,14 @@ type Fluent2MicrosoftSegmentName = 'default';
 type CreateFluent2MicrosoftSwitchSchemaArgs = {
   c: PresetColorGetter<Fluent2MicrosoftSegmentName>;
 };
+
+function fluentSwitchColorWithAlpha(color: SolidColor, visibility: number): SolidColor {
+  const alphaColor = withAlpha(color, visibility);
+  if (alphaColor === undefined) {
+    throw new Error('Expected Fluent switch color before applying transparent alpha.');
+  }
+  return alphaColor;
+}
 
 export function createFluent2MicrosoftSwitchSchema({
   c
@@ -21,6 +29,14 @@ export function createFluent2MicrosoftSwitchSchema({
   const primary80 = c('default', 'l', 'primary', 80);
   const polarityOffThumb = '#C50F1F';
   const polarityOnTrack = '#107C10';
+  const onPrimaryTrack = fluentSwitchColorWithAlpha(white, 28);
+  const onPrimaryTrackHover = fluentSwitchColorWithAlpha(white, 36);
+  const onPrimaryTrackPressed = fluentSwitchColorWithAlpha(white, 44);
+  const onPrimaryTrackDisabled = fluentSwitchColorWithAlpha(white, 12);
+  const onPrimaryBorder = fluentSwitchColorWithAlpha(white, 72);
+  const onPrimaryBorderHover = fluentSwitchColorWithAlpha(white, 88);
+  const onPrimaryBorderDisabled = fluentSwitchColorWithAlpha(white, 20);
+  const onPrimaryTextDisabled = fluentSwitchColorWithAlpha(white, 38);
 
   if (transparent === undefined) {
     throw new Error('Expected Fluent switch.neutral tone 100 before applying transparent alpha.');
@@ -77,6 +93,19 @@ export function createFluent2MicrosoftSwitchSchema({
                               pressed: { ref: primary80 }
                             },
                             disabled: { ref: neutral6 }
+                          },
+                          low: {
+                            rest: onPrimaryTrack,
+                            hover: { ref: onPrimaryTrackHover },
+                            focus: { ref: onPrimaryTrack },
+                            pressed: { ref: onPrimaryTrackPressed },
+                            selected: {
+                              rest: { ref: white },
+                              hover: { ref: white },
+                              focus: { ref: white },
+                              pressed: { ref: white }
+                            },
+                            disabled: { ref: onPrimaryTrackDisabled }
                           }
                         },
                         polarity: {
@@ -84,6 +113,12 @@ export function createFluent2MicrosoftSwitchSchema({
                             rest: white,
                             selected: {
                               rest: { ref: polarityOnTrack }
+                            }
+                          },
+                          low: {
+                            rest: onPrimaryTrack,
+                            selected: {
+                              rest: { ref: white }
                             }
                           }
                         }
@@ -102,11 +137,30 @@ export function createFluent2MicrosoftSwitchSchema({
                               pressed: { ref: transparent }
                             },
                             disabled: { ref: '#D1D1D1' } // cinza claro
+                          },
+                          low: {
+                            rest: onPrimaryBorder,
+                            hover: { ref: onPrimaryBorderHover },
+                            focus: { ref: onPrimaryBorder },
+                            pressed: { ref: onPrimaryBorderHover },
+                            selected: {
+                              rest: { ref: transparent },
+                              hover: { ref: transparent },
+                              focus: { ref: transparent },
+                              pressed: { ref: transparent }
+                            },
+                            disabled: { ref: onPrimaryBorderDisabled }
                           }
                         },
                         polarity: {
                           medium: {
                             rest: '#616161',
+                            selected: {
+                              rest: { ref: transparent }
+                            }
+                          },
+                          low: {
+                            rest: onPrimaryBorder,
                             selected: {
                               rest: { ref: transparent }
                             }
@@ -148,6 +202,19 @@ export function createFluent2MicrosoftSwitchSchema({
                               pressed: { ref: white }
                             },
                             disabled: { ref: neutral25 }
+                          },
+                          low: {
+                            rest: white,
+                            hover: { ref: white },
+                            focus: { ref: white },
+                            pressed: { ref: white },
+                            selected: {
+                              rest: { ref: primary60 },
+                              hover: { ref: primary70 },
+                              focus: { ref: primary60 },
+                              pressed: { ref: primary80 }
+                            },
+                            disabled: { ref: onPrimaryTextDisabled }
                           }
                         },
                         polarity: {
@@ -155,6 +222,12 @@ export function createFluent2MicrosoftSwitchSchema({
                             rest: polarityOffThumb,
                             selected: {
                               rest: { ref: white }
+                            }
+                          },
+                          low: {
+                            rest: white,
+                            selected: {
+                              rest: { ref: polarityOnTrack }
                             }
                           }
                         }
@@ -167,10 +240,23 @@ export function createFluent2MicrosoftSwitchSchema({
                               rest: { ref: transparent }
                             },
                             disabled: { ref: transparent }
+                          },
+                          low: {
+                            rest: transparent,
+                            selected: {
+                              rest: { ref: transparent }
+                            },
+                            disabled: { ref: transparent }
                           }
                         },
                         polarity: {
                           medium: {
+                            rest: transparent,
+                            selected: {
+                              rest: { ref: transparent }
+                            }
+                          },
+                          low: {
                             rest: transparent,
                             selected: {
                               rest: { ref: transparent }
@@ -202,11 +288,18 @@ export function createFluent2MicrosoftSwitchSchema({
                           medium: {
                             rest: '#242424', // preto acinzentado (quase preto)
                             disabled: { ref: neutral25 }
+                          },
+                          low: {
+                            rest: white,
+                            disabled: { ref: onPrimaryTextDisabled }
                           }
                         },
                         polarity: {
                           medium: {
                             rest: '#242424' // preto acinzentado (quase preto)
+                          },
+                          low: {
+                            rest: white
                           }
                         }
                       }
@@ -234,11 +327,18 @@ export function createFluent2MicrosoftSwitchSchema({
                           medium: {
                             rest: '#242424',
                             disabled: { ref: neutral25 }
+                          },
+                          low: {
+                            rest: white,
+                            disabled: { ref: onPrimaryTextDisabled }
                           }
                         },
                         polarity: {
                           medium: {
                             rest: '#242424'
+                          },
+                          low: {
+                            rest: white
                           }
                         }
                       }

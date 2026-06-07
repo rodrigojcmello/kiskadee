@@ -103,6 +103,26 @@ Do not add `components.switch.options.intent` only because a preset exposes more
 than one Switch intent. The public default remains `neutral.medium`; consumers
 choose another intent through the component API when they need it.
 
+### Switch Low Emphasis On Strong Surfaces
+
+Use `low` when the same Switch presentation must sit on a strong local surface,
+such as a primary-colored card in the Showcase. This is not dark mode and does
+not introduce a new color mode. The page/theme can remain light while the local
+example surface is primary.
+
+For this case, keep the public semantic axis stable and lower the visual
+strength inside the current intent:
+
+```txt
+neutral.medium = default Switch on the normal surface
+neutral.low    = same Switch adapted for a strong primary surface
+```
+
+The low treatment should keep the Switch readable on the strong surface, usually
+with white, transparent, or very light primary surfaces for the track/thumb/text
+and enough contrast for selected/on state cues. Do not create a new
+`ComponentEmphasis` value for this; use the existing `low` bucket.
+
 ### Binary Control State And Interaction State
 
 Binary controls have two independent axes:
