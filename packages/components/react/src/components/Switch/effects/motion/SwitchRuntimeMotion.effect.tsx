@@ -1,7 +1,15 @@
 import './SwitchRuntimeMotion.structural.css';
 import type { SwitchActivationMotion } from '@kiskadee/core';
 import { animate, motion, useMotionValue } from 'motion/react';
-import { type ReactNode, type RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  type PointerEvent,
+  type ReactNode,
+  type RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import { join } from '../.././Switch.class-names.ts';
 import type { SwitchClassNames } from '../.././Switch.types.ts';
 
@@ -31,9 +39,8 @@ export type SwitchRuntimeMotionThumbProps = {
   onActivationFeedbackCancel?: () => void;
 };
 
-const SWITCH_MOTION_DRAG_THRESHOLD = 3;
 const SWITCH_MOTION_EXTREMITY_EPSILON = 0.5;
-const SWITCH_MOTION_VELOCITY_PROJECTION = 0.18;
+const SWITCH_MOTION_CLICK_SUPPRESSION_THRESHOLD = 1;
 const SWITCH_MOTION_THUMB_TRANSITIONS = {
   standard: {
     type: 'spring',
@@ -122,7 +129,13 @@ export function SwitchRuntimeMotionThumb({
   );
   const animationControlsRef = useRef<{ stop: () => void } | null>(null);
   const isDraggingRef = useRef(false);
-  const hasDraggedRef = useRef(false);
+  const pointerIntentRef = useRef<{
+    id: number;
+    startX: number;
+    startY: number;
+    moved: boolean;
+  } | null>(null);
+  const dragStartControlStateRef = useRef(controlState);
   const latestDragControlStateRef = useRef(controlState);
   const previousControlStateRef = useRef(controlState);
   const previousInlineDirectionRef = useRef(inlineDirection);
@@ -139,6 +152,45 @@ export function SwitchRuntimeMotionThumb({
       animationControlsRef.current = animate(thumbX, target, thumbTransition);
     },
     [thumbTransition, thumbX]
+  );
+
+  const handlePointerIntent = useCallback(
+    (event: PointerEvent<HTMLSpanElement>) => {
+      if (event.type === 'pointerdown') {
+        if (!canDrag || !event.isPrimary) return;
+
+        pointerIntentRef.current = {
+          id: event.pointerId,
+          startX: event.clientX,
+          startY: event.clientY,
+          moved: false
+        };
+        return;
+      }
+
+      const pointerIntent = pointerIntentRef.current;
+      if (!pointerIntent || pointerIntent.id !== event.pointerId) return;
+
+      if (event.type !== 'pointermove') {
+        if (pointerIntent.moved) {
+          requestSuppressNextClick();
+        }
+        pointerIntentRef.current = null;
+        return;
+      }
+
+      if (pointerIntent.moved) return;
+
+      const deltaX = Math.abs(event.clientX - pointerIntent.startX);
+      const deltaY = Math.abs(event.clientY - pointerIntent.startY);
+      if (deltaX <= SWITCH_MOTION_CLICK_SUPPRESSION_THRESHOLD || deltaX < deltaY) {
+        return;
+      }
+
+      pointerIntent.moved = true;
+      onActivationFeedbackCancel?.();
+    },
+    [canDrag, onActivationFeedbackCancel, requestSuppressNextClick]
   );
 
   useEffect(() => {
@@ -193,16 +245,20 @@ export function SwitchRuntimeMotionThumb({
       dragMomentum={false}
       initial={false}
       style={{ x: thumbX }}
+      onPointerDown={handlePointerIntent}
+      onPointerMove={handlePointerIntent}
+      onPointerUp={handlePointerIntent}
+      onPointerCancel={handlePointerIntent}
       onDragStart={() => {
         if (!canDrag) return;
         isDraggingRef.current = true;
         onActivationFeedbackCancel?.();
-        hasDraggedRef.current = false;
+        dragStartControlStateRef.current = controlState;
         setDragPreviewControlState(null);
         latestDragControlStateRef.current = controlState;
         animationControlsRef.current?.stop();
       }}
-      onDrag={(_, info) => {
+      onDrag={() => {
         const constrainedOffset = clamp(thumbX.get(), dragMin, dragMax);
         if (constrainedOffset !== thumbX.get()) {
           thumbX.set(constrainedOffset);
@@ -224,24 +280,18 @@ export function SwitchRuntimeMotionThumb({
           latestDragControlStateRef.current = extremityControlState;
           setDragPreviewControlState(extremityControlState);
         }
-
-        if (Math.abs(info.offset.x) > SWITCH_MOTION_DRAG_THRESHOLD) {
-          hasDraggedRef.current = true;
-          onActivationFeedbackCancel?.();
-        }
       }}
-      onDragEnd={(_, info) => {
+      onDragEnd={() => {
         if (!canDrag) return;
 
         const currentOffset = normalizeThumbOffset(thumbX.get(), inlineDirection, thumbTranslation);
-        const projectedOffset =
-          currentOffset + info.velocity.x * inlineDirection * SWITCH_MOTION_VELOCITY_PROJECTION;
-        const nextControlState = projectedOffset >= thumbTranslation / 2;
+        const nextControlState =
+          thumbTranslation > 0
+            ? currentOffset >= thumbTranslation / 2
+            : dragStartControlStateRef.current;
 
         isDraggingRef.current = false;
-        if (hasDraggedRef.current || Math.abs(info.offset.x) > SWITCH_MOTION_DRAG_THRESHOLD) {
-          requestSuppressNextClick();
-        }
+        requestSuppressNextClick();
         latestDragControlStateRef.current = nextControlState;
         setControlState(nextControlState);
         setDragPreviewControlState(null);
