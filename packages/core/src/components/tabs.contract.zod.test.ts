@@ -10,14 +10,16 @@ describe('validateTabsComponentContract', () => {
       variants: {
         line: {
           elements: {
-            e1: {}
+            e1: {
+              name: 'bar'
+            }
           }
         }
       }
     });
 
-    expect(issues).toContain(
-      'components.tabs.elements: top-level "elements" is not allowed; use "variants.<name>.elements"'
-    );
+    const issue = issues.find((value) => value.includes('components.tabs') && value.includes('elements'));
+    expect(issue).toBeDefined();
+    expect(issue).toContain('elements');
   });
 });

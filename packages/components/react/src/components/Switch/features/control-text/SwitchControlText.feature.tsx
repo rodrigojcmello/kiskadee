@@ -1,4 +1,4 @@
-import './SwitchControlText.structural.css';
+import './SwitchControlText.structural.scss';
 import {
   breakpoints,
   type ComponentEmphasis,

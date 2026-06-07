@@ -10,7 +10,8 @@ const distDir = path.resolve(packageRoot, 'dist');
 
 /**
  * Rewrites relative import specifiers ending in `.ts`/`.tsx`/`.mts`/`.cts` to
- * their JavaScript counterparts (`.js`/`.mjs`/`.cjs`) inside emitted artifacts.
+ * their JavaScript counterparts (`.js`/`.mjs`/`.cjs`) and `.scss` to `.css`
+ * inside emitted artifacts.
  *
  * This compensates for two upstream gaps:
  *  - esbuild with `bundle: false` preserves specifiers literally (does not
@@ -26,6 +27,13 @@ const TS_TO_JS_EXTENSION: Record<string, string> = {
   '.tsx': '.js',
   '.mts': '.mjs',
   '.cts': '.cjs'
+};
+const STYLE_TO_CSS_EXTENSION: Record<string, string> = {
+  '.scss': '.css'
+};
+const SPECIFIER_EXTENSIONS: Record<string, string> = {
+  ...TS_TO_JS_EXTENSION,
+  ...STYLE_TO_CSS_EXTENSION
 };
 
 const TARGET_FILE_EXTENSIONS = new Set(['.js', '.mjs', '.cjs', '.d.ts', '.d.mts', '.d.cts']);
@@ -56,9 +64,9 @@ async function findTargetFiles(dir: string): Promise<string[]> {
 
 function rewriteSpecifier(specifier: string): string {
   if (!specifier.startsWith('./') && !specifier.startsWith('../')) return specifier;
-  for (const [tsExt, jsExt] of Object.entries(TS_TO_JS_EXTENSION)) {
-    if (specifier.endsWith(tsExt)) {
-      return specifier.slice(0, -tsExt.length) + jsExt;
+  for (const [sourceExt, outputExt] of Object.entries(SPECIFIER_EXTENSIONS)) {
+    if (specifier.endsWith(sourceExt)) {
+      return specifier.slice(0, -sourceExt.length) + outputExt;
     }
   }
   return specifier;
@@ -111,7 +119,7 @@ export async function rewriteDistExtensions(): Promise<void> {
   }
 
   console.log(
-    `[react-components] Rewrote TS→JS extensions: ${totalChanges} imports across ${filesChanged} files (of ${files.length} scanned).`
+    `[react-components] Rewrote dist extensions: ${totalChanges} imports across ${filesChanged} files (of ${files.length} scanned).`
   );
 }
 

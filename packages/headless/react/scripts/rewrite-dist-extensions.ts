@@ -14,6 +14,13 @@ const TS_TO_JS_EXTENSION: Record<string, string> = {
   '.mts': '.mjs',
   '.cts': '.cjs'
 };
+const STYLE_TO_CSS_EXTENSION: Record<string, string> = {
+  '.scss': '.css'
+};
+const SPECIFIER_EXTENSIONS: Record<string, string> = {
+  ...TS_TO_JS_EXTENSION,
+  ...STYLE_TO_CSS_EXTENSION
+};
 
 const TARGET_FILE_EXTENSIONS = new Set(['.js', '.mjs', '.cjs', '.d.ts', '.d.mts', '.d.cts']);
 
@@ -43,9 +50,9 @@ async function findTargetFiles(dir: string): Promise<string[]> {
 
 function rewriteSpecifier(specifier: string): string {
   if (!specifier.startsWith('./') && !specifier.startsWith('../')) return specifier;
-  for (const [tsExt, jsExt] of Object.entries(TS_TO_JS_EXTENSION)) {
-    if (specifier.endsWith(tsExt)) {
-      return specifier.slice(0, -tsExt.length) + jsExt;
+  for (const [sourceExt, outputExt] of Object.entries(SPECIFIER_EXTENSIONS)) {
+    if (specifier.endsWith(sourceExt)) {
+      return specifier.slice(0, -sourceExt.length) + outputExt;
     }
   }
   return specifier;
@@ -98,7 +105,7 @@ export async function rewriteDistExtensions(): Promise<void> {
   }
 
   console.log(
-    `[react-headless] Rewrote TS to JS extensions: ${totalChanges} imports across ${filesChanged} files (of ${files.length} scanned).`
+    `[react-headless] Rewrote dist extensions: ${totalChanges} imports across ${filesChanged} files (of ${files.length} scanned).`
   );
 }
 

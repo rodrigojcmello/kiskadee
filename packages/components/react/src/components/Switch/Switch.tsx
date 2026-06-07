@@ -1,5 +1,5 @@
-import './Switch.structural.css';
-import './effects/thumb-shrink/SwitchThumbShrink.structural.css';
+import './Switch.structural.scss';
+import './effects/thumb-shrink/SwitchThumbShrink.structural.scss';
 import { HeadlessSwitch } from '@kiskadee/react-headless';
 import { type ElementType, memo, useMemo } from 'react';
 import {

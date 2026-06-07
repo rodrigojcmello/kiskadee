@@ -1,4 +1,4 @@
-import './SwitchRuntimeMotion.structural.css';
+import './SwitchRuntimeMotion.structural.scss';
 import type { SwitchActivationMotion } from '@kiskadee/core';
 import { animate, motion, useMotionValue } from 'motion/react';
 import {

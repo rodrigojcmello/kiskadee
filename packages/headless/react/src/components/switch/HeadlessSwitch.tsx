@@ -1,4 +1,4 @@
-import './HeadlessSwitch.structural.css';
+import './HeadlessSwitch.structural.scss';
 import { stateActivator as cn, type ProjectedStateKeys } from '@kiskadee/core';
 import type {
   ChangeEvent,
