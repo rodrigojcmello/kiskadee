@@ -8,6 +8,9 @@
     "node": ">=24"
   },
   "scripts": {
+    "prepare": "husky",
+    "biome": "biome check --write .",
+    "precommit": "pnpm biome && pnpm test",
     "test": "vitest run",
     "commitlint": "commitlint --edit"
   },
