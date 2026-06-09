@@ -1,0 +1,49 @@
+/*
+ * Activation-feedback overflow-static structural registry:
+ * afx = overflow-static host
+ * afxa = active host
+ */
+
+/*
+ * effect host / afx
+ * Owns the shared overflow-static layer and default runtime geometry slots.
+ */
+.k-afx {
+  --k-af-x: 50%;
+  --k-af-y: 50%;
+  --k-af-start-size: 0px;
+  --k-af-end-size: 0px;
+
+  isolation: isolate;
+}
+
+/*
+ * effect layer / afx::after
+ * Draws the static circular feedback behind the host from generated and runtime variables.
+ */
+.k-afx::after {
+  content: '';
+  position: absolute;
+  left: var(--k-af-x);
+  top: var(--k-af-y);
+  width: calc(var(--k-af-end-size) + (var(--k-af-thickness) * 2));
+  height: calc(var(--k-af-end-size) + (var(--k-af-thickness) * 2));
+  z-index: -1;
+  display: block;
+  border-radius: 999px;
+  background: var(--k-af-color);
+  box-shadow: none;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: opacity var(--k-af-fade-duration) var(--k-af-fade-ease);
+}
+
+/*
+ * effect host modifier 'a' / afxa
+ * Keeps the feedback visible until the runtime starts the opacity fade.
+ */
+.k-afxa::after {
+  opacity: var(--k-af-opacity);
+  transition-duration: 0ms;
+}

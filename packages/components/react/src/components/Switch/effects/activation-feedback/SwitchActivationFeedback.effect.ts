@@ -1,3 +1,4 @@
+import '../../../../hooks/effects/activation-feedback/ActivationFeedbackOverflowStatic.structural.css';
 import './SwitchActivationFeedback.structural.css';
 import type { ComponentEmphasis } from '@kiskadee/core';
 import {
@@ -35,8 +36,8 @@ export function resolveSwitchActivationFeedbackEffect({
       e3:
         join(
           activationFeedbackClassName,
-          'k-swt-e3b-a',
-          isActive ? 'k-swt-e3c-a' : '',
+          'k-afx',
+          isActive ? 'k-afxa' : '',
           emphasis === 'low' ? 'k-swt-e3f-a' : ''
         ) ?? ''
     }

@@ -33,7 +33,19 @@ export const schema: Schema<Segment> = {
         thickness: 8,
         holdDurationToken: 'interaction.hold.short',
         fadeDurationToken: 'interaction.fade.long',
-        curveToken: 'motion.standard.out'
+        curveToken: 'motion.standard.out',
+        profiles: {
+          overflowStatic: {
+            animateSize: false,
+            size: 'auto',
+            durationToken: 'interaction.instant',
+            fade: {
+              delayToken: 'interaction.hold.short',
+              durationToken: 'interaction.fade.long',
+              curveToken: 'motion.standard.out'
+            }
+          }
+        }
       }
     },
     radius: 'rounded'
@@ -45,7 +57,17 @@ export const schema: Schema<Segment> = {
           effects: {
             activationFeedback: {
               color: '#000000',
-              opacity: 0.12
+              opacity: 0.12,
+              surfaceTone: {
+                subtle: {
+                  color: '#000000',
+                  opacity: 0.12
+                },
+                vivid: {
+                  color: '#FFFFFF',
+                  opacity: 0.2
+                }
+              }
             }
           }
         }

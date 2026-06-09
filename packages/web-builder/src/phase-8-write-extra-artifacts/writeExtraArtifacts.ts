@@ -334,10 +334,19 @@ export async function writeExtraArtifacts(params: {
       const background = themeTokens?.background;
       const activationFeedback = themeTokens?.effects?.activationFeedback;
       const ripple = themeTokens?.effects?.ripple;
+      const activationFeedbackSubtle = activationFeedback?.surfaceTone?.subtle;
+      const activationFeedbackVivid = activationFeedback?.surfaceTone?.vivid;
+      const activationFeedbackSubtleColor = activationFeedbackSubtle?.color ?? activationFeedback?.color;
+      const activationFeedbackSubtleOpacity =
+        activationFeedbackSubtle?.opacity ?? activationFeedback?.opacity;
       const tokensCss = buildRootTokensCss([
         { name: '--k-focus-color', value: toCssColor(color) },
-        { name: '--k-af-token-color', value: toCssColor(activationFeedback?.color) },
-        { name: '--k-af-token-opacity', value: activationFeedback?.opacity },
+        { name: '--k-af-subtle-color', value: toCssColor(activationFeedbackSubtleColor) },
+        { name: '--k-af-subtle-opacity', value: activationFeedbackSubtleOpacity },
+        { name: '--k-af-vivid-color', value: toCssColor(activationFeedbackVivid?.color) },
+        { name: '--k-af-vivid-opacity', value: activationFeedbackVivid?.opacity },
+        { name: '--k-af-token-color', value: toCssColor(activationFeedbackSubtleColor) },
+        { name: '--k-af-token-opacity', value: activationFeedbackSubtleOpacity },
         { name: '--k-ripple-surface-color', value: toCssColor(ripple?.surface?.color) },
         { name: '--k-ripple-surface-opacity', value: ripple?.surface?.opacity },
         { name: '--k-ripple-overflow-color', value: toCssColor(ripple?.overflow?.color) },

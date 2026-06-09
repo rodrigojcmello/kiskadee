@@ -214,7 +214,7 @@ function Button(inputProps: ButtonWithRippleProps) {
   const rippleProfileBucket = shouldUsePressedRippleProfile
     ? rippleClassTokens.pressedBucket || rippleClassTokens.modeBucket
     : rippleClassTokens.modeBucket;
-  const rippleClasses = [rippleProfileBucket, rippleClassTokens.emphasisClass, 'k-ripple']
+  const rippleClasses = [rippleProfileBucket, rippleClassTokens.emphasisClass, 'k-ripple', 'k-btn-e1a']
     .filter(Boolean)
     .join(' ');
 
@@ -222,9 +222,9 @@ function Button(inputProps: ButtonWithRippleProps) {
     ...baseClassNames,
     e1: `${baseClassNames.e1}${rippleClasses ? ` ${rippleClasses}` : ''}${
       shouldUsePressedFeedback ? ' k-pressed' : ''
-    }${shouldRenderRippleActive ? ' k-ripple-active' : ''}${
+    }${shouldRenderRippleActive ? ' k-ripple-active k-btn-e1b' : ''}${
       rippleMachine.isRippleFading && rippleMode && !shouldForceOverlayPressed
-        ? ' k-ripple-fade'
+        ? ' k-ripple-fade k-btn-e1c'
         : ''
     }`
   };

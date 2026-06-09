@@ -118,6 +118,27 @@ function rippleBucketForKey(key: string): string {
 }
 // [RIPPLE EFFECT 14] END: Ripple bucket compaction for class-map payload.
 
+function activationFeedbackBucketForKey(key: string): string {
+  if (!key.startsWith('activationFeedbackProfile')) return 'af';
+
+  const separatorIndex = key.indexOf('__');
+  const rawValue = separatorIndex === -1 ? '' : key.slice(separatorIndex + 2);
+
+  if (rawValue.startsWith('{')) {
+    try {
+      const parsed = JSON.parse(rawValue) as { profile?: string };
+      if (parsed.profile === 'surface') return 'afs';
+      if (parsed.profile === 'overflow') return 'afo';
+      if (parsed.profile === 'overflow-static') return 'afx';
+      if (parsed.profile === 'pressed') return 'afp';
+    } catch {
+      // fall through to default
+    }
+  }
+
+  return 'af';
+}
+
 /**
  * Produces two JSON-friendly maps of class names from the aggregated StyleKeys:
  * - core: decorations in `d` (always-on), effects in `e` per interaction state (opt-in),
@@ -234,7 +255,7 @@ export function generateClassNamesMapSplit(
             // Bucket by effect family inferred from the style key prefix.
             // Keep compact bucket keys (1-3 chars) for minimal payload.
             let bucket: string;
-            if (key.startsWith('activationFeedback')) bucket = 'af';
+            if (key.startsWith('activationFeedback')) bucket = activationFeedbackBucketForKey(key);
             else if (key.startsWith('shadow')) bucket = 'h';
             else if (key.startsWith('borderRadiusRounded')) bucket = 'rr';
             else if (key.startsWith('borderRadiusPill')) bucket = 'rp';

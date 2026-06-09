@@ -64,6 +64,34 @@ Structural classes must be:
 
 The system intentionally favors compact naming over mnemonic naming.
 
+## Shared structural effect namespace
+
+Most structural CSS is component-scoped. Component-agnostic effects may use a shared effect namespace
+when the selector owns reusable effect plumbing instead of component geometry.
+
+Use:
+
+```txt
+k-<effect>
+k-<effect><a-z>
+```
+
+Examples:
+
+- `k-afx` for activation-feedback `overflow-static`,
+- `k-afxa` for the first structural modifier of that effect host.
+
+Rules:
+
+- shared effect namespaces must use the same compact `k-` prefix and a short three-letter id,
+- use them only for reusable effect structure that can be attached to different component elements,
+- do not put component layout, component geometry, or token decisions in shared effect selectors,
+- component structural CSS must still own the bridge that chooses the target element and resolves local
+  quirks such as clipping, positioning, or tone selection,
+- effect selectors may consume generated effect variables and runtime structural variables emitted by
+  the effect hook,
+- if an effect host requires component-specific positioning, the component bridge must provide it.
+
 ## Canonical naming grammar
 
 ### 1. Namespace

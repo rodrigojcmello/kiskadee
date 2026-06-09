@@ -73,6 +73,7 @@ function SwitchRoot(props: SwitchProps) {
     onControlStateChange,
     onClickCapture,
     onPointerDown,
+    onPointerUp,
     onPointerCancel,
     onBlur,
     ...rootProps
@@ -193,8 +194,10 @@ function SwitchRoot(props: SwitchProps) {
     readOnly,
     inputProps,
     onPointerDown,
+    onPointerUp,
     onPointerCancel,
     onBlur,
+    thumbRef: motionController.thumbProps.thumbRef,
     trackRef: motionController.thumbProps.trackRef
   });
   const statefulClassNames = useMemo(
@@ -213,11 +216,13 @@ function SwitchRoot(props: SwitchProps) {
       activationFeedbackEffect.resolveSwitchActivationFeedbackEffect({
         emphasis,
         elements,
-        isActive: activationFeedbackController.isActive
+        isActive:
+          activationFeedbackController.isActive && !activationFeedbackController.isFading
       }).classNamePatch
     );
   }, [
     activationFeedbackController.isActive,
+    activationFeedbackController.isFading,
     activationFeedbackEffect,
     emphasis,
     elements,
@@ -250,6 +255,7 @@ function SwitchRoot(props: SwitchProps) {
       onControlStateChange={motionController.setControlState}
       onClickCapture={motionController.handleClickCapture}
       onPointerDown={activationFeedbackController.rootHandlers.onPointerDown}
+      onPointerUp={activationFeedbackController.rootHandlers.onPointerUp}
       onPointerCancel={activationFeedbackController.rootHandlers.onPointerCancel}
       onBlur={activationFeedbackController.rootHandlers.onBlur}
       classNames={resolvedClassNames}

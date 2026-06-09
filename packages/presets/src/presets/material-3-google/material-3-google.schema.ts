@@ -49,7 +49,61 @@ export const schema: Schema<Segments> = {
         thickness: 8,
         holdDurationToken: 'interaction.hold.short',
         fadeDurationToken: 'interaction.fade.long',
-        curveToken: 'motion.standard.out'
+        curveToken: 'motion.standard.out',
+        profile: 'surface',
+        origin: 'pointer',
+        inputFeedback: {
+          mouse: 'pressed',
+          keyboard: 'pressed'
+        },
+        pressedVisual: 'overlay',
+        profiles: {
+          surface: {
+            animateSize: true,
+            size: 'auto',
+            durationToken: 'interaction.slow',
+            curveToken: 'motion.emphasized.out',
+            fade: {
+              delayToken: 'interaction.hold.short',
+              durationToken: 'interaction.fade.short',
+              curveToken: 'motion.standard.out'
+            }
+          },
+          overflow: {
+            animateSize: true,
+            size: 80,
+            durationToken: 'interaction.fast',
+            curveToken: 'motion.standard.out',
+            fade: {
+              delayToken: 'interaction.hold.short',
+              durationToken: 'interaction.fade.short',
+              curveToken: 'motion.standard.out'
+            }
+          },
+          overflowStatic: {
+            animateSize: false,
+            size: 80,
+            durationToken: 'interaction.instant',
+            fade: {
+              delayToken: 'interaction.hold.short',
+              durationToken: 'interaction.fade.long',
+              curveToken: 'motion.standard.out'
+            },
+            border: { width: 1, surfaceTone: 'vivid' }
+          },
+          pressed: {
+            animateSize: false,
+            size: 'auto',
+            // Slightly longer hold to keep mouse/trackpad tap feedback visible.
+            durationToken: 'interaction.hold.short',
+            curveToken: 'motion.standard.out',
+            fade: {
+              delayToken: 'interaction.hold.short',
+              durationToken: 'interaction.fade.long',
+              curveToken: 'motion.standard.out'
+            }
+          }
+        }
       },
       ripple: {
         mode: 'surface',
@@ -128,8 +182,16 @@ export const schema: Schema<Segments> = {
           focusColor: c('default', 'l', 'primary.v2', 60), // =
           effects: {
             activationFeedback: {
-              color: '#1D1B20',
-              opacity: 0.1
+              surfaceTone: {
+                subtle: {
+                  color: '#1D1B20',
+                  opacity: 0.1
+                },
+                vivid: {
+                  color: white,
+                  opacity: 0.2
+                }
+              }
             },
             ripple: {
               surface: {

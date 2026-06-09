@@ -1,7 +1,7 @@
 import type { ActivationFeedbackEffectSchema } from '@kiskadee/core';
 import type { SwitchInputProps } from '@kiskadee/react-headless';
 import { type FocusEvent, type PointerEvent, type RefObject, useCallback, useMemo } from 'react';
-import { useActivationFeedback } from '../../../../hooks/effects/activation-feedback/useActivationFeedback.ts';
+import { useActivationFeedbackOverflowStatic } from '../../../../hooks/effects/activation-feedback/useActivationFeedbackOverflowStatic.ts';
 
 type SwitchActivationFeedbackControllerOptions = {
   config?: ActivationFeedbackEffectSchema;
@@ -11,7 +11,9 @@ type SwitchActivationFeedbackControllerOptions = {
   onBlur?: (event: FocusEvent<HTMLLabelElement>) => void;
   onPointerCancel?: (event: PointerEvent<HTMLLabelElement>) => void;
   onPointerDown?: (event: PointerEvent<HTMLLabelElement>) => void;
+  onPointerUp?: (event: PointerEvent<HTMLLabelElement>) => void;
   readOnly?: boolean;
+  thumbRef: RefObject<HTMLSpanElement | null>;
   trackRef: RefObject<HTMLSpanElement | null>;
 };
 
@@ -19,12 +21,16 @@ type SwitchActivationFeedbackControllerResult = {
   cancel: () => void;
   inputProps?: SwitchInputProps;
   isActive: boolean;
+  isFading: boolean;
   rootHandlers: {
     onBlur?: (event: FocusEvent<HTMLLabelElement>) => void;
     onPointerCancel?: (event: PointerEvent<HTMLLabelElement>) => void;
     onPointerDown?: (event: PointerEvent<HTMLLabelElement>) => void;
+    onPointerUp?: (event: PointerEvent<HTMLLabelElement>) => void;
   };
 };
+
+const SWITCH_ACTIVATION_FEEDBACK_KEYBOARD_KEYS = [' '] as const;
 
 export function useSwitchActivationFeedbackController({
   config,
@@ -34,11 +40,15 @@ export function useSwitchActivationFeedbackController({
   onBlur,
   onPointerCancel,
   onPointerDown,
+  onPointerUp,
   readOnly,
+  thumbRef,
   trackRef
 }: SwitchActivationFeedbackControllerOptions): SwitchActivationFeedbackControllerResult {
   const shouldStartPointerFeedback = useCallback(
     (event: PointerEvent<HTMLLabelElement>) => {
+      if (event.button !== 0 || event.isPrimary === false) return false;
+
       const trackElement = trackRef.current;
       const target = event.target;
 
@@ -49,23 +59,27 @@ export function useSwitchActivationFeedbackController({
     [trackRef]
   );
 
-  const {
-    cancel,
-    handleBlur,
-    handleInputBlur,
-    handleInputKeyDown,
-    handlePointerCancel,
-    handlePointerDown,
-    isActive
-  } = useActivationFeedback<HTMLLabelElement, HTMLInputElement>({
+  const activationFeedbackMachine = useActivationFeedbackOverflowStatic<
+    HTMLLabelElement,
+    HTMLSpanElement,
+    HTMLInputElement
+  >({
+    capturePointer: false,
     config,
     disabled,
+    enabled,
+    hostRef: thumbRef,
+    keyboardActivationKeys: SWITCH_ACTIVATION_FEEDBACK_KEYBOARD_KEYS,
+    minPointerHoldMs: 0,
+    origin: 'center',
     readOnly,
     onPointerDown,
+    onPointerUp,
     onPointerCancel,
     onBlur,
-    onInputKeyDown: inputProps?.onKeyDown,
-    onInputBlur: inputProps?.onBlur,
+    onKeyDown: inputProps?.onKeyDown,
+    onKeyUp: inputProps?.onKeyUp,
+    onKeyboardBlur: inputProps?.onBlur,
     shouldStartPointerFeedback
   });
 
@@ -74,21 +88,30 @@ export function useSwitchActivationFeedbackController({
       enabled
         ? {
             ...inputProps,
-            onKeyDown: handleInputKeyDown,
-            onBlur: handleInputBlur
+            onKeyDown: activationFeedbackMachine.handleKeyDown,
+            onKeyUp: activationFeedbackMachine.handleKeyUp,
+            onBlur: activationFeedbackMachine.handleKeyboardBlur
           }
         : inputProps,
-    [enabled, handleInputBlur, handleInputKeyDown, inputProps]
+    [
+      activationFeedbackMachine.handleKeyboardBlur,
+      activationFeedbackMachine.handleKeyDown,
+      activationFeedbackMachine.handleKeyUp,
+      enabled,
+      inputProps
+    ]
   );
 
   return {
-    cancel,
+    cancel: activationFeedbackMachine.cancel,
     inputProps: resolvedInputProps,
-    isActive: enabled && isActive,
+    isActive: enabled && activationFeedbackMachine.isActive,
+    isFading: enabled && activationFeedbackMachine.isFading,
     rootHandlers: {
-      onPointerDown: enabled ? handlePointerDown : onPointerDown,
-      onPointerCancel: enabled ? handlePointerCancel : onPointerCancel,
-      onBlur: enabled ? handleBlur : onBlur
+      onPointerDown: enabled ? activationFeedbackMachine.handlePointerDown : onPointerDown,
+      onPointerUp: enabled ? activationFeedbackMachine.handlePointerUp : onPointerUp,
+      onPointerCancel: enabled ? activationFeedbackMachine.handlePointerCancel : onPointerCancel,
+      onBlur: enabled ? activationFeedbackMachine.handleBlur : onBlur
     }
   };
 }

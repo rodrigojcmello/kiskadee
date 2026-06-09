@@ -371,6 +371,7 @@ export function createMaterial3GoogleButtonSchema({
               }
             }
           },
+          activationFeedback: true,
           ripple: true,
           shadow: {
             // MD3-like elevation: medium at rest, stronger on hover/pressed, focused similar to hover.

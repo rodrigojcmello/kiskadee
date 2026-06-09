@@ -131,8 +131,8 @@ export function hasSwitchActivationFeedbackEffect(
 export function resolveSwitchActivationFeedbackEffectClassName(
   element: ClassNameByElementJSON | undefined
 ): string {
-  const bucket = element?.e?.af;
-  return typeof bucket === 'string' ? bucket : '';
+  const effects = element?.e as { af?: string; afx?: string } | undefined;
+  return [effects?.af, effects?.afx].filter(Boolean).join(' ');
 }
 
 export function resolveSwitchThumbShrinkEffectClassName(

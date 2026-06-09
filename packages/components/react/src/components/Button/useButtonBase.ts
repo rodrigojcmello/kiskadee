@@ -190,6 +190,7 @@ function useButtonCommonProps(props: ButtonProps) {
     scale = DEFAULT_SCALE,
     disabled,
     shadow = false,
+    activationFeedback,
     // [RIPPLE EFFECT 18] START: Local ripple prop passthrough in common button props.
     rippleEffect,
     // [RIPPLE EFFECT 18] END: Local ripple prop passthrough in common button props.
@@ -223,6 +224,7 @@ function useButtonCommonProps(props: ButtonProps) {
     scale,
     disabled,
     shadow,
+    activationFeedback,
     // [RIPPLE EFFECT 18] START: Local ripple prop passthrough in common button props.
     rippleEffect,
     // [RIPPLE EFFECT 18] END: Local ripple prop passthrough in common button props.

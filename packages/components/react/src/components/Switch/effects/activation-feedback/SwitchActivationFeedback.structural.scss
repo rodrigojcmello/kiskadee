@@ -1,6 +1,6 @@
 /*
  * Switch activation-feedback effect structural branch registry:
- * a = static proof of concept
+ * a = static bridge for shared activation-feedback overflow-static
  */
 
 /*
@@ -12,40 +12,10 @@
 }
 
 /*
- * element thumb modifier 'b' / e3b
- * Hosts activation feedback on the thumb carrier.
- */
-.k-swt-e3b-a {
-  isolation: isolate;
-}
-
-.k-swt-e3b-a::after {
-  content: '';
-  position: absolute;
-  inset: calc(var(--k-af-thickness, 3px) * -1);
-  z-index: -1;
-  display: block;
-  border-radius: 999px;
-  background: var(--k-af-color, currentColor);
-  box-shadow: none;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--k-af-fade-duration, 180ms) var(--k-af-ease, ease-out);
-}
-
-/*
- * element thumb modifier 'c' / e3c
- * Keeps the feedback visible for the duration controlled by the React effect hook.
- */
-.k-swt-e3c-a::after {
-  opacity: var(--k-af-opacity);
-  transition-duration: 0ms;
-}
-
-/*
  * element thumb modifier 'f' / e3f
- * Adapts activation feedback color for low-emphasis Switch on vivid local surfaces.
+ * Adapts activation feedback tokens for low-emphasis Switch on vivid local surfaces.
  */
 .k-swt-e3f-a {
-  --k-af-color: #fff;
+  --k-af-current-color: var(--k-af-vivid-color);
+  --k-af-current-opacity: var(--k-af-vivid-opacity);
 }

@@ -23,6 +23,26 @@ export const schema: Schema<Segments> = {
       width: 2,
       offset: 1
     },
+    effects: {
+      activationFeedback: {
+        thickness: 8,
+        holdDurationToken: 'interaction.hold.short',
+        fadeDurationToken: 'interaction.fade.long',
+        curveToken: 'motion.standard.out',
+        profiles: {
+          overflowStatic: {
+            animateSize: false,
+            size: 'auto',
+            durationToken: 'interaction.instant',
+            fade: {
+              delayToken: 'interaction.hold.short',
+              durationToken: 'interaction.fade.long',
+              curveToken: 'motion.standard.out'
+            }
+          }
+        }
+      }
+    },
     radius: 'square'
   },
   themeTokens: {
@@ -31,7 +51,23 @@ export const schema: Schema<Segments> = {
         light: {
           // Global theme tokens can reference primitive colors directly.
           background: color(schemaContext, 'default', 'l', 'primitive.black.v1', 4),
-          focusColor: '#0F62FE'
+          focusColor: '#0F62FE',
+          effects: {
+            activationFeedback: {
+              color: '#161616',
+              opacity: 0.12,
+              surfaceTone: {
+                subtle: {
+                  color: '#161616',
+                  opacity: 0.12
+                },
+                vivid: {
+                  color: '#FFFFFF',
+                  opacity: 0.2
+                }
+              }
+            }
+          }
         }
       }
     }

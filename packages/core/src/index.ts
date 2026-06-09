@@ -8,17 +8,31 @@ export * from './types/colors/colors.types.ts';
 export * from './types/decorations/decorations.types.ts';
 export {
   ACTIVATION_FEEDBACK_DURATION_TOKEN_TO_MS,
-  DEFAULT_ACTIVATION_FEEDBACK
+  DEFAULT_ACTIVATION_FEEDBACK,
+  DEFAULT_ACTIVATION_FEEDBACK_PROFILES,
+  DEFAULT_PRESSED_ACTIVATION_FEEDBACK_PROFILE
 } from './types/effects/activation-feedback/activation-feedback.constants.ts';
 export type {
   ActivationFeedbackEffectSchema,
+  ActivationFeedbackInputFeedback,
   ActivationFeedbackMotionCurveToken,
   ActivationFeedbackMotionDurationToken,
-  ActivationFeedbackThemeTokens
+  ActivationFeedbackOrigin,
+  ActivationFeedbackProfile,
+  ActivationFeedbackProfileConfig,
+  ActivationFeedbackProfileMode,
+  ActivationFeedbackPressedVisual,
+  ActivationFeedbackSurfaceTone,
+  ActivationFeedbackSurfaceToneTokens,
+  ActivationFeedbackThemeTokens,
+  ResolvedActivationFeedbackConfig
 } from './types/effects/activation-feedback/activation-feedback.types.ts';
 export {
   resolveActivationFeedbackConfig,
-  resolveActivationFeedbackDurationMs
+  resolveActivationFeedbackDurationMs,
+  resolveActivationFeedbackProfile,
+  resolveActivationFeedbackProfileKey,
+  resolvePressedActivationFeedbackProfile
 } from './types/effects/activation-feedback/activation-feedback.utils.ts';
 export type {
   BorderRadiusEffectMode,

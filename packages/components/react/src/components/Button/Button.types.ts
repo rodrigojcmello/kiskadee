@@ -3,6 +3,8 @@ import type {
   ClassNameByElementJSON,
   ComponentEmphasis,
   ElementSizeValue,
+  ActivationFeedbackOrigin,
+  ActivationFeedbackProfileMode,
   ProjectedStateKeys,
   RadiusMode,
   RippleMode,
@@ -24,6 +26,13 @@ export type ButtonRippleEffect = {
   origin?: RippleOrigin;
 };
 
+export type ButtonActivationFeedbackEffect = {
+  /** Override activation-feedback profile for this button. */
+  profile?: ActivationFeedbackProfileMode;
+  /** Override activation-feedback origin for this button (center vs. pointer). */
+  origin?: ActivationFeedbackOrigin;
+};
+
 export type ButtonProps = HeadlessButtonProps & {
   /** Force Kiskadee visual/interaction state on the root element (e1). Excludes 'selected' and 'shadow'. */
   status?: ButtonStatus;
@@ -38,8 +47,17 @@ export type ButtonProps = HeadlessButtonProps & {
   scale?: ElementSizeValue;
   /** Enable elevation/shadow visuals. When true, adds the shadow activation class. */
   shadow?: boolean;
-  /** Local ripple override. Pass `false` to disable ripple for this button. */
+  /**
+   * Local ripple override. Pass `false` to disable ripple for this button.
+   *
+   * @deprecated Use `activationFeedback` for new code. This prop remains as a compatibility alias.
+   */
   rippleEffect?: ButtonRippleEffect | false;
+  /**
+   * Local activation-feedback override. Pass `false` to disable activation feedback.
+   * During migration, `rippleEffect` remains a compatibility alias.
+   */
+  activationFeedback?: ButtonActivationFeedbackEffect | false;
   /** Border radius mode. Uses schema radius scales for rounded/pill/square. */
   radius?: RadiusMode;
   /** Enable border-radius effects (animated corners). */

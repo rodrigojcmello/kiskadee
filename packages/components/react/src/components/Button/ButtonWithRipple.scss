@@ -1,21 +1,23 @@
-/* [RIPPLE EFFECT 27] START: Ripple-only button styles. */
+/* [RIPPLE EFFECT 27] START: Legacy ripple aliases over the Button activation-feedback host. */
 .k-ripple {
-  position: relative;
-  z-index: 0;
   --k-ripple-overflow: hidden;
-  overflow: var(--k-ripple-overflow);
-  clip-path: var(--k-ripple-clip, inset(0 round var(--k-bdr, 0px)));
-
-  /*
-   * clip-path clips outline painting on focused buttons.
-   * During focus-visible or forced highlighted focus we disable clip-path so outline-offset can
-   * render outside.
-   */
-  &:focus-visible,
-  &.-f.-k.-a {
-    clip-path: none;
-    overflow: hidden;
-  }
+  --k-af-overflow: var(--k-ripple-overflow);
+  --k-af-clip: var(--k-ripple-clip, inset(0 round var(--k-bdr, 0px)));
+  --k-af-content-z: var(--k-ripple-content-z, 1);
+  --k-af-x: var(--k-ripple-x, 50%);
+  --k-af-y: var(--k-ripple-y, 50%);
+  --k-af-start-size: var(--k-ripple-start-size, 0px);
+  --k-af-end-size: var(--k-ripple-end-size, 0px);
+  --k-af-color: var(--k-ripple-color, currentColor);
+  --k-af-border-width: var(--k-ripple-border-width, 0);
+  --k-af-border-color: var(--k-ripple-border-color, transparent);
+  --k-af-border-opacity: var(--k-ripple-border-opacity, 1);
+  --k-af-opacity: var(--k-ripple-opacity, 0);
+  --k-af-duration: var(--k-ripple-duration, 0ms);
+  --k-af-ease: var(--k-ripple-ease, ease-out);
+  --k-af-fade-duration: var(--k-ripple-fade-duration, 100ms);
+  --k-af-fade-ease: var(--k-ripple-fade-ease, ease-out);
+  --k-af-z: var(--k-ripple-z, 2);
 
   /* Emphasis-specific ripple alpha overrides for surface mode (uses global overlayAlphaByEmphasis). */
   &.k-emph-h {
@@ -33,50 +35,5 @@
   &.k-emph-ll {
     --k-ripple-surface-opacity: var(--k-ripple-alpha-ll);
   }
-
-  > * {
-    position: relative;
-    z-index: var(--k-ripple-content-z, 1);
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    left: var(--k-ripple-x, 50%);
-    top: var(--k-ripple-y, 50%);
-    width: var(--k-ripple-start-size);
-    height: var(--k-ripple-start-size);
-    background-color: var(--k-ripple-color, currentColor);
-    border-width: var(--k-ripple-border-width, 0);
-    border-style: solid;
-    border-color: color-mix(
-      in srgb,
-      var(--k-ripple-border-color, transparent) calc(var(--k-ripple-border-opacity, 1) * 100%),
-      transparent
-    );
-    border-radius: 999px;
-    visibility: hidden;
-    transform: translate(-50%, -50%);
-    opacity: var(--k-ripple-opacity);
-    transition: width var(--k-ripple-duration) var(--k-ripple-ease),
-    height var(--k-ripple-duration) var(--k-ripple-ease),
-    opacity var(--k-ripple-fade-duration) var(--k-ripple-fade-ease);
-    will-change: transform, opacity;
-    display: block;
-    z-index: var(--k-ripple-z);
-    pointer-events: none;
-  }
-
-  &-active::after {
-    animation: none;
-    visibility: visible;
-    transform: translate(-50%, -50%);
-    width: var(--k-ripple-end-size);
-    height: var(--k-ripple-end-size);
-  }
-
-  &-fade::after {
-    opacity: 0;
-  }
 }
-/* [RIPPLE EFFECT 27] END: Ripple-only button styles. */
+/* [RIPPLE EFFECT 27] END: Legacy ripple aliases over the Button activation-feedback host. */
