@@ -38,6 +38,14 @@
  * Keeps the feedback visible for the duration controlled by the React effect hook.
  */
 .k-swt-e3c-a::after {
-  opacity: var(--k-af-opacity, 0.16);
+  opacity: var(--k-af-opacity);
   transition-duration: 0ms;
+}
+
+/*
+ * element thumb modifier 'f' / e3f
+ * Adapts activation feedback color for low-emphasis Switch on vivid local surfaces.
+ */
+.k-swt-e3f-a {
+  --k-af-color: #fff;
 }

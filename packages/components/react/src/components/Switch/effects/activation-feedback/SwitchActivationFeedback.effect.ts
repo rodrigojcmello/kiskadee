@@ -1,4 +1,5 @@
 import './SwitchActivationFeedback.structural.css';
+import type { ComponentEmphasis } from '@kiskadee/core';
 import {
   join,
   resolveSwitchActivationFeedbackEffectClassName
@@ -6,6 +7,7 @@ import {
 import type { SwitchClassesMap, SwitchClassNames } from '../.././Switch.types.ts';
 
 export type SwitchActivationFeedbackEffectOptions = {
+  emphasis: ComponentEmphasis;
   elements: SwitchClassesMap;
   isActive: boolean;
 };
@@ -15,6 +17,7 @@ export type SwitchActivationFeedbackEffectResult = {
 };
 
 export function resolveSwitchActivationFeedbackEffect({
+  emphasis,
   elements,
   isActive
 }: SwitchActivationFeedbackEffectOptions): SwitchActivationFeedbackEffectResult {
@@ -29,7 +32,13 @@ export function resolveSwitchActivationFeedbackEffect({
   return {
     classNamePatch: {
       e2: 'k-swt-e2a-a',
-      e3: join(activationFeedbackClassName, 'k-swt-e3b-a', isActive ? 'k-swt-e3c-a' : '') ?? ''
+      e3:
+        join(
+          activationFeedbackClassName,
+          'k-swt-e3b-a',
+          isActive ? 'k-swt-e3c-a' : '',
+          emphasis === 'low' ? 'k-swt-e3f-a' : ''
+        ) ?? ''
     }
   };
 }

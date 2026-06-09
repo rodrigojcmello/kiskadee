@@ -211,6 +211,7 @@ function SwitchRoot(props: SwitchProps) {
     return mergeSwitchClassNames(
       statefulClassNames,
       activationFeedbackEffect.resolveSwitchActivationFeedbackEffect({
+        emphasis,
         elements,
         isActive: activationFeedbackController.isActive
       }).classNamePatch
@@ -218,6 +219,7 @@ function SwitchRoot(props: SwitchProps) {
   }, [
     activationFeedbackController.isActive,
     activationFeedbackEffect,
+    emphasis,
     elements,
     statefulClassNames
   ]);
