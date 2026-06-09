@@ -104,7 +104,7 @@ const switchControlText = {
 };
 
 const switchActivationFeedbackActiveClassNames = {
-  e3: 'k-swt-e3c-a'
+  e3: 'k-swt-e3c-a k-afx k-afxa'
 };
 
 const THUMB_SHRINK_CHANGE_DELAY_MS = 400;

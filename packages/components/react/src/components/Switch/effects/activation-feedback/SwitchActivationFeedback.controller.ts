@@ -31,6 +31,7 @@ type SwitchActivationFeedbackControllerResult = {
 };
 
 const SWITCH_ACTIVATION_FEEDBACK_KEYBOARD_KEYS = [' '] as const;
+const SWITCH_ACTIVATION_FEEDBACK_MIN_POINTER_HOLD_MS = 140;
 
 export function useSwitchActivationFeedbackController({
   config,
@@ -70,7 +71,7 @@ export function useSwitchActivationFeedbackController({
     enabled,
     hostRef: thumbRef,
     keyboardActivationKeys: SWITCH_ACTIVATION_FEEDBACK_KEYBOARD_KEYS,
-    minPointerHoldMs: 0,
+    minPointerHoldMs: SWITCH_ACTIVATION_FEEDBACK_MIN_POINTER_HOLD_MS,
     origin: 'center',
     readOnly,
     onPointerDown,
