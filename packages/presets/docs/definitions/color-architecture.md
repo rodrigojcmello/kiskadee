@@ -37,8 +37,8 @@ introducing redundant semantic keys.
 | Is the color a state/attention role (error, success, warning, novelty)? | Map to `redLike`, `greenLike`, `yellowLike`, `purpleLike` in Layer 2. |
 | Are you seeing "secondary/tertiary" in the design system? | Treat them as variants of existing semantics, usually `primary.v2` and sometimes `neutral.v2`, rather than new semantic keys. |
 
-Short rule: semantics are global, emphasis is hierarchy, variants are tone
-families, and components interpret meaning.
+Short rule: semantics are global, emphasis is own-surface strength, variants
+are tone families, and components interpret meaning.
 
 ## Core Mental Model
 
@@ -50,8 +50,10 @@ This is the conceptual baseline used to adapt any design system into Kiskadee:
   (`primary`/`neutral`/`redLike`/etc.).
 - Layer 3 (Component Intents): component-specific meaning (`button.primary`,
   `badge.attention`, etc.).
-- Emphasis: hierarchy of visibility (`high` -> `lowest`). It is not a visual
-  style; it is a contrast rule applied to the same semantic family.
+- Emphasis: own-surface strength (`high` -> `lowest`). It is not a local theme
+  mode; it describes how strong the component's own surface is within the same
+  semantic family. See `component-intents.md` for the canonical Button/Card
+  mapping and the unresolved `lowest` decision.
 - Variants (`v1`/`v2`): alternate ramps within the same semantic family, such as
   primary support tones. Variants are not new semantics.
 

@@ -4,8 +4,12 @@
 
 Kiskadee treats `subtle` as the low-emphasis base for button styling. The
 `outline` and `flat` variants, when available, are derived from `subtle`, since
-those variants are conceptually low-emphasis: white/transparent background with
+those variants are conceptually low-emphasis: a white/base own surface with
 colored or neutral text.
+
+Transparent/no-own-surface Button treatments belong to the open `lowest`
+emphasis decision. Do not treat transparent Button styling as the canonical
+definition of `low`.
 
 Important: official presets stay faithful to the original design systems. If a
 design system does not define outline/flat, such as Material 3 or Carbon, those

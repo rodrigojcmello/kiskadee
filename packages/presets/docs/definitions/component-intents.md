@@ -15,15 +15,96 @@ Kiskadee treats that baseline as:
 Preset authoring rules:
 
 - If the preset only defines one emphasis for a component, use `medium`.
-- Introduce `high` only when the same component truly needs a more emphatic
-  version.
-- Use `low` and `lowest` only when there is a recurring, justified use case.
+- Introduce `high` only when the same component truly needs a vivid, strong,
+  or high-contrast own surface.
+- Use `low` only when the same component needs a white/base own surface.
+- Treat `lowest` as an unresolved transparent/no-own-surface emphasis until the
+  ambient-contrast decision is made.
 - If a component cannot reasonably expose `neutral.medium`, document that as an
   explicit exception in the preset instead of silently choosing another
   baseline.
 
 Short rule: the default public face of a component should be `neutral.medium`,
 and stronger or weaker emphases are extensions of that baseline.
+
+## Component Emphasis As Own-Surface Strength
+
+Kiskadee treats `emphasis` as the strength of the component's own visual
+surface. It is not a generic importance score, and it is not a local dark-mode
+switch.
+
+For Button and the future Card component, the canonical surface mapping is:
+
+| Emphasis | Canonical own surface | Examples |
+| --- | --- | --- |
+| `high` | Vivid, strong, or high-contrast surface. | Dark primary Button, dark primary Card. |
+| `medium` | Light tonal surface. | Light primary Button, light neutral Card. |
+| `low` | Solid white/base surface. | White outlined Button, classic white Card. |
+| `lowest` | Unresolved; currently represents no own surface / transparent treatment. | Text/ghost-like Button cases, pending ambient support. |
+
+This rule is intentionally shared by Button and Card so the same emphasis name
+means the same kind of surface across components. A white Card may feel like the
+"normal" card in common design language, but in Kiskadee it is `low` because it
+has less own-surface strength than a light tonal Card and much less than a vivid
+Card.
+
+If a component exposes only one emphasis, the component still uses `medium`.
+`medium` is the consistency baseline, even when the future component could
+later add `high`, `low`, or `lowest`.
+
+### Container And Child Emphasis
+
+Container emphasis and child emphasis are independent component decisions. A
+future Card may suggest a default emphasis for children, but this should start
+as a contextual recommendation, not an automatic universal rule.
+
+Current working guidance:
+
+| Container emphasis | Container surface | Child emphasis guidance |
+| --- | --- | --- |
+| `high` | Vivid / strong / high contrast. | Prefer `medium` or `low`; use child `high` only when contrast is intentionally validated. |
+| `medium` | Light tonal. | `medium` and `low` are both usually viable; `high` can be reserved for the primary action. |
+| `low` | White/base. | Most child emphases can work; children should normally keep their own baseline. |
+| `lowest` | No own surface. | Do not infer child emphasis; the external ambient surface is the real context. |
+
+Do not model this as `child emphasis = parent emphasis - 1`. White/base
+surfaces are permissive and can host many child emphases, while vivid surfaces
+are restrictive and require contrast checks.
+
+### Open Decision: Lowest And Ambient Contrast
+
+`lowest` remains intentionally undecided. The current concern is semantic:
+`lowest` often means a transparent/no-own-surface treatment, but transparent
+components do not carry their own contrast. They depend on the ambient surface
+behind them.
+
+Open questions:
+
+- Should `lowest` be renamed to a literal surface name such as `transparent`?
+- Should `lowest` remain an emphasis value but gain ambient-aware foreground,
+  border, focus, and effect tokens?
+- Should Kiskadee introduce a separate ambient/context axis, such as
+  `ambientTone`, `surfaceTone`, or `contrastContext`, instead of splitting the
+  emphasis scale?
+- Should transparent treatments have separate light-ambient and vivid-ambient
+  token values?
+
+Current leaning: keep `lowest` as the fourth emphasis for now, define it as
+"no own surface", and defer the ambient-contrast model until there are more
+component cases. Avoid adding `high-transparent` or `low-transparent` as
+emphasis names before proving that a separate ambient axis is insufficient.
+
+Relevant existing references:
+
+- Button ripple already adjusts effect alpha by emphasis through
+  `global.effects.ripple.overlayAlphaByEmphasis` and runtime classes such as
+  `k-emph-h`, `k-emph-m`, `k-emph-l`, and `k-emph-ll`.
+- Switch `activationFeedback` is currently only an element opt-in plus global
+  theme tokens. Its element schema value is boolean, while color and opacity
+  come from `themeTokens.effects.activationFeedback`.
+- Future `activationFeedback` or transparent-label decisions should preserve
+  these references before choosing between fixed black/white contrast values
+  and normalized ambient-aware tokens.
 
 ## Component Intent vs. Control State
 
