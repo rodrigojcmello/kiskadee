@@ -1,4 +1,4 @@
-/* [RIPPLE EFFECT 27] START: Legacy ripple aliases over the Button activation-feedback host. */
+/* Legacy ripple aliases over the Button activation-feedback host. */
 .k-ripple {
   --k-ripple-overflow: hidden;
   --k-af-overflow: var(--k-ripple-overflow);
@@ -36,4 +36,3 @@
     --k-ripple-surface-opacity: var(--k-ripple-alpha-ll);
   }
 }
-/* [RIPPLE EFFECT 27] END: Legacy ripple aliases over the Button activation-feedback host. */

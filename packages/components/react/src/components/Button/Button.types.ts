@@ -18,7 +18,6 @@ export type ButtonElementName = 'e1' | 'e2' | 'e3';
 
 export type ButtonClassesMap = Partial<Record<ButtonElementName, ClassNameByElementJSON>>;
 
-// [RIPPLE EFFECT 17] START: Button ripple props contract.
 export type ButtonRippleEffect = {
   /** Override ripple mode for this button. */
   mode?: RippleMode;
@@ -73,4 +72,3 @@ export type ButtonProps = HeadlessButtonProps & {
   /** Duration for the pressed visual state (ms). */
   pressedDurationMs?: number;
 };
-// [RIPPLE EFFECT 17] END: Button ripple props contract.

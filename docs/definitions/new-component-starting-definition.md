@@ -64,6 +64,8 @@ own generated class consumption, structural CSS, visual layout, and design-syste
 When the component belongs in `@kiskadee/react-components`, keep these package-local expectations in
 scope:
 
+- React component internals should follow the canonical package architecture in
+  [`component-architecture.md`](../../packages/components/react/docs/definitions/component-architecture.md);
 - public exports must stay stable from `src/index.ts`;
 - runtime components should consume generated classes and CSS variables instead of inventing token
   values;

@@ -3,6 +3,10 @@
 Kiskadee effects should be modular. A component should not pay runtime, DOM, or dependency cost for
 an effect that is not present in the generated schema/class map.
 
+This document defines the effect-specific runtime rules. For the broader styled React component
+shape that hosts effects and features, see
+[`component-architecture.md`](./component-architecture.md).
+
 Some effects are pure styling concerns and can be consumed directly through generated classes. Other
 effects require extra runtime behavior, auxiliary DOM, gesture coordination, or lazy-loaded code.
 Those effects must stay isolated from the component's core path.

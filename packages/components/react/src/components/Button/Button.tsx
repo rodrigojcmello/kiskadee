@@ -1,14 +1,18 @@
-import './Button.css';
-import './ButtonActivationFeedback.css';
+import './Button.structural.scss';
 import { Button as HeadlessButton } from '@kiskadee/react-headless';
-import { type ComponentType, type LazyExoticComponent, lazy, memo, Suspense, useMemo } from 'react';
-import type { ButtonProps } from './Button.types.ts';
-import { ButtonCore } from './ButtonCore.tsx';
-import type { ButtonWithActivationFeedbackProps } from './ButtonWithActivationFeedback.tsx';
-import type { ButtonWithRippleProps } from './ButtonWithRipple.tsx';
-import { resolveActivationFeedbackProfileAvailability } from '../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
-import { resolveRippleModeAvailability } from './rippleModeAvailability.ts';
-import { useButtonArtifactConfig } from './useButtonArtifactConfig.ts';
+import { memo, useMemo } from 'react';
+import type { ButtonClassesMap, ButtonProps } from './Button.types.ts';
+import { mergeButtonClassNames } from './Button.class-names.ts';
+import {
+  resolveButtonFeedbackClassNamePatch,
+  resolveButtonFeedbackEffectAvailability,
+  useButtonActivationFeedbackController,
+  useButtonFeedbackEffect
+} from './effects/activation-feedback/index.ts';
+import {
+  useButtonClassNamesFromCommon,
+  useButtonCommonProps
+} from './hooks/useButtonBase.ts';
 
 export type {
   ButtonActivationFeedbackEffect,
@@ -17,89 +21,102 @@ export type {
   ButtonStatus
 } from './Button.types.ts';
 
-// [RIPPLE EFFECT 20] START: Lazy-load and availability gate.
-const LazyButtonWithActivationFeedback = lazy(
-  () => import('./ButtonWithActivationFeedback.tsx')
-) as LazyExoticComponent<ComponentType<ButtonWithActivationFeedbackProps>>;
-
-const LazyButtonWithRipple = lazy(() => import('./ButtonWithRipple.tsx')) as LazyExoticComponent<
-  ComponentType<ButtonWithRippleProps>
->;
-
-function shouldRenderActivationFeedbackButton(
-  availableProfiles: ReturnType<typeof resolveActivationFeedbackProfileAvailability>,
-  activationFeedback: ButtonProps['activationFeedback'],
-  rippleEffect: ButtonProps['rippleEffect']
-): boolean {
-  if (availableProfiles.length === 0) return false;
-  if (activationFeedback === false) return false;
-  if (rippleEffect === false) return false;
-  return true;
-}
-
-function shouldRenderRippleButton(
-  availableModes: ReturnType<typeof resolveRippleModeAvailability>,
-  activationFeedback: ButtonProps['activationFeedback'],
-  rippleEffect: ButtonProps['rippleEffect']
-): boolean {
-  if (availableModes.length === 0) return false;
-  // Explicit activationFeedback=false opts out of both the modern and legacy feedback paths.
-  if (activationFeedback === false) return false;
-  if (rippleEffect === false) return false;
-  return true;
-}
-// [RIPPLE EFFECT 20] END: Lazy-load and availability gate.
-
-function Button(props: ButtonProps) {
-  const { buttonClassesMap } = useButtonArtifactConfig();
-  const e1 = buttonClassesMap?.e1;
-  const availableActivationFeedbackProfiles = useMemo(
-    () => resolveActivationFeedbackProfileAvailability(e1),
-    [e1]
+function ButtonRoot(props: ButtonProps) {
+  const common = useButtonCommonProps(props);
+  const feedbackEffectAvailability = useMemo(
+    () =>
+      resolveButtonFeedbackEffectAvailability({
+        activationFeedback: common.activationFeedback,
+        element: common.e1,
+        rippleEffect: common.rippleEffect
+      }),
+    [common.activationFeedback, common.e1, common.rippleEffect]
   );
-  const availableRippleModes = useMemo(() => resolveRippleModeAvailability(e1), [e1]);
+  const feedbackEffect = useButtonFeedbackEffect(feedbackEffectAvailability);
+  const activationFeedbackController = useButtonActivationFeedbackController(
+    common,
+    {
+      feedbackEnabled: Boolean(feedbackEffect.loadedFeedbackKind)
+    }
+  );
+  const elements = useMemo<ButtonClassesMap>(
+    () => ({
+      e1: common.e1,
+      e2: common.e2,
+      e3: common.e3
+    }),
+    [common.e1, common.e2, common.e3]
+  );
+  const feedbackClassNamePatch = useMemo(
+    () =>
+      resolveButtonFeedbackClassNamePatch({
+        activationFeedbackEffect: feedbackEffect.activationFeedbackEffect,
+        activationFeedbackProfile: activationFeedbackController.activationFeedbackProfile,
+        controlState: common.controlState,
+        elements,
+        emphasis: common.emphasis,
+        feedbackKind: activationFeedbackController.feedbackKind,
+        isActive: activationFeedbackController.isFeedbackActive,
+        isFading: activationFeedbackController.isFeedbackFading,
+        rippleLegacyEffect: feedbackEffect.rippleLegacyEffect,
+        rippleMode: activationFeedbackController.rippleMode,
+        shouldForceOverlayPressed: activationFeedbackController.shouldForceOverlayPressed,
+        shouldUsePressedProfile: activationFeedbackController.shouldUsePressedProfile
+      }),
+    [
+      activationFeedbackController.activationFeedbackProfile,
+      activationFeedbackController.feedbackKind,
+      activationFeedbackController.isFeedbackActive,
+      activationFeedbackController.isFeedbackFading,
+      activationFeedbackController.rippleMode,
+      activationFeedbackController.shouldForceOverlayPressed,
+      activationFeedbackController.shouldUsePressedProfile,
+      common.controlState,
+      common.emphasis,
+      elements,
+      feedbackEffect.activationFeedbackEffect,
+      feedbackEffect.rippleLegacyEffect
+    ]
+  );
+  const baseClassNames = useButtonClassNamesFromCommon(common, {
+    statusOverride: activationFeedbackController.shouldForceOverlayPressed ? 'rest' : common.status
+  });
+  const computedClassNames = useMemo(
+    () =>
+      mergeButtonClassNames(
+        baseClassNames,
+        feedbackClassNamePatch,
+        activationFeedbackController.shouldUsePressedFeedback ? { e1: 'k-pressed' } : undefined
+      ),
+    [
+      feedbackClassNamePatch,
+      activationFeedbackController.shouldUsePressedFeedback,
+      baseClassNames
+    ]
+  );
 
-  const hasActivationFeedback = useMemo(() => {
-    return shouldRenderActivationFeedbackButton(
-      availableActivationFeedbackProfiles,
-      props.activationFeedback,
-      props.rippleEffect
-    );
-  }, [availableActivationFeedbackProfiles, props.activationFeedback, props.rippleEffect]);
-
-  // [RIPPLE EFFECT 21] START: Runtime path selection (Core vs. WithRipple).
-  const hasRipple = useMemo(() => {
-    return shouldRenderRippleButton(
-      availableRippleModes,
-      props.activationFeedback,
-      props.rippleEffect
-    );
-  }, [availableRippleModes, props.activationFeedback, props.rippleEffect]);
-
-  if (hasActivationFeedback) {
-    return (
-      <Suspense fallback={<ButtonCore {...props} />}>
-        <LazyButtonWithActivationFeedback
-          {...props}
-          availableActivationFeedbackProfiles={availableActivationFeedbackProfiles}
-        />
-      </Suspense>
-    );
-  }
-
-  if (hasRipple) {
-    return (
-      <Suspense fallback={<ButtonCore {...props} />}>
-        <LazyButtonWithRipple {...props} availableRippleModes={availableRippleModes} />
-      </Suspense>
-    );
-  }
-  // [RIPPLE EFFECT 21] END: Runtime path selection (Core vs WithRipple).
-
-  return <ButtonCore {...props} />;
+  return (
+    <HeadlessButton
+      {...common.restProps}
+      label={common.label}
+      disabled={activationFeedbackController.isDisabled}
+      aria-disabled={activationFeedbackController.ariaDisabled}
+      aria-pressed={activationFeedbackController.ariaPressed}
+      classNames={computedClassNames}
+      ref={activationFeedbackController.hostRef}
+      onClick={activationFeedbackController.handlers.onClick}
+      onPointerDown={activationFeedbackController.handlers.onPointerDown}
+      onPointerUp={activationFeedbackController.handlers.onPointerUp}
+      onPointerCancel={activationFeedbackController.handlers.onPointerCancel}
+      onKeyDown={activationFeedbackController.handlers.onKeyDown}
+      onKeyUp={activationFeedbackController.handlers.onKeyUp}
+      onBlur={activationFeedbackController.handlers.onBlur}
+      tabIndex={common.tabIndex ?? 0}
+    />
+  );
 }
 
-const MemoButton = memo(Button);
+const MemoButton = memo(ButtonRoot);
 const CompoundButton = Object.assign(MemoButton, {
   Label: HeadlessButton.Label,
   Icon: HeadlessButton.Icon
