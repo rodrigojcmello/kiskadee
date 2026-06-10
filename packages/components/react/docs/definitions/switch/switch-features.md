@@ -295,8 +295,9 @@ Current visual behavior:
 - The track may allow overflow so the feedback layer can extend outside the
   rail.
 - The thumb carrier hosts the feedback state layer.
-- `thickness` currently behaves as outward expansion of a filled feedback layer,
-  not as a literal border width.
+- `paint: "halo"` uses `size` as outward halo expansion.
+- `paint: "outline"` uses `size` as the outline width and follows the measured
+  thumb box/radius.
 
 ## Geometry, Radius, And Focus
 
@@ -393,7 +394,7 @@ contracts remain intact or are explicitly migrated.
   public behaviors that future tests should cover: controlled/uncontrolled
   state, disabled/read-only blocking, motion opt-out, control text visibility,
   thumb-shrink artifact gating, activation feedback gating, and radius behavior.
-- Activation-feedback naming still carries semantic overload: `thickness` is a
-  filled state-layer expansion today, not a true border width.
+- Activation feedback now uses profile-local `size`; `paint: 'halo'` treats it
+  as halo expansion and `paint: 'outline'` treats it as outline width.
 - Future components may use this inventory format before implementation instead
   of after implementation.

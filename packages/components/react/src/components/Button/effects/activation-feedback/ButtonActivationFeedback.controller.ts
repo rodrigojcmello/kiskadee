@@ -1,7 +1,6 @@
 import type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackOrigin,
-  ActivationFeedbackPressedVisual,
   ActivationFeedbackProfileMode
 } from '@kiskadee/core';
 import {
@@ -21,7 +20,6 @@ import {
   resolveActivationFeedbackProfileAvailability
 } from '../../../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
 import {
-  type ActivationFeedbackInputFeedback,
   type ActivationFeedbackRadialRuntimeConfig,
   resolveActivationFeedbackRadialRuntimeConfig,
   useActivationFeedbackRadialStateMachine
@@ -146,15 +144,6 @@ export function useButtonActivationFeedbackController(
     ? 'activationFeedback'
     : null;
   const effectProfile = activationFeedbackProfile;
-  const mouseInputFeedback: ActivationFeedbackInputFeedback = 'feedback';
-  // Keyboard activation uses the normal pressed/control-state path. AF remains a pointer feedback.
-  const keyboardInputFeedback: ActivationFeedbackInputFeedback = 'pressed';
-  const pressedVisual: ActivationFeedbackPressedVisual =
-    activationFeedbackProfile &&
-    (activationFeedbackConfig?.visual?.layer === 'overlay' ||
-      activationFeedbackConfig?.pressedVisual === 'overlay')
-      ? 'overlay'
-      : 'state';
   const globalActivationFeedbackOrigin: ActivationFeedbackOrigin =
     activationFeedbackConfig?.origin ?? 'center';
   const localActivationFeedbackOrigin: ActivationFeedbackOrigin | undefined =
@@ -189,15 +178,14 @@ export function useButtonActivationFeedbackController(
   );
 
   const shouldForceOverlayPressed =
-    status === 'pressed' && Boolean(effectProfile) && pressedVisual === 'overlay';
+    status === 'pressed' &&
+    Boolean(effectProfile) &&
+    activationFeedbackConfig?.visual?.layer === 'overlay';
   const activationFeedbackMachine = useActivationFeedbackRadialStateMachine<HTMLButtonElement>({
     effectProfile,
     isDisabled: accessibility.isDisabled,
-    pressedVisual,
     localActivationFeedbackOrigin,
     globalActivationFeedbackOrigin,
-    mouseInputFeedback,
-    keyboardInputFeedback,
     modeActivationFeedbackRadialRuntimeConfig: modeActivationFeedbackRuntimeConfig,
     pressedActivationFeedbackRadialRuntimeConfig: pressedActivationFeedbackRuntimeConfig,
     shouldForceOverlayPressed,

@@ -1,7 +1,6 @@
 import type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackOrigin,
-  ActivationFeedbackPressedVisual,
   ActivationFeedbackProfileMode
 } from '@kiskadee/core';
 import {
@@ -132,10 +131,6 @@ export function useSwitchActivationFeedbackController({
     });
   }, [config]);
 
-  const pressedVisual: ActivationFeedbackPressedVisual =
-    config?.visual?.layer === 'overlay' || config?.pressedVisual === 'overlay'
-      ? 'overlay'
-      : 'state';
   const radialActivationFeedbackMachine = useActivationFeedbackRadialStateMachine<
     HTMLLabelElement,
     HTMLSpanElement
@@ -144,12 +139,8 @@ export function useSwitchActivationFeedbackController({
     effectProfile: enabled && profile !== 'halo' ? profile : null,
     hostRef: thumbRef,
     isDisabled: disabled || readOnly,
-    pressedVisual,
     localActivationFeedbackOrigin: undefined,
     globalActivationFeedbackOrigin: origin,
-    mouseInputFeedback: 'feedback',
-    keyboardInputFeedback: 'pressed',
-    keyboardActivationKeys: [],
     modeActivationFeedbackRadialRuntimeConfig: radialRuntimeConfig,
     minPointerHoldMs: SWITCH_ACTIVATION_FEEDBACK_MIN_POINTER_HOLD_MS,
     pressedActivationFeedbackRadialRuntimeConfig: pressedRuntimeConfig,

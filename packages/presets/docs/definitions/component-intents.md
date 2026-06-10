@@ -84,7 +84,7 @@ Open questions:
 - Should `lowest` remain an emphasis value but gain ambient-aware foreground,
   border, focus, and effect tokens?
 - Should Kiskadee introduce a separate ambient/context axis, such as
-  `ambientTone`, `surfaceTone`, or `contrastContext`, instead of splitting the
+  `ambientTone`, `ambientSurface`, or `contrastContext`, instead of splitting the
   emphasis scale?
 - Should transparent treatments have separate light-ambient and vivid-ambient
   token values?

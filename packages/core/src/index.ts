@@ -8,7 +8,6 @@ export * from './types/colors/colors.types.ts';
 export * from './types/decorations/decorations.types.ts';
 export {
   ACTIVATION_FEEDBACK_DURATION_TOKEN_TO_MS,
-  DEFAULT_ACTIVATION_FEEDBACK,
   DEFAULT_ACTIVATION_FEEDBACK_PROFILES,
   DEFAULT_PRESSED_ACTIVATION_FEEDBACK_PROFILE
 } from './types/effects/activation-feedback/activation-feedback.constants.ts';
@@ -19,22 +18,18 @@ export type {
   ActivationFeedbackOrigin,
   ActivationFeedbackProfile,
   ActivationFeedbackProfileConfig,
+  ActivationFeedbackProfileKey,
   ActivationFeedbackProfileMode,
-  ActivationFeedbackPressedVisual,
   ActivationFeedbackSetting,
-  ActivationFeedbackSurfaceTone,
-  ActivationFeedbackSurfaceToneTokens,
   ActivationFeedbackTone,
   ActivationFeedbackToneMap,
   ActivationFeedbackToneTokens,
   ActivationFeedbackThemeTokens,
-  ActivationFeedbackVisual,
-  ResolvedActivationFeedbackConfig
+  ActivationFeedbackVisual
 } from './types/effects/activation-feedback/activation-feedback.types.ts';
 export {
   mergeActivationFeedbackConfig,
   normalizeActivationFeedbackSetting,
-  resolveActivationFeedbackConfig,
   resolveActivationFeedbackDurationMs,
   resolveActivationFeedbackProfile,
   resolveActivationFeedbackProfileKey,

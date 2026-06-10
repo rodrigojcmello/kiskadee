@@ -1,6 +1,5 @@
 import type {
   ActivationFeedbackOrigin,
-  ActivationFeedbackPressedVisual,
   ActivationFeedbackProfile,
   ActivationFeedbackProfileConfig
 } from '@kiskadee/core';
@@ -18,17 +17,12 @@ import {
   useState
 } from 'react';
 
-export type ActivationFeedbackInputFeedback = 'pressed' | 'feedback';
-
 type ActivationFeedbackRadialProfile = Extract<
   ActivationFeedbackProfile,
   'ripple' | 'ripple-overflow' | 'halo'
 >;
 
-export type {
-  ActivationFeedbackOrigin,
-  ActivationFeedbackPressedVisual
-} from '@kiskadee/core';
+export type { ActivationFeedbackOrigin } from '@kiskadee/core';
 
 export type ActivationFeedbackRadialCssVars = {
   endSize: string;
@@ -43,13 +37,8 @@ const DEFAULT_ACTIVATION_FEEDBACK_RADIAL_CSS_VARS: ActivationFeedbackRadialCssVa
   x: '--k-af-x',
   y: '--k-af-y'
 };
-const DEFAULT_ACTIVATION_FEEDBACK_KEYBOARD_KEYS = ['Enter', ' '] as const;
 
 // Shared radial activation-feedback runtime state machine and interaction handlers.
-type NativeMouseEventWithSourceCapabilities = globalThis.MouseEvent & {
-  sourceCapabilities?: { firesTouchEvents?: boolean };
-};
-
 export type ActivationFeedbackRadialRuntimeConfig = {
   size: number | 'auto';
   durationMs: number;
@@ -115,12 +104,8 @@ type UseActivationFeedbackRadialStateMachineArgs<
   effectProfile: ActivationFeedbackRadialProfile | null;
   hostRef?: RefObject<THostElement | null>;
   isDisabled: boolean | undefined;
-  pressedVisual: ActivationFeedbackPressedVisual;
   localActivationFeedbackOrigin: ActivationFeedbackOrigin | undefined;
   globalActivationFeedbackOrigin: ActivationFeedbackOrigin;
-  mouseInputFeedback: ActivationFeedbackInputFeedback;
-  keyboardInputFeedback: ActivationFeedbackInputFeedback;
-  keyboardActivationKeys?: readonly string[];
   modeActivationFeedbackRadialRuntimeConfig: ActivationFeedbackRadialRuntimeConfig | null;
   minPointerHoldMs?: number;
   pressedActivationFeedbackRadialRuntimeConfig: ActivationFeedbackRadialRuntimeConfig;
@@ -140,14 +125,6 @@ const MIN_POINTER_CLICK_HOLD_MS = 120;
 // mandatory and centralized via clearAllTimers + clearFeedbackInlineVars.
 const isTouchLikePointer = (pointerType: string): boolean =>
   pointerType === 'touch' || pointerType === 'pen';
-
-const isTouchSourcedClick = <TElement extends HTMLElement>(
-  event: MouseEvent<TElement>
-): boolean | null => {
-  const nativeEvent = event.nativeEvent as NativeMouseEventWithSourceCapabilities;
-  if (!nativeEvent.sourceCapabilities) return null;
-  return nativeEvent.sourceCapabilities.firesTouchEvents === true;
-};
 
 const trySetPointerCapture = (target: HTMLElement, pointerId: number) => {
   if (typeof target.setPointerCapture !== 'function') return;
@@ -177,12 +154,8 @@ export function useActivationFeedbackRadialStateMachine<
   effectProfile,
   hostRef: externalHostRef,
   isDisabled,
-  pressedVisual,
   localActivationFeedbackOrigin,
   globalActivationFeedbackOrigin,
-  mouseInputFeedback,
-  keyboardInputFeedback,
-  keyboardActivationKeys = DEFAULT_ACTIVATION_FEEDBACK_KEYBOARD_KEYS,
   modeActivationFeedbackRadialRuntimeConfig,
   minPointerHoldMs = MIN_POINTER_CLICK_HOLD_MS,
   pressedActivationFeedbackRadialRuntimeConfig,
@@ -219,14 +192,8 @@ export function useActivationFeedbackRadialStateMachine<
   const feedbackReleaseRatioRef = useRef<number>(1);
   const feedbackFadeDelayRef = useRef<number>(50);
   const feedbackFadeDurationRef = useRef<number>(100);
-  const pendingClickFeedbackRef = useRef<ActivationFeedbackInputFeedback>('pressed');
   const hasPreClickFeedbackRef = useRef(false);
   const pointerFeedbackInFlightRef = useRef(false);
-  const keyboardFeedbackInFlightRef = useRef(false);
-  const pointerOverlayPressedInFlightRef = useRef(false);
-  const keyboardOverlayPressedInFlightRef = useRef(false);
-  const hasPointerDownFeedbackRef = useRef(false);
-  const pointerDownFeedbackRef = useRef<ActivationFeedbackInputFeedback | null>(null);
   const uncapturedPointerCleanupRef = useRef<(() => void) | null>(null);
   const resolvedCssVars = useMemo<ActivationFeedbackRadialCssVars>(
     () => ({
@@ -326,14 +293,6 @@ export function useActivationFeedbackRadialStateMachine<
       effectProfile,
       resolvedCssVars
     ]
-  );
-
-  const startOverlayPressed = useCallback(
-    (target: THostElement): boolean => {
-      if (isDisabled === true) return false;
-      return applyOverlayPressed(target);
-    },
-    [applyOverlayPressed, isDisabled]
   );
 
   const startFeedback = useCallback(
@@ -453,22 +412,12 @@ export function useActivationFeedbackRadialStateMachine<
         pointerFeedbackInFlightRef.current = false;
         scheduleFeedbackFade(minHoldMs);
       }
-      if (pointerOverlayPressedInFlightRef.current) {
-        pointerOverlayPressedInFlightRef.current = false;
-        scheduleFeedbackFade(minHoldMs);
-      }
       if (opts?.resetPendingFeedback) {
         hasPreClickFeedbackRef.current = false;
-        pendingClickFeedbackRef.current = 'pressed';
       }
     },
     [minPointerHoldMs, scheduleFeedbackFade]
   );
-
-  const resetPointerDownFeedback = useCallback(() => {
-    hasPointerDownFeedbackRef.current = false;
-    pointerDownFeedbackRef.current = null;
-  }, []);
 
   const registerUncapturedPointerEnd = useCallback(
     (pointerId: number, pointerType: string) => {
@@ -481,7 +430,6 @@ export function useActivationFeedbackRadialStateMachine<
         finalizePointerFeedback(event.pointerType || pointerType, {
           resetPendingFeedback: event.type === 'pointercancel'
         });
-        resetPointerDownFeedback();
         clearUncapturedPointerListeners();
       };
 
@@ -492,32 +440,15 @@ export function useActivationFeedbackRadialStateMachine<
         window.removeEventListener('pointercancel', handlePointerEnd, true);
       };
     },
-    [clearUncapturedPointerListeners, finalizePointerFeedback, resetPointerDownFeedback]
+    [clearUncapturedPointerListeners, finalizePointerFeedback]
   );
-
-  const finalizeKeyboardFeedback = useCallback(() => {
-    if (keyboardFeedbackInFlightRef.current) {
-      keyboardFeedbackInFlightRef.current = false;
-      scheduleFeedbackFade();
-    }
-    if (keyboardOverlayPressedInFlightRef.current) {
-      keyboardOverlayPressedInFlightRef.current = false;
-      scheduleFeedbackFade();
-    }
-  }, [scheduleFeedbackFade]);
 
   const cancel = useCallback(() => {
     clearAllTimers();
     clearUncapturedPointerListeners();
 
     pointerFeedbackInFlightRef.current = false;
-    keyboardFeedbackInFlightRef.current = false;
-    pointerOverlayPressedInFlightRef.current = false;
-    keyboardOverlayPressedInFlightRef.current = false;
-    hasPointerDownFeedbackRef.current = false;
-    pointerDownFeedbackRef.current = null;
     hasPreClickFeedbackRef.current = false;
-    pendingClickFeedbackRef.current = 'pressed';
 
     setIsOverlayFeedbackActive(false);
     setIsFeedbackActive(false);
@@ -544,13 +475,7 @@ export function useActivationFeedbackRadialStateMachine<
     setIsOverlayFeedbackActive(false);
 
     pointerFeedbackInFlightRef.current = false;
-    keyboardFeedbackInFlightRef.current = false;
-    pointerOverlayPressedInFlightRef.current = false;
-    keyboardOverlayPressedInFlightRef.current = false;
-    hasPointerDownFeedbackRef.current = false;
-    pointerDownFeedbackRef.current = null;
     hasPreClickFeedbackRef.current = false;
-    pendingClickFeedbackRef.current = 'pressed';
 
     feedbackDurationRef.current = null;
     feedbackReleaseRatioRef.current = 1;
@@ -587,72 +512,20 @@ export function useActivationFeedbackRadialStateMachine<
   const handleClick = useCallback(
     (event: MouseEvent<TPointerElement>) => {
       if (isDisabled === true) {
-        resetPointerDownFeedback();
         return;
       }
 
-      const touchSourcedClick = isTouchSourcedClick(event);
-      const clickFeedback: ActivationFeedbackInputFeedback = (() => {
-        if (hasPointerDownFeedbackRef.current) {
-          const pointerFeedback = pointerDownFeedbackRef.current ?? pendingClickFeedbackRef.current;
-          // Pointerdown can be stale right after DevTools modality switch.
-          // If click is explicitly non-touch-sourced, prefer mouse profile for this interaction.
-          if (
-            touchSourcedClick === false &&
-            pointerFeedback === 'feedback' &&
-            mouseInputFeedback === 'pressed'
-          ) {
-            return 'pressed';
-          }
-          return pointerFeedback;
-        }
-
-        if (pendingClickFeedbackRef.current === 'pressed' && touchSourcedClick === true) {
-          return 'feedback';
-        }
-
-        return pendingClickFeedbackRef.current;
-      })();
-
-      const feedbackHost = resolveFeedbackHost(event.currentTarget);
-      const shouldStartOverlayFromClick =
-        Boolean(effectProfile) &&
-        Boolean(feedbackHost) &&
-        clickFeedback === 'pressed' &&
-        pressedVisual === 'overlay' &&
-        !hasPreClickFeedbackRef.current;
-      if (shouldStartOverlayFromClick) {
-        const started = feedbackHost ? startOverlayPressed(feedbackHost) : false;
-        if (started) {
-          // Mouse/trackpad click should respect minimum hold; keyboard click (detail=0) should not.
-          const minHoldMs = event.detail > 0 ? minPointerHoldMs : 0;
-          scheduleFeedbackFade(minHoldMs);
-        }
-      }
-
-      const shouldUsePressed =
-        !effectProfile || (clickFeedback === 'pressed' && pressedVisual !== 'overlay');
-      if (allowPressedFeedback && shouldUsePressed) {
+      if (allowPressedFeedback && !hasPreClickFeedbackRef.current) {
         triggerPressed();
       }
 
       hasPreClickFeedbackRef.current = false;
-      pendingClickFeedbackRef.current = 'pressed';
-      resetPointerDownFeedback();
       onClick?.(event);
     },
     [
       allowPressedFeedback,
       isDisabled,
-      mouseInputFeedback,
-      minPointerHoldMs,
       onClick,
-      pressedVisual,
-      effectProfile,
-      resolveFeedbackHost,
-      resetPointerDownFeedback,
-      scheduleFeedbackFade,
-      startOverlayPressed,
       triggerPressed
     ]
   );
@@ -667,17 +540,9 @@ export function useActivationFeedbackRadialStateMachine<
 
       const pointerTarget = event.currentTarget;
       const feedbackHost = resolveFeedbackHost(pointerTarget);
-      const feedback: ActivationFeedbackInputFeedback = isTouchLikePointer(event.pointerType)
-        ? 'feedback'
-        : mouseInputFeedback;
-      const shouldUseOverlayPressed = feedback === 'pressed' && pressedVisual === 'overlay';
 
-      pendingClickFeedbackRef.current = feedback;
-      hasPointerDownFeedbackRef.current = true;
-      pointerDownFeedbackRef.current = feedback;
       hasPreClickFeedbackRef.current = false;
       pointerFeedbackInFlightRef.current = false;
-      pointerOverlayPressedInFlightRef.current = false;
 
       if (capturePointer) {
         trySetPointerCapture(pointerTarget, event.pointerId);
@@ -685,27 +550,21 @@ export function useActivationFeedbackRadialStateMachine<
         registerUncapturedPointerEnd(event.pointerId, event.pointerType);
       }
 
-      if (feedback === 'feedback' && feedbackHost) {
+      if (feedbackHost) {
         pointerFeedbackInFlightRef.current = startFeedback(feedbackHost, {
           clientX: event.clientX,
           clientY: event.clientY
         });
         hasPreClickFeedbackRef.current = pointerFeedbackInFlightRef.current;
-      } else if (shouldUseOverlayPressed && feedbackHost) {
-        pointerOverlayPressedInFlightRef.current = startOverlayPressed(feedbackHost);
-        hasPreClickFeedbackRef.current = pointerOverlayPressedInFlightRef.current;
       }
     },
     [
-      mouseInputFeedback,
       capturePointer,
       isDisabled,
       onPointerDown,
-      pressedVisual,
       resolveFeedbackHost,
       registerUncapturedPointerEnd,
       shouldStartPointerFeedback,
-      startOverlayPressed,
       startFeedback
     ]
   );
@@ -716,9 +575,8 @@ export function useActivationFeedbackRadialStateMachine<
       tryReleasePointerCapture(event.currentTarget, event.pointerId);
       clearUncapturedPointerListeners();
       finalizePointerFeedback(event.pointerType);
-      resetPointerDownFeedback();
     },
-    [clearUncapturedPointerListeners, finalizePointerFeedback, onPointerUp, resetPointerDownFeedback]
+    [clearUncapturedPointerListeners, finalizePointerFeedback, onPointerUp]
   );
 
   const handlePointerCancel = useCallback(
@@ -727,60 +585,22 @@ export function useActivationFeedbackRadialStateMachine<
       tryReleasePointerCapture(event.currentTarget, event.pointerId);
       clearUncapturedPointerListeners();
       finalizePointerFeedback(event.pointerType, { resetPendingFeedback: true });
-      resetPointerDownFeedback();
     },
-    [
-      clearUncapturedPointerListeners,
-      finalizePointerFeedback,
-      onPointerCancel,
-      resetPointerDownFeedback
-    ]
+    [clearUncapturedPointerListeners, finalizePointerFeedback, onPointerCancel]
   );
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<TKeyboardElement>) => {
       onKeyDown?.(event);
-      if (event.defaultPrevented || event.repeat) return;
-      if (isDisabled === true) return;
-      if (!keyboardActivationKeys.includes(event.key)) return;
-
-      pendingClickFeedbackRef.current = keyboardInputFeedback;
-      hasPreClickFeedbackRef.current = false;
-      keyboardFeedbackInFlightRef.current = false;
-      keyboardOverlayPressedInFlightRef.current = false;
-
-      const feedbackHost = resolveFeedbackHost(event.currentTarget);
-      const shouldUseOverlayPressed =
-        keyboardInputFeedback === 'pressed' && pressedVisual === 'overlay';
-      if (keyboardInputFeedback === 'feedback' && feedbackHost) {
-        keyboardFeedbackInFlightRef.current = startFeedback(feedbackHost, {
-          originOverride: 'center'
-        });
-        hasPreClickFeedbackRef.current = keyboardFeedbackInFlightRef.current;
-      } else if (shouldUseOverlayPressed && feedbackHost) {
-        keyboardOverlayPressedInFlightRef.current = startOverlayPressed(feedbackHost);
-        hasPreClickFeedbackRef.current = keyboardOverlayPressedInFlightRef.current;
-      }
     },
-    [
-      keyboardActivationKeys,
-      keyboardInputFeedback,
-      isDisabled,
-      onKeyDown,
-      pressedVisual,
-      resolveFeedbackHost,
-      startOverlayPressed,
-      startFeedback
-    ]
+    [onKeyDown]
   );
 
   const handleKeyUp = useCallback(
     (event: KeyboardEvent<TKeyboardElement>) => {
       onKeyUp?.(event);
-      if (!keyboardActivationKeys.includes(event.key)) return;
-      finalizeKeyboardFeedback();
     },
-    [finalizeKeyboardFeedback, keyboardActivationKeys, onKeyUp]
+    [onKeyUp]
   );
 
   const handleBlur = useCallback(

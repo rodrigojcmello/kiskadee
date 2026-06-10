@@ -181,8 +181,8 @@ The icon slot is an instance named `Icon` with `16 x 16`.
   even though the extracted Figma value is `#79757F`.
 - Kiskadee does not change component geometry for interaction states, so the Figma `28 x 28`
   pressed handle is reference-only for now.
-- The V0 `activationFeedback` halo uses the stable `24 x 24` thumb carrier and an `8px` shadow
-  thickness, producing the Figma `40 x 40` state-layer outer size without layout shift.
+- The V0 `activationFeedback` halo uses the stable `24 x 24` thumb carrier and `profiles.halo.size: 8`,
+  producing the Figma `40 x 40` state-layer outer size without layout shift.
 - Figma uses selected-aware state-layer colors: unselected uses `On Surface`; selected uses
   `Primary`. The V0 activation feedback has one token, so exact selected/unselected color switching
   is intentionally deferred.

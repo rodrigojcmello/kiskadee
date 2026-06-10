@@ -331,20 +331,14 @@ export async function writeExtraArtifacts(params: {
       const color = themeTokens?.focusColor;
       const background = themeTokens?.background;
       const activationFeedback = themeTokens?.effects?.activationFeedback;
-      const activationFeedbackTone = activationFeedback?.tone ?? activationFeedback?.surfaceTone;
-      const activationFeedbackSubtle = activationFeedbackTone?.subtle;
-      const activationFeedbackVivid = activationFeedbackTone?.vivid;
-      const activationFeedbackSubtleColor = activationFeedbackSubtle?.color ?? activationFeedback?.color;
-      const activationFeedbackSubtleOpacity =
-        activationFeedbackSubtle?.opacity ?? activationFeedback?.opacity;
+      const activationFeedbackSubtle = activationFeedback?.tone?.subtle;
+      const activationFeedbackVivid = activationFeedback?.tone?.vivid;
       const tokensCss = buildRootTokensCss([
         { name: '--k-focus-color', value: toCssColor(color) },
-        { name: '--k-af-subtle-color', value: toCssColor(activationFeedbackSubtleColor) },
-        { name: '--k-af-subtle-opacity', value: activationFeedbackSubtleOpacity },
+        { name: '--k-af-subtle-color', value: toCssColor(activationFeedbackSubtle?.color) },
+        { name: '--k-af-subtle-opacity', value: activationFeedbackSubtle?.opacity },
         { name: '--k-af-vivid-color', value: toCssColor(activationFeedbackVivid?.color) },
-        { name: '--k-af-vivid-opacity', value: activationFeedbackVivid?.opacity },
-        { name: '--k-af-token-color', value: toCssColor(activationFeedbackSubtleColor) },
-        { name: '--k-af-token-opacity', value: activationFeedbackSubtleOpacity }
+        { name: '--k-af-vivid-opacity', value: activationFeedbackVivid?.opacity }
       ]);
 
       if (tokensCss) {

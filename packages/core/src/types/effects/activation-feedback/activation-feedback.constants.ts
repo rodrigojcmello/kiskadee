@@ -1,9 +1,7 @@
 import type {
-  ActivationFeedbackEffectSchema,
   ActivationFeedbackMotionDurationToken,
   ActivationFeedbackProfileConfig,
-  ActivationFeedbackProfileMode,
-  ResolvedActivationFeedbackConfig
+  ActivationFeedbackProfileMode
 } from './activation-feedback.types.ts';
 
 export const ACTIVATION_FEEDBACK_DURATION_TOKEN_TO_MS: Readonly<
@@ -15,13 +13,6 @@ export const ACTIVATION_FEEDBACK_DURATION_TOKEN_TO_MS: Readonly<
   'interaction.hold.short': 50,
   'interaction.fade.short': 100,
   'interaction.fade.long': 360
-};
-
-export const DEFAULT_ACTIVATION_FEEDBACK: Readonly<ResolvedActivationFeedbackConfig> = {
-  thickness: 3,
-  holdDurationToken: 'interaction.hold.short',
-  fadeDurationToken: 'interaction.fade.long',
-  curveToken: 'motion.standard.out'
 };
 
 export const DEFAULT_ACTIVATION_FEEDBACK_PROFILES: Readonly<

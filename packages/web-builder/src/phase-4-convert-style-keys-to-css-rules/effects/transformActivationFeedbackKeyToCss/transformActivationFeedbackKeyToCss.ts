@@ -1,11 +1,11 @@
 import {
   type ActivationFeedbackEffectSchema,
   type ActivationFeedbackMotionCurveToken,
-  type ActivationFeedbackProfile,
+  type ActivationFeedbackMotionDurationToken,
+  type ActivationFeedbackProfileKey,
   type ActivationFeedbackProfileConfig,
   type ActivationFeedbackTone,
   type ActivationFeedbackVisual,
-  resolveActivationFeedbackConfig,
   resolveActivationFeedbackDurationMs,
   resolveActivationFeedbackProfile,
   resolvePressedActivationFeedbackProfile
@@ -18,7 +18,7 @@ const CURVE_TOKEN_TO_CSS: Record<ActivationFeedbackMotionCurveToken, string> = {
 };
 
 type ActivationFeedbackProfileValue = {
-  profile?: ActivationFeedbackProfile;
+  profile?: ActivationFeedbackProfileKey;
   profileConfig?: ActivationFeedbackProfileConfig;
   visual?: ActivationFeedbackVisual;
 };
@@ -62,13 +62,13 @@ function toCssCurve(token: ActivationFeedbackMotionCurveToken): string {
 
 function toCssDuration(token: string | undefined, fallbackMs: number): string {
   return `${resolveActivationFeedbackDurationMs(
-    token as ActivationFeedbackEffectSchema['fadeDurationToken'],
+    token as ActivationFeedbackMotionDurationToken,
     fallbackMs
   )}ms`;
 }
 
 function resolveProfileConfig(value: ActivationFeedbackProfileValue): {
-  profile: ActivationFeedbackProfile;
+  profile: ActivationFeedbackProfileKey;
   profileConfig: ActivationFeedbackProfileConfig;
   visual?: ActivationFeedbackVisual;
 } {
@@ -91,13 +91,13 @@ function resolveProfileConfig(value: ActivationFeedbackProfileValue): {
 function toneColorVar(tone: ActivationFeedbackTone): string {
   return tone === 'vivid'
     ? 'var(--k-af-vivid-color, var(--k-af-subtle-color, currentColor))'
-    : 'var(--k-af-subtle-color, var(--k-af-token-color, var(--k-focus-color, currentColor)))';
+    : 'var(--k-af-subtle-color, var(--k-focus-color, currentColor))';
 }
 
 function toneOpacityVar(tone: ActivationFeedbackTone): string {
   return tone === 'vivid'
     ? 'var(--k-af-vivid-opacity, var(--k-af-subtle-opacity, 1))'
-    : 'var(--k-af-subtle-opacity, var(--k-af-token-opacity, 0.16))';
+    : 'var(--k-af-subtle-opacity, 0.16)';
 }
 
 function transformActivationFeedbackProfileToCss(
@@ -124,29 +124,21 @@ function transformActivationFeedbackProfileToCss(
   const animateSize = profileConfig.animateSize === false ? '0' : '1';
   const numericSize =
     typeof profileConfig.size === 'number' && profileConfig.size > 0 ? profileConfig.size : null;
-  const thickness = isHaloProfile && numericSize !== null ? `${numericSize}px` : undefined;
-  const borderWidth =
-    isOutline && numericSize !== null
-      ? `${numericSize}px`
-      : profileConfig.border?.width !== undefined
-        ? `${profileConfig.border.width}px`
-        : '0';
-  const borderTone = profileConfig.border?.surfaceTone;
-  const borderColor =
-    borderTone === 'vivid'
-      ? 'var(--k-af-vivid-color, var(--k-af-current-color, currentColor))'
-      : borderTone === 'subtle'
-        ? 'var(--k-af-subtle-color, var(--k-af-current-color, currentColor))'
-        : 'var(--k-af-current-color, var(--k-af-color, currentColor))';
-  const borderOpacity =
-    borderTone === 'vivid'
-      ? 'var(--k-af-vivid-opacity, var(--k-af-current-opacity, 1))'
-      : borderTone === 'subtle'
-        ? 'var(--k-af-subtle-opacity, var(--k-af-current-opacity, 1))'
-        : 'var(--k-af-current-opacity, var(--k-af-opacity, 1))';
+  const geometrySize = isHaloProfile && numericSize !== null ? `${numericSize}px` : '0px';
+  const borderWidth = isOutline && numericSize !== null ? `${numericSize}px` : '0';
+  const borderColor = 'var(--k-af-current-color, var(--k-af-color, currentColor))';
   const fillOpacity = isOutline ? '0' : '1';
+  const layerWidth = isOutline
+    ? `calc(var(--k-af-host-width, var(--k-af-end-size)) + (${geometrySize} * 2))`
+    : `calc(var(--k-af-end-size) + (${geometrySize} * 2))`;
+  const layerHeight = isOutline
+    ? `calc(var(--k-af-host-height, var(--k-af-end-size)) + (${geometrySize} * 2))`
+    : `calc(var(--k-af-end-size) + (${geometrySize} * 2))`;
+  const layerRadius = isOutline
+    ? `calc(var(--k-af-host-radius, 0px) + ${geometrySize})`
+    : '999px';
 
-  return `.${className} { --k-af-profile: ${profile}; --k-af-overflow: ${overflow}; --k-af-clip: ${clip}; --k-af-size: ${size}; --k-af-animate-size: ${animateSize}; --k-af-duration: ${duration}; --k-af-ease: ${ease}; --k-af-fade-delay: ${fadeDelay}; --k-af-fade-duration: ${fadeDuration}; --k-af-fade-ease: ${fadeEase}; --k-af-fill-opacity: ${fillOpacity};${thickness ? ` --k-af-thickness: ${thickness};` : ''} --k-af-border-width: ${borderWidth}; --k-af-border-color: ${borderColor}; --k-af-border-opacity: ${borderOpacity}; }`;
+  return `.${className} { --k-af-profile: ${profile}; --k-af-overflow: ${overflow}; --k-af-clip: ${clip}; --k-af-size: ${size}; --k-af-animate-size: ${animateSize}; --k-af-duration: ${duration}; --k-af-ease: ${ease}; --k-af-fade-delay: ${fadeDelay}; --k-af-fade-duration: ${fadeDuration}; --k-af-fade-ease: ${fadeEase}; --k-af-fill-opacity: ${fillOpacity}; --k-af-layer-width: ${layerWidth}; --k-af-layer-height: ${layerHeight}; --k-af-layer-radius: ${layerRadius}; --k-af-border-width: ${borderWidth}; --k-af-border-color: ${borderColor}; --k-af-border-opacity: 1; }`;
 }
 
 export function transformActivationFeedbackKeyToCss(styleKey: string, className: string): string {
@@ -155,12 +147,9 @@ export function transformActivationFeedbackKeyToCss(styleKey: string, className:
     return transformActivationFeedbackProfileToCss(parsed.value, className);
   }
 
-  const resolved = resolveActivationFeedbackConfig(parsed.value);
-  const fadeDuration = resolveActivationFeedbackDurationMs(resolved.fadeDurationToken, 360);
   const tone = parsed.value.visual?.tone?.default ?? 'subtle';
   const layer = parsed.value.visual?.layer ?? 'overlay';
   const zIndex = layer === 'underlay' ? '-1' : '2';
 
-  // Keep --k-af-token-* in the fallback chain for consumers overriding legacy vars directly.
-  return `.${className} { --k-af-current-color: ${toneColorVar(tone)}; --k-af-current-opacity: ${toneOpacityVar(tone)}; --k-af-color: var(--k-af-current-color, var(--k-af-subtle-color, var(--k-af-token-color, var(--k-focus-color, currentColor)))); --k-af-opacity: var(--k-af-current-opacity, var(--k-af-subtle-opacity, var(--k-af-token-opacity, 0.16))); --k-af-thickness: ${resolved.thickness}px; --k-af-z: ${zIndex}; --k-af-fill-opacity: 1; --k-af-fade-duration: ${fadeDuration}ms; --k-af-ease: ${toCssCurve(resolved.curveToken)}; }`;
+  return `.${className} { --k-af-current-color: ${toneColorVar(tone)}; --k-af-current-opacity: ${toneOpacityVar(tone)}; --k-af-color: var(--k-af-current-color, var(--k-af-subtle-color, var(--k-focus-color, currentColor))); --k-af-opacity: var(--k-af-current-opacity, var(--k-af-subtle-opacity, 0.16)); --k-af-z: ${zIndex}; --k-af-fill-opacity: 1; --k-af-fade-duration: 100ms; --k-af-fade-ease: ease-out; --k-af-ease: ease-out; }`;
 }

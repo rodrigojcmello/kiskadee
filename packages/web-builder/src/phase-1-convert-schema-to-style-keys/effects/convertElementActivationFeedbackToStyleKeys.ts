@@ -4,7 +4,6 @@ import type {
   StyleKeysByInteractionState
 } from '@kiskadee/core';
 import {
-  resolveActivationFeedbackConfig,
   resolveActivationFeedbackProfile,
   resolvePressedActivationFeedbackProfile
 } from '@kiskadee/core';
@@ -43,7 +42,7 @@ export function convertElementActivationFeedbackToStyleKeys({
   const styleKeys = [
     buildStyleKey({
       propertyName: 'activationFeedback',
-      value: config ?? resolveActivationFeedbackConfig(config)
+      value: config ?? {}
     })
   ];
 

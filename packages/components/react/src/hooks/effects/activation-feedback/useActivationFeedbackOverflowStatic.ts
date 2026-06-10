@@ -126,6 +126,9 @@ export function useActivationFeedbackOverflowStatic<
 
     host.style.removeProperty('--k-af-start-size');
     host.style.removeProperty('--k-af-end-size');
+    host.style.removeProperty('--k-af-host-width');
+    host.style.removeProperty('--k-af-host-height');
+    host.style.removeProperty('--k-af-host-radius');
   }, [hostRef]);
 
   const applyOriginVars = useCallback(
@@ -156,8 +159,12 @@ export function useActivationFeedbackOverflowStatic<
     if (rect.width === 0 || rect.height === 0) return false;
 
     const size = Math.max(rect.width, rect.height);
+    const hostStyle = window.getComputedStyle(host);
     host.style.setProperty('--k-af-start-size', `${size}px`);
     host.style.setProperty('--k-af-end-size', `${size}px`);
+    host.style.setProperty('--k-af-host-width', `${rect.width}px`);
+    host.style.setProperty('--k-af-host-height', `${rect.height}px`);
+    host.style.setProperty('--k-af-host-radius', hostStyle.borderTopLeftRadius);
     return true;
   }, [hostRef]);
 

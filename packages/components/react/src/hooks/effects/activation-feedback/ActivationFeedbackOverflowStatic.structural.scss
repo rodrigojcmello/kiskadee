@@ -13,24 +13,35 @@
   --k-af-y: 50%;
   --k-af-start-size: 0px;
   --k-af-end-size: 0px;
+  --k-af-host-width: var(--k-af-end-size);
+  --k-af-host-height: var(--k-af-end-size);
+  --k-af-host-radius: 999px;
 
   isolation: isolate;
 }
 
 /*
  * effect layer / afx::after
- * Draws the static circular feedback behind the host from generated and runtime variables.
+ * Draws the static feedback behind the host from generated and runtime variables.
+ * `paint: halo` remains circular; `paint: outline` follows the measured host box.
  */
 .k-afx::after {
   content: '';
   position: absolute;
   left: var(--k-af-x);
   top: var(--k-af-y);
-  width: calc(var(--k-af-end-size) + (var(--k-af-thickness) * 2));
-  height: calc(var(--k-af-end-size) + (var(--k-af-thickness) * 2));
+  box-sizing: border-box;
+  width: var(
+    --k-af-layer-width,
+    calc(var(--k-af-end-size) + (var(--k-af-size, 0px) * 2))
+  );
+  height: var(
+    --k-af-layer-height,
+    calc(var(--k-af-end-size) + (var(--k-af-size, 0px) * 2))
+  );
   z-index: var(--k-af-z, -1);
   display: block;
-  border-radius: 999px;
+  border-radius: var(--k-af-layer-radius, 999px);
   background: color-mix(
     in srgb,
     var(--k-af-color) calc(var(--k-af-fill-opacity, 1) * 100%),

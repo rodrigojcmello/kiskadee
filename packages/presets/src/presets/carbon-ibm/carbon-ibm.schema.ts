@@ -25,14 +25,19 @@ export const schema: Schema<Segments> = {
     },
     effects: {
       activationFeedback: {
-        thickness: 8,
-        holdDurationToken: 'interaction.hold.short',
-        fadeDurationToken: 'interaction.fade.long',
-        curveToken: 'motion.standard.out',
+        profile: 'ripple',
+        origin: 'pointer',
+        visual: {
+          layer: 'overlay',
+          paint: 'halo',
+          tone: {
+            default: 'subtle'
+          }
+        },
         profiles: {
           halo: {
             animateSize: false,
-            size: 'auto',
+            size: 80,
             durationToken: 'interaction.instant',
             fade: {
               delayToken: 'interaction.hold.short',
@@ -54,8 +59,6 @@ export const schema: Schema<Segments> = {
           focusColor: '#0F62FE',
           effects: {
             activationFeedback: {
-              color: '#161616',
-              opacity: 0.12,
               tone: {
                 subtle: {
                   color: '#161616',

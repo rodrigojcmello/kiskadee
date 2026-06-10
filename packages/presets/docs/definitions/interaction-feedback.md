@@ -115,9 +115,14 @@ component emphasis values. Components may map their own visual recipe to a tone
 through `visual.tone.byEmphasis` when that recipe changes the surface where the
 feedback appears.
 
-The existing single-tone `activationFeedback.color` and
-`activationFeedback.opacity` fields are legacy-compatible and map to
-`tone.subtle`.
+Single-tone `activationFeedback.color`, `activationFeedback.opacity`, and
+`surfaceTone` are not part of the modern contract. Presets must declare
+feedback colors through `tone.subtle` and `tone.vivid`.
+
+Layer opacity is applied once by the effect layer itself. Generated border and
+fill colors should stay opaque unless a profile intentionally uses
+`visual.paint` to suppress the fill; otherwise outline feedback becomes
+effectively transparent after alpha is multiplied twice.
 
 When profiles are declared, generated class maps may expose compact effect
 buckets in addition to the base `af` bucket:

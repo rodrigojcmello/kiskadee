@@ -46,10 +46,6 @@ export const schema: Schema<Segments> = {
     radius: 'pill',
     effects: {
       activationFeedback: {
-        thickness: 8,
-        holdDurationToken: 'interaction.hold.short',
-        fadeDurationToken: 'interaction.fade.long',
-        curveToken: 'motion.standard.out',
         profile: 'ripple',
         origin: 'pointer',
         visual: {
