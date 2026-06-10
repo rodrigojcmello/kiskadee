@@ -16,5 +16,6 @@
  * Adapts activation feedback tokens for low-emphasis Switch on vivid local surfaces.
  */
 .k-swt-e3f-a {
-  --k-af-color: var(--k-af-vivid-color);
+  --k-af-current-color: var(--k-af-vivid-color);
+  --k-af-current-opacity: var(--k-af-vivid-opacity);
 }
