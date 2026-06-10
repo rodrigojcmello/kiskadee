@@ -38,7 +38,10 @@ export function createIos26AppleSwitchSchema({
           layer: 'underlay',
           paint: 'outline',
           tone: {
-            default: 'subtle'
+            default: 'subtle',
+            byEmphasis: {
+              low: 'vivid'
+            }
           }
         },
         profiles: {

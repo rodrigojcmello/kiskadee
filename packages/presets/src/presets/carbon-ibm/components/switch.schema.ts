@@ -29,7 +29,10 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
           layer: 'underlay',
           paint: 'halo',
           tone: {
-            default: 'subtle'
+            default: 'subtle',
+            byEmphasis: {
+              low: 'vivid'
+            }
           }
         },
         profiles: {

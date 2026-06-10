@@ -51,7 +51,10 @@ export function createFluent2MicrosoftSwitchSchema({
           layer: 'underlay',
           paint: 'halo',
           tone: {
-            default: 'subtle'
+            default: 'subtle',
+            byEmphasis: {
+              low: 'vivid'
+            }
           }
         },
         profiles: {

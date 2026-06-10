@@ -154,9 +154,9 @@ area. This is a preset default, not a runtime limitation. If a preset chooses
 `ripple` or `ripple-overflow`, React Switch should consume that resolved profile
 instead of hardcoding `halo`.
 
-Material Switch maps `visual.tone.byEmphasis.low` to `vivid` because its low
-recipe is intended for strong local surfaces. This is a Switch preset decision,
-not a global rule that low emphasis always uses vivid feedback.
+Switch presets map `visual.tone.byEmphasis.low` to `vivid` because their low
+recipes are intended for strong local surfaces. This is a Switch preset
+decision, not a global rule that low emphasis always uses vivid feedback.
 
 React Switch exposes a small local control:
 

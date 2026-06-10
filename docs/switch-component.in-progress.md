@@ -26,9 +26,9 @@ optimized single-component implementation was promoted into
 - Switch activation feedback is a pointer/click visual effect. Direct click/tap on the visual track
   may start AF; Space keeps the native keyboard toggle behavior but must not start AF.
 - Switch activation feedback defaults now come from
-  `components.switch.effects.activationFeedback`. Material uses `profile: 'halo'`, `origin:
-  'center'`, and `visual.tone.byEmphasis.low = 'vivid'`; this is schema-owned, not a structural CSS
-  hardcode.
+  `components.switch.effects.activationFeedback`. Switch presets use `profile: 'halo'`,
+  `origin: 'center'`, and `visual.tone.byEmphasis.low = 'vivid'`; this is schema-owned, not a
+  structural CSS hardcode.
 - Activation feedback now uses the modern shared contract only: profile-local `size`,
   `visual.layer`, `visual.paint`, and `visual.tone`. The old `thickness`, top-level motion tokens,
   `pressedVisual`, `inputFeedback`, profile `border`, and theme `surfaceTone` paths are not part of
@@ -110,3 +110,5 @@ optimized single-component implementation was promoted into
 - 2026-06-10: Browser validation on `/switch` confirmed Material Google click AF in both
   checked/unchecked directions, Material `low` using vivid white AF, iOS Apple outline AF with
   `size: 8`, and static Activation Feedback cards staying active.
+- 2026-06-10: All Switch presets now map `low` emphasis to `vivid` activation feedback, matching
+  strong Showcase surfaces with a white halo/outline.
