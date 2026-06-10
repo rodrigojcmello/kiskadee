@@ -278,11 +278,16 @@ Activation feedback is a schema/global effect combination:
 - Switch enables the effect only when the generated `e3` class map contains an
   activation-feedback effect class.
 - The effect module is lazy-loaded through `useSwitchActivationFeedbackEffect`.
-- Pointer feedback starts only for primary pointer down events that target the
+- Interactive feedback starts from a direct click/tap activation inside the
   visual track area.
-- Keyboard feedback starts from the space key on the native input.
+- Keyboard activation does not start activation feedback. Space may still toggle
+  the native switch state for accessibility, but it must not display the AF
+  layer. Keyboard feedback is represented by the focus ring and the ordinary
+  pressed state, not by touch/click activation feedback.
 - Feedback is canceled on pointer cancel, blur, unmount, and drag movement.
 - Disabled and read-only switches do not start feedback.
+- `activationFeedback="active"` is reserved for static preview surfaces that
+  need the AF layer held on continuously.
 
 Current visual behavior:
 

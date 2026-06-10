@@ -1,5 +1,4 @@
 import type {
-  ActivationFeedbackInputFeedback,
   ActivationFeedbackOrigin,
   ActivationFeedbackPressedVisual,
   ActivationFeedbackProfileMode,
@@ -21,6 +20,7 @@ import {
   resolveActivationFeedbackProfileAvailability
 } from '../../../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
 import {
+  type ActivationFeedbackInputFeedback,
   type ActivationFeedbackRadialRuntimeConfig,
   resolveActivationFeedbackRadialRuntimeConfig,
   useActivationFeedbackRadialStateMachine
@@ -212,8 +212,6 @@ export function useButtonActivationFeedbackController(
       ? 'rippleLegacy'
       : null;
   const effectProfile = activationFeedbackProfile ?? rippleMode;
-  const forceModernFeedback =
-    localActivationFeedback?.profile !== undefined || legacyRippleEffect?.mode !== undefined;
   const forceRippleFeedback = legacyRippleEffect?.mode !== undefined;
   const rippleRuntimeOptions =
     feedbackKind === 'rippleLegacy'
@@ -225,15 +223,11 @@ export function useButtonActivationFeedbackController(
         })
       : null;
   const mouseInputFeedback: ActivationFeedbackInputFeedback =
-    rippleRuntimeOptions?.mouseInputFeedback ??
-    (forceModernFeedback
-        ? 'feedback'
-        : (activationFeedbackConfig?.inputFeedback?.mouse ?? 'feedback'));
+    rippleRuntimeOptions?.mouseInputFeedback ?? 'feedback';
+  // Keyboard-specific feedback is a legacy Ripple policy. Modern activationFeedback
+  // keeps keyboard activation on pressed semantics instead of starting AF.
   const keyboardInputFeedback: ActivationFeedbackInputFeedback =
-    rippleRuntimeOptions?.keyboardInputFeedback ??
-    (forceModernFeedback
-        ? 'feedback'
-        : (activationFeedbackConfig?.inputFeedback?.keyboard ?? mouseInputFeedback));
+    rippleRuntimeOptions?.keyboardInputFeedback ?? 'pressed';
   const pressedVisual: ActivationFeedbackPressedVisual =
     rippleRuntimeOptions?.pressedVisual ??
     (activationFeedbackProfile && activationFeedbackConfig?.pressedVisual === 'overlay'

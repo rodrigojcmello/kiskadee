@@ -63,6 +63,7 @@ function SwitchRoot(props: SwitchProps) {
     radius,
     motion,
     thumbShrink,
+    activationFeedback,
     variant = DEFAULT_SWITCH_VARIANT,
     mode = DEFAULT_SWITCH_MODE,
     labelPosition = DEFAULT_SWITCH_LABEL_POSITION,
@@ -89,8 +90,10 @@ function SwitchRoot(props: SwitchProps) {
   });
   const motionEffect = useSwitchRuntimeMotionEffect(motion !== false);
   const thumbShrinkEffect = effects.thumbShrinkEffect;
+  const shouldUseActivationFeedback =
+    activationFeedback !== false && hasSwitchActivationFeedbackEffect(elements);
   const activationFeedbackEffect = useSwitchActivationFeedbackEffect(
-    hasSwitchActivationFeedbackEffect(elements)
+    shouldUseActivationFeedback
   );
 
   const { classNames: structuralClassNames, thumbVisualClassName } = useMemo(() => {
@@ -191,8 +194,9 @@ function SwitchRoot(props: SwitchProps) {
     enabled: Boolean(activationFeedbackEffect),
     config: globalEffects.activationFeedback,
     disabled,
+    forcedActive: activationFeedback === 'active',
     readOnly,
-    inputProps,
+    onClickCapture: motionController.handleClickCapture,
     onPointerDown,
     onPointerUp,
     onPointerCancel,
@@ -248,12 +252,12 @@ function SwitchRoot(props: SwitchProps) {
     <HeadlessSwitch.Root
       {...rootProps}
       inputId={id}
-      inputProps={activationFeedbackController.inputProps}
+      inputProps={inputProps}
       disabled={disabled}
       readOnly={readOnly}
       controlState={motionController.projectedControlState}
       onControlStateChange={motionController.setControlState}
-      onClickCapture={motionController.handleClickCapture}
+      onClickCapture={activationFeedbackController.rootHandlers.onClickCapture}
       onPointerDown={activationFeedbackController.rootHandlers.onPointerDown}
       onPointerUp={activationFeedbackController.rootHandlers.onPointerUp}
       onPointerCancel={activationFeedbackController.rootHandlers.onPointerCancel}

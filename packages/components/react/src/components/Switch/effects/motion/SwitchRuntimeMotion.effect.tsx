@@ -40,7 +40,7 @@ export type SwitchRuntimeMotionThumbProps = {
 };
 
 const SWITCH_MOTION_EXTREMITY_EPSILON = 0.5;
-const SWITCH_MOTION_CLICK_SUPPRESSION_THRESHOLD = 1;
+const SWITCH_MOTION_CLICK_SUPPRESSION_THRESHOLD = 5;
 const SWITCH_MOTION_THUMB_TRANSITIONS = {
   standard: {
     type: 'spring',

@@ -8,7 +8,7 @@ import {
 } from '@kiskadee/core';
 import type {
   FocusEvent,
-  KeyboardEvent,
+  MouseEvent,
   PointerEvent,
   RefObject
 } from 'react';
@@ -16,20 +16,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 type UseActivationFeedbackOverflowStaticArgs<
   TPointerElement extends HTMLElement,
-  THostElement extends HTMLElement,
-  TKeyboardElement extends HTMLElement
+  THostElement extends HTMLElement
 > = {
   capturePointer?: boolean;
   config?: ActivationFeedbackEffectSchema;
   disabled?: boolean;
   enabled: boolean;
+  forcedActive?: boolean;
   hostRef?: RefObject<THostElement | null>;
-  keyboardActivationKeys?: readonly string[];
   minPointerHoldMs?: number;
   onBlur?: (event: FocusEvent<TPointerElement>) => void;
-  onKeyboardBlur?: (event: FocusEvent<TKeyboardElement>) => void;
-  onKeyDown?: (event: KeyboardEvent<TKeyboardElement>) => void;
-  onKeyUp?: (event: KeyboardEvent<TKeyboardElement>) => void;
   onPointerCancel?: (event: PointerEvent<TPointerElement>) => void;
   onPointerDown?: (event: PointerEvent<TPointerElement>) => void;
   onPointerUp?: (event: PointerEvent<TPointerElement>) => void;
@@ -37,11 +33,6 @@ type UseActivationFeedbackOverflowStaticArgs<
   readOnly?: boolean;
   shouldStartPointerFeedback?: (event: PointerEvent<TPointerElement>) => boolean;
 };
-
-const DEFAULT_KEYBOARD_ACTIVATION_KEYS = ['Enter', ' '] as const;
-
-const isTouchLikePointer = (pointerType: string): boolean =>
-  pointerType === 'touch' || pointerType === 'pen';
 
 const trySetPointerCapture = (target: HTMLElement, pointerId: number) => {
   if (typeof target.setPointerCapture !== 'function') return;
@@ -65,27 +56,23 @@ const tryReleasePointerCapture = (target: HTMLElement, pointerId: number) => {
 
 export function useActivationFeedbackOverflowStatic<
   TPointerElement extends HTMLElement = HTMLElement,
-  THostElement extends HTMLElement = TPointerElement,
-  TKeyboardElement extends HTMLElement = TPointerElement
+  THostElement extends HTMLElement = TPointerElement
 >({
   capturePointer = true,
   config,
   disabled,
   enabled,
+  forcedActive,
   hostRef,
-  keyboardActivationKeys = DEFAULT_KEYBOARD_ACTIVATION_KEYS,
   minPointerHoldMs = 0,
   onBlur,
-  onKeyboardBlur,
-  onKeyDown,
-  onKeyUp,
   onPointerCancel,
   onPointerDown,
   onPointerUp,
   origin = 'pointer',
   readOnly,
   shouldStartPointerFeedback
-}: UseActivationFeedbackOverflowStaticArgs<TPointerElement, THostElement, TKeyboardElement>) {
+}: UseActivationFeedbackOverflowStaticArgs<TPointerElement, THostElement>) {
   const [isActive, setIsActive] = useState(false);
   const [isFading, setIsFading] = useState(false);
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -93,8 +80,8 @@ export function useActivationFeedbackOverflowStatic<
   const uncapturedPointerCleanupRef = useRef<(() => void) | null>(null);
   const startedAtRef = useRef<number>(0);
   const pointerInFlightRef = useRef(false);
-  const keyboardInFlightRef = useRef(false);
-  const isDisabled = disabled || readOnly || !enabled;
+  const isInteractionDisabled = disabled || readOnly || !enabled;
+  const isForcedActive = enabled && forcedActive === true && !disabled;
 
   const runtimeConfig = useMemo(() => {
     const profileConfig = resolveActivationFeedbackProfile('overflow-static', { config });
@@ -123,11 +110,10 @@ export function useActivationFeedbackOverflowStatic<
 
   const resetInFlight = useCallback(() => {
     pointerInFlightRef.current = false;
-    keyboardInFlightRef.current = false;
   }, []);
 
   const clearOriginVars = useCallback(() => {
-    const host = hostRef?.current;
+    const host = hostRef?.current ?? null;
     if (!host) return;
 
     host.style.removeProperty('--k-af-x');
@@ -143,7 +129,7 @@ export function useActivationFeedbackOverflowStatic<
   }, [hostRef]);
 
   const applyOriginVars = useCallback(
-    (event?: PointerEvent<TPointerElement> | KeyboardEvent<TKeyboardElement>) => {
+    (event?: PointerEvent<TPointerElement> | MouseEvent<TPointerElement>) => {
       const host = hostRef?.current;
       if (!host) return;
 
@@ -175,6 +161,20 @@ export function useActivationFeedbackOverflowStatic<
     return true;
   }, [hostRef]);
 
+  const applyStaticFeedback = useCallback(
+    (event?: PointerEvent<TPointerElement> | MouseEvent<TPointerElement>) => {
+      clearGeometryVars();
+      clearOriginVars();
+      applyOriginVars(event);
+      if (applyStaticGeometryVars()) return true;
+
+      clearGeometryVars();
+      clearOriginVars();
+      return false;
+    },
+    [applyOriginVars, applyStaticGeometryVars, clearGeometryVars, clearOriginVars]
+  );
+
   const cancel = useCallback(() => {
     clearTimers();
     clearUncapturedPointerListeners();
@@ -191,40 +191,33 @@ export function useActivationFeedbackOverflowStatic<
     resetInFlight
   ]);
 
-  const start = useCallback((event?: PointerEvent<TPointerElement> | KeyboardEvent<TKeyboardElement>) => {
-    if (isDisabled) return false;
-    if (hostRef && !hostRef.current) return false;
+  const start = useCallback(
+    (event?: PointerEvent<TPointerElement> | MouseEvent<TPointerElement>) => {
+      if (isInteractionDisabled || isForcedActive) return false;
+      if (hostRef && !hostRef.current) return false;
 
-    clearTimers();
-    clearGeometryVars();
-    clearOriginVars();
-    applyOriginVars(event);
-    if (!applyStaticGeometryVars()) {
-      clearGeometryVars();
-      clearOriginVars();
-      return false;
-    }
-    startedAtRef.current = Date.now();
-    setIsFading(false);
-    setIsActive(true);
+      clearTimers();
+      if (!applyStaticFeedback(event)) return false;
+      startedAtRef.current = Date.now();
+      setIsFading(false);
+      setIsActive(true);
 
-    return true;
-  }, [
-    applyOriginVars,
-    applyStaticGeometryVars,
-    clearGeometryVars,
-    clearOriginVars,
-    clearTimers,
-    hostRef,
-    isDisabled
-  ]);
+      return true;
+    },
+    [
+      applyStaticFeedback,
+      clearTimers,
+      hostRef,
+      isForcedActive,
+      isInteractionDisabled
+    ]
+  );
 
   const finish = useCallback(
     (minHoldMs = 0) => {
       const elapsedMs = Math.max(0, Date.now() - startedAtRef.current);
       const remainingDurationMs = Math.max(0, runtimeConfig.durationMs - elapsedMs);
-      const remainingMinHoldMs = Math.max(0, minHoldMs - elapsedMs);
-      const remainingMs = Math.max(remainingDurationMs, remainingMinHoldMs);
+      const remainingMs = Math.max(remainingDurationMs, minHoldMs);
 
       if (fadeTimeoutRef.current !== null) {
         clearTimeout(fadeTimeoutRef.current);
@@ -256,16 +249,28 @@ export function useActivationFeedbackOverflowStatic<
   );
 
   const finalizePointerFeedback = useCallback(
-    (pointerType: string) => {
+    () => {
       if (!pointerInFlightRef.current) return;
       pointerInFlightRef.current = false;
-      finish(isTouchLikePointer(pointerType) ? 0 : minPointerHoldMs);
+      finish(minPointerHoldMs);
     },
     [finish, minPointerHoldMs]
   );
 
+  const trigger = useCallback(
+    (
+      event?: PointerEvent<TPointerElement> | MouseEvent<TPointerElement>,
+      minHoldMs = minPointerHoldMs
+    ) => {
+      if (!start(event)) return false;
+      finish(minHoldMs);
+      return true;
+    },
+    [finish, minPointerHoldMs, start]
+  );
+
   const registerUncapturedPointerEnd = useCallback(
-    (pointerId: number, pointerType: string) => {
+    (pointerId: number) => {
       clearUncapturedPointerListeners();
       if (typeof window === 'undefined') return;
 
@@ -275,7 +280,7 @@ export function useActivationFeedbackOverflowStatic<
         if (event.type === 'pointercancel') {
           cancel();
         } else {
-          finalizePointerFeedback(event.pointerType || pointerType);
+          finalizePointerFeedback();
         }
         clearUncapturedPointerListeners();
       };
@@ -293,14 +298,73 @@ export function useActivationFeedbackOverflowStatic<
   useEffect(() => cancel, [cancel]);
 
   useEffect(() => {
-    if (!isDisabled) return;
+    if (!isInteractionDisabled || isForcedActive) return;
     cancel();
-  }, [cancel, isDisabled]);
+  }, [cancel, isForcedActive, isInteractionDisabled]);
+
+  useEffect(() => {
+    if (!isForcedActive) return;
+
+    let animationFrame: number | null = null;
+    const host = hostRef?.current;
+
+    const applyForcedFeedback = () => {
+      clearTimers();
+      clearUncapturedPointerListeners();
+      resetInFlight();
+
+      if (!applyStaticFeedback()) {
+        setIsActive(false);
+        setIsFading(false);
+        return;
+      }
+
+      setIsFading(false);
+      setIsActive(true);
+    };
+
+    applyForcedFeedback();
+
+    const resizeObserver =
+      host && typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(() => {
+            if (animationFrame !== null) return;
+            animationFrame = window.requestAnimationFrame(() => {
+              animationFrame = null;
+              applyForcedFeedback();
+            });
+          })
+        : null;
+
+    if (resizeObserver && host) {
+      resizeObserver.observe(host);
+    }
+
+    return () => {
+      resizeObserver?.disconnect();
+      if (animationFrame !== null) {
+        window.cancelAnimationFrame(animationFrame);
+      }
+      clearGeometryVars();
+      clearOriginVars();
+      setIsActive(false);
+      setIsFading(false);
+    };
+  }, [
+    applyStaticFeedback,
+    clearGeometryVars,
+    clearOriginVars,
+    clearTimers,
+    clearUncapturedPointerListeners,
+    hostRef,
+    isForcedActive,
+    resetInFlight
+  ]);
 
   const handlePointerDown = useCallback(
     (event: PointerEvent<TPointerElement>) => {
       onPointerDown?.(event);
-      if (event.defaultPrevented || isDisabled) return;
+      if (event.defaultPrevented || isInteractionDisabled || isForcedActive) return;
       if (event.button !== 0 || event.isPrimary === false) return;
       if (shouldStartPointerFeedback?.(event) === false) return;
 
@@ -311,12 +375,13 @@ export function useActivationFeedbackOverflowStatic<
       if (capturePointer) {
         trySetPointerCapture(event.currentTarget, event.pointerId);
       } else {
-        registerUncapturedPointerEnd(event.pointerId, event.pointerType);
+        registerUncapturedPointerEnd(event.pointerId);
       }
     },
     [
       capturePointer,
-      isDisabled,
+      isForcedActive,
+      isInteractionDisabled,
       onPointerDown,
       registerUncapturedPointerEnd,
       shouldStartPointerFeedback,
@@ -329,7 +394,7 @@ export function useActivationFeedbackOverflowStatic<
       onPointerUp?.(event);
       tryReleasePointerCapture(event.currentTarget, event.pointerId);
       clearUncapturedPointerListeners();
-      finalizePointerFeedback(event.pointerType);
+      finalizePointerFeedback();
     },
     [clearUncapturedPointerListeners, finalizePointerFeedback, onPointerUp]
   );
@@ -344,29 +409,6 @@ export function useActivationFeedbackOverflowStatic<
     [cancel, clearUncapturedPointerListeners, onPointerCancel]
   );
 
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent<TKeyboardElement>) => {
-      onKeyDown?.(event);
-      if (event.defaultPrevented || event.repeat || isDisabled) return;
-      if (!keyboardActivationKeys.includes(event.key)) return;
-
-      keyboardInFlightRef.current = start(event);
-    },
-    [isDisabled, keyboardActivationKeys, onKeyDown, start]
-  );
-
-  const handleKeyUp = useCallback(
-    (event: KeyboardEvent<TKeyboardElement>) => {
-      onKeyUp?.(event);
-      if (!keyboardActivationKeys.includes(event.key)) return;
-      if (!keyboardInFlightRef.current) return;
-
-      keyboardInFlightRef.current = false;
-      finish();
-    },
-    [finish, keyboardActivationKeys, onKeyUp]
-  );
-
   const handleBlur = useCallback(
     (event: FocusEvent<TPointerElement>) => {
       onBlur?.(event);
@@ -376,25 +418,14 @@ export function useActivationFeedbackOverflowStatic<
     [cancel, onBlur]
   );
 
-  const handleKeyboardBlur = useCallback(
-    (event: FocusEvent<TKeyboardElement>) => {
-      onKeyboardBlur?.(event);
-      if (event.defaultPrevented) return;
-      cancel();
-    },
-    [cancel, onKeyboardBlur]
-  );
-
   return {
     cancel,
     handleBlur,
-    handleKeyboardBlur,
-    handleKeyDown,
-    handleKeyUp,
     handlePointerCancel,
     handlePointerDown,
     handlePointerUp,
-    isActive,
-    isFading
+    isActive: isForcedActive || isActive,
+    isFading: isForcedActive ? false : isFading,
+    trigger
   };
 }

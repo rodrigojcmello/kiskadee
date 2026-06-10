@@ -16,8 +16,6 @@ export type ActivationFeedbackProfileMode = Exclude<ActivationFeedbackProfile, '
 
 export type ActivationFeedbackOrigin = 'center' | 'pointer';
 
-export type ActivationFeedbackInputFeedback = 'pressed' | 'feedback';
-
 export type ActivationFeedbackPressedVisual = 'state' | 'overlay';
 
 export type ActivationFeedbackSurfaceTone = 'subtle' | 'vivid';
@@ -45,10 +43,6 @@ export type ActivationFeedbackEffectSchema = {
   curveToken?: ActivationFeedbackMotionCurveToken;
   profile?: ActivationFeedbackProfileMode;
   origin?: ActivationFeedbackOrigin;
-  inputFeedback?: {
-    mouse?: ActivationFeedbackInputFeedback;
-    keyboard?: ActivationFeedbackInputFeedback;
-  };
   pressedVisual?: ActivationFeedbackPressedVisual;
   profiles?: {
     surface?: ActivationFeedbackProfileConfig;

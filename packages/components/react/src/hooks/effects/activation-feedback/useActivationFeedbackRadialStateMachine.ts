@@ -1,5 +1,4 @@
 import type {
-  ActivationFeedbackInputFeedback,
   ActivationFeedbackOrigin,
   ActivationFeedbackPressedVisual,
   ActivationFeedbackProfile,
@@ -19,13 +18,14 @@ import {
   useState
 } from 'react';
 
+export type ActivationFeedbackInputFeedback = 'pressed' | 'feedback';
+
 type ActivationFeedbackRadialProfile = Extract<
   ActivationFeedbackProfile,
   'surface' | 'overflow' | 'overflow-static'
 >;
 
 export type {
-  ActivationFeedbackInputFeedback,
   ActivationFeedbackOrigin,
   ActivationFeedbackPressedVisual
 } from '@kiskadee/core';

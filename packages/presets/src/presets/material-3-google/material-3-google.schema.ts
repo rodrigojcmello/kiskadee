@@ -52,10 +52,6 @@ export const schema: Schema<Segments> = {
         curveToken: 'motion.standard.out',
         profile: 'surface',
         origin: 'pointer',
-        inputFeedback: {
-          mouse: 'pressed',
-          keyboard: 'pressed'
-        },
         pressedVisual: 'overlay',
         profiles: {
           surface: {

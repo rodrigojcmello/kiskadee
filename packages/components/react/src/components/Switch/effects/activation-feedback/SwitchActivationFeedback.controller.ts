@@ -1,14 +1,20 @@
 import type { ActivationFeedbackEffectSchema } from '@kiskadee/core';
-import type { SwitchInputProps } from '@kiskadee/react-headless';
-import { type FocusEvent, type PointerEvent, type RefObject, useCallback, useMemo } from 'react';
+import {
+  type FocusEvent,
+  type MouseEvent,
+  type PointerEvent,
+  type RefObject,
+  useCallback
+} from 'react';
 import { useActivationFeedbackOverflowStatic } from '../../../../hooks/effects/activation-feedback/useActivationFeedbackOverflowStatic.ts';
 
 type SwitchActivationFeedbackControllerOptions = {
   config?: ActivationFeedbackEffectSchema;
   disabled?: boolean;
   enabled: boolean;
-  inputProps?: SwitchInputProps;
+  forcedActive?: boolean;
   onBlur?: (event: FocusEvent<HTMLLabelElement>) => void;
+  onClickCapture?: (event: MouseEvent<HTMLLabelElement>) => void;
   onPointerCancel?: (event: PointerEvent<HTMLLabelElement>) => void;
   onPointerDown?: (event: PointerEvent<HTMLLabelElement>) => void;
   onPointerUp?: (event: PointerEvent<HTMLLabelElement>) => void;
@@ -19,26 +25,26 @@ type SwitchActivationFeedbackControllerOptions = {
 
 type SwitchActivationFeedbackControllerResult = {
   cancel: () => void;
-  inputProps?: SwitchInputProps;
   isActive: boolean;
   isFading: boolean;
   rootHandlers: {
     onBlur?: (event: FocusEvent<HTMLLabelElement>) => void;
+    onClickCapture?: (event: MouseEvent<HTMLLabelElement>) => void;
     onPointerCancel?: (event: PointerEvent<HTMLLabelElement>) => void;
     onPointerDown?: (event: PointerEvent<HTMLLabelElement>) => void;
     onPointerUp?: (event: PointerEvent<HTMLLabelElement>) => void;
   };
 };
 
-const SWITCH_ACTIVATION_FEEDBACK_KEYBOARD_KEYS = [' '] as const;
 const SWITCH_ACTIVATION_FEEDBACK_MIN_POINTER_HOLD_MS = 140;
 
 export function useSwitchActivationFeedbackController({
   config,
   disabled,
   enabled,
-  inputProps,
+  forcedActive,
   onBlur,
+  onClickCapture,
   onPointerCancel,
   onPointerDown,
   onPointerUp,
@@ -46,31 +52,40 @@ export function useSwitchActivationFeedbackController({
   thumbRef,
   trackRef
 }: SwitchActivationFeedbackControllerOptions): SwitchActivationFeedbackControllerResult {
-  const shouldStartPointerFeedback = useCallback(
-    (event: PointerEvent<HTMLLabelElement>) => {
-      if (event.button !== 0 || event.isPrimary === false) return false;
-
+  const isEventInsideTrack = useCallback(
+    (event: MouseEvent<HTMLLabelElement> | PointerEvent<HTMLLabelElement>) => {
       const trackElement = trackRef.current;
-      const target = event.target;
+      if (!trackElement) return false;
 
-      return trackElement !== null && target instanceof Node
-        ? trackElement.contains(target)
-        : false;
+      const rect = trackElement.getBoundingClientRect();
+      return (
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom
+      );
     },
     [trackRef]
   );
 
+  const shouldStartPointerFeedback = useCallback(
+    (event: PointerEvent<HTMLLabelElement>) => {
+      if (event.button !== 0 || event.isPrimary === false) return false;
+      return isEventInsideTrack(event);
+    },
+    [isEventInsideTrack]
+  );
+
   const activationFeedbackMachine = useActivationFeedbackOverflowStatic<
     HTMLLabelElement,
-    HTMLSpanElement,
-    HTMLInputElement
+    HTMLSpanElement
   >({
     capturePointer: false,
     config,
     disabled,
     enabled,
+    forcedActive,
     hostRef: thumbRef,
-    keyboardActivationKeys: SWITCH_ACTIVATION_FEEDBACK_KEYBOARD_KEYS,
     minPointerHoldMs: SWITCH_ACTIVATION_FEEDBACK_MIN_POINTER_HOLD_MS,
     origin: 'center',
     readOnly,
@@ -78,40 +93,29 @@ export function useSwitchActivationFeedbackController({
     onPointerUp,
     onPointerCancel,
     onBlur,
-    onKeyDown: inputProps?.onKeyDown,
-    onKeyUp: inputProps?.onKeyUp,
-    onKeyboardBlur: inputProps?.onBlur,
     shouldStartPointerFeedback
   });
 
-  const resolvedInputProps = useMemo(
-    () =>
-      enabled
-        ? {
-            ...inputProps,
-            onKeyDown: activationFeedbackMachine.handleKeyDown,
-            onKeyUp: activationFeedbackMachine.handleKeyUp,
-            onBlur: activationFeedbackMachine.handleKeyboardBlur
-          }
-        : inputProps,
-    [
-      activationFeedbackMachine.handleKeyboardBlur,
-      activationFeedbackMachine.handleKeyDown,
-      activationFeedbackMachine.handleKeyUp,
-      enabled,
-      inputProps
-    ]
+  const handleClickCapture = useCallback(
+    (event: MouseEvent<HTMLLabelElement>) => {
+      onClickCapture?.(event);
+      if (event.defaultPrevented) return;
+      if (!isEventInsideTrack(event)) return;
+
+      activationFeedbackMachine.trigger(event, SWITCH_ACTIVATION_FEEDBACK_MIN_POINTER_HOLD_MS);
+    },
+    [activationFeedbackMachine.trigger, isEventInsideTrack, onClickCapture]
   );
 
   return {
     cancel: activationFeedbackMachine.cancel,
-    inputProps: resolvedInputProps,
     isActive: enabled && activationFeedbackMachine.isActive,
     isFading: enabled && activationFeedbackMachine.isFading,
     rootHandlers: {
-      onPointerDown: enabled ? activationFeedbackMachine.handlePointerDown : onPointerDown,
-      onPointerUp: enabled ? activationFeedbackMachine.handlePointerUp : onPointerUp,
-      onPointerCancel: enabled ? activationFeedbackMachine.handlePointerCancel : onPointerCancel,
+      onClickCapture: enabled ? handleClickCapture : onClickCapture,
+      onPointerDown,
+      onPointerUp,
+      onPointerCancel,
       onBlur: enabled ? activationFeedbackMachine.handleBlur : onBlur
     }
   };

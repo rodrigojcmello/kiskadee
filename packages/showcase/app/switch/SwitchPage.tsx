@@ -103,10 +103,6 @@ const switchControlText = {
   off: 'Off'
 };
 
-const switchActivationFeedbackActiveClassNames = {
-  e3: 'k-swt-e3c-a k-afx k-afxa'
-};
-
 const THUMB_SHRINK_CHANGE_DELAY_MS = 400;
 
 function StateTile({
@@ -565,7 +561,7 @@ export default function SwitchPage() {
                   controlText={switchControlText}
                   controlState={false}
                   status="pressed"
-                  classNames={switchActivationFeedbackActiveClassNames}
+                  activationFeedback="active"
                   scale={scale}
                   radius={radius}
                   motion={motionOverride}
@@ -582,7 +578,7 @@ export default function SwitchPage() {
                   controlText={switchControlText}
                   controlState
                   status="pressed"
-                  classNames={switchActivationFeedbackActiveClassNames}
+                  activationFeedback="active"
                   scale={scale}
                   radius={radius}
                   motion={motionOverride}

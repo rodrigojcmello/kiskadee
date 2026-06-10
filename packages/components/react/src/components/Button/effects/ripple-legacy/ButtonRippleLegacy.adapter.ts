@@ -1,5 +1,4 @@
 import type {
-  ActivationFeedbackInputFeedback,
   ActivationFeedbackOrigin,
   ActivationFeedbackPressedVisual,
   ActivationFeedbackProfileMode,
@@ -16,6 +15,7 @@ import {
   resolveRippleProfile
 } from '@kiskadee/core';
 import type {
+  ActivationFeedbackInputFeedback,
   ActivationFeedbackRadialCssVars,
   ActivationFeedbackRadialRuntimeConfig
 } from '../../../../hooks/effects/activation-feedback/useActivationFeedbackRadialStateMachine.ts';

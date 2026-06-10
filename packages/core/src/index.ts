@@ -14,7 +14,6 @@ export {
 } from './types/effects/activation-feedback/activation-feedback.constants.ts';
 export type {
   ActivationFeedbackEffectSchema,
-  ActivationFeedbackInputFeedback,
   ActivationFeedbackMotionCurveToken,
   ActivationFeedbackMotionDurationToken,
   ActivationFeedbackOrigin,

@@ -92,9 +92,12 @@ shared activation-feedback layer; component hosts should reuse those utilities
 instead of duplicating bucket or timing resolution locally.
 
 The schema supports profile configuration on `global.effects.activationFeedback`.
-Presets may declare a default `profile`, pointer `origin`, per-input feedback
-policy, pressed visual policy, and reusable `profiles`. Element schemas still
-opt in with `activationFeedback: true`; they do not own profile definitions.
+Presets may declare a default `profile`, pointer `origin`, pressed visual policy,
+and reusable `profiles`. Element schemas still opt in with
+`activationFeedback: true`; they do not own profile definitions.
+Keyboard activation uses the ordinary `pressed` state and focus ring. It must not
+start the modern activation-feedback visual effect; keyboard-specific feedback
+policy belongs only to the deprecated `ripple` compatibility schema.
 
 When profiles are declared, generated class maps may expose compact effect
 buckets in addition to the legacy `af` bucket:
