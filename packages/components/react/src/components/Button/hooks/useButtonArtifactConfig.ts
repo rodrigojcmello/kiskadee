@@ -9,7 +9,6 @@ export type ButtonArtifactConfig = {
   buttonClassesMap: ButtonClassesMap | undefined;
   globalEffects: {
     activationFeedback: ButtonGlobalEffects['activationFeedback'] | undefined;
-    ripple: ButtonGlobalEffects['ripple'] | undefined;
   };
   options: {
     radius: NonNullable<ButtonGlobalConfig>['radius'] | undefined;
@@ -26,8 +25,7 @@ export function useButtonArtifactConfig(): ButtonArtifactConfig {
   return {
     buttonClassesMap,
     globalEffects: {
-      activationFeedback: global?.effects?.activationFeedback,
-      ripple: global?.effects?.ripple
+      activationFeedback: global?.effects?.activationFeedback
     },
     options: {
       radius: global?.radius

@@ -170,8 +170,8 @@ Practical rule:
   - Canonical naming, scope, and selector rules for structural Sass in `packages/components/react`.
 
 - [CROSS-COMPONENT-RULES.md](CROSS-COMPONENT-RULES.md)
-  - Durable rules shared across component families, such as focus language, ripple ownership, and
-    shadow philosophy.
+  - Durable rules shared across component families, such as focus language, activation feedback,
+    and shadow philosophy.
 
 - [packages/web-builder/README.md](packages/web-builder/README.md)
   - Web-only details (border/padding compensation, gradients, states).

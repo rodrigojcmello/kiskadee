@@ -41,8 +41,8 @@ The public component may act as a lightweight gate:
 This keeps preset-driven effects modular without adding public props only to protect runtime cost.
 
 Pure CSS effects do not need this shape. For example, a shadow-like effect can stay as generated
-classes when it does not require extra runtime behavior. A ripple-like effect is a better fit for a
-lazy module because it owns event handling, runtime state, and auxiliary visuals.
+classes when it does not require extra runtime behavior. A pointer activation-feedback effect is a
+better fit for a lazy module because it owns event handling, runtime state, and auxiliary visuals.
 
 ## Static And Motion Paths
 

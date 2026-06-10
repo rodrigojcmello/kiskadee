@@ -11,7 +11,6 @@ import {
 } from './decorations/index.ts';
 import { transformActivationFeedbackKeyToCss } from './effects/transformActivationFeedbackKeyToCss/transformActivationFeedbackKeyToCss.ts';
 import { transformBorderRadiusKeyToCss } from './effects/transformBorderRadiusKeyToCss/transformBorderRadiusKeyToCss.ts';
-import { transformRippleKeyToCss } from './effects/transformRippleKeyToCss/transformRippleKeyToCss.ts';
 import { transformThumbShrinkKeyToCss } from './effects/transformThumbShrinkKeyToCss/transformThumbShrinkKeyToCss.ts';
 import {
   type TransformColorKeyToCssOptions,
@@ -43,10 +42,6 @@ export function generateCssRuleFromStyleKey(
     generatedCss = transformThumbShrinkKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('shadow')) {
     generatedCss = transformShadowKeyToCss(styleKey, className, forceState, options);
-    // [RIPPLE EFFECT 12] START: Route ripple style keys through ripple CSS transformer.
-  } else if (styleKey.startsWith('ripple')) {
-    generatedCss = transformRippleKeyToCss(styleKey, className);
-    // [RIPPLE EFFECT 12] END: Route ripple style keys through ripple CSS transformer.
   } else if (styleKey.startsWith('textAlign')) {
     generatedCss = transformTextAlignKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('textFont')) {

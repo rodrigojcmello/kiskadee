@@ -6,7 +6,6 @@ import type {
   ActivationFeedbackThemeTokens,
   HSLA,
   RadiusMode,
-  RippleEffectSchema,
   Schema,
   SchemaFonts,
   SegmentName,
@@ -187,7 +186,6 @@ export async function writeExtraArtifacts(params: {
   const activationFeedback = schema.global?.effects?.activationFeedback as
     | ActivationFeedbackEffectSchema
     | undefined;
-  const ripple = schema.global?.effects?.ripple as RippleEffectSchema | undefined;
   const switchComponentArtifact = buildSwitchComponentArtifact(schema);
   const tabsComponentArtifact = buildTabsComponentArtifact(schema);
   const textFieldComponentArtifact = buildTextFieldComponentArtifact(schema);
@@ -206,8 +204,7 @@ export async function writeExtraArtifacts(params: {
   const hasActivationFeedback = Boolean(
     activationFeedback && Object.keys(activationFeedback).length > 0
   );
-  const hasRipple = Boolean(ripple && Object.keys(ripple).length > 0);
-  if (hasFonts || hasRadius || hasActivationFeedback || hasRipple) {
+  if (hasFonts || hasRadius || hasActivationFeedback) {
     await mkdir(buildDir, { recursive: true });
     const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
 
@@ -216,7 +213,6 @@ export async function writeExtraArtifacts(params: {
       radius?: RadiusMode;
       effects?: {
         activationFeedback?: ActivationFeedbackEffectSchema;
-        ripple?: RippleEffectSchema;
       };
     } = {};
 
@@ -235,13 +231,6 @@ export async function writeExtraArtifacts(params: {
       globalPayload.effects = {
         ...(globalPayload.effects ?? {}),
         activationFeedback
-      };
-    }
-
-    if (hasRipple && ripple) {
-      globalPayload.effects = {
-        ...(globalPayload.effects ?? {}),
-        ripple
       };
     }
 
@@ -265,11 +254,7 @@ export async function writeExtraArtifacts(params: {
   // Global design tokens consumed directly by CSS (no runtime setProperty/removeProperty).
   const globalTokensCss = buildRootTokensCss([
     { name: '--k-focus-width', value: focus?.width },
-    { name: '--k-focus-offset', value: focus?.offset },
-    { name: '--k-ripple-alpha-h', value: ripple?.overlayAlphaByEmphasis?.high },
-    { name: '--k-ripple-alpha-m', value: ripple?.overlayAlphaByEmphasis?.medium },
-    { name: '--k-ripple-alpha-l', value: ripple?.overlayAlphaByEmphasis?.low },
-    { name: '--k-ripple-alpha-ll', value: ripple?.overlayAlphaByEmphasis?.lowest }
+    { name: '--k-focus-offset', value: focus?.offset }
   ]);
 
   if (globalTokensCss) {
@@ -303,24 +288,6 @@ export async function writeExtraArtifacts(params: {
                     background?: SolidColor;
                     effects?: {
                       activationFeedback?: ActivationFeedbackThemeTokens;
-                      ripple?: {
-                        surface?: {
-                          color?: SolidColor;
-                          opacity?: number;
-                        };
-                        overflow?: {
-                          color?: SolidColor;
-                          opacity?: number;
-                        };
-                        overflowStatic?: {
-                          color?: SolidColor;
-                          opacity?: number;
-                        };
-                        overflowStaticBorder?: {
-                          color?: SolidColor;
-                          opacity?: number;
-                        };
-                      };
                     };
                   }
                 >
@@ -333,7 +300,6 @@ export async function writeExtraArtifacts(params: {
       const color = themeTokens?.focusColor;
       const background = themeTokens?.background;
       const activationFeedback = themeTokens?.effects?.activationFeedback;
-      const ripple = themeTokens?.effects?.ripple;
       const activationFeedbackSubtle = activationFeedback?.surfaceTone?.subtle;
       const activationFeedbackVivid = activationFeedback?.surfaceTone?.vivid;
       const activationFeedbackSubtleColor = activationFeedbackSubtle?.color ?? activationFeedback?.color;
@@ -346,24 +312,7 @@ export async function writeExtraArtifacts(params: {
         { name: '--k-af-vivid-color', value: toCssColor(activationFeedbackVivid?.color) },
         { name: '--k-af-vivid-opacity', value: activationFeedbackVivid?.opacity },
         { name: '--k-af-token-color', value: toCssColor(activationFeedbackSubtleColor) },
-        { name: '--k-af-token-opacity', value: activationFeedbackSubtleOpacity },
-        { name: '--k-ripple-surface-color', value: toCssColor(ripple?.surface?.color) },
-        { name: '--k-ripple-surface-opacity', value: ripple?.surface?.opacity },
-        { name: '--k-ripple-overflow-color', value: toCssColor(ripple?.overflow?.color) },
-        { name: '--k-ripple-overflow-opacity', value: ripple?.overflow?.opacity },
-        {
-          name: '--k-ripple-overflow-static-color',
-          value: toCssColor(ripple?.overflowStatic?.color)
-        },
-        { name: '--k-ripple-overflow-static-opacity', value: ripple?.overflowStatic?.opacity },
-        {
-          name: '--k-ripple-overflow-static-border-color',
-          value: toCssColor(ripple?.overflowStaticBorder?.color)
-        },
-        {
-          name: '--k-ripple-overflow-static-border-opacity',
-          value: ripple?.overflowStaticBorder?.opacity
-        }
+        { name: '--k-af-token-opacity', value: activationFeedbackSubtleOpacity }
       ]);
 
       if (tokensCss) {

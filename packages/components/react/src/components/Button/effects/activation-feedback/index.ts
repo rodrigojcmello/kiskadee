@@ -2,7 +2,6 @@ export { useButtonActivationFeedbackController } from './ButtonActivationFeedbac
 export {
   hasButtonActivationFeedbackEffect,
   hasButtonModernActivationFeedbackEffect,
-  hasButtonRippleLegacyEffect,
   resolveButtonFeedbackEffectAvailability
 } from './ButtonActivationFeedback.utils.ts';
 export type { ButtonFeedbackEffectAvailability } from './ButtonActivationFeedback.utils.ts';

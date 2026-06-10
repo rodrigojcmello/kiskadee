@@ -392,9 +392,9 @@ The current web-builder output is emitted per design system under
 | --- | --- | --- |
 | `core.kiskadee.css` | Palette-independent CSS for all generated utility classes. | Keep aggregated. The CSS layer is utility-like and benefits from cross-component class reuse/dedupe. |
 | `<segment>.<theme>.kiskadee.css` | Palette/theme CSS for generated utility classes. | Keep aggregated unless measurements prove a split is better. |
-| `effects.kiskadee.css` | Effect utilities such as shadow, ripple, and stateful radius effects. | Keep shared for now. Effects can be reused and have ordering/runtime implications. |
-| `tokens.kiskadee.css` | Truly global CSS variables such as focus width/offset and ripple alpha values. | Low. Keep global unless component-specific tokens appear. |
-| `tokens.<segment>.<theme>.kiskadee.css` | Theme CSS variables such as focus color, activation feedback, and ripple colors. | Low/medium. Keep theme-global unless component-specific tokens appear. |
+| `effects.kiskadee.css` | Effect utilities such as shadow, activation feedback, and stateful radius effects. | Keep shared for now. Effects can be reused and have ordering/runtime implications. |
+| `tokens.kiskadee.css` | Truly global CSS variables such as focus width/offset and shared effect values. | Low. Keep global unless component-specific tokens appear. |
+| `tokens.<segment>.<theme>.kiskadee.css` | Theme CSS variables such as focus color and activation feedback colors. | Low/medium. Keep theme-global unless component-specific tokens appear. |
 
 ### Showcase Generated Registries
 

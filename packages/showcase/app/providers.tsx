@@ -61,17 +61,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
     enabled: shouldLoadAggregateClassMap
   });
 
-  // 3. Load extra resources (background colors) and global radius/ripple metadata
-  const { backgroundsByTheme, globalRadius, globalRipple } = useThemeExtras({
+  // 3. Load extra resources (background colors) and global radius metadata
+  const { backgroundsByTheme, globalRadius } = useThemeExtras({
     designSystem,
     segment
   });
 
   const globalConfig =
-    globalRadius !== undefined || globalRipple !== undefined
+    globalRadius !== undefined
       ? {
-          ...(globalRadius !== undefined ? { radius: globalRadius } : {}),
-          ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {})
+          radius: globalRadius
         }
       : undefined;
 

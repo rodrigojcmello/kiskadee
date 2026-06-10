@@ -202,7 +202,7 @@ Do not lazy-load a whole alternate component just to change colors, borders,
 radius, or generated classes. Those should remain artifact-driven class
 resolution or small class-name patches.
 
-## Button Compatibility Note
+## Button Effect Runtime Note
 
 `Button` follows this architecture for its main runtime shape:
 
@@ -210,43 +210,21 @@ resolution or small class-name patches.
 - `Button.class-names.ts`;
 - `hooks/useButtonArtifactConfig.ts`;
 - `hooks/useButtonBase.ts`;
-- `effects/activation-feedback`;
-- `effects/ripple-legacy` for the deprecated `rippleEffect` compatibility alias.
+- `effects/activation-feedback`.
 
 `useButtonArtifactConfig` is the local bridge for generated Button classes and
 Button-relevant global decisions. Button internals should consume its `options`
 and `globalEffects` instead of reading the raw Kiskadee global context directly.
 
-The deprecated `rippleEffect` prop is still a compatibility layer over the shared
-activation-feedback runtime. It should not be copied into new components as a
-new effect name. New components should consume `activationFeedback` directly and
-add component-local adapters only when they need local geometry, target-element,
-or tone-selection behavior.
+Button consumes `activationFeedback` directly. Local geometry, target-element,
+or tone-selection behavior belongs in the Button activation-feedback controller
+and effect module, not in a second public effect name.
 
-Legacy aliases such as `rippleEffect` should keep their name translation,
-runtime option mapping, and CSS variable aliases inside a compatibility adapter.
-Modern controllers may call that adapter, but they should not inline legacy
-runtime rules.
-
-Legacy effect CSS and class-name resolvers should also stay behind their own
-loader when the modern effect can run without them. For Button, modern
-`activationFeedback` and deprecated `rippleEffect` share the radial runtime, but
-their structural CSS/resolver modules are loaded separately so the legacy alias
-does not become part of the modern baseline.
-
-When a modern effect has a legacy alias, the public component should consume a
-single component-local effect hook that hides the loader selection. The component
-may decide whether modern or legacy buckets are available, but the effect module
-should own which resolver/CSS module is loaded for that decision.
-
-For Button, that hook is `useButtonFeedbackEffect` from `ButtonFeedback.loader.ts`:
-`Button.tsx` passes modern and legacy availability, while the effect package
-decides whether to load the modern activation-feedback resolver or the legacy
-ripple resolver.
-
-The same package owns the loaded-module routing in `ButtonFeedback.effect.ts`.
-`Button.tsx` should not call methods from the modern or legacy loaded modules
-directly; it should ask the effect package for the final class-name patch.
+`useButtonFeedbackEffect` from `ButtonFeedback.loader.ts` remains the lazy
+boundary for effect CSS and class-name patching. `Button.tsx` passes
+activation-feedback availability, while the effect package owns the final
+class-name patch through `ButtonFeedback.effect.ts`. `Button.tsx` should not
+call methods from loaded modules directly.
 
 ## New Component Checklist
 

@@ -1,4 +1,4 @@
-import type { RadiusMode, RippleEffectSchema, ThemeMode } from '@kiskadee/core';
+import type { RadiusMode, ThemeMode } from '@kiskadee/core';
 import { useEffect, useState } from 'react';
 import { extraMaps, paletteIndex } from '@/registry/design-systems.registry';
 import type { DesignSystemKey } from '@/registry/registry-utils';
@@ -7,7 +7,6 @@ import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 type BackgroundTones = Partial<Record<ThemeMode, string | undefined>>;
 
 const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
-const rippleGlobalCache: Partial<Record<string, RippleEffectSchema | null>> = {};
 
 export function useThemeExtras({
   designSystem,
@@ -18,7 +17,6 @@ export function useThemeExtras({
 }) {
   const [backgroundsByTheme, setBackgroundsByTheme] = useState<BackgroundTones>({});
   const [globalRadius, setGlobalRadius] = useState<RadiusMode | undefined>(undefined);
-  const [globalRipple, setGlobalRipple] = useState<RippleEffectSchema | undefined>(undefined);
 
   useEffect(() => {
     let cancelled = false;
@@ -29,19 +27,14 @@ export function useThemeExtras({
 
       const hasRadius = Object.hasOwn(radiusGlobalCache, dsKey);
       let radius = radiusGlobalCache[dsKey] ?? undefined;
-      const hasRipple = Object.hasOwn(rippleGlobalCache, dsKey);
-      let ripple = rippleGlobalCache[dsKey] ?? undefined;
 
-      if (!hasRadius || !hasRipple) {
+      if (!hasRadius) {
         try {
           const json = await loadJsonFromBuild<{
             radius?: RadiusMode;
-            effects?: { ripple?: RippleEffectSchema };
           }>(`${dsKey}/global.kiskadee.json`, { required: false, fallback: {} });
           radius = json.radius;
           radiusGlobalCache[dsKey] = radius ?? null;
-          ripple = json.effects?.ripple;
-          rippleGlobalCache[dsKey] = ripple ?? null;
         } catch (error) {
           console.warn(
             `[showcase] Failed to load global artifact for "${dsKey}". Retrying on next mount/selection change.`,
@@ -52,7 +45,6 @@ export function useThemeExtras({
 
       if (cancelled) return;
       setGlobalRadius(radius);
-      setGlobalRipple(ripple);
     };
 
     void loadGlobals();
@@ -115,7 +107,6 @@ export function useThemeExtras({
 
   return {
     backgroundsByTheme,
-    globalRadius,
-    globalRipple
+    globalRadius
   };
 }

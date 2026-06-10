@@ -100,72 +100,6 @@ export const schema: Schema<Segments> = {
             }
           }
         }
-      },
-      ripple: {
-        mode: 'surface',
-        origin: 'pointer',
-        inputFeedback: {
-          mouse: 'pressed',
-          keyboard: 'pressed'
-        },
-        pressedVisual: 'overlay',
-        overlayAlphaByEmphasis: {
-          high: 0.15,
-          medium: 0.06,
-          low: 0.05,
-          lowest: 0.05
-        },
-        profiles: {
-          surface: {
-            animateSize: true,
-            size: 'auto',
-            durationToken: 'interaction.slow',
-            curveToken: 'motion.emphasized.out',
-            fade: {
-              delayToken: 'interaction.hold.short',
-              durationToken: 'interaction.fade.short',
-              curveToken: 'motion.standard.out'
-            },
-            fillToken: 'surface'
-          },
-          overflow: {
-            animateSize: true,
-            size: 80,
-            durationToken: 'interaction.fast',
-            curveToken: 'motion.standard.out',
-            fade: {
-              delayToken: 'interaction.hold.short',
-              durationToken: 'interaction.fade.short',
-              curveToken: 'motion.standard.out'
-            },
-            fillToken: 'overflow'
-          },
-          overflowStatic: {
-            animateSize: false,
-            size: 80,
-            durationToken: 'interaction.instant',
-            fade: {
-              delayToken: 'interaction.hold.short',
-              durationToken: 'interaction.fade.long',
-              curveToken: 'motion.standard.out'
-            },
-            fillToken: 'overflowStatic',
-            border: { width: 1, colorToken: 'overflowStaticBorder' }
-          },
-          pressed: {
-            animateSize: false,
-            size: 'auto',
-            // Slightly longer hold to keep mouse/trackpad tap feedback visible.
-            durationToken: 'interaction.hold.short',
-            curveToken: 'motion.standard.out',
-            fade: {
-              delayToken: 'interaction.hold.short',
-              durationToken: 'interaction.fade.long',
-              curveToken: 'motion.standard.out'
-            },
-            fillToken: 'surface'
-          }
-        }
       }
     }
   },
@@ -187,24 +121,6 @@ export const schema: Schema<Segments> = {
                   color: white,
                   opacity: 0.2
                 }
-              }
-            },
-            ripple: {
-              surface: {
-                color: '#000000',
-                opacity: 0.12
-              },
-              overflow: {
-                color: '#0481FF',
-                opacity: 0.15
-              },
-              overflowStatic: {
-                color: '#0481FF',
-                opacity: 0.15
-              },
-              overflowStaticBorder: {
-                color: '#0481FF',
-                opacity: 0.3
               }
             }
           }

@@ -1,1 +1,1 @@
-export type ButtonFeedbackKind = 'activationFeedback' | 'rippleLegacy';
+export type ButtonFeedbackKind = 'activationFeedback';

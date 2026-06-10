@@ -135,7 +135,7 @@ type UseActivationFeedbackRadialStateMachineArgs<
 const MIN_POINTER_CLICK_HOLD_MS = 120;
 
 // Radial feedback writes CSS custom properties directly on the host node on purpose.
-// This avoids React render churn during pointer/keyboard interactions and keeps
+// This avoids React render churn during pointer interactions and keeps
 // animation timing stable. The tradeoff is imperative DOM state, so cleanup is
 // mandatory and centralized via clearAllTimers + clearFeedbackInlineVars.
 const isTouchLikePointer = (pointerType: string): boolean =>
@@ -806,17 +806,12 @@ export function useActivationFeedbackRadialStateMachine<
   return {
     hostRef,
     cancel,
-    // Legacy Button ripple aliases are returned for the compatibility wrapper.
-    buttonRef: hostRef,
     isActive: isFeedbackActive,
     isFading: isFeedbackFading,
     isOverlayActive: isOverlayFeedbackActive,
     isFeedbackActive,
     isFeedbackFading,
     isOverlayFeedbackActive,
-    isRippleActive: isFeedbackActive,
-    isRippleFading: isFeedbackFading,
-    isOverlayRippleActive: isOverlayFeedbackActive,
     handleClick,
     handlePointerDown,
     handlePointerUp,

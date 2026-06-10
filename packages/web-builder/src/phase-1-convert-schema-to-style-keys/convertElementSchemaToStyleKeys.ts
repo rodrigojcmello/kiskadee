@@ -23,7 +23,6 @@ import {
 import { convertElementDecorationsToStyleKeys } from './decoration/convertElementDecorationsToStyleKeys.ts';
 import { convertElementActivationFeedbackToStyleKeys } from './effects/convertElementActivationFeedbackToStyleKeys.ts';
 import { convertElementBorderRadiusToStyleKeys } from './effects/convertElementBorderRadiusToStyleKeys.ts';
-import { convertElementRippleToStyleKeys } from './effects/convertElementRippleToStyleKeys.ts';
 import { convertElementShadowToStyleKeys } from './effects/convertElementShadowToStyleKeys.ts';
 import { convertElementThumbShrinkToStyleKeys } from './effects/convertElementThumbShrinkToStyleKeys.ts';
 import {
@@ -72,9 +71,6 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
   const styleKeysByComponent: ComponentStyleKeyMap = {};
   const toneMetadataByPalette: ToneMetadataByPalette = new Map();
   const activationFeedbackConfig = schema.global?.effects?.activationFeedback;
-  // [RIPPLE EFFECT 10] START: Read global ripple config for element-level ripple conversion.
-  const rippleConfig = schema.global?.effects?.ripple;
-  // [RIPPLE EFFECT 10] END: Read global ripple config for element-level ripple conversion.
 
   const applyElement = (
     path: string[],
@@ -276,14 +272,6 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
           });
           appendEffectMap(activationFeedbackMap);
         }
-        // [RIPPLE EFFECT 11] START: Emit ripple style keys from global ripple config.
-        if (element.effects.ripple) {
-          const rippleMap = convertElementRippleToStyleKeys({
-            config: rippleConfig
-          });
-          appendEffectMap(rippleMap);
-        }
-        // [RIPPLE EFFECT 11] END: Emit ripple style keys from global ripple config.
         if (element.effects.borderRadius) {
           const borderRadius: BorderRadiusEffectSchema = element.effects.borderRadius;
           const rounded = borderRadius?.rounded;

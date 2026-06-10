@@ -49,7 +49,7 @@ Examples:
 - color palettes (`boxColor`, `textColor`, `borderColor`)
 - scalable dimensions (`padding`, `textSize`, `boxHeight`, `borderWidth`)
 - static decorations (`borderStyle`, `textWeight`)
-- optional visual effects (`shadow`, `ripple`, stateful radius effects)
+- optional visual effects (`shadow`, `activationFeedback`, stateful radius effects)
 
 Rule:
 
@@ -237,7 +237,7 @@ Use `global` only for cross-component defaults/shared system behavior.
 Examples:
 
 - `global.radius`
-- `global.effects.ripple`
+- `global.effects.activationFeedback`
 - global font stacks/focus tokens
 
 Rule:
@@ -291,7 +291,7 @@ Use each artifact for a different level of responsibility:
   fonts, and high-level component capabilities without loading the full schema.
 - `global.kiskadee.json`: descriptive runtime-friendly defaults and DS intentions that are useful
   without traversing full component branches. Use it for global defaults such as fonts, radius,
-  and ripple. Component-specific semantic metadata should move toward component artifacts such as
+  and activation feedback. Component-specific semantic metadata should move toward component artifacts such as
   `components/switch.kiskadee.json`, `components/tabs.kiskadee.json`, and
   `components/text-field.kiskadee.json`; new artifacts should not add component semantic payloads
   under `global.components.<name>`.

@@ -372,7 +372,6 @@ export function createMaterial3GoogleButtonSchema({
             }
           },
           activationFeedback: true,
-          ripple: true,
           shadow: {
             // MD3-like elevation: medium at rest, stronger on hover/pressed, focused similar to hover.
             // x stays 0 to avoid lateral drift; y and blur increase with intensity. Color stays black with varying alphas.

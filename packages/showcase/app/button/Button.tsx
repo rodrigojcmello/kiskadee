@@ -102,10 +102,6 @@ export function Button() {
         {/* [ACTIVATION FEEDBACK] START: Showcase examples for profile/origin overrides. */}
         <div className={s['interaction-state']}>
           <h3>Activation Feedback Profiles</h3>
-          <p className={s['section-note']}>
-            Uses the shared activationFeedback host. The legacy rippleEffect prop remains available
-            as a compatibility alias during migration.
-          </p>
           <div className={`${s['example-states']} k-root`}>
             <KButton intent="primary" emphasis="high" activationFeedback={{ profile: 'surface' }}>
               <KButton.Label>
@@ -140,13 +136,6 @@ export function Button() {
               <KButton.Label>
                 <SmoothText fontName={fontName} align={alignment}>
                   AF Overflow Static
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton intent="primary" emphasis="high" rippleEffect={{ mode: 'overflow-static' }}>
-              <KButton.Label>
-                <SmoothText fontName={fontName} align={alignment}>
-                  Legacy Ripple Alias
                 </SmoothText>
               </KButton.Label>
             </KButton>

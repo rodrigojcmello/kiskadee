@@ -88,36 +88,6 @@ function extractSizeKeyFromStyleKey(styleKey: string): string | undefined {
   return rawSize.startsWith('s:') ? rawSize.slice(2) : rawSize;
 }
 
-// Ripple buckets follow a compact 3-letter convention to keep artifact payloads small.
-// This is not a universal rule for every bucket, but for ripple we intentionally
-// cap the key size at 3 characters: ris/rio/rix/rip.
-// [RIPPLE EFFECT 14] START: Ripple bucket compaction for class-map payload.
-function rippleBucketForKey(key: string): string {
-  if (key.startsWith('ripplePressed')) return 'rip';
-
-  const separatorIndex = key.indexOf('__');
-  const rawValue = separatorIndex === -1 ? '' : key.slice(separatorIndex + 2);
-
-  if (rawValue.startsWith('{')) {
-    try {
-      const parsed = JSON.parse(rawValue) as { mode?: string };
-      if (parsed.mode === 'surface') return 'ris';
-      if (parsed.mode === 'overflow') return 'rio';
-      if (parsed.mode === 'overflow-static') return 'rix';
-    } catch {
-      // fall through to string matching
-    }
-  }
-
-  if (rawValue.includes('overflow-static')) return 'rix';
-  if (rawValue.includes('overflow')) return 'rio';
-  if (rawValue.includes('surface')) return 'ris';
-  throw new Error(
-    `Unable to resolve ripple bucket for style key "${key}". Expected mode: surface|overflow|overflow-static.`
-  );
-}
-// [RIPPLE EFFECT 14] END: Ripple bucket compaction for class-map payload.
-
 function activationFeedbackBucketForKey(key: string): string {
   if (!key.startsWith('activationFeedbackProfile')) return 'af';
 
@@ -261,9 +231,6 @@ export function generateClassNamesMapSplit(
             else if (key.startsWith('borderRadiusPill')) bucket = 'rp';
             else if (key.startsWith('borderRadiusSquare')) bucket = 'rs';
             else if (key.startsWith('thumbShrink')) bucket = 'ts';
-            // [RIPPLE EFFECT 15] START: Assign ripple style keys to compact ripple buckets.
-            else if (key.startsWith('ripple')) bucket = rippleBucketForKey(key);
-            // [RIPPLE EFFECT 15] END: Assign ripple style keys to compact ripple buckets.
             else bucket = 'x';
 
             const sizeKey = extractSizeKeyFromStyleKey(key);

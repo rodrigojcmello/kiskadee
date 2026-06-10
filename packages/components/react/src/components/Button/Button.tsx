@@ -17,7 +17,6 @@ import {
 export type {
   ButtonActivationFeedbackEffect,
   ButtonProps,
-  ButtonRippleEffect,
   ButtonStatus
 } from './Button.types.ts';
 
@@ -27,10 +26,9 @@ function ButtonRoot(props: ButtonProps) {
     () =>
       resolveButtonFeedbackEffectAvailability({
         activationFeedback: common.activationFeedback,
-        element: common.e1,
-        rippleEffect: common.rippleEffect
+        element: common.e1
       }),
-    [common.activationFeedback, common.e1, common.rippleEffect]
+    [common.activationFeedback, common.e1]
   );
   const feedbackEffect = useButtonFeedbackEffect(feedbackEffectAvailability);
   const activationFeedbackController = useButtonActivationFeedbackController(
@@ -58,8 +56,6 @@ function ButtonRoot(props: ButtonProps) {
         feedbackKind: activationFeedbackController.feedbackKind,
         isActive: activationFeedbackController.isFeedbackActive,
         isFading: activationFeedbackController.isFeedbackFading,
-        rippleLegacyEffect: feedbackEffect.rippleLegacyEffect,
-        rippleMode: activationFeedbackController.rippleMode,
         shouldForceOverlayPressed: activationFeedbackController.shouldForceOverlayPressed,
         shouldUsePressedProfile: activationFeedbackController.shouldUsePressedProfile
       }),
@@ -68,14 +64,12 @@ function ButtonRoot(props: ButtonProps) {
       activationFeedbackController.feedbackKind,
       activationFeedbackController.isFeedbackActive,
       activationFeedbackController.isFeedbackFading,
-      activationFeedbackController.rippleMode,
       activationFeedbackController.shouldForceOverlayPressed,
       activationFeedbackController.shouldUsePressedProfile,
       common.controlState,
       common.emphasis,
       elements,
-      feedbackEffect.activationFeedbackEffect,
-      feedbackEffect.rippleLegacyEffect
+      feedbackEffect.activationFeedbackEffect
     ]
   );
   const baseClassNames = useButtonClassNamesFromCommon(common, {

@@ -64,11 +64,11 @@ Some Material samples implement hover/focus as a white overlay (e.g., 8% for hov
 
 Decision: in Kiskadee, hover is expressed as a tone shift within the same palette (e.g., if `rest` is tone 60, `hover` becomes tone 55). For Material, the `focus` state keeps the same tone as `rest` and relies on the focus ring/outline for emphasis. This keeps a consistent rule across platforms without relying on opacity overlays.
 
-##### 2.3.2. Pressed ripple vs. pressed color
+##### 2.3.2. Pressed feedback vs. pressed color
 
-Material’s pressed feedback often relies on the ripple animation. That is an effect, not the base pressed color.
+Material’s pressed feedback often relies on an activation animation. That is an effect, not the base pressed color.
 
-Decision: Kiskadee treats the ripple as a future effect layer. The `pressed` state in the schema remains a tone-based color change, independent of the ripple animation.
+Decision: Kiskadee treats activation feedback as an effect layer. The `pressed` state in the schema remains a tone-based color change, independent of the activation-feedback animation.
 
 Decision: for pressed, Kiskadee uses a 10-step darker shift on the tonal scale. This larger contrast is intentional for touch devices: the user’s finger partially covers the UI feedback, so a stronger delta improves perceived confirmation. This 10-step shift is the default across all Kiskadee presets, but it is not a hard constraint—designers can increase or reduce the contrast as needed. We emphasize strong micro-interaction feedback while keeping the system flexible.
 

@@ -8,18 +8,4 @@ export type ElementEffects = Partial<{
   borderRadius: BorderRadiusEffectSchema;
   thumbShrink: ThumbShrinkEffectSchema;
   activationFeedback: boolean;
-  // [RIPPLE EFFECT 4] START: Element-level ripple opt-in flag.
-  ripple: boolean;
-  // [RIPPLE EFFECT 4] END: Element-level ripple opt-in flag.
 }>;
-
-// export type GlobalEffects = Partial<{
-//   focusTrail: {
-//     color: SolidColor;
-//   };
-//   ripple: {
-//     bounded: boolean;
-//     origin: 'center' | 'pointer';
-//     color: SolidColor;
-//   };
-// }>;

@@ -7,7 +7,7 @@ Use it for decisions that are broader than one component contract or one impleme
 Examples of good fit:
 
 - focus language,
-- ripple ownership,
+- activation-feedback ownership,
 - shadow usage philosophy,
 - cross-component interaction semantics,
 - global visual affordance patterns.
