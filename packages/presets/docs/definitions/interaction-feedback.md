@@ -28,27 +28,75 @@ animation to pointer-originated interaction.
 ## Activation Feedback Direction
 
 `activationFeedback` is the cross-component activation feedback effect. It
-behaves like plug-and-play infrastructure: a component opts an element into the
-effect and the shared effect owns tokens, profiles, runtime, and base CSS
-behavior.
+behaves like shared infrastructure: global schema owns reusable tokens, profiles,
+runtime defaults, and base CSS behavior; component schema owns the component's
+default profile, origin, paint, layer, and tone mapping.
 
-Element schemas keep the opt-in small:
+Global effect schema defines the library:
 
 ```ts
-effects: {
-  activationFeedback: true
+global: {
+  effects: {
+    activationFeedback: {
+      profile: 'ripple',
+      origin: 'pointer',
+      visual: {
+        layer: 'overlay',
+        paint: 'halo',
+        tone: { default: 'subtle' }
+      },
+      profiles: {
+        ripple: { size: 'auto', animateSize: true },
+        rippleOverflow: { size: 80, animateSize: true },
+        halo: { size: 80, animateSize: false },
+        pressed: { size: 'auto', animateSize: false }
+      }
+    }
+  }
 }
 ```
 
-The element that declares the effect is the effect host. Component structural
-CSS may handle local hosting requirements such as clipping, stacking, and
-anchoring, but it must not hardcode semantic feedback colors or opacities.
+Component effect schema chooses the recipe:
 
-Activation feedback tokens are resolved through surface tone:
+```ts
+components: {
+  switch: {
+    effects: {
+      activationFeedback: {
+        profile: 'halo',
+        origin: 'center',
+        visual: {
+          layer: 'underlay',
+          paint: 'halo',
+          tone: {
+            default: 'subtle',
+            byEmphasis: { low: 'vivid' }
+          }
+        },
+        profiles: {
+          halo: { size: 8 }
+        }
+      }
+    }
+  }
+}
+```
+
+`activationFeedback` settings inherit by merge:
+
+- `undefined`: inherit the previous level.
+- `false`: disable the effect for that component or element.
+- object: merge with the previous level.
+- `true`: compatibility alias for an empty object; new presets should not use it.
+
+`profiles` use deep merge by profile. A component can override only
+`profiles.halo.size`, and the other profiles remain inherited from global.
+
+Activation feedback tokens are resolved through tone:
 
 ```ts
 activationFeedback: {
-  surfaceTone: {
+  tone: {
     subtle: {
       color: '#1D1B20',
       opacity: 0.1
@@ -62,47 +110,48 @@ activationFeedback: {
 ```
 
 Use `subtle` for feedback on light/subtle/base surfaces and `vivid` for feedback
-on strong, vivid, or dark surfaces. Do not model these tokens directly by
-component `emphasis`; components or surface containers should map their visual
-context to the current surface tone.
+on strong, vivid, or dark surfaces. These are feedback contrast buckets, not
+component emphasis values. Components may map their own visual recipe to a tone
+through `visual.tone.byEmphasis` when that recipe changes the surface where the
+feedback appears.
 
 The existing single-tone `activationFeedback.color` and
 `activationFeedback.opacity` fields are legacy-compatible and map to
-`surfaceTone.subtle`.
-
-The schema supports profile configuration on `global.effects.activationFeedback`.
-Presets may declare a default `profile`, pointer `origin`, pressed visual policy,
-and reusable `profiles`. Element schemas still opt in with
-`activationFeedback: true`; they do not own profile definitions.
+`tone.subtle`.
 
 When profiles are declared, generated class maps may expose compact effect
 buckets in addition to the base `af` bucket:
 
 - `af`: base activation feedback class.
-- `afs`: `surface` profile.
-- `afo`: `overflow` profile.
-- `afx`: `overflow-static` profile.
+- `afs`: `ripple` profile.
+- `afo`: `ripple-overflow` profile.
+- `afx`: `halo` profile.
 - `afp`: `pressed` profile.
-
-Consumers should keep reading `af` until they explicitly migrate to a
-profile-aware host. New profile-aware consumers should pick the supported
-profile bucket rather than infer behavior from component names.
 
 Supported profile intent:
 
-- `surface`: feedback contained inside the host bounds.
-- `overflow`: feedback may escape host bounds and may use pointer/radial
+- `ripple`: feedback contained inside the host bounds.
+- `ripple-overflow`: feedback may escape host bounds and may use pointer/radial
   geometry.
-- `overflow-static`: feedback may escape host bounds but uses fixed geometry.
+- `halo`: feedback may escape host bounds but uses fixed geometry.
 - `pressed`: feedback profile for pressed/overlay state.
+
+For `visual.paint`, `size` has paint-specific meaning:
+
+- `paint: 'halo'`: `size` is the halo expansion/area.
+- `paint: 'outline'`: `size` is the outline stroke width.
 
 ## Switch Activation Feedback
 
-The Switch uses only `overflow-static`: the feedback is anchored on the thumb,
-escapes the track clipping area, and does not need pointer-origin radial
-geometry. React Switch binds the base `af` class plus the `afx` profile bucket
-when the artifact exposes it. This is profile-aware consumption, not a public
-profile choice for Switch.
+Switch defaults should normally use `profile: 'halo'` and `origin: 'center'`,
+because the feedback is anchored on the thumb and may escape the track clipping
+area. This is a preset default, not a runtime limitation. If a preset chooses
+`ripple` or `ripple-overflow`, React Switch should consume that resolved profile
+instead of hardcoding `halo`.
+
+Material Switch maps `visual.tone.byEmphasis.low` to `vivid` because its low
+recipe is intended for strong local surfaces. This is a Switch preset decision,
+not a global rule that low emphasis always uses vivid feedback.
 
 React Switch exposes a small local control:
 
@@ -124,8 +173,9 @@ Button is profile-aware and consumes the shared activation-feedback buckets.
 The local override is `activationFeedback`; passing
 `activationFeedback={false}` disables the activation-feedback path.
 
-Button remains a separate validation surface from Switch. Fixes to a
-Switch-specific profile should not couple Switch to Button runtime details.
+Button defaults should normally use `profile: 'ripple'` and `origin: 'pointer'`.
+Unlike Switch, Button does not need a `byEmphasis` tone mapping by default; if a
+preset wants one, it must declare it in component schema.
 
 ## Switch Activation Motion
 

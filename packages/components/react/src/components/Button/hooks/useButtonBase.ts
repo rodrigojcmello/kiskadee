@@ -36,7 +36,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     ...restProps
   } = props;
 
-  const { buttonClassesMap, globalEffects, options } = useButtonArtifactConfig();
+  const { buttonClassesMap, componentEffects, globalEffects, options } = useButtonArtifactConfig();
   const { e1, e2, e3 } = buttonClassesMap ?? {};
   const status: ButtonStatus | 'rest' = statusProp;
 
@@ -67,6 +67,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     e1,
     e2,
     e3,
+    componentEffects,
     globalEffects,
     options
   };

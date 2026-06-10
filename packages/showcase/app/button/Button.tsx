@@ -103,39 +103,43 @@ export function Button() {
         <div className={s['interaction-state']}>
           <h3>Activation Feedback Profiles</h3>
           <div className={`${s['example-states']} k-root`}>
-            <KButton intent="primary" emphasis="high" activationFeedback={{ profile: 'surface' }}>
+            <KButton intent="primary" emphasis="high" activationFeedback={{ profile: 'ripple' }}>
               <KButton.Label>
                 <SmoothText fontName={fontName} align={alignment}>
-                  AF Surface
+                  AF Ripple
                 </SmoothText>
               </KButton.Label>
             </KButton>
             <KButton
               intent="primary"
               emphasis="high"
-              activationFeedback={{ profile: 'surface', origin: 'center' }}
+              activationFeedback={{ profile: 'ripple', origin: 'center' }}
             >
               <KButton.Label>
                 <SmoothText fontName={fontName} align={alignment}>
-                  AF Surface Center
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton intent="primary" emphasis="high" activationFeedback={{ profile: 'overflow' }}>
-              <KButton.Label>
-                <SmoothText fontName={fontName} align={alignment}>
-                  AF Overflow
+                  AF Ripple Center
                 </SmoothText>
               </KButton.Label>
             </KButton>
             <KButton
               intent="primary"
               emphasis="high"
-              activationFeedback={{ profile: 'overflow-static' }}
+              activationFeedback={{ profile: 'ripple-overflow' }}
             >
               <KButton.Label>
                 <SmoothText fontName={fontName} align={alignment}>
-                  AF Overflow Static
+                  AF Ripple Overflow
+                </SmoothText>
+              </KButton.Label>
+            </KButton>
+            <KButton
+              intent="primary"
+              emphasis="high"
+              activationFeedback={{ profile: 'halo' }}
+            >
+              <KButton.Label>
+                <SmoothText fontName={fontName} align={alignment}>
+                  AF Halo
                 </SmoothText>
               </KButton.Label>
             </KButton>

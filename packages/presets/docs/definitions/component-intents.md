@@ -96,10 +96,10 @@ emphasis names before proving that a separate ambient axis is insufficient.
 
 Relevant existing references:
 
-- `activationFeedback` is an element opt-in plus global/theme tokens. Its
-  element schema value is boolean, while profile behavior comes from
-  `global.effects.activationFeedback` and color/opacity come from
-  `themeTokens.effects.activationFeedback`.
+- `activationFeedback` is a shared global effect library plus component-level
+  recipe. Profile behavior is resolved from `global.effects.activationFeedback`
+  and `components.<name>.effects.activationFeedback`; color/opacity come from
+  `themeTokens.effects.activationFeedback.tone`.
 - Future activation-feedback or transparent-label decisions should preserve
   these references before choosing between fixed black/white contrast values
   and normalized ambient-aware tokens.

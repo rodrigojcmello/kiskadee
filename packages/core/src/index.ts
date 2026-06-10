@@ -21,16 +21,24 @@ export type {
   ActivationFeedbackProfileConfig,
   ActivationFeedbackProfileMode,
   ActivationFeedbackPressedVisual,
+  ActivationFeedbackSetting,
   ActivationFeedbackSurfaceTone,
   ActivationFeedbackSurfaceToneTokens,
+  ActivationFeedbackTone,
+  ActivationFeedbackToneMap,
+  ActivationFeedbackToneTokens,
   ActivationFeedbackThemeTokens,
+  ActivationFeedbackVisual,
   ResolvedActivationFeedbackConfig
 } from './types/effects/activation-feedback/activation-feedback.types.ts';
 export {
+  mergeActivationFeedbackConfig,
+  normalizeActivationFeedbackSetting,
   resolveActivationFeedbackConfig,
   resolveActivationFeedbackDurationMs,
   resolveActivationFeedbackProfile,
   resolveActivationFeedbackProfileKey,
+  resolveActivationFeedbackSetting,
   resolvePressedActivationFeedbackProfile
 } from './types/effects/activation-feedback/activation-feedback.utils.ts';
 export type {

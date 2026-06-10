@@ -25,6 +25,10 @@ optimized single-component implementation was promoted into
 - Runtime motion, `thumbShrink`, `activationFeedback`, and `controlText` remain internal modules.
 - Switch activation feedback is a pointer/click visual effect. Direct click/tap on the visual track
   may start AF; Space keeps the native keyboard toggle behavior but must not start AF.
+- Switch activation feedback defaults now come from
+  `components.switch.effects.activationFeedback`. Material uses `profile: 'halo'`, `origin:
+  'center'`, and `visual.tone.byEmphasis.low = 'vivid'`; this is schema-owned, not a structural CSS
+  hardcode.
 - `controlText` is isolated under `features/control-text`.
 - The Showcase uses only `/switch`.
 - The second-version Showcase route was removed.
@@ -85,7 +89,7 @@ optimized single-component implementation was promoted into
 - 2026-06-07: `pnpm --filter @kiskadee/showcase build`
 - 2026-06-07: Carbon by IBM validation confirmed dark/strong Surface options are omitted because
   Carbon only exposes `emphasis="medium"` for Switch.
-- 2026-06-10: Switch activation feedback click/tap contract tightened. The `overflow-static`
+- 2026-06-10: Switch activation feedback click/tap contract tightened. The `halo`
   profile no longer exposes keyboard activation for Switch, Space continues to toggle the native
   input without displaying AF, static Showcase previews use `activationFeedback="active"`, and
   `activationFeedback.inputFeedback` was removed from the modern schema.

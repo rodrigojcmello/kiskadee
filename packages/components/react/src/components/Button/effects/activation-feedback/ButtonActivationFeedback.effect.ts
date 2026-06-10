@@ -1,15 +1,21 @@
 import './ButtonActivationFeedback.structural.css';
-import type { ActivationFeedbackProfileMode, ComponentEmphasis } from '@kiskadee/core';
+import type {
+  ActivationFeedbackEffectSchema,
+  ActivationFeedbackProfileMode,
+  ComponentEmphasis
+} from '@kiskadee/core';
 import {
   type ActivationFeedbackEffectBuckets,
   resolveActivationFeedbackBucketClass,
-  resolveActivationFeedbackPressedBucketClass
+  resolveActivationFeedbackPressedBucketClass,
+  resolveActivationFeedbackToneClass
 } from '../../../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
 import type { ButtonClassNamePatch } from '../../Button.class-names.ts';
 import { join } from '../../Button.class-names.ts';
 import type { ButtonClassesMap } from '../../Button.types.ts';
 
 export type ButtonActivationFeedbackEffectOptions = {
+  activationFeedbackConfig: ActivationFeedbackEffectSchema | undefined;
   activationFeedbackProfile: ActivationFeedbackProfileMode | null;
   controlState: boolean | undefined;
   elements: ButtonClassesMap;
@@ -25,6 +31,7 @@ export type ButtonActivationFeedbackEffectResult = {
 };
 
 export type ButtonActivationFeedbackClassNamePatchOptions = {
+  config: ActivationFeedbackEffectSchema | undefined;
   controlState: boolean | undefined;
   elements: ButtonClassesMap;
   emphasis: ComponentEmphasis | undefined;
@@ -35,17 +42,9 @@ export type ButtonActivationFeedbackClassNamePatchOptions = {
   shouldUsePressedProfile: boolean;
 };
 
-const resolveActivationFeedbackSurfaceToneClass = (
-  emphasis: ComponentEmphasis | undefined,
-  controlState: boolean | undefined
-): string => {
-  if (controlState) return 'k-btn-e1d';
-  if (emphasis === 'high') return 'k-btn-e1d';
-  return '';
-};
-
 export function resolveButtonActivationFeedbackClassNamePatch({
-  controlState,
+  config,
+  controlState: _controlState,
   elements,
   emphasis,
   isActive,
@@ -67,7 +66,7 @@ export function resolveButtonActivationFeedbackClassNamePatch({
       join(
         effects?.af,
         profileBucket,
-        resolveActivationFeedbackSurfaceToneClass(emphasis, controlState),
+        resolveActivationFeedbackToneClass({ config, emphasis }),
         'k-btn-e1a',
         isActive ? 'k-btn-e1b' : '',
         isFading && !shouldForceOverlayPressed ? 'k-btn-e1c' : ''
@@ -76,6 +75,7 @@ export function resolveButtonActivationFeedbackClassNamePatch({
 }
 
 export function resolveButtonActivationFeedbackEffect({
+  activationFeedbackConfig,
   activationFeedbackProfile,
   controlState,
   elements,
@@ -87,6 +87,7 @@ export function resolveButtonActivationFeedbackEffect({
 }: ButtonActivationFeedbackEffectOptions): ButtonActivationFeedbackEffectResult {
   return {
     classNamePatch: resolveButtonActivationFeedbackClassNamePatch({
+      config: activationFeedbackConfig,
       controlState,
       elements,
       emphasis,

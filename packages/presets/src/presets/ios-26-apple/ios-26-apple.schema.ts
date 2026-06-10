@@ -35,7 +35,7 @@ export const schema: Schema<Segment> = {
         fadeDurationToken: 'interaction.fade.long',
         curveToken: 'motion.standard.out',
         profiles: {
-          overflowStatic: {
+          halo: {
             animateSize: false,
             size: 'auto',
             durationToken: 'interaction.instant',
@@ -58,7 +58,7 @@ export const schema: Schema<Segment> = {
             activationFeedback: {
               color: '#000000',
               opacity: 0.12,
-              surfaceTone: {
+              tone: {
                 subtle: {
                   color: '#000000',
                   opacity: 0.12

@@ -22,7 +22,7 @@ export type ActivationFeedbackInputFeedback = 'pressed' | 'feedback';
 
 type ActivationFeedbackRadialProfile = Extract<
   ActivationFeedbackProfile,
-  'surface' | 'overflow' | 'overflow-static'
+  'ripple' | 'ripple-overflow' | 'halo'
 >;
 
 export type {

@@ -1,3 +1,4 @@
+import type { ActivationFeedbackSetting } from '@kiskadee/core';
 import { useKiskadee } from '../../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../../shared/contexts/useComponentClassMap.ts';
 import type { ButtonClassesMap } from '../Button.types.ts';
@@ -7,6 +8,9 @@ type ButtonGlobalEffects = NonNullable<NonNullable<ButtonGlobalConfig>['effects'
 
 export type ButtonArtifactConfig = {
   buttonClassesMap: ButtonClassesMap | undefined;
+  componentEffects: {
+    activationFeedback: ActivationFeedbackSetting | undefined;
+  };
   globalEffects: {
     activationFeedback: ButtonGlobalEffects['activationFeedback'] | undefined;
   };
@@ -24,6 +28,9 @@ export function useButtonArtifactConfig(): ButtonArtifactConfig {
 
   return {
     buttonClassesMap,
+    componentEffects: {
+      activationFeedback: global?.components?.button?.effects?.activationFeedback
+    },
     globalEffects: {
       activationFeedback: global?.effects?.activationFeedback
     },

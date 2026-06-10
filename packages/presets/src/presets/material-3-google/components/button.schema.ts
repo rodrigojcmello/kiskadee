@@ -17,6 +17,19 @@ export function createMaterial3GoogleButtonSchema({
   transparent
 }: CreateMaterial3GoogleButtonSchemaArgs): ButtonComponent {
   return {
+    effects: {
+      activationFeedback: {
+        profile: 'ripple',
+        origin: 'pointer',
+        visual: {
+          layer: 'overlay',
+          paint: 'halo',
+          tone: {
+            default: 'subtle'
+          }
+        }
+      }
+    },
     elements: {
       e1: {
         name: 'button',
@@ -371,7 +384,6 @@ export function createMaterial3GoogleButtonSchema({
               }
             }
           },
-          activationFeedback: true,
           shadow: {
             // MD3-like elevation: medium at rest, stronger on hover/pressed, focused similar to hover.
             // x stays 0 to avoid lateral drift; y and blur increase with intensity. Color stays black with varying alphas.

@@ -84,7 +84,7 @@ export function useActivationFeedbackOverflowStatic<
   const isForcedActive = enabled && forcedActive === true && !disabled;
 
   const runtimeConfig = useMemo(() => {
-    const profileConfig = resolveActivationFeedbackProfile('overflow-static', { config });
+    const profileConfig = resolveActivationFeedbackProfile('halo', { config });
     return {
       durationMs: resolveActivationFeedbackDurationMs(profileConfig.durationToken, 0),
       fadeDelayMs: resolveActivationFeedbackDurationMs(profileConfig.fade?.delayToken, 50),

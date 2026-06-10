@@ -27,7 +27,7 @@ export const DEFAULT_ACTIVATION_FEEDBACK: Readonly<ResolvedActivationFeedbackCon
 export const DEFAULT_ACTIVATION_FEEDBACK_PROFILES: Readonly<
   Record<ActivationFeedbackProfileMode, ActivationFeedbackProfileConfig>
 > = {
-  surface: {
+  ripple: {
     animateSize: true,
     size: 'auto',
     durationToken: 'interaction.slow',
@@ -38,7 +38,7 @@ export const DEFAULT_ACTIVATION_FEEDBACK_PROFILES: Readonly<
       curveToken: 'motion.standard.out'
     }
   },
-  overflow: {
+  'ripple-overflow': {
     // Generic fallback for larger hosts; compact controls should override in their preset.
     animateSize: true,
     size: 200,
@@ -50,7 +50,7 @@ export const DEFAULT_ACTIVATION_FEEDBACK_PROFILES: Readonly<
       curveToken: 'motion.standard.out'
     }
   },
-  'overflow-static': {
+  halo: {
     // Generic fallback for larger hosts; compact controls should override in their preset.
     animateSize: false,
     size: 200,

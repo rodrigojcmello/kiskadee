@@ -16,6 +16,7 @@ import type {
 import type { DecorationSchema } from './types/decorations/decorations.types.ts';
 import type {
   ActivationFeedbackEffectSchema,
+  ActivationFeedbackSetting,
   ActivationFeedbackThemeTokens
 } from './types/effects/activation-feedback/activation-feedback.types.ts';
 import type { ElementEffects } from './types/effects/index.ts';
@@ -119,12 +120,20 @@ type TextFieldComponent<TSegmentName extends SegmentName = never> = {
 
 type SwitchComponent<TSegmentName extends SegmentName = never> = {
   elements?: never;
+  effects?: ComponentEffects;
   options?: SwitchOptions;
   variants: SwitchVariants<TSegmentName>;
 };
 
+type ComponentEffects = {
+  activationFeedback?: ActivationFeedbackSetting;
+};
+
 type Components<TSegmentName extends SegmentName = never> = Partial<{
-  button: { elements: ButtonElements<TSegmentName> & Elements<TSegmentName> };
+  button: {
+    effects?: ComponentEffects;
+    elements: ButtonElements<TSegmentName> & Elements<TSegmentName>;
+  };
   switch: SwitchComponent<TSegmentName>;
   tabs: TabsComponent<TSegmentName>;
   textField: TextFieldComponent<TSegmentName>;

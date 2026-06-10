@@ -1,10 +1,12 @@
 import type {
+  ActivationFeedbackEffectSchema,
   ActivationFeedbackOrigin,
   ActivationFeedbackPressedVisual,
   ActivationFeedbackProfileMode
 } from '@kiskadee/core';
 import {
   resolveActivationFeedbackProfile,
+  resolveActivationFeedbackSetting,
   resolvePressedActivationFeedbackProfile
 } from '@kiskadee/core';
 import {
@@ -32,6 +34,7 @@ import {
 import type { ButtonFeedbackKind } from './ButtonFeedback.types.ts';
 
 type ButtonActivationFeedbackControllerResult = {
+  activationFeedbackConfig: ActivationFeedbackEffectSchema | undefined;
   activationFeedbackProfile: ActivationFeedbackProfileMode | null;
   ariaDisabled: ReturnType<typeof resolveButtonAccessibilityFromCommon>['ariaDisabled'];
   ariaPressed: ReturnType<typeof resolveButtonAccessibilityFromCommon>['ariaPressed'];
@@ -71,7 +74,7 @@ function resolveModernActivationFeedbackProfile({
   if (availableProfiles.length === 0) return null;
   if (activationFeedback === false) return null;
 
-  const requested = localProfile ?? globalProfile ?? 'surface';
+  const requested = localProfile ?? globalProfile ?? 'ripple';
   if (availableProfiles.includes(requested)) return requested;
   return availableProfiles[0] ?? null;
 }
@@ -93,14 +96,27 @@ export function useButtonActivationFeedbackController(
     onKeyUp,
     onBlur,
     e1,
+    componentEffects,
     globalEffects
   } = common;
 
   const accessibility = resolveButtonAccessibilityFromCommon(common);
   const feedbackEnabled = options.feedbackEnabled ?? true;
-  const activationFeedbackConfig = globalEffects.activationFeedback;
   const localActivationFeedback =
     activationFeedback && typeof activationFeedback === 'object' ? activationFeedback : undefined;
+  const componentActivationFeedbackConfig = useMemo(
+    () =>
+      resolveActivationFeedbackSetting(
+        globalEffects.activationFeedback,
+        componentEffects.activationFeedback
+      ),
+    [componentEffects.activationFeedback, globalEffects.activationFeedback]
+  );
+  const activationFeedbackConfig = useMemo(
+    () =>
+      resolveActivationFeedbackSetting(componentActivationFeedbackConfig, localActivationFeedback),
+    [componentActivationFeedbackConfig, localActivationFeedback]
+  );
   const { isPressed, triggerPressed } = useTransientPressedState(pressedDurationMs);
 
   const availableActivationFeedbackProfiles = useMemo(
@@ -134,7 +150,9 @@ export function useButtonActivationFeedbackController(
   // Keyboard activation uses the normal pressed/control-state path. AF remains a pointer feedback.
   const keyboardInputFeedback: ActivationFeedbackInputFeedback = 'pressed';
   const pressedVisual: ActivationFeedbackPressedVisual =
-    activationFeedbackProfile && activationFeedbackConfig?.pressedVisual === 'overlay'
+    activationFeedbackProfile &&
+    (activationFeedbackConfig?.visual?.layer === 'overlay' ||
+      activationFeedbackConfig?.pressedVisual === 'overlay')
       ? 'overlay'
       : 'state';
   const globalActivationFeedbackOrigin: ActivationFeedbackOrigin =
@@ -150,8 +168,7 @@ export function useButtonActivationFeedbackController(
         config: activationFeedbackConfig
       });
       const isOverflowProfile =
-        activationFeedbackProfile === 'overflow' ||
-        activationFeedbackProfile === 'overflow-static';
+        activationFeedbackProfile === 'ripple-overflow' || activationFeedbackProfile === 'halo';
       return resolveActivationFeedbackRadialRuntimeConfig(profileConfig, {
         fallbackDurationMs: 468,
         isOverflowProfile
@@ -204,6 +221,7 @@ export function useButtonActivationFeedbackController(
 
   return {
     ...accessibility,
+    activationFeedbackConfig,
     activationFeedbackProfile,
     feedbackKind,
     handlers: {

@@ -274,9 +274,10 @@ For preset authoring requirements, see
 
 Activation feedback is a schema/global effect combination:
 
-- The global effect config comes from `global.effects.activationFeedback`.
-- Switch enables the effect only when the generated `e3` class map contains an
-  activation-feedback effect class.
+- The shared effect library comes from `global.effects.activationFeedback`.
+- The Switch default recipe comes from `components.switch.effects.activationFeedback`.
+- Switch enables the effect only when the generated `e3` class map contains the
+  resolved activation-feedback profile class.
 - The effect module is lazy-loaded through `useSwitchActivationFeedbackEffect`.
 - Interactive feedback starts from a direct click/tap activation inside the
   visual track area.

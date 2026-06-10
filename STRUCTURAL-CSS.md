@@ -78,7 +78,7 @@ k-<effect><a-z>
 
 Examples:
 
-- `k-afx` for activation-feedback `overflow-static`,
+- `k-afx` for activation-feedback `halo`,
 - `k-afxa` for the first structural modifier of that effect host.
 
 Rules:
@@ -87,7 +87,8 @@ Rules:
 - use them only for reusable effect structure that can be attached to different component elements,
 - do not put component layout, component geometry, or token decisions in shared effect selectors,
 - component structural CSS must still own the bridge that chooses the target element and resolves local
-  quirks such as clipping, positioning, or tone selection,
+  quirks such as clipping or positioning,
+- activation-feedback tone selection belongs to schema/runtime config, not component structural Sass,
 - effect selectors may consume generated effect variables and runtime structural variables emitted by
   the effect hook,
 - if an effect host requires component-specific positioning, the component bridge must provide it.

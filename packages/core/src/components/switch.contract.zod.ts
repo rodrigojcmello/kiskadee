@@ -81,6 +81,7 @@ function createSwitchVariantsSchema() {
 const switchComponentContractSchema = z
   .object({
     elements: z.unknown().optional(),
+    effects: z.unknown().optional(),
     options: switchOptionsSchema.optional(),
     variants: createSwitchVariantsSchema().optional()
   })

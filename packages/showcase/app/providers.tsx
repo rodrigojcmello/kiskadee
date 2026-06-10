@@ -61,18 +61,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
     enabled: shouldLoadAggregateClassMap
   });
 
-  // 3. Load extra resources (background colors) and global radius metadata
-  const { backgroundsByTheme, globalRadius } = useThemeExtras({
+  // 3. Load extra resources (background colors) and global metadata
+  const { backgroundsByTheme, globalConfig } = useThemeExtras({
     designSystem,
     segment
   });
-
-  const globalConfig =
-    globalRadius !== undefined
-      ? {
-          radius: globalRadius
-        }
-      : undefined;
 
   // 4. Manage global CSS and stylesheet injection (side effects)
   useStylesheetManager({ designSystem, segment, theme });

@@ -1,4 +1,5 @@
 import type {
+  ActivationFeedbackSetting,
   RadiusMode,
   Schema,
   SwitchActivationMotion,
@@ -17,6 +18,7 @@ export type SwitchComponentOptionsPayload = {
 };
 
 export type SwitchComponentEffectsPayload = {
+  activationFeedback?: ActivationFeedbackSetting;
   thumbShrink?: true;
 };
 
@@ -76,13 +78,21 @@ function switchBranchHasThumbShrinkEffect(branch: unknown): boolean {
 function buildSwitchEffectsPayload(schema: Schema): SwitchComponentEffectsPayload {
   const switchSchema = schema.components?.switch;
   if (!isRecord(switchSchema)) return {};
-  if (switchBranchHasThumbShrinkEffect(switchSchema)) return { thumbShrink: true };
+  const effects: SwitchComponentEffectsPayload = {
+    ...(switchSchema.effects?.activationFeedback !== undefined
+      ? { activationFeedback: switchSchema.effects.activationFeedback }
+      : {})
+  };
+
+  if (switchBranchHasThumbShrinkEffect(switchSchema)) {
+    return { ...effects, thumbShrink: true };
+  }
 
   const variants = switchSchema.variants;
-  if (!isRecord(variants)) return {};
+  if (!isRecord(variants)) return effects;
   return Object.values(variants).some(switchBranchHasThumbShrinkEffect)
-    ? { thumbShrink: true }
-    : {};
+    ? { ...effects, thumbShrink: true }
+    : effects;
 }
 
 function buildSwitchVariantsPayload(schema: Schema): SwitchComponentVariantsPayload {

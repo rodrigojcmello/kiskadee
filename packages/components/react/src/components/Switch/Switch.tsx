@@ -1,6 +1,7 @@
 import './Switch.structural.scss';
 import './effects/thumb-shrink/SwitchThumbShrink.structural.scss';
 import { HeadlessSwitch } from '@kiskadee/react-headless';
+import { resolveActivationFeedbackSetting } from '@kiskadee/core';
 import { type ElementType, memo, useMemo } from 'react';
 import {
   hasSwitchActivationFeedbackEffect,
@@ -79,7 +80,7 @@ function SwitchRoot(props: SwitchProps) {
     onBlur,
     ...rootProps
   } = props;
-  const { switchClassesMap, options, effects, globalEffects } =
+  const { switchClassesMap, componentEffects, options, effects, globalEffects } =
     useSwitchArtifactConfig(thumbShrink);
   const resolvedRadius = radius ?? options.radius;
   const elements = resolveVariantElements(switchClassesMap, variant, mode);
@@ -90,8 +91,18 @@ function SwitchRoot(props: SwitchProps) {
   });
   const motionEffect = useSwitchRuntimeMotionEffect(motion !== false);
   const thumbShrinkEffect = effects.thumbShrinkEffect;
+  const activationFeedbackConfig = useMemo(
+    () =>
+      resolveActivationFeedbackSetting(
+        globalEffects.activationFeedback,
+        componentEffects.activationFeedback
+      ),
+    [componentEffects.activationFeedback, globalEffects.activationFeedback]
+  );
+  const activationFeedbackProfile = activationFeedbackConfig?.profile ?? 'halo';
   const shouldUseActivationFeedback =
-    activationFeedback !== false && hasSwitchActivationFeedbackEffect(elements);
+    activationFeedback !== false &&
+    hasSwitchActivationFeedbackEffect(elements, activationFeedbackProfile);
   const activationFeedbackEffect = useSwitchActivationFeedbackEffect(
     shouldUseActivationFeedback
   );
@@ -192,7 +203,7 @@ function SwitchRoot(props: SwitchProps) {
   });
   const activationFeedbackController = useSwitchActivationFeedbackController({
     enabled: Boolean(activationFeedbackEffect),
-    config: globalEffects.activationFeedback,
+    config: activationFeedbackConfig,
     disabled,
     forcedActive: activationFeedback === 'active',
     readOnly,
@@ -201,6 +212,7 @@ function SwitchRoot(props: SwitchProps) {
     onPointerUp,
     onPointerCancel,
     onBlur,
+    profile: activationFeedbackProfile,
     thumbRef: motionController.thumbProps.thumbRef,
     trackRef: motionController.thumbProps.trackRef
   });
@@ -219,16 +231,20 @@ function SwitchRoot(props: SwitchProps) {
       statefulClassNames,
       activationFeedbackEffect.resolveSwitchActivationFeedbackEffect({
         emphasis,
+        config: activationFeedbackConfig,
         elements,
         isActive:
-          activationFeedbackController.isActive && !activationFeedbackController.isFading
+          activationFeedbackController.isActive && !activationFeedbackController.isFading,
+        profile: activationFeedbackProfile
       }).classNamePatch
     );
   }, [
     activationFeedbackController.isActive,
     activationFeedbackController.isFading,
     activationFeedbackEffect,
+    activationFeedbackConfig,
     emphasis,
+    activationFeedbackProfile,
     elements,
     statefulClassNames
   ]);

@@ -1,12 +1,12 @@
 /*
- * Activation-feedback overflow-static structural registry:
- * afx = overflow-static host
+ * Activation-feedback halo structural registry:
+ * afx = halo host
  * afxa = active host
  */
 
 /*
  * effect host / afx
- * Owns the shared overflow-static layer and default runtime geometry slots.
+ * Owns the shared halo layer and default runtime geometry slots.
  */
 .k-afx {
   --k-af-x: 50%;
@@ -28,10 +28,21 @@
   top: var(--k-af-y);
   width: calc(var(--k-af-end-size) + (var(--k-af-thickness) * 2));
   height: calc(var(--k-af-end-size) + (var(--k-af-thickness) * 2));
-  z-index: -1;
+  z-index: var(--k-af-z, -1);
   display: block;
   border-radius: 999px;
-  background: var(--k-af-color);
+  background: color-mix(
+    in srgb,
+    var(--k-af-color) calc(var(--k-af-fill-opacity, 1) * 100%),
+    transparent
+  );
+  border-width: var(--k-af-border-width, 0);
+  border-style: solid;
+  border-color: color-mix(
+    in srgb,
+    var(--k-af-border-color, transparent) calc(var(--k-af-border-opacity, 1) * 100%),
+    transparent
+  );
   box-shadow: none;
   opacity: 0;
   pointer-events: none;
@@ -46,4 +57,18 @@
 .k-afxa::after {
   opacity: var(--k-af-opacity);
   transition-duration: 0ms;
+}
+
+.k-aft-s.k-aft-s {
+  --k-af-current-color: var(--k-af-subtle-color);
+  --k-af-current-opacity: var(--k-af-subtle-opacity);
+  --k-af-color: var(--k-af-current-color);
+  --k-af-opacity: var(--k-af-current-opacity);
+}
+
+.k-aft-v.k-aft-v {
+  --k-af-current-color: var(--k-af-vivid-color);
+  --k-af-current-opacity: var(--k-af-vivid-opacity);
+  --k-af-color: var(--k-af-current-color);
+  --k-af-opacity: var(--k-af-current-opacity);
 }

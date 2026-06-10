@@ -1,4 +1,6 @@
 import type {
+  ActivationFeedbackEffectSchema,
+  ActivationFeedbackSetting,
   BorderRadiusEffectSchema,
   BreakpointValue,
   ComponentName,
@@ -14,6 +16,7 @@ import type {
   StyleKeysByInteractionState,
   ThumbShrinkEffectSchema
 } from '@kiskadee/core';
+import { resolveActivationFeedbackSetting } from '@kiskadee/core';
 import { buildStyleKey, deepUpdate } from '../utils/index.ts';
 import {
   buildScopedToneMetadataKey,
@@ -33,6 +36,9 @@ import {
 type ElementSchemaInput = Pick<ElementStyle, 'decorations' | 'effects' | 'palettes' | 'scales'>;
 
 type ComponentSchemaInput = {
+  effects?: {
+    activationFeedback?: ActivationFeedbackSetting;
+  };
   elements?: Record<string, ElementSchemaInput | undefined>;
   variants?: Record<
     string,
@@ -55,6 +61,11 @@ type RadiusScaleProperty = Extract<
   'borderRadius' | 'borderRadiusRounded' | 'borderRadiusPill' | 'borderRadiusSquare'
 >;
 
+const ACTIVATION_FEEDBACK_HOST_BY_COMPONENT: Partial<Record<ComponentName, string>> = {
+  button: 'e1',
+  switch: 'e3'
+};
+
 /**
  * Processes a Schema object by iterating over each component's elements.
  * For each style object, it processes the decoration, scales, and colors
@@ -71,6 +82,33 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
   const styleKeysByComponent: ComponentStyleKeyMap = {};
   const toneMetadataByPalette: ToneMetadataByPalette = new Map();
   const activationFeedbackConfig = schema.global?.effects?.activationFeedback;
+
+  const resolveElementActivationFeedbackConfig = (
+    componentName: ComponentName,
+    elementName: string,
+    element: ElementSchemaInput
+  ): ActivationFeedbackEffectSchema | undefined => {
+    const component = schema.components?.[componentName] as ComponentSchemaInput | undefined;
+    const componentSetting = component?.effects?.activationFeedback;
+    if (componentSetting === false) return undefined;
+
+    const elementSetting = element.effects?.activationFeedback;
+    const hasElementSetting = elementSetting !== undefined;
+    const componentResolvedConfig = resolveActivationFeedbackSetting(
+      activationFeedbackConfig,
+      componentSetting
+    );
+
+    if (componentSetting !== undefined) {
+      const hostElementName = ACTIVATION_FEEDBACK_HOST_BY_COMPONENT[componentName];
+      if (elementName !== hostElementName && !hasElementSetting) return undefined;
+      if (elementSetting === false) return undefined;
+      return resolveActivationFeedbackSetting(componentResolvedConfig, elementSetting);
+    }
+
+    if (!hasElementSetting || elementSetting === false) return undefined;
+    return resolveActivationFeedbackSetting(activationFeedbackConfig, elementSetting);
+  };
 
   const applyElement = (
     path: string[],
@@ -253,7 +291,12 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
       // Effects: merge multiple effect maps (shadow, borderRadius, ...)
       // Each converter returns a map of InteractionState -> StyleKey[].
       // We concatenate arrays per state to produce a single `effects` map.
-      if (element.effects) {
+      const activationFeedbackResolvedConfig = resolveElementActivationFeedbackConfig(
+        metadataScope.componentName as ComponentName,
+        metadataScope.elementName,
+        element
+      );
+      if (element.effects || activationFeedbackResolvedConfig) {
         const effectsMap: StyleKeysByInteractionState = {};
         const appendEffectMap = (map: StyleKeysByInteractionState) => {
           for (const [state, keys] of Object.entries(map)) {
@@ -262,17 +305,17 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
             deepUpdate(effectsMap, [state], (prev: string[] = []) => [...prev, ...arr]);
           }
         };
-        if (element.effects.shadow) {
+        if (element.effects?.shadow) {
           const shadowMap = convertElementShadowToStyleKeys(element.effects.shadow);
           appendEffectMap(shadowMap);
         }
-        if (element.effects.activationFeedback) {
+        if (activationFeedbackResolvedConfig) {
           const activationFeedbackMap = convertElementActivationFeedbackToStyleKeys({
-            config: activationFeedbackConfig
+            config: activationFeedbackResolvedConfig
           });
           appendEffectMap(activationFeedbackMap);
         }
-        if (element.effects.borderRadius) {
+        if (element.effects?.borderRadius) {
           const borderRadius: BorderRadiusEffectSchema = element.effects.borderRadius;
           const rounded = borderRadius?.rounded;
           const pill = borderRadius?.pill;
@@ -293,7 +336,7 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
           }
         }
         if (
-          element.effects.thumbShrink &&
+          element.effects?.thumbShrink &&
           metadataScope.componentName === 'switch' &&
           metadataScope.elementName === 'e3'
         ) {

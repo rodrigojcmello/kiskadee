@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type {
   ActivationFeedbackEffectSchema,
+  ActivationFeedbackSetting,
   ActivationFeedbackThemeTokens,
   HSLA,
   RadiusMode,
@@ -186,6 +187,28 @@ export async function writeExtraArtifacts(params: {
   const activationFeedback = schema.global?.effects?.activationFeedback as
     | ActivationFeedbackEffectSchema
     | undefined;
+  const componentEffectOverrides = {
+    ...(schema.components?.button?.effects?.activationFeedback !== undefined
+      ? {
+          button: {
+            effects: {
+              activationFeedback: schema.components.button.effects.activationFeedback
+            }
+          }
+        }
+      : {}),
+    ...(schema.components?.switch?.effects?.activationFeedback !== undefined
+      ? {
+          switch: {
+            effects: {
+              activationFeedback: schema.components.switch.effects.activationFeedback
+            }
+          }
+        }
+      : {})
+  } satisfies Partial<
+    Record<'button' | 'switch', { effects: { activationFeedback: ActivationFeedbackSetting } }>
+  >;
   const switchComponentArtifact = buildSwitchComponentArtifact(schema);
   const tabsComponentArtifact = buildTabsComponentArtifact(schema);
   const textFieldComponentArtifact = buildTextFieldComponentArtifact(schema);
@@ -204,7 +227,8 @@ export async function writeExtraArtifacts(params: {
   const hasActivationFeedback = Boolean(
     activationFeedback && Object.keys(activationFeedback).length > 0
   );
-  if (hasFonts || hasRadius || hasActivationFeedback) {
+  const hasComponentEffectOverrides = Object.keys(componentEffectOverrides).length > 0;
+  if (hasFonts || hasRadius || hasActivationFeedback || hasComponentEffectOverrides) {
     await mkdir(buildDir, { recursive: true });
     const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
 
@@ -214,6 +238,9 @@ export async function writeExtraArtifacts(params: {
       effects?: {
         activationFeedback?: ActivationFeedbackEffectSchema;
       };
+      components?: Partial<
+        Record<'button' | 'switch', { effects: { activationFeedback: ActivationFeedbackSetting } }>
+      >;
     } = {};
 
     if (hasFonts && bodyCss) {
@@ -232,6 +259,10 @@ export async function writeExtraArtifacts(params: {
         ...(globalPayload.effects ?? {}),
         activationFeedback
       };
+    }
+
+    if (hasComponentEffectOverrides) {
+      globalPayload.components = componentEffectOverrides;
     }
 
     await writeFile(globalFilePath, JSON.stringify(globalPayload, null, 2), 'utf8');
@@ -300,8 +331,9 @@ export async function writeExtraArtifacts(params: {
       const color = themeTokens?.focusColor;
       const background = themeTokens?.background;
       const activationFeedback = themeTokens?.effects?.activationFeedback;
-      const activationFeedbackSubtle = activationFeedback?.surfaceTone?.subtle;
-      const activationFeedbackVivid = activationFeedback?.surfaceTone?.vivid;
+      const activationFeedbackTone = activationFeedback?.tone ?? activationFeedback?.surfaceTone;
+      const activationFeedbackSubtle = activationFeedbackTone?.subtle;
+      const activationFeedbackVivid = activationFeedbackTone?.vivid;
       const activationFeedbackSubtleColor = activationFeedbackSubtle?.color ?? activationFeedback?.color;
       const activationFeedbackSubtleOpacity =
         activationFeedbackSubtle?.opacity ?? activationFeedback?.opacity;

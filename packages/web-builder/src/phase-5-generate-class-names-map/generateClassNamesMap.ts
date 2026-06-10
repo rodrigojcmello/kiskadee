@@ -97,9 +97,9 @@ function activationFeedbackBucketForKey(key: string): string {
   if (rawValue.startsWith('{')) {
     try {
       const parsed = JSON.parse(rawValue) as { profile?: string };
-      if (parsed.profile === 'surface') return 'afs';
-      if (parsed.profile === 'overflow') return 'afo';
-      if (parsed.profile === 'overflow-static') return 'afx';
+      if (parsed.profile === 'ripple') return 'afs';
+      if (parsed.profile === 'ripple-overflow') return 'afo';
+      if (parsed.profile === 'halo') return 'afx';
       if (parsed.profile === 'pressed') return 'afp';
     } catch {
       // fall through to default

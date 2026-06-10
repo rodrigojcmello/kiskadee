@@ -2,6 +2,7 @@ import {
   type ClassNameByElementJSON,
   type ColorClasses,
   type ComponentEmphasis,
+  type ActivationFeedbackProfileMode,
   componentEmphasisBuckets,
   type EffectClassBucketJSON,
   type RadiusMode,
@@ -17,6 +18,11 @@ import type {
   SwitchLabelPosition,
   SwitchVariantClassesMap
 } from './Switch.types.ts';
+import {
+  type ActivationFeedbackEffectBuckets,
+  resolveActivationFeedbackBucketClass,
+  resolveActivationFeedbackProfileAvailability
+} from '../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
 
 export const DEFAULT_SWITCH_SCALE = 's:md:1';
 export const DEFAULT_SWITCH_ACTIVATION_MOTION: SwitchActivationMotion = 'standard';
@@ -123,16 +129,22 @@ function resolveEffectBucketClassName(
 }
 
 export function hasSwitchActivationFeedbackEffect(
-  element: ClassNameByElementJSON | undefined
+  element: ClassNameByElementJSON | undefined,
+  profile?: ActivationFeedbackProfileMode
 ): boolean {
-  return resolveSwitchActivationFeedbackEffectClassName(element).length > 0;
+  return resolveSwitchActivationFeedbackEffectClassName(element, profile).length > 0;
 }
 
 export function resolveSwitchActivationFeedbackEffectClassName(
-  element: ClassNameByElementJSON | undefined
+  element: ClassNameByElementJSON | undefined,
+  profile?: ActivationFeedbackProfileMode
 ): string {
-  const effects = element?.e as { af?: string; afx?: string } | undefined;
-  return [effects?.af, effects?.afx].filter(Boolean).join(' ');
+  const effects = element?.e as ActivationFeedbackEffectBuckets | undefined;
+  const resolvedProfile =
+    profile ?? resolveActivationFeedbackProfileAvailability({ e: effects })[0] ?? null;
+  return [effects?.af, resolveActivationFeedbackBucketClass(resolvedProfile, effects)]
+    .filter(Boolean)
+    .join(' ');
 }
 
 export function resolveSwitchThumbShrinkEffectClassName(

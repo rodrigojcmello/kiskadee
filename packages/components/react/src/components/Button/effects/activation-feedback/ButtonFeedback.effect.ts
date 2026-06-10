@@ -1,4 +1,8 @@
-import type { ActivationFeedbackProfileMode, ComponentEmphasis } from '@kiskadee/core';
+import type {
+  ActivationFeedbackEffectSchema,
+  ActivationFeedbackProfileMode,
+  ComponentEmphasis
+} from '@kiskadee/core';
 import type { ButtonClassNamePatch } from '../../Button.class-names.ts';
 import type { ButtonClassesMap } from '../../Button.types.ts';
 import type { ButtonActivationFeedbackEffectModule } from './ButtonActivationFeedback.loader.ts';
@@ -6,6 +10,7 @@ import type { ButtonFeedbackKind } from './ButtonFeedback.types.ts';
 
 export type ButtonFeedbackClassNamePatchOptions = {
   activationFeedbackEffect: ButtonActivationFeedbackEffectModule | null;
+  activationFeedbackConfig: ActivationFeedbackEffectSchema | undefined;
   activationFeedbackProfile: ActivationFeedbackProfileMode | null;
   controlState: boolean | undefined;
   elements: ButtonClassesMap;
@@ -19,6 +24,7 @@ export type ButtonFeedbackClassNamePatchOptions = {
 
 export function resolveButtonFeedbackClassNamePatch({
   activationFeedbackEffect,
+  activationFeedbackConfig,
   activationFeedbackProfile,
   controlState,
   elements,
@@ -32,6 +38,7 @@ export function resolveButtonFeedbackClassNamePatch({
   if (feedbackKind === 'activationFeedback') {
     return activationFeedbackEffect
       ? activationFeedbackEffect.resolveButtonActivationFeedbackEffect({
+          activationFeedbackConfig,
           activationFeedbackProfile,
           controlState,
           elements,

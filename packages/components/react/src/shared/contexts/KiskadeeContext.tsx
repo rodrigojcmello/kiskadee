@@ -1,5 +1,6 @@
 import type {
   ActivationFeedbackEffectSchema,
+  ActivationFeedbackSetting,
   ComponentClassNameMapJSON,
   RadiusMode,
   SwitchActivationMotion,
@@ -46,6 +47,11 @@ export type KiskadeeContextValue = {
       activationFeedback?: ActivationFeedbackEffectSchema;
     };
     components?: {
+      button?: {
+        effects?: {
+          activationFeedback?: ActivationFeedbackSetting;
+        };
+      };
       textField?: {
         options?: {
           variant?: TextFieldVariant;
@@ -87,6 +93,7 @@ export type KiskadeeContextValue = {
           controlTextVisibility?: SwitchControlTextVisibility;
         };
         effects?: {
+          activationFeedback?: ActivationFeedbackSetting;
           thumbShrink?: true;
         };
         variants?: {

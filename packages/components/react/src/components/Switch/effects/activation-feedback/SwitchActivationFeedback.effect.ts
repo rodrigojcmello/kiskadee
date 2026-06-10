@@ -1,6 +1,11 @@
 import '../../../../hooks/effects/activation-feedback/ActivationFeedbackOverflowStatic.structural.css';
 import './SwitchActivationFeedback.structural.css';
-import type { ComponentEmphasis } from '@kiskadee/core';
+import type {
+  ActivationFeedbackEffectSchema,
+  ActivationFeedbackProfileMode,
+  ComponentEmphasis
+} from '@kiskadee/core';
+import { resolveActivationFeedbackToneClass } from '../../../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
 import {
   join,
   resolveSwitchActivationFeedbackEffectClassName
@@ -8,9 +13,11 @@ import {
 import type { SwitchClassesMap, SwitchClassNames } from '../.././Switch.types.ts';
 
 export type SwitchActivationFeedbackEffectOptions = {
+  config?: ActivationFeedbackEffectSchema;
   emphasis: ComponentEmphasis;
   elements: SwitchClassesMap;
   isActive: boolean;
+  profile: ActivationFeedbackProfileMode;
 };
 
 export type SwitchActivationFeedbackEffectResult = {
@@ -18,11 +25,16 @@ export type SwitchActivationFeedbackEffectResult = {
 };
 
 export function resolveSwitchActivationFeedbackEffect({
+  config,
   emphasis,
   elements,
-  isActive
+  isActive,
+  profile
 }: SwitchActivationFeedbackEffectOptions): SwitchActivationFeedbackEffectResult {
-  const activationFeedbackClassName = resolveSwitchActivationFeedbackEffectClassName(elements.e3);
+  const activationFeedbackClassName = resolveSwitchActivationFeedbackEffectClassName(
+    elements.e3,
+    profile
+  );
 
   if (!activationFeedbackClassName) {
     return {
@@ -37,8 +49,8 @@ export function resolveSwitchActivationFeedbackEffect({
         join(
           activationFeedbackClassName,
           'k-afx',
+          resolveActivationFeedbackToneClass({ config, emphasis }),
           isActive ? 'k-afxa' : '',
-          emphasis === 'low' ? 'k-swt-e3f-a' : ''
         ) ?? ''
     }
   };

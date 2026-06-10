@@ -3,7 +3,6 @@
  * e1a = root hosts activation feedback
  * e1b = feedback active
  * e1c = feedback fading
- * e1d = vivid surface tone
  */
 .k-btn-e1a {
   position: relative;
@@ -36,7 +35,11 @@
   top: var(--k-af-y, 50%);
   width: var(--k-af-start-size, 0px);
   height: var(--k-af-start-size, 0px);
-  background-color: var(--k-af-color, currentColor);
+  background-color: color-mix(
+    in srgb,
+    var(--k-af-color, currentColor) calc(var(--k-af-fill-opacity, 1) * 100%),
+    transparent
+  );
   border-width: var(--k-af-border-width, 0);
   border-style: solid;
   border-color: color-mix(
@@ -70,7 +73,16 @@
   opacity: 0;
 }
 
-.k-btn-e1d {
-  --k-af-current-color: var(--k-af-vivid-color, var(--k-af-subtle-color));
-  --k-af-current-opacity: var(--k-af-vivid-opacity, var(--k-af-subtle-opacity));
+.k-aft-s.k-aft-s {
+  --k-af-current-color: var(--k-af-subtle-color);
+  --k-af-current-opacity: var(--k-af-subtle-opacity);
+  --k-af-color: var(--k-af-current-color);
+  --k-af-opacity: var(--k-af-current-opacity);
+}
+
+.k-aft-v.k-aft-v {
+  --k-af-current-color: var(--k-af-vivid-color);
+  --k-af-current-opacity: var(--k-af-vivid-opacity);
+  --k-af-color: var(--k-af-current-color);
+  --k-af-opacity: var(--k-af-current-opacity);
 }

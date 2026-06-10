@@ -49,6 +49,7 @@ function ButtonRoot(props: ButtonProps) {
     () =>
       resolveButtonFeedbackClassNamePatch({
         activationFeedbackEffect: feedbackEffect.activationFeedbackEffect,
+        activationFeedbackConfig: activationFeedbackController.activationFeedbackConfig,
         activationFeedbackProfile: activationFeedbackController.activationFeedbackProfile,
         controlState: common.controlState,
         elements,
@@ -60,6 +61,7 @@ function ButtonRoot(props: ButtonProps) {
         shouldUsePressedProfile: activationFeedbackController.shouldUsePressedProfile
       }),
     [
+      activationFeedbackController.activationFeedbackConfig,
       activationFeedbackController.activationFeedbackProfile,
       activationFeedbackController.feedbackKind,
       activationFeedbackController.isFeedbackActive,

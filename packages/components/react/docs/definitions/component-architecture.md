@@ -148,8 +148,8 @@ Reusable effects should be designed as shared profiles before they become
 component-specific implementations.
 
 For example, `activationFeedback` should be treated as a shared effect with
-profiles such as an overflow-static profile. A component adapter should only
-identify the target element and pass the profile inputs. The shared profile
+profiles such as `ripple`, `ripple-overflow`, and `halo`. A component adapter should only
+identify the target element and pass the resolved profile inputs. The shared profile
 should own the generic runtime hook, state machine, CSS variable contract, and
 profile-level structural CSS.
 

@@ -3,6 +3,8 @@ import {
   type ActivationFeedbackMotionCurveToken,
   type ActivationFeedbackProfile,
   type ActivationFeedbackProfileConfig,
+  type ActivationFeedbackTone,
+  type ActivationFeedbackVisual,
   resolveActivationFeedbackConfig,
   resolveActivationFeedbackDurationMs,
   resolveActivationFeedbackProfile,
@@ -18,6 +20,7 @@ const CURVE_TOKEN_TO_CSS: Record<ActivationFeedbackMotionCurveToken, string> = {
 type ActivationFeedbackProfileValue = {
   profile?: ActivationFeedbackProfile;
   profileConfig?: ActivationFeedbackProfileConfig;
+  visual?: ActivationFeedbackVisual;
 };
 
 type ParsedActivationFeedbackStyleKey =
@@ -67,29 +70,46 @@ function toCssDuration(token: string | undefined, fallbackMs: number): string {
 function resolveProfileConfig(value: ActivationFeedbackProfileValue): {
   profile: ActivationFeedbackProfile;
   profileConfig: ActivationFeedbackProfileConfig;
+  visual?: ActivationFeedbackVisual;
 } {
-  const profile = value.profile ?? 'surface';
+  const profile = value.profile ?? 'ripple';
   if (profile === 'pressed') {
     return {
       profile,
-      profileConfig: resolvePressedActivationFeedbackProfile({ profile: value.profileConfig })
+      profileConfig: resolvePressedActivationFeedbackProfile({ profile: value.profileConfig }),
+      visual: value.visual
     };
   }
 
   return {
     profile,
-    profileConfig: resolveActivationFeedbackProfile(profile, { profile: value.profileConfig })
+    profileConfig: resolveActivationFeedbackProfile(profile, { profile: value.profileConfig }),
+    visual: value.visual
   };
+}
+
+function toneColorVar(tone: ActivationFeedbackTone): string {
+  return tone === 'vivid'
+    ? 'var(--k-af-vivid-color, var(--k-af-subtle-color, currentColor))'
+    : 'var(--k-af-subtle-color, var(--k-af-token-color, var(--k-focus-color, currentColor)))';
+}
+
+function toneOpacityVar(tone: ActivationFeedbackTone): string {
+  return tone === 'vivid'
+    ? 'var(--k-af-vivid-opacity, var(--k-af-subtle-opacity, 1))'
+    : 'var(--k-af-subtle-opacity, var(--k-af-token-opacity, 0.16))';
 }
 
 function transformActivationFeedbackProfileToCss(
   value: ActivationFeedbackProfileValue,
   className: string
 ): string {
-  const { profile, profileConfig } = resolveProfileConfig(value);
-  const isOverflowProfile = profile === 'overflow' || profile === 'overflow-static';
+  const { profile, profileConfig, visual } = resolveProfileConfig(value);
+  const isOverflowProfile = profile === 'ripple-overflow' || profile === 'halo';
   const overflow = isOverflowProfile ? 'visible' : 'hidden';
   const clip = isOverflowProfile ? 'none' : 'inset(0 round var(--k-bdr, 0px))';
+  const isHaloProfile = profile === 'halo';
+  const isOutline = visual?.paint === 'outline';
   const size =
     profileConfig.size === 'auto'
       ? 'auto'
@@ -102,8 +122,15 @@ function transformActivationFeedbackProfileToCss(
   const fadeDuration = toCssDuration(profileConfig.fade?.durationToken, 100);
   const fadeEase = toCssCurve(profileConfig.fade?.curveToken ?? 'motion.standard.out');
   const animateSize = profileConfig.animateSize === false ? '0' : '1';
+  const numericSize =
+    typeof profileConfig.size === 'number' && profileConfig.size > 0 ? profileConfig.size : null;
+  const thickness = isHaloProfile && numericSize !== null ? `${numericSize}px` : undefined;
   const borderWidth =
-    profileConfig.border?.width !== undefined ? `${profileConfig.border.width}px` : '0';
+    isOutline && numericSize !== null
+      ? `${numericSize}px`
+      : profileConfig.border?.width !== undefined
+        ? `${profileConfig.border.width}px`
+        : '0';
   const borderTone = profileConfig.border?.surfaceTone;
   const borderColor =
     borderTone === 'vivid'
@@ -117,8 +144,9 @@ function transformActivationFeedbackProfileToCss(
       : borderTone === 'subtle'
         ? 'var(--k-af-subtle-opacity, var(--k-af-current-opacity, 1))'
         : 'var(--k-af-current-opacity, var(--k-af-opacity, 1))';
+  const fillOpacity = isOutline ? '0' : '1';
 
-  return `.${className} { --k-af-profile: ${profile}; --k-af-overflow: ${overflow}; --k-af-clip: ${clip}; --k-af-size: ${size}; --k-af-animate-size: ${animateSize}; --k-af-duration: ${duration}; --k-af-ease: ${ease}; --k-af-fade-delay: ${fadeDelay}; --k-af-fade-duration: ${fadeDuration}; --k-af-fade-ease: ${fadeEase}; --k-af-border-width: ${borderWidth}; --k-af-border-color: ${borderColor}; --k-af-border-opacity: ${borderOpacity}; }`;
+  return `.${className} { --k-af-profile: ${profile}; --k-af-overflow: ${overflow}; --k-af-clip: ${clip}; --k-af-size: ${size}; --k-af-animate-size: ${animateSize}; --k-af-duration: ${duration}; --k-af-ease: ${ease}; --k-af-fade-delay: ${fadeDelay}; --k-af-fade-duration: ${fadeDuration}; --k-af-fade-ease: ${fadeEase}; --k-af-fill-opacity: ${fillOpacity};${thickness ? ` --k-af-thickness: ${thickness};` : ''} --k-af-border-width: ${borderWidth}; --k-af-border-color: ${borderColor}; --k-af-border-opacity: ${borderOpacity}; }`;
 }
 
 export function transformActivationFeedbackKeyToCss(styleKey: string, className: string): string {
@@ -129,7 +157,10 @@ export function transformActivationFeedbackKeyToCss(styleKey: string, className:
 
   const resolved = resolveActivationFeedbackConfig(parsed.value);
   const fadeDuration = resolveActivationFeedbackDurationMs(resolved.fadeDurationToken, 360);
+  const tone = parsed.value.visual?.tone?.default ?? 'subtle';
+  const layer = parsed.value.visual?.layer ?? 'overlay';
+  const zIndex = layer === 'underlay' ? '-1' : '2';
 
   // Keep --k-af-token-* in the fallback chain for consumers overriding legacy vars directly.
-  return `.${className} { --k-af-color: var(--k-af-current-color, var(--k-af-subtle-color, var(--k-af-token-color, var(--k-focus-color, currentColor)))); --k-af-opacity: var(--k-af-current-opacity, var(--k-af-subtle-opacity, var(--k-af-token-opacity, 0.16))); --k-af-thickness: ${resolved.thickness}px; --k-af-fade-duration: ${fadeDuration}ms; --k-af-ease: ${toCssCurve(resolved.curveToken)}; }`;
+  return `.${className} { --k-af-current-color: ${toneColorVar(tone)}; --k-af-current-opacity: ${toneOpacityVar(tone)}; --k-af-color: var(--k-af-current-color, var(--k-af-subtle-color, var(--k-af-token-color, var(--k-focus-color, currentColor)))); --k-af-opacity: var(--k-af-current-opacity, var(--k-af-subtle-opacity, var(--k-af-token-opacity, 0.16))); --k-af-thickness: ${resolved.thickness}px; --k-af-z: ${zIndex}; --k-af-fill-opacity: 1; --k-af-fade-duration: ${fadeDuration}ms; --k-af-ease: ${toCssCurve(resolved.curveToken)}; }`;
 }

@@ -50,11 +50,17 @@ export const schema: Schema<Segments> = {
         holdDurationToken: 'interaction.hold.short',
         fadeDurationToken: 'interaction.fade.long',
         curveToken: 'motion.standard.out',
-        profile: 'surface',
+        profile: 'ripple',
         origin: 'pointer',
-        pressedVisual: 'overlay',
+        visual: {
+          layer: 'overlay',
+          paint: 'halo',
+          tone: {
+            default: 'subtle'
+          }
+        },
         profiles: {
-          surface: {
+          ripple: {
             animateSize: true,
             size: 'auto',
             durationToken: 'interaction.slow',
@@ -65,7 +71,7 @@ export const schema: Schema<Segments> = {
               curveToken: 'motion.standard.out'
             }
           },
-          overflow: {
+          rippleOverflow: {
             animateSize: true,
             size: 80,
             durationToken: 'interaction.fast',
@@ -76,7 +82,7 @@ export const schema: Schema<Segments> = {
               curveToken: 'motion.standard.out'
             }
           },
-          overflowStatic: {
+          halo: {
             animateSize: false,
             size: 80,
             durationToken: 'interaction.instant',
@@ -84,8 +90,7 @@ export const schema: Schema<Segments> = {
               delayToken: 'interaction.hold.short',
               durationToken: 'interaction.fade.long',
               curveToken: 'motion.standard.out'
-            },
-            border: { width: 1, surfaceTone: 'vivid' }
+            }
           },
           pressed: {
             animateSize: false,
@@ -112,7 +117,7 @@ export const schema: Schema<Segments> = {
           focusColor: c('default', 'l', 'primary.v2', 60), // =
           effects: {
             activationFeedback: {
-              surfaceTone: {
+              tone: {
                 subtle: {
                   color: '#1D1B20',
                   opacity: 0.1

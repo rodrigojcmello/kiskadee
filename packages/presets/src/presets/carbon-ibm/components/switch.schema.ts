@@ -21,6 +21,24 @@ const carbonSwitchColor = {
 
 export function createCarbonIbmSwitchSchema(): SwitchComponent {
   return {
+    effects: {
+      activationFeedback: {
+        profile: 'halo',
+        origin: 'center',
+        visual: {
+          layer: 'underlay',
+          paint: 'halo',
+          tone: {
+            default: 'subtle'
+          }
+        },
+        profiles: {
+          halo: {
+            size: 8
+          }
+        }
+      }
+    },
     options: {
       variant: 'standard',
       radius: 'pill',
@@ -109,9 +127,6 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                     pill: 10,
                     square: 0
                   }
-                },
-                effects: {
-                  activationFeedback: true
                 },
                 palettes: {
                   default: {

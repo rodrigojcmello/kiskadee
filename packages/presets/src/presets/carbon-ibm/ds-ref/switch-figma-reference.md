@@ -81,8 +81,9 @@ schema does not expose letter-spacing for Switch text elements.
 - Carbon's `State=Active` visual is represented by the focus-colored outline in the Figma assets.
   Kiskadee maps this through the normal Switch focus ring instead of introducing a Carbon-specific
   active mode.
-- The inspected Carbon Toggle does not expose a state-layer or activation feedback effect. The
-  Carbon schema therefore does not opt into `effects.activationFeedback`.
+- The inspected Carbon Toggle does not expose a distinct state-layer reference. The Carbon schema
+  opts into component-level `activationFeedback` with the shared Switch halo profile for runtime
+  consistency across presets.
 - The current Kiskadee Switch color model does not have a `selected:disabled` color branch. Carbon's
   disabled selected visual is approximated through the existing disabled and selected cascade until
   that state exists in the schema contract.

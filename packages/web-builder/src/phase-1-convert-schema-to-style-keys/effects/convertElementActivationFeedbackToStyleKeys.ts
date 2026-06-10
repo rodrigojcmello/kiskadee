@@ -19,18 +19,18 @@ function resolveDeclaredRadialProfiles(
 ): ActivationFeedbackProfileMode[] {
   const profiles = config?.profiles;
   const modes: ActivationFeedbackProfileMode[] = [];
-  if (profiles?.surface) modes.push('surface');
-  if (profiles?.overflow) modes.push('overflow');
-  if (profiles?.overflowStatic) modes.push('overflow-static');
+  if (profiles?.ripple) modes.push('ripple');
+  if (profiles?.rippleOverflow) modes.push('ripple-overflow');
+  if (profiles?.halo) modes.push('halo');
   return modes;
 }
 
 function hasDeclaredProfileConfig(config?: ActivationFeedbackEffectSchema): boolean {
   return Boolean(
     config?.profile ||
-      config?.profiles?.surface ||
-      config?.profiles?.overflow ||
-      config?.profiles?.overflowStatic ||
+      config?.profiles?.ripple ||
+      config?.profiles?.rippleOverflow ||
+      config?.profiles?.halo ||
       config?.profiles?.pressed
   );
 }
@@ -43,13 +43,13 @@ export function convertElementActivationFeedbackToStyleKeys({
   const styleKeys = [
     buildStyleKey({
       propertyName: 'activationFeedback',
-      value: resolveActivationFeedbackConfig(config)
+      value: config ?? resolveActivationFeedbackConfig(config)
     })
   ];
 
   const hasProfileConfig = hasDeclaredProfileConfig(config);
   if (hasProfileConfig) {
-    const defaultProfile = config?.profile ?? 'surface';
+    const defaultProfile = config?.profile ?? 'ripple';
     const declaredProfiles = resolveDeclaredRadialProfiles(config);
     const profiles = declaredProfiles.length ? [...declaredProfiles] : [defaultProfile];
     if (!profiles.includes(defaultProfile)) profiles.unshift(defaultProfile);
@@ -60,7 +60,8 @@ export function convertElementActivationFeedbackToStyleKeys({
           propertyName: 'activationFeedbackProfile',
           value: {
             profile,
-            profileConfig: resolveActivationFeedbackProfile(profile, { config })
+            profileConfig: resolveActivationFeedbackProfile(profile, { config }),
+            visual: config?.visual
           }
         })
       )
@@ -72,7 +73,8 @@ export function convertElementActivationFeedbackToStyleKeys({
           propertyName: 'activationFeedbackProfile',
           value: {
             profile: 'pressed',
-            profileConfig: resolvePressedActivationFeedbackProfile({ config })
+            profileConfig: resolvePressedActivationFeedbackProfile({ config }),
+            visual: config?.visual
           }
         })
       );
