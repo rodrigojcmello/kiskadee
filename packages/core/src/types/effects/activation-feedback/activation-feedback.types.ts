@@ -17,6 +17,21 @@ export type ActivationFeedbackProfileMode = ActivationFeedbackProfile;
 
 export type ActivationFeedbackProfileKey = ActivationFeedbackProfile | 'pressed';
 
+export type ActivationFeedbackProfileBucket = 'afs' | 'afo' | 'afx' | 'afp';
+
+export type ActivationFeedbackProfileRuntime = 'radial' | 'static';
+
+export type ActivationFeedbackProfileOverflow = 'clipped' | 'visible';
+
+export type ActivationFeedbackProfileShape = 'radial' | 'halo';
+
+export type ActivationFeedbackProfileDefinition = {
+  bucket: ActivationFeedbackProfileBucket;
+  overflow: ActivationFeedbackProfileOverflow;
+  runtime: ActivationFeedbackProfileRuntime;
+  shape: ActivationFeedbackProfileShape;
+};
+
 export type ActivationFeedbackOrigin = 'center' | 'pointer';
 
 export type ActivationFeedbackTone = 'subtle' | 'vivid';

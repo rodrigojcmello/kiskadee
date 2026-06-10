@@ -112,3 +112,6 @@ optimized single-component implementation was promoted into
   `size: 8`, and static Activation Feedback cards staying active.
 - 2026-06-10: All Switch presets now map `low` emphasis to `vivid` activation feedback, matching
   strong Showcase surfaces with a white halo/outline.
+- 2026-06-10: PR #8 review follow-ups resolved for activation feedback: profile capabilities now
+  drive runtime/bucket choices, unknown profile buckets fail loudly, web-builder AF tests were
+  restored, and shared pointer-capture/lazy-loader helpers removed duplicated runtime plumbing.

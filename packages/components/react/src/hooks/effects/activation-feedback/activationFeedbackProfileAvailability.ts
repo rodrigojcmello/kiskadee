@@ -3,6 +3,10 @@ import type {
   ActivationFeedbackProfileMode,
   ComponentEmphasis
 } from '@kiskadee/core';
+import {
+  DEFAULT_ACTIVATION_FEEDBACK_PROFILES,
+  resolveActivationFeedbackProfileBucket
+} from '@kiskadee/core';
 
 export type ActivationFeedbackEffectBuckets = {
   af?: string;
@@ -20,9 +24,13 @@ export function resolveActivationFeedbackProfileAvailability(
   element: { e?: ActivationFeedbackEffectBuckets } | undefined
 ): ActivationFeedbackProfileMode[] {
   const availableProfiles: ActivationFeedbackProfileMode[] = [];
-  if (element?.e?.afs) availableProfiles.push('ripple');
-  if (element?.e?.afo) availableProfiles.push('ripple-overflow');
-  if (element?.e?.afx) availableProfiles.push('halo');
+  for (const profile of Object.keys(
+    DEFAULT_ACTIVATION_FEEDBACK_PROFILES
+  ) as ActivationFeedbackProfileMode[]) {
+    if (element?.e?.[resolveActivationFeedbackProfileBucket(profile)]) {
+      availableProfiles.push(profile);
+    }
+  }
   return availableProfiles;
 }
 
@@ -31,10 +39,7 @@ export function resolveActivationFeedbackBucketClass(
   effects: ActivationFeedbackEffectBuckets | undefined
 ): string {
   if (!profile) return '';
-  if (profile === 'ripple') return effects?.afs ?? '';
-  if (profile === 'ripple-overflow') return effects?.afo ?? '';
-  if (profile === 'halo') return effects?.afx ?? '';
-  return '';
+  return effects?.[resolveActivationFeedbackProfileBucket(profile)] ?? '';
 }
 
 export function resolveActivationFeedbackPressedBucketClass(

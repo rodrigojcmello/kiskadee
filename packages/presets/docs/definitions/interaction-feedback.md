@@ -141,6 +141,12 @@ Supported profile intent:
 - `halo`: feedback may escape host bounds but uses fixed geometry.
 - `pressed`: feedback profile for pressed/overlay state.
 
+Profile bucket, overflow behavior, and runtime mechanism are capabilities owned
+by the shared activation-feedback profile definitions in `@kiskadee/core`.
+Components and builders should consult those capabilities instead of branching on
+profile names locally. Today, `ripple` and `ripple-overflow` use radial runtime
+geometry, while `halo` uses static host geometry.
+
 For `visual.paint`, `size` has paint-specific meaning:
 
 - `paint: 'halo'`: `size` is the halo expansion/area.
@@ -179,6 +185,9 @@ The local override is `activationFeedback`; passing
 `activationFeedback={false}` disables the activation-feedback path.
 
 Button defaults should normally use `profile: 'ripple'` and `origin: 'pointer'`.
+React Button currently selects only profiles whose shared capability declares the
+radial runtime. Static-runtime profiles such as `halo` require component
+structure that can consume host-sized geometry before Button can expose them.
 Unlike Switch, Button does not need a `byEmphasis` tone mapping by default; if a
 preset wants one, it must declare it in component schema.
 

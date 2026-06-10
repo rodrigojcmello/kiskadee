@@ -1,4 +1,5 @@
 import {
+  ACTIVATION_FEEDBACK_PROFILE_DEFINITIONS,
   ACTIVATION_FEEDBACK_DURATION_TOKEN_TO_MS,
   DEFAULT_ACTIVATION_FEEDBACK_PROFILES,
   DEFAULT_PRESSED_ACTIVATION_FEEDBACK_PROFILE
@@ -6,12 +7,64 @@ import {
 import type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackMotionDurationToken,
+  ActivationFeedbackProfileDefinition,
   ActivationFeedbackProfileKey,
   ActivationFeedbackProfileConfig,
   ActivationFeedbackProfileMode,
   ActivationFeedbackSetting,
   ActivationFeedbackVisual
 } from './activation-feedback.types.ts';
+
+export function isActivationFeedbackProfileKey(
+  value: unknown
+): value is ActivationFeedbackProfileKey {
+  return (
+    value === 'ripple' ||
+    value === 'ripple-overflow' ||
+    value === 'halo' ||
+    value === 'pressed'
+  );
+}
+
+export function isActivationFeedbackProfileMode(
+  value: unknown
+): value is ActivationFeedbackProfileMode {
+  return value === 'ripple' || value === 'ripple-overflow' || value === 'halo';
+}
+
+export function resolveActivationFeedbackProfileDefinition(
+  profile: ActivationFeedbackProfileKey
+): ActivationFeedbackProfileDefinition {
+  const definition = ACTIVATION_FEEDBACK_PROFILE_DEFINITIONS[profile];
+  if (!definition) {
+    throw new Error(`Unsupported activation feedback profile "${String(profile)}".`);
+  }
+  return definition;
+}
+
+export function resolveActivationFeedbackProfileBucket(
+  profile: ActivationFeedbackProfileKey
+): ActivationFeedbackProfileDefinition['bucket'] {
+  return resolveActivationFeedbackProfileDefinition(profile).bucket;
+}
+
+export function usesActivationFeedbackOverflowGeometry(
+  profile: ActivationFeedbackProfileKey
+): boolean {
+  return resolveActivationFeedbackProfileDefinition(profile).overflow === 'visible';
+}
+
+export function usesActivationFeedbackStaticRuntime(
+  profile: ActivationFeedbackProfileMode
+): boolean {
+  return resolveActivationFeedbackProfileDefinition(profile).runtime === 'static';
+}
+
+export function usesActivationFeedbackRadialRuntime(
+  profile: ActivationFeedbackProfileMode
+): boolean {
+  return resolveActivationFeedbackProfileDefinition(profile).runtime === 'radial';
+}
 
 export function resolveActivationFeedbackProfileKey(
   profile: ActivationFeedbackProfileKey
@@ -135,6 +188,10 @@ export function resolveActivationFeedbackProfile(
   profile: ActivationFeedbackProfileMode,
   options: { config?: ActivationFeedbackEffectSchema; profile?: ActivationFeedbackProfileConfig } = {}
 ): ActivationFeedbackProfileConfig {
+  if (!isActivationFeedbackProfileMode(profile)) {
+    throw new Error(`Unsupported activation feedback profile "${String(profile)}".`);
+  }
+
   const configured =
     options.profile ?? options.config?.profiles?.[resolveActivationFeedbackProfileKey(profile)];
 

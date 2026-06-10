@@ -7,7 +7,11 @@ import type {
   ComponentName,
   ComponentStyleKeyMap
 } from '@kiskadee/core';
-import { componentEmphasisBuckets } from '@kiskadee/core';
+import {
+  componentEmphasisBuckets,
+  isActivationFeedbackProfileKey,
+  resolveActivationFeedbackProfileBucket
+} from '@kiskadee/core';
 import {
   buildScopedToneMetadataKey,
   type ToneMetadataByPalette
@@ -94,19 +98,20 @@ function activationFeedbackBucketForKey(key: string): string {
   const separatorIndex = key.indexOf('__');
   const rawValue = separatorIndex === -1 ? '' : key.slice(separatorIndex + 2);
 
-  if (rawValue.startsWith('{')) {
-    try {
-      const parsed = JSON.parse(rawValue) as { profile?: string };
-      if (parsed.profile === 'ripple') return 'afs';
-      if (parsed.profile === 'ripple-overflow') return 'afo';
-      if (parsed.profile === 'halo') return 'afx';
-      if (parsed.profile === 'pressed') return 'afp';
-    } catch {
-      // fall through to default
-    }
+  if (!rawValue.startsWith('{')) {
+    throw new Error(`Unable to resolve activation feedback bucket for style key "${key}".`);
   }
 
-  return 'af';
+  try {
+    const parsed = JSON.parse(rawValue) as { profile?: unknown };
+    if (isActivationFeedbackProfileKey(parsed.profile)) {
+      return resolveActivationFeedbackProfileBucket(parsed.profile);
+    }
+  } catch {
+    throw new Error(`Unable to parse activation feedback profile style key "${key}".`);
+  }
+
+  throw new Error(`Unable to resolve activation feedback bucket for style key "${key}".`);
 }
 
 /**

@@ -4,9 +4,8 @@ import type {
   ActivationFeedbackProfileMode
 } from '@kiskadee/core';
 import {
-  resolveActivationFeedbackProfile,
   resolveActivationFeedbackSetting,
-  resolvePressedActivationFeedbackProfile
+  usesActivationFeedbackRadialRuntime
 } from '@kiskadee/core';
 import {
   type FocusEvent,
@@ -21,7 +20,8 @@ import {
 } from '../../../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
 import {
   type ActivationFeedbackRadialRuntimeConfig,
-  resolveActivationFeedbackRadialRuntimeConfig,
+  resolveActivationFeedbackProfileRadialRuntimeConfig,
+  resolvePressedActivationFeedbackRadialRuntimeConfig,
   useActivationFeedbackRadialStateMachine
 } from '../../../../hooks/effects/activation-feedback/useActivationFeedbackRadialStateMachine.ts';
 import {
@@ -121,12 +121,16 @@ export function useButtonActivationFeedbackController(
     () => resolveActivationFeedbackProfileAvailability(e1),
     [e1?.e?.afs, e1?.e?.afo, e1?.e?.afx]
   );
+  const availableRadialActivationFeedbackProfiles = useMemo(
+    () => availableActivationFeedbackProfiles.filter(usesActivationFeedbackRadialRuntime),
+    [availableActivationFeedbackProfiles]
+  );
 
   const activationFeedbackProfile = useMemo(
     () =>
       resolveModernActivationFeedbackProfile({
         activationFeedback,
-        availableProfiles: availableActivationFeedbackProfiles,
+        availableProfiles: availableRadialActivationFeedbackProfiles,
         feedbackEnabled,
         globalProfile: activationFeedbackConfig?.profile,
         localProfile: localActivationFeedback?.profile
@@ -134,7 +138,7 @@ export function useButtonActivationFeedbackController(
     [
       activationFeedback,
       activationFeedbackConfig?.profile,
-      availableActivationFeedbackProfiles,
+      availableRadialActivationFeedbackProfiles,
       feedbackEnabled,
       localActivationFeedback?.profile
     ]
@@ -153,25 +157,17 @@ export function useButtonActivationFeedbackController(
     useMemo<ActivationFeedbackRadialRuntimeConfig | null>(() => {
       if (!activationFeedbackProfile) return null;
 
-      const profileConfig = resolveActivationFeedbackProfile(activationFeedbackProfile, {
-        config: activationFeedbackConfig
-      });
-      const isOverflowProfile =
-        activationFeedbackProfile === 'ripple-overflow' || activationFeedbackProfile === 'halo';
-      return resolveActivationFeedbackRadialRuntimeConfig(profileConfig, {
+      return resolveActivationFeedbackProfileRadialRuntimeConfig({
+        config: activationFeedbackConfig,
         fallbackDurationMs: 468,
-        isOverflowProfile
+        profile: activationFeedbackProfile
       });
     }, [activationFeedbackConfig, activationFeedbackProfile]);
 
   const pressedActivationFeedbackRuntimeConfig = useMemo<ActivationFeedbackRadialRuntimeConfig>(
     () => {
-      const profileConfig = resolvePressedActivationFeedbackProfile({
+      return resolvePressedActivationFeedbackRadialRuntimeConfig({
         config: activationFeedbackConfig
-      });
-      return resolveActivationFeedbackRadialRuntimeConfig(profileConfig, {
-        fallbackDurationMs: 0,
-        isOverflowProfile: false
       });
     },
     [activationFeedbackConfig]

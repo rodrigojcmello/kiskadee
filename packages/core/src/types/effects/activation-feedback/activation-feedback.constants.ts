@@ -1,6 +1,8 @@
 import type {
   ActivationFeedbackMotionDurationToken,
+  ActivationFeedbackProfileDefinition,
   ActivationFeedbackProfileConfig,
+  ActivationFeedbackProfileKey,
   ActivationFeedbackProfileMode
 } from './activation-feedback.types.ts';
 
@@ -51,6 +53,35 @@ export const DEFAULT_ACTIVATION_FEEDBACK_PROFILES: Readonly<
       durationToken: 'interaction.fade.long',
       curveToken: 'motion.standard.out'
     }
+  }
+};
+
+export const ACTIVATION_FEEDBACK_PROFILE_DEFINITIONS: Readonly<
+  Record<ActivationFeedbackProfileKey, ActivationFeedbackProfileDefinition>
+> = {
+  ripple: {
+    bucket: 'afs',
+    overflow: 'clipped',
+    runtime: 'radial',
+    shape: 'radial'
+  },
+  'ripple-overflow': {
+    bucket: 'afo',
+    overflow: 'visible',
+    runtime: 'radial',
+    shape: 'radial'
+  },
+  halo: {
+    bucket: 'afx',
+    overflow: 'visible',
+    runtime: 'static',
+    shape: 'halo'
+  },
+  pressed: {
+    bucket: 'afp',
+    overflow: 'clipped',
+    runtime: 'radial',
+    shape: 'radial'
   }
 };
 

@@ -1,6 +1,7 @@
 import type {
   ActivationFeedbackEffectSchema,
-  ActivationFeedbackOrigin
+  ActivationFeedbackOrigin,
+  ActivationFeedbackProfileMode
 } from '@kiskadee/core';
 import {
   resolveActivationFeedbackDurationMs,
@@ -13,6 +14,7 @@ import type {
   RefObject
 } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { tryReleasePointerCapture, trySetPointerCapture } from './pointerCapture.ts';
 
 type UseActivationFeedbackOverflowStaticArgs<
   TPointerElement extends HTMLElement,
@@ -30,28 +32,9 @@ type UseActivationFeedbackOverflowStaticArgs<
   onPointerDown?: (event: PointerEvent<TPointerElement>) => void;
   onPointerUp?: (event: PointerEvent<TPointerElement>) => void;
   origin?: ActivationFeedbackOrigin;
+  profile?: ActivationFeedbackProfileMode;
   readOnly?: boolean;
   shouldStartPointerFeedback?: (event: PointerEvent<TPointerElement>) => boolean;
-};
-
-const trySetPointerCapture = (target: HTMLElement, pointerId: number) => {
-  if (typeof target.setPointerCapture !== 'function') return;
-  try {
-    target.setPointerCapture(pointerId);
-  } catch {
-    // Ignore capture errors from non-active pointer ids.
-  }
-};
-
-const tryReleasePointerCapture = (target: HTMLElement, pointerId: number) => {
-  if (typeof target.releasePointerCapture !== 'function') return;
-  try {
-    if (typeof target.hasPointerCapture === 'function' && target.hasPointerCapture(pointerId)) {
-      target.releasePointerCapture(pointerId);
-    }
-  } catch {
-    // Ignore release errors from stale pointer ids.
-  }
 };
 
 export function useActivationFeedbackOverflowStatic<
@@ -70,6 +53,7 @@ export function useActivationFeedbackOverflowStatic<
   onPointerDown,
   onPointerUp,
   origin = 'pointer',
+  profile = 'halo',
   readOnly,
   shouldStartPointerFeedback
 }: UseActivationFeedbackOverflowStaticArgs<TPointerElement, THostElement>) {
@@ -84,13 +68,13 @@ export function useActivationFeedbackOverflowStatic<
   const isForcedActive = enabled && forcedActive === true && !disabled;
 
   const runtimeConfig = useMemo(() => {
-    const profileConfig = resolveActivationFeedbackProfile('halo', { config });
+    const profileConfig = resolveActivationFeedbackProfile(profile, { config });
     return {
       durationMs: resolveActivationFeedbackDurationMs(profileConfig.durationToken, 0),
       fadeDelayMs: resolveActivationFeedbackDurationMs(profileConfig.fade?.delayToken, 50),
       fadeDurationMs: resolveActivationFeedbackDurationMs(profileConfig.fade?.durationToken, 100)
     };
-  }, [config]);
+  }, [config, profile]);
 
   const clearTimers = useCallback(() => {
     if (feedbackTimeoutRef.current !== null) {

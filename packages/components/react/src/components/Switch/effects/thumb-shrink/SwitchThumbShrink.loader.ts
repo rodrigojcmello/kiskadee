@@ -1,39 +1,18 @@
-import { useEffect, useState } from 'react';
+import {
+  createLazyModuleCache,
+  useLazyModule
+} from '../../../../shared/utils/lazyModule.ts';
 
 export type SwitchThumbShrinkEffectModule = typeof import('./SwitchThumbShrink.effect.ts');
 
-let switchThumbShrinkEffectModule: SwitchThumbShrinkEffectModule | null = null;
-let switchThumbShrinkEffectPromise: Promise<SwitchThumbShrinkEffectModule> | null = null;
+const switchThumbShrinkEffectCache = createLazyModuleCache<SwitchThumbShrinkEffectModule>(
+  () => import('./SwitchThumbShrink.effect.ts')
+);
 
 export function loadSwitchThumbShrinkEffect(): Promise<SwitchThumbShrinkEffectModule> {
-  if (switchThumbShrinkEffectModule) return Promise.resolve(switchThumbShrinkEffectModule);
-
-  switchThumbShrinkEffectPromise ??= import('./SwitchThumbShrink.effect.ts').then((module) => {
-    switchThumbShrinkEffectModule = module;
-    return module;
-  });
-
-  return switchThumbShrinkEffectPromise;
+  return switchThumbShrinkEffectCache.load();
 }
 
 export function useSwitchThumbShrinkEffect(enabled: boolean): SwitchThumbShrinkEffectModule | null {
-  const [module, setModule] = useState<SwitchThumbShrinkEffectModule | null>(
-    switchThumbShrinkEffectModule
-  );
-
-  useEffect(() => {
-    if (!enabled || module) return;
-
-    let isCurrent = true;
-
-    loadSwitchThumbShrinkEffect().then((loadedModule) => {
-      if (isCurrent) setModule(loadedModule);
-    });
-
-    return () => {
-      isCurrent = false;
-    };
-  }, [enabled, module]);
-
-  return enabled ? module : null;
+  return useLazyModule(switchThumbShrinkEffectCache, enabled);
 }

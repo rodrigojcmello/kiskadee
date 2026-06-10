@@ -1,9 +1,15 @@
 import type {
+  ActivationFeedbackEffectSchema,
   ActivationFeedbackOrigin,
   ActivationFeedbackProfile,
   ActivationFeedbackProfileConfig
 } from '@kiskadee/core';
-import { resolveActivationFeedbackDurationMs } from '@kiskadee/core';
+import {
+  resolveActivationFeedbackDurationMs,
+  resolveActivationFeedbackProfile,
+  resolvePressedActivationFeedbackProfile,
+  usesActivationFeedbackOverflowGeometry
+} from '@kiskadee/core';
 import {
   type FocusEvent,
   type KeyboardEvent,
@@ -16,6 +22,7 @@ import {
   useRef,
   useState
 } from 'react';
+import { tryReleasePointerCapture, trySetPointerCapture } from './pointerCapture.ts';
 
 type ActivationFeedbackRadialProfile = Extract<
   ActivationFeedbackProfile,
@@ -82,6 +89,40 @@ export function resolveActivationFeedbackRadialRuntimeConfig(
   };
 }
 
+export function resolveActivationFeedbackProfileRadialRuntimeConfig({
+  config,
+  fallbackDurationMs,
+  profile
+}: {
+  config?: ActivationFeedbackEffectSchema;
+  fallbackDurationMs: number;
+  profile: ActivationFeedbackProfile;
+}): ActivationFeedbackRadialRuntimeConfig {
+  return resolveActivationFeedbackRadialRuntimeConfig(
+    resolveActivationFeedbackProfile(profile, { config }),
+    {
+      fallbackDurationMs,
+      isOverflowProfile: usesActivationFeedbackOverflowGeometry(profile)
+    }
+  );
+}
+
+export function resolvePressedActivationFeedbackRadialRuntimeConfig({
+  config,
+  fallbackDurationMs = 0
+}: {
+  config?: ActivationFeedbackEffectSchema;
+  fallbackDurationMs?: number;
+}): ActivationFeedbackRadialRuntimeConfig {
+  return resolveActivationFeedbackRadialRuntimeConfig(
+    resolvePressedActivationFeedbackProfile({ config }),
+    {
+      fallbackDurationMs,
+      isOverflowProfile: usesActivationFeedbackOverflowGeometry('pressed')
+    }
+  );
+}
+
 type ActivationFeedbackRadialExternalHandlers<
   TPointerElement extends HTMLElement,
   TKeyboardElement extends HTMLElement
@@ -125,26 +166,6 @@ const MIN_POINTER_CLICK_HOLD_MS = 120;
 // mandatory and centralized via clearAllTimers + clearFeedbackInlineVars.
 const isTouchLikePointer = (pointerType: string): boolean =>
   pointerType === 'touch' || pointerType === 'pen';
-
-const trySetPointerCapture = (target: HTMLElement, pointerId: number) => {
-  if (typeof target.setPointerCapture !== 'function') return;
-  try {
-    target.setPointerCapture(pointerId);
-  } catch {
-    // Ignore capture errors from non-active pointer ids.
-  }
-};
-
-const tryReleasePointerCapture = (target: HTMLElement, pointerId: number) => {
-  if (typeof target.releasePointerCapture !== 'function') return;
-  try {
-    if (typeof target.hasPointerCapture === 'function' && target.hasPointerCapture(pointerId)) {
-      target.releasePointerCapture(pointerId);
-    }
-  } catch {
-    // Ignore release errors from stale pointer ids.
-  }
-};
 
 export function useActivationFeedbackRadialStateMachine<
   TPointerElement extends HTMLElement = HTMLElement,

@@ -6,7 +6,9 @@ import {
   type ActivationFeedbackProfileConfig,
   type ActivationFeedbackTone,
   type ActivationFeedbackVisual,
+  isActivationFeedbackProfileKey,
   resolveActivationFeedbackDurationMs,
+  resolveActivationFeedbackProfileDefinition,
   resolveActivationFeedbackProfile,
   resolvePressedActivationFeedbackProfile
 } from '@kiskadee/core';
@@ -67,12 +69,16 @@ function toCssDuration(token: string | undefined, fallbackMs: number): string {
   )}ms`;
 }
 
-function resolveProfileConfig(value: ActivationFeedbackProfileValue): {
+function resolveProfileConfig(value: ActivationFeedbackProfileValue, styleKey: string): {
   profile: ActivationFeedbackProfileKey;
   profileConfig: ActivationFeedbackProfileConfig;
   visual?: ActivationFeedbackVisual;
 } {
   const profile = value.profile ?? 'ripple';
+  if (!isActivationFeedbackProfileKey(profile)) {
+    throw new Error(UNSUPPORTED_VALUE('activationFeedback', String(profile), styleKey));
+  }
+
   if (profile === 'pressed') {
     return {
       profile,
@@ -102,13 +108,15 @@ function toneOpacityVar(tone: ActivationFeedbackTone): string {
 
 function transformActivationFeedbackProfileToCss(
   value: ActivationFeedbackProfileValue,
+  styleKey: string,
   className: string
 ): string {
-  const { profile, profileConfig, visual } = resolveProfileConfig(value);
-  const isOverflowProfile = profile === 'ripple-overflow' || profile === 'halo';
+  const { profile, profileConfig, visual } = resolveProfileConfig(value, styleKey);
+  const profileDefinition = resolveActivationFeedbackProfileDefinition(profile);
+  const isOverflowProfile = profileDefinition.overflow === 'visible';
   const overflow = isOverflowProfile ? 'visible' : 'hidden';
   const clip = isOverflowProfile ? 'none' : 'inset(0 round var(--k-bdr, 0px))';
-  const isHaloProfile = profile === 'halo';
+  const isHaloProfile = profileDefinition.shape === 'halo';
   const isOutline = visual?.paint === 'outline';
   const size =
     profileConfig.size === 'auto'
@@ -144,7 +152,7 @@ function transformActivationFeedbackProfileToCss(
 export function transformActivationFeedbackKeyToCss(styleKey: string, className: string): string {
   const parsed = parseActivationFeedbackValue(styleKey);
   if (parsed.propertyName === 'activationFeedbackProfile') {
-    return transformActivationFeedbackProfileToCss(parsed.value, className);
+    return transformActivationFeedbackProfileToCss(parsed.value, styleKey, className);
   }
 
   const tone = parsed.value.visual?.tone?.default ?? 'subtle';

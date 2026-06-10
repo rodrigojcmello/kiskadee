@@ -7,6 +7,7 @@ export * from './schema.ts';
 export * from './types/colors/colors.types.ts';
 export * from './types/decorations/decorations.types.ts';
 export {
+  ACTIVATION_FEEDBACK_PROFILE_DEFINITIONS,
   ACTIVATION_FEEDBACK_DURATION_TOKEN_TO_MS,
   DEFAULT_ACTIVATION_FEEDBACK_PROFILES,
   DEFAULT_PRESSED_ACTIVATION_FEEDBACK_PROFILE
@@ -17,9 +18,14 @@ export type {
   ActivationFeedbackMotionDurationToken,
   ActivationFeedbackOrigin,
   ActivationFeedbackProfile,
+  ActivationFeedbackProfileBucket,
   ActivationFeedbackProfileConfig,
+  ActivationFeedbackProfileDefinition,
+  ActivationFeedbackProfileOverflow,
   ActivationFeedbackProfileKey,
   ActivationFeedbackProfileMode,
+  ActivationFeedbackProfileRuntime,
+  ActivationFeedbackProfileShape,
   ActivationFeedbackSetting,
   ActivationFeedbackTone,
   ActivationFeedbackToneMap,
@@ -28,13 +34,20 @@ export type {
   ActivationFeedbackVisual
 } from './types/effects/activation-feedback/activation-feedback.types.ts';
 export {
+  isActivationFeedbackProfileKey,
+  isActivationFeedbackProfileMode,
   mergeActivationFeedbackConfig,
   normalizeActivationFeedbackSetting,
   resolveActivationFeedbackDurationMs,
   resolveActivationFeedbackProfile,
+  resolveActivationFeedbackProfileBucket,
+  resolveActivationFeedbackProfileDefinition,
   resolveActivationFeedbackProfileKey,
   resolveActivationFeedbackSetting,
-  resolvePressedActivationFeedbackProfile
+  resolvePressedActivationFeedbackProfile,
+  usesActivationFeedbackOverflowGeometry,
+  usesActivationFeedbackRadialRuntime,
+  usesActivationFeedbackStaticRuntime
 } from './types/effects/activation-feedback/activation-feedback.utils.ts';
 export type {
   BorderRadiusEffectMode,

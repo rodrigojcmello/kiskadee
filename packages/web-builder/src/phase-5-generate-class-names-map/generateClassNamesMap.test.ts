@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest';
 import type { ToneMetadataByPalette } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys.ts';
 import { convertElementSchemaToStyleKeys } from '../phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
+import { buildStyleKey } from '../utils/index.ts';
 import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
 import { generateClassNamesMapSplit } from './generateClassNamesMap.ts';
 
@@ -181,5 +182,85 @@ describe('generateClassNamesMapSplit', () => {
         'lg:1': 'borderRadiusRounded--hover++s:lg:1__12'
       }
     });
+  });
+
+  it('groups activation feedback profile effects by profile capability buckets', () => {
+    const baseKey = buildStyleKey({
+      propertyName: 'activationFeedback',
+      value: {}
+    });
+    const rippleKey = buildStyleKey({
+      propertyName: 'activationFeedbackProfile',
+      value: { profile: 'ripple' }
+    });
+    const overflowKey = buildStyleKey({
+      propertyName: 'activationFeedbackProfile',
+      value: { profile: 'ripple-overflow' }
+    });
+    const haloKey = buildStyleKey({
+      propertyName: 'activationFeedbackProfile',
+      value: { profile: 'halo' }
+    });
+    const pressedKey = buildStyleKey({
+      propertyName: 'activationFeedbackProfile',
+      value: { profile: 'pressed' }
+    });
+    const styleKeys = {
+      button: {
+        e1: {
+          effects: {
+            rest: [baseKey, rippleKey, overflowKey, haloKey, pressedKey]
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+
+    const out = generateClassNamesMapSplit(
+      styleKeys,
+      {
+        [baseKey]: 'af-base',
+        [rippleKey]: 'af-ripple',
+        [overflowKey]: 'af-overflow',
+        [haloKey]: 'af-halo',
+        [pressedKey]: 'af-pressed'
+      },
+      new Map() as ToneMetadataByPalette
+    );
+
+    const button = out.core.button as Record<string, ClassNameByElementJSON>;
+
+    expect(button.e1.e).toEqual({
+      af: 'af-base',
+      afs: 'af-ripple',
+      afo: 'af-overflow',
+      afx: 'af-halo',
+      afp: 'af-pressed'
+    });
+  });
+
+  it('throws when activation feedback profile effects use an unknown profile', () => {
+    const invalidKey = buildStyleKey({
+      propertyName: 'activationFeedbackProfile',
+      value: { profile: 'hallo' }
+    });
+    const styleKeys = {
+      button: {
+        e1: {
+          effects: {
+            rest: [invalidKey]
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+
+    expect(() =>
+      generateClassNamesMapSplit(
+        styleKeys,
+        {
+          [invalidKey]: 'af-invalid'
+        },
+        new Map() as ToneMetadataByPalette
+      )
+    ).toThrowError(`Unable to resolve activation feedback bucket for style key "${invalidKey}".`);
   });
 });

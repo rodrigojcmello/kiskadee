@@ -4,8 +4,8 @@ import type {
   ActivationFeedbackProfileMode
 } from '@kiskadee/core';
 import {
-  resolveActivationFeedbackProfile,
-  resolvePressedActivationFeedbackProfile
+  resolveActivationFeedbackProfileDefinition,
+  usesActivationFeedbackStaticRuntime
 } from '@kiskadee/core';
 import {
   type FocusEvent,
@@ -18,7 +18,8 @@ import {
 import { useActivationFeedbackOverflowStatic } from '../../../../hooks/effects/activation-feedback/useActivationFeedbackOverflowStatic.ts';
 import {
   type ActivationFeedbackRadialRuntimeConfig,
-  resolveActivationFeedbackRadialRuntimeConfig,
+  resolveActivationFeedbackProfileRadialRuntimeConfig,
+  resolvePressedActivationFeedbackRadialRuntimeConfig,
   useActivationFeedbackRadialStateMachine
 } from '../../../../hooks/effects/activation-feedback/useActivationFeedbackRadialStateMachine.ts';
 
@@ -93,6 +94,8 @@ export function useSwitchActivationFeedbackController({
   );
 
   const origin: ActivationFeedbackOrigin = config?.origin ?? 'center';
+  const profileDefinition = resolveActivationFeedbackProfileDefinition(profile);
+  const usesStaticRuntime = usesActivationFeedbackStaticRuntime(profile);
   const activationFeedbackMachine = useActivationFeedbackOverflowStatic<
     HTMLLabelElement,
     HTMLSpanElement
@@ -100,11 +103,12 @@ export function useSwitchActivationFeedbackController({
     capturePointer: false,
     config,
     disabled,
-    enabled: enabled && profile === 'halo',
-    forcedActive: profile === 'halo' ? forcedActive : false,
+    enabled: enabled && usesStaticRuntime,
+    forcedActive: usesStaticRuntime ? forcedActive : false,
     hostRef: thumbRef,
     minPointerHoldMs: SWITCH_ACTIVATION_FEEDBACK_MIN_POINTER_HOLD_MS,
     origin,
+    profile,
     readOnly,
     onPointerDown,
     onPointerUp,
@@ -114,21 +118,17 @@ export function useSwitchActivationFeedbackController({
   });
 
   const radialRuntimeConfig = useMemo<ActivationFeedbackRadialRuntimeConfig | null>(() => {
-    if (profile === 'halo') return null;
+    if (profileDefinition.runtime !== 'radial') return null;
 
-    const profileConfig = resolveActivationFeedbackProfile(profile, { config });
-    return resolveActivationFeedbackRadialRuntimeConfig(profileConfig, {
+    return resolveActivationFeedbackProfileRadialRuntimeConfig({
+      config,
       fallbackDurationMs: 468,
-      isOverflowProfile: profile === 'ripple-overflow'
+      profile
     });
-  }, [config, profile]);
+  }, [config, profile, profileDefinition.runtime]);
 
   const pressedRuntimeConfig = useMemo<ActivationFeedbackRadialRuntimeConfig>(() => {
-    const profileConfig = resolvePressedActivationFeedbackProfile({ config });
-    return resolveActivationFeedbackRadialRuntimeConfig(profileConfig, {
-      fallbackDurationMs: 0,
-      isOverflowProfile: false
-    });
+    return resolvePressedActivationFeedbackRadialRuntimeConfig({ config });
   }, [config]);
 
   const radialActivationFeedbackMachine = useActivationFeedbackRadialStateMachine<
@@ -136,7 +136,7 @@ export function useSwitchActivationFeedbackController({
     HTMLSpanElement
   >({
     capturePointer: false,
-    effectProfile: enabled && profile !== 'halo' ? profile : null,
+    effectProfile: enabled && profileDefinition.runtime === 'radial' ? profile : null,
     hostRef: thumbRef,
     isDisabled: disabled || readOnly,
     localActivationFeedbackOrigin: undefined,
@@ -160,7 +160,7 @@ export function useSwitchActivationFeedbackController({
       if (event.defaultPrevented) return;
       if (!isEventInsideTrack(event)) return;
 
-      if (profile === 'halo') {
+      if (usesStaticRuntime) {
         activationFeedbackMachine.trigger(event, SWITCH_ACTIVATION_FEEDBACK_MIN_POINTER_HOLD_MS);
         return;
       }
@@ -171,13 +171,13 @@ export function useSwitchActivationFeedbackController({
       activationFeedbackMachine.trigger,
       isEventInsideTrack,
       onClickCapture,
-      profile,
-      radialActivationFeedbackMachine.handleClick
+      radialActivationFeedbackMachine.handleClick,
+      usesStaticRuntime
     ]
   );
 
   const activeMachine =
-    profile === 'halo' ? activationFeedbackMachine : radialActivationFeedbackMachine;
+    usesStaticRuntime ? activationFeedbackMachine : radialActivationFeedbackMachine;
 
   return {
     cancel: activeMachine.cancel,
@@ -185,10 +185,16 @@ export function useSwitchActivationFeedbackController({
     isFading: enabled && activeMachine.isFading,
     rootHandlers: {
       onClickCapture: enabled ? handleClickCapture : onClickCapture,
-      onPointerDown: enabled && profile !== 'halo' ? radialActivationFeedbackMachine.handlePointerDown : onPointerDown,
-      onPointerUp: enabled && profile !== 'halo' ? radialActivationFeedbackMachine.handlePointerUp : onPointerUp,
+      onPointerDown:
+        enabled && profileDefinition.runtime === 'radial'
+          ? radialActivationFeedbackMachine.handlePointerDown
+          : onPointerDown,
+      onPointerUp:
+        enabled && profileDefinition.runtime === 'radial'
+          ? radialActivationFeedbackMachine.handlePointerUp
+          : onPointerUp,
       onPointerCancel:
-        enabled && profile !== 'halo'
+        enabled && profileDefinition.runtime === 'radial'
           ? radialActivationFeedbackMachine.handlePointerCancel
           : onPointerCancel,
       onBlur: enabled ? activeMachine.handleBlur : onBlur
