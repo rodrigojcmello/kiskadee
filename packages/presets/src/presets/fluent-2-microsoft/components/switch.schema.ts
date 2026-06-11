@@ -49,7 +49,7 @@ export function createFluent2MicrosoftSwitchSchema({
         origin: 'center',
         visual: {
           layer: 'underlay',
-          paint: 'halo',
+          paint: 'outline',
           tone: {
             default: 'subtle',
             byEmphasis: {

@@ -27,7 +27,7 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
         origin: 'center',
         visual: {
           layer: 'underlay',
-          paint: 'halo',
+          paint: 'outline',
           tone: {
             default: 'subtle',
             byEmphasis: {

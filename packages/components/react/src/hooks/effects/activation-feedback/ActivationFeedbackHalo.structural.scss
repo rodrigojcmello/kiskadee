@@ -23,7 +23,7 @@
 /*
  * effect layer / afx::after
  * Draws the static feedback behind the host from generated and runtime variables.
- * `paint: halo` remains circular; `paint: outline` follows the measured host box.
+ * `paint: field` remains circular; `paint: outline` follows the measured host box.
  */
 .k-afx::after {
   content: '';

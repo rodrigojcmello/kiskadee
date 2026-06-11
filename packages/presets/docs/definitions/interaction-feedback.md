@@ -42,7 +42,7 @@ global: {
       origin: 'pointer',
       visual: {
         layer: 'overlay',
-        paint: 'halo',
+        paint: 'field',
         tone: { default: 'subtle' }
       },
       profiles: {
@@ -67,7 +67,7 @@ components: {
         origin: 'center',
         visual: {
           layer: 'underlay',
-          paint: 'halo',
+          paint: 'outline',
           tone: {
             default: 'subtle',
             byEmphasis: { low: 'vivid' }
@@ -149,7 +149,7 @@ geometry, while `halo` uses static host geometry.
 
 For `visual.paint`, `size` has paint-specific meaning:
 
-- `paint: 'halo'`: `size` is the halo expansion/area.
+- `paint: 'field'`: `size` is the filled field expansion/area.
 - `paint: 'outline'`: `size` is the outline stroke width.
 
 ## Switch Activation Feedback
@@ -159,6 +159,10 @@ because the feedback is anchored on the thumb and may escape the track clipping
 area. This is a preset default, not a runtime limitation. If a preset chooses
 `ripple` or `ripple-overflow`, React Switch should consume that resolved profile
 instead of hardcoding `halo`.
+
+Switch halo recipes should use `visual.paint: 'outline'` when the feedback
+shape must track the thumb radius. `visual.paint: 'field'` is a filled circular
+field recipe and is normally reserved for components such as Button.
 
 Switch presets map `visual.tone.byEmphasis.low` to `vivid` because their low
 recipes are intended for strong local surfaces. This is a Switch preset
@@ -190,7 +194,7 @@ declared by the shared profile capability. Radial profiles use pointer geometry;
 static profiles such as `halo` use a fixed overflow layer without the ripple
 size wave. Button halo uses `profile.size` as its fixed circular diameter and
 should normally keep `origin: 'pointer'`, matching `ripple-overflow` without the
-animated size expansion. Button halo should use `paint: 'halo'`, not
+animated size expansion. Button halo should use `paint: 'field'`, not
 `paint: 'outline'`; outline feedback is reserved for component recipes that
 explicitly need a border-like affordance.
 Unlike Switch, Button does not need a `byEmphasis` tone mapping by default; if a

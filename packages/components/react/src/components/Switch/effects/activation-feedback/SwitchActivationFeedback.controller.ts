@@ -28,6 +28,7 @@ type SwitchActivationFeedbackControllerOptions = {
   disabled?: boolean;
   enabled: boolean;
   forcedActive?: boolean;
+  geometryKey?: string;
   onBlur?: (event: FocusEvent<HTMLLabelElement>) => void;
   onClickCapture?: (event: MouseEvent<HTMLLabelElement>) => void;
   onPointerCancel?: (event: PointerEvent<HTMLLabelElement>) => void;
@@ -59,6 +60,7 @@ export function useSwitchActivationFeedbackController({
   disabled,
   enabled,
   forcedActive,
+  geometryKey,
   onBlur,
   onClickCapture,
   onPointerCancel,
@@ -105,6 +107,7 @@ export function useSwitchActivationFeedbackController({
     disabled,
     enabled: enabled && usesStaticRuntime,
     forcedActive: usesStaticRuntime ? forcedActive : false,
+    geometryKey,
     hostRef: thumbRef,
     minPointerHoldMs: SWITCH_ACTIVATION_FEEDBACK_MIN_POINTER_HOLD_MS,
     origin,

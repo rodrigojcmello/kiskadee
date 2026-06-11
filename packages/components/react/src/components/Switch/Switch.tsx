@@ -191,6 +191,9 @@ function SwitchRoot(props: SwitchProps) {
   ]);
 
   const resolvedThumbVisualClassName = thumbVisualClassName;
+  const switchGeometryKey = `${resolvedRadius}|${structuralClassNames.e2}|${structuralClassNames.e3}|${
+    resolvedThumbVisualClassName ?? ''
+  }`;
   const motionController = useSwitchRuntimeMotionController({
     enabled: Boolean(motionEffect),
     controlState: controlStateProp,
@@ -199,13 +202,14 @@ function SwitchRoot(props: SwitchProps) {
     readOnly,
     onControlStateChange,
     onClickCapture,
-    geometryKey: `${structuralClassNames.e2}|${structuralClassNames.e3}|${resolvedThumbVisualClassName ?? ''}`
+    geometryKey: switchGeometryKey
   });
   const activationFeedbackController = useSwitchActivationFeedbackController({
     enabled: Boolean(activationFeedbackEffect),
     config: activationFeedbackConfig,
     disabled,
     forcedActive: activationFeedback === 'active',
+    geometryKey: switchGeometryKey,
     readOnly,
     onClickCapture: motionController.handleClickCapture,
     onPointerDown,

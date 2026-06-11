@@ -26,6 +26,7 @@ type UseActivationFeedbackHaloArgs<
   enabled: boolean;
   forcedActive?: boolean;
   geometry?: 'host' | 'profile-size';
+  geometryKey?: string | number;
   hostRef?: RefObject<THostElement | null>;
   minPointerHoldMs?: number;
   onBlur?: (event: FocusEvent<TPointerElement>) => void;
@@ -48,6 +49,7 @@ export function useActivationFeedbackHalo<
   enabled,
   forcedActive,
   geometry = 'host',
+  geometryKey,
   hostRef,
   minPointerHoldMs = 0,
   onBlur,
@@ -322,25 +324,44 @@ export function useActivationFeedbackHalo<
       setIsFading(false);
       setIsActive(true);
     };
+    const scheduleForcedFeedback = () => {
+      if (animationFrame !== null) return;
+
+      animationFrame = window.requestAnimationFrame(() => {
+        animationFrame = null;
+        applyForcedFeedback();
+      });
+    };
 
     applyForcedFeedback();
+    scheduleForcedFeedback();
 
     const resizeObserver =
       host && typeof ResizeObserver !== 'undefined'
         ? new ResizeObserver(() => {
-            if (animationFrame !== null) return;
-            animationFrame = window.requestAnimationFrame(() => {
-              animationFrame = null;
-              applyForcedFeedback();
-            });
+            scheduleForcedFeedback();
           })
         : null;
+    const handleHostTransitionEnd = (event: TransitionEvent) => {
+      if (event.target !== host) return;
+      if (
+        !event.propertyName.includes('radius') &&
+        event.propertyName !== 'width' &&
+        event.propertyName !== 'height'
+      ) {
+        return;
+      }
+
+      applyForcedFeedback();
+    };
 
     if (resizeObserver && host) {
       resizeObserver.observe(host);
     }
+    host?.addEventListener('transitionend', handleHostTransitionEnd);
 
     return () => {
+      host?.removeEventListener('transitionend', handleHostTransitionEnd);
       resizeObserver?.disconnect();
       if (animationFrame !== null) {
         window.cancelAnimationFrame(animationFrame);
@@ -356,6 +377,7 @@ export function useActivationFeedbackHalo<
     clearOriginVars,
     clearTimers,
     clearUncapturedPointerListeners,
+    geometryKey,
     hostRef,
     isForcedActive,
     resetInFlight

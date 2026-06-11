@@ -34,7 +34,7 @@ export const schema: Schema<Segment> = {
         origin: 'pointer',
         visual: {
           layer: 'overlay',
-          paint: 'halo',
+          paint: 'field',
           tone: {
             default: 'subtle'
           }

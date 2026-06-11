@@ -43,7 +43,7 @@ export type ActivationFeedbackToneMap = {
 
 export type ActivationFeedbackVisual = {
   layer?: 'overlay' | 'underlay';
-  paint?: 'halo' | 'outline';
+  paint?: 'field' | 'outline';
   tone?: ActivationFeedbackToneMap;
 };
 

@@ -23,7 +23,7 @@ export function createMaterial3GoogleButtonSchema({
         origin: 'pointer',
         visual: {
           layer: 'overlay',
-          paint: 'halo',
+          paint: 'field',
           tone: {
             default: 'subtle'
           }
