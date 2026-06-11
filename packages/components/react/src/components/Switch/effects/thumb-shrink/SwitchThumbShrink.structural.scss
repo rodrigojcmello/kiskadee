@@ -20,7 +20,7 @@
  * Static shrink keeps the reduced thumb centered in its original visual slot.
  */
 .k-swt:not(.-s) .k-swt-e3-a.k-swt-e3b-a:not(.k-swt-e3d-a) {
-  inset-inline-start: calc(var(--k-swt-thh, 0px) * 0.5);
+  inset-inline-start: calc((var(--k-swt-thh, 0px) * 0.5) - var(--k-bdw, 0px));
 }
 
 /*
