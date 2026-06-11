@@ -41,6 +41,8 @@
  * Owns the rail measurement scope and exposes generated padding as logical geometry.
  */
 .k-swt-e2-a {
+  /* Raw track radius stays inheritable for thumb-hosted structural effects. */
+  --k-swt-trr: var(--k-bdr, 0px);
   --k-swt-ri: max(
     var(--k-pdt, 0px),
     var(--k-pdr, 0px),

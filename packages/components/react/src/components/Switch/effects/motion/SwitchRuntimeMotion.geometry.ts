@@ -22,11 +22,11 @@ export function calculateSwitchRuntimeMotionGeometry(
   const trackContentHeight = trackElement.clientHeight - paddingBlockStart - paddingBlockEnd;
   const thumbWidth = thumbElement.offsetWidth;
   const thumbHeight = thumbElement.offsetHeight;
-  const alignmentBoxWidth = Math.max(thumbWidth, trackContentHeight);
-  const alignmentBoxHeight = Math.max(thumbHeight, trackContentHeight);
+  const usesThumbShrink = thumbElement.classList.contains('k-swt-e3b-a');
+  const alignmentBoxWidth = usesThumbShrink ? Math.max(thumbWidth, trackContentHeight) : thumbWidth;
   const translation = Math.max(0, trackContentWidth - alignmentBoxWidth);
   const inlineStart = paddingInlineStart + Math.max(0, (alignmentBoxWidth - thumbWidth) / 2);
-  const blockStart = paddingBlockStart + Math.max(0, (alignmentBoxHeight - thumbHeight) / 2);
+  const blockStart = paddingBlockStart + Math.max(0, (trackContentHeight - thumbHeight) / 2);
 
   return {
     translation,

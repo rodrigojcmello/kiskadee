@@ -279,6 +279,11 @@ export function resolveSwitchThumbShrinkClassNames(options: {
 
   return {
     ...base,
-    e3: join(base.e3, resolveSwitchThumbShrinkEffectClassName(elements.e3, options.scale)) ?? ''
+    e3:
+      join(
+        base.e3,
+        `k-swt-e3b-${options.structuralBranch}`,
+        resolveSwitchThumbShrinkEffectClassName(elements.e3, options.scale)
+      ) ?? ''
   };
 }
