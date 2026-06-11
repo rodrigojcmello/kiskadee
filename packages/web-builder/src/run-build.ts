@@ -1,3 +1,4 @@
+import { mkdir, rm } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateSchemaComponentContracts } from '@kiskadee/core';
@@ -61,6 +62,7 @@ const baseBuildDir = resolve(__dirname, '..', 'build');
 
 export async function runBuild(): Promise<void> {
   const presetsToBuild = await loadPresetsToBuild(__dirname);
+
   for (const t of presetsToBuild) {
     const { schema, schemaPath } = t;
 
@@ -72,6 +74,13 @@ export async function runBuild(): Promise<void> {
         `Schema component contract validation failed for "${schema.name}" (${schemaPath}).\n${message}`
       );
     }
+  }
+
+  await rm(baseBuildDir, { recursive: true, force: true });
+  await mkdir(baseBuildDir, { recursive: true });
+
+  for (const t of presetsToBuild) {
+    const { schema, schemaPath } = t;
 
     // One concise log per preset, e.g. "[web-builder] Material Design 3.0.0 by Google"
     const presetVersion = Array.isArray(schema.version) ? schema.version.join('.') : '';
