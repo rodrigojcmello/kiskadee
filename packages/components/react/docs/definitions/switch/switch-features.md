@@ -274,23 +274,30 @@ For preset authoring requirements, see
 
 Activation feedback is a schema/global effect combination:
 
-- The global effect config comes from `global.effects.activationFeedback`.
-- Switch enables the effect only when the generated `e3` class map contains an
-  activation-feedback effect class.
+- The shared effect library comes from `global.effects.activationFeedback`.
+- The Switch default recipe comes from `components.switch.effects.activationFeedback`.
+- Switch enables the effect only when the generated `e3` class map contains the
+  resolved activation-feedback profile class.
 - The effect module is lazy-loaded through `useSwitchActivationFeedbackEffect`.
-- Pointer feedback starts only for primary pointer down events that target the
+- Interactive feedback starts from a direct click/tap activation inside the
   visual track area.
-- Keyboard feedback starts from the space key on the native input.
+- Keyboard activation does not start activation feedback. Space may still toggle
+  the native switch state for accessibility, but it must not display the AF
+  layer. Keyboard feedback is represented by the focus ring and the ordinary
+  pressed state, not by touch/click activation feedback.
 - Feedback is canceled on pointer cancel, blur, unmount, and drag movement.
 - Disabled and read-only switches do not start feedback.
+- `activationFeedback="active"` is reserved for static preview surfaces that
+  need the AF layer held on continuously.
 
 Current visual behavior:
 
 - The track may allow overflow so the feedback layer can extend outside the
   rail.
 - The thumb carrier hosts the feedback state layer.
-- `thickness` currently behaves as outward expansion of a filled feedback layer,
-  not as a literal border width.
+- `paint: "halo"` uses `size` as outward halo expansion.
+- `paint: "outline"` uses `size` as the outline width and follows the measured
+  thumb box/radius.
 
 ## Geometry, Radius, And Focus
 
@@ -387,7 +394,7 @@ contracts remain intact or are explicitly migrated.
   public behaviors that future tests should cover: controlled/uncontrolled
   state, disabled/read-only blocking, motion opt-out, control text visibility,
   thumb-shrink artifact gating, activation feedback gating, and radius behavior.
-- Activation-feedback naming still carries semantic overload: `thickness` is a
-  filled state-layer expansion today, not a true border width.
+- Activation feedback now uses profile-local `size`; `paint: 'halo'` treats it
+  as halo expansion and `paint: 'outline'` treats it as outline width.
 - Future components may use this inventory format before implementation instead
   of after implementation.

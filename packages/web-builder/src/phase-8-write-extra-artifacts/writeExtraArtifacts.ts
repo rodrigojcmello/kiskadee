@@ -3,10 +3,10 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type {
   ActivationFeedbackEffectSchema,
+  ActivationFeedbackSetting,
   ActivationFeedbackThemeTokens,
   HSLA,
   RadiusMode,
-  RippleEffectSchema,
   Schema,
   SchemaFonts,
   SegmentName,
@@ -187,7 +187,28 @@ export async function writeExtraArtifacts(params: {
   const activationFeedback = schema.global?.effects?.activationFeedback as
     | ActivationFeedbackEffectSchema
     | undefined;
-  const ripple = schema.global?.effects?.ripple as RippleEffectSchema | undefined;
+  const componentEffectOverrides = {
+    ...(schema.components?.button?.effects?.activationFeedback !== undefined
+      ? {
+          button: {
+            effects: {
+              activationFeedback: schema.components.button.effects.activationFeedback
+            }
+          }
+        }
+      : {}),
+    ...(schema.components?.switch?.effects?.activationFeedback !== undefined
+      ? {
+          switch: {
+            effects: {
+              activationFeedback: schema.components.switch.effects.activationFeedback
+            }
+          }
+        }
+      : {})
+  } satisfies Partial<
+    Record<'button' | 'switch', { effects: { activationFeedback: ActivationFeedbackSetting } }>
+  >;
   const switchComponentArtifact = buildSwitchComponentArtifact(schema);
   const tabsComponentArtifact = buildTabsComponentArtifact(schema);
   const textFieldComponentArtifact = buildTextFieldComponentArtifact(schema);
@@ -206,8 +227,8 @@ export async function writeExtraArtifacts(params: {
   const hasActivationFeedback = Boolean(
     activationFeedback && Object.keys(activationFeedback).length > 0
   );
-  const hasRipple = Boolean(ripple && Object.keys(ripple).length > 0);
-  if (hasFonts || hasRadius || hasActivationFeedback || hasRipple) {
+  const hasComponentEffectOverrides = Object.keys(componentEffectOverrides).length > 0;
+  if (hasFonts || hasRadius || hasActivationFeedback || hasComponentEffectOverrides) {
     await mkdir(buildDir, { recursive: true });
     const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
 
@@ -216,8 +237,10 @@ export async function writeExtraArtifacts(params: {
       radius?: RadiusMode;
       effects?: {
         activationFeedback?: ActivationFeedbackEffectSchema;
-        ripple?: RippleEffectSchema;
       };
+      components?: Partial<
+        Record<'button' | 'switch', { effects: { activationFeedback: ActivationFeedbackSetting } }>
+      >;
     } = {};
 
     if (hasFonts && bodyCss) {
@@ -238,11 +261,8 @@ export async function writeExtraArtifacts(params: {
       };
     }
 
-    if (hasRipple && ripple) {
-      globalPayload.effects = {
-        ...(globalPayload.effects ?? {}),
-        ripple
-      };
+    if (hasComponentEffectOverrides) {
+      globalPayload.components = componentEffectOverrides;
     }
 
     await writeFile(globalFilePath, JSON.stringify(globalPayload, null, 2), 'utf8');
@@ -265,11 +285,7 @@ export async function writeExtraArtifacts(params: {
   // Global design tokens consumed directly by CSS (no runtime setProperty/removeProperty).
   const globalTokensCss = buildRootTokensCss([
     { name: '--k-focus-width', value: focus?.width },
-    { name: '--k-focus-offset', value: focus?.offset },
-    { name: '--k-ripple-alpha-h', value: ripple?.overlayAlphaByEmphasis?.high },
-    { name: '--k-ripple-alpha-m', value: ripple?.overlayAlphaByEmphasis?.medium },
-    { name: '--k-ripple-alpha-l', value: ripple?.overlayAlphaByEmphasis?.low },
-    { name: '--k-ripple-alpha-ll', value: ripple?.overlayAlphaByEmphasis?.lowest }
+    { name: '--k-focus-offset', value: focus?.offset }
   ]);
 
   if (globalTokensCss) {
@@ -303,24 +319,6 @@ export async function writeExtraArtifacts(params: {
                     background?: SolidColor;
                     effects?: {
                       activationFeedback?: ActivationFeedbackThemeTokens;
-                      ripple?: {
-                        surface?: {
-                          color?: SolidColor;
-                          opacity?: number;
-                        };
-                        overflow?: {
-                          color?: SolidColor;
-                          opacity?: number;
-                        };
-                        overflowStatic?: {
-                          color?: SolidColor;
-                          opacity?: number;
-                        };
-                        overflowStaticBorder?: {
-                          color?: SolidColor;
-                          opacity?: number;
-                        };
-                      };
                     };
                   }
                 >
@@ -333,28 +331,14 @@ export async function writeExtraArtifacts(params: {
       const color = themeTokens?.focusColor;
       const background = themeTokens?.background;
       const activationFeedback = themeTokens?.effects?.activationFeedback;
-      const ripple = themeTokens?.effects?.ripple;
+      const activationFeedbackSubtle = activationFeedback?.tone?.subtle;
+      const activationFeedbackVivid = activationFeedback?.tone?.vivid;
       const tokensCss = buildRootTokensCss([
         { name: '--k-focus-color', value: toCssColor(color) },
-        { name: '--k-af-token-color', value: toCssColor(activationFeedback?.color) },
-        { name: '--k-af-token-opacity', value: activationFeedback?.opacity },
-        { name: '--k-ripple-surface-color', value: toCssColor(ripple?.surface?.color) },
-        { name: '--k-ripple-surface-opacity', value: ripple?.surface?.opacity },
-        { name: '--k-ripple-overflow-color', value: toCssColor(ripple?.overflow?.color) },
-        { name: '--k-ripple-overflow-opacity', value: ripple?.overflow?.opacity },
-        {
-          name: '--k-ripple-overflow-static-color',
-          value: toCssColor(ripple?.overflowStatic?.color)
-        },
-        { name: '--k-ripple-overflow-static-opacity', value: ripple?.overflowStatic?.opacity },
-        {
-          name: '--k-ripple-overflow-static-border-color',
-          value: toCssColor(ripple?.overflowStaticBorder?.color)
-        },
-        {
-          name: '--k-ripple-overflow-static-border-opacity',
-          value: ripple?.overflowStaticBorder?.opacity
-        }
+        { name: '--k-af-subtle-color', value: toCssColor(activationFeedbackSubtle?.color) },
+        { name: '--k-af-subtle-opacity', value: activationFeedbackSubtle?.opacity },
+        { name: '--k-af-vivid-color', value: toCssColor(activationFeedbackVivid?.color) },
+        { name: '--k-af-vivid-opacity', value: activationFeedbackVivid?.opacity }
       ]);
 
       if (tokensCss) {

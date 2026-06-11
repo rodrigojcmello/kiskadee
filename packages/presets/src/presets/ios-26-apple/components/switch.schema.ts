@@ -30,6 +30,27 @@ export function createIos26AppleSwitchSchema({
   const iosSwitchLabelText = c('default', 'l', 'button.neutral', 100);
 
   return {
+    effects: {
+      activationFeedback: {
+        profile: 'halo',
+        origin: 'center',
+        visual: {
+          layer: 'underlay',
+          paint: 'outline',
+          tone: {
+            default: 'subtle',
+            byEmphasis: {
+              low: 'vivid'
+            }
+          }
+        },
+        profiles: {
+          halo: {
+            size: 6
+          }
+        }
+      }
+    },
     options: {
       variant: 'standard',
       radius: 'pill',
@@ -277,9 +298,6 @@ export function createIos26AppleSwitchSchema({
                     },
                     square: 0
                   }
-                },
-                effects: {
-                  activationFeedback: true
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {

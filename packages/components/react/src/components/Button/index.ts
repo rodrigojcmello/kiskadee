@@ -1,3 +1,3 @@
 export * from './Button.tsx';
-export type { ButtonArtifactConfig } from './useButtonArtifactConfig.ts';
-export { useButtonArtifactConfig } from './useButtonArtifactConfig.ts';
+export type { ButtonArtifactConfig } from './hooks/useButtonArtifactConfig.ts';
+export { useButtonArtifactConfig } from './hooks/useButtonArtifactConfig.ts';

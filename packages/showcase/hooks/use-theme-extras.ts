@@ -1,4 +1,9 @@
-import type { RadiusMode, RippleEffectSchema, ThemeMode } from '@kiskadee/core';
+import type {
+  ActivationFeedbackEffectSchema,
+  ActivationFeedbackSetting,
+  RadiusMode,
+  ThemeMode
+} from '@kiskadee/core';
 import { useEffect, useState } from 'react';
 import { extraMaps, paletteIndex } from '@/registry/design-systems.registry';
 import type { DesignSystemKey } from '@/registry/registry-utils';
@@ -7,7 +12,18 @@ import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 type BackgroundTones = Partial<Record<ThemeMode, string | undefined>>;
 
 const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
-const rippleGlobalCache: Partial<Record<string, RippleEffectSchema | null>> = {};
+
+type GlobalArtifact = {
+  radius?: RadiusMode;
+  effects?: {
+    activationFeedback?: ActivationFeedbackEffectSchema;
+  };
+  components?: Partial<
+    Record<'button' | 'switch', { effects: { activationFeedback: ActivationFeedbackSetting } }>
+  >;
+};
+
+const globalArtifactCache: Partial<Record<string, GlobalArtifact | null>> = {};
 
 export function useThemeExtras({
   designSystem,
@@ -17,8 +33,7 @@ export function useThemeExtras({
   segment: string;
 }) {
   const [backgroundsByTheme, setBackgroundsByTheme] = useState<BackgroundTones>({});
-  const [globalRadius, setGlobalRadius] = useState<RadiusMode | undefined>(undefined);
-  const [globalRipple, setGlobalRipple] = useState<RippleEffectSchema | undefined>(undefined);
+  const [globalConfig, setGlobalConfig] = useState<GlobalArtifact | undefined>(undefined);
 
   useEffect(() => {
     let cancelled = false;
@@ -27,21 +42,18 @@ export function useThemeExtras({
       const dsKey = String(designSystem);
       if (!dsKey) return;
 
-      const hasRadius = Object.hasOwn(radiusGlobalCache, dsKey);
-      let radius = radiusGlobalCache[dsKey] ?? undefined;
-      const hasRipple = Object.hasOwn(rippleGlobalCache, dsKey);
-      let ripple = rippleGlobalCache[dsKey] ?? undefined;
+      const hasGlobalArtifact = Object.hasOwn(globalArtifactCache, dsKey);
+      let globalArtifact = globalArtifactCache[dsKey] ?? undefined;
 
-      if (!hasRadius || !hasRipple) {
+      if (!hasGlobalArtifact) {
         try {
-          const json = await loadJsonFromBuild<{
-            radius?: RadiusMode;
-            effects?: { ripple?: RippleEffectSchema };
-          }>(`${dsKey}/global.kiskadee.json`, { required: false, fallback: {} });
-          radius = json.radius;
-          radiusGlobalCache[dsKey] = radius ?? null;
-          ripple = json.effects?.ripple;
-          rippleGlobalCache[dsKey] = ripple ?? null;
+          const json = await loadJsonFromBuild<GlobalArtifact>(`${dsKey}/global.kiskadee.json`, {
+            required: false,
+            fallback: {}
+          });
+          globalArtifact = json;
+          globalArtifactCache[dsKey] = Object.keys(json).length ? json : null;
+          radiusGlobalCache[dsKey] = json.radius ?? null;
         } catch (error) {
           console.warn(
             `[showcase] Failed to load global artifact for "${dsKey}". Retrying on next mount/selection change.`,
@@ -51,8 +63,7 @@ export function useThemeExtras({
       }
 
       if (cancelled) return;
-      setGlobalRadius(radius);
-      setGlobalRipple(ripple);
+      setGlobalConfig(globalArtifact ?? undefined);
     };
 
     void loadGlobals();
@@ -115,7 +126,6 @@ export function useThemeExtras({
 
   return {
     backgroundsByTheme,
-    globalRadius,
-    globalRipple
+    globalConfig
   };
 }

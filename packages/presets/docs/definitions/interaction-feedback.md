@@ -12,24 +12,189 @@ This behavior applies to every design system registered in Kiskadee (Material,
 Fluent, iOS, Carbon, etc.). It is treated as a UX micro-interaction, not a brand
 choice, so we keep it consistent across all presets.
 
-## Recommendation When Ripple Is Enabled
+## Keyboard Versus Pointer Feedback
 
-When ripple is enabled, keep `focus`, `hover`, and `pressed` background colors
-equal for the same button emphasis and intent.
+Keyboard activation must use the ordinary pressed/control-state path and the
+focus ring. A focused control already has a clear location affordance, and Space
+or Enter should still activate the native control behavior without starting the
+activation-feedback visual effect.
 
-Rationale:
+Activation feedback is the extra touch/cursor affordance for direct pointer
+interaction: mouse click, trackpad click, pen, and touch. The schema does not
+expose an input-policy field for this decision. Component runtimes should keep
+keyboard handling accessible and native, while restricting activation-feedback
+animation to pointer-originated interaction.
 
-- `hover` is primarily pointer/mouse feedback.
-- `focus` is primarily keyboard feedback, plus focus ring for location.
-- `pressed` must preserve visual continuity for real click/tap confirmation,
-  including long/deep presses such as trackpads.
+## Activation Feedback Direction
 
-If `pressed` differs too much from `hover`/`focus`, quick taps and long presses
-can look inconsistent, especially on low-emphasis buttons whose `rest` color is
-transparent or very light.
+`activationFeedback` is the cross-component activation feedback effect. It
+behaves like shared infrastructure: global schema owns reusable tokens, profiles,
+runtime defaults, and base CSS behavior; component schema owns the component's
+default profile, origin, paint, layer, and tone mapping.
 
-This is a recommended authoring guideline in schema design, not a technical
-engine constraint.
+Global effect schema defines the library:
+
+```ts
+global: {
+  effects: {
+    activationFeedback: {
+      profile: 'ripple',
+      origin: 'pointer',
+      visual: {
+        layer: 'overlay',
+        paint: 'halo',
+        tone: { default: 'subtle' }
+      },
+      profiles: {
+        ripple: { size: 'auto', animateSize: true },
+        rippleOverflow: { size: 80, animateSize: true },
+        halo: { size: 80, animateSize: false },
+        pressed: { size: 'auto', animateSize: false }
+      }
+    }
+  }
+}
+```
+
+Component effect schema chooses the recipe:
+
+```ts
+components: {
+  switch: {
+    effects: {
+      activationFeedback: {
+        profile: 'halo',
+        origin: 'center',
+        visual: {
+          layer: 'underlay',
+          paint: 'halo',
+          tone: {
+            default: 'subtle',
+            byEmphasis: { low: 'vivid' }
+          }
+        },
+        profiles: {
+          halo: { size: 8 }
+        }
+      }
+    }
+  }
+}
+```
+
+`activationFeedback` settings inherit by merge:
+
+- `undefined`: inherit the previous level.
+- `false`: disable the effect for that component or element.
+- object: merge with the previous level.
+- `true`: compatibility alias for an empty object; new presets should not use it.
+
+`profiles` use deep merge by profile. A component can override only
+`profiles.halo.size`, and the other profiles remain inherited from global.
+
+Activation feedback tokens are resolved through tone:
+
+```ts
+activationFeedback: {
+  tone: {
+    subtle: {
+      color: '#1D1B20',
+      opacity: 0.1
+    },
+    vivid: {
+      color: '#FFFFFF',
+      opacity: 0.2
+    }
+  }
+}
+```
+
+Use `subtle` for feedback on light/subtle/base surfaces and `vivid` for feedback
+on strong, vivid, or dark surfaces. These are feedback contrast buckets, not
+component emphasis values. Components may map their own visual recipe to a tone
+through `visual.tone.byEmphasis` when that recipe changes the surface where the
+feedback appears.
+
+Single-tone `activationFeedback.color`, `activationFeedback.opacity`, and
+`surfaceTone` are not part of the modern contract. Presets must declare
+feedback colors through `tone.subtle` and `tone.vivid`.
+
+Layer opacity is applied once by the effect layer itself. Generated border and
+fill colors should stay opaque unless a profile intentionally uses
+`visual.paint` to suppress the fill; otherwise outline feedback becomes
+effectively transparent after alpha is multiplied twice.
+
+When profiles are declared, generated class maps may expose compact effect
+buckets in addition to the base `af` bucket:
+
+- `af`: base activation feedback class.
+- `afs`: `ripple` profile.
+- `afo`: `ripple-overflow` profile.
+- `afx`: `halo` profile.
+- `afp`: `pressed` profile.
+
+Supported profile intent:
+
+- `ripple`: feedback contained inside the host bounds.
+- `ripple-overflow`: feedback may escape host bounds and may use pointer/radial
+  geometry.
+- `halo`: feedback may escape host bounds but uses fixed geometry.
+- `pressed`: feedback profile for pressed/overlay state.
+
+Profile bucket, overflow behavior, and runtime mechanism are capabilities owned
+by the shared activation-feedback profile definitions in `@kiskadee/core`.
+Components and builders should consult those capabilities instead of branching on
+profile names locally. Today, `ripple` and `ripple-overflow` use radial runtime
+geometry, while `halo` uses static host geometry.
+
+For `visual.paint`, `size` has paint-specific meaning:
+
+- `paint: 'halo'`: `size` is the halo expansion/area.
+- `paint: 'outline'`: `size` is the outline stroke width.
+
+## Switch Activation Feedback
+
+Switch defaults should normally use `profile: 'halo'` and `origin: 'center'`,
+because the feedback is anchored on the thumb and may escape the track clipping
+area. This is a preset default, not a runtime limitation. If a preset chooses
+`ripple` or `ripple-overflow`, React Switch should consume that resolved profile
+instead of hardcoding `halo`.
+
+Switch presets map `visual.tone.byEmphasis.low` to `vivid` because their low
+recipes are intended for strong local surfaces. This is a Switch preset
+decision, not a global rule that low emphasis always uses vivid feedback.
+
+React Switch exposes a small local control:
+
+```ts
+activationFeedback?: false | 'active'
+```
+
+- `undefined`: automatic behavior from the artifact.
+- `false`: disables activation feedback for that Switch instance.
+- `'active'`: forces the visual preview active for Showcase and documentation
+  examples.
+
+`activationFeedback="active"` is a preview state only. It should not be used as
+a replacement for semantic `controlState`.
+
+## Button Activation Feedback
+
+Button is profile-aware and consumes the shared activation-feedback buckets.
+The local override is `activationFeedback`; passing
+`activationFeedback={false}` disables the activation-feedback path.
+
+Button defaults should normally use `profile: 'ripple'` and `origin: 'pointer'`.
+React Button selects the resolved profile first, then delegates to the runtime
+declared by the shared profile capability. Radial profiles use pointer geometry;
+static profiles such as `halo` use a fixed overflow layer without the ripple
+size wave. Button halo uses `profile.size` as its fixed circular diameter and
+should normally keep `origin: 'pointer'`, matching `ripple-overflow` without the
+animated size expansion. Button halo should use `paint: 'halo'`, not
+`paint: 'outline'`; outline feedback is reserved for component recipes that
+explicitly need a border-like affordance.
+Unlike Switch, Button does not need a `byEmphasis` tone mapping by default; if a
+preset wants one, it must declare it in component schema.
 
 ## Switch Activation Motion
 

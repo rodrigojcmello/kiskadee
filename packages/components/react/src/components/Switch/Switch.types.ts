@@ -33,6 +33,17 @@ export type SwitchControlText = {
   off: ReactNode;
 };
 
+export type SwitchActivationFeedback =
+  | false
+  /**
+   * Forces the Switch activation-feedback layer on for static previews.
+   *
+   * Interactive activation feedback is pointer/click driven. Keyboard actions,
+   * including Space toggling the native switch state, must not start this visual
+   * effect.
+   */
+  | 'active';
+
 export type SwitchProps = Omit<
   HeadlessSwitchRootProps,
   'children' | 'classNames' | 'inputId' | 'inputProps'
@@ -50,6 +61,7 @@ export type SwitchProps = Omit<
   intent?: SwitchIntent;
   radius?: RadiusMode;
   thumbShrink?: false;
+  activationFeedback?: SwitchActivationFeedback;
   motion?: false;
   variant?: SwitchVariant;
   mode?: SwitchMode;

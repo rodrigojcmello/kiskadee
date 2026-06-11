@@ -7,7 +7,11 @@ import type {
   ComponentName,
   ComponentStyleKeyMap
 } from '@kiskadee/core';
-import { componentEmphasisBuckets } from '@kiskadee/core';
+import {
+  componentEmphasisBuckets,
+  isActivationFeedbackProfileKey,
+  resolveActivationFeedbackProfileBucket
+} from '@kiskadee/core';
 import {
   buildScopedToneMetadataKey,
   type ToneMetadataByPalette
@@ -88,35 +92,27 @@ function extractSizeKeyFromStyleKey(styleKey: string): string | undefined {
   return rawSize.startsWith('s:') ? rawSize.slice(2) : rawSize;
 }
 
-// Ripple buckets follow a compact 3-letter convention to keep artifact payloads small.
-// This is not a universal rule for every bucket, but for ripple we intentionally
-// cap the key size at 3 characters: ris/rio/rix/rip.
-// [RIPPLE EFFECT 14] START: Ripple bucket compaction for class-map payload.
-function rippleBucketForKey(key: string): string {
-  if (key.startsWith('ripplePressed')) return 'rip';
+function activationFeedbackBucketForKey(key: string): string {
+  if (!key.startsWith('activationFeedbackProfile')) return 'af';
 
   const separatorIndex = key.indexOf('__');
   const rawValue = separatorIndex === -1 ? '' : key.slice(separatorIndex + 2);
 
-  if (rawValue.startsWith('{')) {
-    try {
-      const parsed = JSON.parse(rawValue) as { mode?: string };
-      if (parsed.mode === 'surface') return 'ris';
-      if (parsed.mode === 'overflow') return 'rio';
-      if (parsed.mode === 'overflow-static') return 'rix';
-    } catch {
-      // fall through to string matching
-    }
+  if (!rawValue.startsWith('{')) {
+    throw new Error(`Unable to resolve activation feedback bucket for style key "${key}".`);
   }
 
-  if (rawValue.includes('overflow-static')) return 'rix';
-  if (rawValue.includes('overflow')) return 'rio';
-  if (rawValue.includes('surface')) return 'ris';
-  throw new Error(
-    `Unable to resolve ripple bucket for style key "${key}". Expected mode: surface|overflow|overflow-static.`
-  );
+  try {
+    const parsed = JSON.parse(rawValue) as { profile?: unknown };
+    if (isActivationFeedbackProfileKey(parsed.profile)) {
+      return resolveActivationFeedbackProfileBucket(parsed.profile);
+    }
+  } catch {
+    throw new Error(`Unable to parse activation feedback profile style key "${key}".`);
+  }
+
+  throw new Error(`Unable to resolve activation feedback bucket for style key "${key}".`);
 }
-// [RIPPLE EFFECT 14] END: Ripple bucket compaction for class-map payload.
 
 /**
  * Produces two JSON-friendly maps of class names from the aggregated StyleKeys:
@@ -234,15 +230,12 @@ export function generateClassNamesMapSplit(
             // Bucket by effect family inferred from the style key prefix.
             // Keep compact bucket keys (1-3 chars) for minimal payload.
             let bucket: string;
-            if (key.startsWith('activationFeedback')) bucket = 'af';
+            if (key.startsWith('activationFeedback')) bucket = activationFeedbackBucketForKey(key);
             else if (key.startsWith('shadow')) bucket = 'h';
             else if (key.startsWith('borderRadiusRounded')) bucket = 'rr';
             else if (key.startsWith('borderRadiusPill')) bucket = 'rp';
             else if (key.startsWith('borderRadiusSquare')) bucket = 'rs';
             else if (key.startsWith('thumbShrink')) bucket = 'ts';
-            // [RIPPLE EFFECT 15] START: Assign ripple style keys to compact ripple buckets.
-            else if (key.startsWith('ripple')) bucket = rippleBucketForKey(key);
-            // [RIPPLE EFFECT 15] END: Assign ripple style keys to compact ripple buckets.
             else bucket = 'x';
 
             const sizeKey = extractSizeKeyFromStyleKey(key);

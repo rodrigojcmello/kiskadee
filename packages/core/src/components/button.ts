@@ -91,7 +91,7 @@ type ElementContractRules = {
   palettes?: readonly string[];
 };
 
-const BUTTON_COMPONENT_KEYS = ['elements'] as const;
+const BUTTON_COMPONENT_KEYS = ['effects', 'elements'] as const;
 const BUTTON_ELEMENTS_KEYS = ['e1', 'e2', 'e3'] as const;
 const BUTTON_ELEMENT_BASE_KEYS = ['name', 'decorations', 'scales', 'palettes', 'effects'] as const;
 

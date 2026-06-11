@@ -3,10 +3,10 @@ import type {
   ClassNameByElementJSON,
   ComponentEmphasis,
   ElementSizeValue,
+  ActivationFeedbackOrigin,
+  ActivationFeedbackProfileMode,
   ProjectedStateKeys,
-  RadiusMode,
-  RippleMode,
-  RippleOrigin
+  RadiusMode
 } from '@kiskadee/core';
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
 
@@ -16,12 +16,11 @@ export type ButtonElementName = 'e1' | 'e2' | 'e3';
 
 export type ButtonClassesMap = Partial<Record<ButtonElementName, ClassNameByElementJSON>>;
 
-// [RIPPLE EFFECT 17] START: Button ripple props contract.
-export type ButtonRippleEffect = {
-  /** Override ripple mode for this button. */
-  mode?: RippleMode;
-  /** Override ripple origin for this button (center vs. pointer). */
-  origin?: RippleOrigin;
+export type ButtonActivationFeedbackEffect = {
+  /** Override activation-feedback profile for this button. */
+  profile?: ActivationFeedbackProfileMode;
+  /** Override activation-feedback origin for this button (center vs. pointer). */
+  origin?: ActivationFeedbackOrigin;
 };
 
 export type ButtonProps = HeadlessButtonProps & {
@@ -38,8 +37,10 @@ export type ButtonProps = HeadlessButtonProps & {
   scale?: ElementSizeValue;
   /** Enable elevation/shadow visuals. When true, adds the shadow activation class. */
   shadow?: boolean;
-  /** Local ripple override. Pass `false` to disable ripple for this button. */
-  rippleEffect?: ButtonRippleEffect | false;
+  /**
+   * Local activation-feedback override. Pass `false` to disable activation feedback.
+   */
+  activationFeedback?: ButtonActivationFeedbackEffect | false;
   /** Border radius mode. Uses schema radius scales for rounded/pill/square. */
   radius?: RadiusMode;
   /** Enable border-radius effects (animated corners). */
@@ -55,4 +56,3 @@ export type ButtonProps = HeadlessButtonProps & {
   /** Duration for the pressed visual state (ms). */
   pressedDurationMs?: number;
 };
-// [RIPPLE EFFECT 17] END: Button ripple props contract.

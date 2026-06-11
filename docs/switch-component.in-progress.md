@@ -23,6 +23,18 @@ optimized single-component implementation was promoted into
 - KIS-28 feature inventory lives at
   `packages/components/react/docs/definitions/switch/switch-features.md`.
 - Runtime motion, `thumbShrink`, `activationFeedback`, and `controlText` remain internal modules.
+- Switch activation feedback is a pointer/click visual effect. Direct click/tap on the visual track
+  may start AF; Space keeps the native keyboard toggle behavior but must not start AF.
+- Switch activation feedback defaults now come from
+  `components.switch.effects.activationFeedback`. Switch presets use `profile: 'halo'`,
+  `origin: 'center'`, and `visual.tone.byEmphasis.low = 'vivid'`; this is schema-owned, not a
+  structural CSS hardcode.
+- Activation feedback now uses the modern shared contract only: profile-local `size`,
+  `visual.layer`, `visual.paint`, and `visual.tone`. The old `thickness`, top-level motion tokens,
+  `pressedVisual`, `inputFeedback`, profile `border`, and theme `surfaceTone` paths are not part of
+  the runtime/schema contract.
+- iOS 26 Apple Switch uses `visual.paint: 'outline'` with `profiles.halo.size: 8`, so the rectangular
+  thumb gets an outline feedback instead of a filled halo.
 - `controlText` is isolated under `features/control-text`.
 - The Showcase uses only `/switch`.
 - The second-version Showcase route was removed.
@@ -83,3 +95,23 @@ optimized single-component implementation was promoted into
 - 2026-06-07: `pnpm --filter @kiskadee/showcase build`
 - 2026-06-07: Carbon by IBM validation confirmed dark/strong Surface options are omitted because
   Carbon only exposes `emphasis="medium"` for Switch.
+- 2026-06-10: Switch activation feedback click/tap contract tightened. The `halo`
+  profile no longer exposes keyboard activation for Switch, Space continues to toggle the native
+  input without displaying AF, static Showcase previews use `activationFeedback="active"`, and
+  `activationFeedback.inputFeedback` was removed from the modern schema.
+- 2026-06-10: `pnpm --filter @kiskadee/react-components run build`
+- 2026-06-10: `pnpm --filter @kiskadee/showcase build`
+- 2026-06-10: `git diff --check`
+- 2026-06-10: Activation feedback contract migration completed across core types, builder CSS
+  generation, React runtimes, presets, and docs.
+- 2026-06-10: `pnpm --filter @kiskadee/web-builder build`
+- 2026-06-10: `pnpm --filter @kiskadee/react-components run build`
+- 2026-06-10: `pnpm --filter @kiskadee/showcase build`
+- 2026-06-10: Browser validation on `/switch` confirmed Material Google click AF in both
+  checked/unchecked directions, Material `low` using vivid white AF, iOS Apple outline AF with
+  `size: 8`, and static Activation Feedback cards staying active.
+- 2026-06-10: All Switch presets now map `low` emphasis to `vivid` activation feedback, matching
+  strong Showcase surfaces with a white halo/outline.
+- 2026-06-10: PR #8 review follow-ups resolved for activation feedback: profile capabilities now
+  drive runtime/bucket choices, unknown profile buckets fail loudly, web-builder AF tests were
+  restored, and shared pointer-capture/lazy-loader helpers removed duplicated runtime plumbing.

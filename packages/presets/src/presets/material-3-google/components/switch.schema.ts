@@ -309,6 +309,27 @@ export function createMaterial3GoogleSwitchSchema(
   const palettes = createSwitchElementPalettes(args);
 
   return {
+    effects: {
+      activationFeedback: {
+        profile: 'halo',
+        origin: 'center',
+        visual: {
+          layer: 'underlay',
+          paint: 'halo',
+          tone: {
+            default: 'subtle',
+            byEmphasis: {
+              low: 'vivid'
+            }
+          }
+        },
+        profiles: {
+          halo: {
+            size: 8
+          }
+        }
+      }
+    },
     options: {
       variant: 'standard'
     },
@@ -373,7 +394,6 @@ export function createMaterial3GoogleSwitchSchema(
                   }
                 },
                 effects: {
-                  activationFeedback: true,
                   thumbShrink: {
                     rest: {
                       boxWidth: {

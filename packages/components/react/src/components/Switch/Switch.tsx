@@ -1,6 +1,7 @@
 import './Switch.structural.scss';
 import './effects/thumb-shrink/SwitchThumbShrink.structural.scss';
 import { HeadlessSwitch } from '@kiskadee/react-headless';
+import { resolveActivationFeedbackSetting } from '@kiskadee/core';
 import { type ElementType, memo, useMemo } from 'react';
 import {
   hasSwitchActivationFeedbackEffect,
@@ -63,6 +64,7 @@ function SwitchRoot(props: SwitchProps) {
     radius,
     motion,
     thumbShrink,
+    activationFeedback,
     variant = DEFAULT_SWITCH_VARIANT,
     mode = DEFAULT_SWITCH_MODE,
     labelPosition = DEFAULT_SWITCH_LABEL_POSITION,
@@ -73,11 +75,12 @@ function SwitchRoot(props: SwitchProps) {
     onControlStateChange,
     onClickCapture,
     onPointerDown,
+    onPointerUp,
     onPointerCancel,
     onBlur,
     ...rootProps
   } = props;
-  const { switchClassesMap, options, effects, globalEffects } =
+  const { switchClassesMap, componentEffects, options, effects, globalEffects } =
     useSwitchArtifactConfig(thumbShrink);
   const resolvedRadius = radius ?? options.radius;
   const elements = resolveVariantElements(switchClassesMap, variant, mode);
@@ -88,8 +91,20 @@ function SwitchRoot(props: SwitchProps) {
   });
   const motionEffect = useSwitchRuntimeMotionEffect(motion !== false);
   const thumbShrinkEffect = effects.thumbShrinkEffect;
+  const activationFeedbackConfig = useMemo(
+    () =>
+      resolveActivationFeedbackSetting(
+        globalEffects.activationFeedback,
+        componentEffects.activationFeedback
+      ),
+    [componentEffects.activationFeedback, globalEffects.activationFeedback]
+  );
+  const activationFeedbackProfile = activationFeedbackConfig?.profile ?? 'halo';
+  const shouldUseActivationFeedback =
+    activationFeedback !== false &&
+    hasSwitchActivationFeedbackEffect(elements, activationFeedbackProfile);
   const activationFeedbackEffect = useSwitchActivationFeedbackEffect(
-    hasSwitchActivationFeedbackEffect(elements)
+    shouldUseActivationFeedback
   );
 
   const { classNames: structuralClassNames, thumbVisualClassName } = useMemo(() => {
@@ -188,13 +203,17 @@ function SwitchRoot(props: SwitchProps) {
   });
   const activationFeedbackController = useSwitchActivationFeedbackController({
     enabled: Boolean(activationFeedbackEffect),
-    config: globalEffects.activationFeedback,
+    config: activationFeedbackConfig,
     disabled,
+    forcedActive: activationFeedback === 'active',
     readOnly,
-    inputProps,
+    onClickCapture: motionController.handleClickCapture,
     onPointerDown,
+    onPointerUp,
     onPointerCancel,
     onBlur,
+    profile: activationFeedbackProfile,
+    thumbRef: motionController.thumbProps.thumbRef,
     trackRef: motionController.thumbProps.trackRef
   });
   const statefulClassNames = useMemo(
@@ -212,14 +231,20 @@ function SwitchRoot(props: SwitchProps) {
       statefulClassNames,
       activationFeedbackEffect.resolveSwitchActivationFeedbackEffect({
         emphasis,
+        config: activationFeedbackConfig,
         elements,
-        isActive: activationFeedbackController.isActive
+        isActive:
+          activationFeedbackController.isActive && !activationFeedbackController.isFading,
+        profile: activationFeedbackProfile
       }).classNamePatch
     );
   }, [
     activationFeedbackController.isActive,
+    activationFeedbackController.isFading,
     activationFeedbackEffect,
+    activationFeedbackConfig,
     emphasis,
+    activationFeedbackProfile,
     elements,
     statefulClassNames
   ]);
@@ -243,13 +268,14 @@ function SwitchRoot(props: SwitchProps) {
     <HeadlessSwitch.Root
       {...rootProps}
       inputId={id}
-      inputProps={activationFeedbackController.inputProps}
+      inputProps={inputProps}
       disabled={disabled}
       readOnly={readOnly}
       controlState={motionController.projectedControlState}
       onControlStateChange={motionController.setControlState}
-      onClickCapture={motionController.handleClickCapture}
+      onClickCapture={activationFeedbackController.rootHandlers.onClickCapture}
       onPointerDown={activationFeedbackController.rootHandlers.onPointerDown}
+      onPointerUp={activationFeedbackController.rootHandlers.onPointerUp}
       onPointerCancel={activationFeedbackController.rootHandlers.onPointerCancel}
       onBlur={activationFeedbackController.rootHandlers.onBlur}
       classNames={resolvedClassNames}

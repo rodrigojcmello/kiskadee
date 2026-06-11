@@ -1,5 +1,6 @@
 import type {
   ActivationFeedbackEffectSchema,
+  ActivationFeedbackSetting,
   RadiusMode,
   SwitchActivationMotion,
   SwitchControlTextVisibility
@@ -32,6 +33,9 @@ export type SwitchArtifactConfig = {
   };
   effects: {
     thumbShrinkEffect: SwitchThumbShrinkEffectModule | null;
+  };
+  componentEffects: {
+    activationFeedback?: ActivationFeedbackSetting;
   };
   globalEffects: {
     activationFeedback?: ActivationFeedbackEffectSchema;
@@ -110,6 +114,12 @@ export function useSwitchArtifactConfig(thumbShrink?: false): SwitchArtifactConf
     },
     effects: {
       thumbShrinkEffect
+    },
+    componentEffects: {
+      activationFeedback:
+        currentSwitchComponentArtifact?.effects?.activationFeedback ??
+        previousLoadedSwitchComponentArtifact?.effects?.activationFeedback ??
+        global?.components?.switch?.effects?.activationFeedback
     },
     globalEffects: {
       activationFeedback: global?.effects?.activationFeedback

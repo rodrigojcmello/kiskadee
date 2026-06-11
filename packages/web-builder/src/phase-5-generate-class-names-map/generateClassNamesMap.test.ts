@@ -8,68 +8,11 @@ import { describe, expect, it } from 'vitest';
 import type { ToneMetadataByPalette } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys.ts';
 import { convertElementSchemaToStyleKeys } from '../phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
+import { buildStyleKey } from '../utils/index.ts';
 import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
 import { generateClassNamesMapSplit } from './generateClassNamesMap.ts';
 
-describe('generateClassNamesMapSplit (ripple)', () => {
-  it('maps ripple effect style keys into compact ripple buckets', () => {
-    const surfaceKey = 'ripple__{"mode":"surface","profile":{"fillToken":"surface"}}';
-    const overflowKey = 'ripple__{"mode":"overflow","profile":{"fillToken":"overflow"}}';
-    const overflowStaticKey =
-      'ripple__{"mode":"overflow-static","profile":{"fillToken":"overflowStatic"}}';
-    const pressedKey = 'ripplePressed__{"profile":{"fillToken":"surface"}}';
-
-    const styleKeys = {
-      button: {
-        e1: {
-          effects: {
-            rest: [surfaceKey, overflowKey, overflowStaticKey, pressedKey]
-          }
-        }
-      }
-    } as unknown as ComponentStyleKeyMap;
-
-    const shortenMap = {
-      [surfaceKey]: 'ri_s',
-      [overflowKey]: 'ri_o',
-      [overflowStaticKey]: 'ri_x',
-      [pressedKey]: 'ri_p'
-    } as ShortenCssClassNames;
-
-    const toneMetadataByPalette = new Map() as ToneMetadataByPalette;
-    const out = generateClassNamesMapSplit(styleKeys, shortenMap, toneMetadataByPalette);
-
-    expect(out.core.button?.e1?.e).toEqual({
-      ris: 'ri_s',
-      rio: 'ri_o',
-      rix: 'ri_x',
-      rip: 'ri_p'
-    });
-  });
-
-  it('throws when a ripple style key has an unsupported mode', () => {
-    const invalidRippleKey = 'ripple__{"mode":"invalid","profile":{"fillToken":"unknown"}}';
-    const styleKeys = {
-      button: {
-        e1: {
-          effects: {
-            rest: [invalidRippleKey]
-          }
-        }
-      }
-    } as unknown as ComponentStyleKeyMap;
-
-    const shortenMap = {
-      [invalidRippleKey]: 'ri_bad'
-    } as ShortenCssClassNames;
-
-    const toneMetadataByPalette = new Map() as ToneMetadataByPalette;
-
-    expect(() => generateClassNamesMapSplit(styleKeys, shortenMap, toneMetadataByPalette)).toThrow(
-      `Unable to resolve ripple bucket for style key "${invalidRippleKey}". Expected mode: surface|overflow|overflow-static.`
-    );
-  });
-
+describe('generateClassNamesMapSplit', () => {
   it('reuses the mirrored canonical class name for raw and mirrored scale consumers', () => {
     const styleKeys = {
       button: {
@@ -239,5 +182,85 @@ describe('generateClassNamesMapSplit (ripple)', () => {
         'lg:1': 'borderRadiusRounded--hover++s:lg:1__12'
       }
     });
+  });
+
+  it('groups activation feedback profile effects by profile capability buckets', () => {
+    const baseKey = buildStyleKey({
+      propertyName: 'activationFeedback',
+      value: {}
+    });
+    const rippleKey = buildStyleKey({
+      propertyName: 'activationFeedbackProfile',
+      value: { profile: 'ripple' }
+    });
+    const overflowKey = buildStyleKey({
+      propertyName: 'activationFeedbackProfile',
+      value: { profile: 'ripple-overflow' }
+    });
+    const haloKey = buildStyleKey({
+      propertyName: 'activationFeedbackProfile',
+      value: { profile: 'halo' }
+    });
+    const pressedKey = buildStyleKey({
+      propertyName: 'activationFeedbackProfile',
+      value: { profile: 'pressed' }
+    });
+    const styleKeys = {
+      button: {
+        e1: {
+          effects: {
+            rest: [baseKey, rippleKey, overflowKey, haloKey, pressedKey]
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+
+    const out = generateClassNamesMapSplit(
+      styleKeys,
+      {
+        [baseKey]: 'af-base',
+        [rippleKey]: 'af-ripple',
+        [overflowKey]: 'af-overflow',
+        [haloKey]: 'af-halo',
+        [pressedKey]: 'af-pressed'
+      },
+      new Map() as ToneMetadataByPalette
+    );
+
+    const button = out.core.button as Record<string, ClassNameByElementJSON>;
+
+    expect(button.e1.e).toEqual({
+      af: 'af-base',
+      afs: 'af-ripple',
+      afo: 'af-overflow',
+      afx: 'af-halo',
+      afp: 'af-pressed'
+    });
+  });
+
+  it('throws when activation feedback profile effects use an unknown profile', () => {
+    const invalidKey = buildStyleKey({
+      propertyName: 'activationFeedbackProfile',
+      value: { profile: 'hallo' }
+    });
+    const styleKeys = {
+      button: {
+        e1: {
+          effects: {
+            rest: [invalidKey]
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+
+    expect(() =>
+      generateClassNamesMapSplit(
+        styleKeys,
+        {
+          [invalidKey]: 'af-invalid'
+        },
+        new Map() as ToneMetadataByPalette
+      )
+    ).toThrowError(`Unable to resolve activation feedback bucket for style key "${invalidKey}".`);
   });
 });

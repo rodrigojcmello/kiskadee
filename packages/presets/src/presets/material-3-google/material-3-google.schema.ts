@@ -46,27 +46,17 @@ export const schema: Schema<Segments> = {
     radius: 'pill',
     effects: {
       activationFeedback: {
-        thickness: 8,
-        holdDurationToken: 'interaction.hold.short',
-        fadeDurationToken: 'interaction.fade.long',
-        curveToken: 'motion.standard.out'
-      },
-      ripple: {
-        mode: 'surface',
+        profile: 'ripple',
         origin: 'pointer',
-        inputFeedback: {
-          mouse: 'pressed',
-          keyboard: 'pressed'
-        },
-        pressedVisual: 'overlay',
-        overlayAlphaByEmphasis: {
-          high: 0.15,
-          medium: 0.06,
-          low: 0.05,
-          lowest: 0.05
+        visual: {
+          layer: 'overlay',
+          paint: 'halo',
+          tone: {
+            default: 'subtle'
+          }
         },
         profiles: {
-          surface: {
+          ripple: {
             animateSize: true,
             size: 'auto',
             durationToken: 'interaction.slow',
@@ -75,10 +65,9 @@ export const schema: Schema<Segments> = {
               delayToken: 'interaction.hold.short',
               durationToken: 'interaction.fade.short',
               curveToken: 'motion.standard.out'
-            },
-            fillToken: 'surface'
+            }
           },
-          overflow: {
+          rippleOverflow: {
             animateSize: true,
             size: 80,
             durationToken: 'interaction.fast',
@@ -87,10 +76,9 @@ export const schema: Schema<Segments> = {
               delayToken: 'interaction.hold.short',
               durationToken: 'interaction.fade.short',
               curveToken: 'motion.standard.out'
-            },
-            fillToken: 'overflow'
+            }
           },
-          overflowStatic: {
+          halo: {
             animateSize: false,
             size: 80,
             durationToken: 'interaction.instant',
@@ -98,9 +86,7 @@ export const schema: Schema<Segments> = {
               delayToken: 'interaction.hold.short',
               durationToken: 'interaction.fade.long',
               curveToken: 'motion.standard.out'
-            },
-            fillToken: 'overflowStatic',
-            border: { width: 1, colorToken: 'overflowStaticBorder' }
+            }
           },
           pressed: {
             animateSize: false,
@@ -112,8 +98,7 @@ export const schema: Schema<Segments> = {
               delayToken: 'interaction.hold.short',
               durationToken: 'interaction.fade.long',
               curveToken: 'motion.standard.out'
-            },
-            fillToken: 'surface'
+            }
           }
         }
       }
@@ -128,25 +113,15 @@ export const schema: Schema<Segments> = {
           focusColor: c('default', 'l', 'primary.v2', 60), // =
           effects: {
             activationFeedback: {
-              color: '#1D1B20',
-              opacity: 0.1
-            },
-            ripple: {
-              surface: {
-                color: '#000000',
-                opacity: 0.12
-              },
-              overflow: {
-                color: '#0481FF',
-                opacity: 0.15
-              },
-              overflowStatic: {
-                color: '#0481FF',
-                opacity: 0.15
-              },
-              overflowStaticBorder: {
-                color: '#0481FF',
-                opacity: 0.3
+              tone: {
+                subtle: {
+                  color: '#1D1B20',
+                  opacity: 0.1
+                },
+                vivid: {
+                  color: white,
+                  opacity: 0.2
+                }
               }
             }
           }

@@ -84,7 +84,7 @@ Open questions:
 - Should `lowest` remain an emphasis value but gain ambient-aware foreground,
   border, focus, and effect tokens?
 - Should Kiskadee introduce a separate ambient/context axis, such as
-  `ambientTone`, `surfaceTone`, or `contrastContext`, instead of splitting the
+  `ambientTone`, `ambientSurface`, or `contrastContext`, instead of splitting the
   emphasis scale?
 - Should transparent treatments have separate light-ambient and vivid-ambient
   token values?
@@ -96,13 +96,11 @@ emphasis names before proving that a separate ambient axis is insufficient.
 
 Relevant existing references:
 
-- Button ripple already adjusts effect alpha by emphasis through
-  `global.effects.ripple.overlayAlphaByEmphasis` and runtime classes such as
-  `k-emph-h`, `k-emph-m`, `k-emph-l`, and `k-emph-ll`.
-- Switch `activationFeedback` is currently only an element opt-in plus global
-  theme tokens. Its element schema value is boolean, while color and opacity
-  come from `themeTokens.effects.activationFeedback`.
-- Future `activationFeedback` or transparent-label decisions should preserve
+- `activationFeedback` is a shared global effect library plus component-level
+  recipe. Profile behavior is resolved from `global.effects.activationFeedback`
+  and `components.<name>.effects.activationFeedback`; color/opacity come from
+  `themeTokens.effects.activationFeedback.tone`.
+- Future activation-feedback or transparent-label decisions should preserve
   these references before choosing between fixed black/white contrast values
   and normalized ambient-aware tokens.
 

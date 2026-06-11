@@ -16,12 +16,10 @@ import type {
 import type { DecorationSchema } from './types/decorations/decorations.types.ts';
 import type {
   ActivationFeedbackEffectSchema,
+  ActivationFeedbackSetting,
   ActivationFeedbackThemeTokens
 } from './types/effects/activation-feedback/activation-feedback.types.ts';
 import type { ElementEffects } from './types/effects/index.ts';
-// [RIPPLE EFFECT 1] START: Schema-level ripple types.
-import type { RippleEffectSchema } from './types/effects/ripple/ripple.types.ts';
-// [RIPPLE EFFECT 1] END: Schema-level ripple types.
 import type { ScaleSchema } from './types/scales/scales.types.ts';
 
 // Names of all supported components
@@ -122,12 +120,20 @@ type TextFieldComponent<TSegmentName extends SegmentName = never> = {
 
 type SwitchComponent<TSegmentName extends SegmentName = never> = {
   elements?: never;
+  effects?: ComponentEffects;
   options?: SwitchOptions;
   variants: SwitchVariants<TSegmentName>;
 };
 
+type ComponentEffects = {
+  activationFeedback?: ActivationFeedbackSetting;
+};
+
 type Components<TSegmentName extends SegmentName = never> = Partial<{
-  button: { elements: ButtonElements<TSegmentName> & Elements<TSegmentName> };
+  button: {
+    effects?: ComponentEffects;
+    elements: ButtonElements<TSegmentName> & Elements<TSegmentName>;
+  };
   switch: SwitchComponent<TSegmentName>;
   tabs: TabsComponent<TSegmentName>;
   textField: TextFieldComponent<TSegmentName>;
@@ -157,7 +163,6 @@ export type SchemaFonts = {
 // [EFFECTS] START: Global effect schema section.
 export type SchemaGlobalEffects = {
   activationFeedback?: ActivationFeedbackEffectSchema;
-  ripple?: RippleEffectSchema;
 };
 // [EFFECTS] END: Global effect schema section.
 
@@ -190,24 +195,6 @@ export type ThemeTokens<TSegmentName extends SegmentName = never> = Partial<{
             // [EFFECTS] START: Theme effect token overrides.
             effects?: {
               activationFeedback?: ActivationFeedbackThemeTokens;
-              ripple?: {
-                surface?: {
-                  color?: SolidColor;
-                  opacity?: number;
-                };
-                overflow?: {
-                  color?: SolidColor;
-                  opacity?: number;
-                };
-                overflowStatic?: {
-                  color?: SolidColor;
-                  opacity?: number;
-                };
-                overflowStaticBorder?: {
-                  color?: SolidColor;
-                  opacity?: number;
-                };
-              };
             };
             // [EFFECTS] END: Theme effect token overrides.
           }

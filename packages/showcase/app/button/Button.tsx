@@ -99,45 +99,53 @@ export function Button() {
           buttonMeta={buttonMeta}
         />
 
-        {/* [RIPPLE EFFECT 28] START: Showcase examples for ripple modes/origin overrides. */}
+        {/* [ACTIVATION FEEDBACK] START: Showcase examples for profile/origin overrides. */}
         <div className={s['interaction-state']}>
-          <h3>Ripple Modes</h3>
+          <h3>Activation Feedback Profiles</h3>
           <div className={`${s['example-states']} k-root`}>
-            <KButton intent="primary" emphasis="high" rippleEffect={{ mode: 'surface' }}>
+            <KButton intent="primary" emphasis="high" activationFeedback={{ profile: 'ripple' }}>
               <KButton.Label>
                 <SmoothText fontName={fontName} align={alignment}>
-                  Ripple Surface
+                  AF Ripple
                 </SmoothText>
               </KButton.Label>
             </KButton>
             <KButton
               intent="primary"
               emphasis="high"
-              rippleEffect={{ mode: 'surface', origin: 'center' }}
+              activationFeedback={{ profile: 'ripple', origin: 'center' }}
             >
               <KButton.Label>
                 <SmoothText fontName={fontName} align={alignment}>
-                  Ripple Surface (Center)
+                  AF Ripple Center
                 </SmoothText>
               </KButton.Label>
             </KButton>
-            <KButton intent="primary" emphasis="high" rippleEffect={{ mode: 'overflow' }}>
+            <KButton
+              intent="primary"
+              emphasis="high"
+              activationFeedback={{ profile: 'ripple-overflow' }}
+            >
               <KButton.Label>
                 <SmoothText fontName={fontName} align={alignment}>
-                  Ripple Overflow
+                  AF Ripple Overflow
                 </SmoothText>
               </KButton.Label>
             </KButton>
-            <KButton intent="primary" emphasis="high" rippleEffect={{ mode: 'overflow-static' }}>
+            <KButton
+              intent="primary"
+              emphasis="high"
+              activationFeedback={{ profile: 'halo' }}
+            >
               <KButton.Label>
                 <SmoothText fontName={fontName} align={alignment}>
-                  Ripple Overflow Static
+                  AF Halo
                 </SmoothText>
               </KButton.Label>
             </KButton>
           </div>
         </div>
-        {/* [RIPPLE EFFECT 28] END: Showcase examples for ripple modes/origin overrides. */}
+        {/* [ACTIVATION FEEDBACK] END: Showcase examples for profile/origin overrides. */}
 
         {/* Neutral */}
         <div className={s['interaction-state']}>

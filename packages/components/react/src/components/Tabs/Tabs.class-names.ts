@@ -96,7 +96,7 @@ export function resolveEffectClasses(element: TabsClassesMap['e1'] | undefined):
  *     Resolves only the shadow effect class for one element, including the shadow activator.
  * Why
  *     Bridge projects tab shadow from an outer wrapper, so shadow needs to be movable
- *     independently from other effect buckets like ripple.
+ *     independently from other effect buckets.
  */
 export function resolveShadowEffectClassName(element: TabsClassesMap['e1'] | undefined): string {
   const shadowClass = typeof element?.e?.h === 'string' ? element.e.h : '';

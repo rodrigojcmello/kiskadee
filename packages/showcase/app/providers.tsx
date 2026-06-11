@@ -61,19 +61,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
     enabled: shouldLoadAggregateClassMap
   });
 
-  // 3. Load extra resources (background colors) and global radius/ripple metadata
-  const { backgroundsByTheme, globalRadius, globalRipple } = useThemeExtras({
+  // 3. Load extra resources (background colors) and global metadata
+  const { backgroundsByTheme, globalConfig } = useThemeExtras({
     designSystem,
     segment
   });
-
-  const globalConfig =
-    globalRadius !== undefined || globalRipple !== undefined
-      ? {
-          ...(globalRadius !== undefined ? { radius: globalRadius } : {}),
-          ...(globalRipple !== undefined ? { effects: { ripple: globalRipple } } : {})
-        }
-      : undefined;
 
   // 4. Manage global CSS and stylesheet injection (side effects)
   useStylesheetManager({ designSystem, segment, theme });

@@ -1,0 +1,89 @@
+/*
+ * Button activation-feedback structural registry:
+ * e1a = root hosts activation feedback
+ * e1b = feedback active
+ * e1c = feedback fading
+ */
+.k-btn-e1a {
+  position: relative;
+  z-index: 0;
+  overflow: var(--k-af-overflow, hidden);
+  clip-path: var(--k-af-clip, inset(0 round var(--k-bdr, 0px)));
+}
+
+/*
+ * clip-path clips outline painting on focused buttons.
+ * During focus-visible or forced highlighted focus we disable clip-path so outline-offset can
+ * render outside.
+ * .-f.-k.-a is the generated forced focus-visible state used by projected Showcase/status classes.
+ */
+.k-btn-e1a:focus-visible,
+.k-btn-e1a.-f.-k.-a {
+  clip-path: none;
+  overflow: hidden;
+}
+
+.k-btn-e1a > * {
+  position: relative;
+  z-index: var(--k-af-content-z, 1);
+}
+
+.k-btn-e1a::after {
+  content: '';
+  position: absolute;
+  left: var(--k-af-x, 50%);
+  top: var(--k-af-y, 50%);
+  width: var(--k-af-start-size, 0px);
+  height: var(--k-af-start-size, 0px);
+  box-sizing: border-box;
+  background-color: color-mix(
+    in srgb,
+    var(--k-af-color, currentColor) calc(var(--k-af-fill-opacity, 1) * 100%),
+    transparent
+  );
+  border-width: var(--k-af-border-width, 0);
+  border-style: solid;
+  border-color: color-mix(
+    in srgb,
+    var(--k-af-border-color, transparent) calc(var(--k-af-border-opacity, 1) * 100%),
+    transparent
+  );
+  border-radius: var(--k-af-layer-radius, 999px);
+  visibility: hidden;
+  transform: translate(-50%, -50%);
+  opacity: var(--k-af-opacity, 0);
+  transition:
+    width var(--k-af-duration, 0ms) var(--k-af-ease, ease-out),
+    height var(--k-af-duration, 0ms) var(--k-af-ease, ease-out),
+    opacity var(--k-af-fade-duration, 100ms) var(--k-af-fade-ease, ease-out);
+  will-change: transform, opacity;
+  display: block;
+  z-index: var(--k-af-z, 2);
+  pointer-events: none;
+}
+
+.k-btn-e1b::after {
+  animation: none;
+  visibility: visible;
+  transform: translate(-50%, -50%);
+  width: var(--k-af-end-size, var(--k-af-size, 0px));
+  height: var(--k-af-end-size, var(--k-af-size, 0px));
+}
+
+.k-btn-e1c::after {
+  opacity: 0;
+}
+
+.k-aft-s.k-aft-s {
+  --k-af-current-color: var(--k-af-subtle-color);
+  --k-af-current-opacity: var(--k-af-subtle-opacity);
+  --k-af-color: var(--k-af-current-color);
+  --k-af-opacity: var(--k-af-current-opacity);
+}
+
+.k-aft-v.k-aft-v {
+  --k-af-current-color: var(--k-af-vivid-color);
+  --k-af-current-opacity: var(--k-af-vivid-opacity);
+  --k-af-color: var(--k-af-current-color);
+  --k-af-opacity: var(--k-af-current-opacity);
+}

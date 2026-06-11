@@ -49,7 +49,7 @@ Examples:
 - color palettes (`boxColor`, `textColor`, `borderColor`)
 - scalable dimensions (`padding`, `textSize`, `boxHeight`, `borderWidth`)
 - static decorations (`borderStyle`, `textWeight`)
-- optional visual effects (`shadow`, `ripple`, stateful radius effects)
+- optional visual effects (`shadow`, `activationFeedback`, stateful radius effects)
 
 Rule:
 
@@ -125,6 +125,38 @@ Consequence:
 - Component element contracts require `name` whenever an element object is declared.
 - A non-visual but meaningful schema element should still be represented as `name` only.
 - Web-builder style generation continues to use the `e<n>` key as the artifact identity.
+
+### 3.1.3 Activation feedback ownership
+
+Context:
+
+- Activation feedback is shared across components, but each component may need a different default
+  profile, origin, paint, layer, tone mapping, or profile size.
+- For example, Button commonly uses `ripple` with pointer origin, while Switch commonly uses `halo`
+  with center origin.
+
+Decision:
+
+- `global.effects.activationFeedback` defines the shared library: reusable profiles, motion defaults,
+  and theme token buckets.
+- `components.<name>.effects.activationFeedback` defines the component's default recipe.
+- `effects.activationFeedback: true` on an element is compatibility-only and should not be used by
+  new presets.
+- `profiles` merge deeply by profile, so a component can override only `profiles.halo.size` without
+  replacing other global profiles.
+- Feedback tone (`subtle` or `vivid`) is selected through `visual.tone`, optionally by component
+  emphasis. Component structural Sass must not hardcode semantic feedback colors or opacities.
+
+Reason:
+
+- Runtime components should execute resolved effect configuration instead of hardcoding component
+  assumptions such as "Switch low means vivid" or "Switch always uses halo".
+
+Consequence:
+
+- Web-builder resolves activation feedback as `global -> component -> element compatibility`.
+- Runtime adapters provide host refs and event/cancel behavior; schema decides profile, origin,
+  paint, layer, size, and tone.
 
 ### 3.2 `components.<name>.options`
 
@@ -237,13 +269,14 @@ Use `global` only for cross-component defaults/shared system behavior.
 Examples:
 
 - `global.radius`
-- `global.effects.ripple`
+- `global.effects.activationFeedback`
 - global font stacks/focus tokens
 
 Rule:
 
 - If a value is shared by multiple components, use `global`.
-- If a value is specific to one component, keep it in `components.<name>.options`.
+- If a value is specific to one component, keep it in `components.<name>.options` or
+  `components.<name>.effects`, depending on whether it is behavior/structure or an effect recipe.
 
 ## 4) What belongs in structural Sass
 
@@ -291,7 +324,7 @@ Use each artifact for a different level of responsibility:
   fonts, and high-level component capabilities without loading the full schema.
 - `global.kiskadee.json`: descriptive runtime-friendly defaults and DS intentions that are useful
   without traversing full component branches. Use it for global defaults such as fonts, radius,
-  and ripple. Component-specific semantic metadata should move toward component artifacts such as
+  and activation feedback. Component-specific semantic metadata should move toward component artifacts such as
   `components/switch.kiskadee.json`, `components/tabs.kiskadee.json`, and
   `components/text-field.kiskadee.json`; new artifacts should not add component semantic payloads
   under `global.components.<name>`.

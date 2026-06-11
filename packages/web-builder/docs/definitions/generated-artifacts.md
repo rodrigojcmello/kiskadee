@@ -3,7 +3,7 @@
 ## CSS and maps
 
 - Core CSS: utilities for decorations/scales and palette-independent base rules.
-- Effects CSS: gated effect utilities such as shadows, ripple tokens, and stateful radius effects.
+- Effects CSS: gated effect utilities such as shadows, activation feedback, and stateful radius effects.
 - Per-palette CSS: color rules only.
 - Generated CSS remains aggregated by design. It behaves like a shared utility layer with maximum
   class reuse across components, while structural CSS remains owned by the component packages.

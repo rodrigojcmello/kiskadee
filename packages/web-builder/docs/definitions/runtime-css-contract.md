@@ -10,9 +10,8 @@ To keep behavior predictable and performance-oriented, Kiskadee follows this con
 
 Runtime JSON owns interaction policy and behavior switches:
 
-- ripple mode selection;
-- ripple origin (`center` vs `pointer`);
-- input feedback mode (`pressed` vs `ripple`);
+- activation-feedback profile selection;
+- activation-feedback origin (`center` vs `pointer`);
 - pressed visual behavior (`state` vs `overlay`).
 
 ## What belongs to CSS

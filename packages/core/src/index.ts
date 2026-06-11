@@ -7,18 +7,47 @@ export * from './schema.ts';
 export * from './types/colors/colors.types.ts';
 export * from './types/decorations/decorations.types.ts';
 export {
+  ACTIVATION_FEEDBACK_PROFILE_DEFINITIONS,
   ACTIVATION_FEEDBACK_DURATION_TOKEN_TO_MS,
-  DEFAULT_ACTIVATION_FEEDBACK
+  DEFAULT_ACTIVATION_FEEDBACK_PROFILES,
+  DEFAULT_PRESSED_ACTIVATION_FEEDBACK_PROFILE
 } from './types/effects/activation-feedback/activation-feedback.constants.ts';
 export type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackMotionCurveToken,
   ActivationFeedbackMotionDurationToken,
-  ActivationFeedbackThemeTokens
+  ActivationFeedbackOrigin,
+  ActivationFeedbackProfile,
+  ActivationFeedbackProfileBucket,
+  ActivationFeedbackProfileConfig,
+  ActivationFeedbackProfileDefinition,
+  ActivationFeedbackProfileOverflow,
+  ActivationFeedbackProfileKey,
+  ActivationFeedbackProfileMode,
+  ActivationFeedbackProfileRuntime,
+  ActivationFeedbackProfileShape,
+  ActivationFeedbackSetting,
+  ActivationFeedbackTone,
+  ActivationFeedbackToneMap,
+  ActivationFeedbackToneTokens,
+  ActivationFeedbackThemeTokens,
+  ActivationFeedbackVisual
 } from './types/effects/activation-feedback/activation-feedback.types.ts';
 export {
-  resolveActivationFeedbackConfig,
-  resolveActivationFeedbackDurationMs
+  isActivationFeedbackProfileKey,
+  isActivationFeedbackProfileMode,
+  mergeActivationFeedbackConfig,
+  normalizeActivationFeedbackSetting,
+  resolveActivationFeedbackDurationMs,
+  resolveActivationFeedbackProfile,
+  resolveActivationFeedbackProfileBucket,
+  resolveActivationFeedbackProfileDefinition,
+  resolveActivationFeedbackProfileKey,
+  resolveActivationFeedbackSetting,
+  resolvePressedActivationFeedbackProfile,
+  usesActivationFeedbackOverflowGeometry,
+  usesActivationFeedbackRadialRuntime,
+  usesActivationFeedbackStaticRuntime
 } from './types/effects/activation-feedback/activation-feedback.utils.ts';
 export type {
   BorderRadiusEffectMode,
@@ -28,29 +57,6 @@ export type {
   ResponsiveNumeric
 } from './types/effects/border-radius/border-radius.types.ts';
 export * from './types/effects/index.ts';
-export {
-  DEFAULT_PRESSED_RIPPLE_PROFILE,
-  DEFAULT_RIPPLE_PROFILES,
-  RIPPLE_DURATION_TOKEN_TO_MS
-} from './types/effects/ripple/ripple.constants.ts';
-// [RIPPLE EFFECT 8] START: Public ripple type exports.
-export type {
-  RippleEffectSchema,
-  RippleInputFeedback,
-  RippleMode,
-  RippleMotionCurveToken,
-  RippleMotionDurationToken,
-  RippleOrigin,
-  RipplePressedVisual,
-  RippleProfile
-} from './types/effects/ripple/ripple.types.ts';
-export {
-  resolvePressedRippleProfile,
-  resolveRippleDurationMs,
-  resolveRippleProfile,
-  resolveRippleProfileKey
-} from './types/effects/ripple/ripple.utils.ts';
-// [RIPPLE EFFECT 8] END: Public ripple type exports.
 export * from './types/effects/shadow/shadow.types.ts';
 export * from './types/effects/thumb-shrink/thumb-shrink.types.ts';
 export * from './types/scales/scales.types.ts';
