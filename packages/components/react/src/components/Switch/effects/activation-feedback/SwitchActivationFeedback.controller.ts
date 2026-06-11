@@ -15,7 +15,7 @@ import {
   useCallback,
   useMemo
 } from 'react';
-import { useActivationFeedbackOverflowStatic } from '../../../../hooks/effects/activation-feedback/useActivationFeedbackOverflowStatic.ts';
+import { useActivationFeedbackHalo } from '../../../../hooks/effects/activation-feedback/useActivationFeedbackHalo.ts';
 import {
   type ActivationFeedbackRadialRuntimeConfig,
   resolveActivationFeedbackProfileRadialRuntimeConfig,
@@ -96,7 +96,7 @@ export function useSwitchActivationFeedbackController({
   const origin: ActivationFeedbackOrigin = config?.origin ?? 'center';
   const profileDefinition = resolveActivationFeedbackProfileDefinition(profile);
   const usesStaticRuntime = usesActivationFeedbackStaticRuntime(profile);
-  const activationFeedbackMachine = useActivationFeedbackOverflowStatic<
+  const activationFeedbackMachine = useActivationFeedbackHalo<
     HTMLLabelElement,
     HTMLSpanElement
   >({

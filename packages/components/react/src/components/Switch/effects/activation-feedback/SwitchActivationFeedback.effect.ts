@@ -1,4 +1,4 @@
-import '../../../../hooks/effects/activation-feedback/ActivationFeedbackOverflowStatic.structural.css';
+import '../../../../hooks/effects/activation-feedback/ActivationFeedbackHalo.structural.css';
 import './SwitchActivationFeedback.structural.css';
 import type {
   ActivationFeedbackEffectSchema,

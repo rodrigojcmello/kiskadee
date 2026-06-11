@@ -17,7 +17,7 @@ export type ActivationFeedbackEffectBuckets = {
 };
 
 /**
- * Returns selectable radial profiles only. The pressed bucket is internal state feedback and is
+ * Returns selectable interaction profiles. The pressed bucket is internal state feedback and is
  * exposed separately by resolveActivationFeedbackPressedBucketClass.
  */
 export function resolveActivationFeedbackProfileAvailability(

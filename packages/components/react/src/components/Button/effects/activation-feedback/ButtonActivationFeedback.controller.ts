@@ -5,7 +5,8 @@ import type {
 } from '@kiskadee/core';
 import {
   resolveActivationFeedbackSetting,
-  usesActivationFeedbackRadialRuntime
+  usesActivationFeedbackRadialRuntime,
+  usesActivationFeedbackStaticRuntime
 } from '@kiskadee/core';
 import {
   type FocusEvent,
@@ -13,11 +14,14 @@ import {
   type MouseEvent,
   type PointerEvent,
   type RefObject,
-  useMemo
+  useCallback,
+  useMemo,
+  useRef
 } from 'react';
 import {
   resolveActivationFeedbackProfileAvailability
 } from '../../../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
+import { useActivationFeedbackHalo } from '../../../../hooks/effects/activation-feedback/useActivationFeedbackHalo.ts';
 import {
   type ActivationFeedbackRadialRuntimeConfig,
   resolveActivationFeedbackProfileRadialRuntimeConfig,
@@ -77,6 +81,8 @@ function resolveModernActivationFeedbackProfile({
   return availableProfiles[0] ?? null;
 }
 
+const BUTTON_ACTIVATION_FEEDBACK_MIN_POINTER_HOLD_MS = 120;
+
 export function useButtonActivationFeedbackController(
   common: ButtonCommonProps,
   options: { feedbackEnabled?: boolean } = {}
@@ -121,16 +127,12 @@ export function useButtonActivationFeedbackController(
     () => resolveActivationFeedbackProfileAvailability(e1),
     [e1?.e?.afs, e1?.e?.afo, e1?.e?.afx]
   );
-  const availableRadialActivationFeedbackProfiles = useMemo(
-    () => availableActivationFeedbackProfiles.filter(usesActivationFeedbackRadialRuntime),
-    [availableActivationFeedbackProfiles]
-  );
 
   const activationFeedbackProfile = useMemo(
     () =>
       resolveModernActivationFeedbackProfile({
         activationFeedback,
-        availableProfiles: availableRadialActivationFeedbackProfiles,
+        availableProfiles: availableActivationFeedbackProfiles,
         feedbackEnabled,
         globalProfile: activationFeedbackConfig?.profile,
         localProfile: localActivationFeedback?.profile
@@ -138,16 +140,23 @@ export function useButtonActivationFeedbackController(
     [
       activationFeedback,
       activationFeedbackConfig?.profile,
-      availableRadialActivationFeedbackProfiles,
+      availableActivationFeedbackProfiles,
       feedbackEnabled,
       localActivationFeedback?.profile
     ]
   );
 
+  const hostRef = useRef<HTMLButtonElement | null>(null);
   const feedbackKind: ButtonFeedbackKind | null = activationFeedbackProfile
     ? 'activationFeedback'
     : null;
   const effectProfile = activationFeedbackProfile;
+  const usesRadialRuntime = activationFeedbackProfile
+    ? usesActivationFeedbackRadialRuntime(activationFeedbackProfile)
+    : false;
+  const usesStaticRuntime = activationFeedbackProfile
+    ? usesActivationFeedbackStaticRuntime(activationFeedbackProfile)
+    : false;
   const globalActivationFeedbackOrigin: ActivationFeedbackOrigin =
     activationFeedbackConfig?.origin ?? 'center';
   const localActivationFeedbackOrigin: ActivationFeedbackOrigin | undefined =
@@ -155,14 +164,14 @@ export function useButtonActivationFeedbackController(
 
   const modeActivationFeedbackRuntimeConfig =
     useMemo<ActivationFeedbackRadialRuntimeConfig | null>(() => {
-      if (!activationFeedbackProfile) return null;
+      if (!activationFeedbackProfile || !usesRadialRuntime) return null;
 
       return resolveActivationFeedbackProfileRadialRuntimeConfig({
         config: activationFeedbackConfig,
         fallbackDurationMs: 468,
         profile: activationFeedbackProfile
       });
-    }, [activationFeedbackConfig, activationFeedbackProfile]);
+    }, [activationFeedbackConfig, activationFeedbackProfile, usesRadialRuntime]);
 
   const pressedActivationFeedbackRuntimeConfig = useMemo<ActivationFeedbackRadialRuntimeConfig>(
     () => {
@@ -174,11 +183,13 @@ export function useButtonActivationFeedbackController(
   );
 
   const shouldForceOverlayPressed =
+    !usesStaticRuntime &&
     status === 'pressed' &&
     Boolean(effectProfile) &&
     activationFeedbackConfig?.visual?.layer === 'overlay';
   const activationFeedbackMachine = useActivationFeedbackRadialStateMachine<HTMLButtonElement>({
-    effectProfile,
+    effectProfile: usesRadialRuntime ? effectProfile : null,
+    hostRef,
     isDisabled: accessibility.isDisabled,
     localActivationFeedbackOrigin,
     globalActivationFeedbackOrigin,
@@ -195,11 +206,39 @@ export function useButtonActivationFeedbackController(
     onKeyUp,
     onBlur
   });
+  const staticActivationFeedbackMachine = useActivationFeedbackHalo<
+    HTMLButtonElement,
+    HTMLButtonElement
+  >({
+    config: activationFeedbackConfig,
+    disabled: accessibility.isDisabled,
+    enabled: Boolean(effectProfile) && usesStaticRuntime,
+    geometry: 'profile-size',
+    hostRef,
+    minPointerHoldMs: BUTTON_ACTIVATION_FEEDBACK_MIN_POINTER_HOLD_MS,
+    origin: localActivationFeedbackOrigin ?? globalActivationFeedbackOrigin,
+    profile: activationFeedbackProfile ?? 'halo',
+    onPointerDown,
+    onPointerUp,
+    onPointerCancel,
+    onBlur
+  });
+  const handleStaticClick = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      if (accessibility.isDisabled === true) return;
+      onClick?.(event);
+    },
+    [accessibility.isDisabled, onClick]
+  );
+  const activeFeedbackMachine = usesStaticRuntime
+    ? staticActivationFeedbackMachine
+    : activationFeedbackMachine;
 
-  const shouldUsePressedFeedback = isPressed && controlState !== true;
+  const shouldUsePressedFeedback = !usesStaticRuntime && isPressed && controlState !== true;
   const isActive =
-    Boolean(effectProfile) && (activationFeedbackMachine.isActive || shouldForceOverlayPressed);
+    Boolean(effectProfile) && (activeFeedbackMachine.isActive || shouldForceOverlayPressed);
   const shouldUsePressedProfile =
+    !usesStaticRuntime &&
     Boolean(effectProfile) &&
     (activationFeedbackMachine.isOverlayActive || shouldForceOverlayPressed);
 
@@ -209,17 +248,17 @@ export function useButtonActivationFeedbackController(
     activationFeedbackProfile,
     feedbackKind,
     handlers: {
-      onBlur: activationFeedbackMachine.handleBlur,
-      onClick: activationFeedbackMachine.handleClick,
+      onBlur: activeFeedbackMachine.handleBlur,
+      onClick: usesStaticRuntime ? handleStaticClick : activationFeedbackMachine.handleClick,
       onKeyDown: activationFeedbackMachine.handleKeyDown,
       onKeyUp: activationFeedbackMachine.handleKeyUp,
-      onPointerCancel: activationFeedbackMachine.handlePointerCancel,
-      onPointerDown: activationFeedbackMachine.handlePointerDown,
-      onPointerUp: activationFeedbackMachine.handlePointerUp
+      onPointerCancel: activeFeedbackMachine.handlePointerCancel,
+      onPointerDown: activeFeedbackMachine.handlePointerDown,
+      onPointerUp: activeFeedbackMachine.handlePointerUp
     },
-    hostRef: activationFeedbackMachine.hostRef,
+    hostRef,
     isFeedbackActive: isActive,
-    isFeedbackFading: activationFeedbackMachine.isFading,
+    isFeedbackFading: activeFeedbackMachine.isFading,
     shouldForceOverlayPressed,
     shouldUsePressedFeedback,
     shouldUsePressedProfile

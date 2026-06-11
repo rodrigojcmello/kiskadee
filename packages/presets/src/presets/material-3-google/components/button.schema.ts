@@ -27,6 +27,11 @@ export function createMaterial3GoogleButtonSchema({
           tone: {
             default: 'subtle'
           }
+        },
+        profiles: {
+          halo: {
+            size: 80
+          }
         }
       }
     },

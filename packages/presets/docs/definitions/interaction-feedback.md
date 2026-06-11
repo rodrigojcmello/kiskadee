@@ -185,9 +185,14 @@ The local override is `activationFeedback`; passing
 `activationFeedback={false}` disables the activation-feedback path.
 
 Button defaults should normally use `profile: 'ripple'` and `origin: 'pointer'`.
-React Button currently selects only profiles whose shared capability declares the
-radial runtime. Static-runtime profiles such as `halo` require component
-structure that can consume host-sized geometry before Button can expose them.
+React Button selects the resolved profile first, then delegates to the runtime
+declared by the shared profile capability. Radial profiles use pointer geometry;
+static profiles such as `halo` use a fixed overflow layer without the ripple
+size wave. Button halo uses `profile.size` as its fixed circular diameter and
+should normally keep `origin: 'pointer'`, matching `ripple-overflow` without the
+animated size expansion. Button halo should use `paint: 'halo'`, not
+`paint: 'outline'`; outline feedback is reserved for component recipes that
+explicitly need a border-like affordance.
 Unlike Switch, Button does not need a `byEmphasis` tone mapping by default; if a
 preset wants one, it must declare it in component schema.
 

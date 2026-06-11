@@ -16,7 +16,7 @@ import type {
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { tryReleasePointerCapture, trySetPointerCapture } from './pointerCapture.ts';
 
-type UseActivationFeedbackOverflowStaticArgs<
+type UseActivationFeedbackHaloArgs<
   TPointerElement extends HTMLElement,
   THostElement extends HTMLElement
 > = {
@@ -25,6 +25,7 @@ type UseActivationFeedbackOverflowStaticArgs<
   disabled?: boolean;
   enabled: boolean;
   forcedActive?: boolean;
+  geometry?: 'host' | 'profile-size';
   hostRef?: RefObject<THostElement | null>;
   minPointerHoldMs?: number;
   onBlur?: (event: FocusEvent<TPointerElement>) => void;
@@ -37,7 +38,7 @@ type UseActivationFeedbackOverflowStaticArgs<
   shouldStartPointerFeedback?: (event: PointerEvent<TPointerElement>) => boolean;
 };
 
-export function useActivationFeedbackOverflowStatic<
+export function useActivationFeedbackHalo<
   TPointerElement extends HTMLElement = HTMLElement,
   THostElement extends HTMLElement = TPointerElement
 >({
@@ -46,6 +47,7 @@ export function useActivationFeedbackOverflowStatic<
   disabled,
   enabled,
   forcedActive,
+  geometry = 'host',
   hostRef,
   minPointerHoldMs = 0,
   onBlur,
@@ -56,7 +58,7 @@ export function useActivationFeedbackOverflowStatic<
   profile = 'halo',
   readOnly,
   shouldStartPointerFeedback
-}: UseActivationFeedbackOverflowStaticArgs<TPointerElement, THostElement>) {
+}: UseActivationFeedbackHaloArgs<TPointerElement, THostElement>) {
   const [isActive, setIsActive] = useState(false);
   const [isFading, setIsFading] = useState(false);
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -72,7 +74,11 @@ export function useActivationFeedbackOverflowStatic<
     return {
       durationMs: resolveActivationFeedbackDurationMs(profileConfig.durationToken, 0),
       fadeDelayMs: resolveActivationFeedbackDurationMs(profileConfig.fade?.delayToken, 50),
-      fadeDurationMs: resolveActivationFeedbackDurationMs(profileConfig.fade?.durationToken, 100)
+      fadeDurationMs: resolveActivationFeedbackDurationMs(profileConfig.fade?.durationToken, 100),
+      sizePx:
+        typeof profileConfig.size === 'number' && profileConfig.size > 0
+          ? profileConfig.size
+          : null
     };
   }, [config, profile]);
 
@@ -142,7 +148,10 @@ export function useActivationFeedbackOverflowStatic<
     const rect = host.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) return false;
 
-    const size = Math.max(rect.width, rect.height);
+    const size =
+      geometry === 'profile-size' && runtimeConfig.sizePx !== null
+        ? runtimeConfig.sizePx
+        : Math.max(rect.width, rect.height);
     const hostStyle = window.getComputedStyle(host);
     host.style.setProperty('--k-af-start-size', `${size}px`);
     host.style.setProperty('--k-af-end-size', `${size}px`);
@@ -150,7 +159,7 @@ export function useActivationFeedbackOverflowStatic<
     host.style.setProperty('--k-af-host-height', `${rect.height}px`);
     host.style.setProperty('--k-af-host-radius', hostStyle.borderTopLeftRadius);
     return true;
-  }, [hostRef]);
+  }, [geometry, hostRef, runtimeConfig.sizePx]);
 
   const applyStaticFeedback = useCallback(
     (event?: PointerEvent<TPointerElement> | MouseEvent<TPointerElement>) => {
