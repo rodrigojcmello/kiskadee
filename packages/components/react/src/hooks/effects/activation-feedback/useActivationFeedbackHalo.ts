@@ -121,6 +121,7 @@ export function useActivationFeedbackHalo<
     host.style.removeProperty('--k-af-host-width');
     host.style.removeProperty('--k-af-host-height');
     host.style.removeProperty('--k-af-host-radius');
+    host.style.removeProperty('--k-af-outline-radius');
   }, [hostRef]);
 
   const applyOriginVars = useCallback(
@@ -160,6 +161,11 @@ export function useActivationFeedbackHalo<
     host.style.setProperty('--k-af-host-width', `${rect.width}px`);
     host.style.setProperty('--k-af-host-height', `${rect.height}px`);
     host.style.setProperty('--k-af-host-radius', hostStyle.borderTopLeftRadius);
+    if (Number.parseFloat(hostStyle.borderTopLeftRadius) <= 0) {
+      host.style.setProperty('--k-af-outline-radius', '0px');
+    } else {
+      host.style.removeProperty('--k-af-outline-radius');
+    }
     return true;
   }, [geometry, hostRef, runtimeConfig.sizePx]);
 

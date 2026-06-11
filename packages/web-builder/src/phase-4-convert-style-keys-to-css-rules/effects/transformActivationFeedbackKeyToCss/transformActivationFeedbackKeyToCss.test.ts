@@ -82,7 +82,9 @@ describe('transformActivationFeedbackKeyToCss', () => {
     expect(out).toContain(
       '--k-af-layer-width: calc(var(--k-af-host-width, var(--k-af-end-size)) + (8px * 2));'
     );
-    expect(out).toContain('--k-af-layer-radius: calc(var(--k-af-host-radius, 0px) + 8px);');
+    expect(out).toContain(
+      '--k-af-layer-radius: var(--k-af-outline-radius, calc(var(--k-af-host-radius, 0px) + 8px));'
+    );
     expect(out).toContain('--k-af-border-width: 8px;');
     expect(out).toContain('--k-af-fade-duration: 360ms;');
   });

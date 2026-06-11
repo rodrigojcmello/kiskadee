@@ -152,6 +152,10 @@ For `visual.paint`, `size` has paint-specific meaning:
 - `paint: 'field'`: `size` is the filled field expansion/area.
 - `paint: 'outline'`: `size` is the outline stroke width.
 
+For `paint: 'outline'`, the layer follows the measured host corner radius. A
+host with `0px` radius keeps a square outline; otherwise the outer outline
+radius expands from the host radius by the outline stroke width.
+
 ## Switch Activation Feedback
 
 Switch defaults should normally use `profile: 'halo'` and `origin: 'center'`,
