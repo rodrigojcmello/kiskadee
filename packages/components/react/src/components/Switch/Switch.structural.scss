@@ -105,6 +105,8 @@
   pointer-events: none;
   transform: translate(0, -50%);
   transition:
+    width var(--k-dur-int) var(--k-ease-out),
+    height var(--k-dur-int) var(--k-ease-out),
     inset-inline-start var(--k-dur-int) var(--k-ease-out),
     transform var(--k-dur-int) var(--k-ease-out),
     border-color var(--k-dur-int) var(--k-ease-out),

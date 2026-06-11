@@ -35,15 +35,20 @@ optimized single-component implementation was promoted into
   the runtime/schema contract.
 - iOS 26 Apple Switch uses `visual.paint: 'outline'` with `profiles.halo.size: 8`, so the rectangular
   thumb gets an outline feedback instead of a filled halo.
+- Switch thumb rendering is now a single-layer model: `e3` is the visual thumb, runtime-motion
+  measurement target, `thumbShrink` target, and activation-feedback host. Do not reintroduce an
+  internal thumb visual layer for `thumbShrink`.
+- Runtime motion keeps a square alignment box for thumbs smaller than the track content height, so
+  thumbShrink preserves the large-thumb visual inset while still rendering only one `e3` thumb.
 - `controlText` is isolated under `features/control-text`.
 - The Showcase uses only `/switch`.
 - The second-version Showcase route was removed.
 - `radius="rounded"` is resolved from generated track variables, not from a runtime radius
   measurement. The track keeps the generated radius class, computes `--k-swt-tr` from `--k-bdr`,
-  `--k-bdw`, and compensated padding vars, and the thumb/thumb-shrink visual consume that structural
-  value through `k-swt-e3a-a` / `k-swt-x5a-a`.
-- Do not apply the generated rounded radius class from `e3` to the thumb or `x5`; that reintroduces
-  the raw track-radius bug. `pill` and `square` still use generated thumb radius classes directly.
+  `--k-bdw`, and compensated padding vars, and the thumb consumes that structural value through
+  `k-swt-e3a-a`.
+- Do not apply the generated rounded radius value from `e3` directly as-is; that reintroduces the raw
+  track-radius bug. `pill` and `square` still use generated thumb radius classes directly.
 - KIS-33 keeps Switch-on-primary-surface inside the existing `emphasis="low"` contract. It does not
   add a `ComponentEmphasis` value, does not reinterpret `intent="primary"`, and does not model this
   as dark mode.

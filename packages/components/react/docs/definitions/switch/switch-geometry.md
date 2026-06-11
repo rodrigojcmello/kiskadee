@@ -19,13 +19,15 @@ actual nested DOM shape.
   radius runtime.
 - The thumb consumes that track-derived value through the branch-local `k-swt-e3a-*` structural
   modifier. This works by normal CSS inheritance because the rendered track wraps the thumb.
-- When the Switch uses the `thumbShrink` effect, the internal `x5` thumb visual consumes the same
-  `--k-swt-tr` value as the normal `e3` thumb. The effect may reduce visual `width`/`height`, but it
-  does not recalculate or replace border radius.
+- When the Switch uses the `thumbShrink` effect, the same `e3` thumb consumes `--k-swt-tr` and
+  receives the effect dimensions directly. The effect may reduce thumb `width`/`height`, but it does
+  not recalculate or replace border radius.
 
-The runtime motion path may still measure track/thumb dimensions to compute thumb travel. It must
-not project rounded radius values; rounded radius is a structural CSS calculation based on the
-emitted track variables.
+The runtime motion path measures track/thumb dimensions to compute thumb travel. When the thumb is
+smaller than the track content height, motion uses a square alignment box based on that content
+height. This preserves the same visual inset that the large thumb would have had while still keeping
+`e3` as the only rendered thumb. The runtime must not project rounded radius values; rounded radius
+is a structural CSS calculation based on the emitted track variables.
 
 ## Focus Ring
 

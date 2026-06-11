@@ -140,7 +140,6 @@ HeadlessSwitch.Root
   SwitchControlSide
     HeadlessSwitch.Track
       HeadlessSwitch.Thumb or SwitchRuntimeMotionThumb
-        optional x5 thumb visual
   optional HeadlessSwitch.Label
 ```
 
@@ -153,8 +152,8 @@ Rules to preserve:
 - `controlText` is optional visual state text derived from `controlState`.
 - The wrapper around `controlText` plus the visual control is internal React DOM,
   not a schema element and not part of the headless API.
-- `classNames.e3` stays attached to the external thumb carrier even when the
-  thumb-shrink effect renders an internal visual thumb.
+- `classNames.e3` stays attached to the single rendered thumb. That thumb is
+  the visual element, the measurement target, and the local effect host.
 
 ## States
 
@@ -259,11 +258,11 @@ Current rules:
   `effects.thumbShrink === true`.
 - The effect can be disabled per instance with `thumbShrink={false}`.
 - The effect module is lazy-loaded through `useSwitchThumbShrinkEffect`.
-- When absent or disabled, no internal visual thumb node is rendered.
-- When active, the external `e3` thumb remains the stable carrier for
-  measurement, drag, and escape-hatch class names.
-- The internal `x5` visual thumb receives generated visual classes, radius
-  classes, and thumb-shrink effect classes.
+- The Switch renders a single thumb node in both normal and thumb-shrink modes.
+- The `e3` thumb receives generated visual classes, radius classes, and
+  thumb-shrink effect classes directly.
+- The `e3` thumb remains the stable target for visual rendering, runtime motion,
+  drag measurement, activation feedback, and escape-hatch class names.
 - Off/rest effect dimensions belong in schema. Runtime must not decide per-scale
   effect availability.
 
@@ -311,8 +310,9 @@ Preserve these rules:
   thumb.
 - `rounded` uses the generated track radius and computes the thumb radius from
   track variables, padding, and border width.
-- Do not apply the generated rounded `e3` radius class directly to the thumb or
-  `x5`; that can reintroduce raw track-radius bugs.
+- Do not apply the generated rounded `e3` radius value directly as-is; the
+  thumb must use the branch-local `k-swt-e3a-*` structural modifier so it
+  consumes the track-derived radius.
 - The runtime motion path may measure track/thumb travel, but it must not
   project rounded radius values.
 - Keyboard-visible focus is drawn on the rendered track because the native input
@@ -349,13 +349,12 @@ generated markup, structural CSS, or regressions.
 | `k-swt` | Switch structural namespace/root. |
 | `k-swt-e1-a` | Root structural branch. |
 | `k-swt-e2-a` | Track. |
-| `k-swt-e3-a` | Thumb carrier. |
+| `k-swt-e3-a` | Thumb, visual host, and local effect host. |
 | `k-swt-e4-a` | Label text. |
 | `k-swt-e5-a` | Control text. |
 | `k-swt-m` | Runtime motion gate. |
 | `k-swt-x2-a` | Internal wrapper grouping control text and visual control. |
 | `k-swt-x3-a` / `k-swt-x4-a` | Internal off/on control-text parts. |
-| `k-swt-x5-a` | Internal thumb-shrink visual. |
 | `k-swt-x6-a` | Internal visual-control wrapper. |
 
 The structural branch registry currently uses `a` for the single public Switch
@@ -379,7 +378,7 @@ public variants or modes.
 ### Internal Details
 
 - Exact structural class names.
-- Internal wrappers `x2`, `x3`, `x4`, `x5`, and `x6`.
+- Internal wrappers `x2`, `x3`, `x4`, and `x6`.
 - Lazy module names and loader implementation details.
 - Motion spring constants, drag threshold, velocity projection, and click
   suppression duration.

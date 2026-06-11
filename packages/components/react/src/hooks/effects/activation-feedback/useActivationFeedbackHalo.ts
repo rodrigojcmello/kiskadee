@@ -121,6 +121,7 @@ export function useActivationFeedbackHalo<
     host.style.removeProperty('--k-af-host-width');
     host.style.removeProperty('--k-af-host-height');
     host.style.removeProperty('--k-af-host-radius');
+    host.style.removeProperty('--k-af-outline-radius');
   }, [hostRef]);
 
   const applyOriginVars = useCallback(
@@ -160,6 +161,11 @@ export function useActivationFeedbackHalo<
     host.style.setProperty('--k-af-host-width', `${rect.width}px`);
     host.style.setProperty('--k-af-host-height', `${rect.height}px`);
     host.style.setProperty('--k-af-host-radius', hostStyle.borderTopLeftRadius);
+    if (Number.parseFloat(hostStyle.borderTopLeftRadius) <= 0) {
+      host.style.setProperty('--k-af-outline-radius', '0px');
+    } else {
+      host.style.removeProperty('--k-af-outline-radius');
+    }
     return true;
   }, [geometry, hostRef, runtimeConfig.sizePx]);
 
@@ -303,6 +309,66 @@ export function useActivationFeedbackHalo<
     if (!isInteractionDisabled || isForcedActive) return;
     cancel();
   }, [cancel, isForcedActive, isInteractionDisabled]);
+
+  useEffect(() => {
+    if (isInteractionDisabled || isForcedActive || (!isActive && !isFading)) return;
+
+    let animationFrame: number | null = null;
+    const host = hostRef?.current;
+    if (!host) return;
+
+    const syncGeometry = () => {
+      clearGeometryVars();
+      if (!applyStaticGeometryVars()) {
+        clearGeometryVars();
+      }
+    };
+    const scheduleGeometrySync = () => {
+      if (animationFrame !== null) return;
+
+      animationFrame = window.requestAnimationFrame(() => {
+        animationFrame = null;
+        syncGeometry();
+      });
+    };
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(scheduleGeometrySync)
+        : null;
+    const handleHostTransitionEnd = (event: TransitionEvent) => {
+      if (event.target !== host) return;
+      if (
+        !event.propertyName.includes('radius') &&
+        event.propertyName !== 'width' &&
+        event.propertyName !== 'height'
+      ) {
+        return;
+      }
+
+      syncGeometry();
+    };
+
+    scheduleGeometrySync();
+    resizeObserver?.observe(host);
+    host.addEventListener('transitionend', handleHostTransitionEnd);
+
+    return () => {
+      resizeObserver?.disconnect();
+      host.removeEventListener('transitionend', handleHostTransitionEnd);
+      if (animationFrame !== null) {
+        window.cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, [
+    applyStaticGeometryVars,
+    clearGeometryVars,
+    geometryKey,
+    hostRef,
+    isActive,
+    isFading,
+    isForcedActive,
+    isInteractionDisabled
+  ]);
 
   useEffect(() => {
     if (!isForcedActive) return;

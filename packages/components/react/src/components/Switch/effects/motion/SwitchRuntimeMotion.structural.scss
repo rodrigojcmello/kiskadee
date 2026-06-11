@@ -33,6 +33,8 @@
   touch-action: pan-y;
   transform: none;
   transition:
+    width var(--k-swt-dur) var(--k-ease-out),
+    height var(--k-swt-dur) var(--k-ease-out),
     border-color var(--k-swt-dur) var(--k-ease-out),
     border-radius var(--k-swt-dur) var(--k-ease-out),
     color var(--k-swt-dur) var(--k-ease-out),

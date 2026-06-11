@@ -26,13 +26,12 @@ export type SwitchThumbShrinkEffectOptions = {
 
 export type SwitchThumbShrinkEffectResult = {
   classNames: Required<SwitchClassNames>;
-  thumbVisualClassName: string;
 };
 
 export function resolveSwitchThumbShrinkEffect(
   options: SwitchThumbShrinkEffectOptions
 ): SwitchThumbShrinkEffectResult {
-  const { x5, ...classNames } = resolveSwitchThumbShrinkClassNames({
+  const classNames = resolveSwitchThumbShrinkClassNames({
     elements: options.elements,
     classNames: options.classNames,
     structuralBranch: 'a',
@@ -50,7 +49,6 @@ export function resolveSwitchThumbShrinkEffect(
     classNames: {
       ...options.baseClassNames,
       e3: classNames.e3
-    },
-    thumbVisualClassName: x5
+    }
   };
 }
