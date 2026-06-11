@@ -6,12 +6,19 @@
 /*
  * element thumb / e3
  * Caps pill/square radius from the reduced thumb-shrink height.
- * Rounded uses the dedicated e3a modifier and keeps the track-derived radius.
  */
 .k-swt:not(.-s) .k-swt-e3-a:not(.k-swt-e3a-a) {
   border-radius: clamp(
     0px,
     var(--k-bdr, 0px),
-    calc(var(--k-swt-thh, calc(var(--k-bdr, 0px) * 2)) / 2)
+    calc(var(--k-swt-thh, calc(var(--k-bdr, 0px) * 2)) * 0.5)
   );
+}
+
+/*
+ * element thumb modifier 'a' / e3a
+ * Keeps the reduced rounded activation-feedback outline aligned to the switch container radius.
+ */
+.k-swt:not(.-s) .k-swt-e3-a.k-swt-e3a-a {
+  --k-af-outline-radius: var(--k-bdr, 0px);
 }
