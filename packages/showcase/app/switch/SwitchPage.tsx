@@ -162,6 +162,10 @@ export default function SwitchPage() {
       : surface === 'primary'
         ? primarySurface.color
         : backgroundToneByKey.get(surface)?.resolvedColor;
+  const pageBackgroundColor =
+    surface === 'gray' || surface === 'light-primary'
+      ? '#ffffff'
+      : (backgroundToneByKey.get('gray')?.resolvedColor ?? '#f5f5f5');
   const pageStyle = {
     '--switch-surface-primary': primarySurface.color,
     '--switch-card-surface': selectedSurfaceColor ?? '#ffffff'
@@ -292,6 +296,22 @@ export default function SwitchPage() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const previousRouteBackground = root.style.getPropertyValue('--showcase-route-background');
+
+    root.style.setProperty('--showcase-route-background', pageBackgroundColor);
+
+    return () => {
+      if (previousRouteBackground) {
+        root.style.setProperty('--showcase-route-background', previousRouteBackground);
+        return;
+      }
+
+      root.style.removeProperty('--showcase-route-background');
+    };
+  }, [pageBackgroundColor]);
 
   const handleSurfaceChange = (value: string) => {
     const nextSurface = value as SwitchSurface;
