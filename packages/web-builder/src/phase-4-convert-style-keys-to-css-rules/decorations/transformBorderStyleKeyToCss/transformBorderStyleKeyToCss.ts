@@ -38,7 +38,8 @@ export function transformBorderStyleKeyToCss(styleKey: string, className: string
   }
 
   // Map the parsed key (e.g., "solid") to its concrete CSS value via the schema enum.
-  const value: CssBorderStyleValue | undefined = CssBorderStyleValue[valueKey as BorderStyleValue];
+  const value =
+    valueKey === undefined ? undefined : CssBorderStyleValue[valueKey as BorderStyleValue];
 
   // Consider the value unsupported when:
   // - More than one value part is present (e.g., "borderStyle__solid__extra"), or

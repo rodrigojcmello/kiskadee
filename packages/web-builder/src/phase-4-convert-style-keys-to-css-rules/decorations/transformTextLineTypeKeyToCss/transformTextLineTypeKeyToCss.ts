@@ -41,7 +41,7 @@ export function transformTextLineTypeKeyToCss(styleKey: string, className: strin
     throw new Error(UNSUPPORTED_VALUE(propertyName, invalidValue.join('__'), styleKey));
   }
 
-  const value: CssTextDecorationValue | undefined = CssTextDecorationValue[styleValue];
+  const value = CssTextDecorationValue[styleValue];
 
   if (value === undefined) {
     throw new Error(UNSUPPORTED_VALUE(propertyName, styleValue, styleKey));

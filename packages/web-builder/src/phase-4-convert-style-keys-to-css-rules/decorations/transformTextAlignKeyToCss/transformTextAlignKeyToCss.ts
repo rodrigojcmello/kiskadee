@@ -38,7 +38,7 @@ export function transformTextAlignKeyToCss(styleKey: string, className: string):
   }
 
   // Map the parsed key (e.g., "center") to its concrete CSS value via the schema enum.
-  const value: CssTextAlignValue | undefined = CssTextAlignValue[valueKey as TextAlignValue];
+  const value = valueKey === undefined ? undefined : CssTextAlignValue[valueKey as TextAlignValue];
 
   // Consider the value unsupported when:
   // - More than one value part is present (e.g., "textAlign__left__extra"), or

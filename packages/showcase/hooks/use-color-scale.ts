@@ -1,5 +1,6 @@
 'use client';
 
+import type { ThemeMode } from '@kiskadee/core';
 import { useEffect, useMemo, useState } from 'react';
 import {
   type ColorScaleJson,
@@ -7,19 +8,19 @@ import {
   loadColorScaleFromBuild
 } from '@/registry/colors.registry';
 
-type ThemeKey = 'light' | 'dark';
-
 export type ColorsJson = {
   primitiveColors?: Record<
     string,
     Record<
       string,
       {
-        solid?: Record<ThemeKey, string>;
+        solid?: Partial<Record<ThemeMode, string>>;
       }
     >
   >;
-  globalSemantics?: Record<ThemeKey, Record<string, string | { v1: string; v2?: string }>>;
+  globalSemantics?: Partial<
+    Record<ThemeMode, Record<string, string | { v1: string; v2?: string }>>
+  >;
 };
 
 export type SelectionValue = `semantic:${string}` | `primitive:${string}.${string}`;
@@ -83,7 +84,7 @@ function loadScaleJsonCached(
 
 function resolvePrimitiveRefFromSelection(params: {
   colors: ColorsJson;
-  theme: ThemeKey;
+  theme: ThemeMode;
   selection: SelectionValue;
 }): string | null {
   const { colors, theme, selection } = params;
@@ -109,7 +110,7 @@ function resolvePrimitiveRefFromSelection(params: {
 
 function resolveScaleFileName(params: {
   colors: ColorsJson;
-  theme: ThemeKey;
+  theme: ThemeMode;
   resolvedPrimitiveRef: string;
 }): string | null {
   const { colors, theme, resolvedPrimitiveRef } = params;
@@ -144,7 +145,7 @@ export function pickScaleTone(params: {
 
 export function useColorScale(params: {
   designSystemKey: string;
-  theme: ThemeKey;
+  theme: ThemeMode;
   selection: SelectionValue;
   enabled?: boolean;
 }): {
@@ -242,7 +243,7 @@ export function useColorScale(params: {
 
 export function useColorScaleTones(params: {
   designSystemKey: string;
-  theme: ThemeKey;
+  theme: ThemeMode;
   selection: SelectionValue;
   tones: readonly string[];
   preferredTracks: readonly string[];

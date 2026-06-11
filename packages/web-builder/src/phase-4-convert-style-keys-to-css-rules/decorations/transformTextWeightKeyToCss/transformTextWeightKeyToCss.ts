@@ -29,8 +29,7 @@ export function transformTextWeightKeyToCss(styleKey: string, className: string)
   }
 
   const textWeightValue = styleKey.substring(prefix.length);
-  const cssValue: CssTextWeightValue | undefined =
-    CssTextWeightValue[textWeightValue as TextWeightValue];
+  const cssValue = CssTextWeightValue[textWeightValue as TextWeightValue];
 
   if (cssValue === undefined) {
     throw new Error(UNSUPPORTED_VALUE(propertyName, textWeightValue, styleKey));
