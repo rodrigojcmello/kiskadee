@@ -4,48 +4,14 @@
  */
 
 /*
- * extra element for e3 / x5
- * Hosts the stable thumb visual inside the static thumb carrier.
+ * element thumb / e3
+ * Caps pill/square radius from the reduced thumb-shrink height.
+ * Rounded uses the dedicated e3a modifier and keeps the track-derived radius.
  */
-.k-swt-x5-a {
-  position: absolute;
-  inset-block-start: 50%;
-  inset-inline-start: 50%;
-  display: block;
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  transition:
-    width var(--k-dur-int) var(--k-ease-out),
-    height var(--k-dur-int) var(--k-ease-out),
-    border-color var(--k-dur-int) var(--k-ease-out),
-    border-radius var(--k-dur-int) var(--k-ease-out),
-    color var(--k-dur-int) var(--k-ease-out),
-    box-shadow var(--k-dur-int) var(--k-ease-out),
-    --k-bg0 var(--k-dur-int) var(--k-ease-out),
-    --k-bg1 var(--k-dur-int) var(--k-ease-out),
-    --k-bg2 var(--k-dur-int) var(--k-ease-out),
-    background-color var(--k-dur-int) var(--k-ease-out);
-}
-
-/*
- * Caps pill/square visual radius from the reduced thumb-shrink height.
- * Rounded uses the dedicated x5a modifier and keeps the track-derived radius.
- */
-.k-swt:not(.-s) .k-swt-x5-a:not(.k-swt-x5a-a) {
+.k-swt:not(.-s) .k-swt-e3-a:not(.k-swt-e3a-a) {
   border-radius: clamp(
     0px,
     var(--k-bdr, 0px),
     calc(var(--k-swt-thh, calc(var(--k-bdr, 0px) * 2)) / 2)
   );
-}
-
-/*
- * extra element for e3 modifier 'a' / x5a
- * Uses the track-derived rounded radius for thumb-shrink visual layers.
- */
-.k-swt-x5a-a {
-  border-radius: var(--k-swt-tr);
 }

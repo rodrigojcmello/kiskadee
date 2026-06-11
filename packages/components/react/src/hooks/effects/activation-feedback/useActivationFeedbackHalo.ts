@@ -305,6 +305,66 @@ export function useActivationFeedbackHalo<
   }, [cancel, isForcedActive, isInteractionDisabled]);
 
   useEffect(() => {
+    if (isInteractionDisabled || isForcedActive || (!isActive && !isFading)) return;
+
+    let animationFrame: number | null = null;
+    const host = hostRef?.current;
+    if (!host) return;
+
+    const syncGeometry = () => {
+      clearGeometryVars();
+      if (!applyStaticGeometryVars()) {
+        clearGeometryVars();
+      }
+    };
+    const scheduleGeometrySync = () => {
+      if (animationFrame !== null) return;
+
+      animationFrame = window.requestAnimationFrame(() => {
+        animationFrame = null;
+        syncGeometry();
+      });
+    };
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(scheduleGeometrySync)
+        : null;
+    const handleHostTransitionEnd = (event: TransitionEvent) => {
+      if (event.target !== host) return;
+      if (
+        !event.propertyName.includes('radius') &&
+        event.propertyName !== 'width' &&
+        event.propertyName !== 'height'
+      ) {
+        return;
+      }
+
+      syncGeometry();
+    };
+
+    scheduleGeometrySync();
+    resizeObserver?.observe(host);
+    host.addEventListener('transitionend', handleHostTransitionEnd);
+
+    return () => {
+      resizeObserver?.disconnect();
+      host.removeEventListener('transitionend', handleHostTransitionEnd);
+      if (animationFrame !== null) {
+        window.cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, [
+    applyStaticGeometryVars,
+    clearGeometryVars,
+    geometryKey,
+    hostRef,
+    isActive,
+    isFading,
+    isForcedActive,
+    isInteractionDisabled
+  ]);
+
+  useEffect(() => {
     if (!isForcedActive) return;
 
     let animationFrame: number | null = null;

@@ -186,25 +186,13 @@ function resolveThumbRadiusClassName(
   );
 }
 
-function resolveThumbVisualRadiusClassName(
-  element: ClassNameByElementJSON | undefined,
-  scale: string,
-  radiusMode: RadiusMode,
-  branch: SwitchStructuralBranch
-): string {
-  return (
-    join(
-      radiusMode === 'rounded' ? '' : resolveRadiusClassName(element, scale, radiusMode),
-      radiusMode === 'rounded' ? `k-swt-x5a-${branch}` : ''
-    ) ?? ''
-  );
-}
-
 function resolveThumbCarrierClassName(options: {
   elements: SwitchClassesMap;
   classNames: SwitchClassNames;
   structuralBranch: SwitchStructuralBranch;
   scale: string;
+  intent: SwitchIntent;
+  emphasis: ComponentEmphasis | undefined;
   radius: RadiusMode;
 }): string {
   const elements = options.elements;
@@ -214,6 +202,7 @@ function resolveThumbCarrierClassName(options: {
     join(
       `k-swt-e3-${branch}`,
       resolveScaleClassName(elements.e3, options.scale),
+      resolveVisualClassName(elements.e3, options),
       resolveThumbRadiusClassName(elements.e3, options.scale, options.radius, branch),
       'k-trn',
       options.classNames.e3
@@ -272,27 +261,6 @@ export function resolveSwitchClassNames(options: {
   };
 }
 
-export function resolveSwitchThumbVisualClassName(options: {
-  elements: SwitchClassesMap;
-  structuralBranch: SwitchStructuralBranch;
-  scale: string;
-  intent: SwitchIntent;
-  emphasis: ComponentEmphasis | undefined;
-  radius: RadiusMode;
-}): string {
-  const elements = options.elements;
-  const branch = options.structuralBranch;
-
-  return (
-    join(
-      `k-swt-x5-${branch}`,
-      resolveVisualClassName(elements.e3, options),
-      resolveThumbVisualRadiusClassName(elements.e3, options.scale, options.radius, branch),
-      'k-trn'
-    ) ?? ''
-  );
-}
-
 export function resolveSwitchThumbShrinkClassNames(options: {
   elements: SwitchClassesMap;
   classNames: SwitchClassNames;
@@ -305,16 +273,12 @@ export function resolveSwitchThumbShrinkClassNames(options: {
   labelPosition: SwitchLabelPosition;
   hasLabel: boolean;
   hasControlText: boolean;
-}): Required<SwitchClassNames> & { x5: string } {
+}): Required<SwitchClassNames> {
   const base = resolveSwitchClassNames(options);
   const elements = options.elements;
 
   return {
     ...base,
-    x5:
-      join(
-        resolveSwitchThumbVisualClassName(options),
-        resolveSwitchThumbShrinkEffectClassName(elements.e3, options.scale)
-      ) ?? ''
+    e3: join(base.e3, resolveSwitchThumbShrinkEffectClassName(elements.e3, options.scale)) ?? ''
   };
 }
