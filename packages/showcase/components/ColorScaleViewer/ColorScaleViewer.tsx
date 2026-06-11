@@ -1,15 +1,14 @@
 'use client';
 
+import type { ThemeMode } from '@kiskadee/core';
 import { KiskadeeContext } from '@kiskadee/react-components';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { type SelectionValue, useColorScale } from '@/hooks/use-color-scale';
 import { Select } from '@/k-components/Select/Select';
 import style from './ColorScaleViewer.module.scss';
 
-type ThemeKey = 'light' | 'dark';
-
-function normalizeTheme(theme: unknown): ThemeKey {
-  return theme === 'dark' ? 'dark' : 'light';
+function normalizeTheme(theme: unknown): ThemeMode {
+  return theme === 'dark' || theme === 'darker' ? theme : 'light';
 }
 
 function getSelectionLabel(value: SelectionValue): string {

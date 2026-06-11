@@ -22,6 +22,7 @@ describe('convertElementSchemaToStyleKeys', () => {
       button: {
         elements: {
           e1: {
+            name: 'button',
             decorations: {
               borderStyle: 'solid'
             },
@@ -106,6 +107,7 @@ describe('convertElementSchemaToStyleKeys', () => {
           line: {
             elements: {
               e3: {
+                name: 'label',
                 decorations: {
                   textWeight: 'medium'
                 },
@@ -136,6 +138,7 @@ describe('convertElementSchemaToStyleKeys', () => {
       button: {
         elements: {
           e1: {
+            name: 'button',
             palettes: {
               default: {
                 light: {
@@ -185,6 +188,7 @@ describe('convertElementSchemaToStyleKeys', () => {
       button: {
         elements: {
           e1: {
+            name: 'button',
             effects: {
               borderRadius: {
                 rounded: {
