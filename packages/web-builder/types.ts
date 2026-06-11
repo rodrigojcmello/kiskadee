@@ -13,12 +13,12 @@ export type {
   ComponentClassNameMapJSON,
   ComponentClassNameMapSplitJSON
 } from '@kiskadee/core';
-export type { ComponentClassMapArtifactJSON } from './src/component-artifacts/componentClassMapArtifacts';
-export type { SwitchComponentArtifactJSON } from './src/component-artifacts/switchComponentArtifact';
-export type { TabsComponentArtifactJSON } from './src/component-artifacts/tabsComponentArtifact';
-export type { TextFieldComponentArtifactJSON } from './src/component-artifacts/textFieldComponentArtifact';
-export type { FontStack } from './src/utils/fontFamily';
-export { toCssFontFamily } from './src/utils/fontFamily';
+export type { ComponentClassMapArtifactJSON } from './src/component-artifacts/componentClassMapArtifacts.ts';
+export type { SwitchComponentArtifactJSON } from './src/component-artifacts/switchComponentArtifact.ts';
+export type { TabsComponentArtifactJSON } from './src/component-artifacts/tabsComponentArtifact.ts';
+export type { TextFieldComponentArtifactJSON } from './src/component-artifacts/textFieldComponentArtifact.ts';
+export type { FontStack } from './src/utils/fontFamily.ts';
+export { toCssFontFamily } from './src/utils/fontFamily.ts';
 
 export type DesignSystemListEntry = {
   key: string;
@@ -39,4 +39,4 @@ export type {
   Manifest,
   ManifestComponent,
   ManifestComponentState
-} from './src/phase-7-publish-metadata/manifestTypes';
+} from './src/phase-7-publish-metadata/manifestTypes.ts';

@@ -69,7 +69,8 @@ function requireGlobalSemantics(colors: SchemaColors | undefined): GlobalSemanti
  */
 function materializeSegmentThemesArtifact(
   colors: SchemaColors | undefined,
-  bySegment: GlobalSemanticsBySegment
+  bySegment: GlobalSemanticsBySegment,
+  themesBySegment: Record<string, string[]> = {}
 ): Record<string, unknown> {
   const globalSemantics = requireGlobalSemantics(colors);
 
@@ -80,9 +81,17 @@ function materializeSegmentThemesArtifact(
     if (!entry) continue;
 
     const themes: Record<string, unknown> = {};
-    for (const themeName of Object.keys(globalSemantics)) {
-      const base = (globalSemantics as any)[themeName] ?? {};
-      const override = (entry as any)?.themes?.[themeName] ?? {};
+    const themeNames = new Set([
+      ...Object.keys(globalSemantics),
+      ...Object.keys((entry as any)?.themes ?? {}),
+      ...(themesBySegment[segmentKey] ?? [])
+    ]);
+    for (const themeName of themeNames) {
+      const fallbackThemeName = themeName === 'darker' ? 'dark' : themeName;
+      const base =
+        (globalSemantics as any)[themeName] ?? (globalSemantics as any)[fallbackThemeName] ?? {};
+      const override =
+        (entry as any)?.themes?.[themeName] ?? (entry as any)?.themes?.[fallbackThemeName] ?? {};
       themes[themeName] = {
         ...base,
         ...override
@@ -425,13 +434,13 @@ function deepConvertHslaTuplesToHex(value: unknown): unknown {
 function collectPrimitiveSolidScales(colors: SchemaColors): Array<{
   baseColor: string;
   variant: string;
-  theme: 'light' | 'dark';
+  theme: string;
   scale: EmphasisLevel;
 }> {
   const result: Array<{
     baseColor: string;
     variant: string;
-    theme: 'light' | 'dark';
+    theme: string;
     scale: EmphasisLevel;
   }> = [];
 
@@ -446,8 +455,7 @@ function collectPrimitiveSolidScales(colors: SchemaColors): Array<{
       const solid = (variantValue as any).solid as any;
       if (!solid || typeof solid !== 'object') continue;
 
-      for (const theme of ['light', 'dark'] as const) {
-        const scale = solid[theme] as unknown;
+      for (const [theme, scale] of Object.entries(solid)) {
         if (scale && typeof scale === 'object') {
           result.push({ baseColor, variant, theme, scale: scale as EmphasisLevel });
         }
@@ -460,7 +468,8 @@ function collectPrimitiveSolidScales(colors: SchemaColors): Array<{
 
 function buildColorsArtifact(
   colors: SchemaColors,
-  scaleFileNameByRef: WeakMap<object, string>
+  scaleFileNameByRef: WeakMap<object, string>,
+  themeNames: readonly string[] = []
 ): SchemaColors {
   const primitiveColorsSrc = (colors as any).primitiveColors as Record<string, unknown> | undefined;
   const primitiveColorsOut: Record<string, unknown> = {};
@@ -480,14 +489,17 @@ function buildColorsArtifact(
         if (solidSrc && typeof solidSrc === 'object') {
           variantOut.solid = variantOut.solid ?? {};
 
-          for (const theme of ['light', 'dark'] as const) {
-            const scale = solidSrc[theme] as unknown;
+          for (const [theme, scale] of Object.entries(solidSrc)) {
             if (scale && typeof scale === 'object') {
               const fileName = scaleFileNameByRef.get(scale as object);
               if (fileName) {
                 variantOut.solid[theme] = fileName;
               }
             }
+          }
+
+          if (themeNames.includes('darker') && variantOut.solid.darker === undefined) {
+            variantOut.solid.darker = variantOut.solid.dark;
           }
         }
 
@@ -498,10 +510,20 @@ function buildColorsArtifact(
     }
   }
 
+  const globalSemanticsOut = structuredClone((colors as any).globalSemantics ?? {});
+  if (
+    themeNames.includes('darker') &&
+    globalSemanticsOut.darker === undefined &&
+    globalSemanticsOut.dark !== undefined
+  ) {
+    globalSemanticsOut.darker = structuredClone(globalSemanticsOut.dark);
+  }
+
   // Keep Layers 2 and 3 as-is, but override Layer 1 with file references.
   return {
     ...(colors as any),
-    primitiveColors: primitiveColorsOut
+    primitiveColors: primitiveColorsOut,
+    globalSemantics: globalSemanticsOut
   } as SchemaColors;
 }
 
@@ -605,7 +627,7 @@ export async function publishMetadata(params: {
 
   // Write metadata files
   await writeFile(resolve(buildDir, 'manifest.json'), JSON.stringify(manifest, null, 2), 'utf8');
-  const segmentsArtifact = materializeSegmentThemesArtifact(colors, segmentRegistry);
+  const segmentsArtifact = materializeSegmentThemesArtifact(colors, segmentRegistry, themes);
   await writeFile(
     resolve(buildDir, 'segments.json'),
     JSON.stringify(segmentsArtifact, null, 2),
@@ -673,7 +695,8 @@ export async function publishMetadata(params: {
     await writeFile(filePath, JSON.stringify(convertedScale, null, 2), 'utf8');
   }
 
-  const colorsArtifact = buildColorsArtifact(colors, scaleFileNameByRef);
+  const themeNames = Array.from(new Set(Object.values(themes).flat()));
+  const colorsArtifact = buildColorsArtifact(colors, scaleFileNameByRef, themeNames);
   await writeFile(
     resolve(buildDir, 'colors.json'),
     JSON.stringify(colorsArtifact, null, 2),

@@ -8,8 +8,8 @@ import { describe, expect, it } from 'vitest';
 import type { ToneMetadataByPalette } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys.ts';
 import { convertElementSchemaToStyleKeys } from '../phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
-import { buildStyleKey } from '../utils/index.ts';
 import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
+import { buildStyleKey } from '../utils/index.ts';
 import { generateClassNamesMapSplit } from './generateClassNamesMap.ts';
 
 describe('generateClassNamesMapSplit', () => {
@@ -96,6 +96,7 @@ describe('generateClassNamesMapSplit', () => {
         button: {
           elements: {
             e2: {
+              name: 'label',
               palettes: {
                 default: {
                   light: {
@@ -111,6 +112,7 @@ describe('generateClassNamesMapSplit', () => {
               }
             },
             e3: {
+              name: 'icon',
               palettes: {
                 default: {
                   light: {
