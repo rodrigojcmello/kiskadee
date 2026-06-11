@@ -64,7 +64,7 @@ export const schema: Schema<Segment> = {
               tone: {
                 subtle: {
                   color: '#000000',
-                  opacity: 0.2
+                  opacity: 0.1
                 },
                 vivid: {
                   color: '#FFFFFF',

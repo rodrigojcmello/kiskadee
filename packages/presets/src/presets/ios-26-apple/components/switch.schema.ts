@@ -46,7 +46,7 @@ export function createIos26AppleSwitchSchema({
         },
         profiles: {
           halo: {
-            size: 8
+            size: 6
           }
         }
       }
