@@ -110,20 +110,11 @@ const switchControlText = {
 
 const THUMB_SHRINK_CHANGE_DELAY_MS = 400;
 
-function StateTile({
-  children,
-  surface,
-  title
-}: {
-  children: ReactNode;
-  surface: SwitchSurface;
-  title: string;
-}) {
+function StateTile({ children, surface }: { children: ReactNode; surface: SwitchSurface }) {
   const className = getSurfaceClassName(s.stateTile, surface);
 
   return (
     <div className={className}>
-      <div className={s.stateTitle}>{title}</div>
       <div className={s.stateControl}>{children}</div>
     </div>
   );
@@ -498,10 +489,10 @@ export default function SwitchPage() {
           <section className={`${s.section} ${s.statesSection}`}>
             <h3>States</h3>
             <div className={s.stateGrid}>
-              <StateTile title="Rest" surface={surface}>
+              <StateTile surface={surface}>
                 <Switch
                   id="switch-state-rest"
-                  label="Rest"
+                  label="Unselected (rest)"
                   controlText={switchControlText}
                   controlState={false}
                   scale={scale}
@@ -513,10 +504,10 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Selected" surface={surface}>
+              <StateTile surface={surface}>
                 <Switch
                   id="switch-state-selected"
-                  label="Selected"
+                  label="Selected (rest)"
                   controlText={switchControlText}
                   controlState
                   scale={scale}
@@ -528,10 +519,10 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Hover" surface={surface}>
+              <StateTile surface={surface}>
                 <Switch
                   id="switch-state-hover"
-                  label="Hover"
+                  label="Unselected (hover)"
                   controlText={switchControlText}
                   controlState={false}
                   status="hover"
@@ -544,10 +535,10 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Hover Selected" surface={surface}>
+              <StateTile surface={surface}>
                 <Switch
                   id="switch-state-hover-selected"
-                  label="Hover selected"
+                  label="Selected (hover)"
                   controlText={switchControlText}
                   controlState
                   status="hover"
@@ -560,10 +551,10 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Pressed" surface={surface}>
+              <StateTile surface={surface}>
                 <Switch
                   id="switch-state-pressed"
-                  label="Pressed"
+                  label="Unselected (pressed)"
                   controlText={switchControlText}
                   controlState={false}
                   status="pressed"
@@ -576,10 +567,10 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Pressed Selected" surface={surface}>
+              <StateTile surface={surface}>
                 <Switch
                   id="switch-state-pressed-selected"
-                  label="Pressed selected"
+                  label="Selected (pressed)"
                   controlText={switchControlText}
                   controlState
                   status="pressed"
@@ -592,10 +583,10 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Activation Feedback" surface={surface}>
+              <StateTile surface={surface}>
                 <Switch
                   id="switch-state-activation-feedback"
-                  label="Activation feedback"
+                  label="Unselected (activation feedback)"
                   controlText={switchControlText}
                   controlState={false}
                   status="pressed"
@@ -609,10 +600,10 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Activation Feedback Selected" surface={surface}>
+              <StateTile surface={surface}>
                 <Switch
                   id="switch-state-activation-feedback-selected"
-                  label="Activation feedback selected"
+                  label="Selected (activation feedback)"
                   controlText={switchControlText}
                   controlState
                   status="pressed"
@@ -626,10 +617,10 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Focus" surface={surface}>
+              <StateTile surface={surface}>
                 <Switch
                   id="switch-state-focus"
-                  label="Focus"
+                  label="Unselected (focus)"
                   controlText={switchControlText}
                   controlState={false}
                   status="focus"
@@ -642,10 +633,10 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Focus Selected" surface={surface}>
+              <StateTile surface={surface}>
                 <Switch
                   id="switch-state-focus-selected"
-                  label="Focus selected"
+                  label="Selected (focus)"
                   controlText={switchControlText}
                   controlState
                   status="focus"
@@ -658,10 +649,10 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile title="Disabled" surface={surface}>
+              <StateTile surface={surface}>
                 <Switch
                   id="switch-disabled"
-                  label="Disabled"
+                  label="Unselected (disabled)"
                   controlText={switchControlText}
                   controlState={false}
                   scale={scale}
@@ -673,10 +664,10 @@ export default function SwitchPage() {
                   disabled
                 />
               </StateTile>
-              <StateTile title="Disabled Selected" surface={surface}>
+              <StateTile surface={surface}>
                 <Switch
                   id="switch-disabled-selected"
-                  label="Disabled selected"
+                  label="Selected (disabled)"
                   controlText={switchControlText}
                   controlState
                   scale={scale}
