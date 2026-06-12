@@ -1,0 +1,30 @@
+'use client';
+
+import { createContext, useContext } from 'react';
+
+export type ShowcasePanelDetail = {
+  id: string;
+  eyebrow: string;
+  title: string;
+};
+
+type ShowcasePanelContextValue = {
+  panelDetail: ShowcasePanelDetail | null;
+  panelSlotElement: HTMLElement | null;
+  registerPanelDetail: (detail: ShowcasePanelDetail) => void;
+  clearPanelDetail: (id: string) => void;
+  showComponentsPanel: () => void;
+  showDetailPanel: () => void;
+};
+
+export const ShowcasePanelContext = createContext<ShowcasePanelContextValue | null>(null);
+
+export function useShowcasePanel() {
+  const context = useContext(ShowcasePanelContext);
+
+  if (!context) {
+    throw new Error('useShowcasePanel must be used inside ShowcasePanelContext.Provider.');
+  }
+
+  return context;
+}

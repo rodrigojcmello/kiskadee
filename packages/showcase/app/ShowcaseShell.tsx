@@ -2,70 +2,184 @@
 
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import ShowcaseSidebar from '@/components/ShowcaseSidebar/ShowcaseSidebar';
 import style from './layout.module.scss';
+import type { ShowcasePanelDetail } from './ShowcasePanelContext';
+import { ShowcasePanelContext } from './ShowcasePanelContext';
 
-export default function ShowcaseShell({ children }: { children: ReactNode }) {
+export default function ShowcaseShell({
+  children,
+  globalControls
+}: {
+  children: ReactNode;
+  globalControls?: ReactNode;
+}) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [panelDetail, setPanelDetail] = useState<ShowcasePanelDetail | null>(null);
+  const [panelMode, setPanelMode] = useState<'components' | 'detail'>('detail');
+  const [panelSlotElement, setPanelSlotElement] = useState<HTMLElement | null>(null);
+  const [isNarrowViewport, setIsNarrowViewport] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 960px)');
+    const handleChange = () => {
+      setIsNarrowViewport(mediaQuery.matches);
+    };
+
+    handleChange();
+    mediaQuery.addEventListener('change', handleChange);
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange);
+    };
+  }, []);
 
   useEffect(() => {
     setIsSidebarOpen(false);
+    setPanelMode('detail');
   }, [pathname]);
 
+  const registerPanelDetail = useCallback((detail: ShowcasePanelDetail) => {
+    setPanelDetail(detail);
+  }, []);
+
+  const clearPanelDetail = useCallback((id: string) => {
+    setPanelDetail((currentDetail) => (currentDetail?.id === id ? null : currentDetail));
+  }, []);
+
+  const showComponentsPanel = useCallback(() => {
+    setPanelMode('components');
+  }, []);
+
+  const showDetailPanel = useCallback(() => {
+    if (panelDetail) {
+      setPanelMode('detail');
+    }
+  }, [panelDetail]);
+
+  const setRoutePanelSlot = useCallback((node: HTMLDivElement | null) => {
+    setPanelSlotElement(node);
+  }, []);
+
+  const contextValue = useMemo(
+    () => ({
+      panelDetail,
+      panelSlotElement,
+      registerPanelDetail,
+      clearPanelDetail,
+      showComponentsPanel,
+      showDetailPanel
+    }),
+    [
+      clearPanelDetail,
+      panelDetail,
+      panelSlotElement,
+      registerPanelDetail,
+      showComponentsPanel,
+      showDetailPanel
+    ]
+  );
+
+  const isDetailPanelVisible = Boolean(panelDetail && panelMode === 'detail');
+  const menuLabel = isDetailPanelVisible ? 'Controls' : 'Components';
+  const menuAriaLabel = isSidebarOpen
+    ? `Close ${menuLabel.toLowerCase()} panel`
+    : `Open ${menuLabel.toLowerCase()} panel`;
+
+  const handleSidebarNavigate = useCallback(
+    (_href: string, isActive: boolean) => {
+      if (isActive && panelDetail) {
+        setPanelMode('detail');
+        return;
+      }
+
+      setIsSidebarOpen(false);
+    },
+    [panelDetail]
+  );
+
+  const sidebarContent = isDetailPanelVisible ? (
+    <aside
+      className={style.routePanel}
+      aria-label={`${panelDetail?.title ?? 'Component'} controls`}
+    >
+      <button type="button" className={style.backButton} onClick={showComponentsPanel}>
+        <span aria-hidden="true">‹</span>
+        <span>Components</span>
+      </button>
+      <div className={style.routePanelHeader}>
+        <p className={style.routePanelEyebrow}>{panelDetail?.eyebrow}</p>
+        <h2 className={style.routePanelTitle}>{panelDetail?.title}</h2>
+      </div>
+      <div ref={setRoutePanelSlot} className={style.routePanelSlot} />
+    </aside>
+  ) : (
+    <ShowcaseSidebar onNavigate={handleSidebarNavigate} />
+  );
+
   return (
-    <div className={style.shell}>
-      <div className={style.contentColumn}>
-        <div className={style.mobileHeader}>
-          <button
-            type="button"
-            className={style.menuButton}
-            onClick={() => setIsSidebarOpen((value) => !value)}
-            aria-expanded={isSidebarOpen}
-            aria-controls="showcase-sidebar-drawer"
-            aria-label={isSidebarOpen ? 'Close component menu' : 'Open component menu'}
-          >
-            <span className={style.menuButtonIcon} aria-hidden="true">
-              <span />
-              <span />
-              <span />
-            </span>
-            <span>Components</span>
-          </button>
+    <ShowcasePanelContext.Provider value={contextValue}>
+      <div className={style.shell}>
+        <div className={style.contentColumn}>
+          <div className={style.mobileHeader}>
+            <button
+              type="button"
+              className={style.menuButton}
+              onClick={() => setIsSidebarOpen((value) => !value)}
+              aria-expanded={isSidebarOpen}
+              aria-controls="showcase-sidebar-drawer"
+              aria-label={menuAriaLabel}
+            >
+              <span className={style.menuButtonIcon} aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </span>
+              <span>{menuLabel}</span>
+            </button>
+          </div>
+
+          <div className={style.content}>
+            <div className={style.contentInner}>{children}</div>
+          </div>
         </div>
 
-        <div className={style.content}>
-          <div className={style.contentInner}>{children}</div>
-        </div>
-      </div>
+        {!isNarrowViewport ? <div className={style.desktopSidebar}>{sidebarContent}</div> : null}
 
-      <div className={style.desktopSidebar}>
-        <ShowcaseSidebar />
-      </div>
+        {isNarrowViewport ? (
+          <>
+            <div
+              className={`${style.mobileBackdrop} ${isSidebarOpen ? style.mobileBackdropVisible : ''}`.trim()}
+              onClick={() => setIsSidebarOpen(false)}
+              aria-hidden={isSidebarOpen ? 'false' : 'true'}
+            />
 
-      <div
-        className={`${style.mobileBackdrop} ${isSidebarOpen ? style.mobileBackdropVisible : ''}`.trim()}
-        onClick={() => setIsSidebarOpen(false)}
-        aria-hidden={isSidebarOpen ? 'false' : 'true'}
-      />
-
-      <div
-        id="showcase-sidebar-drawer"
-        className={`${style.mobileSidebar} ${isSidebarOpen ? style.mobileSidebarOpen : ''}`.trim()}
-      >
-        <div className={style.mobileSidebarHeader}>
-          <button
-            type="button"
-            className={style.closeButton}
-            onClick={() => setIsSidebarOpen(false)}
-            aria-label="Close component menu"
-          >
-            Close
-          </button>
-        </div>
-        <ShowcaseSidebar onNavigate={() => setIsSidebarOpen(false)} />
+            <div
+              id="showcase-sidebar-drawer"
+              className={`${style.mobileSidebar} ${isSidebarOpen ? style.mobileSidebarOpen : ''}`.trim()}
+            >
+              <div className={style.mobileSidebarHeader}>
+                <button
+                  type="button"
+                  className={style.closeButton}
+                  onClick={() => setIsSidebarOpen(false)}
+                  aria-label={`Close ${menuLabel.toLowerCase()} panel`}
+                >
+                  Close
+                </button>
+              </div>
+              <div className={style.mobilePanelContent}>
+                {globalControls ? (
+                  <div className={style.mobileGlobalControls}>{globalControls}</div>
+                ) : null}
+                {sidebarContent}
+              </div>
+            </div>
+          </>
+        ) : null}
       </div>
-    </div>
+    </ShowcasePanelContext.Provider>
   );
 }

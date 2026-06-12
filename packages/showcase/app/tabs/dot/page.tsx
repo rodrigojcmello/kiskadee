@@ -3,12 +3,18 @@
 import type { TabsIndicatorPosition, TabsTabWidth } from '@kiskadee/core';
 import { TabsDot, useTabsArtifactConfig } from '@kiskadee/react-components';
 import { useState } from 'react';
-import { Select } from '@/k-components';
+import {
+  ShowcaseBooleanControl,
+  ShowcaseControlGrid,
+  ShowcaseControlGroup,
+  ShowcaseControlPanel,
+  ShowcaseControlStack,
+  ShowcaseSelectControl
+} from '@/components/ShowcaseControls';
 import {
   DEFAULT_TAB_SIZE,
   DEFAULT_TAB_VALUE,
   indicatorPositionLabels,
-  modeOptions,
   renderTabsSlots,
   type TabsIndicatorPositionControl,
   type TabsMode,
@@ -53,44 +59,48 @@ export default function TabsDotPage() {
     indicatorPosition === 'default' ? schemaIndicatorPosition : indicatorPosition;
   const tabWidthProp: TabsTabWidth | undefined = tabWidth === 'default' ? undefined : tabWidth;
   const { tabs, contents } = renderTabsSlots(TabsDot, 'dot');
+  const tabsDotControls = (
+    <ShowcaseControlPanel>
+      <ShowcaseControlGroup title="Layout">
+        <ShowcaseControlGrid>
+          <ShowcaseSelectControl
+            label="Size"
+            options={tabSizeOptions}
+            value={tabSize}
+            onValueChange={(value) => setTabSize(value as TabsSizeControl)}
+          />
+          <ShowcaseSelectControl
+            label="Indicator Side"
+            options={indicatorPositionOptions}
+            value={indicatorPosition}
+            onValueChange={(value) => setIndicatorPosition(value as TabsIndicatorPositionControl)}
+          />
+          <ShowcaseSelectControl
+            label="Tab Width"
+            options={tabWidthOptions}
+            value={tabWidth}
+            onValueChange={(value) => setTabWidth(value as TabsTabWidthControl)}
+          />
+        </ShowcaseControlGrid>
+      </ShowcaseControlGroup>
+      <ShowcaseControlGroup title="Motion">
+        <ShowcaseControlStack>
+          <ShowcaseBooleanControl
+            label="Animated"
+            checked={mode === 'animated'}
+            onCheckedChange={(checked) => setMode(checked ? 'animated' : 'static')}
+          />
+        </ShowcaseControlStack>
+      </ShowcaseControlGroup>
+    </ShowcaseControlPanel>
+  );
 
   return (
     <TabsShowcasePageShell
       activeVariant="dot"
       title="Tabs / Dot"
       description="Dot only needs the controls that affect its own runtime: mode, indicator side, and tab width."
-      controls={
-        <>
-          <Select
-            label="Size"
-            width={180}
-            options={tabSizeOptions}
-            value={tabSize}
-            onValueChange={(value) => setTabSize(value as TabsSizeControl)}
-          />
-          <Select
-            label="Mode"
-            width={180}
-            options={modeOptions}
-            value={mode}
-            onValueChange={(value) => setMode(value as TabsMode)}
-          />
-          <Select
-            label="Indicator Side"
-            width={220}
-            options={indicatorPositionOptions}
-            value={indicatorPosition}
-            onValueChange={(value) => setIndicatorPosition(value as TabsIndicatorPositionControl)}
-          />
-          <Select
-            label="Tab Width"
-            width={220}
-            options={tabWidthOptions}
-            value={tabWidth}
-            onValueChange={(value) => setTabWidth(value as TabsTabWidthControl)}
-          />
-        </>
-      }
+      controls={tabsDotControls}
     >
       <TabsDot.Root
         value={selectedValue}

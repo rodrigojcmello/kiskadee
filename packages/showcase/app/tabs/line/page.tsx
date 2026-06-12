@@ -9,7 +9,14 @@ import {
 } from '@kiskadee/core';
 import { TabsLine, useTabsArtifactConfig } from '@kiskadee/react-components';
 import { useState } from 'react';
-import { Select } from '@/k-components';
+import {
+  ShowcaseBooleanControl,
+  ShowcaseControlGrid,
+  ShowcaseControlGroup,
+  ShowcaseControlPanel,
+  ShowcaseControlStack,
+  ShowcaseSelectControl
+} from '@/components/ShowcaseControls';
 import {
   DEFAULT_TAB_SIZE,
   DEFAULT_TAB_VALUE,
@@ -17,7 +24,6 @@ import {
   indicatorPositionLabels,
   lineIndicatorShapeLabels,
   lineIndicatorWidthLabels,
-  modeOptions,
   renderTabsSlots,
   springOptions,
   type TabsIndicatorMotionStyleControl,
@@ -98,78 +104,78 @@ export default function TabsLinePage() {
     ...(lineWidthProp ? { width: lineWidthProp as TabsIndicatorWidth } : {})
   };
   const { tabs, contents } = renderTabsSlots(TabsLine, `line-${indicatorShape}`);
-
-  return (
-    <TabsShowcasePageShell
-      activeVariant="line"
-      title="Tabs / Line"
-      description="Line exposes the full indicator surface: shape, side, width behavior, motion mode, and tab width."
-      controls={
-        <>
-          <Select
+  const tabsLineControls = (
+    <ShowcaseControlPanel>
+      <ShowcaseControlGroup title="Layout">
+        <ShowcaseControlGrid>
+          <ShowcaseSelectControl
             label="Size"
-            width={180}
             options={tabSizeOptions}
             value={tabSize}
             onValueChange={(value) => setTabSize(value as TabsSizeControl)}
           />
-          <Select
-            label="Mode"
-            width={180}
-            options={modeOptions}
-            value={mode}
-            onValueChange={(value) => setMode(value as TabsMode)}
+          <ShowcaseSelectControl
+            label="Indicator Shape"
+            options={lineShapeOptions}
+            value={indicatorShape}
+            onValueChange={(value) => setIndicatorShape(value as TabsLineIndicatorShape)}
           />
-          {mode === 'animated' ? (
-            <Select
+          <ShowcaseSelectControl
+            label="Indicator Side"
+            options={indicatorPositionOptions}
+            value={indicatorPosition}
+            onValueChange={(value) => setIndicatorPosition(value as TabsIndicatorPositionControl)}
+          />
+          <ShowcaseSelectControl
+            label="Line Width"
+            options={lineWidthOptions}
+            value={lineWidth}
+            onValueChange={(value) => setLineWidth(value as TabsLineWidthControl)}
+          />
+          <ShowcaseSelectControl
+            label="Tab Width"
+            options={tabWidthOptions}
+            value={tabWidth}
+            onValueChange={(value) => setTabWidth(value as TabsTabWidthControl)}
+          />
+        </ShowcaseControlGrid>
+      </ShowcaseControlGroup>
+      <ShowcaseControlGroup title="Motion">
+        <ShowcaseControlStack>
+          <ShowcaseBooleanControl
+            label="Animated"
+            checked={mode === 'animated'}
+            onCheckedChange={(checked) => setMode(checked ? 'animated' : 'static')}
+          />
+        </ShowcaseControlStack>
+        {mode === 'animated' ? (
+          <ShowcaseControlGrid>
+            <ShowcaseSelectControl
               label="Spring"
-              width={180}
               options={springOptions}
               value={spring}
               onValueChange={(value) => setSpring(value as TabsSpring)}
             />
-          ) : null}
-          {mode === 'animated' ? (
-            <Select
+            <ShowcaseSelectControl
               label="Motion Style"
-              width={180}
               options={indicatorMotionStyleOptions}
               value={indicatorMotionStyle}
               onValueChange={(value) =>
                 setIndicatorMotionStyle(value as TabsIndicatorMotionStyleControl)
               }
             />
-          ) : null}
-          <Select
-            label="Indicator Shape"
-            width={200}
-            options={lineShapeOptions}
-            value={indicatorShape}
-            onValueChange={(value) => setIndicatorShape(value as TabsLineIndicatorShape)}
-          />
-          <Select
-            label="Indicator Side"
-            width={220}
-            options={indicatorPositionOptions}
-            value={indicatorPosition}
-            onValueChange={(value) => setIndicatorPosition(value as TabsIndicatorPositionControl)}
-          />
-          <Select
-            label="Line Width"
-            width={220}
-            options={lineWidthOptions}
-            value={lineWidth}
-            onValueChange={(value) => setLineWidth(value as TabsLineWidthControl)}
-          />
-          <Select
-            label="Tab Width"
-            width={220}
-            options={tabWidthOptions}
-            value={tabWidth}
-            onValueChange={(value) => setTabWidth(value as TabsTabWidthControl)}
-          />
-        </>
-      }
+          </ShowcaseControlGrid>
+        ) : null}
+      </ShowcaseControlGroup>
+    </ShowcaseControlPanel>
+  );
+
+  return (
+    <TabsShowcasePageShell
+      activeVariant="line"
+      title="Tabs / Line"
+      description="Line exposes the full indicator surface: shape, side, width behavior, motion mode, and tab width."
+      controls={tabsLineControls}
     >
       <TabsLine.Root
         value={selectedValue}

@@ -1,38 +1,37 @@
 .page {
   display: grid;
-  gap: 28px;
+  gap: 26px;
 
   --switch-card-surface: #fff;
   --switch-surface-primary: #615690;
 }
 
 .header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
 }
 
 .header h2 {
   margin: 0;
+  font-size: clamp(1.4rem, 2.8vw, 2rem);
+  line-height: 1.05;
 }
 
 .summary {
   max-width: 680px;
-  margin: 8px 0 0;
+  margin: 10px 0 0;
   color: rgba(0, 0, 0, 0.56);
   line-height: 1.5;
 }
 
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 12px;
-}
-
 .surfaceControl {
   --swatch-selected-ring-shadow: 0 0 0 3px color-mix(in srgb, var(--switch-surface-primary) 72%, white);
+  --swatch-group-inline-size: 100%;
+  --swatch-group-justify-content: space-between;
+
+  display: block;
+  min-width: 0;
 }
 
 .section {
@@ -46,14 +45,22 @@
   line-height: 1.2;
 }
 
+.previewSection {
+  inline-size: min(100%, calc((100% - 12px) / 2));
+  margin-inline: auto;
+}
+
+.statesSection {
+  min-width: 0;
+}
+
 .interactivePanel {
   display: flex;
   align-items: center;
-  inline-size: min(100%, calc((100% - 12px) / 2));
+  inline-size: 100%;
   min-width: 0;
-  min-height: 104px;
-  margin-inline: auto;
-  padding: 14px;
+  min-height: 128px;
+  padding: 18px;
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.72);
@@ -137,20 +144,47 @@
   background: rgba(255, 255, 255, 0.72);
 }
 
-@media (max-width: 720px) {
-  .header {
-    display: grid;
+@media (max-width: 1120px) {
+  .page {
+    gap: 20px;
   }
 
-  .controls {
-    justify-content: flex-start;
+  .interactivePanel {
+    min-height: 116px;
+  }
+}
+
+@media (max-width: 720px) {
+  .page {
+    gap: 18px;
+  }
+
+  .summary {
+    display: none;
   }
 
   .stateGrid {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .previewSection {
+    inline-size: 100%;
   }
 
   .interactivePanel {
-    inline-size: 100%;
+    min-height: 104px;
+    padding: 14px;
+  }
+
+  .stateTile {
+    min-height: 96px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .section {
+    gap: 10px;
   }
 }

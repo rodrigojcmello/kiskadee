@@ -3,6 +3,13 @@
   gap: 12px;
 }
 
+.panelContainer {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  min-width: 0;
+}
+
 .group {
   display: flex;
   flex-direction: column;
@@ -10,8 +17,21 @@
   min-width: 0;
 }
 
+.panelFull {
+  grid-column: 1 / -1;
+}
+
+.panelSelect {
+  display: block;
+  min-width: 0;
+}
+
+.panelSwatches {
+  --swatch-group-inline-size: 100%;
+  --swatch-group-justify-content: space-between;
+}
+
 .label {
   font-size: 0.8rem;
   opacity: 0.8;
 }
-

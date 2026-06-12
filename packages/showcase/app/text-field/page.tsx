@@ -15,7 +15,13 @@ import {
   useTextFieldArtifactConfig
 } from '@kiskadee/react-components';
 import { useEffect, useMemo, useState } from 'react';
-import { Select } from '@/k-components';
+import {
+  ShowcaseControlGrid,
+  ShowcaseControlGroup,
+  ShowcaseControlPanel,
+  ShowcaseRouteControls,
+  ShowcaseSelectControl
+} from '@/components/ShowcaseControls';
 
 const sectionStyle = {
   display: 'grid',
@@ -27,14 +33,6 @@ const sectionStyle = {
 const groupStyle = {
   display: 'grid',
   gap: 18
-} as const;
-
-const controlsStyle = {
-  display: 'flex',
-  gap: 12,
-  alignItems: 'center',
-  flexWrap: 'wrap',
-  marginBottom: 24
 } as const;
 
 const radiusOptions: Array<{ value: RadiusMode; label: string }> = [
@@ -88,6 +86,38 @@ export default function TextFieldPage() {
     setFocusRingColorSourceOverride(undefined);
   }, [designSystem]);
 
+  const textFieldControls = (
+    <ShowcaseControlPanel>
+      <ShowcaseControlGroup title="Appearance">
+        <ShowcaseControlGrid>
+          <ShowcaseSelectControl
+            label="Border Radius"
+            options={radiusOptions}
+            value={borderRadius}
+            onValueChange={(value) => setBorderRadius(value as RadiusMode)}
+          />
+          <ShowcaseSelectControl
+            label="Label Offset"
+            options={labelOffsetOptions}
+            value={labelOffsetSelection}
+            onValueChange={(value) => setLabelOffsetSelection(value as LabelOffsetSelection)}
+          />
+          <ShowcaseSelectControl
+            label="Focus Ring Color"
+            options={focusRingColorSourceOptions}
+            value={focusRingColorSourceSelection}
+            onValueChange={(value) => {
+              const next = value as TextFieldFocusRingColorSource;
+              setFocusRingColorSourceOverride(
+                next === schemaFocusRingColorSource ? undefined : next
+              );
+            }}
+          />
+        </ShowcaseControlGrid>
+      </ShowcaseControlGroup>
+    </ShowcaseControlPanel>
+  );
+
   return (
     <section className="k-root">
       <h2>TextField</h2>
@@ -96,32 +126,9 @@ export default function TextFieldPage() {
         borderless shells. Floating covers notched and inside label behavior.
       </p>
 
-      <div style={controlsStyle}>
-        <Select
-          label="Border Radius"
-          width={200}
-          options={radiusOptions}
-          value={borderRadius}
-          onValueChange={(value) => setBorderRadius(value as RadiusMode)}
-        />
-        <Select
-          label="Label Offset"
-          width={220}
-          options={labelOffsetOptions}
-          value={labelOffsetSelection}
-          onValueChange={(value) => setLabelOffsetSelection(value as LabelOffsetSelection)}
-        />
-        <Select
-          label="Focus Ring Color"
-          width={240}
-          options={focusRingColorSourceOptions}
-          value={focusRingColorSourceSelection}
-          onValueChange={(value) => {
-            const next = value as TextFieldFocusRingColorSource;
-            setFocusRingColorSourceOverride(next === schemaFocusRingColorSource ? undefined : next);
-          }}
-        />
-      </div>
+      <ShowcaseRouteControls id="text-field" eyebrow="TextField" title="Controls">
+        {textFieldControls}
+      </ShowcaseRouteControls>
 
       <div style={sectionStyle}>
         <div style={groupStyle}>

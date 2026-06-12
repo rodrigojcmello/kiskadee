@@ -3,7 +3,12 @@
 import type { TabsTabWidth } from '@kiskadee/core';
 import { TabsSegmented, useTabsArtifactConfig } from '@kiskadee/react-components';
 import { useState } from 'react';
-import { Select } from '@/k-components';
+import {
+  ShowcaseControlGrid,
+  ShowcaseControlGroup,
+  ShowcaseControlPanel,
+  ShowcaseSelectControl
+} from '@/components/ShowcaseControls';
 import {
   DEFAULT_TAB_SIZE,
   DEFAULT_TAB_VALUE,
@@ -34,30 +39,33 @@ export default function TabsSegmentedPage() {
   ];
   const tabWidthProp: TabsTabWidth | undefined = tabWidth === 'default' ? undefined : tabWidth;
   const { tabs, contents } = renderTabsSlots(TabsSegmented, 'segmented');
+  const tabsSegmentedControls = (
+    <ShowcaseControlPanel>
+      <ShowcaseControlGroup title="Layout">
+        <ShowcaseControlGrid>
+          <ShowcaseSelectControl
+            label="Size"
+            options={tabSizeOptions}
+            value={tabSize}
+            onValueChange={(value) => setTabSize(value as TabsSizeControl)}
+          />
+          <ShowcaseSelectControl
+            label="Tab Width"
+            options={tabWidthOptions}
+            value={tabWidth}
+            onValueChange={(value) => setTabWidth(value as TabsTabWidthControl)}
+          />
+        </ShowcaseControlGrid>
+      </ShowcaseControlGroup>
+    </ShowcaseControlPanel>
+  );
 
   return (
     <TabsShowcasePageShell
       activeVariant="segmented"
       title="Tabs / Segmented"
       description="Segmented does not expose indicator controls, so this page focuses only on tab width behavior."
-      controls={
-        <>
-          <Select
-            label="Size"
-            width={180}
-            options={tabSizeOptions}
-            value={tabSize}
-            onValueChange={(value) => setTabSize(value as TabsSizeControl)}
-          />
-          <Select
-            label="Tab Width"
-            width={220}
-            options={tabWidthOptions}
-            value={tabWidth}
-            onValueChange={(value) => setTabWidth(value as TabsTabWidthControl)}
-          />
-        </>
-      }
+      controls={tabsSegmentedControls}
     >
       <TabsSegmented.Root
         value={selectedValue}

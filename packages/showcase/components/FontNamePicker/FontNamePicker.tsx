@@ -5,7 +5,13 @@ import { toCssFontFamily } from '@kiskadee/web-builder/types';
 import { Select } from '@/k-components';
 import { FONTS } from '@/registry/fonts.registry';
 
-export default function FontNamePicker() {
+export default function FontNamePicker({
+  className,
+  width = 160
+}: {
+  className?: string;
+  width?: number | string;
+}) {
   const { fontName, setFontName } = useShowcase();
 
   // Convert FONTS to SelectOption format
@@ -20,8 +26,9 @@ export default function FontNamePicker() {
 
   return (
     <Select
+      className={className}
       label="Font"
-      width={160}
+      width={width}
       options={options}
       value={fontName}
       onValueChange={setFontName}

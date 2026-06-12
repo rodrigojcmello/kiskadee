@@ -6,7 +6,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { Icon } from '@/components/Icon/Icon';
 import styles from './Select.module.scss';
 
-interface SelectProps extends Omit<HeadlessSelectProps, 'children' | 'classNames'> {
+export interface SelectProps extends Omit<HeadlessSelectProps, 'children' | 'classNames'> {
   className?: string;
   label?: ReactNode;
   width?: number | string;

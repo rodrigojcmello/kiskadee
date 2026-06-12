@@ -3,7 +3,12 @@
 import type { TabsBridgeLowerCurve, TabsTabWidth } from '@kiskadee/core';
 import { TabsBridge, useTabsArtifactConfig } from '@kiskadee/react-components';
 import { useState } from 'react';
-import { Select } from '@/k-components';
+import {
+  ShowcaseControlGrid,
+  ShowcaseControlGroup,
+  ShowcaseControlPanel,
+  ShowcaseSelectControl
+} from '@/components/ShowcaseControls';
 import {
   bridgeLowerCurveLabels,
   DEFAULT_TAB_SIZE,
@@ -44,37 +49,39 @@ export default function TabsBridgePage() {
 
   const tabWidthProp: TabsTabWidth | undefined = tabWidth === 'default' ? undefined : tabWidth;
   const { tabs, contents } = renderTabsSlots(TabsBridge, 'bridge');
+  const tabsBridgeControls = (
+    <ShowcaseControlPanel>
+      <ShowcaseControlGroup title="Layout">
+        <ShowcaseControlGrid>
+          <ShowcaseSelectControl
+            label="Size"
+            options={tabSizeOptions}
+            value={tabSize}
+            onValueChange={(value) => setTabSize(value as TabsSizeControl)}
+          />
+          <ShowcaseSelectControl
+            label="Tab Width"
+            options={tabWidthOptions}
+            value={tabWidth}
+            onValueChange={(value) => setTabWidth(value as TabsTabWidthControl)}
+          />
+          <ShowcaseSelectControl
+            label="Lower Curve"
+            options={bridgeLowerCurveOptions}
+            value={bridgeLowerCurve}
+            onValueChange={(value) => setBridgeLowerCurve(value as TabsBridgeLowerCurve)}
+          />
+        </ShowcaseControlGrid>
+      </ShowcaseControlGroup>
+    </ShowcaseControlPanel>
+  );
 
   return (
     <TabsShowcasePageShell
       activeVariant="bridge"
       title="Tabs / Bridge"
       description="Bridge exposes only its structural controls: tab width and the bridge-only `lowerCurve`."
-      controls={
-        <>
-          <Select
-            label="Size"
-            width={180}
-            options={tabSizeOptions}
-            value={tabSize}
-            onValueChange={(value) => setTabSize(value as TabsSizeControl)}
-          />
-          <Select
-            label="Tab Width"
-            width={220}
-            options={tabWidthOptions}
-            value={tabWidth}
-            onValueChange={(value) => setTabWidth(value as TabsTabWidthControl)}
-          />
-          <Select
-            label="Lower Curve"
-            width={220}
-            options={bridgeLowerCurveOptions}
-            value={bridgeLowerCurve}
-            onValueChange={(value) => setBridgeLowerCurve(value as TabsBridgeLowerCurve)}
-          />
-        </>
-      }
+      controls={tabsBridgeControls}
     >
       <TabsBridge.Root
         value={selectedValue}

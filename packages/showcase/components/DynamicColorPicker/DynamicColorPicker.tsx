@@ -15,7 +15,7 @@ const SEGMENT_COLORS = [
   { value: 'black', color: '#000000', label: 'Black' } // Uber
 ];
 
-export default function DynamicColorPicker() {
+export default function DynamicColorPicker({ className }: { className?: string }) {
   const [selected, setSelected] = useState(SEGMENT_COLORS[0].value);
 
   // Apply initial color on mount
@@ -36,6 +36,7 @@ export default function DynamicColorPicker() {
 
   return (
     <SwatchRadioGroup
+      className={className}
       groupLabel="Dynamic Theme Color"
       value={selected}
       onValueChange={setSelected}

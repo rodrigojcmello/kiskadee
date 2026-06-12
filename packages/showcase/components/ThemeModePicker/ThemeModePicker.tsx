@@ -23,7 +23,7 @@ const OPTIONS: Array<{
   { key: 'darker', label: 'Darker', aria: 'Darker theme' }
 ];
 
-export default function ThemeModePicker() {
+export default function ThemeModePicker({ className }: { className?: string }) {
   const { theme, setTheme } = useKiskadee();
   const { availableThemes } = useShowcase();
 
@@ -44,6 +44,7 @@ export default function ThemeModePicker() {
 
   return (
     <SwatchRadioGroup
+      className={className}
       groupLabel="Theme"
       aria-label="Theme mode"
       value={theme}

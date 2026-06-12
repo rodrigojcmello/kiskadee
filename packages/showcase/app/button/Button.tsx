@@ -8,6 +8,13 @@ import {
 } from '@kiskadee/react-components';
 import React from 'react';
 import { Icon } from '@/components/Icon/Icon';
+import {
+  ShowcaseBooleanControl,
+  ShowcaseControlGroup,
+  ShowcaseControlPanel,
+  ShowcaseControlStack,
+  ShowcaseRouteControls
+} from '@/components/ShowcaseControls';
 import s from './Button.module.scss';
 import ButtonStateSection from './components/ButtonStateSection';
 
@@ -20,6 +27,24 @@ export function Button() {
 
   const isCarbon = designSystem === 'carbon-1-ibm';
   const alignment = isCarbon ? 'left' : 'center';
+  const buttonControls = (
+    <ShowcaseControlPanel>
+      <ShowcaseControlGroup title="Selected Examples">
+        <ShowcaseControlStack>
+          <ShowcaseBooleanControl
+            label="Primary medium"
+            checked={isSelected}
+            onCheckedChange={setIsSelected}
+          />
+          <ShowcaseBooleanControl
+            label="Primary high"
+            checked={isSelectedVivid}
+            onCheckedChange={setIsSelectedVivid}
+          />
+        </ShowcaseControlStack>
+      </ShowcaseControlGroup>
+    </ShowcaseControlPanel>
+  );
 
   // Manifest-driven capabilities for the current design system.
   // If the manifest is missing, we fall back to rendering all states
@@ -71,6 +96,9 @@ export function Button() {
   return (
     <section>
       <h2>Button</h2>
+      <ShowcaseRouteControls id="button" eyebrow="Button" title="Controls">
+        {buttonControls}
+      </ShowcaseRouteControls>
       <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
         {/*<KiskadeeButton label="Button" onClick={() => alert('Button clicado!')} />*/}
         {/*<KiskadeeButton*/}
@@ -132,11 +160,7 @@ export function Button() {
                 </SmoothText>
               </KButton.Label>
             </KButton>
-            <KButton
-              intent="primary"
-              emphasis="high"
-              activationFeedback={{ profile: 'halo' }}
-            >
+            <KButton intent="primary" emphasis="high" activationFeedback={{ profile: 'halo' }}>
               <KButton.Label>
                 <SmoothText fontName={fontName} align={alignment}>
                   AF Halo

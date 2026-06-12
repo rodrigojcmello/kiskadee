@@ -1,7 +1,6 @@
 'use client';
 
-import DesignSystemControls from '@/components/DesignSystemControls/DesignSystemControls';
-import ThemeModePicker from '@/components/ThemeModePicker/ThemeModePicker';
+import ShowcaseGlobalControls from '@/components/DesignSystemControls/ShowcaseGlobalControls';
 import styles from './DesignSystemToolbar.module.scss';
 
 type DesignSystemToolbarProps = {
@@ -15,19 +14,11 @@ export default function DesignSystemToolbar({
 }: DesignSystemToolbarProps) {
   return (
     <div className={styles.toolbar}>
-      <div>
-        <DesignSystemControls />
-      </div>
-      <div>
-        <ThemeModePicker />
-        <label>
-          <input
-            type="checkbox"
-            checked={Boolean(showColorScale)}
-            onChange={(event) => onToggleColorScale?.(event.target.checked)}
-          />
-        </label>
-      </div>
+      <ShowcaseGlobalControls
+        variant="toolbar"
+        showColorScale={Boolean(showColorScale)}
+        onToggleColorScale={(next) => onToggleColorScale?.(next)}
+      />
     </div>
   );
 }

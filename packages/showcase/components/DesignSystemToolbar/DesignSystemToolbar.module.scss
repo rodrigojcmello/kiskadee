@@ -22,7 +22,8 @@
   pointer-events: auto;
 }
 
-.toolbar > :last-child {
-  display: flex;
-  gap: 8px;
+@media (max-width: 960px) {
+  .toolbar {
+    display: none;
+  }
 }

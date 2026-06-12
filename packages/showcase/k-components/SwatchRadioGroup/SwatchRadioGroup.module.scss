@@ -30,6 +30,8 @@
 
 .swatches {
   display: inline-flex;
+  inline-size: var(--swatch-group-inline-size, auto);
+  justify-content: var(--swatch-group-justify-content, flex-start);
   gap: 8px;
   padding: 8px;
   background: rgba(255, 255, 255, 0.20);

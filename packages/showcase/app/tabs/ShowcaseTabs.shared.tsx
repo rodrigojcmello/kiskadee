@@ -1,3 +1,5 @@
+'use client';
+
 import type {
   TabsBoxIndicatorShape,
   TabsBridgeLowerCurve,
@@ -8,8 +10,9 @@ import type {
 } from '@kiskadee/core';
 import type { TabsIndicatorMotionStyle, TabsSpringPreset } from '@kiskadee/react-components';
 import Link from 'next/link';
-import type { ComponentType, CSSProperties, ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import { Icon } from '@/components/Icon/Icon';
+import { ShowcaseRouteControls } from '@/components/ShowcaseControls';
 
 export type TabsShowcaseVariant = 'line' | 'dot' | 'box' | 'segmented' | 'bridge';
 export type TabsMode = 'animated' | 'static';
@@ -55,11 +58,6 @@ export const tabItems: ReadonlyArray<{
   { value: 'single-letter', label: 'A' },
   { value: 'fifteen-letters', label: 'ABCDEFGHIJKLMNO' }
 ] as const;
-
-export const modeOptions = [
-  { value: 'animated', label: 'Animated' },
-  { value: 'static', label: 'Static' }
-];
 
 export const springOptions = [
   { value: 'snappy', label: 'Snappy' },
@@ -115,15 +113,7 @@ export const boxIndicatorShapeLabels: Record<TabsBoxIndicatorShape, string> = {
   pill: 'Pill'
 };
 
-export const tabsShowcaseControlsStyle: CSSProperties = {
-  display: 'flex',
-  gap: 12,
-  alignItems: 'center',
-  flexWrap: 'wrap',
-  marginBottom: 20
-};
-
-export const tabsShowcaseDescriptionStyle: CSSProperties = {
+export const tabsShowcaseDescriptionStyle = {
   marginTop: 0,
   marginBottom: 20,
   maxWidth: 720
@@ -215,12 +205,18 @@ export function TabsShowcasePageShell({
   controls?: ReactNode;
   children?: ReactNode;
 }) {
+  const panelId = activeVariant ? `tabs-${activeVariant}` : 'tabs';
+
   return (
     <section>
       <TabsShowcaseMenu activeVariant={activeVariant} />
       <h2>{title}</h2>
       {description ? <div style={tabsShowcaseDescriptionStyle}>{description}</div> : null}
-      {controls ? <div style={tabsShowcaseControlsStyle}>{controls}</div> : null}
+      {controls ? (
+        <ShowcaseRouteControls id={panelId} eyebrow="Tabs" title="Controls">
+          {controls}
+        </ShowcaseRouteControls>
+      ) : null}
       {children}
     </section>
   );

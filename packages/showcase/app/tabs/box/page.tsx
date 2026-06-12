@@ -7,13 +7,19 @@ import {
 } from '@kiskadee/core';
 import { TabsBox, useTabsArtifactConfig } from '@kiskadee/react-components';
 import { useState } from 'react';
-import { Select } from '@/k-components';
+import {
+  ShowcaseBooleanControl,
+  ShowcaseControlGrid,
+  ShowcaseControlGroup,
+  ShowcaseControlPanel,
+  ShowcaseControlStack,
+  ShowcaseSelectControl
+} from '@/components/ShowcaseControls';
 import {
   boxIndicatorShapeLabels,
   DEFAULT_TAB_SIZE,
   DEFAULT_TAB_VALUE,
   indicatorMotionStyleLabels,
-  modeOptions,
   renderTabsSlots,
   springOptions,
   type TabsIndicatorMotionStyleControl,
@@ -59,64 +65,66 @@ export default function TabsBoxPage() {
 
   const tabWidthProp: TabsTabWidth | undefined = tabWidth === 'default' ? undefined : tabWidth;
   const { tabs, contents } = renderTabsSlots(TabsBox, `box-${indicatorShape}`);
-
-  return (
-    <TabsShowcasePageShell
-      activeVariant="box"
-      title="Tabs / Box"
-      description="Box exposes the indicator shape selector together with motion controls and tab width."
-      controls={
-        <>
-          <Select
+  const tabsBoxControls = (
+    <ShowcaseControlPanel>
+      <ShowcaseControlGroup title="Layout">
+        <ShowcaseControlGrid>
+          <ShowcaseSelectControl
             label="Size"
-            width={180}
             options={tabSizeOptions}
             value={tabSize}
             onValueChange={(value) => setTabSize(value as TabsSizeControl)}
           />
-          <Select
-            label="Mode"
-            width={180}
-            options={modeOptions}
-            value={mode}
-            onValueChange={(value) => setMode(value as TabsMode)}
+          <ShowcaseSelectControl
+            label="Indicator Shape"
+            options={boxShapeOptions}
+            value={indicatorShape}
+            onValueChange={(value) => setIndicatorShape(value as TabsBoxIndicatorShape)}
           />
-          {mode === 'animated' ? (
-            <Select
+          <ShowcaseSelectControl
+            label="Tab Width"
+            options={tabWidthOptions}
+            value={tabWidth}
+            onValueChange={(value) => setTabWidth(value as TabsTabWidthControl)}
+          />
+        </ShowcaseControlGrid>
+      </ShowcaseControlGroup>
+      <ShowcaseControlGroup title="Motion">
+        <ShowcaseControlStack>
+          <ShowcaseBooleanControl
+            label="Animated"
+            checked={mode === 'animated'}
+            onCheckedChange={(checked) => setMode(checked ? 'animated' : 'static')}
+          />
+        </ShowcaseControlStack>
+        {mode === 'animated' ? (
+          <ShowcaseControlGrid>
+            <ShowcaseSelectControl
               label="Spring"
-              width={180}
               options={springOptions}
               value={spring}
               onValueChange={(value) => setSpring(value as TabsSpring)}
             />
-          ) : null}
-          {mode === 'animated' ? (
-            <Select
+            <ShowcaseSelectControl
               label="Motion Style"
-              width={180}
               options={indicatorMotionStyleOptions}
               value={indicatorMotionStyle}
               onValueChange={(value) =>
                 setIndicatorMotionStyle(value as TabsIndicatorMotionStyleControl)
               }
             />
-          ) : null}
-          <Select
-            label="Indicator Shape"
-            width={200}
-            options={boxShapeOptions}
-            value={indicatorShape}
-            onValueChange={(value) => setIndicatorShape(value as TabsBoxIndicatorShape)}
-          />
-          <Select
-            label="Tab Width"
-            width={220}
-            options={tabWidthOptions}
-            value={tabWidth}
-            onValueChange={(value) => setTabWidth(value as TabsTabWidthControl)}
-          />
-        </>
-      }
+          </ShowcaseControlGrid>
+        ) : null}
+      </ShowcaseControlGroup>
+    </ShowcaseControlPanel>
+  );
+
+  return (
+    <TabsShowcasePageShell
+      activeVariant="box"
+      title="Tabs / Box"
+      description="Box exposes the indicator shape selector together with motion controls and tab width."
+      controls={tabsBoxControls}
     >
       <TabsBox.Root
         value={selectedValue}

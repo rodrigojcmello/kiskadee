@@ -7,7 +7,7 @@
 
 .shell {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 280px;
+  grid-template-columns: minmax(0, 1fr) 340px;
   height: 100%;
   min-height: 0;
   background-color: var(--showcase-route-background, transparent);
@@ -17,7 +17,7 @@
 .desktopSidebar {
   min-width: 0;
   height: 100%;
-  padding: calc(var(--showcase-toolbar-height) + 24px) 24px 40px;
+  padding: calc(var(--showcase-toolbar-height) + 22px) 20px 40px;
   border-left: 1px solid rgba(0, 0, 0, 0.06);
   overflow-y: auto;
 }
@@ -51,13 +51,16 @@
 .menuButton {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 10px;
+  gap: 10px;
+  min-height: 36px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 999px;
   background: #fff;
   color: inherit;
-  padding: 10px 14px;
+  padding: 0 12px;
   font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .menuButtonIcon {
@@ -95,6 +98,62 @@
   font-weight: 600;
 }
 
+.routePanel {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  min-width: 0;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: rgba(0, 0, 0, 0.72);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.backButton:hover {
+  background: #fff;
+}
+
+.routePanelHeader {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 0 2px 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.routePanelEyebrow {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.48);
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.routePanelTitle {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.78);
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.12;
+}
+
+.routePanelSlot {
+  min-width: 0;
+}
+
 @media (max-width: 960px) {
   .layout {
     height: 100vh;
@@ -110,17 +169,17 @@
 
   .mobileHeader {
     display: flex;
-    padding: calc(var(--showcase-toolbar-height) + 16px) 20px 0;
+    padding: 16px 20px 0;
   }
 
   .contentInner {
-    padding: 20px 20px 40px;
+    padding: 16px 20px 40px;
   }
 
   .mobileBackdrop {
     display: block;
     position: fixed;
-    inset: var(--showcase-toolbar-height) 0 0 0;
+    inset: 0;
     background: rgba(0, 0, 0, 0.28);
     opacity: 0;
     pointer-events: none;
@@ -135,10 +194,10 @@
   .mobileSidebar {
     display: block;
     position: fixed;
-    top: var(--showcase-toolbar-height);
+    top: 0;
     right: 0;
     bottom: 0;
-    width: min(320px, calc(100vw - 40px));
+    width: min(380px, calc(100vw - 24px));
     padding: 20px;
     background: #fff;
     border-left: 1px solid rgba(0, 0, 0, 0.06);
@@ -156,5 +215,17 @@
     display: flex;
     justify-content: flex-end;
     padding-bottom: 12px;
+  }
+
+  .mobilePanelContent {
+    display: grid;
+    gap: 22px;
+    min-width: 0;
+  }
+
+  .mobileGlobalControls {
+    min-width: 0;
+    padding-bottom: 22px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   }
 }

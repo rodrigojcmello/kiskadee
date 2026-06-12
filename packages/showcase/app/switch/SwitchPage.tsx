@@ -10,12 +10,22 @@ import {
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  ShowcaseBooleanControl,
+  ShowcaseControlField,
+  ShowcaseControlGrid,
+  ShowcaseControlGroup,
+  ShowcaseControlPanel,
+  ShowcaseControlStack,
+  ShowcaseRouteControls,
+  ShowcaseSelectControl
+} from '@/components/ShowcaseControls';
+import {
   type BackgroundToneKey,
   type ResolvedBackgroundTone,
   useBackgroundTones,
   usePrimarySurfaceTone
 } from '@/hooks/use-background-tones';
-import { Select, SwatchRadioGroup } from '@/k-components';
+import { SwatchRadioGroup } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
 import s from './Switch.module.scss';
 
@@ -38,11 +48,6 @@ const emphasisOptions: Array<{ value: ComponentEmphasis; label: string }> = [
   { value: 'high', label: 'High' },
   { value: 'low', label: 'Low' },
   { value: 'lowest', label: 'Lowest' }
-];
-
-const effectToggleOptions = [
-  { value: 'on', label: 'Ligado' },
-  { value: 'off', label: 'Desligado' }
 ];
 
 type SwitchSurface = 'default' | 'primary' | Exclude<BackgroundToneKey, 'white'>;
@@ -342,20 +347,12 @@ export default function SwitchPage() {
   };
 
   const interactivePanelClassName = getSurfaceClassName(s.interactivePanel, surface);
-
-  return (
-    <section className={`${s.page} k-root`} style={pageStyle}>
-      <header className={s.header}>
-        <div>
-          <h2>Switch V2</h2>
-          <p className={s.summary}>
-            Static proof of concept for the generated `standard/base` switch contract.
-          </p>
-        </div>
-        <div className={s.controls}>
-          <Select
+  const switchControls = (
+    <ShowcaseControlPanel>
+      <ShowcaseControlGroup title="Shape">
+        <ShowcaseControlGrid>
+          <ShowcaseSelectControl
             label="Scale"
-            width={160}
             options={scaleSelectOptions}
             value={scale}
             onValueChange={(value) => {
@@ -366,9 +363,8 @@ export default function SwitchPage() {
             }}
             disabled={!isSwitchAvailable || scaleSelectOptions.length <= 1}
           />
-          <Select
+          <ShowcaseSelectControl
             label="Radius"
-            width={160}
             options={radiusSelectOptions}
             value={radius}
             onValueChange={(value) => {
@@ -379,9 +375,12 @@ export default function SwitchPage() {
             }}
             disabled={!isSwitchAvailable}
           />
-          <Select
+        </ShowcaseControlGrid>
+      </ShowcaseControlGroup>
+      <ShowcaseControlGroup title="Semantic">
+        <ShowcaseControlGrid>
+          <ShowcaseSelectControl
             label="Intent"
-            width={160}
             options={intentSelectOptions}
             value={intent}
             onValueChange={(value) => {
@@ -392,42 +391,41 @@ export default function SwitchPage() {
             }}
             disabled={!isSwitchAvailable || intentSelectOptions.length <= 1}
           />
-          <Select
+          <ShowcaseSelectControl
             label="Emphasis"
-            width={160}
             options={emphasisSelectOptions}
             value={emphasis}
             onValueChange={handleEmphasisChange}
             disabled={!isSwitchAvailable || emphasisSelectOptions.length <= 1}
           />
-          <SwatchRadioGroup
-            groupLabel="Surface"
-            value={surface}
-            onValueChange={handleSurfaceChange}
-            items={surfaceItems}
-            aria-label="Switch example surface"
-            className={s.surfaceControl}
-          />
-          <Select
+          <ShowcaseControlField fullWidth>
+            <SwatchRadioGroup
+              groupLabel="Surface"
+              value={surface}
+              onValueChange={handleSurfaceChange}
+              items={surfaceItems}
+              aria-label="Switch example surface"
+              className={s.surfaceControl}
+            />
+          </ShowcaseControlField>
+        </ShowcaseControlGrid>
+      </ShowcaseControlGroup>
+      <ShowcaseControlGroup title="Motion">
+        <ShowcaseControlStack>
+          <ShowcaseBooleanControl
             label="Motion"
-            width={140}
-            options={effectToggleOptions}
-            value={motionEnabled ? 'on' : 'off'}
-            onValueChange={(value) => {
-              const nextMotionEnabled = value === 'on';
+            checked={motionEnabled}
+            onCheckedChange={(nextMotionEnabled) => {
               if (nextMotionEnabled === motionEnabled) return;
               playWowTransition();
               setMotionEnabled(nextMotionEnabled);
             }}
             disabled={!isSwitchAvailable}
           />
-          <Select
+          <ShowcaseBooleanControl
             label="Thumb shrink"
-            width={140}
-            options={effectToggleOptions}
-            value={isThumbShrinkEnabled ? 'on' : 'off'}
-            onValueChange={(value) => {
-              const nextThumbShrinkEnabled = value === 'on';
+            checked={isThumbShrinkEnabled}
+            onCheckedChange={(nextThumbShrinkEnabled) => {
               if (!hasThumbShrinkEffect || nextThumbShrinkEnabled === isThumbShrinkEnabled) return;
               if (thumbShrinkChangeTimeoutRef.current) {
                 clearTimeout(thumbShrinkChangeTimeoutRef.current);
@@ -449,7 +447,18 @@ export default function SwitchPage() {
             }}
             disabled={!isSwitchAvailable || !hasThumbShrinkEffect}
           />
-        </div>
+        </ShowcaseControlStack>
+      </ShowcaseControlGroup>
+    </ShowcaseControlPanel>
+  );
+
+  return (
+    <section className={`${s.page} k-root`} style={pageStyle}>
+      <header className={s.header}>
+        <h2>Switch V2</h2>
+        <p className={s.summary}>
+          Static proof of concept for the generated `standard/base` switch contract.
+        </p>
       </header>
 
       {!isSwitchAvailable ? (
@@ -458,7 +467,16 @@ export default function SwitchPage() {
         </div>
       ) : (
         <>
-          <section className={s.section}>
+          <ShowcaseRouteControls
+            id="switch"
+            eyebrow="Switch"
+            title="Controls"
+            isAvailable={isSwitchAvailable}
+          >
+            {switchControls}
+          </ShowcaseRouteControls>
+
+          <section className={`${s.section} ${s.previewSection}`}>
             <h3>Interactive</h3>
             <div className={interactivePanelClassName}>
               <Switch
@@ -477,7 +495,7 @@ export default function SwitchPage() {
             </div>
           </section>
 
-          <section className={s.section}>
+          <section className={`${s.section} ${s.statesSection}`}>
             <h3>States</h3>
             <div className={s.stateGrid}>
               <StateTile title="Rest" surface={surface}>

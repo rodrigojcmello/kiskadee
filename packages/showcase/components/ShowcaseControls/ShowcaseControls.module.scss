@@ -1,0 +1,72 @@
+.panel {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+
+.group {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding-block-end: 18px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.group:last-child {
+  padding-block-end: 0;
+  border-bottom: 0;
+}
+
+.groupTitle {
+  color: rgba(0, 0, 0, 0.52);
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  min-width: 0;
+}
+
+.stack {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.field {
+  min-width: 0;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.select {
+  display: block;
+  min-width: 0;
+}
+
+.booleanLabel {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.booleanLabelText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.booleanDescription {
+  color: rgba(0, 0, 0, 0.48);
+  font-size: 0.76rem;
+  font-weight: 500;
+  line-height: 1.25;
+}

@@ -23,7 +23,13 @@ const entries = [
   }
 ] as const;
 
-export default function ShowcaseSidebar({ onNavigate }: { onNavigate?: () => void }) {
+type ShowcaseSidebarEntry = (typeof entries)[number];
+
+export default function ShowcaseSidebar({
+  onNavigate
+}: {
+  onNavigate?: (href: ShowcaseSidebarEntry['href'], isActive: boolean) => void;
+}) {
   const pathname = usePathname();
 
   return (
@@ -40,7 +46,7 @@ export default function ShowcaseSidebar({ onNavigate }: { onNavigate?: () => voi
             <Link
               key={entry.href}
               href={entry.href}
-              onClick={onNavigate}
+              onClick={() => onNavigate?.(entry.href, isActive)}
               className={`${style.link} ${isActive ? style.active : ''}`.trim()}
               aria-current={isActive ? 'page' : undefined}
             >
