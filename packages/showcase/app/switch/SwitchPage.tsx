@@ -203,9 +203,7 @@ export default function SwitchPage() {
   const motionOverride = motionEnabled ? undefined : false;
   const hasIconSupport = Boolean(switchClassesMap?.standard?.base?.e6);
   const hasActiveIconMode = hasIconSupport && iconMode !== 'none';
-  const isThumbShrinkLockedByIcons = hasActiveIconMode;
-  const isThumbShrinkEnabled =
-    hasThumbShrinkEffect && thumbShrinkEnabled && !isThumbShrinkLockedByIcons;
+  const isThumbShrinkEnabled = hasThumbShrinkEffect && thumbShrinkEnabled;
   const thumbShrinkOverride = isThumbShrinkEnabled ? undefined : false;
   const supportedScales = switchMeta?.scale;
   const supportedIntents = switchMeta?.state;
@@ -494,18 +492,17 @@ export default function SwitchPage() {
             label="Thumb shrink"
             checked={isThumbShrinkEnabled}
             onCheckedChange={(nextThumbShrinkEnabled) => {
-              if (
-                !hasThumbShrinkEffect ||
-                isThumbShrinkLockedByIcons ||
-                nextThumbShrinkEnabled === isThumbShrinkEnabled
-              )
-                return;
+              if (!hasThumbShrinkEffect || nextThumbShrinkEnabled === isThumbShrinkEnabled) return;
               if (thumbShrinkChangeTimeoutRef.current) {
                 clearTimeout(thumbShrinkChangeTimeoutRef.current);
               }
+              const shouldClearIcons = nextThumbShrinkEnabled && hasActiveIconMode;
 
               if (!controlState) {
                 playWowTransition();
+                if (shouldClearIcons) {
+                  setIconMode('none');
+                }
                 setThumbShrinkEnabled(nextThumbShrinkEnabled);
                 thumbShrinkChangeTimeoutRef.current = null;
                 return;
@@ -514,11 +511,14 @@ export default function SwitchPage() {
               setControlState(false);
               thumbShrinkChangeTimeoutRef.current = setTimeout(() => {
                 playWowTransition();
+                if (shouldClearIcons) {
+                  setIconMode('none');
+                }
                 setThumbShrinkEnabled(nextThumbShrinkEnabled);
                 thumbShrinkChangeTimeoutRef.current = null;
               }, THUMB_SHRINK_CHANGE_DELAY_MS);
             }}
-            disabled={!isSwitchAvailable || !hasThumbShrinkEffect || isThumbShrinkLockedByIcons}
+            disabled={!isSwitchAvailable || !hasThumbShrinkEffect}
           />
         </ShowcaseControlStack>
       </ShowcaseControlGroup>

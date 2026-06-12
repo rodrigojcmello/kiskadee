@@ -53,8 +53,9 @@ optimized single-component implementation was promoted into
   through `20 x 20` with the Switch scale.
 - Future presets without `e6` should not expose icon controls in Showcase.
 - The component intentionally allows `icons` and `thumbShrink` together. The `/switch` Showcase
-  applies a local presentation-only guard: choosing an icon mode disables `Thumb shrink`, and
-  choosing `Icons: None` restores artifact-default `thumbShrink` behavior.
+  applies a local presentation-only guard: choosing an icon mode unchecks `Thumb shrink`, choosing
+  `Icons: None` restores artifact-default `thumbShrink` behavior, and turning `Thumb shrink` back
+  on clears the icon mode to `None`.
 - Pending KIS-7 follow-ups: decide if small scales should hide icons and decide whether any preset
   should opt out of icons at specific scales.
 - The Showcase uses only `/switch`.
@@ -148,15 +149,21 @@ optimized single-component implementation was promoted into
 - 2026-06-12: Browser validation on `/switch` confirmed the `Icons` control and `currentColor`
   glyphs for Carbon IBM, Fluent 2 Microsoft, iOS 26 Apple, Material 3 Google, and Material 3
   Kiskadee.
-- 2026-06-12: `/switch` Showcase now disables `Thumb shrink` whenever `Icons` is not `None`, while
-  keeping component-level `icons` + `thumbShrink` support unrestricted.
+- 2026-06-12: `/switch` Showcase now keeps icons and `Thumb shrink` mutually exclusive at the
+  presentation layer, while keeping component-level `icons` + `thumbShrink` support unrestricted.
 - 2026-06-12: `pnpm --filter @kiskadee/showcase exec tsc --noEmit --pretty false`
 - 2026-06-12: `pnpm --filter @kiskadee/showcase build`
-- 2026-06-12: Browser validation on `/switch` confirmed `Icons: Play / pause` unchecks/disables
-  `Thumb shrink`, removes the `thumbShrink` class patch from the demo thumb, and `Icons: None`
-  restores artifact-default `thumbShrink`.
+- 2026-06-12: Browser validation on `/switch` confirmed `Icons: Play / pause` unchecks `Thumb
+  shrink`, removes the `thumbShrink` class patch from the demo thumb, and `Icons: None` restores
+  artifact-default `thumbShrink`.
 - 2026-06-12: Material Google `thumbShrink` disable bug fixed in runtime motion geometry.
   Browser validation on `/switch` confirmed the off-state thumb center stays near `635px` during
   `Thumb shrink` on -> off instead of jumping left to `631px`.
 - 2026-06-12: `pnpm --filter @kiskadee/react-components run build`
 - 2026-06-12: `pnpm --filter @kiskadee/showcase build`
+- 2026-06-12: `/switch` icon/shrink guard updated: icon modes leave the `Thumb shrink` control
+  enabled; turning `Thumb shrink` on while an icon mode is selected clears `Icons` back to `None`.
+- 2026-06-12: `pnpm --filter @kiskadee/showcase exec tsc --noEmit --pretty false`
+- 2026-06-12: Browser validation on `/switch` confirmed `Icons: Play / pause` unchecks `Thumb
+  shrink` without disabling it, and clicking `Thumb shrink` restores `Icons: None`, removes thumb
+  icons, and reapplies the `thumbShrink` class.
