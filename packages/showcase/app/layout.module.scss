@@ -15,11 +15,21 @@
 }
 
 .desktopSidebar {
+  position: relative;
   min-width: 0;
   height: 100%;
   padding: calc(var(--showcase-toolbar-height) + 22px) 20px 40px;
-  border-left: 1px solid rgba(0, 0, 0, 0.06);
   overflow-y: auto;
+}
+
+.desktopSidebar::before {
+  position: absolute;
+  top: 40px;
+  bottom: 40px;
+  left: 0;
+  width: 1px;
+  background: rgba(0, 0, 0, 0.06);
+  content: "";
 }
 
 .contentColumn {
@@ -129,8 +139,8 @@
   display: grid;
   gap: 4px;
   min-width: 0;
-  padding: 0 2px 14px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 18px 2px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .routePanelEyebrow {
@@ -200,11 +210,20 @@
     width: min(380px, calc(100vw - 24px));
     padding: 20px;
     background: #fff;
-    border-left: 1px solid rgba(0, 0, 0, 0.06);
     transform: translateX(100%);
     transition: transform 180ms ease;
     z-index: 20;
     overflow-y: auto;
+  }
+
+  .mobileSidebar::before {
+    position: absolute;
+    top: 40px;
+    bottom: 40px;
+    left: 0;
+    width: 1px;
+    background: rgba(0, 0, 0, 0.06);
+    content: "";
   }
 
   .mobileSidebarOpen {

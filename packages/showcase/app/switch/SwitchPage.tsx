@@ -460,8 +460,8 @@ export default function SwitchPage() {
         <>
           <ShowcaseRouteControls
             id="switch"
-            eyebrow="Switch"
-            title="Controls"
+            eyebrow="Controls"
+            title="Switch"
             isAvailable={isSwitchAvailable}
           >
             {switchControls}
