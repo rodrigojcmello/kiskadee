@@ -172,6 +172,36 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                   }
                 }
               },
+              e6: {
+                name: 'icon',
+                scales: {
+                  boxWidth: { 's:md:1': 14 },
+                  boxHeight: { 's:md:1': 14 }
+                },
+                palettes: {
+                  default: {
+                    light: {
+                      textColor: {
+                        neutral: {
+                          medium: {
+                            rest: carbonSwitchColor.toggleOff,
+                            hover: switchStateRef(carbonSwitchColor.toggleOff),
+                            focus: switchStateRef(carbonSwitchColor.toggleOff),
+                            pressed: switchStateRef(carbonSwitchColor.toggleOff),
+                            disabled: switchStateRef(carbonSwitchColor.textDisabled),
+                            selected: {
+                              rest: switchStateRef(carbonSwitchColor.supportSuccess),
+                              hover: switchStateRef(carbonSwitchColor.supportSuccess),
+                              focus: switchStateRef(carbonSwitchColor.supportSuccess),
+                              pressed: switchStateRef(carbonSwitchColor.supportSuccess)
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
               e4: {
                 name: 'label',
                 decorations: {

@@ -4,6 +4,7 @@ export { Switch } from './Switch.tsx';
 export type {
   SwitchClassNames,
   SwitchElementName,
+  SwitchIcons,
   SwitchLabelPosition,
   SwitchProps,
   SwitchStatus

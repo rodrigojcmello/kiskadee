@@ -45,7 +45,8 @@ function mergeSwitchClassNames(
     e2: join(baseClassNames.e2, ...patch('e2')) ?? '',
     e3: join(baseClassNames.e3, ...patch('e3')) ?? '',
     e4: join(baseClassNames.e4, ...patch('e4')) ?? '',
-    e5: join(baseClassNames.e5, ...patch('e5')) ?? ''
+    e5: join(baseClassNames.e5, ...patch('e5')) ?? '',
+    e6: join(baseClassNames.e6, ...patch('e6')) ?? ''
   };
 }
 
@@ -54,6 +55,7 @@ function SwitchRoot(props: SwitchProps) {
     id,
     label,
     controlText,
+    icons,
     className,
     classNames = EMPTY_SWITCH_CLASS_NAMES,
     inputProps,
@@ -84,6 +86,8 @@ function SwitchRoot(props: SwitchProps) {
   const resolvedRadius = radius ?? options.radius;
   const elements = resolveVariantElements(switchClassesMap, variant, mode);
   const hasLabel = label !== undefined && label !== null;
+  const hasIconSlot = Boolean(elements.e6 || classNames.e6);
+  const hasIcons = hasIconSlot && Boolean(icons?.rest || icons?.selected);
   const shouldRenderControlText = useSwitchControlTextFeature({
     controlText,
     visibility: options.controlTextVisibility
@@ -237,6 +241,16 @@ function SwitchRoot(props: SwitchProps) {
   ]);
   const MotionThumb = motionEffect?.SwitchRuntimeMotionThumb;
   const Thumb: ElementType = MotionThumb ?? HeadlessSwitch.Thumb;
+  const iconNodes = hasIcons ? (
+    <>
+      {icons?.rest ? (
+        <HeadlessSwitch.Icon className="k-swt-e6a-a">{icons.rest}</HeadlessSwitch.Icon>
+      ) : null}
+      {icons?.selected ? (
+        <HeadlessSwitch.Icon className="k-swt-e6b-a">{icons.selected}</HeadlessSwitch.Icon>
+      ) : null}
+    </>
+  ) : null;
   const thumbProps = MotionThumb
     ? {
         activationMotion: options.activationMotion,
@@ -270,7 +284,7 @@ function SwitchRoot(props: SwitchProps) {
         shouldRenderControlText={shouldRenderControlText}
       >
         <HeadlessSwitch.Track ref={motionController.thumbProps.trackRef}>
-          <Thumb {...thumbProps} />
+          <Thumb {...thumbProps}>{iconNodes}</Thumb>
         </HeadlessSwitch.Track>
       </SwitchControlSide>
       {hasLabel ? <HeadlessSwitch.Label>{label}</HeadlessSwitch.Label> : null}

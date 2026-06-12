@@ -18,6 +18,7 @@ const iosSwitchOnPrimaryTrackHover = [0, 0, 100, 0.4] as const;
 const iosSwitchOnPrimaryTrackPressed = [0, 0, 100, 0.48] as const;
 const iosSwitchOnPrimaryTrackDisabled = [0, 0, 100, 0.12] as const;
 const iosSwitchOnPrimaryTrackSelected = [0, 0, 100, 1] as const;
+const iosSwitchOffIcon = [0, 0, 47.059, 0.55] as const;
 
 export function createIos26AppleSwitchSchema({
   c,
@@ -410,6 +411,92 @@ export function createIos26AppleSwitchSchema({
                           rest: transparent,
                           selected: {
                             rest: { ref: transparent }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }))
+              },
+              e6: {
+                name: 'icon',
+                scales: {
+                  boxWidth: {
+                    's:sm:3': 8,
+                    's:sm:2': 10,
+                    's:sm:1': 12,
+                    's:md:1': 16,
+                    's:lg:1': 20
+                  },
+                  boxHeight: {
+                    's:sm:3': 8,
+                    's:sm:2': 10,
+                    's:sm:1': 12,
+                    's:md:1': 16,
+                    's:lg:1': 20
+                  }
+                },
+                palettes: buildBySegment(segmentNames, () => ({
+                  light: {
+                    textColor: {
+                      neutral: {
+                        medium: {
+                          rest: iosSwitchOffIcon,
+                          hover: { ref: iosSwitchOffIcon },
+                          focus: { ref: iosSwitchOffIcon },
+                          pressed: { ref: iosSwitchOffIcon },
+                          selected: {
+                            rest: { ref: iosSwitchNeutralOnTrack },
+                            hover: { ref: iosSwitchNeutralOnTrack },
+                            focus: { ref: iosSwitchNeutralOnTrack },
+                            pressed: { ref: iosSwitchNeutralOnTrack }
+                          }
+                        },
+                        low: {
+                          rest: iosSwitchNeutralOnTrack,
+                          hover: { ref: iosSwitchNeutralOnTrack },
+                          focus: { ref: iosSwitchNeutralOnTrack },
+                          pressed: { ref: iosSwitchNeutralOnTrack },
+                          disabled: { ref: iosSwitchOnPrimaryTrackDisabled },
+                          selected: {
+                            rest: { ref: iosSwitchThumb },
+                            hover: { ref: iosSwitchThumb },
+                            focus: { ref: iosSwitchThumb },
+                            pressed: { ref: iosSwitchThumb }
+                          }
+                        }
+                      },
+                      primary: {
+                        medium: {
+                          rest: iosSwitchOffIcon,
+                          selected: {
+                            rest: { ref: iosSwitchPrimaryOnTrack }
+                          }
+                        },
+                        low: {
+                          rest: iosSwitchPrimaryOnTrack,
+                          selected: {
+                            rest: { ref: iosSwitchThumb }
+                          }
+                        }
+                      },
+                      polarity: {
+                        medium: {
+                          rest: iosSwitchPolarityOffTrack,
+                          hover: { ref: iosSwitchPolarityOffTrack },
+                          focus: { ref: iosSwitchPolarityOffTrack },
+                          pressed: { ref: iosSwitchPolarityOffTrack },
+                          selected: {
+                            rest: { ref: iosSwitchNeutralOnTrack },
+                            hover: { ref: iosSwitchNeutralOnTrack },
+                            focus: { ref: iosSwitchNeutralOnTrack },
+                            pressed: { ref: iosSwitchNeutralOnTrack }
+                          }
+                        },
+                        low: {
+                          rest: iosSwitchPolarityOffTrack,
+                          selected: {
+                            rest: { ref: iosSwitchThumb }
                           }
                         }
                       }

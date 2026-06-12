@@ -67,8 +67,9 @@ headless root generates one and connects the wrapping label to the input.
 | `labelPosition` | Places the optional label before or after the visual control. Default: `start`. |
 | `motion` | `false` disables the runtime motion path. Any other value keeps runtime motion eligible. |
 | `thumbShrink` | `false` disables the thumb-shrink effect for the instance. Any other value keeps artifact-driven thumb size eligible. |
+| `icons` | Optional decorative thumb icons by control state: `{ rest?: ReactNode; selected?: ReactNode }`. Icons must be paintable through `currentColor`. |
 | `className` | Merged into the root `e1` slot. |
-| `classNames` | Escape hatch for the schema element slots `e1` through `e5`. |
+| `classNames` | Escape hatch for the schema element slots `e1` through `e6`. |
 
 `emphasis="low"` is the Switch treatment for strong local surfaces such as a
 primary Showcase card. It keeps the same intent semantics and adapts contrast
@@ -83,7 +84,7 @@ artifact options. Props may override only the options intentionally exposed in
 
 ### Elements
 
-Switch uses five canonical schema element slots:
+Switch uses six canonical schema element slots:
 
 | Element | Meaning |
 | --- | --- |
@@ -92,6 +93,7 @@ Switch uses five canonical schema element slots:
 | `e3` | Thumb / handle. |
 | `e4` | Optional label text. |
 | `e5` | Optional control-state text. |
+| `e6` | Optional thumb icon. |
 
 Current Switch topology is variant-driven:
 
@@ -140,6 +142,7 @@ HeadlessSwitch.Root
   SwitchControlSide
     HeadlessSwitch.Track
       HeadlessSwitch.Thumb or SwitchRuntimeMotionThumb
+        optional HeadlessSwitch.Icon
   optional HeadlessSwitch.Label
 ```
 
@@ -154,6 +157,36 @@ Rules to preserve:
   not a schema element and not part of the headless API.
 - `classNames.e3` stays attached to the single rendered thumb. That thumb is
   the visual element, the measurement target, and the local effect host.
+- `classNames.e6` stays attached to decorative thumb icons rendered inside
+  `e3`. The icon slot must not affect thumb measurement or motion geometry.
+
+## Thumb Icons
+
+`icons` accepts optional visual glyphs for the boolean control states:
+
+- `icons.rest` is shown when `controlState` is `false`.
+- `icons.selected` is shown when `controlState` is `true`.
+- missing state icons render no glyph for that state.
+- the icons are decorative; the native input and `label` still own the
+  accessible switch name.
+- icons render only when the resolved switch contract has `e6` or the consumer
+  supplies an explicit `classNames.e6` style hook.
+
+Switch icons follow the Button/Tabs icon color policy:
+
+- schema `e6.textColor` emits CSS `color`;
+- icons must be monochrome and use `currentColor` through SVG `fill`, SVG
+  `stroke`, or font glyph color inheritance;
+- the builder does not rewrite SVG `path`, `fill`, or `stroke` attributes;
+- multicolor SVGs, hardcoded SVG paints, raster images, and automatic asset
+  recoloring are outside the current contract.
+
+`e6.boxWidth` and `e6.boxHeight` define the icon slot. Structural CSS centers
+the slot inside the thumb and normalizes direct `svg` children to fill the slot.
+It must not hardcode semantic icon colors.
+
+Current first-party Switch presets define `e6`. Future presets that omit `e6`
+are treated as not supporting thumb icons.
 
 ## States
 

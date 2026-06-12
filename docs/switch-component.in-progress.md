@@ -40,7 +40,23 @@ optimized single-component implementation was promoted into
   internal thumb visual layer for `thumbShrink`.
 - Runtime motion keeps a square alignment box for thumbs smaller than the track content height, so
   thumbShrink preserves the large-thumb visual inset while still rendering only one `e3` thumb.
+  This alignment follows the measured thumb size during transitions, not the `thumbShrink` class
+  marker, so disabling the effect while the off-state thumb is still reduced does not move the
+  visual center.
 - `controlText` is isolated under `features/control-text`.
+- KIS-7 adds optional thumb icons through `icons={{ rest, selected }}`. The icon slot is schema
+  element `e6`, rendered inside thumb `e3`, and follows the Button/Tabs currentColor policy:
+  schema `textColor` emits CSS `color`; SVG/icon glyphs must use `currentColor`; the builder does
+  not rewrite SVG paints.
+- All current first-party presets with Switch support define an `e6` icon slot. Material 3 uses
+  `16 x 16`, Carbon uses `14 x 14`, Fluent uses `10 x 10`, and iOS scales the slot from `8 x 8`
+  through `20 x 20` with the Switch scale.
+- Future presets without `e6` should not expose icon controls in Showcase.
+- The component intentionally allows `icons` and `thumbShrink` together. The `/switch` Showcase
+  applies a local presentation-only guard: choosing an icon mode disables `Thumb shrink`, and
+  choosing `Icons: None` restores artifact-default `thumbShrink` behavior.
+- Pending KIS-7 follow-ups: decide if small scales should hide icons and decide whether any preset
+  should opt out of icons at specific scales.
 - The Showcase uses only `/switch`.
 - The second-version Showcase route was removed.
 - `radius="rounded"` is resolved from generated track variables, not from a runtime radius
@@ -70,6 +86,7 @@ optimized single-component implementation was promoted into
 - `pnpm --filter @kiskadee/showcase build`
 - `pnpm --filter @kiskadee/showcase run build:components`
 - `pnpm --filter @kiskadee/showcase run build:artifacts`
+- `pnpm --filter @kiskadee/web-builder run build-sync-generate`
 
 ## Latest Validation
 
@@ -120,3 +137,26 @@ optimized single-component implementation was promoted into
 - 2026-06-10: PR #8 review follow-ups resolved for activation feedback: profile capabilities now
   drive runtime/bucket choices, unknown profile buckets fail loudly, web-builder AF tests were
   restored, and shared pointer-capture/lazy-loader helpers removed duplicated runtime plumbing.
+- 2026-06-12: KIS-7 Switch thumb icons implemented with `e6` and `currentColor` policy. Material 3
+  Google emits the first icon slot and `/switch` exposes None, On/off, and Play/pause options only
+  when the active preset supports `e6`.
+- 2026-06-12: Switch thumb icon support extended to Carbon IBM, Fluent 2 Microsoft, and iOS 26
+  Apple, so every current first-party preset with Switch has an `e6` slot.
+- 2026-06-12: `pnpm --filter @kiskadee/web-builder run build-sync-generate`
+- 2026-06-12: `pnpm --filter @kiskadee/web-builder build`
+- 2026-06-12: `pnpm --filter @kiskadee/showcase build`
+- 2026-06-12: Browser validation on `/switch` confirmed the `Icons` control and `currentColor`
+  glyphs for Carbon IBM, Fluent 2 Microsoft, iOS 26 Apple, Material 3 Google, and Material 3
+  Kiskadee.
+- 2026-06-12: `/switch` Showcase now disables `Thumb shrink` whenever `Icons` is not `None`, while
+  keeping component-level `icons` + `thumbShrink` support unrestricted.
+- 2026-06-12: `pnpm --filter @kiskadee/showcase exec tsc --noEmit --pretty false`
+- 2026-06-12: `pnpm --filter @kiskadee/showcase build`
+- 2026-06-12: Browser validation on `/switch` confirmed `Icons: Play / pause` unchecks/disables
+  `Thumb shrink`, removes the `thumbShrink` class patch from the demo thumb, and `Icons: None`
+  restores artifact-default `thumbShrink`.
+- 2026-06-12: Material Google `thumbShrink` disable bug fixed in runtime motion geometry.
+  Browser validation on `/switch` confirmed the off-state thumb center stays near `635px` during
+  `Thumb shrink` on -> off instead of jumping left to `631px`.
+- 2026-06-12: `pnpm --filter @kiskadee/react-components run build`
+- 2026-06-12: `pnpm --filter @kiskadee/showcase build`

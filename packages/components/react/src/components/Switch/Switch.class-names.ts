@@ -257,7 +257,9 @@ export function resolveSwitchClassNames(options: {
     e5: options.hasControlText
       ? (join(`k-swt-e5-${branch}`, elem(elements.e5, options), 'k-trn', options.classNames.e5) ??
         '')
-      : (options.classNames.e5 ?? '')
+      : (options.classNames.e5 ?? ''),
+    e6:
+      join(`k-swt-e6-${branch}`, elem(elements.e6, options), 'k-trn', options.classNames.e6) ?? ''
   };
 }
 

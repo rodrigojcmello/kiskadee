@@ -5,6 +5,7 @@ export type {
   SwitchArtifactConfig,
   SwitchClassNames,
   SwitchElementName,
+  SwitchIcons,
   SwitchLabelPosition,
   SwitchProps,
   SwitchStatus

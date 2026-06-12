@@ -124,6 +124,17 @@ export function createSwitchStateElementStyleSchema<TSegmentName extends Segment
     .strict();
 }
 
+export function createSwitchIconElementStyleSchema<TSegmentName extends SegmentName = never>() {
+  return z
+    .object({
+      name: z.string(),
+      scales: createScalesSchema(['boxWidth', 'boxHeight']).optional(),
+      palettes: createPalettesSchema<TSegmentName, 'textColor'>(['textColor']).optional(),
+      effects: elementEffectsSchema.optional()
+    })
+    .strict();
+}
+
 export type SwitchRootElementStyleFromSchema = z.input<
   ReturnType<typeof createSwitchRootElementStyleSchema>
 >;
@@ -142,4 +153,8 @@ export type SwitchLabelElementStyleFromSchema<TSegmentName extends SegmentName =
 
 export type SwitchStateElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
   ReturnType<typeof createSwitchStateElementStyleSchema<TSegmentName>>
+>;
+
+export type SwitchIconElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
+  ReturnType<typeof createSwitchIconElementStyleSchema<TSegmentName>>
 >;

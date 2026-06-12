@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { SegmentName } from '../types/colors/colors.types.ts';
 import {
+  createSwitchIconElementStyleSchema,
   createSwitchLabelElementStyleSchema,
   createSwitchRootElementStyleSchema,
   createSwitchStateElementStyleSchema,
@@ -17,7 +18,8 @@ function createSwitchElementsSchema<TSegmentName extends SegmentName = never>() 
       e2: createSwitchTrackElementStyleSchema<TSegmentName>().optional(),
       e3: createSwitchThumbElementStyleSchema<TSegmentName>().optional(),
       e4: createSwitchLabelElementStyleSchema<TSegmentName>().optional(),
-      e5: createSwitchStateElementStyleSchema<TSegmentName>().optional()
+      e5: createSwitchStateElementStyleSchema<TSegmentName>().optional(),
+      e6: createSwitchIconElementStyleSchema<TSegmentName>().optional()
     })
     .strict();
 }

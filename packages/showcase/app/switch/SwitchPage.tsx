@@ -3,6 +3,7 @@
 import type { ComponentEmphasis, ElementSizeValue, RadiusMode, SwitchIntent } from '@kiskadee/core';
 import {
   Switch,
+  type SwitchIcons,
   useKiskadee,
   useShowcase,
   useSwitchArtifactConfig
@@ -108,7 +109,62 @@ const switchControlText = {
   off: 'Off'
 };
 
+type SwitchIconMode = 'none' | 'on-off' | 'play-pause';
+
+const iconModeOptions: Array<{ value: SwitchIconMode; label: string }> = [
+  { value: 'none', label: 'None' },
+  { value: 'on-off', label: 'On / off' },
+  { value: 'play-pause', label: 'Play / pause' }
+];
+
 const THUMB_SHRINK_CHANGE_DELAY_MS = 400;
+
+function SwitchOffIcon() {
+  return (
+    <svg viewBox="0 0 16 16" focusable="false">
+      <path
+        fill="currentColor"
+        d="M4.35 3.05 8 6.7l3.65-3.65 1.3 1.3L9.3 8l3.65 3.65-1.3 1.3L8 9.3l-3.65 3.65-1.3-1.3L6.7 8 3.05 4.35z"
+      />
+    </svg>
+  );
+}
+
+function SwitchOnIcon() {
+  return (
+    <svg viewBox="0 0 16 16" focusable="false">
+      <path fill="currentColor" d="M6.4 11.85 2.75 8.2l1.25-1.25 2.4 2.4 5.6-5.6L13.25 5z" />
+    </svg>
+  );
+}
+
+function SwitchPlayIcon() {
+  return (
+    <svg viewBox="0 0 16 16" focusable="false">
+      <path fill="currentColor" d="M5 3.25 12.25 8 5 12.75z" />
+    </svg>
+  );
+}
+
+function SwitchPauseIcon() {
+  return (
+    <svg viewBox="0 0 16 16" focusable="false">
+      <path fill="currentColor" d="M4.5 3.25h2.25v9.5H4.5zm4.75 0h2.25v9.5H9.25z" />
+    </svg>
+  );
+}
+
+const switchIconSets = {
+  none: undefined,
+  'on-off': {
+    rest: <SwitchOffIcon />,
+    selected: <SwitchOnIcon />
+  },
+  'play-pause': {
+    rest: <SwitchPlayIcon />,
+    selected: <SwitchPauseIcon />
+  }
+} satisfies Record<SwitchIconMode, SwitchIcons | undefined>;
 
 function StateTile({ children, surface }: { children: ReactNode; surface: SwitchSurface }) {
   const className = getSurfaceClassName(s.stateTile, surface);
@@ -122,7 +178,11 @@ function StateTile({ children, surface }: { children: ReactNode; surface: Switch
 
 export default function SwitchPage() {
   const { designSystem } = useKiskadee();
-  const { effects: switchEffects, options: switchOptions } = useSwitchArtifactConfig();
+  const {
+    effects: switchEffects,
+    options: switchOptions,
+    switchClassesMap
+  } = useSwitchArtifactConfig();
   const { manifest } = useShowcase();
   const backgroundTones = useBackgroundTones();
   const primarySurface = usePrimarySurfaceTone();
@@ -134,17 +194,23 @@ export default function SwitchPage() {
   const [surface, setSurface] = useState<SwitchSurface>('default');
   const [motionEnabled, setMotionEnabled] = useState(true);
   const [thumbShrinkEnabled, setThumbShrinkEnabled] = useState(true);
+  const [iconMode, setIconMode] = useState<SwitchIconMode>('none');
   const thumbShrinkChangeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const switchMeta = manifest?.components?.switch;
   const isSwitchAvailable = Boolean(switchMeta);
   const defaultRadius = switchOptions.radius;
   const hasThumbShrinkEffect = Boolean(switchEffects.thumbShrinkEffect);
   const motionOverride = motionEnabled ? undefined : false;
-  const isThumbShrinkEnabled = hasThumbShrinkEffect && thumbShrinkEnabled;
+  const hasIconSupport = Boolean(switchClassesMap?.standard?.base?.e6);
+  const hasActiveIconMode = hasIconSupport && iconMode !== 'none';
+  const isThumbShrinkLockedByIcons = hasActiveIconMode;
+  const isThumbShrinkEnabled =
+    hasThumbShrinkEffect && thumbShrinkEnabled && !isThumbShrinkLockedByIcons;
   const thumbShrinkOverride = isThumbShrinkEnabled ? undefined : false;
   const supportedScales = switchMeta?.scale;
   const supportedIntents = switchMeta?.state;
   const supportedStates = supportedIntents?.[intent];
+  const switchIcons = hasActiveIconMode ? switchIconSets[iconMode] : undefined;
   const backgroundToneByKey = useMemo(
     () =>
       new Map<BackgroundToneKey, ResolvedBackgroundTone>(
@@ -263,6 +329,17 @@ export default function SwitchPage() {
         emphasisSelectOptions[0].value
     );
   }, [emphasis, emphasisSelectOptions]);
+
+  useEffect(() => {
+    if (!hasIconSupport && iconMode !== 'none') {
+      if (thumbShrinkChangeTimeoutRef.current) {
+        clearTimeout(thumbShrinkChangeTimeoutRef.current);
+        thumbShrinkChangeTimeoutRef.current = null;
+      }
+      setIconMode('none');
+      setThumbShrinkEnabled(true);
+    }
+  }, [hasIconSupport, iconMode]);
 
   useEffect(() => {
     if (!isSwitchAvailable) {
@@ -417,7 +494,12 @@ export default function SwitchPage() {
             label="Thumb shrink"
             checked={isThumbShrinkEnabled}
             onCheckedChange={(nextThumbShrinkEnabled) => {
-              if (!hasThumbShrinkEffect || nextThumbShrinkEnabled === isThumbShrinkEnabled) return;
+              if (
+                !hasThumbShrinkEffect ||
+                isThumbShrinkLockedByIcons ||
+                nextThumbShrinkEnabled === isThumbShrinkEnabled
+              )
+                return;
               if (thumbShrinkChangeTimeoutRef.current) {
                 clearTimeout(thumbShrinkChangeTimeoutRef.current);
               }
@@ -436,10 +518,33 @@ export default function SwitchPage() {
                 thumbShrinkChangeTimeoutRef.current = null;
               }, THUMB_SHRINK_CHANGE_DELAY_MS);
             }}
-            disabled={!isSwitchAvailable || !hasThumbShrinkEffect}
+            disabled={!isSwitchAvailable || !hasThumbShrinkEffect || isThumbShrinkLockedByIcons}
           />
         </ShowcaseControlStack>
       </ShowcaseControlGroup>
+      {hasIconSupport ? (
+        <ShowcaseControlGroup title="Content">
+          <ShowcaseControlGrid>
+            <ShowcaseSelectControl
+              label="Icons"
+              options={iconModeOptions}
+              value={iconMode}
+              onValueChange={(value) => {
+                const nextIconMode = value as SwitchIconMode;
+                if (nextIconMode === iconMode) return;
+                if (thumbShrinkChangeTimeoutRef.current) {
+                  clearTimeout(thumbShrinkChangeTimeoutRef.current);
+                  thumbShrinkChangeTimeoutRef.current = null;
+                }
+                playWowTransition();
+                setIconMode(nextIconMode);
+                setThumbShrinkEnabled(nextIconMode === 'none');
+              }}
+              disabled={!isSwitchAvailable}
+            />
+          </ShowcaseControlGrid>
+        </ShowcaseControlGroup>
+      ) : null}
     </ShowcaseControlPanel>
   );
 
@@ -474,6 +579,7 @@ export default function SwitchPage() {
                 id="switch-notifications"
                 label="Notifications"
                 controlText={switchControlText}
+                icons={switchIcons}
                 controlState={controlState}
                 onControlStateChange={setControlState}
                 scale={scale}
@@ -494,6 +600,7 @@ export default function SwitchPage() {
                   id="switch-state-rest"
                   label="Unselected (rest)"
                   controlText={switchControlText}
+                  icons={switchIcons}
                   controlState={false}
                   scale={scale}
                   radius={radius}
@@ -509,6 +616,7 @@ export default function SwitchPage() {
                   id="switch-state-selected"
                   label="Selected (rest)"
                   controlText={switchControlText}
+                  icons={switchIcons}
                   controlState
                   scale={scale}
                   radius={radius}
@@ -524,6 +632,7 @@ export default function SwitchPage() {
                   id="switch-state-hover"
                   label="Unselected (hover)"
                   controlText={switchControlText}
+                  icons={switchIcons}
                   controlState={false}
                   status="hover"
                   scale={scale}
@@ -540,6 +649,7 @@ export default function SwitchPage() {
                   id="switch-state-hover-selected"
                   label="Selected (hover)"
                   controlText={switchControlText}
+                  icons={switchIcons}
                   controlState
                   status="hover"
                   scale={scale}
@@ -556,6 +666,7 @@ export default function SwitchPage() {
                   id="switch-state-pressed"
                   label="Unselected (pressed)"
                   controlText={switchControlText}
+                  icons={switchIcons}
                   controlState={false}
                   status="pressed"
                   scale={scale}
@@ -572,6 +683,7 @@ export default function SwitchPage() {
                   id="switch-state-pressed-selected"
                   label="Selected (pressed)"
                   controlText={switchControlText}
+                  icons={switchIcons}
                   controlState
                   status="pressed"
                   scale={scale}
@@ -588,6 +700,7 @@ export default function SwitchPage() {
                   id="switch-state-activation-feedback"
                   label="Unselected (activation feedback)"
                   controlText={switchControlText}
+                  icons={switchIcons}
                   controlState={false}
                   status="pressed"
                   activationFeedback="active"
@@ -605,6 +718,7 @@ export default function SwitchPage() {
                   id="switch-state-activation-feedback-selected"
                   label="Selected (activation feedback)"
                   controlText={switchControlText}
+                  icons={switchIcons}
                   controlState
                   status="pressed"
                   activationFeedback="active"
@@ -622,6 +736,7 @@ export default function SwitchPage() {
                   id="switch-state-focus"
                   label="Unselected (focus)"
                   controlText={switchControlText}
+                  icons={switchIcons}
                   controlState={false}
                   status="focus"
                   scale={scale}
@@ -638,6 +753,7 @@ export default function SwitchPage() {
                   id="switch-state-focus-selected"
                   label="Selected (focus)"
                   controlText={switchControlText}
+                  icons={switchIcons}
                   controlState
                   status="focus"
                   scale={scale}
@@ -654,6 +770,7 @@ export default function SwitchPage() {
                   id="switch-disabled"
                   label="Unselected (disabled)"
                   controlText={switchControlText}
+                  icons={switchIcons}
                   controlState={false}
                   scale={scale}
                   radius={radius}
@@ -669,6 +786,7 @@ export default function SwitchPage() {
                   id="switch-disabled-selected"
                   label="Selected (disabled)"
                   controlText={switchControlText}
+                  icons={switchIcons}
                   controlState
                   scale={scale}
                   radius={radius}

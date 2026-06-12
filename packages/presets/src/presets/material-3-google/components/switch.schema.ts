@@ -33,7 +33,9 @@ const figmaSwitchColor = {
   offThumbDisabled: switchColorWithAlpha([252, 8.47, 11.57, 1], 38),
   onTrack: '#615690',
   onThumb: '#FFFFFF',
-  onThumbInteractive: '#E7DEFF'
+  onThumbInteractive: '#E7DEFF',
+  offIcon: '#E6E1E9',
+  onIcon: '#493E76'
 } as const;
 
 function createSwitchElementPalettes({
@@ -299,6 +301,72 @@ function createSwitchElementPalettes({
           }
         }
       }
+    })),
+    icon: buildBySegment(segmentNames, (s) => ({
+      light: {
+        textColor: {
+          neutral: {
+            medium: {
+              rest: figmaSwitchColor.offIcon,
+              hover: switchStateRef(figmaSwitchColor.offIcon),
+              focus: switchStateRef(figmaSwitchColor.offIcon),
+              pressed: switchStateRef(figmaSwitchColor.offIcon),
+              disabled: switchStateRef(figmaSwitchColor.offThumbDisabled),
+              selected: {
+                rest: switchStateRef(figmaSwitchColor.onIcon),
+                hover: switchStateRef(figmaSwitchColor.onIcon),
+                focus: switchStateRef(figmaSwitchColor.onIcon),
+                pressed: switchStateRef(figmaSwitchColor.onIcon)
+              }
+            },
+            low: {
+              rest: c(s, 'l', 'primary', 70),
+              hover: switchStateRef(c(s, 'l', 'primary', 75)),
+              focus: switchStateRef(c(s, 'l', 'primary', 70)),
+              pressed: switchStateRef(c(s, 'l', 'primary', 80)),
+              disabled: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 38)),
+              selected: {
+                rest: switchStateRef(figmaSwitchColor.onThumb),
+                hover: switchStateRef(figmaSwitchColor.onThumb),
+                focus: switchStateRef(figmaSwitchColor.onThumb),
+                pressed: switchStateRef(figmaSwitchColor.onThumb)
+              }
+            }
+          }
+        }
+      },
+      dark: {
+        textColor: {
+          neutral: {
+            medium: {
+              rest: c(s, 'd', 'neutral.v2', 20),
+              hover: switchStateRef(c(s, 'd', 'neutral.v2', 10)),
+              focus: switchStateRef(c(s, 'd', 'neutral.v2', 20)),
+              pressed: switchStateRef(c(s, 'd', 'neutral.v2', 5)),
+              disabled: switchStateRef(c(s, 'd', 'neutral', 90, 38)),
+              selected: {
+                rest: switchStateRef(c(s, 'd', 'switch.neutral', 80)),
+                hover: switchStateRef(c(s, 'd', 'switch.neutral', 85)),
+                focus: switchStateRef(c(s, 'd', 'switch.neutral', 80)),
+                pressed: switchStateRef(c(s, 'd', 'switch.neutral', 90))
+              }
+            },
+            low: {
+              rest: c(s, 'd', 'primary', 30),
+              hover: switchStateRef(c(s, 'd', 'primary', 25)),
+              focus: switchStateRef(c(s, 'd', 'primary', 30)),
+              pressed: switchStateRef(c(s, 'd', 'primary', 20)),
+              disabled: switchStateRef(switchColorWithAlpha([0, 0, 100, 1], 38)),
+              selected: {
+                rest: switchStateRef(figmaSwitchColor.onThumb),
+                hover: switchStateRef(figmaSwitchColor.onThumb),
+                focus: switchStateRef(figmaSwitchColor.onThumb),
+                pressed: switchStateRef(figmaSwitchColor.onThumb)
+              }
+            }
+          }
+        }
+      }
     }))
   };
 }
@@ -428,6 +496,18 @@ export function createMaterial3GoogleSwitchSchema(
                   }
                 },
                 palettes: palettes.label
+              },
+              e6: {
+                name: 'icon',
+                scales: {
+                  boxWidth: {
+                    's:md:1': 16
+                  },
+                  boxHeight: {
+                    's:md:1': 16
+                  }
+                },
+                palettes: palettes.icon
               }
             }
           }

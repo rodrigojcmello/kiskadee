@@ -2,6 +2,7 @@ import type { SegmentName } from '../types/colors/colors.types.ts';
 import type {
   SwitchActivationMotionSchemaValue,
   SwitchControlTextVisibilitySchemaValue,
+  SwitchIconElementStyleFromSchema,
   SwitchLabelElementStyleFromSchema,
   SwitchOptionsFromSchema,
   SwitchRootElementStyleFromSchema,
@@ -18,8 +19,9 @@ import type {
  * - e3: thumb / handle
  * - e4: optional label text
  * - e5: optional control text
+ * - e6: optional thumb icon
  */
-export type SwitchElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
+export type SwitchElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 export type SwitchVariant = 'standard';
 export type SwitchStandardMode = 'base';
 export type SwitchMode = SwitchStandardMode;
@@ -74,6 +76,14 @@ export type SwitchLabelElementStyle<TSegmentName extends SegmentName = never> =
 export type SwitchStateElementStyle<TSegmentName extends SegmentName = never> =
   SwitchStateElementStyleFromSchema<TSegmentName>;
 
+/**
+ * e6 — optional thumb icon
+ * - textColor maps to CSS color for currentColor-driven icons
+ * - boxWidth / boxHeight define the icon slot box
+ */
+export type SwitchIconElementStyle<TSegmentName extends SegmentName = never> =
+  SwitchIconElementStyleFromSchema<TSegmentName>;
+
 export type SwitchElements<TSegmentName extends SegmentName = never> = {
   // e1: root label/control wrapper
   e1?: SwitchRootElementStyle;
@@ -85,6 +95,8 @@ export type SwitchElements<TSegmentName extends SegmentName = never> = {
   e4?: SwitchLabelElementStyle<TSegmentName>;
   // e5: optional control text
   e5?: SwitchStateElementStyle<TSegmentName>;
+  // e6: optional thumb icon
+  e6?: SwitchIconElementStyle<TSegmentName>;
 };
 
 export type SwitchModeConfig<TSegmentName extends SegmentName = never> = {

@@ -85,6 +85,12 @@ scale should not visually shrink."
   supported Switch scale.
 - The runtime should apply the generated classes for the current scale. It should not re-decide
   design intent by scale when the schema already expresses it.
+- If a preset supports internal thumb icons, define them through `e6`, not through thumb `e3`.
+- `e6.scales.boxWidth` and `e6.scales.boxHeight` own the icon slot size.
+- `e6.palettes.*.textColor` owns icon color and maps to CSS `color` for `currentColor` icons.
+- Do not add a separate `iconColor` channel or expect the builder to rewrite SVG `fill`, `stroke`,
+  or `path` attributes.
+- A preset that does not define `e6` should be treated as not supporting Switch thumb icons.
 
 ## Why This Rule Exists
 

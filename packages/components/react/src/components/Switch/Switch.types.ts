@@ -14,7 +14,7 @@ import type {
 } from '@kiskadee/react-headless';
 import type { ReactNode } from 'react';
 
-export type SwitchElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
+export type SwitchElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 
 export type SwitchClassNames = Partial<Record<SwitchElementName, string>>;
 
@@ -31,6 +31,11 @@ export type SwitchStatus = HeadlessSwitchStatus;
 export type SwitchControlText = {
   on: ReactNode;
   off: ReactNode;
+};
+
+export type SwitchIcons = {
+  rest?: ReactNode;
+  selected?: ReactNode;
 };
 
 export type SwitchActivationFeedback =
@@ -51,6 +56,7 @@ export type SwitchProps = Omit<
   id?: string;
   label?: ReactNode;
   controlText?: SwitchControlText;
+  icons?: SwitchIcons;
   className?: string;
   classNames?: SwitchClassNames;
   inputProps?: Omit<HeadlessSwitchInputProps, 'className'> & {

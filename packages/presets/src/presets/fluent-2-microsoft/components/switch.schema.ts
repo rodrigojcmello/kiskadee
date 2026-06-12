@@ -286,6 +286,63 @@ export function createFluent2MicrosoftSwitchSchema({
                   }
                 }
               },
+              e6: {
+                name: 'icon',
+                scales: {
+                  boxWidth: { 's:md:1': 10 },
+                  boxHeight: { 's:md:1': 10 }
+                },
+                palettes: {
+                  default: {
+                    light: {
+                      textColor: {
+                        neutral: {
+                          medium: {
+                            rest: white,
+                            hover: { ref: white },
+                            focus: { ref: white },
+                            pressed: { ref: white },
+                            selected: {
+                              rest: { ref: primary60 },
+                              hover: { ref: primary70 },
+                              focus: { ref: primary60 },
+                              pressed: { ref: primary80 }
+                            },
+                            disabled: { ref: neutral70 }
+                          },
+                          low: {
+                            rest: primary60,
+                            hover: { ref: primary70 },
+                            focus: { ref: primary60 },
+                            pressed: { ref: primary80 },
+                            selected: {
+                              rest: { ref: white },
+                              hover: { ref: white },
+                              focus: { ref: white },
+                              pressed: { ref: white }
+                            },
+                            disabled: { ref: onPrimaryTextDisabled }
+                          }
+                        },
+                        polarity: {
+                          medium: {
+                            rest: white,
+                            selected: {
+                              rest: { ref: polarityOnTrack }
+                            }
+                          },
+                          low: {
+                            rest: polarityOffThumb,
+                            selected: {
+                              rest: { ref: white }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
               e4: {
                 name: 'label',
                 decorations: {

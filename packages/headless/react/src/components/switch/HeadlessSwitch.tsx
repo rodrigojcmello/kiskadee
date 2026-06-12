@@ -20,7 +20,7 @@ import {
 } from 'react';
 import { useControlState } from '../../hooks/control-state/useControlState.ts';
 
-export type SwitchElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
+export type SwitchElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 
 export type SwitchStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
 
@@ -86,6 +86,7 @@ export type SwitchTrackProps = HTMLAttributes<HTMLSpanElement>;
 export type SwitchThumbProps = HTMLAttributes<HTMLSpanElement>;
 export type SwitchLabelProps = HTMLAttributes<HTMLSpanElement>;
 export type SwitchStateProps = HTMLAttributes<HTMLSpanElement>;
+export type SwitchIconProps = HTMLAttributes<HTMLSpanElement>;
 
 const SWITCH_INTERNAL_INPUT_CLASS_NAME = 'k-swt-x1';
 
@@ -204,6 +205,9 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
       },
       e5: {
         className: classNames.e5
+      },
+      e6: {
+        className: classNames.e6
       }
     };
   }, [classNames, controlState, disabled, focused, focusVisible, readOnly, status]);
@@ -375,12 +379,33 @@ const SwitchState = forwardRef<HTMLSpanElement, SwitchStateProps>(function Switc
   );
 });
 
+const SwitchIcon = forwardRef<HTMLSpanElement, SwitchIconProps>(function SwitchIcon(
+  { className, children, 'aria-hidden': ariaHidden = true, ...props },
+  ref
+) {
+  const context = useSwitchContext();
+  const { className: slotClassName, ...slotProps } = context.slotProps.e6 ?? {};
+
+  return (
+    <span
+      {...slotProps}
+      ref={ref}
+      className={mergeClassNames(slotClassName, className)}
+      aria-hidden={ariaHidden}
+      {...props}
+    >
+      {children}
+    </span>
+  );
+});
+
 export const HeadlessSwitch = Object.assign(SwitchRoot, {
   Root: SwitchRoot,
   Track: SwitchTrack,
   Thumb: SwitchThumb,
   Label: SwitchLabel,
-  State: SwitchState
+  State: SwitchState,
+  Icon: SwitchIcon
 });
 
 export default HeadlessSwitch;

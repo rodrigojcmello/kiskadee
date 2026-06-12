@@ -123,6 +123,52 @@
 }
 
 /*
+ * element icon / e6
+ * Centers optional currentColor-driven thumb icons without affecting thumb geometry.
+ */
+.k-swt-e6-a {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  line-height: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+
+  > svg {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    flex: 0 0 auto;
+  }
+}
+
+/*
+ * element icon modifier 'b' / e6b
+ * Hides the selected-state icon until the root projects selected state.
+ */
+.k-swt-e6b-a {
+  display: none;
+}
+
+/*
+ * element icon modifiers 'a' and 'b' / e6a e6b
+ * Swap rest and selected icons through the projected control state.
+ */
+.k-swt-e1-a.-s.-a {
+  .k-swt-e6a-a {
+    display: none;
+  }
+
+  .k-swt-e6b-a {
+    display: inline-flex;
+  }
+}
+
+/*
  * element thumb modifier 'a' / e3a
  * Uses the generated track radius minus the visual inset from padding/border variables.
  */
