@@ -26,7 +26,10 @@ component-specific way.
 
 ## Switch
 
-Current scope: `switch.variants.standard.elements.e2`, the visual track.
+Current scope:
+
+- `switch.variants.standard.elements.e2`, the visual track.
+- `switch.variants.standard.elements.e3`, the visual thumb.
 
 The policy applies at the `standard` variant level. The current Switch mode is `base`, but emission
 policy resolution is variant-level here, so future `standard` modes should inherit the same track
@@ -41,6 +44,12 @@ emission contract unless a new policy is added.
 
 This pairing matters: compensated padding should be used with a mirrored border width on the same
 element, so the generated padding rule has access to `--k-bdw`.
+
+### Thumb `e3`
+
+| Property family | Policy | Default | CSS shape | Reason |
+| --- | --- | --- | --- | --- |
+| `boxWidth` | `mirrored` | `direct` | `--k-bxw: <value>; width: <value>` | The static Switch structure anchors the unselected thumb by its normal visual center so `thumbShrink` can animate `width` without sliding the thumb before or after the size transition. |
 
 Why Switch needs it:
 
@@ -83,9 +92,9 @@ These properties are intentionally not overridden for Switch today:
 
 | Property family | Current behavior | Reason |
 | --- | --- | --- |
-| `boxWidth`, `boxHeight` | direct CSS `width` / `height` | The React Switch measures the rendered DOM to compute thumb travel; no structural CSS variable is needed. |
+| `boxHeight` | direct CSS `height` | The React Switch already centers vertical geometry through transform/runtime measurement; no height token is needed by structural CSS. |
 | `boxColor`, `borderColor` | direct CSS color declarations | Switch structural CSS does not consume color variables. State styling is generated directly by the usual palette classes. |
-| `textColor`, `marginLeft`, `shadow`, `boxWidthEmission: token` | no Switch-specific policy | No current Switch structural contract consumes these as variables. |
+| `textColor`, `marginLeft`, `shadow`, `boxWidthEmission: token` | no Switch-specific policy | No current Switch structural contract consumes these as token-only variables. |
 
 ### Not Style Emission
 

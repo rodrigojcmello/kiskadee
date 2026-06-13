@@ -283,7 +283,7 @@ function SwitchRoot(props: SwitchProps) {
         controlState={motionController.projectedControlState}
         shouldRenderControlText={shouldRenderControlText}
       >
-        <HeadlessSwitch.Track ref={motionController.thumbProps.trackRef}>
+        <HeadlessSwitch.Track ref={motionController.thumbProps.trackRefCallback}>
           <Thumb {...thumbProps}>{iconNodes}</Thumb>
         </HeadlessSwitch.Track>
       </SwitchControlSide>

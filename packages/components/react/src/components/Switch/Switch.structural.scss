@@ -123,6 +123,15 @@
 }
 
 /*
+ * element thumb / e3
+ * Anchors unselected static thumbs by center so size-only effects keep the visual center stable.
+ */
+.k-swt:not(.-s) .k-swt-e3-a:not(.k-swt-e3d-a) {
+  inset-inline-start: calc(var(--k-swt-pis) + (var(--k-bxw, 0px) * 0.5));
+  transform: translate(calc(var(--k-swt-dx) * -50%), -50%);
+}
+
+/*
  * element icon / e6
  * Centers optional currentColor-driven thumb icons without affecting thumb geometry.
  */

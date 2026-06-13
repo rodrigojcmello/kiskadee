@@ -4,6 +4,15 @@ export type SwitchRuntimeMotionGeometry = {
   blockStart: number;
 };
 
+export type SwitchRuntimeMotionGeometryResult = SwitchRuntimeMotionGeometry & {
+  isReducedThumb: boolean;
+};
+
+export type SwitchRuntimeMotionGeometryOptions = {
+  alignReducedThumb?: boolean;
+  preserveReducedThumbAlignment?: boolean;
+};
+
 function parsePixelValue(value: string, fallback = 0): number {
   const parsed = Number.parseFloat(value);
   return Number.isFinite(parsed) ? parsed : fallback;
@@ -11,8 +20,9 @@ function parsePixelValue(value: string, fallback = 0): number {
 
 export function calculateSwitchRuntimeMotionGeometry(
   trackElement: HTMLSpanElement,
-  thumbElement: HTMLSpanElement
-): SwitchRuntimeMotionGeometry {
+  thumbElement: HTMLSpanElement,
+  options: SwitchRuntimeMotionGeometryOptions = {}
+): SwitchRuntimeMotionGeometryResult {
   const trackStyles = getComputedStyle(trackElement);
   const paddingInlineStart = parsePixelValue(trackStyles.paddingInlineStart);
   const paddingInlineEnd = parsePixelValue(trackStyles.paddingInlineEnd);
@@ -22,7 +32,13 @@ export function calculateSwitchRuntimeMotionGeometry(
   const trackContentHeight = trackElement.clientHeight - paddingBlockStart - paddingBlockEnd;
   const thumbWidth = thumbElement.offsetWidth;
   const thumbHeight = thumbElement.offsetHeight;
-  const alignmentBoxWidth = Math.max(thumbWidth, trackContentHeight);
+  const usesThumbShrink = thumbElement.classList.contains('k-swt-e3b-a');
+  const isReducedThumb = thumbWidth < trackContentHeight - 0.5;
+  const shouldAlignReducedThumb =
+    options.alignReducedThumb ??
+    (usesThumbShrink || (options.preserveReducedThumbAlignment === true && isReducedThumb));
+  const alignmentBoxWidth =
+    shouldAlignReducedThumb ? Math.max(thumbWidth, trackContentHeight) : thumbWidth;
   const translation = Math.max(0, trackContentWidth - alignmentBoxWidth);
   const inlineStart = paddingInlineStart + Math.max(0, (alignmentBoxWidth - thumbWidth) / 2);
   const blockStart = paddingBlockStart + Math.max(0, (trackContentHeight - thumbHeight) / 2);
@@ -30,7 +46,8 @@ export function calculateSwitchRuntimeMotionGeometry(
   return {
     translation,
     inlineStart,
-    blockStart
+    blockStart,
+    isReducedThumb
   };
 }
 

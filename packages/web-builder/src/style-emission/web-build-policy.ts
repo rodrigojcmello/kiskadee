@@ -22,7 +22,7 @@ type TextColorEmission = DirectOrMirroredEmission;
 export type BorderWidthEmission = DirectMirroredOrTokenEmission;
 export type BorderRadiusEmission = DirectMirroredOrTokenEmission;
 export type BorderColorEmission = DirectMirroredOrTokenEmission;
-export type BoxWidthEmission = DirectOrTokenEmission;
+export type BoxWidthEmission = DirectMirroredOrTokenEmission;
 export type MarginLeftEmission = DirectOrMirroredEmission;
 export type PaddingEmission = DirectMirroredOrTokenEmission | CompensatedEmission;
 export type ShadowEmission = DirectOrTokenEmission;
@@ -104,6 +104,9 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
             e2: {
               borderWidthEmission: 'mirrored',
               paddingEmission: 'compensated'
+            },
+            e3: {
+              boxWidthEmission: 'mirrored'
             }
           }
         }

@@ -5,6 +5,7 @@ import {
   type PointerEvent,
   type ReactNode,
   type RefObject,
+  type RefCallback,
   useCallback,
   useEffect,
   useRef,
@@ -33,7 +34,7 @@ export type SwitchRuntimeMotionThumbProps = {
   setControlState: (controlState: boolean) => void;
   setDragPreviewControlState: (controlState: boolean | null) => void;
   thumbClassName: string;
-  thumbRef: RefObject<HTMLSpanElement | null>;
+  thumbRefCallback: RefCallback<HTMLSpanElement>;
   thumbTranslation: number;
   trackRef: RefObject<HTMLSpanElement | null>;
   onActivationFeedbackCancel?: () => void;
@@ -116,7 +117,7 @@ export function SwitchRuntimeMotionThumb({
   setControlState,
   setDragPreviewControlState,
   thumbClassName,
-  thumbRef,
+  thumbRefCallback,
   thumbTranslation,
   trackRef,
   onActivationFeedbackCancel
@@ -135,6 +136,7 @@ export function SwitchRuntimeMotionThumb({
     startY: number;
     moved: boolean;
   } | null>(null);
+  const hasSynchronizedInitialGeometryRef = useRef(false);
   const dragStartControlStateRef = useRef(controlState);
   const latestDragControlStateRef = useRef(controlState);
   const previousControlStateRef = useRef(controlState);
@@ -145,6 +147,16 @@ export function SwitchRuntimeMotionThumb({
   const dragMin = Math.min(0, thumbTranslation * inlineDirection);
   const dragMax = Math.max(0, thumbTranslation * inlineDirection);
   const thumbTransition = SWITCH_MOTION_THUMB_TRANSITIONS[activationMotion];
+  const geometryStateKey = thumbTranslation > 0 ? 'ready' : 'pending';
+
+  if (
+    thumbTranslation > 0 &&
+    !isDraggingRef.current &&
+    !hasSynchronizedInitialGeometryRef.current
+  ) {
+    thumbX.set(selectedTarget);
+    hasSynchronizedInitialGeometryRef.current = true;
+  }
 
   const animateThumbTo = useCallback(
     (target: number) => {
@@ -216,12 +228,14 @@ export function SwitchRuntimeMotionThumb({
     const hasControlStateChanged = previousControlState !== controlState;
     const hasGeometryChanged =
       previousInlineDirection !== inlineDirection || previousThumbTranslation !== thumbTranslation;
+    const hasInitializedTranslation =
+      previousThumbTranslation <= 0 && thumbTranslation > previousThumbTranslation;
 
     previousControlStateRef.current = controlState;
     previousInlineDirectionRef.current = inlineDirection;
     previousThumbTranslationRef.current = thumbTranslation;
 
-    if (hasGeometryChanged && !hasControlStateChanged) {
+    if (hasGeometryChanged && (!hasControlStateChanged || hasInitializedTranslation)) {
       animationControlsRef.current?.stop();
       thumbX.set(selectedTarget);
       return;
@@ -236,7 +250,8 @@ export function SwitchRuntimeMotionThumb({
 
   return (
     <motion.span
-      ref={thumbRef}
+      key={geometryStateKey}
+      ref={thumbRefCallback}
       aria-hidden="true"
       className={thumbClassName}
       drag={canDrag ? 'x' : false}

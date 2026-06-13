@@ -17,14 +17,6 @@
 
 /*
  * element thumb modifier 'b' / e3b
- * Static shrink keeps the reduced thumb centered in its original visual slot.
- */
-.k-swt:not(.-s) .k-swt-e3-a.k-swt-e3b-a:not(.k-swt-e3d-a) {
-  inset-inline-start: calc((var(--k-swt-thh, 0px) * 0.5) - var(--k-bdw, 0px));
-}
-
-/*
- * element thumb modifier 'b' / e3b
  * Keeps the reduced rounded activation-feedback outline aligned to the switch container radius.
  */
 .k-swt:not(.-s) .k-swt-e3-a.k-swt-e3a-a.k-swt-e3b-a {

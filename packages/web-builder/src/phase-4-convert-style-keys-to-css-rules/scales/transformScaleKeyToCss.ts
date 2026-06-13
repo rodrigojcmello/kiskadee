@@ -197,7 +197,9 @@ export function transformScaleKeyToCss(
           : `.${className} { ${cssProperty}: ${cssValue} }`;
   } else if (scaleProperty === 'boxWidth') {
     rule =
-      styleEmissionPolicy.boxWidthEmission === 'token'
+      styleEmissionPolicy.boxWidthEmission === 'mirrored'
+        ? `.${className} { ${EMITTED_SCALE_CSS_VARS.boxWidth}: ${cssValue}; ${cssProperty}: ${cssValue} }`
+        : styleEmissionPolicy.boxWidthEmission === 'token'
         ? `.${className} { ${EMITTED_SCALE_CSS_VARS.boxWidth}: ${cssValue} }`
         : `.${className} { ${cssProperty}: ${cssValue} }`;
   } else if (

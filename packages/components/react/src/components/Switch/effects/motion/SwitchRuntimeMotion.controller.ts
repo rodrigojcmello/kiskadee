@@ -1,5 +1,13 @@
 import { useControlState } from '@kiskadee/react-headless';
-import { type MouseEvent, type RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  type MouseEvent,
+  type RefObject,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState
+} from 'react';
 import {
   applySwitchRuntimeMotionGeometry,
   calculateSwitchRuntimeMotionGeometry,
@@ -25,8 +33,10 @@ type SwitchRuntimeMotionThumbRuntimeProps = {
   setControlState: (controlState: boolean) => void;
   setDragPreviewControlState: (controlState: boolean | null) => void;
   thumbRef: RefObject<HTMLSpanElement | null>;
+  thumbRefCallback: (element: HTMLSpanElement | null) => void;
   thumbTranslation: number;
   trackRef: RefObject<HTMLSpanElement | null>;
+  trackRefCallback: (element: HTMLSpanElement | null) => void;
 };
 
 type SwitchRuntimeMotionControllerResult = {
@@ -37,26 +47,50 @@ type SwitchRuntimeMotionControllerResult = {
 };
 
 const SWITCH_MOTION_DRAG_CLICK_SUPPRESSION_MS = 450;
+const useSwitchRuntimeMotionLayoutEffect =
+  typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
 function useSwitchRuntimeMotionThumbTranslation(options: {
   enabled: boolean;
   geometryKey: string;
   onTranslationChange: (translation: number) => void;
-  thumbRef: RefObject<HTMLSpanElement | null>;
-  trackRef: RefObject<HTMLSpanElement | null>;
+  thumbElement: HTMLSpanElement | null;
+  trackElement: HTMLSpanElement | null;
 }) {
+  const { enabled, geometryKey, onTranslationChange, thumbElement, trackElement } = options;
   const syncAnimationFrameRef = useRef<number | null>(null);
+  const thumbShrinkElementRef = useRef<HTMLSpanElement | null>(null);
+  const thumbShrinkTrackClassNameRef = useRef<string | null>(null);
   const syncThumbTranslation = useCallback(() => {
-    if (!options.enabled) return;
+    if (!enabled) return;
 
-    const trackElement = options.trackRef.current;
-    const thumbElement = options.thumbRef.current;
     if (!trackElement || !thumbElement) return;
 
-    const geometry = calculateSwitchRuntimeMotionGeometry(trackElement, thumbElement);
+    if (thumbShrinkElementRef.current !== thumbElement) {
+      thumbShrinkElementRef.current = thumbElement;
+      thumbShrinkTrackClassNameRef.current = null;
+    }
+
+    const trackClassName = trackElement.className;
+    const hasThumbShrinkClass = thumbElement.classList.contains('k-swt-e3b-a');
+    if (hasThumbShrinkClass) {
+      thumbShrinkTrackClassNameRef.current = trackClassName;
+    } else if (
+      thumbShrinkTrackClassNameRef.current !== null &&
+      thumbShrinkTrackClassNameRef.current !== trackClassName
+    ) {
+      thumbShrinkTrackClassNameRef.current = null;
+    }
+
+    const geometry = calculateSwitchRuntimeMotionGeometry(trackElement, thumbElement, {
+      preserveReducedThumbAlignment: thumbShrinkTrackClassNameRef.current !== null
+    });
     applySwitchRuntimeMotionGeometry(trackElement, geometry);
-    options.onTranslationChange(geometry.translation);
-  }, [options.enabled, options.onTranslationChange, options.trackRef, options.thumbRef]);
+    onTranslationChange(geometry.translation);
+    if (!hasThumbShrinkClass && !geometry.isReducedThumb) {
+      thumbShrinkTrackClassNameRef.current = null;
+    }
+  }, [enabled, onTranslationChange, thumbElement, trackElement]);
   const cancelScheduledThumbTranslationSync = useCallback(() => {
     if (syncAnimationFrameRef.current === null) return;
 
@@ -64,13 +98,13 @@ function useSwitchRuntimeMotionThumbTranslation(options: {
     syncAnimationFrameRef.current = null;
   }, []);
   const scheduleThumbTranslationSync = useCallback(() => {
-    if (!options.enabled || syncAnimationFrameRef.current !== null) return;
+    if (!enabled || syncAnimationFrameRef.current !== null) return;
 
     syncAnimationFrameRef.current = window.requestAnimationFrame(() => {
       syncAnimationFrameRef.current = null;
       syncThumbTranslation();
     });
-  }, [options.enabled, syncThumbTranslation]);
+  }, [enabled, syncThumbTranslation]);
 
   useEffect(
     () => () => {
@@ -79,20 +113,18 @@ function useSwitchRuntimeMotionThumbTranslation(options: {
     [cancelScheduledThumbTranslationSync]
   );
 
-  useEffect(() => {
+  useSwitchRuntimeMotionLayoutEffect(() => {
     syncThumbTranslation();
-  }, [options.geometryKey, syncThumbTranslation]);
+  }, [geometryKey, syncThumbTranslation]);
 
   useEffect(() => {
-    if (!options.enabled) return;
+    if (!enabled) return;
 
-    const trackElement = options.trackRef.current;
-    const thumbElement = options.thumbRef.current;
     if (!trackElement || !thumbElement) return;
 
     const resizeObserver =
       typeof ResizeObserver !== 'undefined'
-        ? new ResizeObserver(scheduleThumbTranslationSync)
+        ? new ResizeObserver(syncThumbTranslation)
         : null;
     resizeObserver?.observe(trackElement);
     resizeObserver?.observe(thumbElement);
@@ -106,9 +138,10 @@ function useSwitchRuntimeMotionThumbTranslation(options: {
     };
   }, [
     cancelScheduledThumbTranslationSync,
-    options.enabled,
-    options.trackRef,
-    options.thumbRef,
+    enabled,
+    syncThumbTranslation,
+    trackElement,
+    thumbElement,
     scheduleThumbTranslationSync
   ]);
 }
@@ -132,11 +165,21 @@ export function useSwitchRuntimeMotionController({
   });
   const trackRef = useRef<HTMLSpanElement | null>(null);
   const thumbRef = useRef<HTMLSpanElement | null>(null);
+  const [trackElement, setTrackElement] = useState<HTMLSpanElement | null>(null);
+  const [thumbElement, setThumbElement] = useState<HTMLSpanElement | null>(null);
   const suppressNextClickRef = useRef(false);
   const suppressNextClickTimeoutRef = useRef<number | null>(null);
   const [thumbTranslation, setThumbTranslation] = useState(0);
   const [dragPreviewControlState, setDragPreviewControlState] = useState<boolean | null>(null);
   const projectedControlState = enabled ? (dragPreviewControlState ?? controlState) : controlState;
+  const trackRefCallback = useCallback((element: HTMLSpanElement | null) => {
+    trackRef.current = element;
+    setTrackElement(element);
+  }, []);
+  const thumbRefCallback = useCallback((element: HTMLSpanElement | null) => {
+    thumbRef.current = element;
+    setThumbElement(element);
+  }, []);
 
   const requestSuppressNextClick = useCallback(() => {
     suppressNextClickRef.current = true;
@@ -178,8 +221,8 @@ export function useSwitchRuntimeMotionController({
 
   useSwitchRuntimeMotionThumbTranslation({
     enabled,
-    trackRef,
-    thumbRef,
+    trackElement,
+    thumbElement,
     onTranslationChange: setThumbTranslation,
     geometryKey
   });
@@ -196,8 +239,10 @@ export function useSwitchRuntimeMotionController({
       setControlState,
       setDragPreviewControlState,
       thumbRef,
+      thumbRefCallback,
       thumbTranslation,
-      trackRef
+      trackRef,
+      trackRefCallback
     }
   };
 }

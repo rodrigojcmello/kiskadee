@@ -38,11 +38,25 @@ optimized single-component implementation was promoted into
 - Switch thumb rendering is now a single-layer model: `e3` is the visual thumb, runtime-motion
   measurement target, `thumbShrink` target, and activation-feedback host. Do not reintroduce an
   internal thumb visual layer for `thumbShrink`.
-- Runtime motion keeps a square alignment box for thumbs smaller than the track content height, so
-  thumbShrink preserves the large-thumb visual inset while still rendering only one `e3` thumb.
-  This alignment follows the measured thumb size during transitions, not the `thumbShrink` class
-  marker, so disabling the effect while the off-state thumb is still reduced does not move the
-  visual center.
+- Runtime motion uses the measured thumb width for normal presets and switches to a square alignment
+  box only when `thumbShrink` is active or while the same thumb is leaving a `thumbShrink`
+  transition on the same track class. Compact presets such as Fluent must follow the generated
+  compensated padding directly; otherwise a `borderWidth: 1px` rail is shifted by the runtime
+  alignment layer.
+- Static unselected thumbs are anchored by their normal visual center through generated `--k-bxw`.
+  This keeps Material `thumbShrink` centered while `width` transitions between the normal and
+  reduced sizes.
+- The motion thumb remounts once when runtime geometry becomes ready, so initially selected
+  switches receive the measured `thumbTranslation` before the first stable render. This keeps Fluent
+  selected/off state aligned after reload while preserving normal toggle/drag animations.
+- Runtime motion must attach measurement observers to the current DOM elements, not only to the
+  original `RefObject.current` value. The ready-state remount changes the thumb node; Material
+  `thumbShrink` relies on observing that new node so the off-state shrink recalculates `--k-swt-ti`
+  and `--k-swt-ty` from `2px` to `6px`.
+- The motion structural transition must not include `inset-block-start` or `inset-inline-start`.
+  Runtime geometry owns those values as immediate alignment corrections; animating them in CSS
+  competes with the motion `x` transform and makes Material `thumbShrink` travel crooked while
+  toggling. Keep the visual animation on `transform` plus thumb `width`/`height`.
 - `controlText` is isolated under `features/control-text`.
 - KIS-7 adds optional thumb icons through `icons={{ rest, selected }}`. The icon slot is schema
   element `e6`, rendered inside thumb `e3`, and follows the Button/Tabs currentColor policy:
@@ -167,3 +181,61 @@ optimized single-component implementation was promoted into
 - 2026-06-12: Browser validation on `/switch` confirmed `Icons: Play / pause` unchecks `Thumb
   shrink` without disabling it, and clicking `Thumb shrink` restores `Icons: None`, removes thumb
   icons, and reapplies the `thumbShrink` class.
+- 2026-06-12: Fluent 2 Microsoft motion alignment fixed. Browser validation on `/switch` confirmed
+  motion on and motion off both place Fluent off-state at `centerX=10/centerY=10` and selected-state
+  at `centerX=30/centerY=10` on the `40x20` rail with `borderWidth: 1px`.
+- 2026-06-12: Material Google `thumbShrink` off-state regression check confirmed disabling
+  `Thumb shrink` expands the thumb from `16` to `24` without a leftward center jump.
+- 2026-06-12: Material Google + Fluent cross-check completed after the motion observer fix.
+  Material Google with motion on and `thumbShrink` on keeps selected at `centerX=36/centerY=16`,
+  recalculates the interactive off state to `centerX=16/centerY=16` with `--k-swt-ti/ty: 6px`, and
+  Fluent 2 Microsoft still stays at off `centerX=10/centerY=10` and selected `centerX=30/centerY=10`
+  on the `40x20` rail with `borderWidth: 1px`.
+- 2026-06-12: Runtime motion transition policy corrected after the Material/Fluent cross-preset
+  regression. `SwitchRuntimeMotion.structural.scss` no longer transitions `inset-block-start` or
+  `inset-inline-start`; those remain immediate runtime geometry corrections while `transform` and
+  thumb `width`/`height` own the visual motion. Browser validation on `/switch` confirmed Material
+  3 Google with motion + `thumbShrink` at off `centerX=16/centerY=16` and selected
+  `centerX=36/centerY=16`, and Fluent 2 Microsoft at off `centerX=10/centerY=10` and selected
+  `centerX=30/centerY=10`.
+- 2026-06-12: `pnpm --filter @kiskadee/react-components run build`
+- 2026-06-12: `pnpm --filter @kiskadee/showcase exec tsc --noEmit --pretty false`
+- 2026-06-12: `git diff --check`
+- 2026-06-12: `thumbShrink` size-toggle alignment refined. Switch `e3` now mirrors `boxWidth` as
+  `--k-bxw` so the static path can anchor the unselected thumb by its normal center, and runtime
+  motion keeps the shrink alignment box while the measured thumb width is still reduced after the
+  class is removed. Browser validation on `/switch` confirmed Material static and motion
+  `Unselected (rest)` stayed at `centerX=16/centerY=16` while toggling `Thumb shrink`.
+- 2026-06-12: `pnpm --filter @kiskadee/web-builder run build-sync-generate`
+- 2026-06-12: Fluent motion alignment regression fixed by scoping the reduced-thumb alignment box to
+  active/same-track `thumbShrink` transitions only. Browser validation on `/switch` confirmed Fluent
+  2 Microsoft motion-on off state at `centerX=10` and selected state at `centerX=30` on the `40x20`
+  rail, including after switching from Material 3 Google with motion + `thumbShrink` active.
+- 2026-06-12: Material 3 Google regression check confirmed motion + `thumbShrink` still keeps the
+  off-state thumb centered near `centerX=16` throughout the shrink transition and selected at
+  `centerX=36`.
+- 2026-06-12: `pnpm --filter @kiskadee/react-components run build:dev:self`
+- 2026-06-12: `pnpm --filter @kiskadee/react-components run build`
+- 2026-06-12: `pnpm --filter @kiskadee/showcase exec tsc --noEmit --pretty false`
+- 2026-06-12: `switch-motion-thumbshrink-code-review.md` follow-ups applied. The redundant
+  `hasTransitioningThumbShrinkRef` was removed in favor of the single same-track shrink marker,
+  `SwitchRuntimeMotionThumbProps` no longer advertises the unused `thumbRef` prop,
+  `calculateSwitchRuntimeMotionGeometry` now exposes `isReducedThumb` to avoid duplicate
+  `getComputedStyle` reads in one sync, and `SwitchRuntimeMotion.geometry.test.ts` now covers
+  compact thumbs with and without reduced-thumb alignment.
+- 2026-06-12: `pnpm --filter @kiskadee/react-components exec vitest run
+  src/components/Switch/effects/motion/SwitchRuntimeMotion.geometry.test.ts`
+- 2026-06-12: `pnpm --filter @kiskadee/web-builder exec vitest run
+  src/web-style-key-identity.test.ts src/phase-2-map-style-key-usage/mapStyleKeyUsage.test.ts
+  src/phase-5-generate-class-names-map/generateClassNamesMap.test.ts`
+- 2026-06-12: `pnpm --filter @kiskadee/react-components run build`
+- 2026-06-12: `pnpm --filter @kiskadee/showcase exec tsc --noEmit --pretty false`
+- 2026-06-12: Browser validation on `/switch` checked the ResizeObserver risk from the review:
+  Material 3 Google with motion + `Thumb shrink` active produced no `ResizeObserver` warnings after
+  repeated `Thumb shrink` and `Motion` toggles, and still measured off `centerX=16/centerY=16` and
+  selected `centerX=36/centerY=16`.
+- 2026-06-12: Browser validation after the geometry refactor reconfirmed Material 3 Google at off
+  `centerX=16/centerY=16` and selected `centerX=36/centerY=16`, then Fluent 2 Microsoft at off
+  `centerX=10/centerY=10` and selected `centerX=30/centerY=10` with `--k-swt-ti: 2px` and
+  `--k-swt-tx: 20px`; no `ResizeObserver` warnings were logged.
+- 2026-06-12: `git diff --check`
