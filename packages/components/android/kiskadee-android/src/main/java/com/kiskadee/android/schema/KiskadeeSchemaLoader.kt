@@ -21,6 +21,7 @@ public object KiskadeeSchemaLoader {
             version = root.optionalArray("version")?.toList { value -> (value as Number).toInt() },
             author = root.optionalString("author"),
             global = root.optionalObject("global")?.let(::parseGlobal),
+            themeTokens = root.optionalObject("themeTokens")?.let(::parseThemeTokens),
             components = parseComponents(root.getJSONObject("components")),
         )
     }
@@ -29,6 +30,7 @@ public object KiskadeeSchemaLoader {
         return KiskadeeGlobalSchema(
             radius = root.optionalString("radius"),
             fonts = root.optionalObject("fonts")?.let(::parseFonts),
+            effects = root.optionalObject("effects")?.let(::parseActivationFeedbackEffects),
         )
     }
 
@@ -36,6 +38,44 @@ public object KiskadeeSchemaLoader {
         return KiskadeeFontsSchema(
             body = root.optionalArray("body")?.toList { value -> value as String },
             heading = root.optionalArray("heading")?.toList { value -> value as String },
+        )
+    }
+
+    private fun parseThemeTokens(root: JSONObject): KiskadeeThemeTokensSchema {
+        return KiskadeeThemeTokensSchema(
+            palettes = root.optionalObject("palettes")?.toMap { _, segmentValue ->
+                (segmentValue as JSONObject).toMap { _, modeValue ->
+                    parseThemeTokenPalette(modeValue as JSONObject)
+                }
+            },
+        )
+    }
+
+    private fun parseThemeTokenPalette(root: JSONObject): KiskadeeThemeTokenPaletteSchema {
+        return KiskadeeThemeTokenPaletteSchema(
+            effects = root.optionalObject("effects")?.let(::parseThemeTokenEffects),
+        )
+    }
+
+    private fun parseThemeTokenEffects(root: JSONObject): KiskadeeThemeTokenEffectsSchema {
+        return KiskadeeThemeTokenEffectsSchema(
+            activationFeedback = root.optionalObject("activationFeedback")
+                ?.let(::parseActivationFeedbackToneSet),
+        )
+    }
+
+    private fun parseActivationFeedbackToneSet(root: JSONObject): KiskadeeActivationFeedbackToneSetSchema {
+        return KiskadeeActivationFeedbackToneSetSchema(
+            tone = root.getJSONObject("tone").toMap { _, value ->
+                parseActivationFeedbackTone(value as JSONObject)
+            },
+        )
+    }
+
+    private fun parseActivationFeedbackTone(root: JSONObject): KiskadeeActivationFeedbackToneSchema {
+        return KiskadeeActivationFeedbackToneSchema(
+            color = colorTokenFrom(root.opt("color")),
+            opacity = root.getDouble("opacity"),
         )
     }
 
@@ -47,10 +87,52 @@ public object KiskadeeSchemaLoader {
 
     private fun parseSwitchComponent(root: JSONObject): KiskadeeSwitchComponentSchema {
         return KiskadeeSwitchComponentSchema(
+            effects = root.optionalObject("effects")?.let(::parseActivationFeedbackEffects),
             options = root.optionalObject("options")?.let(::parseSwitchOptions),
             variants = root.getJSONObject("variants").toMap { _, value ->
                 parseSwitchVariant(value as JSONObject)
             },
+        )
+    }
+
+    private fun parseActivationFeedbackEffects(root: JSONObject): KiskadeeActivationFeedbackEffectsSchema {
+        return KiskadeeActivationFeedbackEffectsSchema(
+            activationFeedback = root.optionalObject("activationFeedback")
+                ?.let(::parseActivationFeedbackEffect),
+        )
+    }
+
+    private fun parseActivationFeedbackEffect(root: JSONObject): KiskadeeActivationFeedbackEffectSchema {
+        return KiskadeeActivationFeedbackEffectSchema(
+            profile = root.optionalString("profile"),
+            origin = root.optionalString("origin"),
+            visual = root.optionalObject("visual")?.let(::parseActivationFeedbackVisual),
+            profiles = root.optionalObject("profiles")?.toMap { _, value ->
+                parseActivationFeedbackProfile(value as JSONObject)
+            },
+        )
+    }
+
+    private fun parseActivationFeedbackVisual(root: JSONObject): KiskadeeActivationFeedbackVisualSchema {
+        return KiskadeeActivationFeedbackVisualSchema(
+            layer = root.optionalString("layer"),
+            paint = root.optionalString("paint"),
+            tone = root.optionalObject("tone")?.let(::parseActivationFeedbackToneSelection),
+        )
+    }
+
+    private fun parseActivationFeedbackToneSelection(
+        root: JSONObject,
+    ): KiskadeeActivationFeedbackToneSelectionSchema {
+        return KiskadeeActivationFeedbackToneSelectionSchema(
+            defaultTone = root.optionalString("default"),
+            byEmphasis = root.optionalObject("byEmphasis")?.toMap { _, value -> value as String },
+        )
+    }
+
+    private fun parseActivationFeedbackProfile(root: JSONObject): KiskadeeActivationFeedbackProfileSchema {
+        return KiskadeeActivationFeedbackProfileSchema(
+            size = root.optionalJsonValue("size"),
         )
     }
 
@@ -145,6 +227,10 @@ private fun JSONObject.optionalObject(name: String): JSONObject? {
 
 private fun JSONObject.optionalArray(name: String): JSONArray? {
     return if (has(name) && !isNull(name)) getJSONArray(name) else null
+}
+
+private fun JSONObject.optionalJsonValue(name: String): KiskadeeJsonValue? {
+    return if (has(name) && !isNull(name)) jsonValueFrom(opt(name)) else null
 }
 
 private fun JSONObject.optionalColorToken(name: String): KiskadeeColorToken? {

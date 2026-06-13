@@ -71,6 +71,13 @@ optimized single-component implementation was promoted into
   includes first-party presets that currently define `components.switch`: Carbon IBM, Fluent 2
   Microsoft, iOS 26 Apple, Material 3 Google, and Material 3 Kiskadee. Presets without
   `components.switch` stay out of the picker until they gain a Switch schema.
+- The Android Showcase mirrors the iOS Switch preset picker and uses the same first-party Switch
+  fixture files copied into `packages/components/android/showcase/src/main/assets`. The old reduced
+  Material-only Android fixture was removed so the showcase exercises full `themeTokens` and
+  component-level `activationFeedback` data.
+- The Android native Switch now supports tap, drag, edge commit, `interactionLocked`,
+  `interactionCooldownMillis`, animated thumb travel/size changes, and activation-feedback outline
+  rendering resolved from the same schema fields as iOS.
 - The component intentionally allows `icons` and `thumbShrink` together. The `/switch` Showcase
   applies a local presentation-only guard: choosing an icon mode unchecks `Thumb shrink`, choosing
   `Icons: None` restores artifact-default `thumbShrink` behavior, and turning `Thumb shrink` back
@@ -258,3 +265,13 @@ optimized single-component implementation was promoted into
   /tmp/kiskadee-ios-derived build`
 - 2026-06-13: Built app bundle check confirmed all five `*switch.schema.json` fixtures are copied
   into `KiskadeeIOSShowcase.app`.
+- 2026-06-13: Android Switch showcase parity implemented for the iOS native showcase: preset picker,
+  full first-party Switch fixtures, schema/theme-token parsing for activation feedback,
+  drag/edge-commit interaction, interaction lock, cooldown, animated thumb travel/size, and native
+  activation-feedback outline rendering.
+- 2026-06-13: `JAVA_HOME=<Android Studio JBR> ANDROID_HOME=/Users/rodrigo/Library/Android/sdk
+  ./gradlew :kiskadee-android:assembleDebug`
+- 2026-06-13: `JAVA_HOME=<Android Studio JBR> ANDROID_HOME=/Users/rodrigo/Library/Android/sdk
+  ./gradlew :showcase:assembleDebug` passed. D8 emitted Kotlin metadata rewrite warnings, but the
+  APK assembled successfully.
+- 2026-06-13: `git diff --check`

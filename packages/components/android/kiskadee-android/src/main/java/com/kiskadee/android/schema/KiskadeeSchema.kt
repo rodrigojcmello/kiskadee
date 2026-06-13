@@ -6,12 +6,14 @@ public data class KiskadeeSchema(
     val version: List<Int>?,
     val author: String?,
     val global: KiskadeeGlobalSchema?,
+    val themeTokens: KiskadeeThemeTokensSchema?,
     val components: KiskadeeComponentsSchema,
 )
 
 public data class KiskadeeGlobalSchema(
     val radius: String?,
     val fonts: KiskadeeFontsSchema?,
+    val effects: KiskadeeActivationFeedbackEffectsSchema?,
 )
 
 public data class KiskadeeFontsSchema(
@@ -19,13 +21,61 @@ public data class KiskadeeFontsSchema(
     val heading: List<String>?,
 )
 
+public data class KiskadeeThemeTokensSchema(
+    val palettes: Map<String, Map<String, KiskadeeThemeTokenPaletteSchema>>?,
+)
+
+public data class KiskadeeThemeTokenPaletteSchema(
+    val effects: KiskadeeThemeTokenEffectsSchema?,
+)
+
+public data class KiskadeeThemeTokenEffectsSchema(
+    val activationFeedback: KiskadeeActivationFeedbackToneSetSchema?,
+)
+
+public data class KiskadeeActivationFeedbackToneSetSchema(
+    val tone: Map<String, KiskadeeActivationFeedbackToneSchema>,
+)
+
+public data class KiskadeeActivationFeedbackToneSchema(
+    val color: KiskadeeColorToken,
+    val opacity: Double,
+)
+
 public data class KiskadeeComponentsSchema(
     val switch: KiskadeeSwitchComponentSchema?,
 )
 
 public data class KiskadeeSwitchComponentSchema(
+    val effects: KiskadeeActivationFeedbackEffectsSchema?,
     val options: KiskadeeSwitchOptionsSchema?,
     val variants: Map<String, KiskadeeSwitchVariantSchema>,
+)
+
+public data class KiskadeeActivationFeedbackEffectsSchema(
+    val activationFeedback: KiskadeeActivationFeedbackEffectSchema?,
+)
+
+public data class KiskadeeActivationFeedbackEffectSchema(
+    val profile: String?,
+    val origin: String?,
+    val visual: KiskadeeActivationFeedbackVisualSchema?,
+    val profiles: Map<String, KiskadeeActivationFeedbackProfileSchema>?,
+)
+
+public data class KiskadeeActivationFeedbackVisualSchema(
+    val layer: String?,
+    val paint: String?,
+    val tone: KiskadeeActivationFeedbackToneSelectionSchema?,
+)
+
+public data class KiskadeeActivationFeedbackToneSelectionSchema(
+    val defaultTone: String?,
+    val byEmphasis: Map<String, String>?,
+)
+
+public data class KiskadeeActivationFeedbackProfileSchema(
+    val size: KiskadeeJsonValue?,
 )
 
 public data class KiskadeeSwitchOptionsSchema(

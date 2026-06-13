@@ -2,18 +2,18 @@
 
 Native Jetpack Compose components for Kiskadee design-system schemas.
 
-This package is the first Android runtime proof for Kiskadee. The current MVP supports the
-Material Google Switch subset only.
+This package is the first Android runtime proof for Kiskadee. The current Switch showcase uses the
+same first-party Switch fixture set as the iOS showcase.
 
 ## Package layout
 
 - `kiskadee-android`: reusable Android library code.
 - `showcase`: local Android app that consumes the library.
-- `showcase/src/main/assets/material-3-google-switch.kiskadee-android.json`: reduced fixture derived
-  from the canonical Material Google schema.
+- `showcase/src/main/assets/*-switch.schema.json`: Switch fixtures copied from the iOS showcase for
+  Carbon IBM, Fluent 2 Microsoft, iOS 26 Apple, Material 3 Google, and Material 3 Kiskadee.
 
-The fixture is not a separate Android schema contract. It is a small runtime payload for the MVP.
-The canonical source remains the Kiskadee schema in `packages/presets`.
+The fixtures are not a separate Android schema contract. The canonical source remains the Kiskadee
+schema in `packages/presets`.
 
 ## Usage
 
@@ -36,7 +36,7 @@ import com.kiskadee.android.theme.KiskadeeTheme
 fun loadTheme(context: Context): KiskadeeTheme {
     val schema = KiskadeeSchemaLoader.loadFromAsset(
         context,
-        "material-3-google-switch.kiskadee-android.json"
+        "material-3-google-switch.schema.json"
     )
     return KiskadeeTheme(schema).also(KiskadeeSwitchSchemaValidator::validate)
 }
@@ -65,10 +65,13 @@ dependencies {
 ## Supported MVP surface
 
 - Component: `Switch`.
-- Preset payload: Material Google, `default` segment, `light` mode.
+- Preset payloads: Carbon IBM, Fluent 2 Microsoft, iOS 26 Apple, Material 3 Google, and Material 3
+  Kiskadee, `default` segment, `light` mode.
 - Tokens: track, thumb, label, and icon color roles; width, height, padding, border width, radius,
-  label typography, and thumb shrink.
+  label typography, thumb shrink, and activation feedback.
 - States: rest, pressed, disabled, and selected.
+- Interactions: tap, drag, edge commit, interaction lock, optional cooldown, and activation
+  feedback.
 - Rendering: native Compose only; no WebView.
 
 Future native builders can emit smaller per-component payloads such as

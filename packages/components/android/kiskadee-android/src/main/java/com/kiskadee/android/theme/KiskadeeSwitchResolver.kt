@@ -1,6 +1,8 @@
 package com.kiskadee.android.theme
 
 import androidx.compose.ui.graphics.Color
+import com.kiskadee.android.schema.KiskadeeActivationFeedbackEffectSchema
+import com.kiskadee.android.schema.KiskadeeActivationFeedbackToneSchema
 import com.kiskadee.android.schema.KiskadeeColorRoleSchema
 import com.kiskadee.android.schema.KiskadeeColorStateSet
 import com.kiskadee.android.schema.KiskadeeColorToken
@@ -37,6 +39,9 @@ internal data class KiskadeeSwitchResolvedStyle(
     val iconColor: Color?,
     val iconWidth: Float?,
     val iconHeight: Float?,
+    val activationFeedbackColor: Color?,
+    val activationFeedbackOpacity: Float,
+    val activationFeedbackSize: Float,
 )
 
 internal object KiskadeeSwitchResolver {
@@ -58,6 +63,7 @@ internal object KiskadeeSwitchResolver {
         val thumb = element("e3", elements)
         val label = elements["e4"]
         val icon = elements["e6"]
+        val activationFeedback = resolveActivationFeedback(theme)
         val thumbWidth = numberScale(thumb, "boxWidth", theme, "e3")
         val thumbHeight = numberScale(thumb, "boxHeight", theme, "e3")
 
@@ -86,6 +92,9 @@ internal object KiskadeeSwitchResolver {
             iconColor = icon?.let { color(it, "textColor", theme, "e6", isOn, state) },
             iconWidth = icon?.let { numberScale(it, "boxWidth", theme, "e6") },
             iconHeight = icon?.let { numberScale(it, "boxHeight", theme, "e6") },
+            activationFeedbackColor = activationFeedback.color,
+            activationFeedbackOpacity = activationFeedback.opacity,
+            activationFeedbackSize = activationFeedback.size,
         )
     }
 
@@ -235,6 +244,68 @@ internal object KiskadeeSwitchResolver {
         return value?.let { numberFrom(it, theme.scale)?.toFloat() } ?: fallback
     }
 
+    private fun resolveActivationFeedback(theme: KiskadeeTheme): ActivationFeedbackResolution {
+        val effect = theme.schema.components.switch?.effects?.activationFeedback
+            ?: return ActivationFeedbackResolution(color = null, opacity = 0f, size = 0f)
+        val tone = activationFeedbackTone(effect, theme)
+            ?: return ActivationFeedbackResolution(color = null, opacity = 0f, size = 0f)
+
+        return ActivationFeedbackResolution(
+            color = tone.color.toComposeColor(),
+            opacity = tone.opacity.toFloat(),
+            size = activationFeedbackSize(effect, theme),
+        )
+    }
+
+    private fun activationFeedbackTone(
+        effect: KiskadeeActivationFeedbackEffectSchema,
+        theme: KiskadeeTheme,
+    ): KiskadeeActivationFeedbackToneSchema? {
+        val toneSet = theme.schema.themeTokens
+            ?.palettes
+            ?.get(theme.segment)
+            ?.get(theme.mode.schemaKey)
+            ?.effects
+            ?.activationFeedback
+            ?: theme.schema.themeTokens
+                ?.palettes
+                ?.get("default")
+                ?.get(theme.mode.schemaKey)
+                ?.effects
+                ?.activationFeedback
+            ?: theme.schema.themeTokens
+                ?.palettes
+                ?.get(theme.segment)
+                ?.get("light")
+                ?.effects
+                ?.activationFeedback
+            ?: return null
+
+        val toneName = effect.visual
+            ?.tone
+            ?.byEmphasis
+            ?.get(theme.emphasis.schemaKey)
+            ?: effect.visual?.tone?.defaultTone
+            ?: "subtle"
+
+        return toneSet.tone[toneName]
+            ?: toneSet.tone["subtle"]
+            ?: toneSet.tone.values.firstOrNull()
+    }
+
+    private fun activationFeedbackSize(
+        effect: KiskadeeActivationFeedbackEffectSchema,
+        theme: KiskadeeTheme,
+    ): Float {
+        val profileName = effect.profile ?: "halo"
+        val profile = effect.profiles?.get(profileName)
+            ?: effect.profiles?.get("halo")
+            ?: effect.profiles?.values?.firstOrNull()
+        val value = profile?.size ?: return 0f
+
+        return numberFrom(value, theme.scale)?.toFloat() ?: 0f
+    }
+
     private fun numberFrom(value: KiskadeeJsonValue, scale: String): Double? {
         value.numberValue?.let { return it }
 
@@ -261,4 +332,10 @@ internal object KiskadeeSwitchResolver {
             "Switch element '$elementName' is missing $role.${theme.intent}.${theme.emphasis.schemaKey}.",
         )
     }
+
+    private data class ActivationFeedbackResolution(
+        val color: Color?,
+        val opacity: Float,
+        val size: Float,
+    )
 }

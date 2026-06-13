@@ -1,0 +1,2727 @@
+{
+  "name": "Material Design",
+  "prefix": "gmd",
+  "version": [
+    3,
+    0,
+    0
+  ],
+  "author": "Google",
+  "global": {
+    "fonts": {
+      "body": [
+        "Roboto",
+        "sans-serif"
+      ]
+    },
+    "focus": {
+      "width": 2,
+      "offset": 2
+    },
+    "radius": "pill",
+    "effects": {
+      "activationFeedback": {
+        "profile": "ripple",
+        "origin": "pointer",
+        "visual": {
+          "layer": "overlay",
+          "paint": "field",
+          "tone": {
+            "default": "subtle"
+          }
+        },
+        "profiles": {
+          "ripple": {
+            "animateSize": true,
+            "size": "auto",
+            "durationToken": "interaction.slow",
+            "curveToken": "motion.emphasized.out",
+            "fade": {
+              "delayToken": "interaction.hold.short",
+              "durationToken": "interaction.fade.short",
+              "curveToken": "motion.standard.out"
+            }
+          },
+          "rippleOverflow": {
+            "animateSize": true,
+            "size": 80,
+            "durationToken": "interaction.fast",
+            "curveToken": "motion.standard.out",
+            "fade": {
+              "delayToken": "interaction.hold.short",
+              "durationToken": "interaction.fade.short",
+              "curveToken": "motion.standard.out"
+            }
+          },
+          "halo": {
+            "animateSize": false,
+            "size": 80,
+            "durationToken": "interaction.instant",
+            "fade": {
+              "delayToken": "interaction.hold.short",
+              "durationToken": "interaction.fade.long",
+              "curveToken": "motion.standard.out"
+            }
+          },
+          "pressed": {
+            "animateSize": false,
+            "size": "auto",
+            "durationToken": "interaction.hold.short",
+            "curveToken": "motion.standard.out",
+            "fade": {
+              "delayToken": "interaction.hold.short",
+              "durationToken": "interaction.fade.long",
+              "curveToken": "motion.standard.out"
+            }
+          }
+        }
+      }
+    }
+  },
+  "themeTokens": {
+    "palettes": {
+      "default": {
+        "light": {
+          "focusColor": [
+            221.6,
+            34.88,
+            42.16,
+            1
+          ],
+          "effects": {
+            "activationFeedback": {
+              "tone": {
+                "subtle": {
+                  "color": "#1D1B20",
+                  "opacity": 0.1
+                },
+                "vivid": {
+                  "color": [
+                    0,
+                    0,
+                    100,
+                    1
+                  ],
+                  "opacity": 0.2
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "switch": {
+      "effects": {
+        "activationFeedback": {
+          "profile": "halo",
+          "origin": "center",
+          "visual": {
+            "layer": "underlay",
+            "paint": "outline",
+            "tone": {
+              "default": "subtle",
+              "byEmphasis": {
+                "low": "vivid"
+              }
+            }
+          },
+          "profiles": {
+            "halo": {
+              "size": 8
+            }
+          }
+        }
+      },
+      "options": {
+        "variant": "standard"
+      },
+      "variants": {
+        "standard": {
+          "options": {
+            "mode": "base"
+          },
+          "modes": {
+            "base": {
+              "elements": {
+                "e2": {
+                  "name": "track",
+                  "decorations": {
+                    "borderStyle": "solid"
+                  },
+                  "scales": {
+                    "boxWidth": {
+                      "s:md:1": 52
+                    },
+                    "boxHeight": {
+                      "s:md:1": 32
+                    },
+                    "borderWidth": 2,
+                    "borderRadius": {
+                      "rounded": 6,
+                      "pill": {
+                        "s:md:1": 16
+                      },
+                      "square": 0
+                    },
+                    "paddingTop": {
+                      "s:md:1": 4
+                    },
+                    "paddingRight": {
+                      "s:md:1": 4
+                    },
+                    "paddingBottom": {
+                      "s:md:1": 4
+                    },
+                    "paddingLeft": {
+                      "s:md:1": 4
+                    }
+                  },
+                  "palettes": {
+                    "default": {
+                      "light": {
+                        "boxColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#E6E1E9",
+                              "hover": {
+                                "ref": "#E6E1E9"
+                              },
+                              "focus": {
+                                "ref": "#E6E1E9"
+                              },
+                              "pressed": {
+                                "ref": "#E6E1E9"
+                              },
+                              "disabled": {
+                                "ref": [
+                                  275,
+                                  24,
+                                  90.2,
+                                  0.1
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#615690"
+                                },
+                                "hover": {
+                                  "ref": "#615690"
+                                },
+                                "focus": {
+                                  "ref": "#615690"
+                                },
+                                "pressed": {
+                                  "ref": "#615690"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                0,
+                                0,
+                                100,
+                                0.24
+                              ],
+                              "hover": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.32
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.24
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.4
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.12
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    264.71,
+                                    100,
+                                    96.67,
+                                    1
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    256.36,
+                                    100,
+                                    93.53,
+                                    1
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    264.71,
+                                    100,
+                                    96.67,
+                                    1
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    253.47,
+                                    100,
+                                    90.39,
+                                    1
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "borderColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#C9C4CF",
+                              "hover": {
+                                "ref": "#C9C4CF"
+                              },
+                              "focus": {
+                                "ref": "#C9C4CF"
+                              },
+                              "pressed": {
+                                "ref": "#C9C4CF"
+                              },
+                              "disabled": {
+                                "ref": [
+                                  264,
+                                  8.47,
+                                  11.57,
+                                  0.1
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                0,
+                                0,
+                                100,
+                                0.64
+                              ],
+                              "hover": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.8
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.64
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.88
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.2
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "dark": {
+                        "boxColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                260,
+                                5.26,
+                                33.53,
+                                1
+                              ],
+                              "hover": {
+                                "ref": [
+                                  260,
+                                  4.62,
+                                  38.24,
+                                  1
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  260,
+                                  5.26,
+                                  33.53,
+                                  1
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  258,
+                                  4.55,
+                                  43.14,
+                                  1
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  260,
+                                  4.11,
+                                  28.63,
+                                  0.12
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    252,
+                                    100,
+                                    87.25,
+                                    1
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    253.47,
+                                    100,
+                                    90.39,
+                                    1
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    252,
+                                    100,
+                                    87.25,
+                                    1
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    256.36,
+                                    100,
+                                    93.53,
+                                    1
+                                  ]
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                0,
+                                0,
+                                100,
+                                0.24
+                              ],
+                              "hover": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.32
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.24
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.4
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.12
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    256.36,
+                                    100,
+                                    93.53,
+                                    1
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    253.47,
+                                    100,
+                                    90.39,
+                                    1
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    256.36,
+                                    100,
+                                    93.53,
+                                    1
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    252,
+                                    100,
+                                    87.25,
+                                    1
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "borderColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                267.27,
+                                6.83,
+                                68.43,
+                                1
+                              ],
+                              "hover": {
+                                "ref": [
+                                  267.27,
+                                  10.28,
+                                  79.02,
+                                  1
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  267.27,
+                                  6.83,
+                                  68.43,
+                                  1
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  270,
+                                  15.38,
+                                  84.71,
+                                  1
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  260,
+                                  4.11,
+                                  28.63,
+                                  0.12
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                0,
+                                0,
+                                100,
+                                0.64
+                              ],
+                              "hover": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.8
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.64
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.88
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.2
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "dynamic": {
+                      "light": {
+                        "boxColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#E6E1E9",
+                              "hover": {
+                                "ref": "#E6E1E9"
+                              },
+                              "focus": {
+                                "ref": "#E6E1E9"
+                              },
+                              "pressed": {
+                                "ref": "#E6E1E9"
+                              },
+                              "disabled": {
+                                "ref": [
+                                  275,
+                                  24,
+                                  90.2,
+                                  0.1
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#615690"
+                                },
+                                "hover": {
+                                  "ref": "#615690"
+                                },
+                                "focus": {
+                                  "ref": "#615690"
+                                },
+                                "pressed": {
+                                  "ref": "#615690"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                0,
+                                0,
+                                100,
+                                0.24
+                              ],
+                              "hover": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.32
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.24
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.4
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.12
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    264.71,
+                                    100,
+                                    96.67,
+                                    1
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    256.36,
+                                    100,
+                                    93.53,
+                                    1
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    264.71,
+                                    100,
+                                    96.67,
+                                    1
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    253.47,
+                                    100,
+                                    90.39,
+                                    1
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "borderColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#C9C4CF",
+                              "hover": {
+                                "ref": "#C9C4CF"
+                              },
+                              "focus": {
+                                "ref": "#C9C4CF"
+                              },
+                              "pressed": {
+                                "ref": "#C9C4CF"
+                              },
+                              "disabled": {
+                                "ref": [
+                                  264,
+                                  8.47,
+                                  11.57,
+                                  0.1
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                0,
+                                0,
+                                100,
+                                0.64
+                              ],
+                              "hover": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.8
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.64
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.88
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.2
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "dark": {
+                        "boxColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                260,
+                                5.26,
+                                33.53,
+                                1
+                              ],
+                              "hover": {
+                                "ref": [
+                                  260,
+                                  4.62,
+                                  38.24,
+                                  1
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  260,
+                                  5.26,
+                                  33.53,
+                                  1
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  258,
+                                  4.55,
+                                  43.14,
+                                  1
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  260,
+                                  4.11,
+                                  28.63,
+                                  0.12
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    252,
+                                    100,
+                                    87.25,
+                                    1
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    253.47,
+                                    100,
+                                    90.39,
+                                    1
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    252,
+                                    100,
+                                    87.25,
+                                    1
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    256.36,
+                                    100,
+                                    93.53,
+                                    1
+                                  ]
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                0,
+                                0,
+                                100,
+                                0.24
+                              ],
+                              "hover": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.32
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.24
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.4
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.12
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    256.36,
+                                    100,
+                                    93.53,
+                                    1
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    253.47,
+                                    100,
+                                    90.39,
+                                    1
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    256.36,
+                                    100,
+                                    93.53,
+                                    1
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    252,
+                                    100,
+                                    87.25,
+                                    1
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "borderColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                267.27,
+                                6.83,
+                                68.43,
+                                1
+                              ],
+                              "hover": {
+                                "ref": [
+                                  267.27,
+                                  10.28,
+                                  79.02,
+                                  1
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  267.27,
+                                  6.83,
+                                  68.43,
+                                  1
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  270,
+                                  15.38,
+                                  84.71,
+                                  1
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  260,
+                                  4.11,
+                                  28.63,
+                                  0.12
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                0,
+                                0,
+                                100,
+                                0.64
+                              ],
+                              "hover": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.8
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.64
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.88
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.2
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "e3": {
+                  "name": "thumb",
+                  "scales": {
+                    "boxWidth": {
+                      "s:md:1": 24
+                    },
+                    "boxHeight": {
+                      "s:md:1": 24
+                    },
+                    "borderRadius": {
+                      "rounded": 6,
+                      "pill": {
+                        "s:md:1": 12
+                      },
+                      "square": 0
+                    }
+                  },
+                  "effects": {
+                    "thumbShrink": {
+                      "rest": {
+                        "boxWidth": {
+                          "s:md:1": 16
+                        },
+                        "boxHeight": {
+                          "s:md:1": 16
+                        }
+                      }
+                    }
+                  },
+                  "palettes": {
+                    "default": {
+                      "light": {
+                        "boxColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#79757F",
+                              "hover": {
+                                "ref": "#48454E"
+                              },
+                              "focus": {
+                                "ref": "#48454E"
+                              },
+                              "pressed": {
+                                "ref": "#48454E"
+                              },
+                              "disabled": {
+                                "ref": [
+                                  252,
+                                  8.47,
+                                  11.57,
+                                  0.38
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "hover": {
+                                  "ref": "#E7DEFF"
+                                },
+                                "focus": {
+                                  "ref": "#E7DEFF"
+                                },
+                                "pressed": {
+                                  "ref": "#E7DEFF"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#FFFFFF",
+                              "hover": {
+                                "ref": [
+                                  264.71,
+                                  100,
+                                  96.67,
+                                  1
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  264.71,
+                                  100,
+                                  96.67,
+                                  1
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  256.36,
+                                  100,
+                                  93.53,
+                                  1
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.38
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    251.79,
+                                    31.11,
+                                    35.29,
+                                    1
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    252,
+                                    35.03,
+                                    30.78,
+                                    1
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    251.79,
+                                    31.11,
+                                    35.29,
+                                    1
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    253.09,
+                                    41.35,
+                                    26.08,
+                                    1
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "borderColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "dark": {
+                        "boxColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                267.27,
+                                10.28,
+                                79.02,
+                                1
+                              ],
+                              "hover": {
+                                "ref": [
+                                  270,
+                                  24,
+                                  90.2,
+                                  1
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  267.27,
+                                  10.28,
+                                  79.02,
+                                  1
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  270,
+                                  54.55,
+                                  95.69,
+                                  1
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  260,
+                                  4.11,
+                                  28.63,
+                                  0.38
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    253.09,
+                                    41.35,
+                                    26.08,
+                                    1
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    253.09,
+                                    49.55,
+                                    21.76,
+                                    1
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    253.09,
+                                    41.35,
+                                    26.08,
+                                    1
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    253.09,
+                                    61.8,
+                                    17.45,
+                                    1
+                                  ]
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#FFFFFF",
+                              "hover": {
+                                "ref": [
+                                  256.36,
+                                  100,
+                                  93.53,
+                                  1
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  256.36,
+                                  100,
+                                  93.53,
+                                  1
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  252,
+                                  100,
+                                  87.25,
+                                  1
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.38
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    251.79,
+                                    31.11,
+                                    35.29,
+                                    1
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    252,
+                                    35.03,
+                                    30.78,
+                                    1
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    251.79,
+                                    31.11,
+                                    35.29,
+                                    1
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    253.09,
+                                    41.35,
+                                    26.08,
+                                    1
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "borderColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "dynamic": {
+                      "light": {
+                        "boxColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#79757F",
+                              "hover": {
+                                "ref": "#48454E"
+                              },
+                              "focus": {
+                                "ref": "#48454E"
+                              },
+                              "pressed": {
+                                "ref": "#48454E"
+                              },
+                              "disabled": {
+                                "ref": [
+                                  252,
+                                  8.47,
+                                  11.57,
+                                  0.38
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "hover": {
+                                  "ref": "#E7DEFF"
+                                },
+                                "focus": {
+                                  "ref": "#E7DEFF"
+                                },
+                                "pressed": {
+                                  "ref": "#E7DEFF"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#FFFFFF",
+                              "hover": {
+                                "ref": [
+                                  264.71,
+                                  100,
+                                  96.67,
+                                  1
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  264.71,
+                                  100,
+                                  96.67,
+                                  1
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  256.36,
+                                  100,
+                                  93.53,
+                                  1
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.38
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    251.79,
+                                    31.11,
+                                    35.29,
+                                    1
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    252,
+                                    35.03,
+                                    30.78,
+                                    1
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    251.79,
+                                    31.11,
+                                    35.29,
+                                    1
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    253.09,
+                                    41.35,
+                                    26.08,
+                                    1
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "borderColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "dark": {
+                        "boxColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                267.27,
+                                10.28,
+                                79.02,
+                                1
+                              ],
+                              "hover": {
+                                "ref": [
+                                  270,
+                                  24,
+                                  90.2,
+                                  1
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  267.27,
+                                  10.28,
+                                  79.02,
+                                  1
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  270,
+                                  54.55,
+                                  95.69,
+                                  1
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  260,
+                                  4.11,
+                                  28.63,
+                                  0.38
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    253.09,
+                                    41.35,
+                                    26.08,
+                                    1
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    253.09,
+                                    49.55,
+                                    21.76,
+                                    1
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    253.09,
+                                    41.35,
+                                    26.08,
+                                    1
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    253.09,
+                                    61.8,
+                                    17.45,
+                                    1
+                                  ]
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#FFFFFF",
+                              "hover": {
+                                "ref": [
+                                  256.36,
+                                  100,
+                                  93.53,
+                                  1
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  256.36,
+                                  100,
+                                  93.53,
+                                  1
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  252,
+                                  100,
+                                  87.25,
+                                  1
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.38
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    251.79,
+                                    31.11,
+                                    35.29,
+                                    1
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    252,
+                                    35.03,
+                                    30.78,
+                                    1
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    251.79,
+                                    31.11,
+                                    35.29,
+                                    1
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    253.09,
+                                    41.35,
+                                    26.08,
+                                    1
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "borderColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "e4": {
+                  "name": "label",
+                  "decorations": {
+                    "textFont": "body",
+                    "textWeight": "normal"
+                  },
+                  "scales": {
+                    "textSize": {
+                      "s:md:1": 14
+                    },
+                    "textHeight": {
+                      "s:md:1": 20
+                    },
+                    "marginLeft": {
+                      "s:md:1": 12
+                    },
+                    "marginRight": {
+                      "s:md:1": 12
+                    }
+                  },
+                  "palettes": {
+                    "default": {
+                      "light": {
+                        "textColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                252,
+                                8.47,
+                                11.57,
+                                1
+                              ],
+                              "disabled": {
+                                "ref": [
+                                  252,
+                                  8.47,
+                                  11.57,
+                                  0.38
+                                ]
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                0,
+                                0,
+                                100,
+                                1
+                              ],
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.38
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "dark": {
+                        "textColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                277.5,
+                                15.38,
+                                89.8,
+                                1
+                              ],
+                              "disabled": {
+                                "ref": [
+                                  277.5,
+                                  15.38,
+                                  89.8,
+                                  0.38
+                                ]
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                0,
+                                0,
+                                0,
+                                1
+                              ],
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0.38
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "dynamic": {
+                      "light": {
+                        "textColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                252,
+                                8.47,
+                                11.57,
+                                1
+                              ],
+                              "disabled": {
+                                "ref": [
+                                  252,
+                                  8.47,
+                                  11.57,
+                                  0.38
+                                ]
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                0,
+                                0,
+                                100,
+                                1
+                              ],
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.38
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "dark": {
+                        "textColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                277.5,
+                                15.38,
+                                89.8,
+                                1
+                              ],
+                              "disabled": {
+                                "ref": [
+                                  277.5,
+                                  15.38,
+                                  89.8,
+                                  0.38
+                                ]
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                0,
+                                0,
+                                0,
+                                1
+                              ],
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0.38
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "e6": {
+                  "name": "icon",
+                  "scales": {
+                    "boxWidth": {
+                      "s:md:1": 16
+                    },
+                    "boxHeight": {
+                      "s:md:1": 16
+                    }
+                  },
+                  "palettes": {
+                    "default": {
+                      "light": {
+                        "textColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#E6E1E9",
+                              "hover": {
+                                "ref": "#E6E1E9"
+                              },
+                              "focus": {
+                                "ref": "#E6E1E9"
+                              },
+                              "pressed": {
+                                "ref": "#E6E1E9"
+                              },
+                              "disabled": {
+                                "ref": [
+                                  252,
+                                  8.47,
+                                  11.57,
+                                  0.38
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#493E76"
+                                },
+                                "hover": {
+                                  "ref": "#493E76"
+                                },
+                                "focus": {
+                                  "ref": "#493E76"
+                                },
+                                "pressed": {
+                                  "ref": "#493E76"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                251.79,
+                                31.11,
+                                35.29,
+                                1
+                              ],
+                              "hover": {
+                                "ref": [
+                                  252,
+                                  35.03,
+                                  30.78,
+                                  1
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  251.79,
+                                  31.11,
+                                  35.29,
+                                  1
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  253.09,
+                                  41.35,
+                                  26.08,
+                                  1
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.38
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "hover": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "focus": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "pressed": {
+                                  "ref": "#FFFFFF"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "dark": {
+                        "textColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                253.33,
+                                8.74,
+                                20.2,
+                                1
+                              ],
+                              "hover": {
+                                "ref": [
+                                  255,
+                                  13.33,
+                                  11.76,
+                                  1
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  253.33,
+                                  8.74,
+                                  20.2,
+                                  1
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  257.14,
+                                  17.95,
+                                  7.65,
+                                  1
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  277.5,
+                                  15.38,
+                                  89.8,
+                                  0.38
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    252,
+                                    100,
+                                    87.25,
+                                    1
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    253.47,
+                                    100,
+                                    90.39,
+                                    1
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    252,
+                                    100,
+                                    87.25,
+                                    1
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    256.36,
+                                    100,
+                                    93.53,
+                                    1
+                                  ]
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                251.79,
+                                31.11,
+                                35.29,
+                                1
+                              ],
+                              "hover": {
+                                "ref": [
+                                  252,
+                                  35.03,
+                                  30.78,
+                                  1
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  251.79,
+                                  31.11,
+                                  35.29,
+                                  1
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  253.09,
+                                  41.35,
+                                  26.08,
+                                  1
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.38
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "hover": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "focus": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "pressed": {
+                                  "ref": "#FFFFFF"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "dynamic": {
+                      "light": {
+                        "textColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#E6E1E9",
+                              "hover": {
+                                "ref": "#E6E1E9"
+                              },
+                              "focus": {
+                                "ref": "#E6E1E9"
+                              },
+                              "pressed": {
+                                "ref": "#E6E1E9"
+                              },
+                              "disabled": {
+                                "ref": [
+                                  252,
+                                  8.47,
+                                  11.57,
+                                  0.38
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#493E76"
+                                },
+                                "hover": {
+                                  "ref": "#493E76"
+                                },
+                                "focus": {
+                                  "ref": "#493E76"
+                                },
+                                "pressed": {
+                                  "ref": "#493E76"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                251.79,
+                                31.11,
+                                35.29,
+                                1
+                              ],
+                              "hover": {
+                                "ref": [
+                                  252,
+                                  35.03,
+                                  30.78,
+                                  1
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  251.79,
+                                  31.11,
+                                  35.29,
+                                  1
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  253.09,
+                                  41.35,
+                                  26.08,
+                                  1
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.38
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "hover": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "focus": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "pressed": {
+                                  "ref": "#FFFFFF"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "dark": {
+                        "textColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                253.33,
+                                8.74,
+                                20.2,
+                                1
+                              ],
+                              "hover": {
+                                "ref": [
+                                  255,
+                                  13.33,
+                                  11.76,
+                                  1
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  253.33,
+                                  8.74,
+                                  20.2,
+                                  1
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  257.14,
+                                  17.95,
+                                  7.65,
+                                  1
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  277.5,
+                                  15.38,
+                                  89.8,
+                                  0.38
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    252,
+                                    100,
+                                    87.25,
+                                    1
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    253.47,
+                                    100,
+                                    90.39,
+                                    1
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    252,
+                                    100,
+                                    87.25,
+                                    1
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    256.36,
+                                    100,
+                                    93.53,
+                                    1
+                                  ]
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": [
+                                251.79,
+                                31.11,
+                                35.29,
+                                1
+                              ],
+                              "hover": {
+                                "ref": [
+                                  252,
+                                  35.03,
+                                  30.78,
+                                  1
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  251.79,
+                                  31.11,
+                                  35.29,
+                                  1
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  253.09,
+                                  41.35,
+                                  26.08,
+                                  1
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  100,
+                                  0.38
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "hover": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "focus": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "pressed": {
+                                  "ref": "#FFFFFF"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
