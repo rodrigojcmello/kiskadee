@@ -1,12 +1,12 @@
 {
   "name": "Material Design",
-  "prefix": "gmd",
+  "prefix": "mk",
   "version": [
     3,
     0,
     0
   ],
-  "author": "Google",
+  "author": "Kiskadee",
   "global": {
     "fonts": {
       "body": [

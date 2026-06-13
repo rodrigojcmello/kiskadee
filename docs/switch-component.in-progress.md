@@ -66,6 +66,11 @@ optimized single-component implementation was promoted into
   `16 x 16`, Carbon uses `14 x 14`, Fluent uses `10 x 10`, and iOS scales the slot from `8 x 8`
   through `20 x 20` with the Switch scale.
 - Future presets without `e6` should not expose icon controls in Showcase.
+- The iOS Showcase exposes a Switch preset picker backed by generated JSON fixtures under
+  `packages/components/ios/Examples/KiskadeeIOSShowcase/KiskadeeIOSShowcase/Resources`. The picker
+  includes first-party presets that currently define `components.switch`: Carbon IBM, Fluent 2
+  Microsoft, iOS 26 Apple, Material 3 Google, and Material 3 Kiskadee. Presets without
+  `components.switch` stay out of the picker until they gain a Switch schema.
 - The component intentionally allows `icons` and `thumbShrink` together. The `/switch` Showcase
   applies a local presentation-only guard: choosing an icon mode unchecks `Thumb shrink`, choosing
   `Icons: None` restores artifact-default `thumbShrink` behavior, and turning `Thumb shrink` back
@@ -239,3 +244,17 @@ optimized single-component implementation was promoted into
   `centerX=10/centerY=10` and selected `centerX=30/centerY=10` with `--k-swt-ti: 2px` and
   `--k-swt-tx: 20px`; no `ResizeObserver` warnings were logged.
 - 2026-06-12: `git diff --check`
+- 2026-06-13: iOS Showcase Switch preset picker added with generated fixtures for Carbon IBM,
+  Fluent 2 Microsoft, iOS 26 Apple, Material 3 Google, and Material 3 Kiskadee.
+- 2026-06-13: `plutil -lint
+  packages/components/ios/Examples/KiskadeeIOSShowcase/KiskadeeIOSShowcase.xcodeproj/project.pbxproj`
+- 2026-06-13: JSON fixture smoke check confirmed each iOS Switch fixture has `components.switch`,
+  track/thumb elements, `default.light` palettes, and `neutral.medium` colors.
+- 2026-06-13: `swift build --package-path packages/components/ios --scratch-path
+  /tmp/kiskadee-ios-swift-build`
+- 2026-06-13: `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project
+  packages/components/ios/Examples/KiskadeeIOSShowcase/KiskadeeIOSShowcase.xcodeproj -scheme
+  KiskadeeIOSShowcase -destination 'generic/platform=iOS Simulator' -derivedDataPath
+  /tmp/kiskadee-ios-derived build`
+- 2026-06-13: Built app bundle check confirmed all five `*switch.schema.json` fixtures are copied
+  into `KiskadeeIOSShowcase.app`.
