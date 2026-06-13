@@ -32,7 +32,9 @@ struct SettingsView: View {
         KiskadeeSwitch(
             isOn: $isEnabled,
             label: "Material switch",
-            theme: theme
+            theme: theme,
+            isInteractionLocked: false,
+            interactionCooldown: 0
         )
     }
 }
@@ -53,9 +55,20 @@ func loadTheme() throws -> KiskadeeTheme {
 
 - Component: `Switch`.
 - Preset payload: Material Google, `default` segment, `light` mode.
-- Tokens: track, thumb, label, and icon color roles; width, height, padding, border width, radius,
-  label typography, and thumb shrink.
+- Tokens: track, thumb, label, and icon color roles; activation feedback tone; width, height,
+  padding, border width, radius, label typography, and thumb shrink.
 - States: rest, pressed, disabled, and selected.
+- Interactions: tap toggle, accessibility toggle, horizontal drag with endpoint/threshold commit,
+  `interactionLocked`, and opt-in interaction cooldown.
+- Activation feedback: thumb-level `halo` feedback is rendered as a short pulse when the interaction
+  starts. It does not stay active for the whole press or drag.
+
+`interactionLocked` blocks temporary activation attempts without applying disabled or read-only
+semantics. See [`interactionLocked`](../../../docs/definitions/interaction-locked.md).
+
+`interactionCooldown` limits the next separate interaction after a state change. A continuous drag
+can still move across both endpoints and toggle the switch more than once before the user releases
+the thumb.
 
 Future native builders can emit smaller per-component payloads such as
 `material-3-google.switch.kiskadee-ios.json` from the canonical schema.

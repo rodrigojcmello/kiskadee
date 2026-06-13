@@ -9,8 +9,51 @@
     },
     "radius": "pill"
   },
+  "themeTokens": {
+    "palettes": {
+      "default": {
+        "light": {
+          "effects": {
+            "activationFeedback": {
+              "tone": {
+                "subtle": {
+                  "color": "#1D1B20",
+                  "opacity": 0.1
+                },
+                "vivid": {
+                  "color": [0, 0, 100, 1],
+                  "opacity": 0.2
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "components": {
     "switch": {
+      "effects": {
+        "activationFeedback": {
+          "profile": "halo",
+          "origin": "center",
+          "visual": {
+            "layer": "underlay",
+            "paint": "outline",
+            "tone": {
+              "default": "subtle",
+              "byEmphasis": {
+                "low": "vivid"
+              }
+            }
+          },
+          "profiles": {
+            "halo": {
+              "size": 8
+            }
+          }
+        }
+      },
       "options": {
         "variant": "standard"
       },

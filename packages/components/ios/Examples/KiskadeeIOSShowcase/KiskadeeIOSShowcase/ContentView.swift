@@ -5,6 +5,7 @@ struct ContentView: View {
     @StateObject private var schemaStore = ShowcaseSchemaStore()
     @State private var mainSwitch = false
     @State private var iconSwitch = true
+    @State private var cooldownSwitch = false
 
     var body: some View {
         NavigationStack {
@@ -22,6 +23,13 @@ struct ContentView: View {
                             label: "With icon",
                             theme: theme,
                             showsIcon: true
+                        )
+
+                        KiskadeeSwitch(
+                            isOn: $cooldownSwitch,
+                            label: "Cooldown",
+                            theme: theme,
+                            interactionCooldown: 3
                         )
 
                         KiskadeeSwitch(

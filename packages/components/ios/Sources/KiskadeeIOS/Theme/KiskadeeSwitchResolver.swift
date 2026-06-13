@@ -26,6 +26,9 @@ struct KiskadeeSwitchResolvedStyle {
     let iconColor: Color?
     let iconWidth: CGFloat?
     let iconHeight: CGFloat?
+    let activationFeedbackColor: Color?
+    let activationFeedbackOpacity: Double
+    let activationFeedbackSize: CGFloat
 }
 
 enum KiskadeeSwitchResolver {
@@ -43,6 +46,7 @@ enum KiskadeeSwitchResolver {
         let thumb = try element("e3", in: elements)
         let label = elements["e4"]
         let icon = elements["e6"]
+        let activationFeedback = resolveActivationFeedback(theme: theme)
 
         return KiskadeeSwitchResolvedStyle(
             trackWidth: try numberScale(track, "boxWidth", theme: theme, elementName: "e2"),
@@ -129,7 +133,10 @@ enum KiskadeeSwitchResolver {
             },
             iconHeight: try icon.map {
                 try numberScale($0, "boxHeight", theme: theme, elementName: "e6")
-            }
+            },
+            activationFeedbackColor: activationFeedback.color,
+            activationFeedbackOpacity: activationFeedback.opacity,
+            activationFeedbackSize: activationFeedback.size
         )
     }
 
@@ -299,6 +306,70 @@ enum KiskadeeSwitchResolver {
             let number = number(from: value, scale: theme.scale)
         else {
             return fallback
+        }
+
+        return CGFloat(number)
+    }
+
+    private static func resolveActivationFeedback(
+        theme: KiskadeeTheme
+    ) -> (color: Color?, opacity: Double, size: CGFloat) {
+        guard
+            let effect = theme.schema.components.switch?.effects?.activationFeedback,
+            let tone = activationFeedbackTone(effect: effect, theme: theme),
+            let color = try? tone.color.swiftUIColor()
+        else {
+            return (nil, 0, 0)
+        }
+
+        return (
+            color,
+            tone.opacity,
+            activationFeedbackSize(effect: effect, theme: theme)
+        )
+    }
+
+    private static func activationFeedbackTone(
+        effect: KiskadeeActivationFeedbackEffectSchema,
+        theme: KiskadeeTheme
+    ) -> KiskadeeActivationFeedbackToneSchema? {
+        guard
+            let toneSet = theme.schema.themeTokens?
+                .palettes?[theme.segment]?[theme.mode.rawValue]?
+                .effects?.activationFeedback
+                ?? theme.schema.themeTokens?
+                .palettes?["default"]?[theme.mode.rawValue]?
+                .effects?.activationFeedback
+                ?? theme.schema.themeTokens?
+                .palettes?[theme.segment]?["light"]?
+                .effects?.activationFeedback
+        else {
+            return nil
+        }
+
+        let toneName = effect.visual?.tone?.byEmphasis?[theme.emphasis.schemaKey]
+            ?? effect.visual?.tone?.defaultTone
+            ?? "subtle"
+
+        return toneSet.tone[toneName]
+            ?? toneSet.tone["subtle"]
+            ?? toneSet.tone.values.first
+    }
+
+    private static func activationFeedbackSize(
+        effect: KiskadeeActivationFeedbackEffectSchema,
+        theme: KiskadeeTheme
+    ) -> CGFloat {
+        let profileName = effect.profile ?? "halo"
+        let profile = effect.profiles?[profileName]
+            ?? effect.profiles?["halo"]
+            ?? effect.profiles?.values.first
+
+        guard
+            let value = profile?.size,
+            let number = number(from: value, scale: theme.scale)
+        else {
+            return 0
         }
 
         return CGFloat(number)

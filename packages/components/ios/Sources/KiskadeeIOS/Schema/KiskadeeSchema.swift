@@ -6,12 +6,14 @@ public struct KiskadeeSchema: Decodable, Equatable {
     public let version: [Int]?
     public let author: String?
     public let global: KiskadeeGlobalSchema?
+    public let themeTokens: KiskadeeThemeTokensSchema?
     public let components: KiskadeeComponentsSchema
 }
 
 public struct KiskadeeGlobalSchema: Decodable, Equatable {
     public let radius: String?
     public let fonts: KiskadeeFontsSchema?
+    public let effects: KiskadeeActivationFeedbackEffectsSchema?
 }
 
 public struct KiskadeeFontsSchema: Decodable, Equatable {
@@ -19,13 +21,66 @@ public struct KiskadeeFontsSchema: Decodable, Equatable {
     public let heading: [String]?
 }
 
+public struct KiskadeeThemeTokensSchema: Decodable, Equatable {
+    public let palettes: [String: [String: KiskadeeThemeTokenPaletteSchema]]?
+}
+
+public struct KiskadeeThemeTokenPaletteSchema: Decodable, Equatable {
+    public let effects: KiskadeeThemeTokenEffectsSchema?
+}
+
+public struct KiskadeeThemeTokenEffectsSchema: Decodable, Equatable {
+    public let activationFeedback: KiskadeeActivationFeedbackToneSetSchema?
+}
+
+public struct KiskadeeActivationFeedbackToneSetSchema: Decodable, Equatable {
+    public let tone: [String: KiskadeeActivationFeedbackToneSchema]
+}
+
+public struct KiskadeeActivationFeedbackToneSchema: Decodable, Equatable {
+    public let color: KiskadeeColorToken
+    public let opacity: Double
+}
+
 public struct KiskadeeComponentsSchema: Decodable, Equatable {
     public let `switch`: KiskadeeSwitchComponentSchema?
 }
 
 public struct KiskadeeSwitchComponentSchema: Decodable, Equatable {
+    public let effects: KiskadeeActivationFeedbackEffectsSchema?
     public let options: KiskadeeSwitchOptionsSchema?
     public let variants: [String: KiskadeeSwitchVariantSchema]
+}
+
+public struct KiskadeeActivationFeedbackEffectsSchema: Decodable, Equatable {
+    public let activationFeedback: KiskadeeActivationFeedbackEffectSchema?
+}
+
+public struct KiskadeeActivationFeedbackEffectSchema: Decodable, Equatable {
+    public let profile: String?
+    public let origin: String?
+    public let visual: KiskadeeActivationFeedbackVisualSchema?
+    public let profiles: [String: KiskadeeActivationFeedbackProfileSchema]?
+}
+
+public struct KiskadeeActivationFeedbackVisualSchema: Decodable, Equatable {
+    public let layer: String?
+    public let paint: String?
+    public let tone: KiskadeeActivationFeedbackToneSelectionSchema?
+}
+
+public struct KiskadeeActivationFeedbackToneSelectionSchema: Decodable, Equatable {
+    public let defaultTone: String?
+    public let byEmphasis: [String: String]?
+
+    private enum CodingKeys: String, CodingKey {
+        case defaultTone = "default"
+        case byEmphasis
+    }
+}
+
+public struct KiskadeeActivationFeedbackProfileSchema: Decodable, Equatable {
+    public let size: KiskadeeJSONValue?
 }
 
 public struct KiskadeeSwitchOptionsSchema: Decodable, Equatable {
