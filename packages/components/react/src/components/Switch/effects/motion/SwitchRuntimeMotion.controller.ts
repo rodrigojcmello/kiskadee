@@ -20,6 +20,7 @@ type SwitchRuntimeMotionControllerOptions = {
   disabled?: boolean;
   enabled: boolean;
   geometryKey: string;
+  interactionLocked?: boolean;
   onClickCapture?: (event: MouseEvent<HTMLLabelElement>) => void;
   onControlStateChange?: (controlState: boolean) => void;
   readOnly?: boolean;
@@ -28,6 +29,7 @@ type SwitchRuntimeMotionControllerOptions = {
 type SwitchRuntimeMotionThumbRuntimeProps = {
   controlState: boolean;
   disabled?: boolean;
+  interactionLocked?: boolean;
   readOnly?: boolean;
   requestSuppressNextClick: () => void;
   setControlState: (controlState: boolean) => void;
@@ -152,6 +154,7 @@ export function useSwitchRuntimeMotionController({
   disabled,
   enabled,
   geometryKey,
+  interactionLocked,
   onClickCapture,
   onControlStateChange,
   readOnly
@@ -160,6 +163,7 @@ export function useSwitchRuntimeMotionController({
     controlState: controlStateProp,
     defaultControlState,
     disabled,
+    interactionLocked,
     readOnly,
     onControlStateChange
   });
@@ -234,6 +238,7 @@ export function useSwitchRuntimeMotionController({
     thumbProps: {
       controlState: projectedControlState,
       disabled,
+      interactionLocked,
       readOnly,
       requestSuppressNextClick,
       setControlState,

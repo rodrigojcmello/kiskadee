@@ -14,6 +14,8 @@ optimized single-component implementation was promoted into
 - Public hook: `useSwitchArtifactConfig`.
 - Public props type: `SwitchProps`.
 - Runtime motion is controlled by `motion?: false` on `Switch`.
+- `interactionLocked?: boolean` is a temporary interaction gate. It blocks activation attempts
+  without applying `disabled`, `readOnly`, or their visual states.
 - There is no separate public motion component export.
 - There is no second-version public component export.
 
@@ -25,6 +27,12 @@ optimized single-component implementation was promoted into
 - Runtime motion, `thumbShrink`, `activationFeedback`, and `controlText` remain internal modules.
 - Switch activation feedback is a pointer/click visual effect. Direct click/tap on the visual track
   may start AF; Space keeps the native keyboard toggle behavior but must not start AF.
+- `interactionLocked` routes through `useControlState`, `HeadlessSwitch.Root`, runtime motion, and
+  activation feedback. Locked switches suppress click/change/drag activation and activation
+  feedback, but must not project a disabled/read-only state class or input attribute.
+- Runtime motion commits a drag intent when the thumb reaches an endpoint, matching the native iOS
+  behavior. `latestDragControlStateRef` prevents repeated emissions at the same endpoint; consumers
+  still own async confirmation, rollback, and any cooldown state.
 - Switch activation feedback defaults now come from
   `components.switch.effects.activationFeedback`. Switch presets use `profile: 'halo'`,
   `origin: 'center'`, and `visual.tone.byEmphasis.low = 'vivid'`; this is schema-owned, not a
@@ -66,6 +74,8 @@ optimized single-component implementation was promoted into
   `16 x 16`, Carbon uses `14 x 14`, Fluent uses `10 x 10`, and iOS scales the slot from `8 x 8`
   through `20 x 20` with the Switch scale.
 - Future presets without `e6` should not expose icon controls in Showcase.
+- The `/switch` Showcase exposes `Interaction locked` for the interactive example only, so the
+  temporary lock can be validated without treating it as an official visual state tile.
 - The iOS Showcase exposes a Switch preset picker backed by generated JSON fixtures under
   `packages/components/ios/Examples/KiskadeeIOSShowcase/KiskadeeIOSShowcase/Resources`. The picker
   includes first-party presets that currently define `components.switch`: Carbon IBM, Fluent 2
@@ -258,3 +268,22 @@ optimized single-component implementation was promoted into
   /tmp/kiskadee-ios-derived build`
 - 2026-06-13: Built app bundle check confirmed all five `*switch.schema.json` fixtures are copied
   into `KiskadeeIOSShowcase.app`.
+- 2026-06-14: KIS-44 React Switch `interactionLocked` implemented across headless state,
+  styled Switch, runtime motion drag, and activation feedback without disabled/readOnly visual
+  projection.
+- 2026-06-14: `pnpm --filter @kiskadee/react-components run build`
+- 2026-06-14: `pnpm --filter @kiskadee/react-headless exec vitest run
+  src/components/switch/HeadlessSwitch.test.tsx`
+- 2026-06-14: `pnpm --filter @kiskadee/react-components exec vitest run
+  src/components/Switch/Switch.test.tsx`
+- 2026-06-14: Temporary local Vitest check confirmed `interactionLocked` blocks click activation
+  without setting `disabled`, `readonly`, or `aria-readonly`; the temporary file was removed.
+- 2026-06-14: `/switch` Showcase exposes an `Interaction locked` toggle for the interactive
+  example.
+- 2026-06-14: `pnpm --filter @kiskadee/showcase exec tsc --noEmit --pretty false`
+- 2026-06-14: `pnpm --filter @kiskadee/showcase build`
+- 2026-06-14: Browser validation on `/switch` confirmed `Interaction locked` is visible; with
+  motion on and motion off, locked clicks leave the interactive Switch checked state unchanged and
+  do not apply `disabled`, `readonly`, or `aria-readonly`; unlocked clicks still toggle; motion-on
+  drag to the selected endpoint changes the Switch to checked.
+- 2026-06-14: `git diff --check`

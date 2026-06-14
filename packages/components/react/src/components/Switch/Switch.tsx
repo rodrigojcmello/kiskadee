@@ -70,6 +70,7 @@ function SwitchRoot(props: SwitchProps) {
     mode = DEFAULT_SWITCH_MODE,
     labelPosition = DEFAULT_SWITCH_LABEL_POSITION,
     disabled,
+    interactionLocked,
     readOnly,
     controlState: controlStateProp,
     defaultControlState,
@@ -186,6 +187,7 @@ function SwitchRoot(props: SwitchProps) {
     controlState: controlStateProp,
     defaultControlState,
     disabled,
+    interactionLocked,
     readOnly,
     onControlStateChange,
     onClickCapture,
@@ -197,6 +199,7 @@ function SwitchRoot(props: SwitchProps) {
     disabled,
     forcedActive: activationFeedback === 'active',
     geometryKey: switchGeometryKey,
+    interactionLocked,
     readOnly,
     onClickCapture: motionController.handleClickCapture,
     onPointerDown,
@@ -268,6 +271,7 @@ function SwitchRoot(props: SwitchProps) {
       inputId={id}
       inputProps={inputProps}
       disabled={disabled}
+      interactionLocked={interactionLocked}
       readOnly={readOnly}
       controlState={motionController.projectedControlState}
       onControlStateChange={motionController.setControlState}

@@ -6,6 +6,7 @@ import type {
   FocusEvent,
   HTMLAttributes,
   KeyboardEvent,
+  MouseEvent,
   ReactNode,
   Ref
 } from 'react';
@@ -56,6 +57,7 @@ export type SwitchRootProps = SwitchRootLabelProps & {
   onControlStateChange?: (controlState: boolean) => void;
   status?: SwitchStatus;
   disabled?: boolean;
+  interactionLocked?: boolean;
   readOnly?: boolean;
   required?: boolean;
   name?: string;
@@ -160,10 +162,12 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
     onControlStateChange,
     status,
     disabled,
+    interactionLocked,
     readOnly,
     required,
     name,
     value,
+    onClickCapture,
     ...rootProps
   },
   ref
@@ -176,6 +180,7 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
     controlState: controlStateProp,
     defaultControlState,
     disabled,
+    interactionLocked,
     readOnly,
     onControlStateChange
   });
@@ -230,6 +235,11 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
 
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
+      if (interactionLocked) {
+        event.preventDefault();
+        return;
+      }
+
       if (readOnly) {
         event.preventDefault();
         onChange?.(event);
@@ -239,7 +249,20 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
       setControlState(event.currentTarget.checked);
       onChange?.(event);
     },
-    [onChange, readOnly, setControlState]
+    [interactionLocked, onChange, readOnly, setControlState]
+  );
+
+  const handleClickCapture = useCallback(
+    (event: MouseEvent<HTMLLabelElement>) => {
+      if (interactionLocked) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+
+      onClickCapture?.(event);
+    },
+    [interactionLocked, onClickCapture]
   );
 
   const handleFocus = useCallback(
@@ -276,6 +299,7 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
         htmlFor={resolvedInputId}
         className={rootClassName}
         {...rootProps}
+        onClickCapture={handleClickCapture}
       >
         <input
           {...restInputProps}

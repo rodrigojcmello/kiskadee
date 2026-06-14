@@ -4,6 +4,7 @@ export type UseControlStateOptions = {
   controlState?: boolean;
   defaultControlState?: boolean;
   disabled?: boolean;
+  interactionLocked?: boolean;
   readOnly?: boolean;
   onControlStateChange?: (controlState: boolean) => void;
 };
@@ -19,6 +20,7 @@ export function useControlState({
   controlState,
   defaultControlState = false,
   disabled,
+  interactionLocked,
   readOnly,
   onControlStateChange
 }: UseControlStateOptions): UseControlStateResult {
@@ -28,7 +30,9 @@ export function useControlState({
 
   const setControlState = useCallback(
     (nextControlState: boolean) => {
-      if (disabled || readOnly || nextControlState === resolvedControlState) return;
+      if (disabled || interactionLocked || readOnly || nextControlState === resolvedControlState) {
+        return;
+      }
 
       if (!isControlled) {
         setUncontrolledControlState(nextControlState);
@@ -36,7 +40,14 @@ export function useControlState({
 
       onControlStateChange?.(nextControlState);
     },
-    [disabled, isControlled, onControlStateChange, readOnly, resolvedControlState]
+    [
+      disabled,
+      interactionLocked,
+      isControlled,
+      onControlStateChange,
+      readOnly,
+      resolvedControlState
+    ]
   );
 
   const toggle = useCallback(() => {

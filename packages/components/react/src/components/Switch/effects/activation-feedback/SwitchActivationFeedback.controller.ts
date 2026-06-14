@@ -29,6 +29,7 @@ type SwitchActivationFeedbackControllerOptions = {
   enabled: boolean;
   forcedActive?: boolean;
   geometryKey?: string;
+  interactionLocked?: boolean;
   onBlur?: (event: FocusEvent<HTMLLabelElement>) => void;
   onClickCapture?: (event: MouseEvent<HTMLLabelElement>) => void;
   onPointerCancel?: (event: PointerEvent<HTMLLabelElement>) => void;
@@ -61,6 +62,7 @@ export function useSwitchActivationFeedbackController({
   enabled,
   forcedActive,
   geometryKey,
+  interactionLocked,
   onBlur,
   onClickCapture,
   onPointerCancel,
@@ -104,7 +106,7 @@ export function useSwitchActivationFeedbackController({
   >({
     capturePointer: false,
     config,
-    disabled,
+    disabled: disabled || interactionLocked,
     enabled: enabled && usesStaticRuntime,
     forcedActive: usesStaticRuntime ? forcedActive : false,
     geometryKey,
@@ -141,7 +143,7 @@ export function useSwitchActivationFeedbackController({
     capturePointer: false,
     effectProfile: enabled && profileDefinition.runtime === 'radial' ? profile : null,
     hostRef: thumbRef,
-    isDisabled: disabled || readOnly,
+    isDisabled: disabled || interactionLocked || readOnly,
     localActivationFeedbackOrigin: undefined,
     globalActivationFeedbackOrigin: origin,
     modeActivationFeedbackRadialRuntimeConfig: radialRuntimeConfig,

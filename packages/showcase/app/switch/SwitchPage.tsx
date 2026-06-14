@@ -192,6 +192,7 @@ export default function SwitchPage() {
   const [intent, setIntent] = useState<SwitchIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
   const [surface, setSurface] = useState<SwitchSurface>('default');
+  const [interactionLocked, setInteractionLocked] = useState(false);
   const [motionEnabled, setMotionEnabled] = useState(true);
   const [thumbShrinkEnabled, setThumbShrinkEnabled] = useState(true);
   const [iconMode, setIconMode] = useState<SwitchIconMode>('none');
@@ -476,6 +477,16 @@ export default function SwitchPage() {
           </ShowcaseControlField>
         </ShowcaseControlGrid>
       </ShowcaseControlGroup>
+      <ShowcaseControlGroup title="Interaction">
+        <ShowcaseControlStack>
+          <ShowcaseBooleanControl
+            label="Interaction locked"
+            checked={interactionLocked}
+            onCheckedChange={setInteractionLocked}
+            disabled={!isSwitchAvailable}
+          />
+        </ShowcaseControlStack>
+      </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Motion">
         <ShowcaseControlStack>
           <ShowcaseBooleanControl
@@ -584,6 +595,7 @@ export default function SwitchPage() {
                 onControlStateChange={setControlState}
                 scale={scale}
                 radius={radius}
+                interactionLocked={interactionLocked}
                 motion={motionOverride}
                 thumbShrink={thumbShrinkOverride}
                 intent={intent}
