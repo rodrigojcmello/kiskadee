@@ -1,0 +1,20 @@
+.k-crd {
+  /* Layout: Keep card sizing predictable when generated padding/border classes are present */
+  box-sizing: border-box;
+  display: block;
+}
+
+.k-crd-a {
+  /* Native reset: CardAction is a button but should keep the card surface contract */
+  appearance: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: inherit;
+  width: 100%;
+
+  /* Accessibility/UX: Respect disabled state for cursor feedback */
+  &[disabled] {
+    cursor: not-allowed;
+  }
+}

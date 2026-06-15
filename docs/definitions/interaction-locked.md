@@ -3,12 +3,19 @@
 `interactionLocked` is a temporary interaction gate for controls that must stop accepting new
 activation attempts without becoming semantically `disabled` or `readOnly`.
 
+This is a shared control contract, not a Switch-specific feature. Any current or future component
+that exposes persistent user-controlled state through `controlState`, `defaultControlState`, or
+`onControlStateChange` should explicitly decide whether `interactionLocked` belongs in its public
+API. If the component can trigger repeated activation while async work is pending, it should usually
+support `interactionLocked`.
+
 ## Context
 
 Some controls trigger asynchronous work when their state changes. A Switch can start an API request,
-persist a setting, or wait for a remote confirmation after the user taps or drags it. During that
-window, accepting more toggles can create duplicate requests, conflicting responses, or rapid state
-oscillation.
+persist a setting, or wait for a remote confirmation after the user taps or drags it. A selectable
+CardAction can do the same when choosing a plan, activating a preference, or selecting an item.
+During that window, accepting more toggles can create duplicate requests, conflicting responses, or
+rapid state oscillation.
 
 Kiskadee should not solve that by reusing `disabled` or `readOnly`:
 

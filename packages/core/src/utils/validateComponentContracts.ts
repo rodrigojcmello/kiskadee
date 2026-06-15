@@ -1,4 +1,5 @@
 import { validateButtonComponentContract } from '../components/button.ts';
+import { validateCardComponentContract } from '../components/card.ts';
 import { validateSwitchComponentContract } from '../components/switch.zod.ts';
 import { validateTabsComponentContract } from '../components/tabs.zod.ts';
 import { validateTextFieldComponentContract } from '../components/text-field.zod.ts';
@@ -8,6 +9,7 @@ import { validateTextFieldComponentContract } from '../components/text-field.zod
  *
  * Incremental scope:
  * - button
+ * - card
  * - switch
  * - tabs
  * - textField
@@ -27,6 +29,15 @@ export function validateSchemaComponentContracts(schemaLike: {
     if (issues.length > 0) {
       throw new Error(
         `Invalid component contract for button. Review element/property mapping.\n${issues.join('\n')}`
+      );
+    }
+  }
+
+  if (byName.card !== undefined) {
+    const issues = validateCardComponentContract(byName.card, 'components.card');
+    if (issues.length > 0) {
+      throw new Error(
+        `Invalid component contract for card. Review element/property mapping.\n${issues.join('\n')}`
       );
     }
   }

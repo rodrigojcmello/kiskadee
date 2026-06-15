@@ -25,6 +25,11 @@
       "import": "./dist/components/button/Button.js",
       "default": "./dist/components/button/Button.js"
     },
+    "./card": {
+      "types": "./dist/components/card/Card.d.ts",
+      "import": "./dist/components/card/Card.js",
+      "default": "./dist/components/card/Card.js"
+    },
     "./text-field": {
       "types": "./dist/components/text-field/HeadlessTextField.d.ts",
       "import": "./dist/components/text-field/HeadlessTextField.js",

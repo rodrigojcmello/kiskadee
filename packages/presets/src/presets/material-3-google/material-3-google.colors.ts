@@ -41,6 +41,9 @@ export const componentIntents = {
     primary: 'primary',
     neutral: 'neutral'
   },
+  card: {
+    neutral: 'neutral'
+  },
   tabs: {
     neutral: 'neutral'
   },

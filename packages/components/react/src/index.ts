@@ -1,5 +1,12 @@
 export type { ButtonArtifactConfig } from './components/Button';
 export { Button, useButtonArtifactConfig } from './components/Button';
+export type {
+  CardActionProps,
+  CardArtifactConfig,
+  CardProps,
+  CardStatus
+} from './components/Card';
+export { Card, CardAction, useCardArtifactConfig } from './components/Card';
 export { SmoothText } from './components/SmoothText/SmoothText.tsx';
 export type {
   SwitchArtifactConfig,

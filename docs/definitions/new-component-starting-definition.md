@@ -188,6 +188,11 @@ At minimum, decide which of these states are required:
 - `selected`;
 - `filled`.
 
+Treat `hover` as an interaction affordance, not as decorative surface styling. On pointer devices
+that support hover, the hover visual state is the signal that tells users an element can be
+interactive or clickable. Static components should not project hover unless they own an explicit
+interaction or inspection behavior.
+
 For persistent binary controls, prefer the existing `selected` control state for checked/on visuals.
 Do not encode persistent state as `pressed`; pressed is an interaction state.
 
@@ -195,6 +200,18 @@ For public component APIs, use `controlState`, `defaultControlState`, and `onCon
 persistent binary state. This keeps the Kiskadee contract cross-platform; platform-native names such
 as web `checked` are adapter details. The schema/style branch still remains `selected` because it
 describes the visual state consumed when `controlState` is active.
+
+Any component that accepts `controlState`, `defaultControlState`, or `onControlStateChange` must
+also evaluate whether it needs `interactionLocked`. When present, `interactionLocked` blocks new
+activation attempts without applying `disabled`, `readOnly`, or their visual states.
+
+## Cursor Policy
+
+Do not use `cursor: pointer` only because a component is clickable. Kiskadee keeps generic controls
+on the default cursor so web output stays aligned with the cross-platform interaction model. Reserve
+`cursor: pointer` for true link semantics, such as an `a` element with navigation intent.
+
+For the durable rule, see [`cursor-policy.md`](./cursor-policy.md).
 
 ## Generated Class Consumption
 

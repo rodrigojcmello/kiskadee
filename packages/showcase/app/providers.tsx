@@ -52,6 +52,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const shouldLoadAggregateClassMap =
     pathname !== '/switch' &&
     pathname !== '/button' &&
+    pathname !== '/card' &&
     pathname !== '/text-field' &&
     !pathname.startsWith('/tabs');
   const classesMap = useClassMapLoader({

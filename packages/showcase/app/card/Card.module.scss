@@ -1,0 +1,80 @@
+.route {
+  width: 100%;
+}
+
+.grid {
+  align-items: stretch;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+}
+
+.example {
+  min-width: 0;
+}
+
+.exampleLabel {
+  color: rgba(0, 0, 0, 0.48);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 0 0 8px;
+}
+
+.content,
+.contentSelected {
+  min-height: 116px;
+}
+
+.content {
+  color: rgba(0, 0, 0, 0.78);
+}
+
+.contentSelected {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.eyebrow {
+  color: currentColor;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0 0 8px;
+  opacity: 0.72;
+  text-transform: uppercase;
+}
+
+.title {
+  color: currentColor;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.body {
+  color: currentColor;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 8px 0 0;
+  opacity: 0.78;
+}
+
+.unavailable {
+  color: rgba(0, 0, 0, 0.56);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1180px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

@@ -10,6 +10,10 @@ const entries = [
     label: 'Button'
   },
   {
+    href: '/card',
+    label: 'Card'
+  },
+  {
     href: '/tabs',
     label: 'Tabs'
   },

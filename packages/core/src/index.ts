@@ -1,5 +1,6 @@
 export * from './breakpoints.ts';
 export * from './components/button.ts';
+export * from './components/card.ts';
 export * from './components/switch.ts';
 export * from './components/tabs.ts';
 export * from './components/text-field.ts';

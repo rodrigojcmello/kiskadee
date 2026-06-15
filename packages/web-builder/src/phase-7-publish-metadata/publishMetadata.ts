@@ -325,7 +325,13 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function isComponentName(value: string): value is ComponentName {
-  return value === 'button' || value === 'switch' || value === 'tabs' || value === 'textField';
+  return (
+    value === 'button' ||
+    value === 'card' ||
+    value === 'switch' ||
+    value === 'tabs' ||
+    value === 'textField'
+  );
 }
 
 function hasEntries(value: unknown): value is Record<string, unknown> {
@@ -572,7 +578,11 @@ export async function publishMetadata(params: {
   // manifest focused on high-level capabilities instead of duplicating
   // the full schema structure. Absence of keys means the information is
   // not defined or not applicable.
-  const manifestComponentNames = ['button', 'switch'] as const satisfies readonly ComponentName[];
+  const manifestComponentNames = [
+    'button',
+    'card',
+    'switch'
+  ] as const satisfies readonly ComponentName[];
   for (const componentName of manifestComponentNames) {
     const componentScale = buildComponentScale(schema, componentName);
     const componentState = buildComponentState(schema, componentName);

@@ -1,6 +1,12 @@
 export type { ButtonProps } from './components/button/Button.tsx';
 export { Button } from './components/button/Button.tsx';
 export type {
+  CardActionProps,
+  CardClassNames,
+  CardProps
+} from './components/card/Card.tsx';
+export { Card, CardAction } from './components/card/Card.tsx';
+export type {
   ColorRadioGroupClassNames,
   ColorRadioGroupProps,
   ColorRadioItem

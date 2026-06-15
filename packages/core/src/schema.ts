@@ -1,5 +1,6 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints.ts';
 import type { ButtonElements } from './components/button.ts';
+import type { CardElements } from './components/card.ts';
 import type { SwitchOptions, SwitchVariants } from './components/switch.ts';
 import type { TabsOptions, TabsVariants } from './components/tabs.ts';
 import type { TextFieldOptions, TextFieldVariants } from './components/text-field.ts';
@@ -23,7 +24,7 @@ import type { ElementEffects } from './types/effects/index.ts';
 import type { ScaleSchema } from './types/scales/scales.types.ts';
 
 // Names of all supported components
-export type ComponentName = 'button' | 'switch' | 'tabs' | 'textField';
+export type ComponentName = 'button' | 'card' | 'switch' | 'tabs' | 'textField';
 
 export type ElementStyle<TSegmentName extends SegmentName = never> = {
   name: string; // human-readable element label, for example "button-text"
@@ -92,6 +93,7 @@ export type ComponentVariantModesStyleKeyMap<TSegmentName extends SegmentName = 
 
 export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Partial<{
   button: ComponentElementsStyleKeyMap<TSegmentName>;
+  card: ComponentElementsStyleKeyMap<TSegmentName>;
   switch: ComponentVariantModesStyleKeyMap<TSegmentName>;
   tabs: ComponentVariantsStyleKeyMap<TSegmentName>;
   textField: ComponentVariantModesStyleKeyMap<TSegmentName>;
@@ -133,6 +135,9 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
   button: {
     effects?: ComponentEffects;
     elements: ButtonElements<TSegmentName> & Elements<TSegmentName>;
+  };
+  card: {
+    elements: CardElements<TSegmentName> & Elements<TSegmentName>;
   };
   switch: SwitchComponent<TSegmentName>;
   tabs: TabsComponent<TSegmentName>;

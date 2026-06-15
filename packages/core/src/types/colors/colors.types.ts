@@ -1,6 +1,8 @@
 import type {
   ButtonIntent,
+  CardIntent,
   RoleButton,
+  RoleCard,
   RoleSwitch,
   RoleTextField,
   SwitchIntent,
@@ -9,13 +11,20 @@ import type {
 
 export type {
   ButtonIntent,
+  CardIntent,
   RoleButton,
+  RoleCard,
   RoleSwitch,
   RoleTextField,
   SwitchIntent,
   TextFieldIntent
 } from './colors.intents.ts';
-export { ButtonIntentKeys, SwitchIntentKeys, TextFieldIntentKeys } from './colors.intents.ts';
+export {
+  ButtonIntentKeys,
+  CardIntentKeys,
+  SwitchIntentKeys,
+  TextFieldIntentKeys
+} from './colors.intents.ts';
 
 // Unique identifier for each segment (brand/product identity) within a design system.
 // Defined here to avoid circular type dependencies between schema and color types.
@@ -290,7 +299,7 @@ export type IntentValue = SemanticColor | PrimitiveRole;
  * NOTE: This is intentionally extensible. Each component can introduce its own
  * typed role union later (e.g. `RoleBadge`) and be merged into `Role`.
  */
-export type Role = RoleButton | RoleSwitch | RoleTextField | `${string}.${string}`;
+export type Role = RoleButton | RoleCard | RoleSwitch | RoleTextField | `${string}.${string}`;
 
 /**
  * Qualified role identifier used by the new `color()` API.
@@ -302,6 +311,7 @@ export type Role = RoleButton | RoleSwitch | RoleTextField | `${string}.${string
  */
 export type RoleWithPaint =
   | RoleButton
+  | RoleCard
   | RoleSwitch
   | RoleTextField
   | `${string}.${string}`
@@ -385,6 +395,7 @@ export type ComponentIntents = {
    * All intents are optional so presets can override selectively.
    */
   button?: Partial<Record<ButtonIntent, IntentValue>>;
+  card?: Partial<Record<CardIntent, IntentValue>>;
   switch?: Partial<Record<SwitchIntent, IntentValue>>;
   textField?: Partial<Record<TextFieldIntent, IntentValue>>;
 } & Partial<Record<string, Record<string, IntentValue>>>;
@@ -415,7 +426,12 @@ export const componentEmphasisBuckets = {
 
 export type ComponentEmphasis = keyof typeof componentEmphasisBuckets;
 
-export type ComponentPaletteKey = SemanticColor | ButtonIntent | SwitchIntent | TextFieldIntent;
+export type ComponentPaletteKey =
+  | SemanticColor
+  | ButtonIntent
+  | CardIntent
+  | SwitchIntent
+  | TextFieldIntent;
 
 export type SemanticColorMap = Partial<
   Record<ComponentPaletteKey, Partial<Record<ComponentEmphasis, InteractionStateColorMap>>>

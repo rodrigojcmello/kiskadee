@@ -46,6 +46,22 @@ export type ButtonIntent = keyof typeof ButtonIntentKeys;
 export type RoleButton = `button.${ButtonIntent}`;
 
 /**
+ * Supported intent keys for the `card` component.
+ */
+export const CardIntentKeys = {
+  /**
+   * Default card surface presentation.
+   */
+  neutral: 'neutral'
+} as const;
+
+/** Supported intent keys for the `card` component (Layer 3). */
+export type CardIntent = keyof typeof CardIntentKeys;
+
+/** Qualified role identifier for `card` intents (e.g. `card.neutral`). */
+export type RoleCard = `card.${CardIntent}`;
+
+/**
  * Supported intent keys for the `textField` component.
  */
 export const TextFieldIntentKeys = {

@@ -24,5 +24,6 @@ Disabled and read-only Switch states keep the existing `cursor: not-allowed` str
 Those states are non-interactive even though the native input is visually hidden, so the cursor state
 has to be mirrored from the root to the rendered visual slots.
 
-This policy is Switch-specific. Button, Tabs, links, and other controls should be reviewed in their
-own tasks before changing their cursor behavior.
+This component-specific policy follows the global Kiskadee cursor rule. Generic clickable controls
+must not use `cursor: pointer`; reserve the hand cursor for true link semantics. See
+[`cursor-policy.md`](../../../../../../docs/definitions/cursor-policy.md).
