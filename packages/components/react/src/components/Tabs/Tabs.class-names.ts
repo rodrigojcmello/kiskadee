@@ -519,6 +519,7 @@ export function resolveTriggerClassName(options: {
     options.tabWidth === 'distributed' ? 'k-tab-e2b' : '',
     'k-trn',
     cn.interactive,
+    cn.nativeInteraction,
     cn.activator,
     options.selected ? cn.selected : '',
     options.className
@@ -600,6 +601,7 @@ export function resolveBridgeTriggerClassName(options: {
     options.tabWidth === 'distributed' ? 'k-tab-e2b' : '',
     'k-trn',
     cn.interactive,
+    cn.nativeInteraction,
     cn.activator,
     options.selected ? cn.selected : '',
     options.className

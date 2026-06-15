@@ -1,5 +1,6 @@
 export type {
   CardActionProps,
+  CardActionVisualProps,
   CardClassesMap,
   CardProps,
   CardStatus,

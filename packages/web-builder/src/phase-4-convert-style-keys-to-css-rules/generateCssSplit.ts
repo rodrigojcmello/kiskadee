@@ -84,7 +84,7 @@ export async function generateCssSplit(
   //   :disabled, :read-only. These represent runtime UI states and must live outside the core bundle.
   // - It uses projected state classes (.-a, .-h, .-f, .-p, .-s, .-d, .-r), which act as explicit
   //   activators for runtime state or static previews via class toggling. Examples:
-  //   .btn.-h:hover, .card.-a, .chip.-s.-a .icon, etc.
+  //   .btn.-n:hover, .card.-a, .chip.-s.-a .icon, etc.
   // If neither applies, the selector is "simple" (passive): no activation, always-on if emitted.
   const isComplexSelector = (rule: string): boolean => {
     if (/\.k-swt:not\(\.-s\)/.test(rule)) return true;
@@ -290,7 +290,7 @@ export async function generateCssSplit(
   // Rationale:
   // - Browsers keep :hover active while :active is also true during mouse press.
   // - Browsers also keep :hover active while a hovered control is focused.
-  // - Our selectors for parent-ref colors (.-i:hover .child and .-i:active .child) often have
+  // - Our selectors for parent-ref colors (.-n:hover .child and .-n:active .child) often have
   //   identical specificity. When both match, the one that appears LAST in the file wins.
   // - Design intent: focus should take precedence over hover, and pressed (:active) should still
   //   take precedence over both.

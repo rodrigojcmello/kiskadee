@@ -13,7 +13,7 @@ state model started separating:
 - native DOM state;
 - semantic `data-*` helpers;
 - Kiskadee projected state classes;
-- selector/effect metaclasses such as `-a` and `-i`.
+- selector/effect metaclasses such as `-a`, `-i`, and `-n`.
 
 The hook lives in `packages/headless/react/src/hooks/state-projection` because the headless package
 owns the real interaction state for its primitives. It does not know the Kiskadee CSS vocabulary.
@@ -33,7 +33,7 @@ new projection hook call.
 
 `@kiskadee/react-components` owns:
 
-- Kiskadee class vocabulary such as `-f`, `-v`, `-d`, `-r`, `-a`, and `-i`;
+- Kiskadee class vocabulary such as `-f`, `-v`, `-d`, `-r`, `-a`, `-i`, and `-n`;
 - component-specific projection presets;
 - styled runtime integration.
 
@@ -86,7 +86,8 @@ filled   -> -v
 disabled -> -d
 readOnly -> -r
 active state owner -> -a
-native hover anchor -> -i
+interactive/ref anchor -> -i
+native interaction scope -> -n
 ```
 
 The styled runtime no longer owns a duplicate `focused` state.

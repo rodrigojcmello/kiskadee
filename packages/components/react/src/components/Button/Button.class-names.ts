@@ -140,6 +140,7 @@ export function resolveButtonClassNames({
         radiusEffectClass,
         controlState ? resolveButtonEffectBucketClassName(e1?.l, scaleKey) : undefined,
         cn.interactive,
+        cn.nativeInteraction,
         shadow ? cn.shadow : undefined,
         activation,
         'k-btn',

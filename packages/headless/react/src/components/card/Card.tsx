@@ -47,6 +47,7 @@ function cardActionStateClassName(states: {
 
   return join(
     cn.interactive,
+    cn.nativeInteraction,
     states.controlState && cn.selected,
     states.disabled && cn.disabled,
     hasProjectedState && cn.activator

@@ -44,21 +44,21 @@ function getProjectedStateSuffix(state: string): string {
  * States use two kinds of selectors:
  * - Native pseudo-classes (hover, focus, active for "pressed"), sourced from InteractionStateCssPseudoSelector
  * - Projected state class suffixes (e.g., -h for hover, -f for focus, -s for selected), sourced
- *   from projectedStateActivator. Selector meta classes such as -a and -i stay separate.
+ *   from projectedStateActivator. Selector meta classes such as -a, -i, and -n stay separate.
  *
  * Selector emission rules (aligned with transformColorKeyToCss):
  * - Inline (no "==")
- *   • Native branch: emits .<className><pseudo(s)> plus any non-native forced suffixes as classes on the same element.
+ *   • Native branch: emits .<className>.-n<pseudo(s)> plus any non-native forced suffixes as classes on the same element.
  *     Never add the activator class (.-a) in this branch.
  *   • Forced branch: emits .<className>.<all forced suffixes>.-a when forceState === true OR when one state is "disabled" or "readOnly".
  * - Reference (with "==")
- *   • Native parent branch: emits .-i<pseudo(s)><non-native classes> .<className> when there is at least one native pseudo.
+ *   • Native parent branch: emits .-n<pseudo(s)><non-native classes> .<className> when there is at least one native pseudo.
  *   • Forced parent branch: emits .-a.<all forced suffixes> .<className> when forceState === true OR when one state is "disabled" or "readOnly".
  *
  * Examples (simplified for className="abc"):
- * - "--hover__10" => ".abc:hover, .abc.-h.-a { border-radius: 10px }" (when forceState=true)
- * - "--selected:hover__8" => ".abc:hover.-s, .abc.-s.-h.-a { border-radius: 8px }" (when forceState=true)
- * - "==hover__4" => ".-i:hover .abc, .-a.-h .abc { border-radius: 4px }" (when forceState=true)
+ * - "--hover__10" => ".abc.-n:hover, .abc.-h.-a { border-radius: 10px }" (when forceState=true)
+ * - "--selected:hover__8" => ".abc.-n.-s:hover, .abc.-s.-h.-a { border-radius: 8px }" (when forceState=true)
+ * - "==hover__4" => ".-n:hover .abc, .-a.-h .abc { border-radius: 4px }" (when forceState=true)
  *
  * The function only constructs selectors and the "border-radius" declaration; it does not validate
  * whether specific state combinations are semantically meaningful.
@@ -132,13 +132,14 @@ export function transformBorderRadiusKeyToCss(
 
     const selectors: string[] = [];
 
-    // Native branch: .abc:hover[...non-native classes]; never append activator (.-a) here.
+    // Native branch: .abc.-n:hover[...non-native classes]; never append activator (.-a) here.
     if (nativeTokens.length > 0) {
       const nativeChunk = nativeTokens.join('');
       const nonNativeChunk =
         nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
+      const nativeInteraction = stateActivator.nativeInteraction;
       // Do not append activator (.-a) for the native branch; activator gates only the forced branch
-      selectors.push(`.${className}${nativeChunk}${nonNativeChunk}`);
+      selectors.push(`.${className}.${nativeInteraction}${nonNativeChunk}${nativeChunk}`);
     }
 
     // Forced branch: .abc.-s.-h.-a (when allowed)
@@ -168,15 +169,15 @@ export function transformBorderRadiusKeyToCss(
 
     const parentSelectors: string[] = [];
 
-    // Native parent branch: .-i:hover[.nonNative] .abc
+    // Native parent branch: .-n:hover[.nonNative] .abc
     if (nativeTokens.length > 0) {
       const nativeChunk = nativeTokens.join('');
       const nonNativeChunk =
         nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
       {
-        // Use interactive anchor from schema (do not mix with -a).
-        const interactive = stateActivator.interactive;
-        parentSelectors.push(`.${interactive}${nativeChunk}${nonNativeChunk} .${className}`);
+        // Use native interaction scope for pseudo states (do not mix with -a).
+        const nativeInteraction = stateActivator.nativeInteraction;
+        parentSelectors.push(`.${nativeInteraction}${nonNativeChunk}${nativeChunk} .${className}`);
       }
     }
 

@@ -193,6 +193,11 @@ that support hover, the hover visual state is the signal that tells users an ele
 interactive or clickable. Static components should not project hover unless they own an explicit
 interaction or inspection behavior.
 
+Native pseudo states are gated by the native interaction scope class `-n`
+(`stateActivator.nativeInteraction`). Add `-n` only to elements that own native interaction states
+such as `:hover`, `:active`, or `:focus-visible`. Keep static surfaces without `-n`, even when they
+share generated visual classes with an interactive companion.
+
 For persistent binary controls, prefer the existing `selected` control state for checked/on visuals.
 Do not encode persistent state as `pressed`; pressed is an interaction state.
 
@@ -221,6 +226,7 @@ A styled component should consume generated artifacts consistently:
 - normalize scale keys before reading `s`, `w`, `rr`, `rp`, or `rs` buckets;
 - choose intent and emphasis classes from generated color buckets;
 - project state through shared activator classes when generated CSS expects them;
+- add `stateActivator.nativeInteraction` only to native interaction state owners;
 - consume generated CSS variables directly in structural CSS when they are part of the contract;
 - avoid local token fallbacks that hide missing generated values.
 

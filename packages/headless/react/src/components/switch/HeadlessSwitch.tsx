@@ -139,6 +139,7 @@ function switchStateClassName(states: {
 
   return mergeClassNames(
     cn.interactive,
+    cn.nativeInteraction,
     isHovered && cn.hover,
     isPressed && cn.pressed,
     states.controlState && cn.selected,

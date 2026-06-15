@@ -17,8 +17,6 @@ export type CardElementName = 'e1';
 export type CardClassesMap = Partial<Record<CardElementName, ClassNameByElementJSON>>;
 
 export type CardVisualProps = {
-  /** Force Kiskadee visual/interaction state on the root element (e1). Excludes 'selected'. */
-  status?: CardStatus;
   /** Border radius mode. Card v1 supports rounded and square only. */
   radius?: CardRadiusMode;
   /**
@@ -30,6 +28,11 @@ export type CardVisualProps = {
   intent?: CardIntent;
 };
 
+export type CardActionVisualProps = CardVisualProps & {
+  /** Force Kiskadee visual/interaction state on the root element (e1). Excludes 'selected'. */
+  status?: CardStatus;
+};
+
 export type CardProps = HeadlessCardProps & CardVisualProps;
 
-export type CardActionProps = HeadlessCardActionProps & CardVisualProps;
+export type CardActionProps = HeadlessCardActionProps & CardActionVisualProps;

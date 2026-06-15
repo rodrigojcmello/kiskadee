@@ -28,7 +28,7 @@ export const DEFAULT_TEXT_FIELD_FOCUS_RING_COLOR_SOURCE: TextFieldFocusRingColor
 export const TEXT_FIELD_STATE_PROJECTION = {
   target: 'e1',
   activatorClassName: cn.activator,
-  interactiveClassName: cn.interactive,
+  interactiveClassName: `${cn.interactive} ${cn.nativeInteraction}`,
   projections: {
     focused: {
       className: cn.focus

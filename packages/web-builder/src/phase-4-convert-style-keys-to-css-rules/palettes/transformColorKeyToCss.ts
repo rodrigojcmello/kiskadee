@@ -87,8 +87,8 @@ function getProjectedStateSuffix(state: string): string {
  * @param forceState - when true and a state has a projected class, also include the corresponding
  *                     projected selector from projectedStateActivator. Example: if the state is
  *                     "hover" and its projected suffix is "-h", the generated selector list can
- *                     include ".abc:hover, .abc.-h.-a" for inline rules or
- *                     ".-i:hover .abc, .-a.-h .abc" for parent-ref rules. Component states
+ *                     include ".abc.-n:hover, .abc.-h.-a" for inline rules or
+ *                     ".-n:hover .abc, .-a.-h .abc" for parent-ref rules. Component states
  *                     without a safe native pseudo, such as disabled/readOnly, always emit the
  *                     projected selector.
  * @param options
@@ -283,13 +283,15 @@ export function transformColorKeyToCss(
 
     const selectors: string[] = [];
 
-    // Native branch: only use native pseudos; include non-native state classes but NEVER add activator
+    // Native branch: only use native pseudos gated by native interaction scope; include non-native
+    // state classes but NEVER add activator.
     if (nativeTokens.length > 0) {
       const nativeChunk = nativeTokens.join('');
       const nonNativeChunk =
         nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
+      const nativeInteraction = stateActivator.nativeInteraction;
       // Do not append activator to the native branch; activator only gates the forced branch
-      selectors.push(`.${className}${nativeChunk}${nonNativeChunk}`);
+      selectors.push(`.${className}.${nativeInteraction}${nonNativeChunk}${nativeChunk}`);
     }
 
     // Forced branch: include all forced classes for every state, gated by activator
@@ -339,16 +341,16 @@ export function transformColorKeyToCss(
 
   const parentSelectors: string[] = [];
 
-  // Native parent branch: parent uses interactive anchor; add pseudos and non-native state suffixes.
+  // Native parent branch: parent uses native interaction scope; add pseudos and non-native state suffixes.
   // Only emit this branch when there is at least one native pseudo; otherwise it duplicates the forced-only case.
   if (nativeTokens.length > 0) {
     const nativeChunk = nativeTokens.join('');
     const nonNativeChunk =
       nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
     {
-      // Use interactive anchor from schema (do not mix with -a).
-      const interactive = stateActivator.interactive;
-      parentSelectors.push(`.${interactive}${nativeChunk}${nonNativeChunk} .${className}`);
+      // Use native interaction scope for pseudo states (do not mix with -a).
+      const nativeInteraction = stateActivator.nativeInteraction;
+      parentSelectors.push(`.${nativeInteraction}${nonNativeChunk}${nativeChunk} .${className}`);
     }
   }
 

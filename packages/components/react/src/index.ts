@@ -2,6 +2,7 @@ export type { ButtonArtifactConfig } from './components/Button';
 export { Button, useButtonArtifactConfig } from './components/Button';
 export type {
   CardActionProps,
+  CardActionVisualProps,
   CardArtifactConfig,
   CardProps,
   CardStatus

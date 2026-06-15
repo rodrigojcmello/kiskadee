@@ -159,6 +159,7 @@ export const stateActivatorMeta = {
   shadow: '-e',
   activator: '-a',
   interactive: '-i',
+  nativeInteraction: '-n',
   /**
    * Focus qualifier for keyboard-visible / outline-worthy focus.
    * Use with projected focus (`-f`), not as a standalone interaction state.

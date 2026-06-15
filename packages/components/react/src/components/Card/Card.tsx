@@ -4,12 +4,13 @@ import {
   CardAction as HeadlessCardAction
 } from '@kiskadee/react-headless';
 import { forwardRef, useMemo } from 'react';
-import type { CardActionProps, CardProps } from './Card.types.ts';
+import type { CardActionProps, CardProps, CardStatus } from './Card.types.ts';
 import { DEFAULT_CARD_INTENT, resolveCardClassNames } from './Card.class-names.ts';
 import { useCardArtifactConfig } from './hooks/useCardArtifactConfig.ts';
 
 export type {
   CardActionProps,
+  CardActionVisualProps,
   CardClassesMap,
   CardProps,
   CardStatus,
@@ -17,7 +18,9 @@ export type {
 } from './Card.types.ts';
 
 function useCardClassNames(
-  props: Pick<CardProps, 'className' | 'classNames' | 'status' | 'radius' | 'emphasis' | 'intent'>,
+  props: Pick<CardProps, 'className' | 'classNames' | 'radius' | 'emphasis' | 'intent'> & {
+    status?: CardStatus | 'rest';
+  },
   options: { action: boolean }
 ) {
   const {
@@ -58,21 +61,20 @@ function useCardClassNames(
   );
 }
 
-const CardRoot = forwardRef<HTMLDivElement, CardProps>(function Card(
-  {
+const CardRoot = forwardRef<HTMLDivElement, CardProps>(function Card(props, ref) {
+  const {
     className,
     classNames,
-    status,
     radius,
     emphasis,
     intent,
     children,
-    ...restProps
-  },
-  ref
-) {
+    ...restPropsWithPotentialStatus
+  } = props as CardProps & { status?: CardStatus };
+  const { status: _status, ...restProps } = restPropsWithPotentialStatus;
+  void _status;
   const computedClassNames = useCardClassNames(
-    { className, classNames, status, radius, emphasis, intent },
+    { className, classNames, radius, emphasis, intent },
     { action: false }
   );
 

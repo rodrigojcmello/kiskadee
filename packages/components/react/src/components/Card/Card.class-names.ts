@@ -9,7 +9,7 @@ import {
   stateActivator as cn
 } from '@kiskadee/core';
 import type { CardClassNames as HeadlessCardClassNames } from '@kiskadee/react-headless';
-import type { CardProps, CardStatus } from './Card.types.ts';
+import type { CardProps, CardStatus, CardVisualProps } from './Card.types.ts';
 
 export const DEFAULT_CARD_SCALE = 's:md:1';
 export const DEFAULT_CARD_RADIUS: CardRadiusMode = 'rounded';
@@ -71,9 +71,9 @@ export function resolveCardClassNames({
   className: string | undefined;
   classNames: NonNullable<CardProps['classNames']>;
   status: CardStatus | 'rest';
-  radius: CardRadiusMode | undefined;
-  emphasis: ComponentEmphasis | undefined;
-  intent: CardIntent | undefined;
+  radius: CardVisualProps['radius'];
+  emphasis: CardVisualProps['emphasis'];
+  intent: CardVisualProps['intent'];
   globalRadius: RadiusMode | undefined;
   action: boolean;
 }): NonNullable<HeadlessCardClassNames> {

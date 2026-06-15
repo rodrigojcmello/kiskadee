@@ -31,7 +31,7 @@ function getProjectedStateSuffix(state: string): string {
 /**
  * Builds CSS rule(s) that set the box-shadow property from a compact shadow style key.
  *
- * Supports inline interaction states and emits both native pseudo selectors and
+ * Supports inline interaction states and emits both native pseudo selectors gated by `-n` and
  * projected state selectors (using the activator class "-a"), similar to border-radius.
  *
  * Accepted keys:
@@ -95,9 +95,9 @@ export function transformShadowKeyToCss(
   const selectors: string[] = [];
   const eSuffix = stateActivator.shadow;
 
-  // Native branch when a native pseudo exists — always gate with shadow activation class
+  // Native branch when a native pseudo exists — gate with shadow activation and native interaction.
   if (cssPseudo) {
-    selectors.push(`.${className}.${eSuffix}${cssPseudo}`);
+    selectors.push(`.${className}.${eSuffix}.${stateActivator.nativeInteraction}${cssPseudo}`);
   } else if (interactionState === 'rest') {
     // Base rest state with no pseudo — gate with shadow activation class
     selectors.push(`.${className}.${eSuffix}`);

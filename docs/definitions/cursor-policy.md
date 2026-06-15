@@ -26,6 +26,28 @@ browser-specific cursor convention to communicate interactivity.
 - `cursor: not-allowed` for disabled or read-only states is a separate unavailable-state policy and
   may be used when the component already mirrors unavailable semantics visually.
 
+## Interaction State Scope
+
+Generated native interaction selectors must be scoped by `-n`, exposed in code as
+`stateActivator.nativeInteraction`.
+
+```css
+/* Native interaction state: requires native interaction scope. */
+.token.-n:hover { ... }
+
+/* Projected interaction state: requires explicit activator. */
+.token.-h.-a { ... }
+```
+
+- `-n` means the element or state owner is allowed to react to native pseudo states such as `:hover`,
+  `:active`, and `:focus-visible`.
+- `-a` means a projected state is being explicitly activated by runtime classes.
+- `-i` keeps its existing interaction/ref meaning and must not be reused as the native-state scope.
+- Interactive components should add `-n` to the state owner that receives native pseudo states.
+- Static components must not receive `-n`; carrying generated state classes in the visual bucket must
+  not make them hoverable, pressable, focusable, or selectable by accident.
+- `disabled` and `readOnly` remain projected unavailable states. They do not depend on `-n`.
+
 ## Component Work
 
 When creating or reviewing a component, treat cursor behavior as part of the component contract:
@@ -34,4 +56,5 @@ When creating or reviewing a component, treat cursor behavior as part of the com
 - keep clickable controls on the default cursor unless they render true link semantics;
 - avoid using cursor changes as the only signal that an element can be activated;
 - use hover styling only when the component or element owns an interaction affordance;
+- add `-n` only when the component or element owns native interaction states;
 - document any component-specific cursor inheritance guard in the component's definition.
