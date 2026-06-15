@@ -81,6 +81,13 @@ optimized single-component implementation was promoted into
   includes first-party presets that currently define `components.switch`: Carbon IBM, Fluent 2
   Microsoft, iOS 26 Apple, Material 3 Google, and Material 3 Kiskadee. Presets without
   `components.switch` stay out of the picker until they gain a Switch schema.
+- The Android Showcase mirrors the iOS Switch preset picker and uses the same first-party Switch
+  fixture files copied into `packages/components/android/showcase/src/main/assets`. The old reduced
+  Material-only Android fixture was removed so the showcase exercises full `themeTokens` and
+  component-level `activationFeedback` data.
+- The Android native Switch now supports tap, drag, edge commit, `interactionLocked`,
+  `interactionCooldownMillis`, animated thumb travel/size changes, and activation-feedback outline
+  rendering resolved from the same schema fields as iOS.
 - The component intentionally allows `icons` and `thumbShrink` together. The `/switch` Showcase
   applies a local presentation-only guard: choosing an icon mode unchecks `Thumb shrink`, choosing
   `Icons: None` restores artifact-default `thumbShrink` behavior, and turning `Thumb shrink` back

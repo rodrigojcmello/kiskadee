@@ -1,0 +1,525 @@
+{
+  "name": "Carbon",
+  "prefix": "ci",
+  "version": [
+    1,
+    0,
+    0
+  ],
+  "author": "IBM",
+  "global": {
+    "fonts": {
+      "body": [
+        "IBM Plex Sans",
+        "sans-serif"
+      ]
+    },
+    "focus": {
+      "width": 2,
+      "offset": 1
+    },
+    "effects": {
+      "activationFeedback": {
+        "profile": "ripple",
+        "origin": "pointer",
+        "visual": {
+          "layer": "overlay",
+          "paint": "field",
+          "tone": {
+            "default": "subtle"
+          }
+        },
+        "profiles": {
+          "halo": {
+            "animateSize": false,
+            "size": 80,
+            "durationToken": "interaction.instant",
+            "fade": {
+              "delayToken": "interaction.hold.short",
+              "durationToken": "interaction.fade.long",
+              "curveToken": "motion.standard.out"
+            }
+          }
+        }
+      }
+    },
+    "radius": "square"
+  },
+  "themeTokens": {
+    "palettes": {
+      "default": {
+        "light": {
+          "background": [
+            0,
+            0,
+            96,
+            1
+          ],
+          "focusColor": "#0F62FE",
+          "effects": {
+            "activationFeedback": {
+              "tone": {
+                "subtle": {
+                  "color": "#161616",
+                  "opacity": 0.12
+                },
+                "vivid": {
+                  "color": "#FFFFFF",
+                  "opacity": 0.2
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "switch": {
+      "effects": {
+        "activationFeedback": {
+          "profile": "halo",
+          "origin": "center",
+          "visual": {
+            "layer": "underlay",
+            "paint": "outline",
+            "tone": {
+              "default": "subtle",
+              "byEmphasis": {
+                "low": "vivid"
+              }
+            }
+          },
+          "profiles": {
+            "halo": {
+              "size": 8
+            }
+          }
+        }
+      },
+      "options": {
+        "variant": "standard",
+        "radius": "pill",
+        "activationMotion": "standard",
+        "controlTextVisibility": "always"
+      },
+      "variants": {
+        "standard": {
+          "options": {
+            "mode": "base"
+          },
+          "modes": {
+            "base": {
+              "elements": {
+                "e2": {
+                  "name": "track",
+                  "decorations": {
+                    "borderStyle": "none"
+                  },
+                  "scales": {
+                    "boxWidth": {
+                      "s:md:1": 48
+                    },
+                    "boxHeight": {
+                      "s:md:1": 24
+                    },
+                    "borderWidth": 0,
+                    "borderRadius": {
+                      "rounded": 2,
+                      "pill": 12,
+                      "square": 0
+                    },
+                    "paddingTop": {
+                      "s:md:1": 2
+                    },
+                    "paddingRight": {
+                      "s:md:1": 2
+                    },
+                    "paddingBottom": {
+                      "s:md:1": 2
+                    },
+                    "paddingLeft": {
+                      "s:md:1": 2
+                    }
+                  },
+                  "palettes": {
+                    "default": {
+                      "light": {
+                        "boxColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#8D8D8D",
+                              "hover": {
+                                "ref": "#8D8D8D"
+                              },
+                              "focus": {
+                                "ref": "#8D8D8D"
+                              },
+                              "pressed": {
+                                "ref": "#8D8D8D"
+                              },
+                              "disabled": {
+                                "ref": "#C6C6C6"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#24A148"
+                                },
+                                "hover": {
+                                  "ref": "#24A148"
+                                },
+                                "focus": {
+                                  "ref": "#24A148"
+                                },
+                                "pressed": {
+                                  "ref": "#24A148"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "borderColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "hover": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "e3": {
+                  "name": "thumb",
+                  "decorations": {
+                    "borderStyle": "none"
+                  },
+                  "scales": {
+                    "boxWidth": {
+                      "s:md:1": 20
+                    },
+                    "boxHeight": {
+                      "s:md:1": 20
+                    },
+                    "borderWidth": 0,
+                    "borderRadius": {
+                      "rounded": 2,
+                      "pill": 10,
+                      "square": 0
+                    }
+                  },
+                  "palettes": {
+                    "default": {
+                      "light": {
+                        "boxColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#FFFFFF",
+                              "hover": {
+                                "ref": "#FFFFFF"
+                              },
+                              "focus": {
+                                "ref": "#FFFFFF"
+                              },
+                              "pressed": {
+                                "ref": "#FFFFFF"
+                              },
+                              "disabled": {
+                                "ref": "#8D8D8D"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "hover": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "focus": {
+                                  "ref": "#FFFFFF"
+                                },
+                                "pressed": {
+                                  "ref": "#FFFFFF"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "borderColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "hover": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                                ]
+                              },
+                              "focus": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                                ]
+                              },
+                              "pressed": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                                ]
+                              },
+                              "disabled": {
+                                "ref": [
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                                ]
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "hover": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "focus": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                },
+                                "pressed": {
+                                  "ref": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "e6": {
+                  "name": "icon",
+                  "scales": {
+                    "boxWidth": {
+                      "s:md:1": 14
+                    },
+                    "boxHeight": {
+                      "s:md:1": 14
+                    }
+                  },
+                  "palettes": {
+                    "default": {
+                      "light": {
+                        "textColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#8D8D8D",
+                              "hover": {
+                                "ref": "#8D8D8D"
+                              },
+                              "focus": {
+                                "ref": "#8D8D8D"
+                              },
+                              "pressed": {
+                                "ref": "#8D8D8D"
+                              },
+                              "disabled": {
+                                "ref": "#C6C6C6"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#24A148"
+                                },
+                                "hover": {
+                                  "ref": "#24A148"
+                                },
+                                "focus": {
+                                  "ref": "#24A148"
+                                },
+                                "pressed": {
+                                  "ref": "#24A148"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "e4": {
+                  "name": "label",
+                  "decorations": {
+                    "textFont": "body",
+                    "textWeight": "normal"
+                  },
+                  "scales": {
+                    "textSize": {
+                      "s:md:1": 12
+                    },
+                    "textHeight": {
+                      "s:md:1": 16
+                    },
+                    "marginRight": {
+                      "s:md:1": 8
+                    }
+                  },
+                  "palettes": {
+                    "default": {
+                      "light": {
+                        "textColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#525252",
+                              "disabled": {
+                                "ref": "#C6C6C6"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "e5": {
+                  "name": "control text",
+                  "decorations": {
+                    "textFont": "body",
+                    "textWeight": "normal"
+                  },
+                  "scales": {
+                    "textSize": {
+                      "s:md:1": 14
+                    },
+                    "textHeight": {
+                      "s:md:1": 18
+                    },
+                    "marginRight": {
+                      "s:md:1": 8
+                    }
+                  },
+                  "palettes": {
+                    "default": {
+                      "light": {
+                        "textColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#161616",
+                              "disabled": {
+                                "ref": "#C6C6C6"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
