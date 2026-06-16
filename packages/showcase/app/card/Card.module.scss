@@ -12,6 +12,7 @@
 
 .example {
   min-width: 0;
+  position: relative;
 }
 
 .exampleLabel {
@@ -25,6 +26,7 @@
 .content,
 .contentSelected {
   min-height: 116px;
+  padding-bottom: 56px;
 }
 
 .content {
@@ -59,6 +61,13 @@
   line-height: 1.5;
   margin: 8px 0 0;
   opacity: 0.78;
+}
+
+.buttonOverlay {
+  bottom: 16px;
+  left: 16px;
+  position: absolute;
+  z-index: 1;
 }
 
 .unavailable {

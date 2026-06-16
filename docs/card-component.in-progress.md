@@ -60,8 +60,11 @@ action variant.
 - `CardAction` must stay on the default cursor. `cursor: pointer` is reserved for true link semantics.
 - The styled resolver maps global `radius="pill"` to Card `rounded`, so global Material radius does
   not leak an invalid Card radius.
-- The `/card` Showcase includes static, action, selected, disabled, interaction-locked, rounded, and
-  square examples.
+- The `/card` Showcase includes static, action, selected, disabled, and interaction-locked examples.
+  Radius is controlled through a route control select instead of duplicate radius-only examples.
+- The `/card` Showcase now experiments with a real Button visually placed over each card example.
+  For `CardAction`, the Button is rendered as a positioned sibling, not a descendant, because
+  `CardAction` itself is a native button and nested buttons would be invalid HTML.
 
 ## Deferred
 
@@ -94,3 +97,7 @@ action variant.
   with `-n` and default cursor.
 - 2026-06-15: Browser CUA did not populate `:hover` in this session, so native hover behavior was
   validated through generated selector shape instead of a live pointer hover assertion.
+- 2026-06-15: `/card` Showcase radius examples were consolidated into a `Radius` select control
+  with `rounded` and `square` options; `pill` remains outside the Card Showcase surface.
+- 2026-06-15: Added Button-on-card visual experiment to every `/card` example. Buttons are
+  positioned as overlays so CardAction examples avoid invalid nested button markup.

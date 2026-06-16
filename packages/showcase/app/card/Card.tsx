@@ -1,15 +1,28 @@
 'use client';
 
-import { Card as KCard, CardAction as KCardAction, useShowcase } from '@kiskadee/react-components';
+import type { CardRadiusMode } from '@kiskadee/core';
+import {
+  Button as KButton,
+  Card as KCard,
+  CardAction as KCardAction,
+  useShowcase
+} from '@kiskadee/react-components';
 import React from 'react';
 import {
   ShowcaseBooleanControl,
+  ShowcaseControlGrid,
   ShowcaseControlGroup,
   ShowcaseControlPanel,
   ShowcaseControlStack,
-  ShowcaseRouteControls
+  ShowcaseRouteControls,
+  ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
 import s from './Card.module.scss';
+
+const cardRadiusOptions: Array<{ value: CardRadiusMode; label: string }> = [
+  { value: 'rounded', label: 'Rounded' },
+  { value: 'square', label: 'Square' }
+];
 
 type CardContentProps = {
   eyebrow: string;
@@ -28,15 +41,55 @@ function CardContent({ eyebrow, title, body, selected = false }: CardContentProp
   );
 }
 
+type CardDemoButtonProps = {
+  disabled?: boolean;
+  label: string;
+};
+
+function CardDemoButton({ disabled = false, label }: CardDemoButtonProps) {
+  return (
+    <div className={s.buttonOverlay}>
+      <KButton disabled={disabled} emphasis="medium" intent="primary" scale="s:sm:1">
+        <KButton.Label>{label}</KButton.Label>
+      </KButton>
+    </div>
+  );
+}
+
 export function Card() {
   const { manifest } = useShowcase();
-  const isCardAvailable = Boolean(manifest?.components?.card);
+  const cardManifest = manifest?.components?.card;
+  const isCardAvailable = Boolean(cardManifest);
+  const supportedScales = cardManifest?.scale;
+  const defaultRadius: CardRadiusMode = 'rounded';
   const [selected, setSelected] = React.useState(false);
   const [lockedSelected, setLockedSelected] = React.useState(false);
   const [interactionLocked, setInteractionLocked] = React.useState(true);
+  const [radius, setRadius] = React.useState<CardRadiusMode>(defaultRadius);
+
+  const radiusSelectOptions = React.useMemo(
+    () =>
+      cardRadiusOptions.map((option) => ({
+        ...option,
+        label: option.value === defaultRadius ? `${option.label} (default)` : option.label,
+        disabled: supportedScales ? !supportedScales[option.value] : false
+      })),
+    [supportedScales]
+  );
 
   const cardControls = (
     <ShowcaseControlPanel>
+      <ShowcaseControlGroup title="Appearance">
+        <ShowcaseControlGrid>
+          <ShowcaseSelectControl
+            label="Radius"
+            options={radiusSelectOptions}
+            value={radius}
+            onValueChange={(value) => setRadius(value as CardRadiusMode)}
+            disabled={!isCardAvailable || radiusSelectOptions.length <= 1}
+          />
+        </ShowcaseControlGrid>
+      </ShowcaseControlGroup>
       <ShowcaseControlGroup title="CardAction">
         <ShowcaseControlStack>
           <ShowcaseBooleanControl
@@ -65,18 +118,19 @@ export function Card() {
         <div className={`${s.grid} k-root`}>
           <div className={s.example}>
             <p className={s.exampleLabel}>Static</p>
-            <KCard>
+            <KCard radius={radius}>
               <CardContent
                 eyebrow="Surface"
                 title="Static card"
                 body="A non-interactive visual container rendered as a div."
               />
             </KCard>
+            <CardDemoButton label="Learn more" />
           </div>
 
           <div className={s.example}>
             <p className={s.exampleLabel}>Action</p>
-            <KCardAction controlState={selected} onControlStateChange={setSelected}>
+            <KCardAction radius={radius} controlState={selected} onControlStateChange={setSelected}>
               <CardContent
                 eyebrow="Button"
                 title={selected ? 'Selected' : 'Rest'}
@@ -84,11 +138,12 @@ export function Card() {
                 selected={selected}
               />
             </KCardAction>
+            <CardDemoButton label="Details" />
           </div>
 
           <div className={s.example}>
             <p className={s.exampleLabel}>Selected</p>
-            <KCardAction controlState>
+            <KCardAction radius={radius} controlState>
               <CardContent
                 eyebrow="Selected"
                 title="Strong selected"
@@ -96,22 +151,25 @@ export function Card() {
                 selected
               />
             </KCardAction>
+            <CardDemoButton label="Continue" />
           </div>
 
           <div className={s.example}>
             <p className={s.exampleLabel}>Disabled</p>
-            <KCardAction disabled defaultControlState={false}>
+            <KCardAction radius={radius} disabled defaultControlState={false}>
               <CardContent
                 eyebrow="Disabled"
                 title="Unavailable action"
                 body="Native disabled semantics remain separate from interactionLocked."
               />
             </KCardAction>
+            <CardDemoButton disabled label="Unavailable" />
           </div>
 
           <div className={s.example}>
             <p className={s.exampleLabel}>Locked</p>
             <KCardAction
+              radius={radius}
               controlState={lockedSelected}
               interactionLocked={interactionLocked}
               onControlStateChange={setLockedSelected}
@@ -123,28 +181,7 @@ export function Card() {
                 selected={lockedSelected}
               />
             </KCardAction>
-          </div>
-
-          <div className={s.example}>
-            <p className={s.exampleLabel}>Rounded</p>
-            <KCard radius="rounded">
-              <CardContent
-                eyebrow="Radius"
-                title="Rounded"
-                body="The rounded radius uses the generated Card radius bucket."
-              />
-            </KCard>
-          </div>
-
-          <div className={s.example}>
-            <p className={s.exampleLabel}>Square</p>
-            <KCard radius="square">
-              <CardContent
-                eyebrow="Radius"
-                title="Square"
-                body="The square radius is explicit; pill is not part of the Card contract."
-              />
-            </KCard>
+            <CardDemoButton label="Review" />
           </div>
         </div>
       ) : (
