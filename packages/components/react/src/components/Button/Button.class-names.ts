@@ -61,6 +61,13 @@ export function resolveButtonEffectBucketClassName(
   return join(bucket.all, bucket[scaleKey]) ?? '';
 }
 
+function resolveButtonStatefulEffectClassName(bucket: EffectClassBucketJSON | undefined): string {
+  if (!bucket) return '';
+  if (typeof bucket === 'string') return bucket;
+
+  return bucket.all ?? '';
+}
+
 export function resolveButtonClassNames({
   e1,
   e2,
@@ -96,7 +103,7 @@ export function resolveButtonClassNames({
   const radiusMode = radius ?? globalRadius ?? DEFAULT_BUTTON_RADIUS;
 
   const e1Effects = e1?.e;
-  const shadowEffect = shadow ? resolveButtonEffectBucketClassName(e1Effects?.h, scaleKey) : '';
+  const shadowEffect = shadow ? resolveButtonStatefulEffectClassName(e1Effects?.h) : '';
   const radiusEffectClass = radiusEffect
     ? radiusMode === 'rounded'
       ? resolveButtonEffectBucketClassName(e1Effects?.rr, scaleKey)
@@ -141,7 +148,7 @@ export function resolveButtonClassNames({
         controlState ? resolveButtonEffectBucketClassName(e1?.l, scaleKey) : undefined,
         cn.interactive,
         cn.nativeInteraction,
-        shadow ? cn.shadow : undefined,
+        shadowEffect ? cn.shadow : undefined,
         activation,
         'k-btn',
         'k-foc',

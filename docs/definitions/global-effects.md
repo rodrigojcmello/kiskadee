@@ -1,0 +1,265 @@
+# Global Effects
+
+Status: living definition.
+
+Use this document when adding or reviewing a cross-component effect under
+`global.effects`. The key rule is that `global.effects` is not one inheritance
+model. Some effects define reusable behavior defaults. Other effects define a
+standardized value catalog that components must opt into with an explicit
+recipe.
+
+## Two Global Effect Shapes
+
+### Behavioral Effects
+
+A behavioral effect owns shared runtime behavior. Its global definition can
+include defaults that a component inherits when it enables the effect.
+
+`activationFeedback` is the current example:
+
+```ts
+global: {
+  effects: {
+    activationFeedback: {
+      profile: 'ripple',
+      origin: 'pointer',
+      visual: {
+        layer: 'overlay',
+        paint: 'field',
+        tone: { default: 'subtle' }
+      },
+      profiles: {
+        ripple: { size: 'auto', animateSize: true },
+        halo: { size: 80, animateSize: false }
+      }
+    }
+  }
+}
+```
+
+For this kind of effect:
+
+- global schema may define the default behavior;
+- component schema may select a profile or override only the parts it needs;
+- merge inheritance is intentional;
+- the component can be enabled by default when the effect is part of its
+  ordinary interaction model;
+- local runtime props normally disable or preview the effect, instead of
+  choosing every visual value from scratch.
+
+`activationFeedback` follows this model because a component that uses it needs
+the same shared behavior language: profile capability, runtime mode, origin,
+paint, layer, and tone resolution.
+
+### Catalog Effects
+
+A catalog effect owns a standardized value library. Its global definition does
+not say which values are active on a component. A component must provide its own
+recipe that maps the component's interaction states to one value from the
+catalog.
+
+`shadow` follows this model:
+
+```ts
+global: {
+  effects: {
+    shadow: {
+      levels: {
+        's:sm:1': [
+          { x: 0, y: 1, blur: 3, spread: 1, color: [0, 0, 0, 0.15] },
+          { x: 0, y: 1, blur: 2, spread: 0, color: [0, 0, 0, 0.3] }
+        ],
+        's:md:1': [
+          { x: 0, y: 2, blur: 6, spread: 2, color: [0, 0, 0, 0.15] },
+          { x: 0, y: 1, blur: 2, spread: 0, color: [0, 0, 0, 0.3] }
+        ]
+      }
+    }
+  }
+}
+```
+
+For this kind of effect:
+
+- global schema is a catalog, not a default application recipe;
+- components must explicitly choose which level is used for each state;
+- no component should activate every catalog value just because the catalog
+  exists;
+- catalog keys should reuse Kiskadee's canonical size scale where the effect is
+  size-like;
+- local runtime props normally opt into the effect.
+
+## Shadow Direction
+
+`shadow` is an opt-in, stateful elevation effect for a single target element of
+a component. It is not a catch-all place for every `box-shadow` used by a
+component.
+
+Use `effects.shadow` when the shadow is activatable, dismissible, or stateful:
+
+- Button elevation that appears only when `shadow` is enabled;
+- Card elevation that can be rendered with or without shadow;
+- a future Switch thumb shadow if it changes by interaction or control state.
+
+Do not use `effects.shadow` for a fixed anatomical shadow that is part of a
+component's construction and is not a public on/off effect. A fixed Tabs shell
+shadow can still reuse shadow tokens in the future, but it should not become an
+opt-in `effects.shadow` recipe only because it uses `box-shadow`.
+
+## Shadow Component Recipe
+
+A component that supports shadow must declare the target element and the states
+that use a catalog level.
+
+```ts
+components: {
+  button: {
+    effects: {
+      shadow: {
+        targetElement: 'e1',
+        states: {
+          rest: 's:md:1',
+          hover: 's:lg:1',
+          focus: 's:lg:1',
+          pressed: false,
+          disabled: false
+        }
+      }
+    }
+  }
+}
+```
+
+Rules:
+
+- `targetElement` identifies the one generated element that receives the shadow
+  effect in the first contract version.
+- each state value references a global shadow level or uses `false`;
+- `false` inside a state means "emit a zero shadow for this state" so it can
+  override the rest shadow and transition cleanly;
+- global levels may contain one layer or multiple layers; multi-layer levels
+  compile to comma-separated CSS `box-shadow` values;
+- `spread` is supported per layer and defaults to `0` when omitted;
+- the absence of the runtime prop means the component does not add the shadow
+  bucket or the shadow activator class;
+- shadow should stay opt-in by default in React components such as `Button` and
+  `Card`.
+
+Components can also expose a fixed-level mode when the component is not
+interactive and the consumer should choose one catalog level directly:
+
+```ts
+components: {
+  card: {
+    effects: {
+      shadow: {
+        targetElement: 'e1',
+        states: {
+          rest: 's:sm:1',
+          hover: 's:md:1',
+          focus: 's:sm:1',
+          pressed: false,
+          disabled: false
+        },
+        fixedLevels: ['s:sm:1', 's:md:1', 's:lg:1', 's:lg:2', 's:lg:3']
+      }
+    }
+  }
+}
+```
+
+For Card, the two public modes are intentionally separate:
+
+```tsx
+<Card shadow="s:lg:1" />
+<CardAction shadow />
+<Card shadow="s:lg:1" preserveBorderWithShadow={false} />
+```
+
+The static Card uses a fixed catalog level. CardAction uses the component's
+state recipe and native/projected interaction states. A single element should
+not mix a fixed level and a state recipe at runtime.
+
+Shadow does not remove the Card border by default. Card exposes
+`preserveBorderWithShadow` as a local React composition prop because border and
+shadow can both act as visual separation in product UI. When this prop is
+`false` and a shadow class is actually resolved, Card applies a structural class
+that preserves the schema border width and makes only the border color
+transparent.
+
+## Material 3 Google Elevation Mapping
+
+`material-3-google` maps the Material 3 Light elevation levels from the
+Material 3 Design Kit Community Figma file into Kiskadee's canonical size scale:
+
+| Kiskadee level | Material elevation | CSS layers |
+| --- | --- | --- |
+| `s:sm:1` | Elevation 1 | `0 1px 3px 1px rgba(0,0,0,.15)`, `0 1px 2px 0 rgba(0,0,0,.30)` |
+| `s:md:1` | Elevation 2 | `0 2px 6px 2px rgba(0,0,0,.15)`, `0 1px 2px 0 rgba(0,0,0,.30)` |
+| `s:lg:1` | Elevation 3 | `0 1px 3px 0 rgba(0,0,0,.30)`, `0 4px 8px 3px rgba(0,0,0,.15)` |
+| `s:lg:2` | Elevation 4 | `0 2px 3px 0 rgba(0,0,0,.30)`, `0 6px 10px 4px rgba(0,0,0,.15)` |
+| `s:lg:3` | Elevation 5 | `0 4px 4px 0 rgba(0,0,0,.30)`, `0 8px 12px 6px rgba(0,0,0,.15)` |
+
+The current Material Button and CardAction recipe is:
+
+```ts
+{
+  rest: 's:sm:1',
+  hover: 's:md:1',
+  focus: 's:sm:1',
+  pressed: false,
+  disabled: false
+}
+```
+
+Do not add a `none` level to the canonical shadow scale. No shadow is not a
+size. Component-level opt-in turns the effect on or off, while state-level
+`false` emits a zero-value override when an active effect needs to remove shadow
+for a specific state.
+
+## Default Enablement
+
+Effect defaulting is part of the effect shape.
+
+Behavioral effects can be default-on when the effect is part of the component's
+standard interaction model. `activationFeedback` is expected to run unless the
+runtime explicitly disables it.
+
+Catalog effects should be default-off unless a separate component variant or
+semantic contract says otherwise. For shadow, a plain component instance should
+not become elevated only because the selected design system defines
+`global.effects.shadow.levels`.
+
+```tsx
+<Card />
+<Card shadow />
+<Card shadow="s:lg:1" />
+```
+
+The first card renders without the opt-in shadow effect. The second card uses
+the component recipe when the Card surface is interactive or recipe-driven. The
+third card uses a fixed catalog level for a static surface.
+
+If a design system needs an always-elevated component, model that as a variant,
+mode, or separate component decision. Do not make the global shadow catalog
+implicitly enable elevation for every consumer.
+
+## Future Effect Checklist
+
+Before adding a new global effect, answer these questions:
+
+- Is the global definition behavior that components can inherit, or a catalog of
+  values that components must map explicitly?
+- Is the effect part of the component's normal interaction model, or is it an
+  opt-in visual affordance?
+- Does the effect apply to one target element, several elements, or an internal
+  runtime layer?
+- Should missing component configuration inherit global behavior, or should it
+  mean the component has no recipe?
+- Does state-level `false` disable CSS generation, or does it need to emit a
+  zero/reset value for transitions and overrides?
+- Is the visual a public/stateful effect, or fixed component anatomy?
+
+Do not copy the `activationFeedback` inheritance model into a future effect just
+because the effect lives in `global.effects`. Choose the model that matches the
+effect's semantics.

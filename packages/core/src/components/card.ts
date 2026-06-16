@@ -62,7 +62,9 @@ type ElementContractRules = {
   radiusModes?: readonly string[];
 };
 
-const CARD_COMPONENT_KEYS = ['elements'] as const;
+const CARD_COMPONENT_KEYS = ['effects', 'elements'] as const;
+const CARD_COMPONENT_EFFECT_KEYS = ['shadow'] as const;
+const CARD_SHADOW_EFFECT_KEYS = ['fixedLevels', 'states', 'targetElement'] as const;
 const CARD_ELEMENTS_KEYS = ['e1'] as const;
 const CARD_ELEMENT_BASE_KEYS = ['name', 'decorations', 'scales', 'palettes'] as const;
 
@@ -200,6 +202,36 @@ function validateElementContract(
   }
 }
 
+function validateComponentEffects(value: unknown, path: string, issues: string[]): void {
+  if (!isRecord(value)) {
+    issues.push(`${path}: expected object`);
+    return;
+  }
+
+  validateAllowedKeys(value, CARD_COMPONENT_EFFECT_KEYS, path, issues);
+
+  if (value.shadow !== undefined) {
+    if (!isRecord(value.shadow)) {
+      issues.push(`${path}.shadow: expected object`);
+      return;
+    }
+
+    validateAllowedKeys(value.shadow, CARD_SHADOW_EFFECT_KEYS, `${path}.shadow`, issues);
+
+    if (value.shadow.targetElement !== 'e1') {
+      issues.push(`${path}.shadow.targetElement: expected "e1"`);
+    }
+
+    if (value.shadow.states !== undefined && !isRecord(value.shadow.states)) {
+      issues.push(`${path}.shadow.states: expected object`);
+    }
+
+    if (value.shadow.fixedLevels !== undefined && !Array.isArray(value.shadow.fixedLevels)) {
+      issues.push(`${path}.shadow.fixedLevels: expected array`);
+    }
+  }
+}
+
 export function validateCardComponentContract(value: unknown, path = 'components.card'): string[] {
   const issues: string[] = [];
 
@@ -208,6 +240,10 @@ export function validateCardComponentContract(value: unknown, path = 'components
   }
 
   validateAllowedKeys(value, CARD_COMPONENT_KEYS, path, issues);
+
+  if (value.effects !== undefined) {
+    validateComponentEffects(value.effects, `${path}.effects`, issues);
+  }
 
   const elements = value.elements;
   if (!isRecord(elements)) {

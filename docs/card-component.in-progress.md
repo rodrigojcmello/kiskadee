@@ -16,11 +16,18 @@ action variant.
 - `CardAction` uses `aria-pressed` when it represents the selected control state.
 - `interactionLocked` blocks activation attempts without applying `disabled`, `readOnly`, or their
   visual states.
-- `Card` v1 visual props are `intent`, `emphasis`, and `radius`.
-- `CardAction` v1 visual props are `intent`, `emphasis`, `status`, and `radius`.
+- `Card` v1 visual props are `intent`, `emphasis`, `radius`, `shadow`, and
+  `preserveBorderWithShadow`.
+- `Card.shadow` accepts `boolean | ElementSizeValue`; string values select a fixed global shadow
+  level such as `s:sm:1` or `s:lg:3`.
+- `CardAction` v1 visual props are `intent`, `emphasis`, `status`, `radius`, `shadow`, and
+  `preserveBorderWithShadow`.
+- `CardAction.shadow` accepts `boolean`; when enabled it uses the component's stateful shadow
+  recipe.
+- `preserveBorderWithShadow` defaults to `true`; when `false` and shadow is active, the styled
+  wrapper keeps border width and makes border color transparent.
 - Card v1 supports `radius="rounded"` and `radius="square"` only. `pill` is intentionally outside
   the Card contract.
-- Card v1 does not expose `shadow`.
 
 ## Schema Contract
 
@@ -38,6 +45,10 @@ action variant.
   - `scales.borderRadius.square`;
   - `palettes.boxColor`;
   - `palettes.borderColor`.
+- Allowed component-level effect properties:
+  - `effects.shadow.targetElement`;
+  - `effects.shadow.states`;
+  - `effects.shadow.fixedLevels`.
 - `scales.borderRadius.pill` is invalid for Card.
 - Card v1 starts with `neutral.medium`.
 - The selected visual is encoded as the schema `selected` branch under `neutral.medium`; it is not
@@ -57,11 +68,20 @@ action variant.
   native hover, pressed, and focus visuals when those branches exist in schema.
 - `Card` and `CardAction` share generated visual classes, but only `CardAction` enables native
   pseudo-state activation.
+- `Card` static can opt into fixed global shadow levels using `shadow="s:sm:1"` through
+  `shadow="s:lg:3"` when the selected preset exposes them.
+- `CardAction` can opt into the stateful global shadow recipe with `shadow={true}`. Material Google
+  maps rest/focus to `s:sm:1`, hover to `s:md:1`, and pressed/disabled to an explicit zero shadow.
+- `preserveBorderWithShadow={false}` is a local runtime composition for Card and CardAction. It
+  applies only when shadow has a generated class and uses a Card structural class to set
+  `border-color: transparent` while preserving border width.
 - `CardAction` must stay on the default cursor. `cursor: pointer` is reserved for true link semantics.
 - The styled resolver maps global `radius="pill"` to Card `rounded`, so global Material radius does
   not leak an invalid Card radius.
 - The `/card` Showcase includes static, action, selected, disabled, and interaction-locked examples.
-  Radius is controlled through a route control select instead of duplicate radius-only examples.
+  Radius and static shadow are controlled through route selects instead of duplicate examples.
+- The `/card` Showcase includes a CardAction shadow toggle that applies the stateful recipe to all
+  CardAction examples.
 - The `/card` Showcase now experiments with a real Button visually placed over each card example.
   For `CardAction`, the Button is rendered as a positioned sibling, not a descendant, because
   `CardAction` itself is a native button and nested buttons would be invalid HTML.
@@ -70,7 +90,6 @@ action variant.
 
 - Child emphasis is manual in v1. Automatic contextual emphasis remains deferred.
 - Subtle selected visuals such as border-only, colored shadow, or a corner marker remain deferred.
-- Shadow is intentionally not copied from Button. KIS-45 tracks the global shadow effect/refactor.
 - Link-card semantics are outside Card v1.
 - Dark theme Card palettes are outside Card v1.
 
@@ -101,3 +120,17 @@ action variant.
   with `rounded` and `square` options; `pill` remains outside the Card Showcase surface.
 - 2026-06-15: Added Button-on-card visual experiment to every `/card` example. Buttons are
   positioned as overlays so CardAction examples avoid invalid nested button markup.
+- 2026-06-16: Implemented global shadow effect support for Card. `Card` static accepts fixed
+  levels from `s:sm:1` through `s:lg:3`; `CardAction` accepts boolean stateful shadow.
+- 2026-06-16: `pnpm --filter @kiskadee/web-builder build`
+- 2026-06-16: `pnpm --filter @kiskadee/web-builder run build-sync-generate`
+- 2026-06-16: `pnpm --filter @kiskadee/react-components run build`
+- 2026-06-16: `pnpm --filter @kiskadee/showcase build`
+- 2026-06-16: Browser validation on `/card` with Material Design 3 by Google confirmed static
+  Card `shadow="s:lg:3"` computes Elevation 5, CardAction `shadow={true}` computes Elevation 1 at
+  rest, disabled computes zero shadow, and loaded CSS exposes hover as Elevation 2 plus pressed as
+  zero shadow.
+- 2026-06-16: Added `preserveBorderWithShadow` to Card and CardAction. Browser validation confirmed
+  `false` applies the `k-crd-b` structural class only when shadow is active, keeps border width,
+  makes border color transparent, and does not add inline `borderColor`; with static shadow off,
+  the schema border color remains visible.

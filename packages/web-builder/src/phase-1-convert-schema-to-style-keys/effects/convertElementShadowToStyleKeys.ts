@@ -1,6 +1,11 @@
 import type {
+  ElementSizeValue,
   InteractionState,
+  ShadowEffectSchema,
+  ShadowGlobalEffectSchema,
+  ShadowLayer,
   ShadowSchema,
+  ShadowValue,
   SolidColor,
   StyleKeysByInteractionState
 } from '@kiskadee/core';
@@ -22,6 +27,25 @@ function getShadowValue<T>(
       : defaultValue;
 }
 
+const ZERO_SHADOW: readonly ShadowLayer[] = [
+  { x: 0, y: 0, blur: 0, spread: 0, color: [0, 0, 0, 0] }
+];
+
+function normalizeShadowValue(value: ShadowValue): readonly ShadowLayer[] {
+  return Array.isArray(value) ? value : [value];
+}
+
+function getShadowLevel(
+  globalShadow: ShadowGlobalEffectSchema,
+  level: ElementSizeValue
+): readonly ShadowLayer[] {
+  const value = globalShadow.levels[level];
+  if (!value) {
+    throw new Error(`Unknown shadow level "${level}".`);
+  }
+  return normalizeShadowValue(value);
+}
+
 /**
  * Converts an element's shadow schema into style keys organized by interaction state.
  *
@@ -36,13 +60,15 @@ export function convertElementShadowToStyleKeys(shadow: ShadowSchema): StyleKeys
   const styleKeys: StyleKeysByInteractionState = {};
 
   // CSS treats box-shadow as a single property, so combine x, y, blur, and color for each state.
-  const hasShadowProperty = 'color' in shadow || 'blur' in shadow || 'y' in shadow || 'x' in shadow;
+  const hasShadowProperty =
+    'color' in shadow || 'blur' in shadow || 'spread' in shadow || 'y' in shadow || 'x' in shadow;
 
   if (hasShadowProperty) {
-    const { color = {}, blur = {}, y = {}, x = {} } = shadow;
+    const { color = {}, blur = {}, spread = {}, y = {}, x = {} } = shadow;
     const allStates = new Set<InteractionState>([
       ...Object.keys(color),
       ...Object.keys(blur),
+      ...Object.keys(spread),
       ...Object.keys(y),
       ...Object.keys(x)
     ] as InteractionState[]);
@@ -52,15 +78,51 @@ export function convertElementShadowToStyleKeys(shadow: ShadowSchema): StyleKeys
       const shadowX = getShadowValue(x, state, 0);
       const shadowY = getShadowValue(y, state, 0);
       const shadowBlur = getShadowValue(blur, state, 0);
+      const shadowSpread = getShadowValue(spread, state, 0);
       const shadowColor: SolidColor = getShadowValue(color, state, [0, 0, 0, 1]);
       const styleKey = buildStyleKey({
         propertyName: 'shadow',
         interactionState: state,
-        value: [shadowX, shadowY, shadowBlur, shadowColor]
+        value:
+          shadowSpread === 0
+            ? [shadowX, shadowY, shadowBlur, shadowColor]
+            : [shadowX, shadowY, shadowBlur, shadowSpread, shadowColor]
       });
 
       deepUpdate(styleKeys, [state], (arr: string[] = []) => [...arr, styleKey]);
     }
+  }
+
+  return styleKeys;
+}
+
+export function convertComponentShadowToStyleKeys(
+  shadow: ShadowEffectSchema,
+  globalShadow: ShadowGlobalEffectSchema
+): StyleKeysByInteractionState {
+  const styleKeys: StyleKeysByInteractionState = {};
+
+  for (const [rawState, level] of Object.entries(shadow.states ?? {})) {
+    const interactionState = rawState as InteractionState;
+    const value = level === false ? ZERO_SHADOW : getShadowLevel(globalShadow, level);
+    const styleKey = buildStyleKey({
+      propertyName: 'shadow',
+      interactionState,
+      value
+    });
+
+    deepUpdate(styleKeys, [interactionState], (arr: string[] = []) => [...arr, styleKey]);
+  }
+
+  for (const level of shadow.fixedLevels ?? []) {
+    const value = getShadowLevel(globalShadow, level);
+    const styleKey = buildStyleKey({
+      propertyName: 'shadow',
+      size: level,
+      value
+    });
+
+    deepUpdate(styleKeys, ['rest'], (arr: string[] = []) => [...arr, styleKey]);
   }
 
   return styleKeys;

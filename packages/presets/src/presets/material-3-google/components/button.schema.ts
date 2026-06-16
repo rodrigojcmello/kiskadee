@@ -33,6 +33,16 @@ export function createMaterial3GoogleButtonSchema({
             size: 80
           }
         }
+      },
+      shadow: {
+        targetElement: 'e1',
+        states: {
+          rest: 's:sm:1',
+          hover: 's:md:1',
+          focus: 's:sm:1',
+          pressed: false,
+          disabled: false
+        }
       }
     },
     elements: {
@@ -387,21 +397,6 @@ export function createMaterial3GoogleButtonSchema({
                 pressed: 10,
                 focus: 14
               }
-            }
-          },
-          shadow: {
-            // MD3-like elevation: medium at rest, stronger on hover/pressed, focused similar to hover.
-            // x stays 0 to avoid lateral drift; y and blur increase with intensity. Color stays black with varying alphas.
-            x: { rest: 0, hover: 0, pressed: 0, focus: 0, disabled: 0 },
-            y: { rest: 2, hover: 4, pressed: 0, focus: 4, disabled: 0 },
-            blur: { rest: 6, hover: 10, pressed: 0, focus: 10, disabled: 0 },
-            // HSLA: [h, s, l, a] → converted to hex with alpha by the builder
-            color: {
-              rest: [0, 0, 0, 0.28],
-              hover: [0, 0, 0, 0.35],
-              pressed: [0, 0, 0, 0.32],
-              focus: [0, 0, 0, 0.35],
-              disabled: [0, 0, 0, 0.0]
             }
           }
         }

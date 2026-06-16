@@ -1,6 +1,6 @@
 'use client';
 
-import type { CardRadiusMode } from '@kiskadee/core';
+import type { CardRadiusMode, ElementSizeValue } from '@kiskadee/core';
 import {
   Button as KButton,
   Card as KCard,
@@ -22,6 +22,17 @@ import s from './Card.module.scss';
 const cardRadiusOptions: Array<{ value: CardRadiusMode; label: string }> = [
   { value: 'rounded', label: 'Rounded' },
   { value: 'square', label: 'Square' }
+];
+
+type CardShadowOption = 'off' | ElementSizeValue;
+
+const cardShadowOptions: Array<{ value: CardShadowOption; label: string }> = [
+  { value: 'off', label: 'Off (default)' },
+  { value: 's:sm:1', label: 'Elevation 1 (s:sm:1)' },
+  { value: 's:md:1', label: 'Elevation 2 (s:md:1)' },
+  { value: 's:lg:1', label: 'Elevation 3 (s:lg:1)' },
+  { value: 's:lg:2', label: 'Elevation 4 (s:lg:2)' },
+  { value: 's:lg:3', label: 'Elevation 5 (s:lg:3)' }
 ];
 
 type CardContentProps = {
@@ -66,6 +77,10 @@ export function Card() {
   const [lockedSelected, setLockedSelected] = React.useState(false);
   const [interactionLocked, setInteractionLocked] = React.useState(true);
   const [radius, setRadius] = React.useState<CardRadiusMode>(defaultRadius);
+  const [staticShadow, setStaticShadow] = React.useState<CardShadowOption>('off');
+  const [cardActionShadow, setCardActionShadow] = React.useState(false);
+  const [preserveBorderWithShadow, setPreserveBorderWithShadow] = React.useState(true);
+  const resolvedStaticShadow = staticShadow === 'off' ? undefined : staticShadow;
 
   const radiusSelectOptions = React.useMemo(
     () =>
@@ -88,10 +103,29 @@ export function Card() {
             onValueChange={(value) => setRadius(value as CardRadiusMode)}
             disabled={!isCardAvailable || radiusSelectOptions.length <= 1}
           />
+          <ShowcaseSelectControl
+            label="Static shadow"
+            options={cardShadowOptions}
+            value={staticShadow}
+            onValueChange={(value) => setStaticShadow(value as CardShadowOption)}
+            disabled={!isCardAvailable}
+          />
         </ShowcaseControlGrid>
+        <ShowcaseControlStack>
+          <ShowcaseBooleanControl
+            label="Preserve border with shadow"
+            checked={preserveBorderWithShadow}
+            onCheckedChange={setPreserveBorderWithShadow}
+          />
+        </ShowcaseControlStack>
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="CardAction">
         <ShowcaseControlStack>
+          <ShowcaseBooleanControl
+            label="Shadow"
+            checked={cardActionShadow}
+            onCheckedChange={setCardActionShadow}
+          />
           <ShowcaseBooleanControl
             label="Interaction locked"
             checked={interactionLocked}
@@ -118,7 +152,11 @@ export function Card() {
         <div className={`${s.grid} k-root`}>
           <div className={s.example}>
             <p className={s.exampleLabel}>Static</p>
-            <KCard radius={radius}>
+            <KCard
+              radius={radius}
+              shadow={resolvedStaticShadow}
+              preserveBorderWithShadow={preserveBorderWithShadow}
+            >
               <CardContent
                 eyebrow="Surface"
                 title="Static card"
@@ -130,7 +168,13 @@ export function Card() {
 
           <div className={s.example}>
             <p className={s.exampleLabel}>Action</p>
-            <KCardAction radius={radius} controlState={selected} onControlStateChange={setSelected}>
+            <KCardAction
+              radius={radius}
+              shadow={cardActionShadow}
+              preserveBorderWithShadow={preserveBorderWithShadow}
+              controlState={selected}
+              onControlStateChange={setSelected}
+            >
               <CardContent
                 eyebrow="Button"
                 title={selected ? 'Selected' : 'Rest'}
@@ -143,7 +187,12 @@ export function Card() {
 
           <div className={s.example}>
             <p className={s.exampleLabel}>Selected</p>
-            <KCardAction radius={radius} controlState>
+            <KCardAction
+              radius={radius}
+              shadow={cardActionShadow}
+              preserveBorderWithShadow={preserveBorderWithShadow}
+              controlState
+            >
               <CardContent
                 eyebrow="Selected"
                 title="Strong selected"
@@ -156,7 +205,13 @@ export function Card() {
 
           <div className={s.example}>
             <p className={s.exampleLabel}>Disabled</p>
-            <KCardAction radius={radius} disabled defaultControlState={false}>
+            <KCardAction
+              radius={radius}
+              shadow={cardActionShadow}
+              preserveBorderWithShadow={preserveBorderWithShadow}
+              disabled
+              defaultControlState={false}
+            >
               <CardContent
                 eyebrow="Disabled"
                 title="Unavailable action"
@@ -170,6 +225,8 @@ export function Card() {
             <p className={s.exampleLabel}>Locked</p>
             <KCardAction
               radius={radius}
+              shadow={cardActionShadow}
+              preserveBorderWithShadow={preserveBorderWithShadow}
               controlState={lockedSelected}
               interactionLocked={interactionLocked}
               onControlStateChange={setLockedSelected}

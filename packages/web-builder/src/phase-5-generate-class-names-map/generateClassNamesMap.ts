@@ -240,7 +240,11 @@ export function generateClassNamesMapSplit(
 
             const sizeKey = extractSizeKeyFromStyleKey(key);
             const isSizeAwareEffectBucket =
-              bucket === 'rr' || bucket === 'rp' || bucket === 'rs' || bucket === 'ts';
+              bucket === 'h' ||
+              bucket === 'rr' ||
+              bucket === 'rp' ||
+              bucket === 'rs' ||
+              bucket === 'ts';
 
             if (isSizeAwareEffectBucket) {
               const bySize = eSizedBuckets.get(bucket) ?? new Map<string, Set<string>>();

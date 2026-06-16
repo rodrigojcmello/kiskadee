@@ -5,16 +5,29 @@ import {
   type ColorClasses,
   type ComponentEmphasis,
   componentEmphasisBuckets,
+  type EffectClassBucketJSON,
+  type ElementSizeValue,
   type RadiusMode,
   stateActivator as cn
 } from '@kiskadee/core';
 import type { CardClassNames as HeadlessCardClassNames } from '@kiskadee/react-headless';
-import type { CardProps, CardStatus, CardVisualProps } from './Card.types.ts';
+import type {
+  CardActionVisualProps,
+  CardProps,
+  CardStatus,
+  CardVisualProps
+} from './Card.types.ts';
 
 export const DEFAULT_CARD_SCALE = 's:md:1';
 export const DEFAULT_CARD_RADIUS: CardRadiusMode = 'rounded';
 export const DEFAULT_CARD_INTENT: CardIntent = 'neutral';
 export const DEFAULT_CARD_EMPHASIS: ComponentEmphasis = 'medium';
+
+export type ResolvedCardClassNames = {
+  classNames: NonNullable<HeadlessCardClassNames>;
+};
+
+const CARD_HIDE_BORDER_WITH_SHADOW_CLASS = 'k-crd-b';
 
 export function join(...parts: Array<string | undefined | false | null>): string | undefined {
   const joined = parts.filter(Boolean).join(' ').trim();
@@ -23,6 +36,18 @@ export function join(...parts: Array<string | undefined | false | null>): string
 
 export const normalizeCardScaleKey = (key: string): string =>
   key.startsWith('s:') ? key.slice(2) : key;
+
+function resolveCardShadowClassName(
+  bucket: EffectClassBucketJSON | undefined,
+  shadow: CardVisualProps['shadow'] | CardActionVisualProps['shadow']
+): string {
+  if (!bucket || !shadow) return '';
+  if (typeof bucket === 'string') return bucket;
+  if (shadow === true) return bucket.all ?? '';
+
+  const scaleKey = normalizeCardScaleKey(shadow as ElementSizeValue);
+  return bucket[scaleKey] ?? '';
+}
 
 function collectElementClasses(
   element: ClassNameByElementJSON | undefined,
@@ -62,6 +87,8 @@ export function resolveCardClassNames({
   classNames,
   status,
   radius,
+  shadow,
+  preserveBorderWithShadow,
   emphasis,
   intent,
   globalRadius,
@@ -72,11 +99,13 @@ export function resolveCardClassNames({
   classNames: NonNullable<CardProps['classNames']>;
   status: CardStatus | 'rest';
   radius: CardVisualProps['radius'];
+  shadow: CardVisualProps['shadow'] | CardActionVisualProps['shadow'];
+  preserveBorderWithShadow: CardVisualProps['preserveBorderWithShadow'];
   emphasis: CardVisualProps['emphasis'];
   intent: CardVisualProps['intent'];
   globalRadius: RadiusMode | undefined;
   action: boolean;
-}): NonNullable<HeadlessCardClassNames> {
+}): ResolvedCardClassNames {
   const resolvedIntent = intent ?? DEFAULT_CARD_INTENT;
   const resolvedEmphasis = emphasis ?? DEFAULT_CARD_EMPHASIS;
   const scaleKey = normalizeCardScaleKey(DEFAULT_CARD_SCALE);
@@ -85,6 +114,9 @@ export function resolveCardClassNames({
   const e1RadiusAll = radiusMode === 'square' ? (e1?.rs?.all ?? '') : (e1?.rr?.all ?? '');
   const e1RadiusScale =
     radiusMode === 'square' ? (e1?.rs?.[scaleKey] ?? '') : (e1?.rr?.[scaleKey] ?? '');
+  const shadowEffect = resolveCardShadowClassName(e1?.e?.h, shadow);
+  const hideBorderWithShadow =
+    shadowEffect.length > 0 && preserveBorderWithShadow === false;
 
   const projectedStatus =
     status !== 'rest'
@@ -93,20 +125,25 @@ export function resolveCardClassNames({
   const activation = projectedStatus ? join(projectedStatus, cn.activator) : undefined;
 
   return {
-    e1:
-      join(
-        collectElementClasses(e1, resolvedEmphasis, resolvedIntent),
-        e1?.s?.all,
-        e1?.s?.[scaleKey],
-        e1RadiusAll,
-        e1RadiusScale,
-        classNames.e1,
-        className,
-        activation,
-        'k-crd',
-        action ? 'k-crd-a' : undefined,
-        action ? 'k-foc' : undefined,
-        'k-trn'
-      ) ?? ''
+    classNames: {
+      e1:
+        join(
+          collectElementClasses(e1, resolvedEmphasis, resolvedIntent),
+          e1?.s?.all,
+          e1?.s?.[scaleKey],
+          e1RadiusAll,
+          e1RadiusScale,
+          shadowEffect,
+          classNames.e1,
+          className,
+          activation,
+          shadowEffect ? cn.shadow : undefined,
+          'k-crd',
+          action ? 'k-crd-a' : undefined,
+          hideBorderWithShadow ? CARD_HIDE_BORDER_WITH_SHADOW_CLASS : undefined,
+          action ? 'k-foc' : undefined,
+          'k-trn'
+        ) ?? ''
+    }
   };
 }

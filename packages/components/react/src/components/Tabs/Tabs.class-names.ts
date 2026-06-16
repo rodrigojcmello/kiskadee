@@ -1,6 +1,7 @@
 import {
   type ClassNameByElementJSON,
   type ColorClasses,
+  type EffectClassBucketJSON,
   stateActivator as cn,
   componentEmphasisBuckets,
   type RadiusMode
@@ -49,6 +50,12 @@ export function joinClassNames(
   return joined.length > 0 ? joined : undefined;
 }
 
+function resolveEffectBucketClassName(bucket: EffectClassBucketJSON | undefined): string {
+  if (!bucket) return '';
+  if (typeof bucket === 'string') return bucket;
+  return bucket.all ?? '';
+}
+
 /**
  * What
  *     Resolves the semantic color classes for one schema element using the current intent and
@@ -87,7 +94,8 @@ export function resolveIntentClasses(
 export function resolveEffectClasses(element: TabsClassesMap['e1'] | undefined): string {
   if (!element?.e) return '';
   return Object.values(element.e)
-    .filter((value): value is string => typeof value === 'string' && value.length > 0)
+    .map(resolveEffectBucketClassName)
+    .filter((value) => value.length > 0)
     .join(' ');
 }
 
@@ -99,7 +107,7 @@ export function resolveEffectClasses(element: TabsClassesMap['e1'] | undefined):
  *     independently from other effect buckets.
  */
 export function resolveShadowEffectClassName(element: TabsClassesMap['e1'] | undefined): string {
-  const shadowClass = typeof element?.e?.h === 'string' ? element.e.h : '';
+  const shadowClass = resolveEffectBucketClassName(element?.e?.h);
   return joinClassNames(shadowClass, shadowClass ? cn.shadow : '') ?? '';
 }
 
@@ -113,8 +121,9 @@ export function resolveShadowEffectClassName(element: TabsClassesMap['e1'] | und
 export function resolveNonShadowEffectClasses(element: TabsClassesMap['e1'] | undefined): string {
   if (!element?.e) return '';
   return Object.entries(element.e)
-    .filter(([bucket, value]) => bucket !== 'h' && typeof value === 'string' && value.length > 0)
-    .map(([, value]) => value)
+    .filter(([bucket]) => bucket !== 'h')
+    .map(([, value]) => resolveEffectBucketClassName(value))
+    .filter((value) => value.length > 0)
     .join(' ');
 }
 
@@ -140,6 +149,7 @@ export function resolveElementClassName(
   if (!element) return '';
 
   const scaleKey = normalizeScaleKey(options.scale);
+  const shadowClass = resolveEffectBucketClassName(element.e?.h);
   return (
     joinClassNames(
       element.d,
@@ -147,9 +157,7 @@ export function resolveElementClassName(
       element.s?.all,
       element.s?.[scaleKey],
       options.includeEffects === false ? '' : resolveEffectClasses(element),
-      options.includeEffects === false || typeof element.e?.h !== 'string' || !element.e.h
-        ? ''
-        : cn.shadow,
+      options.includeEffects === false || !shadowClass ? '' : cn.shadow,
       options.selected ? element.l : ''
     ) ?? ''
   );
@@ -713,7 +721,7 @@ export function resolveIndicatorClassName(options: {
     options.indicator.motion === 'none'
       ? getTabsIndicatorStatic(options.structural) || 'k-tab-e5j'
       : '',
-    typeof options.elements.e5?.e?.h === 'string' && options.elements.e5.e.h ? cn.shadow : '',
+    resolveEffectBucketClassName(options.elements.e5?.e?.h) ? cn.shadow : '',
     'k-trn',
     options.className
   );

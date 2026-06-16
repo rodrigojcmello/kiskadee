@@ -3,6 +3,8 @@ import type {
   ActivationFeedbackSetting,
   ComponentClassNameMapJSON,
   RadiusMode,
+  ShadowEffectSchema,
+  ShadowGlobalEffectSchema,
   SwitchActivationMotion,
   SwitchControlTextVisibility,
   SwitchMode,
@@ -45,11 +47,18 @@ export type KiskadeeContextValue = {
     radius?: RadiusMode;
     effects?: {
       activationFeedback?: ActivationFeedbackEffectSchema;
+      shadow?: ShadowGlobalEffectSchema;
     };
     components?: {
       button?: {
         effects?: {
           activationFeedback?: ActivationFeedbackSetting;
+          shadow?: ShadowEffectSchema;
+        };
+      };
+      card?: {
+        effects?: {
+          shadow?: ShadowEffectSchema;
         };
       };
       textField?: {

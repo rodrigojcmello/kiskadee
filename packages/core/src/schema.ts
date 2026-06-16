@@ -21,6 +21,10 @@ import type {
   ActivationFeedbackThemeTokens
 } from './types/effects/activation-feedback/activation-feedback.types.ts';
 import type { ElementEffects } from './types/effects/index.ts';
+import type {
+  ShadowEffectSchema,
+  ShadowGlobalEffectSchema
+} from './types/effects/shadow/shadow.types.ts';
 import type { ScaleSchema } from './types/scales/scales.types.ts';
 
 // Names of all supported components
@@ -129,6 +133,7 @@ type SwitchComponent<TSegmentName extends SegmentName = never> = {
 
 type ComponentEffects = {
   activationFeedback?: ActivationFeedbackSetting;
+  shadow?: ShadowEffectSchema;
 };
 
 type Components<TSegmentName extends SegmentName = never> = Partial<{
@@ -137,6 +142,7 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
     elements: ButtonElements<TSegmentName> & Elements<TSegmentName>;
   };
   card: {
+    effects?: ComponentEffects;
     elements: CardElements<TSegmentName> & Elements<TSegmentName>;
   };
   switch: SwitchComponent<TSegmentName>;
@@ -168,6 +174,7 @@ export type SchemaFonts = {
 // [EFFECTS] START: Global effect schema section.
 export type SchemaGlobalEffects = {
   activationFeedback?: ActivationFeedbackEffectSchema;
+  shadow?: ShadowGlobalEffectSchema;
 };
 // [EFFECTS] END: Global effect schema section.
 

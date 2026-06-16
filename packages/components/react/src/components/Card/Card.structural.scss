@@ -4,6 +4,11 @@
   display: block;
 }
 
+.k-crd-b {
+  /* Composition: Keep border geometry while shadow owns the visual separation */
+  border-color: transparent !important;
+}
+
 .k-crd-a {
   /* Native reset: CardAction is a button but should keep the card surface contract */
   appearance: none;

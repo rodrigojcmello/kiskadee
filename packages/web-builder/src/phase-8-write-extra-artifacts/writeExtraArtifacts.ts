@@ -10,6 +10,8 @@ import type {
   Schema,
   SchemaFonts,
   SegmentName,
+  ShadowEffectSchema,
+  ShadowGlobalEffectSchema,
   SolidColor,
   ThemeMode
 } from '@kiskadee/core';
@@ -33,6 +35,13 @@ import { type FontStack, toCssFontFamily } from '../utils/fontFamily.ts';
 type ExtractableSchema = Schema;
 
 type SegmentKey = SegmentName | string;
+type ComponentEffectArtifact = {
+  effects: {
+    activationFeedback?: ActivationFeedbackSetting;
+    shadow?: ShadowEffectSchema;
+  };
+};
+type ComponentEffectArtifactName = 'button' | 'card' | 'switch';
 
 function hasErrnoCode(error: unknown, code: string): boolean {
   return (
@@ -187,28 +196,34 @@ export async function writeExtraArtifacts(params: {
   const activationFeedback = schema.global?.effects?.activationFeedback as
     | ActivationFeedbackEffectSchema
     | undefined;
-  const componentEffectOverrides = {
-    ...(schema.components?.button?.effects?.activationFeedback !== undefined
-      ? {
-          button: {
-            effects: {
-              activationFeedback: schema.components.button.effects.activationFeedback
-            }
-          }
-        }
-      : {}),
-    ...(schema.components?.switch?.effects?.activationFeedback !== undefined
-      ? {
-          switch: {
-            effects: {
-              activationFeedback: schema.components.switch.effects.activationFeedback
-            }
-          }
-        }
-      : {})
-  } satisfies Partial<
-    Record<'button' | 'switch', { effects: { activationFeedback: ActivationFeedbackSetting } }>
-  >;
+  const shadow = schema.global?.effects?.shadow as ShadowGlobalEffectSchema | undefined;
+  const componentEffectOverrides: Partial<Record<ComponentEffectArtifactName, ComponentEffectArtifact>> =
+    {};
+  const getComponentEffects = (
+    componentName: ComponentEffectArtifactName
+  ): ComponentEffectArtifact['effects'] => {
+    const current = componentEffectOverrides[componentName] ?? { effects: {} };
+    componentEffectOverrides[componentName] = current;
+    return current.effects;
+  };
+
+  if (schema.components?.button?.effects?.activationFeedback !== undefined) {
+    getComponentEffects('button').activationFeedback =
+      schema.components.button.effects.activationFeedback;
+  }
+
+  if (schema.components?.button?.effects?.shadow !== undefined) {
+    getComponentEffects('button').shadow = schema.components.button.effects.shadow;
+  }
+
+  if (schema.components?.card?.effects?.shadow !== undefined) {
+    getComponentEffects('card').shadow = schema.components.card.effects.shadow;
+  }
+
+  if (schema.components?.switch?.effects?.activationFeedback !== undefined) {
+    getComponentEffects('switch').activationFeedback =
+      schema.components.switch.effects.activationFeedback;
+  }
   const switchComponentArtifact = buildSwitchComponentArtifact(schema);
   const tabsComponentArtifact = buildTabsComponentArtifact(schema);
   const textFieldComponentArtifact = buildTextFieldComponentArtifact(schema);
@@ -227,8 +242,9 @@ export async function writeExtraArtifacts(params: {
   const hasActivationFeedback = Boolean(
     activationFeedback && Object.keys(activationFeedback).length > 0
   );
+  const hasShadow = Boolean(shadow && Object.keys(shadow.levels ?? {}).length > 0);
   const hasComponentEffectOverrides = Object.keys(componentEffectOverrides).length > 0;
-  if (hasFonts || hasRadius || hasActivationFeedback || hasComponentEffectOverrides) {
+  if (hasFonts || hasRadius || hasActivationFeedback || hasShadow || hasComponentEffectOverrides) {
     await mkdir(buildDir, { recursive: true });
     const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
 
@@ -237,10 +253,9 @@ export async function writeExtraArtifacts(params: {
       radius?: RadiusMode;
       effects?: {
         activationFeedback?: ActivationFeedbackEffectSchema;
+        shadow?: ShadowGlobalEffectSchema;
       };
-      components?: Partial<
-        Record<'button' | 'switch', { effects: { activationFeedback: ActivationFeedbackSetting } }>
-      >;
+      components?: Partial<Record<ComponentEffectArtifactName, ComponentEffectArtifact>>;
     } = {};
 
     if (hasFonts && bodyCss) {
@@ -258,6 +273,13 @@ export async function writeExtraArtifacts(params: {
       globalPayload.effects = {
         ...(globalPayload.effects ?? {}),
         activationFeedback
+      };
+    }
+
+    if (hasShadow && shadow) {
+      globalPayload.effects = {
+        ...(globalPayload.effects ?? {}),
+        shadow
       };
     }
 

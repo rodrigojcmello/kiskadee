@@ -12,6 +12,7 @@ import type {
   ScaleProperty,
   ScaleSchema,
   Schema,
+  ShadowEffectSchema,
   StyleKeyByElement,
   StyleKeysByInteractionState,
   ThumbShrinkEffectSchema
@@ -26,7 +27,10 @@ import {
 import { convertElementDecorationsToStyleKeys } from './decoration/convertElementDecorationsToStyleKeys.ts';
 import { convertElementActivationFeedbackToStyleKeys } from './effects/convertElementActivationFeedbackToStyleKeys.ts';
 import { convertElementBorderRadiusToStyleKeys } from './effects/convertElementBorderRadiusToStyleKeys.ts';
-import { convertElementShadowToStyleKeys } from './effects/convertElementShadowToStyleKeys.ts';
+import {
+  convertComponentShadowToStyleKeys,
+  convertElementShadowToStyleKeys
+} from './effects/convertElementShadowToStyleKeys.ts';
 import { convertElementThumbShrinkToStyleKeys } from './effects/convertElementThumbShrinkToStyleKeys.ts';
 import {
   convertElementScalesToStyleKeys,
@@ -38,6 +42,7 @@ type ElementSchemaInput = Pick<ElementStyle, 'decorations' | 'effects' | 'palett
 type ComponentSchemaInput = {
   effects?: {
     activationFeedback?: ActivationFeedbackSetting;
+    shadow?: ShadowEffectSchema;
   };
   elements?: Record<string, ElementSchemaInput | undefined>;
   variants?: Record<
@@ -82,6 +87,7 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
   const styleKeysByComponent: ComponentStyleKeyMap = {};
   const toneMetadataByPalette: ToneMetadataByPalette = new Map();
   const activationFeedbackConfig = schema.global?.effects?.activationFeedback;
+  const shadowConfig = schema.global?.effects?.shadow;
 
   const resolveElementActivationFeedbackConfig = (
     componentName: ComponentName,
@@ -108,6 +114,17 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
 
     if (!hasElementSetting || elementSetting === false) return undefined;
     return resolveActivationFeedbackSetting(activationFeedbackConfig, elementSetting);
+  };
+
+  const resolveElementShadowConfig = (
+    componentName: ComponentName,
+    elementName: string
+  ): ShadowEffectSchema | undefined => {
+    if (!shadowConfig) return undefined;
+    const component = schema.components?.[componentName] as ComponentSchemaInput | undefined;
+    const componentSetting = component?.effects?.shadow;
+    if (!componentSetting || componentSetting.targetElement !== elementName) return undefined;
+    return componentSetting;
   };
 
   const applyElement = (
@@ -296,7 +313,11 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
         metadataScope.elementName,
         element
       );
-      if (element.effects || activationFeedbackResolvedConfig) {
+      const shadowResolvedConfig = resolveElementShadowConfig(
+        metadataScope.componentName as ComponentName,
+        metadataScope.elementName
+      );
+      if (element.effects || activationFeedbackResolvedConfig || shadowResolvedConfig) {
         const effectsMap: StyleKeysByInteractionState = {};
         const appendEffectMap = (map: StyleKeysByInteractionState) => {
           for (const [state, keys] of Object.entries(map)) {
@@ -307,6 +328,10 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
         };
         if (element.effects?.shadow) {
           const shadowMap = convertElementShadowToStyleKeys(element.effects.shadow);
+          appendEffectMap(shadowMap);
+        }
+        if (shadowResolvedConfig && shadowConfig) {
+          const shadowMap = convertComponentShadowToStyleKeys(shadowResolvedConfig, shadowConfig);
           appendEffectMap(shadowMap);
         }
         if (activationFeedbackResolvedConfig) {

@@ -2,6 +2,8 @@ import type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackSetting,
   RadiusMode,
+  ShadowEffectSchema,
+  ShadowGlobalEffectSchema,
   ThemeMode
 } from '@kiskadee/core';
 import { useEffect, useState } from 'react';
@@ -17,9 +19,18 @@ type GlobalArtifact = {
   radius?: RadiusMode;
   effects?: {
     activationFeedback?: ActivationFeedbackEffectSchema;
+    shadow?: ShadowGlobalEffectSchema;
   };
   components?: Partial<
-    Record<'button' | 'switch', { effects: { activationFeedback: ActivationFeedbackSetting } }>
+    Record<
+      'button' | 'card' | 'switch',
+      {
+        effects: {
+          activationFeedback?: ActivationFeedbackSetting;
+          shadow?: ShadowEffectSchema;
+        };
+      }
+    >
   >;
 };
 

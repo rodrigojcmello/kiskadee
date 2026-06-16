@@ -17,6 +17,19 @@ export function createMaterial3GoogleCardSchema({
   transparent
 }: CreateMaterial3GoogleCardSchemaArgs): CardComponent {
   return {
+    effects: {
+      shadow: {
+        targetElement: 'e1',
+        states: {
+          rest: 's:sm:1',
+          hover: 's:md:1',
+          focus: 's:sm:1',
+          pressed: false,
+          disabled: false
+        },
+        fixedLevels: ['s:sm:1', 's:md:1', 's:lg:1', 's:lg:2', 's:lg:3']
+      }
+    },
     elements: {
       e1: {
         name: 'card',
