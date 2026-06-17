@@ -1,12 +1,20 @@
 'use client';
 
-import type { CardRadiusMode, ElementSizeValue } from '@kiskadee/core';
+import {
+  elementSizeValues,
+  type ButtonIntent,
+  type CardRadiusMode,
+  type ComponentEmphasis,
+  type ElementSizeValue
+} from '@kiskadee/core';
 import {
   Button as KButton,
   Card as KCard,
   CardAction as KCardAction,
+  useCardArtifactConfig,
   useShowcase
 } from '@kiskadee/react-components';
+import type { ManifestComponent } from '@kiskadee/web-builder/types';
 import React from 'react';
 import {
   ShowcaseBooleanControl,
@@ -26,14 +34,32 @@ const cardRadiusOptions: Array<{ value: CardRadiusMode; label: string }> = [
 
 type CardShadowOption = 'off' | ElementSizeValue;
 
-const cardShadowOptions: Array<{ value: CardShadowOption; label: string }> = [
-  { value: 'off', label: 'Off (default)' },
-  { value: 's:sm:1', label: 'Elevation 1 (s:sm:1)' },
-  { value: 's:md:1', label: 'Elevation 2 (s:md:1)' },
-  { value: 's:lg:1', label: 'Elevation 3 (s:lg:1)' },
-  { value: 's:lg:2', label: 'Elevation 4 (s:lg:2)' },
-  { value: 's:lg:3', label: 'Elevation 5 (s:lg:3)' }
-];
+type CardDemoButtonProfile = {
+  emphasis: ComponentEmphasis;
+  intent: ButtonIntent;
+  scale?: ElementSizeValue;
+};
+
+const shadowLevelLabels: Record<ElementSizeValue, string> = {
+  's:sm:5': 'Small 5',
+  's:sm:4': 'Small 4',
+  's:sm:3': 'Small 3',
+  's:sm:2': 'Small 2',
+  's:sm:1': 'Small 1',
+  's:md:1': 'Medium 1',
+  's:lg:1': 'Large 1',
+  's:lg:2': 'Large 2',
+  's:lg:3': 'Large 3',
+  's:lg:4': 'Large 4',
+  's:lg:5': 'Large 5'
+};
+
+function normalizeShadowLevelKey(key: string): ElementSizeValue | undefined {
+  const normalized = key.startsWith('s:') ? key : `s:${key}`;
+  return elementSizeValues.includes(normalized as ElementSizeValue)
+    ? (normalized as ElementSizeValue)
+    : undefined;
+}
 
 type CardContentProps = {
   eyebrow: string;
@@ -52,15 +78,54 @@ function CardContent({ eyebrow, title, body, selected = false }: CardContentProp
   );
 }
 
+const demoButtonScaleOrder: ElementSizeValue[] = ['s:md:1', 's:sm:1', 's:lg:1'];
+const demoButtonIntentOrder: ButtonIntent[] = ['primary', 'neutral', 'destructive', 'positive'];
+const demoButtonEmphasisOrder: ComponentEmphasis[] = ['medium', 'high', 'low', 'lowest'];
+
+function resolveDemoButtonScale(buttonManifest: ManifestComponent | undefined) {
+  if (!buttonManifest?.scale) return 's:md:1';
+
+  return (
+    demoButtonScaleOrder.find((scale) => buttonManifest.scale?.[scale]) ??
+    elementSizeValues.find((scale) => buttonManifest.scale?.[scale])
+  );
+}
+
+function resolveDemoButtonProfile(
+  buttonManifest: ManifestComponent | undefined
+): CardDemoButtonProfile {
+  const scale = resolveDemoButtonScale(buttonManifest);
+
+  if (!buttonManifest?.state) {
+    return { emphasis: 'medium', intent: 'primary', scale };
+  }
+
+  for (const intent of demoButtonIntentOrder) {
+    for (const emphasis of demoButtonEmphasisOrder) {
+      if (buttonManifest.state[intent]?.[emphasis]?.rest) {
+        return { emphasis, intent, scale };
+      }
+    }
+  }
+
+  return { emphasis: 'medium', intent: 'primary', scale };
+}
+
 type CardDemoButtonProps = {
+  buttonProfile: CardDemoButtonProfile;
   disabled?: boolean;
   label: string;
 };
 
-function CardDemoButton({ disabled = false, label }: CardDemoButtonProps) {
+function CardDemoButton({ buttonProfile, disabled = false, label }: CardDemoButtonProps) {
   return (
     <div className={s.buttonOverlay}>
-      <KButton disabled={disabled} emphasis="medium" intent="primary" scale="s:sm:1">
+      <KButton
+        disabled={disabled}
+        emphasis={buttonProfile.emphasis}
+        intent={buttonProfile.intent}
+        scale={buttonProfile.scale}
+      >
         <KButton.Label>{label}</KButton.Label>
       </KButton>
     </div>
@@ -69,7 +134,9 @@ function CardDemoButton({ disabled = false, label }: CardDemoButtonProps) {
 
 export function Card() {
   const { manifest } = useShowcase();
+  const { cardClassesMap } = useCardArtifactConfig();
   const cardManifest = manifest?.components?.card;
+  const buttonManifest = manifest?.components?.button;
   const isCardAvailable = Boolean(cardManifest);
   const supportedScales = cardManifest?.scale;
   const defaultRadius: CardRadiusMode = 'rounded';
@@ -81,6 +148,22 @@ export function Card() {
   const [cardActionShadow, setCardActionShadow] = React.useState(false);
   const [preserveBorderWithShadow, setPreserveBorderWithShadow] = React.useState(true);
   const resolvedStaticShadow = staticShadow === 'off' ? undefined : staticShadow;
+  const demoButtonProfile = React.useMemo(
+    () => resolveDemoButtonProfile(buttonManifest),
+    [buttonManifest]
+  );
+  const fixedShadowLevels = React.useMemo(() => {
+    const shadowBucket = cardClassesMap?.e1?.e?.h;
+
+    if (!shadowBucket || typeof shadowBucket === 'string') {
+      return [];
+    }
+
+    return elementSizeValues.filter((size) => {
+      const key = normalizeShadowLevelKey(size)?.slice(2);
+      return Boolean(key && shadowBucket[key]);
+    });
+  }, [cardClassesMap]);
 
   const radiusSelectOptions = React.useMemo(
     () =>
@@ -91,6 +174,22 @@ export function Card() {
       })),
     [supportedScales]
   );
+  const staticShadowOptions = React.useMemo(
+    () => [
+      { value: 'off', label: 'Off (default)' },
+      ...fixedShadowLevels.map((level) => ({
+        value: level,
+        label: `${shadowLevelLabels[level]} (${level})`
+      }))
+    ],
+    [fixedShadowLevels]
+  );
+
+  React.useEffect(() => {
+    if (staticShadow === 'off') return;
+    if (fixedShadowLevels.includes(staticShadow)) return;
+    setStaticShadow('off');
+  }, [fixedShadowLevels, staticShadow]);
 
   const cardControls = (
     <ShowcaseControlPanel>
@@ -105,10 +204,10 @@ export function Card() {
           />
           <ShowcaseSelectControl
             label="Static shadow"
-            options={cardShadowOptions}
+            options={staticShadowOptions}
             value={staticShadow}
             onValueChange={(value) => setStaticShadow(value as CardShadowOption)}
-            disabled={!isCardAvailable}
+            disabled={!isCardAvailable || fixedShadowLevels.length === 0}
           />
         </ShowcaseControlGrid>
         <ShowcaseControlStack>
@@ -163,7 +262,7 @@ export function Card() {
                 body="A non-interactive visual container rendered as a div."
               />
             </KCard>
-            <CardDemoButton label="Learn more" />
+            <CardDemoButton buttonProfile={demoButtonProfile} label="Learn more" />
           </div>
 
           <div className={s.example}>
@@ -182,7 +281,7 @@ export function Card() {
                 selected={selected}
               />
             </KCardAction>
-            <CardDemoButton label="Details" />
+            <CardDemoButton buttonProfile={demoButtonProfile} label="Details" />
           </div>
 
           <div className={s.example}>
@@ -200,7 +299,7 @@ export function Card() {
                 selected
               />
             </KCardAction>
-            <CardDemoButton label="Continue" />
+            <CardDemoButton buttonProfile={demoButtonProfile} label="Continue" />
           </div>
 
           <div className={s.example}>
@@ -218,7 +317,7 @@ export function Card() {
                 body="Native disabled semantics remain separate from interactionLocked."
               />
             </KCardAction>
-            <CardDemoButton disabled label="Unavailable" />
+            <CardDemoButton buttonProfile={demoButtonProfile} disabled label="Unavailable" />
           </div>
 
           <div className={s.example}>
@@ -238,7 +337,7 @@ export function Card() {
                 selected={lockedSelected}
               />
             </KCardAction>
-            <CardDemoButton label="Review" />
+            <CardDemoButton buttonProfile={demoButtonProfile} label="Review" />
           </div>
         </div>
       ) : (

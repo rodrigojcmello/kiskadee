@@ -212,6 +212,30 @@ The current Material Button and CardAction recipe is:
 }
 ```
 
+## Fluent 2 Microsoft Shadow Mapping
+
+`fluent-2-microsoft` currently exposes the single shadow found in the Microsoft
+Fluent 2 Web Community Figma file as the medium catalog level:
+
+| Kiskadee level | Figma style | CSS layers |
+| --- | --- | --- |
+| `s:md:1` | Shadow 04 | `0 2px 4px 0 rgba(0,0,0,.14)`, `0 0 2px 0 rgba(0,0,0,.12)` |
+
+## Apple 26 Shadow Mapping
+
+`ios-26-apple` temporarily registers every unique shadow found across the
+provided iOS 26 and macOS 26 Figma nodes so the Showcase can compare them in
+practice. The iOS menu material blur node is intentionally excluded because it
+is material/backdrop blur, not a box-shadow layer.
+
+| Kiskadee level | Source | CSS layers |
+| --- | --- | --- |
+| `s:sm:1` | iOS content area | `0 0 16px 0 rgba(0,0,0,.20)` |
+| `s:md:1` | macOS utility panel | `0 5px 20px 0 rgba(0,0,0,.30)` |
+| `s:lg:1` | iOS iPad popover | `0 10px 50px 0 rgba(0,0,0,.30)` |
+| `s:lg:2` | macOS window | `0 16px 48px 0 rgba(0,0,0,.35)` |
+| `s:lg:3` | iOS window | `0 20px 76px 0 rgba(0,0,0,.20)` |
+
 Do not add a `none` level to the canonical shadow scale. No shadow is not a
 size. Component-level opt-in turns the effect on or off, while state-level
 `false` emits a zero-value override when an active effect needs to remove shadow

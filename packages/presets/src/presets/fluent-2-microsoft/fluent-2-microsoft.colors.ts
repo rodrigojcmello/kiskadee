@@ -58,6 +58,9 @@ export const componentIntents = {
     destructive: 'redLike',
     positive: 'greenLike'
   },
+  card: {
+    neutral: 'neutral'
+  },
   switch: {
     neutral: 'neutral'
   }

@@ -1,5 +1,6 @@
 import { breakpoints, color, primitive, type Schema, withAlpha } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
+import { createFluent2MicrosoftCardSchema } from './components/card.schema.ts';
 import { createFluent2MicrosoftSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './fluent-2-microsoft.colors.ts';
 
@@ -7,6 +8,9 @@ import { schemaColors } from './fluent-2-microsoft.colors.ts';
 
 const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
 const c = createPresetColorGetter<'default'>(schemaContext);
+const segmentNames = ['default'] as const;
+const transparent = [0, 0, 0, 0] as const;
+const shadowBlack = (alpha: number) => [0, 0, 0, alpha] as const;
 
 // The `Schema` generic represents extra segment names beyond the built-ins (`default` and optional `dynamic`).
 type Segments = never;
@@ -45,6 +49,14 @@ export const schema: Schema<Segments> = {
               curveToken: 'motion.standard.out'
             }
           }
+        }
+      },
+      shadow: {
+        levels: {
+          's:md:1': [
+            { x: 0, y: 2, blur: 4, spread: 0, color: shadowBlack(0.14) },
+            { x: 0, y: 0, blur: 2, spread: 0, color: shadowBlack(0.12) }
+          ]
         }
       }
     },
@@ -181,6 +193,11 @@ export const schema: Schema<Segments> = {
         }
       }
     },
+    card: createFluent2MicrosoftCardSchema({
+      c,
+      segmentNames,
+      transparent
+    }),
     switch: createFluent2MicrosoftSwitchSchema({
       c
     })

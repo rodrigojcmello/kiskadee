@@ -80,11 +80,16 @@ action variant.
   not leak an invalid Card radius.
 - The `/card` Showcase includes static, action, selected, disabled, and interaction-locked examples.
   Radius and static shadow are controlled through route selects instead of duplicate examples.
+- The `/card` Showcase derives static shadow options from the active Card class map, so presets only
+  show fixed levels they actually expose.
 - The `/card` Showcase includes a CardAction shadow toggle that applies the stateful recipe to all
   CardAction examples.
 - The `/card` Showcase now experiments with a real Button visually placed over each card example.
   For `CardAction`, the Button is rendered as a positioned sibling, not a descendant, because
   `CardAction` itself is a native button and nested buttons would be invalid HTML.
+- The `/card` Showcase resolves the overlay Button scale, intent, and emphasis from the active
+  Button manifest. It prefers `s:md:1` and falls back to a supported visual state so presets with
+  narrower Button catalogs do not render broken or undersized CTAs.
 
 ## Deferred
 
@@ -134,3 +139,10 @@ action variant.
   `false` applies the `k-crd-b` structural class only when shadow is active, keeps border width,
   makes border color transparent, and does not add inline `borderColor`; with static shadow off,
   the schema border color remains visible.
+- 2026-06-16: Added Card schemas to iOS 26 by Apple and Fluent 2 by Microsoft so `/card` can be used
+  to test their shadow catalogs. iOS exposes `s:sm:1`, `s:md:1`, `s:lg:1`, `s:lg:2`, and `s:lg:3`;
+  Fluent Microsoft exposes `s:md:1`.
+- 2026-06-17: Fixed `/card` Showcase overlay Buttons to use a manifest-supported Button profile.
+  Validation confirmed Fluent Microsoft CTAs now use `s:md:1` + `primary/high` instead of the
+  unsupported `primary/medium` small button; iOS Apple CTAs use supported `s:md:1` and remain
+  visible; Material Google keeps a positive text/button gap in the card examples.
