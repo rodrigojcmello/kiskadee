@@ -27,7 +27,7 @@ import {
 } from '../../../../hooks/effects/activation-feedback/useActivationFeedbackRadialStateMachine.ts';
 import {
   hasSwitchThumbShrinkClass,
-  resolveSwitchTrackContentSize
+  resolveSwitchThumbVisualElement
 } from '../.././SwitchGeometry.utils.ts';
 
 type SwitchActivationFeedbackControllerOptions = {
@@ -68,30 +68,19 @@ type SwitchActivationFeedbackPointerHandler = (
 const SWITCH_ACTIVATION_FEEDBACK_MIN_POINTER_HOLD_MS = 140;
 
 function resolveSwitchActivationFeedbackStaticGeometry(
-  thumbElement: HTMLSpanElement,
-  trackElement: HTMLSpanElement | null
+  thumbElement: HTMLSpanElement
 ): ActivationFeedbackStaticGeometry | null {
-  const thumbRect = thumbElement.getBoundingClientRect();
-  if (thumbRect.width === 0 || thumbRect.height === 0) return null;
+  const visualElement = hasSwitchThumbShrinkClass(thumbElement)
+    ? resolveSwitchThumbVisualElement(thumbElement)
+    : null;
+  const geometryElement = visualElement ?? thumbElement;
+  const geometryRect = geometryElement.getBoundingClientRect();
+  if (geometryRect.width === 0 || geometryRect.height === 0) return null;
 
-  const thumbStyle = window.getComputedStyle(thumbElement);
-  let width = thumbRect.width;
-  let height = thumbRect.height;
-  let radius = thumbStyle.borderTopLeftRadius;
-
-  if (trackElement) {
-    const trackStyle = window.getComputedStyle(trackElement);
-    const trackContentSize = resolveSwitchTrackContentSize(trackElement, trackStyle);
-    const isReducedThumb =
-      trackContentSize.height > 0 && hasSwitchThumbShrinkClass(thumbElement);
-
-    if (isReducedThumb) {
-      width = Math.max(width, trackContentSize.height);
-      height = Math.max(height, trackContentSize.height);
-      radius =
-        trackStyle.getPropertyValue('--k-swt-trr').trim() || trackStyle.borderTopLeftRadius;
-    }
-  }
+  const geometryStyle = window.getComputedStyle(geometryElement);
+  const width = geometryRect.width;
+  const height = geometryRect.height;
+  const radius = geometryStyle.borderTopLeftRadius;
 
   return {
     height,
@@ -164,8 +153,8 @@ export function useSwitchActivationFeedbackController({
   );
   const resolveStaticGeometry = useCallback(
     (thumbElement: HTMLSpanElement) =>
-      resolveSwitchActivationFeedbackStaticGeometry(thumbElement, trackRef.current),
-    [trackRef]
+      resolveSwitchActivationFeedbackStaticGeometry(thumbElement),
+    []
   );
 
   const origin: ActivationFeedbackOrigin = config?.origin ?? 'center';

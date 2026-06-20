@@ -1,4 +1,5 @@
 export const SWITCH_THUMB_SHRINK_CLASS_NAME = 'k-swt-e3b-a';
+export const SWITCH_THUMB_VISUAL_CLASS_NAME = 'k-swt-x5-a';
 export const SWITCH_REDUCED_THUMB_EPSILON = 0.5;
 
 export type SwitchTrackContentSize = {
@@ -28,6 +29,12 @@ export function resolveSwitchTrackContentSize(
 
 export function hasSwitchThumbShrinkClass(thumbElement: HTMLSpanElement): boolean {
   return thumbElement.classList.contains(SWITCH_THUMB_SHRINK_CLASS_NAME);
+}
+
+export function resolveSwitchThumbVisualElement(
+  thumbElement: HTMLSpanElement
+): HTMLSpanElement | null {
+  return thumbElement.querySelector<HTMLSpanElement>(`.${SWITCH_THUMB_VISUAL_CLASS_NAME}`);
 }
 
 export function isSwitchReducedThumbSize({

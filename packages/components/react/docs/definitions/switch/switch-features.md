@@ -291,11 +291,12 @@ Current rules:
   `effects.thumbShrink === true`.
 - The effect can be disabled per instance with `thumbShrink={false}`.
 - The effect module is lazy-loaded through `useSwitchThumbShrinkEffect`.
-- The Switch renders a single thumb node in both normal and thumb-shrink modes.
-- The `e3` thumb receives generated visual classes, radius classes, and
-  thumb-shrink effect classes directly.
-- The `e3` thumb remains the stable target for visual rendering, runtime motion,
-  drag measurement, activation feedback, and escape-hatch class names.
+- The Switch renders a stable `e3` thumb host in both normal and thumb-shrink
+  modes.
+- In thumb-shrink mode, internal `x5` receives generated visual classes and
+  thumb-shrink effect classes.
+- The `e3` thumb remains the stable target for runtime motion, drag measurement,
+  activation feedback hosting, and escape-hatch class names.
 - Off/rest effect dimensions belong in schema. Runtime must not decide per-scale
   effect availability.
 
@@ -327,6 +328,8 @@ Current visual behavior:
 - The track may allow overflow so the feedback layer can extend outside the
   rail.
 - The thumb carrier hosts the feedback state layer.
+- When `thumbShrink` renders internal `x5`, the feedback host remains `e3` but
+  the outline geometry is measured from the visual `x5` box.
 - `paint: "field"` uses `size` as outward field expansion.
 - `paint: "outline"` uses `size` as the outline width and follows the measured
   thumb box/radius.
@@ -382,12 +385,13 @@ generated markup, structural CSS, or regressions.
 | `k-swt` | Switch structural namespace/root. |
 | `k-swt-e1-a` | Root structural branch. |
 | `k-swt-e2-a` | Track. |
-| `k-swt-e3-a` | Thumb, visual host, and local effect host. |
+| `k-swt-e3-a` | Stable thumb host, motion measurement target, and local effect host. |
 | `k-swt-e4-a` | Label text. |
 | `k-swt-e5-a` | Control text. |
 | `k-swt-m` | Runtime motion gate. |
 | `k-swt-x2-a` | Internal wrapper grouping control text and visual control. |
 | `k-swt-x3-a` / `k-swt-x4-a` | Internal off/on control-text parts. |
+| `k-swt-x5-a` | Internal visual thumb layer for `thumbShrink`. |
 | `k-swt-x6-a` | Internal visual-control wrapper. |
 
 The structural branch registry currently uses `a` for the single public Switch

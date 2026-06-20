@@ -344,7 +344,6 @@ export function useActivationFeedbackHalo<
         ? new ResizeObserver(scheduleGeometrySync)
         : null;
     const handleHostTransitionEnd = (event: TransitionEvent) => {
-      if (event.target !== host) return;
       if (
         !event.propertyName.includes('radius') &&
         event.propertyName !== 'width' &&

@@ -39,9 +39,9 @@ optimized single-component implementation was promoted into
   toggle animation path until movement actually crosses the drag threshold.
 - Switch geometry helpers shared by runtime motion and activation feedback live in
   `SwitchGeometry.utils.ts`. Keep class names, reduced-thumb epsilon, track content measurement, and
-  pixel parsing centralized there. AF must only switch to carrier geometry when the explicit
-  `thumbShrink` marker class is present; compact presets such as Fluent have a naturally smaller
-  thumb and should still use the real thumb box for the AF outline.
+  pixel parsing centralized there. AF uses the real visual thumb box when the explicit `thumbShrink`
+  marker exposes an internal `x5` visual layer; compact presets such as Fluent have a naturally
+  smaller thumb and should still use the real thumb box for the AF outline.
 - Switch activation feedback defaults now come from
   `components.switch.effects.activationFeedback`. Switch presets use `profile: 'halo'`,
   `origin: 'center'`, and `visual.tone.byEmphasis.low = 'vivid'`; this is schema-owned, not a
@@ -60,28 +60,24 @@ optimized single-component implementation was promoted into
   fade from the configured minimum press hold plus profile `fade.delayToken`.
 - Static outline activation feedback treats host geometry as a required runtime contract. The
   generated outline CSS does not provide drawable fallbacks for `--k-af-host-width`,
-  `--k-af-host-height`, or `--k-af-host-radius`; Switch resolves stable thumb geometry in advance
-  and uses carrier-sized geometry for reduced/thumbShrink states.
+  `--k-af-host-height`, or `--k-af-host-radius`; Switch resolves measured thumb geometry in advance
+  and uses the internal `x5` visual box for reduced/thumbShrink states.
 - SSR-safe layout reads in React components should use the shared `useIsomorphicLayoutEffect`
   utility instead of local `typeof window` hook aliases.
-- Switch thumb rendering is now a single-layer model: `e3` is the visual thumb, runtime-motion
-  measurement target, `thumbShrink` target, and activation-feedback host. Do not reintroduce an
-  internal thumb visual layer for `thumbShrink`.
-- Runtime motion uses the measured thumb width for normal presets and switches to a square alignment
-  box only when `thumbShrink` is active or while the same thumb is leaving a `thumbShrink`
-  transition on the same track class. Compact presets such as Fluent must follow the generated
-  compensated padding directly; otherwise a `borderWidth: 1px` rail is shifted by the runtime
-  alignment layer.
-- Static unselected thumbs are anchored by their normal visual center through generated `--k-bxw`.
-  This keeps Material `thumbShrink` centered while `width` transitions between the normal and
-  reduced sizes.
+- Switch `thumbShrink` uses a two-layer thumb structure: `e3` is the stable host for runtime motion,
+  measurement, and activation feedback; internal `x5` is the painted thumb layer that receives the
+  generated `thumbShrink` width/height effect.
+- Runtime motion measures the stable `e3` host. `thumbShrink` must not resize that host; compact
+  presets such as Fluent still follow their generated thumb geometry directly because they do not
+  receive the explicit `thumbShrink` marker.
+- Static unselected thumb hosts are anchored by their normal visual center through generated
+  `--k-bxw`. Material `thumbShrink` centers the reduced `x5` visual inside that stable host.
 - The motion thumb remounts once when runtime geometry becomes ready, so initially selected
   switches receive the measured `thumbTranslation` before the first stable render. This keeps Fluent
   selected/off state aligned after reload while preserving normal toggle/drag animations.
 - Runtime motion must attach measurement observers to the current DOM elements, not only to the
-  original `RefObject.current` value. The ready-state remount changes the thumb node; Material
-  `thumbShrink` relies on observing that new node so the off-state shrink recalculates `--k-swt-ti`
-  and `--k-swt-ty` from `2px` to `6px`.
+  original `RefObject.current` value. The ready-state remount changes the thumb node, so the motion
+  controller reattaches observers to the stable `e3` host after remount.
 - The motion structural transition must not include `inset-block-start` or `inset-inline-start`.
   Runtime geometry owns those values as immediate alignment corrections; animating them in CSS
   competes with the motion `x` transform and makes Material `thumbShrink` travel crooked while
@@ -336,4 +332,11 @@ optimized single-component implementation was promoted into
   selection is centralized, and SSR-safe layout effects use `useIsomorphicLayoutEffect`.
 - 2026-06-20: Fluent compact Switch AF regression fix restored by limiting AF carrier geometry to
   the explicit `thumbShrink` marker. Natural compact thumbs keep thumb-sized AF geometry, while
-  Material `thumbShrink` still uses the stable carrier.
+  Material `thumbShrink` uses the internal `x5` visual layer for AF geometry.
+- 2026-06-20: Switch `thumbShrink` restored a component-owned visual layer: stable `e3` hosts
+  runtime motion and activation feedback, while internal `x5` carries the generated visual thumb
+  classes and reduced width/height. This keeps activation feedback component-agnostic.
+- 2026-06-20: Static Switch AF for `thumbShrink` now resolves outline geometry from the internal
+  `x5` visual box instead of the stable `e3` carrier. Browser validation on `/switch` confirmed the
+  Material `Unselected (activation feedback)` card changed from `40x40` carrier geometry to `32x32`
+  visual-thumb geometry.
