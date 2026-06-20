@@ -1,6 +1,6 @@
 import './SwitchRuntimeMotion.structural.scss';
 import type { SwitchActivationMotion } from '@kiskadee/core';
-import { animate, motion, useMotionValue } from 'motion/react';
+import { animate, motion, useDragControls, useMotionValue } from 'motion/react';
 import {
   type PointerEvent,
   type ReactNode,
@@ -38,7 +38,6 @@ export type SwitchRuntimeMotionThumbProps = {
   thumbRefCallback: RefCallback<HTMLSpanElement>;
   thumbTranslation: number;
   trackRef: RefObject<HTMLSpanElement | null>;
-  onActivationFeedbackCancel?: () => void;
 };
 
 const SWITCH_MOTION_EXTREMITY_EPSILON = 0.5;
@@ -121,8 +120,7 @@ export function SwitchRuntimeMotionThumb({
   thumbClassName,
   thumbRefCallback,
   thumbTranslation,
-  trackRef,
-  onActivationFeedbackCancel
+  trackRef
 }: SwitchRuntimeMotionThumbProps) {
   const [inlineDirection, setInlineDirection] = useState<InlineDirection>(() =>
     resolveInlineDirection(trackRef.current)
@@ -130,6 +128,7 @@ export function SwitchRuntimeMotionThumb({
   const thumbX = useMotionValue(
     resolveThumbTarget(controlState, thumbTranslation, inlineDirection)
   );
+  const dragControls = useDragControls();
   const animationControlsRef = useRef<{ stop: () => void } | null>(null);
   const isDraggingRef = useRef(false);
   const pointerIntentRef = useRef<{
@@ -184,6 +183,10 @@ export function SwitchRuntimeMotionThumb({
           startY: event.clientY,
           moved: false
         };
+        dragControls.start(event.nativeEvent, {
+          distanceThreshold: SWITCH_MOTION_CLICK_SUPPRESSION_THRESHOLD,
+          snapToCursor: false
+        });
         return;
       }
 
@@ -207,9 +210,8 @@ export function SwitchRuntimeMotionThumb({
       }
 
       pointerIntent.moved = true;
-      onActivationFeedbackCancel?.();
     },
-    [canDrag, onActivationFeedbackCancel, requestSuppressNextClick]
+    [canDrag, dragControls, requestSuppressNextClick]
   );
 
   useEffect(() => {
@@ -272,8 +274,10 @@ export function SwitchRuntimeMotionThumb({
       aria-hidden="true"
       className={thumbClassName}
       drag={canDrag ? 'x' : false}
+      dragControls={dragControls}
       dragConstraints={{ left: dragMin, right: dragMax }}
       dragElastic={0}
+      dragListener={false}
       dragMomentum={false}
       initial={false}
       style={{ x: thumbX }}
@@ -284,7 +288,6 @@ export function SwitchRuntimeMotionThumb({
       onDragStart={() => {
         if (!canDrag) return;
         isDraggingRef.current = true;
-        onActivationFeedbackCancel?.();
         dragStartControlStateRef.current = controlState;
         setDragPreviewControlState(null);
         latestDragControlStateRef.current = controlState;

@@ -15,13 +15,20 @@ import {
   useCallback,
   useMemo
 } from 'react';
-import { useActivationFeedbackHalo } from '../../../../hooks/effects/activation-feedback/useActivationFeedbackHalo.ts';
+import {
+  type ActivationFeedbackStaticGeometry,
+  useActivationFeedbackHalo
+} from '../../../../hooks/effects/activation-feedback/useActivationFeedbackHalo.ts';
 import {
   type ActivationFeedbackRadialRuntimeConfig,
   resolveActivationFeedbackProfileRadialRuntimeConfig,
   resolvePressedActivationFeedbackRadialRuntimeConfig,
   useActivationFeedbackRadialStateMachine
 } from '../../../../hooks/effects/activation-feedback/useActivationFeedbackRadialStateMachine.ts';
+import {
+  hasSwitchThumbShrinkClass,
+  resolveSwitchTrackContentSize
+} from '../.././SwitchGeometry.utils.ts';
 
 type SwitchActivationFeedbackControllerOptions = {
   config?: ActivationFeedbackEffectSchema;
@@ -54,7 +61,66 @@ type SwitchActivationFeedbackControllerResult = {
   };
 };
 
+type SwitchActivationFeedbackPointerHandler = (
+  event: PointerEvent<HTMLLabelElement>
+) => void;
+
 const SWITCH_ACTIVATION_FEEDBACK_MIN_POINTER_HOLD_MS = 140;
+
+function resolveSwitchActivationFeedbackStaticGeometry(
+  thumbElement: HTMLSpanElement,
+  trackElement: HTMLSpanElement | null
+): ActivationFeedbackStaticGeometry | null {
+  const thumbRect = thumbElement.getBoundingClientRect();
+  if (thumbRect.width === 0 || thumbRect.height === 0) return null;
+
+  const thumbStyle = window.getComputedStyle(thumbElement);
+  let width = thumbRect.width;
+  let height = thumbRect.height;
+  let radius = thumbStyle.borderTopLeftRadius;
+
+  if (trackElement) {
+    const trackStyle = window.getComputedStyle(trackElement);
+    const trackContentSize = resolveSwitchTrackContentSize(trackElement, trackStyle);
+    const isReducedThumb =
+      trackContentSize.height > 0 && hasSwitchThumbShrinkClass(thumbElement);
+
+    if (isReducedThumb) {
+      width = Math.max(width, trackContentSize.height);
+      height = Math.max(height, trackContentSize.height);
+      radius =
+        trackStyle.getPropertyValue('--k-swt-trr').trim() || trackStyle.borderTopLeftRadius;
+    }
+  }
+
+  return {
+    height,
+    radius,
+    size: Math.max(width, height),
+    width
+  };
+}
+
+function pickSwitchActivationFeedbackPointerHandler({
+  enabled,
+  fallbackHandler,
+  radialHandler,
+  staticHandler,
+  usesRadialRuntime,
+  usesStaticRuntime
+}: {
+  enabled: boolean;
+  fallbackHandler?: SwitchActivationFeedbackPointerHandler;
+  radialHandler: SwitchActivationFeedbackPointerHandler;
+  staticHandler: SwitchActivationFeedbackPointerHandler;
+  usesRadialRuntime: boolean;
+  usesStaticRuntime: boolean;
+}): SwitchActivationFeedbackPointerHandler | undefined {
+  if (!enabled) return fallbackHandler;
+  if (usesRadialRuntime) return radialHandler;
+  if (usesStaticRuntime) return staticHandler;
+  return fallbackHandler;
+}
 
 export function useSwitchActivationFeedbackController({
   config,
@@ -96,9 +162,15 @@ export function useSwitchActivationFeedbackController({
     },
     [isEventInsideTrack]
   );
+  const resolveStaticGeometry = useCallback(
+    (thumbElement: HTMLSpanElement) =>
+      resolveSwitchActivationFeedbackStaticGeometry(thumbElement, trackRef.current),
+    [trackRef]
+  );
 
   const origin: ActivationFeedbackOrigin = config?.origin ?? 'center';
   const profileDefinition = resolveActivationFeedbackProfileDefinition(profile);
+  const usesRadialRuntime = profileDefinition.runtime === 'radial';
   const usesStaticRuntime = usesActivationFeedbackStaticRuntime(profile);
   const activationFeedbackMachine = useActivationFeedbackHalo<
     HTMLLabelElement,
@@ -115,6 +187,7 @@ export function useSwitchActivationFeedbackController({
     origin,
     profile,
     readOnly,
+    resolveStaticGeometry,
     onPointerDown,
     onPointerUp,
     onPointerCancel,
@@ -123,14 +196,14 @@ export function useSwitchActivationFeedbackController({
   });
 
   const radialRuntimeConfig = useMemo<ActivationFeedbackRadialRuntimeConfig | null>(() => {
-    if (profileDefinition.runtime !== 'radial') return null;
+    if (!usesRadialRuntime) return null;
 
     return resolveActivationFeedbackProfileRadialRuntimeConfig({
       config,
       fallbackDurationMs: 468,
       profile
     });
-  }, [config, profile, profileDefinition.runtime]);
+  }, [config, profile, usesRadialRuntime]);
 
   const pressedRuntimeConfig = useMemo<ActivationFeedbackRadialRuntimeConfig>(() => {
     return resolvePressedActivationFeedbackRadialRuntimeConfig({ config });
@@ -141,7 +214,7 @@ export function useSwitchActivationFeedbackController({
     HTMLSpanElement
   >({
     capturePointer: false,
-    effectProfile: enabled && profileDefinition.runtime === 'radial' ? profile : null,
+    effectProfile: enabled && usesRadialRuntime ? profile : null,
     hostRef: thumbRef,
     isDisabled: disabled || interactionLocked || readOnly,
     localActivationFeedbackOrigin: undefined,
@@ -166,14 +239,12 @@ export function useSwitchActivationFeedbackController({
       if (!isEventInsideTrack(event)) return;
 
       if (usesStaticRuntime) {
-        activationFeedbackMachine.trigger(event, SWITCH_ACTIVATION_FEEDBACK_MIN_POINTER_HOLD_MS);
         return;
       }
 
       radialActivationFeedbackMachine.handleClick(event);
     },
     [
-      activationFeedbackMachine.trigger,
       isEventInsideTrack,
       onClickCapture,
       radialActivationFeedbackMachine.handleClick,
@@ -183,6 +254,32 @@ export function useSwitchActivationFeedbackController({
 
   const activeMachine =
     usesStaticRuntime ? activationFeedbackMachine : radialActivationFeedbackMachine;
+  const pointerHandlers = {
+    onPointerDown: pickSwitchActivationFeedbackPointerHandler({
+      enabled,
+      fallbackHandler: onPointerDown,
+      radialHandler: radialActivationFeedbackMachine.handlePointerDown,
+      staticHandler: activationFeedbackMachine.handlePointerDown,
+      usesRadialRuntime,
+      usesStaticRuntime
+    }),
+    onPointerUp: pickSwitchActivationFeedbackPointerHandler({
+      enabled,
+      fallbackHandler: onPointerUp,
+      radialHandler: radialActivationFeedbackMachine.handlePointerUp,
+      staticHandler: activationFeedbackMachine.handlePointerUp,
+      usesRadialRuntime,
+      usesStaticRuntime
+    }),
+    onPointerCancel: pickSwitchActivationFeedbackPointerHandler({
+      enabled,
+      fallbackHandler: onPointerCancel,
+      radialHandler: radialActivationFeedbackMachine.handlePointerCancel,
+      staticHandler: activationFeedbackMachine.handlePointerCancel,
+      usesRadialRuntime,
+      usesStaticRuntime
+    })
+  };
 
   return {
     cancel: activeMachine.cancel,
@@ -190,18 +287,7 @@ export function useSwitchActivationFeedbackController({
     isFading: enabled && activeMachine.isFading,
     rootHandlers: {
       onClickCapture: enabled ? handleClickCapture : onClickCapture,
-      onPointerDown:
-        enabled && profileDefinition.runtime === 'radial'
-          ? radialActivationFeedbackMachine.handlePointerDown
-          : onPointerDown,
-      onPointerUp:
-        enabled && profileDefinition.runtime === 'radial'
-          ? radialActivationFeedbackMachine.handlePointerUp
-          : onPointerUp,
-      onPointerCancel:
-        enabled && profileDefinition.runtime === 'radial'
-          ? radialActivationFeedbackMachine.handlePointerCancel
-          : onPointerCancel,
+      ...pointerHandlers,
       onBlur: enabled ? activeMachine.handleBlur : onBlur
     }
   };

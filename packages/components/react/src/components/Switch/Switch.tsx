@@ -181,7 +181,12 @@ function SwitchRoot(props: SwitchProps) {
     thumbShrinkEffect
   ]);
 
-  const switchGeometryKey = `${resolvedRadius}|${structuralClassNames.e2}|${structuralClassNames.e3}`;
+  const switchGeometryKey = [
+    resolvedRadius,
+    Boolean(motionEffect),
+    structuralClassNames.e2,
+    structuralClassNames.e3
+  ].join('|');
   const motionController = useSwitchRuntimeMotionController({
     enabled: Boolean(motionEffect),
     controlState: controlStateProp,
@@ -258,7 +263,6 @@ function SwitchRoot(props: SwitchProps) {
     ? {
         activationMotion: options.activationMotion,
         thumbClassName: resolvedClassNames.e3,
-        onActivationFeedbackCancel: activationFeedbackController.cancel,
         ...motionController.thumbProps
       }
     : {

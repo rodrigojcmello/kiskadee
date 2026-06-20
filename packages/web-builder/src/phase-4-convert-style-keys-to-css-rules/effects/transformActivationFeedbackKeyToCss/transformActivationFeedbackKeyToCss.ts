@@ -137,13 +137,13 @@ function transformActivationFeedbackProfileToCss(
   const borderColor = 'var(--k-af-current-color, var(--k-af-color, currentColor))';
   const fillOpacity = isOutline ? '0' : '1';
   const layerWidth = isOutline
-    ? `calc(var(--k-af-host-width, var(--k-af-end-size)) + (${geometrySize} * 2))`
+    ? `calc(var(--k-af-host-width) + (${geometrySize} * 2))`
     : `calc(var(--k-af-end-size) + (${geometrySize} * 2))`;
   const layerHeight = isOutline
-    ? `calc(var(--k-af-host-height, var(--k-af-end-size)) + (${geometrySize} * 2))`
+    ? `calc(var(--k-af-host-height) + (${geometrySize} * 2))`
     : `calc(var(--k-af-end-size) + (${geometrySize} * 2))`;
   const layerRadius = isOutline
-    ? `var(--k-af-outline-radius, calc(var(--k-af-host-radius, 0px) + ${geometrySize}))`
+    ? `var(--k-af-outline-radius, calc(var(--k-af-host-radius) + ${geometrySize}))`
     : '999px';
 
   return `.${className} { --k-af-profile: ${profile}; --k-af-overflow: ${overflow}; --k-af-clip: ${clip}; --k-af-size: ${size}; --k-af-animate-size: ${animateSize}; --k-af-duration: ${duration}; --k-af-ease: ${ease}; --k-af-fade-delay: ${fadeDelay}; --k-af-fade-duration: ${fadeDuration}; --k-af-fade-ease: ${fadeEase}; --k-af-fill-opacity: ${fillOpacity}; --k-af-layer-width: ${layerWidth}; --k-af-layer-height: ${layerHeight}; --k-af-layer-radius: ${layerRadius}; --k-af-border-width: ${borderWidth}; --k-af-border-color: ${borderColor}; --k-af-border-opacity: 1; }`;

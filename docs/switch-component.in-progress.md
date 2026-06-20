@@ -33,6 +33,15 @@ optimized single-component implementation was promoted into
 - Runtime motion commits a drag intent when the thumb reaches an endpoint, matching the native iOS
   behavior. `latestDragControlStateRef` prevents repeated emissions at the same endpoint; consumers
   still own async confirmation, rollback, and any cooldown state.
+- Runtime motion does not let Framer Motion's default thumb drag listener classify every thumb
+  press as a potential visual drag. The thumb uses manual `dragControls` with the same click
+  suppression threshold as Switch pointer intent, so thumb clicks and label clicks share the same
+  toggle animation path until movement actually crosses the drag threshold.
+- Switch geometry helpers shared by runtime motion and activation feedback live in
+  `SwitchGeometry.utils.ts`. Keep class names, reduced-thumb epsilon, track content measurement, and
+  pixel parsing centralized there. AF must only switch to carrier geometry when the explicit
+  `thumbShrink` marker class is present; compact presets such as Fluent have a naturally smaller
+  thumb and should still use the real thumb box for the AF outline.
 - Switch activation feedback defaults now come from
   `components.switch.effects.activationFeedback`. Switch presets use `profile: 'halo'`,
   `origin: 'center'`, and `visual.tone.byEmphasis.low = 'vivid'`; this is schema-owned, not a
@@ -43,6 +52,18 @@ optimized single-component implementation was promoted into
   the runtime/schema contract.
 - iOS 26 Apple Switch uses `visual.paint: 'outline'` with `profiles.halo.size: 8`, so the rectangular
   thumb gets an outline feedback instead of a filled halo.
+- Static Switch activation feedback is a press-start one-shot visual pulse. `pointerdown` starts
+  the feedback, semantic `click` keeps owning the toggle, and `pointerup`/`pointercancel`/drag do
+  not extend the active feedback duration. The one-shot path ignores profile runtime duration but
+  still honors profile `fade.delayToken`, so quick taps get a short full-opacity hold before fade.
+- The static AF one-shot finish path intentionally has no runtime-duration option: it schedules
+  fade from the configured minimum press hold plus profile `fade.delayToken`.
+- Static outline activation feedback treats host geometry as a required runtime contract. The
+  generated outline CSS does not provide drawable fallbacks for `--k-af-host-width`,
+  `--k-af-host-height`, or `--k-af-host-radius`; Switch resolves stable thumb geometry in advance
+  and uses carrier-sized geometry for reduced/thumbShrink states.
+- SSR-safe layout reads in React components should use the shared `useIsomorphicLayoutEffect`
+  utility instead of local `typeof window` hook aliases.
 - Switch thumb rendering is now a single-layer model: `e3` is the visual thumb, runtime-motion
   measurement target, `thumbShrink` target, and activation-feedback host. Do not reintroduce an
   internal thumb visual layer for `thumbShrink`.
@@ -294,3 +315,25 @@ optimized single-component implementation was promoted into
   do not apply `disabled`, `readonly`, or `aria-readonly`; unlocked clicks still toggle; motion-on
   drag to the selected endpoint changes the Switch to checked.
 - 2026-06-14: `git diff --check`
+- 2026-06-19: Switch static activation feedback now caches stable host/carrier geometry before
+  interaction, starts the visual pulse on `pointerdown`, and runs as a one-shot independent of
+  drag/pointer release. The generated outline CSS no longer falls back to a drawable host geometry.
+- 2026-06-19: `pnpm --filter @kiskadee/react-components run build`
+- 2026-06-19: `pnpm --filter @kiskadee/web-builder run build`
+- 2026-06-19: `git diff --check`
+- 2026-06-19: Browser validation on `/switch` with iOS 26 Apple and motion enabled confirmed rapid
+  clicks do not collapse AF into a `12x12` thumb-centered circle. Drag from the thumb starts AF on
+  press and the active class is gone by the one-shot timeout instead of being held by drag.
+- 2026-06-19: Switch static activation feedback one-shot timing refined to honor profile
+  `fade.delayToken` while still ignoring profile runtime duration, preserving drag independence and
+  making light taps less visually abrupt.
+- 2026-06-19: Switch runtime motion thumb drag now starts through manual Motion drag controls with
+  the existing `5px` intent threshold, preventing plain thumb clicks from entering the drag visual
+  path earlier than label clicks.
+- 2026-06-20: Switch AF/motion code review cleanup restored after rollback: web-builder outline CSS
+  tests assert required host geometry vars, Switch reduced-thumb geometry helpers are shared by AF
+  and motion, static AF one-shot finish no longer carries runtime-duration options, pointer handler
+  selection is centralized, and SSR-safe layout effects use `useIsomorphicLayoutEffect`.
+- 2026-06-20: Fluent compact Switch AF regression fix restored by limiting AF carrier geometry to
+  the explicit `thumbShrink` marker. Natural compact thumbs keep thumb-sized AF geometry, while
+  Material `thumbShrink` still uses the stable carrier.
