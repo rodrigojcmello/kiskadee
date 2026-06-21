@@ -13,6 +13,7 @@ const ios18SwitchTrackDisabled = [240, 4, 92, 0.42] as const;
 const ios18SwitchThumb = [0, 0, 100, 1] as const;
 const ios18SwitchThumbDisabled = [0, 0, 100, 0.72] as const;
 const ios18SwitchLabel = [0, 0, 7, 1] as const;
+const ios18SwitchOffIcon = [0, 0, 47.059, 0.55] as const;
 
 export function createIos18AppleSwitchSchema(): SwitchComponent {
   const segmentNames = ['default'] as const;
@@ -183,6 +184,37 @@ export function createIos18AppleSwitchSchema(): SwitchComponent {
                             hover: { ref: transparent },
                             focus: { ref: transparent },
                             pressed: { ref: transparent }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }))
+              },
+              e6: {
+                name: 'icon',
+                scales: {
+                  boxWidth: {
+                    's:md:1': 16
+                  },
+                  boxHeight: {
+                    's:md:1': 16
+                  }
+                },
+                palettes: buildBySegment(segmentNames, () => ({
+                  light: {
+                    textColor: {
+                      neutral: {
+                        medium: {
+                          rest: ios18SwitchOffIcon,
+                          hover: { ref: ios18SwitchOffIcon },
+                          focus: { ref: ios18SwitchOffIcon },
+                          pressed: { ref: ios18SwitchOffIcon },
+                          selected: {
+                            rest: { ref: ios18SwitchTrackOn },
+                            hover: { ref: ios18SwitchTrackOn },
+                            focus: { ref: ios18SwitchTrackOn },
+                            pressed: { ref: ios18SwitchTrackOn }
                           }
                         }
                       }
