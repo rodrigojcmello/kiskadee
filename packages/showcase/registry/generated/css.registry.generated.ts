@@ -96,6 +96,17 @@ export const cssPaths = {
       'default|light': '/build/material-design-3-kiskadee/tokens.default.light.kiskadee.css',
     }
   },
+  'sandbox-0-kiskadee': {
+    core: '/build/sandbox-0-kiskadee/core.kiskadee.css',
+    effects: '/build/sandbox-0-kiskadee/effects.kiskadee.css',
+    tokens: '/build/sandbox-0-kiskadee/tokens.kiskadee.css',
+    palettes: {
+      'default|light': '/build/sandbox-0-kiskadee/default.light.kiskadee.css',
+    },
+    tokenPalettes: {
+      'default|light': '/build/sandbox-0-kiskadee/tokens.default.light.kiskadee.css',
+    }
+  },
 } as const;
 
 export type CssRegistry = typeof cssPaths;
