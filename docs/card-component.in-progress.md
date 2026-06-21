@@ -46,9 +46,9 @@ action variant.
   - `palettes.boxColor`;
   - `palettes.borderColor`.
 - Allowed component-level effect properties:
-  - `effects.shadow.targetElement`;
-  - `effects.shadow.states`;
-  - `effects.shadow.fixedLevels`.
+  - `effects.shadow.e1.kind`;
+  - `effects.shadow.e1.states`;
+  - `effects.shadow.e1.fixedLevels`.
 - `scales.borderRadius.pill` is invalid for Card.
 - Card v1 starts with `neutral.medium`.
 - The selected visual is encoded as the schema `selected` branch under `neutral.medium`; it is not

@@ -299,6 +299,7 @@ export function resolveSwitchClassNames(options: {
         `k-swt-e2-${branch}`,
         elem(elements.e2, options),
         resolveRadiusClassName(elements.e2, options.scale, options.radius),
+        resolveSwitchShadowEffectClassName(elements.e2, options.scale),
         'k-trn',
         options.classNames.e2
       ) ?? '',

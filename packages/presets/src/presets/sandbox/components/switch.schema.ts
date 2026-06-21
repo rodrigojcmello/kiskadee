@@ -831,11 +831,20 @@ export function createSandboxSwitchSchema(): SwitchComponent {
         }
       },
       shadow: {
-        targetElement: 'e3',
-        states: {
-          rest: 's:sm:1',
-          hover: 's:md:1',
-          disabled: false
+        e2: {
+          kind: 'inner',
+          states: {
+            rest: 's:sm:1',
+            disabled: false
+          }
+        },
+        e3: {
+          kind: 'outer',
+          states: {
+            rest: 's:sm:1',
+            hover: 's:md:1',
+            disabled: false
+          }
         }
       }
     },

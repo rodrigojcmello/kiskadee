@@ -25,6 +25,7 @@ export type TransformShadowKeyToCssOptions = {
 type ParsedShadowLayer = {
   blur: number;
   color: HSLA;
+  inset?: boolean;
   spread: number;
   x: number;
   y: number;
@@ -81,7 +82,8 @@ function parseShadowLayer(value: unknown): ParsedShadowLayer {
         y: layer.y,
         blur: layer.blur,
         spread: typeof layer.spread === 'number' ? layer.spread : 0,
-        color: parseShadowColor(layer.color)
+        color: parseShadowColor(layer.color),
+        inset: layer.inset === true
       };
     }
   }
@@ -89,7 +91,7 @@ function parseShadowLayer(value: unknown): ParsedShadowLayer {
   throw new Error(UNSUPPORTED_VALUE('shadow', JSON.stringify(value), 'shadow'));
 }
 
-function parseShadowLayers(shadowValue: string, styleKey: string): ParsedShadowLayer[] {
+function parseShadowValue(shadowValue: string, styleKey: string): ParsedShadowLayer {
   try {
     const parsed = JSON.parse(shadowValue) as unknown;
     if (Array.isArray(parsed)) {
@@ -98,8 +100,9 @@ function parseShadowLayers(shadowValue: string, styleKey: string): ParsedShadowL
         typeof parsed[0] === 'number' &&
         typeof parsed[1] === 'number' &&
         typeof parsed[2] === 'number';
-      return isSingleTuple ? [parseShadowLayer(parsed)] : parsed.map(parseShadowLayer);
+      if (!isSingleTuple) throw new Error(UNSUPPORTED_VALUE('shadow', shadowValue, styleKey));
     }
+    return parseShadowLayer(parsed);
   } catch {
     // Fall through to the legacy compact parser below.
   }
@@ -113,15 +116,13 @@ function parseShadowLayers(shadowValue: string, styleKey: string): ParsedShadowL
   const colorPart = parts[4].trim();
 
   try {
-    return [
-      {
-        x,
-        y,
-        blur,
-        spread: 0,
-        color: JSON.parse(colorPart) as HSLA
-      }
-    ];
+    return {
+      x,
+      y,
+      blur,
+      spread: 0,
+      color: JSON.parse(colorPart) as HSLA
+    };
   } catch {
     throw new Error(INVALID_SHADOW_COLOR_VALUE);
   }
@@ -136,9 +137,9 @@ function parseShadowLayers(shadowValue: string, styleKey: string): ParsedShadowL
  * Accepted keys:
  * - "shadow__[x,y,blur,[h,l,s,a]]"                 — default (rest)
  * - "shadow__[x,y,blur,spread,[h,l,s,a]]"          — default (rest with spread)
- * - "shadow__[[x,y,blur,spread,[h,l,s,a]], ...]"   — multi-layer default
+ * - "shadow__{\"x\":0,\"y\":1,\"blur\":2,\"color\":[h,l,s,a],\"inset\":true}" — inner shadow
  * - "shadow--<state>__[x,y,blur,[h,l,s,a]]"        — inline interaction state
- * - "shadow++<size>__[[x,y,blur,spread,[...]], ...]" — size-aware fixed level
+ * - "shadow++<size>__[x,y,blur,spread,[...]]"      — size-aware fixed level
  *
  * Notes:
  * - This transformer does not implement parent reference ("==") because shadow keys are not
@@ -171,17 +172,17 @@ export function transformShadowKeyToCss(
 
   // Optimize zero lengths: CSS allows omitting the unit for 0 values
   const formatPx = (n: number): string => (n === 0 ? '0' : `${n}px`);
-  const layers = parseShadowLayers(shadowValue, styleKey);
-  if (layers.length === 0) throw new Error(UNSUPPORTED_VALUE('shadow', shadowValue, styleKey));
-  const formatLayer = ({ x, y, blur, spread, color }: ParsedShadowLayer): string => {
+  const layer = parseShadowValue(shadowValue, styleKey);
+  const formatLayer = ({ x, y, blur, spread, color, inset }: ParsedShadowLayer): string => {
     const hexColor = convertHslaToHex(color);
-    return `${formatPx(x)} ${formatPx(y)} ${formatPx(blur)} ${formatPx(spread)} ${hexColor}`;
+    const prefix = inset ? 'inset ' : '';
+    return `${prefix}${formatPx(x)} ${formatPx(y)} ${formatPx(blur)} ${formatPx(spread)} ${hexColor}`;
   };
   const styleEmissionPolicy = options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
   const decl =
     styleEmissionPolicy.shadowEmission === 'token'
-      ? `{ --k-sh-x: ${formatPx(layers[0].x)}; --k-sh-y: ${formatPx(layers[0].y)}; --k-sh-blur: ${formatPx(layers[0].blur)}; --k-sh-color: ${convertHslaToHex(layers[0].color)} }`
-      : `{ box-shadow: ${layers.map(formatLayer).join(', ')} }`;
+      ? `{ --k-sh-x: ${formatPx(layer.x)}; --k-sh-y: ${formatPx(layer.y)}; --k-sh-blur: ${formatPx(layer.blur)}; --k-sh-color: ${convertHslaToHex(layer.color)} }`
+      : `{ box-shadow: ${formatLayer(layer)} }`;
 
   // Build selectors
   const selectors: string[] = [];

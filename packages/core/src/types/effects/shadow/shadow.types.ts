@@ -13,19 +13,26 @@ export type ShadowLayer = {
   y: PixelValue;
 };
 
-export type ShadowValue = ShadowLayer | readonly ShadowLayer[];
+export type ShadowKind = 'inner' | 'outer';
 
 export type ShadowGlobalEffectSchema = {
-  levels: Partial<Record<ElementSizeValue, ShadowValue>>;
+  inner?: {
+    levels: Partial<Record<ElementSizeValue, ShadowLayer>>;
+  };
+  outer?: {
+    levels: Partial<Record<ElementSizeValue, ShadowLayer>>;
+  };
 };
 
 export type ShadowStateValue = ElementSizeValue | false;
 
-export type ShadowEffectSchema = {
+export type ShadowElementEffectSchema = {
   fixedLevels?: readonly ElementSizeValue[];
+  kind: ShadowKind;
   states?: Partial<Record<InteractionState, ShadowStateValue>>;
-  targetElement: string;
 };
+
+export type ShadowEffectSchema = Partial<Record<string, ShadowElementEffectSchema>>;
 
 export type ShadowSchema = Partial<{
   blur: ShadowByInteractionState;

@@ -35,13 +35,15 @@ export function createMaterial3GoogleButtonSchema({
         }
       },
       shadow: {
-        targetElement: 'e1',
-        states: {
-          rest: 's:sm:1',
-          hover: 's:md:1',
-          focus: 's:sm:1',
-          pressed: false,
-          disabled: false
+        e1: {
+          kind: 'outer',
+          states: {
+            rest: 's:sm:1',
+            hover: 's:md:1',
+            focus: 's:sm:1',
+            pressed: false,
+            disabled: false
+          }
         }
       }
     },

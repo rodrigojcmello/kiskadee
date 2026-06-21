@@ -19,15 +19,17 @@ export function createFluent2MicrosoftCardSchema({
   return {
     effects: {
       shadow: {
-        targetElement: 'e1',
-        states: {
-          rest: 's:md:1',
-          hover: 's:md:1',
-          focus: 's:md:1',
-          pressed: false,
-          disabled: false
-        },
-        fixedLevels: ['s:md:1']
+        e1: {
+          kind: 'outer',
+          states: {
+            rest: 's:md:1',
+            hover: 's:md:1',
+            focus: 's:md:1',
+            pressed: false,
+            disabled: false
+          },
+          fixedLevels: ['s:md:1']
+        }
       }
     },
     elements: {

@@ -247,7 +247,11 @@ export async function writeExtraArtifacts(params: {
   const hasActivationFeedback = Boolean(
     activationFeedback && Object.keys(activationFeedback).length > 0
   );
-  const hasShadow = Boolean(shadow && Object.keys(shadow.levels ?? {}).length > 0);
+  const hasShadow = Boolean(
+    shadow &&
+      (Object.keys(shadow.outer?.levels ?? {}).length > 0 ||
+        Object.keys(shadow.inner?.levels ?? {}).length > 0)
+  );
   const hasComponentEffectOverrides = Object.keys(componentEffectOverrides).length > 0;
   if (hasFonts || hasRadius || hasActivationFeedback || hasShadow || hasComponentEffectOverrides) {
     await mkdir(buildDir, { recursive: true });

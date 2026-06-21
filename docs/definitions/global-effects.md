@@ -64,15 +64,16 @@ catalog.
 global: {
   effects: {
     shadow: {
-      levels: {
-        's:sm:1': [
-          { x: 0, y: 1, blur: 3, spread: 1, color: [0, 0, 0, 0.15] },
-          { x: 0, y: 1, blur: 2, spread: 0, color: [0, 0, 0, 0.3] }
-        ],
-        's:md:1': [
-          { x: 0, y: 2, blur: 6, spread: 2, color: [0, 0, 0, 0.15] },
-          { x: 0, y: 1, blur: 2, spread: 0, color: [0, 0, 0, 0.3] }
-        ]
+      outer: {
+        levels: {
+          's:sm:1': { x: 0, y: 1, blur: 3, spread: 1, color: [0, 0, 0, 0.15] },
+          's:md:1': { x: 0, y: 2, blur: 6, spread: 2, color: [0, 0, 0, 0.15] }
+        }
+      },
+      inner: {
+        levels: {
+          's:sm:1': { x: 0, y: 1, blur: 2, spread: 0, color: [0, 0, 0, 0.22] }
+        }
       }
     }
   }
@@ -87,13 +88,15 @@ For this kind of effect:
   exists;
 - catalog keys should reuse Kiskadee's canonical size scale where the effect is
   size-like;
+- global shadow levels are split into `outer` and `inner` catalogs so presets can
+  reuse canonical inset shadows without inventing component-local numeric values;
 - local runtime props normally opt into the effect.
 
 ## Shadow Direction
 
-`shadow` is an opt-in, stateful elevation effect for a single target element of
-a component. It is not a catch-all place for every `box-shadow` used by a
-component.
+`shadow` is an opt-in, stateful elevation effect for one or more explicit target
+elements of a component. It is not a catch-all place for every `box-shadow` used
+by a component.
 
 Use `effects.shadow` when the shadow is activatable, dismissible, or stateful:
 
@@ -119,21 +122,23 @@ Switch thumb-shadow work.
 
 ## Shadow Component Recipe
 
-A component that supports shadow must declare the target element and the states
-that use a catalog level.
+A component that supports shadow must declare each target element explicitly and
+map that element's states to one level from the matching catalog.
 
 ```ts
 components: {
   button: {
     effects: {
       shadow: {
-        targetElement: 'e1',
-        states: {
-          rest: 's:md:1',
-          hover: 's:lg:1',
-          focus: 's:lg:1',
-          pressed: false,
-          disabled: false
+        e1: {
+          kind: 'outer',
+          states: {
+            rest: 's:md:1',
+            hover: 's:lg:1',
+            focus: 's:lg:1',
+            pressed: false,
+            disabled: false
+          }
         }
       }
     }
@@ -143,13 +148,18 @@ components: {
 
 Rules:
 
-- `targetElement` identifies the one generated element that receives the shadow
-  effect in the first contract version.
-- each state value references a global shadow level or uses `false`;
+- each key under `effects.shadow` is the generated element that receives that
+  shadow recipe;
+- `kind: 'outer'` resolves levels from `global.effects.shadow.outer.levels` and
+  emits a normal `box-shadow`;
+- `kind: 'inner'` resolves levels from `global.effects.shadow.inner.levels` and
+  emits `box-shadow: inset ...`;
+- each state value references a global shadow level in the recipe kind's catalog
+  or uses `false`;
 - `false` inside a state means "emit a zero shadow for this state" so it can
   override the rest shadow and transition cleanly;
-- global levels may contain one layer or multiple layers; multi-layer levels
-  compile to comma-separated CSS `box-shadow` values;
+- global levels contain exactly one shadow layer; multi-layer arrays are not
+  supported in the global shadow catalog;
 - `spread` is supported per layer and defaults to `0` when omitted;
 - the absence of the runtime prop means the component does not add the shadow
   bucket or the shadow activator class;
@@ -165,11 +175,20 @@ components: {
   switch: {
     effects: {
       shadow: {
-        targetElement: 'e3',
-        states: {
-          rest: 's:sm:1',
-          hover: 's:md:1',
-          disabled: false
+        e2: {
+          kind: 'inner',
+          states: {
+            rest: 's:sm:1',
+            disabled: false
+          }
+        },
+        e3: {
+          kind: 'outer',
+          states: {
+            rest: 's:sm:1',
+            hover: 's:md:1',
+            disabled: false
+          }
         }
       }
     }
@@ -177,20 +196,20 @@ components: {
 }
 ```
 
-This expresses a thumb with a base shadow for ordinary states, a stronger shadow
-on hover, and no shadow when disabled. If a state should use the same shadow as
-`rest`, omit it from the recipe instead of adding a duplicate state override.
-This keeps combined states such as selected hover from competing with the hover
-override. State-level `false` is the way to remove shadow for states such as
-`disabled`, including disabled selected controls.
+This expresses a track with an inner shadow and a thumb with a base outer shadow,
+a stronger thumb shadow on hover, and no shadow when disabled. If a state should
+use the same shadow as `rest`, omit it from the recipe instead of adding a
+duplicate state override. This keeps combined states such as selected hover from
+competing with the hover override. State-level `false` is the way to remove
+shadow for states such as `disabled`, including disabled selected controls.
 
 Components can also expose a fixed-level mode when the component is not
 interactive and the consumer should choose one catalog level directly:
 
-If `targetElement` is not the same DOM element that owns the component
+If a shadow target is not the same DOM element that owns the component
 interaction state, the component runtime must project the relevant state
 activator classes onto that target element. The shadow CSS emission expects the
-shadow bucket, `-e`, and state activators to match on the rendered target; it
+shadow bucket, `-e`, and state activators to match on each rendered target; it
 does not infer parent-state selectors for shadow.
 
 ```ts
@@ -198,15 +217,17 @@ components: {
   card: {
     effects: {
       shadow: {
-        targetElement: 'e1',
-        states: {
-          rest: 's:sm:1',
-          hover: 's:md:1',
-          focus: 's:sm:1',
-          pressed: false,
-          disabled: false
-        },
-        fixedLevels: ['s:sm:1', 's:md:1', 's:lg:1', 's:lg:2', 's:lg:3']
+        e1: {
+          kind: 'outer',
+          states: {
+            rest: 's:sm:1',
+            hover: 's:md:1',
+            focus: 's:sm:1',
+            pressed: false,
+            disabled: false
+          },
+          fixedLevels: ['s:sm:1', 's:md:1', 's:lg:1', 's:lg:2', 's:lg:3']
+        }
       }
     }
   }
@@ -237,13 +258,17 @@ transparent.
 `material-3-google` maps the Material 3 Light elevation levels from the
 Material 3 Design Kit Community Figma file into Kiskadee's canonical size scale:
 
-| Kiskadee level | Material elevation | CSS layers |
+| Kiskadee level | Material elevation | CSS layer |
 | --- | --- | --- |
-| `s:sm:1` | Elevation 1 | `0 1px 3px 1px rgba(0,0,0,.15)`, `0 1px 2px 0 rgba(0,0,0,.30)` |
-| `s:md:1` | Elevation 2 | `0 2px 6px 2px rgba(0,0,0,.15)`, `0 1px 2px 0 rgba(0,0,0,.30)` |
-| `s:lg:1` | Elevation 3 | `0 1px 3px 0 rgba(0,0,0,.30)`, `0 4px 8px 3px rgba(0,0,0,.15)` |
-| `s:lg:2` | Elevation 4 | `0 2px 3px 0 rgba(0,0,0,.30)`, `0 6px 10px 4px rgba(0,0,0,.15)` |
-| `s:lg:3` | Elevation 5 | `0 4px 4px 0 rgba(0,0,0,.30)`, `0 8px 12px 6px rgba(0,0,0,.15)` |
+| `s:sm:1` | Elevation 1 | `0 1px 3px 1px rgba(0,0,0,.15)` |
+| `s:md:1` | Elevation 2 | `0 2px 6px 2px rgba(0,0,0,.15)` |
+| `s:lg:1` | Elevation 3 | `0 1px 3px 0 rgba(0,0,0,.30)` |
+| `s:lg:2` | Elevation 4 | `0 2px 3px 0 rgba(0,0,0,.30)` |
+| `s:lg:3` | Elevation 5 | `0 4px 4px 0 rgba(0,0,0,.30)` |
+
+The Material source defines two-layer elevation shadows. Kiskadee currently keeps
+the first layer only because the global shadow catalog is a single-layer
+contract.
 
 The current Material Button and CardAction recipe is:
 
@@ -262,9 +287,9 @@ The current Material Button and CardAction recipe is:
 `fluent-2-microsoft` currently exposes the single shadow found in the Microsoft
 Fluent 2 Web Community Figma file as the medium catalog level:
 
-| Kiskadee level | Figma style | CSS layers |
+| Kiskadee level | Figma style | CSS layer |
 | --- | --- | --- |
-| `s:md:1` | Shadow 04 | `0 2px 4px 0 rgba(0,0,0,.14)`, `0 0 2px 0 rgba(0,0,0,.12)` |
+| `s:md:1` | Shadow 04 | `0 2px 4px 0 rgba(0,0,0,.14)` |
 
 ## Apple 26 Shadow Mapping
 
@@ -273,7 +298,7 @@ provided iOS 26 and macOS 26 Figma nodes so the Showcase can compare them in
 practice. The iOS menu material blur node is intentionally excluded because it
 is material/backdrop blur, not a box-shadow layer.
 
-| Kiskadee level | Source | CSS layers |
+| Kiskadee level | Source | CSS layer |
 | --- | --- | --- |
 | `s:sm:1` | iOS content area | `0 0 16px 0 rgba(0,0,0,.20)` |
 | `s:md:1` | macOS utility panel | `0 5px 20px 0 rgba(0,0,0,.30)` |
@@ -296,8 +321,8 @@ runtime explicitly disables it.
 
 Catalog effects should be default-off unless a separate component variant or
 semantic contract says otherwise. For shadow, a plain component instance should
-not become elevated only because the selected design system defines
-`global.effects.shadow.levels`.
+not become elevated only because the selected design system defines levels under
+`global.effects.shadow.outer.levels` or `global.effects.shadow.inner.levels`.
 
 ```tsx
 <Card />

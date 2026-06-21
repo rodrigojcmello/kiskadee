@@ -1,11 +1,11 @@
 import type {
   ElementSizeValue,
   InteractionState,
-  ShadowEffectSchema,
+  ShadowElementEffectSchema,
   ShadowGlobalEffectSchema,
+  ShadowKind,
   ShadowLayer,
   ShadowSchema,
-  ShadowValue,
   SolidColor,
   StyleKeysByInteractionState
 } from '@kiskadee/core';
@@ -27,23 +27,26 @@ function getShadowValue<T>(
       : defaultValue;
 }
 
-const ZERO_SHADOW: readonly ShadowLayer[] = [
-  { x: 0, y: 0, blur: 0, spread: 0, color: [0, 0, 0, 0] }
-];
+type ShadowCssLayer = ShadowLayer & {
+  inset?: boolean;
+};
 
-function normalizeShadowValue(value: ShadowValue): readonly ShadowLayer[] {
-  return Array.isArray(value) ? value : [value];
+const ZERO_SHADOW: ShadowLayer = { x: 0, y: 0, blur: 0, spread: 0, color: [0, 0, 0, 0] };
+
+function asCssLayer(layer: ShadowLayer, kind: ShadowKind): ShadowCssLayer {
+  return kind === 'inner' ? { ...layer, inset: true } : layer;
 }
 
 function getShadowLevel(
   globalShadow: ShadowGlobalEffectSchema,
+  kind: ShadowKind,
   level: ElementSizeValue
-): readonly ShadowLayer[] {
-  const value = globalShadow.levels[level];
+): ShadowLayer {
+  const value = globalShadow[kind]?.levels[level];
   if (!value) {
-    throw new Error(`Unknown shadow level "${level}".`);
+    throw new Error(`Unknown ${kind} shadow level "${level}".`);
   }
-  return normalizeShadowValue(value);
+  return value;
 }
 
 /**
@@ -97,14 +100,17 @@ export function convertElementShadowToStyleKeys(shadow: ShadowSchema): StyleKeys
 }
 
 export function convertComponentShadowToStyleKeys(
-  shadow: ShadowEffectSchema,
+  shadow: ShadowElementEffectSchema,
   globalShadow: ShadowGlobalEffectSchema
 ): StyleKeysByInteractionState {
   const styleKeys: StyleKeysByInteractionState = {};
 
   for (const [rawState, level] of Object.entries(shadow.states ?? {})) {
     const interactionState = rawState as InteractionState;
-    const value = level === false ? ZERO_SHADOW : getShadowLevel(globalShadow, level);
+    const value =
+      level === false
+        ? asCssLayer(ZERO_SHADOW, shadow.kind)
+        : asCssLayer(getShadowLevel(globalShadow, shadow.kind, level), shadow.kind);
     const styleKey = buildStyleKey({
       propertyName: 'shadow',
       interactionState,
@@ -115,7 +121,7 @@ export function convertComponentShadowToStyleKeys(
   }
 
   for (const level of shadow.fixedLevels ?? []) {
-    const value = getShadowLevel(globalShadow, level);
+    const value = asCssLayer(getShadowLevel(globalShadow, shadow.kind, level), shadow.kind);
     const styleKey = buildStyleKey({
       propertyName: 'shadow',
       size: level,

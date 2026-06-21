@@ -19,15 +19,17 @@ export function createIos26AppleCardSchema({
   return {
     effects: {
       shadow: {
-        targetElement: 'e1',
-        states: {
-          rest: 's:sm:1',
-          hover: 's:md:1',
-          focus: 's:sm:1',
-          pressed: false,
-          disabled: false
-        },
-        fixedLevels: ['s:sm:1', 's:md:1', 's:lg:1', 's:lg:2', 's:lg:3']
+        e1: {
+          kind: 'outer',
+          states: {
+            rest: 's:sm:1',
+            hover: 's:md:1',
+            focus: 's:sm:1',
+            pressed: false,
+            disabled: false
+          },
+          fixedLevels: ['s:sm:1', 's:md:1', 's:lg:1', 's:lg:2', 's:lg:3']
+        }
       }
     },
     elements: {

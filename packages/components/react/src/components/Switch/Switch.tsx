@@ -121,8 +121,10 @@ function SwitchRoot(props: SwitchProps) {
     useSwitchArtifactConfig(thumbShrink);
   const resolvedRadius = radius ?? options.radius;
   const elements = resolveVariantElements(switchClassesMap, variant, mode);
+  const hasTrackShadowEffect = resolveSwitchShadowEffectClassName(elements.e2, scale).length > 0;
   const hasThumbShadowEffect = resolveSwitchShadowEffectClassName(elements.e3, scale).length > 0;
-  const [isThumbShadowHovered, setIsThumbShadowHovered] = useState(false);
+  const hasShadowEffect = hasTrackShadowEffect || hasThumbShadowEffect;
+  const [isShadowHovered, setIsShadowHovered] = useState(false);
   const hasLabel = label !== undefined && label !== null;
   const hasIconSlot = Boolean(elements.e6 || classNames.e6);
   const hasIcons = hasIconSlot && Boolean(icons?.rest || icons?.selected);
@@ -260,45 +262,53 @@ function SwitchRoot(props: SwitchProps) {
   const handlePointerEnter = useCallback(
     (event: PointerEvent<HTMLLabelElement>) => {
       onPointerEnter?.(event);
-      if (hasThumbShadowEffect) {
-        setIsThumbShadowHovered(true);
+      if (hasShadowEffect) {
+        setIsShadowHovered(true);
       }
     },
-    [hasThumbShadowEffect, onPointerEnter]
+    [hasShadowEffect, onPointerEnter]
   );
   const handlePointerLeave = useCallback(
     (event: PointerEvent<HTMLLabelElement>) => {
       onPointerLeave?.(event);
-      if (hasThumbShadowEffect) {
-        setIsThumbShadowHovered(false);
+      if (hasShadowEffect) {
+        setIsShadowHovered(false);
       }
     },
-    [hasThumbShadowEffect, onPointerLeave]
+    [hasShadowEffect, onPointerLeave]
   );
   const statefulClassNames = useMemo(
     () => {
-      const thumbShadowStateClassName = hasThumbShadowEffect
+      const shadowStateClassName = hasShadowEffect
         ? resolveSwitchEffectTargetStateClassName({
             controlState: motionController.projectedControlState,
             status,
-            hovered: isThumbShadowHovered,
+            hovered: isShadowHovered,
             disabled,
             readOnly
           })
         : '';
+      const shadowClassNamePatch = shadowStateClassName
+        ? {
+            ...(hasTrackShadowEffect ? { e2: shadowStateClassName } : {}),
+            ...(hasThumbShadowEffect ? { e3: shadowStateClassName } : {})
+          }
+        : undefined;
 
       return mergeSwitchClassNames(
         structuralClassNames,
         !motionEffect && motionController.projectedControlState
           ? { e3: 'k-swt-e3e-a' }
           : undefined,
-        thumbShadowStateClassName ? { e3: thumbShadowStateClassName } : undefined
+        shadowClassNamePatch
       );
     },
     [
       disabled,
+      hasShadowEffect,
+      hasTrackShadowEffect,
       hasThumbShadowEffect,
-      isThumbShadowHovered,
+      isShadowHovered,
       motionController.projectedControlState,
       motionEffect,
       readOnly,

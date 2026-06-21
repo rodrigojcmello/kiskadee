@@ -105,27 +105,14 @@ export const schema: Schema<Segments> = {
         }
       },
       shadow: {
-        levels: {
-          's:sm:1': [
-            { x: 0, y: 1, blur: 3, spread: 1, color: shadowBlack(0.15) },
-            { x: 0, y: 1, blur: 2, spread: 0, color: shadowBlack(0.3) }
-          ],
-          's:md:1': [
-            { x: 0, y: 2, blur: 6, spread: 2, color: shadowBlack(0.15) },
-            { x: 0, y: 1, blur: 2, spread: 0, color: shadowBlack(0.3) }
-          ],
-          's:lg:1': [
-            { x: 0, y: 1, blur: 3, spread: 0, color: shadowBlack(0.3) },
-            { x: 0, y: 4, blur: 8, spread: 3, color: shadowBlack(0.15) }
-          ],
-          's:lg:2': [
-            { x: 0, y: 2, blur: 3, spread: 0, color: shadowBlack(0.3) },
-            { x: 0, y: 6, blur: 10, spread: 4, color: shadowBlack(0.15) }
-          ],
-          's:lg:3': [
-            { x: 0, y: 4, blur: 4, spread: 0, color: shadowBlack(0.3) },
-            { x: 0, y: 8, blur: 12, spread: 6, color: shadowBlack(0.15) }
-          ]
+        outer: {
+          levels: {
+            's:sm:1': { x: 0, y: 1, blur: 3, spread: 1, color: shadowBlack(0.15) },
+            's:md:1': { x: 0, y: 2, blur: 6, spread: 2, color: shadowBlack(0.15) },
+            's:lg:1': { x: 0, y: 1, blur: 3, spread: 0, color: shadowBlack(0.3) },
+            's:lg:2': { x: 0, y: 2, blur: 3, spread: 0, color: shadowBlack(0.3) },
+            's:lg:3': { x: 0, y: 4, blur: 4, spread: 0, color: shadowBlack(0.3) }
+          }
         }
       }
     }

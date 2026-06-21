@@ -12,6 +12,7 @@ import type {
   ScaleProperty,
   ScaleSchema,
   Schema,
+  ShadowElementEffectSchema,
   ShadowEffectSchema,
   StyleKeyByElement,
   StyleKeysByInteractionState,
@@ -119,12 +120,13 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
   const resolveElementShadowConfig = (
     componentName: ComponentName,
     elementName: string
-  ): ShadowEffectSchema | undefined => {
+  ): ShadowElementEffectSchema | undefined => {
     if (!shadowConfig) return undefined;
     const component = schema.components?.[componentName] as ComponentSchemaInput | undefined;
     const componentSetting = component?.effects?.shadow;
-    if (!componentSetting || componentSetting.targetElement !== elementName) return undefined;
-    return componentSetting;
+    const elementSetting = componentSetting?.[elementName];
+    if (!elementSetting) return undefined;
+    return elementSetting;
   };
 
   const applyElement = (

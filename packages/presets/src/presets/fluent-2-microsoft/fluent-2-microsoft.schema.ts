@@ -52,11 +52,10 @@ export const schema: Schema<Segments> = {
         }
       },
       shadow: {
-        levels: {
-          's:md:1': [
-            { x: 0, y: 2, blur: 4, spread: 0, color: shadowBlack(0.14) },
-            { x: 0, y: 0, blur: 2, spread: 0, color: shadowBlack(0.12) }
-          ]
+        outer: {
+          levels: {
+            's:md:1': { x: 0, y: 2, blur: 4, spread: 0, color: shadowBlack(0.14) }
+          }
         }
       }
     },

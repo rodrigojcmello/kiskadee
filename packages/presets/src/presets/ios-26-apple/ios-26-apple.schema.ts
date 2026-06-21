@@ -55,12 +55,14 @@ export const schema: Schema<Segment> = {
         }
       },
       shadow: {
-        levels: {
-          's:sm:1': [{ x: 0, y: 0, blur: 16, spread: 0, color: shadowBlack(0.2) }],
-          's:md:1': [{ x: 0, y: 5, blur: 20, spread: 0, color: shadowBlack(0.3) }],
-          's:lg:1': [{ x: 0, y: 10, blur: 50, spread: 0, color: shadowBlack(0.3) }],
-          's:lg:2': [{ x: 0, y: 16, blur: 48, spread: 0, color: shadowBlack(0.35) }],
-          's:lg:3': [{ x: 0, y: 20, blur: 76, spread: 0, color: shadowBlack(0.2) }]
+        outer: {
+          levels: {
+            's:sm:1': { x: 0, y: 0, blur: 16, spread: 0, color: shadowBlack(0.2) },
+            's:md:1': { x: 0, y: 5, blur: 20, spread: 0, color: shadowBlack(0.3) },
+            's:lg:1': { x: 0, y: 10, blur: 50, spread: 0, color: shadowBlack(0.3) },
+            's:lg:2': { x: 0, y: 16, blur: 48, spread: 0, color: shadowBlack(0.35) },
+            's:lg:3': { x: 0, y: 20, blur: 76, spread: 0, color: shadowBlack(0.2) }
+          }
         }
       }
     },
