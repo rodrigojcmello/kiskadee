@@ -45,7 +45,7 @@ export function calculateSwitchRuntimeMotionGeometry(
     Math.max(0, (alignmentBoxWidth - thumbWidth) / 2);
   const blockStart =
     parseSwitchPixelValue(trackStyles.paddingBlockStart) +
-    Math.max(0, (trackContentSize.height - thumbHeight) / 2);
+    (trackContentSize.height - thumbHeight) / 2;
 
   return {
     translation,

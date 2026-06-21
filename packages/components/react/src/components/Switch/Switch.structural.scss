@@ -38,7 +38,7 @@
 
 /*
  * element track / e2
- * Owns the rail measurement scope and exposes generated padding as logical geometry.
+ * Owns the rail measurement scope and lets the thumb exceed the rail block size.
  */
 .k-swt-e2-a {
   /* Raw track radius stays inheritable for thumb-hosted structural effects. */
@@ -59,7 +59,7 @@
   align-items: center;
   box-sizing: border-box;
   flex: 0 0 auto;
-  overflow: hidden;
+  overflow: visible;
   cursor: inherit;
   transition:
     border-color var(--k-dur-int) var(--k-ease-out),

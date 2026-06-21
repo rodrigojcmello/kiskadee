@@ -29,6 +29,25 @@ height. This preserves the same visual inset that the large thumb would have had
 `e3` as the only rendered thumb. The runtime must not project rounded radius values; rounded radius
 is a structural CSS calculation based on the emitted track variables.
 
+## Thumb And Track Alignment
+
+The `standard/base` Switch supports a thumb that is taller than the track content box. In that case,
+the extra block size belongs to the thumb and must be distributed symmetrically around the track.
+For motion geometry, the block offset is:
+
+```txt
+paddingBlockStart + (trackContentHeight - thumbHeight) / 2
+```
+
+Negative offsets are valid and expected when `thumbHeight` exceeds `trackContentHeight`. For
+example, a `20px` track content height with a `24px` thumb places the thumb `2px` above and `2px`
+below the track. The static CSS path uses the same vertical-centering contract through a centered
+absolute thumb, so the track must not clip `e3`.
+
+Horizontal geometry remains edge-aligned: in the unselected state, the thumb start edge aligns with
+the track's useful start edge; in the selected state, the thumb end edge aligns with the track's
+useful end edge. Runtime travel is the useful track width minus the effective thumb alignment box.
+
 ## Focus Ring
 
 The Switch track draws keyboard-visible focus from structural CSS because the native input is
