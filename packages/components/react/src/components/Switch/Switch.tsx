@@ -1,8 +1,8 @@
 import './Switch.structural.scss';
 import './effects/thumb-shrink/SwitchThumbShrink.structural.scss';
 import { HeadlessSwitch } from '@kiskadee/react-headless';
-import { resolveActivationFeedbackSetting } from '@kiskadee/core';
-import { type ElementType, memo, useMemo } from 'react';
+import { resolveActivationFeedbackSetting, stateActivator as cn } from '@kiskadee/core';
+import { type ElementType, memo, type PointerEvent, useCallback, useMemo, useState } from 'react';
 import {
   hasSwitchActivationFeedbackEffect,
   useSwitchActivationFeedbackController,
@@ -26,12 +26,44 @@ import {
   DEFAULT_SWITCH_SCALE,
   DEFAULT_SWITCH_VARIANT,
   join,
+  resolveSwitchShadowEffectClassName,
   resolveSwitchClassNames as resolveSwitchStructuralClassNames,
   resolveVariantElements
 } from './Switch.class-names.ts';
-import type { SwitchClassNames, SwitchProps } from './Switch.types.ts';
+import type { SwitchClassNames, SwitchProps, SwitchStatus } from './Switch.types.ts';
 
 const EMPTY_SWITCH_CLASS_NAMES: SwitchClassNames = {};
+
+function resolveSwitchEffectTargetStateClassName(states: {
+  controlState: boolean;
+  status?: SwitchStatus;
+  hovered: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
+}): string {
+  const isHovered = states.hovered || states.status === 'hover';
+  const isPressed = states.status === 'pressed';
+  const isFocused = states.status === 'focus';
+  const isDisabled = states.disabled || states.status === 'disabled';
+  const isReadOnly = states.readOnly || states.status === 'readOnly';
+  const hasProjectedState =
+    states.controlState || isHovered || isPressed || isFocused || isDisabled || isReadOnly;
+
+  return (
+    join(
+      cn.interactive,
+      cn.nativeInteraction,
+      isHovered && cn.hover,
+      isPressed && cn.pressed,
+      states.controlState && cn.selected,
+      isFocused && cn.focus,
+      isFocused && cn.focusVisible,
+      isDisabled && cn.disabled,
+      isReadOnly && cn.readOnly,
+      hasProjectedState && cn.activator
+    ) ?? ''
+  );
+}
 
 function mergeSwitchClassNames(
   baseClassNames: Required<SwitchClassNames>,
@@ -72,10 +104,13 @@ function SwitchRoot(props: SwitchProps) {
     disabled,
     interactionLocked,
     readOnly,
+    status,
     controlState: controlStateProp,
     defaultControlState,
     onControlStateChange,
     onClickCapture,
+    onPointerEnter,
+    onPointerLeave,
     onPointerDown,
     onPointerUp,
     onPointerCancel,
@@ -86,6 +121,8 @@ function SwitchRoot(props: SwitchProps) {
     useSwitchArtifactConfig(thumbShrink);
   const resolvedRadius = radius ?? options.radius;
   const elements = resolveVariantElements(switchClassesMap, variant, mode);
+  const hasThumbShadowEffect = resolveSwitchShadowEffectClassName(elements.e3, scale).length > 0;
+  const [isThumbShadowHovered, setIsThumbShadowHovered] = useState(false);
   const hasLabel = label !== undefined && label !== null;
   const hasIconSlot = Boolean(elements.e6 || classNames.e6);
   const hasIcons = hasIconSlot && Boolean(icons?.rest || icons?.selected);
@@ -220,13 +257,54 @@ function SwitchRoot(props: SwitchProps) {
     thumbRef: motionController.thumbProps.thumbRef,
     trackRef: motionController.thumbProps.trackRef
   });
+  const handlePointerEnter = useCallback(
+    (event: PointerEvent<HTMLLabelElement>) => {
+      onPointerEnter?.(event);
+      if (hasThumbShadowEffect) {
+        setIsThumbShadowHovered(true);
+      }
+    },
+    [hasThumbShadowEffect, onPointerEnter]
+  );
+  const handlePointerLeave = useCallback(
+    (event: PointerEvent<HTMLLabelElement>) => {
+      onPointerLeave?.(event);
+      if (hasThumbShadowEffect) {
+        setIsThumbShadowHovered(false);
+      }
+    },
+    [hasThumbShadowEffect, onPointerLeave]
+  );
   const statefulClassNames = useMemo(
-    () =>
-      mergeSwitchClassNames(
+    () => {
+      const thumbShadowStateClassName = hasThumbShadowEffect
+        ? resolveSwitchEffectTargetStateClassName({
+            controlState: motionController.projectedControlState,
+            status,
+            hovered: isThumbShadowHovered,
+            disabled,
+            readOnly
+          })
+        : '';
+
+      return mergeSwitchClassNames(
         structuralClassNames,
-        !motionEffect && motionController.projectedControlState ? { e3: 'k-swt-e3e-a' } : undefined
-      ),
-    [motionController.projectedControlState, motionEffect, structuralClassNames]
+        !motionEffect && motionController.projectedControlState
+          ? { e3: 'k-swt-e3e-a' }
+          : undefined,
+        thumbShadowStateClassName ? { e3: thumbShadowStateClassName } : undefined
+      );
+    },
+    [
+      disabled,
+      hasThumbShadowEffect,
+      isThumbShadowHovered,
+      motionController.projectedControlState,
+      motionEffect,
+      readOnly,
+      status,
+      structuralClassNames
+    ]
   );
   const resolvedClassNames = useMemo(() => {
     if (!activationFeedbackEffect) return statefulClassNames;
@@ -282,9 +360,12 @@ function SwitchRoot(props: SwitchProps) {
       disabled={disabled}
       interactionLocked={interactionLocked}
       readOnly={readOnly}
+      status={status}
       controlState={motionController.projectedControlState}
       onControlStateChange={motionController.setControlState}
       onClickCapture={activationFeedbackController.rootHandlers.onClickCapture}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
       onPointerDown={activationFeedbackController.rootHandlers.onPointerDown}
       onPointerUp={activationFeedbackController.rootHandlers.onPointerUp}
       onPointerCancel={activationFeedbackController.rootHandlers.onPointerCancel}

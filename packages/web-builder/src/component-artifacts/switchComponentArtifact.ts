@@ -2,6 +2,7 @@ import type {
   ActivationFeedbackSetting,
   RadiusMode,
   Schema,
+  ShadowEffectSchema,
   SwitchActivationMotion,
   SwitchControlTextVisibility,
   SwitchMode,
@@ -19,6 +20,7 @@ export type SwitchComponentOptionsPayload = {
 
 export type SwitchComponentEffectsPayload = {
   activationFeedback?: ActivationFeedbackSetting;
+  shadow?: ShadowEffectSchema;
   thumbShrink?: true;
 };
 
@@ -81,7 +83,8 @@ function buildSwitchEffectsPayload(schema: Schema): SwitchComponentEffectsPayloa
   const effects: SwitchComponentEffectsPayload = {
     ...(switchSchema.effects?.activationFeedback !== undefined
       ? { activationFeedback: switchSchema.effects.activationFeedback }
-      : {})
+      : {}),
+    ...(switchSchema.effects?.shadow !== undefined ? { shadow: switchSchema.effects.shadow } : {})
   };
 
   if (switchBranchHasThumbShrinkEffect(switchSchema)) {

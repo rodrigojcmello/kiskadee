@@ -28,6 +28,7 @@ type InteractionColors = {
   selectedFocus: Color;
   selectedPressed: Color;
 };
+type ThumbInteractionColors = Omit<InteractionColors, 'pressed' | 'selectedPressed'>;
 
 function ref<T>(value: T): { ref: T } {
   return { ref: value };
@@ -45,6 +46,20 @@ function states(colors: InteractionColors) {
       hover: ref(colors.selectedHover),
       focus: ref(colors.selectedFocus),
       pressed: ref(colors.selectedPressed)
+    }
+  };
+}
+
+function thumbStates(colors: ThumbInteractionColors) {
+  return {
+    rest: colors.rest,
+    hover: ref(colors.hover),
+    focus: ref(colors.focus),
+    disabled: ref(colors.disabled),
+    selected: {
+      rest: ref(colors.selectedRest),
+      hover: ref(colors.selectedHover),
+      focus: ref(colors.selectedFocus)
     }
   };
 }
@@ -82,7 +97,6 @@ const c = {
   polarityOnPressed: [154, 78, 27, 1],
 
   thumbOff: [0, 0, 100, 1],
-  thumbOffMuted: [220, 18, 96, 1],
   thumbDisabled: [220, 14, 84, 1],
   thumbOn: [264, 100, 48, 1],
   iconOff: [226, 12, 50, 1],
@@ -440,156 +454,130 @@ const thumbPalettes = {
     light: {
       boxColor: {
         neutral: {
-          high: states({
+          high: thumbStates({
             rest: c.white,
             hover: c.white,
             focus: c.white,
-            pressed: c.thumbOffMuted,
             disabled: c.thumbDisabled,
             selectedRest: c.thumbOn,
             selectedHover: c.thumbOn,
-            selectedFocus: c.thumbOn,
-            selectedPressed: c.thumbOffMuted
+            selectedFocus: c.thumbOn
           }),
-          medium: states({
+          medium: thumbStates({
             rest: c.white,
             hover: c.white,
             focus: c.white,
-            pressed: c.thumbOffMuted,
             disabled: c.thumbDisabled,
             selectedRest: c.thumbOn,
             selectedHover: c.thumbOn,
-            selectedFocus: c.thumbOn,
-            selectedPressed: c.thumbOffMuted
+            selectedFocus: c.thumbOn
           }),
-          low: states({
+          low: thumbStates({
             rest: c.white,
             hover: c.white,
             focus: c.white,
-            pressed: c.thumbOffMuted,
             disabled: c.thumbDisabled,
             selectedRest: c.white,
             selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.thumbOffMuted
+            selectedFocus: c.white
           }),
-          lowest: states({
+          lowest: thumbStates({
             rest: c.white,
             hover: c.white,
             focus: c.white,
-            pressed: c.thumbOffMuted,
             disabled: c.thumbDisabled,
             selectedRest: c.white,
             selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.thumbOffMuted
+            selectedFocus: c.white
           })
         },
         primary: {
-          high: states({
+          high: thumbStates({
             rest: c.white,
             hover: c.white,
             focus: c.white,
-            pressed: c.thumbOffMuted,
             disabled: c.thumbDisabled,
             selectedRest: c.white,
             selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.thumbOffMuted
+            selectedFocus: c.white
           }),
-          medium: states({
+          medium: thumbStates({
             rest: c.white,
             hover: c.white,
             focus: c.white,
-            pressed: c.thumbOffMuted,
             disabled: c.thumbDisabled,
             selectedRest: c.white,
             selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.thumbOffMuted
+            selectedFocus: c.white
           }),
-          low: states({
+          low: thumbStates({
             rest: c.white,
             hover: c.white,
             focus: c.white,
-            pressed: c.thumbOffMuted,
             disabled: c.thumbDisabled,
             selectedRest: c.white,
             selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.thumbOffMuted
+            selectedFocus: c.white
           }),
-          lowest: states({
+          lowest: thumbStates({
             rest: c.white,
             hover: c.white,
             focus: c.white,
-            pressed: c.thumbOffMuted,
             disabled: c.thumbDisabled,
             selectedRest: c.white,
             selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.thumbOffMuted
+            selectedFocus: c.white
           })
         },
         polarity: {
-          high: states({
+          high: thumbStates({
             rest: c.white,
             hover: c.white,
             focus: c.white,
-            pressed: c.thumbOffMuted,
             disabled: c.thumbDisabled,
             selectedRest: c.white,
             selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.thumbOffMuted
+            selectedFocus: c.white
           }),
-          medium: states({
+          medium: thumbStates({
             rest: c.white,
             hover: c.white,
             focus: c.white,
-            pressed: c.thumbOffMuted,
             disabled: c.thumbDisabled,
             selectedRest: c.white,
             selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.thumbOffMuted
+            selectedFocus: c.white
           }),
-          low: states({
+          low: thumbStates({
             rest: c.white,
             hover: c.white,
             focus: c.white,
-            pressed: c.thumbOffMuted,
             disabled: c.thumbDisabled,
             selectedRest: c.white,
             selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.thumbOffMuted
+            selectedFocus: c.white
           }),
-          lowest: states({
+          lowest: thumbStates({
             rest: c.white,
             hover: c.white,
             focus: c.white,
-            pressed: c.thumbOffMuted,
             disabled: c.thumbDisabled,
             selectedRest: c.white,
             selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.thumbOffMuted
+            selectedFocus: c.white
           })
         }
       },
       borderColor: {
         neutral: {
-          high: states({
+          high: thumbStates({
             rest: transparent,
             hover: transparent,
             focus: transparent,
-            pressed: transparent,
             disabled: transparent,
             selectedRest: transparent,
             selectedHover: transparent,
-            selectedFocus: transparent,
-            selectedPressed: transparent
+            selectedFocus: transparent
           })
         }
       }
@@ -838,8 +826,16 @@ export function createSandboxSwitchSchema(): SwitchComponent {
         },
         profiles: {
           halo: {
-            size: 10
+            size: 8
           }
+        }
+      },
+      shadow: {
+        targetElement: 'e3',
+        states: {
+          rest: 's:sm:1',
+          hover: 's:md:1',
+          disabled: false
         }
       }
     },
@@ -915,20 +911,6 @@ export function createSandboxSwitchSchema(): SwitchComponent {
                       's:lg:1': 12
                     },
                     square: 0
-                  }
-                },
-                effects: {
-                  shadow: {
-                    x: { rest: 0, hover: 0, focus: 0, pressed: 0, disabled: 0 },
-                    y: { rest: 1, hover: 2, focus: 2, pressed: 1, disabled: 0 },
-                    blur: { rest: 3, hover: 5, focus: 6, pressed: 2, disabled: 0 },
-                    color: {
-                      rest: [0, 0, 0, 0.24],
-                      hover: [0, 0, 0, 0.28],
-                      focus: [0, 0, 0, 0.3],
-                      pressed: [0, 0, 0, 0.22],
-                      disabled: [0, 0, 0, 0]
-                    }
                   }
                 },
                 palettes: thumbPalettes

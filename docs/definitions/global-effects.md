@@ -99,12 +99,23 @@ Use `effects.shadow` when the shadow is activatable, dismissible, or stateful:
 
 - Button elevation that appears only when `shadow` is enabled;
 - Card elevation that can be rendered with or without shadow;
-- a future Switch thumb shadow if it changes by interaction or control state.
+- Switch thumb shadow when it changes by interaction or control state.
 
 Do not use `effects.shadow` for a fixed anatomical shadow that is part of a
 component's construction and is not a public on/off effect. A fixed Tabs shell
 shadow can still reuse shadow tokens in the future, but it should not become an
 opt-in `effects.shadow` recipe only because it uses `box-shadow`.
+
+Static shadow and `effects.shadow` are mutually exclusive for a single rendered
+element. If an element's shadow is fixed anatomy, model it through the static
+component styling contract. If the same element needs shadow that can appear,
+disappear, or change by state, model that element with `effects.shadow` instead
+of also adding a static shadow path.
+
+Known follow-up: the current Tabs bridge projects a fixed shell shadow through
+the effect bucket `e.h` and the `-e` activator. That mixes static component
+anatomy with effect infrastructure and should be resolved separately from the
+Switch thumb-shadow work.
 
 ## Shadow Component Recipe
 
@@ -145,8 +156,42 @@ Rules:
 - shadow should stay opt-in by default in React components such as `Button` and
   `Card`.
 
+The state recipe is flat. It maps each canonical interaction or projected state
+to one shadow level or to `false`; it does not define a nested selected-state
+matrix. For example, a Switch thumb can use:
+
+```ts
+components: {
+  switch: {
+    effects: {
+      shadow: {
+        targetElement: 'e3',
+        states: {
+          rest: 's:sm:1',
+          hover: 's:md:1',
+          disabled: false
+        }
+      }
+    }
+  }
+}
+```
+
+This expresses a thumb with a base shadow for ordinary states, a stronger shadow
+on hover, and no shadow when disabled. If a state should use the same shadow as
+`rest`, omit it from the recipe instead of adding a duplicate state override.
+This keeps combined states such as selected hover from competing with the hover
+override. State-level `false` is the way to remove shadow for states such as
+`disabled`, including disabled selected controls.
+
 Components can also expose a fixed-level mode when the component is not
 interactive and the consumer should choose one catalog level directly:
+
+If `targetElement` is not the same DOM element that owns the component
+interaction state, the component runtime must project the relevant state
+activator classes onto that target element. The shadow CSS emission expects the
+shadow bucket, `-e`, and state activators to match on the rendered target; it
+does not infer parent-state selectors for shadow.
 
 ```ts
 components: {

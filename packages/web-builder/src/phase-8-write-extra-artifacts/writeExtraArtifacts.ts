@@ -224,6 +224,11 @@ export async function writeExtraArtifacts(params: {
     getComponentEffects('switch').activationFeedback =
       schema.components.switch.effects.activationFeedback;
   }
+
+  if (schema.components?.switch?.effects?.shadow !== undefined) {
+    getComponentEffects('switch').shadow = schema.components.switch.effects.shadow;
+  }
+
   const switchComponentArtifact = buildSwitchComponentArtifact(schema);
   const tabsComponentArtifact = buildTabsComponentArtifact(schema);
   const textFieldComponentArtifact = buildTextFieldComponentArtifact(schema);

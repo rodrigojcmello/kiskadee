@@ -6,6 +6,7 @@ import {
   componentEmphasisBuckets,
   type EffectClassBucketJSON,
   type RadiusMode,
+  stateActivator as cn,
   type SwitchActivationMotion,
   type SwitchControlTextVisibility,
   type SwitchIntent,
@@ -159,6 +160,14 @@ export function resolveSwitchThumbShrinkEffectClassName(
   return resolveEffectBucketClassName(element?.e?.ts, scale);
 }
 
+export function resolveSwitchShadowEffectClassName(
+  element: ClassNameByElementJSON | undefined,
+  scale: string
+): string {
+  const shadowClass = resolveEffectBucketClassName(element?.e?.h, scale);
+  return join(shadowClass, shadowClass ? cn.shadow : '') ?? '';
+}
+
 function resolveScaleClassName(element: ClassNameByElementJSON | undefined, scale: string): string {
   if (!element) return '';
   const scaleKey = normalizeScaleKey(scale);
@@ -208,6 +217,7 @@ function resolveThumbCarrierClassName(options: {
       `k-swt-e3-${branch}`,
       resolveScaleClassName(elements.e3, options.scale),
       resolveVisualClassName(elements.e3, options),
+      resolveSwitchShadowEffectClassName(elements.e3, options.scale),
       resolveThumbRadiusClassName(elements.e3, options.scale, options.radius, branch),
       'k-trn',
       options.classNames.e3
@@ -229,6 +239,7 @@ function resolveThumbShrinkHostClassName(options: {
     join(
       `k-swt-e3-${branch}`,
       resolveScaleClassName(elements.e3, options.scale),
+      resolveSwitchShadowEffectClassName(elements.e3, options.scale),
       resolveThumbRadiusClassName(elements.e3, options.scale, options.radius, branch),
       `k-swt-e3b-${branch}`,
       'k-trn',
