@@ -111,7 +111,7 @@ function SwitchRoot(props: SwitchProps) {
     shouldUseActivationFeedback
   );
 
-  const structuralClassNames = useMemo(() => {
+  const structuralResolution = useMemo(() => {
     const classNamesWithRoot = {
       ...classNames,
       e1: join(classNames.e1, className)
@@ -143,7 +143,7 @@ function SwitchRoot(props: SwitchProps) {
           labelPosition,
           hasLabel
         })
-      : { classNames: baseClassNames };
+      : { classNames: baseClassNames, thumbVisualClassName: null };
 
     const motionClassNamePatch = motionEffect
       ? motionEffect.resolveSwitchRuntimeMotionEffect({
@@ -160,11 +160,14 @@ function SwitchRoot(props: SwitchProps) {
         }).classNamePatch
       : undefined;
 
-    return mergeSwitchClassNames(
-      thumbShrinkStructure.classNames,
-      motionClassNamePatch,
-      controlTextClassNamePatch
-    );
+    return {
+      classNames: mergeSwitchClassNames(
+        thumbShrinkStructure.classNames,
+        motionClassNamePatch,
+        controlTextClassNamePatch
+      ),
+      thumbVisualClassName: thumbShrinkStructure.thumbVisualClassName
+    };
   }, [
     className,
     classNames,
@@ -180,8 +183,15 @@ function SwitchRoot(props: SwitchProps) {
     scale,
     thumbShrinkEffect
   ]);
+  const structuralClassNames = structuralResolution.classNames;
+  const thumbVisualClassName = structuralResolution.thumbVisualClassName;
 
-  const switchGeometryKey = `${resolvedRadius}|${structuralClassNames.e2}|${structuralClassNames.e3}`;
+  const switchGeometryKey = [
+    resolvedRadius,
+    Boolean(motionEffect),
+    structuralClassNames.e2,
+    structuralClassNames.e3
+  ].join('|');
   const motionController = useSwitchRuntimeMotionController({
     enabled: Boolean(motionEffect),
     controlState: controlStateProp,
@@ -258,7 +268,6 @@ function SwitchRoot(props: SwitchProps) {
     ? {
         activationMotion: options.activationMotion,
         thumbClassName: resolvedClassNames.e3,
-        onActivationFeedbackCancel: activationFeedbackController.cancel,
         ...motionController.thumbProps
       }
     : {
@@ -288,7 +297,15 @@ function SwitchRoot(props: SwitchProps) {
         shouldRenderControlText={shouldRenderControlText}
       >
         <HeadlessSwitch.Track ref={motionController.thumbProps.trackRefCallback}>
-          <Thumb {...thumbProps}>{iconNodes}</Thumb>
+          <Thumb {...thumbProps}>
+            {thumbVisualClassName ? (
+              <span aria-hidden="true" className={thumbVisualClassName}>
+                {iconNodes}
+              </span>
+            ) : (
+              iconNodes
+            )}
+          </Thumb>
         </HeadlessSwitch.Track>
       </SwitchControlSide>
       {hasLabel ? <HeadlessSwitch.Label>{label}</HeadlessSwitch.Label> : null}

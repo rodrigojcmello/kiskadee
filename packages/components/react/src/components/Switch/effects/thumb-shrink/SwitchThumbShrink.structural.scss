@@ -4,21 +4,45 @@
  */
 
 /*
- * element thumb / e3
+ * extra element for e3 / x5
+ * Hosts the visual thumb so thumbShrink can reduce paint without resizing the effect host.
+ */
+.k-swt-x5-a {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  z-index: 0;
+  display: block;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  pointer-events: none;
+  border-radius: inherit;
+  transform: translate(-50%, -50%);
+  transition:
+    width var(--k-dur-int) var(--k-ease-out),
+    height var(--k-dur-int) var(--k-ease-out),
+    border-color var(--k-dur-int) var(--k-ease-out),
+    border-radius var(--k-dur-int) var(--k-ease-out),
+    color var(--k-dur-int) var(--k-ease-out),
+    box-shadow var(--k-dur-int) var(--k-ease-out),
+    --k-bg0 var(--k-dur-int) var(--k-ease-out),
+    --k-bg1 var(--k-dur-int) var(--k-ease-out),
+    --k-bg2 var(--k-dur-int) var(--k-ease-out),
+    background-color var(--k-dur-int) var(--k-ease-out);
+}
+
+/*
+ * extra element for e3 / x5
  * Caps pill/square radius from the reduced thumb-shrink height.
  */
-.k-swt:not(.-s) .k-swt-e3-a:not(.k-swt-e3a-a) {
-  border-radius: clamp(
-    0px,
-    var(--k-bdr, 0px),
-    calc(var(--k-swt-thh, calc(var(--k-bdr, 0px) * 2)) * 0.5)
-  );
+.k-swt:not(.-s) .k-swt-e3-a.k-swt-e3b-a:not(.k-swt-e3a-a) > .k-swt-x5-a {
+  border-radius: clamp(0px, var(--k-bdr), calc(var(--k-swt-thh) * 0.5));
 }
 
 /*
  * element thumb modifier 'b' / e3b
- * Keeps the reduced rounded activation-feedback outline aligned to the switch container radius.
+ * Keeps rounded activation-feedback outline aligned to the switch container radius.
  */
-.k-swt:not(.-s) .k-swt-e3-a.k-swt-e3a-a.k-swt-e3b-a {
-  --k-af-outline-radius: var(--k-swt-trr, var(--k-bdr, 0px));
+.k-swt-e3-a.k-swt-e3a-a.k-swt-e3b-a {
+  --k-af-outline-radius: var(--k-swt-trr);
 }

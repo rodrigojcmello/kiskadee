@@ -33,6 +33,15 @@ optimized single-component implementation was promoted into
 - Runtime motion commits a drag intent when the thumb reaches an endpoint, matching the native iOS
   behavior. `latestDragControlStateRef` prevents repeated emissions at the same endpoint; consumers
   still own async confirmation, rollback, and any cooldown state.
+- Runtime motion does not let Framer Motion's default thumb drag listener classify every thumb
+  press as a potential visual drag. The thumb uses manual `dragControls` with the same click
+  suppression threshold as Switch pointer intent, so thumb clicks and label clicks share the same
+  toggle animation path until movement actually crosses the drag threshold.
+- Switch geometry helpers shared by runtime motion and activation feedback live in
+  `SwitchGeometry.utils.ts`. Keep class names, reduced-thumb epsilon, track content measurement, and
+  pixel parsing centralized there. AF uses the real visual thumb box when the explicit `thumbShrink`
+  marker exposes an internal `x5` visual layer; compact presets such as Fluent have a naturally
+  smaller thumb and should still use the real thumb box for the AF outline.
 - Switch activation feedback defaults now come from
   `components.switch.effects.activationFeedback`. Switch presets use `profile: 'halo'`,
   `origin: 'center'`, and `visual.tone.byEmphasis.low = 'vivid'`; this is schema-owned, not a
@@ -43,24 +52,36 @@ optimized single-component implementation was promoted into
   the runtime/schema contract.
 - iOS 26 Apple Switch uses `visual.paint: 'outline'` with `profiles.halo.size: 8`, so the rectangular
   thumb gets an outline feedback instead of a filled halo.
-- Switch thumb rendering is now a single-layer model: `e3` is the visual thumb, runtime-motion
-  measurement target, `thumbShrink` target, and activation-feedback host. Do not reintroduce an
-  internal thumb visual layer for `thumbShrink`.
-- Runtime motion uses the measured thumb width for normal presets and switches to a square alignment
-  box only when `thumbShrink` is active or while the same thumb is leaving a `thumbShrink`
-  transition on the same track class. Compact presets such as Fluent must follow the generated
-  compensated padding directly; otherwise a `borderWidth: 1px` rail is shifted by the runtime
-  alignment layer.
-- Static unselected thumbs are anchored by their normal visual center through generated `--k-bxw`.
-  This keeps Material `thumbShrink` centered while `width` transitions between the normal and
-  reduced sizes.
+- Static Switch activation feedback is a press-start one-shot visual pulse. `pointerdown` starts
+  the feedback, semantic `click` keeps owning the toggle, and `pointerup`/`pointercancel`/drag do
+  not extend the active feedback duration. The one-shot path ignores profile runtime duration but
+  still honors profile `fade.delayToken`, so quick taps get a short full-opacity hold before fade.
+- The static AF one-shot finish path intentionally has no runtime-duration option: it schedules
+  fade from the configured minimum press hold plus profile `fade.delayToken`.
+- Static outline activation feedback treats host geometry as a required runtime contract. The
+  generated outline CSS does not provide drawable fallbacks for `--k-af-host-width`,
+  `--k-af-host-height`, or `--k-af-host-radius`; Switch resolves measured thumb geometry in advance
+  and uses the internal `x5` visual box for reduced/thumbShrink states.
+- Static activation feedback does not start when required host geometry cannot be applied. The
+  shared halo hook only resyncs geometry on host `transitionend` by default; Switch explicitly also
+  accepts the internal `x5` visual layer while `thumbShrink` is active because that layer owns the
+  width, height, and radius transition that changes the measured AF box.
+- SSR-safe layout reads in React components should use the shared `useIsomorphicLayoutEffect`
+  utility instead of local `typeof window` hook aliases.
+- Switch `thumbShrink` uses a two-layer thumb structure: `e3` is the stable host for runtime motion,
+  measurement, and activation feedback; internal `x5` is the painted thumb layer that receives the
+  generated `thumbShrink` width/height effect.
+- Runtime motion measures the stable `e3` host. `thumbShrink` must not resize that host; compact
+  presets such as Fluent still follow their generated thumb geometry directly because they do not
+  receive the explicit `thumbShrink` marker.
+- Static unselected thumb hosts are anchored by their normal visual center through generated
+  `--k-bxw`. Material `thumbShrink` centers the reduced `x5` visual inside that stable host.
 - The motion thumb remounts once when runtime geometry becomes ready, so initially selected
   switches receive the measured `thumbTranslation` before the first stable render. This keeps Fluent
   selected/off state aligned after reload while preserving normal toggle/drag animations.
 - Runtime motion must attach measurement observers to the current DOM elements, not only to the
-  original `RefObject.current` value. The ready-state remount changes the thumb node; Material
-  `thumbShrink` relies on observing that new node so the off-state shrink recalculates `--k-swt-ti`
-  and `--k-swt-ty` from `2px` to `6px`.
+  original `RefObject.current` value. The ready-state remount changes the thumb node, so the motion
+  controller reattaches observers to the stable `e3` host after remount.
 - The motion structural transition must not include `inset-block-start` or `inset-inline-start`.
   Runtime geometry owns those values as immediate alignment corrections; animating them in CSS
   competes with the motion `x` transform and makes Material `thumbShrink` travel crooked while
@@ -196,6 +217,14 @@ optimized single-component implementation was promoted into
   Browser validation on `/switch` confirmed the off-state thumb center stays near `635px` during
   `Thumb shrink` on -> off instead of jumping left to `631px`.
 - 2026-06-12: `pnpm --filter @kiskadee/react-components run build`
+- 2026-06-20: Switch AF review follow-ups applied: cached static geometry now fails when the host
+  is unavailable, geometry transition sync is host-scoped by default, and Switch explicitly includes
+  the `thumbShrink` `x5` visual layer as a valid transition source.
+- 2026-06-20: `pnpm --filter @kiskadee/react-components run build`
+- 2026-06-20: `git diff --check`
+- 2026-06-20: Browser validation on `/switch` with Material Design 3 by Google confirmed the static
+  `Unselected (activation feedback)` card measures AF from the `x5` visual layer (`16 x 16`, AF
+  layer `32 x 32`) and the interactive toggle keeps the same geometry after motion settles.
 - 2026-06-12: `pnpm --filter @kiskadee/showcase build`
 - 2026-06-12: `/switch` icon/shrink guard updated: icon modes leave the `Thumb shrink` control
   enabled; turning `Thumb shrink` on while an icon mode is selected clears `Icons` back to `None`.
@@ -294,3 +323,32 @@ optimized single-component implementation was promoted into
   do not apply `disabled`, `readonly`, or `aria-readonly`; unlocked clicks still toggle; motion-on
   drag to the selected endpoint changes the Switch to checked.
 - 2026-06-14: `git diff --check`
+- 2026-06-19: Switch static activation feedback now caches stable host/carrier geometry before
+  interaction, starts the visual pulse on `pointerdown`, and runs as a one-shot independent of
+  drag/pointer release. The generated outline CSS no longer falls back to a drawable host geometry.
+- 2026-06-19: `pnpm --filter @kiskadee/react-components run build`
+- 2026-06-19: `pnpm --filter @kiskadee/web-builder run build`
+- 2026-06-19: `git diff --check`
+- 2026-06-19: Browser validation on `/switch` with iOS 26 Apple and motion enabled confirmed rapid
+  clicks do not collapse AF into a `12x12` thumb-centered circle. Drag from the thumb starts AF on
+  press and the active class is gone by the one-shot timeout instead of being held by drag.
+- 2026-06-19: Switch static activation feedback one-shot timing refined to honor profile
+  `fade.delayToken` while still ignoring profile runtime duration, preserving drag independence and
+  making light taps less visually abrupt.
+- 2026-06-19: Switch runtime motion thumb drag now starts through manual Motion drag controls with
+  the existing `5px` intent threshold, preventing plain thumb clicks from entering the drag visual
+  path earlier than label clicks.
+- 2026-06-20: Switch AF/motion code review cleanup restored after rollback: web-builder outline CSS
+  tests assert required host geometry vars, Switch reduced-thumb geometry helpers are shared by AF
+  and motion, static AF one-shot finish no longer carries runtime-duration options, pointer handler
+  selection is centralized, and SSR-safe layout effects use `useIsomorphicLayoutEffect`.
+- 2026-06-20: Fluent compact Switch AF regression fix restored by limiting AF carrier geometry to
+  the explicit `thumbShrink` marker. Natural compact thumbs keep thumb-sized AF geometry, while
+  Material `thumbShrink` uses the internal `x5` visual layer for AF geometry.
+- 2026-06-20: Switch `thumbShrink` restored a component-owned visual layer: stable `e3` hosts
+  runtime motion and activation feedback, while internal `x5` carries the generated visual thumb
+  classes and reduced width/height. This keeps activation feedback component-agnostic.
+- 2026-06-20: Static Switch AF for `thumbShrink` now resolves outline geometry from the internal
+  `x5` visual box instead of the stable `e3` carrier. Browser validation on `/switch` confirmed the
+  Material `Unselected (activation feedback)` card changed from `40x40` carrier geometry to `32x32`
+  visual-thumb geometry.

@@ -80,11 +80,17 @@ describe('transformActivationFeedbackKeyToCss', () => {
     expect(out).toContain('--k-af-animate-size: 0;');
     expect(out).toContain('--k-af-fill-opacity: 0;');
     expect(out).toContain(
-      '--k-af-layer-width: calc(var(--k-af-host-width, var(--k-af-end-size)) + (8px * 2));'
+      '--k-af-layer-width: calc(var(--k-af-host-width) + (8px * 2));'
     );
     expect(out).toContain(
-      '--k-af-layer-radius: var(--k-af-outline-radius, calc(var(--k-af-host-radius, 0px) + 8px));'
+      '--k-af-layer-height: calc(var(--k-af-host-height) + (8px * 2));'
     );
+    expect(out).toContain(
+      '--k-af-layer-radius: var(--k-af-outline-radius, calc(var(--k-af-host-radius) + 8px));'
+    );
+    expect(out).not.toContain('var(--k-af-host-width,');
+    expect(out).not.toContain('var(--k-af-host-height,');
+    expect(out).not.toContain('var(--k-af-host-radius,');
     expect(out).toContain('--k-af-border-width: 8px;');
     expect(out).toContain('--k-af-fade-duration: 360ms;');
   });

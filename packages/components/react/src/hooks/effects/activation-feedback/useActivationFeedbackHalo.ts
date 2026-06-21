@@ -14,7 +14,16 @@ import type {
   RefObject
 } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useIsomorphicLayoutEffect } from '../../../shared/utils/useIsomorphicLayoutEffect.ts';
 import { tryReleasePointerCapture, trySetPointerCapture } from './pointerCapture.ts';
+
+export type ActivationFeedbackStaticGeometry = {
+  height: number;
+  outlineRadius?: string;
+  radius: string;
+  size: number;
+  width: number;
+};
 
 type UseActivationFeedbackHaloArgs<
   TPointerElement extends HTMLElement,
@@ -36,8 +45,27 @@ type UseActivationFeedbackHaloArgs<
   origin?: ActivationFeedbackOrigin;
   profile?: ActivationFeedbackProfileMode;
   readOnly?: boolean;
+  resolveStaticGeometry?: (
+    hostElement: THostElement
+  ) => ActivationFeedbackStaticGeometry | null;
+  shouldSyncGeometryOnTransitionEnd?: (
+    event: TransitionEvent,
+    hostElement: THostElement
+  ) => boolean;
   shouldStartPointerFeedback?: (event: PointerEvent<TPointerElement>) => boolean;
 };
+
+function isValidStaticGeometry(
+  geometry: ActivationFeedbackStaticGeometry | null
+): geometry is ActivationFeedbackStaticGeometry {
+  return (
+    geometry !== null &&
+    geometry.width > 0 &&
+    geometry.height > 0 &&
+    geometry.size > 0 &&
+    geometry.radius.length > 0
+  );
+}
 
 export function useActivationFeedbackHalo<
   TPointerElement extends HTMLElement = HTMLElement,
@@ -59,22 +87,21 @@ export function useActivationFeedbackHalo<
   origin = 'pointer',
   profile = 'halo',
   readOnly,
+  resolveStaticGeometry,
+  shouldSyncGeometryOnTransitionEnd,
   shouldStartPointerFeedback
 }: UseActivationFeedbackHaloArgs<TPointerElement, THostElement>) {
   const [isActive, setIsActive] = useState(false);
   const [isFading, setIsFading] = useState(false);
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const uncapturedPointerCleanupRef = useRef<(() => void) | null>(null);
-  const startedAtRef = useRef<number>(0);
-  const pointerInFlightRef = useRef(false);
+  const lastStaticGeometryRef = useRef<ActivationFeedbackStaticGeometry | null>(null);
   const isInteractionDisabled = disabled || readOnly || !enabled;
   const isForcedActive = enabled && forcedActive === true && !disabled;
 
   const runtimeConfig = useMemo(() => {
     const profileConfig = resolveActivationFeedbackProfile(profile, { config });
     return {
-      durationMs: resolveActivationFeedbackDurationMs(profileConfig.durationToken, 0),
       fadeDelayMs: resolveActivationFeedbackDurationMs(profileConfig.fade?.delayToken, 50),
       fadeDurationMs: resolveActivationFeedbackDurationMs(profileConfig.fade?.durationToken, 100),
       sizePx:
@@ -95,15 +122,6 @@ export function useActivationFeedbackHalo<
     }
   }, []);
 
-  const clearUncapturedPointerListeners = useCallback(() => {
-    uncapturedPointerCleanupRef.current?.();
-    uncapturedPointerCleanupRef.current = null;
-  }, []);
-
-  const resetInFlight = useCallback(() => {
-    pointerInFlightRef.current = false;
-  }, []);
-
   const clearOriginVars = useCallback(() => {
     const host = hostRef?.current ?? null;
     if (!host) return;
@@ -114,6 +132,7 @@ export function useActivationFeedbackHalo<
 
   const clearGeometryVars = useCallback(() => {
     const host = hostRef?.current;
+    lastStaticGeometryRef.current = null;
     if (!host) return;
 
     host.style.removeProperty('--k-af-start-size');
@@ -144,69 +163,97 @@ export function useActivationFeedbackHalo<
     [hostRef, origin]
   );
 
-  const applyStaticGeometryVars = useCallback((): boolean => {
+  const writeStaticGeometryVars = useCallback(
+    (host: THostElement, staticGeometry: ActivationFeedbackStaticGeometry) => {
+      host.style.setProperty('--k-af-start-size', `${staticGeometry.size}px`);
+      host.style.setProperty('--k-af-end-size', `${staticGeometry.size}px`);
+      host.style.setProperty('--k-af-host-width', `${staticGeometry.width}px`);
+      host.style.setProperty('--k-af-host-height', `${staticGeometry.height}px`);
+      host.style.setProperty('--k-af-host-radius', staticGeometry.radius);
+      if (staticGeometry.outlineRadius !== undefined) {
+        host.style.setProperty('--k-af-outline-radius', staticGeometry.outlineRadius);
+      } else if (Number.parseFloat(staticGeometry.radius) <= 0) {
+        host.style.setProperty('--k-af-outline-radius', '0px');
+      } else {
+        host.style.removeProperty('--k-af-outline-radius');
+      }
+      lastStaticGeometryRef.current = staticGeometry;
+    },
+    []
+  );
+
+  const measureStaticGeometryVars = useCallback((): ActivationFeedbackStaticGeometry | null => {
     const host = hostRef?.current;
-    if (!host) return true;
+    if (!host) return null;
 
     const rect = host.getBoundingClientRect();
-    if (rect.width === 0 || rect.height === 0) return false;
+    if (rect.width === 0 || rect.height === 0) return null;
 
-    const size =
-      geometry === 'profile-size' && runtimeConfig.sizePx !== null
-        ? runtimeConfig.sizePx
-        : Math.max(rect.width, rect.height);
     const hostStyle = window.getComputedStyle(host);
-    host.style.setProperty('--k-af-start-size', `${size}px`);
-    host.style.setProperty('--k-af-end-size', `${size}px`);
-    host.style.setProperty('--k-af-host-width', `${rect.width}px`);
-    host.style.setProperty('--k-af-host-height', `${rect.height}px`);
-    host.style.setProperty('--k-af-host-radius', hostStyle.borderTopLeftRadius);
-    if (Number.parseFloat(hostStyle.borderTopLeftRadius) <= 0) {
-      host.style.setProperty('--k-af-outline-radius', '0px');
-    } else {
-      host.style.removeProperty('--k-af-outline-radius');
+    const staticGeometry =
+      resolveStaticGeometry?.(host) ?? {
+        height: rect.height,
+        radius: hostStyle.borderTopLeftRadius,
+        size:
+          geometry === 'profile-size' && runtimeConfig.sizePx !== null
+            ? runtimeConfig.sizePx
+            : Math.max(rect.width, rect.height),
+        width: rect.width
+      };
+
+    return isValidStaticGeometry(staticGeometry) ? staticGeometry : null;
+  }, [geometry, hostRef, resolveStaticGeometry, runtimeConfig.sizePx]);
+
+  const syncStaticGeometryVars = useCallback((): boolean => {
+    const host = hostRef?.current;
+    if (!host) {
+      lastStaticGeometryRef.current = null;
+      return false;
     }
+
+    const staticGeometry = measureStaticGeometryVars();
+    if (!isValidStaticGeometry(staticGeometry)) return false;
+
+    writeStaticGeometryVars(host, staticGeometry);
     return true;
-  }, [geometry, hostRef, runtimeConfig.sizePx]);
+  }, [hostRef, measureStaticGeometryVars, writeStaticGeometryVars]);
+
+  const applyCachedStaticGeometryVars = useCallback((): boolean => {
+    const host = hostRef?.current;
+    if (!host) return false;
+
+    const staticGeometry = lastStaticGeometryRef.current;
+    if (!isValidStaticGeometry(staticGeometry)) return false;
+
+    writeStaticGeometryVars(host, staticGeometry);
+    return true;
+  }, [hostRef, writeStaticGeometryVars]);
 
   const applyStaticFeedback = useCallback(
     (event?: PointerEvent<TPointerElement> | MouseEvent<TPointerElement>) => {
-      clearGeometryVars();
-      clearOriginVars();
       applyOriginVars(event);
-      if (applyStaticGeometryVars()) return true;
+      if (applyCachedStaticGeometryVars()) return true;
 
-      clearGeometryVars();
       clearOriginVars();
       return false;
     },
-    [applyOriginVars, applyStaticGeometryVars, clearGeometryVars, clearOriginVars]
+    [applyOriginVars, applyCachedStaticGeometryVars, clearOriginVars]
   );
 
   const cancel = useCallback(() => {
     clearTimers();
-    clearUncapturedPointerListeners();
-    clearGeometryVars();
     clearOriginVars();
-    resetInFlight();
     setIsActive(false);
     setIsFading(false);
-  }, [
-    clearGeometryVars,
-    clearOriginVars,
-    clearTimers,
-    clearUncapturedPointerListeners,
-    resetInFlight
-  ]);
+  }, [clearOriginVars, clearTimers]);
 
   const start = useCallback(
     (event?: PointerEvent<TPointerElement> | MouseEvent<TPointerElement>) => {
       if (isInteractionDisabled || isForcedActive) return false;
       if (hostRef && !hostRef.current) return false;
 
-      clearTimers();
       if (!applyStaticFeedback(event)) return false;
-      startedAtRef.current = Date.now();
+      clearTimers();
       setIsFading(false);
       setIsActive(true);
 
@@ -223,10 +270,7 @@ export function useActivationFeedbackHalo<
 
   const finish = useCallback(
     (minHoldMs = 0) => {
-      const elapsedMs = Math.max(0, Date.now() - startedAtRef.current);
-      const remainingDurationMs = Math.max(0, runtimeConfig.durationMs - elapsedMs);
-      const remainingMs = Math.max(remainingDurationMs, minHoldMs);
-
+      const remainingMs = Math.max(0, minHoldMs);
       if (fadeTimeoutRef.current !== null) {
         clearTimeout(fadeTimeoutRef.current);
         fadeTimeoutRef.current = null;
@@ -243,9 +287,7 @@ export function useActivationFeedbackHalo<
 
       feedbackTimeoutRef.current = setTimeout(
         () => {
-          clearGeometryVars();
           clearOriginVars();
-          resetInFlight();
           setIsActive(false);
           setIsFading(false);
           feedbackTimeoutRef.current = null;
@@ -253,16 +295,7 @@ export function useActivationFeedbackHalo<
         remainingMs + runtimeConfig.fadeDelayMs + runtimeConfig.fadeDurationMs
       );
     },
-    [clearGeometryVars, clearOriginVars, resetInFlight, runtimeConfig]
-  );
-
-  const finalizePointerFeedback = useCallback(
-    () => {
-      if (!pointerInFlightRef.current) return;
-      pointerInFlightRef.current = false;
-      finish(minPointerHoldMs);
-    },
-    [finish, minPointerHoldMs]
+    [clearOriginVars, runtimeConfig]
   );
 
   const trigger = useCallback(
@@ -277,51 +310,31 @@ export function useActivationFeedbackHalo<
     [finish, minPointerHoldMs, start]
   );
 
-  const registerUncapturedPointerEnd = useCallback(
-    (pointerId: number) => {
-      clearUncapturedPointerListeners();
-      if (typeof window === 'undefined') return;
-
-      const handlePointerEnd = (event: globalThis.PointerEvent) => {
-        if (event.pointerId !== pointerId) return;
-
-        if (event.type === 'pointercancel') {
-          cancel();
-        } else {
-          finalizePointerFeedback();
-        }
-        clearUncapturedPointerListeners();
-      };
-
-      window.addEventListener('pointerup', handlePointerEnd, true);
-      window.addEventListener('pointercancel', handlePointerEnd, true);
-      uncapturedPointerCleanupRef.current = () => {
-        window.removeEventListener('pointerup', handlePointerEnd, true);
-        window.removeEventListener('pointercancel', handlePointerEnd, true);
-      };
+  useEffect(
+    () => () => {
+      clearTimers();
+      clearGeometryVars();
+      clearOriginVars();
     },
-    [cancel, clearUncapturedPointerListeners, finalizePointerFeedback]
+    [
+      clearGeometryVars,
+      clearOriginVars,
+      clearTimers
+    ]
   );
-
-  useEffect(() => cancel, [cancel]);
 
   useEffect(() => {
     if (!isInteractionDisabled || isForcedActive) return;
     cancel();
   }, [cancel, isForcedActive, isInteractionDisabled]);
 
-  useEffect(() => {
-    if (isInteractionDisabled || isForcedActive || (!isActive && !isFading)) return;
+  useIsomorphicLayoutEffect(() => {
+    if (!enabled) return;
 
     let animationFrame: number | null = null;
     const host = hostRef?.current;
-    if (!host) return;
-
     const syncGeometry = () => {
-      clearGeometryVars();
-      if (!applyStaticGeometryVars()) {
-        clearGeometryVars();
-      }
+      syncStaticGeometryVars();
     };
     const scheduleGeometrySync = () => {
       if (animationFrame !== null) return;
@@ -332,11 +345,11 @@ export function useActivationFeedbackHalo<
       });
     };
     const resizeObserver =
-      typeof ResizeObserver !== 'undefined'
+      host && typeof ResizeObserver !== 'undefined'
         ? new ResizeObserver(scheduleGeometrySync)
         : null;
     const handleHostTransitionEnd = (event: TransitionEvent) => {
-      if (event.target !== host) return;
+      if (!host) return;
       if (
         !event.propertyName.includes('radius') &&
         event.propertyName !== 'width' &&
@@ -344,42 +357,41 @@ export function useActivationFeedbackHalo<
       ) {
         return;
       }
+      const shouldSync =
+        shouldSyncGeometryOnTransitionEnd?.(event, host) ?? event.target === host;
+      if (!shouldSync) return;
 
       syncGeometry();
     };
 
+    syncGeometry();
+    if (host) {
+      resizeObserver?.observe(host);
+      host.addEventListener('transitionend', handleHostTransitionEnd);
+    }
+    // The first pass feeds same-frame feedback; the rAF pass catches layout settled after mount.
     scheduleGeometrySync();
-    resizeObserver?.observe(host);
-    host.addEventListener('transitionend', handleHostTransitionEnd);
 
     return () => {
       resizeObserver?.disconnect();
-      host.removeEventListener('transitionend', handleHostTransitionEnd);
+      host?.removeEventListener('transitionend', handleHostTransitionEnd);
       if (animationFrame !== null) {
         window.cancelAnimationFrame(animationFrame);
       }
     };
   }, [
-    applyStaticGeometryVars,
-    clearGeometryVars,
+    enabled,
     geometryKey,
     hostRef,
-    isActive,
-    isFading,
-    isForcedActive,
-    isInteractionDisabled
+    shouldSyncGeometryOnTransitionEnd,
+    syncStaticGeometryVars
   ]);
 
   useEffect(() => {
     if (!isForcedActive) return;
 
-    let animationFrame: number | null = null;
-    const host = hostRef?.current;
-
     const applyForcedFeedback = () => {
       clearTimers();
-      clearUncapturedPointerListeners();
-      resetInFlight();
 
       if (!applyStaticFeedback()) {
         setIsActive(false);
@@ -390,63 +402,21 @@ export function useActivationFeedbackHalo<
       setIsFading(false);
       setIsActive(true);
     };
-    const scheduleForcedFeedback = () => {
-      if (animationFrame !== null) return;
-
-      animationFrame = window.requestAnimationFrame(() => {
-        animationFrame = null;
-        applyForcedFeedback();
-      });
-    };
 
     applyForcedFeedback();
-    scheduleForcedFeedback();
-
-    const resizeObserver =
-      host && typeof ResizeObserver !== 'undefined'
-        ? new ResizeObserver(() => {
-            scheduleForcedFeedback();
-          })
-        : null;
-    const handleHostTransitionEnd = (event: TransitionEvent) => {
-      if (event.target !== host) return;
-      if (
-        !event.propertyName.includes('radius') &&
-        event.propertyName !== 'width' &&
-        event.propertyName !== 'height'
-      ) {
-        return;
-      }
-
-      applyForcedFeedback();
-    };
-
-    if (resizeObserver && host) {
-      resizeObserver.observe(host);
-    }
-    host?.addEventListener('transitionend', handleHostTransitionEnd);
 
     return () => {
-      host?.removeEventListener('transitionend', handleHostTransitionEnd);
-      resizeObserver?.disconnect();
-      if (animationFrame !== null) {
-        window.cancelAnimationFrame(animationFrame);
-      }
-      clearGeometryVars();
       clearOriginVars();
       setIsActive(false);
       setIsFading(false);
     };
   }, [
     applyStaticFeedback,
-    clearGeometryVars,
     clearOriginVars,
     clearTimers,
-    clearUncapturedPointerListeners,
     geometryKey,
     hostRef,
-    isForcedActive,
-    resetInFlight
+    isForcedActive
   ]);
 
   const handlePointerDown = useCallback(
@@ -456,24 +426,21 @@ export function useActivationFeedbackHalo<
       if (event.button !== 0 || event.isPrimary === false) return;
       if (shouldStartPointerFeedback?.(event) === false) return;
 
-      const started = start(event);
-      pointerInFlightRef.current = started;
+      const started = trigger(event, minPointerHoldMs);
       if (!started) return;
 
       if (capturePointer) {
         trySetPointerCapture(event.currentTarget, event.pointerId);
-      } else {
-        registerUncapturedPointerEnd(event.pointerId);
       }
     },
     [
       capturePointer,
       isForcedActive,
       isInteractionDisabled,
+      minPointerHoldMs,
       onPointerDown,
-      registerUncapturedPointerEnd,
       shouldStartPointerFeedback,
-      start
+      trigger
     ]
   );
 
@@ -481,20 +448,16 @@ export function useActivationFeedbackHalo<
     (event: PointerEvent<TPointerElement>) => {
       onPointerUp?.(event);
       tryReleasePointerCapture(event.currentTarget, event.pointerId);
-      clearUncapturedPointerListeners();
-      finalizePointerFeedback();
     },
-    [clearUncapturedPointerListeners, finalizePointerFeedback, onPointerUp]
+    [onPointerUp]
   );
 
   const handlePointerCancel = useCallback(
     (event: PointerEvent<TPointerElement>) => {
       onPointerCancel?.(event);
       tryReleasePointerCapture(event.currentTarget, event.pointerId);
-      clearUncapturedPointerListeners();
-      cancel();
     },
-    [cancel, clearUncapturedPointerListeners, onPointerCancel]
+    [onPointerCancel]
   );
 
   const handleBlur = useCallback(

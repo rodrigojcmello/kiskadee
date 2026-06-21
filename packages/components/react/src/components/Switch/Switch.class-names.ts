@@ -23,6 +23,7 @@ import {
   resolveActivationFeedbackBucketClass,
   resolveActivationFeedbackProfileAvailability
 } from '../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
+import { SWITCH_THUMB_VISUAL_CLASS_NAME } from './SwitchGeometry.utils.ts';
 
 export const DEFAULT_SWITCH_SCALE = 's:md:1';
 export const DEFAULT_SWITCH_ACTIVATION_MOTION: SwitchActivationMotion = 'standard';
@@ -34,6 +35,10 @@ export const DEFAULT_SWITCH_MODE: SwitchMode = 'base';
 export const DEFAULT_SWITCH_LABEL_POSITION: SwitchLabelPosition = 'start';
 export const DEFAULT_SWITCH_CONTROL_TEXT_VISIBILITY: SwitchControlTextVisibility = 'none';
 type SwitchStructuralBranch = 'a' | 'b';
+
+export type SwitchThumbShrinkClassNames = Required<SwitchClassNames> & {
+  x5: string;
+};
 
 export function join(...parts: Array<string | undefined | false | null>): string | undefined {
   const joined = parts.filter(Boolean).join(' ').trim();
@@ -210,6 +215,48 @@ function resolveThumbCarrierClassName(options: {
   );
 }
 
+function resolveThumbShrinkHostClassName(options: {
+  elements: SwitchClassesMap;
+  classNames: SwitchClassNames;
+  structuralBranch: SwitchStructuralBranch;
+  scale: string;
+  radius: RadiusMode;
+}): string {
+  const elements = options.elements;
+  const branch = options.structuralBranch;
+
+  return (
+    join(
+      `k-swt-e3-${branch}`,
+      resolveScaleClassName(elements.e3, options.scale),
+      resolveThumbRadiusClassName(elements.e3, options.scale, options.radius, branch),
+      `k-swt-e3b-${branch}`,
+      'k-trn',
+      options.classNames.e3
+    ) ?? ''
+  );
+}
+
+function resolveThumbShrinkVisualClassName(options: {
+  elements: SwitchClassesMap;
+  structuralBranch: SwitchStructuralBranch;
+  scale: string;
+  intent: SwitchIntent;
+  emphasis: ComponentEmphasis | undefined;
+}): string {
+  const elements = options.elements;
+
+  return (
+    join(
+      SWITCH_THUMB_VISUAL_CLASS_NAME,
+      resolveScaleClassName(elements.e3, options.scale),
+      resolveVisualClassName(elements.e3, options),
+      resolveSwitchThumbShrinkEffectClassName(elements.e3, options.scale),
+      'k-trn'
+    ) ?? ''
+  );
+}
+
 export function resolveSwitchClassNames(options: {
   elements: SwitchClassesMap;
   classNames: SwitchClassNames;
@@ -275,17 +322,12 @@ export function resolveSwitchThumbShrinkClassNames(options: {
   labelPosition: SwitchLabelPosition;
   hasLabel: boolean;
   hasControlText: boolean;
-}): Required<SwitchClassNames> {
+}): SwitchThumbShrinkClassNames {
   const base = resolveSwitchClassNames(options);
-  const elements = options.elements;
 
   return {
     ...base,
-    e3:
-      join(
-        base.e3,
-        `k-swt-e3b-${options.structuralBranch}`,
-        resolveSwitchThumbShrinkEffectClassName(elements.e3, options.scale)
-      ) ?? ''
+    e3: resolveThumbShrinkHostClassName(options),
+    x5: resolveThumbShrinkVisualClassName(options)
   };
 }

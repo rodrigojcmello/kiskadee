@@ -4,10 +4,11 @@ import {
   type RefObject,
   useCallback,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState
 } from 'react';
+import { useIsomorphicLayoutEffect } from '../../../../shared/utils/useIsomorphicLayoutEffect.ts';
+import { hasSwitchThumbShrinkClass } from '../.././SwitchGeometry.utils.ts';
 import {
   applySwitchRuntimeMotionGeometry,
   calculateSwitchRuntimeMotionGeometry,
@@ -49,8 +50,6 @@ type SwitchRuntimeMotionControllerResult = {
 };
 
 const SWITCH_MOTION_DRAG_CLICK_SUPPRESSION_MS = 450;
-const useSwitchRuntimeMotionLayoutEffect =
-  typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
 function useSwitchRuntimeMotionThumbTranslation(options: {
   enabled: boolean;
@@ -74,7 +73,7 @@ function useSwitchRuntimeMotionThumbTranslation(options: {
     }
 
     const trackClassName = trackElement.className;
-    const hasThumbShrinkClass = thumbElement.classList.contains('k-swt-e3b-a');
+    const hasThumbShrinkClass = hasSwitchThumbShrinkClass(thumbElement);
     if (hasThumbShrinkClass) {
       thumbShrinkTrackClassNameRef.current = trackClassName;
     } else if (
@@ -115,7 +114,7 @@ function useSwitchRuntimeMotionThumbTranslation(options: {
     [cancelScheduledThumbTranslationSync]
   );
 
-  useSwitchRuntimeMotionLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     syncThumbTranslation();
   }, [geometryKey, syncThumbTranslation]);
 
