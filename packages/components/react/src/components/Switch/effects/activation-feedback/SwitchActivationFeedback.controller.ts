@@ -90,6 +90,18 @@ function resolveSwitchActivationFeedbackStaticGeometry(
   };
 }
 
+function shouldSyncSwitchActivationFeedbackGeometryOnTransitionEnd(
+  event: TransitionEvent,
+  thumbElement: HTMLSpanElement
+): boolean {
+  if (event.target === thumbElement) return true;
+
+  const visualElement = hasSwitchThumbShrinkClass(thumbElement)
+    ? resolveSwitchThumbVisualElement(thumbElement)
+    : null;
+  return visualElement !== null && event.target === visualElement;
+}
+
 function pickSwitchActivationFeedbackPointerHandler({
   enabled,
   fallbackHandler,
@@ -181,6 +193,8 @@ export function useSwitchActivationFeedbackController({
     onPointerUp,
     onPointerCancel,
     onBlur,
+    shouldSyncGeometryOnTransitionEnd:
+      shouldSyncSwitchActivationFeedbackGeometryOnTransitionEnd,
     shouldStartPointerFeedback
   });
 

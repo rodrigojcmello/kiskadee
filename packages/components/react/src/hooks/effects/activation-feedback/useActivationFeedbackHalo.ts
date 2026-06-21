@@ -48,6 +48,10 @@ type UseActivationFeedbackHaloArgs<
   resolveStaticGeometry?: (
     hostElement: THostElement
   ) => ActivationFeedbackStaticGeometry | null;
+  shouldSyncGeometryOnTransitionEnd?: (
+    event: TransitionEvent,
+    hostElement: THostElement
+  ) => boolean;
   shouldStartPointerFeedback?: (event: PointerEvent<TPointerElement>) => boolean;
 };
 
@@ -84,6 +88,7 @@ export function useActivationFeedbackHalo<
   profile = 'halo',
   readOnly,
   resolveStaticGeometry,
+  shouldSyncGeometryOnTransitionEnd,
   shouldStartPointerFeedback
 }: UseActivationFeedbackHaloArgs<TPointerElement, THostElement>) {
   const [isActive, setIsActive] = useState(false);
@@ -215,7 +220,7 @@ export function useActivationFeedbackHalo<
 
   const applyCachedStaticGeometryVars = useCallback((): boolean => {
     const host = hostRef?.current;
-    if (!host) return true;
+    if (!host) return false;
 
     const staticGeometry = lastStaticGeometryRef.current;
     if (!isValidStaticGeometry(staticGeometry)) return false;
@@ -344,6 +349,7 @@ export function useActivationFeedbackHalo<
         ? new ResizeObserver(scheduleGeometrySync)
         : null;
     const handleHostTransitionEnd = (event: TransitionEvent) => {
+      if (!host) return;
       if (
         !event.propertyName.includes('radius') &&
         event.propertyName !== 'width' &&
@@ -351,6 +357,9 @@ export function useActivationFeedbackHalo<
       ) {
         return;
       }
+      const shouldSync =
+        shouldSyncGeometryOnTransitionEnd?.(event, host) ?? event.target === host;
+      if (!shouldSync) return;
 
       syncGeometry();
     };
@@ -360,6 +369,7 @@ export function useActivationFeedbackHalo<
       resizeObserver?.observe(host);
       host.addEventListener('transitionend', handleHostTransitionEnd);
     }
+    // The first pass feeds same-frame feedback; the rAF pass catches layout settled after mount.
     scheduleGeometrySync();
 
     return () => {
@@ -373,6 +383,7 @@ export function useActivationFeedbackHalo<
     enabled,
     geometryKey,
     hostRef,
+    shouldSyncGeometryOnTransitionEnd,
     syncStaticGeometryVars
   ]);
 

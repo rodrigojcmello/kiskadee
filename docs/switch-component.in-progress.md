@@ -62,6 +62,10 @@ optimized single-component implementation was promoted into
   generated outline CSS does not provide drawable fallbacks for `--k-af-host-width`,
   `--k-af-host-height`, or `--k-af-host-radius`; Switch resolves measured thumb geometry in advance
   and uses the internal `x5` visual box for reduced/thumbShrink states.
+- Static activation feedback does not start when required host geometry cannot be applied. The
+  shared halo hook only resyncs geometry on host `transitionend` by default; Switch explicitly also
+  accepts the internal `x5` visual layer while `thumbShrink` is active because that layer owns the
+  width, height, and radius transition that changes the measured AF box.
 - SSR-safe layout reads in React components should use the shared `useIsomorphicLayoutEffect`
   utility instead of local `typeof window` hook aliases.
 - Switch `thumbShrink` uses a two-layer thumb structure: `e3` is the stable host for runtime motion,
@@ -213,6 +217,14 @@ optimized single-component implementation was promoted into
   Browser validation on `/switch` confirmed the off-state thumb center stays near `635px` during
   `Thumb shrink` on -> off instead of jumping left to `631px`.
 - 2026-06-12: `pnpm --filter @kiskadee/react-components run build`
+- 2026-06-20: Switch AF review follow-ups applied: cached static geometry now fails when the host
+  is unavailable, geometry transition sync is host-scoped by default, and Switch explicitly includes
+  the `thumbShrink` `x5` visual layer as a valid transition source.
+- 2026-06-20: `pnpm --filter @kiskadee/react-components run build`
+- 2026-06-20: `git diff --check`
+- 2026-06-20: Browser validation on `/switch` with Material Design 3 by Google confirmed the static
+  `Unselected (activation feedback)` card measures AF from the `x5` visual layer (`16 x 16`, AF
+  layer `32 x 32`) and the interactive toggle keeps the same geometry after motion settles.
 - 2026-06-12: `pnpm --filter @kiskadee/showcase build`
 - 2026-06-12: `/switch` icon/shrink guard updated: icon modes leave the `Thumb shrink` control
   enabled; turning `Thumb shrink` on while an icon mode is selected clears `Icons` back to `None`.
