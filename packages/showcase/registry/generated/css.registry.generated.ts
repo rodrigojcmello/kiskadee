@@ -42,6 +42,17 @@ export const cssPaths = {
       'default|light': '/build/fluent-2-microsoft/tokens.default.light.kiskadee.css',
     }
   },
+  'ios-18-apple': {
+    core: '/build/ios-18-apple/core.kiskadee.css',
+    effects: '/build/ios-18-apple/effects.kiskadee.css',
+    tokens: '/build/ios-18-apple/tokens.kiskadee.css',
+    palettes: {
+      'default|light': '/build/ios-18-apple/default.light.kiskadee.css',
+    },
+    tokenPalettes: {
+      'default|light': '/build/ios-18-apple/tokens.default.light.kiskadee.css',
+    }
+  },
   'ios-26-apple': {
     core: '/build/ios-26-apple/core.kiskadee.css',
     effects: '/build/ios-26-apple/effects.kiskadee.css',

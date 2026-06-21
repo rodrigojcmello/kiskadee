@@ -10,6 +10,7 @@ export const colorsMaps = {
   'carbon-1-ibm': () => loadJsonFromBuild<ColorsJson>('carbon-1-ibm/colors.json', { required: true }),
   'fluent-2-kiskadee': () => loadJsonFromBuild<ColorsJson>('fluent-2-kiskadee/colors.json', { required: true }),
   'fluent-2-microsoft': () => loadJsonFromBuild<ColorsJson>('fluent-2-microsoft/colors.json', { required: true }),
+  'ios-18-apple': () => loadJsonFromBuild<ColorsJson>('ios-18-apple/colors.json', { required: true }),
   'ios-26-apple': () => loadJsonFromBuild<ColorsJson>('ios-26-apple/colors.json', { required: true }),
   'ios-26-kiskadee': () => loadJsonFromBuild<ColorsJson>('ios-26-kiskadee/colors.json', { required: true }),
   'material-design-3-google': () => loadJsonFromBuild<ColorsJson>('material-design-3-google/colors.json', { required: true }),
