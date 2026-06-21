@@ -61,9 +61,9 @@ const c = {
   neutralTrackHover: [220, 18, 88, 1],
   neutralTrackPressed: [220, 18, 82, 1],
   neutralTrackDisabled: [220, 14, 90, 0.62],
-  neutralTrackOn: [226, 78, 44, 1],
-  neutralTrackOnHover: [225, 76, 52, 1],
-  neutralTrackOnPressed: [227, 82, 36, 1],
+  neutralTrackOn: [264, 86, 72, 1],
+  neutralTrackOnHover: [264, 88, 68, 1],
+  neutralTrackOnPressed: [264, 90, 62, 1],
 
   primaryTrack: [225, 76, 52, 1],
   primaryTrackHover: [224, 76, 62, 1],
@@ -84,46 +84,46 @@ const c = {
   thumbOff: [0, 0, 100, 1],
   thumbOffMuted: [220, 18, 96, 1],
   thumbDisabled: [220, 14, 84, 1],
-  thumbOn: [0, 0, 100, 1],
+  thumbOn: [264, 100, 48, 1],
   iconOff: [226, 12, 50, 1],
-  iconOn: [225, 76, 52, 1]
+  iconOn: [0, 0, 100, 1]
 } as const;
 
 const sizes = {
   trackWidth: {
-    's:sm:3': 32,
-    's:sm:2': 40,
-    's:sm:1': 48,
-    's:md:1': 56,
-    's:lg:1': 68
-  },
-  trackHeight: {
-    's:sm:3': 18,
-    's:sm:2': 22,
-    's:sm:1': 28,
+    's:sm:3': 28,
+    's:sm:2': 32,
+    's:sm:1': 34,
     's:md:1': 34,
     's:lg:1': 42
   },
-  trackPadding: {
-    's:sm:3': 2,
-    's:sm:2': 2,
-    's:sm:1': 3,
-    's:md:1': 3,
-    's:lg:1': 4
-  },
-  thumb: {
-    's:sm:3': 14,
-    's:sm:2': 18,
-    's:sm:1': 22,
-    's:md:1': 28,
-    's:lg:1': 34
-  },
-  icon: {
+  trackHeight: {
     's:sm:3': 10,
     's:sm:2': 12,
     's:sm:1': 14,
-    's:md:1': 16,
-    's:lg:1': 20
+    's:md:1': 14,
+    's:lg:1': 16
+  },
+  trackPadding: {
+    's:sm:3': 0,
+    's:sm:2': 0,
+    's:sm:1': 0,
+    's:md:1': 0,
+    's:lg:1': 0
+  },
+  thumb: {
+    's:sm:3': 16,
+    's:sm:2': 18,
+    's:sm:1': 20,
+    's:md:1': 20,
+    's:lg:1': 24
+  },
+  icon: {
+    's:sm:3': 10,
+    's:sm:2': 10,
+    's:sm:1': 12,
+    's:md:1': 12,
+    's:lg:1': 14
   },
   labelText: {
     's:sm:3': 12,
@@ -847,7 +847,7 @@ export function createSandboxSwitchSchema(): SwitchComponent {
       variant: 'standard',
       radius: 'pill',
       activationMotion: 'slow',
-      controlTextVisibility: 'always'
+      controlTextVisibility: 'none'
     },
     variants: {
       standard: {
@@ -865,21 +865,21 @@ export function createSandboxSwitchSchema(): SwitchComponent {
                 scales: {
                   boxWidth: sizes.trackWidth,
                   boxHeight: sizes.trackHeight,
-                  borderWidth: 1,
+                  borderWidth: 0,
                   borderRadius: {
                     rounded: {
                       's:sm:3': 5,
                       's:sm:2': 6,
                       's:sm:1': 7,
-                      's:md:1': 8,
-                      's:lg:1': 10
+                      's:md:1': 7,
+                      's:lg:1': 8
                     },
                     pill: {
-                      's:sm:3': 9,
-                      's:sm:2': 11,
-                      's:sm:1': 14,
-                      's:md:1': 17,
-                      's:lg:1': 21
+                      's:sm:3': 5,
+                      's:sm:2': 6,
+                      's:sm:1': 7,
+                      's:md:1': 7,
+                      's:lg:1': 8
                     },
                     square: 0
                   },
@@ -908,13 +908,27 @@ export function createSandboxSwitchSchema(): SwitchComponent {
                       's:lg:1': 9
                     },
                     pill: {
-                      's:sm:3': 7,
+                      's:sm:3': 8,
                       's:sm:2': 9,
-                      's:sm:1': 11,
-                      's:md:1': 14,
-                      's:lg:1': 17
+                      's:sm:1': 10,
+                      's:md:1': 10,
+                      's:lg:1': 12
                     },
                     square: 0
+                  }
+                },
+                effects: {
+                  shadow: {
+                    x: { rest: 0, hover: 0, focus: 0, pressed: 0, disabled: 0 },
+                    y: { rest: 1, hover: 2, focus: 2, pressed: 1, disabled: 0 },
+                    blur: { rest: 3, hover: 5, focus: 6, pressed: 2, disabled: 0 },
+                    color: {
+                      rest: [0, 0, 0, 0.24],
+                      hover: [0, 0, 0, 0.28],
+                      focus: [0, 0, 0, 0.3],
+                      pressed: [0, 0, 0, 0.22],
+                      disabled: [0, 0, 0, 0]
+                    }
                   }
                 },
                 palettes: thumbPalettes
