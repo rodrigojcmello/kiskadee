@@ -118,13 +118,6 @@ const sizes = {
     's:md:1': 28,
     's:lg:1': 34
   },
-  thumbShrink: {
-    's:sm:3': 10,
-    's:sm:2': 12,
-    's:sm:1': 16,
-    's:md:1': 20,
-    's:lg:1': 24
-  },
   icon: {
     's:sm:3': 10,
     's:sm:2': 12,
@@ -852,7 +845,7 @@ export function createSandboxSwitchSchema(): SwitchComponent {
     },
     options: {
       variant: 'standard',
-      radius: 'rounded',
+      radius: 'pill',
       activationMotion: 'slow',
       controlTextVisibility: 'always'
     },
@@ -922,14 +915,6 @@ export function createSandboxSwitchSchema(): SwitchComponent {
                       's:lg:1': 17
                     },
                     square: 0
-                  }
-                },
-                effects: {
-                  thumbShrink: {
-                    rest: {
-                      boxWidth: sizes.thumbShrink,
-                      boxHeight: sizes.thumbShrink
-                    }
                   }
                 },
                 palettes: thumbPalettes

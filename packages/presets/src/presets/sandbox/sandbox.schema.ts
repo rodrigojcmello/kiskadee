@@ -19,7 +19,7 @@ export const schema: Schema<SandboxSegment> = {
       width: 2,
       offset: 2
     },
-    radius: 'rounded',
+    radius: 'pill',
     effects: {
       activationFeedback: {
         profile: 'ripple',
