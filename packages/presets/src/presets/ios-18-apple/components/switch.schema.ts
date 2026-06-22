@@ -13,6 +13,7 @@ const ios18SwitchTrackDisabled = [240, 4, 92, 0.42] as const;
 const ios18SwitchThumb = [0, 0, 100, 1] as const;
 const ios18SwitchThumbDisabled = [0, 0, 100, 0.72] as const;
 const ios18SwitchLabel = [0, 0, 7, 1] as const;
+const ios18SwitchLabelDisabled = [0, 0, 7, 0.3] as const;
 const ios18SwitchOffIcon = [0, 0, 47.059, 0.55] as const;
 
 export function createIos18AppleSwitchSchema(): SwitchComponent {
@@ -248,7 +249,7 @@ export function createIos18AppleSwitchSchema(): SwitchComponent {
                       neutral: {
                         medium: {
                           rest: ios18SwitchLabel,
-                          disabled: [0, 0, 7, 0.3]
+                          disabled: ios18SwitchLabelDisabled
                         }
                       }
                     }
