@@ -8,7 +8,12 @@ import {
   useState
 } from 'react';
 import { useIsomorphicLayoutEffect } from '../../../../shared/utils/useIsomorphicLayoutEffect.ts';
-import { hasSwitchThumbShrinkClass } from '../.././SwitchGeometry.utils.ts';
+import {
+  applySwitchFocusOffsetExtra,
+  calculateSwitchFocusOffsetExtra,
+  clearSwitchFocusOffsetExtra,
+  hasSwitchThumbShrinkClass
+} from '../.././SwitchGeometry.utils.ts';
 import {
   applySwitchRuntimeMotionGeometry,
   calculateSwitchRuntimeMotionGeometry,
@@ -63,9 +68,14 @@ function useSwitchRuntimeMotionThumbTranslation(options: {
   const thumbShrinkElementRef = useRef<HTMLSpanElement | null>(null);
   const thumbShrinkTrackClassNameRef = useRef<string | null>(null);
   const syncThumbTranslation = useCallback(() => {
-    if (!enabled) return;
-
     if (!trackElement || !thumbElement) return;
+
+    applySwitchFocusOffsetExtra(
+      trackElement,
+      calculateSwitchFocusOffsetExtra(trackElement, thumbElement)
+    );
+
+    if (!enabled) return;
 
     if (thumbShrinkElementRef.current !== thumbElement) {
       thumbShrinkElementRef.current = thumbElement;
@@ -99,7 +109,7 @@ function useSwitchRuntimeMotionThumbTranslation(options: {
     syncAnimationFrameRef.current = null;
   }, []);
   const scheduleThumbTranslationSync = useCallback(() => {
-    if (!enabled || syncAnimationFrameRef.current !== null) return;
+    if (syncAnimationFrameRef.current !== null) return;
 
     syncAnimationFrameRef.current = window.requestAnimationFrame(() => {
       syncAnimationFrameRef.current = null;
@@ -119,8 +129,6 @@ function useSwitchRuntimeMotionThumbTranslation(options: {
   }, [geometryKey, syncThumbTranslation]);
 
   useEffect(() => {
-    if (!enabled) return;
-
     if (!trackElement || !thumbElement) return;
 
     const resizeObserver =
@@ -135,7 +143,10 @@ function useSwitchRuntimeMotionThumbTranslation(options: {
       resizeObserver?.disconnect();
       window.removeEventListener('resize', scheduleThumbTranslationSync);
       cancelScheduledThumbTranslationSync();
-      clearSwitchRuntimeMotionGeometry(trackElement);
+      clearSwitchFocusOffsetExtra(trackElement);
+      if (enabled) {
+        clearSwitchRuntimeMotionGeometry(trackElement);
+      }
     };
   }, [
     cancelScheduledThumbTranslationSync,

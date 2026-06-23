@@ -359,7 +359,7 @@ function SwitchRoot(props: SwitchProps) {
         ...motionController.thumbProps
       }
     : {
-        ref: motionController.thumbProps.thumbRef
+        ref: motionController.thumbProps.thumbRefCallback
       };
 
   return (

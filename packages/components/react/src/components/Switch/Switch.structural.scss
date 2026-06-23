@@ -87,7 +87,7 @@
  */
 .k-swt-e1-a.-f.-k.-a .k-swt-e2-a {
   outline-color: var(--k-focus-color);
-  outline-offset: calc(var(--k-focus-offset) * 1px);
+  outline-offset: calc((var(--k-focus-offset) * 1px) + var(--k-swt-frx, 0px));
   outline-style: solid;
   outline-width: calc(var(--k-focus-width) * 1px);
 }
