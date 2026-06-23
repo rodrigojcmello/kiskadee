@@ -11,6 +11,10 @@ import {
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  ShowcaseGlobalSemanticControls,
+  ShowcaseTypographyControls
+} from '@/components/DesignSystemControls/ShowcaseGlobalControls';
+import {
   ShowcaseBooleanControl,
   ShowcaseControlField,
   ShowcaseControlGrid,
@@ -445,6 +449,7 @@ export default function SwitchPage() {
         </ShowcaseControlGrid>
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Semantic">
+        <ShowcaseGlobalSemanticControls />
         <ShowcaseControlGrid>
           <ShowcaseSelectControl
             label="Intent"
@@ -476,6 +481,9 @@ export default function SwitchPage() {
             />
           </ShowcaseControlField>
         </ShowcaseControlGrid>
+      </ShowcaseControlGroup>
+      <ShowcaseControlGroup title="Tipografia">
+        <ShowcaseTypographyControls />
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Interaction">
         <ShowcaseControlStack>
@@ -579,6 +587,7 @@ export default function SwitchPage() {
             eyebrow="Controls"
             title="Switch"
             isAvailable={isSwitchAvailable}
+            showGlobalControls={false}
           >
             {switchControls}
           </ShowcaseRouteControls>

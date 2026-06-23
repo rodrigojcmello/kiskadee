@@ -1,4 +1,6 @@
 .layout {
+  --showcase-sidebar-width: 340px;
+
   display: block;
   height: 100vh;
   box-sizing: border-box;
@@ -7,7 +9,7 @@
 
 .shell {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
+  grid-template-columns: minmax(0, 1fr) var(--showcase-sidebar-width);
   height: 100%;
   min-height: 0;
   background-color: var(--showcase-route-background, transparent);
@@ -18,7 +20,8 @@
   position: relative;
   min-width: 0;
   height: 100%;
-  padding: calc(var(--showcase-toolbar-height) + 22px) 20px 40px;
+  padding: 20px 20px 40px;
+  background: #fff;
   overflow-y: auto;
 }
 
@@ -55,7 +58,8 @@
 .contentInner {
   max-width: 1040px;
   margin: 0 auto;
-  padding: calc(var(--showcase-toolbar-height) + 24px) 32px 48px;
+  padding: calc(var(--showcase-toolbar-height) + 24px) 32px
+    calc(var(--showcase-footer-height) + 48px);
 }
 
 .menuButton {
@@ -164,6 +168,10 @@
   min-width: 0;
 }
 
+.routeGlobalControls {
+  min-width: 0;
+}
+
 @media (max-width: 960px) {
   .layout {
     height: 100vh;
@@ -183,7 +191,7 @@
   }
 
   .contentInner {
-    padding: 16px 20px 40px;
+    padding: 16px 20px calc(var(--showcase-footer-height) + 40px);
   }
 
   .mobileBackdrop {
@@ -240,11 +248,5 @@
     display: grid;
     gap: 22px;
     min-width: 0;
-  }
-
-  .mobileGlobalControls {
-    min-width: 0;
-    padding-bottom: 22px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   }
 }

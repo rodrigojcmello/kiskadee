@@ -27,7 +27,7 @@ export default function FontNamePicker({
   return (
     <Select
       className={className}
-      label="Font"
+      label="Font family"
       width={width}
       options={options}
       value={fontName}

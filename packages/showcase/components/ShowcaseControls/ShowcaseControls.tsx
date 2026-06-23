@@ -17,12 +17,14 @@ export function ShowcaseRouteControls({
   eyebrow,
   id,
   isAvailable = true,
+  showGlobalControls = true,
   title
 }: {
   children: ReactNode;
   eyebrow: string;
   id: string;
   isAvailable?: boolean;
+  showGlobalControls?: boolean;
   title: string;
 }) {
   const { panelSlotElement, registerPanelDetail, clearPanelDetail } = useShowcasePanel();
@@ -33,12 +35,12 @@ export function ShowcaseRouteControls({
       return;
     }
 
-    registerPanelDetail({ id, eyebrow, title });
+    registerPanelDetail({ id, eyebrow, showGlobalControls, title });
 
     return () => {
       clearPanelDetail(id);
     };
-  }, [clearPanelDetail, eyebrow, id, isAvailable, registerPanelDetail, title]);
+  }, [clearPanelDetail, eyebrow, id, isAvailable, registerPanelDetail, showGlobalControls, title]);
 
   if (!isAvailable || !panelSlotElement) return null;
 

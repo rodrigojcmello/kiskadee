@@ -1,29 +1,18 @@
 .toolbarLayout {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 16px;
   inline-size: 100%;
   min-width: 0;
 }
 
-.toolbarSecondary {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-.toolbarColorScale {
-  --switch-control-width: 126px;
-}
-
-.panelTheme {
-  display: grid;
-  gap: 10px;
+.panelSelect {
+  display: block;
   min-width: 0;
 }
 
-.panelThemePicker {
+.panelSwatches {
   --swatch-group-inline-size: 100%;
   --swatch-group-justify-content: space-between;
 }

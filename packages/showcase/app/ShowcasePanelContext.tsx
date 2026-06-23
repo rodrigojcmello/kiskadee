@@ -5,6 +5,7 @@ import { createContext, useContext } from 'react';
 export type ShowcasePanelDetail = {
   id: string;
   eyebrow: string;
+  showGlobalControls?: boolean;
   title: string;
 };
 

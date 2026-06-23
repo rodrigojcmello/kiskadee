@@ -83,6 +83,8 @@ export default function ShowcaseShell({
   );
 
   const isDetailPanelVisible = Boolean(panelDetail && panelMode === 'detail');
+  const shouldShowGlobalControls =
+    isDetailPanelVisible && panelDetail?.showGlobalControls !== false && Boolean(globalControls);
   const menuLabel = isDetailPanelVisible ? 'Controls' : 'Components';
   const menuAriaLabel = isSidebarOpen
     ? `Close ${menuLabel.toLowerCase()} panel`
@@ -113,6 +115,9 @@ export default function ShowcaseShell({
         <p className={style.routePanelEyebrow}>{panelDetail?.eyebrow}</p>
         <h2 className={style.routePanelTitle}>{panelDetail?.title}</h2>
       </div>
+      {shouldShowGlobalControls ? (
+        <div className={style.routeGlobalControls}>{globalControls}</div>
+      ) : null}
       <div ref={setRoutePanelSlot} className={style.routePanelSlot} />
     </aside>
   ) : (
@@ -171,9 +176,6 @@ export default function ShowcaseShell({
                 </button>
               </div>
               <div className={style.mobilePanelContent}>
-                {globalControls ? (
-                  <div className={style.mobileGlobalControls}>{globalControls}</div>
-                ) : null}
                 {sidebarContent}
               </div>
             </div>

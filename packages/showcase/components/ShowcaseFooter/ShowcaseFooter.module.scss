@@ -1,0 +1,34 @@
+.footer {
+  position: fixed;
+  inset: auto var(--showcase-sidebar-width, 340px) 0 0;
+  z-index: 9000;
+  min-height: var(--showcase-footer-height);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 12px;
+  pointer-events: none;
+  background: hsl(0deg 0% 100% / 85%);
+  backdrop-filter: saturate(1.5) blur(10px);
+  box-shadow:
+    inset 0 1px 0 hsl(0deg 0% 100% / 45%),
+    0 0 2px #00000014;
+}
+
+.inner {
+  display: flex;
+  justify-content: flex-end;
+  min-width: 0;
+  pointer-events: auto;
+}
+
+.colorSchema {
+  --switch-control-width: 190px;
+}
+
+@media (max-width: 960px) {
+  .footer {
+    inset-inline-end: 0;
+  }
+}
