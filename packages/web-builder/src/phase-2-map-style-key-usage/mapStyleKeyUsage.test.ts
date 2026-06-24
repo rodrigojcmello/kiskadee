@@ -57,6 +57,34 @@ describe('mapStyleKeyUsage', () => {
     expect(keys).toEqual(['e1', 'e2', 's1', 's2']);
   });
 
+  it('counts later elements when the first eN element is empty', () => {
+    const input = {
+      textField: {
+        standard: {
+          outline: {
+            e1: {},
+            e3: {
+              scales: {
+                's:md:1': ['boxHeight__40', 'paddingLeft__12']
+              }
+            },
+            e4: {
+              decorations: ['textWeight__regular']
+            }
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+
+    const result = mapStyleKeyUsage(input);
+
+    expect(result).toEqual({
+      boxHeight__40: 1,
+      paddingLeft__12: 1,
+      textWeight__regular: 1
+    });
+  });
+
   it('counts nested palettes correctly', () => {
     const input = {
       PaletteComponent: {

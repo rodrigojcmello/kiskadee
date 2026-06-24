@@ -286,6 +286,48 @@ describe('generateCssSplit', () => {
     expect(result.coreCss).toContain('.tw1');
   });
 
+  it('generates CSS for later eN elements when the first element is empty', async () => {
+    const input = {
+      textField: {
+        standard: {
+          outline: {
+            e1: {},
+            e3: {
+              scales: {
+                's:md:1': ['boxHeight__40', 'paddingLeft__12']
+              }
+            },
+            e4: {
+              palettes: {
+                default: {
+                  light: {
+                    neutral: {
+                      rest: ['textColor__[0,0,0,1]']
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+    const shortenMap: ShortenCssClassNames = {
+      boxHeight__40: 'tf-height',
+      paddingLeft__12: 'tf-padding',
+      'textColor__[0,0,0,1]': 'tf-color'
+    };
+
+    const result = await generateCssSplit(input, shortenMap);
+
+    expect(result.coreCss).toContain('.tf-height');
+    expect(result.coreCss).toContain('height');
+    expect(result.coreCss).toContain('.tf-padding');
+    expect(result.coreCss).toContain('padding-left');
+    expect(result.palettes['default.light']).toContain('.tf-color');
+    expect(result.palettes['default.light']).toContain('color');
+  });
+
   it('handles multiple components', async () => {
     const input = {
       button: {

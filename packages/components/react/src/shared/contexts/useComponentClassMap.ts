@@ -11,12 +11,18 @@ type ComponentClassMapState<TClassMap> = {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
+const hasElementClassShape = (value: Record<string, unknown>): boolean => {
+  const elementKeys = ['d', 'e', 's', 'w', 'c', 'l', 'rr', 'rp', 'rs'];
+  return elementKeys.some((key) => key in value);
+};
+
 const isClassElementMap = (value: unknown): value is Record<string, Record<string, unknown>> => {
   if (!isRecord(value)) return false;
-  const first = Object.values(value).find(Boolean);
-  if (!isRecord(first)) return false;
-  const elementKeys = ['d', 'e', 's', 'w', 'c', 'l', 'rr', 'rp', 'rs'];
-  return elementKeys.some((key) => key in first);
+  const entries = Object.entries(value);
+  if (entries.length === 0) return false;
+  return entries.every(
+    ([key, item]) => isRecord(item) && (/^e\d+$/.test(key) || hasElementClassShape(item))
+  );
 };
 
 function isComponentClassMapArtifact<TClassMap>(

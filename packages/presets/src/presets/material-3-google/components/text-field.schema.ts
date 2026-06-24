@@ -697,13 +697,7 @@ export function createMaterial3GoogleTextFieldSchema(
             },
             elements: {
               e1: {
-                name: 'root',
-                scales: {
-                  boxWidth: {
-                    's:sm:1': 280,
-                    's:md:1': 320
-                  }
-                }
+                name: 'root'
               },
               e2: {
                 name: 'label',
@@ -826,13 +820,7 @@ export function createMaterial3GoogleTextFieldSchema(
             },
             elements: {
               e1: {
-                name: 'root',
-                scales: {
-                  boxWidth: {
-                    's:sm:1': 280,
-                    's:md:1': 320
-                  }
-                }
+                name: 'root'
               },
               e2: {
                 name: 'label',
@@ -965,13 +953,7 @@ export function createMaterial3GoogleTextFieldSchema(
             },
             elements: {
               e1: {
-                name: 'root',
-                scales: {
-                  boxWidth: {
-                    's:sm:1': 280,
-                    's:md:1': 320
-                  }
-                }
+                name: 'root'
               },
               e2: {
                 name: 'label',
@@ -1101,13 +1083,7 @@ export function createMaterial3GoogleTextFieldSchema(
             },
             elements: {
               e1: {
-                name: 'root',
-                scales: {
-                  boxWidth: {
-                    's:sm:1': 280,
-                    's:md:1': 320
-                  }
-                }
+                name: 'root'
               },
               e2: {
                 name: 'label',
@@ -1245,13 +1221,7 @@ export function createMaterial3GoogleTextFieldSchema(
             },
             elements: {
               e1: {
-                name: 'root',
-                scales: {
-                  boxWidth: {
-                    's:sm:1': 280,
-                    's:md:1': 320
-                  }
-                }
+                name: 'root'
               },
               e2: {
                 name: 'label',

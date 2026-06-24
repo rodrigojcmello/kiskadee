@@ -3,12 +3,18 @@ import type { ComponentClassNameMapJSON } from '@kiskadee/core';
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
+const hasElementClassShape = (value: Record<string, unknown>): boolean => {
+  const elementKeys = ['d', 'e', 's', 'w', 'c', 'l', 'rr', 'rp', 'rs'];
+  return elementKeys.some((key) => key in value);
+};
+
 const isElementMap = (value: unknown): value is Record<string, Record<string, unknown>> => {
   if (!isRecord(value)) return false;
-  const first = Object.values(value).find(Boolean);
-  if (!isRecord(first)) return false;
-  const elementKeys = ['d', 'e', 's', 'c', 'l', 'r', 'rp', 'rs'];
-  return elementKeys.some((key) => key in first);
+  const entries = Object.entries(value);
+  if (entries.length === 0) return false;
+  return entries.every(
+    ([key, item]) => isRecord(item) && (/^e\d+$/.test(key) || hasElementClassShape(item))
+  );
 };
 
 const mergeElementMaps = (
@@ -30,6 +36,11 @@ const mergeElementMaps = (
     if (mergedEl.d === undefined && pEl.d !== undefined) mergedEl.d = pEl.d;
     if (mergedEl.e === undefined && pEl.e !== undefined) mergedEl.e = pEl.e;
     if (mergedEl.s === undefined && pEl.s !== undefined) mergedEl.s = pEl.s;
+    if (mergedEl.w === undefined && pEl.w !== undefined) mergedEl.w = pEl.w;
+    if (mergedEl.l === undefined && pEl.l !== undefined) mergedEl.l = pEl.l;
+    if (mergedEl.rr === undefined && pEl.rr !== undefined) mergedEl.rr = pEl.rr;
+    if (mergedEl.rp === undefined && pEl.rp !== undefined) mergedEl.rp = pEl.rp;
+    if (mergedEl.rs === undefined && pEl.rs !== undefined) mergedEl.rs = pEl.rs;
     out[el] = mergedEl;
   }
   return out;

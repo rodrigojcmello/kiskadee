@@ -15,28 +15,28 @@ describe('transformShadowKeyToCss', () => {
       const styleKey = 'shadow__[2,4,5,[0,0,0,1]]';
       const result = transformShadowKeyToCss(styleKey, className);
 
-      expect(result).toEqual('.abc.-e { box-shadow: 2px 4px 5px #000 }');
+      expect(result).toEqual('.abc.-e { box-shadow: 2px 4px 5px 0 #000 }');
     });
 
     it('should transform a hover state shadow key with pseudo-selector', () => {
       const styleKey = 'shadow--hover__[6,8,10,[0,0,0,0.5]]';
       const result = transformShadowKeyToCss(styleKey, className);
 
-      expect(result).toEqual('.abc.-e:hover { box-shadow: 6px 8px 10px #00000080 }');
+      expect(result).toEqual('.abc.-e.-n:hover { box-shadow: 6px 8px 10px 0 #00000080 }');
     });
 
     it('should transform a pressed state shadow key to use :active pseudo-selector', () => {
       const styleKey = 'shadow--pressed__[3,3,3,[0,0,0,1]]';
       const result = transformShadowKeyToCss(styleKey, className);
 
-      expect(result).toEqual('.abc.-e:active { box-shadow: 3px 3px 3px #000 }');
+      expect(result).toEqual('.abc.-e.-n:active { box-shadow: 3px 3px 3px 0 #000 }');
     });
 
     it('should abbreviate zero pixel values to 0', () => {
       const styleKey = 'shadow__[0,4,5,[0,0,0,1]]';
       const result = transformShadowKeyToCss(styleKey, className);
 
-      expect(result).toEqual('.abc.-e { box-shadow: 0 4px 5px #000 }');
+      expect(result).toEqual('.abc.-e { box-shadow: 0 4px 5px 0 #000 }');
     });
   });
 
@@ -46,7 +46,7 @@ describe('transformShadowKeyToCss', () => {
       const fn1 = (): string => transformShadowKeyToCss(invalidKey1, className);
       expect(fn1).toThrowError(UNSUPPORTED_PROPERTY_NAME('shadow', invalidKey1));
 
-      const invalidKey2 = 'shadow__2,4,5,[0,0,0,1]';
+      const invalidKey2 = 'shadow--hover';
       const fn2 = (): string => transformShadowKeyToCss(invalidKey2, className);
       expect(fn2).toThrowError(UNSUPPORTED_PROPERTY_NAME('shadow', invalidKey2));
     });
@@ -54,7 +54,7 @@ describe('transformShadowKeyToCss', () => {
     it('should throw an error when the shadow values cannot be parsed', () => {
       const invalidKey = 'shadow__[2,4,"invalid"]';
       const fn = (): string => transformShadowKeyToCss(invalidKey, className);
-      expect(fn).toThrowError(UNSUPPORTED_VALUE('shadow', '2,4,"invalid"', invalidKey));
+      expect(fn).toThrowError(UNSUPPORTED_VALUE('shadow', '[2,4,"invalid"]', invalidKey));
     });
 
     it('should throw an error for an unsupported interaction state', () => {
@@ -64,7 +64,7 @@ describe('transformShadowKeyToCss', () => {
     });
 
     it('should throw an error for an invalid color value', () => {
-      const styleKey = 'shadow__[10,20,30,blue]';
+      const styleKey = 'shadow__10,20,30,blue';
       const fn = (): string => transformShadowKeyToCss(styleKey, className);
       expect(fn).toThrowError(INVALID_SHADOW_COLOR_VALUE);
     });

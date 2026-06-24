@@ -47,12 +47,23 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+function hasElementStyleShape(value: Record<string, unknown>): boolean {
+  return (
+    'decorations' in value ||
+    'effects' in value ||
+    'scales' in value ||
+    'radiusScales' in value ||
+    'palettes' in value
+  );
+}
+
 function isElementMap(value: unknown): value is Record<string, ElementStyleKeyRecord> {
   if (!isRecord(value)) return false;
-  const first = Object.values(value).find(Boolean);
-  if (!isRecord(first)) return false;
-  const elementKeys = ['decorations', 'effects', 'scales', 'radiusScales', 'palettes'];
-  return elementKeys.some((key) => key in first);
+  const entries = Object.entries(value);
+  if (entries.length === 0) return false;
+  return entries.every(
+    ([key, item]) => isRecord(item) && (/^e\d+$/.test(key) || hasElementStyleShape(item))
+  );
 }
 
 function getOrCreateSet(map: Map<string, Set<string>>, key: string): Set<string> {

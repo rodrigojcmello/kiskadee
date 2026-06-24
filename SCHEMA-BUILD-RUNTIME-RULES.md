@@ -158,6 +158,40 @@ Consequence:
 - Runtime adapters provide host refs and event/cancel behavior; schema decides profile, origin,
   paint, layer, size, and tone.
 
+### 3.1.4 TextField width ownership
+
+Context:
+
+- TextField is an editable form control whose useful width depends on the surrounding form,
+  expected value, grid, breakpoint, and consumer layout.
+- Unlike Button, TextField content is often empty at rest, so its own label or value is not a
+  reliable sizing source.
+- The React TextField structural CSS already makes root, control, and input fill the available
+  inline size of the parent container.
+
+Decision:
+
+- TextField width is owned by the parent layout container.
+- TextField root elements must not declare `scales.boxWidth`.
+- Do not add a TextField-specific runtime width mode unless there is concrete product evidence that
+  container-owned sizing is insufficient.
+
+Reason:
+
+- A schema-emitted root width is always-on once generated and conflicts with the structural contract
+  that TextField fills its container.
+- A minimum or preferred width cannot be safely inferred by the component because field semantics
+  such as email, zip code, address, search, and URL have different expected widths.
+- Keeping width in the parent preserves responsive layout control without expanding the TextField
+  runtime API.
+
+Consequence:
+
+- Presets should size TextFields by composing them inside form/grid wrappers, not by emitting
+  `boxWidth` on TextField `e1`.
+- Web artifacts should not include TextField root width classes.
+- Showcase examples that need bounded fields must constrain their example blocks or wrappers.
+
 ### 3.2 `components.<name>.options`
 
 Use `options` for component-specific behavior/structure defaults that are not a DS color/scale token.

@@ -42,7 +42,7 @@ export type TextFieldModeOptions = TextFieldModeOptionsFromSchema;
 
 /**
  * e1 — root wrapper
- * - optional width scale
+ * - component root without schema-owned width
  */
 export type TextFieldRootElementStyle = TextFieldRootElementStyleFromSchema;
 

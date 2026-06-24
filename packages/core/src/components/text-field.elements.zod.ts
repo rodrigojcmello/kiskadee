@@ -12,7 +12,6 @@ export function createTextFieldRootElementStyleSchema() {
   return z
     .object({
       name: z.string(),
-      scales: createScalesSchema(['boxWidth']).optional(),
       effects: elementEffectsSchema.optional()
     })
     .strict();

@@ -5,7 +5,10 @@ import type {
   Schema
 } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
-import type { ToneMetadataByPalette } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys.ts';
+import {
+  buildScopedToneMetadataKey,
+  type ToneMetadataByPalette
+} from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys.ts';
 import { convertElementSchemaToStyleKeys } from '../phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
 import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
@@ -81,6 +84,90 @@ describe('generateClassNamesMapSplit', () => {
 
     expect(button.e1.s?.['md:1']).toBe('bw1');
     expect(card.e1.s?.['md:1']).toBe('bw0');
+  });
+
+  it('generates class maps for later eN elements when the first element is empty', () => {
+    const colorKey = 'textColor__[0,0,0,1]';
+    const styleKeys = {
+      textField: {
+        standard: {
+          outline: {
+            e1: {},
+            e3: {
+              scales: {
+                's:md:1': ['boxHeight__40', 'paddingLeft__12']
+              }
+            },
+            e4: {
+              palettes: {
+                default: {
+                  light: {
+                    neutral: {
+                      rest: [colorKey]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+    const toneMetadataByPalette = new Map([
+      [
+        'default.light',
+        new Map([
+          [
+            buildScopedToneMetadataKey(
+              {
+                componentName: 'textField',
+                variantName: 'standard',
+                modeName: 'outline',
+                elementName: 'e4'
+              },
+              `neutral::${colorKey}`
+            ),
+            { tones: ['medium'] }
+          ]
+        ])
+      ]
+    ]) as ToneMetadataByPalette;
+
+    const out = generateClassNamesMapSplit(
+      styleKeys,
+      {
+        boxHeight__40: 'tf-height',
+        paddingLeft__12: 'tf-padding',
+        [colorKey]: 'tf-color'
+      },
+      toneMetadataByPalette
+    );
+
+    const coreTextField = out.core.textField as Record<
+      string,
+      Record<string, ClassNameByElementJSON>
+    >;
+    const paletteTextField = out.palettes['default.light'].textField as Record<
+      string,
+      Record<string, ClassNameByElementJSON>
+    >;
+    const coreOutline = coreTextField.standard.outline;
+    const paletteOutline = paletteTextField.standard.outline;
+
+    expect(coreOutline.e1).toEqual({
+      d: undefined,
+      e: undefined,
+      l: undefined,
+      s: undefined,
+      w: undefined,
+      rr: undefined,
+      rp: undefined,
+      rs: undefined
+    });
+    expect(coreOutline.e3.s?.['md:1']).toBe('tf-height tf-padding');
+    expect(paletteOutline.e4.c?.neutral).toEqual({
+      m: 'tf-color'
+    });
   });
 
   it('keeps shared palette style keys in the tone bucket declared by the current element', () => {
