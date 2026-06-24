@@ -8,6 +8,7 @@ export type ColorScaleJson = Record<string, Record<string, string>>;
 // Map: designSystemKey -> loader for <ds>/colors.json
 export const colorsMaps = {
   'carbon-1-ibm': () => loadJsonFromBuild<ColorsJson>('carbon-1-ibm/colors.json', { required: true }),
+  'elegant-1-kiskadee': () => loadJsonFromBuild<ColorsJson>('elegant-1-kiskadee/colors.json', { required: true }),
   'fluent-2-kiskadee': () => loadJsonFromBuild<ColorsJson>('fluent-2-kiskadee/colors.json', { required: true }),
   'fluent-2-microsoft': () => loadJsonFromBuild<ColorsJson>('fluent-2-microsoft/colors.json', { required: true }),
   'ios-18-apple': () => loadJsonFromBuild<ColorsJson>('ios-18-apple/colors.json', { required: true }),

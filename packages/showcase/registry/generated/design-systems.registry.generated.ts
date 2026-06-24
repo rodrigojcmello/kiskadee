@@ -21,6 +21,7 @@ function loadExtraJson(relativePath: string): Promise<ExtraArtifactsJSON> {
 
 export const coreMaps = {
   'carbon-1-ibm': () => loadJsonModule('carbon-1-ibm/core.kiskadee.json'),
+  'elegant-1-kiskadee': () => loadJsonModule('elegant-1-kiskadee/core.kiskadee.json'),
   'fluent-2-kiskadee': () => loadJsonModule('fluent-2-kiskadee/core.kiskadee.json'),
   'fluent-2-microsoft': () => loadJsonModule('fluent-2-microsoft/core.kiskadee.json'),
   'ios-18-apple': () => loadJsonModule('ios-18-apple/core.kiskadee.json'),
@@ -33,6 +34,7 @@ export const coreMaps = {
 
 export const paletteMaps = {
   'carbon-1-ibm|default|light': () => loadJsonModule('carbon-1-ibm/default.light.kiskadee.json'),
+  'elegant-1-kiskadee|default|light': () => loadJsonModule('elegant-1-kiskadee/default.light.kiskadee.json'),
   'fluent-2-kiskadee|default|dark': () => loadJsonModule('fluent-2-kiskadee/default.dark.kiskadee.json'),
   'fluent-2-kiskadee|default|light': () => loadJsonModule('fluent-2-kiskadee/default.light.kiskadee.json'),
   'fluent-2-kiskadee|modern|dark': () => loadJsonModule('fluent-2-kiskadee/modern.dark.kiskadee.json'),
@@ -59,6 +61,7 @@ export const paletteMaps = {
 
 export const extraMaps = {
   'carbon-1-ibm|default|light': () => loadExtraJson('carbon-1-ibm/extra.default.light.kiskadee.json'),
+  'elegant-1-kiskadee|default|light': () => loadExtraJson('elegant-1-kiskadee/extra.default.light.kiskadee.json'),
   'fluent-2-kiskadee|default|dark': () => loadExtraJson('fluent-2-kiskadee/extra.default.dark.kiskadee.json'),
   'ios-18-apple|default|light': () => loadExtraJson('ios-18-apple/extra.default.light.kiskadee.json'),
   'sandbox-0-kiskadee|default|light': () => loadExtraJson('sandbox-0-kiskadee/extra.default.light.kiskadee.json'),
@@ -66,6 +69,12 @@ export const extraMaps = {
 
 export const paletteIndex = {
   'carbon-1-ibm': {
+    segments: ['default'],
+    themesBySegment: {
+      "default": ['light']
+    }
+  },
+  'elegant-1-kiskadee': {
     segments: ['default'],
     themesBySegment: {
       "default": ['light']
@@ -129,6 +138,7 @@ export type DesignSystemListEntry = import('@kiskadee/web-builder/types').Design
 
 export const designSystemList: DesignSystemListEntry[] = [
   { key: 'carbon-1-ibm', displayName: "Carbon by IBM" },
+  { key: 'elegant-1-kiskadee', displayName: "Elegant by Kiskadee" },
   { key: 'fluent-2-kiskadee', displayName: "Fluent 2 by Kiskadee" },
   { key: 'fluent-2-microsoft', displayName: "Fluent 2 by Microsoft" },
   { key: 'ios-18-apple', displayName: "iOS 18 by Apple" },
@@ -141,6 +151,7 @@ export const designSystemList: DesignSystemListEntry[] = [
 
 export const designSystemMeta = {
   'carbon-1-ibm': {"displayName":"Carbon by IBM","components":{"button":{"scale":{"s:sm:2":true,"s:sm:1":true,"s:md:1":true,"s:lg:1":true,"s:lg:2":true,"s:lg:3":true},"state":{"primary":{"high":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true}}},"artifacts":{"classMaps":{"core":"class-maps/core/button.kiskadee.json","palettes":{"default.light":"class-maps/default.light/button.kiskadee.json"}}}},"switch":{"scale":{"s:md:1":true,"rounded":true,"pill":true,"square":true},"state":{"neutral":{"medium":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true,"selected":true}}},"artifacts":{"metadata":"components/switch.kiskadee.json","classMaps":{"core":"class-maps/core/switch.kiskadee.json","palettes":{"default.light":"class-maps/default.light/switch.kiskadee.json"}}}}}},
+  'elegant-1-kiskadee': {"displayName":"Elegant by Kiskadee","components":{"button":{"scale":{"s:md:1":true,"rounded":true,"pill":true,"square":true},"state":{"primary":{"medium":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true,"selected":true},"high":{"rest":true,"hover":true,"pressed":true,"disabled":true,"focus":true,"selected":true}}},"artifacts":{"classMaps":{"core":"class-maps/core/button.kiskadee.json","palettes":{"default.light":"class-maps/default.light/button.kiskadee.json"}}}},"card":{"scale":{"s:md:1":true,"rounded":true,"square":true},"state":{"neutral":{"medium":{"rest":true,"hover":true,"pressed":true,"focus":true,"disabled":true,"selected":true}}},"artifacts":{"classMaps":{"core":"class-maps/core/card.kiskadee.json","palettes":{"default.light":"class-maps/default.light/card.kiskadee.json"}}}},"switch":{"scale":{"s:md:1":true,"rounded":true,"pill":true,"square":true},"state":{"neutral":{"medium":{"rest":true,"pressed":true,"disabled":true,"selected":true,"hover":true,"focus":true}}},"artifacts":{"metadata":"components/switch.kiskadee.json","classMaps":{"core":"class-maps/core/switch.kiskadee.json","palettes":{"default.light":"class-maps/default.light/switch.kiskadee.json"}}}}}},
   'fluent-2-kiskadee': {"displayName":"Fluent 2 by Kiskadee","components":{"button":{"scale":{"s:sm:1":true,"s:md:1":true,"s:lg:1":true,"rounded":true,"pill":true,"square":true},"state":{"primary":{"high":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true,"selected":true}}},"artifacts":{"classMaps":{"core":"class-maps/core/button.kiskadee.json","palettes":{"default.light":"class-maps/default.light/button.kiskadee.json","default.dark":"class-maps/default.dark/button.kiskadee.json","modern.light":"class-maps/modern.light/button.kiskadee.json","modern.dark":"class-maps/modern.dark/button.kiskadee.json","dynamic.light":"class-maps/dynamic.light/button.kiskadee.json","dynamic.dark":"class-maps/dynamic.dark/button.kiskadee.json"}}}}}},
   'fluent-2-microsoft': {"displayName":"Fluent 2 by Microsoft","components":{"button":{"scale":{"s:sm:1":true,"s:md:1":true,"s:lg:1":true,"rounded":true,"pill":true,"square":true},"state":{"primary":{"high":{"rest":true,"hover":true,"focus":true,"pressed":true,"disabled":true,"selected":true}}},"artifacts":{"classMaps":{"core":"class-maps/core/button.kiskadee.json","palettes":{"default.light":"class-maps/default.light/button.kiskadee.json"}}}},"card":{"scale":{"s:md:1":true,"rounded":true,"square":true},"state":{"neutral":{"medium":{"rest":true,"hover":true,"pressed":true,"focus":true,"disabled":true,"selected":true}}},"artifacts":{"classMaps":{"core":"class-maps/core/card.kiskadee.json","palettes":{"default.light":"class-maps/default.light/card.kiskadee.json"}}}},"switch":{"scale":{"s:md:1":true,"rounded":true,"pill":true,"square":true},"state":{"neutral":{"medium":{"rest":true,"hover":true,"focus":true,"pressed":true,"selected":true,"disabled":true},"low":{"rest":true,"hover":true,"focus":true,"pressed":true,"selected":true,"disabled":true}},"polarity":{"medium":{"rest":true,"selected":true},"low":{"rest":true,"selected":true}}},"artifacts":{"metadata":"components/switch.kiskadee.json","classMaps":{"core":"class-maps/core/switch.kiskadee.json","palettes":{"default.light":"class-maps/default.light/switch.kiskadee.json"}}}}}},
   'ios-18-apple': {"displayName":"iOS 18 by Apple","components":{"switch":{"scale":{"s:md:1":true,"rounded":true,"pill":true,"square":true},"state":{"neutral":{"medium":{"rest":true,"pressed":true,"disabled":true,"selected":true,"hover":true,"focus":true}}},"artifacts":{"metadata":"components/switch.kiskadee.json","classMaps":{"core":"class-maps/core/switch.kiskadee.json","palettes":{"default.light":"class-maps/default.light/switch.kiskadee.json"}}}}}},

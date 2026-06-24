@@ -13,6 +13,17 @@ export const cssPaths = {
       'default|light': '/build/carbon-1-ibm/tokens.default.light.kiskadee.css',
     }
   },
+  'elegant-1-kiskadee': {
+    core: '/build/elegant-1-kiskadee/core.kiskadee.css',
+    effects: '/build/elegant-1-kiskadee/effects.kiskadee.css',
+    tokens: '/build/elegant-1-kiskadee/tokens.kiskadee.css',
+    palettes: {
+      'default|light': '/build/elegant-1-kiskadee/default.light.kiskadee.css',
+    },
+    tokenPalettes: {
+      'default|light': '/build/elegant-1-kiskadee/tokens.default.light.kiskadee.css',
+    }
+  },
   'fluent-2-kiskadee': {
     core: '/build/fluent-2-kiskadee/core.kiskadee.css',
     effects: '/build/fluent-2-kiskadee/effects.kiskadee.css',
