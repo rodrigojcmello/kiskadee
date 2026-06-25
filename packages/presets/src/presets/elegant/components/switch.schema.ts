@@ -6,8 +6,10 @@ type SwitchComponent = NonNullable<Schema<ElegantSegmentName>['components']['swi
 
 const transparent = [0, 0, 0, 0] as const;
 const ios18SwitchTrackOff = [240, 4, 92, 1] as const;
-const ios18SwitchTrackOffPressed = [240, 4, 86, 1] as const;
+const elegantSwitchTrackOffHover = [240, 4, 94, 1] as const;
+const elegantSwitchTrackOffPressed = [240, 4, 86, 1] as const;
 const ios18SwitchTrackOn = [136, 60, 49, 1] as const;
+const elegantSwitchTrackOnHoverFocus = [136, 60, 54, 1] as const;
 const ios18SwitchTrackOnPressed = [136, 54, 43, 1] as const;
 const ios18SwitchTrackDisabled = [240, 4, 92, 0.42] as const;
 const ios18SwitchThumb = [0, 0, 100, 1] as const;
@@ -39,15 +41,6 @@ export function createElegantSwitchSchema(): SwitchComponent {
             size: 8
           }
         }
-      },
-      shadow: {
-        e3: {
-          kind: 'outer',
-          states: {
-            rest: 's:sm:1',
-            disabled: false
-          }
-        }
       }
     },
     options: {
@@ -71,18 +64,18 @@ export function createElegantSwitchSchema(): SwitchComponent {
                 },
                 scales: {
                   boxWidth: {
-                    's:md:1': 51
+                    's:md:1': 40
                   },
                   boxHeight: {
-                    's:md:1': 31
+                    's:md:1': 22
                   },
                   borderWidth: 0,
                   borderRadius: {
                     rounded: {
-                      's:md:1': 15.5
+                      's:md:1': 11
                     },
                     pill: {
-                      's:md:1': 15.5
+                      's:md:1': 11
                     },
                     square: 0
                   },
@@ -105,10 +98,13 @@ export function createElegantSwitchSchema(): SwitchComponent {
                       neutral: {
                         medium: {
                           rest: ios18SwitchTrackOff,
-                          pressed: ios18SwitchTrackOffPressed,
-                          disabled: ios18SwitchTrackDisabled,
+                          hover: { ref: elegantSwitchTrackOffHover },
+                          pressed: { ref: elegantSwitchTrackOffPressed },
+                          disabled: { ref: ios18SwitchTrackDisabled },
                           selected: {
                             rest: { ref: ios18SwitchTrackOn },
+                            hover: { ref: elegantSwitchTrackOnHoverFocus },
+                            focus: { ref: elegantSwitchTrackOnHoverFocus },
                             pressed: { ref: ios18SwitchTrackOnPressed }
                           }
                         }
@@ -136,19 +132,31 @@ export function createElegantSwitchSchema(): SwitchComponent {
               },
               e3: {
                 name: 'thumb',
+                effects: {
+                  shadow: {
+                    x: { rest: 1, hover: 1, pressed: 1 },
+                    y: { rest: 1, hover: 2, pressed: 1 },
+                    blur: { rest: 2, hover: 4, pressed: 2 },
+                    color: {
+                      rest: [0, 0, 0, 0.22],
+                      hover: [0, 0, 0, 0.26],
+                      pressed: [0, 0, 0, 0.22]
+                    }
+                  }
+                },
                 scales: {
                   boxWidth: {
-                    's:md:1': 27
+                    's:md:1': 18
                   },
                   boxHeight: {
-                    's:md:1': 27
+                    's:md:1': 18
                   },
                   borderRadius: {
                     rounded: {
-                      's:md:1': 13.5
+                      's:md:1': 9
                     },
                     pill: {
-                      's:md:1': 13.5
+                      's:md:1': 9
                     },
                     square: 0
                   }
