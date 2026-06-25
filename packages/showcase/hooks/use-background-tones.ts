@@ -6,8 +6,8 @@ import { useColorScaleTones } from '@/hooks/use-color-scale';
 
 const BACKGROUND_TONES = [
   { key: 'white', color: '#ffffff', displayColor: '#ffffff', aria: 'White' },
-  { key: 'gray', color: '#f5f5f5', displayColor: '#e5e7eb', aria: 'Gray' },
   { key: 'light-primary', color: '#f0eafb', displayColor: '#f0eafb', aria: 'Light primary' },
+  { key: 'gray', color: '#f5f5f5', displayColor: '#e5e7eb', aria: 'Gray' },
   { key: 'dark-gray', color: '#29313d', displayColor: '#6b6f7b', aria: 'Dark gray' },
   { key: 'dark-primary', color: '#201933', displayColor: '#201933', aria: 'Dark primary' },
   { key: 'black', color: '#000000', displayColor: '#000000', aria: 'Black' }
@@ -42,8 +42,8 @@ export function useBackgroundTones() {
     designSystemKey,
     theme: 'dark',
     selection: 'semantic:primary',
-    tones: ['85'],
-    preferredTracks: ['vivid', 'subtle'],
+    tones: ['10'],
+    preferredTracks: ['subtle', 'vivid'],
     enabled: canLoadPrimary
   });
 
@@ -68,7 +68,7 @@ export function useBackgroundTones() {
       }
 
       if (tone.key === 'dark-primary') {
-        const hex = darkPrimary.picked['85'];
+        const hex = darkPrimary.picked['10'];
         return {
           ...tone,
           resolvedColor: hex ?? tone.color,

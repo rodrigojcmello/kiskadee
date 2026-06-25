@@ -11,7 +11,9 @@ type CreateMaterial3GoogleTextFieldSchemaArgs = {
   transparent: readonly [number, number, number, number];
 };
 
-type PaletteBundle = Record<string, Record<string, Record<string, unknown>>>;
+type PaletteTheme = Record<string, Record<string, Record<string, unknown>>>;
+type PaletteBundle = Record<string, Record<string, PaletteTheme>>;
+type PaletteGroupBundle = Record<string, PaletteBundle>;
 
 const borderlessLightRestBoxColor: Color = [0, 0, 96, 1];
 const borderlessLightHoverBoxColor: Color = [0, 0, 94, 1];
@@ -19,6 +21,55 @@ const borderlessLightFocusBoxColor: Color = [0, 0, 92, 1];
 
 function fieldStateRef(color: Color): { ref: Color } {
   return { ref: color };
+}
+
+function createLightLowEmphasisTheme(lightTheme: PaletteTheme, darkTheme: PaletteTheme) {
+  const light: PaletteTheme = {};
+
+  for (const styleName of new Set([...Object.keys(lightTheme), ...Object.keys(darkTheme)])) {
+    const lightStyle = lightTheme[styleName] ?? {};
+    const darkStyle = darkTheme[styleName] ?? {};
+    light[styleName] = {};
+
+    for (const intentName of new Set([...Object.keys(lightStyle), ...Object.keys(darkStyle)])) {
+      const darkMedium = darkStyle[intentName]?.medium;
+      light[styleName][intentName] = {
+        ...(lightStyle[intentName] ?? {}),
+        ...(darkMedium === undefined ? {} : { low: darkMedium })
+      };
+    }
+  }
+
+  return light;
+}
+
+function withLightLowEmphasisBundle<TPaletteBundle extends PaletteBundle>(
+  palettes: TPaletteBundle
+): TPaletteBundle {
+  const merged: PaletteBundle = {};
+
+  for (const segmentName of Object.keys(palettes)) {
+    const themes = palettes[segmentName];
+    merged[segmentName] = { ...themes };
+
+    if (themes.light && themes.dark) {
+      merged[segmentName].light = createLightLowEmphasisTheme(themes.light, themes.dark);
+    }
+  }
+
+  return merged as TPaletteBundle;
+}
+
+function withLightLowEmphasisFromDarkMedium<TPaletteGroupBundle extends PaletteGroupBundle>(
+  paletteGroups: TPaletteGroupBundle
+): TPaletteGroupBundle {
+  const merged: PaletteGroupBundle = {};
+
+  for (const groupName of Object.keys(paletteGroups)) {
+    merged[groupName] = withLightLowEmphasisBundle(paletteGroups[groupName]);
+  }
+
+  return merged as TPaletteGroupBundle;
 }
 
 function withPlaceholderPalette<TControl extends PaletteBundle>(
@@ -539,23 +590,23 @@ function createTextFieldElementPalettes({
         textColor: {
           neutral: {
             medium: {
-              rest: c(s, 'd', 'neutral', 10),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'neutral', 15))
+              rest: c(s, 'd', 'neutral', 90),
+              disabled: fieldStateRef(c(s, 'd', 'neutral', 90, 38)),
+              readOnly: fieldStateRef(c(s, 'd', 'neutral', 85))
             }
           },
           error: {
             medium: {
-              rest: c(s, 'd', 'neutral', 10),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'neutral', 15))
+              rest: c(s, 'd', 'neutral', 90),
+              disabled: fieldStateRef(c(s, 'd', 'neutral', 90, 38)),
+              readOnly: fieldStateRef(c(s, 'd', 'neutral', 85))
             }
           },
           warning: {
             medium: {
-              rest: c(s, 'd', 'neutral', 10),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'neutral', 15))
+              rest: c(s, 'd', 'neutral', 90),
+              disabled: fieldStateRef(c(s, 'd', 'neutral', 90, 38)),
+              readOnly: fieldStateRef(c(s, 'd', 'neutral', 85))
             }
           }
         }
@@ -677,7 +728,7 @@ function createTextFieldElementPalettes({
 export function createMaterial3GoogleTextFieldSchema(
   args: CreateMaterial3GoogleTextFieldSchemaArgs
 ): TextFieldComponent {
-  const palettes = createTextFieldElementPalettes(args);
+  const palettes = withLightLowEmphasisFromDarkMedium(createTextFieldElementPalettes(args));
 
   return {
     options: {

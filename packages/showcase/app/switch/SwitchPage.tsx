@@ -59,8 +59,8 @@ type SwitchSurface = 'default' | 'primary' | Exclude<BackgroundToneKey, 'white'>
 
 const surfaceToneOrder: SwitchSurface[] = [
   'default',
-  'gray',
   'light-primary',
+  'gray',
   'primary',
   'dark-gray',
   'dark-primary',

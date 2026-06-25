@@ -56,8 +56,8 @@ type TextFieldSurface = 'default' | 'primary' | Exclude<BackgroundToneKey, 'whit
 
 const surfaceToneOrder: TextFieldSurface[] = [
   'default',
-  'gray',
   'light-primary',
+  'gray',
   'primary',
   'dark-gray',
   'dark-primary',
