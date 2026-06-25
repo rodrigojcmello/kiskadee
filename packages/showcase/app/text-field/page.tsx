@@ -8,6 +8,7 @@ import type {
 } from '@kiskadee/core';
 import { componentEmphasisBuckets } from '@kiskadee/core';
 import {
+  Button as KButton,
   TextFieldFloatingInside,
   TextFieldFloatingNotched,
   TextFieldStandardBorderless,
@@ -50,6 +51,21 @@ const labelOffsetOptions: Array<{ value: LabelOffsetSelection; label: string }> 
   { value: 'radius', label: 'Radius' },
   { value: 'input-start', label: 'Input start' },
   { value: 'none', label: 'None' }
+];
+
+type TextFieldVariantMode =
+  | 'standard-outline'
+  | 'standard-underline'
+  | 'standard-borderless'
+  | 'floating-notched'
+  | 'floating-inside';
+
+const variantModeOptions: Array<{ value: TextFieldVariantMode; label: string }> = [
+  { value: 'standard-outline', label: 'Standard / Outline' },
+  { value: 'standard-underline', label: 'Standard / Underline' },
+  { value: 'standard-borderless', label: 'Standard / Borderless' },
+  { value: 'floating-notched', label: 'Floating / Notched' },
+  { value: 'floating-inside', label: 'Floating / Inside' }
 ];
 
 type TextFieldSurface = 'default' | 'primary' | Exclude<BackgroundToneKey, 'white'>;
@@ -138,6 +154,10 @@ export default function TextFieldPage() {
   const [standardBorderlessName, setStandardBorderlessName] = useState('');
   const [floatingNotchedProject, setFloatingNotchedProject] = useState('');
   const [floatingInsideProject, setFloatingInsideProject] = useState('');
+  const [interactiveVariantMode, setInteractiveVariantMode] =
+    useState<TextFieldVariantMode>('standard-outline');
+  const [interactiveEmail, setInteractiveEmail] = useState('');
+  const [interactiveEmailConfirmation, setInteractiveEmailConfirmation] = useState('');
   const [borderRadius, setBorderRadius] = useState<RadiusMode>('rounded');
   const [labelOffsetSelection, setLabelOffsetSelection] = useState<LabelOffsetSelection>('auto');
   const [surface, setSurface] = useState<TextFieldSurface>('default');
@@ -249,8 +269,67 @@ export default function TextFieldPage() {
     setSurface(nextSurface);
   };
 
+  const renderInteractiveTextField = ({
+    id,
+    label,
+    onValueChange,
+    placeholder,
+    value
+  }: {
+    id: string;
+    label: string;
+    onValueChange: (value: string) => void;
+    placeholder: string;
+    value: string;
+  }) => {
+    const interactiveTextFieldProps = {
+      id,
+      label,
+      value,
+      onValueChange,
+      placeholder,
+      radius: borderRadius,
+      emphasis: textFieldEmphasis,
+      labelOffset,
+      focusRingColorSource: focusRingColorSourceOverride,
+      inputProps: {
+        autoComplete: 'email',
+        type: 'email'
+      }
+    };
+
+    return interactiveVariantMode === 'standard-outline' ? (
+      <TextFieldStandardOutline {...interactiveTextFieldProps} />
+    ) : interactiveVariantMode === 'standard-underline' ? (
+      <TextFieldStandardUnderline {...interactiveTextFieldProps} />
+    ) : interactiveVariantMode === 'standard-borderless' ? (
+      <TextFieldStandardBorderless {...interactiveTextFieldProps} />
+    ) : interactiveVariantMode === 'floating-notched' ? (
+      <TextFieldFloatingNotched {...interactiveTextFieldProps} />
+    ) : (
+      <TextFieldFloatingInside {...interactiveTextFieldProps} />
+    );
+  };
+  const interactivePanelClassName = getSurfaceClassName(s.interactivePanel, surface);
   const textFieldControls = (
     <ShowcaseControlPanel>
+      <ShowcaseControlGroup title="Interactive">
+        <ShowcaseControlGrid>
+          <ShowcaseControlField fullWidth>
+            <ShowcaseSelectControl
+              label="Variant / Mode"
+              options={variantModeOptions}
+              value={interactiveVariantMode}
+              onValueChange={(value) => {
+                const nextVariantMode = value as TextFieldVariantMode;
+                if (nextVariantMode === interactiveVariantMode) return;
+                playWowTransition();
+                setInteractiveVariantMode(nextVariantMode);
+              }}
+            />
+          </ShowcaseControlField>
+        </ShowcaseControlGrid>
+      </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Appearance">
         <ShowcaseControlGrid>
           <ShowcaseSelectControl
@@ -316,6 +395,33 @@ export default function TextFieldPage() {
       <ShowcaseRouteControls id="text-field" eyebrow="TextField" title="Controls">
         {textFieldControls}
       </ShowcaseRouteControls>
+
+      <section className={`${s.section} ${s.previewSection}`}>
+        <h3>Interactive</h3>
+        <div className={interactivePanelClassName}>
+          <div className={s.interactiveForm}>
+            {renderInteractiveTextField({
+              id: 'text-field-interactive-email',
+              label: 'Email',
+              value: interactiveEmail,
+              onValueChange: setInteractiveEmail,
+              placeholder: 'ada@example.com'
+            })}
+            {renderInteractiveTextField({
+              id: 'text-field-interactive-email-confirmation',
+              label: 'Confirm email',
+              value: interactiveEmailConfirmation,
+              onValueChange: setInteractiveEmailConfirmation,
+              placeholder: 'Type email again'
+            })}
+            <div className={s.interactiveActions}>
+              <KButton type="button" intent="primary" emphasis="high" radius={borderRadius}>
+                <KButton.Label>Continue</KButton.Label>
+              </KButton>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <div className={s.exampleGrid}>
         <ExampleBlock title="Standard / Outline" surface={surface}>
