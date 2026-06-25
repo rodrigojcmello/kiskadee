@@ -13,6 +13,10 @@ type CreateMaterial3GoogleTextFieldSchemaArgs = {
 
 type PaletteBundle = Record<string, Record<string, Record<string, unknown>>>;
 
+const borderlessLightRestBoxColor: Color = [0, 0, 96, 1];
+const borderlessLightHoverBoxColor: Color = [0, 0, 94, 1];
+const borderlessLightFocusBoxColor: Color = [0, 0, 92, 1];
+
 function fieldStateRef(color: Color): { ref: Color } {
   return { ref: color };
 }
@@ -284,29 +288,29 @@ function createTextFieldElementPalettes({
         boxColor: {
           neutral: {
             medium: {
-              rest: c(s, 'l', 'neutral', 98),
-              hover: fieldStateRef(c(s, 'l', 'neutral', 96)),
-              focus: fieldStateRef(c(s, 'l', 'primary', 95)),
+              rest: borderlessLightRestBoxColor,
+              hover: fieldStateRef(borderlessLightHoverBoxColor),
+              focus: fieldStateRef(borderlessLightFocusBoxColor),
               disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
-              readOnly: fieldStateRef(c(s, 'l', 'neutral', 97))
+              readOnly: fieldStateRef(borderlessLightRestBoxColor)
             }
           },
           error: {
             medium: {
-              rest: c(s, 'l', 'redLike', 98),
-              hover: fieldStateRef(c(s, 'l', 'redLike', 96)),
-              focus: fieldStateRef(c(s, 'l', 'redLike', 94)),
+              rest: borderlessLightRestBoxColor,
+              hover: fieldStateRef(borderlessLightHoverBoxColor),
+              focus: fieldStateRef(borderlessLightFocusBoxColor),
               disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
-              readOnly: fieldStateRef(c(s, 'l', 'redLike', 97))
+              readOnly: fieldStateRef(borderlessLightRestBoxColor)
             }
           },
           warning: {
             medium: {
-              rest: c(s, 'l', 'yellowLike', 97),
-              hover: fieldStateRef(c(s, 'l', 'yellowLike', 95)),
-              focus: fieldStateRef(c(s, 'l', 'yellowLike', 92)),
+              rest: borderlessLightRestBoxColor,
+              hover: fieldStateRef(borderlessLightHoverBoxColor),
+              focus: fieldStateRef(borderlessLightFocusBoxColor),
               disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
-              readOnly: fieldStateRef(c(s, 'l', 'yellowLike', 96))
+              readOnly: fieldStateRef(borderlessLightRestBoxColor)
             }
           }
         },
