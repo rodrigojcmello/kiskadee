@@ -19,6 +19,7 @@ import {
 } from '@kiskadee/react-components';
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import {
   ShowcaseControlField,
   ShowcaseControlGrid,
@@ -67,6 +68,15 @@ const variantModeOptions: Array<{ value: TextFieldVariantMode; label: string }> 
   { value: 'floating-notched', label: 'Floating / Notched' },
   { value: 'floating-inside', label: 'Floating / Inside' }
 ];
+
+type InteractiveEmailFormValues = {
+  email: string;
+  emailConfirmation: string;
+};
+
+const emailValidationMessage = 'Enter a valid email address.';
+const emailConfirmationValidationMessage = 'Email addresses must match.';
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type TextFieldSurface = 'default' | 'primary' | Exclude<BackgroundToneKey, 'white'>;
 
@@ -144,6 +154,10 @@ function supportsTextFieldEmphasis(classesMap: unknown, emphasis: ComponentEmpha
   return Boolean(bucket && hasBucketClass(classesMap, bucket));
 }
 
+function isValidEmail(value: string) {
+  return emailPattern.test(value);
+}
+
 export default function TextFieldPage() {
   const { designSystem } = useKiskadee();
   const { options: textFieldArtifactOptions, textFieldClassesMap } = useTextFieldArtifactConfig();
@@ -156,8 +170,7 @@ export default function TextFieldPage() {
   const [floatingInsideProject, setFloatingInsideProject] = useState('');
   const [interactiveVariantMode, setInteractiveVariantMode] =
     useState<TextFieldVariantMode>('standard-outline');
-  const [interactiveEmail, setInteractiveEmail] = useState('');
-  const [interactiveEmailConfirmation, setInteractiveEmailConfirmation] = useState('');
+  const [interactiveSubmitState, setInteractiveSubmitState] = useState<'idle' | 'success'>('idle');
   const [borderRadius, setBorderRadius] = useState<RadiusMode>('rounded');
   const [labelOffsetSelection, setLabelOffsetSelection] = useState<LabelOffsetSelection>('auto');
   const [surface, setSurface] = useState<TextFieldSurface>('default');
@@ -168,6 +181,28 @@ export default function TextFieldPage() {
   const textFieldEmphasis = getSurfaceEmphasis(surface);
   const schemaFocusRingColorSource = textFieldArtifactOptions.focusRingColorSource ?? 'global';
   const focusRingColorSourceSelection = focusRingColorSourceOverride ?? schemaFocusRingColorSource;
+  const {
+    control: interactiveFormControl,
+    formState: { isSubmitted: isInteractiveFormSubmitted, touchedFields: interactiveTouchedFields },
+    getValues: getInteractiveFormValues,
+    handleSubmit: handleInteractiveFormSubmit,
+    trigger: triggerInteractiveFormValidation
+  } = useForm<InteractiveEmailFormValues>({
+    defaultValues: {
+      email: '',
+      emailConfirmation: ''
+    },
+    mode: 'onBlur',
+    reValidateMode: 'onBlur'
+  });
+  const watchedInteractiveEmail = useWatch({
+    control: interactiveFormControl,
+    name: 'email'
+  });
+  const watchedInteractiveEmailConfirmation = useWatch({
+    control: interactiveFormControl,
+    name: 'emailConfirmation'
+  });
   const focusRingColorSourceOptions = useMemo(
     () =>
       (
@@ -241,6 +276,10 @@ export default function TextFieldPage() {
   }, [designSystem]);
 
   useEffect(() => {
+    setInteractiveSubmitState('idle');
+  }, [watchedInteractiveEmail, watchedInteractiveEmailConfirmation]);
+
+  useEffect(() => {
     if (!isDarkSurface(surface) || supportsDarkSurfaces) return;
     setSurface('default');
   }, [supportsDarkSurfaces, surface]);
@@ -268,18 +307,30 @@ export default function TextFieldPage() {
     playWowTransition();
     setSurface(nextSurface);
   };
+  const shouldValidateInteractiveConfirmation =
+    isInteractiveFormSubmitted ||
+    Boolean(interactiveTouchedFields.emailConfirmation) ||
+    Boolean(getInteractiveFormValues('emailConfirmation'));
 
   const renderInteractiveTextField = ({
+    autoComplete = 'email',
     id,
     label,
+    message,
+    onBlur,
     onValueChange,
     placeholder,
+    validationStatus,
     value
   }: {
+    autoComplete?: string;
     id: string;
     label: string;
+    message?: ReactNode;
+    onBlur: () => void;
     onValueChange: (value: string) => void;
     placeholder: string;
+    validationStatus?: 'error';
     value: string;
   }) => {
     const interactiveTextFieldProps = {
@@ -288,12 +339,15 @@ export default function TextFieldPage() {
       value,
       onValueChange,
       placeholder,
+      message,
+      validationStatus,
       radius: borderRadius,
       emphasis: textFieldEmphasis,
       labelOffset,
       focusRingColorSource: focusRingColorSourceOverride,
       inputProps: {
-        autoComplete: 'email',
+        autoComplete,
+        onBlur,
         type: 'email'
       }
     };
@@ -310,6 +364,14 @@ export default function TextFieldPage() {
       <TextFieldFloatingInside {...interactiveTextFieldProps} />
     );
   };
+  const handleInteractiveSubmit = handleInteractiveFormSubmit(
+    () => {
+      setInteractiveSubmitState('success');
+    },
+    () => {
+      setInteractiveSubmitState('idle');
+    }
+  );
   const interactivePanelClassName = getSurfaceClassName(s.interactivePanel, surface);
   const textFieldControls = (
     <ShowcaseControlPanel>
@@ -399,27 +461,72 @@ export default function TextFieldPage() {
       <section className={`${s.section} ${s.previewSection}`}>
         <h3>Interactive</h3>
         <div className={interactivePanelClassName}>
-          <div className={s.interactiveForm}>
-            {renderInteractiveTextField({
-              id: 'text-field-interactive-email',
-              label: 'Email',
-              value: interactiveEmail,
-              onValueChange: setInteractiveEmail,
-              placeholder: 'ada@example.com'
-            })}
-            {renderInteractiveTextField({
-              id: 'text-field-interactive-email-confirmation',
-              label: 'Confirm email',
-              value: interactiveEmailConfirmation,
-              onValueChange: setInteractiveEmailConfirmation,
-              placeholder: 'Type email again'
-            })}
+          <form className={s.interactiveForm} noValidate onSubmit={handleInteractiveSubmit}>
+            <Controller
+              control={interactiveFormControl}
+              name="email"
+              rules={{
+                validate: (value) => isValidEmail(value) || emailValidationMessage
+              }}
+              render={({ field, fieldState }) =>
+                renderInteractiveTextField({
+                  id: 'text-field-interactive-email',
+                  label: 'Email',
+                  value: field.value,
+                  onValueChange: field.onChange,
+                  onBlur: () => {
+                    field.onBlur();
+                    void triggerInteractiveFormValidation('email');
+                    if (!shouldValidateInteractiveConfirmation) return;
+                    void triggerInteractiveFormValidation('emailConfirmation');
+                  },
+                  placeholder: 'ada@example.com',
+                  validationStatus: fieldState.error ? 'error' : undefined,
+                  message: fieldState.error?.message
+                })
+              }
+            />
+            <Controller
+              control={interactiveFormControl}
+              name="emailConfirmation"
+              rules={{
+                validate: (value) => {
+                  if (!isValidEmail(value)) return emailValidationMessage;
+
+                  return (
+                    value === getInteractiveFormValues('email') ||
+                    emailConfirmationValidationMessage
+                  );
+                }
+              }}
+              render={({ field, fieldState }) =>
+                renderInteractiveTextField({
+                  autoComplete: 'off',
+                  id: 'text-field-interactive-email-confirmation',
+                  label: 'Confirm email',
+                  value: field.value,
+                  onValueChange: field.onChange,
+                  onBlur: () => {
+                    field.onBlur();
+                    void triggerInteractiveFormValidation('emailConfirmation');
+                  },
+                  placeholder: 'Type email again',
+                  validationStatus: fieldState.error ? 'error' : undefined,
+                  message: fieldState.error?.message
+                })
+              }
+            />
             <div className={s.interactiveActions}>
-              <KButton type="button" intent="primary" emphasis="high" radius={borderRadius}>
+              <KButton type="submit" intent="primary" emphasis="high" radius={borderRadius}>
                 <KButton.Label>Continue</KButton.Label>
               </KButton>
             </div>
-          </div>
+            {interactiveSubmitState === 'success' ? (
+              <p className={s.interactiveSuccess} role="status">
+                Email confirmed.
+              </p>
+            ) : null}
+          </form>
         </div>
       </section>
 

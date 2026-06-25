@@ -79,6 +79,17 @@
   min-width: 0;
 }
 
+.interactiveSuccess {
+  margin: -4px 0 0;
+  color: #1f7a3f;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.darkSurface .interactiveSuccess {
+  color: #b8efc6;
+}
+
 .exampleGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
