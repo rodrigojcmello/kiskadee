@@ -131,6 +131,10 @@
   margin-block-end: 0;
 }
 
+.k-txf-e5-b[data-reserved] {
+  min-block-size: 1lh;
+}
+
 /*
  * element indicator / e6
  * Preserves the bottom overlay lane shared with other TextField modes.

@@ -50,6 +50,8 @@ export type TextFieldProps = Omit<
   labelOffset?: TextFieldLabelOffsetStrategy | TextFieldLabelOffsetByRadius;
   /** Focus outline color policy. `global` uses --k-focus-color; `component` uses e3 borderColor. */
   focusRingColorSource?: TextFieldFocusRingColorSource;
+  /** Reserve one message line to avoid vertical drift when validation text appears. */
+  reserveMessageSpace?: boolean;
 };
 
 export type TextFieldStandardProps = TextFieldProps;

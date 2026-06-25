@@ -128,6 +128,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
       radius,
       labelOffset,
       focusRingColorSource,
+      reserveMessageSpace,
       disabled,
       readOnly,
       ...rootProps
@@ -244,7 +245,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
             {indicator}
           </HeadlessTextField.Control>
         )}
-        <HeadlessTextField.Message />
+        <HeadlessTextField.Message reserveSpace={reserveMessageSpace} />
       </HeadlessTextField.Root>
     );
   }

@@ -132,6 +132,10 @@
   margin-block-end: 0;
 }
 
+.k-txf-e5-d[data-reserved] {
+  min-block-size: 1lh;
+}
+
 /*
  * element indicator / e6
  * Owns the bottom underline lane that stays aligned to the control shell.

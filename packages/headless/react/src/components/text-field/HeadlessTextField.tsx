@@ -74,7 +74,9 @@ export type TextFieldRootProps = TextFieldRootDivProps & {
 
 export type TextFieldLabelProps = Omit<HTMLAttributes<HTMLLabelElement>, 'htmlFor'>;
 export type TextFieldControlProps = HTMLAttributes<HTMLDivElement>;
-export type TextFieldMessageProps = HTMLAttributes<HTMLParagraphElement>;
+export type TextFieldMessageProps = HTMLAttributes<HTMLParagraphElement> & {
+  reserveSpace?: boolean;
+};
 
 export type TextFieldInputProps = Omit<
   ComponentPropsWithoutRef<'input'>,
@@ -418,22 +420,39 @@ const TextFieldInput = forwardRef<HTMLInputElement, TextFieldInputProps>(functio
 });
 
 const TextFieldMessage = forwardRef<HTMLParagraphElement, TextFieldMessageProps>(
-  function TextFieldMessage({ className, children, ...props }, ref) {
+  function TextFieldMessage(
+    {
+      className,
+      children,
+      id,
+      reserveSpace = false,
+      role,
+      'aria-hidden': ariaHidden,
+      'aria-live': ariaLive,
+      ...props
+    },
+    ref
+  ) {
     const context = useTextFieldContext();
     const { className: slotClassName, ...slotProps } = context.slotProps.e5 ?? {};
     const content = children ?? context.message;
+    const isReserved = !content && reserveSpace;
+    const resolvedRole = context.validationStatus === 'error' ? 'alert' : undefined;
+    const resolvedAriaLive = context.validationStatus === 'warning' ? 'polite' : undefined;
 
-    if (!content) return null;
+    if (!content && !reserveSpace) return null;
 
     return (
       <p
         {...slotProps}
-        ref={ref}
-        id={context.messageId}
-        className={mergeClassNames(slotClassName, className)}
-        role={context.validationStatus === 'error' ? 'alert' : undefined}
-        aria-live={context.validationStatus === 'warning' ? 'polite' : undefined}
         {...props}
+        ref={ref}
+        id={isReserved ? undefined : (id ?? context.messageId)}
+        className={mergeClassNames(slotClassName, className)}
+        role={isReserved ? undefined : (role ?? resolvedRole)}
+        aria-hidden={isReserved ? true : ariaHidden}
+        aria-live={isReserved ? undefined : (ariaLive ?? resolvedAriaLive)}
+        data-reserved={isReserved ? '' : undefined}
       >
         {content}
       </p>

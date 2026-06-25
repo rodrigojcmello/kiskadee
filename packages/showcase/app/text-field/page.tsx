@@ -345,6 +345,7 @@ export default function TextFieldPage() {
       emphasis: textFieldEmphasis,
       labelOffset,
       focusRingColorSource: focusRingColorSourceOverride,
+      reserveMessageSpace: true,
       inputProps: {
         autoComplete,
         onBlur,
