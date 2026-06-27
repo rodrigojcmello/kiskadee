@@ -1,6 +1,7 @@
 import type {
   Schema,
   TextFieldFocusRingColorSource,
+  TextFieldLabelPlacement,
   TextFieldLabelOffsetByRadius,
   TextFieldMode,
   TextFieldModeByVariant,
@@ -26,6 +27,7 @@ export type TextFieldModePayload<TMode extends TextFieldMode = TextFieldMode> = 
 
 export type TextFieldVariantOptionsPayload = {
   focusRingColorSource?: TextFieldFocusRingColorSource;
+  labelPlacement?: TextFieldLabelPlacement;
 };
 
 export type TextFieldVariantsPayload = {
@@ -55,7 +57,25 @@ function pickTextFieldModeOptions(options: unknown): TextFieldModeOptionsPayload
     : undefined;
 }
 
-function pickTextFieldVariantOptions(options: unknown): TextFieldVariantOptionsPayload | undefined {
+function pickTextFieldStandardVariantOptions(
+  options: unknown
+): TextFieldVariantOptionsPayload | undefined {
+  const focusRingColorSource = (
+    options as { focusRingColorSource?: TextFieldFocusRingColorSource } | undefined
+  )?.focusRingColorSource;
+  const labelPlacement = (options as { labelPlacement?: TextFieldLabelPlacement } | undefined)
+    ?.labelPlacement;
+  return focusRingColorSource || labelPlacement
+    ? {
+        ...(focusRingColorSource ? { focusRingColorSource } : {}),
+        ...(labelPlacement ? { labelPlacement } : {})
+      }
+    : undefined;
+}
+
+function pickTextFieldFloatingVariantOptions(
+  options: unknown
+): TextFieldVariantOptionsPayload | undefined {
   const focusRingColorSource = (
     options as { focusRingColorSource?: TextFieldFocusRingColorSource } | undefined
   )?.focusRingColorSource;
@@ -70,7 +90,7 @@ function buildTextFieldVariantsPayload(schema: Schema): TextFieldVariantsPayload
   const floatingModes = textField?.variants?.floating?.modes;
   const variants: TextFieldVariantsPayload = {};
 
-  const standardOptions = pickTextFieldVariantOptions(standardVariant?.options);
+  const standardOptions = pickTextFieldStandardVariantOptions(standardVariant?.options);
   const standard: TextFieldModePayload<TextFieldModeByVariant['standard']> = {};
   const outlineOptions = pickTextFieldModeOptions(standardModes?.outline?.options);
   const underlineOptions = pickTextFieldModeOptions(standardModes?.underline?.options);
@@ -85,7 +105,7 @@ function buildTextFieldVariantsPayload(schema: Schema): TextFieldVariantsPayload
     };
   }
 
-  const floatingOptions = pickTextFieldVariantOptions(floatingVariant?.options);
+  const floatingOptions = pickTextFieldFloatingVariantOptions(floatingVariant?.options);
   const floating: TextFieldModePayload<TextFieldModeByVariant['floating']> = {};
   const notchedOptions = pickTextFieldModeOptions(floatingModes?.notched?.options);
   const insideOptions = pickTextFieldModeOptions(floatingModes?.inside?.options);

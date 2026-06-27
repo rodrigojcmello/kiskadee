@@ -7,6 +7,7 @@ import {
   type RadiusMode,
   type TextFieldFocusRingColorSource,
   type TextFieldIntent,
+  type TextFieldLabelPlacement,
   type TextFieldLabelOffsetStrategy,
   type TextFieldMode,
   type TextFieldVariant
@@ -24,6 +25,7 @@ export const DEFAULT_TEXT_FIELD_EMPHASIS: ComponentEmphasis = 'medium';
 export const DEFAULT_TEXT_FIELD_INTENT: TextFieldIntent = 'neutral';
 export const DEFAULT_TEXT_FIELD_RADIUS: RadiusMode = 'rounded';
 export const DEFAULT_TEXT_FIELD_FOCUS_RING_COLOR_SOURCE: TextFieldFocusRingColorSource = 'global';
+export const DEFAULT_TEXT_FIELD_LABEL_PLACEMENT: TextFieldLabelPlacement = 'top';
 
 export const TEXT_FIELD_STATE_PROJECTION = {
   target: 'e1',
@@ -145,10 +147,33 @@ export function resolveTextFieldClassNames(options: {
   emphasis: ComponentEmphasis | undefined;
   radius: RadiusMode;
   labelOffsetStrategy: TextFieldLabelOffsetStrategy;
+  labelPlacement: TextFieldLabelPlacement;
   focusRingColorSource: TextFieldFocusRingColorSource;
 }): Required<TextFieldClassNames> {
   const elements = options.elements;
   const letter = options.structural.letter;
+  const usesInlineLabel = options.labelPlacement === 'inline';
+  const effectiveLabelOffsetStrategy = usesInlineLabel ? 'none' : options.labelOffsetStrategy;
+  const topLabelClassName = join(
+    `k-txf-e2-${letter}`,
+    effectiveLabelOffsetStrategy === 'radius'
+      ? 'k-txf-e2a'
+      : effectiveLabelOffsetStrategy === 'input-start'
+        ? 'k-txf-e2b'
+        : effectiveLabelOffsetStrategy === 'none'
+          ? 'k-txf-e2c'
+          : '',
+    elem(elements.e2, options),
+    'k-trn',
+    options.classNames.e2
+  );
+  const inlineLabelClassName = join(
+    `k-txf-e7-${letter}`,
+    elem(elements.e7 ?? elements.e2, options),
+    'k-trn',
+    options.classNames.e2,
+    options.classNames.e7
+  );
 
   return {
     e1:
@@ -156,26 +181,14 @@ export function resolveTextFieldClassNames(options: {
         'k-txf',
         `k-txf-${letter}`,
         `k-txf-e1-${letter}`,
-        options.labelOffsetStrategy === 'radius'
+        usesInlineLabel ? `k-txf-e1a-${letter}` : '',
+        effectiveLabelOffsetStrategy === 'radius'
           ? resolveRadiusClassName(elements.e3, options.scale, options.radius)
           : '',
         elem(elements.e1, options),
         options.classNames.e1
       ) ?? '',
-    e2:
-      join(
-        `k-txf-e2-${letter}`,
-        options.labelOffsetStrategy === 'radius'
-          ? 'k-txf-e2a'
-          : options.labelOffsetStrategy === 'input-start'
-            ? 'k-txf-e2b'
-            : options.labelOffsetStrategy === 'none'
-              ? 'k-txf-e2c'
-              : '',
-        elem(elements.e2, options),
-        'k-trn',
-        options.classNames.e2
-      ) ?? '',
+    e2: (usesInlineLabel ? inlineLabelClassName : topLabelClassName) ?? '',
     e3:
       join(
         `k-txf-e3-${letter}`,
@@ -201,6 +214,7 @@ export function resolveTextFieldClassNames(options: {
           'k-trn',
           options.classNames.e6
         ) ?? '')
-      : ''
+      : '',
+    e7: usesInlineLabel ? (inlineLabelClassName ?? '') : ''
   };
 }

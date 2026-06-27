@@ -19,6 +19,16 @@
 }
 
 /*
+ * element root modifier 'a' / e1a-b
+ * Switches the standard stack to an inline-label grid without changing the visual shell mode.
+ */
+.k-txf-e1a-b {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  grid-template-rows: auto auto;
+}
+
+/*
  * element label / e2
  * Owns the standalone label row that sits above the outlined control shell.
  */
@@ -53,6 +63,23 @@
 }
 
 /*
+ * element inline label / e7
+ * Owns the alternate label style used when the standard field is laid out inline.
+ */
+.k-txf-e7-b {
+  display: block;
+  cursor: default;
+  user-select: none;
+}
+
+.k-txf-e1a-b .k-txf-e7-b {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
+  margin-block-end: 0;
+}
+
+/*
  * element control / e3
  * Owns the outlined shell that wraps the native input and carries emitted border variables.
  */
@@ -68,6 +95,11 @@
   outline: var(--k-bdc) solid var(--k-bdw);
   outline-offset: 0;
   --k-txf-phc: var(--k-txc);
+}
+
+.k-txf-e1a-b .k-txf-e3-b {
+  grid-column: 2;
+  grid-row: 1;
 }
 
 /*
@@ -131,6 +163,11 @@
   margin-block-end: 0;
 }
 
+.k-txf-e1a-b .k-txf-e5-b {
+  grid-column: 2;
+  grid-row: 2;
+}
+
 .k-txf-e5-b[data-reserved] {
   min-block-size: 1lh;
 }
@@ -157,6 +194,7 @@
  */
 .k-txf-e1-b.-d.-a,
 .k-txf-e1-b.-d.-a .k-txf-e2-b,
+.k-txf-e1-b.-d.-a .k-txf-e7-b,
 .k-txf-e1-b.-d.-a .k-txf-e3-b,
 .k-txf-e1-b.-d.-a .k-txf-e4-b {
   cursor: not-allowed;

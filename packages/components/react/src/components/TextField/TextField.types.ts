@@ -5,6 +5,7 @@ import type {
   RadiusMode,
   TextFieldFocusRingColorSource,
   TextFieldIntent,
+  TextFieldLabelPlacement,
   TextFieldLabelOffsetByRadius,
   TextFieldLabelOffsetStrategy,
   TextFieldMode,
@@ -17,7 +18,7 @@ import type {
 } from '@kiskadee/react-headless';
 import type { ReactNode } from 'react';
 
-export type TextFieldElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
+export type TextFieldElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6' | 'e7';
 
 export type TextFieldClassNames = Partial<Record<TextFieldElementName, string>>;
 
@@ -54,10 +55,13 @@ export type TextFieldProps = Omit<
   reserveMessageSpace?: boolean;
 };
 
-export type TextFieldStandardProps = TextFieldProps;
-export type TextFieldStandardOutlineProps = TextFieldProps;
-export type TextFieldStandardUnderlineProps = TextFieldProps;
-export type TextFieldStandardBorderlessProps = TextFieldProps;
+export type TextFieldStandardProps = TextFieldProps & {
+  /** Label placement for Standard TextField layouts. */
+  labelPlacement?: TextFieldLabelPlacement;
+};
+export type TextFieldStandardOutlineProps = TextFieldStandardProps;
+export type TextFieldStandardUnderlineProps = TextFieldStandardProps;
+export type TextFieldStandardBorderlessProps = TextFieldStandardProps;
 
 export type TextFieldFloatingNotchedProps = TextFieldProps;
 

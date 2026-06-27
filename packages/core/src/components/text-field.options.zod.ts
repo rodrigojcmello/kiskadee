@@ -16,6 +16,7 @@ export const textFieldLabelOffsetStrategySchema = z.enum([
   'input-start',
   'none'
 ]);
+export const textFieldLabelPlacementSchema = z.enum(['top', 'inline']);
 export const textFieldFocusRingColorSourceSchema = z.enum(['global', 'component']);
 export const textFieldLabelOffsetByRadiusSchema = z
   .object({
@@ -28,6 +29,7 @@ export const textFieldLabelOffsetByRadiusSchema = z
 export type TextFieldStandardModeSchemaValue = z.infer<typeof textFieldStandardModeSchema>;
 export type TextFieldFloatingModeSchemaValue = z.infer<typeof textFieldFloatingModeSchema>;
 export type TextFieldModeSchemaValue = z.infer<typeof textFieldModeSchema>;
+export type TextFieldLabelPlacementSchemaValue = z.infer<typeof textFieldLabelPlacementSchema>;
 
 function isStandardMode(
   value: TextFieldModeSchemaValue
@@ -79,11 +81,38 @@ export function createTextFieldModeOptionsSchema() {
     .strict();
 }
 
+export function createTextFieldStandardVariantOptionsSchema() {
+  return z
+    .object({
+      mode: textFieldStandardModeSchema.optional(),
+      focusRingColorSource: textFieldFocusRingColorSourceSchema.optional(),
+      labelPlacement: textFieldLabelPlacementSchema.optional()
+    })
+    .strict();
+}
+
+export function createTextFieldFloatingVariantOptionsSchema() {
+  return z
+    .object({
+      mode: textFieldFloatingModeSchema.optional(),
+      focusRingColorSource: textFieldFocusRingColorSourceSchema.optional()
+    })
+    .strict();
+}
+
 export const textFieldOptionsSchema = createTextFieldOptionsSchema();
 export const textFieldModeOptionsSchema = createTextFieldModeOptionsSchema();
+export const textFieldStandardVariantOptionsSchema = createTextFieldStandardVariantOptionsSchema();
+export const textFieldFloatingVariantOptionsSchema = createTextFieldFloatingVariantOptionsSchema();
 
 export type TextFieldOptionsFromSchema = z.input<typeof textFieldOptionsSchema>;
 export type TextFieldModeOptionsFromSchema = z.input<typeof textFieldModeOptionsSchema>;
+export type TextFieldStandardVariantOptionsFromSchema = z.input<
+  typeof textFieldStandardVariantOptionsSchema
+>;
+export type TextFieldFloatingVariantOptionsFromSchema = z.input<
+  typeof textFieldFloatingVariantOptionsSchema
+>;
 export type TextFieldFocusRingColorSourceFromSchema = z.input<
   typeof textFieldFocusRingColorSourceSchema
 >;

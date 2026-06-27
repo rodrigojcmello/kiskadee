@@ -739,7 +739,8 @@ export function createMaterial3GoogleTextFieldSchema(
     variants: {
       standard: {
         options: {
-          mode: 'outline'
+          mode: 'outline',
+          labelPlacement: 'top'
         },
         modes: {
           outline: {
@@ -772,6 +773,40 @@ export function createMaterial3GoogleTextFieldSchema(
                   marginBottom: {
                     's:sm:1': 4,
                     's:md:1': 6
+                  }
+                },
+                palettes: palettes.label
+              },
+              e7: {
+                name: 'inline-label',
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'medium'
+                },
+                scales: {
+                  boxWidth: {
+                    's:sm:1': {
+                      'bp:all': 88,
+                      'bp:md:2': 104,
+                      'bp:lg:1': 120
+                    },
+                    's:md:1': {
+                      'bp:all': 96,
+                      'bp:md:2': 120,
+                      'bp:lg:1': 144
+                    }
+                  },
+                  textSize: {
+                    's:sm:1': 12,
+                    's:md:1': 14
+                  },
+                  textHeight: {
+                    's:sm:1': 16,
+                    's:md:1': 20
+                  },
+                  paddingRight: {
+                    's:sm:1': 10,
+                    's:md:1': 12
                   }
                 },
                 palettes: palettes.label
@@ -895,6 +930,40 @@ export function createMaterial3GoogleTextFieldSchema(
                   marginBottom: {
                     's:sm:1': 4,
                     's:md:1': 6
+                  }
+                },
+                palettes: palettes.label
+              },
+              e7: {
+                name: 'inline-label',
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'medium'
+                },
+                scales: {
+                  boxWidth: {
+                    's:sm:1': {
+                      'bp:all': 88,
+                      'bp:md:2': 104,
+                      'bp:lg:1': 120
+                    },
+                    's:md:1': {
+                      'bp:all': 96,
+                      'bp:md:2': 120,
+                      'bp:lg:1': 144
+                    }
+                  },
+                  textSize: {
+                    's:sm:1': 12,
+                    's:md:1': 14
+                  },
+                  textHeight: {
+                    's:sm:1': 16,
+                    's:md:1': 20
+                  },
+                  paddingRight: {
+                    's:sm:1': 10,
+                    's:md:1': 12
                   }
                 },
                 palettes: palettes.label
@@ -1028,6 +1097,40 @@ export function createMaterial3GoogleTextFieldSchema(
                   marginBottom: {
                     's:sm:1': 4,
                     's:md:1': 6
+                  }
+                },
+                palettes: palettes.label
+              },
+              e7: {
+                name: 'inline-label',
+                decorations: {
+                  textFont: 'body',
+                  textWeight: 'medium'
+                },
+                scales: {
+                  boxWidth: {
+                    's:sm:1': {
+                      'bp:all': 88,
+                      'bp:md:2': 104,
+                      'bp:lg:1': 120
+                    },
+                    's:md:1': {
+                      'bp:all': 96,
+                      'bp:md:2': 120,
+                      'bp:lg:1': 144
+                    }
+                  },
+                  textSize: {
+                    's:sm:1': 12,
+                    's:md:1': 14
+                  },
+                  textHeight: {
+                    's:sm:1': 16,
+                    's:md:1': 20
+                  },
+                  paddingRight: {
+                    's:sm:1': 10,
+                    's:md:1': 12
                   }
                 },
                 palettes: palettes.label

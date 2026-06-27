@@ -1,6 +1,7 @@
 import type {
   RadiusMode,
   TextFieldFloatingMode,
+  TextFieldLabelPlacement,
   TextFieldLabelOffsetByRadius,
   TextFieldLabelOffsetStrategy,
   TextFieldStandardMode
@@ -12,6 +13,7 @@ import {
   DEFAULT_TEXT_FIELD_EMPHASIS,
   DEFAULT_TEXT_FIELD_FOCUS_RING_COLOR_SOURCE,
   DEFAULT_TEXT_FIELD_INTENT,
+  DEFAULT_TEXT_FIELD_LABEL_PLACEMENT,
   DEFAULT_TEXT_FIELD_RADIUS,
   DEFAULT_TEXT_FIELD_SCALE,
   resolveTextFieldClassNames,
@@ -39,6 +41,10 @@ type CreateTextFieldComponentOptions = {
   layout: 'standard' | 'floating';
 };
 
+type TextFieldRuntimeProps = TextFieldProps & {
+  labelPlacement?: TextFieldLabelPlacement;
+};
+
 const loadFloatingRestTypography = () =>
   import('./floatingRestTypography.runtime.ts').then((module) => module.bindFloatingRestTypography);
 
@@ -49,6 +55,15 @@ function resolveLabelOffsetStrategy(
   if (!labelOffset) return 'schema';
   if (typeof labelOffset === 'string') return labelOffset;
   return labelOffset[radius] ?? 'schema';
+}
+
+function resolveTextFieldLabelPlacement(options: {
+  layout: 'standard' | 'floating';
+  prop: TextFieldLabelPlacement | undefined;
+  schema: TextFieldLabelPlacement | undefined;
+}): TextFieldLabelPlacement {
+  if (options.layout !== 'standard') return DEFAULT_TEXT_FIELD_LABEL_PLACEMENT;
+  return options.prop ?? options.schema ?? DEFAULT_TEXT_FIELD_LABEL_PLACEMENT;
 }
 
 function useInputStartLabelOffset(options: {
@@ -111,7 +126,7 @@ function resolveTextFieldElements(
   );
 }
 
-export function createTextFieldComponent<TProps extends TextFieldProps>(
+export function createTextFieldComponent<TProps extends TextFieldRuntimeProps>(
   options: CreateTextFieldComponentOptions
 ) {
   function TextFieldRoot(props: TProps) {
@@ -127,6 +142,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
       validationStatus,
       radius,
       labelOffset,
+      labelPlacement,
       focusRingColorSource,
       reserveMessageSpace,
       disabled,
@@ -152,8 +168,13 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
       options.structural.variant === 'standard'
         ? variants.standard?.options
         : variants.floating?.options;
+    const resolvedLabelPlacement = resolveTextFieldLabelPlacement({
+      layout: options.layout,
+      prop: labelPlacement,
+      schema: variants.standard?.options?.labelPlacement
+    });
     const resolvedLabelOffsetStrategy = resolveLabelOffsetStrategy(
-      labelOffset ?? modeOptions?.labelOffset,
+      resolvedLabelPlacement === 'inline' ? 'none' : (labelOffset ?? modeOptions?.labelOffset),
       resolvedRadius
     );
     const resolvedFocusRingColorSource =
@@ -176,6 +197,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
           emphasis,
           radius: resolvedRadius,
           labelOffsetStrategy: resolvedLabelOffsetStrategy,
+          labelPlacement: resolvedLabelPlacement,
           focusRingColorSource: resolvedFocusRingColorSource
         }),
       [
@@ -183,6 +205,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
         elements,
         emphasis,
         radius,
+        resolvedLabelPlacement,
         resolvedFocusRingColorSource,
         resolvedLabelOffsetStrategy,
         resolvedIntent,
@@ -199,7 +222,7 @@ export function createTextFieldComponent<TProps extends TextFieldProps>(
     });
 
     useInputStartLabelOffset({
-      enabled: resolvedLabelOffsetStrategy === 'input-start',
+      enabled: resolvedLabelPlacement !== 'inline' && resolvedLabelOffsetStrategy === 'input-start',
       labelRef,
       inputRef,
       controlRef

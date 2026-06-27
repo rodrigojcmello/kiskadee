@@ -1,5 +1,6 @@
 import type {
   TextFieldFocusRingColorSource,
+  TextFieldLabelPlacement,
   TextFieldLabelOffsetByRadius,
   TextFieldMode,
   TextFieldModeByVariant,
@@ -19,6 +20,7 @@ export type TextFieldVariantsConfig = {
   [TVariant in TextFieldVariant]?: {
     options?: {
       focusRingColorSource?: TextFieldFocusRingColorSource;
+      labelPlacement?: TextFieldLabelPlacement;
     };
     modes?: Partial<
       Record<

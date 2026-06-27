@@ -17,6 +17,7 @@ import type {
   TabsVariant,
   TextFieldFocusRingColorSource,
   TextFieldLabelOffsetByRadius,
+  TextFieldLabelPlacement,
   TextFieldMode,
   TextFieldModeByVariant,
   TextFieldVariant,
@@ -71,7 +72,7 @@ export type KiskadeeContextValue = {
           [TVariant in TextFieldVariant]?: {
             options?: {
               focusRingColorSource?: TextFieldFocusRingColorSource;
-            };
+            } & (TVariant extends 'standard' ? { labelPlacement?: TextFieldLabelPlacement } : {});
             modes?: {
               [TMode in TextFieldModeByVariant[TVariant]]?: {
                 options?: {

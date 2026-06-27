@@ -4,27 +4,18 @@ import { formatZodIssue } from './tabs.zod.shared.ts';
 import {
   createTextFieldControlElementStyleSchema,
   createTextFieldIndicatorElementStyleSchema,
+  createTextFieldInlineLabelElementStyleSchema,
   createTextFieldInputElementStyleSchema,
   createTextFieldLabelElementStyleSchema,
   createTextFieldMessageElementStyleSchema,
   createTextFieldRootElementStyleSchema
 } from './text-field.elements.zod.ts';
 import {
+  createTextFieldFloatingVariantOptionsSchema,
   createTextFieldModeOptionsSchema,
-  createTextFieldOptionsSchema,
-  type TextFieldModeSchemaValue,
+  createTextFieldStandardVariantOptionsSchema,
   textFieldOptionsSchema
 } from './text-field.options.zod.ts';
-
-function isStandardMode(
-  value: TextFieldModeSchemaValue
-): value is 'outline' | 'underline' | 'borderless' {
-  return value === 'outline' || value === 'underline' || value === 'borderless';
-}
-
-function isFloatingMode(value: TextFieldModeSchemaValue): value is 'notched' | 'inside' {
-  return value === 'notched' || value === 'inside';
-}
 
 function createTextFieldElementsSchema<TSegmentName extends SegmentName = never>() {
   return z
@@ -34,7 +25,8 @@ function createTextFieldElementsSchema<TSegmentName extends SegmentName = never>
       e3: createTextFieldControlElementStyleSchema<TSegmentName>().optional(),
       e4: createTextFieldInputElementStyleSchema<TSegmentName>().optional(),
       e5: createTextFieldMessageElementStyleSchema<TSegmentName>().optional(),
-      e6: createTextFieldIndicatorElementStyleSchema<TSegmentName>().optional()
+      e6: createTextFieldIndicatorElementStyleSchema<TSegmentName>().optional(),
+      e7: createTextFieldInlineLabelElementStyleSchema<TSegmentName>().optional()
     })
     .strict();
 }
@@ -51,25 +43,7 @@ function createTextFieldModeConfigSchema() {
 function createTextFieldStandardVariantConfigSchema() {
   return z
     .object({
-      options: createTextFieldOptionsSchema()
-        .superRefine((value, ctx) => {
-          if (value.variant !== undefined) {
-            ctx.addIssue({
-              code: 'custom',
-              path: ['variant'],
-              message: 'variant must not be repeated inside a variant branch'
-            });
-          }
-
-          if (value.mode && !isStandardMode(value.mode)) {
-            ctx.addIssue({
-              code: 'custom',
-              path: ['mode'],
-              message: `mode "${value.mode}" is not valid for variant "standard"`
-            });
-          }
-        })
-        .optional(),
+      options: createTextFieldStandardVariantOptionsSchema().optional(),
       modes: z
         .object({
           outline: createTextFieldModeConfigSchema().optional(),
@@ -93,25 +67,7 @@ function createTextFieldStandardVariantConfigSchema() {
 function createTextFieldFloatingVariantConfigSchema() {
   return z
     .object({
-      options: createTextFieldOptionsSchema()
-        .superRefine((value, ctx) => {
-          if (value.variant !== undefined) {
-            ctx.addIssue({
-              code: 'custom',
-              path: ['variant'],
-              message: 'variant must not be repeated inside a variant branch'
-            });
-          }
-
-          if (value.mode && !isFloatingMode(value.mode)) {
-            ctx.addIssue({
-              code: 'custom',
-              path: ['mode'],
-              message: `mode "${value.mode}" is not valid for variant "floating"`
-            });
-          }
-        })
-        .optional(),
+      options: createTextFieldFloatingVariantOptionsSchema().optional(),
       modes: z
         .object({
           notched: createTextFieldModeConfigSchema().optional(),

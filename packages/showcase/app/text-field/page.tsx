@@ -4,6 +4,7 @@ import type {
   ComponentEmphasis,
   RadiusMode,
   TextFieldFocusRingColorSource,
+  TextFieldLabelPlacement,
   TextFieldLabelOffsetStrategy
 } from '@kiskadee/core';
 import { componentEmphasisBuckets } from '@kiskadee/core';
@@ -52,6 +53,11 @@ const labelOffsetOptions: Array<{ value: LabelOffsetSelection; label: string }> 
   { value: 'radius', label: 'Radius' },
   { value: 'input-start', label: 'Input start' },
   { value: 'none', label: 'None' }
+];
+
+const labelPlacementOptions: Array<{ value: TextFieldLabelPlacement; label: string }> = [
+  { value: 'top', label: 'Top' },
+  { value: 'inline', label: 'Inline' }
 ];
 
 type TextFieldVariantMode =
@@ -173,11 +179,13 @@ export default function TextFieldPage() {
   const [interactiveSubmitState, setInteractiveSubmitState] = useState<'idle' | 'success'>('idle');
   const [borderRadius, setBorderRadius] = useState<RadiusMode>('rounded');
   const [labelOffsetSelection, setLabelOffsetSelection] = useState<LabelOffsetSelection>('auto');
+  const [labelPlacement, setLabelPlacement] = useState<TextFieldLabelPlacement>('top');
   const [surface, setSurface] = useState<TextFieldSurface>('default');
   const [focusRingColorSourceOverride, setFocusRingColorSourceOverride] = useState<
     TextFieldFocusRingColorSource | undefined
   >(undefined);
   const labelOffset = labelOffsetSelection === 'auto' ? undefined : labelOffsetSelection;
+  const standardLabelOffset = labelPlacement === 'inline' ? undefined : labelOffset;
   const textFieldEmphasis = getSurfaceEmphasis(surface);
   const schemaFocusRingColorSource = textFieldArtifactOptions.focusRingColorSource ?? 'global';
   const focusRingColorSourceSelection = focusRingColorSourceOverride ?? schemaFocusRingColorSource;
@@ -343,7 +351,6 @@ export default function TextFieldPage() {
       validationStatus,
       radius: borderRadius,
       emphasis: textFieldEmphasis,
-      labelOffset,
       focusRingColorSource: focusRingColorSourceOverride,
       reserveMessageSpace: true,
       inputProps: {
@@ -354,15 +361,27 @@ export default function TextFieldPage() {
     };
 
     return interactiveVariantMode === 'standard-outline' ? (
-      <TextFieldStandardOutline {...interactiveTextFieldProps} />
+      <TextFieldStandardOutline
+        {...interactiveTextFieldProps}
+        labelPlacement={labelPlacement}
+        labelOffset={standardLabelOffset}
+      />
     ) : interactiveVariantMode === 'standard-underline' ? (
-      <TextFieldStandardUnderline {...interactiveTextFieldProps} />
+      <TextFieldStandardUnderline
+        {...interactiveTextFieldProps}
+        labelPlacement={labelPlacement}
+        labelOffset={standardLabelOffset}
+      />
     ) : interactiveVariantMode === 'standard-borderless' ? (
-      <TextFieldStandardBorderless {...interactiveTextFieldProps} />
+      <TextFieldStandardBorderless
+        {...interactiveTextFieldProps}
+        labelPlacement={labelPlacement}
+        labelOffset={standardLabelOffset}
+      />
     ) : interactiveVariantMode === 'floating-notched' ? (
-      <TextFieldFloatingNotched {...interactiveTextFieldProps} />
+      <TextFieldFloatingNotched {...interactiveTextFieldProps} labelOffset={labelOffset} />
     ) : (
-      <TextFieldFloatingInside {...interactiveTextFieldProps} />
+      <TextFieldFloatingInside {...interactiveTextFieldProps} labelOffset={labelOffset} />
     );
   };
   const handleInteractiveSubmit = handleInteractiveFormSubmit(
@@ -407,16 +426,29 @@ export default function TextFieldPage() {
             }}
           />
           <ShowcaseSelectControl
-            label="Label Offset"
-            options={labelOffsetOptions}
-            value={labelOffsetSelection}
+            label="Label Placement"
+            options={labelPlacementOptions}
+            value={labelPlacement}
             onValueChange={(value) => {
-              const nextLabelOffset = value as LabelOffsetSelection;
-              if (nextLabelOffset === labelOffsetSelection) return;
+              const nextLabelPlacement = value as TextFieldLabelPlacement;
+              if (nextLabelPlacement === labelPlacement) return;
               playWowTransition();
-              setLabelOffsetSelection(nextLabelOffset);
+              setLabelPlacement(nextLabelPlacement);
             }}
           />
+          {labelPlacement === 'top' ? (
+            <ShowcaseSelectControl
+              label="Label Offset"
+              options={labelOffsetOptions}
+              value={labelOffsetSelection}
+              onValueChange={(value) => {
+                const nextLabelOffset = value as LabelOffsetSelection;
+                if (nextLabelOffset === labelOffsetSelection) return;
+                playWowTransition();
+                setLabelOffsetSelection(nextLabelOffset);
+              }}
+            />
+          ) : null}
           <ShowcaseSelectControl
             label="Focus Ring Color"
             options={focusRingColorSourceOptions}
@@ -542,7 +574,8 @@ export default function TextFieldPage() {
             message="Classic outlined field."
             radius={borderRadius}
             emphasis={textFieldEmphasis}
-            labelOffset={labelOffset}
+            labelPlacement={labelPlacement}
+            labelOffset={standardLabelOffset}
             focusRingColorSource={focusRingColorSourceOverride}
           />
           <TextFieldStandardOutline
@@ -553,7 +586,8 @@ export default function TextFieldPage() {
             message="Enter a valid email address."
             radius={borderRadius}
             emphasis={textFieldEmphasis}
-            labelOffset={labelOffset}
+            labelPlacement={labelPlacement}
+            labelOffset={standardLabelOffset}
             focusRingColorSource={focusRingColorSourceOverride}
           />
           <TextFieldStandardOutline
@@ -563,7 +597,8 @@ export default function TextFieldPage() {
             message="Disabled fields keep their message available."
             radius={borderRadius}
             emphasis={textFieldEmphasis}
-            labelOffset={labelOffset}
+            labelPlacement={labelPlacement}
+            labelOffset={standardLabelOffset}
             focusRingColorSource={focusRingColorSourceOverride}
             disabled
           />
@@ -579,7 +614,8 @@ export default function TextFieldPage() {
             message="Minimal shell with an underline."
             radius={borderRadius}
             emphasis={textFieldEmphasis}
-            labelOffset={labelOffset}
+            labelPlacement={labelPlacement}
+            labelOffset={standardLabelOffset}
             focusRingColorSource={focusRingColorSourceOverride}
           />
           <TextFieldStandardUnderline
@@ -590,7 +626,8 @@ export default function TextFieldPage() {
             message="This value looks short for the selected country."
             radius={borderRadius}
             emphasis={textFieldEmphasis}
-            labelOffset={labelOffset}
+            labelPlacement={labelPlacement}
+            labelOffset={standardLabelOffset}
             focusRingColorSource={focusRingColorSourceOverride}
           />
           <TextFieldStandardUnderline
@@ -600,7 +637,8 @@ export default function TextFieldPage() {
             message="Read-only fields can still be focused and copied."
             radius={borderRadius}
             emphasis={textFieldEmphasis}
-            labelOffset={labelOffset}
+            labelPlacement={labelPlacement}
+            labelOffset={standardLabelOffset}
             focusRingColorSource={focusRingColorSourceOverride}
             readOnly
           />
@@ -616,7 +654,8 @@ export default function TextFieldPage() {
             message="Filled shell without a visible border."
             radius={borderRadius}
             emphasis={textFieldEmphasis}
-            labelOffset={labelOffset}
+            labelPlacement={labelPlacement}
+            labelOffset={standardLabelOffset}
             focusRingColorSource={focusRingColorSourceOverride}
           />
           <TextFieldStandardBorderless
@@ -627,7 +666,8 @@ export default function TextFieldPage() {
             message="Enter a valid email address."
             radius={borderRadius}
             emphasis={textFieldEmphasis}
-            labelOffset={labelOffset}
+            labelPlacement={labelPlacement}
+            labelOffset={standardLabelOffset}
             focusRingColorSource={focusRingColorSourceOverride}
           />
           <TextFieldStandardBorderless
@@ -638,7 +678,8 @@ export default function TextFieldPage() {
             message="Budget may be lower than the project minimum."
             radius={borderRadius}
             emphasis={textFieldEmphasis}
-            labelOffset={labelOffset}
+            labelPlacement={labelPlacement}
+            labelOffset={standardLabelOffset}
             focusRingColorSource={focusRingColorSourceOverride}
           />
         </ExampleBlock>

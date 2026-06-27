@@ -43,6 +43,35 @@ export function createTextFieldLabelElementStyleSchema<TSegmentName extends Segm
     .strict();
 }
 
+export function createTextFieldInlineLabelElementStyleSchema<
+  TSegmentName extends SegmentName = never
+>() {
+  return z
+    .object({
+      name: z.string(),
+      decorations: z
+        .object({
+          textFont: z.custom<DecorationSchema['textFont']>().optional(),
+          textWeight: z.custom<DecorationSchema['textWeight']>().optional()
+        })
+        .strict()
+        .optional(),
+      scales: createScalesSchema([
+        'boxWidth',
+        'textSize',
+        'textHeight',
+        'marginBottom',
+        'marginTop',
+        'marginLeft',
+        'paddingRight',
+        'paddingLeft'
+      ]).optional(),
+      palettes: createPalettesSchema<TSegmentName, 'textColor'>(['textColor']).optional(),
+      effects: elementEffectsSchema.optional()
+    })
+    .strict();
+}
+
 export function createTextFieldControlElementStyleSchema<
   TSegmentName extends SegmentName = never
 >() {
@@ -130,6 +159,9 @@ export type TextFieldRootElementStyleFromSchema = z.input<
 
 export type TextFieldLabelElementStyleFromSchema<TSegmentName extends SegmentName = never> =
   z.input<ReturnType<typeof createTextFieldLabelElementStyleSchema<TSegmentName>>>;
+
+export type TextFieldInlineLabelElementStyleFromSchema<TSegmentName extends SegmentName = never> =
+  z.input<ReturnType<typeof createTextFieldInlineLabelElementStyleSchema<TSegmentName>>>;
 
 export type TextFieldControlElementStyleFromSchema<TSegmentName extends SegmentName = never> =
   z.input<ReturnType<typeof createTextFieldControlElementStyleSchema<TSegmentName>>>;

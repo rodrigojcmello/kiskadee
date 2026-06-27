@@ -3,12 +3,16 @@ import type { SegmentName } from '../types/colors/colors.types.ts';
 import type {
   TextFieldControlElementStyleFromSchema,
   TextFieldFocusRingColorSourceFromSchema,
+  TextFieldFloatingVariantOptionsFromSchema,
   TextFieldIndicatorElementStyleFromSchema,
+  TextFieldInlineLabelElementStyleFromSchema,
   TextFieldInputElementStyleFromSchema,
   TextFieldLabelElementStyleFromSchema,
+  TextFieldLabelPlacementSchemaValue,
   TextFieldMessageElementStyleFromSchema,
   TextFieldModeOptionsFromSchema,
   TextFieldOptionsFromSchema,
+  TextFieldStandardVariantOptionsFromSchema,
   TextFieldRootElementStyleFromSchema
 } from './text-field.zod.ts';
 
@@ -20,13 +24,15 @@ import type {
  * - e4: input
  * - e5: validation/supporting message
  * - e6: indicator layer
+ * - e7: inline label
  */
-export type TextFieldElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
+export type TextFieldElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6' | 'e7';
 export type TextFieldVariant = 'standard' | 'floating';
 export type TextFieldStandardMode = 'outline' | 'underline' | 'borderless';
 export type TextFieldFloatingMode = 'notched' | 'inside';
 export type TextFieldMode = TextFieldStandardMode | TextFieldFloatingMode;
 export type TextFieldValidationStatus = 'error' | 'warning';
+export type TextFieldLabelPlacement = TextFieldLabelPlacementSchemaValue;
 export type TextFieldModeByVariant = {
   standard: TextFieldStandardMode;
   floating: TextFieldFloatingMode;
@@ -95,6 +101,16 @@ export type TextFieldMessageElementStyle<TSegmentName extends SegmentName = neve
 export type TextFieldIndicatorElementStyle<TSegmentName extends SegmentName = never> =
   TextFieldIndicatorElementStyleFromSchema<TSegmentName>;
 
+/**
+ * e7 — inline label
+ * - textColor
+ * - boxWidth defines the inline label slot width
+ * - textSize / textHeight
+ * - marginBottom / marginTop / marginLeft / paddingRight / paddingLeft
+ */
+export type TextFieldInlineLabelElementStyle<TSegmentName extends SegmentName = never> =
+  TextFieldInlineLabelElementStyleFromSchema<TSegmentName>;
+
 export type TextFieldElements<TSegmentName extends SegmentName = never> = {
   // e1: root wrapper
   e1?: TextFieldRootElementStyle;
@@ -108,13 +124,12 @@ export type TextFieldElements<TSegmentName extends SegmentName = never> = {
   e5?: TextFieldMessageElementStyle<TSegmentName>;
   // e6: indicator layer
   e6?: TextFieldIndicatorElementStyle<TSegmentName>;
+  // e7: inline label
+  e7?: TextFieldInlineLabelElementStyle<TSegmentName>;
 };
 
 export type TextFieldVariantConfig = {
-  options?: {
-    mode?: TextFieldMode;
-    focusRingColorSource?: TextFieldFocusRingColorSource;
-  };
+  options?: TextFieldOptions;
 };
 
 export type TextFieldModeConfig<TSegmentName extends SegmentName = never> = {
@@ -122,30 +137,22 @@ export type TextFieldModeConfig<TSegmentName extends SegmentName = never> = {
   elements: TextFieldElements<TSegmentName>;
 };
 
-export type TextFieldStandardVariantConfig<TSegmentName extends SegmentName = never> =
-  TextFieldVariantConfig & {
-    options?: {
-      mode?: TextFieldStandardMode;
-      focusRingColorSource?: TextFieldFocusRingColorSource;
-    };
-    modes: Partial<{
-      outline: TextFieldModeConfig<TSegmentName>;
-      underline: TextFieldModeConfig<TSegmentName>;
-      borderless: TextFieldModeConfig<TSegmentName>;
-    }>;
-  };
+export type TextFieldStandardVariantConfig<TSegmentName extends SegmentName = never> = {
+  options?: TextFieldStandardVariantOptionsFromSchema;
+  modes: Partial<{
+    outline: TextFieldModeConfig<TSegmentName>;
+    underline: TextFieldModeConfig<TSegmentName>;
+    borderless: TextFieldModeConfig<TSegmentName>;
+  }>;
+};
 
-export type TextFieldFloatingVariantConfig<TSegmentName extends SegmentName = never> =
-  TextFieldVariantConfig & {
-    options?: {
-      mode?: TextFieldFloatingMode;
-      focusRingColorSource?: TextFieldFocusRingColorSource;
-    };
-    modes: Partial<{
-      notched: TextFieldModeConfig<TSegmentName>;
-      inside: TextFieldModeConfig<TSegmentName>;
-    }>;
-  };
+export type TextFieldFloatingVariantConfig<TSegmentName extends SegmentName = never> = {
+  options?: TextFieldFloatingVariantOptionsFromSchema;
+  modes: Partial<{
+    notched: TextFieldModeConfig<TSegmentName>;
+    inside: TextFieldModeConfig<TSegmentName>;
+  }>;
+};
 
 export type TextFieldVariants<TSegmentName extends SegmentName = never> = Partial<{
   standard: TextFieldStandardVariantConfig<TSegmentName>;
