@@ -741,9 +741,8 @@ export default function SwitchPage() {
                 emphasis={selectedSurface.cardEmphasis}
                 shadow={Boolean(cardShadow)}
                 preserveBorderWithShadow={false}
-                controlState={controlState}
-                onControlStateChange={setControlState}
                 interactionLocked={interactionLocked}
+                onClick={() => setControlState((current) => !current)}
                 aria-label={`Notifications ${controlState ? switchControlText.on : switchControlText.off}`}
               />
               <div className={s.interactiveSwitchVisual} aria-hidden="true">
