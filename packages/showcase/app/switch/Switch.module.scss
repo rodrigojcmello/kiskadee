@@ -46,7 +46,7 @@
 }
 
 .previewSection {
-  inline-size: min(100%, calc((100% - 12px) / 2));
+  inline-size: min(100%, calc((100% - 32px) / 2));
   margin-inline: auto;
 }
 
@@ -65,7 +65,8 @@
 .stateGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  row-gap: 16px;
+  column-gap: 32px;
 }
 
 .interactivePanel :global(.k-swt-e1-a),
@@ -120,7 +121,7 @@
 
   .stateGrid {
     grid-template-columns: 1fr;
-    gap: 10px;
+    row-gap: 16px;
   }
 
   .previewSection {
