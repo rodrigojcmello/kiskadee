@@ -3,6 +3,7 @@
 import {
   elementSizeValues,
   type ButtonIntent,
+  type CardIntent,
   type CardRadiusMode,
   type ComponentEmphasis,
   type ElementSizeValue
@@ -40,6 +41,11 @@ type CardDemoButtonProfile = {
   scale?: ElementSizeValue;
 };
 
+type CardSemanticSample = {
+  emphasis: ComponentEmphasis;
+  intent: CardIntent;
+};
+
 const shadowLevelLabels: Record<ElementSizeValue, string> = {
   's:sm:5': 'Small 5',
   's:sm:4': 'Small 4',
@@ -54,6 +60,28 @@ const shadowLevelLabels: Record<ElementSizeValue, string> = {
   's:lg:5': 'Large 5'
 };
 
+const cardIntentLabels: Record<CardIntent, string> = {
+  neutral: 'Neutral',
+  primary: 'Primary'
+};
+
+const cardEmphasisLabels: Record<ComponentEmphasis, string> = {
+  lowest: 'Lowest',
+  low: 'Low',
+  medium: 'Medium',
+  high: 'High',
+  highest: 'Highest'
+};
+
+const cardSemanticIntentOrder: CardIntent[] = ['neutral', 'primary'];
+const cardSemanticEmphasisOrder: ComponentEmphasis[] = [
+  'lowest',
+  'low',
+  'medium',
+  'high',
+  'highest'
+];
+
 function normalizeShadowLevelKey(key: string): ElementSizeValue | undefined {
   const normalized = key.startsWith('s:') ? key : `s:${key}`;
   return elementSizeValues.includes(normalized as ElementSizeValue)
@@ -66,11 +94,26 @@ type CardContentProps = {
   title: string;
   body: string;
   selected?: boolean;
+  tone?: 'default' | 'inverse';
+  withActionSlot?: boolean;
 };
 
-function CardContent({ eyebrow, title, body, selected = false }: CardContentProps) {
+function CardContent({
+  eyebrow,
+  title,
+  body,
+  selected = false,
+  tone = 'default',
+  withActionSlot = false
+}: CardContentProps) {
+  const toneClassName = selected
+    ? s.contentSelected
+    : tone === 'inverse'
+      ? s.contentInverse
+      : s.content;
+
   return (
-    <div className={selected ? s.contentSelected : s.content}>
+    <div className={`${toneClassName} ${withActionSlot ? s.contentWithActionSlot : ''}`.trim()}>
       <p className={s.eyebrow}>{eyebrow}</p>
       <h3 className={s.title}>{title}</h3>
       <p className={s.body}>{body}</p>
@@ -81,6 +124,20 @@ function CardContent({ eyebrow, title, body, selected = false }: CardContentProp
 const demoButtonScaleOrder: ElementSizeValue[] = ['s:md:1', 's:sm:1', 's:lg:1'];
 const demoButtonIntentOrder: ButtonIntent[] = ['primary', 'neutral', 'destructive', 'positive'];
 const demoButtonEmphasisOrder: ComponentEmphasis[] = ['medium', 'high', 'low', 'lowest'];
+
+function resolveCardSemanticSamples(
+  cardManifest: ManifestComponent | undefined
+): CardSemanticSample[] {
+  const state = cardManifest?.state;
+
+  if (!state) return [];
+
+  return cardSemanticIntentOrder.flatMap((intent) =>
+    cardSemanticEmphasisOrder
+      .filter((emphasis) => Boolean(state[intent]?.[emphasis]?.rest))
+      .map((emphasis) => ({ emphasis, intent }))
+  );
+}
 
 function resolveDemoButtonScale(buttonManifest: ManifestComponent | undefined) {
   if (!buttonManifest?.scale) return 's:md:1';
@@ -164,6 +221,10 @@ export function Card() {
       return Boolean(key && shadowBucket[key]);
     });
   }, [cardClassesMap]);
+  const semanticSamples = React.useMemo(
+    () => resolveCardSemanticSamples(cardManifest),
+    [cardManifest]
+  );
 
   const radiusSelectOptions = React.useMemo(
     () =>
@@ -248,97 +309,140 @@ export function Card() {
       </ShowcaseRouteControls>
 
       {isCardAvailable ? (
-        <div className={`${s.grid} k-root`}>
-          <div className={s.example}>
-            <p className={s.exampleLabel}>Static</p>
-            <KCard
-              radius={radius}
-              shadow={resolvedStaticShadow}
-              preserveBorderWithShadow={preserveBorderWithShadow}
-            >
-              <CardContent
-                eyebrow="Surface"
-                title="Static card"
-                body="A non-interactive visual container rendered as a div."
-              />
-            </KCard>
-            <CardDemoButton buttonProfile={demoButtonProfile} label="Learn more" />
-          </div>
+        <div className={s.sections}>
+          {semanticSamples.length > 0 ? (
+            <section className={s.exampleSection}>
+              <h3 className={s.sectionTitle}>Semantic surfaces</h3>
+              <div className={`${s.grid} k-root`}>
+                {semanticSamples.map(({ emphasis, intent }) => {
+                  const inverse = emphasis === 'high' || emphasis === 'highest';
 
-          <div className={s.example}>
-            <p className={s.exampleLabel}>Action</p>
-            <KCardAction
-              radius={radius}
-              shadow={cardActionShadow}
-              preserveBorderWithShadow={preserveBorderWithShadow}
-              controlState={selected}
-              onControlStateChange={setSelected}
-            >
-              <CardContent
-                eyebrow="Button"
-                title={selected ? 'Selected' : 'Rest'}
-                body="A button-backed card that toggles the selected schema state."
-                selected={selected}
-              />
-            </KCardAction>
-            <CardDemoButton buttonProfile={demoButtonProfile} label="Details" />
-          </div>
+                  return (
+                    <div className={s.example} key={`${intent}-${emphasis}`}>
+                      <p className={s.exampleLabel}>
+                        {cardIntentLabels[intent]} / {cardEmphasisLabels[emphasis]}
+                      </p>
+                      <KCard
+                        emphasis={emphasis}
+                        intent={intent}
+                        radius={radius}
+                        shadow={resolvedStaticShadow}
+                        preserveBorderWithShadow={preserveBorderWithShadow}
+                      >
+                        <CardContent
+                          eyebrow={cardIntentLabels[intent]}
+                          title={cardEmphasisLabels[emphasis]}
+                          body={`${intent}.${emphasis}`}
+                          tone={inverse ? 'inverse' : 'default'}
+                        />
+                      </KCard>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          ) : null}
 
-          <div className={s.example}>
-            <p className={s.exampleLabel}>Selected</p>
-            <KCardAction
-              radius={radius}
-              shadow={cardActionShadow}
-              preserveBorderWithShadow={preserveBorderWithShadow}
-              controlState
-            >
-              <CardContent
-                eyebrow="Selected"
-                title="Strong selected"
-                body="Child contrast is adjusted manually in the consumer for v1."
-                selected
-              />
-            </KCardAction>
-            <CardDemoButton buttonProfile={demoButtonProfile} label="Continue" />
-          </div>
+          <section className={s.exampleSection}>
+            <h3 className={s.sectionTitle}>States</h3>
+            <div className={`${s.grid} k-root`}>
+              <div className={s.example}>
+                <p className={s.exampleLabel}>Static</p>
+                <KCard
+                  radius={radius}
+                  shadow={resolvedStaticShadow}
+                  preserveBorderWithShadow={preserveBorderWithShadow}
+                >
+                  <CardContent
+                    eyebrow="Surface"
+                    title="Static card"
+                    body="A non-interactive visual container rendered as a div."
+                    withActionSlot
+                  />
+                </KCard>
+                <CardDemoButton buttonProfile={demoButtonProfile} label="Learn more" />
+              </div>
 
-          <div className={s.example}>
-            <p className={s.exampleLabel}>Disabled</p>
-            <KCardAction
-              radius={radius}
-              shadow={cardActionShadow}
-              preserveBorderWithShadow={preserveBorderWithShadow}
-              disabled
-              defaultControlState={false}
-            >
-              <CardContent
-                eyebrow="Disabled"
-                title="Unavailable action"
-                body="Native disabled semantics remain separate from interactionLocked."
-              />
-            </KCardAction>
-            <CardDemoButton buttonProfile={demoButtonProfile} disabled label="Unavailable" />
-          </div>
+              <div className={s.example}>
+                <p className={s.exampleLabel}>Action</p>
+                <KCardAction
+                  radius={radius}
+                  shadow={cardActionShadow}
+                  preserveBorderWithShadow={preserveBorderWithShadow}
+                  controlState={selected}
+                  onControlStateChange={setSelected}
+                >
+                  <CardContent
+                    eyebrow="Button"
+                    title={selected ? 'Selected' : 'Rest'}
+                    body="A button-backed card that toggles the selected schema state."
+                    selected={selected}
+                    withActionSlot
+                  />
+                </KCardAction>
+                <CardDemoButton buttonProfile={demoButtonProfile} label="Details" />
+              </div>
 
-          <div className={s.example}>
-            <p className={s.exampleLabel}>Locked</p>
-            <KCardAction
-              radius={radius}
-              shadow={cardActionShadow}
-              preserveBorderWithShadow={preserveBorderWithShadow}
-              controlState={lockedSelected}
-              interactionLocked={interactionLocked}
-              onControlStateChange={setLockedSelected}
-            >
-              <CardContent
-                eyebrow={interactionLocked ? 'Locked' : 'Unlocked'}
-                title={lockedSelected ? 'Selected' : 'Rest'}
-                body="Toggle the panel control to allow or block activation."
-                selected={lockedSelected}
-              />
-            </KCardAction>
-            <CardDemoButton buttonProfile={demoButtonProfile} label="Review" />
-          </div>
+              <div className={s.example}>
+                <p className={s.exampleLabel}>Selected</p>
+                <KCardAction
+                  radius={radius}
+                  shadow={cardActionShadow}
+                  preserveBorderWithShadow={preserveBorderWithShadow}
+                  controlState
+                >
+                  <CardContent
+                    eyebrow="Selected"
+                    title="Strong selected"
+                    body="Child contrast is adjusted manually in the consumer for v1."
+                    selected
+                    withActionSlot
+                  />
+                </KCardAction>
+                <CardDemoButton buttonProfile={demoButtonProfile} label="Continue" />
+              </div>
+
+              <div className={s.example}>
+                <p className={s.exampleLabel}>Disabled</p>
+                <KCardAction
+                  radius={radius}
+                  shadow={cardActionShadow}
+                  preserveBorderWithShadow={preserveBorderWithShadow}
+                  disabled
+                  defaultControlState={false}
+                >
+                  <CardContent
+                    eyebrow="Disabled"
+                    title="Unavailable action"
+                    body="Native disabled semantics remain separate from interactionLocked."
+                    withActionSlot
+                  />
+                </KCardAction>
+                <CardDemoButton buttonProfile={demoButtonProfile} disabled label="Unavailable" />
+              </div>
+
+              <div className={s.example}>
+                <p className={s.exampleLabel}>Locked</p>
+                <KCardAction
+                  radius={radius}
+                  shadow={cardActionShadow}
+                  preserveBorderWithShadow={preserveBorderWithShadow}
+                  controlState={lockedSelected}
+                  interactionLocked={interactionLocked}
+                  onControlStateChange={setLockedSelected}
+                >
+                  <CardContent
+                    eyebrow={interactionLocked ? 'Locked' : 'Unlocked'}
+                    title={lockedSelected ? 'Selected' : 'Rest'}
+                    body="Toggle the panel control to allow or block activation."
+                    selected={lockedSelected}
+                    withActionSlot
+                  />
+                </KCardAction>
+                <CardDemoButton buttonProfile={demoButtonProfile} label="Review" />
+              </div>
+            </div>
+          </section>
         </div>
       ) : (
         <div className={s.unavailable}>Card is not available in the current design system.</div>

@@ -2,6 +2,26 @@
   width: 100%;
 }
 
+.sections {
+  display: grid;
+  gap: 32px;
+  width: 100%;
+}
+
+.exampleSection {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.sectionTitle {
+  color: rgba(0, 0, 0, 0.72);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
 .grid {
   align-items: stretch;
   display: grid;
@@ -24,8 +44,12 @@
 }
 
 .content,
-.contentSelected {
+.contentSelected,
+.contentInverse {
   min-height: 116px;
+}
+
+.contentWithActionSlot {
   padding-bottom: 56px;
 }
 
@@ -35,6 +59,10 @@
 
 .contentSelected {
   color: rgba(255, 255, 255, 0.88);
+}
+
+.contentInverse {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .eyebrow {
