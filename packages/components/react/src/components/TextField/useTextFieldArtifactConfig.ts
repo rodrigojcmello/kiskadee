@@ -1,19 +1,15 @@
 import type {
   TextFieldFocusRingColorSource,
-  TextFieldLabelPlacement,
   TextFieldLabelOffsetByRadius,
+  TextFieldLabelPlacement,
   TextFieldMode,
   TextFieldModeByVariant,
   TextFieldVariant
 } from '@kiskadee/core';
 import type { TextFieldComponentArtifactJSON } from '@kiskadee/web-builder/types';
-import { useEffect, useState } from 'react';
-import {
-  getComponentArtifactCacheKey,
-  loadCachedComponentArtifact
-} from '../../shared/contexts/componentArtifactCache.ts';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
+import { useLoadedComponentArtifact } from '../../shared/contexts/useLoadedComponentArtifact.ts';
 import type { TextFieldVariantClassesMap } from './TextField.types.ts';
 
 export type TextFieldVariantsConfig = {
@@ -46,60 +42,23 @@ export type TextFieldArtifactConfig = {
   variants: TextFieldVariantsConfig;
 };
 
-type TextFieldArtifactState = {
-  cacheKey: string;
-  artifact: TextFieldComponentArtifactJSON | undefined;
-};
-
 function isTextFieldComponentArtifact(
-  artifact: TextFieldComponentArtifactJSON | undefined
+  artifact: unknown
 ): artifact is TextFieldComponentArtifactJSON {
-  return artifact?.component === 'textField';
+  return (artifact as TextFieldComponentArtifactJSON | undefined)?.component === 'textField';
 }
 
 export function useTextFieldArtifactConfig(): TextFieldArtifactConfig {
-  const { artifactVersion, classesMap, designSystem, global, loadComponentArtifact } =
-    useKiskadee();
-  const textFieldArtifactCacheKey = getComponentArtifactCacheKey({
-    designSystem,
-    artifactVersion,
-    componentName: 'textField'
+  const { classesMap, global } = useKiskadee();
+  const { currentArtifact: textFieldComponentArtifact } = useLoadedComponentArtifact({
+    componentName: 'textField',
+    isArtifact: isTextFieldComponentArtifact
   });
-  const [artifactState, setArtifactState] = useState<TextFieldArtifactState | undefined>(undefined);
-  const textFieldComponentArtifact =
-    artifactState?.cacheKey === textFieldArtifactCacheKey ? artifactState.artifact : undefined;
   const legacyTextFieldConfig = global?.components?.textField;
   const textFieldClassesMap = useComponentClassMap(
     'textField',
     classesMap.textField as TextFieldVariantClassesMap | undefined
   );
-
-  useEffect(() => {
-    let cancelled = false;
-
-    if (!loadComponentArtifact) {
-      setArtifactState(undefined);
-      return () => {
-        cancelled = true;
-      };
-    }
-
-    loadCachedComponentArtifact<TextFieldComponentArtifactJSON>({
-      cacheKey: textFieldArtifactCacheKey,
-      componentName: 'textField',
-      loadComponentArtifact
-    }).then((artifact) => {
-      if (cancelled) return;
-      setArtifactState({
-        cacheKey: textFieldArtifactCacheKey,
-        artifact: isTextFieldComponentArtifact(artifact) ? artifact : undefined
-      });
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [loadComponentArtifact, textFieldArtifactCacheKey]);
 
   return {
     textFieldClassesMap,

@@ -7,13 +7,9 @@ import type {
   TabsVariant
 } from '@kiskadee/core';
 import type { TabsComponentArtifactJSON } from '@kiskadee/web-builder/types';
-import { useEffect, useState } from 'react';
-import {
-  getComponentArtifactCacheKey,
-  loadCachedComponentArtifact
-} from '../../shared/contexts/componentArtifactCache.ts';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
+import { useLoadedComponentArtifact } from '../../shared/contexts/useLoadedComponentArtifact.ts';
 import type { TabsVariantClassesMap } from './Tabs.types.ts';
 
 export type TabsArtifactConfig = {
@@ -29,11 +25,6 @@ export type TabsArtifactConfig = {
   };
 };
 
-type TabsArtifactState = {
-  cacheKey: string;
-  artifact: TabsComponentArtifactJSON | undefined;
-};
-
 type LegacyTabsOptions = TabsArtifactConfig['options'] & {
   type?: TabsVariant;
   indicatorVariant?: TabsIndicatorShape;
@@ -42,10 +33,8 @@ type LegacyTabsOptions = TabsArtifactConfig['options'] & {
   lowerCurveMode?: TabsBridgeLowerCurve;
 };
 
-function isTabsComponentArtifact(
-  artifact: TabsComponentArtifactJSON | undefined
-): artifact is TabsComponentArtifactJSON {
-  return artifact?.component === 'tabs';
+function isTabsComponentArtifact(artifact: unknown): artifact is TabsComponentArtifactJSON {
+  return (artifact as TabsComponentArtifactJSON | undefined)?.component === 'tabs';
 }
 
 function normalizeTabsOptions(
@@ -71,48 +60,16 @@ function normalizeTabsOptions(
 }
 
 export function useTabsArtifactConfig(): TabsArtifactConfig {
-  const { artifactVersion, classesMap, designSystem, global, loadComponentArtifact } =
-    useKiskadee();
-  const tabsArtifactCacheKey = getComponentArtifactCacheKey({
-    designSystem,
-    artifactVersion,
-    componentName: 'tabs'
+  const { classesMap, global } = useKiskadee();
+  const { currentArtifact: tabsComponentArtifact } = useLoadedComponentArtifact({
+    componentName: 'tabs',
+    isArtifact: isTabsComponentArtifact
   });
-  const [artifactState, setArtifactState] = useState<TabsArtifactState | undefined>(undefined);
-  const tabsComponentArtifact =
-    artifactState?.cacheKey === tabsArtifactCacheKey ? artifactState.artifact : undefined;
   const legacyTabsConfig = global?.components?.tabs;
   const tabsClassesMap = useComponentClassMap(
     'tabs',
     classesMap.tabs as TabsVariantClassesMap | undefined
   );
-
-  useEffect(() => {
-    let cancelled = false;
-
-    if (!loadComponentArtifact) {
-      setArtifactState(undefined);
-      return () => {
-        cancelled = true;
-      };
-    }
-
-    loadCachedComponentArtifact<TabsComponentArtifactJSON>({
-      cacheKey: tabsArtifactCacheKey,
-      componentName: 'tabs',
-      loadComponentArtifact
-    }).then((artifact) => {
-      if (cancelled) return;
-      setArtifactState({
-        cacheKey: tabsArtifactCacheKey,
-        artifact: isTabsComponentArtifact(artifact) ? artifact : undefined
-      });
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [loadComponentArtifact, tabsArtifactCacheKey]);
 
   return {
     tabsClassesMap,

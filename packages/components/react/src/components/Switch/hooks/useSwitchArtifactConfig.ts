@@ -6,13 +6,9 @@ import type {
   SwitchControlTextVisibility
 } from '@kiskadee/core';
 import type { SwitchComponentArtifactJSON } from '@kiskadee/web-builder/types';
-import { useEffect, useState } from 'react';
-import {
-  getComponentArtifactCacheKey,
-  loadCachedComponentArtifact
-} from '../../../shared/contexts/componentArtifactCache.ts';
 import { useKiskadee } from '../../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../../shared/contexts/useComponentClassMap.ts';
+import { useLoadedComponentArtifact } from '../../../shared/contexts/useLoadedComponentArtifact.ts';
 import {
   type SwitchThumbShrinkEffectModule,
   useSwitchThumbShrinkEffect
@@ -42,30 +38,21 @@ export type SwitchArtifactConfig = {
   };
 };
 
-type SwitchArtifactState = {
-  cacheKey: string;
-  artifact: SwitchComponentArtifactJSON | undefined;
-};
-
-function isSwitchComponentArtifact(
-  artifact: SwitchComponentArtifactJSON | undefined
-): artifact is SwitchComponentArtifactJSON {
-  return artifact?.component === 'switch';
+function isSwitchComponentArtifact(artifact: unknown): artifact is SwitchComponentArtifactJSON {
+  return (artifact as SwitchComponentArtifactJSON | undefined)?.component === 'switch';
 }
 
 export function useSwitchArtifactConfig(thumbShrink?: false): SwitchArtifactConfig {
-  const { artifactVersion, classesMap, designSystem, global, loadComponentArtifact } =
-    useKiskadee();
-  const switchArtifactCacheKey = getComponentArtifactCacheKey({
-    designSystem,
-    artifactVersion,
-    componentName: 'switch'
+  const { classesMap, global } = useKiskadee();
+  const {
+    currentArtifact: currentSwitchComponentArtifact,
+    previousArtifact: previousLoadedSwitchComponentArtifact
+  } = useLoadedComponentArtifact({
+    componentName: 'switch',
+    isArtifact: isSwitchComponentArtifact,
+    preservePrevious: true,
+    resetWhenLoaderMissing: false
   });
-  const [artifactState, setArtifactState] = useState<SwitchArtifactState | undefined>(undefined);
-  const currentSwitchComponentArtifact =
-    artifactState?.cacheKey === switchArtifactCacheKey ? artifactState.artifact : undefined;
-  const previousLoadedSwitchComponentArtifact =
-    artifactState?.cacheKey !== switchArtifactCacheKey ? artifactState?.artifact : undefined;
   // Preserve component metadata while a provider swaps manifests/design systems.
   const switchGlobalConfig =
     currentSwitchComponentArtifact ??
@@ -76,32 +63,6 @@ export function useSwitchArtifactConfig(thumbShrink?: false): SwitchArtifactConf
   const shouldLoadThumbShrinkEffect =
     thumbShrink !== false && switchGlobalConfig?.effects?.thumbShrink === true;
   const thumbShrinkEffect = useSwitchThumbShrinkEffect(shouldLoadThumbShrinkEffect);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    if (!loadComponentArtifact) {
-      return () => {
-        cancelled = true;
-      };
-    }
-
-    loadCachedComponentArtifact<SwitchComponentArtifactJSON>({
-      cacheKey: switchArtifactCacheKey,
-      componentName: 'switch',
-      loadComponentArtifact
-    }).then((artifact) => {
-      if (cancelled) return;
-      setArtifactState({
-        cacheKey: switchArtifactCacheKey,
-        artifact: isSwitchComponentArtifact(artifact) ? artifact : undefined
-      });
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [loadComponentArtifact, switchArtifactCacheKey]);
 
   return {
     switchClassesMap,
