@@ -1,18 +1,23 @@
 import {
   type ClassNameByElementJSON,
-  type ColorClasses,
   type ComponentEmphasis,
   stateActivator as cn,
-  componentEmphasisBuckets,
   type RadiusMode,
   type TextFieldFocusRingColorSource,
   type TextFieldIntent,
-  type TextFieldLabelPlacement,
   type TextFieldLabelOffsetStrategy,
+  type TextFieldLabelPlacement,
   type TextFieldMode,
   type TextFieldVariant
 } from '@kiskadee/core';
 import type { TextFieldStateProjectionOptions } from '@kiskadee/react-headless';
+import {
+  joinClassNames,
+  normalizeScaleKey,
+  resolveIntentClassName,
+  resolveSchemaElementClassName,
+  resolveRadiusClassName as resolveSharedRadiusClassName
+} from '../../shared/class-resolution/classNames.ts';
 import type { TextFieldStructuralDescriptor } from './TextField.structural.ts';
 import type {
   TextFieldClassesMap,
@@ -53,13 +58,8 @@ export const TEXT_FIELD_STATE_PROJECTION = {
 /**
  * Joins optional class fragments into one trimmed className string.
  */
-export function join(...parts: Array<string | undefined | false | null>): string | undefined {
-  const joined = parts.filter(Boolean).join(' ').trim();
-  return joined.length > 0 ? joined : undefined;
-}
-
-export const normalizeScaleKey = (key: string): string =>
-  key.startsWith('s:') ? key.slice(2) : key;
+export const join = joinClassNames;
+export { normalizeScaleKey };
 
 export function resolveVariantElements(
   map: TextFieldVariantClassesMap | undefined,
@@ -75,17 +75,11 @@ export function resolveIntentClasses(
   intent: TextFieldIntent,
   emphasis: ComponentEmphasis | undefined
 ): string {
-  if (!element?.c) return '';
-
-  const byIntent = element.c as Record<TextFieldIntent, ColorClasses>;
-  const chosen = byIntent[intent] ?? byIntent.neutral ?? Object.values(byIntent)[0];
-  if (!chosen) return '';
-
-  const bucket = emphasis ? componentEmphasisBuckets[emphasis] : undefined;
-  if (!bucket) return chosen.hh ?? chosen.h ?? chosen.m ?? chosen.l ?? chosen.ll ?? '';
-
-  const buckets = chosen as Record<string, string | undefined>;
-  return buckets[bucket] ?? chosen.m ?? chosen.h ?? chosen.hh ?? chosen.l ?? chosen.ll ?? '';
+  return resolveIntentClassName(element, intent, emphasis, {
+    fallbackIntent: 'neutral',
+    useFirstIntentFallback: true,
+    emphasisFallbackOrder: ['m', 'h', 'hh', 'l', 'll']
+  });
 }
 
 /**
@@ -101,15 +95,16 @@ export function elem(
 ): string {
   if (!element) return '';
 
-  const scaleKey = normalizeScaleKey(options.scale);
-  return (
-    join(
-      element.d,
-      resolveIntentClasses(element, options.intent, options.emphasis),
-      element.s?.all,
-      element.s?.[scaleKey]
-    ) ?? ''
-  );
+  return resolveSchemaElementClassName(element, {
+    scale: options.scale,
+    intent: options.intent,
+    emphasis: options.emphasis,
+    intentOptions: {
+      fallbackIntent: 'neutral',
+      useFirstIntentFallback: true,
+      emphasisFallbackOrder: ['m', 'h', 'hh', 'l', 'll']
+    }
+  });
 }
 
 export function resolveRadiusClassName(
@@ -117,25 +112,7 @@ export function resolveRadiusClassName(
   scale: string,
   radiusMode: RadiusMode
 ): string {
-  if (!element) return '';
-  const scaleKey = normalizeScaleKey(scale);
-  const all =
-    radiusMode === 'rounded'
-      ? (element.rr?.all ?? '')
-      : radiusMode === 'pill'
-        ? (element.rp?.all ?? '')
-        : radiusMode === 'square'
-          ? (element.rs?.all ?? '')
-          : '';
-  const byScale =
-    radiusMode === 'rounded'
-      ? (element.rr?.[scaleKey] ?? '')
-      : radiusMode === 'pill'
-        ? (element.rp?.[scaleKey] ?? '')
-        : radiusMode === 'square'
-          ? (element.rs?.[scaleKey] ?? '')
-          : '';
-  return join(all, byScale) ?? '';
+  return resolveSharedRadiusClassName(element, scale, radiusMode);
 }
 
 export function resolveTextFieldClassNames(options: {

@@ -1,29 +1,36 @@
 import {
-  type ClassNameByElementJSON,
-  type ColorClasses,
-  type ComponentEmphasis,
   type ActivationFeedbackProfileMode,
-  componentEmphasisBuckets,
+  type ClassNameByElementJSON,
+  type ComponentEmphasis,
+  stateActivator as cn,
   type EffectClassBucketJSON,
   type RadiusMode,
-  stateActivator as cn,
   type SwitchActivationMotion,
   type SwitchControlTextVisibility,
   type SwitchIntent,
   type SwitchMode,
   type SwitchVariant
 } from '@kiskadee/core';
+import {
+  type ActivationFeedbackEffectBuckets,
+  resolveActivationFeedbackBucketClass,
+  resolveActivationFeedbackProfileAvailability
+} from '../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
+import {
+  joinClassNames,
+  normalizeScaleKey,
+  resolveIntentClassName,
+  resolveSchemaElementClassName,
+  resolveEffectBucketClassName as resolveSharedEffectBucketClassName,
+  resolveRadiusClassName as resolveSharedRadiusClassName,
+  resolveScaleClassName as resolveSharedScaleClassName
+} from '../../shared/class-resolution/classNames.ts';
 import type {
   SwitchClassesMap,
   SwitchClassNames,
   SwitchLabelPosition,
   SwitchVariantClassesMap
 } from './Switch.types.ts';
-import {
-  type ActivationFeedbackEffectBuckets,
-  resolveActivationFeedbackBucketClass,
-  resolveActivationFeedbackProfileAvailability
-} from '../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
 import { SWITCH_THUMB_VISUAL_CLASS_NAME } from './SwitchGeometry.utils.ts';
 
 export const DEFAULT_SWITCH_SCALE = 's:md:1';
@@ -41,13 +48,8 @@ export type SwitchThumbShrinkClassNames = Required<SwitchClassNames> & {
   x5: string;
 };
 
-export function join(...parts: Array<string | undefined | false | null>): string | undefined {
-  const joined = parts.filter(Boolean).join(' ').trim();
-  return joined.length > 0 ? joined : undefined;
-}
-
-export const normalizeScaleKey = (key: string): string =>
-  key.startsWith('s:') ? key.slice(2) : key;
+export const join = joinClassNames;
+export { normalizeScaleKey };
 
 export function resolveVariantElements(
   map: SwitchVariantClassesMap | undefined,
@@ -63,17 +65,11 @@ export function resolveIntentClasses(
   intent: SwitchIntent,
   emphasis: ComponentEmphasis | undefined
 ): string {
-  if (!element?.c) return '';
-
-  const byIntent = element.c as Record<string, ColorClasses>;
-  const chosen = byIntent[intent] ?? byIntent.neutral ?? Object.values(byIntent)[0];
-  if (!chosen) return '';
-
-  const bucket = emphasis ? componentEmphasisBuckets[emphasis] : undefined;
-  if (!bucket) return chosen.hh ?? chosen.h ?? chosen.m ?? chosen.l ?? chosen.ll ?? '';
-
-  const buckets = chosen as Record<string, string | undefined>;
-  return buckets[bucket] ?? chosen.m ?? chosen.h ?? chosen.hh ?? chosen.l ?? chosen.ll ?? '';
+  return resolveIntentClassName(element, intent, emphasis, {
+    fallbackIntent: 'neutral',
+    useFirstIntentFallback: true,
+    emphasisFallbackOrder: ['m', 'h', 'hh', 'l', 'll']
+  });
 }
 
 export function elem(
@@ -86,15 +82,16 @@ export function elem(
 ): string {
   if (!element) return '';
 
-  const scaleKey = normalizeScaleKey(options.scale);
-  return (
-    join(
-      element.d,
-      resolveIntentClasses(element, options.intent, options.emphasis),
-      element.s?.all,
-      element.s?.[scaleKey]
-    ) ?? ''
-  );
+  return resolveSchemaElementClassName(element, {
+    scale: options.scale,
+    intent: options.intent,
+    emphasis: options.emphasis,
+    intentOptions: {
+      fallbackIntent: 'neutral',
+      useFirstIntentFallback: true,
+      emphasisFallbackOrder: ['m', 'h', 'hh', 'l', 'll']
+    }
+  });
 }
 
 export function resolveRadiusClassName(
@@ -102,36 +99,14 @@ export function resolveRadiusClassName(
   scale: string,
   radiusMode: RadiusMode
 ): string {
-  if (!element) return '';
-  const scaleKey = normalizeScaleKey(scale);
-  const all =
-    radiusMode === 'rounded'
-      ? (element.rr?.all ?? '')
-      : radiusMode === 'pill'
-        ? (element.rp?.all ?? '')
-        : radiusMode === 'square'
-          ? (element.rs?.all ?? '')
-          : '';
-  const byScale =
-    radiusMode === 'rounded'
-      ? (element.rr?.[scaleKey] ?? '')
-      : radiusMode === 'pill'
-        ? (element.rp?.[scaleKey] ?? '')
-        : radiusMode === 'square'
-          ? (element.rs?.[scaleKey] ?? '')
-          : '';
-  return join(all, byScale) ?? '';
+  return resolveSharedRadiusClassName(element, scale, radiusMode);
 }
 
 function resolveEffectBucketClassName(
   bucket: EffectClassBucketJSON | undefined,
   scale: string
 ): string {
-  if (!bucket) return '';
-  if (typeof bucket === 'string') return bucket;
-
-  const scaleKey = normalizeScaleKey(scale);
-  return join(bucket.all, bucket[scaleKey]) ?? '';
+  return resolveSharedEffectBucketClassName(bucket, { scale });
 }
 
 export function hasSwitchActivationFeedbackEffect(
@@ -169,9 +144,7 @@ export function resolveSwitchShadowEffectClassName(
 }
 
 function resolveScaleClassName(element: ClassNameByElementJSON | undefined, scale: string): string {
-  if (!element) return '';
-  const scaleKey = normalizeScaleKey(scale);
-  return join(element.s?.all, element.s?.[scaleKey]) ?? '';
+  return resolveSharedScaleClassName(element, scale);
 }
 
 function resolveVisualClassName(
@@ -317,8 +290,7 @@ export function resolveSwitchClassNames(options: {
       ? (join(`k-swt-e5-${branch}`, elem(elements.e5, options), 'k-trn', options.classNames.e5) ??
         '')
       : (options.classNames.e5 ?? ''),
-    e6:
-      join(`k-swt-e6-${branch}`, elem(elements.e6, options), 'k-trn', options.classNames.e6) ?? ''
+    e6: join(`k-swt-e6-${branch}`, elem(elements.e6, options), 'k-trn', options.classNames.e6) ?? ''
   };
 }
 

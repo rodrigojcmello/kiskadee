@@ -1,14 +1,20 @@
 import {
   type ButtonIntent,
   type ClassNameByElementJSON,
-  type ColorClasses,
   type ComponentEmphasis,
-  componentEmphasisBuckets,
+  stateActivator as cn,
   type EffectClassBucketJSON,
-  type RadiusMode,
-  stateActivator as cn
+  type RadiusMode
 } from '@kiskadee/core';
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
+import {
+  joinClassNames,
+  mergeClassNamePatches,
+  normalizeScaleKey,
+  resolveEffectBucketClassName,
+  resolveRadiusClassName,
+  resolveSchemaElementClassName
+} from '../../shared/class-resolution/classNames.ts';
 import type { ButtonElementName, ButtonProps, ButtonStatus } from './Button.types.ts';
 
 export const DEFAULT_BUTTON_SCALE = 's:md:1';
@@ -19,58 +25,29 @@ export const DEFAULT_BUTTON_PRESSED_DURATION_MS = 60;
 
 export type ButtonClassNamePatch = Partial<Record<ButtonElementName, string>>;
 
-export function join(...parts: Array<string | undefined | false | null>): string | undefined {
-  const joined = parts.filter(Boolean).join(' ').trim();
-  return joined.length > 0 ? joined : undefined;
-}
-
-export const normalizeButtonScaleKey = (key: string): string =>
-  key.startsWith('s:') ? key.slice(2) : key;
+export const join = joinClassNames;
+export const normalizeButtonScaleKey = normalizeScaleKey;
 
 function collectElementClasses(
   element: ClassNameByElementJSON | undefined,
   emphasis: ComponentEmphasis | undefined = DEFAULT_BUTTON_EMPHASIS,
   intent: ButtonIntent | undefined = DEFAULT_BUTTON_INTENT
 ): string {
-  if (!element) return '';
-
-  const base = element.d ?? '';
-  const colorByIntent = element.c as Record<ButtonIntent, ColorClasses> | undefined;
-  const colorBuckets = colorByIntent?.[intent];
-
-  if (!colorBuckets) return base;
-
-  const bucket = emphasis ? componentEmphasisBuckets[emphasis] : undefined;
-  const colorBucketMap = colorBuckets as Record<string, string | undefined>;
-  const color = bucket
-    ? (colorBucketMap[bucket] ?? '')
-    : !emphasis
-      ? (colorBuckets.hh ??
-        colorBuckets.h ??
-        colorBuckets.m ??
-        colorBuckets.l ??
-        colorBuckets.ll ??
-        '')
-      : '';
-
-  return join(base, color) ?? '';
+  return resolveSchemaElementClassName(element, {
+    intent,
+    emphasis
+  });
 }
 
 export function resolveButtonEffectBucketClassName(
   bucket: EffectClassBucketJSON | undefined,
   scaleKey: string
 ): string {
-  if (!bucket) return '';
-  if (typeof bucket === 'string') return bucket;
-
-  return join(bucket.all, bucket[scaleKey]) ?? '';
+  return resolveEffectBucketClassName(bucket, { scale: scaleKey });
 }
 
 function resolveButtonStatefulEffectClassName(bucket: EffectClassBucketJSON | undefined): string {
-  if (!bucket) return '';
-  if (typeof bucket === 'string') return bucket;
-
-  return bucket.all ?? '';
+  return resolveEffectBucketClassName(bucket);
 }
 
 export function resolveButtonClassNames({
@@ -117,18 +94,7 @@ export function resolveButtonClassNames({
         : ''
     : '';
 
-  const e1RadiusAll =
-    radiusMode === 'rounded'
-      ? (e1?.rr?.all ?? '')
-      : radiusMode === 'pill'
-        ? (e1?.rp?.all ?? '')
-        : (e1?.rs?.all ?? '');
-  const e1RadiusScale =
-    radiusMode === 'rounded'
-      ? (e1?.rr?.[scaleKey] ?? '')
-      : radiusMode === 'pill'
-        ? (e1?.rp?.[scaleKey] ?? '')
-        : (e1?.rs?.[scaleKey] ?? '');
+  const e1RadiusClassName = resolveRadiusClassName(e1, scaleKey, radiusMode);
 
   const projectedStatus =
     status !== 'rest'
@@ -146,8 +112,7 @@ export function resolveButtonClassNames({
         e1?.s?.all,
         classNames.e1,
         e1?.s?.[scaleKey],
-        e1RadiusAll,
-        e1RadiusScale,
+        e1RadiusClassName,
         shadowEffect,
         radiusEffectClass,
         controlState ? resolveButtonEffectBucketClassName(e1?.l, scaleKey) : undefined,
@@ -174,12 +139,5 @@ export function mergeButtonClassNames(
   baseClassNames: NonNullable<HeadlessButtonProps['classNames']>,
   ...classNamePatches: Array<ButtonClassNamePatch | null | undefined>
 ): NonNullable<HeadlessButtonProps['classNames']> {
-  const patch = (elementName: ButtonElementName) =>
-    classNamePatches.map((classNamePatch) => classNamePatch?.[elementName]);
-
-  return {
-    e1: join(baseClassNames.e1, ...patch('e1')) ?? '',
-    e2: join(baseClassNames.e2, ...patch('e2')) ?? '',
-    e3: join(baseClassNames.e3, ...patch('e3')) ?? ''
-  };
+  return mergeClassNamePatches(['e1', 'e2', 'e3'], baseClassNames, ...classNamePatches);
 }

@@ -1,12 +1,18 @@
 import {
   type ClassNameByElementJSON,
-  type ColorClasses,
-  type EffectClassBucketJSON,
   stateActivator as cn,
-  componentEmphasisBuckets,
+  type EffectClassBucketJSON,
   type RadiusMode
 } from '@kiskadee/core';
 import { isValidElement, type ReactNode } from 'react';
+import {
+  joinClassNames as joinSharedClassNames,
+  normalizeScaleKey,
+  resolveIntentClassName,
+  resolveSchemaElementClassName,
+  resolveEffectBucketClassName as resolveSharedEffectBucketClassName,
+  resolveRadiusClassName as resolveSharedRadiusClassName
+} from '../../shared/class-resolution/classNames.ts';
 import {
   getTabsDistributedBar,
   getTabsIndicatorStatic,
@@ -33,8 +39,7 @@ export const DEFAULT_VARIANT: TabsVisualContextValue['variant'] = 'line';
  *     Schema class maps are keyed by the raw scale name, so every resolver needs the same
  *     lookup format.
  */
-export const normalizeScaleKey = (key: string): string =>
-  key.startsWith('s:') ? key.slice(2) : key;
+export { normalizeScaleKey };
 
 /**
  * What
@@ -46,14 +51,11 @@ export const normalizeScaleKey = (key: string): string =>
 export function joinClassNames(
   ...parts: Array<string | undefined | false | null>
 ): string | undefined {
-  const joined = parts.filter(Boolean).join(' ').trim();
-  return joined.length > 0 ? joined : undefined;
+  return joinSharedClassNames(...parts);
 }
 
 function resolveEffectBucketClassName(bucket: EffectClassBucketJSON | undefined): string {
-  if (!bucket) return '';
-  if (typeof bucket === 'string') return bucket;
-  return bucket.all ?? '';
+  return resolveSharedEffectBucketClassName(bucket);
 }
 
 /**
@@ -69,19 +71,10 @@ export function resolveIntentClasses(
   intent: string,
   emphasis: TabsVisualContextValue['emphasis']
 ): string {
-  if (!element?.c) return '';
-
-  const byIntent = element.c as Record<string, ColorClasses>;
-  const chosen = byIntent[intent] ?? Object.values(byIntent)[0];
-  if (!chosen) return '';
-
-  if (emphasis) {
-    const bucket = componentEmphasisBuckets[emphasis];
-    const buckets = chosen as Record<string, string | undefined>;
-    return buckets[bucket] ?? chosen.h ?? chosen.hh ?? chosen.m ?? chosen.l ?? chosen.ll ?? '';
-  }
-
-  return chosen.hh ?? chosen.h ?? chosen.m ?? chosen.l ?? chosen.ll ?? '';
+  return resolveIntentClassName(element, intent, emphasis, {
+    useFirstIntentFallback: true,
+    emphasisFallbackOrder: ['h', 'hh', 'm', 'l', 'll']
+  });
 }
 
 /**
@@ -148,14 +141,18 @@ export function resolveElementClassName(
 ): string {
   if (!element) return '';
 
-  const scaleKey = normalizeScaleKey(options.scale);
   const shadowClass = resolveEffectBucketClassName(element.e?.h);
   return (
     joinClassNames(
-      element.d,
-      resolveIntentClasses(element, options.intent, options.emphasis),
-      element.s?.all,
-      element.s?.[scaleKey],
+      resolveSchemaElementClassName(element, {
+        scale: options.scale,
+        intent: options.intent,
+        emphasis: options.emphasis,
+        intentOptions: {
+          useFirstIntentFallback: true,
+          emphasisFallbackOrder: ['h', 'hh', 'm', 'l', 'll']
+        }
+      }),
       options.includeEffects === false ? '' : resolveEffectClasses(element),
       options.includeEffects === false || !shadowClass ? '' : cn.shadow,
       options.selected ? element.l : ''
@@ -208,25 +205,7 @@ export function resolveRadiusClassName(
   scale: string,
   radiusMode: RadiusMode
 ): string {
-  if (!element) return '';
-  const scaleKey = normalizeScaleKey(scale);
-  const all =
-    radiusMode === 'rounded'
-      ? (element.rr?.all ?? '')
-      : radiusMode === 'pill'
-        ? (element.rp?.all ?? '')
-        : radiusMode === 'square'
-          ? (element.rs?.all ?? '')
-          : '';
-  const byScale =
-    radiusMode === 'rounded'
-      ? (element.rr?.[scaleKey] ?? '')
-      : radiusMode === 'pill'
-        ? (element.rp?.[scaleKey] ?? '')
-        : radiusMode === 'square'
-          ? (element.rs?.[scaleKey] ?? '')
-          : '';
-  return joinClassNames(all, byScale) ?? '';
+  return resolveSharedRadiusClassName(element, scale, radiusMode);
 }
 
 /**

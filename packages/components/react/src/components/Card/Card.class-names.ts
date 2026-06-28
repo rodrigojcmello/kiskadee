@@ -2,15 +2,20 @@ import {
   type CardIntent,
   type CardRadiusMode,
   type ClassNameByElementJSON,
-  type ColorClasses,
   type ComponentEmphasis,
-  componentEmphasisBuckets,
+  stateActivator as cn,
   type EffectClassBucketJSON,
   type ElementSizeValue,
-  type RadiusMode,
-  stateActivator as cn
+  type RadiusMode
 } from '@kiskadee/core';
 import type { CardClassNames as HeadlessCardClassNames } from '@kiskadee/react-headless';
+import {
+  joinClassNames,
+  normalizeScaleKey,
+  resolveEffectBucketClassName,
+  resolveRadiusClassName,
+  resolveSchemaElementClassName
+} from '../../shared/class-resolution/classNames.ts';
 import type {
   CardActionVisualProps,
   CardProps,
@@ -29,24 +34,20 @@ export type ResolvedCardClassNames = {
 
 const CARD_HIDE_BORDER_WITH_SHADOW_CLASS = 'k-crd-b';
 
-export function join(...parts: Array<string | undefined | false | null>): string | undefined {
-  const joined = parts.filter(Boolean).join(' ').trim();
-  return joined.length > 0 ? joined : undefined;
-}
-
-export const normalizeCardScaleKey = (key: string): string =>
-  key.startsWith('s:') ? key.slice(2) : key;
+export const join = joinClassNames;
+export const normalizeCardScaleKey = normalizeScaleKey;
 
 function resolveCardShadowClassName(
   bucket: EffectClassBucketJSON | undefined,
   shadow: CardVisualProps['shadow'] | CardActionVisualProps['shadow']
 ): string {
   if (!bucket || !shadow) return '';
-  if (typeof bucket === 'string') return bucket;
-  if (shadow === true) return bucket.all ?? '';
+  if (shadow === true) return resolveEffectBucketClassName(bucket);
 
-  const scaleKey = normalizeCardScaleKey(shadow as ElementSizeValue);
-  return bucket[scaleKey] ?? '';
+  return resolveEffectBucketClassName(bucket, {
+    scale: shadow as ElementSizeValue,
+    includeAll: false
+  });
 }
 
 function collectElementClasses(
@@ -54,28 +55,10 @@ function collectElementClasses(
   emphasis: ComponentEmphasis | undefined = DEFAULT_CARD_EMPHASIS,
   intent: CardIntent | undefined = DEFAULT_CARD_INTENT
 ): string {
-  if (!element) return '';
-
-  const base = element.d ?? '';
-  const colorByIntent = element.c as Record<CardIntent, ColorClasses> | undefined;
-  const colorBuckets = colorByIntent?.[intent];
-
-  if (!colorBuckets) return base;
-
-  const bucket = emphasis ? componentEmphasisBuckets[emphasis] : undefined;
-  const colorBucketMap = colorBuckets as Record<string, string | undefined>;
-  const color = bucket
-    ? (colorBucketMap[bucket] ?? '')
-    : !emphasis
-      ? (colorBuckets.hh ??
-        colorBuckets.h ??
-        colorBuckets.m ??
-        colorBuckets.l ??
-        colorBuckets.ll ??
-        '')
-      : '';
-
-  return join(base, color) ?? '';
+  return resolveSchemaElementClassName(element, {
+    intent,
+    emphasis
+  });
 }
 
 function resolveCardRadiusMode(
@@ -116,12 +99,9 @@ export function resolveCardClassNames({
   const scaleKey = normalizeCardScaleKey(DEFAULT_CARD_SCALE);
   const radiusMode = resolveCardRadiusMode(radius, globalRadius);
 
-  const e1RadiusAll = radiusMode === 'square' ? (e1?.rs?.all ?? '') : (e1?.rr?.all ?? '');
-  const e1RadiusScale =
-    radiusMode === 'square' ? (e1?.rs?.[scaleKey] ?? '') : (e1?.rr?.[scaleKey] ?? '');
+  const e1RadiusClassName = resolveRadiusClassName(e1, DEFAULT_CARD_SCALE, radiusMode);
   const shadowEffect = resolveCardShadowClassName(e1?.e?.h, shadow);
-  const hideBorderWithShadow =
-    shadowEffect.length > 0 && preserveBorderWithShadow === false;
+  const hideBorderWithShadow = shadowEffect.length > 0 && preserveBorderWithShadow === false;
 
   const projectedStatus =
     status !== 'rest'
@@ -136,8 +116,7 @@ export function resolveCardClassNames({
           collectElementClasses(e1, resolvedEmphasis, resolvedIntent),
           e1?.s?.all,
           e1?.s?.[scaleKey],
-          e1RadiusAll,
-          e1RadiusScale,
+          e1RadiusClassName,
           shadowEffect,
           classNames.e1,
           className,

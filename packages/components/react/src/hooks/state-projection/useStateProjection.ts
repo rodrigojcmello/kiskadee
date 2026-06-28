@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { joinClassNames } from '../../shared/class-resolution/classNames.ts';
 
 export type StateProjectionStateValue = boolean | string | number | null | undefined;
 
@@ -38,11 +39,6 @@ export type UseStateProjectionOptions<TSlot extends string, TState extends strin
 export type UseStateProjectionResult<TSlot extends string> = {
   slotProps: StateProjectionSlotProps<TSlot>;
 };
-
-function mergeClassNames(...parts: Array<string | undefined | null | false>): string | undefined {
-  const joined = parts.filter(Boolean).join(' ').trim();
-  return joined.length > 0 ? joined : undefined;
-}
 
 function isStateActive(value: StateProjectionStateValue): boolean {
   return Boolean(value);
@@ -87,12 +83,12 @@ export function useStateProjection<TSlot extends string, TState extends string>(
     >) {
       if (!className) continue;
       const props = ensureSlot(slotProps, slot);
-      props.className = mergeClassNames(props.className, className);
+      props.className = joinClassNames(props.className, className);
     }
 
     if (interactiveClassName) {
       const props = ensureSlot(slotProps, target);
-      props.className = mergeClassNames(props.className, interactiveClassName);
+      props.className = joinClassNames(props.className, interactiveClassName);
     }
 
     for (const state of Object.keys(states) as TState[]) {
@@ -116,7 +112,7 @@ export function useStateProjection<TSlot extends string, TState extends string>(
           : resolveProjectionValue(rule.className, stateValue, context);
 
       if (className) {
-        props.className = mergeClassNames(props.className, className);
+        props.className = joinClassNames(props.className, className);
         activeClassTargets.add(projectionTarget);
       }
     }
@@ -124,7 +120,7 @@ export function useStateProjection<TSlot extends string, TState extends string>(
     if (activatorClassName) {
       for (const activeTarget of activeClassTargets) {
         const props = ensureSlot(slotProps, activeTarget);
-        props.className = mergeClassNames(props.className, activatorClassName);
+        props.className = joinClassNames(props.className, activatorClassName);
       }
     }
 

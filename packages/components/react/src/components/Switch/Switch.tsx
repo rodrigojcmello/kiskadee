@@ -1,8 +1,9 @@
 import './Switch.structural.scss';
 import './effects/thumb-shrink/SwitchThumbShrink.structural.scss';
+import { stateActivator as cn, resolveActivationFeedbackSetting } from '@kiskadee/core';
 import { HeadlessSwitch } from '@kiskadee/react-headless';
-import { resolveActivationFeedbackSetting, stateActivator as cn } from '@kiskadee/core';
 import { type ElementType, memo, type PointerEvent, useCallback, useMemo, useState } from 'react';
+import { mergeClassNamePatches } from '../../shared/class-resolution/classNames.ts';
 import {
   hasSwitchActivationFeedbackEffect,
   useSwitchActivationFeedbackController,
@@ -69,17 +70,11 @@ function mergeSwitchClassNames(
   baseClassNames: Required<SwitchClassNames>,
   ...classNamePatches: Array<SwitchClassNames | null | undefined>
 ): Required<SwitchClassNames> {
-  const patch = (elementName: keyof Required<SwitchClassNames>) =>
-    classNamePatches.map((classNamePatch) => classNamePatch?.[elementName]);
-
-  return {
-    e1: join(baseClassNames.e1, ...patch('e1')) ?? '',
-    e2: join(baseClassNames.e2, ...patch('e2')) ?? '',
-    e3: join(baseClassNames.e3, ...patch('e3')) ?? '',
-    e4: join(baseClassNames.e4, ...patch('e4')) ?? '',
-    e5: join(baseClassNames.e5, ...patch('e5')) ?? '',
-    e6: join(baseClassNames.e6, ...patch('e6')) ?? ''
-  };
+  return mergeClassNamePatches(
+    ['e1', 'e2', 'e3', 'e4', 'e5', 'e6'],
+    baseClassNames,
+    ...classNamePatches
+  );
 }
 
 function SwitchRoot(props: SwitchProps) {
@@ -146,9 +141,7 @@ function SwitchRoot(props: SwitchProps) {
   const shouldUseActivationFeedback =
     activationFeedback !== false &&
     hasSwitchActivationFeedbackEffect(elements, activationFeedbackProfile);
-  const activationFeedbackEffect = useSwitchActivationFeedbackEffect(
-    shouldUseActivationFeedback
-  );
+  const activationFeedbackEffect = useSwitchActivationFeedbackEffect(shouldUseActivationFeedback);
 
   const structuralResolution = useMemo(() => {
     const classNamesWithRoot = {
@@ -277,45 +270,40 @@ function SwitchRoot(props: SwitchProps) {
     },
     [hasShadowEffect, onPointerLeave]
   );
-  const statefulClassNames = useMemo(
-    () => {
-      const shadowStateClassName = hasShadowEffect
-        ? resolveSwitchEffectTargetStateClassName({
-            controlState: motionController.projectedControlState,
-            status,
-            hovered: isShadowHovered,
-            disabled,
-            readOnly
-          })
-        : '';
-      const shadowClassNamePatch = shadowStateClassName
-        ? {
-            ...(hasTrackShadowEffect ? { e2: shadowStateClassName } : {}),
-            ...(hasThumbShadowEffect ? { e3: shadowStateClassName } : {})
-          }
-        : undefined;
+  const statefulClassNames = useMemo(() => {
+    const shadowStateClassName = hasShadowEffect
+      ? resolveSwitchEffectTargetStateClassName({
+          controlState: motionController.projectedControlState,
+          status,
+          hovered: isShadowHovered,
+          disabled,
+          readOnly
+        })
+      : '';
+    const shadowClassNamePatch = shadowStateClassName
+      ? {
+          ...(hasTrackShadowEffect ? { e2: shadowStateClassName } : {}),
+          ...(hasThumbShadowEffect ? { e3: shadowStateClassName } : {})
+        }
+      : undefined;
 
-      return mergeSwitchClassNames(
-        structuralClassNames,
-        !motionEffect && motionController.projectedControlState
-          ? { e3: 'k-swt-e3e-a' }
-          : undefined,
-        shadowClassNamePatch
-      );
-    },
-    [
-      disabled,
-      hasShadowEffect,
-      hasTrackShadowEffect,
-      hasThumbShadowEffect,
-      isShadowHovered,
-      motionController.projectedControlState,
-      motionEffect,
-      readOnly,
-      status,
-      structuralClassNames
-    ]
-  );
+    return mergeSwitchClassNames(
+      structuralClassNames,
+      !motionEffect && motionController.projectedControlState ? { e3: 'k-swt-e3e-a' } : undefined,
+      shadowClassNamePatch
+    );
+  }, [
+    disabled,
+    hasShadowEffect,
+    hasTrackShadowEffect,
+    hasThumbShadowEffect,
+    isShadowHovered,
+    motionController.projectedControlState,
+    motionEffect,
+    readOnly,
+    status,
+    structuralClassNames
+  ]);
   const resolvedClassNames = useMemo(() => {
     if (!activationFeedbackEffect) return statefulClassNames;
 
@@ -325,8 +313,7 @@ function SwitchRoot(props: SwitchProps) {
         emphasis,
         config: activationFeedbackConfig,
         elements,
-        isActive:
-          activationFeedbackController.isActive && !activationFeedbackController.isFading,
+        isActive: activationFeedbackController.isActive && !activationFeedbackController.isFading,
         profile: activationFeedbackProfile
       }).classNamePatch
     );
