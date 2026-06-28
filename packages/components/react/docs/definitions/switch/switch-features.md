@@ -172,6 +172,11 @@ In that case, the child Switch still owns the boolean selected state. The parent
 CardAction should not mirror that state as its own selected state unless the
 card itself is the selectable item.
 
+The Switch root remains the pointer target for its own visual control even when
+the composition uses a pass-through overlay wrapper. That lets the parent
+surface keep its own hover and pressed feedback while the Switch still receives
+press, click, activation feedback, and drag input.
+
 ## Thumb Icons
 
 `icons` accepts optional visual glyphs for the boolean control states:

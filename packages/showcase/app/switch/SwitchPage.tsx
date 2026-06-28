@@ -741,6 +741,7 @@ export default function SwitchPage() {
                 emphasis={selectedSurface.cardEmphasis}
                 shadow={Boolean(cardShadow)}
                 preserveBorderWithShadow={false}
+                interactionStateSource="bounds"
                 interactionLocked={interactionLocked}
                 onClick={() => setControlState((current) => !current)}
                 aria-label={`Notifications ${controlState ? switchControlText.on : switchControlText.off}`}

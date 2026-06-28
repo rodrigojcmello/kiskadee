@@ -79,6 +79,15 @@ communicate that the card is clickable.
 visual states. It is for temporary interaction gates, such as async work in
 flight.
 
+`interactionStateSource="bounds"` is an opt-in composition mode for cases where
+another interactive control is visually layered over a `CardAction` while the
+card remains the larger clickable surface. It keeps the normal button
+semantics, click handling, selected state, `disabled`, and `interactionLocked`
+contracts unchanged, but projects hover and pressed visual state while the
+pointer is within the card bounds even if the browser hit-test lands on the
+overlaid control. Use it only for these overlay compositions. The child control
+still owns its own checked/selected state and interaction feedback.
+
 ## Showcase Surface Usage
 
 When Showcase examples need real Card surfaces, they should render real

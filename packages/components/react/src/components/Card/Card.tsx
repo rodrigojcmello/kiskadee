@@ -1,14 +1,12 @@
 import './Card.structural.scss';
-import {
-  Card as HeadlessCard,
-  CardAction as HeadlessCardAction
-} from '@kiskadee/react-headless';
+import { Card as HeadlessCard, CardAction as HeadlessCardAction } from '@kiskadee/react-headless';
 import { forwardRef, useMemo } from 'react';
-import type { CardActionProps, CardProps, CardStatus } from './Card.types.ts';
 import { DEFAULT_CARD_INTENT, resolveCardClassNames } from './Card.class-names.ts';
+import type { CardActionProps, CardProps, CardStatus } from './Card.types.ts';
 import { useCardArtifactConfig } from './hooks/useCardArtifactConfig.ts';
 
 export type {
+  CardActionInteractionStateSource,
   CardActionProps,
   CardActionVisualProps,
   CardClassesMap,
@@ -89,11 +87,7 @@ const CardRoot = forwardRef<HTMLDivElement, CardProps>(function Card(props, ref)
   );
 
   return (
-    <HeadlessCard
-      {...restProps}
-      ref={ref}
-      classNames={resolvedClasses.classNames}
-    >
+    <HeadlessCard {...restProps} ref={ref} classNames={resolvedClasses.classNames}>
       {children}
     </HeadlessCard>
   );
@@ -120,11 +114,7 @@ const CardActionRoot = forwardRef<HTMLButtonElement, CardActionProps>(function C
   );
 
   return (
-    <HeadlessCardAction
-      {...restProps}
-      ref={ref}
-      classNames={resolvedClasses.classNames}
-    >
+    <HeadlessCardAction {...restProps} ref={ref} classNames={resolvedClasses.classNames}>
       {children}
     </HeadlessCardAction>
   );

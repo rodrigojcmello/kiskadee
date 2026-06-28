@@ -7,9 +7,12 @@ import type {
   ProjectedStateKeys
 } from '@kiskadee/core';
 import type {
+  CardActionInteractionStateSource,
   CardActionProps as HeadlessCardActionProps,
   CardProps as HeadlessCardProps
 } from '@kiskadee/react-headless';
+
+export type { CardActionInteractionStateSource };
 
 export type CardStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
 

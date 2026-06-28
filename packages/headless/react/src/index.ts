@@ -1,6 +1,7 @@
 export type { ButtonProps } from './components/button/Button.tsx';
 export { Button } from './components/button/Button.tsx';
 export type {
+  CardActionInteractionStateSource,
   CardActionProps,
   CardClassNames,
   CardProps

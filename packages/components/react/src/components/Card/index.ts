@@ -1,4 +1,5 @@
 export type {
+  CardActionInteractionStateSource,
   CardActionProps,
   CardActionVisualProps,
   CardClassesMap,
