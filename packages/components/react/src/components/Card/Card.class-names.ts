@@ -67,7 +67,12 @@ function collectElementClasses(
   const color = bucket
     ? (colorBucketMap[bucket] ?? '')
     : !emphasis
-      ? (colorBuckets.h ?? colorBuckets.m ?? colorBuckets.l ?? colorBuckets.ll ?? '')
+      ? (colorBuckets.hh ??
+        colorBuckets.h ??
+        colorBuckets.m ??
+        colorBuckets.l ??
+        colorBuckets.ll ??
+        '')
       : '';
 
   return join(base, color) ?? '';

@@ -289,7 +289,7 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
         el.palettes = paletteKeys;
         // Merge element-local emphasis metadata into the global map.
         // Style keys remain globally dedupable; metadata is additionally scoped by component,
-        // variant, and element so another consumer cannot change this element's h/m/l/ll buckets.
+        // variant, and element so another consumer cannot change this element's hh/h/m/l/ll buckets.
         for (const [paletteKey, byMetaKey] of paletteToneMetadataByPalette) {
           if (!toneMetadataByPalette.has(paletteKey)) {
             toneMetadataByPalette.set(paletteKey, new Map());

@@ -52,7 +52,12 @@ export const CardIntentKeys = {
   /**
    * Default card surface presentation.
    */
-  neutral: 'neutral'
+  neutral: 'neutral',
+
+  /**
+   * Brand/primary card surface presentation.
+   */
+  primary: 'primary'
 } as const;
 
 /** Supported intent keys for the `card` component (Layer 3). */

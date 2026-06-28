@@ -238,6 +238,7 @@ export type Schema<TSegmentName extends SegmentName = never> = SchemaMetadata & 
 
 // Color classes structure: emphasis variants for component palettes
 export type ColorClasses = {
+  hh?: string; // highest emphasis
   h?: string; // high emphasis
   m?: string; // medium emphasis
   l?: string; // low emphasis
@@ -249,7 +250,7 @@ export type EffectClassBucketJSON = string | EffectClassNamesBySizeJSON;
 
 // Types describing the JSON artifact produced by web-builder (classNamesMap.json)
 export type ClassNameByElementJSON = {
-  // d = decorations, e = effects (segregated), s = scales, w = width scales, c = colors (with h/m/l/ll sub-fields), l = control states
+  // d = decorations, e = effects (segregated), s = scales, w = width scales, c = colors (with hh/h/m/l/ll sub-fields), l = control states
   // d: flattened into a single space-separated string of class names (always-on)
   d?: string;
   // e: effect buckets (each bucket is opt-in at component level).

@@ -78,10 +78,10 @@ export function resolveIntentClasses(
   if (emphasis) {
     const bucket = componentEmphasisBuckets[emphasis];
     const buckets = chosen as Record<string, string | undefined>;
-    return buckets[bucket] ?? chosen.h ?? chosen.m ?? chosen.l ?? chosen.ll ?? '';
+    return buckets[bucket] ?? chosen.h ?? chosen.hh ?? chosen.m ?? chosen.l ?? chosen.ll ?? '';
   }
 
-  return chosen.h ?? chosen.m ?? chosen.l ?? chosen.ll ?? '';
+  return chosen.hh ?? chosen.h ?? chosen.m ?? chosen.l ?? chosen.ll ?? '';
 }
 
 /**

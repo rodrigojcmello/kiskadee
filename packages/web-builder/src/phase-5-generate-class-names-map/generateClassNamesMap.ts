@@ -29,7 +29,7 @@ import {
 // e = effects by interaction state (arrays of classes, opt-in at component level)
 // s = scales (size variants only, flattened strings per size)
 // w = width-only scales (opt-in at component level, flattened strings per size)
-// c = color classes (organized by emphasis: h/m/l/ll)
+// c = color classes (organized by emphasis: hh/h/m/l/ll)
 // cs = control states (selected)
 export type ClassNameByElement = ClassNameByElementJSON;
 export type ComponentClassNameMap = ComponentClassNameMapJSON;
@@ -335,10 +335,10 @@ export function generateClassNamesMapSplit(
             // Rationale:
             // - The same StyleKey can be used across multiple palettes because StyleKey encodes
             //   the final CSS rule/value and must remain globally deduplicable.
-            // - However, the component emphasis bucket (high/medium/low/lowest) is semantic
+            // - However, the component emphasis bucket (highest/high/medium/low/lowest) is semantic
             //   metadata and is allowed to differ per palette and per component element. If we used a single global
             //   metadata map keyed only by StyleKey, emphasis could "leak" from one consumer to
-            //   another and make the JSON artifact incorrectly classify high/medium/low/lowest classes.
+            //   another and make the JSON artifact incorrectly classify highest/high/medium/low/lowest classes.
             //
             // By resolving metadata through `bundleKey` plus the current component/variant/element,
             // we keep CSS dedupe intact while producing correct `c[semantic].h|m|l|ll` buckets.
@@ -351,7 +351,7 @@ export function generateClassNamesMapSplit(
               elementName
             );
 
-            // Build color classes per semantic: c[semantic] = { h, m, l, ll }
+            // Build color classes per semantic: c[semantic] = { hh, h, m, l, ll }
             const colorBySemantic: Record<string, ColorClasses> = {};
 
             for (const sem of Object.keys(bySemantic)) {

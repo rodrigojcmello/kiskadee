@@ -1,9 +1,17 @@
 'use client';
 
-import type { ComponentEmphasis, ElementSizeValue, RadiusMode, SwitchIntent } from '@kiskadee/core';
+import type {
+  CardIntent,
+  ComponentEmphasis,
+  ElementSizeValue,
+  RadiusMode,
+  SwitchIntent
+} from '@kiskadee/core';
 import {
+  Card,
   Switch,
   type SwitchIcons,
+  useCardArtifactConfig,
   useKiskadee,
   useShowcase,
   useSwitchArtifactConfig
@@ -24,12 +32,7 @@ import {
   ShowcaseRouteControls,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
-import {
-  type BackgroundToneKey,
-  type ResolvedBackgroundTone,
-  useBackgroundTones,
-  usePrimarySurfaceTone
-} from '@/hooks/use-background-tones';
+import { useDesignSystemSchema } from '@/hooks/use-design-system-schema';
 import { SwatchRadioGroup } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
 import s from './Switch.module.scss';
@@ -51,14 +54,34 @@ const radiusOptions: Array<{ value: RadiusMode; label: string }> = [
 const emphasisOptions: Array<{ value: ComponentEmphasis; label: string }> = [
   { value: 'medium', label: 'Medium' },
   { value: 'high', label: 'High' },
+  { value: 'highest', label: 'Highest' },
   { value: 'low', label: 'Low' },
   { value: 'lowest', label: 'Lowest' }
 ];
 
-type SwitchSurface = 'default' | 'primary' | Exclude<BackgroundToneKey, 'white'>;
+type SwitchSurface =
+  | 'white'
+  | 'gray'
+  | 'dark-gray'
+  | 'black'
+  | 'light-primary'
+  | 'primary'
+  | 'dark-primary';
+
+type SwitchSurfaceProfile = {
+  label: string;
+  cardIntent: CardIntent;
+  cardEmphasis: ComponentEmphasis;
+  switchEmphasis: ComponentEmphasis;
+};
+
+type ResolvedSwitchSurface = SwitchSurfaceProfile & {
+  value: SwitchSurface;
+  swatchColor: string;
+};
 
 const surfaceToneOrder: SwitchSurface[] = [
-  'default',
+  'white',
   'light-primary',
   'gray',
   'primary',
@@ -67,39 +90,84 @@ const surfaceToneOrder: SwitchSurface[] = [
   'black'
 ];
 
-const surfaceLabels: Record<SwitchSurface, string> = {
-  default: 'Default',
-  gray: 'Gray',
-  'light-primary': 'Light primary',
-  primary: 'Primary',
-  'dark-gray': 'Dark gray',
-  'dark-primary': 'Dark primary',
-  black: 'Black'
+const surfaceProfiles: Record<SwitchSurface, SwitchSurfaceProfile> = {
+  white: {
+    label: 'White',
+    cardIntent: 'neutral',
+    cardEmphasis: 'low',
+    switchEmphasis: 'medium'
+  },
+  gray: {
+    label: 'Gray',
+    cardIntent: 'neutral',
+    cardEmphasis: 'medium',
+    switchEmphasis: 'medium'
+  },
+  'dark-gray': {
+    label: 'Dark gray',
+    cardIntent: 'neutral',
+    cardEmphasis: 'high',
+    switchEmphasis: 'low'
+  },
+  black: {
+    label: 'Black',
+    cardIntent: 'neutral',
+    cardEmphasis: 'highest',
+    switchEmphasis: 'low'
+  },
+  'light-primary': {
+    label: 'Light primary',
+    cardIntent: 'primary',
+    cardEmphasis: 'medium',
+    switchEmphasis: 'medium'
+  },
+  primary: {
+    label: 'Primary',
+    cardIntent: 'primary',
+    cardEmphasis: 'high',
+    switchEmphasis: 'low'
+  },
+  'dark-primary': {
+    label: 'Dark primary',
+    cardIntent: 'primary',
+    cardEmphasis: 'highest',
+    switchEmphasis: 'low'
+  }
 };
 
-const darkSurfaceValues: SwitchSurface[] = ['primary', 'dark-gray', 'dark-primary', 'black'];
-
-function isDarkSurface(surface: SwitchSurface) {
-  return darkSurfaceValues.includes(surface);
-}
-
-function getSurfaceEmphasis(surface: SwitchSurface): ComponentEmphasis {
-  return isDarkSurface(surface) ? 'low' : 'medium';
-}
-
 function getSurfaceForEmphasis(emphasis: ComponentEmphasis): SwitchSurface {
-  return emphasis === 'low' ? 'primary' : 'default';
+  return emphasis === 'low' ? 'primary' : 'white';
 }
 
-function getSurfaceClassName(baseClassName: string, surface: SwitchSurface) {
-  if (surface === 'default') return baseClassName;
+function resolveSchemaColor(value: unknown): string | undefined {
+  if (typeof value === 'string') return value;
+  if (typeof value !== 'object' || value === null) return undefined;
+  const ref = (value as { ref?: unknown }).ref;
+  return typeof ref === 'string' ? ref : undefined;
+}
 
-  const surfaceClassNames = [baseClassName, s.surfaceTone];
-  if (isDarkSurface(surface)) {
-    surfaceClassNames.push(s.darkSurface);
-  }
+function normalizeSurfaceColor(color: string): string {
+  return color.trim().toLowerCase();
+}
 
-  return surfaceClassNames.join(' ');
+function resolveCardSurfaceColor({
+  schema,
+  segment,
+  theme,
+  intent,
+  emphasis
+}: {
+  schema: ReturnType<typeof useDesignSystemSchema>;
+  segment: string;
+  theme: string;
+  intent: CardIntent;
+  emphasis: ComponentEmphasis;
+}): string | undefined {
+  return resolveSchemaColor(
+    schema?.components?.card?.elements?.e1?.palettes?.[segment]?.[theme]?.boxColor?.[intent]?.[
+      emphasis
+    ]?.rest
+  );
 }
 
 const intentLabels: Record<string, string> = {
@@ -122,6 +190,25 @@ const iconModeOptions: Array<{ value: SwitchIconMode; label: string }> = [
 ];
 
 const THUMB_SHRINK_CHANGE_DELAY_MS = 400;
+const preferredCardShadowLevels: ElementSizeValue[] = [
+  's:md:1',
+  's:sm:1',
+  's:lg:1',
+  's:lg:2',
+  's:lg:3'
+];
+
+function normalizeShadowLevelKey(key: ElementSizeValue): string {
+  return key.slice(2);
+}
+
+function getAmbientSurfaceEmphasis(surface: ResolvedSwitchSurface): ComponentEmphasis {
+  if (surface.cardIntent === 'neutral' && surface.cardEmphasis === 'low') {
+    return 'medium';
+  }
+
+  return 'low';
+}
 
 function SwitchOffIcon() {
   return (
@@ -170,39 +257,53 @@ const switchIconSets = {
   }
 } satisfies Record<SwitchIconMode, SwitchIcons | undefined>;
 
-function StateTile({ children, surface }: { children: ReactNode; surface: SwitchSurface }) {
-  const className = getSurfaceClassName(s.stateTile, surface);
-
+function StateTile({
+  children,
+  cardShadow,
+  surface
+}: {
+  children: ReactNode;
+  cardShadow: ElementSizeValue | undefined;
+  surface: ResolvedSwitchSurface;
+}) {
   return (
-    <div className={className}>
+    <Card
+      className={s.stateTile}
+      intent={surface.cardIntent}
+      emphasis={surface.cardEmphasis}
+      shadow={cardShadow}
+      preserveBorderWithShadow={false}
+    >
       <div className={s.stateControl}>{children}</div>
-    </div>
+    </Card>
   );
 }
 
 export default function SwitchPage() {
-  const { designSystem } = useKiskadee();
+  const { designSystem, segment, theme } = useKiskadee();
   const {
     effects: switchEffects,
     options: switchOptions,
     switchClassesMap
   } = useSwitchArtifactConfig();
+  const { cardClassesMap } = useCardArtifactConfig();
   const { manifest } = useShowcase();
-  const backgroundTones = useBackgroundTones();
-  const primarySurface = usePrimarySurfaceTone();
+  const designSystemSchema = useDesignSystemSchema(designSystem);
   const [controlState, setControlState] = useState(true);
   const [scale, setScale] = useState<ElementSizeValue>('s:md:1');
   const [radius, setRadius] = useState<RadiusMode>('rounded');
   const [intent, setIntent] = useState<SwitchIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
-  const [surface, setSurface] = useState<SwitchSurface>('default');
+  const [surface, setSurface] = useState<SwitchSurface>('white');
   const [interactionLocked, setInteractionLocked] = useState(false);
   const [motionEnabled, setMotionEnabled] = useState(true);
   const [thumbShrinkEnabled, setThumbShrinkEnabled] = useState(true);
   const [iconMode, setIconMode] = useState<SwitchIconMode>('none');
   const thumbShrinkChangeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const switchMeta = manifest?.components?.switch;
+  const cardMeta = manifest?.components?.card;
   const isSwitchAvailable = Boolean(switchMeta);
+  const isCardAvailable = Boolean(cardMeta);
   const defaultRadius = switchOptions.radius;
   const hasThumbShrinkEffect = Boolean(switchEffects.thumbShrinkEffect);
   const motionOverride = motionEnabled ? undefined : false;
@@ -213,28 +314,16 @@ export default function SwitchPage() {
   const supportedScales = switchMeta?.scale;
   const supportedIntents = switchMeta?.state;
   const supportedStates = supportedIntents?.[intent];
+  const supportedCardStates = cardMeta?.state;
   const switchIcons = hasActiveIconMode ? switchIconSets[iconMode] : undefined;
-  const backgroundToneByKey = useMemo(
-    () =>
-      new Map<BackgroundToneKey, ResolvedBackgroundTone>(
-        backgroundTones.tones.map((tone) => [tone.key, tone])
-      ),
-    [backgroundTones.tones]
-  );
-  const selectedSurfaceColor =
-    surface === 'default'
-      ? undefined
-      : surface === 'primary'
-        ? primarySurface.color
-        : backgroundToneByKey.get(surface)?.resolvedColor;
-  const pageBackgroundColor =
-    surface === 'gray' || surface === 'light-primary'
-      ? '#ffffff'
-      : (backgroundToneByKey.get('gray')?.resolvedColor ?? '#f5f5f5');
-  const pageStyle = {
-    '--switch-surface-primary': primarySurface.color,
-    '--switch-card-surface': selectedSurfaceColor ?? '#ffffff'
-  } as CSSProperties;
+  const cardShadow = useMemo(() => {
+    const shadowBucket = cardClassesMap?.e1?.e?.h;
+    if (!shadowBucket || typeof shadowBucket === 'string') return undefined;
+
+    return preferredCardShadowLevels.find((level) =>
+      Boolean(shadowBucket[normalizeShadowLevelKey(level)])
+    );
+  }, [cardClassesMap]);
 
   const scaleSelectOptions = useMemo(
     () => scaleOptions.filter((option) => Boolean(supportedScales?.[option.value])),
@@ -261,34 +350,80 @@ export default function SwitchPage() {
     () => emphasisOptions.filter((option) => Boolean(supportedStates?.[option.value])),
     [supportedStates]
   );
-  const surfaceItems = useMemo(
-    () =>
-      surfaceToneOrder.flatMap((value) => {
-        if (!isSwitchAvailable || !supportedStates?.[getSurfaceEmphasis(value)]) {
-          return [];
-        }
+  const surfaceOptions = useMemo<ResolvedSwitchSurface[]>(
+    () => {
+      const seenSurfaceColors = new Set<string>();
 
-        let swatchColor = '#ffffff';
+      return surfaceToneOrder.flatMap((value) => {
+        if (!isSwitchAvailable || !isCardAvailable) return [];
 
-        if (value === 'primary') {
-          swatchColor = primarySurface.color;
-        } else if (value !== 'default') {
-          const backgroundTone = backgroundToneByKey.get(value as BackgroundToneKey);
-          swatchColor = backgroundTone?.displayColor ?? swatchColor;
-        }
+        const profile = surfaceProfiles[value];
+        const hasSwitchEmphasis = Boolean(supportedStates?.[profile.switchEmphasis]);
+        const hasCardSurface = Boolean(
+          supportedCardStates?.[profile.cardIntent]?.[profile.cardEmphasis]?.rest
+        );
+        if (!hasSwitchEmphasis || !hasCardSurface) return [];
+
+        const swatchColor = resolveCardSurfaceColor({
+          schema: designSystemSchema,
+          segment,
+          theme,
+          intent: profile.cardIntent,
+          emphasis: profile.cardEmphasis
+        });
+        if (!swatchColor) return [];
+        const normalizedSwatchColor = normalizeSurfaceColor(swatchColor);
+        if (seenSurfaceColors.has(normalizedSwatchColor)) return [];
+        seenSurfaceColors.add(normalizedSwatchColor);
 
         return [
           {
             value,
-            label: surfaceLabels[value],
-            swatch: {
-              color: swatchColor
-            }
+            ...profile,
+            swatchColor
           }
         ];
-      }),
-    [backgroundToneByKey, isSwitchAvailable, primarySurface.color, supportedStates]
+      });
+    },
+    [
+      designSystemSchema,
+      isCardAvailable,
+      isSwitchAvailable,
+      segment,
+      supportedCardStates,
+      supportedStates,
+      theme
+    ]
   );
+  const selectedSurface = useMemo(
+    () => surfaceOptions.find((option) => option.value === surface),
+    [surface, surfaceOptions]
+  );
+  const surfaceItems = useMemo(
+    () =>
+      surfaceOptions.map((option) => ({
+        value: option.value,
+        label: option.label,
+        swatch: {
+          color: option.swatchColor
+        }
+      })),
+    [surfaceOptions]
+  );
+  const pageBackgroundColor = useMemo(() => {
+    if (!selectedSurface) return undefined;
+
+    return resolveCardSurfaceColor({
+      schema: designSystemSchema,
+      segment,
+      theme,
+      intent: 'neutral',
+      emphasis: getAmbientSurfaceEmphasis(selectedSurface)
+    });
+  }, [designSystemSchema, segment, selectedSurface, theme]);
+  const pageStyle = {
+    '--switch-surface-primary': selectedSurface?.swatchColor ?? '#0064B4'
+  } as CSSProperties;
 
   useEffect(() => {
     setRadius(defaultRadius);
@@ -345,25 +480,24 @@ export default function SwitchPage() {
   }, [hasIconSupport, iconMode]);
 
   useEffect(() => {
-    if (!isSwitchAvailable) {
+    if (!surfaceOptions.length) {
       return;
     }
 
-    const currentSurfaceEmphasis = getSurfaceEmphasis(surface);
-    if (supportedStates?.[currentSurfaceEmphasis]) {
+    if (selectedSurface) {
+      if (emphasis !== selectedSurface.switchEmphasis) {
+        setEmphasis(selectedSurface.switchEmphasis);
+      }
       return;
     }
 
     const nextSurface =
-      surfaceToneOrder.find((value) => Boolean(supportedStates?.[getSurfaceEmphasis(value)])) ??
-      'default';
-    setSurface(nextSurface);
-
-    const nextEmphasis = getSurfaceEmphasis(nextSurface);
-    if (supportedStates?.[nextEmphasis] && emphasis !== nextEmphasis) {
-      setEmphasis(nextEmphasis);
+      surfaceOptions.find((option) => option.value === 'white') ?? surfaceOptions[0];
+    setSurface(nextSurface.value);
+    if (emphasis !== nextSurface.switchEmphasis) {
+      setEmphasis(nextSurface.switchEmphasis);
     }
-  }, [emphasis, isSwitchAvailable, supportedStates, surface]);
+  }, [emphasis, selectedSurface, surfaceOptions]);
 
   useEffect(() => {
     return () => {
@@ -377,7 +511,11 @@ export default function SwitchPage() {
     const root = document.documentElement;
     const previousRouteBackground = root.style.getPropertyValue('--showcase-route-background');
 
-    root.style.setProperty('--showcase-route-background', pageBackgroundColor);
+    if (pageBackgroundColor) {
+      root.style.setProperty('--showcase-route-background', pageBackgroundColor);
+    } else {
+      root.style.removeProperty('--showcase-route-background');
+    }
 
     return () => {
       if (previousRouteBackground) {
@@ -393,13 +531,13 @@ export default function SwitchPage() {
     const nextSurface = value as SwitchSurface;
     if (nextSurface === surface) return;
 
-    const nextEmphasis = getSurfaceEmphasis(nextSurface);
-    if (!supportedStates?.[nextEmphasis]) return;
+    const nextSurfaceOption = surfaceOptions.find((option) => option.value === nextSurface);
+    if (!nextSurfaceOption) return;
 
     playWowTransition();
     setSurface(nextSurface);
-    if (emphasis !== nextEmphasis) {
-      setEmphasis(nextEmphasis);
+    if (emphasis !== nextSurfaceOption.switchEmphasis) {
+      setEmphasis(nextSurfaceOption.switchEmphasis);
     }
   };
 
@@ -407,17 +545,21 @@ export default function SwitchPage() {
     const nextEmphasis = value as ComponentEmphasis;
     if (nextEmphasis === emphasis) return;
 
-    const nextSurface = getSurfaceForEmphasis(nextEmphasis);
     if (!supportedStates?.[nextEmphasis]) return;
+
+    const preferredSurface = getSurfaceForEmphasis(nextEmphasis);
+    const nextSurface =
+      surfaceOptions.find((option) => option.value === preferredSurface) ??
+      surfaceOptions.find((option) => option.switchEmphasis === nextEmphasis);
+    if (!nextSurface) return;
 
     playWowTransition();
     setEmphasis(nextEmphasis);
-    if (surface !== nextSurface && supportedStates?.[getSurfaceEmphasis(nextSurface)]) {
-      setSurface(nextSurface);
+    if (surface !== nextSurface.value) {
+      setSurface(nextSurface.value);
     }
   };
 
-  const interactivePanelClassName = getSurfaceClassName(s.interactivePanel, surface);
   const switchControls = (
     <ShowcaseControlPanel>
       <ShowcaseControlGroup title="Shape">
@@ -576,9 +718,9 @@ export default function SwitchPage() {
         </p>
       </header>
 
-      {!isSwitchAvailable ? (
+      {!isSwitchAvailable || !isCardAvailable || !selectedSurface ? (
         <div className={s.emptyState}>
-          Switch is not available for the selected design system: {designSystem}.
+          Switch/Card surfaces are not available for the selected design system: {designSystem}.
         </div>
       ) : (
         <>
@@ -594,7 +736,13 @@ export default function SwitchPage() {
 
           <section className={`${s.section} ${s.previewSection}`}>
             <h3>Interactive</h3>
-            <div className={interactivePanelClassName}>
+            <Card
+              className={s.interactivePanel}
+              intent={selectedSurface.cardIntent}
+              emphasis={selectedSurface.cardEmphasis}
+              shadow={cardShadow}
+              preserveBorderWithShadow={false}
+            >
               <Switch
                 id="switch-notifications"
                 label="Notifications"
@@ -610,13 +758,13 @@ export default function SwitchPage() {
                 intent={intent}
                 emphasis={emphasis}
               />
-            </div>
+            </Card>
           </section>
 
           <section className={`${s.section} ${s.statesSection}`}>
             <h3>States</h3>
             <div className={s.stateGrid}>
-              <StateTile surface={surface}>
+              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
                 <Switch
                   id="switch-state-rest"
                   label="Unselected (rest)"
@@ -632,7 +780,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile surface={surface}>
+              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
                 <Switch
                   id="switch-state-selected"
                   label="Selected (rest)"
@@ -648,7 +796,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile surface={surface}>
+              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
                 <Switch
                   id="switch-state-hover"
                   label="Unselected (hover)"
@@ -665,7 +813,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile surface={surface}>
+              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
                 <Switch
                   id="switch-state-hover-selected"
                   label="Selected (hover)"
@@ -682,7 +830,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile surface={surface}>
+              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
                 <Switch
                   id="switch-state-pressed"
                   label="Unselected (pressed)"
@@ -699,7 +847,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile surface={surface}>
+              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
                 <Switch
                   id="switch-state-pressed-selected"
                   label="Selected (pressed)"
@@ -716,7 +864,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile surface={surface}>
+              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
                 <Switch
                   id="switch-state-activation-feedback"
                   label="Unselected (activation feedback)"
@@ -734,7 +882,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile surface={surface}>
+              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
                 <Switch
                   id="switch-state-activation-feedback-selected"
                   label="Selected (activation feedback)"
@@ -752,7 +900,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile surface={surface}>
+              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
                 <Switch
                   id="switch-state-focus"
                   label="Unselected (focus)"
@@ -769,7 +917,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile surface={surface}>
+              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
                 <Switch
                   id="switch-state-focus-selected"
                   label="Selected (focus)"
@@ -786,7 +934,7 @@ export default function SwitchPage() {
                   readOnly
                 />
               </StateTile>
-              <StateTile surface={surface}>
+              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
                 <Switch
                   id="switch-disabled"
                   label="Unselected (disabled)"
@@ -802,7 +950,7 @@ export default function SwitchPage() {
                   disabled
                 />
               </StateTile>
-              <StateTile surface={surface}>
+              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
                 <Switch
                   id="switch-disabled-selected"
                   label="Selected (disabled)"

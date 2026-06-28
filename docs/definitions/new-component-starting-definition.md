@@ -130,8 +130,8 @@ Treat this as a default, not as a complete design matrix:
 - extra Layer 3 component intents should not be added only to name internal state colors;
 - raw semantic colors such as `redLike` or `greenLike` are preset mappings, not public component
   intent names;
-- extra emphasis levels such as `high`, `low`, and `lowest` should be added only when the design
-  has real visual hierarchy for them.
+- extra emphasis levels such as `highest`, `high`, `low`, and `lowest` should be added only when
+  the design has real visual hierarchy or a real no-own-surface treatment for them.
 
 For binary controls, selected/on and unchecked/off are control states inside the same intent. A
 default Switch should remain `neutral.medium`; it can still use Layer 2 global `primary` directly

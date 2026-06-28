@@ -15,9 +15,13 @@ Kiskadee treats that baseline as:
 Preset authoring rules:
 
 - If the preset only defines one emphasis for a component, use `medium`.
+- Introduce `highest` only when the same component needs an extreme or
+  absolute own surface, such as black or a very dark brand surface.
 - Introduce `high` only when the same component truly needs a vivid, strong,
   or high-contrast own surface.
-- Use `low` only when the same component needs a white/base own surface.
+- Use `low` only when the same component needs a white/base own surface. In the
+  current light-theme presets, `low` should resolve to that same base surface
+  across intents unless the component has a documented exception.
 - Treat `lowest` as an unresolved transparent/no-own-surface emphasis until the
   ambient-contrast decision is made.
 - If a component cannot reasonably expose `neutral.medium`, document that as an
@@ -33,10 +37,11 @@ Kiskadee treats `emphasis` as the strength of the component's own visual
 surface. It is not a generic importance score, and it is not a local dark-mode
 switch.
 
-For Button and the future Card component, the canonical surface mapping is:
+For Button and Card, the canonical surface mapping is:
 
 | Emphasis | Canonical own surface | Examples |
 | --- | --- | --- |
+| `highest` | Extreme or absolute surface. | Black neutral Card, very dark primary Card. |
 | `high` | Vivid, strong, or high-contrast surface. | Dark primary Button, dark primary Card. |
 | `medium` | Light tonal surface. | Light primary Button, light neutral Card. |
 | `low` | Solid white/base surface. | White outlined Button, classic white Card. |
@@ -49,19 +54,31 @@ has less own-surface strength than a light tonal Card and much less than a vivid
 Card.
 
 If a component exposes only one emphasis, the component still uses `medium`.
-`medium` is the consistency baseline, even when the future component could
-later add `high`, `low`, or `lowest`.
+`medium` is the consistency baseline, even when the component could later add
+`highest`, `high`, `low`, or `lowest`.
+
+`highest` is not dark mode. It is the strongest own-surface bucket inside the
+current intent and theme. For example, `neutral.highest` and `primary.highest`
+are equivalent in role, but their literal colors may be black and very dark
+primary respectively.
+
+If two semantic combinations resolve to the same own-surface color, consumers
+that choose visual backgrounds should avoid exposing duplicate choices. For
+example, `neutral.low` and `primary.low` may both be white/base in a light
+theme; a surface picker should keep one white option instead of showing two
+identical backgrounds just because their semantic paths differ.
 
 ### Container And Child Emphasis
 
-Container emphasis and child emphasis are independent component decisions. A
-future Card may suggest a default emphasis for children, but this should start
-as a contextual recommendation, not an automatic universal rule.
+Container emphasis and child emphasis are independent component decisions. Card
+may suggest a default emphasis for children, but this should start as a
+contextual recommendation, not an automatic universal rule.
 
 Current working guidance:
 
 | Container emphasis | Container surface | Child emphasis guidance |
 | --- | --- | --- |
+| `highest` | Extreme / absolute surface. | Prefer `low`; validate any stronger child emphasis explicitly. |
 | `high` | Vivid / strong / high contrast. | Prefer `medium` or `low`; use child `high` only when contrast is intentionally validated. |
 | `medium` | Light tonal. | `medium` and `low` are both usually viable; `high` can be reserved for the primary action. |
 | `low` | White/base. | Most child emphases can work; children should normally keep their own baseline. |
@@ -89,10 +106,10 @@ Open questions:
 - Should transparent treatments have separate light-ambient and vivid-ambient
   token values?
 
-Current leaning: keep `lowest` as the fourth emphasis for now, define it as
-"no own surface", and defer the ambient-contrast model until there are more
-component cases. Avoid adding `high-transparent` or `low-transparent` as
-emphasis names before proving that a separate ambient axis is insufficient.
+Current leaning: keep `lowest` as the no-own-surface emphasis for now and defer
+the ambient-contrast model until there are more component cases. Avoid adding
+`high-transparent` or `low-transparent` as emphasis names before proving that a
+separate ambient axis is insufficient.
 
 Relevant existing references:
 
@@ -123,6 +140,11 @@ Authoring rule:
 - Add another component intent only when users can choose a genuinely different
   semantic variant of the whole component, not just because one state within the
   component needs a different color.
+
+Card can expose `primary` as a public component intent because it changes the
+whole Card surface from neutral to brand/primary. This is distinct from a binary
+control's selected/on state using a primary activation color inside a neutral
+presentation.
 
 Example:
 

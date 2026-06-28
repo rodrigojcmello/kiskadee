@@ -419,6 +419,7 @@ export type SchemaColors = Partial<{
 }>;
 
 export const componentEmphasisBuckets = {
+  highest: 'hh',
   high: 'h',
   medium: 'm',
   low: 'l',

@@ -59,7 +59,8 @@ export const componentIntents = {
     positive: 'greenLike'
   },
   card: {
-    neutral: 'neutral'
+    neutral: 'neutral',
+    primary: 'primary'
   },
   switch: {
     neutral: 'neutral'

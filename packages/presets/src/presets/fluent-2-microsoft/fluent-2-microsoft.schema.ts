@@ -193,7 +193,6 @@ export const schema: Schema<Segments> = {
       }
     },
     card: createFluent2MicrosoftCardSchema({
-      c,
       segmentNames,
       transparent
     }),

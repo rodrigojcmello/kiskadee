@@ -47,7 +47,8 @@ export type ButtonProps = HeadlessButtonProps & {
   radiusEffect?: boolean;
   /**
    * Emphasis level for the button colors.
-   * When provided, selects only classes for the specified emphasis (high/medium/low/lowest).
+   * When provided, selects only classes for the specified emphasis
+   * (highest/high/medium/low/lowest).
    * If not provided or if emphasis metadata is not available, uses all palette classes.
    */
   emphasis?: ComponentEmphasis;

@@ -18,9 +18,9 @@ import { buildStyleKey, deepUpdate } from '../../utils/index.ts';
 
 // Metadata to track which emphasis track(s) generated each style key.
 //
-// Important: different tracks (high/medium/low/lowest) may legitimately produce the same StyleKey
+// Important: different tracks (highest/high/medium/low/lowest) may legitimately produce the same StyleKey
 // when their resolved color values are identical. In that case we must retain the local tracks
-// for the current consumer, otherwise downstream h/m/l/ll bucketing becomes order-dependent.
+// for the current consumer, otherwise downstream hh/h/m/l/ll bucketing becomes order-dependent.
 export type ToneMetadata = {
   tones?: ComponentEmphasis[]; // undefined = color without emphasis (single/unique color)
 };
@@ -96,9 +96,9 @@ function addToneMetadataByPalette(
   }
 
   // NOTE:
-  // Different tracks (high/medium/low/lowest) can legitimately produce the same StyleKey when their
+  // Different tracks (highest/high/medium/low/lowest) can legitimately produce the same StyleKey when their
   // resolved color values are identical. In that case we must retain BOTH tones.
-  // Downstream, Phase 5 is allowed to put the same CSS class into multiple local h/m/l/ll buckets.
+  // Downstream, Phase 5 is allowed to put the same CSS class into multiple local hh/h/m/l/ll buckets.
   byMetaKey.set(toneMetadataKey, { tones: [...tones, tone] });
 }
 
@@ -140,7 +140,7 @@ function isInteractionStateColorMap(val: unknown): val is InteractionStateColorM
  *     "textColor==hover__[0,0,0,0.5]").
  * - Appends the generated key to a nested output structure organized by:
  *     segmentName -> themeName -> semanticColor -> interactionState -> StyleKey[]
- * - Additionally tracks which emphasis (high/medium/low/lowest) generated each style key in a parallel Map
+ * - Additionally tracks which emphasis (highest/high/medium/low/lowest) generated each style key in a parallel Map
  *
  * Why pre-stringify color values:
  * - buildStyleKey stringifies primitives via String(value) and JSON-serializes non-primitives.
@@ -177,11 +177,11 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
         const colorEntry = colorSchema[colorProperty];
         if (colorEntry === undefined) continue;
 
-        // The new schema requires emphasis tracks (high/medium/low/lowest) under each semantic color.
+        // The new schema requires emphasis tracks (highest/high/medium/low/lowest) under each semantic color.
         // Reject legacy direct InteractionStateColorMap at the property root.
         if (isInteractionStateColorMap(colorEntry)) {
           throw new Error(
-            'Invalid color schema: direct interaction-state maps are no longer supported. Use high/medium/low/lowest tracks under each semantic color.'
+            'Invalid color schema: direct interaction-state maps are no longer supported. Use highest/high/medium/low/lowest tracks under each semantic color.'
           );
         }
         type SemanticEntry = Record<ComponentEmphasis, InteractionStateColorMap> | unknown;
@@ -306,13 +306,17 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
           const semanticColor = s as SemanticColor;
           const entry = semanticColorMap[semanticColor];
 
-          // Support emphasis tracks (high/medium/low/lowest) as an intermediate level under the semantic color.
+          // Support emphasis tracks (highest/high/medium/low/lowest) as an intermediate level under the semantic color.
           const hasEmphasisTracks =
             entry &&
             typeof entry === 'object' &&
-            ('high' in entry || 'medium' in entry || 'low' in entry || 'lowest' in entry);
+            ('highest' in entry ||
+              'high' in entry ||
+              'medium' in entry ||
+              'low' in entry ||
+              'lowest' in entry);
           if (hasEmphasisTracks) {
-            const tracks = ['high', 'medium', 'low', 'lowest'] as const;
+            const tracks = ['highest', 'high', 'medium', 'low', 'lowest'] as const;
             for (const t of tracks) {
               const trackEntry = (entry as Record<(typeof tracks)[number], unknown>)[t];
               if (isInteractionStateColorMap(trackEntry)) {
@@ -325,7 +329,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
           // Fallback: legacy shape (direct interaction-state map under a semantic color) is no longer supported
           if (isInteractionStateColorMap(entry)) {
             throw new Error(
-              `Invalid color schema: semantic color "${semanticColor}" must define high/medium/low/lowest tracks.`
+              `Invalid color schema: semantic color "${semanticColor}" must define highest/high/medium/low/lowest tracks.`
             );
           }
         }

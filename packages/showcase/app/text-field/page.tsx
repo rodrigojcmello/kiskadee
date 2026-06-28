@@ -179,13 +179,15 @@ export default function TextFieldPage() {
   const [interactiveSubmitState, setInteractiveSubmitState] = useState<'idle' | 'success'>('idle');
   const [borderRadius, setBorderRadius] = useState<RadiusMode>('rounded');
   const [labelOffsetSelection, setLabelOffsetSelection] = useState<LabelOffsetSelection>('auto');
-  const [labelPlacement, setLabelPlacement] = useState<TextFieldLabelPlacement>('top');
+  const [interactiveLabelPlacement, setInteractiveLabelPlacement] =
+    useState<TextFieldLabelPlacement>('top');
   const [surface, setSurface] = useState<TextFieldSurface>('default');
   const [focusRingColorSourceOverride, setFocusRingColorSourceOverride] = useState<
     TextFieldFocusRingColorSource | undefined
   >(undefined);
   const labelOffset = labelOffsetSelection === 'auto' ? undefined : labelOffsetSelection;
-  const standardLabelOffset = labelPlacement === 'inline' ? undefined : labelOffset;
+  const interactiveStandardLabelOffset =
+    interactiveLabelPlacement === 'inline' ? undefined : labelOffset;
   const textFieldEmphasis = getSurfaceEmphasis(surface);
   const schemaFocusRingColorSource = textFieldArtifactOptions.focusRingColorSource ?? 'global';
   const focusRingColorSourceSelection = focusRingColorSourceOverride ?? schemaFocusRingColorSource;
@@ -360,24 +362,24 @@ export default function TextFieldPage() {
       }
     };
 
-    return interactiveVariantMode === 'standard-outline' ? (
-      <TextFieldStandardOutline
-        {...interactiveTextFieldProps}
-        labelPlacement={labelPlacement}
-        labelOffset={standardLabelOffset}
-      />
-    ) : interactiveVariantMode === 'standard-underline' ? (
-      <TextFieldStandardUnderline
-        {...interactiveTextFieldProps}
-        labelPlacement={labelPlacement}
-        labelOffset={standardLabelOffset}
-      />
-    ) : interactiveVariantMode === 'standard-borderless' ? (
-      <TextFieldStandardBorderless
-        {...interactiveTextFieldProps}
-        labelPlacement={labelPlacement}
-        labelOffset={standardLabelOffset}
-      />
+	    return interactiveVariantMode === 'standard-outline' ? (
+	      <TextFieldStandardOutline
+	        {...interactiveTextFieldProps}
+	        labelPlacement={interactiveLabelPlacement}
+	        labelOffset={interactiveStandardLabelOffset}
+	      />
+	    ) : interactiveVariantMode === 'standard-underline' ? (
+	      <TextFieldStandardUnderline
+	        {...interactiveTextFieldProps}
+	        labelPlacement={interactiveLabelPlacement}
+	        labelOffset={interactiveStandardLabelOffset}
+	      />
+	    ) : interactiveVariantMode === 'standard-borderless' ? (
+	      <TextFieldStandardBorderless
+	        {...interactiveTextFieldProps}
+	        labelPlacement={interactiveLabelPlacement}
+	        labelOffset={interactiveStandardLabelOffset}
+	      />
     ) : interactiveVariantMode === 'floating-notched' ? (
       <TextFieldFloatingNotched {...interactiveTextFieldProps} labelOffset={labelOffset} />
     ) : (
@@ -391,12 +393,140 @@ export default function TextFieldPage() {
     () => {
       setInteractiveSubmitState('idle');
     }
-  );
-  const interactivePanelClassName = getSurfaceClassName(s.interactivePanel, surface);
-  const textFieldControls = (
-    <ShowcaseControlPanel>
-      <ShowcaseControlGroup title="Interactive">
-        <ShowcaseControlGrid>
+	  );
+	  const interactivePanelClassName = getSurfaceClassName(s.interactivePanel, surface);
+	  const getStaticStandardLabelOffset = (placement: TextFieldLabelPlacement) =>
+	    placement === 'inline' ? undefined : labelOffset;
+	  const renderStandardOutlineFields = (placement: TextFieldLabelPlacement, idSuffix: string) => (
+	    <>
+	      <TextFieldStandardOutline
+	        id={`standard-outline-name-${idSuffix}`}
+	        label="Full name"
+	        value={standardOutlineName}
+	        onValueChange={setStandardOutlineName}
+	        placeholder="Ada Lovelace"
+	        message="Classic outlined field."
+	        radius={borderRadius}
+	        emphasis={textFieldEmphasis}
+	        labelPlacement={placement}
+	        labelOffset={getStaticStandardLabelOffset(placement)}
+	        focusRingColorSource={focusRingColorSourceOverride}
+	      />
+	      <TextFieldStandardOutline
+	        id={`standard-outline-email-${idSuffix}`}
+	        label="Email"
+	        defaultValue="ada@"
+	        validationStatus="error"
+	        message="Enter a valid email address."
+	        radius={borderRadius}
+	        emphasis={textFieldEmphasis}
+	        labelPlacement={placement}
+	        labelOffset={getStaticStandardLabelOffset(placement)}
+	        focusRingColorSource={focusRingColorSourceOverride}
+	      />
+	      <TextFieldStandardOutline
+	        id={`standard-outline-disabled-${idSuffix}`}
+	        label="Disabled"
+	        defaultValue="Locked value"
+	        message="Disabled fields keep their message available."
+	        radius={borderRadius}
+	        emphasis={textFieldEmphasis}
+	        labelPlacement={placement}
+	        labelOffset={getStaticStandardLabelOffset(placement)}
+	        focusRingColorSource={focusRingColorSourceOverride}
+	        disabled
+	      />
+	    </>
+	  );
+	  const renderStandardUnderlineFields = (placement: TextFieldLabelPlacement, idSuffix: string) => (
+	    <>
+	      <TextFieldStandardUnderline
+	        id={`standard-underline-name-${idSuffix}`}
+	        label="Project name"
+	        value={standardUnderlineName}
+	        onValueChange={setStandardUnderlineName}
+	        placeholder="Odette"
+	        message="Minimal shell with an underline."
+	        radius={borderRadius}
+	        emphasis={textFieldEmphasis}
+	        labelPlacement={placement}
+	        labelOffset={getStaticStandardLabelOffset(placement)}
+	        focusRingColorSource={focusRingColorSourceOverride}
+	      />
+	      <TextFieldStandardUnderline
+	        id={`standard-underline-tax-id-${idSuffix}`}
+	        label="Tax ID"
+	        defaultValue="123"
+	        validationStatus="warning"
+	        message="This value looks short for the selected country."
+	        radius={borderRadius}
+	        emphasis={textFieldEmphasis}
+	        labelPlacement={placement}
+	        labelOffset={getStaticStandardLabelOffset(placement)}
+	        focusRingColorSource={focusRingColorSourceOverride}
+	      />
+	      <TextFieldStandardUnderline
+	        id={`standard-underline-readonly-${idSuffix}`}
+	        label="Read only"
+	        defaultValue="Generated automatically"
+	        message="Read-only fields can still be focused and copied."
+	        radius={borderRadius}
+	        emphasis={textFieldEmphasis}
+	        labelPlacement={placement}
+	        labelOffset={getStaticStandardLabelOffset(placement)}
+	        focusRingColorSource={focusRingColorSourceOverride}
+	        readOnly
+	      />
+	    </>
+	  );
+	  const renderStandardBorderlessFields = (
+	    placement: TextFieldLabelPlacement,
+	    idSuffix: string
+	  ) => (
+	    <>
+	      <TextFieldStandardBorderless
+	        id={`standard-borderless-name-${idSuffix}`}
+	        label="Search"
+	        value={standardBorderlessName}
+	        onValueChange={setStandardBorderlessName}
+	        placeholder="Find a record"
+	        message="Filled shell without a visible border."
+	        radius={borderRadius}
+	        emphasis={textFieldEmphasis}
+	        labelPlacement={placement}
+	        labelOffset={getStaticStandardLabelOffset(placement)}
+	        focusRingColorSource={focusRingColorSourceOverride}
+	      />
+	      <TextFieldStandardBorderless
+	        id={`standard-borderless-email-${idSuffix}`}
+	        label="Email"
+	        defaultValue="ada@"
+	        validationStatus="error"
+	        message="Enter a valid email address."
+	        radius={borderRadius}
+	        emphasis={textFieldEmphasis}
+	        labelPlacement={placement}
+	        labelOffset={getStaticStandardLabelOffset(placement)}
+	        focusRingColorSource={focusRingColorSourceOverride}
+	      />
+	      <TextFieldStandardBorderless
+	        id={`standard-borderless-budget-${idSuffix}`}
+	        label="Budget"
+	        defaultValue="12"
+	        validationStatus="warning"
+	        message="Budget may be lower than the project minimum."
+	        radius={borderRadius}
+	        emphasis={textFieldEmphasis}
+	        labelPlacement={placement}
+	        labelOffset={getStaticStandardLabelOffset(placement)}
+	        focusRingColorSource={focusRingColorSourceOverride}
+	      />
+	    </>
+	  );
+	  const textFieldControls = (
+	    <ShowcaseControlPanel>
+	      <ShowcaseControlGroup title="Interactive">
+	        <ShowcaseControlGrid>
           <ShowcaseControlField fullWidth>
             <ShowcaseSelectControl
               label="Variant / Mode"
@@ -407,13 +537,26 @@ export default function TextFieldPage() {
                 if (nextVariantMode === interactiveVariantMode) return;
                 playWowTransition();
                 setInteractiveVariantMode(nextVariantMode);
-              }}
-            />
-          </ShowcaseControlField>
-        </ShowcaseControlGrid>
-      </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Appearance">
-        <ShowcaseControlGrid>
+	              }}
+	            />
+	          </ShowcaseControlField>
+	          <ShowcaseControlField fullWidth>
+	            <ShowcaseSelectControl
+	              label="Label Placement"
+	              options={labelPlacementOptions}
+	              value={interactiveLabelPlacement}
+	              onValueChange={(value) => {
+	                const nextLabelPlacement = value as TextFieldLabelPlacement;
+	                if (nextLabelPlacement === interactiveLabelPlacement) return;
+	                playWowTransition();
+	                setInteractiveLabelPlacement(nextLabelPlacement);
+	              }}
+	            />
+	          </ShowcaseControlField>
+	        </ShowcaseControlGrid>
+	      </ShowcaseControlGroup>
+	      <ShowcaseControlGroup title="Appearance">
+	        <ShowcaseControlGrid>
           <ShowcaseSelectControl
             label="Border Radius"
             options={radiusOptions}
@@ -425,30 +568,17 @@ export default function TextFieldPage() {
               setBorderRadius(nextRadius);
             }}
           />
-          <ShowcaseSelectControl
-            label="Label Placement"
-            options={labelPlacementOptions}
-            value={labelPlacement}
-            onValueChange={(value) => {
-              const nextLabelPlacement = value as TextFieldLabelPlacement;
-              if (nextLabelPlacement === labelPlacement) return;
-              playWowTransition();
-              setLabelPlacement(nextLabelPlacement);
-            }}
-          />
-          {labelPlacement === 'top' ? (
-            <ShowcaseSelectControl
-              label="Label Offset"
-              options={labelOffsetOptions}
-              value={labelOffsetSelection}
-              onValueChange={(value) => {
-                const nextLabelOffset = value as LabelOffsetSelection;
-                if (nextLabelOffset === labelOffsetSelection) return;
-                playWowTransition();
-                setLabelOffsetSelection(nextLabelOffset);
-              }}
-            />
-          ) : null}
+	          <ShowcaseSelectControl
+	            label="Label Offset"
+	            options={labelOffsetOptions}
+	            value={labelOffsetSelection}
+	            onValueChange={(value) => {
+	              const nextLabelOffset = value as LabelOffsetSelection;
+	              if (nextLabelOffset === labelOffsetSelection) return;
+	              playWowTransition();
+	              setLabelOffsetSelection(nextLabelOffset);
+	            }}
+	          />
           <ShowcaseSelectControl
             label="Focus Ring Color"
             options={focusRingColorSourceOptions}
@@ -564,125 +694,32 @@ export default function TextFieldPage() {
       </section>
 
       <div className={s.exampleGrid}>
-        <ExampleBlock title="Standard / Outline" surface={surface}>
-          <TextFieldStandardOutline
-            id="standard-outline-name"
-            label="Full name"
-            value={standardOutlineName}
-            onValueChange={setStandardOutlineName}
-            placeholder="Ada Lovelace"
-            message="Classic outlined field."
-            radius={borderRadius}
-            emphasis={textFieldEmphasis}
-            labelPlacement={labelPlacement}
-            labelOffset={standardLabelOffset}
-            focusRingColorSource={focusRingColorSourceOverride}
-          />
-          <TextFieldStandardOutline
-            id="standard-outline-email"
-            label="Email"
-            defaultValue="ada@"
-            validationStatus="error"
-            message="Enter a valid email address."
-            radius={borderRadius}
-            emphasis={textFieldEmphasis}
-            labelPlacement={labelPlacement}
-            labelOffset={standardLabelOffset}
-            focusRingColorSource={focusRingColorSourceOverride}
-          />
-          <TextFieldStandardOutline
-            id="standard-outline-disabled"
-            label="Disabled"
-            defaultValue="Locked value"
-            message="Disabled fields keep their message available."
-            radius={borderRadius}
-            emphasis={textFieldEmphasis}
-            labelPlacement={labelPlacement}
-            labelOffset={standardLabelOffset}
-            focusRingColorSource={focusRingColorSourceOverride}
-            disabled
-          />
-        </ExampleBlock>
+        <div className={s.standardExamplePair}>
+          <ExampleBlock title="Standard / Outline" surface={surface}>
+            {renderStandardOutlineFields('top', 'top')}
+          </ExampleBlock>
+          <ExampleBlock title="Standard / Outline Inline" surface={surface}>
+            {renderStandardOutlineFields('inline', 'inline')}
+          </ExampleBlock>
+        </div>
 
-        <ExampleBlock title="Standard / Underline" surface={surface}>
-          <TextFieldStandardUnderline
-            id="standard-underline-name"
-            label="Project name"
-            value={standardUnderlineName}
-            onValueChange={setStandardUnderlineName}
-            placeholder="Odette"
-            message="Minimal shell with an underline."
-            radius={borderRadius}
-            emphasis={textFieldEmphasis}
-            labelPlacement={labelPlacement}
-            labelOffset={standardLabelOffset}
-            focusRingColorSource={focusRingColorSourceOverride}
-          />
-          <TextFieldStandardUnderline
-            id="standard-underline-tax-id"
-            label="Tax ID"
-            defaultValue="123"
-            validationStatus="warning"
-            message="This value looks short for the selected country."
-            radius={borderRadius}
-            emphasis={textFieldEmphasis}
-            labelPlacement={labelPlacement}
-            labelOffset={standardLabelOffset}
-            focusRingColorSource={focusRingColorSourceOverride}
-          />
-          <TextFieldStandardUnderline
-            id="standard-underline-readonly"
-            label="Read only"
-            defaultValue="Generated automatically"
-            message="Read-only fields can still be focused and copied."
-            radius={borderRadius}
-            emphasis={textFieldEmphasis}
-            labelPlacement={labelPlacement}
-            labelOffset={standardLabelOffset}
-            focusRingColorSource={focusRingColorSourceOverride}
-            readOnly
-          />
-        </ExampleBlock>
+        <div className={s.standardExamplePair}>
+          <ExampleBlock title="Standard / Underline" surface={surface}>
+            {renderStandardUnderlineFields('top', 'top')}
+          </ExampleBlock>
+          <ExampleBlock title="Standard / Underline Inline" surface={surface}>
+            {renderStandardUnderlineFields('inline', 'inline')}
+          </ExampleBlock>
+        </div>
 
-        <ExampleBlock title="Standard / Borderless" surface={surface}>
-          <TextFieldStandardBorderless
-            id="standard-borderless-name"
-            label="Search"
-            value={standardBorderlessName}
-            onValueChange={setStandardBorderlessName}
-            placeholder="Find a record"
-            message="Filled shell without a visible border."
-            radius={borderRadius}
-            emphasis={textFieldEmphasis}
-            labelPlacement={labelPlacement}
-            labelOffset={standardLabelOffset}
-            focusRingColorSource={focusRingColorSourceOverride}
-          />
-          <TextFieldStandardBorderless
-            id="standard-borderless-email"
-            label="Email"
-            defaultValue="ada@"
-            validationStatus="error"
-            message="Enter a valid email address."
-            radius={borderRadius}
-            emphasis={textFieldEmphasis}
-            labelPlacement={labelPlacement}
-            labelOffset={standardLabelOffset}
-            focusRingColorSource={focusRingColorSourceOverride}
-          />
-          <TextFieldStandardBorderless
-            id="standard-borderless-budget"
-            label="Budget"
-            defaultValue="12"
-            validationStatus="warning"
-            message="Budget may be lower than the project minimum."
-            radius={borderRadius}
-            emphasis={textFieldEmphasis}
-            labelPlacement={labelPlacement}
-            labelOffset={standardLabelOffset}
-            focusRingColorSource={focusRingColorSourceOverride}
-          />
-        </ExampleBlock>
+        <div className={s.standardExamplePair}>
+          <ExampleBlock title="Standard / Borderless" surface={surface}>
+            {renderStandardBorderlessFields('top', 'top')}
+          </ExampleBlock>
+          <ExampleBlock title="Standard / Borderless Inline" surface={surface}>
+            {renderStandardBorderlessFields('inline', 'inline')}
+          </ExampleBlock>
+        </div>
 
         <ExampleBlock title="Floating / Notched" surface={surface}>
           <TextFieldFloatingNotched

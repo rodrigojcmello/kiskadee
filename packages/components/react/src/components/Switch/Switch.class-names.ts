@@ -70,10 +70,10 @@ export function resolveIntentClasses(
   if (!chosen) return '';
 
   const bucket = emphasis ? componentEmphasisBuckets[emphasis] : undefined;
-  if (!bucket) return chosen.h ?? chosen.m ?? chosen.l ?? chosen.ll ?? '';
+  if (!bucket) return chosen.hh ?? chosen.h ?? chosen.m ?? chosen.l ?? chosen.ll ?? '';
 
   const buckets = chosen as Record<string, string | undefined>;
-  return buckets[bucket] ?? chosen.m ?? chosen.h ?? chosen.l ?? chosen.ll ?? '';
+  return buckets[bucket] ?? chosen.m ?? chosen.h ?? chosen.hh ?? chosen.l ?? chosen.ll ?? '';
 }
 
 export function elem(

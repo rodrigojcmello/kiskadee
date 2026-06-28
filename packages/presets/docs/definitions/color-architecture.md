@@ -50,9 +50,9 @@ This is the conceptual baseline used to adapt any design system into Kiskadee:
   (`primary`/`neutral`/`redLike`/etc.).
 - Layer 3 (Component Intents): component-specific meaning (`button.primary`,
   `badge.attention`, etc.).
-- Emphasis: own-surface strength (`high` -> `lowest`). It is not a local theme
-  mode; it describes how strong the component's own surface is within the same
-  semantic family. See `component-intents.md` for the canonical Button/Card
+- Emphasis: own-surface strength (`highest` -> `lowest`). It is not a local
+  theme mode; it describes how strong the component's own surface is within the
+  same semantic family. See `component-intents.md` for the canonical Button/Card
   mapping and the unresolved `lowest` decision.
 - Variants (`v1`/`v2`): alternate ramps within the same semantic family, such as
   primary support tones. Variants are not new semantics.
