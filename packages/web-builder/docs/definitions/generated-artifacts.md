@@ -11,6 +11,7 @@
   compatibility while component hooks migrate to smaller artifacts.
 - `class-maps/core/<component>.kiskadee.json`: component-scoped core class map.
 - `class-maps/<segment>.<theme>/<component>.kiskadee.json`: component-scoped palette class map.
+- Component-scoped class maps use the shape `{ component, classMap }`.
 
 ## Metadata
 
@@ -27,8 +28,22 @@ Metadata is written per template under `packages/web-builder/build/<template-key
 - `class-maps/**/<component>.kiskadee.json`: component-scoped class maps loaded on demand by
   component runtime hooks. These are class resolution artifacts, not semantic metadata.
 
+`global.kiskadee.json` should not grow new component semantic payloads under
+`global.components.<name>`. Existing fallback data may remain for compatibility,
+but new component-specific metadata should move to component artifacts.
+
+The generated `schema.json` remains aggregated. Tooling that needs full schema
+inspection, such as the Showcase surface picker, should read `schema.json`
+directly instead of expanding runtime component artifacts beyond their semantic
+metadata role.
+
 ## Typical usage
 
 1. Choose a preset from `@kiskadee/presets` and run the web-builder to generate CSS and class maps.
 2. Consume `core` and palette CSS in the app, and apply classes from `classNamesMapSplit`.
 3. Keep layout/structure in component code; the builder should only own visual identity.
+
+Component hooks such as `useSwitchArtifactConfig` are the component-facing entry
+points for generated component metadata. `KiskadeeContext` provides the loading
+environment; it should not force every page to eagerly load every component
+artifact.

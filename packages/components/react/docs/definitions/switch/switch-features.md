@@ -76,6 +76,13 @@ primary Showcase card. It keeps the same intent semantics and adapts contrast
 inside the existing emphasis bucket; it is not a dark-mode switch and does not
 create a new public emphasis value.
 
+When a Switch is shown inside a Card surface in the Showcase, the Card owns the
+container surface and the Switch keeps its own component axes. Strong or dark
+Card surfaces should usually render the child Switch with `emphasis="low"`;
+light/base/tonal Card surfaces can keep the Switch at `emphasis="medium"`.
+This is a contextual Showcase composition rule, not an automatic global
+parent-to-child emphasis formula.
+
 `radius`, `activationMotion`, and `controlTextVisibility` are component
 artifact options. Props may override only the options intentionally exposed in
 `SwitchProps`.
@@ -159,6 +166,11 @@ Rules to preserve:
   the visual element, the measurement target, and the local effect host.
 - `classNames.e6` stays attached to decorative thumb icons rendered inside
   `e3`. The icon slot must not affect thumb measurement or motion geometry.
+
+Interactive Showcase compositions may place a Switch inside a clickable Card.
+In that case, the child Switch still owns the boolean selected state. The parent
+CardAction should not mirror that state as its own selected state unless the
+card itself is the selectable item.
 
 ## Thumb Icons
 

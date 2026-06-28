@@ -354,8 +354,8 @@ The first migration pass established these component decisions:
   contract is independent from the shell outline selector and should not be used as evidence that
   every focused field style needs `.-k`.
 - Current TextField still receives `TEXT_FIELD_STATE_PROJECTION` through `HeadlessTextField.Root`.
-  Treat that as a transitional exception tracked by the TextField migration handoff, not as a pattern
-  to copy into new headless primitives.
+  Treat that as a transitional exception tracked by the TextField projection-boundary technical debt,
+  not as a pattern to copy into new headless primitives.
 - Descendant slots that react to field state should use reference keys, not self-state classes.
 - Native `:focus-visible` can remain on the input when the style belongs to the input itself.
 - Hover should stay native when possible; `-i` on `e1` is the parent-to-child native hover anchor,

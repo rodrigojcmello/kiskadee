@@ -51,26 +51,20 @@ keep task-specific workflows inside skills.
   with that package or feature when it has its own documentation root.
 - The repository root `docs/` directory is for cross-project or cross-package documentation only, and should be
   updated with care.
-- Use named handoff files for active work: `docs/<demand-slug>.in-progress.md`, always at the root of
-  the owning project's `docs/` directory. Use lowercase kebab-case slugs that identify the demand, such as
-  `switch-component.in-progress.md`.
-- Do not create new generic `docs/in-progress.md` files. Existing generic `in-progress` files are legacy
-  context only; prefer the named handoff that matches the current demand, or create one if the user asks for
-  a new handoff.
-- Multiple named handoffs may coexist in the same `docs/` root so parallel agents can work without
-  overwriting each other's "what am I doing?" context.
-- Use the matching named handoff as the active feature handoff when it exists: read it before continuing
-  work, and update it after implementation changes with the current status, relevant decisions, files changed,
-  and validations run. If that file is missing or empty, assume there is no active handoff for that demand and
-  the current task starts a new context if the user asks for one.
 - Within a project's `docs/` root, use `docs/definitions/` for durable definitions, terminology, and concepts that
   should stay stable over time.
 - Within a project's `docs/` root, use `docs/proposals/` for ideas and proposals that are intentionally deferred
   but still worth keeping.
+- Within a project's `docs/` root, use `docs/technical-debt/` for known follow-ups, migrations, and cleanup work
+  that is not part of the stable contract yet.
 - Within a project's `docs/` root, use `docs/rejected/` for approaches that were considered and explicitly rejected,
   so the reasoning is not lost.
-- If a task changes behavior exposed across packages, document the relevant assumptions in the handoff and promote
-  durable outcomes into the appropriate docs location when needed.
+- If a task introduces a new durable decision, document why that decision exists in the nearest appropriate
+  Markdown document. Prefer documentation as the source of truth for intended behavior; code can drift or be
+  incomplete.
+- If a task changes behavior exposed across packages, document the relevant assumptions in the nearest appropriate
+  package docs and promote cross-package rules to the root documentation only when they truly apply across the
+  monorepo.
 - `CHAT-CONTEXT.md`: single-file bootstrap for new chats.
 - `PROJECT-PURPOSE.md`: canonical project purpose and architecture map.
 - `SCHEMA-BUILD-RUNTIME-RULES.md`: ownership rules for schema, build artifacts, runtime, and Sass.
