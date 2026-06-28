@@ -752,6 +752,7 @@ export default function SwitchPage() {
                   controlText={switchControlText}
                   icons={switchIcons}
                   controlState={controlState}
+                  onControlStateChange={setControlState}
                   scale={scale}
                   radius={radius}
                   motion={motionOverride}
