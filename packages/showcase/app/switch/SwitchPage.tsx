@@ -9,6 +9,7 @@ import type {
 } from '@kiskadee/core';
 import {
   Card,
+  CardAction,
   Switch,
   type SwitchIcons,
   useCardArtifactConfig,
@@ -733,29 +734,36 @@ export default function SwitchPage() {
 
           <section className={`${s.section} ${s.previewSection}`}>
             <h3>Interactive</h3>
-            <Card
-              className={s.interactivePanel}
-              intent={selectedSurface.cardIntent}
-              emphasis={selectedSurface.cardEmphasis}
-              shadow={cardShadow}
-              preserveBorderWithShadow={false}
-            >
-              <Switch
-                id="switch-notifications"
-                label="Notifications"
-                controlText={switchControlText}
-                icons={switchIcons}
+            <div className={s.interactiveFrame}>
+              <CardAction
+                className={s.interactivePanel}
+                intent={selectedSurface.cardIntent}
+                emphasis={selectedSurface.cardEmphasis}
+                shadow={Boolean(cardShadow)}
+                preserveBorderWithShadow={false}
                 controlState={controlState}
                 onControlStateChange={setControlState}
-                scale={scale}
-                radius={radius}
                 interactionLocked={interactionLocked}
-                motion={motionOverride}
-                thumbShrink={thumbShrinkOverride}
-                intent={intent}
-                emphasis={emphasis}
+                aria-label={`Notifications ${controlState ? switchControlText.on : switchControlText.off}`}
               />
-            </Card>
+              <div className={s.interactiveSwitchVisual} aria-hidden="true">
+                <Switch
+                  id="switch-notifications"
+                  label="Notifications"
+                  controlText={switchControlText}
+                  icons={switchIcons}
+                  controlState={controlState}
+                  scale={scale}
+                  radius={radius}
+                  motion={motionOverride}
+                  thumbShrink={thumbShrinkOverride}
+                  intent={intent}
+                  emphasis={emphasis}
+                  inputProps={{ tabIndex: -1 }}
+                  aria-hidden="true"
+                />
+              </div>
+            </div>
           </section>
 
           <section className={`${s.section} ${s.statesSection}`}>

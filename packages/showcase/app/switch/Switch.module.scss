@@ -54,12 +54,28 @@
   min-width: 0;
 }
 
+.interactiveFrame {
+  position: relative;
+  inline-size: 100%;
+  min-width: 0;
+  min-height: var(--switch-demo-card-min-height);
+}
+
 .interactivePanel {
   display: flex;
   align-items: center;
   inline-size: 100%;
   min-width: 0;
   min-height: var(--switch-demo-card-min-height);
+  cursor: pointer;
+}
+
+.interactiveSwitchVisual {
+  position: absolute;
+  inset: 16px;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
 }
 
 .stateGrid {
@@ -69,13 +85,13 @@
   column-gap: 32px;
 }
 
-.interactivePanel :global(.k-swt-e1-a),
+.interactiveSwitchVisual :global(.k-swt-e1-a),
 .stateControl :global(.k-swt-e1-a) {
   inline-size: 100%;
   justify-content: space-between;
 }
 
-.interactivePanel :global(.k-swt-e2-a),
+.interactiveSwitchVisual :global(.k-swt-e2-a),
 .stateControl :global(.k-swt-e2-a) {
   margin-inline-start: auto;
 }
