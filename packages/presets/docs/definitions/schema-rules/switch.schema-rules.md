@@ -92,6 +92,15 @@ scale should not visually shrink."
   or `path` attributes.
 - A preset that does not define `e6` should be treated as not supporting Switch thumb icons.
 
+## Surface-Adapted Emphasis
+
+A preset may define `neutral.low` in a light theme as the same visual treatment as
+`neutral.medium` in a dark theme when both represent the component running on a
+strong dark surface.
+
+This equivalence is a preset-authored palette decision, not a generic automatic
+theme inversion rule.
+
 ## Why This Rule Exists
 
 Switch thumb-shrink is tightly coupled to normal thumb geometry. The schema already owns both normal

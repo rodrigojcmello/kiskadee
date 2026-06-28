@@ -65,6 +65,8 @@ keep task-specific workflows inside skills.
 - If a task changes behavior exposed across packages, document the relevant assumptions in the nearest appropriate
   package docs and promote cross-package rules to the root documentation only when they truly apply across the
   monorepo.
+- For official preset source evidence, follow `packages/presets/docs/definitions/preset-schema-organization.md`:
+  keep design-system-level source notes and component evidence under `packages/presets/docs/design-systems/<preset>/`.
 - `CHAT-CONTEXT.md`: single-file bootstrap for new chats.
 - `PROJECT-PURPOSE.md`: canonical project purpose and architecture map.
 - `SCHEMA-BUILD-RUNTIME-RULES.md`: ownership rules for schema, build artifacts, runtime, and Sass.

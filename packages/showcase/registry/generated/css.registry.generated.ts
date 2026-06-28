@@ -7,9 +7,11 @@ export const cssPaths = {
     effects: '/build/carbon-1-ibm/effects.kiskadee.css',
     tokens: '/build/carbon-1-ibm/tokens.kiskadee.css',
     palettes: {
+      'default|dark': '/build/carbon-1-ibm/default.dark.kiskadee.css',
       'default|light': '/build/carbon-1-ibm/default.light.kiskadee.css',
     },
     tokenPalettes: {
+      'default|dark': '/build/carbon-1-ibm/tokens.default.dark.kiskadee.css',
       'default|light': '/build/carbon-1-ibm/tokens.default.light.kiskadee.css',
     }
   },

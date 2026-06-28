@@ -10,16 +10,98 @@ function switchStateRef<T>(value: T): { ref: T } {
 const carbonSwitchColor = {
   textSecondary: '#525252',
   textPrimary: '#161616',
+  textOnDark: '#F4F4F4',
   textDisabled: '#C6C6C6',
   iconOnColor: '#FFFFFF',
   iconOnColorDisabled: '#8D8D8D',
   supportSuccess: '#24A148',
+  supportSuccessOnDark: '#42BE65',
   buttonDisabled: '#C6C6C6',
   toggleOff: '#8D8D8D',
+  toggleOffOnDark: '#6B6B6B',
   transparent: [0, 0, 0, 0] as const
 } as const;
 
 export function createCarbonIbmSwitchSchema(): SwitchComponent {
+  const mediumTrackColor = {
+    rest: carbonSwitchColor.toggleOff,
+    hover: switchStateRef(carbonSwitchColor.toggleOff),
+    focus: switchStateRef(carbonSwitchColor.toggleOff),
+    pressed: switchStateRef(carbonSwitchColor.toggleOff),
+    disabled: switchStateRef(carbonSwitchColor.buttonDisabled),
+    selected: {
+      rest: switchStateRef(carbonSwitchColor.supportSuccess),
+      hover: switchStateRef(carbonSwitchColor.supportSuccess),
+      focus: switchStateRef(carbonSwitchColor.supportSuccess),
+      pressed: switchStateRef(carbonSwitchColor.supportSuccess)
+    }
+  };
+  const lowTrackColor = {
+    rest: carbonSwitchColor.toggleOffOnDark,
+    hover: switchStateRef(carbonSwitchColor.toggleOffOnDark),
+    focus: switchStateRef(carbonSwitchColor.toggleOffOnDark),
+    pressed: switchStateRef(carbonSwitchColor.toggleOffOnDark),
+    disabled: switchStateRef(carbonSwitchColor.buttonDisabled),
+    selected: {
+      rest: switchStateRef(carbonSwitchColor.supportSuccessOnDark),
+      hover: switchStateRef(carbonSwitchColor.supportSuccessOnDark),
+      focus: switchStateRef(carbonSwitchColor.supportSuccessOnDark),
+      pressed: switchStateRef(carbonSwitchColor.supportSuccessOnDark)
+    }
+  };
+  const mediumIconColor = {
+    rest: carbonSwitchColor.toggleOff,
+    hover: switchStateRef(carbonSwitchColor.toggleOff),
+    focus: switchStateRef(carbonSwitchColor.toggleOff),
+    pressed: switchStateRef(carbonSwitchColor.toggleOff),
+    disabled: switchStateRef(carbonSwitchColor.textDisabled),
+    selected: {
+      rest: switchStateRef(carbonSwitchColor.supportSuccess),
+      hover: switchStateRef(carbonSwitchColor.supportSuccess),
+      focus: switchStateRef(carbonSwitchColor.supportSuccess),
+      pressed: switchStateRef(carbonSwitchColor.supportSuccess)
+    }
+  };
+  const lowIconColor = {
+    rest: carbonSwitchColor.toggleOffOnDark,
+    hover: switchStateRef(carbonSwitchColor.toggleOffOnDark),
+    focus: switchStateRef(carbonSwitchColor.toggleOffOnDark),
+    pressed: switchStateRef(carbonSwitchColor.toggleOffOnDark),
+    disabled: switchStateRef(carbonSwitchColor.textDisabled),
+    selected: {
+      rest: switchStateRef(carbonSwitchColor.supportSuccessOnDark),
+      hover: switchStateRef(carbonSwitchColor.supportSuccessOnDark),
+      focus: switchStateRef(carbonSwitchColor.supportSuccessOnDark),
+      pressed: switchStateRef(carbonSwitchColor.supportSuccessOnDark)
+    }
+  };
+  const thumbColor = {
+    rest: carbonSwitchColor.iconOnColor,
+    hover: switchStateRef(carbonSwitchColor.iconOnColor),
+    focus: switchStateRef(carbonSwitchColor.iconOnColor),
+    pressed: switchStateRef(carbonSwitchColor.iconOnColor),
+    disabled: switchStateRef(carbonSwitchColor.iconOnColorDisabled),
+    selected: {
+      rest: switchStateRef(carbonSwitchColor.iconOnColor),
+      hover: switchStateRef(carbonSwitchColor.iconOnColor),
+      focus: switchStateRef(carbonSwitchColor.iconOnColor),
+      pressed: switchStateRef(carbonSwitchColor.iconOnColor)
+    }
+  };
+  const transparentBorder = {
+    rest: carbonSwitchColor.transparent,
+    hover: switchStateRef(carbonSwitchColor.transparent),
+    focus: switchStateRef(carbonSwitchColor.transparent),
+    pressed: switchStateRef(carbonSwitchColor.transparent),
+    disabled: switchStateRef(carbonSwitchColor.transparent),
+    selected: {
+      rest: switchStateRef(carbonSwitchColor.transparent),
+      hover: switchStateRef(carbonSwitchColor.transparent),
+      focus: switchStateRef(carbonSwitchColor.transparent),
+      pressed: switchStateRef(carbonSwitchColor.transparent)
+    }
+  };
+
   return {
     effects: {
       activationFeedback: {
@@ -62,54 +144,44 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                   borderStyle: 'none'
                 },
                 scales: {
-                  boxWidth: { 's:md:1': 48 },
-                  boxHeight: { 's:md:1': 24 },
+                  boxWidth: { 's:sm:1': 32, 's:md:1': 48 },
+                  boxHeight: { 's:sm:1': 16, 's:md:1': 24 },
                   borderWidth: 0,
                   borderRadius: {
                     rounded: 2,
-                    pill: 12,
+                    pill: { 's:sm:1': 8, 's:md:1': 12 },
                     square: 0
                   },
-                  paddingTop: { 's:md:1': 2 },
-                  paddingRight: { 's:md:1': 2 },
-                  paddingBottom: { 's:md:1': 2 },
-                  paddingLeft: { 's:md:1': 2 }
+                  paddingTop: { 's:sm:1': 3, 's:md:1': 2 },
+                  paddingRight: { 's:sm:1': 3, 's:md:1': 2 },
+                  paddingBottom: { 's:sm:1': 3, 's:md:1': 2 },
+                  paddingLeft: { 's:sm:1': 3, 's:md:1': 2 }
                 },
                 palettes: {
                   default: {
                     light: {
                       boxColor: {
                         neutral: {
-                          medium: {
-                            rest: carbonSwitchColor.toggleOff,
-                            hover: switchStateRef(carbonSwitchColor.toggleOff),
-                            focus: switchStateRef(carbonSwitchColor.toggleOff),
-                            pressed: switchStateRef(carbonSwitchColor.toggleOff),
-                            disabled: switchStateRef(carbonSwitchColor.buttonDisabled),
-                            selected: {
-                              rest: switchStateRef(carbonSwitchColor.supportSuccess),
-                              hover: switchStateRef(carbonSwitchColor.supportSuccess),
-                              focus: switchStateRef(carbonSwitchColor.supportSuccess),
-                              pressed: switchStateRef(carbonSwitchColor.supportSuccess)
-                            }
-                          }
+                          medium: mediumTrackColor,
+                          low: lowTrackColor
                         }
                       },
                       borderColor: {
                         neutral: {
-                          medium: {
-                            rest: carbonSwitchColor.transparent,
-                            hover: switchStateRef(carbonSwitchColor.transparent),
-                            focus: switchStateRef(carbonSwitchColor.transparent),
-                            pressed: switchStateRef(carbonSwitchColor.transparent),
-                            disabled: switchStateRef(carbonSwitchColor.transparent),
-                            selected: {
-                              rest: switchStateRef(carbonSwitchColor.transparent),
-                              hover: switchStateRef(carbonSwitchColor.transparent),
-                              focus: switchStateRef(carbonSwitchColor.transparent),
-                              pressed: switchStateRef(carbonSwitchColor.transparent)
-                            }
-                          }
+                          medium: transparentBorder,
+                          low: transparentBorder
+                        }
+                      }
+                    },
+                    dark: {
+                      boxColor: {
+                        neutral: {
+                          medium: lowTrackColor
+                        }
+                      },
+                      borderColor: {
+                        neutral: {
+                          medium: transparentBorder
                         }
                       }
                     }
@@ -122,12 +194,12 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                   borderStyle: 'none'
                 },
                 scales: {
-                  boxWidth: { 's:md:1': 20 },
-                  boxHeight: { 's:md:1': 20 },
+                  boxWidth: { 's:sm:1': 10, 's:md:1': 20 },
+                  boxHeight: { 's:sm:1': 10, 's:md:1': 20 },
                   borderWidth: 0,
                   borderRadius: {
                     rounded: 2,
-                    pill: 10,
+                    pill: { 's:sm:1': 5, 's:md:1': 10 },
                     square: 0
                   }
                 },
@@ -136,36 +208,26 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                     light: {
                       boxColor: {
                         neutral: {
-                          medium: {
-                            rest: carbonSwitchColor.iconOnColor,
-                            hover: switchStateRef(carbonSwitchColor.iconOnColor),
-                            focus: switchStateRef(carbonSwitchColor.iconOnColor),
-                            pressed: switchStateRef(carbonSwitchColor.iconOnColor),
-                            disabled: switchStateRef(carbonSwitchColor.iconOnColorDisabled),
-                            selected: {
-                              rest: switchStateRef(carbonSwitchColor.iconOnColor),
-                              hover: switchStateRef(carbonSwitchColor.iconOnColor),
-                              focus: switchStateRef(carbonSwitchColor.iconOnColor),
-                              pressed: switchStateRef(carbonSwitchColor.iconOnColor)
-                            }
-                          }
+                          medium: thumbColor,
+                          low: thumbColor
                         }
                       },
                       borderColor: {
                         neutral: {
-                          medium: {
-                            rest: carbonSwitchColor.transparent,
-                            hover: switchStateRef(carbonSwitchColor.transparent),
-                            focus: switchStateRef(carbonSwitchColor.transparent),
-                            pressed: switchStateRef(carbonSwitchColor.transparent),
-                            disabled: switchStateRef(carbonSwitchColor.transparent),
-                            selected: {
-                              rest: switchStateRef(carbonSwitchColor.transparent),
-                              hover: switchStateRef(carbonSwitchColor.transparent),
-                              focus: switchStateRef(carbonSwitchColor.transparent),
-                              pressed: switchStateRef(carbonSwitchColor.transparent)
-                            }
-                          }
+                          medium: transparentBorder,
+                          low: transparentBorder
+                        }
+                      }
+                    },
+                    dark: {
+                      boxColor: {
+                        neutral: {
+                          medium: thumbColor
+                        }
+                      },
+                      borderColor: {
+                        neutral: {
+                          medium: transparentBorder
                         }
                       }
                     }
@@ -175,27 +237,23 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
               e6: {
                 name: 'icon',
                 scales: {
-                  boxWidth: { 's:md:1': 14 },
-                  boxHeight: { 's:md:1': 14 }
+                  boxWidth: { 's:sm:1': 6, 's:md:1': 14 },
+                  boxHeight: { 's:sm:1': 6, 's:md:1': 14 }
                 },
                 palettes: {
                   default: {
                     light: {
                       textColor: {
                         neutral: {
-                          medium: {
-                            rest: carbonSwitchColor.toggleOff,
-                            hover: switchStateRef(carbonSwitchColor.toggleOff),
-                            focus: switchStateRef(carbonSwitchColor.toggleOff),
-                            pressed: switchStateRef(carbonSwitchColor.toggleOff),
-                            disabled: switchStateRef(carbonSwitchColor.textDisabled),
-                            selected: {
-                              rest: switchStateRef(carbonSwitchColor.supportSuccess),
-                              hover: switchStateRef(carbonSwitchColor.supportSuccess),
-                              focus: switchStateRef(carbonSwitchColor.supportSuccess),
-                              pressed: switchStateRef(carbonSwitchColor.supportSuccess)
-                            }
-                          }
+                          medium: mediumIconColor,
+                          low: lowIconColor
+                        }
+                      }
+                    },
+                    dark: {
+                      textColor: {
+                        neutral: {
+                          medium: lowIconColor
                         }
                       }
                     }
@@ -220,6 +278,20 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                         neutral: {
                           medium: {
                             rest: carbonSwitchColor.textSecondary,
+                            disabled: switchStateRef(carbonSwitchColor.textDisabled)
+                          },
+                          low: {
+                            rest: carbonSwitchColor.textDisabled,
+                            disabled: switchStateRef(carbonSwitchColor.textDisabled)
+                          }
+                        }
+                      }
+                    },
+                    dark: {
+                      textColor: {
+                        neutral: {
+                          medium: {
+                            rest: carbonSwitchColor.textDisabled,
                             disabled: switchStateRef(carbonSwitchColor.textDisabled)
                           }
                         }
@@ -246,6 +318,20 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                         neutral: {
                           medium: {
                             rest: carbonSwitchColor.textPrimary,
+                            disabled: switchStateRef(carbonSwitchColor.textDisabled)
+                          },
+                          low: {
+                            rest: carbonSwitchColor.textOnDark,
+                            disabled: switchStateRef(carbonSwitchColor.textDisabled)
+                          }
+                        }
+                      }
+                    },
+                    dark: {
+                      textColor: {
+                        neutral: {
+                          medium: {
+                            rest: carbonSwitchColor.textOnDark,
                             disabled: switchStateRef(carbonSwitchColor.textDisabled)
                           }
                         }

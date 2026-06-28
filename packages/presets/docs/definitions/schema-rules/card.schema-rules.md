@@ -50,6 +50,17 @@ Current first-party Card surface buckets are:
 - `primary.high`
 - `primary.highest`
 
+Showcase component examples can depend on these Card buckets when they need a
+real preset-owned surface. A preset that exposes components intended for those
+examples should provide the Card surface contract as a minimum companion
+component, even if the upstream design system does not publish a formal Card
+component.
+
+When a preset adapts Card without an upstream formal Card component, document
+the source evidence and adaptation rationale under that design system's preset
+documentation. Do not encode the source-of-truth explanation only in schema
+code or in this generic component rule ledger.
+
 Do not create literal intents such as `black`, `gray`, `darkGray`, or
 `darkPrimary`. Those are visual aliases for semantic intent/emphasis
 combinations.

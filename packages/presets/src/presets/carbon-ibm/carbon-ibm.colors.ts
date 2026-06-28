@@ -75,6 +75,13 @@ export const componentIntents = {
 
     // Example of direct Layer 1 usage (e.g. social buttons):
     // socialLinkedIn: 'primitive.blue.linkedin'
+  },
+  card: {
+    neutral: 'neutral',
+    primary: 'primary'
+  },
+  switch: {
+    neutral: 'neutral'
   }
 } as const satisfies ComponentIntents;
 

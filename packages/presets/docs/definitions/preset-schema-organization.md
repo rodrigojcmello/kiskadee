@@ -48,6 +48,43 @@ would otherwise be scattered across temporary handoffs or package docs.
 
 The first component ledger is `schema-rules/switch.schema-rules.md`.
 
+## Preset Source Evidence
+
+Every official preset should keep its source-of-truth notes under:
+
+```text
+packages/presets/docs/design-systems/<preset>/
+  README.md
+  components/
+    <component>.md
+  evidence/
+    <component>/
+      <source-slug>.png
+```
+
+Use `README.md` for design-system-level sources and decisions:
+
+- Figma file name, file key, and canonical links used for the preset;
+- official documentation sites and relevant pages;
+- known source gaps, such as a Figma file that lacks dark mode while the public
+  site demonstrates a dark or high-contrast treatment;
+- broad preset decisions that affect multiple components.
+
+Use `components/<component>.md` for component-specific evidence:
+
+- exact Figma node links and node IDs used as references;
+- official documentation URLs used for behavior, color, or state decisions;
+- local evidence image paths under `evidence/<component>/`;
+- the schema decisions that were derived from each source;
+- explicit adaptations when Kiskadee needs a component bucket or theme treatment
+  that the upstream design system does not publish as a formal component.
+
+Do not put preset-specific source evidence in generic schema-rule ledgers such
+as `definitions/schema-rules/switch.schema-rules.md`. Those ledgers define the
+cross-preset component rule. The per-design-system evidence belongs with the
+design-system documentation so future preset edits can audit the original
+source before changing schema values.
+
 ## Numeric Values
 
 Use the simplest schema shape that preserves meaning:

@@ -1,8 +1,10 @@
 import { breakpoints, color, type Schema, withAlpha } from '@kiskadee/core';
 import { schemaColors } from './carbon-ibm.colors.ts';
+import { createCarbonIbmCardSchema } from './components/card.schema.ts';
 import { createCarbonIbmSwitchSchema } from './components/switch.schema.ts';
 
-// Reference: https://www.figma.com/community/file/1157761560874207208 copied to "ds-refs/(v11) Carbon Design System (Community).fig"
+// Reference: IBM Carbon Design System Community
+// https://www.figma.com/design/52HHpBaYAUdDKqAdH5vw8Y/IBM-Carbon-Design-System--Community-
 
 const schemaContext = { colors: schemaColors };
 
@@ -63,6 +65,24 @@ export const schema: Schema<Segments> = {
                 subtle: {
                   color: '#161616',
                   opacity: 0.12
+                },
+                vivid: {
+                  color: '#FFFFFF',
+                  opacity: 0.2
+                }
+              }
+            }
+          }
+        },
+        dark: {
+          background: '#161616',
+          focusColor: '#0F62FE',
+          effects: {
+            activationFeedback: {
+              tone: {
+                subtle: {
+                  color: '#F4F4F4',
+                  opacity: 0.16
                 },
                 vivid: {
                   color: '#FFFFFF',
@@ -193,6 +213,10 @@ export const schema: Schema<Segments> = {
         }
       }
     },
+    card: createCarbonIbmCardSchema({
+      segmentNames: ['default'],
+      transparent: [0, 0, 0, 0]
+    }),
     switch: createCarbonIbmSwitchSchema()
   }
 };
