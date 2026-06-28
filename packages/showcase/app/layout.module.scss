@@ -187,7 +187,7 @@
 
   .mobileHeader {
     display: flex;
-    padding: 16px 20px 0;
+    padding: calc(var(--showcase-toolbar-height) + 16px) 20px 0;
   }
 
   .contentInner {
@@ -198,6 +198,7 @@
     display: block;
     position: fixed;
     inset: 0;
+    z-index: 9100;
     background: rgba(0, 0, 0, 0.28);
     opacity: 0;
     pointer-events: none;
@@ -220,7 +221,7 @@
     background: #fff;
     transform: translateX(100%);
     transition: transform 180ms ease;
-    z-index: 20;
+    z-index: 9101;
     overflow-y: auto;
   }
 

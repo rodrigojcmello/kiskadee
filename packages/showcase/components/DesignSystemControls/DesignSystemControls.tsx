@@ -23,8 +23,9 @@ export default function DesignSystemControls() {
         <Select
           className={styles.select}
           label="Design System"
-          width={340}
-          minWidth={280}
+          width="100%"
+          minWidth={0}
+          maxWidth={340}
           options={designSystemOptions}
           value={designSystem}
           onValueChange={(value) => {

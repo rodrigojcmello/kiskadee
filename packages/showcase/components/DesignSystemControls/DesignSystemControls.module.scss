@@ -1,5 +1,7 @@
 .container {
   display: flex;
+  inline-size: 100%;
+  max-inline-size: 340px;
   min-width: 0;
 }
 
@@ -7,10 +9,12 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  inline-size: 100%;
   min-width: 0;
 }
 
 .select {
   display: block;
+  inline-size: 100%;
   min-width: 0;
 }
