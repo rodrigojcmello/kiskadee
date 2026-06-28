@@ -350,51 +350,48 @@ export default function SwitchPage() {
     () => emphasisOptions.filter((option) => Boolean(supportedStates?.[option.value])),
     [supportedStates]
   );
-  const surfaceOptions = useMemo<ResolvedSwitchSurface[]>(
-    () => {
-      const seenSurfaceColors = new Set<string>();
+  const surfaceOptions = useMemo<ResolvedSwitchSurface[]>(() => {
+    const seenSurfaceColors = new Set<string>();
 
-      return surfaceToneOrder.flatMap((value) => {
-        if (!isSwitchAvailable || !isCardAvailable) return [];
+    return surfaceToneOrder.flatMap((value) => {
+      if (!isSwitchAvailable || !isCardAvailable) return [];
 
-        const profile = surfaceProfiles[value];
-        const hasSwitchEmphasis = Boolean(supportedStates?.[profile.switchEmphasis]);
-        const hasCardSurface = Boolean(
-          supportedCardStates?.[profile.cardIntent]?.[profile.cardEmphasis]?.rest
-        );
-        if (!hasSwitchEmphasis || !hasCardSurface) return [];
+      const profile = surfaceProfiles[value];
+      const hasSwitchEmphasis = Boolean(supportedStates?.[profile.switchEmphasis]);
+      const hasCardSurface = Boolean(
+        supportedCardStates?.[profile.cardIntent]?.[profile.cardEmphasis]?.rest
+      );
+      if (!hasSwitchEmphasis || !hasCardSurface) return [];
 
-        const swatchColor = resolveCardSurfaceColor({
-          schema: designSystemSchema,
-          segment,
-          theme,
-          intent: profile.cardIntent,
-          emphasis: profile.cardEmphasis
-        });
-        if (!swatchColor) return [];
-        const normalizedSwatchColor = normalizeSurfaceColor(swatchColor);
-        if (seenSurfaceColors.has(normalizedSwatchColor)) return [];
-        seenSurfaceColors.add(normalizedSwatchColor);
-
-        return [
-          {
-            value,
-            ...profile,
-            swatchColor
-          }
-        ];
+      const swatchColor = resolveCardSurfaceColor({
+        schema: designSystemSchema,
+        segment,
+        theme,
+        intent: profile.cardIntent,
+        emphasis: profile.cardEmphasis
       });
-    },
-    [
-      designSystemSchema,
-      isCardAvailable,
-      isSwitchAvailable,
-      segment,
-      supportedCardStates,
-      supportedStates,
-      theme
-    ]
-  );
+      if (!swatchColor) return [];
+      const normalizedSwatchColor = normalizeSurfaceColor(swatchColor);
+      if (seenSurfaceColors.has(normalizedSwatchColor)) return [];
+      seenSurfaceColors.add(normalizedSwatchColor);
+
+      return [
+        {
+          value,
+          ...profile,
+          swatchColor
+        }
+      ];
+    });
+  }, [
+    designSystemSchema,
+    isCardAvailable,
+    isSwitchAvailable,
+    segment,
+    supportedCardStates,
+    supportedStates,
+    theme
+  ]);
   const selectedSurface = useMemo(
     () => surfaceOptions.find((option) => option.value === surface),
     [surface, surfaceOptions]
