@@ -19,6 +19,11 @@ container.
 renders a native button, it owns keyboard activation, pointer activation, focus,
 disabled behavior, and semantic button accessibility.
 
+`CardAction` follows the Kiskadee cursor policy for generic controls: it uses the
+default cursor, not `cursor: pointer`. Interactivity should be communicated by
+hover, pressed, focus, disabled, and shadow states. Disabled CardAction
+instances may use the unavailable-state cursor.
+
 ## Visual Props
 
 Card visuals are selected through the normal Kiskadee component axes:
