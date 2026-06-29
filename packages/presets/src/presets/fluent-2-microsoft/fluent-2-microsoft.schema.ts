@@ -11,6 +11,17 @@ const c = createPresetColorGetter<'default'>(schemaContext);
 const segmentNames = ['default'] as const;
 const transparent = [0, 0, 0, 0] as const;
 const shadowBlack = (alpha: number) => [0, 0, 0, alpha] as const;
+const fluentShadow = (
+  ambientBlur: number,
+  ambientAlpha: number,
+  y: number,
+  blur: number,
+  alpha: number
+) =>
+  [
+    { x: 0, y: 0, blur: ambientBlur, spread: 0, color: shadowBlack(ambientAlpha) },
+    { x: 0, y, blur, spread: 0, color: shadowBlack(alpha) }
+  ] as const;
 
 // The `Schema` generic represents extra segment names beyond the built-ins (`default` and optional `dynamic`).
 type Segments = never;
@@ -54,7 +65,12 @@ export const schema: Schema<Segments> = {
       shadow: {
         outer: {
           levels: {
-            's:md:1': { x: 0, y: 2, blur: 4, spread: 0, color: shadowBlack(0.14) }
+            's:sm:1': fluentShadow(2, 0.12, 1, 2, 0.14),
+            's:md:1': fluentShadow(2, 0.12, 2, 4, 0.14),
+            's:lg:1': fluentShadow(2, 0.12, 4, 8, 0.14),
+            's:lg:2': fluentShadow(2, 0.12, 8, 16, 0.14),
+            's:lg:3': fluentShadow(8, 0.2, 14, 28, 0.24),
+            's:lg:4': fluentShadow(8, 0.2, 32, 64, 0.24)
           }
         }
       }

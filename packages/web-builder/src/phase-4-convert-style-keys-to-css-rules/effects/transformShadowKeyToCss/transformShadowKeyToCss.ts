@@ -31,6 +31,8 @@ type ParsedShadowLayer = {
   y: number;
 };
 
+type ParsedShadowValue = readonly ParsedShadowLayer[];
+
 function getProjectedStateSuffix(state: string): string {
   return Object.hasOwn(projectedStateActivator, state)
     ? projectedStateActivator[state as ProjectedStateKeys]
@@ -38,8 +40,8 @@ function getProjectedStateSuffix(state: string): string {
 }
 
 function parseShadowColor(value: unknown): HSLA {
-  if (!Array.isArray(value)) throw new Error(INVALID_SHADOW_COLOR_VALUE);
-  return value as HSLA;
+  if (!Array.isArray(value) || value.length !== 4) throw new Error(INVALID_SHADOW_COLOR_VALUE);
+  return value as unknown as HSLA;
 }
 
 function parseShadowLayer(value: unknown): ParsedShadowLayer {
@@ -91,18 +93,30 @@ function parseShadowLayer(value: unknown): ParsedShadowLayer {
   throw new Error(UNSUPPORTED_VALUE('shadow', JSON.stringify(value), 'shadow'));
 }
 
-function parseShadowValue(shadowValue: string, styleKey: string): ParsedShadowLayer {
+function isSingleShadowTuple(value: readonly unknown[]): boolean {
+  return (
+    value.length >= 4 &&
+    typeof value[0] === 'number' &&
+    typeof value[1] === 'number' &&
+    typeof value[2] === 'number'
+  );
+}
+
+function parseShadowLayers(value: unknown): ParsedShadowValue {
+  if (Array.isArray(value) && !isSingleShadowTuple(value)) {
+    if (value.length === 0) {
+      throw new Error(UNSUPPORTED_VALUE('shadow', JSON.stringify(value), 'shadow'));
+    }
+    return value.map(parseShadowLayer);
+  }
+
+  return [parseShadowLayer(value)];
+}
+
+function parseShadowValue(shadowValue: string, styleKey: string): ParsedShadowValue {
   try {
     const parsed = JSON.parse(shadowValue) as unknown;
-    if (Array.isArray(parsed)) {
-      const isSingleTuple =
-        parsed.length >= 4 &&
-        typeof parsed[0] === 'number' &&
-        typeof parsed[1] === 'number' &&
-        typeof parsed[2] === 'number';
-      if (!isSingleTuple) throw new Error(UNSUPPORTED_VALUE('shadow', shadowValue, styleKey));
-    }
-    return parseShadowLayer(parsed);
+    return parseShadowLayers(parsed);
   } catch {
     // Fall through to the legacy compact parser below.
   }
@@ -116,13 +130,15 @@ function parseShadowValue(shadowValue: string, styleKey: string): ParsedShadowLa
   const colorPart = parts[4].trim();
 
   try {
-    return {
-      x,
-      y,
-      blur,
-      spread: 0,
-      color: JSON.parse(colorPart) as HSLA
-    };
+    return [
+      {
+        x,
+        y,
+        blur,
+        spread: 0,
+        color: JSON.parse(colorPart) as HSLA
+      }
+    ];
   } catch {
     throw new Error(INVALID_SHADOW_COLOR_VALUE);
   }
@@ -138,6 +154,7 @@ function parseShadowValue(shadowValue: string, styleKey: string): ParsedShadowLa
  * - "shadow__[x,y,blur,[h,l,s,a]]"                 — default (rest)
  * - "shadow__[x,y,blur,spread,[h,l,s,a]]"          — default (rest with spread)
  * - "shadow__{\"x\":0,\"y\":1,\"blur\":2,\"color\":[h,l,s,a],\"inset\":true}" — inner shadow
+ * - "shadow__[{\"x\":0,\"y\":0,\"blur\":2,\"color\":[h,l,s,a]},{...}]" — stacked shadows
  * - "shadow--<state>__[x,y,blur,[h,l,s,a]]"        — inline interaction state
  * - "shadow++<size>__[x,y,blur,spread,[...]]"      — size-aware fixed level
  *
@@ -172,17 +189,24 @@ export function transformShadowKeyToCss(
 
   // Optimize zero lengths: CSS allows omitting the unit for 0 values
   const formatPx = (n: number): string => (n === 0 ? '0' : `${n}px`);
-  const layer = parseShadowValue(shadowValue, styleKey);
+  const layers = parseShadowValue(shadowValue, styleKey);
   const formatLayer = ({ x, y, blur, spread, color, inset }: ParsedShadowLayer): string => {
     const hexColor = convertHslaToHex(color);
     const prefix = inset ? 'inset ' : '';
     return `${prefix}${formatPx(x)} ${formatPx(y)} ${formatPx(blur)} ${formatPx(spread)} ${hexColor}`;
   };
   const styleEmissionPolicy = options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
+  const firstLayer = layers[0];
+  if (!firstLayer) {
+    throw new Error(UNSUPPORTED_VALUE('shadow', shadowValue, styleKey));
+  }
+  if (styleEmissionPolicy.shadowEmission === 'token' && layers.length > 1) {
+    throw new Error(UNSUPPORTED_VALUE('shadow', shadowValue, styleKey));
+  }
   const decl =
     styleEmissionPolicy.shadowEmission === 'token'
-      ? `{ --k-sh-x: ${formatPx(layer.x)}; --k-sh-y: ${formatPx(layer.y)}; --k-sh-blur: ${formatPx(layer.blur)}; --k-sh-color: ${convertHslaToHex(layer.color)} }`
-      : `{ box-shadow: ${formatLayer(layer)} }`;
+      ? `{ --k-sh-x: ${formatPx(firstLayer.x)}; --k-sh-y: ${formatPx(firstLayer.y)}; --k-sh-blur: ${formatPx(firstLayer.blur)}; --k-sh-color: ${convertHslaToHex(firstLayer.color)} }`
+      : `{ box-shadow: ${layers.map(formatLayer).join(', ')} }`;
 
   // Build selectors
   const selectors: string[] = [];

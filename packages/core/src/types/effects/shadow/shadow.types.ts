@@ -13,14 +13,16 @@ export type ShadowLayer = {
   y: PixelValue;
 };
 
+export type ShadowLayerValue = ShadowLayer | readonly ShadowLayer[];
+
 export type ShadowKind = 'inner' | 'outer';
 
 export type ShadowGlobalEffectSchema = {
   inner?: {
-    levels: Partial<Record<ElementSizeValue, ShadowLayer>>;
+    levels: Partial<Record<ElementSizeValue, ShadowLayerValue>>;
   };
   outer?: {
-    levels: Partial<Record<ElementSizeValue, ShadowLayer>>;
+    levels: Partial<Record<ElementSizeValue, ShadowLayerValue>>;
   };
 };
 

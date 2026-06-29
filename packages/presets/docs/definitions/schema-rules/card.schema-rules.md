@@ -41,10 +41,12 @@ surface changes semantic family.
 
 Current first-party Card surface buckets are:
 
+- `neutral.lowest`
 - `neutral.low`
 - `neutral.medium`
 - `neutral.high`
 - `neutral.highest`
+- `primary.lowest`
 - `primary.low`
 - `primary.medium`
 - `primary.high`
@@ -65,9 +67,16 @@ Do not create literal intents such as `black`, `gray`, `darkGray`, or
 `darkPrimary`. Those are visual aliases for semantic intent/emphasis
 combinations.
 
-`low` in light themes is the base/white own surface. This is intentionally
-shared across intents unless a component documents an exception. Therefore
-`neutral.low` and `primary.low` may resolve to the same Card background.
+`lowest` is the no-own-surface Card bucket. It should be used only when the Card
+is transparent at rest and the surrounding ambient surface remains the real
+container surface.
+
+`low` in light themes is the base/white own surface. It may also carry the
+visible border treatment for design systems that call this variant "outline",
+because Kiskadee does not expose `outline` as a separate Card axis. This is
+intentionally shared across intents unless a component documents an exception.
+Therefore `neutral.low` and `primary.low` may resolve to the same Card
+background.
 
 `medium` is the default public Card baseline. It is the normal light tonal Card
 surface in the Kiskadee axis model, even though many product UIs call a white

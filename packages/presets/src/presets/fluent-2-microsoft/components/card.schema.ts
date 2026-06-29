@@ -15,17 +15,24 @@ export function createFluent2MicrosoftCardSchema({
 }: CreateFluent2MicrosoftCardSchemaArgs): CardComponent {
   const neutralLow = {
     rest: '#FFFFFF',
-    hover: '#F5FAFF',
-    pressed: '#F0F5FF',
+    hover: '#F0F5FF',
+    pressed: '#DBE0EC',
     focus: '#FFFFFF',
-    disabled: '#FFFFFF1F'
+    disabled: '#EBF0FC'
   };
   const neutralMedium = {
-    rest: '#EBF0FC',
-    hover: '#E1E6F2',
-    pressed: '#D8DEEA',
-    focus: '#EBF0FC',
-    disabled: '#FFFFFF1F'
+    rest: '#F5FAFF',
+    hover: '#EBF0FC',
+    pressed: '#D6DBE7',
+    focus: '#F5FAFF',
+    disabled: '#EBF0FC'
+  };
+  const neutralLowest = {
+    rest: transparent,
+    hover: '#F0F5FF',
+    pressed: '#DBE0EC',
+    focus: transparent,
+    disabled: '#EBF0FC'
   };
   const neutralHigh = {
     rest: '#262932',
@@ -42,6 +49,13 @@ export function createFluent2MicrosoftCardSchema({
     disabled: '#FFFFFF1F'
   };
   const primaryLow = neutralLow;
+  const primaryLowest = {
+    rest: transparent,
+    hover: '#D9F1FF',
+    pressed: '#C7E9FF',
+    focus: transparent,
+    disabled: '#EBF0FC'
+  };
   const primaryMedium = {
     rest: '#D9F1FF',
     hover: '#C7E9FF',
@@ -81,12 +95,37 @@ export function createFluent2MicrosoftCardSchema({
     pressed: primaryHighest.pressed,
     focus: primaryHighest.focus
   };
+  const selectedNeutralLow = {
+    rest: '#E6EBF7',
+    hover: '#E6EBF7',
+    pressed: '#E6EBF7',
+    focus: '#E6EBF7'
+  };
+  const selectedNeutralMedium = {
+    rest: '#E1E6F2',
+    hover: '#E1E6F2',
+    pressed: '#E1E6F2',
+    focus: '#E1E6F2'
+  };
   const borderLow = {
     rest: '#CCD1DD',
-    hover: '#A9ADB9',
-    pressed: '#5D616B',
+    hover: '#C3C7D3',
+    pressed: '#AFB3BF',
+    focus: '#0064B4',
+    disabled: '#DBE0EC'
+  };
+  const borderlessNeutral = {
+    rest: transparent,
+    hover: transparent,
+    pressed: transparent,
     focus: '#0064B4',
     disabled: transparent
+  };
+  const selectedBorder = {
+    rest: '#B9BDC9',
+    hover: '#B9BDC9',
+    pressed: '#B9BDC9',
+    focus: '#B9BDC9'
   };
   const borderHigh = {
     rest: '#626671',
@@ -107,6 +146,13 @@ export function createFluent2MicrosoftCardSchema({
     hover: '#0055A4',
     pressed: '#002B6B',
     focus: '#0064B4',
+    disabled: transparent
+  };
+  const primaryBorderless = {
+    rest: transparent,
+    hover: transparent,
+    pressed: transparent,
+    focus: '#3387DA',
     disabled: transparent
   };
   const primaryBorderHigh = {
@@ -131,12 +177,12 @@ export function createFluent2MicrosoftCardSchema({
           kind: 'outer',
           states: {
             rest: 's:md:1',
-            hover: 's:md:1',
+            hover: 's:lg:1',
             focus: 's:md:1',
-            pressed: false,
-            disabled: false
+            pressed: 's:md:1',
+            disabled: 's:md:1'
           },
-          fixedLevels: ['s:md:1']
+          fixedLevels: ['s:sm:1', 's:md:1', 's:lg:1', 's:lg:2', 's:lg:3', 's:lg:4']
         }
       }
     },
@@ -175,13 +221,17 @@ export function createFluent2MicrosoftCardSchema({
           light: {
             boxColor: {
               neutral: {
+                lowest: {
+                  ...neutralLowest,
+                  selected: selectedNeutralLow
+                },
                 low: {
                   ...neutralLow,
-                  selected: selectedPrimaryHigh
+                  selected: selectedNeutralLow
                 },
                 medium: {
                   ...neutralMedium,
-                  selected: selectedPrimaryHigh
+                  selected: selectedNeutralMedium
                 },
                 high: {
                   ...neutralHigh,
@@ -193,6 +243,10 @@ export function createFluent2MicrosoftCardSchema({
                 }
               },
               primary: {
+                lowest: {
+                  ...primaryLowest,
+                  selected: selectedPrimaryHigh
+                },
                 low: {
                   ...primaryLow,
                   selected: selectedPrimaryHigh
@@ -213,79 +267,47 @@ export function createFluent2MicrosoftCardSchema({
             },
             borderColor: {
               neutral: {
+                lowest: {
+                  ...borderlessNeutral,
+                  selected: selectedBorder
+                },
                 low: {
                   ...borderLow,
-                  selected: {
-                    rest: transparent,
-                    hover: transparent,
-                    pressed: transparent,
-                    focus: transparent
-                  }
+                  selected: selectedBorder
                 },
                 medium: {
-                  ...borderLow,
-                  selected: {
-                    rest: transparent,
-                    hover: transparent,
-                    pressed: transparent,
-                    focus: transparent
-                  }
+                  ...borderlessNeutral,
+                  selected: selectedBorder
                 },
                 high: {
                   ...borderHigh,
-                  selected: {
-                    rest: transparent,
-                    hover: transparent,
-                    pressed: transparent,
-                    focus: transparent
-                  }
+                  selected: selectedBorder
                 },
                 highest: {
                   ...borderHighest,
-                  selected: {
-                    rest: transparent,
-                    hover: transparent,
-                    pressed: transparent,
-                    focus: transparent
-                  }
+                  selected: selectedBorder
                 }
               },
               primary: {
+                lowest: {
+                  ...primaryBorderless,
+                  selected: selectedBorder
+                },
                 low: {
                   ...primaryBorderLow,
-                  selected: {
-                    rest: transparent,
-                    hover: transparent,
-                    pressed: transparent,
-                    focus: transparent
-                  }
+                  selected: selectedBorder
                 },
                 medium: {
-                  ...primaryBorderLow,
-                  selected: {
-                    rest: transparent,
-                    hover: transparent,
-                    pressed: transparent,
-                    focus: transparent
-                  }
+                  ...primaryBorderless,
+                  selected: selectedBorder
                 },
                 high: {
                   ...primaryBorderHigh,
-                  selected: {
-                    rest: transparent,
-                    hover: transparent,
-                    pressed: transparent,
-                    focus: transparent
-                  }
+                  selected: selectedBorder
                 },
                 highest: {
                   ...primaryBorderHighest,
-                  selected: {
-                    rest: transparent,
-                    hover: transparent,
-                    pressed: transparent,
-                    focus: transparent
-                  }
+                  selected: selectedBorder
                 }
               }
             }

@@ -54,7 +54,7 @@ Every official preset should keep its source-of-truth notes under:
 
 ```text
 packages/presets/docs/design-systems/<preset>/
-  README.md
+  source-evidence.md
   components/
     <component>.md
   evidence/
@@ -62,13 +62,20 @@ packages/presets/docs/design-systems/<preset>/
       <source-slug>.png
 ```
 
-Use `README.md` for design-system-level sources and decisions:
+Use `source-evidence.md` for design-system-level sources and decisions:
 
 - Figma file name, file key, and canonical links used for the preset;
 - official documentation sites and relevant pages;
 - known source gaps, such as a Figma file that lacks dark mode while the public
   site demonstrates a dark or high-contrast treatment;
-- broad preset decisions that affect multiple components.
+- broad preset decisions that affect multiple components;
+- extraction notes for cross-component tokens, such as shadow/elevation scales,
+  when the upstream design system does not provide a centralized token page.
+
+When a token scale is reconstructed from multiple components, document the
+reason and the provenance for each level. For example, a shadow/elevation scale
+should identify the effect style, the component or local style where it was
+found, and any inspected component links that did not use a given level.
 
 Use `components/<component>.md` for component-specific evidence:
 
@@ -84,6 +91,12 @@ as `definitions/schema-rules/switch.schema-rules.md`. Those ledgers define the
 cross-preset component rule. The per-design-system evidence belongs with the
 design-system documentation so future preset edits can audit the original
 source before changing schema values.
+
+Legacy source notes may still exist in older locations. Known examples include
+`packages/presets/src/presets/material-3-google/ds-ref/DS-REF.md` and other
+preset-local `ds-ref/` folders. New preset evidence should use
+`packages/presets/docs/design-systems/`, and older notes should be migrated
+there when touched.
 
 ## Numeric Values
 

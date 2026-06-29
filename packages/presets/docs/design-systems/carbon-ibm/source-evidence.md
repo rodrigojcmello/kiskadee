@@ -1,6 +1,6 @@
-# IBM Carbon Preset Sources
+# IBM Carbon Source Evidence
 
-This directory records the source-of-truth evidence used to author the
+This file records the source-of-truth evidence used to author the
 `carbon-ibm` preset.
 
 ## Primary Sources

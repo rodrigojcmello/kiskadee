@@ -67,7 +67,11 @@ global: {
       outer: {
         levels: {
           's:sm:1': { x: 0, y: 1, blur: 3, spread: 1, color: [0, 0, 0, 0.15] },
-          's:md:1': { x: 0, y: 2, blur: 6, spread: 2, color: [0, 0, 0, 0.15] }
+          's:md:1': { x: 0, y: 2, blur: 6, spread: 2, color: [0, 0, 0, 0.15] },
+          's:lg:1': [
+            { x: 0, y: 0, blur: 2, spread: 0, color: [0, 0, 0, 0.12] },
+            { x: 0, y: 4, blur: 8, spread: 0, color: [0, 0, 0, 0.14] }
+          ]
         }
       },
       inner: {
@@ -158,8 +162,16 @@ Rules:
   or uses `false`;
 - `false` inside a state means "emit a zero shadow for this state" so it can
   override the rest shadow and transition cleanly;
-- global levels contain exactly one shadow layer; multi-layer arrays are not
-  supported in the global shadow catalog;
+- global levels may contain either one shadow layer or a shadow stack
+  represented as an ordered array of layers;
+- preserve a source design system's shadow stack when the official source
+  defines multiple layers for a single elevation/effect style;
+- adapters for platforms that do not support shadow stacks natively must choose
+  a platform-level strategy, such as composition layers, approximation, or a
+  documented fallback. Do not flatten source evidence in the shared schema only
+  because one platform has a simpler primitive;
+- `kind` applies to every layer in a stack, so an `inner` stack emits inset
+  layers and an `outer` stack emits normal layers;
 - `spread` is supported per layer and defaults to `0` when omitted;
 - the absence of the runtime prop means the component does not add the shadow
   bucket or the shadow activator class;
@@ -266,9 +278,11 @@ Material 3 Design Kit Community Figma file into Kiskadee's canonical size scale:
 | `s:lg:2` | Elevation 4 | `0 2px 3px 0 rgba(0,0,0,.30)` |
 | `s:lg:3` | Elevation 5 | `0 4px 4px 0 rgba(0,0,0,.30)` |
 
-The Material source defines two-layer elevation shadows. Kiskadee currently keeps
-the first layer only because the global shadow catalog is a single-layer
-contract.
+The Material source defines two-layer elevation shadows. The current
+`material-3-google` preset still keeps one CSS layer per level as a preset-level
+approximation. This is not a global schema limitation; a future Material fidelity
+pass may preserve both source layers in the same way as any other official
+shadow stack.
 
 The current Material Button and CardAction recipe is:
 
@@ -284,12 +298,20 @@ The current Material Button and CardAction recipe is:
 
 ## Fluent 2 Microsoft Shadow Mapping
 
-`fluent-2-microsoft` currently exposes the single shadow found in the Microsoft
-Fluent 2 Web Community Figma file as the medium catalog level:
+`fluent-2-microsoft` preserves the two-layer local effect styles found in the
+Microsoft Fluent 2 Web Community Figma file. The file did not expose a single
+centralized shadow documentation page in the inspected nodes, so the preset
+records detailed provenance under
+`packages/presets/docs/design-systems/fluent-2-microsoft/source-evidence.md`.
 
-| Kiskadee level | Figma style | CSS layer |
+| Kiskadee level | Figma style | CSS layers |
 | --- | --- | --- |
-| `s:md:1` | Shadow 04 | `0 2px 4px 0 rgba(0,0,0,.14)` |
+| `s:sm:1` | Shadow 02 | `0 0 2px 0 rgba(0,0,0,.12)`, `0 1px 2px 0 rgba(0,0,0,.14)` |
+| `s:md:1` | Shadow 04 | `0 0 2px 0 rgba(0,0,0,.12)`, `0 2px 4px 0 rgba(0,0,0,.14)` |
+| `s:lg:1` | Shadow 08 | `0 0 2px 0 rgba(0,0,0,.12)`, `0 4px 8px 0 rgba(0,0,0,.14)` |
+| `s:lg:2` | Shadow 16 | `0 0 2px 0 rgba(0,0,0,.12)`, `0 8px 16px 0 rgba(0,0,0,.14)` |
+| `s:lg:3` | Shadow 28 | `0 0 8px 0 rgba(0,0,0,.20)`, `0 14px 28px 0 rgba(0,0,0,.24)` |
+| `s:lg:4` | Shadow 64 | `0 0 8px 0 rgba(0,0,0,.20)`, `0 32px 64px 0 rgba(0,0,0,.24)` |
 
 ## Apple 26 Shadow Mapping
 

@@ -30,8 +30,8 @@ Card visuals are selected through the normal Kiskadee component axes:
 
 - `intent`: public semantic surface family, currently including `neutral` and
   `primary` in first-party presets that expose Card colors.
-- `emphasis`: own-surface strength, such as `low`, `medium`, `high`, and
-  `highest`.
+- `emphasis`: own-surface strength, such as `lowest`, `low`, `medium`, `high`,
+  and `highest`.
 - `radius`: local shape override. Current public values are `rounded` and
   `square`; `pill` is outside the current Card contract.
 - `shadow`: static or stateful elevation, depending on component and schema

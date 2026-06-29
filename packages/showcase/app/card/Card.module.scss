@@ -35,6 +35,10 @@
   position: relative;
 }
 
+.cardSurface {
+  aspect-ratio: 16 / 9;
+}
+
 .exampleLabel {
   color: rgba(0, 0, 0, 0.48);
   font-size: 13px;
@@ -107,11 +111,5 @@
 @media (min-width: 768px) {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1180px) {
-  .grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }

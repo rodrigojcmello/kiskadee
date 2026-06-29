@@ -323,6 +323,7 @@ export function Card() {
                         {cardIntentLabels[intent]} / {cardEmphasisLabels[emphasis]}
                       </p>
                       <KCard
+                        className={s.cardSurface}
                         emphasis={emphasis}
                         intent={intent}
                         radius={radius}
@@ -349,6 +350,7 @@ export function Card() {
               <div className={s.example}>
                 <p className={s.exampleLabel}>Static</p>
                 <KCard
+                  className={s.cardSurface}
                   radius={radius}
                   shadow={resolvedStaticShadow}
                   preserveBorderWithShadow={preserveBorderWithShadow}
@@ -366,6 +368,7 @@ export function Card() {
               <div className={s.example}>
                 <p className={s.exampleLabel}>Action</p>
                 <KCardAction
+                  className={s.cardSurface}
                   radius={radius}
                   shadow={cardActionShadow}
                   preserveBorderWithShadow={preserveBorderWithShadow}
@@ -386,6 +389,7 @@ export function Card() {
               <div className={s.example}>
                 <p className={s.exampleLabel}>Selected</p>
                 <KCardAction
+                  className={s.cardSurface}
                   radius={radius}
                   shadow={cardActionShadow}
                   preserveBorderWithShadow={preserveBorderWithShadow}
@@ -405,6 +409,7 @@ export function Card() {
               <div className={s.example}>
                 <p className={s.exampleLabel}>Disabled</p>
                 <KCardAction
+                  className={s.cardSurface}
                   radius={radius}
                   shadow={cardActionShadow}
                   preserveBorderWithShadow={preserveBorderWithShadow}
@@ -424,6 +429,7 @@ export function Card() {
               <div className={s.example}>
                 <p className={s.exampleLabel}>Locked</p>
                 <KCardAction
+                  className={s.cardSurface}
                   radius={radius}
                   shadow={cardActionShadow}
                   preserveBorderWithShadow={preserveBorderWithShadow}
