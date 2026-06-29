@@ -67,6 +67,14 @@ function resolveStyleKeyEmissionMode(
         : undefined;
   }
 
+  if (styleKey.startsWith('boxHeight')) {
+    return styleEmissionPolicy.boxHeightEmission === 'mirrored'
+      ? 'm'
+      : styleEmissionPolicy.boxHeightEmission === 'token'
+        ? 't'
+        : undefined;
+  }
+
   if (styleKey.startsWith('marginLeft')) {
     return styleEmissionPolicy.marginLeftEmission === 'mirrored' ? 'm' : undefined;
   }
@@ -98,6 +106,7 @@ function resolveStyleKeyEmissionFamily(
   | 'borderWidth'
   | 'borderColor'
   | 'boxWidth'
+  | 'boxHeight'
   | 'marginLeft'
   | 'padding'
   | undefined {
@@ -123,6 +132,10 @@ function resolveStyleKeyEmissionFamily(
 
   if (styleKey.startsWith('boxWidth')) {
     return 'boxWidth';
+  }
+
+  if (styleKey.startsWith('boxHeight')) {
+    return 'boxHeight';
   }
 
   if (styleKey.startsWith('marginLeft')) {
@@ -230,6 +243,10 @@ export function applyCanonicalStyleEmissionPolicy(
 
   if (family === 'boxWidth') {
     return { ...styleEmissionPolicy, boxWidthEmission: 'mirrored' };
+  }
+
+  if (family === 'boxHeight') {
+    return { ...styleEmissionPolicy, boxHeightEmission: 'mirrored' };
   }
 
   if (family === 'marginLeft') {

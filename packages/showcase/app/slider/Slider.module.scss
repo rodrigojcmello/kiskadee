@@ -1,0 +1,64 @@
+.page {
+  display: grid;
+  gap: 26px;
+}
+
+.header {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: clamp(1.4rem, 2.8vw, 2rem);
+  line-height: 1.05;
+}
+
+.summary {
+  max-width: 720px;
+  margin: 10px 0 0;
+  color: rgba(0, 0, 0, 0.56);
+  line-height: 1.5;
+}
+
+.demoGrid {
+  display: grid;
+  gap: 28px;
+  inline-size: min(100%, 980px);
+}
+
+.demoBlock {
+  display: grid;
+  min-width: 0;
+  padding: 32px 28px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.emptyState {
+  padding: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  color: rgba(0, 0, 0, 0.64);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+@media (max-width: 720px) {
+  .page {
+    gap: 20px;
+  }
+
+  .summary {
+    display: none;
+  }
+
+  .demoGrid {
+    gap: 20px;
+  }
+
+  .demoBlock {
+    padding: 28px 18px;
+  }
+}

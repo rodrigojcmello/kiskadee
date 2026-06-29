@@ -14,6 +14,7 @@ export type {
   ComponentClassNameMapSplitJSON
 } from '@kiskadee/core';
 export type { ComponentClassMapArtifactJSON } from './src/component-artifacts/componentClassMapArtifacts.ts';
+export type { SliderComponentArtifactJSON } from './src/component-artifacts/sliderComponentArtifact.ts';
 export type { SwitchComponentArtifactJSON } from './src/component-artifacts/switchComponentArtifact.ts';
 export type { TabsComponentArtifactJSON } from './src/component-artifacts/tabsComponentArtifact.ts';
 export type { TextFieldComponentArtifactJSON } from './src/component-artifacts/textFieldComponentArtifact.ts';

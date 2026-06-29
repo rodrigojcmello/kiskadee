@@ -1,6 +1,7 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints.ts';
 import type { ButtonElements } from './components/button.ts';
 import type { CardElements } from './components/card.ts';
+import type { SliderOptions, SliderVariants } from './components/slider.ts';
 import type { SwitchOptions, SwitchVariants } from './components/switch.ts';
 import type { TabsOptions, TabsVariants } from './components/tabs.ts';
 import type { TextFieldOptions, TextFieldVariants } from './components/text-field.ts';
@@ -28,7 +29,7 @@ import type {
 import type { ScaleSchema } from './types/scales/scales.types.ts';
 
 // Names of all supported components
-export type ComponentName = 'button' | 'card' | 'switch' | 'tabs' | 'textField';
+export type ComponentName = 'button' | 'card' | 'slider' | 'switch' | 'tabs' | 'textField';
 
 export type ElementStyle<TSegmentName extends SegmentName = never> = {
   name: string; // human-readable element label, for example "button-text"
@@ -98,6 +99,7 @@ export type ComponentVariantModesStyleKeyMap<TSegmentName extends SegmentName = 
 export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Partial<{
   button: ComponentElementsStyleKeyMap<TSegmentName>;
   card: ComponentElementsStyleKeyMap<TSegmentName>;
+  slider: ComponentVariantModesStyleKeyMap<TSegmentName>;
   switch: ComponentVariantModesStyleKeyMap<TSegmentName>;
   tabs: ComponentVariantsStyleKeyMap<TSegmentName>;
   textField: ComponentVariantModesStyleKeyMap<TSegmentName>;
@@ -131,6 +133,12 @@ type SwitchComponent<TSegmentName extends SegmentName = never> = {
   variants: SwitchVariants<TSegmentName>;
 };
 
+type SliderComponent<TSegmentName extends SegmentName = never> = {
+  elements?: never;
+  options?: SliderOptions;
+  variants: SliderVariants<TSegmentName>;
+};
+
 type ComponentEffects = {
   activationFeedback?: ActivationFeedbackSetting;
   shadow?: ShadowEffectSchema;
@@ -145,6 +153,7 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
     effects?: ComponentEffects;
     elements: CardElements<TSegmentName> & Elements<TSegmentName>;
   };
+  slider: SliderComponent<TSegmentName>;
   switch: SwitchComponent<TSegmentName>;
   tabs: TabsComponent<TSegmentName>;
   textField: TextFieldComponent<TSegmentName>;

@@ -1,4 +1,5 @@
 import { breakpoints, type Schema } from '@kiskadee/core';
+import { createSandboxSliderSchema } from './components/slider.schema.ts';
 import { createSandboxSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './sandbox.colors.ts';
 
@@ -100,6 +101,7 @@ export const schema: Schema<SandboxSegment> = {
     }
   },
   components: {
+    slider: createSandboxSliderSchema(),
     switch: createSandboxSwitchSchema()
   }
 };

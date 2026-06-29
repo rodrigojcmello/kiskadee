@@ -1,6 +1,7 @@
 export * from './breakpoints.ts';
 export * from './components/button.ts';
 export * from './components/card.ts';
+export * from './components/slider.ts';
 export * from './components/switch.ts';
 export * from './components/tabs.ts';
 export * from './components/text-field.ts';
@@ -8,8 +9,8 @@ export * from './schema.ts';
 export * from './types/colors/colors.types.ts';
 export * from './types/decorations/decorations.types.ts';
 export {
-  ACTIVATION_FEEDBACK_PROFILE_DEFINITIONS,
   ACTIVATION_FEEDBACK_DURATION_TOKEN_TO_MS,
+  ACTIVATION_FEEDBACK_PROFILE_DEFINITIONS,
   DEFAULT_ACTIVATION_FEEDBACK_PROFILES,
   DEFAULT_PRESSED_ACTIVATION_FEEDBACK_PROFILE
 } from './types/effects/activation-feedback/activation-feedback.constants.ts';
@@ -22,16 +23,16 @@ export type {
   ActivationFeedbackProfileBucket,
   ActivationFeedbackProfileConfig,
   ActivationFeedbackProfileDefinition,
-  ActivationFeedbackProfileOverflow,
   ActivationFeedbackProfileKey,
   ActivationFeedbackProfileMode,
+  ActivationFeedbackProfileOverflow,
   ActivationFeedbackProfileRuntime,
   ActivationFeedbackProfileShape,
   ActivationFeedbackSetting,
+  ActivationFeedbackThemeTokens,
   ActivationFeedbackTone,
   ActivationFeedbackToneMap,
   ActivationFeedbackToneTokens,
-  ActivationFeedbackThemeTokens,
   ActivationFeedbackVisual
 } from './types/effects/activation-feedback/activation-feedback.types.ts';
 export {

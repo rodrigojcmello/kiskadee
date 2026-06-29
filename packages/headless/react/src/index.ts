@@ -22,6 +22,31 @@ export type {
 } from './components/select/Select.tsx';
 export { Select } from './components/select/Select.tsx';
 export type {
+  SliderActiveTrackProps,
+  SliderClassNames,
+  SliderControlRowProps,
+  SliderElementName,
+  SliderEndpointIconProps,
+  SliderEndpointLabelProps,
+  SliderEndpointProps,
+  SliderFieldLabelProps,
+  SliderFormatValue,
+  SliderHelperTextProps,
+  SliderMarkLabelProps,
+  SliderMarkProps,
+  SliderRangeValue,
+  SliderRootProps,
+  SliderStatus,
+  SliderThumbIndex,
+  SliderThumbProps,
+  SliderTrackProps,
+  SliderValue,
+  SliderValueIndicatorProps,
+  SliderValueMode,
+  SliderValueSummaryProps
+} from './components/slider/HeadlessSlider.tsx';
+export { HeadlessSlider } from './components/slider/HeadlessSlider.tsx';
+export type {
   SwatchRadioGroupClassNames,
   SwatchRadioGroupProps,
   SwatchRadioGroupRenderSwatchArgs,

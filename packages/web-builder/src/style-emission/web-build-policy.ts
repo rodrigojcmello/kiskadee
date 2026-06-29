@@ -23,6 +23,7 @@ export type BorderWidthEmission = DirectMirroredOrTokenEmission;
 export type BorderRadiusEmission = DirectMirroredOrTokenEmission;
 export type BorderColorEmission = DirectMirroredOrTokenEmission;
 export type BoxWidthEmission = DirectMirroredOrTokenEmission;
+export type BoxHeightEmission = DirectMirroredOrTokenEmission;
 export type MarginLeftEmission = DirectOrMirroredEmission;
 export type PaddingEmission = DirectMirroredOrTokenEmission | CompensatedEmission;
 export type ShadowEmission = DirectOrTokenEmission;
@@ -35,6 +36,7 @@ export type ElementStyleEmissionPolicy = {
   borderRadiusEmission?: BorderRadiusEmission;
   borderColorEmission?: BorderColorEmission;
   boxWidthEmission?: BoxWidthEmission;
+  boxHeightEmission?: BoxHeightEmission;
   marginLeftEmission?: MarginLeftEmission;
   paddingEmission?: PaddingEmission;
   shadowEmission?: ShadowEmission;
@@ -48,6 +50,7 @@ export type ResolvedElementStyleEmissionPolicy = {
   borderRadiusEmission: BorderRadiusEmission;
   borderColorEmission: BorderColorEmission;
   boxWidthEmission?: BoxWidthEmission;
+  boxHeightEmission?: BoxHeightEmission;
   marginLeftEmission?: MarginLeftEmission;
   paddingEmission: PaddingEmission;
   shadowEmission: ShadowEmission;
@@ -112,6 +115,20 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         }
       }
     },
+    slider: {
+      variants: {
+        standard: {
+          elements: {
+            e8: {
+              boxHeightEmission: 'mirrored'
+            },
+            e12: {
+              boxWidthEmission: 'mirrored'
+            }
+          }
+        }
+      }
+    },
     tabs: {
       elements: {
         e2: {
@@ -157,6 +174,7 @@ export const DEFAULT_ELEMENT_STYLE_EMISSION_POLICY: ResolvedElementStyleEmission
   borderWidthEmission: 'direct',
   borderColorEmission: 'direct',
   boxWidthEmission: 'direct',
+  boxHeightEmission: 'direct',
   marginLeftEmission: 'direct',
   paddingEmission: 'direct',
   shadowEmission: 'direct'
@@ -203,6 +221,10 @@ export function resolveElementStyleEmissionPolicy(
       variantElementPolicy?.boxWidthEmission ??
       elementPolicy?.boxWidthEmission ??
       DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.boxWidthEmission,
+    boxHeightEmission:
+      variantElementPolicy?.boxHeightEmission ??
+      elementPolicy?.boxHeightEmission ??
+      DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.boxHeightEmission,
     marginLeftEmission:
       variantElementPolicy?.marginLeftEmission ??
       elementPolicy?.marginLeftEmission ??

@@ -9,6 +9,17 @@ export type {
   CardStatus
 } from './components/Card';
 export { Card, CardAction, useCardArtifactConfig } from './components/Card';
+export type {
+  SliderArtifactConfig,
+  SliderClassNames,
+  SliderEndpoint,
+  SliderEndpoints,
+  SliderMark,
+  SliderMarks,
+  SliderProps,
+  SliderStatus
+} from './components/Slider';
+export { Slider, useSliderArtifactConfig } from './components/Slider';
 export { SmoothText } from './components/SmoothText/SmoothText.tsx';
 export type {
   SwitchArtifactConfig,

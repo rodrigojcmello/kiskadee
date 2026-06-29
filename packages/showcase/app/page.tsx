@@ -12,6 +12,9 @@ export default function HomePage() {
           <Link href="/card">/card</Link>
         </li>
         <li>
+          <Link href="/slider">/slider</Link>
+        </li>
+        <li>
           <Link href="/tabs">/tabs</Link>
         </li>
         <li>

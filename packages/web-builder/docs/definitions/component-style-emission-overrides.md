@@ -24,6 +24,29 @@ Some non-direct emission is default behavior, not an override. In the current bu
 changes that default or when local runtime/structural behavior depends on the emitted variable in a
 component-specific way.
 
+## Slider
+
+Current scope:
+
+- `slider.variants.standard.elements.e8`, the visual track.
+- `slider.variants.standard.elements.e12`, the visual mark.
+
+The policy applies at the `standard` variant level. The current Slider mode is `base`, but emission
+policy resolution is variant-level here, so future `standard` modes should inherit the same mark
+geometry contract unless a new policy is added.
+
+### Track `e8`
+
+| Property family | Policy | Default | CSS shape | Reason |
+| --- | --- | --- | --- | --- |
+| `boxHeight` | `mirrored` | `direct` | `--k-bxh: <value>; height: <value>` | Slider structural CSS needs the rendered track thickness to clamp edge marks into the track geometry. |
+
+### Mark `e12`
+
+| Property family | Policy | Default | CSS shape | Reason |
+| --- | --- | --- | --- | --- |
+| `boxWidth` | `mirrored` | `direct` | `--k-bxw: <value>; width: <value>` | Slider structural CSS needs the rendered mark width to clamp the first and last marks without hardcoding preset geometry. |
+
 ## Switch
 
 Current scope:

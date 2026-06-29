@@ -1,5 +1,6 @@
 import { validateButtonComponentContract } from '../components/button.ts';
 import { validateCardComponentContract } from '../components/card.ts';
+import { validateSliderComponentContract } from '../components/slider.zod.ts';
 import { validateSwitchComponentContract } from '../components/switch.zod.ts';
 import { validateTabsComponentContract } from '../components/tabs.zod.ts';
 import { validateTextFieldComponentContract } from '../components/text-field.zod.ts';
@@ -10,6 +11,7 @@ import { validateTextFieldComponentContract } from '../components/text-field.zod
  * Incremental scope:
  * - button
  * - card
+ * - slider
  * - switch
  * - tabs
  * - textField
@@ -38,6 +40,15 @@ export function validateSchemaComponentContracts(schemaLike: {
     if (issues.length > 0) {
       throw new Error(
         `Invalid component contract for card. Review element/property mapping.\n${issues.join('\n')}`
+      );
+    }
+  }
+
+  if (byName.slider !== undefined) {
+    const issues = validateSliderComponentContract(byName.slider, 'components.slider');
+    if (issues.length > 0) {
+      throw new Error(
+        `Invalid component contract for slider. Review element/property mapping.\n${issues.join('\n')}`
       );
     }
   }

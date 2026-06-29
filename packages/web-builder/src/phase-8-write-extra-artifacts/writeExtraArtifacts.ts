@@ -18,6 +18,10 @@ import type {
 import { convertHslaToHex } from '@kiskadee/core';
 import { minifyCss } from '@kiskadee/css-build';
 import {
+  buildSliderComponentArtifact,
+  SLIDER_COMPONENT_ARTIFACT_PATH
+} from '../component-artifacts/sliderComponentArtifact.ts';
+import {
   buildSwitchComponentArtifact,
   SWITCH_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/switchComponentArtifact.ts';
@@ -197,8 +201,9 @@ export async function writeExtraArtifacts(params: {
     | ActivationFeedbackEffectSchema
     | undefined;
   const shadow = schema.global?.effects?.shadow as ShadowGlobalEffectSchema | undefined;
-  const componentEffectOverrides: Partial<Record<ComponentEffectArtifactName, ComponentEffectArtifact>> =
-    {};
+  const componentEffectOverrides: Partial<
+    Record<ComponentEffectArtifactName, ComponentEffectArtifact>
+  > = {};
   const getComponentEffects = (
     componentName: ComponentEffectArtifactName
   ): ComponentEffectArtifact['effects'] => {
@@ -229,6 +234,7 @@ export async function writeExtraArtifacts(params: {
     getComponentEffects('switch').shadow = schema.components.switch.effects.shadow;
   }
 
+  const sliderComponentArtifact = buildSliderComponentArtifact(schema);
   const switchComponentArtifact = buildSwitchComponentArtifact(schema);
   const tabsComponentArtifact = buildTabsComponentArtifact(schema);
   const textFieldComponentArtifact = buildTextFieldComponentArtifact(schema);
@@ -301,6 +307,7 @@ export async function writeExtraArtifacts(params: {
   }
 
   const componentArtifacts = [
+    { artifact: sliderComponentArtifact, path: SLIDER_COMPONENT_ARTIFACT_PATH },
     { artifact: switchComponentArtifact, path: SWITCH_COMPONENT_ARTIFACT_PATH },
     { artifact: tabsComponentArtifact, path: TABS_COMPONENT_ARTIFACT_PATH },
     { artifact: textFieldComponentArtifact, path: TEXT_FIELD_COMPONENT_ARTIFACT_PATH }

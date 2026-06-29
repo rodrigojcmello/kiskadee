@@ -42,6 +42,9 @@ Current element-specific contracts include:
 - `switch.standard.e2.borderWidthEmission = 'mirrored'` and
   `switch.standard.e2.paddingEmission = 'compensated'` so the web track can preserve
   cross-platform visual geometry when a border is present.
+- `slider.standard.e8.boxHeightEmission = 'mirrored'` and
+  `slider.standard.e12.boxWidthEmission = 'mirrored'` so Slider structural CSS can keep edge marks
+  inside the rendered track geometry.
 
 For component-by-component notes, see
 [`component-style-emission-overrides.md`](./component-style-emission-overrides.md).

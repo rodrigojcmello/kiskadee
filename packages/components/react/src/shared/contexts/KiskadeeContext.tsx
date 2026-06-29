@@ -5,6 +5,10 @@ import type {
   RadiusMode,
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
+  SliderMarks,
+  SliderMode,
+  SliderValueDisplay,
+  SliderVariant,
   SwitchActivationMotion,
   SwitchControlTextVisibility,
   SwitchMode,
@@ -60,6 +64,20 @@ export type KiskadeeContextValue = {
       card?: {
         effects?: {
           shadow?: ShadowEffectSchema;
+        };
+      };
+      slider?: {
+        options?: {
+          variant?: SliderVariant;
+          valueDisplay?: SliderValueDisplay;
+          marks?: SliderMarks;
+        };
+        variants?: {
+          standard?: {
+            options?: {
+              mode?: SliderMode;
+            };
+          };
         };
       };
       textField?: {

@@ -39,6 +39,11 @@
       "types": "./dist/components/switch/HeadlessSwitch.d.ts",
       "import": "./dist/components/switch/HeadlessSwitch.js",
       "default": "./dist/components/switch/HeadlessSwitch.js"
+    },
+    "./slider": {
+      "types": "./dist/components/slider/HeadlessSlider.d.ts",
+      "import": "./dist/components/slider/HeadlessSlider.js",
+      "default": "./dist/components/slider/HeadlessSlider.js"
     }
   },
   "files": [

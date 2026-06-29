@@ -39,6 +39,7 @@ export const EMITTED_SCALE_CSS_VARS = {
   borderWidth: '--k-bdw',
   borderRadius: '--k-bdr',
   boxWidth: '--k-bxw',
+  boxHeight: '--k-bxh',
   marginLeft: '--k-mgl',
   paddingTop: '--k-pdt',
   paddingRight: '--k-pdr',
@@ -200,8 +201,15 @@ export function transformScaleKeyToCss(
       styleEmissionPolicy.boxWidthEmission === 'mirrored'
         ? `.${className} { ${EMITTED_SCALE_CSS_VARS.boxWidth}: ${cssValue}; ${cssProperty}: ${cssValue} }`
         : styleEmissionPolicy.boxWidthEmission === 'token'
-        ? `.${className} { ${EMITTED_SCALE_CSS_VARS.boxWidth}: ${cssValue} }`
-        : `.${className} { ${cssProperty}: ${cssValue} }`;
+          ? `.${className} { ${EMITTED_SCALE_CSS_VARS.boxWidth}: ${cssValue} }`
+          : `.${className} { ${cssProperty}: ${cssValue} }`;
+  } else if (scaleProperty === 'boxHeight') {
+    rule =
+      styleEmissionPolicy.boxHeightEmission === 'mirrored'
+        ? `.${className} { ${EMITTED_SCALE_CSS_VARS.boxHeight}: ${cssValue}; ${cssProperty}: ${cssValue} }`
+        : styleEmissionPolicy.boxHeightEmission === 'token'
+          ? `.${className} { ${EMITTED_SCALE_CSS_VARS.boxHeight}: ${cssValue} }`
+          : `.${className} { ${cssProperty}: ${cssValue} }`;
   } else if (
     scaleProperty === 'borderRadius' ||
     scaleProperty === 'borderRadiusRounded' ||

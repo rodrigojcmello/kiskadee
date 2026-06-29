@@ -14,6 +14,10 @@ const entries = [
     label: 'Card'
   },
   {
+    href: '/slider',
+    label: 'Slider'
+  },
+  {
     href: '/tabs',
     label: 'Tabs'
   },
