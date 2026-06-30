@@ -1,10 +1,13 @@
 import { breakpoints, type Schema } from '@kiskadee/core';
+import { createFluent2MicrosoftCardSchema } from '../fluent-2-microsoft/components/card.schema.ts';
 import { createSandboxSliderSchema } from './components/slider.schema.ts';
 import { createSandboxSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './sandbox.colors.ts';
 
 export type SandboxSegment = 'default';
 
+const segmentNames = ['default'] as const;
+const transparent = [0, 0, 0, 0] as const;
 const shadowBlack = (alpha: number) => [0, 0, 0, alpha] as const;
 
 export const schema: Schema<SandboxSegment> = {
@@ -65,7 +68,8 @@ export const schema: Schema<SandboxSegment> = {
             's:md:1': { x: 0, y: 2, blur: 6, spread: 2, color: shadowBlack(0.15) },
             's:lg:1': { x: 0, y: 1, blur: 3, spread: 0, color: shadowBlack(0.3) },
             's:lg:2': { x: 0, y: 2, blur: 3, spread: 0, color: shadowBlack(0.3) },
-            's:lg:3': { x: 0, y: 4, blur: 4, spread: 0, color: shadowBlack(0.3) }
+            's:lg:3': { x: 0, y: 4, blur: 4, spread: 0, color: shadowBlack(0.3) },
+            's:lg:4': { x: 0, y: 8, blur: 16, spread: 0, color: shadowBlack(0.3) }
           }
         },
         inner: {
@@ -101,6 +105,10 @@ export const schema: Schema<SandboxSegment> = {
     }
   },
   components: {
+    card: createFluent2MicrosoftCardSchema({
+      segmentNames,
+      transparent
+    }),
     slider: createSandboxSliderSchema(),
     switch: createSandboxSwitchSchema()
   }

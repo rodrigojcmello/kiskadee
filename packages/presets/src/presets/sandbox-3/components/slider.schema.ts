@@ -26,6 +26,8 @@ function states(colors: {
 const transparent = [0, 0, 0, 0] as const;
 
 const c = {
+  black: [0, 0, 0, 1],
+  blackDisabled: [0, 0, 0, 0.38],
   ink: [231, 24, 6, 1],
   inkSoft: [226, 12, 50, 1],
   inkMuted: [226, 12, 58, 1],
@@ -44,6 +46,16 @@ const c = {
   violetHover: [260, 74, 58, 1],
   violetPressed: [260, 78, 40, 1]
 } as const;
+
+function markStates(selectedRest: Color) {
+  return {
+    rest: c.black,
+    selected: {
+      rest: selectedRest
+    },
+    disabled: ref(c.blackDisabled)
+  };
+}
 
 const sizes = {
   labelText: {
@@ -254,6 +266,57 @@ const activeTrackPalettes = {
         },
         primary: {
           medium: states({
+            rest: transparent,
+            hover: transparent,
+            focus: transparent,
+            pressed: transparent,
+            disabled: transparent
+          })
+        }
+      }
+    }
+  }
+} as const;
+
+const markPalettes = {
+  default: {
+    light: {
+      boxColor: {
+        neutral: {
+          medium: markStates(c.white),
+          low: markStates(c.white)
+        },
+        primary: {
+          medium: markStates(c.white),
+          low: markStates(c.white)
+        }
+      },
+      borderColor: {
+        neutral: {
+          medium: states({
+            rest: transparent,
+            hover: transparent,
+            focus: transparent,
+            pressed: transparent,
+            disabled: transparent
+          }),
+          low: states({
+            rest: transparent,
+            hover: transparent,
+            focus: transparent,
+            pressed: transparent,
+            disabled: transparent
+          })
+        },
+        primary: {
+          medium: states({
+            rest: transparent,
+            hover: transparent,
+            focus: transparent,
+            pressed: transparent,
+            disabled: transparent
+          }),
+          low: states({
             rest: transparent,
             hover: transparent,
             focus: transparent,
@@ -509,7 +572,7 @@ export function createSandbox3SliderSchema(): SliderComponent {
                   },
                   borderWidth: 0
                 },
-                palettes: activeTrackPalettes
+                palettes: markPalettes
               },
               e13: {
                 name: 'slider-mark-label',

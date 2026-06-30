@@ -235,7 +235,44 @@ type SliderMark = {
 
 Only marks inside `[min, max]` render. A mark is projected as selected when it
 falls inside the active interval. In single mode, that interval is `min` to the
-current thumb value. In range mode, it is thumb `0` to thumb `1`.
+current thumb value. In range mode, it is thumb `0` to thumb `1`. Selected marks
+also receive the projected `selected` state classes on `e12`, so presets can
+style `e12.selected.rest` independently from the unselected mark color.
+
+### Selected Mark Color
+
+`e12` owns mark color. The normal mark color comes from `e12.boxColor.rest`.
+The selected mark color comes from `e12.boxColor.selected.rest`.
+
+Use this distinction for the two common visual treatments:
+
+- To hide selected marks on the active range, set `e12.selected.rest` to the
+  same color as the active track (`e9.rest`).
+- To keep selected marks visible on the active range, set `e12.selected.rest`
+  to a contrasting color, such as white on a dark active track.
+
+Example:
+
+```ts
+boxColor: {
+  primary: {
+    medium: {
+      rest: markOnInactiveTrack,
+      selected: {
+        rest: markOnActiveTrack
+      }
+    }
+  }
+}
+```
+
+Selected mark state is projected on the mark element itself. Slider hover,
+focus, and pressed states are projected on the Slider root. Because of that,
+avoid adding root-inherited mark interaction colors such as `hover: ref(...)`,
+`focus: ref(...)`, or `pressed: ref(...)` on `e12` unless the preset explicitly
+wants root interaction to recolor all marks. Those inherited rules can override
+`e12.selected.rest` while the Slider root is hovered. If a preset only needs a
+stable mark color, prefer `rest`, `selected.rest`, and `disabled`.
 
 Visual mark shape belongs to preset schema, not to React logic. A preset can
 make `e12` look like a dot, a vertical tick, or another simple marker by

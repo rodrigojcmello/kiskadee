@@ -130,6 +130,10 @@ export const globalSemanticsBySegment = {
 } as const satisfies GlobalSemanticsBySegment;
 
 export const componentIntents = {
+  card: {
+    neutral: 'neutral',
+    primary: 'primary'
+  },
   slider: {
     neutral: 'neutral',
     primary: 'primary'

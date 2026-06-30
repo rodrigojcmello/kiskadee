@@ -980,6 +980,7 @@ const SliderMark = forwardRef<HTMLSpanElement, SliderMarkProps>(function SliderM
   const context = useSliderContext();
   const { className: slotClassName, ...slotProps } = context.slotProps.e12 ?? {};
   const markValue = value ?? context.min;
+  const isSelected = context.isMarkSelected(markValue);
   const markStyle = {
     '--k-sld-mark': `${valueToPercent(markValue, context.min, context.max)}%`,
     ...style
@@ -989,8 +990,13 @@ const SliderMark = forwardRef<HTMLSpanElement, SliderMarkProps>(function SliderM
     <span
       {...slotProps}
       ref={ref}
-      className={mergeClassNames(slotClassName, className)}
-      data-selected={context.isMarkSelected(markValue) ? '' : undefined}
+      className={mergeClassNames(
+        slotClassName,
+        isSelected && cn.selected,
+        isSelected && cn.activator,
+        className
+      )}
+      data-selected={isSelected ? '' : undefined}
       style={markStyle}
       aria-hidden="true"
       {...props}

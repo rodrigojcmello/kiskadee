@@ -62,6 +62,10 @@ export const componentIntents = {
     neutral: 'neutral',
     primary: 'primary'
   },
+  slider: {
+    neutral: 'neutral',
+    primary: 'primary'
+  },
   switch: {
     neutral: 'neutral'
   }

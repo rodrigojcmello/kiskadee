@@ -1,0 +1,461 @@
+import type { Color, Schema } from '@kiskadee/core';
+
+type SliderComponent = NonNullable<NonNullable<Schema<never>['components']>['slider']>;
+
+function ref<T>(value: T): { ref: T } {
+  return { ref: value };
+}
+
+function states(colors: {
+  rest: Color;
+  hover?: Color;
+  focus?: Color;
+  pressed?: Color;
+  disabled?: Color;
+}) {
+  return {
+    rest: colors.rest,
+    hover: ref(colors.hover ?? colors.rest),
+    focus: ref(colors.focus ?? colors.rest),
+    pressed: ref(colors.pressed ?? colors.rest),
+    disabled: ref(colors.disabled ?? colors.rest)
+  };
+}
+
+const fluent = {
+  transparent: '#FFFFFF00',
+  neutralForeground1: '#242424',
+  neutralStrokeAccessible: '#5D616B',
+  neutralBackground1: '#FFFFFF',
+  neutralStroke1: '#CCD1DD',
+  neutralForegroundDisabled: '#B9BDC9',
+  neutralStrokeDisabled: '#DBE0EC',
+  compoundBrandRest: '#0064B4',
+  compoundBrandHover: '#0055A4',
+  compoundBrandPressed: '#004694'
+} as const satisfies Record<string, Color>;
+
+const sizes = {
+  labelText: {
+    's:sm:1': 12,
+    's:md:1': 14
+  },
+  labelLine: {
+    's:sm:1': 16,
+    's:md:1': 20
+  },
+  trackHeight: {
+    's:sm:1': 2,
+    's:md:1': 4
+  },
+  thumb: {
+    's:sm:1': 14,
+    's:md:1': 18
+  },
+  thumbBorder: {
+    's:sm:1': 2,
+    's:md:1': 3
+  },
+  endpointIcon: {
+    's:sm:1': 16,
+    's:md:1': 20
+  },
+  indicatorHeight: {
+    's:sm:1': 24,
+    's:md:1': 28
+  },
+  indicatorPadding: {
+    's:sm:1': 8,
+    's:md:1': 10
+  },
+  markWidth: {
+    's:sm:1': 1,
+    's:md:1': 1
+  }
+} as const;
+
+const textPalettes = {
+  default: {
+    light: {
+      textColor: {
+        neutral: {
+          medium: states({
+            rest: fluent.neutralForeground1,
+            disabled: fluent.neutralForegroundDisabled
+          })
+        },
+        primary: {
+          medium: states({
+            rest: fluent.compoundBrandRest,
+            hover: fluent.compoundBrandHover,
+            focus: fluent.compoundBrandRest,
+            pressed: fluent.compoundBrandPressed,
+            disabled: fluent.neutralForegroundDisabled
+          })
+        }
+      }
+    }
+  }
+} as const;
+
+const iconPalettes = {
+  default: {
+    light: {
+      textColor: {
+        neutral: {
+          medium: states({
+            rest: fluent.neutralStrokeAccessible,
+            disabled: fluent.neutralForegroundDisabled
+          })
+        },
+        primary: {
+          medium: states({
+            rest: fluent.compoundBrandRest,
+            hover: fluent.compoundBrandHover,
+            focus: fluent.compoundBrandRest,
+            pressed: fluent.compoundBrandPressed,
+            disabled: fluent.neutralForegroundDisabled
+          })
+        }
+      }
+    }
+  }
+} as const;
+
+const railPalettes = {
+  default: {
+    light: {
+      boxColor: {
+        neutral: {
+          medium: states({
+            rest: fluent.neutralStrokeAccessible,
+            hover: fluent.neutralStrokeAccessible,
+            focus: fluent.neutralStrokeAccessible,
+            pressed: fluent.neutralStrokeAccessible,
+            disabled: fluent.transparent
+          })
+        },
+        primary: {
+          medium: states({
+            rest: fluent.neutralStrokeAccessible,
+            hover: fluent.neutralStrokeAccessible,
+            focus: fluent.neutralStrokeAccessible,
+            pressed: fluent.neutralStrokeAccessible,
+            disabled: fluent.transparent
+          })
+        }
+      },
+      borderColor: {
+        neutral: {
+          medium: states({
+            rest: fluent.transparent,
+            disabled: fluent.transparent
+          })
+        },
+        primary: {
+          medium: states({
+            rest: fluent.transparent,
+            disabled: fluent.transparent
+          })
+        }
+      }
+    }
+  }
+} as const;
+
+const activeTrackPalettes = {
+  default: {
+    light: {
+      boxColor: {
+        neutral: {
+          medium: states({
+            rest: fluent.compoundBrandRest,
+            hover: fluent.compoundBrandHover,
+            focus: fluent.compoundBrandRest,
+            pressed: fluent.compoundBrandPressed,
+            disabled: fluent.neutralForegroundDisabled
+          })
+        },
+        primary: {
+          medium: states({
+            rest: fluent.compoundBrandRest,
+            hover: fluent.compoundBrandHover,
+            focus: fluent.compoundBrandRest,
+            pressed: fluent.compoundBrandPressed,
+            disabled: fluent.neutralForegroundDisabled
+          })
+        }
+      },
+      borderColor: {
+        neutral: {
+          medium: states({
+            rest: fluent.transparent,
+            disabled: fluent.transparent
+          })
+        },
+        primary: {
+          medium: states({
+            rest: fluent.transparent,
+            disabled: fluent.transparent
+          })
+        }
+      }
+    }
+  }
+} as const;
+
+const thumbPalettes = {
+  default: {
+    light: {
+      boxColor: {
+        neutral: {
+          medium: states({
+            rest: fluent.compoundBrandRest,
+            hover: fluent.compoundBrandHover,
+            focus: fluent.compoundBrandRest,
+            pressed: fluent.compoundBrandPressed,
+            disabled: fluent.neutralForegroundDisabled
+          })
+        },
+        primary: {
+          medium: states({
+            rest: fluent.compoundBrandRest,
+            hover: fluent.compoundBrandHover,
+            focus: fluent.compoundBrandRest,
+            pressed: fluent.compoundBrandPressed,
+            disabled: fluent.neutralForegroundDisabled
+          })
+        }
+      },
+      borderColor: {
+        neutral: {
+          medium: states({
+            rest: fluent.neutralBackground1,
+            disabled: fluent.neutralBackground1
+          })
+        },
+        primary: {
+          medium: states({
+            rest: fluent.neutralBackground1,
+            disabled: fluent.neutralBackground1
+          })
+        }
+      }
+    }
+  }
+} as const;
+
+const markPalettes = {
+  default: {
+    light: {
+      boxColor: {
+        neutral: {
+          medium: states({
+            rest: fluent.neutralBackground1,
+            disabled: fluent.neutralBackground1
+          })
+        },
+        primary: {
+          medium: states({
+            rest: fluent.neutralBackground1,
+            disabled: fluent.neutralBackground1
+          })
+        }
+      },
+      borderColor: {
+        neutral: {
+          medium: states({
+            rest: fluent.transparent,
+            disabled: fluent.transparent
+          })
+        },
+        primary: {
+          medium: states({
+            rest: fluent.transparent,
+            disabled: fluent.transparent
+          })
+        }
+      }
+    }
+  }
+} as const;
+
+const valueIndicatorPalettes = {
+  default: {
+    light: {
+      boxColor: activeTrackPalettes.default.light.boxColor,
+      borderColor: activeTrackPalettes.default.light.borderColor,
+      textColor: {
+        neutral: {
+          medium: states({
+            rest: fluent.neutralBackground1,
+            disabled: fluent.neutralBackground1
+          })
+        },
+        primary: {
+          medium: states({
+            rest: fluent.neutralBackground1,
+            disabled: fluent.neutralBackground1
+          })
+        }
+      }
+    }
+  }
+} as const;
+
+export function createFluent2MicrosoftSliderSchema(): SliderComponent {
+  return {
+    options: {
+      variant: 'standard',
+      valueDisplay: 'none',
+      marks: 'none'
+    },
+    variants: {
+      standard: {
+        options: {
+          mode: 'base'
+        },
+        modes: {
+          base: {
+            elements: {
+              e1: { name: 'slider-root' },
+              e2: {
+                name: 'slider-field-label',
+                decorations: { textFont: 'body', textWeight: 'normal' },
+                scales: {
+                  textSize: sizes.labelText,
+                  textHeight: sizes.labelLine
+                },
+                palettes: textPalettes
+              },
+              e3: {
+                name: 'slider-value-summary',
+                decorations: { textFont: 'body', textWeight: 'normal' },
+                scales: {
+                  textSize: sizes.labelText,
+                  textHeight: sizes.labelLine
+                },
+                palettes: textPalettes
+              },
+              e4: { name: 'slider-control-row' },
+              e5: { name: 'slider-endpoint' },
+              e6: {
+                name: 'slider-endpoint-icon',
+                scales: {
+                  boxWidth: sizes.endpointIcon,
+                  boxHeight: sizes.endpointIcon
+                },
+                palettes: iconPalettes
+              },
+              e7: {
+                name: 'slider-endpoint-label',
+                decorations: { textFont: 'body', textWeight: 'normal' },
+                scales: {
+                  textSize: sizes.labelText,
+                  textHeight: sizes.labelLine
+                },
+                palettes: textPalettes
+              },
+              e8: {
+                name: 'slider-track',
+                decorations: { borderStyle: 'solid' },
+                scales: {
+                  boxHeight: sizes.trackHeight,
+                  borderRadius: {
+                    rounded: 2,
+                    pill: 2,
+                    square: 0
+                  },
+                  borderWidth: 0
+                },
+                palettes: railPalettes
+              },
+              e9: {
+                name: 'slider-active-track',
+                decorations: { borderStyle: 'solid' },
+                scales: {
+                  boxHeight: sizes.trackHeight,
+                  borderRadius: {
+                    rounded: 2,
+                    pill: 2,
+                    square: 0
+                  },
+                  borderWidth: 0
+                },
+                palettes: activeTrackPalettes
+              },
+              e10: {
+                name: 'slider-thumb',
+                decorations: { borderStyle: 'solid' },
+                scales: {
+                  boxWidth: sizes.thumb,
+                  boxHeight: sizes.thumb,
+                  borderRadius: {
+                    rounded: sizes.thumb,
+                    pill: sizes.thumb,
+                    square: 0
+                  },
+                  borderWidth: sizes.thumbBorder
+                },
+                palettes: thumbPalettes
+              },
+              e11: {
+                name: 'slider-value-indicator',
+                decorations: { borderStyle: 'solid', textFont: 'body', textWeight: 'normal' },
+                scales: {
+                  boxHeight: sizes.indicatorHeight,
+                  borderRadius: {
+                    rounded: 4,
+                    pill: 4,
+                    square: 0
+                  },
+                  borderWidth: 0,
+                  paddingLeft: sizes.indicatorPadding,
+                  paddingRight: sizes.indicatorPadding,
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                  textSize: sizes.labelText,
+                  textHeight: sizes.labelLine
+                },
+                palettes: valueIndicatorPalettes
+              },
+              e12: {
+                name: 'slider-mark',
+                decorations: { borderStyle: 'solid' },
+                scales: {
+                  boxWidth: sizes.markWidth,
+                  boxHeight: sizes.trackHeight,
+                  borderRadius: {
+                    rounded: 0,
+                    pill: 0,
+                    square: 0
+                  },
+                  borderWidth: 0
+                },
+                palettes: markPalettes
+              },
+              e13: {
+                name: 'slider-mark-label',
+                decorations: { textFont: 'body', textWeight: 'normal' },
+                scales: {
+                  textSize: sizes.labelText,
+                  textHeight: sizes.labelLine
+                },
+                palettes: textPalettes
+              },
+              e14: {
+                name: 'slider-helper-text',
+                decorations: { textFont: 'body', textWeight: 'normal' },
+                scales: {
+                  textSize: sizes.labelText,
+                  textHeight: sizes.labelLine
+                },
+                palettes: textPalettes
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+}

@@ -1,6 +1,7 @@
 import { breakpoints, color, primitive, type Schema, withAlpha } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import { createFluent2MicrosoftCardSchema } from './components/card.schema.ts';
+import { createFluent2MicrosoftSliderSchema } from './components/slider.schema.ts';
 import { createFluent2MicrosoftSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './fluent-2-microsoft.colors.ts';
 
@@ -101,6 +102,7 @@ export const schema: Schema<Segments> = {
     }
   },
   components: {
+    slider: createFluent2MicrosoftSliderSchema(),
     button: {
       elements: {
         e1: {

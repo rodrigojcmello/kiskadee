@@ -1,6 +1,8 @@
 .page {
   display: grid;
   gap: 26px;
+
+  --slider-surface-primary: #0064b4;
 }
 
 .header {
@@ -22,19 +24,53 @@
   line-height: 1.5;
 }
 
+.surfaceControl {
+  --swatch-selected-ring-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--slider-surface-primary) 72%, white);
+  --swatch-group-inline-size: 100%;
+  --swatch-group-justify-content: space-between;
+
+  display: block;
+  min-width: 0;
+}
+
+.section {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.section h3 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.previewSection {
+  inline-size: min(100%, 760px);
+  margin-inline: auto;
+}
+
 .demoGrid {
   display: grid;
   gap: 28px;
   inline-size: min(100%, 980px);
 }
 
-.demoBlock {
+.demoCard {
   display: grid;
   min-width: 0;
-  padding: 32px 28px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.72);
+}
+
+.interactiveCard {
+  min-height: 132px;
+}
+
+.cardContent {
+  display: grid;
+  align-items: center;
+  min-width: 0;
+  min-height: 88px;
 }
 
 .emptyState {
@@ -58,7 +94,15 @@
     gap: 20px;
   }
 
-  .demoBlock {
-    padding: 28px 18px;
+  .previewSection {
+    inline-size: 100%;
+  }
+
+  .interactiveCard {
+    min-height: 120px;
+  }
+
+  .cardContent {
+    min-height: 82px;
   }
 }
