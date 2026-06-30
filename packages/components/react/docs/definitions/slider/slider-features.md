@@ -80,6 +80,7 @@ label through `aria-labelledby` unless a per-thumb naming prop overrides it.
 | `helperText` | Optional helper copy below the control row. |
 | `endpoints` | Optional content before and after the track. Each endpoint may provide `icon` and/or `label`. |
 | `marks` | Visual marker configuration. Supports `false`, `"none"`, `"step"`, or an explicit array of `{ value, label? }`. |
+| `edgeMarks` | Controls whether rendered marks include edge marks at `min` and `max`. Supports `"include"` and `"exclude"`. |
 | `valueDisplay` | Controls selected value display: `"none"`, `"tooltip"`, `"summary"`, or `"both"`. |
 | `className` | Merged into the root `e1` slot. |
 | `classNames` | Escape hatch for schema element slots `e1` through `e14`. |
@@ -120,9 +121,11 @@ The current schema option values are:
 
 - `valueDisplay`: `none`, `tooltip`, `summary`, `both`
 - `marks`: `none`, `step`
+- `edgeMarks`: `include`, `exclude`
 
-`marks` is a top-level component option because it describes a visual default
-for the component. Consumers can still override it per instance.
+`marks` and `edgeMarks` are top-level component options because they describe
+visual defaults for the component. Consumers can still override them per
+instance.
 
 ### Component Artifact
 
@@ -223,6 +226,16 @@ The track line is `e8`. The thumb is `e10`. Visual markers on the line are
 `marks="step"` generates one mark per step between `min` and `max`, capped at
 101 generated marks. This prevents accidental huge DOM output when a consumer
 uses a very small step across a large range.
+
+`edgeMarks` controls whether the rendered mark set includes boundary values:
+
+- `edgeMarks="include"` renders marks at `min`, intermediate steps, and `max`.
+- `edgeMarks="exclude"` renders only intermediate step marks.
+
+`edgeMarks` is resolved from the component prop first, then from the
+schema/artifact option, then from the default `"include"`. It applies after mark
+normalization, so both `marks="step"` and explicit mark arrays omit exact `min`
+and `max` marks when `edgeMarks="exclude"`.
 
 Explicit marks accept:
 
@@ -359,8 +372,8 @@ structure. The suffix does not create a public variant or mode.
 - Headless slider semantics: focusable thumbs with `role="slider"`,
   controlled/uncontrolled value, `disabled`, `readOnly`, and keyboard support.
 - Schema elements `e1` through `e14`.
-- Current schema options and values for `variant`, `mode`, `valueDisplay`, and
-  `marks`.
+- Current schema options and values for `variant`, `mode`, `valueDisplay`,
+  `marks`, and `edgeMarks`.
 - Generated artifacts and class maps as the source of truth for visual tokens.
 - Horizontal-only V1.
 

@@ -1,9 +1,16 @@
-import type { SliderMarks, SliderMode, SliderValueDisplay, SliderVariant } from '@kiskadee/core';
+import type {
+  SliderEdgeMarks,
+  SliderMarks,
+  SliderMode,
+  SliderValueDisplay,
+  SliderVariant
+} from '@kiskadee/core';
 import type { SliderComponentArtifactJSON } from '@kiskadee/web-builder/types';
 import { useKiskadee } from '../../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../../shared/contexts/useComponentClassMap.ts';
 import { useLoadedComponentArtifact } from '../../../shared/contexts/useLoadedComponentArtifact.ts';
 import {
+  DEFAULT_SLIDER_EDGE_MARKS,
   DEFAULT_SLIDER_MARKS,
   DEFAULT_SLIDER_MODE,
   DEFAULT_SLIDER_VALUE_DISPLAY,
@@ -18,6 +25,7 @@ export type SliderArtifactConfig = {
     mode: SliderMode;
     valueDisplay: SliderValueDisplay;
     marks: SliderMarks;
+    edgeMarks: SliderEdgeMarks;
   };
 };
 
@@ -53,7 +61,8 @@ export function useSliderArtifactConfig(): SliderArtifactConfig {
       variant,
       mode: variantOptions?.mode ?? DEFAULT_SLIDER_MODE,
       valueDisplay: options?.valueDisplay ?? DEFAULT_SLIDER_VALUE_DISPLAY,
-      marks: options?.marks ?? DEFAULT_SLIDER_MARKS
+      marks: options?.marks ?? DEFAULT_SLIDER_MARKS,
+      edgeMarks: options?.edgeMarks ?? DEFAULT_SLIDER_EDGE_MARKS
     }
   };
 }

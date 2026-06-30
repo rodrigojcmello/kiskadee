@@ -60,6 +60,8 @@ Kiskadee maps this to the generic Slider marks contract:
 
 - preset default: `components.slider.options.marks = "none"`;
 - instance opt-in: `marks="step"`;
+- automatic step ticks omit edge marks through
+  `components.slider.options.edgeMarks = "exclude"`;
 - visual element: `e12`, with width `1px` and height equal to the rail height.
 
 The default remains `none` because the Figma component default has

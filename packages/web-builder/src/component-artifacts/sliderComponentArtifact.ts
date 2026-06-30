@@ -1,5 +1,6 @@
 import type {
   Schema,
+  SliderEdgeMarks,
   SliderMarks,
   SliderMode,
   SliderValueDisplay,
@@ -12,6 +13,7 @@ export type SliderComponentOptionsPayload = {
   variant?: SliderVariant;
   valueDisplay?: SliderValueDisplay;
   marks?: SliderMarks;
+  edgeMarks?: SliderEdgeMarks;
 };
 
 export type SliderComponentVariantsPayload = {
@@ -58,7 +60,8 @@ export function buildSliderComponentArtifact(schema: Schema): SliderComponentArt
     ...(sliderSchema.options?.valueDisplay
       ? { valueDisplay: sliderSchema.options.valueDisplay }
       : {}),
-    ...(sliderSchema.options?.marks ? { marks: sliderSchema.options.marks } : {})
+    ...(sliderSchema.options?.marks ? { marks: sliderSchema.options.marks } : {}),
+    ...(sliderSchema.options?.edgeMarks ? { edgeMarks: sliderSchema.options.edgeMarks } : {})
   };
   const variants = buildSliderVariantsPayload(schema);
 

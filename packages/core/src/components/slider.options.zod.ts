@@ -5,19 +5,22 @@ export const sliderStandardModeSchema = z.enum(['base']);
 export const sliderModeSchema = sliderStandardModeSchema;
 export const sliderValueDisplaySchema = z.enum(['none', 'tooltip', 'summary', 'both']);
 export const sliderMarksSchema = z.enum(['none', 'step']);
+export const sliderEdgeMarksSchema = z.enum(['include', 'exclude']);
 
 export type SliderVariantSchemaValue = z.infer<typeof sliderVariantSchema>;
 export type SliderStandardModeSchemaValue = z.infer<typeof sliderStandardModeSchema>;
 export type SliderModeSchemaValue = z.infer<typeof sliderModeSchema>;
 export type SliderValueDisplaySchemaValue = z.infer<typeof sliderValueDisplaySchema>;
 export type SliderMarksSchemaValue = z.infer<typeof sliderMarksSchema>;
+export type SliderEdgeMarksSchemaValue = z.infer<typeof sliderEdgeMarksSchema>;
 
 export function createSliderOptionsSchema() {
   return z
     .object({
       variant: sliderVariantSchema.optional(),
       valueDisplay: sliderValueDisplaySchema.optional(),
-      marks: sliderMarksSchema.optional()
+      marks: sliderMarksSchema.optional(),
+      edgeMarks: sliderEdgeMarksSchema.optional()
     })
     .strict();
 }

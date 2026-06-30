@@ -9,6 +9,7 @@ import type {
   SliderHelperTextElementStyleFromSchema,
   SliderMarkElementStyleFromSchema,
   SliderMarkLabelElementStyleFromSchema,
+  SliderEdgeMarksSchemaValue,
   SliderMarksSchemaValue,
   SliderOptionsFromSchema,
   SliderRootElementStyleFromSchema,
@@ -58,6 +59,7 @@ export type SliderStandardMode = 'base';
 export type SliderMode = SliderStandardMode;
 export type SliderValueDisplay = SliderValueDisplaySchemaValue;
 export type SliderMarks = SliderMarksSchemaValue;
+export type SliderEdgeMarks = SliderEdgeMarksSchemaValue;
 export type SliderModeByVariant = {
   standard: SliderStandardMode;
 };

@@ -5,6 +5,7 @@ import type {
   RadiusMode,
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
+  SliderEdgeMarks,
   SliderMarks,
   SliderMode,
   SliderValueDisplay,
@@ -71,6 +72,7 @@ export type KiskadeeContextValue = {
           variant?: SliderVariant;
           valueDisplay?: SliderValueDisplay;
           marks?: SliderMarks;
+          edgeMarks?: SliderEdgeMarks;
         };
         variants?: {
           standard?: {

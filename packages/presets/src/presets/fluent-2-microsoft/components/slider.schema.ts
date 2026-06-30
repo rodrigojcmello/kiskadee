@@ -308,7 +308,8 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
     options: {
       variant: 'standard',
       valueDisplay: 'none',
-      marks: 'none'
+      marks: 'none',
+      edgeMarks: 'exclude'
     },
     variants: {
       standard: {

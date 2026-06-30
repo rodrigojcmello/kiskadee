@@ -26,6 +26,7 @@ export const DEFAULT_SLIDER_VARIANT: SliderVariant = 'standard';
 export const DEFAULT_SLIDER_MODE: SliderMode = 'base';
 export const DEFAULT_SLIDER_VALUE_DISPLAY = 'none';
 export const DEFAULT_SLIDER_MARKS = 'none';
+export const DEFAULT_SLIDER_EDGE_MARKS = 'include';
 
 type SliderStructuralBranch = 'a';
 

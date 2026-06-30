@@ -4,6 +4,7 @@ import type {
   ElementSizeValue,
   RadiusMode,
   SliderMarks as SliderArtifactMarks,
+  SliderEdgeMarks,
   SliderIntent,
   SliderMode,
   SliderValueDisplay,
@@ -59,6 +60,7 @@ export type SliderMark = {
 };
 
 export type SliderMarks = false | SliderArtifactMarks | readonly SliderMark[];
+export type SliderEdgeMarksOption = SliderEdgeMarks;
 
 export type SliderThumbAriaLabels = {
   start?: string;
@@ -91,6 +93,7 @@ export type SliderProps = Omit<
   defaultValue?: SliderValue;
   endpoints?: SliderEndpoints;
   marks?: SliderMarks;
+  edgeMarks?: SliderEdgeMarksOption;
   valueDisplay?: SliderValueDisplay;
   formatValue?: (value: number, index: 0 | 1) => ReactNode;
   thumbAriaLabels?: SliderThumbAriaLabels;

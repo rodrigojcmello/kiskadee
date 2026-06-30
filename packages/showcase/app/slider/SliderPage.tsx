@@ -11,6 +11,7 @@ import type {
 import {
   Card,
   Slider,
+  type SliderEdgeMarksOption,
   type SliderMarks,
   useCardArtifactConfig,
   useKiskadee,
@@ -155,6 +156,11 @@ const marksModeOptions: Array<{ value: SliderMarksMode; label: string }> = [
   { value: 'none', label: 'None' },
   { value: 'step', label: 'Step' },
   { value: 'labeled', label: 'Labeled' }
+];
+
+const edgeMarksOptions: Array<{ value: SliderEdgeMarksOption; label: string }> = [
+  { value: 'include', label: 'Include edges' },
+  { value: 'exclude', label: 'Exclude edges' }
 ];
 
 const intentLabels: Record<string, string> = {
@@ -325,6 +331,7 @@ export default function SliderPage() {
   const [valueMode, setValueMode] = useState<SliderValueMode>('single');
   const [valueDisplay, setValueDisplay] = useState<SliderValueDisplay>('tooltip');
   const [marksMode, setMarksMode] = useState<SliderMarksMode>('none');
+  const [edgeMarks, setEdgeMarks] = useState<SliderEdgeMarksOption>('include');
   const [showEndpoints, setShowEndpoints] = useState(true);
   const [disabled, setDisabled] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
@@ -504,6 +511,10 @@ export default function SliderPage() {
   }, [sliderOptions.valueDisplay]);
 
   useEffect(() => {
+    setEdgeMarks(sliderOptions.edgeMarks);
+  }, [sliderOptions.edgeMarks]);
+
+  useEffect(() => {
     if (!surfaceOptions.length) {
       return;
     }
@@ -681,6 +692,18 @@ export default function SliderPage() {
             }}
             disabled={!isSliderAvailable}
           />
+          <ShowcaseSelectControl
+            label="Edge marks"
+            options={edgeMarksOptions}
+            value={edgeMarks}
+            onValueChange={(value) => {
+              const nextEdgeMarks = value as SliderEdgeMarksOption;
+              if (nextEdgeMarks === edgeMarks) return;
+              playWowTransition();
+              setEdgeMarks(nextEdgeMarks);
+            }}
+            disabled={!isSliderAvailable}
+          />
         </ShowcaseControlGrid>
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Content">
@@ -770,6 +793,7 @@ export default function SliderPage() {
                 }}
                 endpoints={interactiveEndpoints}
                 marks={interactiveMarks}
+                edgeMarks={edgeMarks}
                 valueDisplay={valueDisplay}
                 formatValue={formatPercent}
                 scale={scale}
@@ -849,6 +873,7 @@ export default function SliderPage() {
                     end: { label: '+' }
                   }}
                   marks={labeledPercentMarks}
+                  edgeMarks={edgeMarks}
                   formatValue={(value) => `${value}%`}
                   valueDisplay="summary"
                   scale={scale}
@@ -873,6 +898,7 @@ export default function SliderPage() {
                     end: { label: '10', icon: <SmileIcon /> }
                   }}
                   marks="step"
+                  edgeMarks={edgeMarks}
                   helperText="How happy are you with the level of service?"
                   valueDisplay="tooltip"
                   scale={scale}

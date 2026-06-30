@@ -13,6 +13,7 @@ import {
 } from './Slider.class-names.ts';
 import type {
   SliderClassNames,
+  SliderEdgeMarksOption,
   SliderEndpoint,
   SliderMark,
   SliderMarks,
@@ -69,6 +70,16 @@ function resolveMarks(
     .map((mark) => ({ value: mark.value, label: mark.label }));
 }
 
+function applyEdgeMarks(
+  marks: SliderMark[],
+  min: number,
+  max: number,
+  edgeMarks: SliderEdgeMarksOption
+): SliderMark[] {
+  if (edgeMarks === 'include') return marks;
+  return marks.filter((mark) => mark.value !== min && mark.value !== max);
+}
+
 function hasEndpointContent(endpoint: SliderEndpoint | undefined): boolean {
   return endpoint?.icon !== undefined || endpoint?.label !== undefined;
 }
@@ -120,6 +131,7 @@ function SliderRoot(props: SliderProps) {
     required,
     endpoints,
     marks,
+    edgeMarks,
     valueDisplay,
     formatValue,
     thumbAriaLabels,
@@ -140,9 +152,16 @@ function SliderRoot(props: SliderProps) {
   const resolvedValueMode = resolveValueMode(valueMode, props);
   const { min, max } = normalizeBounds(minProp, maxProp);
   const step = normalizeStep(stepProp);
+  const resolvedEdgeMarks = edgeMarks ?? options.edgeMarks;
   const resolvedMarks = useMemo(
-    () => resolveMarks(marks ?? options.marks, min, max, step),
-    [marks, max, min, options.marks, step]
+    () =>
+      applyEdgeMarks(
+        resolveMarks(marks ?? options.marks, min, max, step),
+        min,
+        max,
+        resolvedEdgeMarks
+      ),
+    [marks, max, min, options.marks, resolvedEdgeMarks, step]
   );
   const hasLabel = label !== undefined && label !== null;
   const hasValueSummary = resolvedValueDisplay === 'summary' || resolvedValueDisplay === 'both';

@@ -6,6 +6,7 @@ export type {
   SliderClassNames,
   SliderEndpoint,
   SliderEndpoints,
+  SliderEdgeMarksOption,
   SliderMark,
   SliderMarks,
   SliderModeClassesMap,
