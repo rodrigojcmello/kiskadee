@@ -75,8 +75,36 @@ function resolveStyleKeyEmissionMode(
         : undefined;
   }
 
+  if (styleKey.startsWith('marginTop')) {
+    return styleEmissionPolicy.marginTopEmission === 'mirrored'
+      ? 'm'
+      : styleEmissionPolicy.marginTopEmission === 'token'
+        ? 't'
+        : undefined;
+  }
+
+  if (styleKey.startsWith('marginRight')) {
+    return styleEmissionPolicy.marginRightEmission === 'mirrored'
+      ? 'm'
+      : styleEmissionPolicy.marginRightEmission === 'token'
+        ? 't'
+        : undefined;
+  }
+
+  if (styleKey.startsWith('marginBottom')) {
+    return styleEmissionPolicy.marginBottomEmission === 'mirrored'
+      ? 'm'
+      : styleEmissionPolicy.marginBottomEmission === 'token'
+        ? 't'
+        : undefined;
+  }
+
   if (styleKey.startsWith('marginLeft')) {
-    return styleEmissionPolicy.marginLeftEmission === 'mirrored' ? 'm' : undefined;
+    return styleEmissionPolicy.marginLeftEmission === 'mirrored'
+      ? 'm'
+      : styleEmissionPolicy.marginLeftEmission === 'token'
+        ? 't'
+        : undefined;
   }
 
   if (
@@ -107,6 +135,9 @@ function resolveStyleKeyEmissionFamily(
   | 'borderColor'
   | 'boxWidth'
   | 'boxHeight'
+  | 'marginTop'
+  | 'marginRight'
+  | 'marginBottom'
   | 'marginLeft'
   | 'padding'
   | undefined {
@@ -136,6 +167,18 @@ function resolveStyleKeyEmissionFamily(
 
   if (styleKey.startsWith('boxHeight')) {
     return 'boxHeight';
+  }
+
+  if (styleKey.startsWith('marginTop')) {
+    return 'marginTop';
+  }
+
+  if (styleKey.startsWith('marginRight')) {
+    return 'marginRight';
+  }
+
+  if (styleKey.startsWith('marginBottom')) {
+    return 'marginBottom';
   }
 
   if (styleKey.startsWith('marginLeft')) {
@@ -247,6 +290,18 @@ export function applyCanonicalStyleEmissionPolicy(
 
   if (family === 'boxHeight') {
     return { ...styleEmissionPolicy, boxHeightEmission: 'mirrored' };
+  }
+
+  if (family === 'marginTop') {
+    return { ...styleEmissionPolicy, marginTopEmission: 'mirrored' };
+  }
+
+  if (family === 'marginRight') {
+    return { ...styleEmissionPolicy, marginRightEmission: 'mirrored' };
+  }
+
+  if (family === 'marginBottom') {
+    return { ...styleEmissionPolicy, marginBottomEmission: 'mirrored' };
   }
 
   if (family === 'marginLeft') {

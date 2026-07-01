@@ -24,7 +24,7 @@ export type BorderRadiusEmission = DirectMirroredOrTokenEmission;
 export type BorderColorEmission = DirectMirroredOrTokenEmission;
 export type BoxWidthEmission = DirectMirroredOrTokenEmission;
 export type BoxHeightEmission = DirectMirroredOrTokenEmission;
-export type MarginLeftEmission = DirectOrMirroredEmission;
+export type MarginEmission = DirectMirroredOrTokenEmission;
 export type PaddingEmission = DirectMirroredOrTokenEmission | CompensatedEmission;
 export type ShadowEmission = DirectOrTokenEmission;
 
@@ -37,7 +37,10 @@ export type ElementStyleEmissionPolicy = {
   borderColorEmission?: BorderColorEmission;
   boxWidthEmission?: BoxWidthEmission;
   boxHeightEmission?: BoxHeightEmission;
-  marginLeftEmission?: MarginLeftEmission;
+  marginTopEmission?: MarginEmission;
+  marginRightEmission?: MarginEmission;
+  marginBottomEmission?: MarginEmission;
+  marginLeftEmission?: MarginEmission;
   paddingEmission?: PaddingEmission;
   shadowEmission?: ShadowEmission;
 };
@@ -51,7 +54,10 @@ export type ResolvedElementStyleEmissionPolicy = {
   borderColorEmission: BorderColorEmission;
   boxWidthEmission?: BoxWidthEmission;
   boxHeightEmission?: BoxHeightEmission;
-  marginLeftEmission?: MarginLeftEmission;
+  marginTopEmission?: MarginEmission;
+  marginRightEmission?: MarginEmission;
+  marginBottomEmission?: MarginEmission;
+  marginLeftEmission?: MarginEmission;
   paddingEmission: PaddingEmission;
   shadowEmission: ShadowEmission;
 };
@@ -120,10 +126,33 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         standard: {
           elements: {
             e8: {
+              boxWidthEmission: 'token',
               boxHeightEmission: 'mirrored'
+            },
+            e3: {
+              marginLeftEmission: 'token'
+            },
+            e4: {
+              marginTopEmission: 'token'
+            },
+            e5: {
+              marginRightEmission: 'token',
+              marginLeftEmission: 'token'
+            },
+            e7: {
+              marginLeftEmission: 'token'
+            },
+            e11: {
+              marginBottomEmission: 'token'
             },
             e12: {
               boxWidthEmission: 'mirrored'
+            },
+            e13: {
+              marginTopEmission: 'token'
+            },
+            e14: {
+              marginTopEmission: 'token'
             }
           }
         }
@@ -175,6 +204,9 @@ export const DEFAULT_ELEMENT_STYLE_EMISSION_POLICY: ResolvedElementStyleEmission
   borderColorEmission: 'direct',
   boxWidthEmission: 'direct',
   boxHeightEmission: 'direct',
+  marginTopEmission: 'direct',
+  marginRightEmission: 'direct',
+  marginBottomEmission: 'direct',
   marginLeftEmission: 'direct',
   paddingEmission: 'direct',
   shadowEmission: 'direct'
@@ -225,6 +257,18 @@ export function resolveElementStyleEmissionPolicy(
       variantElementPolicy?.boxHeightEmission ??
       elementPolicy?.boxHeightEmission ??
       DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.boxHeightEmission,
+    marginTopEmission:
+      variantElementPolicy?.marginTopEmission ??
+      elementPolicy?.marginTopEmission ??
+      DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.marginTopEmission,
+    marginRightEmission:
+      variantElementPolicy?.marginRightEmission ??
+      elementPolicy?.marginRightEmission ??
+      DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.marginRightEmission,
+    marginBottomEmission:
+      variantElementPolicy?.marginBottomEmission ??
+      elementPolicy?.marginBottomEmission ??
+      DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.marginBottomEmission,
     marginLeftEmission:
       variantElementPolicy?.marginLeftEmission ??
       elementPolicy?.marginLeftEmission ??

@@ -52,7 +52,8 @@ export function createSliderValueSummaryElementStyleSchema<
 export function createSliderControlRowElementStyleSchema() {
   return z
     .object({
-      name: z.string()
+      name: z.string(),
+      scales: createScalesSchema(['marginTop']).optional()
     })
     .strict();
 }
@@ -60,7 +61,8 @@ export function createSliderControlRowElementStyleSchema() {
 export function createSliderEndpointElementStyleSchema() {
   return z
     .object({
-      name: z.string()
+      name: z.string(),
+      scales: createScalesSchema(['marginRight', 'marginLeft']).optional()
     })
     .strict();
 }
@@ -167,6 +169,7 @@ export function createSliderValueIndicatorElementStyleSchema<
         'paddingRight',
         'paddingBottom',
         'paddingLeft',
+        'marginBottom',
         'textSize',
         'textHeight'
       ]).optional(),

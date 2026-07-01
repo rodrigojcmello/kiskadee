@@ -94,12 +94,14 @@ export type SliderValueSummaryElementStyle<TSegmentName extends SegmentName = ne
 /**
  * e4 — control row
  * - non-visual layout row for endpoints and track
+ * - marginTop defines the conditional gap below the header row
  */
 export type SliderControlRowElementStyle = SliderControlRowElementStyleFromSchema;
 
 /**
  * e5 — endpoint wrapper
  * - non-visual endpoint composition wrapper
+ * - marginLeft / marginRight define endpoint-to-track spacing
  */
 export type SliderEndpointElementStyle = SliderEndpointElementStyleFromSchema;
 
@@ -124,6 +126,7 @@ export type SliderEndpointLabelElementStyle<TSegmentName extends SegmentName = n
  * e8 — track
  * - boxColor / borderColor
  * - width, height, padding, border, radius
+ * - boxWidth is consumed structurally as the minimum useful inline size
  */
 export type SliderTrackElementStyle<TSegmentName extends SegmentName = never> =
   SliderTrackElementStyleFromSchema<TSegmentName>;
@@ -147,7 +150,7 @@ export type SliderThumbElementStyle<TSegmentName extends SegmentName = never> =
 /**
  * e11 — value indicator / tooltip
  * - boxColor / borderColor / textColor
- * - height, padding, text size, border, radius
+ * - height, padding, text size, marginBottom, border, radius
  */
 export type SliderValueIndicatorElementStyle<TSegmentName extends SegmentName = never> =
   SliderValueIndicatorElementStyleFromSchema<TSegmentName>;

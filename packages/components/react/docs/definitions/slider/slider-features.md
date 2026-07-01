@@ -127,11 +127,29 @@ The current schema option values are:
 visual defaults for the component. Consumers can still override them per
 instance.
 
+### Schema-Owned Layout Spacing
+
+Slider structural CSS may consume schema-emitted variables, but spacing values
+belong to schema scales:
+
+- `e3.marginLeft` separates the field label from the value summary.
+- `e4.marginTop` separates the header row from the control row.
+- `e5.marginLeft` and `e5.marginRight` separate endpoints from the track.
+- `e7.marginLeft` separates an endpoint icon from its label.
+- `e8.boxWidth` is consumed structurally as the minimum useful track width.
+- `e11.marginBottom` offsets the value indicator above the track.
+- `e13.marginTop` offsets mark labels below the track.
+- `e14.marginTop` separates helper text from the control row.
+
+Do not add gap-like Slider scale attributes for these relationships. Use
+margin, padding, or existing box scales, then let structural CSS consume the
+generated token in the specific DOM relationship.
+
 ### Component Artifact
 
 `web-builder` may emit `components/slider.kiskadee.json` with:
 
-- component options: `variant`, `valueDisplay`, and `marks`;
+- component options: `variant`, `valueDisplay`, `marks`, and `edgeMarks`;
 - variant-local options: currently `standard.options.mode`.
 
 Fallback order for component options:
@@ -306,16 +324,19 @@ Preserve these rules:
 - `e13` uses `--k-sld-mark` for its label position.
 - Keyboard-visible focus is drawn on each thumb through global focus variables.
 
-Edge marks need generated geometry variables so the first and last marks can
-remain inside the visual track without hardcoding preset sizes. The web-builder
-policy currently mirrors:
+Edge marks and Slider layout spacing need generated geometry variables so the
+structural CSS can avoid hardcoding preset sizes. The web-builder policy emits:
 
 - `slider.variants.standard.elements.e8.boxHeight` into `--k-bxh`;
+- `slider.variants.standard.elements.e8.boxWidth` into `--k-bxw`;
+- Slider layout margins into `--k-mgt`, `--k-mgr`, `--k-mgb`, or `--k-mgl`
+  when structural CSS needs conditional spacing;
 - `slider.variants.standard.elements.e12.boxWidth` into `--k-bxw`.
 
 Structural CSS uses those variables to clamp `e12` by the larger of half the
-track height and half the mark width. This supports both dots and tick-like
-marks across presets.
+track height and half the mark width, position value indicators and mark labels,
+separate endpoint content, and apply header/helper spacing only when the related
+DOM composition exists.
 
 For the durable web-builder rule, see:
 

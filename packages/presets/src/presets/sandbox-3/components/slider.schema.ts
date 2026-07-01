@@ -116,6 +116,16 @@ const sizes = {
   }
 } as const;
 
+const layout = {
+  headerSummaryGap: 16,
+  fieldGap: 10,
+  endpointTrackGap: 12,
+  endpointContentGap: 8,
+  trackMinWidth: 96,
+  floatingValueOffset: 8,
+  markLabelOffset: 8
+} as const;
+
 const textPalettes = {
   default: {
     light: {
@@ -473,12 +483,24 @@ export function createSandbox3SliderSchema(): SliderComponent {
                 decorations: { textFont: 'body', textWeight: 'medium' },
                 scales: {
                   textSize: sizes.labelText,
-                  textHeight: sizes.labelLine
+                  textHeight: sizes.labelLine,
+                  marginLeft: layout.headerSummaryGap
                 },
                 palettes: textPalettes
               },
-              e4: { name: 'slider-control-row' },
-              e5: { name: 'slider-endpoint' },
+              e4: {
+                name: 'slider-control-row',
+                scales: {
+                  marginTop: layout.fieldGap
+                }
+              },
+              e5: {
+                name: 'slider-endpoint',
+                scales: {
+                  marginRight: layout.endpointTrackGap,
+                  marginLeft: layout.endpointTrackGap
+                }
+              },
               e6: {
                 name: 'slider-endpoint-icon',
                 scales: {
@@ -492,7 +514,8 @@ export function createSandbox3SliderSchema(): SliderComponent {
                 decorations: { textFont: 'body', textWeight: 'medium' },
                 scales: {
                   textSize: sizes.labelText,
-                  textHeight: sizes.labelLine
+                  textHeight: sizes.labelLine,
+                  marginLeft: layout.endpointContentGap
                 },
                 palettes: textPalettes
               },
@@ -500,6 +523,7 @@ export function createSandbox3SliderSchema(): SliderComponent {
                 name: 'slider-track',
                 decorations: { borderStyle: 'solid' },
                 scales: {
+                  boxWidth: layout.trackMinWidth,
                   boxHeight: sizes.trackHeight,
                   borderRadius: {
                     rounded: sizes.trackHeight,
@@ -555,7 +579,8 @@ export function createSandbox3SliderSchema(): SliderComponent {
                   paddingTop: 0,
                   paddingBottom: 0,
                   textSize: sizes.labelText,
-                  textHeight: sizes.labelLine
+                  textHeight: sizes.labelLine,
+                  marginBottom: layout.floatingValueOffset
                 },
                 palettes: valueIndicatorPalettes
               },
@@ -579,7 +604,8 @@ export function createSandbox3SliderSchema(): SliderComponent {
                 decorations: { textFont: 'body', textWeight: 'medium' },
                 scales: {
                   textSize: sizes.labelText,
-                  textHeight: sizes.labelLine
+                  textHeight: sizes.labelLine,
+                  marginTop: layout.markLabelOffset
                 },
                 palettes: textPalettes
               },
@@ -588,7 +614,8 @@ export function createSandbox3SliderSchema(): SliderComponent {
                 decorations: { textFont: 'body', textWeight: 'normal' },
                 scales: {
                   textSize: sizes.labelText,
-                  textHeight: sizes.labelLine
+                  textHeight: sizes.labelLine,
+                  marginTop: layout.fieldGap
                 },
                 palettes: textPalettes
               }

@@ -51,6 +51,43 @@ Practical rule:
 - if a component needs responsive structural changes, those changes must come from schema-emitted
   classes and variables rather than handwritten viewport breakpoints in structural Sass.
 
+## Spacing And Schema Ownership
+
+All custom spacing values must come from schema scales. Structural CSS may decide how a spacing
+token is applied to a specific DOM composition, but it must not introduce hardcoded spacing values.
+
+Use the existing spacing vocabulary before adding new scale attributes:
+
+- internal spacing belongs to `paddingTop`, `paddingRight`, `paddingBottom`, and `paddingLeft`;
+- external spacing belongs to `marginTop`, `marginRight`, `marginBottom`, and `marginLeft`;
+- do not add gap-like scale attributes such as `rowGap` or `columnGap` just because the structural
+  CSS implementation uses CSS `gap`;
+- do not add size-specific scale attributes such as `minInlineSize` while an existing attribute can
+  represent the design token and structural CSS can consume it safely.
+
+When a layout relationship would normally be written with CSS `gap`, prefer modeling it as margin on
+the participating schema element. For example, an icon-to-label gap should usually be a label
+margin, and a field-row separation should usually be margin on the row or following content.
+
+Style emission policy may expose existing scale attributes as CSS custom properties when structural
+CSS needs to consume the value indirectly. Margin emission stays side-specific:
+`marginTopEmission`, `marginRightEmission`, `marginBottomEmission`, and `marginLeftEmission`. These
+policies do not imply that the schema has or should gain a shorthand `margin` attribute. Padding
+emission may still be governed as a family because that is the existing builder contract for
+`paddingTop`, `paddingRight`, `paddingBottom`, and `paddingLeft`; it also does not introduce a
+shorthand `padding` scale.
+
+Examples:
+
+- a tooltip offset from a track can be `marginBottom` emitted as a token and consumed in a structural
+  positioning formula;
+- a mark label offset below a track can be `marginTop` emitted as a token and consumed by structural
+  CSS;
+- a minimum useful track size can reuse `boxWidth` as a token consumed by structural CSS instead of
+  adding a `minInlineSize` scale;
+- a row or column visual gap should be represented by margin on the relevant schema element instead
+  of adding `rowGap` or `columnGap`.
+
 ## Core naming goals
 
 Structural classes must be:

@@ -9,7 +9,6 @@
  */
 .k-sld-e1-a {
   display: grid;
-  row-gap: 0.625rem;
   inline-size: 100%;
   max-inline-size: 100%;
   cursor: default;
@@ -25,7 +24,6 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 1rem;
   min-inline-size: 0;
 }
 
@@ -50,6 +48,10 @@
   white-space: nowrap;
 }
 
+.k-sld-e2-a + .k-sld-e3-a {
+  margin-inline-start: var(--k-mgl, 0px);
+}
+
 /*
  * element control row / e4
  * Places endpoint content around the track while letting the track consume remaining width.
@@ -57,8 +59,11 @@
 .k-sld-e4-a {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
   min-inline-size: 0;
+}
+
+.k-sld-x1-a + .k-sld-e4-a {
+  margin-block-start: var(--k-mgt, 0px);
 }
 
 /*
@@ -68,9 +73,16 @@
 .k-sld-e5-a {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
   flex: 0 0 auto;
   min-inline-size: 0;
+}
+
+.k-sld-e4-a > .k-sld-e5-a:first-child {
+  margin-inline-end: var(--k-mgr, 0px);
+}
+
+.k-sld-e4-a > .k-sld-e5-a:last-child {
+  margin-inline-start: var(--k-mgl, 0px);
 }
 
 /*
@@ -105,6 +117,10 @@
   white-space: nowrap;
 }
 
+.k-sld-e6-a + .k-sld-e7-a {
+  margin-inline-start: var(--k-mgl, 0px);
+}
+
 /*
  * element track / e8
  * Owns the rail positioning plane for active range, marks, value indicators, and thumbs.
@@ -113,7 +129,7 @@
   position: relative;
   display: block;
   flex: 1 1 auto;
-  min-inline-size: 6rem;
+  min-inline-size: var(--k-bxw, 0px);
   min-block-size: var(--k-bxh, 0px);
   box-sizing: border-box;
   overflow: visible;
@@ -169,7 +185,7 @@
  */
 .k-sld-e11-a {
   position: absolute;
-  inset-block-end: calc(100% + 0.5rem);
+  inset-block-end: calc(100% + var(--k-mgb, 0px));
   inset-inline-start: var(--k-sld-value, 0%);
   z-index: 3;
   display: inline-flex;
@@ -208,7 +224,7 @@
  */
 .k-sld-e13-a {
   position: absolute;
-  inset-block-start: calc(100% + 0.5rem);
+  inset-block-start: calc(100% + var(--k-mgt, 0px));
   inset-inline-start: var(--k-sld-mark, 0%);
   display: block;
   pointer-events: none;
@@ -222,7 +238,7 @@
  */
 .k-sld-e14-a {
   display: block;
-  margin-block: 0;
+  margin-block: var(--k-mgt, 0px) 0;
 }
 
 /*
