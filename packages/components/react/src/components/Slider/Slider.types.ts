@@ -6,6 +6,7 @@ import type {
   SliderMarks as SliderArtifactMarks,
   SliderEdgeMarks,
   SliderIntent,
+  SliderMarkLabelPlacement,
   SliderMode,
   SliderValueDisplay,
   SliderVariant
@@ -61,6 +62,8 @@ export type SliderMark = {
 
 export type SliderMarks = false | SliderArtifactMarks | readonly SliderMark[];
 export type SliderEdgeMarksOption = SliderEdgeMarks;
+export type SliderMarkLabelPlacementOption = SliderMarkLabelPlacement;
+export type SliderResolvedMarkLabelPlacement = Exclude<SliderMarkLabelPlacementOption, 'auto'>;
 
 export type SliderThumbAriaLabels = {
   start?: string;
@@ -94,6 +97,7 @@ export type SliderProps = Omit<
   endpoints?: SliderEndpoints;
   marks?: SliderMarks;
   edgeMarks?: SliderEdgeMarksOption;
+  markLabelPlacement?: SliderMarkLabelPlacementOption;
   valueDisplay?: SliderValueDisplay;
   formatValue?: (value: number, index: 0 | 1) => ReactNode;
   thumbAriaLabels?: SliderThumbAriaLabels;

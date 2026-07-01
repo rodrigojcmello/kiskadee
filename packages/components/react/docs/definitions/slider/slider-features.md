@@ -81,6 +81,7 @@ label through `aria-labelledby` unless a per-thumb naming prop overrides it.
 | `endpoints` | Optional content before and after the track. Each endpoint may provide `icon` and/or `label`. |
 | `marks` | Visual marker configuration. Supports `false`, `"none"`, `"step"`, or an explicit array of `{ value, label? }`. |
 | `edgeMarks` | Controls whether rendered marks include edge marks at `min` and `max`. Supports `"include"` and `"exclude"`. |
+| `markLabelPlacement` | Controls where `e13` mark labels sit relative to the track. Supports `"auto"`, `"above"`, and `"below"`. |
 | `valueDisplay` | Controls selected value display: `"none"`, `"tooltip"`, `"summary"`, or `"both"`. |
 | `className` | Merged into the root `e1` slot. |
 | `classNames` | Escape hatch for schema element slots `e1` through `e14`. |
@@ -122,10 +123,11 @@ The current schema option values are:
 - `valueDisplay`: `none`, `tooltip`, `summary`, `both`
 - `marks`: `none`, `step`
 - `edgeMarks`: `include`, `exclude`
+- `markLabelPlacement`: `auto`, `above`, `below`
 
-`marks` and `edgeMarks` are top-level component options because they describe
-visual defaults for the component. Consumers can still override them per
-instance.
+`marks`, `edgeMarks`, and `markLabelPlacement` are top-level component options
+because they describe visual defaults for the component. Consumers can still
+override them per instance.
 
 ### Schema-Owned Layout Spacing
 
@@ -139,6 +141,7 @@ belong to schema scales:
 - `e8.boxWidth` is consumed structurally as the minimum useful track width.
 - `e11.marginBottom` offsets the value indicator above the track.
 - `e13.marginTop` offsets mark labels below the track.
+- `e13.marginBottom` offsets mark labels above the track.
 - `e14.marginTop` separates helper text from the control row.
 
 Do not add gap-like Slider scale attributes for these relationships. Use
@@ -149,7 +152,8 @@ generated token in the specific DOM relationship.
 
 `web-builder` may emit `components/slider.kiskadee.json` with:
 
-- component options: `variant`, `valueDisplay`, `marks`, and `edgeMarks`;
+- component options: `variant`, `valueDisplay`, `marks`, `edgeMarks`, and
+  `markLabelPlacement`;
 - variant-local options: currently `standard.options.mode`.
 
 Fallback order for component options:
@@ -254,6 +258,19 @@ uses a very small step across a large range.
 schema/artifact option, then from the default `"include"`. It applies after mark
 normalization, so both `marks="step"` and explicit mark arrays omit exact `min`
 and `max` marks when `edgeMarks="exclude"`.
+
+`markLabelPlacement` controls only mark labels (`e13`):
+
+- `markLabelPlacement="below"` places labels below the track using
+  `e13.marginTop`;
+- `markLabelPlacement="above"` places labels above the track using
+  `e13.marginBottom`;
+- `markLabelPlacement="auto"` resolves at runtime from the shared
+  `isLikelyTouch` interaction environment. Likely-touch environments use
+  `above`; otherwise labels use `below`.
+
+This option does not affect endpoint labels (`e7`), value summaries (`e3`), or
+value indicators/tooltips (`e11`).
 
 Explicit marks accept:
 
@@ -394,9 +411,9 @@ structure. The suffix does not create a public variant or mode.
   controlled/uncontrolled value, `disabled`, `readOnly`, and keyboard support.
 - Schema elements `e1` through `e14`.
 - Current schema options and values for `variant`, `mode`, `valueDisplay`,
-  `marks`, and `edgeMarks`.
+  `marks`, `edgeMarks`, and `markLabelPlacement`.
 - Generated artifacts and class maps as the source of truth for visual tokens.
-- Horizontal-only V1.
+- Current horizontal-only contract.
 
 ### Internal Details
 

@@ -68,6 +68,27 @@ This is not only a visual transformation. It can change:
 For this layer, CSS-only hiding is usually not enough. Prefer an explicit runtime composition, a
 higher-level adaptive component, or separate composed components that share state intentionally.
 
+## Shared `isLikelyTouch` Environment
+
+Some component choices are ergonomic rather than purely visual. A component may need to know whether
+it should assume touch interaction even when the DOM stays the same.
+
+The shared React web signal for this is `isLikelyTouch`. It means "prefer touch ergonomics", not
+"the device definitely has a touchscreen".
+
+Initial web resolution:
+
+- iOS, iPadOS, and Android resolve to touch.
+- Windows, Linux, macOS, and unknown desktop-like platforms resolve from viewport width.
+- Viewports below `bp:lg:1` resolve to touch.
+- Viewports at or above `bp:lg:1` resolve to non-touch.
+- `KiskadeeContext.interactionEnvironment.isLikelyTouch` may override detection when an app has
+  stronger environment knowledge.
+
+Native platform runtimes should not copy the web viewport heuristic directly. iOS and Android
+native components should resolve this signal as touch by platform default unless a future platform
+adapter has stronger input-mode data.
+
 ## Switch `controlTextVisibility`
 
 The current styled React Switch supports the generated Switch component artifact option

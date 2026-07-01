@@ -8,6 +8,7 @@ export type {
   SliderEndpoints,
   SliderEdgeMarksOption,
   SliderMark,
+  SliderMarkLabelPlacementOption,
   SliderMarks,
   SliderModeClassesMap,
   SliderProps,

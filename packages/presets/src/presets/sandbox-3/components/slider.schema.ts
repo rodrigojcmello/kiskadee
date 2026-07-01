@@ -458,7 +458,8 @@ export function createSandbox3SliderSchema(): SliderComponent {
     options: {
       variant: 'standard',
       valueDisplay: 'tooltip',
-      marks: 'none'
+      marks: 'none',
+      markLabelPlacement: 'auto'
     },
     variants: {
       standard: {
@@ -605,7 +606,8 @@ export function createSandbox3SliderSchema(): SliderComponent {
                 scales: {
                   textSize: sizes.labelText,
                   textHeight: sizes.labelLine,
-                  marginTop: layout.markLabelOffset
+                  marginTop: layout.markLabelOffset,
+                  marginBottom: layout.markLabelOffset
                 },
                 palettes: textPalettes
               },

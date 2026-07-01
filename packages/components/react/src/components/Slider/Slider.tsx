@@ -1,6 +1,7 @@
 import './Slider.structural.scss';
 import { HeadlessSlider } from '@kiskadee/react-headless';
 import { memo, useId, useMemo } from 'react';
+import { useIsLikelyTouch } from '../../shared/interaction/useIsLikelyTouch.ts';
 import { useSliderArtifactConfig } from './hooks/useSliderArtifactConfig.ts';
 import {
   DEFAULT_SLIDER_EMPHASIS,
@@ -15,8 +16,10 @@ import type {
   SliderClassNames,
   SliderEdgeMarksOption,
   SliderEndpoint,
+  SliderMarkLabelPlacementOption,
   SliderMark,
   SliderMarks,
+  SliderResolvedMarkLabelPlacement,
   SliderProps
 } from './Slider.types.ts';
 
@@ -80,6 +83,14 @@ function applyEdgeMarks(
   return marks.filter((mark) => mark.value !== min && mark.value !== max);
 }
 
+function resolveMarkLabelPlacement(
+  placement: SliderMarkLabelPlacementOption,
+  isLikelyTouch: boolean
+): SliderResolvedMarkLabelPlacement {
+  if (placement !== 'auto') return placement;
+  return isLikelyTouch ? 'above' : 'below';
+}
+
 function hasEndpointContent(endpoint: SliderEndpoint | undefined): boolean {
   return endpoint?.icon !== undefined || endpoint?.label !== undefined;
 }
@@ -132,6 +143,7 @@ function SliderRoot(props: SliderProps) {
     endpoints,
     marks,
     edgeMarks,
+    markLabelPlacement,
     valueDisplay,
     formatValue,
     thumbAriaLabels,
@@ -141,6 +153,7 @@ function SliderRoot(props: SliderProps) {
     'aria-describedby': ariaDescribedBy,
     ...rootProps
   } = props;
+  const isLikelyTouch = useIsLikelyTouch();
   const generatedId = useId();
   const rootId = id ?? `slider-${generatedId}`;
   const labelId = `${rootId}-label`;
@@ -149,6 +162,10 @@ function SliderRoot(props: SliderProps) {
   const resolvedVariant = variant ?? options.variant;
   const resolvedMode = mode ?? options.mode;
   const resolvedValueDisplay = valueDisplay ?? options.valueDisplay;
+  const resolvedMarkLabelPlacement = resolveMarkLabelPlacement(
+    markLabelPlacement ?? options.markLabelPlacement,
+    isLikelyTouch
+  );
   const resolvedValueMode = resolveValueMode(valueMode, props);
   const { min, max } = normalizeBounds(minProp, maxProp);
   const step = normalizeStep(stepProp);
@@ -183,7 +200,8 @@ function SliderRoot(props: SliderProps) {
         radius,
         hasLabel,
         hasValueSummary,
-        hasHelperText
+        hasHelperText,
+        markLabelPlacement: resolvedMarkLabelPlacement
       }),
     [
       className,
@@ -195,6 +213,7 @@ function SliderRoot(props: SliderProps) {
       hasValueSummary,
       intent,
       radius,
+      resolvedMarkLabelPlacement,
       scale
     ]
   );

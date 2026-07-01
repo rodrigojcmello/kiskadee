@@ -12,6 +12,7 @@ import {
   Card,
   Slider,
   type SliderEdgeMarksOption,
+  type SliderMarkLabelPlacementOption,
   type SliderMarks,
   useCardArtifactConfig,
   useKiskadee,
@@ -161,6 +162,12 @@ const marksModeOptions: Array<{ value: SliderMarksMode; label: string }> = [
 const edgeMarksOptions: Array<{ value: SliderEdgeMarksOption; label: string }> = [
   { value: 'include', label: 'Include edges' },
   { value: 'exclude', label: 'Exclude edges' }
+];
+
+const markLabelPlacementOptions: Array<{ value: SliderMarkLabelPlacementOption; label: string }> = [
+  { value: 'auto', label: 'Auto' },
+  { value: 'above', label: 'Above' },
+  { value: 'below', label: 'Below' }
 ];
 
 const intentLabels: Record<string, string> = {
@@ -332,6 +339,8 @@ export default function SliderPage() {
   const [valueDisplay, setValueDisplay] = useState<SliderValueDisplay>('tooltip');
   const [marksMode, setMarksMode] = useState<SliderMarksMode>('none');
   const [edgeMarks, setEdgeMarks] = useState<SliderEdgeMarksOption>('include');
+  const [markLabelPlacement, setMarkLabelPlacement] =
+    useState<SliderMarkLabelPlacementOption>('auto');
   const [showEndpoints, setShowEndpoints] = useState(true);
   const [disabled, setDisabled] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
@@ -513,6 +522,10 @@ export default function SliderPage() {
   useEffect(() => {
     setEdgeMarks(sliderOptions.edgeMarks);
   }, [sliderOptions.edgeMarks]);
+
+  useEffect(() => {
+    setMarkLabelPlacement(sliderOptions.markLabelPlacement);
+  }, [sliderOptions.markLabelPlacement]);
 
   useEffect(() => {
     if (!surfaceOptions.length) {
@@ -704,6 +717,18 @@ export default function SliderPage() {
             }}
             disabled={!isSliderAvailable}
           />
+          <ShowcaseSelectControl
+            label="Mark labels"
+            options={markLabelPlacementOptions}
+            value={markLabelPlacement}
+            onValueChange={(value) => {
+              const nextMarkLabelPlacement = value as SliderMarkLabelPlacementOption;
+              if (nextMarkLabelPlacement === markLabelPlacement) return;
+              playWowTransition();
+              setMarkLabelPlacement(nextMarkLabelPlacement);
+            }}
+            disabled={!isSliderAvailable}
+          />
         </ShowcaseControlGrid>
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Content">
@@ -794,6 +819,7 @@ export default function SliderPage() {
                 endpoints={interactiveEndpoints}
                 marks={interactiveMarks}
                 edgeMarks={edgeMarks}
+                markLabelPlacement={markLabelPlacement}
                 valueDisplay={valueDisplay}
                 formatValue={formatPercent}
                 scale={scale}
@@ -874,6 +900,7 @@ export default function SliderPage() {
                   }}
                   marks={labeledPercentMarks}
                   edgeMarks={edgeMarks}
+                  markLabelPlacement={markLabelPlacement}
                   formatValue={(value) => `${value}%`}
                   valueDisplay="summary"
                   scale={scale}
@@ -899,6 +926,7 @@ export default function SliderPage() {
                   }}
                   marks="step"
                   edgeMarks={edgeMarks}
+                  markLabelPlacement={markLabelPlacement}
                   helperText="How happy are you with the level of service?"
                   valueDisplay="tooltip"
                   scale={scale}

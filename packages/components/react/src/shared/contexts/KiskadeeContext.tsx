@@ -6,6 +6,7 @@ import type {
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
   SliderEdgeMarks,
+  SliderMarkLabelPlacement,
   SliderMarks,
   SliderMode,
   SliderValueDisplay,
@@ -34,6 +35,10 @@ export type ComponentClassMapScope =
   | { kind: 'core' }
   | { kind: 'palette'; segment: string; theme: ThemeMode };
 
+export type KiskadeeInteractionEnvironment = {
+  isLikelyTouch?: boolean;
+};
+
 export type KiskadeeContextValue = {
   classesMap: ComponentClassNameMapJSON;
   segment: string;
@@ -49,6 +54,7 @@ export type KiskadeeContextValue = {
     componentName: string,
     scope: ComponentClassMapScope
   ) => Promise<T | undefined>;
+  interactionEnvironment?: KiskadeeInteractionEnvironment;
   global?: {
     radius?: RadiusMode;
     effects?: {
@@ -73,6 +79,7 @@ export type KiskadeeContextValue = {
           valueDisplay?: SliderValueDisplay;
           marks?: SliderMarks;
           edgeMarks?: SliderEdgeMarks;
+          markLabelPlacement?: SliderMarkLabelPlacement;
         };
         variants?: {
           standard?: {

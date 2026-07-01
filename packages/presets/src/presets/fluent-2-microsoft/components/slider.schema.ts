@@ -319,7 +319,8 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
       variant: 'standard',
       valueDisplay: 'none',
       marks: 'none',
-      edgeMarks: 'exclude'
+      edgeMarks: 'exclude',
+      markLabelPlacement: 'auto'
     },
     variants: {
       standard: {
@@ -466,7 +467,8 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
                 scales: {
                   textSize: sizes.labelText,
                   textHeight: sizes.labelLine,
-                  marginTop: layout.markLabelOffset
+                  marginTop: layout.markLabelOffset,
+                  marginBottom: layout.markLabelOffset
                 },
                 palettes: textPalettes
               },

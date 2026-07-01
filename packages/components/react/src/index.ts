@@ -16,6 +16,7 @@ export type {
   SliderEndpoints,
   SliderEdgeMarksOption,
   SliderMark,
+  SliderMarkLabelPlacementOption,
   SliderMarks,
   SliderProps,
   SliderStatus
@@ -65,7 +66,8 @@ export {
 } from './components/TextField';
 export type {
   ComponentClassMapScope,
-  KiskadeeContextValue
+  KiskadeeContextValue,
+  KiskadeeInteractionEnvironment
 } from './shared/contexts/KiskadeeContext.tsx';
 export { KiskadeeContext, useKiskadee } from './shared/contexts/KiskadeeContext.tsx';
 export { ShowcaseContext, useShowcase } from './shared/contexts/ShowcaseContext.tsx';

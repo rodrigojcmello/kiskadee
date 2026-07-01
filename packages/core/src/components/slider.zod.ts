@@ -17,6 +17,7 @@ export type {
 } from './slider.elements.zod.ts';
 export type {
   SliderEdgeMarksSchemaValue,
+  SliderMarkLabelPlacementSchemaValue,
   SliderMarksSchemaValue,
   SliderModeSchemaValue,
   SliderOptionsFromSchema,

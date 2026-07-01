@@ -2,6 +2,7 @@ import type { SegmentName } from '../types/colors/colors.types.ts';
 import type {
   SliderActiveTrackElementStyleFromSchema,
   SliderControlRowElementStyleFromSchema,
+  SliderEdgeMarksSchemaValue,
   SliderEndpointElementStyleFromSchema,
   SliderEndpointIconElementStyleFromSchema,
   SliderEndpointLabelElementStyleFromSchema,
@@ -9,7 +10,7 @@ import type {
   SliderHelperTextElementStyleFromSchema,
   SliderMarkElementStyleFromSchema,
   SliderMarkLabelElementStyleFromSchema,
-  SliderEdgeMarksSchemaValue,
+  SliderMarkLabelPlacementSchemaValue,
   SliderMarksSchemaValue,
   SliderOptionsFromSchema,
   SliderRootElementStyleFromSchema,
@@ -60,6 +61,7 @@ export type SliderMode = SliderStandardMode;
 export type SliderValueDisplay = SliderValueDisplaySchemaValue;
 export type SliderMarks = SliderMarksSchemaValue;
 export type SliderEdgeMarks = SliderEdgeMarksSchemaValue;
+export type SliderMarkLabelPlacement = SliderMarkLabelPlacementSchemaValue;
 export type SliderModeByVariant = {
   standard: SliderStandardMode;
 };

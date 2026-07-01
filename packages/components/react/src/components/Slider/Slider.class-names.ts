@@ -15,6 +15,7 @@ import {
 import type {
   SliderClassesMap,
   SliderClassNames,
+  SliderResolvedMarkLabelPlacement,
   SliderVariantClassesMap
 } from './Slider.types.ts';
 
@@ -27,6 +28,7 @@ export const DEFAULT_SLIDER_MODE: SliderMode = 'base';
 export const DEFAULT_SLIDER_VALUE_DISPLAY = 'none';
 export const DEFAULT_SLIDER_MARKS = 'none';
 export const DEFAULT_SLIDER_EDGE_MARKS = 'include';
+export const DEFAULT_SLIDER_MARK_LABEL_PLACEMENT = 'auto';
 
 type SliderStructuralBranch = 'a';
 
@@ -82,6 +84,7 @@ export function resolveSliderClassNames(options: {
   hasLabel: boolean;
   hasValueSummary: boolean;
   hasHelperText: boolean;
+  markLabelPlacement: SliderResolvedMarkLabelPlacement;
 }): Required<SliderClassNames> {
   const elements = options.elements;
   const branch = options.structuralBranch;
@@ -150,8 +153,13 @@ export function resolveSliderClassNames(options: {
         options.classNames.e12
       ) ?? '',
     e13:
-      join(`k-sld-e13-${branch}`, elem(elements.e13, options), 'k-trn', options.classNames.e13) ??
-      '',
+      join(
+        `k-sld-e13-${branch}`,
+        options.markLabelPlacement === 'above' ? `k-sld-e13a-${branch}` : `k-sld-e13b-${branch}`,
+        elem(elements.e13, options),
+        'k-trn',
+        options.classNames.e13
+      ) ?? '',
     e14: options.hasHelperText
       ? (join(
           `k-sld-e14-${branch}`,

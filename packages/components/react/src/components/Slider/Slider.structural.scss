@@ -220,16 +220,31 @@
 
 /*
  * element mark label / e13
- * Positions optional step labels below their corresponding marker.
+ * Positions optional step labels around their corresponding marker.
  */
 .k-sld-e13-a {
   position: absolute;
-  inset-block-start: calc(100% + var(--k-mgt, 0px));
   inset-inline-start: var(--k-sld-mark, 0%);
   display: block;
   pointer-events: none;
   white-space: nowrap;
   transform: translateX(-50%);
+}
+
+/*
+ * element mark label modifier / e13a
+ * Places mark labels above the track using the schema-owned bottom margin token.
+ */
+.k-sld-e13a-a {
+  inset-block-end: calc(100% + var(--k-mgb, 0px));
+}
+
+/*
+ * element mark label modifier / e13b
+ * Places mark labels below the track using the schema-owned top margin token.
+ */
+.k-sld-e13b-a {
+  inset-block-start: calc(100% + var(--k-mgt, 0px));
 }
 
 /*

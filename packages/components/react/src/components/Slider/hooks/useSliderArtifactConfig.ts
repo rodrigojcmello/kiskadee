@@ -1,5 +1,6 @@
 import type {
   SliderEdgeMarks,
+  SliderMarkLabelPlacement,
   SliderMarks,
   SliderMode,
   SliderValueDisplay,
@@ -11,6 +12,7 @@ import { useComponentClassMap } from '../../../shared/contexts/useComponentClass
 import { useLoadedComponentArtifact } from '../../../shared/contexts/useLoadedComponentArtifact.ts';
 import {
   DEFAULT_SLIDER_EDGE_MARKS,
+  DEFAULT_SLIDER_MARK_LABEL_PLACEMENT,
   DEFAULT_SLIDER_MARKS,
   DEFAULT_SLIDER_MODE,
   DEFAULT_SLIDER_VALUE_DISPLAY,
@@ -26,6 +28,7 @@ export type SliderArtifactConfig = {
     valueDisplay: SliderValueDisplay;
     marks: SliderMarks;
     edgeMarks: SliderEdgeMarks;
+    markLabelPlacement: SliderMarkLabelPlacement;
   };
 };
 
@@ -62,7 +65,8 @@ export function useSliderArtifactConfig(): SliderArtifactConfig {
       mode: variantOptions?.mode ?? DEFAULT_SLIDER_MODE,
       valueDisplay: options?.valueDisplay ?? DEFAULT_SLIDER_VALUE_DISPLAY,
       marks: options?.marks ?? DEFAULT_SLIDER_MARKS,
-      edgeMarks: options?.edgeMarks ?? DEFAULT_SLIDER_EDGE_MARKS
+      edgeMarks: options?.edgeMarks ?? DEFAULT_SLIDER_EDGE_MARKS,
+      markLabelPlacement: options?.markLabelPlacement ?? DEFAULT_SLIDER_MARK_LABEL_PLACEMENT
     }
   };
 }

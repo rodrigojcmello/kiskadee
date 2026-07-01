@@ -149,7 +149,8 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
               boxWidthEmission: 'mirrored'
             },
             e13: {
-              marginTopEmission: 'token'
+              marginTopEmission: 'token',
+              marginBottomEmission: 'token'
             },
             e14: {
               marginTopEmission: 'token'
