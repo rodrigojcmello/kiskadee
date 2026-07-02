@@ -14,6 +14,7 @@ export type {
   SliderClassNames,
   SliderEndpoint,
   SliderEndpoints,
+  SliderEdgeMarkLabelPlacementOption,
   SliderEdgeMarksOption,
   SliderMark,
   SliderMarkLabelPlacementOption,
@@ -67,7 +68,8 @@ export {
 export type {
   ComponentClassMapScope,
   KiskadeeContextValue,
-  KiskadeeInteractionEnvironment
+  KiskadeeInteractionEnvironment,
+  KiskadeeLayoutEnvironment
 } from './shared/contexts/KiskadeeContext.tsx';
 export { KiskadeeContext, useKiskadee } from './shared/contexts/KiskadeeContext.tsx';
 export { ShowcaseContext, useShowcase } from './shared/contexts/ShowcaseContext.tsx';

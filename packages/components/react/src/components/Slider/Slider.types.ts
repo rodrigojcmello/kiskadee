@@ -4,6 +4,7 @@ import type {
   ElementSizeValue,
   RadiusMode,
   SliderMarks as SliderArtifactMarks,
+  SliderEdgeMarkLabelPlacement,
   SliderEdgeMarks,
   SliderIntent,
   SliderMarkLabelPlacement,
@@ -64,6 +65,11 @@ export type SliderMarks = false | SliderArtifactMarks | readonly SliderMark[];
 export type SliderEdgeMarksOption = SliderEdgeMarks;
 export type SliderMarkLabelPlacementOption = SliderMarkLabelPlacement;
 export type SliderResolvedMarkLabelPlacement = Exclude<SliderMarkLabelPlacementOption, 'auto'>;
+export type SliderEdgeMarkLabelPlacementOption = SliderEdgeMarkLabelPlacement;
+export type SliderResolvedEdgeMarkLabelPlacement = Exclude<
+  SliderEdgeMarkLabelPlacementOption,
+  'auto'
+>;
 
 export type SliderThumbAriaLabels = {
   start?: string;
@@ -98,6 +104,7 @@ export type SliderProps = Omit<
   marks?: SliderMarks;
   edgeMarks?: SliderEdgeMarksOption;
   markLabelPlacement?: SliderMarkLabelPlacementOption;
+  edgeMarkLabelPlacement?: SliderEdgeMarkLabelPlacementOption;
   valueDisplay?: SliderValueDisplay;
   formatValue?: (value: number, index: 0 | 1) => ReactNode;
   thumbAriaLabels?: SliderThumbAriaLabels;

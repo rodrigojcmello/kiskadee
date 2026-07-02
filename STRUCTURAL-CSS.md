@@ -67,7 +67,10 @@ Use the existing spacing vocabulary before adding new scale attributes:
 
 When a layout relationship would normally be written with CSS `gap`, prefer modeling it as margin on
 the participating schema element. For example, an icon-to-label gap should usually be a label
-margin, and a field-row separation should usually be margin on the row or following content.
+margin, and a field-row separation should usually be margin on the row or following content. When
+the child order is intentionally side-aware or reversible, the wrapper may own the relationship as a
+padding token that structural CSS consumes as `gap`; this keeps the value in schema without coupling
+spacing to one child order.
 
 Style emission policy may expose existing scale attributes as CSS custom properties when structural
 CSS needs to consume the value indirectly. Margin emission stays side-specific:
@@ -85,6 +88,8 @@ Examples:
   CSS;
 - a minimum useful track size can reuse `boxWidth` as a token consumed by structural CSS instead of
   adding a `minInlineSize` scale;
+- a side-aware inline group can use wrapper `paddingLeft` emitted as a token and consumed as a
+  structural `column-gap`;
 - a row or column visual gap should be represented by margin on the relevant schema element instead
   of adding `rowGap` or `columnGap`.
 

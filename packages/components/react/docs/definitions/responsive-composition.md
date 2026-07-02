@@ -89,6 +89,24 @@ Native platform runtimes should not copy the web viewport heuristic directly. iO
 native components should resolve this signal as touch by platform default unless a future platform
 adapter has stronger input-mode data.
 
+## Shared `isCompactViewport` Environment
+
+Some component choices are about available space rather than input ergonomics. A component may need
+to move supporting content out of a crowded inline layout while keeping the same interaction model.
+
+The shared React web signal for this is `isCompactViewport`. It means "prefer compact layout
+composition", not "the device is a phone".
+
+Initial web resolution:
+
+- Viewports below `bp:md:2` resolve to compact.
+- Viewports at or above `bp:md:2` resolve to non-compact.
+- `KiskadeeContext.layoutEnvironment.isCompactViewport` may override detection when an app has
+  stronger layout knowledge.
+
+Keep this separate from `isLikelyTouch`. A large touch surface may not be compact, and a narrow
+desktop window may be compact without being touch-oriented.
+
 ## Switch `controlTextVisibility`
 
 The current styled React Switch supports the generated Switch component artifact option

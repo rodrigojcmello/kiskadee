@@ -5,6 +5,7 @@ import type {
   RadiusMode,
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
+  SliderEdgeMarkLabelPlacement,
   SliderEdgeMarks,
   SliderMarkLabelPlacement,
   SliderMarks,
@@ -39,6 +40,10 @@ export type KiskadeeInteractionEnvironment = {
   isLikelyTouch?: boolean;
 };
 
+export type KiskadeeLayoutEnvironment = {
+  isCompactViewport?: boolean;
+};
+
 export type KiskadeeContextValue = {
   classesMap: ComponentClassNameMapJSON;
   segment: string;
@@ -55,6 +60,7 @@ export type KiskadeeContextValue = {
     scope: ComponentClassMapScope
   ) => Promise<T | undefined>;
   interactionEnvironment?: KiskadeeInteractionEnvironment;
+  layoutEnvironment?: KiskadeeLayoutEnvironment;
   global?: {
     radius?: RadiusMode;
     effects?: {
@@ -80,6 +86,7 @@ export type KiskadeeContextValue = {
           marks?: SliderMarks;
           edgeMarks?: SliderEdgeMarks;
           markLabelPlacement?: SliderMarkLabelPlacement;
+          edgeMarkLabelPlacement?: SliderEdgeMarkLabelPlacement;
         };
         variants?: {
           standard?: {

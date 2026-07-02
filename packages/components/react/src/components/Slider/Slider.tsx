@@ -1,6 +1,7 @@
 import './Slider.structural.scss';
 import { HeadlessSlider } from '@kiskadee/react-headless';
 import { memo, useId, useMemo } from 'react';
+import { useIsCompactViewport } from '../../shared/interaction/useIsCompactViewport.ts';
 import { useIsLikelyTouch } from '../../shared/interaction/useIsLikelyTouch.ts';
 import { useSliderArtifactConfig } from './hooks/useSliderArtifactConfig.ts';
 import {
@@ -14,11 +15,13 @@ import {
 } from './Slider.class-names.ts';
 import type {
   SliderClassNames,
+  SliderEdgeMarkLabelPlacementOption,
   SliderEdgeMarksOption,
   SliderEndpoint,
   SliderMarkLabelPlacementOption,
   SliderMark,
   SliderMarks,
+  SliderResolvedEdgeMarkLabelPlacement,
   SliderResolvedMarkLabelPlacement,
   SliderProps
 } from './Slider.types.ts';
@@ -91,21 +94,55 @@ function resolveMarkLabelPlacement(
   return isLikelyTouch ? 'above' : 'below';
 }
 
+function resolveEdgeMarkLabelPlacement(
+  placement: SliderEdgeMarkLabelPlacementOption,
+  isCompactViewport: boolean
+): SliderResolvedEdgeMarkLabelPlacement {
+  if (placement !== 'auto') return placement;
+  return isCompactViewport ? 'markLabels' : 'endpoints';
+}
+
+function isEdgeMark(mark: SliderMark, min: number, max: number): boolean {
+  return mark.value === min || mark.value === max;
+}
+
+function getEdgeMarkLabel(
+  marks: SliderMark[],
+  value: number
+): SliderMark['label'] | undefined {
+  return marks.find((mark) => mark.value === value && mark.label !== undefined)?.label;
+}
+
 function hasEndpointContent(endpoint: SliderEndpoint | undefined): boolean {
   return endpoint?.icon !== undefined || endpoint?.label !== undefined;
 }
 
-function renderEndpoint(endpoint: SliderEndpoint | undefined) {
-  if (!hasEndpointContent(endpoint)) return null;
+function renderEndpoint(
+  side: 'start' | 'end',
+  endpoint: SliderEndpoint | undefined,
+  edgeMarkLabel: SliderMark['label'] | undefined
+) {
+  const hasEdgeMarkLabel = edgeMarkLabel !== undefined;
+  if (!hasEndpointContent(endpoint) && !hasEdgeMarkLabel) return null;
+
+  const endpointIcon =
+    endpoint?.icon !== undefined ? (
+      <HeadlessSlider.EndpointIcon>{endpoint.icon}</HeadlessSlider.EndpointIcon>
+    ) : null;
+  const endpointLabel =
+    endpoint?.label !== undefined ? (
+      <HeadlessSlider.EndpointLabel>{endpoint.label}</HeadlessSlider.EndpointLabel>
+    ) : null;
+  const edgeMarkLabelNode = hasEdgeMarkLabel ? (
+    <HeadlessSlider.EndpointLabel>{edgeMarkLabel}</HeadlessSlider.EndpointLabel>
+  ) : null;
 
   return (
     <HeadlessSlider.Endpoint>
-      {endpoint?.icon !== undefined ? (
-        <HeadlessSlider.EndpointIcon>{endpoint.icon}</HeadlessSlider.EndpointIcon>
-      ) : null}
-      {endpoint?.label !== undefined ? (
-        <HeadlessSlider.EndpointLabel>{endpoint.label}</HeadlessSlider.EndpointLabel>
-      ) : null}
+      {side === 'end' ? edgeMarkLabelNode : null}
+      {side === 'end' ? endpointLabel : endpointIcon}
+      {side === 'end' ? endpointIcon : endpointLabel}
+      {side === 'start' ? edgeMarkLabelNode : null}
     </HeadlessSlider.Endpoint>
   );
 }
@@ -144,6 +181,7 @@ function SliderRoot(props: SliderProps) {
     marks,
     edgeMarks,
     markLabelPlacement,
+    edgeMarkLabelPlacement,
     valueDisplay,
     formatValue,
     thumbAriaLabels,
@@ -154,6 +192,7 @@ function SliderRoot(props: SliderProps) {
     ...rootProps
   } = props;
   const isLikelyTouch = useIsLikelyTouch();
+  const isCompactViewport = useIsCompactViewport();
   const generatedId = useId();
   const rootId = id ?? `slider-${generatedId}`;
   const labelId = `${rootId}-label`;
@@ -166,20 +205,38 @@ function SliderRoot(props: SliderProps) {
     markLabelPlacement ?? options.markLabelPlacement,
     isLikelyTouch
   );
+  const resolvedEdgeMarkLabelPlacement = resolveEdgeMarkLabelPlacement(
+    edgeMarkLabelPlacement ?? options.edgeMarkLabelPlacement,
+    isCompactViewport
+  );
   const resolvedValueMode = resolveValueMode(valueMode, props);
   const { min, max } = normalizeBounds(minProp, maxProp);
   const step = normalizeStep(stepProp);
   const resolvedEdgeMarks = edgeMarks ?? options.edgeMarks;
-  const resolvedMarks = useMemo(
-    () =>
-      applyEdgeMarks(
-        resolveMarks(marks ?? options.marks, min, max, step),
-        min,
-        max,
-        resolvedEdgeMarks
-      ),
-    [marks, max, min, options.marks, resolvedEdgeMarks, step]
+  const normalizedMarks = useMemo(
+    () => resolveMarks(marks ?? options.marks, min, max, step),
+    [marks, max, min, options.marks, step]
   );
+  const visualMarks = useMemo(
+    () => applyEdgeMarks(normalizedMarks, min, max, resolvedEdgeMarks),
+    [max, min, normalizedMarks, resolvedEdgeMarks]
+  );
+  const markLabels = useMemo(
+    () =>
+      normalizedMarks.filter(
+        (mark) =>
+          mark.label !== undefined &&
+          (!isEdgeMark(mark, min, max) || resolvedEdgeMarkLabelPlacement === 'markLabels')
+      ),
+    [max, min, normalizedMarks, resolvedEdgeMarkLabelPlacement]
+  );
+  const shouldRenderEdgeMarkLabelsAsEndpoints = resolvedEdgeMarkLabelPlacement === 'endpoints';
+  const startEdgeMarkLabel = shouldRenderEdgeMarkLabelsAsEndpoints
+    ? getEdgeMarkLabel(normalizedMarks, min)
+    : undefined;
+  const endEdgeMarkLabel = shouldRenderEdgeMarkLabelsAsEndpoints
+    ? getEdgeMarkLabel(normalizedMarks, max)
+    : undefined;
   const hasLabel = label !== undefined && label !== null;
   const hasValueSummary = resolvedValueDisplay === 'summary' || resolvedValueDisplay === 'both';
   const hasValueIndicator = resolvedValueDisplay === 'tooltip' || resolvedValueDisplay === 'both';
@@ -255,19 +312,17 @@ function SliderRoot(props: SliderProps) {
         </div>
       ) : null}
       <HeadlessSlider.ControlRow>
-        {renderEndpoint(endpoints?.start)}
+        {renderEndpoint('start', endpoints?.start, startEdgeMarkLabel)}
         <HeadlessSlider.Track>
           <HeadlessSlider.ActiveTrack />
-          {resolvedMarks.map((mark) => (
+          {visualMarks.map((mark) => (
             <HeadlessSlider.Mark key={`mark-${mark.value}`} value={mark.value} />
           ))}
-          {resolvedMarks.map((mark) =>
-            mark.label !== undefined ? (
-              <HeadlessSlider.MarkLabel key={`mark-label-${mark.value}`} value={mark.value}>
-                {mark.label}
-              </HeadlessSlider.MarkLabel>
-            ) : null
-          )}
+          {markLabels.map((mark) => (
+            <HeadlessSlider.MarkLabel key={`mark-label-${mark.value}`} value={mark.value}>
+              {mark.label}
+            </HeadlessSlider.MarkLabel>
+          ))}
           <HeadlessSlider.Thumb
             index={0}
             aria-label={getThumbAriaLabel(0)}
@@ -285,7 +340,7 @@ function SliderRoot(props: SliderProps) {
             <HeadlessSlider.ValueIndicator index={1} />
           ) : null}
         </HeadlessSlider.Track>
-        {renderEndpoint(endpoints?.end)}
+        {renderEndpoint('end', endpoints?.end, endEdgeMarkLabel)}
       </HeadlessSlider.ControlRow>
       {hasHelperText ? (
         <HeadlessSlider.HelperText id={helperTextId}>{helperText}</HeadlessSlider.HelperText>

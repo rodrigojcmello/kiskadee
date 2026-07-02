@@ -2,7 +2,6 @@ import type { SegmentName } from '../types/colors/colors.types.ts';
 import type {
   SliderActiveTrackElementStyleFromSchema,
   SliderControlRowElementStyleFromSchema,
-  SliderEdgeMarksSchemaValue,
   SliderEndpointElementStyleFromSchema,
   SliderEndpointIconElementStyleFromSchema,
   SliderEndpointLabelElementStyleFromSchema,
@@ -10,17 +9,21 @@ import type {
   SliderHelperTextElementStyleFromSchema,
   SliderMarkElementStyleFromSchema,
   SliderMarkLabelElementStyleFromSchema,
-  SliderMarkLabelPlacementSchemaValue,
-  SliderMarksSchemaValue,
-  SliderOptionsFromSchema,
   SliderRootElementStyleFromSchema,
   SliderThumbElementStyleFromSchema,
   SliderTrackElementStyleFromSchema,
-  SliderValueDisplaySchemaValue,
   SliderValueIndicatorElementStyleFromSchema,
-  SliderValueSummaryElementStyleFromSchema,
+  SliderValueSummaryElementStyleFromSchema
+} from './slider.elements.zod.ts';
+import type {
+  SliderEdgeMarkLabelPlacementSchemaValue,
+  SliderEdgeMarksSchemaValue,
+  SliderMarkLabelPlacementSchemaValue,
+  SliderMarksSchemaValue,
+  SliderOptionsFromSchema,
+  SliderValueDisplaySchemaValue,
   SliderVariantOptionsFromSchema
-} from './slider.zod.ts';
+} from './slider.options.zod.ts';
 
 /**
  * Slider elements canonical mapping:
@@ -62,6 +65,7 @@ export type SliderValueDisplay = SliderValueDisplaySchemaValue;
 export type SliderMarks = SliderMarksSchemaValue;
 export type SliderEdgeMarks = SliderEdgeMarksSchemaValue;
 export type SliderMarkLabelPlacement = SliderMarkLabelPlacementSchemaValue;
+export type SliderEdgeMarkLabelPlacement = SliderEdgeMarkLabelPlacementSchemaValue;
 export type SliderModeByVariant = {
   standard: SliderStandardMode;
 };
@@ -104,6 +108,7 @@ export type SliderControlRowElementStyle = SliderControlRowElementStyleFromSchem
  * e5 — endpoint wrapper
  * - non-visual endpoint composition wrapper
  * - marginLeft / marginRight define endpoint-to-track spacing
+ * - paddingLeft defines the internal endpoint content gap consumed structurally
  */
 export type SliderEndpointElementStyle = SliderEndpointElementStyleFromSchema;
 
@@ -119,7 +124,6 @@ export type SliderEndpointIconElementStyle<TSegmentName extends SegmentName = ne
  * e7 — endpoint label
  * - textColor
  * - textSize / textHeight
- * - margins
  */
 export type SliderEndpointLabelElementStyle<TSegmentName extends SegmentName = never> =
   SliderEndpointLabelElementStyleFromSchema<TSegmentName>;

@@ -7,6 +7,7 @@ export const sliderValueDisplaySchema = z.enum(['none', 'tooltip', 'summary', 'b
 export const sliderMarksSchema = z.enum(['none', 'step']);
 export const sliderEdgeMarksSchema = z.enum(['include', 'exclude']);
 export const sliderMarkLabelPlacementSchema = z.enum(['auto', 'above', 'below']);
+export const sliderEdgeMarkLabelPlacementSchema = z.enum(['auto', 'endpoints', 'markLabels']);
 
 export type SliderVariantSchemaValue = z.infer<typeof sliderVariantSchema>;
 export type SliderStandardModeSchemaValue = z.infer<typeof sliderStandardModeSchema>;
@@ -17,6 +18,9 @@ export type SliderEdgeMarksSchemaValue = z.infer<typeof sliderEdgeMarksSchema>;
 export type SliderMarkLabelPlacementSchemaValue = z.infer<
   typeof sliderMarkLabelPlacementSchema
 >;
+export type SliderEdgeMarkLabelPlacementSchemaValue = z.infer<
+  typeof sliderEdgeMarkLabelPlacementSchema
+>;
 
 export function createSliderOptionsSchema() {
   return z
@@ -25,7 +29,8 @@ export function createSliderOptionsSchema() {
       valueDisplay: sliderValueDisplaySchema.optional(),
       marks: sliderMarksSchema.optional(),
       edgeMarks: sliderEdgeMarksSchema.optional(),
-      markLabelPlacement: sliderMarkLabelPlacementSchema.optional()
+      markLabelPlacement: sliderMarkLabelPlacementSchema.optional(),
+      edgeMarkLabelPlacement: sliderEdgeMarkLabelPlacementSchema.optional()
     })
     .strict();
 }

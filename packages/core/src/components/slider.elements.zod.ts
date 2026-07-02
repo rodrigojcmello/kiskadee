@@ -62,7 +62,7 @@ export function createSliderEndpointElementStyleSchema() {
   return z
     .object({
       name: z.string(),
-      scales: createScalesSchema(['marginRight', 'marginLeft']).optional()
+      scales: createScalesSchema(['marginRight', 'marginLeft', 'paddingLeft']).optional()
     })
     .strict();
 }

@@ -6,6 +6,7 @@ export type {
   SliderClassNames,
   SliderEndpoint,
   SliderEndpoints,
+  SliderEdgeMarkLabelPlacementOption,
   SliderEdgeMarksOption,
   SliderMark,
   SliderMarkLabelPlacementOption,

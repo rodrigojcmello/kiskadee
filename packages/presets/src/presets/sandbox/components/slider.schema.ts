@@ -396,7 +396,8 @@ export function createSandboxSliderSchema(): SliderComponent {
       variant: 'standard',
       valueDisplay: 'tooltip',
       marks: 'none',
-      markLabelPlacement: 'auto'
+      markLabelPlacement: 'auto',
+      edgeMarkLabelPlacement: 'auto'
     },
     variants: {
       standard: {
@@ -436,7 +437,8 @@ export function createSandboxSliderSchema(): SliderComponent {
                 name: 'slider-endpoint',
                 scales: {
                   marginRight: layout.endpointTrackGap,
-                  marginLeft: layout.endpointTrackGap
+                  marginLeft: layout.endpointTrackGap,
+                  paddingLeft: layout.endpointContentGap
                 }
               },
               e6: {
@@ -452,8 +454,7 @@ export function createSandboxSliderSchema(): SliderComponent {
                 decorations: { textFont: 'body', textWeight: 'medium' },
                 scales: {
                   textSize: sizes.labelText,
-                  textHeight: sizes.labelLine,
-                  marginLeft: layout.endpointContentGap
+                  textHeight: sizes.labelLine
                 },
                 palettes: textPalettes
               },

@@ -320,7 +320,8 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
       valueDisplay: 'none',
       marks: 'none',
       edgeMarks: 'exclude',
-      markLabelPlacement: 'auto'
+      markLabelPlacement: 'auto',
+      edgeMarkLabelPlacement: 'auto'
     },
     variants: {
       standard: {
@@ -360,7 +361,8 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
                 name: 'slider-endpoint',
                 scales: {
                   marginRight: layout.endpointTrackGap,
-                  marginLeft: layout.endpointTrackGap
+                  marginLeft: layout.endpointTrackGap,
+                  paddingLeft: layout.endpointContentGap
                 }
               },
               e6: {
@@ -376,8 +378,7 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
                 decorations: { textFont: 'body', textWeight: 'normal' },
                 scales: {
                   textSize: sizes.labelText,
-                  textHeight: sizes.labelLine,
-                  marginLeft: layout.endpointContentGap
+                  textHeight: sizes.labelLine
                 },
                 palettes: textPalettes
               },

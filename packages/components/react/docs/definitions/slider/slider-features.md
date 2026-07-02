@@ -82,6 +82,7 @@ label through `aria-labelledby` unless a per-thumb naming prop overrides it.
 | `marks` | Visual marker configuration. Supports `false`, `"none"`, `"step"`, or an explicit array of `{ value, label? }`. |
 | `edgeMarks` | Controls whether rendered marks include edge marks at `min` and `max`. Supports `"include"` and `"exclude"`. |
 | `markLabelPlacement` | Controls where `e13` mark labels sit relative to the track. Supports `"auto"`, `"above"`, and `"below"`. |
+| `edgeMarkLabelPlacement` | Controls whether labels declared on `min`/`max` marks render as endpoint labels or track labels. Supports `"auto"`, `"endpoints"`, and `"markLabels"`. |
 | `valueDisplay` | Controls selected value display: `"none"`, `"tooltip"`, `"summary"`, or `"both"`. |
 | `className` | Merged into the root `e1` slot. |
 | `classNames` | Escape hatch for schema element slots `e1` through `e14`. |
@@ -124,10 +125,11 @@ The current schema option values are:
 - `marks`: `none`, `step`
 - `edgeMarks`: `include`, `exclude`
 - `markLabelPlacement`: `auto`, `above`, `below`
+- `edgeMarkLabelPlacement`: `auto`, `endpoints`, `markLabels`
 
-`marks`, `edgeMarks`, and `markLabelPlacement` are top-level component options
-because they describe visual defaults for the component. Consumers can still
-override them per instance.
+`marks`, `edgeMarks`, `markLabelPlacement`, and `edgeMarkLabelPlacement` are
+top-level component options because they describe visual defaults for the
+component. Consumers can still override them per instance.
 
 ### Schema-Owned Layout Spacing
 
@@ -137,7 +139,9 @@ belong to schema scales:
 - `e3.marginLeft` separates the field label from the value summary.
 - `e4.marginTop` separates the header row from the control row.
 - `e5.marginLeft` and `e5.marginRight` separate endpoints from the track.
-- `e7.marginLeft` separates an endpoint icon from its label.
+- `e5.paddingLeft` defines the internal endpoint content gap. Structural CSS
+  consumes it as the `column-gap` between endpoint items so both `icon -> label`
+  and `label -> icon` compositions use the same schema-owned spacing.
 - `e8.boxWidth` is consumed structurally as the minimum useful track width.
 - `e11.marginBottom` offsets the value indicator above the track.
 - `e13.marginTop` offsets mark labels below the track.
@@ -152,8 +156,8 @@ generated token in the specific DOM relationship.
 
 `web-builder` may emit `components/slider.kiskadee.json` with:
 
-- component options: `variant`, `valueDisplay`, `marks`, `edgeMarks`, and
-  `markLabelPlacement`;
+- component options: `variant`, `valueDisplay`, `marks`, `edgeMarks`,
+  `markLabelPlacement`, and `edgeMarkLabelPlacement`;
 - variant-local options: currently `standard.options.mode`.
 
 Fallback order for component options:
@@ -249,15 +253,17 @@ The track line is `e8`. The thumb is `e10`. Visual markers on the line are
 101 generated marks. This prevents accidental huge DOM output when a consumer
 uses a very small step across a large range.
 
-`edgeMarks` controls whether the rendered mark set includes boundary values:
+`edgeMarks` controls whether the rendered visual mark set (`e12`) includes
+boundary values:
 
-- `edgeMarks="include"` renders marks at `min`, intermediate steps, and `max`.
-- `edgeMarks="exclude"` renders only intermediate step marks.
+- `edgeMarks="include"` renders visual marks at `min`, intermediate steps, and
+  `max`.
+- `edgeMarks="exclude"` renders only intermediate visual marks.
 
 `edgeMarks` is resolved from the component prop first, then from the
 schema/artifact option, then from the default `"include"`. It applies after mark
-normalization, so both `marks="step"` and explicit mark arrays omit exact `min`
-and `max` marks when `edgeMarks="exclude"`.
+normalization and affects visual marks only. Labels declared on exact `min` and
+`max` marks are still available to `edgeMarkLabelPlacement`.
 
 `markLabelPlacement` controls only mark labels (`e13`):
 
@@ -271,6 +277,34 @@ and `max` marks when `edgeMarks="exclude"`.
 
 This option does not affect endpoint labels (`e7`), value summaries (`e3`), or
 value indicators/tooltips (`e11`).
+
+`edgeMarkLabelPlacement` controls only labels declared on exact `min` and `max`
+marks:
+
+- `edgeMarkLabelPlacement="markLabels"` renders those edge labels as track labels
+  (`e13`);
+- `edgeMarkLabelPlacement="endpoints"` renders those edge labels as endpoint
+  labels (`e7`);
+- `edgeMarkLabelPlacement="auto"` resolves at runtime from the shared
+  `isCompactViewport` layout environment. Compact viewports use `markLabels`;
+  non-compact viewports use `endpoints`.
+
+Intermediate mark labels always render as track labels (`e13`). `marks` remains
+the single source for scale labels:
+
+```tsx
+<Slider
+  min={0}
+  max={100}
+  marks={[
+    { value: 0, label: '0%' },
+    { value: 25, label: '25%' },
+    { value: 50, label: '50%' },
+    { value: 75, label: '75%' },
+    { value: 100, label: '100%' }
+  ]}
+/>
+```
 
 Explicit marks accept:
 
@@ -348,6 +382,8 @@ structural CSS can avoid hardcoding preset sizes. The web-builder policy emits:
 - `slider.variants.standard.elements.e8.boxWidth` into `--k-bxw`;
 - Slider layout margins into `--k-mgt`, `--k-mgr`, `--k-mgb`, or `--k-mgl`
   when structural CSS needs conditional spacing;
+- `slider.variants.standard.elements.e5.paddingLeft` into `--k-pdl` for the
+  endpoint internal content gap;
 - `slider.variants.standard.elements.e12.boxWidth` into `--k-bxw`.
 
 Structural CSS uses those variables to clamp `e12` by the larger of half the
@@ -411,7 +447,7 @@ structure. The suffix does not create a public variant or mode.
   controlled/uncontrolled value, `disabled`, `readOnly`, and keyboard support.
 - Schema elements `e1` through `e14`.
 - Current schema options and values for `variant`, `mode`, `valueDisplay`,
-  `marks`, `edgeMarks`, and `markLabelPlacement`.
+  `marks`, `edgeMarks`, `markLabelPlacement`, and `edgeMarkLabelPlacement`.
 - Generated artifacts and class maps as the source of truth for visual tokens.
 - Current horizontal-only contract.
 

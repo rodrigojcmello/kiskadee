@@ -73,6 +73,7 @@
 .k-sld-e5-a {
   display: inline-flex;
   align-items: center;
+  column-gap: var(--k-pdl, 0px);
   flex: 0 0 auto;
   min-inline-size: 0;
 }
@@ -115,10 +116,6 @@
 .k-sld-e7-a {
   display: block;
   white-space: nowrap;
-}
-
-.k-sld-e6-a + .k-sld-e7-a {
-  margin-inline-start: var(--k-mgl, 0px);
 }
 
 /*

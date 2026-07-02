@@ -1,5 +1,6 @@
 import type {
   Schema,
+  SliderEdgeMarkLabelPlacement,
   SliderEdgeMarks,
   SliderMarkLabelPlacement,
   SliderMarks,
@@ -16,6 +17,7 @@ export type SliderComponentOptionsPayload = {
   marks?: SliderMarks;
   edgeMarks?: SliderEdgeMarks;
   markLabelPlacement?: SliderMarkLabelPlacement;
+  edgeMarkLabelPlacement?: SliderEdgeMarkLabelPlacement;
 };
 
 export type SliderComponentVariantsPayload = {
@@ -66,6 +68,9 @@ export function buildSliderComponentArtifact(schema: Schema): SliderComponentArt
     ...(sliderSchema.options?.edgeMarks ? { edgeMarks: sliderSchema.options.edgeMarks } : {}),
     ...(sliderSchema.options?.markLabelPlacement
       ? { markLabelPlacement: sliderSchema.options.markLabelPlacement }
+      : {}),
+    ...(sliderSchema.options?.edgeMarkLabelPlacement
+      ? { edgeMarkLabelPlacement: sliderSchema.options.edgeMarkLabelPlacement }
       : {})
   };
   const variants = buildSliderVariantsPayload(schema);

@@ -29,6 +29,7 @@ export const DEFAULT_SLIDER_VALUE_DISPLAY = 'none';
 export const DEFAULT_SLIDER_MARKS = 'none';
 export const DEFAULT_SLIDER_EDGE_MARKS = 'include';
 export const DEFAULT_SLIDER_MARK_LABEL_PLACEMENT = 'auto';
+export const DEFAULT_SLIDER_EDGE_MARK_LABEL_PLACEMENT = 'auto';
 
 type SliderStructuralBranch = 'a';
 

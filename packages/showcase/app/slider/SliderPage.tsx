@@ -11,6 +11,7 @@ import type {
 import {
   Card,
   Slider,
+  type SliderEdgeMarkLabelPlacementOption,
   type SliderEdgeMarksOption,
   type SliderMarkLabelPlacementOption,
   type SliderMarks,
@@ -168,6 +169,15 @@ const markLabelPlacementOptions: Array<{ value: SliderMarkLabelPlacementOption; 
   { value: 'auto', label: 'Auto' },
   { value: 'above', label: 'Above' },
   { value: 'below', label: 'Below' }
+];
+
+const edgeMarkLabelPlacementOptions: Array<{
+  value: SliderEdgeMarkLabelPlacementOption;
+  label: string;
+}> = [
+  { value: 'auto', label: 'Auto' },
+  { value: 'endpoints', label: 'Side' },
+  { value: 'markLabels', label: 'Track labels' }
 ];
 
 const intentLabels: Record<string, string> = {
@@ -341,6 +351,8 @@ export default function SliderPage() {
   const [edgeMarks, setEdgeMarks] = useState<SliderEdgeMarksOption>('include');
   const [markLabelPlacement, setMarkLabelPlacement] =
     useState<SliderMarkLabelPlacementOption>('auto');
+  const [edgeMarkLabelPlacement, setEdgeMarkLabelPlacement] =
+    useState<SliderEdgeMarkLabelPlacementOption>('auto');
   const [showEndpoints, setShowEndpoints] = useState(true);
   const [disabled, setDisabled] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
@@ -526,6 +538,10 @@ export default function SliderPage() {
   useEffect(() => {
     setMarkLabelPlacement(sliderOptions.markLabelPlacement);
   }, [sliderOptions.markLabelPlacement]);
+
+  useEffect(() => {
+    setEdgeMarkLabelPlacement(sliderOptions.edgeMarkLabelPlacement);
+  }, [sliderOptions.edgeMarkLabelPlacement]);
 
   useEffect(() => {
     if (!surfaceOptions.length) {
@@ -729,6 +745,18 @@ export default function SliderPage() {
             }}
             disabled={!isSliderAvailable}
           />
+          <ShowcaseSelectControl
+            label="Edge mark labels"
+            options={edgeMarkLabelPlacementOptions}
+            value={edgeMarkLabelPlacement}
+            onValueChange={(value) => {
+              const nextEdgeMarkLabelPlacement = value as SliderEdgeMarkLabelPlacementOption;
+              if (nextEdgeMarkLabelPlacement === edgeMarkLabelPlacement) return;
+              playWowTransition();
+              setEdgeMarkLabelPlacement(nextEdgeMarkLabelPlacement);
+            }}
+            disabled={!isSliderAvailable}
+          />
         </ShowcaseControlGrid>
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Content">
@@ -820,6 +848,7 @@ export default function SliderPage() {
                 marks={interactiveMarks}
                 edgeMarks={edgeMarks}
                 markLabelPlacement={markLabelPlacement}
+                edgeMarkLabelPlacement={edgeMarkLabelPlacement}
                 valueDisplay={valueDisplay}
                 formatValue={formatPercent}
                 scale={scale}
@@ -847,10 +876,13 @@ export default function SliderPage() {
                   onValueChange={(nextValue) => {
                     if (Array.isArray(nextValue)) setPrice([nextValue[0], nextValue[1]]);
                   }}
-                  endpoints={{
-                    start: { label: formatCurrency(1000) },
-                    end: { label: formatCurrency(10000) }
-                  }}
+                  marks={[
+                    { value: 1000, label: formatCurrency(1000) },
+                    { value: 10000, label: formatCurrency(10000) }
+                  ]}
+                  edgeMarks="exclude"
+                  markLabelPlacement={markLabelPlacement}
+                  edgeMarkLabelPlacement={edgeMarkLabelPlacement}
                   formatValue={(value) => formatCurrency(value)}
                   valueDisplay="tooltip"
                   scale={scale}
@@ -901,6 +933,7 @@ export default function SliderPage() {
                   marks={labeledPercentMarks}
                   edgeMarks={edgeMarks}
                   markLabelPlacement={markLabelPlacement}
+                  edgeMarkLabelPlacement={edgeMarkLabelPlacement}
                   formatValue={(value) => `${value}%`}
                   valueDisplay="summary"
                   scale={scale}
@@ -927,6 +960,7 @@ export default function SliderPage() {
                   marks="step"
                   edgeMarks={edgeMarks}
                   markLabelPlacement={markLabelPlacement}
+                  edgeMarkLabelPlacement={edgeMarkLabelPlacement}
                   helperText="How happy are you with the level of service?"
                   valueDisplay="tooltip"
                   scale={scale}
