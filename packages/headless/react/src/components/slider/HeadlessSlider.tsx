@@ -39,7 +39,8 @@ export type SliderElementName =
   | 'e11'
   | 'e12'
   | 'e13'
-  | 'e14';
+  | 'e14'
+  | 'e15';
 
 export type SliderStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
 
@@ -83,6 +84,7 @@ export type SliderEndpointIconProps = HTMLAttributes<HTMLSpanElement>;
 export type SliderEndpointLabelProps = HTMLAttributes<HTMLSpanElement>;
 export type SliderTrackProps = HTMLAttributes<HTMLDivElement>;
 export type SliderActiveTrackProps = HTMLAttributes<HTMLSpanElement>;
+export type SliderThumbInnerProps = HTMLAttributes<HTMLSpanElement>;
 export type SliderValueIndicatorProps = HTMLAttributes<HTMLSpanElement> & {
   index?: SliderThumbIndex;
 };
@@ -603,7 +605,8 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       e11: { className: classNames.e11 },
       e12: { className: classNames.e12 },
       e13: { className: classNames.e13 },
-      e14: { className: classNames.e14 }
+      e14: { className: classNames.e14 },
+      e15: { className: classNames.e15 }
     };
   }, [classNames, disabled, focused, focusVisible, hovered, pressed, readOnly, status]);
 
@@ -953,7 +956,7 @@ const SliderThumb = forwardRef<HTMLSpanElement, SliderThumbProps>(function Slide
 const SliderValueIndicator = forwardRef<HTMLSpanElement, SliderValueIndicatorProps>(
   function SliderValueIndicator({ className, children, index = 0, style, ...props }, ref) {
     const context = useSliderContext();
-    const { className: slotClassName, ...slotProps } = context.slotProps.e11 ?? {};
+    const { className: slotClassName, ...slotProps } = context.slotProps.e12 ?? {};
     const indicatorStyle = {
       '--k-sld-value': `${context.getThumbPercent(index)}%`,
       ...style
@@ -973,12 +976,34 @@ const SliderValueIndicator = forwardRef<HTMLSpanElement, SliderValueIndicatorPro
   }
 );
 
+const SliderThumbInner = forwardRef<HTMLSpanElement, SliderThumbInnerProps>(
+  function SliderThumbInner(
+    { className, children, 'aria-hidden': ariaHidden = true, ...props },
+    ref
+  ) {
+    const context = useSliderContext();
+    const { className: slotClassName, ...slotProps } = context.slotProps.e11 ?? {};
+
+    return (
+      <span
+        {...slotProps}
+        ref={ref}
+        className={mergeClassNames(slotClassName, className)}
+        aria-hidden={ariaHidden}
+        {...props}
+      >
+        {children}
+      </span>
+    );
+  }
+);
+
 const SliderMark = forwardRef<HTMLSpanElement, SliderMarkProps>(function SliderMark(
   { className, children, value, style, ...props },
   ref
 ) {
   const context = useSliderContext();
-  const { className: slotClassName, ...slotProps } = context.slotProps.e12 ?? {};
+  const { className: slotClassName, ...slotProps } = context.slotProps.e13 ?? {};
   const markValue = value ?? context.min;
   const isSelected = context.isMarkSelected(markValue);
   const markStyle = {
@@ -1011,7 +1036,7 @@ const SliderMarkLabel = forwardRef<HTMLSpanElement, SliderMarkLabelProps>(functi
   ref
 ) {
   const context = useSliderContext();
-  const { className: slotClassName, ...slotProps } = context.slotProps.e13 ?? {};
+  const { className: slotClassName, ...slotProps } = context.slotProps.e14 ?? {};
   const markValue = value ?? context.min;
   const labelStyle = {
     '--k-sld-mark': `${valueToPercent(markValue, context.min, context.max)}%`,
@@ -1034,7 +1059,7 @@ const SliderMarkLabel = forwardRef<HTMLSpanElement, SliderMarkLabelProps>(functi
 const SliderHelperText = forwardRef<HTMLParagraphElement, SliderHelperTextProps>(
   function SliderHelperText({ className, children, id, ...props }, ref) {
     const context = useSliderContext();
-    const { className: slotClassName, ...slotProps } = context.slotProps.e14 ?? {};
+    const { className: slotClassName, ...slotProps } = context.slotProps.e15 ?? {};
 
     if (!children) return null;
 
@@ -1063,6 +1088,7 @@ export const HeadlessSlider = Object.assign(SliderRoot, {
   Track: SliderTrack,
   ActiveTrack: SliderActiveTrack,
   Thumb: SliderThumb,
+  ThumbInner: SliderThumbInner,
   ValueIndicator: SliderValueIndicator,
   Mark: SliderMark,
   MarkLabel: SliderMarkLabel,

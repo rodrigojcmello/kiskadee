@@ -149,7 +149,7 @@
 }
 
 /*
- * element thumb / e10
+ * element thumb wrapper / e10
  * Centers each slider handle on its headless-provided percentage position.
  */
 .k-sld-e10-a {
@@ -157,7 +157,9 @@
   inset-block-start: 50%;
   inset-inline-start: var(--k-sld-value, 0%);
   z-index: 2;
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   box-sizing: border-box;
   cursor: pointer;
   outline: none;
@@ -166,7 +168,7 @@
 }
 
 /*
- * element thumb / e10
+ * element thumb wrapper / e10
  * Projects keyboard focus using global focus tokens while preserving generated thumb visuals.
  */
 .k-sld-e10-a:focus-visible {
@@ -177,10 +179,21 @@
 }
 
 /*
- * element value indicator / e11
- * Positions tooltip-style selected values above the corresponding thumb.
+ * element thumb inner / e11
+ * Provides a second thumb layer for designs with distinct outer and inner shapes.
  */
 .k-sld-e11-a {
+  display: block;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  pointer-events: none;
+}
+
+/*
+ * element value indicator / e12
+ * Positions tooltip-style selected values above the corresponding thumb.
+ */
+.k-sld-e12-a {
   --k-sld-tooltip-arrow-block-size: 0.375rem;
   --k-sld-tooltip-arrow-inline-size: 0.75rem;
   --k-sld-tooltip-arrow-tip-radius: 0.0625rem;
@@ -206,10 +219,10 @@
 }
 
 /*
- * element value indicator arrow / e11
+ * element value indicator arrow / e12
  * Extends the tooltip shape without introducing a separate schema element.
  */
-.k-sld-e11-a::after {
+.k-sld-e12-a::after {
   content: '';
   position: absolute;
   inset-block-start: calc(100% - var(--k-sld-tooltip-arrow-overlap));
@@ -229,10 +242,10 @@
 }
 
 /*
- * element mark / e12
+ * element mark / e13
  * Keeps visual step markers inside the track geometry while preserving their value position.
  */
-.k-sld-e12-a {
+.k-sld-e13-a {
   --k-sld-mark-edge-offset: max(calc(var(--k-bxh, 0px) / 2), calc(var(--k-bxw, 0px) / 2));
 
   position: absolute;
@@ -250,10 +263,10 @@
 }
 
 /*
- * element mark label / e13
+ * element mark label / e14
  * Positions optional step labels around their corresponding marker.
  */
-.k-sld-e13-a {
+.k-sld-e14-a {
   position: absolute;
   inset-inline-start: var(--k-sld-mark, 0%);
   display: block;
@@ -263,44 +276,44 @@
 }
 
 /*
- * element mark label modifier / e13a
+ * element mark label modifier / e14a
  * Places mark labels above the track using the schema-owned bottom margin token.
  */
-.k-sld-e13a-a {
+.k-sld-e14a-a {
   inset-block-end: calc(100% + var(--k-mgb, 0px));
 }
 
 /*
- * element mark label modifier / e13b
+ * element mark label modifier / e14b
  * Places mark labels below the track using the schema-owned top margin token.
  */
-.k-sld-e13b-a {
+.k-sld-e14b-a {
   inset-block-start: calc(100% + var(--k-mgt, 0px));
 }
 
 /*
- * element mark label modifier / e13c
+ * element mark label modifier / e14c
  * Keeps the start edge label inside the track instead of centering it on the boundary.
  */
-.k-sld-e13c-a {
+.k-sld-e14c-a {
   text-align: start;
   transform: translateX(0);
 }
 
 /*
- * element mark label modifier / e13d
+ * element mark label modifier / e14d
  * Keeps the end edge label inside the track instead of centering it on the boundary.
  */
-.k-sld-e13d-a {
+.k-sld-e14d-a {
   text-align: end;
   transform: translateX(-100%);
 }
 
 /*
- * element helper text / e14
+ * element helper text / e15
  * Keeps helper content in normal block flow below the slider control row.
  */
-.k-sld-e14-a {
+.k-sld-e15-a {
   display: block;
   margin-block: var(--k-mgt, 0px) 0;
 }

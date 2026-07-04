@@ -11,6 +11,7 @@ import type {
   SliderMarkLabelElementStyleFromSchema,
   SliderRootElementStyleFromSchema,
   SliderThumbElementStyleFromSchema,
+  SliderThumbInnerElementStyleFromSchema,
   SliderTrackElementStyleFromSchema,
   SliderValueIndicatorElementStyleFromSchema,
   SliderValueSummaryElementStyleFromSchema
@@ -37,11 +38,12 @@ import type {
  * - e7: endpoint label
  * - e8: track
  * - e9: active track / selected range
- * - e10: thumb / handle
- * - e11: value indicator / tooltip
- * - e12: mark / tick
- * - e13: mark label
- * - e14: helper text
+ * - e10: thumb / handle wrapper
+ * - e11: thumb inner
+ * - e12: value indicator / tooltip
+ * - e13: mark / tick
+ * - e14: mark label
+ * - e15: helper text
  */
 export type SliderElementName =
   | 'e1'
@@ -57,7 +59,8 @@ export type SliderElementName =
   | 'e11'
   | 'e12'
   | 'e13'
-  | 'e14';
+  | 'e14'
+  | 'e15';
 
 export type SliderVariant = 'standard';
 export type SliderStandardMode = 'base';
@@ -148,7 +151,7 @@ export type SliderActiveTrackElementStyle<TSegmentName extends SegmentName = nev
   SliderActiveTrackElementStyleFromSchema<TSegmentName>;
 
 /**
- * e10 — thumb / handle
+ * e10 — thumb / handle wrapper
  * - boxColor / borderColor
  * - width, height, margins, border, radius
  */
@@ -156,7 +159,15 @@ export type SliderThumbElementStyle<TSegmentName extends SegmentName = never> =
   SliderThumbElementStyleFromSchema<TSegmentName>;
 
 /**
- * e11 — value indicator / tooltip
+ * e11 — thumb inner
+ * - boxColor / borderColor
+ * - width, height, margins, border, radius
+ */
+export type SliderThumbInnerElementStyle<TSegmentName extends SegmentName = never> =
+  SliderThumbInnerElementStyleFromSchema<TSegmentName>;
+
+/**
+ * e12 — value indicator / tooltip
  * - boxColor / borderColor / textColor
  * - height, padding, text size, marginBottom, border, radius
  */
@@ -164,7 +175,7 @@ export type SliderValueIndicatorElementStyle<TSegmentName extends SegmentName = 
   SliderValueIndicatorElementStyleFromSchema<TSegmentName>;
 
 /**
- * e12 — mark / tick
+ * e13 — mark / tick
  * - boxColor / borderColor
  * - width, height, border, radius
  */
@@ -172,7 +183,7 @@ export type SliderMarkElementStyle<TSegmentName extends SegmentName = never> =
   SliderMarkElementStyleFromSchema<TSegmentName>;
 
 /**
- * e13 — mark label
+ * e14 — mark label
  * - textColor
  * - textSize / textHeight
  * - margins
@@ -181,7 +192,7 @@ export type SliderMarkLabelElementStyle<TSegmentName extends SegmentName = never
   SliderMarkLabelElementStyleFromSchema<TSegmentName>;
 
 /**
- * e14 — helper text
+ * e15 — helper text
  * - textColor
  * - textSize / textHeight
  * - margins
@@ -208,16 +219,18 @@ export type SliderElements<TSegmentName extends SegmentName = never> = {
   e8?: SliderTrackElementStyle<TSegmentName>;
   // e9: active track / selected range
   e9?: SliderActiveTrackElementStyle<TSegmentName>;
-  // e10: thumb / handle
+  // e10: thumb / handle wrapper
   e10?: SliderThumbElementStyle<TSegmentName>;
-  // e11: value indicator / tooltip
-  e11?: SliderValueIndicatorElementStyle<TSegmentName>;
-  // e12: mark / tick
-  e12?: SliderMarkElementStyle<TSegmentName>;
-  // e13: mark label
-  e13?: SliderMarkLabelElementStyle<TSegmentName>;
-  // e14: helper text
-  e14?: SliderHelperTextElementStyle<TSegmentName>;
+  // e11: thumb inner
+  e11?: SliderThumbInnerElementStyle<TSegmentName>;
+  // e12: value indicator / tooltip
+  e12?: SliderValueIndicatorElementStyle<TSegmentName>;
+  // e13: mark / tick
+  e13?: SliderMarkElementStyle<TSegmentName>;
+  // e14: mark label
+  e14?: SliderMarkLabelElementStyle<TSegmentName>;
+  // e15: helper text
+  e15?: SliderHelperTextElementStyle<TSegmentName>;
 };
 
 export type SliderModeConfig<TSegmentName extends SegmentName = never> = {

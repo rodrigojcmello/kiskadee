@@ -552,6 +552,18 @@ export function createSandbox3SliderSchema(): SliderComponent {
               },
               e10: {
                 name: 'slider-thumb',
+                scales: {
+                  boxWidth: sizes.thumb,
+                  boxHeight: sizes.thumb,
+                  borderRadius: {
+                    rounded: sizes.thumb,
+                    pill: sizes.thumb,
+                    square: 0
+                  }
+                }
+              },
+              e11: {
+                name: 'slider-thumb-inner',
                 decorations: { borderStyle: 'solid' },
                 scales: {
                   boxWidth: sizes.thumb,
@@ -565,7 +577,7 @@ export function createSandbox3SliderSchema(): SliderComponent {
                 },
                 palettes: thumbPalettes
               },
-              e11: {
+              e12: {
                 name: 'slider-value-indicator',
                 decorations: { borderStyle: 'solid', textFont: 'body', textWeight: 'medium' },
                 scales: {
@@ -586,7 +598,7 @@ export function createSandbox3SliderSchema(): SliderComponent {
                 },
                 palettes: valueIndicatorPalettes
               },
-              e12: {
+              e13: {
                 name: 'slider-mark',
                 decorations: { borderStyle: 'solid' },
                 scales: {
@@ -601,7 +613,7 @@ export function createSandbox3SliderSchema(): SliderComponent {
                 },
                 palettes: markPalettes
               },
-              e13: {
+              e14: {
                 name: 'slider-mark-label',
                 decorations: { textFont: 'body', textWeight: 'medium' },
                 scales: {
@@ -612,7 +624,7 @@ export function createSandbox3SliderSchema(): SliderComponent {
                 },
                 palettes: textPalettes
               },
-              e14: {
+              e15: {
                 name: 'slider-helper-text',
                 decorations: { textFont: 'body', textWeight: 'normal' },
                 scales: {

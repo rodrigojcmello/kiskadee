@@ -140,17 +140,17 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
               marginLeftEmission: 'token',
               paddingEmission: 'token'
             },
-            e11: {
+            e12: {
               marginBottomEmission: 'token'
             },
-            e12: {
+            e13: {
               boxWidthEmission: 'mirrored'
             },
-            e13: {
+            e14: {
               marginTopEmission: 'token',
               marginBottomEmission: 'token'
             },
-            e14: {
+            e15: {
               marginTopEmission: 'token'
             }
           }

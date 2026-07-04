@@ -148,6 +148,12 @@ export function createSliderThumbElementStyleSchema<TSegmentName extends Segment
     .strict();
 }
 
+export function createSliderThumbInnerElementStyleSchema<
+  TSegmentName extends SegmentName = never
+>() {
+  return createSliderThumbElementStyleSchema<TSegmentName>();
+}
+
 export function createSliderValueIndicatorElementStyleSchema<
   TSegmentName extends SegmentName = never
 >() {
@@ -257,6 +263,9 @@ export type SliderActiveTrackElementStyleFromSchema<TSegmentName extends Segment
 export type SliderThumbElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
   ReturnType<typeof createSliderThumbElementStyleSchema<TSegmentName>>
 >;
+
+export type SliderThumbInnerElementStyleFromSchema<TSegmentName extends SegmentName = never> =
+  z.input<ReturnType<typeof createSliderThumbInnerElementStyleSchema<TSegmentName>>>;
 
 export type SliderValueIndicatorElementStyleFromSchema<TSegmentName extends SegmentName = never> =
   z.input<ReturnType<typeof createSliderValueIndicatorElementStyleSchema<TSegmentName>>>;

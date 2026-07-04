@@ -35,7 +35,8 @@ export type SliderElementName =
   | 'e11'
   | 'e12'
   | 'e13'
-  | 'e14';
+  | 'e14'
+  | 'e15';
 
 export type SliderClassNames = Partial<Record<SliderElementName, string>>;
 

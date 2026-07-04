@@ -31,8 +31,8 @@ const DEFAULT_MIN = 0;
 const DEFAULT_MAX = 100;
 const DEFAULT_STEP = 1;
 const STEP_MARK_LIMIT = 101;
-const START_EDGE_MARK_LABEL_INSIDE_CLASS_NAME = 'k-sld-e13c-a';
-const END_EDGE_MARK_LABEL_INSIDE_CLASS_NAME = 'k-sld-e13d-a';
+const START_EDGE_MARK_LABEL_INSIDE_CLASS_NAME = 'k-sld-e14c-a';
+const END_EDGE_MARK_LABEL_INSIDE_CLASS_NAME = 'k-sld-e14d-a';
 
 function finiteNumber(value: number | undefined, fallback: number): number {
   return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
@@ -351,13 +351,17 @@ function SliderRoot(props: SliderProps) {
             index={0}
             aria-label={getThumbAriaLabel(0)}
             aria-labelledby={getThumbAriaLabelledBy(0)}
-          />
+          >
+            <HeadlessSlider.ThumbInner />
+          </HeadlessSlider.Thumb>
           {resolvedValueMode === 'range' ? (
             <HeadlessSlider.Thumb
               index={1}
               aria-label={getThumbAriaLabel(1)}
               aria-labelledby={getThumbAriaLabelledBy(1)}
-            />
+            >
+              <HeadlessSlider.ThumbInner />
+            </HeadlessSlider.Thumb>
           ) : null}
           {hasValueIndicator ? <HeadlessSlider.ValueIndicator index={0} /> : null}
           {hasValueIndicator && resolvedValueMode === 'range' ? (

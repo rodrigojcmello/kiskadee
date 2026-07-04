@@ -52,9 +52,13 @@ const sizes = {
     's:sm:1': 14,
     's:md:1': 18
   },
+  thumbInner: {
+    's:sm:1': 10,
+    's:md:1': 12
+  },
   thumbBorder: {
-    's:sm:1': 2,
-    's:md:1': 3
+    's:sm:1': 1,
+    's:md:1': 1
   },
   endpointIcon: {
     's:sm:1': 16,
@@ -220,6 +224,47 @@ const thumbPalettes = {
       boxColor: {
         neutral: {
           medium: states({
+            rest: fluent.neutralBackground1,
+            hover: fluent.neutralBackground1,
+            focus: fluent.neutralBackground1,
+            pressed: fluent.neutralBackground1,
+            disabled: fluent.neutralBackground1
+          })
+        },
+        primary: {
+          medium: states({
+            rest: fluent.neutralBackground1,
+            hover: fluent.neutralBackground1,
+            focus: fluent.neutralBackground1,
+            pressed: fluent.neutralBackground1,
+            disabled: fluent.neutralBackground1
+          })
+        }
+      },
+      borderColor: {
+        neutral: {
+          medium: states({
+            rest: fluent.neutralStroke1,
+            disabled: fluent.neutralStrokeDisabled
+          })
+        },
+        primary: {
+          medium: states({
+            rest: fluent.neutralStroke1,
+            disabled: fluent.neutralStrokeDisabled
+          })
+        }
+      }
+    }
+  }
+} as const;
+
+const thumbInnerPalettes = {
+  default: {
+    light: {
+      boxColor: {
+        neutral: {
+          medium: states({
             rest: fluent.compoundBrandRest,
             hover: fluent.compoundBrandHover,
             focus: fluent.compoundBrandRest,
@@ -240,14 +285,14 @@ const thumbPalettes = {
       borderColor: {
         neutral: {
           medium: states({
-            rest: fluent.neutralBackground1,
-            disabled: fluent.neutralBackground1
+            rest: fluent.transparent,
+            disabled: fluent.transparent
           })
         },
         primary: {
           medium: states({
-            rest: fluent.neutralBackground1,
-            disabled: fluent.neutralBackground1
+            rest: fluent.transparent,
+            disabled: fluent.transparent
           })
         }
       }
@@ -427,6 +472,21 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
                 palettes: thumbPalettes
               },
               e11: {
+                name: 'slider-thumb-inner',
+                decorations: { borderStyle: 'solid' },
+                scales: {
+                  boxWidth: sizes.thumbInner,
+                  boxHeight: sizes.thumbInner,
+                  borderRadius: {
+                    rounded: sizes.thumbInner,
+                    pill: sizes.thumbInner,
+                    square: 0
+                  },
+                  borderWidth: 0
+                },
+                palettes: thumbInnerPalettes
+              },
+              e12: {
                 name: 'slider-value-indicator',
                 decorations: { borderStyle: 'solid', textFont: 'body', textWeight: 'normal' },
                 scales: {
@@ -447,7 +507,7 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
                 },
                 palettes: valueIndicatorPalettes
               },
-              e12: {
+              e13: {
                 name: 'slider-mark',
                 decorations: { borderStyle: 'solid' },
                 scales: {
@@ -462,7 +522,7 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
                 },
                 palettes: markPalettes
               },
-              e13: {
+              e14: {
                 name: 'slider-mark-label',
                 decorations: { textFont: 'body', textWeight: 'normal' },
                 scales: {
@@ -473,7 +533,7 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
                 },
                 palettes: textPalettes
               },
-              e14: {
+              e15: {
                 name: 'slider-helper-text',
                 decorations: { textFont: 'body', textWeight: 'normal' },
                 scales: {

@@ -158,18 +158,26 @@ export function resolveSliderClassNames(options: {
     e13:
       join(
         `k-sld-e13-${branch}`,
-        options.markLabelPlacement === 'above' ? `k-sld-e13a-${branch}` : `k-sld-e13b-${branch}`,
         elem(elements.e13, options),
+        resolveRadiusClassName(elements.e13, options.scale, options.radius),
         'k-trn',
         options.classNames.e13
       ) ?? '',
-    e14: options.hasHelperText
+    e14:
+      join(
+        `k-sld-e14-${branch}`,
+        options.markLabelPlacement === 'above' ? `k-sld-e14a-${branch}` : `k-sld-e14b-${branch}`,
+        elem(elements.e14, options),
+        'k-trn',
+        options.classNames.e14
+      ) ?? '',
+    e15: options.hasHelperText
       ? (join(
-          `k-sld-e14-${branch}`,
-          elem(elements.e14, options),
+          `k-sld-e15-${branch}`,
+          elem(elements.e15, options),
           'k-trn',
-          options.classNames.e14
+          options.classNames.e15
         ) ?? '')
-      : (options.classNames.e14 ?? '')
+      : (options.classNames.e15 ?? '')
   };
 }
