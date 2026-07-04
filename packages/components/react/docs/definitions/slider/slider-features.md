@@ -87,7 +87,9 @@ label through `aria-labelledby` unless a per-thumb naming prop overrides it.
 | `className` | Merged into the root `e1` slot. |
 | `classNames` | Escape hatch for schema element slots `e1` through `e14`. |
 
-`valueDisplay="tooltip"` renders a value indicator near each thumb.
+`valueDisplay="tooltip"` renders a value indicator near each thumb. The value
+indicator includes a fixed structural arrow with a slightly rounded tip that
+points toward the track.
 `valueDisplay="summary"` renders an out-of-track value summary in the header.
 `valueDisplay="both"` renders both surfaces.
 
@@ -146,7 +148,9 @@ belong to schema scales:
   consumes it as the `column-gap` between edge items so both `icon -> label` and
   `label -> icon` compositions use the same schema-owned spacing.
 - `e8.boxWidth` is consumed structurally as the minimum useful track width.
-- `e11.marginBottom` offsets the value indicator above the track.
+- `e11.marginBottom` offsets the value indicator above the track. When tooltip
+  display is active, this measures the distance between the tooltip arrow tip
+  and the track.
 - `e13.marginTop` offsets mark labels below the track.
 - `e13.marginBottom` offsets mark labels above the track.
 - `e14.marginTop` separates helper text from the control row.
@@ -400,6 +404,9 @@ Preserve these rules:
 - `e9` fills the active range through `--k-sld-start` and `--k-sld-end`.
 - `e10` centers on `--k-sld-value`.
 - `e11` centers on the corresponding thumb position and is pointer-inert.
+  It owns a fixed-size structural arrow through `::after`; the arrow inherits
+  the tooltip background, has a fixed rounded tip, and is not
+  schema-customizable yet.
 - `e12` uses `--k-sld-mark` for its value position.
 - `e13` uses `--k-sld-mark` for its label position.
 - Keyboard-visible focus is drawn on each thumb through global focus variables.
