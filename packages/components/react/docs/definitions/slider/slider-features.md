@@ -15,7 +15,7 @@ This document covers the public styled component exported by
 - Public component: `Slider`.
 - Public hook: `useSliderArtifactConfig`.
 - Public props/type exports: `SliderProps`, `SliderStatus`,
-  `SliderClassNames`, `SliderEndpoint`, `SliderEndpoints`, `SliderMark`,
+  `SliderClassNames`, `SliderMark`,
   `SliderMarks`, `SliderClassesMap`, `SliderModeClassesMap`,
   `SliderVariantClassesMap`, and `SliderArtifactConfig`.
 - Headless primitive: `HeadlessSlider` from `@kiskadee/react-headless`.
@@ -23,8 +23,8 @@ This document covers the public styled component exported by
 - Current topology: `variant: "standard"` and `mode: "base"`.
 
 Vertical Slider is intentionally out of V1. A vertical control is not only a
-rotated horizontal track; it needs separate placement rules for labels,
-endpoints, value indicators, marks, summaries, and helper content.
+rotated horizontal track; it needs separate placement rules for labels, lateral
+edge content, value indicators, marks, summaries, and helper content.
 
 This document does not redefine broad architecture. For cross-cutting rules,
 prefer the canonical docs:
@@ -78,11 +78,11 @@ label through `aria-labelledby` unless a per-thumb naming prop overrides it.
 | `label` | Optional field label shown above the control row. |
 | `labelAdornment` | Optional inline adornment after the label, such as an info affordance. |
 | `helperText` | Optional helper copy below the control row. |
-| `endpoints` | Optional content before and after the track. Each endpoint may provide `icon` and/or `label`. |
-| `marks` | Visual marker configuration. Supports `false`, `"none"`, `"step"`, or an explicit array of `{ value, label? }`. |
+| `marks` | Scale content and visual marker configuration. Supports `false`, `"none"`, `"step"`, or an explicit array of `{ value, label?, icon? }`. `label` is the only source for scale labels, including `min` and `max`. `icon` is supported only on exact `min` and `max` marks. |
 | `edgeMarks` | Controls whether rendered marks include edge marks at `min` and `max`. Supports `"include"` and `"exclude"`. |
 | `markLabelPlacement` | Controls where `e13` mark labels sit relative to the track. Supports `"auto"`, `"above"`, and `"below"`. |
 | `edgeMarkLabelPlacement` | Controls whether labels declared on `min`/`max` marks render as endpoint labels or track labels. Supports `"auto"`, `"endpoints"`, and `"markLabels"`. |
+| `edgeMarkLabelAlignment` | Controls how `min`/`max` labels align when rendered as track labels. Supports `"auto"`, `"center"`, and `"inside"`. |
 | `valueDisplay` | Controls selected value display: `"none"`, `"tooltip"`, `"summary"`, or `"both"`. |
 | `className` | Merged into the root `e1` slot. |
 | `classNames` | Escape hatch for schema element slots `e1` through `e14`. |
@@ -102,10 +102,10 @@ Slider uses fourteen canonical schema element slots:
 | `e1` | Root field wrapper and projected state scope. |
 | `e2` | Optional field label. |
 | `e3` | Optional value summary. |
-| `e4` | Control row that groups endpoints and track. |
-| `e5` | Endpoint wrapper. |
-| `e6` | Endpoint icon. |
-| `e7` | Endpoint label/value. |
+| `e4` | Control row that groups lateral edge content and track. |
+| `e5` | Internal lateral edge content wrapper. |
+| `e6` | Internal lateral edge icon. |
+| `e7` | Internal lateral edge label/value. |
 | `e8` | Track / rail. |
 | `e9` | Active track / selected interval. |
 | `e10` | Thumb / handle. |
@@ -126,10 +126,12 @@ The current schema option values are:
 - `edgeMarks`: `include`, `exclude`
 - `markLabelPlacement`: `auto`, `above`, `below`
 - `edgeMarkLabelPlacement`: `auto`, `endpoints`, `markLabels`
+- `edgeMarkLabelAlignment`: `auto`, `center`, `inside`
 
-`marks`, `edgeMarks`, `markLabelPlacement`, and `edgeMarkLabelPlacement` are
-top-level component options because they describe visual defaults for the
-component. Consumers can still override them per instance.
+`marks`, `edgeMarks`, `markLabelPlacement`, `edgeMarkLabelPlacement`, and
+`edgeMarkLabelAlignment` are top-level component options because they describe
+visual defaults for the component. Consumers can still override them per
+instance.
 
 ### Schema-Owned Layout Spacing
 
@@ -138,10 +140,11 @@ belong to schema scales:
 
 - `e3.marginLeft` separates the field label from the value summary.
 - `e4.marginTop` separates the header row from the control row.
-- `e5.marginLeft` and `e5.marginRight` separate endpoints from the track.
-- `e5.paddingLeft` defines the internal endpoint content gap. Structural CSS
-  consumes it as the `column-gap` between endpoint items so both `icon -> label`
-  and `label -> icon` compositions use the same schema-owned spacing.
+- `e5.marginLeft` and `e5.marginRight` separate lateral edge content from the
+  track.
+- `e5.paddingLeft` defines the internal lateral edge content gap. Structural CSS
+  consumes it as the `column-gap` between edge items so both `icon -> label` and
+  `label -> icon` compositions use the same schema-owned spacing.
 - `e8.boxWidth` is consumed structurally as the minimum useful track width.
 - `e11.marginBottom` offsets the value indicator above the track.
 - `e13.marginTop` offsets mark labels below the track.
@@ -157,7 +160,8 @@ generated token in the specific DOM relationship.
 `web-builder` may emit `components/slider.kiskadee.json` with:
 
 - component options: `variant`, `valueDisplay`, `marks`, `edgeMarks`,
-  `markLabelPlacement`, and `edgeMarkLabelPlacement`;
+  `markLabelPlacement`, `edgeMarkLabelPlacement`, and
+  `edgeMarkLabelAlignment`;
 - variant-local options: currently `standard.options.mode`.
 
 Fallback order for component options:
@@ -182,9 +186,9 @@ HeadlessSlider.Root
     optional HeadlessSlider.FieldLabel
     optional HeadlessSlider.ValueSummary
   HeadlessSlider.ControlRow
-    optional start HeadlessSlider.Endpoint
-      optional HeadlessSlider.EndpointIcon
-      optional HeadlessSlider.EndpointLabel
+    optional start HeadlessSlider.Endpoint derived from min mark
+      optional HeadlessSlider.EndpointIcon from min mark icon
+      optional HeadlessSlider.EndpointLabel from min mark label
     HeadlessSlider.Track
       HeadlessSlider.ActiveTrack
       optional HeadlessSlider.Mark list
@@ -192,7 +196,7 @@ HeadlessSlider.Root
       HeadlessSlider.Thumb index=0
       optional HeadlessSlider.Thumb index=1
       optional HeadlessSlider.ValueIndicator list
-    optional end HeadlessSlider.Endpoint
+    optional end HeadlessSlider.Endpoint derived from max mark
   optional HeadlessSlider.HelperText
 ```
 
@@ -207,7 +211,8 @@ Rules to preserve:
   pointing at a non-rendered label. Consumers can provide `aria-label`,
   `aria-labelledby`, `thumbAriaLabels`, or `thumbAriaLabelledBy`.
 - `helperText` is connected through `aria-describedby`.
-- Endpoint icons are decorative by default and should be paintable through
+- Edge icons come from exact `min` and `max` marks. They are decorative by
+  default, render laterally through `e6`, and should be paintable through
   `currentColor`.
 - Marks are visual; they do not become separate interactive controls.
 - `classNames.e10` stays attached to each rendered thumb.
@@ -262,8 +267,9 @@ boundary values:
 
 `edgeMarks` is resolved from the component prop first, then from the
 schema/artifact option, then from the default `"include"`. It applies after mark
-normalization and affects visual marks only. Labels declared on exact `min` and
-`max` marks are still available to `edgeMarkLabelPlacement`.
+normalization and affects visual marks only. Labels and icons declared on exact
+`min` and `max` marks are still available to lateral edge composition and
+`edgeMarkLabelPlacement`.
 
 `markLabelPlacement` controls only mark labels (`e13`):
 
@@ -275,33 +281,48 @@ normalization and affects visual marks only. Labels declared on exact `min` and
   `isLikelyTouch` interaction environment. Likely-touch environments use
   `above`; otherwise labels use `below`.
 
-This option does not affect endpoint labels (`e7`), value summaries (`e3`), or
-value indicators/tooltips (`e11`).
+This option does not affect lateral edge labels (`e7`), value summaries (`e3`),
+or value indicators/tooltips (`e11`).
 
 `edgeMarkLabelPlacement` controls only labels declared on exact `min` and `max`
 marks:
 
 - `edgeMarkLabelPlacement="markLabels"` renders those edge labels as track labels
   (`e13`);
-- `edgeMarkLabelPlacement="endpoints"` renders those edge labels as endpoint
-  labels (`e7`);
+- `edgeMarkLabelPlacement="endpoints"` renders those edge labels as lateral
+  edge labels (`e7`);
 - `edgeMarkLabelPlacement="auto"` resolves at runtime from the shared
   `isCompactViewport` layout environment. Compact viewports use `markLabels`;
   non-compact viewports use `endpoints`.
 
+`edgeMarkLabelAlignment` controls how edge labels align when
+`edgeMarkLabelPlacement` resolves to `markLabels`:
+
+- `edgeMarkLabelAlignment="center"` keeps the current centered geometry;
+- `edgeMarkLabelAlignment="inside"` aligns the `min` label start to the track
+  start and the `max` label end to the track end;
+- `edgeMarkLabelAlignment="auto"` resolves at runtime from the shared
+  `isCompactViewport` layout environment. Compact viewports use `inside`;
+  non-compact viewports use `center`.
+
+This is not collision handling for all labels. Intermediate mark labels remain
+centered on their marks. If a design system chooses `center` and needs extra
+room for large edge labels, reserve that space outside the Slider, such as on a
+wrapper or card content container.
+
 Intermediate mark labels always render as track labels (`e13`). `marks` remains
-the single source for scale labels:
+the single source for scale labels and edge icon content:
 
 ```tsx
 <Slider
   min={0}
   max={100}
   marks={[
-    { value: 0, label: '0%' },
+    { value: 0, label: '0%', icon: '-' },
     { value: 25, label: '25%' },
     { value: 50, label: '50%' },
     { value: 75, label: '75%' },
-    { value: 100, label: '100%' }
+    { value: 100, label: '100%', icon: '+' }
   ]}
 />
 ```
@@ -312,8 +333,16 @@ Explicit marks accept:
 type SliderMark = {
   value: number;
   label?: ReactNode;
+  icon?: ReactNode;
 };
 ```
+
+`marks[].icon` is consumed only when `value` is exactly `min` or `max`.
+Intermediate mark icons are intentionally ignored by the styled `Slider`.
+The edge icon always renders laterally in `e6`. The edge label follows
+`edgeMarkLabelPlacement`: `endpoints` renders it laterally in `e7`,
+`markLabels` renders it on the track in `e13`, and `auto` chooses between those
+two placements from the shared compact viewport environment.
 
 Only marks inside `[min, max]` render. A mark is projected as selected when it
 falls inside the active interval. In single mode, that interval is `min` to the
@@ -422,15 +451,17 @@ generated markup, structural CSS, or regressions.
 | `k-sld-e2-a` | Field label. |
 | `k-sld-e3-a` | Value summary. |
 | `k-sld-e4-a` | Control row. |
-| `k-sld-e5-a` | Endpoint wrapper. |
-| `k-sld-e6-a` | Endpoint icon. |
-| `k-sld-e7-a` | Endpoint label/value. |
+| `k-sld-e5-a` | Internal lateral edge content wrapper. |
+| `k-sld-e6-a` | Internal lateral edge icon. |
+| `k-sld-e7-a` | Internal lateral edge label/value. |
 | `k-sld-e8-a` | Track / rail. |
 | `k-sld-e9-a` | Active track / selected interval. |
 | `k-sld-e10-a` | Thumb / handle. |
 | `k-sld-e11-a` | Value indicator / tooltip. |
 | `k-sld-e12-a` | Mark / visual step marker. |
 | `k-sld-e13-a` | Mark label. |
+| `k-sld-e13c-a` | Start edge mark label aligned inside the track. |
+| `k-sld-e13d-a` | End edge mark label aligned inside the track. |
 | `k-sld-e14-a` | Helper text. |
 
 The structural branch registry currently uses `a` for the single public Slider
@@ -447,7 +478,8 @@ structure. The suffix does not create a public variant or mode.
   controlled/uncontrolled value, `disabled`, `readOnly`, and keyboard support.
 - Schema elements `e1` through `e14`.
 - Current schema options and values for `variant`, `mode`, `valueDisplay`,
-  `marks`, `edgeMarks`, `markLabelPlacement`, and `edgeMarkLabelPlacement`.
+  `marks`, `edgeMarks`, `markLabelPlacement`, `edgeMarkLabelPlacement`, and
+  `edgeMarkLabelAlignment`.
 - Generated artifacts and class maps as the source of truth for visual tokens.
 - Current horizontal-only contract.
 

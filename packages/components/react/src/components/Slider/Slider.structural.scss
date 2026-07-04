@@ -245,6 +245,24 @@
 }
 
 /*
+ * element mark label modifier / e13c
+ * Keeps the start edge label inside the track instead of centering it on the boundary.
+ */
+.k-sld-e13c-a {
+  text-align: start;
+  transform: translateX(0);
+}
+
+/*
+ * element mark label modifier / e13d
+ * Keeps the end edge label inside the track instead of centering it on the boundary.
+ */
+.k-sld-e13d-a {
+  text-align: end;
+  transform: translateX(-100%);
+}
+
+/*
  * element helper text / e14
  * Keeps helper content in normal block flow below the slider control row.
  */

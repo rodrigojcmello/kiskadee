@@ -16,6 +16,7 @@ import type {
   SliderValueSummaryElementStyleFromSchema
 } from './slider.elements.zod.ts';
 import type {
+  SliderEdgeMarkLabelAlignmentSchemaValue,
   SliderEdgeMarkLabelPlacementSchemaValue,
   SliderEdgeMarksSchemaValue,
   SliderMarkLabelPlacementSchemaValue,
@@ -66,6 +67,7 @@ export type SliderMarks = SliderMarksSchemaValue;
 export type SliderEdgeMarks = SliderEdgeMarksSchemaValue;
 export type SliderMarkLabelPlacement = SliderMarkLabelPlacementSchemaValue;
 export type SliderEdgeMarkLabelPlacement = SliderEdgeMarkLabelPlacementSchemaValue;
+export type SliderEdgeMarkLabelAlignment = SliderEdgeMarkLabelAlignmentSchemaValue;
 export type SliderModeByVariant = {
   standard: SliderStandardMode;
 };

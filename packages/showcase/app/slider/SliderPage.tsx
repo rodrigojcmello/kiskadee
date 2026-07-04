@@ -11,6 +11,7 @@ import type {
 import {
   Card,
   Slider,
+  type SliderEdgeMarkLabelAlignmentOption,
   type SliderEdgeMarkLabelPlacementOption,
   type SliderEdgeMarksOption,
   type SliderMarkLabelPlacementOption,
@@ -180,6 +181,15 @@ const edgeMarkLabelPlacementOptions: Array<{
   { value: 'markLabels', label: 'Track labels' }
 ];
 
+const edgeMarkLabelAlignmentOptions: Array<{
+  value: SliderEdgeMarkLabelAlignmentOption;
+  label: string;
+}> = [
+  { value: 'auto', label: 'Auto' },
+  { value: 'center', label: 'Center' },
+  { value: 'inside', label: 'Inside' }
+];
+
 const intentLabels: Record<string, string> = {
   neutral: 'Neutral',
   primary: 'Primary'
@@ -199,6 +209,20 @@ const labeledPercentMarks = [
   { value: 50, label: '50%' },
   { value: 75, label: '75%' },
   { value: 100, label: '100%' }
+] as const;
+
+const ratingMarks = [
+  { value: 0, label: '0', icon: <SadIcon /> },
+  { value: 1 },
+  { value: 2 },
+  { value: 3 },
+  { value: 4 },
+  { value: 5 },
+  { value: 6 },
+  { value: 7 },
+  { value: 8 },
+  { value: 9 },
+  { value: 10, label: '10', icon: <SmileIcon /> }
 ] as const;
 
 function normalizeShadowLevelKey(key: ElementSizeValue): string {
@@ -353,7 +377,8 @@ export default function SliderPage() {
     useState<SliderMarkLabelPlacementOption>('auto');
   const [edgeMarkLabelPlacement, setEdgeMarkLabelPlacement] =
     useState<SliderEdgeMarkLabelPlacementOption>('auto');
-  const [showEndpoints, setShowEndpoints] = useState(true);
+  const [edgeMarkLabelAlignment, setEdgeMarkLabelAlignment] =
+    useState<SliderEdgeMarkLabelAlignmentOption>('auto');
   const [disabled, setDisabled] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
   const [interactiveValue, setInteractiveValue] = useState(55);
@@ -474,12 +499,6 @@ export default function SliderPage() {
     '--slider-surface-primary': selectedSurface?.swatchColor ?? '#0064B4'
   } as CSSProperties;
   const interactiveMarks = resolveInteractiveMarks(marksMode);
-  const interactiveEndpoints = showEndpoints
-    ? {
-        start: { label: '0' },
-        end: { label: '100' }
-      }
-    : undefined;
 
   useEffect(() => {
     if (!scaleSelectOptions.length || scaleSelectOptions.some((option) => option.value === scale)) {
@@ -542,6 +561,10 @@ export default function SliderPage() {
   useEffect(() => {
     setEdgeMarkLabelPlacement(sliderOptions.edgeMarkLabelPlacement);
   }, [sliderOptions.edgeMarkLabelPlacement]);
+
+  useEffect(() => {
+    setEdgeMarkLabelAlignment(sliderOptions.edgeMarkLabelAlignment);
+  }, [sliderOptions.edgeMarkLabelAlignment]);
 
   useEffect(() => {
     if (!surfaceOptions.length) {
@@ -757,21 +780,19 @@ export default function SliderPage() {
             }}
             disabled={!isSliderAvailable}
           />
-        </ShowcaseControlGrid>
-      </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Content">
-        <ShowcaseControlStack>
-          <ShowcaseBooleanControl
-            label="Endpoints"
-            checked={showEndpoints}
-            onCheckedChange={(checked) => {
-              if (checked === showEndpoints) return;
+          <ShowcaseSelectControl
+            label="Edge label alignment"
+            options={edgeMarkLabelAlignmentOptions}
+            value={edgeMarkLabelAlignment}
+            onValueChange={(value) => {
+              const nextEdgeMarkLabelAlignment = value as SliderEdgeMarkLabelAlignmentOption;
+              if (nextEdgeMarkLabelAlignment === edgeMarkLabelAlignment) return;
               playWowTransition();
-              setShowEndpoints(checked);
+              setEdgeMarkLabelAlignment(nextEdgeMarkLabelAlignment);
             }}
             disabled={!isSliderAvailable}
           />
-        </ShowcaseControlStack>
+        </ShowcaseControlGrid>
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="State">
         <ShowcaseControlStack>
@@ -844,11 +865,11 @@ export default function SliderPage() {
                   }
                   setInteractiveValue(nextValue);
                 }}
-                endpoints={interactiveEndpoints}
                 marks={interactiveMarks}
                 edgeMarks={edgeMarks}
                 markLabelPlacement={markLabelPlacement}
                 edgeMarkLabelPlacement={edgeMarkLabelPlacement}
+                edgeMarkLabelAlignment={edgeMarkLabelAlignment}
                 valueDisplay={valueDisplay}
                 formatValue={formatPercent}
                 scale={scale}
@@ -883,6 +904,7 @@ export default function SliderPage() {
                   edgeMarks="exclude"
                   markLabelPlacement={markLabelPlacement}
                   edgeMarkLabelPlacement={edgeMarkLabelPlacement}
+                  edgeMarkLabelAlignment={edgeMarkLabelAlignment}
                   formatValue={(value) => formatCurrency(value)}
                   valueDisplay="tooltip"
                   scale={scale}
@@ -902,10 +924,13 @@ export default function SliderPage() {
                   onValueChange={(nextValue) => {
                     if (typeof nextValue === 'number') setBrightness(nextValue);
                   }}
-                  endpoints={{
-                    start: { icon: <MoonIcon /> },
-                    end: { icon: <SunIcon /> }
-                  }}
+                  marks={[
+                    { value: 0, icon: <MoonIcon /> },
+                    { value: 100, icon: <SunIcon /> }
+                  ]}
+                  edgeMarks="exclude"
+                  edgeMarkLabelPlacement={edgeMarkLabelPlacement}
+                  edgeMarkLabelAlignment={edgeMarkLabelAlignment}
                   formatValue={(value) => (value > 85 ? 'Very Bright' : `${value}%`)}
                   valueDisplay="tooltip"
                   scale={scale}
@@ -926,14 +951,17 @@ export default function SliderPage() {
                   onValueChange={(nextValue) => {
                     if (Array.isArray(nextValue)) setTasks([nextValue[0], nextValue[1]]);
                   }}
-                  endpoints={{
-                    start: { label: '-' },
-                    end: { label: '+' }
-                  }}
-                  marks={labeledPercentMarks}
+                  marks={[
+                    { value: 0, label: '0%', icon: '-' },
+                    { value: 25, label: '25%' },
+                    { value: 50, label: '50%' },
+                    { value: 75, label: '75%' },
+                    { value: 100, label: '100%', icon: '+' }
+                  ]}
                   edgeMarks={edgeMarks}
                   markLabelPlacement={markLabelPlacement}
                   edgeMarkLabelPlacement={edgeMarkLabelPlacement}
+                  edgeMarkLabelAlignment={edgeMarkLabelAlignment}
                   formatValue={(value) => `${value}%`}
                   valueDisplay="summary"
                   scale={scale}
@@ -953,14 +981,11 @@ export default function SliderPage() {
                   onValueChange={(nextValue) => {
                     if (typeof nextValue === 'number') setRating(nextValue);
                   }}
-                  endpoints={{
-                    start: { icon: <SadIcon />, label: '0' },
-                    end: { label: '10', icon: <SmileIcon /> }
-                  }}
-                  marks="step"
+                  marks={ratingMarks}
                   edgeMarks={edgeMarks}
                   markLabelPlacement={markLabelPlacement}
                   edgeMarkLabelPlacement={edgeMarkLabelPlacement}
+                  edgeMarkLabelAlignment={edgeMarkLabelAlignment}
                   helperText="How happy are you with the level of service?"
                   valueDisplay="tooltip"
                   scale={scale}

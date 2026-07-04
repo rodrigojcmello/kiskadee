@@ -4,8 +4,7 @@ export { Slider } from './Slider.tsx';
 export type {
   SliderClassesMap,
   SliderClassNames,
-  SliderEndpoint,
-  SliderEndpoints,
+  SliderEdgeMarkLabelAlignmentOption,
   SliderEdgeMarkLabelPlacementOption,
   SliderEdgeMarksOption,
   SliderMark,

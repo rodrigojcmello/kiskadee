@@ -8,6 +8,7 @@ export const sliderMarksSchema = z.enum(['none', 'step']);
 export const sliderEdgeMarksSchema = z.enum(['include', 'exclude']);
 export const sliderMarkLabelPlacementSchema = z.enum(['auto', 'above', 'below']);
 export const sliderEdgeMarkLabelPlacementSchema = z.enum(['auto', 'endpoints', 'markLabels']);
+export const sliderEdgeMarkLabelAlignmentSchema = z.enum(['auto', 'center', 'inside']);
 
 export type SliderVariantSchemaValue = z.infer<typeof sliderVariantSchema>;
 export type SliderStandardModeSchemaValue = z.infer<typeof sliderStandardModeSchema>;
@@ -21,6 +22,9 @@ export type SliderMarkLabelPlacementSchemaValue = z.infer<
 export type SliderEdgeMarkLabelPlacementSchemaValue = z.infer<
   typeof sliderEdgeMarkLabelPlacementSchema
 >;
+export type SliderEdgeMarkLabelAlignmentSchemaValue = z.infer<
+  typeof sliderEdgeMarkLabelAlignmentSchema
+>;
 
 export function createSliderOptionsSchema() {
   return z
@@ -30,7 +34,8 @@ export function createSliderOptionsSchema() {
       marks: sliderMarksSchema.optional(),
       edgeMarks: sliderEdgeMarksSchema.optional(),
       markLabelPlacement: sliderMarkLabelPlacementSchema.optional(),
-      edgeMarkLabelPlacement: sliderEdgeMarkLabelPlacementSchema.optional()
+      edgeMarkLabelPlacement: sliderEdgeMarkLabelPlacementSchema.optional(),
+      edgeMarkLabelAlignment: sliderEdgeMarkLabelAlignmentSchema.optional()
     })
     .strict();
 }

@@ -12,8 +12,7 @@ export { Card, CardAction, useCardArtifactConfig } from './components/Card';
 export type {
   SliderArtifactConfig,
   SliderClassNames,
-  SliderEndpoint,
-  SliderEndpoints,
+  SliderEdgeMarkLabelAlignmentOption,
   SliderEdgeMarkLabelPlacementOption,
   SliderEdgeMarksOption,
   SliderMark,

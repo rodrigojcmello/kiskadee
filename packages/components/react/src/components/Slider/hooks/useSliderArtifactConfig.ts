@@ -1,4 +1,5 @@
 import type {
+  SliderEdgeMarkLabelAlignment,
   SliderEdgeMarkLabelPlacement,
   SliderEdgeMarks,
   SliderMarkLabelPlacement,
@@ -13,6 +14,7 @@ import { useComponentClassMap } from '../../../shared/contexts/useComponentClass
 import { useLoadedComponentArtifact } from '../../../shared/contexts/useLoadedComponentArtifact.ts';
 import {
   DEFAULT_SLIDER_EDGE_MARK_LABEL_PLACEMENT,
+  DEFAULT_SLIDER_EDGE_MARK_LABEL_ALIGNMENT,
   DEFAULT_SLIDER_EDGE_MARKS,
   DEFAULT_SLIDER_MARK_LABEL_PLACEMENT,
   DEFAULT_SLIDER_MARKS,
@@ -32,6 +34,7 @@ export type SliderArtifactConfig = {
     edgeMarks: SliderEdgeMarks;
     markLabelPlacement: SliderMarkLabelPlacement;
     edgeMarkLabelPlacement: SliderEdgeMarkLabelPlacement;
+    edgeMarkLabelAlignment: SliderEdgeMarkLabelAlignment;
   };
 };
 
@@ -71,7 +74,9 @@ export function useSliderArtifactConfig(): SliderArtifactConfig {
       edgeMarks: options?.edgeMarks ?? DEFAULT_SLIDER_EDGE_MARKS,
       markLabelPlacement: options?.markLabelPlacement ?? DEFAULT_SLIDER_MARK_LABEL_PLACEMENT,
       edgeMarkLabelPlacement:
-        options?.edgeMarkLabelPlacement ?? DEFAULT_SLIDER_EDGE_MARK_LABEL_PLACEMENT
+        options?.edgeMarkLabelPlacement ?? DEFAULT_SLIDER_EDGE_MARK_LABEL_PLACEMENT,
+      edgeMarkLabelAlignment:
+        options?.edgeMarkLabelAlignment ?? DEFAULT_SLIDER_EDGE_MARK_LABEL_ALIGNMENT
     }
   };
 }

@@ -3,6 +3,7 @@ import type {
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
+  SliderEdgeMarkLabelAlignment,
   SliderIntent,
   SliderMode,
   SliderVariant
@@ -30,6 +31,7 @@ export const DEFAULT_SLIDER_MARKS = 'none';
 export const DEFAULT_SLIDER_EDGE_MARKS = 'include';
 export const DEFAULT_SLIDER_MARK_LABEL_PLACEMENT = 'auto';
 export const DEFAULT_SLIDER_EDGE_MARK_LABEL_PLACEMENT = 'auto';
+export const DEFAULT_SLIDER_EDGE_MARK_LABEL_ALIGNMENT: SliderEdgeMarkLabelAlignment = 'auto';
 
 type SliderStructuralBranch = 'a';
 

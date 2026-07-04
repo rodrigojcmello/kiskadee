@@ -3,6 +3,7 @@ import type {
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
+  SliderEdgeMarkLabelAlignment,
   SliderMarks as SliderArtifactMarks,
   SliderEdgeMarkLabelPlacement,
   SliderEdgeMarks,
@@ -46,19 +47,10 @@ export type SliderVariantClassesMap = Partial<Record<SliderVariant, SliderModeCl
 
 export type SliderStatus = HeadlessSliderStatus;
 
-export type SliderEndpoint = {
-  icon?: ReactNode;
-  label?: ReactNode;
-};
-
-export type SliderEndpoints = {
-  start?: SliderEndpoint;
-  end?: SliderEndpoint;
-};
-
 export type SliderMark = {
   value: number;
   label?: ReactNode;
+  icon?: ReactNode;
 };
 
 export type SliderMarks = false | SliderArtifactMarks | readonly SliderMark[];
@@ -68,6 +60,11 @@ export type SliderResolvedMarkLabelPlacement = Exclude<SliderMarkLabelPlacementO
 export type SliderEdgeMarkLabelPlacementOption = SliderEdgeMarkLabelPlacement;
 export type SliderResolvedEdgeMarkLabelPlacement = Exclude<
   SliderEdgeMarkLabelPlacementOption,
+  'auto'
+>;
+export type SliderEdgeMarkLabelAlignmentOption = SliderEdgeMarkLabelAlignment;
+export type SliderResolvedEdgeMarkLabelAlignment = Exclude<
+  SliderEdgeMarkLabelAlignmentOption,
   'auto'
 >;
 
@@ -100,11 +97,11 @@ export type SliderProps = Omit<
   valueMode?: SliderValueMode;
   value?: SliderValue;
   defaultValue?: SliderValue;
-  endpoints?: SliderEndpoints;
   marks?: SliderMarks;
   edgeMarks?: SliderEdgeMarksOption;
   markLabelPlacement?: SliderMarkLabelPlacementOption;
   edgeMarkLabelPlacement?: SliderEdgeMarkLabelPlacementOption;
+  edgeMarkLabelAlignment?: SliderEdgeMarkLabelAlignmentOption;
   valueDisplay?: SliderValueDisplay;
   formatValue?: (value: number, index: 0 | 1) => ReactNode;
   thumbAriaLabels?: SliderThumbAriaLabels;

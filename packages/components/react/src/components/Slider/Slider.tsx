@@ -15,12 +15,13 @@ import {
 } from './Slider.class-names.ts';
 import type {
   SliderClassNames,
+  SliderEdgeMarkLabelAlignmentOption,
   SliderEdgeMarkLabelPlacementOption,
   SliderEdgeMarksOption,
-  SliderEndpoint,
   SliderMarkLabelPlacementOption,
   SliderMark,
   SliderMarks,
+  SliderResolvedEdgeMarkLabelAlignment,
   SliderResolvedEdgeMarkLabelPlacement,
   SliderResolvedMarkLabelPlacement,
   SliderProps
@@ -31,6 +32,8 @@ const DEFAULT_MIN = 0;
 const DEFAULT_MAX = 100;
 const DEFAULT_STEP = 1;
 const STEP_MARK_LIMIT = 101;
+const START_EDGE_MARK_LABEL_INSIDE_CLASS_NAME = 'k-sld-e13c-a';
+const END_EDGE_MARK_LABEL_INSIDE_CLASS_NAME = 'k-sld-e13d-a';
 
 function finiteNumber(value: number | undefined, fallback: number): number {
   return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
@@ -73,7 +76,7 @@ function resolveMarks(
   if (marks === 'step') return generateStepMarks(min, max, step);
   return marks
     .filter((mark) => Number.isFinite(mark.value) && mark.value >= min && mark.value <= max)
-    .map((mark) => ({ value: mark.value, label: mark.label }));
+    .map((mark) => ({ value: mark.value, label: mark.label, icon: mark.icon }));
 }
 
 function applyEdgeMarks(
@@ -102,47 +105,59 @@ function resolveEdgeMarkLabelPlacement(
   return isCompactViewport ? 'markLabels' : 'endpoints';
 }
 
+function resolveEdgeMarkLabelAlignment(
+  alignment: SliderEdgeMarkLabelAlignmentOption,
+  isCompactViewport: boolean
+): SliderResolvedEdgeMarkLabelAlignment {
+  if (alignment !== 'auto') return alignment;
+  return isCompactViewport ? 'inside' : 'center';
+}
+
 function isEdgeMark(mark: SliderMark, min: number, max: number): boolean {
   return mark.value === min || mark.value === max;
 }
 
-function getEdgeMarkLabel(
-  marks: SliderMark[],
-  value: number
-): SliderMark['label'] | undefined {
-  return marks.find((mark) => mark.value === value && mark.label !== undefined)?.label;
+function getEdgeMarkLabelAlignmentClassName(
+  mark: SliderMark,
+  min: number,
+  max: number,
+  alignment: SliderResolvedEdgeMarkLabelAlignment
+): string | undefined {
+  if (alignment !== 'inside') return undefined;
+  if (mark.value === min) return START_EDGE_MARK_LABEL_INSIDE_CLASS_NAME;
+  if (mark.value === max) return END_EDGE_MARK_LABEL_INSIDE_CLASS_NAME;
+  return undefined;
 }
 
-function hasEndpointContent(endpoint: SliderEndpoint | undefined): boolean {
-  return endpoint?.icon !== undefined || endpoint?.label !== undefined;
+function getEdgeMark(
+  marks: SliderMark[],
+  value: number
+): SliderMark | undefined {
+  return marks.find((mark) => mark.value === value);
 }
 
 function renderEndpoint(
   side: 'start' | 'end',
-  endpoint: SliderEndpoint | undefined,
-  edgeMarkLabel: SliderMark['label'] | undefined
+  edgeMark: SliderMark | undefined,
+  shouldRenderEdgeMarkLabel: boolean
 ) {
+  const edgeMarkLabel = shouldRenderEdgeMarkLabel ? edgeMark?.label : undefined;
   const hasEdgeMarkLabel = edgeMarkLabel !== undefined;
-  if (!hasEndpointContent(endpoint) && !hasEdgeMarkLabel) return null;
+  const hasEdgeMarkIcon = edgeMark?.icon !== undefined;
+  if (!hasEdgeMarkLabel && !hasEdgeMarkIcon) return null;
 
-  const endpointIcon =
-    endpoint?.icon !== undefined ? (
-      <HeadlessSlider.EndpointIcon>{endpoint.icon}</HeadlessSlider.EndpointIcon>
-    ) : null;
-  const endpointLabel =
-    endpoint?.label !== undefined ? (
-      <HeadlessSlider.EndpointLabel>{endpoint.label}</HeadlessSlider.EndpointLabel>
-    ) : null;
-  const edgeMarkLabelNode = hasEdgeMarkLabel ? (
-    <HeadlessSlider.EndpointLabel>{edgeMarkLabel}</HeadlessSlider.EndpointLabel>
+  const edgeMarkIconNode = hasEdgeMarkIcon ? (
+    <HeadlessSlider.EndpointIcon>{edgeMark.icon}</HeadlessSlider.EndpointIcon>
   ) : null;
+  const edgeMarkLabelNode =
+    hasEdgeMarkLabel ? (
+      <HeadlessSlider.EndpointLabel>{edgeMarkLabel}</HeadlessSlider.EndpointLabel>
+    ) : null;
 
   return (
     <HeadlessSlider.Endpoint>
-      {side === 'end' ? edgeMarkLabelNode : null}
-      {side === 'end' ? endpointLabel : endpointIcon}
-      {side === 'end' ? endpointIcon : endpointLabel}
-      {side === 'start' ? edgeMarkLabelNode : null}
+      {side === 'end' ? edgeMarkLabelNode : edgeMarkIconNode}
+      {side === 'end' ? edgeMarkIconNode : edgeMarkLabelNode}
     </HeadlessSlider.Endpoint>
   );
 }
@@ -177,11 +192,11 @@ function SliderRoot(props: SliderProps) {
     max: maxProp,
     step: stepProp,
     required,
-    endpoints,
     marks,
     edgeMarks,
     markLabelPlacement,
     edgeMarkLabelPlacement,
+    edgeMarkLabelAlignment,
     valueDisplay,
     formatValue,
     thumbAriaLabels,
@@ -209,6 +224,10 @@ function SliderRoot(props: SliderProps) {
     edgeMarkLabelPlacement ?? options.edgeMarkLabelPlacement,
     isCompactViewport
   );
+  const resolvedEdgeMarkLabelAlignment = resolveEdgeMarkLabelAlignment(
+    edgeMarkLabelAlignment ?? options.edgeMarkLabelAlignment,
+    isCompactViewport
+  );
   const resolvedValueMode = resolveValueMode(valueMode, props);
   const { min, max } = normalizeBounds(minProp, maxProp);
   const step = normalizeStep(stepProp);
@@ -231,12 +250,8 @@ function SliderRoot(props: SliderProps) {
     [max, min, normalizedMarks, resolvedEdgeMarkLabelPlacement]
   );
   const shouldRenderEdgeMarkLabelsAsEndpoints = resolvedEdgeMarkLabelPlacement === 'endpoints';
-  const startEdgeMarkLabel = shouldRenderEdgeMarkLabelsAsEndpoints
-    ? getEdgeMarkLabel(normalizedMarks, min)
-    : undefined;
-  const endEdgeMarkLabel = shouldRenderEdgeMarkLabelsAsEndpoints
-    ? getEdgeMarkLabel(normalizedMarks, max)
-    : undefined;
+  const startEdgeMark = getEdgeMark(normalizedMarks, min);
+  const endEdgeMark = getEdgeMark(normalizedMarks, max);
   const hasLabel = label !== undefined && label !== null;
   const hasValueSummary = resolvedValueDisplay === 'summary' || resolvedValueDisplay === 'both';
   const hasValueIndicator = resolvedValueDisplay === 'tooltip' || resolvedValueDisplay === 'both';
@@ -312,14 +327,23 @@ function SliderRoot(props: SliderProps) {
         </div>
       ) : null}
       <HeadlessSlider.ControlRow>
-        {renderEndpoint('start', endpoints?.start, startEdgeMarkLabel)}
+        {renderEndpoint('start', startEdgeMark, shouldRenderEdgeMarkLabelsAsEndpoints)}
         <HeadlessSlider.Track>
           <HeadlessSlider.ActiveTrack />
           {visualMarks.map((mark) => (
             <HeadlessSlider.Mark key={`mark-${mark.value}`} value={mark.value} />
           ))}
           {markLabels.map((mark) => (
-            <HeadlessSlider.MarkLabel key={`mark-label-${mark.value}`} value={mark.value}>
+            <HeadlessSlider.MarkLabel
+              key={`mark-label-${mark.value}`}
+              className={getEdgeMarkLabelAlignmentClassName(
+                mark,
+                min,
+                max,
+                resolvedEdgeMarkLabelAlignment
+              )}
+              value={mark.value}
+            >
               {mark.label}
             </HeadlessSlider.MarkLabel>
           ))}
@@ -340,7 +364,7 @@ function SliderRoot(props: SliderProps) {
             <HeadlessSlider.ValueIndicator index={1} />
           ) : null}
         </HeadlessSlider.Track>
-        {renderEndpoint('end', endpoints?.end, endEdgeMarkLabel)}
+        {renderEndpoint('end', endEdgeMark, shouldRenderEdgeMarkLabelsAsEndpoints)}
       </HeadlessSlider.ControlRow>
       {hasHelperText ? (
         <HeadlessSlider.HelperText id={helperTextId}>{helperText}</HeadlessSlider.HelperText>

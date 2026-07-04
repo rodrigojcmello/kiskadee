@@ -3,6 +3,7 @@ import type {
   ActivationFeedbackSetting,
   ComponentClassNameMapJSON,
   RadiusMode,
+  SliderEdgeMarkLabelAlignment,
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
   SliderEdgeMarkLabelPlacement,
@@ -87,6 +88,7 @@ export type KiskadeeContextValue = {
           edgeMarks?: SliderEdgeMarks;
           markLabelPlacement?: SliderMarkLabelPlacement;
           edgeMarkLabelPlacement?: SliderEdgeMarkLabelPlacement;
+          edgeMarkLabelAlignment?: SliderEdgeMarkLabelAlignment;
         };
         variants?: {
           standard?: {
