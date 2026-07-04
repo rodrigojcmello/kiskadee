@@ -1,4 +1,6 @@
 import type {
+  ActivationFeedbackEffectSchema,
+  ActivationFeedbackSetting,
   RadiusMode,
   SliderEdgeMarkLabelAlignment,
   SliderEdgeMarkLabelPlacement,
@@ -38,6 +40,12 @@ export type SliderArtifactConfig = {
     markLabelPlacement: SliderMarkLabelPlacement;
     edgeMarkLabelPlacement: SliderEdgeMarkLabelPlacement;
     edgeMarkLabelAlignment: SliderEdgeMarkLabelAlignment;
+  };
+  componentEffects: {
+    activationFeedback?: ActivationFeedbackSetting;
+  };
+  globalEffects: {
+    activationFeedback?: ActivationFeedbackEffectSchema;
   };
 };
 
@@ -81,6 +89,15 @@ export function useSliderArtifactConfig(): SliderArtifactConfig {
         options?.edgeMarkLabelPlacement ?? DEFAULT_SLIDER_EDGE_MARK_LABEL_PLACEMENT,
       edgeMarkLabelAlignment:
         options?.edgeMarkLabelAlignment ?? DEFAULT_SLIDER_EDGE_MARK_LABEL_ALIGNMENT
+    },
+    componentEffects: {
+      activationFeedback:
+        currentSliderComponentArtifact?.effects?.activationFeedback ??
+        previousLoadedSliderComponentArtifact?.effects?.activationFeedback ??
+        global?.components?.slider?.effects?.activationFeedback
+    },
+    globalEffects: {
+      activationFeedback: global?.effects?.activationFeedback
     }
   };
 }

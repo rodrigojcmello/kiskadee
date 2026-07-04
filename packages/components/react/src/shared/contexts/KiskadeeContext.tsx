@@ -81,6 +81,9 @@ export type KiskadeeContextValue = {
         };
       };
       slider?: {
+        effects?: {
+          activationFeedback?: ActivationFeedbackSetting;
+        };
         options?: {
           variant?: SliderVariant;
           valueDisplay?: SliderValueDisplay;

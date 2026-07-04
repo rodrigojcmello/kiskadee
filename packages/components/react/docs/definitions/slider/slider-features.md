@@ -15,6 +15,7 @@ This document covers the public styled component exported by
 - Public component: `Slider`.
 - Public hook: `useSliderArtifactConfig`.
 - Public props/type exports: `SliderProps`, `SliderStatus`,
+  `SliderActivationFeedback`,
   `SliderClassNames`, `SliderMark`,
   `SliderMarks`, `SliderClassesMap`, `SliderModeClassesMap`,
   `SliderVariantClassesMap`, and `SliderArtifactConfig`.
@@ -84,6 +85,7 @@ label through `aria-labelledby` unless a per-thumb naming prop overrides it.
 | `edgeMarkLabelPlacement` | Controls whether labels declared on `min`/`max` marks render as endpoint labels or track labels. Supports `"auto"`, `"endpoints"`, and `"markLabels"`. |
 | `edgeMarkLabelAlignment` | Controls how `min`/`max` labels align when rendered as track labels. Supports `"auto"`, `"center"`, and `"inside"`. |
 | `valueDisplay` | Controls selected value display: `"none"`, `"tooltip"`, `"summary"`, or `"both"`. |
+| `activationFeedback` | Optional per-instance override for the schema/artifact activation feedback effect. Supports `false` to disable and `"active"` for static preview. |
 | `className` | Merged into the root `e1` slot. |
 | `classNames` | Escape hatch for schema element slots `e1` through `e15`. |
 
@@ -92,6 +94,28 @@ indicator includes a fixed structural arrow with a slightly rounded tip that
 points toward the track.
 `valueDisplay="summary"` renders an out-of-track value summary in the header.
 `valueDisplay="both"` renders both surfaces.
+
+### Activation Feedback
+
+Slider activation feedback is a schema/artifact effect, following the same
+global/component recipe model used by Switch. The styled prop is only a local
+override:
+
+- omitted: use the current design system artifact;
+- `false`: disable the effect for this instance;
+- `"active"`: force a static preview state.
+
+The effect host is `e10`, the thumb wrapper. `e11` remains the thumb inner and
+must not own the effect state. This is important for presets such as Fluent 2,
+where the wrapper and inner thumb can have independent borders, fills, and
+radius values.
+
+Range sliders render two physical `e10` instances. The generated base
+activation-feedback classes are shared by the slot, but the active structural
+class `k-afxa` is applied per rendered thumb instance. A track click uses the
+thumb index chosen by `HeadlessSlider`, so only the thumb that will move gets
+the activation feedback. Keyboard value changes do not trigger activation
+feedback; the effect represents physical pointer/touch interaction.
 
 ## Schema And Artifact Contract
 
@@ -135,6 +159,11 @@ The current schema option values are:
 `edgeMarkLabelAlignment` are top-level component options because they describe
 visual defaults for the component. Consumers can still override them per
 instance.
+
+`components.slider.effects.activationFeedback` defines the component-level
+activation feedback recipe. When present, the web builder treats `e10` as the
+Slider activation-feedback host and emits the effect buckets consumed by the
+styled runtime.
 
 ### Schema-Owned Layout Spacing
 
@@ -231,6 +260,7 @@ override pattern and schema-owned mode values are not enough.
 - component options: `variant`, `valueDisplay`, `marks`, `edgeMarks`,
   `markLabelPlacement`, `edgeMarkLabelPlacement`, and
   `edgeMarkLabelAlignment`;
+- component effects: currently `activationFeedback`;
 - variant-local options: currently `standard.options.mode`.
 
 Fallback order for component options:

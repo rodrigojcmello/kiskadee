@@ -79,9 +79,18 @@ export type SliderThumbAriaLabelledBy = {
   end?: string;
 };
 
+export type SliderActivationFeedback = false | 'active';
+
 export type SliderProps = Omit<
   HeadlessSliderRootProps,
-  'children' | 'classNames' | 'labelId' | 'describedBy' | 'formatValue'
+  | 'children'
+  | 'classNames'
+  | 'labelId'
+  | 'describedBy'
+  | 'formatValue'
+  | 'onThumbInteractionCancel'
+  | 'onThumbInteractionEnd'
+  | 'onThumbInteractionStart'
 > & {
   id?: string;
   label?: ReactNode;
@@ -104,6 +113,7 @@ export type SliderProps = Omit<
   edgeMarkLabelPlacement?: SliderEdgeMarkLabelPlacementOption;
   edgeMarkLabelAlignment?: SliderEdgeMarkLabelAlignmentOption;
   valueDisplay?: SliderValueDisplay;
+  activationFeedback?: SliderActivationFeedback;
   formatValue?: (value: number, index: 0 | 1) => ReactNode;
   thumbAriaLabels?: SliderThumbAriaLabels;
   thumbAriaLabelledBy?: SliderThumbAriaLabelledBy;

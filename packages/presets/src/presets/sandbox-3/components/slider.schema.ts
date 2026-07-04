@@ -455,6 +455,28 @@ const valueIndicatorPalettes = {
 
 export function createSandbox3SliderSchema(): SliderComponent {
   return {
+    effects: {
+      activationFeedback: {
+        profile: 'halo',
+        origin: 'center',
+        visual: {
+          layer: 'underlay',
+          paint: 'outline',
+          tone: {
+            default: 'subtle',
+            byEmphasis: {
+              low: 'vivid',
+              lowest: 'vivid'
+            }
+          }
+        },
+        profiles: {
+          halo: {
+            size: 8
+          }
+        }
+      }
+    },
     options: {
       variant: 'standard',
       valueDisplay: 'tooltip',
@@ -552,6 +574,9 @@ export function createSandbox3SliderSchema(): SliderComponent {
               },
               e10: {
                 name: 'slider-thumb',
+                effects: {
+                  activationFeedback: true
+                },
                 scales: {
                   boxWidth: sizes.thumb,
                   boxHeight: sizes.thumb,

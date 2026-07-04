@@ -135,6 +135,7 @@ type SwitchComponent<TSegmentName extends SegmentName = never> = {
 
 type SliderComponent<TSegmentName extends SegmentName = never> = {
   elements?: never;
+  effects?: ComponentEffects;
   options?: SliderOptions;
   variants: SliderVariants<TSegmentName>;
 };

@@ -70,3 +70,17 @@ The Figma focus variant draws a two-layer focus frame around the component
 example. Kiskadee Slider V1 draws keyboard-visible focus on the thumb using the
 global focus contract. This follows the current shared component behavior and
 avoids adding a Slider-specific focus wrapper just for this preset.
+
+## Activation Feedback
+
+Fluent 2 Slider uses the Kiskadee shared activation-feedback effect to match the
+interactive affordance already used by Fluent Switch. The preset declares
+`components.slider.effects.activationFeedback` with the `halo` profile and uses
+`e10` as the host:
+
+- `e10`: outer thumb wrapper and activation-feedback host;
+- `e11`: visual thumb inner only.
+
+Range sliders render two physical `e10` thumbs. The generated effect capability
+is slot-level, but the runtime active class is applied per thumb instance so
+only the interacted thumb shows the feedback.

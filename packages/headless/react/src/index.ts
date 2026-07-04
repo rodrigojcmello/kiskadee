@@ -38,6 +38,7 @@ export type {
   SliderRootProps,
   SliderStatus,
   SliderThumbIndex,
+  SliderThumbInteractionDetails,
   SliderThumbProps,
   SliderTrackProps,
   SliderValue,

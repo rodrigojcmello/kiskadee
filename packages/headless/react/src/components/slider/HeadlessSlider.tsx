@@ -56,6 +56,11 @@ type SliderRootDivProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'cl
 
 export type SliderFormatValue = (value: number, index: SliderThumbIndex) => ReactNode;
 
+export type SliderThumbInteractionDetails = {
+  event: ReactPointerEvent<HTMLDivElement>;
+  index: SliderThumbIndex;
+};
+
 export type SliderRootProps = SliderRootDivProps & {
   children?: ReactNode;
   classNames?: SliderClassNames;
@@ -73,6 +78,9 @@ export type SliderRootProps = SliderRootDivProps & {
   status?: SliderStatus;
   formatValue?: SliderFormatValue;
   getAriaValueText?: (value: number, index: SliderThumbIndex) => string;
+  onThumbInteractionCancel?: (details: SliderThumbInteractionDetails) => void;
+  onThumbInteractionEnd?: (details: SliderThumbInteractionDetails) => void;
+  onThumbInteractionStart?: (details: SliderThumbInteractionDetails) => void;
   onValueChange?: (value: SliderValue) => void;
 };
 
@@ -303,6 +311,9 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
     status,
     formatValue,
     getAriaValueText,
+    onThumbInteractionCancel,
+    onThumbInteractionEnd,
+    onThumbInteractionStart,
     onValueChange,
     onPointerEnter,
     onPointerLeave,
@@ -484,8 +495,17 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       setPressed(true);
       event.currentTarget.setPointerCapture?.(event.pointerId);
       setThumbPreviewValue(targetIndex, nextValue);
+      onThumbInteractionStart?.({ event, index: targetIndex });
     },
-    [disabled, max, min, pickNearestThumbIndex, readOnly, setThumbPreviewValue]
+    [
+      disabled,
+      max,
+      min,
+      onThumbInteractionStart,
+      pickNearestThumbIndex,
+      readOnly,
+      setThumbPreviewValue
+    ]
   );
 
   const handleTrackPointerMove = useCallback(
@@ -503,20 +523,31 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
         setThumbValue(draggingThumbIndex, nextValue);
       }
 
+      if (draggingThumbIndex !== null) {
+        onThumbInteractionEnd?.({ event, index: draggingThumbIndex });
+      }
+
       event.currentTarget.releasePointerCapture?.(event.pointerId);
       setDraggingThumbIndex(null);
       setDragPreviewValue(null);
       setPressed(false);
     },
-    [disabled, draggingThumbIndex, max, min, readOnly, setThumbValue]
+    [disabled, draggingThumbIndex, max, min, onThumbInteractionEnd, readOnly, setThumbValue]
   );
 
-  const handleTrackPointerCancel = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
-    event.currentTarget.releasePointerCapture?.(event.pointerId);
-    setDraggingThumbIndex(null);
-    setDragPreviewValue(null);
-    setPressed(false);
-  }, []);
+  const handleTrackPointerCancel = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      if (draggingThumbIndex !== null) {
+        onThumbInteractionCancel?.({ event, index: draggingThumbIndex });
+      }
+
+      event.currentTarget.releasePointerCapture?.(event.pointerId);
+      setDraggingThumbIndex(null);
+      setDragPreviewValue(null);
+      setPressed(false);
+    },
+    [draggingThumbIndex, onThumbInteractionCancel]
+  );
 
   const handleThumbFocus = useCallback(
     (index: SliderThumbIndex, event: FocusEvent<HTMLSpanElement>) => {

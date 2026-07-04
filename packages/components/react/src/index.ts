@@ -10,6 +10,7 @@ export type {
 } from './components/Card';
 export { Card, CardAction, useCardArtifactConfig } from './components/Card';
 export type {
+  SliderActivationFeedback,
   SliderArtifactConfig,
   SliderClassNames,
   SliderEdgeMarkLabelAlignmentOption,

@@ -1,8 +1,17 @@
 import './Slider.structural.scss';
+import {
+  resolveActivationFeedbackSetting,
+  usesActivationFeedbackStaticRuntime
+} from '@kiskadee/core';
 import { HeadlessSlider } from '@kiskadee/react-headless';
-import { memo, useId, useMemo } from 'react';
+import { memo, useId, useMemo, useRef } from 'react';
 import { useIsCompactViewport } from '../../shared/interaction/useIsCompactViewport.ts';
 import { useIsLikelyTouch } from '../../shared/interaction/useIsLikelyTouch.ts';
+import {
+  hasSliderActivationFeedbackEffect,
+  useSliderActivationFeedbackController,
+  useSliderActivationFeedbackEffect
+} from './effects/activation-feedback/index.ts';
 import { useSliderArtifactConfig } from './hooks/useSliderArtifactConfig.ts';
 import {
   DEFAULT_SLIDER_EMPHASIS,
@@ -197,9 +206,12 @@ function SliderRoot(props: SliderProps) {
     edgeMarkLabelPlacement,
     edgeMarkLabelAlignment,
     valueDisplay,
+    activationFeedback,
     formatValue,
     thumbAriaLabels,
     thumbAriaLabelledBy,
+    disabled,
+    readOnly,
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     'aria-describedby': ariaDescribedBy,
@@ -208,10 +220,12 @@ function SliderRoot(props: SliderProps) {
   const isLikelyTouch = useIsLikelyTouch();
   const isCompactViewport = useIsCompactViewport();
   const generatedId = useId();
+  const startThumbRef = useRef<HTMLSpanElement | null>(null);
+  const endThumbRef = useRef<HTMLSpanElement | null>(null);
   const rootId = id ?? `slider-${generatedId}`;
   const labelId = `${rootId}-label`;
   const helperTextId = `${rootId}-helper`;
-  const { sliderClassesMap, options } = useSliderArtifactConfig();
+  const { sliderClassesMap, options, componentEffects, globalEffects } = useSliderArtifactConfig();
   const resolvedVariant = variant ?? options.variant;
   const resolvedMode = mode ?? options.mode;
   const resolvedRadius = radius ?? options.radius;
@@ -257,6 +271,20 @@ function SliderRoot(props: SliderProps) {
   const hasValueIndicator = resolvedValueDisplay === 'tooltip' || resolvedValueDisplay === 'both';
   const hasHelperText = helperText !== undefined && helperText !== null;
   const elements = resolveVariantElements(sliderClassesMap, resolvedVariant, resolvedMode);
+  const activationFeedbackConfig = useMemo(
+    () =>
+      resolveActivationFeedbackSetting(
+        globalEffects.activationFeedback,
+        componentEffects.activationFeedback
+      ),
+    [componentEffects.activationFeedback, globalEffects.activationFeedback]
+  );
+  const activationFeedbackProfile = activationFeedbackConfig?.profile ?? 'halo';
+  const shouldUseActivationFeedback =
+    activationFeedback !== false &&
+    usesActivationFeedbackStaticRuntime(activationFeedbackProfile) &&
+    hasSliderActivationFeedbackEffect(elements, activationFeedbackProfile);
+  const activationFeedbackEffect = useSliderActivationFeedbackEffect(shouldUseActivationFeedback);
   const structuralClassNames = useMemo(
     () =>
       resolveSliderClassNames({
@@ -290,6 +318,45 @@ function SliderRoot(props: SliderProps) {
     ]
   );
   const describedBy = join(ariaDescribedBy, hasHelperText ? helperTextId : undefined);
+  const activationFeedbackController = useSliderActivationFeedbackController({
+    config: activationFeedbackConfig,
+    disabled,
+    enabled: Boolean(activationFeedbackEffect),
+    forcedActive: activationFeedback === 'active',
+    geometryKey: `${scale}:${resolvedRadius}:${resolvedValueMode}:${structuralClassNames.e10}:${structuralClassNames.e11}`,
+    isRange: resolvedValueMode === 'range',
+    profile: activationFeedbackProfile,
+    readOnly,
+    startThumbRef,
+    endThumbRef
+  });
+  const activationFeedbackClassNames = useMemo(() => {
+    if (!activationFeedbackEffect) {
+      return {
+        activeThumbClassName: '',
+        thumbClassName: ''
+      };
+    }
+
+    return activationFeedbackEffect.resolveSliderActivationFeedbackEffect({
+      config: activationFeedbackConfig,
+      elements,
+      emphasis,
+      profile: activationFeedbackProfile
+    });
+  }, [
+    activationFeedbackConfig,
+    activationFeedbackEffect,
+    activationFeedbackProfile,
+    elements,
+    emphasis
+  ]);
+  const getThumbActivationFeedbackClassName = (index: 0 | 1) =>
+    join(
+      activationFeedbackClassNames.thumbClassName,
+      activationFeedbackController.isThumbActive(index) &&
+        activationFeedbackClassNames.activeThumbClassName
+    );
   const getThumbAriaLabelledBy = (index: 0 | 1) =>
     thumbAriaLabelledBy?.[resolveThumbKey(index)] ?? (hasLabel ? undefined : ariaLabelledBy);
   const getThumbAriaLabel = (index: 0 | 1) => {
@@ -310,9 +377,20 @@ function SliderRoot(props: SliderProps) {
       min={min}
       max={max}
       step={step}
+      disabled={disabled}
+      readOnly={readOnly}
       required={required}
       formatValue={formatValue}
       aria-describedby={describedBy}
+      onThumbInteractionCancel={
+        activationFeedbackController.thumbInteractionHandlers.onThumbInteractionCancel
+      }
+      onThumbInteractionEnd={
+        activationFeedbackController.thumbInteractionHandlers.onThumbInteractionEnd
+      }
+      onThumbInteractionStart={
+        activationFeedbackController.thumbInteractionHandlers.onThumbInteractionStart
+      }
     >
       {hasLabel || hasValueSummary ? (
         <div className="k-sld-x1-a">
@@ -348,7 +426,9 @@ function SliderRoot(props: SliderProps) {
             </HeadlessSlider.MarkLabel>
           ))}
           <HeadlessSlider.Thumb
+            ref={startThumbRef}
             index={0}
+            className={getThumbActivationFeedbackClassName(0)}
             aria-label={getThumbAriaLabel(0)}
             aria-labelledby={getThumbAriaLabelledBy(0)}
           >
@@ -356,7 +436,9 @@ function SliderRoot(props: SliderProps) {
           </HeadlessSlider.Thumb>
           {resolvedValueMode === 'range' ? (
             <HeadlessSlider.Thumb
+              ref={endThumbRef}
               index={1}
+              className={getThumbActivationFeedbackClassName(1)}
               aria-label={getThumbAriaLabel(1)}
               aria-labelledby={getThumbAriaLabelledBy(1)}
             >

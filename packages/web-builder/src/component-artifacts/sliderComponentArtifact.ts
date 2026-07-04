@@ -1,4 +1,5 @@
 import type {
+  ActivationFeedbackSetting,
   Schema,
   SliderEdgeMarkLabelAlignment,
   SliderEdgeMarkLabelPlacement,
@@ -22,6 +23,10 @@ export type SliderComponentOptionsPayload = {
   edgeMarkLabelAlignment?: SliderEdgeMarkLabelAlignment;
 };
 
+export type SliderComponentEffectsPayload = {
+  activationFeedback?: ActivationFeedbackSetting;
+};
+
 export type SliderComponentVariantsPayload = {
   [TVariant in SliderVariant]?: {
     options?: {
@@ -33,6 +38,7 @@ export type SliderComponentVariantsPayload = {
 export type SliderComponentArtifactJSON = {
   component: 'slider';
   options: SliderComponentOptionsPayload;
+  effects: SliderComponentEffectsPayload;
   variants: SliderComponentVariantsPayload;
 };
 
@@ -57,6 +63,17 @@ function buildSliderVariantsPayload(schema: Schema): SliderComponentVariantsPayl
   return variants;
 }
 
+function buildSliderEffectsPayload(schema: Schema): SliderComponentEffectsPayload {
+  const sliderSchema = schema.components?.slider;
+  if (!sliderSchema?.effects) return {};
+
+  return {
+    ...(sliderSchema.effects.activationFeedback !== undefined
+      ? { activationFeedback: sliderSchema.effects.activationFeedback }
+      : {})
+  };
+}
+
 export function buildSliderComponentArtifact(schema: Schema): SliderComponentArtifactJSON | null {
   const sliderSchema = schema.components?.slider;
   if (!sliderSchema) return null;
@@ -78,15 +95,17 @@ export function buildSliderComponentArtifact(schema: Schema): SliderComponentArt
       ? { edgeMarkLabelAlignment: sliderSchema.options.edgeMarkLabelAlignment }
       : {})
   };
+  const effects = buildSliderEffectsPayload(schema);
   const variants = buildSliderVariantsPayload(schema);
 
-  if (!Object.keys(options).length && !Object.keys(variants).length) {
+  if (!Object.keys(options).length && !Object.keys(effects).length && !Object.keys(variants).length) {
     return null;
   }
 
   return {
     component: 'slider',
     options,
+    effects,
     variants
   };
 }

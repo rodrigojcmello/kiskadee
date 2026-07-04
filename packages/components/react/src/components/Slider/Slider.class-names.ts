@@ -1,4 +1,5 @@
 import type {
+  ActivationFeedbackProfileMode,
   ClassNameByElementJSON,
   ComponentEmphasis,
   ElementSizeValue,
@@ -13,6 +14,11 @@ import {
   resolveSchemaElementClassName,
   resolveRadiusClassName as resolveSharedRadiusClassName
 } from '../../shared/class-resolution/classNames.ts';
+import {
+  type ActivationFeedbackEffectBuckets,
+  resolveActivationFeedbackBucketClass,
+  resolveActivationFeedbackProfileAvailability
+} from '../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
 import type {
   SliderClassesMap,
   SliderClassNames,
@@ -44,6 +50,19 @@ export function resolveVariantElements(
 ): SliderClassesMap {
   if (!map) return {};
   return map[variant]?.[mode] ?? {};
+}
+
+export function resolveSliderActivationFeedbackEffectClassName(
+  element: ClassNameByElementJSON | undefined,
+  profile?: ActivationFeedbackProfileMode
+): string {
+  const effects = element?.e as ActivationFeedbackEffectBuckets | undefined;
+  const resolvedProfile =
+    profile ?? resolveActivationFeedbackProfileAvailability({ e: effects })[0] ?? null;
+
+  return [effects?.af, resolveActivationFeedbackBucketClass(resolvedProfile, effects)]
+    .filter(Boolean)
+    .join(' ');
 }
 
 function elem(

@@ -360,6 +360,27 @@ const valueIndicatorPalettes = {
 
 export function createFluent2MicrosoftSliderSchema(): SliderComponent {
   return {
+    effects: {
+      activationFeedback: {
+        profile: 'halo',
+        origin: 'center',
+        visual: {
+          layer: 'underlay',
+          paint: 'outline',
+          tone: {
+            default: 'subtle',
+            byEmphasis: {
+              low: 'vivid'
+            }
+          }
+        },
+        profiles: {
+          halo: {
+            size: 8
+          }
+        }
+      }
+    },
     options: {
       variant: 'standard',
       valueDisplay: 'none',
@@ -459,6 +480,9 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
               e10: {
                 name: 'slider-thumb',
                 decorations: { borderStyle: 'solid' },
+                effects: {
+                  activationFeedback: true
+                },
                 scales: {
                   boxWidth: sizes.thumb,
                   boxHeight: sizes.thumb,

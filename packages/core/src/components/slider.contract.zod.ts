@@ -101,6 +101,7 @@ function createSliderVariantsSchema() {
 const sliderComponentContractSchema = z
   .object({
     elements: z.unknown().optional(),
+    effects: z.unknown().optional(),
     options: sliderOptionsSchema.optional(),
     variants: createSliderVariantsSchema().optional()
   })

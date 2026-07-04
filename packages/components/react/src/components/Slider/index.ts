@@ -2,6 +2,7 @@ export type { SliderArtifactConfig } from './hooks/useSliderArtifactConfig.ts';
 export { useSliderArtifactConfig } from './hooks/useSliderArtifactConfig.ts';
 export { Slider } from './Slider.tsx';
 export type {
+  SliderActivationFeedback,
   SliderClassesMap,
   SliderClassNames,
   SliderEdgeMarkLabelAlignmentOption,

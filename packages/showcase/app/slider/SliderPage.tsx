@@ -11,6 +11,7 @@ import type {
 import {
   Card,
   Slider,
+  type SliderActivationFeedback,
   type SliderEdgeMarkLabelAlignmentOption,
   type SliderEdgeMarkLabelPlacementOption,
   type SliderEdgeMarksOption,
@@ -44,6 +45,7 @@ import s from './Slider.module.scss';
 
 type SliderValueMode = 'single' | 'range';
 type SliderMarksMode = 'none' | 'step' | 'labeled';
+type SliderActivationFeedbackControl = 'default' | 'off' | 'active';
 
 const scaleOptions: Array<{ value: ElementSizeValue; label: string }> = [
   { value: 's:sm:3', label: 'Small 3' },
@@ -190,6 +192,15 @@ const edgeMarkLabelAlignmentOptions: Array<{
   { value: 'inside', label: 'Inside' }
 ];
 
+const activationFeedbackOptions: Array<{
+  value: SliderActivationFeedbackControl;
+  label: string;
+}> = [
+  { value: 'default', label: 'Default' },
+  { value: 'off', label: 'Off' },
+  { value: 'active', label: 'Active' }
+];
+
 const intentLabels: Record<string, string> = {
   neutral: 'Neutral',
   primary: 'Primary'
@@ -276,6 +287,14 @@ function resolveInteractiveMarks(marksMode: SliderMarksMode): SliderMarks {
   if (marksMode === 'step') return 'step';
   if (marksMode === 'labeled') return labeledPercentMarks;
   return 'none';
+}
+
+function resolveActivationFeedbackProp(
+  activationFeedback: SliderActivationFeedbackControl
+): SliderActivationFeedback | undefined {
+  if (activationFeedback === 'off') return false;
+  if (activationFeedback === 'active') return 'active';
+  return undefined;
 }
 
 function formatCurrency(value: number): string {
@@ -379,6 +398,8 @@ export default function SliderPage() {
     useState<SliderEdgeMarkLabelPlacementOption>('auto');
   const [edgeMarkLabelAlignment, setEdgeMarkLabelAlignment] =
     useState<SliderEdgeMarkLabelAlignmentOption>('auto');
+  const [activationFeedback, setActivationFeedback] =
+    useState<SliderActivationFeedbackControl>('default');
   const [disabled, setDisabled] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
   const [interactiveValue, setInteractiveValue] = useState(55);
@@ -501,6 +522,7 @@ export default function SliderPage() {
     '--slider-surface-primary': selectedSurface?.swatchColor ?? '#0064B4'
   } as CSSProperties;
   const interactiveMarks = resolveInteractiveMarks(marksMode);
+  const activationFeedbackProp = resolveActivationFeedbackProp(activationFeedback);
 
   useEffect(() => {
     setRadius(defaultRadius);
@@ -798,6 +820,18 @@ export default function SliderPage() {
             }}
             disabled={!isSliderAvailable}
           />
+          <ShowcaseSelectControl
+            label="Activation feedback"
+            options={activationFeedbackOptions}
+            value={activationFeedback}
+            onValueChange={(value) => {
+              const nextActivationFeedback = value as SliderActivationFeedbackControl;
+              if (nextActivationFeedback === activationFeedback) return;
+              playWowTransition();
+              setActivationFeedback(nextActivationFeedback);
+            }}
+            disabled={!isSliderAvailable}
+          />
         </ShowcaseControlGrid>
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="State">
@@ -877,6 +911,7 @@ export default function SliderPage() {
                 edgeMarkLabelPlacement={edgeMarkLabelPlacement}
                 edgeMarkLabelAlignment={edgeMarkLabelAlignment}
                 valueDisplay={valueDisplay}
+                activationFeedback={activationFeedbackProp}
                 formatValue={formatPercent}
                 scale={scale}
                 radius={radius}
@@ -913,6 +948,7 @@ export default function SliderPage() {
                   edgeMarkLabelAlignment={edgeMarkLabelAlignment}
                   formatValue={(value) => formatCurrency(value)}
                   valueDisplay="tooltip"
+                  activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
                   intent={intent}
@@ -939,6 +975,7 @@ export default function SliderPage() {
                   edgeMarkLabelAlignment={edgeMarkLabelAlignment}
                   formatValue={(value) => (value > 85 ? 'Very Bright' : `${value}%`)}
                   valueDisplay="tooltip"
+                  activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
                   intent={intent}
@@ -970,6 +1007,7 @@ export default function SliderPage() {
                   edgeMarkLabelAlignment={edgeMarkLabelAlignment}
                   formatValue={(value) => `${value}%`}
                   valueDisplay="summary"
+                  activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
                   intent={intent}
@@ -994,6 +1032,7 @@ export default function SliderPage() {
                   edgeMarkLabelAlignment={edgeMarkLabelAlignment}
                   helperText="How happy are you with the level of service?"
                   valueDisplay="tooltip"
+                  activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
                   intent={intent}

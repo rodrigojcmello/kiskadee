@@ -45,7 +45,7 @@ type ComponentEffectArtifact = {
     shadow?: ShadowEffectSchema;
   };
 };
-type ComponentEffectArtifactName = 'button' | 'card' | 'switch';
+type ComponentEffectArtifactName = 'button' | 'card' | 'slider' | 'switch';
 
 function hasErrnoCode(error: unknown, code: string): boolean {
   return (
@@ -223,6 +223,11 @@ export async function writeExtraArtifacts(params: {
 
   if (schema.components?.card?.effects?.shadow !== undefined) {
     getComponentEffects('card').shadow = schema.components.card.effects.shadow;
+  }
+
+  if (schema.components?.slider?.effects?.activationFeedback !== undefined) {
+    getComponentEffects('slider').activationFeedback =
+      schema.components.slider.effects.activationFeedback;
   }
 
   if (schema.components?.switch?.effects?.activationFeedback !== undefined) {
