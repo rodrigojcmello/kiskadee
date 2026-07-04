@@ -38,6 +38,10 @@ const c = {
   trackHover: [220, 18, 88, 1],
   trackPressed: [220, 18, 82, 1],
   trackDisabled: [220, 14, 90, 0.5],
+  tooltip: [0, 0, 14, 1],
+  tooltipHover: [0, 0, 18, 1],
+  tooltipPressed: [0, 0, 10, 1],
+  tooltipDisabled: [0, 0, 20, 0.54],
   primary: [225, 76, 52, 1],
   primaryHover: [224, 76, 62, 1],
   primaryPressed: [227, 82, 36, 1],
@@ -392,20 +396,20 @@ const valueIndicatorPalettes = {
       boxColor: {
         neutral: {
           medium: states({
-            rest: c.primary,
-            hover: c.primaryHover,
-            focus: c.primary,
-            pressed: c.primaryPressed,
-            disabled: c.primaryDisabled
+            rest: c.tooltip,
+            hover: c.tooltipHover,
+            focus: c.tooltip,
+            pressed: c.tooltipPressed,
+            disabled: c.tooltipDisabled
           })
         },
         primary: {
           medium: states({
-            rest: c.violet,
-            hover: c.violetHover,
-            focus: c.violet,
-            pressed: c.violetPressed,
-            disabled: c.primaryDisabled
+            rest: c.tooltip,
+            hover: c.tooltipHover,
+            focus: c.tooltip,
+            pressed: c.tooltipPressed,
+            disabled: c.tooltipDisabled
           })
         }
       },
