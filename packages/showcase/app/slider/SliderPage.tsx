@@ -391,6 +391,7 @@ export default function SliderPage() {
   const cardMeta = manifest?.components?.card;
   const isSliderAvailable = Boolean(sliderMeta);
   const isCardAvailable = Boolean(cardMeta);
+  const defaultRadius = sliderOptions.radius;
   const supportedScales = sliderMeta?.scale;
   const supportedIntents = sliderMeta?.state;
   const supportedStates = supportedIntents?.[intent];
@@ -411,9 +412,10 @@ export default function SliderPage() {
     () =>
       radiusOptions.map((option) => ({
         ...option,
+        label: option.value === defaultRadius ? `${option.label} (default)` : option.label,
         disabled: supportedScales ? !supportedScales[option.value] : false
       })),
-    [supportedScales]
+    [defaultRadius, supportedScales]
   );
   const intentSelectOptions = useMemo(
     () =>
@@ -499,6 +501,10 @@ export default function SliderPage() {
     '--slider-surface-primary': selectedSurface?.swatchColor ?? '#0064B4'
   } as CSSProperties;
   const interactiveMarks = resolveInteractiveMarks(marksMode);
+
+  useEffect(() => {
+    setRadius(defaultRadius);
+  }, [defaultRadius]);
 
   useEffect(() => {
     if (!scaleSelectOptions.length || scaleSelectOptions.some((option) => option.value === scale)) {

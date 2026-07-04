@@ -572,7 +572,7 @@ export function createSandbox3SliderSchema(): SliderComponent {
                   boxHeight: sizes.indicatorHeight,
                   borderRadius: {
                     rounded: 6,
-                    pill: 6,
+                    pill: sizes.indicatorHeight,
                     square: 0
                   },
                   borderWidth: 0,

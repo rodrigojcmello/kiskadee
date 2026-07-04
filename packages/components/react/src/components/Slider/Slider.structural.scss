@@ -184,15 +184,22 @@
   --k-sld-tooltip-arrow-block-size: 0.375rem;
   --k-sld-tooltip-arrow-inline-size: 0.75rem;
   --k-sld-tooltip-arrow-tip-radius: 0.0625rem;
+  --k-sld-tooltip-arrow-clearance: 2px;
+  --k-sld-tooltip-arrow-overlap: 2px;
 
   position: absolute;
-  inset-block-end: calc(100% + var(--k-mgb, 0px) + var(--k-sld-tooltip-arrow-block-size));
+  inset-block-end: calc(
+    100% + var(--k-mgb, 0px) + var(--k-sld-tooltip-arrow-block-size) -
+      var(--k-sld-tooltip-arrow-overlap) +
+      var(--k-sld-tooltip-arrow-clearance)
+  );
   inset-inline-start: var(--k-sld-value, 0%);
   z-index: 3;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  min-inline-size: var(--k-sld-tooltip-arrow-inline-size);
   pointer-events: none;
   white-space: nowrap;
   transform: translateX(-50%);
@@ -205,14 +212,20 @@
 .k-sld-e11-a::after {
   content: '';
   position: absolute;
-  inset-block-start: 100%;
+  inset-block-start: calc(100% - var(--k-sld-tooltip-arrow-overlap));
   inset-inline-start: 50%;
-  inline-size: calc(var(--k-sld-tooltip-arrow-inline-size) * 0.7071067812);
-  block-size: calc(var(--k-sld-tooltip-arrow-inline-size) * 0.7071067812);
+  inline-size: var(--k-sld-tooltip-arrow-inline-size);
+  block-size: var(--k-sld-tooltip-arrow-block-size);
   background: inherit;
-  border-radius: 0 0 var(--k-sld-tooltip-arrow-tip-radius) 0;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    calc(50% + var(--k-sld-tooltip-arrow-tip-radius)) calc(100% - var(--k-sld-tooltip-arrow-tip-radius)),
+    50% 100%,
+    calc(50% - var(--k-sld-tooltip-arrow-tip-radius)) calc(100% - var(--k-sld-tooltip-arrow-tip-radius))
+  );
   pointer-events: none;
-  transform: translate(-50%, -50%) rotate(45deg);
+  transform: translateX(-50%);
 }
 
 /*

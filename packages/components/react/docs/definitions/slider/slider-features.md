@@ -148,9 +148,13 @@ belong to schema scales:
   consumes it as the `column-gap` between edge items so both `icon -> label` and
   `label -> icon` compositions use the same schema-owned spacing.
 - `e8.boxWidth` is consumed structurally as the minimum useful track width.
+- `e11.boxHeight` sets the value indicator height.
+- `e11.paddingLeft` and `e11.paddingRight` set the value indicator horizontal
+  padding.
 - `e11.marginBottom` offsets the value indicator above the track. When tooltip
-  display is active, this measures the distance between the tooltip arrow tip
-  and the track.
+  display is active, structural CSS also adds fixed arrow geometry: a `2px`
+  arrow overlap into the tooltip body and a `2px` arrow clearance from the
+  thumb.
 - `e13.marginTop` offsets mark labels below the track.
 - `e13.marginBottom` offsets mark labels above the track.
 - `e14.marginTop` separates helper text from the control row.
@@ -158,6 +162,65 @@ belong to schema scales:
 Do not add gap-like Slider scale attributes for these relationships. Use
 margin, padding, or existing box scales, then let structural CSS consume the
 generated token in the specific DOM relationship.
+
+### Radius Ownership
+
+Slider radius follows the shared Kiskadee radius model: `rounded`, `pill`, and
+`square` are semantic modes selected globally or per instance, while the schema
+defines the physical radius value for each element inside each mode.
+
+Runtime precedence is:
+
+1. `Slider` prop `radius`;
+2. preset `global.radius`;
+3. `DEFAULT_SLIDER_RADIUS`.
+
+The styled Slider currently resolves the selected radius mode for:
+
+- `e8`: track;
+- `e9`: active track;
+- `e10`: thumb;
+- `e11`: value indicator / tooltip;
+- `e12`: mark.
+
+Do not add per-element radius props such as `trackRadius`, `thumbRadius`, or
+`tooltipRadius` only to support showcase experimentation. If a preset wants the
+component mode to be `pill` but one Slider element should remain square, the
+preset should encode that directly in the element schema by setting that
+element's `pill` border radius value to `0`. Likewise, a preset can make the
+thumb fully circular, the tooltip softly rounded, and the track square while
+still exposing only one public radius mode.
+
+Example:
+
+```ts
+e8: {
+  // Track is square even when the component radius mode is pill.
+  scales: {
+    borderRadius: {
+      rounded: 2,
+      pill: 0,
+      square: 0
+    }
+  }
+}
+
+e10: {
+  // Thumb remains circular in pill mode.
+  scales: {
+    borderRadius: {
+      rounded: 12,
+      pill: 999,
+      square: 0
+    }
+  }
+}
+```
+
+This keeps the public contract small: consumers select the radius mode, and the
+design system decides what that mode means for each Slider element. Reopen a
+per-element radius API only if multiple components need the same runtime
+override pattern and schema-owned mode values are not enough.
 
 ### Component Artifact
 
@@ -405,8 +468,9 @@ Preserve these rules:
 - `e10` centers on `--k-sld-value`.
 - `e11` centers on the corresponding thumb position and is pointer-inert.
   It owns a fixed-size structural arrow through `::after`; the arrow inherits
-  the tooltip background, has a fixed rounded tip, and is not
-  schema-customizable yet.
+  the tooltip background, has a fixed softened tip, overlaps the tooltip body by
+  `2px`, and includes a fixed `2px` clearance from the thumb. Arrow geometry is
+  not schema-customizable yet.
 - `e12` uses `--k-sld-mark` for its value position.
 - `e13` uses `--k-sld-mark` for its label position.
 - Keyboard-visible focus is drawn on each thumb through global focus variables.

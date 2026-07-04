@@ -1,4 +1,5 @@
 import type {
+  RadiusMode,
   SliderEdgeMarkLabelAlignment,
   SliderEdgeMarkLabelPlacement,
   SliderEdgeMarks,
@@ -19,6 +20,7 @@ import {
   DEFAULT_SLIDER_MARK_LABEL_PLACEMENT,
   DEFAULT_SLIDER_MARKS,
   DEFAULT_SLIDER_MODE,
+  DEFAULT_SLIDER_RADIUS,
   DEFAULT_SLIDER_VALUE_DISPLAY,
   DEFAULT_SLIDER_VARIANT
 } from '../Slider.class-names.ts';
@@ -29,6 +31,7 @@ export type SliderArtifactConfig = {
   options: {
     variant: SliderVariant;
     mode: SliderMode;
+    radius: RadiusMode;
     valueDisplay: SliderValueDisplay;
     marks: SliderMarks;
     edgeMarks: SliderEdgeMarks;
@@ -69,6 +72,7 @@ export function useSliderArtifactConfig(): SliderArtifactConfig {
     options: {
       variant,
       mode: variantOptions?.mode ?? DEFAULT_SLIDER_MODE,
+      radius: global?.radius ?? DEFAULT_SLIDER_RADIUS,
       valueDisplay: options?.valueDisplay ?? DEFAULT_SLIDER_VALUE_DISPLAY,
       marks: options?.marks ?? DEFAULT_SLIDER_MARKS,
       edgeMarks: options?.edgeMarks ?? DEFAULT_SLIDER_EDGE_MARKS,

@@ -7,7 +7,6 @@ import { useSliderArtifactConfig } from './hooks/useSliderArtifactConfig.ts';
 import {
   DEFAULT_SLIDER_EMPHASIS,
   DEFAULT_SLIDER_INTENT,
-  DEFAULT_SLIDER_RADIUS,
   DEFAULT_SLIDER_SCALE,
   join,
   resolveSliderClassNames,
@@ -182,7 +181,7 @@ function SliderRoot(props: SliderProps) {
     scale = DEFAULT_SLIDER_SCALE,
     emphasis = DEFAULT_SLIDER_EMPHASIS,
     intent = DEFAULT_SLIDER_INTENT,
-    radius = DEFAULT_SLIDER_RADIUS,
+    radius,
     variant,
     mode,
     valueMode,
@@ -215,6 +214,7 @@ function SliderRoot(props: SliderProps) {
   const { sliderClassesMap, options } = useSliderArtifactConfig();
   const resolvedVariant = variant ?? options.variant;
   const resolvedMode = mode ?? options.mode;
+  const resolvedRadius = radius ?? options.radius;
   const resolvedValueDisplay = valueDisplay ?? options.valueDisplay;
   const resolvedMarkLabelPlacement = resolveMarkLabelPlacement(
     markLabelPlacement ?? options.markLabelPlacement,
@@ -269,7 +269,7 @@ function SliderRoot(props: SliderProps) {
         scale,
         intent,
         emphasis,
-        radius,
+        radius: resolvedRadius,
         hasLabel,
         hasValueSummary,
         hasHelperText,
@@ -284,7 +284,7 @@ function SliderRoot(props: SliderProps) {
       hasLabel,
       hasValueSummary,
       intent,
-      radius,
+      resolvedRadius,
       resolvedMarkLabelPlacement,
       scale
     ]
