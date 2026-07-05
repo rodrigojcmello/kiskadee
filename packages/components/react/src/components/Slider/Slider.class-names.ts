@@ -1,23 +1,26 @@
-import type {
-  ActivationFeedbackProfileMode,
-  ClassNameByElementJSON,
-  ComponentEmphasis,
-  ElementSizeValue,
-  RadiusMode,
-  SliderActiveTrackOrigin,
-  SliderMarkPlacement,
-  SliderEdgeMarkLabelAlignment,
-  SliderIntent,
-  SliderMode,
-  SliderOriginMark,
-  SliderSnapMotion,
-  SliderThumbEdgeBehavior,
-  SliderThumbCrossing,
-  SliderValueAnimation,
-  SliderVariant
+import {
+  type ActivationFeedbackProfileMode,
+  type ClassNameByElementJSON,
+  type ComponentEmphasis,
+  type EffectClassBucketJSON,
+  type ElementSizeValue,
+  type RadiusMode,
+  stateActivator as cn,
+  type SliderActiveTrackOrigin,
+  type SliderMarkPlacement,
+  type SliderEdgeMarkLabelAlignment,
+  type SliderIntent,
+  type SliderMode,
+  type SliderOriginMark,
+  type SliderSnapMotion,
+  type SliderThumbEdgeBehavior,
+  type SliderThumbCrossing,
+  type SliderValueAnimation,
+  type SliderVariant
 } from '@kiskadee/core';
 import {
   joinClassNames,
+  resolveEffectBucketClassName,
   resolveSchemaElementClassName,
   resolveRadiusClassName as resolveSharedRadiusClassName
 } from '../../shared/class-resolution/classNames.ts';
@@ -79,6 +82,11 @@ export function resolveSliderActivationFeedbackEffectClassName(
     .join(' ');
 }
 
+function resolveSliderShadowEffectClassName(bucket: EffectClassBucketJSON | undefined): string {
+  const shadowClass = resolveEffectBucketClassName(bucket);
+  return join(shadowClass, shadowClass ? cn.shadow : '') ?? '';
+}
+
 function elem(
   element: ClassNameByElementJSON | undefined,
   options: {
@@ -125,6 +133,7 @@ export function resolveSliderClassNames(options: {
 }): Required<SliderClassNames> {
   const elements = options.elements;
   const branch = options.structuralBranch;
+  const thumbShadowClassName = resolveSliderShadowEffectClassName(elements.e10?.e?.h);
 
   return {
     e1:
@@ -170,6 +179,7 @@ export function resolveSliderClassNames(options: {
         `k-sld-e10-${branch}`,
         elem(elements.e10, options),
         resolveRadiusClassName(elements.e10, options.scale, options.radius),
+        thumbShadowClassName,
         'k-trn',
         options.classNames.e10
       ) ?? '',

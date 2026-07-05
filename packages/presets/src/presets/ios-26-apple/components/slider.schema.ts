@@ -15,8 +15,8 @@ const iosSliderTrack = [0, 0, 0, 0.05] as const;
 const iosSliderTrackDisabled = [0, 0, 0, 0.03] as const;
 const iosSliderTick = [0, 0, 0, 0.25] as const;
 const iosSliderOriginTick = [0, 0, 0, 1] as const;
-const iosSliderThumb = [0, 0, 100, 0.72] as const;
-const iosSliderThumbBorder = [0, 0, 100, 0.9] as const;
+const iosSliderThumb = [0, 0, 100, 0.96] as const;
+const iosSliderThumbBorder = [0, 0, 100, 1] as const;
 const iosSliderText = [0, 0, 0, 0.6] as const;
 const iosSliderTooltipText = [0, 0, 100, 1] as const;
 const iosSliderTooltipTextDisabled = [0, 0, 100, 0.6] as const;
@@ -64,6 +64,7 @@ export function createIos26AppleSliderSchema({
 }: CreateIos26AppleSliderSchemaArgs): SliderComponent {
   const tint = c('default', 'l', 'primary', 50);
   const tintHover = c('default', 'l', 'primary', 50, 84);
+  const tintPressed = c('default', 'l', 'primary', 60);
   const disabledTint = c('default', 'l', 'primary', 50, 20);
 
   const textPalettes = buildBySegment(segmentNames, () => ({
@@ -98,6 +99,16 @@ export function createIos26AppleSliderSchema({
   }));
 
   return {
+    effects: {
+      shadow: {
+        e10: {
+          kind: 'outer',
+          states: {
+            rest: 's:sm:1'
+          }
+        }
+      }
+    },
     options: {
       variant: 'standard',
       valueDisplay: 'none',
@@ -223,7 +234,7 @@ export function createIos26AppleSliderSchema({
                           rest: tint,
                           hover: tintHover,
                           focus: tint,
-                          pressed: tint,
+                          pressed: tintPressed,
                           disabled: disabledTint
                         }
                       },
@@ -232,7 +243,7 @@ export function createIos26AppleSliderSchema({
                           rest: tint,
                           hover: tintHover,
                           focus: tint,
-                          pressed: tint,
+                          pressed: tintPressed,
                           disabled: disabledTint
                         }
                       }
@@ -269,18 +280,7 @@ export function createIos26AppleSliderSchema({
                       }
                     }
                   }
-                })),
-                effects: {
-                  shadow: {
-                    x: { rest: 0, disabled: 0 },
-                    y: { rest: 3, disabled: 0 },
-                    blur: { rest: 8, disabled: 0 },
-                    color: {
-                      rest: withAlpha([0, 0, 0, 1], 18),
-                      disabled: withAlpha([0, 0, 0, 1], 0)
-                    }
-                  }
-                }
+                }))
               },
               e11: {
                 name: 'slider-thumb-inner',

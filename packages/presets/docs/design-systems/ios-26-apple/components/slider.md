@@ -32,9 +32,17 @@ The preset uses:
 ## Adaptations
 
 The upstream visual treatment includes a Liquid Glass thumb material. This
-preset does not implement that material yet. The current schema uses a
-translucent thumb fill, border, and shadow as a lightweight approximation while
-preserving the cross-platform Slider contract.
+preset does not implement that material yet. The schema uses a mostly opaque
+white thumb, solid white border, and the smallest global outer shadow level
+from the iOS elevation scale as a pragmatic cross-platform approximation. A
+low-alpha white fill without the full Liquid Glass material lets the track show
+through the thumb and makes the control look weak in Kiskadee, so the preset
+favors legibility until a real material effect exists.
+
+The macOS reference shows a darker selected track during interaction. Kiskadee
+uses that as evidence for a `pressed` state, but derives the pressed color from
+the iOS primary blue instead of copying the macOS blue into the unified
+`ios-26-apple` preset.
 
 The center-biased reference uses a neutral mark at the origin and lets the
 active range grow away from that origin. Kiskadee implements this with

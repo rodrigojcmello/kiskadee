@@ -21,6 +21,12 @@ This file records source evidence and preset-level decisions for
 - The current Slider schema approximates platform geometry, color, and mark
   placement. The Liquid Glass thumb material is intentionally not implemented
   in this preset yet.
+- The Slider thumb uses the smallest global iOS outer shadow level first. If
+  that reads too weak or too strong, revise the iOS elevation scale instead of
+  adding local ad hoc thumb shadow values.
+- macOS Slider evidence includes a darker selected track during interaction.
+  Kiskadee maps that to the Slider pressed state, while keeping the actual
+  pressed color derived from the iOS primary blue for the unified preset.
 
 ## Component Evidence
 
