@@ -18,8 +18,8 @@ This document covers the public styled component exported by
   `SliderActivationFeedback`,
   `SliderClassNames`, `SliderMark`,
   `SliderMarks`, `SliderValueAnimationOption`, `SliderSnapMotionOption`,
-  `SliderClassesMap`, `SliderModeClassesMap`, `SliderVariantClassesMap`, and
-  `SliderArtifactConfig`.
+  `SliderThumbCrossingOption`, `SliderClassesMap`, `SliderModeClassesMap`,
+  `SliderVariantClassesMap`, and `SliderArtifactConfig`.
 - Shared value helper: `RollingNumber`.
 - Headless primitive: `HeadlessSlider` from `@kiskadee/react-headless`.
 - Current layout scope: horizontal only.
@@ -61,12 +61,23 @@ primitive.
 | `aria-label` / `aria-labelledby` | When no visible `label` is rendered, these inherited props are forwarded to the rendered thumb instead of naming only the wrapper. |
 | `thumbAriaLabels` | Optional per-thumb accessible labels: `{ start, end }`. Use this for range sliders when each thumb needs a distinct name. |
 | `thumbAriaLabelledBy` | Optional per-thumb accessible label references: `{ start, end }`. This takes precedence over `thumbAriaLabels` for the matching thumb. |
+| `thumbCrossing` | Optional per-instance override for range pointer dragging. Supports `"prevent"` and `"swap"`. |
 
 The rendered thumb is a focusable `span` with `role="slider"`,
 `aria-orientation="horizontal"`, and `aria-valuemin`, `aria-valuemax`,
 `aria-valuenow`, and `aria-valuetext`. Range mode renders two independent
 slider thumbs. When a visible `label` exists, each thumb falls back to that
 label through `aria-labelledby` unless a per-thumb naming prop overrides it.
+
+`thumbCrossing` affects range sliders only. With `"prevent"`, each thumb is
+blocked by the other thumb. With `"swap"`, pointer drag can cross the other
+thumb; when that happens, the active thumb switches to the opposite side of the
+range and continues following the pointer. The public `value` and
+`onValueChange` contract remains ordered as `[lower, upper]`. Keyboard behavior
+still uses the `"prevent"` model because `start` and `end` are semantic lower
+and upper values, not fixed physical thumb identities. For the same reason,
+`thumbAriaLabels.start` and `thumbAriaLabels.end` name the current lower and
+upper values.
 
 ### Visual And Artifact Props
 
@@ -171,13 +182,14 @@ The current schema option values are:
 - `valueDisplay`: `none`, `tooltip`, `summary`, `both`
 - `valueAnimation`: `none`, `rolling`
 - `snapMotion`: `none`, `smooth`
+- `thumbCrossing`: `prevent`, `swap`
 - `marks`: `none`, `step`
 - `edgeMarks`: `include`, `exclude`
 - `markLabelPlacement`: `auto`, `above`, `below`
 - `edgeMarkLabelPlacement`: `auto`, `endpoints`, `markLabels`
 - `edgeMarkLabelAlignment`: `auto`, `center`, `inside`
 
-`snapMotion`, `marks`, `edgeMarks`, `markLabelPlacement`,
+`snapMotion`, `thumbCrossing`, `marks`, `edgeMarks`, `markLabelPlacement`,
 `edgeMarkLabelPlacement`, and `edgeMarkLabelAlignment` are top-level component
 options because they describe visual defaults for the component. Consumers can
 still override them per instance.
@@ -280,8 +292,8 @@ override pattern and schema-owned mode values are not enough.
 `web-builder` may emit `components/slider.kiskadee.json` with:
 
 - component options: `variant`, `valueDisplay`, `valueAnimation`, `snapMotion`,
-  `marks`, `edgeMarks`, `markLabelPlacement`, `edgeMarkLabelPlacement`, and
-  `edgeMarkLabelAlignment`;
+  `thumbCrossing`, `marks`, `edgeMarks`, `markLabelPlacement`,
+  `edgeMarkLabelPlacement`, and `edgeMarkLabelAlignment`;
 - component effects: currently `activationFeedback`;
 - variant-local options: currently `standard.options.mode`.
 
@@ -609,8 +621,9 @@ structure. The suffix does not create a public variant or mode.
   controlled/uncontrolled value, `disabled`, `readOnly`, and keyboard support.
 - Schema elements `e1` through `e15`.
 - Current schema options and values for `variant`, `mode`, `valueDisplay`,
-  `valueAnimation`, `snapMotion`, `marks`, `edgeMarks`, `markLabelPlacement`,
-  `edgeMarkLabelPlacement`, and `edgeMarkLabelAlignment`.
+  `valueAnimation`, `snapMotion`, `thumbCrossing`, `marks`, `edgeMarks`,
+  `markLabelPlacement`, `edgeMarkLabelPlacement`, and
+  `edgeMarkLabelAlignment`.
 - Generated artifacts and class maps as the source of truth for visual tokens.
 - Current horizontal-only contract.
 

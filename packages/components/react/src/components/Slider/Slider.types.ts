@@ -11,6 +11,7 @@ import type {
   SliderMarkLabelPlacement,
   SliderMode,
   SliderSnapMotion,
+  SliderThumbCrossing,
   SliderValueAnimation,
   SliderValueDisplay,
   SliderVariant
@@ -72,6 +73,7 @@ export type SliderResolvedEdgeMarkLabelAlignment = Exclude<
 >;
 export type SliderValueAnimationOption = SliderValueAnimation;
 export type SliderSnapMotionOption = SliderSnapMotion;
+export type SliderThumbCrossingOption = SliderThumbCrossing;
 
 export type SliderThumbAriaLabels = {
   start?: string;
@@ -95,6 +97,8 @@ export type SliderProps = Omit<
   | 'onThumbInteractionCancel'
   | 'onThumbInteractionEnd'
   | 'onThumbInteractionStart'
+  | 'onThumbInteractionSwitch'
+  | 'thumbCrossing'
 > & {
   id?: string;
   label?: ReactNode;
@@ -119,6 +123,7 @@ export type SliderProps = Omit<
   valueDisplay?: SliderValueDisplay;
   valueAnimation?: SliderValueAnimationOption;
   snapMotion?: SliderSnapMotionOption;
+  thumbCrossing?: SliderThumbCrossingOption;
   activationFeedback?: SliderActivationFeedback;
   formatValue?: (value: number, index: 0 | 1) => ReactNode;
   thumbAriaLabels?: SliderThumbAriaLabels;

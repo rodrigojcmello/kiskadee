@@ -22,6 +22,7 @@ export type {
   SliderProps,
   SliderSnapMotionOption,
   SliderStatus,
+  SliderThumbCrossingOption,
   SliderValueAnimationOption
 } from './components/Slider';
 export { Slider, useSliderArtifactConfig } from './components/Slider';

@@ -8,6 +8,7 @@ import type {
   SliderIntent,
   SliderMode,
   SliderSnapMotion,
+  SliderThumbCrossing,
   SliderValueAnimation,
   SliderVariant
 } from '@kiskadee/core';
@@ -37,6 +38,7 @@ export const DEFAULT_SLIDER_MODE: SliderMode = 'base';
 export const DEFAULT_SLIDER_VALUE_DISPLAY = 'none';
 export const DEFAULT_SLIDER_VALUE_ANIMATION: SliderValueAnimation = 'none';
 export const DEFAULT_SLIDER_SNAP_MOTION: SliderSnapMotion = 'smooth';
+export const DEFAULT_SLIDER_THUMB_CROSSING: SliderThumbCrossing = 'swap';
 export const DEFAULT_SLIDER_MARKS = 'none';
 export const DEFAULT_SLIDER_EDGE_MARKS = 'include';
 export const DEFAULT_SLIDER_MARK_LABEL_PLACEMENT = 'auto';

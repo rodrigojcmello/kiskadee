@@ -8,6 +8,7 @@ import type {
   SliderMarks,
   SliderMode,
   SliderSnapMotion,
+  SliderThumbCrossing,
   SliderValueAnimation,
   SliderValueDisplay,
   SliderVariant
@@ -20,6 +21,7 @@ export type SliderComponentOptionsPayload = {
   valueDisplay?: SliderValueDisplay;
   valueAnimation?: SliderValueAnimation;
   snapMotion?: SliderSnapMotion;
+  thumbCrossing?: SliderThumbCrossing;
   marks?: SliderMarks;
   edgeMarks?: SliderEdgeMarks;
   markLabelPlacement?: SliderMarkLabelPlacement;
@@ -91,6 +93,9 @@ export function buildSliderComponentArtifact(schema: Schema): SliderComponentArt
       ? { valueAnimation: sliderSchema.options.valueAnimation }
       : {}),
     ...(sliderSchema.options?.snapMotion ? { snapMotion: sliderSchema.options.snapMotion } : {}),
+    ...(sliderSchema.options?.thumbCrossing
+      ? { thumbCrossing: sliderSchema.options.thumbCrossing }
+      : {}),
     ...(sliderSchema.options?.marks ? { marks: sliderSchema.options.marks } : {}),
     ...(sliderSchema.options?.edgeMarks ? { edgeMarks: sliderSchema.options.edgeMarks } : {}),
     ...(sliderSchema.options?.markLabelPlacement

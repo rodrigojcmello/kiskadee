@@ -18,6 +18,7 @@ import {
   type SliderMarkLabelPlacementOption,
   type SliderMarks,
   type SliderSnapMotionOption,
+  type SliderThumbCrossingOption,
   type SliderValueAnimationOption,
   useCardArtifactConfig,
   useKiskadee,
@@ -50,6 +51,7 @@ type SliderMarksMode = 'none' | 'step' | 'labeled';
 type SliderActivationFeedbackControl = 'default' | 'off' | 'active';
 type SliderValueAnimationControl = 'default' | SliderValueAnimationOption;
 type SliderSnapMotionControl = 'default' | SliderSnapMotionOption;
+type SliderThumbCrossingControl = 'default' | SliderThumbCrossingOption;
 
 const scaleOptions: Array<{ value: ElementSizeValue; label: string }> = [
   { value: 's:sm:3', label: 'Small 3' },
@@ -171,6 +173,12 @@ const snapMotionOptions: Array<{ value: SliderSnapMotionControl; label: string }
   { value: 'default', label: 'Default' },
   { value: 'none', label: 'None' },
   { value: 'smooth', label: 'Smooth' }
+];
+
+const thumbCrossingOptions: Array<{ value: SliderThumbCrossingControl; label: string }> = [
+  { value: 'default', label: 'Default' },
+  { value: 'prevent', label: 'Prevent' },
+  { value: 'swap', label: 'Swap' }
 ];
 
 const marksModeOptions: Array<{ value: SliderMarksMode; label: string }> = [
@@ -325,6 +333,12 @@ function resolveSnapMotionProp(
   return snapMotion === 'default' ? undefined : snapMotion;
 }
 
+function resolveThumbCrossingProp(
+  thumbCrossing: SliderThumbCrossingControl
+): SliderThumbCrossingOption | undefined {
+  return thumbCrossing === 'default' ? undefined : thumbCrossing;
+}
+
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -420,6 +434,7 @@ export default function SliderPage() {
   const [valueDisplay, setValueDisplay] = useState<SliderValueDisplay>('tooltip');
   const [valueAnimation, setValueAnimation] = useState<SliderValueAnimationControl>('rolling');
   const [snapMotion, setSnapMotion] = useState<SliderSnapMotionControl>('smooth');
+  const [thumbCrossing, setThumbCrossing] = useState<SliderThumbCrossingControl>('swap');
   const [marksMode, setMarksMode] = useState<SliderMarksMode>('none');
   const [edgeMarks, setEdgeMarks] = useState<SliderEdgeMarksOption>('include');
   const [markLabelPlacement, setMarkLabelPlacement] =
@@ -555,6 +570,7 @@ export default function SliderPage() {
   const activationFeedbackProp = resolveActivationFeedbackProp(activationFeedback);
   const valueAnimationProp = resolveValueAnimationProp(valueAnimation);
   const snapMotionProp = resolveSnapMotionProp(snapMotion);
+  const thumbCrossingProp = resolveThumbCrossingProp(thumbCrossing);
 
   useEffect(() => {
     setRadius(defaultRadius);
@@ -817,6 +833,18 @@ export default function SliderPage() {
             disabled={!isSliderAvailable}
           />
           <ShowcaseSelectControl
+            label="Thumb crossing"
+            options={thumbCrossingOptions}
+            value={thumbCrossing}
+            onValueChange={(value) => {
+              const nextThumbCrossing = value as SliderThumbCrossingControl;
+              if (nextThumbCrossing === thumbCrossing) return;
+              playWowTransition();
+              setThumbCrossing(nextThumbCrossing);
+            }}
+            disabled={!isSliderAvailable}
+          />
+          <ShowcaseSelectControl
             label="Marks"
             options={marksModeOptions}
             value={marksMode}
@@ -969,6 +997,7 @@ export default function SliderPage() {
                 valueDisplay={valueDisplay}
                 valueAnimation={valueAnimationProp}
                 snapMotion={snapMotionProp}
+                thumbCrossing={thumbCrossingProp}
                 activationFeedback={activationFeedbackProp}
                 formatValue={formatPercent}
                 scale={scale}
@@ -1008,6 +1037,7 @@ export default function SliderPage() {
                   valueDisplay="tooltip"
                   valueAnimation={valueAnimationProp}
                   snapMotion={snapMotionProp}
+                  thumbCrossing={thumbCrossingProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
@@ -1037,6 +1067,7 @@ export default function SliderPage() {
                   valueDisplay="tooltip"
                   valueAnimation={valueAnimationProp}
                   snapMotion={snapMotionProp}
+                  thumbCrossing={thumbCrossingProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
@@ -1071,6 +1102,7 @@ export default function SliderPage() {
                   valueDisplay="summary"
                   valueAnimation={valueAnimationProp}
                   snapMotion={snapMotionProp}
+                  thumbCrossing={thumbCrossingProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
@@ -1098,6 +1130,7 @@ export default function SliderPage() {
                   valueDisplay="tooltip"
                   valueAnimation={valueAnimationProp}
                   snapMotion={snapMotionProp}
+                  thumbCrossing={thumbCrossingProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}

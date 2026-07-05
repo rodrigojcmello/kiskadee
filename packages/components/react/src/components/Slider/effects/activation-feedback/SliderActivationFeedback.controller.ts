@@ -6,7 +6,8 @@ import type {
 import { usesActivationFeedbackStaticRuntime } from '@kiskadee/core';
 import type {
   SliderThumbIndex,
-  SliderThumbInteractionDetails
+  SliderThumbInteractionDetails,
+  SliderThumbInteractionSwitchDetails
 } from '@kiskadee/react-headless';
 import type { RefObject } from 'react';
 import { useCallback } from 'react';
@@ -33,6 +34,7 @@ type SliderActivationFeedbackControllerResult = {
     onThumbInteractionCancel?: (details: SliderThumbInteractionDetails) => void;
     onThumbInteractionEnd?: (details: SliderThumbInteractionDetails) => void;
     onThumbInteractionStart?: (details: SliderThumbInteractionDetails) => void;
+    onThumbInteractionSwitch?: (details: SliderThumbInteractionSwitchDetails) => void;
   };
   isThumbActive: (index: SliderThumbIndex) => boolean;
 };
@@ -151,6 +153,16 @@ export function useSliderActivationFeedbackController({
     [enabled, pickMachine, usesStaticRuntime]
   );
 
+  const handleThumbInteractionSwitch = useCallback(
+    ({ fromIndex, toIndex }: SliderThumbInteractionSwitchDetails) => {
+      if (!enabled || !usesStaticRuntime) return;
+      if (toIndex === 1 && !isRange) return;
+
+      pickMachine(fromIndex).cancel();
+    },
+    [enabled, isRange, pickMachine, usesStaticRuntime]
+  );
+
   const isThumbActive = useCallback(
     (index: SliderThumbIndex) => {
       const machine = pickMachine(index);
@@ -164,7 +176,8 @@ export function useSliderActivationFeedbackController({
     thumbInteractionHandlers: {
       onThumbInteractionCancel: enabled ? handleThumbInteractionCancel : undefined,
       onThumbInteractionEnd: enabled ? handleThumbInteractionEnd : undefined,
-      onThumbInteractionStart: enabled ? handleThumbInteractionStart : undefined
+      onThumbInteractionStart: enabled ? handleThumbInteractionStart : undefined,
+      onThumbInteractionSwitch: enabled ? handleThumbInteractionSwitch : undefined
     },
     isThumbActive
   };

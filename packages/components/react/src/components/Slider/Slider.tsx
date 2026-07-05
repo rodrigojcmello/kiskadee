@@ -256,6 +256,7 @@ function SliderRoot(props: SliderProps) {
     valueDisplay,
     valueAnimation,
     snapMotion,
+    thumbCrossing,
     activationFeedback,
     formatValue,
     thumbAriaLabels,
@@ -282,6 +283,7 @@ function SliderRoot(props: SliderProps) {
   const resolvedValueDisplay = valueDisplay ?? options.valueDisplay;
   const resolvedValueAnimation = valueAnimation ?? options.valueAnimation;
   const resolvedSnapMotion: SliderSnapMotionOption = snapMotion ?? options.snapMotion;
+  const resolvedThumbCrossing = thumbCrossing ?? options.thumbCrossing;
   const resolvedMarkLabelPlacement = resolveMarkLabelPlacement(
     markLabelPlacement ?? options.markLabelPlacement,
     isLikelyTouch
@@ -434,6 +436,7 @@ function SliderRoot(props: SliderProps) {
       min={min}
       max={max}
       step={step}
+      thumbCrossing={resolvedThumbCrossing}
       disabled={disabled}
       readOnly={readOnly}
       required={required}
@@ -447,6 +450,9 @@ function SliderRoot(props: SliderProps) {
       }
       onThumbInteractionStart={
         activationFeedbackController.thumbInteractionHandlers.onThumbInteractionStart
+      }
+      onThumbInteractionSwitch={
+        activationFeedbackController.thumbInteractionHandlers.onThumbInteractionSwitch
       }
     >
       {hasLabel || hasValueSummary ? (
