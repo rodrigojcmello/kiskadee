@@ -104,7 +104,7 @@ export function createIos26AppleSliderSchema({
         e10: {
           kind: 'outer',
           states: {
-            rest: 's:sm:1'
+            rest: 's:sm:2'
           }
         }
       }

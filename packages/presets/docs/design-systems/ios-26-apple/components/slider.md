@@ -33,11 +33,13 @@ The preset uses:
 
 The upstream visual treatment includes a Liquid Glass thumb material. This
 preset does not implement that material yet. The schema uses a mostly opaque
-white thumb, solid white border, and the smallest global outer shadow level
-from the iOS elevation scale as a pragmatic cross-platform approximation. A
-low-alpha white fill without the full Liquid Glass material lets the track show
-through the thumb and makes the control look weak in Kiskadee, so the preset
-favors legibility until a real material effect exists.
+white thumb, solid white border, and the `s:sm:2` global outer shadow level
+registered from the iOS Slider thumb node as a pragmatic cross-platform
+approximation. The inspected thumb shadow is a two-layer stack:
+`0 6px 13px rgba(0,0,0,0.12)` and `0 0.5px 4px rgba(0,0,0,0.12)`. A low-alpha
+white fill without the full Liquid Glass material lets the track show through
+the thumb and makes the control look weak in Kiskadee, so the preset favors
+legibility until a real material effect exists.
 
 The macOS reference shows a darker selected track during interaction. Kiskadee
 uses that as evidence for a `pressed` state, but derives the pressed color from
