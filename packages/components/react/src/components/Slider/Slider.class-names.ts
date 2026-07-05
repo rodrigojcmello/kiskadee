@@ -7,6 +7,7 @@ import type {
   SliderEdgeMarkLabelAlignment,
   SliderIntent,
   SliderMode,
+  SliderValueAnimation,
   SliderVariant
 } from '@kiskadee/core';
 import {
@@ -33,6 +34,7 @@ export const DEFAULT_SLIDER_RADIUS: RadiusMode = 'rounded';
 export const DEFAULT_SLIDER_VARIANT: SliderVariant = 'standard';
 export const DEFAULT_SLIDER_MODE: SliderMode = 'base';
 export const DEFAULT_SLIDER_VALUE_DISPLAY = 'none';
+export const DEFAULT_SLIDER_VALUE_ANIMATION: SliderValueAnimation = 'none';
 export const DEFAULT_SLIDER_MARKS = 'none';
 export const DEFAULT_SLIDER_EDGE_MARKS = 'include';
 export const DEFAULT_SLIDER_MARK_LABEL_PLACEMENT = 'auto';

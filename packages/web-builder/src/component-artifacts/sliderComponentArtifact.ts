@@ -7,6 +7,7 @@ import type {
   SliderMarkLabelPlacement,
   SliderMarks,
   SliderMode,
+  SliderValueAnimation,
   SliderValueDisplay,
   SliderVariant
 } from '@kiskadee/core';
@@ -16,6 +17,7 @@ export const SLIDER_COMPONENT_ARTIFACT_PATH = 'components/slider.kiskadee.json';
 export type SliderComponentOptionsPayload = {
   variant?: SliderVariant;
   valueDisplay?: SliderValueDisplay;
+  valueAnimation?: SliderValueAnimation;
   marks?: SliderMarks;
   edgeMarks?: SliderEdgeMarks;
   markLabelPlacement?: SliderMarkLabelPlacement;
@@ -82,6 +84,9 @@ export function buildSliderComponentArtifact(schema: Schema): SliderComponentArt
     ...(sliderSchema.options?.variant ? { variant: sliderSchema.options.variant } : {}),
     ...(sliderSchema.options?.valueDisplay
       ? { valueDisplay: sliderSchema.options.valueDisplay }
+      : {}),
+    ...(sliderSchema.options?.valueAnimation
+      ? { valueAnimation: sliderSchema.options.valueAnimation }
       : {}),
     ...(sliderSchema.options?.marks ? { marks: sliderSchema.options.marks } : {}),
     ...(sliderSchema.options?.edgeMarks ? { edgeMarks: sliderSchema.options.edgeMarks } : {}),

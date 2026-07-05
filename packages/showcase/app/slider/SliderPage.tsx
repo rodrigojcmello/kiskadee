@@ -17,6 +17,7 @@ import {
   type SliderEdgeMarksOption,
   type SliderMarkLabelPlacementOption,
   type SliderMarks,
+  type SliderValueAnimationOption,
   useCardArtifactConfig,
   useKiskadee,
   useShowcase,
@@ -46,6 +47,7 @@ import s from './Slider.module.scss';
 type SliderValueMode = 'single' | 'range';
 type SliderMarksMode = 'none' | 'step' | 'labeled';
 type SliderActivationFeedbackControl = 'default' | 'off' | 'active';
+type SliderValueAnimationControl = 'default' | SliderValueAnimationOption;
 
 const scaleOptions: Array<{ value: ElementSizeValue; label: string }> = [
   { value: 's:sm:3', label: 'Small 3' },
@@ -155,6 +157,12 @@ const valueDisplayOptions: Array<{ value: SliderValueDisplay; label: string }> =
   { value: 'tooltip', label: 'Tooltip' },
   { value: 'summary', label: 'Summary' },
   { value: 'both', label: 'Both' }
+];
+
+const valueAnimationOptions: Array<{ value: SliderValueAnimationControl; label: string }> = [
+  { value: 'default', label: 'Default' },
+  { value: 'none', label: 'None' },
+  { value: 'rolling', label: 'Rolling' }
 ];
 
 const marksModeOptions: Array<{ value: SliderMarksMode; label: string }> = [
@@ -297,6 +305,12 @@ function resolveActivationFeedbackProp(
   return undefined;
 }
 
+function resolveValueAnimationProp(
+  valueAnimation: SliderValueAnimationControl
+): SliderValueAnimationOption | undefined {
+  return valueAnimation === 'default' ? undefined : valueAnimation;
+}
+
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -390,6 +404,7 @@ export default function SliderPage() {
   const [surface, setSurface] = useState<SliderSurface>('white');
   const [valueMode, setValueMode] = useState<SliderValueMode>('single');
   const [valueDisplay, setValueDisplay] = useState<SliderValueDisplay>('tooltip');
+  const [valueAnimation, setValueAnimation] = useState<SliderValueAnimationControl>('rolling');
   const [marksMode, setMarksMode] = useState<SliderMarksMode>('none');
   const [edgeMarks, setEdgeMarks] = useState<SliderEdgeMarksOption>('include');
   const [markLabelPlacement, setMarkLabelPlacement] =
@@ -523,6 +538,7 @@ export default function SliderPage() {
   } as CSSProperties;
   const interactiveMarks = resolveInteractiveMarks(marksMode);
   const activationFeedbackProp = resolveActivationFeedbackProp(activationFeedback);
+  const valueAnimationProp = resolveValueAnimationProp(valueAnimation);
 
   useEffect(() => {
     setRadius(defaultRadius);
@@ -761,6 +777,18 @@ export default function SliderPage() {
             disabled={!isSliderAvailable}
           />
           <ShowcaseSelectControl
+            label="Value animation"
+            options={valueAnimationOptions}
+            value={valueAnimation}
+            onValueChange={(value) => {
+              const nextValueAnimation = value as SliderValueAnimationControl;
+              if (nextValueAnimation === valueAnimation) return;
+              playWowTransition();
+              setValueAnimation(nextValueAnimation);
+            }}
+            disabled={!isSliderAvailable}
+          />
+          <ShowcaseSelectControl
             label="Marks"
             options={marksModeOptions}
             value={marksMode}
@@ -911,6 +939,7 @@ export default function SliderPage() {
                 edgeMarkLabelPlacement={edgeMarkLabelPlacement}
                 edgeMarkLabelAlignment={edgeMarkLabelAlignment}
                 valueDisplay={valueDisplay}
+                valueAnimation={valueAnimationProp}
                 activationFeedback={activationFeedbackProp}
                 formatValue={formatPercent}
                 scale={scale}
@@ -948,6 +977,7 @@ export default function SliderPage() {
                   edgeMarkLabelAlignment={edgeMarkLabelAlignment}
                   formatValue={(value) => formatCurrency(value)}
                   valueDisplay="tooltip"
+                  valueAnimation={valueAnimationProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
@@ -975,6 +1005,7 @@ export default function SliderPage() {
                   edgeMarkLabelAlignment={edgeMarkLabelAlignment}
                   formatValue={(value) => (value > 85 ? 'Very Bright' : `${value}%`)}
                   valueDisplay="tooltip"
+                  valueAnimation={valueAnimationProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
@@ -1007,6 +1038,7 @@ export default function SliderPage() {
                   edgeMarkLabelAlignment={edgeMarkLabelAlignment}
                   formatValue={(value) => `${value}%`}
                   valueDisplay="summary"
+                  valueAnimation={valueAnimationProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
@@ -1032,6 +1064,7 @@ export default function SliderPage() {
                   edgeMarkLabelAlignment={edgeMarkLabelAlignment}
                   helperText="How happy are you with the level of service?"
                   valueDisplay="tooltip"
+                  valueAnimation={valueAnimationProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}

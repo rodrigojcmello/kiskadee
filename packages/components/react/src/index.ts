@@ -20,9 +20,15 @@ export type {
   SliderMarkLabelPlacementOption,
   SliderMarks,
   SliderProps,
-  SliderStatus
+  SliderStatus,
+  SliderValueAnimationOption
 } from './components/Slider';
 export { Slider, useSliderArtifactConfig } from './components/Slider';
+export { RollingNumber } from './components/RollingNumber/RollingNumber.tsx';
+export type {
+  RollingNumberFormatValue,
+  RollingNumberProps
+} from './components/RollingNumber/RollingNumber.tsx';
 export { SmoothText } from './components/SmoothText/SmoothText.tsx';
 export type {
   SwitchArtifactConfig,

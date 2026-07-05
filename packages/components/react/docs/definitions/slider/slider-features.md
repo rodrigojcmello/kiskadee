@@ -17,8 +17,9 @@ This document covers the public styled component exported by
 - Public props/type exports: `SliderProps`, `SliderStatus`,
   `SliderActivationFeedback`,
   `SliderClassNames`, `SliderMark`,
-  `SliderMarks`, `SliderClassesMap`, `SliderModeClassesMap`,
+  `SliderMarks`, `SliderValueAnimationOption`, `SliderClassesMap`, `SliderModeClassesMap`,
   `SliderVariantClassesMap`, and `SliderArtifactConfig`.
+- Shared value helper: `RollingNumber`.
 - Headless primitive: `HeadlessSlider` from `@kiskadee/react-headless`.
 - Current layout scope: horizontal only.
 - Current topology: `variant: "standard"` and `mode: "base"`.
@@ -85,6 +86,7 @@ label through `aria-labelledby` unless a per-thumb naming prop overrides it.
 | `edgeMarkLabelPlacement` | Controls whether labels declared on `min`/`max` marks render as endpoint labels or track labels. Supports `"auto"`, `"endpoints"`, and `"markLabels"`. |
 | `edgeMarkLabelAlignment` | Controls how `min`/`max` labels align when rendered as track labels. Supports `"auto"`, `"center"`, and `"inside"`. |
 | `valueDisplay` | Controls selected value display: `"none"`, `"tooltip"`, `"summary"`, or `"both"`. |
+| `valueAnimation` | Optional per-instance override for how selected values are visually rendered. Supports `"none"` and `"rolling"`. |
 | `activationFeedback` | Optional per-instance override for the schema/artifact activation feedback effect. Supports `false` to disable and `"active"` for static preview. |
 | `className` | Merged into the root `e1` slot. |
 | `classNames` | Escape hatch for schema element slots `e1` through `e15`. |
@@ -94,6 +96,14 @@ indicator includes a fixed structural arrow with a slightly rounded tip that
 points toward the track.
 `valueDisplay="summary"` renders an out-of-track value summary in the header.
 `valueDisplay="both"` renders both surfaces.
+
+`formatValue` owns the value text. `valueAnimation` only changes how selected
+values are presented on the visual value surfaces. With `valueAnimation="rolling"`,
+the styled Slider uses the shared `RollingNumber` helper for value indicators
+and summaries when `formatValue` returns a string or number. If `formatValue`
+returns a complex React node, the value is rendered statically. Mark labels,
+edge labels, helper text, and accessible value text are not animated by this
+option.
 
 ### Activation Feedback
 
@@ -149,6 +159,7 @@ Current Slider topology is variant-driven:
 The current schema option values are:
 
 - `valueDisplay`: `none`, `tooltip`, `summary`, `both`
+- `valueAnimation`: `none`, `rolling`
 - `marks`: `none`, `step`
 - `edgeMarks`: `include`, `exclude`
 - `markLabelPlacement`: `auto`, `above`, `below`
@@ -257,7 +268,7 @@ override pattern and schema-owned mode values are not enough.
 
 `web-builder` may emit `components/slider.kiskadee.json` with:
 
-- component options: `variant`, `valueDisplay`, `marks`, `edgeMarks`,
+- component options: `variant`, `valueDisplay`, `valueAnimation`, `marks`, `edgeMarks`,
   `markLabelPlacement`, `edgeMarkLabelPlacement`, and
   `edgeMarkLabelAlignment`;
 - component effects: currently `activationFeedback`;
@@ -587,8 +598,8 @@ structure. The suffix does not create a public variant or mode.
   controlled/uncontrolled value, `disabled`, `readOnly`, and keyboard support.
 - Schema elements `e1` through `e15`.
 - Current schema options and values for `variant`, `mode`, `valueDisplay`,
-  `marks`, `edgeMarks`, `markLabelPlacement`, `edgeMarkLabelPlacement`, and
-  `edgeMarkLabelAlignment`.
+  `valueAnimation`, `marks`, `edgeMarks`, `markLabelPlacement`,
+  `edgeMarkLabelPlacement`, and `edgeMarkLabelAlignment`.
 - Generated artifacts and class maps as the source of truth for visual tokens.
 - Current horizontal-only contract.
 

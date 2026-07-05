@@ -1,0 +1,64 @@
+.k-rolling-number {
+  display: inline-flex;
+  align-items: baseline;
+  color: inherit;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  line-height: inherit;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+.k-rolling-number-visual {
+  display: inline-flex;
+  align-items: baseline;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+}
+
+.k-rolling-number-static {
+  display: inline-block;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+}
+
+.k-rolling-number-digit {
+  display: inline-block;
+  block-size: 1em;
+  overflow: hidden;
+  line-height: 1;
+  vertical-align: -0.125em;
+}
+
+.k-rolling-number-digit-stack {
+  display: flex;
+  flex-direction: column;
+  transform: translateY(calc(var(--k-rn-digit, 0) * -1em));
+  transition: transform 240ms cubic-bezier(0.2, 0, 0, 1);
+  will-change: transform;
+}
+
+.k-rolling-number-digit-glyph {
+  display: block;
+  block-size: 1em;
+  line-height: 1;
+  text-align: center;
+}
+
+.k-rolling-number-accessible {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .k-rolling-number-digit-stack {
+    transition: none;
+  }
+}

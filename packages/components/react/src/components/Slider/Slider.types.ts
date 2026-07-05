@@ -10,6 +10,7 @@ import type {
   SliderIntent,
   SliderMarkLabelPlacement,
   SliderMode,
+  SliderValueAnimation,
   SliderValueDisplay,
   SliderVariant
 } from '@kiskadee/core';
@@ -68,6 +69,7 @@ export type SliderResolvedEdgeMarkLabelAlignment = Exclude<
   SliderEdgeMarkLabelAlignmentOption,
   'auto'
 >;
+export type SliderValueAnimationOption = SliderValueAnimation;
 
 export type SliderThumbAriaLabels = {
   start?: string;
@@ -113,6 +115,7 @@ export type SliderProps = Omit<
   edgeMarkLabelPlacement?: SliderEdgeMarkLabelPlacementOption;
   edgeMarkLabelAlignment?: SliderEdgeMarkLabelAlignmentOption;
   valueDisplay?: SliderValueDisplay;
+  valueAnimation?: SliderValueAnimationOption;
   activationFeedback?: SliderActivationFeedback;
   formatValue?: (value: number, index: 0 | 1) => ReactNode;
   thumbAriaLabels?: SliderThumbAriaLabels;

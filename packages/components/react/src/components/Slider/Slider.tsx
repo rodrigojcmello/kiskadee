@@ -3,10 +3,15 @@ import {
   resolveActivationFeedbackSetting,
   usesActivationFeedbackStaticRuntime
 } from '@kiskadee/core';
-import { HeadlessSlider } from '@kiskadee/react-headless';
-import { memo, useId, useMemo, useRef } from 'react';
+import {
+  HeadlessSlider,
+  type SliderValueIndicatorRenderDetails,
+  type SliderValueSummaryRenderDetails
+} from '@kiskadee/react-headless';
+import { memo, type ReactNode, useId, useMemo, useRef } from 'react';
 import { useIsCompactViewport } from '../../shared/interaction/useIsCompactViewport.ts';
 import { useIsLikelyTouch } from '../../shared/interaction/useIsLikelyTouch.ts';
+import { RollingNumber } from '../RollingNumber/RollingNumber.tsx';
 import {
   hasSliderActivationFeedbackEffect,
   useSliderActivationFeedbackController,
@@ -32,6 +37,7 @@ import type {
   SliderResolvedEdgeMarkLabelAlignment,
   SliderResolvedEdgeMarkLabelPlacement,
   SliderResolvedMarkLabelPlacement,
+  SliderValueAnimationOption,
   SliderProps
 } from './Slider.types.ts';
 
@@ -170,6 +176,46 @@ function renderEndpoint(
   );
 }
 
+function canRenderRollingValue(value: ReactNode): value is number | string {
+  return typeof value === 'number' || typeof value === 'string';
+}
+
+function renderSliderValue(
+  valueAnimation: SliderValueAnimationOption,
+  value: number,
+  formattedValue: ReactNode
+): ReactNode {
+  if (valueAnimation !== 'rolling' || !canRenderRollingValue(formattedValue)) {
+    return formattedValue;
+  }
+
+  return <RollingNumber value={value} formatValue={() => formattedValue} />;
+}
+
+function renderSliderValueIndicator(
+  valueAnimation: SliderValueAnimationOption,
+  details: SliderValueIndicatorRenderDetails
+): ReactNode {
+  return renderSliderValue(valueAnimation, details.value, details.formattedValue);
+}
+
+function renderSliderValueSummary(
+  valueAnimation: SliderValueAnimationOption,
+  details: SliderValueSummaryRenderDetails
+): ReactNode {
+  if (details.valueMode !== 'range') {
+    return renderSliderValue(valueAnimation, details.values[0] ?? 0, details.formattedValues[0]);
+  }
+
+  return (
+    <>
+      {renderSliderValue(valueAnimation, details.values[0] ?? 0, details.formattedValues[0])}
+      <span aria-hidden="true"> - </span>
+      {renderSliderValue(valueAnimation, details.values[1] ?? 0, details.formattedValues[1])}
+    </>
+  );
+}
+
 function resolveValueMode(valueMode: SliderProps['valueMode'], props: SliderProps) {
   if (valueMode) return valueMode;
   return Array.isArray(props.value) || Array.isArray(props.defaultValue) ? 'range' : 'single';
@@ -206,6 +252,7 @@ function SliderRoot(props: SliderProps) {
     edgeMarkLabelPlacement,
     edgeMarkLabelAlignment,
     valueDisplay,
+    valueAnimation,
     activationFeedback,
     formatValue,
     thumbAriaLabels,
@@ -230,6 +277,7 @@ function SliderRoot(props: SliderProps) {
   const resolvedMode = mode ?? options.mode;
   const resolvedRadius = radius ?? options.radius;
   const resolvedValueDisplay = valueDisplay ?? options.valueDisplay;
+  const resolvedValueAnimation = valueAnimation ?? options.valueAnimation;
   const resolvedMarkLabelPlacement = resolveMarkLabelPlacement(
     markLabelPlacement ?? options.markLabelPlacement,
     isLikelyTouch
@@ -401,7 +449,15 @@ function SliderRoot(props: SliderProps) {
               {labelAdornment}
             </HeadlessSlider.FieldLabel>
           ) : null}
-          {hasValueSummary ? <HeadlessSlider.ValueSummary /> : null}
+          {hasValueSummary ? (
+            resolvedValueAnimation === 'rolling' ? (
+              <HeadlessSlider.ValueSummary>
+                {(details) => renderSliderValueSummary(resolvedValueAnimation, details)}
+              </HeadlessSlider.ValueSummary>
+            ) : (
+              <HeadlessSlider.ValueSummary />
+            )
+          ) : null}
         </div>
       ) : null}
       <HeadlessSlider.ControlRow>
@@ -445,9 +501,23 @@ function SliderRoot(props: SliderProps) {
               <HeadlessSlider.ThumbInner />
             </HeadlessSlider.Thumb>
           ) : null}
-          {hasValueIndicator ? <HeadlessSlider.ValueIndicator index={0} /> : null}
+          {hasValueIndicator ? (
+            resolvedValueAnimation === 'rolling' ? (
+              <HeadlessSlider.ValueIndicator index={0}>
+                {(details) => renderSliderValueIndicator(resolvedValueAnimation, details)}
+              </HeadlessSlider.ValueIndicator>
+            ) : (
+              <HeadlessSlider.ValueIndicator index={0} />
+            )
+          ) : null}
           {hasValueIndicator && resolvedValueMode === 'range' ? (
-            <HeadlessSlider.ValueIndicator index={1} />
+            resolvedValueAnimation === 'rolling' ? (
+              <HeadlessSlider.ValueIndicator index={1}>
+                {(details) => renderSliderValueIndicator(resolvedValueAnimation, details)}
+              </HeadlessSlider.ValueIndicator>
+            ) : (
+              <HeadlessSlider.ValueIndicator index={1} />
+            )
           ) : null}
         </HeadlessSlider.Track>
         {renderEndpoint('end', endEdgeMark, shouldRenderEdgeMarkLabelsAsEndpoints)}

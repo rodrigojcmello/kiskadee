@@ -8,6 +8,7 @@ import type {
   SliderMarkLabelPlacement,
   SliderMarks,
   SliderMode,
+  SliderValueAnimation,
   SliderValueDisplay,
   SliderVariant
 } from '@kiskadee/core';
@@ -23,6 +24,7 @@ import {
   DEFAULT_SLIDER_MARKS,
   DEFAULT_SLIDER_MODE,
   DEFAULT_SLIDER_RADIUS,
+  DEFAULT_SLIDER_VALUE_ANIMATION,
   DEFAULT_SLIDER_VALUE_DISPLAY,
   DEFAULT_SLIDER_VARIANT
 } from '../Slider.class-names.ts';
@@ -35,6 +37,7 @@ export type SliderArtifactConfig = {
     mode: SliderMode;
     radius: RadiusMode;
     valueDisplay: SliderValueDisplay;
+    valueAnimation: SliderValueAnimation;
     marks: SliderMarks;
     edgeMarks: SliderEdgeMarks;
     markLabelPlacement: SliderMarkLabelPlacement;
@@ -82,6 +85,7 @@ export function useSliderArtifactConfig(): SliderArtifactConfig {
       mode: variantOptions?.mode ?? DEFAULT_SLIDER_MODE,
       radius: global?.radius ?? DEFAULT_SLIDER_RADIUS,
       valueDisplay: options?.valueDisplay ?? DEFAULT_SLIDER_VALUE_DISPLAY,
+      valueAnimation: options?.valueAnimation ?? DEFAULT_SLIDER_VALUE_ANIMATION,
       marks: options?.marks ?? DEFAULT_SLIDER_MARKS,
       edgeMarks: options?.edgeMarks ?? DEFAULT_SLIDER_EDGE_MARKS,
       markLabelPlacement: options?.markLabelPlacement ?? DEFAULT_SLIDER_MARK_LABEL_PLACEMENT,

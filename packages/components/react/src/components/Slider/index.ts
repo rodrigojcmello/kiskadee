@@ -16,5 +16,6 @@ export type {
   SliderStatus,
   SliderThumbAriaLabelledBy,
   SliderThumbAriaLabels,
+  SliderValueAnimationOption,
   SliderVariantClassesMap
 } from './Slider.types.ts';

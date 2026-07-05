@@ -42,9 +42,11 @@ export type {
   SliderThumbProps,
   SliderTrackProps,
   SliderValue,
+  SliderValueIndicatorRenderDetails,
   SliderValueIndicatorProps,
   SliderValueMode,
-  SliderValueSummaryProps
+  SliderValueSummaryProps,
+  SliderValueSummaryRenderDetails
 } from './components/slider/HeadlessSlider.tsx';
 export { HeadlessSlider } from './components/slider/HeadlessSlider.tsx';
 export type {

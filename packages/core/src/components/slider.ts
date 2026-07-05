@@ -23,6 +23,7 @@ import type {
   SliderMarkLabelPlacementSchemaValue,
   SliderMarksSchemaValue,
   SliderOptionsFromSchema,
+  SliderValueAnimationSchemaValue,
   SliderValueDisplaySchemaValue,
   SliderVariantOptionsFromSchema
 } from './slider.options.zod.ts';
@@ -66,6 +67,7 @@ export type SliderVariant = 'standard';
 export type SliderStandardMode = 'base';
 export type SliderMode = SliderStandardMode;
 export type SliderValueDisplay = SliderValueDisplaySchemaValue;
+export type SliderValueAnimation = SliderValueAnimationSchemaValue;
 export type SliderMarks = SliderMarksSchemaValue;
 export type SliderEdgeMarks = SliderEdgeMarksSchemaValue;
 export type SliderMarkLabelPlacement = SliderMarkLabelPlacementSchemaValue;

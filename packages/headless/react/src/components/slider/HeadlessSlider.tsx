@@ -61,6 +61,20 @@ export type SliderThumbInteractionDetails = {
   index: SliderThumbIndex;
 };
 
+export type SliderValueIndicatorRenderDetails = {
+  value: number;
+  index: SliderThumbIndex;
+  formattedValue: ReactNode;
+};
+
+export type SliderValueSummaryRenderDetails = {
+  value: SliderValue;
+  values: readonly number[];
+  formattedValue: ReactNode;
+  formattedValues: readonly ReactNode[];
+  valueMode: SliderValueMode;
+};
+
 export type SliderRootProps = SliderRootDivProps & {
   children?: ReactNode;
   classNames?: SliderClassNames;
@@ -85,7 +99,9 @@ export type SliderRootProps = SliderRootDivProps & {
 };
 
 export type SliderFieldLabelProps = HTMLAttributes<HTMLSpanElement>;
-export type SliderValueSummaryProps = HTMLAttributes<HTMLSpanElement>;
+export type SliderValueSummaryProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> & {
+  children?: ReactNode | ((details: SliderValueSummaryRenderDetails) => ReactNode);
+};
 export type SliderControlRowProps = HTMLAttributes<HTMLDivElement>;
 export type SliderEndpointProps = HTMLAttributes<HTMLSpanElement>;
 export type SliderEndpointIconProps = HTMLAttributes<HTMLSpanElement>;
@@ -93,7 +109,8 @@ export type SliderEndpointLabelProps = HTMLAttributes<HTMLSpanElement>;
 export type SliderTrackProps = HTMLAttributes<HTMLDivElement>;
 export type SliderActiveTrackProps = HTMLAttributes<HTMLSpanElement>;
 export type SliderThumbInnerProps = HTMLAttributes<HTMLSpanElement>;
-export type SliderValueIndicatorProps = HTMLAttributes<HTMLSpanElement> & {
+export type SliderValueIndicatorProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> & {
+  children?: ReactNode | ((details: SliderValueIndicatorRenderDetails) => ReactNode);
   index?: SliderThumbIndex;
 };
 export type SliderMarkProps = HTMLAttributes<HTMLSpanElement> & {
@@ -759,17 +776,38 @@ const SliderValueSummary = forwardRef<HTMLSpanElement, SliderValueSummaryProps>(
   function SliderValueSummary({ className, children, ...props }, ref) {
     const context = useSliderContext();
     const { className: slotClassName, ...slotProps } = context.slotProps.e3 ?? {};
-    const content =
-      children ??
-      (context.valueMode === 'range' ? (
+    const values =
+      context.valueMode === 'range'
+        ? ([context.getThumbValue(0), context.getThumbValue(1)] as const)
+        : ([context.getThumbValue(0)] as const);
+    const formattedValues =
+      context.valueMode === 'range'
+        ? ([context.getFormattedValue(0), context.getFormattedValue(1)] as const)
+        : ([context.getFormattedValue(0)] as const);
+    const formattedValue =
+      context.valueMode === 'range' ? (
         <>
-          {context.getFormattedValue(0)}
+          {formattedValues[0]}
           <span aria-hidden="true"> - </span>
-          {context.getFormattedValue(1)}
+          {formattedValues[1]}
         </>
       ) : (
-        context.getFormattedValue(0)
-      ));
+        formattedValues[0]
+      );
+    const summaryValue: SliderValue =
+      context.valueMode === 'range'
+        ? [values[0] ?? context.min, values[1] ?? context.max]
+        : (values[0] ?? context.min);
+    const content =
+      typeof children === 'function'
+        ? children({
+            value: summaryValue,
+            values,
+            formattedValue,
+            formattedValues,
+            valueMode: context.valueMode
+          })
+        : (children ?? formattedValue);
 
     return (
       <span
@@ -988,6 +1026,8 @@ const SliderValueIndicator = forwardRef<HTMLSpanElement, SliderValueIndicatorPro
   function SliderValueIndicator({ className, children, index = 0, style, ...props }, ref) {
     const context = useSliderContext();
     const { className: slotClassName, ...slotProps } = context.slotProps.e12 ?? {};
+    const value = context.getThumbValue(index);
+    const formattedValue = context.getFormattedValue(index);
     const indicatorStyle = {
       '--k-sld-value': `${context.getThumbPercent(index)}%`,
       ...style
@@ -1001,7 +1041,9 @@ const SliderValueIndicator = forwardRef<HTMLSpanElement, SliderValueIndicatorPro
         style={indicatorStyle}
         {...props}
       >
-        {children ?? context.getFormattedValue(index)}
+        {typeof children === 'function'
+          ? children({ value, index, formattedValue })
+          : (children ?? formattedValue)}
       </span>
     );
   }
