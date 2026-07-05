@@ -334,6 +334,19 @@ function valueToVisualPercent(
   return (visualPosition / geometry.trackWidth) * 100;
 }
 
+function valueToActiveTrackPercent(
+  value: number,
+  min: number,
+  max: number,
+  thumbEdgeBehavior: SliderThumbEdgeBehavior,
+  geometry: SliderGeometry
+): number {
+  if (max <= min) return 0;
+  if (value <= min) return 0;
+  if (value >= max) return 100;
+  return valueToVisualPercent(value, min, max, thumbEdgeBehavior, geometry);
+}
+
 function getPointerValue(
   event: ReactPointerEvent,
   track: HTMLDivElement | null,
@@ -541,6 +554,12 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
     [geometry, max, min, thumbEdgeBehavior]
   );
 
+  const getActiveTrackPercent = useCallback(
+    (value: number) =>
+      valueToActiveTrackPercent(value, min, max, thumbEdgeBehavior, geometry),
+    [geometry, max, min, thumbEdgeBehavior]
+  );
+
   const getActiveTrackOriginValue = useCallback(() => {
     if (Array.isArray(resolvedValue)) return null;
     return resolveActiveTrackOriginValue(activeTrackOrigin, min, max);
@@ -549,14 +568,21 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
   const getActiveRangePercent = useCallback((): SliderRangeValue => {
     if (Array.isArray(resolvedValue)) {
       return [
-        getValuePercent(getVisualThumbValue(0)),
-        getValuePercent(getVisualThumbValue(1))
+        getActiveTrackPercent(getVisualThumbValue(0)),
+        getActiveTrackPercent(getVisualThumbValue(1))
       ];
     }
-    const originPercent = getValuePercent(resolveActiveTrackOriginValue(activeTrackOrigin, min, max));
-    const thumbPercent = getValuePercent(getVisualThumbValue(0));
+    const originPercent = getActiveTrackPercent(resolveActiveTrackOriginValue(activeTrackOrigin, min, max));
+    const thumbPercent = getActiveTrackPercent(getVisualThumbValue(0));
     return [Math.min(originPercent, thumbPercent), Math.max(originPercent, thumbPercent)];
-  }, [activeTrackOrigin, getValuePercent, getVisualThumbValue, max, min, resolvedValue]);
+  }, [
+    activeTrackOrigin,
+    getActiveTrackPercent,
+    getVisualThumbValue,
+    max,
+    min,
+    resolvedValue
+  ]);
 
   const getThumbPercent = useCallback(
     (index: SliderThumbIndex) => getValuePercent(getVisualThumbValue(index)),

@@ -540,8 +540,11 @@ boundaries:
   the rail.
 
 The value contract does not change. This option only changes the visual
-coordinate plane used by pointer mapping, active track, marks, labels,
-tooltips, and thumbs.
+coordinate plane used by pointer mapping, marks, labels, tooltips, and thumbs.
+The active track uses that same visual plane for intermediate values, but if
+the selected interval touches `min` or `max`, the fill is clamped to the
+absolute rail edge. This keeps a contained thumb inside the rail without
+leaving a selected-track gap at the first or last value.
 
 `activeTrackOrigin` affects single-value sliders only:
 
