@@ -102,6 +102,145 @@
   z-index: 1;
 }
 
+.shadowKindGrid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  min-width: 0;
+}
+
+.shadowKindGroup {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.shadowKindHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  color: rgba(0, 0, 0, 0.62);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.shadowCardGrid {
+  display: grid;
+  gap: 16px 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 156px), 1fr));
+  min-width: 0;
+}
+
+.shadowLevelItem {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.shadowPreviewCard,
+.shadowRawPreview {
+  min-height: 116px;
+}
+
+.shadowRawPreview {
+  display: grid;
+  align-items: stretch;
+  min-width: 0;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.shadowPreviewContent {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+  color: rgba(0, 0, 0, 0.76);
+}
+
+.shadowPreviewContent span {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.shadowPreviewContent strong {
+  min-width: 0;
+  color: currentColor;
+  font-size: 15px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.shadowPreviewContent code,
+.shadowCssValue {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+}
+
+.shadowPreviewContent code {
+  min-width: 0;
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 11px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.shadowUsageList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+  min-width: 0;
+}
+
+.shadowUsageList span {
+  border-radius: 999px;
+  padding: 2px 7px;
+  color: rgba(0, 0, 0, 0.68);
+  background: rgba(0, 0, 0, 0.07);
+  font-size: 10px;
+  line-height: 1.35;
+  text-transform: none;
+}
+
+.shadowCssValue,
+.shadowLayerCount {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.shadowCssValue {
+  color: rgba(0, 0, 0, 0.56);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.shadowLayerCount {
+  color: rgba(0, 0, 0, 0.44);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.shadowEmpty {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  color: rgba(0, 0, 0, 0.54);
+  background: rgba(255, 255, 255, 0.58);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 .unavailable {
   color: rgba(0, 0, 0, 0.56);
   font-size: 14px;

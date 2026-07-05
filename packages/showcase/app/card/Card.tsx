@@ -6,13 +6,21 @@ import {
   type CardIntent,
   type CardRadiusMode,
   type ComponentEmphasis,
-  type ElementSizeValue
+  type ElementSizeValue,
+  type InteractionState,
+  type ShadowElementEffectSchema,
+  type ShadowGlobalEffectSchema,
+  type ShadowKind,
+  type ShadowLayer,
+  type ShadowLayerValue,
+  type SolidColor
 } from '@kiskadee/core';
 import {
   Button as KButton,
   Card as KCard,
   CardAction as KCardAction,
   useCardArtifactConfig,
+  useKiskadee,
   useShowcase
 } from '@kiskadee/react-components';
 import type { ManifestComponent } from '@kiskadee/web-builder/types';
@@ -44,6 +52,16 @@ type CardDemoButtonProfile = {
 type CardSemanticSample = {
   emphasis: ComponentEmphasis;
   intent: CardIntent;
+};
+
+type ShadowLevelDocumentation = {
+  cardShadow?: ElementSizeValue;
+  cssValue: string;
+  kind: ShadowKind;
+  label: string;
+  layers: readonly ShadowLayer[];
+  level: string;
+  usageLabels: readonly string[];
 };
 
 const shadowLevelLabels: Record<ElementSizeValue, string> = {
@@ -81,12 +99,149 @@ const cardSemanticEmphasisOrder: ComponentEmphasis[] = [
   'high',
   'highest'
 ];
+const shadowKindOrder: ShadowKind[] = ['outer', 'inner'];
+const shadowKindLabels: Record<ShadowKind, string> = {
+  outer: 'Outer',
+  inner: 'Inner'
+};
+const cardShadowStateLabels: Partial<Record<InteractionState, string>> = {
+  rest: 'Rest',
+  hover: 'Hover',
+  focus: 'Focus',
+  pressed: 'Pressed',
+  disabled: 'Disabled',
+  selected: 'Selected'
+};
 
 function normalizeShadowLevelKey(key: string): ElementSizeValue | undefined {
   const normalized = key.startsWith('s:') ? key : `s:${key}`;
   return elementSizeValues.includes(normalized as ElementSizeValue)
     ? (normalized as ElementSizeValue)
     : undefined;
+}
+
+function formatShadowLevelLabel(level: string): string {
+  const normalized = normalizeShadowLevelKey(level);
+
+  return normalized ? shadowLevelLabels[normalized] : level;
+}
+
+function getOrderedShadowLevelKeys(
+  levels: Partial<Record<ElementSizeValue, ShadowLayerValue>>
+): string[] {
+  const availableLevels = Object.keys(levels);
+  const knownLevels = elementSizeValues.filter((level) => availableLevels.includes(level));
+  const customLevels = availableLevels
+    .filter((level) => !normalizeShadowLevelKey(level))
+    .sort((a, b) => a.localeCompare(b));
+
+  return [...knownLevels, ...customLevels];
+}
+
+function isShadowLayerStack(value: ShadowLayerValue): value is readonly ShadowLayer[] {
+  return Array.isArray(value);
+}
+
+function normalizeShadowLayers(value: ShadowLayerValue): readonly ShadowLayer[] {
+  return isShadowLayerStack(value) ? value : [value];
+}
+
+function formatCssLength(value: number): string {
+  return `${value}px`;
+}
+
+function formatShadowColor(color: SolidColor): string {
+  if (typeof color === 'string') return color;
+
+  const [hue, saturation, lightness, alpha] = color;
+
+  return `hsl(${hue} ${saturation}% ${lightness}% / ${alpha})`;
+}
+
+function formatShadowLayerCss(kind: ShadowKind, layer: ShadowLayer): string {
+  const inset = kind === 'inner' ? 'inset ' : '';
+  const spread = layer.spread === undefined ? '' : ` ${formatCssLength(layer.spread)}`;
+
+  return `${inset}${formatCssLength(layer.x)} ${formatCssLength(layer.y)} ${formatCssLength(
+    layer.blur
+  )}${spread} ${formatShadowColor(layer.color)}`;
+}
+
+function formatShadowCssValue(kind: ShadowKind, layers: readonly ShadowLayer[]): string {
+  return layers.map((layer) => formatShadowLayerCss(kind, layer)).join(', ');
+}
+
+function buildCardShadowUsageByLevel(
+  cardShadowEffect: ShadowElementEffectSchema | undefined
+): Record<string, string[]> {
+  const usageByLevel = new Map<string, string[]>();
+  const appendUsage = (level: string, label: string) => {
+    const current = usageByLevel.get(level) ?? [];
+    if (!current.includes(label)) {
+      usageByLevel.set(level, [...current, label]);
+    }
+  };
+
+  for (const [state, level] of Object.entries(cardShadowEffect?.states ?? {})) {
+    if (typeof level !== 'string') continue;
+    appendUsage(level, cardShadowStateLabels[state as InteractionState] ?? state);
+  }
+
+  for (const level of cardShadowEffect?.fixedLevels ?? []) {
+    appendUsage(level, 'Static');
+  }
+
+  return Object.fromEntries(usageByLevel);
+}
+
+function buildShadowDocumentationByKind({
+  cardShadowUsageByLevel,
+  cardSupportedShadowLevels,
+  shadowEffect
+}: {
+  cardShadowUsageByLevel: Record<string, string[]>;
+  cardSupportedShadowLevels: readonly ElementSizeValue[];
+  shadowEffect: ShadowGlobalEffectSchema | undefined;
+}): Record<ShadowKind, ShadowLevelDocumentation[]> {
+  return shadowKindOrder.reduce(
+    (acc, kind) => {
+      const levels = shadowEffect?.[kind]?.levels;
+
+      if (!levels) {
+        acc[kind] = [];
+        return acc;
+      }
+
+      acc[kind] = getOrderedShadowLevelKeys(levels).flatMap((level) => {
+        const value = levels[level as ElementSizeValue];
+        if (!value) return [];
+
+        const normalizedLevel = normalizeShadowLevelKey(level);
+        const layers = normalizeShadowLayers(value);
+        const cardShadow =
+          kind === 'outer' &&
+          normalizedLevel &&
+          cardSupportedShadowLevels.includes(normalizedLevel)
+            ? normalizedLevel
+            : undefined;
+
+        return [
+          {
+            cardShadow,
+            cssValue: formatShadowCssValue(kind, layers),
+            kind,
+            label: formatShadowLevelLabel(level),
+            layers,
+            level,
+            usageLabels: cardShadowUsageByLevel[level] ?? []
+          }
+        ];
+      });
+
+      return acc;
+    },
+    { outer: [], inner: [] } as Record<ShadowKind, ShadowLevelDocumentation[]>
+  );
 }
 
 type CardContentProps = {
@@ -190,6 +345,7 @@ function CardDemoButton({ buttonProfile, disabled = false, label }: CardDemoButt
 }
 
 export function Card() {
+  const { global } = useKiskadee();
   const { manifest } = useShowcase();
   const { cardClassesMap } = useCardArtifactConfig();
   const cardManifest = manifest?.components?.card;
@@ -244,6 +400,22 @@ export function Card() {
       }))
     ],
     [fixedShadowLevels]
+  );
+  const cardShadowUsageByLevel = React.useMemo(
+    () => buildCardShadowUsageByLevel(global?.components?.card?.effects?.shadow?.e1),
+    [global?.components?.card?.effects?.shadow?.e1]
+  );
+  const shadowDocumentationByKind = React.useMemo(
+    () =>
+      buildShadowDocumentationByKind({
+        cardShadowUsageByLevel,
+        cardSupportedShadowLevels: fixedShadowLevels,
+        shadowEffect: global?.effects?.shadow
+      }),
+    [cardShadowUsageByLevel, fixedShadowLevels, global?.effects?.shadow]
+  );
+  const showShadowDocumentation = shadowKindOrder.some(
+    (kind) => shadowDocumentationByKind[kind].length > 0
   );
 
   React.useEffect(() => {
@@ -337,6 +509,78 @@ export function Card() {
                           tone={inverse ? 'inverse' : 'default'}
                         />
                       </KCard>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          ) : null}
+
+          {showShadowDocumentation ? (
+            <section className={s.exampleSection}>
+              <h3 className={s.sectionTitle}>Shadow effect</h3>
+              <div className={s.shadowKindGrid}>
+                {shadowKindOrder.map((kind) => {
+                  const shadowLevels = shadowDocumentationByKind[kind];
+
+                  return (
+                    <div className={s.shadowKindGroup} key={kind}>
+                      <div className={s.shadowKindHeader}>
+                        <span>{shadowKindLabels[kind]}</span>
+                        <span>
+                          {shadowLevels.length} {shadowLevels.length === 1 ? 'level' : 'levels'}
+                        </span>
+                      </div>
+
+                      {shadowLevels.length > 0 ? (
+                        <div className={s.shadowCardGrid}>
+                          {shadowLevels.map((shadowLevel) => (
+                            <article className={s.shadowLevelItem} key={shadowLevel.level}>
+                              {shadowLevel.cardShadow ? (
+                                <KCard
+                                  className={s.shadowPreviewCard}
+                                  radius={radius}
+                                  shadow={shadowLevel.cardShadow}
+                                  preserveBorderWithShadow={false}
+                                >
+                                  <div className={s.shadowPreviewContent}>
+                                    <span>{shadowKindLabels[shadowLevel.kind]}</span>
+                                    <strong>{shadowLevel.label}</strong>
+                                    <code>{shadowLevel.level}</code>
+                                    {shadowLevel.usageLabels.length > 0 ? (
+                                      <div className={s.shadowUsageList}>
+                                        {shadowLevel.usageLabels.map((label) => (
+                                          <span key={label}>{label}</span>
+                                        ))}
+                                      </div>
+                                    ) : null}
+                                  </div>
+                                </KCard>
+                              ) : (
+                                <div
+                                  className={s.shadowRawPreview}
+                                  style={{ boxShadow: shadowLevel.cssValue }}
+                                >
+                                  <div className={s.shadowPreviewContent}>
+                                    <span>{shadowKindLabels[shadowLevel.kind]}</span>
+                                    <strong>{shadowLevel.label}</strong>
+                                    <code>{shadowLevel.level}</code>
+                                  </div>
+                                </div>
+                              )}
+                              <p className={s.shadowCssValue}>{shadowLevel.cssValue}</p>
+                              <p className={s.shadowLayerCount}>
+                                {shadowLevel.layers.length}{' '}
+                                {shadowLevel.layers.length === 1 ? 'layer' : 'layers'}
+                              </p>
+                            </article>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className={s.shadowEmpty}>
+                          No {kind} shadow levels in this preset.
+                        </div>
+                      )}
                     </div>
                   );
                 })}
