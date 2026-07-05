@@ -11,6 +11,7 @@ import type {
   SliderMarkLabelPlacement,
   SliderMarks,
   SliderMode,
+  SliderSnapMotion,
   SliderValueAnimation,
   SliderValueDisplay,
   SliderVariant,
@@ -89,6 +90,7 @@ export type KiskadeeContextValue = {
           variant?: SliderVariant;
           valueDisplay?: SliderValueDisplay;
           valueAnimation?: SliderValueAnimation;
+          snapMotion?: SliderSnapMotion;
           marks?: SliderMarks;
           edgeMarks?: SliderEdgeMarks;
           markLabelPlacement?: SliderMarkLabelPlacement;

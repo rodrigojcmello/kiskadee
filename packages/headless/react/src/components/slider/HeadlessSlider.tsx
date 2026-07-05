@@ -7,13 +7,15 @@ import type {
   KeyboardEvent,
   ReactNode,
   PointerEvent as ReactPointerEvent,
-  Ref
+  Ref,
+  TransitionEvent as ReactTransitionEvent
 } from 'react';
 import {
   createContext,
   forwardRef,
   useCallback,
   useContext,
+  useEffect,
   useId,
   useMemo,
   useRef,
@@ -154,6 +156,8 @@ type SliderContextValue = {
   getActiveRangePercent: () => SliderRangeValue;
   getFormattedValue: (index: SliderThumbIndex) => ReactNode;
   getAriaValueText: (index: SliderThumbIndex) => string;
+  isSettling: () => boolean;
+  isThumbSettling: (index: SliderThumbIndex) => boolean;
   isMarkSelected: (value: number) => boolean;
   setTrackElement: (node: HTMLDivElement | null) => void;
   handleTrackPointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void;
@@ -163,12 +167,17 @@ type SliderContextValue = {
   handleThumbFocus: (index: SliderThumbIndex, event: FocusEvent<HTMLSpanElement>) => void;
   handleThumbBlur: (event: FocusEvent<HTMLSpanElement>) => void;
   handleThumbKeyDown: (index: SliderThumbIndex, event: KeyboardEvent<HTMLSpanElement>) => void;
+  handleThumbTransitionEnd: (
+    index: SliderThumbIndex,
+    event: ReactTransitionEvent<HTMLSpanElement>
+  ) => void;
 };
 
 const DEFAULT_MIN = 0;
 const DEFAULT_MAX = 100;
 const DEFAULT_STEP = 1;
 const MAX_DECIMAL_PLACES = 15;
+const SETTLE_FALLBACK_TIMEOUT_MS = 240;
 
 const SliderContext = createContext<SliderContextValue | null>(null);
 
@@ -360,11 +369,24 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
   const [focusVisible, setFocusVisible] = useState(false);
   const [activeThumbIndex, setActiveThumbIndex] = useState<SliderThumbIndex>(0);
   const [draggingThumbIndex, setDraggingThumbIndex] = useState<SliderThumbIndex | null>(null);
+  const [settlingThumbIndex, setSettlingThumbIndex] = useState<SliderThumbIndex | null>(null);
   const [dragPreviewValue, setDragPreviewValue] = useState<{
     index: SliderThumbIndex;
     value: number;
   } | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (settlingThumbIndex === null) return undefined;
+
+    const timeoutId = setTimeout(() => {
+      setSettlingThumbIndex((currentIndex) =>
+        currentIndex === settlingThumbIndex ? null : currentIndex
+      );
+    }, SETTLE_FALLBACK_TIMEOUT_MS);
+
+    return () => clearTimeout(timeoutId);
+  }, [settlingThumbIndex]);
 
   const getCommittedThumbValue = useCallback(
     (index: SliderThumbIndex) => {
@@ -489,6 +511,13 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
     [getVisualThumbValue, resolvedValue]
   );
 
+  const isSettling = useCallback(() => settlingThumbIndex !== null, [settlingThumbIndex]);
+
+  const isThumbSettling = useCallback(
+    (index: SliderThumbIndex) => settlingThumbIndex === index,
+    [settlingThumbIndex]
+  );
+
   const setTrackElement = useCallback((node: HTMLDivElement | null) => {
     trackRef.current = node;
   }, []);
@@ -509,6 +538,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
         getThumbIndexFromEventTarget(event.target) ?? pickNearestThumbIndex(nextValue);
       setActiveThumbIndex(targetIndex);
       setDraggingThumbIndex(targetIndex);
+      setSettlingThumbIndex(null);
       setPressed(true);
       event.currentTarget.setPointerCapture?.(event.pointerId);
       setThumbPreviewValue(targetIndex, nextValue);
@@ -538,6 +568,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       if (draggingThumbIndex !== null && !disabled && !readOnly) {
         const nextValue = getPointerValue(event, trackRef.current, min, max);
         setThumbValue(draggingThumbIndex, nextValue);
+        setSettlingThumbIndex(draggingThumbIndex);
       }
 
       if (draggingThumbIndex !== null) {
@@ -560,6 +591,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
       event.currentTarget.releasePointerCapture?.(event.pointerId);
       setDraggingThumbIndex(null);
+      setSettlingThumbIndex(null);
       setDragPreviewValue(null);
       setPressed(false);
     },
@@ -628,6 +660,14 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
     [disabled, getThumbValue, max, min, readOnly, resolvedValue, setThumbValue, step, valueMode]
   );
 
+  const handleThumbTransitionEnd = useCallback(
+    (index: SliderThumbIndex, event: ReactTransitionEvent<HTMLSpanElement>) => {
+      if (event.target !== event.currentTarget) return;
+      setSettlingThumbIndex((currentIndex) => (currentIndex === index ? null : currentIndex));
+    },
+    []
+  );
+
   const slotProps = useMemo<SliderSlotProps>(() => {
     const stateClassName = sliderStateClassName({
       status,
@@ -677,6 +717,8 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       getActiveRangePercent,
       getFormattedValue,
       getAriaValueText: resolveAriaValueText,
+      isSettling,
+      isThumbSettling,
       isMarkSelected,
       setTrackElement,
       handleTrackPointerDown,
@@ -685,7 +727,8 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       handleTrackPointerCancel,
       handleThumbFocus,
       handleThumbBlur,
-      handleThumbKeyDown
+      handleThumbKeyDown,
+      handleThumbTransitionEnd
     }),
     [
       describedBy,
@@ -697,11 +740,14 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       handleThumbBlur,
       handleThumbFocus,
       handleThumbKeyDown,
+      handleThumbTransitionEnd,
       handleTrackPointerCancel,
       handleTrackPointerDown,
       handleTrackPointerMove,
       handleTrackPointerUp,
       isMarkSelected,
+      isSettling,
+      isThumbSettling,
       max,
       min,
       readOnly,
@@ -949,6 +995,7 @@ const SliderActiveTrack = forwardRef<HTMLSpanElement, SliderActiveTrackProps>(
         ref={ref}
         className={mergeClassNames(slotClassName, className)}
         style={activeStyle}
+        data-slider-settling={context.isSettling() ? '' : undefined}
         aria-hidden="true"
         {...props}
       >
@@ -967,6 +1014,7 @@ const SliderThumb = forwardRef<HTMLSpanElement, SliderThumbProps>(function Slide
     onFocus,
     onBlur,
     onKeyDown,
+    onTransitionEnd,
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     'aria-describedby': ariaDescribedBy,
@@ -1002,6 +1050,7 @@ const SliderThumb = forwardRef<HTMLSpanElement, SliderThumbProps>(function Slide
       aria-disabled={context.disabled || undefined}
       aria-readonly={context.readOnly || undefined}
       data-slider-thumb-index={index}
+      data-slider-settling={context.isThumbSettling(index) ? '' : undefined}
       className={mergeClassNames(slotClassName, className)}
       style={thumbStyle}
       onFocus={(event) => {
@@ -1015,6 +1064,10 @@ const SliderThumb = forwardRef<HTMLSpanElement, SliderThumbProps>(function Slide
       onKeyDown={(event) => {
         onKeyDown?.(event);
         context.handleThumbKeyDown(index, event);
+      }}
+      onTransitionEnd={(event) => {
+        onTransitionEnd?.(event);
+        context.handleThumbTransitionEnd(index, event);
       }}
     >
       {children}
@@ -1038,6 +1091,7 @@ const SliderValueIndicator = forwardRef<HTMLSpanElement, SliderValueIndicatorPro
         {...slotProps}
         ref={ref}
         className={mergeClassNames(slotClassName, className)}
+        data-slider-settling={context.isThumbSettling(index) ? '' : undefined}
         style={indicatorStyle}
         {...props}
       >

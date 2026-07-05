@@ -7,6 +7,7 @@ import type {
   SliderMarkLabelPlacement,
   SliderMarks,
   SliderMode,
+  SliderSnapMotion,
   SliderValueAnimation,
   SliderValueDisplay,
   SliderVariant
@@ -18,6 +19,7 @@ export type SliderComponentOptionsPayload = {
   variant?: SliderVariant;
   valueDisplay?: SliderValueDisplay;
   valueAnimation?: SliderValueAnimation;
+  snapMotion?: SliderSnapMotion;
   marks?: SliderMarks;
   edgeMarks?: SliderEdgeMarks;
   markLabelPlacement?: SliderMarkLabelPlacement;
@@ -88,6 +90,7 @@ export function buildSliderComponentArtifact(schema: Schema): SliderComponentArt
     ...(sliderSchema.options?.valueAnimation
       ? { valueAnimation: sliderSchema.options.valueAnimation }
       : {}),
+    ...(sliderSchema.options?.snapMotion ? { snapMotion: sliderSchema.options.snapMotion } : {}),
     ...(sliderSchema.options?.marks ? { marks: sliderSchema.options.marks } : {}),
     ...(sliderSchema.options?.edgeMarks ? { edgeMarks: sliderSchema.options.edgeMarks } : {}),
     ...(sliderSchema.options?.markLabelPlacement

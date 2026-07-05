@@ -148,6 +148,12 @@
   pointer-events: none;
 }
 
+.k-sld-sm .k-sld-e9-a[data-slider-settling] {
+  transition:
+    inset-inline-start var(--k-dur-int) var(--k-ease-out),
+    inset-inline-end var(--k-dur-int) var(--k-ease-out);
+}
+
 /*
  * element thumb wrapper / e10
  * Centers each slider handle on its headless-provided percentage position.
@@ -165,6 +171,10 @@
   outline: none;
   touch-action: none;
   transform: translate(-50%, -50%);
+}
+
+.k-sld-sm .k-sld-e10-a[data-slider-settling] {
+  transition: inset-inline-start var(--k-dur-int) var(--k-ease-out);
 }
 
 /*
@@ -216,6 +226,10 @@
   pointer-events: none;
   white-space: nowrap;
   transform: translateX(-50%);
+}
+
+.k-sld-sm .k-sld-e12-a[data-slider-settling] {
+  transition: inset-inline-start var(--k-dur-int) var(--k-ease-out);
 }
 
 /*
@@ -334,4 +348,18 @@
 .k-sld-e1-a.-d.-a *,
 .k-sld-e1-a.-r.-a * {
   cursor: inherit;
+}
+
+.no-transitions .k-sld-sm .k-sld-e9-a[data-slider-settling],
+.no-transitions .k-sld-sm .k-sld-e10-a[data-slider-settling],
+.no-transitions .k-sld-sm .k-sld-e12-a[data-slider-settling] {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .k-sld-sm .k-sld-e9-a[data-slider-settling],
+  .k-sld-sm .k-sld-e10-a[data-slider-settling],
+  .k-sld-sm .k-sld-e12-a[data-slider-settling] {
+    transition: none;
+  }
 }

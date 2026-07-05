@@ -20,6 +20,7 @@ export type {
   SliderMarkLabelPlacementOption,
   SliderMarks,
   SliderProps,
+  SliderSnapMotionOption,
   SliderStatus,
   SliderValueAnimationOption
 } from './components/Slider';

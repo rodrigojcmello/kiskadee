@@ -10,6 +10,7 @@ import type {
   SliderIntent,
   SliderMarkLabelPlacement,
   SliderMode,
+  SliderSnapMotion,
   SliderValueAnimation,
   SliderValueDisplay,
   SliderVariant
@@ -70,6 +71,7 @@ export type SliderResolvedEdgeMarkLabelAlignment = Exclude<
   'auto'
 >;
 export type SliderValueAnimationOption = SliderValueAnimation;
+export type SliderSnapMotionOption = SliderSnapMotion;
 
 export type SliderThumbAriaLabels = {
   start?: string;
@@ -116,6 +118,7 @@ export type SliderProps = Omit<
   edgeMarkLabelAlignment?: SliderEdgeMarkLabelAlignmentOption;
   valueDisplay?: SliderValueDisplay;
   valueAnimation?: SliderValueAnimationOption;
+  snapMotion?: SliderSnapMotionOption;
   activationFeedback?: SliderActivationFeedback;
   formatValue?: (value: number, index: 0 | 1) => ReactNode;
   thumbAriaLabels?: SliderThumbAriaLabels;

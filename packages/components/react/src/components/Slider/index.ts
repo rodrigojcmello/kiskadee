@@ -13,6 +13,7 @@ export type {
   SliderMarks,
   SliderModeClassesMap,
   SliderProps,
+  SliderSnapMotionOption,
   SliderStatus,
   SliderThumbAriaLabelledBy,
   SliderThumbAriaLabels,

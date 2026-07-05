@@ -8,6 +8,7 @@ import type {
   SliderMarkLabelPlacement,
   SliderMarks,
   SliderMode,
+  SliderSnapMotion,
   SliderValueAnimation,
   SliderValueDisplay,
   SliderVariant
@@ -24,6 +25,7 @@ import {
   DEFAULT_SLIDER_MARKS,
   DEFAULT_SLIDER_MODE,
   DEFAULT_SLIDER_RADIUS,
+  DEFAULT_SLIDER_SNAP_MOTION,
   DEFAULT_SLIDER_VALUE_ANIMATION,
   DEFAULT_SLIDER_VALUE_DISPLAY,
   DEFAULT_SLIDER_VARIANT
@@ -38,6 +40,7 @@ export type SliderArtifactConfig = {
     radius: RadiusMode;
     valueDisplay: SliderValueDisplay;
     valueAnimation: SliderValueAnimation;
+    snapMotion: SliderSnapMotion;
     marks: SliderMarks;
     edgeMarks: SliderEdgeMarks;
     markLabelPlacement: SliderMarkLabelPlacement;
@@ -86,6 +89,7 @@ export function useSliderArtifactConfig(): SliderArtifactConfig {
       radius: global?.radius ?? DEFAULT_SLIDER_RADIUS,
       valueDisplay: options?.valueDisplay ?? DEFAULT_SLIDER_VALUE_DISPLAY,
       valueAnimation: options?.valueAnimation ?? DEFAULT_SLIDER_VALUE_ANIMATION,
+      snapMotion: options?.snapMotion ?? DEFAULT_SLIDER_SNAP_MOTION,
       marks: options?.marks ?? DEFAULT_SLIDER_MARKS,
       edgeMarks: options?.edgeMarks ?? DEFAULT_SLIDER_EDGE_MARKS,
       markLabelPlacement: options?.markLabelPlacement ?? DEFAULT_SLIDER_MARK_LABEL_PLACEMENT,

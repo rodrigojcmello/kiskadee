@@ -17,8 +17,9 @@ This document covers the public styled component exported by
 - Public props/type exports: `SliderProps`, `SliderStatus`,
   `SliderActivationFeedback`,
   `SliderClassNames`, `SliderMark`,
-  `SliderMarks`, `SliderValueAnimationOption`, `SliderClassesMap`, `SliderModeClassesMap`,
-  `SliderVariantClassesMap`, and `SliderArtifactConfig`.
+  `SliderMarks`, `SliderValueAnimationOption`, `SliderSnapMotionOption`,
+  `SliderClassesMap`, `SliderModeClassesMap`, `SliderVariantClassesMap`, and
+  `SliderArtifactConfig`.
 - Shared value helper: `RollingNumber`.
 - Headless primitive: `HeadlessSlider` from `@kiskadee/react-headless`.
 - Current layout scope: horizontal only.
@@ -87,6 +88,7 @@ label through `aria-labelledby` unless a per-thumb naming prop overrides it.
 | `edgeMarkLabelAlignment` | Controls how `min`/`max` labels align when rendered as track labels. Supports `"auto"`, `"center"`, and `"inside"`. |
 | `valueDisplay` | Controls selected value display: `"none"`, `"tooltip"`, `"summary"`, or `"both"`. |
 | `valueAnimation` | Optional per-instance override for how selected values are visually rendered. Supports `"none"` and `"rolling"`. |
+| `snapMotion` | Optional per-instance override for thumb position settling after pointer release. Supports `"none"` and `"smooth"`. |
 | `activationFeedback` | Optional per-instance override for the schema/artifact activation feedback effect. Supports `false` to disable and `"active"` for static preview. |
 | `className` | Merged into the root `e1` slot. |
 | `classNames` | Escape hatch for schema element slots `e1` through `e15`. |
@@ -104,6 +106,14 @@ and summaries when `formatValue` returns a string or number. If `formatValue`
 returns a complex React node, the value is rendered statically. Mark labels,
 edge labels, helper text, and accessible value text are not animated by this
 option.
+
+`snapMotion` owns the visual position transition from a free drag preview to
+the committed `step` value. It is separate from `valueAnimation`: `snapMotion`
+moves the thumb, tooltip, and active track after pointer release, while
+`valueAnimation` animates the text shown inside value surfaces. `marks` do not
+control snapping; `step` controls the committed value grid. Programmatic or
+externally controlled `value` changes do not automatically enter the settling
+state in this contract.
 
 ### Activation Feedback
 
@@ -160,16 +170,17 @@ The current schema option values are:
 
 - `valueDisplay`: `none`, `tooltip`, `summary`, `both`
 - `valueAnimation`: `none`, `rolling`
+- `snapMotion`: `none`, `smooth`
 - `marks`: `none`, `step`
 - `edgeMarks`: `include`, `exclude`
 - `markLabelPlacement`: `auto`, `above`, `below`
 - `edgeMarkLabelPlacement`: `auto`, `endpoints`, `markLabels`
 - `edgeMarkLabelAlignment`: `auto`, `center`, `inside`
 
-`marks`, `edgeMarks`, `markLabelPlacement`, `edgeMarkLabelPlacement`, and
-`edgeMarkLabelAlignment` are top-level component options because they describe
-visual defaults for the component. Consumers can still override them per
-instance.
+`snapMotion`, `marks`, `edgeMarks`, `markLabelPlacement`,
+`edgeMarkLabelPlacement`, and `edgeMarkLabelAlignment` are top-level component
+options because they describe visual defaults for the component. Consumers can
+still override them per instance.
 
 `components.slider.effects.activationFeedback` defines the component-level
 activation feedback recipe. When present, the web builder treats `e10` as the
@@ -268,8 +279,8 @@ override pattern and schema-owned mode values are not enough.
 
 `web-builder` may emit `components/slider.kiskadee.json` with:
 
-- component options: `variant`, `valueDisplay`, `valueAnimation`, `marks`, `edgeMarks`,
-  `markLabelPlacement`, `edgeMarkLabelPlacement`, and
+- component options: `variant`, `valueDisplay`, `valueAnimation`, `snapMotion`,
+  `marks`, `edgeMarks`, `markLabelPlacement`, `edgeMarkLabelPlacement`, and
   `edgeMarkLabelAlignment`;
 - component effects: currently `activationFeedback`;
 - variant-local options: currently `standard.options.mode`.
@@ -598,7 +609,7 @@ structure. The suffix does not create a public variant or mode.
   controlled/uncontrolled value, `disabled`, `readOnly`, and keyboard support.
 - Schema elements `e1` through `e15`.
 - Current schema options and values for `variant`, `mode`, `valueDisplay`,
-  `valueAnimation`, `marks`, `edgeMarks`, `markLabelPlacement`,
+  `valueAnimation`, `snapMotion`, `marks`, `edgeMarks`, `markLabelPlacement`,
   `edgeMarkLabelPlacement`, and `edgeMarkLabelAlignment`.
 - Generated artifacts and class maps as the source of truth for visual tokens.
 - Current horizontal-only contract.

@@ -37,6 +37,7 @@ import type {
   SliderResolvedEdgeMarkLabelAlignment,
   SliderResolvedEdgeMarkLabelPlacement,
   SliderResolvedMarkLabelPlacement,
+  SliderSnapMotionOption,
   SliderValueAnimationOption,
   SliderProps
 } from './Slider.types.ts';
@@ -48,6 +49,7 @@ const DEFAULT_STEP = 1;
 const STEP_MARK_LIMIT = 101;
 const START_EDGE_MARK_LABEL_INSIDE_CLASS_NAME = 'k-sld-e14c-a';
 const END_EDGE_MARK_LABEL_INSIDE_CLASS_NAME = 'k-sld-e14d-a';
+const SNAP_MOTION_CLASS_NAME = 'k-sld-sm';
 
 function finiteNumber(value: number | undefined, fallback: number): number {
   return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
@@ -253,6 +255,7 @@ function SliderRoot(props: SliderProps) {
     edgeMarkLabelAlignment,
     valueDisplay,
     valueAnimation,
+    snapMotion,
     activationFeedback,
     formatValue,
     thumbAriaLabels,
@@ -278,6 +281,7 @@ function SliderRoot(props: SliderProps) {
   const resolvedRadius = radius ?? options.radius;
   const resolvedValueDisplay = valueDisplay ?? options.valueDisplay;
   const resolvedValueAnimation = valueAnimation ?? options.valueAnimation;
+  const resolvedSnapMotion: SliderSnapMotionOption = snapMotion ?? options.snapMotion;
   const resolvedMarkLabelPlacement = resolveMarkLabelPlacement(
     markLabelPlacement ?? options.markLabelPlacement,
     isLikelyTouch
@@ -339,7 +343,11 @@ function SliderRoot(props: SliderProps) {
         elements,
         classNames: {
           ...classNames,
-          e1: join(classNames.e1, className)
+          e1: join(
+            classNames.e1,
+            className,
+            resolvedSnapMotion === 'smooth' && SNAP_MOTION_CLASS_NAME
+          )
         },
         structuralBranch: 'a',
         scale,
@@ -362,6 +370,7 @@ function SliderRoot(props: SliderProps) {
       intent,
       resolvedRadius,
       resolvedMarkLabelPlacement,
+      resolvedSnapMotion,
       scale
     ]
   );

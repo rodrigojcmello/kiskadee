@@ -23,6 +23,7 @@ import type {
   SliderMarkLabelPlacementSchemaValue,
   SliderMarksSchemaValue,
   SliderOptionsFromSchema,
+  SliderSnapMotionSchemaValue,
   SliderValueAnimationSchemaValue,
   SliderValueDisplaySchemaValue,
   SliderVariantOptionsFromSchema
@@ -68,6 +69,7 @@ export type SliderStandardMode = 'base';
 export type SliderMode = SliderStandardMode;
 export type SliderValueDisplay = SliderValueDisplaySchemaValue;
 export type SliderValueAnimation = SliderValueAnimationSchemaValue;
+export type SliderSnapMotion = SliderSnapMotionSchemaValue;
 export type SliderMarks = SliderMarksSchemaValue;
 export type SliderEdgeMarks = SliderEdgeMarksSchemaValue;
 export type SliderMarkLabelPlacement = SliderMarkLabelPlacementSchemaValue;
