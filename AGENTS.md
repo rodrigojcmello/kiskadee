@@ -67,6 +67,9 @@ keep task-specific workflows inside skills.
   monorepo.
 - For official preset source evidence, follow `packages/presets/docs/definitions/preset-schema-organization.md`:
   keep design-system-level source notes and component evidence under `packages/presets/docs/design-systems/<preset>/`.
+- When a task touches official preset schemas, Figma links, official design-system docs, or source-derived
+  visual decisions, use `skills/kiskadee-preset-evidence/SKILL.md` and update the matching source-evidence docs
+  before finalizing.
 - `CHAT-CONTEXT.md`: single-file bootstrap for new chats.
 - `PROJECT-PURPOSE.md`: canonical project purpose and architecture map.
 - `SCHEMA-BUILD-RUNTIME-RULES.md`: ownership rules for schema, build artifacts, runtime, and Sass.
@@ -74,6 +77,8 @@ keep task-specific workflows inside skills.
 - `skills/kiskadee-architecture/SKILL.md`: architecture workflow for cross-package decisions.
 - `skills/kiskadee-code-review-markdown/SKILL.md`: code review workflow that writes `CODE-REVIEW.md`
   at the repository root for agent handoff.
+- `skills/kiskadee-preset-evidence/SKILL.md`: source-evidence workflow for official presets and
+  design-system-derived schema decisions.
 - `skills/kiskadee-linear/SKILL.md`: Linear issue workflow, including title/description language
   and label rules.
 

@@ -40,6 +40,53 @@ Kiskadee as `s:sm:1`:
 - disabled text: `#C6C6C6`
 - focus color: `#0F62FE`
 
+## Additional Toggle Figma Reference
+
+An older extraction inspected the larger Carbon `Toggle` frame:
+
+- [IBM Carbon Design System Community, node 2598:187999](https://www.figma.com/design/52HHpBaYAUdDKqAdH5vw8Y/IBM-Carbon-Design-System--Community-?node-id=2598-187999)
+- file key: `52HHpBaYAUdDKqAdH5vw8Y`
+- node id: `2598:187999`
+- frame: `Toggle`
+- inspected on: 2026-06-05
+
+That reference exposes six state symbols: `Toggle State=True|False` across
+`State=Default|Active|Disabled`. Kiskadee maps `Toggle State=True` to selected
+Switch state and `Toggle State=False` to unselected Switch state.
+
+Extracted values from that larger Toggle reference:
+
+| Carbon token | Value | Kiskadee usage |
+| --- | --- | --- |
+| `support/support-success` | `#24A148` | selected/on track |
+| `miscellaneous/toggle-off` | `#8D8D8D` | unselected/off track |
+| `button/button-disabled` | `#C6C6C6` | disabled track |
+| `icon/icon-on-color` | `#FFFFFF` | enabled thumb |
+| `icon/icon-on-color-disabled` | `#8D8D8D` | disabled thumb |
+| `text/text-primary` | `#161616` | enabled control text |
+| `text/text-secondary` | `#525252` | enabled label |
+| `text/text-disabled` | `#C6C6C6` | disabled label and control text |
+| `focus/focus` | `#0F62FE` | global focus color |
+
+Geometry from that reference:
+
+| Part | Value |
+| --- | ---: |
+| Toggle visual | `48 x 24` |
+| Thumb | `20 x 20` |
+| Track radius | `12` |
+| Thumb radius | `10` |
+| Track padding | `2` |
+| Control text gap | `8` |
+| Focus ring | `2px` outline with `1px` offset |
+
+Typography from that reference:
+
+| Figma style | Value | Kiskadee element |
+| --- | --- | --- |
+| `productive / label-01` | IBM Plex Sans regular, `12 / 16` | `e4` label |
+| `body/body-compact-01` | IBM Plex Sans regular, `14 / 18` | `e5` control text |
+
 ## Site-Derived Decisions
 
 The official Toggle docs expose a Gray 100 theme that was not available in the
@@ -58,3 +105,24 @@ Kiskadee registers this dark-surface treatment in two equivalent places:
 
 This is a preset-authored palette equivalence for Carbon, not a generic
 automatic inversion rule.
+
+## Adaptations
+
+- Carbon's Figma Toggle has an optional field label above the control. The
+  current Kiskadee Switch primitive only has an inline `label`, so `e4` uses the
+  Carbon label typography/color as the closest supported representation.
+- Carbon's Figma `Toggle + Text` places the visual toggle before the `On`/`Off`
+  text. The current Kiskadee `controlText` feature renders the control text
+  before the visual track. The Carbon preset still sets
+  `controlTextVisibility: "always"` because this is the closest supported
+  mapping for the Carbon state text.
+- Carbon's `State=Active` visual is represented by the focus-colored outline in
+  the Figma assets. Kiskadee maps this through the normal Switch focus ring
+  instead of introducing a Carbon-specific active mode.
+- The inspected Carbon Toggle does not expose a distinct state-layer reference.
+  The Carbon schema opts into component-level `activationFeedback` with the
+  shared Switch halo profile for runtime consistency across presets.
+- The current Kiskadee Switch color model does not have a `selected:disabled`
+  color branch. Carbon's disabled selected visual is approximated through the
+  existing disabled and selected cascade until that state exists in the schema
+  contract.

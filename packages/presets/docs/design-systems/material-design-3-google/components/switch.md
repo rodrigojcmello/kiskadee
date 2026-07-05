@@ -1,4 +1,7 @@
-# Material 3 Switch Figma Reference
+# Material Design 3 Google Switch Evidence
+
+This file records source evidence and schema decisions for
+`packages/presets/src/presets/material-3-google/components/switch.schema.ts`.
 
 ## Source
 

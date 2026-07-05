@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kiskadee Preset Evidence"
+  short_description: "Document preset source evidence"
+  default_prompt: "Document the source evidence for this Kiskadee preset change."

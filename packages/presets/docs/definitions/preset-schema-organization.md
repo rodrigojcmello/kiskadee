@@ -92,11 +92,14 @@ cross-preset component rule. The per-design-system evidence belongs with the
 design-system documentation so future preset edits can audit the original
 source before changing schema values.
 
-Legacy source notes may still exist in older locations. Known examples include
-`packages/presets/src/presets/material-3-google/ds-ref/DS-REF.md` and other
-preset-local `ds-ref/` folders. New preset evidence should use
+Legacy source notes may still exist in older preset-local locations. New preset evidence should use
 `packages/presets/docs/design-systems/`, and older notes should be migrated
 there when touched.
+
+For automated agent work, use `skills/kiskadee-preset-evidence/SKILL.md`.
+That skill owns the reusable workflow and the evidence-file format reference
+used when a task includes Figma links, official design-system documentation, or
+source-derived preset decisions.
 
 ## Numeric Values
 
