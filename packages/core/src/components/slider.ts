@@ -9,6 +9,7 @@ import type {
   SliderHelperTextElementStyleFromSchema,
   SliderMarkElementStyleFromSchema,
   SliderMarkLabelElementStyleFromSchema,
+  SliderOriginMarkElementStyleFromSchema,
   SliderRootElementStyleFromSchema,
   SliderThumbElementStyleFromSchema,
   SliderThumbInnerElementStyleFromSchema,
@@ -20,10 +21,14 @@ import type {
   SliderEdgeMarkLabelAlignmentSchemaValue,
   SliderEdgeMarkLabelPlacementSchemaValue,
   SliderEdgeMarksSchemaValue,
+  SliderActiveTrackOriginSchemaValue,
   SliderMarkLabelPlacementSchemaValue,
+  SliderMarkPlacementSchemaValue,
   SliderMarksSchemaValue,
+  SliderOriginMarkSchemaValue,
   SliderOptionsFromSchema,
   SliderSnapMotionSchemaValue,
+  SliderThumbEdgeBehaviorSchemaValue,
   SliderThumbCrossingSchemaValue,
   SliderValueAnimationSchemaValue,
   SliderValueDisplaySchemaValue,
@@ -47,6 +52,7 @@ import type {
  * - e13: mark / tick
  * - e14: mark label
  * - e15: helper text
+ * - e16: origin mark / neutral tick
  */
 export type SliderElementName =
   | 'e1'
@@ -63,7 +69,8 @@ export type SliderElementName =
   | 'e12'
   | 'e13'
   | 'e14'
-  | 'e15';
+  | 'e15'
+  | 'e16';
 
 export type SliderVariant = 'standard';
 export type SliderStandardMode = 'base';
@@ -74,9 +81,13 @@ export type SliderSnapMotion = SliderSnapMotionSchemaValue;
 export type SliderThumbCrossing = SliderThumbCrossingSchemaValue;
 export type SliderMarks = SliderMarksSchemaValue;
 export type SliderEdgeMarks = SliderEdgeMarksSchemaValue;
+export type SliderMarkPlacement = SliderMarkPlacementSchemaValue;
 export type SliderMarkLabelPlacement = SliderMarkLabelPlacementSchemaValue;
 export type SliderEdgeMarkLabelPlacement = SliderEdgeMarkLabelPlacementSchemaValue;
 export type SliderEdgeMarkLabelAlignment = SliderEdgeMarkLabelAlignmentSchemaValue;
+export type SliderThumbEdgeBehavior = SliderThumbEdgeBehaviorSchemaValue;
+export type SliderActiveTrackOrigin = SliderActiveTrackOriginSchemaValue;
+export type SliderOriginMark = SliderOriginMarkSchemaValue;
 export type SliderModeByVariant = {
   standard: SliderStandardMode;
 };
@@ -206,6 +217,15 @@ export type SliderMarkLabelElementStyle<TSegmentName extends SegmentName = never
 export type SliderHelperTextElementStyle<TSegmentName extends SegmentName = never> =
   SliderHelperTextElementStyleFromSchema<TSegmentName>;
 
+/**
+ * e16 — origin mark / neutral tick
+ * - boxColor / borderColor
+ * - width, height, border, radius
+ * - margins
+ */
+export type SliderOriginMarkElementStyle<TSegmentName extends SegmentName = never> =
+  SliderOriginMarkElementStyleFromSchema<TSegmentName>;
+
 export type SliderElements<TSegmentName extends SegmentName = never> = {
   // e1: root state and field wrapper
   e1?: SliderRootElementStyle;
@@ -237,6 +257,8 @@ export type SliderElements<TSegmentName extends SegmentName = never> = {
   e14?: SliderMarkLabelElementStyle<TSegmentName>;
   // e15: helper text
   e15?: SliderHelperTextElementStyle<TSegmentName>;
+  // e16: origin mark / neutral tick
+  e16?: SliderOriginMarkElementStyle<TSegmentName>;
 };
 
 export type SliderModeConfig<TSegmentName extends SegmentName = never> = {

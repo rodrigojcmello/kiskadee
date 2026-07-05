@@ -1,13 +1,17 @@
 import type {
   ActivationFeedbackSetting,
   Schema,
+  SliderActiveTrackOrigin,
   SliderEdgeMarkLabelAlignment,
   SliderEdgeMarkLabelPlacement,
   SliderEdgeMarks,
   SliderMarkLabelPlacement,
+  SliderMarkPlacement,
   SliderMarks,
   SliderMode,
+  SliderOriginMark,
   SliderSnapMotion,
+  SliderThumbEdgeBehavior,
   SliderThumbCrossing,
   SliderValueAnimation,
   SliderValueDisplay,
@@ -24,9 +28,13 @@ export type SliderComponentOptionsPayload = {
   thumbCrossing?: SliderThumbCrossing;
   marks?: SliderMarks;
   edgeMarks?: SliderEdgeMarks;
+  markPlacement?: SliderMarkPlacement;
   markLabelPlacement?: SliderMarkLabelPlacement;
   edgeMarkLabelPlacement?: SliderEdgeMarkLabelPlacement;
   edgeMarkLabelAlignment?: SliderEdgeMarkLabelAlignment;
+  thumbEdgeBehavior?: SliderThumbEdgeBehavior;
+  activeTrackOrigin?: SliderActiveTrackOrigin;
+  originMark?: SliderOriginMark;
 };
 
 export type SliderComponentEffectsPayload = {
@@ -98,6 +106,9 @@ export function buildSliderComponentArtifact(schema: Schema): SliderComponentArt
       : {}),
     ...(sliderSchema.options?.marks ? { marks: sliderSchema.options.marks } : {}),
     ...(sliderSchema.options?.edgeMarks ? { edgeMarks: sliderSchema.options.edgeMarks } : {}),
+    ...(sliderSchema.options?.markPlacement
+      ? { markPlacement: sliderSchema.options.markPlacement }
+      : {}),
     ...(sliderSchema.options?.markLabelPlacement
       ? { markLabelPlacement: sliderSchema.options.markLabelPlacement }
       : {}),
@@ -106,7 +117,14 @@ export function buildSliderComponentArtifact(schema: Schema): SliderComponentArt
       : {}),
     ...(sliderSchema.options?.edgeMarkLabelAlignment
       ? { edgeMarkLabelAlignment: sliderSchema.options.edgeMarkLabelAlignment }
-      : {})
+      : {}),
+    ...(sliderSchema.options?.thumbEdgeBehavior
+      ? { thumbEdgeBehavior: sliderSchema.options.thumbEdgeBehavior }
+      : {}),
+    ...(sliderSchema.options?.activeTrackOrigin !== undefined
+      ? { activeTrackOrigin: sliderSchema.options.activeTrackOrigin }
+      : {}),
+    ...(sliderSchema.options?.originMark ? { originMark: sliderSchema.options.originMark } : {})
   };
   const effects = buildSliderEffectsPayload(schema);
   const variants = buildSliderVariantsPayload(schema);

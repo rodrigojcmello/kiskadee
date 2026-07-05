@@ -18,10 +18,14 @@ export type {
   SliderEdgeMarksOption,
   SliderMark,
   SliderMarkLabelPlacementOption,
+  SliderMarkPlacementOption,
   SliderMarks,
+  SliderActiveTrackOriginOption,
+  SliderOriginMarkOption,
   SliderProps,
   SliderSnapMotionOption,
   SliderStatus,
+  SliderThumbEdgeBehaviorOption,
   SliderThumbCrossingOption,
   SliderValueAnimationOption
 } from './components/Slider';

@@ -144,7 +144,9 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
               marginBottomEmission: 'token'
             },
             e13: {
-              boxWidthEmission: 'mirrored'
+              boxWidthEmission: 'mirrored',
+              marginTopEmission: 'token',
+              marginBottomEmission: 'token'
             },
             e14: {
               marginTopEmission: 'token',
@@ -152,6 +154,11 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
             },
             e15: {
               marginTopEmission: 'token'
+            },
+            e16: {
+              boxWidthEmission: 'mirrored',
+              marginTopEmission: 'token',
+              marginBottomEmission: 'token'
             }
           }
         }

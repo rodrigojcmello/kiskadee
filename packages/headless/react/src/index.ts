@@ -23,6 +23,7 @@ export type {
 export { Select } from './components/select/Select.tsx';
 export type {
   SliderActiveTrackProps,
+  SliderActiveTrackOrigin,
   SliderClassNames,
   SliderControlRowProps,
   SliderElementName,
@@ -34,10 +35,12 @@ export type {
   SliderHelperTextProps,
   SliderMarkLabelProps,
   SliderMarkProps,
+  SliderOriginMarkProps,
   SliderRangeValue,
   SliderRootProps,
   SliderStatus,
   SliderThumbCrossing,
+  SliderThumbEdgeBehavior,
   SliderThumbIndex,
   SliderThumbInteractionDetails,
   SliderThumbInteractionSwitchDetails,

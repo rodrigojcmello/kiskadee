@@ -217,6 +217,12 @@ export function createSliderMarkElementStyleSchema<TSegmentName extends SegmentN
     .strict();
 }
 
+export function createSliderOriginMarkElementStyleSchema<
+  TSegmentName extends SegmentName = never
+>() {
+  return createSliderMarkElementStyleSchema<TSegmentName>();
+}
+
 export function createSliderMarkLabelElementStyleSchema<
   TSegmentName extends SegmentName = never
 >() {
@@ -273,6 +279,10 @@ export type SliderValueIndicatorElementStyleFromSchema<TSegmentName extends Segm
 export type SliderMarkElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
   ReturnType<typeof createSliderMarkElementStyleSchema<TSegmentName>>
 >;
+
+export type SliderOriginMarkElementStyleFromSchema<
+  TSegmentName extends SegmentName = never
+> = z.input<ReturnType<typeof createSliderOriginMarkElementStyleSchema<TSegmentName>>>;
 
 export type SliderMarkLabelElementStyleFromSchema<TSegmentName extends SegmentName = never> =
   z.input<ReturnType<typeof createSliderMarkLabelElementStyleSchema<TSegmentName>>>;

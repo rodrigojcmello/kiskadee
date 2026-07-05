@@ -12,12 +12,16 @@ import {
   Card,
   Slider,
   type SliderActivationFeedback,
+  type SliderActiveTrackOriginOption,
   type SliderEdgeMarkLabelAlignmentOption,
   type SliderEdgeMarkLabelPlacementOption,
   type SliderEdgeMarksOption,
   type SliderMarkLabelPlacementOption,
+  type SliderMarkPlacementOption,
   type SliderMarks,
+  type SliderOriginMarkOption,
   type SliderSnapMotionOption,
+  type SliderThumbEdgeBehaviorOption,
   type SliderThumbCrossingOption,
   type SliderValueAnimationOption,
   useCardArtifactConfig,
@@ -52,6 +56,7 @@ type SliderActivationFeedbackControl = 'default' | 'off' | 'active';
 type SliderValueAnimationControl = 'default' | SliderValueAnimationOption;
 type SliderSnapMotionControl = 'default' | SliderSnapMotionOption;
 type SliderThumbCrossingControl = 'default' | SliderThumbCrossingOption;
+type SliderActiveTrackOriginControl = 'min' | 'center' | '25' | '50' | '75';
 
 const scaleOptions: Array<{ value: ElementSizeValue; label: string }> = [
   { value: 's:sm:3', label: 'Small 3' },
@@ -192,6 +197,12 @@ const edgeMarksOptions: Array<{ value: SliderEdgeMarksOption; label: string }> =
   { value: 'exclude', label: 'Exclude edges' }
 ];
 
+const markPlacementOptions: Array<{ value: SliderMarkPlacementOption; label: string }> = [
+  { value: 'track', label: 'Track' },
+  { value: 'above', label: 'Above' },
+  { value: 'below', label: 'Below' }
+];
+
 const markLabelPlacementOptions: Array<{ value: SliderMarkLabelPlacementOption; label: string }> = [
   { value: 'auto', label: 'Auto' },
   { value: 'above', label: 'Above' },
@@ -214,6 +225,24 @@ const edgeMarkLabelAlignmentOptions: Array<{
   { value: 'auto', label: 'Auto' },
   { value: 'center', label: 'Center' },
   { value: 'inside', label: 'Inside' }
+];
+
+const thumbEdgeBehaviorOptions: Array<{ value: SliderThumbEdgeBehaviorOption; label: string }> = [
+  { value: 'overflow', label: 'Overflow' },
+  { value: 'contain', label: 'Contain' }
+];
+
+const activeTrackOriginOptions: Array<{ value: SliderActiveTrackOriginControl; label: string }> = [
+  { value: 'min', label: 'Min' },
+  { value: 'center', label: 'Center' },
+  { value: '25', label: '25' },
+  { value: '50', label: '50' },
+  { value: '75', label: '75' }
+];
+
+const originMarkOptions: Array<{ value: SliderOriginMarkOption; label: string }> = [
+  { value: 'none', label: 'None' },
+  { value: 'auto', label: 'Auto' }
 ];
 
 const activationFeedbackOptions: Array<{
@@ -339,6 +368,23 @@ function resolveThumbCrossingProp(
   return thumbCrossing === 'default' ? undefined : thumbCrossing;
 }
 
+function toActiveTrackOriginControl(
+  activeTrackOrigin: SliderActiveTrackOriginOption
+): SliderActiveTrackOriginControl {
+  if (activeTrackOrigin === 'center' || activeTrackOrigin === 'min') return activeTrackOrigin;
+  if (activeTrackOrigin === 25 || activeTrackOrigin === 50 || activeTrackOrigin === 75) {
+    return String(activeTrackOrigin) as SliderActiveTrackOriginControl;
+  }
+  return 'min';
+}
+
+function resolveActiveTrackOriginProp(
+  activeTrackOrigin: SliderActiveTrackOriginControl
+): SliderActiveTrackOriginOption {
+  if (activeTrackOrigin === 'min' || activeTrackOrigin === 'center') return activeTrackOrigin;
+  return Number(activeTrackOrigin);
+}
+
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -348,6 +394,11 @@ function formatCurrency(value: number): string {
 }
 
 function formatPercent(value: number): string {
+  return `${value}%`;
+}
+
+function formatSignedPercent(value: number): string {
+  if (value > 0) return `+${value}%`;
   return `${value}%`;
 }
 
@@ -437,12 +488,18 @@ export default function SliderPage() {
   const [thumbCrossing, setThumbCrossing] = useState<SliderThumbCrossingControl>('swap');
   const [marksMode, setMarksMode] = useState<SliderMarksMode>('none');
   const [edgeMarks, setEdgeMarks] = useState<SliderEdgeMarksOption>('include');
+  const [markPlacement, setMarkPlacement] = useState<SliderMarkPlacementOption>('track');
   const [markLabelPlacement, setMarkLabelPlacement] =
     useState<SliderMarkLabelPlacementOption>('auto');
   const [edgeMarkLabelPlacement, setEdgeMarkLabelPlacement] =
     useState<SliderEdgeMarkLabelPlacementOption>('auto');
   const [edgeMarkLabelAlignment, setEdgeMarkLabelAlignment] =
     useState<SliderEdgeMarkLabelAlignmentOption>('auto');
+  const [thumbEdgeBehavior, setThumbEdgeBehavior] =
+    useState<SliderThumbEdgeBehaviorOption>('overflow');
+  const [activeTrackOrigin, setActiveTrackOrigin] =
+    useState<SliderActiveTrackOriginControl>('min');
+  const [originMark, setOriginMark] = useState<SliderOriginMarkOption>('none');
   const [activationFeedback, setActivationFeedback] =
     useState<SliderActivationFeedbackControl>('default');
   const [disabled, setDisabled] = useState(false);
@@ -453,6 +510,7 @@ export default function SliderPage() {
   const [price, setPrice] = useState<[number, number]>([2500, 5000]);
   const [tasks, setTasks] = useState<[number, number]>([0, 43]);
   const [rating, setRating] = useState(4);
+  const [centerBiased, setCenterBiased] = useState(40);
   const sliderMeta = manifest?.components?.slider;
   const cardMeta = manifest?.components?.card;
   const isSliderAvailable = Boolean(sliderMeta);
@@ -571,6 +629,7 @@ export default function SliderPage() {
   const valueAnimationProp = resolveValueAnimationProp(valueAnimation);
   const snapMotionProp = resolveSnapMotionProp(snapMotion);
   const thumbCrossingProp = resolveThumbCrossingProp(thumbCrossing);
+  const activeTrackOriginProp = resolveActiveTrackOriginProp(activeTrackOrigin);
 
   useEffect(() => {
     setRadius(defaultRadius);
@@ -631,6 +690,10 @@ export default function SliderPage() {
   }, [sliderOptions.edgeMarks]);
 
   useEffect(() => {
+    setMarkPlacement(sliderOptions.markPlacement);
+  }, [sliderOptions.markPlacement]);
+
+  useEffect(() => {
     setMarkLabelPlacement(sliderOptions.markLabelPlacement);
   }, [sliderOptions.markLabelPlacement]);
 
@@ -641,6 +704,18 @@ export default function SliderPage() {
   useEffect(() => {
     setEdgeMarkLabelAlignment(sliderOptions.edgeMarkLabelAlignment);
   }, [sliderOptions.edgeMarkLabelAlignment]);
+
+  useEffect(() => {
+    setThumbEdgeBehavior(sliderOptions.thumbEdgeBehavior);
+  }, [sliderOptions.thumbEdgeBehavior]);
+
+  useEffect(() => {
+    setActiveTrackOrigin(toActiveTrackOriginControl(sliderOptions.activeTrackOrigin));
+  }, [sliderOptions.activeTrackOrigin]);
+
+  useEffect(() => {
+    setOriginMark(sliderOptions.originMark);
+  }, [sliderOptions.originMark]);
 
   useEffect(() => {
     if (!surfaceOptions.length) {
@@ -869,6 +944,18 @@ export default function SliderPage() {
             disabled={!isSliderAvailable}
           />
           <ShowcaseSelectControl
+            label="Mark placement"
+            options={markPlacementOptions}
+            value={markPlacement}
+            onValueChange={(value) => {
+              const nextMarkPlacement = value as SliderMarkPlacementOption;
+              if (nextMarkPlacement === markPlacement) return;
+              playWowTransition();
+              setMarkPlacement(nextMarkPlacement);
+            }}
+            disabled={!isSliderAvailable}
+          />
+          <ShowcaseSelectControl
             label="Mark labels"
             options={markLabelPlacementOptions}
             value={markLabelPlacement}
@@ -901,6 +988,42 @@ export default function SliderPage() {
               if (nextEdgeMarkLabelAlignment === edgeMarkLabelAlignment) return;
               playWowTransition();
               setEdgeMarkLabelAlignment(nextEdgeMarkLabelAlignment);
+            }}
+            disabled={!isSliderAvailable}
+          />
+          <ShowcaseSelectControl
+            label="Thumb edge"
+            options={thumbEdgeBehaviorOptions}
+            value={thumbEdgeBehavior}
+            onValueChange={(value) => {
+              const nextThumbEdgeBehavior = value as SliderThumbEdgeBehaviorOption;
+              if (nextThumbEdgeBehavior === thumbEdgeBehavior) return;
+              playWowTransition();
+              setThumbEdgeBehavior(nextThumbEdgeBehavior);
+            }}
+            disabled={!isSliderAvailable}
+          />
+          <ShowcaseSelectControl
+            label="Active origin"
+            options={activeTrackOriginOptions}
+            value={activeTrackOrigin}
+            onValueChange={(value) => {
+              const nextActiveTrackOrigin = value as SliderActiveTrackOriginControl;
+              if (nextActiveTrackOrigin === activeTrackOrigin) return;
+              playWowTransition();
+              setActiveTrackOrigin(nextActiveTrackOrigin);
+            }}
+            disabled={!isSliderAvailable}
+          />
+          <ShowcaseSelectControl
+            label="Origin mark"
+            options={originMarkOptions}
+            value={originMark}
+            onValueChange={(value) => {
+              const nextOriginMark = value as SliderOriginMarkOption;
+              if (nextOriginMark === originMark) return;
+              playWowTransition();
+              setOriginMark(nextOriginMark);
             }}
             disabled={!isSliderAvailable}
           />
@@ -991,9 +1114,13 @@ export default function SliderPage() {
                 }}
                 marks={interactiveMarks}
                 edgeMarks={edgeMarks}
+                markPlacement={markPlacement}
                 markLabelPlacement={markLabelPlacement}
                 edgeMarkLabelPlacement={edgeMarkLabelPlacement}
                 edgeMarkLabelAlignment={edgeMarkLabelAlignment}
+                thumbEdgeBehavior={thumbEdgeBehavior}
+                activeTrackOrigin={activeTrackOriginProp}
+                originMark={originMark}
                 valueDisplay={valueDisplay}
                 valueAnimation={valueAnimationProp}
                 snapMotion={snapMotionProp}
@@ -1030,9 +1157,13 @@ export default function SliderPage() {
                     { value: 10000, label: formatCurrency(10000) }
                   ]}
                   edgeMarks="exclude"
+                  markPlacement={markPlacement}
                   markLabelPlacement={markLabelPlacement}
                   edgeMarkLabelPlacement={edgeMarkLabelPlacement}
                   edgeMarkLabelAlignment={edgeMarkLabelAlignment}
+                  thumbEdgeBehavior={thumbEdgeBehavior}
+                  activeTrackOrigin={activeTrackOriginProp}
+                  originMark={originMark}
                   formatValue={(value) => formatCurrency(value)}
                   valueDisplay="tooltip"
                   valueAnimation={valueAnimationProp}
@@ -1061,8 +1192,12 @@ export default function SliderPage() {
                     { value: 100, icon: <SunIcon /> }
                   ]}
                   edgeMarks="exclude"
+                  markPlacement={markPlacement}
                   edgeMarkLabelPlacement={edgeMarkLabelPlacement}
                   edgeMarkLabelAlignment={edgeMarkLabelAlignment}
+                  thumbEdgeBehavior={thumbEdgeBehavior}
+                  activeTrackOrigin={activeTrackOriginProp}
+                  originMark={originMark}
                   formatValue={(value) => (value > 85 ? 'Very Bright' : `${value}%`)}
                   valueDisplay="tooltip"
                   valueAnimation={valueAnimationProp}
@@ -1095,14 +1230,49 @@ export default function SliderPage() {
                     { value: 100, label: '100%', icon: '+' }
                   ]}
                   edgeMarks={edgeMarks}
+                  markPlacement={markPlacement}
                   markLabelPlacement={markLabelPlacement}
                   edgeMarkLabelPlacement={edgeMarkLabelPlacement}
                   edgeMarkLabelAlignment={edgeMarkLabelAlignment}
+                  thumbEdgeBehavior={thumbEdgeBehavior}
+                  activeTrackOrigin={activeTrackOriginProp}
+                  originMark={originMark}
                   formatValue={(value) => `${value}%`}
                   valueDisplay="summary"
                   valueAnimation={valueAnimationProp}
                   snapMotion={snapMotionProp}
                   thumbCrossing={thumbCrossingProp}
+                  activationFeedback={activationFeedbackProp}
+                  scale={scale}
+                  radius={radius}
+                  intent={intent}
+                  emphasis={emphasis}
+                />
+              </SliderExampleCard>
+
+              <SliderExampleCard cardShadow={cardShadow} surface={selectedSurface}>
+                <Slider
+                  label="Center biased"
+                  min={-100}
+                  max={100}
+                  step={10}
+                  value={centerBiased}
+                  onValueChange={(nextValue) => {
+                    if (typeof nextValue === 'number') setCenterBiased(nextValue);
+                  }}
+                  marks="step"
+                  edgeMarks={edgeMarks}
+                  markPlacement={markPlacement}
+                  markLabelPlacement={markLabelPlacement}
+                  edgeMarkLabelPlacement="endpoints"
+                  edgeMarkLabelAlignment={edgeMarkLabelAlignment}
+                  thumbEdgeBehavior={thumbEdgeBehavior}
+                  activeTrackOrigin="center"
+                  originMark="auto"
+                  formatValue={formatSignedPercent}
+                  valueDisplay="tooltip"
+                  valueAnimation={valueAnimationProp}
+                  snapMotion={snapMotionProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
@@ -1123,9 +1293,13 @@ export default function SliderPage() {
                   }}
                   marks={ratingMarks}
                   edgeMarks={edgeMarks}
+                  markPlacement={markPlacement}
                   markLabelPlacement={markLabelPlacement}
                   edgeMarkLabelPlacement={edgeMarkLabelPlacement}
                   edgeMarkLabelAlignment={edgeMarkLabelAlignment}
+                  thumbEdgeBehavior={thumbEdgeBehavior}
+                  activeTrackOrigin={activeTrackOriginProp}
+                  originMark={originMark}
                   helperText="How happy are you with the level of service?"
                   valueDisplay="tooltip"
                   valueAnimation={valueAnimationProp}

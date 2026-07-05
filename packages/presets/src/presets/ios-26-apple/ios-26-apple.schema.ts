@@ -2,6 +2,7 @@ import { breakpoints, type Schema } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import { createIos26AppleButtonSchema } from './components/button.schema.ts';
 import { createIos26AppleCardSchema } from './components/card.schema.ts';
+import { createIos26AppleSliderSchema } from './components/slider.schema.ts';
 import { createIos26AppleSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './ios-26-apple.colors.ts';
 
@@ -95,6 +96,11 @@ export const schema: Schema<Segment> = {
       c
     }),
     card: createIos26AppleCardSchema({
+      c,
+      segmentNames,
+      transparent
+    }),
+    slider: createIos26AppleSliderSchema({
       c,
       segmentNames,
       transparent

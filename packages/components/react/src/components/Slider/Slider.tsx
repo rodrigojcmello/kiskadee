@@ -28,16 +28,20 @@ import {
 } from './Slider.class-names.ts';
 import type {
   SliderClassNames,
+  SliderActiveTrackOriginOption,
   SliderEdgeMarkLabelAlignmentOption,
   SliderEdgeMarkLabelPlacementOption,
   SliderEdgeMarksOption,
   SliderMarkLabelPlacementOption,
+  SliderMarkPlacementOption,
   SliderMark,
   SliderMarks,
+  SliderOriginMarkOption,
   SliderResolvedEdgeMarkLabelAlignment,
   SliderResolvedEdgeMarkLabelPlacement,
   SliderResolvedMarkLabelPlacement,
   SliderSnapMotionOption,
+  SliderThumbEdgeBehaviorOption,
   SliderValueAnimationOption,
   SliderProps
 } from './Slider.types.ts';
@@ -152,6 +156,26 @@ function getEdgeMark(
   return marks.find((mark) => mark.value === value);
 }
 
+function resolveActiveTrackOriginValue(
+  activeTrackOrigin: SliderActiveTrackOriginOption,
+  min: number,
+  max: number
+): number {
+  if (activeTrackOrigin === 'center') return min + (max - min) / 2;
+  if (typeof activeTrackOrigin === 'number') return Math.min(max, Math.max(min, activeTrackOrigin));
+  return min;
+}
+
+function shouldRenderOriginMark(
+  originMark: SliderOriginMarkOption,
+  activeTrackOrigin: SliderActiveTrackOriginOption,
+  min: number,
+  max: number
+): boolean {
+  if (originMark !== 'auto') return false;
+  return resolveActiveTrackOriginValue(activeTrackOrigin, min, max) !== min;
+}
+
 function renderEndpoint(
   side: 'start' | 'end',
   edgeMark: SliderMark | undefined,
@@ -250,9 +274,13 @@ function SliderRoot(props: SliderProps) {
     required,
     marks,
     edgeMarks,
+    markPlacement,
     markLabelPlacement,
     edgeMarkLabelPlacement,
     edgeMarkLabelAlignment,
+    thumbEdgeBehavior,
+    activeTrackOrigin,
+    originMark,
     valueDisplay,
     valueAnimation,
     snapMotion,
@@ -284,6 +312,13 @@ function SliderRoot(props: SliderProps) {
   const resolvedValueAnimation = valueAnimation ?? options.valueAnimation;
   const resolvedSnapMotion: SliderSnapMotionOption = snapMotion ?? options.snapMotion;
   const resolvedThumbCrossing = thumbCrossing ?? options.thumbCrossing;
+  const resolvedThumbEdgeBehavior: SliderThumbEdgeBehaviorOption =
+    thumbEdgeBehavior ?? options.thumbEdgeBehavior;
+  const resolvedActiveTrackOrigin: SliderActiveTrackOriginOption =
+    activeTrackOrigin ?? options.activeTrackOrigin;
+  const resolvedOriginMark: SliderOriginMarkOption = originMark ?? options.originMark;
+  const resolvedMarkPlacement: SliderMarkPlacementOption =
+    markPlacement ?? options.markPlacement;
   const resolvedMarkLabelPlacement = resolveMarkLabelPlacement(
     markLabelPlacement ?? options.markLabelPlacement,
     isLikelyTouch
@@ -359,6 +394,7 @@ function SliderRoot(props: SliderProps) {
         hasLabel,
         hasValueSummary,
         hasHelperText,
+        markPlacement: resolvedMarkPlacement,
         markLabelPlacement: resolvedMarkLabelPlacement
       }),
     [
@@ -371,6 +407,7 @@ function SliderRoot(props: SliderProps) {
       hasValueSummary,
       intent,
       resolvedRadius,
+      resolvedMarkPlacement,
       resolvedMarkLabelPlacement,
       resolvedSnapMotion,
       scale
@@ -437,6 +474,8 @@ function SliderRoot(props: SliderProps) {
       max={max}
       step={step}
       thumbCrossing={resolvedThumbCrossing}
+      thumbEdgeBehavior={resolvedThumbEdgeBehavior}
+      activeTrackOrigin={resolvedActiveTrackOrigin}
       disabled={disabled}
       readOnly={readOnly}
       required={required}
@@ -479,6 +518,9 @@ function SliderRoot(props: SliderProps) {
         {renderEndpoint('start', startEdgeMark, shouldRenderEdgeMarkLabelsAsEndpoints)}
         <HeadlessSlider.Track>
           <HeadlessSlider.ActiveTrack />
+          {shouldRenderOriginMark(resolvedOriginMark, resolvedActiveTrackOrigin, min, max) ? (
+            <HeadlessSlider.OriginMark />
+          ) : null}
           {visualMarks.map((mark) => (
             <HeadlessSlider.Mark key={`mark-${mark.value}`} value={mark.value} />
           ))}

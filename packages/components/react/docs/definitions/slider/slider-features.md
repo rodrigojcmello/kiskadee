@@ -1,7 +1,7 @@
 # Slider Feature Inventory
 
 This file is the first durable specification for the styled React `Slider`.
-It records the V1 behavior, schema slots, artifact options, and known deferrals
+It records the current behavior, schema slots, artifact options, and known deferrals
 so future Slider work can start from a shared document instead of chat history.
 
 Use this document like `switch/switch-features.md`: it is a component contract
@@ -18,7 +18,9 @@ This document covers the public styled component exported by
   `SliderActivationFeedback`,
   `SliderClassNames`, `SliderMark`,
   `SliderMarks`, `SliderValueAnimationOption`, `SliderSnapMotionOption`,
-  `SliderThumbCrossingOption`, `SliderClassesMap`, `SliderModeClassesMap`,
+  `SliderThumbCrossingOption`, `SliderMarkPlacementOption`,
+  `SliderThumbEdgeBehaviorOption`, `SliderActiveTrackOriginOption`,
+  `SliderOriginMarkOption`, `SliderClassesMap`, `SliderModeClassesMap`,
   `SliderVariantClassesMap`, and `SliderArtifactConfig`.
 - Shared value helper: `RollingNumber`.
 - Headless primitive: `HeadlessSlider` from `@kiskadee/react-headless`.
@@ -94,15 +96,19 @@ upper values.
 | `helperText` | Optional helper copy below the control row. |
 | `marks` | Scale content and visual marker configuration. Supports `false`, `"none"`, `"step"`, or an explicit array of `{ value, label?, icon? }`. `label` is the only source for scale labels, including `min` and `max`. `icon` is supported only on exact `min` and `max` marks. |
 | `edgeMarks` | Controls whether rendered marks include edge marks at `min` and `max`. Supports `"include"` and `"exclude"`. |
+| `markPlacement` | Controls where visual marks (`e13`) and the optional origin mark (`e16`) sit relative to the track. Supports `"track"`, `"above"`, and `"below"`. |
 | `markLabelPlacement` | Controls where `e14` mark labels sit relative to the track. Supports `"auto"`, `"above"`, and `"below"`. |
 | `edgeMarkLabelPlacement` | Controls whether labels declared on `min`/`max` marks render as endpoint labels or track labels. Supports `"auto"`, `"endpoints"`, and `"markLabels"`. |
 | `edgeMarkLabelAlignment` | Controls how `min`/`max` labels align when rendered as track labels. Supports `"auto"`, `"center"`, and `"inside"`. |
+| `thumbEdgeBehavior` | Controls the horizontal value plane at the track edges. Supports `"overflow"` and `"contain"`. |
+| `activeTrackOrigin` | Controls the active track origin in single-value sliders. Supports `"min"`, `"center"`, or a finite numeric value inside the range. Range sliders ignore it. |
+| `originMark` | Controls whether the neutral origin is rendered as a separate mark (`e16`). Supports `"none"` and `"auto"`. |
 | `valueDisplay` | Controls selected value display: `"none"`, `"tooltip"`, `"summary"`, or `"both"`. |
 | `valueAnimation` | Optional per-instance override for how selected values are visually rendered. Supports `"none"` and `"rolling"`. |
 | `snapMotion` | Optional per-instance override for thumb position settling after pointer release. Supports `"none"` and `"smooth"`. |
 | `activationFeedback` | Optional per-instance override for the schema/artifact activation feedback effect. Supports `false` to disable and `"active"` for static preview. |
 | `className` | Merged into the root `e1` slot. |
-| `classNames` | Escape hatch for schema element slots `e1` through `e15`. |
+| `classNames` | Escape hatch for schema element slots `e1` through `e16`. |
 
 `valueDisplay="tooltip"` renders a value indicator near each thumb. The value
 indicator includes a fixed structural arrow with a slightly rounded tip that
@@ -152,7 +158,7 @@ feedback; the effect represents physical pointer/touch interaction.
 
 ### Elements
 
-Slider uses fifteen canonical schema element slots:
+Slider uses sixteen canonical schema element slots:
 
 | Element | Meaning |
 | --- | --- |
@@ -171,6 +177,7 @@ Slider uses fifteen canonical schema element slots:
 | `e13` | Mark / visual step marker. |
 | `e14` | Mark label. |
 | `e15` | Helper text. |
+| `e16` | Origin mark / neutral tick. |
 
 Current Slider topology is variant-driven:
 
@@ -185,14 +192,19 @@ The current schema option values are:
 - `thumbCrossing`: `prevent`, `swap`
 - `marks`: `none`, `step`
 - `edgeMarks`: `include`, `exclude`
+- `markPlacement`: `track`, `above`, `below`
 - `markLabelPlacement`: `auto`, `above`, `below`
 - `edgeMarkLabelPlacement`: `auto`, `endpoints`, `markLabels`
 - `edgeMarkLabelAlignment`: `auto`, `center`, `inside`
+- `thumbEdgeBehavior`: `overflow`, `contain`
+- `activeTrackOrigin`: `min`, `center`, or a finite number
+- `originMark`: `none`, `auto`
 
-`snapMotion`, `thumbCrossing`, `marks`, `edgeMarks`, `markLabelPlacement`,
-`edgeMarkLabelPlacement`, and `edgeMarkLabelAlignment` are top-level component
-options because they describe visual defaults for the component. Consumers can
-still override them per instance.
+`snapMotion`, `thumbCrossing`, `marks`, `edgeMarks`, `markPlacement`,
+`markLabelPlacement`, `edgeMarkLabelPlacement`, `edgeMarkLabelAlignment`,
+`thumbEdgeBehavior`, `activeTrackOrigin`, and `originMark` are top-level
+component options because they describe behavioral or visual defaults for the
+component. Consumers can still override them per instance.
 
 `components.slider.effects.activationFeedback` defines the component-level
 activation feedback recipe. When present, the web builder treats `e10` as the
@@ -219,9 +231,17 @@ belong to schema scales:
   display is active, structural CSS also adds fixed arrow geometry: a `2px`
   arrow overlap into the tooltip body and a `2px` arrow clearance from the
   thumb.
+- `e13.marginTop` offsets visual marks below the track when
+  `markPlacement="below"`.
+- `e13.marginBottom` offsets visual marks above the track when
+  `markPlacement="above"`.
 - `e14.marginTop` offsets mark labels below the track.
 - `e14.marginBottom` offsets mark labels above the track.
 - `e15.marginTop` separates helper text from the control row.
+- `e16.marginTop` offsets the origin mark below the track when
+  `markPlacement="below"`.
+- `e16.marginBottom` offsets the origin mark above the track when
+  `markPlacement="above"`.
 
 Do not add gap-like Slider scale attributes for these relationships. Use
 margin, padding, or existing box scales, then let structural CSS consume the
@@ -292,8 +312,9 @@ override pattern and schema-owned mode values are not enough.
 `web-builder` may emit `components/slider.kiskadee.json` with:
 
 - component options: `variant`, `valueDisplay`, `valueAnimation`, `snapMotion`,
-  `thumbCrossing`, `marks`, `edgeMarks`, `markLabelPlacement`,
-  `edgeMarkLabelPlacement`, and `edgeMarkLabelAlignment`;
+  `thumbCrossing`, `marks`, `edgeMarks`, `markPlacement`,
+  `markLabelPlacement`, `edgeMarkLabelPlacement`, `edgeMarkLabelAlignment`,
+  `thumbEdgeBehavior`, `activeTrackOrigin`, and `originMark`;
 - component effects: currently `activationFeedback`;
 - variant-local options: currently `standard.options.mode`.
 
@@ -324,6 +345,7 @@ HeadlessSlider.Root
       optional HeadlessSlider.EndpointLabel from min mark label
     HeadlessSlider.Track
       HeadlessSlider.ActiveTrack
+      optional HeadlessSlider.OriginMark
       optional HeadlessSlider.Mark list
       optional HeadlessSlider.MarkLabel list
       HeadlessSlider.Thumb index=0
@@ -378,12 +400,15 @@ Keyboard interaction is step-based:
 - `End` moves to the upper bound, or to the other thumb in range mode when
   needed to preserve ordering.
 
-Range mode preserves thumb ordering:
+Range mode emits ordered values. The pointer-drag crossing behavior is selected
+by `thumbCrossing`:
 
-- thumb `0` cannot move above thumb `1`;
-- thumb `1` cannot move below thumb `0`;
-- clicking the track chooses the nearest thumb, keeping the previous active
-  thumb when distances tie.
+- `thumbCrossing="prevent"` blocks each thumb at the other thumb;
+- `thumbCrossing="swap"` lets the active pointer drag cross the other thumb and
+  swaps the active semantic side when the values cross.
+
+Clicking the track chooses the nearest thumb, keeping the previous active thumb
+when distances tie.
 
 ## Marks And Labels
 
@@ -407,6 +432,19 @@ schema/artifact option, then from the default `"include"`. It applies after mark
 normalization and affects visual marks only. Labels and icons declared on exact
 `min` and `max` marks are still available to lateral edge composition and
 `edgeMarkLabelPlacement`.
+
+`markPlacement` controls the physical placement of visual marks (`e13`):
+
+- `markPlacement="track"` keeps the mark centered on the track plane;
+- `markPlacement="above"` moves the mark above the track using
+  `e13.marginBottom`;
+- `markPlacement="below"` moves the mark below the track using
+  `e13.marginTop`.
+
+This does not create a second mark element. Dots, ticks, and off-track marks are
+all still rendered through `e13`, so presets keep one mark color, size, radius,
+and selected-state contract. The separate `e16` origin mark exists only for the
+neutral origin marker described below.
 
 `markLabelPlacement` controls only mark labels (`e14`):
 
@@ -482,10 +520,40 @@ The edge icon always renders laterally in `e6`. The edge label follows
 two placements from the shared compact viewport environment.
 
 Only marks inside `[min, max]` render. A mark is projected as selected when it
-falls inside the active interval. In single mode, that interval is `min` to the
-current thumb value. In range mode, it is thumb `0` to thumb `1`. Selected marks
-also receive the projected `selected` state classes on `e13`, so presets can
-style `e13.selected.rest` independently from the unselected mark color.
+falls inside the active interval. In single mode, that interval is the resolved
+`activeTrackOrigin` to the current thumb value. The default origin is `min`; a
+preset or instance can use `"center"` or a finite numeric origin for
+center-biased controls. In range mode, the interval is thumb `0` to thumb `1`.
+Selected marks also receive the projected `selected` state classes on `e13`, so
+presets can style `e13.selected.rest` independently from the unselected mark
+color.
+
+`thumbEdgeBehavior` controls where the thumb can visually sit at the range
+boundaries:
+
+- `thumbEdgeBehavior="overflow"` maps `min` and `max` directly to the track
+  edges. A centered thumb can visually overflow the rail, which is the classic
+  web slider geometry.
+- `thumbEdgeBehavior="contain"` maps `min` and `max` to the track edges after
+  reserving half of the measured thumb width. This is useful for platforms
+  where the thumb, not the mark, should own the end stop and stay fully inside
+  the rail.
+
+The value contract does not change. This option only changes the visual
+coordinate plane used by pointer mapping, active track, marks, labels,
+tooltips, and thumbs.
+
+`activeTrackOrigin` affects single-value sliders only:
+
+- `activeTrackOrigin="min"` fills the active track from `min` to the value;
+- `activeTrackOrigin="center"` fills from the midpoint to the value;
+- a finite numeric value fills from that value to the current thumb.
+
+`originMark="auto"` renders `e16` when the resolved active origin is not `min`.
+That mark uses the same placement option as `e13` but has a separate schema slot
+so a preset can give it a neutral color or shape. `originMark="none"` never
+renders it. This is for neutral-origin sliders such as center-biased controls;
+ordinary step marks remain `e13`.
 
 ### Selected Mark Color
 
@@ -533,7 +601,8 @@ The current structural branch is horizontal `standard/base`.
 
 Preserve these rules:
 
-- `e8` is the positioning plane for `e9`, `e10`, `e12`, `e13`, and `e14`.
+- `e8` is the positioning plane for `e9`, `e10`, `e12`, `e13`, `e14`, and
+  `e16`.
 - `e9` fills the active range through `--k-sld-start` and `--k-sld-end`.
 - `e10` centers on `--k-sld-value` and owns focus semantics.
 - `e11` is centered inside `e10` and is pointer-inert.
@@ -544,6 +613,7 @@ Preserve these rules:
   not schema-customizable yet.
 - `e13` uses `--k-sld-mark` for its value position.
 - `e14` uses `--k-sld-mark` for its label position.
+- `e16` uses `--k-sld-mark` for the resolved active origin position.
 - Keyboard-visible focus is drawn on each thumb through global focus variables.
 
 Edge marks and Slider layout spacing need generated geometry variables so the
@@ -556,11 +626,12 @@ structural CSS can avoid hardcoding preset sizes. The web-builder policy emits:
 - `slider.variants.standard.elements.e5.paddingLeft` into `--k-pdl` for the
   endpoint internal content gap;
 - `slider.variants.standard.elements.e13.boxWidth` into `--k-bxw`.
+- `slider.variants.standard.elements.e16.boxWidth` into `--k-bxw`.
 
-Structural CSS uses those variables to clamp `e13` by the larger of half the
-track height and half the mark width, position value indicators and mark labels,
-separate endpoint content, and apply header/helper spacing only when the related
-DOM composition exists.
+Structural CSS uses those variables to clamp `e13`/`e16` by the larger of half
+the track height and half the mark width, position value indicators and mark
+labels, separate endpoint content, and apply header/helper spacing only when
+the related DOM composition exists.
 
 For the durable web-builder rule, see:
 
@@ -602,10 +673,15 @@ generated markup, structural CSS, or regressions.
 | `k-sld-e11-a` | Thumb inner. |
 | `k-sld-e12-a` | Value indicator / tooltip. |
 | `k-sld-e13-a` | Mark / visual step marker. |
+| `k-sld-e13a-a` | Mark placed above the track. |
+| `k-sld-e13b-a` | Mark placed below the track. |
 | `k-sld-e14-a` | Mark label. |
 | `k-sld-e14c-a` | Start edge mark label aligned inside the track. |
 | `k-sld-e14d-a` | End edge mark label aligned inside the track. |
 | `k-sld-e15-a` | Helper text. |
+| `k-sld-e16-a` | Origin mark / neutral tick. |
+| `k-sld-e16a-a` | Origin mark placed above the track. |
+| `k-sld-e16b-a` | Origin mark placed below the track. |
 
 The structural branch registry currently uses `a` for the single public Slider
 structure. The suffix does not create a public variant or mode.
@@ -619,11 +695,12 @@ structure. The suffix does not create a public variant or mode.
 - `SliderProps` public props listed in this document.
 - Headless slider semantics: focusable thumbs with `role="slider"`,
   controlled/uncontrolled value, `disabled`, `readOnly`, and keyboard support.
-- Schema elements `e1` through `e15`.
+- Schema elements `e1` through `e16`.
 - Current schema options and values for `variant`, `mode`, `valueDisplay`,
   `valueAnimation`, `snapMotion`, `thumbCrossing`, `marks`, `edgeMarks`,
-  `markLabelPlacement`, `edgeMarkLabelPlacement`, and
-  `edgeMarkLabelAlignment`.
+  `markPlacement`, `markLabelPlacement`, `edgeMarkLabelPlacement`,
+  `edgeMarkLabelAlignment`, `thumbEdgeBehavior`, `activeTrackOrigin`, and
+  `originMark`.
 - Generated artifacts and class maps as the source of truth for visual tokens.
 - Current horizontal-only contract.
 
@@ -641,15 +718,13 @@ contracts remain intact or are explicitly migrated.
 
 ## Deferred Areas
 
-These areas are intentionally not part of the current V1 contract:
+These areas are intentionally not part of the current contract:
 
 - vertical orientation;
 - chart or histogram overlays behind the track;
 - built-in numeric inputs attached to one or both thumbs;
-- dedicated mark placement modes beyond the current clamped track geometry;
 - built-in value label placement modes beyond `valueDisplay`;
 - special collision handling when two range value indicators overlap;
-- preset-specific source evidence for Slider in official design systems.
 
 Those features are valid follow-up candidates, but they should be added through
 schema/artifact decisions rather than one-off React-only props.

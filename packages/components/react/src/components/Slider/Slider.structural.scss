@@ -260,10 +260,11 @@
 }
 
 /*
- * element mark / e13
- * Keeps visual step markers inside the track geometry while preserving their value position.
+ * element mark / e13 and origin mark / e16
+ * Keeps visual markers on the headless-provided coordinate plane.
  */
-.k-sld-e13-a {
+.k-sld-e13-a,
+.k-sld-e16-a {
   --k-sld-mark-edge-offset: max(calc(var(--k-bxh, 0px) / 2), calc(var(--k-bxw, 0px) / 2));
 
   position: absolute;
@@ -278,6 +279,25 @@
   box-sizing: border-box;
   pointer-events: none;
   transform: translate(-50%, -50%);
+}
+
+/*
+ * element mark modifier / e13a
+ * Places visual marks above the track using the schema-owned bottom margin token.
+ */
+.k-sld-e13a-a {
+  inset-block-start: auto;
+  inset-block-end: calc(100% + var(--k-mgb, 0px));
+  transform: translateX(-50%);
+}
+
+/*
+ * element mark modifier / e13b
+ * Places visual marks below the track using the schema-owned top margin token.
+ */
+.k-sld-e13b-a {
+  inset-block-start: calc(100% + var(--k-mgt, 0px));
+  transform: translateX(-50%);
 }
 
 /*
@@ -334,6 +354,25 @@
 .k-sld-e15-a {
   display: block;
   margin-block: var(--k-mgt, 0px) 0;
+}
+
+/*
+ * element origin mark modifier / e16a
+ * Places the neutral origin mark above the track using the schema-owned bottom margin token.
+ */
+.k-sld-e16a-a {
+  inset-block-start: auto;
+  inset-block-end: calc(100% + var(--k-mgb, 0px));
+  transform: translateX(-50%);
+}
+
+/*
+ * element origin mark modifier / e16b
+ * Places the neutral origin mark below the track using the schema-owned top margin token.
+ */
+.k-sld-e16b-a {
+  inset-block-start: calc(100% + var(--k-mgt, 0px));
+  transform: translateX(-50%);
 }
 
 /*

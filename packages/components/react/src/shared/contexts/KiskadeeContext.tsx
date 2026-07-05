@@ -3,15 +3,19 @@ import type {
   ActivationFeedbackSetting,
   ComponentClassNameMapJSON,
   RadiusMode,
+  SliderActiveTrackOrigin,
   SliderEdgeMarkLabelAlignment,
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
   SliderEdgeMarkLabelPlacement,
   SliderEdgeMarks,
   SliderMarkLabelPlacement,
+  SliderMarkPlacement,
   SliderMarks,
   SliderMode,
+  SliderOriginMark,
   SliderSnapMotion,
+  SliderThumbEdgeBehavior,
   SliderThumbCrossing,
   SliderValueAnimation,
   SliderValueDisplay,
@@ -95,9 +99,13 @@ export type KiskadeeContextValue = {
           thumbCrossing?: SliderThumbCrossing;
           marks?: SliderMarks;
           edgeMarks?: SliderEdgeMarks;
+          markPlacement?: SliderMarkPlacement;
           markLabelPlacement?: SliderMarkLabelPlacement;
           edgeMarkLabelPlacement?: SliderEdgeMarkLabelPlacement;
           edgeMarkLabelAlignment?: SliderEdgeMarkLabelAlignment;
+          thumbEdgeBehavior?: SliderThumbEdgeBehavior;
+          activeTrackOrigin?: SliderActiveTrackOrigin;
+          originMark?: SliderOriginMark;
         };
         variants?: {
           standard?: {

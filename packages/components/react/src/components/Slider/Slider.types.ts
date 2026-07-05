@@ -3,14 +3,18 @@ import type {
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
+  SliderActiveTrackOrigin,
   SliderEdgeMarkLabelAlignment,
   SliderMarks as SliderArtifactMarks,
   SliderEdgeMarkLabelPlacement,
   SliderEdgeMarks,
   SliderIntent,
   SliderMarkLabelPlacement,
+  SliderMarkPlacement,
   SliderMode,
+  SliderOriginMark,
   SliderSnapMotion,
+  SliderThumbEdgeBehavior,
   SliderThumbCrossing,
   SliderValueAnimation,
   SliderValueDisplay,
@@ -39,7 +43,8 @@ export type SliderElementName =
   | 'e12'
   | 'e13'
   | 'e14'
-  | 'e15';
+  | 'e15'
+  | 'e16';
 
 export type SliderClassNames = Partial<Record<SliderElementName, string>>;
 
@@ -59,6 +64,7 @@ export type SliderMark = {
 
 export type SliderMarks = false | SliderArtifactMarks | readonly SliderMark[];
 export type SliderEdgeMarksOption = SliderEdgeMarks;
+export type SliderMarkPlacementOption = SliderMarkPlacement;
 export type SliderMarkLabelPlacementOption = SliderMarkLabelPlacement;
 export type SliderResolvedMarkLabelPlacement = Exclude<SliderMarkLabelPlacementOption, 'auto'>;
 export type SliderEdgeMarkLabelPlacementOption = SliderEdgeMarkLabelPlacement;
@@ -74,6 +80,9 @@ export type SliderResolvedEdgeMarkLabelAlignment = Exclude<
 export type SliderValueAnimationOption = SliderValueAnimation;
 export type SliderSnapMotionOption = SliderSnapMotion;
 export type SliderThumbCrossingOption = SliderThumbCrossing;
+export type SliderThumbEdgeBehaviorOption = SliderThumbEdgeBehavior;
+export type SliderActiveTrackOriginOption = SliderActiveTrackOrigin;
+export type SliderOriginMarkOption = SliderOriginMark;
 
 export type SliderThumbAriaLabels = {
   start?: string;
@@ -99,6 +108,8 @@ export type SliderProps = Omit<
   | 'onThumbInteractionStart'
   | 'onThumbInteractionSwitch'
   | 'thumbCrossing'
+  | 'thumbEdgeBehavior'
+  | 'activeTrackOrigin'
 > & {
   id?: string;
   label?: ReactNode;
@@ -117,9 +128,13 @@ export type SliderProps = Omit<
   defaultValue?: SliderValue;
   marks?: SliderMarks;
   edgeMarks?: SliderEdgeMarksOption;
+  markPlacement?: SliderMarkPlacementOption;
   markLabelPlacement?: SliderMarkLabelPlacementOption;
   edgeMarkLabelPlacement?: SliderEdgeMarkLabelPlacementOption;
   edgeMarkLabelAlignment?: SliderEdgeMarkLabelAlignmentOption;
+  thumbEdgeBehavior?: SliderThumbEdgeBehaviorOption;
+  activeTrackOrigin?: SliderActiveTrackOriginOption;
+  originMark?: SliderOriginMarkOption;
   valueDisplay?: SliderValueDisplay;
   valueAnimation?: SliderValueAnimationOption;
   snapMotion?: SliderSnapMotionOption;

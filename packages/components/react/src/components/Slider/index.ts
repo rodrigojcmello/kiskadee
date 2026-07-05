@@ -1,5 +1,11 @@
 export type { SliderArtifactConfig } from './hooks/useSliderArtifactConfig.ts';
 export { useSliderArtifactConfig } from './hooks/useSliderArtifactConfig.ts';
+export type {
+  SliderActiveTrackOriginOption,
+  SliderMarkPlacementOption,
+  SliderOriginMarkOption,
+  SliderThumbEdgeBehaviorOption
+} from './Slider.types.ts';
 export { Slider } from './Slider.tsx';
 export type {
   SliderActivationFeedback,

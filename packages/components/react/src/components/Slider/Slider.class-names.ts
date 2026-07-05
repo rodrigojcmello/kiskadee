@@ -4,10 +4,14 @@ import type {
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
+  SliderActiveTrackOrigin,
+  SliderMarkPlacement,
   SliderEdgeMarkLabelAlignment,
   SliderIntent,
   SliderMode,
+  SliderOriginMark,
   SliderSnapMotion,
+  SliderThumbEdgeBehavior,
   SliderThumbCrossing,
   SliderValueAnimation,
   SliderVariant
@@ -41,9 +45,13 @@ export const DEFAULT_SLIDER_SNAP_MOTION: SliderSnapMotion = 'smooth';
 export const DEFAULT_SLIDER_THUMB_CROSSING: SliderThumbCrossing = 'swap';
 export const DEFAULT_SLIDER_MARKS = 'none';
 export const DEFAULT_SLIDER_EDGE_MARKS = 'include';
+export const DEFAULT_SLIDER_MARK_PLACEMENT: SliderMarkPlacement = 'track';
 export const DEFAULT_SLIDER_MARK_LABEL_PLACEMENT = 'auto';
 export const DEFAULT_SLIDER_EDGE_MARK_LABEL_PLACEMENT = 'auto';
 export const DEFAULT_SLIDER_EDGE_MARK_LABEL_ALIGNMENT: SliderEdgeMarkLabelAlignment = 'auto';
+export const DEFAULT_SLIDER_THUMB_EDGE_BEHAVIOR: SliderThumbEdgeBehavior = 'overflow';
+export const DEFAULT_SLIDER_ACTIVE_TRACK_ORIGIN: SliderActiveTrackOrigin = 'min';
+export const DEFAULT_SLIDER_ORIGIN_MARK: SliderOriginMark = 'none';
 
 type SliderStructuralBranch = 'a';
 
@@ -112,6 +120,7 @@ export function resolveSliderClassNames(options: {
   hasLabel: boolean;
   hasValueSummary: boolean;
   hasHelperText: boolean;
+  markPlacement: SliderMarkPlacement;
   markLabelPlacement: SliderResolvedMarkLabelPlacement;
 }): Required<SliderClassNames> {
   const elements = options.elements;
@@ -183,6 +192,8 @@ export function resolveSliderClassNames(options: {
     e13:
       join(
         `k-sld-e13-${branch}`,
+        options.markPlacement === 'above' && `k-sld-e13a-${branch}`,
+        options.markPlacement === 'below' && `k-sld-e13b-${branch}`,
         elem(elements.e13, options),
         resolveRadiusClassName(elements.e13, options.scale, options.radius),
         'k-trn',
@@ -203,6 +214,16 @@ export function resolveSliderClassNames(options: {
           'k-trn',
           options.classNames.e15
         ) ?? '')
-      : (options.classNames.e15 ?? '')
+      : (options.classNames.e15 ?? ''),
+    e16:
+      join(
+        `k-sld-e16-${branch}`,
+        options.markPlacement === 'above' && `k-sld-e16a-${branch}`,
+        options.markPlacement === 'below' && `k-sld-e16b-${branch}`,
+        elem(elements.e16, options),
+        resolveRadiusClassName(elements.e16, options.scale, options.radius),
+        'k-trn',
+        options.classNames.e16
+      ) ?? ''
   };
 }

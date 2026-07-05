@@ -2,13 +2,17 @@ import type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackSetting,
   RadiusMode,
+  SliderActiveTrackOrigin,
   SliderEdgeMarkLabelAlignment,
   SliderEdgeMarkLabelPlacement,
   SliderEdgeMarks,
   SliderMarkLabelPlacement,
+  SliderMarkPlacement,
   SliderMarks,
   SliderMode,
+  SliderOriginMark,
   SliderSnapMotion,
+  SliderThumbEdgeBehavior,
   SliderThumbCrossing,
   SliderValueAnimation,
   SliderValueDisplay,
@@ -22,11 +26,15 @@ import {
   DEFAULT_SLIDER_EDGE_MARK_LABEL_PLACEMENT,
   DEFAULT_SLIDER_EDGE_MARK_LABEL_ALIGNMENT,
   DEFAULT_SLIDER_EDGE_MARKS,
+  DEFAULT_SLIDER_ACTIVE_TRACK_ORIGIN,
+  DEFAULT_SLIDER_MARK_PLACEMENT,
   DEFAULT_SLIDER_MARK_LABEL_PLACEMENT,
   DEFAULT_SLIDER_MARKS,
   DEFAULT_SLIDER_MODE,
+  DEFAULT_SLIDER_ORIGIN_MARK,
   DEFAULT_SLIDER_RADIUS,
   DEFAULT_SLIDER_SNAP_MOTION,
+  DEFAULT_SLIDER_THUMB_EDGE_BEHAVIOR,
   DEFAULT_SLIDER_THUMB_CROSSING,
   DEFAULT_SLIDER_VALUE_ANIMATION,
   DEFAULT_SLIDER_VALUE_DISPLAY,
@@ -46,9 +54,13 @@ export type SliderArtifactConfig = {
     thumbCrossing: SliderThumbCrossing;
     marks: SliderMarks;
     edgeMarks: SliderEdgeMarks;
+    markPlacement: SliderMarkPlacement;
     markLabelPlacement: SliderMarkLabelPlacement;
     edgeMarkLabelPlacement: SliderEdgeMarkLabelPlacement;
     edgeMarkLabelAlignment: SliderEdgeMarkLabelAlignment;
+    thumbEdgeBehavior: SliderThumbEdgeBehavior;
+    activeTrackOrigin: SliderActiveTrackOrigin;
+    originMark: SliderOriginMark;
   };
   componentEffects: {
     activationFeedback?: ActivationFeedbackSetting;
@@ -96,11 +108,15 @@ export function useSliderArtifactConfig(): SliderArtifactConfig {
       thumbCrossing: options?.thumbCrossing ?? DEFAULT_SLIDER_THUMB_CROSSING,
       marks: options?.marks ?? DEFAULT_SLIDER_MARKS,
       edgeMarks: options?.edgeMarks ?? DEFAULT_SLIDER_EDGE_MARKS,
+      markPlacement: options?.markPlacement ?? DEFAULT_SLIDER_MARK_PLACEMENT,
       markLabelPlacement: options?.markLabelPlacement ?? DEFAULT_SLIDER_MARK_LABEL_PLACEMENT,
       edgeMarkLabelPlacement:
         options?.edgeMarkLabelPlacement ?? DEFAULT_SLIDER_EDGE_MARK_LABEL_PLACEMENT,
       edgeMarkLabelAlignment:
-        options?.edgeMarkLabelAlignment ?? DEFAULT_SLIDER_EDGE_MARK_LABEL_ALIGNMENT
+        options?.edgeMarkLabelAlignment ?? DEFAULT_SLIDER_EDGE_MARK_LABEL_ALIGNMENT,
+      thumbEdgeBehavior: options?.thumbEdgeBehavior ?? DEFAULT_SLIDER_THUMB_EDGE_BEHAVIOR,
+      activeTrackOrigin: options?.activeTrackOrigin ?? DEFAULT_SLIDER_ACTIVE_TRACK_ORIGIN,
+      originMark: options?.originMark ?? DEFAULT_SLIDER_ORIGIN_MARK
     },
     componentEffects: {
       activationFeedback:
