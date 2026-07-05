@@ -166,6 +166,7 @@ type SliderContextValue = {
   getFormattedValue: (index: SliderThumbIndex) => ReactNode;
   getAriaValueText: (index: SliderThumbIndex) => string;
   isSettling: () => boolean;
+  isThumbDragging: (index: SliderThumbIndex) => boolean;
   isThumbSettling: (index: SliderThumbIndex) => boolean;
   isMarkSelected: (value: number) => boolean;
   setTrackElement: (node: HTMLDivElement | null) => void;
@@ -624,6 +625,11 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
   const isSettling = useCallback(() => settlingThumbIndex !== null, [settlingThumbIndex]);
 
+  const isThumbDragging = useCallback(
+    (index: SliderThumbIndex) => draggingThumbIndex === index,
+    [draggingThumbIndex]
+  );
+
   const isThumbSettling = useCallback(
     (index: SliderThumbIndex) => settlingThumbIndex === index,
     [settlingThumbIndex]
@@ -861,6 +867,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       getFormattedValue,
       getAriaValueText: resolveAriaValueText,
       isSettling,
+      isThumbDragging,
       isThumbSettling,
       isMarkSelected,
       setTrackElement,
@@ -890,6 +897,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       handleTrackPointerUp,
       isMarkSelected,
       isSettling,
+      isThumbDragging,
       isThumbSettling,
       max,
       min,
@@ -1193,6 +1201,7 @@ const SliderThumb = forwardRef<HTMLSpanElement, SliderThumbProps>(function Slide
       aria-disabled={context.disabled || undefined}
       aria-readonly={context.readOnly || undefined}
       data-slider-thumb-index={index}
+      data-slider-dragging={context.isThumbDragging(index) ? '' : undefined}
       data-slider-settling={context.isThumbSettling(index) ? '' : undefined}
       className={mergeClassNames(slotClassName, className)}
       style={thumbStyle}
@@ -1234,6 +1243,7 @@ const SliderValueIndicator = forwardRef<HTMLSpanElement, SliderValueIndicatorPro
         {...slotProps}
         ref={ref}
         className={mergeClassNames(slotClassName, className)}
+        data-slider-dragging={context.isThumbDragging(index) ? '' : undefined}
         data-slider-settling={context.isThumbSettling(index) ? '' : undefined}
         style={indicatorStyle}
         {...props}

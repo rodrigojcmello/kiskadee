@@ -228,6 +228,10 @@
   transform: translateX(-50%);
 }
 
+.k-sld-e12-a[data-slider-dragging] {
+  z-index: 4;
+}
+
 .k-sld-sm .k-sld-e12-a[data-slider-settling] {
   transition: inset-inline-start var(--k-dur-int) var(--k-ease-out);
 }
