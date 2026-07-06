@@ -128,6 +128,7 @@ export function resolveSliderClassNames(options: {
   hasLabel: boolean;
   hasValueSummary: boolean;
   hasHelperText: boolean;
+  hasMarkLabels: boolean;
   markPlacement: SliderMarkPlacement;
   markLabelPlacement: SliderResolvedMarkLabelPlacement;
 }): Required<SliderClassNames> {
@@ -153,7 +154,18 @@ export function resolveSliderClassNames(options: {
       ? (join(`k-sld-e3-${branch}`, elem(elements.e3, options), 'k-trn', options.classNames.e3) ??
         '')
       : (options.classNames.e3 ?? ''),
-    e4: join(`k-sld-e4-${branch}`, elem(elements.e4, options), options.classNames.e4) ?? '',
+    e4:
+      join(
+        `k-sld-e4-${branch}`,
+        options.hasMarkLabels &&
+          options.markLabelPlacement === 'above' &&
+          `k-sld-e4a-${branch}`,
+        options.hasMarkLabels &&
+          options.markLabelPlacement === 'below' &&
+          `k-sld-e4b-${branch}`,
+        elem(elements.e4, options),
+        options.classNames.e4
+      ) ?? '',
     e5: join(`k-sld-e5-${branch}`, elem(elements.e5, options), options.classNames.e5) ?? '',
     e6:
       join(`k-sld-e6-${branch}`, elem(elements.e6, options), 'k-trn', options.classNames.e6) ?? '',

@@ -53,7 +53,7 @@ export function createSliderControlRowElementStyleSchema() {
   return z
     .object({
       name: z.string(),
-      scales: createScalesSchema(['marginTop']).optional()
+      scales: createScalesSchema(['marginTop', 'paddingTop', 'paddingBottom']).optional()
     })
     .strict();
 }
@@ -175,7 +175,6 @@ export function createSliderValueIndicatorElementStyleSchema<
         'paddingRight',
         'paddingBottom',
         'paddingLeft',
-        'marginBottom',
         'textSize',
         'textHeight'
       ]).optional(),

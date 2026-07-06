@@ -278,6 +278,11 @@ belong to schema scales:
 
 - `e3.marginLeft` separates the field label from the value summary.
 - `e4.marginTop` separates the header row from the control row.
+- `e4.paddingTop` reserves an above-track layout lane when persistent mark labels
+  render above the track.
+- `e4.paddingBottom` reserves a below-track layout lane when persistent mark
+  labels render below the track. This keeps below-track labels from colliding
+  with helper text or the next block.
 - `e5.marginLeft` and `e5.marginRight` separate lateral edge content from the
   track.
 - `e5.paddingLeft` defines the internal lateral edge content gap. Structural CSS
@@ -287,10 +292,12 @@ belong to schema scales:
 - `e12.boxHeight` sets the value indicator height.
 - `e12.paddingLeft` and `e12.paddingRight` set the value indicator horizontal
   padding.
-- `e12.marginBottom` offsets the value indicator above the track. When tooltip
-  display is active, structural CSS also adds fixed arrow geometry: a `2px`
-  arrow overlap into the tooltip body and a `2px` arrow clearance from the
-  thumb.
+- Tooltip-style value indicators are positioned by fixed structural arrow
+  geometry. The arrow overlaps the tooltip body by `2px` and keeps a fixed `2px`
+  visual clearance from the thumb. Structural CSS also compensates the emitted
+  `e10.borderWidth` token because absolute children position from the thumb
+  padding box, not from its border box. This clearance is intentionally not
+  customizable through schema.
 - `e13.marginTop` offsets visual marks below the track when
   `markPlacement="below"`.
 - `e13.marginBottom` offsets visual marks above the track when
@@ -306,6 +313,12 @@ belong to schema scales:
 Do not add gap-like Slider scale attributes for these relationships. Use
 margin, padding, or existing box scales, then let structural CSS consume the
 generated token in the specific DOM relationship.
+
+Tooltip-style value indicators (`e12`) remain overlay geometry. They can overlap
+the field label or summary while active, especially in `valueDisplay="auto"`,
+because the tooltip is transient and selected-value content is redundant with the
+summary. Persistent scale text belongs to mark labels (`e14`), so only mark label
+placement reserves the above/below track lanes in the current contract.
 
 ### Radius Ownership
 
@@ -664,15 +677,16 @@ The current structural branch is horizontal `standard/base`.
 
 Preserve these rules:
 
-- `e8` is the positioning plane for `e9`, `e10`, `e12`, `e13`, `e14`, and
-  `e16`.
+- `e8` is the positioning plane for `e9`, `e10`, `e13`, `e14`, and `e16`.
 - `e9` fills the active range through `--k-sld-start` and `--k-sld-end`.
-- `e10` centers on `--k-sld-value` and owns focus semantics.
+- `e10` centers on `--k-sld-value`, owns focus semantics, and acts as the
+  positioning container for the value indicator.
 - `e11` is centered inside `e10` and is pointer-inert.
-- `e12` centers on the corresponding thumb position and is pointer-inert.
+- `e12` centers inside the corresponding thumb container and is pointer-inert.
   It owns a fixed-size structural arrow through `::after`; the arrow inherits
   the tooltip background, has a fixed softened tip, overlaps the tooltip body by
-  `2px`, and includes a fixed `2px` clearance from the thumb. Arrow geometry is
+  `2px`, and includes a fixed `2px` visual clearance from the thumb. The formula
+  compensates `e10.borderWidth` when the thumb has a border. Arrow geometry is
   not schema-customizable yet. In `valueDisplay="auto"`, a structural modifier
   hides `e12` unless the matching thumb is currently dragging.
 - `e13` uses `--k-sld-mark` for its value position.
@@ -693,9 +707,9 @@ structural CSS can avoid hardcoding preset sizes. The web-builder policy emits:
 - `slider.variants.standard.elements.e16.boxWidth` into `--k-bxw`.
 
 Structural CSS uses those variables to clamp `e13`/`e16` by the larger of half
-the track height and half the mark width, position value indicators and mark
-labels, separate endpoint content, and apply header/helper spacing only when
-the related DOM composition exists.
+the track height and half the mark width, position mark labels, separate
+endpoint content, and apply header/helper spacing only when the related DOM
+composition exists.
 
 For the durable web-builder rule, see:
 
@@ -730,6 +744,8 @@ generated markup, structural CSS, or regressions.
 | `k-sld-e2-a` | Field label. |
 | `k-sld-e3-a` | Value summary. |
 | `k-sld-e4-a` | Control row. |
+| `k-sld-e4a-a` | Control row with an above-track mark label reserve lane. |
+| `k-sld-e4b-a` | Control row with a below-track mark label reserve lane. |
 | `k-sld-e5-a` | Internal lateral edge content wrapper. |
 | `k-sld-e6-a` | Internal lateral edge icon. |
 | `k-sld-e7-a` | Internal lateral edge label/value. |

@@ -64,6 +64,10 @@ const layout = {
   endpointContentGap: 8,
   trackMinWidth: 100,
   markOffset: 7,
+  markLabelReserve: {
+    's:sm:1': 23,
+    's:md:1': 29
+  },
   helperOffset: 8
 } as const;
 
@@ -169,7 +173,9 @@ export function createIos26AppleSliderSchema({
               e4: {
                 name: 'slider-control-row',
                 scales: {
-                  marginTop: layout.fieldGap
+                  marginTop: layout.fieldGap,
+                  paddingTop: layout.markLabelReserve,
+                  paddingBottom: layout.markLabelReserve
                 }
               },
               e5: {
@@ -337,8 +343,7 @@ export function createIos26AppleSliderSchema({
                   paddingTop: 0,
                   paddingBottom: 0,
                   textSize: sizes.tooltipText,
-                  textHeight: sizes.tooltipLine,
-                  marginBottom: 8
+                  textHeight: sizes.tooltipLine
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {

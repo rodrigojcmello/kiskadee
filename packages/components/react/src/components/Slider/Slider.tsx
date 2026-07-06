@@ -357,6 +357,7 @@ function SliderRoot(props: SliderProps) {
   const startEdgeMark = getEdgeMark(normalizedMarks, min);
   const endEdgeMark = getEdgeMark(normalizedMarks, max);
   const hasLabel = label !== undefined && label !== null;
+  const hasMarkLabels = markLabels.length > 0;
   const hasValueSummary =
     resolvedValueDisplay === 'summary' ||
     resolvedValueDisplay === 'both' ||
@@ -403,6 +404,7 @@ function SliderRoot(props: SliderProps) {
         hasLabel,
         hasValueSummary,
         hasHelperText,
+        hasMarkLabels,
         markPlacement: resolvedMarkPlacement,
         markLabelPlacement: resolvedMarkLabelPlacement
       }),
@@ -413,6 +415,7 @@ function SliderRoot(props: SliderProps) {
       emphasis,
       hasHelperText,
       hasLabel,
+      hasMarkLabels,
       hasValueSummary,
       intent,
       resolvedRadius,
@@ -467,6 +470,25 @@ function SliderRoot(props: SliderProps) {
   const getThumbAriaLabel = (index: 0 | 1) => {
     if (getThumbAriaLabelledBy(index)) return undefined;
     return thumbAriaLabels?.[resolveThumbKey(index)] ?? (hasLabel ? undefined : ariaLabel);
+  };
+  const renderValueIndicator = (index: 0 | 1) => {
+    if (!hasValueIndicator) return null;
+
+    return resolvedValueAnimation === 'rolling' ? (
+      <HeadlessSlider.ValueIndicator
+        index={index}
+        className={valueIndicatorClassName}
+        aria-hidden="true"
+      >
+        {(details) => renderSliderValueIndicator(resolvedValueAnimation, details)}
+      </HeadlessSlider.ValueIndicator>
+    ) : (
+      <HeadlessSlider.ValueIndicator
+        index={index}
+        className={valueIndicatorClassName}
+        aria-hidden="true"
+      />
+    );
   };
 
   return (
@@ -555,6 +577,7 @@ function SliderRoot(props: SliderProps) {
             aria-labelledby={getThumbAriaLabelledBy(0)}
           >
             <HeadlessSlider.ThumbInner />
+            {renderValueIndicator(0)}
           </HeadlessSlider.Thumb>
           {resolvedValueMode === 'range' ? (
             <HeadlessSlider.Thumb
@@ -565,25 +588,8 @@ function SliderRoot(props: SliderProps) {
               aria-labelledby={getThumbAriaLabelledBy(1)}
             >
               <HeadlessSlider.ThumbInner />
+              {renderValueIndicator(1)}
             </HeadlessSlider.Thumb>
-          ) : null}
-          {hasValueIndicator ? (
-            resolvedValueAnimation === 'rolling' ? (
-              <HeadlessSlider.ValueIndicator index={0} className={valueIndicatorClassName}>
-                {(details) => renderSliderValueIndicator(resolvedValueAnimation, details)}
-              </HeadlessSlider.ValueIndicator>
-            ) : (
-              <HeadlessSlider.ValueIndicator index={0} className={valueIndicatorClassName} />
-            )
-          ) : null}
-          {hasValueIndicator && resolvedValueMode === 'range' ? (
-            resolvedValueAnimation === 'rolling' ? (
-              <HeadlessSlider.ValueIndicator index={1} className={valueIndicatorClassName}>
-                {(details) => renderSliderValueIndicator(resolvedValueAnimation, details)}
-              </HeadlessSlider.ValueIndicator>
-            ) : (
-              <HeadlessSlider.ValueIndicator index={1} className={valueIndicatorClassName} />
-            )
           ) : null}
         </HeadlessSlider.Track>
         {renderEndpoint('end', endEdgeMark, shouldRenderEdgeMarkLabelsAsEndpoints)}

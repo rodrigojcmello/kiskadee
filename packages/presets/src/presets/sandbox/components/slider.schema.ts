@@ -110,8 +110,14 @@ const layout = {
   endpointTrackGap: 12,
   endpointContentGap: 8,
   trackMinWidth: 96,
-  floatingValueOffset: 8,
-  markLabelOffset: 8
+  markLabelOffset: 8,
+  markLabelReserve: {
+    's:sm:3': 24,
+    's:sm:2': 24,
+    's:sm:1': 26,
+    's:md:1': 28,
+    's:lg:1': 32
+  }
 } as const;
 
 const textPalettes = {
@@ -430,7 +436,9 @@ export function createSandboxSliderSchema(): SliderComponent {
               e4: {
                 name: 'slider-control-row',
                 scales: {
-                  marginTop: layout.fieldGap
+                  marginTop: layout.fieldGap,
+                  paddingTop: layout.markLabelReserve,
+                  paddingBottom: layout.markLabelReserve
                 }
               },
               e5: {
@@ -530,8 +538,7 @@ export function createSandboxSliderSchema(): SliderComponent {
                   paddingTop: 0,
                   paddingBottom: 0,
                   textSize: sizes.labelText,
-                  textHeight: sizes.labelLine,
-                  marginBottom: layout.floatingValueOffset
+                  textHeight: sizes.labelLine
                 },
                 palettes: valueIndicatorPalettes
               },

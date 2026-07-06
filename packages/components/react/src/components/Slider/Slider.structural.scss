@@ -67,6 +67,22 @@
 }
 
 /*
+ * element control row modifier / e4a
+ * Reserves an above-track lane for persistent mark labels using the schema-owned top padding token.
+ */
+.k-sld-e4a-a {
+  padding-block-start: var(--k-pdt, 0px);
+}
+
+/*
+ * element control row modifier / e4b
+ * Reserves a below-track lane for persistent mark labels using the schema-owned bottom padding token.
+ */
+.k-sld-e4b-a {
+  padding-block-end: var(--k-pdb, 0px);
+}
+
+/*
  * element endpoint / e5
  * Groups optional endpoint icon and label without affecting track measurements.
  */
@@ -173,6 +189,10 @@
   transform: translate(-50%, -50%);
 }
 
+.k-sld-e10-a[data-slider-dragging] {
+  z-index: 4;
+}
+
 .k-sld-e1-a[data-slider-dragging]:not(.-d.-a):not(.-r.-a) .k-sld-e8-a,
 .k-sld-e1-a[data-slider-dragging]:not(.-d.-a):not(.-r.-a) .k-sld-e10-a {
   cursor: grabbing;
@@ -217,11 +237,10 @@
 
   position: absolute;
   inset-block-end: calc(
-    100% + var(--k-mgb, 0px) + var(--k-sld-tooltip-arrow-block-size) -
-      var(--k-sld-tooltip-arrow-overlap) +
-      var(--k-sld-tooltip-arrow-clearance)
+    100% + var(--k-sld-tooltip-arrow-block-size) - var(--k-sld-tooltip-arrow-overlap) +
+      var(--k-sld-tooltip-arrow-clearance) + var(--k-bdw, 0px)
   );
-  inset-inline-start: var(--k-sld-value, 0%);
+  inset-inline-start: 50%;
   z-index: 3;
   display: inline-flex;
   align-items: center;
@@ -239,10 +258,6 @@
 
 .k-sld-e12b-a:not([data-slider-dragging]) {
   display: none;
-}
-
-.k-sld-sm .k-sld-e12-a[data-slider-settling] {
-  transition: inset-inline-start var(--k-dur-int) var(--k-ease-out);
 }
 
 /*
@@ -403,15 +418,13 @@
 }
 
 .no-transitions .k-sld-sm .k-sld-e9-a[data-slider-settling],
-.no-transitions .k-sld-sm .k-sld-e10-a[data-slider-settling],
-.no-transitions .k-sld-sm .k-sld-e12-a[data-slider-settling] {
+.no-transitions .k-sld-sm .k-sld-e10-a[data-slider-settling] {
   transition: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .k-sld-sm .k-sld-e9-a[data-slider-settling],
-  .k-sld-sm .k-sld-e10-a[data-slider-settling],
-  .k-sld-sm .k-sld-e12-a[data-slider-settling] {
+  .k-sld-sm .k-sld-e10-a[data-slider-settling] {
     transition: none;
   }
 }

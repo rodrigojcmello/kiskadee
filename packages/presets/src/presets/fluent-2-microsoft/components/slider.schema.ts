@@ -84,8 +84,11 @@ const layout = {
   endpointTrackGap: 12,
   endpointContentGap: 8,
   trackMinWidth: 96,
-  floatingValueOffset: 8,
-  markLabelOffset: 8
+  markLabelOffset: 8,
+  markLabelReserve: {
+    's:sm:1': 24,
+    's:md:1': 28
+  }
 } as const;
 
 const textPalettes = {
@@ -420,7 +423,9 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
               e4: {
                 name: 'slider-control-row',
                 scales: {
-                  marginTop: layout.fieldGap
+                  marginTop: layout.fieldGap,
+                  paddingTop: layout.markLabelReserve,
+                  paddingBottom: layout.markLabelReserve
                 }
               },
               e5: {
@@ -526,8 +531,7 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
                   paddingTop: 0,
                   paddingBottom: 0,
                   textSize: sizes.labelText,
-                  textHeight: sizes.labelLine,
-                  marginBottom: layout.floatingValueOffset
+                  textHeight: sizes.labelLine
                 },
                 palettes: valueIndicatorPalettes
               },
