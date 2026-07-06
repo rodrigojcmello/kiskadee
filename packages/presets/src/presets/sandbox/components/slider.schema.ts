@@ -117,6 +117,13 @@ const layout = {
     's:sm:1': 26,
     's:md:1': 28,
     's:lg:1': 32
+  },
+  tooltipLaneReserve: {
+    's:sm:3': 18,
+    's:sm:2': 20,
+    's:sm:1': 22,
+    's:md:1': 24,
+    's:lg:1': 26
   }
 } as const;
 
@@ -533,6 +540,7 @@ export function createSandboxSliderSchema(): SliderComponent {
                     square: 0
                   },
                   borderWidth: 0,
+                  marginTop: layout.tooltipLaneReserve,
                   paddingLeft: sizes.indicatorPadding,
                   paddingRight: sizes.indicatorPadding,
                   paddingTop: 0,

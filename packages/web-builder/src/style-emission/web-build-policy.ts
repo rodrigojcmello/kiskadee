@@ -132,6 +132,9 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
             e10: {
               borderWidthEmission: 'mirrored'
             },
+            e12: {
+              marginTopEmission: 'token'
+            },
             e3: {
               marginLeftEmission: 'token'
             },

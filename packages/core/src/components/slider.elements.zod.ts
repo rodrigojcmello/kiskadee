@@ -100,6 +100,7 @@ export function createSliderTrackElementStyleSchema<TSegmentName extends Segment
         'boxWidth',
         'boxHeight',
         'borderWidth',
+        'marginTop',
         'paddingTop',
         'paddingRight',
         'paddingBottom',
@@ -134,7 +135,6 @@ export function createSliderThumbElementStyleSchema<TSegmentName extends Segment
         'boxWidth',
         'boxHeight',
         'borderWidth',
-        'marginTop',
         'marginRight',
         'marginBottom',
         'marginLeft'
@@ -171,6 +171,7 @@ export function createSliderValueIndicatorElementStyleSchema<
       scales: createScalesSchemaWithBorderRadius([
         'boxHeight',
         'borderWidth',
+        'marginTop',
         'paddingTop',
         'paddingRight',
         'paddingBottom',

@@ -127,6 +127,7 @@ export function resolveSliderClassNames(options: {
   radius: RadiusMode;
   hasLabel: boolean;
   hasValueSummary: boolean;
+  hasPersistentValueIndicator: boolean;
   hasHelperText: boolean;
   hasMarkLabels: boolean;
   markPlacement: SliderMarkPlacement;
@@ -163,6 +164,7 @@ export function resolveSliderClassNames(options: {
         options.hasMarkLabels &&
           options.markLabelPlacement === 'below' &&
           `k-sld-e4b-${branch}`,
+        options.hasPersistentValueIndicator && `k-sld-e4c-${branch}`,
         elem(elements.e4, options),
         options.classNames.e4
       ) ?? '',

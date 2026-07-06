@@ -279,7 +279,8 @@ belong to schema scales:
 - `e3.marginLeft` separates the field label from the value summary.
 - `e4.marginTop` separates the header row from the control row.
 - `e4.paddingTop` reserves an above-track layout lane when persistent mark labels
-  render above the track.
+  render above the track. If persistent tooltips also reserve above-track space,
+  structural CSS uses the larger of the two reserves instead of adding them.
 - `e4.paddingBottom` reserves a below-track layout lane when persistent mark
   labels render below the track. This keeps below-track labels from colliding
   with helper text or the next block.
@@ -290,6 +291,11 @@ belong to schema scales:
   `label -> icon` compositions use the same schema-owned spacing.
 - `e8.boxWidth` is consumed structurally as the minimum useful track width.
 - `e12.boxHeight` sets the value indicator height.
+- `e12.marginTop` reserves the above-track lane for persistent tooltip-style
+  value indicators. It is emitted as a token and consumed by the control row; it
+  does not apply CSS `margin-top` to the tooltip itself. If mark labels also
+  reserve above-track space, structural CSS uses the larger of the two reserves
+  instead of adding them.
 - `e12.paddingLeft` and `e12.paddingRight` set the value indicator horizontal
   padding.
 - Tooltip-style value indicators are positioned by fixed structural arrow
@@ -314,11 +320,14 @@ Do not add gap-like Slider scale attributes for these relationships. Use
 margin, padding, or existing box scales, then let structural CSS consume the
 generated token in the specific DOM relationship.
 
-Tooltip-style value indicators (`e12`) remain overlay geometry. They can overlap
-the field label or summary while active, especially in `valueDisplay="auto"`,
-because the tooltip is transient and selected-value content is redundant with the
-summary. Persistent scale text belongs to mark labels (`e14`), so only mark label
-placement reserves the above/below track lanes in the current contract.
+Tooltip-style value indicators (`e12`) remain overlay geometry. Persistent
+tooltips in `valueDisplay="tooltip"` and `"both"` reserve an above-track lane
+through `e12.marginTop`; transient tooltips in `valueDisplay="auto"` do not
+reserve that lane and may overlap the field label or summary during drag. Mark
+label placement remains a separate token source owned by `e4.paddingTop` and
+`e4.paddingBottom`. Above the track, tooltip reserve and mark-label reserve are
+unified with `max(...)`, so combining both does not create stacked vertical
+space. Below the track, only mark labels reserve space.
 
 ### Radius Ownership
 
@@ -687,8 +696,9 @@ Preserve these rules:
   the tooltip background, has a fixed softened tip, overlaps the tooltip body by
   `2px`, and includes a fixed `2px` visual clearance from the thumb. The formula
   compensates `e10.borderWidth` when the thumb has a border. Arrow geometry is
-  not schema-customizable yet. In `valueDisplay="auto"`, a structural modifier
-  hides `e12` unless the matching thumb is currently dragging.
+  not schema-customizable yet. `e12.marginTop` is a lane-reserve token and does
+  not move the tooltip. In `valueDisplay="auto"`, a structural modifier hides
+  `e12` unless the matching thumb is currently dragging.
 - `e13` uses `--k-sld-mark` for its value position.
 - `e14` uses `--k-sld-mark` for its label position.
 - `e16` uses `--k-sld-mark` for the resolved active origin position.
@@ -746,6 +756,7 @@ generated markup, structural CSS, or regressions.
 | `k-sld-e4-a` | Control row. |
 | `k-sld-e4a-a` | Control row with an above-track mark label reserve lane. |
 | `k-sld-e4b-a` | Control row with a below-track mark label reserve lane. |
+| `k-sld-e4c-a` | Control row with an above-track persistent value indicator reserve source. |
 | `k-sld-e5-a` | Internal lateral edge content wrapper. |
 | `k-sld-e6-a` | Internal lateral edge icon. |
 | `k-sld-e7-a` | Internal lateral edge label/value. |

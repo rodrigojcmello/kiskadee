@@ -88,6 +88,10 @@ const layout = {
   markLabelReserve: {
     's:sm:1': 24,
     's:md:1': 28
+  },
+  tooltipLaneReserve: {
+    's:sm:1': 18,
+    's:md:1': 20
   }
 } as const;
 
@@ -526,6 +530,7 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
                     square: 0
                   },
                   borderWidth: 0,
+                  marginTop: layout.tooltipLaneReserve,
                   paddingLeft: sizes.indicatorPadding,
                   paddingRight: sizes.indicatorPadding,
                   paddingTop: 0,

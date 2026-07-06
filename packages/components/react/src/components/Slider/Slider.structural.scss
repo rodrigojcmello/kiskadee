@@ -75,6 +75,22 @@
 }
 
 /*
+ * element control row modifier / e4c
+ * Reserves an above-track lane for persistent value indicators using the runtime-projected token.
+ */
+.k-sld-e4c-a {
+  padding-block-start: var(--k-sld-value-indicator-lane, 0px);
+}
+
+/*
+ * element control row modifiers / e4a + e4c
+ * Uses the larger above-track reserve when mark labels and value indicators coexist.
+ */
+.k-sld-e4a-a.k-sld-e4c-a {
+  padding-block-start: max(var(--k-pdt, 0px), var(--k-sld-value-indicator-lane, 0px));
+}
+
+/*
  * element control row modifier / e4b
  * Reserves a below-track lane for persistent mark labels using the schema-owned bottom padding token.
  */

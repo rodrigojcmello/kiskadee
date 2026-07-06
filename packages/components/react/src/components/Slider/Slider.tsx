@@ -8,9 +8,10 @@ import {
   type SliderValueIndicatorRenderDetails,
   type SliderValueSummaryRenderDetails
 } from '@kiskadee/react-headless';
-import { memo, type ReactNode, useId, useMemo, useRef } from 'react';
+import { memo, type CSSProperties, type ReactNode, useId, useMemo, useRef, useState } from 'react';
 import { useIsCompactViewport } from '../../shared/interaction/useIsCompactViewport.ts';
 import { useIsLikelyTouch } from '../../shared/interaction/useIsLikelyTouch.ts';
+import { useIsomorphicLayoutEffect } from '../../shared/utils/useIsomorphicLayoutEffect.ts';
 import { RollingNumber } from '../RollingNumber/RollingNumber.tsx';
 import {
   hasSliderActivationFeedbackEffect,
@@ -260,6 +261,7 @@ function SliderRoot(props: SliderProps) {
     helperText,
     className,
     classNames = EMPTY_SLIDER_CLASS_NAMES,
+    style,
     scale = DEFAULT_SLIDER_SCALE,
     emphasis = DEFAULT_SLIDER_EMPHASIS,
     intent = DEFAULT_SLIDER_INTENT,
@@ -302,6 +304,9 @@ function SliderRoot(props: SliderProps) {
   const generatedId = useId();
   const startThumbRef = useRef<HTMLSpanElement | null>(null);
   const endThumbRef = useRef<HTMLSpanElement | null>(null);
+  const startValueIndicatorRef = useRef<HTMLSpanElement | null>(null);
+  const endValueIndicatorRef = useRef<HTMLSpanElement | null>(null);
+  const [valueIndicatorLane, setValueIndicatorLane] = useState<string | undefined>();
   const rootId = id ?? `slider-${generatedId}`;
   const labelId = `${rootId}-label`;
   const helperTextId = `${rootId}-helper`;
@@ -366,6 +371,8 @@ function SliderRoot(props: SliderProps) {
     resolvedValueDisplay === 'tooltip' ||
     resolvedValueDisplay === 'both' ||
     resolvedValueDisplay === 'auto';
+  const hasPersistentValueIndicator =
+    resolvedValueDisplay === 'tooltip' || resolvedValueDisplay === 'both';
   const valueIndicatorClassName =
     resolvedValueDisplay === 'auto' ? VALUE_INDICATOR_DRAG_ONLY_CLASS_NAME : undefined;
   const hasHelperText = helperText !== undefined && helperText !== null;
@@ -403,6 +410,7 @@ function SliderRoot(props: SliderProps) {
         radius: resolvedRadius,
         hasLabel,
         hasValueSummary,
+        hasPersistentValueIndicator,
         hasHelperText,
         hasMarkLabels,
         markPlacement: resolvedMarkPlacement,
@@ -415,6 +423,7 @@ function SliderRoot(props: SliderProps) {
       emphasis,
       hasHelperText,
       hasLabel,
+      hasPersistentValueIndicator,
       hasMarkLabels,
       hasValueSummary,
       intent,
@@ -474,8 +483,11 @@ function SliderRoot(props: SliderProps) {
   const renderValueIndicator = (index: 0 | 1) => {
     if (!hasValueIndicator) return null;
 
+    const valueIndicatorRef = index === 0 ? startValueIndicatorRef : endValueIndicatorRef;
+
     return resolvedValueAnimation === 'rolling' ? (
       <HeadlessSlider.ValueIndicator
+        ref={valueIndicatorRef}
         index={index}
         className={valueIndicatorClassName}
         aria-hidden="true"
@@ -484,17 +496,45 @@ function SliderRoot(props: SliderProps) {
       </HeadlessSlider.ValueIndicator>
     ) : (
       <HeadlessSlider.ValueIndicator
+        ref={valueIndicatorRef}
         index={index}
         className={valueIndicatorClassName}
         aria-hidden="true"
       />
     );
   };
+  useIsomorphicLayoutEffect(() => {
+    if (!hasPersistentValueIndicator) {
+      setValueIndicatorLane((currentValue) =>
+        currentValue === undefined ? currentValue : undefined
+      );
+      return;
+    }
+
+    const valueIndicatorElement = startValueIndicatorRef.current ?? endValueIndicatorRef.current;
+    if (!valueIndicatorElement || typeof window === 'undefined') return;
+
+    const nextValue =
+      window.getComputedStyle(valueIndicatorElement).getPropertyValue('--k-mgt').trim() || '0px';
+    setValueIndicatorLane((currentValue) =>
+      currentValue === nextValue ? currentValue : nextValue
+    );
+  }, [hasPersistentValueIndicator, structuralClassNames.e12]);
+
+  const rootStyle = useMemo(() => {
+    if (!valueIndicatorLane) return style;
+
+    return {
+      ...style,
+      '--k-sld-value-indicator-lane': valueIndicatorLane
+    } as CSSProperties;
+  }, [style, valueIndicatorLane]);
 
   return (
     <HeadlessSlider.Root
       {...rootProps}
       id={rootId}
+      style={rootStyle}
       classNames={structuralClassNames}
       labelId={hasLabel ? labelId : false}
       describedBy={describedBy}

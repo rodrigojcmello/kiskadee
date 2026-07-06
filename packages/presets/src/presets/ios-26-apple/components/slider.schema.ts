@@ -68,6 +68,10 @@ const layout = {
     's:sm:1': 23,
     's:md:1': 29
   },
+  tooltipLaneReserve: {
+    's:sm:1': 16,
+    's:md:1': 20
+  },
   helperOffset: 8
 } as const;
 
@@ -338,6 +342,7 @@ export function createIos26AppleSliderSchema({
                     square: 0
                   },
                   borderWidth: 0,
+                  marginTop: layout.tooltipLaneReserve,
                   paddingLeft: 10,
                   paddingRight: 10,
                   paddingTop: 0,
