@@ -19,6 +19,10 @@ const sliderThumbShadow = [
   { x: 0, y: 6, blur: 13, spread: 0, color: shadowBlack(0.12) },
   { x: 0, y: 0.5, blur: 4, spread: 0, color: shadowBlack(0.12) }
 ] as const;
+const sliderTooltipShadow = [
+  { x: 0, y: 2, blur: 6, spread: 0, color: shadowBlack(0.08) },
+  { x: 0, y: 0.5, blur: 2, spread: 0, color: shadowBlack(0.06) }
+] as const;
 
 export const schema: Schema<Segment> = {
   name: 'iOS',
@@ -64,6 +68,7 @@ export const schema: Schema<Segment> = {
           levels: {
             's:sm:1': { x: 0, y: 0, blur: 16, spread: 0, color: shadowBlack(0.2) },
             's:sm:2': sliderThumbShadow,
+            's:sm:3': sliderTooltipShadow,
             's:md:1': { x: 0, y: 5, blur: 20, spread: 0, color: shadowBlack(0.3) },
             's:lg:1': { x: 0, y: 10, blur: 50, spread: 0, color: shadowBlack(0.3) },
             's:lg:2': { x: 0, y: 16, blur: 48, spread: 0, color: shadowBlack(0.35) },

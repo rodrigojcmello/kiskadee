@@ -211,6 +211,10 @@ activation feedback recipe. When present, the web builder treats `e10` as the
 Slider activation-feedback host and emits the effect buckets consumed by the
 styled runtime.
 
+`components.slider.effects.shadow` can target `e10` for the thumb wrapper and
+`e12` for tooltip-style value indicators. Shadow remains a preset-authored
+visual effect, not structural Sass.
+
 ### Schema-Owned Layout Spacing
 
 Slider structural CSS may consume schema-emitted variables, but spacing values
@@ -646,8 +650,10 @@ For the durable web-builder rule, see:
 Current rules:
 
 - Interactive roots use `cursor: default`.
-- The track and thumbs use pointer affordance locally because they are direct
-  drag targets.
+- The track and thumbs use `cursor: grab` locally because they are direct drag
+  targets.
+- During pointer drag, the root projects `data-slider-dragging` and the track
+  and thumbs use `cursor: grabbing`.
 - Disabled and read-only roots use `cursor: not-allowed` and inherit that cursor
   through descendants.
 - The root disables text selection and browser tap highlight.

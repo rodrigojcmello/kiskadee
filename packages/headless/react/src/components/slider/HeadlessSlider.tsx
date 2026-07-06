@@ -1116,6 +1116,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
         ref={ref}
         className={rootClassName}
         data-disabled={disabled ? '' : undefined}
+        data-slider-dragging={draggingThumbIndex === null ? undefined : ''}
         data-readonly={readOnly ? '' : undefined}
         data-required={required ? '' : undefined}
         data-value-mode={valueMode}

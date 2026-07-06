@@ -26,6 +26,9 @@ This file records source evidence and preset-level decisions for
   level `s:sm:2`: `0 6px 13px rgba(0,0,0,0.12)` plus
   `0 0.5px 4px rgba(0,0,0,0.12)`. Keep this as a global shadow level instead
   of adding local ad hoc thumb shadow values.
+- Slider tooltip indicators use global outer level `s:sm:3`, a subtler
+  Kiskadee-authored adaptation for white tooltip surfaces rather than an
+  official Figma shadow value.
 - macOS Slider evidence includes a darker selected track during interaction.
   Kiskadee maps that to the Slider pressed state, while keeping the actual
   pressed color derived from the iOS primary blue for the unified preset.

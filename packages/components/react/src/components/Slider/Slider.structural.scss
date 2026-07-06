@@ -131,7 +131,7 @@
   box-sizing: border-box;
   overflow: visible;
   touch-action: none;
-  cursor: pointer;
+  cursor: grab;
 }
 
 /*
@@ -167,10 +167,15 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  cursor: pointer;
+  cursor: grab;
   outline: none;
   touch-action: none;
   transform: translate(-50%, -50%);
+}
+
+.k-sld-e1-a[data-slider-dragging]:not(.-d.-a):not(.-r.-a) .k-sld-e8-a,
+.k-sld-e1-a[data-slider-dragging]:not(.-d.-a):not(.-r.-a) .k-sld-e10-a {
+  cursor: grabbing;
 }
 
 .k-sld-sm .k-sld-e10-a[data-slider-settling] {

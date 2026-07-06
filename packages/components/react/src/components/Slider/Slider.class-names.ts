@@ -134,6 +134,7 @@ export function resolveSliderClassNames(options: {
   const elements = options.elements;
   const branch = options.structuralBranch;
   const thumbShadowClassName = resolveSliderShadowEffectClassName(elements.e10?.e?.h);
+  const valueIndicatorShadowClassName = resolveSliderShadowEffectClassName(elements.e12?.e?.h);
 
   return {
     e1:
@@ -196,6 +197,7 @@ export function resolveSliderClassNames(options: {
         `k-sld-e12-${branch}`,
         elem(elements.e12, options),
         resolveRadiusClassName(elements.e12, options.scale, options.radius),
+        valueIndicatorShadowClassName,
         'k-trn',
         options.classNames.e12
       ) ?? '',

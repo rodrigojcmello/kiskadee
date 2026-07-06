@@ -18,8 +18,10 @@ const iosSliderOriginTick = [0, 0, 0, 1] as const;
 const iosSliderThumb = [0, 0, 100, 0.96] as const;
 const iosSliderThumbBorder = [0, 0, 100, 1] as const;
 const iosSliderText = [0, 0, 0, 0.6] as const;
-const iosSliderTooltipText = [0, 0, 100, 1] as const;
-const iosSliderTooltipTextDisabled = [0, 0, 100, 0.6] as const;
+const iosSliderTooltip = [0, 0, 100, 1] as const;
+const iosSliderTooltipDisabled = [0, 0, 100, 0.6] as const;
+const iosSliderTooltipText = [0, 0, 0, 1] as const;
+const iosSliderTooltipTextDisabled = [0, 0, 0, 0.3] as const;
 
 const sizes = {
   labelText: {
@@ -29,6 +31,14 @@ const sizes = {
   labelLine: {
     's:sm:1': 16,
     's:md:1': 22
+  },
+  tooltipText: {
+    's:sm:1': 11,
+    's:md:1': 14
+  },
+  tooltipLine: {
+    's:sm:1': 14,
+    's:md:1': 18
   },
   trackHeight: {
     's:sm:1': 6,
@@ -105,6 +115,12 @@ export function createIos26AppleSliderSchema({
           kind: 'outer',
           states: {
             rest: 's:sm:2'
+          }
+        },
+        e12: {
+          kind: 'outer',
+          states: {
+            rest: 's:sm:3'
           }
         }
       }
@@ -320,15 +336,19 @@ export function createIos26AppleSliderSchema({
                   paddingRight: 10,
                   paddingTop: 0,
                   paddingBottom: 0,
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine,
+                  textSize: sizes.tooltipText,
+                  textHeight: sizes.tooltipLine,
                   marginBottom: 8
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
                     boxColor: {
-                      neutral: { medium: { rest: tint, disabled: disabledTint } },
-                      primary: { medium: { rest: tint, disabled: disabledTint } }
+                      neutral: {
+                        medium: { rest: iosSliderTooltip, disabled: iosSliderTooltipDisabled }
+                      },
+                      primary: {
+                        medium: { rest: iosSliderTooltip, disabled: iosSliderTooltipDisabled }
+                      }
                     },
                     borderColor: {
                       neutral: { medium: { rest: transparent, disabled: transparent } },

@@ -41,6 +41,11 @@ white fill without the full Liquid Glass material lets the track show through
 the thumb and makes the control look weak in Kiskadee, so the preset favors
 legibility until a real material effect exists.
 
+Tooltip-style value indicators use a white surface, black text, and the
+`s:sm:3` global outer shadow level. That shadow is a Kiskadee adaptation, not a
+direct Figma extraction, because the thumb shadow is too strong for the smaller
+tooltip surface.
+
 The macOS reference shows a darker selected track during interaction. Kiskadee
 uses that as evidence for a `pressed` state, but derives the pressed color from
 the iOS primary blue instead of copying the macOS blue into the unified
