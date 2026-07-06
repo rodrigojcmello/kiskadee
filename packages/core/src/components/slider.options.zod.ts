@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const sliderVariantSchema = z.enum(['standard']);
 export const sliderStandardModeSchema = z.enum(['base']);
 export const sliderModeSchema = sliderStandardModeSchema;
-export const sliderValueDisplaySchema = z.enum(['none', 'tooltip', 'summary', 'both']);
+export const sliderValueDisplaySchema = z.enum(['none', 'tooltip', 'summary', 'both', 'auto']);
 export const sliderValueAnimationSchema = z.enum(['none', 'rolling']);
 export const sliderSnapMotionSchema = z.enum(['none', 'smooth']);
 export const sliderThumbCrossingSchema = z.enum(['prevent', 'swap']);

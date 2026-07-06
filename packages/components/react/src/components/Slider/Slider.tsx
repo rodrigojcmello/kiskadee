@@ -54,6 +54,7 @@ const STEP_MARK_LIMIT = 101;
 const START_EDGE_MARK_LABEL_INSIDE_CLASS_NAME = 'k-sld-e14c-a';
 const END_EDGE_MARK_LABEL_INSIDE_CLASS_NAME = 'k-sld-e14d-a';
 const SNAP_MOTION_CLASS_NAME = 'k-sld-sm';
+const VALUE_INDICATOR_DRAG_ONLY_CLASS_NAME = 'k-sld-e12b-a';
 
 function finiteNumber(value: number | undefined, fallback: number): number {
   return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
@@ -356,8 +357,16 @@ function SliderRoot(props: SliderProps) {
   const startEdgeMark = getEdgeMark(normalizedMarks, min);
   const endEdgeMark = getEdgeMark(normalizedMarks, max);
   const hasLabel = label !== undefined && label !== null;
-  const hasValueSummary = resolvedValueDisplay === 'summary' || resolvedValueDisplay === 'both';
-  const hasValueIndicator = resolvedValueDisplay === 'tooltip' || resolvedValueDisplay === 'both';
+  const hasValueSummary =
+    resolvedValueDisplay === 'summary' ||
+    resolvedValueDisplay === 'both' ||
+    resolvedValueDisplay === 'auto';
+  const hasValueIndicator =
+    resolvedValueDisplay === 'tooltip' ||
+    resolvedValueDisplay === 'both' ||
+    resolvedValueDisplay === 'auto';
+  const valueIndicatorClassName =
+    resolvedValueDisplay === 'auto' ? VALUE_INDICATOR_DRAG_ONLY_CLASS_NAME : undefined;
   const hasHelperText = helperText !== undefined && helperText !== null;
   const elements = resolveVariantElements(sliderClassesMap, resolvedVariant, resolvedMode);
   const activationFeedbackConfig = useMemo(
@@ -560,20 +569,20 @@ function SliderRoot(props: SliderProps) {
           ) : null}
           {hasValueIndicator ? (
             resolvedValueAnimation === 'rolling' ? (
-              <HeadlessSlider.ValueIndicator index={0}>
+              <HeadlessSlider.ValueIndicator index={0} className={valueIndicatorClassName}>
                 {(details) => renderSliderValueIndicator(resolvedValueAnimation, details)}
               </HeadlessSlider.ValueIndicator>
             ) : (
-              <HeadlessSlider.ValueIndicator index={0} />
+              <HeadlessSlider.ValueIndicator index={0} className={valueIndicatorClassName} />
             )
           ) : null}
           {hasValueIndicator && resolvedValueMode === 'range' ? (
             resolvedValueAnimation === 'rolling' ? (
-              <HeadlessSlider.ValueIndicator index={1}>
+              <HeadlessSlider.ValueIndicator index={1} className={valueIndicatorClassName}>
                 {(details) => renderSliderValueIndicator(resolvedValueAnimation, details)}
               </HeadlessSlider.ValueIndicator>
             ) : (
-              <HeadlessSlider.ValueIndicator index={1} />
+              <HeadlessSlider.ValueIndicator index={1} className={valueIndicatorClassName} />
             )
           ) : null}
         </HeadlessSlider.Track>

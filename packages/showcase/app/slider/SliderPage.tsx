@@ -165,7 +165,8 @@ const valueDisplayOptions: Array<{ value: SliderValueDisplay; label: string }> =
   { value: 'none', label: 'None' },
   { value: 'tooltip', label: 'Tooltip' },
   { value: 'summary', label: 'Summary' },
-  { value: 'both', label: 'Both' }
+  { value: 'both', label: 'Both' },
+  { value: 'auto', label: 'Auto' }
 ];
 
 const valueAnimationOptions: Array<{ value: SliderValueAnimationControl; label: string }> = [

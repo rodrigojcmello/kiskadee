@@ -237,6 +237,10 @@
   z-index: 4;
 }
 
+.k-sld-e12b-a:not([data-slider-dragging]) {
+  display: none;
+}
+
 .k-sld-sm .k-sld-e12-a[data-slider-settling] {
   transition: inset-inline-start var(--k-dur-int) var(--k-ease-out);
 }

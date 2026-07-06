@@ -103,7 +103,7 @@ upper values.
 | `thumbEdgeBehavior` | Controls the horizontal value plane at the track edges. Supports `"overflow"` and `"contain"`. |
 | `activeTrackOrigin` | Controls the active track origin in single-value sliders. Supports `"min"`, `"center"`, or a finite numeric value inside the range. Range sliders ignore it. |
 | `originMark` | Controls whether the neutral origin is rendered as a separate mark (`e16`). Supports `"none"` and `"auto"`. |
-| `valueDisplay` | Controls selected value display: `"none"`, `"tooltip"`, `"summary"`, or `"both"`. |
+| `valueDisplay` | Controls selected value display: `"none"`, `"tooltip"`, `"summary"`, `"both"`, or `"auto"`. |
 | `valueAnimation` | Optional per-instance override for how selected values are visually rendered. Supports `"none"` and `"rolling"`. |
 | `snapMotion` | Optional per-instance override for thumb position settling after pointer release. Supports `"none"` and `"smooth"`. |
 | `activationFeedback` | Optional per-instance override for the schema/artifact activation feedback effect. Supports `false` to disable and `"active"` for static preview. |
@@ -115,6 +115,8 @@ indicator includes a fixed structural arrow with a slightly rounded tip that
 points toward the track.
 `valueDisplay="summary"` renders an out-of-track value summary in the header.
 `valueDisplay="both"` renders both surfaces.
+`valueDisplay="auto"` renders the summary continuously and shows a tooltip-style
+indicator for the active thumb during pointer/touch drag.
 
 `formatValue` owns the value text. `valueAnimation` only changes how selected
 values are presented on the visual value surfaces. With `valueAnimation="rolling"`,
@@ -123,6 +125,60 @@ and summaries when `formatValue` returns a string or number. If `formatValue`
 returns a complex React node, the value is rendered statically. Mark labels,
 edge labels, helper text, and accessible value text are not animated by this
 option.
+
+### Value Presentation Contract
+
+Slider value presentation is split across three separate contracts:
+
+- `formatValue` owns visible value formatting for selected values.
+- `getAriaValueText` owns accessible value text for each thumb.
+- `valueDisplay` owns which visual value surface is rendered.
+
+Do not use mark labels, edge labels, or endpoint labels as selected-value
+surfaces. Those labels describe the scale. Selected values belong to either the
+summary surface (`e3`) or the thumb value indicator (`e12`).
+
+The implemented `valueDisplay` modes are:
+
+- `"none"`: render no selected-value surface.
+- `"summary"`: render only the out-of-track value summary in `e3`.
+- `"tooltip"`: render persistent tooltip-style value indicators in `e12`.
+- `"both"`: render summary and tooltip-style indicators at the same time.
+- `"auto"`: render summary continuously and render a tooltip-style indicator
+  only for the active thumb during pointer/touch drag.
+
+`valueDisplay="auto"` means:
+
+- always render the summary surface (`e3`);
+- during pointer/touch thumb interaction, also render a tooltip-style value
+  indicator (`e12`) for the active thumb;
+- in range mode, render the active thumb indicator only while dragging so the
+  inactive thumb does not cover or duplicate the value being manipulated;
+- after pointer release or cancellation, remove the tooltip-style indicator and
+  keep the summary surface;
+- keyboard changes keep the summary surface in the first implementation unless
+  a future accessibility review defines a focused keyboard tooltip behavior.
+
+`auto` is an interaction presentation mode, not a formatter and not a motion
+option. It must keep using `formatValue` for the displayed text,
+`getAriaValueText` for assistive text, `valueAnimation` for text animation, and
+`snapMotion` for position settling.
+
+`valueAnimation="rolling"` applies to whichever selected-value surface is
+currently rendered. In `auto`, this means the summary can roll continuously and
+the active tooltip can roll during drag, as long as `formatValue` returns a
+string or number. Complex React nodes still render statically.
+
+The resolution order for `valueDisplay` remains:
+
+1. `Slider` prop;
+2. `components.slider.options.valueDisplay` from the loaded artifact/preset;
+3. legacy `KiskadeeContext.global.components.slider.options.valueDisplay`;
+4. local default from the styled Slider.
+
+Do not add a separate prop such as `showTooltipOnDrag`. The interaction rule is
+part of the selected `valueDisplay` mode, while tooltip geometry, summary
+position, and input composition remain separate follow-up contracts.
 
 `snapMotion` owns the visual position transition from a free drag preview to
 the committed `step` value. It is separate from `valueAnimation`: `snapMotion`
@@ -186,7 +242,7 @@ Current Slider topology is variant-driven:
 
 The current schema option values are:
 
-- `valueDisplay`: `none`, `tooltip`, `summary`, `both`
+- `valueDisplay`: `none`, `tooltip`, `summary`, `both`, `auto`
 - `valueAnimation`: `none`, `rolling`
 - `snapMotion`: `none`, `smooth`
 - `thumbCrossing`: `prevent`, `swap`
@@ -617,7 +673,8 @@ Preserve these rules:
   It owns a fixed-size structural arrow through `::after`; the arrow inherits
   the tooltip background, has a fixed softened tip, overlaps the tooltip body by
   `2px`, and includes a fixed `2px` clearance from the thumb. Arrow geometry is
-  not schema-customizable yet.
+  not schema-customizable yet. In `valueDisplay="auto"`, a structural modifier
+  hides `e12` unless the matching thumb is currently dragging.
 - `e13` uses `--k-sld-mark` for its value position.
 - `e14` uses `--k-sld-mark` for its label position.
 - `e16` uses `--k-sld-mark` for the resolved active origin position.
@@ -681,6 +738,7 @@ generated markup, structural CSS, or regressions.
 | `k-sld-e10-a` | Thumb / handle wrapper. |
 | `k-sld-e11-a` | Thumb inner. |
 | `k-sld-e12-a` | Value indicator / tooltip. |
+| `k-sld-e12b-a` | Value indicator visible only while its thumb is dragging. |
 | `k-sld-e13-a` | Mark / visual step marker. |
 | `k-sld-e13a-a` | Mark placed above the track. |
 | `k-sld-e13b-a` | Mark placed below the track. |
