@@ -24,6 +24,7 @@ import {
   type SliderThumbEdgeBehaviorOption,
   type SliderThumbCrossingOption,
   type SliderValueAnimationOption,
+  type SliderValueSummaryPlacementOption,
   useCardArtifactConfig,
   useKiskadee,
   useShowcase,
@@ -54,6 +55,7 @@ type SliderValueMode = 'single' | 'range';
 type SliderMarksMode = 'none' | 'step' | 'labeled';
 type SliderActivationFeedbackControl = 'default' | 'off' | 'active';
 type SliderValueAnimationControl = 'default' | SliderValueAnimationOption;
+type SliderValueSummaryPlacementControl = 'default' | SliderValueSummaryPlacementOption;
 type SliderSnapMotionControl = 'default' | SliderSnapMotionOption;
 type SliderThumbCrossingControl = 'default' | SliderThumbCrossingOption;
 type SliderActiveTrackOriginControl = 'min' | 'center' | '25' | '50' | '75';
@@ -173,6 +175,15 @@ const valueAnimationOptions: Array<{ value: SliderValueAnimationControl; label: 
   { value: 'default', label: 'Default' },
   { value: 'none', label: 'None' },
   { value: 'rolling', label: 'Rolling' }
+];
+
+const valueSummaryPlacementOptions: Array<{
+  value: SliderValueSummaryPlacementControl;
+  label: string;
+}> = [
+  { value: 'default', label: 'Default' },
+  { value: 'headerEnd', label: 'Header end' },
+  { value: 'controlEnd', label: 'Control end' }
 ];
 
 const snapMotionOptions: Array<{ value: SliderSnapMotionControl; label: string }> = [
@@ -357,6 +368,12 @@ function resolveValueAnimationProp(
   return valueAnimation === 'default' ? undefined : valueAnimation;
 }
 
+function resolveValueSummaryPlacementProp(
+  valueSummaryPlacement: SliderValueSummaryPlacementControl
+): SliderValueSummaryPlacementOption | undefined {
+  return valueSummaryPlacement === 'default' ? undefined : valueSummaryPlacement;
+}
+
 function resolveSnapMotionProp(
   snapMotion: SliderSnapMotionControl
 ): SliderSnapMotionOption | undefined {
@@ -425,6 +442,17 @@ function SunIcon() {
   );
 }
 
+function VolumeIcon() {
+  return (
+    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M4 9h4l5-5v16l-5-5H4zm12.3-.8a6 6 0 0 1 0 7.6l-1.1-1.1a4.5 4.5 0 0 0 0-5.4zm2.6-2.6a9.8 9.8 0 0 1 0 12.8l-1.1-1.1a8.2 8.2 0 0 0 0-10.6z"
+      />
+    </svg>
+  );
+}
+
 function SadIcon() {
   return (
     <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
@@ -485,6 +513,8 @@ export default function SliderPage() {
   const [valueMode, setValueMode] = useState<SliderValueMode>('single');
   const [valueDisplay, setValueDisplay] = useState<SliderValueDisplay>('tooltip');
   const [valueAnimation, setValueAnimation] = useState<SliderValueAnimationControl>('rolling');
+  const [valueSummaryPlacement, setValueSummaryPlacement] =
+    useState<SliderValueSummaryPlacementControl>('default');
   const [snapMotion, setSnapMotion] = useState<SliderSnapMotionControl>('smooth');
   const [thumbCrossing, setThumbCrossing] = useState<SliderThumbCrossingControl>('swap');
   const [marksMode, setMarksMode] = useState<SliderMarksMode>('none');
@@ -507,6 +537,8 @@ export default function SliderPage() {
   const [readOnly, setReadOnly] = useState(false);
   const [interactiveValue, setInteractiveValue] = useState(55);
   const [interactiveRange, setInteractiveRange] = useState<[number, number]>([20, 75]);
+  const [sideValue, setSideValue] = useState(35);
+  const [volume, setVolume] = useState(64);
   const [brightness, setBrightness] = useState(78);
   const [price, setPrice] = useState<[number, number]>([2500, 5000]);
   const [tasks, setTasks] = useState<[number, number]>([0, 43]);
@@ -628,6 +660,7 @@ export default function SliderPage() {
   const interactiveMarks = resolveInteractiveMarks(marksMode);
   const activationFeedbackProp = resolveActivationFeedbackProp(activationFeedback);
   const valueAnimationProp = resolveValueAnimationProp(valueAnimation);
+  const valueSummaryPlacementProp = resolveValueSummaryPlacementProp(valueSummaryPlacement);
   const snapMotionProp = resolveSnapMotionProp(snapMotion);
   const thumbCrossingProp = resolveThumbCrossingProp(thumbCrossing);
   const activeTrackOriginProp = resolveActiveTrackOriginProp(activeTrackOrigin);
@@ -885,6 +918,18 @@ export default function SliderPage() {
             disabled={!isSliderAvailable}
           />
           <ShowcaseSelectControl
+            label="Value summary placement"
+            options={valueSummaryPlacementOptions}
+            value={valueSummaryPlacement}
+            onValueChange={(value) => {
+              const nextValueSummaryPlacement = value as SliderValueSummaryPlacementControl;
+              if (nextValueSummaryPlacement === valueSummaryPlacement) return;
+              playWowTransition();
+              setValueSummaryPlacement(nextValueSummaryPlacement);
+            }}
+            disabled={!isSliderAvailable}
+          />
+          <ShowcaseSelectControl
             label="Value animation"
             options={valueAnimationOptions}
             value={valueAnimation}
@@ -1123,6 +1168,7 @@ export default function SliderPage() {
                 activeTrackOrigin={activeTrackOriginProp}
                 originMark={originMark}
                 valueDisplay={valueDisplay}
+                valueSummaryPlacement={valueSummaryPlacementProp}
                 valueAnimation={valueAnimationProp}
                 snapMotion={snapMotionProp}
                 thumbCrossing={thumbCrossingProp}
@@ -1141,6 +1187,70 @@ export default function SliderPage() {
           <section className={s.section}>
             <h3>Examples</h3>
             <div className={s.demoGrid}>
+              <SliderExampleCard cardShadow={cardShadow} surface={selectedSurface}>
+                <Slider
+                  aria-label="Simple value"
+                  min={0}
+                  max={200}
+                  step={1}
+                  value={sideValue}
+                  onValueChange={(nextValue) => {
+                    if (typeof nextValue === 'number') setSideValue(nextValue);
+                  }}
+                  marks="none"
+                  edgeMarks="include"
+                  markPlacement={markPlacement}
+                  markLabelPlacement={markLabelPlacement}
+                  edgeMarkLabelPlacement={edgeMarkLabelPlacement}
+                  edgeMarkLabelAlignment={edgeMarkLabelAlignment}
+                  thumbEdgeBehavior={thumbEdgeBehavior}
+                  activeTrackOrigin={activeTrackOriginProp}
+                  originMark={originMark}
+                  formatValue={(value) => `$${value}`}
+                  valueDisplay="summary"
+                  valueSummaryPlacement="controlEnd"
+                  valueAnimation={valueAnimationProp}
+                  snapMotion={snapMotionProp}
+                  activationFeedback={activationFeedbackProp}
+                  scale={scale}
+                  radius={radius}
+                  intent={intent}
+                  emphasis={emphasis}
+                />
+              </SliderExampleCard>
+
+              <SliderExampleCard cardShadow={cardShadow} surface={selectedSurface}>
+                <Slider
+                  aria-label="Volume"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={volume}
+                  onValueChange={(nextValue) => {
+                    if (typeof nextValue === 'number') setVolume(nextValue);
+                  }}
+                  marks={[{ value: 0, icon: <VolumeIcon /> }]}
+                  edgeMarks="exclude"
+                  markPlacement={markPlacement}
+                  markLabelPlacement={markLabelPlacement}
+                  edgeMarkLabelPlacement={edgeMarkLabelPlacement}
+                  edgeMarkLabelAlignment={edgeMarkLabelAlignment}
+                  thumbEdgeBehavior={thumbEdgeBehavior}
+                  activeTrackOrigin={activeTrackOriginProp}
+                  originMark={originMark}
+                  formatValue={formatPercent}
+                  valueDisplay="summary"
+                  valueSummaryPlacement="controlEnd"
+                  valueAnimation={valueAnimationProp}
+                  snapMotion={snapMotionProp}
+                  activationFeedback={activationFeedbackProp}
+                  scale={scale}
+                  radius={radius}
+                  intent={intent}
+                  emphasis={emphasis}
+                />
+              </SliderExampleCard>
+
               <SliderExampleCard cardShadow={cardShadow} surface={selectedSurface}>
                 <Slider
                   label="Price Range"

@@ -16,6 +16,7 @@ import {
   type SliderThumbEdgeBehavior,
   type SliderThumbCrossing,
   type SliderValueAnimation,
+  type SliderValueSummaryPlacement,
   type SliderVariant
 } from '@kiskadee/core';
 import {
@@ -43,6 +44,7 @@ export const DEFAULT_SLIDER_RADIUS: RadiusMode = 'rounded';
 export const DEFAULT_SLIDER_VARIANT: SliderVariant = 'standard';
 export const DEFAULT_SLIDER_MODE: SliderMode = 'base';
 export const DEFAULT_SLIDER_VALUE_DISPLAY = 'none';
+export const DEFAULT_SLIDER_VALUE_SUMMARY_PLACEMENT: SliderValueSummaryPlacement = 'headerEnd';
 export const DEFAULT_SLIDER_VALUE_ANIMATION: SliderValueAnimation = 'none';
 export const DEFAULT_SLIDER_SNAP_MOTION: SliderSnapMotion = 'smooth';
 export const DEFAULT_SLIDER_THUMB_CROSSING: SliderThumbCrossing = 'swap';
@@ -127,6 +129,7 @@ export function resolveSliderClassNames(options: {
   radius: RadiusMode;
   hasLabel: boolean;
   hasValueSummary: boolean;
+  valueSummaryPlacement: SliderValueSummaryPlacement;
   hasPersistentValueIndicator: boolean;
   hasHelperText: boolean;
   hasMarkLabels: boolean;
@@ -152,8 +155,13 @@ export function resolveSliderClassNames(options: {
         '')
       : (options.classNames.e2 ?? ''),
     e3: options.hasValueSummary
-      ? (join(`k-sld-e3-${branch}`, elem(elements.e3, options), 'k-trn', options.classNames.e3) ??
-        '')
+      ? (join(
+          `k-sld-e3-${branch}`,
+          options.valueSummaryPlacement === 'controlEnd' && `k-sld-e3a-${branch}`,
+          elem(elements.e3, options),
+          'k-trn',
+          options.classNames.e3
+        ) ?? '')
       : (options.classNames.e3 ?? ''),
     e4:
       join(
@@ -165,6 +173,9 @@ export function resolveSliderClassNames(options: {
           options.markLabelPlacement === 'below' &&
           `k-sld-e4b-${branch}`,
         options.hasPersistentValueIndicator && `k-sld-e4c-${branch}`,
+        options.hasValueSummary &&
+          options.valueSummaryPlacement === 'controlEnd' &&
+          `k-sld-e4d-${branch}`,
         elem(elements.e4, options),
         options.classNames.e4
       ) ?? '',

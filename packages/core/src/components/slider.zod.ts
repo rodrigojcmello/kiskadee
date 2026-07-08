@@ -25,6 +25,7 @@ export type {
   SliderOptionsFromSchema,
   SliderStandardModeSchemaValue,
   SliderValueDisplaySchemaValue,
+  SliderValueSummaryPlacementSchemaValue,
   SliderVariantOptionsFromSchema,
   SliderVariantSchemaValue
 } from './slider.options.zod.ts';

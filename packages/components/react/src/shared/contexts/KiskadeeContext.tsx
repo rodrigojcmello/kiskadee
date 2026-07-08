@@ -19,6 +19,7 @@ import type {
   SliderThumbCrossing,
   SliderValueAnimation,
   SliderValueDisplay,
+  SliderValueSummaryPlacement,
   SliderVariant,
   SwitchActivationMotion,
   SwitchControlTextVisibility,
@@ -94,6 +95,7 @@ export type KiskadeeContextValue = {
         options?: {
           variant?: SliderVariant;
           valueDisplay?: SliderValueDisplay;
+          valueSummaryPlacement?: SliderValueSummaryPlacement;
           valueAnimation?: SliderValueAnimation;
           snapMotion?: SliderSnapMotion;
           thumbCrossing?: SliderThumbCrossing;

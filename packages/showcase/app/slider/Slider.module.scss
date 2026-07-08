@@ -54,7 +54,8 @@
 .demoGrid {
   display: grid;
   gap: 28px;
-  inline-size: min(100%, 980px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  inline-size: 100%;
 }
 
 .demoCard {
@@ -92,6 +93,7 @@
 
   .demoGrid {
     gap: 20px;
+    grid-template-columns: 1fr;
   }
 
   .previewSection {

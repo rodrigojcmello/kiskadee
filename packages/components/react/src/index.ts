@@ -27,7 +27,8 @@ export type {
   SliderStatus,
   SliderThumbEdgeBehaviorOption,
   SliderThumbCrossingOption,
-  SliderValueAnimationOption
+  SliderValueAnimationOption,
+  SliderValueSummaryPlacementOption
 } from './components/Slider';
 export { Slider, useSliderArtifactConfig } from './components/Slider';
 export { RollingNumber } from './components/RollingNumber/RollingNumber.tsx';

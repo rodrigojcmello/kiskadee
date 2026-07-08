@@ -104,6 +104,7 @@ upper values.
 | `activeTrackOrigin` | Controls the active track origin in single-value sliders. Supports `"min"`, `"center"`, or a finite numeric value inside the range. Range sliders ignore it. |
 | `originMark` | Controls whether the neutral origin is rendered as a separate mark (`e16`). Supports `"none"` and `"auto"`. |
 | `valueDisplay` | Controls selected value display: `"none"`, `"tooltip"`, `"summary"`, `"both"`, or `"auto"`. |
+| `valueSummaryPlacement` | Controls where the read-only summary (`e3`) appears when rendered. Supports `"headerEnd"` and `"controlEnd"`. |
 | `valueAnimation` | Optional per-instance override for how selected values are visually rendered. Supports `"none"` and `"rolling"`. |
 | `snapMotion` | Optional per-instance override for thumb position settling after pointer release. Supports `"none"` and `"smooth"`. |
 | `activationFeedback` | Optional per-instance override for the schema/artifact activation feedback effect. Supports `false` to disable and `"active"` for static preview. |
@@ -113,10 +114,14 @@ upper values.
 `valueDisplay="tooltip"` renders a value indicator near each thumb. The value
 indicator includes a fixed structural arrow with a slightly rounded tip that
 points toward the track.
-`valueDisplay="summary"` renders an out-of-track value summary in the header.
+`valueDisplay="summary"` renders an out-of-track value summary.
 `valueDisplay="both"` renders both surfaces.
 `valueDisplay="auto"` renders the summary continuously and shows a tooltip-style
 indicator for the active thumb during pointer/touch drag.
+`valueSummaryPlacement="headerEnd"` keeps the summary in the header row at the
+logical end of the field label. `valueSummaryPlacement="controlEnd"` renders
+the same read-only summary at the logical end of the control row, after the
+track and endpoint content. This is not an editable input contract.
 
 `formatValue` owns the value text. `valueAnimation` only changes how selected
 values are presented on the visual value surfaces. With `valueAnimation="rolling"`,
@@ -133,6 +138,7 @@ Slider value presentation is split across three separate contracts:
 - `formatValue` owns visible value formatting for selected values.
 - `getAriaValueText` owns accessible value text for each thumb.
 - `valueDisplay` owns which visual value surface is rendered.
+- `valueSummaryPlacement` owns where the read-only summary surface is rendered.
 
 Do not use mark labels, edge labels, or endpoint labels as selected-value
 surfaces. Those labels describe the scale. Selected values belong to either the
@@ -178,7 +184,9 @@ The resolution order for `valueDisplay` remains:
 
 Do not add a separate prop such as `showTooltipOnDrag`. The interaction rule is
 part of the selected `valueDisplay` mode, while tooltip geometry, summary
-position, and input composition remain separate follow-up contracts.
+position, and input composition remain separate contracts. Summary position is
+controlled by `valueSummaryPlacement`; editable input composition remains a
+future Slider + TextField concern.
 
 `snapMotion` owns the visual position transition from a free drag preview to
 the committed `step` value. It is separate from `valueAnimation`: `snapMotion`
@@ -753,10 +761,12 @@ generated markup, structural CSS, or regressions.
 | `k-sld-x1-a` | Internal header wrapper for label and value summary. |
 | `k-sld-e2-a` | Field label. |
 | `k-sld-e3-a` | Value summary. |
+| `k-sld-e3a-a` | Value summary placed at the end of the control row. |
 | `k-sld-e4-a` | Control row. |
 | `k-sld-e4a-a` | Control row with an above-track mark label reserve lane. |
 | `k-sld-e4b-a` | Control row with a below-track mark label reserve lane. |
 | `k-sld-e4c-a` | Control row with an above-track persistent value indicator reserve source. |
+| `k-sld-e4d-a` | Control row that owns the value summary as its final inline item. |
 | `k-sld-e5-a` | Internal lateral edge content wrapper. |
 | `k-sld-e6-a` | Internal lateral edge icon. |
 | `k-sld-e7-a` | Internal lateral edge label/value. |
@@ -791,10 +801,10 @@ structure. The suffix does not create a public variant or mode.
   controlled/uncontrolled value, `disabled`, `readOnly`, and keyboard support.
 - Schema elements `e1` through `e16`.
 - Current schema options and values for `variant`, `mode`, `valueDisplay`,
-  `valueAnimation`, `snapMotion`, `thumbCrossing`, `marks`, `edgeMarks`,
-  `markPlacement`, `markLabelPlacement`, `edgeMarkLabelPlacement`,
-  `edgeMarkLabelAlignment`, `thumbEdgeBehavior`, `activeTrackOrigin`, and
-  `originMark`.
+  `valueSummaryPlacement`, `valueAnimation`, `snapMotion`, `thumbCrossing`,
+  `marks`, `edgeMarks`, `markPlacement`, `markLabelPlacement`,
+  `edgeMarkLabelPlacement`, `edgeMarkLabelAlignment`, `thumbEdgeBehavior`,
+  `activeTrackOrigin`, and `originMark`.
 - Generated artifacts and class maps as the source of truth for visual tokens.
 - Current horizontal-only contract.
 
@@ -817,7 +827,6 @@ These areas are intentionally not part of the current contract:
 - vertical orientation;
 - chart or histogram overlays behind the track;
 - built-in numeric inputs attached to one or both thumbs;
-- built-in value label placement modes beyond `valueDisplay`;
 - special collision handling when two range value indicators overlap;
 
 Those features are valid follow-up candidates, but they should be added through

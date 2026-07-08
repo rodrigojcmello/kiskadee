@@ -32,6 +32,7 @@ import type {
   SliderThumbCrossingSchemaValue,
   SliderValueAnimationSchemaValue,
   SliderValueDisplaySchemaValue,
+  SliderValueSummaryPlacementSchemaValue,
   SliderVariantOptionsFromSchema
 } from './slider.options.zod.ts';
 
@@ -76,6 +77,7 @@ export type SliderVariant = 'standard';
 export type SliderStandardMode = 'base';
 export type SliderMode = SliderStandardMode;
 export type SliderValueDisplay = SliderValueDisplaySchemaValue;
+export type SliderValueSummaryPlacement = SliderValueSummaryPlacementSchemaValue;
 export type SliderValueAnimation = SliderValueAnimationSchemaValue;
 export type SliderSnapMotion = SliderSnapMotionSchemaValue;
 export type SliderThumbCrossing = SliderThumbCrossingSchemaValue;

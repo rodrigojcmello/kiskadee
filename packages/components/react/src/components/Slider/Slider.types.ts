@@ -18,6 +18,7 @@ import type {
   SliderThumbCrossing,
   SliderValueAnimation,
   SliderValueDisplay,
+  SliderValueSummaryPlacement,
   SliderVariant
 } from '@kiskadee/core';
 import type {
@@ -78,6 +79,7 @@ export type SliderResolvedEdgeMarkLabelAlignment = Exclude<
   'auto'
 >;
 export type SliderValueAnimationOption = SliderValueAnimation;
+export type SliderValueSummaryPlacementOption = SliderValueSummaryPlacement;
 export type SliderSnapMotionOption = SliderSnapMotion;
 export type SliderThumbCrossingOption = SliderThumbCrossing;
 export type SliderThumbEdgeBehaviorOption = SliderThumbEdgeBehavior;
@@ -136,6 +138,7 @@ export type SliderProps = Omit<
   activeTrackOrigin?: SliderActiveTrackOriginOption;
   originMark?: SliderOriginMarkOption;
   valueDisplay?: SliderValueDisplay;
+  valueSummaryPlacement?: SliderValueSummaryPlacementOption;
   valueAnimation?: SliderValueAnimationOption;
   snapMotion?: SliderSnapMotionOption;
   thumbCrossing?: SliderThumbCrossingOption;

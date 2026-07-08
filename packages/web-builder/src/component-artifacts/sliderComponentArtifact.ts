@@ -15,6 +15,7 @@ import type {
   SliderThumbCrossing,
   SliderValueAnimation,
   SliderValueDisplay,
+  SliderValueSummaryPlacement,
   SliderVariant
 } from '@kiskadee/core';
 
@@ -23,6 +24,7 @@ export const SLIDER_COMPONENT_ARTIFACT_PATH = 'components/slider.kiskadee.json';
 export type SliderComponentOptionsPayload = {
   variant?: SliderVariant;
   valueDisplay?: SliderValueDisplay;
+  valueSummaryPlacement?: SliderValueSummaryPlacement;
   valueAnimation?: SliderValueAnimation;
   snapMotion?: SliderSnapMotion;
   thumbCrossing?: SliderThumbCrossing;
@@ -96,6 +98,9 @@ export function buildSliderComponentArtifact(schema: Schema): SliderComponentArt
     ...(sliderSchema.options?.variant ? { variant: sliderSchema.options.variant } : {}),
     ...(sliderSchema.options?.valueDisplay
       ? { valueDisplay: sliderSchema.options.valueDisplay }
+      : {}),
+    ...(sliderSchema.options?.valueSummaryPlacement
+      ? { valueSummaryPlacement: sliderSchema.options.valueSummaryPlacement }
       : {}),
     ...(sliderSchema.options?.valueAnimation
       ? { valueAnimation: sliderSchema.options.valueAnimation }

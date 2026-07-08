@@ -53,6 +53,14 @@
 }
 
 /*
+ * element value summary modifier / e3a
+ * Places the same summary element at the logical end of the control row.
+ */
+.k-sld-e4d-a > .k-sld-e3a-a {
+  margin-inline-start: var(--k-mgl, 0px);
+}
+
+/*
  * element control row / e4
  * Places endpoint content around the track while letting the track consume remaining width.
  */
@@ -88,6 +96,14 @@
  */
 .k-sld-e4a-a.k-sld-e4c-a {
   padding-block-start: max(var(--k-pdt, 0px), var(--k-sld-value-indicator-lane, 0px));
+}
+
+/*
+ * element control row modifier / e4d
+ * Marks a control row that owns the value summary as its final inline item.
+ */
+.k-sld-e4d-a {
+  min-inline-size: 0;
 }
 
 /*

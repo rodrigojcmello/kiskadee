@@ -16,6 +16,7 @@ import type {
   SliderThumbCrossing,
   SliderValueAnimation,
   SliderValueDisplay,
+  SliderValueSummaryPlacement,
   SliderVariant
 } from '@kiskadee/core';
 import type { SliderComponentArtifactJSON } from '@kiskadee/web-builder/types';
@@ -38,6 +39,7 @@ import {
   DEFAULT_SLIDER_THUMB_CROSSING,
   DEFAULT_SLIDER_VALUE_ANIMATION,
   DEFAULT_SLIDER_VALUE_DISPLAY,
+  DEFAULT_SLIDER_VALUE_SUMMARY_PLACEMENT,
   DEFAULT_SLIDER_VARIANT
 } from '../Slider.class-names.ts';
 import type { SliderVariantClassesMap } from '../Slider.types.ts';
@@ -49,6 +51,7 @@ export type SliderArtifactConfig = {
     mode: SliderMode;
     radius: RadiusMode;
     valueDisplay: SliderValueDisplay;
+    valueSummaryPlacement: SliderValueSummaryPlacement;
     valueAnimation: SliderValueAnimation;
     snapMotion: SliderSnapMotion;
     thumbCrossing: SliderThumbCrossing;
@@ -103,6 +106,8 @@ export function useSliderArtifactConfig(): SliderArtifactConfig {
       mode: variantOptions?.mode ?? DEFAULT_SLIDER_MODE,
       radius: global?.radius ?? DEFAULT_SLIDER_RADIUS,
       valueDisplay: options?.valueDisplay ?? DEFAULT_SLIDER_VALUE_DISPLAY,
+      valueSummaryPlacement:
+        options?.valueSummaryPlacement ?? DEFAULT_SLIDER_VALUE_SUMMARY_PLACEMENT,
       valueAnimation: options?.valueAnimation ?? DEFAULT_SLIDER_VALUE_ANIMATION,
       snapMotion: options?.snapMotion ?? DEFAULT_SLIDER_SNAP_MOTION,
       thumbCrossing: options?.thumbCrossing ?? DEFAULT_SLIDER_THUMB_CROSSING,

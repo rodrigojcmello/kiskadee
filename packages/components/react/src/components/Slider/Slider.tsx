@@ -44,6 +44,7 @@ import type {
   SliderSnapMotionOption,
   SliderThumbEdgeBehaviorOption,
   SliderValueAnimationOption,
+  SliderValueSummaryPlacementOption,
   SliderProps
 } from './Slider.types.ts';
 
@@ -285,6 +286,7 @@ function SliderRoot(props: SliderProps) {
     activeTrackOrigin,
     originMark,
     valueDisplay,
+    valueSummaryPlacement,
     valueAnimation,
     snapMotion,
     thumbCrossing,
@@ -315,6 +317,8 @@ function SliderRoot(props: SliderProps) {
   const resolvedMode = mode ?? options.mode;
   const resolvedRadius = radius ?? options.radius;
   const resolvedValueDisplay = valueDisplay ?? options.valueDisplay;
+  const resolvedValueSummaryPlacement: SliderValueSummaryPlacementOption =
+    valueSummaryPlacement ?? options.valueSummaryPlacement;
   const resolvedValueAnimation = valueAnimation ?? options.valueAnimation;
   const resolvedSnapMotion: SliderSnapMotionOption = snapMotion ?? options.snapMotion;
   const resolvedThumbCrossing = thumbCrossing ?? options.thumbCrossing;
@@ -367,6 +371,8 @@ function SliderRoot(props: SliderProps) {
     resolvedValueDisplay === 'summary' ||
     resolvedValueDisplay === 'both' ||
     resolvedValueDisplay === 'auto';
+  const hasHeaderValueSummary = hasValueSummary && resolvedValueSummaryPlacement === 'headerEnd';
+  const hasControlValueSummary = hasValueSummary && resolvedValueSummaryPlacement === 'controlEnd';
   const hasValueIndicator =
     resolvedValueDisplay === 'tooltip' ||
     resolvedValueDisplay === 'both' ||
@@ -410,6 +416,7 @@ function SliderRoot(props: SliderProps) {
         radius: resolvedRadius,
         hasLabel,
         hasValueSummary,
+        valueSummaryPlacement: resolvedValueSummaryPlacement,
         hasPersistentValueIndicator,
         hasHelperText,
         hasMarkLabels,
@@ -424,6 +431,7 @@ function SliderRoot(props: SliderProps) {
       hasHelperText,
       hasLabel,
       hasPersistentValueIndicator,
+      resolvedValueSummaryPlacement,
       hasMarkLabels,
       hasValueSummary,
       intent,
@@ -503,6 +511,15 @@ function SliderRoot(props: SliderProps) {
       />
     );
   };
+  const renderValueSummary = () =>
+    resolvedValueAnimation === 'rolling' ? (
+      <HeadlessSlider.ValueSummary>
+        {(details) => renderSliderValueSummary(resolvedValueAnimation, details)}
+      </HeadlessSlider.ValueSummary>
+    ) : (
+      <HeadlessSlider.ValueSummary />
+    );
+
   useIsomorphicLayoutEffect(() => {
     if (!hasPersistentValueIndicator) {
       setValueIndicatorLane((currentValue) =>
@@ -565,7 +582,7 @@ function SliderRoot(props: SliderProps) {
         activationFeedbackController.thumbInteractionHandlers.onThumbInteractionSwitch
       }
     >
-      {hasLabel || hasValueSummary ? (
+      {hasLabel || hasHeaderValueSummary ? (
         <div className="k-sld-x1-a">
           {hasLabel ? (
             <HeadlessSlider.FieldLabel>
@@ -574,15 +591,7 @@ function SliderRoot(props: SliderProps) {
               {labelAdornment}
             </HeadlessSlider.FieldLabel>
           ) : null}
-          {hasValueSummary ? (
-            resolvedValueAnimation === 'rolling' ? (
-              <HeadlessSlider.ValueSummary>
-                {(details) => renderSliderValueSummary(resolvedValueAnimation, details)}
-              </HeadlessSlider.ValueSummary>
-            ) : (
-              <HeadlessSlider.ValueSummary />
-            )
-          ) : null}
+          {hasHeaderValueSummary ? renderValueSummary() : null}
         </div>
       ) : null}
       <HeadlessSlider.ControlRow>
@@ -633,6 +642,7 @@ function SliderRoot(props: SliderProps) {
           ) : null}
         </HeadlessSlider.Track>
         {renderEndpoint('end', endEdgeMark, shouldRenderEdgeMarkLabelsAsEndpoints)}
+        {hasControlValueSummary ? renderValueSummary() : null}
       </HeadlessSlider.ControlRow>
       {hasHelperText ? (
         <HeadlessSlider.HelperText id={helperTextId}>{helperText}</HeadlessSlider.HelperText>
