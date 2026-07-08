@@ -661,6 +661,7 @@ export default function SliderPage() {
   const activationFeedbackProp = resolveActivationFeedbackProp(activationFeedback);
   const valueAnimationProp = resolveValueAnimationProp(valueAnimation);
   const valueSummaryPlacementProp = resolveValueSummaryPlacementProp(valueSummaryPlacement);
+  const interactiveValueSummaryWidth = valueMode === 'range' ? 136 : 72;
   const snapMotionProp = resolveSnapMotionProp(snapMotion);
   const thumbCrossingProp = resolveThumbCrossingProp(thumbCrossing);
   const activeTrackOriginProp = resolveActiveTrackOriginProp(activeTrackOrigin);
@@ -1169,6 +1170,7 @@ export default function SliderPage() {
                 originMark={originMark}
                 valueDisplay={valueDisplay}
                 valueSummaryPlacement={valueSummaryPlacementProp}
+                valueSummaryWidth={interactiveValueSummaryWidth}
                 valueAnimation={valueAnimationProp}
                 snapMotion={snapMotionProp}
                 thumbCrossing={thumbCrossingProp}
@@ -1209,6 +1211,7 @@ export default function SliderPage() {
                   formatValue={(value) => `$${value}`}
                   valueDisplay="summary"
                   valueSummaryPlacement="controlEnd"
+                  valueSummaryWidth={72}
                   valueAnimation={valueAnimationProp}
                   snapMotion={snapMotionProp}
                   activationFeedback={activationFeedbackProp}
@@ -1241,6 +1244,7 @@ export default function SliderPage() {
                   formatValue={formatPercent}
                   valueDisplay="summary"
                   valueSummaryPlacement="controlEnd"
+                  valueSummaryWidth={64}
                   valueAnimation={valueAnimationProp}
                   snapMotion={snapMotionProp}
                   activationFeedback={activationFeedbackProp}

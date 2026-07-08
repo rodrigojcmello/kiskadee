@@ -105,6 +105,7 @@ upper values.
 | `originMark` | Controls whether the neutral origin is rendered as a separate mark (`e16`). Supports `"none"` and `"auto"`. |
 | `valueDisplay` | Controls selected value display: `"none"`, `"tooltip"`, `"summary"`, `"both"`, or `"auto"`. |
 | `valueSummaryPlacement` | Controls where the read-only summary (`e3`) appears when rendered. Supports `"headerEnd"` and `"controlEnd"`. |
+| `valueSummaryWidth` | Optional pixel width reservation for the read-only summary when `valueSummaryPlacement="controlEnd"`. |
 | `valueAnimation` | Optional per-instance override for how selected values are visually rendered. Supports `"none"` and `"rolling"`. |
 | `snapMotion` | Optional per-instance override for thumb position settling after pointer release. Supports `"none"` and `"smooth"`. |
 | `activationFeedback` | Optional per-instance override for the schema/artifact activation feedback effect. Supports `false` to disable and `"active"` for static preview. |
@@ -122,6 +123,10 @@ indicator for the active thumb during pointer/touch drag.
 logical end of the field label. `valueSummaryPlacement="controlEnd"` renders
 the same read-only summary at the logical end of the control row, after the
 track and endpoint content. This is not an editable input contract.
+`valueSummaryWidth` accepts a number in pixels and is consumed as a minimum
+inline size only for `controlEnd`, preventing track shifts when the summary
+changes between values such as `0%`, `10%`, and `100%`. If omitted, the summary
+keeps its natural content width.
 
 `formatValue` owns the value text. `valueAnimation` only changes how selected
 values are presented on the visual value surfaces. With `valueAnimation="rolling"`,
@@ -139,10 +144,15 @@ Slider value presentation is split across three separate contracts:
 - `getAriaValueText` owns accessible value text for each thumb.
 - `valueDisplay` owns which visual value surface is rendered.
 - `valueSummaryPlacement` owns where the read-only summary surface is rendered.
+- `valueSummaryWidth` optionally reserves the control-end summary column.
 
 Do not use mark labels, edge labels, or endpoint labels as selected-value
 surfaces. Those labels describe the scale. Selected values belong to either the
 summary surface (`e3`) or the thumb value indicator (`e12`).
+
+Both selected-value surfaces use tabular numerals structurally so same-length
+numeric updates do not resize the summary/tooltip and shift the track. This is
+rendering stability, not a schema typography token.
 
 The implemented `valueDisplay` modes are:
 

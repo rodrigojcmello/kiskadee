@@ -45,6 +45,7 @@
   display: inline-flex;
   align-items: center;
   flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
@@ -58,6 +59,9 @@
  */
 .k-sld-e4d-a > .k-sld-e3a-a {
   margin-inline-start: var(--k-mgl, 0px);
+  min-inline-size: var(--k-sld-value-summary-inline-size, 0px);
+  justify-content: flex-end;
+  text-align: end;
 }
 
 /*
@@ -278,6 +282,7 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  font-variant-numeric: tabular-nums;
   min-inline-size: var(--k-sld-tooltip-arrow-inline-size);
   pointer-events: none;
   white-space: nowrap;

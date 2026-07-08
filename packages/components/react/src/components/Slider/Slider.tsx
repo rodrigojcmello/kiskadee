@@ -287,6 +287,7 @@ function SliderRoot(props: SliderProps) {
     originMark,
     valueDisplay,
     valueSummaryPlacement,
+    valueSummaryWidth,
     valueAnimation,
     snapMotion,
     thumbCrossing,
@@ -373,6 +374,13 @@ function SliderRoot(props: SliderProps) {
     resolvedValueDisplay === 'auto';
   const hasHeaderValueSummary = hasValueSummary && resolvedValueSummaryPlacement === 'headerEnd';
   const hasControlValueSummary = hasValueSummary && resolvedValueSummaryPlacement === 'controlEnd';
+  const valueSummaryInlineSize =
+    hasControlValueSummary &&
+    typeof valueSummaryWidth === 'number' &&
+    Number.isFinite(valueSummaryWidth) &&
+    valueSummaryWidth > 0
+      ? `${valueSummaryWidth}px`
+      : undefined;
   const hasValueIndicator =
     resolvedValueDisplay === 'tooltip' ||
     resolvedValueDisplay === 'both' ||
@@ -539,13 +547,16 @@ function SliderRoot(props: SliderProps) {
   }, [hasPersistentValueIndicator, structuralClassNames.e12]);
 
   const rootStyle = useMemo(() => {
-    if (!valueIndicatorLane) return style;
+    if (!valueIndicatorLane && !valueSummaryInlineSize) return style;
 
     return {
       ...style,
-      '--k-sld-value-indicator-lane': valueIndicatorLane
+      ...(valueIndicatorLane ? { '--k-sld-value-indicator-lane': valueIndicatorLane } : {}),
+      ...(valueSummaryInlineSize
+        ? { '--k-sld-value-summary-inline-size': valueSummaryInlineSize }
+        : {})
     } as CSSProperties;
-  }, [style, valueIndicatorLane]);
+  }, [style, valueIndicatorLane, valueSummaryInlineSize]);
 
   return (
     <HeadlessSlider.Root

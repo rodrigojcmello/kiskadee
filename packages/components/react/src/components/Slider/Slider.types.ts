@@ -139,6 +139,7 @@ export type SliderProps = Omit<
   originMark?: SliderOriginMarkOption;
   valueDisplay?: SliderValueDisplay;
   valueSummaryPlacement?: SliderValueSummaryPlacementOption;
+  valueSummaryWidth?: number;
   valueAnimation?: SliderValueAnimationOption;
   snapMotion?: SliderSnapMotionOption;
   thumbCrossing?: SliderThumbCrossingOption;
