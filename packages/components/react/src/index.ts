@@ -25,6 +25,7 @@ export type {
   SliderProps,
   SliderSnapMotionOption,
   SliderStatus,
+  SliderThumbBehaviorOption,
   SliderThumbEdgeBehaviorOption,
   SliderThumbCrossingOption,
   SliderValueAnimationOption,

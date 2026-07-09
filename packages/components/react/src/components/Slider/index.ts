@@ -4,6 +4,7 @@ export type {
   SliderActiveTrackOriginOption,
   SliderMarkPlacementOption,
   SliderOriginMarkOption,
+  SliderThumbBehaviorOption,
   SliderThumbEdgeBehaviorOption
 } from './Slider.types.ts';
 export { Slider } from './Slider.tsx';

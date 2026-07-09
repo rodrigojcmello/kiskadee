@@ -39,6 +39,7 @@ export type {
   SliderRangeValue,
   SliderRootProps,
   SliderStatus,
+  SliderThumbBehavior,
   SliderThumbCrossing,
   SliderThumbEdgeBehavior,
   SliderThumbIndex,

@@ -7,13 +7,18 @@ export const sliderValueDisplaySchema = z.enum(['none', 'tooltip', 'summary', 'b
 export const sliderValueSummaryPlacementSchema = z.enum(['headerEnd', 'controlEnd']);
 export const sliderValueAnimationSchema = z.enum(['none', 'rolling']);
 export const sliderSnapMotionSchema = z.enum(['none', 'smooth']);
+export const sliderThumbBehaviorSchema = z.enum(['snap', 'hold', 'stops']);
 export const sliderThumbCrossingSchema = z.enum(['prevent', 'swap']);
 export const sliderMarksSchema = z.enum(['none', 'step']);
 export const sliderEdgeMarksSchema = z.enum(['include', 'exclude']);
 export const sliderMarkPlacementSchema = z.enum(['track', 'above', 'below']);
 export const sliderMarkLabelPlacementSchema = z.enum(['auto', 'above', 'below']);
-export const sliderEdgeMarkLabelPlacementSchema = z.enum(['auto', 'endpoints', 'markLabels']);
-export const sliderEdgeMarkLabelAlignmentSchema = z.enum(['auto', 'center', 'inside']);
+export const sliderEdgeMarkLabelPlacementSchema = z.enum([
+  'markLabels',
+  'endpoints',
+  'adaptive'
+]);
+export const sliderEdgeMarkLabelAlignmentSchema = z.enum(['center', 'inside', 'adaptive']);
 export const sliderThumbEdgeBehaviorSchema = z.enum(['overflow', 'contain']);
 export const sliderActiveTrackOriginSchema = z.union([
   z.enum(['min', 'center']),
@@ -30,6 +35,7 @@ export type SliderValueSummaryPlacementSchemaValue = z.infer<
 >;
 export type SliderValueAnimationSchemaValue = z.infer<typeof sliderValueAnimationSchema>;
 export type SliderSnapMotionSchemaValue = z.infer<typeof sliderSnapMotionSchema>;
+export type SliderThumbBehaviorSchemaValue = z.infer<typeof sliderThumbBehaviorSchema>;
 export type SliderThumbCrossingSchemaValue = z.infer<typeof sliderThumbCrossingSchema>;
 export type SliderMarksSchemaValue = z.infer<typeof sliderMarksSchema>;
 export type SliderEdgeMarksSchemaValue = z.infer<typeof sliderEdgeMarksSchema>;
@@ -55,8 +61,10 @@ export function createSliderOptionsSchema() {
       valueSummaryPlacement: sliderValueSummaryPlacementSchema.optional(),
       valueAnimation: sliderValueAnimationSchema.optional(),
       snapMotion: sliderSnapMotionSchema.optional(),
+      thumbBehavior: sliderThumbBehaviorSchema.optional(),
       thumbCrossing: sliderThumbCrossingSchema.optional(),
       marks: sliderMarksSchema.optional(),
+      markStep: z.number().finite().positive().optional(),
       edgeMarks: sliderEdgeMarksSchema.optional(),
       markPlacement: sliderMarkPlacementSchema.optional(),
       markLabelPlacement: sliderMarkLabelPlacementSchema.optional(),

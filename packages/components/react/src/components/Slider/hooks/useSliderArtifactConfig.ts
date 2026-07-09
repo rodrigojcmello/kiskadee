@@ -12,6 +12,7 @@ import type {
   SliderMode,
   SliderOriginMark,
   SliderSnapMotion,
+  SliderThumbBehavior,
   SliderThumbEdgeBehavior,
   SliderThumbCrossing,
   SliderValueAnimation,
@@ -35,6 +36,7 @@ import {
   DEFAULT_SLIDER_ORIGIN_MARK,
   DEFAULT_SLIDER_RADIUS,
   DEFAULT_SLIDER_SNAP_MOTION,
+  DEFAULT_SLIDER_THUMB_BEHAVIOR,
   DEFAULT_SLIDER_THUMB_EDGE_BEHAVIOR,
   DEFAULT_SLIDER_THUMB_CROSSING,
   DEFAULT_SLIDER_VALUE_ANIMATION,
@@ -54,8 +56,10 @@ export type SliderArtifactConfig = {
     valueSummaryPlacement: SliderValueSummaryPlacement;
     valueAnimation: SliderValueAnimation;
     snapMotion: SliderSnapMotion;
+    thumbBehavior: SliderThumbBehavior;
     thumbCrossing: SliderThumbCrossing;
     marks: SliderMarks;
+    markStep: number | undefined;
     edgeMarks: SliderEdgeMarks;
     markPlacement: SliderMarkPlacement;
     markLabelPlacement: SliderMarkLabelPlacement;
@@ -110,8 +114,10 @@ export function useSliderArtifactConfig(): SliderArtifactConfig {
         options?.valueSummaryPlacement ?? DEFAULT_SLIDER_VALUE_SUMMARY_PLACEMENT,
       valueAnimation: options?.valueAnimation ?? DEFAULT_SLIDER_VALUE_ANIMATION,
       snapMotion: options?.snapMotion ?? DEFAULT_SLIDER_SNAP_MOTION,
+      thumbBehavior: options?.thumbBehavior ?? DEFAULT_SLIDER_THUMB_BEHAVIOR,
       thumbCrossing: options?.thumbCrossing ?? DEFAULT_SLIDER_THUMB_CROSSING,
       marks: options?.marks ?? DEFAULT_SLIDER_MARKS,
+      markStep: options?.markStep,
       edgeMarks: options?.edgeMarks ?? DEFAULT_SLIDER_EDGE_MARKS,
       markPlacement: options?.markPlacement ?? DEFAULT_SLIDER_MARK_PLACEMENT,
       markLabelPlacement: options?.markLabelPlacement ?? DEFAULT_SLIDER_MARK_LABEL_PLACEMENT,

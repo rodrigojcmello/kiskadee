@@ -13,6 +13,7 @@ import {
   type SliderMode,
   type SliderOriginMark,
   type SliderSnapMotion,
+  type SliderThumbBehavior,
   type SliderThumbEdgeBehavior,
   type SliderThumbCrossing,
   type SliderValueAnimation,
@@ -47,13 +48,14 @@ export const DEFAULT_SLIDER_VALUE_DISPLAY = 'none';
 export const DEFAULT_SLIDER_VALUE_SUMMARY_PLACEMENT: SliderValueSummaryPlacement = 'headerEnd';
 export const DEFAULT_SLIDER_VALUE_ANIMATION: SliderValueAnimation = 'none';
 export const DEFAULT_SLIDER_SNAP_MOTION: SliderSnapMotion = 'smooth';
+export const DEFAULT_SLIDER_THUMB_BEHAVIOR: SliderThumbBehavior = 'snap';
 export const DEFAULT_SLIDER_THUMB_CROSSING: SliderThumbCrossing = 'swap';
 export const DEFAULT_SLIDER_MARKS = 'none';
 export const DEFAULT_SLIDER_EDGE_MARKS = 'include';
 export const DEFAULT_SLIDER_MARK_PLACEMENT: SliderMarkPlacement = 'track';
 export const DEFAULT_SLIDER_MARK_LABEL_PLACEMENT = 'auto';
-export const DEFAULT_SLIDER_EDGE_MARK_LABEL_PLACEMENT = 'auto';
-export const DEFAULT_SLIDER_EDGE_MARK_LABEL_ALIGNMENT: SliderEdgeMarkLabelAlignment = 'auto';
+export const DEFAULT_SLIDER_EDGE_MARK_LABEL_PLACEMENT = 'markLabels';
+export const DEFAULT_SLIDER_EDGE_MARK_LABEL_ALIGNMENT: SliderEdgeMarkLabelAlignment = 'inside';
 export const DEFAULT_SLIDER_THUMB_EDGE_BEHAVIOR: SliderThumbEdgeBehavior = 'overflow';
 export const DEFAULT_SLIDER_ACTIVE_TRACK_ORIGIN: SliderActiveTrackOrigin = 'min';
 export const DEFAULT_SLIDER_ORIGIN_MARK: SliderOriginMark = 'none';

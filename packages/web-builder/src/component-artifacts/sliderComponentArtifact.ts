@@ -11,6 +11,7 @@ import type {
   SliderMode,
   SliderOriginMark,
   SliderSnapMotion,
+  SliderThumbBehavior,
   SliderThumbEdgeBehavior,
   SliderThumbCrossing,
   SliderValueAnimation,
@@ -27,8 +28,10 @@ export type SliderComponentOptionsPayload = {
   valueSummaryPlacement?: SliderValueSummaryPlacement;
   valueAnimation?: SliderValueAnimation;
   snapMotion?: SliderSnapMotion;
+  thumbBehavior?: SliderThumbBehavior;
   thumbCrossing?: SliderThumbCrossing;
   marks?: SliderMarks;
+  markStep?: number;
   edgeMarks?: SliderEdgeMarks;
   markPlacement?: SliderMarkPlacement;
   markLabelPlacement?: SliderMarkLabelPlacement;
@@ -106,10 +109,16 @@ export function buildSliderComponentArtifact(schema: Schema): SliderComponentArt
       ? { valueAnimation: sliderSchema.options.valueAnimation }
       : {}),
     ...(sliderSchema.options?.snapMotion ? { snapMotion: sliderSchema.options.snapMotion } : {}),
+    ...(sliderSchema.options?.thumbBehavior
+      ? { thumbBehavior: sliderSchema.options.thumbBehavior }
+      : {}),
     ...(sliderSchema.options?.thumbCrossing
       ? { thumbCrossing: sliderSchema.options.thumbCrossing }
       : {}),
     ...(sliderSchema.options?.marks ? { marks: sliderSchema.options.marks } : {}),
+    ...(sliderSchema.options?.markStep !== undefined
+      ? { markStep: sliderSchema.options.markStep }
+      : {}),
     ...(sliderSchema.options?.edgeMarks ? { edgeMarks: sliderSchema.options.edgeMarks } : {}),
     ...(sliderSchema.options?.markPlacement
       ? { markPlacement: sliderSchema.options.markPlacement }

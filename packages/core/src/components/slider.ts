@@ -28,6 +28,7 @@ import type {
   SliderOriginMarkSchemaValue,
   SliderOptionsFromSchema,
   SliderSnapMotionSchemaValue,
+  SliderThumbBehaviorSchemaValue,
   SliderThumbEdgeBehaviorSchemaValue,
   SliderThumbCrossingSchemaValue,
   SliderValueAnimationSchemaValue,
@@ -80,6 +81,7 @@ export type SliderValueDisplay = SliderValueDisplaySchemaValue;
 export type SliderValueSummaryPlacement = SliderValueSummaryPlacementSchemaValue;
 export type SliderValueAnimation = SliderValueAnimationSchemaValue;
 export type SliderSnapMotion = SliderSnapMotionSchemaValue;
+export type SliderThumbBehavior = SliderThumbBehaviorSchemaValue;
 export type SliderThumbCrossing = SliderThumbCrossingSchemaValue;
 export type SliderMarks = SliderMarksSchemaValue;
 export type SliderEdgeMarks = SliderEdgeMarksSchemaValue;

@@ -14,6 +14,7 @@ import type {
   SliderMode,
   SliderOriginMark,
   SliderSnapMotion,
+  SliderThumbBehavior,
   SliderThumbEdgeBehavior,
   SliderThumbCrossing,
   SliderValueAnimation,
@@ -71,16 +72,17 @@ export type SliderResolvedMarkLabelPlacement = Exclude<SliderMarkLabelPlacementO
 export type SliderEdgeMarkLabelPlacementOption = SliderEdgeMarkLabelPlacement;
 export type SliderResolvedEdgeMarkLabelPlacement = Exclude<
   SliderEdgeMarkLabelPlacementOption,
-  'auto'
+  'adaptive'
 >;
 export type SliderEdgeMarkLabelAlignmentOption = SliderEdgeMarkLabelAlignment;
 export type SliderResolvedEdgeMarkLabelAlignment = Exclude<
   SliderEdgeMarkLabelAlignmentOption,
-  'auto'
+  'adaptive'
 >;
 export type SliderValueAnimationOption = SliderValueAnimation;
 export type SliderValueSummaryPlacementOption = SliderValueSummaryPlacement;
 export type SliderSnapMotionOption = SliderSnapMotion;
+export type SliderThumbBehaviorOption = SliderThumbBehavior;
 export type SliderThumbCrossingOption = SliderThumbCrossing;
 export type SliderThumbEdgeBehaviorOption = SliderThumbEdgeBehavior;
 export type SliderActiveTrackOriginOption = SliderActiveTrackOrigin;
@@ -109,6 +111,7 @@ export type SliderProps = Omit<
   | 'onThumbInteractionEnd'
   | 'onThumbInteractionStart'
   | 'onThumbInteractionSwitch'
+  | 'thumbBehavior'
   | 'thumbCrossing'
   | 'thumbEdgeBehavior'
   | 'activeTrackOrigin'
@@ -129,6 +132,7 @@ export type SliderProps = Omit<
   value?: SliderValue;
   defaultValue?: SliderValue;
   marks?: SliderMarks;
+  markStep?: number;
   edgeMarks?: SliderEdgeMarksOption;
   markPlacement?: SliderMarkPlacementOption;
   markLabelPlacement?: SliderMarkLabelPlacementOption;
@@ -142,6 +146,7 @@ export type SliderProps = Omit<
   valueSummaryWidth?: number;
   valueAnimation?: SliderValueAnimationOption;
   snapMotion?: SliderSnapMotionOption;
+  thumbBehavior?: SliderThumbBehaviorOption;
   thumbCrossing?: SliderThumbCrossingOption;
   activationFeedback?: SliderActivationFeedback;
   formatValue?: (value: number, index: 0 | 1) => ReactNode;

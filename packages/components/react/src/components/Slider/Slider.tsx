@@ -42,6 +42,7 @@ import type {
   SliderResolvedEdgeMarkLabelPlacement,
   SliderResolvedMarkLabelPlacement,
   SliderSnapMotionOption,
+  SliderThumbBehaviorOption,
   SliderThumbEdgeBehaviorOption,
   SliderValueAnimationOption,
   SliderValueSummaryPlacementOption,
@@ -73,6 +74,12 @@ function normalizeStep(step: number | undefined): number {
   return typeof step === 'number' && Number.isFinite(step) && step > 0 ? step : DEFAULT_STEP;
 }
 
+function normalizeMarkStep(markStep: number | undefined, fallbackStep: number): number {
+  return typeof markStep === 'number' && Number.isFinite(markStep) && markStep > 0
+    ? markStep
+    : fallbackStep;
+}
+
 function generateStepMarks(min: number, max: number, step: number): SliderMark[] {
   const count = Math.floor((max - min) / step);
   if (count < 1 || count + 1 > STEP_MARK_LIMIT) return [];
@@ -93,10 +100,11 @@ function resolveMarks(
   marks: SliderMarks | undefined,
   min: number,
   max: number,
-  step: number
+  step: number,
+  markStep: number | undefined
 ): SliderMark[] {
   if (marks === false || marks === 'none' || marks === undefined) return [];
-  if (marks === 'step') return generateStepMarks(min, max, step);
+  if (marks === 'step') return generateStepMarks(min, max, normalizeMarkStep(markStep, step));
   return marks
     .filter((mark) => Number.isFinite(mark.value) && mark.value >= min && mark.value <= max)
     .map((mark) => ({ value: mark.value, label: mark.label, icon: mark.icon }));
@@ -124,7 +132,7 @@ function resolveEdgeMarkLabelPlacement(
   placement: SliderEdgeMarkLabelPlacementOption,
   isCompactViewport: boolean
 ): SliderResolvedEdgeMarkLabelPlacement {
-  if (placement !== 'auto') return placement;
+  if (placement !== 'adaptive') return placement;
   return isCompactViewport ? 'markLabels' : 'endpoints';
 }
 
@@ -132,12 +140,8 @@ function resolveEdgeMarkLabelAlignment(
   alignment: SliderEdgeMarkLabelAlignmentOption,
   isCompactViewport: boolean
 ): SliderResolvedEdgeMarkLabelAlignment {
-  if (alignment !== 'auto') return alignment;
+  if (alignment !== 'adaptive') return alignment;
   return isCompactViewport ? 'inside' : 'center';
-}
-
-function isEdgeMark(mark: SliderMark, min: number, max: number): boolean {
-  return mark.value === min || mark.value === max;
 }
 
 function getEdgeMarkLabelAlignmentClassName(
@@ -277,6 +281,7 @@ function SliderRoot(props: SliderProps) {
     step: stepProp,
     required,
     marks,
+    markStep,
     edgeMarks,
     markPlacement,
     markLabelPlacement,
@@ -290,6 +295,7 @@ function SliderRoot(props: SliderProps) {
     valueSummaryWidth,
     valueAnimation,
     snapMotion,
+    thumbBehavior,
     thumbCrossing,
     activationFeedback,
     formatValue,
@@ -322,6 +328,8 @@ function SliderRoot(props: SliderProps) {
     valueSummaryPlacement ?? options.valueSummaryPlacement;
   const resolvedValueAnimation = valueAnimation ?? options.valueAnimation;
   const resolvedSnapMotion: SliderSnapMotionOption = snapMotion ?? options.snapMotion;
+  const resolvedThumbBehavior: SliderThumbBehaviorOption =
+    thumbBehavior ?? options.thumbBehavior;
   const resolvedThumbCrossing = thumbCrossing ?? options.thumbCrossing;
   const resolvedThumbEdgeBehavior: SliderThumbEdgeBehaviorOption =
     thumbEdgeBehavior ?? options.thumbEdgeBehavior;
@@ -345,10 +353,11 @@ function SliderRoot(props: SliderProps) {
   const resolvedValueMode = resolveValueMode(valueMode, props);
   const { min, max } = normalizeBounds(minProp, maxProp);
   const step = normalizeStep(stepProp);
+  const resolvedMarkStep = markStep ?? options.markStep;
   const resolvedEdgeMarks = edgeMarks ?? options.edgeMarks;
   const normalizedMarks = useMemo(
-    () => resolveMarks(marks ?? options.marks, min, max, step),
-    [marks, max, min, options.marks, step]
+    () => resolveMarks(marks ?? options.marks, min, max, step, resolvedMarkStep),
+    [marks, max, min, options.marks, resolvedMarkStep, step]
   );
   const visualMarks = useMemo(
     () => applyEdgeMarks(normalizedMarks, min, max, resolvedEdgeMarks),
@@ -356,11 +365,9 @@ function SliderRoot(props: SliderProps) {
   );
   const markLabels = useMemo(
     () =>
-      normalizedMarks.filter(
-        (mark) =>
-          mark.label !== undefined &&
-          (!isEdgeMark(mark, min, max) || resolvedEdgeMarkLabelPlacement === 'markLabels')
-      ),
+      resolvedEdgeMarkLabelPlacement === 'endpoints'
+        ? []
+        : normalizedMarks.filter((mark) => mark.label !== undefined),
     [max, min, normalizedMarks, resolvedEdgeMarkLabelPlacement]
   );
   const shouldRenderEdgeMarkLabelsAsEndpoints = resolvedEdgeMarkLabelPlacement === 'endpoints';
@@ -572,6 +579,7 @@ function SliderRoot(props: SliderProps) {
       min={min}
       max={max}
       step={step}
+      thumbBehavior={resolvedThumbBehavior}
       thumbCrossing={resolvedThumbCrossing}
       thumbEdgeBehavior={resolvedThumbEdgeBehavior}
       activeTrackOrigin={resolvedActiveTrackOrigin}

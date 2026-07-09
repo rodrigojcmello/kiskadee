@@ -394,7 +394,7 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
       marks: 'none',
       edgeMarks: 'exclude',
       markLabelPlacement: 'auto',
-      edgeMarkLabelPlacement: 'auto'
+      edgeMarkLabelPlacement: 'adaptive'
     },
     variants: {
       standard: {

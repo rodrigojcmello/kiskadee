@@ -21,6 +21,7 @@ import {
   type SliderMarks,
   type SliderOriginMarkOption,
   type SliderSnapMotionOption,
+  type SliderThumbBehaviorOption,
   type SliderThumbEdgeBehaviorOption,
   type SliderThumbCrossingOption,
   type SliderValueAnimationOption,
@@ -57,7 +58,9 @@ type SliderActivationFeedbackControl = 'default' | 'off' | 'active';
 type SliderValueAnimationControl = 'default' | SliderValueAnimationOption;
 type SliderValueSummaryPlacementControl = 'default' | SliderValueSummaryPlacementOption;
 type SliderSnapMotionControl = 'default' | SliderSnapMotionOption;
+type SliderThumbBehaviorControl = 'default' | SliderThumbBehaviorOption;
 type SliderThumbCrossingControl = 'default' | SliderThumbCrossingOption;
+type SliderMarkStepControl = 'default' | '1' | '5' | '10' | '25' | '50';
 type SliderActiveTrackOriginControl = 'min' | 'center' | '25' | '50' | '75';
 
 const scaleOptions: Array<{ value: ElementSizeValue; label: string }> = [
@@ -192,6 +195,13 @@ const snapMotionOptions: Array<{ value: SliderSnapMotionControl; label: string }
   { value: 'smooth', label: 'Smooth' }
 ];
 
+const thumbBehaviorOptions: Array<{ value: SliderThumbBehaviorControl; label: string }> = [
+  { value: 'default', label: 'Default' },
+  { value: 'snap', label: 'Snap' },
+  { value: 'hold', label: 'Hold' },
+  { value: 'stops', label: 'Stops' }
+];
+
 const thumbCrossingOptions: Array<{ value: SliderThumbCrossingControl; label: string }> = [
   { value: 'default', label: 'Default' },
   { value: 'prevent', label: 'Prevent' },
@@ -202,6 +212,15 @@ const marksModeOptions: Array<{ value: SliderMarksMode; label: string }> = [
   { value: 'none', label: 'None' },
   { value: 'step', label: 'Step' },
   { value: 'labeled', label: 'Labeled' }
+];
+
+const markStepOptions: Array<{ value: SliderMarkStepControl; label: string }> = [
+  { value: 'default', label: 'Default' },
+  { value: '1', label: '1' },
+  { value: '5', label: '5' },
+  { value: '10', label: '10' },
+  { value: '25', label: '25' },
+  { value: '50', label: '50' }
 ];
 
 const edgeMarksOptions: Array<{ value: SliderEdgeMarksOption; label: string }> = [
@@ -225,18 +244,18 @@ const edgeMarkLabelPlacementOptions: Array<{
   value: SliderEdgeMarkLabelPlacementOption;
   label: string;
 }> = [
-  { value: 'auto', label: 'Auto' },
+  { value: 'markLabels', label: 'Mark labels' },
   { value: 'endpoints', label: 'Side' },
-  { value: 'markLabels', label: 'Track labels' }
+  { value: 'adaptive', label: 'Adaptive' }
 ];
 
 const edgeMarkLabelAlignmentOptions: Array<{
   value: SliderEdgeMarkLabelAlignmentOption;
   label: string;
 }> = [
-  { value: 'auto', label: 'Auto' },
+  { value: 'inside', label: 'Inside' },
   { value: 'center', label: 'Center' },
-  { value: 'inside', label: 'Inside' }
+  { value: 'adaptive', label: 'Adaptive' }
 ];
 
 const thumbEdgeBehaviorOptions: Array<{ value: SliderThumbEdgeBehaviorOption; label: string }> = [
@@ -380,10 +399,27 @@ function resolveSnapMotionProp(
   return snapMotion === 'default' ? undefined : snapMotion;
 }
 
+function resolveThumbBehaviorProp(
+  thumbBehavior: SliderThumbBehaviorControl
+): SliderThumbBehaviorOption | undefined {
+  return thumbBehavior === 'default' ? undefined : thumbBehavior;
+}
+
 function resolveThumbCrossingProp(
   thumbCrossing: SliderThumbCrossingControl
 ): SliderThumbCrossingOption | undefined {
   return thumbCrossing === 'default' ? undefined : thumbCrossing;
+}
+
+function resolveMarkStepProp(markStep: SliderMarkStepControl): number | undefined {
+  return markStep === 'default' ? undefined : Number(markStep);
+}
+
+function toMarkStepControl(markStep: number | undefined): SliderMarkStepControl {
+  if (markStep === 1 || markStep === 5 || markStep === 10 || markStep === 25 || markStep === 50) {
+    return String(markStep) as SliderMarkStepControl;
+  }
+  return 'default';
 }
 
 function toActiveTrackOriginControl(
@@ -516,16 +552,18 @@ export default function SliderPage() {
   const [valueSummaryPlacement, setValueSummaryPlacement] =
     useState<SliderValueSummaryPlacementControl>('default');
   const [snapMotion, setSnapMotion] = useState<SliderSnapMotionControl>('smooth');
+  const [thumbBehavior, setThumbBehavior] = useState<SliderThumbBehaviorControl>('snap');
   const [thumbCrossing, setThumbCrossing] = useState<SliderThumbCrossingControl>('swap');
   const [marksMode, setMarksMode] = useState<SliderMarksMode>('none');
+  const [markStep, setMarkStep] = useState<SliderMarkStepControl>('default');
   const [edgeMarks, setEdgeMarks] = useState<SliderEdgeMarksOption>('include');
   const [markPlacement, setMarkPlacement] = useState<SliderMarkPlacementOption>('track');
   const [markLabelPlacement, setMarkLabelPlacement] =
     useState<SliderMarkLabelPlacementOption>('auto');
   const [edgeMarkLabelPlacement, setEdgeMarkLabelPlacement] =
-    useState<SliderEdgeMarkLabelPlacementOption>('auto');
+    useState<SliderEdgeMarkLabelPlacementOption>('markLabels');
   const [edgeMarkLabelAlignment, setEdgeMarkLabelAlignment] =
-    useState<SliderEdgeMarkLabelAlignmentOption>('auto');
+    useState<SliderEdgeMarkLabelAlignmentOption>('inside');
   const [thumbEdgeBehavior, setThumbEdgeBehavior] =
     useState<SliderThumbEdgeBehaviorOption>('overflow');
   const [activeTrackOrigin, setActiveTrackOrigin] =
@@ -663,7 +701,9 @@ export default function SliderPage() {
   const valueSummaryPlacementProp = resolveValueSummaryPlacementProp(valueSummaryPlacement);
   const interactiveValueSummaryWidth = valueMode === 'range' ? 96 : 44;
   const snapMotionProp = resolveSnapMotionProp(snapMotion);
+  const thumbBehaviorProp = resolveThumbBehaviorProp(thumbBehavior);
   const thumbCrossingProp = resolveThumbCrossingProp(thumbCrossing);
+  const markStepProp = resolveMarkStepProp(markStep);
   const activeTrackOriginProp = resolveActiveTrackOriginProp(activeTrackOrigin);
 
   useEffect(() => {
@@ -723,6 +763,14 @@ export default function SliderPage() {
   useEffect(() => {
     setEdgeMarks(sliderOptions.edgeMarks);
   }, [sliderOptions.edgeMarks]);
+
+  useEffect(() => {
+    setThumbBehavior(sliderOptions.thumbBehavior);
+  }, [sliderOptions.thumbBehavior]);
+
+  useEffect(() => {
+    setMarkStep(toMarkStepControl(sliderOptions.markStep));
+  }, [sliderOptions.markStep]);
 
   useEffect(() => {
     setMarkPlacement(sliderOptions.markPlacement);
@@ -955,6 +1003,18 @@ export default function SliderPage() {
             disabled={!isSliderAvailable}
           />
           <ShowcaseSelectControl
+            label="Thumb behavior"
+            options={thumbBehaviorOptions}
+            value={thumbBehavior}
+            onValueChange={(value) => {
+              const nextThumbBehavior = value as SliderThumbBehaviorControl;
+              if (nextThumbBehavior === thumbBehavior) return;
+              playWowTransition();
+              setThumbBehavior(nextThumbBehavior);
+            }}
+            disabled={!isSliderAvailable}
+          />
+          <ShowcaseSelectControl
             label="Thumb crossing"
             options={thumbCrossingOptions}
             value={thumbCrossing}
@@ -977,6 +1037,18 @@ export default function SliderPage() {
               setMarksMode(nextMarksMode);
             }}
             disabled={!isSliderAvailable}
+          />
+          <ShowcaseSelectControl
+            label="Mark step"
+            options={markStepOptions}
+            value={markStep}
+            onValueChange={(value) => {
+              const nextMarkStep = value as SliderMarkStepControl;
+              if (nextMarkStep === markStep) return;
+              playWowTransition();
+              setMarkStep(nextMarkStep);
+            }}
+            disabled={!isSliderAvailable || marksMode !== 'step'}
           />
           <ShowcaseSelectControl
             label="Edge marks"
@@ -1160,6 +1232,7 @@ export default function SliderPage() {
                   setInteractiveValue(nextValue);
                 }}
                 marks={interactiveMarks}
+                markStep={markStepProp}
                 edgeMarks={edgeMarks}
                 markPlacement={markPlacement}
                 markLabelPlacement={markLabelPlacement}
@@ -1173,6 +1246,7 @@ export default function SliderPage() {
                 valueSummaryWidth={interactiveValueSummaryWidth}
                 valueAnimation={valueAnimationProp}
                 snapMotion={snapMotionProp}
+                thumbBehavior={thumbBehaviorProp}
                 thumbCrossing={thumbCrossingProp}
                 activationFeedback={activationFeedbackProp}
                 formatValue={formatPercent}
@@ -1200,6 +1274,7 @@ export default function SliderPage() {
                     if (typeof nextValue === 'number') setSideValue(nextValue);
                   }}
                   marks="none"
+                  markStep={markStepProp}
                   edgeMarks="include"
                   markPlacement={markPlacement}
                   markLabelPlacement={markLabelPlacement}
@@ -1214,6 +1289,7 @@ export default function SliderPage() {
                   valueSummaryWidth={44}
                   valueAnimation={valueAnimationProp}
                   snapMotion={snapMotionProp}
+                  thumbBehavior={thumbBehaviorProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
@@ -1233,6 +1309,7 @@ export default function SliderPage() {
                     if (typeof nextValue === 'number') setVolume(nextValue);
                   }}
                   marks={[{ value: 0, icon: <VolumeIcon /> }]}
+                  markStep={markStepProp}
                   edgeMarks="exclude"
                   markPlacement={markPlacement}
                   markLabelPlacement={markLabelPlacement}
@@ -1247,6 +1324,7 @@ export default function SliderPage() {
                   valueSummaryWidth={40}
                   valueAnimation={valueAnimationProp}
                   snapMotion={snapMotionProp}
+                  thumbBehavior={thumbBehaviorProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
@@ -1271,6 +1349,7 @@ export default function SliderPage() {
                     { value: 1000, label: formatCurrency(1000) },
                     { value: 10000, label: formatCurrency(10000) }
                   ]}
+                  markStep={markStepProp}
                   edgeMarks="exclude"
                   markPlacement={markPlacement}
                   markLabelPlacement={markLabelPlacement}
@@ -1283,6 +1362,7 @@ export default function SliderPage() {
                   valueDisplay="tooltip"
                   valueAnimation={valueAnimationProp}
                   snapMotion={snapMotionProp}
+                  thumbBehavior={thumbBehaviorProp}
                   thumbCrossing={thumbCrossingProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
@@ -1306,6 +1386,7 @@ export default function SliderPage() {
                     { value: 0, icon: <MoonIcon /> },
                     { value: 100, icon: <SunIcon /> }
                   ]}
+                  markStep={markStepProp}
                   edgeMarks="exclude"
                   markPlacement={markPlacement}
                   edgeMarkLabelPlacement={edgeMarkLabelPlacement}
@@ -1317,6 +1398,7 @@ export default function SliderPage() {
                   valueDisplay="tooltip"
                   valueAnimation={valueAnimationProp}
                   snapMotion={snapMotionProp}
+                  thumbBehavior={thumbBehaviorProp}
                   thumbCrossing={thumbCrossingProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
@@ -1344,6 +1426,7 @@ export default function SliderPage() {
                     { value: 75, label: '75%' },
                     { value: 100, label: '100%', icon: '+' }
                   ]}
+                  markStep={markStepProp}
                   edgeMarks={edgeMarks}
                   markPlacement={markPlacement}
                   markLabelPlacement={markLabelPlacement}
@@ -1356,6 +1439,7 @@ export default function SliderPage() {
                   valueDisplay="summary"
                   valueAnimation={valueAnimationProp}
                   snapMotion={snapMotionProp}
+                  thumbBehavior={thumbBehaviorProp}
                   thumbCrossing={thumbCrossingProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
@@ -1376,6 +1460,7 @@ export default function SliderPage() {
                     if (typeof nextValue === 'number') setCenterBiased(nextValue);
                   }}
                   marks="step"
+                  markStep={markStepProp}
                   edgeMarks={edgeMarks}
                   markPlacement={markPlacement}
                   markLabelPlacement={markLabelPlacement}
@@ -1388,6 +1473,7 @@ export default function SliderPage() {
                   valueDisplay="tooltip"
                   valueAnimation={valueAnimationProp}
                   snapMotion={snapMotionProp}
+                  thumbBehavior={thumbBehaviorProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
@@ -1407,6 +1493,7 @@ export default function SliderPage() {
                     if (typeof nextValue === 'number') setRating(nextValue);
                   }}
                   marks={ratingMarks}
+                  markStep={markStepProp}
                   edgeMarks={edgeMarks}
                   markPlacement={markPlacement}
                   markLabelPlacement={markLabelPlacement}
@@ -1419,6 +1506,7 @@ export default function SliderPage() {
                   valueDisplay="tooltip"
                   valueAnimation={valueAnimationProp}
                   snapMotion={snapMotionProp}
+                  thumbBehavior={thumbBehaviorProp}
                   thumbCrossing={thumbCrossingProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}

@@ -417,7 +417,7 @@ export function createSandbox2SliderSchema(): SliderComponent {
       valueDisplay: 'tooltip',
       marks: 'none',
       markLabelPlacement: 'auto',
-      edgeMarkLabelPlacement: 'auto'
+      edgeMarkLabelPlacement: 'adaptive'
     },
     variants: {
       standard: {

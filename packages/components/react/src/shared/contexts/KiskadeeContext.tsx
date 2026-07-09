@@ -15,6 +15,7 @@ import type {
   SliderMode,
   SliderOriginMark,
   SliderSnapMotion,
+  SliderThumbBehavior,
   SliderThumbEdgeBehavior,
   SliderThumbCrossing,
   SliderValueAnimation,
@@ -98,8 +99,10 @@ export type KiskadeeContextValue = {
           valueSummaryPlacement?: SliderValueSummaryPlacement;
           valueAnimation?: SliderValueAnimation;
           snapMotion?: SliderSnapMotion;
+          thumbBehavior?: SliderThumbBehavior;
           thumbCrossing?: SliderThumbCrossing;
           marks?: SliderMarks;
+          markStep?: number;
           edgeMarks?: SliderEdgeMarks;
           markPlacement?: SliderMarkPlacement;
           markLabelPlacement?: SliderMarkLabelPlacement;

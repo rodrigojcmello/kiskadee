@@ -26,6 +26,7 @@ export type SliderValueMode = 'single' | 'range';
 export type SliderRangeValue = [number, number];
 export type SliderValue = number | SliderRangeValue;
 export type SliderThumbIndex = 0 | 1;
+export type SliderThumbBehavior = 'snap' | 'hold' | 'stops';
 export type SliderThumbCrossing = 'prevent' | 'swap';
 export type SliderThumbEdgeBehavior = 'overflow' | 'contain';
 export type SliderActiveTrackOrigin = 'min' | 'center' | number;
@@ -104,6 +105,7 @@ export type SliderRootProps = SliderRootDivProps & {
   status?: SliderStatus;
   formatValue?: SliderFormatValue;
   getAriaValueText?: (value: number, index: SliderThumbIndex) => string;
+  thumbBehavior?: SliderThumbBehavior;
   thumbCrossing?: SliderThumbCrossing;
   thumbEdgeBehavior?: SliderThumbEdgeBehavior;
   activeTrackOrigin?: SliderActiveTrackOrigin;
@@ -434,6 +436,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
     status,
     formatValue,
     getAriaValueText,
+    thumbBehavior = 'snap',
     thumbCrossing = 'swap',
     thumbEdgeBehavior = 'overflow',
     activeTrackOrigin = 'min',
@@ -472,6 +475,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
   const [draggingThumbIndex, setDraggingThumbIndex] = useState<SliderThumbIndex | null>(null);
   const [settlingThumbIndex, setSettlingThumbIndex] = useState<SliderThumbIndex | null>(null);
   const [dragPreviewValue, setDragPreviewValue] = useState<SliderDragPreview | null>(null);
+  const [heldPreviewValue, setHeldPreviewValue] = useState<SliderDragPreview | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const thumbRefs = useRef<[HTMLSpanElement | null, HTMLSpanElement | null]>([null, null]);
   const [geometry, setGeometry] = useState<SliderGeometry>(DEFAULT_SLIDER_GEOMETRY);
@@ -503,6 +507,12 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
     return () => clearTimeout(timeoutId);
   }, [settlingThumbIndex]);
+
+  useEffect(() => {
+    setDragPreviewValue(null);
+    setHeldPreviewValue(null);
+    setSettlingThumbIndex(null);
+  }, [max, min, step, thumbBehavior, valueMode]);
 
   useEffect(() => {
     measureGeometry();
@@ -538,9 +548,17 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
         return dragPreviewValue.value;
       }
 
+      if (heldPreviewValue?.valueMode === 'range') {
+        return heldPreviewValue.values[index];
+      }
+
+      if (heldPreviewValue?.valueMode === 'single' && heldPreviewValue.index === index) {
+        return heldPreviewValue.value;
+      }
+
       return getCommittedThumbValue(index);
     },
-    [dragPreviewValue, getCommittedThumbValue]
+    [dragPreviewValue, getCommittedThumbValue, heldPreviewValue]
   );
 
   const getThumbValue = useCallback(
@@ -657,6 +675,12 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
     [getCurrentRangeValues, max, min]
   );
 
+  const resolveThumbBehaviorValue = useCallback(
+    (rawValue: number) =>
+      thumbBehavior === 'stops' ? roundToStep(rawValue, min, max, step) : rawValue,
+    [max, min, step, thumbBehavior]
+  );
+
   const setThumbValue = useCallback(
     (
       index: SliderThumbIndex,
@@ -664,6 +688,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       options: { allowCrossing?: boolean } = {}
     ) => {
       if (disabled || readOnly) return;
+      setHeldPreviewValue(null);
 
       if (valueMode === 'range') {
         const crossing = options.allowCrossing ? thumbCrossing : 'prevent';
@@ -689,9 +714,10 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
   const setThumbPreviewValue = useCallback(
     (index: SliderThumbIndex, rawValue: number, event: ReactPointerEvent<HTMLDivElement>) => {
       if (disabled || readOnly) return;
+      const nextValue = resolveThumbBehaviorValue(rawValue);
 
       if (valueMode === 'range') {
-        const preview = resolveRangePreview(index, rawValue, thumbCrossing);
+        const preview = resolveRangePreview(index, nextValue, thumbCrossing);
         switchDraggingThumbIndex(index, preview.index, event);
         setDragPreviewValue({
           valueMode: 'range',
@@ -704,7 +730,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       setDragPreviewValue({
         valueMode: 'single',
         index,
-        value: clamp(rawValue, min, max)
+        value: clamp(nextValue, min, max)
       });
     },
     [
@@ -713,6 +739,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       min,
       readOnly,
       resolveRangePreview,
+      resolveThumbBehaviorValue,
       switchDraggingThumbIndex,
       thumbCrossing,
       valueMode
@@ -817,6 +844,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       setActiveThumbIndex(targetIndex);
       setDraggingThumbIndex(targetIndex);
       setSettlingThumbIndex(null);
+      setHeldPreviewValue(null);
       setPressed(true);
       event.currentTarget.setPointerCapture?.(event.pointerId);
       onThumbInteractionStart?.({ event, index: targetIndex });
@@ -845,13 +873,8 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
   const handleTrackPointerUp = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
-      const nextValue = getPointerValue(
-        event,
-        trackRef.current,
-        min,
-        max,
-        thumbEdgeBehavior,
-        geometry
+      const nextValue = resolveThumbBehaviorValue(
+        getPointerValue(event, trackRef.current, min, max, thumbEdgeBehavior, geometry)
       );
       const nextPreview =
         draggingThumbIndex === null || valueMode !== 'range'
@@ -874,7 +897,28 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
             allowCrossing: false
           });
         }
-        setSettlingThumbIndex(nextDraggingThumbIndex);
+        if (thumbBehavior === 'hold') {
+          setHeldPreviewValue(
+            nextPreview
+              ? {
+                  valueMode: 'range',
+                  index: nextPreview.index,
+                  values: nextPreview.values
+                }
+              : {
+                  valueMode: 'single',
+                  index: nextDraggingThumbIndex,
+                  value: clamp(nextValue, min, max)
+                }
+          );
+          setSettlingThumbIndex(null);
+        } else if (thumbBehavior === 'snap') {
+          setHeldPreviewValue(null);
+          setSettlingThumbIndex(nextDraggingThumbIndex);
+        } else {
+          setHeldPreviewValue(null);
+          setSettlingThumbIndex(null);
+        }
       }
 
       if (nextDraggingThumbIndex !== null) {
@@ -895,9 +939,11 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       min,
       onThumbInteractionEnd,
       readOnly,
+      resolveThumbBehaviorValue,
       resolveRangePreview,
       setThumbValue,
       switchDraggingThumbIndex,
+      thumbBehavior,
       thumbCrossing,
       thumbEdgeBehavior,
       valueMode
@@ -914,6 +960,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       setDraggingThumbIndex(null);
       setSettlingThumbIndex(null);
       setDragPreviewValue(null);
+      setHeldPreviewValue(null);
       setPressed(false);
     },
     [draggingThumbIndex, onThumbInteractionCancel]
