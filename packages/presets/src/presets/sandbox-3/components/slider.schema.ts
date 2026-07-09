@@ -28,6 +28,7 @@ const transparent = [0, 0, 0, 0] as const;
 const c = {
   black: [0, 0, 0, 1],
   blackDisabled: [0, 0, 0, 0.38],
+  markLabel: [220, 8, 58, 1],
   ink: [231, 24, 6, 1],
   inkSoft: [226, 12, 50, 1],
   inkMuted: [226, 12, 58, 1],
@@ -191,6 +192,47 @@ const textPalettes = {
             focus: [260, 36, 44, 1],
             pressed: c.violetPressed,
             disabled: c.primaryDisabled
+          })
+        }
+      }
+    }
+  }
+} as const;
+
+const markLabelPalettes = {
+  default: {
+    light: {
+      textColor: {
+        neutral: {
+          medium: states({
+            rest: c.markLabel,
+            hover: c.markLabel,
+            focus: c.markLabel,
+            pressed: c.markLabel,
+            disabled: c.inkDisabled
+          }),
+          low: states({
+            rest: c.markLabel,
+            hover: c.markLabel,
+            focus: c.markLabel,
+            pressed: c.markLabel,
+            disabled: c.inkDisabled
+          })
+        },
+        primary: {
+          medium: states({
+            rest: c.markLabel,
+            hover: c.markLabel,
+            focus: c.markLabel,
+            pressed: c.markLabel,
+            disabled: c.inkDisabled
+          }),
+          low: states({
+            rest: c.markLabel,
+            hover: c.markLabel,
+            focus: c.markLabel,
+            pressed: c.markLabel,
+            disabled: c.inkDisabled
           })
         }
       }
@@ -715,7 +757,7 @@ export function createSandbox3SliderSchema(): SliderComponent {
                   marginTop: layout.markLabelOffset,
                   marginBottom: layout.markLabelOffset
                 },
-                palettes: textPalettes
+                palettes: markLabelPalettes
               },
               e17: {
                 name: 'slider-helper-text',
