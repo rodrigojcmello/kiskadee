@@ -126,6 +126,7 @@ export type SliderValueSummaryElementStyle<TSegmentName extends SegmentName = ne
 /**
  * e4 — control row
  * - non-visual layout row for endpoints and track
+ * - boxHeight defines the stable control lane height
  * - marginTop defines the conditional gap below the header row
  */
 export type SliderControlRowElementStyle = SliderControlRowElementStyleFromSchema;

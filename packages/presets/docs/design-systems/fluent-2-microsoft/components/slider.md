@@ -25,6 +25,11 @@ that directly:
 - `e10`: outer thumb wrapper, with white fill and neutral stroke;
 - `e11`: inner thumb dot, with Fluent compound brand fill.
 
+Kiskadee also sets `e4.boxHeight` to the nominal thumb size for each scale. This
+is a structural lane-stabilization token, not a separate Figma measurement: it
+keeps the rail centered consistently when endpoint icons or a control-end value
+summary are present.
+
 ## State Colors
 
 The inspected node exposes these relevant variables:

@@ -177,6 +177,7 @@ export function createIos26AppleSliderSchema({
               e4: {
                 name: 'slider-control-row',
                 scales: {
+                  boxHeight: sizes.thumbHeight,
                   marginTop: layout.fieldGap,
                   paddingTop: layout.markLabelReserve,
                   paddingBottom: layout.markLabelReserve

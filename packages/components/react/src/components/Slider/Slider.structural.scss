@@ -71,7 +71,9 @@
 .k-sld-e4-a {
   display: flex;
   align-items: center;
+  block-size: var(--k-bxh, auto);
   min-inline-size: 0;
+  overflow: visible;
 }
 
 .k-sld-x1-a + .k-sld-e4-a {
@@ -86,7 +88,9 @@
   display: flex;
   align-items: center;
   flex: 1 1 auto;
+  block-size: 100%;
   min-inline-size: 0;
+  overflow: visible;
 }
 
 /*

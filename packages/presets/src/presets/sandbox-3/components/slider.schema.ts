@@ -525,6 +525,7 @@ export function createSandbox3SliderSchema(): SliderComponent {
               e4: {
                 name: 'slider-control-row',
                 scales: {
+                  boxHeight: sizes.thumb,
                   marginTop: layout.fieldGap,
                   paddingTop: layout.markLabelReserve,
                   paddingBottom: layout.markLabelReserve

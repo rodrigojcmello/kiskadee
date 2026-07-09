@@ -139,6 +139,7 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
               marginLeftEmission: 'token'
             },
             e4: {
+              boxHeightEmission: 'token',
               marginTopEmission: 'token',
               paddingEmission: 'token'
             },

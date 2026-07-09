@@ -29,6 +29,10 @@ The preset uses:
 - `originMark: "auto"` so a neutral origin mark appears when an instance uses
   `activeTrackOrigin="center"` or a numeric origin.
 
+Kiskadee sets `e4.boxHeight` to the nominal thumb height for each scale. This is
+a structural lane-stabilization token, not a separate Figma measurement: it keeps
+the track vertically stable when endpoint icons overflow the control lane.
+
 ## Adaptations
 
 The upstream visual treatment includes a Liquid Glass thumb material. This

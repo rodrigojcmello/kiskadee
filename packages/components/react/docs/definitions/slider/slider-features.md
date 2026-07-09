@@ -258,7 +258,7 @@ Slider uses sixteen canonical schema element slots:
 | `e1` | Root field wrapper and projected state scope. |
 | `e2` | Optional field label. |
 | `e3` | Optional value summary. |
-| `e4` | Control row that groups lateral edge content and track. |
+| `e4` | Control row that groups lateral edge content and track and owns the stable control lane height. |
 | `e5` | Internal lateral edge content wrapper. |
 | `e6` | Internal lateral edge icon. |
 | `e7` | Internal lateral edge label/value. |
@@ -314,6 +314,9 @@ Slider structural CSS may consume schema-emitted variables, but spacing values
 belong to schema scales:
 
 - `e3.marginLeft` separates the field label from the value summary.
+- `e4.boxHeight` defines the stable control lane height. Structural CSS consumes
+  it as a token so endpoint icons can overflow visually without moving the
+  track center.
 - `e4.marginTop` separates the header row from the control row.
 - `e4.paddingTop` reserves an above-track layout lane when persistent mark labels
   render above the track. If persistent tooltips also reserve above-track space,
@@ -761,6 +764,8 @@ Edge marks and Slider layout spacing need generated geometry variables so the
 structural CSS can avoid hardcoding preset sizes. The web-builder policy emits:
 
 - `slider.variants.standard.elements.e8.boxHeight` into `--k-bxh`;
+- `slider.variants.standard.elements.e4.boxHeight` into `--k-bxh` for the
+  control lane only;
 - `slider.variants.standard.elements.e8.boxWidth` into `--k-bxw`;
 - Slider layout margins into `--k-mgt`, `--k-mgr`, `--k-mgb`, or `--k-mgl`
   when structural CSS needs conditional spacing;
@@ -807,11 +812,12 @@ generated markup, structural CSS, or regressions.
 | `k-sld-e2-a` | Field label. |
 | `k-sld-e3-a` | Value summary. |
 | `k-sld-e3a-a` | Value summary placed at the end of the control row. |
-| `k-sld-e4-a` | Control row. |
+| `k-sld-e4-a` | Control row; consumes `e4.boxHeight` as the stable lane height. |
 | `k-sld-e4a-a` | Control row with an above-track mark label reserve lane. |
 | `k-sld-e4b-a` | Control row with a below-track mark label reserve lane. |
 | `k-sld-e4c-a` | Control row with an above-track persistent value indicator reserve source. |
 | `k-sld-e4d-a` | Control row that owns the value summary as its final inline item. |
+| `k-sld-x2-a` | Control group that keeps endpoint icons and the track centered inside the stable lane. |
 | `k-sld-e5-a` | Internal lateral edge content wrapper. |
 | `k-sld-e6-a` | Internal lateral edge icon. |
 | `k-sld-e7-a` | Internal lateral edge label/value. |
