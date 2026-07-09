@@ -23,11 +23,11 @@ The preset uses:
 
 - `markPlacement: "below"` so ordinary marks render outside the track by
   default;
-- `thumbEdgeBehavior: "contain"` so the thumb stays within the rail at
+- `thumbEdge: "contain"` so the thumb stays within the rail at
   `min`/`max`;
-- `activeTrackOrigin: "min"` for ordinary sliders;
-- `originMark: "auto"` so a neutral origin mark appears when an instance uses
-  `activeTrackOrigin="center"` or a numeric origin.
+- `fillOrigin: "min"` for ordinary sliders;
+- `fillOriginMark: "auto"` so a neutral origin mark appears when an instance uses
+  `fillOrigin="center"` or a numeric origin.
 
 Kiskadee sets `e4.boxHeight` to the nominal thumb height for each scale. This is
 a structural lane-stabilization token, not a separate Figma measurement: it keeps
@@ -63,5 +63,5 @@ the iOS primary blue instead of copying the macOS blue into the unified
 
 The center-biased reference uses a neutral mark at the origin and lets the
 active range grow away from that origin. Kiskadee implements this with
-`activeTrackOrigin` and `originMark` instead of creating a platform-specific
+`fillOrigin` and `fillOriginMark` instead of creating a platform-specific
 Slider variant.

@@ -10,36 +10,37 @@ export type {
 } from './components/Card';
 export { Card, CardAction, useCardArtifactConfig } from './components/Card';
 export type {
+  RollingNumberFormatValue,
+  RollingNumberProps
+} from './components/RollingNumber/RollingNumber.tsx';
+export { RollingNumber } from './components/RollingNumber/RollingNumber.tsx';
+export type {
   SliderActivationFeedback,
   SliderArtifactConfig,
   SliderClassNames,
-  SliderEdgeMarkLabelAlignmentOption,
-  SliderEdgeMarkLabelPlacementOption,
+  SliderEdgeLabelAlignmentOption,
+  SliderEdgeLabelPlacementOption,
   SliderEdgeMarksOption,
+  SliderFillOriginMarkOption,
+  SliderFillOriginOption,
   SliderInteractionValueChangeDetails,
   SliderMark,
   SliderMarkLabelPlacementOption,
   SliderMarkPlacementOption,
   SliderMarks,
-  SliderActiveTrackOriginOption,
-  SliderOriginMarkOption,
   SliderProps,
-  SliderSnapMotionOption,
+  SliderSelectionMode,
+  SliderSnapAnimationOption,
   SliderStatus,
-  SliderThumbBehaviorOption,
-  SliderThumbEdgeBehaviorOption,
+  SliderThumbCrossingOption,
+  SliderThumbEdgeOption,
   SliderThumbIcon,
   SliderThumbIconDetails,
-  SliderThumbCrossingOption,
+  SliderThumbStepBehaviorOption,
   SliderValueAnimationOption,
   SliderValueSummaryPlacementOption
 } from './components/Slider';
 export { Slider, useSliderArtifactConfig } from './components/Slider';
-export { RollingNumber } from './components/RollingNumber/RollingNumber.tsx';
-export type {
-  RollingNumberFormatValue,
-  RollingNumberProps
-} from './components/RollingNumber/RollingNumber.tsx';
 export { SmoothText } from './components/SmoothText/SmoothText.tsx';
 export type {
   SwitchArtifactConfig,

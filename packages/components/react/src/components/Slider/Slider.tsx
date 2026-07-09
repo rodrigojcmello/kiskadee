@@ -28,25 +28,25 @@ import {
   resolveVariantElements
 } from './Slider.class-names.ts';
 import type {
-  SliderActiveTrackOriginOption,
   SliderClassNames,
-  SliderEdgeMarkLabelAlignmentOption,
-  SliderEdgeMarkLabelPlacementOption,
+  SliderEdgeLabelAlignmentOption,
+  SliderEdgeLabelPlacementOption,
   SliderEdgeMarksOption,
+  SliderFillOriginMarkOption,
+  SliderFillOriginOption,
   SliderMark,
   SliderMarkLabelPlacementOption,
   SliderMarkPlacementOption,
   SliderMarks,
-  SliderOriginMarkOption,
   SliderProps,
-  SliderResolvedEdgeMarkLabelAlignment,
-  SliderResolvedEdgeMarkLabelPlacement,
+  SliderResolvedEdgeLabelAlignment,
+  SliderResolvedEdgeLabelPlacement,
   SliderResolvedMarkLabelPlacement,
-  SliderSnapMotionOption,
-  SliderThumbBehaviorOption,
-  SliderThumbEdgeBehaviorOption,
+  SliderSnapAnimationOption,
+  SliderThumbEdgeOption,
   SliderThumbIcon,
   SliderThumbIconDetails,
+  SliderThumbStepBehaviorOption,
   SliderValueAnimationOption,
   SliderValueSummaryPlacementOption
 } from './Slider.types.ts';
@@ -76,9 +76,9 @@ function normalizeStep(step: number | undefined): number {
   return typeof step === 'number' && Number.isFinite(step) && step > 0 ? step : DEFAULT_STEP;
 }
 
-function normalizeMarkStep(markStep: number | undefined, fallbackStep: number): number {
-  return typeof markStep === 'number' && Number.isFinite(markStep) && markStep > 0
-    ? markStep
+function normalizeMarkInterval(markInterval: number | undefined, fallbackStep: number): number {
+  return typeof markInterval === 'number' && Number.isFinite(markInterval) && markInterval > 0
+    ? markInterval
     : fallbackStep;
 }
 
@@ -103,10 +103,11 @@ function resolveMarks(
   min: number,
   max: number,
   step: number,
-  markStep: number | undefined
+  markInterval: number | undefined
 ): SliderMark[] {
-  if (marks === false || marks === 'none' || marks === undefined) return [];
-  if (marks === 'step') return generateStepMarks(min, max, normalizeMarkStep(markStep, step));
+  if (marks === 'none' || marks === undefined) return [];
+  if (marks === 'step')
+    return generateStepMarks(min, max, normalizeMarkInterval(markInterval, step));
   return marks
     .filter((mark) => Number.isFinite(mark.value) && mark.value >= min && mark.value <= max)
     .map((mark) => ({ value: mark.value, label: mark.label, icon: mark.icon }));
@@ -126,31 +127,31 @@ function resolveMarkLabelPlacement(
   placement: SliderMarkLabelPlacementOption,
   isLikelyTouch: boolean
 ): SliderResolvedMarkLabelPlacement {
-  if (placement !== 'auto') return placement;
+  if (placement !== 'adaptive') return placement;
   return isLikelyTouch ? 'above' : 'below';
 }
 
-function resolveEdgeMarkLabelPlacement(
-  placement: SliderEdgeMarkLabelPlacementOption,
+function resolveEdgeLabelPlacement(
+  placement: SliderEdgeLabelPlacementOption,
   isCompactViewport: boolean
-): SliderResolvedEdgeMarkLabelPlacement {
+): SliderResolvedEdgeLabelPlacement {
   if (placement !== 'adaptive') return placement;
   return isCompactViewport ? 'markLabels' : 'endpoints';
 }
 
-function resolveEdgeMarkLabelAlignment(
-  alignment: SliderEdgeMarkLabelAlignmentOption,
+function resolveEdgeLabelAlignment(
+  alignment: SliderEdgeLabelAlignmentOption,
   isCompactViewport: boolean
-): SliderResolvedEdgeMarkLabelAlignment {
+): SliderResolvedEdgeLabelAlignment {
   if (alignment !== 'adaptive') return alignment;
   return isCompactViewport ? 'inside' : 'center';
 }
 
-function getEdgeMarkLabelAlignmentClassName(
+function getEdgeLabelAlignmentClassName(
   mark: SliderMark,
   min: number,
   max: number,
-  alignment: SliderResolvedEdgeMarkLabelAlignment
+  alignment: SliderResolvedEdgeLabelAlignment
 ): string | undefined {
   if (alignment !== 'inside') return undefined;
   if (mark.value === min) return START_EDGE_MARK_LABEL_INSIDE_CLASS_NAME;
@@ -162,24 +163,24 @@ function getEdgeMark(marks: SliderMark[], value: number): SliderMark | undefined
   return marks.find((mark) => mark.value === value);
 }
 
-function resolveActiveTrackOriginValue(
-  activeTrackOrigin: SliderActiveTrackOriginOption,
+function resolveFillOriginValue(
+  fillOrigin: SliderFillOriginOption,
   min: number,
   max: number
 ): number {
-  if (activeTrackOrigin === 'center') return min + (max - min) / 2;
-  if (typeof activeTrackOrigin === 'number') return Math.min(max, Math.max(min, activeTrackOrigin));
+  if (fillOrigin === 'center') return min + (max - min) / 2;
+  if (typeof fillOrigin === 'number') return Math.min(max, Math.max(min, fillOrigin));
   return min;
 }
 
-function shouldRenderOriginMark(
-  originMark: SliderOriginMarkOption,
-  activeTrackOrigin: SliderActiveTrackOriginOption,
+function shouldRenderFillOriginMark(
+  fillOriginMark: SliderFillOriginMarkOption,
+  fillOrigin: SliderFillOriginOption,
   min: number,
   max: number
 ): boolean {
-  if (originMark !== 'auto') return false;
-  return resolveActiveTrackOriginValue(activeTrackOrigin, min, max) !== min;
+  if (fillOriginMark !== 'auto') return false;
+  return resolveFillOriginValue(fillOrigin, min, max) !== min;
 }
 
 function renderEndpoint(
@@ -234,7 +235,7 @@ function renderSliderValueSummary(
   valueAnimation: SliderValueAnimationOption,
   details: SliderValueSummaryRenderDetails
 ): ReactNode {
-  if (details.valueMode !== 'range') {
+  if (details.selectionMode !== 'range') {
     return renderSliderValue(valueAnimation, details.values[0] ?? 0, details.formattedValues[0]);
   }
 
@@ -255,8 +256,8 @@ function renderSliderThumbIcon(
   return typeof thumbIcon === 'function' ? thumbIcon(details) : thumbIcon;
 }
 
-function resolveValueMode(valueMode: SliderProps['valueMode'], props: SliderProps) {
-  if (valueMode) return valueMode;
+function resolveSelectionMode(selectionMode: SliderProps['selectionMode'], props: SliderProps) {
+  if (selectionMode) return selectionMode;
   return Array.isArray(props.value) || Array.isArray(props.defaultValue) ? 'range' : 'single';
 }
 
@@ -279,7 +280,7 @@ function SliderRoot(props: SliderProps) {
     radius,
     variant,
     mode,
-    valueMode,
+    selectionMode,
     value,
     defaultValue,
     min: minProp,
@@ -287,21 +288,21 @@ function SliderRoot(props: SliderProps) {
     step: stepProp,
     required,
     marks,
-    markStep,
+    markInterval,
     edgeMarks,
     markPlacement,
     markLabelPlacement,
-    edgeMarkLabelPlacement,
-    edgeMarkLabelAlignment,
-    thumbEdgeBehavior,
-    activeTrackOrigin,
-    originMark,
+    edgeLabelPlacement,
+    edgeLabelAlignment,
+    thumbEdge,
+    fillOrigin,
+    fillOriginMark,
     valueDisplay,
     valueSummaryPlacement,
     valueSummaryWidth,
     valueAnimation,
-    snapMotion,
-    thumbBehavior,
+    snapAnimation,
+    thumbStepBehavior,
     thumbCrossing,
     activationFeedback,
     formatValue,
@@ -334,35 +335,35 @@ function SliderRoot(props: SliderProps) {
   const resolvedValueSummaryPlacement: SliderValueSummaryPlacementOption =
     valueSummaryPlacement ?? options.valueSummaryPlacement;
   const resolvedValueAnimation = valueAnimation ?? options.valueAnimation;
-  const resolvedSnapMotion: SliderSnapMotionOption = snapMotion ?? options.snapMotion;
-  const resolvedThumbBehavior: SliderThumbBehaviorOption = thumbBehavior ?? options.thumbBehavior;
+  const resolvedSnapAnimation: SliderSnapAnimationOption = snapAnimation ?? options.snapAnimation;
+  const resolvedThumbStepBehavior: SliderThumbStepBehaviorOption =
+    thumbStepBehavior ?? options.thumbStepBehavior;
   const resolvedThumbCrossing = thumbCrossing ?? options.thumbCrossing;
-  const resolvedThumbEdgeBehavior: SliderThumbEdgeBehaviorOption =
-    thumbEdgeBehavior ?? options.thumbEdgeBehavior;
-  const resolvedActiveTrackOrigin: SliderActiveTrackOriginOption =
-    activeTrackOrigin ?? options.activeTrackOrigin;
-  const resolvedOriginMark: SliderOriginMarkOption = originMark ?? options.originMark;
+  const resolvedThumbEdge: SliderThumbEdgeOption = thumbEdge ?? options.thumbEdge;
+  const resolvedFillOrigin: SliderFillOriginOption = fillOrigin ?? options.fillOrigin;
+  const resolvedFillOriginMark: SliderFillOriginMarkOption =
+    fillOriginMark ?? options.fillOriginMark;
   const resolvedMarkPlacement: SliderMarkPlacementOption = markPlacement ?? options.markPlacement;
   const resolvedMarkLabelPlacement = resolveMarkLabelPlacement(
     markLabelPlacement ?? options.markLabelPlacement,
     isLikelyTouch
   );
-  const resolvedEdgeMarkLabelPlacement = resolveEdgeMarkLabelPlacement(
-    edgeMarkLabelPlacement ?? options.edgeMarkLabelPlacement,
+  const resolvedEdgeLabelPlacement = resolveEdgeLabelPlacement(
+    edgeLabelPlacement ?? options.edgeLabelPlacement,
     isCompactViewport
   );
-  const resolvedEdgeMarkLabelAlignment = resolveEdgeMarkLabelAlignment(
-    edgeMarkLabelAlignment ?? options.edgeMarkLabelAlignment,
+  const resolvedEdgeLabelAlignment = resolveEdgeLabelAlignment(
+    edgeLabelAlignment ?? options.edgeLabelAlignment,
     isCompactViewport
   );
-  const resolvedValueMode = resolveValueMode(valueMode, props);
+  const resolvedSelectionMode = resolveSelectionMode(selectionMode, props);
   const { min, max } = normalizeBounds(minProp, maxProp);
   const step = normalizeStep(stepProp);
-  const resolvedMarkStep = markStep ?? options.markStep;
+  const resolvedMarkInterval = markInterval ?? options.markInterval;
   const resolvedEdgeMarks = edgeMarks ?? options.edgeMarks;
   const normalizedMarks = useMemo(
-    () => resolveMarks(marks ?? options.marks, min, max, step, resolvedMarkStep),
-    [marks, max, min, options.marks, resolvedMarkStep, step]
+    () => resolveMarks(marks ?? options.marks, min, max, step, resolvedMarkInterval),
+    [marks, max, min, options.marks, resolvedMarkInterval, step]
   );
   const visualMarks = useMemo(
     () => applyEdgeMarks(normalizedMarks, min, max, resolvedEdgeMarks),
@@ -370,12 +371,12 @@ function SliderRoot(props: SliderProps) {
   );
   const markLabels = useMemo(
     () =>
-      resolvedEdgeMarkLabelPlacement === 'endpoints'
+      resolvedEdgeLabelPlacement === 'endpoints'
         ? []
         : normalizedMarks.filter((mark) => mark.label !== undefined),
-    [max, min, normalizedMarks, resolvedEdgeMarkLabelPlacement]
+    [max, min, normalizedMarks, resolvedEdgeLabelPlacement]
   );
-  const shouldRenderEdgeMarkLabelsAsEndpoints = resolvedEdgeMarkLabelPlacement === 'endpoints';
+  const shouldRenderEdgeLabelsAsEndpoints = resolvedEdgeLabelPlacement === 'endpoints';
   const startEdgeMark = getEdgeMark(normalizedMarks, min);
   const endEdgeMark = getEdgeMark(normalizedMarks, max);
   const hasLabel = label !== undefined && label !== null;
@@ -427,7 +428,7 @@ function SliderRoot(props: SliderProps) {
           e1: join(
             classNames.e1,
             className,
-            resolvedSnapMotion === 'smooth' && SNAP_MOTION_CLASS_NAME
+            resolvedSnapAnimation === 'smooth' && SNAP_MOTION_CLASS_NAME
           )
         },
         structuralBranch: 'a',
@@ -461,7 +462,7 @@ function SliderRoot(props: SliderProps) {
       resolvedRadius,
       resolvedMarkPlacement,
       resolvedMarkLabelPlacement,
-      resolvedSnapMotion,
+      resolvedSnapAnimation,
       scale
     ]
   );
@@ -479,8 +480,8 @@ function SliderRoot(props: SliderProps) {
     disabled,
     enabled: Boolean(activationFeedbackEffect),
     forcedActive: activationFeedback === 'active',
-    geometryKey: `${scale}:${resolvedRadius}:${resolvedValueMode}:${headlessClassNames.e10}:${headlessClassNames.e11}`,
-    isRange: resolvedValueMode === 'range',
+    geometryKey: `${scale}:${resolvedRadius}:${resolvedSelectionMode}:${headlessClassNames.e10}:${headlessClassNames.e11}`,
+    isRange: resolvedSelectionMode === 'range',
     profile: activationFeedbackProfile,
     readOnly,
     startThumbRef,
@@ -598,16 +599,16 @@ function SliderRoot(props: SliderProps) {
       classNames={headlessClassNames}
       labelId={hasLabel ? labelId : false}
       describedBy={describedBy}
-      valueMode={resolvedValueMode}
+      selectionMode={resolvedSelectionMode}
       value={value}
       defaultValue={defaultValue}
       min={min}
       max={max}
       step={step}
-      thumbBehavior={resolvedThumbBehavior}
+      thumbStepBehavior={resolvedThumbStepBehavior}
       thumbCrossing={resolvedThumbCrossing}
-      thumbEdgeBehavior={resolvedThumbEdgeBehavior}
-      activeTrackOrigin={resolvedActiveTrackOrigin}
+      thumbEdge={resolvedThumbEdge}
+      fillOrigin={resolvedFillOrigin}
       disabled={disabled}
       readOnly={readOnly}
       required={required}
@@ -640,10 +641,10 @@ function SliderRoot(props: SliderProps) {
       ) : null}
       <HeadlessSlider.ControlRow>
         <div className="k-sld-x2-a">
-          {renderEndpoint('start', startEdgeMark, shouldRenderEdgeMarkLabelsAsEndpoints)}
+          {renderEndpoint('start', startEdgeMark, shouldRenderEdgeLabelsAsEndpoints)}
           <HeadlessSlider.Track>
             <HeadlessSlider.ActiveTrack />
-            {shouldRenderOriginMark(resolvedOriginMark, resolvedActiveTrackOrigin, min, max) ? (
+            {shouldRenderFillOriginMark(resolvedFillOriginMark, resolvedFillOrigin, min, max) ? (
               <HeadlessSlider.OriginMark />
             ) : null}
             {visualMarks.map((mark) => (
@@ -652,11 +653,11 @@ function SliderRoot(props: SliderProps) {
             {markLabels.map((mark) => (
               <HeadlessSlider.MarkLabel
                 key={`mark-label-${mark.value}`}
-                className={getEdgeMarkLabelAlignmentClassName(
+                className={getEdgeLabelAlignmentClassName(
                   mark,
                   min,
                   max,
-                  resolvedEdgeMarkLabelAlignment
+                  resolvedEdgeLabelAlignment
                 )}
                 value={mark.value}
               >
@@ -674,7 +675,7 @@ function SliderRoot(props: SliderProps) {
               {renderThumbIcon(0)}
               {renderValueIndicator(0)}
             </HeadlessSlider.Thumb>
-            {resolvedValueMode === 'range' ? (
+            {resolvedSelectionMode === 'range' ? (
               <HeadlessSlider.Thumb
                 ref={endThumbRef}
                 index={1}
@@ -688,7 +689,7 @@ function SliderRoot(props: SliderProps) {
               </HeadlessSlider.Thumb>
             ) : null}
           </HeadlessSlider.Track>
-          {renderEndpoint('end', endEdgeMark, shouldRenderEdgeMarkLabelsAsEndpoints)}
+          {renderEndpoint('end', endEdgeMark, shouldRenderEdgeLabelsAsEndpoints)}
         </div>
         {hasControlValueSummary ? renderValueSummary() : null}
       </HeadlessSlider.ControlRow>

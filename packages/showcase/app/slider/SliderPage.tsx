@@ -12,18 +12,19 @@ import {
   Card,
   Slider,
   type SliderActivationFeedback,
-  type SliderActiveTrackOriginOption,
-  type SliderEdgeMarkLabelAlignmentOption,
-  type SliderEdgeMarkLabelPlacementOption,
+  type SliderEdgeLabelAlignmentOption,
+  type SliderEdgeLabelPlacementOption,
   type SliderEdgeMarksOption,
+  type SliderFillOriginMarkOption,
+  type SliderFillOriginOption,
   type SliderMarkLabelPlacementOption,
   type SliderMarkPlacementOption,
   type SliderMarks,
-  type SliderOriginMarkOption,
-  type SliderSnapMotionOption,
-  type SliderThumbBehaviorOption,
+  type SliderSelectionMode,
+  type SliderSnapAnimationOption,
   type SliderThumbCrossingOption,
-  type SliderThumbEdgeBehaviorOption,
+  type SliderThumbEdgeOption,
+  type SliderThumbStepBehaviorOption,
   type SliderValueAnimationOption,
   type SliderValueSummaryPlacementOption,
   useCardArtifactConfig,
@@ -52,16 +53,15 @@ import { SwatchRadioGroup } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
 import s from './Slider.module.scss';
 
-type SliderValueMode = 'single' | 'range';
 type SliderMarksMode = 'none' | 'step' | 'labeled';
 type SliderActivationFeedbackControl = 'default' | 'off' | 'active';
 type SliderValueAnimationControl = 'default' | SliderValueAnimationOption;
 type SliderValueSummaryPlacementControl = 'default' | SliderValueSummaryPlacementOption;
-type SliderSnapMotionControl = 'default' | SliderSnapMotionOption;
-type SliderThumbBehaviorControl = 'default' | SliderThumbBehaviorOption;
+type SliderSnapAnimationControl = 'default' | SliderSnapAnimationOption;
+type SliderThumbStepBehaviorControl = 'default' | SliderThumbStepBehaviorOption;
 type SliderThumbCrossingControl = 'default' | SliderThumbCrossingOption;
-type SliderMarkStepControl = 'default' | '1' | '5' | '10' | '25' | '50';
-type SliderActiveTrackOriginControl = 'min' | 'center' | '25' | '50' | '75';
+type SliderMarkIntervalControl = 'default' | '1' | '5' | '10' | '25' | '50';
+type SliderFillOriginControl = 'min' | 'center' | '25' | '50' | '75';
 
 const scaleOptions: Array<{ value: ElementSizeValue; label: string }> = [
   { value: 's:sm:3', label: 'Small 3' },
@@ -161,7 +161,7 @@ const surfaceProfiles: Record<SliderSurface, SliderSurfaceProfile> = {
   }
 };
 
-const valueModeOptions: Array<{ value: SliderValueMode; label: string }> = [
+const selectionModeOptions: Array<{ value: SliderSelectionMode; label: string }> = [
   { value: 'single', label: 'Single value' },
   { value: 'range', label: 'Range' }
 ];
@@ -189,13 +189,13 @@ const valueSummaryPlacementOptions: Array<{
   { value: 'controlEnd', label: 'Control end' }
 ];
 
-const snapMotionOptions: Array<{ value: SliderSnapMotionControl; label: string }> = [
+const snapAnimationOptions: Array<{ value: SliderSnapAnimationControl; label: string }> = [
   { value: 'default', label: 'Default' },
   { value: 'none', label: 'None' },
   { value: 'smooth', label: 'Smooth' }
 ];
 
-const thumbBehaviorOptions: Array<{ value: SliderThumbBehaviorControl; label: string }> = [
+const thumbStepBehaviorOptions: Array<{ value: SliderThumbStepBehaviorControl; label: string }> = [
   { value: 'default', label: 'Default' },
   { value: 'snap', label: 'Snap' },
   { value: 'hold', label: 'Hold' },
@@ -214,7 +214,7 @@ const marksModeOptions: Array<{ value: SliderMarksMode; label: string }> = [
   { value: 'labeled', label: 'Labeled' }
 ];
 
-const markStepOptions: Array<{ value: SliderMarkStepControl; label: string }> = [
+const markIntervalOptions: Array<{ value: SliderMarkIntervalControl; label: string }> = [
   { value: 'default', label: 'Default' },
   { value: '1', label: '1' },
   { value: '5', label: '5' },
@@ -235,13 +235,13 @@ const markPlacementOptions: Array<{ value: SliderMarkPlacementOption; label: str
 ];
 
 const markLabelPlacementOptions: Array<{ value: SliderMarkLabelPlacementOption; label: string }> = [
-  { value: 'auto', label: 'Auto' },
+  { value: 'adaptive', label: 'Adaptive' },
   { value: 'above', label: 'Above' },
   { value: 'below', label: 'Below' }
 ];
 
-const edgeMarkLabelPlacementOptions: Array<{
-  value: SliderEdgeMarkLabelPlacementOption;
+const edgeLabelPlacementOptions: Array<{
+  value: SliderEdgeLabelPlacementOption;
   label: string;
 }> = [
   { value: 'markLabels', label: 'Mark labels' },
@@ -249,8 +249,8 @@ const edgeMarkLabelPlacementOptions: Array<{
   { value: 'adaptive', label: 'Adaptive' }
 ];
 
-const edgeMarkLabelAlignmentOptions: Array<{
-  value: SliderEdgeMarkLabelAlignmentOption;
+const edgeLabelAlignmentOptions: Array<{
+  value: SliderEdgeLabelAlignmentOption;
   label: string;
 }> = [
   { value: 'inside', label: 'Inside' },
@@ -258,12 +258,12 @@ const edgeMarkLabelAlignmentOptions: Array<{
   { value: 'adaptive', label: 'Adaptive' }
 ];
 
-const thumbEdgeBehaviorOptions: Array<{ value: SliderThumbEdgeBehaviorOption; label: string }> = [
+const thumbEdgeOptions: Array<{ value: SliderThumbEdgeOption; label: string }> = [
   { value: 'overflow', label: 'Overflow' },
   { value: 'contain', label: 'Contain' }
 ];
 
-const activeTrackOriginOptions: Array<{ value: SliderActiveTrackOriginControl; label: string }> = [
+const fillOriginOptions: Array<{ value: SliderFillOriginControl; label: string }> = [
   { value: 'min', label: 'Min' },
   { value: 'center', label: 'Center' },
   { value: '25', label: '25' },
@@ -271,7 +271,7 @@ const activeTrackOriginOptions: Array<{ value: SliderActiveTrackOriginControl; l
   { value: '75', label: '75' }
 ];
 
-const originMarkOptions: Array<{ value: SliderOriginMarkOption; label: string }> = [
+const fillOriginMarkOptions: Array<{ value: SliderFillOriginMarkOption; label: string }> = [
   { value: 'none', label: 'None' },
   { value: 'auto', label: 'Auto' }
 ];
@@ -406,16 +406,16 @@ function resolveValueSummaryPlacementProp(
   return valueSummaryPlacement === 'default' ? undefined : valueSummaryPlacement;
 }
 
-function resolveSnapMotionProp(
-  snapMotion: SliderSnapMotionControl
-): SliderSnapMotionOption | undefined {
-  return snapMotion === 'default' ? undefined : snapMotion;
+function resolveSnapAnimationProp(
+  snapAnimation: SliderSnapAnimationControl
+): SliderSnapAnimationOption | undefined {
+  return snapAnimation === 'default' ? undefined : snapAnimation;
 }
 
-function resolveThumbBehaviorProp(
-  thumbBehavior: SliderThumbBehaviorControl
-): SliderThumbBehaviorOption | undefined {
-  return thumbBehavior === 'default' ? undefined : thumbBehavior;
+function resolveThumbStepBehaviorProp(
+  thumbStepBehavior: SliderThumbStepBehaviorControl
+): SliderThumbStepBehaviorOption | undefined {
+  return thumbStepBehavior === 'default' ? undefined : thumbStepBehavior;
 }
 
 function resolveThumbCrossingProp(
@@ -424,32 +424,34 @@ function resolveThumbCrossingProp(
   return thumbCrossing === 'default' ? undefined : thumbCrossing;
 }
 
-function resolveMarkStepProp(markStep: SliderMarkStepControl): number | undefined {
-  return markStep === 'default' ? undefined : Number(markStep);
+function resolveMarkIntervalProp(markInterval: SliderMarkIntervalControl): number | undefined {
+  return markInterval === 'default' ? undefined : Number(markInterval);
 }
 
-function toMarkStepControl(markStep: number | undefined): SliderMarkStepControl {
-  if (markStep === 1 || markStep === 5 || markStep === 10 || markStep === 25 || markStep === 50) {
-    return String(markStep) as SliderMarkStepControl;
+function toMarkIntervalControl(markInterval: number | undefined): SliderMarkIntervalControl {
+  if (
+    markInterval === 1 ||
+    markInterval === 5 ||
+    markInterval === 10 ||
+    markInterval === 25 ||
+    markInterval === 50
+  ) {
+    return String(markInterval) as SliderMarkIntervalControl;
   }
   return 'default';
 }
 
-function toActiveTrackOriginControl(
-  activeTrackOrigin: SliderActiveTrackOriginOption
-): SliderActiveTrackOriginControl {
-  if (activeTrackOrigin === 'center' || activeTrackOrigin === 'min') return activeTrackOrigin;
-  if (activeTrackOrigin === 25 || activeTrackOrigin === 50 || activeTrackOrigin === 75) {
-    return String(activeTrackOrigin) as SliderActiveTrackOriginControl;
+function toFillOriginControl(fillOrigin: SliderFillOriginOption): SliderFillOriginControl {
+  if (fillOrigin === 'center' || fillOrigin === 'min') return fillOrigin;
+  if (fillOrigin === 25 || fillOrigin === 50 || fillOrigin === 75) {
+    return String(fillOrigin) as SliderFillOriginControl;
   }
   return 'min';
 }
 
-function resolveActiveTrackOriginProp(
-  activeTrackOrigin: SliderActiveTrackOriginControl
-): SliderActiveTrackOriginOption {
-  if (activeTrackOrigin === 'min' || activeTrackOrigin === 'center') return activeTrackOrigin;
-  return Number(activeTrackOrigin);
+function resolveFillOriginProp(fillOrigin: SliderFillOriginControl): SliderFillOriginOption {
+  if (fillOrigin === 'min' || fillOrigin === 'center') return fillOrigin;
+  return Number(fillOrigin);
 }
 
 function formatSquareMeters(value: number): string {
@@ -599,28 +601,28 @@ export default function SliderPage() {
   const [intent, setIntent] = useState<SliderIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
   const [surface, setSurface] = useState<SliderSurface>('white');
-  const [valueMode, setValueMode] = useState<SliderValueMode>('single');
+  const [selectionMode, setSelectionMode] = useState<SliderSelectionMode>('single');
   const [valueDisplay, setValueDisplay] = useState<SliderValueDisplay>('tooltip');
   const [valueAnimation, setValueAnimation] = useState<SliderValueAnimationControl>('rolling');
   const [valueSummaryPlacement, setValueSummaryPlacement] =
     useState<SliderValueSummaryPlacementControl>('default');
-  const [snapMotion, setSnapMotion] = useState<SliderSnapMotionControl>('smooth');
-  const [thumbBehavior, setThumbBehavior] = useState<SliderThumbBehaviorControl>('snap');
+  const [snapAnimation, setSnapAnimation] = useState<SliderSnapAnimationControl>('smooth');
+  const [thumbStepBehavior, setThumbStepBehavior] =
+    useState<SliderThumbStepBehaviorControl>('snap');
   const [thumbCrossing, setThumbCrossing] = useState<SliderThumbCrossingControl>('swap');
   const [marksMode, setMarksMode] = useState<SliderMarksMode>('none');
-  const [markStep, setMarkStep] = useState<SliderMarkStepControl>('default');
+  const [markInterval, setMarkInterval] = useState<SliderMarkIntervalControl>('default');
   const [edgeMarks, setEdgeMarks] = useState<SliderEdgeMarksOption>('include');
   const [markPlacement, setMarkPlacement] = useState<SliderMarkPlacementOption>('track');
   const [markLabelPlacement, setMarkLabelPlacement] =
-    useState<SliderMarkLabelPlacementOption>('auto');
-  const [edgeMarkLabelPlacement, setEdgeMarkLabelPlacement] =
-    useState<SliderEdgeMarkLabelPlacementOption>('markLabels');
-  const [edgeMarkLabelAlignment, setEdgeMarkLabelAlignment] =
-    useState<SliderEdgeMarkLabelAlignmentOption>('inside');
-  const [thumbEdgeBehavior, setThumbEdgeBehavior] =
-    useState<SliderThumbEdgeBehaviorOption>('overflow');
-  const [activeTrackOrigin, setActiveTrackOrigin] = useState<SliderActiveTrackOriginControl>('min');
-  const [originMark, setOriginMark] = useState<SliderOriginMarkOption>('none');
+    useState<SliderMarkLabelPlacementOption>('adaptive');
+  const [edgeLabelPlacement, setEdgeLabelPlacement] =
+    useState<SliderEdgeLabelPlacementOption>('markLabels');
+  const [edgeLabelAlignment, setEdgeLabelAlignment] =
+    useState<SliderEdgeLabelAlignmentOption>('inside');
+  const [thumbEdge, setThumbEdge] = useState<SliderThumbEdgeOption>('overflow');
+  const [fillOrigin, setFillOrigin] = useState<SliderFillOriginControl>('min');
+  const [fillOriginMark, setFillOriginMark] = useState<SliderFillOriginMarkOption>('none');
   const [activationFeedback, setActivationFeedback] =
     useState<SliderActivationFeedbackControl>('default');
   const [disabled, setDisabled] = useState(false);
@@ -752,12 +754,12 @@ export default function SliderPage() {
   const activationFeedbackProp = resolveActivationFeedbackProp(activationFeedback);
   const valueAnimationProp = resolveValueAnimationProp(valueAnimation);
   const valueSummaryPlacementProp = resolveValueSummaryPlacementProp(valueSummaryPlacement);
-  const interactiveValueSummaryWidth = valueMode === 'range' ? 96 : 44;
-  const snapMotionProp = resolveSnapMotionProp(snapMotion);
-  const thumbBehaviorProp = resolveThumbBehaviorProp(thumbBehavior);
+  const interactiveValueSummaryWidth = selectionMode === 'range' ? 96 : 44;
+  const snapAnimationProp = resolveSnapAnimationProp(snapAnimation);
+  const thumbStepBehaviorProp = resolveThumbStepBehaviorProp(thumbStepBehavior);
   const thumbCrossingProp = resolveThumbCrossingProp(thumbCrossing);
-  const markStepProp = resolveMarkStepProp(markStep);
-  const activeTrackOriginProp = resolveActiveTrackOriginProp(activeTrackOrigin);
+  const markIntervalProp = resolveMarkIntervalProp(markInterval);
+  const fillOriginProp = resolveFillOriginProp(fillOrigin);
   const visibleVolume = volumePreview ?? volume;
 
   useEffect(() => {
@@ -819,12 +821,12 @@ export default function SliderPage() {
   }, [sliderOptions.edgeMarks]);
 
   useEffect(() => {
-    setThumbBehavior(sliderOptions.thumbBehavior);
-  }, [sliderOptions.thumbBehavior]);
+    setThumbStepBehavior(sliderOptions.thumbStepBehavior);
+  }, [sliderOptions.thumbStepBehavior]);
 
   useEffect(() => {
-    setMarkStep(toMarkStepControl(sliderOptions.markStep));
-  }, [sliderOptions.markStep]);
+    setMarkInterval(toMarkIntervalControl(sliderOptions.markInterval));
+  }, [sliderOptions.markInterval]);
 
   useEffect(() => {
     setMarkPlacement(sliderOptions.markPlacement);
@@ -835,24 +837,24 @@ export default function SliderPage() {
   }, [sliderOptions.markLabelPlacement]);
 
   useEffect(() => {
-    setEdgeMarkLabelPlacement(sliderOptions.edgeMarkLabelPlacement);
-  }, [sliderOptions.edgeMarkLabelPlacement]);
+    setEdgeLabelPlacement(sliderOptions.edgeLabelPlacement);
+  }, [sliderOptions.edgeLabelPlacement]);
 
   useEffect(() => {
-    setEdgeMarkLabelAlignment(sliderOptions.edgeMarkLabelAlignment);
-  }, [sliderOptions.edgeMarkLabelAlignment]);
+    setEdgeLabelAlignment(sliderOptions.edgeLabelAlignment);
+  }, [sliderOptions.edgeLabelAlignment]);
 
   useEffect(() => {
-    setThumbEdgeBehavior(sliderOptions.thumbEdgeBehavior);
-  }, [sliderOptions.thumbEdgeBehavior]);
+    setThumbEdge(sliderOptions.thumbEdge);
+  }, [sliderOptions.thumbEdge]);
 
   useEffect(() => {
-    setActiveTrackOrigin(toActiveTrackOriginControl(sliderOptions.activeTrackOrigin));
-  }, [sliderOptions.activeTrackOrigin]);
+    setFillOrigin(toFillOriginControl(sliderOptions.fillOrigin));
+  }, [sliderOptions.fillOrigin]);
 
   useEffect(() => {
-    setOriginMark(sliderOptions.originMark);
-  }, [sliderOptions.originMark]);
+    setFillOriginMark(sliderOptions.fillOriginMark);
+  }, [sliderOptions.fillOriginMark]);
 
   useEffect(() => {
     if (!surfaceOptions.length) {
@@ -997,14 +999,14 @@ export default function SliderPage() {
       <ShowcaseControlGroup title="Value">
         <ShowcaseControlGrid>
           <ShowcaseSelectControl
-            label="Mode"
-            options={valueModeOptions}
-            value={valueMode}
+            label="Selection mode"
+            options={selectionModeOptions}
+            value={selectionMode}
             onValueChange={(value) => {
-              const nextValueMode = value as SliderValueMode;
-              if (nextValueMode === valueMode) return;
+              const nextSelectionMode = value as SliderSelectionMode;
+              if (nextSelectionMode === selectionMode) return;
               playWowTransition();
-              setValueMode(nextValueMode);
+              setSelectionMode(nextSelectionMode);
             }}
             disabled={!isSliderAvailable}
           />
@@ -1045,26 +1047,26 @@ export default function SliderPage() {
             disabled={!isSliderAvailable}
           />
           <ShowcaseSelectControl
-            label="Snap motion"
-            options={snapMotionOptions}
-            value={snapMotion}
+            label="Snap animation"
+            options={snapAnimationOptions}
+            value={snapAnimation}
             onValueChange={(value) => {
-              const nextSnapMotion = value as SliderSnapMotionControl;
-              if (nextSnapMotion === snapMotion) return;
+              const nextSnapAnimation = value as SliderSnapAnimationControl;
+              if (nextSnapAnimation === snapAnimation) return;
               playWowTransition();
-              setSnapMotion(nextSnapMotion);
+              setSnapAnimation(nextSnapAnimation);
             }}
             disabled={!isSliderAvailable}
           />
           <ShowcaseSelectControl
-            label="Thumb behavior"
-            options={thumbBehaviorOptions}
-            value={thumbBehavior}
+            label="Thumb step behavior"
+            options={thumbStepBehaviorOptions}
+            value={thumbStepBehavior}
             onValueChange={(value) => {
-              const nextThumbBehavior = value as SliderThumbBehaviorControl;
-              if (nextThumbBehavior === thumbBehavior) return;
+              const nextThumbStepBehavior = value as SliderThumbStepBehaviorControl;
+              if (nextThumbStepBehavior === thumbStepBehavior) return;
               playWowTransition();
-              setThumbBehavior(nextThumbBehavior);
+              setThumbStepBehavior(nextThumbStepBehavior);
             }}
             disabled={!isSliderAvailable}
           />
@@ -1093,14 +1095,14 @@ export default function SliderPage() {
             disabled={!isSliderAvailable}
           />
           <ShowcaseSelectControl
-            label="Mark step"
-            options={markStepOptions}
-            value={markStep}
+            label="Mark interval"
+            options={markIntervalOptions}
+            value={markInterval}
             onValueChange={(value) => {
-              const nextMarkStep = value as SliderMarkStepControl;
-              if (nextMarkStep === markStep) return;
+              const nextMarkInterval = value as SliderMarkIntervalControl;
+              if (nextMarkInterval === markInterval) return;
               playWowTransition();
-              setMarkStep(nextMarkStep);
+              setMarkInterval(nextMarkInterval);
             }}
             disabled={!isSliderAvailable || marksMode !== 'step'}
           />
@@ -1141,62 +1143,62 @@ export default function SliderPage() {
             disabled={!isSliderAvailable}
           />
           <ShowcaseSelectControl
-            label="Edge mark labels"
-            options={edgeMarkLabelPlacementOptions}
-            value={edgeMarkLabelPlacement}
+            label="Edge labels"
+            options={edgeLabelPlacementOptions}
+            value={edgeLabelPlacement}
             onValueChange={(value) => {
-              const nextEdgeMarkLabelPlacement = value as SliderEdgeMarkLabelPlacementOption;
-              if (nextEdgeMarkLabelPlacement === edgeMarkLabelPlacement) return;
+              const nextEdgeLabelPlacement = value as SliderEdgeLabelPlacementOption;
+              if (nextEdgeLabelPlacement === edgeLabelPlacement) return;
               playWowTransition();
-              setEdgeMarkLabelPlacement(nextEdgeMarkLabelPlacement);
+              setEdgeLabelPlacement(nextEdgeLabelPlacement);
             }}
             disabled={!isSliderAvailable}
           />
           <ShowcaseSelectControl
             label="Edge label alignment"
-            options={edgeMarkLabelAlignmentOptions}
-            value={edgeMarkLabelAlignment}
+            options={edgeLabelAlignmentOptions}
+            value={edgeLabelAlignment}
             onValueChange={(value) => {
-              const nextEdgeMarkLabelAlignment = value as SliderEdgeMarkLabelAlignmentOption;
-              if (nextEdgeMarkLabelAlignment === edgeMarkLabelAlignment) return;
+              const nextEdgeLabelAlignment = value as SliderEdgeLabelAlignmentOption;
+              if (nextEdgeLabelAlignment === edgeLabelAlignment) return;
               playWowTransition();
-              setEdgeMarkLabelAlignment(nextEdgeMarkLabelAlignment);
+              setEdgeLabelAlignment(nextEdgeLabelAlignment);
             }}
             disabled={!isSliderAvailable}
           />
           <ShowcaseSelectControl
             label="Thumb edge"
-            options={thumbEdgeBehaviorOptions}
-            value={thumbEdgeBehavior}
+            options={thumbEdgeOptions}
+            value={thumbEdge}
             onValueChange={(value) => {
-              const nextThumbEdgeBehavior = value as SliderThumbEdgeBehaviorOption;
-              if (nextThumbEdgeBehavior === thumbEdgeBehavior) return;
+              const nextThumbEdge = value as SliderThumbEdgeOption;
+              if (nextThumbEdge === thumbEdge) return;
               playWowTransition();
-              setThumbEdgeBehavior(nextThumbEdgeBehavior);
+              setThumbEdge(nextThumbEdge);
             }}
             disabled={!isSliderAvailable}
           />
           <ShowcaseSelectControl
-            label="Active origin"
-            options={activeTrackOriginOptions}
-            value={activeTrackOrigin}
+            label="Fill origin"
+            options={fillOriginOptions}
+            value={fillOrigin}
             onValueChange={(value) => {
-              const nextActiveTrackOrigin = value as SliderActiveTrackOriginControl;
-              if (nextActiveTrackOrigin === activeTrackOrigin) return;
+              const nextFillOrigin = value as SliderFillOriginControl;
+              if (nextFillOrigin === fillOrigin) return;
               playWowTransition();
-              setActiveTrackOrigin(nextActiveTrackOrigin);
+              setFillOrigin(nextFillOrigin);
             }}
             disabled={!isSliderAvailable}
           />
           <ShowcaseSelectControl
-            label="Origin mark"
-            options={originMarkOptions}
-            value={originMark}
+            label="Fill origin mark"
+            options={fillOriginMarkOptions}
+            value={fillOriginMark}
             onValueChange={(value) => {
-              const nextOriginMark = value as SliderOriginMarkOption;
-              if (nextOriginMark === originMark) return;
+              const nextFillOriginMark = value as SliderFillOriginMarkOption;
+              if (nextFillOriginMark === fillOriginMark) return;
               playWowTransition();
-              setOriginMark(nextOriginMark);
+              setFillOriginMark(nextFillOriginMark);
             }}
             disabled={!isSliderAvailable}
           />
@@ -1272,12 +1274,12 @@ export default function SliderPage() {
               className={s.interactiveCard}
             >
               <Slider
-                label={valueMode === 'range' ? 'Selected range' : 'Selected value'}
-                valueMode={valueMode}
+                label={selectionMode === 'range' ? 'Selected range' : 'Selected value'}
+                selectionMode={selectionMode}
                 min={0}
                 max={100}
                 step={5}
-                value={valueMode === 'range' ? interactiveRange : interactiveValue}
+                value={selectionMode === 'range' ? interactiveRange : interactiveValue}
                 onValueChange={(nextValue) => {
                   if (Array.isArray(nextValue)) {
                     setInteractiveRange([nextValue[0], nextValue[1]]);
@@ -1286,21 +1288,21 @@ export default function SliderPage() {
                   setInteractiveValue(nextValue);
                 }}
                 marks={interactiveMarks}
-                markStep={markStepProp}
+                markInterval={markIntervalProp}
                 edgeMarks={edgeMarks}
                 markPlacement={markPlacement}
                 markLabelPlacement={markLabelPlacement}
-                edgeMarkLabelPlacement={edgeMarkLabelPlacement}
-                edgeMarkLabelAlignment={edgeMarkLabelAlignment}
-                thumbEdgeBehavior={thumbEdgeBehavior}
-                activeTrackOrigin={activeTrackOriginProp}
-                originMark={originMark}
+                edgeLabelPlacement={edgeLabelPlacement}
+                edgeLabelAlignment={edgeLabelAlignment}
+                thumbEdge={thumbEdge}
+                fillOrigin={fillOriginProp}
+                fillOriginMark={fillOriginMark}
                 valueDisplay={valueDisplay}
                 valueSummaryPlacement={valueSummaryPlacementProp}
                 valueSummaryWidth={interactiveValueSummaryWidth}
                 valueAnimation={valueAnimationProp}
-                snapMotion={snapMotionProp}
-                thumbBehavior={thumbBehaviorProp}
+                snapAnimation={snapAnimationProp}
+                thumbStepBehavior={thumbStepBehaviorProp}
                 thumbCrossing={thumbCrossingProp}
                 activationFeedback={activationFeedbackProp}
                 formatValue={formatPercent}
@@ -1352,17 +1354,17 @@ export default function SliderPage() {
                     },
                     { value: 100, icon: <VolumeHighIcon /> }
                   ]}
-                  markStep={markStepProp}
+                  markInterval={markIntervalProp}
                   edgeMarks="exclude"
                   markPlacement={markPlacement}
                   markLabelPlacement={markLabelPlacement}
-                  edgeMarkLabelPlacement={edgeMarkLabelPlacement}
-                  edgeMarkLabelAlignment={edgeMarkLabelAlignment}
-                  thumbEdgeBehavior={thumbEdgeBehavior}
-                  activeTrackOrigin={activeTrackOriginProp}
-                  originMark={originMark}
-                  snapMotion={snapMotionProp}
-                  thumbBehavior={thumbBehaviorProp}
+                  edgeLabelPlacement={edgeLabelPlacement}
+                  edgeLabelAlignment={edgeLabelAlignment}
+                  thumbEdge={thumbEdge}
+                  fillOrigin={fillOriginProp}
+                  fillOriginMark={fillOriginMark}
+                  snapAnimation={snapAnimationProp}
+                  thumbStepBehavior={thumbStepBehaviorProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
@@ -1386,18 +1388,18 @@ export default function SliderPage() {
                     if (typeof nextValue === 'number') setThumbIconVolume(nextValue);
                   }}
                   thumbIcon={({ value }) => renderThumbVolumeIcon(value)}
-                  markStep={markStepProp}
+                  markInterval={markIntervalProp}
                   edgeMarks="exclude"
                   markPlacement={markPlacement}
                   markLabelPlacement={markLabelPlacement}
-                  edgeMarkLabelPlacement={edgeMarkLabelPlacement}
-                  edgeMarkLabelAlignment={edgeMarkLabelAlignment}
-                  thumbEdgeBehavior={thumbEdgeBehavior}
-                  activeTrackOrigin={activeTrackOriginProp}
-                  originMark={originMark}
+                  edgeLabelPlacement={edgeLabelPlacement}
+                  edgeLabelAlignment={edgeLabelAlignment}
+                  thumbEdge={thumbEdge}
+                  fillOrigin={fillOriginProp}
+                  fillOriginMark={fillOriginMark}
                   valueDisplay="none"
-                  snapMotion={snapMotionProp}
-                  thumbBehavior={thumbBehaviorProp}
+                  snapAnimation={snapAnimationProp}
+                  thumbStepBehavior={thumbStepBehaviorProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
@@ -1414,7 +1416,7 @@ export default function SliderPage() {
                 <Slider
                   label="Area"
                   required
-                  valueMode="range"
+                  selectionMode="range"
                   min={25}
                   max={250}
                   step={5}
@@ -1427,20 +1429,20 @@ export default function SliderPage() {
                     { value: 250, label: formatSquareMeters(250) }
                   ]}
                   thumbIcon={<DragHandleIcon />}
-                  markStep={markStepProp}
+                  markInterval={markIntervalProp}
                   edgeMarks="exclude"
                   markPlacement={markPlacement}
                   markLabelPlacement={markLabelPlacement}
-                  edgeMarkLabelPlacement={edgeMarkLabelPlacement}
-                  edgeMarkLabelAlignment={edgeMarkLabelAlignment}
-                  thumbEdgeBehavior={thumbEdgeBehavior}
-                  activeTrackOrigin={activeTrackOriginProp}
-                  originMark={originMark}
+                  edgeLabelPlacement={edgeLabelPlacement}
+                  edgeLabelAlignment={edgeLabelAlignment}
+                  thumbEdge={thumbEdge}
+                  fillOrigin={fillOriginProp}
+                  fillOriginMark={fillOriginMark}
                   formatValue={(value) => formatSquareMeters(value)}
                   valueDisplay="tooltip"
                   valueAnimation={valueAnimationProp}
-                  snapMotion={snapMotionProp}
-                  thumbBehavior={thumbBehaviorProp}
+                  snapAnimation={snapAnimationProp}
+                  thumbStepBehavior={thumbStepBehaviorProp}
                   thumbCrossing={thumbCrossingProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
@@ -1468,19 +1470,19 @@ export default function SliderPage() {
                     { value: 0, icon: <MoonIcon /> },
                     { value: 100, icon: <SunIcon /> }
                   ]}
-                  markStep={markStepProp}
+                  markInterval={markIntervalProp}
                   edgeMarks="exclude"
                   markPlacement={markPlacement}
-                  edgeMarkLabelPlacement={edgeMarkLabelPlacement}
-                  edgeMarkLabelAlignment={edgeMarkLabelAlignment}
-                  thumbEdgeBehavior={thumbEdgeBehavior}
-                  activeTrackOrigin={activeTrackOriginProp}
-                  originMark={originMark}
+                  edgeLabelPlacement={edgeLabelPlacement}
+                  edgeLabelAlignment={edgeLabelAlignment}
+                  thumbEdge={thumbEdge}
+                  fillOrigin={fillOriginProp}
+                  fillOriginMark={fillOriginMark}
                   formatValue={(value) => (value > 85 ? 'Very Bright' : `${value}%`)}
                   valueDisplay="tooltip"
                   valueAnimation={valueAnimationProp}
-                  snapMotion={snapMotionProp}
-                  thumbBehavior={thumbBehaviorProp}
+                  snapAnimation={snapAnimationProp}
+                  thumbStepBehavior={thumbStepBehaviorProp}
                   thumbCrossing={thumbCrossingProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
@@ -1497,7 +1499,7 @@ export default function SliderPage() {
               >
                 <Slider
                   label="Tasks completed"
-                  valueMode="range"
+                  selectionMode="range"
                   min={0}
                   max={100}
                   step={1}
@@ -1512,20 +1514,20 @@ export default function SliderPage() {
                     { value: 75, label: '75%' },
                     { value: 100, label: '100%', icon: '+' }
                   ]}
-                  markStep={markStepProp}
+                  markInterval={markIntervalProp}
                   edgeMarks={edgeMarks}
                   markPlacement={markPlacement}
                   markLabelPlacement={markLabelPlacement}
-                  edgeMarkLabelPlacement={edgeMarkLabelPlacement}
-                  edgeMarkLabelAlignment={edgeMarkLabelAlignment}
-                  thumbEdgeBehavior={thumbEdgeBehavior}
-                  activeTrackOrigin={activeTrackOriginProp}
-                  originMark={originMark}
+                  edgeLabelPlacement={edgeLabelPlacement}
+                  edgeLabelAlignment={edgeLabelAlignment}
+                  thumbEdge={thumbEdge}
+                  fillOrigin={fillOriginProp}
+                  fillOriginMark={fillOriginMark}
                   formatValue={(value) => `${value}%`}
                   valueDisplay="summary"
                   valueAnimation={valueAnimationProp}
-                  snapMotion={snapMotionProp}
-                  thumbBehavior={thumbBehaviorProp}
+                  snapAnimation={snapAnimationProp}
+                  thumbStepBehavior={thumbStepBehaviorProp}
                   thumbCrossing={thumbCrossingProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
@@ -1550,20 +1552,20 @@ export default function SliderPage() {
                     if (typeof nextValue === 'number') setCenterBiased(nextValue);
                   }}
                   marks="step"
-                  markStep={markStepProp}
+                  markInterval={markIntervalProp}
                   edgeMarks={edgeMarks}
                   markPlacement={markPlacement}
                   markLabelPlacement={markLabelPlacement}
-                  edgeMarkLabelPlacement="endpoints"
-                  edgeMarkLabelAlignment={edgeMarkLabelAlignment}
-                  thumbEdgeBehavior={thumbEdgeBehavior}
-                  activeTrackOrigin="center"
-                  originMark="auto"
+                  edgeLabelPlacement="endpoints"
+                  edgeLabelAlignment={edgeLabelAlignment}
+                  thumbEdge={thumbEdge}
+                  fillOrigin="center"
+                  fillOriginMark="auto"
                   formatValue={formatSignedPercent}
                   valueDisplay="tooltip"
                   valueAnimation={valueAnimationProp}
-                  snapMotion={snapMotionProp}
-                  thumbBehavior={thumbBehaviorProp}
+                  snapAnimation={snapAnimationProp}
+                  thumbStepBehavior={thumbStepBehaviorProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}
                   radius={radius}
@@ -1587,20 +1589,20 @@ export default function SliderPage() {
                     if (typeof nextValue === 'number') setRating(nextValue);
                   }}
                   marks={ratingMarks}
-                  markStep={markStepProp}
+                  markInterval={markIntervalProp}
                   edgeMarks={edgeMarks}
                   markPlacement={markPlacement}
                   markLabelPlacement={markLabelPlacement}
-                  edgeMarkLabelPlacement={edgeMarkLabelPlacement}
-                  edgeMarkLabelAlignment={edgeMarkLabelAlignment}
-                  thumbEdgeBehavior={thumbEdgeBehavior}
-                  activeTrackOrigin={activeTrackOriginProp}
-                  originMark={originMark}
+                  edgeLabelPlacement={edgeLabelPlacement}
+                  edgeLabelAlignment={edgeLabelAlignment}
+                  thumbEdge={thumbEdge}
+                  fillOrigin={fillOriginProp}
+                  fillOriginMark={fillOriginMark}
                   helperText="How happy are you with the level of service?"
                   valueDisplay="tooltip"
                   valueAnimation={valueAnimationProp}
-                  snapMotion={snapMotionProp}
-                  thumbBehavior={thumbBehaviorProp}
+                  snapAnimation={snapAnimationProp}
+                  thumbStepBehavior={thumbStepBehaviorProp}
                   thumbCrossing={thumbCrossingProp}
                   activationFeedback={activationFeedbackProp}
                   scale={scale}

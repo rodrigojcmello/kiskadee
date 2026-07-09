@@ -6,25 +6,18 @@ export const sliderModeSchema = sliderStandardModeSchema;
 export const sliderValueDisplaySchema = z.enum(['none', 'tooltip', 'summary', 'both', 'auto']);
 export const sliderValueSummaryPlacementSchema = z.enum(['headerEnd', 'controlEnd']);
 export const sliderValueAnimationSchema = z.enum(['none', 'rolling']);
-export const sliderSnapMotionSchema = z.enum(['none', 'smooth']);
-export const sliderThumbBehaviorSchema = z.enum(['snap', 'hold', 'stops']);
+export const sliderSnapAnimationSchema = z.enum(['none', 'smooth']);
+export const sliderThumbStepBehaviorSchema = z.enum(['snap', 'hold', 'stops']);
 export const sliderThumbCrossingSchema = z.enum(['prevent', 'swap']);
 export const sliderMarksSchema = z.enum(['none', 'step']);
 export const sliderEdgeMarksSchema = z.enum(['include', 'exclude']);
 export const sliderMarkPlacementSchema = z.enum(['track', 'above', 'below']);
-export const sliderMarkLabelPlacementSchema = z.enum(['auto', 'above', 'below']);
-export const sliderEdgeMarkLabelPlacementSchema = z.enum([
-  'markLabels',
-  'endpoints',
-  'adaptive'
-]);
-export const sliderEdgeMarkLabelAlignmentSchema = z.enum(['center', 'inside', 'adaptive']);
-export const sliderThumbEdgeBehaviorSchema = z.enum(['overflow', 'contain']);
-export const sliderActiveTrackOriginSchema = z.union([
-  z.enum(['min', 'center']),
-  z.number().finite()
-]);
-export const sliderOriginMarkSchema = z.enum(['none', 'auto']);
+export const sliderMarkLabelPlacementSchema = z.enum(['adaptive', 'above', 'below']);
+export const sliderEdgeLabelPlacementSchema = z.enum(['markLabels', 'endpoints', 'adaptive']);
+export const sliderEdgeLabelAlignmentSchema = z.enum(['center', 'inside', 'adaptive']);
+export const sliderThumbEdgeSchema = z.enum(['overflow', 'contain']);
+export const sliderFillOriginSchema = z.union([z.enum(['min', 'center']), z.number().finite()]);
+export const sliderFillOriginMarkSchema = z.enum(['none', 'auto']);
 
 export type SliderVariantSchemaValue = z.infer<typeof sliderVariantSchema>;
 export type SliderStandardModeSchemaValue = z.infer<typeof sliderStandardModeSchema>;
@@ -34,24 +27,18 @@ export type SliderValueSummaryPlacementSchemaValue = z.infer<
   typeof sliderValueSummaryPlacementSchema
 >;
 export type SliderValueAnimationSchemaValue = z.infer<typeof sliderValueAnimationSchema>;
-export type SliderSnapMotionSchemaValue = z.infer<typeof sliderSnapMotionSchema>;
-export type SliderThumbBehaviorSchemaValue = z.infer<typeof sliderThumbBehaviorSchema>;
+export type SliderSnapAnimationSchemaValue = z.infer<typeof sliderSnapAnimationSchema>;
+export type SliderThumbStepBehaviorSchemaValue = z.infer<typeof sliderThumbStepBehaviorSchema>;
 export type SliderThumbCrossingSchemaValue = z.infer<typeof sliderThumbCrossingSchema>;
 export type SliderMarksSchemaValue = z.infer<typeof sliderMarksSchema>;
 export type SliderEdgeMarksSchemaValue = z.infer<typeof sliderEdgeMarksSchema>;
 export type SliderMarkPlacementSchemaValue = z.infer<typeof sliderMarkPlacementSchema>;
-export type SliderMarkLabelPlacementSchemaValue = z.infer<
-  typeof sliderMarkLabelPlacementSchema
->;
-export type SliderEdgeMarkLabelPlacementSchemaValue = z.infer<
-  typeof sliderEdgeMarkLabelPlacementSchema
->;
-export type SliderEdgeMarkLabelAlignmentSchemaValue = z.infer<
-  typeof sliderEdgeMarkLabelAlignmentSchema
->;
-export type SliderThumbEdgeBehaviorSchemaValue = z.infer<typeof sliderThumbEdgeBehaviorSchema>;
-export type SliderActiveTrackOriginSchemaValue = z.infer<typeof sliderActiveTrackOriginSchema>;
-export type SliderOriginMarkSchemaValue = z.infer<typeof sliderOriginMarkSchema>;
+export type SliderMarkLabelPlacementSchemaValue = z.infer<typeof sliderMarkLabelPlacementSchema>;
+export type SliderEdgeLabelPlacementSchemaValue = z.infer<typeof sliderEdgeLabelPlacementSchema>;
+export type SliderEdgeLabelAlignmentSchemaValue = z.infer<typeof sliderEdgeLabelAlignmentSchema>;
+export type SliderThumbEdgeSchemaValue = z.infer<typeof sliderThumbEdgeSchema>;
+export type SliderFillOriginSchemaValue = z.infer<typeof sliderFillOriginSchema>;
+export type SliderFillOriginMarkSchemaValue = z.infer<typeof sliderFillOriginMarkSchema>;
 
 export function createSliderOptionsSchema() {
   return z
@@ -60,19 +47,19 @@ export function createSliderOptionsSchema() {
       valueDisplay: sliderValueDisplaySchema.optional(),
       valueSummaryPlacement: sliderValueSummaryPlacementSchema.optional(),
       valueAnimation: sliderValueAnimationSchema.optional(),
-      snapMotion: sliderSnapMotionSchema.optional(),
-      thumbBehavior: sliderThumbBehaviorSchema.optional(),
+      snapAnimation: sliderSnapAnimationSchema.optional(),
+      thumbStepBehavior: sliderThumbStepBehaviorSchema.optional(),
       thumbCrossing: sliderThumbCrossingSchema.optional(),
       marks: sliderMarksSchema.optional(),
-      markStep: z.number().finite().positive().optional(),
+      markInterval: z.number().finite().positive().optional(),
       edgeMarks: sliderEdgeMarksSchema.optional(),
       markPlacement: sliderMarkPlacementSchema.optional(),
       markLabelPlacement: sliderMarkLabelPlacementSchema.optional(),
-      edgeMarkLabelPlacement: sliderEdgeMarkLabelPlacementSchema.optional(),
-      edgeMarkLabelAlignment: sliderEdgeMarkLabelAlignmentSchema.optional(),
-      thumbEdgeBehavior: sliderThumbEdgeBehaviorSchema.optional(),
-      activeTrackOrigin: sliderActiveTrackOriginSchema.optional(),
-      originMark: sliderOriginMarkSchema.optional()
+      edgeLabelPlacement: sliderEdgeLabelPlacementSchema.optional(),
+      edgeLabelAlignment: sliderEdgeLabelAlignmentSchema.optional(),
+      thumbEdge: sliderThumbEdgeSchema.optional(),
+      fillOrigin: sliderFillOriginSchema.optional(),
+      fillOriginMark: sliderFillOriginMarkSchema.optional()
     })
     .strict();
 }

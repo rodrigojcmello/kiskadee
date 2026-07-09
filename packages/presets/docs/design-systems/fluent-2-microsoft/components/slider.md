@@ -68,9 +68,9 @@ Kiskadee maps this to the generic Slider marks contract:
 - automatic step ticks omit edge marks through
   `components.slider.options.edgeMarks = "exclude"`;
 - mark labels use the generic Slider default
-  `components.slider.options.markLabelPlacement = "auto"`;
+  `components.slider.options.markLabelPlacement = "adaptive"`;
 - labels declared on edge marks use the Kiskadee adaptive responsive mapping
-  `components.slider.options.edgeMarkLabelPlacement = "adaptive"`;
+  `components.slider.options.edgeLabelPlacement = "adaptive"`;
 - visual element: `e15`, with width `1px` and height equal to the rail height.
 
 The default remains `none` because the Figma component default has

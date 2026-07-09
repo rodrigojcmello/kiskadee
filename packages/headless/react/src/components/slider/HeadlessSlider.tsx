@@ -22,14 +22,14 @@ import {
   useState
 } from 'react';
 
-export type SliderValueMode = 'single' | 'range';
+export type SliderSelectionMode = 'single' | 'range';
 export type SliderRangeValue = [number, number];
 export type SliderValue = number | SliderRangeValue;
 export type SliderThumbIndex = 0 | 1;
-export type SliderThumbBehavior = 'snap' | 'hold' | 'stops';
+export type SliderThumbStepBehavior = 'snap' | 'hold' | 'stops';
 export type SliderThumbCrossing = 'prevent' | 'swap';
-export type SliderThumbEdgeBehavior = 'overflow' | 'contain';
-export type SliderActiveTrackOrigin = 'min' | 'center' | number;
+export type SliderThumbEdge = 'overflow' | 'contain';
+export type SliderFillOrigin = 'min' | 'center' | number;
 
 export type SliderElementName =
   | 'e1'
@@ -81,7 +81,7 @@ export type SliderInteractionValueChangeDetails = {
   value: SliderValue;
   values: readonly number[];
   activeThumbIndex: SliderThumbIndex;
-  valueMode: SliderValueMode;
+  selectionMode: SliderSelectionMode;
 };
 
 export type SliderValueIndicatorRenderDetails = {
@@ -94,7 +94,7 @@ export type SliderThumbIconRenderDetails = {
   value: number;
   values: readonly number[];
   index: SliderThumbIndex;
-  valueMode: SliderValueMode;
+  selectionMode: SliderSelectionMode;
   isDragging: boolean;
 };
 
@@ -103,7 +103,7 @@ export type SliderValueSummaryRenderDetails = {
   values: readonly number[];
   formattedValue: ReactNode;
   formattedValues: readonly ReactNode[];
-  valueMode: SliderValueMode;
+  selectionMode: SliderSelectionMode;
 };
 
 export type SliderRootProps = SliderRootDivProps & {
@@ -111,7 +111,7 @@ export type SliderRootProps = SliderRootDivProps & {
   classNames?: SliderClassNames;
   labelId?: string | false;
   describedBy?: string;
-  valueMode?: SliderValueMode;
+  selectionMode?: SliderSelectionMode;
   value?: SliderValue;
   defaultValue?: SliderValue;
   min?: number;
@@ -123,10 +123,10 @@ export type SliderRootProps = SliderRootDivProps & {
   status?: SliderStatus;
   formatValue?: SliderFormatValue;
   getAriaValueText?: (value: number, index: SliderThumbIndex) => string;
-  thumbBehavior?: SliderThumbBehavior;
+  thumbStepBehavior?: SliderThumbStepBehavior;
   thumbCrossing?: SliderThumbCrossing;
-  thumbEdgeBehavior?: SliderThumbEdgeBehavior;
-  activeTrackOrigin?: SliderActiveTrackOrigin;
+  thumbEdge?: SliderThumbEdge;
+  fillOrigin?: SliderFillOrigin;
   onThumbInteractionCancel?: (details: SliderThumbInteractionDetails) => void;
   onThumbInteractionEnd?: (details: SliderThumbInteractionDetails) => void;
   onThumbInteractionStart?: (details: SliderThumbInteractionDetails) => void;
@@ -182,7 +182,7 @@ type SliderContextValue = {
   slotProps: SliderSlotProps;
   labelId: string | undefined;
   describedBy: string | undefined;
-  valueMode: SliderValueMode;
+  selectionMode: SliderSelectionMode;
   value: SliderValue;
   min: number;
   max: number;
@@ -195,7 +195,7 @@ type SliderContextValue = {
   getThumbPercent: (index: SliderThumbIndex) => number;
   getValuePercent: (value: number) => number;
   getActiveRangePercent: () => SliderRangeValue;
-  getActiveTrackOriginValue: () => number | null;
+  getFillOriginValue: () => number | null;
   getFormattedValue: (index: SliderThumbIndex) => ReactNode;
   getAriaValueText: (index: SliderThumbIndex) => string;
   isSettling: () => boolean;
@@ -219,12 +219,12 @@ type SliderContextValue = {
 
 type SliderDragPreview =
   | {
-      valueMode: 'single';
+      selectionMode: 'single';
       index: SliderThumbIndex;
       value: number;
     }
   | {
-      valueMode: 'range';
+      selectionMode: 'range';
       index: SliderThumbIndex;
       values: SliderRangeValue;
     };
@@ -234,15 +234,15 @@ function dragPreviewsEqual(
   right: SliderDragPreview | null
 ): boolean {
   if (left === right) return true;
-  if (!left || !right || left.valueMode !== right.valueMode || left.index !== right.index) {
+  if (!left || !right || left.selectionMode !== right.selectionMode || left.index !== right.index) {
     return false;
   }
 
-  if (left.valueMode === 'single' && right.valueMode === 'single') {
+  if (left.selectionMode === 'single' && right.selectionMode === 'single') {
     return left.value === right.value;
   }
 
-  if (left.valueMode === 'range' && right.valueMode === 'range') {
+  if (left.selectionMode === 'range' && right.selectionMode === 'range') {
     return valuesEqual(left.values, right.values);
   }
 
@@ -325,12 +325,12 @@ function roundToStep(value: number, min: number, max: number, step: number): num
 
 function normalizeValue(
   value: SliderValue | undefined,
-  valueMode: SliderValueMode,
+  selectionMode: SliderSelectionMode,
   min: number,
   max: number,
   step: number
 ): SliderValue {
-  if (valueMode === 'range') {
+  if (selectionMode === 'range') {
     const rawStart = Array.isArray(value) ? value[0] : min;
     const rawEnd = Array.isArray(value) ? value[1] : typeof value === 'number' ? value : max;
     const start = roundToStep(finiteNumber(rawStart, min), min, max, step);
@@ -354,11 +354,8 @@ function valueToPercent(value: number, min: number, max: number): number {
   return ((value - min) / (max - min)) * 100;
 }
 
-function getThumbEdgeInset(
-  thumbEdgeBehavior: SliderThumbEdgeBehavior,
-  geometry: SliderGeometry
-): number {
-  if (thumbEdgeBehavior !== 'contain' || geometry.trackWidth <= 0) return 0;
+function getThumbEdgeInset(thumbEdge: SliderThumbEdge, geometry: SliderGeometry): number {
+  if (thumbEdge !== 'contain' || geometry.trackWidth <= 0) return 0;
   const maxThumbWidth = Math.max(geometry.thumbWidths[0], geometry.thumbWidths[1]);
   return Math.min(maxThumbWidth / 2, geometry.trackWidth / 2);
 }
@@ -367,11 +364,11 @@ function valueToVisualPercent(
   value: number,
   min: number,
   max: number,
-  thumbEdgeBehavior: SliderThumbEdgeBehavior,
+  thumbEdge: SliderThumbEdge,
   geometry: SliderGeometry
 ): number {
   const rawPercent = valueToPercent(value, min, max);
-  const edgeInset = getThumbEdgeInset(thumbEdgeBehavior, geometry);
+  const edgeInset = getThumbEdgeInset(thumbEdge, geometry);
   if (edgeInset <= 0 || geometry.trackWidth <= 0) return rawPercent;
   const availableWidth = geometry.trackWidth - edgeInset * 2;
   if (availableWidth <= 0) return 50;
@@ -383,13 +380,13 @@ function valueToActiveTrackPercent(
   value: number,
   min: number,
   max: number,
-  thumbEdgeBehavior: SliderThumbEdgeBehavior,
+  thumbEdge: SliderThumbEdge,
   geometry: SliderGeometry
 ): number {
   if (max <= min) return 0;
   if (value <= min) return 0;
   if (value >= max) return 100;
-  return valueToVisualPercent(value, min, max, thumbEdgeBehavior, geometry);
+  return valueToVisualPercent(value, min, max, thumbEdge, geometry);
 }
 
 function getPointerValue(
@@ -397,26 +394,22 @@ function getPointerValue(
   track: HTMLDivElement | null,
   min: number,
   max: number,
-  thumbEdgeBehavior: SliderThumbEdgeBehavior,
+  thumbEdge: SliderThumbEdge,
   geometry: SliderGeometry
 ): number {
   if (!track) return min;
   const rect = track.getBoundingClientRect();
   if (rect.width <= 0) return min;
-  const edgeInset = getThumbEdgeInset(thumbEdgeBehavior, geometry);
+  const edgeInset = getThumbEdgeInset(thumbEdge, geometry);
   const availableWidth = rect.width - edgeInset * 2;
   if (availableWidth <= 0) return min;
   const ratio = clamp((event.clientX - rect.left - edgeInset) / availableWidth, 0, 1);
   return clamp(min + ratio * (max - min), min, max);
 }
 
-function resolveActiveTrackOriginValue(
-  activeTrackOrigin: SliderActiveTrackOrigin,
-  min: number,
-  max: number
-): number {
-  if (activeTrackOrigin === 'center') return min + (max - min) / 2;
-  if (typeof activeTrackOrigin === 'number') return clamp(activeTrackOrigin, min, max);
+function resolveFillOriginValue(fillOrigin: SliderFillOrigin, min: number, max: number): number {
+  if (fillOrigin === 'center') return min + (max - min) / 2;
+  if (typeof fillOrigin === 'number') return clamp(fillOrigin, min, max);
   return min;
 }
 
@@ -467,7 +460,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
     classNames = {},
     labelId,
     describedBy,
-    valueMode = 'single',
+    selectionMode = 'single',
     value,
     defaultValue,
     min: minProp,
@@ -479,10 +472,10 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
     status,
     formatValue,
     getAriaValueText,
-    thumbBehavior = 'snap',
+    thumbStepBehavior = 'snap',
     thumbCrossing = 'swap',
-    thumbEdgeBehavior = 'overflow',
-    activeTrackOrigin = 'min',
+    thumbEdge = 'overflow',
+    fillOrigin = 'min',
     onThumbInteractionCancel,
     onThumbInteractionEnd,
     onThumbInteractionStart,
@@ -502,11 +495,11 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
   const step = normalizeStep(stepProp);
   const isControlled = value !== undefined;
   const [uncontrolledValue, setUncontrolledValue] = useState<SliderValue>(() =>
-    normalizeValue(defaultValue, valueMode, min, max, step)
+    normalizeValue(defaultValue, selectionMode, min, max, step)
   );
   const resolvedValue = normalizeValue(
     isControlled ? value : uncontrolledValue,
-    valueMode,
+    selectionMode,
     min,
     max,
     step
@@ -556,7 +549,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
     setDragPreviewValue(null);
     setHeldPreviewValue(null);
     setSettlingThumbIndex(null);
-  }, [max, min, step, thumbBehavior, valueMode]);
+  }, [max, min, step, thumbStepBehavior, selectionMode]);
 
   useEffect(() => {
     measureGeometry();
@@ -572,7 +565,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
     }
 
     return () => resizeObserver.disconnect();
-  }, [measureGeometry, valueMode]);
+  }, [measureGeometry, selectionMode]);
 
   const getCommittedThumbValue = useCallback(
     (index: SliderThumbIndex) => {
@@ -584,19 +577,19 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
   const getVisualThumbValue = useCallback(
     (index: SliderThumbIndex) => {
-      if (dragPreviewValue?.valueMode === 'range') {
+      if (dragPreviewValue?.selectionMode === 'range') {
         return dragPreviewValue.values[index];
       }
 
-      if (dragPreviewValue?.valueMode === 'single' && dragPreviewValue.index === index) {
+      if (dragPreviewValue?.selectionMode === 'single' && dragPreviewValue.index === index) {
         return dragPreviewValue.value;
       }
 
-      if (heldPreviewValue?.valueMode === 'range') {
+      if (heldPreviewValue?.selectionMode === 'range') {
         return heldPreviewValue.values[index];
       }
 
-      if (heldPreviewValue?.valueMode === 'single' && heldPreviewValue.index === index) {
+      if (heldPreviewValue?.selectionMode === 'single' && heldPreviewValue.index === index) {
         return heldPreviewValue.value;
       }
 
@@ -611,19 +604,19 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
   );
 
   const getValuePercent = useCallback(
-    (value: number) => valueToVisualPercent(value, min, max, thumbEdgeBehavior, geometry),
-    [geometry, max, min, thumbEdgeBehavior]
+    (value: number) => valueToVisualPercent(value, min, max, thumbEdge, geometry),
+    [geometry, max, min, thumbEdge]
   );
 
   const getActiveTrackPercent = useCallback(
-    (value: number) => valueToActiveTrackPercent(value, min, max, thumbEdgeBehavior, geometry),
-    [geometry, max, min, thumbEdgeBehavior]
+    (value: number) => valueToActiveTrackPercent(value, min, max, thumbEdge, geometry),
+    [geometry, max, min, thumbEdge]
   );
 
-  const getActiveTrackOriginValue = useCallback(() => {
+  const getFillOriginValue = useCallback(() => {
     if (Array.isArray(resolvedValue)) return null;
-    return resolveActiveTrackOriginValue(activeTrackOrigin, min, max);
-  }, [activeTrackOrigin, max, min, resolvedValue]);
+    return resolveFillOriginValue(fillOrigin, min, max);
+  }, [fillOrigin, max, min, resolvedValue]);
 
   const getActiveRangePercent = useCallback((): SliderRangeValue => {
     if (Array.isArray(resolvedValue)) {
@@ -632,12 +625,10 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
         getActiveTrackPercent(getVisualThumbValue(1))
       ];
     }
-    const originPercent = getActiveTrackPercent(
-      resolveActiveTrackOriginValue(activeTrackOrigin, min, max)
-    );
+    const originPercent = getActiveTrackPercent(resolveFillOriginValue(fillOrigin, min, max));
     const thumbPercent = getActiveTrackPercent(getVisualThumbValue(0));
     return [Math.min(originPercent, thumbPercent), Math.max(originPercent, thumbPercent)];
-  }, [activeTrackOrigin, getActiveTrackPercent, getVisualThumbValue, max, min, resolvedValue]);
+  }, [fillOrigin, getActiveTrackPercent, getVisualThumbValue, max, min, resolvedValue]);
 
   const getThumbPercent = useCallback(
     (index: SliderThumbIndex) => getValuePercent(getVisualThumbValue(index)),
@@ -646,14 +637,14 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
   const commitValue = useCallback(
     (nextValue: SliderValue) => {
-      const normalizedValue = normalizeValue(nextValue, valueMode, min, max, step);
+      const normalizedValue = normalizeValue(nextValue, selectionMode, min, max, step);
       if (valuesEqual(normalizedValue, resolvedValue)) return;
       if (!isControlled) {
         setUncontrolledValue(normalizedValue);
       }
       onValueChange?.(normalizedValue);
     },
-    [isControlled, max, min, onValueChange, resolvedValue, step, valueMode]
+    [isControlled, max, min, onValueChange, resolvedValue, step, selectionMode]
   );
 
   const switchDraggingThumbIndex = useCallback(
@@ -671,7 +662,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
   );
 
   const getCurrentRangeValues = useCallback((): SliderRangeValue => {
-    if (dragPreviewValue?.valueMode === 'range') return dragPreviewValue.values;
+    if (dragPreviewValue?.selectionMode === 'range') return dragPreviewValue.values;
     return Array.isArray(resolvedValue) ? resolvedValue : [min, max];
   }, [dragPreviewValue, max, min, resolvedValue]);
 
@@ -711,22 +702,22 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
     [getCurrentRangeValues, max, min]
   );
 
-  const resolveThumbBehaviorValue = useCallback(
+  const resolveThumbStepBehaviorValue = useCallback(
     (rawValue: number) =>
-      thumbBehavior === 'stops' ? roundToStep(rawValue, min, max, step) : rawValue,
-    [max, min, step, thumbBehavior]
+      thumbStepBehavior === 'stops' ? roundToStep(rawValue, min, max, step) : rawValue,
+    [max, min, step, thumbStepBehavior]
   );
 
   const notifyInteractionValueChange = useCallback(
     (preview: SliderDragPreview) => {
       if (!onInteractionValueChange) return;
 
-      if (preview.valueMode === 'single') {
+      if (preview.selectionMode === 'single') {
         onInteractionValueChange({
           value: preview.value,
           values: [preview.value],
           activeThumbIndex: preview.index,
-          valueMode: 'single'
+          selectionMode: 'single'
         });
         return;
       }
@@ -735,7 +726,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
         value: preview.values,
         values: preview.values,
         activeThumbIndex: preview.index,
-        valueMode: 'range'
+        selectionMode: 'range'
       });
     },
     [onInteractionValueChange]
@@ -746,7 +737,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       if (disabled || readOnly) return;
       setHeldPreviewValue(null);
 
-      if (valueMode === 'range') {
+      if (selectionMode === 'range') {
         const crossing = options.allowCrossing ? thumbCrossing : 'prevent';
         commitValue(resolveRangePreview(index, rawValue, crossing).values);
         return;
@@ -754,19 +745,29 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
       commitValue(roundToStep(rawValue, min, max, step));
     },
-    [commitValue, disabled, max, min, readOnly, resolveRangePreview, step, thumbCrossing, valueMode]
+    [
+      commitValue,
+      disabled,
+      max,
+      min,
+      readOnly,
+      resolveRangePreview,
+      step,
+      thumbCrossing,
+      selectionMode
+    ]
   );
 
   const setThumbPreviewValue = useCallback(
     (index: SliderThumbIndex, rawValue: number, event: ReactPointerEvent<HTMLDivElement>) => {
       if (disabled || readOnly) return;
-      const nextValue = resolveThumbBehaviorValue(rawValue);
+      const nextValue = resolveThumbStepBehaviorValue(rawValue);
 
-      if (valueMode === 'range') {
+      if (selectionMode === 'range') {
         const preview = resolveRangePreview(index, nextValue, thumbCrossing);
         switchDraggingThumbIndex(index, preview.index, event);
         const nextPreview: SliderDragPreview = {
-          valueMode: 'range',
+          selectionMode: 'range',
           index: preview.index,
           values: preview.values
         };
@@ -778,7 +779,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       }
 
       const nextPreview: SliderDragPreview = {
-        valueMode: 'single',
+        selectionMode: 'single',
         index,
         value: clamp(nextValue, min, max)
       };
@@ -795,22 +796,22 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       notifyInteractionValueChange,
       readOnly,
       resolveRangePreview,
-      resolveThumbBehaviorValue,
+      resolveThumbStepBehaviorValue,
       switchDraggingThumbIndex,
       thumbCrossing,
-      valueMode
+      selectionMode
     ]
   );
 
   const pickNearestThumbIndex = useCallback(
     (nextValue: number): SliderThumbIndex => {
-      if (valueMode !== 'range' || !Array.isArray(resolvedValue)) return 0;
+      if (selectionMode !== 'range' || !Array.isArray(resolvedValue)) return 0;
       const startDistance = Math.abs(nextValue - resolvedValue[0]);
       const endDistance = Math.abs(nextValue - resolvedValue[1]);
       if (startDistance === endDistance) return activeThumbIndex;
       return startDistance < endDistance ? 0 : 1;
     },
-    [activeThumbIndex, resolvedValue, valueMode]
+    [activeThumbIndex, resolvedValue, selectionMode]
   );
 
   const getFormattedValue = useCallback(
@@ -834,14 +835,14 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       if (Array.isArray(resolvedValue)) {
         return markValue >= getVisualThumbValue(0) && markValue <= getVisualThumbValue(1);
       }
-      const originValue = resolveActiveTrackOriginValue(activeTrackOrigin, min, max);
+      const originValue = resolveFillOriginValue(fillOrigin, min, max);
       const thumbValue = getVisualThumbValue(0);
       return (
         markValue >= Math.min(originValue, thumbValue) &&
         markValue <= Math.max(originValue, thumbValue)
       );
     },
-    [activeTrackOrigin, getVisualThumbValue, max, min, resolvedValue]
+    [fillOrigin, getVisualThumbValue, max, min, resolvedValue]
   );
 
   const isSettling = useCallback(() => settlingThumbIndex !== null, [settlingThumbIndex]);
@@ -874,30 +875,16 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
   const updateThumbFromPointer = useCallback(
     (index: SliderThumbIndex, event: ReactPointerEvent<HTMLDivElement>) => {
-      const nextValue = getPointerValue(
-        event,
-        trackRef.current,
-        min,
-        max,
-        thumbEdgeBehavior,
-        geometry
-      );
+      const nextValue = getPointerValue(event, trackRef.current, min, max, thumbEdge, geometry);
       setThumbPreviewValue(index, nextValue, event);
     },
-    [geometry, max, min, setThumbPreviewValue, thumbEdgeBehavior]
+    [geometry, max, min, setThumbPreviewValue, thumbEdge]
   );
 
   const handleTrackPointerDown = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
       if (event.defaultPrevented || disabled || readOnly) return;
-      const nextValue = getPointerValue(
-        event,
-        trackRef.current,
-        min,
-        max,
-        thumbEdgeBehavior,
-        geometry
-      );
+      const nextValue = getPointerValue(event, trackRef.current, min, max, thumbEdge, geometry);
       const targetIndex =
         getThumbIndexFromEventTarget(event.target) ?? pickNearestThumbIndex(nextValue);
       setActiveThumbIndex(targetIndex);
@@ -918,7 +905,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       pickNearestThumbIndex,
       readOnly,
       setThumbPreviewValue,
-      thumbEdgeBehavior
+      thumbEdge
     ]
   );
 
@@ -932,11 +919,11 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
   const handleTrackPointerUp = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
-      const nextValue = resolveThumbBehaviorValue(
-        getPointerValue(event, trackRef.current, min, max, thumbEdgeBehavior, geometry)
+      const nextValue = resolveThumbStepBehaviorValue(
+        getPointerValue(event, trackRef.current, min, max, thumbEdge, geometry)
       );
       const nextPreview =
-        draggingThumbIndex === null || valueMode !== 'range'
+        draggingThumbIndex === null || selectionMode !== 'range'
           ? null
           : resolveRangePreview(draggingThumbIndex, nextValue, thumbCrossing);
       const nextDraggingThumbIndex = nextPreview?.index ?? draggingThumbIndex;
@@ -955,22 +942,22 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
             allowCrossing: false
           });
         }
-        if (thumbBehavior === 'hold') {
+        if (thumbStepBehavior === 'hold') {
           setHeldPreviewValue(
             nextPreview
               ? {
-                  valueMode: 'range',
+                  selectionMode: 'range',
                   index: nextPreview.index,
                   values: nextPreview.values
                 }
               : {
-                  valueMode: 'single',
+                  selectionMode: 'single',
                   index: nextDraggingThumbIndex,
                   value: clamp(nextValue, min, max)
                 }
           );
           setSettlingThumbIndex(null);
-        } else if (thumbBehavior === 'snap') {
+        } else if (thumbStepBehavior === 'snap') {
           setHeldPreviewValue(null);
           setSettlingThumbIndex(nextDraggingThumbIndex);
         } else {
@@ -997,14 +984,14 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       min,
       onThumbInteractionEnd,
       readOnly,
-      resolveThumbBehaviorValue,
+      resolveThumbStepBehaviorValue,
       resolveRangePreview,
       setThumbValue,
       switchDraggingThumbIndex,
-      thumbBehavior,
+      thumbStepBehavior,
       thumbCrossing,
-      thumbEdgeBehavior,
-      valueMode
+      thumbEdge,
+      selectionMode
     ]
   );
 
@@ -1063,13 +1050,13 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
           break;
         case 'Home':
           nextValue =
-            valueMode === 'range' && index === 1 && Array.isArray(resolvedValue)
+            selectionMode === 'range' && index === 1 && Array.isArray(resolvedValue)
               ? resolvedValue[0]
               : min;
           break;
         case 'End':
           nextValue =
-            valueMode === 'range' && index === 0 && Array.isArray(resolvedValue)
+            selectionMode === 'range' && index === 0 && Array.isArray(resolvedValue)
               ? resolvedValue[1]
               : max;
           break;
@@ -1083,7 +1070,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
         setThumbValue(index, nextValue, { allowCrossing: false });
       }
     },
-    [disabled, getThumbValue, max, min, readOnly, resolvedValue, setThumbValue, step, valueMode]
+    [disabled, getThumbValue, max, min, readOnly, resolvedValue, setThumbValue, step, selectionMode]
   );
 
   const handleThumbTransitionEnd = useCallback(
@@ -1133,7 +1120,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       slotProps,
       labelId: resolvedLabelId,
       describedBy,
-      valueMode,
+      selectionMode,
       value: resolvedValue,
       min,
       max,
@@ -1146,7 +1133,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       getThumbPercent,
       getValuePercent,
       getActiveRangePercent,
-      getActiveTrackOriginValue,
+      getFillOriginValue,
       getFormattedValue,
       getAriaValueText: resolveAriaValueText,
       isSettling,
@@ -1168,7 +1155,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       describedBy,
       disabled,
       getActiveRangePercent,
-      getActiveTrackOriginValue,
+      getFillOriginValue,
       getFormattedValue,
       getThumbPercent,
       getThumbValue,
@@ -1196,7 +1183,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       setThumbElement,
       slotProps,
       step,
-      valueMode
+      selectionMode
     ]
   );
   const { className: rootClassName, ...rootSlotProps } = slotProps.e1 ?? {};
@@ -1227,7 +1214,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
         data-slider-dragging={draggingThumbIndex === null ? undefined : ''}
         data-readonly={readOnly ? '' : undefined}
         data-required={required ? '' : undefined}
-        data-value-mode={valueMode}
+        data-value-mode={selectionMode}
         {...rootProps}
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
@@ -1262,15 +1249,15 @@ const SliderValueSummary = forwardRef<HTMLSpanElement, SliderValueSummaryProps>(
     const context = useSliderContext();
     const { className: slotClassName, ...slotProps } = context.slotProps.e3 ?? {};
     const values =
-      context.valueMode === 'range'
+      context.selectionMode === 'range'
         ? ([context.getThumbValue(0), context.getThumbValue(1)] as const)
         : ([context.getThumbValue(0)] as const);
     const formattedValues =
-      context.valueMode === 'range'
+      context.selectionMode === 'range'
         ? ([context.getFormattedValue(0), context.getFormattedValue(1)] as const)
         : ([context.getFormattedValue(0)] as const);
     const formattedValue =
-      context.valueMode === 'range' ? (
+      context.selectionMode === 'range' ? (
         <>
           {formattedValues[0]}
           <span aria-hidden="true"> - </span>
@@ -1280,7 +1267,7 @@ const SliderValueSummary = forwardRef<HTMLSpanElement, SliderValueSummaryProps>(
         formattedValues[0]
       );
     const summaryValue: SliderValue =
-      context.valueMode === 'range'
+      context.selectionMode === 'range'
         ? [values[0] ?? context.min, values[1] ?? context.max]
         : (values[0] ?? context.min);
     const content =
@@ -1290,7 +1277,7 @@ const SliderValueSummary = forwardRef<HTMLSpanElement, SliderValueSummaryProps>(
             values,
             formattedValue,
             formattedValues,
-            valueMode: context.valueMode
+            selectionMode: context.selectionMode
           })
         : (children ?? formattedValue);
 
@@ -1586,7 +1573,7 @@ const SliderThumbIcon = forwardRef<HTMLSpanElement, SliderThumbIconProps>(functi
   const context = useSliderContext();
   const { className: slotClassName, ...slotProps } = context.slotProps.e19 ?? {};
   const values =
-    context.valueMode === 'range'
+    context.selectionMode === 'range'
       ? ([context.getThumbValue(0), context.getThumbValue(1)] as const)
       : ([context.getThumbValue(0)] as const);
   const value = context.getThumbValue(index);
@@ -1596,7 +1583,7 @@ const SliderThumbIcon = forwardRef<HTMLSpanElement, SliderThumbIconProps>(functi
           value,
           values,
           index,
-          valueMode: context.valueMode,
+          selectionMode: context.selectionMode,
           isDragging: context.isThumbDragging(index)
         })
       : children;
@@ -1678,7 +1665,7 @@ const SliderOriginMark = forwardRef<HTMLSpanElement, SliderOriginMarkProps>(
   function SliderOriginMark({ className, style, ...props }, ref) {
     const context = useSliderContext();
     const { className: slotClassName, ...slotProps } = context.slotProps.e18 ?? {};
-    const originValue = context.getActiveTrackOriginValue();
+    const originValue = context.getFillOriginValue();
 
     if (originValue === null) return null;
 

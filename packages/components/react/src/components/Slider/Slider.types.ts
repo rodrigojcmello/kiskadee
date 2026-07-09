@@ -3,20 +3,20 @@ import type {
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
-  SliderActiveTrackOrigin,
   SliderMarks as SliderArtifactMarks,
-  SliderEdgeMarkLabelAlignment,
-  SliderEdgeMarkLabelPlacement,
+  SliderEdgeLabelAlignment,
+  SliderEdgeLabelPlacement,
   SliderEdgeMarks,
+  SliderFillOrigin,
+  SliderFillOriginMark,
   SliderIntent,
   SliderMarkLabelPlacement,
   SliderMarkPlacement,
   SliderMode,
-  SliderOriginMark,
-  SliderSnapMotion,
-  SliderThumbBehavior,
+  SliderSnapAnimation,
   SliderThumbCrossing,
-  SliderThumbEdgeBehavior,
+  SliderThumbEdge,
+  SliderThumbStepBehavior,
   SliderValueAnimation,
   SliderValueDisplay,
   SliderValueSummaryPlacement,
@@ -25,10 +25,10 @@ import type {
 import type {
   SliderInteractionValueChangeDetails as HeadlessSliderInteractionValueChangeDetails,
   SliderRootProps as HeadlessSliderRootProps,
+  SliderSelectionMode as HeadlessSliderSelectionMode,
   SliderStatus as HeadlessSliderStatus,
   SliderThumbIconRenderDetails as HeadlessSliderThumbIconRenderDetails,
-  SliderValue,
-  SliderValueMode
+  SliderValue
 } from '@kiskadee/react-headless';
 import type { ReactNode } from 'react';
 
@@ -62,6 +62,7 @@ export type SliderModeClassesMap = Partial<Record<SliderMode, SliderClassesMap>>
 export type SliderVariantClassesMap = Partial<Record<SliderVariant, SliderModeClassesMap>>;
 
 export type SliderStatus = HeadlessSliderStatus;
+export type SliderSelectionMode = HeadlessSliderSelectionMode;
 
 export type SliderMark = {
   value: number;
@@ -69,29 +70,23 @@ export type SliderMark = {
   icon?: ReactNode;
 };
 
-export type SliderMarks = false | SliderArtifactMarks | readonly SliderMark[];
+export type SliderMarks = SliderArtifactMarks | readonly SliderMark[];
 export type SliderEdgeMarksOption = SliderEdgeMarks;
 export type SliderMarkPlacementOption = SliderMarkPlacement;
 export type SliderMarkLabelPlacementOption = SliderMarkLabelPlacement;
-export type SliderResolvedMarkLabelPlacement = Exclude<SliderMarkLabelPlacementOption, 'auto'>;
-export type SliderEdgeMarkLabelPlacementOption = SliderEdgeMarkLabelPlacement;
-export type SliderResolvedEdgeMarkLabelPlacement = Exclude<
-  SliderEdgeMarkLabelPlacementOption,
-  'adaptive'
->;
-export type SliderEdgeMarkLabelAlignmentOption = SliderEdgeMarkLabelAlignment;
-export type SliderResolvedEdgeMarkLabelAlignment = Exclude<
-  SliderEdgeMarkLabelAlignmentOption,
-  'adaptive'
->;
+export type SliderResolvedMarkLabelPlacement = Exclude<SliderMarkLabelPlacementOption, 'adaptive'>;
+export type SliderEdgeLabelPlacementOption = SliderEdgeLabelPlacement;
+export type SliderResolvedEdgeLabelPlacement = Exclude<SliderEdgeLabelPlacementOption, 'adaptive'>;
+export type SliderEdgeLabelAlignmentOption = SliderEdgeLabelAlignment;
+export type SliderResolvedEdgeLabelAlignment = Exclude<SliderEdgeLabelAlignmentOption, 'adaptive'>;
 export type SliderValueAnimationOption = SliderValueAnimation;
 export type SliderValueSummaryPlacementOption = SliderValueSummaryPlacement;
-export type SliderSnapMotionOption = SliderSnapMotion;
-export type SliderThumbBehaviorOption = SliderThumbBehavior;
+export type SliderSnapAnimationOption = SliderSnapAnimation;
+export type SliderThumbStepBehaviorOption = SliderThumbStepBehavior;
 export type SliderThumbCrossingOption = SliderThumbCrossing;
-export type SliderThumbEdgeBehaviorOption = SliderThumbEdgeBehavior;
-export type SliderActiveTrackOriginOption = SliderActiveTrackOrigin;
-export type SliderOriginMarkOption = SliderOriginMark;
+export type SliderThumbEdgeOption = SliderThumbEdge;
+export type SliderFillOriginOption = SliderFillOrigin;
+export type SliderFillOriginMarkOption = SliderFillOriginMark;
 
 export type SliderThumbAriaLabels = {
   start?: string;
@@ -119,10 +114,10 @@ export type SliderProps = Omit<
   | 'onThumbInteractionEnd'
   | 'onThumbInteractionStart'
   | 'onThumbInteractionSwitch'
-  | 'thumbBehavior'
+  | 'thumbStepBehavior'
   | 'thumbCrossing'
-  | 'thumbEdgeBehavior'
-  | 'activeTrackOrigin'
+  | 'thumbEdge'
+  | 'fillOrigin'
 > & {
   id?: string;
   label?: ReactNode;
@@ -136,25 +131,25 @@ export type SliderProps = Omit<
   radius?: RadiusMode;
   variant?: SliderVariant;
   mode?: SliderMode;
-  valueMode?: SliderValueMode;
+  selectionMode?: SliderSelectionMode;
   value?: SliderValue;
   defaultValue?: SliderValue;
   marks?: SliderMarks;
-  markStep?: number;
+  markInterval?: number;
   edgeMarks?: SliderEdgeMarksOption;
   markPlacement?: SliderMarkPlacementOption;
   markLabelPlacement?: SliderMarkLabelPlacementOption;
-  edgeMarkLabelPlacement?: SliderEdgeMarkLabelPlacementOption;
-  edgeMarkLabelAlignment?: SliderEdgeMarkLabelAlignmentOption;
-  thumbEdgeBehavior?: SliderThumbEdgeBehaviorOption;
-  activeTrackOrigin?: SliderActiveTrackOriginOption;
-  originMark?: SliderOriginMarkOption;
+  edgeLabelPlacement?: SliderEdgeLabelPlacementOption;
+  edgeLabelAlignment?: SliderEdgeLabelAlignmentOption;
+  thumbEdge?: SliderThumbEdgeOption;
+  fillOrigin?: SliderFillOriginOption;
+  fillOriginMark?: SliderFillOriginMarkOption;
   valueDisplay?: SliderValueDisplay;
   valueSummaryPlacement?: SliderValueSummaryPlacementOption;
   valueSummaryWidth?: number;
   valueAnimation?: SliderValueAnimationOption;
-  snapMotion?: SliderSnapMotionOption;
-  thumbBehavior?: SliderThumbBehaviorOption;
+  snapAnimation?: SliderSnapAnimationOption;
+  thumbStepBehavior?: SliderThumbStepBehaviorOption;
   thumbCrossing?: SliderThumbCrossingOption;
   activationFeedback?: SliderActivationFeedback;
   formatValue?: (value: number, index: 0 | 1) => ReactNode;

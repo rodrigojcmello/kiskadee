@@ -144,11 +144,11 @@ export function createIos26AppleSliderSchema({
       edgeMarks: 'include',
       markPlacement: 'below',
       markLabelPlacement: 'below',
-      edgeMarkLabelPlacement: 'endpoints',
-      edgeMarkLabelAlignment: 'inside',
-      thumbEdgeBehavior: 'contain',
-      activeTrackOrigin: 'min',
-      originMark: 'auto'
+      edgeLabelPlacement: 'endpoints',
+      edgeLabelAlignment: 'inside',
+      thumbEdge: 'contain',
+      fillOrigin: 'min',
+      fillOriginMark: 'auto'
     },
     variants: {
       standard: {

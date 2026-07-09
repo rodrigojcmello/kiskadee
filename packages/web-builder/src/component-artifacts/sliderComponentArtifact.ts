@@ -1,19 +1,19 @@
 import type {
   ActivationFeedbackSetting,
   Schema,
-  SliderActiveTrackOrigin,
-  SliderEdgeMarkLabelAlignment,
-  SliderEdgeMarkLabelPlacement,
+  SliderEdgeLabelAlignment,
+  SliderEdgeLabelPlacement,
   SliderEdgeMarks,
+  SliderFillOrigin,
+  SliderFillOriginMark,
   SliderMarkLabelPlacement,
   SliderMarkPlacement,
   SliderMarks,
   SliderMode,
-  SliderOriginMark,
-  SliderSnapMotion,
-  SliderThumbBehavior,
-  SliderThumbEdgeBehavior,
+  SliderSnapAnimation,
   SliderThumbCrossing,
+  SliderThumbEdge,
+  SliderThumbStepBehavior,
   SliderValueAnimation,
   SliderValueDisplay,
   SliderValueSummaryPlacement,
@@ -27,19 +27,19 @@ export type SliderComponentOptionsPayload = {
   valueDisplay?: SliderValueDisplay;
   valueSummaryPlacement?: SliderValueSummaryPlacement;
   valueAnimation?: SliderValueAnimation;
-  snapMotion?: SliderSnapMotion;
-  thumbBehavior?: SliderThumbBehavior;
+  snapAnimation?: SliderSnapAnimation;
+  thumbStepBehavior?: SliderThumbStepBehavior;
   thumbCrossing?: SliderThumbCrossing;
   marks?: SliderMarks;
-  markStep?: number;
+  markInterval?: number;
   edgeMarks?: SliderEdgeMarks;
   markPlacement?: SliderMarkPlacement;
   markLabelPlacement?: SliderMarkLabelPlacement;
-  edgeMarkLabelPlacement?: SliderEdgeMarkLabelPlacement;
-  edgeMarkLabelAlignment?: SliderEdgeMarkLabelAlignment;
-  thumbEdgeBehavior?: SliderThumbEdgeBehavior;
-  activeTrackOrigin?: SliderActiveTrackOrigin;
-  originMark?: SliderOriginMark;
+  edgeLabelPlacement?: SliderEdgeLabelPlacement;
+  edgeLabelAlignment?: SliderEdgeLabelAlignment;
+  thumbEdge?: SliderThumbEdge;
+  fillOrigin?: SliderFillOrigin;
+  fillOriginMark?: SliderFillOriginMark;
 };
 
 export type SliderComponentEffectsPayload = {
@@ -108,16 +108,18 @@ export function buildSliderComponentArtifact(schema: Schema): SliderComponentArt
     ...(sliderSchema.options?.valueAnimation
       ? { valueAnimation: sliderSchema.options.valueAnimation }
       : {}),
-    ...(sliderSchema.options?.snapMotion ? { snapMotion: sliderSchema.options.snapMotion } : {}),
-    ...(sliderSchema.options?.thumbBehavior
-      ? { thumbBehavior: sliderSchema.options.thumbBehavior }
+    ...(sliderSchema.options?.snapAnimation
+      ? { snapAnimation: sliderSchema.options.snapAnimation }
+      : {}),
+    ...(sliderSchema.options?.thumbStepBehavior
+      ? { thumbStepBehavior: sliderSchema.options.thumbStepBehavior }
       : {}),
     ...(sliderSchema.options?.thumbCrossing
       ? { thumbCrossing: sliderSchema.options.thumbCrossing }
       : {}),
     ...(sliderSchema.options?.marks ? { marks: sliderSchema.options.marks } : {}),
-    ...(sliderSchema.options?.markStep !== undefined
-      ? { markStep: sliderSchema.options.markStep }
+    ...(sliderSchema.options?.markInterval !== undefined
+      ? { markInterval: sliderSchema.options.markInterval }
       : {}),
     ...(sliderSchema.options?.edgeMarks ? { edgeMarks: sliderSchema.options.edgeMarks } : {}),
     ...(sliderSchema.options?.markPlacement
@@ -126,24 +128,28 @@ export function buildSliderComponentArtifact(schema: Schema): SliderComponentArt
     ...(sliderSchema.options?.markLabelPlacement
       ? { markLabelPlacement: sliderSchema.options.markLabelPlacement }
       : {}),
-    ...(sliderSchema.options?.edgeMarkLabelPlacement
-      ? { edgeMarkLabelPlacement: sliderSchema.options.edgeMarkLabelPlacement }
+    ...(sliderSchema.options?.edgeLabelPlacement
+      ? { edgeLabelPlacement: sliderSchema.options.edgeLabelPlacement }
       : {}),
-    ...(sliderSchema.options?.edgeMarkLabelAlignment
-      ? { edgeMarkLabelAlignment: sliderSchema.options.edgeMarkLabelAlignment }
+    ...(sliderSchema.options?.edgeLabelAlignment
+      ? { edgeLabelAlignment: sliderSchema.options.edgeLabelAlignment }
       : {}),
-    ...(sliderSchema.options?.thumbEdgeBehavior
-      ? { thumbEdgeBehavior: sliderSchema.options.thumbEdgeBehavior }
+    ...(sliderSchema.options?.thumbEdge ? { thumbEdge: sliderSchema.options.thumbEdge } : {}),
+    ...(sliderSchema.options?.fillOrigin !== undefined
+      ? { fillOrigin: sliderSchema.options.fillOrigin }
       : {}),
-    ...(sliderSchema.options?.activeTrackOrigin !== undefined
-      ? { activeTrackOrigin: sliderSchema.options.activeTrackOrigin }
-      : {}),
-    ...(sliderSchema.options?.originMark ? { originMark: sliderSchema.options.originMark } : {})
+    ...(sliderSchema.options?.fillOriginMark
+      ? { fillOriginMark: sliderSchema.options.fillOriginMark }
+      : {})
   };
   const effects = buildSliderEffectsPayload(schema);
   const variants = buildSliderVariantsPayload(schema);
 
-  if (!Object.keys(options).length && !Object.keys(effects).length && !Object.keys(variants).length) {
+  if (
+    !Object.keys(options).length &&
+    !Object.keys(effects).length &&
+    !Object.keys(variants).length
+  ) {
     return null;
   }
 

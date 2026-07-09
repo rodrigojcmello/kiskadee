@@ -6,16 +6,16 @@ import {
   type EffectClassBucketJSON,
   type ElementSizeValue,
   type RadiusMode,
-  type SliderActiveTrackOrigin,
-  type SliderEdgeMarkLabelAlignment,
+  type SliderEdgeLabelAlignment,
+  type SliderFillOrigin,
+  type SliderFillOriginMark,
   type SliderIntent,
   type SliderMarkPlacement,
   type SliderMode,
-  type SliderOriginMark,
-  type SliderSnapMotion,
-  type SliderThumbBehavior,
+  type SliderSnapAnimation,
   type SliderThumbCrossing,
-  type SliderThumbEdgeBehavior,
+  type SliderThumbEdge,
+  type SliderThumbStepBehavior,
   type SliderValueAnimation,
   type SliderValueSummaryPlacement,
   type SliderVariant
@@ -47,18 +47,18 @@ export const DEFAULT_SLIDER_MODE: SliderMode = 'base';
 export const DEFAULT_SLIDER_VALUE_DISPLAY = 'none';
 export const DEFAULT_SLIDER_VALUE_SUMMARY_PLACEMENT: SliderValueSummaryPlacement = 'headerEnd';
 export const DEFAULT_SLIDER_VALUE_ANIMATION: SliderValueAnimation = 'none';
-export const DEFAULT_SLIDER_SNAP_MOTION: SliderSnapMotion = 'smooth';
-export const DEFAULT_SLIDER_THUMB_BEHAVIOR: SliderThumbBehavior = 'snap';
+export const DEFAULT_SLIDER_SNAP_ANIMATION: SliderSnapAnimation = 'smooth';
+export const DEFAULT_SLIDER_THUMB_STEP_BEHAVIOR: SliderThumbStepBehavior = 'snap';
 export const DEFAULT_SLIDER_THUMB_CROSSING: SliderThumbCrossing = 'swap';
 export const DEFAULT_SLIDER_MARKS = 'none';
 export const DEFAULT_SLIDER_EDGE_MARKS = 'include';
 export const DEFAULT_SLIDER_MARK_PLACEMENT: SliderMarkPlacement = 'track';
-export const DEFAULT_SLIDER_MARK_LABEL_PLACEMENT = 'auto';
-export const DEFAULT_SLIDER_EDGE_MARK_LABEL_PLACEMENT = 'markLabels';
-export const DEFAULT_SLIDER_EDGE_MARK_LABEL_ALIGNMENT: SliderEdgeMarkLabelAlignment = 'inside';
-export const DEFAULT_SLIDER_THUMB_EDGE_BEHAVIOR: SliderThumbEdgeBehavior = 'contain';
-export const DEFAULT_SLIDER_ACTIVE_TRACK_ORIGIN: SliderActiveTrackOrigin = 'min';
-export const DEFAULT_SLIDER_ORIGIN_MARK: SliderOriginMark = 'none';
+export const DEFAULT_SLIDER_MARK_LABEL_PLACEMENT = 'adaptive';
+export const DEFAULT_SLIDER_EDGE_LABEL_PLACEMENT = 'markLabels';
+export const DEFAULT_SLIDER_EDGE_LABEL_ALIGNMENT: SliderEdgeLabelAlignment = 'inside';
+export const DEFAULT_SLIDER_THUMB_EDGE: SliderThumbEdge = 'contain';
+export const DEFAULT_SLIDER_FILL_ORIGIN: SliderFillOrigin = 'min';
+export const DEFAULT_SLIDER_FILL_ORIGIN_MARK: SliderFillOriginMark = 'none';
 
 type SliderStructuralBranch = 'a';
 

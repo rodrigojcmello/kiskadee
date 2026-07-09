@@ -21,19 +21,19 @@ import type {
   SliderValueSummaryElementStyleFromSchema
 } from './slider.elements.zod.ts';
 import type {
-  SliderActiveTrackOriginSchemaValue,
-  SliderEdgeMarkLabelAlignmentSchemaValue,
-  SliderEdgeMarkLabelPlacementSchemaValue,
+  SliderEdgeLabelAlignmentSchemaValue,
+  SliderEdgeLabelPlacementSchemaValue,
   SliderEdgeMarksSchemaValue,
+  SliderFillOriginMarkSchemaValue,
+  SliderFillOriginSchemaValue,
   SliderMarkLabelPlacementSchemaValue,
   SliderMarkPlacementSchemaValue,
   SliderMarksSchemaValue,
   SliderOptionsFromSchema,
-  SliderOriginMarkSchemaValue,
-  SliderSnapMotionSchemaValue,
-  SliderThumbBehaviorSchemaValue,
+  SliderSnapAnimationSchemaValue,
   SliderThumbCrossingSchemaValue,
-  SliderThumbEdgeBehaviorSchemaValue,
+  SliderThumbEdgeSchemaValue,
+  SliderThumbStepBehaviorSchemaValue,
   SliderValueAnimationSchemaValue,
   SliderValueDisplaySchemaValue,
   SliderValueSummaryPlacementSchemaValue,
@@ -89,18 +89,18 @@ export type SliderMode = SliderStandardMode;
 export type SliderValueDisplay = SliderValueDisplaySchemaValue;
 export type SliderValueSummaryPlacement = SliderValueSummaryPlacementSchemaValue;
 export type SliderValueAnimation = SliderValueAnimationSchemaValue;
-export type SliderSnapMotion = SliderSnapMotionSchemaValue;
-export type SliderThumbBehavior = SliderThumbBehaviorSchemaValue;
+export type SliderSnapAnimation = SliderSnapAnimationSchemaValue;
+export type SliderThumbStepBehavior = SliderThumbStepBehaviorSchemaValue;
 export type SliderThumbCrossing = SliderThumbCrossingSchemaValue;
 export type SliderMarks = SliderMarksSchemaValue;
 export type SliderEdgeMarks = SliderEdgeMarksSchemaValue;
 export type SliderMarkPlacement = SliderMarkPlacementSchemaValue;
 export type SliderMarkLabelPlacement = SliderMarkLabelPlacementSchemaValue;
-export type SliderEdgeMarkLabelPlacement = SliderEdgeMarkLabelPlacementSchemaValue;
-export type SliderEdgeMarkLabelAlignment = SliderEdgeMarkLabelAlignmentSchemaValue;
-export type SliderThumbEdgeBehavior = SliderThumbEdgeBehaviorSchemaValue;
-export type SliderActiveTrackOrigin = SliderActiveTrackOriginSchemaValue;
-export type SliderOriginMark = SliderOriginMarkSchemaValue;
+export type SliderEdgeLabelPlacement = SliderEdgeLabelPlacementSchemaValue;
+export type SliderEdgeLabelAlignment = SliderEdgeLabelAlignmentSchemaValue;
+export type SliderThumbEdge = SliderThumbEdgeSchemaValue;
+export type SliderFillOrigin = SliderFillOriginSchemaValue;
+export type SliderFillOriginMark = SliderFillOriginMarkSchemaValue;
 export type SliderModeByVariant = {
   standard: SliderStandardMode;
 };

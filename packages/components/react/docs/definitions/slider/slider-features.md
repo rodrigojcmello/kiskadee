@@ -17,11 +17,13 @@ This document covers the public styled component exported by
 - Public props/type exports: `SliderProps`, `SliderStatus`,
   `SliderActivationFeedback`,
   `SliderClassNames`, `SliderMark`, `SliderThumbIcon`, `SliderThumbIconDetails`,
-  `SliderMarks`, `SliderValueAnimationOption`, `SliderSnapMotionOption`,
+  `SliderMarks`, `SliderSelectionMode`, `SliderValueAnimationOption`,
+  `SliderSnapAnimationOption`, `SliderThumbStepBehaviorOption`,
   `SliderThumbCrossingOption`, `SliderMarkPlacementOption`,
-  `SliderThumbEdgeBehaviorOption`, `SliderActiveTrackOriginOption`,
-  `SliderOriginMarkOption`, `SliderClassesMap`, `SliderModeClassesMap`,
-  `SliderVariantClassesMap`, and `SliderArtifactConfig`.
+  `SliderEdgeLabelPlacementOption`, `SliderEdgeLabelAlignmentOption`,
+  `SliderThumbEdgeOption`, `SliderFillOriginOption`, `SliderFillOriginMarkOption`,
+  `SliderClassesMap`, `SliderModeClassesMap`, `SliderVariantClassesMap`, and
+  `SliderArtifactConfig`.
 - Shared value helper: `RollingNumber`.
 - Headless primitive: `HeadlessSlider` from `@kiskadee/react-headless`.
 - Current layout scope: horizontal only.
@@ -48,7 +50,7 @@ primitive.
 
 | Prop | Current rule |
 | --- | --- |
-| `valueMode` | Selects `single` or `range`. If omitted, arrays in `value` or `defaultValue` imply `range`; otherwise the Slider is `single`. |
+| `selectionMode` | Selects `single` or `range`. If omitted, arrays in `value` or `defaultValue` imply `range`; otherwise the Slider is `single`. |
 | `value` | Controlled value. A single Slider uses `number`; a range Slider uses `[number, number]`. |
 | `defaultValue` | Initial uncontrolled value. Values are normalized to bounds and step. |
 | `onValueChange` | Called when the committed semantic value changes. It is not called for no-op changes, disabled controls, or read-only controls. |
@@ -94,22 +96,22 @@ upper values.
 | `label` | Optional field label shown above the control row. |
 | `labelAdornment` | Optional inline adornment after the label, such as an info affordance. |
 | `helperText` | Optional helper copy below the control row. |
-| `marks` | Scale content and visual marker configuration. Supports `false`, `"none"`, `"step"`, or an explicit array of `{ value, label?, icon? }`. `label` is the only source for scale labels, including `min` and `max`. `icon` is supported only on exact `min` and `max` marks. |
-| `markStep` | Optional visual interval for generated marks when `marks="step"`. If omitted, generated marks use the semantic `step`. |
+| `marks` | Scale content and visual marker configuration. Supports `"none"`, `"step"`, or an explicit array of `{ value, label?, icon? }`. `label` is the only source for scale labels, including `min` and `max`. `icon` is supported only on exact `min` and `max` marks. |
+| `markInterval` | Optional visual interval for generated marks when `marks="step"`. If omitted, generated marks use the semantic `step`. |
 | `edgeMarks` | Controls whether rendered marks include edge marks at `min` and `max`. Supports `"include"` and `"exclude"`. |
 | `markPlacement` | Controls where visual marks (`e15`) and the optional origin mark (`e18`) sit relative to the track. Supports `"track"`, `"above"`, and `"below"`. |
-| `markLabelPlacement` | Controls where `e16` mark labels sit relative to the track. Supports `"auto"`, `"above"`, and `"below"`. |
-| `edgeMarkLabelPlacement` | Controls whether edge labels render as track labels, endpoint labels, or adapt by layout. Supports `"markLabels"`, `"endpoints"`, and `"adaptive"`. Default: `"markLabels"`. |
-| `edgeMarkLabelAlignment` | Controls how `min`/`max` labels align when rendered as track labels. Supports `"inside"`, `"center"`, and `"adaptive"`. Default: `"inside"`. |
-| `thumbEdgeBehavior` | Controls the horizontal value plane at the track edges. Supports `"overflow"` and `"contain"`. Default: `"contain"`. |
-| `activeTrackOrigin` | Controls the active track origin in single-value sliders. Supports `"min"`, `"center"`, or a finite numeric value inside the range. Range sliders ignore it. |
-| `originMark` | Controls whether the neutral origin is rendered as a separate mark (`e18`). Supports `"none"` and `"auto"`. |
+| `markLabelPlacement` | Controls where `e16` mark labels sit relative to the track. Supports `"adaptive"`, `"above"`, and `"below"`. |
+| `edgeLabelPlacement` | Controls whether edge labels render as track labels, endpoint labels, or adapt by layout. Supports `"markLabels"`, `"endpoints"`, and `"adaptive"`. Default: `"markLabels"`. |
+| `edgeLabelAlignment` | Controls how `min`/`max` labels align when rendered as track labels. Supports `"inside"`, `"center"`, and `"adaptive"`. Default: `"inside"`. |
+| `thumbEdge` | Controls the horizontal value plane at the track edges. Supports `"overflow"` and `"contain"`. Default: `"contain"`. |
+| `fillOrigin` | Controls the active track origin in single-value sliders. Supports `"min"`, `"center"`, or a finite numeric value inside the range. Range sliders ignore it. |
+| `fillOriginMark` | Controls whether the neutral origin is rendered as a separate mark (`e18`). Supports `"none"` and `"auto"`. |
 | `valueDisplay` | Controls selected value display: `"none"`, `"tooltip"`, `"summary"`, `"both"`, or `"auto"`. |
 | `valueSummaryPlacement` | Controls where the read-only summary (`e3`) appears when rendered. Supports `"headerEnd"` and `"controlEnd"`. |
 | `valueSummaryWidth` | Optional pixel width reservation for the read-only summary when `valueSummaryPlacement="controlEnd"`. |
 | `valueAnimation` | Optional per-instance override for how selected values are visually rendered. Supports `"none"` and `"rolling"`. |
-| `snapMotion` | Optional per-instance override for thumb position settling after pointer release. Supports `"none"` and `"smooth"`. |
-| `thumbBehavior` | Controls how the thumb behaves relative to the semantic `step`. Supports `"snap"`, `"hold"`, and `"stops"`. |
+| `snapAnimation` | Optional per-instance override for thumb position settling after pointer release. Supports `"none"` and `"smooth"`. |
+| `thumbStepBehavior` | Controls how the thumb behaves relative to the semantic `step`. Supports `"snap"`, `"hold"`, and `"stops"`. |
 | `thumbIcon` | Optional decorative icon rendered inside each thumb. Accepts a React node or a render function that receives the current visual thumb value. |
 | `onInteractionValueChange` | Runtime callback for pointer-drag preview values. Does not replace `onValueChange`, which remains the committed-value channel. |
 | `activationFeedback` | Optional per-instance override for the schema/artifact activation feedback effect. Supports `false` to disable and `"active"` for static preview. |
@@ -182,7 +184,7 @@ The implemented `valueDisplay` modes are:
 `auto` is an interaction presentation mode, not a formatter and not a motion
 option. It must keep using `formatValue` for the displayed text,
 `getAriaValueText` for assistive text, `valueAnimation` for text animation, and
-`snapMotion` for position settling.
+`snapAnimation` for position settling.
 
 `valueAnimation="rolling"` applies to whichever selected-value surface is
 currently rendered. In `auto`, this means the summary can roll continuously and
@@ -208,20 +210,20 @@ callback, not a schema/artifact option. Consumers can use it for external
 previews, icon swaps, or temporary readouts without treating the value as
 committed. `onValueChange` remains the committed-value callback.
 
-`thumbBehavior` owns the relation between pointer drag and the semantic `step`
+`thumbStepBehavior` owns the relation between pointer drag and the semantic `step`
 grid:
 
-- `thumbBehavior="snap"` keeps the thumb free during drag and moves it to the
+- `thumbStepBehavior="snap"` keeps the thumb free during drag and moves it to the
   nearest semantic `step` on release. This is the default and preserves the
   original behavior.
-- `thumbBehavior="hold"` keeps the thumb free during drag and leaves the visual
+- `thumbStepBehavior="hold"` keeps the thumb free during drag and leaves the visual
   thumb where it was released. The semantic value, ARIA value, summary, tooltip,
   and `onValueChange` still use the nearest `step`.
-- `thumbBehavior="stops"` moves the thumb on the semantic `step` grid during
+- `thumbStepBehavior="stops"` moves the thumb on the semantic `step` grid during
   drag, so there is no release correction.
 
-`snapMotion` owns only the visual transition used by `thumbBehavior="snap"`.
-It is separate from `valueAnimation`: `snapMotion` moves the thumb, tooltip,
+`snapAnimation` owns only the visual transition used by `thumbStepBehavior="snap"`.
+It is separate from `valueAnimation`: `snapAnimation` moves the thumb, tooltip,
 and active track after pointer release, while `valueAnimation` animates the
 text shown inside value surfaces. Programmatic or externally controlled `value`
 changes do not automatically enter the settling state in this contract.
@@ -285,21 +287,21 @@ The current schema option values are:
 
 - `valueDisplay`: `none`, `tooltip`, `summary`, `both`, `auto`
 - `valueAnimation`: `none`, `rolling`
-- `snapMotion`: `none`, `smooth`
+- `snapAnimation`: `none`, `smooth`
 - `thumbCrossing`: `prevent`, `swap`
 - `marks`: `none`, `step`
 - `edgeMarks`: `include`, `exclude`
 - `markPlacement`: `track`, `above`, `below`
-- `markLabelPlacement`: `auto`, `above`, `below`
-- `edgeMarkLabelPlacement`: `markLabels`, `endpoints`, `adaptive`
-- `edgeMarkLabelAlignment`: `inside`, `center`, `adaptive`
-- `thumbEdgeBehavior`: `overflow`, `contain`
-- `activeTrackOrigin`: `min`, `center`, or a finite number
-- `originMark`: `none`, `auto`
+- `markLabelPlacement`: `adaptive`, `above`, `below`
+- `edgeLabelPlacement`: `markLabels`, `endpoints`, `adaptive`
+- `edgeLabelAlignment`: `inside`, `center`, `adaptive`
+- `thumbEdge`: `overflow`, `contain`
+- `fillOrigin`: `min`, `center`, or a finite number
+- `fillOriginMark`: `none`, `auto`
 
-`snapMotion`, `thumbCrossing`, `marks`, `edgeMarks`, `markPlacement`,
-`markLabelPlacement`, `edgeMarkLabelPlacement`, `edgeMarkLabelAlignment`,
-`thumbEdgeBehavior`, `activeTrackOrigin`, and `originMark` are top-level
+`snapAnimation`, `thumbCrossing`, `marks`, `edgeMarks`, `markPlacement`,
+`markLabelPlacement`, `edgeLabelPlacement`, `edgeLabelAlignment`,
+`thumbEdge`, `fillOrigin`, and `fillOriginMark` are top-level
 component options because they describe behavioral or visual defaults for the
 component. Consumers can still override them per instance.
 
@@ -445,10 +447,11 @@ override pattern and schema-owned mode values are not enough.
 
 `web-builder` may emit `components/slider.kiskadee.json` with:
 
-- component options: `variant`, `valueDisplay`, `valueAnimation`, `snapMotion`,
-  `thumbCrossing`, `marks`, `edgeMarks`, `markPlacement`,
-  `markLabelPlacement`, `edgeMarkLabelPlacement`, `edgeMarkLabelAlignment`,
-  `thumbEdgeBehavior`, `activeTrackOrigin`, and `originMark`;
+- component options: `variant`, `valueDisplay`, `valueSummaryPlacement`,
+  `valueAnimation`, `snapAnimation`, `thumbStepBehavior`, `thumbCrossing`,
+  `marks`, `markInterval`, `edgeMarks`, `markPlacement`, `markLabelPlacement`,
+  `edgeLabelPlacement`, `edgeLabelAlignment`, `thumbEdge`, `fillOrigin`, and
+  `fillOriginMark`;
 - component effects: currently `activationFeedback`;
 - variant-local options: currently `standard.options.mode`.
 
@@ -573,10 +576,10 @@ marker values is `e16`.
 
 `marks="step"` generates automatic visual marks between `min` and `max`, capped
 at 101 generated marks. By default these marks use the semantic `step`.
-`markStep` can override only the visual mark interval:
+`markInterval` can override only the visual mark interval:
 
 ```tsx
-<Slider step={1} marks="step" markStep={25} />
+<Slider step={1} marks="step" markInterval={25} />
 ```
 
 In this example the Slider value remains semantically granular by `1`, while
@@ -593,11 +596,11 @@ boundary values:
 schema/artifact option, then from the default `"include"`. It applies after mark
 normalization and affects visual marks only. Labels and icons declared on exact
 `min` and `max` marks are still available to lateral edge composition and
-`edgeMarkLabelPlacement`.
+`edgeLabelPlacement`.
 
 Marks do not define the semantic value grid. `step` defines semantic values and
-also defines the stops used by `thumbBehavior="stops"`. When a Slider uses large
-steps with `thumbBehavior="stops"`, authors should usually render matching
+also defines the stops used by `thumbStepBehavior="stops"`. When a Slider uses large
+steps with `thumbStepBehavior="stops"`, authors should usually render matching
 marks for clarity, but the component does not require that relationship.
 
 `markPlacement` controls the physical placement of visual marks (`e15`):
@@ -619,21 +622,21 @@ neutral origin marker described below.
   `e16.marginTop`;
 - `markLabelPlacement="above"` places labels above the track using
   `e16.marginBottom`;
-- `markLabelPlacement="auto"` resolves at runtime from the shared
+- `markLabelPlacement="adaptive"` resolves at runtime from the shared
   `isLikelyTouch` interaction environment. Likely-touch environments use
   `above`; otherwise labels use `below`.
 
 This option does not affect lateral edge labels (`e7`), value summaries (`e3`),
 or value indicators/tooltips (`e14`).
 
-`edgeMarkLabelPlacement` controls how scale labels are presented around exact
+`edgeLabelPlacement` controls how scale labels are presented around exact
 `min` and `max` marks:
 
-- `edgeMarkLabelPlacement="markLabels"` renders those edge labels as track labels
+- `edgeLabelPlacement="markLabels"` renders those edge labels as track labels
   (`e16`). This is the default;
-- `edgeMarkLabelPlacement="endpoints"` renders those edge labels as lateral
+- `edgeLabelPlacement="endpoints"` renders those edge labels as lateral
   edge labels (`e7`) and does not render intermediate mark labels;
-- `edgeMarkLabelPlacement="adaptive"` resolves at runtime from the shared
+- `edgeLabelPlacement="adaptive"` resolves at runtime from the shared
   `isCompactViewport` layout environment. Compact viewports use `markLabels`;
   non-compact viewports use `endpoints`.
 
@@ -641,13 +644,13 @@ or value indicators/tooltips (`e14`).
 intermediate `marks[].label` values do not render as `e16`. This prevents mixing
 lateral edge labels with track labels in the same Slider.
 
-`edgeMarkLabelAlignment` controls how edge labels align when
-`edgeMarkLabelPlacement` resolves to `markLabels`:
+`edgeLabelAlignment` controls how edge labels align when
+`edgeLabelPlacement` resolves to `markLabels`:
 
-- `edgeMarkLabelAlignment="center"` keeps the current centered geometry;
-- `edgeMarkLabelAlignment="inside"` aligns the `min` label start to the track
+- `edgeLabelAlignment="center"` keeps the current centered geometry;
+- `edgeLabelAlignment="inside"` aligns the `min` label start to the track
   start and the `max` label end to the track end. This is the default;
-- `edgeMarkLabelAlignment="adaptive"` resolves at runtime from the shared
+- `edgeLabelAlignment="adaptive"` resolves at runtime from the shared
   `isCompactViewport` layout environment. Compact viewports use `inside`;
   non-compact viewports use `center`.
 
@@ -686,26 +689,26 @@ type SliderMark = {
 `marks[].icon` is consumed only when `value` is exactly `min` or `max`.
 Intermediate mark icons are intentionally ignored by the styled `Slider`.
 The edge icon always renders laterally in `e6`. The edge label follows
-`edgeMarkLabelPlacement`: `endpoints` renders it laterally in `e7`,
+`edgeLabelPlacement`: `endpoints` renders it laterally in `e7`,
 `markLabels` renders it on the track in `e16`, and `auto` chooses between those
 two placements from the shared compact viewport environment.
 
 Only marks inside `[min, max]` render. A mark is projected as selected when it
 falls inside the active interval. In single mode, that interval is the resolved
-`activeTrackOrigin` to the current thumb value. The default origin is `min`; a
+`fillOrigin` to the current thumb value. The default origin is `min`; a
 preset or instance can use `"center"` or a finite numeric origin for
 center-biased controls. In range mode, the interval is thumb `0` to thumb `1`.
 Selected marks also receive the projected `selected` state classes on `e15`, so
 presets can style `e15.selected.rest` independently from the unselected mark
 color.
 
-`thumbEdgeBehavior` controls where the thumb can visually sit at the range
+`thumbEdge` controls where the thumb can visually sit at the range
 boundaries. The component default is `contain`:
 
-- `thumbEdgeBehavior="overflow"` maps `min` and `max` directly to the track
+- `thumbEdge="overflow"` maps `min` and `max` directly to the track
   edges. A centered thumb can visually overflow the rail, which is the classic
   web slider geometry.
-- `thumbEdgeBehavior="contain"` maps `min` and `max` to the track edges after
+- `thumbEdge="contain"` maps `min` and `max` to the track edges after
   reserving half of the measured thumb width. This is useful for platforms
   where the thumb, not the mark, should own the end stop and stay fully inside
   the rail.
@@ -717,15 +720,15 @@ the selected interval touches `min` or `max`, the fill is clamped to the
 absolute rail edge. This keeps a contained thumb inside the rail without
 leaving a selected-track gap at the first or last value.
 
-`activeTrackOrigin` affects single-value sliders only:
+`fillOrigin` affects single-value sliders only:
 
-- `activeTrackOrigin="min"` fills the active track from `min` to the value;
-- `activeTrackOrigin="center"` fills from the midpoint to the value;
+- `fillOrigin="min"` fills the active track from `min` to the value;
+- `fillOrigin="center"` fills from the midpoint to the value;
 - a finite numeric value fills from that value to the current thumb.
 
-`originMark="auto"` renders `e18` when the resolved active origin is not `min`.
+`fillOriginMark="auto"` renders `e18` when the resolved active origin is not `min`.
 That mark uses the same placement option as `e15` but has a separate schema slot
-so a preset can give it a neutral color or shape. `originMark="none"` never
+so a preset can give it a neutral color or shape. `fillOriginMark="none"` never
 renders it. This is for neutral-origin sliders such as center-biased controls;
 ordinary step marks remain `e15`.
 
@@ -895,10 +898,10 @@ structure. The suffix does not create a public variant or mode.
   controlled/uncontrolled value, `disabled`, `readOnly`, and keyboard support.
 - Schema elements `e1` through `e19`.
 - Current schema options and values for `variant`, `mode`, `valueDisplay`,
-  `valueSummaryPlacement`, `valueAnimation`, `snapMotion`, `thumbBehavior`,
-  `thumbCrossing`, `marks`, `markStep`, `edgeMarks`, `markPlacement`, `markLabelPlacement`,
-  `edgeMarkLabelPlacement`, `edgeMarkLabelAlignment`, `thumbEdgeBehavior`,
-  `activeTrackOrigin`, and `originMark`.
+  `valueSummaryPlacement`, `valueAnimation`, `snapAnimation`, `thumbStepBehavior`,
+  `thumbCrossing`, `marks`, `markInterval`, `edgeMarks`, `markPlacement`, `markLabelPlacement`,
+  `edgeLabelPlacement`, `edgeLabelAlignment`, `thumbEdge`,
+  `fillOrigin`, and `fillOriginMark`.
 - Generated artifacts and class maps as the source of truth for visual tokens.
 - Current horizontal-only contract.
 

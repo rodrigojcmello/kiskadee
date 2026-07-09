@@ -3,21 +3,21 @@ import type {
   ActivationFeedbackSetting,
   ComponentClassNameMapJSON,
   RadiusMode,
-  SliderActiveTrackOrigin,
-  SliderEdgeMarkLabelAlignment,
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
-  SliderEdgeMarkLabelPlacement,
+  SliderEdgeLabelAlignment,
+  SliderEdgeLabelPlacement,
   SliderEdgeMarks,
+  SliderFillOrigin,
+  SliderFillOriginMark,
   SliderMarkLabelPlacement,
   SliderMarkPlacement,
   SliderMarks,
   SliderMode,
-  SliderOriginMark,
-  SliderSnapMotion,
-  SliderThumbBehavior,
-  SliderThumbEdgeBehavior,
+  SliderSnapAnimation,
   SliderThumbCrossing,
+  SliderThumbEdge,
+  SliderThumbStepBehavior,
   SliderValueAnimation,
   SliderValueDisplay,
   SliderValueSummaryPlacement,
@@ -98,19 +98,19 @@ export type KiskadeeContextValue = {
           valueDisplay?: SliderValueDisplay;
           valueSummaryPlacement?: SliderValueSummaryPlacement;
           valueAnimation?: SliderValueAnimation;
-          snapMotion?: SliderSnapMotion;
-          thumbBehavior?: SliderThumbBehavior;
+          snapAnimation?: SliderSnapAnimation;
+          thumbStepBehavior?: SliderThumbStepBehavior;
           thumbCrossing?: SliderThumbCrossing;
           marks?: SliderMarks;
-          markStep?: number;
+          markInterval?: number;
           edgeMarks?: SliderEdgeMarks;
           markPlacement?: SliderMarkPlacement;
           markLabelPlacement?: SliderMarkLabelPlacement;
-          edgeMarkLabelPlacement?: SliderEdgeMarkLabelPlacement;
-          edgeMarkLabelAlignment?: SliderEdgeMarkLabelAlignment;
-          thumbEdgeBehavior?: SliderThumbEdgeBehavior;
-          activeTrackOrigin?: SliderActiveTrackOrigin;
-          originMark?: SliderOriginMark;
+          edgeLabelPlacement?: SliderEdgeLabelPlacement;
+          edgeLabelAlignment?: SliderEdgeLabelAlignment;
+          thumbEdge?: SliderThumbEdge;
+          fillOrigin?: SliderFillOrigin;
+          fillOriginMark?: SliderFillOriginMark;
         };
         variants?: {
           standard?: {
