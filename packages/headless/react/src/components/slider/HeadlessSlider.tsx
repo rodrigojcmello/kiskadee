@@ -74,6 +74,13 @@ export type SliderThumbInteractionSwitchDetails = {
   toIndex: SliderThumbIndex;
 };
 
+export type SliderInteractionValueChangeDetails = {
+  value: SliderValue;
+  values: readonly number[];
+  activeThumbIndex: SliderThumbIndex;
+  valueMode: SliderValueMode;
+};
+
 export type SliderValueIndicatorRenderDetails = {
   value: number;
   index: SliderThumbIndex;
@@ -113,6 +120,7 @@ export type SliderRootProps = SliderRootDivProps & {
   onThumbInteractionEnd?: (details: SliderThumbInteractionDetails) => void;
   onThumbInteractionStart?: (details: SliderThumbInteractionDetails) => void;
   onThumbInteractionSwitch?: (details: SliderThumbInteractionSwitchDetails) => void;
+  onInteractionValueChange?: (details: SliderInteractionValueChangeDetails) => void;
   onValueChange?: (value: SliderValue) => void;
 };
 
@@ -205,6 +213,26 @@ type SliderDragPreview =
       index: SliderThumbIndex;
       values: SliderRangeValue;
     };
+
+function dragPreviewsEqual(
+  left: SliderDragPreview | null,
+  right: SliderDragPreview | null
+): boolean {
+  if (left === right) return true;
+  if (!left || !right || left.valueMode !== right.valueMode || left.index !== right.index) {
+    return false;
+  }
+
+  if (left.valueMode === 'single' && right.valueMode === 'single') {
+    return left.value === right.value;
+  }
+
+  if (left.valueMode === 'range' && right.valueMode === 'range') {
+    return valuesEqual(left.values, right.values);
+  }
+
+  return false;
+}
 
 type SliderGeometry = {
   trackWidth: number;
@@ -444,6 +472,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
     onThumbInteractionEnd,
     onThumbInteractionStart,
     onThumbInteractionSwitch,
+    onInteractionValueChange,
     onValueChange,
     onPointerEnter,
     onPointerLeave,
@@ -681,6 +710,30 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
     [max, min, step, thumbBehavior]
   );
 
+  const notifyInteractionValueChange = useCallback(
+    (preview: SliderDragPreview) => {
+      if (!onInteractionValueChange) return;
+
+      if (preview.valueMode === 'single') {
+        onInteractionValueChange({
+          value: preview.value,
+          values: [preview.value],
+          activeThumbIndex: preview.index,
+          valueMode: 'single'
+        });
+        return;
+      }
+
+      onInteractionValueChange({
+        value: preview.values,
+        values: preview.values,
+        activeThumbIndex: preview.index,
+        valueMode: 'range'
+      });
+    },
+    [onInteractionValueChange]
+  );
+
   const setThumbValue = useCallback(
     (
       index: SliderThumbIndex,
@@ -719,24 +772,34 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       if (valueMode === 'range') {
         const preview = resolveRangePreview(index, nextValue, thumbCrossing);
         switchDraggingThumbIndex(index, preview.index, event);
-        setDragPreviewValue({
+        const nextPreview: SliderDragPreview = {
           valueMode: 'range',
           index: preview.index,
           values: preview.values
-        });
+        };
+        if (!dragPreviewsEqual(dragPreviewValue, nextPreview)) {
+          setDragPreviewValue(nextPreview);
+          notifyInteractionValueChange(nextPreview);
+        }
         return;
       }
 
-      setDragPreviewValue({
+      const nextPreview: SliderDragPreview = {
         valueMode: 'single',
         index,
         value: clamp(nextValue, min, max)
-      });
+      };
+      if (!dragPreviewsEqual(dragPreviewValue, nextPreview)) {
+        setDragPreviewValue(nextPreview);
+        notifyInteractionValueChange(nextPreview);
+      }
     },
     [
       disabled,
+      dragPreviewValue,
       max,
       min,
+      notifyInteractionValueChange,
       readOnly,
       resolveRangePreview,
       resolveThumbBehaviorValue,

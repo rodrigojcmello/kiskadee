@@ -15,6 +15,7 @@ export type {
   SliderEdgeMarkLabelAlignmentOption,
   SliderEdgeMarkLabelPlacementOption,
   SliderEdgeMarksOption,
+  SliderInteractionValueChangeDetails,
   SliderMark,
   SliderMarkLabelPlacementOption,
   SliderMarks,

@@ -79,6 +79,17 @@
 }
 
 /*
+ * structural slot control group / x2
+ * Groups endpoint content with the track so control-end summary sizing stays independent.
+ */
+.k-sld-x2-a {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+/*
  * element control row modifier / e4a
  * Reserves an above-track lane for persistent mark labels using the schema-owned top padding token.
  */
@@ -130,11 +141,11 @@
   min-inline-size: 0;
 }
 
-.k-sld-e4-a > .k-sld-e5-a:first-child {
+.k-sld-x2-a > .k-sld-e5-a:first-child {
   margin-inline-end: var(--k-mgr, 0px);
 }
 
-.k-sld-e4-a > .k-sld-e5-a:last-child {
+.k-sld-x2-a > .k-sld-e5-a:last-child {
   margin-inline-start: var(--k-mgl, 0px);
 }
 

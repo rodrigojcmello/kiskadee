@@ -614,53 +614,55 @@ function SliderRoot(props: SliderProps) {
         </div>
       ) : null}
       <HeadlessSlider.ControlRow>
-        {renderEndpoint('start', startEdgeMark, shouldRenderEdgeMarkLabelsAsEndpoints)}
-        <HeadlessSlider.Track>
-          <HeadlessSlider.ActiveTrack />
-          {shouldRenderOriginMark(resolvedOriginMark, resolvedActiveTrackOrigin, min, max) ? (
-            <HeadlessSlider.OriginMark />
-          ) : null}
-          {visualMarks.map((mark) => (
-            <HeadlessSlider.Mark key={`mark-${mark.value}`} value={mark.value} />
-          ))}
-          {markLabels.map((mark) => (
-            <HeadlessSlider.MarkLabel
-              key={`mark-label-${mark.value}`}
-              className={getEdgeMarkLabelAlignmentClassName(
-                mark,
-                min,
-                max,
-                resolvedEdgeMarkLabelAlignment
-              )}
-              value={mark.value}
-            >
-              {mark.label}
-            </HeadlessSlider.MarkLabel>
-          ))}
-          <HeadlessSlider.Thumb
-            ref={startThumbRef}
-            index={0}
-            className={getThumbActivationFeedbackClassName(0)}
-            aria-label={getThumbAriaLabel(0)}
-            aria-labelledby={getThumbAriaLabelledBy(0)}
-          >
-            <HeadlessSlider.ThumbInner />
-            {renderValueIndicator(0)}
-          </HeadlessSlider.Thumb>
-          {resolvedValueMode === 'range' ? (
+        <div className="k-sld-x2-a">
+          {renderEndpoint('start', startEdgeMark, shouldRenderEdgeMarkLabelsAsEndpoints)}
+          <HeadlessSlider.Track>
+            <HeadlessSlider.ActiveTrack />
+            {shouldRenderOriginMark(resolvedOriginMark, resolvedActiveTrackOrigin, min, max) ? (
+              <HeadlessSlider.OriginMark />
+            ) : null}
+            {visualMarks.map((mark) => (
+              <HeadlessSlider.Mark key={`mark-${mark.value}`} value={mark.value} />
+            ))}
+            {markLabels.map((mark) => (
+              <HeadlessSlider.MarkLabel
+                key={`mark-label-${mark.value}`}
+                className={getEdgeMarkLabelAlignmentClassName(
+                  mark,
+                  min,
+                  max,
+                  resolvedEdgeMarkLabelAlignment
+                )}
+                value={mark.value}
+              >
+                {mark.label}
+              </HeadlessSlider.MarkLabel>
+            ))}
             <HeadlessSlider.Thumb
-              ref={endThumbRef}
-              index={1}
-              className={getThumbActivationFeedbackClassName(1)}
-              aria-label={getThumbAriaLabel(1)}
-              aria-labelledby={getThumbAriaLabelledBy(1)}
+              ref={startThumbRef}
+              index={0}
+              className={getThumbActivationFeedbackClassName(0)}
+              aria-label={getThumbAriaLabel(0)}
+              aria-labelledby={getThumbAriaLabelledBy(0)}
             >
               <HeadlessSlider.ThumbInner />
-              {renderValueIndicator(1)}
+              {renderValueIndicator(0)}
             </HeadlessSlider.Thumb>
-          ) : null}
-        </HeadlessSlider.Track>
-        {renderEndpoint('end', endEdgeMark, shouldRenderEdgeMarkLabelsAsEndpoints)}
+            {resolvedValueMode === 'range' ? (
+              <HeadlessSlider.Thumb
+                ref={endThumbRef}
+                index={1}
+                className={getThumbActivationFeedbackClassName(1)}
+                aria-label={getThumbAriaLabel(1)}
+                aria-labelledby={getThumbAriaLabelledBy(1)}
+              >
+                <HeadlessSlider.ThumbInner />
+                {renderValueIndicator(1)}
+              </HeadlessSlider.Thumb>
+            ) : null}
+          </HeadlessSlider.Track>
+          {renderEndpoint('end', endEdgeMark, shouldRenderEdgeMarkLabelsAsEndpoints)}
+        </div>
         {hasControlValueSummary ? renderValueSummary() : null}
       </HeadlessSlider.ControlRow>
       {hasHelperText ? (

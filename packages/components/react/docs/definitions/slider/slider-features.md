@@ -110,6 +110,7 @@ upper values.
 | `valueAnimation` | Optional per-instance override for how selected values are visually rendered. Supports `"none"` and `"rolling"`. |
 | `snapMotion` | Optional per-instance override for thumb position settling after pointer release. Supports `"none"` and `"smooth"`. |
 | `thumbBehavior` | Controls how the thumb behaves relative to the semantic `step`. Supports `"snap"`, `"hold"`, and `"stops"`. |
+| `onInteractionValueChange` | Runtime callback for pointer-drag preview values. Does not replace `onValueChange`, which remains the committed-value channel. |
 | `activationFeedback` | Optional per-instance override for the schema/artifact activation feedback effect. Supports `false` to disable and `"active"` for static preview. |
 | `className` | Merged into the root `e1` slot. |
 | `classNames` | Escape hatch for schema element slots `e1` through `e16`. |
@@ -199,6 +200,12 @@ part of the selected `valueDisplay` mode, while tooltip geometry, summary
 position, and input composition remain separate contracts. Summary position is
 controlled by `valueSummaryPlacement`; editable input composition remains a
 future Slider + TextField concern.
+
+`onInteractionValueChange` exposes the same transient pointer-drag value used
+by the thumb, active track, tooltip, and summary preview. It is a runtime React
+callback, not a schema/artifact option. Consumers can use it for external
+previews, icon swaps, or temporary readouts without treating the value as
+committed. `onValueChange` remains the committed-value callback.
 
 `thumbBehavior` owns the relation between pointer drag and the semantic `step`
 grid:

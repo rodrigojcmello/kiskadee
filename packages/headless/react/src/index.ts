@@ -33,6 +33,7 @@ export type {
   SliderFieldLabelProps,
   SliderFormatValue,
   SliderHelperTextProps,
+  SliderInteractionValueChangeDetails,
   SliderMarkLabelProps,
   SliderMarkProps,
   SliderOriginMarkProps,

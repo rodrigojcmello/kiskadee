@@ -24,6 +24,7 @@ import type {
 } from '@kiskadee/core';
 import type {
   SliderRootProps as HeadlessSliderRootProps,
+  SliderInteractionValueChangeDetails as HeadlessSliderInteractionValueChangeDetails,
   SliderStatus as HeadlessSliderStatus,
   SliderValue,
   SliderValueMode
@@ -99,6 +100,7 @@ export type SliderThumbAriaLabelledBy = {
 };
 
 export type SliderActivationFeedback = false | 'active';
+export type SliderInteractionValueChangeDetails = HeadlessSliderInteractionValueChangeDetails;
 
 export type SliderProps = Omit<
   HeadlessSliderRootProps,
