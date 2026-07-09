@@ -56,7 +56,7 @@ export const DEFAULT_SLIDER_MARK_PLACEMENT: SliderMarkPlacement = 'track';
 export const DEFAULT_SLIDER_MARK_LABEL_PLACEMENT = 'auto';
 export const DEFAULT_SLIDER_EDGE_MARK_LABEL_PLACEMENT = 'markLabels';
 export const DEFAULT_SLIDER_EDGE_MARK_LABEL_ALIGNMENT: SliderEdgeMarkLabelAlignment = 'inside';
-export const DEFAULT_SLIDER_THUMB_EDGE_BEHAVIOR: SliderThumbEdgeBehavior = 'overflow';
+export const DEFAULT_SLIDER_THUMB_EDGE_BEHAVIOR: SliderThumbEdgeBehavior = 'contain';
 export const DEFAULT_SLIDER_ACTIVE_TRACK_ORIGIN: SliderActiveTrackOrigin = 'min';
 export const DEFAULT_SLIDER_ORIGIN_MARK: SliderOriginMark = 'none';
 

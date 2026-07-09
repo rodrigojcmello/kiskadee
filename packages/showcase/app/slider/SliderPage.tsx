@@ -478,12 +478,34 @@ function SunIcon() {
   );
 }
 
-function VolumeIcon() {
+function VolumeHighIcon() {
   return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+    <svg width="28" height="28" viewBox="0 0 5 5" focusable="false" aria-hidden="true">
       <path
         fill="currentColor"
-        d="M4 9h4l5-5v16l-5-5H4zm12.3-.8a6 6 0 0 1 0 7.6l-1.1-1.1a4.5 4.5 0 0 0 0-5.4zm2.6-2.6a9.8 9.8 0 0 1 0 12.8l-1.1-1.1a8.2 8.2 0 0 0 0-10.6z"
+        d="M3.054 0v.572a1.945 1.945 0 0 1 1.389 1.863c0 .88-.586 1.622-1.389 1.86v.575a2.5 2.5 0 0 0 1.944-2.435A2.5 2.5 0 0 0 3.054 0m.695 2.435c0-.491-.278-.913-.695-1.119v2.23c.417-.197.695-.622.695-1.11M0 1.602v1.666h1.111L2.5 4.657V.214L1.111 1.602z"
+      />
+    </svg>
+  );
+}
+
+function VolumeLowIcon() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 7 7" focusable="false" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M1.388 2.499v1.666h1.111l1.388 1.388V1.11L2.499 2.499zm3.749.833c0-.492-.278-.914-.694-1.12v2.23c.416-.197.694-.622.694-1.11"
+      />
+    </svg>
+  );
+}
+
+function VolumeOffIcon() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 7 7" focusable="false" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="m3.332 1.11-.58.58.58.58zm-2.146-.278-.353.353 1.313 1.313H.833v1.666h1.111l1.388 1.388V3.684l1.18 1.183a2.4 2.4 0 0 1-.625.324v.575c.383-.089.73-.264 1.022-.502l.569.566.353-.353-2.5-2.499zm4.09 2.499c0 .261-.056.505-.15.733l.419.419c.18-.344.286-.736.286-1.152A2.5 2.5 0 0 0 3.887.896v.572a1.945 1.945 0 0 1 1.389 1.863m-.694 0c0-.491-.278-.913-.695-1.119v.614l.681.68c.014-.055.014-.116.014-.175"
       />
     </svg>
   );
@@ -515,12 +537,14 @@ function SliderExampleCard({
   cardShadow,
   children,
   className,
-  surface
+  surface,
+  title
 }: {
   cardShadow: ElementSizeValue | undefined;
   children: ReactNode;
   className?: string;
   surface: ResolvedSliderSurface;
+  title?: string;
 }) {
   return (
     <Card
@@ -530,6 +554,7 @@ function SliderExampleCard({
       shadow={cardShadow}
       preserveBorderWithShadow={false}
     >
+      {title ? <h4 className={s.cardTitle}>{title}</h4> : null}
       <div className={s.cardContent}>{children}</div>
     </Card>
   );
@@ -575,7 +600,6 @@ export default function SliderPage() {
   const [readOnly, setReadOnly] = useState(false);
   const [interactiveValue, setInteractiveValue] = useState(55);
   const [interactiveRange, setInteractiveRange] = useState<[number, number]>([20, 75]);
-  const [sideValue, setSideValue] = useState(35);
   const [volume, setVolume] = useState(64);
   const [brightness, setBrightness] = useState(78);
   const [price, setPrice] = useState<[number, number]>([2500, 5000]);
@@ -1263,44 +1287,21 @@ export default function SliderPage() {
           <section className={s.section}>
             <h3>Examples</h3>
             <div className={s.demoGrid}>
-              <SliderExampleCard cardShadow={cardShadow} surface={selectedSurface}>
-                <Slider
-                  aria-label="Simple value"
-                  min={0}
-                  max={200}
-                  step={1}
-                  value={sideValue}
-                  onValueChange={(nextValue) => {
-                    if (typeof nextValue === 'number') setSideValue(nextValue);
-                  }}
-                  marks="none"
-                  markStep={markStepProp}
-                  edgeMarks="include"
-                  markPlacement={markPlacement}
-                  markLabelPlacement={markLabelPlacement}
-                  edgeMarkLabelPlacement={edgeMarkLabelPlacement}
-                  edgeMarkLabelAlignment={edgeMarkLabelAlignment}
-                  thumbEdgeBehavior={thumbEdgeBehavior}
-                  activeTrackOrigin={activeTrackOriginProp}
-                  originMark={originMark}
-                  formatValue={(value) => `$${value}`}
-                  valueDisplay="summary"
-                  valueSummaryPlacement="controlEnd"
-                  valueSummaryWidth={44}
-                  valueAnimation={valueAnimationProp}
-                  snapMotion={snapMotionProp}
-                  thumbBehavior={thumbBehaviorProp}
-                  activationFeedback={activationFeedbackProp}
-                  scale={scale}
-                  radius={radius}
-                  intent={intent}
-                  emphasis={emphasis}
-                />
+              <SliderExampleCard
+                cardShadow={cardShadow}
+                surface={selectedSurface}
+                title="Example A"
+              >
+                <Slider label="Basic" defaultValue={50} />
               </SliderExampleCard>
 
-              <SliderExampleCard cardShadow={cardShadow} surface={selectedSurface}>
+              <SliderExampleCard
+                cardShadow={cardShadow}
+                surface={selectedSurface}
+                title="Example B"
+              >
                 <Slider
-                  aria-label="Volume"
+                  label="Volume"
                   min={0}
                   max={100}
                   step={1}
@@ -1308,7 +1309,10 @@ export default function SliderPage() {
                   onValueChange={(nextValue) => {
                     if (typeof nextValue === 'number') setVolume(nextValue);
                   }}
-                  marks={[{ value: 0, icon: <VolumeIcon /> }]}
+                  marks={[
+                    { value: 0, icon: volume === 0 ? <VolumeOffIcon /> : <VolumeLowIcon /> },
+                    { value: 100, icon: <VolumeHighIcon /> }
+                  ]}
                   markStep={markStepProp}
                   edgeMarks="exclude"
                   markPlacement={markPlacement}
@@ -1333,7 +1337,11 @@ export default function SliderPage() {
                 />
               </SliderExampleCard>
 
-              <SliderExampleCard cardShadow={cardShadow} surface={selectedSurface}>
+              <SliderExampleCard
+                cardShadow={cardShadow}
+                surface={selectedSurface}
+                title="Example C: Price range"
+              >
                 <Slider
                   label="Price Range"
                   required
@@ -1372,7 +1380,11 @@ export default function SliderPage() {
                 />
               </SliderExampleCard>
 
-              <SliderExampleCard cardShadow={cardShadow} surface={selectedSurface}>
+              <SliderExampleCard
+                cardShadow={cardShadow}
+                surface={selectedSurface}
+                title="Example D: Brightness"
+              >
                 <Slider
                   label="Brightness"
                   min={0}
@@ -1408,7 +1420,11 @@ export default function SliderPage() {
                 />
               </SliderExampleCard>
 
-              <SliderExampleCard cardShadow={cardShadow} surface={selectedSurface}>
+              <SliderExampleCard
+                cardShadow={cardShadow}
+                surface={selectedSurface}
+                title="Example E: Tasks completed"
+              >
                 <Slider
                   label="Tasks completed"
                   valueMode="range"
@@ -1449,7 +1465,11 @@ export default function SliderPage() {
                 />
               </SliderExampleCard>
 
-              <SliderExampleCard cardShadow={cardShadow} surface={selectedSurface}>
+              <SliderExampleCard
+                cardShadow={cardShadow}
+                surface={selectedSurface}
+                title="Example F: Center origin"
+              >
                 <Slider
                   label="Center biased"
                   min={-100}
@@ -1482,7 +1502,11 @@ export default function SliderPage() {
                 />
               </SliderExampleCard>
 
-              <SliderExampleCard cardShadow={cardShadow} surface={selectedSurface}>
+              <SliderExampleCard
+                cardShadow={cardShadow}
+                surface={selectedSurface}
+                title="Example G: Rating"
+              >
                 <Slider
                   label="Rating"
                   min={0}

@@ -494,13 +494,6 @@ export function createSandbox3SliderSchema(): SliderComponent {
         }
       }
     },
-    options: {
-      variant: 'standard',
-      valueDisplay: 'tooltip',
-      marks: 'none',
-      markLabelPlacement: 'auto',
-      edgeMarkLabelPlacement: 'adaptive'
-    },
     variants: {
       standard: {
         options: {

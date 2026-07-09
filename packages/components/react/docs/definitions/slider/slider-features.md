@@ -101,7 +101,7 @@ upper values.
 | `markLabelPlacement` | Controls where `e14` mark labels sit relative to the track. Supports `"auto"`, `"above"`, and `"below"`. |
 | `edgeMarkLabelPlacement` | Controls whether edge labels render as track labels, endpoint labels, or adapt by layout. Supports `"markLabels"`, `"endpoints"`, and `"adaptive"`. Default: `"markLabels"`. |
 | `edgeMarkLabelAlignment` | Controls how `min`/`max` labels align when rendered as track labels. Supports `"inside"`, `"center"`, and `"adaptive"`. Default: `"inside"`. |
-| `thumbEdgeBehavior` | Controls the horizontal value plane at the track edges. Supports `"overflow"` and `"contain"`. |
+| `thumbEdgeBehavior` | Controls the horizontal value plane at the track edges. Supports `"overflow"` and `"contain"`. Default: `"contain"`. |
 | `activeTrackOrigin` | Controls the active track origin in single-value sliders. Supports `"min"`, `"center"`, or a finite numeric value inside the range. Range sliders ignore it. |
 | `originMark` | Controls whether the neutral origin is rendered as a separate mark (`e16`). Supports `"none"` and `"auto"`. |
 | `valueDisplay` | Controls selected value display: `"none"`, `"tooltip"`, `"summary"`, `"both"`, or `"auto"`. |
@@ -657,7 +657,7 @@ presets can style `e13.selected.rest` independently from the unselected mark
 color.
 
 `thumbEdgeBehavior` controls where the thumb can visually sit at the range
-boundaries:
+boundaries. The component default is `contain`:
 
 - `thumbEdgeBehavior="overflow"` maps `min` and `max` directly to the track
   edges. A centered thumb can visually overflow the rail, which is the classic
