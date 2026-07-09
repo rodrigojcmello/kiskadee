@@ -44,6 +44,8 @@ export type {
   SliderThumbCrossing,
   SliderThumbEdgeBehavior,
   SliderThumbIndex,
+  SliderThumbIconProps,
+  SliderThumbIconRenderDetails,
   SliderThumbInteractionDetails,
   SliderThumbInteractionSwitchDetails,
   SliderThumbProps,

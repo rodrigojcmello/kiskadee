@@ -16,8 +16,8 @@ contract:
 - `e9`: active track;
 - `e10`: thumb wrapper and visible thumb body;
 - `e11`: thumb inner, kept visually empty for this preset;
-- `e13`: ordinary marks / ticks;
-- `e16`: neutral origin mark for center-biased sliders.
+- `e15`: ordinary marks / ticks;
+- `e18`: neutral origin mark for center-biased sliders.
 
 The preset uses:
 
@@ -32,6 +32,12 @@ The preset uses:
 Kiskadee sets `e4.boxHeight` to the nominal thumb height for each scale. This is
 a structural lane-stabilization token, not a separate Figma measurement: it keeps
 the track vertically stable when endpoint icons overflow the control lane.
+
+The optional Kiskadee `e19` thumb icon slot is also schema-styled for the preset.
+The preset does not declare the optional `e12`/`e13` enlarged icon-thumb
+geometry overlays, so `thumbIcon` preserves the official `e10`/`e11`
+dimensions. It is a generic Kiskadee composition affordance, not a separate
+iOS 26 Slider measurement from the Figma source.
 
 ## Adaptations
 

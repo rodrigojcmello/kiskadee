@@ -4,8 +4,8 @@ import type {
   ElementSizeValue,
   RadiusMode,
   SliderActiveTrackOrigin,
-  SliderEdgeMarkLabelAlignment,
   SliderMarks as SliderArtifactMarks,
+  SliderEdgeMarkLabelAlignment,
   SliderEdgeMarkLabelPlacement,
   SliderEdgeMarks,
   SliderIntent,
@@ -15,17 +15,18 @@ import type {
   SliderOriginMark,
   SliderSnapMotion,
   SliderThumbBehavior,
-  SliderThumbEdgeBehavior,
   SliderThumbCrossing,
+  SliderThumbEdgeBehavior,
   SliderValueAnimation,
   SliderValueDisplay,
   SliderValueSummaryPlacement,
   SliderVariant
 } from '@kiskadee/core';
 import type {
-  SliderRootProps as HeadlessSliderRootProps,
   SliderInteractionValueChangeDetails as HeadlessSliderInteractionValueChangeDetails,
+  SliderRootProps as HeadlessSliderRootProps,
   SliderStatus as HeadlessSliderStatus,
+  SliderThumbIconRenderDetails as HeadlessSliderThumbIconRenderDetails,
   SliderValue,
   SliderValueMode
 } from '@kiskadee/react-headless';
@@ -47,7 +48,10 @@ export type SliderElementName =
   | 'e13'
   | 'e14'
   | 'e15'
-  | 'e16';
+  | 'e16'
+  | 'e17'
+  | 'e18'
+  | 'e19';
 
 export type SliderClassNames = Partial<Record<SliderElementName, string>>;
 
@@ -101,6 +105,8 @@ export type SliderThumbAriaLabelledBy = {
 
 export type SliderActivationFeedback = false | 'active';
 export type SliderInteractionValueChangeDetails = HeadlessSliderInteractionValueChangeDetails;
+export type SliderThumbIconDetails = HeadlessSliderThumbIconRenderDetails;
+export type SliderThumbIcon = ReactNode | ((details: SliderThumbIconDetails) => ReactNode);
 
 export type SliderProps = Omit<
   HeadlessSliderRootProps,
@@ -152,6 +158,7 @@ export type SliderProps = Omit<
   thumbCrossing?: SliderThumbCrossingOption;
   activationFeedback?: SliderActivationFeedback;
   formatValue?: (value: number, index: 0 | 1) => ReactNode;
+  thumbIcon?: SliderThumbIcon;
   thumbAriaLabels?: SliderThumbAriaLabels;
   thumbAriaLabelledBy?: SliderThumbAriaLabelledBy;
 };

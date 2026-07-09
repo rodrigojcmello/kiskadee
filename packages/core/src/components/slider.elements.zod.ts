@@ -85,6 +85,12 @@ export function createSliderEndpointIconElementStyleSchema<
     .strict();
 }
 
+export function createSliderThumbIconElementStyleSchema<
+  TSegmentName extends SegmentName = never
+>() {
+  return createSliderEndpointIconElementStyleSchema<TSegmentName>();
+}
+
 export function createSliderEndpointLabelElementStyleSchema<
   TSegmentName extends SegmentName = never
 >() {
@@ -157,6 +163,19 @@ export function createSliderThumbInnerElementStyleSchema<
   TSegmentName extends SegmentName = never
 >() {
   return createSliderThumbElementStyleSchema<TSegmentName>();
+}
+
+export function createSliderThumbWithIconElementStyleSchema() {
+  return z
+    .object({
+      name: z.string(),
+      scales: createScalesSchema(['boxWidth', 'boxHeight']).optional()
+    })
+    .strict();
+}
+
+export function createSliderThumbInnerWithIconElementStyleSchema() {
+  return createSliderThumbWithIconElementStyleSchema();
 }
 
 export function createSliderValueIndicatorElementStyleSchema<
@@ -261,6 +280,9 @@ export type SliderEndpointElementStyleFromSchema = z.input<
 export type SliderEndpointIconElementStyleFromSchema<TSegmentName extends SegmentName = never> =
   z.input<ReturnType<typeof createSliderEndpointIconElementStyleSchema<TSegmentName>>>;
 
+export type SliderThumbIconElementStyleFromSchema<TSegmentName extends SegmentName = never> =
+  z.input<ReturnType<typeof createSliderThumbIconElementStyleSchema<TSegmentName>>>;
+
 export type SliderEndpointLabelElementStyleFromSchema<TSegmentName extends SegmentName = never> =
   z.input<ReturnType<typeof createSliderEndpointLabelElementStyleSchema<TSegmentName>>>;
 
@@ -278,6 +300,14 @@ export type SliderThumbElementStyleFromSchema<TSegmentName extends SegmentName =
 export type SliderThumbInnerElementStyleFromSchema<TSegmentName extends SegmentName = never> =
   z.input<ReturnType<typeof createSliderThumbInnerElementStyleSchema<TSegmentName>>>;
 
+export type SliderThumbWithIconElementStyleFromSchema = z.input<
+  ReturnType<typeof createSliderThumbWithIconElementStyleSchema>
+>;
+
+export type SliderThumbInnerWithIconElementStyleFromSchema = z.input<
+  ReturnType<typeof createSliderThumbInnerWithIconElementStyleSchema>
+>;
+
 export type SliderValueIndicatorElementStyleFromSchema<TSegmentName extends SegmentName = never> =
   z.input<ReturnType<typeof createSliderValueIndicatorElementStyleSchema<TSegmentName>>>;
 
@@ -285,9 +315,8 @@ export type SliderMarkElementStyleFromSchema<TSegmentName extends SegmentName = 
   ReturnType<typeof createSliderMarkElementStyleSchema<TSegmentName>>
 >;
 
-export type SliderOriginMarkElementStyleFromSchema<
-  TSegmentName extends SegmentName = never
-> = z.input<ReturnType<typeof createSliderOriginMarkElementStyleSchema<TSegmentName>>>;
+export type SliderOriginMarkElementStyleFromSchema<TSegmentName extends SegmentName = never> =
+  z.input<ReturnType<typeof createSliderOriginMarkElementStyleSchema<TSegmentName>>>;
 
 export type SliderMarkLabelElementStyleFromSchema<TSegmentName extends SegmentName = never> =
   z.input<ReturnType<typeof createSliderMarkLabelElementStyleSchema<TSegmentName>>>;

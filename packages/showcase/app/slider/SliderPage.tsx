@@ -22,8 +22,8 @@ import {
   type SliderOriginMarkOption,
   type SliderSnapMotionOption,
   type SliderThumbBehaviorOption,
-  type SliderThumbEdgeBehaviorOption,
   type SliderThumbCrossingOption,
+  type SliderThumbEdgeBehaviorOption,
   type SliderValueAnimationOption,
   type SliderValueSummaryPlacementOption,
   useCardArtifactConfig,
@@ -320,6 +320,19 @@ const ratingMarks = [
   { value: 10, label: '10', icon: <SmileIcon /> }
 ] as const;
 
+function renderVolumeIcon(value: number) {
+  if (value <= 0) return <VolumeOffIcon />;
+  if (value < 50) return <VolumeLowIcon />;
+  return <VolumeHighIcon />;
+}
+
+function renderThumbVolumeIcon(value: number) {
+  if (value <= 0) return <VolumeOffIcon />;
+  if (value < 16) return <VolumeMinimumIcon />;
+  if (value < 67) return <VolumeLowIcon />;
+  return <VolumeHighIcon />;
+}
+
 function normalizeShadowLevelKey(key: ElementSizeValue): string {
   return key.slice(2);
 }
@@ -439,12 +452,8 @@ function resolveActiveTrackOriginProp(
   return Number(activeTrackOrigin);
 }
 
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0
-  }).format(value);
+function formatSquareMeters(value: number): string {
+  return `${value} m²`;
 }
 
 function formatPercent(value: number): string {
@@ -500,12 +509,31 @@ function VolumeLowIcon() {
   );
 }
 
+function VolumeMinimumIcon() {
+  return (
+    <svg viewBox="0 0 6.664 6.664" focusable="false" aria-hidden="true">
+      <path fill="currentColor" d="M1.944 2.498v1.666h1.11l1.389 1.389V1.11L3.054 2.498z" />
+    </svg>
+  );
+}
+
 function VolumeOffIcon() {
   return (
     <svg viewBox="0 0 7 7" focusable="false" aria-hidden="true">
       <path
         fill="currentColor"
         d="M.833 2.499h1.111L3.332 1.11v4.443L1.944 4.165H.833zm3.774.833-.72-.72.392-.391.719.719.719-.719.392.391-.72.72.72.719-.392.391-.719-.719-.719.719-.392-.391z"
+      />
+    </svg>
+  );
+}
+
+function DragHandleIcon() {
+  return (
+    <svg viewBox="0 0 6.664 6.664" focusable="false" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M1.944 1.388h.555v.555h-.555zm1.11 0h.556v.555h-.555zm1.111 0h.555v.555h-.555zM1.944 2.499h.555v.555h-.555zm1.11 0h.556v.555h-.555zm1.111 0h.555v.555h-.555zM1.944 3.61h.555v.555h-.555zm1.11 0h.556v.555h-.555zm1.111 0h.555v.555h-.555zM1.944 4.72h.555v.556h-.555zm1.11 0h.556v.556h-.555zm1.111 0h.555v.556h-.555z"
       />
     </svg>
   );
@@ -591,8 +619,7 @@ export default function SliderPage() {
     useState<SliderEdgeMarkLabelAlignmentOption>('inside');
   const [thumbEdgeBehavior, setThumbEdgeBehavior] =
     useState<SliderThumbEdgeBehaviorOption>('overflow');
-  const [activeTrackOrigin, setActiveTrackOrigin] =
-    useState<SliderActiveTrackOriginControl>('min');
+  const [activeTrackOrigin, setActiveTrackOrigin] = useState<SliderActiveTrackOriginControl>('min');
   const [originMark, setOriginMark] = useState<SliderOriginMarkOption>('none');
   const [activationFeedback, setActivationFeedback] =
     useState<SliderActivationFeedbackControl>('default');
@@ -600,10 +627,11 @@ export default function SliderPage() {
   const [readOnly, setReadOnly] = useState(false);
   const [interactiveValue, setInteractiveValue] = useState(55);
   const [interactiveRange, setInteractiveRange] = useState<[number, number]>([20, 75]);
-  const [volume, setVolume] = useState(64);
+  const [volume, setVolume] = useState(25);
   const [volumePreview, setVolumePreview] = useState<number | null>(null);
+  const [thumbIconVolume, setThumbIconVolume] = useState(75);
   const [brightness, setBrightness] = useState(78);
-  const [price, setPrice] = useState<[number, number]>([2500, 5000]);
+  const [area, setArea] = useState<[number, number]>([50, 150]);
   const [tasks, setTasks] = useState<[number, number]>([0, 43]);
   const [rating, setRating] = useState(4);
   const [centerBiased, setCenterBiased] = useState(40);
@@ -1320,7 +1348,7 @@ export default function SliderPage() {
                   marks={[
                     {
                       value: 0,
-                      icon: visibleVolume === 0 ? <VolumeOffIcon /> : <VolumeLowIcon />
+                      icon: renderVolumeIcon(visibleVolume)
                     },
                     { value: 100, icon: <VolumeHighIcon /> }
                   ]}
@@ -1346,23 +1374,18 @@ export default function SliderPage() {
               <SliderExampleCard
                 cardShadow={cardShadow}
                 surface={selectedSurface}
-                title="Example C: Price range"
+                title="Example C"
               >
                 <Slider
-                  label="Price Range"
-                  required
-                  valueMode="range"
-                  min={1000}
-                  max={10000}
-                  step={500}
-                  value={price}
+                  label="Thumb icon"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={thumbIconVolume}
                   onValueChange={(nextValue) => {
-                    if (Array.isArray(nextValue)) setPrice([nextValue[0], nextValue[1]]);
+                    if (typeof nextValue === 'number') setThumbIconVolume(nextValue);
                   }}
-                  marks={[
-                    { value: 1000, label: formatCurrency(1000) },
-                    { value: 10000, label: formatCurrency(10000) }
-                  ]}
+                  thumbIcon={({ value }) => renderThumbVolumeIcon(value)}
                   markStep={markStepProp}
                   edgeMarks="exclude"
                   markPlacement={markPlacement}
@@ -1372,7 +1395,48 @@ export default function SliderPage() {
                   thumbEdgeBehavior={thumbEdgeBehavior}
                   activeTrackOrigin={activeTrackOriginProp}
                   originMark={originMark}
-                  formatValue={(value) => formatCurrency(value)}
+                  valueDisplay="none"
+                  snapMotion={snapMotionProp}
+                  thumbBehavior={thumbBehaviorProp}
+                  activationFeedback={activationFeedbackProp}
+                  scale={scale}
+                  radius={radius}
+                  intent={intent}
+                  emphasis={emphasis}
+                />
+              </SliderExampleCard>
+
+              <SliderExampleCard
+                cardShadow={cardShadow}
+                surface={selectedSurface}
+                title="Example D: Area"
+              >
+                <Slider
+                  label="Area"
+                  required
+                  valueMode="range"
+                  min={25}
+                  max={250}
+                  step={5}
+                  value={area}
+                  onValueChange={(nextValue) => {
+                    if (Array.isArray(nextValue)) setArea([nextValue[0], nextValue[1]]);
+                  }}
+                  marks={[
+                    { value: 25, label: formatSquareMeters(25) },
+                    { value: 250, label: formatSquareMeters(250) }
+                  ]}
+                  thumbIcon={<DragHandleIcon />}
+                  markStep={markStepProp}
+                  edgeMarks="exclude"
+                  markPlacement={markPlacement}
+                  markLabelPlacement={markLabelPlacement}
+                  edgeMarkLabelPlacement={edgeMarkLabelPlacement}
+                  edgeMarkLabelAlignment={edgeMarkLabelAlignment}
+                  thumbEdgeBehavior={thumbEdgeBehavior}
+                  activeTrackOrigin={activeTrackOriginProp}
+                  originMark={originMark}
+                  formatValue={(value) => formatSquareMeters(value)}
                   valueDisplay="tooltip"
                   valueAnimation={valueAnimationProp}
                   snapMotion={snapMotionProp}
@@ -1389,7 +1453,7 @@ export default function SliderPage() {
               <SliderExampleCard
                 cardShadow={cardShadow}
                 surface={selectedSurface}
-                title="Example D: Brightness"
+                title="Example E: Brightness"
               >
                 <Slider
                   label="Brightness"
@@ -1429,7 +1493,7 @@ export default function SliderPage() {
               <SliderExampleCard
                 cardShadow={cardShadow}
                 surface={selectedSurface}
-                title="Example E: Tasks completed"
+                title="Example F: Tasks completed"
               >
                 <Slider
                   label="Tasks completed"
@@ -1474,7 +1538,7 @@ export default function SliderPage() {
               <SliderExampleCard
                 cardShadow={cardShadow}
                 surface={selectedSurface}
-                title="Example F: Center origin"
+                title="Example G: Center origin"
               >
                 <Slider
                   label="Center biased"
@@ -1511,7 +1575,7 @@ export default function SliderPage() {
               <SliderExampleCard
                 cardShadow={cardShadow}
                 surface={selectedSurface}
-                title="Example G: Rating"
+                title="Example H: Rating"
               >
                 <Slider
                   label="Rating"

@@ -13,7 +13,10 @@ import {
   createSliderOriginMarkElementStyleSchema,
   createSliderRootElementStyleSchema,
   createSliderThumbElementStyleSchema,
+  createSliderThumbIconElementStyleSchema,
   createSliderThumbInnerElementStyleSchema,
+  createSliderThumbInnerWithIconElementStyleSchema,
+  createSliderThumbWithIconElementStyleSchema,
   createSliderTrackElementStyleSchema,
   createSliderValueIndicatorElementStyleSchema,
   createSliderValueSummaryElementStyleSchema
@@ -35,11 +38,14 @@ function createSliderElementsSchema<TSegmentName extends SegmentName = never>() 
       e9: createSliderActiveTrackElementStyleSchema<TSegmentName>().optional(),
       e10: createSliderThumbElementStyleSchema<TSegmentName>().optional(),
       e11: createSliderThumbInnerElementStyleSchema<TSegmentName>().optional(),
-      e12: createSliderValueIndicatorElementStyleSchema<TSegmentName>().optional(),
-      e13: createSliderMarkElementStyleSchema<TSegmentName>().optional(),
-      e14: createSliderMarkLabelElementStyleSchema<TSegmentName>().optional(),
-      e15: createSliderHelperTextElementStyleSchema<TSegmentName>().optional(),
-      e16: createSliderOriginMarkElementStyleSchema<TSegmentName>().optional()
+      e12: createSliderThumbWithIconElementStyleSchema().optional(),
+      e13: createSliderThumbInnerWithIconElementStyleSchema().optional(),
+      e14: createSliderValueIndicatorElementStyleSchema<TSegmentName>().optional(),
+      e15: createSliderMarkElementStyleSchema<TSegmentName>().optional(),
+      e16: createSliderMarkLabelElementStyleSchema<TSegmentName>().optional(),
+      e17: createSliderHelperTextElementStyleSchema<TSegmentName>().optional(),
+      e18: createSliderOriginMarkElementStyleSchema<TSegmentName>().optional(),
+      e19: createSliderThumbIconElementStyleSchema<TSegmentName>().optional()
     })
     .strict();
 }

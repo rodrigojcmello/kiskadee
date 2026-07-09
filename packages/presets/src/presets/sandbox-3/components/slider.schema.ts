@@ -90,6 +90,20 @@ const sizes = {
     's:md:1': 24,
     's:lg:1': 28
   },
+  iconThumb: {
+    's:sm:3': 26,
+    's:sm:2': 28,
+    's:sm:1': 30,
+    's:md:1': 32,
+    's:lg:1': 36
+  },
+  thumbIcon: {
+    's:sm:3': 18,
+    's:sm:2': 19,
+    's:sm:1': 20,
+    's:md:1': 22,
+    's:lg:1': 24
+  },
   endpointIcon: {
     's:sm:3': 16,
     's:sm:2': 18,
@@ -195,6 +209,33 @@ const iconPalettes = {
             focus: c.inkMuted,
             pressed: c.ink,
             disabled: c.inkDisabled
+          })
+        },
+        primary: {
+          medium: states({
+            rest: c.violet,
+            hover: c.violetHover,
+            focus: c.violet,
+            pressed: c.violetPressed,
+            disabled: c.primaryDisabled
+          })
+        }
+      }
+    }
+  }
+} as const;
+
+const thumbIconPalettes = {
+  default: {
+    light: {
+      textColor: {
+        neutral: {
+          medium: states({
+            rest: c.primary,
+            hover: c.primaryHover,
+            focus: c.primary,
+            pressed: c.primaryPressed,
+            disabled: c.primaryDisabled
           })
         },
         primary: {
@@ -616,6 +657,20 @@ export function createSandbox3SliderSchema(): SliderComponent {
                 palettes: thumbPalettes
               },
               e12: {
+                name: 'slider-thumb-with-icon',
+                scales: {
+                  boxWidth: sizes.iconThumb,
+                  boxHeight: sizes.iconThumb
+                }
+              },
+              e13: {
+                name: 'slider-thumb-inner-with-icon',
+                scales: {
+                  boxWidth: sizes.iconThumb,
+                  boxHeight: sizes.iconThumb
+                }
+              },
+              e14: {
                 name: 'slider-value-indicator',
                 decorations: { borderStyle: 'solid', textFont: 'body', textWeight: 'medium' },
                 scales: {
@@ -636,7 +691,7 @@ export function createSandbox3SliderSchema(): SliderComponent {
                 },
                 palettes: valueIndicatorPalettes
               },
-              e13: {
+              e15: {
                 name: 'slider-mark',
                 decorations: { borderStyle: 'solid' },
                 scales: {
@@ -651,7 +706,7 @@ export function createSandbox3SliderSchema(): SliderComponent {
                 },
                 palettes: markPalettes
               },
-              e14: {
+              e16: {
                 name: 'slider-mark-label',
                 decorations: { textFont: 'body', textWeight: 'medium' },
                 scales: {
@@ -662,7 +717,7 @@ export function createSandbox3SliderSchema(): SliderComponent {
                 },
                 palettes: textPalettes
               },
-              e15: {
+              e17: {
                 name: 'slider-helper-text',
                 decorations: { textFont: 'body', textWeight: 'normal' },
                 scales: {
@@ -671,6 +726,14 @@ export function createSandbox3SliderSchema(): SliderComponent {
                   marginTop: layout.fieldGap
                 },
                 palettes: textPalettes
+              },
+              e19: {
+                name: 'slider-thumb-icon',
+                scales: {
+                  boxWidth: sizes.thumbIcon,
+                  boxHeight: sizes.thumbIcon
+                },
+                palettes: thumbIconPalettes
               }
             }
           }

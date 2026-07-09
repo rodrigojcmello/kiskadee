@@ -28,6 +28,8 @@ export type {
   SliderStatus,
   SliderThumbBehaviorOption,
   SliderThumbEdgeBehaviorOption,
+  SliderThumbIcon,
+  SliderThumbIconDetails,
   SliderThumbCrossingOption,
   SliderValueAnimationOption,
   SliderValueSummaryPlacementOption

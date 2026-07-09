@@ -7,8 +7,8 @@ import type {
   KeyboardEvent,
   ReactNode,
   PointerEvent as ReactPointerEvent,
-  Ref,
-  TransitionEvent as ReactTransitionEvent
+  TransitionEvent as ReactTransitionEvent,
+  Ref
 } from 'react';
 import {
   createContext,
@@ -47,7 +47,10 @@ export type SliderElementName =
   | 'e13'
   | 'e14'
   | 'e15'
-  | 'e16';
+  | 'e16'
+  | 'e17'
+  | 'e18'
+  | 'e19';
 
 export type SliderStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
 
@@ -85,6 +88,14 @@ export type SliderValueIndicatorRenderDetails = {
   value: number;
   index: SliderThumbIndex;
   formattedValue: ReactNode;
+};
+
+export type SliderThumbIconRenderDetails = {
+  value: number;
+  values: readonly number[];
+  index: SliderThumbIndex;
+  valueMode: SliderValueMode;
+  isDragging: boolean;
 };
 
 export type SliderValueSummaryRenderDetails = {
@@ -135,6 +146,10 @@ export type SliderEndpointLabelProps = HTMLAttributes<HTMLSpanElement>;
 export type SliderTrackProps = HTMLAttributes<HTMLDivElement>;
 export type SliderActiveTrackProps = HTMLAttributes<HTMLSpanElement>;
 export type SliderThumbInnerProps = HTMLAttributes<HTMLSpanElement>;
+export type SliderThumbIconProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> & {
+  children?: ReactNode | ((details: SliderThumbIconRenderDetails) => ReactNode);
+  index?: SliderThumbIndex;
+};
 export type SliderValueIndicatorProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> & {
   children?: ReactNode | ((details: SliderValueIndicatorRenderDetails) => ReactNode);
   index?: SliderThumbIndex;
@@ -596,14 +611,12 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
   );
 
   const getValuePercent = useCallback(
-    (value: number) =>
-      valueToVisualPercent(value, min, max, thumbEdgeBehavior, geometry),
+    (value: number) => valueToVisualPercent(value, min, max, thumbEdgeBehavior, geometry),
     [geometry, max, min, thumbEdgeBehavior]
   );
 
   const getActiveTrackPercent = useCallback(
-    (value: number) =>
-      valueToActiveTrackPercent(value, min, max, thumbEdgeBehavior, geometry),
+    (value: number) => valueToActiveTrackPercent(value, min, max, thumbEdgeBehavior, geometry),
     [geometry, max, min, thumbEdgeBehavior]
   );
 
@@ -619,17 +632,12 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
         getActiveTrackPercent(getVisualThumbValue(1))
       ];
     }
-    const originPercent = getActiveTrackPercent(resolveActiveTrackOriginValue(activeTrackOrigin, min, max));
+    const originPercent = getActiveTrackPercent(
+      resolveActiveTrackOriginValue(activeTrackOrigin, min, max)
+    );
     const thumbPercent = getActiveTrackPercent(getVisualThumbValue(0));
     return [Math.min(originPercent, thumbPercent), Math.max(originPercent, thumbPercent)];
-  }, [
-    activeTrackOrigin,
-    getActiveTrackPercent,
-    getVisualThumbValue,
-    max,
-    min,
-    resolvedValue
-  ]);
+  }, [activeTrackOrigin, getActiveTrackPercent, getVisualThumbValue, max, min, resolvedValue]);
 
   const getThumbPercent = useCallback(
     (index: SliderThumbIndex) => getValuePercent(getVisualThumbValue(index)),
@@ -689,8 +697,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
             };
       }
 
-      const nextIndex =
-        nextValue < stationaryValue ? 0 : nextValue > stationaryValue ? 1 : index;
+      const nextIndex = nextValue < stationaryValue ? 0 : nextValue > stationaryValue ? 1 : index;
       return nextIndex === 0
         ? {
             index: nextIndex,
@@ -735,11 +742,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
   );
 
   const setThumbValue = useCallback(
-    (
-      index: SliderThumbIndex,
-      rawValue: number,
-      options: { allowCrossing?: boolean } = {}
-    ) => {
+    (index: SliderThumbIndex, rawValue: number, options: { allowCrossing?: boolean } = {}) => {
       if (disabled || readOnly) return;
       setHeldPreviewValue(null);
 
@@ -751,17 +754,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
       commitValue(roundToStep(rawValue, min, max, step));
     },
-    [
-      commitValue,
-      disabled,
-      max,
-      min,
-      readOnly,
-      resolveRangePreview,
-      step,
-      thumbCrossing,
-      valueMode
-    ]
+    [commitValue, disabled, max, min, readOnly, resolveRangePreview, step, thumbCrossing, valueMode]
   );
 
   const setThumbPreviewValue = useCallback(
@@ -843,7 +836,10 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       }
       const originValue = resolveActiveTrackOriginValue(activeTrackOrigin, min, max);
       const thumbValue = getVisualThumbValue(0);
-      return markValue >= Math.min(originValue, thumbValue) && markValue <= Math.max(originValue, thumbValue);
+      return (
+        markValue >= Math.min(originValue, thumbValue) &&
+        markValue <= Math.max(originValue, thumbValue)
+      );
     },
     [activeTrackOrigin, getVisualThumbValue, max, min, resolvedValue]
   );
@@ -943,8 +939,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
         draggingThumbIndex === null || valueMode !== 'range'
           ? null
           : resolveRangePreview(draggingThumbIndex, nextValue, thumbCrossing);
-      const nextDraggingThumbIndex =
-        nextPreview?.index ?? draggingThumbIndex;
+      const nextDraggingThumbIndex = nextPreview?.index ?? draggingThumbIndex;
 
       if (
         draggingThumbIndex !== null &&
@@ -1126,7 +1121,10 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       e13: { className: classNames.e13 },
       e14: { className: classNames.e14 },
       e15: { className: classNames.e15 },
-      e16: { className: classNames.e16 }
+      e16: { className: classNames.e16 },
+      e17: { className: classNames.e17 },
+      e18: { className: classNames.e18 },
+      e19: { className: classNames.e19 }
     };
   }, [classNames, disabled, focused, focusVisible, hovered, pressed, readOnly, status]);
 
@@ -1482,7 +1480,7 @@ const SliderThumb = forwardRef<HTMLSpanElement, SliderThumbProps>(function Slide
   const thumbStyle = {
     '--k-sld-value': `${context.getThumbPercent(index)}%`,
     ...style
-    } as CSSProperties;
+  } as CSSProperties;
 
   return (
     <span
@@ -1533,7 +1531,7 @@ const SliderThumb = forwardRef<HTMLSpanElement, SliderThumbProps>(function Slide
 const SliderValueIndicator = forwardRef<HTMLSpanElement, SliderValueIndicatorProps>(
   function SliderValueIndicator({ className, children, index = 0, style, ...props }, ref) {
     const context = useSliderContext();
-    const { className: slotClassName, ...slotProps } = context.slotProps.e12 ?? {};
+    const { className: slotClassName, ...slotProps } = context.slotProps.e14 ?? {};
     const value = context.getThumbValue(index);
     const formattedValue = context.getFormattedValue(index);
     const indicatorStyle = {
@@ -1581,12 +1579,49 @@ const SliderThumbInner = forwardRef<HTMLSpanElement, SliderThumbInnerProps>(
   }
 );
 
+const SliderThumbIcon = forwardRef<HTMLSpanElement, SliderThumbIconProps>(function SliderThumbIcon(
+  { className, children, index = 0, 'aria-hidden': ariaHidden = true, ...props },
+  ref
+) {
+  const context = useSliderContext();
+  const { className: slotClassName, ...slotProps } = context.slotProps.e19 ?? {};
+  const values =
+    context.valueMode === 'range'
+      ? ([context.getThumbValue(0), context.getThumbValue(1)] as const)
+      : ([context.getThumbValue(0)] as const);
+  const value = context.getThumbValue(index);
+  const content =
+    typeof children === 'function'
+      ? children({
+          value,
+          values,
+          index,
+          valueMode: context.valueMode,
+          isDragging: context.isThumbDragging(index)
+        })
+      : children;
+
+  if (content === undefined || content === null) return null;
+
+  return (
+    <span
+      {...slotProps}
+      ref={ref}
+      className={mergeClassNames(slotClassName, className)}
+      aria-hidden={ariaHidden}
+      {...props}
+    >
+      {content}
+    </span>
+  );
+});
+
 const SliderMark = forwardRef<HTMLSpanElement, SliderMarkProps>(function SliderMark(
   { className, children, value, style, ...props },
   ref
 ) {
   const context = useSliderContext();
-  const { className: slotClassName, ...slotProps } = context.slotProps.e13 ?? {};
+  const { className: slotClassName, ...slotProps } = context.slotProps.e15 ?? {};
   const markValue = value ?? context.min;
   const isSelected = context.isMarkSelected(markValue);
   const markStyle = {
@@ -1619,7 +1654,7 @@ const SliderMarkLabel = forwardRef<HTMLSpanElement, SliderMarkLabelProps>(functi
   ref
 ) {
   const context = useSliderContext();
-  const { className: slotClassName, ...slotProps } = context.slotProps.e14 ?? {};
+  const { className: slotClassName, ...slotProps } = context.slotProps.e16 ?? {};
   const markValue = value ?? context.min;
   const labelStyle = {
     '--k-sld-mark': `${context.getValuePercent(markValue)}%`,
@@ -1639,38 +1674,37 @@ const SliderMarkLabel = forwardRef<HTMLSpanElement, SliderMarkLabelProps>(functi
   );
 });
 
-const SliderOriginMark = forwardRef<HTMLSpanElement, SliderOriginMarkProps>(function SliderOriginMark(
-  { className, style, ...props },
-  ref
-) {
-  const context = useSliderContext();
-  const { className: slotClassName, ...slotProps } = context.slotProps.e16 ?? {};
-  const originValue = context.getActiveTrackOriginValue();
+const SliderOriginMark = forwardRef<HTMLSpanElement, SliderOriginMarkProps>(
+  function SliderOriginMark({ className, style, ...props }, ref) {
+    const context = useSliderContext();
+    const { className: slotClassName, ...slotProps } = context.slotProps.e18 ?? {};
+    const originValue = context.getActiveTrackOriginValue();
 
-  if (originValue === null) return null;
+    if (originValue === null) return null;
 
-  const markStyle = {
-    '--k-sld-mark': `${context.getValuePercent(originValue)}%`,
-    ...style
-  } as CSSProperties;
+    const markStyle = {
+      '--k-sld-mark': `${context.getValuePercent(originValue)}%`,
+      ...style
+    } as CSSProperties;
 
-  return (
-    <span
-      {...slotProps}
-      ref={ref}
-      className={mergeClassNames(slotClassName, className)}
-      data-slider-origin-mark=""
-      style={markStyle}
-      aria-hidden="true"
-      {...props}
-    />
-  );
-});
+    return (
+      <span
+        {...slotProps}
+        ref={ref}
+        className={mergeClassNames(slotClassName, className)}
+        data-slider-origin-mark=""
+        style={markStyle}
+        aria-hidden="true"
+        {...props}
+      />
+    );
+  }
+);
 
 const SliderHelperText = forwardRef<HTMLParagraphElement, SliderHelperTextProps>(
   function SliderHelperText({ className, children, id, ...props }, ref) {
     const context = useSliderContext();
-    const { className: slotClassName, ...slotProps } = context.slotProps.e15 ?? {};
+    const { className: slotClassName, ...slotProps } = context.slotProps.e17 ?? {};
 
     if (!children) return null;
 
@@ -1700,6 +1734,7 @@ export const HeadlessSlider = Object.assign(SliderRoot, {
   ActiveTrack: SliderActiveTrack,
   Thumb: SliderThumb,
   ThumbInner: SliderThumbInner,
+  ThumbIcon: SliderThumbIcon,
   ValueIndicator: SliderValueIndicator,
   Mark: SliderMark,
   MarkLabel: SliderMarkLabel,

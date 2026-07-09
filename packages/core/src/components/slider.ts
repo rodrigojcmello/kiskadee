@@ -12,25 +12,28 @@ import type {
   SliderOriginMarkElementStyleFromSchema,
   SliderRootElementStyleFromSchema,
   SliderThumbElementStyleFromSchema,
+  SliderThumbIconElementStyleFromSchema,
   SliderThumbInnerElementStyleFromSchema,
+  SliderThumbInnerWithIconElementStyleFromSchema,
+  SliderThumbWithIconElementStyleFromSchema,
   SliderTrackElementStyleFromSchema,
   SliderValueIndicatorElementStyleFromSchema,
   SliderValueSummaryElementStyleFromSchema
 } from './slider.elements.zod.ts';
 import type {
+  SliderActiveTrackOriginSchemaValue,
   SliderEdgeMarkLabelAlignmentSchemaValue,
   SliderEdgeMarkLabelPlacementSchemaValue,
   SliderEdgeMarksSchemaValue,
-  SliderActiveTrackOriginSchemaValue,
   SliderMarkLabelPlacementSchemaValue,
   SliderMarkPlacementSchemaValue,
   SliderMarksSchemaValue,
-  SliderOriginMarkSchemaValue,
   SliderOptionsFromSchema,
+  SliderOriginMarkSchemaValue,
   SliderSnapMotionSchemaValue,
   SliderThumbBehaviorSchemaValue,
-  SliderThumbEdgeBehaviorSchemaValue,
   SliderThumbCrossingSchemaValue,
+  SliderThumbEdgeBehaviorSchemaValue,
   SliderValueAnimationSchemaValue,
   SliderValueDisplaySchemaValue,
   SliderValueSummaryPlacementSchemaValue,
@@ -50,11 +53,14 @@ import type {
  * - e9: active track / selected range
  * - e10: thumb / handle wrapper
  * - e11: thumb inner
- * - e12: value indicator / tooltip
- * - e13: mark / tick
- * - e14: mark label
- * - e15: helper text
- * - e16: origin mark / neutral tick
+ * - e12: thumb-with-icon host geometry override
+ * - e13: thumb-with-icon inner geometry override
+ * - e14: value indicator / tooltip
+ * - e15: mark / tick
+ * - e16: mark label
+ * - e17: helper text
+ * - e18: origin mark / neutral tick
+ * - e19: optional thumb icon
  */
 export type SliderElementName =
   | 'e1'
@@ -72,7 +78,10 @@ export type SliderElementName =
   | 'e13'
   | 'e14'
   | 'e15'
-  | 'e16';
+  | 'e16'
+  | 'e17'
+  | 'e18'
+  | 'e19';
 
 export type SliderVariant = 'standard';
 export type SliderStandardMode = 'base';
@@ -189,7 +198,19 @@ export type SliderThumbInnerElementStyle<TSegmentName extends SegmentName = neve
   SliderThumbInnerElementStyleFromSchema<TSegmentName>;
 
 /**
- * e12 — value indicator / tooltip
+ * e12 — thumb-with-icon host geometry override
+ * - boxWidth / boxHeight replace only the host geometry while preserving e10 styling
+ */
+export type SliderThumbWithIconElementStyle = SliderThumbWithIconElementStyleFromSchema;
+
+/**
+ * e13 — thumb-with-icon inner geometry override
+ * - boxWidth / boxHeight replace only the inner geometry while preserving e11 styling
+ */
+export type SliderThumbInnerWithIconElementStyle = SliderThumbInnerWithIconElementStyleFromSchema;
+
+/**
+ * e14 — value indicator / tooltip
  * - boxColor / borderColor / textColor
  * - height, padding, text size, marginBottom, border, radius
  */
@@ -197,7 +218,7 @@ export type SliderValueIndicatorElementStyle<TSegmentName extends SegmentName = 
   SliderValueIndicatorElementStyleFromSchema<TSegmentName>;
 
 /**
- * e13 — mark / tick
+ * e15 — mark / tick
  * - boxColor / borderColor
  * - width, height, border, radius
  */
@@ -205,7 +226,7 @@ export type SliderMarkElementStyle<TSegmentName extends SegmentName = never> =
   SliderMarkElementStyleFromSchema<TSegmentName>;
 
 /**
- * e14 — mark label
+ * e16 — mark label
  * - textColor
  * - textSize / textHeight
  * - margins
@@ -214,7 +235,7 @@ export type SliderMarkLabelElementStyle<TSegmentName extends SegmentName = never
   SliderMarkLabelElementStyleFromSchema<TSegmentName>;
 
 /**
- * e15 — helper text
+ * e17 — helper text
  * - textColor
  * - textSize / textHeight
  * - margins
@@ -223,13 +244,21 @@ export type SliderHelperTextElementStyle<TSegmentName extends SegmentName = neve
   SliderHelperTextElementStyleFromSchema<TSegmentName>;
 
 /**
- * e16 — origin mark / neutral tick
+ * e18 — origin mark / neutral tick
  * - boxColor / borderColor
  * - width, height, border, radius
  * - margins
  */
 export type SliderOriginMarkElementStyle<TSegmentName extends SegmentName = never> =
   SliderOriginMarkElementStyleFromSchema<TSegmentName>;
+
+/**
+ * e19 — optional thumb icon
+ * - textColor maps to CSS color for currentColor-driven icons
+ * - boxWidth / boxHeight define the icon slot box
+ */
+export type SliderThumbIconElementStyle<TSegmentName extends SegmentName = never> =
+  SliderThumbIconElementStyleFromSchema<TSegmentName>;
 
 export type SliderElements<TSegmentName extends SegmentName = never> = {
   // e1: root state and field wrapper
@@ -254,16 +283,22 @@ export type SliderElements<TSegmentName extends SegmentName = never> = {
   e10?: SliderThumbElementStyle<TSegmentName>;
   // e11: thumb inner
   e11?: SliderThumbInnerElementStyle<TSegmentName>;
-  // e12: value indicator / tooltip
-  e12?: SliderValueIndicatorElementStyle<TSegmentName>;
-  // e13: mark / tick
-  e13?: SliderMarkElementStyle<TSegmentName>;
-  // e14: mark label
-  e14?: SliderMarkLabelElementStyle<TSegmentName>;
-  // e15: helper text
-  e15?: SliderHelperTextElementStyle<TSegmentName>;
-  // e16: origin mark / neutral tick
-  e16?: SliderOriginMarkElementStyle<TSegmentName>;
+  // e12: thumb-with-icon host geometry override
+  e12?: SliderThumbWithIconElementStyle;
+  // e13: thumb-with-icon inner geometry override
+  e13?: SliderThumbInnerWithIconElementStyle;
+  // e14: value indicator / tooltip
+  e14?: SliderValueIndicatorElementStyle<TSegmentName>;
+  // e15: mark / tick
+  e15?: SliderMarkElementStyle<TSegmentName>;
+  // e16: mark label
+  e16?: SliderMarkLabelElementStyle<TSegmentName>;
+  // e17: helper text
+  e17?: SliderHelperTextElementStyle<TSegmentName>;
+  // e18: origin mark / neutral tick
+  e18?: SliderOriginMarkElementStyle<TSegmentName>;
+  // e19: optional thumb icon
+  e19?: SliderThumbIconElementStyle<TSegmentName>;
 };
 
 export type SliderModeConfig<TSegmentName extends SegmentName = never> = {

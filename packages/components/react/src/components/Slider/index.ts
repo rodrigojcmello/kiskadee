@@ -23,6 +23,8 @@ export type {
   SliderProps,
   SliderSnapMotionOption,
   SliderStatus,
+  SliderThumbIcon,
+  SliderThumbIconDetails,
   SliderThumbCrossingOption,
   SliderThumbAriaLabelledBy,
   SliderThumbAriaLabels,

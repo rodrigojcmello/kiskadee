@@ -2,35 +2,35 @@ import {
   type ActivationFeedbackProfileMode,
   type ClassNameByElementJSON,
   type ComponentEmphasis,
+  stateActivator as cn,
   type EffectClassBucketJSON,
   type ElementSizeValue,
   type RadiusMode,
-  stateActivator as cn,
   type SliderActiveTrackOrigin,
-  type SliderMarkPlacement,
   type SliderEdgeMarkLabelAlignment,
   type SliderIntent,
+  type SliderMarkPlacement,
   type SliderMode,
   type SliderOriginMark,
   type SliderSnapMotion,
   type SliderThumbBehavior,
-  type SliderThumbEdgeBehavior,
   type SliderThumbCrossing,
+  type SliderThumbEdgeBehavior,
   type SliderValueAnimation,
   type SliderValueSummaryPlacement,
   type SliderVariant
 } from '@kiskadee/core';
+import {
+  type ActivationFeedbackEffectBuckets,
+  resolveActivationFeedbackBucketClass,
+  resolveActivationFeedbackProfileAvailability
+} from '../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
 import {
   joinClassNames,
   resolveEffectBucketClassName,
   resolveSchemaElementClassName,
   resolveRadiusClassName as resolveSharedRadiusClassName
 } from '../../shared/class-resolution/classNames.ts';
-import {
-  type ActivationFeedbackEffectBuckets,
-  resolveActivationFeedbackBucketClass,
-  resolveActivationFeedbackProfileAvailability
-} from '../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
 import type {
   SliderClassesMap,
   SliderClassNames,
@@ -133,6 +133,7 @@ export function resolveSliderClassNames(options: {
   hasValueSummary: boolean;
   valueSummaryPlacement: SliderValueSummaryPlacement;
   hasPersistentValueIndicator: boolean;
+  hasThumbIcon: boolean;
   hasHelperText: boolean;
   hasMarkLabels: boolean;
   markPlacement: SliderMarkPlacement;
@@ -141,7 +142,7 @@ export function resolveSliderClassNames(options: {
   const elements = options.elements;
   const branch = options.structuralBranch;
   const thumbShadowClassName = resolveSliderShadowEffectClassName(elements.e10?.e?.h);
-  const valueIndicatorShadowClassName = resolveSliderShadowEffectClassName(elements.e12?.e?.h);
+  const valueIndicatorShadowClassName = resolveSliderShadowEffectClassName(elements.e14?.e?.h);
 
   return {
     e1:
@@ -168,12 +169,8 @@ export function resolveSliderClassNames(options: {
     e4:
       join(
         `k-sld-e4-${branch}`,
-        options.hasMarkLabels &&
-          options.markLabelPlacement === 'above' &&
-          `k-sld-e4a-${branch}`,
-        options.hasMarkLabels &&
-          options.markLabelPlacement === 'below' &&
-          `k-sld-e4b-${branch}`,
+        options.hasMarkLabels && options.markLabelPlacement === 'above' && `k-sld-e4a-${branch}`,
+        options.hasMarkLabels && options.markLabelPlacement === 'below' && `k-sld-e4b-${branch}`,
         options.hasPersistentValueIndicator && `k-sld-e4c-${branch}`,
         options.hasValueSummary &&
           options.valueSummaryPlacement === 'controlEnd' &&
@@ -220,49 +217,60 @@ export function resolveSliderClassNames(options: {
         options.classNames.e11
       ) ?? '',
     e12:
-      join(
-        `k-sld-e12-${branch}`,
-        elem(elements.e12, options),
-        resolveRadiusClassName(elements.e12, options.scale, options.radius),
-        valueIndicatorShadowClassName,
-        'k-trn',
-        options.classNames.e12
-      ) ?? '',
+      options.hasThumbIcon && elements.e12
+        ? (join(`k-sld-e12-${branch}`, elem(elements.e12, options), options.classNames.e12) ?? '')
+        : '',
     e13:
-      join(
-        `k-sld-e13-${branch}`,
-        options.markPlacement === 'above' && `k-sld-e13a-${branch}`,
-        options.markPlacement === 'below' && `k-sld-e13b-${branch}`,
-        elem(elements.e13, options),
-        resolveRadiusClassName(elements.e13, options.scale, options.radius),
-        'k-trn',
-        options.classNames.e13
-      ) ?? '',
+      options.hasThumbIcon && elements.e13
+        ? (join(`k-sld-e13-${branch}`, elem(elements.e13, options), options.classNames.e13) ?? '')
+        : '',
     e14:
       join(
         `k-sld-e14-${branch}`,
-        options.markLabelPlacement === 'above' ? `k-sld-e14a-${branch}` : `k-sld-e14b-${branch}`,
         elem(elements.e14, options),
+        resolveRadiusClassName(elements.e14, options.scale, options.radius),
+        valueIndicatorShadowClassName,
         'k-trn',
         options.classNames.e14
       ) ?? '',
-    e15: options.hasHelperText
-      ? (join(
-          `k-sld-e15-${branch}`,
-          elem(elements.e15, options),
-          'k-trn',
-          options.classNames.e15
-        ) ?? '')
-      : (options.classNames.e15 ?? ''),
+    e15:
+      join(
+        `k-sld-e15-${branch}`,
+        options.markPlacement === 'above' && `k-sld-e15a-${branch}`,
+        options.markPlacement === 'below' && `k-sld-e15b-${branch}`,
+        elem(elements.e15, options),
+        resolveRadiusClassName(elements.e15, options.scale, options.radius),
+        'k-trn',
+        options.classNames.e15
+      ) ?? '',
     e16:
       join(
         `k-sld-e16-${branch}`,
-        options.markPlacement === 'above' && `k-sld-e16a-${branch}`,
-        options.markPlacement === 'below' && `k-sld-e16b-${branch}`,
+        options.markLabelPlacement === 'above' ? `k-sld-e16a-${branch}` : `k-sld-e16b-${branch}`,
         elem(elements.e16, options),
-        resolveRadiusClassName(elements.e16, options.scale, options.radius),
         'k-trn',
         options.classNames.e16
-      ) ?? ''
+      ) ?? '',
+    e17: options.hasHelperText
+      ? (join(
+          `k-sld-e17-${branch}`,
+          elem(elements.e17, options),
+          'k-trn',
+          options.classNames.e17
+        ) ?? '')
+      : (options.classNames.e17 ?? ''),
+    e18:
+      join(
+        `k-sld-e18-${branch}`,
+        options.markPlacement === 'above' && `k-sld-e18a-${branch}`,
+        options.markPlacement === 'below' && `k-sld-e18b-${branch}`,
+        elem(elements.e18, options),
+        resolveRadiusClassName(elements.e18, options.scale, options.radius),
+        'k-trn',
+        options.classNames.e18
+      ) ?? '',
+    e19:
+      join(`k-sld-e19-${branch}`, elem(elements.e19, options), 'k-trn', options.classNames.e19) ??
+      ''
   };
 }

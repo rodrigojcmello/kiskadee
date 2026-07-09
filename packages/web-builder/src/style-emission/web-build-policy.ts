@@ -133,6 +133,14 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
               borderWidthEmission: 'mirrored'
             },
             e12: {
+              boxWidthEmission: 'token',
+              boxHeightEmission: 'token'
+            },
+            e13: {
+              boxWidthEmission: 'token',
+              boxHeightEmission: 'token'
+            },
+            e14: {
               marginTopEmission: 'token'
             },
             e3: {
@@ -148,19 +156,19 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
               marginLeftEmission: 'token',
               paddingEmission: 'token'
             },
-            e13: {
+            e15: {
               boxWidthEmission: 'mirrored',
               marginTopEmission: 'token',
               marginBottomEmission: 'token'
             },
-            e14: {
+            e16: {
               marginTopEmission: 'token',
               marginBottomEmission: 'token'
             },
-            e15: {
+            e17: {
               marginTopEmission: 'token'
             },
-            e16: {
+            e18: {
               boxWidthEmission: 'mirrored',
               marginTopEmission: 'token',
               marginBottomEmission: 'token'

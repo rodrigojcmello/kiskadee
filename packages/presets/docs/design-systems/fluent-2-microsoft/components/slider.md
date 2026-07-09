@@ -30,6 +30,13 @@ is a structural lane-stabilization token, not a separate Figma measurement: it
 keeps the rail centered consistently when endpoint icons or a control-end value
 summary are present.
 
+The optional Kiskadee `e19` thumb icon slot is sized smaller than the Fluent
+thumb inner and uses white `currentColor` so a runtime icon remains legible over
+the compound-brand thumb dot. This preset does not declare the optional
+`e12`/`e13` enlarged icon-thumb geometry overlays, so `thumbIcon` preserves the
+official `e10`/`e11` dimensions. This is a Kiskadee composition affordance; the
+inspected Fluent reference does not require a built-in thumb icon.
+
 ## State Colors
 
 The inspected node exposes these relevant variables:
@@ -64,7 +71,7 @@ Kiskadee maps this to the generic Slider marks contract:
   `components.slider.options.markLabelPlacement = "auto"`;
 - labels declared on edge marks use the Kiskadee adaptive responsive mapping
   `components.slider.options.edgeMarkLabelPlacement = "adaptive"`;
-- visual element: `e13`, with width `1px` and height equal to the rail height.
+- visual element: `e15`, with width `1px` and height equal to the rail height.
 
 The default remains `none` because the Figma component default has
 `ticks=false`.

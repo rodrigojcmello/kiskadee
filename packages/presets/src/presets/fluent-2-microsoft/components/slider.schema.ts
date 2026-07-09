@@ -56,6 +56,10 @@ const sizes = {
     's:sm:1': 10,
     's:md:1': 12
   },
+  thumbIcon: {
+    's:sm:1': 8,
+    's:md:1': 10
+  },
   thumbBorder: {
     's:sm:1': 1,
     's:md:1': 1
@@ -307,6 +311,27 @@ const thumbInnerPalettes = {
   }
 } as const;
 
+const thumbIconPalettes = {
+  default: {
+    light: {
+      textColor: {
+        neutral: {
+          medium: states({
+            rest: fluent.neutralBackground1,
+            disabled: fluent.neutralBackground1
+          })
+        },
+        primary: {
+          medium: states({
+            rest: fluent.neutralBackground1,
+            disabled: fluent.neutralBackground1
+          })
+        }
+      }
+    }
+  }
+} as const;
+
 const markPalettes = {
   default: {
     light: {
@@ -520,7 +545,7 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
                 },
                 palettes: thumbInnerPalettes
               },
-              e12: {
+              e14: {
                 name: 'slider-value-indicator',
                 decorations: { borderStyle: 'solid', textFont: 'body', textWeight: 'normal' },
                 scales: {
@@ -541,7 +566,7 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
                 },
                 palettes: valueIndicatorPalettes
               },
-              e13: {
+              e15: {
                 name: 'slider-mark',
                 decorations: { borderStyle: 'solid' },
                 scales: {
@@ -556,7 +581,7 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
                 },
                 palettes: markPalettes
               },
-              e14: {
+              e16: {
                 name: 'slider-mark-label',
                 decorations: { textFont: 'body', textWeight: 'normal' },
                 scales: {
@@ -567,7 +592,7 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
                 },
                 palettes: textPalettes
               },
-              e15: {
+              e17: {
                 name: 'slider-helper-text',
                 decorations: { textFont: 'body', textWeight: 'normal' },
                 scales: {
@@ -576,6 +601,14 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
                   marginTop: layout.fieldGap
                 },
                 palettes: textPalettes
+              },
+              e19: {
+                name: 'slider-thumb-icon',
+                scales: {
+                  boxWidth: sizes.thumbIcon,
+                  boxHeight: sizes.thumbIcon
+                },
+                palettes: thumbIconPalettes
               }
             }
           }

@@ -8,7 +8,7 @@ import {
   type SliderValueIndicatorRenderDetails,
   type SliderValueSummaryRenderDetails
 } from '@kiskadee/react-headless';
-import { memo, type CSSProperties, type ReactNode, useId, useMemo, useRef, useState } from 'react';
+import { type CSSProperties, memo, type ReactNode, useId, useMemo, useRef, useState } from 'react';
 import { useIsCompactViewport } from '../../shared/interaction/useIsCompactViewport.ts';
 import { useIsLikelyTouch } from '../../shared/interaction/useIsLikelyTouch.ts';
 import { useIsomorphicLayoutEffect } from '../../shared/utils/useIsomorphicLayoutEffect.ts';
@@ -28,25 +28,27 @@ import {
   resolveVariantElements
 } from './Slider.class-names.ts';
 import type {
-  SliderClassNames,
   SliderActiveTrackOriginOption,
+  SliderClassNames,
   SliderEdgeMarkLabelAlignmentOption,
   SliderEdgeMarkLabelPlacementOption,
   SliderEdgeMarksOption,
+  SliderMark,
   SliderMarkLabelPlacementOption,
   SliderMarkPlacementOption,
-  SliderMark,
   SliderMarks,
   SliderOriginMarkOption,
+  SliderProps,
   SliderResolvedEdgeMarkLabelAlignment,
   SliderResolvedEdgeMarkLabelPlacement,
   SliderResolvedMarkLabelPlacement,
   SliderSnapMotionOption,
   SliderThumbBehaviorOption,
   SliderThumbEdgeBehaviorOption,
+  SliderThumbIcon,
+  SliderThumbIconDetails,
   SliderValueAnimationOption,
-  SliderValueSummaryPlacementOption,
-  SliderProps
+  SliderValueSummaryPlacementOption
 } from './Slider.types.ts';
 
 const EMPTY_SLIDER_CLASS_NAMES: SliderClassNames = {};
@@ -54,10 +56,10 @@ const DEFAULT_MIN = 0;
 const DEFAULT_MAX = 100;
 const DEFAULT_STEP = 1;
 const STEP_MARK_LIMIT = 101;
-const START_EDGE_MARK_LABEL_INSIDE_CLASS_NAME = 'k-sld-e14c-a';
-const END_EDGE_MARK_LABEL_INSIDE_CLASS_NAME = 'k-sld-e14d-a';
+const START_EDGE_MARK_LABEL_INSIDE_CLASS_NAME = 'k-sld-e16c-a';
+const END_EDGE_MARK_LABEL_INSIDE_CLASS_NAME = 'k-sld-e16d-a';
 const SNAP_MOTION_CLASS_NAME = 'k-sld-sm';
-const VALUE_INDICATOR_DRAG_ONLY_CLASS_NAME = 'k-sld-e12b-a';
+const VALUE_INDICATOR_DRAG_ONLY_CLASS_NAME = 'k-sld-e14b-a';
 
 function finiteNumber(value: number | undefined, fallback: number): number {
   return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
@@ -156,10 +158,7 @@ function getEdgeMarkLabelAlignmentClassName(
   return undefined;
 }
 
-function getEdgeMark(
-  marks: SliderMark[],
-  value: number
-): SliderMark | undefined {
+function getEdgeMark(marks: SliderMark[], value: number): SliderMark | undefined {
   return marks.find((mark) => mark.value === value);
 }
 
@@ -196,10 +195,9 @@ function renderEndpoint(
   const edgeMarkIconNode = hasEdgeMarkIcon ? (
     <HeadlessSlider.EndpointIcon>{edgeMark.icon}</HeadlessSlider.EndpointIcon>
   ) : null;
-  const edgeMarkLabelNode =
-    hasEdgeMarkLabel ? (
-      <HeadlessSlider.EndpointLabel>{edgeMarkLabel}</HeadlessSlider.EndpointLabel>
-    ) : null;
+  const edgeMarkLabelNode = hasEdgeMarkLabel ? (
+    <HeadlessSlider.EndpointLabel>{edgeMarkLabel}</HeadlessSlider.EndpointLabel>
+  ) : null;
 
   return (
     <HeadlessSlider.Endpoint>
@@ -247,6 +245,14 @@ function renderSliderValueSummary(
       {renderSliderValue(valueAnimation, details.values[1] ?? 0, details.formattedValues[1])}
     </>
   );
+}
+
+function renderSliderThumbIcon(
+  thumbIcon: SliderThumbIcon | undefined,
+  details: SliderThumbIconDetails
+): ReactNode {
+  if (thumbIcon === undefined || thumbIcon === null) return null;
+  return typeof thumbIcon === 'function' ? thumbIcon(details) : thumbIcon;
 }
 
 function resolveValueMode(valueMode: SliderProps['valueMode'], props: SliderProps) {
@@ -299,6 +305,7 @@ function SliderRoot(props: SliderProps) {
     thumbCrossing,
     activationFeedback,
     formatValue,
+    thumbIcon,
     thumbAriaLabels,
     thumbAriaLabelledBy,
     disabled,
@@ -328,16 +335,14 @@ function SliderRoot(props: SliderProps) {
     valueSummaryPlacement ?? options.valueSummaryPlacement;
   const resolvedValueAnimation = valueAnimation ?? options.valueAnimation;
   const resolvedSnapMotion: SliderSnapMotionOption = snapMotion ?? options.snapMotion;
-  const resolvedThumbBehavior: SliderThumbBehaviorOption =
-    thumbBehavior ?? options.thumbBehavior;
+  const resolvedThumbBehavior: SliderThumbBehaviorOption = thumbBehavior ?? options.thumbBehavior;
   const resolvedThumbCrossing = thumbCrossing ?? options.thumbCrossing;
   const resolvedThumbEdgeBehavior: SliderThumbEdgeBehaviorOption =
     thumbEdgeBehavior ?? options.thumbEdgeBehavior;
   const resolvedActiveTrackOrigin: SliderActiveTrackOriginOption =
     activeTrackOrigin ?? options.activeTrackOrigin;
   const resolvedOriginMark: SliderOriginMarkOption = originMark ?? options.originMark;
-  const resolvedMarkPlacement: SliderMarkPlacementOption =
-    markPlacement ?? options.markPlacement;
+  const resolvedMarkPlacement: SliderMarkPlacementOption = markPlacement ?? options.markPlacement;
   const resolvedMarkLabelPlacement = resolveMarkLabelPlacement(
     markLabelPlacement ?? options.markLabelPlacement,
     isLikelyTouch
@@ -374,6 +379,7 @@ function SliderRoot(props: SliderProps) {
   const startEdgeMark = getEdgeMark(normalizedMarks, min);
   const endEdgeMark = getEdgeMark(normalizedMarks, max);
   const hasLabel = label !== undefined && label !== null;
+  const hasThumbIcon = thumbIcon !== undefined && thumbIcon !== null;
   const hasMarkLabels = markLabels.length > 0;
   const hasValueSummary =
     resolvedValueDisplay === 'summary' ||
@@ -433,6 +439,7 @@ function SliderRoot(props: SliderProps) {
         hasValueSummary,
         valueSummaryPlacement: resolvedValueSummaryPlacement,
         hasPersistentValueIndicator,
+        hasThumbIcon,
         hasHelperText,
         hasMarkLabels,
         markPlacement: resolvedMarkPlacement,
@@ -446,6 +453,7 @@ function SliderRoot(props: SliderProps) {
       hasHelperText,
       hasLabel,
       hasPersistentValueIndicator,
+      hasThumbIcon,
       resolvedValueSummaryPlacement,
       hasMarkLabels,
       hasValueSummary,
@@ -457,13 +465,21 @@ function SliderRoot(props: SliderProps) {
       scale
     ]
   );
+  const headlessClassNames = useMemo(
+    () => ({
+      ...structuralClassNames,
+      e10: join(structuralClassNames.e10, structuralClassNames.e12),
+      e11: join(structuralClassNames.e11, structuralClassNames.e13)
+    }),
+    [structuralClassNames]
+  );
   const describedBy = join(ariaDescribedBy, hasHelperText ? helperTextId : undefined);
   const activationFeedbackController = useSliderActivationFeedbackController({
     config: activationFeedbackConfig,
     disabled,
     enabled: Boolean(activationFeedbackEffect),
     forcedActive: activationFeedback === 'active',
-    geometryKey: `${scale}:${resolvedRadius}:${resolvedValueMode}:${structuralClassNames.e10}:${structuralClassNames.e11}`,
+    geometryKey: `${scale}:${resolvedRadius}:${resolvedValueMode}:${headlessClassNames.e10}:${headlessClassNames.e11}`,
     isRange: resolvedValueMode === 'range',
     profile: activationFeedbackProfile,
     readOnly,
@@ -534,6 +550,15 @@ function SliderRoot(props: SliderProps) {
     ) : (
       <HeadlessSlider.ValueSummary />
     );
+  const renderThumbIcon = (index: 0 | 1) => {
+    if (thumbIcon === undefined || thumbIcon === null) return null;
+
+    return (
+      <HeadlessSlider.ThumbIcon index={index}>
+        {(details) => renderSliderThumbIcon(thumbIcon, details)}
+      </HeadlessSlider.ThumbIcon>
+    );
+  };
 
   useIsomorphicLayoutEffect(() => {
     if (!hasPersistentValueIndicator) {
@@ -551,7 +576,7 @@ function SliderRoot(props: SliderProps) {
     setValueIndicatorLane((currentValue) =>
       currentValue === nextValue ? currentValue : nextValue
     );
-  }, [hasPersistentValueIndicator, structuralClassNames.e12]);
+  }, [hasPersistentValueIndicator, structuralClassNames.e14]);
 
   const rootStyle = useMemo(() => {
     if (!valueIndicatorLane && !valueSummaryInlineSize) return style;
@@ -570,7 +595,7 @@ function SliderRoot(props: SliderProps) {
       {...rootProps}
       id={rootId}
       style={rootStyle}
-      classNames={structuralClassNames}
+      classNames={headlessClassNames}
       labelId={hasLabel ? labelId : false}
       describedBy={describedBy}
       valueMode={resolvedValueMode}
@@ -646,6 +671,7 @@ function SliderRoot(props: SliderProps) {
               aria-labelledby={getThumbAriaLabelledBy(0)}
             >
               <HeadlessSlider.ThumbInner />
+              {renderThumbIcon(0)}
               {renderValueIndicator(0)}
             </HeadlessSlider.Thumb>
             {resolvedValueMode === 'range' ? (
@@ -657,6 +683,7 @@ function SliderRoot(props: SliderProps) {
                 aria-labelledby={getThumbAriaLabelledBy(1)}
               >
                 <HeadlessSlider.ThumbInner />
+                {renderThumbIcon(1)}
                 {renderValueIndicator(1)}
               </HeadlessSlider.Thumb>
             ) : null}

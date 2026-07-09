@@ -74,6 +74,13 @@ const sizes = {
     's:md:1': 24,
     's:lg:1': 28
   },
+  thumbIcon: {
+    's:sm:3': 10,
+    's:sm:2': 11,
+    's:sm:1': 12,
+    's:md:1': 14,
+    's:lg:1': 16
+  },
   endpointIcon: {
     's:sm:3': 16,
     's:sm:2': 18,
@@ -530,7 +537,7 @@ export function createSandboxSliderSchema(): SliderComponent {
                 },
                 palettes: thumbPalettes
               },
-              e12: {
+              e14: {
                 name: 'slider-value-indicator',
                 decorations: { borderStyle: 'solid', textFont: 'body', textWeight: 'medium' },
                 scales: {
@@ -551,7 +558,7 @@ export function createSandboxSliderSchema(): SliderComponent {
                 },
                 palettes: valueIndicatorPalettes
               },
-              e13: {
+              e15: {
                 name: 'slider-mark',
                 decorations: { borderStyle: 'solid' },
                 scales: {
@@ -566,7 +573,7 @@ export function createSandboxSliderSchema(): SliderComponent {
                 },
                 palettes: activeTrackPalettes
               },
-              e14: {
+              e16: {
                 name: 'slider-mark-label',
                 decorations: { textFont: 'body', textWeight: 'medium' },
                 scales: {
@@ -577,7 +584,7 @@ export function createSandboxSliderSchema(): SliderComponent {
                 },
                 palettes: textPalettes
               },
-              e15: {
+              e17: {
                 name: 'slider-helper-text',
                 decorations: { textFont: 'body', textWeight: 'normal' },
                 scales: {
@@ -586,6 +593,14 @@ export function createSandboxSliderSchema(): SliderComponent {
                   marginTop: layout.fieldGap
                 },
                 palettes: textPalettes
+              },
+              e19: {
+                name: 'slider-thumb-icon',
+                scales: {
+                  boxWidth: sizes.thumbIcon,
+                  boxHeight: sizes.thumbIcon
+                },
+                palettes: iconPalettes
               }
             }
           }

@@ -52,6 +52,10 @@ const sizes = {
     's:sm:1': 16,
     's:md:1': 24
   },
+  thumbIcon: {
+    's:sm:1': 10,
+    's:md:1': 14
+  },
   endpointIcon: {
     's:sm:1': 20,
     's:md:1': 32
@@ -125,7 +129,7 @@ export function createIos26AppleSliderSchema({
             rest: 's:sm:2'
           }
         },
-        e12: {
+        e14: {
           kind: 'outer',
           states: {
             rest: 's:sm:3'
@@ -332,7 +336,7 @@ export function createIos26AppleSliderSchema({
                   }
                 }))
               },
-              e12: {
+              e14: {
                 name: 'slider-value-indicator',
                 decorations: { borderStyle: 'solid', textFont: 'body', textWeight: 'medium' },
                 scales: {
@@ -382,7 +386,7 @@ export function createIos26AppleSliderSchema({
                   }
                 }))
               },
-              e13: {
+              e15: {
                 name: 'slider-mark',
                 decorations: { borderStyle: 'solid' },
                 scales: {
@@ -411,7 +415,7 @@ export function createIos26AppleSliderSchema({
                   }
                 }))
               },
-              e14: {
+              e16: {
                 name: 'slider-mark-label',
                 decorations: { textFont: 'body', textWeight: 'medium' },
                 scales: {
@@ -422,7 +426,7 @@ export function createIos26AppleSliderSchema({
                 },
                 palettes: textPalettes
               },
-              e15: {
+              e17: {
                 name: 'slider-helper-text',
                 decorations: { textFont: 'body', textWeight: 'normal' },
                 scales: {
@@ -432,7 +436,7 @@ export function createIos26AppleSliderSchema({
                 },
                 palettes: textPalettes
               },
-              e16: {
+              e18: {
                 name: 'slider-origin-mark',
                 decorations: { borderStyle: 'solid' },
                 scales: {
@@ -466,6 +470,14 @@ export function createIos26AppleSliderSchema({
                     ...transparentBorder.default.light
                   }
                 }))
+              },
+              e19: {
+                name: 'slider-thumb-icon',
+                scales: {
+                  boxWidth: sizes.thumbIcon,
+                  boxHeight: sizes.thumbIcon
+                },
+                palettes: textPalettes
               }
             }
           }
