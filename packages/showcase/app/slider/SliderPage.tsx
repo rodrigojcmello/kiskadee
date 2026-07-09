@@ -480,10 +480,10 @@ function SunIcon() {
 
 function VolumeHighIcon() {
   return (
-    <svg width="28" height="28" viewBox="0 0 5 5" focusable="false" aria-hidden="true">
+    <svg viewBox="0 0 7 7" focusable="false" aria-hidden="true">
       <path
         fill="currentColor"
-        d="M3.054 0v.572a1.945 1.945 0 0 1 1.389 1.863c0 .88-.586 1.622-1.389 1.86v.575a2.5 2.5 0 0 0 1.944-2.435A2.5 2.5 0 0 0 3.054 0m.695 2.435c0-.491-.278-.913-.695-1.119v2.23c.417-.197.695-.622.695-1.11M0 1.602v1.666h1.111L2.5 4.657V.214L1.111 1.602z"
+        d="M3.887.896v.572a1.945 1.945 0 0 1 1.389 1.864c0 .88-.586 1.621-1.389 1.86v.575a2.5 2.5 0 0 0 1.944-2.435A2.5 2.5 0 0 0 3.887.896m.695 2.436c0-.492-.278-.914-.695-1.12v2.23c.417-.197.695-.622.695-1.11M.833 2.499v1.666h1.111l1.388 1.388V1.11L1.944 2.499z"
       />
     </svg>
   );
@@ -491,7 +491,7 @@ function VolumeHighIcon() {
 
 function VolumeLowIcon() {
   return (
-    <svg viewBox="0 0 5.4 5.4" focusable="false" aria-hidden="true">
+    <svg viewBox="0 0 7 7" focusable="false" aria-hidden="true">
       <path
         fill="currentColor"
         d="M1.388 2.499v1.666h1.111l1.388 1.388V1.11L2.499 2.499zm3.749.833c0-.492-.278-.914-.694-1.12v2.23c.416-.197.694-.622.694-1.11"
@@ -502,10 +502,10 @@ function VolumeLowIcon() {
 
 function VolumeOffIcon() {
   return (
-    <svg viewBox="0 0 5.4 5.4" focusable="false" aria-hidden="true">
+    <svg viewBox="0 0 7 7" focusable="false" aria-hidden="true">
       <path
         fill="currentColor"
-        d="m3.332 1.11-.58.58.58.58zm-2.146-.278-.353.353 1.313 1.313H.833v1.666h1.111l1.388 1.388V3.684l1.18 1.183a2.4 2.4 0 0 1-.625.324v.575c.383-.089.73-.264 1.022-.502l.569.566.353-.353-2.5-2.499zm4.09 2.499c0 .261-.056.505-.15.733l.419.419c.18-.344.286-.736.286-1.152A2.5 2.5 0 0 0 3.887.896v.572a1.945 1.945 0 0 1 1.389 1.863m-.694 0c0-.491-.278-.913-.695-1.119v.614l.681.68c.014-.055.014-.116.014-.175"
+        d="M.833 2.499h1.111L3.332 1.11v4.443L1.944 4.165H.833zm3.774.833-.72-.72.392-.391.719.719.719-.719.392.391-.72.72.72.719-.392.391-.719-.719-.719.719-.392-.391z"
       />
     </svg>
   );
@@ -1333,11 +1333,6 @@ export default function SliderPage() {
                   thumbEdgeBehavior={thumbEdgeBehavior}
                   activeTrackOrigin={activeTrackOriginProp}
                   originMark={originMark}
-                  formatValue={formatPercent}
-                  valueDisplay="summary"
-                  valueSummaryPlacement="controlEnd"
-                  valueSummaryWidth={40}
-                  valueAnimation={valueAnimationProp}
                   snapMotion={snapMotionProp}
                   thumbBehavior={thumbBehaviorProp}
                   activationFeedback={activationFeedbackProp}
