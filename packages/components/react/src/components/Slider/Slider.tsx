@@ -631,7 +631,7 @@ function SliderRoot(props: SliderProps) {
           {hasLabel ? (
             <HeadlessSlider.FieldLabel>
               {label}
-              {required ? <span aria-hidden="true"> *</span> : null}
+              {!required ? <span className="k-sld-e2a-a">(opcional)</span> : null}
               {labelAdornment}
             </HeadlessSlider.FieldLabel>
           ) : null}

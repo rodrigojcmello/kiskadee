@@ -631,7 +631,7 @@ export default function SliderPage() {
   const [volumePreview, setVolumePreview] = useState<number | null>(null);
   const [thumbIconVolume, setThumbIconVolume] = useState(75);
   const [brightness, setBrightness] = useState(78);
-  const [area, setArea] = useState<[number, number]>([50, 150]);
+  const [area, setArea] = useState<[number, number]>([60, 160]);
   const [tasks, setTasks] = useState<[number, number]>([0, 43]);
   const [rating, setRating] = useState(4);
   const [centerBiased, setCenterBiased] = useState(40);

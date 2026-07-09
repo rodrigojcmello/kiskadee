@@ -38,6 +38,17 @@
 }
 
 /*
+ * element field label modifier / e2a
+ * Temporarily distinguishes the optional indicator until it gains a schema-owned element.
+ */
+.k-sld-e2a-a {
+  margin-inline-start: 2px;
+  color: #000;
+  font-size: 0.75rem;
+  opacity: 0.3;
+}
+
+/*
  * element value summary / e3
  * Keeps the out-of-track selected value aligned to the logical end of the header.
  */
@@ -453,6 +464,7 @@
  * Keeps the start edge label inside the track instead of centering it on the boundary.
  */
 .k-sld-e16c-a {
+  inset-inline-start: 0;
   text-align: start;
   transform: translateX(0);
 }
@@ -462,6 +474,7 @@
  * Keeps the end edge label inside the track instead of centering it on the boundary.
  */
 .k-sld-e16d-a {
+  inset-inline-start: 100%;
   text-align: end;
   transform: translateX(-100%);
 }
