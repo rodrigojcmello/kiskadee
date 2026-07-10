@@ -9,6 +9,7 @@ import type {
   SliderHelperTextElementStyleFromSchema,
   SliderMarkElementStyleFromSchema,
   SliderMarkLabelElementStyleFromSchema,
+  SliderOptionalIndicatorElementStyleFromSchema,
   SliderOriginMarkElementStyleFromSchema,
   SliderRootElementStyleFromSchema,
   SliderThumbElementStyleFromSchema,
@@ -61,6 +62,7 @@ import type {
  * - e17: helper text
  * - e18: origin mark / neutral tick
  * - e19: optional thumb icon
+ * - e20: optional indicator rendered with the field label
  */
 export type SliderElementName =
   | 'e1'
@@ -81,7 +83,8 @@ export type SliderElementName =
   | 'e16'
   | 'e17'
   | 'e18'
-  | 'e19';
+  | 'e19'
+  | 'e20';
 
 export type SliderVariant = 'standard';
 export type SliderStandardMode = 'base';
@@ -260,6 +263,15 @@ export type SliderOriginMarkElementStyle<TSegmentName extends SegmentName = neve
 export type SliderThumbIconElementStyle<TSegmentName extends SegmentName = never> =
   SliderThumbIconElementStyleFromSchema<TSegmentName>;
 
+/**
+ * e20 — optional indicator
+ * - textColor
+ * - textSize / textHeight
+ * - marginLeft
+ */
+export type SliderOptionalIndicatorElementStyle<TSegmentName extends SegmentName = never> =
+  SliderOptionalIndicatorElementStyleFromSchema<TSegmentName>;
+
 export type SliderElements<TSegmentName extends SegmentName = never> = {
   // e1: root state and field wrapper
   e1?: SliderRootElementStyle;
@@ -299,6 +311,8 @@ export type SliderElements<TSegmentName extends SegmentName = never> = {
   e18?: SliderOriginMarkElementStyle<TSegmentName>;
   // e19: optional thumb icon
   e19?: SliderThumbIconElementStyle<TSegmentName>;
+  // e20: optional indicator rendered with the field label
+  e20?: SliderOptionalIndicatorElementStyle<TSegmentName>;
 };
 
 export type SliderModeConfig<TSegmentName extends SegmentName = never> = {

@@ -26,6 +26,8 @@ function states(colors: {
 const transparent = [0, 0, 0, 0] as const;
 
 const c = {
+  optionalIndicator: [0, 0, 0, 0.3],
+  optionalIndicatorDisabled: [0, 0, 0, 0.18],
   black: [0, 0, 0, 1],
   blackDisabled: [0, 0, 0, 0.38],
   markLabel: [220, 8, 58, 1],
@@ -63,6 +65,13 @@ function markStates(selectedRest: Color) {
 }
 
 const sizes = {
+  optionalIndicatorText: {
+    's:sm:3': 12,
+    's:sm:2': 12,
+    's:sm:1': 12,
+    's:md:1': 12,
+    's:lg:1': 12
+  },
   labelText: {
     's:sm:3': 12,
     's:sm:2': 12,
@@ -136,6 +145,7 @@ const sizes = {
 } as const;
 
 const layout = {
+  optionalIndicatorGap: 2,
   headerSummaryGap: 16,
   fieldGap: 10,
   endpointTrackGap: 12,
@@ -192,6 +202,24 @@ const textPalettes = {
             focus: [260, 36, 44, 1],
             pressed: c.violetPressed,
             disabled: c.primaryDisabled
+          })
+        }
+      }
+    }
+  }
+} as const;
+
+const optionalIndicatorPalettes = {
+  default: {
+    light: {
+      textColor: {
+        neutral: {
+          medium: states({
+            rest: c.optionalIndicator,
+            hover: c.optionalIndicator,
+            focus: c.optionalIndicator,
+            pressed: c.optionalIndicator,
+            disabled: c.optionalIndicatorDisabled
           })
         }
       }
@@ -776,6 +804,14 @@ export function createSandbox3SliderSchema(): SliderComponent {
                   boxHeight: sizes.thumbIcon
                 },
                 palettes: thumbIconPalettes
+              },
+              e20: {
+                name: 'slider-optional-indicator',
+                scales: {
+                  textSize: sizes.optionalIndicatorText,
+                  marginLeft: layout.optionalIndicatorGap
+                },
+                palettes: optionalIndicatorPalettes
               }
             }
           }

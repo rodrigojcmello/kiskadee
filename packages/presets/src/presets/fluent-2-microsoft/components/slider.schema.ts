@@ -23,6 +23,8 @@ function states(colors: {
 }
 
 const fluent = {
+  optionalIndicator: '#0000004D',
+  optionalIndicatorDisabled: '#0000002E',
   transparent: '#FFFFFF00',
   neutralForeground1: '#242424',
   neutralStrokeAccessible: '#5D616B',
@@ -36,6 +38,10 @@ const fluent = {
 } as const satisfies Record<string, Color>;
 
 const sizes = {
+  optionalIndicatorText: {
+    's:sm:1': 12,
+    's:md:1': 12
+  },
   labelText: {
     's:sm:1': 12,
     's:md:1': 14
@@ -83,6 +89,7 @@ const sizes = {
 } as const;
 
 const layout = {
+  optionalIndicatorGap: 2,
   headerSummaryGap: 16,
   fieldGap: 10,
   endpointTrackGap: 12,
@@ -116,6 +123,21 @@ const textPalettes = {
             focus: fluent.compoundBrandRest,
             pressed: fluent.compoundBrandPressed,
             disabled: fluent.neutralForegroundDisabled
+          })
+        }
+      }
+    }
+  }
+} as const;
+
+const optionalIndicatorPalettes = {
+  default: {
+    light: {
+      textColor: {
+        neutral: {
+          medium: states({
+            rest: fluent.optionalIndicator,
+            disabled: fluent.optionalIndicatorDisabled
           })
         }
       }
@@ -609,6 +631,14 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
                   boxHeight: sizes.thumbIcon
                 },
                 palettes: thumbIconPalettes
+              },
+              e20: {
+                name: 'slider-optional-indicator',
+                scales: {
+                  textSize: sizes.optionalIndicatorText,
+                  marginLeft: layout.optionalIndicatorGap
+                },
+                palettes: optionalIndicatorPalettes
               }
             }
           }

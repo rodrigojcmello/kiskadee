@@ -58,7 +58,7 @@ primitive.
 | `step` | Numeric value grid. Defaults to `1`; invalid or non-positive values fall back to `1`. |
 | `disabled` | Blocks pointer and keyboard value changes and removes thumb tab stops. |
 | `readOnly` | Keeps the control focusable/readable but blocks value changes. |
-| `required` | Projects required state and renders the styled required marker when `label` is present. |
+| `required` | Projects required semantics. It does not inject a visual required or optional indicator. |
 | `status` | Optional projected visual status. Supported values come from `SliderStatus`: `hover`, `pressed`, `focus`, `disabled`, and `readOnly`. `selected` and `filled` are excluded because Slider selection is numeric range state, not a boolean state. |
 | `formatValue` | Formats visible value summary and value indicators. Receives the thumb value and thumb index. |
 | `getAriaValueText` | Formats `aria-valuetext` for each thumb. |
@@ -95,6 +95,7 @@ upper values.
 | `mode` | Current public mode inside `standard`. Default comes from the component artifact, falling back to `base`. |
 | `label` | Optional field label shown above the control row. |
 | `labelAdornment` | Optional inline adornment after the label, such as an info affordance. |
+| `optionalIndicator` | Optional label-adjacent content rendered only when explicitly provided. The recommended text pattern is `"(optional)"`; localization remains consumer-owned. |
 | `helperText` | Optional helper copy below the control row. |
 | `marks` | Scale content and visual marker configuration. Supports `"none"`, `"step"`, or an explicit array of `{ value, label?, icon? }`. `label` is the only source for scale labels, including `min` and `max`. `icon` is supported only on exact `min` and `max` marks. |
 | `markInterval` | Optional visual interval for generated marks when `marks="step"`. If omitted, generated marks use the semantic `step`. |
@@ -116,7 +117,7 @@ upper values.
 | `onInteractionValueChange` | Runtime callback for pointer-drag preview values. Does not replace `onValueChange`, which remains the committed-value channel. |
 | `activationFeedback` | Optional per-instance override for the schema/artifact activation feedback effect. Supports `false` to disable and `"active"` for static preview. |
 | `className` | Merged into the root `e1` slot. |
-| `classNames` | Escape hatch for schema element slots `e1` through `e19`. |
+| `classNames` | Escape hatch for schema element slots `e1` through `e20`. |
 
 `valueDisplay="tooltip"` renders a value indicator near each thumb. The value
 indicator includes a fixed structural arrow with a slightly rounded tip that
@@ -254,7 +255,7 @@ feedback; the effect represents physical pointer/touch interaction.
 
 ### Elements
 
-Slider uses nineteen canonical schema element slots:
+Slider uses twenty canonical schema element slots:
 
 | Element | Meaning |
 | --- | --- |
@@ -277,6 +278,7 @@ Slider uses nineteen canonical schema element slots:
 | `e17` | Helper text. |
 | `e18` | Origin mark / neutral tick. |
 | `e19` | Optional thumb icon. |
+| `e20` | Optional indicator rendered with the field label. |
 
 Current Slider topology is variant-driven:
 
@@ -366,6 +368,8 @@ belong to schema scales:
 - `e18.marginBottom` offsets the origin mark above the track when
   `markPlacement="above"`.
 - `e19.boxWidth` and `e19.boxHeight` define the decorative thumb icon slot.
+- `e20.marginLeft` separates the optional indicator from the field label. It is
+  emitted as a token and consumed structurally as logical inline-start spacing.
 
 Do not add gap-like Slider scale attributes for these relationships. Use
 margin, padding, or existing box scales, then let structural CSS consume the
@@ -403,6 +407,7 @@ The styled Slider currently resolves the selected radius mode for:
 - `e14`: value indicator / tooltip;
 - `e15`: mark.
 - `e19` is not radius-aware; it is an icon slot centered inside the thumb.
+- `e20` is not radius-aware; it is label-adjacent text content.
 
 Do not add per-element radius props such as `trackRadius`, `thumbRadius`, or
 `tooltipRadius` only to support showcase experimentation. If a preset wants the
@@ -475,6 +480,7 @@ The styled `Slider` composes the headless slider primitive:
 HeadlessSlider.Root
   optional header
     optional HeadlessSlider.FieldLabel
+      optional HeadlessSlider.OptionalIndicator
     optional HeadlessSlider.ValueSummary
   HeadlessSlider.ControlRow
     optional start HeadlessSlider.Endpoint derived from min mark
@@ -503,6 +509,8 @@ Rules to preserve:
 - The track owns pointer capture and maps pointer position to a value.
 - `label` names the control and is connected to thumbs through
   `aria-labelledby`.
+- `optionalIndicator` is opt-in content inside the field label. It participates
+  in the accessible name and is never inferred from `required`.
 - When `label` is omitted, the styled component must not leave the thumbs
   pointing at a non-rendered label. Consumers can provide `aria-label`,
   `aria-labelledby`, `thumbAriaLabels`, or `thumbAriaLabelledBy`.
@@ -532,6 +540,8 @@ Rules to preserve:
 - `classNames.e19` stays attached to optional decorative thumb icons rendered
   inside each thumb. The icon slot must not affect thumb measurement, focus,
   activation feedback, or motion geometry.
+- `classNames.e20` stays attached to the optional indicator rendered inside the
+  field label.
 - `classNames.e15` stays attached to each rendered mark.
 
 ## Values, Drag, And Step
@@ -797,6 +807,7 @@ Preserve these rules:
 - `e16` uses `--k-sld-mark` for its label position.
 - `e18` uses `--k-sld-mark` for the resolved active origin position.
 - `e19` centers optional thumb icons inside `e10` and is pointer-inert.
+- `e20` renders inline with `e2` and consumes schema-owned logical spacing.
 - Keyboard-visible focus is drawn on each thumb through global focus variables.
 
 Edge marks and Slider layout spacing need generated geometry variables so the
@@ -883,6 +894,7 @@ generated markup, structural CSS, or regressions.
 | `k-sld-e18a-a` | Origin mark placed above the track. |
 | `k-sld-e18b-a` | Origin mark placed below the track. |
 | `k-sld-e19-a` | Optional thumb icon. |
+| `k-sld-e20-a` | Optional indicator rendered with the field label. |
 
 The structural branch registry currently uses `a` for the single public Slider
 structure. The suffix does not create a public variant or mode.
@@ -896,7 +908,7 @@ structure. The suffix does not create a public variant or mode.
 - `SliderProps` public props listed in this document.
 - Headless slider semantics: focusable thumbs with `role="slider"`,
   controlled/uncontrolled value, `disabled`, `readOnly`, and keyboard support.
-- Schema elements `e1` through `e19`.
+- Schema elements `e1` through `e20`.
 - Current schema options and values for `variant`, `mode`, `valueDisplay`,
   `valueSummaryPlacement`, `valueAnimation`, `snapAnimation`, `thumbStepBehavior`,
   `thumbCrossing`, `marks`, `markInterval`, `edgeMarks`, `markPlacement`, `markLabelPlacement`,

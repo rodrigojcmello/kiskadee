@@ -43,6 +43,26 @@ export function createSliderFieldLabelElementStyleSchema<
     .strict();
 }
 
+export function createSliderOptionalIndicatorElementStyleSchema<
+  TSegmentName extends SegmentName = never
+>() {
+  return z
+    .object({
+      name: z.string(),
+      decorations: z
+        .object({
+          textFont: z.custom<DecorationSchema['textFont']>().optional(),
+          textWeight: z.custom<DecorationSchema['textWeight']>().optional()
+        })
+        .strict()
+        .optional(),
+      scales: createScalesSchema(['textSize', 'textHeight', 'marginLeft']).optional(),
+      palettes: createPalettesSchema<TSegmentName, 'textColor'>(['textColor']).optional(),
+      effects: elementEffectsSchema.optional()
+    })
+    .strict();
+}
+
 export function createSliderValueSummaryElementStyleSchema<
   TSegmentName extends SegmentName = never
 >() {
@@ -265,6 +285,10 @@ export type SliderRootElementStyleFromSchema = z.input<
 
 export type SliderFieldLabelElementStyleFromSchema<TSegmentName extends SegmentName = never> =
   z.input<ReturnType<typeof createSliderFieldLabelElementStyleSchema<TSegmentName>>>;
+
+export type SliderOptionalIndicatorElementStyleFromSchema<
+  TSegmentName extends SegmentName = never
+> = z.input<ReturnType<typeof createSliderOptionalIndicatorElementStyleSchema<TSegmentName>>>;
 
 export type SliderValueSummaryElementStyleFromSchema<TSegmentName extends SegmentName = never> =
   z.input<ReturnType<typeof createSliderValueSummaryElementStyleSchema<TSegmentName>>>;

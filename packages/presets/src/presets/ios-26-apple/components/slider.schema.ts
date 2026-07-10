@@ -18,12 +18,18 @@ const iosSliderOriginTick = [0, 0, 0, 1] as const;
 const iosSliderThumb = [0, 0, 100, 0.96] as const;
 const iosSliderThumbBorder = [0, 0, 100, 1] as const;
 const iosSliderText = [0, 0, 0, 0.6] as const;
+const iosSliderOptionalIndicator = [0, 0, 0, 0.3] as const;
+const iosSliderOptionalIndicatorDisabled = [0, 0, 0, 0.18] as const;
 const iosSliderTooltip = [0, 0, 100, 1] as const;
 const iosSliderTooltipDisabled = [0, 0, 100, 0.6] as const;
 const iosSliderTooltipText = [0, 0, 0, 1] as const;
 const iosSliderTooltipTextDisabled = [0, 0, 0, 0.3] as const;
 
 const sizes = {
+  optionalIndicatorText: {
+    's:sm:1': 12,
+    's:md:1': 12
+  },
   labelText: {
     's:sm:1': 13,
     's:md:1': 17
@@ -63,6 +69,7 @@ const sizes = {
 } as const;
 
 const layout = {
+  optionalIndicatorGap: 2,
   fieldGap: 12,
   endpointTrackGap: 12,
   endpointContentGap: 8,
@@ -105,6 +112,19 @@ export function createIos26AppleSliderSchema({
             focus: tint,
             pressed: tint,
             disabled: disabledTint
+          }
+        }
+      }
+    }
+  }));
+
+  const optionalIndicatorPalettes = buildBySegment(segmentNames, () => ({
+    light: {
+      textColor: {
+        neutral: {
+          medium: {
+            rest: iosSliderOptionalIndicator,
+            disabled: iosSliderOptionalIndicatorDisabled
           }
         }
       }
@@ -478,6 +498,14 @@ export function createIos26AppleSliderSchema({
                   boxHeight: sizes.thumbIcon
                 },
                 palettes: textPalettes
+              },
+              e20: {
+                name: 'slider-optional-indicator',
+                scales: {
+                  textSize: sizes.optionalIndicatorText,
+                  marginLeft: layout.optionalIndicatorGap
+                },
+                palettes: optionalIndicatorPalettes
               }
             }
           }

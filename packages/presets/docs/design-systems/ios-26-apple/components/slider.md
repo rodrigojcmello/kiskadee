@@ -39,6 +39,10 @@ geometry overlays, so `thumbIcon` preserves the official `e10`/`e11`
 dimensions. It is a generic Kiskadee composition affordance, not a separate
 iOS 26 Slider measurement from the Figma source.
 
+The optional `e20` label indicator is also a Kiskadee form-composition
+affordance rather than an Apple Slider measurement. Its text size, color alpha,
+and label spacing remain schema-owned.
+
 ## Adaptations
 
 The upstream visual treatment includes a Liquid Glass thumb material. This

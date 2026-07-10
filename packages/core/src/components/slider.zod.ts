@@ -9,6 +9,7 @@ export type {
   SliderHelperTextElementStyleFromSchema,
   SliderMarkElementStyleFromSchema,
   SliderMarkLabelElementStyleFromSchema,
+  SliderOptionalIndicatorElementStyleFromSchema,
   SliderRootElementStyleFromSchema,
   SliderThumbElementStyleFromSchema,
   SliderTrackElementStyleFromSchema,

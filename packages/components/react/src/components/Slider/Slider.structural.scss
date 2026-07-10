@@ -38,14 +38,11 @@
 }
 
 /*
- * element field label modifier / e2a
- * Temporarily distinguishes the optional indicator until it gains a schema-owned element.
+ * element optional indicator / e20
+ * Applies schema-owned spacing at the logical end of the field label.
  */
-.k-sld-e2a-a {
-  margin-inline-start: 2px;
-  color: #000;
-  font-size: 0.75rem;
-  opacity: 0.3;
+.k-sld-e20-a {
+  margin-inline-start: var(--k-mgl, 0px);
 }
 
 /*

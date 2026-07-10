@@ -1334,6 +1334,7 @@ export default function SliderPage() {
               >
                 <Slider
                   label="Volume"
+                  optionalIndicator="(optional)"
                   min={0}
                   max={100}
                   step={1}

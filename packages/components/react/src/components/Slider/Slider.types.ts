@@ -51,7 +51,8 @@ export type SliderElementName =
   | 'e16'
   | 'e17'
   | 'e18'
-  | 'e19';
+  | 'e19'
+  | 'e20';
 
 export type SliderClassNames = Partial<Record<SliderElementName, string>>;
 
@@ -122,6 +123,7 @@ export type SliderProps = Omit<
   id?: string;
   label?: ReactNode;
   labelAdornment?: ReactNode;
+  optionalIndicator?: ReactNode;
   helperText?: ReactNode;
   className?: string;
   classNames?: SliderClassNames;

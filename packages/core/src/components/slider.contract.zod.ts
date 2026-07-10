@@ -10,6 +10,7 @@ import {
   createSliderHelperTextElementStyleSchema,
   createSliderMarkElementStyleSchema,
   createSliderMarkLabelElementStyleSchema,
+  createSliderOptionalIndicatorElementStyleSchema,
   createSliderOriginMarkElementStyleSchema,
   createSliderRootElementStyleSchema,
   createSliderThumbElementStyleSchema,
@@ -45,7 +46,8 @@ function createSliderElementsSchema<TSegmentName extends SegmentName = never>() 
       e16: createSliderMarkLabelElementStyleSchema<TSegmentName>().optional(),
       e17: createSliderHelperTextElementStyleSchema<TSegmentName>().optional(),
       e18: createSliderOriginMarkElementStyleSchema<TSegmentName>().optional(),
-      e19: createSliderThumbIconElementStyleSchema<TSegmentName>().optional()
+      e19: createSliderThumbIconElementStyleSchema<TSegmentName>().optional(),
+      e20: createSliderOptionalIndicatorElementStyleSchema<TSegmentName>().optional()
     })
     .strict();
 }

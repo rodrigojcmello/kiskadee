@@ -36,6 +36,7 @@ export type {
   SliderInteractionValueChangeDetails,
   SliderMarkLabelProps,
   SliderMarkProps,
+  SliderOptionalIndicatorProps,
   SliderOriginMarkProps,
   SliderRangeValue,
   SliderRootProps,

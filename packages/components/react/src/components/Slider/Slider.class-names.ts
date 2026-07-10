@@ -130,6 +130,7 @@ export function resolveSliderClassNames(options: {
   emphasis: ComponentEmphasis | undefined;
   radius: RadiusMode;
   hasLabel: boolean;
+  hasOptionalIndicator: boolean;
   hasValueSummary: boolean;
   valueSummaryPlacement: SliderValueSummaryPlacement;
   hasPersistentValueIndicator: boolean;
@@ -271,6 +272,14 @@ export function resolveSliderClassNames(options: {
       ) ?? '',
     e19:
       join(`k-sld-e19-${branch}`, elem(elements.e19, options), 'k-trn', options.classNames.e19) ??
-      ''
+      '',
+    e20: options.hasOptionalIndicator
+      ? (join(
+          `k-sld-e20-${branch}`,
+          elem(elements.e20, options),
+          'k-trn',
+          options.classNames.e20
+        ) ?? '')
+      : (options.classNames.e20 ?? '')
   };
 }

@@ -50,7 +50,8 @@ export type SliderElementName =
   | 'e16'
   | 'e17'
   | 'e18'
-  | 'e19';
+  | 'e19'
+  | 'e20';
 
 export type SliderStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
 
@@ -136,6 +137,7 @@ export type SliderRootProps = SliderRootDivProps & {
 };
 
 export type SliderFieldLabelProps = HTMLAttributes<HTMLSpanElement>;
+export type SliderOptionalIndicatorProps = HTMLAttributes<HTMLSpanElement>;
 export type SliderValueSummaryProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> & {
   children?: ReactNode | ((details: SliderValueSummaryRenderDetails) => ReactNode);
 };
@@ -1111,7 +1113,8 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       e16: { className: classNames.e16 },
       e17: { className: classNames.e17 },
       e18: { className: classNames.e18 },
-      e19: { className: classNames.e19 }
+      e19: { className: classNames.e19 },
+      e20: { className: classNames.e20 }
     };
   }, [classNames, disabled, focused, focusVisible, hovered, pressed, readOnly, status]);
 
@@ -1235,6 +1238,24 @@ const SliderFieldLabel = forwardRef<HTMLSpanElement, SliderFieldLabelProps>(
         {...slotProps}
         ref={ref}
         id={id ?? context.labelId}
+        className={mergeClassNames(slotClassName, className)}
+        {...props}
+      >
+        {children}
+      </span>
+    );
+  }
+);
+
+const SliderOptionalIndicator = forwardRef<HTMLSpanElement, SliderOptionalIndicatorProps>(
+  function SliderOptionalIndicator({ className, children, ...props }, ref) {
+    const context = useSliderContext();
+    const { className: slotClassName, ...slotProps } = context.slotProps.e20 ?? {};
+
+    return (
+      <span
+        {...slotProps}
+        ref={ref}
         className={mergeClassNames(slotClassName, className)}
         {...props}
       >
@@ -1712,6 +1733,7 @@ const SliderHelperText = forwardRef<HTMLParagraphElement, SliderHelperTextProps>
 export const HeadlessSlider = Object.assign(SliderRoot, {
   Root: SliderRoot,
   FieldLabel: SliderFieldLabel,
+  OptionalIndicator: SliderOptionalIndicator,
   ValueSummary: SliderValueSummary,
   ControlRow: SliderControlRow,
   Endpoint: SliderEndpoint,

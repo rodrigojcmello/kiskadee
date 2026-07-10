@@ -270,6 +270,7 @@ function SliderRoot(props: SliderProps) {
     id,
     label,
     labelAdornment,
+    optionalIndicator,
     helperText,
     className,
     classNames = EMPTY_SLIDER_CLASS_NAMES,
@@ -380,6 +381,11 @@ function SliderRoot(props: SliderProps) {
   const startEdgeMark = getEdgeMark(normalizedMarks, min);
   const endEdgeMark = getEdgeMark(normalizedMarks, max);
   const hasLabel = label !== undefined && label !== null;
+  const hasOptionalIndicator =
+    hasLabel &&
+    optionalIndicator !== undefined &&
+    optionalIndicator !== null &&
+    optionalIndicator !== false;
   const hasThumbIcon = thumbIcon !== undefined && thumbIcon !== null;
   const hasMarkLabels = markLabels.length > 0;
   const hasValueSummary =
@@ -437,6 +443,7 @@ function SliderRoot(props: SliderProps) {
         emphasis,
         radius: resolvedRadius,
         hasLabel,
+        hasOptionalIndicator,
         hasValueSummary,
         valueSummaryPlacement: resolvedValueSummaryPlacement,
         hasPersistentValueIndicator,
@@ -453,6 +460,7 @@ function SliderRoot(props: SliderProps) {
       emphasis,
       hasHelperText,
       hasLabel,
+      hasOptionalIndicator,
       hasPersistentValueIndicator,
       hasThumbIcon,
       resolvedValueSummaryPlacement,
@@ -632,7 +640,11 @@ function SliderRoot(props: SliderProps) {
           {hasLabel ? (
             <HeadlessSlider.FieldLabel>
               {label}
-              {!required ? <span className="k-sld-e2a-a">(opcional)</span> : null}
+              {hasOptionalIndicator ? (
+                <HeadlessSlider.OptionalIndicator>
+                  {optionalIndicator}
+                </HeadlessSlider.OptionalIndicator>
+              ) : null}
               {labelAdornment}
             </HeadlessSlider.FieldLabel>
           ) : null}
