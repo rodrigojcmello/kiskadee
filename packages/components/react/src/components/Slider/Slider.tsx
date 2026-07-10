@@ -65,10 +65,10 @@ function finiteNumber(value: number | undefined, fallback: number): number {
   return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
 }
 
-function normalizeBounds(minProp: number | undefined, maxProp: number | undefined) {
+function normalizeBounds(minProp: number | undefined, maxProp: number | undefined, step: number) {
   const min = finiteNumber(minProp, DEFAULT_MIN);
   const rawMax = finiteNumber(maxProp, DEFAULT_MAX);
-  const max = rawMax > min ? rawMax : min + DEFAULT_STEP;
+  const max = rawMax > min ? rawMax : min + step;
   return { min, max };
 }
 
@@ -358,8 +358,8 @@ function SliderRoot(props: SliderProps) {
     isCompactViewport
   );
   const resolvedSelectionMode = resolveSelectionMode(selectionMode, props);
-  const { min, max } = normalizeBounds(minProp, maxProp);
   const step = normalizeStep(stepProp);
+  const { min, max } = normalizeBounds(minProp, maxProp, step);
   const resolvedMarkInterval = markInterval ?? options.markInterval;
   const resolvedEdgeMarks = edgeMarks ?? options.edgeMarks;
   const normalizedMarks = useMemo(

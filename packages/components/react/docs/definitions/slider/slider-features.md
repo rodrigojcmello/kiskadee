@@ -83,6 +83,11 @@ and upper values, not fixed physical thumb identities. For the same reason,
 `thumbAriaLabels.start` and `thumbAriaLabels.end` name the current lower and
 upper values.
 
+Range thumbs expose dynamic ARIA limits that match the keyboard contract. The
+lower thumb uses the current upper value as `aria-valuemax`; the upper thumb
+uses the current lower value as `aria-valuemin`. Single-value sliders continue
+to expose the global `min` and `max`.
+
 ### Visual And Artifact Props
 
 | Prop | Current rule |
@@ -219,7 +224,9 @@ grid:
   original behavior.
 - `thumbStepBehavior="hold"` keeps the thumb free during drag and leaves the visual
   thumb where it was released. The semantic value, ARIA value, summary, tooltip,
-  and `onValueChange` still use the nearest `step`.
+  and `onValueChange` still use the nearest `step`. The held visual preview is
+  associated with that committed semantic value; a controlled parent that
+  rejects the commit or later provides another value clears the preview.
 - `thumbStepBehavior="stops"` moves the thumb on the semantic `step` grid during
   drag, so there is no release correction.
 
@@ -506,7 +513,9 @@ Rules to preserve:
 
 - The root is a field wrapper, not a native form input.
 - Each thumb owns its own accessible slider semantics.
-- The track owns pointer capture and maps pointer position to a value.
+- The track owns pointer capture and maps pointer position to a value. Only the
+  primary pointer with the primary button can begin and continue interaction;
+  other pointer identities cannot take over an active drag.
 - `label` names the control and is connected to thumbs through
   `aria-labelledby`.
 - `optionalIndicator` is opt-in content inside the field label. It participates

@@ -231,6 +231,11 @@ type SliderDragPreview =
       values: SliderRangeValue;
     };
 
+type SliderHeldPreview = {
+  preview: SliderDragPreview;
+  committedValue: SliderValue;
+};
+
 function dragPreviewsEqual(
   left: SliderDragPreview | null,
   right: SliderDragPreview | null
@@ -294,10 +299,10 @@ function finiteNumber(value: number | undefined, fallback: number): number {
   return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
 }
 
-function normalizeBounds(minProp: number | undefined, maxProp: number | undefined) {
+function normalizeBounds(minProp: number | undefined, maxProp: number | undefined, step: number) {
   const min = finiteNumber(minProp, DEFAULT_MIN);
   const rawMax = finiteNumber(maxProp, DEFAULT_MAX);
-  const max = rawMax > min ? rawMax : min + DEFAULT_STEP;
+  const max = rawMax > min ? rawMax : min + step;
   return { min, max };
 }
 
@@ -493,8 +498,8 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
   const generatedId = useId();
   const resolvedLabelId =
     labelId === false ? undefined : (labelId ?? `slider-${generatedId}-label`);
-  const { min, max } = normalizeBounds(minProp, maxProp);
   const step = normalizeStep(stepProp);
+  const { min, max } = normalizeBounds(minProp, maxProp, step);
   const isControlled = value !== undefined;
   const [uncontrolledValue, setUncontrolledValue] = useState<SliderValue>(() =>
     normalizeValue(defaultValue, selectionMode, min, max, step)
@@ -514,8 +519,9 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
   const [draggingThumbIndex, setDraggingThumbIndex] = useState<SliderThumbIndex | null>(null);
   const [settlingThumbIndex, setSettlingThumbIndex] = useState<SliderThumbIndex | null>(null);
   const [dragPreviewValue, setDragPreviewValue] = useState<SliderDragPreview | null>(null);
-  const [heldPreviewValue, setHeldPreviewValue] = useState<SliderDragPreview | null>(null);
+  const [heldPreviewValue, setHeldPreviewValue] = useState<SliderHeldPreview | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
+  const activePointerIdRef = useRef<number | null>(null);
   const thumbRefs = useRef<[HTMLSpanElement | null, HTMLSpanElement | null]>([null, null]);
   const [geometry, setGeometry] = useState<SliderGeometry>(DEFAULT_SLIDER_GEOMETRY);
 
@@ -554,6 +560,12 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
   }, [max, min, step, thumbStepBehavior, selectionMode]);
 
   useEffect(() => {
+    if (heldPreviewValue !== null && !valuesEqual(heldPreviewValue.committedValue, resolvedValue)) {
+      setHeldPreviewValue(null);
+    }
+  }, [heldPreviewValue, resolvedValue]);
+
+  useEffect(() => {
     measureGeometry();
     if (typeof ResizeObserver === 'undefined') return undefined;
 
@@ -587,12 +599,15 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
         return dragPreviewValue.value;
       }
 
-      if (heldPreviewValue?.selectionMode === 'range') {
-        return heldPreviewValue.values[index];
+      if (heldPreviewValue?.preview.selectionMode === 'range') {
+        return heldPreviewValue.preview.values[index];
       }
 
-      if (heldPreviewValue?.selectionMode === 'single' && heldPreviewValue.index === index) {
-        return heldPreviewValue.value;
+      if (
+        heldPreviewValue?.preview.selectionMode === 'single' &&
+        heldPreviewValue.preview.index === index
+      ) {
+        return heldPreviewValue.preview.value;
       }
 
       return getCommittedThumbValue(index);
@@ -885,7 +900,16 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
   const handleTrackPointerDown = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
-      if (event.defaultPrevented || disabled || readOnly) return;
+      if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.isPrimary === false ||
+        activePointerIdRef.current !== null ||
+        disabled ||
+        readOnly
+      ) {
+        return;
+      }
       const nextValue = getPointerValue(event, trackRef.current, min, max, thumbEdge, geometry);
       const targetIndex =
         getThumbIndexFromEventTarget(event.target) ?? pickNearestThumbIndex(nextValue);
@@ -894,6 +918,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       setSettlingThumbIndex(null);
       setHeldPreviewValue(null);
       setPressed(true);
+      activePointerIdRef.current = event.pointerId;
       event.currentTarget.setPointerCapture?.(event.pointerId);
       onThumbInteractionStart?.({ event, index: targetIndex });
       setThumbPreviewValue(targetIndex, nextValue, event);
@@ -913,7 +938,16 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
   const handleTrackPointerMove = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
-      if (event.defaultPrevented || draggingThumbIndex === null || disabled || readOnly) return;
+      if (
+        event.defaultPrevented ||
+        event.isPrimary === false ||
+        activePointerIdRef.current !== event.pointerId ||
+        draggingThumbIndex === null ||
+        disabled ||
+        readOnly
+      ) {
+        return;
+      }
       updateThumbFromPointer(draggingThumbIndex, event);
     },
     [disabled, draggingThumbIndex, readOnly, updateThumbFromPointer]
@@ -921,6 +955,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
   const handleTrackPointerUp = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
+      if (event.isPrimary === false || activePointerIdRef.current !== event.pointerId) return;
       const nextValue = resolveThumbStepBehaviorValue(
         getPointerValue(event, trackRef.current, min, max, thumbEdge, geometry)
       );
@@ -945,19 +980,27 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
           });
         }
         if (thumbStepBehavior === 'hold') {
-          setHeldPreviewValue(
-            nextPreview
-              ? {
-                  selectionMode: 'range',
-                  index: nextPreview.index,
-                  values: nextPreview.values
-                }
-              : {
-                  selectionMode: 'single',
-                  index: nextDraggingThumbIndex,
-                  value: clamp(nextValue, min, max)
-                }
-          );
+          const preview: SliderDragPreview = nextPreview
+            ? {
+                selectionMode: 'range',
+                index: nextPreview.index,
+                values: nextPreview.values
+              }
+            : {
+                selectionMode: 'single',
+                index: nextDraggingThumbIndex,
+                value: clamp(nextValue, min, max)
+              };
+          setHeldPreviewValue({
+            preview,
+            committedValue: normalizeValue(
+              preview.selectionMode === 'range' ? preview.values : preview.value,
+              selectionMode,
+              min,
+              max,
+              step
+            )
+          });
           setSettlingThumbIndex(null);
         } else if (thumbStepBehavior === 'snap') {
           setHeldPreviewValue(null);
@@ -973,6 +1016,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       }
 
       event.currentTarget.releasePointerCapture?.(event.pointerId);
+      activePointerIdRef.current = null;
       setDraggingThumbIndex(null);
       setDragPreviewValue(null);
       setPressed(false);
@@ -990,6 +1034,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       resolveRangePreview,
       setThumbValue,
       switchDraggingThumbIndex,
+      step,
       thumbStepBehavior,
       thumbCrossing,
       thumbEdge,
@@ -999,11 +1044,13 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
   const handleTrackPointerCancel = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
+      if (event.isPrimary === false || activePointerIdRef.current !== event.pointerId) return;
       if (draggingThumbIndex !== null) {
         onThumbInteractionCancel?.({ event, index: draggingThumbIndex });
       }
 
       event.currentTarget.releasePointerCapture?.(event.pointerId);
+      activePointerIdRef.current = null;
       setDraggingThumbIndex(null);
       setSettlingThumbIndex(null);
       setDragPreviewValue(null);
@@ -1478,6 +1525,10 @@ const SliderThumb = forwardRef<HTMLSpanElement, SliderThumbProps>(function Slide
   const { className: slotClassName, ...slotProps } = context.slotProps.e10 ?? {};
   const { setThumbElement } = context;
   const thumbValue = context.getThumbValue(index);
+  const ariaValueMin =
+    context.selectionMode === 'range' && index === 1 ? context.getThumbValue(0) : context.min;
+  const ariaValueMax =
+    context.selectionMode === 'range' && index === 0 ? context.getThumbValue(1) : context.max;
   const setThumbRef = useCallback(
     (node: HTMLSpanElement | null) => {
       setThumbElement(index, node);
@@ -1503,8 +1554,8 @@ const SliderThumb = forwardRef<HTMLSpanElement, SliderThumbProps>(function Slide
       }
       aria-describedby={ariaDescribedBy ?? context.describedBy}
       aria-orientation="horizontal"
-      aria-valuemin={context.min}
-      aria-valuemax={context.max}
+      aria-valuemin={ariaValueMin}
+      aria-valuemax={ariaValueMax}
       aria-valuenow={thumbValue}
       aria-valuetext={context.getAriaValueText(index)}
       aria-disabled={context.disabled || undefined}
