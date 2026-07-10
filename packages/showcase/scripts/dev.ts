@@ -57,6 +57,7 @@ function stopChildren(signal: NodeJS.Signals): void {
 
 async function main(): Promise<void> {
   await Promise.all([
+    runOnce(pnpm, ['--filter', '@kiskadee/icons', 'run', 'build']),
     runOnce(pnpm, ['--filter', '@kiskadee/react-components', 'run', 'build:dev']),
     runOnce(pnpm, ['--filter', '@kiskadee/web-builder', 'run', 'build-sync-generate'])
   ]);

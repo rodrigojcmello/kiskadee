@@ -18,6 +18,10 @@ import {
   getComponentPaletteClassMapArtifactPath
 } from '../component-artifacts/componentClassMapArtifacts.ts';
 import {
+  buildSliderComponentArtifact,
+  SLIDER_COMPONENT_ARTIFACT_PATH
+} from '../component-artifacts/sliderComponentArtifact.ts';
+import {
   buildSwitchComponentArtifact,
   SWITCH_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/switchComponentArtifact.ts';
@@ -328,6 +332,7 @@ function isComponentName(value: string): value is ComponentName {
   return (
     value === 'button' ||
     value === 'card' ||
+    value === 'slider' ||
     value === 'switch' ||
     value === 'tabs' ||
     value === 'textField'
@@ -581,6 +586,7 @@ export async function publishMetadata(params: {
   const manifestComponentNames = [
     'button',
     'card',
+    'slider',
     'switch'
   ] as const satisfies readonly ComponentName[];
   for (const componentName of manifestComponentNames) {
@@ -595,6 +601,17 @@ export async function publishMetadata(params: {
         ...(componentState ? { state: componentState } : {})
       };
     }
+  }
+
+  if (buildSliderComponentArtifact(schema)) {
+    manifest.components = manifest.components ?? {};
+    manifest.components.slider = {
+      ...(manifest.components.slider ?? {}),
+      artifacts: {
+        ...(manifest.components.slider?.artifacts ?? {}),
+        metadata: SLIDER_COMPONENT_ARTIFACT_PATH
+      }
+    };
   }
 
   if (buildSwitchComponentArtifact(schema)) {

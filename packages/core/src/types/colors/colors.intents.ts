@@ -67,6 +67,27 @@ export type CardIntent = keyof typeof CardIntentKeys;
 export type RoleCard = `card.${CardIntent}`;
 
 /**
+ * Supported intent keys for the `slider` component.
+ */
+export const SliderIntentKeys = {
+  /**
+   * Default slider presentation for the selected preset.
+   */
+  neutral: 'neutral',
+
+  /**
+   * Brand/primary value selection presentation.
+   */
+  primary: 'primary'
+} as const;
+
+/** Supported intent keys for the `slider` component (Layer 3). */
+export type SliderIntent = keyof typeof SliderIntentKeys;
+
+/** Qualified role identifier for `slider` intents (e.g. `slider.primary`). */
+export type RoleSlider = `slider.${SliderIntent}`;
+
+/**
  * Supported intent keys for the `textField` component.
  */
 export const TextFieldIntentKeys = {

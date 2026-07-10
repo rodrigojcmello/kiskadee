@@ -83,3 +83,4 @@ instead of flattening them to the larger offset layer.
 ## Component Evidence
 
 - [Card](components/card.md)
+- [Slider](components/slider.md)

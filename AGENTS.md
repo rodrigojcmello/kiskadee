@@ -15,6 +15,7 @@ keep task-specific workflows inside skills.
   - `packages/core`: shared schema types, color utilities, breakpoints.
   - `packages/presets`: official presets and schema/token definitions.
   - `packages/runtime`: runtime theming support.
+  - `packages/icons`: family-scoped SVG icons for React consumers.
   - `packages/web-builder`: schema-to-web generation and showcase sync scripts.
   - `packages/headless/react`: headless React primitives.
   - `packages/components/react`: styled React components and Sass output.
@@ -67,17 +68,25 @@ keep task-specific workflows inside skills.
   monorepo.
 - For official preset source evidence, follow `packages/presets/docs/definitions/preset-schema-organization.md`:
   keep design-system-level source notes and component evidence under `packages/presets/docs/design-systems/<preset>/`.
+- When a task touches official preset schemas, Figma links, official design-system docs, or source-derived
+  visual decisions, use `skills/kiskadee-preset-evidence/SKILL.md` and update the matching source-evidence docs
+  before finalizing.
 - `CHAT-CONTEXT.md`: single-file bootstrap for new chats.
 - `PROJECT-PURPOSE.md`: canonical project purpose and architecture map.
 - `SCHEMA-BUILD-RUNTIME-RULES.md`: ownership rules for schema, build artifacts, runtime, and Sass.
 - `STRUCTURAL-CSS.md`: structural Sass naming and scope rules.
 - `skills/kiskadee-architecture/SKILL.md`: architecture workflow for cross-package decisions.
+- `skills/kiskadee-code-review-markdown/SKILL.md`: code review workflow that writes `CODE-REVIEW.md`
+  at the repository root for agent handoff.
+- `skills/kiskadee-preset-evidence/SKILL.md`: source-evidence workflow for official presets and
+  design-system-derived schema decisions.
 - `skills/kiskadee-linear/SKILL.md`: Linear issue workflow, including title/description language
   and label rules.
 
 ## Package Guidance
 
 - In `packages/core`, preserve framework-agnostic utilities and types.
+- In `packages/icons`, preserve family-scoped exports and shared SVG/accessibility defaults.
 - In `packages/presets`, preserve design-system fidelity unless the task explicitly targets a
   Kiskadee extension.
 - In `packages/web-builder`, inspect package scripts before changing pipeline behavior.

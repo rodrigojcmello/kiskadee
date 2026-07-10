@@ -1,0 +1,144 @@
+import { z } from 'zod';
+import type { SegmentName } from '../types/colors/colors.types.ts';
+import {
+  createSliderActiveTrackElementStyleSchema,
+  createSliderControlRowElementStyleSchema,
+  createSliderEndpointElementStyleSchema,
+  createSliderEndpointIconElementStyleSchema,
+  createSliderEndpointLabelElementStyleSchema,
+  createSliderFieldLabelElementStyleSchema,
+  createSliderHelperTextElementStyleSchema,
+  createSliderMarkElementStyleSchema,
+  createSliderMarkLabelElementStyleSchema,
+  createSliderOptionalIndicatorElementStyleSchema,
+  createSliderOriginMarkElementStyleSchema,
+  createSliderRootElementStyleSchema,
+  createSliderThumbElementStyleSchema,
+  createSliderThumbIconElementStyleSchema,
+  createSliderThumbInnerElementStyleSchema,
+  createSliderThumbInnerWithIconElementStyleSchema,
+  createSliderThumbWithIconElementStyleSchema,
+  createSliderTrackElementStyleSchema,
+  createSliderValueIndicatorElementStyleSchema,
+  createSliderValueSummaryElementStyleSchema
+} from './slider.elements.zod.ts';
+import { createSliderVariantOptionsSchema, sliderOptionsSchema } from './slider.options.zod.ts';
+import { formatZodIssue } from './tabs.zod.shared.ts';
+
+function createSliderElementsSchema<TSegmentName extends SegmentName = never>() {
+  return z
+    .object({
+      e1: createSliderRootElementStyleSchema().optional(),
+      e2: createSliderFieldLabelElementStyleSchema<TSegmentName>().optional(),
+      e3: createSliderValueSummaryElementStyleSchema<TSegmentName>().optional(),
+      e4: createSliderControlRowElementStyleSchema().optional(),
+      e5: createSliderEndpointElementStyleSchema().optional(),
+      e6: createSliderEndpointIconElementStyleSchema<TSegmentName>().optional(),
+      e7: createSliderEndpointLabelElementStyleSchema<TSegmentName>().optional(),
+      e8: createSliderTrackElementStyleSchema<TSegmentName>().optional(),
+      e9: createSliderActiveTrackElementStyleSchema<TSegmentName>().optional(),
+      e10: createSliderThumbElementStyleSchema<TSegmentName>().optional(),
+      e11: createSliderThumbInnerElementStyleSchema<TSegmentName>().optional(),
+      e12: createSliderThumbWithIconElementStyleSchema().optional(),
+      e13: createSliderThumbInnerWithIconElementStyleSchema().optional(),
+      e14: createSliderValueIndicatorElementStyleSchema<TSegmentName>().optional(),
+      e15: createSliderMarkElementStyleSchema<TSegmentName>().optional(),
+      e16: createSliderMarkLabelElementStyleSchema<TSegmentName>().optional(),
+      e17: createSliderHelperTextElementStyleSchema<TSegmentName>().optional(),
+      e18: createSliderOriginMarkElementStyleSchema<TSegmentName>().optional(),
+      e19: createSliderThumbIconElementStyleSchema<TSegmentName>().optional(),
+      e20: createSliderOptionalIndicatorElementStyleSchema<TSegmentName>().optional()
+    })
+    .strict();
+}
+
+function createSliderModeConfigSchema() {
+  return z
+    .object({
+      elements: createSliderElementsSchema()
+    })
+    .strict();
+}
+
+function createSliderStandardVariantConfigSchema() {
+  return z
+    .object({
+      options: createSliderVariantOptionsSchema().optional(),
+      modes: z
+        .object({
+          base: createSliderModeConfigSchema().optional()
+        })
+        .optional()
+    })
+    .strict()
+    .superRefine((value, ctx) => {
+      if (value.modes === undefined) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['modes'],
+          message: 'expected "modes"'
+        });
+        return;
+      }
+
+      if (value.modes.base === undefined) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['modes', 'base'],
+          message: 'expected "base" mode'
+        });
+      }
+    });
+}
+
+function createSliderVariantsSchema() {
+  return z
+    .object({
+      standard: createSliderStandardVariantConfigSchema().optional()
+    })
+    .strict()
+    .superRefine((value, ctx) => {
+      if (value.standard === undefined) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['standard'],
+          message: 'expected "standard" variant'
+        });
+      }
+    });
+}
+
+const sliderComponentContractSchema = z
+  .object({
+    elements: z.unknown().optional(),
+    effects: z.unknown().optional(),
+    options: sliderOptionsSchema.optional(),
+    variants: createSliderVariantsSchema().optional()
+  })
+  .strict()
+  .superRefine((value, ctx) => {
+    if (value.elements !== undefined) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['elements'],
+        message: 'top-level "elements" is not allowed; use "variants.standard.modes.base.elements"'
+      });
+    }
+
+    if (value.variants === undefined) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['variants'],
+        message: 'expected "variants"'
+      });
+    }
+  });
+
+export function validateSliderComponentContract(
+  value: unknown,
+  path = 'components.slider'
+): string[] {
+  const result = sliderComponentContractSchema.safeParse(value);
+  if (result.success) return [];
+  return result.error.issues.map((issue) => formatZodIssue(path, issue));
+}

@@ -5,6 +5,23 @@ import type {
   RadiusMode,
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
+  SliderEdgeLabelAlignment,
+  SliderEdgeLabelPlacement,
+  SliderEdgeMarks,
+  SliderFillOrigin,
+  SliderFillOriginMark,
+  SliderMarkLabelPlacement,
+  SliderMarkPlacement,
+  SliderMarks,
+  SliderMode,
+  SliderSnapAnimation,
+  SliderThumbCrossing,
+  SliderThumbEdge,
+  SliderThumbStepBehavior,
+  SliderValueAnimation,
+  SliderValueDisplay,
+  SliderValueSummaryPlacement,
+  SliderVariant,
   SwitchActivationMotion,
   SwitchControlTextVisibility,
   SwitchMode,
@@ -29,6 +46,14 @@ export type ComponentClassMapScope =
   | { kind: 'core' }
   | { kind: 'palette'; segment: string; theme: ThemeMode };
 
+export type KiskadeeInteractionEnvironment = {
+  isLikelyTouch?: boolean;
+};
+
+export type KiskadeeLayoutEnvironment = {
+  isCompactViewport?: boolean;
+};
+
 export type KiskadeeContextValue = {
   classesMap: ComponentClassNameMapJSON;
   segment: string;
@@ -44,6 +69,8 @@ export type KiskadeeContextValue = {
     componentName: string,
     scope: ComponentClassMapScope
   ) => Promise<T | undefined>;
+  interactionEnvironment?: KiskadeeInteractionEnvironment;
+  layoutEnvironment?: KiskadeeLayoutEnvironment;
   global?: {
     radius?: RadiusMode;
     effects?: {
@@ -60,6 +87,37 @@ export type KiskadeeContextValue = {
       card?: {
         effects?: {
           shadow?: ShadowEffectSchema;
+        };
+      };
+      slider?: {
+        effects?: {
+          activationFeedback?: ActivationFeedbackSetting;
+        };
+        options?: {
+          variant?: SliderVariant;
+          valueDisplay?: SliderValueDisplay;
+          valueSummaryPlacement?: SliderValueSummaryPlacement;
+          valueAnimation?: SliderValueAnimation;
+          snapAnimation?: SliderSnapAnimation;
+          thumbStepBehavior?: SliderThumbStepBehavior;
+          thumbCrossing?: SliderThumbCrossing;
+          marks?: SliderMarks;
+          markInterval?: number;
+          edgeMarks?: SliderEdgeMarks;
+          markPlacement?: SliderMarkPlacement;
+          markLabelPlacement?: SliderMarkLabelPlacement;
+          edgeLabelPlacement?: SliderEdgeLabelPlacement;
+          edgeLabelAlignment?: SliderEdgeLabelAlignment;
+          thumbEdge?: SliderThumbEdge;
+          fillOrigin?: SliderFillOrigin;
+          fillOriginMark?: SliderFillOriginMark;
+        };
+        variants?: {
+          standard?: {
+            options?: {
+              mode?: SliderMode;
+            };
+          };
         };
       };
       textField?: {

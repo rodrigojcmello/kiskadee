@@ -39,6 +39,10 @@ export const EMITTED_SCALE_CSS_VARS = {
   borderWidth: '--k-bdw',
   borderRadius: '--k-bdr',
   boxWidth: '--k-bxw',
+  boxHeight: '--k-bxh',
+  marginTop: '--k-mgt',
+  marginRight: '--k-mgr',
+  marginBottom: '--k-mgb',
   marginLeft: '--k-mgl',
   paddingTop: '--k-pdt',
   paddingRight: '--k-pdr',
@@ -200,8 +204,15 @@ export function transformScaleKeyToCss(
       styleEmissionPolicy.boxWidthEmission === 'mirrored'
         ? `.${className} { ${EMITTED_SCALE_CSS_VARS.boxWidth}: ${cssValue}; ${cssProperty}: ${cssValue} }`
         : styleEmissionPolicy.boxWidthEmission === 'token'
-        ? `.${className} { ${EMITTED_SCALE_CSS_VARS.boxWidth}: ${cssValue} }`
-        : `.${className} { ${cssProperty}: ${cssValue} }`;
+          ? `.${className} { ${EMITTED_SCALE_CSS_VARS.boxWidth}: ${cssValue} }`
+          : `.${className} { ${cssProperty}: ${cssValue} }`;
+  } else if (scaleProperty === 'boxHeight') {
+    rule =
+      styleEmissionPolicy.boxHeightEmission === 'mirrored'
+        ? `.${className} { ${EMITTED_SCALE_CSS_VARS.boxHeight}: ${cssValue}; ${cssProperty}: ${cssValue} }`
+        : styleEmissionPolicy.boxHeightEmission === 'token'
+          ? `.${className} { ${EMITTED_SCALE_CSS_VARS.boxHeight}: ${cssValue} }`
+          : `.${className} { ${cssProperty}: ${cssValue} }`;
   } else if (
     scaleProperty === 'borderRadius' ||
     scaleProperty === 'borderRadiusRounded' ||
@@ -239,13 +250,35 @@ export function transformScaleKeyToCss(
     } else {
       rule = `.${className} { ${cssProperty}: ${cssValue} }`;
     }
-  } else if (scaleProperty === 'marginLeft') {
-    // Emission shape must be decided by the element policy. Do not mirror
-    // marginLeft based only on the property name; --k-mgl is a structural contract.
+  } else if (
+    scaleProperty === 'marginTop' ||
+    scaleProperty === 'marginRight' ||
+    scaleProperty === 'marginBottom' ||
+    scaleProperty === 'marginLeft'
+  ) {
+    const marginVar =
+      scaleProperty === 'marginTop'
+        ? EMITTED_SCALE_CSS_VARS.marginTop
+        : scaleProperty === 'marginRight'
+          ? EMITTED_SCALE_CSS_VARS.marginRight
+          : scaleProperty === 'marginBottom'
+            ? EMITTED_SCALE_CSS_VARS.marginBottom
+            : EMITTED_SCALE_CSS_VARS.marginLeft;
+    const marginEmission =
+      scaleProperty === 'marginTop'
+        ? styleEmissionPolicy.marginTopEmission
+        : scaleProperty === 'marginRight'
+          ? styleEmissionPolicy.marginRightEmission
+          : scaleProperty === 'marginBottom'
+            ? styleEmissionPolicy.marginBottomEmission
+            : styleEmissionPolicy.marginLeftEmission;
+
     rule =
-      styleEmissionPolicy.marginLeftEmission === 'mirrored'
-        ? `.${className} { ${EMITTED_SCALE_CSS_VARS.marginLeft}: ${cssValue}; ${cssProperty}: ${cssValue} }`
-        : `.${className} { ${cssProperty}: ${cssValue} }`;
+      marginEmission === 'mirrored'
+        ? `.${className} { ${marginVar}: ${cssValue}; ${cssProperty}: ${cssValue} }`
+        : marginEmission === 'token'
+          ? `.${className} { ${marginVar}: ${cssValue} }`
+          : `.${className} { ${cssProperty}: ${cssValue} }`;
   } else {
     rule = `.${className} { ${cssProperty}: ${cssValue} }`;
   }

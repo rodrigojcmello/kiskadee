@@ -3,8 +3,10 @@ import type {
   CardIntent,
   RoleButton,
   RoleCard,
+  RoleSlider,
   RoleSwitch,
   RoleTextField,
+  SliderIntent,
   SwitchIntent,
   TextFieldIntent
 } from './colors.intents.ts';
@@ -14,14 +16,17 @@ export type {
   CardIntent,
   RoleButton,
   RoleCard,
+  RoleSlider,
   RoleSwitch,
   RoleTextField,
+  SliderIntent,
   SwitchIntent,
   TextFieldIntent
 } from './colors.intents.ts';
 export {
   ButtonIntentKeys,
   CardIntentKeys,
+  SliderIntentKeys,
   SwitchIntentKeys,
   TextFieldIntentKeys
 } from './colors.intents.ts';
@@ -300,7 +305,13 @@ export type IntentValue = SemanticColor | PrimitiveRole;
  * NOTE: This is intentionally extensible. Each component can introduce its own
  * typed role union later (e.g. `RoleBadge`) and be merged into `Role`.
  */
-export type Role = RoleButton | RoleCard | RoleSwitch | RoleTextField | `${string}.${string}`;
+export type Role =
+  | RoleButton
+  | RoleCard
+  | RoleSlider
+  | RoleSwitch
+  | RoleTextField
+  | `${string}.${string}`;
 
 /**
  * Qualified role identifier used by the new `color()` API.
@@ -313,6 +324,7 @@ export type Role = RoleButton | RoleCard | RoleSwitch | RoleTextField | `${strin
 export type RoleWithPaint =
   | RoleButton
   | RoleCard
+  | RoleSlider
   | RoleSwitch
   | RoleTextField
   | `${string}.${string}`
@@ -397,6 +409,7 @@ export type ComponentIntents = {
    */
   button?: Partial<Record<ButtonIntent, IntentValue>>;
   card?: Partial<Record<CardIntent, IntentValue>>;
+  slider?: Partial<Record<SliderIntent, IntentValue>>;
   switch?: Partial<Record<SwitchIntent, IntentValue>>;
   textField?: Partial<Record<TextFieldIntent, IntentValue>>;
 } & Partial<Record<string, Record<string, IntentValue>>>;
@@ -432,6 +445,7 @@ export type ComponentPaletteKey =
   | SemanticColor
   | ButtonIntent
   | CardIntent
+  | SliderIntent
   | SwitchIntent
   | TextFieldIntent;
 

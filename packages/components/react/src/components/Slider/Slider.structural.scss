@@ -1,0 +1,535 @@
+/*
+ * Slider structural branch registry:
+ * a = standard horizontal base
+ */
+
+/*
+ * element root / e1
+ * Owns the vertical field flow and state projection scope for the horizontal slider.
+ */
+.k-sld-e1-a {
+  display: grid;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  cursor: default;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/*
+ * structural slot header / x1
+ * Aligns the optional field label and value summary without introducing schema-owned visuals.
+ */
+.k-sld-x1-a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  min-inline-size: 0;
+}
+
+/*
+ * element field label / e2
+ * Keeps label content and optional adornments in a compact inline flow.
+ */
+.k-sld-e2-a {
+  display: inline-flex;
+  align-items: center;
+  min-inline-size: 0;
+}
+
+/*
+ * element optional indicator / e20
+ * Applies schema-owned spacing at the logical end of the field label.
+ */
+.k-sld-e20-a {
+  margin-inline-start: var(--k-mgl, 0px);
+}
+
+/*
+ * element value summary / e3
+ * Keeps the out-of-track selected value aligned to the logical end of the header.
+ */
+.k-sld-e3-a {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.k-sld-e2-a + .k-sld-e3-a {
+  margin-inline-start: var(--k-mgl, 0px);
+}
+
+/*
+ * element value summary modifier / e3a
+ * Places the same summary element at the logical end of the control row.
+ */
+.k-sld-e4d-a > .k-sld-e3a-a {
+  margin-inline-start: var(--k-mgl, 0px);
+  min-inline-size: var(--k-sld-value-summary-inline-size, 0px);
+  justify-content: flex-end;
+  text-align: end;
+}
+
+/*
+ * element control row / e4
+ * Places endpoint content around the track while letting the track consume remaining width.
+ */
+.k-sld-e4-a {
+  display: flex;
+  align-items: center;
+  block-size: var(--k-bxh, auto);
+  min-inline-size: 0;
+  overflow: visible;
+}
+
+.k-sld-x1-a + .k-sld-e4-a {
+  margin-block-start: var(--k-mgt, 0px);
+}
+
+/*
+ * structural slot control group / x2
+ * Groups endpoint content with the track so control-end summary sizing stays independent.
+ */
+.k-sld-x2-a {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  block-size: 100%;
+  min-inline-size: 0;
+  overflow: visible;
+}
+
+/*
+ * element control row modifier / e4a
+ * Reserves an above-track lane for persistent mark labels using the schema-owned top padding token.
+ */
+.k-sld-e4a-a {
+  padding-block-start: var(--k-pdt, 0px);
+}
+
+/*
+ * element control row modifier / e4c
+ * Reserves an above-track lane for persistent value indicators using the runtime-projected token.
+ */
+.k-sld-e4c-a {
+  padding-block-start: var(--k-sld-value-indicator-lane, 0px);
+}
+
+/*
+ * element control row modifiers / e4a + e4c
+ * Uses the larger above-track reserve when mark labels and value indicators coexist.
+ */
+.k-sld-e4a-a.k-sld-e4c-a {
+  padding-block-start: max(var(--k-pdt, 0px), var(--k-sld-value-indicator-lane, 0px));
+}
+
+/*
+ * element control row modifier / e4d
+ * Marks a control row that owns the value summary as its final inline item.
+ */
+.k-sld-e4d-a {
+  min-inline-size: 0;
+}
+
+/*
+ * element control row modifier / e4b
+ * Reserves a below-track lane for persistent mark labels using the schema-owned bottom padding token.
+ */
+.k-sld-e4b-a {
+  padding-block-end: var(--k-pdb, 0px);
+}
+
+/*
+ * element endpoint / e5
+ * Groups optional endpoint icon and label without affecting track measurements.
+ */
+.k-sld-e5-a {
+  display: inline-flex;
+  align-items: center;
+  column-gap: var(--k-pdl, 0px);
+  flex: 0 0 auto;
+  min-inline-size: 0;
+}
+
+.k-sld-x2-a > .k-sld-e5-a:first-child {
+  margin-inline-end: var(--k-mgr, 0px);
+}
+
+.k-sld-x2-a > .k-sld-e5-a:last-child {
+  margin-inline-start: var(--k-mgl, 0px);
+}
+
+/*
+ * element endpoint icon / e6
+ * Centers currentColor-driven icons inside the generated icon slot.
+ */
+.k-sld-e6-a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  line-height: 0;
+}
+
+/*
+ * element endpoint icon child svg / e6
+ * Lets SVG endpoint icons fill the generated icon slot predictably.
+ */
+.k-sld-e6-a > svg {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  flex: 0 0 auto;
+}
+
+/*
+ * element endpoint label / e7
+ * Keeps endpoint values readable and prevents them from wrapping into the track.
+ */
+.k-sld-e7-a {
+  display: block;
+  white-space: nowrap;
+}
+
+/*
+ * element track / e8
+ * Owns the rail positioning plane for active range, marks, value indicators, and thumbs.
+ */
+.k-sld-e8-a {
+  position: relative;
+  display: block;
+  flex: 1 1 auto;
+  min-inline-size: var(--k-bxw, 0px);
+  min-block-size: var(--k-bxh, 0px);
+  box-sizing: border-box;
+  overflow: visible;
+  touch-action: none;
+  cursor: grab;
+}
+
+/*
+ * element active track / e9
+ * Fills the selected interval from the headless-provided percentage variables.
+ */
+.k-sld-e9-a {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--k-sld-start, 0%);
+  inset-inline-end: calc(100% - var(--k-sld-end, 0%));
+  display: block;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.k-sld-sm .k-sld-e9-a[data-slider-settling] {
+  transition:
+    inset-inline-start var(--k-dur-int) var(--k-ease-out),
+    inset-inline-end var(--k-dur-int) var(--k-ease-out);
+}
+
+/*
+ * element thumb wrapper / e10
+ * Centers each slider handle on its headless-provided percentage position.
+ */
+.k-sld-e10-a {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: var(--k-sld-value, 0%);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  cursor: grab;
+  outline: none;
+  touch-action: none;
+  transform: translate(-50%, -50%);
+}
+
+.k-sld-e10-a[data-slider-dragging] {
+  z-index: 4;
+}
+
+.k-sld-e1-a[data-slider-dragging]:not(.-d.-a):not(.-r.-a) .k-sld-e8-a,
+.k-sld-e1-a[data-slider-dragging]:not(.-d.-a):not(.-r.-a) .k-sld-e10-a {
+  cursor: grabbing;
+}
+
+.k-sld-sm .k-sld-e10-a[data-slider-settling] {
+  transition: inset-inline-start var(--k-dur-int) var(--k-ease-out);
+}
+
+/*
+ * element thumb wrapper / e10
+ * Projects keyboard focus using global focus tokens while preserving generated thumb visuals.
+ */
+.k-sld-e10-a:focus-visible {
+  outline-color: var(--k-focus-color);
+  outline-offset: calc(var(--k-focus-offset) * 1px);
+  outline-style: solid;
+  outline-width: calc(var(--k-focus-width) * 1px);
+}
+
+/*
+ * element thumb inner / e11
+ * Provides a second thumb layer for designs with distinct outer and inner shapes.
+ */
+.k-sld-e11-a {
+  display: block;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  pointer-events: none;
+}
+
+/*
+ * element thumb-with-icon host geometry / e12
+ * Replaces only the e10 dimensions when the styled Slider receives a thumb icon.
+ */
+.k-sld-e10-a.k-sld-e12-a {
+  inline-size: var(--k-bxw);
+  block-size: var(--k-bxh);
+}
+
+/*
+ * element thumb-with-icon inner geometry / e13
+ * Replaces only the e11 dimensions when the styled Slider receives a thumb icon.
+ */
+.k-sld-e11-a.k-sld-e13-a {
+  inline-size: var(--k-bxw);
+  block-size: var(--k-bxh);
+}
+
+/*
+ * element thumb icon / e19
+ * Centers optional currentColor-driven thumb icons without affecting thumb geometry.
+ */
+.k-sld-e19-a {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  line-height: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.k-sld-e19-a > svg {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  flex: 0 0 auto;
+}
+
+/*
+ * element value indicator / e14
+ * Positions tooltip-style selected values above the corresponding thumb.
+ */
+.k-sld-e14-a {
+  --k-sld-tooltip-arrow-block-size: 0.375rem;
+  --k-sld-tooltip-arrow-inline-size: 0.75rem;
+  --k-sld-tooltip-arrow-tip-radius: 0.0625rem;
+  --k-sld-tooltip-arrow-clearance: 2px;
+  --k-sld-tooltip-arrow-overlap: 2px;
+
+  position: absolute;
+  inset-block-end: calc(
+    100% + var(--k-sld-tooltip-arrow-block-size) - var(--k-sld-tooltip-arrow-overlap) +
+      var(--k-sld-tooltip-arrow-clearance) + var(--k-bdw, 0px)
+  );
+  inset-inline-start: 50%;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  font-variant-numeric: tabular-nums;
+  min-inline-size: var(--k-sld-tooltip-arrow-inline-size);
+  pointer-events: none;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.k-sld-e14-a[data-slider-dragging] {
+  z-index: 4;
+}
+
+.k-sld-e14b-a:not([data-slider-dragging]) {
+  display: none;
+}
+
+/*
+ * element value indicator arrow / e14
+ * Extends the tooltip shape without introducing a separate schema element.
+ */
+.k-sld-e14-a::after {
+  content: '';
+  position: absolute;
+  inset-block-start: calc(100% - var(--k-sld-tooltip-arrow-overlap));
+  inset-inline-start: 50%;
+  inline-size: var(--k-sld-tooltip-arrow-inline-size);
+  block-size: var(--k-sld-tooltip-arrow-block-size);
+  background: inherit;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    calc(50% + var(--k-sld-tooltip-arrow-tip-radius)) calc(100% - var(--k-sld-tooltip-arrow-tip-radius)),
+    50% 100%,
+    calc(50% - var(--k-sld-tooltip-arrow-tip-radius)) calc(100% - var(--k-sld-tooltip-arrow-tip-radius))
+  );
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+/*
+ * element mark / e15 and origin mark / e18
+ * Keeps visual markers on the headless-provided coordinate plane.
+ */
+.k-sld-e15-a,
+.k-sld-e18-a {
+  --k-sld-mark-edge-offset: max(calc(var(--k-bxh, 0px) / 2), calc(var(--k-bxw, 0px) / 2));
+
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: clamp(
+    var(--k-sld-mark-edge-offset),
+    var(--k-sld-mark, 0%),
+    calc(100% - var(--k-sld-mark-edge-offset))
+  );
+  z-index: 1;
+  display: block;
+  box-sizing: border-box;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+/*
+ * element mark modifier / e15a
+ * Places visual marks above the track using the schema-owned bottom margin token.
+ */
+.k-sld-e15a-a {
+  inset-block-start: auto;
+  inset-block-end: calc(100% + var(--k-mgb, 0px));
+  transform: translateX(-50%);
+}
+
+/*
+ * element mark modifier / e15b
+ * Places visual marks below the track using the schema-owned top margin token.
+ */
+.k-sld-e15b-a {
+  inset-block-start: calc(100% + var(--k-mgt, 0px));
+  transform: translateX(-50%);
+}
+
+/*
+ * element mark label / e16
+ * Positions optional step labels around their corresponding marker.
+ */
+.k-sld-e16-a {
+  position: absolute;
+  inset-inline-start: var(--k-sld-mark, 0%);
+  display: block;
+  pointer-events: none;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+/*
+ * element mark label modifier / e16a
+ * Places mark labels above the track using the schema-owned bottom margin token.
+ */
+.k-sld-e16a-a {
+  inset-block-end: calc(100% + var(--k-mgb, 0px));
+}
+
+/*
+ * element mark label modifier / e16b
+ * Places mark labels below the track using the schema-owned top margin token.
+ */
+.k-sld-e16b-a {
+  inset-block-start: calc(100% + var(--k-mgt, 0px));
+}
+
+/*
+ * element mark label modifier / e16c
+ * Keeps the start edge label inside the track instead of centering it on the boundary.
+ */
+.k-sld-e16c-a {
+  inset-inline-start: 0;
+  text-align: start;
+  transform: translateX(0);
+}
+
+/*
+ * element mark label modifier / e16d
+ * Keeps the end edge label inside the track instead of centering it on the boundary.
+ */
+.k-sld-e16d-a {
+  inset-inline-start: 100%;
+  text-align: end;
+  transform: translateX(-100%);
+}
+
+/*
+ * element helper text / e17
+ * Keeps helper content in normal block flow below the slider control row.
+ */
+.k-sld-e17-a {
+  display: block;
+  margin-block: var(--k-mgt, 0px) 0;
+}
+
+/*
+ * element origin mark modifier / e18a
+ * Places the neutral origin mark above the track using the schema-owned bottom margin token.
+ */
+.k-sld-e18a-a {
+  inset-block-start: auto;
+  inset-block-end: calc(100% + var(--k-mgb, 0px));
+  transform: translateX(-50%);
+}
+
+/*
+ * element origin mark modifier / e18b
+ * Places the neutral origin mark below the track using the schema-owned top margin token.
+ */
+.k-sld-e18b-a {
+  inset-block-start: calc(100% + var(--k-mgt, 0px));
+  transform: translateX(-50%);
+}
+
+/*
+ * element root / e1
+ * Mirrors non-interactive cursor state across descendants that otherwise look draggable.
+ */
+.k-sld-e1-a.-d.-a,
+.k-sld-e1-a.-r.-a {
+  cursor: not-allowed;
+}
+
+/*
+ * element descendants / e1
+ * Prevents disabled/read-only descendants from advertising interactive pointer affordance.
+ */
+.k-sld-e1-a.-d.-a *,
+.k-sld-e1-a.-r.-a * {
+  cursor: inherit;
+}
+
+.no-transitions .k-sld-sm .k-sld-e9-a[data-slider-settling],
+.no-transitions .k-sld-sm .k-sld-e10-a[data-slider-settling] {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .k-sld-sm .k-sld-e9-a[data-slider-settling],
+  .k-sld-sm .k-sld-e10-a[data-slider-settling] {
+    transition: none;
+  }
+}

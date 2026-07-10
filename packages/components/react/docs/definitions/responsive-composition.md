@@ -68,6 +68,45 @@ This is not only a visual transformation. It can change:
 For this layer, CSS-only hiding is usually not enough. Prefer an explicit runtime composition, a
 higher-level adaptive component, or separate composed components that share state intentionally.
 
+## Shared `isLikelyTouch` Environment
+
+Some component choices are ergonomic rather than purely visual. A component may need to know whether
+it should assume touch interaction even when the DOM stays the same.
+
+The shared React web signal for this is `isLikelyTouch`. It means "prefer touch ergonomics", not
+"the device definitely has a touchscreen".
+
+Initial web resolution:
+
+- iOS, iPadOS, and Android resolve to touch.
+- Windows, Linux, macOS, and unknown desktop-like platforms resolve from viewport width.
+- Viewports below `bp:lg:1` resolve to touch.
+- Viewports at or above `bp:lg:1` resolve to non-touch.
+- `KiskadeeContext.interactionEnvironment.isLikelyTouch` may override detection when an app has
+  stronger environment knowledge.
+
+Native platform runtimes should not copy the web viewport heuristic directly. iOS and Android
+native components should resolve this signal as touch by platform default unless a future platform
+adapter has stronger input-mode data.
+
+## Shared `isCompactViewport` Environment
+
+Some component choices are about available space rather than input ergonomics. A component may need
+to move supporting content out of a crowded inline layout while keeping the same interaction model.
+
+The shared React web signal for this is `isCompactViewport`. It means "prefer compact layout
+composition", not "the device is a phone".
+
+Initial web resolution:
+
+- Viewports below `bp:md:2` resolve to compact.
+- Viewports at or above `bp:md:2` resolve to non-compact.
+- `KiskadeeContext.layoutEnvironment.isCompactViewport` may override detection when an app has
+  stronger layout knowledge.
+
+Keep this separate from `isLikelyTouch`. A large touch surface may not be compact, and a narrow
+desktop window may be compact without being touch-oriented.
+
 ## Switch `controlTextVisibility`
 
 The current styled React Switch supports the generated Switch component artifact option

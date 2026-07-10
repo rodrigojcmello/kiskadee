@@ -17,6 +17,8 @@ export const colorsMaps = {
   'material-design-3-google': () => loadJsonFromBuild<ColorsJson>('material-design-3-google/colors.json', { required: true }),
   'material-design-3-kiskadee': () => loadJsonFromBuild<ColorsJson>('material-design-3-kiskadee/colors.json', { required: true }),
   'sandbox-0-kiskadee': () => loadJsonFromBuild<ColorsJson>('sandbox-0-kiskadee/colors.json', { required: true }),
+  'sandbox-2-kiskadee': () => loadJsonFromBuild<ColorsJson>('sandbox-2-kiskadee/colors.json', { required: true }),
+  'sandbox-3-kiskadee': () => loadJsonFromBuild<ColorsJson>('sandbox-3-kiskadee/colors.json', { required: true }),
 } as const;
 
 // Helper to load a primitive color scale file referenced by colors.json

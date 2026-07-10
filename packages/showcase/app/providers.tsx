@@ -51,6 +51,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   // 2. Load class maps (core + palette) dynamically
   const shouldLoadAggregateClassMap =
     pathname !== '/switch' &&
+    pathname !== '/slider' &&
     pathname !== '/button' &&
     pathname !== '/card' &&
     pathname !== '/text-field' &&

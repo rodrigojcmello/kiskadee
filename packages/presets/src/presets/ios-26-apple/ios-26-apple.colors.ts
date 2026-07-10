@@ -97,6 +97,10 @@ export const componentIntents = {
   card: {
     neutral: 'neutral'
   },
+  slider: {
+    neutral: 'neutral',
+    primary: 'primary'
+  },
   switch: {
     neutral: 'neutral',
     primary: 'primary',

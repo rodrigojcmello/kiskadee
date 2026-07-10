@@ -5,16 +5,18 @@
   "type": "module",
   "scripts": {
     "dev": "node ./scripts/dev.ts",
-    "clean:dev": "pnpm --filter @kiskadee/react-headless run clean && pnpm --filter @kiskadee/react-components run clean && pnpm --filter @kiskadee/web-builder run clean",
+    "clean:dev": "pnpm --filter @kiskadee/icons run clean && pnpm --filter @kiskadee/react-headless run clean && pnpm --filter @kiskadee/react-components run clean && pnpm --filter @kiskadee/web-builder run clean",
     "dev:fresh": "pnpm run clean:dev && pnpm run dev",
+    "build:icons": "pnpm --filter @kiskadee/icons run build",
     "build:headless": "pnpm --filter @kiskadee/react-headless run build",
-    "build:components": "pnpm run build:headless && pnpm --filter @kiskadee/react-components run build:self",
+    "build:components": "pnpm run build:icons && pnpm run build:headless && pnpm --filter @kiskadee/react-components run build:self",
     "build:artifacts": "pnpm --filter @kiskadee/web-builder run build-sync-generate",
     "build": "pnpm run build:components && pnpm run build:artifacts && next build",
     "start": "next start"
   },
   "dependencies": {
     "@kiskadee/core": "workspace:*",
+    "@kiskadee/icons": "workspace:*",
     "@kiskadee/react-components": "workspace:*",
     "@kiskadee/react-headless": "workspace:*",
     "@kiskadee/runtime": "workspace:*",

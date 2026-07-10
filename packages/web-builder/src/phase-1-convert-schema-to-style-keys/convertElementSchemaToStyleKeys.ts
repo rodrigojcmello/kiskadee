@@ -69,6 +69,7 @@ type RadiusScaleProperty = Extract<
 
 const ACTIVATION_FEEDBACK_HOST_BY_COMPONENT: Partial<Record<ComponentName, string>> = {
   button: 'e1',
+  slider: 'e10',
   switch: 'e3'
 };
 

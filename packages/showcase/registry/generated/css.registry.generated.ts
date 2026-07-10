@@ -131,6 +131,28 @@ export const cssPaths = {
       'default|light': '/build/sandbox-0-kiskadee/tokens.default.light.kiskadee.css',
     }
   },
+  'sandbox-2-kiskadee': {
+    core: '/build/sandbox-2-kiskadee/core.kiskadee.css',
+    effects: '/build/sandbox-2-kiskadee/effects.kiskadee.css',
+    tokens: '/build/sandbox-2-kiskadee/tokens.kiskadee.css',
+    palettes: {
+      'default|light': '/build/sandbox-2-kiskadee/default.light.kiskadee.css',
+    },
+    tokenPalettes: {
+      'default|light': '/build/sandbox-2-kiskadee/tokens.default.light.kiskadee.css',
+    }
+  },
+  'sandbox-3-kiskadee': {
+    core: '/build/sandbox-3-kiskadee/core.kiskadee.css',
+    effects: '/build/sandbox-3-kiskadee/effects.kiskadee.css',
+    tokens: '/build/sandbox-3-kiskadee/tokens.kiskadee.css',
+    palettes: {
+      'default|light': '/build/sandbox-3-kiskadee/default.light.kiskadee.css',
+    },
+    tokenPalettes: {
+      'default|light': '/build/sandbox-3-kiskadee/tokens.default.light.kiskadee.css',
+    }
+  },
 } as const;
 
 export type CssRegistry = typeof cssPaths;

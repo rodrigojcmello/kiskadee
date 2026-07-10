@@ -68,6 +68,10 @@ This matters because not every geometric value is always-on. Some values exist i
   - Goal: color runtime for dynamic segments.
   - Calculates scales and injects CSS variables in the browser.
 
+- `packages/icons`
+  - Goal: reusable SVG icons for React, organized into independent visual families.
+  - Exposes family barrels and direct per-icon imports without coupling icons to component logic.
+
 - `packages/headless`
   - Goal: unstyled components (logic and accessibility).
   - Foundation for composition in React or other layers.
@@ -104,6 +108,7 @@ This is the baseline end-to-end flow for Web:
 
 5. Runtime consumers
 - `packages/components` consumes generated class maps/CSS and composes headless behavior.
+- `packages/icons` provides family-scoped SVG assets to React consumers.
 - `packages/showcase` consumes synced artifacts and renders routes/scenarios using those components.
 
 6. Showcase routes

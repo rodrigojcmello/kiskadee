@@ -9,6 +9,38 @@ export type {
   CardStatus
 } from './components/Card';
 export { Card, CardAction, useCardArtifactConfig } from './components/Card';
+export type {
+  RollingNumberFormatValue,
+  RollingNumberProps
+} from './components/RollingNumber/RollingNumber.tsx';
+export { RollingNumber } from './components/RollingNumber/RollingNumber.tsx';
+export type {
+  SliderActivationFeedback,
+  SliderArtifactConfig,
+  SliderClassNames,
+  SliderEdgeLabelAlignmentOption,
+  SliderEdgeLabelPlacementOption,
+  SliderEdgeMarksOption,
+  SliderFillOriginMarkOption,
+  SliderFillOriginOption,
+  SliderInteractionValueChangeDetails,
+  SliderMark,
+  SliderMarkLabelPlacementOption,
+  SliderMarkPlacementOption,
+  SliderMarks,
+  SliderProps,
+  SliderSelectionMode,
+  SliderSnapAnimationOption,
+  SliderStatus,
+  SliderThumbCrossingOption,
+  SliderThumbEdgeOption,
+  SliderThumbIcon,
+  SliderThumbIconDetails,
+  SliderThumbStepBehaviorOption,
+  SliderValueAnimationOption,
+  SliderValueSummaryPlacementOption
+} from './components/Slider';
+export { Slider, useSliderArtifactConfig } from './components/Slider';
 export { SmoothText } from './components/SmoothText/SmoothText.tsx';
 export type {
   SwitchArtifactConfig,
@@ -53,7 +85,9 @@ export {
 } from './components/TextField';
 export type {
   ComponentClassMapScope,
-  KiskadeeContextValue
+  KiskadeeContextValue,
+  KiskadeeInteractionEnvironment,
+  KiskadeeLayoutEnvironment
 } from './shared/contexts/KiskadeeContext.tsx';
 export { KiskadeeContext, useKiskadee } from './shared/contexts/KiskadeeContext.tsx';
 export { ShowcaseContext, useShowcase } from './shared/contexts/ShowcaseContext.tsx';

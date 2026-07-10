@@ -1,0 +1,115 @@
+import { breakpoints, type Schema } from '@kiskadee/core';
+import { createFluent2MicrosoftCardSchema } from '../fluent-2-microsoft/components/card.schema.ts';
+import { createSandbox3SliderSchema } from './components/slider.schema.ts';
+import { createSandbox3SwitchSchema } from './components/switch.schema.ts';
+import { schemaColors } from './sandbox-3.colors.ts';
+
+export type Sandbox3Segment = 'default';
+
+const segmentNames = ['default'] as const;
+const transparent = [0, 0, 0, 0] as const;
+const shadowBlack = (alpha: number) => [0, 0, 0, alpha] as const;
+
+export const schema: Schema<Sandbox3Segment> = {
+  name: 'Sandbox',
+  prefix: 'sbx',
+  version: [3, 0, 0],
+  author: 'Kiskadee',
+  breakpoints,
+  colors: schemaColors,
+  global: {
+    fonts: {
+      body: ['Inter', 'sans-serif']
+    },
+    focus: {
+      width: 2,
+      offset: 2
+    },
+    radius: 'pill',
+    effects: {
+      activationFeedback: {
+        profile: 'ripple',
+        origin: 'pointer',
+        visual: {
+          layer: 'overlay',
+          paint: 'field',
+          tone: {
+            default: 'subtle'
+          }
+        },
+        profiles: {
+          ripple: {
+            animateSize: true,
+            size: 'auto',
+            durationToken: 'interaction.fast',
+            curveToken: 'motion.standard.out',
+            fade: {
+              delayToken: 'interaction.hold.short',
+              durationToken: 'interaction.fade.short',
+              curveToken: 'motion.standard.out'
+            }
+          },
+          halo: {
+            animateSize: false,
+            size: 72,
+            durationToken: 'interaction.instant',
+            fade: {
+              delayToken: 'interaction.hold.short',
+              durationToken: 'interaction.fade.long',
+              curveToken: 'motion.standard.out'
+            }
+          }
+        }
+      },
+      shadow: {
+        outer: {
+          levels: {
+            's:sm:1': { x: 0, y: 1, blur: 3, spread: 1, color: shadowBlack(0.15) },
+            's:md:1': { x: 0, y: 2, blur: 6, spread: 2, color: shadowBlack(0.15) },
+            's:lg:1': { x: 0, y: 1, blur: 3, spread: 0, color: shadowBlack(0.3) },
+            's:lg:2': { x: 0, y: 2, blur: 3, spread: 0, color: shadowBlack(0.3) },
+            's:lg:3': { x: 0, y: 4, blur: 4, spread: 0, color: shadowBlack(0.3) },
+            's:lg:4': { x: 0, y: 8, blur: 16, spread: 0, color: shadowBlack(0.3) }
+          }
+        },
+        inner: {
+          levels: {
+            's:sm:1': { x: 0, y: 1, blur: 2, spread: 0, color: shadowBlack(0.22) }
+          }
+        }
+      }
+    }
+  },
+  themeTokens: {
+    palettes: {
+      default: {
+        light: {
+          background: [220, 20, 97, 1],
+          focusColor: [225, 76, 52, 1],
+          effects: {
+            activationFeedback: {
+              tone: {
+                subtle: {
+                  color: [231, 24, 6, 1],
+                  opacity: 0.12
+                },
+                vivid: {
+                  color: [0, 0, 100, 1],
+                  opacity: 0.24
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  components: {
+    card: createFluent2MicrosoftCardSchema({
+      segmentNames,
+      transparent
+    }),
+    slider: createSandbox3SliderSchema(),
+    switch: createSandbox3SwitchSchema()
+  }
+};
