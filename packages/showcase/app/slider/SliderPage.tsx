@@ -8,6 +8,12 @@ import type {
   SliderIntent,
   SliderValueDisplay
 } from '@kiskadee/core';
+import { DragHandleIcon } from '@kiskadee/icons/kiskadee/DragHandleIcon';
+import { VolumeHighIcon } from '@kiskadee/icons/kiskadee/VolumeHighIcon';
+import { VolumeIcon } from '@kiskadee/icons/kiskadee/VolumeIcon';
+import { VolumeLowIcon } from '@kiskadee/icons/kiskadee/VolumeLowIcon';
+import { VolumeMediumIcon } from '@kiskadee/icons/kiskadee/VolumeMediumIcon';
+import { VolumeOffIcon } from '@kiskadee/icons/kiskadee/VolumeOffIcon';
 import {
   Card,
   Slider,
@@ -328,8 +334,9 @@ function renderVolumeIcon(value: number) {
 
 function renderThumbVolumeIcon(value: number) {
   if (value <= 0) return <VolumeOffIcon />;
-  if (value < 16) return <VolumeMinimumIcon />;
-  if (value < 67) return <VolumeLowIcon />;
+  if (value < 16) return <VolumeIcon />;
+  if (value < 40) return <VolumeLowIcon />;
+  if (value < 67) return <VolumeMediumIcon />;
   return <VolumeHighIcon />;
 }
 
@@ -484,58 +491,6 @@ function SunIcon() {
       <path
         fill="currentColor"
         d="M12 4V1h1v3zm0 19v-3h1v3zM4 13H1v-1h3zm19 0h-3v-1h3zM6.2 6.9 4.1 4.8l.7-.7 2.1 2.1zm13.4 13.4-2.1-2.1.7-.7 2.1 2.1zM17.5 6.2l2.1-2.1.7.7-2.1 2.1zM4.8 20.3l-.7-.7 2.1-2.1.7.7zM12.5 7a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11"
-      />
-    </svg>
-  );
-}
-
-function VolumeHighIcon() {
-  return (
-    <svg viewBox="0 0 7 7" focusable="false" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M3.887.896v.572a1.945 1.945 0 0 1 1.389 1.864c0 .88-.586 1.621-1.389 1.86v.575a2.5 2.5 0 0 0 1.944-2.435A2.5 2.5 0 0 0 3.887.896m.695 2.436c0-.492-.278-.914-.695-1.12v2.23c.417-.197.695-.622.695-1.11M.833 2.499v1.666h1.111l1.388 1.388V1.11L1.944 2.499z"
-      />
-    </svg>
-  );
-}
-
-function VolumeLowIcon() {
-  return (
-    <svg viewBox="0 0 7 7" focusable="false" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M1.388 2.499v1.666h1.111l1.388 1.388V1.11L2.499 2.499zm3.749.833c0-.492-.278-.914-.694-1.12v2.23c.416-.197.694-.622.694-1.11"
-      />
-    </svg>
-  );
-}
-
-function VolumeMinimumIcon() {
-  return (
-    <svg viewBox="0 0 6.664 6.664" focusable="false" aria-hidden="true">
-      <path fill="currentColor" d="M1.944 2.498v1.666h1.11l1.389 1.389V1.11L3.054 2.498z" />
-    </svg>
-  );
-}
-
-function VolumeOffIcon() {
-  return (
-    <svg viewBox="0 0 7 7" focusable="false" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M.833 2.499h1.111L3.332 1.11v4.443L1.944 4.165H.833zm3.774.833-.72-.72.392-.391.719.719.719-.719.392.391-.72.72.72.719-.392.391-.719-.719-.719.719-.392-.391z"
-      />
-    </svg>
-  );
-}
-
-function DragHandleIcon() {
-  return (
-    <svg viewBox="0 0 6.664 6.664" focusable="false" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M1.944 1.388h.555v.555h-.555zm1.11 0h.556v.555h-.555zm1.111 0h.555v.555h-.555zM1.944 2.499h.555v.555h-.555zm1.11 0h.556v.555h-.555zm1.111 0h.555v.555h-.555zM1.944 3.61h.555v.555h-.555zm1.11 0h.556v.555h-.555zm1.111 0h.555v.555h-.555zM1.944 4.72h.555v.556h-.555zm1.11 0h.556v.556h-.555zm1.111 0h.555v.556h-.555z"
       />
     </svg>
   );
