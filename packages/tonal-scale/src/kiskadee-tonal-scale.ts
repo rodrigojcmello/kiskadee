@@ -7,6 +7,14 @@ import {
   type OklchColor,
   oklchToSrgbHex
 } from './color-math.ts';
+import {
+  analyzeEmittedContinuity,
+  type EmittedAdjacentDeltaE,
+  type EmittedContinuityDiagnostics,
+  type EmittedCurveFairingTrace,
+  type EmittedSample,
+  fairEmittedAnchorNeighborhood
+} from './emitted-curve-continuity.ts';
 
 export const KISKADEE_TONES = [
   0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60,
@@ -123,7 +131,11 @@ export type KiskadeeScaleDiagnostics = {
   maxLocalChromaProminence: number;
   chromaPeakTone: KiskadeeTone | null;
   chromaContinuityRelaxed: boolean;
+  emittedContinuity: KiskadeeEmittedContinuityDiagnostics;
 };
+
+export type KiskadeeAdjacentDeltaE = EmittedAdjacentDeltaE;
+export type KiskadeeEmittedContinuityDiagnostics = EmittedContinuityDiagnostics;
 
 export type GenerateKiskadeeScaleInput = {
   seedHex: string;
@@ -143,6 +155,8 @@ type AnchorSelection = {
   relocationReason: KiskadeeAnchorDiagnostics['relocationReason'];
 };
 
+type FairingTrace = EmittedCurveFairingTrace;
+
 const VIVID_START_TONE = 35;
 const VIVID_END_TONE = 95;
 const VIVID_CONTRAST = 3;
@@ -150,6 +164,10 @@ const PREFERRED_LIGHTNESS_DELTA = 0.3;
 const NUMERIC_EPSILON = 1e-7;
 const GAMUT_LOSS_EPSILON = 1e-6;
 const CHROMA_PROMINENCE_TOLERANCE = 0.01;
+const ANCHOR_STEP_IMBALANCE_TOLERANCE = 3.25;
+const ANCHOR_CHROMA_EXCESS_TOLERANCE = 0.015;
+const CONTINUITY_REVIEW_MAX_DELTA_E = 0.04;
+const CONTINUITY_REVIEW_CHROMA_TURN = 0.2;
 
 export function generateKiskadeeScale({
   seedHex,
@@ -214,7 +232,38 @@ export function generateKiskadeeScale({
     vividThreshold,
     theme
   });
-  const targetLightnesses = stabilized.map((value) => unorientLightness(value, theme));
+  const faired = fairEmittedAnchorNeighborhood({
+    tones: KISKADEE_TONES,
+    orientedTargets: stabilized,
+    anchorIndex,
+    vividThreshold,
+    foregroundHex,
+    anchorRelocated: anchorSelection.relocationReason !== 'none',
+    contrastAdjusted: KISKADEE_TONES.map(
+      (_tone, index) => Math.abs(solved.values[index] - baseline.values[index]) > NUMERIC_EPSILON
+    ),
+    render: (index, oriented) =>
+      renderEmittedSample(index, oriented, {
+        anchorIndex,
+        normalizedSeed,
+        seedHue: seedOklch.h,
+        chromaAtLightness,
+        theme
+      }),
+    stabilize: (orientedTargets) =>
+      stabilizeRenderedTargets({
+        orientedTargets,
+        anchorIndex,
+        normalizedSeed,
+        seedHue: seedOklch.h,
+        chromaAtLightness,
+        vividThreshold,
+        theme
+      }),
+    orientLightness: (lightness) => orientLightness(lightness, theme),
+    isVividTone: (tone) => isVividTone(tone as KiskadeeTone)
+  });
+  const targetLightnesses = faired.values.map((value) => unorientLightness(value, theme));
 
   const renderedColors = KISKADEE_TONES.map((tone, index): KiskadeeScaleColor => {
     const targetLightness = targetLightnesses[index];
@@ -279,6 +328,7 @@ export function generateKiskadeeScale({
     foregroundHex,
     theme,
     anchorSelection,
+    fairing: faired.trace,
     separationRelaxed:
       anchorSelection.relocationReason !== 'none' ||
       solved.separationRelaxed ||
@@ -581,6 +631,40 @@ function stabilizeRenderedTargets(params: {
   return stabilized;
 }
 
+function renderEmittedSample(
+  index: number,
+  oriented: number,
+  params: {
+    anchorIndex: number;
+    normalizedSeed: string;
+    seedHue: number;
+    chromaAtLightness: (lightness: number) => number;
+    theme: KiskadeeTheme;
+  }
+): EmittedSample {
+  const { anchorIndex, normalizedSeed, seedHue, chromaAtLightness, theme } = params;
+  const tone = KISKADEE_TONES[index];
+  let hex: string;
+  let gamutChromaLoss = 0;
+
+  if (index === anchorIndex) {
+    hex = normalizedSeed;
+  } else if (tone === 0 || tone === 100) {
+    hex = resolveCapHex(tone, theme);
+  } else {
+    const lightness = unorientLightness(oriented, theme);
+    const rendered = oklchToSrgbHex({
+      l: lightness,
+      c: chromaAtLightness(lightness),
+      h: seedHue
+    });
+    hex = rendered.hex;
+    gamutChromaLoss = rendered.chromaLoss;
+  }
+
+  return { tone, hex, oklch: hexToOklch(hex), gamutChromaLoss };
+}
+
 function createChromaCurve(seed: OklchColor): (lightness: number) => number {
   if (seed.c < NUMERIC_EPSILON) return () => 0;
 
@@ -694,6 +778,7 @@ function createDiagnostics(params: {
   foregroundHex: string;
   theme: KiskadeeTheme;
   anchorSelection: AnchorSelection;
+  fairing: FairingTrace;
   separationRelaxed: boolean;
 }): KiskadeeScaleDiagnostics {
   const {
@@ -703,6 +788,7 @@ function createDiagnostics(params: {
     foregroundHex,
     theme,
     anchorSelection,
+    fairing,
     separationRelaxed
   } = params;
   const orientedActual = colors.map((color) => orientLightness(color.oklch.l, theme));
@@ -740,7 +826,7 @@ function createDiagnostics(params: {
   const chromaProminences = colors.map((color, index) => {
     const previous = colors[index - 1];
     const next = colors[index + 1];
-    return previous && next
+    return previous && next && !previous.flags.isCap && !color.flags.isCap && !next.flags.isCap
       ? Math.max(0, color.oklch.c - Math.max(previous.oklch.c, next.oklch.c))
       : 0;
   });
@@ -750,6 +836,35 @@ function createDiagnostics(params: {
   );
   const anchorColor = colors[anchorIndex];
   const anchorContrast = contrastRatio(normalizedSeed, foregroundHex);
+  const emittedAnalysis = analyzeEmittedContinuity(
+    colors.map((color) => ({
+      tone: color.tone,
+      hex: color.hex,
+      oklch: color.oklch,
+      gamutChromaLoss: color.gamutChromaLoss
+    })),
+    anchorIndex,
+    (lightness) => orientLightness(lightness, theme)
+  );
+  const anchorContinuity = emittedAnalysis.anchor;
+  const maximumAnchorDeltaE = Math.max(
+    anchorContinuity.incomingDeltaE ?? 0,
+    anchorContinuity.outgoingDeltaE ?? 0
+  );
+  const continuityReviewRequired =
+    fairing.status === 'rejected' ||
+    (anchorContinuity.stepImbalance !== null &&
+      anchorContinuity.stepImbalance > ANCHOR_STEP_IMBALANCE_TOLERANCE &&
+      maximumAnchorDeltaE >= CONTINUITY_REVIEW_MAX_DELTA_E) ||
+    (anchorContinuity.chromaExcess !== null &&
+      anchorContinuity.chromaExcess > ANCHOR_CHROMA_EXCESS_TOLERANCE &&
+      anchorContinuity.normalizedChromaTurn !== null &&
+      anchorContinuity.normalizedChromaTurn > CONTINUITY_REVIEW_CHROMA_TURN);
+  const emittedContinuity: KiskadeeEmittedContinuityDiagnostics = {
+    ...emittedAnalysis,
+    reviewRequired: continuityReviewRequired,
+    fairing
+  };
 
   return {
     valid: monotonic && duplicateTones.length === 0 && contrastFailures.length === 0,
@@ -778,7 +893,9 @@ function createDiagnostics(params: {
     separationRelaxed,
     maxLocalChromaProminence,
     chromaPeakTone: chromaPeakIndex >= 0 ? colors[chromaPeakIndex].tone : null,
-    chromaContinuityRelaxed: maxLocalChromaProminence > CHROMA_PROMINENCE_TOLERANCE
+    chromaContinuityRelaxed:
+      maxLocalChromaProminence > CHROMA_PROMINENCE_TOLERANCE || continuityReviewRequired,
+    emittedContinuity
   };
 }
 
@@ -802,7 +919,31 @@ function invalidResult(error: KiskadeeScaleError): KiskadeeScaleResult {
       separationRelaxed: false,
       maxLocalChromaProminence: 0,
       chromaPeakTone: null,
-      chromaContinuityRelaxed: false
+      chromaContinuityRelaxed: false,
+      emittedContinuity: {
+        adjacentDeltaE: [],
+        maxAdjacentDeltaE: 0,
+        anchor: {
+          incomingDeltaE: null,
+          outgoingDeltaE: null,
+          stepImbalance: null,
+          incomingChromaSlope: null,
+          outgoingChromaSlope: null,
+          chromaSlopeChange: null,
+          chromaExcess: null,
+          normalizedChromaTurn: null,
+          localRhythmDeltaE: null
+        },
+        reviewRequired: false,
+        fairing: {
+          status: 'not-needed',
+          adjustedTones: [],
+          maxLightnessAdjustment: 0,
+          beforeStepImbalance: null,
+          beforeChromaSlopeChange: null,
+          beforeChromaExcess: null
+        }
+      }
     }
   };
 }

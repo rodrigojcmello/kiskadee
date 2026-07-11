@@ -111,6 +111,17 @@ export function contrastRatio(leftHex: string, rightHex: string): number {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
+export function deltaEOk(left: OklchColor, right: OklchColor): number {
+  const leftHue = (left.h * Math.PI) / 180;
+  const rightHue = (right.h * Math.PI) / 180;
+  const leftA = left.c * Math.cos(leftHue);
+  const leftB = left.c * Math.sin(leftHue);
+  const rightA = right.c * Math.cos(rightHue);
+  const rightB = right.c * Math.sin(rightHue);
+
+  return Math.hypot((left.l - right.l) / 100, leftA - rightA, leftB - rightB);
+}
+
 export function relativeLuminance(hex: string): number {
   const [r, g, b] = hexToRgb(hex).map((channel) => srgbToLinear(channel / 255)) as [
     number,

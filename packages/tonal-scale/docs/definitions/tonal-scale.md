@@ -77,9 +77,50 @@ fitted by reducing chroma while preserving target lightness and hue as far as
 the target gamut permits. The standard target curve is continuous around its
 anchor and has a broad chroma apex. An exact highly saturated anchor can sit on
 an sRGB gamut cusp where neighboring lightnesses cannot reproduce the same
-chroma. Any resulting isolated prominence in the emitted curve is measured and
-reported as a continuity relaxation instead of being hidden or repairing the
-input color.
+chroma. Emitted-curve continuity is governed by the decision below. The input
+color is never recolored to repair a discontinuity.
+
+### Emitted Curve Continuity
+
+Decision status: implemented in the Milestone 1 generator.
+
+Continuity is evaluated from the emitted eight-bit sRGB sequence, not only from
+the pre-gamut OKLCH target curve. Diagnostics must measure adjacent Delta E in
+OKLab and changes in the emitted chroma slope around the exact anchor. Absolute
+caps are excluded from local curve-rhythm metrics because they are structural
+endpoints rather than chromatic samples.
+
+When an exact seed at an sRGB gamut cusp produces a detectable discontinuity,
+the generator may apply a bounded local fairing after the first gamut-fitted
+render:
+
+1. absolute caps and the exact input anchor remain immutable;
+2. the first repair variable is the target lightness of generated neighbors;
+3. the adjustment uses the smallest practical window around the anchor and
+   tapers back into the untouched nominal curve; both sides are evaluated as a
+   coupled window because moving either side also changes its outer transition;
+4. a repair is accepted only when it improves emitted continuity while
+   preserving monotonicity, uniqueness, valid sRGB output, the vivid contrast
+   guard, and the best attainable adjacent separation;
+5. every resulting nominal-lightness deviation remains measured and visible;
+6. when no bounded repair satisfies all acceptance criteria, the original scale
+   remains intact and diagnostics report `Review`.
+
+Activation is metric-based and hue-agnostic. `#ffb300` and `#ffab00` are
+regression references for saturated gamut-cusp behavior, not special-case
+branches. `#0f6cbd` and `#ff5722` remain comparison references that protect
+already satisfactory families from unnecessary changes.
+
+The activation model distinguishes a severe asymmetric discontinuity from a
+balanced but visually concentrated gamut cusp. Both paths use the same bounded
+search and acceptance rules. The balanced path is attempted only when its two
+anchor-adjacent steps are already relatively even, and it must measurably reduce
+chroma concentration without damaging that Delta E rhythm.
+
+This decision does not authorize seed desaturation, seed recoloring,
+anchor relocation solely for visual smoothing, hue-specific conditions, a
+global chroma-curve rewrite, or hue drift during gamut fitting. Changing the
+global gamut-mapping method requires a separate decision.
 
 For Milestone 1, `K35` through `K95` retain the expressive `3:1` contrast guard:
 against white in the light theme and against black in the dark theme. Contrast

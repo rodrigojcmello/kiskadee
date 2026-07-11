@@ -450,6 +450,8 @@ function DiagnosticsPanel({ theme, result }: { theme: Theme; result: ScaleResult
   const status = resolveIntegrityStatus(result);
   const anchor = resolveAnchorColor(result);
   const anchorDiagnostics = diagnostics.anchor;
+  const continuity = diagnostics.emittedContinuity;
+  const continuityAnchor = continuity.anchor;
   const duplicateCount = diagnostics.adjacentDuplicates.length;
   const contrastFailureCount = diagnostics.contrastFailures.length;
   const notes: Array<{ text: string; ok: boolean }> = [
@@ -481,7 +483,39 @@ function DiagnosticsPanel({ theme, result }: { theme: Theme; result: ScaleResult
       ok: false
     });
   }
-  if (diagnostics.chromaContinuityRelaxed) {
+  if (continuity.fairing.status === 'applied') {
+    notes.push({
+      text: `Local emitted-curve fairing adjusted ${continuity.fairing.adjustedTones.map((tone) => `K${tone}`).join(', ')} with at most ${formatLightness(continuity.fairing.maxLightnessAdjustment, 2)} lightness movement.`,
+      ok: true
+    });
+  } else if (continuity.fairing.status === 'rejected') {
+    notes.push({
+      text: 'A local fairing was evaluated but did not meet the bounded acceptance criteria.',
+      ok: false
+    });
+  }
+  if (continuity.reviewRequired) {
+    const reviewMetrics = [
+      continuityAnchor.stepImbalance === null
+        ? null
+        : `${continuityAnchor.stepImbalance.toFixed(2)}× anchor-step imbalance`,
+      continuityAnchor.chromaExcess === null
+        ? null
+        : `${continuityAnchor.chromaExcess.toFixed(4)} anchor chroma excess`,
+      continuityAnchor.normalizedChromaTurn === null
+        ? null
+        : `${continuityAnchor.normalizedChromaTurn.toFixed(3)} normalized chroma turn`
+    ].filter((metric): metric is string => metric !== null);
+    notes.push({
+      text: `Emitted continuity remains under review${reviewMetrics.length > 0 ? `: ${reviewMetrics.join(', ')}.` : '.'}`,
+      ok: false
+    });
+  }
+  if (
+    diagnostics.chromaContinuityRelaxed &&
+    diagnostics.maxLocalChromaProminence > 0.01 &&
+    diagnostics.chromaPeakTone !== null
+  ) {
     notes.push({
       text: `An unavoidable emitted chroma prominence of ${diagnostics.maxLocalChromaProminence.toFixed(4)} remains at K${diagnostics.chromaPeakTone}.`,
       ok: false
@@ -519,6 +553,39 @@ function DiagnosticsPanel({ theme, result }: { theme: Theme; result: ScaleResult
         <Metric label="Contrast fails" value={String(contrastFailureCount)} />
         <Metric label="Gamut mapped" value={String(diagnostics.gamutMappedCount)} />
         <Metric label="Max ΔC" value={diagnostics.maxGamutChromaLoss.toFixed(4)} />
+        <Metric label="Max emitted ΔE" value={continuity.maxAdjacentDeltaE.toFixed(3)} />
+        <Metric
+          label="Anchor ΔE"
+          value={formatMetricPair(
+            continuityAnchor.incomingDeltaE,
+            continuityAnchor.outgoingDeltaE,
+            3
+          )}
+        />
+        <Metric
+          label="Step imbalance"
+          value={
+            continuityAnchor.stepImbalance === null
+              ? '—'
+              : `${continuityAnchor.stepImbalance.toFixed(2)}×`
+          }
+        />
+        <Metric
+          label="Chroma slope Δ"
+          value={
+            continuityAnchor.chromaSlopeChange === null
+              ? '—'
+              : continuityAnchor.chromaSlopeChange.toFixed(4)
+          }
+        />
+        <Metric
+          label="Fairing"
+          value={
+            continuity.fairing.status === 'not-needed'
+              ? 'Not needed'
+              : capitalize(continuity.fairing.status)
+          }
+        />
         <Metric label="Peak prominence" value={diagnostics.maxLocalChromaProminence.toFixed(4)} />
         <Metric
           label="Max nominal ΔL"
@@ -572,6 +639,9 @@ function Metric({ label, value }: { label: string; value: string }) {
 
 function DetailTable({ theme, result }: { theme: Theme; result: ScaleResult }) {
   const contrastBackground = theme === 'light' ? '#ffffff' : '#000000';
+  const adjacentDeltaEByTone = new Map(
+    result.diagnostics.emittedContinuity.adjacentDeltaE.map((edge) => [edge.toTone, edge.value])
+  );
 
   return (
     <article className="panel detail-panel">
@@ -589,6 +659,7 @@ function DetailTable({ theme, result }: { theme: Theme; result: ScaleResult }) {
               <th>C</th>
               <th>H</th>
               <th>ΔL prev</th>
+              <th>ΔE prev</th>
               <th>Nominal ΔL</th>
               <th>Contrast</th>
               <th>Gamut ΔC</th>
@@ -601,6 +672,7 @@ function DetailTable({ theme, result }: { theme: Theme; result: ScaleResult }) {
               const deltaFromPrevious = previous
                 ? Math.abs(color.oklch.l - previous.oklch.l)
                 : null;
+              const deltaEFromPrevious = adjacentDeltaEByTone.get(color.tone);
               const flags = resolveFlags(color);
 
               return (
@@ -620,6 +692,7 @@ function DetailTable({ theme, result }: { theme: Theme; result: ScaleResult }) {
                   <td>{color.oklch.c.toFixed(4)}</td>
                   <td>{formatHue(color.oklch.h)}</td>
                   <td>{deltaFromPrevious === null ? '—' : deltaFromPrevious.toFixed(2)}</td>
+                  <td>{deltaEFromPrevious?.toFixed(3) ?? '—'}</td>
                   <td>{Math.abs(color.oklch.l - color.nominalLightness).toFixed(2)}</td>
                   <td>{contrastRatio(color.hex, contrastBackground).toFixed(2)}:1</td>
                   <td>{color.gamutChromaLoss.toFixed(4)}</td>
@@ -704,6 +777,16 @@ function round(value: number, precision: number): number {
 
 function formatLightness(value: number, precision: number): string {
   return `${value.toFixed(precision)}%`;
+}
+
+function formatMetricPair(
+  incoming: number | null,
+  outgoing: number | null,
+  precision: number
+): string {
+  return incoming === null || outgoing === null
+    ? '—'
+    : `${incoming.toFixed(precision)} / ${outgoing.toFixed(precision)}`;
 }
 
 function formatHue(value: number): string {
