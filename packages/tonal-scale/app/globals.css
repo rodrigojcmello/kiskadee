@@ -229,7 +229,8 @@ dd {
   overflow: hidden;
 }
 
-.theme-header {
+.theme-header,
+.scale-panel-header {
   display: flex;
   gap: 18px;
   align-items: center;
@@ -245,7 +246,8 @@ dd {
   font-weight: 750;
 }
 
-.theme-header h3 {
+.theme-header h3,
+.scale-panel-header h3 {
   font-size: 18px;
   letter-spacing: -0.02em;
 }
@@ -337,46 +339,49 @@ dd {
   font-weight: 700;
 }
 
-.scale-scroll {
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  scrollbar-color: var(--border-strong) transparent;
+.scale-stack {
+  display: grid;
+  gap: 16px;
+}
+
+.scale-panel {
+  min-width: 0;
+  overflow: hidden;
 }
 
 .scale-strip {
   display: grid;
-  width: max-content;
-  min-width: 100%;
-  grid-template-columns: repeat(35, minmax(58px, 1fr));
+  width: 100%;
+  grid-template-columns: repeat(35, minmax(0, 1fr));
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
 }
 
 .swatch {
   display: grid;
+  min-width: 0;
   min-height: 112px;
   align-content: end;
-  padding: 9px 7px;
+  padding: 9px 3px;
   background: var(--swatch);
   color: var(--swatch-text);
 }
 
 .swatch.anchor {
   position: relative;
-  box-shadow: inset 0 0 0 3px currentColor;
 }
 
 .swatch.anchor::before {
   position: absolute;
-  top: 7px;
-  left: 7px;
-  border-radius: 4px;
-  padding: 2px 4px;
-  background: currentColor;
-  color: var(--swatch);
-  content: "seed";
-  font-size: 8px;
-  font-weight: 850;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  top: -13px;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-top: 8px solid var(--text);
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+  content: "";
+  transform: translateX(-50%);
 }
 
 .swatch-tone,
@@ -389,13 +394,13 @@ dd {
 }
 
 .swatch-tone {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
 }
 
 .swatch-hex {
   margin-top: 2px;
-  font-size: 9px;
+  font-size: 8px;
   opacity: 0.78;
 }
 
@@ -693,6 +698,18 @@ dd {
   font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
+@media (max-width: 1200px) {
+  .scale-strip {
+    grid-template-columns: repeat(18, minmax(0, 1fr));
+    padding-top: 0;
+  }
+
+  .swatch.anchor::before {
+    top: 7px;
+    border-top-color: var(--swatch-text);
+  }
+}
+
 @media (max-width: 1120px) {
   .hero,
   .theme-grid,
@@ -736,6 +753,15 @@ dd {
   .component-preview {
     min-height: 210px;
     padding: 20px;
+  }
+
+  .scale-strip {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
+  .swatch {
+    min-height: 88px;
+    padding-inline: 5px;
   }
 
   .metrics {

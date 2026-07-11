@@ -156,15 +156,26 @@ function ScaleWorkspace({
     <>
       <section className="section-block" aria-labelledby="theme-preview-title">
         <div className="section-heading">
-          <h2 id="theme-preview-title">Theme orientations</h2>
-          <p>
-            Labels stay fixed. Light progresses from white to black; dark reverses the physical
-            lightness targets without reordering the slots.
-          </p>
+          <h2 id="theme-preview-title">Theme previews</h2>
+          <p>The same color family applied to representative light and dark interface surfaces.</p>
         </div>
         <div className="theme-grid">
           <ThemePanel theme="light" result={lightResult} />
           <ThemePanel theme="dark" result={darkResult} />
+        </div>
+      </section>
+
+      <section className="section-block" aria-labelledby="tonal-scales-title">
+        <div className="section-heading">
+          <h2 id="tonal-scales-title">Tonal scales</h2>
+          <p>
+            All 35 public slots remain visible. Light and dark use the same labels with opposite
+            physical lightness directions.
+          </p>
+        </div>
+        <div className="scale-stack">
+          <TonalScalePanel theme="light" result={lightResult} />
+          <TonalScalePanel theme="dark" result={darkResult} />
         </div>
       </section>
 
@@ -212,9 +223,9 @@ function ScaleWorkspace({
 
 function ThemePanel({ theme, result }: { theme: Theme; result: ScaleResult }) {
   const anchorColor = resolveAnchorColor(result);
-  const surface = resolveTone(result, 0);
-  const surfaceRaised = resolveTone(result, 4);
-  const border = resolveTone(result, 10);
+  const surface = resolveTone(result, theme === 'dark' ? 10 : 0);
+  const surfaceRaised = resolveTone(result, theme === 'dark' ? 14 : 4);
+  const border = resolveTone(result, theme === 'dark' ? 20 : 10);
   const text = resolveTone(result, 100);
   const muted = resolveTone(result, 70);
   const action = anchorColor ?? resolveTone(result, 50);
@@ -251,13 +262,28 @@ function ThemePanel({ theme, result }: { theme: Theme; result: ScaleResult }) {
           </button>
         </div>
       </div>
+    </article>
+  );
+}
 
-      <div className="scale-scroll">
-        <div className="scale-strip">
-          {result.colors.map((color) => (
-            <Swatch key={color.tone} color={color} />
-          ))}
+function TonalScalePanel({ theme, result }: { theme: Theme; result: ScaleResult }) {
+  const status = resolveIntegrityStatus(result);
+
+  return (
+    <article className="panel scale-panel">
+      <div className="scale-panel-header">
+        <div>
+          <span className="theme-kicker">{theme} scale</span>
+          <h3>
+            {theme === 'light' ? 'White → black' : 'Black → white'} · anchor K{result.anchorTone}
+          </h3>
         </div>
+        <StatusBadge result={result} label={status.label} className={status.className} />
+      </div>
+      <div className="scale-strip">
+        {result.colors.map((color) => (
+          <Swatch key={color.tone} color={color} />
+        ))}
       </div>
     </article>
   );
