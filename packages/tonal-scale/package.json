@@ -1,5 +1,5 @@
 {
-  "name": "@kiskadee/tonal-scale-lab",
+  "name": "@kiskadee/tonal-scale",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -7,6 +7,7 @@
     "dev": "next dev --port 3001",
     "build": "next build",
     "start": "next start --port 3001",
+    "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "generate": "node scripts/print-scale.ts"
   },
@@ -19,6 +20,7 @@
     "@types/node": "^25.9.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
   }
 }

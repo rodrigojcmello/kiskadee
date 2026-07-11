@@ -1,12 +1,12 @@
 # Presets Color Tools Migration
 
-Status: deferred technical debt.
+Status: deferred until after Kiskadee Tonal Scale v1 approval.
 
 Color-generation experiments currently live in `packages/presets/src/tools`, even when they are not
 part of the stable preset build pipeline. This makes `packages/presets` carry both production preset
 definitions and exploratory color tooling.
 
-Candidate files to move or retire after the tonal-scale lab stabilizes:
+Candidate files to assess only after `@kiskadee/tonal-scale` is approved:
 
 - `packages/presets/src/tools/generate-material-color-artifacts.ts`;
 - `packages/presets/src/tools/legacy/generate-color-scale.ts`;
@@ -15,12 +15,14 @@ Candidate files to move or retire after the tonal-scale lab stabilizes:
 
 Already retired:
 
-- `packages/presets/src/tools/generate-fast-color-scale.ts`: replaced by the tonal-scale lab
-  exploration path.
+- `packages/presets/src/tools/generate-fast-color-scale.ts`: retired during the former tonal-scale
+  lab exploration.
 
 Target direction:
 
 - keep stable preset artifacts and schemas in `packages/presets`;
-- keep exploratory color-generation workflows in `packages/tonal-scale-lab`;
-- move only after the lab has a stable CLI contract and the generated output format needed by
-  Kiskadee presets is defined.
+- keep Kiskadee scale generation and validation in `packages/tonal-scale`;
+- do not move or retire additional preset tooling during Tonal Scale Milestone 1;
+- treat the local `generate` CLI as inspection-only, not as an export contract;
+- plan migration separately after the generated artifact format and preset integration contract are
+  approved.

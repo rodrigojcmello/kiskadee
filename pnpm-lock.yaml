@@ -246,7 +246,7 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
-  packages/tonal-scale-lab:
+  packages/tonal-scale:
     dependencies:
       next:
         specifier: 16.2.7
@@ -270,6 +270,9 @@ importers:
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
+      vitest:
+        specifier: ^4.1.8
+        version: 4.1.8(@types/node@25.9.2)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@7.1.5(@types/node@25.9.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.100.0)(tsx@4.20.6)(yaml@2.8.2))
 
   packages/web-builder:
     dependencies:
@@ -1752,6 +1755,7 @@ packages:
   git-raw-commits@5.0.1:
     resolution: {integrity: sha512-Y+csSm2GD/PCSh6Isd/WiMjNAydu0VBiG9J7EdQsNA5P9uXvLayqjmTsNlK5Gs9IhblFZqOU0yid5Il5JPoLiQ==}
     engines: {node: '>=18'}
+    deprecated: Deprecated and no longer maintained. Use @conventional-changelog/git-client instead.
     hasBin: true
 
   global-directory@5.0.0:
