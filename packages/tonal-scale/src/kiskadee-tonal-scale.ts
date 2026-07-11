@@ -18,7 +18,7 @@ import {
 
 export const KISKADEE_TONES = [
   0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60,
-  65, 70, 75, 80, 85, 90, 95, 100
+  65, 70, 75, 80, 85, 90, 95, 99, 100
 ] as const;
 
 export type KiskadeeTone = (typeof KISKADEE_TONES)[number];
@@ -60,6 +60,7 @@ export const KISKADEE_LIGHT_NOMINAL_LIGHTNESS = {
   85: 26.259884,
   90: 22.969853,
   95: 19.9971,
+  99: 3.99942,
   100: 0
 } as const satisfies Record<KiskadeeTone, number>;
 
@@ -114,6 +115,13 @@ export type KiskadeeContrastFailure = {
   foregroundHex: string;
 };
 
+export type KiskadeeAdjacentContrastFailure = {
+  tone: KiskadeeTone;
+  nextTone: KiskadeeTone;
+  ratio: number;
+  nextRatio: number;
+};
+
 export type KiskadeeScaleDiagnostics = {
   valid: boolean;
   error: KiskadeeScaleError | null;
@@ -123,6 +131,8 @@ export type KiskadeeScaleDiagnostics = {
   anchor: KiskadeeAnchorDiagnostics | null;
   minLightnessDelta: number;
   contrastFailures: KiskadeeContrastFailure[];
+  darkSurfaceContrastMonotonic: boolean;
+  darkSurfaceContrastFailures: KiskadeeAdjacentContrastFailure[];
   gamutMappedCount: number;
   maxGamutChromaLoss: number;
   maxNominalDeviation: number;
@@ -160,6 +170,9 @@ type FairingTrace = EmittedCurveFairingTrace;
 const VIVID_START_TONE = 35;
 const VIVID_END_TONE = 95;
 const VIVID_CONTRAST = 3;
+const DARK_EARLY_CONTRAST_GAMMA = 1.1;
+const DARK_EARLY_BLEND_END_TONE = 35;
+const DARK_EARLY_BLEND_START_TONE = 10;
 const PREFERRED_LIGHTNESS_DELTA = 0.3;
 const NUMERIC_EPSILON = 1e-7;
 const GAMUT_LOSS_EPSILON = 1e-6;
@@ -191,8 +204,6 @@ export function generateKiskadeeScale({
 
   const seedOklch = hexToOklch(normalizedSeed);
   const foregroundHex = theme === 'light' ? '#ffffff' : '#000000';
-  const nominalLightnesses = KISKADEE_TONES.map((tone) => resolveNominalLightness(tone, theme));
-  const nominalOriented = nominalLightnesses.map((lightness) => orientLightness(lightness, theme));
   const chromaAtLightness = createChromaCurve(seedOklch);
   const vividThreshold = findVividContrastThreshold({
     foregroundHex,
@@ -200,6 +211,13 @@ export function generateKiskadeeScale({
     chromaAtLightness,
     theme
   });
+  const nominalOriented = resolveNominalOrientedTargets({
+    theme,
+    vividThreshold,
+    seedHue: seedOklch.h,
+    chromaAtLightness
+  });
+  const nominalLightnesses = nominalOriented.map((value) => unorientLightness(value, theme));
   const anchorSelection = resolveAnchorIndex({
     normalizedSeed,
     seedOklch,
@@ -338,9 +356,106 @@ export function generateKiskadeeScale({
   return { colors, anchorTone, diagnostics };
 }
 
-export function resolveNominalLightness(tone: KiskadeeTone, theme: KiskadeeTheme): number {
-  const light = KISKADEE_LIGHT_NOMINAL_LIGHTNESS[tone];
-  return theme === 'light' ? light : 100 - light;
+export function resolveCanonicalNominalLightness(tone: number): number {
+  const clampedTone = Math.min(100, Math.max(0, tone));
+  const exact = KISKADEE_LIGHT_NOMINAL_LIGHTNESS[clampedTone as KiskadeeTone];
+
+  if (exact !== undefined) return exact;
+
+  let lowerTone: KiskadeeTone = KISKADEE_TONES[0];
+  let upperTone: KiskadeeTone = KISKADEE_TONES[KISKADEE_TONES.length - 1];
+
+  for (const candidate of KISKADEE_TONES) {
+    if (candidate < clampedTone) lowerTone = candidate;
+    if (candidate > clampedTone) {
+      upperTone = candidate;
+      break;
+    }
+  }
+
+  const lower = KISKADEE_LIGHT_NOMINAL_LIGHTNESS[lowerTone];
+  const upper = KISKADEE_LIGHT_NOMINAL_LIGHTNESS[upperTone];
+  const ratio = (clampedTone - lowerTone) / (upperTone - lowerTone);
+  return lower + (upper - lower) * ratio;
+}
+
+function resolveNominalOrientedTargets(params: {
+  theme: KiskadeeTheme;
+  vividThreshold: number;
+  seedHue: number;
+  chromaAtLightness: (lightness: number) => number;
+}): number[] {
+  const { theme, vividThreshold, seedHue, chromaAtLightness } = params;
+
+  if (theme === 'light') {
+    return KISKADEE_TONES.map((tone) =>
+      orientLightness(KISKADEE_LIGHT_NOMINAL_LIGHTNESS[tone], theme)
+    );
+  }
+
+  const pivotTone = 35;
+  const pivotBase = resolveCanonicalNominalLightness(100 - pivotTone);
+  const pivotTarget = Math.max(pivotBase, vividThreshold);
+
+  return KISKADEE_TONES.map((tone) => {
+    const base = resolveCanonicalNominalLightness(100 - tone);
+    const legacyTarget =
+      base <= pivotBase
+        ? pivotBase <= 0
+          ? 0
+          : (base / pivotBase) * pivotTarget
+        : pivotTarget + ((base - pivotBase) / (100 - pivotBase)) * (100 - pivotTarget);
+
+    if (tone === 0 || tone >= pivotTone) return legacyTarget;
+
+    const contrastProgress = (tone / pivotTone) ** DARK_EARLY_CONTRAST_GAMMA;
+    const targetContrast = 1 + (VIVID_CONTRAST - 1) * contrastProgress;
+    const contrastTarget = findDarkContrastLightness({
+      targetContrast,
+      maximumLightness: pivotTarget,
+      seedHue,
+      chromaAtLightness
+    });
+    const blendProgress = Math.min(
+      1,
+      Math.max(
+        0,
+        (tone - DARK_EARLY_BLEND_START_TONE) /
+          (DARK_EARLY_BLEND_END_TONE - DARK_EARLY_BLEND_START_TONE)
+      )
+    );
+    const legacyWeight = blendProgress ** 2 * (3 - 2 * blendProgress);
+
+    return contrastTarget + (legacyTarget - contrastTarget) * legacyWeight;
+  });
+}
+
+function findDarkContrastLightness(params: {
+  targetContrast: number;
+  maximumLightness: number;
+  seedHue: number;
+  chromaAtLightness: (lightness: number) => number;
+}): number {
+  const { targetContrast, maximumLightness, seedHue, chromaAtLightness } = params;
+  let low = 0;
+  let high = maximumLightness;
+
+  for (let iteration = 0; iteration < 32; iteration += 1) {
+    const lightness = (low + high) / 2;
+    const color = oklchToSrgbHex({
+      l: lightness,
+      c: chromaAtLightness(lightness),
+      h: seedHue
+    });
+
+    if (contrastRatio(color.hex, '#000000') >= targetContrast) {
+      high = lightness;
+    } else {
+      low = lightness;
+    }
+  }
+
+  return high;
 }
 
 function resolveAnchorIndex(params: {
@@ -384,6 +499,13 @@ function resolveAnchorIndex(params: {
     requireVividContrast: false,
     maximumNeeded: KISKADEE_TONES.length - 2
   });
+  const structuralSuccessorCapacity = countRenderedSuccessors({
+    normalizedSeed,
+    seedOklch,
+    chromaAtLightness,
+    theme,
+    maximumNeeded: KISKADEE_TONES.length - 2
+  });
   const vividPredecessorCapacity = seedPassesVividContrast
     ? countRenderedPredecessors({
         normalizedSeed,
@@ -407,6 +529,7 @@ function resolveAnchorIndex(params: {
   }, chromaticCandidates[0]?.index ?? 1);
   const candidateIndices = chromaticCandidates.filter(({ tone, index }) => {
     if (index - 1 > structuralPredecessorCapacity) return false;
+    if (KISKADEE_TONES.length - index - 2 > structuralSuccessorCapacity) return false;
     if (!isVividTone(tone)) return true;
     if (!seedPassesVividContrast) return false;
 
@@ -426,6 +549,47 @@ function resolveAnchorIndex(params: {
         : 'emitted-spacing';
 
   return { index, nominalNearestIndex, relocationReason };
+}
+
+function countRenderedSuccessors(params: {
+  normalizedSeed: string;
+  seedOklch: OklchColor;
+  chromaAtLightness: (lightness: number) => number;
+  theme: KiskadeeTheme;
+  maximumNeeded: number;
+}): number {
+  const { normalizedSeed, seedOklch, chromaAtLightness, theme, maximumNeeded } = params;
+  let cursor = orientLightness(seedOklch.l, theme);
+  let previousHex = normalizedSeed;
+  let previousActual = cursor;
+  let count = 0;
+  const capHex = resolveCapHex(100, theme);
+
+  while (cursor < 100 && count < maximumNeeded) {
+    cursor = Math.min(100, cursor + 0.005);
+    const lightness = unorientLightness(cursor, theme);
+    const candidate = oklchToSrgbHex({
+      l: lightness,
+      c: chromaAtLightness(lightness),
+      h: seedOklch.h
+    }).hex;
+    const actual = orientLightness(hexToOklch(candidate).l, theme);
+
+    if (
+      candidate !== previousHex &&
+      candidate !== capHex &&
+      actual > previousActual &&
+      actual < 100
+    ) {
+      count += 1;
+      previousHex = candidate;
+      previousActual = actual;
+    }
+
+    if (cursor === 100) break;
+  }
+
+  return count;
 }
 
 function countRenderedPredecessors(params: {
@@ -508,10 +672,19 @@ function stabilizeRenderedTargets(params: {
     theme
   } = params;
   const stabilized = [...orientedTargets];
-  const fixedIndices = [...new Set([0, anchorIndex, KISKADEE_TONES.length - 1])].sort(
-    (left, right) => left - right
-  );
-  const renderAt = (index: number, oriented: number): { hex: string; actual: number } => {
+  const darkGuardIndex = KISKADEE_TONES.indexOf(VIVID_START_TONE);
+  const fixedIndices = [
+    ...new Set([
+      0,
+      anchorIndex,
+      KISKADEE_TONES.length - 1,
+      ...(theme === 'dark' ? [darkGuardIndex] : [])
+    ])
+  ].sort((left, right) => left - right);
+  const renderAt = (
+    index: number,
+    oriented: number
+  ): { hex: string; actual: number; blackContrast: number } => {
     const tone = KISKADEE_TONES[index];
     const hex =
       index === anchorIndex
@@ -523,8 +696,24 @@ function stabilizeRenderedTargets(params: {
               c: chromaAtLightness(unorientLightness(oriented, theme)),
               h: seedHue
             }).hex;
-    return { hex, actual: orientLightness(hexToOklch(hex).l, theme) };
+    return {
+      hex,
+      actual: orientLightness(hexToOklch(hex).l, theme),
+      blackContrast: theme === 'dark' ? contrastRatio(hex, '#000000') : 0
+    };
   };
+  const requiresDarkContrastProgression = (leftIndex: number, rightIndex: number): boolean =>
+    theme === 'dark' && leftIndex < rightIndex && KISKADEE_TONES[rightIndex] <= VIVID_START_TONE;
+  const isValidSuccessor = (
+    value: ReturnType<typeof renderAt>,
+    previousValue: ReturnType<typeof renderAt>,
+    previousIndex: number,
+    index: number
+  ): boolean =>
+    value.actual > previousValue.actual &&
+    value.hex !== previousValue.hex &&
+    (!requiresDarkContrastProgression(previousIndex, index) ||
+      value.blackContrast > previousValue.blackContrast + NUMERIC_EPSILON);
 
   for (let segment = 0; segment < fixedIndices.length - 1; segment += 1) {
     const startIndex = fixedIndices[segment];
@@ -537,24 +726,21 @@ function stabilizeRenderedTargets(params: {
       let candidate = Math.max(stabilized[index], stabilized[index - 1] + NUMERIC_EPSILON);
       let rendered = renderAt(index, candidate);
 
-      if (rendered.actual <= previous.actual || rendered.hex === previous.hex) {
+      if (!isValidSuccessor(rendered, previous, index - 1, index)) {
         let low = candidate;
         let high = candidate;
 
         while (high < maximum) {
           high = Math.min(maximum, high + 0.25);
           rendered = renderAt(index, high);
-          if (rendered.actual > previous.actual && rendered.hex !== previous.hex) break;
+          if (isValidSuccessor(rendered, previous, index - 1, index)) break;
         }
 
-        if (rendered.actual > previous.actual && rendered.hex !== previous.hex) {
+        if (isValidSuccessor(rendered, previous, index - 1, index)) {
           for (let iteration = 0; iteration < 18; iteration += 1) {
             const midpoint = (low + high) / 2;
             const midpointRendered = renderAt(index, midpoint);
-            if (
-              midpointRendered.actual > previous.actual &&
-              midpointRendered.hex !== previous.hex
-            ) {
+            if (isValidSuccessor(midpointRendered, previous, index - 1, index)) {
               high = midpoint;
               rendered = midpointRendered;
             } else {
@@ -562,10 +748,10 @@ function stabilizeRenderedTargets(params: {
             }
           }
           candidate = high;
-          rendered = renderAt(index, candidate);
         }
       }
 
+      rendered = renderAt(index, candidate);
       stabilized[index] = candidate;
       previous = rendered;
     }
@@ -580,11 +766,15 @@ function stabilizeRenderedTargets(params: {
       );
       let candidate = Math.min(stabilized[index], stabilized[index + 1] - NUMERIC_EPSILON);
       let rendered = renderAt(index, candidate);
-      const isValidPredecessor = (value: { hex: string; actual: number }): boolean =>
+      const isValidPredecessor = (value: ReturnType<typeof renderAt>): boolean =>
         value.actual > startRendered.actual &&
         value.actual < next.actual &&
         value.hex !== startRendered.hex &&
-        value.hex !== next.hex;
+        value.hex !== next.hex &&
+        (!requiresDarkContrastProgression(startIndex, index) ||
+          value.blackContrast > startRendered.blackContrast + NUMERIC_EPSILON) &&
+        (!requiresDarkContrastProgression(index, index + 1) ||
+          value.blackContrast + NUMERIC_EPSILON < next.blackContrast);
 
       if (!isValidPredecessor(rendered)) {
         let invalidUpper = candidate;
@@ -821,6 +1011,21 @@ function createDiagnostics(params: {
         ]
       : [];
   });
+  const darkSurfaceColors =
+    theme === 'dark' ? colors.filter((color) => color.tone <= VIVID_START_TONE) : [];
+  const darkSurfaceContrastFailures = darkSurfaceColors.flatMap(
+    (color, index): KiskadeeAdjacentContrastFailure[] => {
+      const next = darkSurfaceColors[index + 1];
+      if (!next) return [];
+
+      const ratio = contrastRatio(color.hex, '#000000');
+      const nextRatio = contrastRatio(next.hex, '#000000');
+      return nextRatio > ratio + NUMERIC_EPSILON
+        ? []
+        : [{ tone: color.tone, nextTone: next.tone, ratio, nextRatio }];
+    }
+  );
+  const darkSurfaceContrastMonotonic = darkSurfaceContrastFailures.length === 0;
   const gamutLosses = colors.map((color) => color.gamutChromaLoss);
   const nominalDeviations = colors.map((color) => Math.abs(color.oklch.l - color.nominalLightness));
   const chromaProminences = colors.map((color, index) => {
@@ -867,7 +1072,11 @@ function createDiagnostics(params: {
   };
 
   return {
-    valid: monotonic && duplicateTones.length === 0 && contrastFailures.length === 0,
+    valid:
+      monotonic &&
+      duplicateTones.length === 0 &&
+      contrastFailures.length === 0 &&
+      darkSurfaceContrastMonotonic,
     error: null,
     monotonic,
     duplicateTones,
@@ -885,6 +1094,8 @@ function createDiagnostics(params: {
     },
     minLightnessDelta,
     contrastFailures,
+    darkSurfaceContrastMonotonic,
+    darkSurfaceContrastFailures,
     gamutMappedCount: gamutLosses.filter((loss) => loss > GAMUT_LOSS_EPSILON).length,
     maxGamutChromaLoss: Math.max(...gamutLosses),
     maxNominalDeviation: Math.max(...nominalDeviations),
@@ -912,6 +1123,8 @@ function invalidResult(error: KiskadeeScaleError): KiskadeeScaleResult {
       anchor: null,
       minLightnessDelta: 0,
       contrastFailures: [],
+      darkSurfaceContrastMonotonic: false,
+      darkSurfaceContrastFailures: [],
       gamutMappedCount: 0,
       maxGamutChromaLoss: 0,
       maxNominalDeviation: 0,

@@ -252,6 +252,18 @@ dd {
   letter-spacing: -0.02em;
 }
 
+.scale-guard-note {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.scale-guard-note strong {
+  color: var(--muted-strong);
+  font-weight: 750;
+}
+
 .status-badge {
   display: inline-flex;
   min-height: 28px;
@@ -325,6 +337,44 @@ dd {
   line-height: 1.5;
 }
 
+.surface-stress {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 14px 0 0;
+  overflow: hidden;
+  border: 1px solid var(--preview-border);
+  border-radius: 9px;
+  padding: 0;
+  list-style: none;
+}
+
+.surface-role {
+  display: grid;
+  min-width: 0;
+  min-height: 42px;
+  align-content: end;
+  padding: 6px;
+  background: var(--stress-surface);
+  color: var(--stress-text);
+}
+
+.surface-slot,
+.surface-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.surface-slot {
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.surface-name {
+  font-size: 9px;
+  opacity: 0.78;
+}
+
 .preview-button {
   display: inline-flex;
   min-height: 38px;
@@ -352,7 +402,7 @@ dd {
 .scale-strip {
   display: grid;
   width: 100%;
-  grid-template-columns: repeat(35, minmax(0, 1fr));
+  grid-template-columns: repeat(36, minmax(0, 1fr));
   border-top: 1px solid var(--border);
   padding-top: 18px;
 }
@@ -362,7 +412,7 @@ dd {
   min-width: 0;
   min-height: 112px;
   align-content: end;
-  padding: 9px 3px;
+  padding: 9px 1px;
   background: var(--swatch);
   color: var(--swatch-text);
 }
@@ -394,13 +444,13 @@ dd {
 }
 
 .swatch-tone {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
 }
 
 .swatch-hex {
   margin-top: 2px;
-  font-size: 8px;
+  font-size: 7px;
   opacity: 0.78;
 }
 
@@ -700,7 +750,7 @@ dd {
 
 @media (max-width: 1200px) {
   .scale-strip {
-    grid-template-columns: repeat(18, minmax(0, 1fr));
+    grid-template-columns: repeat(12, minmax(0, 1fr));
     padding-top: 0;
   }
 
@@ -756,7 +806,7 @@ dd {
   }
 
   .scale-strip {
-    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
   .swatch {

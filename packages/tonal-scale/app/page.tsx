@@ -11,6 +11,12 @@ const CHART_HEIGHT = 300;
 const CHART_PADDING_X = 42;
 const CHART_PADDING_Y = 30;
 const CHART_LABEL_TONES = new Set([0, 10, 30, 50, 70, 100]);
+const SURFACE_STRESS_ROLES = [
+  { label: 'Base', tone: 0 },
+  { label: 'Level 1', tone: 1 },
+  { label: 'Level 2', tone: 2 },
+  { label: 'Level 3', tone: 3 }
+] as const;
 
 type ScaleResult = ReturnType<typeof generateKiskadeeScale>;
 type ScaleColor = ScaleResult['colors'][number];
@@ -21,22 +27,19 @@ export default function TonalScalePage() {
   const [hexInput, setHexInput] = useState(DEFAULT_SEED);
   const urlReadyRef = useRef(false);
 
-  const lightResult = useMemo(
-    () =>
-      generateKiskadeeScale({
+  const { lightResult, darkResult } = useMemo(
+    () => ({
+      lightResult: generateKiskadeeScale({
         seedHex: hexInput,
         theme: 'light',
         variant: 'standard'
       }),
-    [hexInput]
-  );
-  const darkResult = useMemo(
-    () =>
-      generateKiskadeeScale({
+      darkResult: generateKiskadeeScale({
         seedHex: hexInput,
         theme: 'dark',
         variant: 'standard'
-      }),
+      })
+    }),
     [hexInput]
   );
 
@@ -93,10 +96,10 @@ export default function TonalScalePage() {
       <header className="hero">
         <div>
           <span className="eyebrow">Kiskadee v1 · Standard</span>
-          <h1>One seed. One canonical tonal scale.</h1>
+          <h1>One seed. Two theme-relative tonal scales.</h1>
           <p className="hero-copy">
-            Generate the same 35 stable positions for light and dark themes. The input color stays
-            exact; the surrounding curve adapts and reports every compromise.
+            Generate 36 stable L positions for light interfaces and 36 stable D positions for dark
+            interfaces. Both follow one internal color trajectory and preserve the input exactly.
           </p>
         </div>
 
@@ -117,7 +120,7 @@ export default function TonalScalePage() {
           </div>
           <p id="seed-help" className={`field-help${isValid ? '' : ' error'}`}>
             {isValid
-              ? `${seedColor} is preserved exactly in both theme orientations.`
+              ? `${seedColor} is preserved exactly at independent L and D anchors.`
               : errorMessage}
           </p>
         </div>
@@ -128,18 +131,18 @@ export default function TonalScalePage() {
       ) : (
         <section className="empty-state" aria-live="polite">
           <div>
-            <strong>No scale generated</strong>
+            <strong>No tonal system generated</strong>
             <p>
               Generation never falls back to another color. Enter a valid value such as #0f6cbd to
-              generate the Kiskadee scale.
+              generate the Kiskadee light and dark scales.
             </p>
           </div>
         </section>
       )}
 
       <footer className="app-footer">
-        <span>Milestone 1 validates only the standard Kiskadee scale.</span>
-        <code>Soft Dark: deferred until visual approval</code>
+        <span>Milestone 1 validates only the standard Kiskadee tonal system.</span>
+        <code>One K trajectory · Light L profile · Dark D profile</code>
       </footer>
     </main>
   );
@@ -167,10 +170,10 @@ function ScaleWorkspace({
 
       <section className="section-block" aria-labelledby="tonal-scales-title">
         <div className="section-heading">
-          <h2 id="tonal-scales-title">Tonal scales</h2>
+          <h2 id="tonal-scales-title">Theme-relative tonal scales</h2>
           <p>
-            All 35 public slots remain visible. Light and dark use the same labels with opposite
-            physical lightness directions.
+            Light uses L0→L100 and dark uses D0→D100. K remains an internal physical coordinate; no
+            L96–L98 slots are exposed.
           </p>
         </div>
         <div className="scale-stack">
@@ -183,8 +186,8 @@ function ScaleWorkspace({
         <div className="section-heading">
           <h2 id="curve-title">OKLCH curves</h2>
           <p>
-            Solid lines show emitted sRGB colors. Dashed lightness lines show the frozen nominal
-            targets before the exact anchor and constraints adapt the curve.
+            Both profiles follow the same hue/chroma trajectory with different lightness
+            distributions. Dashed lines show nominal targets before exact-anchor adaptation.
           </p>
         </div>
         <div className="chart-grid">
@@ -197,8 +200,8 @@ function ScaleWorkspace({
         <div className="section-heading">
           <h2 id="integrity-title">Integrity report</h2>
           <p>
-            Caps, exact anchor, monotonicity, spacing, contrast and sRGB fitting are measured for
-            each orientation independently.
+            Caps, exact anchors, monotonicity, spacing, contrast and sRGB fitting are measured for
+            each theme-relative profile.
           </p>
         </div>
         <div className="diagnostics-grid">
@@ -210,9 +213,9 @@ function ScaleWorkspace({
       <section className="section-block" aria-labelledby="slot-details-title">
         <div className="section-heading">
           <h2 id="slot-details-title">Slot details</h2>
-          <p>Inspect actual lightness deltas, nominal deviation, vivid contrast and gamut loss.</p>
+          <p>Inspect actual deltas, nominal deviation, guard contrast and gamut loss.</p>
         </div>
-        <div className="theme-grid">
+        <div className="scale-stack">
           <DetailTable theme="light" result={lightResult} />
           <DetailTable theme="dark" result={darkResult} />
         </div>
@@ -222,10 +225,11 @@ function ScaleWorkspace({
 }
 
 function ThemePanel({ theme, result }: { theme: Theme; result: ScaleResult }) {
+  const prefix = resolveThemePrefix(theme);
   const anchorColor = resolveAnchorColor(result);
-  const surface = resolveTone(result, theme === 'dark' ? 10 : 0);
-  const surfaceRaised = resolveTone(result, theme === 'dark' ? 14 : 4);
-  const border = resolveTone(result, theme === 'dark' ? 20 : 10);
+  const surface = resolveTone(result, 0);
+  const surfaceRaised = resolveTone(result, 4);
+  const border = resolveTone(result, 10);
   const text = resolveTone(result, 100);
   const muted = resolveTone(result, 70);
   const action = anchorColor ?? resolveTone(result, 50);
@@ -245,9 +249,7 @@ function ThemePanel({ theme, result }: { theme: Theme; result: ScaleResult }) {
       <div className="theme-header">
         <div>
           <span className="theme-kicker">{theme} theme</span>
-          <h3>
-            {theme === 'light' ? 'White → black' : 'Black → white'} · anchor K{result.anchorTone}
-          </h3>
+          <h3>{`${prefix}0 → ${prefix}100 · anchor ${prefix}${result.anchorTone}`}</h3>
         </div>
         <StatusBadge result={result} label={status.label} className={status.className} />
       </div>
@@ -257,6 +259,28 @@ function ThemePanel({ theme, result }: { theme: Theme; result: ScaleResult }) {
           <small>Example surface</small>
           <strong>Stable positions, flexible identity</strong>
           <p>The same slots can power another color family without changing component intent.</p>
+          <ul
+            className="surface-stress"
+            aria-label={`${capitalize(theme)} early surface slot differentiation`}
+          >
+            {SURFACE_STRESS_ROLES.map(({ label, tone }) => {
+              const color = resolveTone(result, tone);
+              const style = {
+                '--stress-surface': color?.hex,
+                '--stress-text': color ? bestTextColor(color.hex) : undefined
+              } as CSSProperties;
+
+              return (
+                <li key={tone} className="surface-role" style={style}>
+                  <span className="surface-slot">
+                    {prefix}
+                    {tone}
+                  </span>
+                  <span className="surface-name">{label}</span>
+                </li>
+              );
+            })}
+          </ul>
           <button className="preview-button" type="button">
             Primary action
           </button>
@@ -267,29 +291,38 @@ function ThemePanel({ theme, result }: { theme: Theme; result: ScaleResult }) {
 }
 
 function TonalScalePanel({ theme, result }: { theme: Theme; result: ScaleResult }) {
+  const prefix = resolveThemePrefix(theme);
   const status = resolveIntegrityStatus(result);
+  const guardForeground = theme === 'light' ? '#ffffff' : '#000000';
+  const guardForegroundLabel = theme === 'light' ? 'white' : 'black';
+  const guardColor = resolveTone(result, 35);
+  const guardRatio = guardColor ? contrastRatio(guardColor.hex, guardForeground) : null;
 
   return (
     <article className="panel scale-panel">
       <div className="scale-panel-header">
         <div>
           <span className="theme-kicker">{theme} scale</span>
-          <h3>
-            {theme === 'light' ? 'White → black' : 'Black → white'} · anchor K{result.anchorTone}
-          </h3>
+          <h3>{`${prefix}0 → ${prefix}100 · anchor ${prefix}${result.anchorTone}`}</h3>
+          <p className="scale-guard-note">
+            <strong>{prefix}35</strong>
+            {` · ${guardForegroundLabel} 3:1 guard starts${guardRatio === null ? '' : ` (${guardRatio.toFixed(2)}:1)`} · swatch labels use max contrast`}
+          </p>
         </div>
         <StatusBadge result={result} label={status.label} className={status.className} />
       </div>
       <div className="scale-strip">
         {result.colors.map((color) => (
-          <Swatch key={color.tone} color={color} />
+          <Swatch key={color.tone} color={color} prefix={prefix} />
         ))}
       </div>
     </article>
   );
 }
 
-function Swatch({ color }: { color: ScaleColor }) {
+function Swatch({ color, prefix }: { color: ScaleColor; prefix: 'L' | 'D' }) {
+  const blackContrast = contrastRatio(color.hex, '#000000');
+  const whiteContrast = contrastRatio(color.hex, '#ffffff');
   const style = {
     '--swatch': color.hex,
     '--swatch-text': bestTextColor(color.hex)
@@ -299,9 +332,12 @@ function Swatch({ color }: { color: ScaleColor }) {
     <div
       className={`swatch${color.flags.isAnchor ? ' anchor' : ''}`}
       style={style}
-      title={`K${color.tone} · ${color.hex}`}
+      title={`${prefix}${color.tone} · ${color.hex} · black ${blackContrast.toFixed(2)}:1 · white ${whiteContrast.toFixed(2)}:1`}
     >
-      <span className="swatch-tone">K{color.tone}</span>
+      <span className="swatch-tone">
+        {prefix}
+        {color.tone}
+      </span>
       <span className="swatch-hex">{color.hex}</span>
     </div>
   );
@@ -372,12 +408,14 @@ function CurveChart({
         aria-labelledby={`${chartId}-title ${chartId}-description`}
       >
         <title id={`${chartId}-title`}>
-          {metric === 'lightness' ? 'OKLCH lightness curves' : 'OKLCH chroma curves'}
+          {metric === 'lightness'
+            ? 'Light and dark OKLCH lightness'
+            : 'Light and dark OKLCH chroma'}
         </title>
         <desc id={`${chartId}-description`}>
           {metric === 'lightness'
-            ? 'Light and dark OKL lightness progression, including nominal targets.'
-            : 'Light and dark OKL chroma progression.'}
+            ? 'Theme-relative lightness progression from position zero to one hundred, including nominal targets.'
+            : 'Theme-relative chroma progression from position zero to one hundred.'}
         </desc>
         <rect
           className="plot-bg"
@@ -414,7 +452,7 @@ function CurveChart({
               y={CHART_HEIGHT - 10}
               textAnchor="middle"
             >
-              K{color.tone}
+              {color.tone}
             </text>
           ) : null
         )}
@@ -446,6 +484,9 @@ function CurveChart({
 }
 
 function DiagnosticsPanel({ theme, result }: { theme: Theme; result: ScaleResult }) {
+  const prefix = resolveThemePrefix(theme);
+  const guardForeground = theme === 'light' ? '#ffffff' : '#000000';
+  const guardAt35 = resolveTone(result, 35);
   const diagnostics = result.diagnostics;
   const status = resolveIntegrityStatus(result);
   const anchor = resolveAnchorColor(result);
@@ -454,9 +495,10 @@ function DiagnosticsPanel({ theme, result }: { theme: Theme; result: ScaleResult
   const continuityAnchor = continuity.anchor;
   const duplicateCount = diagnostics.adjacentDuplicates.length;
   const contrastFailureCount = diagnostics.contrastFailures.length;
+  const adaptiveTextCrossover = resolveAdaptiveTextCrossover(result);
   const notes: Array<{ text: string; ok: boolean }> = [
     {
-      text: `Exact seed preserved at K${result.anchorTone} as ${anchor?.hex}.`,
+      text: `Exact seed preserved at ${prefix}${result.anchorTone} as ${anchor?.hex}.`,
       ok: true
     },
     diagnostics.gamutMappedCount > 0
@@ -479,13 +521,13 @@ function DiagnosticsPanel({ theme, result }: { theme: Theme; result: ScaleResult
         ? 'the 3:1 vivid contrast guard'
         : 'strict emitted-color spacing';
     notes.push({
-      text: `Nearest nominal K${anchorDiagnostics.nominalNearestTone} was not feasible; the anchor moved to K${anchorDiagnostics.tone} to preserve ${reason}.`,
+      text: `Nearest nominal ${prefix}${anchorDiagnostics.nominalNearestTone} was not feasible; the anchor moved to ${prefix}${anchorDiagnostics.tone} to preserve ${reason}.`,
       ok: false
     });
   }
   if (continuity.fairing.status === 'applied') {
     notes.push({
-      text: `Local emitted-curve fairing adjusted ${continuity.fairing.adjustedTones.map((tone) => `K${tone}`).join(', ')} with at most ${formatLightness(continuity.fairing.maxLightnessAdjustment, 2)} lightness movement.`,
+      text: `Local emitted-curve fairing adjusted ${continuity.fairing.adjustedTones.map((tone) => `${prefix}${tone}`).join(', ')} with at most ${formatLightness(continuity.fairing.maxLightnessAdjustment, 2)} lightness movement.`,
       ok: true
     });
   } else if (continuity.fairing.status === 'rejected') {
@@ -517,7 +559,7 @@ function DiagnosticsPanel({ theme, result }: { theme: Theme; result: ScaleResult
     diagnostics.chromaPeakTone !== null
   ) {
     notes.push({
-      text: `An unavoidable emitted chroma prominence of ${diagnostics.maxLocalChromaProminence.toFixed(4)} remains at K${diagnostics.chromaPeakTone}.`,
+      text: `An unavoidable emitted chroma prominence of ${diagnostics.maxLocalChromaProminence.toFixed(4)} remains at ${prefix}${diagnostics.chromaPeakTone}.`,
       ok: false
     });
   }
@@ -530,27 +572,47 @@ function DiagnosticsPanel({ theme, result }: { theme: Theme; result: ScaleResult
   if (duplicateCount > 0) {
     notes.push({ text: `${duplicateCount} adjacent duplicate color(s) detected.`, ok: false });
   }
+  if (!diagnostics.darkSurfaceContrastMonotonic) {
+    notes.push({
+      text: `${diagnostics.darkSurfaceContrastFailures.length} emitted contrast reversal(s) detected between D0 and D35.`,
+      ok: false
+    });
+  }
 
   return (
     <article className="panel diagnostics-panel">
       <div className="diagnostics-heading">
-        <h3>{capitalize(theme)} orientation</h3>
+        <h3>{capitalize(theme)} profile</h3>
         <StatusBadge result={result} label={status.label} className={status.className} />
       </div>
       <dl className="metrics">
-        <Metric label="Anchor" value={`K${result.anchorTone}`} />
+        <Metric label="Anchor" value={`${prefix}${result.anchorTone}`} />
         <Metric
           label="Nominal anchor"
           value={
             anchorDiagnostics?.relocated
-              ? `K${anchorDiagnostics.nominalNearestTone} → K${result.anchorTone}`
-              : `K${result.anchorTone}`
+              ? `${prefix}${anchorDiagnostics.nominalNearestTone} → ${prefix}${result.anchorTone}`
+              : `${prefix}${result.anchorTone}`
           }
         />
         <Metric label="Monotonic" value={diagnostics.monotonic ? 'Pass' : 'Fail'} />
         <Metric label="Min ΔL" value={formatLightness(diagnostics.minLightnessDelta, 2)} />
         <Metric label="Duplicates" value={String(duplicateCount)} />
-        <Metric label="Contrast fails" value={String(contrastFailureCount)} />
+        <Metric
+          label={`${prefix}35 vs ${theme === 'light' ? 'white' : 'black'}`}
+          value={guardAt35 ? `${contrastRatio(guardAt35.hex, guardForeground).toFixed(2)}:1` : '—'}
+        />
+        <Metric
+          label="Swatch label switch"
+          value={adaptiveTextCrossover === null ? '—' : `${prefix}${adaptiveTextCrossover}`}
+        />
+        {theme === 'dark' ? (
+          <Metric
+            label="D0–D35 contrast"
+            value={diagnostics.darkSurfaceContrastMonotonic ? 'Pass' : 'Fail'}
+          />
+        ) : null}
+        <Metric label="Guard failures" value={String(contrastFailureCount)} />
         <Metric label="Gamut mapped" value={String(diagnostics.gamutMappedCount)} />
         <Metric label="Max ΔC" value={diagnostics.maxGamutChromaLoss.toFixed(4)} />
         <Metric label="Max emitted ΔE" value={continuity.maxAdjacentDeltaE.toFixed(3)} />
@@ -638,6 +700,7 @@ function Metric({ label, value }: { label: string; value: string }) {
 }
 
 function DetailTable({ theme, result }: { theme: Theme; result: ScaleResult }) {
+  const prefix = resolveThemePrefix(theme);
   const contrastBackground = theme === 'light' ? '#ffffff' : '#000000';
   const adjacentDeltaEByTone = new Map(
     result.diagnostics.emittedContinuity.adjacentDeltaE.map((edge) => [edge.toTone, edge.value])
@@ -646,7 +709,7 @@ function DetailTable({ theme, result }: { theme: Theme; result: ScaleResult }) {
   return (
     <article className="panel detail-panel">
       <div className="detail-heading">
-        <h3>{capitalize(theme)}</h3>
+        <h3>{`${prefix}0 → ${prefix}100`}</h3>
         <p>Contrast measured against {theme === 'light' ? 'white' : 'black'}.</p>
       </div>
       <div className="table-wrap">
@@ -661,7 +724,7 @@ function DetailTable({ theme, result }: { theme: Theme; result: ScaleResult }) {
               <th>ΔL prev</th>
               <th>ΔE prev</th>
               <th>Nominal ΔL</th>
-              <th>Contrast</th>
+              <th>Contrast vs {theme === 'light' ? 'white' : 'black'}</th>
               <th>Gamut ΔC</th>
               <th>Flags</th>
             </tr>
@@ -677,7 +740,10 @@ function DetailTable({ theme, result }: { theme: Theme; result: ScaleResult }) {
 
               return (
                 <tr key={color.tone}>
-                  <td>K{color.tone}</td>
+                  <td>
+                    {prefix}
+                    {color.tone}
+                  </td>
                   <td>
                     <span className="color-cell">
                       <i
@@ -713,6 +779,20 @@ function resolveAnchorColor(result: ScaleResult): ScaleColor | undefined {
 
 function resolveTone(result: ScaleResult, tone: number): ScaleColor | undefined {
   return result.colors.find((color) => color.tone === tone);
+}
+
+function resolveThemePrefix(theme: Theme): 'L' | 'D' {
+  return theme === 'light' ? 'L' : 'D';
+}
+
+function resolveAdaptiveTextCrossover(result: ScaleResult): number | null {
+  for (let index = 1; index < result.colors.length; index += 1) {
+    if (bestTextColor(result.colors[index].hex) !== bestTextColor(result.colors[index - 1].hex)) {
+      return result.colors[index].tone;
+    }
+  }
+
+  return null;
 }
 
 function resolveIntegrityStatus(result: ScaleResult): {

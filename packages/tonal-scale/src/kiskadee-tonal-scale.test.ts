@@ -4,23 +4,60 @@ import { hexToOklch, oklchToSrgbHex } from './color-math';
 import {
   generateKiskadeeScale,
   KISKADEE_LIGHT_NOMINAL_LIGHTNESS,
-  KISKADEE_TONES
+  KISKADEE_TONES,
+  type KiskadeeTheme,
+  resolveCanonicalNominalLightness
 } from './kiskadee-tonal-scale';
 
+const THEMES = ['light', 'dark'] as const satisfies readonly KiskadeeTheme[];
 const EXPECTED_TONES = [
   0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60,
-  65, 70, 75, 80, 85, 90, 95, 100
+  65, 70, 75, 80, 85, 90, 95, 99, 100
 ] as const;
-
-const THEMES = ['light', 'dark'] as const;
 const VIVID_TONES = EXPECTED_TONES.filter((tone) => tone >= 35 && tone <= 95);
 const EXPECTED_LIGHT_NOMINALS = [
   100, 98.695278, 97.425096, 96.058783, 94.688924, 93.362199, 92.093408, 90.751004, 89.096993,
   87.688317, 86.217449, 84.099966, 81.422592, 78.853248, 76.553514, 74.041323, 71.411081, 68.894359,
   66.355545, 63.926274, 61.395946, 58.386091, 55.558077, 52.630117, 49.174144, 45.959014, 42.906258,
-  39.516528, 36.108367, 32.964855, 29.4167, 26.259884, 22.969853, 19.9971, 0
+  39.516528, 36.108367, 32.964855, 29.4167, 26.259884, 22.969853, 19.9971, 3.99942, 0
 ] as const;
-
+const APPROVED_BLUE_LIGHT = {
+  0: '#ffffff',
+  1: '#f8fbff',
+  2: '#f1f7ff',
+  3: '#e9f3ff',
+  4: '#e1efff',
+  5: '#daebff',
+  6: '#d3e7ff',
+  7: '#cbe3ff',
+  8: '#c1deff',
+  9: '#b9daff',
+  10: '#b1d6ff',
+  12: '#a4cfff',
+  14: '#94c7ff',
+  16: '#84bfff',
+  18: '#76b7ff',
+  20: '#6baffa',
+  22: '#60a7f3',
+  24: '#559fed',
+  26: '#4b97e6',
+  28: '#418fdf',
+  30: '#3787d8',
+  35: '#2b7ecf',
+  40: '#1f75c6',
+  45: '#0f6cbd',
+  50: '#0062b0',
+  55: '#0059a0',
+  60: '#005092',
+  65: '#004782',
+  70: '#003e73',
+  75: '#003665',
+  80: '#002d56',
+  85: '#002549',
+  90: '#001d3b',
+  95: '#001630',
+  100: '#000000'
+} as const;
 const REGRESSION_SEEDS = [
   '#6666ff',
   '#ffcccc',
@@ -40,12 +77,7 @@ const REGRESSION_SEEDS = [
 ] as const;
 
 type GeneratedScale = ReturnType<typeof generateKiskadeeScale>;
-type Theme = (typeof THEMES)[number];
-
-type FailureBucket = {
-  total: number;
-  samples: string[];
-};
+type FailureBucket = { total: number; samples: string[] };
 
 function createFailureBucket(): FailureBucket {
   return { total: 0, samples: [] };
@@ -53,10 +85,7 @@ function createFailureBucket(): FailureBucket {
 
 function recordFailure(bucket: FailureBucket, message: string): void {
   bucket.total += 1;
-
-  if (bucket.samples.length < 20) {
-    bucket.samples.push(message);
-  }
+  if (bucket.samples.length < 20) bucket.samples.push(message);
 }
 
 function expectNoFailures(label: string, bucket: FailureBucket): void {
@@ -64,15 +93,16 @@ function expectNoFailures(label: string, bucket: FailureBucket): void {
   expect(bucket.total, `${label}: ${bucket.total} violation(s)${samples}`).toBe(0);
 }
 
+function generate(seedHex: string, theme: KiskadeeTheme): GeneratedScale {
+  return generateKiskadeeScale({ seedHex, theme, variant: 'standard' });
+}
+
 function findColor(result: GeneratedScale, tone: number) {
   return result.colors.find((color) => color.tone === tone);
 }
 
 function parseHex(hex: string): [number, number, number] | null {
-  if (!/^#[0-9a-f]{6}$/u.test(hex)) {
-    return null;
-  }
-
+  if (!/^#[0-9a-f]{6}$/u.test(hex)) return null;
   return [
     Number.parseInt(hex.slice(1, 3), 16),
     Number.parseInt(hex.slice(3, 5), 16),
@@ -87,11 +117,7 @@ function srgbToLinear(channel: number): number {
 
 function relativeLuminance(hex: string): number {
   const rgb = parseHex(hex);
-
-  if (!rgb) {
-    return Number.NaN;
-  }
-
+  if (!rgb) return Number.NaN;
   const [red, green, blue] = rgb.map(srgbToLinear);
   return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
 }
@@ -99,123 +125,98 @@ function relativeLuminance(hex: string): number {
 function contrastRatio(leftHex: string, rightHex: string): number {
   const left = relativeLuminance(leftHex);
   const right = relativeLuminance(rightHex);
-  const lighter = Math.max(left, right);
-  const darker = Math.min(left, right);
-  return (lighter + 0.05) / (darker + 0.05);
+  return (Math.max(left, right) + 0.05) / (Math.min(left, right) + 0.05);
 }
 
 function oklabLightness(hex: string): number {
   const rgb = parseHex(hex);
-
-  if (!rgb) {
-    return Number.NaN;
-  }
-
+  if (!rgb) return Number.NaN;
   const [red, green, blue] = rgb.map(srgbToLinear);
   const l = 0.4122214708 * red + 0.5363325363 * green + 0.0514459929 * blue;
   const m = 0.2119034982 * red + 0.6806995451 * green + 0.1073969566 * blue;
   const s = 0.0883024619 * red + 0.2817188376 * green + 0.6299787005 * blue;
-
   return 0.2104542553 * Math.cbrt(l) + 0.793617785 * Math.cbrt(m) - 0.0040720468 * Math.cbrt(s);
 }
 
-function isStrictlyMonotonic(result: GeneratedScale, theme: Theme): boolean {
+function isStrictlyMonotonic(result: GeneratedScale, theme: KiskadeeTheme): boolean {
   for (let index = 1; index < result.colors.length; index += 1) {
     const previous = oklabLightness(result.colors[index - 1].hex);
     const current = oklabLightness(result.colors[index].hex);
-
-    if (theme === 'light' ? previous <= current : previous >= current) {
-      return false;
-    }
+    if (theme === 'light' ? previous <= current : previous >= current) return false;
   }
-
   return true;
 }
 
-function expectedCapHex(theme: Theme, tone: 0 | 100): string {
-  if (theme === 'light') {
-    return tone === 0 ? '#ffffff' : '#000000';
-  }
-
+function expectedCapHex(theme: KiskadeeTheme, tone: 0 | 100): string {
+  if (theme === 'light') return tone === 0 ? '#ffffff' : '#000000';
   return tone === 0 ? '#000000' : '#ffffff';
 }
 
-function expectedCapTone(theme: Theme, seedHex: '#000000' | '#ffffff'): 0 | 100 {
-  if (theme === 'light') {
-    return seedHex === '#ffffff' ? 0 : 100;
-  }
-
-  return seedHex === '#000000' ? 0 : 100;
-}
-
 describe('generateKiskadeeScale', () => {
-  it.each(THEMES)('emits the complete ordered grid with absolute caps in %s', (theme) => {
-    const result = generateKiskadeeScale({ seedHex: '#0f6cbd', theme, variant: 'standard' });
+  it.each(THEMES)('emits the 36-slot %s grid with theme-relative caps', (theme) => {
+    const result = generate('#0f6cbd', theme);
 
     expect(KISKADEE_TONES).toEqual(EXPECTED_TONES);
     expect(result.diagnostics.valid).toBe(true);
     expect(result.colors.map((color) => color.tone)).toEqual(EXPECTED_TONES);
     expect(findColor(result, 0)?.hex).toBe(expectedCapHex(theme, 0));
     expect(findColor(result, 100)?.hex).toBe(expectedCapHex(theme, 100));
-    expect(findColor(result, 0)?.flags.isCap).toBe(true);
-    expect(findColor(result, 100)?.flags.isCap).toBe(true);
     expect(result.colors.filter((color) => color.flags.isCap).map((color) => color.tone)).toEqual([
       0, 100
     ]);
   });
 
-  it('derives every dark nominal lightness by inverting the light target', () => {
-    const light = generateKiskadeeScale({
-      seedHex: '#0f6cbd',
-      theme: 'light',
-      variant: 'standard'
-    });
-    const dark = generateKiskadeeScale({
-      seedHex: '#0f6cbd',
-      theme: 'dark',
-      variant: 'standard'
-    });
+  it('does not expose L96 through L98 and preserves every approved light slot', () => {
+    const result = generate('#0f6cbd', 'light');
 
-    for (const tone of EXPECTED_TONES) {
-      const lightColor = findColor(light, tone);
-      const darkColor = findColor(dark, tone);
-
-      expect(lightColor, `missing light K${tone}`).toBeDefined();
-      expect(darkColor, `missing dark K${tone}`).toBeDefined();
-      expect(darkColor?.nominalLightness).toBeCloseTo(
-        100 - (lightColor?.nominalLightness ?? 0),
-        12
-      );
+    for (const [tone, hex] of Object.entries(APPROVED_BLUE_LIGHT)) {
+      expect(findColor(result, Number(tone))?.hex, `L${tone}`).toBe(hex);
     }
+
+    expect(findColor(result, 96)).toBeUndefined();
+    expect(findColor(result, 97)).toBeUndefined();
+    expect(findColor(result, 98)).toBeUndefined();
+    expect([95, 99, 100].map((tone) => findColor(result, tone)?.hex)).toEqual([
+      '#001630',
+      '#000001',
+      '#000000'
+    ]);
   });
 
-  it('keeps the Kiskadee v1 light nominal targets frozen', () => {
+  it('keeps the approved light knots and evaluates hidden K coordinates continuously', () => {
     expect(EXPECTED_TONES.map((tone) => KISKADEE_LIGHT_NOMINAL_LIGHTNESS[tone])).toEqual(
       EXPECTED_LIGHT_NOMINALS
     );
+    expect(resolveCanonicalNominalLightness(96)).toBeCloseTo(15.99768, 5);
+    expect(resolveCanonicalNominalLightness(97)).toBeCloseTo(11.99826, 5);
+    expect(resolveCanonicalNominalLightness(98)).toBeCloseTo(7.99884, 5);
   });
 
-  it('preserves the normalized seed exactly and can anchor it at different theme slots', () => {
-    const light = generateKiskadeeScale({
-      seedHex: '#FFCCCC',
-      theme: 'light',
-      variant: 'standard'
-    });
-    const dark = generateKiskadeeScale({
-      seedHex: '#FFCCCC',
-      theme: 'dark',
-      variant: 'standard'
-    });
+  it('materializes a distinct dark D0 through D10 region without adding light tail slots', () => {
+    const dark = generate('#0f6cbd', 'dark');
+    const early = Array.from({ length: 11 }, (_, tone) => findColor(dark, tone));
 
-    expect(light.anchorTone).not.toBeNull();
-    expect(dark.anchorTone).not.toBeNull();
-    expect(light.anchorTone).not.toBe(dark.anchorTone);
-    expect(findColor(light, light.anchorTone ?? -1)?.hex).toBe('#ffcccc');
-    expect(findColor(dark, dark.anchorTone ?? -1)?.hex).toBe('#ffcccc');
-    expect(findColor(light, light.anchorTone ?? -1)?.flags.isAnchor).toBe(true);
-    expect(findColor(dark, dark.anchorTone ?? -1)?.flags.isAnchor).toBe(true);
-    expect(light.diagnostics.anchor?.hex).toBe('#ffcccc');
-    expect(dark.diagnostics.anchor?.hex).toBe('#ffcccc');
+    expect(early.every(Boolean)).toBe(true);
+    expect(new Set(early.map((color) => color?.hex)).size).toBe(11);
+    expect(early[0]?.hex).toBe('#000000');
+    expect(early[1]?.hex).not.toBe('#000000');
+    expect(findColor(dark, 95)?.oklch.l).toBeGreaterThan(90);
+    expect(findColor(dark, 99)?.oklch.l).toBeGreaterThan(98);
+    expect(findColor(dark, 100)?.hex).toBe('#ffffff');
+  });
+
+  it('preserves the normalized seed exactly once at independent L and D anchors', () => {
+    const light = generate('#FA8072', 'light');
+    const dark = generate('#FA8072', 'dark');
+
+    expect(light.anchorTone).toBe(20);
+    expect(dark.anchorTone).toBe(75);
+
+    for (const result of [light, dark]) {
+      expect(result.colors.filter((color) => color.flags.isAnchor)).toHaveLength(1);
+      expect(findColor(result, result.anchorTone ?? -1)?.hex).toBe('#fa8072');
+      expect(result.diagnostics.anchor?.hex).toBe('#fa8072');
+    }
   });
 
   it.each([
@@ -223,52 +224,35 @@ describe('generateKiskadeeScale', () => {
     ['fff', '#ffffff'],
     ['0F6CBD', '#0f6cbd'],
     ['ABCDEF', '#abcdef']
-  ])('normalizes supported input %s to %s', (seedHex, normalizedHex) => {
-    const result = generateKiskadeeScale({ seedHex, theme: 'light', variant: 'standard' });
-
-    expect(result.diagnostics.valid).toBe(true);
-    expect(result.anchorTone).not.toBeNull();
-    expect(findColor(result, result.anchorTone ?? -1)?.hex).toBe(normalizedHex);
-  });
-
-  it.each(THEMES)('maps absolute input colors directly to the matching %s cap', (theme) => {
-    for (const seedHex of ['#000000', '#ffffff'] as const) {
-      const result = generateKiskadeeScale({ seedHex, theme, variant: 'standard' });
-      const expectedTone = expectedCapTone(theme, seedHex);
-
+  ])('normalizes supported input %s to %s in both themes', (seedHex, normalizedHex) => {
+    for (const theme of THEMES) {
+      const result = generate(seedHex, theme);
       expect(result.diagnostics.valid).toBe(true);
-      expect(result.anchorTone).toBe(expectedTone);
-      expect(findColor(result, expectedTone)?.hex).toBe(seedHex);
-      expect(findColor(result, expectedTone)?.flags.isAnchor).toBe(true);
+      expect(findColor(result, result.anchorTone ?? -1)?.hex).toBe(normalizedHex);
     }
   });
 
-  it('selects the nearest quantized-feasible anchor and reports any relocation', () => {
-    const feasible = generateKiskadeeScale({
-      seedHex: '#3333ff',
-      theme: 'dark',
-      variant: 'standard'
-    });
-    const relocated = generateKiskadeeScale({
-      seedHex: '#6600ff',
-      theme: 'dark',
-      variant: 'standard'
-    });
+  it('maps black and white directly to the correct L/D caps', () => {
+    for (const theme of THEMES) {
+      for (const seedHex of ['#000000', '#ffffff'] as const) {
+        const result = generate(seedHex, theme);
+        const expectedTone =
+          theme === 'light' ? (seedHex === '#ffffff' ? 0 : 100) : seedHex === '#000000' ? 0 : 100;
 
-    expect(feasible.anchorTone).toBe(50);
-    expect(feasible.diagnostics.anchor).toMatchObject({
-      nominalNearestTone: 50,
-      relocated: false,
-      relocationReason: 'none'
-    });
-    expect(relocated.anchorTone).toBe(35);
-    expect(relocated.diagnostics.anchor).toMatchObject({
-      nominalNearestTone: 50,
-      relocated: true,
-      relocationReason: 'emitted-spacing'
-    });
-    expect(relocated.diagnostics.separationRelaxed).toBe(true);
-    expect(findColor(relocated, 35)?.hex).toBe('#6600ff');
+        expect(result.anchorTone).toBe(expectedTone);
+        expect(findColor(result, expectedTone)?.hex).toBe(seedHex);
+      }
+    }
+  });
+
+  it('keeps near-black seeds exact in the last light and first dark chromatic slots', () => {
+    const light = generate('#010101', 'light');
+    const dark = generate('#010101', 'dark');
+
+    expect(light.anchorTone).toBe(99);
+    expect(findColor(light, 99)?.hex).toBe('#010101');
+    expect(dark.anchorTone).toBe(1);
+    expect(findColor(dark, 1)?.hex).toBe('#010101');
   });
 
   it('preserves target lightness and hue while fitting out-of-gamut OKLCH chroma', () => {
@@ -283,12 +267,8 @@ describe('generateKiskadeeScale', () => {
     expect(emitted.l).toBeCloseTo(requested.l, 0);
   });
 
-  it('reports an emitted chroma cusp without altering the exact saturated anchor', () => {
-    const result = generateKiskadeeScale({
-      seedHex: '#0c02fc',
-      theme: 'dark',
-      variant: 'standard'
-    });
+  it('reports a light emitted chroma cusp without altering the exact saturated anchor', () => {
+    const result = generate('#0c02fc', 'light');
 
     expect(result.diagnostics.valid).toBe(true);
     expect(findColor(result, result.anchorTone ?? -1)?.hex).toBe('#0c02fc');
@@ -297,53 +277,52 @@ describe('generateKiskadeeScale', () => {
     expect(result.diagnostics.chromaPeakTone).toBe(result.anchorTone);
   });
 
-  it.each(THEMES)('is strictly monotonic, unique, in gamut, and vivid-safe in %s', (theme) => {
-    for (const seedHex of REGRESSION_SEEDS) {
-      const result = generateKiskadeeScale({ seedHex, theme, variant: 'standard' });
-      const foregroundHex = theme === 'light' ? '#ffffff' : '#000000';
+  it('starts each 3:1 guard at position 35 against the theme foreground', () => {
+    for (const theme of THEMES) {
+      const result = generate('#0f6cbd', theme);
+      const foreground = theme === 'light' ? '#ffffff' : '#000000';
+      const at35 = findColor(result, 35);
 
-      expect(result.diagnostics.valid, `${seedHex} ${theme}`).toBe(true);
-      expect(result.diagnostics.monotonic, `${seedHex} ${theme}`).toBe(true);
-      expect(isStrictlyMonotonic(result, theme), `${seedHex} ${theme}`).toBe(true);
-      expect(result.diagnostics.adjacentDuplicates, `${seedHex} ${theme}`).toEqual([]);
-
-      for (let index = 1; index < result.colors.length; index += 1) {
-        expect(
-          result.colors[index].hex,
-          `${seedHex} ${theme} K${result.colors[index].tone}`
-        ).not.toBe(result.colors[index - 1].hex);
-      }
-
-      for (const color of result.colors) {
-        expect(
-          parseHex(color.hex),
-          `${seedHex} ${theme} K${color.tone}: ${color.hex}`
-        ).not.toBeNull();
-        expect(Number.isFinite(color.oklch.l), `${seedHex} ${theme} K${color.tone} OKL L`).toBe(
-          true
-        );
-        expect(Number.isFinite(color.oklch.c), `${seedHex} ${theme} K${color.tone} OKL C`).toBe(
-          true
-        );
-        expect(Number.isFinite(color.oklch.h), `${seedHex} ${theme} K${color.tone} OKL H`).toBe(
-          true
-        );
-        expect(
-          color.gamutChromaLoss,
-          `${seedHex} ${theme} K${color.tone} gamut loss`
-        ).toBeGreaterThanOrEqual(0);
-      }
-
+      expect(contrastRatio(at35?.hex ?? foreground, foreground)).toBeGreaterThanOrEqual(3);
       for (const tone of VIVID_TONES) {
-        const color = findColor(result, tone);
-        expect(color, `${seedHex} ${theme} missing K${tone}`).toBeDefined();
         expect(
-          contrastRatio(color?.hex ?? '#000000', foregroundHex),
-          `${seedHex} ${theme} K${tone}`
+          contrastRatio(findColor(result, tone)?.hex ?? foreground, foreground),
+          `${theme} ${tone}`
         ).toBeGreaterThanOrEqual(3);
       }
+    }
+  });
 
-      expect(result.diagnostics.contrastFailures, `${seedHex} ${theme}`).toEqual([]);
+  it('is monotonic, unique, in gamut, and contrast-safe for regression seeds', () => {
+    for (const seedHex of REGRESSION_SEEDS) {
+      for (const theme of THEMES) {
+        const result = generate(seedHex, theme);
+        const context = `${seedHex} ${theme}`;
+        const foreground = theme === 'light' ? '#ffffff' : '#000000';
+
+        expect(result.diagnostics.valid, context).toBe(true);
+        expect(result.diagnostics.monotonic, context).toBe(true);
+        expect(isStrictlyMonotonic(result, theme), context).toBe(true);
+        expect(result.diagnostics.adjacentDuplicates, context).toEqual([]);
+        expect(new Set(result.colors.map((color) => color.hex)).size, context).toBe(
+          result.colors.length
+        );
+
+        for (const color of result.colors) {
+          expect(parseHex(color.hex), `${context} ${color.tone}`).not.toBeNull();
+          expect(Number.isFinite(color.oklch.l), `${context} ${color.tone} OKL L`).toBe(true);
+          expect(Number.isFinite(color.oklch.c), `${context} ${color.tone} OKL C`).toBe(true);
+          expect(Number.isFinite(color.oklch.h), `${context} ${color.tone} OKL H`).toBe(true);
+          expect(color.gamutChromaLoss, `${context} ${color.tone} gamut`).toBeGreaterThanOrEqual(0);
+        }
+
+        for (const tone of VIVID_TONES) {
+          expect(
+            contrastRatio(findColor(result, tone)?.hex ?? foreground, foreground),
+            `${context} ${tone}`
+          ).toBeGreaterThanOrEqual(3);
+        }
+      }
     }
   });
 
@@ -355,13 +334,14 @@ describe('generateKiskadeeScale', () => {
     '#0f6cbdff',
     '#12345',
     '#1234567'
-  ])('rejects invalid input %j without generating a fallback scale', (seedHex) => {
-    const result = generateKiskadeeScale({ seedHex, theme: 'light', variant: 'standard' });
-
-    expect(result.colors).toEqual([]);
-    expect(result.anchorTone).toBeNull();
-    expect(result.diagnostics.valid).toBe(false);
-    expect(result.diagnostics.error?.code).toBe('INVALID_HEX');
+  ])('rejects invalid input %j without generating fallback scales', (seedHex) => {
+    for (const theme of THEMES) {
+      const result = generate(seedHex, theme);
+      expect(result.colors).toEqual([]);
+      expect(result.anchorTone).toBeNull();
+      expect(result.diagnostics.valid).toBe(false);
+      expect(result.diagnostics.error?.code).toBe('INVALID_HEX');
+    }
   });
 
   it('preserves all invariants across an 11 x 11 x 11 RGB matrix in both themes', () => {
@@ -384,27 +364,23 @@ describe('generateKiskadeeScale', () => {
             .padStart(2, '0')}${blue.toString(16).padStart(2, '0')}`;
 
           for (const theme of THEMES) {
+            const result = generate(seedHex, theme);
+            const prefix = theme === 'light' ? 'L' : 'D';
             const context = `${seedHex} ${theme}`;
-            const result = generateKiskadeeScale({ seedHex, theme, variant: 'standard' });
+            const foreground = theme === 'light' ? '#ffffff' : '#000000';
 
             if (!result.diagnostics.valid) {
-              recordFailure(failures.generation, `${context}: ${result.diagnostics.error?.code}`);
+              recordFailure(failures.generation, context);
               continue;
             }
-
             if (
               result.colors.length !== EXPECTED_TONES.length ||
-              result.colors.some((color, index) => color.tone !== EXPECTED_TONES[index])
-            ) {
-              recordFailure(failures.structure, `${context}: incomplete or unordered grid`);
-              continue;
-            }
-
-            if (
+              result.colors.some((color, index) => color.tone !== EXPECTED_TONES[index]) ||
               findColor(result, 0)?.hex !== expectedCapHex(theme, 0) ||
               findColor(result, 100)?.hex !== expectedCapHex(theme, 100)
             ) {
-              recordFailure(failures.structure, `${context}: invalid absolute caps`);
+              recordFailure(failures.structure, context);
+              continue;
             }
 
             const anchor =
@@ -412,55 +388,36 @@ describe('generateKiskadeeScale', () => {
             if (!anchor || anchor.hex !== seedHex || !anchor.flags.isAnchor) {
               recordFailure(
                 failures.anchor,
-                `${context}: K${result.anchorTone ?? 'null'} emitted ${anchor?.hex ?? 'nothing'}`
+                `${context}: ${prefix}${result.anchorTone ?? 'null'} ${anchor?.hex ?? 'missing'}`
               );
             }
-
             if (!result.diagnostics.monotonic || !isStrictlyMonotonic(result, theme)) {
               recordFailure(failures.monotonicity, context);
             }
-
-            for (let index = 1; index < result.colors.length; index += 1) {
-              const previous = result.colors[index - 1];
-              const current = result.colors[index];
-
-              if (previous.hex === current.hex) {
-                recordFailure(
-                  failures.duplicates,
-                  `${context}: K${previous.tone}/K${current.tone} ${current.hex}`
-                );
-              }
+            if (new Set(result.colors.map((color) => color.hex)).size !== result.colors.length) {
+              recordFailure(failures.duplicates, context);
             }
 
             for (const color of result.colors) {
-              const validHex = parseHex(color.hex) !== null;
-              const finiteCoordinates =
-                Number.isFinite(color.oklch.l) &&
-                Number.isFinite(color.oklch.c) &&
-                Number.isFinite(color.oklch.h);
-
               if (
-                !validHex ||
-                !finiteCoordinates ||
+                parseHex(color.hex) === null ||
+                !Number.isFinite(color.oklch.l) ||
+                !Number.isFinite(color.oklch.c) ||
+                !Number.isFinite(color.oklch.h) ||
                 !Number.isFinite(color.gamutChromaLoss) ||
                 color.gamutChromaLoss < 0
               ) {
-                recordFailure(
-                  failures.gamut,
-                  `${context}: K${color.tone} ${color.hex} loss=${color.gamutChromaLoss}`
-                );
+                recordFailure(failures.gamut, `${context}: ${prefix}${color.tone}`);
               }
             }
 
-            const foregroundHex = theme === 'light' ? '#ffffff' : '#000000';
             for (const tone of VIVID_TONES) {
               const color = findColor(result, tone);
-              const ratio = color ? contrastRatio(color.hex, foregroundHex) : 0;
-
+              const ratio = color ? contrastRatio(color.hex, foreground) : 0;
               if (ratio < 3) {
                 recordFailure(
                   failures.contrast,
-                  `${context}: K${tone} ${color?.hex ?? 'missing'} ratio=${ratio.toFixed(4)}`
+                  `${context}: ${prefix}${tone} ${color?.hex ?? 'missing'} ${ratio.toFixed(4)}`
                 );
               }
             }
@@ -473,8 +430,8 @@ describe('generateKiskadeeScale', () => {
     expectNoFailures('structure', failures.structure);
     expectNoFailures('exact anchor', failures.anchor);
     expectNoFailures('monotonicity', failures.monotonicity);
-    expectNoFailures('adjacent duplicates', failures.duplicates);
+    expectNoFailures('duplicates', failures.duplicates);
     expectNoFailures('sRGB gamut', failures.gamut);
-    expectNoFailures('vivid contrast', failures.contrast);
+    expectNoFailures('contrast', failures.contrast);
   }, 60_000);
 });

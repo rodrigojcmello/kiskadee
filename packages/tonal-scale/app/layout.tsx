@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
   title: 'Kiskadee Tonal Scale',
-  description: 'Generate and validate the canonical Kiskadee tonal scale.'
+  description: 'Generate and validate the Kiskadee light and dark tonal system.'
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
