@@ -1,9 +1,14 @@
-import { generateKiskadeeScale } from '../src/kiskadee-tonal-scale.ts';
+import {
+  generateKiskadeeScale,
+  isKiskadeeTonalProfile,
+  type KiskadeeTonalProfile
+} from '../src/kiskadee-tonal-scale.ts';
 
 type ThemeArgument = 'light' | 'dark' | 'both';
 
-const usage = 'Usage: pnpm generate <hex> [light|dark|both]';
-const [seedHex, themeArgument = 'both', ...unexpectedArguments] = process.argv.slice(2);
+const usage = 'Usage: pnpm generate <hex> [light|dark|both] [balanced|muted-darks]';
+const [seedHex, themeArgument = 'both', profileArgument = 'balanced', ...unexpectedArguments] =
+  process.argv.slice(2);
 
 if (!seedHex || unexpectedArguments.length > 0) {
   console.error(usage);
@@ -12,11 +17,15 @@ if (!seedHex || unexpectedArguments.length > 0) {
   console.error(`Invalid theme: ${themeArgument}`);
   console.error(usage);
   process.exitCode = 1;
+} else if (!isKiskadeeTonalProfile(profileArgument)) {
+  console.error(`Invalid tonal profile: ${profileArgument}`);
+  console.error(usage);
+  process.exitCode = 1;
 } else {
   const themes = themeArgument === 'both' ? (['light', 'dark'] as const) : [themeArgument];
   for (const [index, theme] of themes.entries()) {
     if (index > 0) console.log('');
-    if (!printScale(seedHex, theme)) break;
+    if (!printScale(seedHex, theme, profileArgument)) break;
   }
 }
 
@@ -24,11 +33,15 @@ function isThemeArgument(value: string): value is ThemeArgument {
   return value === 'light' || value === 'dark' || value === 'both';
 }
 
-function printScale(seedHex: string, theme: 'light' | 'dark'): boolean {
+function printScale(
+  seedHex: string,
+  theme: 'light' | 'dark',
+  profile: KiskadeeTonalProfile
+): boolean {
   const result = generateKiskadeeScale({
     seedHex,
     theme,
-    variant: 'standard'
+    profile
   });
 
   if (!result.diagnostics.valid) {
@@ -41,7 +54,7 @@ function printScale(seedHex: string, theme: 'light' | 'dark'): boolean {
   const prefix = theme === 'light' ? 'L' : 'D';
 
   console.log(
-    `Kiskadee v1 | ${theme} scale | seed ${normalizedSeed} | anchor ${prefix}${result.anchorTone}`
+    `Kiskadee v1 | ${theme} scale | profile ${profile} | seed ${normalizedSeed} | anchor ${prefix}${result.anchorTone}`
   );
 
   for (const color of result.colors) {

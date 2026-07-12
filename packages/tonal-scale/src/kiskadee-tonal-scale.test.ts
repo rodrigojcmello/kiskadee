@@ -1,11 +1,14 @@
+import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 
+import { BALANCED_V1_GOLDEN_SCALES, BALANCED_V1_MATRIX_HASHES } from './balanced-v1.golden';
 import { hexToOklch, oklchToSrgbHex } from './color-math';
 import {
   generateKiskadeeScale,
   KISKADEE_LIGHT_NOMINAL_LIGHTNESS,
   KISKADEE_TONES,
   type KiskadeeTheme,
+  type KiskadeeTonalProfile,
   resolveCanonicalNominalLightness
 } from './kiskadee-tonal-scale';
 
@@ -75,6 +78,7 @@ const REGRESSION_SEEDS = [
   '#bdbdbd',
   '#424242'
 ] as const;
+const PROFILE_COMPARISON_EPSILON = 1e-6;
 
 type GeneratedScale = ReturnType<typeof generateKiskadeeScale>;
 type FailureBucket = { total: number; samples: string[] };
@@ -94,7 +98,15 @@ function expectNoFailures(label: string, bucket: FailureBucket): void {
 }
 
 function generate(seedHex: string, theme: KiskadeeTheme): GeneratedScale {
-  return generateKiskadeeScale({ seedHex, theme, variant: 'standard' });
+  return generateWithProfile(seedHex, theme, 'balanced');
+}
+
+function generateWithProfile(
+  seedHex: string,
+  theme: KiskadeeTheme,
+  profile: KiskadeeTonalProfile
+): GeneratedScale {
+  return generateKiskadeeScale({ seedHex, theme, profile });
 }
 
 function findColor(result: GeneratedScale, tone: number) {
@@ -153,6 +165,21 @@ function expectedCapHex(theme: KiskadeeTheme, tone: 0 | 100): string {
 }
 
 describe('generateKiskadeeScale', () => {
+  it('keeps the approved Balanced v1 scales byte-for-byte stable', () => {
+    for (const [seedHex, themes] of Object.entries(BALANCED_V1_GOLDEN_SCALES)) {
+      for (const theme of THEMES) {
+        const result = generate(seedHex, theme);
+        const expected = themes[theme];
+
+        expect(result.anchorTone, `${seedHex} ${theme} anchor`).toBe(expected.anchorTone);
+        expect(
+          result.colors.map((color) => color.hex),
+          `${seedHex} ${theme} emitted colors`
+        ).toEqual(expected.hexes);
+      }
+    }
+  });
+
   it.each(THEMES)('emits the 36-slot %s grid with theme-relative caps', (theme) => {
     const result = generate('#0f6cbd', theme);
 
@@ -277,6 +304,91 @@ describe('generateKiskadeeScale', () => {
     expect(result.diagnostics.chromaPeakTone).toBe(result.anchorTone);
   });
 
+  it('keeps Balanced geometry and the non-dark side immutable in Muted Darks', () => {
+    for (const seedHex of ['#0f6cbd', '#8e44ad', '#ffb300'] as const) {
+      const seedLightness = hexToOklch(seedHex).l;
+
+      for (const theme of THEMES) {
+        const balanced = generateWithProfile(seedHex, theme, 'balanced');
+        const muted = generateWithProfile(seedHex, theme, 'muted-darks');
+        const context = `${seedHex} ${theme}`;
+
+        expect(balanced.diagnostics.profile, `${context} Balanced profile`).toBe('balanced');
+        expect(balanced.diagnostics.profileChromaAdjustedCount, context).toBe(0);
+        expect(balanced.diagnostics.maxProfileChromaReduction, context).toBe(0);
+        expect(muted.diagnostics.profile, `${context} Muted profile`).toBe('muted-darks');
+        expect(muted.diagnostics.valid, context).toBe(true);
+        expect(muted.anchorTone, `${context} anchor tone`).toBe(balanced.anchorTone);
+        expect(
+          muted.colors.map((color) => color.tone),
+          `${context} grid`
+        ).toEqual(balanced.colors.map((color) => color.tone));
+
+        for (let index = 0; index < balanced.colors.length; index += 1) {
+          const balancedColor = balanced.colors[index];
+          const mutedColor = muted.colors[index];
+          const toneContext = `${context} ${theme === 'light' ? 'L' : 'D'}${balancedColor.tone}`;
+
+          expect(mutedColor.nominalLightness, `${toneContext} nominal lightness`).toBe(
+            balancedColor.nominalLightness
+          );
+          expect(mutedColor.targetLightness, `${toneContext} target lightness`).toBe(
+            balancedColor.targetLightness
+          );
+
+          if (
+            balancedColor.flags.isCap ||
+            balancedColor.flags.isAnchor ||
+            balancedColor.targetLightness >= seedLightness - PROFILE_COMPARISON_EPSILON
+          ) {
+            expect(mutedColor.hex, `${toneContext} protected color`).toBe(balancedColor.hex);
+          } else {
+            expect(mutedColor.oklch.c, `${toneContext} chroma`).toBeLessThanOrEqual(
+              balancedColor.oklch.c + PROFILE_COMPARISON_EPSILON
+            );
+          }
+        }
+
+        expect(findColor(muted, 0)?.hex, `${context} first cap`).toBe(expectedCapHex(theme, 0));
+        expect(findColor(muted, 100)?.hex, `${context} last cap`).toBe(expectedCapHex(theme, 100));
+        expect(findColor(muted, muted.anchorTone ?? -1)?.hex, `${context} exact anchor`).toBe(
+          seedHex
+        );
+        expect(muted.diagnostics.anchorChromaProtected, context).toBe(true);
+        expect(muted.diagnostics.profileChromaAdjustedCount, context).toBeGreaterThan(0);
+        expect(muted.diagnostics.maxProfileChromaReduction, context).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('does not introduce chroma changes for a neutral seed', () => {
+    for (const theme of THEMES) {
+      const balanced = generateWithProfile('#808080', theme, 'balanced');
+      const muted = generateWithProfile('#808080', theme, 'muted-darks');
+
+      expect(muted.diagnostics.valid, theme).toBe(true);
+      expect(muted.diagnostics.profile, theme).toBe('muted-darks');
+      expect(muted.anchorTone, theme).toBe(balanced.anchorTone);
+      expect(muted.colors, theme).toEqual(balanced.colors);
+      expect(muted.diagnostics.profileChromaAdjustedCount, theme).toBe(0);
+      expect(muted.diagnostics.maxProfileChromaReduction, theme).toBe(0);
+    }
+  });
+
+  it('rejects unsupported tonal profiles without generating a fallback scale', () => {
+    const result = generateKiskadeeScale({
+      seedHex: '#0f6cbd',
+      theme: 'light',
+      profile: 'unknown-profile' as KiskadeeTonalProfile
+    });
+
+    expect(result.colors).toEqual([]);
+    expect(result.anchorTone).toBeNull();
+    expect(result.diagnostics.valid).toBe(false);
+    expect(result.diagnostics.profile).toBeNull();
+    expect(result.diagnostics.error?.code).toBe('UNSUPPORTED_PROFILE');
+  });
+
   it('starts each 3:1 guard at position 35 against the theme foreground', () => {
     for (const theme of THEMES) {
       const result = generate('#0f6cbd', theme);
@@ -344,7 +456,7 @@ describe('generateKiskadeeScale', () => {
     }
   });
 
-  it('preserves all invariants across an 11 x 11 x 11 RGB matrix in both themes', () => {
+  it('preserves Balanced and Muted Darks invariants across an 11 x 11 x 11 RGB matrix', () => {
     const channelValues = [0, 26, 51, 77, 102, 128, 153, 179, 204, 230, 255] as const;
     const failures = {
       generation: createFailureBucket(),
@@ -354,6 +466,23 @@ describe('generateKiskadeeScale', () => {
       duplicates: createFailureBucket(),
       gamut: createFailureBucket(),
       contrast: createFailureBucket()
+    };
+    const mutedFailures = {
+      generation: createFailureBucket(),
+      structure: createFailureBucket(),
+      geometry: createFailureBucket(),
+      anchor: createFailureBucket(),
+      nonDarkIdentity: createFailureBucket(),
+      chroma: createFailureBucket(),
+      monotonicity: createFailureBucket(),
+      duplicates: createFailureBucket(),
+      gamut: createFailureBucket(),
+      contrast: createFailureBucket(),
+      darkSurfaceContrast: createFailureBucket()
+    };
+    const balancedHashes = {
+      light: createHash('sha256'),
+      dark: createHash('sha256')
     };
 
     for (const red of channelValues) {
@@ -368,6 +497,11 @@ describe('generateKiskadeeScale', () => {
             const prefix = theme === 'light' ? 'L' : 'D';
             const context = `${seedHex} ${theme}`;
             const foreground = theme === 'light' ? '#ffffff' : '#000000';
+            balancedHashes[theme].update(
+              `${seedHex}|${result.anchorTone}|${result.colors
+                .map((color) => `${color.tone}:${color.hex}`)
+                .join(',')}\n`
+            );
 
             if (!result.diagnostics.valid) {
               recordFailure(failures.generation, context);
@@ -421,6 +555,119 @@ describe('generateKiskadeeScale', () => {
                 );
               }
             }
+
+            const muted = generateWithProfile(seedHex, theme, 'muted-darks');
+            const seedLightness = hexToOklch(seedHex).l;
+
+            if (!muted.diagnostics.valid || muted.diagnostics.profile !== 'muted-darks') {
+              recordFailure(
+                mutedFailures.generation,
+                `${context}: valid=${muted.diagnostics.valid} profile=${String(
+                  muted.diagnostics.profile
+                )}`
+              );
+              continue;
+            }
+            if (
+              muted.colors.length !== EXPECTED_TONES.length ||
+              muted.colors.some((color, index) => color.tone !== EXPECTED_TONES[index]) ||
+              findColor(muted, 0)?.hex !== expectedCapHex(theme, 0) ||
+              findColor(muted, 100)?.hex !== expectedCapHex(theme, 100)
+            ) {
+              recordFailure(mutedFailures.structure, context);
+              continue;
+            }
+            if (
+              muted.anchorTone !== result.anchorTone ||
+              muted.colors.some(
+                (color, index) =>
+                  color.nominalLightness !== result.colors[index].nominalLightness ||
+                  color.targetLightness !== result.colors[index].targetLightness
+              )
+            ) {
+              recordFailure(mutedFailures.geometry, context);
+            }
+
+            const mutedAnchor =
+              muted.anchorTone === null ? undefined : findColor(muted, muted.anchorTone);
+            if (!mutedAnchor || mutedAnchor.hex !== seedHex || !mutedAnchor.flags.isAnchor) {
+              recordFailure(
+                mutedFailures.anchor,
+                `${context}: ${prefix}${muted.anchorTone ?? 'null'} ${
+                  mutedAnchor?.hex ?? 'missing'
+                }`
+              );
+            }
+            if (!muted.diagnostics.monotonic || !isStrictlyMonotonic(muted, theme)) {
+              recordFailure(mutedFailures.monotonicity, context);
+            }
+            if (new Set(muted.colors.map((color) => color.hex)).size !== muted.colors.length) {
+              recordFailure(mutedFailures.duplicates, context);
+            }
+
+            for (let index = 0; index < muted.colors.length; index += 1) {
+              const balancedColor = result.colors[index];
+              const mutedColor = muted.colors[index];
+              const toneContext = `${context}: ${prefix}${mutedColor.tone}`;
+
+              if (
+                parseHex(mutedColor.hex) === null ||
+                !Number.isFinite(mutedColor.oklch.l) ||
+                !Number.isFinite(mutedColor.oklch.c) ||
+                !Number.isFinite(mutedColor.oklch.h) ||
+                !Number.isFinite(mutedColor.gamutChromaLoss) ||
+                mutedColor.gamutChromaLoss < 0
+              ) {
+                recordFailure(mutedFailures.gamut, toneContext);
+              }
+
+              const physicallyNonDark =
+                balancedColor.targetLightness >= seedLightness - PROFILE_COMPARISON_EPSILON;
+              if (
+                (balancedColor.flags.isCap || balancedColor.flags.isAnchor || physicallyNonDark) &&
+                mutedColor.hex !== balancedColor.hex
+              ) {
+                recordFailure(
+                  mutedFailures.nonDarkIdentity,
+                  `${toneContext} ${balancedColor.hex} -> ${mutedColor.hex}`
+                );
+              }
+
+              const physicallyDark =
+                !balancedColor.flags.isCap &&
+                !balancedColor.flags.isAnchor &&
+                balancedColor.targetLightness < seedLightness - PROFILE_COMPARISON_EPSILON;
+              if (
+                physicallyDark &&
+                mutedColor.oklch.c > balancedColor.oklch.c + PROFILE_COMPARISON_EPSILON
+              ) {
+                recordFailure(
+                  mutedFailures.chroma,
+                  `${toneContext} ${balancedColor.oklch.c.toFixed(6)} -> ${mutedColor.oklch.c.toFixed(
+                    6
+                  )}`
+                );
+              }
+            }
+
+            for (const tone of VIVID_TONES) {
+              const color = findColor(muted, tone);
+              const ratio = color ? contrastRatio(color.hex, foreground) : 0;
+              if (ratio < 3) {
+                recordFailure(
+                  mutedFailures.contrast,
+                  `${context}: ${prefix}${tone} ${color?.hex ?? 'missing'} ${ratio.toFixed(4)}`
+                );
+              }
+            }
+
+            if (
+              theme === 'dark' &&
+              (!muted.diagnostics.darkSurfaceContrastMonotonic ||
+                muted.diagnostics.darkSurfaceContrastFailures.length > 0)
+            ) {
+              recordFailure(mutedFailures.darkSurfaceContrast, context);
+            }
           }
         }
       }
@@ -433,5 +680,18 @@ describe('generateKiskadeeScale', () => {
     expectNoFailures('duplicates', failures.duplicates);
     expectNoFailures('sRGB gamut', failures.gamut);
     expectNoFailures('contrast', failures.contrast);
+    expectNoFailures('Muted generation', mutedFailures.generation);
+    expectNoFailures('Muted structure', mutedFailures.structure);
+    expectNoFailures('Muted Balanced geometry', mutedFailures.geometry);
+    expectNoFailures('Muted exact anchor', mutedFailures.anchor);
+    expectNoFailures('Muted protected non-dark colors', mutedFailures.nonDarkIdentity);
+    expectNoFailures('Muted monotonicity', mutedFailures.monotonicity);
+    expectNoFailures('Muted duplicates', mutedFailures.duplicates);
+    expectNoFailures('Muted sRGB gamut', mutedFailures.gamut);
+    expectNoFailures('Muted vivid contrast', mutedFailures.contrast);
+    expectNoFailures('Muted dark-surface contrast', mutedFailures.darkSurfaceContrast);
+    expect(balancedHashes.light.digest('hex')).toBe(BALANCED_V1_MATRIX_HASHES.light);
+    expect(balancedHashes.dark.digest('hex')).toBe(BALANCED_V1_MATRIX_HASHES.dark);
+    expectNoFailures('Muted chroma ceiling', mutedFailures.chroma);
   }, 60_000);
 });

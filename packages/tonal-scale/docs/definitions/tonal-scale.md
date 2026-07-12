@@ -1,11 +1,24 @@
 # Kiskadee Tonal Scale v1
 
-Status: canonical definition for Milestone 1.
+Status: canonical definition. `Balanced` is frozen; `Muted Darks` is a
+candidate profile under validation.
 
 `@kiskadee/tonal-scale` generates a coordinated light and dark tonal system
 from one exact sRGB source color. This document defines the contract that the
 generator and its validation UI must implement before preset integration is
 considered.
+
+## Terminology
+
+Kiskadee has two independent choices:
+
+- the **theme** is `light` or `dark` and determines the L or D orientation,
+  caps, lightness distribution, and contrast guard;
+- the **tonal profile** is `balanced` or `muted-darks` and determines only the
+  chroma treatment applied to the already generated theme scale.
+
+In this document, "profile" without a qualifier means tonal profile. Light and
+Dark are themes, not alternate tonal profiles.
 
 ## Coordinate Model
 
@@ -13,22 +26,22 @@ Kiskadee separates the internal physical coordinate from theme-relative public
 positions:
 
 - `K` is the internal continuous coordinate from white at K0 to black at K100.
-- `L` identifies a public position in the light profile.
-- `D` identifies a public position in the dark profile.
+- `L` identifies a public position in the Light theme.
+- `D` identifies a public position in the Dark theme.
 
 K is a generation and diagnostic concept, not a public theme palette. L and D
 are the scales that consumers inspect and will eventually export. Their numbers
-describe distance from the theme background, so both profiles progress from
+describe distance from the theme background, so both themes progress from
 position 0 to position 100:
 
-| Profile | Position 0 | Position 100 |
+| Theme | Position 0 | Position 100 |
 | --- | --- | --- |
 | Light | L0 = `#ffffff` | L100 = `#000000` |
 | Dark | D0 = `#000000` | D100 = `#ffffff` |
 
 Exact inversion remains only a rejected baseline for comparison. Kiskadee v1
-does not derive the public D profile by reversing or uniformly remapping the
-public L profile. The approved Light profile remains unchanged. Dark samples
+does not derive the public D scale by reversing or uniformly remapping the
+public L scale. The approved Balanced Light theme remains unchanged. Dark samples
 the same seed-derived hue/chroma trajectory with its own functional luminance
 and contrast distribution.
 
@@ -51,37 +64,62 @@ Dark:  D0, D1, D2, D3, D4, D5 ... D10
 ```
 
 L96, L97, L98, D96, D97, and D98 do not exist as public slots. L99 is the
-darkest chromatic light-profile color and L100 is absolute black. Internal K
-coordinates such as K91 through K98 remain evaluable when the dark profile
+darkest chromatic Light color and L100 is absolute black. Internal K
+coordinates such as K91 through K98 remain evaluable when the Dark theme
 needs dense early samples; internal existence does not make them public L or D
 slots.
 
 D0 is the absolute `#000000` cap and carries no seed hue or chroma. D1 is the
-first chromatic dark-profile position and must remain emitted-distinct from D0.
+first chromatic Dark position and must remain emitted-distinct from D0.
 Its near-black separation is deliberately subtle: D1 establishes the family
 immediately above absolute black rather than matching the larger functional
 steps used later in the ramp.
 
 ## Input And Exact Anchors
 
-The generator accepts one `seedHex` and a requested theme profile. It accepts
-`rgb`, `#rgb`, `rrggbb`, or `#rrggbb` hexadecimal sRGB notation and normalizes
-the seed to lowercase `#rrggbb`. Invalid input fails explicitly and never falls
-back to another color.
+The generator accepts one `seedHex`, a requested theme, and a tonal profile. It
+accepts `rgb`, `#rgb`, `rrggbb`, or `#rrggbb` hexadecimal sRGB notation and
+normalizes the seed to lowercase `#rrggbb`. Invalid input fails explicitly and
+never falls back to another color.
 
-Each profile selects its own nearest feasible public position. The selected
+Each theme selects its own nearest feasible public position. The selected
 position must emit the normalized input hex byte for byte. Light and dark
 anchors can therefore have different numbers, such as L20 and D75, while both
 preserve the same input color. White and black resolve directly to the
-appropriate profile caps.
+appropriate theme caps.
 
 A public position is feasible only when the remaining emitted eight-bit sRGB
-colors can preserve caps, strict monotonicity, uniqueness, and the profile's
+colors can preserve caps, strict monotonicity, uniqueness, and the theme's
 contrast guard. If quantization makes the nominally nearest position
 impossible, the generator uses the closest feasible position and reports the
 relocation reason.
 
-## Light Profile
+## Balanced Canonical Barrier
+
+`balanced` is the approved Kiskadee v1 tonal profile. Its emitted output is
+canonical and must not change as a side effect of adding another profile,
+refactoring, formatting, or improving diagnostics.
+
+The source-controlled golden barrier in `src/balanced-v1.golden.ts` has two
+layers:
+
+- exact Light and Dark scales, including anchor positions, for `#0f6cbd`,
+  `#8e44ad`, `#ffb300`, `#ffab00`, and `#808080`;
+- SHA-256 hashes of the complete RGB `11³` matrix for each theme, serialized
+  in channel order with every seed, anchor, position, and emitted hex.
+
+The approved matrix hashes are:
+
+```txt
+Light: da9448b7165806c6f19c1b885fab0e726c4a7636500342f9cd8496572c882286
+Dark:  0c552c49683a49e138c3670034da129be207343b0730abce2737b8de3f8b146c
+```
+
+These values are approval locks, not snapshots to refresh during routine work.
+Changing a golden scale or either hash means changing the canonical Balanced
+contract and requires explicit product approval.
+
+## Light Theme
 
 The approved light nominal OKL lightness knots are frozen from the former
 Balanced experiment for the `#0f6cbd` reference blue. The previously approved
@@ -93,15 +131,15 @@ reach at least `3:1` contrast against white. L35 is the first guarded position;
 it is not forced to equal exactly `3:1` and can exceed the threshold when the
 nominal curve or exact anchor requires it.
 
-Dark-profile decisions do not change any Light nominal target,
+Dark-theme decisions do not change any Light nominal target,
 anchor-selection rule, emitted color, contrast guard, or continuity behavior.
-The approved Light profile remains the Milestone 1 reference.
+The approved Light theme remains the Milestone 1 reference.
 
-## Dark Profile
+## Dark Theme
 
 Dark progresses monotonically from black to white and uses the same
 seed-derived hue/chroma trajectory as Light. Its lightness distribution is
-theme-specific and is not an exact inversion of the Light profile.
+theme-specific and is not an exact inversion of the Light theme.
 
 1. D0 is the absolute `#000000` cap.
 2. D1 is the first chromatic near-black position. Its distinction from D0 is
@@ -136,23 +174,83 @@ foreground/background pair.
 
 ## Shared Color Generation
 
-Both profiles use OKLCH for lightness, chroma, and hue. A single continuous
+Both themes use OKLCH for lightness, chroma, and hue. A single continuous
 chroma function is derived from the exact seed. Colors outside sRGB are fitted
 by reducing chroma while preserving target lightness and hue as far as the
-target gamut permits. Theme profiles alter where this trajectory is sampled;
+target gamut permits. Themes alter where this trajectory is sampled;
 they do not introduce hue-specific branches or recolor the seed.
 
-Light keeps its frozen sampling contract. Only the Dark profile owns the
+Light keeps its frozen sampling contract. Only the Dark theme owns the
 functional D2 through D30 luminance/contrast mapping described above.
 
 Generation resolves constraints in this order:
 
 1. theme-relative absolute caps;
 2. exact input anchor;
-3. monotonic OKL lightness in the profile direction;
-4. profile contrast guard;
+3. monotonic OKL lightness in the theme direction;
+4. theme contrast guard;
 5. best attainable separation between emitted neighbors;
-6. minimum deviation from the profile nominal curve.
+6. minimum deviation from the theme nominal curve.
+
+## Tonal Profiles
+
+### Balanced
+
+`balanced` is the default and canonical profile. It emits the approved theme
+scales without a profile-specific post-process. The canonical barrier above
+protects it byte for byte.
+
+### Muted Darks
+
+`muted-darks` is a candidate derived from Balanced. It runs only after the full
+Balanced geometry has been resolved. It may reduce OKL chroma only for colors
+whose physical OKL lightness is below the exact seed lightness. The rule is
+physical, not numeric: it applies to the dark side of both the L and D scales,
+regardless of the public slot number.
+
+Muted Darks must preserve from Balanced:
+
+- the exact absolute caps;
+- the exact seed and its L or D anchor position;
+- every target lightness and the resulting monotonic direction;
+- the seed-derived requested hue;
+- Light and Dark contrast guards;
+- public positions and uniqueness.
+
+The initial envelope uses these profile constants:
+
+```txt
+referenceLightness: 20
+minimumChromaRatio: 0.25
+gamma: 0.8
+```
+
+The ratio is `1` at the seed and moves smoothly toward the dark side. For a
+seed above OKL lightness 20, it reaches `0.25` at that reference point and then
+approaches zero at black. For a seed at or below the reference point, the same
+smooth function is compressed between the seed and black. Neutral inputs do
+not acquire chroma.
+
+Eight-bit sRGB conversion can change emitted lightness, chroma, and contrast
+even when the requested OKL lightness is fixed. Therefore a candidate that
+leaves its Balanced lightness cell, breaks a theme contrast guard, leaves the
+canonical D0-D35 black-contrast cell, or would emit more chroma than Balanced
+restores only as much chroma toward its Balanced endpoint as needed to satisfy
+all constraints. A complete restoration is legal and means preserving a
+canonical invariant took precedence over visible attenuation at that position.
+Diagnostics report the final emitted chroma reduction and any
+constraint-driven restoration separately from gamut fitting.
+
+The profile is inspired by the reduced chroma of physically dark tones in
+[Microsoft Fluent 2 Web](https://www.figma.com/design/qdtPPQysSX0kHGGcDpEXzw/Microsoft-Fluent-2-Web--Community-?node-id=9738-4937&t=VKTTOhGXjS8MYP2E-11).
+This is directional evidence only: Kiskadee does not copy Fluent's exact blue,
+slot count, or curve.
+
+The rejected lab used the display name `Balanced` for an experimental
+`Auto Soft Dark + 3:1 Vivid` profile. That historical profile is archived under
+`docs/rejected/legacy-engine/` and is not the current contract. Current
+`balanced` means the frozen approved output; the separate `muted-darks` id owns
+the new dark-chroma behavior.
 
 ## Emitted Curve Continuity
 
@@ -162,10 +260,10 @@ changes in emitted chroma slope around each exact anchor. Absolute caps are
 excluded from local curve-rhythm metrics.
 
 When a saturated seed at an sRGB gamut cusp produces a detectable isolated
-discontinuity, the generator may apply bounded local fairing to profile sample
+discontinuity, the generator may apply bounded local fairing to theme sample
 lightnesses. Caps and the exact seed remain immutable. A repair is accepted only
 when it improves emitted continuity while preserving monotonicity, uniqueness,
-valid sRGB output, the profile contrast guard, and attainable spacing. All
+valid sRGB output, the theme contrast guard, and attainable spacing. All
 nominal deviations remain visible in diagnostics.
 
 `#ffb300` and `#ffab00` remain regression references for saturated yellow gamut
@@ -186,6 +284,8 @@ Light and dark diagnostics are independent and must report:
 - L35-L95 contrast failures against white or D35-D95 failures against black,
   without treating either guard as foreground selection;
 - gamut chroma reduction;
+- active tonal profile, profile chroma reduction, constraint-driven chroma
+  restoration, and whether the exact anchor was protected;
 - nominal-lightness deviation;
 - emitted Delta E, chroma prominence, and any fairing decision;
 - any relaxed spacing or unsatisfied invariant.
@@ -194,11 +294,20 @@ Generation must never hide a relaxation.
 
 ## Milestone Boundary
 
-Milestone 1 contains only the `standard` Kiskadee v1 variant. A future chroma
-attenuation option for physically dark colors remains deferred until the L/D
-profiles are visually approved.
+Milestone 1 approved and froze the `balanced` profile. The `muted-darks`
+candidate is the next isolated milestone and cannot alter Balanced while it is
+implemented or evaluated.
 
 Export formats, public package APIs, preset integration, preset type changes,
 and preset migration are explicitly deferred. The package remains a private
-generator and validation application. The local `generate` CLI prints L and D
-scales for inspection only; it does not write preset artifacts.
+generator and validation application. The local `generate` CLI accepts
+`balanced` or `muted-darks` and prints L and D scales for inspection only; it
+does not write preset artifacts.
+
+```txt
+pnpm generate <hex> [light|dark|both] [balanced|muted-darks]
+```
+
+The omitted theme defaults to `both`; the omitted tonal profile defaults to
+`balanced`. The CLI rejects unknown themes or profiles explicitly and includes
+the active profile in each scale header.

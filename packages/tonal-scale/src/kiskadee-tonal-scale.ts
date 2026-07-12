@@ -23,7 +23,26 @@ export const KISKADEE_TONES = [
 
 export type KiskadeeTone = (typeof KISKADEE_TONES)[number];
 export type KiskadeeTheme = 'light' | 'dark';
-export type KiskadeeVariant = 'standard';
+export const KISKADEE_TONAL_PROFILES = [
+  {
+    id: 'balanced',
+    label: 'Balanced',
+    description: 'Canonical Kiskadee v1 chroma trajectory.'
+  },
+  {
+    id: 'muted-darks',
+    label: 'Muted Darks',
+    description: 'Lower chroma on the physically dark side of the exact seed.'
+  }
+] as const;
+
+export type KiskadeeTonalProfile = (typeof KISKADEE_TONAL_PROFILES)[number]['id'];
+
+export const MUTED_DARKS_PARAMETERS = {
+  referenceLightness: 20,
+  minimumChromaRatio: 0.25,
+  gamma: 0.8
+} as const;
 
 export const KISKADEE_LIGHT_NOMINAL_LIGHTNESS = {
   0: 100,
@@ -71,6 +90,8 @@ export type KiskadeeColorFlags = {
   contrastAdjusted: boolean;
   gamutMapped: boolean;
   separationRelaxed: boolean;
+  profileChromaAdjusted: boolean;
+  profileConstraintRestored: boolean;
 };
 
 export type KiskadeeScaleColor = {
@@ -81,11 +102,13 @@ export type KiskadeeScaleColor = {
   nominalLightness: number;
   targetLightness: number;
   gamutChromaLoss: number;
+  profileChromaReduction: number;
+  profileRestoreRatio: number;
   flags: KiskadeeColorFlags;
 };
 
 export type KiskadeeScaleError = {
-  code: 'INVALID_HEX' | 'UNSUPPORTED_VARIANT';
+  code: 'INVALID_HEX' | 'UNSUPPORTED_PROFILE';
   message: string;
 };
 
@@ -123,6 +146,7 @@ export type KiskadeeAdjacentContrastFailure = {
 };
 
 export type KiskadeeScaleDiagnostics = {
+  profile: KiskadeeTonalProfile | null;
   valid: boolean;
   error: KiskadeeScaleError | null;
   monotonic: boolean;
@@ -135,6 +159,12 @@ export type KiskadeeScaleDiagnostics = {
   darkSurfaceContrastFailures: KiskadeeAdjacentContrastFailure[];
   gamutMappedCount: number;
   maxGamutChromaLoss: number;
+  profileChromaAdjustedCount: number;
+  profileChromaRestoredCount: number;
+  profileChromaFullyRestoredCount: number;
+  maxProfileChromaReduction: number;
+  meanProfileChromaReduction: number;
+  anchorChromaProtected: boolean;
   maxNominalDeviation: number;
   meanNominalDeviation: number;
   separationRelaxed: boolean;
@@ -150,7 +180,7 @@ export type KiskadeeEmittedContinuityDiagnostics = EmittedContinuityDiagnostics;
 export type GenerateKiskadeeScaleInput = {
   seedHex: string;
   theme: KiskadeeTheme;
-  variant: KiskadeeVariant;
+  profile: KiskadeeTonalProfile;
 };
 
 export type KiskadeeScaleResult = {
@@ -167,12 +197,34 @@ type AnchorSelection = {
 
 type FairingTrace = EmittedCurveFairingTrace;
 
+type ProfileRestorationReason =
+  | 'lightness-cell'
+  | 'dark-contrast-cell'
+  | 'vivid-contrast'
+  | 'chroma-direction';
+
+type ProfileCandidate = {
+  alpha: number;
+  hex: string;
+  oklch: OklchColor;
+  gamutChromaLoss: number;
+};
+
+type ProfileRestoration = {
+  candidate: ProfileCandidate;
+  restoreRatio: number;
+  initialFailureReasons: ProfileRestorationReason[];
+};
+
 const VIVID_START_TONE = 35;
 const VIVID_END_TONE = 95;
 const VIVID_CONTRAST = 3;
 const DARK_EARLY_CONTRAST_GAMMA = 1.1;
 const DARK_EARLY_BLEND_END_TONE = 35;
 const DARK_EARLY_BLEND_START_TONE = 10;
+const PROFILE_RESTORE_SCAN_STEPS = 64;
+const PROFILE_RESTORE_BISECTION_STEPS = 16;
+const PROFILE_CONSTRAINT_EPSILON = 1e-7;
 const PREFERRED_LIGHTNESS_DELTA = 0.3;
 const NUMERIC_EPSILON = 1e-7;
 const GAMUT_LOSS_EPSILON = 1e-6;
@@ -185,12 +237,12 @@ const CONTINUITY_REVIEW_CHROMA_TURN = 0.2;
 export function generateKiskadeeScale({
   seedHex,
   theme,
-  variant
+  profile
 }: GenerateKiskadeeScaleInput): KiskadeeScaleResult {
-  if (variant !== 'standard') {
+  if (!isKiskadeeTonalProfile(profile)) {
     return invalidResult({
-      code: 'UNSUPPORTED_VARIANT',
-      message: `Unsupported Kiskadee tonal scale variant: ${String(variant)}`
+      code: 'UNSUPPORTED_PROFILE',
+      message: `Unsupported Kiskadee tonal profile: ${String(profile)}`
     });
   }
 
@@ -312,13 +364,17 @@ export function generateKiskadeeScale({
       nominalLightness: nominalLightnesses[index],
       targetLightness,
       gamutChromaLoss,
+      profileChromaReduction: 0,
+      profileRestoreRatio: 0,
       flags: {
         isCap,
         isAnchor,
         isVivid: isVividTone(tone),
         contrastAdjusted: Math.abs(solved.values[index] - baseline.values[index]) > NUMERIC_EPSILON,
         gamutMapped: gamutChromaLoss > GAMUT_LOSS_EPSILON,
-        separationRelaxed: false
+        separationRelaxed: false,
+        profileChromaAdjusted: false,
+        profileConstraintRestored: false
       }
     };
   });
@@ -340,6 +396,7 @@ export function generateKiskadeeScale({
   );
 
   const diagnostics = createDiagnostics({
+    profile: 'balanced',
     colors,
     anchorIndex,
     normalizedSeed,
@@ -350,10 +407,296 @@ export function generateKiskadeeScale({
     separationRelaxed:
       anchorSelection.relocationReason !== 'none' ||
       solved.separationRelaxed ||
-      actualDeltas.some((delta) => delta < PREFERRED_LIGHTNESS_DELTA - NUMERIC_EPSILON)
+      actualDeltas.some((delta) => delta < PREFERRED_LIGHTNESS_DELTA - NUMERIC_EPSILON),
+    anchorChromaProtected: false
+  });
+  const balancedResult = { colors, anchorTone, diagnostics };
+
+  return profile === 'balanced'
+    ? balancedResult
+    : applyMutedDarksProfile({
+        balancedResult,
+        normalizedSeed,
+        seedOklch,
+        chromaAtLightness,
+        theme
+      });
+}
+
+function applyMutedDarksProfile(params: {
+  balancedResult: KiskadeeScaleResult;
+  normalizedSeed: string;
+  seedOklch: OklchColor;
+  chromaAtLightness: (lightness: number) => number;
+  theme: KiskadeeTheme;
+}): KiskadeeScaleResult {
+  const { balancedResult, normalizedSeed, seedOklch, chromaAtLightness, theme } = params;
+  const balancedColors = balancedResult.colors;
+  const foregroundHex = theme === 'light' ? '#ffffff' : '#000000';
+  const balancedOrientedLightness = balancedColors.map((color) =>
+    orientLightness(color.oklch.l, theme)
+  );
+  const balancedBlackContrast = balancedColors.map((color) => contrastRatio(color.hex, '#000000'));
+  const darkSurfaceIndices = KISKADEE_TONES.map((tone, index) => ({ tone, index }))
+    .filter(({ tone }) => tone <= VIVID_START_TONE)
+    .map(({ index }) => index);
+  const darkSurfacePositionByIndex = new Map(
+    darkSurfaceIndices.map((index, position) => [index, position])
+  );
+
+  const inspectCandidate = (
+    candidate: ProfileCandidate,
+    index: number,
+    tone: KiskadeeTone
+  ): ProfileRestorationReason[] => {
+    const reasons: ProfileRestorationReason[] = [];
+    const oriented = orientLightness(candidate.oklch.l, theme);
+    const lightnessMinimum =
+      (balancedOrientedLightness[index - 1] + balancedOrientedLightness[index]) / 2;
+    const lightnessMaximum =
+      (balancedOrientedLightness[index] + balancedOrientedLightness[index + 1]) / 2;
+
+    if (
+      oriented <= lightnessMinimum + PROFILE_CONSTRAINT_EPSILON ||
+      oriented >= lightnessMaximum - PROFILE_CONSTRAINT_EPSILON
+    ) {
+      reasons.push('lightness-cell');
+    }
+
+    if (candidate.oklch.c > balancedColors[index].oklch.c + PROFILE_CONSTRAINT_EPSILON) {
+      reasons.push('chroma-direction');
+    }
+
+    if (
+      isVividTone(tone) &&
+      contrastRatio(candidate.hex, foregroundHex) + PROFILE_CONSTRAINT_EPSILON < VIVID_CONTRAST
+    ) {
+      reasons.push('vivid-contrast');
+    }
+
+    if (theme === 'dark') {
+      const darkSurfacePosition = darkSurfacePositionByIndex.get(index);
+
+      if (darkSurfacePosition !== undefined) {
+        const previousIndex = darkSurfaceIndices[darkSurfacePosition - 1];
+        const nextIndex = darkSurfaceIndices[darkSurfacePosition + 1];
+        const contrast = contrastRatio(candidate.hex, '#000000');
+        const contrastMinimum =
+          previousIndex === undefined
+            ? Number.NEGATIVE_INFINITY
+            : (balancedBlackContrast[previousIndex] + balancedBlackContrast[index]) / 2;
+        const contrastMaximum =
+          nextIndex === undefined
+            ? Number.POSITIVE_INFINITY
+            : (balancedBlackContrast[index] + balancedBlackContrast[nextIndex]) / 2;
+
+        if (
+          contrast <= contrastMinimum + PROFILE_CONSTRAINT_EPSILON ||
+          contrast >= contrastMaximum - PROFILE_CONSTRAINT_EPSILON
+        ) {
+          reasons.push('dark-contrast-cell');
+        }
+      }
+    }
+
+    return reasons;
+  };
+
+  const restoreProfileColor = (params: {
+    index: number;
+    balancedColor: KiskadeeScaleColor;
+    desiredChroma: number;
+    balancedFittedChroma: number;
+  }): ProfileRestoration => {
+    const { index, balancedColor, desiredChroma, balancedFittedChroma } = params;
+    const render = (alpha: number): ProfileCandidate => {
+      if (alpha >= 1) {
+        return {
+          alpha: 1,
+          hex: balancedColor.hex,
+          oklch: balancedColor.oklch,
+          gamutChromaLoss: balancedColor.gamutChromaLoss
+        };
+      }
+
+      const requestedChroma = desiredChroma + (balancedFittedChroma - desiredChroma) * alpha;
+      const rendered = oklchToSrgbHex({
+        l: balancedColor.targetLightness,
+        c: requestedChroma,
+        h: seedOklch.h
+      });
+
+      return {
+        alpha,
+        hex: rendered.hex,
+        oklch: hexToOklch(rendered.hex),
+        gamutChromaLoss: rendered.chromaLoss
+      };
+    };
+    const desired = render(0);
+    const initialFailureReasons = inspectCandidate(desired, index, balancedColor.tone);
+
+    if (initialFailureReasons.length === 0) {
+      return { candidate: desired, restoreRatio: 0, initialFailureReasons: [] };
+    }
+
+    for (let step = 1; step <= PROFILE_RESTORE_SCAN_STEPS; step += 1) {
+      const alpha = step / PROFILE_RESTORE_SCAN_STEPS;
+      const sampled = render(alpha);
+
+      if (inspectCandidate(sampled, index, balancedColor.tone).length > 0) continue;
+
+      let invalidAlpha = alpha - 1 / PROFILE_RESTORE_SCAN_STEPS;
+      let validAlpha = alpha;
+      let validCandidate = sampled;
+
+      for (let iteration = 0; iteration < PROFILE_RESTORE_BISECTION_STEPS; iteration += 1) {
+        const midpoint = (invalidAlpha + validAlpha) / 2;
+        const midpointCandidate = render(midpoint);
+
+        if (inspectCandidate(midpointCandidate, index, balancedColor.tone).length === 0) {
+          validAlpha = midpoint;
+          validCandidate = midpointCandidate;
+        } else {
+          invalidAlpha = midpoint;
+        }
+      }
+
+      return {
+        candidate: validCandidate,
+        restoreRatio: validAlpha,
+        initialFailureReasons
+      };
+    }
+
+    const canonical = render(1);
+    if (inspectCandidate(canonical, index, balancedColor.tone).length > 0) {
+      throw new Error(
+        `Balanced endpoint rejected while restoring ${theme} tone ${balancedColor.tone}`
+      );
+    }
+
+    return { candidate: canonical, restoreRatio: 1, initialFailureReasons };
+  };
+
+  const transformedColors = balancedColors.map((balancedColor, index): KiskadeeScaleColor => {
+    if (
+      balancedColor.flags.isCap ||
+      balancedColor.flags.isAnchor ||
+      seedOklch.c <= NUMERIC_EPSILON ||
+      balancedColor.targetLightness >= seedOklch.l - NUMERIC_EPSILON
+    ) {
+      return balancedColor;
+    }
+
+    const balancedFittedChroma = balancedColor.oklch.c;
+    const envelopeChroma =
+      seedOklch.c * resolveMutedDarksEnvelopeRatio(balancedColor.targetLightness, seedOklch.l);
+
+    if (envelopeChroma >= balancedFittedChroma - NUMERIC_EPSILON) return balancedColor;
+
+    const restoration = restoreProfileColor({
+      index,
+      balancedColor,
+      desiredChroma: Math.min(chromaAtLightness(balancedColor.targetLightness), envelopeChroma),
+      balancedFittedChroma
+    });
+    const candidate = restoration.candidate;
+    const profileChromaReduction = Math.max(0, balancedColor.oklch.c - candidate.oklch.c);
+    const profileChromaAdjusted =
+      candidate.hex !== balancedColor.hex && profileChromaReduction > NUMERIC_EPSILON;
+    const profileConstraintRestored =
+      restoration.initialFailureReasons.length > 0 &&
+      restoration.restoreRatio > PROFILE_CONSTRAINT_EPSILON;
+
+    return {
+      ...balancedColor,
+      hex: candidate.hex,
+      hsl: hexToHsl(candidate.hex),
+      oklch: candidate.oklch,
+      gamutChromaLoss: candidate.gamutChromaLoss,
+      profileChromaReduction,
+      profileRestoreRatio: restoration.restoreRatio,
+      flags: {
+        ...balancedColor.flags,
+        gamutMapped: candidate.gamutChromaLoss > GAMUT_LOSS_EPSILON,
+        profileChromaAdjusted,
+        profileConstraintRestored
+      }
+    };
+  });
+  const actualOriented = transformedColors.map((color) => orientLightness(color.oklch.l, theme));
+  const actualDeltas = actualOriented.slice(1).map((value, index) => value - actualOriented[index]);
+  const colors = transformedColors.map(
+    (color, index): KiskadeeScaleColor => ({
+      ...color,
+      flags: {
+        ...color.flags,
+        separationRelaxed:
+          color.flags.separationRelaxed ||
+          (actualDeltas[index - 1] ?? Number.POSITIVE_INFINITY) <
+            PREFERRED_LIGHTNESS_DELTA - NUMERIC_EPSILON ||
+          (actualDeltas[index] ?? Number.POSITIVE_INFINITY) <
+            PREFERRED_LIGHTNESS_DELTA - NUMERIC_EPSILON
+      }
+    })
+  );
+  const anchorIndex = colors.findIndex((color) => color.flags.isAnchor);
+  const balancedAnchor = balancedResult.diagnostics.anchor;
+
+  if (anchorIndex < 0 || !balancedAnchor) return balancedResult;
+
+  const anchorSelection: AnchorSelection = {
+    index: anchorIndex,
+    nominalNearestIndex: KISKADEE_TONES.indexOf(balancedAnchor.nominalNearestTone),
+    relocationReason: balancedAnchor.relocationReason
+  };
+  const diagnostics = createDiagnostics({
+    profile: 'muted-darks',
+    colors,
+    anchorIndex,
+    normalizedSeed,
+    foregroundHex,
+    theme,
+    anchorSelection,
+    fairing: balancedResult.diagnostics.emittedContinuity.fairing,
+    separationRelaxed:
+      balancedResult.diagnostics.separationRelaxed ||
+      actualDeltas.some((delta) => delta < PREFERRED_LIGHTNESS_DELTA - NUMERIC_EPSILON),
+    anchorChromaProtected: seedOklch.c > NUMERIC_EPSILON
   });
 
-  return { colors, anchorTone, diagnostics };
+  return { colors, anchorTone: balancedResult.anchorTone, diagnostics };
+}
+
+function resolveMutedDarksEnvelopeRatio(lightness: number, anchorLightness: number): number {
+  if (lightness >= anchorLightness) return 1;
+
+  const { referenceLightness, minimumChromaRatio, gamma } = MUTED_DARKS_PARAMETERS;
+
+  if (anchorLightness <= referenceLightness) {
+    const progress = clampUnit(lightness / Math.max(anchorLightness, NUMERIC_EPSILON));
+    return smoothstep(progress) ** gamma;
+  }
+
+  if (lightness >= referenceLightness) {
+    const progress = clampUnit(
+      (anchorLightness - lightness) / (anchorLightness - referenceLightness)
+    );
+    return 1 - (1 - minimumChromaRatio) * smoothstep(progress) ** gamma;
+  }
+
+  const progress = clampUnit(lightness / referenceLightness);
+  return minimumChromaRatio * smoothstep(progress) ** gamma;
+}
+
+function smoothstep(value: number): number {
+  const clamped = clampUnit(value);
+  return clamped * clamped * (3 - 2 * clamped);
+}
+
+function clampUnit(value: number): number {
+  return Math.min(1, Math.max(0, value));
 }
 
 export function resolveCanonicalNominalLightness(tone: number): number {
@@ -962,6 +1305,7 @@ function resolveFeasibleGap(
 }
 
 function createDiagnostics(params: {
+  profile: KiskadeeTonalProfile;
   colors: KiskadeeScaleColor[];
   anchorIndex: number;
   normalizedSeed: string;
@@ -970,8 +1314,10 @@ function createDiagnostics(params: {
   anchorSelection: AnchorSelection;
   fairing: FairingTrace;
   separationRelaxed: boolean;
+  anchorChromaProtected: boolean;
 }): KiskadeeScaleDiagnostics {
   const {
+    profile,
     colors,
     anchorIndex,
     normalizedSeed,
@@ -979,7 +1325,8 @@ function createDiagnostics(params: {
     theme,
     anchorSelection,
     fairing,
-    separationRelaxed
+    separationRelaxed,
+    anchorChromaProtected
   } = params;
   const orientedActual = colors.map((color) => orientLightness(color.oklch.l, theme));
   const deltas = orientedActual.slice(1).map((value, index) => value - orientedActual[index]);
@@ -1027,6 +1374,9 @@ function createDiagnostics(params: {
   );
   const darkSurfaceContrastMonotonic = darkSurfaceContrastFailures.length === 0;
   const gamutLosses = colors.map((color) => color.gamutChromaLoss);
+  const profileChromaReductions = colors.map((color) => color.profileChromaReduction);
+  const profileAdjustedColors = colors.filter((color) => color.flags.profileChromaAdjusted);
+  const profileRestoredColors = colors.filter((color) => color.flags.profileConstraintRestored);
   const nominalDeviations = colors.map((color) => Math.abs(color.oklch.l - color.nominalLightness));
   const chromaProminences = colors.map((color, index) => {
     const previous = colors[index - 1];
@@ -1072,6 +1422,7 @@ function createDiagnostics(params: {
   };
 
   return {
+    profile,
     valid:
       monotonic &&
       duplicateTones.length === 0 &&
@@ -1098,6 +1449,16 @@ function createDiagnostics(params: {
     darkSurfaceContrastFailures,
     gamutMappedCount: gamutLosses.filter((loss) => loss > GAMUT_LOSS_EPSILON).length,
     maxGamutChromaLoss: Math.max(...gamutLosses),
+    profileChromaAdjustedCount: profileAdjustedColors.length,
+    profileChromaRestoredCount: profileRestoredColors.length,
+    profileChromaFullyRestoredCount: profileRestoredColors.filter(
+      (color) => color.profileRestoreRatio >= 1 - NUMERIC_EPSILON
+    ).length,
+    maxProfileChromaReduction: Math.max(...profileChromaReductions),
+    meanProfileChromaReduction:
+      profileChromaReductions.reduce((sum, reduction) => sum + reduction, 0) /
+      profileChromaReductions.length,
+    anchorChromaProtected,
     maxNominalDeviation: Math.max(...nominalDeviations),
     meanNominalDeviation:
       nominalDeviations.reduce((sum, deviation) => sum + deviation, 0) / nominalDeviations.length,
@@ -1115,6 +1476,7 @@ function invalidResult(error: KiskadeeScaleError): KiskadeeScaleResult {
     colors: [],
     anchorTone: null,
     diagnostics: {
+      profile: null,
       valid: false,
       error,
       monotonic: false,
@@ -1127,6 +1489,12 @@ function invalidResult(error: KiskadeeScaleError): KiskadeeScaleResult {
       darkSurfaceContrastFailures: [],
       gamutMappedCount: 0,
       maxGamutChromaLoss: 0,
+      profileChromaAdjustedCount: 0,
+      profileChromaRestoredCount: 0,
+      profileChromaFullyRestoredCount: 0,
+      maxProfileChromaReduction: 0,
+      meanProfileChromaReduction: 0,
+      anchorChromaProtected: false,
       maxNominalDeviation: 0,
       meanNominalDeviation: 0,
       separationRelaxed: false,
@@ -1168,6 +1536,10 @@ function resolveCapHex(tone: KiskadeeTone, theme: KiskadeeTheme): string {
 
 function isVividTone(tone: KiskadeeTone): boolean {
   return tone >= VIVID_START_TONE && tone <= VIVID_END_TONE;
+}
+
+export function isKiskadeeTonalProfile(value: string): value is KiskadeeTonalProfile {
+  return KISKADEE_TONAL_PROFILES.some((profile) => profile.id === value);
 }
 
 function orientLightness(lightness: number, theme: KiskadeeTheme): number {

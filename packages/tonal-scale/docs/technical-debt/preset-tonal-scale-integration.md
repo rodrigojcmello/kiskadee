@@ -1,20 +1,21 @@
 # Preset Tonal Scale Integration
 
-Status: deferred until after Kiskadee Tonal Scale v1 approval.
+Status: deferred. Balanced approval and Muted Darks evaluation do not authorize
+preset integration.
 
 This document reserves a follow-up for connecting `@kiskadee/tonal-scale` to
 official presets. It is not an active proposal and does not define the output
 format, preset contract, migration, or ownership boundary.
 
-Milestone 1 is intentionally limited to making the standard scale functionally
-complete and obtaining explicit visual approval. During that milestone:
+Balanced is now frozen by the canonical golden barrier. Muted Darks is an
+isolated candidate profile. Neither milestone changes the integration boundary:
 
 - presets and their types remain unchanged;
 - the generator has no preset export API;
 - the local `generate` CLI is inspection-only and writes no artifacts;
 - no component state mapping or preset anchor policy is introduced.
 
-After approval, a separate plan must decide:
+After explicit approval of the tonal profiles, a separate plan must decide:
 
 - the serialized artifact format and required metadata;
 - whether generation is invoked manually or by a build workflow;

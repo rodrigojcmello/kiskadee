@@ -1,11 +1,22 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { generateKiskadeeScale } from '@/src/kiskadee-tonal-scale';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  generateKiskadeeScale,
+  isKiskadeeTonalProfile,
+  KISKADEE_TONAL_PROFILES,
+  type KiskadeeTonalProfile
+} from '@/src/kiskadee-tonal-scale';
 
 const DEFAULT_SEED = '#0f6cbd';
 const COLOR_QUERY_PARAM = 'color';
+const PROFILE_QUERY_PARAM = 'profile';
+const DEFAULT_PROFILE: KiskadeeTonalProfile = 'balanced';
+const PROFILE_OPTION_LABELS = {
+  balanced: 'Balanced (canonical)',
+  'muted-darks': 'Muted Darks (candidate)'
+} as const satisfies Record<KiskadeeTonalProfile, string>;
 const CHART_WIDTH = 720;
 const CHART_HEIGHT = 300;
 const CHART_PADDING_X = 42;
@@ -25,22 +36,24 @@ type ChartMetric = 'lightness' | 'chroma';
 
 export default function TonalScalePage() {
   const [hexInput, setHexInput] = useState(DEFAULT_SEED);
-  const urlReadyRef = useRef(false);
+  const [tonalProfile, setTonalProfile] = useState<KiskadeeTonalProfile>(DEFAULT_PROFILE);
+  const [urlRevision, setUrlRevision] = useState(0);
+  const profileDefinition = resolveProfileDefinition(tonalProfile);
 
   const { lightResult, darkResult } = useMemo(
     () => ({
       lightResult: generateKiskadeeScale({
         seedHex: hexInput,
         theme: 'light',
-        variant: 'standard'
+        profile: tonalProfile
       }),
       darkResult: generateKiskadeeScale({
         seedHex: hexInput,
         theme: 'dark',
-        variant: 'standard'
+        profile: tonalProfile
       })
     }),
-    [hexInput]
+    [hexInput, tonalProfile]
   );
 
   const isValid = lightResult.diagnostics.valid && darkResult.diagnostics.valid;
@@ -50,38 +63,51 @@ export default function TonalScalePage() {
     darkResult.diagnostics.error?.code === 'INVALID_HEX';
 
   useEffect(() => {
-    const applyColorFromUrl = () => {
+    const applyStateFromUrl = () => {
       const url = new URL(window.location.href);
       const color = url.searchParams.get(COLOR_QUERY_PARAM);
+      const profile = url.searchParams.get(PROFILE_QUERY_PARAM);
 
-      if (color !== null) {
-        setHexInput(color.startsWith('#') ? color : `#${color}`);
-      }
+      setHexInput(color === null ? DEFAULT_SEED : color.startsWith('#') ? color : `#${color}`);
 
-      urlReadyRef.current = true;
+      setTonalProfile(
+        profile !== null && isKiskadeeTonalProfile(profile) ? profile : DEFAULT_PROFILE
+      );
+      setUrlRevision((revision) => revision + 1);
     };
 
-    applyColorFromUrl();
-    window.addEventListener('popstate', applyColorFromUrl);
+    applyStateFromUrl();
+    window.addEventListener('popstate', applyStateFromUrl);
 
-    return () => window.removeEventListener('popstate', applyColorFromUrl);
+    return () => window.removeEventListener('popstate', applyStateFromUrl);
   }, []);
 
   useEffect(() => {
-    if (!urlReadyRef.current || !isValid || !seedColor) {
+    if (urlRevision === 0) {
       return;
     }
 
     const url = new URL(window.location.href);
-    const serializedColor = seedColor.slice(1);
+    let changed = false;
 
-    if (url.searchParams.get(COLOR_QUERY_PARAM) === serializedColor) {
-      return;
+    if (isValid && seedColor) {
+      const serializedColor = seedColor.slice(1);
+
+      if (url.searchParams.get(COLOR_QUERY_PARAM) !== serializedColor) {
+        url.searchParams.set(COLOR_QUERY_PARAM, serializedColor);
+        changed = true;
+      }
     }
 
-    url.searchParams.set(COLOR_QUERY_PARAM, serializedColor);
-    window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
-  }, [isValid, seedColor]);
+    if (url.searchParams.get(PROFILE_QUERY_PARAM) !== tonalProfile) {
+      url.searchParams.set(PROFILE_QUERY_PARAM, tonalProfile);
+      changed = true;
+    }
+
+    if (changed) {
+      window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+    }
+  }, [isValid, seedColor, tonalProfile, urlRevision]);
 
   const errorMessage =
     lightResult.diagnostics.error?.message ??
@@ -95,11 +121,12 @@ export default function TonalScalePage() {
     <main className="app-shell">
       <header className="hero">
         <div>
-          <span className="eyebrow">Kiskadee v1 · Standard</span>
+          <span className="eyebrow">Kiskadee v1 · {profileDefinition.label}</span>
           <h1>One seed. Two theme-relative tonal scales.</h1>
           <p className="hero-copy">
-            Generate 36 stable L positions for light interfaces and 36 stable D positions for dark
-            interfaces. Both follow one internal color trajectory and preserve the input exactly.
+            {tonalProfile === 'balanced'
+              ? 'The frozen canonical profile generates 36 stable L positions and 36 stable D positions while preserving the input exactly.'
+              : 'The candidate profile preserves the canonical lightness geometry and exact input while reducing chroma on physically dark colors.'}
           </p>
         </div>
 
@@ -123,11 +150,37 @@ export default function TonalScalePage() {
               ? `${seedColor} is preserved exactly at independent L and D anchors.`
               : errorMessage}
           </p>
+          <div className="profile-field">
+            <label htmlFor="tonal-profile">Tonal profile</label>
+            <select
+              id="tonal-profile"
+              aria-describedby="profile-help"
+              value={tonalProfile}
+              onChange={(event) => {
+                if (isKiskadeeTonalProfile(event.target.value)) {
+                  setTonalProfile(event.target.value);
+                }
+              }}
+            >
+              {KISKADEE_TONAL_PROFILES.map((profile) => (
+                <option key={profile.id} value={profile.id}>
+                  {PROFILE_OPTION_LABELS[profile.id]}
+                </option>
+              ))}
+            </select>
+            <p id="profile-help" className="field-help">
+              {profileDefinition.description}
+            </p>
+          </div>
         </div>
       </header>
 
       {isValid ? (
-        <ScaleWorkspace lightResult={lightResult} darkResult={darkResult} />
+        <ScaleWorkspace
+          lightResult={lightResult}
+          darkResult={darkResult}
+          tonalProfile={tonalProfile}
+        />
       ) : (
         <section className="empty-state" aria-live="polite">
           <div>
@@ -141,8 +194,12 @@ export default function TonalScalePage() {
       )}
 
       <footer className="app-footer">
-        <span>Milestone 1 validates only the standard Kiskadee tonal system.</span>
-        <code>One K trajectory · Light L profile · Dark D profile</code>
+        <span>
+          {tonalProfile === 'balanced'
+            ? 'Balanced is the frozen canonical Kiskadee tonal profile.'
+            : 'Muted Darks is a candidate layered on the canonical Balanced geometry.'}
+        </span>
+        <code>One tonal profile · Light L theme · Dark D theme</code>
       </footer>
     </main>
   );
@@ -150,10 +207,12 @@ export default function TonalScalePage() {
 
 function ScaleWorkspace({
   lightResult,
-  darkResult
+  darkResult,
+  tonalProfile
 }: {
   lightResult: ScaleResult;
   darkResult: ScaleResult;
+  tonalProfile: KiskadeeTonalProfile;
 }) {
   return (
     <>
@@ -186,8 +245,10 @@ function ScaleWorkspace({
         <div className="section-heading">
           <h2 id="curve-title">OKLCH curves</h2>
           <p>
-            Both profiles follow the same hue/chroma trajectory with different lightness
-            distributions. Dashed lines show nominal targets before exact-anchor adaptation.
+            {tonalProfile === 'balanced'
+              ? 'Light and dark use the canonical chroma trajectory with theme-relative lightness distributions.'
+              : 'Lightness geometry stays canonical while chroma is reduced only on the physically dark side of the seed.'}{' '}
+            Dashed lines show nominal lightness targets before exact-anchor adaptation.
           </p>
         </div>
         <div className="chart-grid">
@@ -200,8 +261,8 @@ function ScaleWorkspace({
         <div className="section-heading">
           <h2 id="integrity-title">Integrity report</h2>
           <p>
-            Caps, exact anchors, monotonicity, spacing, contrast and sRGB fitting are measured for
-            each theme-relative profile.
+            Caps, exact anchors, monotonicity, spacing, contrast, profile chroma changes and sRGB
+            fitting are measured independently for each theme.
           </p>
         </div>
         <div className="diagnostics-grid">
@@ -213,7 +274,10 @@ function ScaleWorkspace({
       <section className="section-block" aria-labelledby="slot-details-title">
         <div className="section-heading">
           <h2 id="slot-details-title">Slot details</h2>
-          <p>Inspect actual deltas, nominal deviation, guard contrast and gamut loss.</p>
+          <p>
+            Inspect actual deltas, nominal deviation, profile attenuation, constraint restoration,
+            guard contrast and gamut loss.
+          </p>
         </div>
         <div className="scale-stack">
           <DetailTable theme="light" result={lightResult} />
@@ -501,6 +565,15 @@ function DiagnosticsPanel({ theme, result }: { theme: Theme; result: ScaleResult
       text: `Exact seed preserved at ${prefix}${result.anchorTone} as ${anchor?.hex}.`,
       ok: true
     },
+    diagnostics.profile === 'muted-darks'
+      ? {
+          text: `${diagnostics.profileChromaAdjustedCount} physically dark slot${diagnostics.profileChromaAdjustedCount === 1 ? '' : 's'} received intentional profile chroma reduction (max ${diagnostics.maxProfileChromaReduction.toFixed(4)}).`,
+          ok: true
+        }
+      : {
+          text: 'Balanced uses the frozen canonical chroma trajectory without profile attenuation.',
+          ok: true
+        },
     diagnostics.gamutMappedCount > 0
       ? {
           text: `${diagnostics.gamutMappedCount} slot${diagnostics.gamutMappedCount === 1 ? '' : 's'} fitted to sRGB by chroma reduction.`,
@@ -508,6 +581,27 @@ function DiagnosticsPanel({ theme, result }: { theme: Theme; result: ScaleResult
         }
       : { text: 'Every generated target was already inside sRGB.', ok: true }
   ];
+
+  if (diagnostics.profile === 'muted-darks') {
+    notes.push({
+      text: diagnostics.anchorChromaProtected
+        ? 'The exact seed anchor is excluded from profile attenuation.'
+        : 'The neutral seed anchor has no chroma to protect from profile attenuation.',
+      ok: true
+    });
+  }
+  if (diagnostics.profileChromaRestoredCount > 0) {
+    notes.push({
+      text: `${diagnostics.profileChromaRestoredCount} slot${diagnostics.profileChromaRestoredCount === 1 ? '' : 's'} recovered only the chroma required to preserve canonical lightness, contrast and chroma-direction constraints.`,
+      ok: true
+    });
+  }
+  if (diagnostics.profileChromaFullyRestoredCount > 0) {
+    notes.push({
+      text: `${diagnostics.profileChromaFullyRestoredCount} slot${diagnostics.profileChromaFullyRestoredCount === 1 ? '' : 's'} returned fully to its Balanced chroma endpoint.`,
+      ok: false
+    });
+  }
 
   if (diagnostics.separationRelaxed) {
     notes.push({
@@ -582,10 +676,11 @@ function DiagnosticsPanel({ theme, result }: { theme: Theme; result: ScaleResult
   return (
     <article className="panel diagnostics-panel">
       <div className="diagnostics-heading">
-        <h3>{capitalize(theme)} profile</h3>
+        <h3>{capitalize(theme)} theme</h3>
         <StatusBadge result={result} label={status.label} className={status.className} />
       </div>
       <dl className="metrics">
+        <Metric label="Tonal profile" value={resolveProfileLabel(diagnostics.profile)} />
         <Metric label="Anchor" value={`${prefix}${result.anchorTone}`} />
         <Metric
           label="Nominal anchor"
@@ -613,8 +708,29 @@ function DiagnosticsPanel({ theme, result }: { theme: Theme; result: ScaleResult
           />
         ) : null}
         <Metric label="Guard failures" value={String(contrastFailureCount)} />
+        <Metric label="Profile adjusted" value={String(diagnostics.profileChromaAdjustedCount)} />
+        <Metric
+          label="Constraint restores"
+          value={String(diagnostics.profileChromaRestoredCount)}
+        />
+        <Metric
+          label="Fully restored"
+          value={String(diagnostics.profileChromaFullyRestoredCount)}
+        />
+        <Metric
+          label="Anchor chroma"
+          value={
+            diagnostics.profile === 'balanced'
+              ? 'Canonical'
+              : diagnostics.anchorChromaProtected
+                ? 'Protected'
+                : 'Neutral'
+          }
+        />
+        <Metric label="Max profile ΔC" value={diagnostics.maxProfileChromaReduction.toFixed(4)} />
+        <Metric label="Mean profile ΔC" value={diagnostics.meanProfileChromaReduction.toFixed(4)} />
         <Metric label="Gamut mapped" value={String(diagnostics.gamutMappedCount)} />
-        <Metric label="Max ΔC" value={diagnostics.maxGamutChromaLoss.toFixed(4)} />
+        <Metric label="Max gamut ΔC" value={diagnostics.maxGamutChromaLoss.toFixed(4)} />
         <Metric label="Max emitted ΔE" value={continuity.maxAdjacentDeltaE.toFixed(3)} />
         <Metric
           label="Anchor ΔE"
@@ -725,6 +841,8 @@ function DetailTable({ theme, result }: { theme: Theme; result: ScaleResult }) {
               <th>ΔE prev</th>
               <th>Nominal ΔL</th>
               <th>Contrast vs {theme === 'light' ? 'white' : 'black'}</th>
+              <th>Profile ΔC</th>
+              <th>Restore</th>
               <th>Gamut ΔC</th>
               <th>Flags</th>
             </tr>
@@ -761,6 +879,12 @@ function DetailTable({ theme, result }: { theme: Theme; result: ScaleResult }) {
                   <td>{deltaEFromPrevious?.toFixed(3) ?? '—'}</td>
                   <td>{Math.abs(color.oklch.l - color.nominalLightness).toFixed(2)}</td>
                   <td>{contrastRatio(color.hex, contrastBackground).toFixed(2)}:1</td>
+                  <td>{color.profileChromaReduction.toFixed(4)}</td>
+                  <td>
+                    {color.flags.profileConstraintRestored
+                      ? `${Math.round(color.profileRestoreRatio * 100)}%`
+                      : '—'}
+                  </td>
                   <td>{color.gamutChromaLoss.toFixed(4)}</td>
                   <td>{flags}</td>
                 </tr>
@@ -775,6 +899,17 @@ function DetailTable({ theme, result }: { theme: Theme; result: ScaleResult }) {
 
 function resolveAnchorColor(result: ScaleResult): ScaleColor | undefined {
   return result.colors.find((color) => color.flags.isAnchor);
+}
+
+function resolveProfileDefinition(profile: KiskadeeTonalProfile) {
+  return (
+    KISKADEE_TONAL_PROFILES.find((candidate) => candidate.id === profile) ??
+    KISKADEE_TONAL_PROFILES[0]
+  );
+}
+
+function resolveProfileLabel(profile: KiskadeeTonalProfile | null): string {
+  return profile === null ? '—' : resolveProfileDefinition(profile).label;
 }
 
 function resolveTone(result: ScaleResult, tone: number): ScaleColor | undefined {
@@ -824,7 +959,9 @@ function resolveFlags(color: ScaleColor): string {
     color.flags.isVivid ? 'vivid' : null,
     color.flags.contrastAdjusted ? 'contrast fit' : null,
     color.flags.gamutMapped ? 'gamut fit' : null,
-    color.flags.separationRelaxed ? 'spacing' : null
+    color.flags.separationRelaxed ? 'spacing' : null,
+    color.flags.profileChromaAdjusted ? 'profile muted' : null,
+    color.flags.profileConstraintRestored ? 'profile restore' : null
   ].filter((flag): flag is string => flag !== null);
 
   return flags.length > 0 ? flags.join(', ') : '—';
