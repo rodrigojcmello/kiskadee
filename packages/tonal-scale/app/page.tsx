@@ -1,22 +1,27 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useDeferredValue, useEffect, useMemo, useState } from 'react';
+import { createTonalArtifactBundle, type TonalArtifactBundle } from '@/src/export/tonal-artifacts';
+import { createTonalBundleZip } from '@/src/export/tonal-bundle-zip';
+import { KISKADEE_TONAL_PROFILES, type KiskadeeTonalProfile } from '@/src/kiskadee-tonal-scale';
 import {
-  generateKiskadeeScale,
-  isKiskadeeTonalProfile,
-  KISKADEE_TONAL_PROFILES,
-  type KiskadeeTonalProfile
-} from '@/src/kiskadee-tonal-scale';
+  generateKiskadeeTonalSystem,
+  type ResolvedKiskadeeTonalSystem,
+  type ResolvedTonalFamily,
+  type ResolvedTonalTheme
+} from '@/src/tonal-system';
+import {
+  DEFAULT_TONAL_SYSTEM_RECIPE,
+  type TonalFamilyId,
+  type TonalSystemRecipeV1,
+  validateTonalSystemRecipe
+} from '@/src/tonal-system-contract';
+import RecipeEditor from './components/RecipeEditor';
 
-const DEFAULT_SEED = '#0f6cbd';
+const RECIPE_QUERY_PARAM = 'recipe';
 const COLOR_QUERY_PARAM = 'color';
 const PROFILE_QUERY_PARAM = 'profile';
-const DEFAULT_PROFILE: KiskadeeTonalProfile = 'balanced';
-const PROFILE_OPTION_LABELS = {
-  balanced: 'Balanced (canonical)',
-  'muted-darks': 'Muted Darks (candidate)'
-} as const satisfies Record<KiskadeeTonalProfile, string>;
 const CHART_WIDTH = 720;
 const CHART_HEIGHT = 300;
 const CHART_PADDING_X = 42;
@@ -29,51 +34,64 @@ const SURFACE_STRESS_ROLES = [
   { label: 'Level 3', tone: 3 }
 ] as const;
 
-type ScaleResult = ReturnType<typeof generateKiskadeeScale>;
+type ScaleResult = ResolvedTonalTheme['scale'];
 type ScaleColor = ScaleResult['colors'][number];
 type Theme = 'light' | 'dark';
 type ChartMetric = 'lightness' | 'chroma';
 
 export default function TonalScalePage() {
-  const [hexInput, setHexInput] = useState(DEFAULT_SEED);
-  const [tonalProfile, setTonalProfile] = useState<KiskadeeTonalProfile>(DEFAULT_PROFILE);
-  const [urlRevision, setUrlRevision] = useState(0);
-  const profileDefinition = resolveProfileDefinition(tonalProfile);
-
-  const { lightResult, darkResult } = useMemo(
-    () => ({
-      lightResult: generateKiskadeeScale({
-        seedHex: hexInput,
-        theme: 'light',
-        profile: tonalProfile
-      }),
-      darkResult: generateKiskadeeScale({
-        seedHex: hexInput,
-        theme: 'dark',
-        profile: tonalProfile
-      })
-    }),
-    [hexInput, tonalProfile]
+  const [recipe, setRecipe] = useState<TonalSystemRecipeV1>(() =>
+    structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE)
   );
-
-  const isValid = lightResult.diagnostics.valid && darkResult.diagnostics.valid;
-  const seedColor = resolveAnchorColor(lightResult)?.hex ?? resolveAnchorColor(darkResult)?.hex;
-  const inputIsInvalid =
-    lightResult.diagnostics.error?.code === 'INVALID_HEX' ||
-    darkResult.diagnostics.error?.code === 'INVALID_HEX';
+  const [selectedFamilyId, setSelectedFamilyId] = useState<TonalFamilyId>(
+    DEFAULT_TONAL_SYSTEM_RECIPE.primaryReference
+  );
+  const [urlReady, setUrlReady] = useState(false);
+  const deferredRecipe = useDeferredValue(recipe);
+  const system = useMemo(() => generateKiskadeeTonalSystem(deferredRecipe), [deferredRecipe]);
+  const isGenerating = deferredRecipe !== recipe;
+  const resolvedFamily = system.valid
+    ? (system.families.find((family) => family.id === selectedFamilyId) ??
+      system.families.find((family) => family.id === system.primaryReference.familyId) ??
+      system.families[0])
+    : undefined;
 
   useEffect(() => {
     const applyStateFromUrl = () => {
       const url = new URL(window.location.href);
+      const serializedRecipe = url.searchParams.get(RECIPE_QUERY_PARAM);
+
+      if (serializedRecipe) {
+        try {
+          const parsed = validateTonalSystemRecipe(JSON.parse(serializedRecipe));
+          if (parsed.valid) {
+            setRecipe(parsed.value);
+            setSelectedFamilyId(parsed.value.primaryReference);
+            setUrlReady(true);
+            return;
+          }
+        } catch {
+          // Invalid shared state is ignored in favor of the explicit defaults.
+        }
+      }
+
       const color = url.searchParams.get(COLOR_QUERY_PARAM);
       const profile = url.searchParams.get(PROFILE_QUERY_PARAM);
-
-      setHexInput(color === null ? DEFAULT_SEED : color.startsWith('#') ? color : `#${color}`);
-
-      setTonalProfile(
-        profile !== null && isKiskadeeTonalProfile(profile) ? profile : DEFAULT_PROFILE
-      );
-      setUrlRevision((revision) => revision + 1);
+      if (color !== null || profile !== null) {
+        const legacy = structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV1;
+        if (color !== null) {
+          const blueIndex = legacy.families.findIndex((family) => family.id === 'blue.v1');
+          legacy.families[blueIndex] = {
+            ...legacy.families[blueIndex],
+            seedHex: color.startsWith('#') ? color : `#${color}`
+          };
+        }
+        if (profile !== null && KISKADEE_TONAL_PROFILES.some((item) => item.id === profile)) {
+          legacy.tonalProfile = profile as KiskadeeTonalProfile;
+        }
+        setRecipe(legacy);
+      }
+      setUrlReady(true);
     };
 
     applyStateFromUrl();
@@ -83,147 +101,169 @@ export default function TonalScalePage() {
   }, []);
 
   useEffect(() => {
-    if (urlRevision === 0) {
-      return;
-    }
+    if (!urlReady) return;
+
+    const validation = validateTonalSystemRecipe(recipe);
+    if (!validation.valid) return;
 
     const url = new URL(window.location.href);
-    let changed = false;
-
-    if (isValid && seedColor) {
-      const serializedColor = seedColor.slice(1);
-
-      if (url.searchParams.get(COLOR_QUERY_PARAM) !== serializedColor) {
-        url.searchParams.set(COLOR_QUERY_PARAM, serializedColor);
-        changed = true;
-      }
-    }
-
-    if (url.searchParams.get(PROFILE_QUERY_PARAM) !== tonalProfile) {
-      url.searchParams.set(PROFILE_QUERY_PARAM, tonalProfile);
-      changed = true;
-    }
-
-    if (changed) {
+    const serializedRecipe = JSON.stringify(validation.value);
+    if (url.searchParams.get(RECIPE_QUERY_PARAM) !== serializedRecipe) {
+      url.searchParams.set(RECIPE_QUERY_PARAM, serializedRecipe);
+      url.searchParams.delete(COLOR_QUERY_PARAM);
+      url.searchParams.delete(PROFILE_QUERY_PARAM);
       window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
     }
-  }, [isValid, seedColor, tonalProfile, urlRevision]);
-
-  const errorMessage =
-    lightResult.diagnostics.error?.message ??
-    darkResult.diagnostics.error?.message ??
-    'The scale could not satisfy every required invariant for this input.';
-  const seedStyle = {
-    '--seed-color': seedColor ?? 'transparent'
-  } as CSSProperties;
+  }, [recipe, urlReady]);
 
   return (
-    <main className="app-shell">
+    <main className="app-shell" aria-busy={isGenerating}>
       <header className="hero">
         <div>
-          <span className="eyebrow">Kiskadee v1 · {profileDefinition.label}</span>
-          <h1>One seed. Two theme-relative tonal scales.</h1>
+          <span className="eyebrow">Kiskadee harmonized tonal system v1</span>
+          <h1>Many seeds. One coherent color system.</h1>
           <p className="hero-copy">
-            {tonalProfile === 'balanced'
-              ? 'The frozen canonical profile generates 36 stable L positions and 36 stable D positions while preserving the input exactly.'
-              : 'The candidate profile preserves the canonical lightness geometry and exact input while reducing chroma on physically dark colors.'}
+            Select one primitive family as the primary reference. Its Light and Dark rest colors
+            establish the shared tonal target while each chromatic or neutral family keeps an
+            explicit Light and Dark generation policy.
           </p>
         </div>
-
-        <div className="seed-form">
-          <label htmlFor="seed-hex">Color family seed</label>
-          <div className="seed-input-row">
-            <span className="seed-preview" style={seedStyle} aria-hidden="true" />
-            <input
-              id="seed-hex"
-              aria-describedby="seed-help"
-              aria-invalid={inputIsInvalid}
-              autoComplete="off"
-              inputMode="text"
-              spellCheck={false}
-              value={hexInput}
-              onChange={(event) => setHexInput(event.target.value)}
-            />
-          </div>
-          <p id="seed-help" className={`field-help${isValid ? '' : ' error'}`}>
-            {isValid
-              ? `${seedColor} is preserved exactly at independent L and D anchors.`
-              : errorMessage}
+        <div
+          className={`system-hero-status ${isGenerating ? 'generating' : system.status}`}
+          aria-live="polite"
+        >
+          <span>{isGenerating ? 'Generating' : capitalize(system.status)}</span>
+          <strong>{recipe.families.length} primitive families</strong>
+          <p>
+            {isGenerating
+              ? 'Resolving the current recipe and every dependent family.'
+              : system.valid
+                ? `${system.primaryReference.familyId} · L${system.rest.light} / D${system.rest.dark} · ${resolveProfileLabel(recipe.tonalProfile)}`
+                : (system.issues[0]?.message ?? 'The tonal recipe is incomplete.')}
           </p>
-          <div className="profile-field">
-            <label htmlFor="tonal-profile">Tonal profile</label>
-            <select
-              id="tonal-profile"
-              aria-describedby="profile-help"
-              value={tonalProfile}
-              onChange={(event) => {
-                if (isKiskadeeTonalProfile(event.target.value)) {
-                  setTonalProfile(event.target.value);
-                }
-              }}
-            >
-              {KISKADEE_TONAL_PROFILES.map((profile) => (
-                <option key={profile.id} value={profile.id}>
-                  {PROFILE_OPTION_LABELS[profile.id]}
-                </option>
-              ))}
-            </select>
-            <p id="profile-help" className="field-help">
-              {profileDefinition.description}
-            </p>
-          </div>
         </div>
       </header>
 
-      {isValid ? (
-        <ScaleWorkspace
-          lightResult={lightResult}
-          darkResult={darkResult}
-          tonalProfile={tonalProfile}
+      <section className="section-block" aria-labelledby="recipe-title">
+        <div className="section-heading">
+          <h2 id="recipe-title">Tonal recipe</h2>
+          <p>
+            Inputs remain primitive Layer 1 families. Semantic aliases and preset integration are
+            intentionally outside this package.
+          </p>
+        </div>
+        <RecipeEditor
+          recipe={recipe}
+          result={system}
+          isGenerating={isGenerating}
+          onChange={setRecipe}
         />
+      </section>
+
+      {system.valid && resolvedFamily ? (
+        <>
+          <SystemReference system={system} />
+          <HarmonyComparison system={system} />
+          <ScaleOverview
+            system={system}
+            selectedFamilyId={resolvedFamily.id}
+            onSelectFamily={setSelectedFamilyId}
+          />
+          <ScaleWorkspace
+            family={resolvedFamily}
+            tonalProfile={recipe.tonalProfile}
+            rest={system.rest}
+            onSelectFamily={setSelectedFamilyId}
+            families={system.families}
+          />
+          <ArtifactExportPanel system={system} disabled={isGenerating} />
+        </>
+      ) : isGenerating ? (
+        <section className="empty-state generating-state" aria-live="polite">
+          <div>
+            <strong>Generating the current tonal system</strong>
+            <p>
+              Resolving the primary reference and every dependent Light and Dark family. No stale
+              intermediate result can be exported.
+            </p>
+          </div>
+        </section>
       ) : (
         <section className="empty-state" aria-live="polite">
           <div>
-            <strong>No tonal system generated</strong>
+            <strong>No exportable tonal system generated</strong>
             <p>
-              Generation never falls back to another color. Enter a valid value such as #0f6cbd to
-              generate the Kiskadee light and dark scales.
+              Correct the recipe issues above. Generation does not substitute colors, move locked
+              rest positions, or emit a partial bundle silently.
             </p>
           </div>
         </section>
       )}
 
       <footer className="app-footer">
-        <span>
-          {tonalProfile === 'balanced'
-            ? 'Balanced is the frozen canonical Kiskadee tonal profile.'
-            : 'Muted Darks is a candidate layered on the canonical Balanced geometry.'}
-        </span>
-        <code>One tonal profile · Light L theme · Dark D theme</code>
+        <span>Balanced + Source Exact remains protected by its byte-for-byte Golden barrier.</span>
+        <code>Primitive inputs · One primary reference · Atomic bundle</code>
       </footer>
     </main>
   );
 }
 
 function ScaleWorkspace({
-  lightResult,
-  darkResult,
-  tonalProfile
+  family,
+  tonalProfile,
+  rest,
+  families,
+  onSelectFamily
 }: {
-  lightResult: ScaleResult;
-  darkResult: ScaleResult;
+  family: ResolvedTonalFamily;
   tonalProfile: KiskadeeTonalProfile;
+  rest: ResolvedKiskadeeTonalSystem['rest'];
+  families: ResolvedTonalFamily[];
+  onSelectFamily: (familyId: TonalFamilyId) => void;
 }) {
+  const lightResult = family.themes.light.scale;
+  const darkResult = family.themes.dark.scale;
+
   return (
     <>
+      <section className="section-block" aria-labelledby="family-inspector-title">
+        <div className="section-heading">
+          <h2 id="family-inspector-title">Family inspector</h2>
+          <p>
+            Full previews and diagnostics for one family at a time. The system comparison remains
+            visible above.
+          </p>
+        </div>
+        <fieldset className="family-tabs">
+          <legend className="visually-hidden">Primitive family inspector</legend>
+          {families.map((candidate) => (
+            <button
+              key={candidate.id}
+              type="button"
+              aria-pressed={candidate.id === family.id}
+              className={candidate.id === family.id ? 'selected' : undefined}
+              onClick={() => onSelectFamily(candidate.id)}
+            >
+              <i
+                style={{ '--tab-color': candidate.themes.light.restColor.hex } as CSSProperties}
+                aria-hidden="true"
+              />
+              {candidate.id}
+            </button>
+          ))}
+        </fieldset>
+      </section>
+
       <section className="section-block" aria-labelledby="theme-preview-title">
         <div className="section-heading">
           <h2 id="theme-preview-title">Theme previews</h2>
-          <p>The same color family applied to representative light and dark interface surfaces.</p>
+          <p>
+            {family.id} uses its shared rest positions for representative Light and Dark actions.
+          </p>
         </div>
         <div className="theme-grid">
-          <ThemePanel theme="light" result={lightResult} />
-          <ThemePanel theme="dark" result={darkResult} />
+          <ThemePanel theme="light" resolution={family.themes.light} />
+          <ThemePanel theme="dark" resolution={family.themes.dark} />
         </div>
       </section>
 
@@ -236,8 +276,8 @@ function ScaleWorkspace({
           </p>
         </div>
         <div className="scale-stack">
-          <TonalScalePanel theme="light" result={lightResult} />
-          <TonalScalePanel theme="dark" result={darkResult} />
+          <TonalScalePanel theme="light" result={lightResult} restTone={rest.light} />
+          <TonalScalePanel theme="dark" result={darkResult} restTone={rest.dark} />
         </div>
       </section>
 
@@ -266,8 +306,8 @@ function ScaleWorkspace({
           </p>
         </div>
         <div className="diagnostics-grid">
-          <DiagnosticsPanel theme="light" result={lightResult} />
-          <DiagnosticsPanel theme="dark" result={darkResult} />
+          <DiagnosticsPanel theme="light" resolution={family.themes.light} />
+          <DiagnosticsPanel theme="dark" resolution={family.themes.dark} />
         </div>
       </section>
 
@@ -288,15 +328,327 @@ function ScaleWorkspace({
   );
 }
 
-function ThemePanel({ theme, result }: { theme: Theme; result: ScaleResult }) {
+function SystemReference({ system }: { system: ResolvedKiskadeeTonalSystem }) {
+  const references = [system.primaryReference.light, system.primaryReference.dark];
+
+  return (
+    <section className="section-block" aria-labelledby="primary-reference-title">
+      <div className="section-heading">
+        <h2 id="primary-reference-title">Primary reference</h2>
+        <p>
+          Light and Dark fingerprints are measured independently from the emitted primary rest
+          colors. Support families target these measurements, not the primary hex itself.
+        </p>
+      </div>
+      <div className="reference-grid">
+        {references.map((reference) => {
+          const prefix = resolveThemePrefix(reference.theme);
+          return (
+            <article key={reference.theme} className="panel reference-card">
+              <div
+                className="reference-swatch"
+                style={{ '--reference-color': reference.hex } as CSSProperties}
+                aria-hidden="true"
+              />
+              <div>
+                <span className="theme-kicker">{reference.theme} reference</span>
+                <h3>
+                  {prefix}
+                  {reference.tone} · {reference.hex}
+                </h3>
+                <dl className="reference-metrics">
+                  <Metric label="OKL L" value={reference.oklch.l.toFixed(2)} />
+                  <Metric label="OKL C" value={reference.oklch.c.toFixed(4)} />
+                  <Metric label="Luminance" value={reference.relativeLuminance.toFixed(4)} />
+                  <Metric
+                    label="Gamut use"
+                    value={`${(reference.chromaUtilization * 100).toFixed(1)}%`}
+                  />
+                  <Metric
+                    label="vs white"
+                    value={`${reference.contrastAgainstWhite.toFixed(2)}:1`}
+                  />
+                  <Metric
+                    label="vs black"
+                    value={`${reference.contrastAgainstBlack.toFixed(2)}:1`}
+                  />
+                </dl>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function HarmonyComparison({ system }: { system: ResolvedKiskadeeTonalSystem }) {
+  return (
+    <section className="section-block" aria-labelledby="harmony-comparison-title">
+      <div className="section-heading">
+        <h2 id="harmony-comparison-title">Rest harmony comparison</h2>
+        <p>
+          Source seeds establish identity. Effective rest colors are the actual scale anchors used
+          for functional equivalence against the primary reference.
+        </p>
+      </div>
+      <article className="panel harmony-panel">
+        <div className="table-wrap harmony-table-wrap">
+          <table className="detail-table harmony-table">
+            <thead>
+              <tr>
+                <th>Family</th>
+                <th>Theme</th>
+                <th>Policy</th>
+                <th>Source</th>
+                <th>Effective rest</th>
+                <th>Position</th>
+                <th>OKL L</th>
+                <th>Gamut use</th>
+                <th>Harmony score</th>
+                <th>Source ΔE</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {system.families.flatMap((family) =>
+                (['light', 'dark'] as const).map((theme) => {
+                  const resolution = family.themes[theme];
+                  const harmony = resolution.harmony;
+                  const reference = system.primaryReference[theme];
+
+                  return (
+                    <tr key={`${family.id}-${theme}`}>
+                      <td>
+                        <span className="color-cell">
+                          <i
+                            className="color-dot"
+                            style={{ '--color': resolution.effectiveSeedHex } as CSSProperties}
+                            aria-hidden="true"
+                          />
+                          {family.id}
+                        </span>
+                      </td>
+                      <td>{capitalize(theme)}</td>
+                      <td>{resolution.policy}</td>
+                      <td>{resolution.sourceSeedHex}</td>
+                      <td>{resolution.effectiveSeedHex}</td>
+                      <td>
+                        {resolveThemePrefix(theme)}
+                        {resolution.restTone}
+                      </td>
+                      <td>{resolution.restColor.oklch.l.toFixed(2)}</td>
+                      <td>
+                        {harmony
+                          ? `${((reference.chromaUtilization + harmony.chromaUtilizationDelta) * 100).toFixed(1)}%`
+                          : `${(reference.chromaUtilization * 100).toFixed(1)}%`}
+                      </td>
+                      <td>{harmony ? harmony.score.toFixed(3) : 'reference'}</td>
+                      <td>{harmony ? harmony.seedDeltaE.toFixed(3) : '0.000'}</td>
+                      <td>
+                        <span className={`inline-status ${resolution.status}`}>
+                          {capitalize(resolution.status)}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+  );
+}
+
+function ScaleOverview({
+  system,
+  selectedFamilyId,
+  onSelectFamily
+}: {
+  system: ResolvedKiskadeeTonalSystem;
+  selectedFamilyId: TonalFamilyId;
+  onSelectFamily: (familyId: TonalFamilyId) => void;
+}) {
+  return (
+    <section className="section-block" aria-labelledby="scale-overview-title">
+      <div className="section-heading">
+        <h2 id="scale-overview-title">System scale overview</h2>
+        <p>
+          Every row uses the same 36 public positions. The marker identifies the shared Light or
+          Dark rest checkpoint.
+        </p>
+      </div>
+      <div className="overview-stack">
+        {system.families.map((family) => (
+          <article
+            key={family.id}
+            className={`panel overview-family${family.id === selectedFamilyId ? ' selected' : ''}`}
+          >
+            <button type="button" onClick={() => onSelectFamily(family.id)}>
+              <span>
+                <strong>{family.id}</strong>
+                <small>
+                  {family.role} · {family.status}
+                </small>
+              </span>
+              <span>Inspect family</span>
+            </button>
+            <CompactScaleStrip resolution={family.themes.light} />
+            <CompactScaleStrip resolution={family.themes.dark} />
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CompactScaleStrip({ resolution }: { resolution: ResolvedTonalTheme }) {
+  const prefix = resolveThemePrefix(resolution.theme);
+
+  return (
+    <div className="overview-scale-row">
+      <span>{prefix}</span>
+      <div
+        className="overview-strip"
+        role="img"
+        aria-label={`${capitalize(resolution.theme)} scale, rest ${prefix}${resolution.restTone}`}
+      >
+        {resolution.scale.colors.map((color) => (
+          <i
+            key={color.tone}
+            className={color.tone === resolution.restTone ? 'rest' : undefined}
+            style={{ '--overview-color': color.hex } as CSSProperties}
+            title={`${prefix}${color.tone} · ${color.hex}`}
+          />
+        ))}
+      </div>
+      <code>{resolution.effectiveSeedHex}</code>
+    </div>
+  );
+}
+
+function ArtifactExportPanel({
+  system,
+  disabled
+}: {
+  system: ResolvedKiskadeeTonalSystem;
+  disabled: boolean;
+}) {
+  const [prepared, setPrepared] = useState<{
+    owner: ResolvedKiskadeeTonalSystem;
+    bundle: TonalArtifactBundle;
+  } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const bundle = !disabled && prepared?.owner === system ? prepared.bundle : null;
+
+  const prepareBundle = async () => {
+    if (disabled) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const nextBundle = await createTonalArtifactBundle(system);
+      setPrepared({ owner: system, bundle: nextBundle });
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Artifact generation failed.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const downloadAll = () => {
+    if (!bundle) return;
+    downloadBlob('kiskadee-tonal-system.zip', createTonalBundleZip(bundle.files));
+  };
+
+  return (
+    <section className="section-block" aria-labelledby="artifact-export-title">
+      <div className="section-heading">
+        <h2 id="artifact-export-title">Canonical artifact set</h2>
+        <p>
+          Export locks the proposed rest positions and separates compact consumption assets from the
+          complete review diagnostics.
+        </p>
+      </div>
+      <article className="panel export-panel" aria-busy={busy || disabled}>
+        <div>
+          <span className="theme-kicker">Directory-shaped output</span>
+          <pre>{`tonal-system.source.json\ntonal-system.json\ntonal-system.diagnostics.json\ncolors/\n${system.families.map((family) => `  ${family.id}.json`).join('\n')}`}</pre>
+        </div>
+        <div className="export-actions">
+          <p>Artifact serialization is available only when the complete atomic batch is valid.</p>
+          <button type="button" disabled={busy || disabled} onClick={prepareBundle}>
+            {disabled
+              ? 'Waiting for current recipe…'
+              : busy
+                ? 'Preparing hashes…'
+                : bundle
+                  ? 'Rebuild artifact set'
+                  : 'Prepare artifact set'}
+          </button>
+          {error ? (
+            <p className="export-error" role="alert">
+              {error}
+            </p>
+          ) : null}
+          {bundle ? (
+            <>
+              <div className="export-ready" aria-live="polite">
+                <strong>{bundle.files.size} canonical JSON files ready</strong>
+                <code>
+                  {bundle.manifest.generator.package}@{bundle.manifest.generator.version}
+                </code>
+              </div>
+              <button className="secondary-action" type="button" onClick={downloadAll}>
+                Download canonical ZIP
+              </button>
+              <ul className="artifact-file-list">
+                {[...bundle.files].map(([path, contents]) => (
+                  <li key={path}>
+                    <code>{path}</code>
+                    <button type="button" onClick={() => downloadArtifact(path, contents)}>
+                      Download JSON
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+        </div>
+      </article>
+    </section>
+  );
+}
+
+function downloadArtifact(path: string, contents: string): void {
+  downloadBlob(
+    path.split('/').at(-1) ?? path,
+    new Blob([contents], { type: 'application/json;charset=utf-8' })
+  );
+}
+
+function downloadBlob(filename: string, blob: Blob): void {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.append(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
+function ThemePanel({ theme, resolution }: { theme: Theme; resolution: ResolvedTonalTheme }) {
+  const result = resolution.scale;
   const prefix = resolveThemePrefix(theme);
-  const anchorColor = resolveAnchorColor(result);
   const surface = resolveTone(result, 0);
   const surfaceRaised = resolveTone(result, 4);
   const border = resolveTone(result, 10);
   const text = resolveTone(result, 100);
   const muted = resolveTone(result, 70);
-  const action = anchorColor ?? resolveTone(result, 50);
+  const action = resolution.restColor;
   const status = resolveIntegrityStatus(result);
   const previewStyle = {
     '--preview-bg': surface?.hex,
@@ -313,7 +665,10 @@ function ThemePanel({ theme, result }: { theme: Theme; result: ScaleResult }) {
       <div className="theme-header">
         <div>
           <span className="theme-kicker">{theme} theme</span>
-          <h3>{`${prefix}0 → ${prefix}100 · anchor ${prefix}${result.anchorTone}`}</h3>
+          <h3>{`${prefix}0 → ${prefix}100 · rest ${prefix}${resolution.restTone}`}</h3>
+          <p className="scale-guard-note">
+            {capitalize(resolution.policy)} · effective {resolution.effectiveSeedHex}
+          </p>
         </div>
         <StatusBadge result={result} label={status.label} className={status.className} />
       </div>
@@ -354,7 +709,15 @@ function ThemePanel({ theme, result }: { theme: Theme; result: ScaleResult }) {
   );
 }
 
-function TonalScalePanel({ theme, result }: { theme: Theme; result: ScaleResult }) {
+function TonalScalePanel({
+  theme,
+  result,
+  restTone
+}: {
+  theme: Theme;
+  result: ScaleResult;
+  restTone: number;
+}) {
   const prefix = resolveThemePrefix(theme);
   const status = resolveIntegrityStatus(result);
   const guardForeground = theme === 'light' ? '#ffffff' : '#000000';
@@ -377,14 +740,22 @@ function TonalScalePanel({ theme, result }: { theme: Theme; result: ScaleResult 
       </div>
       <div className="scale-strip">
         {result.colors.map((color) => (
-          <Swatch key={color.tone} color={color} prefix={prefix} />
+          <Swatch key={color.tone} color={color} prefix={prefix} isRest={color.tone === restTone} />
         ))}
       </div>
     </article>
   );
 }
 
-function Swatch({ color, prefix }: { color: ScaleColor; prefix: 'L' | 'D' }) {
+function Swatch({
+  color,
+  prefix,
+  isRest
+}: {
+  color: ScaleColor;
+  prefix: 'L' | 'D';
+  isRest: boolean;
+}) {
   const blackContrast = contrastRatio(color.hex, '#000000');
   const whiteContrast = contrastRatio(color.hex, '#ffffff');
   const style = {
@@ -394,7 +765,7 @@ function Swatch({ color, prefix }: { color: ScaleColor; prefix: 'L' | 'D' }) {
 
   return (
     <div
-      className={`swatch${color.flags.isAnchor ? ' anchor' : ''}`}
+      className={`swatch${color.flags.isAnchor ? ' anchor' : ''}${isRest ? ' rest' : ''}`}
       style={style}
       title={`${prefix}${color.tone} · ${color.hex} · black ${blackContrast.toFixed(2)}:1 · white ${whiteContrast.toFixed(2)}:1`}
     >
@@ -547,7 +918,8 @@ function CurveChart({
   );
 }
 
-function DiagnosticsPanel({ theme, result }: { theme: Theme; result: ScaleResult }) {
+function DiagnosticsPanel({ theme, resolution }: { theme: Theme; resolution: ResolvedTonalTheme }) {
+  const result = resolution.scale;
   const prefix = resolveThemePrefix(theme);
   const guardForeground = theme === 'light' ? '#ffffff' : '#000000';
   const guardAt35 = resolveTone(result, 35);
@@ -561,10 +933,15 @@ function DiagnosticsPanel({ theme, result }: { theme: Theme; result: ScaleResult
   const contrastFailureCount = diagnostics.contrastFailures.length;
   const adaptiveTextCrossover = resolveAdaptiveTextCrossover(result);
   const notes: Array<{ text: string; ok: boolean }> = [
-    {
-      text: `Exact seed preserved at ${prefix}${result.anchorTone} as ${anchor?.hex}.`,
-      ok: true
-    },
+    resolution.policy === 'source-exact'
+      ? {
+          text: `Source seed preserved exactly at ${prefix}${result.anchorTone} as ${anchor?.hex}.`,
+          ok: true
+        }
+      : {
+          text: `${capitalize(resolution.policy)} policy resolved ${resolution.sourceSeedHex} to effective rest ${resolution.effectiveSeedHex} at ${prefix}${resolution.restTone}.`,
+          ok: resolution.status === 'pass'
+        },
     diagnostics.profile === 'muted-darks'
       ? {
           text: `${diagnostics.profileChromaAdjustedCount} physically dark slot${diagnostics.profileChromaAdjustedCount === 1 ? '' : 's'} received intentional profile chroma reduction (max ${diagnostics.maxProfileChromaReduction.toFixed(4)}).`,
@@ -681,6 +1058,17 @@ function DiagnosticsPanel({ theme, result }: { theme: Theme; result: ScaleResult
       </div>
       <dl className="metrics">
         <Metric label="Tonal profile" value={resolveProfileLabel(diagnostics.profile)} />
+        <Metric label="Seed policy" value={capitalize(resolution.policy)} />
+        <Metric label="Source seed" value={resolution.sourceSeedHex} />
+        <Metric label="Effective seed" value={resolution.effectiveSeedHex} />
+        <Metric
+          label="Harmony score"
+          value={resolution.harmony ? resolution.harmony.score.toFixed(3) : 'Reference'}
+        />
+        <Metric
+          label="Source Delta E"
+          value={resolution.harmony ? resolution.harmony.seedDeltaE.toFixed(3) : '0.000'}
+        />
         <Metric label="Anchor" value={`${prefix}${result.anchorTone}`} />
         <Metric
           label="Nominal anchor"

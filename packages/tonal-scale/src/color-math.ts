@@ -102,6 +102,21 @@ export function oklchToSrgbHex(oklch: OklchColor): FittedOklchColor {
   };
 }
 
+/**
+ * Returns the radial sRGB gamut limit for one OKL lightness and hue. This uses
+ * the same chroma-only fitting path as emitted scale colors.
+ */
+export function maxSrgbChroma(lightness: number, hue: number): number {
+  const resolvedLightness = clamp(lightness, 0, 100);
+  if (resolvedLightness <= 0 || resolvedLightness >= 100) return 0;
+
+  return fitOklchToSrgb({
+    l: resolvedLightness,
+    c: 1,
+    h: normalizeHue(hue)
+  }).c;
+}
+
 export function contrastRatio(leftHex: string, rightHex: string): number {
   const left = relativeLuminance(leftHex);
   const right = relativeLuminance(rightHex);

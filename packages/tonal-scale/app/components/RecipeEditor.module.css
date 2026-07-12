@@ -1,0 +1,545 @@
+.editor {
+  --editor-border: var(--border, #dce2e9);
+  --editor-border-strong: var(--border-strong, #c7d0db);
+  --editor-surface: var(--surface, #ffffff);
+  --editor-surface-subtle: var(--surface-subtle, #f8fafc);
+  --editor-text: var(--text, #17202a);
+  --editor-muted: var(--muted, #66727f);
+  --editor-brand: var(--brand, #0f6cbd);
+  --editor-brand-soft: var(--brand-soft, #e5f2ff);
+  --editor-success: var(--success, #177447);
+  --editor-success-soft: var(--success-soft, #e6f6ed);
+  --editor-warning: var(--warning, #9a5b00);
+  --editor-warning-soft: var(--warning-soft, #fff3d8);
+  --editor-danger: var(--danger, #b42318);
+  --editor-danger-soft: var(--danger-soft, #fce8e6);
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  border: 1px solid var(--editor-border);
+  border-radius: 22px;
+  background: var(--editor-surface);
+  color: var(--editor-text);
+  box-shadow: var(--shadow, 0 12px 32px rgb(20 33 48 / 5%));
+}
+
+.heading,
+.cardHeading {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.heading h2,
+.cardHeading h3,
+.heading p,
+.cardHeading p,
+.statusSummary,
+.autoAnchor p {
+  margin: 0;
+}
+
+.heading h2 {
+  margin-top: 3px;
+  font-size: clamp(22px, 3vw, 30px);
+  letter-spacing: -0.035em;
+}
+
+.cardHeading h3 {
+  margin-top: 3px;
+  font-size: 19px;
+  letter-spacing: -0.02em;
+}
+
+.kicker {
+  color: var(--editor-brand);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heading .intro {
+  max-width: 720px;
+  margin-top: 8px;
+  color: var(--editor-muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.profileField,
+.compactField,
+.seedField,
+.lockedAnchor label {
+  display: grid;
+  gap: 7px;
+}
+
+.profileField {
+  flex: 0 0 min(280px, 34vw);
+  color: var(--editor-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.editor input,
+.editor select,
+.editor button {
+  font: inherit;
+}
+
+.editor input[type="text"],
+.editor input:not([type]),
+.editor select {
+  min-width: 0;
+  height: 40px;
+  border: 1px solid var(--editor-border-strong);
+  border-radius: 9px;
+  outline: 0;
+  padding: 0 11px;
+  background: var(--editor-surface);
+  color: var(--editor-text);
+}
+
+.editor input:focus-visible,
+.editor select:focus-visible,
+.editor button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--editor-brand) 24%, transparent);
+  outline-offset: 2px;
+}
+
+.editor input[aria-invalid="true"] {
+  border-color: var(--editor-danger);
+}
+
+.familyFieldset {
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.familyFieldset > legend {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.familyHeader,
+.familyRow {
+  display: grid;
+  grid-template-columns: 64px minmax(180px, 0.9fr) minmax(180px, 1.2fr) minmax(230px, 1.25fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.familyHeader {
+  padding: 0 12px 8px;
+  color: var(--editor-muted);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.familyList {
+  display: grid;
+  gap: 8px;
+}
+
+.familyRow {
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid var(--editor-border);
+  border-radius: 14px;
+  background: var(--editor-surface-subtle);
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease;
+}
+
+.primaryRow {
+  border-color: color-mix(in srgb, var(--editor-brand) 45%, var(--editor-border));
+  background: color-mix(in srgb, var(--editor-brand-soft) 42%, var(--editor-surface));
+}
+
+.primaryControl {
+  display: inline-flex;
+  justify-content: center;
+}
+
+.primaryControl input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--editor-brand);
+}
+
+.compactField {
+  min-width: 0;
+}
+
+.familyIdField select {
+  width: 100%;
+}
+
+.seedField {
+  position: relative;
+  min-width: 0;
+}
+
+.editor .seedField input {
+  width: 100%;
+  padding-left: 42px;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+.swatch {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgb(0 0 0 / 12%);
+  border-radius: 6px;
+}
+
+.invalidSwatch {
+  background-image:
+    linear-gradient(45deg, #ddd 25%, transparent 25%),
+    linear-gradient(-45deg, #ddd 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ddd 75%),
+    linear-gradient(-45deg, transparent 75%, #ddd 75%);
+  background-position:
+    0 0,
+    0 6px,
+    6px -6px,
+    -6px 0;
+  background-size: 12px 12px;
+}
+
+.fieldError {
+  color: var(--editor-danger);
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.policyCell {
+  display: flex;
+  min-width: 0;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.policyTag,
+.modeTag,
+.statusBadge {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  border-radius: 999px;
+  padding: 5px 9px;
+  background: var(--editor-brand-soft);
+  color: var(--editor-brand);
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.themePolicy {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: var(--editor-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.themePolicy select {
+  width: 128px;
+  height: 30px;
+  padding: 0 7px;
+  font-size: 12px;
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.editor button {
+  min-height: 36px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  padding: 7px 11px;
+  background: var(--editor-brand);
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.editor button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.editor .selectButton,
+.editor .secondaryButton {
+  border-color: var(--editor-border-strong);
+  background: var(--editor-surface);
+  color: var(--editor-text);
+}
+
+.editor .removeButton {
+  border-color: transparent;
+  background: transparent;
+  color: var(--editor-danger);
+}
+
+.editor .addButton {
+  margin-top: 12px;
+  border-color: var(--editor-border-strong);
+  background: var(--editor-surface);
+  color: var(--editor-brand);
+}
+
+.addButton span {
+  margin-right: 4px;
+  font-size: 16px;
+}
+
+.lowerGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.anchorCard,
+.statusCard {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid var(--editor-border);
+  border-radius: 16px;
+  background: var(--editor-surface-subtle);
+}
+
+.modeTag {
+  background: var(--editor-surface);
+  color: var(--editor-muted);
+  text-transform: capitalize;
+}
+
+.autoAnchor,
+.lockedAnchor {
+  display: flex;
+  gap: 10px;
+  align-items: end;
+  margin-top: 16px;
+}
+
+.autoAnchor {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.autoAnchor p,
+.statusSummary {
+  color: var(--editor-muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.anchorHelp {
+  margin: 10px 0 0;
+  color: var(--editor-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.lockedAnchor label {
+  flex: 1 1 120px;
+  color: var(--editor-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.statusPass {
+  border-color: color-mix(in srgb, var(--editor-success) 30%, var(--editor-border));
+}
+
+.statusPass .statusBadge {
+  background: var(--editor-success-soft);
+  color: var(--editor-success);
+}
+
+.statusReview {
+  border-color: color-mix(in srgb, var(--editor-warning) 30%, var(--editor-border));
+}
+
+.statusReview .statusBadge {
+  background: var(--editor-warning-soft);
+  color: var(--editor-warning);
+}
+
+.statusGenerating {
+  border-color: color-mix(in srgb, var(--editor-brand) 30%, var(--editor-border));
+}
+
+.statusGenerating .statusBadge {
+  background: var(--editor-brand-soft);
+  color: var(--editor-brand);
+}
+
+.statusError {
+  border-color: color-mix(in srgb, var(--editor-danger) 30%, var(--editor-border));
+}
+
+.statusError .statusBadge {
+  background: var(--editor-danger-soft);
+  color: var(--editor-danger);
+}
+
+.statusSummary {
+  margin-top: 16px;
+}
+
+.issueDetails {
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+.issueDetails summary {
+  cursor: pointer;
+  color: var(--editor-text);
+  font-weight: 700;
+}
+
+.issueDetails ul {
+  display: grid;
+  gap: 9px;
+  max-height: 230px;
+  overflow: auto;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.issueDetails li {
+  display: grid;
+  gap: 3px;
+  padding: 9px;
+  border-left: 3px solid var(--editor-danger);
+  border-radius: 6px;
+  background: var(--editor-surface);
+}
+
+.issueDetails li span {
+  color: var(--editor-muted);
+  line-height: 1.4;
+}
+
+.issueDetails code {
+  overflow-wrap: anywhere;
+  color: var(--editor-muted);
+  font-size: 10px;
+}
+
+.mobileLabel {
+  display: none;
+}
+
+@media (max-width: 1120px) {
+  .familyHeader {
+    display: none;
+  }
+
+  .familyRow {
+    grid-template-columns: 54px minmax(160px, 1fr) minmax(180px, 1.2fr) auto;
+  }
+
+  .policyCell {
+    grid-column: 2 / 4;
+  }
+
+  .actions {
+    grid-column: 4;
+  }
+
+  .mobileLabel {
+    display: block;
+    color: var(--editor-muted);
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .primaryControl {
+    display: grid;
+    grid-row: 1 / 3;
+    gap: 7px;
+    justify-items: center;
+  }
+}
+
+@media (max-width: 760px) {
+  .editor {
+    padding: 16px;
+  }
+
+  .heading,
+  .lowerGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .profileField {
+    width: 100%;
+  }
+
+  .familyRow {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+
+  .primaryControl {
+    grid-column: 1;
+    grid-row: 1 / 5;
+  }
+
+  .familyIdField,
+  .seedField,
+  .policyCell,
+  .actions {
+    grid-column: 2;
+  }
+
+  .actions {
+    justify-content: flex-start;
+  }
+
+  .autoAnchor,
+  .lockedAnchor {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .lockedAnchor label {
+    flex-basis: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .familyRow {
+    transition: none;
+  }
+}

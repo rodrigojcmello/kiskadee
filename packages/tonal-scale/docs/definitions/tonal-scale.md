@@ -1,12 +1,19 @@
 # Kiskadee Tonal Scale v1
 
-Status: canonical definition. `Balanced` is frozen; `Muted Darks` is a
-candidate profile under validation.
+Status: canonical low-level definition. `Balanced` is frozen; `Muted Darks`
+is an isolated tonal profile that must not alter it.
 
-`@kiskadee/tonal-scale` generates a coordinated light and dark tonal system
-from one exact sRGB source color. This document defines the contract that the
-generator and its validation UI must implement before preset integration is
-considered.
+`@kiskadee/tonal-scale` generates a coordinated Light and Dark tonal scale
+from one sRGB seed. This document defines the low-level scale contract
+implemented by `generateKiskadeeScale`. The higher-level multi-family contract,
+harmonization rules, and package-owned artifact format are defined separately
+in [tonal-system.md](./tonal-system.md).
+
+The public L/D grid, Balanced geometry, emitted colors, and diagnostics
+described here remain canonical when the low-level generator is composed into
+a tonal system. System generation may choose a derived seed according to an
+explicit seed policy, but it must not mutate the Balanced scale algorithm or
+reinterpret its positions.
 
 ## Terminology
 
@@ -292,17 +299,26 @@ Light and dark diagnostics are independent and must report:
 
 Generation must never hide a relaxation.
 
-## Milestone Boundary
+## Composition And Integration Boundary
 
-Milestone 1 approved and froze the `balanced` profile. The `muted-darks`
-candidate is the next isolated milestone and cannot alter Balanced while it is
-implemented or evaluated.
+The approved `balanced` profile and its golden barrier remain the immutable
+foundation of every higher-level workflow. `muted-darks` is orthogonal to seed
+policy and must remain an isolated tonal-profile transformation. Neither
+multi-family generation, harmonization, artifact serialization, nor UI work may
+change Balanced output.
 
-Export formats, public package APIs, preset integration, preset type changes,
-and preset migration are explicitly deferred. The package remains a private
-generator and validation application. The local `generate` CLI accepts
-`balanced` or `muted-darks` and prints L and D scales for inspection only; it
-does not write preset artifacts.
+Package-owned artifact generation is part of the tonal-system contract and is
+no longer deferred. Those artifacts describe primitive color families; they
+are not preset artifacts and are not compatible with the current preset schema
+by implication.
+
+Preset integration, preset type changes, semantic color mapping, and preset
+migration remain explicitly outside this package's current boundary. They
+require a future integration plan and must not change this low-level contract
+implicitly.
+
+The local single-scale CLI continues to accept `balanced` or `muted-darks` for
+direct scale inspection:
 
 ```txt
 pnpm generate <hex> [light|dark|both] [balanced|muted-darks]
