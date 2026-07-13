@@ -75,6 +75,63 @@ dd {
   padding: 36px 28px 56px;
 }
 
+.generation-loader {
+  position: fixed;
+  z-index: 100;
+  top: 18px;
+  left: 50%;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: max-content;
+  max-width: calc(100vw - 28px);
+  border: 1px solid color-mix(in srgb, var(--brand) 24%, var(--border));
+  border-radius: 14px;
+  padding: 11px 15px;
+  background: rgb(255 255 255 / 94%);
+  box-shadow: 0 14px 40px rgb(20 33 48 / 16%);
+  pointer-events: none;
+  transform: translateX(-50%);
+  backdrop-filter: blur(14px);
+}
+
+.generation-loader > span:last-child {
+  display: grid;
+  gap: 2px;
+}
+
+.generation-loader strong {
+  color: var(--text);
+  font-size: 13px;
+}
+
+.generation-loader small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.generation-loader-spinner {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  border: 2px solid color-mix(in srgb, var(--brand) 20%, transparent);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: generation-loader-spin 720ms linear infinite;
+}
+
+@keyframes generation-loader-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .generation-loader-spinner {
+    animation: none;
+  }
+}
+
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(300px, 420px);

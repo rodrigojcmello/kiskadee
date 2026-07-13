@@ -1,12 +1,13 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
+import { useCallback, useDeferredValue, useEffect, useState } from 'react';
 import { createTonalArtifactBundle, type TonalArtifactBundle } from '@/src/export/tonal-artifacts';
 import { createTonalBundleZip } from '@/src/export/tonal-bundle-zip';
 import { KISKADEE_TONAL_PROFILES, type KiskadeeTonalProfile } from '@/src/kiskadee-tonal-scale';
 import {
   generateKiskadeeTonalSystem,
+  type KiskadeeTonalSystemResult,
   type ResolvedKiskadeeTonalSystem,
   type ResolvedTonalFamily,
   type ResolvedTonalTheme
@@ -47,10 +48,12 @@ export default function TonalScalePage() {
   const [selectedFamilyId, setSelectedFamilyId] = useState<TonalFamilyId>('blue.v1');
   const [urlReady, setUrlReady] = useState(false);
   const [sharedStateIssue, setSharedStateIssue] = useState<string | null>(null);
+  const [system, setSystem] = useState<KiskadeeTonalSystemResult | null>(null);
+  const [generatedRecipe, setGeneratedRecipe] = useState<TonalSystemRecipeV2 | null>(null);
   const deferredRecipe = useDeferredValue(recipe);
-  const system = useMemo(() => generateKiskadeeTonalSystem(deferredRecipe), [deferredRecipe]);
-  const isGenerating = deferredRecipe !== recipe;
-  const resolvedFamily = system.valid
+  const isGenerating =
+    !urlReady || system === null || deferredRecipe !== recipe || generatedRecipe !== deferredRecipe;
+  const resolvedFamily = system?.valid
     ? (system.families.find((family) => family.id === selectedFamilyId) ??
       system.families.find((family) => family.id === system.primaryReference.familyId) ??
       system.families[0])
@@ -107,6 +110,24 @@ export default function TonalScalePage() {
   }, []);
 
   useEffect(() => {
+    if (!urlReady) return;
+
+    let cancelled = false;
+    const generationTimer = window.setTimeout(() => {
+      const nextSystem = generateKiskadeeTonalSystem(deferredRecipe);
+      if (cancelled) return;
+
+      setSystem(nextSystem);
+      setGeneratedRecipe(deferredRecipe);
+    }, 0);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(generationTimer);
+    };
+  }, [deferredRecipe, urlReady]);
+
+  useEffect(() => {
     if (!urlReady || sharedStateIssue) return;
 
     const validation = validateTonalSystemRecipe(recipe);
@@ -129,27 +150,31 @@ export default function TonalScalePage() {
 
   return (
     <main className="app-shell" aria-busy={isGenerating}>
+      {isGenerating ? <GenerationLoader isInitial={system === null} /> : null}
+
       <header className="hero">
         <div>
           <span className="eyebrow">Kiskadee Munsell tonal system v2</span>
           <h1>One primary. A complete color system.</h1>
           <p className="hero-copy">
-            Start with the exact primary color. Kiskadee projects its chromatic signature across
-            every Munsell sector, preserves a dedicated Black scale, and keeps all Light and Dark
-            families aligned to one functional rest reference.
+            Start with the exact primary color. Kiskadee harmonizes one fixed reference in every
+            Munsell sector, preserves a dedicated Black scale, and keeps all Light and Dark families
+            aligned to shared functional rest positions.
           </p>
         </div>
         <div
-          className={`system-hero-status ${isGenerating ? 'generating' : system.status}`}
+          className={`system-hero-status ${isGenerating || !system ? 'generating' : system.status}`}
           aria-live="polite"
         >
-          <span>{isGenerating ? 'Generating' : capitalize(system.status)}</span>
+          <span>{isGenerating || !system ? 'Generating' : capitalize(system.status)}</span>
           <strong>
-            {system.families.length > 0 ? system.families.length : TONAL_CORE_FAMILY_IDS.length}{' '}
+            {system && system.families.length > 0
+              ? system.families.length
+              : TONAL_CORE_FAMILY_IDS.length}{' '}
             primitive families
           </strong>
           <p>
-            {isGenerating
+            {isGenerating || !system
               ? 'Resolving the current recipe and every dependent family.'
               : system.valid
                 ? `${system.primaryReference.familyId} · L${system.rest.light} / D${system.rest.dark} · ${resolveProfileLabel(recipe.tonalProfile)}`
@@ -169,19 +194,28 @@ export default function TonalScalePage() {
         <div className="section-heading">
           <h2 id="recipe-title">Tonal recipe</h2>
           <p>
-            The twelve canonical Layer 1 families are always generated. Add overrides only when a
-            Design System needs an exact or intentionally adapted source color.
+            The twelve Layer 1 families always start from the same controlled reference set. Add
+            overrides only when a Design System intentionally leaves this harmony baseline.
           </p>
         </div>
-        <RecipeEditor
-          recipe={recipe}
-          result={system}
-          isGenerating={isGenerating}
-          onChange={handleRecipeChange}
-        />
+        {system ? (
+          <RecipeEditor
+            recipe={recipe}
+            result={system}
+            isGenerating={isGenerating}
+            onChange={handleRecipeChange}
+          />
+        ) : (
+          <section className="empty-state generating-state" aria-live="polite">
+            <div>
+              <strong>Preparing the tonal recipe</strong>
+              <p>Reading the shared URL state before generating the first complete system.</p>
+            </div>
+          </section>
+        )}
       </section>
 
-      {system.valid && resolvedFamily ? (
+      {system?.valid && resolvedFamily ? (
         <>
           <SystemReference system={system} />
           <HarmonyComparison system={system} />
@@ -226,6 +260,20 @@ export default function TonalScalePage() {
         <code>Munsell projection · One primary reference · Atomic bundle</code>
       </footer>
     </main>
+  );
+}
+
+function GenerationLoader({ isInitial }: { isInitial: boolean }) {
+  return (
+    <div className="generation-loader" role="status" aria-live="polite">
+      <span className="generation-loader-spinner" aria-hidden="true" />
+      <span>
+        <strong>Generating tonal scales</strong>
+        <small>
+          {isInitial ? 'Loading the shared recipe' : 'Updating every Light and Dark family'}
+        </small>
+      </span>
+    </div>
   );
 }
 

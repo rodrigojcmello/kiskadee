@@ -9,6 +9,7 @@ import {
   relativeLuminance
 } from './color-math.ts';
 import { compareStrings } from './deterministic-order.ts';
+import { FIXED_FAMILY_SEEDS_V1 } from './fixed-family-seeds.ts';
 import {
   generateKiskadeeScale,
   KISKADEE_TONES,
@@ -62,12 +63,14 @@ export const HARMONY_V1_PARAMETERS = {
 
 export const MUNSELL_HARMONY_V1_PARAMETERS = {
   brownChromaRatio: 0.6,
-  canonicalBlackSeed: '#20252b',
-  quantizationSafeInset: 0.02,
   functionalRestVividSourceMinimum: 0.5,
   functionalRestSourceRetention: 0.7,
   functionalRestBalanceRatio: 0.6,
   functionalRestSourceAnchorBalanceRatio: 0.55
+} as const;
+
+const DEFERRED_PRIMARY_DERIVATION_V1_PARAMETERS = {
+  quantizationSafeInset: 0.02
 } as const;
 
 const REST_TONES = KISKADEE_TONES.filter((tone) => tone > 0 && tone < 100);
@@ -152,7 +155,7 @@ export type ResolvedTonalFamily = {
   variant: TonalFamilyVariant;
   colorKind: TonalFamilyColorKind;
   role: 'primary' | 'support';
-  seedOrigin: 'primary' | 'derived' | 'override' | 'canonical';
+  seedOrigin: 'primary' | 'reference' | 'derived' | 'override' | 'canonical';
   sourceSeedHex: string;
   identity: MunsellColorClassification | null;
   status: Exclude<TonalSystemStatus, 'error'>;
@@ -406,19 +409,8 @@ function materializeTonalSystemRecipe(
   }
 
   const primarySignature = resolveGlobalChromaSignature(primaryIdentity.oklch);
-  const useGlobalDerivedSignature = requiresGlobalDerivedSignature(primaryIdentity);
   const useHueGlobalHarmony =
     primarySignature.utilization >= MUNSELL_HARMONY_V1_PARAMETERS.functionalRestVividSourceMinimum;
-  const primaryLocalMaximumChroma = maxSrgbChroma(primaryIdentity.oklch.l, primaryIdentity.oklch.h);
-  const primaryLocalUtilization =
-    primaryLocalMaximumChroma <= 0 ? 0 : primaryIdentity.oklch.c / primaryLocalMaximumChroma;
-  const primaryDerivedUtilization = useGlobalDerivedSignature
-    ? primarySignature.utilization
-    : primaryLocalUtilization;
-  const baseUtilization =
-    primaryId === 'yellow-red.v2'
-      ? Math.min(1, primaryDerivedUtilization / MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio)
-      : primaryDerivedUtilization;
 
   const families = new Map<TonalFamilyId, MaterializedFamilySource>();
   families.set(primaryId, {
@@ -438,10 +430,11 @@ function materializeTonalSystemRecipe(
       continue;
     }
 
+    const referenceSeedHex = FIXED_FAMILY_SEEDS_V1[id];
     if (id === 'black.v1') {
       families.set(id, {
         id,
-        seedHex: MUNSELL_HARMONY_V1_PARAMETERS.canonicalBlackSeed,
+        seedHex: referenceSeedHex,
         seedOrigin: 'canonical',
         policies: { light: 'source-exact', dark: 'source-exact' },
         identity: null
@@ -451,45 +444,24 @@ function materializeTonalSystemRecipe(
 
     const parsed = parseTonalFamilyId(id);
     if (!parsed?.sector) continue;
-    const projection = projectMunsellHue(primaryIdentity.oklch.h, parsed.sector);
-    const utilization =
-      id === 'yellow-red.v2'
-        ? baseUtilization * MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio
-        : baseUtilization;
-    const derivedSeed = resolveSafeDerivedSeed({
-      utilization,
-      lightness: useGlobalDerivedSignature ? undefined : primaryIdentity.oklch.l,
-      signedPeakOffset: useGlobalDerivedSignature ? primarySignature.signedPeakOffset : undefined,
-      sector: parsed.sector,
-      projectedPosition: projection.projectedPosition
-    });
-
-    if (!derivedSeed) {
+    const referenceIdentity = classifyMunsellHex(referenceSeedHex);
+    if (referenceIdentity.sector !== parsed.sector) {
       issues.push({
         severity: 'error',
-        code: 'DERIVED_SAFE_CORE_UNREACHABLE',
-        path: `/derived/${id}`,
-        message: `${id} could not emit an sRGB seed inside the safe ${parsed.sector} generation region.`,
+        code: 'REFERENCE_SEED_SECTOR_MISMATCH',
+        path: `/references/${id}`,
+        message: `${id} fixed reference classifies as ${referenceIdentity.sector} instead of ${parsed.sector}.`,
         familyId: id
       });
       continue;
     }
-    if (projection.clampedToSafeCore || derivedSeed.quantizationInsetApplied) {
-      issues.push({
-        severity: 'review',
-        code: 'MUNSELL_HUE_CLAMPED',
-        path: `/derived/${id}`,
-        message: `${id} was clamped inside the safe ${parsed.sector} region with an sRGB quantization guard.`,
-        familyId: id
-      });
-    }
 
     families.set(id, {
       id,
-      seedHex: derivedSeed.seedHex,
-      seedOrigin: 'derived',
+      seedHex: referenceSeedHex,
+      seedOrigin: 'reference',
       policies: { light: 'harmonized', dark: 'harmonized' },
-      identity: derivedSeed.identity
+      identity: referenceIdentity
     });
   }
 
@@ -526,7 +498,11 @@ function materializeTonalSystemRecipe(
   };
 }
 
-function resolveSafeDerivedSeed(params: {
+/**
+ * Deferred primary-derived family strategy. Fixed references are the active
+ * runtime model while harmony is calibrated in isolation.
+ */
+function _resolveSafeDerivedSeed(params: {
   utilization: number;
   lightness?: number;
   signedPeakOffset?: number;
@@ -546,9 +522,9 @@ function resolveSafeDerivedSeed(params: {
   } = params;
   const definition = getMunsellOklchSectorDefinition(sector);
   const guardedStart =
-    MUNSELL_OKLCH_SAFE_CORE.start + MUNSELL_HARMONY_V1_PARAMETERS.quantizationSafeInset;
+    MUNSELL_OKLCH_SAFE_CORE.start + DEFERRED_PRIMARY_DERIVATION_V1_PARAMETERS.quantizationSafeInset;
   const guardedEnd =
-    MUNSELL_OKLCH_SAFE_CORE.end - MUNSELL_HARMONY_V1_PARAMETERS.quantizationSafeInset;
+    MUNSELL_OKLCH_SAFE_CORE.end - DEFERRED_PRIMARY_DERIVATION_V1_PARAMETERS.quantizationSafeInset;
   const guardedPosition = clamp(projectedPosition, guardedStart, guardedEnd);
   const centerPosition = getMunsellOklchSectorCenterPosition(sector);
   const utilizationRatio = Math.min(1, Math.max(0.04, utilization));
@@ -599,7 +575,8 @@ function resolveGlobalChromaSignature(color: OklchColor): GlobalChromaSignature 
   };
 }
 
-function requiresGlobalDerivedSignature(primary: MunsellColorClassification): boolean {
+/** Deferred with the primary-derived family strategy above. */
+function _requiresPrimaryDerivedGlobalSignature(primary: MunsellColorClassification): boolean {
   const sourceSignature = resolveGlobalChromaSignature(primary.oklch);
   if (
     sourceSignature.utilization < MUNSELL_HARMONY_V1_PARAMETERS.functionalRestVividSourceMinimum
@@ -1744,7 +1721,7 @@ function resolveCandidateTheme(params: {
       severity: 'error',
       code: 'HARMONY_HARD_CEILING',
       path: familyPath(recipe, familyId, 'seedHex'),
-      message: `${familyId} exceeds the v1 harmony or hue-identity hard ceiling in ${theme}.`,
+      message: `${familyId} exceeds the v1 harmony or hue-identity hard ceiling in ${theme}: score ${metrics.score.toFixed(3)}, hue drift ${metrics.hueDrift.toFixed(2)}deg at chroma ${resolution.candidate.oklch.c.toFixed(4)}.`,
       familyId,
       theme
     });
@@ -2081,6 +2058,17 @@ function compareRankedCandidates(
   const leftMetrics = left.metrics;
   const rightMetrics = right.metrics;
 
+  // Hard-feasible candidates must win before soft harmony preferences are
+  // compared. The hard ceiling is still reported when no feasible candidate
+  // exists; it is never used only after discarding a valid fallback.
+  const leftHardFeasible =
+    leftMetrics.score <= HARMONY_V1_PARAMETERS.hardScoreCeiling &&
+    leftMetrics.hueDrift <= HARMONY_V1_PARAMETERS.maximumHueDrift;
+  const rightHardFeasible =
+    rightMetrics.score <= HARMONY_V1_PARAMETERS.hardScoreCeiling &&
+    rightMetrics.hueDrift <= HARMONY_V1_PARAMETERS.maximumHueDrift;
+  if (leftHardFeasible !== rightHardFeasible) return leftHardFeasible ? -1 : 1;
+
   // A vivid system must first return to the permitted hue-global balance
   // range. Once feasible, the approved perceptual hierarchy remains intact.
   const balanceDifference = leftMetrics.hueGlobalBalanceError - rightMetrics.hueGlobalBalanceError;
@@ -2249,9 +2237,19 @@ function familyPath(
   const overrideIndex = recipe.authoringRecipe.overrides.findIndex(
     (override) => override.id === familyId
   );
-  return overrideIndex >= 0
-    ? `/overrides/${overrideIndex}/${property}`
-    : `/derived/${familyId}/${property}`;
+  if (overrideIndex >= 0) return `/overrides/${overrideIndex}/${property}`;
+
+  const source = recipe.families.find((family) => family.id === familyId);
+  switch (source?.seedOrigin) {
+    case 'reference':
+      return `/references/${familyId}/${property}`;
+    case 'canonical':
+      return `/canonical/${familyId}/${property}`;
+    case 'derived':
+      return `/derived/${familyId}/${property}`;
+    default:
+      return `/families/${familyId}/${property}`;
+  }
 }
 
 function failedResult(

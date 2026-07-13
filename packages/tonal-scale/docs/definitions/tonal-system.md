@@ -1,11 +1,12 @@
-# Kiskadee Primary-Derived Tonal System v2
+# Kiskadee Tonal System v2
 
 Status: canonical package-level definition.
 
-The tonal system generates a complete Layer 1 primitive color system from one
-exact sRGB primary plus optional authored overrides. It composes the frozen
-`generateKiskadeeScale` operation without changing its L/D grid, Balanced
-outputs, profiles, contrast guards, or golden hashes defined in
+The tonal system evaluates one exact sRGB primary against a fixed set of Layer
+1 family references plus optional authored overrides. This controlled model
+isolates harmony behavior from companion-color generation. It composes the
+frozen `generateKiskadeeScale` operation without changing its L/D grid,
+Balanced outputs, profiles, contrast guards, or golden hashes defined in
 [tonal-scale.md](./tonal-scale.md).
 
 The family taxonomy and hue boundaries are defined in
@@ -52,6 +53,34 @@ policies, and conflicting primary overrides fail explicitly.
 Format 1 is not migrated silently. Former natural family names do not have a
 unique mapping onto the Munsell family and variant model.
 
+## Fixed Reference Set
+
+The active seed model is `fixed-reference`, backed by
+`kiskadee-munsell-reference-v1`:
+
+| Family | Reference seed |
+| --- | --- |
+| `red.v1` | `#d13438` |
+| `yellow-red.v1` | `#ca5010` |
+| `yellow-red.v2` | `#8e562e` |
+| `yellow.v1` | `#ffb900` |
+| `green-yellow.v1` | `#7fba00` |
+| `green.v1` | `#107c10` |
+| `blue-green.v1` | `#038387` |
+| `blue.v1` | `#0f6cbd` |
+| `purple-blue.v1` | `#4f6bed` |
+| `purple.v1` | `#8764b8` |
+| `red-purple.v1` | `#e3008c` |
+| `black.v1` | `#20252b` |
+
+The primary replaces only the reference whose resolved family id it occupies.
+All other required families start from the same bytes for every primary.
+Overrides remain possible but intentionally leave the controlled baseline.
+Chromatic fixed references use `seedOrigin: reference`; Black retains its
+existing `canonical` origin. They are not described as primary-derived or
+silently clamped to the safe generation region. Sector identity remains
+mandatory.
+
 ## Derivation And Harmony
 
 Generation performs these deterministic stages:
@@ -60,24 +89,19 @@ Generation performs these deterministic stages:
 2. Resolve its family variant and exact Light/Dark scales.
 3. Measure primary chroma against the maximum available anywhere along its
    hue, not only at the primary lightness.
-4. Test whether the exact primary anchor offers enough cross-hue capacity for
-   a vivid system. Balanced anchors keep the local projection; luminous vivid
-   anchors use the hue-global projection described below.
-5. Materialize concrete seeds for required families, Brown, canonical Black,
-   and authored overrides.
-6. Generate family baselines and establish one shared Light and one shared
+4. Materialize the fixed references, replacing only the primary family and any
+   explicit overrides.
+5. Generate family baselines and establish one shared Light and one shared
    Dark functional `rest` position independently from every generated anchor.
-7. Harmonize eligible seeds at those shared functional rest positions.
-8. Compose the unchanged low-level scale generator and validate the complete
+6. Harmonize eligible references at those shared functional rest positions.
+7. Compose the unchanged low-level scale generator and validate the complete
    atomic system.
 
-The hue-global signature contains `C / peakC(hue)` and the signed lightness
-displacement around `peakL(hue)`. When an exact primary lightness cannot carry
-the other sectors, that displacement is projected around each target hue's own
-chroma peak. If the projected lightness cannot emit the desired chroma, it
-moves only as far as necessary toward that peak. This prevents a luminous
-Yellow from creating pastel Red, Blue, and Purple seeds while preserving the
-previous projection for already balanced primaries.
+The hue-global signature contains `C / peakC(hue)`. It is now used only to
+evaluate rest balance and constrain harmony; it no longer generates the source
+colors of companion families. The primary-derived seed strategy is preserved
+as a deferred proposal and stays outside the active runtime while harmony is
+calibrated.
 
 For vivid systems, harmonized candidates must first return to the permitted
 hue-global balance interval of `0.6` through `1 / 0.6` relative to the primary
@@ -111,21 +135,21 @@ all ten v1 families after harmonization. Baseline projections are used only to
 select a candidate position; they are never exported as evidence that the
 final system is balanced.
 
-Brown uses `0.6` of the base Orange chroma utilization while preserving the
+Brown targets `0.6` of the base Orange chroma utilization while preserving the
 same rest position and lightness/contrast priority. A light rest may therefore
 appear tan; physically darker positions retain the Brown character. If Brown
-is primary, its utilization is normalized by the same ratio before deriving
-the base companion system.
+is primary, the harmony reference normalizes its utilization by the same ratio
+before comparing it with the fixed companion set.
 
-`black.v1` defaults to `#20252b`, uses `source-exact` in both themes, and is not
-derived from the primary. Achromatic chroma above `0.04` requires review and
-above `0.08` fails.
+`black.v1` uses the fixed reference `#20252b`, remains `source-exact` in both
+themes, and does not participate in chromatic harmony. Achromatic chroma above
+`0.04` requires review and above `0.08` fails.
 
 ## Generated Anchor And Functional Rest
 
 `seedHex`, generated anchor, and functional rest are separate concepts:
 
-- `seedHex` is the authored or derived source color;
+- `seedHex` is the primary, fixed-reference, or authored source color;
 - the generated anchor is where the low-level scale preserves or adapts that
   seed;
 - functional rest is the shared slot read by component semantics.
@@ -133,8 +157,10 @@ above `0.08` fails.
 All families use the same public functional rest positions. A source-exact
 primary or support seed may occupy another generated anchor without changing
 the shared rest. Rest may be any public chromatic slot from 1 through 99.
-Twitter Blue `#1da1f2` remains exact at L24/D70, and those anchors remain its
-functional rest because the complete system is already balanced there.
+For example, Twitter Blue `#1da1f2` remains exact at its generated L24/D70
+anchors while the current fixed-reference baseline selects L50/D40 as the
+shared functional rest. This difference is intentional evidence for harmony
+calibration; it is not hidden by moving the exact primary.
 
 The automatic vividness guard applies only when the source uses at least `0.5`
 of its hue-global chroma potential. An exact source anchor is preserved while
@@ -146,9 +172,10 @@ the system must move, the selected functional rest must:
   utilization;
 - be the nearest qualifying public slot by grid position.
 
-For example, `#ffeb3b` remains exact at L5/D95 while its functional rest moves
-to L22/D75. Locked positions remain authoritative, but an imbalance is
-reported for review rather than hidden.
+For example, `#ffeb3b` remains exact at L5/D95 while the current
+fixed-reference baseline moves functional rest to L28/D65. Locked positions
+remain authoritative, but an imbalance is reported for review rather than
+hidden.
 
 ## Low-Level Invariants
 
@@ -177,6 +204,12 @@ expose the prominence and any unresolved continuity review; invalid caps,
 anchors, monotonicity, uniqueness, contrast, or gamut output still fail
 normally.
 
+Candidate ranking always prefers solutions that satisfy both the harmony score
+and hue-drift hard ceilings before applying soft perceptual preferences. The
+hard ceiling remains an error only when the complete finite search has no
+hard-feasible candidate; a slightly better soft score cannot discard a valid
+fallback.
+
 ## Artifact Set
 
 An export is one deterministic directory-shaped bundle:
@@ -203,9 +236,9 @@ The locked source retains the primary id and seed, policies, overrides,
 profile, rest positions, and contract identifiers. The manifest centralizes
 asset hashes. Each color asset contains `sector`, `variant`, `colorKind`,
 `seedHex`, `seedOrigin`, policies, generated anchors, functional rest colors,
-and complete Light and Dark tone maps. Cross-hue rest balance, classification,
-clamps, harmony metrics, and scale diagnostics remain in the review-only
-diagnostics file.
+and complete Light and Dark tone maps. The diagnostics identify the
+`fixed-reference` seed model and `kiskadee-munsell-reference-v1` set alongside
+cross-hue balance, classification, harmony metrics, and scale diagnostics.
 
 Verification regenerates the complete bundle and compares canonical JSON byte
 for byte. Missing, extra, non-canonical, or modified files invalidate it

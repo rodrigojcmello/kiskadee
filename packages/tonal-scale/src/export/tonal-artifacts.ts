@@ -1,4 +1,5 @@
 import { compareStrings } from '../deterministic-order.ts';
+import { FIXED_FAMILY_REFERENCE_SET, FIXED_FAMILY_SEEDS_V1 } from '../fixed-family-seeds.ts';
 import { KISKADEE_TONES, type KiskadeeTone } from '../kiskadee-tonal-scale.ts';
 import { classifyMunsellHex, type MunsellColorClassification } from '../munsell-oklch.ts';
 import {
@@ -8,6 +9,7 @@ import {
   type TonalSystemIssue
 } from '../tonal-system.ts';
 import {
+  type CoreTonalFamilyId,
   type LockedTonalSystemSourceV2,
   TONAL_CORE_FAMILY_IDS,
   type TonalFamilyColorKind,
@@ -83,6 +85,8 @@ export type TonalSystemDiagnosticsV2 = {
   kind: 'kiskadee.tonal-system-diagnostics';
   formatVersion: 2;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
+  seedModel: 'fixed-reference';
+  referenceSet: typeof FIXED_FAMILY_REFERENCE_SET;
   status: 'pass' | 'review';
   issues: TonalSystemIssue[];
   functionalRest: ResolvedKiskadeeTonalSystem['functionalRestDiagnostics'];
@@ -175,6 +179,8 @@ export async function createTonalArtifactBundle(
     kind: 'kiskadee.tonal-system-diagnostics',
     formatVersion: system.source.formatVersion,
     generator: TONAL_ARTIFACT_GENERATOR,
+    seedModel: 'fixed-reference',
+    referenceSet: FIXED_FAMILY_REFERENCE_SET,
     status: system.status,
     issues: normalizeIssues(system.issues),
     functionalRest: system.functionalRestDiagnostics,
@@ -472,7 +478,23 @@ function assertResolvedSystem(system: ResolvedKiskadeeTonalSystem): void {
     ) {
       throw new TonalArtifactError(`${family.id} does not match its locked override.`);
     }
-    if (family.seedOrigin === 'canonical' && family.id !== 'black.v1') {
+    if (family.seedOrigin === 'reference') {
+      const referenceSeed = Object.hasOwn(FIXED_FAMILY_SEEDS_V1, family.id)
+        ? FIXED_FAMILY_SEEDS_V1[family.id as CoreTonalFamilyId]
+        : undefined;
+      if (referenceSeed !== family.sourceSeedHex) {
+        throw new TonalArtifactError(`${family.id} does not match the fixed reference set.`);
+      }
+    }
+    if (family.seedOrigin === 'derived') {
+      throw new TonalArtifactError(
+        `${family.id} cannot use a primary-derived seed in a fixed-reference artifact.`
+      );
+    }
+    if (
+      family.seedOrigin === 'canonical' &&
+      (family.id !== 'black.v1' || family.sourceSeedHex !== FIXED_FAMILY_SEEDS_V1['black.v1'])
+    ) {
       throw new TonalArtifactError(`${family.id} cannot use canonical seed origin.`);
     }
     seen.add(family.id);

@@ -27,7 +27,7 @@ red-purple
 authored gray trajectory and may be subtly tinted, but it is never a chromatic
 harmony reference. `neutral` is not a Layer 1 family name.
 
-Every primary-derived system contains these family ids:
+Every complete system contains these family ids:
 
 ```txt
 red.v1
@@ -70,26 +70,25 @@ interval includes its start and excludes its end, including the wrap between
 red-purple and red. This removes ambiguous equality at a boundary.
 
 The inner 15% through 85% of each interval is its safe generation region.
-Authored colors in the outer bands remain valid but require review. Derived
-colors preserve their signed displacement from the source sector center: a
-sector center always maps to the destination center, while positions toward a
-boundary preserve 40% of their relative distance along that same side. The
-`0.4` transfer keeps systems derived from different primaries observably
-distinct without letting a boundary-adjacent blue turn its Red companion into
-Orange or its Yellow companion into Green-Yellow. This also avoids asymmetric
-sector widths pushing a nearly central source toward an unrelated natural-color
-boundary. The projected position is clamped to the safe region when necessary.
-Generation also keeps a small deterministic inset from the 15% and 85% edges
-so sRGB quantization cannot push an emitted seed back outside the safe region.
-Classification or clamping is always reported; it is never hidden.
+Authored and fixed-reference colors in the outer bands remain valid when they
+classify in the correct sector. The active fixed-reference harmony does not
+move or clamp those source seeds, because doing so would introduce another
+variable into harmony calibration.
+
+The deferred primary-derived strategy uses the safe region for generated
+companion sources, including sector-relative projection, deterministic edge
+insets, and explicit clamp diagnostics. Its current status and re-entry
+criteria are documented in
+[`primary-derived-family-seeds.md`](../proposals/primary-derived-family-seeds.md).
 
 The red, yellow-red, yellow, and purple-blue centers are perceptually
-calibrated so common product colors remain recognizable after cross-sector
-projection. In particular, the red/yellow-red boundary retains Orange in
-yellow-red, the yellow center favors golden Yellow over olive Green-Yellow, and
-saturated electric blues remain on the blue side of the blue/purple-blue
-boundary. These values are part of the Kiskadee projection rather than claims
-about a universal Munsell-to-OKLCH conversion.
+calibrated so common product colors classify recognizably and remain coherent
+if the deferred cross-sector projection returns. In particular, the
+red/yellow-red boundary retains Orange in yellow-red, the yellow center favors
+golden Yellow over olive Green-Yellow, and saturated electric blues remain on
+the blue side of the blue/purple-blue boundary. These values are part of the
+Kiskadee projection rather than claims about a universal Munsell-to-OKLCH
+conversion.
 
 A chromatic primary with OKL chroma below `0.005` fails because its hue is not
 reliable. Chroma from `0.005` through `0.02` is classifiable but requires review.
@@ -108,19 +107,22 @@ frozen sector boundaries. Sector classification always runs first. The
 calibrated red/yellow-red boundary classifies the Orange prototype `#ca5010`
 inside yellow-red without requiring a special-case identity override.
 
-Brown uses the yellow-red hue projection and the same shared Light and Dark
-rest positions as every other family. Its target gamut utilization is initially
-`0.6` of the Orange appearance. Functional harmony still outranks keeping the
-rest color visibly dark, so a very light rest may appear tan while physically
-darker positions retain the Brown character.
+Brown uses the fixed `yellow-red.v2` reference and the same shared Light and
+Dark rest positions as every other family. Its target gamut utilization is
+initially `0.6` of the Orange appearance. Functional harmony still outranks
+keeping the rest color visibly dark, so a very light rest may appear tan while
+physically darker positions retain the Brown character.
 
-`black.v1` defaults to `#20252b` and is not derived from the primary. Authored
-black seeds above OKL chroma `0.04` require review; values above `0.08` fail.
+`black.v1` uses the fixed reference `#20252b` and is not derived from the
+primary. Authored black seeds above OKL chroma `0.04` require review; values
+above `0.08` fail.
 
 ## Identity Invariants
 
-- A chromatic family seed must classify inside its declared sector.
-- Generated hues must stay in the safe region of the destination sector.
+- A chromatic family source and its harmonized output must classify inside its
+  declared sector.
+- Primary-derived companion sources must stay in the safe generation region
+  when that deferred strategy is enabled; fixed references are not clamped.
 - Hue fitting cannot be used to satisfy harmony; lightness and relative chroma
   are the adjustable dimensions.
 - Brown remains yellow-red and cannot be replaced by an Orange-like v2 seed.

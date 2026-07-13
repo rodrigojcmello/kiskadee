@@ -1,6 +1,7 @@
 # Superseded: Manual Family Seeds v1
 
-Status: superseded by the primary-derived Munsell tonal system.
+Status: rejected as an authoring contract; fixed references remain useful as an
+internal harmony baseline.
 
 The first tonal-system contract required authors to provide a seed for every
 primitive family. The primary supplied only the shared rest fingerprint; it did
@@ -12,9 +13,11 @@ stage, but it was rejected as the authoring contract because custom Design
 Systems would repeatedly inherit the same manually curated red, yellow, green,
 and other supporting colors.
 
-The replacement accepts one exact primary plus optional overrides, derives the
-complete Munsell family set, and materializes concrete seeds before composing
-the unchanged low-level tonal-scale generator.
+The current authoring contract accepts one exact primary plus optional
+overrides. During harmony calibration, the runtime materializes the complete
+Munsell set from controlled fixed references instead of asking authors for all
+twelve seeds. Primary-derived companion generation is deferred separately in
+[`primary-derived-family-seeds.md`](../proposals/primary-derived-family-seeds.md).
 
 There is no automatic artifact migration. Former names such as `orange`,
 `teal`, `cyan`, `pink`, and `brown` do not map one-to-one onto the new family

@@ -2,6 +2,7 @@
 
 import { useId, useState } from 'react';
 import { normalizeHexColor } from '@/src/color-math';
+import { FIXED_FAMILY_SEEDS_V1 } from '@/src/fixed-family-seeds';
 import {
   KISKADEE_TONAL_PROFILES,
   KISKADEE_TONES,
@@ -19,6 +20,7 @@ import type {
   TonalSystemIssue
 } from '@/src/tonal-system';
 import {
+  type CoreTonalFamilyId,
   createTonalFamilyId,
   parseTonalFamilyId,
   resolveTonalFamilyColorKind,
@@ -26,7 +28,6 @@ import {
   TONAL_FAMILY_NAMES,
   TONAL_FAMILY_VARIANTS,
   type TonalFamilyId,
-  type TonalFamilyName,
   type TonalFamilyOverrideV2,
   type TonalFamilyVariant,
   type TonalPrimaryDraftV2,
@@ -42,20 +43,6 @@ const EXTRA_VARIANTS = TONAL_FAMILY_VARIANTS.filter((variant) => variant !== 'v1
 const EXTRA_FAMILY_IDS = TONAL_FAMILY_NAMES.flatMap((family) =>
   EXTRA_VARIANTS.map((variant) => createTonalFamilyId(family, variant))
 ).filter((id) => !CORE_FAMILY_ID_SET.has(id));
-
-const DEFAULT_SEEDS = {
-  red: '#d13438',
-  'yellow-red': '#ca5010',
-  yellow: '#ffb900',
-  'green-yellow': '#7fba00',
-  green: '#107c10',
-  'blue-green': '#038387',
-  blue: '#0f6cbd',
-  'purple-blue': '#4f6bed',
-  purple: '#8764b8',
-  'red-purple': '#e3008c',
-  black: '#20252b'
-} as const satisfies Record<TonalFamilyName, string>;
 
 const POLICY_LABELS = {
   'source-exact': 'Source exact',
@@ -114,10 +101,11 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
     const sectorPeer = result.families.find(
       (family) => parsed.sector !== null && family.sector === parsed.sector
     );
+    const referenceId = (
+      id === 'yellow-red.v2' ? id : createTonalFamilyId(parsed.family, 'v1')
+    ) as CoreTonalFamilyId;
     const seedHex =
-      resolved?.sourceSeedHex ??
-      sectorPeer?.sourceSeedHex ??
-      (id === 'yellow-red.v2' ? '#8e562e' : DEFAULT_SEEDS[parsed.family]);
+      resolved?.sourceSeedHex ?? sectorPeer?.sourceSeedHex ?? FIXED_FAMILY_SEEDS_V1[referenceId];
     const colorKind = resolveTonalFamilyColorKind(id);
     const override: TonalFamilyOverrideV2 = {
       id,
@@ -172,13 +160,12 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
     <section className={styles.editor} aria-labelledby={`${editorId}-title`}>
       <div className={styles.heading}>
         <div>
-          <p className={styles.kicker}>Primary-derived recipe</p>
-          <h2 id={`${editorId}-title`}>Primary color and Munsell projection</h2>
+          <p className={styles.kicker}>Fixed-reference harmony</p>
+          <h2 id={`${editorId}-title`}>Primary color and harmony references</h2>
           <p className={styles.intro}>
-            The exact primary establishes the chromatic signature and remains preserved at its
-            generated anchors. Kiskadee selects shared Light and Dark functional rest positions for
-            the complete Munsell family while optional overrides preserve Design System source
-            colors.
+            The exact primary remains preserved at its generated anchors. Every support family
+            starts from a fixed reference seed so only the harmony response changes while Kiskadee
+            selects shared Light and Dark functional rest positions.
           </p>
         </div>
 
@@ -338,6 +325,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
                 id={id}
                 required
                 isPrimary={id === resolvedPrimaryId}
+                primarySeedHex={id === resolvedPrimaryId ? recipe.primary.seedHex : undefined}
                 override={override}
                 resolved={result.families.find((family) => family.id === id)}
                 seedIssue={resolveFamilySeedIssue(result.issues, id, overrideIndex)}
@@ -509,7 +497,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
 
           <p className={styles.statusSummary}>
             {isGenerating
-              ? 'Resolving the primary-derived recipe and every dependent family.'
+              ? 'Resolving the exact primary against every fixed harmony reference.'
               : result.issues.length === 0
                 ? `${result.families.length} ${pluralize(result.families.length, 'family', 'families')} resolved without issues.`
                 : `${result.issues.length} ${pluralize(result.issues.length, 'issue', 'issues')} require attention.`}
@@ -541,6 +529,7 @@ type FamilyRowProps = {
   id: TonalFamilyId;
   required: boolean;
   isPrimary: boolean;
+  primarySeedHex?: string;
   override: TonalFamilyOverrideV2 | undefined;
   resolved: ResolvedTonalFamily | undefined;
   seedIssue: string | undefined;
@@ -553,6 +542,7 @@ function FamilyRow({
   id,
   required,
   isPrimary,
+  primarySeedHex,
   override,
   resolved,
   seedIssue,
@@ -562,7 +552,9 @@ function FamilyRow({
 }: FamilyRowProps) {
   const rowId = useId();
   const colorKind = resolveTonalFamilyColorKind(id);
-  const activeSeed = override?.seedHex ?? resolved?.sourceSeedHex;
+  const referenceSeed = required ? FIXED_FAMILY_SEEDS_V1[id as CoreTonalFamilyId] : undefined;
+  const activeSeed =
+    primarySeedHex ?? override?.seedHex ?? resolved?.sourceSeedHex ?? referenceSeed;
   const normalizedSeed = activeSeed ? normalizeHexColor(activeSeed) : null;
   const policies =
     override?.policies ??
@@ -590,9 +582,15 @@ function FamilyRow({
               ? 'Primary · exact input'
               : override
                 ? 'Explicit override'
-                : resolved?.seedOrigin === 'canonical'
-                  ? 'Canonical source'
-                  : 'Derived from primary'}
+                : resolved?.seedOrigin === 'reference'
+                  ? 'Fixed harmony reference'
+                  : resolved?.seedOrigin === 'canonical'
+                    ? 'Canonical source'
+                    : required && id === 'black.v1'
+                      ? 'Canonical source'
+                      : required
+                        ? 'Fixed harmony reference'
+                        : 'Derived from primary'}
           </small>
         </span>
       </div>
@@ -619,7 +617,9 @@ function FamilyRow({
         </label>
       ) : (
         <div className={styles.generatedSeed}>
-          <span className={styles.mobileLabel}>Generated seed</span>
+          <span className={styles.mobileLabel}>
+            {isPrimary ? 'Primary seed' : required ? 'Reference seed' : 'Generated seed'}
+          </span>
           <code>{activeSeed ?? 'Generating…'}</code>
         </div>
       )}
