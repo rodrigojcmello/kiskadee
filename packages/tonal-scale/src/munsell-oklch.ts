@@ -18,14 +18,14 @@ export const MUNSELL_OKLCH_SECTOR_ORDER = [
 export type MunsellOklchSector = (typeof MUNSELL_OKLCH_SECTOR_ORDER)[number];
 
 export const MUNSELL_OKLCH_SECTOR_CENTERS = {
-  red: 30,
-  'yellow-red': 65,
-  yellow: 103,
+  red: 24,
+  'yellow-red': 60,
+  yellow: 90,
   'green-yellow': 116,
   green: 145,
   'blue-green': 198,
   blue: 250,
-  'purple-blue': 272,
+  'purple-blue': 276,
   purple: 322,
   'red-purple': 351
 } as const satisfies Record<MunsellOklchSector, number>;
@@ -34,6 +34,8 @@ export const MUNSELL_OKLCH_SAFE_CORE = {
   start: 0.15,
   end: 0.85
 } as const;
+
+export const MUNSELL_OKLCH_SIGNATURE_TRANSFER = 0.4;
 
 export const MUNSELL_OKLCH_PRIMARY_CHROMA = {
   minimum: 0.005,
@@ -160,6 +162,10 @@ export function getMunsellOklchSectorDefinition(
   return definition;
 }
 
+export function getMunsellOklchSectorCenterPosition(sector: MunsellOklchSector): number {
+  return positionAtCenter(getMunsellOklchSectorDefinition(sector));
+}
+
 export function classifyMunsellHue(hue: number): MunsellHueClassification {
   const normalizedHue = normalizeMunsellHue(hue);
   const definition = MUNSELL_OKLCH_SECTOR_DEFINITIONS.find(
@@ -244,9 +250,16 @@ export function projectMunsellHue(
   targetSector: MunsellOklchSector
 ): MunsellHueProjection {
   const source = classifyMunsellHue(sourceHue);
+  const sourceDefinition = getMunsellOklchSectorDefinition(source.sector);
   const targetDefinition = getMunsellOklchSectorDefinition(targetSector);
+  const centeredCoordinate = positionToCenteredCoordinate(
+    sourceDefinition,
+    source.positionInSector
+  );
+  const transferredCoordinate = centeredCoordinate * MUNSELL_OKLCH_SIGNATURE_TRANSFER;
+  const rawTargetPosition = centeredCoordinateToPosition(targetDefinition, transferredCoordinate);
   const projectedPosition = clamp(
-    source.positionInSector,
+    rawTargetPosition,
     MUNSELL_OKLCH_SAFE_CORE.start,
     MUNSELL_OKLCH_SAFE_CORE.end
   );
@@ -255,10 +268,10 @@ export function projectMunsellHue(
     projection: MUNSELL_OKLCH_PROJECTION,
     source,
     targetSector,
-    rawTargetHue: hueAtPosition(targetDefinition, source.positionInSector),
+    rawTargetHue: hueAtPosition(targetDefinition, rawTargetPosition),
     projectedHue: hueAtPosition(targetDefinition, projectedPosition),
     projectedPosition,
-    clampedToSafeCore: projectedPosition !== source.positionInSector
+    clampedToSafeCore: projectedPosition !== rawTargetPosition
   };
 }
 
@@ -281,6 +294,32 @@ export function suggestYellowRedVariant(input: string | OklchColor): YellowRedVa
 
 function hueAtPosition(definition: MunsellOklchSectorDefinition, position: number): number {
   return normalizeMunsellHue(definition.startHue + definition.spanDegrees * position);
+}
+
+function positionAtCenter(definition: MunsellOklchSectorDefinition): number {
+  return circularDistance(definition.startHue, definition.centerHue) / definition.spanDegrees;
+}
+
+function positionToCenteredCoordinate(
+  definition: MunsellOklchSectorDefinition,
+  position: number
+): number {
+  const centerPosition = positionAtCenter(definition);
+
+  return position <= centerPosition
+    ? (position - centerPosition) / centerPosition
+    : (position - centerPosition) / (1 - centerPosition);
+}
+
+function centeredCoordinateToPosition(
+  definition: MunsellOklchSectorDefinition,
+  coordinate: number
+): number {
+  const centerPosition = positionAtCenter(definition);
+
+  return coordinate <= 0
+    ? centerPosition + coordinate * centerPosition
+    : centerPosition + coordinate * (1 - centerPosition);
 }
 
 function circularDistance(startHue: number, endHue: number): number {

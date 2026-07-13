@@ -18,6 +18,7 @@ import {
 } from './kiskadee-tonal-scale.ts';
 import {
   classifyMunsellHex,
+  getMunsellOklchSectorCenterPosition,
   getMunsellOklchSectorDefinition,
   MUNSELL_OKLCH_SAFE_CORE,
   type MunsellColorClassification,
@@ -484,11 +485,12 @@ function resolveSafeDerivedSeed(params: {
   const guardedEnd =
     MUNSELL_OKLCH_SAFE_CORE.end - MUNSELL_HARMONY_V1_PARAMETERS.quantizationSafeInset;
   const guardedPosition = clamp(projectedPosition, guardedStart, guardedEnd);
+  const centerPosition = getMunsellOklchSectorCenterPosition(sector);
   const utilizationRatio = Math.min(1, Math.max(0.04, utilization));
   const attempts = 40;
 
   for (let attempt = 0; attempt <= attempts; attempt += 1) {
-    const position = guardedPosition + (0.5 - guardedPosition) * (attempt / attempts);
+    const position = guardedPosition + (centerPosition - guardedPosition) * (attempt / attempts);
     const hue = normalizeMunsellHue(definition.startHue + definition.spanDegrees * position);
     const maximumChroma = maxSrgbChroma(lightness, hue);
     const seedHex = oklchToSrgbHex({
@@ -671,29 +673,6 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
   }
   if (issues.some((issue) => issue.severity === 'error')) {
     return failedResult(issues, rest);
-  }
-
-  const primaryContinuityIssues = (
-    [
-      ['light', primaryExactLight],
-      ...(primaryDarkPolicy === 'source-exact' ? ([['dark', primaryExactDark]] as const) : [])
-    ] as const
-  ).flatMap(([theme, scale]): TonalSystemIssue[] =>
-    scale.diagnostics.chromaContinuityRelaxed
-      ? [
-          {
-            severity: 'error',
-            code: 'PRIMARY_SCALE_CONTINUITY',
-            path: familyPath(recipe, recipe.primaryReference, 'seedHex'),
-            message: `The exact primary ${theme} scale does not satisfy the emitted-curve continuity invariant.`,
-            familyId: recipe.primaryReference,
-            theme
-          }
-        ]
-      : []
-  );
-  if (primaryContinuityIssues.length > 0) {
-    return failedResult(primaryContinuityIssues, rest);
   }
 
   const primaryLight = resolveSourceExactTheme({
@@ -1377,19 +1356,27 @@ function findHarmonyCandidate(params: {
   });
   let evaluated = 0;
   const feasible: CandidateResolution[] = [];
+  const reviewFallbacks: CandidateResolution[] = [];
 
   for (const candidate of coarse.slice(0, 96)) {
     if (!isMunsellCandidateIdentityValid(candidate.hex, familyId, enforceSafeCore)) continue;
     evaluated += 1;
     const scale = generateKiskadeeScale({ seedHex: candidate.hex, theme, profile });
     if (isAcceptedCandidate(scale, candidate.hex, restTone)) {
-      feasible.push({ candidate, scale, candidatesEvaluated: evaluated });
+      const resolution = { candidate, scale, candidatesEvaluated: evaluated };
+      if (scale.diagnostics.chromaContinuityRelaxed) {
+        reviewFallbacks.push(resolution);
+        continue;
+      }
+
+      feasible.push(resolution);
       if (feasible.length >= 4) break;
     }
   }
 
-  if (feasible.length === 0) return null;
-  let best = feasible.sort(compareCandidateResolutions)[0];
+  const candidates = feasible.length > 0 ? feasible : reviewFallbacks;
+  if (candidates.length === 0) return null;
+  let best = candidates.sort(compareCandidateResolutions)[0];
   const refined = rankHarmonyCandidates({
     sourceOklch,
     sourceSeedHex,
@@ -1579,7 +1566,6 @@ function isAcceptedCandidate(
 ): boolean {
   return (
     scale.diagnostics.valid &&
-    !scale.diagnostics.chromaContinuityRelaxed &&
     scale.anchorTone === restTone &&
     resolveTone(scale, restTone)?.hex === effectiveSeedHex
   );
@@ -1704,6 +1690,10 @@ function reportSourceExactScaleReview(
 function resolveScaleReviewReasons(scale: KiskadeeScaleResult): string[] {
   return [
     scale.diagnostics.separationRelaxed ? 'relaxed emitted spacing' : null,
+    scale.diagnostics.emittedContinuity.reviewRequired ? 'emitted curve continuity' : null,
+    scale.diagnostics.maxLocalChromaProminence > 0.01
+      ? `local chroma prominence ${scale.diagnostics.maxLocalChromaProminence.toFixed(4)}`
+      : null,
     scale.diagnostics.maxGamutChromaLoss > HARMONY_V1_PARAMETERS.gamutLossReviewThreshold
       ? `gamut chroma loss ${scale.diagnostics.maxGamutChromaLoss.toFixed(3)}`
       : null,

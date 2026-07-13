@@ -54,14 +54,14 @@ The `munsell-oklch-v1` projection freezes these hue centers:
 
 | Sector | OKLCH hue |
 | --- | ---: |
-| red | 30deg |
-| yellow-red | 65deg |
-| yellow | 103deg |
+| red | 24deg |
+| yellow-red | 60deg |
+| yellow | 90deg |
 | green-yellow | 116deg |
 | green | 145deg |
 | blue-green | 198deg |
 | blue | 250deg |
-| purple-blue | 272deg |
+| purple-blue | 276deg |
 | purple | 322deg |
 | red-purple | 351deg |
 
@@ -71,11 +71,25 @@ red-purple and red. This removes ambiguous equality at a boundary.
 
 The inner 15% through 85% of each interval is its safe generation region.
 Authored colors in the outer bands remain valid but require review. Derived
-colors are projected to the same relative location in every target sector and
-clamped to the safe region when necessary. Generation also keeps a small
-deterministic inset from the 15% and 85% edges so sRGB quantization cannot push
-an emitted seed back outside the safe region. Classification or clamping is
-always reported; it is never hidden.
+colors preserve their signed displacement from the source sector center: a
+sector center always maps to the destination center, while positions toward a
+boundary preserve 40% of their relative distance along that same side. The
+`0.4` transfer keeps systems derived from different primaries observably
+distinct without letting a boundary-adjacent blue turn its Red companion into
+Orange or its Yellow companion into Green-Yellow. This also avoids asymmetric
+sector widths pushing a nearly central source toward an unrelated natural-color
+boundary. The projected position is clamped to the safe region when necessary.
+Generation also keeps a small deterministic inset from the 15% and 85% edges
+so sRGB quantization cannot push an emitted seed back outside the safe region.
+Classification or clamping is always reported; it is never hidden.
+
+The red, yellow-red, yellow, and purple-blue centers are perceptually
+calibrated so common product colors remain recognizable after cross-sector
+projection. In particular, the red/yellow-red boundary retains Orange in
+yellow-red, the yellow center favors golden Yellow over olive Green-Yellow, and
+saturated electric blues remain on the blue side of the blue/purple-blue
+boundary. These values are part of the Kiskadee projection rather than claims
+about a universal Munsell-to-OKLCH conversion.
 
 A chromatic primary with OKL chroma below `0.005` fails because its hue is not
 reliable. Chroma from `0.005` through `0.02` is classifiable but requires review.
@@ -90,10 +104,9 @@ correct the variant without changing the classified sector. Export locks the
 resolved family id.
 
 The prototypes are perceptual comparison references, not exceptions to the
-frozen sector boundaries. Sector classification always runs first. In
-particular, `#ca5010` lies on the red side of the fixed red/yellow-red midpoint
-in this projection, so it cannot bypass that classification merely because it
-is the Orange comparison prototype.
+frozen sector boundaries. Sector classification always runs first. The
+calibrated red/yellow-red boundary classifies the Orange prototype `#ca5010`
+inside yellow-red without requiring a special-case identity override.
 
 Brown uses the yellow-red hue projection and the same shared Light and Dark
 rest positions as every other family. Its target gamut utilization is initially

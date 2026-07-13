@@ -4,6 +4,7 @@ import {
   classifyMunsellHex,
   classifyMunsellHue,
   classifyMunsellOklch,
+  getMunsellOklchSectorCenterPosition,
   getMunsellOklchSectorDefinition,
   MUNSELL_OKLCH_PRIMARY_CHROMA,
   MUNSELL_OKLCH_PROJECTION,
@@ -11,6 +12,7 @@ import {
   MUNSELL_OKLCH_SECTOR_CENTERS,
   MUNSELL_OKLCH_SECTOR_DEFINITIONS,
   MUNSELL_OKLCH_SECTOR_ORDER,
+  MUNSELL_OKLCH_SIGNATURE_TRANSFER,
   MUNSELL_YELLOW_RED_PROTOTYPES,
   projectMunsellHue,
   suggestYellowRedVariant
@@ -32,18 +34,19 @@ describe('Munsell OKLCH projection', () => {
       'red-purple'
     ]);
     expect(MUNSELL_OKLCH_SECTOR_CENTERS).toEqual({
-      red: 30,
-      'yellow-red': 65,
-      yellow: 103,
+      red: 24,
+      'yellow-red': 60,
+      yellow: 90,
       'green-yellow': 116,
       green: 145,
       'blue-green': 198,
       blue: 250,
-      'purple-blue': 272,
+      'purple-blue': 276,
       purple: 322,
       'red-purple': 351
     });
     expect(MUNSELL_OKLCH_SAFE_CORE).toEqual({ start: 0.15, end: 0.85 });
+    expect(MUNSELL_OKLCH_SIGNATURE_TRANSFER).toBe(0.4);
     expect(MUNSELL_OKLCH_PRIMARY_CHROMA).toEqual({
       minimum: 0.005,
       lowConfidenceCeiling: 0.02
@@ -63,14 +66,14 @@ describe('Munsell OKLCH projection', () => {
     }
 
     expect(getMunsellOklchSectorDefinition('red')).toMatchObject({
-      startHue: 10.5,
-      endHue: 47.5,
-      spanDegrees: 37
+      startHue: 7.5,
+      endHue: 42,
+      spanDegrees: 34.5
     });
     expect(getMunsellOklchSectorDefinition('red-purple')).toMatchObject({
       startHue: 336.5,
-      endHue: 10.5,
-      spanDegrees: 34
+      endHue: 7.5,
+      spanDegrees: 31
     });
     expect(classifyMunsellHue(0).sector).toBe('red-purple');
     expect(classifyMunsellHue(360).sector).toBe('red-purple');
@@ -149,22 +152,40 @@ describe('Munsell OKLCH projection', () => {
     );
   });
 
-  it('projects relative sector position and clamps generated hues to the safe core', () => {
+  it('projects a bounded center-relative signature instead of copying asymmetric positions', () => {
     const red = getMunsellOklchSectorDefinition('red');
     const blue = getMunsellOklchSectorDefinition('blue');
     const boundarySourceHue = red.startHue + red.spanDegrees * 0.05;
-    const clamped = projectMunsellHue(boundarySourceHue, 'blue');
-    const safe = projectMunsellHue(MUNSELL_OKLCH_SECTOR_CENTERS.red, 'blue');
+    const bounded = projectMunsellHue(boundarySourceHue, 'blue');
+    const centered = projectMunsellHue(MUNSELL_OKLCH_SECTOR_CENTERS.red, 'blue');
 
-    expect(clamped.source.positionInSector).toBeCloseTo(0.05, 10);
-    expect(clamped.rawTargetHue).toBeCloseTo(blue.startHue + blue.spanDegrees * 0.05, 10);
-    expect(clamped.projectedPosition).toBe(0.15);
-    expect(clamped.projectedHue).toBeCloseTo(blue.safeStartHue, 10);
-    expect(clamped.clampedToSafeCore).toBe(true);
+    expect(bounded.source.positionInSector).toBeCloseTo(0.05, 10);
+    expect(bounded.projectedPosition).toBeGreaterThan(MUNSELL_OKLCH_SAFE_CORE.start);
+    expect(bounded.projectedPosition).toBeLessThan(getMunsellOklchSectorCenterPosition('blue'));
+    expect(bounded.projectedHue).toBeCloseTo(bounded.rawTargetHue, 10);
+    expect(bounded.clampedToSafeCore).toBe(false);
 
-    expect(safe.projectedPosition).toBeCloseTo(safe.source.positionInSector, 10);
-    expect(safe.projectedHue).toBeCloseTo(safe.rawTargetHue, 10);
-    expect(safe.clampedToSafeCore).toBe(false);
+    expect(centered.projectedPosition).toBeCloseTo(getMunsellOklchSectorCenterPosition('blue'), 10);
+    expect(centered.projectedHue).toBeCloseTo(blue.centerHue, 10);
+    expect(centered.rawTargetHue).toBeCloseTo(blue.centerHue, 10);
+    expect(centered.clampedToSafeCore).toBe(false);
+  });
+
+  it('maps every approved sector center to every other approved center', () => {
+    for (const sourceSector of MUNSELL_OKLCH_SECTOR_ORDER) {
+      for (const targetSector of MUNSELL_OKLCH_SECTOR_ORDER) {
+        const projection = projectMunsellHue(
+          MUNSELL_OKLCH_SECTOR_CENTERS[sourceSector],
+          targetSector
+        );
+
+        expect(projection.projectedHue).toBeCloseTo(MUNSELL_OKLCH_SECTOR_CENTERS[targetSector], 10);
+        expect(projection.projectedPosition).toBeCloseTo(
+          getMunsellOklchSectorCenterPosition(targetSector),
+          10
+        );
+      }
+    }
   });
 
   it('keeps Orange and Brown as deterministic yellow-red variant prototypes', () => {

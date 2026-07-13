@@ -59,9 +59,10 @@ Generation performs these deterministic stages:
 1. Normalize and classify the exact primary.
 2. Resolve its family variant and exact Light/Dark scales.
 3. Establish one shared Light and one shared Dark `rest` position.
-4. Extract relative sector position, luminance, contrast, OKL lightness, and
-   available-gamut chroma utilization.
-5. Project the relative position into every target Munsell sector, clamping
+4. Extract center-relative sector displacement, luminance, contrast, OKL
+   lightness, and available-gamut chroma utilization.
+5. Project 40% of that signed displacement into every target Munsell sector so
+   center maps to center while the primary signature remains bounded, clamping
    generated hues to the safe inner 70% when needed.
 6. Materialize concrete seeds for required families, Brown, canonical Black,
    and authored overrides.
@@ -107,7 +108,16 @@ The full system preserves this invariant order:
 6. strict theme-direction lightness monotonicity;
 7. emitted uniqueness;
 8. theme contrast guards;
-9. emitted-curve continuity.
+9. emitted-curve continuity diagnostics.
+
+A color at an sRGB gamut cusp may retain a small local chroma prominence that
+cannot be removed without changing its effective seed. Harmony searches prefer
+clean candidates and use a continuity-review candidate only when no clean
+candidate satisfies the shared rest contract. When the low-level scale remains
+valid, this is a review condition rather than a system failure. The diagnostics
+expose the prominence and any unresolved continuity review; invalid caps,
+anchors, monotonicity, uniqueness, contrast, or gamut output still fail
+normally.
 
 ## Artifact Set
 

@@ -37,7 +37,7 @@ function resolveFamily(result: ResolvedKiskadeeTonalSystem, id: TonalFamilyId) {
 const REPRESENTATIVE_MUNSELL_PRIMARIES = [
   ['red', '#b94739'],
   ['yellow-red', '#a26000'],
-  ['yellow', '#7e7400'],
+  ['yellow', '#b8941a'],
   ['green-yellow', '#6e7a00'],
   ['green', '#278733'],
   ['blue-green', '#008285'],
@@ -88,7 +88,7 @@ describe('generateKiskadeeTonalSystem v2', () => {
     recipe.overrides = [
       {
         id: 'yellow.v1',
-        seedHex: '#766d0e',
+        seedHex: '#82670e',
         policies: { light: 'harmonized', dark: 'source-exact' }
       }
     ];
@@ -212,13 +212,33 @@ describe('generateKiskadeeTonalSystem v2', () => {
     expect(result.families).toHaveLength(12);
   });
 
+  it('keeps saturated electric blue exact without promoting a local chroma cusp to an error', () => {
+    const result = generateKiskadeeTonalSystem(createRecipe('#0061FF'));
+    expectResolved(result);
+
+    expect(result.primaryReference.familyId).toBe('blue.v1');
+    expect(result.rest).toEqual({ light: 40, dark: 50, source: 'auto-proposal' });
+    expect(result.primaryReference.light).toMatchObject({ tone: 40, hex: '#0061ff' });
+    expect(result.primaryReference.dark).toMatchObject({ tone: 50, hex: '#0061ff' });
+    expect(result.issues.map((issue) => issue.code)).not.toContain('PRIMARY_SCALE_CONTINUITY');
+    expect(result.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          severity: 'review',
+          code: 'SOURCE_EXACT_SCALE_REVIEW',
+          familyId: 'blue.v1'
+        })
+      ])
+    );
+  });
+
   it.each([
     {
       label: 'very light',
       seedHex: '#fff0d6',
       expectedRest: { light: 3, dark: 95 },
       expectedStatus: 'review',
-      expectedIssue: 'MUNSELL_HUE_NEAR_BOUNDARY'
+      expectedIssue: 'HARMONY_REVIEW'
     },
     {
       label: 'very dark',
@@ -247,7 +267,7 @@ describe('generateKiskadeeTonalSystem v2', () => {
     }
   });
 
-  it('rejects an extreme-gamut primary with an explicit continuity diagnostic', () => {
+  it('reports an unreachable companion instead of rejecting an extreme primary for review-only continuity', () => {
     const result = generateKiskadeeTonalSystem(createRecipe('#ff0000'));
 
     expect(result.valid).toBe(false);
@@ -255,17 +275,16 @@ describe('generateKiskadeeTonalSystem v2', () => {
       expect.arrayContaining([
         expect.objectContaining({
           severity: 'error',
-          code: 'PRIMARY_SCALE_CONTINUITY',
-          familyId: 'red.v1'
+          code: 'HARMONY_TARGET_UNREACHABLE'
         })
       ])
     );
+    expect(result.issues.map((issue) => issue.code)).not.toContain('PRIMARY_SCALE_CONTINUITY');
   });
 
   it('keeps every derived seed inside the safe core after sRGB quantization and harmony', () => {
     const result = generateKiskadeeTonalSystem(createRecipe('#ca5010'));
     expectResolved(result);
-    expect(result.issues.map((issue) => issue.code)).toContain('MUNSELL_HUE_CLAMPED');
 
     for (const family of result.families.filter(
       (candidate) => candidate.seedOrigin === 'derived'
