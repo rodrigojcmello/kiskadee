@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { oklchToSrgbHex } from './color-math';
+import { maxSrgbChroma, oklchToSrgbHex } from './color-math';
 import { generateKiskadeeScale, KISKADEE_TONES } from './kiskadee-tonal-scale';
 import { classifyMunsellHex } from './munsell-oklch';
 import {
@@ -249,6 +249,29 @@ describe('generateKiskadeeTonalSystem v2', () => {
       chromaContinuityRelaxed: false
     });
     expect(result.issues.map((issue) => issue.code)).not.toContain('HARMONY_TARGET_UNREACHABLE');
+  });
+
+  it('preserves chromatic character when a saturated green primary has unusually high luminance', () => {
+    const result = generateKiskadeeTonalSystem(createRecipe('#00c300'));
+    expectResolved(result);
+
+    expect(result.primaryReference.familyId).toBe('green.v1');
+    expect(result.rest).toEqual({ light: 22, dark: 75, source: 'auto-proposal' });
+
+    for (const family of result.families.filter(
+      (candidate) => candidate.colorKind === 'chromatic' && candidate.variant === 'v1'
+    )) {
+      for (const theme of ['light', 'dark'] as const) {
+        const rest = family.themes[theme].restColor.oklch;
+        const utilization = rest.c / maxSrgbChroma(rest.l, rest.h);
+
+        expect(utilization, `${family.id} ${theme}`).toBeGreaterThanOrEqual(0.9);
+      }
+    }
+
+    expect(resolveFamily(result, 'red.v1').themes.light.restColor.hex).toBe('#fb7977');
+    expect(resolveFamily(result, 'yellow-red.v1').themes.light.restColor.hex).toBe('#f0891f');
+    expect(resolveFamily(result, 'red-purple.v1').themes.light.restColor.hex).toBe('#f96db7');
   });
 
   it.each([

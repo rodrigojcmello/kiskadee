@@ -491,6 +491,23 @@ dd {
   transform: translateX(-50%);
 }
 
+.swatch.rest {
+  position: relative;
+}
+
+.swatch.rest::after {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  content: "";
+  opacity: 0.72;
+  transform: translateX(-50%);
+}
+
 .swatch-tone,
 .swatch-hex {
   display: block;

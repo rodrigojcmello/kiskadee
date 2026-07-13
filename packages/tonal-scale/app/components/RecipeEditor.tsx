@@ -175,9 +175,10 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
           <p className={styles.kicker}>Primary-derived recipe</p>
           <h2 id={`${editorId}-title`}>Primary color and Munsell projection</h2>
           <p className={styles.intro}>
-            The exact primary establishes the shared Light and Dark rest fingerprint. Kiskadee then
-            derives every canonical Munsell family while optional overrides preserve Design System
-            source colors.
+            The exact primary establishes the chromatic signature and remains preserved at its
+            generated anchors. Kiskadee selects shared Light and Dark functional rest positions for
+            the complete Munsell family while optional overrides preserve Design System source
+            colors.
           </p>
         </div>
 
@@ -306,7 +307,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
             ? `Hue ${classification.hue.toFixed(1)}° · ${(classification.positionInSector * 100).toFixed(1)}% through ${formatFamilyName(classification.sector)} · ${classification.isInSafeCore ? 'inside the safe generation region' : `near the ${classification.boundarySide} boundary`}.`
             : 'Enter a valid six-digit sRGB hex to classify the primary.'}
           {resolvedPrimary
-            ? ` Current anchors: L${resolvedPrimary.themes.light.restTone} / D${resolvedPrimary.themes.dark.restTone}.`
+            ? ` Generated anchors: L${resolvedPrimary.themes.light.scale.anchorTone} / D${resolvedPrimary.themes.dark.scale.anchorTone}. Functional rest: L${resolvedPrimary.themes.light.restTone} / D${resolvedPrimary.themes.dark.restTone}.`
             : ''}
         </p>
       </section>
@@ -430,8 +431,9 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
             <span className={styles.modeTag}>{recipe.tonalAnchors.rest.mode}</span>
           </div>
           <p className={styles.anchorHelp}>
-            The primary proposes one Light and one Dark rest position. Every generated family uses
-            those same positions.
+            The system keeps the primary at its generated anchor, then selects one shared Light and
+            one shared Dark functional rest where the complete family remains chromatically
+            coherent.
           </p>
 
           {recipe.tonalAnchors.rest.mode === 'auto' ? (

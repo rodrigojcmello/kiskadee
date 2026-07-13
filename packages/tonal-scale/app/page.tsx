@@ -355,15 +355,16 @@ function SystemReference({ system }: { system: ResolvedKiskadeeTonalSystem }) {
   return (
     <section className="section-block" aria-labelledby="primary-reference-title">
       <div className="section-heading">
-        <h2 id="primary-reference-title">Primary reference</h2>
+        <h2 id="primary-reference-title">Functional rest reference</h2>
         <p>
-          Light and Dark fingerprints are measured independently from the emitted primary rest
-          colors. Support families target these measurements, not the primary hex itself.
+          Light and Dark fingerprints are measured from the primary color at the shared functional
+          rest. The exact source remains preserved at its generated anchor.
         </p>
       </div>
       <div className="reference-grid">
         {references.map((reference) => {
           const prefix = resolveThemePrefix(reference.theme);
+          const restDiagnostics = system.functionalRestDiagnostics[reference.theme];
           return (
             <article key={reference.theme} className="panel reference-card">
               <div
@@ -380,10 +381,26 @@ function SystemReference({ system }: { system: ResolvedKiskadeeTonalSystem }) {
                 <dl className="reference-metrics">
                   <Metric label="OKL L" value={reference.oklch.l.toFixed(2)} />
                   <Metric label="OKL C" value={reference.oklch.c.toFixed(4)} />
+                  <Metric
+                    label="Source anchor"
+                    value={`${prefix}${restDiagnostics.sourceAnchorTone}`}
+                  />
+                  <Metric
+                    label="Source retention"
+                    value={`${(restDiagnostics.sourceRetention * 100).toFixed(1)}%`}
+                  />
+                  <Metric
+                    label="Family balance"
+                    value={`${restDiagnostics.minimumFamilyRatio.toFixed(2)}–${restDiagnostics.maximumFamilyRatio.toFixed(2)}×`}
+                  />
                   <Metric label="Luminance" value={reference.relativeLuminance.toFixed(4)} />
                   <Metric
-                    label="Gamut use"
+                    label="Local gamut use"
                     value={`${(reference.chromaUtilization * 100).toFixed(1)}%`}
+                  />
+                  <Metric
+                    label="Hue-global chroma"
+                    value={`${(reference.hueGlobalChromaUtilization * 100).toFixed(1)}%`}
                   />
                   <Metric
                     label="vs white"
@@ -409,8 +426,8 @@ function HarmonyComparison({ system }: { system: ResolvedKiskadeeTonalSystem }) 
       <div className="section-heading">
         <h2 id="harmony-comparison-title">Rest harmony comparison</h2>
         <p>
-          Source seeds establish identity. Effective rest colors are the actual scale anchors used
-          for functional equivalence against the primary reference.
+          Source seeds establish identity. Generated anchors preserve or adapt those seeds, while
+          rest colors are read independently from the shared functional positions.
         </p>
       </div>
       <article className="panel harmony-panel">
@@ -422,10 +439,10 @@ function HarmonyComparison({ system }: { system: ResolvedKiskadeeTonalSystem }) 
                 <th>Theme</th>
                 <th>Policy</th>
                 <th>Source</th>
-                <th>Effective rest</th>
-                <th>Position</th>
+                <th>Generated anchor</th>
+                <th>Functional rest</th>
                 <th>OKL L</th>
-                <th>Gamut use</th>
+                <th>Hue-global chroma</th>
                 <th>Harmony score</th>
                 <th>Source ΔE</th>
                 <th>Status</th>
@@ -437,6 +454,12 @@ function HarmonyComparison({ system }: { system: ResolvedKiskadeeTonalSystem }) 
                   const resolution = family.themes[theme];
                   const harmony = resolution.harmony;
                   const reference = system.primaryReference[theme];
+                  const generatedAnchorTone = resolution.scale.anchorTone;
+                  const globalChromaUtilization = harmony
+                    ? reference.hueGlobalChromaUtilization + harmony.hueGlobalChromaUtilizationDelta
+                    : family.role === 'primary'
+                      ? reference.hueGlobalChromaUtilization
+                      : null;
 
                   return (
                     <tr key={`${family.id}-${theme}`}>
@@ -453,18 +476,28 @@ function HarmonyComparison({ system }: { system: ResolvedKiskadeeTonalSystem }) 
                       <td>{capitalize(theme)}</td>
                       <td>{resolution.policy}</td>
                       <td>{resolution.sourceSeedHex}</td>
-                      <td>{resolution.effectiveSeedHex}</td>
+                      <td>
+                        {generatedAnchorTone === null
+                          ? resolution.effectiveSeedHex
+                          : `${resolveThemePrefix(theme)}${generatedAnchorTone} · ${resolution.effectiveSeedHex}`}
+                      </td>
                       <td>
                         {resolveThemePrefix(theme)}
-                        {resolution.restTone}
+                        {resolution.restTone} · {resolution.restColor.hex}
                       </td>
                       <td>{resolution.restColor.oklch.l.toFixed(2)}</td>
                       <td>
-                        {harmony
-                          ? `${((reference.chromaUtilization + harmony.chromaUtilizationDelta) * 100).toFixed(1)}%`
-                          : `${(reference.chromaUtilization * 100).toFixed(1)}%`}
+                        {globalChromaUtilization === null
+                          ? '—'
+                          : `${(globalChromaUtilization * 100).toFixed(1)}%`}
                       </td>
-                      <td>{harmony ? harmony.score.toFixed(3) : 'reference'}</td>
+                      <td>
+                        {harmony
+                          ? harmony.score.toFixed(3)
+                          : family.role === 'primary'
+                            ? 'reference'
+                            : '—'}
+                      </td>
                       <td>{harmony ? harmony.seedDeltaE.toFixed(3) : '0.000'}</td>
                       <td>
                         <span className={`inline-status ${resolution.status}`}>
@@ -545,7 +578,7 @@ function CompactScaleStrip({ resolution }: { resolution: ResolvedTonalTheme }) {
           />
         ))}
       </div>
-      <code>{resolution.effectiveSeedHex}</code>
+      <code>{resolution.restColor.hex}</code>
     </div>
   );
 }
@@ -688,7 +721,9 @@ function ThemePanel({ theme, resolution }: { theme: Theme; resolution: ResolvedT
           <span className="theme-kicker">{theme} theme</span>
           <h3>{`${prefix}0 → ${prefix}100 · rest ${prefix}${resolution.restTone}`}</h3>
           <p className="scale-guard-note">
-            {capitalize(resolution.policy)} · effective {resolution.effectiveSeedHex}
+            {capitalize(resolution.policy)} · anchor {prefix}
+            {resolution.scale.anchorTone} {resolution.effectiveSeedHex} · rest{' '}
+            {resolution.restColor.hex}
           </p>
         </div>
         <StatusBadge result={result} label={status.label} className={status.className} />
@@ -751,7 +786,7 @@ function TonalScalePanel({
       <div className="scale-panel-header">
         <div>
           <span className="theme-kicker">{theme} scale</span>
-          <h3>{`${prefix}0 → ${prefix}100 · anchor ${prefix}${result.anchorTone}`}</h3>
+          <h3>{`${prefix}0 → ${prefix}100 · anchor ${prefix}${result.anchorTone} · rest ${prefix}${restTone}`}</h3>
           <p className="scale-guard-note">
             <strong>{prefix}35</strong>
             {` · ${guardForegroundLabel} 3:1 guard starts${guardRatio === null ? '' : ` (${guardRatio.toFixed(2)}:1)`} · swatch labels use max contrast`}
@@ -956,11 +991,11 @@ function DiagnosticsPanel({ theme, resolution }: { theme: Theme; resolution: Res
   const notes: Array<{ text: string; ok: boolean }> = [
     resolution.policy === 'source-exact'
       ? {
-          text: `Source seed preserved exactly at ${prefix}${result.anchorTone} as ${anchor?.hex}.`,
+          text: `Source seed preserved exactly at ${prefix}${result.anchorTone} as ${anchor?.hex}; functional rest is read at ${prefix}${resolution.restTone} as ${resolution.restColor.hex}.`,
           ok: true
         }
       : {
-          text: `${capitalize(resolution.policy)} policy resolved ${resolution.sourceSeedHex} to effective rest ${resolution.effectiveSeedHex} at ${prefix}${resolution.restTone}.`,
+          text: `${capitalize(resolution.policy)} policy resolved ${resolution.sourceSeedHex} to generated anchor ${resolution.effectiveSeedHex} at ${prefix}${result.anchorTone}; functional rest is ${resolution.restColor.hex} at ${prefix}${resolution.restTone}.`,
           ok: resolution.status === 'pass'
         },
     diagnostics.profile === 'muted-darks'

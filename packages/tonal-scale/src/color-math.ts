@@ -117,6 +117,25 @@ export function maxSrgbChroma(lightness: number, hue: number): number {
   }).c;
 }
 
+/**
+ * Estimates the radial sRGB gamut limit for search/ranking operations that do
+ * not emit colors. Canonical color generation continues to use the full
+ * precision path above.
+ */
+export function estimateMaxSrgbChroma(lightness: number, hue: number): number {
+  const resolvedLightness = clamp(lightness, 0, 100);
+  if (resolvedLightness <= 0 || resolvedLightness >= 100) return 0;
+
+  return fitOklchToSrgb(
+    {
+      l: resolvedLightness,
+      c: 1,
+      h: normalizeHue(hue)
+    },
+    18
+  ).c;
+}
+
 export function contrastRatio(leftHex: string, rightHex: string): number {
   const left = relativeLuminance(leftHex);
   const right = relativeLuminance(rightHex);
@@ -165,7 +184,7 @@ function hexToLinearRgb(hex: string): [number, number, number] {
   return hexToRgb(hex).map((channel) => srgbToLinear(channel / 255)) as [number, number, number];
 }
 
-function fitOklchToSrgb(oklch: OklchColor): OklchColor {
+function fitOklchToSrgb(oklch: OklchColor, iterations = 32): OklchColor {
   if (isSrgbInGamut(oklchToSrgbChannels(oklch))) {
     return oklch;
   }
@@ -173,7 +192,7 @@ function fitOklchToSrgb(oklch: OklchColor): OklchColor {
   let low = 0;
   let high = oklch.c;
 
-  for (let iteration = 0; iteration < 32; iteration += 1) {
+  for (let iteration = 0; iteration < iterations; iteration += 1) {
     const chroma = (low + high) / 2;
     const candidate = { ...oklch, c: chroma };
 

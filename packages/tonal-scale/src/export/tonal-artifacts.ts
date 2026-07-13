@@ -85,6 +85,7 @@ export type TonalSystemDiagnosticsV2 = {
   generator: typeof TONAL_ARTIFACT_GENERATOR;
   status: 'pass' | 'review';
   issues: TonalSystemIssue[];
+  functionalRest: ResolvedKiskadeeTonalSystem['functionalRestDiagnostics'];
   primaryReference: ResolvedKiskadeeTonalSystem['primaryReference'];
   families: Array<{
     familyId: TonalFamilyId;
@@ -103,6 +104,8 @@ type ThemeDiagnostics = {
   status: 'pass' | 'review';
   sourceSeedPreserved: boolean;
   effectiveSeedHex: string;
+  generatedAnchor: { tone: KiskadeeTone; hex: string };
+  functionalRest: { tone: KiskadeeTone; hex: string };
   classification: MunsellColorClassification | null;
   harmony: ResolvedTonalFamily['themes']['light']['harmony'];
   scale: ResolvedTonalFamily['themes']['light']['scale']['diagnostics'];
@@ -174,6 +177,7 @@ export async function createTonalArtifactBundle(
     generator: TONAL_ARTIFACT_GENERATOR,
     status: system.status,
     issues: normalizeIssues(system.issues),
+    functionalRest: system.functionalRestDiagnostics,
     primaryReference: system.primaryReference,
     families: system.families
       .map((family) => ({
@@ -382,11 +386,19 @@ function createThemeDiagnostics(
   family: ResolvedTonalFamily,
   theme: ResolvedTonalFamily['themes']['light']
 ): ThemeDiagnostics {
+  const anchorTone = theme.scale.anchorTone;
+  const anchorColor =
+    anchorTone === null ? undefined : theme.scale.colors.find((color) => color.tone === anchorTone);
+  if (anchorTone === null || !anchorColor) {
+    throw new TonalArtifactError(`${family.id} ${theme.theme} is missing its generated anchor.`);
+  }
   return {
     policy: theme.policy,
     status: theme.status,
     sourceSeedPreserved: theme.sourceSeedPreserved,
     effectiveSeedHex: theme.effectiveSeedHex,
+    generatedAnchor: { tone: anchorTone, hex: anchorColor.hex },
+    functionalRest: { tone: theme.restTone, hex: theme.restColor.hex },
     classification:
       family.colorKind === 'chromatic' ? classifyMunsellHex(theme.effectiveSeedHex) : null,
     harmony: theme.harmony,

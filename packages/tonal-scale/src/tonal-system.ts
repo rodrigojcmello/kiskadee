@@ -1,6 +1,7 @@
 import {
   contrastRatio,
   deltaEOk,
+  estimateMaxSrgbChroma,
   hexToOklch,
   maxSrgbChroma,
   type OklchColor,
@@ -29,6 +30,7 @@ import {
 import {
   type LockedTonalSystemSourceV2,
   lockTonalSystemRecipe,
+  MUNSELL_SECTORS,
   parseTonalFamilyId,
   resolveTonalFamilyColorKind,
   TONAL_CORE_FAMILY_IDS,
@@ -61,7 +63,11 @@ export const HARMONY_V1_PARAMETERS = {
 export const MUNSELL_HARMONY_V1_PARAMETERS = {
   brownChromaRatio: 0.6,
   canonicalBlackSeed: '#20252b',
-  quantizationSafeInset: 0.02
+  quantizationSafeInset: 0.02,
+  functionalRestVividSourceMinimum: 0.5,
+  functionalRestSourceRetention: 0.7,
+  functionalRestBalanceRatio: 0.6,
+  functionalRestSourceAnchorBalanceRatio: 0.55
 } as const;
 
 const REST_TONES = KISKADEE_TONES.filter((tone) => tone > 0 && tone < 100);
@@ -91,19 +97,24 @@ export type TonalHarmonyFingerprint = {
   contrastAgainstBlack: number;
   maximumSrgbChroma: number;
   chromaUtilization: number;
+  hueGlobalMaximumSrgbChroma: number;
+  hueGlobalChromaUtilization: number;
   policy: 'source-exact' | 'adaptive';
 };
 
 export type TonalHarmonyMetrics = {
+  chromaModel: 'local-gamut' | 'hue-global';
   score: number;
   lightnessError: number;
   contrastLogError: number;
   chromaUtilizationError: number;
+  hueGlobalBalanceError: number;
   lightnessDelta: number;
   relativeLuminanceDelta: number;
   contrastAgainstWhiteDelta: number;
   contrastAgainstBlackDelta: number;
   chromaUtilizationDelta: number;
+  hueGlobalChromaUtilizationDelta: number;
   seedDeltaE: number;
   hueDrift: number;
   candidatesEvaluated: number;
@@ -120,6 +131,19 @@ export type ResolvedTonalTheme = {
   scale: KiskadeeScaleResult;
   harmony: TonalHarmonyMetrics | null;
   status: Exclude<TonalSystemStatus, 'error'>;
+};
+
+export type FunctionalRestThemeDiagnostics = {
+  theme: KiskadeeTheme;
+  sourceAnchorTone: KiskadeeTone;
+  functionalRestTone: KiskadeeTone;
+  sourceGlobalChromaUtilization: number;
+  restGlobalChromaUtilization: number;
+  sourceRetention: number;
+  minimumFamilyRatio: number;
+  maximumFamilyRatio: number;
+  vividnessGuardApplied: boolean;
+  balanced: boolean;
 };
 
 export type ResolvedTonalFamily = {
@@ -147,6 +171,10 @@ export type ResolvedKiskadeeTonalSystem = {
     dark: KiskadeeTone;
     source: 'auto-proposal' | 'locked';
   };
+  functionalRestDiagnostics: {
+    light: FunctionalRestThemeDiagnostics;
+    dark: FunctionalRestThemeDiagnostics;
+  };
   primaryReference: {
     familyId: TonalFamilyId;
     light: TonalHarmonyFingerprint;
@@ -165,6 +193,7 @@ export type FailedKiskadeeTonalSystem = {
     dark: KiskadeeTone;
     source: 'auto-proposal' | 'locked';
   } | null;
+  functionalRestDiagnostics: null;
   primaryReference: null;
   families: ResolvedTonalFamily[];
   issues: TonalSystemIssue[];
@@ -195,12 +224,32 @@ type MaterializedFamilySource = {
   identity: MunsellColorClassification | null;
 };
 
+type GlobalChromaSignature = {
+  utilization: number;
+  signedPeakOffset: number;
+};
+
+type HueChromaPeak = {
+  lightness: number;
+  chroma: number;
+};
+
+type FunctionalRestProposal = {
+  tone: KiskadeeTone;
+};
+
+type FunctionalRestCandidateEvaluation = FunctionalRestThemeDiagnostics & {
+  gridDistance: number;
+  deficit: number;
+};
+
 type MaterializedTonalSystemRecipe = Pick<
   TonalSystemRecipeV2,
   'formatVersion' | 'gridContract' | 'harmonyContract' | 'tonalProfile' | 'tonalAnchors'
 > & {
   authoringRecipe: TonalSystemRecipeV2;
   primaryReference: TonalFamilyId;
+  useHueGlobalHarmony: boolean;
   families: MaterializedFamilySource[];
 };
 
@@ -356,13 +405,20 @@ function materializeTonalSystemRecipe(
     return { valid: false, recipe: null, issues: sortIssues(issues) };
   }
 
-  const primaryMaximumChroma = maxSrgbChroma(primaryIdentity.oklch.l, primaryIdentity.oklch.h);
-  const primaryUtilization =
-    primaryMaximumChroma <= 0 ? 0 : primaryIdentity.oklch.c / primaryMaximumChroma;
+  const primarySignature = resolveGlobalChromaSignature(primaryIdentity.oklch);
+  const useGlobalDerivedSignature = requiresGlobalDerivedSignature(primaryIdentity);
+  const useHueGlobalHarmony =
+    primarySignature.utilization >= MUNSELL_HARMONY_V1_PARAMETERS.functionalRestVividSourceMinimum;
+  const primaryLocalMaximumChroma = maxSrgbChroma(primaryIdentity.oklch.l, primaryIdentity.oklch.h);
+  const primaryLocalUtilization =
+    primaryLocalMaximumChroma <= 0 ? 0 : primaryIdentity.oklch.c / primaryLocalMaximumChroma;
+  const primaryDerivedUtilization = useGlobalDerivedSignature
+    ? primarySignature.utilization
+    : primaryLocalUtilization;
   const baseUtilization =
     primaryId === 'yellow-red.v2'
-      ? Math.min(1, primaryUtilization / MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio)
-      : primaryUtilization;
+      ? Math.min(1, primaryDerivedUtilization / MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio)
+      : primaryDerivedUtilization;
 
   const families = new Map<TonalFamilyId, MaterializedFamilySource>();
   families.set(primaryId, {
@@ -401,8 +457,9 @@ function materializeTonalSystemRecipe(
         ? baseUtilization * MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio
         : baseUtilization;
     const derivedSeed = resolveSafeDerivedSeed({
-      lightness: primaryIdentity.oklch.l,
       utilization,
+      lightness: useGlobalDerivedSignature ? undefined : primaryIdentity.oklch.l,
+      signedPeakOffset: useGlobalDerivedSignature ? primarySignature.signedPeakOffset : undefined,
       sector: parsed.sector,
       projectedPosition: projection.projectedPosition
     });
@@ -462,6 +519,7 @@ function materializeTonalSystemRecipe(
       tonalAnchors: authoringRecipe.tonalAnchors,
       authoringRecipe,
       primaryReference: primaryId,
+      useHueGlobalHarmony,
       families: [...families.values()].sort((left, right) => compareStrings(left.id, right.id))
     },
     issues: sortIssues(issues)
@@ -469,8 +527,9 @@ function materializeTonalSystemRecipe(
 }
 
 function resolveSafeDerivedSeed(params: {
-  lightness: number;
   utilization: number;
+  lightness?: number;
+  signedPeakOffset?: number;
   sector: TonalFamilySector;
   projectedPosition: number;
 }): {
@@ -478,7 +537,13 @@ function resolveSafeDerivedSeed(params: {
   identity: MunsellColorClassification;
   quantizationInsetApplied: boolean;
 } | null {
-  const { lightness, utilization, sector, projectedPosition } = params;
+  const {
+    utilization,
+    lightness: fixedLightness,
+    signedPeakOffset,
+    sector,
+    projectedPosition
+  } = params;
   const definition = getMunsellOklchSectorDefinition(sector);
   const guardedStart =
     MUNSELL_OKLCH_SAFE_CORE.start + MUNSELL_HARMONY_V1_PARAMETERS.quantizationSafeInset;
@@ -492,10 +557,17 @@ function resolveSafeDerivedSeed(params: {
   for (let attempt = 0; attempt <= attempts; attempt += 1) {
     const position = guardedPosition + (centerPosition - guardedPosition) * (attempt / attempts);
     const hue = normalizeMunsellHue(definition.startHue + definition.spanDegrees * position);
-    const maximumChroma = maxSrgbChroma(lightness, hue);
+    const peak = fixedLightness === undefined ? resolveHueChromaPeak(hue) : null;
+    const desiredLightness =
+      fixedLightness ??
+      resolveLightnessFromPeakOffset(peak?.lightness ?? 50, signedPeakOffset ?? 0);
+    const desiredChroma = (peak?.chroma ?? maxSrgbChroma(desiredLightness, hue)) * utilizationRatio;
+    const lightness = peak
+      ? resolveNearestGlobalChromaLightness({ desiredLightness, desiredChroma, hue, peak })
+      : desiredLightness;
     const seedHex = oklchToSrgbHex({
       l: lightness,
-      c: maximumChroma * utilizationRatio,
+      c: desiredChroma,
       h: hue
     }).hex;
     const identity = classifyMunsellHex(seedHex);
@@ -510,6 +582,391 @@ function resolveSafeDerivedSeed(params: {
   }
 
   return null;
+}
+
+const HUE_CHROMA_PEAK_CACHE = new Map<string, HueChromaPeak>();
+
+function resolveGlobalChromaSignature(color: OklchColor): GlobalChromaSignature {
+  const peak = resolveHueChromaPeak(color.h);
+  const signedPeakOffset =
+    color.l >= peak.lightness
+      ? (color.l - peak.lightness) / Math.max(100 - peak.lightness, 0.000_001)
+      : (color.l - peak.lightness) / Math.max(peak.lightness, 0.000_001);
+
+  return {
+    utilization: peak.chroma <= 0 ? 0 : clamp(color.c / peak.chroma, 0, 1),
+    signedPeakOffset: clamp(signedPeakOffset, -1, 1)
+  };
+}
+
+function requiresGlobalDerivedSignature(primary: MunsellColorClassification): boolean {
+  const sourceSignature = resolveGlobalChromaSignature(primary.oklch);
+  if (
+    sourceSignature.utilization < MUNSELL_HARMONY_V1_PARAMETERS.functionalRestVividSourceMinimum
+  ) {
+    return false;
+  }
+
+  let minimumProjectedCapacityRatio = Number.POSITIVE_INFINITY;
+  for (const sector of MUNSELL_SECTORS) {
+    const projection = projectMunsellHue(primary.oklch.h, sector);
+    const definition = getMunsellOklchSectorDefinition(sector);
+    const hue = normalizeMunsellHue(
+      definition.startHue + definition.spanDegrees * projection.projectedPosition
+    );
+    const peak = resolveHueChromaPeak(hue);
+    const capacity = peak.chroma <= 0 ? 0 : maxSrgbChroma(primary.oklch.l, hue) / peak.chroma;
+    minimumProjectedCapacityRatio = Math.min(
+      minimumProjectedCapacityRatio,
+      sourceSignature.utilization <= 0 ? 1 : capacity / sourceSignature.utilization
+    );
+  }
+
+  return (
+    minimumProjectedCapacityRatio <
+    MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceAnchorBalanceRatio
+  );
+}
+
+function resolveHueChromaPeak(hue: number): HueChromaPeak {
+  const normalizedHue = normalizeMunsellHue(hue);
+  const cacheKey = normalizedHue.toFixed(6);
+  const cached = HUE_CHROMA_PEAK_CACHE.get(cacheKey);
+  if (cached) return cached;
+
+  let best: HueChromaPeak = {
+    lightness: 0.5,
+    chroma: estimateMaxSrgbChroma(0.5, normalizedHue)
+  };
+  for (let lightness = 4.5; lightness <= 96.5; lightness += 4) {
+    const chroma = estimateMaxSrgbChroma(lightness, normalizedHue);
+    if (
+      chroma > best.chroma + 1e-12 ||
+      (Math.abs(chroma - best.chroma) <= 1e-12 && lightness < best.lightness)
+    ) {
+      best = { lightness, chroma };
+    }
+  }
+  const upperChroma = estimateMaxSrgbChroma(99.5, normalizedHue);
+  if (upperChroma > best.chroma + 1e-12) best = { lightness: 99.5, chroma: upperChroma };
+
+  const coarseRefinementStart = Math.max(0.5, best.lightness - 4);
+  const coarseRefinementEnd = Math.min(99.5, best.lightness + 4);
+  for (let lightness = coarseRefinementStart; lightness <= coarseRefinementEnd; lightness += 0.2) {
+    const chroma = estimateMaxSrgbChroma(lightness, normalizedHue);
+    if (
+      chroma > best.chroma + 1e-12 ||
+      (Math.abs(chroma - best.chroma) <= 1e-12 && lightness < best.lightness)
+    ) {
+      best = { lightness, chroma };
+    }
+  }
+
+  const fineRefinementStart = Math.max(0.5, best.lightness - 0.2);
+  const fineRefinementEnd = Math.min(99.5, best.lightness + 0.2);
+  for (let lightness = fineRefinementStart; lightness <= fineRefinementEnd; lightness += 0.01) {
+    const chroma = estimateMaxSrgbChroma(lightness, normalizedHue);
+    if (
+      chroma > best.chroma + 1e-12 ||
+      (Math.abs(chroma - best.chroma) <= 1e-12 && lightness < best.lightness)
+    ) {
+      best = { lightness, chroma };
+    }
+  }
+
+  const resolved = {
+    lightness: Number(best.lightness.toFixed(6)),
+    chroma: best.chroma
+  };
+  HUE_CHROMA_PEAK_CACHE.set(cacheKey, resolved);
+  return resolved;
+}
+
+function resolveLightnessFromPeakOffset(peakLightness: number, signedPeakOffset: number): number {
+  return signedPeakOffset >= 0
+    ? peakLightness + signedPeakOffset * (100 - peakLightness)
+    : peakLightness + signedPeakOffset * peakLightness;
+}
+
+function resolveNearestGlobalChromaLightness(params: {
+  desiredLightness: number;
+  desiredChroma: number;
+  hue: number;
+  peak: HueChromaPeak;
+}): number {
+  const { desiredLightness, desiredChroma, hue, peak } = params;
+  const clampedDesired = clamp(desiredLightness, 0.5, 99.5);
+  if (maxSrgbChroma(clampedDesired, hue) >= desiredChroma - 1e-9) return clampedDesired;
+
+  if (clampedDesired < peak.lightness) {
+    let insufficient = clampedDesired;
+    let sufficient = peak.lightness;
+    for (let iteration = 0; iteration < 28; iteration += 1) {
+      const middle = (insufficient + sufficient) / 2;
+      if (maxSrgbChroma(middle, hue) >= desiredChroma) sufficient = middle;
+      else insufficient = middle;
+    }
+    return sufficient;
+  }
+
+  let sufficient = peak.lightness;
+  let insufficient = clampedDesired;
+  for (let iteration = 0; iteration < 28; iteration += 1) {
+    const middle = (sufficient + insufficient) / 2;
+    if (maxSrgbChroma(middle, hue) >= desiredChroma) sufficient = middle;
+    else insufficient = middle;
+  }
+  return sufficient;
+}
+
+function resolveFunctionalRestProposal(params: {
+  theme: KiskadeeTheme;
+  primaryScale: KiskadeeScaleResult;
+  primarySource: MaterializedFamilySource;
+  recipe: MaterializedTonalSystemRecipe;
+  lockedTone?: KiskadeeTone;
+}): FunctionalRestProposal {
+  const { theme, primaryScale, primarySource, recipe, lockedTone } = params;
+  const sourceAnchorTone = primaryScale.anchorTone;
+  if (sourceAnchorTone === null) {
+    throw new Error(`Cannot resolve ${theme} functional rest without a primary source anchor.`);
+  }
+
+  const baselineByFamily = new Map<TonalFamilyId, KiskadeeScaleResult>();
+  for (const sector of MUNSELL_SECTORS) {
+    const familyId = `${sector}.v1` as TonalFamilyId;
+    const source = recipe.families.find((family) => family.id === familyId);
+    if (!source) continue;
+    const scale =
+      familyId === primarySource.id
+        ? primaryScale
+        : generateKiskadeeScale({
+            seedHex: source.seedHex,
+            theme,
+            profile: recipe.tonalProfile
+          });
+    if (scale.diagnostics.valid) baselineByFamily.set(familyId, scale);
+  }
+
+  const primarySourceUtilization = normalizePrimaryGlobalUtilization(
+    primarySource.id,
+    resolveGlobalChromaSignature(hexToOklch(primarySource.seedHex)).utilization
+  );
+  const sourceIndex = KISKADEE_TONES.indexOf(sourceAnchorTone);
+  const tones = lockedTone === undefined ? REST_TONES : [lockedTone];
+  const evaluations = tones
+    .map((tone) =>
+      evaluateFunctionalRestCandidate({
+        theme,
+        tone,
+        sourceAnchorTone,
+        sourceIndex,
+        primaryScale,
+        primaryId: primarySource.id,
+        primarySourceUtilization,
+        baselines: baselineByFamily
+      })
+    )
+    .filter((candidate): candidate is FunctionalRestCandidateEvaluation => candidate !== null);
+
+  if (lockedTone === undefined) {
+    const sourceAnchor = evaluations.find(
+      (candidate) => candidate.functionalRestTone === sourceAnchorTone
+    );
+    if (sourceAnchor) {
+      const vividnessGuardApplied =
+        primarySourceUtilization >= MUNSELL_HARMONY_V1_PARAMETERS.functionalRestVividSourceMinimum;
+      const sourceAnchorRatio =
+        MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceAnchorBalanceRatio;
+      const sourceAnchorAccepted =
+        !vividnessGuardApplied ||
+        (sourceAnchor.sourceRetention >=
+          MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceRetention &&
+          sourceAnchor.minimumFamilyRatio >= sourceAnchorRatio &&
+          sourceAnchor.maximumFamilyRatio <= 1 / sourceAnchorRatio);
+      if (sourceAnchorAccepted) {
+        return { tone: sourceAnchorTone };
+      }
+    }
+  }
+
+  const balanced = evaluations
+    .filter((candidate) => candidate.balanced)
+    .sort(compareFunctionalRestCandidates)[0];
+  const best = balanced ?? evaluations.sort(compareRelaxedFunctionalRestCandidates)[0];
+  if (!best) {
+    return { tone: sourceAnchorTone };
+  }
+
+  return { tone: best.functionalRestTone };
+}
+
+function evaluateFunctionalRestCandidate(params: {
+  theme: KiskadeeTheme;
+  tone: KiskadeeTone;
+  sourceAnchorTone: KiskadeeTone;
+  sourceIndex: number;
+  primaryScale: KiskadeeScaleResult;
+  primaryId: TonalFamilyId;
+  primarySourceUtilization: number;
+  baselines: ReadonlyMap<TonalFamilyId, KiskadeeScaleResult>;
+}): FunctionalRestCandidateEvaluation | null {
+  const {
+    theme,
+    tone,
+    sourceAnchorTone,
+    sourceIndex,
+    primaryScale,
+    primaryId,
+    primarySourceUtilization,
+    baselines
+  } = params;
+  const primaryColor = resolveTone(primaryScale, tone);
+  if (!primaryColor) return null;
+
+  const primaryRestUtilization = normalizePrimaryGlobalUtilization(
+    primaryId,
+    resolveScaleToneGlobalUtilization(primaryScale, primaryColor)
+  );
+  const familyRatios: number[] = [];
+  for (const scale of baselines.values()) {
+    const color = resolveTone(scale, tone);
+    if (!color) return null;
+    const utilization = resolveScaleToneGlobalUtilization(scale, color);
+    familyRatios.push(
+      primaryRestUtilization <= 0.000_001 ? 1 : utilization / primaryRestUtilization
+    );
+  }
+
+  if (familyRatios.length !== MUNSELL_SECTORS.length) return null;
+  const minimumFamilyRatio = Math.min(...familyRatios);
+  const maximumFamilyRatio = Math.max(...familyRatios);
+  const sourceRetention =
+    primarySourceUtilization <= 0.000_001 ? 1 : primaryRestUtilization / primarySourceUtilization;
+  const minimumRatio = MUNSELL_HARMONY_V1_PARAMETERS.functionalRestBalanceRatio;
+  const maximumRatio = 1 / minimumRatio;
+  const minimumRetention = MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceRetention;
+  const retentionDeficit = Math.max(0, minimumRetention - sourceRetention) / minimumRetention;
+  const lowerBalanceDeficit = Math.max(0, minimumRatio - minimumFamilyRatio) / minimumRatio;
+  const upperBalanceDeficit = Math.max(0, maximumFamilyRatio - maximumRatio) / maximumRatio;
+  const vividnessGuardApplied =
+    primarySourceUtilization >= MUNSELL_HARMONY_V1_PARAMETERS.functionalRestVividSourceMinimum;
+  const balanced =
+    !vividnessGuardApplied ||
+    (retentionDeficit <= 1e-12 && lowerBalanceDeficit <= 1e-12 && upperBalanceDeficit <= 1e-12);
+
+  return {
+    theme,
+    sourceAnchorTone,
+    functionalRestTone: tone,
+    sourceGlobalChromaUtilization: primarySourceUtilization,
+    restGlobalChromaUtilization: primaryRestUtilization,
+    sourceRetention,
+    minimumFamilyRatio,
+    maximumFamilyRatio,
+    vividnessGuardApplied,
+    balanced,
+    gridDistance: Math.abs(KISKADEE_TONES.indexOf(tone) - sourceIndex),
+    deficit: vividnessGuardApplied
+      ? Math.max(retentionDeficit, lowerBalanceDeficit, upperBalanceDeficit)
+      : 0
+  };
+}
+
+function resolveScaleToneGlobalUtilization(
+  scale: KiskadeeScaleResult,
+  color: KiskadeeScaleColor
+): number {
+  const anchor = scale.anchorTone === null ? null : resolveTone(scale, scale.anchorTone);
+  const globalMaximum = resolveHueChromaPeak(anchor?.oklch.h ?? color.oklch.h).chroma;
+  return globalMaximum <= 0 ? 0 : clamp(color.oklch.c / globalMaximum, 0, 1);
+}
+
+function compareFunctionalRestCandidates(
+  left: FunctionalRestCandidateEvaluation,
+  right: FunctionalRestCandidateEvaluation
+): number {
+  const distance = left.gridDistance - right.gridDistance;
+  if (distance !== 0) return distance;
+  return left.functionalRestTone - right.functionalRestTone;
+}
+
+function compareRelaxedFunctionalRestCandidates(
+  left: FunctionalRestCandidateEvaluation,
+  right: FunctionalRestCandidateEvaluation
+): number {
+  const deficit = left.deficit - right.deficit;
+  if (Math.abs(deficit) > 1e-12) return deficit;
+  return compareFunctionalRestCandidates(left, right);
+}
+
+function normalizePrimaryGlobalUtilization(familyId: TonalFamilyId, utilization: number): number {
+  return familyId === 'yellow-red.v2'
+    ? Math.min(1, utilization / MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio)
+    : utilization;
+}
+
+function resolveEmittedFunctionalRestDiagnostics(params: {
+  theme: KiskadeeTheme;
+  source: 'auto-proposal' | 'locked';
+  primarySource: MaterializedFamilySource;
+  primaryFamily: ResolvedTonalFamily;
+  families: ResolvedTonalFamily[];
+}): FunctionalRestThemeDiagnostics {
+  const { theme, source, primarySource, primaryFamily, families } = params;
+  const primary = primaryFamily.themes[theme];
+  const sourceAnchorTone = primary.scale.anchorTone;
+  if (sourceAnchorTone === null) {
+    throw new Error(`Cannot diagnose ${theme} functional rest without a primary source anchor.`);
+  }
+
+  const sourceGlobalChromaUtilization = normalizePrimaryGlobalUtilization(
+    primarySource.id,
+    resolveGlobalChromaSignature(hexToOklch(primarySource.seedHex)).utilization
+  );
+  const restGlobalChromaUtilization = normalizePrimaryGlobalUtilization(
+    primarySource.id,
+    resolveScaleToneGlobalUtilization(primary.scale, primary.restColor)
+  );
+  const familyRatios = families
+    .filter((family) => family.colorKind === 'chromatic' && family.variant === 'v1')
+    .map((family) => {
+      const resolution = family.themes[theme];
+      const utilization = resolveScaleToneGlobalUtilization(resolution.scale, resolution.restColor);
+      return restGlobalChromaUtilization <= 0.000_001
+        ? 1
+        : utilization / restGlobalChromaUtilization;
+    });
+  const minimumFamilyRatio = familyRatios.length === 0 ? 0 : Math.min(...familyRatios);
+  const maximumFamilyRatio = familyRatios.length === 0 ? 0 : Math.max(...familyRatios);
+  const sourceRetention =
+    sourceGlobalChromaUtilization <= 0.000_001
+      ? 1
+      : restGlobalChromaUtilization / sourceGlobalChromaUtilization;
+  const vividnessGuardApplied =
+    sourceGlobalChromaUtilization >= MUNSELL_HARMONY_V1_PARAMETERS.functionalRestVividSourceMinimum;
+  const exactAutomaticAnchor = source === 'auto-proposal' && primary.restTone === sourceAnchorTone;
+  const balanceRatio = exactAutomaticAnchor
+    ? MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceAnchorBalanceRatio
+    : MUNSELL_HARMONY_V1_PARAMETERS.functionalRestBalanceRatio;
+  const balanced =
+    !vividnessGuardApplied ||
+    (sourceRetention >= MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceRetention - 1e-12 &&
+      minimumFamilyRatio >= balanceRatio - 1e-12 &&
+      maximumFamilyRatio <= 1 / balanceRatio + 1e-12);
+
+  return {
+    theme,
+    sourceAnchorTone,
+    functionalRestTone: primary.restTone,
+    sourceGlobalChromaUtilization,
+    restGlobalChromaUtilization,
+    sourceRetention,
+    minimumFamilyRatio,
+    maximumFamilyRatio,
+    vividnessGuardApplied,
+    balanced
+  };
 }
 
 function materializeOverride(
@@ -625,9 +1082,9 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
     return failedResult(primaryIssues);
   }
 
-  const proposedLight = primaryExactLight.anchorTone;
-  const proposedDark = primaryExactDark.anchorTone;
-  if (proposedLight === null || proposedDark === null) {
+  const sourceLightAnchor = primaryExactLight.anchorTone;
+  const sourceDarkAnchor = primaryExactDark.anchorTone;
+  if (sourceLightAnchor === null || sourceDarkAnchor === null) {
     return failedResult([
       {
         severity: 'error',
@@ -638,42 +1095,28 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
     ]);
   }
 
-  let rest =
-    recipe.tonalAnchors.rest.mode === 'auto'
-      ? {
-          light: proposedLight,
-          dark: primaryDarkPolicy === 'adaptive' ? nearestRestTone(proposedDark) : proposedDark,
-          source: 'auto-proposal' as const
-        }
-      : {
-          light: recipe.tonalAnchors.rest.light,
-          dark: recipe.tonalAnchors.rest.dark,
-          source: 'locked' as const
-        };
-
-  if (primaryExactLight.anchorTone !== rest.light) {
-    issues.push(
-      exactRestMismatchIssue(
-        recipe.primaryReference,
-        'light',
-        rest.light,
-        primaryExactLight.anchorTone
-      )
-    );
-  }
-  if (primaryDarkPolicy === 'source-exact' && primaryExactDark.anchorTone !== rest.dark) {
-    issues.push(
-      exactRestMismatchIssue(
-        recipe.primaryReference,
-        'dark',
-        rest.dark,
-        primaryExactDark.anchorTone
-      )
-    );
-  }
-  if (issues.some((issue) => issue.severity === 'error')) {
-    return failedResult(issues, rest);
-  }
+  const lightRestProposal = resolveFunctionalRestProposal({
+    theme: 'light',
+    primaryScale: primaryExactLight,
+    primarySource,
+    recipe,
+    lockedTone:
+      recipe.tonalAnchors.rest.mode === 'locked' ? recipe.tonalAnchors.rest.light : undefined
+  });
+  const darkRestProposal = resolveFunctionalRestProposal({
+    theme: 'dark',
+    primaryScale: primaryExactDark,
+    primarySource,
+    recipe,
+    lockedTone:
+      recipe.tonalAnchors.rest.mode === 'locked' ? recipe.tonalAnchors.rest.dark : undefined
+  });
+  const rest = {
+    light: lightRestProposal.tone,
+    dark: darkRestProposal.tone,
+    source:
+      recipe.tonalAnchors.rest.mode === 'auto' ? ('auto-proposal' as const) : ('locked' as const)
+  };
 
   const primaryLight = resolveSourceExactTheme({
     familyId: recipe.primaryReference,
@@ -681,7 +1124,7 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
     theme: 'light',
     restTone: rest.light,
     scale: primaryExactLight,
-    requireRestAnchor: true
+    requireRestAnchor: false
   });
   let primaryDark: ResolvedTonalTheme | null;
   if (primaryDarkPolicy === 'source-exact') {
@@ -691,21 +1134,8 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
       theme: 'dark',
       restTone: rest.dark,
       scale: primaryExactDark,
-      requireRestAnchor: true
+      requireRestAnchor: false
     });
-  } else if (recipe.tonalAnchors.rest.mode === 'auto') {
-    const autoResolution = resolveAutoAdaptivePrimaryDark({
-      familyId: recipe.primaryReference,
-      sourceSeedHex: primarySource.seedHex,
-      preferredRestTone: rest.dark,
-      baseline: primaryExactDark,
-      recipe,
-      issues
-    });
-    primaryDark = autoResolution?.resolution ?? null;
-    if (autoResolution && autoResolution.restTone !== rest.dark) {
-      rest = { ...rest, dark: autoResolution.restTone };
-    }
   } else {
     primaryDark = resolveAdaptiveTheme({
       familyId: recipe.primaryReference,
@@ -880,6 +1310,25 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
     return failedResult(issues, rest, families);
   }
 
+  const functionalRestDiagnostics = {
+    light: resolveEmittedFunctionalRestDiagnostics({
+      theme: 'light',
+      source: rest.source,
+      primarySource,
+      primaryFamily,
+      families
+    }),
+    dark: resolveEmittedFunctionalRestDiagnostics({
+      theme: 'dark',
+      source: rest.source,
+      primarySource,
+      primaryFamily,
+      families
+    })
+  };
+  reportFunctionalRestReview(issues, functionalRestDiagnostics.light, rest.source);
+  reportFunctionalRestReview(issues, functionalRestDiagnostics.dark, rest.source);
+
   const source = lockTonalSystemRecipe(recipe.authoringRecipe, recipe.primaryReference, rest);
   const status =
     issues.some((issue) => issue.severity === 'review') ||
@@ -892,6 +1341,7 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
     status,
     source,
     rest,
+    functionalRestDiagnostics,
     primaryReference: {
       familyId: recipe.primaryReference,
       light: lightFingerprint,
@@ -932,6 +1382,24 @@ function validateResolvedFamilyIdentity(
       familyId,
       theme: resolution.theme
     });
+    return;
+  }
+
+  if (
+    requireSafeCore &&
+    resolution.restColor.oklch.c >= HARMONY_V1_PARAMETERS.reliableHueMinimumChroma
+  ) {
+    const restIdentity = classifyMunsellHex(resolution.restColor.hex);
+    if (restIdentity.sector !== parsed.sector) {
+      issues.push({
+        severity: 'error',
+        code: 'REST_SECTOR_MISMATCH',
+        path: `/families/${familyId}/${resolution.theme}/rest`,
+        message: `${familyId} functional rest emitted ${restIdentity.sector} instead of ${parsed.sector} in ${resolution.theme}.`,
+        familyId,
+        theme: resolution.theme
+      });
+    }
   }
 }
 
@@ -948,10 +1416,26 @@ function resolveFamilyHarmonyReference(
     familyId === 'yellow-red.v2'
       ? baseUtilization * MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio
       : baseUtilization;
+  const baseGlobalUtilization =
+    primaryId === 'yellow-red.v2'
+      ? Math.min(
+          1,
+          reference.hueGlobalChromaUtilization / MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio
+        )
+      : reference.hueGlobalChromaUtilization;
+  const targetGlobalUtilization =
+    familyId === 'yellow-red.v2'
+      ? baseGlobalUtilization * MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio
+      : baseGlobalUtilization;
 
-  return targetUtilization === reference.chromaUtilization
+  return targetUtilization === reference.chromaUtilization &&
+    targetGlobalUtilization === reference.hueGlobalChromaUtilization
     ? reference
-    : { ...reference, chromaUtilization: targetUtilization };
+    : {
+        ...reference,
+        chromaUtilization: targetUtilization,
+        hueGlobalChromaUtilization: targetGlobalUtilization
+      };
 }
 
 function resolveSourceExactTheme(params: {
@@ -987,50 +1471,6 @@ function resolveSourceExactTheme(params: {
     harmony: null,
     status: scaleNeedsReview(scale) ? 'review' : 'pass'
   };
-}
-
-function resolveAutoAdaptivePrimaryDark(params: {
-  familyId: TonalFamilyId;
-  sourceSeedHex: string;
-  preferredRestTone: KiskadeeTone;
-  baseline: KiskadeeScaleResult;
-  recipe: MaterializedTonalSystemRecipe;
-  issues: TonalSystemIssue[];
-}): { restTone: KiskadeeTone; resolution: ResolvedTonalTheme } | null {
-  const { familyId, sourceSeedHex, preferredRestTone, baseline, recipe, issues } = params;
-  const orderedTones = [...REST_TONES].sort((left, right) => {
-    const distance = Math.abs(left - preferredRestTone) - Math.abs(right - preferredRestTone);
-    return distance === 0 ? left - right : distance;
-  });
-
-  for (const restTone of orderedTones) {
-    const attemptIssues: TonalSystemIssue[] = [];
-    const resolution = resolveAdaptiveTheme({
-      familyId,
-      sourceSeedHex,
-      restTone,
-      baseline,
-      theme: 'dark',
-      familyKind: 'chromatic',
-      enforceSafeCore: false,
-      recipe,
-      issues: attemptIssues
-    });
-    if (!resolution) continue;
-
-    issues.push(...attemptIssues);
-    return { restTone, resolution };
-  }
-
-  issues.push({
-    severity: 'error',
-    code: 'ADAPTIVE_AUTO_REST_UNREACHABLE',
-    path: '/tonalAnchors/rest',
-    message: `No public Dark rest position can adapt ${familyId} without violating the tonal invariants.`,
-    familyId,
-    theme: 'dark'
-  });
-  return null;
 }
 
 function resolveAdaptiveTheme(params: {
@@ -1090,7 +1530,13 @@ function resolveAdaptiveTheme(params: {
       policy: 'adaptive',
       recipe
     });
-    const metrics = createHarmonyMetrics(projected.hex, sourceOklch, projectedFingerprint, 1);
+    const metrics = createHarmonyMetrics(
+      projected.hex,
+      sourceOklch,
+      projectedFingerprint,
+      1,
+      recipe.useHueGlobalHarmony ? 'hue-global' : 'local-gamut'
+    );
     const status = resolveHarmonyStatus(metrics, projectedScale);
     reportHarmonyReview(issues, familyId, theme, metrics, projectedScale, status);
 
@@ -1270,7 +1716,8 @@ function resolveCandidateTheme(params: {
     reference,
     familyId,
     enforceSafeCore,
-    profile: recipe.tonalProfile
+    profile: recipe.tonalProfile,
+    chromaModel: recipe.useHueGlobalHarmony ? 'hue-global' : 'local-gamut'
   });
 
   if (!resolution) {
@@ -1332,6 +1779,7 @@ function findHarmonyCandidate(params: {
   familyId: TonalFamilyId;
   enforceSafeCore: boolean;
   profile: TonalSystemRecipeV2['tonalProfile'];
+  chromaModel: TonalHarmonyMetrics['chromaModel'];
 }): CandidateResolution | null {
   const {
     sourceOklch,
@@ -1341,12 +1789,14 @@ function findHarmonyCandidate(params: {
     reference,
     familyId,
     enforceSafeCore,
-    profile
+    profile,
+    chromaModel
   } = params;
   const coarse = rankHarmonyCandidates({
     sourceOklch,
     sourceSeedHex,
     reference,
+    chromaModel,
     lightnessMinimum: reference.oklch.l - 10,
     lightnessMaximum: reference.oklch.l + 10,
     lightnessStep: 0.5,
@@ -1381,6 +1831,7 @@ function findHarmonyCandidate(params: {
     sourceOklch,
     sourceSeedHex,
     reference,
+    chromaModel,
     lightnessMinimum: best.candidate.requestedLightness - 0.6,
     lightnessMaximum: best.candidate.requestedLightness + 0.6,
     lightnessStep: 0.1,
@@ -1407,6 +1858,7 @@ function rankHarmonyCandidates(params: {
   sourceOklch: OklchColor;
   sourceSeedHex: string;
   reference: TonalHarmonyFingerprint;
+  chromaModel: TonalHarmonyMetrics['chromaModel'];
   lightnessMinimum: number;
   lightnessMaximum: number;
   lightnessStep: number;
@@ -1418,6 +1870,7 @@ function rankHarmonyCandidates(params: {
     sourceOklch,
     sourceSeedHex,
     reference,
+    chromaModel,
     lightnessMinimum,
     lightnessMaximum,
     lightnessStep,
@@ -1442,7 +1895,7 @@ function rankHarmonyCandidates(params: {
       });
       const emitted = hexToOklch(rendered.hex);
       const emittedMaximumChroma = maxSrgbChroma(emitted.l, emitted.h);
-      const metrics = createHarmonyMetrics(rendered.hex, sourceOklch, reference, 0);
+      const metrics = createHarmonyMetrics(rendered.hex, sourceOklch, reference, 0, chromaModel);
       const candidate: RankedHarmonyCandidate = {
         requestedLightness: lightness,
         requestedUtilization: utilization,
@@ -1468,7 +1921,7 @@ function rankHarmonyCandidates(params: {
       hex: sourceSeedHex,
       oklch: sourceOklch,
       maximumSrgbChroma: sourceMaximum,
-      metrics: createHarmonyMetrics(sourceSeedHex, sourceOklch, reference, 0)
+      metrics: createHarmonyMetrics(sourceSeedHex, sourceOklch, reference, 0, chromaModel)
     });
   }
 
@@ -1479,34 +1932,61 @@ function createHarmonyMetrics(
   hex: string,
   sourceOklch: OklchColor,
   reference: TonalHarmonyFingerprint,
-  candidatesEvaluated: number
+  candidatesEvaluated: number,
+  chromaModel: TonalHarmonyMetrics['chromaModel']
 ): TonalHarmonyMetrics {
   const emitted = hexToOklch(hex);
   const luminance = relativeLuminance(hex);
   const maximumChroma = maxSrgbChroma(emitted.l, emitted.h);
   const utilization = maximumChroma <= 0 ? 0 : clamp(emitted.c / maximumChroma, 0, 1);
+  const globalMaximumChroma = resolveHueChromaPeak(sourceOklch.h).chroma;
+  const globalUtilization =
+    globalMaximumChroma <= 0 ? 0 : clamp(emitted.c / globalMaximumChroma, 0, 1);
   const lightnessDelta = emitted.l - reference.oklch.l;
   const relativeLuminanceDelta = luminance - reference.relativeLuminance;
   const contrastAgainstWhiteDelta = contrastRatio(hex, '#ffffff') - reference.contrastAgainstWhite;
   const contrastAgainstBlackDelta = contrastRatio(hex, '#000000') - reference.contrastAgainstBlack;
   const chromaUtilizationDelta = utilization - reference.chromaUtilization;
+  const hueGlobalChromaUtilizationDelta = globalUtilization - reference.hueGlobalChromaUtilization;
   const lightnessError = Math.abs(lightnessDelta) / HARMONY_V1_PARAMETERS.lightnessTolerance;
   const contrastLogError =
     Math.abs(Math.log((luminance + 0.05) / (reference.relativeLuminance + 0.05))) /
     HARMONY_V1_PARAMETERS.contrastLogTolerance;
   const chromaUtilizationError =
     Math.abs(chromaUtilizationDelta) / HARMONY_V1_PARAMETERS.chromaUtilizationTolerance;
+  const hueGlobalRatio =
+    reference.hueGlobalChromaUtilization <= 0.000_001
+      ? 1
+      : globalUtilization / reference.hueGlobalChromaUtilization;
+  const minimumGlobalRatio = MUNSELL_HARMONY_V1_PARAMETERS.functionalRestBalanceRatio;
+  const maximumGlobalRatio = 1 / minimumGlobalRatio;
+  const hueGlobalBalanceError =
+    chromaModel === 'local-gamut'
+      ? 0
+      : hueGlobalRatio < minimumGlobalRatio
+        ? (minimumGlobalRatio - hueGlobalRatio) / minimumGlobalRatio
+        : hueGlobalRatio > maximumGlobalRatio
+          ? (hueGlobalRatio - maximumGlobalRatio) / maximumGlobalRatio
+          : 0;
 
   return {
-    score: Math.max(lightnessError, contrastLogError, chromaUtilizationError),
+    chromaModel,
+    score: Math.max(
+      lightnessError,
+      contrastLogError,
+      chromaUtilizationError,
+      hueGlobalBalanceError
+    ),
     lightnessError,
     contrastLogError,
     chromaUtilizationError,
+    hueGlobalBalanceError,
     lightnessDelta,
     relativeLuminanceDelta,
     contrastAgainstWhiteDelta,
     contrastAgainstBlackDelta,
     chromaUtilizationDelta,
+    hueGlobalChromaUtilizationDelta,
     seedDeltaE: deltaEOk(sourceOklch, emitted),
     hueDrift: circularHueDistance(sourceOklch.h, emitted.h),
     candidatesEvaluated
@@ -1539,6 +2019,7 @@ function fingerprintFromColor(params: {
 }): TonalHarmonyFingerprint {
   const { familyId, theme, tone, color, policy, recipe } = params;
   const maximumChroma = maxSrgbChroma(color.oklch.l, color.oklch.h);
+  const globalMaximumChroma = resolveHueChromaPeak(color.oklch.h).chroma;
 
   return {
     formatVersion: recipe.formatVersion,
@@ -1555,6 +2036,9 @@ function fingerprintFromColor(params: {
     contrastAgainstBlack: contrastRatio(color.hex, '#000000'),
     maximumSrgbChroma: maximumChroma,
     chromaUtilization: maximumChroma <= 0 ? 0 : clamp(color.oklch.c / maximumChroma, 0, 1),
+    hueGlobalMaximumSrgbChroma: globalMaximumChroma,
+    hueGlobalChromaUtilization:
+      globalMaximumChroma <= 0 ? 0 : clamp(color.oklch.c / globalMaximumChroma, 0, 1),
     policy
   };
 }
@@ -1597,13 +2081,16 @@ function compareRankedCandidates(
   const leftMetrics = left.metrics;
   const rightMetrics = right.metrics;
 
-  // Functional equivalence is hierarchical at the tolerance boundary:
-  // contrast/luminance outranks lightness, which outranks gamut utilization.
-  // Once both candidates satisfy the same hierarchy, the minimax score keeps
-  // the remaining soft objectives balanced before source distance is used.
-  for (const metric of ['contrastLogError', 'lightnessError', 'chromaUtilizationError'] as const) {
-    const leftExcess = Math.max(0, leftMetrics[metric] - 1);
-    const rightExcess = Math.max(0, rightMetrics[metric] - 1);
+  // A vivid system must first return to the permitted hue-global balance
+  // range. Once feasible, the approved perceptual hierarchy remains intact.
+  const balanceDifference = leftMetrics.hueGlobalBalanceError - rightMetrics.hueGlobalBalanceError;
+  if (Math.abs(balanceDifference) > 1e-12) return balanceDifference;
+
+  for (const metric of ['lightnessError', 'chromaUtilizationError', 'contrastLogError'] as const) {
+    const leftValue = leftMetrics[metric];
+    const rightValue = rightMetrics[metric];
+    const leftExcess = Math.max(0, leftValue - 1);
+    const rightExcess = Math.max(0, rightValue - 1);
     const excessDifference = leftExcess - rightExcess;
     if (Math.abs(excessDifference) > 1e-12) return excessDifference;
   }
@@ -1614,11 +2101,13 @@ function compareRankedCandidates(
   const leftSquared =
     leftMetrics.lightnessError ** 2 +
     leftMetrics.contrastLogError ** 2 +
-    leftMetrics.chromaUtilizationError ** 2;
+    leftMetrics.chromaUtilizationError ** 2 +
+    leftMetrics.hueGlobalBalanceError ** 2;
   const rightSquared =
     rightMetrics.lightnessError ** 2 +
     rightMetrics.contrastLogError ** 2 +
-    rightMetrics.chromaUtilizationError ** 2;
+    rightMetrics.chromaUtilizationError ** 2 +
+    rightMetrics.hueGlobalBalanceError ** 2;
   if (Math.abs(leftSquared - rightSquared) > 1e-12) return leftSquared - rightSquared;
   if (Math.abs(leftMetrics.seedDeltaE - rightMetrics.seedDeltaE) > 1e-12) {
     return leftMetrics.seedDeltaE - rightMetrics.seedDeltaE;
@@ -1719,21 +2208,20 @@ function resolveTone(
   return scale.colors.find((color) => color.tone === tone);
 }
 
-function exactRestMismatchIssue(
-  familyId: TonalFamilyId,
-  theme: KiskadeeTheme,
-  expected: KiskadeeTone,
-  actual: KiskadeeTone | null
-): TonalSystemIssue {
-  const prefix = theme === 'light' ? 'L' : 'D';
-  return {
-    severity: 'error',
-    code: 'PRIMARY_REST_MISMATCH',
-    path: `/tonalAnchors/rest/${theme}`,
-    message: `Exact primary ${theme} resolves to ${prefix}${actual ?? 'none'}, not locked ${prefix}${expected}.`,
-    familyId,
-    theme
-  };
+function reportFunctionalRestReview(
+  issues: TonalSystemIssue[],
+  diagnostics: FunctionalRestThemeDiagnostics,
+  source: 'auto-proposal' | 'locked'
+): void {
+  if (diagnostics.balanced) return;
+  const prefix = diagnostics.theme === 'light' ? 'L' : 'D';
+  issues.push({
+    severity: 'review',
+    code: 'FUNCTIONAL_REST_BALANCE_RELAXED',
+    path: `/tonalAnchors/rest/${diagnostics.theme}`,
+    message: `${source === 'locked' ? 'Locked' : 'Automatic'} ${diagnostics.theme} functional rest ${prefix}${diagnostics.functionalRestTone} retains ${(diagnostics.sourceRetention * 100).toFixed(1)}% of the primary global chroma signature with family ratios ${diagnostics.minimumFamilyRatio.toFixed(3)} through ${diagnostics.maximumFamilyRatio.toFixed(3)}.`,
+    theme: diagnostics.theme
+  });
 }
 
 function scaleFailureIssue(
@@ -1776,6 +2264,7 @@ function failedResult(
     status: 'error',
     source: null,
     rest,
+    functionalRestDiagnostics: null,
     primaryReference: null,
     families: families.sort((left, right) => compareStrings(left.id, right.id)),
     issues: sortIssues(issues)
@@ -1800,14 +2289,6 @@ function combineStatuses(
 function circularHueDistance(left: number, right: number): number {
   const distance = Math.abs(left - right) % 360;
   return Math.min(distance, 360 - distance);
-}
-
-function nearestRestTone(tone: KiskadeeTone): KiskadeeTone {
-  return REST_TONES.reduce((nearest, candidate) => {
-    const candidateDistance = Math.abs(candidate - tone);
-    const nearestDistance = Math.abs(nearest - tone);
-    return candidateDistance < nearestDistance ? candidate : nearest;
-  });
 }
 
 function clamp(value: number, minimum: number, maximum: number): number {
