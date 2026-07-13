@@ -23,6 +23,7 @@ import {
   classifyMunsellHue,
   getMunsellOklchSectorCenterPosition,
   getMunsellOklchSectorDefinition,
+  MUNSELL_OKLCH_PRIMARY_CHROMA,
   MUNSELL_OKLCH_SAFE_CORE,
   type MunsellColorClassification,
   normalizeMunsellHue,
@@ -68,6 +69,8 @@ export const MUNSELL_HARMONY_V1_PARAMETERS = {
   functionalRestSourceRetention: 0.7,
   functionalRestBalanceRatio: 0.6,
   functionalRestSourceAnchorBalanceRatio: 0.5,
+  functionalRestSourceAnchorBalanceTolerance: 0.005,
+  functionalRestSupportChromaFloor: 0.025,
   adjacentFamilyMinimumHueSeparation: 12,
   adjacentFamilyHueSeparationMargin: 1.5,
   adjacentFamilyMinimumRestDeltaE: 0.05
@@ -810,23 +813,43 @@ function resolveFunctionalRestProposal(params: {
     )
     .filter((candidate): candidate is FunctionalRestCandidateEvaluation => candidate !== null);
 
-  if (lockedTone === undefined) {
-    const vividnessGuardApplied =
-      primarySourceUtilization >= MUNSELL_HARMONY_V1_PARAMETERS.functionalRestVividSourceMinimum;
-    if (!vividnessGuardApplied) {
-      return { tone: sourceAnchorTone };
-    }
+  const vividnessGuardApplied =
+    primarySourceUtilization >= MUNSELL_HARMONY_V1_PARAMETERS.functionalRestVividSourceMinimum;
+  const sourceAnchorEvaluation = evaluations.find(
+    (candidate) => candidate.functionalRestTone === sourceAnchorTone
+  );
+  const sourceAnchorBalanceRatio =
+    MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceAnchorBalanceRatio -
+    MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceAnchorBalanceTolerance;
+  const sourceAnchorNeedsBalance =
+    sourceAnchorEvaluation !== undefined &&
+    (sourceAnchorEvaluation.minimumFamilyRatio < sourceAnchorBalanceRatio ||
+      sourceAnchorEvaluation.maximumFamilyRatio > 1 / sourceAnchorBalanceRatio);
+  const supportsPaleHueGlobalPreview =
+    !vividnessGuardApplied &&
+    sourceAnchorNeedsBalance &&
+    hexToOklch(primarySource.seedHex).c >= MUNSELL_OKLCH_PRIMARY_CHROMA.lowConfidenceCeiling &&
+    (lockedTone === undefined || lockedTone === sourceAnchorTone);
+  const shouldTrySourceAnchorPreview =
+    (lockedTone === undefined && vividnessGuardApplied) || supportsPaleHueGlobalPreview;
 
+  if (shouldTrySourceAnchorPreview) {
     const harmonizedAnchorPreview = resolveHarmonizedSourceAnchorPreview({
       theme,
       primaryScale,
       primarySource,
       recipe,
-      primarySourceUtilization
+      primarySourceUtilization,
+      chromaModelOverride: supportsPaleHueGlobalPreview ? 'hue-global' : undefined,
+      requireIdentifiableSupports: supportsPaleHueGlobalPreview
     });
     if (harmonizedAnchorPreview) {
       return { tone: sourceAnchorTone, harmonizedAnchorPreview };
     }
+  }
+
+  if (lockedTone === undefined && !vividnessGuardApplied) {
+    return { tone: sourceAnchorTone };
   }
 
   const balanced = evaluations
@@ -846,8 +869,18 @@ function resolveHarmonizedSourceAnchorPreview(params: {
   primarySource: MaterializedFamilySource;
   recipe: MaterializedTonalSystemRecipe;
   primarySourceUtilization: number;
+  chromaModelOverride?: TonalHarmonyMetrics['chromaModel'];
+  requireIdentifiableSupports?: boolean;
 }): NonNullable<FunctionalRestProposal['harmonizedAnchorPreview']> | null {
-  const { theme, primaryScale, primarySource, recipe, primarySourceUtilization } = params;
+  const {
+    theme,
+    primaryScale,
+    primarySource,
+    recipe,
+    primarySourceUtilization,
+    chromaModelOverride,
+    requireIdentifiableSupports = false
+  } = params;
   const sourceAnchorTone = primaryScale.anchorTone;
   if (sourceAnchorTone === null) return null;
 
@@ -898,6 +931,7 @@ function resolveHarmonizedSourceAnchorPreview(params: {
         policy: source.policies[theme]
       }),
       enforceSafeCore: source.seedOrigin === 'derived',
+      chromaModelOverride,
       recipe,
       issues: previewIssues
     });
@@ -928,11 +962,27 @@ function resolveHarmonizedSourceAnchorPreview(params: {
   if (!evaluation) return null;
 
   const ratio = MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceAnchorBalanceRatio;
-  const accepted =
+  const balanceTolerance = requireIdentifiableSupports
+    ? MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceAnchorBalanceTolerance
+    : 0;
+  const effectiveBalanceRatio = ratio - balanceTolerance;
+  const sourceRetentionAccepted =
     !evaluation.vividnessGuardApplied ||
-    (evaluation.sourceRetention >= MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceRetention &&
-      evaluation.minimumFamilyRatio >= ratio &&
-      evaluation.maximumFamilyRatio <= 1 / ratio);
+    evaluation.sourceRetention >= MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceRetention;
+  const balanceAccepted =
+    evaluation.minimumFamilyRatio >= effectiveBalanceRatio &&
+    evaluation.maximumFamilyRatio <= 1 / effectiveBalanceRatio;
+  const supportsAreIdentifiable =
+    !requireIdentifiableSupports ||
+    [...emittedByFamily.entries()].every(([familyId, scale]) => {
+      if (familyId === primarySource.id) return true;
+      const color = resolveTone(scale, sourceAnchorTone);
+      return (
+        color !== undefined &&
+        color.oklch.c >= MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSupportChromaFloor
+      );
+    });
+  const accepted = sourceRetentionAccepted && balanceAccepted && supportsAreIdentifiable;
 
   return accepted ? { issues: previewIssues, resolutions } : null;
 }
@@ -1777,6 +1827,7 @@ function resolveAdaptiveTheme(params: {
   theme: KiskadeeTheme;
   familyKind: TonalFamilyColorKind;
   enforceSafeCore: boolean;
+  chromaModelOverride?: TonalHarmonyMetrics['chromaModel'];
   recipe: MaterializedTonalSystemRecipe;
   issues: TonalSystemIssue[];
 }): ResolvedTonalTheme | null {
@@ -1788,6 +1839,7 @@ function resolveAdaptiveTheme(params: {
     theme,
     familyKind,
     enforceSafeCore,
+    chromaModelOverride,
     recipe,
     issues
   } = params;
@@ -1831,7 +1883,7 @@ function resolveAdaptiveTheme(params: {
       sourceOklch,
       projectedFingerprint,
       1,
-      recipe.useHueGlobalHarmony ? 'hue-global' : 'local-gamut'
+      chromaModelOverride ?? (recipe.useHueGlobalHarmony ? 'hue-global' : 'local-gamut')
     );
     const status = resolveHarmonyStatus(metrics, projectedScale);
     reportHarmonyReview(issues, familyId, theme, metrics, projectedScale, status);
@@ -1878,6 +1930,7 @@ function resolveAdaptiveTheme(params: {
     reference: fallbackReference,
     policy: 'adaptive',
     enforceSafeCore,
+    chromaModelOverride,
     recipe,
     issues
   });
@@ -1893,6 +1946,7 @@ function resolveConfiguredFamilyTheme(params: {
   harmonyTarget: FamilyHarmonyTarget;
   harmonyHueOverride?: number;
   enforceSafeCore: boolean;
+  chromaModelOverride?: TonalHarmonyMetrics['chromaModel'];
   recipe: MaterializedTonalSystemRecipe;
   issues: TonalSystemIssue[];
 }): ResolvedTonalTheme | null {
@@ -1906,6 +1960,7 @@ function resolveConfiguredFamilyTheme(params: {
     harmonyTarget,
     harmonyHueOverride,
     enforceSafeCore,
+    chromaModelOverride,
     recipe,
     issues
   } = params;
@@ -1919,6 +1974,7 @@ function resolveConfiguredFamilyTheme(params: {
       harmonyTarget,
       harmonyHueOverride,
       enforceSafeCore,
+      chromaModelOverride,
       recipe,
       issues
     });
@@ -1966,6 +2022,7 @@ function resolveConfiguredFamilyTheme(params: {
     theme,
     familyKind,
     enforceSafeCore,
+    chromaModelOverride,
     recipe,
     issues
   });
@@ -1979,6 +2036,7 @@ function resolveHarmonizedTheme(params: {
   harmonyTarget: FamilyHarmonyTarget;
   harmonyHueOverride?: number;
   enforceSafeCore: boolean;
+  chromaModelOverride?: TonalHarmonyMetrics['chromaModel'];
   recipe: MaterializedTonalSystemRecipe;
   issues: TonalSystemIssue[];
 }): ResolvedTonalTheme | null {
@@ -2002,6 +2060,7 @@ function resolveCandidateTheme(params: {
   harmonyHueOverride?: number;
   policy: 'adaptive' | 'harmonized';
   enforceSafeCore: boolean;
+  chromaModelOverride?: TonalHarmonyMetrics['chromaModel'];
   recipe: MaterializedTonalSystemRecipe;
   issues: TonalSystemIssue[];
 }): ResolvedTonalTheme | null {
@@ -2016,6 +2075,7 @@ function resolveCandidateTheme(params: {
     harmonyHueOverride,
     policy,
     enforceSafeCore,
+    chromaModelOverride,
     recipe,
     issues
   } = params;
@@ -2034,7 +2094,7 @@ function resolveCandidateTheme(params: {
     familyId,
     enforceSafeCore,
     profile: recipe.tonalProfile,
-    chromaModel: recipe.useHueGlobalHarmony ? 'hue-global' : 'local-gamut'
+    chromaModel: chromaModelOverride ?? (recipe.useHueGlobalHarmony ? 'hue-global' : 'local-gamut')
   } as const;
   const resolution =
     policy === 'harmonized' && vividPeakGlobalUtilization !== undefined

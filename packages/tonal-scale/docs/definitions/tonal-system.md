@@ -132,6 +132,30 @@ It does not generate the source colors of companion families. The
 primary-derived seed strategy is preserved as a deferred proposal and stays
 outside the active runtime while harmony is calibrated.
 
+Light chromatic primaries can expose a separate sRGB limitation. At a very
+light exact anchor, equal local-gamut utilization may leave green and yellow
+recognizable while blue, purple, red, and yellow-red collapse toward gray. A
+low-vivid primary therefore receives one opportunistic hue-global probe at its
+exact source anchor when all of the following are true:
+
+- the primary uses less than `0.5` of its hue-global chroma potential;
+- its OKL chroma is at least `0.02`, so the hue remains a confident reference;
+- the local baseline falls outside the source-anchor balance interval after a
+  `0.005` quantization tolerance.
+
+The probe is accepted only when every emitted chromatic v1 companion keeps at
+least `0.025` OKL chroma and the family ratios remain between `0.495` and
+`1 / 0.495`. It never moves the shared rest away from the exact primary
+anchor. If any family cannot satisfy the complete probe, generation falls back
+atomically to the prior local-gamut result; it does not select a cap-adjacent
+rest merely because chroma ratios converge near white or black. Locked replay
+repeats the same probe when its rest equals the source anchor.
+
+For example, Blue-Green `#b2dfdb` remains exact at L9/D90. The accepted probe
+keeps its Blue, Purple, Red, and Yellow-Red companions visibly pastel rather
+than gray while preserving the already approved behavior of vivid primaries
+and of low-vivid primaries whose local harmony is already balanced.
+
 For vivid systems, a moved fallback must keep the emitted v1 family set inside
 the hue-global balance interval of `0.6` through `1 / 0.6` relative to the
 primary functional rest. The exact primary anchor has the special
