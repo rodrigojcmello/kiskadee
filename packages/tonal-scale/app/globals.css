@@ -232,6 +232,26 @@ dd {
   margin-top: 22px;
 }
 
+.shared-state-error {
+  display: grid;
+  gap: 4px;
+  margin: 0 4px 22px;
+  border: 1px solid color-mix(in srgb, var(--danger) 34%, var(--border));
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.shared-state-error strong {
+  font-size: 13px;
+}
+
+.shared-state-error p {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .section-heading {
   display: flex;
   gap: 16px;

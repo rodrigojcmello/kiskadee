@@ -1,7 +1,7 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import { useDeferredValue, useEffect, useMemo, useState } from 'react';
+import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { createTonalArtifactBundle, type TonalArtifactBundle } from '@/src/export/tonal-artifacts';
 import { createTonalBundleZip } from '@/src/export/tonal-bundle-zip';
 import { KISKADEE_TONAL_PROFILES, type KiskadeeTonalProfile } from '@/src/kiskadee-tonal-scale';
@@ -13,8 +13,9 @@ import {
 } from '@/src/tonal-system';
 import {
   DEFAULT_TONAL_SYSTEM_RECIPE,
+  TONAL_CORE_FAMILY_IDS,
   type TonalFamilyId,
-  type TonalSystemRecipeV1,
+  type TonalSystemRecipeV2,
   validateTonalSystemRecipe
 } from '@/src/tonal-system-contract';
 import RecipeEditor from './components/RecipeEditor';
@@ -40,13 +41,12 @@ type Theme = 'light' | 'dark';
 type ChartMetric = 'lightness' | 'chroma';
 
 export default function TonalScalePage() {
-  const [recipe, setRecipe] = useState<TonalSystemRecipeV1>(() =>
-    structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE)
+  const [recipe, setRecipe] = useState<TonalSystemRecipeV2>(
+    () => structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV2
   );
-  const [selectedFamilyId, setSelectedFamilyId] = useState<TonalFamilyId>(
-    DEFAULT_TONAL_SYSTEM_RECIPE.primaryReference
-  );
+  const [selectedFamilyId, setSelectedFamilyId] = useState<TonalFamilyId>('blue.v1');
   const [urlReady, setUrlReady] = useState(false);
+  const [sharedStateIssue, setSharedStateIssue] = useState<string | null>(null);
   const deferredRecipe = useDeferredValue(recipe);
   const system = useMemo(() => generateKiskadeeTonalSystem(deferredRecipe), [deferredRecipe]);
   const isGenerating = deferredRecipe !== recipe;
@@ -60,29 +60,35 @@ export default function TonalScalePage() {
     const applyStateFromUrl = () => {
       const url = new URL(window.location.href);
       const serializedRecipe = url.searchParams.get(RECIPE_QUERY_PARAM);
+      setSharedStateIssue(null);
 
       if (serializedRecipe) {
         try {
           const parsed = validateTonalSystemRecipe(JSON.parse(serializedRecipe));
           if (parsed.valid) {
             setRecipe(parsed.value);
-            setSelectedFamilyId(parsed.value.primaryReference);
             setUrlReady(true);
             return;
           }
+          setSharedStateIssue(
+            parsed.issues[0]?.message ?? 'The shared tonal recipe is not supported.'
+          );
+          setUrlReady(true);
+          return;
         } catch {
-          // Invalid shared state is ignored in favor of the explicit defaults.
+          setSharedStateIssue('The shared tonal recipe is not valid JSON.');
+          setUrlReady(true);
+          return;
         }
       }
 
       const color = url.searchParams.get(COLOR_QUERY_PARAM);
       const profile = url.searchParams.get(PROFILE_QUERY_PARAM);
       if (color !== null || profile !== null) {
-        const legacy = structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV1;
+        const legacy = structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV2;
         if (color !== null) {
-          const blueIndex = legacy.families.findIndex((family) => family.id === 'blue.v1');
-          legacy.families[blueIndex] = {
-            ...legacy.families[blueIndex],
+          legacy.primary = {
+            ...legacy.primary,
             seedHex: color.startsWith('#') ? color : `#${color}`
           };
         }
@@ -101,7 +107,7 @@ export default function TonalScalePage() {
   }, []);
 
   useEffect(() => {
-    if (!urlReady) return;
+    if (!urlReady || sharedStateIssue) return;
 
     const validation = validateTonalSystemRecipe(recipe);
     if (!validation.valid) return;
@@ -114,18 +120,23 @@ export default function TonalScalePage() {
       url.searchParams.delete(PROFILE_QUERY_PARAM);
       window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
     }
-  }, [recipe, urlReady]);
+  }, [recipe, sharedStateIssue, urlReady]);
+
+  const handleRecipeChange = useCallback((next: TonalSystemRecipeV2) => {
+    setSharedStateIssue(null);
+    setRecipe(next);
+  }, []);
 
   return (
     <main className="app-shell" aria-busy={isGenerating}>
       <header className="hero">
         <div>
-          <span className="eyebrow">Kiskadee harmonized tonal system v1</span>
-          <h1>Many seeds. One coherent color system.</h1>
+          <span className="eyebrow">Kiskadee Munsell tonal system v2</span>
+          <h1>One primary. A complete color system.</h1>
           <p className="hero-copy">
-            Select one primitive family as the primary reference. Its Light and Dark rest colors
-            establish the shared tonal target while each chromatic or neutral family keeps an
-            explicit Light and Dark generation policy.
+            Start with the exact primary color. Kiskadee projects its chromatic signature across
+            every Munsell sector, preserves a dedicated Black scale, and keeps all Light and Dark
+            families aligned to one functional rest reference.
           </p>
         </div>
         <div
@@ -133,7 +144,10 @@ export default function TonalScalePage() {
           aria-live="polite"
         >
           <span>{isGenerating ? 'Generating' : capitalize(system.status)}</span>
-          <strong>{recipe.families.length} primitive families</strong>
+          <strong>
+            {system.families.length > 0 ? system.families.length : TONAL_CORE_FAMILY_IDS.length}{' '}
+            primitive families
+          </strong>
           <p>
             {isGenerating
               ? 'Resolving the current recipe and every dependent family.'
@@ -144,19 +158,26 @@ export default function TonalScalePage() {
         </div>
       </header>
 
+      {sharedStateIssue ? (
+        <aside className="shared-state-error" role="alert">
+          <strong>Shared recipe rejected</strong>
+          <p>{sharedStateIssue} Version 1 recipes are not migrated automatically.</p>
+        </aside>
+      ) : null}
+
       <section className="section-block" aria-labelledby="recipe-title">
         <div className="section-heading">
           <h2 id="recipe-title">Tonal recipe</h2>
           <p>
-            Inputs remain primitive Layer 1 families. Semantic aliases and preset integration are
-            intentionally outside this package.
+            The twelve canonical Layer 1 families are always generated. Add overrides only when a
+            Design System needs an exact or intentionally adapted source color.
           </p>
         </div>
         <RecipeEditor
           recipe={recipe}
           result={system}
           isGenerating={isGenerating}
-          onChange={setRecipe}
+          onChange={handleRecipeChange}
         />
       </section>
 
@@ -202,7 +223,7 @@ export default function TonalScalePage() {
 
       <footer className="app-footer">
         <span>Balanced + Source Exact remains protected by its byte-for-byte Golden barrier.</span>
-        <code>Primitive inputs · One primary reference · Atomic bundle</code>
+        <code>Munsell projection · One primary reference · Atomic bundle</code>
       </footer>
     </main>
   );
@@ -963,7 +984,7 @@ function DiagnosticsPanel({ theme, resolution }: { theme: Theme; resolution: Res
     notes.push({
       text: diagnostics.anchorChromaProtected
         ? 'The exact seed anchor is excluded from profile attenuation.'
-        : 'The neutral seed anchor has no chroma to protect from profile attenuation.',
+        : 'The achromatic seed anchor has no chroma to protect from profile attenuation.',
       ok: true
     });
   }
@@ -1112,7 +1133,7 @@ function DiagnosticsPanel({ theme, resolution }: { theme: Theme; resolution: Res
               ? 'Canonical'
               : diagnostics.anchorChromaProtected
                 ? 'Protected'
-                : 'Neutral'
+                : 'Achromatic'
           }
         />
         <Metric label="Max profile ΔC" value={diagnostics.maxProfileChromaReduction.toFixed(4)} />

@@ -1,0 +1,248 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1520" role="img" aria-labelledby="title description">
+  <title id="title">Kiskadee Munsell color-family taxonomy</title>
+  <desc id="description">
+    A color wheel showing the ten public Kiskadee Munsell family names: red, yellow-red,
+    yellow, green-yellow, green, blue-green, blue, purple-blue, purple, and red-purple.
+    Black occupies the achromatic center. Notes identify yellow-red version one as Orange,
+    yellow-red version two as Brown, and black version one as chroma-limited.
+  </desc>
+
+  <defs>
+    <linearGradient id="canvas-gradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbfcfe" />
+      <stop offset="1" stop-color="#f1f4f8" />
+    </linearGradient>
+    <radialGradient id="black-gradient" cx="35%" cy="28%" r="78%">
+      <stop offset="0" stop-color="#56606b" />
+      <stop offset="0.48" stop-color="#303740" />
+      <stop offset="1" stop-color="#15191e" />
+    </radialGradient>
+    <linearGradient id="orange-gradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f5a55f" />
+      <stop offset="0.55" stop-color="#ca5010" />
+      <stop offset="1" stop-color="#743009" />
+    </linearGradient>
+    <linearGradient id="brown-gradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#d1a17e" />
+      <stop offset="0.55" stop-color="#8e562e" />
+      <stop offset="1" stop-color="#4a2e1c" />
+    </linearGradient>
+    <filter id="soft-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="12" stdDeviation="22" flood-color="#17202a" flood-opacity="0.14" />
+    </filter>
+    <filter id="label-shadow" x="-20%" y="-40%" width="140%" height="180%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#17202a" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <style>
+    .canvas { fill: url(#canvas-gradient); }
+    .eyebrow {
+      fill: #667085;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .heading {
+      fill: #17202a;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 42px;
+      font-weight: 750;
+    }
+    .subheading {
+      fill: #667085;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 19px;
+      font-weight: 500;
+    }
+    .sector {
+      fill: none;
+      stroke-width: 154;
+      stroke-dasharray: 249 2325;
+      stroke-linecap: butt;
+    }
+    .ring-outline { fill: none; stroke: #ffffff; stroke-width: 8; }
+    .guide { stroke: #98a2b3; stroke-width: 2; }
+    .guide-dot { stroke: #ffffff; stroke-width: 5; }
+    .family-pill {
+      fill: #ffffff;
+      stroke: #e0e5ec;
+      stroke-width: 1.5;
+      filter: url(#label-shadow);
+    }
+    .family-name {
+      fill: #17202a;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .center-title {
+      fill: #ffffff;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 38px;
+      font-weight: 760;
+    }
+    .center-subtitle {
+      fill: #e5e7eb;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 20px;
+      font-weight: 650;
+    }
+    .center-note {
+      fill: #cfd4da;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 15px;
+      font-weight: 550;
+    }
+    .card {
+      fill: #ffffff;
+      stroke: #e0e5ec;
+      stroke-width: 1.5;
+      filter: url(#soft-shadow);
+    }
+    .card-eyebrow {
+      fill: #667085;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 750;
+      letter-spacing: 0.12em;
+    }
+    .card-title {
+      fill: #17202a;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 24px;
+      font-weight: 750;
+    }
+    .card-note {
+      fill: #667085;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 17px;
+      font-weight: 500;
+    }
+    .swatch-label {
+      fill: #ffffff;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 16px;
+      font-weight: 750;
+      paint-order: stroke;
+      stroke: rgba(0, 0, 0, 0.24);
+      stroke-width: 3px;
+    }
+    .footer {
+      fill: #98a2b3;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 15px;
+      font-weight: 550;
+    }
+  </style>
+
+  <rect class="canvas" width="1400" height="1520" rx="32" />
+
+  <g aria-label="Document heading">
+    <text class="eyebrow" x="700" y="66" text-anchor="middle">Kiskadee color foundations</text>
+    <text class="heading" x="700" y="118" text-anchor="middle">Munsell family taxonomy</text>
+    <text class="subheading" x="700" y="156" text-anchor="middle">
+      Ten chromatic sectors and one achromatic family, named exactly as they are exported.
+    </text>
+  </g>
+
+  <g aria-label="Ten public chromatic sectors" filter="url(#soft-shadow)">
+    <circle class="sector" cx="700" cy="690" r="410" stroke="#e44d43" transform="rotate(-108 700 690)" />
+    <circle class="sector" cx="700" cy="690" r="410" stroke="#d97922" transform="rotate(-72 700 690)" />
+    <circle class="sector" cx="700" cy="690" r="410" stroke="#d3ad17" transform="rotate(-36 700 690)" />
+    <circle class="sector" cx="700" cy="690" r="410" stroke="#91ad2a" transform="rotate(0 700 690)" />
+    <circle class="sector" cx="700" cy="690" r="410" stroke="#3f9b58" transform="rotate(36 700 690)" />
+    <circle class="sector" cx="700" cy="690" r="410" stroke="#11968f" transform="rotate(72 700 690)" />
+    <circle class="sector" cx="700" cy="690" r="410" stroke="#277fc0" transform="rotate(108 700 690)" />
+    <circle class="sector" cx="700" cy="690" r="410" stroke="#6667bd" transform="rotate(144 700 690)" />
+    <circle class="sector" cx="700" cy="690" r="410" stroke="#9656a7" transform="rotate(180 700 690)" />
+    <circle class="sector" cx="700" cy="690" r="410" stroke="#c14e7b" transform="rotate(216 700 690)" />
+    <circle class="ring-outline" cx="700" cy="690" r="329" />
+    <circle class="ring-outline" cx="700" cy="690" r="491" />
+  </g>
+
+  <g aria-label="Public family names">
+    <line class="guide" x1="700" y1="199" x2="700" y2="176" />
+    <circle class="guide-dot" cx="700" cy="199" r="9" fill="#e44d43" />
+    <rect class="family-pill" x="638" y="162" width="124" height="48" rx="24" />
+    <text class="family-name" x="700" y="194" text-anchor="middle">red</text>
+
+    <line class="guide" x1="989" y1="293" x2="1024" y2="250" />
+    <circle class="guide-dot" cx="989" cy="293" r="9" fill="#d97922" />
+    <rect class="family-pill" x="1008" y="218" width="188" height="48" rx="24" />
+    <text class="family-name" x="1102" y="250" text-anchor="middle">yellow-red</text>
+
+    <line class="guide" x1="1167" y1="538" x2="1208" y2="522" />
+    <circle class="guide-dot" cx="1167" cy="538" r="9" fill="#d3ad17" />
+    <rect class="family-pill" x="1191" y="498" width="144" height="48" rx="24" />
+    <text class="family-name" x="1263" y="530" text-anchor="middle">yellow</text>
+
+    <line class="guide" x1="1167" y1="842" x2="1208" y2="858" />
+    <circle class="guide-dot" cx="1167" cy="842" r="9" fill="#91ad2a" />
+    <rect class="family-pill" x="1153" y="846" width="210" height="48" rx="24" />
+    <text class="family-name" x="1258" y="878" text-anchor="middle">green-yellow</text>
+
+    <line class="guide" x1="989" y1="1087" x2="1024" y2="1130" />
+    <circle class="guide-dot" cx="989" cy="1087" r="9" fill="#3f9b58" />
+    <rect class="family-pill" x="1008" y="1114" width="142" height="48" rx="24" />
+    <text class="family-name" x="1079" y="1146" text-anchor="middle">green</text>
+
+    <line class="guide" x1="700" y1="1181" x2="700" y2="1218" />
+    <circle class="guide-dot" cx="700" cy="1181" r="9" fill="#11968f" />
+    <rect class="family-pill" x="601" y="1204" width="198" height="48" rx="24" />
+    <text class="family-name" x="700" y="1236" text-anchor="middle">blue-green</text>
+
+    <line class="guide" x1="411" y1="1087" x2="376" y2="1130" />
+    <circle class="guide-dot" cx="411" cy="1087" r="9" fill="#277fc0" />
+    <rect class="family-pill" x="250" y="1114" width="126" height="48" rx="24" />
+    <text class="family-name" x="313" y="1146" text-anchor="middle">blue</text>
+
+    <line class="guide" x1="233" y1="842" x2="192" y2="858" />
+    <circle class="guide-dot" cx="233" cy="842" r="9" fill="#6667bd" />
+    <rect class="family-pill" x="33" y="846" width="214" height="48" rx="24" />
+    <text class="family-name" x="140" y="878" text-anchor="middle">purple-blue</text>
+
+    <line class="guide" x1="233" y1="538" x2="192" y2="522" />
+    <circle class="guide-dot" cx="233" cy="538" r="9" fill="#9656a7" />
+    <rect class="family-pill" x="66" y="498" width="146" height="48" rx="24" />
+    <text class="family-name" x="139" y="530" text-anchor="middle">purple</text>
+
+    <line class="guide" x1="411" y1="293" x2="376" y2="250" />
+    <circle class="guide-dot" cx="411" cy="293" r="9" fill="#c14e7b" />
+    <rect class="family-pill" x="198" y="218" width="204" height="48" rx="24" />
+    <text class="family-name" x="300" y="250" text-anchor="middle">red-purple</text>
+  </g>
+
+  <g aria-label="Black achromatic family">
+    <circle cx="700" cy="690" r="168" fill="url(#black-gradient)" stroke="#ffffff" stroke-width="10" filter="url(#soft-shadow)" />
+    <text class="center-title" x="700" y="666" text-anchor="middle">black</text>
+    <text class="center-subtitle" x="700" y="704" text-anchor="middle">black.v1 · achromatic</text>
+    <text class="center-note" x="700" y="736" text-anchor="middle">chroma is intentionally limited</text>
+  </g>
+
+  <g aria-label="Yellow-red variants" transform="translate(70 1322)">
+    <rect class="card" x="0" y="0" width="780" height="132" rx="24" />
+    <text class="card-eyebrow" x="28" y="34">YELLOW-RED VARIANTS</text>
+    <rect x="28" y="52" width="214" height="50" rx="14" fill="url(#orange-gradient)" />
+    <text class="swatch-label" x="135" y="83" text-anchor="middle">yellow-red.v1</text>
+    <text class="card-title" x="262" y="85">Orange</text>
+    <rect x="402" y="52" width="214" height="50" rx="14" fill="url(#brown-gradient)" />
+    <text class="swatch-label" x="509" y="83" text-anchor="middle">yellow-red.v2</text>
+    <text class="card-title" x="636" y="85">Brown</text>
+    <text class="card-note" x="28" y="122">Both identities remain inside the same public hue sector.</text>
+  </g>
+
+  <g aria-label="Black chroma guard" transform="translate(880 1322)">
+    <rect class="card" x="0" y="0" width="450" height="132" rx="24" />
+    <text class="card-eyebrow" x="28" y="34">ACHROMATIC GUARD</text>
+    <circle cx="54" cy="74" r="22" fill="url(#black-gradient)" />
+    <text class="card-title" x="92" y="82">black.v1</text>
+    <text class="card-note" x="28" y="116">Review above C 0.04 · fail above C 0.08</text>
+  </g>
+
+  <text class="footer" x="700" y="1492" text-anchor="middle">
+    Kiskadee munsell-oklch-v1 projection · family labels are canonical; displayed colors are illustrative.
+  </text>
+</svg>

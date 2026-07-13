@@ -3,56 +3,154 @@ import { describe, expect, it } from 'vitest';
 import {
   createTonalFamilyId,
   DEFAULT_TONAL_SYSTEM_RECIPE,
+  type LockedTonalSystemSourceV2,
   lockTonalSystemRecipe,
+  MUNSELL_SECTORS,
   parseTonalFamilyId,
-  resolveTonalFamilyKind,
+  resolveTonalFamilyColorKind,
+  TONAL_CORE_FAMILY_IDS,
   TONAL_GRID_CONTRACT,
   TONAL_HARMONY_CONTRACT,
   TONAL_SYSTEM_FORMAT_VERSION,
-  type TonalFamilyId,
-  type TonalSystemRecipeV1,
+  type TonalSystemRecipeV2,
+  validateLockedTonalSystemSource,
   validateTonalSystemRecipe
 } from './tonal-system-contract';
 
-function createRecipe(): TonalSystemRecipeV1 {
-  return structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV1;
+function createRecipe(): TonalSystemRecipeV2 {
+  return structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV2;
 }
 
-function issueCodes(input: unknown, options?: { allowAutoRest?: boolean }): string[] {
-  const result = validateTonalSystemRecipe(input, options);
+function issueCodes(
+  input: unknown,
+  validator:
+    | typeof validateTonalSystemRecipe
+    | typeof validateLockedTonalSystemSource = validateTonalSystemRecipe
+): string[] {
+  const result = validator(input);
   return result.valid ? [] : result.issues.map((issue) => issue.code);
 }
 
-describe('tonal-system contract', () => {
-  it('normalizes seeds, policies, and family order without changing primitive identities', () => {
+describe('tonal-system contract v2', () => {
+  it('defines the complete Munsell taxonomy and twelve mandatory generated ids', () => {
+    expect(TONAL_SYSTEM_FORMAT_VERSION).toBe(2);
+    expect(TONAL_HARMONY_CONTRACT).toBe('kiskadee-munsell-rest-v1');
+    expect(MUNSELL_SECTORS).toEqual([
+      'red',
+      'yellow-red',
+      'yellow',
+      'green-yellow',
+      'green',
+      'blue-green',
+      'blue',
+      'purple-blue',
+      'purple',
+      'red-purple'
+    ]);
+    expect(TONAL_CORE_FAMILY_IDS).toEqual([
+      'red.v1',
+      'yellow-red.v1',
+      'yellow-red.v2',
+      'yellow.v1',
+      'green-yellow.v1',
+      'green.v1',
+      'blue-green.v1',
+      'blue.v1',
+      'purple-blue.v1',
+      'purple.v1',
+      'red-purple.v1',
+      'black.v1'
+    ]);
+  });
+
+  it('parses hyphenated sectors, all variants, and achromatic black without ambiguity', () => {
+    expect(createTonalFamilyId('yellow-red', 'v2')).toBe('yellow-red.v2');
+    expect(parseTonalFamilyId('yellow-red.v2')).toEqual({
+      family: 'yellow-red',
+      sector: 'yellow-red',
+      variant: 'v2'
+    });
+    expect(parseTonalFamilyId('black.v4')).toEqual({
+      family: 'black',
+      sector: null,
+      variant: 'v4'
+    });
+    expect(parseTonalFamilyId('orange.v1')).toBeNull();
+    expect(parseTonalFamilyId('blue.v5')).toBeNull();
+    expect(resolveTonalFamilyColorKind('black.v2')).toBe('achromatic');
+    expect(resolveTonalFamilyColorKind('purple-blue.v3')).toBe('chromatic');
+  });
+
+  it('normalizes primary and override seeds and orders overrides deterministically', () => {
     const recipe = createRecipe();
-    recipe.families = [
-      { id: 'yellow.v2', seedHex: 'FFB900', policies: { light: 'harmonized', dark: 'adaptive' } },
+    recipe.primary.seedHex = '0F6CBD';
+    recipe.primary.variant = 'v1';
+    recipe.overrides = [
       {
-        id: 'blue.v1',
-        seedHex: '#0F6CBD',
-        policies: { light: 'source-exact', dark: 'source-exact' }
+        id: 'yellow-red.v2',
+        seedHex: '8E562E',
+        policies: { light: 'harmonized', dark: 'adaptive' }
       },
-      { id: 'red.v1', seedHex: '#D13438', policies: { light: 'harmonized', dark: 'harmonized' } }
+      {
+        id: 'black.v2',
+        seedHex: '#334455',
+        policies: { light: 'source-exact', dark: 'adaptive' }
+      },
+      {
+        id: 'red-purple.v4',
+        seedHex: '#E3008C',
+        policies: { light: 'harmonized', dark: 'harmonized' }
+      }
     ];
 
     const result = validateTonalSystemRecipe(recipe);
 
     expect(result.valid).toBe(true);
     if (!result.valid) return;
-    expect(result.value.families.map(({ id, seedHex }) => ({ id, seedHex }))).toEqual([
-      { id: 'blue.v1', seedHex: '#0f6cbd' },
-      { id: 'red.v1', seedHex: '#d13438' },
-      { id: 'yellow.v2', seedHex: '#ffb900' }
+    expect(result.value.primary).toMatchObject({ seedHex: '#0f6cbd', variant: 'v1' });
+    expect(result.value.overrides.map(({ id, seedHex }) => ({ id, seedHex }))).toEqual([
+      { id: 'black.v2', seedHex: '#334455' },
+      { id: 'red-purple.v4', seedHex: '#e3008c' },
+      { id: 'yellow-red.v2', seedHex: '#8e562e' }
     ]);
-    expect(createTonalFamilyId('black', 'v2')).toBe('black.v2');
-    expect(parseTonalFamilyId('black.v2')).toEqual({ hue: 'black', variant: 'v2' });
-    expect(resolveTonalFamilyKind('black.v2')).toBe('neutral');
-    expect(resolveTonalFamilyKind('blue.v1')).toBe('chromatic');
+  });
+
+  it('rejects format 1 recipes explicitly instead of migrating old families', () => {
+    const legacy = {
+      formatVersion: 1,
+      gridContract: TONAL_GRID_CONTRACT,
+      harmonyContract: 'kiskadee-rest-v1',
+      tonalProfile: 'balanced',
+      primaryReference: 'blue.v1',
+      tonalAnchors: { rest: { mode: 'auto' } },
+      families: [
+        {
+          id: 'blue.v1',
+          seedHex: '#0f6cbd',
+          policies: { light: 'source-exact', dark: 'source-exact' }
+        }
+      ]
+    };
+
+    const result = validateTonalSystemRecipe(legacy);
+
+    expect(result.valid).toBe(false);
+    if (result.valid) return;
+    expect(result.value).toBeNull();
+    expect(result.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: 'UNSUPPORTED_FORMAT', path: '/formatVersion' }),
+        expect.objectContaining({ code: 'UNKNOWN_PROPERTY', path: '/families' }),
+        expect.objectContaining({ code: 'UNKNOWN_PROPERTY', path: '/primaryReference' })
+      ])
+    );
+    expect(result.issues.find((issue) => issue.code === 'UNSUPPORTED_FORMAT')?.message).toContain(
+      'not migrated automatically'
+    );
   });
 
   it.each([
-    ['formatVersion', 2, 'UNSUPPORTED_FORMAT'],
+    ['formatVersion', 3, 'UNSUPPORTED_FORMAT'],
     ['gridContract', 'legacy-grid', 'UNSUPPORTED_GRID'],
     ['harmonyContract', 'legacy-harmony', 'UNSUPPORTED_HARMONY'],
     ['tonalProfile', 'unknown-profile', 'UNSUPPORTED_PROFILE']
@@ -62,95 +160,152 @@ describe('tonal-system contract', () => {
     expect(issueCodes(recipe)).toContain(expectedCode);
   });
 
-  it('strictly rejects unknown properties at every contract layer', () => {
-    const recipe = createRecipe() as TonalSystemRecipeV1 & Record<string, unknown>;
+  it('strictly rejects unknown properties at every draft contract layer', () => {
+    const recipe = createRecipe() as TonalSystemRecipeV2 & Record<string, unknown>;
     recipe.extra = true;
+    (recipe.primary as unknown as Record<string, unknown>).extra = true;
+    (recipe.primary.policies as unknown as Record<string, unknown>).extra = true;
     (recipe.tonalAnchors as unknown as Record<string, unknown>).extra = true;
     (recipe.tonalAnchors.rest as unknown as Record<string, unknown>).extra = true;
-    (recipe.families[0] as unknown as Record<string, unknown>).extra = true;
-    (recipe.families[0].policies as unknown as Record<string, unknown>).extra = true;
+    recipe.overrides.push({
+      id: 'red.v1',
+      seedHex: '#d13438',
+      policies: { light: 'harmonized', dark: 'harmonized' }
+    });
+    (recipe.overrides[0] as unknown as Record<string, unknown>).extra = true;
+    (recipe.overrides[0].policies as unknown as Record<string, unknown>).extra = true;
 
     const result = validateTonalSystemRecipe(recipe);
 
     expect(result.valid).toBe(false);
     if (result.valid) return;
-    expect(result.issues.filter((issue) => issue.code === 'UNKNOWN_PROPERTY')).toHaveLength(5);
+    expect(result.issues.filter((issue) => issue.code === 'UNKNOWN_PROPERTY')).toHaveLength(7);
   });
 
-  it('requires explicit supported policies for each family and theme', () => {
-    const missing = createRecipe();
-    delete (missing.families[0] as Partial<(typeof missing.families)[number]>).policies;
-    expect(issueCodes(missing)).toContain('INVALID_FAMILY_POLICIES');
-
-    const unsupported = createRecipe();
-    unsupported.families[1].policies.dark = 'unknown' as 'adaptive';
-    expect(issueCodes(unsupported)).toContain('UNSUPPORTED_THEME_POLICY');
-  });
-
-  it('keeps black as author-defined neutral intent but not as a chromatic primary', () => {
-    const neutral = createRecipe();
-    neutral.primaryReference = 'black.v1';
-    expect(issueCodes(neutral)).toContain('NEUTRAL_PRIMARY_UNSUPPORTED');
-
-    const harmonized = createRecipe();
-    const black = harmonized.families.find((family) => family.id === 'black.v1');
-    if (!black) throw new Error('Default neutral family is required.');
-    black.policies.dark = 'harmonized';
-    expect(issueCodes(harmonized)).toContain('NEUTRAL_HARMONIZATION_UNSUPPORTED');
-  });
-
-  it('restricts primary Light to source-exact and primary Dark to source-exact or adaptive', () => {
+  it('restricts primary policies and accepts auto or explicit variants only', () => {
     const light = createRecipe();
-    light.families.find((family) => family.id === light.primaryReference)!.policies.light =
-      'adaptive';
+    light.primary.policies.light = 'adaptive' as 'source-exact';
     expect(issueCodes(light)).toContain('UNSUPPORTED_PRIMARY_LIGHT_POLICY');
 
     const dark = createRecipe();
-    dark.families.find((family) => family.id === dark.primaryReference)!.policies.dark =
-      'harmonized';
+    dark.primary.policies.dark = 'harmonized' as 'adaptive';
     expect(issueCodes(dark)).toContain('UNSUPPORTED_PRIMARY_DARK_POLICY');
+
+    const variant = createRecipe();
+    variant.primary.variant = 'v5' as 'v1';
+    expect(issueCodes(variant)).toContain('INVALID_PRIMARY_VARIANT');
   });
 
-  it('rejects duplicate ids and missing primary references', () => {
+  it('rejects duplicate overrides, legacy ids, and chromatic harmonization for black', () => {
     const duplicate = createRecipe();
-    duplicate.families.push(structuredClone(duplicate.families[0]));
-    expect(issueCodes(duplicate)).toContain('DUPLICATE_FAMILY_ID');
+    duplicate.overrides = [
+      {
+        id: 'blue-green.v1',
+        seedHex: '#008899',
+        policies: { light: 'adaptive', dark: 'adaptive' }
+      },
+      {
+        id: 'blue-green.v1',
+        seedHex: '#0099aa',
+        policies: { light: 'adaptive', dark: 'adaptive' }
+      }
+    ];
+    expect(issueCodes(duplicate)).toContain('DUPLICATE_OVERRIDE_ID');
 
-    const missing = createRecipe();
-    missing.primaryReference = 'cyan.v4' as TonalFamilyId;
-    expect(issueCodes(missing)).toContain('PRIMARY_NOT_FOUND');
+    const legacy = createRecipe();
+    legacy.overrides = [
+      {
+        id: 'cyan.v1' as 'blue-green.v1',
+        seedHex: '#00bcd4',
+        policies: { light: 'adaptive', dark: 'adaptive' }
+      }
+    ];
+    expect(issueCodes(legacy)).toContain('INVALID_FAMILY_ID');
+
+    const black = createRecipe();
+    black.overrides = [
+      {
+        id: 'black.v1',
+        seedHex: '#20252b',
+        policies: { light: 'source-exact', dark: 'harmonized' }
+      }
+    ];
+    expect(issueCodes(black)).toContain('ACHROMATIC_HARMONIZATION_UNSUPPORTED');
   });
 
-  it('allows auto rest for generation but requires locked positions for export', () => {
+  it('locks the resolved primary id and rest positions for export', () => {
     const recipe = createRecipe();
-    expect(validateTonalSystemRecipe(recipe).valid).toBe(true);
-    expect(issueCodes(recipe, { allowAutoRest: false })).toContain('AUTO_REST_NOT_EXPORTABLE');
+    recipe.primary.seedHex = '#1da1f2';
+    const locked = lockTonalSystemRecipe(recipe, 'blue.v1', { light: 24, dark: 70 });
 
-    const locked = lockTonalSystemRecipe(recipe, { light: 45, dark: 45 });
-    expect(validateTonalSystemRecipe(locked, { allowAutoRest: false }).valid).toBe(true);
+    expect(locked).toMatchObject({
+      primary: {
+        id: 'blue.v1',
+        seedHex: '#1da1f2',
+        policies: { light: 'source-exact', dark: 'source-exact' }
+      },
+      tonalAnchors: { rest: { mode: 'locked', light: 24, dark: 70 } }
+    });
+    expect(validateLockedTonalSystemSource(locked).valid).toBe(true);
+    expect(issueCodes(recipe, validateLockedTonalSystemSource)).toContain(
+      'AUTO_REST_NOT_EXPORTABLE'
+    );
   });
 
-  it('accepts every non-cap public rest position and preserves versioned contracts', () => {
+  it('rejects achromatic primary locks, variant drift, and primary override conflicts', () => {
+    const recipe = createRecipe();
+    expect(() => lockTonalSystemRecipe(recipe, 'black.v1', { light: 45, dark: 45 })).toThrow(
+      'chromatic Munsell family'
+    );
+
+    recipe.primary.variant = 'v2';
+    expect(() => lockTonalSystemRecipe(recipe, 'blue.v1', { light: 45, dark: 45 })).toThrow(
+      'explicit primary variant'
+    );
+
+    recipe.primary.variant = 'auto';
+    recipe.overrides = [
+      {
+        id: 'blue.v1',
+        seedHex: '#0066aa',
+        policies: { light: 'harmonized', dark: 'harmonized' }
+      }
+    ];
+    expect(() => lockTonalSystemRecipe(recipe, 'blue.v1', { light: 45, dark: 45 })).toThrow(
+      'PRIMARY_OVERRIDE_CONFLICT'
+    );
+
+    recipe.overrides = [];
+    const locked = lockTonalSystemRecipe(recipe, 'blue.v1', { light: 45, dark: 45 });
+    locked.overrides.push({
+      id: 'blue.v1',
+      seedHex: '#0066aa',
+      policies: { light: 'harmonized', dark: 'harmonized' }
+    });
+    expect(issueCodes(locked, validateLockedTonalSystemSource)).toContain(
+      'PRIMARY_OVERRIDE_CONFLICT'
+    );
+
+    const blackPrimary = structuredClone(locked) as LockedTonalSystemSourceV2;
+    blackPrimary.primary.id = 'black.v1';
+    expect(issueCodes(blackPrimary, validateLockedTonalSystemSource)).toContain(
+      'ACHROMATIC_PRIMARY_UNSUPPORTED'
+    );
+  });
+
+  it('accepts locked rest positions from 1 through 99 and rejects absolute caps', () => {
     const recipe = createRecipe();
     recipe.tonalAnchors.rest = { mode: 'locked', light: 1, dark: 99 };
-    const result = validateTonalSystemRecipe(recipe, { allowAutoRest: false });
-    expect(result.valid).toBe(true);
-    if (!result.valid) return;
-    expect(result.value).toMatchObject({
-      formatVersion: TONAL_SYSTEM_FORMAT_VERSION,
-      gridContract: TONAL_GRID_CONTRACT,
-      harmonyContract: TONAL_HARMONY_CONTRACT
-    });
-  });
+    expect(validateTonalSystemRecipe(recipe).valid).toBe(true);
 
-  it.each([0, 100])('rejects absolute cap K%s as a shared rest position', (tone) => {
-    const recipe = createRecipe();
-    recipe.tonalAnchors.rest = {
-      mode: 'locked',
-      light: tone,
-      dark: 45
-    } as TonalSystemRecipeV1['tonalAnchors']['rest'];
-
-    expect(issueCodes(recipe)).toContain('INVALID_REST_TONE');
+    for (const tone of [0, 100] as const) {
+      const invalid = createRecipe();
+      invalid.tonalAnchors.rest = {
+        mode: 'locked',
+        light: tone,
+        dark: 45
+      } as TonalSystemRecipeV2['tonalAnchors']['rest'];
+      expect(issueCodes(invalid)).toContain('INVALID_REST_TONE');
+    }
   });
 });

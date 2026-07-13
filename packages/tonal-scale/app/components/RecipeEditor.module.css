@@ -3,6 +3,7 @@
   --editor-border-strong: var(--border-strong, #c7d0db);
   --editor-surface: var(--surface, #ffffff);
   --editor-surface-subtle: var(--surface-subtle, #f8fafc);
+  --editor-surface-strong: var(--surface-strong, #eef2f6);
   --editor-text: var(--text, #17202a);
   --editor-muted: var(--muted, #66727f);
   --editor-brand: var(--brand, #0f6cbd);
@@ -24,6 +25,8 @@
 }
 
 .heading,
+.primaryHeading,
+.familySectionHeading,
 .cardHeading {
   display: flex;
   gap: 20px;
@@ -32,11 +35,17 @@
 }
 
 .heading h2,
-.cardHeading h3,
 .heading p,
+.primaryHeading h3,
+.primaryHeading p,
+.familySectionHeading h3,
+.familySectionHeading p,
+.cardHeading h3,
 .cardHeading p,
+.primaryNote,
 .statusSummary,
-.autoAnchor p {
+.autoAnchor p,
+.emptyExtras {
   margin: 0;
 }
 
@@ -46,6 +55,8 @@
   letter-spacing: -0.035em;
 }
 
+.primaryHeading h3,
+.familySectionHeading h3,
 .cardHeading h3 {
   margin-top: 3px;
   font-size: 19px;
@@ -61,7 +72,7 @@
 }
 
 .heading .intro {
-  max-width: 720px;
+  max-width: 760px;
   margin-top: 8px;
   color: var(--editor-muted);
   font-size: 14px;
@@ -70,7 +81,9 @@
 
 .profileField,
 .compactField,
+.primarySeedField,
 .seedField,
+.addExtraRow label,
 .lockedAnchor label {
   display: grid;
   gap: 7px;
@@ -113,6 +126,157 @@
   border-color: var(--editor-danger);
 }
 
+.editor button {
+  min-height: 36px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  padding: 7px 11px;
+  background: var(--editor-brand);
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.editor button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.primaryCard,
+.extraSection,
+.anchorCard,
+.statusCard {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid var(--editor-border);
+  border-radius: 16px;
+  background: var(--editor-surface-subtle);
+}
+
+.primaryCard {
+  display: grid;
+  gap: 16px;
+  border-color: color-mix(in srgb, var(--editor-brand) 32%, var(--editor-border));
+  background: linear-gradient(
+    130deg,
+    color-mix(in srgb, var(--editor-brand-soft) 54%, var(--editor-surface)) 0%,
+    var(--editor-surface-subtle) 66%
+  );
+}
+
+.classificationBadges {
+  display: flex;
+  max-width: 700px;
+  gap: 7px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.classificationBadges span,
+.familySectionHeading > span,
+.fixedPolicy strong,
+.policyTag,
+.modeTag,
+.statusBadge {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  border-radius: 999px;
+  padding: 5px 9px;
+  background: var(--editor-brand-soft);
+  color: var(--editor-brand);
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.classificationBadges strong {
+  margin-left: 4px;
+}
+
+.primaryControls {
+  display: grid;
+  grid-template-columns: minmax(250px, 1.5fr) minmax(170px, 0.7fr) minmax(150px, 0.6fr) minmax(
+      170px,
+      0.7fr
+    );
+  gap: 12px;
+  align-items: start;
+}
+
+.primaryControls label > span:first-child,
+.fixedPolicy > span,
+.addExtraRow label > span,
+.lockedAnchor label > span {
+  color: var(--editor-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.primarySeedField {
+  position: relative;
+}
+
+.editor .primarySeedField input {
+  width: 100%;
+  padding-left: 42px;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+.swatch {
+  position: absolute;
+  top: 26px;
+  left: 8px;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgb(0 0 0 / 12%);
+  border-radius: 6px;
+}
+
+.invalidSwatch {
+  background-image:
+    linear-gradient(45deg, #ddd 25%, transparent 25%),
+    linear-gradient(-45deg, #ddd 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ddd 75%),
+    linear-gradient(-45deg, transparent 75%, #ddd 75%);
+  background-position:
+    0 0,
+    0 6px,
+    6px -6px,
+    -6px 0;
+  background-size: 12px 12px;
+}
+
+.fieldError {
+  color: var(--editor-danger);
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.fixedPolicy {
+  display: grid;
+  gap: 7px;
+}
+
+.fixedPolicy strong {
+  min-height: 40px;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--editor-brand) 20%, var(--editor-border));
+  border-radius: 9px;
+}
+
+.primaryNote,
+.familySectionHeading p,
+.emptyExtras,
+.anchorHelp {
+  color: var(--editor-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .familyFieldset {
   min-width: 0;
   margin: 0;
@@ -130,10 +294,20 @@
   white-space: nowrap;
 }
 
+.familySectionHeading {
+  align-items: center;
+  margin-bottom: 11px;
+}
+
+.familySectionHeading > span {
+  background: var(--editor-surface-strong);
+  color: var(--editor-muted);
+}
+
 .familyHeader,
 .familyRow {
   display: grid;
-  grid-template-columns: 64px minmax(180px, 0.9fr) minmax(180px, 1.2fr) minmax(230px, 1.25fr) auto;
+  grid-template-columns: minmax(220px, 0.95fr) minmax(170px, 0.75fr) minmax(300px, 1.3fr) 90px;
   gap: 10px;
   align-items: center;
 }
@@ -168,67 +342,66 @@
   background: color-mix(in srgb, var(--editor-brand-soft) 42%, var(--editor-surface));
 }
 
-.primaryControl {
-  display: inline-flex;
-  justify-content: center;
+.overrideRow {
+  background: var(--editor-surface);
 }
 
-.primaryControl input {
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  accent-color: var(--editor-brand);
-}
-
-.compactField {
+.familyIdentity {
+  display: flex;
   min-width: 0;
+  gap: 10px;
+  align-items: center;
 }
 
-.familyIdField select {
-  width: 100%;
+.familyIdentity > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.familyIdentity strong,
+.familyIdentity small,
+.generatedSeed code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.familyIdentity strong {
+  font-size: 13px;
+}
+
+.familyIdentity small {
+  color: var(--editor-muted);
+  font-size: 10px;
+}
+
+.familySwatch {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgb(0 0 0 / 12%);
+  border-radius: 9px;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 16%);
 }
 
 .seedField {
-  position: relative;
   min-width: 0;
 }
 
 .editor .seedField input {
   width: 100%;
-  padding-left: 42px;
   font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
-.swatch {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  z-index: 1;
-  width: 24px;
-  height: 24px;
-  border: 1px solid rgb(0 0 0 / 12%);
-  border-radius: 6px;
+.generatedSeed {
+  min-width: 0;
 }
 
-.invalidSwatch {
-  background-image:
-    linear-gradient(45deg, #ddd 25%, transparent 25%),
-    linear-gradient(-45deg, #ddd 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #ddd 75%),
-    linear-gradient(-45deg, transparent 75%, #ddd 75%);
-  background-position:
-    0 0,
-    0 6px,
-    6px -6px,
-    -6px 0;
-  background-size: 12px 12px;
-}
-
-.fieldError {
-  color: var(--editor-danger);
-  font-size: 10px;
-  font-weight: 650;
-  line-height: 1.35;
+.generatedSeed code {
+  display: block;
+  color: var(--editor-muted);
+  font-size: 12px;
 }
 
 .policyCell {
@@ -239,19 +412,9 @@
   flex-wrap: wrap;
 }
 
-.policyTag,
-.modeTag,
-.statusBadge {
-  display: inline-flex;
-  min-height: 28px;
-  align-items: center;
-  border-radius: 999px;
-  padding: 5px 9px;
-  background: var(--editor-brand-soft);
-  color: var(--editor-brand);
-  font-size: 11px;
-  font-weight: 750;
-  white-space: nowrap;
+.policyTag {
+  background: var(--editor-surface-strong);
+  color: var(--editor-muted);
 }
 
 .themePolicy {
@@ -265,39 +428,71 @@
 
 .themePolicy select {
   width: 128px;
-  height: 30px;
+  height: 32px;
   padding: 0 7px;
   font-size: 12px;
 }
 
 .actions {
   display: flex;
-  gap: 6px;
   justify-content: flex-end;
 }
 
-.editor button {
-  min-height: 36px;
-  border: 1px solid transparent;
-  border-radius: 9px;
-  padding: 7px 11px;
-  background: var(--editor-brand);
-  color: #fff;
+.overrideToggle {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 700;
+  color: var(--editor-muted);
+  font-size: 11px;
 }
 
-.editor button:disabled {
+.overrideToggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.overrideToggle > span {
+  position: relative;
+  width: 34px;
+  height: 20px;
+  border: 1px solid var(--editor-border-strong);
+  border-radius: 999px;
+  background: var(--editor-surface-strong);
+  transition: background-color 140ms ease;
+}
+
+.overrideToggle > span::after {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--editor-muted);
+  content: "";
+  transition: transform 140ms ease;
+}
+
+.overrideToggle input:checked + span {
+  border-color: var(--editor-brand);
+  background: var(--editor-brand);
+}
+
+.overrideToggle input:checked + span::after {
+  background: #fff;
+  transform: translateX(14px);
+}
+
+.overrideToggle input:focus-visible + span {
+  outline: 3px solid color-mix(in srgb, var(--editor-brand) 24%, transparent);
+  outline-offset: 2px;
+}
+
+.disabledToggle {
   cursor: not-allowed;
-  opacity: 0.45;
-}
-
-.editor .selectButton,
-.editor .secondaryButton {
-  border-color: var(--editor-border-strong);
-  background: var(--editor-surface);
-  color: var(--editor-text);
+  opacity: 0.62;
 }
 
 .editor .removeButton {
@@ -306,8 +501,31 @@
   color: var(--editor-danger);
 }
 
+.extraSection {
+  display: grid;
+  gap: 11px;
+}
+
+.emptyExtras {
+  padding: 14px;
+  border: 1px dashed var(--editor-border-strong);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.addExtraRow {
+  display: flex;
+  gap: 10px;
+  align-items: end;
+  justify-content: flex-end;
+}
+
+.addExtraRow label {
+  width: min(330px, 100%);
+}
+
 .editor .addButton {
-  margin-top: 12px;
+  flex: 0 0 auto;
   border-color: var(--editor-border-strong);
   background: var(--editor-surface);
   color: var(--editor-brand);
@@ -322,15 +540,6 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 14px;
-}
-
-.anchorCard,
-.statusCard {
-  min-width: 0;
-  padding: 17px;
-  border: 1px solid var(--editor-border);
-  border-radius: 16px;
-  background: var(--editor-surface-subtle);
 }
 
 .modeTag {
@@ -361,16 +570,16 @@
 
 .anchorHelp {
   margin: 10px 0 0;
-  color: var(--editor-muted);
-  font-size: 12px;
-  line-height: 1.45;
 }
 
 .lockedAnchor label {
   flex: 1 1 120px;
-  color: var(--editor-muted);
-  font-size: 11px;
-  font-weight: 700;
+}
+
+.editor .secondaryButton {
+  border-color: var(--editor-border-strong);
+  background: var(--editor-surface);
+  color: var(--editor-text);
 }
 
 .statusPass {
@@ -458,21 +667,26 @@
   display: none;
 }
 
-@media (max-width: 1120px) {
+@media (max-width: 1180px) {
+  .primaryControls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .familyHeader {
     display: none;
   }
 
   .familyRow {
-    grid-template-columns: 54px minmax(160px, 1fr) minmax(180px, 1.2fr) auto;
+    grid-template-columns: minmax(220px, 0.9fr) minmax(190px, 1fr) auto;
   }
 
   .policyCell {
-    grid-column: 2 / 4;
+    grid-column: 1 / 3;
   }
 
   .actions {
-    grid-column: 4;
+    grid-column: 3;
+    grid-row: 1 / 3;
   }
 
   .mobileLabel {
@@ -483,13 +697,6 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
-
-  .primaryControl {
-    display: grid;
-    grid-row: 1 / 3;
-    gap: 7px;
-    justify-items: center;
-  }
 }
 
 @media (max-width: 760px) {
@@ -498,6 +705,7 @@
   }
 
   .heading,
+  .primaryHeading,
   .lowerGrid {
     display: grid;
     grid-template-columns: 1fr;
@@ -507,30 +715,34 @@
     width: 100%;
   }
 
+  .classificationBadges {
+    justify-content: flex-start;
+  }
+
+  .primaryControls,
   .familyRow {
-    grid-template-columns: 44px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .primaryControl {
-    grid-column: 1;
-    grid-row: 1 / 5;
-  }
-
-  .familyIdField,
-  .seedField,
   .policyCell,
   .actions {
-    grid-column: 2;
+    grid-column: 1;
+    grid-row: auto;
   }
 
   .actions {
     justify-content: flex-start;
   }
 
+  .addExtraRow,
   .autoAnchor,
   .lockedAnchor {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .addExtraRow label {
+    width: 100%;
   }
 
   .lockedAnchor label {
@@ -539,7 +751,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .familyRow {
+  .familyRow,
+  .overrideToggle > span,
+  .overrideToggle > span::after {
     transition: none;
   }
 }

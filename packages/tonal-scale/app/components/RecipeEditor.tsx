@@ -1,6 +1,6 @@
 'use client';
 
-import { useId } from 'react';
+import { useId, useState } from 'react';
 import { normalizeHexColor } from '@/src/color-math';
 import {
   KISKADEE_TONAL_PROFILES,
@@ -8,133 +8,142 @@ import {
   type KiskadeeTonalProfile,
   type KiskadeeTone
 } from '@/src/kiskadee-tonal-scale';
-import type { KiskadeeTonalSystemResult } from '@/src/tonal-system';
+import {
+  classifyMunsellHex,
+  type MunsellHexClassification,
+  suggestYellowRedVariant
+} from '@/src/munsell-oklch';
+import type {
+  KiskadeeTonalSystemResult,
+  ResolvedTonalFamily,
+  TonalSystemIssue
+} from '@/src/tonal-system';
 import {
   createTonalFamilyId,
   parseTonalFamilyId,
-  resolveTonalFamilyKind,
-  TONAL_FAMILY_HUES,
+  resolveTonalFamilyColorKind,
+  TONAL_CORE_FAMILY_IDS,
+  TONAL_FAMILY_NAMES,
   TONAL_FAMILY_VARIANTS,
-  type TonalFamilyHue,
   type TonalFamilyId,
-  type TonalFamilySourceV1,
-  type TonalSystemRecipeV1,
+  type TonalFamilyName,
+  type TonalFamilyOverrideV2,
+  type TonalFamilyVariant,
+  type TonalPrimaryDraftV2,
+  type TonalPrimaryVariant,
+  type TonalSystemRecipeV2,
   type TonalThemePolicy
 } from '@/src/tonal-system-contract';
 import styles from './RecipeEditor.module.css';
 
 const REST_TONES = KISKADEE_TONES.filter((tone): tone is KiskadeeTone => tone > 0 && tone < 100);
-const TONAL_FAMILY_IDS = TONAL_FAMILY_HUES.flatMap((hue) =>
-  TONAL_FAMILY_VARIANTS.map((variant) => createTonalFamilyId(hue, variant))
-);
+const CORE_FAMILY_ID_SET = new Set<TonalFamilyId>(TONAL_CORE_FAMILY_IDS);
+const EXTRA_VARIANTS = TONAL_FAMILY_VARIANTS.filter((variant) => variant !== 'v1');
+const EXTRA_FAMILY_IDS = TONAL_FAMILY_NAMES.flatMap((family) =>
+  EXTRA_VARIANTS.map((variant) => createTonalFamilyId(family, variant))
+).filter((id) => !CORE_FAMILY_ID_SET.has(id));
 
 const DEFAULT_SEEDS = {
   red: '#d13438',
-  orange: '#ca5010',
+  'yellow-red': '#ca5010',
   yellow: '#ffb900',
+  'green-yellow': '#7fba00',
   green: '#107c10',
-  teal: '#038387',
-  cyan: '#00b7c3',
+  'blue-green': '#038387',
   blue: '#0f6cbd',
+  'purple-blue': '#4f6bed',
   purple: '#8764b8',
-  pink: '#e3008c',
-  brown: '#8e562e',
+  'red-purple': '#e3008c',
   black: '#20252b'
-} as const satisfies Record<TonalFamilyHue, string>;
+} as const satisfies Record<TonalFamilyName, string>;
+
+const POLICY_LABELS = {
+  'source-exact': 'Source exact',
+  adaptive: 'Adaptive',
+  harmonized: 'Harmonized'
+} as const satisfies Record<TonalThemePolicy, string>;
 
 export type RecipeEditorProps = {
-  recipe: TonalSystemRecipeV1;
+  recipe: TonalSystemRecipeV2;
   result: KiskadeeTonalSystemResult;
   isGenerating: boolean;
-  onChange: (next: TonalSystemRecipeV1) => void;
+  onChange: (next: TonalSystemRecipeV2) => void;
 };
 
 export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeEditorProps) {
   const editorId = useId();
-  const nextAvailableFamily = findNextAvailableFamily(recipe.families);
-  const proposal = isGenerating ? null : result.rest;
+  const [requestedExtraId, setRequestedExtraId] = useState<TonalFamilyId | ''>('');
+  const classification = classifyPrimary(recipe.primary.seedHex);
+  const suggestedVariant = resolveSuggestedVariant(classification);
+  const inferredPrimaryId = resolvePrimaryId(recipe, classification);
+  const resolvedPrimaryId = result.valid ? result.primaryReference.familyId : inferredPrimaryId;
+  const usedIds = new Set(recipe.overrides.map((override) => override.id));
+  const extraOptions = EXTRA_FAMILY_IDS.filter(
+    (id) => !usedIds.has(id) && id !== resolvedPrimaryId
+  );
+  const extraId =
+    requestedExtraId && extraOptions.includes(requestedExtraId)
+      ? requestedExtraId
+      : (extraOptions[0] ?? '');
+  const proposal = !isGenerating && result.rest ? result.rest : null;
   const visibleStatus = isGenerating ? 'generating' : result.status;
+  const primaryIssue = resolvePrimaryIssue(result.issues);
+  const primaryError = resolvePrimaryError(recipe.primary.seedHex, classification, primaryIssue);
+  const resolvedPrimary = result.valid
+    ? result.families.find((family) => family.id === result.primaryReference.familyId)
+    : undefined;
 
-  const updateFamily = (index: number, nextFamily: TonalFamilySourceV1) => {
-    const currentFamily = recipe.families[index];
-    if (!currentFamily) return;
+  const updatePrimary = (primary: TonalPrimaryDraftV2) => {
+    const nextRecipe: TonalSystemRecipeV2 = { ...recipe, primary };
+    const nextPrimaryId = resolvePrimaryId(nextRecipe, classifyPrimary(primary.seedHex));
 
-    const families = recipe.families.map((family, familyIndex) =>
-      familyIndex === index ? nextFamily : family
-    );
-    const primaryReference =
-      currentFamily.id === recipe.primaryReference ? nextFamily.id : recipe.primaryReference;
-
-    onChange({ ...recipe, primaryReference, families });
-  };
-
-  const updateFamilyId = (index: number, id: TonalFamilyId) => {
-    const currentFamily = recipe.families[index];
-    if (!currentFamily) return;
-
-    if (recipe.families.some((family, familyIndex) => familyIndex !== index && family.id === id)) {
-      return;
-    }
-
-    updateFamily(index, {
-      ...currentFamily,
-      id,
-      policies:
-        resolveTonalFamilyKind(id) === 'neutral'
-          ? {
-              light:
-                currentFamily.policies.light === 'harmonized'
-                  ? 'source-exact'
-                  : currentFamily.policies.light,
-              dark:
-                currentFamily.policies.dark === 'harmonized'
-                  ? 'source-exact'
-                  : currentFamily.policies.dark
-            }
-          : currentFamily.policies
+    onChange({
+      ...nextRecipe,
+      overrides: nextPrimaryId
+        ? nextRecipe.overrides.filter((override) => override.id !== nextPrimaryId)
+        : nextRecipe.overrides
     });
   };
 
-  const setPrimary = (id: TonalFamilyId) => {
-    if (resolveTonalFamilyKind(id) === 'neutral') return;
+  const addOverride = (id: TonalFamilyId) => {
+    if (recipe.overrides.some((override) => override.id === id) || id === resolvedPrimaryId) return;
+
+    const parsed = parseTonalFamilyId(id);
+    if (!parsed) return;
+    const resolved = result.families.find((family) => family.id === id);
+    const sectorPeer = result.families.find(
+      (family) => parsed.sector !== null && family.sector === parsed.sector
+    );
+    const seedHex =
+      resolved?.sourceSeedHex ??
+      sectorPeer?.sourceSeedHex ??
+      (id === 'yellow-red.v2' ? '#8e562e' : DEFAULT_SEEDS[parsed.family]);
+    const colorKind = resolveTonalFamilyColorKind(id);
+    const override: TonalFamilyOverrideV2 = {
+      id,
+      seedHex,
+      policies:
+        colorKind === 'achromatic'
+          ? { light: 'source-exact', dark: 'source-exact' }
+          : { light: 'harmonized', dark: 'harmonized' }
+    };
+
+    onChange({ ...recipe, overrides: [...recipe.overrides, override] });
+  };
+
+  const updateOverride = (nextOverride: TonalFamilyOverrideV2) => {
     onChange({
       ...recipe,
-      primaryReference: id,
-      families: recipe.families.map((family) =>
-        family.id === id
-          ? {
-              ...family,
-              policies: {
-                light: 'source-exact',
-                dark: family.policies.dark === 'harmonized' ? 'source-exact' : family.policies.dark
-              }
-            }
-          : family
+      overrides: recipe.overrides.map((override) =>
+        override.id === nextOverride.id ? nextOverride : override
       )
     });
   };
 
-  const addFamily = () => {
-    if (!nextAvailableFamily) return;
-
-    const family: TonalFamilySourceV1 = {
-      id: nextAvailableFamily.id,
-      seedHex: DEFAULT_SEEDS[nextAvailableFamily.hue],
-      policies:
-        nextAvailableFamily.hue === 'black'
-          ? { light: 'source-exact', dark: 'source-exact' }
-          : { light: 'harmonized', dark: 'harmonized' }
-    };
-    onChange({ ...recipe, families: [...recipe.families, family] });
-  };
-
-  const removeFamily = (index: number) => {
-    const family = recipe.families[index];
-    if (!family || family.id === recipe.primaryReference) return;
-
+  const removeOverride = (id: TonalFamilyId) => {
     onChange({
       ...recipe,
-      families: recipe.families.filter((_, familyIndex) => familyIndex !== index)
+      overrides: recipe.overrides.filter((override) => override.id !== id)
     });
   };
 
@@ -144,11 +153,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
     onChange({
       ...recipe,
       tonalAnchors: {
-        rest: {
-          mode: 'locked',
-          light: proposal.light,
-          dark: proposal.dark
-        }
+        rest: { mode: 'locked', light: proposal.light, dark: proposal.dark }
       }
     });
   };
@@ -159,12 +164,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
 
     onChange({
       ...recipe,
-      tonalAnchors: {
-        rest: {
-          ...rest,
-          [theme]: tone
-        }
-      }
+      tonalAnchors: { rest: { ...rest, [theme]: tone } }
     });
   };
 
@@ -172,11 +172,12 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
     <section className={styles.editor} aria-labelledby={`${editorId}-title`}>
       <div className={styles.heading}>
         <div>
-          <p className={styles.kicker}>Tonal system recipe</p>
-          <h2 id={`${editorId}-title`}>Families and harmony reference</h2>
+          <p className={styles.kicker}>Primary-derived recipe</p>
+          <h2 id={`${editorId}-title`}>Primary color and Munsell projection</h2>
           <p className={styles.intro}>
-            The chromatic primary defines the shared rest fingerprint. Each family chooses how its
-            Light and Dark seed is preserved, adapted, or harmonized.
+            The exact primary establishes the shared Light and Dark rest fingerprint. Kiskadee then
+            derives every canonical Munsell family while optional overrides preserve Design System
+            source colors.
           </p>
         </div>
 
@@ -201,166 +202,223 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
         </label>
       </div>
 
+      <section className={styles.primaryCard} aria-labelledby={`${editorId}-primary-title`}>
+        <div className={styles.primaryHeading}>
+          <div>
+            <p className={styles.kicker}>Global reference</p>
+            <h3 id={`${editorId}-primary-title`}>Primary</h3>
+          </div>
+          <div className={styles.classificationBadges} aria-live="polite">
+            <span>
+              Sector{' '}
+              <strong>{classification ? formatFamilyName(classification.sector) : '—'}</strong>
+            </span>
+            <span>
+              Suggested{' '}
+              <strong>
+                {classification ? `${classification.sector}.${suggestedVariant}` : '—'}
+              </strong>
+            </span>
+            <span>
+              Resolved <strong>{resolvedPrimaryId ?? '—'}</strong>
+            </span>
+          </div>
+        </div>
+
+        <div className={styles.primaryControls}>
+          <label className={styles.primarySeedField} htmlFor={`${editorId}-primary-seed`}>
+            <span>Exact primary hex</span>
+            <span
+              className={`${styles.swatch}${classification ? '' : ` ${styles.invalidSwatch}`}`}
+              style={{
+                backgroundColor: normalizeHexColor(recipe.primary.seedHex) ?? 'transparent'
+              }}
+              aria-hidden="true"
+            />
+            <input
+              id={`${editorId}-primary-seed`}
+              value={recipe.primary.seedHex}
+              aria-invalid={Boolean(primaryError)}
+              aria-describedby={primaryError ? `${editorId}-primary-seed-error` : undefined}
+              autoComplete="off"
+              inputMode="text"
+              spellCheck={false}
+              onChange={(event) =>
+                updatePrimary({ ...recipe.primary, seedHex: event.target.value })
+              }
+            />
+            {primaryError ? (
+              <span className={styles.fieldError} id={`${editorId}-primary-seed-error`}>
+                {primaryError}
+              </span>
+            ) : null}
+          </label>
+
+          <label className={styles.compactField} htmlFor={`${editorId}-primary-variant`}>
+            <span>Primary variant</span>
+            <select
+              id={`${editorId}-primary-variant`}
+              value={recipe.primary.variant}
+              onChange={(event) =>
+                updatePrimary({
+                  ...recipe.primary,
+                  variant: event.target.value as TonalPrimaryVariant
+                })
+              }
+            >
+              <option value="auto">Auto · suggested {suggestedVariant.toUpperCase()}</option>
+              {TONAL_FAMILY_VARIANTS.map((variant) => (
+                <option key={variant} value={variant}>
+                  {variant.toUpperCase()}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <div className={styles.fixedPolicy}>
+            <span>Light policy</span>
+            <strong>Source exact</strong>
+          </div>
+
+          <label className={styles.compactField} htmlFor={`${editorId}-primary-dark-policy`}>
+            <span>Dark policy</span>
+            <select
+              id={`${editorId}-primary-dark-policy`}
+              value={recipe.primary.policies.dark}
+              onChange={(event) =>
+                updatePrimary({
+                  ...recipe.primary,
+                  policies: {
+                    ...recipe.primary.policies,
+                    dark: event.target.value as TonalPrimaryDraftV2['policies']['dark']
+                  }
+                })
+              }
+            >
+              <option value="source-exact">Source exact</option>
+              <option value="adaptive">Adaptive</option>
+            </select>
+          </label>
+        </div>
+
+        <p className={styles.primaryNote}>
+          {classification
+            ? `Hue ${classification.hue.toFixed(1)}° · ${(classification.positionInSector * 100).toFixed(1)}% through ${formatFamilyName(classification.sector)} · ${classification.isInSafeCore ? 'inside the safe generation region' : `near the ${classification.boundarySide} boundary`}.`
+            : 'Enter a valid six-digit sRGB hex to classify the primary.'}
+          {resolvedPrimary
+            ? ` Current anchors: L${resolvedPrimary.themes.light.restTone} / D${resolvedPrimary.themes.dark.restTone}.`
+            : ''}
+        </p>
+      </section>
+
       <fieldset className={styles.familyFieldset}>
-        <legend>Primitive color families</legend>
+        <legend>Canonical primitive color families</legend>
+        <div className={styles.familySectionHeading}>
+          <div>
+            <h3>Core families</h3>
+            <p>All twelve assets are generated on every run and cannot be removed.</p>
+          </div>
+          <span>{TONAL_CORE_FAMILY_IDS.length} required</span>
+        </div>
         <div className={styles.familyHeader} aria-hidden="true">
-          <span>Primary</span>
-          <span>Family ID</span>
+          <span>Family</span>
           <span>Seed</span>
           <span>Light / Dark policies</span>
-          <span>Actions</span>
+          <span>Override</span>
         </div>
 
         <div className={styles.familyList}>
-          {recipe.families.map((family, index) => {
-            const parsed = parseTonalFamilyId(family.id);
-            if (!parsed) return null;
-
-            const isPrimary = family.id === recipe.primaryReference;
-            const isNeutral = resolveTonalFamilyKind(family.id) === 'neutral';
-            const normalizedSeed = normalizeHexColor(family.seedHex);
-            const rowId = `${editorId}-family-${index}`;
-            const seedIssue = result.issues.find(
-              (issue) => issue.familyId === family.id && issue.path.endsWith('/seedHex')
-            );
-            const seedIssueMessage =
-              normalizedSeed === null
-                ? 'Enter a six-digit sRGB hex color such as #0f6cbd.'
-                : seedIssue?.message;
-            const seedIssueId = seedIssueMessage ? `${rowId}-seed-error` : undefined;
-
+          {TONAL_CORE_FAMILY_IDS.map((id) => {
+            const override = recipe.overrides.find((candidate) => candidate.id === id);
+            const overrideIndex = recipe.overrides.findIndex((candidate) => candidate.id === id);
             return (
-              <div
-                className={`${styles.familyRow}${isPrimary ? ` ${styles.primaryRow}` : ''}`}
-                key={family.id}
-              >
-                <label className={styles.primaryControl} title="Use as harmony reference">
-                  <input
-                    type="radio"
-                    name={`${editorId}-primary-family`}
-                    checked={isPrimary}
-                    disabled={isNeutral}
-                    aria-label={`Use ${family.id} as primary harmony reference`}
-                    onChange={() => setPrimary(family.id)}
-                  />
-                  <span className={styles.mobileLabel}>Primary</span>
-                </label>
-
-                <label
-                  className={`${styles.compactField} ${styles.familyIdField}`}
-                  htmlFor={`${rowId}-family-id`}
-                >
-                  <span className={styles.mobileLabel}>Family ID</span>
-                  <select
-                    id={`${rowId}-family-id`}
-                    value={family.id}
-                    onChange={(event) => updateFamilyId(index, event.target.value as TonalFamilyId)}
-                  >
-                    {TONAL_FAMILY_IDS.map((id) => {
-                      const option = parseTonalFamilyId(id);
-                      if (!option) return null;
-                      return (
-                        <option
-                          key={id}
-                          value={id}
-                          disabled={
-                            isFamilyIdUsed(recipe.families, index, id) ||
-                            (isPrimary && resolveTonalFamilyKind(id) === 'neutral')
-                          }
-                        >
-                          {capitalize(option.hue)} · {option.variant.toUpperCase()}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </label>
-
-                <label className={styles.seedField} htmlFor={`${rowId}-seed`}>
-                  <span className={styles.mobileLabel}>Seed</span>
-                  <span
-                    className={`${styles.swatch}${normalizedSeed ? '' : ` ${styles.invalidSwatch}`}`}
-                    style={{ backgroundColor: normalizedSeed ?? 'transparent' }}
-                    aria-hidden="true"
-                  />
-                  <input
-                    id={`${rowId}-seed`}
-                    value={family.seedHex}
-                    aria-invalid={normalizedSeed === null || Boolean(seedIssue)}
-                    aria-describedby={seedIssueId}
-                    aria-label={`${capitalize(parsed.hue)} ${parsed.variant.toUpperCase()} seed hex`}
-                    autoComplete="off"
-                    inputMode="text"
-                    spellCheck={false}
-                    onChange={(event) =>
-                      updateFamily(index, { ...family, seedHex: event.target.value })
-                    }
-                  />
-                  {seedIssueMessage ? (
-                    <span className={styles.fieldError} id={seedIssueId}>
-                      {seedIssueMessage}
-                    </span>
-                  ) : null}
-                </label>
-
-                <div className={styles.policyCell}>
-                  {(['light', 'dark'] as const).map((theme) => (
-                    <label
-                      className={styles.themePolicy}
-                      htmlFor={`${rowId}-${theme}-policy`}
-                      key={theme}
-                    >
-                      <span>{capitalize(theme)}</span>
-                      <select
-                        id={`${rowId}-${theme}-policy`}
-                        value={family.policies[theme]}
-                        disabled={isPrimary && theme === 'light'}
-                        onChange={(event) =>
-                          updateFamily(index, {
-                            ...family,
-                            policies: {
-                              ...family.policies,
-                              [theme]: event.target.value as TonalThemePolicy
-                            }
-                          })
-                        }
-                      >
-                        <option value="source-exact">Source exact</option>
-                        <option value="adaptive">Adaptive</option>
-                        {!isNeutral && !(isPrimary && theme === 'dark') ? (
-                          <option value="harmonized">Harmonized</option>
-                        ) : null}
-                      </select>
-                    </label>
-                  ))}
-                </div>
-
-                <div className={styles.actions}>
-                  <button
-                    className={styles.removeButton}
-                    type="button"
-                    disabled={isPrimary}
-                    title={
-                      isPrimary ? 'Select another primary before removing this family.' : undefined
-                    }
-                    onClick={() => removeFamily(index)}
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
+              <FamilyRow
+                key={id}
+                id={id}
+                required
+                isPrimary={id === resolvedPrimaryId}
+                override={override}
+                resolved={result.families.find((family) => family.id === id)}
+                seedIssue={resolveFamilySeedIssue(result.issues, id, overrideIndex)}
+                onEnable={() => addOverride(id)}
+                onChange={updateOverride}
+                onRemove={() => removeOverride(id)}
+              />
             );
           })}
         </div>
-
-        <button
-          className={styles.addButton}
-          type="button"
-          disabled={!nextAvailableFamily}
-          onClick={addFamily}
-        >
-          <span aria-hidden="true">+</span> Add family
-        </button>
       </fieldset>
+
+      <section className={styles.extraSection} aria-labelledby={`${editorId}-extras-title`}>
+        <div className={styles.familySectionHeading}>
+          <div>
+            <h3 id={`${editorId}-extras-title`}>Additional variants</h3>
+            <p>Optional V2–V4 assets require their own explicit seed and may be removed.</p>
+          </div>
+          <span>
+            {recipe.overrides.filter((override) => !CORE_FAMILY_ID_SET.has(override.id)).length}{' '}
+            added
+          </span>
+        </div>
+
+        {recipe.overrides.some((override) => !CORE_FAMILY_ID_SET.has(override.id)) ? (
+          <div className={styles.familyList}>
+            {recipe.overrides
+              .filter((override) => !CORE_FAMILY_ID_SET.has(override.id))
+              .map((override) => {
+                const overrideIndex = recipe.overrides.findIndex(
+                  (candidate) => candidate.id === override.id
+                );
+                return (
+                  <FamilyRow
+                    key={override.id}
+                    id={override.id}
+                    required={false}
+                    isPrimary={override.id === resolvedPrimaryId}
+                    override={override}
+                    resolved={result.families.find((family) => family.id === override.id)}
+                    seedIssue={resolveFamilySeedIssue(result.issues, override.id, overrideIndex)}
+                    onEnable={() => addOverride(override.id)}
+                    onChange={updateOverride}
+                    onRemove={() => removeOverride(override.id)}
+                  />
+                );
+              })}
+          </div>
+        ) : (
+          <p className={styles.emptyExtras}>No additional variants in this recipe.</p>
+        )}
+
+        <div className={styles.addExtraRow}>
+          <label htmlFor={`${editorId}-extra-family`}>
+            <span>Family variant</span>
+            <select
+              id={`${editorId}-extra-family`}
+              value={extraId}
+              disabled={extraOptions.length === 0}
+              onChange={(event) => setRequestedExtraId(event.target.value as TonalFamilyId)}
+            >
+              {extraOptions.map((id) => (
+                <option key={id} value={id}>
+                  {formatFamilyId(id)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button
+            className={styles.addButton}
+            type="button"
+            disabled={!extraId}
+            onClick={() => {
+              if (!extraId) return;
+              addOverride(extraId);
+              setRequestedExtraId('');
+            }}
+          >
+            <span aria-hidden="true">+</span> Add variant
+          </button>
+        </div>
+      </section>
 
       <div className={styles.lowerGrid}>
         <section className={styles.anchorCard} aria-labelledby={`${editorId}-rest-title`}>
@@ -372,8 +430,8 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
             <span className={styles.modeTag}>{recipe.tonalAnchors.rest.mode}</span>
           </div>
           <p className={styles.anchorHelp}>
-            Any chromatic position from 1 through 99 may be rest. Contrast against both caps is
-            reported in the primary reference diagnostics.
+            The primary proposes one Light and one Dark rest position. Every generated family uses
+            those same positions.
           </p>
 
           {recipe.tonalAnchors.rest.mode === 'auto' ? (
@@ -383,7 +441,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
                   ? `Current proposal: L${proposal.light} / D${proposal.dark}`
                   : isGenerating
                     ? 'Resolving the current Light and Dark proposal…'
-                    : 'A proposal will appear when the recipe is valid.'}
+                    : 'A proposal will appear when the primary is valid.'}
               </p>
               <button type="button" disabled={!proposal} onClick={lockProposal}>
                 Lock proposal
@@ -426,12 +484,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
               <button
                 className={styles.secondaryButton}
                 type="button"
-                onClick={() =>
-                  onChange({
-                    ...recipe,
-                    tonalAnchors: { rest: { mode: 'auto' } }
-                  })
-                }
+                onClick={() => onChange({ ...recipe, tonalAnchors: { rest: { mode: 'auto' } } })}
               >
                 Return to auto
               </button>
@@ -454,7 +507,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
 
           <p className={styles.statusSummary}>
             {isGenerating
-              ? 'Resolving the current recipe and every dependent family.'
+              ? 'Resolving the primary-derived recipe and every dependent family.'
               : result.issues.length === 0
                 ? `${result.families.length} ${pluralize(result.families.length, 'family', 'families')} resolved without issues.`
                 : `${result.issues.length} ${pluralize(result.issues.length, 'issue', 'issues')} require attention.`}
@@ -482,27 +535,224 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
 
 export default RecipeEditor;
 
-function isFamilyIdUsed(
-  families: TonalFamilySourceV1[],
-  currentIndex: number,
-  id: TonalFamilyId
-): boolean {
-  return families.some((family, index) => index !== currentIndex && family.id === id);
+type FamilyRowProps = {
+  id: TonalFamilyId;
+  required: boolean;
+  isPrimary: boolean;
+  override: TonalFamilyOverrideV2 | undefined;
+  resolved: ResolvedTonalFamily | undefined;
+  seedIssue: string | undefined;
+  onEnable: () => void;
+  onChange: (override: TonalFamilyOverrideV2) => void;
+  onRemove: () => void;
+};
+
+function FamilyRow({
+  id,
+  required,
+  isPrimary,
+  override,
+  resolved,
+  seedIssue,
+  onEnable,
+  onChange,
+  onRemove
+}: FamilyRowProps) {
+  const rowId = useId();
+  const colorKind = resolveTonalFamilyColorKind(id);
+  const activeSeed = override?.seedHex ?? resolved?.sourceSeedHex;
+  const normalizedSeed = activeSeed ? normalizeHexColor(activeSeed) : null;
+  const policies =
+    override?.policies ??
+    (resolved
+      ? { light: resolved.themes.light.policy, dark: resolved.themes.dark.policy }
+      : colorKind === 'achromatic'
+        ? { light: 'source-exact' as const, dark: 'source-exact' as const }
+        : { light: 'harmonized' as const, dark: 'harmonized' as const });
+  const canDisable = Boolean(override);
+
+  return (
+    <div
+      className={`${styles.familyRow}${isPrimary ? ` ${styles.primaryRow}` : ''}${override ? ` ${styles.overrideRow}` : ''}`}
+    >
+      <div className={styles.familyIdentity}>
+        <span
+          className={`${styles.familySwatch}${normalizedSeed ? '' : ` ${styles.invalidSwatch}`}`}
+          style={{ backgroundColor: normalizedSeed ?? 'transparent' }}
+          aria-hidden="true"
+        />
+        <span>
+          <strong>{formatFamilyId(id)}</strong>
+          <small>
+            {isPrimary
+              ? 'Primary · exact input'
+              : override
+                ? 'Explicit override'
+                : resolved?.seedOrigin === 'canonical'
+                  ? 'Canonical source'
+                  : 'Derived from primary'}
+          </small>
+        </span>
+      </div>
+
+      {override ? (
+        <label className={styles.seedField} htmlFor={`${rowId}-seed`}>
+          <span className={styles.mobileLabel}>Override seed</span>
+          <input
+            id={`${rowId}-seed`}
+            value={override.seedHex}
+            aria-invalid={normalizeHexColor(override.seedHex) === null || Boolean(seedIssue)}
+            aria-describedby={seedIssue ? `${rowId}-seed-error` : undefined}
+            aria-label={`${id} override seed hex`}
+            autoComplete="off"
+            inputMode="text"
+            spellCheck={false}
+            onChange={(event) => onChange({ ...override, seedHex: event.target.value })}
+          />
+          {seedIssue ? (
+            <span className={styles.fieldError} id={`${rowId}-seed-error`}>
+              {seedIssue}
+            </span>
+          ) : null}
+        </label>
+      ) : (
+        <div className={styles.generatedSeed}>
+          <span className={styles.mobileLabel}>Generated seed</span>
+          <code>{activeSeed ?? 'Generating…'}</code>
+        </div>
+      )}
+
+      <div className={styles.policyCell}>
+        {(['light', 'dark'] as const).map((theme) =>
+          override ? (
+            <label className={styles.themePolicy} htmlFor={`${rowId}-${theme}-policy`} key={theme}>
+              <span>{capitalize(theme)}</span>
+              <select
+                id={`${rowId}-${theme}-policy`}
+                value={override.policies[theme]}
+                onChange={(event) =>
+                  onChange({
+                    ...override,
+                    policies: {
+                      ...override.policies,
+                      [theme]: event.target.value as TonalThemePolicy
+                    }
+                  })
+                }
+              >
+                <option value="source-exact">Source exact</option>
+                <option value="adaptive">Adaptive</option>
+                {colorKind === 'chromatic' ? <option value="harmonized">Harmonized</option> : null}
+              </select>
+            </label>
+          ) : (
+            <span className={styles.policyTag} key={theme}>
+              {capitalize(theme)} · {POLICY_LABELS[policies[theme]]}
+            </span>
+          )
+        )}
+      </div>
+
+      <div className={styles.actions}>
+        {required ? (
+          <label
+            className={`${styles.overrideToggle}${isPrimary && !override ? ` ${styles.disabledToggle}` : ''}`}
+            title={
+              isPrimary ? 'The primary seed is edited in the global reference above.' : undefined
+            }
+          >
+            <input
+              type="checkbox"
+              checked={Boolean(override)}
+              disabled={isPrimary && !override}
+              onChange={() => (canDisable ? onRemove() : onEnable())}
+            />
+            <span aria-hidden="true" />
+            <b>{override ? 'On' : isPrimary ? 'Primary' : 'Off'}</b>
+          </label>
+        ) : (
+          <button className={styles.removeButton} type="button" onClick={onRemove}>
+            Remove
+          </button>
+        )}
+      </div>
+    </div>
+  );
 }
 
-function findNextAvailableFamily(
-  families: TonalFamilySourceV1[]
-): { id: TonalFamilyId; hue: TonalFamilyHue } | null {
-  const usedIds = new Set(families.map((family) => family.id));
-
-  for (const variant of TONAL_FAMILY_VARIANTS) {
-    for (const hue of TONAL_FAMILY_HUES) {
-      const id = createTonalFamilyId(hue, variant);
-      if (!usedIds.has(id)) return { id, hue };
-    }
+function classifyPrimary(seedHex: string): MunsellHexClassification | null {
+  if (!normalizeHexColor(seedHex)) return null;
+  try {
+    return classifyMunsellHex(seedHex);
+  } catch {
+    return null;
   }
+}
 
-  return null;
+function resolveSuggestedVariant(
+  classification: MunsellHexClassification | null
+): TonalFamilyVariant {
+  if (classification?.sector !== 'yellow-red') return 'v1';
+  return suggestYellowRedVariant(classification.oklch).variant;
+}
+
+function resolvePrimaryId(
+  recipe: TonalSystemRecipeV2,
+  classification: MunsellHexClassification | null
+): TonalFamilyId | null {
+  if (!classification) return null;
+  const variant =
+    recipe.primary.variant === 'auto'
+      ? resolveSuggestedVariant(classification)
+      : recipe.primary.variant;
+  return createTonalFamilyId(classification.sector, variant);
+}
+
+function resolvePrimaryIssue(issues: TonalSystemIssue[]): TonalSystemIssue | undefined {
+  return issues.find(
+    (issue) =>
+      issue.severity === 'error' &&
+      (issue.path === '/primary' || issue.path.startsWith('/primary/'))
+  );
+}
+
+function resolvePrimaryError(
+  seedHex: string,
+  classification: MunsellHexClassification | null,
+  issue: TonalSystemIssue | undefined
+): string | undefined {
+  if (!normalizeHexColor(seedHex)) return 'Enter a six-digit sRGB hex color such as #0f6cbd.';
+  const diagnostic = classification?.diagnostics.find(
+    (candidate) => candidate.severity === 'error'
+  );
+  return diagnostic?.message ?? issue?.message;
+}
+
+function resolveFamilySeedIssue(
+  issues: TonalSystemIssue[],
+  id: TonalFamilyId,
+  overrideIndex: number
+): string | undefined {
+  return issues.find(
+    (issue) =>
+      issue.severity === 'error' &&
+      ((issue.familyId === id && issue.path.endsWith('/seedHex')) ||
+        (overrideIndex >= 0 && issue.path === `/overrides/${overrideIndex}/seedHex`))
+  )?.message;
+}
+
+function formatFamilyId(id: TonalFamilyId): string {
+  if (id === 'yellow-red.v1') return 'Yellow-red · Orange · V1';
+  if (id === 'yellow-red.v2') return 'Yellow-red · Brown · V2';
+  const parsed = parseTonalFamilyId(id);
+  return parsed ? `${formatFamilyName(parsed.family)} · ${parsed.variant.toUpperCase()}` : id;
+}
+
+function formatFamilyName(value: string): string {
+  return value
+    .split('-')
+    .map((part) => capitalize(part))
+    .join('-');
 }
 
 function capitalize<T extends string>(value: T): Capitalize<T> {

@@ -17,17 +17,29 @@ import {
   type KiskadeeTone
 } from './kiskadee-tonal-scale.ts';
 import {
-  type LockedTonalSystemSourceV1,
+  classifyMunsellHex,
+  getMunsellOklchSectorDefinition,
+  MUNSELL_OKLCH_SAFE_CORE,
+  type MunsellColorClassification,
+  normalizeMunsellHue,
+  projectMunsellHue,
+  suggestYellowRedVariant
+} from './munsell-oklch.ts';
+import {
+  type LockedTonalSystemSourceV2,
   lockTonalSystemRecipe,
   parseTonalFamilyId,
-  resolveTonalFamilyKind,
-  type TonalFamilyHue,
+  resolveTonalFamilyColorKind,
+  TONAL_CORE_FAMILY_IDS,
+  type TonalFamilyColorKind,
   type TonalFamilyId,
-  type TonalFamilyKind,
+  type TonalFamilyOverrideV2,
+  type TonalFamilySector,
   type TonalFamilyVariant,
-  type TonalSystemRecipeV1,
+  type TonalSystemRecipeV2,
   type TonalSystemValidationIssue,
   type TonalThemePolicy,
+  validateLockedTonalSystemSource,
   validateTonalSystemRecipe
 } from './tonal-system-contract.ts';
 
@@ -41,11 +53,18 @@ export const HARMONY_V1_PARAMETERS = {
   maximumHueDrift: 12,
   seedDistanceReviewDeltaE: 0.18,
   gamutLossReviewThreshold: 0.08,
-  neutralChromaReviewThreshold: 0.04,
-  neutralChromaHardCeiling: 0.08
+  achromaticChromaReviewThreshold: 0.04,
+  achromaticChromaHardCeiling: 0.08
+} as const;
+
+export const MUNSELL_HARMONY_V1_PARAMETERS = {
+  brownChromaRatio: 0.6,
+  canonicalBlackSeed: '#20252b',
+  quantizationSafeInset: 0.02
 } as const;
 
 const REST_TONES = KISKADEE_TONES.filter((tone) => tone > 0 && tone < 100);
+const CORE_FAMILY_IDS = new Set<TonalFamilyId>(TONAL_CORE_FAMILY_IDS);
 
 export type TonalSeedPolicy = TonalThemePolicy;
 export type TonalSystemStatus = 'pass' | 'review' | 'error';
@@ -57,10 +76,10 @@ export type TonalSystemIssue = TonalSystemValidationIssue & {
 };
 
 export type TonalHarmonyFingerprint = {
-  formatVersion: TonalSystemRecipeV1['formatVersion'];
-  gridContract: TonalSystemRecipeV1['gridContract'];
-  harmonyContract: TonalSystemRecipeV1['harmonyContract'];
-  tonalProfile: TonalSystemRecipeV1['tonalProfile'];
+  formatVersion: TonalSystemRecipeV2['formatVersion'];
+  gridContract: TonalSystemRecipeV2['gridContract'];
+  harmonyContract: TonalSystemRecipeV2['harmonyContract'];
+  tonalProfile: TonalSystemRecipeV2['tonalProfile'];
   familyId: TonalFamilyId;
   theme: KiskadeeTheme;
   tone: KiskadeeTone;
@@ -104,11 +123,13 @@ export type ResolvedTonalTheme = {
 
 export type ResolvedTonalFamily = {
   id: TonalFamilyId;
-  hue: TonalFamilyHue;
+  sector: TonalFamilySector | null;
   variant: TonalFamilyVariant;
-  kind: TonalFamilyKind;
+  colorKind: TonalFamilyColorKind;
   role: 'primary' | 'support';
+  seedOrigin: 'primary' | 'derived' | 'override' | 'canonical';
   sourceSeedHex: string;
+  identity: MunsellColorClassification | null;
   status: Exclude<TonalSystemStatus, 'error'>;
   themes: {
     light: ResolvedTonalTheme;
@@ -119,7 +140,7 @@ export type ResolvedTonalFamily = {
 export type ResolvedKiskadeeTonalSystem = {
   valid: true;
   status: Exclude<TonalSystemStatus, 'error'>;
-  source: LockedTonalSystemSourceV1;
+  source: LockedTonalSystemSourceV2;
   rest: {
     light: KiskadeeTone;
     dark: KiskadeeTone;
@@ -165,14 +186,394 @@ type CandidateResolution = {
   candidatesEvaluated: number;
 };
 
-export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystemResult {
-  const validation = validateTonalSystemRecipe(input);
-  if (!validation.valid) {
-    return failedResult(validation.issues.map((issue) => ({ ...issue, severity: 'error' })));
+type MaterializedFamilySource = {
+  id: TonalFamilyId;
+  seedHex: string;
+  seedOrigin: ResolvedTonalFamily['seedOrigin'];
+  policies: { light: TonalThemePolicy; dark: TonalThemePolicy };
+  identity: MunsellColorClassification | null;
+};
+
+type MaterializedTonalSystemRecipe = Pick<
+  TonalSystemRecipeV2,
+  'formatVersion' | 'gridContract' | 'harmonyContract' | 'tonalProfile' | 'tonalAnchors'
+> & {
+  authoringRecipe: TonalSystemRecipeV2;
+  primaryReference: TonalFamilyId;
+  families: MaterializedFamilySource[];
+};
+
+type AuthoringRecipeResolution =
+  | {
+      valid: true;
+      recipe: TonalSystemRecipeV2;
+      lockedPrimaryId: TonalFamilyId | null;
+      issues: [];
+    }
+  | { valid: false; recipe: null; lockedPrimaryId: null; issues: TonalSystemIssue[] };
+
+type MaterializedRecipeResolution =
+  | {
+      valid: true;
+      recipe: MaterializedTonalSystemRecipe;
+      issues: TonalSystemIssue[];
+    }
+  | { valid: false; recipe: null; issues: TonalSystemIssue[] };
+
+function resolveAuthoringRecipe(input: unknown): AuthoringRecipeResolution {
+  const draft = validateTonalSystemRecipe(input);
+  if (draft.valid) {
+    return { valid: true, recipe: draft.value, lockedPrimaryId: null, issues: [] };
   }
 
-  const recipe = validation.value;
+  const locked = validateLockedTonalSystemSource(input);
+  if (locked.valid) {
+    const parsed = parseTonalFamilyId(locked.value.primary.id);
+    if (!parsed || parsed.sector === null) {
+      return {
+        valid: false,
+        recipe: null,
+        lockedPrimaryId: null,
+        issues: [
+          {
+            severity: 'error',
+            code: 'ACHROMATIC_PRIMARY_UNSUPPORTED',
+            path: '/primary/id',
+            message: 'The locked primary must identify a chromatic Munsell sector.'
+          }
+        ]
+      };
+    }
+
+    return {
+      valid: true,
+      recipe: {
+        formatVersion: locked.value.formatVersion,
+        gridContract: locked.value.gridContract,
+        harmonyContract: locked.value.harmonyContract,
+        tonalProfile: locked.value.tonalProfile,
+        primary: {
+          seedHex: locked.value.primary.seedHex,
+          variant: parsed.variant,
+          policies: { ...locked.value.primary.policies }
+        },
+        tonalAnchors: locked.value.tonalAnchors,
+        overrides: locked.value.overrides
+      },
+      lockedPrimaryId: locked.value.primary.id,
+      issues: []
+    };
+  }
+
+  const lockedLike =
+    typeof input === 'object' &&
+    input !== null &&
+    'primary' in input &&
+    typeof input.primary === 'object' &&
+    input.primary !== null &&
+    'id' in input.primary;
+  const validationIssues = lockedLike ? locked.issues : draft.issues;
+  return {
+    valid: false,
+    recipe: null,
+    lockedPrimaryId: null,
+    issues: validationIssues.map((issue) => ({ ...issue, severity: 'error' as const }))
+  };
+}
+
+function materializeTonalSystemRecipe(
+  authoringRecipe: TonalSystemRecipeV2,
+  lockedPrimaryId: TonalFamilyId | null
+): MaterializedRecipeResolution {
   const issues: TonalSystemIssue[] = [];
+  const primaryIdentity = classifyMunsellHex(authoringRecipe.primary.seedHex);
+
+  const requestedVariant = authoringRecipe.primary.variant;
+  const automaticVariant =
+    primaryIdentity.sector === 'yellow-red'
+      ? suggestYellowRedVariant(primaryIdentity.oklch).variant
+      : 'v1';
+  const resolvedVariant = requestedVariant === 'auto' ? automaticVariant : requestedVariant;
+  const primaryId = `${primaryIdentity.sector}.${resolvedVariant}` as TonalFamilyId;
+
+  for (const diagnostic of primaryIdentity.diagnostics) {
+    issues.push({
+      severity: diagnostic.severity,
+      code: diagnostic.code,
+      path: '/primary/seedHex',
+      message: diagnostic.message,
+      familyId: primaryId
+    });
+  }
+
+  if (lockedPrimaryId) {
+    const parsedLocked = parseTonalFamilyId(lockedPrimaryId);
+    if (
+      !parsedLocked ||
+      parsedLocked.sector !== primaryIdentity.sector ||
+      parsedLocked.variant !== resolvedVariant
+    ) {
+      issues.push({
+        severity: 'error',
+        code: 'LOCKED_PRIMARY_CLASSIFICATION_MISMATCH',
+        path: '/primary/id',
+        message: `Locked primary ${lockedPrimaryId} does not match the ${primaryIdentity.sector}.${resolvedVariant} classification.`,
+        familyId: lockedPrimaryId
+      });
+    }
+  }
+
+  if (
+    primaryIdentity.sector === 'yellow-red' &&
+    resolvedVariant === 'v2' &&
+    suggestYellowRedVariant(primaryIdentity.oklch).variant !== 'v2'
+  ) {
+    issues.push({
+      severity: 'error',
+      code: 'BROWN_APPEARANCE_MISMATCH',
+      path: '/primary/variant',
+      message:
+        'yellow-red.v2 is reserved for a Brown appearance, but the primary is closer to Orange.',
+      familyId: primaryId
+    });
+  }
+
+  const overrideById = new Map(
+    authoringRecipe.overrides.map((override) => [override.id, override])
+  );
+  if (overrideById.has(primaryId)) {
+    issues.push({
+      severity: 'error',
+      code: 'PRIMARY_OVERRIDE_CONFLICT',
+      path: '/overrides',
+      message: `Primary ${primaryId} cannot also be configured as an override.`,
+      familyId: primaryId
+    });
+  }
+
+  if (issues.some((issue) => issue.severity === 'error')) {
+    return { valid: false, recipe: null, issues: sortIssues(issues) };
+  }
+
+  const primaryMaximumChroma = maxSrgbChroma(primaryIdentity.oklch.l, primaryIdentity.oklch.h);
+  const primaryUtilization =
+    primaryMaximumChroma <= 0 ? 0 : primaryIdentity.oklch.c / primaryMaximumChroma;
+  const baseUtilization =
+    primaryId === 'yellow-red.v2'
+      ? Math.min(1, primaryUtilization / MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio)
+      : primaryUtilization;
+
+  const families = new Map<TonalFamilyId, MaterializedFamilySource>();
+  families.set(primaryId, {
+    id: primaryId,
+    seedHex: authoringRecipe.primary.seedHex,
+    seedOrigin: 'primary',
+    policies: { ...authoringRecipe.primary.policies },
+    identity: primaryIdentity
+  });
+
+  for (const id of TONAL_CORE_FAMILY_IDS) {
+    if (id === primaryId) continue;
+    const override = overrideById.get(id);
+    if (override) {
+      const resolved = materializeOverride(override, issues);
+      if (resolved) families.set(id, resolved);
+      continue;
+    }
+
+    if (id === 'black.v1') {
+      families.set(id, {
+        id,
+        seedHex: MUNSELL_HARMONY_V1_PARAMETERS.canonicalBlackSeed,
+        seedOrigin: 'canonical',
+        policies: { light: 'source-exact', dark: 'source-exact' },
+        identity: null
+      });
+      continue;
+    }
+
+    const parsed = parseTonalFamilyId(id);
+    if (!parsed?.sector) continue;
+    const projection = projectMunsellHue(primaryIdentity.oklch.h, parsed.sector);
+    const utilization =
+      id === 'yellow-red.v2'
+        ? baseUtilization * MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio
+        : baseUtilization;
+    const derivedSeed = resolveSafeDerivedSeed({
+      lightness: primaryIdentity.oklch.l,
+      utilization,
+      sector: parsed.sector,
+      projectedPosition: projection.projectedPosition
+    });
+
+    if (!derivedSeed) {
+      issues.push({
+        severity: 'error',
+        code: 'DERIVED_SAFE_CORE_UNREACHABLE',
+        path: `/derived/${id}`,
+        message: `${id} could not emit an sRGB seed inside the safe ${parsed.sector} generation region.`,
+        familyId: id
+      });
+      continue;
+    }
+    if (projection.clampedToSafeCore || derivedSeed.quantizationInsetApplied) {
+      issues.push({
+        severity: 'review',
+        code: 'MUNSELL_HUE_CLAMPED',
+        path: `/derived/${id}`,
+        message: `${id} was clamped inside the safe ${parsed.sector} region with an sRGB quantization guard.`,
+        familyId: id
+      });
+    }
+
+    families.set(id, {
+      id,
+      seedHex: derivedSeed.seedHex,
+      seedOrigin: 'derived',
+      policies: { light: 'harmonized', dark: 'harmonized' },
+      identity: derivedSeed.identity
+    });
+  }
+
+  for (const override of authoringRecipe.overrides) {
+    if (
+      CORE_FAMILY_IDS.has(override.id) ||
+      families.has(override.id) ||
+      override.id === primaryId
+    ) {
+      continue;
+    }
+    const resolved = materializeOverride(override, issues);
+    if (resolved) families.set(override.id, resolved);
+  }
+
+  if (issues.some((issue) => issue.severity === 'error')) {
+    return { valid: false, recipe: null, issues: sortIssues(issues) };
+  }
+
+  return {
+    valid: true,
+    recipe: {
+      formatVersion: authoringRecipe.formatVersion,
+      gridContract: authoringRecipe.gridContract,
+      harmonyContract: authoringRecipe.harmonyContract,
+      tonalProfile: authoringRecipe.tonalProfile,
+      tonalAnchors: authoringRecipe.tonalAnchors,
+      authoringRecipe,
+      primaryReference: primaryId,
+      families: [...families.values()].sort((left, right) => compareStrings(left.id, right.id))
+    },
+    issues: sortIssues(issues)
+  };
+}
+
+function resolveSafeDerivedSeed(params: {
+  lightness: number;
+  utilization: number;
+  sector: TonalFamilySector;
+  projectedPosition: number;
+}): {
+  seedHex: string;
+  identity: MunsellColorClassification;
+  quantizationInsetApplied: boolean;
+} | null {
+  const { lightness, utilization, sector, projectedPosition } = params;
+  const definition = getMunsellOklchSectorDefinition(sector);
+  const guardedStart =
+    MUNSELL_OKLCH_SAFE_CORE.start + MUNSELL_HARMONY_V1_PARAMETERS.quantizationSafeInset;
+  const guardedEnd =
+    MUNSELL_OKLCH_SAFE_CORE.end - MUNSELL_HARMONY_V1_PARAMETERS.quantizationSafeInset;
+  const guardedPosition = clamp(projectedPosition, guardedStart, guardedEnd);
+  const utilizationRatio = Math.min(1, Math.max(0.04, utilization));
+  const attempts = 40;
+
+  for (let attempt = 0; attempt <= attempts; attempt += 1) {
+    const position = guardedPosition + (0.5 - guardedPosition) * (attempt / attempts);
+    const hue = normalizeMunsellHue(definition.startHue + definition.spanDegrees * position);
+    const maximumChroma = maxSrgbChroma(lightness, hue);
+    const seedHex = oklchToSrgbHex({
+      l: lightness,
+      c: maximumChroma * utilizationRatio,
+      h: hue
+    }).hex;
+    const identity = classifyMunsellHex(seedHex);
+
+    if (identity.sector === sector && identity.isInSafeCore) {
+      return {
+        seedHex,
+        identity,
+        quantizationInsetApplied: Math.abs(position - projectedPosition) > 0.000_001
+      };
+    }
+  }
+
+  return null;
+}
+
+function materializeOverride(
+  override: TonalFamilyOverrideV2,
+  issues: TonalSystemIssue[]
+): MaterializedFamilySource | null {
+  const parsed = parseTonalFamilyId(override.id);
+  if (!parsed) return null;
+
+  if (parsed.sector === null) {
+    return {
+      ...override,
+      policies: { ...override.policies },
+      seedOrigin: 'override',
+      identity: null
+    };
+  }
+
+  const identity = classifyMunsellHex(override.seedHex);
+  if (identity.sector !== parsed.sector) {
+    issues.push({
+      severity: 'error',
+      code: 'OVERRIDE_SECTOR_MISMATCH',
+      path: `/overrides/${override.id}/seedHex`,
+      message: `${override.id} expects ${parsed.sector}, but its seed classifies as ${identity.sector}.`,
+      familyId: override.id
+    });
+    return null;
+  }
+  if (override.id === 'yellow-red.v2' && suggestYellowRedVariant(identity.oklch).variant !== 'v2') {
+    issues.push({
+      severity: 'error',
+      code: 'BROWN_APPEARANCE_MISMATCH',
+      path: `/overrides/${override.id}/seedHex`,
+      message: 'yellow-red.v2 is reserved for Brown and cannot use an Orange-like seed.',
+      familyId: override.id
+    });
+    return null;
+  }
+  if (!identity.isInSafeCore) {
+    issues.push({
+      severity: 'review',
+      code: 'MUNSELL_OVERRIDE_NEAR_BOUNDARY',
+      path: `/overrides/${override.id}/seedHex`,
+      message: `${override.id} is valid but lies in the outer 15% of its Munsell sector.`,
+      familyId: override.id
+    });
+  }
+
+  return {
+    ...override,
+    policies: { ...override.policies },
+    seedOrigin: 'override',
+    identity
+  };
+}
+
+export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystemResult {
+  const authoring = resolveAuthoringRecipe(input);
+  if (!authoring.valid) return failedResult(authoring.issues);
+
+  const materialization = materializeTonalSystemRecipe(authoring.recipe, authoring.lockedPrimaryId);
+  if (!materialization.valid) return failedResult(materialization.issues);
+
+  const recipe = materialization.recipe;
+  const issues: TonalSystemIssue[] = [...materialization.issues];
   const primarySource = recipe.families.find((family) => family.id === recipe.primaryReference);
 
   if (!primarySource) {
@@ -180,7 +581,7 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
       {
         severity: 'error',
         code: 'PRIMARY_NOT_FOUND',
-        path: '/primaryReference',
+        path: '/primary',
         message: 'Primary reference is missing from the normalized family collection.'
       }
     ]);
@@ -194,7 +595,7 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
         severity: 'error',
         code: 'PRIMARY_HUE_UNRELIABLE',
         path: familyPath(recipe, recipe.primaryReference, 'seedHex'),
-        message: `The ${recipe.primaryReference} seed is too neutral to establish a chromatic harmony reference.`,
+        message: `The ${recipe.primaryReference} seed is too achromatic to establish a chromatic harmony reference.`,
         familyId: recipe.primaryReference
       }
     ]);
@@ -229,7 +630,7 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
       {
         severity: 'error',
         code: 'PRIMARY_ANCHOR_MISSING',
-        path: '/primaryReference',
+        path: '/primary',
         message: 'The primary scale did not resolve both theme anchors.'
       }
     ]);
@@ -334,6 +735,7 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
       baseline: primaryExactDark,
       theme: 'dark',
       familyKind: 'chromatic',
+      enforceSafeCore: false,
       recipe,
       issues
     });
@@ -361,10 +763,13 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
 
   const primaryFamily: ResolvedTonalFamily = {
     id: recipe.primaryReference,
-    ...parsedPrimaryId,
-    kind: 'chromatic',
+    sector: parsedPrimaryId.sector,
+    variant: parsedPrimaryId.variant,
+    colorKind: 'chromatic',
     role: 'primary',
+    seedOrigin: 'primary',
     sourceSeedHex: primarySource.seedHex,
+    identity: primarySource.identity,
     status: combineStatuses(primaryLight.status, primaryDark.status),
     themes: {
       light: primaryLight,
@@ -378,7 +783,7 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
     const parsedId = parseTonalFamilyId(familySource.id);
     if (!parsedId) continue;
 
-    const familyKind = resolveTonalFamilyKind(familySource.id);
+    const familyKind = resolveTonalFamilyColorKind(familySource.id);
     const sourceOklch = hexToOklch(familySource.seedHex);
     if (
       familyKind === 'chromatic' &&
@@ -390,36 +795,47 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
         severity: 'error',
         code: 'HUE_UNRELIABLE',
         path: familyPath(recipe, familySource.id, 'seedHex'),
-        message: `The ${familySource.id} seed is too neutral to establish a reliable hue.`,
+        message: `The ${familySource.id} seed is too achromatic to establish a reliable hue.`,
         familyId: familySource.id
       });
       continue;
     }
     if (
-      familyKind === 'neutral' &&
-      sourceOklch.c > HARMONY_V1_PARAMETERS.neutralChromaHardCeiling
+      familyKind === 'achromatic' &&
+      sourceOklch.c > HARMONY_V1_PARAMETERS.achromaticChromaHardCeiling
     ) {
       issues.push({
         severity: 'error',
-        code: 'NEUTRAL_CHROMA_TOO_HIGH',
+        code: 'ACHROMATIC_CHROMA_TOO_HIGH',
         path: familyPath(recipe, familySource.id, 'seedHex'),
-        message: `${familySource.id} has too much chroma for a neutral-intent family.`,
+        message: `${familySource.id} has too much chroma for an achromatic family.`,
         familyId: familySource.id
       });
       continue;
     }
     if (
-      familyKind === 'neutral' &&
-      sourceOklch.c > HARMONY_V1_PARAMETERS.neutralChromaReviewThreshold
+      familyKind === 'achromatic' &&
+      sourceOklch.c > HARMONY_V1_PARAMETERS.achromaticChromaReviewThreshold
     ) {
       issues.push({
         severity: 'review',
-        code: 'NEUTRAL_TINT_REVIEW',
+        code: 'ACHROMATIC_TINT_REVIEW',
         path: familyPath(recipe, familySource.id, 'seedHex'),
-        message: `${familySource.id} preserves a strong neutral tint with OKL chroma ${sourceOklch.c.toFixed(3)}.`,
+        message: `${familySource.id} preserves a strong achromatic tint with OKL chroma ${sourceOklch.c.toFixed(3)}.`,
         familyId: familySource.id
       });
     }
+
+    const lightFamilyReference = resolveFamilyHarmonyReference(
+      lightFingerprint,
+      recipe.primaryReference,
+      familySource.id
+    );
+    const darkFamilyReference = resolveFamilyHarmonyReference(
+      darkFingerprint,
+      recipe.primaryReference,
+      familySource.id
+    );
 
     const light = resolveConfiguredFamilyTheme({
       familyId: familySource.id,
@@ -428,7 +844,8 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
       policy: familySource.policies.light,
       theme: 'light',
       restTone: rest.light,
-      reference: lightFingerprint,
+      reference: lightFamilyReference,
+      enforceSafeCore: familySource.seedOrigin === 'derived',
       recipe,
       issues
     });
@@ -439,19 +856,39 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
       policy: familySource.policies.dark,
       theme: 'dark',
       restTone: rest.dark,
-      reference: darkFingerprint,
+      reference: darkFamilyReference,
+      enforceSafeCore: familySource.seedOrigin === 'derived',
       recipe,
       issues
     });
 
     if (!light || !dark) continue;
 
+    validateResolvedFamilyIdentity(
+      familySource.id,
+      light,
+      familySource.seedOrigin === 'derived',
+      issues
+    );
+    validateResolvedFamilyIdentity(
+      familySource.id,
+      dark,
+      familySource.seedOrigin === 'derived',
+      issues
+    );
+    if (issues.some((issue) => issue.severity === 'error' && issue.familyId === familySource.id)) {
+      continue;
+    }
+
     families.push({
       id: familySource.id,
-      ...parsedId,
-      kind: familyKind,
+      sector: parsedId.sector,
+      variant: parsedId.variant,
+      colorKind: familyKind,
       role: 'support',
+      seedOrigin: familySource.seedOrigin,
       sourceSeedHex: familySource.seedHex,
+      identity: familySource.identity,
       status: combineStatuses(light.status, dark.status),
       themes: { light, dark }
     });
@@ -464,7 +901,7 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
     return failedResult(issues, rest, families);
   }
 
-  const source = lockTonalSystemRecipe(recipe, rest);
+  const source = lockTonalSystemRecipe(recipe.authoringRecipe, recipe.primaryReference, rest);
   const status =
     issues.some((issue) => issue.severity === 'review') ||
     families.some((family) => family.status === 'review')
@@ -484,6 +921,58 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
     families: families.sort((left, right) => compareStrings(left.id, right.id)),
     issues: sortIssues(issues)
   };
+}
+
+function validateResolvedFamilyIdentity(
+  familyId: TonalFamilyId,
+  resolution: ResolvedTonalTheme,
+  requireSafeCore: boolean,
+  issues: TonalSystemIssue[]
+): void {
+  const parsed = parseTonalFamilyId(familyId);
+  if (!parsed?.sector) return;
+
+  const identity = classifyMunsellHex(resolution.effectiveSeedHex);
+  if (identity.sector !== parsed.sector) {
+    issues.push({
+      severity: 'error',
+      code: 'EMITTED_SECTOR_MISMATCH',
+      path: `/families/${familyId}/${resolution.theme}`,
+      message: `${familyId} emitted ${identity.sector} instead of ${parsed.sector} in ${resolution.theme}.`,
+      familyId,
+      theme: resolution.theme
+    });
+    return;
+  }
+  if (requireSafeCore && !identity.isInSafeCore) {
+    issues.push({
+      severity: 'error',
+      code: 'EMITTED_SAFE_CORE_MISMATCH',
+      path: `/families/${familyId}/${resolution.theme}`,
+      message: `${familyId} left the safe ${parsed.sector} generation region in ${resolution.theme}.`,
+      familyId,
+      theme: resolution.theme
+    });
+  }
+}
+
+function resolveFamilyHarmonyReference(
+  reference: TonalHarmonyFingerprint,
+  primaryId: TonalFamilyId,
+  familyId: TonalFamilyId
+): TonalHarmonyFingerprint {
+  const baseUtilization =
+    primaryId === 'yellow-red.v2'
+      ? Math.min(1, reference.chromaUtilization / MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio)
+      : reference.chromaUtilization;
+  const targetUtilization =
+    familyId === 'yellow-red.v2'
+      ? baseUtilization * MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio
+      : baseUtilization;
+
+  return targetUtilization === reference.chromaUtilization
+    ? reference
+    : { ...reference, chromaUtilization: targetUtilization };
 }
 
 function resolveSourceExactTheme(params: {
@@ -526,7 +1015,7 @@ function resolveAutoAdaptivePrimaryDark(params: {
   sourceSeedHex: string;
   preferredRestTone: KiskadeeTone;
   baseline: KiskadeeScaleResult;
-  recipe: TonalSystemRecipeV1;
+  recipe: MaterializedTonalSystemRecipe;
   issues: TonalSystemIssue[];
 }): { restTone: KiskadeeTone; resolution: ResolvedTonalTheme } | null {
   const { familyId, sourceSeedHex, preferredRestTone, baseline, recipe, issues } = params;
@@ -544,6 +1033,7 @@ function resolveAutoAdaptivePrimaryDark(params: {
       baseline,
       theme: 'dark',
       familyKind: 'chromatic',
+      enforceSafeCore: false,
       recipe,
       issues: attemptIssues
     });
@@ -570,11 +1060,22 @@ function resolveAdaptiveTheme(params: {
   restTone: KiskadeeTone;
   baseline: KiskadeeScaleResult;
   theme: KiskadeeTheme;
-  familyKind: TonalFamilyKind;
-  recipe: TonalSystemRecipeV1;
+  familyKind: TonalFamilyColorKind;
+  enforceSafeCore: boolean;
+  recipe: MaterializedTonalSystemRecipe;
   issues: TonalSystemIssue[];
 }): ResolvedTonalTheme | null {
-  const { familyId, sourceSeedHex, restTone, baseline, theme, familyKind, recipe, issues } = params;
+  const {
+    familyId,
+    sourceSeedHex,
+    restTone,
+    baseline,
+    theme,
+    familyKind,
+    enforceSafeCore,
+    recipe,
+    issues
+  } = params;
   const prefix = theme === 'light' ? 'L' : 'D';
   const projected = resolveTone(baseline, restTone);
   if (!projected) {
@@ -598,7 +1099,8 @@ function resolveAdaptiveTheme(params: {
 
   if (
     isAcceptedCandidate(projectedScale, projected.hex, restTone) &&
-    projectedRest?.hex === projected.hex
+    projectedRest?.hex === projected.hex &&
+    isMunsellCandidateIdentityValid(projected.hex, familyId, enforceSafeCore)
   ) {
     const sourceOklch = hexToOklch(sourceSeedHex);
     const projectedFingerprint = fingerprintFromColor({
@@ -627,12 +1129,12 @@ function resolveAdaptiveTheme(params: {
     };
   }
 
-  if (familyKind === 'neutral') {
+  if (familyKind === 'achromatic') {
     issues.push({
       severity: 'error',
       code: 'NEUTRAL_ADAPTIVE_UNREACHABLE',
       path: familyPath(recipe, familyId, `policies/${theme}`),
-      message: `${familyId} cannot place its neutral projection at ${prefix}${restTone} without violating the tonal invariants.`,
+      message: `${familyId} cannot place its achromatic projection at ${prefix}${restTone} without violating the tonal invariants.`,
       familyId,
       theme
     });
@@ -654,6 +1156,7 @@ function resolveAdaptiveTheme(params: {
     restTone,
     reference: fallbackReference,
     policy: 'adaptive',
+    enforceSafeCore,
     recipe,
     issues
   });
@@ -662,12 +1165,13 @@ function resolveAdaptiveTheme(params: {
 function resolveConfiguredFamilyTheme(params: {
   familyId: TonalFamilyId;
   sourceSeedHex: string;
-  familyKind: TonalFamilyKind;
+  familyKind: TonalFamilyColorKind;
   policy: TonalThemePolicy;
   theme: KiskadeeTheme;
   restTone: KiskadeeTone;
   reference: TonalHarmonyFingerprint;
-  recipe: TonalSystemRecipeV1;
+  enforceSafeCore: boolean;
+  recipe: MaterializedTonalSystemRecipe;
   issues: TonalSystemIssue[];
 }): ResolvedTonalTheme | null {
   const {
@@ -678,6 +1182,7 @@ function resolveConfiguredFamilyTheme(params: {
     theme,
     restTone,
     reference,
+    enforceSafeCore,
     recipe,
     issues
   } = params;
@@ -689,6 +1194,7 @@ function resolveConfiguredFamilyTheme(params: {
       theme,
       restTone,
       reference,
+      enforceSafeCore,
       recipe,
       issues
     });
@@ -735,6 +1241,7 @@ function resolveConfiguredFamilyTheme(params: {
     baseline,
     theme,
     familyKind,
+    enforceSafeCore,
     recipe,
     issues
   });
@@ -746,7 +1253,8 @@ function resolveHarmonizedTheme(params: {
   theme: KiskadeeTheme;
   restTone: KiskadeeTone;
   reference: TonalHarmonyFingerprint;
-  recipe: TonalSystemRecipeV1;
+  enforceSafeCore: boolean;
+  recipe: MaterializedTonalSystemRecipe;
   issues: TonalSystemIssue[];
 }): ResolvedTonalTheme | null {
   return resolveCandidateTheme({ ...params, policy: 'harmonized' });
@@ -759,10 +1267,21 @@ function resolveCandidateTheme(params: {
   restTone: KiskadeeTone;
   reference: TonalHarmonyFingerprint;
   policy: 'adaptive' | 'harmonized';
-  recipe: TonalSystemRecipeV1;
+  enforceSafeCore: boolean;
+  recipe: MaterializedTonalSystemRecipe;
   issues: TonalSystemIssue[];
 }): ResolvedTonalTheme | null {
-  const { familyId, sourceSeedHex, theme, restTone, reference, policy, recipe, issues } = params;
+  const {
+    familyId,
+    sourceSeedHex,
+    theme,
+    restTone,
+    reference,
+    policy,
+    enforceSafeCore,
+    recipe,
+    issues
+  } = params;
   const sourceOklch = hexToOklch(sourceSeedHex);
   const resolution = findHarmonyCandidate({
     sourceOklch,
@@ -770,6 +1289,8 @@ function resolveCandidateTheme(params: {
     theme,
     restTone,
     reference,
+    familyId,
+    enforceSafeCore,
     profile: recipe.tonalProfile
   });
 
@@ -829,9 +1350,20 @@ function findHarmonyCandidate(params: {
   theme: KiskadeeTheme;
   restTone: KiskadeeTone;
   reference: TonalHarmonyFingerprint;
-  profile: TonalSystemRecipeV1['tonalProfile'];
+  familyId: TonalFamilyId;
+  enforceSafeCore: boolean;
+  profile: TonalSystemRecipeV2['tonalProfile'];
 }): CandidateResolution | null {
-  const { sourceOklch, sourceSeedHex, theme, restTone, reference, profile } = params;
+  const {
+    sourceOklch,
+    sourceSeedHex,
+    theme,
+    restTone,
+    reference,
+    familyId,
+    enforceSafeCore,
+    profile
+  } = params;
   const coarse = rankHarmonyCandidates({
     sourceOklch,
     sourceSeedHex,
@@ -847,6 +1379,7 @@ function findHarmonyCandidate(params: {
   const feasible: CandidateResolution[] = [];
 
   for (const candidate of coarse.slice(0, 96)) {
+    if (!isMunsellCandidateIdentityValid(candidate.hex, familyId, enforceSafeCore)) continue;
     evaluated += 1;
     const scale = generateKiskadeeScale({ seedHex: candidate.hex, theme, profile });
     if (isAcceptedCandidate(scale, candidate.hex, restTone)) {
@@ -871,6 +1404,7 @@ function findHarmonyCandidate(params: {
 
   for (const candidate of refined.slice(0, 32)) {
     if (compareRankedCandidates(candidate, best.candidate) >= 0) break;
+    if (!isMunsellCandidateIdentityValid(candidate.hex, familyId, enforceSafeCore)) continue;
     evaluated += 1;
     const scale = generateKiskadeeScale({ seedHex: candidate.hex, theme, profile });
     if (!isAcceptedCandidate(scale, candidate.hex, restTone)) continue;
@@ -996,7 +1530,7 @@ function createFingerprint(
   familyId: TonalFamilyId,
   resolution: ResolvedTonalTheme,
   policy: 'source-exact' | 'adaptive',
-  recipe: TonalSystemRecipeV1
+  recipe: MaterializedTonalSystemRecipe
 ): TonalHarmonyFingerprint {
   return fingerprintFromColor({
     familyId,
@@ -1014,7 +1548,7 @@ function fingerprintFromColor(params: {
   tone: KiskadeeTone;
   color: KiskadeeScaleColor;
   policy: 'source-exact' | 'adaptive';
-  recipe: TonalSystemRecipeV1;
+  recipe: MaterializedTonalSystemRecipe;
 }): TonalHarmonyFingerprint {
   const { familyId, theme, tone, color, policy, recipe } = params;
   const maximumChroma = maxSrgbChroma(color.oklch.l, color.oklch.h);
@@ -1049,6 +1583,18 @@ function isAcceptedCandidate(
     scale.anchorTone === restTone &&
     resolveTone(scale, restTone)?.hex === effectiveSeedHex
   );
+}
+
+function isMunsellCandidateIdentityValid(
+  hex: string,
+  familyId: TonalFamilyId,
+  requireSafeCore: boolean
+): boolean {
+  const parsed = parseTonalFamilyId(familyId);
+  if (!parsed?.sector) return true;
+
+  const identity = classifyMunsellHex(hex);
+  return identity.sector === parsed.sector && (!requireSafeCore || identity.isInSafeCore);
 }
 
 function compareCandidateResolutions(
@@ -1217,12 +1763,17 @@ function scaleFailureIssue(
 }
 
 function familyPath(
-  recipe: TonalSystemRecipeV1,
+  recipe: MaterializedTonalSystemRecipe,
   familyId: TonalFamilyId,
   property: string
 ): string {
-  const index = recipe.families.findIndex((family) => family.id === familyId);
-  return `/families/${Math.max(0, index)}/${property}`;
+  if (familyId === recipe.primaryReference) return `/primary/${property}`;
+  const overrideIndex = recipe.authoringRecipe.overrides.findIndex(
+    (override) => override.id === familyId
+  );
+  return overrideIndex >= 0
+    ? `/overrides/${overrideIndex}/${property}`
+    : `/derived/${familyId}/${property}`;
 }
 
 function failedResult(
