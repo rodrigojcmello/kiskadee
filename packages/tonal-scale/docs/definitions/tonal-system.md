@@ -13,6 +13,21 @@ The family taxonomy and hue boundaries are defined in
 [munsell-family-taxonomy.md](./munsell-family-taxonomy.md). Presets, Core,
 semantic aliases, components, and preset migration remain outside this package.
 
+The multi-family system distinguishes three references that must not be
+collapsed into one concept:
+
+- the **generated anchor** is the technical slot where the low-level generator
+  preserves or adapts the effective seed;
+- the **harmony rest** is the shared Light or Dark checkpoint used to compare
+  all families in one system;
+- the **state anchor** is the per-family, per-theme starting slot from which an
+  eventual semantic state projection may be derived.
+
+Existing runtime and artifact fields named `rest`, `restColor`,
+`functionalRest`, or `tonalAnchors.rest` represent the harmony-rest checkpoint.
+They no longer imply that every family must use that slot as its component
+state reference.
+
 ## Required Family Set
 
 Every valid system resolves ten Munsell `v1` sectors, Brown at
@@ -94,13 +109,13 @@ Generation performs these deterministic stages:
    the same signature.
 4. Materialize the fixed references, replacing only the primary family and any
    explicit overrides.
-5. Generate family baselines to rank fallback Light and Dark functional
-   `rest` positions.
+5. Generate family baselines to rank fallback Light and Dark harmony-rest
+   positions.
 6. Test the exact primary anchor first with the complete emitted chromatic v1
    harmony. A harmonized companion receives a free vivid anchor at the natural
    peak lightness of its hue, while its emitted color at the shared slot is
    scored against the primary `rest` behavior.
-7. Keep the primary anchor as `rest` when every v1 family satisfies the
+7. Keep the primary anchor as harmony rest when every v1 family satisfies the
    source-anchor balance guard; otherwise repeat the same separation at the
    nearest qualifying fallback position.
 8. Compose the unchanged low-level scale generator and validate the complete
@@ -181,38 +196,54 @@ before comparing it with the fixed companion set.
 themes, and does not participate in chromatic harmony. Achromatic chroma above
 `0.04` requires review and above `0.08` fails.
 
-## Generated Anchor And Functional Rest
+## Generated Anchor, Harmony Rest, And State Anchor
 
-`seedHex`, generated anchor, and functional rest are separate concepts:
+`seedHex`, generated anchor, harmony rest, and state anchor are separate
+concepts:
 
 - `seedHex` is the primary, fixed-reference, or authored source color;
 - the generated anchor is where the low-level scale preserves or adapts the
   effective seed; for a harmonized companion it is free to occupy the natural
   peak lightness of that hue;
-- functional rest is the shared slot read by component semantics.
+- harmony rest is the shared slot used to compare emitted companion colors and
+  validate cross-family balance;
+- state anchor is the family/theme reference intended for experiments with
+  semantic interaction states.
 
-All families use the same public functional rest positions, but they do not
-need to share generated anchor positions. Rest may be any public chromatic slot
-from 1 through 99. In automatic mode, the exact primary anchor is always the
-first candidate for the shared rest. It becomes `rest` when the complete
-emitted v1 harmony satisfies the source-anchor guard. A source-exact primary
-and the shared rest differ only when that harmonized probe fails; the primary
-itself is never moved or rewritten. Harmonized companions instead preserve a
+All families use the same public harmony-rest positions, but they do not need
+to share generated anchor or state-anchor positions. Harmony rest may be any
+public chromatic slot from 1 through 99. In automatic mode, the exact primary
+anchor is always the first candidate for the shared harmony rest. It becomes
+harmony rest when the complete emitted v1 harmony satisfies the source-anchor
+guard. When that probe fails, the primary itself is never moved or rewritten:
+only the shared checkpoint moves. Harmonized companions preserve a
 primary-equivalent vivid peak at their own hue's natural lightness, then expose
-the color emitted by that scale at the shared `rest` slot.
+the color emitted by that scale at the shared harmony-rest slot.
 
-For example, Orange `#ff6200` remains exact and becomes the shared L24/D70 rest:
-its raw fixed-reference baselines are imbalanced, but the emitted harmonized
-chromatic v1 set passes the `0.5` source-anchor guard. Red and Yellow may place
-their generated vivid anchors at different tones while still emitting their
-functional colors at L24/D70. Twitter Blue `#1da1f2` likewise keeps its exact
-L24/D70 anchors as rest.
+State-anchor resolution is intentionally simple and deterministic:
+
+- the primary family uses its generated anchor in each theme;
+- every support family uses the shared harmony rest in each theme.
+
+Consequently, Yellow `#ffeb3b` remains exact and uses L5/D95 as its primary
+state anchor even when its system's shared harmony rest is L28/D65. Companion
+families in that system continue to use L28/D65 as their state anchors. This
+does not create family-specific harmony-rest slots; it separates the technical
+checkpoint from the position that represents the family's authored primary
+identity.
+
+For example, Orange `#ff6200` remains exact and becomes the shared L24/D70
+harmony rest: its raw fixed-reference baselines are imbalanced, but the emitted
+harmonized chromatic v1 set passes the `0.5` source-anchor guard. Red and Yellow
+may place their generated vivid anchors at different tones while still
+emitting their harmonized colors at L24/D70. Twitter Blue `#1da1f2` likewise
+keeps its exact L24/D70 anchors as harmony rest and primary state anchor.
 
 The automatic vividness guard applies only when the source uses at least `0.5`
 of its hue-global chroma potential. An exact source anchor is preserved while
 every emitted v1 sector retains at least `0.5` of the primary normalized
 chroma. When the harmonized source-anchor probe proves that the system must
-move, the selected functional rest must:
+move, the selected harmony rest must:
 
 - retain at least `0.7` of the source hue-global chroma signature;
 - keep every v1 family between `0.6` and `1 / 0.6` of the primary rest
@@ -220,7 +251,7 @@ move, the selected functional rest must:
 - be the nearest qualifying public slot by grid position.
 
 For example, `#ffeb3b` remains exact at L5/D95 while the harmonized
-source-anchor probe confirms that functional rest must move to L28/D65. Locked
+source-anchor probe confirms that harmony rest must move to L28/D65. Locked
 positions remain authoritative, but an imbalance is reported for review rather
 than hidden. The `0.5` source-anchor interval remains attached to an exact
 rest/anchor match after export locks an automatic proposal, so replay preserves
@@ -233,6 +264,25 @@ and `adaptive` retains its existing policy behavior. Neither this separation
 nor the source/fallback balance ratios change `generateKiskadeeScale`; they are
 multi-family orchestration rules above the frozen low-level generator.
 
+### Ordinal State Projection
+
+The package may preview interaction states by applying an integer offset to the
+state anchor's index in the canonical public grid. The offset is ordinal, not
+arithmetic: from L28, `+1` resolves to L30; from L55, `+1` resolves to L60.
+Offsets that leave the chromatic range return no color instead of silently
+clamping to an absolute cap.
+
+The same sign does not have the same physical-lightness meaning in both
+themes. Increasing the slot index makes a Light color physically darker and a
+Dark color physically lighter. A future semantic mapping may therefore choose
+different offset signs for Light and Dark. The current Rest/Hover/Pressed/Focus
+display is an experiment for evaluating slot distance, DeltaE, and contrast;
+it is not yet a preset or component-state contract.
+
+State projection selects colors that already exist in the emitted scale. It
+does not recolor a slot, regenerate a family, or change any low-level
+`generateKiskadeeScale` output.
+
 ## Low-Level Invariants
 
 The low-level 3:1 guards remain L35-L95 against white and D35-D95 against
@@ -242,7 +292,7 @@ rest.
 The full system preserves this invariant order:
 
 1. absolute caps and canonical public grid;
-2. exact primary and authored generated anchors plus locked functional rest
+2. exact primary and authored generated anchors plus locked harmony-rest
    positions;
 3. per-theme policy;
 4. Munsell sector identity and Brown/Black guards;
@@ -292,8 +342,10 @@ authored variants add one color file each. All artifacts identify
 The locked source retains the primary id and seed, policies, overrides,
 profile, rest positions, and contract identifiers. The manifest centralizes
 asset hashes. Each color asset contains `sector`, `variant`, `colorKind`,
-`seedHex`, `seedOrigin`, policies, generated anchors, functional rest colors,
-and complete Light and Dark tone maps. The diagnostics identify the
+`seedHex`, `seedOrigin`, policies, generated anchors, harmony-rest colors,
+per-theme `stateReferences`, and complete Light and Dark tone maps. A state
+reference records its tone, hex, and whether it came from `generated-anchor` or
+`harmony-rest`. The diagnostics identify the
 `fixed-reference` seed model and `kiskadee-munsell-reference-v1` set alongside
 cross-hue balance, classification, harmony metrics, and scale diagnostics.
 
@@ -314,5 +366,7 @@ refine the draft V1 behavior. After the golden is approved, any byte-changing
 harmony algorithm requires a new harmony contract or generator version.
 
 This package produces Layer 1 artifacts only. It does not write presets,
-external types, semantic aliases, or component state mappings. Those changes
-require a separate approved plan after this generator is visually accepted.
+external types, semantic aliases, or component state mappings. In particular,
+exporting a state anchor does not authorize a preset to adopt the experimental
+state offsets. Preset integration and the definitive Light/Dark mapping require
+a separate approved plan after this generator is visually accepted.

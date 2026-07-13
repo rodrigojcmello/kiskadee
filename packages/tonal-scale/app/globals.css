@@ -423,7 +423,7 @@ dd {
 }
 
 .preview-card {
-  width: min(380px, 100%);
+  width: min(520px, 100%);
   border: 1px solid var(--preview-border);
   border-radius: 16px;
   padding: 20px;
@@ -501,6 +501,96 @@ dd {
   background: var(--preview-action);
   color: var(--preview-action-text);
   font-weight: 700;
+}
+
+.state-experiment {
+  margin-top: 16px;
+  border-top: 1px solid var(--preview-border);
+  padding-top: 12px;
+}
+
+.state-experiment-heading {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+
+.state-experiment-heading strong {
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+
+.state-experiment-heading small {
+  color: var(--preview-muted);
+  font-size: 8px;
+}
+
+.state-experiment > ul {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--preview-border);
+  border-radius: 9px;
+  padding: 0;
+  list-style: none;
+}
+
+.state-sample {
+  display: grid;
+  min-width: 0;
+  min-height: 64px;
+  gap: 3px;
+  align-content: space-between;
+  padding: 7px;
+  background: var(--state-color);
+  color: var(--state-text);
+}
+
+.state-sample + .state-sample {
+  border-left: 1px solid color-mix(in srgb, currentcolor 18%, transparent);
+}
+
+.state-sample > span {
+  display: flex;
+  gap: 4px;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.state-sample strong {
+  overflow: hidden;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.state-sample code,
+.state-sample small {
+  overflow: hidden;
+  color: inherit;
+  font-size: 7px;
+  opacity: 0.82;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.state-sample code {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-weight: 700;
+}
+
+.state-sample.unavailable {
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      color-mix(in srgb, var(--preview-border) 40%, transparent) 0 6px,
+      transparent 6px 12px
+    ),
+    var(--preview-surface);
+  color: var(--preview-muted);
 }
 
 .scale-stack {
@@ -1012,6 +1102,42 @@ dd {
   gap: 10px;
 }
 
+.overview-marker-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  align-items: center;
+  margin: -3px 4px 12px;
+  color: var(--muted-strong);
+  font-size: 10px;
+}
+
+.overview-marker-legend > span {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.overview-marker-legend > small {
+  color: var(--muted);
+  font-size: inherit;
+}
+
+.overview-marker-legend .anchor-marker {
+  width: 0;
+  height: 0;
+  border-top: 7px solid var(--text);
+  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
+}
+
+.overview-marker-legend .rest-marker {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text);
+}
+
 .overview-family {
   overflow: hidden;
   transition:
@@ -1100,15 +1226,30 @@ dd {
   border-radius: 0 6px 6px 0;
 }
 
+.overview-strip i.anchor::before {
+  position: absolute;
+  z-index: 1;
+  top: -7px;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-top: 6px solid var(--text);
+  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
+  content: "";
+  transform: translateX(-50%);
+}
+
 .overview-strip i.rest::after {
   position: absolute;
-  top: -5px;
+  z-index: 1;
+  top: 4px;
   left: 50%;
   width: 7px;
   height: 7px;
-  border: 1px solid var(--surface);
+  border: 1px solid color-mix(in srgb, var(--overview-marker) 70%, transparent);
   border-radius: 50%;
-  background: var(--text);
+  background: var(--overview-marker);
   content: "";
   transform: translateX(-50%);
 }
@@ -1339,6 +1480,19 @@ dd {
   .component-preview {
     min-height: 210px;
     padding: 20px;
+  }
+
+  .state-experiment > ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .state-sample:nth-child(3) {
+    border-left: 0;
+    border-top: 1px solid color-mix(in srgb, currentcolor 18%, transparent);
+  }
+
+  .state-sample:nth-child(4) {
+    border-top: 1px solid color-mix(in srgb, currentcolor 18%, transparent);
   }
 
   .swatch {

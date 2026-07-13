@@ -65,9 +65,14 @@ The `munsell-oklch-v1` projection freezes these hue centers:
 | purple | 322deg |
 | red-purple | 351deg |
 
-Sector boundaries are the circular midpoints between adjacent centers. An
+Sector boundaries are the circular midpoints between adjacent centers except
+for Red/Yellow-Red. That boundary is explicitly calibrated to `34deg`, near the
+midpoint between the canonical Red `#d13438` and Orange `#ca5010` reference
+hues and rounded toward Orange so `30deg` remains inside Red's safe core. An
 interval includes its start and excludes its end, including the wrap between
-red-purple and red. This removes ambiguous equality at a boundary.
+red-purple and red. Therefore `34deg` belongs to Yellow-Red and `#f4511e`
+classifies as `yellow-red.v1`, preserving Red as a distinct companion family
+rather than consuming it with a visibly Orange primary.
 
 The inner 15% through 85% of each interval is its safe generation region.
 Authored and fixed-reference colors in the outer bands remain valid when they
@@ -83,12 +88,18 @@ criteria are documented in
 
 The red, yellow-red, yellow, and purple-blue centers are perceptually
 calibrated so common product colors classify recognizably and remain coherent
-if the deferred cross-sector projection returns. In particular, the
-red/yellow-red boundary retains Orange in yellow-red, the yellow center favors
-golden Yellow over olive Green-Yellow, and saturated electric blues remain on
-the blue side of the blue/purple-blue boundary. These values are part of the
-Kiskadee projection rather than claims about a universal Munsell-to-OKLCH
-conversion.
+if the deferred cross-sector projection returns. In particular, the explicit
+red/yellow-red boundary keeps Orange and red-biased Orange in Yellow-Red, the
+yellow center favors golden Yellow over olive Green-Yellow, and saturated
+electric blues remain on the blue side of the blue/purple-blue boundary. These
+values are part of the Kiskadee projection rather than claims about a universal
+Munsell-to-OKLCH conversion.
+
+`munsell-oklch-v1` is still before its systemic-golden milestone. Calibrating
+the Red/Yellow-Red boundary therefore refines the not-yet-frozen V1 projection
+instead of creating a misleading V2 contract. Once that milestone is approved,
+future byte- or identity-changing boundary adjustments require a new projection
+version.
 
 A chromatic primary with OKL chroma below `0.005` fails because its hue is not
 reliable. Chroma from `0.005` through `0.02` is classifiable but requires review.
@@ -127,5 +138,24 @@ above `0.08` fail.
   are the adjustable dimensions.
 - Brown remains yellow-red and cannot be replaced by an Orange-like v2 seed.
 - The same recipe, contracts, and generator version must emit identical bytes.
+
+Adjacent primary and support families also have a collision guard at their
+emitted rest colors. The public angular identity target is at least `12deg`; a
+`DeltaE` of `0.05` is the perceptual safety threshold for cases where gamut
+fitting compresses hue separation. A pair is considered collided only when it
+falls below both thresholds.
+
+The preventive harmony band is wider than the public target. When a harmonized
+fixed-reference support seed is adjacent to and less than `13.5deg` from the
+exact primary, its working hue moves away from the primary toward its declared
+sector to target `13.5deg`. The extra `1.5deg` protects the emitted `12deg`
+minimum from sRGB quantization and gamut fitting. The primary is immutable, and
+this restoration never changes a `source-exact` or `adaptive` family. A
+non-harmonized collision is reported for review rather than silently rewriting
+the authored color.
+
+This support-only restoration belongs to the multi-family harmony layer. It
+does not change sector centers for other boundaries, the public L/D grid, or
+the low-level `generateKiskadeeScale` algorithm and its canonical colors.
 
 ![Kiskadee color family taxonomy](../assets/color-family-taxonomy-wheel.svg)

@@ -165,7 +165,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
           <p className={styles.intro}>
             The exact primary remains preserved at its generated anchors. Every support family
             starts from a fixed reference seed so only the harmony response changes while Kiskadee
-            selects shared Light and Dark functional rest positions.
+            selects shared Light and Dark harmony-rest positions.
           </p>
         </div>
 
@@ -294,7 +294,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
             ? `Hue ${classification.hue.toFixed(1)}° · ${(classification.positionInSector * 100).toFixed(1)}% through ${formatFamilyName(classification.sector)} · ${classification.isInSafeCore ? 'inside the safe generation region' : `near the ${classification.boundarySide} boundary`}.`
             : 'Enter a valid six-digit sRGB hex to classify the primary.'}
           {resolvedPrimary
-            ? ` Generated anchors: L${resolvedPrimary.themes.light.scale.anchorTone} / D${resolvedPrimary.themes.dark.scale.anchorTone}. Functional rest: L${resolvedPrimary.themes.light.restTone} / D${resolvedPrimary.themes.dark.restTone}.`
+            ? ` Generated anchors: L${resolvedPrimary.themes.light.scale.anchorTone} / D${resolvedPrimary.themes.dark.scale.anchorTone}. Harmony rest: L${resolvedPrimary.themes.light.restTone} / D${resolvedPrimary.themes.dark.restTone}.`
             : ''}
         </p>
       </section>
@@ -413,7 +413,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
         <section className={styles.anchorCard} aria-labelledby={`${editorId}-rest-title`}>
           <div className={styles.cardHeading}>
             <div>
-              <p className={styles.kicker}>Shared functional anchor</p>
+              <p className={styles.kicker}>Shared harmony checkpoint</p>
               <h3 id={`${editorId}-rest-title`}>Rest</h3>
             </div>
             <span className={styles.modeTag}>{recipe.tonalAnchors.rest.mode}</span>
@@ -422,7 +422,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
             The system tests the exact primary anchor as the shared rest first. It moves Light or
             Dark independently only when the ten emitted chromatic v1 sectors cannot remain coherent
             there. Harmonized support families may keep their vivid anchor at another tone while
-            still sharing that functional rest.
+            still sharing that harmony rest.
           </p>
 
           {recipe.tonalAnchors.rest.mode === 'auto' ? (

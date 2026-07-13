@@ -6,6 +6,8 @@ import {
   generateKiskadeeTonalSystem,
   type ResolvedKiskadeeTonalSystem,
   type ResolvedTonalFamily,
+  resolveTonalStateReference,
+  type TonalStateReference,
   type TonalSystemIssue
 } from '../tonal-system.ts';
 import {
@@ -60,8 +62,14 @@ export type PrimitiveTonalColorAssetV2 = {
     light: { tone: KiskadeeTone; hex: string };
     dark: { tone: KiskadeeTone; hex: string };
   };
+  stateReferences: {
+    light: ArtifactStateReference;
+    dark: ArtifactStateReference;
+  };
   scales: { light: ToneHexMap; dark: ToneHexMap };
 };
+
+type ArtifactStateReference = Pick<TonalStateReference, 'tone' | 'hex' | 'source'>;
 
 export type TonalManifestAssetEntry = {
   familyId: TonalFamilyId;
@@ -110,6 +118,7 @@ type ThemeDiagnostics = {
   effectiveSeedHex: string;
   generatedAnchor: { tone: KiskadeeTone; hex: string };
   functionalRest: { tone: KiskadeeTone; hex: string };
+  stateReference: ArtifactStateReference;
   classification: MunsellColorClassification | null;
   harmony: ResolvedTonalFamily['themes']['light']['harmony'];
   scale: ResolvedTonalFamily['themes']['light']['scale']['diagnostics'];
@@ -346,6 +355,8 @@ function createColorAsset(
 ): PrimitiveTonalColorAssetV2 {
   const lightAnchor = resolveSourceAnchor(family, 'light');
   const darkAnchor = resolveSourceAnchor(family, 'dark');
+  const lightStateReference = resolveArtifactStateReference(family, 'light');
+  const darkStateReference = resolveArtifactStateReference(family, 'dark');
   return {
     kind: 'kiskadee.primitive-tonal-family',
     formatVersion: system.source.formatVersion,
@@ -368,11 +379,20 @@ function createColorAsset(
       light: { tone: family.themes.light.restTone, hex: family.themes.light.restColor.hex },
       dark: { tone: family.themes.dark.restTone, hex: family.themes.dark.restColor.hex }
     },
+    stateReferences: { light: lightStateReference, dark: darkStateReference },
     scales: {
       light: createToneHexMap(family.themes.light.scale.colors),
       dark: createToneHexMap(family.themes.dark.scale.colors)
     }
   };
+}
+
+function resolveArtifactStateReference(
+  family: ResolvedTonalFamily,
+  theme: 'light' | 'dark'
+): ArtifactStateReference {
+  const { tone, hex, source } = resolveTonalStateReference(family, theme);
+  return { tone, hex, source };
 }
 
 function resolveSourceAnchor(
@@ -405,6 +425,7 @@ function createThemeDiagnostics(
     effectiveSeedHex: theme.effectiveSeedHex,
     generatedAnchor: { tone: anchorTone, hex: anchorColor.hex },
     functionalRest: { tone: theme.restTone, hex: theme.restColor.hex },
+    stateReference: resolveArtifactStateReference(family, theme.theme),
     classification:
       family.colorKind === 'chromatic' ? classifyMunsellHex(theme.effectiveSeedHex) : null,
     harmony: theme.harmony,

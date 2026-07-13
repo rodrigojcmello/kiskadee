@@ -4,13 +4,19 @@ import type { CSSProperties } from 'react';
 import { useCallback, useDeferredValue, useEffect, useState } from 'react';
 import { createTonalArtifactBundle, type TonalArtifactBundle } from '@/src/export/tonal-artifacts';
 import { createTonalBundleZip } from '@/src/export/tonal-bundle-zip';
-import { KISKADEE_TONAL_PROFILES, type KiskadeeTonalProfile } from '@/src/kiskadee-tonal-scale';
+import {
+  KISKADEE_TONAL_PROFILES,
+  type KiskadeeTonalProfile,
+  type KiskadeeTone
+} from '@/src/kiskadee-tonal-scale';
 import {
   generateKiskadeeTonalSystem,
   type KiskadeeTonalSystemResult,
+  offsetKiskadeeTone,
   type ResolvedKiskadeeTonalSystem,
   type ResolvedTonalFamily,
-  type ResolvedTonalTheme
+  type ResolvedTonalTheme,
+  resolveTonalStateReference
 } from '@/src/tonal-system';
 import {
   DEFAULT_TONAL_SYSTEM_RECIPE,
@@ -35,11 +41,36 @@ const SURFACE_STRESS_ROLES = [
   { label: 'Level 2', tone: 2 },
   { label: 'Level 3', tone: 3 }
 ] as const;
+const STATE_EXPERIMENT_OFFSETS = [
+  { label: 'Rest', offset: 0 },
+  { label: 'Hover', offset: 1 },
+  { label: 'Pressed', offset: -1 },
+  { label: 'Focus', offset: 1 }
+] as const;
 
 type ScaleResult = ResolvedTonalTheme['scale'];
 type ScaleColor = ScaleResult['colors'][number];
 type Theme = 'light' | 'dark';
 type ChartMetric = 'lightness' | 'chroma';
+type StateSample =
+  | {
+      label: string;
+      offset: number;
+      tone: KiskadeeTone;
+      color: ScaleColor;
+      textColor: '#000000' | '#ffffff';
+      deltaE: number;
+      contrast: number;
+    }
+  | {
+      label: string;
+      offset: number;
+      tone: null;
+      color: null;
+      textColor: null;
+      deltaE: null;
+      contrast: null;
+    };
 
 export default function TonalScalePage() {
   const [recipe, setRecipe] = useState<TonalSystemRecipeV2>(
@@ -159,7 +190,7 @@ export default function TonalScalePage() {
           <p className="hero-copy">
             Start with the exact primary color. Kiskadee harmonizes one fixed reference in every
             Munsell sector, preserves a dedicated Black scale, and keeps all Light and Dark families
-            aligned to shared functional rest positions.
+            aligned to shared harmony-rest checkpoints.
           </p>
         </div>
         <div
@@ -249,7 +280,7 @@ export default function TonalScalePage() {
             <strong>No exportable tonal system generated</strong>
             <p>
               Correct the recipe issues above. Generation does not substitute colors, move locked
-              rest positions, or emit a partial bundle silently.
+              harmony-rest positions, or emit a partial bundle silently.
             </p>
           </div>
         </section>
@@ -327,12 +358,13 @@ function ScaleWorkspace({
         <div className="section-heading">
           <h2 id="theme-preview-title">Theme previews</h2>
           <p>
-            {family.id} uses its shared rest positions for representative Light and Dark actions.
+            {family.id} uses its state anchor for the action preview. Exact primary colors can use
+            their generated anchor while support families keep the shared harmony rest.
           </p>
         </div>
         <div className="theme-grid">
-          <ThemePanel theme="light" resolution={family.themes.light} />
-          <ThemePanel theme="dark" resolution={family.themes.dark} />
+          <ThemePanel theme="light" family={family} />
+          <ThemePanel theme="dark" family={family} />
         </div>
       </section>
 
@@ -403,10 +435,11 @@ function SystemReference({ system }: { system: ResolvedKiskadeeTonalSystem }) {
   return (
     <section className="section-block" aria-labelledby="primary-reference-title">
       <div className="section-heading">
-        <h2 id="primary-reference-title">Functional rest reference</h2>
+        <h2 id="primary-reference-title">Harmony rest reference</h2>
         <p>
-          Light and Dark fingerprints are measured from the primary color at the shared functional
-          rest. The exact source remains preserved at its generated anchor.
+          Light and Dark fingerprints are measured from the primary color at the shared harmony
+          rest. The exact source remains preserved at its generated anchor and can remain the
+          primary state anchor.
         </p>
       </div>
       <div className="reference-grid">
@@ -472,9 +505,9 @@ function HarmonyComparison({ system }: { system: ResolvedKiskadeeTonalSystem }) 
   return (
     <section className="section-block" aria-labelledby="harmony-comparison-title">
       <div className="section-heading">
-        <h2 id="harmony-comparison-title">Anchor and rest harmony</h2>
+        <h2 id="harmony-comparison-title">Vivid anchor and harmony rest</h2>
         <p>
-          Each family may place its vivid anchor where that hue has enough gamut. Functional rest
+          Each family may place its vivid anchor where that hue has enough gamut. Harmony rest
           remains shared and is evaluated independently at the same Light and Dark positions.
         </p>
       </div>
@@ -488,7 +521,7 @@ function HarmonyComparison({ system }: { system: ResolvedKiskadeeTonalSystem }) 
                 <th>Policy</th>
                 <th>Source</th>
                 <th>Generated anchor</th>
-                <th>Functional rest</th>
+                <th>Harmony rest</th>
                 <th>OKL L</th>
                 <th>Rest hue-global chroma</th>
                 <th>Vivid peak</th>
@@ -589,9 +622,18 @@ function ScaleOverview({
       <div className="section-heading">
         <h2 id="scale-overview-title">System scale overview</h2>
         <p>
-          Every row uses the same 36 public positions. The marker identifies the shared Light or
-          Dark rest checkpoint.
+          Every row uses the same 36 public positions. The triangle marks the generated vivid
+          anchor; the dot marks the shared harmony-rest checkpoint.
         </p>
+      </div>
+      <div className="overview-marker-legend">
+        <span>
+          <i className="anchor-marker" aria-hidden="true" /> Generated anchor
+        </span>
+        <span>
+          <i className="rest-marker" aria-hidden="true" /> Harmony rest
+        </span>
+        <small>The state anchor used by previews can resolve to either marker.</small>
       </div>
       <div className="overview-stack">
         {system.families.map((family) => (
@@ -608,8 +650,8 @@ function ScaleOverview({
               </span>
               <span>Inspect family</span>
             </button>
-            <CompactScaleStrip resolution={family.themes.light} />
-            <CompactScaleStrip resolution={family.themes.dark} />
+            <CompactScaleStrip family={family} theme="light" />
+            <CompactScaleStrip family={family} theme="dark" />
           </article>
         ))}
       </div>
@@ -617,8 +659,11 @@ function ScaleOverview({
   );
 }
 
-function CompactScaleStrip({ resolution }: { resolution: ResolvedTonalTheme }) {
-  const prefix = resolveThemePrefix(resolution.theme);
+function CompactScaleStrip({ family, theme }: { family: ResolvedTonalFamily; theme: Theme }) {
+  const resolution = family.themes[theme];
+  const prefix = resolveThemePrefix(theme);
+  const generatedAnchorTone = resolution.scale.anchorTone;
+  const stateReference = resolveTonalStateReference(family, theme);
 
   return (
     <div className="overview-scale-row">
@@ -626,18 +671,33 @@ function CompactScaleStrip({ resolution }: { resolution: ResolvedTonalTheme }) {
       <div
         className="overview-strip"
         role="img"
-        aria-label={`${capitalize(resolution.theme)} scale, rest ${prefix}${resolution.restTone}`}
+        aria-label={`${capitalize(theme)} scale. Generated anchor ${generatedAnchorTone === null ? 'unavailable' : `${prefix}${generatedAnchorTone}`}. Harmony rest ${prefix}${resolution.restTone}. State anchor ${prefix}${stateReference.tone}.`}
       >
-        {resolution.scale.colors.map((color) => (
-          <i
-            key={color.tone}
-            className={color.tone === resolution.restTone ? 'rest' : undefined}
-            style={{ '--overview-color': color.hex } as CSSProperties}
-            title={`${prefix}${color.tone} · ${color.hex}`}
-          />
-        ))}
+        {resolution.scale.colors.map((color) => {
+          const isAnchor = color.flags.isAnchor;
+          const isHarmonyRest = color.tone === resolution.restTone;
+          const markerLabels = [
+            isAnchor ? 'generated anchor' : null,
+            isHarmonyRest ? 'harmony rest' : null,
+            color.tone === stateReference.tone ? 'state anchor' : null
+          ].filter((label): label is string => label !== null);
+
+          return (
+            <i
+              key={color.tone}
+              className={`${isAnchor ? 'anchor' : ''}${isHarmonyRest ? ' rest' : ''}`.trim()}
+              style={
+                {
+                  '--overview-color': color.hex,
+                  '--overview-marker': bestTextColor(color.hex)
+                } as CSSProperties
+              }
+              title={`${prefix}${color.tone} · ${color.hex}${markerLabels.length > 0 ? ` · ${markerLabels.join(' + ')}` : ''}`}
+            />
+          );
+        })}
       </div>
-      <code>{resolution.restColor.hex}</code>
+      <code title={`Harmony rest ${prefix}${resolution.restTone}`}>{resolution.restColor.hex}</code>
     </div>
   );
 }
@@ -681,8 +741,8 @@ function ArtifactExportPanel({
       <div className="section-heading">
         <h2 id="artifact-export-title">Canonical artifact set</h2>
         <p>
-          Export locks the proposed rest positions and separates compact consumption assets from the
-          complete review diagnostics.
+          Export locks the proposed harmony-rest positions and separates compact consumption assets
+          from the complete review diagnostics.
         </p>
       </div>
       <article className="panel export-panel" aria-busy={busy || disabled}>
@@ -753,7 +813,8 @@ function downloadBlob(filename: string, blob: Blob): void {
   URL.revokeObjectURL(url);
 }
 
-function ThemePanel({ theme, resolution }: { theme: Theme; resolution: ResolvedTonalTheme }) {
+function ThemePanel({ theme, family }: { theme: Theme; family: ResolvedTonalFamily }) {
+  const resolution = family.themes[theme];
   const result = resolution.scale;
   const prefix = resolveThemePrefix(theme);
   const surface = resolveTone(result, 0);
@@ -761,7 +822,9 @@ function ThemePanel({ theme, resolution }: { theme: Theme; resolution: ResolvedT
   const border = resolveTone(result, 10);
   const text = resolveTone(result, 100);
   const muted = resolveTone(result, 70);
-  const action = resolution.restColor;
+  const stateReference = resolveTonalStateReference(family, theme);
+  const action = stateReference.color;
+  const stateSamples = resolveStateSamples(result, stateReference.tone);
   const status = resolveIntegrityStatus(result);
   const previewStyle = {
     '--preview-bg': surface?.hex,
@@ -778,11 +841,12 @@ function ThemePanel({ theme, resolution }: { theme: Theme; resolution: ResolvedT
       <div className="theme-header">
         <div>
           <span className="theme-kicker">{theme} theme</span>
-          <h3>{`${prefix}0 → ${prefix}100 · rest ${prefix}${resolution.restTone}`}</h3>
+          <h3>{`${prefix}0 → ${prefix}100 · state anchor ${prefix}${stateReference.tone}`}</h3>
           <p className="scale-guard-note">
             {capitalize(resolution.policy)} · anchor {prefix}
-            {resolution.scale.anchorTone} {resolution.effectiveSeedHex} · rest{' '}
-            {resolution.restColor.hex}
+            {resolution.scale.anchorTone} {resolution.effectiveSeedHex} · harmony rest {prefix}
+            {resolution.restTone} {resolution.restColor.hex} · state source{' '}
+            {formatStateSource(stateReference.source)}
           </p>
         </div>
         <StatusBadge result={result} label={status.label} className={status.className} />
@@ -818,6 +882,59 @@ function ThemePanel({ theme, resolution }: { theme: Theme; resolution: ResolvedT
           <button className="preview-button" type="button">
             Primary action
           </button>
+          <section
+            className="state-experiment"
+            aria-label={`${capitalize(theme)} ordinal state experiment`}
+          >
+            <div className="state-experiment-heading">
+              <strong>Ordinal state experiment</strong>
+              <small>Exploration only · not a preset contract</small>
+            </div>
+            <ul>
+              {stateSamples.map((sample) => {
+                if (!sample.color) {
+                  return (
+                    <li key={sample.label} className="state-sample unavailable">
+                      <span>
+                        <strong>{sample.label}</strong>
+                        <small>{formatSignedOffset(sample.offset)}</small>
+                      </span>
+                      <code>Unavailable</code>
+                      <small>No public slot</small>
+                    </li>
+                  );
+                }
+
+                return (
+                  <li
+                    key={sample.label}
+                    className="state-sample"
+                    style={
+                      {
+                        '--state-color': sample.color.hex,
+                        '--state-text': sample.textColor
+                      } as CSSProperties
+                    }
+                    title={`${sample.label} · ${prefix}${sample.tone} · ${sample.color.hex} · Delta E ${sample.deltaE.toFixed(3)} · best-text contrast ${sample.contrast.toFixed(2)}:1`}
+                  >
+                    <span>
+                      <strong>{sample.label}</strong>
+                      <small>{formatSignedOffset(sample.offset)}</small>
+                    </span>
+                    <code>
+                      {prefix}
+                      {sample.tone} · {sample.color.hex}
+                    </code>
+                    <small>
+                      ΔE {sample.deltaE.toFixed(3)} ·{' '}
+                      {sample.textColor === '#000000' ? 'black' : 'white'}{' '}
+                      {sample.contrast.toFixed(2)}:1
+                    </small>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
         </div>
       </div>
     </article>
@@ -845,7 +962,7 @@ function TonalScalePanel({
       <div className="scale-panel-header">
         <div>
           <span className="theme-kicker">{theme} scale</span>
-          <h3>{`${prefix}0 → ${prefix}100 · anchor ${prefix}${result.anchorTone} · rest ${prefix}${restTone}`}</h3>
+          <h3>{`${prefix}0 → ${prefix}100 · anchor ${prefix}${result.anchorTone} · harmony rest ${prefix}${restTone}`}</h3>
           <p className="scale-guard-note">
             <strong>{prefix}35</strong>
             {` · ${guardForegroundLabel} 3:1 guard starts${guardRatio === null ? '' : ` (${guardRatio.toFixed(2)}:1)`} · swatch labels use max contrast`}
@@ -1050,11 +1167,11 @@ function DiagnosticsPanel({ theme, resolution }: { theme: Theme; resolution: Res
   const notes: Array<{ text: string; ok: boolean }> = [
     resolution.policy === 'source-exact'
       ? {
-          text: `Source seed preserved exactly at ${prefix}${result.anchorTone} as ${anchor?.hex}; functional rest is read at ${prefix}${resolution.restTone} as ${resolution.restColor.hex}.`,
+          text: `Source seed preserved exactly at ${prefix}${result.anchorTone} as ${anchor?.hex}; harmony rest is read at ${prefix}${resolution.restTone} as ${resolution.restColor.hex}.`,
           ok: true
         }
       : {
-          text: `${capitalize(resolution.policy)} policy resolved ${resolution.sourceSeedHex} to generated anchor ${resolution.effectiveSeedHex} at ${prefix}${result.anchorTone}; functional rest is ${resolution.restColor.hex} at ${prefix}${resolution.restTone}.`,
+          text: `${capitalize(resolution.policy)} policy resolved ${resolution.sourceSeedHex} to generated anchor ${resolution.effectiveSeedHex} at ${prefix}${result.anchorTone}; harmony rest is ${resolution.restColor.hex} at ${prefix}${resolution.restTone}.`,
           ok: resolution.status === 'pass'
         },
     diagnostics.profile === 'muted-darks'
@@ -1435,6 +1552,47 @@ function resolveTone(result: ScaleResult, tone: number): ScaleColor | undefined 
   return result.colors.find((color) => color.tone === tone);
 }
 
+function resolveStateSamples(result: ScaleResult, stateTone: KiskadeeTone): StateSample[] {
+  const stateColor = resolveTone(result, stateTone);
+  if (!stateColor) return [];
+
+  return STATE_EXPERIMENT_OFFSETS.map(({ label, offset }): StateSample => {
+    const tone = offsetKiskadeeTone(stateTone, offset);
+    const color = tone === null ? undefined : resolveTone(result, tone);
+
+    if (tone === null || !color) {
+      return {
+        label,
+        offset,
+        tone: null,
+        color: null,
+        textColor: null,
+        deltaE: null,
+        contrast: null
+      };
+    }
+
+    const textColor = bestTextColor(color.hex);
+    return {
+      label,
+      offset,
+      tone,
+      color,
+      textColor,
+      deltaE: deltaEOk(stateColor.oklch, color.oklch),
+      contrast: contrastRatio(color.hex, textColor)
+    };
+  });
+}
+
+function formatSignedOffset(offset: number): string {
+  return offset > 0 ? `+${offset}` : `${offset}`;
+}
+
+function formatStateSource(source: 'generated-anchor' | 'harmony-rest'): string {
+  return source === 'generated-anchor' ? 'generated anchor' : 'harmony rest';
+}
+
 function resolveThemePrefix(theme: Theme): 'L' | 'D' {
   return theme === 'light' ? 'L' : 'D';
 }
@@ -1543,6 +1701,17 @@ function contrastRatio(firstHex: string, secondHex: string): number {
   const lighter = Math.max(first, second);
   const darker = Math.min(first, second);
   return (lighter + 0.05) / (darker + 0.05);
+}
+
+function deltaEOk(left: ScaleColor['oklch'], right: ScaleColor['oklch']): number {
+  const leftHue = (left.h * Math.PI) / 180;
+  const rightHue = (right.h * Math.PI) / 180;
+  const leftA = left.c * Math.cos(leftHue);
+  const leftB = left.c * Math.sin(leftHue);
+  const rightA = right.c * Math.cos(rightHue);
+  const rightB = right.c * Math.sin(rightHue);
+
+  return Math.hypot((left.l - right.l) / 100, leftA - rightA, leftB - rightB);
 }
 
 function relativeLuminance(hex: string): number {

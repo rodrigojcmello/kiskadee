@@ -30,10 +30,15 @@ export const MUNSELL_OKLCH_SECTOR_CENTERS = {
   'red-purple': 351
 } as const satisfies Record<MunsellOklchSector, number>;
 
+// Calibrated near the canonical Red/Orange midpoint while keeping 30deg inside Red's safe core.
+export const MUNSELL_OKLCH_RED_YELLOW_RED_BOUNDARY_HUE = 34;
+
 export const MUNSELL_OKLCH_SAFE_CORE = {
   start: 0.15,
   end: 0.85
 } as const;
+
+const MUNSELL_OKLCH_SAFE_CORE_EPSILON = 1e-12;
 
 export const MUNSELL_OKLCH_SIGNATURE_TRANSFER = 0.4;
 
@@ -120,14 +125,12 @@ export const MUNSELL_OKLCH_SECTOR_DEFINITIONS = Object.freeze(
         (index - 1 + MUNSELL_OKLCH_SECTOR_ORDER.length) % MUNSELL_OKLCH_SECTOR_ORDER.length
       ];
     const nextSector = MUNSELL_OKLCH_SECTOR_ORDER[(index + 1) % MUNSELL_OKLCH_SECTOR_ORDER.length];
-    let previousCenter = MUNSELL_OKLCH_SECTOR_CENTERS[previousSector];
-    let nextCenter = MUNSELL_OKLCH_SECTOR_CENTERS[nextSector];
+    let unwrappedStart = resolveMunsellSectorBoundary(previousSector, sector);
+    let unwrappedEnd = resolveMunsellSectorBoundary(sector, nextSector);
 
-    if (previousCenter > centerHue) previousCenter -= 360;
-    if (nextCenter < centerHue) nextCenter += 360;
+    if (unwrappedStart > centerHue) unwrappedStart -= 360;
+    if (unwrappedEnd < centerHue) unwrappedEnd += 360;
 
-    const unwrappedStart = (previousCenter + centerHue) / 2;
-    const unwrappedEnd = (centerHue + nextCenter) / 2;
     const spanDegrees = unwrappedEnd - unwrappedStart;
 
     return Object.freeze({
@@ -143,6 +146,21 @@ export const MUNSELL_OKLCH_SECTOR_DEFINITIONS = Object.freeze(
     });
   })
 );
+
+function resolveMunsellSectorBoundary(
+  leadingSector: MunsellOklchSector,
+  trailingSector: MunsellOklchSector
+): number {
+  if (leadingSector === 'red' && trailingSector === 'yellow-red') {
+    return MUNSELL_OKLCH_RED_YELLOW_RED_BOUNDARY_HUE;
+  }
+
+  const leadingCenter = MUNSELL_OKLCH_SECTOR_CENTERS[leadingSector];
+  let trailingCenter = MUNSELL_OKLCH_SECTOR_CENTERS[trailingSector];
+  if (trailingCenter < leadingCenter) trailingCenter += 360;
+
+  return normalizeMunsellHue((leadingCenter + trailingCenter) / 2);
+}
 
 export function normalizeMunsellHue(hue: number): number {
   if (!Number.isFinite(hue)) throw new TypeError('Munsell projection hue must be finite.');
@@ -179,8 +197,8 @@ export function classifyMunsellHue(hue: number): MunsellHueClassification {
   const positionInSector =
     circularDistance(definition.startHue, normalizedHue) / definition.spanDegrees;
   const isInSafeCore =
-    positionInSector >= MUNSELL_OKLCH_SAFE_CORE.start &&
-    positionInSector <= MUNSELL_OKLCH_SAFE_CORE.end;
+    positionInSector >= MUNSELL_OKLCH_SAFE_CORE.start - MUNSELL_OKLCH_SAFE_CORE_EPSILON &&
+    positionInSector <= MUNSELL_OKLCH_SAFE_CORE.end + MUNSELL_OKLCH_SAFE_CORE_EPSILON;
   const safePosition = clamp(
     positionInSector,
     MUNSELL_OKLCH_SAFE_CORE.start,
