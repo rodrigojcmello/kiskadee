@@ -66,7 +66,7 @@ export const MUNSELL_HARMONY_V1_PARAMETERS = {
   functionalRestVividSourceMinimum: 0.5,
   functionalRestSourceRetention: 0.7,
   functionalRestBalanceRatio: 0.6,
-  functionalRestSourceAnchorBalanceRatio: 0.55
+  functionalRestSourceAnchorBalanceRatio: 0.5
 } as const;
 
 const DEFERRED_PRIMARY_DERIVATION_V1_PARAMETERS = {
@@ -117,7 +117,11 @@ export type TonalHarmonyMetrics = {
   contrastAgainstWhiteDelta: number;
   contrastAgainstBlackDelta: number;
   chromaUtilizationDelta: number;
+  restHueGlobalChromaUtilization: number;
   hueGlobalChromaUtilizationDelta: number;
+  vividPeakGlobalChromaUtilization?: number;
+  vividPeakGlobalChromaUtilizationDelta?: number;
+  vividPeakError?: number;
   seedDeltaE: number;
   hueDrift: number;
   candidatesEvaluated: number;
@@ -213,6 +217,8 @@ type RankedHarmonyCandidate = {
   metrics: Omit<TonalHarmonyMetrics, 'candidatesEvaluated'>;
 };
 
+type HarmonySeedCandidate = Omit<RankedHarmonyCandidate, 'metrics'>;
+
 type CandidateResolution = {
   candidate: RankedHarmonyCandidate;
   scale: KiskadeeScaleResult;
@@ -237,8 +243,18 @@ type HueChromaPeak = {
   chroma: number;
 };
 
+type FamilyHarmonyTarget = {
+  rest: TonalHarmonyFingerprint;
+  vividPeakGlobalUtilization: number;
+  minimumRestBalanceRatio: number;
+};
+
 type FunctionalRestProposal = {
   tone: KiskadeeTone;
+  harmonizedAnchorPreview?: {
+    issues: TonalSystemIssue[];
+    resolutions: ReadonlyMap<TonalFamilyId, ResolvedTonalTheme>;
+  };
 };
 
 type FunctionalRestCandidateEvaluation = FunctionalRestThemeDiagnostics & {
@@ -747,23 +763,21 @@ function resolveFunctionalRestProposal(params: {
     .filter((candidate): candidate is FunctionalRestCandidateEvaluation => candidate !== null);
 
   if (lockedTone === undefined) {
-    const sourceAnchor = evaluations.find(
-      (candidate) => candidate.functionalRestTone === sourceAnchorTone
-    );
-    if (sourceAnchor) {
-      const vividnessGuardApplied =
-        primarySourceUtilization >= MUNSELL_HARMONY_V1_PARAMETERS.functionalRestVividSourceMinimum;
-      const sourceAnchorRatio =
-        MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceAnchorBalanceRatio;
-      const sourceAnchorAccepted =
-        !vividnessGuardApplied ||
-        (sourceAnchor.sourceRetention >=
-          MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceRetention &&
-          sourceAnchor.minimumFamilyRatio >= sourceAnchorRatio &&
-          sourceAnchor.maximumFamilyRatio <= 1 / sourceAnchorRatio);
-      if (sourceAnchorAccepted) {
-        return { tone: sourceAnchorTone };
-      }
+    const vividnessGuardApplied =
+      primarySourceUtilization >= MUNSELL_HARMONY_V1_PARAMETERS.functionalRestVividSourceMinimum;
+    if (!vividnessGuardApplied) {
+      return { tone: sourceAnchorTone };
+    }
+
+    const harmonizedAnchorPreview = resolveHarmonizedSourceAnchorPreview({
+      theme,
+      primaryScale,
+      primarySource,
+      recipe,
+      primarySourceUtilization
+    });
+    if (harmonizedAnchorPreview) {
+      return { tone: sourceAnchorTone, harmonizedAnchorPreview };
     }
   }
 
@@ -776,6 +790,96 @@ function resolveFunctionalRestProposal(params: {
   }
 
   return { tone: best.functionalRestTone };
+}
+
+function resolveHarmonizedSourceAnchorPreview(params: {
+  theme: KiskadeeTheme;
+  primaryScale: KiskadeeScaleResult;
+  primarySource: MaterializedFamilySource;
+  recipe: MaterializedTonalSystemRecipe;
+  primarySourceUtilization: number;
+}): NonNullable<FunctionalRestProposal['harmonizedAnchorPreview']> | null {
+  const { theme, primaryScale, primarySource, recipe, primarySourceUtilization } = params;
+  const sourceAnchorTone = primaryScale.anchorTone;
+  if (sourceAnchorTone === null) return null;
+
+  const primaryColor = resolveTone(primaryScale, sourceAnchorTone);
+  if (!primaryColor) return null;
+
+  const reference = fingerprintFromColor({
+    familyId: primarySource.id,
+    theme,
+    tone: sourceAnchorTone,
+    color: primaryColor,
+    policy:
+      theme === 'dark' && primarySource.policies.dark === 'adaptive' ? 'adaptive' : 'source-exact',
+    recipe
+  });
+  const previewIssues: TonalSystemIssue[] = [];
+  const resolutions = new Map<TonalFamilyId, ResolvedTonalTheme>();
+  const emittedByFamily = new Map<TonalFamilyId, KiskadeeScaleResult>();
+
+  for (const sector of MUNSELL_SECTORS) {
+    const familyId = `${sector}.v1` as TonalFamilyId;
+    if (familyId === primarySource.id) {
+      emittedByFamily.set(familyId, primaryScale);
+      continue;
+    }
+
+    const source = recipe.families.find((family) => family.id === familyId);
+    if (!source) return null;
+    const resolution = resolveConfiguredFamilyTheme({
+      familyId,
+      sourceSeedHex: source.seedHex,
+      familyKind: 'chromatic',
+      policy: source.policies[theme],
+      theme,
+      restTone: sourceAnchorTone,
+      harmonyTarget: resolveFamilyHarmonyTarget(
+        reference,
+        primarySource.id,
+        familyId,
+        primarySourceUtilization,
+        MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceAnchorBalanceRatio
+      ),
+      enforceSafeCore: source.seedOrigin === 'derived',
+      recipe,
+      issues: previewIssues
+    });
+    if (!resolution) return null;
+
+    validateResolvedFamilyIdentity(
+      familyId,
+      resolution,
+      source.seedOrigin === 'derived',
+      previewIssues
+    );
+    if (previewIssues.some((issue) => issue.severity === 'error')) return null;
+
+    resolutions.set(familyId, resolution);
+    emittedByFamily.set(familyId, resolution.scale);
+  }
+
+  const evaluation = evaluateFunctionalRestCandidate({
+    theme,
+    tone: sourceAnchorTone,
+    sourceAnchorTone,
+    sourceIndex: KISKADEE_TONES.indexOf(sourceAnchorTone),
+    primaryScale,
+    primaryId: primarySource.id,
+    primarySourceUtilization,
+    baselines: emittedByFamily
+  });
+  if (!evaluation) return null;
+
+  const ratio = MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceAnchorBalanceRatio;
+  const accepted =
+    !evaluation.vividnessGuardApplied ||
+    (evaluation.sourceRetention >= MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceRetention &&
+      evaluation.minimumFamilyRatio >= ratio &&
+      evaluation.maximumFamilyRatio <= 1 / ratio);
+
+  return accepted ? { issues: previewIssues, resolutions } : null;
 }
 
 function evaluateFunctionalRestCandidate(params: {
@@ -859,6 +963,18 @@ function resolveScaleToneGlobalUtilization(
   return globalMaximum <= 0 ? 0 : clamp(color.oklch.c / globalMaximum, 0, 1);
 }
 
+function resolveScalePeakGlobalUtilization(scale: KiskadeeScaleResult): number {
+  const anchor = scale.anchorTone === null ? null : resolveTone(scale, scale.anchorTone);
+  if (!anchor) return 0;
+
+  const globalMaximum = resolveHueChromaPeak(anchor.oklch.h).chroma;
+  if (globalMaximum <= 0) return 0;
+  return scale.colors.reduce(
+    (maximum, color) => Math.max(maximum, clamp(color.oklch.c / globalMaximum, 0, 1)),
+    0
+  );
+}
+
 function compareFunctionalRestCandidates(
   left: FunctionalRestCandidateEvaluation,
   right: FunctionalRestCandidateEvaluation
@@ -885,12 +1001,11 @@ function normalizePrimaryGlobalUtilization(familyId: TonalFamilyId, utilization:
 
 function resolveEmittedFunctionalRestDiagnostics(params: {
   theme: KiskadeeTheme;
-  source: 'auto-proposal' | 'locked';
   primarySource: MaterializedFamilySource;
   primaryFamily: ResolvedTonalFamily;
   families: ResolvedTonalFamily[];
 }): FunctionalRestThemeDiagnostics {
-  const { theme, source, primarySource, primaryFamily, families } = params;
+  const { theme, primarySource, primaryFamily, families } = params;
   const primary = primaryFamily.themes[theme];
   const sourceAnchorTone = primary.scale.anchorTone;
   if (sourceAnchorTone === null) {
@@ -922,8 +1037,8 @@ function resolveEmittedFunctionalRestDiagnostics(params: {
       : restGlobalChromaUtilization / sourceGlobalChromaUtilization;
   const vividnessGuardApplied =
     sourceGlobalChromaUtilization >= MUNSELL_HARMONY_V1_PARAMETERS.functionalRestVividSourceMinimum;
-  const exactAutomaticAnchor = source === 'auto-proposal' && primary.restTone === sourceAnchorTone;
-  const balanceRatio = exactAutomaticAnchor
+  const exactSourceAnchor = primary.restTone === sourceAnchorTone;
+  const balanceRatio = exactSourceAnchor
     ? MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceAnchorBalanceRatio
     : MUNSELL_HARMONY_V1_PARAMETERS.functionalRestBalanceRatio;
   const balanced =
@@ -1094,6 +1209,10 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
     source:
       recipe.tonalAnchors.rest.mode === 'auto' ? ('auto-proposal' as const) : ('locked' as const)
   };
+  issues.push(
+    ...(lightRestProposal.harmonizedAnchorPreview?.issues ?? []),
+    ...(darkRestProposal.harmonizedAnchorPreview?.issues ?? [])
+  );
 
   const primaryLight = resolveSourceExactTheme({
     familyId: recipe.primaryReference,
@@ -1163,6 +1282,14 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
     }
   };
   const families: ResolvedTonalFamily[] = [primaryFamily];
+  const lightPrimaryVividPeakGlobalUtilization = normalizePrimaryGlobalUtilization(
+    recipe.primaryReference,
+    resolveGlobalChromaSignature(hexToOklch(primaryLight.effectiveSeedHex)).utilization
+  );
+  const darkPrimaryVividPeakGlobalUtilization = normalizePrimaryGlobalUtilization(
+    recipe.primaryReference,
+    resolveGlobalChromaSignature(hexToOklch(primaryDark.effectiveSeedHex)).utilization
+  );
 
   for (const familySource of recipe.families) {
     if (familySource.id === recipe.primaryReference) continue;
@@ -1212,41 +1339,53 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
       });
     }
 
-    const lightFamilyReference = resolveFamilyHarmonyReference(
+    const lightHarmonyTarget = resolveFamilyHarmonyTarget(
       lightFingerprint,
       recipe.primaryReference,
-      familySource.id
+      familySource.id,
+      lightPrimaryVividPeakGlobalUtilization,
+      primaryLight.scale.anchorTone === rest.light
+        ? MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceAnchorBalanceRatio
+        : MUNSELL_HARMONY_V1_PARAMETERS.functionalRestBalanceRatio
     );
-    const darkFamilyReference = resolveFamilyHarmonyReference(
+    const darkHarmonyTarget = resolveFamilyHarmonyTarget(
       darkFingerprint,
       recipe.primaryReference,
-      familySource.id
+      familySource.id,
+      darkPrimaryVividPeakGlobalUtilization,
+      primaryDark.scale.anchorTone === rest.dark
+        ? MUNSELL_HARMONY_V1_PARAMETERS.functionalRestSourceAnchorBalanceRatio
+        : MUNSELL_HARMONY_V1_PARAMETERS.functionalRestBalanceRatio
     );
 
-    const light = resolveConfiguredFamilyTheme({
-      familyId: familySource.id,
-      sourceSeedHex: familySource.seedHex,
-      familyKind,
-      policy: familySource.policies.light,
-      theme: 'light',
-      restTone: rest.light,
-      reference: lightFamilyReference,
-      enforceSafeCore: familySource.seedOrigin === 'derived',
-      recipe,
-      issues
-    });
-    const dark = resolveConfiguredFamilyTheme({
-      familyId: familySource.id,
-      sourceSeedHex: familySource.seedHex,
-      familyKind,
-      policy: familySource.policies.dark,
-      theme: 'dark',
-      restTone: rest.dark,
-      reference: darkFamilyReference,
-      enforceSafeCore: familySource.seedOrigin === 'derived',
-      recipe,
-      issues
-    });
+    const light =
+      lightRestProposal.harmonizedAnchorPreview?.resolutions.get(familySource.id) ??
+      resolveConfiguredFamilyTheme({
+        familyId: familySource.id,
+        sourceSeedHex: familySource.seedHex,
+        familyKind,
+        policy: familySource.policies.light,
+        theme: 'light',
+        restTone: rest.light,
+        harmonyTarget: lightHarmonyTarget,
+        enforceSafeCore: familySource.seedOrigin === 'derived',
+        recipe,
+        issues
+      });
+    const dark =
+      darkRestProposal.harmonizedAnchorPreview?.resolutions.get(familySource.id) ??
+      resolveConfiguredFamilyTheme({
+        familyId: familySource.id,
+        sourceSeedHex: familySource.seedHex,
+        familyKind,
+        policy: familySource.policies.dark,
+        theme: 'dark',
+        restTone: rest.dark,
+        harmonyTarget: darkHarmonyTarget,
+        enforceSafeCore: familySource.seedOrigin === 'derived',
+        recipe,
+        issues
+      });
 
     if (!light || !dark) continue;
 
@@ -1290,14 +1429,12 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
   const functionalRestDiagnostics = {
     light: resolveEmittedFunctionalRestDiagnostics({
       theme: 'light',
-      source: rest.source,
       primarySource,
       primaryFamily,
       families
     }),
     dark: resolveEmittedFunctionalRestDiagnostics({
       theme: 'dark',
-      source: rest.source,
       primarySource,
       primaryFamily,
       families
@@ -1415,6 +1552,24 @@ function resolveFamilyHarmonyReference(
       };
 }
 
+function resolveFamilyHarmonyTarget(
+  reference: TonalHarmonyFingerprint,
+  primaryId: TonalFamilyId,
+  familyId: TonalFamilyId,
+  normalizedPrimaryVividPeakGlobalUtilization: number,
+  minimumRestBalanceRatio: number
+): FamilyHarmonyTarget {
+  return {
+    rest: resolveFamilyHarmonyReference(reference, primaryId, familyId),
+    vividPeakGlobalUtilization:
+      familyId === 'yellow-red.v2'
+        ? normalizedPrimaryVividPeakGlobalUtilization *
+          MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio
+        : normalizedPrimaryVividPeakGlobalUtilization,
+    minimumRestBalanceRatio
+  };
+}
+
 function resolveSourceExactTheme(params: {
   familyId: TonalFamilyId;
   sourceSeedHex: string;
@@ -1494,7 +1649,7 @@ function resolveAdaptiveTheme(params: {
   const projectedRest = resolveTone(projectedScale, restTone);
 
   if (
-    isAcceptedCandidate(projectedScale, projected.hex, restTone) &&
+    isAcceptedRestAnchorCandidate(projectedScale, projected.hex, restTone) &&
     projectedRest?.hex === projected.hex &&
     isMunsellCandidateIdentityValid(projected.hex, familyId, enforceSafeCore)
   ) {
@@ -1571,7 +1726,7 @@ function resolveConfiguredFamilyTheme(params: {
   policy: TonalThemePolicy;
   theme: KiskadeeTheme;
   restTone: KiskadeeTone;
-  reference: TonalHarmonyFingerprint;
+  harmonyTarget: FamilyHarmonyTarget;
   enforceSafeCore: boolean;
   recipe: MaterializedTonalSystemRecipe;
   issues: TonalSystemIssue[];
@@ -1583,7 +1738,7 @@ function resolveConfiguredFamilyTheme(params: {
     policy,
     theme,
     restTone,
-    reference,
+    harmonyTarget,
     enforceSafeCore,
     recipe,
     issues
@@ -1595,7 +1750,7 @@ function resolveConfiguredFamilyTheme(params: {
       sourceSeedHex,
       theme,
       restTone,
-      reference,
+      harmonyTarget,
       enforceSafeCore,
       recipe,
       issues
@@ -1654,12 +1809,18 @@ function resolveHarmonizedTheme(params: {
   sourceSeedHex: string;
   theme: KiskadeeTheme;
   restTone: KiskadeeTone;
-  reference: TonalHarmonyFingerprint;
+  harmonyTarget: FamilyHarmonyTarget;
   enforceSafeCore: boolean;
   recipe: MaterializedTonalSystemRecipe;
   issues: TonalSystemIssue[];
 }): ResolvedTonalTheme | null {
-  return resolveCandidateTheme({ ...params, policy: 'harmonized' });
+  return resolveCandidateTheme({
+    ...params,
+    reference: params.harmonyTarget.rest,
+    vividPeakGlobalUtilization: params.harmonyTarget.vividPeakGlobalUtilization,
+    minimumRestBalanceRatio: params.harmonyTarget.minimumRestBalanceRatio,
+    policy: 'harmonized'
+  });
 }
 
 function resolveCandidateTheme(params: {
@@ -1668,6 +1829,8 @@ function resolveCandidateTheme(params: {
   theme: KiskadeeTheme;
   restTone: KiskadeeTone;
   reference: TonalHarmonyFingerprint;
+  vividPeakGlobalUtilization?: number;
+  minimumRestBalanceRatio?: number;
   policy: 'adaptive' | 'harmonized';
   enforceSafeCore: boolean;
   recipe: MaterializedTonalSystemRecipe;
@@ -1679,13 +1842,15 @@ function resolveCandidateTheme(params: {
     theme,
     restTone,
     reference,
+    vividPeakGlobalUtilization,
+    minimumRestBalanceRatio,
     policy,
     enforceSafeCore,
     recipe,
     issues
   } = params;
   const sourceOklch = hexToOklch(sourceSeedHex);
-  const resolution = findHarmonyCandidate({
+  const candidateParams = {
     sourceOklch,
     sourceSeedHex,
     theme,
@@ -1695,14 +1860,23 @@ function resolveCandidateTheme(params: {
     enforceSafeCore,
     profile: recipe.tonalProfile,
     chromaModel: recipe.useHueGlobalHarmony ? 'hue-global' : 'local-gamut'
-  });
+  } as const;
+  const resolution =
+    policy === 'harmonized' && vividPeakGlobalUtilization !== undefined
+      ? findFreeAnchorHarmonyCandidate({
+          ...candidateParams,
+          vividPeakGlobalUtilization,
+          minimumRestBalanceRatio:
+            minimumRestBalanceRatio ?? MUNSELL_HARMONY_V1_PARAMETERS.functionalRestBalanceRatio
+        })
+      : findRestAnchoredHarmonyCandidate(candidateParams);
 
   if (!resolution) {
     issues.push({
       severity: 'error',
       code: 'HARMONY_TARGET_UNREACHABLE',
       path: familyPath(recipe, familyId, 'seedHex'),
-      message: `${familyId} could not produce a valid ${theme} scale anchored at ${theme === 'light' ? 'L' : 'D'}${restTone}.`,
+      message: `${familyId} could not produce a valid ${theme} scale with functional rest at ${theme === 'light' ? 'L' : 'D'}${restTone}.`,
       familyId,
       theme
     });
@@ -1747,7 +1921,216 @@ function resolveCandidateTheme(params: {
   };
 }
 
-function findHarmonyCandidate(params: {
+function findFreeAnchorHarmonyCandidate(params: {
+  sourceOklch: OklchColor;
+  sourceSeedHex: string;
+  theme: KiskadeeTheme;
+  restTone: KiskadeeTone;
+  reference: TonalHarmonyFingerprint;
+  vividPeakGlobalUtilization: number;
+  minimumRestBalanceRatio: number;
+  familyId: TonalFamilyId;
+  enforceSafeCore: boolean;
+  profile: TonalSystemRecipeV2['tonalProfile'];
+  chromaModel: TonalHarmonyMetrics['chromaModel'];
+}): CandidateResolution | null {
+  const {
+    sourceOklch,
+    sourceSeedHex,
+    theme,
+    restTone,
+    reference,
+    vividPeakGlobalUtilization,
+    minimumRestBalanceRatio,
+    familyId,
+    enforceSafeCore,
+    profile,
+    chromaModel
+  } = params;
+
+  if (chromaModel !== 'hue-global') {
+    return findRestAnchoredHarmonyCandidate({
+      sourceOklch,
+      sourceSeedHex,
+      theme,
+      restTone,
+      reference,
+      familyId,
+      enforceSafeCore,
+      profile,
+      chromaModel
+    });
+  }
+
+  let evaluated = 0;
+  const evaluatedHexes = new Set<string>();
+  const feasible: CandidateResolution[] = [];
+  const reviewFallbacks: CandidateResolution[] = [];
+  const evaluate = (seedCandidate: HarmonySeedCandidate): void => {
+    if (evaluatedHexes.has(seedCandidate.hex)) return;
+    evaluatedHexes.add(seedCandidate.hex);
+    if (!isFreeAnchorSeedIdentityValid(seedCandidate.hex, familyId, enforceSafeCore)) return;
+
+    evaluated += 1;
+    const scale = generateKiskadeeScale({ seedHex: seedCandidate.hex, theme, profile });
+    if (!isAcceptedFreeAnchorCandidate(scale, seedCandidate.hex, restTone)) return;
+    const restColor = resolveTone(scale, restTone);
+    if (!restColor || !isMunsellRestIdentityValid(restColor, familyId)) return;
+
+    const vividPeakUtilization = resolveScalePeakGlobalUtilization(scale);
+    const vividPeakDelta = vividPeakUtilization - vividPeakGlobalUtilization;
+    const vividPeakError =
+      Math.abs(vividPeakDelta) / HARMONY_V1_PARAMETERS.chromaUtilizationTolerance;
+    const restMetrics = createHarmonyMetrics(
+      restColor.hex,
+      sourceOklch,
+      reference,
+      0,
+      chromaModel,
+      seedCandidate.hex,
+      minimumRestBalanceRatio
+    );
+    const metrics: Omit<TonalHarmonyMetrics, 'candidatesEvaluated'> = {
+      ...restMetrics,
+      score: Math.max(restMetrics.score, vividPeakError),
+      vividPeakGlobalChromaUtilization: vividPeakUtilization,
+      vividPeakGlobalChromaUtilizationDelta: vividPeakDelta,
+      vividPeakError
+    };
+    const candidate: RankedHarmonyCandidate = { ...seedCandidate, metrics };
+    const resolution = { candidate, scale, candidatesEvaluated: evaluated };
+    if (scale.diagnostics.chromaContinuityRelaxed) reviewFallbacks.push(resolution);
+    else feasible.push(resolution);
+  };
+
+  const sourceVividPeakUtilization = resolveGlobalChromaSignature(sourceOklch).utilization;
+  const coarseUtilizations = resolveFreeAnchorSearchUtilizations(
+    vividPeakGlobalUtilization,
+    sourceVividPeakUtilization,
+    0.04
+  );
+  for (const candidate of createFreeAnchorSeedCandidates({
+    sourceOklch,
+    sourceSeedHex,
+    familyId,
+    targetUtilization: vividPeakGlobalUtilization,
+    utilizations: coarseUtilizations
+  })) {
+    evaluate(candidate);
+  }
+
+  let candidates = resolveFreeAnchorCandidatePool(feasible, reviewFallbacks);
+  if (candidates.length === 0) return null;
+  let best = [...candidates].sort(compareCandidateResolutions)[0];
+  const refinedUtilizations = resolveFreeAnchorSearchUtilizations(
+    best.candidate.requestedUtilization,
+    sourceVividPeakUtilization,
+    0.005,
+    0.03
+  );
+  for (const candidate of createFreeAnchorSeedCandidates({
+    sourceOklch,
+    sourceSeedHex,
+    familyId,
+    targetUtilization: vividPeakGlobalUtilization,
+    utilizations: refinedUtilizations
+  })) {
+    evaluate(candidate);
+  }
+
+  candidates = resolveFreeAnchorCandidatePool(feasible, reviewFallbacks);
+  best = [...candidates].sort(compareCandidateResolutions)[0];
+  return { ...best, candidatesEvaluated: evaluated };
+}
+
+function resolveFreeAnchorCandidatePool(
+  clean: CandidateResolution[],
+  continuityReviews: CandidateResolution[]
+): CandidateResolution[] {
+  if (clean.length === 0) return continuityReviews;
+  if (continuityReviews.length === 0) return clean;
+
+  const bestClean = [...clean].sort(compareCandidateResolutions)[0];
+  const metrics = bestClean.candidate.metrics;
+  const cleanPreservesBothHarmonyAxes =
+    metrics.hueGlobalBalanceError <= 1e-12 &&
+    metrics.chromaUtilizationError <= 1 &&
+    (metrics.vividPeakError ?? 0) <= 1;
+  return cleanPreservesBothHarmonyAxes ? clean : [...clean, ...continuityReviews];
+}
+
+function resolveFreeAnchorSearchUtilizations(
+  center: number,
+  source: number,
+  step: number,
+  radius = 0.16
+): number[] {
+  const values = new Set<number>([clamp(center, 0.04, 1), clamp(source, 0.04, 1)]);
+  const steps = Math.round(radius / step);
+  for (let index = -steps; index <= steps; index += 1) {
+    values.add(clamp(center + index * step, 0.04, 1));
+  }
+  return [...values].sort((left, right) => left - right);
+}
+
+function createFreeAnchorSeedCandidates(params: {
+  sourceOklch: OklchColor;
+  sourceSeedHex: string;
+  familyId: TonalFamilyId;
+  targetUtilization: number;
+  utilizations: number[];
+}): HarmonySeedCandidate[] {
+  const { sourceOklch, sourceSeedHex, familyId, targetUtilization, utilizations } = params;
+  const peak = resolveHueChromaPeak(sourceOklch.h);
+  const preferredLightness = familyId === 'yellow-red.v2' ? sourceOklch.l : peak.lightness;
+  const byHex = new Map<string, HarmonySeedCandidate>();
+
+  for (const requestedUtilization of utilizations) {
+    const utilization = clamp(requestedUtilization, 0.04, 1);
+    const desiredChroma = peak.chroma * utilization;
+    const lightness = resolveNearestGlobalChromaLightness({
+      desiredLightness: preferredLightness,
+      desiredChroma,
+      hue: sourceOklch.h,
+      peak
+    });
+    const rendered = oklchToSrgbHex({ l: lightness, c: desiredChroma, h: sourceOklch.h });
+    const emitted = hexToOklch(rendered.hex);
+    const maximumChroma = maxSrgbChroma(emitted.l, emitted.h);
+    byHex.set(rendered.hex, {
+      requestedLightness: lightness,
+      requestedUtilization: utilization,
+      hex: rendered.hex,
+      oklch: emitted,
+      maximumSrgbChroma: maximumChroma
+    });
+  }
+
+  if (!byHex.has(sourceSeedHex)) {
+    const sourceMaximum = maxSrgbChroma(sourceOklch.l, sourceOklch.h);
+    byHex.set(sourceSeedHex, {
+      requestedLightness: sourceOklch.l,
+      requestedUtilization: peak.chroma <= 0 ? 0 : clamp(sourceOklch.c / peak.chroma, 0, 1),
+      hex: sourceSeedHex,
+      oklch: sourceOklch,
+      maximumSrgbChroma: sourceMaximum
+    });
+  }
+
+  return [...byHex.values()].sort((left, right) => {
+    const targetDifference =
+      Math.abs(left.requestedUtilization - targetUtilization) -
+      Math.abs(right.requestedUtilization - targetUtilization);
+    if (Math.abs(targetDifference) > 1e-12) return targetDifference;
+    const sourceLightnessDifference =
+      Math.abs(left.requestedLightness - sourceOklch.l) -
+      Math.abs(right.requestedLightness - sourceOklch.l);
+    if (Math.abs(sourceLightnessDifference) > 1e-12) return sourceLightnessDifference;
+    return compareStrings(left.hex, right.hex);
+  });
+}
+
+function findRestAnchoredHarmonyCandidate(params: {
   sourceOklch: OklchColor;
   sourceSeedHex: string;
   theme: KiskadeeTheme;
@@ -1789,7 +2172,7 @@ function findHarmonyCandidate(params: {
     if (!isMunsellCandidateIdentityValid(candidate.hex, familyId, enforceSafeCore)) continue;
     evaluated += 1;
     const scale = generateKiskadeeScale({ seedHex: candidate.hex, theme, profile });
-    if (isAcceptedCandidate(scale, candidate.hex, restTone)) {
+    if (isAcceptedRestAnchorCandidate(scale, candidate.hex, restTone)) {
       const resolution = { candidate, scale, candidatesEvaluated: evaluated };
       if (scale.diagnostics.chromaContinuityRelaxed) {
         reviewFallbacks.push(resolution);
@@ -1822,7 +2205,7 @@ function findHarmonyCandidate(params: {
     if (!isMunsellCandidateIdentityValid(candidate.hex, familyId, enforceSafeCore)) continue;
     evaluated += 1;
     const scale = generateKiskadeeScale({ seedHex: candidate.hex, theme, profile });
-    if (!isAcceptedCandidate(scale, candidate.hex, restTone)) continue;
+    if (!isAcceptedRestAnchorCandidate(scale, candidate.hex, restTone)) continue;
 
     const resolution = { candidate, scale, candidatesEvaluated: evaluated };
     if (compareCandidateResolutions(resolution, best) < 0) best = resolution;
@@ -1910,9 +2293,12 @@ function createHarmonyMetrics(
   sourceOklch: OklchColor,
   reference: TonalHarmonyFingerprint,
   candidatesEvaluated: number,
-  chromaModel: TonalHarmonyMetrics['chromaModel']
+  chromaModel: TonalHarmonyMetrics['chromaModel'],
+  effectiveSeedHex = hex,
+  minimumGlobalRatio: number = MUNSELL_HARMONY_V1_PARAMETERS.functionalRestBalanceRatio
 ): TonalHarmonyMetrics {
   const emitted = hexToOklch(hex);
+  const effectiveSeed = hexToOklch(effectiveSeedHex);
   const luminance = relativeLuminance(hex);
   const maximumChroma = maxSrgbChroma(emitted.l, emitted.h);
   const utilization = maximumChroma <= 0 ? 0 : clamp(emitted.c / maximumChroma, 0, 1);
@@ -1935,7 +2321,6 @@ function createHarmonyMetrics(
     reference.hueGlobalChromaUtilization <= 0.000_001
       ? 1
       : globalUtilization / reference.hueGlobalChromaUtilization;
-  const minimumGlobalRatio = MUNSELL_HARMONY_V1_PARAMETERS.functionalRestBalanceRatio;
   const maximumGlobalRatio = 1 / minimumGlobalRatio;
   const hueGlobalBalanceError =
     chromaModel === 'local-gamut'
@@ -1963,9 +2348,10 @@ function createHarmonyMetrics(
     contrastAgainstWhiteDelta,
     contrastAgainstBlackDelta,
     chromaUtilizationDelta,
+    restHueGlobalChromaUtilization: globalUtilization,
     hueGlobalChromaUtilizationDelta,
-    seedDeltaE: deltaEOk(sourceOklch, emitted),
-    hueDrift: circularHueDistance(sourceOklch.h, emitted.h),
+    seedDeltaE: deltaEOk(sourceOklch, effectiveSeed),
+    hueDrift: circularHueDistance(sourceOklch.h, effectiveSeed.h),
     candidatesEvaluated
   };
 }
@@ -2020,7 +2406,7 @@ function fingerprintFromColor(params: {
   };
 }
 
-function isAcceptedCandidate(
+function isAcceptedRestAnchorCandidate(
   scale: KiskadeeScaleResult,
   effectiveSeedHex: string,
   restTone: KiskadeeTone
@@ -2030,6 +2416,33 @@ function isAcceptedCandidate(
     scale.anchorTone === restTone &&
     resolveTone(scale, restTone)?.hex === effectiveSeedHex
   );
+}
+
+function isAcceptedFreeAnchorCandidate(
+  scale: KiskadeeScaleResult,
+  effectiveSeedHex: string,
+  restTone: KiskadeeTone
+): boolean {
+  if (!scale.diagnostics.valid || scale.anchorTone === null || !resolveTone(scale, restTone)) {
+    return false;
+  }
+  return resolveTone(scale, scale.anchorTone)?.hex === effectiveSeedHex;
+}
+
+function isFreeAnchorSeedIdentityValid(
+  hex: string,
+  familyId: TonalFamilyId,
+  requireSafeCore: boolean
+): boolean {
+  if (!isMunsellCandidateIdentityValid(hex, familyId, requireSafeCore)) return false;
+  return familyId !== 'yellow-red.v2' || suggestYellowRedVariant(hexToOklch(hex)).variant === 'v2';
+}
+
+function isMunsellRestIdentityValid(color: KiskadeeScaleColor, familyId: TonalFamilyId): boolean {
+  const parsed = parseTonalFamilyId(familyId);
+  if (!parsed?.sector || color.oklch.c < HARMONY_V1_PARAMETERS.reliableHueMinimumChroma)
+    return true;
+  return classifyMunsellHex(color.hex).sector === parsed.sector;
 }
 
 function isMunsellCandidateIdentityValid(
@@ -2069,12 +2482,19 @@ function compareRankedCandidates(
     rightMetrics.hueDrift <= HARMONY_V1_PARAMETERS.maximumHueDrift;
   if (leftHardFeasible !== rightHardFeasible) return leftHardFeasible ? -1 : 1;
 
-  // A vivid system must first return to the permitted hue-global balance
-  // range. Once feasible, the approved perceptual hierarchy remains intact.
+  // A vivid system must first return to the permitted rest balance range.
+  // Within that range, rest lightness/chroma feasibility protects semantic
+  // equivalence before the independent vivid-peak target is compared.
   const balanceDifference = leftMetrics.hueGlobalBalanceError - rightMetrics.hueGlobalBalanceError;
   if (Math.abs(balanceDifference) > 1e-12) return balanceDifference;
 
-  for (const metric of ['lightnessError', 'chromaUtilizationError', 'contrastLogError'] as const) {
+  const leftRestChromaFeasible = leftMetrics.chromaUtilizationError <= 1;
+  const rightRestChromaFeasible = rightMetrics.chromaUtilizationError <= 1;
+  if (leftRestChromaFeasible !== rightRestChromaFeasible) {
+    return leftRestChromaFeasible ? -1 : 1;
+  }
+
+  for (const metric of ['lightnessError', 'chromaUtilizationError'] as const) {
     const leftValue = leftMetrics[metric];
     const rightValue = rightMetrics[metric];
     const leftExcess = Math.max(0, leftValue - 1);
@@ -2083,6 +2503,14 @@ function compareRankedCandidates(
     if (Math.abs(excessDifference) > 1e-12) return excessDifference;
   }
 
+  const vividPeakDifference =
+    (leftMetrics.vividPeakError ?? 0) - (rightMetrics.vividPeakError ?? 0);
+  if (Math.abs(vividPeakDifference) > 1e-12) return vividPeakDifference;
+
+  const contrastExcessDifference =
+    Math.max(0, leftMetrics.contrastLogError - 1) - Math.max(0, rightMetrics.contrastLogError - 1);
+  if (Math.abs(contrastExcessDifference) > 1e-12) return contrastExcessDifference;
+
   const scoreDifference = leftMetrics.score - rightMetrics.score;
   if (Math.abs(scoreDifference) > 1e-12) return scoreDifference;
 
@@ -2090,12 +2518,14 @@ function compareRankedCandidates(
     leftMetrics.lightnessError ** 2 +
     leftMetrics.contrastLogError ** 2 +
     leftMetrics.chromaUtilizationError ** 2 +
-    leftMetrics.hueGlobalBalanceError ** 2;
+    leftMetrics.hueGlobalBalanceError ** 2 +
+    (leftMetrics.vividPeakError ?? 0) ** 2;
   const rightSquared =
     rightMetrics.lightnessError ** 2 +
     rightMetrics.contrastLogError ** 2 +
     rightMetrics.chromaUtilizationError ** 2 +
-    rightMetrics.hueGlobalBalanceError ** 2;
+    rightMetrics.hueGlobalBalanceError ** 2 +
+    (rightMetrics.vividPeakError ?? 0) ** 2;
   if (Math.abs(leftSquared - rightSquared) > 1e-12) return leftSquared - rightSquared;
   if (Math.abs(leftMetrics.seedDeltaE - rightMetrics.seedDeltaE) > 1e-12) {
     return leftMetrics.seedDeltaE - rightMetrics.seedDeltaE;
@@ -2133,6 +2563,11 @@ function reportHarmonyReview(
       : null,
     metrics.seedDeltaE > HARMONY_V1_PARAMETERS.seedDistanceReviewDeltaE
       ? `source distance ${metrics.seedDeltaE.toFixed(3)} Delta E OK`
+      : null,
+    (metrics.vividPeakError ?? 0) > HARMONY_V1_PARAMETERS.passScore
+      ? `vivid peak retention ${((metrics.vividPeakGlobalChromaUtilization ?? 0) * 100).toFixed(
+          1
+        )}%`
       : null,
     ...scaleReasons
   ].filter((reason): reason is string => reason !== null);

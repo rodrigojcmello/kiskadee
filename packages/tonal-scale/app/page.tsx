@@ -472,10 +472,10 @@ function HarmonyComparison({ system }: { system: ResolvedKiskadeeTonalSystem }) 
   return (
     <section className="section-block" aria-labelledby="harmony-comparison-title">
       <div className="section-heading">
-        <h2 id="harmony-comparison-title">Rest harmony comparison</h2>
+        <h2 id="harmony-comparison-title">Anchor and rest harmony</h2>
         <p>
-          Source seeds establish identity. Generated anchors preserve or adapt those seeds, while
-          rest colors are read independently from the shared functional positions.
+          Each family may place its vivid anchor where that hue has enough gamut. Functional rest
+          remains shared and is evaluated independently at the same Light and Dark positions.
         </p>
       </div>
       <article className="panel harmony-panel">
@@ -490,7 +490,8 @@ function HarmonyComparison({ system }: { system: ResolvedKiskadeeTonalSystem }) 
                 <th>Generated anchor</th>
                 <th>Functional rest</th>
                 <th>OKL L</th>
-                <th>Hue-global chroma</th>
+                <th>Rest hue-global chroma</th>
+                <th>Vivid peak</th>
                 <th>Harmony score</th>
                 <th>Source ΔE</th>
                 <th>Status</th>
@@ -503,8 +504,13 @@ function HarmonyComparison({ system }: { system: ResolvedKiskadeeTonalSystem }) 
                   const harmony = resolution.harmony;
                   const reference = system.primaryReference[theme];
                   const generatedAnchorTone = resolution.scale.anchorTone;
-                  const globalChromaUtilization = harmony
-                    ? reference.hueGlobalChromaUtilization + harmony.hueGlobalChromaUtilizationDelta
+                  const restGlobalChromaUtilization = harmony
+                    ? harmony.restHueGlobalChromaUtilization
+                    : family.role === 'primary'
+                      ? reference.hueGlobalChromaUtilization
+                      : null;
+                  const vividPeakGlobalChromaUtilization = harmony
+                    ? (harmony.vividPeakGlobalChromaUtilization ?? null)
                     : family.role === 'primary'
                       ? reference.hueGlobalChromaUtilization
                       : null;
@@ -535,9 +541,14 @@ function HarmonyComparison({ system }: { system: ResolvedKiskadeeTonalSystem }) 
                       </td>
                       <td>{resolution.restColor.oklch.l.toFixed(2)}</td>
                       <td>
-                        {globalChromaUtilization === null
+                        {restGlobalChromaUtilization === null
                           ? '—'
-                          : `${(globalChromaUtilization * 100).toFixed(1)}%`}
+                          : `${(restGlobalChromaUtilization * 100).toFixed(1)}%`}
+                      </td>
+                      <td>
+                        {vividPeakGlobalChromaUtilization === null
+                          ? '—'
+                          : `${(vividPeakGlobalChromaUtilization * 100).toFixed(1)}%`}
                       </td>
                       <td>
                         {harmony
@@ -1168,6 +1179,22 @@ function DiagnosticsPanel({ theme, resolution }: { theme: Theme; resolution: Res
         <Metric
           label="Harmony score"
           value={resolution.harmony ? resolution.harmony.score.toFixed(3) : 'Reference'}
+        />
+        <Metric
+          label="Rest hue-global chroma"
+          value={
+            resolution.harmony
+              ? `${(resolution.harmony.restHueGlobalChromaUtilization * 100).toFixed(1)}%`
+              : 'Reference'
+          }
+        />
+        <Metric
+          label="Vivid peak"
+          value={
+            resolution.harmony?.vividPeakGlobalChromaUtilization === undefined
+              ? 'Reference'
+              : `${(resolution.harmony.vividPeakGlobalChromaUtilization * 100).toFixed(1)}%`
+          }
         />
         <Metric
           label="Source Delta E"

@@ -419,9 +419,10 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
             <span className={styles.modeTag}>{recipe.tonalAnchors.rest.mode}</span>
           </div>
           <p className={styles.anchorHelp}>
-            The system keeps the primary at its generated anchor, then selects one shared Light and
-            one shared Dark functional rest where the complete family remains chromatically
-            coherent.
+            The system tests the exact primary anchor as the shared rest first. It moves Light or
+            Dark independently only when the ten emitted chromatic v1 sectors cannot remain coherent
+            there. Harmonized support families may keep their vivid anchor at another tone while
+            still sharing that functional rest.
           </p>
 
           {recipe.tonalAnchors.rest.mode === 'auto' ? (
