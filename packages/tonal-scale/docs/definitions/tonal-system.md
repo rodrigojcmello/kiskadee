@@ -77,6 +77,13 @@ Harmony targets remain hierarchical:
 3. relative chroma utilization within the target hue's sRGB gamut;
 4. perceptual distance from the materialized seed.
 
+Candidate ranking is a soft preference and cannot run before hard feasibility.
+The finite coarse grid is traversed in ranked order until enough candidates
+satisfy sector identity, safe-core generation, a valid scale, and the exact
+shared rest anchor. Only those feasible candidates participate in final
+selection. Exhausting an arbitrary top-N window is not evidence that a harmony
+target is unreachable.
+
 Brown uses `0.6` of the base Orange chroma utilization while preserving the
 same rest position and lightness/contrast priority. A light rest may therefore
 appear tan; physically darker positions retain the Brown character. If Brown

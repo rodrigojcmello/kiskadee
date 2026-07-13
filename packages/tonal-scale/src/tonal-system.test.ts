@@ -232,6 +232,25 @@ describe('generateKiskadeeTonalSystem v2', () => {
     );
   });
 
+  it('searches beyond soft-ranked candidates to resolve a saturated red-purple system', () => {
+    const result = generateKiskadeeTonalSystem(createRecipe('#FF0084'));
+    expectResolved(result);
+
+    expect(result.primaryReference.familyId).toBe('red-purple.v1');
+    expect(result.rest).toEqual({ light: 28, dark: 65, source: 'auto-proposal' });
+    expect(result.primaryReference.light).toMatchObject({ tone: 28, hex: '#ff0084' });
+    expect(result.primaryReference.dark).toMatchObject({ tone: 65, hex: '#ff0084' });
+
+    const green = resolveFamily(result, 'green.v1');
+    expect(green.themes.light).toMatchObject({ restTone: 28, status: 'review' });
+    expect(green.themes.light.scale.diagnostics).toMatchObject({
+      valid: true,
+      contrastFailures: [],
+      chromaContinuityRelaxed: false
+    });
+    expect(result.issues.map((issue) => issue.code)).not.toContain('HARMONY_TARGET_UNREACHABLE');
+  });
+
   it.each([
     {
       label: 'very light',
@@ -267,18 +286,17 @@ describe('generateKiskadeeTonalSystem v2', () => {
     }
   });
 
-  it('reports an unreachable companion instead of rejecting an extreme primary for review-only continuity', () => {
+  it('resolves an extreme-gamut primary after exhausting hard-feasible candidates', () => {
     const result = generateKiskadeeTonalSystem(createRecipe('#ff0000'));
+    expectResolved(result);
 
-    expect(result.valid).toBe(false);
-    expect(result.issues).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          severity: 'error',
-          code: 'HARMONY_TARGET_UNREACHABLE'
-        })
-      ])
-    );
+    expect(result.status).toBe('review');
+    expect(result.primaryReference.familyId).toBe('red.v1');
+    expect(result.rest).toEqual({ light: 28, dark: 60, source: 'auto-proposal' });
+    expect(result.primaryReference.light).toMatchObject({ tone: 28, hex: '#ff0000' });
+    expect(result.primaryReference.dark).toMatchObject({ tone: 60, hex: '#ff0000' });
+    expect(result.issues.every((issue) => issue.severity !== 'error')).toBe(true);
+    expect(result.issues.map((issue) => issue.code)).not.toContain('HARMONY_TARGET_UNREACHABLE');
     expect(result.issues.map((issue) => issue.code)).not.toContain('PRIMARY_SCALE_CONTINUITY');
   });
 

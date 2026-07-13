@@ -1358,7 +1358,7 @@ function findHarmonyCandidate(params: {
   const feasible: CandidateResolution[] = [];
   const reviewFallbacks: CandidateResolution[] = [];
 
-  for (const candidate of coarse.slice(0, 96)) {
+  for (const candidate of coarse) {
     if (!isMunsellCandidateIdentityValid(candidate.hex, familyId, enforceSafeCore)) continue;
     evaluated += 1;
     const scale = generateKiskadeeScale({ seedHex: candidate.hex, theme, profile });
