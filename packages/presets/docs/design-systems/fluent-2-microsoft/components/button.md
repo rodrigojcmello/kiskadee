@@ -66,22 +66,25 @@ exercised by the Kiskadee Material 3 preset, recalibrated against the Fluent Blu
 
 Disabled continues to use the official neutral mappings already shared by `primary.high`: L3/L16
 for Light background/foreground and D3/D35 for Dark background/foreground.
+Primary Medium now exposes Selected explicitly in every theme. Selected reuses the Medium Rest
+surface: L4 in Light and D10 in Dark/Darker.
 
-`primary.low` and `primary.lowest` reuse the Medium foreground and interaction rhythm instead of
-introducing another Blue state rule. Both are transparent at Rest, while Hover, Focus, Pressed, and
-Selected use the same pale or dark Blue surface positions already established by Medium. Low adds
-a one-pixel Blue border; Lowest keeps every border state transparent.
+`primary.low` and `primary.lowest` reuse the Medium foreground but use a deliberately light
+interaction rhythm. The states move toward the physically lighter end of each theme scale. In
+Light, Focus and Selected stop at L1 instead of the absolute-white L0 cap so they remain visible on
+white surfaces. Both are transparent at Rest. Low adds a one-pixel Blue border; Lowest keeps every
+border state transparent.
 
 | Theme/state | Low and Lowest background | Low border | Enabled foreground |
 | --- | --- | --- | --- |
 | Light Rest | transparent | L50 at 50% `#0064b480` | L65 `#0d477e` |
-| Light Hover | L6 `#d3e7ff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
-| Light Focus and Selected | L4 `#e1efff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
-| Light Pressed | L8 `#c1deff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
-| Dark Rest | transparent | D35 at 50% `#005ba480` | D75 `#61a7f3` |
-| Dark Hover | D8 `#13273e` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
-| Dark Focus and Selected | D10 `#142d48` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
-| Dark Pressed | D14 `#14375b` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
+| Light Hover | L2 `#f1f7ff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
+| Light Focus and Selected | L1 `#f8fbff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
+| Light Pressed | L4 `#e1efff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
+| Dark/Darker Rest | transparent | D35 at 50% `#005ba480` | D75 `#61a7f3` |
+| Dark/Darker Hover | D14 `#14375b` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
+| Dark/Darker Focus and Selected | D18 `#133d68` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
+| Dark/Darker Pressed | D22 `#104375` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
 
 Disabled Low uses the same neutral L3/D3 background and L16/D35 foreground as Medium and High,
 without a visible border. Lowest remains fully transparent and borderless when disabled, preserving
@@ -249,6 +252,7 @@ changing the asset scales.
 
 - `e1.boxColor.primary.medium`, `primary.low`, and `primary.lowest`, together with their text and
   border mappings, implement the documented Kiskadee-only extensions in Light, Dark, and Darker.
+- `e1.boxColor.primary.medium.selected` explicitly reuses Medium Rest in all three themes.
 - `e1.boxColor.primary.high` owns the Primary Button background in all three themes.
 - `e2.textColor.primary.high` owns enabled and disabled foreground colors in all three themes.
 - `e1.boxColor.neutral` and `e2.textColor.neutral` expose High, Medium, Low, and Lowest in both
