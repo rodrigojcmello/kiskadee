@@ -36,6 +36,11 @@ This file records source evidence and color decisions for the Button currently a
 - States: Rest, Hover, Pressed, Selected, Focus, and Disabled.
 - Kiskadee surface: `primary.high` for the official Fluent mapping.
 
+The medium scale declares 6 px of vertical padding per side in the platform-agnostic schema. The
+Web Builder's Button emission policy subtracts the 1 px border from each side, producing 5 px of
+rendered CSS padding. Together with the 20 px label line height and both 1 px borders, the final web
+height remains the official 32 px: `5 + 1 + 20 + 1 + 5`.
+
 ## Kiskadee Extensions: Primary Medium, Low, And Lowest
 
 Fluent 2 does not define Primary Button equivalents for Kiskadee's `primary.medium`, `primary.low`,

@@ -168,12 +168,12 @@ export function createFluent2MicrosoftButtonSchema({
         scales: {
           paddingTop: {
             's:sm:1': 1,
-            's:md:1': 5,
+            's:md:1': 6,
             's:lg:1': 7
           },
           paddingBottom: {
             's:sm:1': 1,
-            's:md:1': 5,
+            's:md:1': 6,
             's:lg:1': 7
           },
           paddingLeft: {

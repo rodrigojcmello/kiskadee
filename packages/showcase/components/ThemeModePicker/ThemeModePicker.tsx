@@ -2,7 +2,6 @@
 import type { ThemeMode } from '@kiskadee/core';
 import { useKiskadee, useShowcase } from '@kiskadee/react-components';
 import { SwatchRadioGroup } from '@/k-components';
-import { playWowTransition } from '@/utils/playWowTransition';
 import { Icon, type IconName } from '../Icon/Icon';
 
 /*
@@ -53,9 +52,6 @@ export default function ThemeModePicker({ className }: { className?: string }) {
         label: opt.label
       }))}
       showItemLabels
-      onBeforeValueChange={() => {
-        playWowTransition();
-      }}
       onValueChange={(value) => {
         setTheme(value as ThemeMode);
       }}
