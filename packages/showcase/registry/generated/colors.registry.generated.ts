@@ -3,7 +3,7 @@
 import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 
 export type ColorsJson = any;
-export type ColorScaleJson = Record<string, Record<string, string>>;
+export type ColorScaleJson = Record<string, string>;
 
 // Map: designSystemKey -> loader for <ds>/colors.json
 export const colorsMaps = {

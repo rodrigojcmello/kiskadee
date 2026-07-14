@@ -303,7 +303,7 @@ function generateColorsRegistrySource(manifests: Manifest[]): string {
   lines.push('');
 
   lines.push('export type ColorsJson = any;');
-  lines.push('export type ColorScaleJson = Record<string, Record<string, string>>;');
+  lines.push('export type ColorScaleJson = Record<string, string>;');
   lines.push('');
 
   lines.push('// Map: designSystemKey -> loader for <ds>/colors.json');

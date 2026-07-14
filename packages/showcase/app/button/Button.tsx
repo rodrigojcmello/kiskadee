@@ -10,20 +10,63 @@ import React from 'react';
 import { Icon } from '@/components/Icon/Icon';
 import {
   ShowcaseBooleanControl,
+  ShowcaseControlField,
   ShowcaseControlGroup,
   ShowcaseControlPanel,
   ShowcaseControlStack,
   ShowcaseRouteControls
 } from '@/components/ShowcaseControls';
+import { type BackgroundToneKey, useBackgroundTones } from '@/hooks/use-background-tones';
+import { SwatchRadioGroup } from '@/k-components';
 import s from './Button.module.scss';
 import ButtonStateSection from './components/ButtonStateSection';
 
 export function Button() {
-  const { designSystem } = useKiskadee();
+  const { designSystem, theme } = useKiskadee();
   const { fontName, manifest } = useShowcase();
+  const backgroundTones = useBackgroundTones();
 
   const [isSelected, setIsSelected] = React.useState(false);
   const [isSelectedVivid, setIsSelectedVivid] = React.useState(false);
+  const [surface, setSurface] = React.useState<BackgroundToneKey>(() =>
+    theme === 'dark' ? 'dark-gray' : 'white'
+  );
+
+  React.useEffect(() => {
+    setSurface(theme === 'dark' ? 'dark-gray' : 'white');
+  }, [theme]);
+
+  const selectedSurface = React.useMemo(
+    () => backgroundTones.tones.find((tone) => tone.key === surface),
+    [backgroundTones.tones, surface]
+  );
+
+  React.useEffect(() => {
+    const root = document.documentElement;
+    const previousRouteBackground = root.style.getPropertyValue('--showcase-route-background');
+
+    if (selectedSurface?.resolvedColor) {
+      root.style.setProperty('--showcase-route-background', selectedSurface.resolvedColor);
+    } else {
+      root.style.removeProperty('--showcase-route-background');
+    }
+
+    return () => {
+      if (previousRouteBackground) {
+        root.style.setProperty('--showcase-route-background', previousRouteBackground);
+        return;
+      }
+
+      root.style.removeProperty('--showcase-route-background');
+    };
+  }, [selectedSurface?.resolvedColor]);
+
+  const isDarkSurface =
+    surface === 'primary' ||
+    surface === 'dark-gray' ||
+    surface === 'dark-primary' ||
+    surface === 'very-dark-primary' ||
+    surface === 'black';
 
   const isCarbon = designSystem === 'carbon-1-ibm';
   const alignment = isCarbon ? 'left' : 'center';
@@ -42,6 +85,17 @@ export function Button() {
             onCheckedChange={setIsSelectedVivid}
           />
         </ShowcaseControlStack>
+      </ShowcaseControlGroup>
+      <ShowcaseControlGroup title="Surface">
+        <ShowcaseControlField fullWidth>
+          <SwatchRadioGroup
+            groupLabel="Background"
+            value={surface}
+            onValueChange={(value) => setSurface(value as BackgroundToneKey)}
+            items={backgroundTones.items}
+            aria-label="Button example background"
+          />
+        </ShowcaseControlField>
       </ShowcaseControlGroup>
     </ShowcaseControlPanel>
   );
@@ -94,7 +148,7 @@ export function Button() {
   };
 
   return (
-    <section>
+    <section className={isDarkSurface ? s.darkSurface : undefined}>
       <h2>Button</h2>
       <ShowcaseRouteControls id="button" eyebrow="Button" title="Controls">
         {buttonControls}

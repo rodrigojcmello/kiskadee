@@ -74,14 +74,11 @@ export default function ColorScaleViewer() {
     }
   }, [designSystemKey, colors, loading, meta?.resolvedPrimitiveRef, selection]);
 
-  const tracks = useMemo(() => {
+  const tones = useMemo(() => {
     if (!scale) return [];
-    return Object.entries(scale).map(([trackName, tones]) => {
-      const entries = Object.entries(tones)
-        .map(([tone, hex]) => ({ tone, hex }))
-        .sort((a, b) => Number(a.tone) - Number(b.tone));
-      return { trackName, entries };
-    });
+    return Object.entries(scale)
+      .map(([tone, hex]) => ({ tone, hex }))
+      .sort((a, b) => Number(a.tone) - Number(b.tone));
   }, [scale]);
 
   return (
@@ -113,29 +110,32 @@ export default function ColorScaleViewer() {
 
       {error ? <div className={style.error}>{error}</div> : null}
 
-      {tracks.length ? (
+      {tones.length ? (
         <div className={style.tracks}>
-          {tracks.map((t) => (
-            <div key={t.trackName}>
-              <div className={style.trackTitle}>{t.trackName}</div>
-              <div className={style.swatches}>
-                {t.entries.map((e) => (
-                  <div key={`${t.trackName}-${e.tone}`} className={style.swatch}>
-                    <div className={style.chip} style={{ background: e.hex }}>
+          <div>
+            <div className={style.trackTitle}>Tonal scale</div>
+            <div className={style.swatches}>
+              {tones.map((entry) => {
+                const physicalLightTone =
+                  theme === 'light' ? Number(entry.tone) <= 30 : Number(entry.tone) >= 70;
+
+                return (
+                  <div key={entry.tone} className={style.swatch}>
+                    <div className={style.chip} style={{ background: entry.hex }}>
                       <div
                         className={`${style.chipLabel} ${
-                          t.trackName === 'subtle' ? style.textOnSubtle : style.textOnVivid
+                          physicalLightTone ? style.textOnSubtle : style.textOnVivid
                         }`}
                       >
-                        <span className={style.tone}>{e.tone}</span>
-                        <span className={style.hex}>{e.hex}</span>
+                        <span className={style.tone}>{entry.tone}</span>
+                        <span className={style.hex}>{entry.hex}</span>
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
-          ))}
+          </div>
         </div>
       ) : null}
     </div>

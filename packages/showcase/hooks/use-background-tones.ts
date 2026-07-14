@@ -1,22 +1,23 @@
 'use client';
 
-import { useKiskadee, useShowcase } from '@kiskadee/react-components';
+import { useKiskadee } from '@kiskadee/react-components';
 import { useMemo } from 'react';
 import { useColorScaleTones } from '@/hooks/use-color-scale';
 
 const BACKGROUND_TONES = [
-  { key: 'white', color: '#ffffff', displayColor: '#ffffff', aria: 'White' },
-  { key: 'light-primary', color: '#f0eafb', displayColor: '#f0eafb', aria: 'Light primary' },
-  { key: 'gray', color: '#f5f5f5', displayColor: '#e5e7eb', aria: 'Gray' },
-  { key: 'dark-gray', color: '#29313d', displayColor: '#6b6f7b', aria: 'Dark gray' },
-  { key: 'dark-primary', color: '#201933', displayColor: '#201933', aria: 'Dark primary' },
-  { key: 'black', color: '#000000', displayColor: '#000000', aria: 'Black' }
+  { key: 'white', aria: 'White' },
+  { key: 'gray', aria: 'Light neutral' },
+  { key: 'light-primary', aria: 'Light primary' },
+  { key: 'primary', aria: 'Primary rest' },
+  { key: 'dark-primary', aria: 'Dark primary' },
+  { key: 'very-dark-primary', aria: 'Very dark primary' },
+  { key: 'dark-gray', aria: 'Dark neutral' },
+  { key: 'black', aria: 'Black' }
 ] as const;
 
 export type BackgroundToneKey = (typeof BACKGROUND_TONES)[number]['key'];
 export type ResolvedBackgroundTone = {
   key: BackgroundToneKey;
-  color: string;
   displayColor: string;
   aria: string;
   resolvedColor: string;
@@ -24,7 +25,6 @@ export type ResolvedBackgroundTone = {
 
 export function useBackgroundTones() {
   const { designSystem, theme } = useKiskadee();
-  const { backgroundsByTheme } = useShowcase();
 
   const designSystemKey = String(designSystem ?? '');
   const canLoadPrimary = Boolean(designSystemKey);
@@ -33,8 +33,7 @@ export function useBackgroundTones() {
     designSystemKey,
     theme: 'light',
     selection: 'semantic:primary',
-    tones: ['5'],
-    preferredTracks: ['subtle', 'vivid'],
+    tones: ['5', '50'],
     enabled: canLoadPrimary
   });
 
@@ -42,49 +41,51 @@ export function useBackgroundTones() {
     designSystemKey,
     theme: 'dark',
     selection: 'semantic:primary',
-    tones: ['10'],
-    preferredTracks: ['subtle', 'vivid'],
+    tones: ['5', '10'],
+    enabled: canLoadPrimary
+  });
+
+  const lightNeutral = useColorScaleTones({
+    designSystemKey,
+    theme: 'light',
+    selection: 'semantic:neutral',
+    tones: ['0', '5'],
+    enabled: canLoadPrimary
+  });
+
+  const darkNeutral = useColorScaleTones({
+    designSystemKey,
+    theme: 'dark',
+    selection: 'semantic:neutral',
+    tones: ['0', '5'],
     enabled: canLoadPrimary
   });
 
   const tones = useMemo<ResolvedBackgroundTone[]>(() => {
-    const themeByToneKey: Record<string, string | undefined> = {
-      white: undefined,
-      gray: 'light',
-      'light-primary': undefined,
-      'dark-gray': 'dark',
-      'dark-primary': undefined,
-      black: 'darker'
+    const resolvedByKey: Record<BackgroundToneKey, string | undefined> = {
+      white: lightNeutral.picked['0'],
+      gray: lightNeutral.picked['5'],
+      'light-primary': lightPrimary.picked['5'],
+      primary: lightPrimary.picked['50'],
+      'dark-primary': darkPrimary.picked['10'],
+      'very-dark-primary': darkPrimary.picked['5'],
+      'dark-gray': darkNeutral.picked['5'],
+      black: darkNeutral.picked['0']
     };
 
-    return BACKGROUND_TONES.map((tone) => {
-      if (tone.key === 'light-primary') {
-        const hex = lightPrimary.picked['5'];
-        return {
+    return BACKGROUND_TONES.flatMap((tone) => {
+      const resolvedColor = resolvedByKey[tone.key];
+      if (!resolvedColor) return [];
+
+      return [
+        {
           ...tone,
-          resolvedColor: hex ?? tone.color,
-          displayColor: hex ?? tone.displayColor
-        };
-      }
-
-      if (tone.key === 'dark-primary') {
-        const hex = darkPrimary.picked['10'];
-        return {
-          ...tone,
-          resolvedColor: hex ?? tone.color,
-          displayColor: hex ?? tone.displayColor
-        };
-      }
-
-      const themeKey = themeByToneKey[tone.key];
-      const backgroundFromStore = themeKey ? backgroundsByTheme[themeKey] : undefined;
-
-      return {
-        ...tone,
-        resolvedColor: backgroundFromStore ?? tone.color
-      };
+          resolvedColor,
+          displayColor: resolvedColor
+        }
+      ];
     });
-  }, [backgroundsByTheme, darkPrimary.picked, lightPrimary.picked]);
+  }, [darkNeutral.picked, darkPrimary.picked, lightNeutral.picked, lightPrimary.picked]);
 
   const items = useMemo(
     () =>
@@ -98,8 +99,7 @@ export function useBackgroundTones() {
     [tones]
   );
 
-  const defaultToneKey: BackgroundToneKey =
-    theme === 'dark' ? 'dark-gray' : backgroundsByTheme.light ? 'gray' : 'white';
+  const defaultToneKey: BackgroundToneKey = theme === 'light' ? 'white' : 'dark-gray';
 
   return {
     defaultToneKey,
@@ -109,8 +109,8 @@ export function useBackgroundTones() {
 }
 
 export function usePrimarySurfaceTone({
-  fallback = '#615690',
-  tone = '60'
+  fallback = 'transparent',
+  tone = '50'
 }: {
   fallback?: string;
   tone?: string;
@@ -123,7 +123,6 @@ export function usePrimarySurfaceTone({
     theme: themeKey,
     selection: 'semantic:primary',
     tones: [tone],
-    preferredTracks: ['vivid', 'subtle'],
     enabled: Boolean(designSystemKey)
   });
 

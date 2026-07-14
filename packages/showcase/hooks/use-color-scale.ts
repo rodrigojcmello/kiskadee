@@ -14,7 +14,8 @@ export type ColorsJson = {
     Record<
       string,
       {
-        solid?: Partial<Record<ThemeMode, string>>;
+        kind?: 'static' | 'dynamic';
+        scales?: Partial<Record<ThemeMode, string>>;
       }
     >
   >;
@@ -117,30 +118,16 @@ function resolveScaleFileName(params: {
   const parsed = parsePrimitiveRef(resolvedPrimitiveRef);
   if (!parsed) return null;
 
-  const fileName = colors.primitiveColors?.[parsed.baseColor]?.[parsed.variant]?.solid?.[theme] as
+  const fileName = colors.primitiveColors?.[parsed.baseColor]?.[parsed.variant]?.scales?.[theme] as
     | string
     | undefined;
   return fileName ?? null;
 }
 
-export function pickScaleTone(params: {
-  scale: ColorScaleJson;
-  tone: string;
-  preferredTracks: string[];
-}): string | undefined {
-  const { scale, tone, preferredTracks } = params;
-
-  for (const track of preferredTracks) {
-    const v = scale[track]?.[tone];
-    if (typeof v === 'string') return v;
-  }
-
-  for (const track of Object.keys(scale)) {
-    const v = scale[track]?.[tone];
-    if (typeof v === 'string') return v;
-  }
-
-  return undefined;
+export function pickScaleTone(params: { scale: ColorScaleJson; tone: string }): string | undefined {
+  const { scale, tone } = params;
+  const value = scale[tone];
+  return typeof value === 'string' ? value : undefined;
 }
 
 export function useColorScale(params: {
@@ -246,7 +233,6 @@ export function useColorScaleTones(params: {
   theme: ThemeMode;
   selection: SelectionValue;
   tones: readonly string[];
-  preferredTracks: readonly string[];
   enabled?: boolean;
 }): {
   meta: ColorScaleMeta | null;
@@ -254,7 +240,7 @@ export function useColorScaleTones(params: {
   error: string | null;
   picked: Record<string, string | undefined>;
 } {
-  const { designSystemKey, theme, selection, tones, preferredTracks, enabled } = params;
+  const { designSystemKey, theme, selection, tones, enabled } = params;
   const { scale, meta, loading, error } = useColorScale({
     designSystemKey,
     theme,
@@ -270,13 +256,12 @@ export function useColorScaleTones(params: {
     for (const t of tones) {
       out[t] = pickScaleTone({
         scale,
-        tone: String(t),
-        preferredTracks: Array.from(preferredTracks)
+        tone: String(t)
       });
     }
 
     return out;
-  }, [scale, tones, preferredTracks]);
+  }, [scale, tones]);
 
   return { meta, loading, error, picked };
 }

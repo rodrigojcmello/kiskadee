@@ -93,6 +93,7 @@ const surfaceToneOrder: TextFieldSurface[] = [
   'primary',
   'dark-gray',
   'dark-primary',
+  'very-dark-primary',
   'black'
 ];
 
@@ -103,10 +104,17 @@ const surfaceLabels: Record<TextFieldSurface, string> = {
   primary: 'Primary',
   'dark-gray': 'Dark gray',
   'dark-primary': 'Dark primary',
+  'very-dark-primary': 'Very dark primary',
   black: 'Black'
 };
 
-const darkSurfaceValues: TextFieldSurface[] = ['primary', 'dark-gray', 'dark-primary', 'black'];
+const darkSurfaceValues: TextFieldSurface[] = [
+  'primary',
+  'dark-gray',
+  'dark-primary',
+  'very-dark-primary',
+  'black'
+];
 
 function isDarkSurface(surface: TextFieldSurface) {
   return darkSurfaceValues.includes(surface);

@@ -69,6 +69,26 @@ $height: 64px;
   width: 100%;
 }
 
+.darkSurface {
+  color: rgba(255, 255, 255, 0.92);
+
+  .section-note {
+    color: rgba(255, 255, 255, 0.64);
+  }
+
+  .emphasis-title {
+    color: rgba(255, 255, 255, 0.32);
+  }
+
+  .emphasis-divider {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .section-divider {
+    border-bottom-color: rgba(255, 255, 255, 0.16);
+  }
+}
+
 @media (min-width: 768px) {
   .example-states {
     grid-template-columns: repeat(4, minmax(0, 1fr));
