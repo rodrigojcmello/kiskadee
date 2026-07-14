@@ -1,8 +1,17 @@
-import type { Schema, SolidColor } from '@kiskadee/core';
+import type { KiskadeeTone, Schema, SolidColor } from '@kiskadee/core';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
 type ButtonComponent = NonNullable<Schema<never>['components']['button']>;
 type Fluent2MicrosoftSegmentName = 'default';
+type ThemeShortcut = 'l' | 'd';
+type ChromaticButtonRole = 'button.destructive' | 'button.positive';
+
+type ChromaticHighTones = {
+  rest: KiskadeeTone;
+  hover: KiskadeeTone;
+  pressed: KiskadeeTone;
+  selected: KiskadeeTone;
+};
 
 type CreateFluent2MicrosoftButtonSchemaArgs = {
   c: PresetColorGetter<Fluent2MicrosoftSegmentName>;
@@ -15,6 +24,140 @@ export function createFluent2MicrosoftButtonSchema({
 }: CreateFluent2MicrosoftButtonSchemaArgs): ButtonComponent {
   const lightTransparent = c('default', 'l', 'button.neutral', 0, 0);
   const darkTransparent = c('default', 'd', 'button.neutral', 0, 0);
+
+  const createChromaticBoxIntent = (
+    theme: ThemeShortcut,
+    role: ChromaticButtonRole,
+    high: ChromaticHighTones
+  ) => {
+    const isLight = theme === 'l';
+    const transparent = isLight ? lightTransparent : darkTransparent;
+    const mediumRest = isLight ? 4 : 10;
+    const mediumHover = isLight ? 6 : 8;
+    const mediumPressed = isLight ? 8 : 14;
+
+    return {
+      // Kiskadee extension: Fluent has no complete semantic Button emphasis family.
+      medium: {
+        rest: c('default', theme, role, mediumRest),
+        hover: c('default', theme, role, mediumHover),
+        focus: c('default', theme, role, mediumRest),
+        pressed: c('default', theme, role, mediumPressed),
+        disabled: c('default', theme, 'button.neutral', 3),
+        selected: {
+          rest: c('default', theme, role, mediumRest)
+        }
+      },
+      high: {
+        rest: c('default', theme, role, high.rest),
+        hover: c('default', theme, role, high.hover),
+        focus: c('default', theme, role, high.rest),
+        pressed: c('default', theme, role, high.pressed),
+        disabled: c('default', theme, 'button.neutral', 3),
+        selected: {
+          rest: c('default', theme, role, high.selected)
+        }
+      },
+      low: {
+        rest: transparent,
+        hover: c('default', theme, role, mediumHover),
+        focus: c('default', theme, role, mediumRest),
+        pressed: c('default', theme, role, mediumPressed),
+        disabled: transparent,
+        selected: {
+          rest: c('default', theme, role, mediumRest)
+        }
+      },
+      lowest: {
+        rest: transparent,
+        hover: c('default', theme, role, mediumHover),
+        focus: c('default', theme, role, mediumRest),
+        pressed: c('default', theme, role, mediumPressed),
+        disabled: transparent,
+        selected: {
+          rest: c('default', theme, role, mediumRest)
+        }
+      }
+    };
+  };
+
+  const createChromaticBorderIntent = (
+    theme: ThemeShortcut,
+    role: ChromaticButtonRole,
+    restTone: KiskadeeTone
+  ) => {
+    const isLight = theme === 'l';
+    const transparent = isLight ? lightTransparent : darkTransparent;
+    const disabledTone = isLight ? 16 : 35;
+
+    return {
+      medium: {
+        rest: transparent,
+        hover: transparent,
+        focus: transparent,
+        pressed: transparent,
+        disabled: transparent
+      },
+      high: {
+        rest: transparent,
+        hover: transparent,
+        focus: transparent,
+        pressed: transparent,
+        disabled: transparent
+      },
+      low: {
+        rest: c('default', theme, role, restTone, 50),
+        hover: c('default', theme, role, restTone, 50),
+        focus: c('default', theme, role, restTone, 50),
+        pressed: c('default', theme, role, restTone, 50),
+        disabled: c('default', theme, 'button.neutral', disabledTone),
+        selected: {
+          rest: c('default', theme, role, restTone, 50)
+        }
+      },
+      lowest: {
+        rest: transparent,
+        hover: transparent,
+        focus: transparent,
+        pressed: transparent,
+        disabled: transparent
+      }
+    };
+  };
+
+  const createChromaticTextIntent = (theme: ThemeShortcut, role: ChromaticButtonRole) => {
+    const isLight = theme === 'l';
+    const foregroundTone = isLight ? 65 : 75;
+    const disabledTone = isLight ? 16 : 35;
+    const highForegroundTone = 0;
+
+    return {
+      medium: {
+        rest: c('default', theme, role, foregroundTone),
+        disabled: {
+          ref: c('default', theme, 'button.neutral', disabledTone)
+        }
+      },
+      high: {
+        rest: c('default', theme, 'button.neutral', highForegroundTone),
+        disabled: {
+          ref: c('default', theme, 'button.neutral', disabledTone)
+        }
+      },
+      low: {
+        rest: c('default', theme, role, foregroundTone),
+        disabled: {
+          ref: c('default', theme, 'button.neutral', disabledTone)
+        }
+      },
+      lowest: {
+        rest: c('default', theme, role, foregroundTone),
+        disabled: {
+          ref: c('default', theme, 'button.neutral', disabledTone)
+        }
+      }
+    };
+  };
 
   return {
     elements: {
@@ -150,7 +293,19 @@ export function createFluent2MicrosoftButtonSchema({
                       rest: c('default', 'l', 'button.neutral', 80)
                     }
                   }
-                }
+                },
+                destructive: createChromaticBoxIntent('l', 'button.destructive', {
+                  rest: 45,
+                  hover: 50,
+                  pressed: 65,
+                  selected: 55
+                }),
+                positive: createChromaticBoxIntent('l', 'button.positive', {
+                  rest: 45,
+                  hover: 50,
+                  pressed: 65,
+                  selected: 55
+                })
               },
               borderColor: {
                 primary: {
@@ -218,7 +373,9 @@ export function createFluent2MicrosoftButtonSchema({
                     pressed: lightTransparent,
                     disabled: lightTransparent
                   }
-                }
+                },
+                destructive: createChromaticBorderIntent('l', 'button.destructive', 45),
+                positive: createChromaticBorderIntent('l', 'button.positive', 45)
               }
             },
             dark: {
@@ -311,7 +468,19 @@ export function createFluent2MicrosoftButtonSchema({
                       rest: c('default', 'd', 'button.neutral', 80)
                     }
                   }
-                }
+                },
+                destructive: createChromaticBoxIntent('d', 'button.destructive', {
+                  rest: 65,
+                  hover: 70,
+                  pressed: 45,
+                  selected: 60
+                }),
+                positive: createChromaticBoxIntent('d', 'button.positive', {
+                  rest: 75,
+                  hover: 80,
+                  pressed: 55,
+                  selected: 70
+                })
               },
               borderColor: {
                 primary: {
@@ -379,7 +548,9 @@ export function createFluent2MicrosoftButtonSchema({
                     pressed: darkTransparent,
                     disabled: darkTransparent
                   }
-                }
+                },
+                destructive: createChromaticBorderIntent('d', 'button.destructive', 65),
+                positive: createChromaticBorderIntent('d', 'button.positive', 75)
               }
             }
           }
@@ -459,7 +630,9 @@ export function createFluent2MicrosoftButtonSchema({
                       ref: c('default', 'l', 'button.neutral', 16)
                     }
                   }
-                }
+                },
+                destructive: createChromaticTextIntent('l', 'button.destructive'),
+                positive: createChromaticTextIntent('l', 'button.positive')
               }
             },
             dark: {
@@ -515,7 +688,9 @@ export function createFluent2MicrosoftButtonSchema({
                       ref: c('default', 'd', 'button.neutral', 35)
                     }
                   }
-                }
+                },
+                destructive: createChromaticTextIntent('d', 'button.destructive'),
+                positive: createChromaticTextIntent('d', 'button.positive')
               }
             }
           }

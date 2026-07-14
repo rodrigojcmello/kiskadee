@@ -144,6 +144,33 @@ Light Rest surface, progressing to L90/L95 for Hover/Pressed. In Dark, D85 is us
 D0 foreground; this physical inversion is required for the action to retain high emphasis against
 a dark interface instead of disappearing into the page background.
 
+## Kiskadee Extensions: Destructive And Positive
+
+Fluent 2 exposes Cranberry for danger semantics and Green for success semantics, but it does not
+define complete Button families matching Kiskadee's four emphasis levels. The Fluent preset now
+provides `destructive` and `positive` Buttons as explicit Kiskadee extensions so components can use
+the same semantic and emphasis contract across design systems. These appearances must not be
+presented as upstream Fluent Button variants.
+
+The extensions preserve the approved official families rather than deriving new component colors:
+
+| Intent | Fluent semantic source | Approved primitive | Light High Rest | Dark High Rest |
+| --- | --- | --- | --- | --- |
+| `destructive` | Cranberry Primary `#c50f1f` | `r.red.v1` through `button.destructive` | L45 `#c50f1f` | D65 `#ee4f4b` |
+| `positive` | Green Primary `#107c10` | `g.green.v1` through `button.positive` | L45 `#107c10` | D75 `#67b661` |
+
+Light High follows Rest/Hover/Focus/Pressed/Selected at L45/L50/L45/L65/L55 for both intents.
+Dark resolves each semantic independently: Destructive uses D65/D70/D65/D45/D60, while Positive
+uses D75/D80/D75/D55/D70. High foregrounds use the physical neutral cap: L0 white in Light and D0
+black in Dark.
+
+Medium, Low, and Lowest reuse the approved Primary extension rhythm because they describe
+emphasis, not a Fluent-authored component variant. Light interaction fills use L4/L6/L4/L8 and
+Dark uses D10/D8/D10/D14 for Rest/Hover/Focus/Pressed. Low and Lowest remain transparent at Rest;
+Low uses its own High Rest color at 50% opacity for the border, while Lowest remains borderless.
+Enabled Medium/Low/Lowest foregrounds use L65 in Light and D75 in Dark. All disabled surfaces,
+foregrounds, and Low borders continue to resolve through `button.neutral`.
+
 ## Background De-para
 
 The generated colors are selected by the preset-wide OKLab nearest-tone mapping. Light and Dark
@@ -181,13 +208,19 @@ the preset-wide primitive de-para.
 
 1. Layer 1 primitives:
    - generator `b.blue.v1` is promoted as Core role `primitive.blue.v1`;
-   - generator `n.black.v1` is promoted as Core role `primitive.black.v1`.
+   - generator `n.black.v1` is promoted as Core role `primitive.black.v1`;
+   - generator `r.red.v1` is promoted as Core role `primitive.red.v1`;
+   - generator `g.green.v1` is promoted as Core role `primitive.green.v1`.
 2. Layer 2 global semantics:
    - `primary.v1` points to `primitive.blue.v1` in Light and Dark;
-   - `neutral.v1` points to `primitive.black.v1` in Light and Dark.
+   - `neutral.v1` points to `primitive.black.v1` in Light and Dark;
+   - `redLike.v1` points to `primitive.red.v1` in Light and Dark;
+   - `greenLike.v1` points to `primitive.green.v1` in Light and Dark.
 3. Layer 3 Button intents:
    - `button.primary` points to global `primary`;
-   - `button.neutral` points to global `neutral`.
+   - `button.neutral` points to global `neutral`;
+   - `button.destructive` points to global `redLike`;
+   - `button.positive` points to global `greenLike`.
 
 The Munsell sector prefix remains in generated-artifact provenance. Core currently addresses the
 primitive through its natural appearance name, so `b.blue.v1` becomes `primitive.blue.v1` without
@@ -201,6 +234,8 @@ changing the asset scales.
 - `e2.textColor.primary.high` owns enabled and disabled foreground colors in both themes.
 - `e1.boxColor.neutral` and `e2.textColor.neutral` expose High, Medium, Low, and Lowest in both
   themes.
+- `e1.boxColor.destructive`/`positive`, their text colors, and their borders expose all four
+  Kiskadee emphasis levels in both themes.
 - `e1.borderColor.neutral.low` is the only visible neutral Button border; all other Button borders
   are transparent so the shared one-pixel geometry does not change component dimensions.
 - Focus reuses Rest because that is the value authored by Fluent for this variant.
@@ -212,15 +247,16 @@ changing the asset scales.
 
 - Kiskadee preserves its canonical tonal grid, so non-exact Fluent stops use the nearest generated
   L/D position and expose the adaptation distance above.
-- Dark support in this schema covers the current Primary and Neutral Button intents. It does not
-  imply Dark support for the preset's other components.
+- Dark support in this schema covers Primary, Neutral, Destructive, and Positive Button intents.
+  It does not imply Dark support for the preset's other components.
 - The neutral High and Medium appearances are Kiskadee extensions. Consumers that require strict
   upstream Fluent fidelity should use `neutral.low` or the documented `neutral.lowest` adaptation.
 - Primary Medium, Low, and Lowest are Kiskadee extensions. Only Primary High maps to an official
   Fluent Primary Button appearance.
+- Destructive and Positive use official Fluent semantic color families, but all four Button
+  emphasis appearances are Kiskadee extensions rather than official Fluent variants.
 
 ## Open Gaps
 
 - Revisit whether Outline, Subtle, and Transparent need separate structural capabilities instead
   of sharing `neutral.lowest`.
-- Decide semantic Button intents only after the corresponding primitive families are promoted.
