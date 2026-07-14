@@ -5,7 +5,7 @@ import { generateKiskadeeTonalSystem, type ResolvedKiskadeeTonalSystem } from '.
 import {
   DEFAULT_TONAL_SYSTEM_RECIPE,
   TONAL_CORE_FAMILY_IDS,
-  type TonalSystemRecipeV2
+  type TonalSystemRecipeV3
 } from '../tonal-system-contract';
 import { formatCanonicalJsonFile } from './canonical-json';
 import {
@@ -18,11 +18,11 @@ import {
   verifyTonalArtifactBundle
 } from './tonal-artifacts';
 
-function createRecipe(): TonalSystemRecipeV2 {
-  return structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV2;
+function createRecipe(): TonalSystemRecipeV3 {
+  return structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV3;
 }
 
-describe('tonal artifact bundle v2', () => {
+describe('tonal artifact bundle v3', () => {
   let system: ResolvedKiskadeeTonalSystem;
   let bundle: TonalArtifactBundle;
 
@@ -45,16 +45,16 @@ describe('tonal artifact bundle v2', () => {
       ...[...TONAL_CORE_FAMILY_IDS].sort().map((id) => `colors/${id}.json` as const)
     ]);
     expect(bundle.manifest.generator).toEqual(TONAL_ARTIFACT_GENERATOR);
-    expect(bundle.manifest.generator.version).toBe('0.2.0');
-    expect(bundle.manifest.primaryReference).toBe('blue.v1');
+    expect(bundle.manifest.generator.version).toBe('0.3.0');
+    expect(bundle.manifest.primaryReference).toBe('b.blue.v1');
     for (const contents of bundle.files.values()) {
       expect(contents).toBe(formatCanonicalJsonFile(JSON.parse(contents)));
     }
   });
 
-  it('keeps consumer assets concise while recording V2 identity and origin', () => {
+  it('keeps consumer assets concise while recording V3 identity and origin', () => {
     for (const asset of bundle.assets) {
-      expect(asset.formatVersion).toBe(2);
+      expect(asset.formatVersion).toBe(3);
       expect(asset.generator).toEqual(TONAL_ARTIFACT_GENERATOR);
       expect(asset).not.toHaveProperty('diagnostics');
       expect(asset).not.toHaveProperty('dependencies');
@@ -71,26 +71,29 @@ describe('tonal artifact bundle v2', () => {
       expect(asset.scales.dark['100']).toBe('#ffffff');
     }
 
-    expect(bundle.assets.find((asset) => asset.id === 'blue.v1')).toMatchObject({
-      sector: 'blue',
+    expect(bundle.assets.find((asset) => asset.id === 'b.blue.v1')).toMatchObject({
+      munsellSector: 'B',
+      appearance: 'blue',
       colorKind: 'chromatic',
       seedOrigin: 'primary',
       seedHex: '#0f6cbd'
     });
-    expect(bundle.assets.find((asset) => asset.id === 'black.v1')).toMatchObject({
-      sector: null,
+    expect(bundle.assets.find((asset) => asset.id === 'n.black.v1')).toMatchObject({
+      munsellSector: 'N',
+      appearance: 'black',
       colorKind: 'achromatic',
       seedOrigin: 'canonical',
       seedHex: '#20252b'
     });
-    expect(bundle.assets.find((asset) => asset.id === 'yellow-red.v2')).toMatchObject({
-      sector: 'yellow-red',
-      seedOrigin: 'derived'
+    expect(bundle.assets.find((asset) => asset.id === 'yr.brown.v1')).toMatchObject({
+      munsellSector: 'YR',
+      appearance: 'brown',
+      seedOrigin: 'reference'
     });
   });
 
   it('keeps Munsell classification and projection details only in diagnostics', () => {
-    const blue = bundle.diagnostics.families.find((family) => family.familyId === 'blue.v1');
+    const blue = bundle.diagnostics.families.find((family) => family.familyId === 'b.blue.v1');
     expect(blue).toMatchObject({
       seedOrigin: 'primary',
       classification: {
@@ -116,7 +119,7 @@ describe('tonal artifact bundle v2', () => {
       }
     });
 
-    const black = bundle.diagnostics.families.find((family) => family.familyId === 'black.v1');
+    const black = bundle.diagnostics.families.find((family) => family.familyId === 'n.black.v1');
     expect(black?.classification).toBeNull();
     expect(black?.themes.light.classification).toBeNull();
     expect(black?.themes.dark.classification).toBeNull();
@@ -140,7 +143,7 @@ describe('tonal artifact bundle v2', () => {
   it('rejects tampered, missing, and extra files atomically', async () => {
     const files = new Map<string, string>(bundle.files);
     files.delete(TONAL_DIAGNOSTICS_PATH);
-    const greenPath = 'colors/green.v1.json';
+    const greenPath = 'colors/g.green.v1.json';
     const green = JSON.parse(files.get(greenPath) ?? '{}') as {
       scales: { light: Record<string, string> };
     };
@@ -170,7 +173,7 @@ describe('tonal artifact bundle v2', () => {
   it('includes explicit extra variants in the atomic tree', async () => {
     const recipe = createRecipe();
     recipe.overrides.push({
-      id: 'blue.v2',
+      id: 'b.blue.v2',
       seedHex: '#0057b8',
       policies: { light: 'source-exact', dark: 'source-exact' }
     });
@@ -178,7 +181,7 @@ describe('tonal artifact bundle v2', () => {
     expect(result.valid, JSON.stringify(result.issues, null, 2)).toBe(true);
     if (!result.valid) return;
     const extraBundle = await createTonalArtifactBundle(result);
-    expect(extraBundle.files.has('colors/blue.v2.json')).toBe(true);
+    expect(extraBundle.files.has('colors/b.blue.v2.json')).toBe(true);
     expect(extraBundle.files.size).toBe(16);
   });
 });

@@ -15,7 +15,7 @@ import {
   MUNSELL_OKLCH_SIGNATURE_TRANSFER,
   MUNSELL_YELLOW_RED_PROTOTYPES,
   projectMunsellHue,
-  suggestYellowRedVariant
+  suggestYellowRedAppearance
 } from './munsell-oklch';
 
 describe('Munsell OKLCH projection', () => {
@@ -188,25 +188,22 @@ describe('Munsell OKLCH projection', () => {
     }
   });
 
-  it('keeps Orange and Brown as deterministic yellow-red variant prototypes', () => {
+  it('keeps Orange and Brown as deterministic yellow-red appearance prototypes', () => {
     expect(MUNSELL_YELLOW_RED_PROTOTYPES).toEqual({
-      v1: { appearance: 'orange', hex: '#ca5010' },
-      v2: { appearance: 'brown', hex: '#8e562e' }
+      orange: { hex: '#ca5010' },
+      brown: { hex: '#8e562e' }
     });
-    expect(suggestYellowRedVariant('#ca5010')).toMatchObject({
-      variant: 'v1',
+    expect(suggestYellowRedAppearance('#ca5010')).toMatchObject({
       appearance: 'orange',
-      distances: { v1: 0 }
+      distances: { orange: 0 }
     });
-    expect(suggestYellowRedVariant('#8e562e')).toMatchObject({
+    expect(suggestYellowRedAppearance('#8e562e')).toMatchObject({
       inputSector: 'yellow-red',
-      variant: 'v2',
       appearance: 'brown',
-      distances: { v2: 0 }
+      distances: { brown: 0 }
     });
-    expect(suggestYellowRedVariant('#ff9800')).toMatchObject({
+    expect(suggestYellowRedAppearance('#ff9800')).toMatchObject({
       inputSector: 'yellow-red',
-      variant: 'v1',
       appearance: 'orange'
     });
   });

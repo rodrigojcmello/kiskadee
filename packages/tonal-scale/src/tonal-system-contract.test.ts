@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   createTonalFamilyId,
   DEFAULT_TONAL_SYSTEM_RECIPE,
-  type LockedTonalSystemSourceV2,
+  type LockedTonalSystemSourceV3,
   lockTonalSystemRecipe,
   MUNSELL_SECTORS,
   parseTonalFamilyId,
@@ -12,13 +12,13 @@ import {
   TONAL_GRID_CONTRACT,
   TONAL_HARMONY_CONTRACT,
   TONAL_SYSTEM_FORMAT_VERSION,
-  type TonalSystemRecipeV2,
+  type TonalSystemRecipeV3,
   validateLockedTonalSystemSource,
   validateTonalSystemRecipe
 } from './tonal-system-contract';
 
-function createRecipe(): TonalSystemRecipeV2 {
-  return structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV2;
+function createRecipe(): TonalSystemRecipeV3 {
+  return structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV3;
 }
 
 function issueCodes(
@@ -31,9 +31,9 @@ function issueCodes(
   return result.valid ? [] : result.issues.map((issue) => issue.code);
 }
 
-describe('tonal-system contract v2', () => {
+describe('tonal-system contract v3', () => {
   it('defines the complete Munsell taxonomy and twelve mandatory generated ids', () => {
-    expect(TONAL_SYSTEM_FORMAT_VERSION).toBe(2);
+    expect(TONAL_SYSTEM_FORMAT_VERSION).toBe(3);
     expect(TONAL_HARMONY_CONTRACT).toBe('kiskadee-munsell-rest-v1');
     expect(MUNSELL_SECTORS).toEqual([
       'red',
@@ -48,37 +48,45 @@ describe('tonal-system contract v2', () => {
       'red-purple'
     ]);
     expect(TONAL_CORE_FAMILY_IDS).toEqual([
-      'red.v1',
-      'yellow-red.v1',
-      'yellow-red.v2',
-      'yellow.v1',
-      'green-yellow.v1',
-      'green.v1',
-      'blue-green.v1',
-      'blue.v1',
-      'purple-blue.v1',
-      'purple.v1',
-      'red-purple.v1',
-      'black.v1'
+      'r.red.v1',
+      'yr.orange.v1',
+      'yr.brown.v1',
+      'y.yellow.v1',
+      'gy.lime.v1',
+      'g.green.v1',
+      'bg.teal.v1',
+      'b.blue.v1',
+      'pb.indigo.v1',
+      'p.purple.v1',
+      'rp.magenta.v1',
+      'n.black.v1'
     ]);
   });
 
-  it('parses hyphenated sectors, all variants, and achromatic black without ambiguity', () => {
-    expect(createTonalFamilyId('yellow-red', 'v2')).toBe('yellow-red.v2');
-    expect(parseTonalFamilyId('yellow-red.v2')).toEqual({
-      family: 'yellow-red',
+  it('parses sector, appearance, variant, and achromatic black without ambiguity', () => {
+    expect(createTonalFamilyId('yr.brown', 'v2')).toBe('yr.brown.v2');
+    expect(parseTonalFamilyId('yr.brown.v2')).toEqual({
+      stem: 'yr.brown',
+      appearance: 'brown',
       sector: 'yellow-red',
+      sectorCode: 'yr',
+      munsellSector: 'YR',
+      colorKind: 'chromatic',
       variant: 'v2'
     });
-    expect(parseTonalFamilyId('black.v4')).toEqual({
-      family: 'black',
+    expect(parseTonalFamilyId('n.black.v4')).toEqual({
+      stem: 'n.black',
+      appearance: 'black',
       sector: null,
+      sectorCode: 'n',
+      munsellSector: 'N',
+      colorKind: 'achromatic',
       variant: 'v4'
     });
     expect(parseTonalFamilyId('orange.v1')).toBeNull();
-    expect(parseTonalFamilyId('blue.v5')).toBeNull();
-    expect(resolveTonalFamilyColorKind('black.v2')).toBe('achromatic');
-    expect(resolveTonalFamilyColorKind('purple-blue.v3')).toBe('chromatic');
+    expect(parseTonalFamilyId('b.blue.v5')).toBeNull();
+    expect(resolveTonalFamilyColorKind('n.black.v2')).toBe('achromatic');
+    expect(resolveTonalFamilyColorKind('pb.indigo.v3')).toBe('chromatic');
   });
 
   it('normalizes primary and override seeds and orders overrides deterministically', () => {
@@ -87,17 +95,17 @@ describe('tonal-system contract v2', () => {
     recipe.primary.variant = 'v1';
     recipe.overrides = [
       {
-        id: 'yellow-red.v2',
+        id: 'yr.brown.v1',
         seedHex: '8E562E',
         policies: { light: 'harmonized', dark: 'adaptive' }
       },
       {
-        id: 'black.v2',
+        id: 'n.black.v2',
         seedHex: '#334455',
         policies: { light: 'source-exact', dark: 'adaptive' }
       },
       {
-        id: 'red-purple.v4',
+        id: 'rp.magenta.v4',
         seedHex: '#E3008C',
         policies: { light: 'harmonized', dark: 'harmonized' }
       }
@@ -109,9 +117,9 @@ describe('tonal-system contract v2', () => {
     if (!result.valid) return;
     expect(result.value.primary).toMatchObject({ seedHex: '#0f6cbd', variant: 'v1' });
     expect(result.value.overrides.map(({ id, seedHex }) => ({ id, seedHex }))).toEqual([
-      { id: 'black.v2', seedHex: '#334455' },
-      { id: 'red-purple.v4', seedHex: '#e3008c' },
-      { id: 'yellow-red.v2', seedHex: '#8e562e' }
+      { id: 'n.black.v2', seedHex: '#334455' },
+      { id: 'rp.magenta.v4', seedHex: '#e3008c' },
+      { id: 'yr.brown.v1', seedHex: '#8e562e' }
     ]);
   });
 
@@ -150,7 +158,7 @@ describe('tonal-system contract v2', () => {
   });
 
   it.each([
-    ['formatVersion', 3, 'UNSUPPORTED_FORMAT'],
+    ['formatVersion', 4, 'UNSUPPORTED_FORMAT'],
     ['gridContract', 'legacy-grid', 'UNSUPPORTED_GRID'],
     ['harmonyContract', 'legacy-harmony', 'UNSUPPORTED_HARMONY'],
     ['tonalProfile', 'unknown-profile', 'UNSUPPORTED_PROFILE']
@@ -161,14 +169,14 @@ describe('tonal-system contract v2', () => {
   });
 
   it('strictly rejects unknown properties at every draft contract layer', () => {
-    const recipe = createRecipe() as TonalSystemRecipeV2 & Record<string, unknown>;
+    const recipe = createRecipe() as TonalSystemRecipeV3 & Record<string, unknown>;
     recipe.extra = true;
     (recipe.primary as unknown as Record<string, unknown>).extra = true;
     (recipe.primary.policies as unknown as Record<string, unknown>).extra = true;
     (recipe.tonalAnchors as unknown as Record<string, unknown>).extra = true;
     (recipe.tonalAnchors.rest as unknown as Record<string, unknown>).extra = true;
     recipe.overrides.push({
-      id: 'red.v1',
+      id: 'r.red.v1',
       seedHex: '#d13438',
       policies: { light: 'harmonized', dark: 'harmonized' }
     });
@@ -182,7 +190,7 @@ describe('tonal-system contract v2', () => {
     expect(result.issues.filter((issue) => issue.code === 'UNKNOWN_PROPERTY')).toHaveLength(7);
   });
 
-  it('restricts primary policies and accepts auto or explicit variants only', () => {
+  it('restricts primary policies, appearances, and variants', () => {
     const light = createRecipe();
     light.primary.policies.light = 'adaptive' as 'source-exact';
     expect(issueCodes(light)).toContain('UNSUPPORTED_PRIMARY_LIGHT_POLICY');
@@ -194,18 +202,22 @@ describe('tonal-system contract v2', () => {
     const variant = createRecipe();
     variant.primary.variant = 'v5' as 'v1';
     expect(issueCodes(variant)).toContain('INVALID_PRIMARY_VARIANT');
+
+    const appearance = createRecipe();
+    appearance.primary.appearance = 'cyan' as 'auto';
+    expect(issueCodes(appearance)).toContain('INVALID_PRIMARY_APPEARANCE');
   });
 
   it('rejects duplicate overrides, legacy ids, and chromatic harmonization for black', () => {
     const duplicate = createRecipe();
     duplicate.overrides = [
       {
-        id: 'blue-green.v1',
+        id: 'bg.teal.v1',
         seedHex: '#008899',
         policies: { light: 'adaptive', dark: 'adaptive' }
       },
       {
-        id: 'blue-green.v1',
+        id: 'bg.teal.v1',
         seedHex: '#0099aa',
         policies: { light: 'adaptive', dark: 'adaptive' }
       }
@@ -215,7 +227,7 @@ describe('tonal-system contract v2', () => {
     const legacy = createRecipe();
     legacy.overrides = [
       {
-        id: 'cyan.v1' as 'blue-green.v1',
+        id: 'cyan.v1' as 'bg.teal.v1',
         seedHex: '#00bcd4',
         policies: { light: 'adaptive', dark: 'adaptive' }
       }
@@ -225,7 +237,7 @@ describe('tonal-system contract v2', () => {
     const black = createRecipe();
     black.overrides = [
       {
-        id: 'black.v1',
+        id: 'n.black.v1',
         seedHex: '#20252b',
         policies: { light: 'source-exact', dark: 'harmonized' }
       }
@@ -236,11 +248,11 @@ describe('tonal-system contract v2', () => {
   it('locks the resolved primary id and rest positions for export', () => {
     const recipe = createRecipe();
     recipe.primary.seedHex = '#1da1f2';
-    const locked = lockTonalSystemRecipe(recipe, 'blue.v1', { light: 24, dark: 70 });
+    const locked = lockTonalSystemRecipe(recipe, 'b.blue.v1', { light: 24, dark: 70 });
 
     expect(locked).toMatchObject({
       primary: {
-        id: 'blue.v1',
+        id: 'b.blue.v1',
         seedHex: '#1da1f2',
         policies: { light: 'source-exact', dark: 'source-exact' }
       },
@@ -254,31 +266,31 @@ describe('tonal-system contract v2', () => {
 
   it('rejects achromatic primary locks, variant drift, and primary override conflicts', () => {
     const recipe = createRecipe();
-    expect(() => lockTonalSystemRecipe(recipe, 'black.v1', { light: 45, dark: 45 })).toThrow(
+    expect(() => lockTonalSystemRecipe(recipe, 'n.black.v1', { light: 45, dark: 45 })).toThrow(
       'chromatic Munsell family'
     );
 
     recipe.primary.variant = 'v2';
-    expect(() => lockTonalSystemRecipe(recipe, 'blue.v1', { light: 45, dark: 45 })).toThrow(
+    expect(() => lockTonalSystemRecipe(recipe, 'b.blue.v1', { light: 45, dark: 45 })).toThrow(
       'explicit primary variant'
     );
 
-    recipe.primary.variant = 'auto';
+    recipe.primary.variant = 'v1';
     recipe.overrides = [
       {
-        id: 'blue.v1',
+        id: 'b.blue.v1',
         seedHex: '#0066aa',
         policies: { light: 'harmonized', dark: 'harmonized' }
       }
     ];
-    expect(() => lockTonalSystemRecipe(recipe, 'blue.v1', { light: 45, dark: 45 })).toThrow(
+    expect(() => lockTonalSystemRecipe(recipe, 'b.blue.v1', { light: 45, dark: 45 })).toThrow(
       'PRIMARY_OVERRIDE_CONFLICT'
     );
 
     recipe.overrides = [];
-    const locked = lockTonalSystemRecipe(recipe, 'blue.v1', { light: 45, dark: 45 });
+    const locked = lockTonalSystemRecipe(recipe, 'b.blue.v1', { light: 45, dark: 45 });
     locked.overrides.push({
-      id: 'blue.v1',
+      id: 'b.blue.v1',
       seedHex: '#0066aa',
       policies: { light: 'harmonized', dark: 'harmonized' }
     });
@@ -286,8 +298,8 @@ describe('tonal-system contract v2', () => {
       'PRIMARY_OVERRIDE_CONFLICT'
     );
 
-    const blackPrimary = structuredClone(locked) as LockedTonalSystemSourceV2;
-    blackPrimary.primary.id = 'black.v1';
+    const blackPrimary = structuredClone(locked) as LockedTonalSystemSourceV3;
+    blackPrimary.primary.id = 'n.black.v1';
     expect(issueCodes(blackPrimary, validateLockedTonalSystemSource)).toContain(
       'ACHROMATIC_PRIMARY_UNSUPPORTED'
     );
@@ -304,7 +316,7 @@ describe('tonal-system contract v2', () => {
         mode: 'locked',
         light: tone,
         dark: 45
-      } as TonalSystemRecipeV2['tonalAnchors']['rest'];
+      } as TonalSystemRecipeV3['tonalAnchors']['rest'];
       expect(issueCodes(invalid)).toContain('INVALID_REST_TONE');
     }
   });

@@ -28,21 +28,28 @@ import {
   type MunsellColorClassification,
   normalizeMunsellHue,
   projectMunsellHue,
-  suggestYellowRedVariant
+  suggestYellowRedAppearance
 } from './munsell-oklch.ts';
 import {
-  type LockedTonalSystemSourceV2,
+  createTonalFamilyId,
+  type LockedTonalSystemSourceV3,
   lockTonalSystemRecipe,
   MUNSELL_SECTORS,
   parseTonalFamilyId,
   resolveTonalFamilyColorKind,
+  resolveTonalFamilyStem,
+  TONAL_BASE_FAMILY_ID_BY_SECTOR,
+  TONAL_BASE_FAMILY_IDS,
   TONAL_CORE_FAMILY_IDS,
+  type TonalChromaticAppearance,
+  type TonalFamilyAppearance,
   type TonalFamilyColorKind,
   type TonalFamilyId,
-  type TonalFamilyOverrideV2,
+  type TonalFamilyOverrideV3,
   type TonalFamilySector,
+  type TonalFamilySectorNotation,
   type TonalFamilyVariant,
-  type TonalSystemRecipeV2,
+  type TonalSystemRecipeV3,
   type TonalSystemValidationIssue,
   type TonalThemePolicy,
   validateLockedTonalSystemSource,
@@ -82,6 +89,7 @@ const DEFERRED_PRIMARY_DERIVATION_V1_PARAMETERS = {
 
 const REST_TONES = KISKADEE_TONES.filter((tone) => tone > 0 && tone < 100);
 const CORE_FAMILY_IDS = new Set<TonalFamilyId>(TONAL_CORE_FAMILY_IDS);
+const BASE_FAMILY_IDS = new Set<TonalFamilyId>(TONAL_BASE_FAMILY_IDS);
 
 export type TonalSeedPolicy = TonalThemePolicy;
 export type TonalSystemStatus = 'pass' | 'review' | 'error';
@@ -93,10 +101,10 @@ export type TonalSystemIssue = TonalSystemValidationIssue & {
 };
 
 export type TonalHarmonyFingerprint = {
-  formatVersion: TonalSystemRecipeV2['formatVersion'];
-  gridContract: TonalSystemRecipeV2['gridContract'];
-  harmonyContract: TonalSystemRecipeV2['harmonyContract'];
-  tonalProfile: TonalSystemRecipeV2['tonalProfile'];
+  formatVersion: TonalSystemRecipeV3['formatVersion'];
+  gridContract: TonalSystemRecipeV3['gridContract'];
+  harmonyContract: TonalSystemRecipeV3['harmonyContract'];
+  tonalProfile: TonalSystemRecipeV3['tonalProfile'];
   familyId: TonalFamilyId;
   theme: KiskadeeTheme;
   tone: KiskadeeTone;
@@ -162,7 +170,9 @@ export type FunctionalRestThemeDiagnostics = {
 
 export type ResolvedTonalFamily = {
   id: TonalFamilyId;
+  appearance: TonalFamilyAppearance;
   sector: TonalFamilySector | null;
+  munsellSector: TonalFamilySectorNotation | 'N';
   variant: TonalFamilyVariant;
   colorKind: TonalFamilyColorKind;
   role: 'primary' | 'support';
@@ -223,7 +233,7 @@ export function offsetKiskadeeTone(tone: KiskadeeTone, offset: number): Kiskadee
 export type ResolvedKiskadeeTonalSystem = {
   valid: true;
   status: Exclude<TonalSystemStatus, 'error'>;
-  source: LockedTonalSystemSourceV2;
+  source: LockedTonalSystemSourceV3;
   rest: {
     light: KiskadeeTone;
     dark: KiskadeeTone;
@@ -314,10 +324,10 @@ type FunctionalRestCandidateEvaluation = FunctionalRestThemeDiagnostics & {
 };
 
 type MaterializedTonalSystemRecipe = Pick<
-  TonalSystemRecipeV2,
+  TonalSystemRecipeV3,
   'formatVersion' | 'gridContract' | 'harmonyContract' | 'tonalProfile' | 'tonalAnchors'
 > & {
-  authoringRecipe: TonalSystemRecipeV2;
+  authoringRecipe: TonalSystemRecipeV3;
   primaryReference: TonalFamilyId;
   useHueGlobalHarmony: boolean;
   families: MaterializedFamilySource[];
@@ -326,7 +336,7 @@ type MaterializedTonalSystemRecipe = Pick<
 type AuthoringRecipeResolution =
   | {
       valid: true;
-      recipe: TonalSystemRecipeV2;
+      recipe: TonalSystemRecipeV3;
       lockedPrimaryId: TonalFamilyId | null;
       issues: [];
     }
@@ -374,6 +384,7 @@ function resolveAuthoringRecipe(input: unknown): AuthoringRecipeResolution {
         tonalProfile: locked.value.tonalProfile,
         primary: {
           seedHex: locked.value.primary.seedHex,
+          appearance: parsed.appearance as TonalChromaticAppearance,
           variant: parsed.variant,
           policies: { ...locked.value.primary.policies }
         },
@@ -402,19 +413,39 @@ function resolveAuthoringRecipe(input: unknown): AuthoringRecipeResolution {
 }
 
 function materializeTonalSystemRecipe(
-  authoringRecipe: TonalSystemRecipeV2,
+  authoringRecipe: TonalSystemRecipeV3,
   lockedPrimaryId: TonalFamilyId | null
 ): MaterializedRecipeResolution {
   const issues: TonalSystemIssue[] = [];
   const primaryIdentity = classifyMunsellHex(authoringRecipe.primary.seedHex);
 
-  const requestedVariant = authoringRecipe.primary.variant;
-  const automaticVariant =
+  const suggestedAppearance: TonalChromaticAppearance | undefined =
     primaryIdentity.sector === 'yellow-red'
-      ? suggestYellowRedVariant(primaryIdentity.oklch).variant
-      : 'v1';
-  const resolvedVariant = requestedVariant === 'auto' ? automaticVariant : requestedVariant;
-  const primaryId = `${primaryIdentity.sector}.${resolvedVariant}` as TonalFamilyId;
+      ? suggestYellowRedAppearance(primaryIdentity.oklch).appearance
+      : (parseTonalFamilyId(TONAL_BASE_FAMILY_ID_BY_SECTOR[primaryIdentity.sector])?.appearance as
+          | TonalChromaticAppearance
+          | undefined);
+  if (!suggestedAppearance) {
+    throw new Error(`Missing canonical appearance for ${primaryIdentity.sector}.`);
+  }
+  const resolvedAppearance =
+    authoringRecipe.primary.appearance === 'auto'
+      ? suggestedAppearance
+      : authoringRecipe.primary.appearance;
+  const primaryStem = resolveTonalFamilyStem(primaryIdentity.sector, resolvedAppearance);
+  const resolvedVariant = authoringRecipe.primary.variant;
+  const primaryId = primaryStem
+    ? createTonalFamilyId(primaryStem, resolvedVariant)
+    : TONAL_BASE_FAMILY_ID_BY_SECTOR[primaryIdentity.sector];
+
+  if (!primaryStem) {
+    issues.push({
+      severity: 'error',
+      code: 'PRIMARY_APPEARANCE_SECTOR_MISMATCH',
+      path: '/primary/appearance',
+      message: `${resolvedAppearance} is not a supported appearance in the ${primaryIdentity.sector} sector.`
+    });
+  }
 
   for (const diagnostic of primaryIdentity.diagnostics) {
     issues.push({
@@ -431,13 +462,14 @@ function materializeTonalSystemRecipe(
     if (
       !parsedLocked ||
       parsedLocked.sector !== primaryIdentity.sector ||
+      parsedLocked.appearance !== resolvedAppearance ||
       parsedLocked.variant !== resolvedVariant
     ) {
       issues.push({
         severity: 'error',
         code: 'LOCKED_PRIMARY_CLASSIFICATION_MISMATCH',
         path: '/primary/id',
-        message: `Locked primary ${lockedPrimaryId} does not match the ${primaryIdentity.sector}.${resolvedVariant} classification.`,
+        message: `Locked primary ${lockedPrimaryId} does not match the ${primaryIdentity.sector} ${resolvedAppearance} ${resolvedVariant} classification.`,
         familyId: lockedPrimaryId
       });
     }
@@ -445,15 +477,14 @@ function materializeTonalSystemRecipe(
 
   if (
     primaryIdentity.sector === 'yellow-red' &&
-    resolvedVariant === 'v2' &&
-    suggestYellowRedVariant(primaryIdentity.oklch).variant !== 'v2'
+    resolvedAppearance === 'brown' &&
+    suggestYellowRedAppearance(primaryIdentity.oklch).appearance !== 'brown'
   ) {
     issues.push({
       severity: 'error',
       code: 'BROWN_APPEARANCE_MISMATCH',
-      path: '/primary/variant',
-      message:
-        'yellow-red.v2 is reserved for a Brown appearance, but the primary is closer to Orange.',
+      path: '/primary/appearance',
+      message: `${primaryId} is a Brown appearance, but the primary is closer to Orange.`,
       familyId: primaryId
     });
   }
@@ -498,7 +529,7 @@ function materializeTonalSystemRecipe(
     }
 
     const referenceSeedHex = FIXED_FAMILY_SEEDS_V1[id];
-    if (id === 'black.v1') {
+    if (id === 'n.black.v1') {
       families.set(id, {
         id,
         seedHex: referenceSeedHex,
@@ -777,8 +808,7 @@ function resolveFunctionalRestProposal(params: {
   }
 
   const baselineByFamily = new Map<TonalFamilyId, KiskadeeScaleResult>();
-  for (const sector of MUNSELL_SECTORS) {
-    const familyId = `${sector}.v1` as TonalFamilyId;
+  for (const familyId of TONAL_BASE_FAMILY_IDS) {
     const source = recipe.families.find((family) => family.id === familyId);
     if (!source) continue;
     const scale =
@@ -900,8 +930,7 @@ function resolveHarmonizedSourceAnchorPreview(params: {
   const resolutions = new Map<TonalFamilyId, ResolvedTonalTheme>();
   const emittedByFamily = new Map<TonalFamilyId, KiskadeeScaleResult>();
 
-  for (const sector of MUNSELL_SECTORS) {
-    const familyId = `${sector}.v1` as TonalFamilyId;
+  for (const familyId of TONAL_BASE_FAMILY_IDS) {
     if (familyId === primarySource.id) {
       emittedByFamily.set(familyId, primaryScale);
       continue;
@@ -1099,9 +1128,13 @@ function compareRelaxedFunctionalRestCandidates(
 }
 
 function normalizePrimaryGlobalUtilization(familyId: TonalFamilyId, utilization: number): number {
-  return familyId === 'yellow-red.v2'
+  return isBrownFamilyId(familyId)
     ? Math.min(1, utilization / MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio)
     : utilization;
+}
+
+function isBrownFamilyId(familyId: TonalFamilyId): boolean {
+  return parseTonalFamilyId(familyId)?.appearance === 'brown';
 }
 
 function resolveEmittedFunctionalRestDiagnostics(params: {
@@ -1126,7 +1159,7 @@ function resolveEmittedFunctionalRestDiagnostics(params: {
     resolveScaleToneGlobalUtilization(primary.scale, primary.restColor)
   );
   const familyRatios = families
-    .filter((family) => family.colorKind === 'chromatic' && family.variant === 'v1')
+    .filter((family) => family.colorKind === 'chromatic' && BASE_FAMILY_IDS.has(family.id))
     .map((family) => {
       const resolution = family.themes[theme];
       const utilization = resolveScaleToneGlobalUtilization(resolution.scale, resolution.restColor);
@@ -1167,7 +1200,7 @@ function resolveEmittedFunctionalRestDiagnostics(params: {
 }
 
 function materializeOverride(
-  override: TonalFamilyOverrideV2,
+  override: TonalFamilyOverrideV3,
   issues: TonalSystemIssue[]
 ): MaterializedFamilySource | null {
   const parsed = parseTonalFamilyId(override.id);
@@ -1193,12 +1226,15 @@ function materializeOverride(
     });
     return null;
   }
-  if (override.id === 'yellow-red.v2' && suggestYellowRedVariant(identity.oklch).variant !== 'v2') {
+  if (
+    isBrownFamilyId(override.id) &&
+    suggestYellowRedAppearance(identity.oklch).appearance !== 'brown'
+  ) {
     issues.push({
       severity: 'error',
       code: 'BROWN_APPEARANCE_MISMATCH',
       path: `/overrides/${override.id}/seedHex`,
-      message: 'yellow-red.v2 is reserved for Brown and cannot use an Orange-like seed.',
+      message: `${override.id} is reserved for Brown and cannot use an Orange-like seed.`,
       familyId: override.id
     });
     return null;
@@ -1373,7 +1409,9 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
 
   const primaryFamily: ResolvedTonalFamily = {
     id: recipe.primaryReference,
+    appearance: parsedPrimaryId.appearance,
     sector: parsedPrimaryId.sector,
+    munsellSector: parsedPrimaryId.munsellSector,
     variant: parsedPrimaryId.variant,
     colorKind: 'chromatic',
     role: 'primary',
@@ -1528,7 +1566,9 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
 
     families.push({
       id: familySource.id,
+      appearance: parsedId.appearance,
       sector: parsedId.sector,
+      munsellSector: parsedId.munsellSector,
       variant: parsedId.variant,
       colorKind: familyKind,
       role: 'support',
@@ -1645,25 +1685,21 @@ function resolveFamilyHarmonyReference(
   primaryId: TonalFamilyId,
   familyId: TonalFamilyId
 ): TonalHarmonyFingerprint {
-  const baseUtilization =
-    primaryId === 'yellow-red.v2'
-      ? Math.min(1, reference.chromaUtilization / MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio)
-      : reference.chromaUtilization;
-  const targetUtilization =
-    familyId === 'yellow-red.v2'
-      ? baseUtilization * MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio
-      : baseUtilization;
-  const baseGlobalUtilization =
-    primaryId === 'yellow-red.v2'
-      ? Math.min(
-          1,
-          reference.hueGlobalChromaUtilization / MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio
-        )
-      : reference.hueGlobalChromaUtilization;
-  const targetGlobalUtilization =
-    familyId === 'yellow-red.v2'
-      ? baseGlobalUtilization * MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio
-      : baseGlobalUtilization;
+  const baseUtilization = isBrownFamilyId(primaryId)
+    ? Math.min(1, reference.chromaUtilization / MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio)
+    : reference.chromaUtilization;
+  const targetUtilization = isBrownFamilyId(familyId)
+    ? baseUtilization * MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio
+    : baseUtilization;
+  const baseGlobalUtilization = isBrownFamilyId(primaryId)
+    ? Math.min(
+        1,
+        reference.hueGlobalChromaUtilization / MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio
+      )
+    : reference.hueGlobalChromaUtilization;
+  const targetGlobalUtilization = isBrownFamilyId(familyId)
+    ? baseGlobalUtilization * MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio
+    : baseGlobalUtilization;
 
   return targetUtilization === reference.chromaUtilization &&
     targetGlobalUtilization === reference.hueGlobalChromaUtilization
@@ -1684,11 +1720,9 @@ function resolveFamilyHarmonyTarget(
 ): FamilyHarmonyTarget {
   return {
     rest: resolveFamilyHarmonyReference(reference, primaryId, familyId),
-    vividPeakGlobalUtilization:
-      familyId === 'yellow-red.v2'
-        ? normalizedPrimaryVividPeakGlobalUtilization *
-          MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio
-        : normalizedPrimaryVividPeakGlobalUtilization,
+    vividPeakGlobalUtilization: isBrownFamilyId(familyId)
+      ? normalizedPrimaryVividPeakGlobalUtilization * MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio
+      : normalizedPrimaryVividPeakGlobalUtilization,
     minimumRestBalanceRatio
   };
 }
@@ -1750,7 +1784,7 @@ function validateAdjacentFamilyRestSeparation(
   for (const family of families) {
     if (
       family.role === 'primary' ||
-      family.variant !== 'v1' ||
+      !BASE_FAMILY_IDS.has(family.id) ||
       !family.sector ||
       !areMunsellSectorsAdjacent(primary.sector, family.sector)
     ) {
@@ -2180,7 +2214,7 @@ function findFreeAnchorHarmonyCandidate(params: {
   minimumRestBalanceRatio: number;
   familyId: TonalFamilyId;
   enforceSafeCore: boolean;
-  profile: TonalSystemRecipeV2['tonalProfile'];
+  profile: TonalSystemRecipeV3['tonalProfile'];
   chromaModel: TonalHarmonyMetrics['chromaModel'];
 }): CandidateResolution | null {
   const {
@@ -2343,7 +2377,7 @@ function createFreeAnchorSeedCandidates(params: {
     utilizations
   } = params;
   const peak = resolveHueChromaPeak(sourceOklch.h);
-  const preferredLightness = familyId === 'yellow-red.v2' ? sourceOklch.l : peak.lightness;
+  const preferredLightness = isBrownFamilyId(familyId) ? sourceOklch.l : peak.lightness;
   const byHex = new Map<string, HarmonySeedCandidate>();
 
   for (const requestedUtilization of utilizations) {
@@ -2399,7 +2433,7 @@ function findRestAnchoredHarmonyCandidate(params: {
   reference: TonalHarmonyFingerprint;
   familyId: TonalFamilyId;
   enforceSafeCore: boolean;
-  profile: TonalSystemRecipeV2['tonalProfile'];
+  profile: TonalSystemRecipeV3['tonalProfile'];
   chromaModel: TonalHarmonyMetrics['chromaModel'];
 }): CandidateResolution | null {
   const {
@@ -2696,7 +2730,9 @@ function isFreeAnchorSeedIdentityValid(
   requireSafeCore: boolean
 ): boolean {
   if (!isMunsellCandidateIdentityValid(hex, familyId, requireSafeCore)) return false;
-  return familyId !== 'yellow-red.v2' || suggestYellowRedVariant(hexToOklch(hex)).variant === 'v2';
+  return (
+    !isBrownFamilyId(familyId) || suggestYellowRedAppearance(hexToOklch(hex)).appearance === 'brown'
+  );
 }
 
 function isMunsellRestIdentityValid(color: KiskadeeScaleColor, familyId: TonalFamilyId): boolean {

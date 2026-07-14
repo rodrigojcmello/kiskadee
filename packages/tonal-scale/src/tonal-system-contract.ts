@@ -7,7 +7,7 @@ import {
   type KiskadeeTone
 } from './kiskadee-tonal-scale.ts';
 
-export const TONAL_SYSTEM_FORMAT_VERSION = 2 as const;
+export const TONAL_SYSTEM_FORMAT_VERSION = 3 as const;
 export const TONAL_GRID_CONTRACT = 'kiskadee-tonal-v1' as const;
 export const TONAL_HARMONY_CONTRACT = 'kiskadee-munsell-rest-v1' as const;
 
@@ -24,52 +24,143 @@ export const MUNSELL_SECTORS = [
   'red-purple'
 ] as const;
 
-export const TONAL_FAMILY_NAMES = [...MUNSELL_SECTORS, 'black'] as const;
+export const MUNSELL_SECTOR_IDENTITIES = [
+  { sector: 'red', code: 'r', notation: 'R', appearance: 'red', stem: 'r.red' },
+  {
+    sector: 'yellow-red',
+    code: 'yr',
+    notation: 'YR',
+    appearance: 'orange',
+    stem: 'yr.orange'
+  },
+  {
+    sector: 'yellow-red',
+    code: 'yr',
+    notation: 'YR',
+    appearance: 'brown',
+    stem: 'yr.brown'
+  },
+  { sector: 'yellow', code: 'y', notation: 'Y', appearance: 'yellow', stem: 'y.yellow' },
+  {
+    sector: 'green-yellow',
+    code: 'gy',
+    notation: 'GY',
+    appearance: 'lime',
+    stem: 'gy.lime'
+  },
+  { sector: 'green', code: 'g', notation: 'G', appearance: 'green', stem: 'g.green' },
+  {
+    sector: 'blue-green',
+    code: 'bg',
+    notation: 'BG',
+    appearance: 'teal',
+    stem: 'bg.teal'
+  },
+  { sector: 'blue', code: 'b', notation: 'B', appearance: 'blue', stem: 'b.blue' },
+  {
+    sector: 'purple-blue',
+    code: 'pb',
+    notation: 'PB',
+    appearance: 'indigo',
+    stem: 'pb.indigo'
+  },
+  {
+    sector: 'purple',
+    code: 'p',
+    notation: 'P',
+    appearance: 'purple',
+    stem: 'p.purple'
+  },
+  {
+    sector: 'red-purple',
+    code: 'rp',
+    notation: 'RP',
+    appearance: 'magenta',
+    stem: 'rp.magenta'
+  }
+] as const;
+
+export const TONAL_ACHROMATIC_IDENTITY = {
+  sector: null,
+  code: 'n',
+  notation: 'N',
+  appearance: 'black',
+  stem: 'n.black'
+} as const;
+
+export const TONAL_FAMILY_IDENTITIES = [
+  ...MUNSELL_SECTOR_IDENTITIES,
+  TONAL_ACHROMATIC_IDENTITY
+] as const;
 export const TONAL_FAMILY_VARIANTS = ['v1', 'v2', 'v3', 'v4'] as const;
 
 export type TonalFamilySector = (typeof MUNSELL_SECTORS)[number];
-export type TonalFamilyName = (typeof TONAL_FAMILY_NAMES)[number];
+export type TonalFamilySectorCode = (typeof MUNSELL_SECTOR_IDENTITIES)[number]['code'];
+export type TonalFamilySectorNotation = (typeof MUNSELL_SECTOR_IDENTITIES)[number]['notation'];
+export type TonalChromaticAppearance = (typeof MUNSELL_SECTOR_IDENTITIES)[number]['appearance'];
+export type TonalFamilyAppearance =
+  | TonalChromaticAppearance
+  | typeof TONAL_ACHROMATIC_IDENTITY.appearance;
+export type TonalFamilyStem = (typeof TONAL_FAMILY_IDENTITIES)[number]['stem'];
 export type TonalFamilyVariant = (typeof TONAL_FAMILY_VARIANTS)[number];
-export type TonalPrimaryVariant = 'auto' | TonalFamilyVariant;
-export type TonalFamilyId = `${TonalFamilyName}.${TonalFamilyVariant}`;
+export type TonalPrimaryAppearance = 'auto' | TonalChromaticAppearance;
+export type TonalFamilyId = `${TonalFamilyStem}.${TonalFamilyVariant}`;
 export type TonalFamilyColorKind = 'chromatic' | 'achromatic';
 export type TonalThemePolicy = 'source-exact' | 'adaptive' | 'harmonized';
 export type PrimaryLightPolicy = 'source-exact';
 export type PrimaryDarkPolicy = 'source-exact' | 'adaptive';
 
 export const TONAL_CORE_FAMILY_IDS = [
-  'red.v1',
-  'yellow-red.v1',
-  'yellow-red.v2',
-  'yellow.v1',
-  'green-yellow.v1',
-  'green.v1',
-  'blue-green.v1',
-  'blue.v1',
-  'purple-blue.v1',
-  'purple.v1',
-  'red-purple.v1',
-  'black.v1'
+  'r.red.v1',
+  'yr.orange.v1',
+  'yr.brown.v1',
+  'y.yellow.v1',
+  'gy.lime.v1',
+  'g.green.v1',
+  'bg.teal.v1',
+  'b.blue.v1',
+  'pb.indigo.v1',
+  'p.purple.v1',
+  'rp.magenta.v1',
+  'n.black.v1'
 ] as const satisfies readonly TonalFamilyId[];
 
 export type CoreTonalFamilyId = (typeof TONAL_CORE_FAMILY_IDS)[number];
 
-export type TonalPrimaryDraftV2 = {
+export const TONAL_BASE_FAMILY_ID_BY_SECTOR = {
+  red: 'r.red.v1',
+  'yellow-red': 'yr.orange.v1',
+  yellow: 'y.yellow.v1',
+  'green-yellow': 'gy.lime.v1',
+  green: 'g.green.v1',
+  'blue-green': 'bg.teal.v1',
+  blue: 'b.blue.v1',
+  'purple-blue': 'pb.indigo.v1',
+  purple: 'p.purple.v1',
+  'red-purple': 'rp.magenta.v1'
+} as const satisfies Record<TonalFamilySector, CoreTonalFamilyId>;
+
+export const TONAL_BASE_FAMILY_IDS = MUNSELL_SECTORS.map(
+  (sector) => TONAL_BASE_FAMILY_ID_BY_SECTOR[sector]
+);
+
+export type TonalPrimaryDraftV3 = {
   seedHex: string;
-  variant: TonalPrimaryVariant;
+  appearance: TonalPrimaryAppearance;
+  variant: TonalFamilyVariant;
   policies: {
     light: PrimaryLightPolicy;
     dark: PrimaryDarkPolicy;
   };
 };
 
-export type TonalPrimaryLockedV2 = {
+export type TonalPrimaryLockedV3 = {
   id: TonalFamilyId;
   seedHex: string;
-  policies: TonalPrimaryDraftV2['policies'];
+  policies: TonalPrimaryDraftV3['policies'];
 };
 
-export type TonalFamilyOverrideV2 = {
+export type TonalFamilyOverrideV3 = {
   id: TonalFamilyId;
   seedHex: string;
   policies: {
@@ -93,18 +184,18 @@ type TonalSystemContractBase = {
   gridContract: typeof TONAL_GRID_CONTRACT;
   harmonyContract: typeof TONAL_HARMONY_CONTRACT;
   tonalProfile: KiskadeeTonalProfile;
-  overrides: TonalFamilyOverrideV2[];
+  overrides: TonalFamilyOverrideV3[];
 };
 
-export type TonalSystemRecipeV2 = TonalSystemContractBase & {
-  primary: TonalPrimaryDraftV2;
+export type TonalSystemRecipeV3 = TonalSystemContractBase & {
+  primary: TonalPrimaryDraftV3;
   tonalAnchors: {
     rest: AutoRest | LockedRest;
   };
 };
 
-export type LockedTonalSystemSourceV2 = TonalSystemContractBase & {
-  primary: TonalPrimaryLockedV2;
+export type LockedTonalSystemSourceV3 = TonalSystemContractBase & {
+  primary: TonalPrimaryLockedV3;
   tonalAnchors: {
     rest: LockedRest;
   };
@@ -127,7 +218,8 @@ export const DEFAULT_TONAL_SYSTEM_RECIPE = {
   tonalProfile: 'balanced',
   primary: {
     seedHex: '#0f6cbd',
-    variant: 'auto',
+    appearance: 'auto',
+    variant: 'v1',
     policies: { light: 'source-exact', dark: 'source-exact' }
   },
   tonalAnchors: {
@@ -136,7 +228,7 @@ export const DEFAULT_TONAL_SYSTEM_RECIPE = {
     }
   },
   overrides: []
-} as const satisfies TonalSystemRecipeV2;
+} as const satisfies TonalSystemRecipeV3;
 
 const RECIPE_KEYS = [
   'formatVersion',
@@ -147,7 +239,7 @@ const RECIPE_KEYS = [
   'tonalAnchors',
   'overrides'
 ] as const;
-const PRIMARY_DRAFT_KEYS = ['seedHex', 'variant', 'policies'] as const;
+const PRIMARY_DRAFT_KEYS = ['seedHex', 'appearance', 'variant', 'policies'] as const;
 const PRIMARY_LOCKED_KEYS = ['id', 'seedHex', 'policies'] as const;
 const OVERRIDE_KEYS = ['id', 'seedHex', 'policies'] as const;
 const FAMILY_POLICY_KEYS = ['light', 'dark'] as const;
@@ -155,68 +247,78 @@ const TONAL_ANCHOR_KEYS = ['rest'] as const;
 const AUTO_REST_KEYS = ['mode'] as const;
 const LOCKED_REST_KEYS = ['mode', 'light', 'dark'] as const;
 
-export type ParsedTonalFamilyId =
-  | {
-      family: TonalFamilySector;
-      sector: TonalFamilySector;
-      variant: TonalFamilyVariant;
-    }
-  | {
-      family: 'black';
-      sector: null;
-      variant: TonalFamilyVariant;
-    };
+export type ParsedTonalFamilyId = {
+  stem: TonalFamilyStem;
+  appearance: TonalFamilyAppearance;
+  sector: TonalFamilySector | null;
+  sectorCode: TonalFamilySectorCode | typeof TONAL_ACHROMATIC_IDENTITY.code;
+  munsellSector: TonalFamilySectorNotation | typeof TONAL_ACHROMATIC_IDENTITY.notation;
+  colorKind: TonalFamilyColorKind;
+  variant: TonalFamilyVariant;
+};
 
 export function createTonalFamilyId(
-  family: TonalFamilyName,
+  stem: TonalFamilyStem,
   variant: TonalFamilyVariant
 ): TonalFamilyId {
-  return `${family}.${variant}`;
+  return `${stem}.${variant}`;
 }
 
 export function parseTonalFamilyId(value: string): ParsedTonalFamilyId | null {
-  const [family, variant, extra] = value.split('.');
+  const [sectorCode, appearance, variant, extra] = value.split('.');
 
-  if (
-    extra !== undefined ||
-    !TONAL_FAMILY_NAMES.includes(family as TonalFamilyName) ||
-    !TONAL_FAMILY_VARIANTS.includes(variant as TonalFamilyVariant)
-  ) {
+  if (extra !== undefined || !TONAL_FAMILY_VARIANTS.includes(variant as TonalFamilyVariant)) {
     return null;
   }
 
-  if (family === 'black') {
-    return { family, sector: null, variant: variant as TonalFamilyVariant };
-  }
+  const identity = TONAL_FAMILY_IDENTITIES.find(
+    (candidate) => candidate.code === sectorCode && candidate.appearance === appearance
+  );
+  if (!identity) return null;
 
   return {
-    family: family as TonalFamilySector,
-    sector: family as TonalFamilySector,
+    stem: identity.stem,
+    appearance: identity.appearance,
+    sector: identity.sector,
+    sectorCode: identity.code,
+    munsellSector: identity.notation,
+    colorKind: identity.sector === null ? 'achromatic' : 'chromatic',
     variant: variant as TonalFamilyVariant
   };
 }
 
 export function resolveTonalFamilyColorKind(id: TonalFamilyId): TonalFamilyColorKind {
-  return id.startsWith('black.') ? 'achromatic' : 'chromatic';
+  return parseTonalFamilyId(id)?.colorKind ?? 'chromatic';
+}
+
+export function resolveTonalFamilyStem(
+  sector: TonalFamilySector,
+  appearance: TonalChromaticAppearance
+): TonalFamilyStem | null {
+  return (
+    MUNSELL_SECTOR_IDENTITIES.find(
+      (candidate) => candidate.sector === sector && candidate.appearance === appearance
+    )?.stem ?? null
+  );
 }
 
 export function validateTonalSystemRecipe(
   input: unknown
-): TonalSystemValidationResult<TonalSystemRecipeV2> {
+): TonalSystemValidationResult<TonalSystemRecipeV3> {
   return validateContract(input, 'draft');
 }
 
 export function validateLockedTonalSystemSource(
   input: unknown
-): TonalSystemValidationResult<LockedTonalSystemSourceV2> {
+): TonalSystemValidationResult<LockedTonalSystemSourceV3> {
   return validateContract(input, 'locked');
 }
 
 export function lockTonalSystemRecipe(
-  recipe: TonalSystemRecipeV2,
+  recipe: TonalSystemRecipeV3,
   primaryId: TonalFamilyId,
   rest: { light: KiskadeeTone; dark: KiskadeeTone }
-): LockedTonalSystemSourceV2 {
+): LockedTonalSystemSourceV3 {
   const recipeValidation = validateTonalSystemRecipe(recipe);
   if (!recipeValidation.valid) {
     throw new Error(
@@ -230,17 +332,20 @@ export function lockTonalSystemRecipe(
   if (!parsedPrimary || parsedPrimary.sector === null) {
     throw new Error('The locked primary id must identify a chromatic Munsell family.');
   }
-  if (
-    normalizedRecipe.primary.variant !== 'auto' &&
-    normalizedRecipe.primary.variant !== parsedPrimary.variant
-  ) {
+  if (normalizedRecipe.primary.variant !== parsedPrimary.variant) {
     throw new Error('The locked primary id must preserve the explicit primary variant.');
+  }
+  if (
+    normalizedRecipe.primary.appearance !== 'auto' &&
+    normalizedRecipe.primary.appearance !== parsedPrimary.appearance
+  ) {
+    throw new Error('The locked primary id must preserve the explicit primary appearance.');
   }
   if (!isRestTone(rest.light) || !isRestTone(rest.dark)) {
     throw new Error('Locked rest positions must be public chromatic tones from 1 through 99.');
   }
 
-  const source: LockedTonalSystemSourceV2 = {
+  const source: LockedTonalSystemSourceV3 = {
     formatVersion: normalizedRecipe.formatVersion,
     gridContract: normalizedRecipe.gridContract,
     harmonyContract: normalizedRecipe.harmonyContract,
@@ -277,15 +382,15 @@ export function lockTonalSystemRecipe(
 function validateContract(
   input: unknown,
   stage: 'draft'
-): TonalSystemValidationResult<TonalSystemRecipeV2>;
+): TonalSystemValidationResult<TonalSystemRecipeV3>;
 function validateContract(
   input: unknown,
   stage: 'locked'
-): TonalSystemValidationResult<LockedTonalSystemSourceV2>;
+): TonalSystemValidationResult<LockedTonalSystemSourceV3>;
 function validateContract(
   input: unknown,
   stage: 'draft' | 'locked'
-): TonalSystemValidationResult<TonalSystemRecipeV2 | LockedTonalSystemSourceV2> {
+): TonalSystemValidationResult<TonalSystemRecipeV3 | LockedTonalSystemSourceV3> {
   const issues: TonalSystemValidationIssue[] = [];
   const issue = (code: string, path: string, message: string) => {
     issues.push({ code, path, message });
@@ -318,7 +423,7 @@ function validateContract(
   if (
     stage === 'locked' &&
     primary &&
-    overrides?.some((override) => override.id === (primary as TonalPrimaryLockedV2).id)
+    overrides?.some((override) => override.id === (primary as TonalPrimaryLockedV3).id)
   ) {
     issue(
       'PRIMARY_OVERRIDE_CONFLICT',
@@ -347,7 +452,7 @@ function validateContract(
   if (stage === 'draft') {
     return {
       valid: true,
-      value: { ...base, primary: primary as TonalPrimaryDraftV2, tonalAnchors: { rest } },
+      value: { ...base, primary: primary as TonalPrimaryDraftV3, tonalAnchors: { rest } },
       issues: []
     };
   }
@@ -356,7 +461,7 @@ function validateContract(
     valid: true,
     value: {
       ...base,
-      primary: primary as TonalPrimaryLockedV2,
+      primary: primary as TonalPrimaryLockedV3,
       tonalAnchors: { rest: rest as LockedRest }
     },
     issues: []
@@ -368,7 +473,10 @@ function validateContractIdentifiers(
   issue: (code: string, path: string, message: string) => void
 ): void {
   if (input.formatVersion !== TONAL_SYSTEM_FORMAT_VERSION) {
-    const legacy = input.formatVersion === 1 ? ' Version 1 is not migrated automatically.' : '';
+    const legacy =
+      input.formatVersion === 1 || input.formatVersion === 2
+        ? ` Version ${input.formatVersion} is not migrated automatically.`
+        : '';
     issue(
       'UNSUPPORTED_FORMAT',
       '/formatVersion',
@@ -386,7 +494,7 @@ function validateContractIdentifiers(
 function validateDraftPrimary(
   input: unknown,
   issue: (code: string, path: string, message: string) => void
-): TonalPrimaryDraftV2 | null {
+): TonalPrimaryDraftV3 | null {
   const path = '/primary';
   if (!isPlainObject(input)) {
     issue('INVALID_PRIMARY', path, 'Primary must be a plain object.');
@@ -395,27 +503,39 @@ function validateDraftPrimary(
 
   reportUnknownKeys(input, PRIMARY_DRAFT_KEYS, path, issue);
   const seedHex = validateSeed(input.seedHex, `${path}/seedHex`, issue);
+  const appearance =
+    input.appearance === 'auto' ||
+    MUNSELL_SECTOR_IDENTITIES.some((identity) => identity.appearance === input.appearance)
+      ? (input.appearance as TonalPrimaryAppearance)
+      : null;
+  if (!appearance) {
+    issue(
+      'INVALID_PRIMARY_APPEARANCE',
+      `${path}/appearance`,
+      'Primary appearance must be auto or a supported chromatic appearance.'
+    );
+  }
   const variant = TONAL_FAMILY_VARIANTS.includes(input.variant as TonalFamilyVariant)
     ? (input.variant as TonalFamilyVariant)
-    : input.variant === 'auto'
-      ? 'auto'
-      : null;
+    : null;
   if (!variant) {
     issue(
       'INVALID_PRIMARY_VARIANT',
       `${path}/variant`,
-      'Primary variant must be auto or a supported v1 through v4 variant.'
+      'Primary variant must be a supported v1 through v4 variant.'
     );
   }
   const policies = validatePrimaryPolicies(input.policies, `${path}/policies`, issue);
 
-  return seedHex && variant && policies ? { seedHex, variant, policies } : null;
+  return seedHex && appearance && variant && policies
+    ? { seedHex, appearance, variant, policies }
+    : null;
 }
 
 function validateLockedPrimary(
   input: unknown,
   issue: (code: string, path: string, message: string) => void
-): TonalPrimaryLockedV2 | null {
+): TonalPrimaryLockedV3 | null {
   const path = '/primary';
   if (!isPlainObject(input)) {
     issue('INVALID_PRIMARY', path, 'Primary must be a plain object.');
@@ -441,7 +561,7 @@ function validatePrimaryPolicies(
   input: unknown,
   path: string,
   issue: (code: string, path: string, message: string) => void
-): TonalPrimaryDraftV2['policies'] | null {
+): TonalPrimaryDraftV3['policies'] | null {
   if (!isPlainObject(input)) {
     issue('INVALID_PRIMARY_POLICIES', path, 'Primary policies must be a plain object.');
     return null;
@@ -471,13 +591,13 @@ function validatePrimaryPolicies(
 function validateOverrides(
   input: unknown,
   issue: (code: string, path: string, message: string) => void
-): TonalFamilyOverrideV2[] | null {
+): TonalFamilyOverrideV3[] | null {
   if (!Array.isArray(input)) {
     issue('INVALID_OVERRIDES', '/overrides', 'Overrides must be an array.');
     return null;
   }
 
-  const overrides: TonalFamilyOverrideV2[] = [];
+  const overrides: TonalFamilyOverrideV3[] = [];
   const seen = new Set<TonalFamilyId>();
   input.forEach((rawOverride, index) => {
     const path = `/overrides/${index}`;
@@ -518,7 +638,7 @@ function validateOverridePolicies(
   input: unknown,
   path: string,
   issue: (code: string, path: string, message: string) => void
-): TonalFamilyOverrideV2['policies'] | null {
+): TonalFamilyOverrideV3['policies'] | null {
   if (!isPlainObject(input)) {
     issue('INVALID_OVERRIDE_POLICIES', path, 'Override policies must be a plain object.');
     return null;
@@ -587,7 +707,7 @@ function validateFamilyId(
   issue: (code: string, path: string, message: string) => void
 ): TonalFamilyId | null {
   if (typeof value === 'string' && parseTonalFamilyId(value)) return value as TonalFamilyId;
-  issue('INVALID_FAMILY_ID', path, 'Family id is not supported by tonal-system format 2.');
+  issue('INVALID_FAMILY_ID', path, 'Family id is not supported by tonal-system format 3.');
   return null;
 }
 

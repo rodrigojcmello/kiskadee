@@ -48,12 +48,10 @@ export const MUNSELL_OKLCH_PRIMARY_CHROMA = {
 } as const;
 
 export const MUNSELL_YELLOW_RED_PROTOTYPES = {
-  v1: {
-    appearance: 'orange',
+  orange: {
     hex: '#ca5010'
   },
-  v2: {
-    appearance: 'brown',
+  brown: {
     hex: '#8e562e'
   }
 } as const;
@@ -107,13 +105,12 @@ export type MunsellHueProjection = {
   clampedToSafeCore: boolean;
 };
 
-export type YellowRedVariantSuggestion = {
+export type YellowRedAppearanceSuggestion = {
   inputSector: MunsellOklchSector;
-  variant: keyof typeof MUNSELL_YELLOW_RED_PROTOTYPES;
-  appearance: (typeof MUNSELL_YELLOW_RED_PROTOTYPES)[keyof typeof MUNSELL_YELLOW_RED_PROTOTYPES]['appearance'];
+  appearance: keyof typeof MUNSELL_YELLOW_RED_PROTOTYPES;
   distances: {
-    v1: number;
-    v2: number;
+    orange: number;
+    brown: number;
   };
 };
 
@@ -293,19 +290,20 @@ export function projectMunsellHue(
   };
 }
 
-export function suggestYellowRedVariant(input: string | OklchColor): YellowRedVariantSuggestion {
+export function suggestYellowRedAppearance(
+  input: string | OklchColor
+): YellowRedAppearanceSuggestion {
   const oklch = typeof input === 'string' ? resolveHexOklch(input) : normalizeOklch(input);
   const classification = classifyMunsellHue(oklch.h);
   const distances = {
-    v1: deltaEOk(oklch, hexToOklch(MUNSELL_YELLOW_RED_PROTOTYPES.v1.hex)),
-    v2: deltaEOk(oklch, hexToOklch(MUNSELL_YELLOW_RED_PROTOTYPES.v2.hex))
+    orange: deltaEOk(oklch, hexToOklch(MUNSELL_YELLOW_RED_PROTOTYPES.orange.hex)),
+    brown: deltaEOk(oklch, hexToOklch(MUNSELL_YELLOW_RED_PROTOTYPES.brown.hex))
   };
-  const variant = distances.v1 <= distances.v2 ? 'v1' : 'v2';
+  const appearance = distances.orange <= distances.brown ? 'orange' : 'brown';
 
   return {
     inputSector: classification.sector,
-    variant,
-    appearance: MUNSELL_YELLOW_RED_PROTOTYPES[variant].appearance,
+    appearance,
     distances
   };
 }

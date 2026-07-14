@@ -1,4 +1,4 @@
-# Kiskadee Tonal System v2
+# Kiskadee Tonal System v3
 
 Status: canonical package-level definition.
 
@@ -30,12 +30,13 @@ state reference.
 
 ## Required Family Set
 
-Every valid system resolves ten Munsell `v1` sectors, Brown at
-`yellow-red.v2`, and `black.v1`. The primary may occupy one of those ids or an
-explicit additional `v2` through `v4` variant. Optional overrides may replace a
-required seed or add further authored variants.
+Every valid system resolves one `v1` appearance for each of the ten Munsell
+sectors, the additional Brown appearance at `yr.brown.v1`, and Black at
+`n.black.v1`. The primary may occupy one of those ids or an explicit additional
+`v2` through `v4` variant. Optional overrides may replace a required seed or
+add further authored variants of an existing appearance.
 
-`black.*` is public Layer 1 terminology. Its internal color kind is
+`n.black.*` is public Layer 1 terminology. Its internal color kind is
 `achromatic`, never `neutral`. A black seed may be a warm, cool, or subtly
 tinted gray, but it cannot be the chromatic primary reference.
 
@@ -46,9 +47,10 @@ The absolute caps remain part of every scale:
 
 ## Input Contract
 
-Draft format 2 contains:
+Draft format 3 contains:
 
-- one exact primary seed, automatic or explicit variant, and Light/Dark policy;
+- one exact primary seed, automatic or explicit natural appearance, explicit
+  `v1` through `v4` variant, and Light/Dark policy;
 - zero or more family overrides;
 - one tonal profile (`balanced` or `muted-darks`);
 - automatic or locked Light/Dark rest positions;
@@ -56,17 +58,19 @@ Draft format 2 contains:
 
 Primary Light is always `source-exact`. Primary Dark may be `source-exact` or
 `adaptive`. The primary sector is classified automatically; automatic
-yellow-red variant selection distinguishes Orange v1 and Brown v2. Export
-replaces the automatic identity with a locked family id.
+Yellow-Red appearance selection distinguishes `yr.orange.v1` and
+`yr.brown.v1`. Export replaces the automatic appearance with a locked family
+id.
 
 Overrides are explicit and ordered semantically by id rather than input order.
 Chromatic overrides may use `source-exact`, `adaptive`, or `harmonized` per
-theme. `black.*` may use only `source-exact` or `adaptive`. Invalid ids,
+theme. `n.black.*` may use only `source-exact` or `adaptive`. Invalid ids,
 duplicates, sector mismatches, Orange-like Brown overrides, unsupported
 policies, and conflicting primary overrides fail explicitly.
 
-Format 1 is not migrated silently. Former natural family names do not have a
-unique mapping onto the Munsell family and variant model.
+Formats 1 and 2 are not migrated silently. Format 2 encoded Brown as a sector
+variant and used complete sector names as public ids; neither meaning is
+compatible with the format 3 sector, appearance, and variant axes.
 
 ## Fixed Reference Set
 
@@ -75,18 +79,18 @@ The active seed model is `fixed-reference`, backed by
 
 | Family | Reference seed |
 | --- | --- |
-| `red.v1` | `#d13438` |
-| `yellow-red.v1` | `#ca5010` |
-| `yellow-red.v2` | `#8e562e` |
-| `yellow.v1` | `#ffb900` |
-| `green-yellow.v1` | `#7fba00` |
-| `green.v1` | `#107c10` |
-| `blue-green.v1` | `#038387` |
-| `blue.v1` | `#0f6cbd` |
-| `purple-blue.v1` | `#4f6bed` |
-| `purple.v1` | `#8764b8` |
-| `red-purple.v1` | `#e3008c` |
-| `black.v1` | `#20252b` |
+| `r.red.v1` | `#d13438` |
+| `yr.orange.v1` | `#ca5010` |
+| `yr.brown.v1` | `#8e562e` |
+| `y.yellow.v1` | `#ffb900` |
+| `gy.lime.v1` | `#7fba00` |
+| `g.green.v1` | `#107c10` |
+| `bg.teal.v1` | `#038387` |
+| `b.blue.v1` | `#0f6cbd` |
+| `pb.indigo.v1` | `#4f6bed` |
+| `p.purple.v1` | `#8764b8` |
+| `rp.magenta.v1` | `#e3008c` |
+| `n.black.v1` | `#20252b` |
 
 The primary replaces only the reference whose resolved family id it occupies.
 All other required families start from the same bytes for every primary.
@@ -101,7 +105,7 @@ mandatory.
 Generation performs these deterministic stages:
 
 1. Normalize and classify the exact primary.
-2. Resolve its family variant and exact Light/Dark scales.
+2. Resolve its natural appearance, family variant, and exact Light/Dark scales.
 3. Measure primary chroma against the maximum available anywhere along its
    hue, not only at the primary lightness. The measurement comes from the
    effective primary anchor, never from an incidental chroma overshoot in a
@@ -216,7 +220,7 @@ tan; physically darker positions retain the Brown character. If Brown is
 primary, the harmony reference normalizes its utilization by the same ratio
 before comparing it with the fixed companion set.
 
-`black.v1` uses the fixed reference `#20252b`, remains `source-exact` in both
+`n.black.v1` uses the fixed reference `#20252b`, remains `source-exact` in both
 themes, and does not participate in chromatic harmony. Achromatic chroma above
 `0.04` requires review and above `0.08` fails.
 
@@ -350,23 +354,24 @@ tonal-system.source.json
 tonal-system.json
 tonal-system.diagnostics.json
 colors/
-  black.v1.json
-  blue-green.v1.json
-  blue.v1.json
+  b.blue.v1.json
+  bg.teal.v1.json
+  n.black.v1.json
   ...
-  yellow-red.v1.json
-  yellow-red.v2.json
-  yellow.v1.json
+  y.yellow.v1.json
+  yr.brown.v1.json
+  yr.orange.v1.json
 ```
 
 The required system contains 12 color assets and 15 files total. Additional
 authored variants add one color file each. All artifacts identify
-`@kiskadee/tonal-scale@0.2.0`.
+`@kiskadee/tonal-scale@0.3.0`.
 
 The locked source retains the primary id and seed, policies, overrides,
 profile, rest positions, and contract identifiers. The manifest centralizes
-asset hashes. Each color asset contains `sector`, `variant`, `colorKind`,
-`seedHex`, `seedOrigin`, policies, generated anchors, harmony-rest colors,
+asset hashes. Each color asset contains `munsellSector`, `appearance`,
+`variant`, `colorKind`, `seedHex`, `seedOrigin`, policies, generated anchors,
+harmony-rest colors,
 per-theme `stateReferences`, and complete Light and Dark tone maps. A state
 reference records its tone, hex, and whether it came from `generated-anchor` or
 `harmony-rest`. The diagnostics identify the
@@ -380,7 +385,7 @@ atomically.
 ## Versioning And External Boundary
 
 Family variant, package version, artifact format, grid contract, harmony
-contract, and tonal profile are independent version axes. The V2 format and
+contract, and tonal profile are independent version axes. The V3 format and
 Munsell harmony contract do not alter the `kiskadee-tonal-v1` low-level grid or
 the canonical Balanced barrier.
 

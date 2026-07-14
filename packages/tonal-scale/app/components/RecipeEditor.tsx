@@ -12,7 +12,7 @@ import {
 import {
   classifyMunsellHex,
   type MunsellHexClassification,
-  suggestYellowRedVariant
+  suggestYellowRedAppearance
 } from '@/src/munsell-oklch';
 import type {
   KiskadeeTonalSystemResult,
@@ -22,17 +22,19 @@ import type {
 import {
   type CoreTonalFamilyId,
   createTonalFamilyId,
+  MUNSELL_SECTOR_IDENTITIES,
   parseTonalFamilyId,
   resolveTonalFamilyColorKind,
+  resolveTonalFamilyStem,
   TONAL_CORE_FAMILY_IDS,
-  TONAL_FAMILY_NAMES,
+  TONAL_FAMILY_IDENTITIES,
   TONAL_FAMILY_VARIANTS,
   type TonalFamilyId,
-  type TonalFamilyOverrideV2,
+  type TonalFamilyOverrideV3,
   type TonalFamilyVariant,
-  type TonalPrimaryDraftV2,
-  type TonalPrimaryVariant,
-  type TonalSystemRecipeV2,
+  type TonalPrimaryAppearance,
+  type TonalPrimaryDraftV3,
+  type TonalSystemRecipeV3,
   type TonalThemePolicy
 } from '@/src/tonal-system-contract';
 import styles from './RecipeEditor.module.css';
@@ -40,8 +42,8 @@ import styles from './RecipeEditor.module.css';
 const REST_TONES = KISKADEE_TONES.filter((tone): tone is KiskadeeTone => tone > 0 && tone < 100);
 const CORE_FAMILY_ID_SET = new Set<TonalFamilyId>(TONAL_CORE_FAMILY_IDS);
 const EXTRA_VARIANTS = TONAL_FAMILY_VARIANTS.filter((variant) => variant !== 'v1');
-const EXTRA_FAMILY_IDS = TONAL_FAMILY_NAMES.flatMap((family) =>
-  EXTRA_VARIANTS.map((variant) => createTonalFamilyId(family, variant))
+const EXTRA_FAMILY_IDS = TONAL_FAMILY_IDENTITIES.flatMap((identity) =>
+  EXTRA_VARIANTS.map((variant) => createTonalFamilyId(identity.stem, variant))
 ).filter((id) => !CORE_FAMILY_ID_SET.has(id));
 
 const POLICY_LABELS = {
@@ -51,17 +53,20 @@ const POLICY_LABELS = {
 } as const satisfies Record<TonalThemePolicy, string>;
 
 export type RecipeEditorProps = {
-  recipe: TonalSystemRecipeV2;
+  recipe: TonalSystemRecipeV3;
   result: KiskadeeTonalSystemResult;
   isGenerating: boolean;
-  onChange: (next: TonalSystemRecipeV2) => void;
+  onChange: (next: TonalSystemRecipeV3) => void;
 };
 
 export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeEditorProps) {
   const editorId = useId();
   const [requestedExtraId, setRequestedExtraId] = useState<TonalFamilyId | ''>('');
   const classification = classifyPrimary(recipe.primary.seedHex);
-  const suggestedVariant = resolveSuggestedVariant(classification);
+  const suggestedAppearance = resolveSuggestedAppearance(classification);
+  const appearanceOptions = classification
+    ? MUNSELL_SECTOR_IDENTITIES.filter((identity) => identity.sector === classification.sector)
+    : [];
   const inferredPrimaryId = resolvePrimaryId(recipe, classification);
   const resolvedPrimaryId = result.valid ? result.primaryReference.familyId : inferredPrimaryId;
   const usedIds = new Set(recipe.overrides.map((override) => override.id));
@@ -80,9 +85,16 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
     ? result.families.find((family) => family.id === result.primaryReference.familyId)
     : undefined;
 
-  const updatePrimary = (primary: TonalPrimaryDraftV2) => {
-    const nextRecipe: TonalSystemRecipeV2 = { ...recipe, primary };
-    const nextPrimaryId = resolvePrimaryId(nextRecipe, classifyPrimary(primary.seedHex));
+  const updatePrimary = (primary: TonalPrimaryDraftV3) => {
+    const nextClassification = classifyPrimary(primary.seedHex);
+    const nextPrimary =
+      nextClassification &&
+      primary.appearance !== 'auto' &&
+      !resolveTonalFamilyStem(nextClassification.sector, primary.appearance)
+        ? { ...primary, appearance: 'auto' as const }
+        : primary;
+    const nextRecipe: TonalSystemRecipeV3 = { ...recipe, primary: nextPrimary };
+    const nextPrimaryId = resolvePrimaryId(nextRecipe, nextClassification);
 
     onChange({
       ...nextRecipe,
@@ -101,13 +113,11 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
     const sectorPeer = result.families.find(
       (family) => parsed.sector !== null && family.sector === parsed.sector
     );
-    const referenceId = (
-      id === 'yellow-red.v2' ? id : createTonalFamilyId(parsed.family, 'v1')
-    ) as CoreTonalFamilyId;
+    const referenceId = createTonalFamilyId(parsed.stem, 'v1') as CoreTonalFamilyId;
     const seedHex =
       resolved?.sourceSeedHex ?? sectorPeer?.sourceSeedHex ?? FIXED_FAMILY_SEEDS_V1[referenceId];
     const colorKind = resolveTonalFamilyColorKind(id);
-    const override: TonalFamilyOverrideV2 = {
+    const override: TonalFamilyOverrideV3 = {
       id,
       seedHex,
       policies:
@@ -119,7 +129,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
     onChange({ ...recipe, overrides: [...recipe.overrides, override] });
   };
 
-  const updateOverride = (nextOverride: TonalFamilyOverrideV2) => {
+  const updateOverride = (nextOverride: TonalFamilyOverrideV3) => {
     onChange({
       ...recipe,
       overrides: recipe.overrides.map((override) =>
@@ -199,12 +209,12 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
           <div className={styles.classificationBadges} aria-live="polite">
             <span>
               Sector{' '}
-              <strong>{classification ? formatFamilyName(classification.sector) : '—'}</strong>
+              <strong>{classification ? formatMunsellSector(classification.sector) : '—'}</strong>
             </span>
             <span>
               Suggested{' '}
               <strong>
-                {classification ? `${classification.sector}.${suggestedVariant}` : '—'}
+                {resolveSuggestedPrimaryId(classification, suggestedAppearance) ?? '—'}
               </strong>
             </span>
             <span>
@@ -242,6 +252,29 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
             ) : null}
           </label>
 
+          <label className={styles.compactField} htmlFor={`${editorId}-primary-appearance`}>
+            <span>Primary appearance</span>
+            <select
+              id={`${editorId}-primary-appearance`}
+              value={recipe.primary.appearance}
+              onChange={(event) =>
+                updatePrimary({
+                  ...recipe.primary,
+                  appearance: event.target.value as TonalPrimaryAppearance
+                })
+              }
+            >
+              <option value="auto">
+                Auto{suggestedAppearance ? ` · ${capitalize(suggestedAppearance)}` : ''}
+              </option>
+              {appearanceOptions.map((identity) => (
+                <option key={identity.appearance} value={identity.appearance}>
+                  {capitalize(identity.appearance)}
+                </option>
+              ))}
+            </select>
+          </label>
+
           <label className={styles.compactField} htmlFor={`${editorId}-primary-variant`}>
             <span>Primary variant</span>
             <select
@@ -250,11 +283,10 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
               onChange={(event) =>
                 updatePrimary({
                   ...recipe.primary,
-                  variant: event.target.value as TonalPrimaryVariant
+                  variant: event.target.value as TonalFamilyVariant
                 })
               }
             >
-              <option value="auto">Auto · suggested {suggestedVariant.toUpperCase()}</option>
               {TONAL_FAMILY_VARIANTS.map((variant) => (
                 <option key={variant} value={variant}>
                   {variant.toUpperCase()}
@@ -278,7 +310,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
                   ...recipe.primary,
                   policies: {
                     ...recipe.primary.policies,
-                    dark: event.target.value as TonalPrimaryDraftV2['policies']['dark']
+                    dark: event.target.value as TonalPrimaryDraftV3['policies']['dark']
                   }
                 })
               }
@@ -531,11 +563,11 @@ type FamilyRowProps = {
   required: boolean;
   isPrimary: boolean;
   primarySeedHex?: string;
-  override: TonalFamilyOverrideV2 | undefined;
+  override: TonalFamilyOverrideV3 | undefined;
   resolved: ResolvedTonalFamily | undefined;
   seedIssue: string | undefined;
   onEnable: () => void;
-  onChange: (override: TonalFamilyOverrideV2) => void;
+  onChange: (override: TonalFamilyOverrideV3) => void;
   onRemove: () => void;
 };
 
@@ -587,7 +619,7 @@ function FamilyRow({
                   ? 'Fixed harmony reference'
                   : resolved?.seedOrigin === 'canonical'
                     ? 'Canonical source'
-                    : required && id === 'black.v1'
+                    : required && id === 'n.black.v1'
                       ? 'Canonical source'
                       : required
                         ? 'Fixed harmony reference'
@@ -692,23 +724,40 @@ function classifyPrimary(seedHex: string): MunsellHexClassification | null {
   }
 }
 
-function resolveSuggestedVariant(
+function resolveSuggestedAppearance(
   classification: MunsellHexClassification | null
-): TonalFamilyVariant {
-  if (classification?.sector !== 'yellow-red') return 'v1';
-  return suggestYellowRedVariant(classification.oklch).variant;
+): TonalPrimaryAppearance | null {
+  if (!classification) return null;
+  if (classification.sector === 'yellow-red') {
+    return suggestYellowRedAppearance(classification.oklch).appearance;
+  }
+  return (
+    MUNSELL_SECTOR_IDENTITIES.find((identity) => identity.sector === classification.sector)
+      ?.appearance ?? null
+  );
 }
 
 function resolvePrimaryId(
-  recipe: TonalSystemRecipeV2,
+  recipe: TonalSystemRecipeV3,
   classification: MunsellHexClassification | null
 ): TonalFamilyId | null {
   if (!classification) return null;
-  const variant =
-    recipe.primary.variant === 'auto'
-      ? resolveSuggestedVariant(classification)
-      : recipe.primary.variant;
-  return createTonalFamilyId(classification.sector, variant);
+  const appearance =
+    recipe.primary.appearance === 'auto'
+      ? resolveSuggestedAppearance(classification)
+      : recipe.primary.appearance;
+  if (!appearance || appearance === 'auto') return null;
+  const stem = resolveTonalFamilyStem(classification.sector, appearance);
+  return stem ? createTonalFamilyId(stem, recipe.primary.variant) : null;
+}
+
+function resolveSuggestedPrimaryId(
+  classification: MunsellHexClassification | null,
+  appearance: TonalPrimaryAppearance | null
+): TonalFamilyId | null {
+  if (!classification || !appearance || appearance === 'auto') return null;
+  const stem = resolveTonalFamilyStem(classification.sector, appearance);
+  return stem ? createTonalFamilyId(stem, 'v1') : null;
 }
 
 function resolvePrimaryIssue(issues: TonalSystemIssue[]): TonalSystemIssue | undefined {
@@ -745,10 +794,16 @@ function resolveFamilySeedIssue(
 }
 
 function formatFamilyId(id: TonalFamilyId): string {
-  if (id === 'yellow-red.v1') return 'Yellow-red · Orange · V1';
-  if (id === 'yellow-red.v2') return 'Yellow-red · Brown · V2';
   const parsed = parseTonalFamilyId(id);
-  return parsed ? `${formatFamilyName(parsed.family)} · ${parsed.variant.toUpperCase()}` : id;
+  return parsed
+    ? `${parsed.munsellSector} · ${capitalize(parsed.appearance)} · ${parsed.variant.toUpperCase()}`
+    : id;
+}
+
+function formatMunsellSector(sector: MunsellHexClassification['sector']): string {
+  return (
+    MUNSELL_SECTOR_IDENTITIES.find((identity) => identity.sector === sector)?.notation ?? sector
+  );
 }
 
 function formatFamilyName(value: string): string {

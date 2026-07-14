@@ -1,52 +1,67 @@
-# Kiskadee Munsell Family Taxonomy v1
+# Kiskadee Munsell Family Taxonomy v2
 
 Status: canonical package-level definition.
 
-Kiskadee uses the ten complete Munsell hue-family names as the stable Layer 1
-color taxonomy. The implementation is a Kiskadee projection into OKLCH; it is
-not a general-purpose converter for Munsell notation or physical color chips.
+Kiskadee uses the ten Munsell hue sectors as its stable Layer 1 classification
+axis and natural color names as its human-facing appearance axis. The
+implementation is a Kiskadee projection into OKLCH; it is not a general-purpose
+converter for Munsell notation or physical color chips.
 
 ## Public Families
 
-The chromatic sectors are ordered around the hue circle as follows:
+Every public family id follows `<sector>.<appearance>.<variant>`. The lowercase
+sector prefix is the official Munsell abbreviation used as a technical
+namespace; the natural appearance is the readable Layer 1 color name; and the
+variant identifies another authored version of that same appearance.
 
-```txt
-red
-yellow-red
-yellow
-green-yellow
-green
-blue-green
-blue
-purple-blue
-purple
-red-purple
-```
+| Munsell sector | Appearance | Base family id |
+| --- | --- | --- |
+| R | Red | `r.red.v1` |
+| YR | Orange | `yr.orange.v1` |
+| YR | Brown | `yr.brown.v1` |
+| Y | Yellow | `y.yellow.v1` |
+| GY | Lime | `gy.lime.v1` |
+| G | Green | `g.green.v1` |
+| BG | Teal | `bg.teal.v1` |
+| B | Blue | `b.blue.v1` |
+| PB | Indigo | `pb.indigo.v1` |
+| P | Purple | `p.purple.v1` |
+| RP | Magenta | `rp.magenta.v1` |
+| N | Black | `n.black.v1` |
 
-`black` is the separate achromatic family. It contains the Design System's
-authored gray trajectory and may be subtly tinted, but it is never a chromatic
-harmony reference. `neutral` is not a Layer 1 family name.
+The complete sector names `red`, `yellow-red`, `yellow`, `green-yellow`,
+`green`, `blue-green`, `blue`, `purple-blue`, `purple`, and `red-purple`
+remain internal classification values and diagnostic terminology. They are not
+public family ids.
+
+`n.black` is the separate achromatic or near-achromatic family. It contains the
+Design System's authored gray trajectory and may be subtly tinted, but it is
+never a chromatic harmony reference. `N` is the Kiskadee namespace for that
+axis, not a promise that every authored Black seed has exactly zero chroma.
+`neutral` is not a Layer 1 family name.
 
 Every complete system contains these family ids:
 
 ```txt
-red.v1
-yellow-red.v1
-yellow-red.v2
-yellow.v1
-green-yellow.v1
-green.v1
-blue-green.v1
-blue.v1
-purple-blue.v1
-purple.v1
-red-purple.v1
-black.v1
+r.red.v1
+yr.orange.v1
+yr.brown.v1
+y.yellow.v1
+gy.lime.v1
+g.green.v1
+bg.teal.v1
+b.blue.v1
+pb.indigo.v1
+p.purple.v1
+rp.magenta.v1
+n.black.v1
 ```
 
-`v1` is the base appearance of each chromatic sector. `yellow-red.v1` is the
-Orange appearance and `yellow-red.v2` is permanently reserved for Brown.
-Other `v2` through `v4` ids are authored variants and require explicit seeds.
+`v1` is the base variant of one appearance. Orange and Brown share YR but are
+separate appearances, so both begin at `v1`. A second Blue is `b.blue.v2`; a
+second Brown is `yr.brown.v2`. Optional `v2` through `v4` ids require explicit
+seeds. New appearances are intentionally deferred until the current set proves
+insufficient in real Design System integration.
 
 ## OKLCH Projection
 
@@ -71,8 +86,8 @@ midpoint between the canonical Red `#d13438` and Orange `#ca5010` reference
 hues and rounded toward Orange so `30deg` remains inside Red's safe core. An
 interval includes its start and excludes its end, including the wrap between
 red-purple and red. Therefore `34deg` belongs to Yellow-Red and `#f4511e`
-classifies as `yellow-red.v1`, preserving Red as a distinct companion family
-rather than consuming it with a visibly Orange primary.
+resolves to `yr.orange.v1`, preserving `r.red.v1` as a distinct companion
+family rather than consuming it with a visibly Orange primary.
 
 The inner 15% through 85% of each interval is its safe generation region.
 Authored and fixed-reference colors in the outer bands remain valid when they
@@ -97,34 +112,35 @@ Munsell-to-OKLCH conversion.
 
 `munsell-oklch-v1` is still before its systemic-golden milestone. Calibrating
 the Red/Yellow-Red boundary therefore refines the not-yet-frozen V1 projection
-instead of creating a misleading V2 contract. Once that milestone is approved,
+instead of creating a misleading `munsell-oklch-v2` projection. Once that milestone is approved,
 future byte- or identity-changing boundary adjustments require a new projection
 version.
 
 A chromatic primary with OKL chroma below `0.005` fails because its hue is not
 reliable. Chroma from `0.005` through `0.02` is classifiable but requires review.
 
-## Primary And Variants
+## Primary Appearance And Variants
 
 The primary sector is classified automatically from the normalized primary
-hex. Automatic variant selection normally resolves to `v1`. Within yellow-red,
-the seed is compared perceptually with the frozen Orange `#ca5010` and Brown
-`#8e562e` prototypes; the closer appearance proposes `v1` or `v2`. Authors may
-correct the variant without changing the classified sector. Export locks the
-resolved family id.
+hex. Its appearance defaults to the canonical natural name for that sector and
+its variant defaults to `v1`. Within Yellow-Red, the seed is compared
+perceptually with the frozen Orange `#ca5010` and Brown `#8e562e` prototypes;
+the closer appearance proposes `orange` or `brown`. Authors may correct the
+appearance within the classified sector and select `v1` through `v4`. Export
+locks the resolved three-axis family id.
 
 The prototypes are perceptual comparison references, not exceptions to the
 frozen sector boundaries. Sector classification always runs first. The
 calibrated red/yellow-red boundary classifies the Orange prototype `#ca5010`
 inside yellow-red without requiring a special-case identity override.
 
-Brown uses the fixed `yellow-red.v2` reference and the same shared Light and
+Brown uses the fixed `yr.brown.v1` reference and the same shared Light and
 Dark rest positions as every other family. Its target gamut utilization is
 initially `0.6` of the Orange appearance. Functional harmony still outranks
 keeping the rest color visibly dark, so a very light rest may appear tan while
 physically darker positions retain the Brown character.
 
-`black.v1` uses the fixed reference `#20252b` and is not derived from the
+`n.black.v1` uses the fixed reference `#20252b` and is not derived from the
 primary. Authored black seeds above OKL chroma `0.04` require review; values
 above `0.08` fail.
 
@@ -136,7 +152,7 @@ above `0.08` fail.
   when that deferred strategy is enabled; fixed references are not clamped.
 - Hue fitting cannot be used to satisfy harmony; lightness and relative chroma
   are the adjustable dimensions.
-- Brown remains yellow-red and cannot be replaced by an Orange-like v2 seed.
+- Brown remains Yellow-Red and cannot be replaced by an Orange-like seed.
 - The same recipe, contracts, and generator version must emit identical bytes.
 
 Adjacent primary and support families also have a collision guard at their

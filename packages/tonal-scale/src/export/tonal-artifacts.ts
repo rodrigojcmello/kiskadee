@@ -12,11 +12,12 @@ import {
 } from '../tonal-system.ts';
 import {
   type CoreTonalFamilyId,
-  type LockedTonalSystemSourceV2,
+  type LockedTonalSystemSourceV3,
   TONAL_CORE_FAMILY_IDS,
+  type TonalFamilyAppearance,
   type TonalFamilyColorKind,
   type TonalFamilyId,
-  type TonalFamilySector,
+  type TonalFamilySectorNotation,
   type TonalFamilyVariant,
   type TonalThemePolicy,
   validateLockedTonalSystemSource
@@ -26,7 +27,7 @@ import { sha256Hex } from './sha256.ts';
 
 export const TONAL_ARTIFACT_GENERATOR = {
   package: '@kiskadee/tonal-scale',
-  version: '0.2.0'
+  version: '0.3.0'
 } as const;
 export const TONAL_SOURCE_PATH = 'tonal-system.source.json' as const;
 export const TONAL_MANIFEST_PATH = 'tonal-system.json' as const;
@@ -40,16 +41,17 @@ export type TonalArtifactPath =
 
 export type ToneHexMap = Record<`${KiskadeeTone}`, string>;
 
-export type PrimitiveTonalColorAssetV2 = {
+export type PrimitiveTonalColorAssetV3 = {
   kind: 'kiskadee.primitive-tonal-family';
-  formatVersion: 2;
+  formatVersion: 3;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
   id: TonalFamilyId;
-  sector: TonalFamilySector | null;
+  munsellSector: TonalFamilySectorNotation | 'N';
+  appearance: TonalFamilyAppearance;
   variant: TonalFamilyVariant;
   colorKind: TonalFamilyColorKind;
   role: 'primary' | 'support';
-  tonalProfile: LockedTonalSystemSourceV2['tonalProfile'];
+  tonalProfile: LockedTonalSystemSourceV3['tonalProfile'];
   seedHex: string;
   seedOrigin: ResolvedTonalFamily['seedOrigin'];
   policies: { light: TonalThemePolicy; dark: TonalThemePolicy };
@@ -77,11 +79,11 @@ export type TonalManifestAssetEntry = {
   sha256: string;
 };
 
-export type TonalSystemManifestV2 = {
+export type TonalSystemManifestV3 = {
   kind: 'kiskadee.tonal-system';
-  formatVersion: 2;
+  formatVersion: 3;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
-  tonalProfile: LockedTonalSystemSourceV2['tonalProfile'];
+  tonalProfile: LockedTonalSystemSourceV3['tonalProfile'];
   primaryReference: TonalFamilyId;
   tonalAnchors: { rest: { light: KiskadeeTone; dark: KiskadeeTone } };
   source: { path: typeof TONAL_SOURCE_PATH; sha256: string };
@@ -89,9 +91,9 @@ export type TonalSystemManifestV2 = {
   assets: TonalManifestAssetEntry[];
 };
 
-export type TonalSystemDiagnosticsV2 = {
+export type TonalSystemDiagnosticsV3 = {
   kind: 'kiskadee.tonal-system-diagnostics';
-  formatVersion: 2;
+  formatVersion: 3;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
   seedModel: 'fixed-reference';
   referenceSet: typeof FIXED_FAMILY_REFERENCE_SET;
@@ -125,10 +127,10 @@ type ThemeDiagnostics = {
 };
 
 export type TonalArtifactBundle = {
-  source: LockedTonalSystemSourceV2;
-  manifest: TonalSystemManifestV2;
-  diagnostics: TonalSystemDiagnosticsV2;
-  assets: PrimitiveTonalColorAssetV2[];
+  source: LockedTonalSystemSourceV3;
+  manifest: TonalSystemManifestV3;
+  diagnostics: TonalSystemDiagnosticsV3;
+  assets: PrimitiveTonalColorAssetV3[];
   files: ReadonlyMap<TonalArtifactPath, string>;
 };
 
@@ -149,10 +151,10 @@ export type TonalArtifactVerificationResult =
   | {
       valid: true;
       issues: [];
-      source: LockedTonalSystemSourceV2;
-      manifest: TonalSystemManifestV2;
-      diagnostics: TonalSystemDiagnosticsV2;
-      assets: PrimitiveTonalColorAssetV2[];
+      source: LockedTonalSystemSourceV3;
+      manifest: TonalSystemManifestV3;
+      diagnostics: TonalSystemDiagnosticsV3;
+      assets: PrimitiveTonalColorAssetV3[];
     }
   | {
       valid: false;
@@ -184,7 +186,7 @@ export async function createTonalArtifactBundle(
       sha256: await hashCanonicalFile(asset)
     }))
   );
-  const diagnostics = normalizeArtifactNumbers<TonalSystemDiagnosticsV2>({
+  const diagnostics = normalizeArtifactNumbers<TonalSystemDiagnosticsV3>({
     kind: 'kiskadee.tonal-system-diagnostics',
     formatVersion: system.source.formatVersion,
     generator: TONAL_ARTIFACT_GENERATOR,
@@ -207,7 +209,7 @@ export async function createTonalArtifactBundle(
       }))
       .sort((left, right) => compareStrings(left.familyId, right.familyId))
   });
-  const manifest: TonalSystemManifestV2 = {
+  const manifest: TonalSystemManifestV3 = {
     kind: 'kiskadee.tonal-system',
     formatVersion: system.source.formatVersion,
     generator: TONAL_ARTIFACT_GENERATOR,
@@ -352,7 +354,7 @@ export async function verifyTonalArtifactBundle(
 function createColorAsset(
   system: ResolvedKiskadeeTonalSystem,
   family: ResolvedTonalFamily
-): PrimitiveTonalColorAssetV2 {
+): PrimitiveTonalColorAssetV3 {
   const lightAnchor = resolveSourceAnchor(family, 'light');
   const darkAnchor = resolveSourceAnchor(family, 'dark');
   const lightStateReference = resolveArtifactStateReference(family, 'light');
@@ -362,7 +364,8 @@ function createColorAsset(
     formatVersion: system.source.formatVersion,
     generator: TONAL_ARTIFACT_GENERATOR,
     id: family.id,
-    sector: family.sector,
+    munsellSector: family.munsellSector,
+    appearance: family.appearance,
     variant: family.variant,
     colorKind: family.colorKind,
     role: family.role,
@@ -514,7 +517,7 @@ function assertResolvedSystem(system: ResolvedKiskadeeTonalSystem): void {
     }
     if (
       family.seedOrigin === 'canonical' &&
-      (family.id !== 'black.v1' || family.sourceSeedHex !== FIXED_FAMILY_SEEDS_V1['black.v1'])
+      (family.id !== 'n.black.v1' || family.sourceSeedHex !== FIXED_FAMILY_SEEDS_V1['n.black.v1'])
     ) {
       throw new TonalArtifactError(`${family.id} cannot use canonical seed origin.`);
     }

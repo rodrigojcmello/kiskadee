@@ -22,7 +22,7 @@ import {
   DEFAULT_TONAL_SYSTEM_RECIPE,
   TONAL_CORE_FAMILY_IDS,
   type TonalFamilyId,
-  type TonalSystemRecipeV2,
+  type TonalSystemRecipeV3,
   validateTonalSystemRecipe
 } from '@/src/tonal-system-contract';
 import RecipeEditor from './components/RecipeEditor';
@@ -73,14 +73,14 @@ type StateSample =
     };
 
 export default function TonalScalePage() {
-  const [recipe, setRecipe] = useState<TonalSystemRecipeV2>(
-    () => structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV2
+  const [recipe, setRecipe] = useState<TonalSystemRecipeV3>(
+    () => structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV3
   );
-  const [selectedFamilyId, setSelectedFamilyId] = useState<TonalFamilyId>('blue.v1');
+  const [selectedFamilyId, setSelectedFamilyId] = useState<TonalFamilyId>('b.blue.v1');
   const [urlReady, setUrlReady] = useState(false);
   const [sharedStateIssue, setSharedStateIssue] = useState<string | null>(null);
   const [system, setSystem] = useState<KiskadeeTonalSystemResult | null>(null);
-  const [generatedRecipe, setGeneratedRecipe] = useState<TonalSystemRecipeV2 | null>(null);
+  const [generatedRecipe, setGeneratedRecipe] = useState<TonalSystemRecipeV3 | null>(null);
   const deferredRecipe = useDeferredValue(recipe);
   const isGenerating =
     !urlReady || system === null || deferredRecipe !== recipe || generatedRecipe !== deferredRecipe;
@@ -119,7 +119,7 @@ export default function TonalScalePage() {
       const color = url.searchParams.get(COLOR_QUERY_PARAM);
       const profile = url.searchParams.get(PROFILE_QUERY_PARAM);
       if (color !== null || profile !== null) {
-        const legacy = structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV2;
+        const legacy = structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV3;
         if (color !== null) {
           legacy.primary = {
             ...legacy.primary,
@@ -174,7 +174,7 @@ export default function TonalScalePage() {
     }
   }, [recipe, sharedStateIssue, urlReady]);
 
-  const handleRecipeChange = useCallback((next: TonalSystemRecipeV2) => {
+  const handleRecipeChange = useCallback((next: TonalSystemRecipeV3) => {
     setSharedStateIssue(null);
     setRecipe(next);
   }, []);
@@ -185,7 +185,7 @@ export default function TonalScalePage() {
 
       <header className="hero">
         <div>
-          <span className="eyebrow">Kiskadee Munsell tonal system v2</span>
+          <span className="eyebrow">Kiskadee Munsell tonal system v3</span>
           <h1>One primary. A complete color system.</h1>
           <p className="hero-copy">
             Start with the exact primary color. Kiskadee harmonizes one fixed reference in every
@@ -217,7 +217,7 @@ export default function TonalScalePage() {
       {sharedStateIssue ? (
         <aside className="shared-state-error" role="alert">
           <strong>Shared recipe rejected</strong>
-          <p>{sharedStateIssue} Version 1 recipes are not migrated automatically.</p>
+          <p>{sharedStateIssue} Version 1 and 2 recipes are not migrated automatically.</p>
         </aside>
       ) : null}
 

@@ -7,7 +7,7 @@ describe('createTonalBundleZip', () => {
   it('creates one deterministic ZIP that preserves canonical directory paths', async () => {
     const files = new Map([
       ['tonal-system.json', '{"manifest":true}\n'],
-      ['colors/blue.v1.json', '{"blue":true}\n'],
+      ['colors/b.blue.v1.json', '{"blue":true}\n'],
       ['tonal-system.source.json', '{"source":true}\n']
     ]);
 
@@ -23,12 +23,12 @@ describe('createTonalBundleZip', () => {
     expect(view.getUint32(0, true)).toBe(0x04034b50);
     expect(view.getUint32(first.length - 22, true)).toBe(0x06054b50);
     expect(view.getUint16(first.length - 14, true)).toBe(3);
-    expect(text).toContain('colors/blue.v1.json');
+    expect(text).toContain('colors/b.blue.v1.json');
     expect(text).toContain('tonal-system.source.json');
     expect(text).toContain('tonal-system.json');
     expect(extracted).toEqual(
       new Map([
-        ['colors/blue.v1.json', '{"blue":true}\n'],
+        ['colors/b.blue.v1.json', '{"blue":true}\n'],
         ['tonal-system.json', '{"manifest":true}\n'],
         ['tonal-system.source.json', '{"source":true}\n']
       ])
