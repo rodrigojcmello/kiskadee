@@ -1,0 +1,2768 @@
+{
+  "kind": "fluent-2-figma-to-kiskadee-tonal-mapping",
+  "formatVersion": 1,
+  "generator": {
+    "package": "@kiskadee/tonal-scale",
+    "version": "0.3.0"
+  },
+  "sourceEvidence": "./figma-color-scales.json",
+  "generatedBundle": "./generated/tonal-system.json",
+  "methodology": {
+    "colorSpace": "OKLab",
+    "distanceMetric": "Delta E OK",
+    "selection": "Nearest generated tone independently for Light and Dark",
+    "tieBreak": "Lower numeric Kiskadee tone",
+    "notes": [
+      "Mappings describe perceptual correspondence and do not rename Fluent tokens.",
+      "Duplicate target tones are allowed when the upstream ramp is denser than the Kiskadee grid.",
+      "Semantic component aliases remain separate from primitive-ramp correspondence."
+    ]
+  },
+  "tonalSystem": {
+    "formatVersion": 3,
+    "gridContract": "kiskadee-tonal-v1",
+    "harmonyContract": "kiskadee-munsell-rest-v1",
+    "tonalProfile": "muted-darks",
+    "primaryReference": "b.blue.v1",
+    "rest": {
+      "dark": 40,
+      "light": 50
+    }
+  },
+  "families": {
+    "brand": {
+      "sourceFamily": "Brand",
+      "kiskadeeFamilyId": "b.blue.v1",
+      "seedHex": "#0064b4",
+      "generatedAnchors": {
+        "dark": {
+          "hex": "#0064b4",
+          "tone": 40
+        },
+        "light": {
+          "hex": "#0064b4",
+          "tone": 50
+        }
+      },
+      "stateReferences": {
+        "dark": {
+          "hex": "#0064b4",
+          "source": "generated-anchor",
+          "tone": 40
+        },
+        "light": {
+          "hex": "#0064b4",
+          "source": "generated-anchor",
+          "tone": 50
+        }
+      },
+      "mappings": [
+        {
+          "sourceToken": "Brand-10",
+          "sourceHex": "#00072e",
+          "light": {
+            "token": "L95",
+            "tone": 95,
+            "hex": "#091726",
+            "deltaE": 0.062576,
+            "exact": false
+          },
+          "dark": {
+            "token": "D2",
+            "tone": 2,
+            "hex": "#030e1c",
+            "deltaE": 0.046245,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Brand-20",
+          "sourceHex": "#001241",
+          "light": {
+            "token": "L95",
+            "tone": 95,
+            "hex": "#091726",
+            "deltaE": 0.058459,
+            "exact": false
+          },
+          "dark": {
+            "token": "D4",
+            "tone": 4,
+            "hex": "#0b1929",
+            "deltaE": 0.056666,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Brand-30",
+          "sourceHex": "#001f55",
+          "light": {
+            "token": "L85",
+            "tone": 85,
+            "hex": "#12263b",
+            "deltaE": 0.058728,
+            "exact": false
+          },
+          "dark": {
+            "token": "D9",
+            "tone": 9,
+            "hex": "#142a43",
+            "deltaE": 0.055948,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Brand-40",
+          "sourceHex": "#002b6b",
+          "light": {
+            "token": "L75",
+            "tone": 75,
+            "hex": "#14375a",
+            "deltaE": 0.053265,
+            "exact": false
+          },
+          "dark": {
+            "token": "D14",
+            "tone": 14,
+            "hex": "#14375b",
+            "deltaE": 0.052062,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Brand-50",
+          "sourceHex": "#003881",
+          "light": {
+            "token": "L65",
+            "tone": 65,
+            "hex": "#0d477e",
+            "deltaE": 0.046097,
+            "exact": false
+          },
+          "dark": {
+            "token": "D22",
+            "tone": 22,
+            "hex": "#104375",
+            "deltaE": 0.041763,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Brand-60",
+          "sourceHex": "#004694",
+          "light": {
+            "token": "L60",
+            "tone": 60,
+            "hex": "#045091",
+            "deltaE": 0.029862,
+            "exact": false
+          },
+          "dark": {
+            "token": "D28",
+            "tone": 28,
+            "hex": "#074d89",
+            "deltaE": 0.029039,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Brand-70",
+          "sourceHex": "#0055a4",
+          "light": {
+            "token": "L55",
+            "tone": 55,
+            "hex": "#0059a1",
+            "deltaE": 0.012877,
+            "exact": false
+          },
+          "dark": {
+            "token": "D35",
+            "tone": 35,
+            "hex": "#005ba4",
+            "deltaE": 0.017032,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Brand-80",
+          "sourceHex": "#0064b4",
+          "light": {
+            "token": "L50",
+            "tone": 50,
+            "hex": "#0064b4",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "token": "D40",
+            "tone": 40,
+            "hex": "#0064b4",
+            "deltaE": 0,
+            "exact": true
+          }
+        },
+        {
+          "sourceToken": "Brand-90",
+          "sourceHex": "#1e75c7",
+          "light": {
+            "token": "L40",
+            "tone": 40,
+            "hex": "#2075c6",
+            "deltaE": 0.001732,
+            "exact": false
+          },
+          "dark": {
+            "token": "D50",
+            "tone": 50,
+            "hex": "#1e74c5",
+            "deltaE": 0.00386,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Brand-100",
+          "sourceHex": "#3387da",
+          "light": {
+            "token": "L30",
+            "tone": 30,
+            "hex": "#3887d7",
+            "deltaE": 0.005357,
+            "exact": false
+          },
+          "dark": {
+            "token": "D60",
+            "tone": 60,
+            "hex": "#3685d6",
+            "deltaE": 0.007264,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Brand-110",
+          "sourceHex": "#4698ed",
+          "light": {
+            "token": "L26",
+            "tone": 26,
+            "hex": "#4c97e5",
+            "deltaE": 0.012046,
+            "exact": false
+          },
+          "dark": {
+            "token": "D70",
+            "tone": 70,
+            "hex": "#4a95e4",
+            "deltaE": 0.014092,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Brand-120",
+          "sourceHex": "#58aaff",
+          "light": {
+            "token": "L22",
+            "tone": 22,
+            "hex": "#60a7f3",
+            "deltaE": 0.017942,
+            "exact": false
+          },
+          "dark": {
+            "token": "D75",
+            "tone": 75,
+            "hex": "#61a7f3",
+            "deltaE": 0.018135,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Brand-130",
+          "sourceHex": "#72bcff",
+          "light": {
+            "token": "L18",
+            "tone": 18,
+            "hex": "#76b7ff",
+            "deltaE": 0.013445,
+            "exact": false
+          },
+          "dark": {
+            "token": "D80",
+            "tone": 80,
+            "hex": "#79b9ff",
+            "deltaE": 0.009668,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Brand-140",
+          "sourceHex": "#96cfff",
+          "light": {
+            "token": "L12",
+            "tone": 12,
+            "hex": "#a4cfff",
+            "deltaE": 0.015561,
+            "exact": false
+          },
+          "dark": {
+            "token": "D85",
+            "tone": 85,
+            "hex": "#9bcaff",
+            "deltaE": 0.013802,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Brand-150",
+          "sourceHex": "#b8e0ff",
+          "light": {
+            "token": "L8",
+            "tone": 8,
+            "hex": "#c1deff",
+            "deltaE": 0.011383,
+            "exact": false
+          },
+          "dark": {
+            "token": "D90",
+            "tone": 90,
+            "hex": "#badaff",
+            "deltaE": 0.015839,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Brand-160",
+          "sourceHex": "#d9f1ff",
+          "light": {
+            "token": "L4",
+            "tone": 4,
+            "hex": "#e1efff",
+            "deltaE": 0.010752,
+            "exact": false
+          },
+          "dark": {
+            "token": "D95",
+            "tone": 95,
+            "hex": "#deedff",
+            "deltaE": 0.011557,
+            "exact": false
+          }
+        }
+      ]
+    },
+    "neutral": {
+      "sourceFamily": "Neutral",
+      "kiskadeeFamilyId": "n.black.v1",
+      "seedHex": "#21242d",
+      "generatedAnchors": {
+        "dark": {
+          "hex": "#21242d",
+          "tone": 7
+        },
+        "light": {
+          "hex": "#21242d",
+          "tone": 85
+        }
+      },
+      "stateReferences": {
+        "dark": {
+          "hex": "#5d616d",
+          "source": "harmony-rest",
+          "tone": 40
+        },
+        "light": {
+          "hex": "#5c616d",
+          "source": "harmony-rest",
+          "tone": 50
+        }
+      },
+      "mappings": [
+        {
+          "sourceToken": "Black",
+          "sourceHex": "#000000",
+          "light": {
+            "token": "L100",
+            "tone": 100,
+            "hex": "#000000",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "token": "D0",
+            "tone": 0,
+            "hex": "#000000",
+            "deltaE": 0,
+            "exact": true
+          }
+        },
+        {
+          "sourceToken": "Grey-2",
+          "sourceHex": "#03050b",
+          "light": {
+            "token": "L99",
+            "tone": 99,
+            "hex": "#000001",
+            "deltaE": 0.085005,
+            "exact": false
+          },
+          "dark": {
+            "token": "D1",
+            "tone": 1,
+            "hex": "#060708",
+            "deltaE": 0.018693,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-4",
+          "sourceHex": "#070a11",
+          "light": {
+            "token": "L95",
+            "tone": 95,
+            "hex": "#151618",
+            "deltaE": 0.056338,
+            "exact": false
+          },
+          "dark": {
+            "token": "D1",
+            "tone": 1,
+            "hex": "#060708",
+            "deltaE": 0.021706,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-6",
+          "sourceHex": "#0c0f17",
+          "light": {
+            "token": "L95",
+            "tone": 95,
+            "hex": "#151618",
+            "deltaE": 0.033408,
+            "exact": false
+          },
+          "dark": {
+            "token": "D2",
+            "tone": 2,
+            "hex": "#0d0e10",
+            "deltaE": 0.014229,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-8",
+          "sourceHex": "#11141c",
+          "light": {
+            "token": "L95",
+            "tone": 95,
+            "hex": "#151618",
+            "deltaE": 0.014991,
+            "exact": false
+          },
+          "dark": {
+            "token": "D3",
+            "tone": 3,
+            "hex": "#131416",
+            "deltaE": 0.012664,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-10",
+          "sourceHex": "#171a22",
+          "light": {
+            "token": "L90",
+            "tone": 90,
+            "hex": "#1b1d22",
+            "deltaE": 0.013949,
+            "exact": false
+          },
+          "dark": {
+            "token": "D5",
+            "tone": 5,
+            "hex": "#1b1c21",
+            "deltaE": 0.011464,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-12",
+          "sourceHex": "#1c1f28",
+          "light": {
+            "token": "L90",
+            "tone": 90,
+            "hex": "#1b1d22",
+            "deltaE": 0.012235,
+            "exact": false
+          },
+          "dark": {
+            "token": "D6",
+            "tone": 6,
+            "hex": "#1d2026",
+            "deltaE": 0.006395,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-14",
+          "sourceHex": "#21242d",
+          "light": {
+            "token": "L85",
+            "tone": 85,
+            "hex": "#21242d",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "token": "D7",
+            "tone": 7,
+            "hex": "#21242d",
+            "deltaE": 0,
+            "exact": true
+          }
+        },
+        {
+          "sourceToken": "Grey-16",
+          "sourceHex": "#262932",
+          "light": {
+            "token": "L80",
+            "tone": 80,
+            "hex": "#292c36",
+            "deltaE": 0.012722,
+            "exact": false
+          },
+          "dark": {
+            "token": "D9",
+            "tone": 9,
+            "hex": "#262a33",
+            "deltaE": 0.003411,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-18",
+          "sourceHex": "#2b2e37",
+          "light": {
+            "token": "L80",
+            "tone": 80,
+            "hex": "#292c36",
+            "deltaE": 0.007811,
+            "exact": false
+          },
+          "dark": {
+            "token": "D10",
+            "tone": 10,
+            "hex": "#292c35",
+            "deltaE": 0.008035,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-20",
+          "sourceHex": "#2f333c",
+          "light": {
+            "token": "L75",
+            "tone": 75,
+            "hex": "#31353f",
+            "deltaE": 0.00847,
+            "exact": false
+          },
+          "dark": {
+            "token": "D12",
+            "tone": 12,
+            "hex": "#2d313b",
+            "deltaE": 0.007694,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-22",
+          "sourceHex": "#343842",
+          "light": {
+            "token": "L75",
+            "tone": 75,
+            "hex": "#31353f",
+            "deltaE": 0.011704,
+            "exact": false
+          },
+          "dark": {
+            "token": "D16",
+            "tone": 16,
+            "hex": "#353843",
+            "deltaE": 0.002544,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-24",
+          "sourceHex": "#393d47",
+          "light": {
+            "token": "L70",
+            "tone": 70,
+            "hex": "#393d48",
+            "deltaE": 0.001773,
+            "exact": false
+          },
+          "dark": {
+            "token": "D20",
+            "tone": 20,
+            "hex": "#3b3e49",
+            "deltaE": 0.005573,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-26",
+          "sourceHex": "#3e424c",
+          "light": {
+            "token": "L65",
+            "tone": 65,
+            "hex": "#424651",
+            "deltaE": 0.015549,
+            "exact": false
+          },
+          "dark": {
+            "token": "D22",
+            "tone": 22,
+            "hex": "#3e414d",
+            "deltaE": 0.004155,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-28",
+          "sourceHex": "#434751",
+          "light": {
+            "token": "L65",
+            "tone": 65,
+            "hex": "#424651",
+            "deltaE": 0.003749,
+            "exact": false
+          },
+          "dark": {
+            "token": "D26",
+            "tone": 26,
+            "hex": "#444753",
+            "deltaE": 0.003936,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-30",
+          "sourceHex": "#494d57",
+          "light": {
+            "token": "L60",
+            "tone": 60,
+            "hex": "#4b4f5b",
+            "deltaE": 0.008776,
+            "exact": false
+          },
+          "dark": {
+            "token": "D30",
+            "tone": 30,
+            "hex": "#4a4e5a",
+            "deltaE": 0.005551,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-32",
+          "sourceHex": "#4e525c",
+          "light": {
+            "token": "L60",
+            "tone": 60,
+            "hex": "#4b4f5b",
+            "deltaE": 0.010736,
+            "exact": false
+          },
+          "dark": {
+            "token": "D30",
+            "tone": 30,
+            "hex": "#4a4e5a",
+            "deltaE": 0.014279,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-34",
+          "sourceHex": "#535761",
+          "light": {
+            "token": "L55",
+            "tone": 55,
+            "hex": "#535864",
+            "deltaE": 0.004956,
+            "exact": false
+          },
+          "dark": {
+            "token": "D35",
+            "tone": 35,
+            "hex": "#555965",
+            "deltaE": 0.008591,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-36",
+          "sourceHex": "#585c66",
+          "light": {
+            "token": "L55",
+            "tone": 55,
+            "hex": "#535864",
+            "deltaE": 0.014913,
+            "exact": false
+          },
+          "dark": {
+            "token": "D35",
+            "tone": 35,
+            "hex": "#555965",
+            "deltaE": 0.010531,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-38",
+          "sourceHex": "#5d616b",
+          "light": {
+            "token": "L50",
+            "tone": 50,
+            "hex": "#5c616d",
+            "deltaE": 0.003459,
+            "exact": false
+          },
+          "dark": {
+            "token": "D40",
+            "tone": 40,
+            "hex": "#5d616d",
+            "deltaE": 0.003265,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-40",
+          "sourceHex": "#626671",
+          "light": {
+            "token": "L45",
+            "tone": 45,
+            "hex": "#666a77",
+            "deltaE": 0.01506,
+            "exact": false
+          },
+          "dark": {
+            "token": "D45",
+            "tone": 45,
+            "hex": "#646975",
+            "deltaE": 0.01023,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-42",
+          "sourceHex": "#676b76",
+          "light": {
+            "token": "L45",
+            "tone": 45,
+            "hex": "#666a77",
+            "deltaE": 0.004182,
+            "exact": false
+          },
+          "dark": {
+            "token": "D45",
+            "tone": 45,
+            "hex": "#646975",
+            "deltaE": 0.007743,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-44",
+          "sourceHex": "#6c707b",
+          "light": {
+            "token": "L40",
+            "tone": 40,
+            "hex": "#6f737f",
+            "deltaE": 0.01081,
+            "exact": false
+          },
+          "dark": {
+            "token": "D50",
+            "tone": 50,
+            "hex": "#6d717d",
+            "deltaE": 0.00411,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-46",
+          "sourceHex": "#717580",
+          "light": {
+            "token": "L40",
+            "tone": 40,
+            "hex": "#6f737f",
+            "deltaE": 0.006703,
+            "exact": false
+          },
+          "dark": {
+            "token": "D50",
+            "tone": 50,
+            "hex": "#6d717d",
+            "deltaE": 0.013505,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-48",
+          "sourceHex": "#767a85",
+          "light": {
+            "token": "L35",
+            "tone": 35,
+            "hex": "#777b88",
+            "deltaE": 0.005105,
+            "exact": false
+          },
+          "dark": {
+            "token": "D55",
+            "tone": 55,
+            "hex": "#767a86",
+            "deltaE": 0.001565,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-50",
+          "sourceHex": "#7c808b",
+          "light": {
+            "token": "L30",
+            "tone": 30,
+            "hex": "#808491",
+            "deltaE": 0.014465,
+            "exact": false
+          },
+          "dark": {
+            "token": "D60",
+            "tone": 60,
+            "hex": "#7d828e",
+            "deltaE": 0.006555,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-52",
+          "sourceHex": "#818590",
+          "light": {
+            "token": "L30",
+            "tone": 30,
+            "hex": "#808491",
+            "deltaE": 0.004026,
+            "exact": false
+          },
+          "dark": {
+            "token": "D60",
+            "tone": 60,
+            "hex": "#7d828e",
+            "deltaE": 0.010744,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-54",
+          "sourceHex": "#868a95",
+          "light": {
+            "token": "L28",
+            "tone": 28,
+            "hex": "#878c98",
+            "deltaE": 0.006463,
+            "exact": false
+          },
+          "dark": {
+            "token": "D65",
+            "tone": 65,
+            "hex": "#858996",
+            "deltaE": 0.004,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-56",
+          "sourceHex": "#8b8f9a",
+          "light": {
+            "token": "L28",
+            "tone": 28,
+            "hex": "#878c98",
+            "deltaE": 0.010606,
+            "exact": false
+          },
+          "dark": {
+            "token": "D70",
+            "tone": 70,
+            "hex": "#8d919d",
+            "deltaE": 0.007098,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-58",
+          "sourceHex": "#90949f",
+          "light": {
+            "token": "L26",
+            "tone": 26,
+            "hex": "#8f939f",
+            "deltaE": 0.003308,
+            "exact": false
+          },
+          "dark": {
+            "token": "D70",
+            "tone": 70,
+            "hex": "#8d919d",
+            "deltaE": 0.009669,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-60",
+          "sourceHex": "#9599a4",
+          "light": {
+            "token": "L24",
+            "tone": 24,
+            "hex": "#969ba7",
+            "deltaE": 0.006339,
+            "exact": false
+          },
+          "dark": {
+            "token": "D70",
+            "tone": 70,
+            "hex": "#8d919d",
+            "deltaE": 0.025995,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-62",
+          "sourceHex": "#9a9eaa",
+          "light": {
+            "token": "L24",
+            "tone": 24,
+            "hex": "#969ba7",
+            "deltaE": 0.010632,
+            "exact": false
+          },
+          "dark": {
+            "token": "D75",
+            "tone": 75,
+            "hex": "#9ea2ae",
+            "deltaE": 0.01297,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-64",
+          "sourceHex": "#9fa3af",
+          "light": {
+            "token": "L22",
+            "tone": 22,
+            "hex": "#9ea2ae",
+            "deltaE": 0.003233,
+            "exact": false
+          },
+          "dark": {
+            "token": "D75",
+            "tone": 75,
+            "hex": "#9ea2ae",
+            "deltaE": 0.003233,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-66",
+          "sourceHex": "#a4a8b4",
+          "light": {
+            "token": "L20",
+            "tone": 20,
+            "hex": "#a7abb6",
+            "deltaE": 0.009417,
+            "exact": false
+          },
+          "dark": {
+            "token": "D75",
+            "tone": 75,
+            "hex": "#9ea2ae",
+            "deltaE": 0.019346,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-68",
+          "sourceHex": "#a9adb9",
+          "light": {
+            "token": "L20",
+            "tone": 20,
+            "hex": "#a7abb6",
+            "deltaE": 0.006868,
+            "exact": false
+          },
+          "dark": {
+            "token": "D80",
+            "tone": 80,
+            "hex": "#b0b4bf",
+            "deltaE": 0.022025,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-70",
+          "sourceHex": "#afb3bf",
+          "light": {
+            "token": "L18",
+            "tone": 18,
+            "hex": "#afb2be",
+            "deltaE": 0.002639,
+            "exact": false
+          },
+          "dark": {
+            "token": "D80",
+            "tone": 80,
+            "hex": "#b0b4bf",
+            "deltaE": 0.003193,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-72",
+          "sourceHex": "#b4b8c4",
+          "light": {
+            "token": "L16",
+            "tone": 16,
+            "hex": "#b6bac5",
+            "deltaE": 0.006166,
+            "exact": false
+          },
+          "dark": {
+            "token": "D80",
+            "tone": 80,
+            "hex": "#b0b4bf",
+            "deltaE": 0.013057,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-74",
+          "sourceHex": "#b9bdc9",
+          "light": {
+            "token": "L16",
+            "tone": 16,
+            "hex": "#b6bac5",
+            "deltaE": 0.00986,
+            "exact": false
+          },
+          "dark": {
+            "token": "D85",
+            "tone": 85,
+            "hex": "#c1c5cf",
+            "deltaE": 0.024605,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-76",
+          "sourceHex": "#bec2ce",
+          "light": {
+            "token": "L14",
+            "tone": 14,
+            "hex": "#bec2cc",
+            "deltaE": 0.00286,
+            "exact": false
+          },
+          "dark": {
+            "token": "D85",
+            "tone": 85,
+            "hex": "#c1c5cf",
+            "deltaE": 0.009195,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-78",
+          "sourceHex": "#c3c7d3",
+          "light": {
+            "token": "L12",
+            "tone": 12,
+            "hex": "#c7cbd5",
+            "deltaE": 0.012147,
+            "exact": false
+          },
+          "dark": {
+            "token": "D85",
+            "tone": 85,
+            "hex": "#c1c5cf",
+            "deltaE": 0.007392,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-80",
+          "sourceHex": "#c7ccd8",
+          "light": {
+            "token": "L12",
+            "tone": 12,
+            "hex": "#c7cbd5",
+            "deltaE": 0.004202,
+            "exact": false
+          },
+          "dark": {
+            "token": "D85",
+            "tone": 85,
+            "hex": "#c1c5cf",
+            "deltaE": 0.021824,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-82",
+          "sourceHex": "#ccd1dd",
+          "light": {
+            "token": "L10",
+            "tone": 10,
+            "hex": "#ced1db",
+            "deltaE": 0.003675,
+            "exact": false
+          },
+          "dark": {
+            "token": "D90",
+            "tone": 90,
+            "hex": "#d3d6df",
+            "deltaE": 0.016707,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-84",
+          "sourceHex": "#d1d6e2",
+          "light": {
+            "token": "L9",
+            "tone": 9,
+            "hex": "#d3d6df",
+            "deltaE": 0.004736,
+            "exact": false
+          },
+          "dark": {
+            "token": "D90",
+            "tone": 90,
+            "hex": "#d3d6df",
+            "deltaE": 0.004736,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-86",
+          "sourceHex": "#d6dbe7",
+          "light": {
+            "token": "L8",
+            "tone": 8,
+            "hex": "#d8dbe3",
+            "deltaE": 0.005923,
+            "exact": false
+          },
+          "dark": {
+            "token": "D90",
+            "tone": 90,
+            "hex": "#d3d6df",
+            "deltaE": 0.01543,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-88",
+          "sourceHex": "#dbe0ec",
+          "light": {
+            "token": "L7",
+            "tone": 7,
+            "hex": "#dde0e8",
+            "deltaE": 0.005897,
+            "exact": false
+          },
+          "dark": {
+            "token": "D90",
+            "tone": 90,
+            "hex": "#d3d6df",
+            "deltaE": 0.030332,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-90",
+          "sourceHex": "#e1e6f2",
+          "light": {
+            "token": "L6",
+            "tone": 6,
+            "hex": "#e2e5ec",
+            "deltaE": 0.007733,
+            "exact": false
+          },
+          "dark": {
+            "token": "D95",
+            "tone": 95,
+            "hex": "#e9ebf2",
+            "deltaE": 0.01762,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-92",
+          "sourceHex": "#e6ebf7",
+          "light": {
+            "token": "L5",
+            "tone": 5,
+            "hex": "#e6e9f0",
+            "deltaE": 0.0093,
+            "exact": false
+          },
+          "dark": {
+            "token": "D95",
+            "tone": 95,
+            "hex": "#e9ebf2",
+            "deltaE": 0.007554,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-94",
+          "sourceHex": "#ebf0fc",
+          "light": {
+            "token": "L3",
+            "tone": 3,
+            "hex": "#f0f2f7",
+            "deltaE": 0.011744,
+            "exact": false
+          },
+          "dark": {
+            "token": "D95",
+            "tone": 95,
+            "hex": "#e9ebf2",
+            "deltaE": 0.016115,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-96",
+          "sourceHex": "#f0f5ff",
+          "light": {
+            "token": "L2",
+            "tone": 2,
+            "hex": "#f5f6fb",
+            "deltaE": 0.00918,
+            "exact": false
+          },
+          "dark": {
+            "token": "D99",
+            "tone": 99,
+            "hex": "#fafbfe",
+            "deltaE": 0.02155,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Grey-98",
+          "sourceHex": "#f5faff",
+          "light": {
+            "token": "L1",
+            "tone": 1,
+            "hex": "#f9fbfe",
+            "deltaE": 0.006252,
+            "exact": false
+          },
+          "dark": {
+            "token": "D99",
+            "tone": 99,
+            "hex": "#fafbfe",
+            "deltaE": 0.007392,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "White",
+          "sourceHex": "#ffffff",
+          "light": {
+            "token": "L0",
+            "tone": 0,
+            "hex": "#ffffff",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "token": "D100",
+            "tone": 100,
+            "hex": "#ffffff",
+            "deltaE": 0,
+            "exact": true
+          }
+        }
+      ]
+    },
+    "cranberry": {
+      "sourceFamily": "Cranberry",
+      "kiskadeeFamilyId": "r.red.v1",
+      "seedHex": "#c50f1f",
+      "generatedAnchors": {
+        "dark": {
+          "hex": "#c50f1f",
+          "tone": 40
+        },
+        "light": {
+          "hex": "#c50f1f",
+          "tone": 45
+        }
+      },
+      "stateReferences": {
+        "dark": {
+          "hex": "#c50f1f",
+          "source": "harmony-rest",
+          "tone": 40
+        },
+        "light": {
+          "hex": "#b70419",
+          "source": "harmony-rest",
+          "tone": 50
+        }
+      },
+      "mappings": [
+        {
+          "sourceToken": "Shade 50",
+          "sourceHex": "#200205",
+          "light": {
+            "token": "L95",
+            "tone": 95,
+            "hex": "#290b09",
+            "deltaE": 0.040674,
+            "exact": false
+          },
+          "dark": {
+            "token": "D2",
+            "tone": 2,
+            "hex": "#210505",
+            "deltaE": 0.012878,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 40",
+          "sourceHex": "#3b0509",
+          "light": {
+            "token": "L90",
+            "tone": 90,
+            "hex": "#32110f",
+            "deltaE": 0.028588,
+            "exact": false
+          },
+          "dark": {
+            "token": "D5",
+            "tone": 5,
+            "hex": "#361310",
+            "deltaE": 0.028446,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 30",
+          "sourceHex": "#6e0811",
+          "light": {
+            "token": "L70",
+            "tone": 70,
+            "hex": "#6e1b1a",
+            "deltaE": 0.022939,
+            "exact": false
+          },
+          "dark": {
+            "token": "D16",
+            "tone": 16,
+            "hex": "#6e1b1a",
+            "deltaE": 0.022939,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 20",
+          "sourceHex": "#960b18",
+          "light": {
+            "token": "L60",
+            "tone": 60,
+            "hex": "#951219",
+            "deltaE": 0.004744,
+            "exact": false
+          },
+          "dark": {
+            "token": "D28",
+            "tone": 28,
+            "hex": "#971118",
+            "deltaE": 0.005557,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 10",
+          "sourceHex": "#b10e1c",
+          "light": {
+            "token": "L50",
+            "tone": 50,
+            "hex": "#b70419",
+            "deltaE": 0.011914,
+            "exact": false
+          },
+          "dark": {
+            "token": "D35",
+            "tone": 35,
+            "hex": "#b60018",
+            "deltaE": 0.010204,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Primary",
+          "sourceHex": "#c50f1f",
+          "light": {
+            "token": "L45",
+            "tone": 45,
+            "hex": "#c50f1f",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "token": "D40",
+            "tone": 40,
+            "hex": "#c50f1f",
+            "deltaE": 0,
+            "exact": true
+          }
+        },
+        {
+          "sourceToken": "Tint 10",
+          "sourceHex": "#cc2635",
+          "light": {
+            "token": "L40",
+            "tone": 40,
+            "hex": "#d0252b",
+            "deltaE": 0.01255,
+            "exact": false
+          },
+          "dark": {
+            "token": "D45",
+            "tone": 45,
+            "hex": "#cc1d26",
+            "deltaE": 0.01415,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 20",
+          "sourceHex": "#d33f4c",
+          "light": {
+            "token": "L35",
+            "tone": 35,
+            "hex": "#da3334",
+            "deltaE": 0.027586,
+            "exact": false
+          },
+          "dark": {
+            "token": "D55",
+            "tone": 55,
+            "hex": "#df3a39",
+            "deltaE": 0.029639,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 30",
+          "sourceHex": "#dc626d",
+          "light": {
+            "token": "L26",
+            "tone": 26,
+            "hex": "#f35651",
+            "deltaE": 0.050652,
+            "exact": false
+          },
+          "dark": {
+            "token": "D65",
+            "tone": 65,
+            "hex": "#ee4f4b",
+            "deltaE": 0.050745,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 40",
+          "sourceHex": "#eeacb2",
+          "light": {
+            "token": "L14",
+            "tone": 14,
+            "hex": "#ffa89f",
+            "deltaE": 0.034251,
+            "exact": false
+          },
+          "dark": {
+            "token": "D85",
+            "tone": 85,
+            "hex": "#ffb1a8",
+            "deltaE": 0.035005,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 50",
+          "sourceHex": "#f6d1d5",
+          "light": {
+            "token": "L7",
+            "tone": 7,
+            "hex": "#ffd5d0",
+            "deltaE": 0.019611,
+            "exact": false
+          },
+          "dark": {
+            "token": "D90",
+            "tone": 90,
+            "hex": "#ffcac4",
+            "deltaE": 0.025256,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 60",
+          "sourceHex": "#fdf3f4",
+          "light": {
+            "token": "L2",
+            "tone": 2,
+            "hex": "#fff4f2",
+            "deltaE": 0.005075,
+            "exact": false
+          },
+          "dark": {
+            "token": "D99",
+            "tone": 99,
+            "hex": "#fffaf9",
+            "deltaE": 0.017508,
+            "exact": false
+          }
+        }
+      ]
+    },
+    "orange": {
+      "sourceFamily": "Orange",
+      "kiskadeeFamilyId": "yr.orange.v1",
+      "seedHex": "#f7630c",
+      "generatedAnchors": {
+        "dark": {
+          "hex": "#a5430f",
+          "tone": 40
+        },
+        "light": {
+          "hex": "#f7630c",
+          "tone": 24
+        }
+      },
+      "stateReferences": {
+        "dark": {
+          "hex": "#a5430f",
+          "source": "harmony-rest",
+          "tone": 40
+        },
+        "light": {
+          "hex": "#9d4012",
+          "source": "harmony-rest",
+          "tone": 50
+        }
+      },
+      "mappings": [
+        {
+          "sourceToken": "Shade 50",
+          "sourceHex": "#271002",
+          "light": {
+            "token": "L95",
+            "tone": 95,
+            "hex": "#280d03",
+            "deltaE": 0.009884,
+            "exact": false
+          },
+          "dark": {
+            "token": "D3",
+            "tone": 3,
+            "hex": "#220f07",
+            "deltaE": 0.016122,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 40",
+          "sourceHex": "#4a1e04",
+          "light": {
+            "token": "L80",
+            "tone": 80,
+            "hex": "#452111",
+            "deltaE": 0.015523,
+            "exact": false
+          },
+          "dark": {
+            "token": "D10",
+            "tone": 10,
+            "hex": "#462415",
+            "deltaE": 0.020173,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 30",
+          "sourceHex": "#8a3707",
+          "light": {
+            "token": "L55",
+            "tone": 55,
+            "hex": "#8d3c15",
+            "deltaE": 0.014093,
+            "exact": false
+          },
+          "dark": {
+            "token": "D30",
+            "tone": 30,
+            "hex": "#87360c",
+            "deltaE": 0.007327,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 20",
+          "sourceHex": "#bc4b09",
+          "light": {
+            "token": "L40",
+            "tone": 40,
+            "hex": "#bd4905",
+            "deltaE": 0.003749,
+            "exact": false
+          },
+          "dark": {
+            "token": "D50",
+            "tone": 50,
+            "hex": "#b75426",
+            "deltaE": 0.019916,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 10",
+          "sourceHex": "#de590b",
+          "light": {
+            "token": "L28",
+            "tone": 28,
+            "hex": "#e55900",
+            "deltaE": 0.013213,
+            "exact": false
+          },
+          "dark": {
+            "token": "D60",
+            "tone": 60,
+            "hex": "#c8663b",
+            "deltaE": 0.045867,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Primary",
+          "sourceHex": "#f7630c",
+          "light": {
+            "token": "L24",
+            "tone": 24,
+            "hex": "#f7630c",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "token": "D70",
+            "tone": 70,
+            "hex": "#d7774e",
+            "deltaE": 0.06679,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 10",
+          "sourceHex": "#f87528",
+          "light": {
+            "token": "L22",
+            "tone": 22,
+            "hex": "#ff7230",
+            "deltaE": 0.015161,
+            "exact": false
+          },
+          "dark": {
+            "token": "D75",
+            "tone": 75,
+            "hex": "#e68962",
+            "deltaE": 0.057157,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 20",
+          "sourceHex": "#f98845",
+          "light": {
+            "token": "L20",
+            "tone": 20,
+            "hex": "#ff834d",
+            "deltaE": 0.017946,
+            "exact": false
+          },
+          "dark": {
+            "token": "D75",
+            "tone": 75,
+            "hex": "#e68962",
+            "deltaE": 0.040846,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 30",
+          "sourceHex": "#faa06b",
+          "light": {
+            "token": "L16",
+            "tone": 16,
+            "hex": "#ff9d75",
+            "deltaE": 0.017698,
+            "exact": false
+          },
+          "dark": {
+            "token": "D80",
+            "tone": 80,
+            "hex": "#f49d79",
+            "deltaE": 0.022013,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 40",
+          "sourceHex": "#fdcfb4",
+          "light": {
+            "token": "L8",
+            "tone": 8,
+            "hex": "#ffcfbc",
+            "deltaE": 0.011193,
+            "exact": false
+          },
+          "dark": {
+            "token": "D90",
+            "tone": 90,
+            "hex": "#ffcbb5",
+            "deltaE": 0.010874,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 50",
+          "sourceHex": "#fee5d7",
+          "light": {
+            "token": "L5",
+            "tone": 5,
+            "hex": "#ffe2d7",
+            "deltaE": 0.007676,
+            "exact": false
+          },
+          "dark": {
+            "token": "D95",
+            "tone": 95,
+            "hex": "#ffe6dc",
+            "deltaE": 0.006628,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 60",
+          "sourceHex": "#fff9f5",
+          "light": {
+            "token": "L1",
+            "tone": 1,
+            "hex": "#fff9f7",
+            "deltaE": 0.002685,
+            "exact": false
+          },
+          "dark": {
+            "token": "D99",
+            "tone": 99,
+            "hex": "#fffaf8",
+            "deltaE": 0.003967,
+            "exact": false
+          }
+        }
+      ]
+    },
+    "marigold": {
+      "sourceFamily": "Marigold",
+      "kiskadeeFamilyId": "y.yellow.v1",
+      "seedHex": "#eaa300",
+      "generatedAnchors": {
+        "dark": {
+          "hex": "#805a15",
+          "tone": 40
+        },
+        "light": {
+          "hex": "#eaa300",
+          "tone": 18
+        }
+      },
+      "stateReferences": {
+        "dark": {
+          "hex": "#805a15",
+          "source": "harmony-rest",
+          "tone": 40
+        },
+        "light": {
+          "hex": "#7e5915",
+          "source": "harmony-rest",
+          "tone": 50
+        }
+      },
+      "mappings": [
+        {
+          "sourceToken": "Shade 50",
+          "sourceHex": "#251a00",
+          "light": {
+            "token": "L90",
+            "tone": 90,
+            "hex": "#271a04",
+            "deltaE": 0.008919,
+            "exact": false
+          },
+          "dark": {
+            "token": "D5",
+            "tone": 5,
+            "hex": "#241c0f",
+            "deltaE": 0.021718,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 40",
+          "sourceHex": "#463100",
+          "light": {
+            "token": "L75",
+            "tone": 75,
+            "hex": "#443213",
+            "deltaE": 0.015755,
+            "exact": false
+          },
+          "dark": {
+            "token": "D14",
+            "tone": 14,
+            "hex": "#443217",
+            "deltaE": 0.02034,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 30",
+          "sourceHex": "#835b00",
+          "light": {
+            "token": "L50",
+            "tone": 50,
+            "hex": "#7e5915",
+            "deltaE": 0.0143,
+            "exact": false
+          },
+          "dark": {
+            "token": "D40",
+            "tone": 40,
+            "hex": "#805a15",
+            "deltaE": 0.010856,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 20",
+          "sourceHex": "#b27c00",
+          "light": {
+            "token": "L30",
+            "tone": 30,
+            "hex": "#ae7900",
+            "deltaE": 0.010907,
+            "exact": false
+          },
+          "dark": {
+            "token": "D65",
+            "tone": 65,
+            "hex": "#a98347",
+            "deltaE": 0.040428,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 10",
+          "sourceHex": "#d39300",
+          "light": {
+            "token": "L22",
+            "tone": 22,
+            "hex": "#d69400",
+            "deltaE": 0.00587,
+            "exact": false
+          },
+          "dark": {
+            "token": "D75",
+            "tone": 75,
+            "hex": "#c19c65",
+            "deltaE": 0.063494,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Primary",
+          "sourceHex": "#eaa300",
+          "light": {
+            "token": "L18",
+            "tone": 18,
+            "hex": "#eaa300",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "token": "D80",
+            "tone": 80,
+            "hex": "#d1af7c",
+            "deltaE": 0.082135,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 10",
+          "sourceHex": "#edad1c",
+          "light": {
+            "token": "L16",
+            "tone": 16,
+            "hex": "#f0ac2b",
+            "deltaE": 0.009244,
+            "exact": false
+          },
+          "dark": {
+            "token": "D80",
+            "tone": 80,
+            "hex": "#d1af7c",
+            "deltaE": 0.081103,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 20",
+          "sourceHex": "#efb839",
+          "light": {
+            "token": "L14",
+            "tone": 14,
+            "hex": "#f6b544",
+            "deltaE": 0.016796,
+            "exact": false
+          },
+          "dark": {
+            "token": "D85",
+            "tone": 85,
+            "hex": "#e0c193",
+            "deltaE": 0.08131,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 30",
+          "sourceHex": "#f2c661",
+          "light": {
+            "token": "L12",
+            "tone": 12,
+            "hex": "#fcbf5a",
+            "deltaE": 0.020728,
+            "exact": false
+          },
+          "dark": {
+            "token": "D85",
+            "tone": 85,
+            "hex": "#e0c193",
+            "deltaE": 0.063474,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 40",
+          "sourceHex": "#f9e2ae",
+          "light": {
+            "token": "L6",
+            "tone": 6,
+            "hex": "#ffe0b2",
+            "deltaE": 0.012049,
+            "exact": false
+          },
+          "dark": {
+            "token": "D95",
+            "tone": 95,
+            "hex": "#fce9cc",
+            "deltaE": 0.037114,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 50",
+          "sourceHex": "#fcefd3",
+          "light": {
+            "token": "L3",
+            "tone": 3,
+            "hex": "#fff0da",
+            "deltaE": 0.010119,
+            "exact": false
+          },
+          "dark": {
+            "token": "D95",
+            "tone": 95,
+            "hex": "#fce9cc",
+            "deltaE": 0.014969,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 60",
+          "sourceHex": "#fefbf4",
+          "light": {
+            "token": "L1",
+            "tone": 1,
+            "hex": "#fffaf3",
+            "deltaE": 0.002579,
+            "exact": false
+          },
+          "dark": {
+            "token": "D99",
+            "tone": 99,
+            "hex": "#fffbf4",
+            "deltaE": 0.001318,
+            "exact": false
+          }
+        }
+      ]
+    },
+    "green": {
+      "sourceFamily": "Green",
+      "kiskadeeFamilyId": "g.green.v1",
+      "seedHex": "#107c10",
+      "generatedAnchors": {
+        "dark": {
+          "hex": "#087209",
+          "tone": 40
+        },
+        "light": {
+          "hex": "#107c10",
+          "tone": 45
+        }
+      },
+      "stateReferences": {
+        "dark": {
+          "hex": "#087209",
+          "source": "harmony-rest",
+          "tone": 40
+        },
+        "light": {
+          "hex": "#09760a",
+          "source": "harmony-rest",
+          "tone": 50
+        }
+      },
+      "mappings": [
+        {
+          "sourceToken": "Shade 50",
+          "sourceHex": "#031403",
+          "light": {
+            "token": "L95",
+            "tone": 95,
+            "hex": "#0a1b09",
+            "deltaE": 0.032074,
+            "exact": false
+          },
+          "dark": {
+            "token": "D3",
+            "tone": 3,
+            "hex": "#071706",
+            "deltaE": 0.015727,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 40",
+          "sourceHex": "#052505",
+          "light": {
+            "token": "L90",
+            "tone": 90,
+            "hex": "#10220e",
+            "deltaE": 0.02366,
+            "exact": false
+          },
+          "dark": {
+            "token": "D6",
+            "tone": 6,
+            "hex": "#112310",
+            "deltaE": 0.02499,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 30",
+          "sourceHex": "#094509",
+          "light": {
+            "token": "L70",
+            "tone": 70,
+            "hex": "#184a16",
+            "deltaE": 0.023201,
+            "exact": false
+          },
+          "dark": {
+            "token": "D18",
+            "tone": 18,
+            "hex": "#154514",
+            "deltaE": 0.013653,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 20",
+          "sourceHex": "#0c5e0c",
+          "light": {
+            "token": "L60",
+            "tone": 60,
+            "hex": "#0f610f",
+            "deltaE": 0.009933,
+            "exact": false
+          },
+          "dark": {
+            "token": "D30",
+            "tone": 30,
+            "hex": "#0a5c0a",
+            "deltaE": 0.006633,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 10",
+          "sourceHex": "#0e700e",
+          "light": {
+            "token": "L55",
+            "tone": 55,
+            "hex": "#0a6b0a",
+            "deltaE": 0.015984,
+            "exact": false
+          },
+          "dark": {
+            "token": "D40",
+            "tone": 40,
+            "hex": "#087209",
+            "deltaE": 0.007072,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Primary",
+          "sourceHex": "#107c10",
+          "light": {
+            "token": "L45",
+            "tone": 45,
+            "hex": "#107c10",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "token": "D45",
+            "tone": 45,
+            "hex": "#197b17",
+            "deltaE": 0.006442,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 10",
+          "sourceHex": "#218c21",
+          "light": {
+            "token": "L40",
+            "tone": 40,
+            "hex": "#278a24",
+            "deltaE": 0.007282,
+            "exact": false
+          },
+          "dark": {
+            "token": "D55",
+            "tone": 55,
+            "hex": "#328d2f",
+            "deltaE": 0.016574,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 20",
+          "sourceHex": "#359b35",
+          "light": {
+            "token": "L30",
+            "tone": 30,
+            "hex": "#3f9b3b",
+            "deltaE": 0.009811,
+            "exact": false
+          },
+          "dark": {
+            "token": "D60",
+            "tone": 60,
+            "hex": "#3c9539",
+            "deltaE": 0.019367,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 30",
+          "sourceHex": "#54b054",
+          "light": {
+            "token": "L24",
+            "tone": 24,
+            "hex": "#5db258",
+            "deltaE": 0.011295,
+            "exact": false
+          },
+          "dark": {
+            "token": "D75",
+            "tone": 75,
+            "hex": "#67b661",
+            "deltaE": 0.029238,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 40",
+          "sourceHex": "#9fd89f",
+          "light": {
+            "token": "L12",
+            "tone": 12,
+            "hex": "#9ddf98",
+            "deltaE": 0.023962,
+            "exact": false
+          },
+          "dark": {
+            "token": "D85",
+            "tone": 85,
+            "hex": "#96d890",
+            "deltaE": 0.023167,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 50",
+          "sourceHex": "#c9eac9",
+          "light": {
+            "token": "L6",
+            "tone": 6,
+            "hex": "#c4f4c0",
+            "deltaE": 0.033208,
+            "exact": false
+          },
+          "dark": {
+            "token": "D95",
+            "tone": 95,
+            "hex": "#d0f8cc",
+            "deltaE": 0.038343,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 60",
+          "sourceHex": "#f1faf1",
+          "light": {
+            "token": "L1",
+            "tone": 1,
+            "hex": "#f2fff1",
+            "deltaE": 0.01318,
+            "exact": false
+          },
+          "dark": {
+            "token": "D99",
+            "tone": 99,
+            "hex": "#f4fff2",
+            "deltaE": 0.013598,
+            "exact": false
+          }
+        }
+      ]
+    },
+    "lightGreen": {
+      "sourceFamily": "Light green",
+      "kiskadeeFamilyId": "g.green.v1",
+      "seedHex": "#107c10",
+      "generatedAnchors": {
+        "dark": {
+          "hex": "#087209",
+          "tone": 40
+        },
+        "light": {
+          "hex": "#107c10",
+          "tone": 45
+        }
+      },
+      "stateReferences": {
+        "dark": {
+          "hex": "#087209",
+          "source": "harmony-rest",
+          "tone": 40
+        },
+        "light": {
+          "hex": "#09760a",
+          "source": "harmony-rest",
+          "tone": 50
+        }
+      },
+      "mappings": [
+        {
+          "sourceToken": "Shade 50",
+          "sourceHex": "#031a02",
+          "light": {
+            "token": "L95",
+            "tone": 95,
+            "hex": "#0a1b09",
+            "deltaE": 0.018538,
+            "exact": false
+          },
+          "dark": {
+            "token": "D3",
+            "tone": 3,
+            "hex": "#071706",
+            "deltaE": 0.017742,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 40",
+          "sourceHex": "#063004",
+          "light": {
+            "token": "L80",
+            "tone": 80,
+            "hex": "#173416",
+            "deltaE": 0.031151,
+            "exact": false
+          },
+          "dark": {
+            "token": "D10",
+            "tone": 10,
+            "hex": "#163114",
+            "deltaE": 0.026498,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 30",
+          "sourceHex": "#0b5a08",
+          "light": {
+            "token": "L65",
+            "tone": 65,
+            "hex": "#155513",
+            "deltaE": 0.019623,
+            "exact": false
+          },
+          "dark": {
+            "token": "D30",
+            "tone": 30,
+            "hex": "#0a5c0a",
+            "deltaE": 0.006355,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 20",
+          "sourceHex": "#0e7a0b",
+          "light": {
+            "token": "L45",
+            "tone": 45,
+            "hex": "#107c10",
+            "deltaE": 0.006362,
+            "exact": false
+          },
+          "dark": {
+            "token": "D45",
+            "tone": 45,
+            "hex": "#197b17",
+            "deltaE": 0.008308,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 10",
+          "sourceHex": "#11910d",
+          "light": {
+            "token": "L40",
+            "tone": 40,
+            "hex": "#278a24",
+            "deltaE": 0.02767,
+            "exact": false
+          },
+          "dark": {
+            "token": "D55",
+            "tone": 55,
+            "hex": "#328d2f",
+            "deltaE": 0.031762,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Primary",
+          "sourceHex": "#13a10e",
+          "light": {
+            "token": "L30",
+            "tone": 30,
+            "hex": "#3f9b3b",
+            "deltaE": 0.044392,
+            "exact": false
+          },
+          "dark": {
+            "token": "D65",
+            "tone": 65,
+            "hex": "#469d42",
+            "deltaE": 0.051051,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 10",
+          "sourceHex": "#27ac22",
+          "light": {
+            "token": "L28",
+            "tone": 28,
+            "hex": "#49a345",
+            "deltaE": 0.048177,
+            "exact": false
+          },
+          "dark": {
+            "token": "D70",
+            "tone": 70,
+            "hex": "#51a54c",
+            "deltaE": 0.054297,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 20",
+          "sourceHex": "#3db838",
+          "light": {
+            "token": "L24",
+            "tone": 24,
+            "hex": "#5db258",
+            "deltaE": 0.047647,
+            "exact": false
+          },
+          "dark": {
+            "token": "D75",
+            "tone": 75,
+            "hex": "#67b661",
+            "deltaE": 0.058029,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 30",
+          "sourceHex": "#5ec75a",
+          "light": {
+            "token": "L20",
+            "tone": 20,
+            "hex": "#72c16c",
+            "deltaE": 0.03566,
+            "exact": false
+          },
+          "dark": {
+            "token": "D80",
+            "tone": 80,
+            "hex": "#7ec879",
+            "deltaE": 0.049924,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 40",
+          "sourceHex": "#a7e3a5",
+          "light": {
+            "token": "L10",
+            "tone": 10,
+            "hex": "#a7e5a2",
+            "deltaE": 0.007672,
+            "exact": false
+          },
+          "dark": {
+            "token": "D90",
+            "tone": 90,
+            "hex": "#afe7aa",
+            "deltaE": 0.015443,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 50",
+          "sourceHex": "#cef0cd",
+          "light": {
+            "token": "L5",
+            "tone": 5,
+            "hex": "#cbf7c7",
+            "deltaE": 0.022819,
+            "exact": false
+          },
+          "dark": {
+            "token": "D95",
+            "tone": 95,
+            "hex": "#d0f8cc",
+            "deltaE": 0.022221,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 60",
+          "sourceHex": "#f2fbf2",
+          "light": {
+            "token": "L1",
+            "tone": 1,
+            "hex": "#f2fff1",
+            "deltaE": 0.010911,
+            "exact": false
+          },
+          "dark": {
+            "token": "D99",
+            "tone": 99,
+            "hex": "#f4fff2",
+            "deltaE": 0.010948,
+            "exact": false
+          }
+        }
+      ]
+    },
+    "berry": {
+      "sourceFamily": "Berry",
+      "kiskadeeFamilyId": "p.purple.v1",
+      "seedHex": "#c239b3",
+      "generatedAnchors": {
+        "dark": {
+          "hex": "#a62d99",
+          "tone": 40
+        },
+        "light": {
+          "hex": "#c239b3",
+          "tone": 35
+        }
+      },
+      "stateReferences": {
+        "dark": {
+          "hex": "#a62d99",
+          "source": "harmony-rest",
+          "tone": 40
+        },
+        "light": {
+          "hex": "#982b8c",
+          "source": "harmony-rest",
+          "tone": 50
+        }
+      },
+      "mappings": [
+        {
+          "sourceToken": "Shade 50",
+          "sourceHex": "#1f091d",
+          "light": {
+            "token": "L95",
+            "tone": 95,
+            "hex": "#240b20",
+            "deltaE": 0.014991,
+            "exact": false
+          },
+          "dark": {
+            "token": "D2",
+            "tone": 2,
+            "hex": "#1b0719",
+            "deltaE": 0.014268,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 40",
+          "sourceHex": "#3a1136",
+          "light": {
+            "token": "L85",
+            "tone": 85,
+            "hex": "#361832",
+            "deltaE": 0.021131,
+            "exact": false
+          },
+          "dark": {
+            "token": "D7",
+            "tone": 7,
+            "hex": "#3b1736",
+            "deltaE": 0.015088,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 30",
+          "sourceHex": "#6d2064",
+          "light": {
+            "token": "L65",
+            "tone": 65,
+            "hex": "#6b2762",
+            "deltaE": 0.014152,
+            "exact": false
+          },
+          "dark": {
+            "token": "D20",
+            "tone": 20,
+            "hex": "#6c2064",
+            "deltaE": 0.002162,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 20",
+          "sourceHex": "#932b88",
+          "light": {
+            "token": "L50",
+            "tone": 50,
+            "hex": "#982b8c",
+            "deltaE": 0.011614,
+            "exact": false
+          },
+          "dark": {
+            "token": "D35",
+            "tone": 35,
+            "hex": "#99268d",
+            "deltaE": 0.0151,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Shade 10",
+          "sourceHex": "#af33a1",
+          "light": {
+            "token": "L40",
+            "tone": 40,
+            "hex": "#b431a6",
+            "deltaE": 0.012172,
+            "exact": false
+          },
+          "dark": {
+            "token": "D45",
+            "tone": 45,
+            "hex": "#ad35a0",
+            "deltaE": 0.004713,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Primary",
+          "sourceHex": "#c239b3",
+          "light": {
+            "token": "L35",
+            "tone": 35,
+            "hex": "#c239b3",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "token": "D55",
+            "tone": 55,
+            "hex": "#bf4ab1",
+            "deltaE": 0.027709,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 10",
+          "sourceHex": "#c94cbc",
+          "light": {
+            "token": "L30",
+            "tone": 30,
+            "hex": "#ca43ba",
+            "deltaE": 0.014396,
+            "exact": false
+          },
+          "dark": {
+            "token": "D60",
+            "tone": 60,
+            "hex": "#c753b8",
+            "deltaE": 0.015015,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 20",
+          "sourceHex": "#d161c4",
+          "light": {
+            "token": "L26",
+            "tone": 26,
+            "hex": "#d958c9",
+            "deltaE": 0.022695,
+            "exact": false
+          },
+          "dark": {
+            "token": "D65",
+            "tone": 65,
+            "hex": "#ce5cbf",
+            "deltaE": 0.012957,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 30",
+          "sourceHex": "#da7ed0",
+          "light": {
+            "token": "L20",
+            "tone": 20,
+            "hex": "#ee77de",
+            "deltaE": 0.04251,
+            "exact": false
+          },
+          "dark": {
+            "token": "D75",
+            "tone": 75,
+            "hex": "#e47ad5",
+            "deltaE": 0.020296,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 40",
+          "sourceHex": "#edbbe7",
+          "light": {
+            "token": "L9",
+            "tone": 9,
+            "hex": "#ffbef3",
+            "deltaE": 0.03324,
+            "exact": false
+          },
+          "dark": {
+            "token": "D90",
+            "tone": 90,
+            "hex": "#ffc2f4",
+            "deltaE": 0.036619,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 50",
+          "sourceHex": "#f5daf2",
+          "light": {
+            "token": "L5",
+            "tone": 5,
+            "hex": "#ffddf8",
+            "deltaE": 0.018117,
+            "exact": false
+          },
+          "dark": {
+            "token": "D95",
+            "tone": 95,
+            "hex": "#ffe3f9",
+            "deltaE": 0.027605,
+            "exact": false
+          }
+        },
+        {
+          "sourceToken": "Tint 60",
+          "sourceHex": "#fdf5fc",
+          "light": {
+            "token": "L2",
+            "tone": 2,
+            "hex": "#fff2fc",
+            "deltaE": 0.00785,
+            "exact": false
+          },
+          "dark": {
+            "token": "D99",
+            "tone": 99,
+            "hex": "#fff9fe",
+            "deltaE": 0.01039,
+            "exact": false
+          }
+        }
+      ]
+    }
+  }
+}

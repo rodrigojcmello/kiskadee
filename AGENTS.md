@@ -71,6 +71,9 @@ keep task-specific workflows inside skills.
 - When a task touches official preset schemas, Figma links, official design-system docs, or source-derived
   visual decisions, use `skills/kiskadee-preset-evidence/SKILL.md` and update the matching source-evidence docs
   before finalizing.
+- When a task resolves Figma or official colors for a preset, edits preset color mappings, or styles an official
+  preset schema with color, also use `skills/kiskadee-resolve-preset-colors/SKILL.md`. Resolve the documented
+  source-to-tonal mapping before editing the schema; never add literal colors to official preset schemas.
 - `CHAT-CONTEXT.md`: single-file bootstrap for new chats.
 - `PROJECT-PURPOSE.md`: canonical project purpose and architecture map.
 - `SCHEMA-BUILD-RUNTIME-RULES.md`: ownership rules for schema, build artifacts, runtime, and Sass.
@@ -80,6 +83,8 @@ keep task-specific workflows inside skills.
   at the repository root for agent handoff.
 - `skills/kiskadee-preset-evidence/SKILL.md`: source-evidence workflow for official presets and
   design-system-derived schema decisions.
+- `skills/kiskadee-resolve-preset-colors/SKILL.md`: official color-to-tonal mapping workflow and
+  no-literal-color rule for preset schemas.
 - `skills/kiskadee-linear/SKILL.md`: Linear issue workflow, including title/description language
   and label rules.
 

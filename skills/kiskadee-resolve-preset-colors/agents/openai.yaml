@@ -1,0 +1,4 @@
+interface:
+  display_name: "Resolve Kiskadee Preset Colors"
+  short_description: "Map official colors to tonal preset assets"
+  default_prompt: "Use $kiskadee-resolve-preset-colors to map official colors to Kiskadee tonal assets before editing a preset schema."

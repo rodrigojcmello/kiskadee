@@ -1,0 +1,85 @@
+{
+  "assets": [
+    {
+      "familyId": "b.blue.v1",
+      "path": "colors/b.blue.v1.json",
+      "sha256": "e577f61f05411bc9e929f0dfb3ead37f507736222d909805bb02c67605402bbe"
+    },
+    {
+      "familyId": "bg.teal.v1",
+      "path": "colors/bg.teal.v1.json",
+      "sha256": "bca5f514161005c14c1eec7d977369a8322c2266da45b90e6c27db952797111d"
+    },
+    {
+      "familyId": "g.green.v1",
+      "path": "colors/g.green.v1.json",
+      "sha256": "e20107d8c1643f972b5c4ac37c4221300d4ab407d1458ccd7c1b5c1a27c20470"
+    },
+    {
+      "familyId": "gy.lime.v1",
+      "path": "colors/gy.lime.v1.json",
+      "sha256": "9865c14116aa29a18e88f7bf3d12b0261d23a9f104e778bf690e009ae64e8ce9"
+    },
+    {
+      "familyId": "n.black.v1",
+      "path": "colors/n.black.v1.json",
+      "sha256": "6a5e2ea920b24b8f7e5837b3cef97a22adb4a2131696376387574a64e1045397"
+    },
+    {
+      "familyId": "p.purple.v1",
+      "path": "colors/p.purple.v1.json",
+      "sha256": "3affd0ddc175ddb49ae803f4cc3c3bf03b615948e42c5bc6840840f76c5538fe"
+    },
+    {
+      "familyId": "pb.indigo.v1",
+      "path": "colors/pb.indigo.v1.json",
+      "sha256": "6af2d0aa52c25874112e10f57f9d29543b3e81d68a4d843bbc41654ddb2f2d2d"
+    },
+    {
+      "familyId": "r.red.v1",
+      "path": "colors/r.red.v1.json",
+      "sha256": "e0635f0ba4658f51e2d615a4807a91f3961ee937a944457233a8d88cf4327b5c"
+    },
+    {
+      "familyId": "rp.magenta.v1",
+      "path": "colors/rp.magenta.v1.json",
+      "sha256": "3d212284db71ae5d60366222d0c37c7b306bc510d659b3be0b4696794571871b"
+    },
+    {
+      "familyId": "y.yellow.v1",
+      "path": "colors/y.yellow.v1.json",
+      "sha256": "7434dbf3d43fe1813404eada69fdc916c74a2986bcd5ed72aeba4164ba3cf5bb"
+    },
+    {
+      "familyId": "yr.brown.v1",
+      "path": "colors/yr.brown.v1.json",
+      "sha256": "4d373bd79c7688f5ee767a1cd18c6f90e7dcb1f0b962b211c093c513149e703b"
+    },
+    {
+      "familyId": "yr.orange.v1",
+      "path": "colors/yr.orange.v1.json",
+      "sha256": "58dbcd527d441ca97a60263176fd66dae9fda4d1b6d9428e58cc5559ae46900c"
+    }
+  ],
+  "diagnostics": {
+    "path": "tonal-system.diagnostics.json"
+  },
+  "formatVersion": 3,
+  "generator": {
+    "package": "@kiskadee/tonal-scale",
+    "version": "0.3.0"
+  },
+  "kind": "kiskadee.tonal-system",
+  "primaryReference": "b.blue.v1",
+  "source": {
+    "path": "tonal-system.source.json",
+    "sha256": "21f26fbbad21ab20a8ea87eba3455bbcd8cd4f686730041463a3f0708f7027ab"
+  },
+  "tonalAnchors": {
+    "rest": {
+      "dark": 40,
+      "light": 50
+    }
+  },
+  "tonalProfile": "muted-darks"
+}

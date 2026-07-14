@@ -1,0 +1,287 @@
+{
+  "kind": "fluent-2-figma-color-evidence",
+  "formatVersion": 1,
+  "source": {
+    "name": "Microsoft Fluent 2 Web Community",
+    "fileKey": "qdtPPQysSX0kHGGcDpEXzw",
+    "inspectedOn": "2026-07-14",
+    "collections": {
+      "semantic": "Mode",
+      "global": " Global",
+      "brand": " Brand"
+    },
+    "nodes": {
+      "brand": "9738:4937",
+      "neutral": "9738:4957",
+      "badge": "9202:10100",
+      "presenceBadge": "9329:16467",
+      "fieldValidation": "9159:203",
+      "inputValidation": "9119:3825",
+      "messageBar": "9361:23385",
+      "persona": "9398:26991",
+      "statusExamples": "9121:5925",
+      "neutralDark": "9738:5044"
+    }
+  },
+  "contracts": {
+    "brand": "Brand-10 through Brand-160 in increments of 10",
+    "neutral": "Black, Grey-2 through Grey-98 in increments of 2, and White",
+    "shared": [
+      "Shade 50",
+      "Shade 40",
+      "Shade 30",
+      "Shade 20",
+      "Shade 10",
+      "Primary",
+      "Tint 10",
+      "Tint 20",
+      "Tint 30",
+      "Tint 40",
+      "Tint 50",
+      "Tint 60"
+    ]
+  },
+  "semanticEvidence": [
+    {
+      "role": "brand-background-rest",
+      "family": "Brand",
+      "light": { "token": "Brand-80", "hex": "#0064b4" },
+      "dark": { "token": "Brand-70", "hex": "#0055a4" }
+    },
+    {
+      "role": "neutral-foreground-rest",
+      "family": "Neutral",
+      "light": { "token": "Grey-14", "hex": "#21242d" },
+      "dark": { "token": "White", "hex": "#ffffff" }
+    },
+    {
+      "role": "neutral-background-rest",
+      "family": "Neutral",
+      "light": { "token": "White", "hex": "#ffffff" },
+      "dark": { "token": "Grey-16", "hex": "#262932" }
+    },
+    {
+      "role": "danger",
+      "family": "Cranberry",
+      "light": { "token": "Primary", "hex": "#c50f1f" },
+      "dark": { "token": "Tint 30", "hex": "#dc626d" }
+    },
+    {
+      "role": "warning",
+      "family": "Orange",
+      "light": { "token": "Primary", "hex": "#f7630c" },
+      "dark": { "token": "Tint 20", "hex": "#f98845" }
+    },
+    {
+      "role": "success",
+      "family": "Green",
+      "light": { "token": "Primary", "hex": "#107c10" },
+      "dark": { "token": "Tint 30", "hex": "#54b054" }
+    },
+    {
+      "role": "available",
+      "family": "Light green",
+      "light": { "token": "Primary", "hex": "#13a10e" },
+      "dark": { "token": "Primary", "hex": "#13a10e" }
+    },
+    {
+      "role": "away",
+      "family": "Marigold",
+      "light": { "token": "Primary", "hex": "#eaa300" },
+      "dark": { "token": "Primary", "hex": "#eaa300" }
+    },
+    {
+      "role": "out-of-office",
+      "family": "Berry",
+      "light": { "token": "Primary", "hex": "#c239b3" },
+      "dark": { "token": "Tint 20", "hex": "#d161c4" }
+    }
+  ],
+  "ramps": {
+    "brand": {
+      "sourceFamily": "Brand",
+      "steps": {
+        "Brand-10": "#00072e",
+        "Brand-20": "#001241",
+        "Brand-30": "#001f55",
+        "Brand-40": "#002b6b",
+        "Brand-50": "#003881",
+        "Brand-60": "#004694",
+        "Brand-70": "#0055a4",
+        "Brand-80": "#0064b4",
+        "Brand-90": "#1e75c7",
+        "Brand-100": "#3387da",
+        "Brand-110": "#4698ed",
+        "Brand-120": "#58aaff",
+        "Brand-130": "#72bcff",
+        "Brand-140": "#96cfff",
+        "Brand-150": "#b8e0ff",
+        "Brand-160": "#d9f1ff"
+      }
+    },
+    "neutral": {
+      "sourceFamily": "Neutral",
+      "steps": {
+        "Black": "#000000",
+        "Grey-2": "#03050b",
+        "Grey-4": "#070a11",
+        "Grey-6": "#0c0f17",
+        "Grey-8": "#11141c",
+        "Grey-10": "#171a22",
+        "Grey-12": "#1c1f28",
+        "Grey-14": "#21242d",
+        "Grey-16": "#262932",
+        "Grey-18": "#2b2e37",
+        "Grey-20": "#2f333c",
+        "Grey-22": "#343842",
+        "Grey-24": "#393d47",
+        "Grey-26": "#3e424c",
+        "Grey-28": "#434751",
+        "Grey-30": "#494d57",
+        "Grey-32": "#4e525c",
+        "Grey-34": "#535761",
+        "Grey-36": "#585c66",
+        "Grey-38": "#5d616b",
+        "Grey-40": "#626671",
+        "Grey-42": "#676b76",
+        "Grey-44": "#6c707b",
+        "Grey-46": "#717580",
+        "Grey-48": "#767a85",
+        "Grey-50": "#7c808b",
+        "Grey-52": "#818590",
+        "Grey-54": "#868a95",
+        "Grey-56": "#8b8f9a",
+        "Grey-58": "#90949f",
+        "Grey-60": "#9599a4",
+        "Grey-62": "#9a9eaa",
+        "Grey-64": "#9fa3af",
+        "Grey-66": "#a4a8b4",
+        "Grey-68": "#a9adb9",
+        "Grey-70": "#afb3bf",
+        "Grey-72": "#b4b8c4",
+        "Grey-74": "#b9bdc9",
+        "Grey-76": "#bec2ce",
+        "Grey-78": "#c3c7d3",
+        "Grey-80": "#c7ccd8",
+        "Grey-82": "#ccd1dd",
+        "Grey-84": "#d1d6e2",
+        "Grey-86": "#d6dbe7",
+        "Grey-88": "#dbe0ec",
+        "Grey-90": "#e1e6f2",
+        "Grey-92": "#e6ebf7",
+        "Grey-94": "#ebf0fc",
+        "Grey-96": "#f0f5ff",
+        "Grey-98": "#f5faff",
+        "White": "#ffffff"
+      }
+    },
+    "cranberry": {
+      "sourceFamily": "Cranberry",
+      "steps": {
+        "Shade 50": "#200205",
+        "Shade 40": "#3b0509",
+        "Shade 30": "#6e0811",
+        "Shade 20": "#960b18",
+        "Shade 10": "#b10e1c",
+        "Primary": "#c50f1f",
+        "Tint 10": "#cc2635",
+        "Tint 20": "#d33f4c",
+        "Tint 30": "#dc626d",
+        "Tint 40": "#eeacb2",
+        "Tint 50": "#f6d1d5",
+        "Tint 60": "#fdf3f4"
+      }
+    },
+    "orange": {
+      "sourceFamily": "Orange",
+      "steps": {
+        "Shade 50": "#271002",
+        "Shade 40": "#4a1e04",
+        "Shade 30": "#8a3707",
+        "Shade 20": "#bc4b09",
+        "Shade 10": "#de590b",
+        "Primary": "#f7630c",
+        "Tint 10": "#f87528",
+        "Tint 20": "#f98845",
+        "Tint 30": "#faa06b",
+        "Tint 40": "#fdcfb4",
+        "Tint 50": "#fee5d7",
+        "Tint 60": "#fff9f5"
+      }
+    },
+    "marigold": {
+      "sourceFamily": "Marigold",
+      "steps": {
+        "Shade 50": "#251a00",
+        "Shade 40": "#463100",
+        "Shade 30": "#835b00",
+        "Shade 20": "#b27c00",
+        "Shade 10": "#d39300",
+        "Primary": "#eaa300",
+        "Tint 10": "#edad1c",
+        "Tint 20": "#efb839",
+        "Tint 30": "#f2c661",
+        "Tint 40": "#f9e2ae",
+        "Tint 50": "#fcefd3",
+        "Tint 60": "#fefbf4"
+      }
+    },
+    "green": {
+      "sourceFamily": "Green",
+      "steps": {
+        "Shade 50": "#031403",
+        "Shade 40": "#052505",
+        "Shade 30": "#094509",
+        "Shade 20": "#0c5e0c",
+        "Shade 10": "#0e700e",
+        "Primary": "#107c10",
+        "Tint 10": "#218c21",
+        "Tint 20": "#359b35",
+        "Tint 30": "#54b054",
+        "Tint 40": "#9fd89f",
+        "Tint 50": "#c9eac9",
+        "Tint 60": "#f1faf1"
+      }
+    },
+    "lightGreen": {
+      "sourceFamily": "Light green",
+      "steps": {
+        "Shade 50": "#031a02",
+        "Shade 40": "#063004",
+        "Shade 30": "#0b5a08",
+        "Shade 20": "#0e7a0b",
+        "Shade 10": "#11910d",
+        "Primary": "#13a10e",
+        "Tint 10": "#27ac22",
+        "Tint 20": "#3db838",
+        "Tint 30": "#5ec75a",
+        "Tint 40": "#a7e3a5",
+        "Tint 50": "#cef0cd",
+        "Tint 60": "#f2fbf2"
+      }
+    },
+    "berry": {
+      "sourceFamily": "Berry",
+      "steps": {
+        "Shade 50": "#1f091d",
+        "Shade 40": "#3a1136",
+        "Shade 30": "#6d2064",
+        "Shade 20": "#932b88",
+        "Shade 10": "#af33a1",
+        "Primary": "#c239b3",
+        "Tint 10": "#c94cbc",
+        "Tint 20": "#d161c4",
+        "Tint 30": "#da7ed0",
+        "Tint 40": "#edbbe7",
+        "Tint 50": "#f5daf2",
+        "Tint 60": "#fdf5fc"
+      }
+    }
+  },
+  "availableAlternatives": {
+    "Red": { "primary": "#d13438" },
+    "Yellow": { "primary": "#fde300" },
+    "Pink": { "primary": "#e43ba6" },
+    "Magenta": { "primary": "#bf0077" }
+  }
+}

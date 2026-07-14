@@ -1,0 +1,71 @@
+{
+  "formatVersion": 3,
+  "gridContract": "kiskadee-tonal-v1",
+  "harmonyContract": "kiskadee-munsell-rest-v1",
+  "overrides": [
+    {
+      "id": "g.green.v1",
+      "policies": {
+        "dark": "adaptive",
+        "light": "source-exact"
+      },
+      "seedHex": "#107c10"
+    },
+    {
+      "id": "n.black.v1",
+      "policies": {
+        "dark": "source-exact",
+        "light": "source-exact"
+      },
+      "seedHex": "#21242d"
+    },
+    {
+      "id": "p.purple.v1",
+      "policies": {
+        "dark": "adaptive",
+        "light": "source-exact"
+      },
+      "seedHex": "#c239b3"
+    },
+    {
+      "id": "r.red.v1",
+      "policies": {
+        "dark": "adaptive",
+        "light": "source-exact"
+      },
+      "seedHex": "#c50f1f"
+    },
+    {
+      "id": "y.yellow.v1",
+      "policies": {
+        "dark": "adaptive",
+        "light": "source-exact"
+      },
+      "seedHex": "#eaa300"
+    },
+    {
+      "id": "yr.orange.v1",
+      "policies": {
+        "dark": "adaptive",
+        "light": "source-exact"
+      },
+      "seedHex": "#f7630c"
+    }
+  ],
+  "primary": {
+    "id": "b.blue.v1",
+    "policies": {
+      "dark": "adaptive",
+      "light": "source-exact"
+    },
+    "seedHex": "#0064b4"
+  },
+  "tonalAnchors": {
+    "rest": {
+      "dark": 40,
+      "light": 50,
+      "mode": "locked"
+    }
+  },
+  "tonalProfile": "muted-darks"
+}

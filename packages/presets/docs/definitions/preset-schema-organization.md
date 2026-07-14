@@ -101,6 +101,13 @@ That skill owns the reusable workflow and the evidence-file format reference
 used when a task includes Figma links, official design-system documentation, or
 source-derived preset decisions.
 
+When source evidence includes colors, also use
+`skills/kiskadee-resolve-preset-colors/SKILL.md`. It requires agents to trace the
+official semantic token through the documented tonal de-para and use the
+resulting primitive, semantic role, and exact L/D position. Official preset
+schemas must not contain literal colors; literals belong only in source evidence
+or approved primitive assets.
+
 ## Numeric Values
 
 Use the simplest schema shape that preserves meaning:

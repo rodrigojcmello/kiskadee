@@ -18,12 +18,26 @@ This file records source evidence and preset-level decisions for
 - In Fluent 2 the focus ring is rendered inside the component. In Kiskadee the
   focus ring is rendered outside the element for visual consistency with the
   rest of the system, so there is a small intentional difference here.
-- Fluent 2 uses a very specific color ramp that adjusts hue, saturation, and
-  lightness. Most design systems, including Kiskadee by default, use simpler
-  ramps that usually vary only lightness. For this preset we generate a scale
-  that approximates the Fluent 2 ramp; if we ever gain access to the official
-  Fluent 2 ramp algorithm in the future, we can refine this approximation even
-  further.
+- The Figma file exposes exact Brand, Neutral, and Shared primitive ramps as
+  local variables. Kiskadee preserves those source values as evidence, then
+  maps each upstream stop to the nearest position in its own canonical L/D
+  scale. The mapping is explicit because the two grids and theme orientations
+  are not identical.
+
+## Color Scale Evidence
+
+The color investigation and generated candidate system live under
+[`colors/fluent-tonal-scale-evidence.md`](./colors/fluent-tonal-scale-evidence.md). That evidence includes:
+
+- exact Figma Brand, Neutral, Cranberry, Orange, Marigold, Green, Light green,
+  and Berry ramps;
+- semantic alias provenance from Badge, Presence Badge, Field, Input, Message
+  Bar, and Persona nodes;
+- the reproducible Kiskadee tonal recipe and verified canonical bundle;
+- a per-stop OKLab de-para for both Light and Dark.
+
+The generated color artifacts are not integrated into the preset yet. They are
+review inputs for the next component-level phase.
 
 ## Shadow Scale
 

@@ -12,6 +12,10 @@ Use this skill to keep official preset source documentation automatic and consis
 Do not finish an official preset change without checking whether source evidence needs to be
 created or updated.
 
+When the task includes color extraction, tonal mapping, primitive color assets, semantic color
+roles, or component schema colors, also read and follow
+`../kiskadee-resolve-preset-colors/SKILL.md` completely before editing the schema.
+
 This applies when the task includes any of these inputs or files:
 
 - Figma links or node IDs;
