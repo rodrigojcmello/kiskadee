@@ -77,9 +77,11 @@ bookmark. It requires the local `@kiskadee/tonal-scale` application on port
 
 The verified canonical export is under [`generated/`](./generated/). It contains
 twelve primitive family assets plus source, manifest, and diagnostics.
-`b.blue.v1` and `n.black.v1` are approved and promoted into the preset for the
-Primary Button integration. The remaining ten assets stay as evidence
-candidates until their first explicit component or semantic use is approved.
+The seven families backed by explicit Fluent seeds are approved and promoted
+into the preset: `b.blue.v1`, `n.black.v1`, `r.red.v1`, `yr.orange.v1`,
+`y.yellow.v1`, `g.green.v1`, and `p.purple.v1`. The five harmony-derived
+companions (`bg.teal.v1`, `gy.lime.v1`, `pb.indigo.v1`, `rp.magenta.v1`, and
+`yr.brown.v1`) remain evidence candidates until explicitly approved.
 
 ## Semantic De-para
 
@@ -152,7 +154,13 @@ different primitive color identities.
 
 The first integration is the Fluent Primary Button documented in
 [`../components/button.md`](../components/button.md). It promotes the Blue and
-Black generated scales, keeps the existing three-layer runtime identifiers, and
-maps the official Light/Dark Button states to exact L/D positions. Other
-components, Button appearances, semantic intents, and generated color families
-remain deferred.
+Black generated scales and maps the official Light/Dark Button states to exact
+L/D positions.
+
+The preset-wide color foundation also promotes the other five explicitly
+authored Fluent families at Layer 1. Layer 2 maps Blue to `primary`, Black to
+`neutral`, Cranberry to `redLike`, Green to `greenLike`, Marigold to
+`yellowLike.v1`, and Orange to `yellowLike.v2`. Berry remains available as the
+Purple primitive because its official role is Out of office, not a generic
+Kiskadee `secondary` semantic. Other components and Button appearances remain
+deferred.

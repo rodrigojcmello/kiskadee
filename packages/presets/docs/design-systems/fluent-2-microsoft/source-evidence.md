@@ -36,10 +36,10 @@ The color investigation and generated candidate system live under
 - the reproducible Kiskadee tonal recipe and verified canonical bundle;
 - a per-stop OKLab de-para for both Light and Dark.
 
-The generated `b.blue.v1` and `n.black.v1` artifacts are now promoted into the
-preset as the primitive sources for the first component integration. The other
-generated families remain review inputs until a component or semantic role
-requires them.
+The seven generated assets backed by explicit Fluent seeds are promoted into
+the preset: Blue, Black, Cranberry/Red, Orange, Marigold/Yellow, Green, and
+Berry/Purple. The harmony-derived Teal, Lime, Indigo, Magenta, and Brown assets
+remain review inputs until separately approved.
 
 ## Shadow Scale
 
