@@ -66,15 +66,15 @@ describe('generateCssSplit', () => {
       button: {
         e1: {
           effects: {
-            hover: ['shadow--hover__[0,4,10,[0,0,0,0.35]]'],
-            focus: ['shadow--focus__[0,4,10,[0,0,0,0.35]]']
+            hover: ['shadow--hover__[0,4,10,"#00000059"]'],
+            focus: ['shadow--focus__[0,4,10,"#00000059"]']
           }
         }
       }
     } as unknown as ComponentStyleKeyMap;
     const shortenMap: ShortenCssClassNames = {
-      'shadow--hover__[0,4,10,[0,0,0,0.35]]': 'sh1',
-      'shadow--focus__[0,4,10,[0,0,0,0.35]]': 'sh2'
+      'shadow--hover__[0,4,10,"#00000059"]': 'sh1',
+      'shadow--focus__[0,4,10,"#00000059"]': 'sh2'
     };
     const result = await generateCssSplit(input, shortenMap);
 
@@ -94,7 +94,7 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 primary: {
-                  rest: ['boxColor__[206,100,50,1]']
+                  rest: ['boxColor__#0091ff']
                 }
               }
             }
@@ -103,7 +103,7 @@ describe('generateCssSplit', () => {
       }
     } as unknown as ComponentStyleKeyMap;
     const shortenMap: ShortenCssClassNames = {
-      'boxColor__[206,100,50,1]': 'bc1'
+      'boxColor__#0091ff': 'bc1'
     };
     const result = await generateCssSplit(input, shortenMap);
 
@@ -122,19 +122,19 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 primary: {
-                  rest: ['boxColor__[206,100,50,1]']
+                  rest: ['boxColor__#0091ff']
                 }
               },
               dark: {
                 primary: {
-                  rest: ['boxColor__[206,100,30,1]']
+                  rest: ['boxColor__#005799']
                 }
               }
             },
             youtube: {
               light: {
                 primary: {
-                  rest: ['boxColor__[255,0,0,1]']
+                  rest: ['boxColor__#000000']
                 }
               }
             }
@@ -143,9 +143,9 @@ describe('generateCssSplit', () => {
       }
     } as unknown as ComponentStyleKeyMap;
     const shortenMap: ShortenCssClassNames = {
-      'boxColor__[206,100,50,1]': 'bc1',
-      'boxColor__[206,100,30,1]': 'bc2',
-      'boxColor__[255,0,0,1]': 'bc3'
+      'boxColor__#0091ff': 'bc1',
+      'boxColor__#005799': 'bc2',
+      'boxColor__#000000': 'bc3'
     };
     const result = await generateCssSplit(input, shortenMap);
 
@@ -166,9 +166,9 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 primary: {
-                  rest: ['boxColor__[206,100,50,1]'],
-                  hover: ['boxColor==hover__[206,100,40,0.8]'],
-                  pressed: ['boxColor--pressed__[206,100,60,0.8]']
+                  rest: ['boxColor__#0091ff'],
+                  hover: ['boxColor==hover__#0074cccc'],
+                  pressed: ['boxColor--pressed__#33a7ffcc']
                 }
               }
             }
@@ -177,9 +177,9 @@ describe('generateCssSplit', () => {
       }
     } as unknown as ComponentStyleKeyMap;
     const shortenMap: ShortenCssClassNames = {
-      'boxColor__[206,100,50,1]': 'bc1',
-      'boxColor==hover__[206,100,40,0.8]': 'bc2',
-      'boxColor--pressed__[206,100,60,0.8]': 'bc3'
+      'boxColor__#0091ff': 'bc1',
+      'boxColor==hover__#0074cccc': 'bc2',
+      'boxColor--pressed__#33a7ffcc': 'bc3'
     };
     const result = await generateCssSplit(input, shortenMap);
 
@@ -196,13 +196,13 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 primary: {
-                  rest: ['boxColor__[206,100,50,1]']
+                  rest: ['boxColor__#0091ff']
                 },
                 secondary: {
-                  rest: ['boxColor__[180,60,40,1]']
+                  rest: ['boxColor__#29a3a3']
                 },
                 redLike: {
-                  rest: ['boxColor__[0,85,50,1]']
+                  rest: ['boxColor__#ec1313']
                 }
               }
             }
@@ -211,9 +211,9 @@ describe('generateCssSplit', () => {
       }
     } as unknown as ComponentStyleKeyMap;
     const shortenMap: ShortenCssClassNames = {
-      'boxColor__[206,100,50,1]': 'bc1',
-      'boxColor__[180,60,40,1]': 'bc2',
-      'boxColor__[0,85,50,1]': 'bc3'
+      'boxColor__#0091ff': 'bc1',
+      'boxColor__#29a3a3': 'bc2',
+      'boxColor__#ec1313': 'bc3'
     };
     const result = await generateCssSplit(input, shortenMap);
 
@@ -232,13 +232,13 @@ describe('generateCssSplit', () => {
             's:md:1': ['paddingTop__@md>16px']
           },
           effects: {
-            hover: ['shadow--hover__[0,4,10,[0,0,0,0.35]]']
+            hover: ['shadow--hover__[0,4,10,"#00000059"]']
           },
           palettes: {
             ios: {
               light: {
                 primary: {
-                  rest: ['boxColor__[206,100,50,1]']
+                  rest: ['boxColor__#0091ff']
                 }
               }
             }
@@ -249,8 +249,8 @@ describe('generateCssSplit', () => {
     const shortenMap: ShortenCssClassNames = {
       borderStyle__none: 'bs1',
       'paddingTop__@md>16px': 'pt1',
-      'shadow--hover__[0,4,10,[0,0,0,0.35]]': 'sh1',
-      'boxColor__[206,100,50,1]': 'bc1'
+      'shadow--hover__[0,4,10,"#00000059"]': 'sh1',
+      'boxColor__#0091ff': 'bc1'
     };
     const result = await generateCssSplit(input, shortenMap);
 
@@ -302,7 +302,7 @@ describe('generateCssSplit', () => {
                 default: {
                   light: {
                     neutral: {
-                      rest: ['textColor__[0,0,0,1]']
+                      rest: ['textColor__#000000']
                     }
                   }
                 }
@@ -315,7 +315,7 @@ describe('generateCssSplit', () => {
     const shortenMap: ShortenCssClassNames = {
       boxHeight__40: 'tf-height',
       paddingLeft__12: 'tf-padding',
-      'textColor__[0,0,0,1]': 'tf-color'
+      'textColor__#000000': 'tf-color'
     };
 
     const result = await generateCssSplit(input, shortenMap);
@@ -392,8 +392,8 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 primary: {
-                  rest: ['boxColor__[206,100,50,1]'],
-                  hover: ['boxColor==hover__[206,100,40,0.8]']
+                  rest: ['boxColor__#0091ff'],
+                  hover: ['boxColor==hover__#0074cccc']
                 }
               }
             }
@@ -402,8 +402,8 @@ describe('generateCssSplit', () => {
       }
     } as unknown as ComponentStyleKeyMap;
     const shortenMap: ShortenCssClassNames = {
-      'boxColor__[206,100,50,1]': 'bc1',
-      'boxColor==hover__[206,100,40,0.8]': 'bc2'
+      'boxColor__#0091ff': 'bc1',
+      'boxColor==hover__#0074cccc': 'bc2'
     };
 
     // Without forceState flag
@@ -446,12 +446,12 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 primary: {
-                  rest: ['boxColor__[206,100,50,1]']
+                  rest: ['boxColor__#0091ff']
                 }
               },
               dark: {
                 primary: {
-                  rest: ['boxColor__[206,100,30,1]']
+                  rest: ['boxColor__#005799']
                 }
               }
             }
@@ -462,7 +462,7 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 primary: {
-                  rest: ['textColor__[0,0,100,1]']
+                  rest: ['textColor__#ffffff']
                 }
               }
             }
@@ -471,9 +471,9 @@ describe('generateCssSplit', () => {
       }
     } as unknown as ComponentStyleKeyMap;
     const shortenMap: ShortenCssClassNames = {
-      'boxColor__[206,100,50,1]': 'bc1',
-      'boxColor__[206,100,30,1]': 'bc2',
-      'textColor__[0,0,100,1]': 'tc1'
+      'boxColor__#0091ff': 'bc1',
+      'boxColor__#005799': 'bc2',
+      'textColor__#ffffff': 'tc1'
     };
     const result = await generateCssSplit(input, shortenMap);
 
@@ -495,7 +495,7 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 primary: {
-                  rest: ['boxColor__[206,100,50,1]']
+                  rest: ['boxColor__#0091ff']
                 }
               }
             }
@@ -505,7 +505,7 @@ describe('generateCssSplit', () => {
     } as unknown as ComponentStyleKeyMap;
     const shortenMap: ShortenCssClassNames = {
       borderStyle__none: 'bs1',
-      'boxColor__[206,100,50,1]': 'bc1'
+      'boxColor__#0091ff': 'bc1'
     };
     const result = await generateCssSplit(input, shortenMap);
 

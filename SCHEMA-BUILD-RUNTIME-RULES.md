@@ -336,6 +336,29 @@ Rule:
 
 Artifacts are precompiled by `@kiskadee/web-builder`.
 
+### 5.0 Canonical tonal color ownership
+
+Kiskadee uses one continuous primitive tonal scale. Its public positions are `KISKADEE_TONES`,
+and every declared theme contains every position in that grid.
+
+Ownership is intentionally split across packages:
+
+- `@kiskadee/core` owns the grid, HEX/CSS scale types, normalization, validation, and exact tone
+  lookup;
+- `@kiskadee/tonal-scale` owns the color-generation algorithm and its visual invariants;
+- `@kiskadee/presets` owns concrete static or dynamic scale instances;
+- `@kiskadee/web-builder` validates, normalizes, deduplicates, and compiles authored values without
+  generating or repairing a scale;
+- `@kiskadee/runtime` invokes the same tonal generator for dynamic segments and publishes complete
+  Light and Dark CSS-variable scales.
+
+Static primitive values are stored as lowercase six- or eight-digit HEX. Dynamic primitive values
+are CSS color references such as `var(--k-p-light-24)`. Tone lookup is exact: unsupported positions
+are authoring errors and must never be rounded or snapped.
+
+The former primitive `subtle` and `vivid` tracks no longer exist. Those words may still describe
+activation-feedback profiles; that effect vocabulary is unrelated to primitive tonal storage.
+
 Main outputs per design system:
 
 - `core.kiskadee.css` / `core.kiskadee.json`
@@ -347,7 +370,7 @@ Main outputs per design system:
 - `class-maps/<segment>.<theme>/<component>.kiskadee.json`
 - `segments.json`, `manifest.json`, `schema.json`
 
-### 5.0 Artifact responsibilities
+### 5.1 Artifact responsibilities
 
 Use each artifact for a different level of responsibility:
 
@@ -390,7 +413,7 @@ Rule:
 - Omit unsupported component effects from component metadata artifacts; do not emit explicit `false`
   values for absent effects.
 
-### 5.1 Segment and theme representation
+### 5.2 Segment and theme representation
 
 In schema:
 
@@ -401,7 +424,7 @@ In artifacts:
 - segment + theme are primarily encoded in file name (`default.light.kiskadee.css`, `dynamic.dark.kiskadee.json`).
 - `segments.json` keeps explicit segment metadata for tooling.
 
-### 5.2 Emphasis representation
+### 5.3 Emphasis representation
 
 In palette JSON maps, emphasis is encoded in color buckets:
 
@@ -412,7 +435,7 @@ In palette JSON maps, emphasis is encoded in color buckets:
 
 Runtime picks one of these buckets from component emphasis.
 
-### 5.3 Default public component baseline
+### 5.4 Default public component baseline
 
 Public components should expose a canonical baseline whenever the design system supports it:
 

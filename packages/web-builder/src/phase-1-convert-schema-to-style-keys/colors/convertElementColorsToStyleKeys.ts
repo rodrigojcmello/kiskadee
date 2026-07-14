@@ -136,17 +136,11 @@ function isInteractionStateColorMap(val: unknown): val is InteractionStateColorM
  *       - When isRef is true, the underlying referenced color is stringified.
  *       - When isRef is false, the direct color value is stringified.
  *   - Uses buildStyleKey to encode propertyName, state, isRef, and serialized value
- *     into a stable StyleKey (e.g., "textColor--rest__[0,0,0,1]" or
- *     "textColor==hover__[0,0,0,0.5]").
+ *     into a stable StyleKey (e.g., `textColor--rest__#000000` or
+ *     `textColor==hover__#00000080`).
  * - Appends the generated key to a nested output structure organized by:
  *     segmentName -> themeName -> semanticColor -> interactionState -> StyleKey[]
  * - Additionally tracks which emphasis (highest/high/medium/low/lowest) generated each style key in a parallel Map
- *
- * Why pre-stringify color values:
- * - buildStyleKey stringifies primitives via String(value) and JSON-serializes non-primitives.
- * - Colors here are arrays (e.g., [h, s, l, a]) or references to arrays. By explicitly
- *   JSON.stringify-ing these values into a string, we guarantee a predictable output
- *   like "[0,0,0,1]" at the end of the key (after "__").
  *
  * Notes:
  * - This function only produces style keys; it does not validate color formats or states.
@@ -276,8 +270,8 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
 
             // Build the style key including the interaction state and whether this is a ref.
             // Examples:
-            //   - Non-ref: textColor--rest__[0,0,0,1]
-            //   - Ref:     textColor==hover__[0,0,0,0.5]
+            //   - Non-ref: textColor--rest__#000000
+            //   - Ref:     textColor==hover__#00000080
             const styleKey = buildStyleKey({
               propertyName: colorProperty,
               interactionState: interactionState,

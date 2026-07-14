@@ -23,28 +23,28 @@ function states(colors: {
   };
 }
 
-const transparent = [0, 0, 0, 0] as const;
+const transparent = '#00000000' as const;
 
 const c = {
-  optionalIndicator: [0, 0, 0, 0.3],
-  optionalIndicatorDisabled: [0, 0, 0, 0.18],
-  ink: [231, 24, 6, 1],
-  inkSoft: [226, 12, 50, 1],
-  inkMuted: [226, 12, 58, 1],
-  inkDisabled: [226, 12, 72, 1],
-  white: [0, 0, 100, 1],
-  surface: [0, 0, 100, 1],
-  track: [220, 18, 91, 1],
-  trackHover: [220, 18, 88, 1],
-  trackPressed: [220, 18, 82, 1],
-  trackDisabled: [220, 14, 90, 0.5],
-  primary: [225, 76, 52, 1],
-  primaryHover: [224, 76, 62, 1],
-  primaryPressed: [227, 82, 36, 1],
-  primaryDisabled: [224, 20, 80, 0.54],
-  violet: [260, 72, 50, 1],
-  violetHover: [260, 74, 58, 1],
-  violetPressed: [260, 78, 40, 1]
+  optionalIndicator: '#0000004d',
+  optionalIndicatorDisabled: '#0000002e',
+  ink: '#0c0d13',
+  inkSoft: '#70778f',
+  inkMuted: '#878da1',
+  inkDisabled: '#afb3c0',
+  white: '#ffffff',
+  surface: '#ffffff',
+  track: '#e4e7ec',
+  trackHover: '#dbdfe6',
+  trackPressed: '#c9ced9',
+  trackDisabled: '#e2e4e980',
+  primary: '#2856e2',
+  primaryHover: '#547ce8',
+  primaryPressed: '#1131a7',
+  primaryDisabled: '#c2c7d68a',
+  violet: '#6124db',
+  violetHover: '#7945e3',
+  violetPressed: '#4b16b6'
 } as const;
 
 const sizes = {
@@ -173,9 +173,9 @@ const textPalettes = {
             disabled: c.primaryDisabled
           }),
           low: states({
-            rest: [260, 36, 44, 1],
+            rest: '#634899',
             hover: c.violet,
-            focus: [260, 36, 44, 1],
+            focus: '#634899',
             pressed: c.violetPressed,
             disabled: c.primaryDisabled
           })
@@ -245,11 +245,11 @@ const trackPalettes = {
         },
         primary: {
           medium: states({
-            rest: [225, 76, 52, 0.24],
-            hover: [225, 76, 52, 0.32],
-            focus: [225, 76, 52, 0.24],
-            pressed: [225, 76, 52, 0.4],
-            disabled: [224, 20, 80, 0.22]
+            rest: '#2856e23d',
+            hover: '#2856e252',
+            focus: '#2856e23d',
+            pressed: '#2856e266',
+            disabled: '#c2c7d638'
           })
         }
       },
@@ -333,8 +333,8 @@ const thumbPalettes = {
             rest: c.surface,
             hover: c.white,
             focus: c.white,
-            pressed: [225, 76, 96, 1],
-            disabled: [220, 14, 86, 1]
+            pressed: '#edf1fd',
+            disabled: '#d6dae0'
           })
         },
         primary: {
@@ -342,8 +342,8 @@ const thumbPalettes = {
             rest: c.surface,
             hover: c.white,
             focus: c.white,
-            pressed: [260, 72, 95, 1],
-            disabled: [224, 20, 86, 1]
+            pressed: '#efe9fb',
+            disabled: '#d4d8e2'
           })
         }
       },

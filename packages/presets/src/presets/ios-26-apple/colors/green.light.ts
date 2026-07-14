@@ -1,9 +1,40 @@
-import type { EmphasisLevel } from '@kiskadee/core';
+import type { KiskadeeHexScale } from '@kiskadee/core';
 
 export default {
-  subtle: {},
-  vivid: {
-    // iOS 26 Toggle / State=On from the Apple iOS 26 and iPadOS 26 Community file.
-    50: [135.102, 58.566, 49.216, 1]
-  }
-} as EmphasisLevel;
+  0: '#ffffff',
+  1: '#fcfefc',
+  2: '#f8fdf9',
+  3: '#f5fcf5',
+  4: '#f1fbf2',
+  5: '#eefaef',
+  6: '#ebf9ec',
+  7: '#e7f8e8',
+  8: '#e4f7e5',
+  9: '#e0f6e2',
+  10: '#ddf5df',
+  12: '#d6f3d8',
+  14: '#cff1d2',
+  16: '#c8efcb',
+  18: '#c1ecc5',
+  20: '#baeabe',
+  22: '#b3e8b8',
+  24: '#abe6b1',
+  26: '#a4e4ab',
+  28: '#9ce1a4',
+  30: '#95df9e',
+  35: '#81d98d',
+  40: '#6cd37d',
+  45: '#54cd6b',
+  50: '#34c759',
+  55: '#2cad4c',
+  60: '#249340',
+  65: '#1c7a34',
+  70: '#156228',
+  75: '#0e4c1d',
+  80: '#073613',
+  85: '#032109',
+  90: '#010e03',
+  95: '#000200',
+  99: '#000000',
+  100: '#000000'
+} as KiskadeeHexScale;

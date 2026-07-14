@@ -1,4 +1,4 @@
-import { breakpoints, type Schema } from '@kiskadee/core';
+import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
 import { createFluent2MicrosoftCardSchema } from '../fluent-2-microsoft/components/card.schema.ts';
 import { createSandbox2SliderSchema } from './components/slider.schema.ts';
 import { createSandbox2SwitchSchema } from './components/switch.schema.ts';
@@ -7,8 +7,8 @@ import { schemaColors } from './sandbox-2.colors.ts';
 export type Sandbox2Segment = 'default';
 
 const segmentNames = ['default'] as const;
-const transparent = [0, 0, 0, 0] as const;
-const shadowBlack = (alpha: number) => [0, 0, 0, alpha] as const;
+const transparent = '#00000000' as const;
+const shadowBlack = (alpha: number) => withAlpha('#000000', alpha * 100);
 
 export const schema: Schema<Sandbox2Segment> = {
   name: 'Sandbox',
@@ -84,17 +84,17 @@ export const schema: Schema<Sandbox2Segment> = {
     palettes: {
       default: {
         light: {
-          background: [220, 20, 97, 1],
-          focusColor: [225, 76, 52, 1],
+          background: '#f6f7f9',
+          focusColor: '#2856e2',
           effects: {
             activationFeedback: {
               tone: {
                 subtle: {
-                  color: [231, 24, 6, 1],
+                  color: '#0c0d13',
                   opacity: 0.12
                 },
                 vivid: {
-                  color: [0, 0, 100, 1],
+                  color: '#ffffff',
                   opacity: 0.24
                 }
               }

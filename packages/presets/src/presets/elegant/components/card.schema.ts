@@ -8,7 +8,7 @@ type CardComponent = NonNullable<Schema<Segment>['components']['card']>;
 type CreateElegantCardSchemaArgs = {
   c: PresetColorGetter<Segment>;
   segmentNames: readonly Segment[];
-  transparent: readonly [number, number, number, number];
+  transparent: string;
 };
 
 export function createElegantCardSchema({
@@ -86,7 +86,7 @@ export function createElegantCardSchema({
               neutral: {
                 medium: {
                   rest: c(s, 'l', 'card.neutral', 10),
-                  hover: c(s, 'l', 'card.neutral', 15),
+                  hover: c(s, 'l', 'card.neutral', 16),
                   pressed: c(s, 'l', 'card.neutral', 20),
                   focus: c(s, 'l', 'primary', 50),
                   disabled: transparent,

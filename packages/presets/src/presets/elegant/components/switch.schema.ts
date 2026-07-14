@@ -4,19 +4,19 @@ import { buildBySegment } from '../../../utils/buildBySegment.ts';
 type ElegantSegmentName = 'default';
 type SwitchComponent = NonNullable<Schema<ElegantSegmentName>['components']['switch']>;
 
-const transparent = [0, 0, 0, 0] as const;
-const ios18SwitchTrackOff = [240, 4, 92, 1] as const;
-const elegantSwitchTrackOffHover = [240, 4, 94, 1] as const;
-const elegantSwitchTrackOffPressed = [240, 4, 86, 1] as const;
-const ios18SwitchTrackOn = [136, 60, 49, 1] as const;
-const elegantSwitchTrackOnHoverFocus = [136, 60, 54, 1] as const;
-const ios18SwitchTrackOnPressed = [136, 54, 43, 1] as const;
-const ios18SwitchTrackDisabled = [240, 4, 92, 0.42] as const;
-const ios18SwitchThumb = [0, 0, 100, 1] as const;
-const ios18SwitchThumbDisabled = [0, 0, 100, 0.72] as const;
-const ios18SwitchLabel = [0, 0, 7, 1] as const;
-const ios18SwitchLabelDisabled = [0, 0, 7, 0.3] as const;
-const ios18SwitchOffIcon = [0, 0, 47.059, 0.55] as const;
+const transparent = '#00000000' as const;
+const ios18SwitchTrackOff = '#eaeaeb' as const;
+const elegantSwitchTrackOffHover = '#efeff0' as const;
+const elegantSwitchTrackOffPressed = '#dadadd' as const;
+const ios18SwitchTrackOn = '#32c85a' as const;
+const elegantSwitchTrackOnHoverFocus = '#43d069' as const;
+const ios18SwitchTrackOnPressed = '#32a952' as const;
+const ios18SwitchTrackDisabled = '#eaeaeb6b' as const;
+const ios18SwitchThumb = '#ffffff' as const;
+const ios18SwitchThumbDisabled = '#ffffffb8' as const;
+const ios18SwitchLabel = '#121212' as const;
+const ios18SwitchLabelDisabled = '#1212124d' as const;
+const ios18SwitchOffIcon = '#7878788c' as const;
 
 export function createElegantSwitchSchema(): SwitchComponent {
   const segmentNames = ['default'] as const;
@@ -138,9 +138,9 @@ export function createElegantSwitchSchema(): SwitchComponent {
                     y: { rest: 1, hover: 2, pressed: 1 },
                     blur: { rest: 2, hover: 4, pressed: 2 },
                     color: {
-                      rest: [0, 0, 0, 0.22],
-                      hover: [0, 0, 0, 0.26],
-                      pressed: [0, 0, 0, 0.22]
+                      rest: '#00000038',
+                      hover: '#00000042',
+                      pressed: '#00000038'
                     }
                   }
                 },

@@ -7,7 +7,7 @@ type Material3GoogleSegmentName = 'default' | 'dynamic';
 
 type CreateMaterial3GoogleTabsVariantArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;
-  transparent: readonly [number, number, number, number];
+  transparent: string;
 };
 
 export function createMaterial3GoogleTabsDotVariant({

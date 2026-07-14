@@ -1,4 +1,4 @@
-import { breakpoints, type Schema } from '@kiskadee/core';
+import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import { createIos26AppleButtonSchema } from './components/button.schema.ts';
 import { createIos26AppleCardSchema } from './components/card.schema.ts';
@@ -13,8 +13,8 @@ export type Segment = (typeof segmentNames)[number];
 
 const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
 const c = createPresetColorGetter<Segment>(schemaContext);
-const transparent = [0, 0, 0, 0] as const;
-const shadowBlack = (alpha: number) => [0, 0, 0, alpha] as const;
+const transparent = '#00000000' as const;
+const shadowBlack = (alpha: number) => withAlpha('#000000', alpha * 100);
 const sliderThumbShadow = [
   { x: 0, y: 6, blur: 13, spread: 0, color: shadowBlack(0.12) },
   { x: 0, y: 0.5, blur: 4, spread: 0, color: shadowBlack(0.12) }
@@ -91,7 +91,7 @@ export const schema: Schema<Segment> = {
                   opacity: 0.1
                 },
                 vivid: {
-                  color: '#FFFFFF',
+                  color: '#ffffff',
                   opacity: 0.2
                 }
               }

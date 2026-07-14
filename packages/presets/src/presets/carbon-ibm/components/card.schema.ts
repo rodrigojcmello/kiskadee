@@ -6,7 +6,7 @@ type CardComponent = NonNullable<Schema<never>['components']['card']>;
 
 type CreateCarbonIbmCardSchemaArgs = {
   segmentNames: readonly CarbonIbmSegmentName[];
-  transparent: readonly [number, number, number, number];
+  transparent: string;
 };
 
 export function createCarbonIbmCardSchema({
@@ -14,61 +14,61 @@ export function createCarbonIbmCardSchema({
   transparent
 }: CreateCarbonIbmCardSchemaArgs): CardComponent {
   const neutralLow = {
-    rest: '#FFFFFF',
-    hover: '#F4F4F4',
-    pressed: '#C6C6C6',
-    focus: '#FFFFFF',
-    disabled: '#FFFFFF1F'
+    rest: '#ffffff',
+    hover: '#f4f4f4',
+    pressed: '#c6c6c6',
+    focus: '#ffffff',
+    disabled: '#ffffff1f'
   };
   const neutralMedium = {
-    rest: '#F4F4F4',
-    hover: '#E8E8E8',
-    pressed: '#C6C6C6',
-    focus: '#F4F4F4',
-    disabled: '#FFFFFF1F'
+    rest: '#f4f4f4',
+    hover: '#e8e8e8',
+    pressed: '#c6c6c6',
+    focus: '#f4f4f4',
+    disabled: '#ffffff1f'
   };
   const neutralMediumDark = {
     rest: '#161616',
     hover: '#262626',
     pressed: '#393939',
     focus: '#161616',
-    disabled: '#FFFFFF1F'
+    disabled: '#ffffff1f'
   };
   const neutralHigh = {
     rest: '#393939',
-    hover: '#4C4C4C',
+    hover: '#4c4c4c',
     pressed: '#262626',
     focus: '#393939',
-    disabled: '#FFFFFF1F'
+    disabled: '#ffffff1f'
   };
   const neutralHighest = {
     rest: '#000000',
     hover: '#393939',
     pressed: '#000000',
     focus: '#000000',
-    disabled: '#FFFFFF1F'
+    disabled: '#ffffff1f'
   };
   const primaryLow = neutralLow;
   const primaryMedium = {
-    rest: '#D0E2FF',
-    hover: '#A6C8FF',
-    pressed: '#78A9FF',
-    focus: '#D0E2FF',
-    disabled: '#FFFFFF1F'
+    rest: '#d0e2ff',
+    hover: '#a6c8ff',
+    pressed: '#78a9ff',
+    focus: '#d0e2ff',
+    disabled: '#ffffff1f'
   };
   const primaryHigh = {
-    rest: '#0F62FE',
-    hover: '#0050E6',
-    pressed: '#002D9C',
-    focus: '#0F62FE',
-    disabled: '#FFFFFF1F'
+    rest: '#0f62fe',
+    hover: '#0050e6',
+    pressed: '#002d9c',
+    focus: '#0f62fe',
+    disabled: '#ffffff1f'
   };
   const primaryHighest = {
-    rest: '#001D6C',
-    hover: '#002D9C',
+    rest: '#001d6c',
+    hover: '#002d9c',
     pressed: '#001141',
-    focus: '#001D6C',
-    disabled: '#FFFFFF1F'
+    focus: '#001d6c',
+    disabled: '#ffffff1f'
   };
   const selectedPrimaryMedium = {
     rest: primaryMedium.rest,
@@ -89,38 +89,38 @@ export function createCarbonIbmCardSchema({
     focus: primaryHighest.focus
   };
   const borderLow = {
-    rest: '#E0E0E0',
-    hover: '#C6C6C6',
-    pressed: '#8D8D8D',
-    focus: '#0F62FE',
+    rest: '#e0e0e0',
+    hover: '#c6c6c6',
+    pressed: '#8d8d8d',
+    focus: '#0f62fe',
     disabled: transparent
   };
   const borderHigh = {
-    rest: '#6F6F6F',
-    hover: '#A8A8A8',
-    pressed: '#E0E0E0',
-    focus: '#78A9FF',
+    rest: '#6f6f6f',
+    hover: '#a8a8a8',
+    pressed: '#e0e0e0',
+    focus: '#78a9ff',
     disabled: transparent
   };
   const borderHighest = {
     rest: '#000000',
-    hover: '#6F6F6F',
+    hover: '#6f6f6f',
     pressed: '#000000',
-    focus: '#78A9FF',
+    focus: '#78a9ff',
     disabled: transparent
   };
   const primaryBorderLow = {
-    rest: '#0F62FE',
-    hover: '#0050E6',
-    pressed: '#002D9C',
-    focus: '#0F62FE',
+    rest: '#0f62fe',
+    hover: '#0050e6',
+    pressed: '#002d9c',
+    focus: '#0f62fe',
     disabled: transparent
   };
   const primaryBorderHigh = {
-    rest: '#78A9FF',
-    hover: '#0F62FE',
-    pressed: '#0050E6',
-    focus: '#78A9FF',
+    rest: '#78a9ff',
+    hover: '#0f62fe',
+    pressed: '#0050e6',
+    focus: '#78a9ff',
     disabled: transparent
   };
   const selectedBorder = {
@@ -160,9 +160,7 @@ export function createCarbonIbmCardSchema({
           }
         },
         palettes: buildBySegment(segmentNames, () => {
-          const createPalette = (
-            neutralMediumPalette: typeof neutralMedium
-          ) => ({
+          const createPalette = (neutralMediumPalette: typeof neutralMedium) => ({
             boxColor: {
               neutral: {
                 low: {

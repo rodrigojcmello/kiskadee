@@ -6,7 +6,7 @@ type Material3GoogleSegmentName = 'default' | 'dynamic';
 
 type CreateMaterial3GoogleTabsVariantArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;
-  transparent: readonly [number, number, number, number];
+  transparent: string;
 };
 
 export function createMaterial3GoogleTabsLineVariant({
@@ -112,13 +112,13 @@ export function createMaterial3GoogleTabsLineVariant({
                 neutral: {
                   medium: {
                     rest: transparent,
-                    hover: c('default', 'd', 'neutral', 86),
-                    focus: c('default', 'd', 'neutral', 86),
-                    pressed: c('default', 'd', 'neutral', 82),
+                    hover: c('default', 'd', 'neutral', 85),
+                    focus: c('default', 'd', 'neutral', 85),
+                    pressed: c('default', 'd', 'neutral', 80),
                     selected: {
                       rest: transparent,
-                      hover: c('default', 'd', 'neutral', 86),
-                      pressed: c('default', 'd', 'neutral', 82)
+                      hover: c('default', 'd', 'neutral', 85),
+                      pressed: c('default', 'd', 'neutral', 80)
                     }
                   }
                 }

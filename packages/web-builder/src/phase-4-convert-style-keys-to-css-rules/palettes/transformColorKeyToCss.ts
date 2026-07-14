@@ -1,7 +1,6 @@
 import {
   type ColorProperty,
   CssColorProperty,
-  type HSLA,
   InteractionStateCssPseudoSelector,
   type ProjectedStateKeys,
   type PseudoSelectorKeys,
@@ -9,11 +8,12 @@ import {
   type StyleKey,
   stateActivator
 } from '@kiskadee/core';
+import { normalizeHexColor } from '@kiskadee/core';
 import {
   DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
   type ResolvedElementStyleEmissionPolicy
 } from '../../style-emission/web-build-policy.ts';
-import { convertHslaToHex } from '../utils/convertHslaToHex.ts';
+import { toShortHex } from '../utils/toShortHex.ts';
 
 export type TransformColorKeyToCssOptions = {
   /**
@@ -38,10 +38,13 @@ type ResolvedGradientLike = {
   stops: Array<{ color: unknown; position: number }>;
 };
 
-function isHslaLike(v: unknown): v is HSLA {
-  return (
-    Array.isArray(v) && v.length === 4 && v.every((n) => typeof n === 'number' && !Number.isNaN(n))
-  );
+function normalizeCssColor(value: unknown): string {
+  if (typeof value !== 'string') {
+    throw new Error('Color values must be HEX or a CSS custom-property expression.');
+  }
+  if (value.startsWith('#')) return toShortHex(normalizeHexColor(value));
+  if (value.startsWith('var(--') || value.startsWith('color-mix(')) return value;
+  throw new Error(`Unsupported CSS color value: ${value}`);
 }
 
 function isResolvedGradientLike(v: unknown): v is ResolvedGradientLike {
@@ -54,8 +57,7 @@ function isResolvedGradientLike(v: unknown): v is ResolvedGradientLike {
     if (!s || typeof s !== 'object') return false;
     const stop = s as { color?: unknown; position?: unknown };
     if (typeof stop.position !== 'number' || Number.isNaN(stop.position)) return false;
-    // color is either HSLA-like array or string (e.g. CSS variable)
-    return typeof stop.color === 'string' || isHslaLike(stop.color);
+    return typeof stop.color === 'string';
   });
 }
 
@@ -147,33 +149,8 @@ export function transformColorKeyToCss(
   let gradientVars: string | undefined;
   let gradientBackground: string | undefined;
 
-  // Check if it is HSLA array (solid color encoded as JSON array)
   if (rawValue.startsWith('[') && rawValue.endsWith(']')) {
-    const inner = rawValue.slice(1, -1);
-    const parts = inner.split(',').map(Number);
-    if (parts.length !== 4 || parts.some((n) => Number.isNaN(n))) {
-      throw new Error(
-        `Invalid HSLA tuple in style key. Expected "h,s,l,a" (4 numbers), got: "${inner}"`
-      );
-    }
-    // TS note: `HSLA` is a `readonly` tuple. We validate length at runtime and then cast.
-    const hsla = parts as unknown as HSLA;
-    const solidHex = convertHslaToHex(hsla);
-
-    // Gradient interpolation is also an element-level emission policy. The global
-    // flag only enables the experiment; the element policy decides where it applies.
-    const shouldForceSolidAsGradient =
-      options?.enableSolidBoxColorAsGradient === true &&
-      optimizedProperty === 'background' &&
-      shouldInterpolateBoxColor;
-
-    if (shouldForceSolidAsGradient) {
-      gradientVars = `--k-bg0: ${solidHex}; --k-bg1: ${solidHex};`;
-      gradientBackground = 'linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%)';
-      cssValue = gradientBackground;
-    } else {
-      cssValue = solidHex;
-    }
+    throw new Error('Numeric color tuples are not supported in style keys. Use HEX.');
   } else if (rawValue.startsWith('{') && rawValue.endsWith('}')) {
     // Cross-platform encoding: gradients are stored as JSON objects in the style key.
     // Web builder converts them to a valid CSS gradient only at this phase.
@@ -198,10 +175,10 @@ export function transformColorKeyToCss(
     }
 
     const g = parsed;
-    const resolvedStops = g.stops.map((s) => {
-      const stopColor = typeof s.color === 'string' ? s.color : convertHslaToHex(s.color as HSLA);
-      return { color: stopColor, position: s.position };
-    });
+    const resolvedStops = g.stops.map((s) => ({
+      color: normalizeCssColor(s.color),
+      position: s.position
+    }));
 
     // Animated gradient strategy for Web (2–3 stops):
     // - Background is expressed in terms of CSS custom properties (--k-bg0/1/2)
@@ -223,8 +200,18 @@ export function transformColorKeyToCss(
       cssValue = `linear-gradient(${g.angle}deg, ${stops})`;
     }
   } else {
-    // String value (e.g. CSS var)
-    cssValue = rawValue;
+    const solidColor = normalizeCssColor(rawValue);
+    const shouldForceSolidAsGradient =
+      options?.enableSolidBoxColorAsGradient === true &&
+      optimizedProperty === 'background' &&
+      shouldInterpolateBoxColor;
+    if (shouldForceSolidAsGradient) {
+      gradientVars = `--k-bg0: ${solidColor}; --k-bg1: ${solidColor};`;
+      gradientBackground = 'linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%)';
+      cssValue = gradientBackground;
+    } else {
+      cssValue = solidColor;
+    }
   }
 
   const isRef = styleKey.includes('==');

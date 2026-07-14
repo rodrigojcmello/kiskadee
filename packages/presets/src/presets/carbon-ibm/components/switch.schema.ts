@@ -10,16 +10,16 @@ function switchStateRef<T>(value: T): { ref: T } {
 const carbonSwitchColor = {
   textSecondary: '#525252',
   textPrimary: '#161616',
-  textOnDark: '#F4F4F4',
-  textDisabled: '#C6C6C6',
-  iconOnColor: '#FFFFFF',
-  iconOnColorDisabled: '#8D8D8D',
-  supportSuccess: '#24A148',
-  supportSuccessOnDark: '#42BE65',
-  buttonDisabled: '#C6C6C6',
-  toggleOff: '#8D8D8D',
-  toggleOffOnDark: '#6B6B6B',
-  transparent: [0, 0, 0, 0] as const
+  textOnDark: '#f4f4f4',
+  textDisabled: '#c6c6c6',
+  iconOnColor: '#ffffff',
+  iconOnColorDisabled: '#8d8d8d',
+  supportSuccess: '#24a148',
+  supportSuccessOnDark: '#42be65',
+  buttonDisabled: '#c6c6c6',
+  toggleOff: '#8d8d8d',
+  toggleOffOnDark: '#6b6b6b',
+  transparent: '#00000000' as const
 } as const;
 
 export function createCarbonIbmSwitchSchema(): SwitchComponent {

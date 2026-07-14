@@ -6,8 +6,8 @@ type Material3GoogleSegmentName = 'default' | 'dynamic';
 
 type CreateMaterial3GoogleTabsVariantArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;
-  transparent: readonly [number, number, number, number];
-  white: readonly [number, number, number, number];
+  transparent: string;
+  white: string;
 };
 
 export function createMaterial3GoogleTabsBridgeVariant({
@@ -104,10 +104,10 @@ export function createMaterial3GoogleTabsBridgeVariant({
               boxColor: {
                 neutral: {
                   medium: {
-                    rest: [36, 100, 57, 1],
-                    hover: [37, 100, 65, 1],
-                    focus: [36, 100, 57, 1],
-                    pressed: [35, 90, 50, 1],
+                    rest: '#ffa724',
+                    hover: '#ffbb4d',
+                    focus: '#ffa724',
+                    pressed: '#f2930d',
                     selected: {
                       rest: transparent,
                       hover: transparent,
@@ -122,10 +122,10 @@ export function createMaterial3GoogleTabsBridgeVariant({
               boxColor: {
                 neutral: {
                   medium: {
-                    rest: [36, 78, 42, 1],
-                    hover: [36, 80, 48, 1],
-                    focus: [36, 78, 42, 1],
-                    pressed: [36, 76, 36, 1],
+                    rest: '#bf7c18',
+                    hover: '#dc8e18',
+                    focus: '#bf7c18',
+                    pressed: '#a26a16',
                     selected: {
                       rest: transparent,
                       hover: transparent,
@@ -144,7 +144,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
             y: { rest: 0 },
             blur: { rest: 4 },
             color: {
-              rest: withAlpha([0, 0, 0, 1], 20)
+              rest: withAlpha('#000000', 20)
             }
           }
         }
@@ -171,9 +171,9 @@ export function createMaterial3GoogleTabsBridgeVariant({
               textColor: {
                 neutral: {
                   medium: {
-                    rest: [24, 100, 12, 1],
+                    rest: '#3d1800',
                     selected: {
-                      rest: { ref: [0, 0, 7, 1] }
+                      rest: { ref: '#121212' }
                     }
                   }
                 }
@@ -183,7 +183,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
               textColor: {
                 neutral: {
                   medium: {
-                    rest: [38, 100, 88, 1],
+                    rest: '#ffe9c2',
                     selected: {
                       rest: { ref: white }
                     }
@@ -214,9 +214,9 @@ export function createMaterial3GoogleTabsBridgeVariant({
               textColor: {
                 neutral: {
                   medium: {
-                    rest: [24, 100, 12, 1],
+                    rest: '#3d1800',
                     selected: {
-                      rest: { ref: [0, 0, 7, 1] }
+                      rest: { ref: '#121212' }
                     }
                   }
                 }
@@ -226,7 +226,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
               textColor: {
                 neutral: {
                   medium: {
-                    rest: [38, 100, 88, 1],
+                    rest: '#ffe9c2',
                     selected: {
                       rest: { ref: white }
                     }
@@ -254,10 +254,10 @@ export function createMaterial3GoogleTabsBridgeVariant({
               boxColor: {
                 neutral: {
                   medium: {
-                    rest: [43, 100, 99, 1],
-                    hover: [39, 100, 95, 1],
-                    focus: [43, 100, 99, 1],
-                    pressed: [38, 100, 92, 1]
+                    rest: '#fffefa',
+                    hover: '#fff6e5',
+                    focus: '#fffefa',
+                    pressed: '#fff0d6'
                   }
                 }
               }
@@ -279,7 +279,7 @@ export function createMaterial3GoogleTabsBridgeVariant({
             y: { rest: 0 },
             blur: { rest: 4 },
             color: {
-              rest: withAlpha([0, 0, 0, 1], 20)
+              rest: withAlpha('#000000', 20)
             }
           }
         }

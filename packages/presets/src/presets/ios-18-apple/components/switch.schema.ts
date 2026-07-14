@@ -4,17 +4,17 @@ import { buildBySegment } from '../../../utils/buildBySegment.ts';
 type Ios18AppleSegmentName = 'default';
 type SwitchComponent = NonNullable<Schema<Ios18AppleSegmentName>['components']['switch']>;
 
-const transparent = [0, 0, 0, 0] as const;
-const ios18SwitchTrackOff = [240, 4, 92, 1] as const;
-const ios18SwitchTrackOffPressed = [240, 4, 86, 1] as const;
-const ios18SwitchTrackOn = [136, 60, 49, 1] as const;
-const ios18SwitchTrackOnPressed = [136, 54, 43, 1] as const;
-const ios18SwitchTrackDisabled = [240, 4, 92, 0.42] as const;
-const ios18SwitchThumb = [0, 0, 100, 1] as const;
-const ios18SwitchThumbDisabled = [0, 0, 100, 0.72] as const;
-const ios18SwitchLabel = [0, 0, 7, 1] as const;
-const ios18SwitchLabelDisabled = [0, 0, 7, 0.3] as const;
-const ios18SwitchOffIcon = [0, 0, 47.059, 0.55] as const;
+const transparent = '#00000000' as const;
+const ios18SwitchTrackOff = '#eaeaeb' as const;
+const ios18SwitchTrackOffPressed = '#dadadd' as const;
+const ios18SwitchTrackOn = '#32c85a' as const;
+const ios18SwitchTrackOnPressed = '#32a952' as const;
+const ios18SwitchTrackDisabled = '#eaeaeb6b' as const;
+const ios18SwitchThumb = '#ffffff' as const;
+const ios18SwitchThumbDisabled = '#ffffffb8' as const;
+const ios18SwitchLabel = '#121212' as const;
+const ios18SwitchLabelDisabled = '#1212124d' as const;
+const ios18SwitchOffIcon = '#7878788c' as const;
 
 export function createIos18AppleSwitchSchema(): SwitchComponent {
   const segmentNames = ['default'] as const;

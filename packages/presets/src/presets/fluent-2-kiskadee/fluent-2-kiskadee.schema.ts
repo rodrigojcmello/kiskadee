@@ -37,7 +37,7 @@ export const schema: Schema<Segments> = {
         },
         dark: {
           focusColor: color(schemaContext, 'default', 'd', primitive('black', 'v1'), 100),
-          background: [0, 0, 12, 1]
+          background: '#1f1f1f'
         }
       },
       modern: {
@@ -144,7 +144,7 @@ export const schema: Schema<Segments> = {
                   boxColor: {
                     primary: {
                       high: {
-                        rest: c(segmentName, 'l', 'button.primary.gradient', 25),
+                        rest: c(segmentName, 'l', 'button.primary.gradient', 26),
                         hover: c(segmentName, 'l', 'button.primary.gradient', 20),
                         focus: c(segmentName, 'l', 'button.primary.gradient', 5),
                         pressed: c(segmentName, 'l', 'button.primary.gradient', 30),
@@ -162,7 +162,7 @@ export const schema: Schema<Segments> = {
                   boxColor: {
                     primary: {
                       high: {
-                        rest: c(segmentName, 'd', 'button.primary.gradient', 25),
+                        rest: c(segmentName, 'd', 'button.primary.gradient', 26),
                         hover: c(segmentName, 'd', 'button.primary.gradient', 60),
                         focus: c(segmentName, 'd', 'button.primary.gradient', 70),
                         pressed: c(segmentName, 'd', 'button.primary.gradient', 90),
@@ -184,11 +184,11 @@ export const schema: Schema<Segments> = {
               y: { rest: 2, hover: 4, pressed: 0, focus: 4, disabled: 0 },
               blur: { rest: 6, hover: 10, pressed: 0, focus: 10, disabled: 0 },
               color: {
-                rest: withAlpha([0, 0, 0, 1], 28),
-                hover: withAlpha([0, 0, 0, 1], 35),
-                pressed: withAlpha([0, 0, 0, 1], 32),
-                focus: withAlpha([0, 0, 0, 1], 35),
-                disabled: withAlpha([0, 0, 0, 1], 0)
+                rest: withAlpha('#000000', 28),
+                hover: withAlpha('#000000', 35),
+                pressed: withAlpha('#000000', 32),
+                focus: withAlpha('#000000', 35),
+                disabled: withAlpha('#000000', 0)
               }
             }
           }
@@ -208,7 +208,7 @@ export const schema: Schema<Segments> = {
                       high: {
                         rest: c(segmentName, 'l', 'button.neutral', 0),
                         disabled: {
-                          ref: c(segmentName, 'l', 'button.neutral', 25)
+                          ref: c(segmentName, 'l', 'button.neutral', 26)
                         }
                       }
                     }

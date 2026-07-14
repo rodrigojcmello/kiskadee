@@ -1,9 +1,7 @@
 import type {
   Color,
-  DarkTrackTones,
-  EmphasisLevel,
   HueName,
-  LightTrackTones,
+  KiskadeeTone,
   PrimitiveColorName,
   PrimitiveColorRef,
   PrimitiveRole,
@@ -15,55 +13,15 @@ import type {
   ThemeName,
   ThemeShortcut
 } from '../types/colors/colors.types.ts';
+import { assertKiskadeeCssScale, assertKiskadeeHexScale, isKiskadeeTone } from './hexColor.ts';
 import { withAlpha } from './withAlpha.ts';
-
-function resolveSeriesAndKey(
-  tone: number
-): { series: 'subtle'; key: LightTrackTones } | { series: 'vivid'; key: DarkTrackTones } {
-  // Normalized grids:
-  // subtle: 0–15 (step 1), then 20, 25, 30
-  // vivid: 35–100 (step 5)
-  const subtleKeys: LightTrackTones[] = [
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 25, 30
-  ] as const;
-  const vividKeys: DarkTrackTones[] = [
-    35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100
-  ] as const;
-
-  if (tone <= 30) {
-    const clamped = Math.max(0, Math.min(30, Math.round(tone)));
-    // snap to nearest allowed subtle key
-    let best = subtleKeys[0];
-    let bestDiff = Math.abs(clamped - best);
-    for (const k of subtleKeys) {
-      const diff = Math.abs(clamped - k);
-      if (diff < bestDiff) {
-        best = k;
-        bestDiff = diff;
-      }
-    }
-    return { series: 'subtle', key: best };
-  }
-
-  const clamped = Math.max(35, Math.min(100, Math.round(tone)));
-  let best = vividKeys[0];
-  let bestDiff = Math.abs(clamped - best);
-  for (const k of vividKeys) {
-    const diff = Math.abs(clamped - k);
-    if (diff < bestDiff) {
-      best = k;
-      bestDiff = diff;
-    }
-  }
-  return { series: 'vivid', key: best };
-}
 
 export function color(
   schema: { colors?: SchemaColors },
   segmentName: string,
   theme: ThemeShortcut,
   roleOrPrimitive: PrimitiveRole,
-  tone: number,
+  tone: KiskadeeTone,
   alpha?: number
 ): SolidColor;
 
@@ -72,7 +30,7 @@ export function color(
   segmentName: string,
   theme: ThemeShortcut,
   roleOrPrimitive: `${string}.${string}` | `${string}.${string}.solid`,
-  tone: number,
+  tone: KiskadeeTone,
   alpha?: number
 ): SolidColor;
 
@@ -81,7 +39,7 @@ export function color(
   segmentName: string,
   theme: ThemeShortcut,
   roleOrPrimitive: `${string}.${string}.gradient`,
-  tone: number | number[],
+  tone: KiskadeeTone | KiskadeeTone[],
   alpha?: number
 ): ResolvedGradient;
 
@@ -90,7 +48,7 @@ export function color(
   segmentName: string,
   theme: ThemeShortcut,
   roleOrPrimitive: RoleWithPaint | PrimitiveRole,
-  tone: number | number[],
+  tone: KiskadeeTone | KiskadeeTone[],
   alpha?: number
 ): Color {
   return resolveColor(schema, segmentName, theme, roleOrPrimitive, tone, alpha);
@@ -104,28 +62,6 @@ export function color(
  */
 export function primitive(hue: HueName, name: PrimitiveColorName): PrimitiveRole {
   return `primitive.${hue}.${name}` as PrimitiveRole;
-}
-
-type ResolvedBucket =
-  | { series: 'subtle'; bucket: Partial<Record<LightTrackTones, SolidColor>>; key: LightTrackTones }
-  | { series: 'vivid'; bucket: Partial<Record<DarkTrackTones, SolidColor>>; key: DarkTrackTones };
-
-function resolveBucketFromEmphasis(emphasis: EmphasisLevel, tone: number): ResolvedBucket {
-  const { series, key } = resolveSeriesAndKey(tone);
-
-  if (series === 'subtle') {
-    const bucket = emphasis?.subtle as Partial<Record<LightTrackTones, SolidColor>> | undefined;
-    if (!bucket) {
-      throw new Error('Missing subtle bucket for resolved emphasis level');
-    }
-    return { series, bucket, key };
-  }
-
-  const bucket = emphasis?.vivid as Partial<Record<DarkTrackTones, SolidColor>> | undefined;
-  if (!bucket) {
-    throw new Error('Missing vivid bucket for resolved emphasis level');
-  }
-  return { series, bucket, key };
 }
 
 function requireSchemaColors(colors: SchemaColors | undefined): Required<SchemaColors> {
@@ -188,22 +124,32 @@ function resolveSolidFromPrimitiveRef(
   colors: Required<SchemaColors>,
   themeName: ThemeName,
   primitiveRef: PrimitiveColorRef,
-  tone: number
+  tone: KiskadeeTone
 ): SolidColor {
   const asset = colors.primitiveColors?.[primitiveRef.hue]?.[primitiveRef.name];
-  const emphasis = asset?.solid?.[themeName];
-  if (!emphasis) {
+  const scale = asset?.scales?.[themeName];
+  if (!scale) {
     throw new Error(
       `Primitive color asset not found for hue=${primitiveRef.hue} name=${primitiveRef.name} theme=${themeName}`
     );
   }
 
-  const resolved = resolveBucketFromEmphasis(emphasis, tone);
-  const value = resolved.bucket[resolved.key as never] as SolidColor | undefined;
+  if (!isKiskadeeTone(tone)) {
+    throw new Error(`Unknown Kiskadee tone: ${tone}`);
+  }
+  if (asset.kind === 'static') {
+    assertKiskadeeHexScale(scale, themeName);
+  } else if (asset.kind === 'dynamic') {
+    assertKiskadeeCssScale(scale);
+  } else {
+    throw new Error('Invalid primitive color asset kind');
+  }
+
+  const value = scale[tone] as SolidColor | undefined;
   if (!value) {
-    const available = Object.keys(resolved.bucket).join(', ');
+    const available = Object.keys(scale).join(', ');
     throw new Error(
-      `Tone ${resolved.key} not available in primitive hue=${primitiveRef.hue} name=${primitiveRef.name} series=${resolved.series}. Available: ${available}`
+      `Tone ${tone} not available in primitive hue=${primitiveRef.hue} name=${primitiveRef.name}. Available: ${available}`
     );
   }
 
@@ -222,7 +168,7 @@ export function resolveColor(
   segmentName: string,
   theme: ThemeShortcut,
   roleOrPrimitive: RoleWithPaint | PrimitiveRole,
-  tone: number | number[],
+  tone: KiskadeeTone | KiskadeeTone[],
   alpha?: number
 ): Color {
   // `segmentName` is kept for per-segment overrides.
@@ -284,7 +230,7 @@ export function resolveColor(
     );
   }
 
-  const tones: number[] = Array.isArray(tone) ? tone : template.stops.map(() => tone);
+  const tones: KiskadeeTone[] = Array.isArray(tone) ? tone : template.stops.map(() => tone);
   if (Array.isArray(tone) && tone.length !== template.stops.length) {
     throw new Error(
       `Invalid gradient tones length. Expected ${template.stops.length}, got ${tone.length} (role=${roleOrPrimitive})`

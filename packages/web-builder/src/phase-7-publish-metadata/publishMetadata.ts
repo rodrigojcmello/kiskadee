@@ -3,16 +3,20 @@ import { dirname, resolve } from 'node:path';
 import type {
   ComponentClassNameMapSplitJSON,
   ComponentName,
-  EmphasisLevel,
   GlobalSemanticsBySegment,
   GlobalSemanticsByTheme,
-  HSLA,
+  KiskadeeCssScale,
+  KiskadeeHexScale,
   Schema,
   SchemaColors,
   SchemaFonts,
   ThemeMode
 } from '@kiskadee/core';
-import { convertHslaToHex } from '@kiskadee/core';
+import {
+  assertKiskadeeCssScale,
+  assertKiskadeeHexScale,
+  normalizeHexColor
+} from '@kiskadee/core';
 import {
   getComponentCoreClassMapArtifactPath,
   getComponentPaletteClassMapArtifactPath
@@ -33,7 +37,6 @@ import {
   buildTextFieldComponentArtifact,
   TEXT_FIELD_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/textFieldComponentArtifact.ts';
-import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex.ts';
 import type {
   Manifest,
   ManifestComponent,
@@ -394,65 +397,51 @@ function addComponentClassMapArtifactsToManifest(
   }
 }
 
-function convertEmphasisLevelToJson(scale: EmphasisLevel): Record<string, Record<string, string>> {
-  const convertedScale: Record<string, Record<string, string>> = {};
+type PublishedScale = KiskadeeHexScale | KiskadeeCssScale;
 
-  for (const [trackKey, trackValues] of Object.entries(scale as Record<string, unknown>)) {
-    if (!isRecord(trackValues)) continue;
-    convertedScale[trackKey] = {};
-    for (const [tone, value] of Object.entries(trackValues)) {
-      // Emphasis levels may contain either HSLA tuples or already-resolved strings
-      // (e.g. CSS vars in `dynamic.color.ts`).
-      if (typeof value === 'string') {
-        convertedScale[trackKey][tone] = value;
-      } else {
-        convertedScale[trackKey][tone] = toShortHex(convertHslaToHex(value as HSLA));
-      }
-    }
-  }
-
-  return convertedScale;
-}
-
-function isHslaTuple(value: unknown): value is HSLA {
-  return (
-    Array.isArray(value) &&
-    value.length === 4 &&
-    value.every((v) => typeof v === 'number' && Number.isFinite(v))
+function normalizeScaleToJson(scale: PublishedScale): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(scale).map(([tone, value]) => {
+      if (typeof value !== 'string') throw new Error(`Invalid non-string color at tone ${tone}`);
+      return [tone, value.startsWith('#') ? normalizeHexColor(value) : value];
+    })
   );
 }
 
-function deepConvertHslaTuplesToHex(value: unknown): unknown {
-  if (isHslaTuple(value)) {
-    return toShortHex(convertHslaToHex(value));
+function deepNormalizeHexColors(value: unknown): unknown {
+  if (
+    Array.isArray(value) &&
+    value.length === 4 &&
+    value.every((item) => typeof item === 'number')
+  ) {
+    throw new Error('Numeric color tuples are not supported in schema artifacts.');
   }
-
   if (Array.isArray(value)) {
-    return value.map((v) => deepConvertHslaTuplesToHex(v));
+    return value.map((v) => deepNormalizeHexColors(v));
   }
 
   if (isRecord(value)) {
     const out: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(value)) {
-      out[k] = deepConvertHslaTuplesToHex(v);
+      out[k] = deepNormalizeHexColors(v);
     }
     return out;
   }
-
+  if (typeof value === 'string' && value.startsWith('#')) return normalizeHexColor(value);
   return value;
 }
 
-function collectPrimitiveSolidScales(colors: SchemaColors): Array<{
+function collectPrimitiveScales(colors: SchemaColors): Array<{
   baseColor: string;
   variant: string;
   theme: string;
-  scale: EmphasisLevel;
+  scale: PublishedScale;
 }> {
   const result: Array<{
     baseColor: string;
     variant: string;
     theme: string;
-    scale: EmphasisLevel;
+    scale: PublishedScale;
   }> = [];
 
   const primitiveColors = (colors as any).primitiveColors as Record<string, unknown> | undefined;
@@ -462,14 +451,30 @@ function collectPrimitiveSolidScales(colors: SchemaColors): Array<{
     if (!isRecord(variantsValue)) continue;
 
     for (const [variant, variantValue] of Object.entries(variantsValue)) {
-      if (!isRecord(variantValue)) continue;
-      const solid = (variantValue as any).solid as any;
-      if (!solid || typeof solid !== 'object') continue;
+      if (!isRecord(variantValue)) {
+        throw new Error(`Invalid primitive asset ${baseColor}.${variant}: expected an object.`);
+      }
+      const kind = variantValue.kind;
+      if (kind !== 'static' && kind !== 'dynamic') {
+        throw new Error(
+          `Invalid primitive asset ${baseColor}.${variant}: expected kind "static" or "dynamic".`
+        );
+      }
+      const scales = (variantValue as any).scales as any;
+      if (!scales || typeof scales !== 'object' || Array.isArray(scales)) {
+        throw new Error(`Invalid primitive asset ${baseColor}.${variant}: missing scales.`);
+      }
 
-      for (const [theme, scale] of Object.entries(solid)) {
-        if (scale && typeof scale === 'object') {
-          result.push({ baseColor, variant, theme, scale: scale as EmphasisLevel });
+      for (const [theme, scale] of Object.entries(scales)) {
+        if (theme !== 'light' && theme !== 'dark') {
+          throw new Error(`Invalid primitive asset theme ${baseColor}.${variant}.${theme}.`);
         }
+        if (kind === 'static') {
+          assertKiskadeeHexScale(scale, theme);
+        } else {
+          assertKiskadeeCssScale(scale);
+        }
+        result.push({ baseColor, variant, theme, scale });
       }
     }
   }
@@ -495,22 +500,18 @@ function buildColorsArtifact(
 
         // Clone to keep any extra primitive asset config (e.g. `gradient`) intact.
         const variantOut: any = structuredClone(variantValue as any);
-        const solidSrc = (variantValue as any).solid as any;
+        const scalesSrc = (variantValue as any).scales as any;
 
-        if (solidSrc && typeof solidSrc === 'object') {
-          variantOut.solid = variantOut.solid ?? {};
+        if (scalesSrc && typeof scalesSrc === 'object') {
+          variantOut.scales = variantOut.scales ?? {};
 
-          for (const [theme, scale] of Object.entries(solidSrc)) {
+          for (const [theme, scale] of Object.entries(scalesSrc)) {
             if (scale && typeof scale === 'object') {
               const fileName = scaleFileNameByRef.get(scale as object);
               if (fileName) {
-                variantOut.solid[theme] = fileName;
+                variantOut.scales[theme] = fileName;
               }
             }
-          }
-
-          if (themeNames.includes('darker') && variantOut.solid.darker === undefined) {
-            variantOut.solid.darker = variantOut.solid.dark;
           }
         }
 
@@ -688,28 +689,33 @@ export async function publishMetadata(params: {
         const targetFilePath = resolve(colorsDirTarget, file.replace(/\.ts$/, '.json'));
 
         // Import the color scale from the source file
-        const mod = (await import(srcFilePath)) as { default: EmphasisLevel };
+        const mod = (await import(srcFilePath)) as { default: PublishedScale };
         const colorScale = mod.default;
 
         if (!colorScale) continue;
+        const sourceTheme = file.match(/\.(light|dark)\.ts$/)?.[1] as
+          | 'light'
+          | 'dark'
+          | undefined;
+        assertKiskadeeHexScale(colorScale, sourceTheme);
 
         // Make this scale discoverable for `colors.json` references.
         scaleFileNameByRef.set(colorScale as unknown as object, file.replace(/\.ts$/, '.json'));
 
-        const convertedScale = convertEmphasisLevelToJson(colorScale);
+        const convertedScale = normalizeScaleToJson(colorScale);
         await writeFile(targetFilePath, JSON.stringify(convertedScale, null, 2), 'utf8');
       }
     }
   } catch (error) {
     if ((error as any).code !== 'ENOENT') {
-      console.warn('[web-builder] Warning: Failed to process "colors" folder', error);
+      throw new Error('[web-builder] Failed to process "colors" folder', { cause: error });
     }
   }
 
   // Ensure all primitive solid scales referenced by the schema have a file.
   // This covers cases like `dynamic.color.ts` (shared module outside `colors/`).
   const colorsDirTarget = resolve(buildDir, 'colors');
-  const primitiveScales = collectPrimitiveSolidScales(colors);
+  const primitiveScales = collectPrimitiveScales(colors);
   for (const { baseColor, variant, theme, scale } of primitiveScales) {
     if (scaleFileNameByRef.has(scale as unknown as object)) continue;
 
@@ -718,7 +724,7 @@ export async function publishMetadata(params: {
     const filePath = resolve(colorsDirTarget, fileName);
 
     scaleFileNameByRef.set(scale as unknown as object, fileName);
-    const convertedScale = convertEmphasisLevelToJson(scale);
+    const convertedScale = normalizeScaleToJson(scale);
     await writeFile(filePath, JSON.stringify(convertedScale, null, 2), 'utf8');
   }
 
@@ -735,7 +741,7 @@ export async function publishMetadata(params: {
   delete schemaArtifact.colors;
   // Rule: any explicit colors inside `components` in schema.json must be HEX.
   if (schemaArtifact.components) {
-    schemaArtifact.components = deepConvertHslaTuplesToHex(schemaArtifact.components);
+    schemaArtifact.components = deepNormalizeHexColors(schemaArtifact.components);
   }
   await writeFile(
     resolve(buildDir, 'schema.json'),

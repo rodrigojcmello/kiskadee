@@ -23,7 +23,7 @@ const schemaColors = {
 const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
 
 const c = createPresetColorGetter<SegmentName>(schemaContext);
-const transparent = withAlpha([0, 0, 0, 1], 0);
+const transparent = withAlpha('#000000', 0);
 
 export const schema: Schema = {
   name: 'iOS',
@@ -188,11 +188,11 @@ export const schema: Schema = {
                     y: { rest: 2, hover: 4, pressed: 0, focus: 4, disabled: 0 },
                     blur: { rest: 6, hover: 10, pressed: 0, focus: 10, disabled: 0 },
                     color: {
-                      rest: withAlpha([0, 0, 0, 1], 28),
-                      hover: withAlpha([0, 0, 0, 1], 35),
-                      pressed: withAlpha([0, 0, 0, 1], 32),
-                      focus: withAlpha([0, 0, 0, 1], 35),
-                      disabled: withAlpha([0, 0, 0, 1], 0)
+                      rest: withAlpha('#000000', 28),
+                      hover: withAlpha('#000000', 35),
+                      pressed: withAlpha('#000000', 32),
+                      focus: withAlpha('#000000', 35),
+                      disabled: withAlpha('#000000', 0)
                     }
                   }
                 }
@@ -520,7 +520,7 @@ export const schema: Schema = {
                   y: { rest: 1 },
                   blur: { rest: 3 },
                   color: {
-                    rest: withAlpha([0, 0, 0, 1], 20)
+                    rest: withAlpha('#000000', 20)
                   }
                 }
               },
@@ -619,10 +619,10 @@ export const schema: Schema = {
                     boxColor: {
                       neutral: {
                         medium: {
-                          rest: [36, 100, 57, 1] as const,
-                          hover: [37, 100, 65, 1] as const,
-                          focus: [36, 100, 57, 1] as const,
-                          pressed: [35, 90, 50, 1] as const,
+                          rest: '#ffa724' as const,
+                          hover: '#ffbb4d' as const,
+                          focus: '#ffa724' as const,
+                          pressed: '#f2930d' as const,
                           selected: {
                             rest: transparent,
                             hover: transparent,
@@ -641,7 +641,7 @@ export const schema: Schema = {
                   y: { rest: 0 },
                   blur: { rest: 4 },
                   color: {
-                    rest: withAlpha([0, 0, 0, 1], 20)
+                    rest: withAlpha('#000000', 20)
                   }
                 }
               }
@@ -662,9 +662,9 @@ export const schema: Schema = {
                     textColor: {
                       neutral: {
                         medium: {
-                          rest: [24, 100, 12, 1] as const,
+                          rest: '#3d1800' as const,
                           selected: {
-                            rest: [0, 0, 7, 1] as const
+                            rest: '#121212' as const
                           }
                         }
                       }
@@ -687,9 +687,9 @@ export const schema: Schema = {
                     textColor: {
                       neutral: {
                         medium: {
-                          rest: [24, 100, 12, 1] as const,
+                          rest: '#3d1800' as const,
                           selected: {
-                            rest: [0, 0, 7, 1] as const
+                            rest: '#121212' as const
                           }
                         }
                       }
@@ -716,10 +716,10 @@ export const schema: Schema = {
                     boxColor: {
                       neutral: {
                         medium: {
-                          rest: [43, 100, 99, 1] as const,
-                          hover: [39, 100, 95, 1] as const,
-                          focus: [43, 100, 99, 1] as const,
-                          pressed: [38, 100, 92, 1] as const
+                          rest: '#fffefa' as const,
+                          hover: '#fff6e5' as const,
+                          focus: '#fffefa' as const,
+                          pressed: '#fff0d6' as const
                         }
                       }
                     }
@@ -732,7 +732,7 @@ export const schema: Schema = {
                   y: { rest: 0 },
                   blur: { rest: 4 },
                   color: {
-                    rest: withAlpha([0, 0, 0, 1], 20)
+                    rest: withAlpha('#000000', 20)
                   }
                 }
               }
@@ -883,7 +883,7 @@ export const schema: Schema = {
                   y: { rest: 1 },
                   blur: { rest: 3 },
                   color: {
-                    rest: withAlpha([0, 0, 0, 1], 20)
+                    rest: withAlpha('#000000', 20)
                   }
                 }
               },

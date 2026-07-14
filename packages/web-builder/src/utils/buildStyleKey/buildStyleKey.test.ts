@@ -6,33 +6,33 @@ describe('buildStyleKey', () => {
     it('generates non-ref key for selected:rest', () => {
       const key = buildStyleKey({
         propertyName: 'boxColor',
-        value: '[1,2,3,1]',
+        value: '#080807',
         controlState: true,
         interactionState: 'rest'
       });
-      expect(key).toBe('boxColor--selected:rest__[1,2,3,1]');
+      expect(key).toBe('boxColor--selected:rest__#080807');
     });
 
     it('generates ref key for selected:hover', () => {
       const key = buildStyleKey({
         propertyName: 'boxColor',
-        value: '[2,3,4,1]',
+        value: '#0b0a0a',
         controlState: true,
         interactionState: 'hover',
         isRef: true
       });
-      expect(key).toBe('boxColor==selected:hover__[2,3,4,1]');
+      expect(key).toBe('boxColor==selected:hover__#0b0a0a');
     });
 
     it('allows isRef=true with selected:rest (parent-selected rest) and generates ==selected:rest', () => {
       const key = buildStyleKey({
         propertyName: 'boxColor',
-        value: '[1,1,1,1]',
+        value: '#030303',
         controlState: true,
         interactionState: 'rest',
         isRef: true
       });
-      expect(key).toBe('boxColor==selected:rest__[1,1,1,1]');
+      expect(key).toBe('boxColor==selected:rest__#030303');
     });
 
     it('throws when controlState=true with disabled', () => {
@@ -40,7 +40,7 @@ describe('buildStyleKey', () => {
       try {
         buildStyleKey({
           propertyName: 'boxColor',
-          value: '[1,1,1,1]',
+          value: '#030303',
           controlState: true,
           interactionState: 'disabled'
         } as any);
@@ -57,7 +57,7 @@ describe('buildStyleKey', () => {
       try {
         buildStyleKey({
           propertyName: 'boxColor',
-          value: '[1,1,1,1]',
+          value: '#030303',
           controlState: true,
           interactionState: 'selected'
         });
@@ -121,7 +121,7 @@ describe('buildStyleKey', () => {
           isRef: true,
           value: '#fff'
         };
-        expect(buildStyleKey(opts)).toBe('color==hover__#fff');
+        expect(buildStyleKey(opts)).toBe('color==hover__#ffffff');
       });
 
       it('hover + isRef=false does not use == separator', () => {
@@ -131,7 +131,7 @@ describe('buildStyleKey', () => {
           isRef: false,
           value: '#000'
         };
-        expect(buildStyleKey(opts)).toBe('color--hover__#000');
+        expect(buildStyleKey(opts)).toBe('color--hover__#000000');
       });
     });
 

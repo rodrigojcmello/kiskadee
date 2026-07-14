@@ -8,7 +8,7 @@ type ButtonComponent = NonNullable<Schema<never>['components']['button']>;
 type CreateMaterial3GoogleButtonSchemaArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;
   segmentNames: readonly Material3GoogleSegmentName[];
-  transparent: readonly [number, number, number, number];
+  transparent: string;
 };
 
 export function createMaterial3GoogleButtonSchema({
@@ -265,11 +265,11 @@ export function createMaterial3GoogleButtonSchema({
                     disabled: transparent
                   },
                   low: {
-                    rest: c(s, 'l', 'neutral', 15),
-                    focus: c(s, 'l', 'neutral', 15),
+                    rest: c(s, 'l', 'neutral', 16),
+                    focus: c(s, 'l', 'neutral', 16),
                     hover: c(s, 'l', 'neutral', 10),
                     pressed: c(s, 'l', 'neutral', 20),
-                    disabled: c(s, 'l', 'neutral', 15)
+                    disabled: c(s, 'l', 'neutral', 16)
                   },
                   lowest: {
                     rest: transparent,
@@ -287,7 +287,7 @@ export function createMaterial3GoogleButtonSchema({
                   medium: {
                     rest: c(s, 'd', 'button.primary', 10),
                     hover: c(s, 'd', 'button.primary', 8),
-                    pressed: c(s, 'd', 'button.primary', 13),
+                    pressed: c(s, 'd', 'button.primary', 14),
                     focus: c(s, 'd', 'button.primary', 10),
                     disabled: c(s, 'l', 'primitive.black.v1', 90, 12),
                     selected: {
@@ -299,7 +299,7 @@ export function createMaterial3GoogleButtonSchema({
                   high: {
                     rest: c(s, 'd', 'button.primary', 30),
                     hover: c(s, 'd', 'button.primary', 35),
-                    pressed: c(s, 'd', 'button.primary', 25),
+                    pressed: c(s, 'd', 'button.primary', 26),
                     focus: c(s, 'd', 'button.primary', 30),
                     disabled: c(s, 'l', 'primitive.black.v1', 90, 12)
                   },
@@ -307,7 +307,7 @@ export function createMaterial3GoogleButtonSchema({
                     rest: transparent,
                     focus: c(s, 'd', 'button.primary', 10),
                     hover: c(s, 'd', 'button.primary', 8),
-                    pressed: c(s, 'd', 'button.primary', 13),
+                    pressed: c(s, 'd', 'button.primary', 14),
                     disabled: transparent,
                     selected: {
                       rest: c(s, 'd', 'button.primary', 50),
@@ -319,7 +319,7 @@ export function createMaterial3GoogleButtonSchema({
                     rest: transparent,
                     focus: c(s, 'd', 'button.primary', 10),
                     hover: c(s, 'd', 'button.primary', 8),
-                    pressed: c(s, 'd', 'button.primary', 13),
+                    pressed: c(s, 'd', 'button.primary', 14),
                     disabled: transparent
                   }
                 }
@@ -344,7 +344,7 @@ export function createMaterial3GoogleButtonSchema({
                     rest: c(s, 'd', 'button.primary', 30),
                     focus: c(s, 'd', 'button.primary', 30),
                     hover: c(s, 'd', 'button.primary', 35),
-                    pressed: c(s, 'd', 'button.primary', 25),
+                    pressed: c(s, 'd', 'button.primary', 26),
                     disabled: transparent
                   },
                   lowest: {
@@ -486,7 +486,7 @@ export function createMaterial3GoogleButtonSchema({
                   low: {
                     rest: c(s, 'd', 'button.primary', 30),
                     hover: { ref: c(s, 'd', 'button.primary', 35) },
-                    pressed: { ref: c(s, 'd', 'button.primary', 25) },
+                    pressed: { ref: c(s, 'd', 'button.primary', 26) },
                     disabled: {
                       ref: c(s, 'd', 'button.neutral', 60)
                     }
@@ -494,7 +494,7 @@ export function createMaterial3GoogleButtonSchema({
                   lowest: {
                     rest: c(s, 'd', 'button.primary', 30),
                     hover: { ref: c(s, 'd', 'button.primary', 35) },
-                    pressed: { ref: c(s, 'd', 'button.primary', 25) },
+                    pressed: { ref: c(s, 'd', 'button.primary', 26) },
                     disabled: {
                       ref: c(s, 'd', 'button.neutral', 60)
                     }

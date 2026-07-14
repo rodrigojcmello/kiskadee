@@ -1,4 +1,4 @@
-import { breakpoints, type Schema } from '@kiskadee/core';
+import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import { createMaterial3GoogleButtonSchema } from './components/button.schema.ts';
 import { createMaterial3GoogleCardSchema } from './components/card.schema.ts';
@@ -22,9 +22,9 @@ const segmentNames = ['default', 'dynamic'] as const;
 type SegmentName = (typeof segmentNames)[number];
 
 const c = createPresetColorGetter<SegmentName>(schemaContext);
-const transparent = [0, 0, 0, 0] as const;
-const white = [0, 0, 100, 1] as const;
-const shadowBlack = (alpha: number) => [0, 0, 0, alpha] as const;
+const transparent = '#00000000' as const;
+const white = '#ffffff' as const;
+const shadowBlack = (alpha: number) => withAlpha('#000000', alpha * 100);
 
 // The `Schema` generic represents extra segment names beyond the built-ins (`default` and optional `dynamic`).
 type Segments = never;
@@ -128,7 +128,7 @@ export const schema: Schema<Segments> = {
             activationFeedback: {
               tone: {
                 subtle: {
-                  color: '#1D1B20',
+                  color: '#1d1b20',
                   opacity: 0.1
                 },
                 vivid: {

@@ -8,7 +8,7 @@ type CardComponent = NonNullable<Schema<never>['components']['card']>;
 type CreateMaterial3GoogleCardSchemaArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;
   segmentNames: readonly Material3GoogleSegmentName[];
-  transparent: readonly [number, number, number, number];
+  transparent: string;
 };
 
 export function createMaterial3GoogleCardSchema({
@@ -85,9 +85,9 @@ export function createMaterial3GoogleCardSchema({
             borderColor: {
               neutral: {
                 medium: {
-                  rest: c(s, 'l', 'card.neutral.v2', 15),
+                  rest: c(s, 'l', 'card.neutral.v2', 16),
                   hover: c(s, 'l', 'card.neutral.v2', 20),
-                  pressed: c(s, 'l', 'card.neutral.v2', 25),
+                  pressed: c(s, 'l', 'card.neutral.v2', 26),
                   focus: c(s, 'l', 'primary.v2', 50),
                   disabled: transparent,
                   selected: {

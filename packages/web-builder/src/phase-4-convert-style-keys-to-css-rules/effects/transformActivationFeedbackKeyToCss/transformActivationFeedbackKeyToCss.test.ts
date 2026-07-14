@@ -114,7 +114,7 @@ describe('transformActivationFeedbackKeyToCss', () => {
   });
 
   it('throws when style key does not match activation feedback properties', () => {
-    const invalid = 'shadow__[0,0,0,[0,0,0,1]]';
+    const invalid = 'shadow__[0,0,0,"#000000"]';
 
     expect(() => transformActivationFeedbackKeyToCss(invalid, className)).toThrowError(
       UNSUPPORTED_PROPERTY_NAME('activationFeedback', invalid)

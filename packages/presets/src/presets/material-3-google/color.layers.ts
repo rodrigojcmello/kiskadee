@@ -16,13 +16,15 @@ import yellowV1Light from './colors/yellow.v1.light.ts';
 export const primitiveColors = {
   black: {
     v1: {
-      solid: {
+      kind: 'static',
+      scales: {
         light: blackV1Light,
         dark: blackV1Dark
       }
     },
     v2: {
-      solid: {
+      kind: 'static',
+      scales: {
         light: blackV2Light,
         dark: blackV2Dark
       }
@@ -30,7 +32,8 @@ export const primitiveColors = {
   },
   blue: {
     v1: {
-      solid: {
+      kind: 'static',
+      scales: {
         light: blueV1Light,
         dark: blueV1Dark
       }
@@ -38,7 +41,8 @@ export const primitiveColors = {
   },
   pink: {
     v1: {
-      solid: {
+      kind: 'static',
+      scales: {
         light: pinkV1Light,
         dark: pinkV1Dark
       }
@@ -46,7 +50,8 @@ export const primitiveColors = {
   },
   purple: {
     v1: {
-      solid: {
+      kind: 'static',
+      scales: {
         light: purpleV1Light,
         dark: purpleV1Dark
       }
@@ -54,7 +59,8 @@ export const primitiveColors = {
   },
   red: {
     v1: {
-      solid: {
+      kind: 'static',
+      scales: {
         light: redV1Light,
         dark: redV1Dark
       }
@@ -62,7 +68,8 @@ export const primitiveColors = {
   },
   yellow: {
     v1: {
-      solid: {
+      kind: 'static',
+      scales: {
         light: yellowV1Light,
         dark: yellowV1Dark
       }

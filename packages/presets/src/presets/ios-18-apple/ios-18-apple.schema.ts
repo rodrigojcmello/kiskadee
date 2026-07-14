@@ -1,10 +1,10 @@
-import { breakpoints, type Schema } from '@kiskadee/core';
+import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
 import { createIos18AppleSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './ios-18-apple.colors.ts';
 
 export type Segment = 'default';
 
-const shadowBlack = (alpha: number) => [0, 0, 0, alpha] as const;
+const shadowBlack = (alpha: number) => withAlpha('#000000', alpha * 100);
 
 export const schema: Schema<Segment> = {
   name: 'iOS',
@@ -36,8 +36,8 @@ export const schema: Schema<Segment> = {
     palettes: {
       default: {
         light: {
-          background: [0, 0, 100, 1],
-          focusColor: '#007AFF',
+          background: '#ffffff',
+          focusColor: '#007aff',
           effects: {
             activationFeedback: {
               tone: {
@@ -46,7 +46,7 @@ export const schema: Schema<Segment> = {
                   opacity: 0.1
                 },
                 vivid: {
-                  color: '#FFFFFF',
+                  color: '#ffffff',
                   opacity: 0.2
                 }
               }

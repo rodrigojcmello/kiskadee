@@ -173,7 +173,7 @@ const patch = {
                       rest: c('default', 'l', 'button.destructive', 10),
                       focus: c('default', 'l', 'button.destructive', 10),
                       hover: c('default', 'l', 'button.destructive', 8),
-                      pressed: c('default', 'l', 'button.destructive', 15),
+                      pressed: c('default', 'l', 'button.destructive', 16),
                       disabled: c('default', 'l', 'button.neutral', 10),
                       selected: {
                         rest: c('default', 'l', 'button.destructive', 50),

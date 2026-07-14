@@ -11,6 +11,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "@kiskadee/tonal-scale": "workspace:*"
+  },
   "devDependencies": {
     "typescript": "^6.0.3"
   }

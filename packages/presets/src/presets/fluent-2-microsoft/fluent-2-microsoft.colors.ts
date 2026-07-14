@@ -1,3 +1,4 @@
+import { invertKiskadeeHexScale } from '@kiskadee/core';
 import type {
   ComponentIntents,
   GlobalSemanticsBySegment,
@@ -15,10 +16,13 @@ import primaryUnique from './colors/primary.unique.ts';
 
 export const primitiveColors = {
   blue: {
-    v1: { solid: { light: primaryUnique, dark: primaryUnique } }
+    v1: {
+      kind: 'static',
+      scales: { light: primaryUnique, dark: invertKiskadeeHexScale(primaryUnique) }
+    }
   },
   black: {
-    v1: { solid: { light: neutralLight, dark: neutralDark } }
+    v1: { kind: 'static', scales: { light: neutralLight, dark: neutralDark } }
   }
 } as const satisfies PrimitiveColors;
 

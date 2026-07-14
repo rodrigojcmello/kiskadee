@@ -10,8 +10,8 @@ import { schemaColors } from './fluent-2-microsoft.colors.ts';
 const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
 const c = createPresetColorGetter<'default'>(schemaContext);
 const segmentNames = ['default'] as const;
-const transparent = [0, 0, 0, 0] as const;
-const shadowBlack = (alpha: number) => [0, 0, 0, alpha] as const;
+const transparent = '#00000000' as const;
+const shadowBlack = (alpha: number) => withAlpha('#000000', alpha * 100);
 const fluentShadow = (
   ambientBlur: number,
   ambientAlpha: number,
@@ -91,7 +91,7 @@ export const schema: Schema<Segments> = {
                   opacity: 0.12
                 },
                 vivid: {
-                  color: '#FFFFFF',
+                  color: '#ffffff',
                   opacity: 0.2
                 }
               }
@@ -165,11 +165,11 @@ export const schema: Schema<Segments> = {
               y: { rest: 2, hover: 4, pressed: 0, focus: 4, disabled: 0 },
               blur: { rest: 6, hover: 10, pressed: 0, focus: 10, disabled: 0 },
               color: {
-                rest: withAlpha([0, 0, 0, 1], 28),
-                hover: withAlpha([0, 0, 0, 1], 35),
-                pressed: withAlpha([0, 0, 0, 1], 32),
-                focus: withAlpha([0, 0, 0, 1], 35),
-                disabled: withAlpha([0, 0, 0, 1], 0)
+                rest: withAlpha('#000000', 28),
+                hover: withAlpha('#000000', 35),
+                pressed: withAlpha('#000000', 32),
+                focus: withAlpha('#000000', 35),
+                disabled: withAlpha('#000000', 0)
               }
             }
           }
@@ -187,7 +187,7 @@ export const schema: Schema<Segments> = {
                     high: {
                       rest: color(schemaContext, 'default', 'l', 'button.neutral', 0),
                       disabled: {
-                        ref: color(schemaContext, 'default', 'l', 'button.neutral', 25)
+                        ref: color(schemaContext, 'default', 'l', 'button.neutral', 26)
                       }
                     }
                   }

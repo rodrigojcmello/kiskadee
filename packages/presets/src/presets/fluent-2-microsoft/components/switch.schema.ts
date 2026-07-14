@@ -22,13 +22,13 @@ export function createFluent2MicrosoftSwitchSchema({
   const white = c('default', 'l', 'switch.neutral', 0);
   const transparent = withAlpha(c('default', 'l', 'switch.neutral', 100), 0);
   const neutral6 = c('default', 'l', 'switch.neutral', 6);
-  const neutral25 = c('default', 'l', 'switch.neutral', 25);
+  const neutral25 = c('default', 'l', 'switch.neutral', 26);
   const neutral70 = c('default', 'l', 'switch.neutral', 70);
   const primary60 = c('default', 'l', 'primary', 60);
   const primary70 = c('default', 'l', 'primary', 70);
   const primary80 = c('default', 'l', 'primary', 80);
-  const polarityOffThumb = '#C50F1F';
-  const polarityOnTrack = '#107C10';
+  const polarityOffThumb = '#c50f1f';
+  const polarityOnTrack = '#107c10';
   const onPrimaryTrack = fluentSwitchColorWithAlpha(white, 28);
   const onPrimaryTrackHover = fluentSwitchColorWithAlpha(white, 36);
   const onPrimaryTrackPressed = fluentSwitchColorWithAlpha(white, 44);
@@ -157,7 +157,7 @@ export function createFluent2MicrosoftSwitchSchema({
                               focus: { ref: transparent },
                               pressed: { ref: transparent }
                             },
-                            disabled: { ref: '#D1D1D1' } // cinza claro
+                            disabled: { ref: '#d1d1d1' } // cinza claro
                           },
                           low: {
                             rest: onPrimaryBorder,

@@ -9,8 +9,8 @@ const color: ColorSchema = {
           kind: 'linear',
           angle: 90,
           stops: [
-            { color: [45, 100, 50, 1], position: 0 },
-            { color: [180, 100, 50, 1], position: 100 }
+            { color: '#ffbf00', position: 0 },
+            { color: '#00ffff', position: 100 }
           ]
         }
       },
@@ -19,8 +19,8 @@ const color: ColorSchema = {
           kind: 'linear',
           angle: 90,
           stops: [
-            { color: [45, 100, 50, 1], position: 0 },
-            { color: [180, 100, 50, 1], position: 100 }
+            { color: '#ffbf00', position: 0 },
+            { color: '#00ffff', position: 100 }
           ]
         }
       }
@@ -29,44 +29,44 @@ const color: ColorSchema = {
   borderColor: {
     primary: {
       high: {
-        rest: [45, 0, 0, 0.02]
+        rest: '#00000005'
       },
       medium: {
-        rest: [45, 0, 0, 0.02]
+        rest: '#00000005'
       }
     },
     redLike: {
       high: {
-        rest: [0, 0, 0, 0.02],
-        hover: [0, 0, 0, 0.02]
+        rest: '#00000005',
+        hover: '#00000005'
       },
       medium: {
-        rest: [0, 0, 0, 0.02],
-        hover: [0, 0, 0, 0.02]
+        rest: '#00000005',
+        hover: '#00000005'
       }
     }
   },
   textColor: {
     primary: {
       high: {
-        rest: [120, 50, 50, 1],
+        rest: '#40bf40',
         hover: {
-          ref: [240, 50, 50, 0.5]
+          ref: '#4040bf80'
         }
       },
       medium: {
-        rest: [120, 50, 50, 1],
+        rest: '#40bf40',
         hover: {
-          ref: [240, 50, 50, 0.5]
+          ref: '#4040bf80'
         }
       }
     },
     secondary: {
       high: {
-        rest: [240, 50, 50, 0.5]
+        rest: '#4040bf80'
       },
       medium: {
-        rest: [240, 50, 50, 0.5]
+        rest: '#4040bf80'
       }
     }
   }

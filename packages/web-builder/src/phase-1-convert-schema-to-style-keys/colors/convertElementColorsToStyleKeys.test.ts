@@ -14,7 +14,7 @@ describe('convertElementColorsToStyleKeys', () => {
         light: {
           boxColor: {
             primary: {
-              medium: { rest: [45, 100, 50, 1] }
+              medium: { rest: '#ffbf00' }
             }
           }
         }
@@ -25,7 +25,7 @@ describe('convertElementColorsToStyleKeys', () => {
       default: {
         light: {
           primary: {
-            rest: ['boxColor__[45,100,50,1]']
+            rest: ['boxColor__#ffbf00']
           }
         }
       }
@@ -39,8 +39,8 @@ describe('convertElementColorsToStyleKeys', () => {
           borderColor: {
             primary: {
               medium: {
-                rest: [255, 255, 255, 1],
-                hover: { ref: [255, 255, 255, 0.1] }
+                rest: '#ffffff',
+                hover: { ref: '#ffffff1a' }
               }
             }
           }
@@ -52,8 +52,8 @@ describe('convertElementColorsToStyleKeys', () => {
       default: {
         light: {
           primary: {
-            rest: ['borderColor__[255,255,255,1]'],
-            hover: ['borderColor==hover__[255,255,255,0.1]']
+            rest: ['borderColor__#ffffff'],
+            hover: ['borderColor==hover__#ffffff1a']
           }
         }
       }
@@ -67,26 +67,26 @@ describe('convertElementColorsToStyleKeys', () => {
           textColor: {
             primary: {
               medium: {
-                rest: [120, 50, 50, 1],
-                hover: { ref: [240, 50, 50, 0.5] }
+                rest: '#40bf40',
+                hover: { ref: '#4040bf80' }
               }
             },
             secondary: {
               medium: {
-                rest: [240, 50, 50, 0.5]
+                rest: '#4040bf80'
               }
             }
           },
           borderColor: {
             primary: {
               medium: {
-                rest: [120, 50, 50, 1]
+                rest: '#40bf40'
               }
             },
             redLike: {
               medium: {
-                rest: [0, 0, 0, 0.02],
-                focus: { ref: [10, 20, 30, 0.1] }
+                rest: '#00000005',
+                focus: { ref: '#5c423d1a' }
               }
             }
           }
@@ -98,15 +98,15 @@ describe('convertElementColorsToStyleKeys', () => {
       default: {
         light: {
           primary: {
-            rest: ['textColor__[120,50,50,1]', 'borderColor__[120,50,50,1]'],
-            hover: ['textColor==hover__[240,50,50,0.5]']
+            rest: ['textColor__#40bf40', 'borderColor__#40bf40'],
+            hover: ['textColor==hover__#4040bf80']
           },
           secondary: {
-            rest: ['textColor__[240,50,50,0.5]']
+            rest: ['textColor__#4040bf80']
           },
           redLike: {
-            rest: ['borderColor__[0,0,0,0.02]'],
-            focus: ['borderColor==focus__[10,20,30,0.1]']
+            rest: ['borderColor__#00000005'],
+            focus: ['borderColor==focus__#5c423d1a']
           }
         }
       }
@@ -119,8 +119,8 @@ describe('convertElementColorsToStyleKeys', () => {
         light: {
           // Legacy direct interaction‐state map at property level (invalid now)
           boxColor: {
-            rest: [0, 128, 255, 1],
-            hover: { ref: [0, 128, 255, 0.5] }
+            rest: '#90484484',
+            hover: { ref: '#9048448480' }
           } as any
         }
       }
@@ -137,13 +137,13 @@ describe('convertElementColorsToStyleKeys', () => {
           boxColor: {
             primary: {
               medium: {
-                rest: [10, 20, 30, 0.9],
-                hover: [15, 25, 35, 0.9],
+                rest: '#5c423de6',
+                hover: '#704e43e6',
                 selected: {
-                  rest: [200, 50, 50, 1],
-                  hover: { ref: [210, 55, 55, 0.8] }
+                  rest: '#4095bf',
+                  hover: { ref: '#4d8ccbcc' }
                 },
-                disabled: [0, 0, 50, 0.5]
+                disabled: '#80808080'
               }
             }
           }
@@ -157,11 +157,11 @@ describe('convertElementColorsToStyleKeys', () => {
       default: {
         light: {
           primary: {
-            rest: ['boxColor__[10,20,30,0.9]'],
-            hover: ['boxColor--hover__[15,25,35,0.9]'],
-            'selected:rest': ['boxColor--selected:rest__[200,50,50,1]'],
-            'selected:hover': ['boxColor==selected:hover__[210,55,55,0.8]'],
-            disabled: ['boxColor--disabled__[0,0,50,0.5]']
+            rest: ['boxColor__#5c423de6'],
+            hover: ['boxColor--hover__#704e43e6'],
+            'selected:rest': ['boxColor--selected:rest__#4095bf'],
+            'selected:hover': ['boxColor==selected:hover__#4d8ccbcc'],
+            disabled: ['boxColor--disabled__#80808080']
           }
         }
       }
@@ -179,7 +179,7 @@ describe('convertElementColorsToStyleKeys – invalid inputs', () => {
           boxColor: {
             primary: {
               medium: {
-                rest: { ref: [10, 20, 30, 0.5] } as unknown as Color
+                rest: { ref: '#5c423d80' } as unknown as Color
               }
             }
           }

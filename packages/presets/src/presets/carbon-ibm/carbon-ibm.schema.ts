@@ -58,7 +58,7 @@ export const schema: Schema<Segments> = {
         light: {
           // Global theme tokens can reference primitive colors directly.
           background: color(schemaContext, 'default', 'l', 'primitive.black.v1', 4),
-          focusColor: '#0F62FE',
+          focusColor: '#0f62fe',
           effects: {
             activationFeedback: {
               tone: {
@@ -67,7 +67,7 @@ export const schema: Schema<Segments> = {
                   opacity: 0.12
                 },
                 vivid: {
-                  color: '#FFFFFF',
+                  color: '#ffffff',
                   opacity: 0.2
                 }
               }
@@ -76,16 +76,16 @@ export const schema: Schema<Segments> = {
         },
         dark: {
           background: '#161616',
-          focusColor: '#0F62FE',
+          focusColor: '#0f62fe',
           effects: {
             activationFeedback: {
               tone: {
                 subtle: {
-                  color: '#F4F4F4',
+                  color: '#f4f4f4',
                   opacity: 0.16
                 },
                 vivid: {
-                  color: '#FFFFFF',
+                  color: '#ffffff',
                   opacity: 0.2
                 }
               }
@@ -161,11 +161,11 @@ export const schema: Schema<Segments> = {
               y: { rest: 2, hover: 4, pressed: 0, focus: 4, disabled: 0 },
               blur: { rest: 6, hover: 10, pressed: 0, focus: 10, disabled: 0 },
               color: {
-                rest: withAlpha([0, 0, 0, 1], 28),
-                hover: withAlpha([0, 0, 0, 1], 35),
-                pressed: withAlpha([0, 0, 0, 1], 32),
-                focus: withAlpha([0, 0, 0, 1], 35),
-                disabled: withAlpha([0, 0, 0, 1], 0)
+                rest: withAlpha('#000000', 28),
+                hover: withAlpha('#000000', 35),
+                pressed: withAlpha('#000000', 32),
+                focus: withAlpha('#000000', 35),
+                disabled: withAlpha('#000000', 0)
               }
             }
           }
@@ -215,7 +215,7 @@ export const schema: Schema<Segments> = {
     },
     card: createCarbonIbmCardSchema({
       segmentNames: ['default'],
-      transparent: [0, 0, 0, 0]
+      transparent: '#00000000'
     }),
     switch: createCarbonIbmSwitchSchema()
   }

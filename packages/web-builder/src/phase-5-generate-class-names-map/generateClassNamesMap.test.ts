@@ -87,7 +87,7 @@ describe('generateClassNamesMapSplit', () => {
   });
 
   it('generates class maps for later eN elements when the first element is empty', () => {
-    const colorKey = 'textColor__[0,0,0,1]';
+    const colorKey = 'textColor__#000000';
     const styleKeys = {
       textField: {
         standard: {
@@ -154,7 +154,7 @@ describe('generateClassNamesMapSplit', () => {
     const coreOutline = coreTextField.standard.outline;
     const paletteOutline = paletteTextField.standard.outline;
 
-    expect(coreOutline.e1).toEqual({
+    expect((coreOutline as any).e1).toEqual({
       d: undefined,
       e: undefined,
       l: undefined,
@@ -164,14 +164,14 @@ describe('generateClassNamesMapSplit', () => {
       rp: undefined,
       rs: undefined
     });
-    expect(coreOutline.e3.s?.['md:1']).toBe('tf-height tf-padding');
-    expect(paletteOutline.e4.c?.neutral).toEqual({
+    expect((coreOutline as any).e3.s?.['md:1']).toBe('tf-height tf-padding');
+    expect((paletteOutline as any).e4.c?.neutral).toEqual({
       m: 'tf-color'
     });
   });
 
   it('keeps shared palette style keys in the tone bucket declared by the current element', () => {
-    const sharedColor = [0, 0, 0, 1] as const;
+    const sharedColor = '#000000' as const;
     const schema = {
       name: 'Test Design System',
       version: [1, 0, 0],
@@ -223,7 +223,7 @@ describe('generateClassNamesMapSplit', () => {
     const out = generateClassNamesMapSplit(
       styleKeys,
       {
-        'textColor__[0,0,0,1]': 'txt'
+        'textColor__#000000': 'txt'
       },
       toneMetadataByPalette
     );

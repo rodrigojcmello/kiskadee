@@ -15,13 +15,9 @@ import {
   type EmittedSample,
   fairEmittedAnchorNeighborhood
 } from './emitted-curve-continuity.ts';
+import { KISKADEE_TONES, type KiskadeeTone } from '@kiskadee/core';
 
-export const KISKADEE_TONES = [
-  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60,
-  65, 70, 75, 80, 85, 90, 95, 99, 100
-] as const;
-
-export type KiskadeeTone = (typeof KISKADEE_TONES)[number];
+export { KISKADEE_TONES, type KiskadeeTone } from '@kiskadee/core';
 export type KiskadeeTheme = 'light' | 'dark';
 export const KISKADEE_TONAL_PROFILES = [
   {

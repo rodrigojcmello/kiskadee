@@ -5,6 +5,7 @@ import type {
   SelectedInteractionStateToken,
   StyleKey
 } from '@kiskadee/core';
+import { normalizeHexColor } from '@kiskadee/core';
 
 export interface BuildStyleKeyParams {
   /**
@@ -79,7 +80,7 @@ export const SEPARATORS = {
  *   - "margin++small__16"                   (with size)
  *   - "margin++small::md__16"               (with size + breakpoint)
  *   - "color==hover__\"#ff0000\""           (reference color on hover)
- *   - "shadow--focus__[4,4,8,[0,0,0,0.5]]"  (shadow values on focus)
+ *   - `shadow--focus__[4,4,8,"#00000080"]` (shadow values on focus)
  *
  * Notes:
  *   - When size is provided, interactionState and isRef are ignored for key construction.
@@ -109,8 +110,12 @@ export function buildStyleKey({
   breakpoint
 }: BuildStyleKeyParams): StyleKey {
   // Stringify the value: primitives via String(value), others via JSON.stringify
+  const normalizedValue =
+    typeof value === 'string' && value.startsWith('#') ? normalizeHexColor(value) : value;
   const valueString =
-    typeof value === 'string' || typeof value === 'number' ? String(value) : JSON.stringify(value);
+    typeof normalizedValue === 'string' || typeof normalizedValue === 'number'
+      ? String(normalizedValue)
+      : JSON.stringify(normalizedValue);
 
   // 1) State normalization and validation (done first so size branch can include state)
   let effectiveState: InteractionState | SelectedInteractionStateToken | undefined;

@@ -1,3 +1,4 @@
+import { invertKiskadeeHexScale } from '@kiskadee/core';
 import type {
   ComponentIntents,
   GlobalSemanticsBySegment,
@@ -5,7 +6,7 @@ import type {
   PrimitiveColors,
   SchemaColors
 } from '@kiskadee/core';
-import dynamicColor from '../dynamic.color.ts';
+import { dynamicDark, dynamicLight } from '../dynamic.color.ts';
 import neutralDark from './colors/neutral.dark.ts';
 import neutralLight from './colors/neutral.light.ts';
 import primaryUnique from './colors/primary.unique.ts';
@@ -22,13 +23,17 @@ import purple2Light from './colors/purple-2.light.ts';
 
 export const primitiveColors = {
   blue: {
-    v1: { solid: { light: primaryUnique, dark: primaryUnique } },
+    v1: {
+      kind: 'static',
+      scales: { light: primaryUnique, dark: invertKiskadeeHexScale(primaryUnique) }
+    },
     // Used by the `dynamic` segment override.
-    dynamic: { solid: { light: dynamicColor, dark: dynamicColor } }
+    dynamic: { kind: 'dynamic', scales: { light: dynamicLight, dark: dynamicDark } }
   },
   black: {
     v1: {
-      solid: { light: neutralLight, dark: neutralDark },
+      kind: 'static',
+      scales: { light: neutralLight, dark: neutralDark },
       gradient: {
         angle: 180,
         stops: [
@@ -41,7 +46,8 @@ export const primitiveColors = {
   purple: {
     v1: {
       // NOTE: Dark scale is currently mirrored from light as a placeholder.
-      solid: { light: purpleLight, dark: purpleLight },
+      kind: 'static',
+      scales: { light: purpleLight, dark: invertKiskadeeHexScale(purpleLight) },
       gradient: {
         angle: 180,
         stops: [
@@ -51,7 +57,10 @@ export const primitiveColors = {
       }
     },
     // NOTE: Dark scale is currently mirrored from light as a placeholder.
-    v2: { solid: { light: purple2Light, dark: purple2Light } }
+    v2: {
+      kind: 'static',
+      scales: { light: purple2Light, dark: invertKiskadeeHexScale(purple2Light) }
+    }
   }
 } as const satisfies PrimitiveColors;
 

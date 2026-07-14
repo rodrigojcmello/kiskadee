@@ -8,17 +8,17 @@ type SwitchComponent = NonNullable<Schema<Ios26AppleSegmentName>['components']['
 type CreateIos26AppleSwitchSchemaArgs = {
   c: PresetColorGetter<Ios26AppleSegmentName>;
   segmentNames: readonly Ios26AppleSegmentName[];
-  transparent: readonly [number, number, number, number];
+  transparent: string;
 };
 
-const iosSwitchOffTrack = [0, 0, 47.059, 0.2] as const;
-const iosSwitchThumb = [0, 0, 100, 1] as const;
-const iosSwitchOnPrimaryTrack = [0, 0, 100, 0.32] as const;
-const iosSwitchOnPrimaryTrackHover = [0, 0, 100, 0.4] as const;
-const iosSwitchOnPrimaryTrackPressed = [0, 0, 100, 0.48] as const;
-const iosSwitchOnPrimaryTrackDisabled = [0, 0, 100, 0.12] as const;
-const iosSwitchOnPrimaryTrackSelected = [0, 0, 100, 1] as const;
-const iosSwitchOffIcon = [0, 0, 47.059, 0.55] as const;
+const iosSwitchOffTrack = '#78787833' as const;
+const iosSwitchThumb = '#ffffff' as const;
+const iosSwitchOnPrimaryTrack = '#ffffff52' as const;
+const iosSwitchOnPrimaryTrackHover = '#ffffff66' as const;
+const iosSwitchOnPrimaryTrackPressed = '#ffffff7a' as const;
+const iosSwitchOnPrimaryTrackDisabled = '#ffffff1f' as const;
+const iosSwitchOnPrimaryTrackSelected = '#ffffff' as const;
+const iosSwitchOffIcon = '#7878788c' as const;
 
 export function createIos26AppleSwitchSchema({
   c,

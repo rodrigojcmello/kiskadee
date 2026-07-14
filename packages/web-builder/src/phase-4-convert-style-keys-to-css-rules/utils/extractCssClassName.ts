@@ -19,7 +19,7 @@ export function extractCssClassName(cssRule: string): string | null {
   // Extract class selector by stopping at pseudo selectors (":hover", ":focus", etc) or whitespace
   // Class selector can have characters valid in CSS class names including brackets
   // Matches something starting with dot, then anything except pseudo selectors and spaces, until we find : or { or space
-  // For example: .shadow--hover__[4,4,4,[0,0,0,0.5]]
+  // For example: .shadow--hover__[4,4,4,"#00000080"]
 
   // We'll extract everything after "." up to the first ':' or whitespace or '{'
   const classNameRegex = /^\s*\.([^\s:{]+)(?=:|{|\s|$)/;
@@ -35,10 +35,10 @@ export function extractCssClassName(cssRule: string): string | null {
 // Examples to test:
 // console.log(
 //   extractCssClassName(
-//     '.shadow--hover__[4,4,4,[0,0,0,0.5]]:hover { box-shadow: 4px 4px 4px #00000080; }'
+//     '.shadow--hover__[4,4,4,"#00000080"]:hover { box-shadow: 4px 4px 4px #00000080; }'
 //   )
 // );
-// Output: shadow--hover__[4,4,4,[0,0,0,0.5]]
+// Output: shadow--hover__[4,4,4,"#00000080"]
 
 // console.log(
 //   extractCssClassName('@media (max-width: 600px) { .my-class__test:hover { color: red; } }')

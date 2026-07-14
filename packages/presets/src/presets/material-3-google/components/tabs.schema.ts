@@ -11,8 +11,8 @@ type Material3GoogleSegmentName = 'default' | 'dynamic';
 
 type CreateMaterial3GoogleTabsSchemaArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;
-  transparent: readonly [number, number, number, number];
-  white: readonly [number, number, number, number];
+  transparent: string;
+  white: string;
 };
 
 export function createMaterial3GoogleTabsSchema({

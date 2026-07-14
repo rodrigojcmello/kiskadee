@@ -151,11 +151,7 @@ function formatCssLength(value: number): string {
 }
 
 function formatShadowColor(color: SolidColor): string {
-  if (typeof color === 'string') return color;
-
-  const [hue, saturation, lightness, alpha] = color;
-
-  return `hsl(${hue} ${saturation}% ${lightness}% / ${alpha})`;
+  return color;
 }
 
 function formatShadowLayerCss(kind: ShadowKind, layer: ShadowLayer): string {
@@ -219,9 +215,7 @@ function buildShadowDocumentationByKind({
         const normalizedLevel = normalizeShadowLevelKey(level);
         const layers = normalizeShadowLayers(value);
         const cardShadow =
-          kind === 'outer' &&
-          normalizedLevel &&
-          cardSupportedShadowLevels.includes(normalizedLevel)
+          kind === 'outer' && normalizedLevel && cardSupportedShadowLevels.includes(normalizedLevel)
             ? normalizedLevel
             : undefined;
 
@@ -577,9 +571,7 @@ export function Card() {
                           ))}
                         </div>
                       ) : (
-                        <div className={s.shadowEmpty}>
-                          No {kind} shadow levels in this preset.
-                        </div>
+                        <div className={s.shadowEmpty}>No {kind} shadow levels in this preset.</div>
                       )}
                     </div>
                   );

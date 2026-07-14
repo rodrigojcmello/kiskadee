@@ -1,6 +1,7 @@
+import { invertKiskadeeHexScale } from '@kiskadee/core';
 import type {
   ComponentIntents,
-  EmphasisLevel,
+  KiskadeeHexScale,
   GlobalSemanticsBySegment,
   GlobalSemanticsByTheme,
   PrimitiveColors,
@@ -8,100 +9,184 @@ import type {
 } from '@kiskadee/core';
 
 const primaryScale = {
-  subtle: {
-    0: [0, 0, 100, 1],
-    5: [220, 100, 97, 1],
-    10: [221, 94, 92, 1],
-    20: [222, 86, 84, 1],
-    30: [223, 78, 72, 1]
-  },
-  vivid: {
-    40: [224, 76, 62, 1],
-    50: [225, 76, 52, 1],
-    60: [226, 78, 44, 1],
-    70: [227, 82, 36, 1],
-    80: [228, 86, 28, 1],
-    90: [230, 92, 18, 1],
-    100: [231, 100, 9, 1]
-  }
-} as const satisfies EmphasisLevel;
+  0: '#ffffff',
+  1: '#fcfdff',
+  2: '#f9fbff',
+  3: '#f6f9ff',
+  4: '#f3f7ff',
+  5: '#f0f5ff',
+  6: '#ebf1ff',
+  7: '#e6eeff',
+  8: '#e1eafe',
+  9: '#dce7fe',
+  10: '#d7e4fe',
+  12: '#d0defd',
+  14: '#c9d9fc',
+  16: '#c2d3fb',
+  18: '#bacefa',
+  20: '#b3c8f9',
+  22: '#a9c0f7',
+  24: '#9eb8f6',
+  26: '#94b0f4',
+  28: '#8aa8f1',
+  30: '#809fef',
+  35: '#6a8eec',
+  40: '#547ce8',
+  45: '#3e6ae5',
+  50: '#2856e2',
+  55: '#204cd5',
+  60: '#1942c8',
+  65: '#1539b7',
+  70: '#1131a7',
+  75: '#0d2a96',
+  80: '#0a2385',
+  85: '#061a6e',
+  90: '#041258',
+  95: '#010c42',
+  99: '#000832',
+  100: '#000000'
+} as const satisfies KiskadeeHexScale;
 
 const neutralScale = {
-  subtle: {
-    0: [0, 0, 100, 1],
-    5: [220, 20, 97, 1],
-    10: [220, 18, 92, 1],
-    20: [222, 15, 84, 1],
-    30: [224, 13, 72, 1]
-  },
-  vivid: {
-    40: [225, 12, 60, 1],
-    50: [226, 12, 50, 1],
-    60: [227, 13, 40, 1],
-    70: [228, 14, 30, 1],
-    80: [229, 16, 20, 1],
-    90: [230, 18, 12, 1],
-    100: [231, 24, 6, 1]
-  }
-} as const satisfies EmphasisLevel;
+  0: '#ffffff',
+  1: '#fdfdfe',
+  2: '#fbfcfd',
+  3: '#f9fafb',
+  4: '#f8f8fa',
+  5: '#f6f7f9',
+  6: '#f3f4f7',
+  7: '#f0f1f5',
+  8: '#edeff3',
+  9: '#eaecf0',
+  10: '#e7e9ee',
+  12: '#e2e5eb',
+  14: '#dee1e7',
+  16: '#d9dce3',
+  18: '#d5d8e0',
+  20: '#d0d4dc',
+  22: '#c9cdd7',
+  24: '#c2c7d1',
+  26: '#bcc0cc',
+  28: '#b5bac6',
+  30: '#aeb3c1',
+  35: '#9da3b3',
+  40: '#8d93a5',
+  45: '#7e859a',
+  50: '#70778f',
+  55: '#646b81',
+  60: '#595e73',
+  65: '#4d5265',
+  70: '#424657',
+  75: '#363a49',
+  80: '#2b2e3b',
+  85: '#22242f',
+  90: '#191b24',
+  95: '#12141b',
+  99: '#0d0e15',
+  100: '#000000'
+} as const satisfies KiskadeeHexScale;
 
 const positiveScale = {
-  subtle: {
-    0: [0, 0, 100, 1],
-    5: [154, 70, 96, 1],
-    10: [154, 68, 90, 1],
-    20: [154, 64, 80, 1],
-    30: [154, 60, 68, 1]
-  },
-  vivid: {
-    40: [154, 60, 54, 1],
-    50: [154, 66, 44, 1],
-    60: [154, 72, 35, 1],
-    70: [154, 78, 27, 1],
-    80: [154, 84, 20, 1],
-    90: [154, 90, 13, 1],
-    100: [154, 96, 6, 1]
-  }
-} as const satisfies EmphasisLevel;
+  0: '#ffffff',
+  1: '#fcfefd',
+  2: '#f8fefb',
+  3: '#f5fdf9',
+  4: '#f1fdf8',
+  5: '#eefcf6',
+  6: '#e9fbf3',
+  7: '#e4faf0',
+  8: '#def9ed',
+  9: '#d9f8eb',
+  10: '#d4f7e8',
+  12: '#ccf5e3',
+  14: '#c4f3de',
+  16: '#bcf1da',
+  18: '#b4efd5',
+  20: '#abedd0',
+  22: '#a2eacb',
+  24: '#99e7c5',
+  26: '#90e4bf',
+  28: '#86e1ba',
+  30: '#7cdeb4',
+  35: '#63d7a4',
+  40: '#43d093',
+  45: '#36c587',
+  50: '#26ba7a',
+  55: '#20aa6e',
+  60: '#199a62',
+  65: '#148a57',
+  70: '#0f7b4c',
+  75: '#0c6c42',
+  80: '#085e39',
+  85: '#054e2f',
+  90: '#033f25',
+  95: '#022e1b',
+  99: '#012113',
+  100: '#000000'
+} as const satisfies KiskadeeHexScale;
 
 const negativeScale = {
-  subtle: {
-    0: [0, 0, 100, 1],
-    5: [350, 100, 97, 1],
-    10: [350, 94, 91, 1],
-    20: [350, 88, 82, 1],
-    30: [350, 82, 70, 1]
-  },
-  vivid: {
-    40: [350, 78, 58, 1],
-    50: [350, 78, 48, 1],
-    60: [350, 82, 40, 1],
-    70: [350, 86, 32, 1],
-    80: [350, 90, 24, 1],
-    90: [350, 94, 16, 1],
-    100: [350, 100, 8, 1]
-  }
-} as const satisfies EmphasisLevel;
+  0: '#ffffff',
+  1: '#fffcfc',
+  2: '#fff9fa',
+  3: '#fff6f7',
+  4: '#fff3f5',
+  5: '#fff0f2',
+  6: '#ffeaed',
+  7: '#ffe4e8',
+  8: '#fedee3',
+  9: '#fed8df',
+  10: '#fed2da',
+  12: '#fdcad2',
+  14: '#fcc2cb',
+  16: '#fcbac4',
+  18: '#fbb1bd',
+  20: '#f9a9b6',
+  22: '#f89ead',
+  24: '#f794a4',
+  26: '#f58a9b',
+  28: '#f37f92',
+  30: '#f17489',
+  35: '#ed5c72',
+  40: '#e7405c',
+  45: '#e1304c',
+  50: '#da1b3b',
+  55: '#ca1734',
+  60: '#ba122e',
+  65: '#a90f28',
+  70: '#980b23',
+  75: '#86091e',
+  80: '#740618',
+  85: '#610414',
+  90: '#4f020f',
+  95: '#3b010b',
+  99: '#2c0008',
+  100: '#000000'
+} as const satisfies KiskadeeHexScale;
 
 export const primitiveColors = {
   blue: {
     v1: {
-      solid: { light: primaryScale, dark: primaryScale }
+      kind: 'static',
+      scales: { light: primaryScale, dark: invertKiskadeeHexScale(primaryScale) }
     }
   },
   black: {
     v1: {
-      solid: { light: neutralScale, dark: neutralScale }
+      kind: 'static',
+      scales: { light: neutralScale, dark: invertKiskadeeHexScale(neutralScale) }
     }
   },
   green: {
     v1: {
-      solid: { light: positiveScale, dark: positiveScale }
+      kind: 'static',
+      scales: { light: positiveScale, dark: invertKiskadeeHexScale(positiveScale) }
     }
   },
   red: {
     v1: {
-      solid: { light: negativeScale, dark: negativeScale }
+      kind: 'static',
+      scales: { light: negativeScale, dark: invertKiskadeeHexScale(negativeScale) }
     }
   }
 } as const satisfies PrimitiveColors;

@@ -1,27 +1,25 @@
-import type { SolidColor } from '../types/colors/colors.types.ts';
+import type { HexColor, SolidColor } from '../types/colors/colors.types.ts';
+import { normalizeHexColor } from './hexColor.ts';
 
 /**
- * Applies visibility (opacity) to an HSLA color.
+ * Replaces the alpha channel of a HEX color or a dynamic CSS color reference.
  *
- * This helper was designed for designer-friendly usage:
- * uses 0-100 scale (percentage) instead of the standard HSLA 0-1.
- * The conversion to the internal HSLA format is done automatically.
- *
- * @param color - Color in HSLA format [hue, saturation, lightness, alpha] or CSS string. Returns undefined if undefined.
+ * @param color - Canonical HEX color or supported CSS color reference. Returns undefined if undefined.
  * @param visibility - Visibility percentage from 0 (invisible) to 100 (fully visible)
- * @returns New HSLA color with modified alpha, or string with injected alpha, or undefined
+ * @returns A HEX color or color-mix expression with the requested alpha.
  *
  * @example
  * ```TypeScript
  * // Apple: "disabled uses primary 500 with 20% opacity"
- * const disabled = withAlpha(palette.p1.primary.solid[50]!, 20);
- * // Result: [206, 100, 50, 0.2]
+ * const disabled = withAlpha('#0f6cbd', 20);
+ * // Result: '#0f6cbd33'
  *
  * // With CSS Variable
- * const dynamic = withAlpha('hsl(var(--k-p-50))', 50);
- * // Result: 'hsl(var(--k-p-50) / 0.5)'
+ * const dynamic = withAlpha('var(--k-p-light-50)', 50);
+ * // Result: 'color-mix(in srgb, var(--k-p-light-50) 50%, transparent)'
  * ```
  */
+export function withAlpha(color: SolidColor, visibility: number): SolidColor;
 export function withAlpha(
   color: SolidColor | undefined,
   visibility: number
@@ -31,22 +29,19 @@ export function withAlpha(
     return undefined;
   }
 
-  if (typeof color === 'string') {
-    if (color.startsWith('hsl(') && color.endsWith(')')) {
-      const clampedVisibility = Math.max(0, Math.min(100, visibility));
-      const alpha = clampedVisibility / 100;
-      return `${color.slice(0, -1)} / ${alpha})`;
-    }
-    return color;
+  const clampedVisibility = Math.max(0, Math.min(100, visibility));
+  if (color.startsWith('#')) {
+    const normalized = normalizeHexColor(color);
+    const rgb = normalized.slice(0, 7);
+    if (clampedVisibility === 100) return rgb as HexColor;
+    const alpha = Math.round((clampedVisibility / 100) * 255)
+      .toString(16)
+      .padStart(2, '0');
+    return `${rgb}${alpha}` as HexColor;
   }
 
-  const [h, s, l] = color;
-
-  // Clamp between 0-100 to ensure valid values
-  const clampedVisibility = Math.max(0, Math.min(100, visibility));
-
-  // Convert percentage (0-100) to HSLA alpha (0-1)
-  const alpha = clampedVisibility / 100;
-
-  return [h, s, l, alpha];
+  if (!color.startsWith('var(') && !color.startsWith('color-mix(')) {
+    throw new Error(`Unsupported CSS color reference: ${color}`);
+  }
+  return `color-mix(in srgb, ${color} ${clampedVisibility}%, transparent)`;
 }

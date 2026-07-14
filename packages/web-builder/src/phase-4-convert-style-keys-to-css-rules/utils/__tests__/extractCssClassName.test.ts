@@ -8,8 +8,8 @@ describe('extractCssClassName', () => {
   });
 
   it('should extract class name ignoring pseudo selectors like :hover', () => {
-    const css = '.shadow--hover__[4,4,4,[0,0,0,0.5]]:hover { box-shadow: 4px 4px 4px #00000080; }';
-    expect(extractCssClassName(css)).toBe('shadow--hover__[4,4,4,[0,0,0,0.5]]');
+    const css = '.shadow--hover__[4,4,4,"#00000080"]:hover { box-shadow: 4px 4px 4px #00000080; }';
+    expect(extractCssClassName(css)).toBe('shadow--hover__[4,4,4,"#00000080"]');
   });
 
   it('should extract class name inside @media block', () => {

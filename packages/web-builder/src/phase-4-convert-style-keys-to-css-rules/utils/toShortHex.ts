@@ -1,4 +1,4 @@
-import type { Hex } from '@kiskadee/core';
+import type { HexColor } from '@kiskadee/core';
 
 /**
  * Helper function to convert a full hex color string into its shorthand version,
@@ -13,7 +13,7 @@ import type { Hex } from '@kiskadee/core';
  * If the full hex color cannot be shortened (i.e., each pair of digits is not identical),
  * the original hex color is returned.
  */
-export function toShortHex(hex: Hex): Hex {
+export function toShortHex(hex: HexColor): HexColor {
   if (hex[0] !== '#') {
     throw new Error(`Invalid hex format: ${hex}`);
   }
@@ -38,5 +38,5 @@ export function toShortHex(hex: Hex): Hex {
     short += hex[i];
   }
 
-  return isShortenable ? short : hex;
+  return (isShortenable ? short : hex) as HexColor;
 }

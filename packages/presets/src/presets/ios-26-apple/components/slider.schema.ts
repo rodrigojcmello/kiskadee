@@ -8,22 +8,22 @@ type SliderComponent = NonNullable<Schema<Ios26AppleSegmentName>['components']['
 type CreateIos26AppleSliderSchemaArgs = {
   c: PresetColorGetter<Ios26AppleSegmentName>;
   segmentNames: readonly Ios26AppleSegmentName[];
-  transparent: readonly [number, number, number, number];
+  transparent: string;
 };
 
-const iosSliderTrack = [0, 0, 0, 0.05] as const;
-const iosSliderTrackDisabled = [0, 0, 0, 0.03] as const;
-const iosSliderTick = [0, 0, 0, 0.25] as const;
-const iosSliderOriginTick = [0, 0, 0, 1] as const;
-const iosSliderThumb = [0, 0, 100, 0.96] as const;
-const iosSliderThumbBorder = [0, 0, 100, 1] as const;
-const iosSliderText = [0, 0, 0, 0.6] as const;
-const iosSliderOptionalIndicator = [0, 0, 0, 0.3] as const;
-const iosSliderOptionalIndicatorDisabled = [0, 0, 0, 0.18] as const;
-const iosSliderTooltip = [0, 0, 100, 1] as const;
-const iosSliderTooltipDisabled = [0, 0, 100, 0.6] as const;
-const iosSliderTooltipText = [0, 0, 0, 1] as const;
-const iosSliderTooltipTextDisabled = [0, 0, 0, 0.3] as const;
+const iosSliderTrack = '#0000000d' as const;
+const iosSliderTrackDisabled = '#00000008' as const;
+const iosSliderTick = '#00000040' as const;
+const iosSliderOriginTick = '#000000' as const;
+const iosSliderThumb = '#fffffff5' as const;
+const iosSliderThumbBorder = '#ffffff' as const;
+const iosSliderText = '#00000099' as const;
+const iosSliderOptionalIndicator = '#0000004d' as const;
+const iosSliderOptionalIndicatorDisabled = '#0000002e' as const;
+const iosSliderTooltip = '#ffffff' as const;
+const iosSliderTooltipDisabled = '#ffffff99' as const;
+const iosSliderTooltipText = '#000000' as const;
+const iosSliderTooltipTextDisabled = '#0000004d' as const;
 
 const sizes = {
   optionalIndicatorText: {

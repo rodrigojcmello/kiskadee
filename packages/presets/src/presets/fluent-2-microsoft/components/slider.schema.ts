@@ -23,17 +23,17 @@ function states(colors: {
 }
 
 const fluent = {
-  optionalIndicator: '#0000004D',
-  optionalIndicatorDisabled: '#0000002E',
-  transparent: '#FFFFFF00',
+  optionalIndicator: '#0000004d',
+  optionalIndicatorDisabled: '#0000002e',
+  transparent: '#ffffff00',
   neutralForeground1: '#242424',
-  neutralStrokeAccessible: '#5D616B',
-  neutralBackground1: '#FFFFFF',
-  neutralStroke1: '#CCD1DD',
-  neutralForegroundDisabled: '#B9BDC9',
-  neutralStrokeDisabled: '#DBE0EC',
-  compoundBrandRest: '#0064B4',
-  compoundBrandHover: '#0055A4',
+  neutralStrokeAccessible: '#5d616b',
+  neutralBackground1: '#ffffff',
+  neutralStroke1: '#ccd1dd',
+  neutralForegroundDisabled: '#b9bdc9',
+  neutralStrokeDisabled: '#dbe0ec',
+  compoundBrandRest: '#0064b4',
+  compoundBrandHover: '#0055a4',
   compoundBrandPressed: '#004694'
 } as const satisfies Record<string, Color>;
 

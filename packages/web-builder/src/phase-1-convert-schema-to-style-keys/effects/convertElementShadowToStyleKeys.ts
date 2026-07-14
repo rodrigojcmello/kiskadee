@@ -34,7 +34,7 @@ type ShadowCssLayer = ShadowLayer & {
 
 type ShadowCssValue = ShadowCssLayer | readonly ShadowCssLayer[];
 
-const ZERO_SHADOW: ShadowLayer = { x: 0, y: 0, blur: 0, spread: 0, color: [0, 0, 0, 0] };
+const ZERO_SHADOW: ShadowLayer = { x: 0, y: 0, blur: 0, spread: 0, color: '#00000000' };
 
 function asCssLayer(layer: ShadowLayer, kind: ShadowKind): ShadowCssLayer {
   return kind === 'inner' ? { ...layer, inset: true } : layer;
@@ -95,7 +95,7 @@ export function convertElementShadowToStyleKeys(shadow: ShadowSchema): StyleKeys
       const shadowY = getShadowValue(y, state, 0);
       const shadowBlur = getShadowValue(blur, state, 0);
       const shadowSpread = getShadowValue(spread, state, 0);
-      const shadowColor: SolidColor = getShadowValue(color, state, [0, 0, 0, 1]);
+      const shadowColor: SolidColor = getShadowValue(color, state, '#000000');
       const styleKey = buildStyleKey({
         propertyName: 'shadow',
         interactionState: state,

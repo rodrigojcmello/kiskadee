@@ -35,29 +35,23 @@ export {
 // Defined here to avoid circular type dependencies between schema and color types.
 export type SegmentName = string;
 
-/** Represents a hue value in degrees ranging from 0 to 360. */
-type Hue = number;
+export const KISKADEE_TONES = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60,
+  65, 70, 75, 80, 85, 90, 95, 99, 100
+] as const;
 
-/** Represents a lightness percentage ranging from 0 to 100. */
-type Lightness = number;
+export type KiskadeeTone = (typeof KISKADEE_TONES)[number];
 
-/** Represents a saturation percentage ranging from 0 to 100. */
-type Saturation = number;
+/** Canonically stored as lowercase #rrggbb or #rrggbbaa. */
+export type HexColor = `#${string}`;
 
-/** Represents an alpha value (opacity) ranging from 0 to 1 (e.g., 0.02). */
-type Alpha = number;
+/** A runtime CSS color expression, normally a custom-property reference. */
+export type CssColorReference = `var(--${string})` | `color-mix(${string})`;
 
-/** Represents a color in HSLA format: [hue, saturation, lightness, alpha]. */
-export type HSLA = readonly [hue: Hue, saturation: Saturation, lightness: Lightness, alpha: Alpha];
-
-/** Represents a color in hexadecimal format (e.g., "#ff0000" or "#ff0000ff"). */
-export type Hex = string;
-
-/** Represents a CSS variable string (e.g., "var(--my-color)"). */
-export type CssVariable = string;
-
-/** Represents a single solid color in HSLA format or a CSS variable string. */
-export type SolidColor = HSLA | CssVariable;
+/** Validated by the compiler boundary before CSS is emitted. */
+export type SolidColor = string;
+export type KiskadeeHexScale = Record<KiskadeeTone, HexColor>;
+export type KiskadeeCssScale = Record<KiskadeeTone, CssColorReference>;
 
 /** Represents the position of a color stop in a CSS gradient as a percentage (0–100). */
 type GradientStopPosition = number;
@@ -350,9 +344,16 @@ export type GradientTemplate = {
   stops: GradientStopTemplate[];
 };
 
-export type PrimitiveColorAsset = {
-  solid: Partial<Record<ThemeName, EmphasisLevel>>;
+export type StaticPrimitiveColorAsset = {
+  kind: 'static';
+  scales: Partial<Record<ThemeName, KiskadeeHexScale>>;
+  /** Optional gradient template resolved from other primitive scales. */
+  gradient?: GradientTemplate;
+};
 
+export type DynamicPrimitiveColorAsset = {
+  kind: 'dynamic';
+  scales: Partial<Record<ThemeName, KiskadeeCssScale>>;
   /**
    * Optional gradient template for this primitive slot.
    *
@@ -362,6 +363,8 @@ export type PrimitiveColorAsset = {
    */
   gradient?: GradientTemplate;
 };
+
+export type PrimitiveColorAsset = StaticPrimitiveColorAsset | DynamicPrimitiveColorAsset;
 
 export type PrimitiveColors = Partial<
   Record<HueName, Partial<Record<PrimitiveColorName, PrimitiveColorAsset>>>
@@ -473,50 +476,7 @@ export type ColorSchema = Partial<Record<ColorProperty, ColorEntry>>;
 // Token scale types
 // -------------------------------------------------------------------------------------------------
 
-export type ColorScale = Partial<Record<LightTrackTones | DarkTrackTones, SolidColor>>;
-
-// Soft track tones: 0–15 (step 1), then 20, 25, 30
-export type LightTrackTones =
-  | 0
-  | 1
-  | 2
-  | 3
-  | 4
-  | 5
-  | 6
-  | 7
-  | 8
-  | 9
-  | 10
-  | 11
-  | 12
-  | 13
-  | 14
-  | 15
-  | 20
-  | 25
-  | 30;
-
-// Dark track tones: 35–100 (step 5)
-export type DarkTrackTones = 35 | 40 | 45 | 50 | 55 | 60 | 65 | 70 | 75 | 80 | 85 | 90 | 95 | 100;
-
-export type ColorScaleLight = Partial<Record<LightTrackTones, SolidColor>>;
-export type ColorScaleDark = Partial<Record<DarkTrackTones, SolidColor>>;
-
-export type VariantColorScale = {
-  light: ColorScaleLight;
-  dark: ColorScaleDark;
-};
-
 export type ThemeMode = 'light' | 'dark' | 'darker';
-
-export type EmphasisLevel = {
-  subtle: ColorScaleLight;
-  vivid: ColorScaleDark;
-};
-
-export type ColorPalette = Partial<Record<SemanticColor, EmphasisLevel>>;
-export type ThemeColorPalette = ColorPalette;
 
 export type ElementPalettes<TSegmentName extends SegmentName = never> = Partial<
   Record<TSegmentName | 'default' | 'dynamic', Partial<Record<ThemeMode, ColorSchema>>>

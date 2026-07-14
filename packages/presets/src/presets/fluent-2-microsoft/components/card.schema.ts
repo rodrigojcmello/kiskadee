@@ -6,7 +6,7 @@ type CardComponent = NonNullable<Schema<never>['components']['card']>;
 
 type CreateFluent2MicrosoftCardSchemaArgs = {
   segmentNames: readonly Fluent2MicrosoftSegmentName[];
-  transparent: readonly [number, number, number, number];
+  transparent: string;
 };
 
 export function createFluent2MicrosoftCardSchema({
@@ -14,68 +14,68 @@ export function createFluent2MicrosoftCardSchema({
   transparent
 }: CreateFluent2MicrosoftCardSchemaArgs): CardComponent {
   const neutralLow = {
-    rest: '#FFFFFF',
-    hover: '#F0F5FF',
-    pressed: '#DBE0EC',
-    focus: '#FFFFFF',
-    disabled: '#EBF0FC'
+    rest: '#ffffff',
+    hover: '#f0f5ff',
+    pressed: '#dbe0ec',
+    focus: '#ffffff',
+    disabled: '#ebf0fc'
   };
   const neutralMedium = {
-    rest: '#F5FAFF',
-    hover: '#EBF0FC',
-    pressed: '#D6DBE7',
-    focus: '#F5FAFF',
-    disabled: '#EBF0FC'
+    rest: '#f5faff',
+    hover: '#ebf0fc',
+    pressed: '#d6dbe7',
+    focus: '#f5faff',
+    disabled: '#ebf0fc'
   };
   const neutralLowest = {
     rest: transparent,
-    hover: '#F0F5FF',
-    pressed: '#DBE0EC',
+    hover: '#f0f5ff',
+    pressed: '#dbe0ec',
     focus: transparent,
-    disabled: '#EBF0FC'
+    disabled: '#ebf0fc'
   };
   const neutralHigh = {
     rest: '#262932',
-    hover: '#1C1F28',
-    pressed: '#11141C',
+    hover: '#1c1f28',
+    pressed: '#11141c',
     focus: '#262932',
-    disabled: '#FFFFFF1F'
+    disabled: '#ffffff1f'
   };
   const neutralHighest = {
     rest: '#000000',
-    hover: '#070A11',
+    hover: '#070a11',
     pressed: '#000000',
     focus: '#000000',
-    disabled: '#FFFFFF1F'
+    disabled: '#ffffff1f'
   };
   const primaryLow = neutralLow;
   const primaryLowest = {
     rest: transparent,
-    hover: '#D9F1FF',
-    pressed: '#C7E9FF',
+    hover: '#d9f1ff',
+    pressed: '#c7e9ff',
     focus: transparent,
-    disabled: '#EBF0FC'
+    disabled: '#ebf0fc'
   };
   const primaryMedium = {
-    rest: '#D9F1FF',
-    hover: '#C7E9FF',
-    pressed: '#B3DFFF',
-    focus: '#D9F1FF',
-    disabled: '#FFFFFF1F'
+    rest: '#d9f1ff',
+    hover: '#c7e9ff',
+    pressed: '#b3dfff',
+    focus: '#d9f1ff',
+    disabled: '#ffffff1f'
   };
   const primaryHigh = {
-    rest: '#0064B4',
-    hover: '#0055A4',
-    pressed: '#002B6B',
-    focus: '#0064B4',
-    disabled: '#FFFFFF1F'
+    rest: '#0064b4',
+    hover: '#0055a4',
+    pressed: '#002b6b',
+    focus: '#0064b4',
+    disabled: '#ffffff1f'
   };
   const primaryHighest = {
     rest: '#001241',
-    hover: '#071A4D',
-    pressed: '#000A2E',
+    hover: '#071a4d',
+    pressed: '#000a2e',
     focus: '#001241',
-    disabled: '#FFFFFF1F'
+    disabled: '#ffffff1f'
   };
   const selectedPrimaryMedium = {
     rest: primaryMedium.rest,
@@ -96,77 +96,77 @@ export function createFluent2MicrosoftCardSchema({
     focus: primaryHighest.focus
   };
   const selectedNeutralLow = {
-    rest: '#E6EBF7',
-    hover: '#E6EBF7',
-    pressed: '#E6EBF7',
-    focus: '#E6EBF7'
+    rest: '#e6ebf7',
+    hover: '#e6ebf7',
+    pressed: '#e6ebf7',
+    focus: '#e6ebf7'
   };
   const selectedNeutralMedium = {
-    rest: '#E1E6F2',
-    hover: '#E1E6F2',
-    pressed: '#E1E6F2',
-    focus: '#E1E6F2'
+    rest: '#e1e6f2',
+    hover: '#e1e6f2',
+    pressed: '#e1e6f2',
+    focus: '#e1e6f2'
   };
   const borderLow = {
-    rest: '#CCD1DD',
-    hover: '#C3C7D3',
-    pressed: '#AFB3BF',
-    focus: '#0064B4',
-    disabled: '#DBE0EC'
+    rest: '#ccd1dd',
+    hover: '#c3c7d3',
+    pressed: '#afb3bf',
+    focus: '#0064b4',
+    disabled: '#dbe0ec'
   };
   const borderlessNeutral = {
     rest: transparent,
     hover: transparent,
     pressed: transparent,
-    focus: '#0064B4',
+    focus: '#0064b4',
     disabled: transparent
   };
   const selectedBorder = {
-    rest: '#B9BDC9',
-    hover: '#B9BDC9',
-    pressed: '#B9BDC9',
-    focus: '#B9BDC9'
+    rest: '#b9bdc9',
+    hover: '#b9bdc9',
+    pressed: '#b9bdc9',
+    focus: '#b9bdc9'
   };
   const borderHigh = {
     rest: '#626671',
-    hover: '#A9ADB9',
-    pressed: '#CCD1DD',
-    focus: '#3387DA',
+    hover: '#a9adb9',
+    pressed: '#ccd1dd',
+    focus: '#3387da',
     disabled: transparent
   };
   const borderHighest = {
     rest: '#000000',
     hover: '#626671',
     pressed: '#000000',
-    focus: '#3387DA',
+    focus: '#3387da',
     disabled: transparent
   };
   const primaryBorderLow = {
-    rest: '#0064B4',
-    hover: '#0055A4',
-    pressed: '#002B6B',
-    focus: '#0064B4',
+    rest: '#0064b4',
+    hover: '#0055a4',
+    pressed: '#002b6b',
+    focus: '#0064b4',
     disabled: transparent
   };
   const primaryBorderless = {
     rest: transparent,
     hover: transparent,
     pressed: transparent,
-    focus: '#3387DA',
+    focus: '#3387da',
     disabled: transparent
   };
   const primaryBorderHigh = {
-    rest: '#3387DA',
-    hover: '#0064B4',
-    pressed: '#0055A4',
-    focus: '#3387DA',
+    rest: '#3387da',
+    hover: '#0064b4',
+    pressed: '#0055a4',
+    focus: '#3387da',
     disabled: transparent
   };
   const primaryBorderHighest = {
-    rest: '#3387DA',
-    hover: '#0064B4',
-    pressed: '#0055A4',
-    focus: '#3387DA',
+    rest: '#3387da',
+    hover: '#0064b4',
+    pressed: '#0055a4',
+    focus: '#3387da',
     disabled: transparent
   };
 

@@ -8,16 +8,16 @@ type Material3GoogleSegmentName = 'default' | 'dynamic';
 type CreateMaterial3GoogleTextFieldSchemaArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;
   segmentNames: readonly Material3GoogleSegmentName[];
-  transparent: readonly [number, number, number, number];
+  transparent: string;
 };
 
 type PaletteTheme = Record<string, Record<string, Record<string, unknown>>>;
 type PaletteBundle = Record<string, Record<string, PaletteTheme>>;
 type PaletteGroupBundle = Record<string, PaletteBundle>;
 
-const borderlessLightRestBoxColor: Color = [0, 0, 96, 1];
-const borderlessLightHoverBoxColor: Color = [0, 0, 94, 1];
-const borderlessLightFocusBoxColor: Color = [0, 0, 92, 1];
+const borderlessLightRestBoxColor: Color = '#f5f5f5';
+const borderlessLightHoverBoxColor: Color = '#f0f0f0';
+const borderlessLightFocusBoxColor: Color = '#ebebeb';
 
 function fieldStateRef(color: Color): { ref: Color } {
   return { ref: color };

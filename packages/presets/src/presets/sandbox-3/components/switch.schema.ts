@@ -64,43 +64,43 @@ function thumbStates(colors: ThumbInteractionColors) {
   };
 }
 
-const transparent = [0, 0, 0, 0] as const;
+const transparent = '#00000000' as const;
 
 const c = {
-  canvasInk: [231, 24, 6, 1],
-  inkMuted: [226, 12, 50, 1],
-  inkDisabled: [226, 12, 72, 1],
-  white: [0, 0, 100, 1],
+  canvasInk: '#0c0d13',
+  inkMuted: '#70778f',
+  inkDisabled: '#afb3c0',
+  white: '#ffffff',
 
-  neutralTrack: [220, 18, 92, 1],
-  neutralTrackHover: [220, 18, 88, 1],
-  neutralTrackPressed: [220, 18, 82, 1],
-  neutralTrackDisabled: [220, 14, 90, 0.62],
-  neutralTrackOn: [264, 86, 72, 1],
-  neutralTrackOnHover: [264, 88, 68, 1],
-  neutralTrackOnPressed: [264, 90, 62, 1],
+  neutralTrack: '#e7e9ee',
+  neutralTrackHover: '#dbdfe6',
+  neutralTrackPressed: '#c9ced9',
+  neutralTrackDisabled: '#e2e4e99e',
+  neutralTrackOn: '#ab7af5',
+  neutralTrackOnHover: '#9f66f5',
+  neutralTrackOnPressed: '#8d47f5',
 
-  primaryTrack: [225, 76, 52, 1],
-  primaryTrackHover: [224, 76, 62, 1],
-  primaryTrackPressed: [227, 82, 36, 1],
-  primaryTrackDisabled: [224, 20, 80, 0.54],
-  primaryTrackOn: [260, 72, 50, 1],
-  primaryTrackOnHover: [260, 74, 58, 1],
-  primaryTrackOnPressed: [260, 78, 40, 1],
+  primaryTrack: '#2856e2',
+  primaryTrackHover: '#547ce8',
+  primaryTrackPressed: '#1131a7',
+  primaryTrackDisabled: '#c2c7d68a',
+  primaryTrackOn: '#6124db',
+  primaryTrackOnHover: '#7945e3',
+  primaryTrackOnPressed: '#4b16b6',
 
-  polarityOff: [350, 78, 48, 1],
-  polarityOffHover: [350, 78, 58, 1],
-  polarityOffPressed: [350, 86, 32, 1],
-  polarityDisabled: [350, 20, 78, 0.54],
-  polarityOn: [154, 66, 44, 1],
-  polarityOnHover: [154, 60, 54, 1],
-  polarityOnPressed: [154, 78, 27, 1],
+  polarityOff: '#da1b3b',
+  polarityOffHover: '#e7405c',
+  polarityOffPressed: '#980b23',
+  polarityDisabled: '#d2bcbf8a',
+  polarityOn: '#26ba7a',
+  polarityOnHover: '#43d093',
+  polarityOnPressed: '#0f7b4c',
 
-  thumbOff: [0, 0, 100, 1],
-  thumbDisabled: [220, 14, 84, 1],
-  thumbOn: [264, 100, 48, 1],
-  iconOff: [226, 12, 50, 1],
-  iconOn: [0, 0, 100, 1]
+  thumbOff: '#ffffff',
+  thumbDisabled: '#d0d4dc',
+  thumbOn: '#6200f5',
+  iconOff: '#70778f',
+  iconOn: '#ffffff'
 } as const;
 
 const sizes = {
@@ -169,9 +169,9 @@ const trackPalettes = {
         neutral: {
           high: states({
             rest: c.canvasInk,
-            hover: [231, 24, 12, 1],
+            hover: '#171926',
             focus: c.canvasInk,
-            pressed: [231, 24, 18, 1],
+            pressed: '#232639',
             disabled: c.neutralTrackDisabled,
             selectedRest: c.neutralTrackOn,
             selectedHover: c.neutralTrackOnHover,
@@ -190,26 +190,26 @@ const trackPalettes = {
             selectedPressed: c.neutralTrackOnPressed
           }),
           low: states({
-            rest: [220, 18, 96, 0.42],
-            hover: [220, 18, 94, 0.56],
-            focus: [220, 18, 96, 0.42],
-            pressed: [220, 18, 90, 0.64],
-            disabled: [220, 14, 90, 0.28],
-            selectedRest: [225, 76, 52, 0.28],
-            selectedHover: [225, 76, 52, 0.36],
-            selectedFocus: [225, 76, 52, 0.28],
-            selectedPressed: [225, 76, 52, 0.44]
+            rest: '#f3f4f76b',
+            hover: '#edeff28f',
+            focus: '#f3f4f76b',
+            pressed: '#e1e4eaa3',
+            disabled: '#e2e4e947',
+            selectedRest: '#2856e247',
+            selectedHover: '#2856e25c',
+            selectedFocus: '#2856e247',
+            selectedPressed: '#2856e270'
           }),
           lowest: states({
             rest: transparent,
-            hover: [220, 18, 92, 0.22],
+            hover: '#e7e9ee38',
             focus: transparent,
-            pressed: [220, 18, 84, 0.32],
-            disabled: [220, 14, 90, 0.18],
-            selectedRest: [225, 76, 52, 0.16],
-            selectedHover: [225, 76, 52, 0.24],
-            selectedFocus: [225, 76, 52, 0.16],
-            selectedPressed: [225, 76, 52, 0.32]
+            pressed: '#cfd4de52',
+            disabled: '#e2e4e92e',
+            selectedRest: '#2856e229',
+            selectedHover: '#2856e23d',
+            selectedFocus: '#2856e229',
+            selectedPressed: '#2856e252'
           })
         },
         primary: {
@@ -217,7 +217,7 @@ const trackPalettes = {
             rest: c.primaryTrackPressed,
             hover: c.primaryTrack,
             focus: c.primaryTrackPressed,
-            pressed: [228, 86, 28, 1],
+            pressed: '#0a2385',
             disabled: c.primaryTrackDisabled,
             selectedRest: c.primaryTrackOn,
             selectedHover: c.primaryTrackOnHover,
@@ -236,26 +236,26 @@ const trackPalettes = {
             selectedPressed: c.primaryTrackOnPressed
           }),
           low: states({
-            rest: [225, 76, 52, 0.26],
-            hover: [225, 76, 52, 0.36],
-            focus: [225, 76, 52, 0.26],
-            pressed: [225, 76, 52, 0.46],
-            disabled: [224, 20, 80, 0.28],
-            selectedRest: [260, 72, 50, 0.32],
-            selectedHover: [260, 72, 50, 0.42],
-            selectedFocus: [260, 72, 50, 0.32],
-            selectedPressed: [260, 72, 50, 0.52]
+            rest: '#2856e242',
+            hover: '#2856e25c',
+            focus: '#2856e242',
+            pressed: '#2856e275',
+            disabled: '#c2c7d647',
+            selectedRest: '#6124db52',
+            selectedHover: '#6124db6b',
+            selectedFocus: '#6124db52',
+            selectedPressed: '#6124db85'
           }),
           lowest: states({
             rest: transparent,
-            hover: [225, 76, 52, 0.18],
+            hover: '#2856e22e',
             focus: transparent,
-            pressed: [225, 76, 52, 0.3],
-            disabled: [224, 20, 80, 0.16],
-            selectedRest: [260, 72, 50, 0.18],
-            selectedHover: [260, 72, 50, 0.28],
-            selectedFocus: [260, 72, 50, 0.18],
-            selectedPressed: [260, 72, 50, 0.38]
+            pressed: '#2856e24d',
+            disabled: '#c2c7d629',
+            selectedRest: '#6124db2e',
+            selectedHover: '#6124db47',
+            selectedFocus: '#6124db2e',
+            selectedPressed: '#6124db61'
           })
         },
         polarity: {
@@ -263,7 +263,7 @@ const trackPalettes = {
             rest: c.polarityOffPressed,
             hover: c.polarityOff,
             focus: c.polarityOffPressed,
-            pressed: [350, 90, 24, 1],
+            pressed: '#740618',
             disabled: c.polarityDisabled,
             selectedRest: c.polarityOn,
             selectedHover: c.polarityOnHover,
@@ -282,26 +282,26 @@ const trackPalettes = {
             selectedPressed: c.polarityOnPressed
           }),
           low: states({
-            rest: [350, 78, 48, 0.28],
-            hover: [350, 78, 48, 0.38],
-            focus: [350, 78, 48, 0.28],
-            pressed: [350, 78, 48, 0.48],
-            disabled: [350, 20, 78, 0.28],
-            selectedRest: [154, 66, 44, 0.32],
-            selectedHover: [154, 66, 44, 0.42],
-            selectedFocus: [154, 66, 44, 0.32],
-            selectedPressed: [154, 66, 44, 0.52]
+            rest: '#da1b3b47',
+            hover: '#da1b3b61',
+            focus: '#da1b3b47',
+            pressed: '#da1b3b7a',
+            disabled: '#d2bcbf47',
+            selectedRest: '#26ba7a52',
+            selectedHover: '#26ba7a6b',
+            selectedFocus: '#26ba7a52',
+            selectedPressed: '#26ba7a85'
           }),
           lowest: states({
             rest: transparent,
-            hover: [350, 78, 48, 0.18],
+            hover: '#da1b3b2e',
             focus: transparent,
-            pressed: [350, 78, 48, 0.3],
-            disabled: [350, 20, 78, 0.16],
-            selectedRest: [154, 66, 44, 0.18],
-            selectedHover: [154, 66, 44, 0.28],
-            selectedFocus: [154, 66, 44, 0.18],
-            selectedPressed: [154, 66, 44, 0.38]
+            pressed: '#da1b3b4d',
+            disabled: '#d2bcbf29',
+            selectedRest: '#26ba7a2e',
+            selectedHover: '#26ba7a47',
+            selectedFocus: '#26ba7a2e',
+            selectedPressed: '#26ba7a61'
           })
         }
       },
@@ -309,9 +309,9 @@ const trackPalettes = {
         neutral: {
           high: states({
             rest: c.canvasInk,
-            hover: [231, 24, 12, 1],
+            hover: '#171926',
             focus: c.canvasInk,
-            pressed: [231, 24, 18, 1],
+            pressed: '#232639',
             disabled: c.neutralTrackDisabled,
             selectedRest: transparent,
             selectedHover: transparent,
@@ -319,10 +319,10 @@ const trackPalettes = {
             selectedPressed: transparent
           }),
           medium: states({
-            rest: [226, 12, 70, 1],
-            hover: [226, 12, 60, 1],
-            focus: [226, 12, 70, 1],
-            pressed: [226, 12, 50, 1],
+            rest: '#a9aebc',
+            hover: '#8d92a5',
+            focus: '#a9aebc',
+            pressed: '#70778f',
             disabled: c.neutralTrackDisabled,
             selectedRest: transparent,
             selectedHover: transparent,
@@ -330,22 +330,22 @@ const trackPalettes = {
             selectedPressed: transparent
           }),
           low: states({
-            rest: [226, 12, 72, 0.52],
-            hover: [226, 12, 62, 0.62],
-            focus: [226, 12, 72, 0.52],
-            pressed: [226, 12, 50, 0.72],
-            disabled: [220, 14, 90, 0.28],
+            rest: '#afb3c085',
+            hover: '#9298aa9e',
+            focus: '#afb3c085',
+            pressed: '#70778fb8',
+            disabled: '#e2e4e947',
             selectedRest: transparent,
             selectedHover: transparent,
             selectedFocus: transparent,
             selectedPressed: transparent
           }),
           lowest: states({
-            rest: [226, 12, 72, 0.24],
-            hover: [226, 12, 62, 0.36],
-            focus: [226, 12, 72, 0.24],
-            pressed: [226, 12, 50, 0.48],
-            disabled: [220, 14, 90, 0.18],
+            rest: '#afb3c03d',
+            hover: '#9298aa5c',
+            focus: '#afb3c03d',
+            pressed: '#70778f7a',
+            disabled: '#e2e4e92e',
             selectedRest: transparent,
             selectedHover: transparent,
             selectedFocus: transparent,
@@ -357,7 +357,7 @@ const trackPalettes = {
             rest: c.primaryTrackPressed,
             hover: c.primaryTrack,
             focus: c.primaryTrackPressed,
-            pressed: [228, 86, 28, 1],
+            pressed: '#0a2385',
             disabled: c.primaryTrackDisabled,
             selectedRest: transparent,
             selectedHover: transparent,
@@ -376,22 +376,22 @@ const trackPalettes = {
             selectedPressed: transparent
           }),
           low: states({
-            rest: [225, 76, 52, 0.44],
-            hover: [225, 76, 52, 0.56],
-            focus: [225, 76, 52, 0.44],
-            pressed: [225, 76, 52, 0.68],
-            disabled: [224, 20, 80, 0.28],
+            rest: '#2856e270',
+            hover: '#2856e28f',
+            focus: '#2856e270',
+            pressed: '#2856e2ad',
+            disabled: '#c2c7d647',
             selectedRest: transparent,
             selectedHover: transparent,
             selectedFocus: transparent,
             selectedPressed: transparent
           }),
           lowest: states({
-            rest: [225, 76, 52, 0.26],
-            hover: [225, 76, 52, 0.38],
-            focus: [225, 76, 52, 0.26],
-            pressed: [225, 76, 52, 0.5],
-            disabled: [224, 20, 80, 0.16],
+            rest: '#2856e242',
+            hover: '#2856e261',
+            focus: '#2856e242',
+            pressed: '#2856e280',
+            disabled: '#c2c7d629',
             selectedRest: transparent,
             selectedHover: transparent,
             selectedFocus: transparent,
@@ -403,7 +403,7 @@ const trackPalettes = {
             rest: c.polarityOffPressed,
             hover: c.polarityOff,
             focus: c.polarityOffPressed,
-            pressed: [350, 90, 24, 1],
+            pressed: '#740618',
             disabled: c.polarityDisabled,
             selectedRest: transparent,
             selectedHover: transparent,
@@ -422,22 +422,22 @@ const trackPalettes = {
             selectedPressed: transparent
           }),
           low: states({
-            rest: [350, 78, 48, 0.44],
-            hover: [350, 78, 48, 0.56],
-            focus: [350, 78, 48, 0.44],
-            pressed: [350, 78, 48, 0.68],
-            disabled: [350, 20, 78, 0.28],
+            rest: '#da1b3b70',
+            hover: '#da1b3b8f',
+            focus: '#da1b3b70',
+            pressed: '#da1b3bad',
+            disabled: '#d2bcbf47',
             selectedRest: transparent,
             selectedHover: transparent,
             selectedFocus: transparent,
             selectedPressed: transparent
           }),
           lowest: states({
-            rest: [350, 78, 48, 0.26],
-            hover: [350, 78, 48, 0.38],
-            focus: [350, 78, 48, 0.26],
-            pressed: [350, 78, 48, 0.5],
-            disabled: [350, 20, 78, 0.16],
+            rest: '#da1b3b42',
+            hover: '#da1b3b61',
+            focus: '#da1b3b42',
+            pressed: '#da1b3b80',
+            disabled: '#d2bcbf29',
             selectedRest: transparent,
             selectedHover: transparent,
             selectedFocus: transparent,
@@ -599,11 +599,11 @@ const textPalettes = {
             disabled: ref(c.inkDisabled)
           },
           low: {
-            rest: [226, 12, 50, 0.78],
+            rest: '#70778fc7',
             disabled: ref(c.inkDisabled)
           },
           lowest: {
-            rest: [226, 12, 50, 0.62],
+            rest: '#70778f9e',
             disabled: ref(c.inkDisabled)
           }
         },
@@ -617,11 +617,11 @@ const textPalettes = {
             disabled: ref(c.inkDisabled)
           },
           low: {
-            rest: [225, 76, 52, 0.78],
+            rest: '#2856e2c7',
             disabled: ref(c.inkDisabled)
           },
           lowest: {
-            rest: [225, 76, 52, 0.62],
+            rest: '#2856e29e',
             disabled: ref(c.inkDisabled)
           }
         },
@@ -641,16 +641,16 @@ const textPalettes = {
             disabled: ref(c.inkDisabled)
           },
           low: {
-            rest: [350, 78, 48, 0.78],
+            rest: '#da1b3bc7',
             selected: {
-              rest: ref([154, 66, 44, 0.78] as const)
+              rest: ref('#26ba7ac7' as const)
             },
             disabled: ref(c.inkDisabled)
           },
           lowest: {
-            rest: [350, 78, 48, 0.62],
+            rest: '#da1b3b9e',
             selected: {
-              rest: ref([154, 66, 44, 0.62] as const)
+              rest: ref('#26ba7a9e' as const)
             },
             disabled: ref(c.inkDisabled)
           }
@@ -688,10 +688,10 @@ const iconPalettes = {
             selectedPressed: c.iconOn
           }),
           low: states({
-            rest: [226, 12, 50, 0.78],
-            hover: [226, 12, 50, 0.78],
-            focus: [226, 12, 50, 0.78],
-            pressed: [226, 12, 50, 0.78],
+            rest: '#70778fc7',
+            hover: '#70778fc7',
+            focus: '#70778fc7',
+            pressed: '#70778fc7',
             disabled: c.inkDisabled,
             selectedRest: c.white,
             selectedHover: c.white,
@@ -699,10 +699,10 @@ const iconPalettes = {
             selectedPressed: c.white
           }),
           lowest: states({
-            rest: [226, 12, 50, 0.62],
-            hover: [226, 12, 50, 0.62],
-            focus: [226, 12, 50, 0.62],
-            pressed: [226, 12, 50, 0.62],
+            rest: '#70778f9e',
+            hover: '#70778f9e',
+            focus: '#70778f9e',
+            pressed: '#70778f9e',
             disabled: c.inkDisabled,
             selectedRest: c.white,
             selectedHover: c.white,
@@ -734,10 +734,10 @@ const iconPalettes = {
             selectedPressed: c.white
           }),
           low: states({
-            rest: [225, 76, 52, 0.78],
-            hover: [225, 76, 52, 0.78],
-            focus: [225, 76, 52, 0.78],
-            pressed: [225, 76, 52, 0.78],
+            rest: '#2856e2c7',
+            hover: '#2856e2c7',
+            focus: '#2856e2c7',
+            pressed: '#2856e2c7',
             disabled: c.inkDisabled,
             selectedRest: c.white,
             selectedHover: c.white,
@@ -745,10 +745,10 @@ const iconPalettes = {
             selectedPressed: c.white
           }),
           lowest: states({
-            rest: [225, 76, 52, 0.62],
-            hover: [225, 76, 52, 0.62],
-            focus: [225, 76, 52, 0.62],
-            pressed: [225, 76, 52, 0.62],
+            rest: '#2856e29e',
+            hover: '#2856e29e',
+            focus: '#2856e29e',
+            pressed: '#2856e29e',
             disabled: c.inkDisabled,
             selectedRest: c.white,
             selectedHover: c.white,
@@ -780,10 +780,10 @@ const iconPalettes = {
             selectedPressed: c.white
           }),
           low: states({
-            rest: [350, 78, 48, 0.78],
-            hover: [350, 78, 48, 0.78],
-            focus: [350, 78, 48, 0.78],
-            pressed: [350, 78, 48, 0.78],
+            rest: '#da1b3bc7',
+            hover: '#da1b3bc7',
+            focus: '#da1b3bc7',
+            pressed: '#da1b3bc7',
             disabled: c.inkDisabled,
             selectedRest: c.white,
             selectedHover: c.white,
@@ -791,10 +791,10 @@ const iconPalettes = {
             selectedPressed: c.white
           }),
           lowest: states({
-            rest: [350, 78, 48, 0.62],
-            hover: [350, 78, 48, 0.62],
-            focus: [350, 78, 48, 0.62],
-            pressed: [350, 78, 48, 0.62],
+            rest: '#da1b3b9e',
+            hover: '#da1b3b9e',
+            focus: '#da1b3b9e',
+            pressed: '#da1b3b9e',
             disabled: c.inkDisabled,
             selectedRest: c.white,
             selectedHover: c.white,

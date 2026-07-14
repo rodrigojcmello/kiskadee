@@ -89,7 +89,7 @@ describe('web-style-key-identity', () => {
 
     it('appends the compact token suffix for border-color token emission', () => {
       expect(
-        buildWebStyleKeyIdentity('borderColor__[0,0,0,1]', {
+        buildWebStyleKeyIdentity('borderColor__#000000', {
           borderRadiusEmission: 'direct',
           borderWidthEmission: 'direct',
           borderColorEmission: 'token',
@@ -97,12 +97,12 @@ describe('web-style-key-identity', () => {
           paddingEmission: 'direct',
           shadowEmission: 'direct'
         })
-      ).toBe('borderColor__[0,0,0,1]@@t');
+      ).toBe('borderColor__#000000@@t');
     });
 
     it('appends the compact interpolation suffix for box-color gradient emission', () => {
       expect(
-        buildWebStyleKeyIdentity('boxColor__[0,0,0,1]', {
+        buildWebStyleKeyIdentity('boxColor__#000000', {
           boxColorGradientEmission: 'interpolated',
           borderRadiusEmission: 'direct',
           borderWidthEmission: 'direct',
@@ -111,12 +111,12 @@ describe('web-style-key-identity', () => {
           paddingEmission: 'direct',
           shadowEmission: 'direct'
         })
-      ).toBe('boxColor__[0,0,0,1]@@i');
+      ).toBe('boxColor__#000000@@i');
     });
 
     it('keeps shadow keys unchanged when shadow emission stays raw', () => {
       expect(
-        buildWebStyleKeyIdentity('shadow__[0,0,4,[0,0,0,0.22]]', {
+        buildWebStyleKeyIdentity('shadow__[0,0,4,"#00000038"]', {
           borderRadiusEmission: 'mirrored',
           borderWidthEmission: 'mirrored',
           borderColorEmission: 'direct',
@@ -124,12 +124,12 @@ describe('web-style-key-identity', () => {
           paddingEmission: 'compensated',
           shadowEmission: 'direct'
         })
-      ).toBe('shadow__[0,0,4,[0,0,0,0.22]]');
+      ).toBe('shadow__[0,0,4,"#00000038"]');
     });
 
     it('appends the compact var suffix for shadow emission', () => {
       expect(
-        buildWebStyleKeyIdentity('shadow__[0,0,4,[0,0,0,0.22]]', {
+        buildWebStyleKeyIdentity('shadow__[0,0,4,"#00000038"]', {
           borderRadiusEmission: 'direct',
           borderWidthEmission: 'direct',
           borderColorEmission: 'direct',
@@ -137,7 +137,7 @@ describe('web-style-key-identity', () => {
           paddingEmission: 'direct',
           shadowEmission: 'token'
         })
-      ).toBe('shadow__[0,0,4,[0,0,0,0.22]]@@t');
+      ).toBe('shadow__[0,0,4,"#00000038"]@@t');
     });
   });
 
@@ -156,12 +156,12 @@ describe('web-style-key-identity', () => {
     it('uses the button e1 policy from the builder config for box-color interpolation', () => {
       expect(
         resolveWebStyleKeyIdentity(
-          'boxColor__[0,0,0,1]',
+          'boxColor__#000000',
           DEFAULT_WEB_STYLE_EMISSION_POLICY,
           'button',
           'e1'
         )
-      ).toBe('boxColor__[0,0,0,1]@@i');
+      ).toBe('boxColor__#000000@@i');
     });
 
     it('uses the tabs e2 policy from the builder config for border-radius', () => {
@@ -207,12 +207,12 @@ describe('web-style-key-identity', () => {
     it('uses the tabs shadow var policy for bridge tabs', () => {
       expect(
         resolveWebStyleKeyIdentity(
-          'shadow__[0,0,4,[0,0,0,0.22]]',
+          'shadow__[0,0,4,"#00000038"]',
           DEFAULT_WEB_STYLE_EMISSION_POLICY,
           'tabs',
           'e2'
         )
-      ).toBe('shadow__[0,0,4,[0,0,0,0.22]]@@t');
+      ).toBe('shadow__[0,0,4,"#00000038"]@@t');
     });
 
     it('keeps button border-radius in mirrored emission mode', () => {
@@ -240,23 +240,23 @@ describe('web-style-key-identity', () => {
     it('uses the textField e3 policy from the builder config for border color', () => {
       expect(
         resolveWebStyleKeyIdentity(
-          'borderColor__[0,0,0,1]',
+          'borderColor__#000000',
           DEFAULT_WEB_STYLE_EMISSION_POLICY,
           'textField',
           'e3'
         )
-      ).toBe('borderColor__[0,0,0,1]@@t');
+      ).toBe('borderColor__#000000@@t');
     });
 
     it('uses the textField e3 policy from the builder config for text color', () => {
       expect(
         resolveWebStyleKeyIdentity(
-          'textColor__[0,0,0,1]',
+          'textColor__#000000',
           DEFAULT_WEB_STYLE_EMISSION_POLICY,
           'textField',
           'e3'
         )
-      ).toBe('textColor__[0,0,0,1]@@m');
+      ).toBe('textColor__#000000@@m');
     });
 
     it('uses the textField e2 policy from the builder config for margin left', () => {

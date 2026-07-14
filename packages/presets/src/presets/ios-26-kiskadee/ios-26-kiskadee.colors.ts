@@ -1,10 +1,11 @@
+import { invertKiskadeeHexScale } from '@kiskadee/core';
 import type {
   ComponentIntents,
   GlobalSemanticsBySegment,
   GlobalSemanticsByTheme,
   PrimitiveColors
 } from '@kiskadee/core';
-import dynamicColor from '../dynamic.color.ts';
+import { dynamicDark, dynamicLight } from '../dynamic.color.ts';
 import neutralLight from './colors/neutral.light.ts';
 import primaryLight from './colors/primary.light.ts';
 import redLikeLight from './colors/red-like.light.ts';
@@ -22,15 +23,24 @@ import redLikeLight from './colors/red-like.light.ts';
  */
 export const primitiveColors = {
   blue: {
-    v1: { solid: { light: primaryLight, dark: primaryLight } },
+    v1: {
+      kind: 'static',
+      scales: { light: primaryLight, dark: invertKiskadeeHexScale(primaryLight) }
+    },
     // `dynamic` segment override uses `dynamic`.
-    dynamic: { solid: { light: dynamicColor, dark: dynamicColor } }
+    dynamic: { kind: 'dynamic', scales: { light: dynamicLight, dark: dynamicDark } }
   },
   black: {
-    v1: { solid: { light: neutralLight, dark: neutralLight } }
+    v1: {
+      kind: 'static',
+      scales: { light: neutralLight, dark: invertKiskadeeHexScale(neutralLight) }
+    }
   },
   red: {
-    v1: { solid: { light: redLikeLight, dark: redLikeLight } }
+    v1: {
+      kind: 'static',
+      scales: { light: redLikeLight, dark: invertKiskadeeHexScale(redLikeLight) }
+    }
   }
 } as const satisfies PrimitiveColors;
 

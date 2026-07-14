@@ -1,4 +1,4 @@
-import { breakpoints, type Schema } from '@kiskadee/core';
+import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import { createElegantButtonSchema } from './components/button.schema.ts';
 import { createElegantCardSchema } from './components/card.schema.ts';
@@ -12,8 +12,8 @@ export type Segment = (typeof segmentNames)[number];
 
 const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
 const c = createPresetColorGetter<Segment>(schemaContext);
-const transparent = [0, 0, 0, 0] as const;
-const shadowBlack = (alpha: number) => [0, 0, 0, alpha] as const;
+const transparent = '#00000000' as const;
+const shadowBlack = (alpha: number) => withAlpha('#000000', alpha * 100);
 
 export const schema: Schema<Segment> = {
   name: 'Elegant',
@@ -81,8 +81,8 @@ export const schema: Schema<Segment> = {
     palettes: {
       default: {
         light: {
-          background: [0, 0, 100, 1],
-          focusColor: '#007AFF',
+          background: '#ffffff',
+          focusColor: '#007aff',
           effects: {
             activationFeedback: {
               tone: {
@@ -91,7 +91,7 @@ export const schema: Schema<Segment> = {
                   opacity: 0.1
                 },
                 vivid: {
-                  color: '#FFFFFF',
+                  color: '#ffffff',
                   opacity: 0.2
                 }
               }

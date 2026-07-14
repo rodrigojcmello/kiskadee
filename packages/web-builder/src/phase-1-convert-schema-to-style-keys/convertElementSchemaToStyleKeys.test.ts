@@ -42,7 +42,7 @@ describe('convertElementSchemaToStyleKeys', () => {
                   boxColor: {
                     primary: {
                       medium: {
-                        rest: [10, 20, 30, 1]
+                        rest: '#5c423d'
                       }
                     }
                   }
@@ -54,7 +54,7 @@ describe('convertElementSchemaToStyleKeys', () => {
                 x: { rest: 0 },
                 y: { rest: 2 },
                 blur: { rest: 4 },
-                color: { rest: [0, 0, 0, 0.2] }
+                color: { rest: '#00000033' }
               }
             }
           }
@@ -79,20 +79,20 @@ describe('convertElementSchemaToStyleKeys', () => {
       default: {
         light: {
           primary: {
-            rest: ['boxColor__[10,20,30,1]']
+            rest: ['boxColor__#5c423d']
           }
         }
       }
     });
     expect(e1.effects).toEqual({
-      rest: ['shadow__[0,2,4,[0,0,0,0.2]]']
+      rest: ['shadow__[0,2,4,"#00000033"]']
     });
     const metadataKey = buildScopedToneMetadataKey(
       {
         componentName: 'button',
         elementName: 'e1'
       },
-      'primary::boxColor__[10,20,30,1]'
+      'primary::boxColor__#5c423d'
     );
 
     expect(toneMetadataByPalette.get('default.light')?.get(metadataKey)).toEqual({
@@ -133,7 +133,7 @@ describe('convertElementSchemaToStyleKeys', () => {
   });
 
   it('keeps emphasis metadata scoped by palette', () => {
-    const sameColor = [0, 0, 0, 1] as const;
+    const sameColor = '#000000' as const;
     const schema = createSchema({
       button: {
         elements: {
@@ -172,7 +172,7 @@ describe('convertElementSchemaToStyleKeys', () => {
         componentName: 'button',
         elementName: 'e1'
       },
-      'primary::boxColor__[0,0,0,1]'
+      'primary::boxColor__#000000'
     );
 
     expect(toneMetadataByPalette.get('default.light')?.get(metadataKey)).toEqual({

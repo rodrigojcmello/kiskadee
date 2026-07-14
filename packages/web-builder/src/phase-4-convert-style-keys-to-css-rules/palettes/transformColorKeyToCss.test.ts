@@ -24,20 +24,20 @@ describe('transformColorKeyToCss', () => {
       describe('base (rest is implicit)', () => {
         it('forceState=false', () => {
           const force = false as const;
-          const styleKey = 'textColor__[120,50,50,1]';
+          const styleKey = 'textColor__#40bf40';
           const result = transformColorKeyToCss(styleKey, className, force);
-          expect(result).toEqual('.abc { color: #40BF40 }');
+          expect(result).toEqual('.abc { color: #40bf40 }');
         });
         it('forceState=true', () => {
           const force = true as const;
-          const styleKey = 'textColor__[120,50,50,1]';
+          const styleKey = 'textColor__#40bf40';
           const result = transformColorKeyToCss(styleKey, className, force);
-          expect(result).toEqual('.abc { color: #40BF40 }');
+          expect(result).toEqual('.abc { color: #40bf40 }');
         });
 
         it('emits --k-txc and color when text-color emission is mirrored', () => {
           const force = false as const;
-          const result = transformColorKeyToCss('textColor__[120,50,50,1]', className, force, {
+          const result = transformColorKeyToCss('textColor__#40bf40', className, force, {
             styleEmissionPolicy: {
               textColorEmission: 'mirrored',
               borderRadiusEmission: 'direct',
@@ -48,12 +48,12 @@ describe('transformColorKeyToCss', () => {
             }
           });
 
-          expect(result).toEqual('.abc { --k-txc: #40BF40; color: #40BF40 }');
+          expect(result).toEqual('.abc { --k-txc: #40bf40; color: #40bf40 }');
         });
 
         it('emits only --k-bdc when border-color emission is token', () => {
           const force = false as const;
-          const result = transformColorKeyToCss('borderColor__[120,50,50,1]', className, force, {
+          const result = transformColorKeyToCss('borderColor__#40bf40', className, force, {
             styleEmissionPolicy: {
               borderRadiusEmission: 'direct',
               borderColorEmission: 'token',
@@ -63,30 +63,22 @@ describe('transformColorKeyToCss', () => {
             }
           });
 
-          expect(result).toEqual('.abc { --k-bdc: #40BF40 }');
+          expect(result).toEqual('.abc { --k-bdc: #40bf40 }');
         });
       });
 
       describe('hover', () => {
         it('forceState=false', () => {
           const force = false as const;
-          const result = transformColorKeyToCss(
-            'boxColor--hover__[240,50,50,0.5]',
-            className,
-            force
-          );
-          expect(result).toEqual('.abc.-n:hover:where(:not(:active)) { background: #4040BF80 }');
+          const result = transformColorKeyToCss('boxColor--hover__#4040bf80', className, force);
+          expect(result).toEqual('.abc.-n:hover:where(:not(:active)) { background: #4040bf80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
-          const result = transformColorKeyToCss(
-            'boxColor--hover__[240,50,50,0.5]',
-            className,
-            force
-          );
+          const result = transformColorKeyToCss('boxColor--hover__#4040bf80', className, force);
           // expects both :hover and forced class (.-h) gated by activator (.-a) applied to the same element (i.e. .abc.-h.-a)
           expect(result).toEqual(
-            '.abc.-n:hover:where(:not(:active)), .abc.-h.-a { background: #4040BF80 }'
+            '.abc.-n:hover:where(:not(:active)), .abc.-h.-a { background: #4040bf80 }'
           );
         });
       });
@@ -94,39 +86,34 @@ describe('transformColorKeyToCss', () => {
       describe('solid as gradient (feature flag)', () => {
         it('rest emits vars + background when enabled', () => {
           const force = false as const;
-          const result = transformColorKeyToCss('boxColor__[240,50,50,0.5]', className, force, {
+          const result = transformColorKeyToCss('boxColor__#4040bf80', className, force, {
             enableSolidBoxColorAsGradient: true,
             styleEmissionPolicy: interpolatedBoxColorStyleEmissionPolicy
           });
 
           expect(result).toEqual(
-            '.abc { --k-bg0: #4040BF80; --k-bg1: #4040BF80; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }'
+            '.abc { --k-bg0: #4040bf80; --k-bg1: #4040bf80; background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }'
           );
         });
 
         it('hover emits vars only when enabled (forceState=true)', () => {
           const force = true as const;
-          const result = transformColorKeyToCss(
-            'boxColor--hover__[240,50,50,0.5]',
-            className,
-            force,
-            {
-              enableSolidBoxColorAsGradient: true,
-              styleEmissionPolicy: interpolatedBoxColorStyleEmissionPolicy
-            }
-          );
+          const result = transformColorKeyToCss('boxColor--hover__#4040bf80', className, force, {
+            enableSolidBoxColorAsGradient: true,
+            styleEmissionPolicy: interpolatedBoxColorStyleEmissionPolicy
+          });
 
           expect(result).toEqual(
-            '.abc.-n:hover:where(:not(:active)), .abc.-h.-a { --k-bg0: #4040BF80; --k-bg1: #4040BF80; }'
+            '.abc.-n:hover:where(:not(:active)), .abc.-h.-a { --k-bg0: #4040bf80; --k-bg1: #4040bf80; }'
           );
         });
 
         it('does not force non-boxColor properties into gradients', () => {
           const force = false as const;
-          const result = transformColorKeyToCss('textColor__[240,50,50,0.5]', className, force, {
+          const result = transformColorKeyToCss('textColor__#4040bf80', className, force, {
             enableSolidBoxColorAsGradient: true
           });
-          expect(result).toEqual('.abc { color: #4040BF80 }');
+          expect(result).toEqual('.abc { color: #4040bf80 }');
         });
       });
 
@@ -134,22 +121,22 @@ describe('transformColorKeyToCss', () => {
         it('forceState=false', () => {
           const force = false as const;
           const result = transformColorKeyToCss(
-            'boxColor--selected:hover__[240,50,50,0.5]',
+            'boxColor--selected:hover__#4040bf80',
             className,
             force
           );
-          expect(result).toEqual('.abc.-n.-s:hover:where(:not(:active)) { background: #4040BF80 }');
+          expect(result).toEqual('.abc.-n.-s:hover:where(:not(:active)) { background: #4040bf80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
           const result = transformColorKeyToCss(
-            'boxColor--selected:hover__[240,50,50,0.5]',
+            'boxColor--selected:hover__#4040bf80',
             className,
             force
           );
           // native selector must NOT include activator (-a); forced selector remains gated by activator (-a)
           expect(result).toEqual(
-            '.abc.-n.-s:hover:where(:not(:active)), .abc.-s.-h.-a { background: #4040BF80 }'
+            '.abc.-n.-s:hover:where(:not(:active)), .abc.-s.-h.-a { background: #4040bf80 }'
           );
         });
       });
@@ -157,21 +144,13 @@ describe('transformColorKeyToCss', () => {
       describe('disabled (forced branch always present)', () => {
         it('forceState=false', () => {
           const force = false as const;
-          const result = transformColorKeyToCss(
-            'boxColor--disabled__[240,50,50,0.5]',
-            className,
-            force
-          );
-          expect(result).toEqual('.abc.-d.-a { background: #4040BF80 }');
+          const result = transformColorKeyToCss('boxColor--disabled__#4040bf80', className, force);
+          expect(result).toEqual('.abc.-d.-a { background: #4040bf80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
-          const result = transformColorKeyToCss(
-            'boxColor--disabled__[240,50,50,0.5]',
-            className,
-            force
-          );
-          expect(result).toEqual('.abc.-d.-a { background: #4040BF80 }');
+          const result = transformColorKeyToCss('boxColor--disabled__#4040bf80', className, force);
+          expect(result).toEqual('.abc.-d.-a { background: #4040bf80 }');
         });
       });
 
@@ -182,7 +161,7 @@ describe('transformColorKeyToCss', () => {
             kind: 'linear',
             angle: 180,
             stops: [
-              { color: [240, 50, 50, 0.5], position: 0 },
+              { color: '#4040bf80', position: 0 },
               { color: 'var(--x)', position: 100 }
             ]
           } as const;
@@ -194,7 +173,7 @@ describe('transformColorKeyToCss', () => {
             { styleEmissionPolicy: interpolatedBoxColorStyleEmissionPolicy }
           );
           expect(result).toEqual(
-            '.abc { --k-bg0: #4040BF80; --k-bg1: var(--x); background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }'
+            '.abc { --k-bg0: #4040bf80; --k-bg1: var(--x); background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }'
           );
         });
 
@@ -204,7 +183,7 @@ describe('transformColorKeyToCss', () => {
             kind: 'linear',
             angle: 180,
             stops: [
-              { color: [240, 50, 50, 0.5], position: 0 },
+              { color: '#4040bf80', position: 0 },
               { color: 'var(--x)', position: 100 }
             ]
           } as const;
@@ -218,7 +197,7 @@ describe('transformColorKeyToCss', () => {
 
           // Non-rest rules only override the variables.
           expect(result).toEqual(
-            '.abc.-n:hover:where(:not(:active)), .abc.-h.-a { --k-bg0: #4040BF80; --k-bg1: var(--x); }'
+            '.abc.-n:hover:where(:not(:active)), .abc.-h.-a { --k-bg0: #4040bf80; --k-bg1: var(--x); }'
           );
         });
 
@@ -228,8 +207,8 @@ describe('transformColorKeyToCss', () => {
             kind: 'linear',
             angle: 180,
             stops: [
-              { color: [120, 50, 50, 1], position: 0 },
-              { color: [0, 0, 0, 1], position: 50 },
+              { color: '#40bf40', position: 0 },
+              { color: '#000000', position: 50 },
               { color: 'var(--x)', position: 100 }
             ]
           } as const;
@@ -241,7 +220,7 @@ describe('transformColorKeyToCss', () => {
             { styleEmissionPolicy: interpolatedBoxColorStyleEmissionPolicy }
           );
           expect(result).toEqual(
-            '.abc { --k-bg0: #40BF40; --k-bg1: #000; --k-bg2: var(--x); background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 50%, var(--k-bg2) 100%) }'
+            '.abc { --k-bg0: #40bf40; --k-bg1: #000; --k-bg2: var(--x); background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 50%, var(--k-bg2) 100%) }'
           );
         });
 
@@ -251,10 +230,10 @@ describe('transformColorKeyToCss', () => {
             kind: 'linear',
             angle: 180,
             stops: [
-              { color: [120, 50, 50, 1], position: 0 },
-              { color: [0, 0, 0, 1], position: 33 },
+              { color: '#40bf40', position: 0 },
+              { color: '#000000', position: 33 },
               { color: 'var(--x)', position: 66 },
-              { color: [240, 50, 50, 0.5], position: 100 }
+              { color: '#4040bf80', position: 100 }
             ]
           } as const;
 
@@ -264,7 +243,7 @@ describe('transformColorKeyToCss', () => {
             force
           );
           expect(result).toEqual(
-            '.abc { background: linear-gradient(180deg, #40BF40 0%, #000 33%, var(--x) 66%, #4040BF80 100%) }'
+            '.abc { background: linear-gradient(180deg, #40bf40 0%, #000 33%, var(--x) 66%, #4040bf80 100%) }'
           );
         });
 
@@ -273,8 +252,8 @@ describe('transformColorKeyToCss', () => {
             kind: 'linear',
             angle: 180,
             stops: [
-              { color: [240, 50, 50, 0.5], position: 0 },
-              { color: [0, 0, 0, 1], position: 100 }
+              { color: '#4040bf80', position: 0 },
+              { color: '#000000', position: 100 }
             ]
           } as const;
 
@@ -301,23 +280,15 @@ describe('transformColorKeyToCss', () => {
       describe('==hover', () => {
         it('forceState=false', () => {
           const force = false as const;
-          const result = transformColorKeyToCss(
-            'boxColor==hover__[240,50,50,0.5]',
-            className,
-            force
-          );
-          expect(result).toEqual('.-n:hover:where(:not(:active)) .abc { background: #4040BF80 }');
+          const result = transformColorKeyToCss('boxColor==hover__#4040bf80', className, force);
+          expect(result).toEqual('.-n:hover:where(:not(:active)) .abc { background: #4040bf80 }');
         });
         it('forceState=true', () => {
           const force = true as const;
-          const result = transformColorKeyToCss(
-            'boxColor==hover__[240,50,50,0.5]',
-            className,
-            force
-          );
+          const result = transformColorKeyToCss('boxColor==hover__#4040bf80', className, force);
           // expects both parent :hover and forced parent class (.-h) to be combined as selectors
           expect(result).toEqual(
-            '.-n:hover:where(:not(:active)) .abc, .-a.-h .abc { background: #4040BF80 }'
+            '.-n:hover:where(:not(:active)) .abc, .-a.-h .abc { background: #4040bf80 }'
           );
         });
       });
@@ -325,13 +296,13 @@ describe('transformColorKeyToCss', () => {
       describe('==focus', () => {
         it('forceState=false', () => {
           const force = false as const;
-          const result = transformColorKeyToCss('textColor==focus__[0,0,0,0.3]', className, force);
-          expect(result).toEqual('.-n:focus-visible .abc { color: #0000004D }');
+          const result = transformColorKeyToCss('textColor==focus__#0000004d', className, force);
+          expect(result).toEqual('.-n:focus-visible .abc { color: #0000004d }');
         });
         it('forceState=true', () => {
           const force = true as const;
-          const result = transformColorKeyToCss('textColor==focus__[0,0,0,0.3]', className, force);
-          expect(result).toEqual('.-n:focus-visible .abc, .-a.-f .abc { color: #0000004D }');
+          const result = transformColorKeyToCss('textColor==focus__#0000004d', className, force);
+          expect(result).toEqual('.-n:focus-visible .abc, .-a.-f .abc { color: #0000004d }');
         });
       });
 
@@ -339,7 +310,7 @@ describe('transformColorKeyToCss', () => {
         it('forceState=true (forced class for non-native selected)', () => {
           const force = true as const;
           const result = transformColorKeyToCss(
-            'textColor==selected:rest__[0,0,0,1]',
+            'textColor==selected:rest__#000000',
             className,
             force
           );
@@ -351,24 +322,24 @@ describe('transformColorKeyToCss', () => {
         it('forceState=false', () => {
           const force = false as const;
           const result = transformColorKeyToCss(
-            'boxColor==selected:hover__[240,50,50,0.5]',
+            'boxColor==selected:hover__#4040bf80',
             className,
             force
           );
           expect(result).toEqual(
-            '.-n.-s:hover:where(:not(:active)) .abc { background: #4040BF80 }'
+            '.-n.-s:hover:where(:not(:active)) .abc { background: #4040bf80 }'
           );
         });
         it('forceState=true', () => {
           const force = true as const;
           const result = transformColorKeyToCss(
-            'boxColor==selected:hover__[240,50,50,0.5]',
+            'boxColor==selected:hover__#4040bf80',
             className,
             force
           );
           // parent gets native-interaction anchor -n for native, activator -a only for forced branch
           expect(result).toEqual(
-            '.-n.-s:hover:where(:not(:active)) .abc, .-a.-s.-h .abc { background: #4040BF80 }'
+            '.-n.-s:hover:where(:not(:active)) .abc, .-a.-s.-h .abc { background: #4040bf80 }'
           );
         });
       });
@@ -376,21 +347,13 @@ describe('transformColorKeyToCss', () => {
       describe('==disabled (forced branch always present)', () => {
         it('forceState=false', () => {
           const force = false as const;
-          const result = transformColorKeyToCss(
-            'textColor==disabled__[0,0,0,0.3]',
-            className,
-            force
-          );
-          expect(result).toEqual('.-a.-d .abc { color: #0000004D }');
+          const result = transformColorKeyToCss('textColor==disabled__#0000004d', className, force);
+          expect(result).toEqual('.-a.-d .abc { color: #0000004d }');
         });
         it('forceState=true', () => {
           const force = true as const;
-          const result = transformColorKeyToCss(
-            'textColor==disabled__[0,0,0,0.3]',
-            className,
-            force
-          );
-          expect(result).toEqual('.-a.-d .abc { color: #0000004D }');
+          const result = transformColorKeyToCss('textColor==disabled__#0000004d', className, force);
+          expect(result).toEqual('.-a.-d .abc { color: #0000004d }');
         });
       });
 
@@ -401,7 +364,7 @@ describe('transformColorKeyToCss', () => {
             kind: 'linear',
             angle: 180,
             stops: [
-              { color: [240, 50, 50, 0.5], position: 0 },
+              { color: '#4040bf80', position: 0 },
               { color: 'var(--x)', position: 100 }
             ]
           } as const;
@@ -415,7 +378,7 @@ describe('transformColorKeyToCss', () => {
 
           // Ref rules do not have a guaranteed rest anchor, so they must include background.
           expect(result).toEqual(
-            '.-n:hover:where(:not(:active)) .abc, .-a.-h .abc { --k-bg0: #4040BF80; --k-bg1: var(--x); background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }'
+            '.-n:hover:where(:not(:active)) .abc, .-a.-h .abc { --k-bg0: #4040bf80; --k-bg1: var(--x); background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }'
           );
         });
       });
@@ -423,13 +386,13 @@ describe('transformColorKeyToCss', () => {
 
     describe('Error handling', () => {
       it('should throw if "==" is used without a state', () => {
-        const key = 'boxColor==__[240,50,50,0.5]';
+        const key = 'boxColor==__#4040bf80';
         const fn = (): string => transformColorKeyToCss(key, className);
         expect(fn).toThrowError(ERROR_REF_REQUIRE_STATE);
       });
 
       it('should throw when using unsupported state "visited"', () => {
-        const key = 'boxColor==visited__[240,50,50,0.5]';
+        const key = 'boxColor==visited__#4040bf80';
         const fn = (): string => transformColorKeyToCss(key, className);
         expect(fn).toThrowError(ERROR_REF_REQUIRE_STATE);
       });

@@ -2,8 +2,8 @@
 
 ## Layer 1: Primitive Colors
 
-The foundation layer defines the actual color values. These are the raw HSLA
-color definitions that represent specific hues.
+The foundation layer defines the actual color values. Every declared theme is a complete canonical
+Kiskadee tonal scale stored as lowercase HEX, or as CSS color references for a dynamic asset.
 
 ```typescript
 // Examples of primitive colors (actual type lives in @kiskadee/core)

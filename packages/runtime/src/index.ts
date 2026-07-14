@@ -1,4 +1,3 @@
-import { hexToHsl } from './colorUtils';
 import { generatePrimaryScale } from './generator';
 
 export type {
@@ -25,12 +24,11 @@ export function applyDynamicTheme(
   primaryColorHex: string,
   target: HTMLElement = document.documentElement
 ): void {
-  const [h, s] = hexToHsl(primaryColorHex);
-  const vars = generatePrimaryScale(h, s);
+  const vars = generatePrimaryScale(primaryColorHex);
 
   for (const [key, value] of Object.entries(vars)) {
     target.style.setProperty(key, value);
   }
 }
 
-export { generatePrimaryScale, hexToHsl };
+export { generatePrimaryScale };

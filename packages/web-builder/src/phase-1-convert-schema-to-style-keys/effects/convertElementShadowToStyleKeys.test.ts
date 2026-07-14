@@ -10,13 +10,13 @@ describe('convertElementShadowToStyleKeys', () => {
         x: { rest: 10, hover: 20 },
         y: { rest: 15 },
         blur: { rest: 5 },
-        color: { rest: [0, 0, 0, 0.5] }
+        color: { rest: '#00000080' }
       };
       const result = convertElementShadowToStyleKeys(shadowEffect);
 
       expect(result).toEqual({
-        rest: ['shadow__[10,15,5,[0,0,0,0.5]]'],
-        hover: ['shadow--hover__[20,15,5,[0,0,0,0.5]]']
+        rest: ['shadow__[10,15,5,"#00000080"]'],
+        hover: ['shadow--hover__[20,15,5,"#00000080"]']
       });
     });
 
@@ -28,8 +28,8 @@ describe('convertElementShadowToStyleKeys', () => {
       const result = convertElementShadowToStyleKeys(shadowEffect);
 
       expect(result).toEqual({
-        rest: ['shadow__[0,0,0,[0,0,0,1]]'],
-        hover: ['shadow--hover__[25,0,0,[0,0,0,1]]']
+        rest: ['shadow__[0,0,0,"#000000"]'],
+        hover: ['shadow--hover__[25,0,0,"#000000"]']
       });
     });
 
@@ -39,14 +39,14 @@ describe('convertElementShadowToStyleKeys', () => {
         x: { rest: 5, focus: 12 },
         y: { rest: 8, focus: 16, hover: 10 },
         blur: { rest: 3 },
-        color: { rest: [10, 20, 30, 0.8], hover: [50, 60, 70, 0.9] }
+        color: { rest: '#5c423dcc', hover: '#e0d185e6' }
       };
       const result = convertElementShadowToStyleKeys(shadowEffect);
 
       expect(result).toEqual({
-        rest: ['shadow__[5,8,3,[10,20,30,0.8]]'],
-        focus: ['shadow--focus__[12,16,3,[10,20,30,0.8]]'],
-        hover: ['shadow--hover__[5,10,3,[50,60,70,0.9]]']
+        rest: ['shadow__[5,8,3,"#5c423dcc"]'],
+        focus: ['shadow--focus__[12,16,3,"#5c423dcc"]'],
+        hover: ['shadow--hover__[5,10,3,"#e0d185e6"]']
       });
     });
   });

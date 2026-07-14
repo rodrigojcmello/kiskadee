@@ -81,11 +81,11 @@ export function createElegantButtonSchema({ c }: CreateElegantButtonSchemaArgs):
             y: { rest: 2, hover: 4, pressed: 0, focus: 4, disabled: 0 },
             blur: { rest: 6, hover: 10, pressed: 0, focus: 10, disabled: 0 },
             color: {
-              rest: withAlpha([0, 0, 0, 1], 28),
-              hover: withAlpha([0, 0, 0, 1], 35),
-              pressed: withAlpha([0, 0, 0, 1], 32),
-              focus: withAlpha([0, 0, 0, 1], 35),
-              disabled: withAlpha([0, 0, 0, 1], 0)
+              rest: withAlpha('#000000', 28),
+              hover: withAlpha('#000000', 35),
+              pressed: withAlpha('#000000', 32),
+              focus: withAlpha('#000000', 35),
+              disabled: withAlpha('#000000', 0)
             }
           }
         }

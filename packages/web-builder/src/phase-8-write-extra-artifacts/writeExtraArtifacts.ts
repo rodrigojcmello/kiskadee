@@ -5,7 +5,6 @@ import type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackSetting,
   ActivationFeedbackThemeTokens,
-  HSLA,
   RadiusMode,
   Schema,
   SchemaFonts,
@@ -15,7 +14,6 @@ import type {
   SolidColor,
   ThemeMode
 } from '@kiskadee/core';
-import { convertHslaToHex } from '@kiskadee/core';
 import { minifyCss } from '@kiskadee/css-build';
 import {
   buildSliderComponentArtifact,
@@ -33,7 +31,6 @@ import {
   buildTextFieldComponentArtifact,
   TEXT_FIELD_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/textFieldComponentArtifact.ts';
-import { toShortHex } from '../phase-4-convert-style-keys-to-css-rules/utils/toShortHex.ts';
 import { type FontStack, toCssFontFamily } from '../utils/fontFamily.ts';
 
 type ExtractableSchema = Schema;
@@ -88,8 +85,8 @@ function getThemesForSegment(schema: ExtractableSchema, segment: SegmentKey): Th
             Record<
               ThemeMode,
               {
-                focusColor?: HSLA;
-                background?: HSLA;
+                focusColor?: SolidColor;
+                background?: SolidColor;
               }
             >
           >
@@ -105,9 +102,7 @@ function getThemesForSegment(schema: ExtractableSchema, segment: SegmentKey): Th
 }
 
 function toCssColor(value: SolidColor | undefined): string | undefined {
-  if (value === undefined) return undefined;
-  if (typeof value === 'string') return value;
-  return toShortHex(convertHslaToHex(value as HSLA));
+  return value;
 }
 
 function buildRootTokensCss(

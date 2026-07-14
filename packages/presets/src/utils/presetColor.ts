@@ -1,5 +1,6 @@
 import type {
   GlobalSemanticsByTheme,
+  KiskadeeTone,
   PrimitiveRole,
   ResolvedGradient,
   RoleWithPaint,
@@ -63,7 +64,7 @@ export type PresetColorGetter<TSegmentName extends string> = {
     segmentName: TSegmentName,
     theme: ThemeShortcut,
     roleOrPrimitive: PrimitiveRole | SolidRole | SemanticRole | IntentRoleWithVariant,
-    tone: number,
+    tone: KiskadeeTone,
     alpha?: number
   ): SolidColor;
 
@@ -71,7 +72,7 @@ export type PresetColorGetter<TSegmentName extends string> = {
     segmentName: TSegmentName,
     theme: ThemeShortcut,
     roleOrPrimitive: GradientRole,
-    tone: number | number[],
+    tone: KiskadeeTone | KiskadeeTone[],
     alpha?: number
   ): ResolvedGradient;
 };
@@ -90,7 +91,7 @@ export function createPresetColorGetter<TSegmentName extends string>(schemaConte
     segmentName: TSegmentName,
     theme: ThemeShortcut,
     roleOrPrimitive: RoleWithPaint | PrimitiveRole | SemanticRole | IntentRoleWithVariant,
-    tone: number | number[],
+    tone: KiskadeeTone | KiskadeeTone[],
     alpha?: number
   ): SolidColor | ResolvedGradient => {
     const semanticRole =

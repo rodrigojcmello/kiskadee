@@ -1,11 +1,11 @@
 import {
-  type HSLA,
   InteractionStateCssPseudoSelector,
   type ProjectedStateKeys,
   type PseudoSelectorKeys,
   projectedStateActivator,
   stateActivator
 } from '@kiskadee/core';
+import { normalizeHexColor } from '@kiskadee/core';
 import {
   DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
   type ResolvedElementStyleEmissionPolicy
@@ -16,7 +16,6 @@ import {
   UNSUPPORTED_PROPERTY_NAME,
   UNSUPPORTED_VALUE
 } from '../../errorMessages.ts';
-import { convertHslaToHex } from '../../utils/convertHslaToHex.ts';
 
 export type TransformShadowKeyToCssOptions = {
   styleEmissionPolicy?: ResolvedElementStyleEmissionPolicy;
@@ -24,7 +23,7 @@ export type TransformShadowKeyToCssOptions = {
 
 type ParsedShadowLayer = {
   blur: number;
-  color: HSLA;
+  color: string;
   inset?: boolean;
   spread: number;
   x: number;
@@ -39,9 +38,11 @@ function getProjectedStateSuffix(state: string): string {
     : '';
 }
 
-function parseShadowColor(value: unknown): HSLA {
-  if (!Array.isArray(value) || value.length !== 4) throw new Error(INVALID_SHADOW_COLOR_VALUE);
-  return value as unknown as HSLA;
+function parseShadowColor(value: unknown): string {
+  if (typeof value !== 'string') throw new Error(INVALID_SHADOW_COLOR_VALUE);
+  if (value.startsWith('#')) return normalizeHexColor(value);
+  if (value.startsWith('var(--') || value.startsWith('color-mix(')) return value;
+  throw new Error(INVALID_SHADOW_COLOR_VALUE);
 }
 
 function parseShadowLayer(value: unknown): ParsedShadowLayer {
@@ -51,7 +52,7 @@ function parseShadowLayer(value: unknown): ParsedShadowLayer {
       throw new Error(UNSUPPORTED_VALUE('shadow', JSON.stringify(value), 'shadow'));
     }
 
-    if (Array.isArray(spreadOrColor)) {
+    if (typeof spreadOrColor === 'string') {
       return {
         x,
         y,
@@ -136,7 +137,7 @@ function parseShadowValue(shadowValue: string, styleKey: string): ParsedShadowVa
         y,
         blur,
         spread: 0,
-        color: JSON.parse(colorPart) as HSLA
+        color: parseShadowColor(JSON.parse(colorPart))
       }
     ];
   } catch {
@@ -151,12 +152,12 @@ function parseShadowValue(shadowValue: string, styleKey: string): ParsedShadowVa
  * projected state selectors (using the activator class "-a"), similar to border-radius.
  *
  * Accepted keys:
- * - "shadow__[x,y,blur,[h,l,s,a]]"                 — default (rest)
- * - "shadow__[x,y,blur,spread,[h,l,s,a]]"          — default (rest with spread)
- * - "shadow__{\"x\":0,\"y\":1,\"blur\":2,\"color\":[h,l,s,a],\"inset\":true}" — inner shadow
- * - "shadow__[{\"x\":0,\"y\":0,\"blur\":2,\"color\":[h,l,s,a]},{...}]" — stacked shadows
- * - "shadow--<state>__[x,y,blur,[h,l,s,a]]"        — inline interaction state
- * - "shadow++<size>__[x,y,blur,spread,[...]]"      — size-aware fixed level
+ * - `shadow__[x,y,blur,"#rrggbbaa"]` — default (rest)
+ * - `shadow__[x,y,blur,spread,"#rrggbbaa"]` — default (rest with spread)
+ * - `shadow__{"x":0,"y":1,"blur":2,"color":"#rrggbbaa","inset":true}` — inner shadow
+ * - `shadow__[{"x":0,"y":0,"blur":2,"color":"#rrggbbaa"},{...}]` — stacked shadows
+ * - `shadow--<state>__[x,y,blur,"#rrggbbaa"]` — inline interaction state
+ * - `shadow++<size>__[x,y,blur,spread,"#rrggbbaa"]` — size-aware fixed level
  *
  * Notes:
  * - This transformer does not implement parent reference ("==") because shadow keys are not
@@ -191,9 +192,8 @@ export function transformShadowKeyToCss(
   const formatPx = (n: number): string => (n === 0 ? '0' : `${n}px`);
   const layers = parseShadowValue(shadowValue, styleKey);
   const formatLayer = ({ x, y, blur, spread, color, inset }: ParsedShadowLayer): string => {
-    const hexColor = convertHslaToHex(color);
     const prefix = inset ? 'inset ' : '';
-    return `${prefix}${formatPx(x)} ${formatPx(y)} ${formatPx(blur)} ${formatPx(spread)} ${hexColor}`;
+    return `${prefix}${formatPx(x)} ${formatPx(y)} ${formatPx(blur)} ${formatPx(spread)} ${color}`;
   };
   const styleEmissionPolicy = options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
   const firstLayer = layers[0];
@@ -205,7 +205,7 @@ export function transformShadowKeyToCss(
   }
   const decl =
     styleEmissionPolicy.shadowEmission === 'token'
-      ? `{ --k-sh-x: ${formatPx(firstLayer.x)}; --k-sh-y: ${formatPx(firstLayer.y)}; --k-sh-blur: ${formatPx(firstLayer.blur)}; --k-sh-color: ${convertHslaToHex(firstLayer.color)} }`
+      ? `{ --k-sh-x: ${formatPx(firstLayer.x)}; --k-sh-y: ${formatPx(firstLayer.y)}; --k-sh-blur: ${formatPx(firstLayer.blur)}; --k-sh-color: ${firstLayer.color} }`
       : `{ box-shadow: ${layers.map(formatLayer).join(', ')} }`;
 
   // Build selectors

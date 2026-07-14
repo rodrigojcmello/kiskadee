@@ -1,12 +1,29 @@
 import { mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { KISKADEE_TONES } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 
 import { generateMaterialColorArtifacts } from './generate-material-color-artifacts.ts';
 
 function createTempDir(prefix = 'material-artifacts-'): string {
   return mkdtempSync(join(tmpdir(), prefix));
+}
+
+function expectCanonicalScale(file: string): void {
+  const source = readFileSync(file, 'utf8');
+  for (const tone of KISKADEE_TONES) {
+    expect(source).toMatch(new RegExp(`\\n  ${tone}: '#[0-9a-f]{6}'(?:,|\\n)`));
+  }
+  expect(source).not.toContain('subtle');
+  expect(source).not.toContain('vivid');
+  if (file.endsWith('.light.ts')) {
+    expect(source).toContain("  0: '#ffffff'");
+    expect(source).toContain("  100: '#000000'");
+  } else {
+    expect(source).toContain("  0: '#000000'");
+    expect(source).toContain("  100: '#ffffff'");
+  }
 }
 
 describe('generateMaterialColorArtifacts', () => {
@@ -29,6 +46,9 @@ describe('generateMaterialColorArtifacts', () => {
       expect(files).toContain('black.v2.light.ts');
       expect(files).toContain('red.v1.dark.ts');
       expect(files).toContain('red.v1.light.ts');
+      for (const file of files) {
+        expectCanonicalScale(join(outDir, 'colors', file));
+      }
 
       const layerFile = readFileSync(join(outDir, 'color.layers.ts'), 'utf8');
       expect(layerFile).toMatch(
@@ -59,6 +79,9 @@ describe('generateMaterialColorArtifacts', () => {
       expect(files).toContain('red.v1.dark.ts');
       expect(files).toContain('red.v1.light.ts');
       expect(files.every((fileName) => !fileName.includes('.v2.'))).toBe(true);
+      for (const file of files) {
+        expectCanonicalScale(join(outDir, 'colors', file));
+      }
 
       const layerFile = readFileSync(join(outDir, 'color.layers.ts'), 'utf8');
       expect(layerFile).toContain('purpleLike');

@@ -1,3 +1,4 @@
+import { invertKiskadeeHexScale } from '@kiskadee/core';
 import type {
   ComponentIntents,
   GlobalSemanticsBySegment,
@@ -12,12 +13,14 @@ import blueLight from './colors/blue.light.ts';
 export const primitiveColors = {
   blue: {
     v1: {
-      solid: { light: blueLight, dark: blueLight }
+      kind: 'static',
+      scales: { light: blueLight, dark: invertKiskadeeHexScale(blueLight) }
     }
   },
   black: {
     v1: {
-      solid: { light: blackLight, dark: blackLight }
+      kind: 'static',
+      scales: { light: blackLight, dark: invertKiskadeeHexScale(blackLight) }
     }
   }
 } as const satisfies PrimitiveColors;
