@@ -76,9 +76,10 @@ bookmark. It requires the local `@kiskadee/tonal-scale` application on port
 `3001`.
 
 The verified canonical export is under [`generated/`](./generated/). It contains
-twelve primitive family assets plus source, manifest, and diagnostics. These
-files are evidence candidates only and must not be copied into the preset until
-the visual scale and mapping are explicitly approved.
+twelve primitive family assets plus source, manifest, and diagnostics.
+`b.blue.v1` and `n.black.v1` are approved and promoted into the preset for the
+Primary Button integration. The remaining ten assets stay as evidence
+candidates until their first explicit component or semantic use is approved.
 
 ## Semantic De-para
 
@@ -147,9 +148,11 @@ evidence, while Fluent `Available` maps to L30/D65 of `g.green.v1`. Success and
 Available can now differ by semantic position without pretending they have
 different primitive color identities.
 
-## Deferred Integration
+## Integration Status
 
-No preset schema, semantic alias, component, Core contract, or generated Web
-Builder artifact is changed by this evidence package. The next phase may choose
-one component and replace hardcoded primitive references with the approved
-family assets and semantic positions documented here.
+The first integration is the Fluent Primary Button documented in
+[`../components/button.md`](../components/button.md). It promotes the Blue and
+Black generated scales, keeps the existing three-layer runtime identifiers, and
+maps the official Light/Dark Button states to exact L/D positions. Other
+components, Button appearances, semantic intents, and generated color families
+remain deferred.

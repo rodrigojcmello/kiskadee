@@ -36,8 +36,10 @@ The color investigation and generated candidate system live under
 - the reproducible Kiskadee tonal recipe and verified canonical bundle;
 - a per-stop OKLab de-para for both Light and Dark.
 
-The generated color artifacts are not integrated into the preset yet. They are
-review inputs for the next component-level phase.
+The generated `b.blue.v1` and `n.black.v1` artifacts are now promoted into the
+preset as the primitive sources for the first component integration. The other
+generated families remain review inputs until a component or semantic role
+requires them.
 
 ## Shadow Scale
 
@@ -96,5 +98,6 @@ instead of flattening them to the larger offset layer.
 
 ## Component Evidence
 
+- [Button](components/button.md)
 - [Card](components/card.md)
 - [Slider](components/slider.md)

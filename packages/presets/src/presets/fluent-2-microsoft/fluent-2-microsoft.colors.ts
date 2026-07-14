@@ -1,4 +1,3 @@
-import { invertKiskadeeHexScale } from '@kiskadee/core';
 import type {
   ComponentIntents,
   GlobalSemanticsBySegment,
@@ -6,9 +5,8 @@ import type {
   PrimitiveColors,
   SchemaColors
 } from '@kiskadee/core';
-import neutralDark from './colors/neutral.dark.ts';
-import neutralLight from './colors/neutral.light.ts';
-import primaryUnique from './colors/primary.unique.ts';
+import blueV1 from './colors/b.blue.v1.ts';
+import blackV1 from './colors/n.black.v1.ts';
 
 // -------------------------------------------------------------------------------------------------
 // 3-layer color architecture (Primitive → Global semantics → Component intents)
@@ -16,13 +14,12 @@ import primaryUnique from './colors/primary.unique.ts';
 
 export const primitiveColors = {
   blue: {
-    v1: {
-      kind: 'static',
-      scales: { light: primaryUnique, dark: invertKiskadeeHexScale(primaryUnique) }
-    }
+    // Tonal generator asset `b.blue.v1` is addressed by its natural appearance in Core.
+    v1: blueV1
   },
   black: {
-    v1: { kind: 'static', scales: { light: neutralLight, dark: neutralDark } }
+    // Tonal generator asset `n.black.v1` is addressed by its natural appearance in Core.
+    v1: blackV1
   }
 } as const satisfies PrimitiveColors;
 

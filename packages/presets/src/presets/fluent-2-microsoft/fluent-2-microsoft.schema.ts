@@ -1,5 +1,6 @@
-import { breakpoints, color, primitive, type Schema, withAlpha } from '@kiskadee/core';
+import { breakpoints, color, primitive, type Schema } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
+import { createFluent2MicrosoftButtonSchema } from './components/button.schema.ts';
 import { createFluent2MicrosoftCardSchema } from './components/card.schema.ts';
 import { createFluent2MicrosoftSliderSchema } from './components/slider.schema.ts';
 import { createFluent2MicrosoftSwitchSchema } from './components/switch.schema.ts';
@@ -10,8 +11,9 @@ import { schemaColors } from './fluent-2-microsoft.colors.ts';
 const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
 const c = createPresetColorGetter<'default'>(schemaContext);
 const segmentNames = ['default'] as const;
-const transparent = '#00000000' as const;
-const shadowBlack = (alpha: number) => withAlpha('#000000', alpha * 100);
+const transparent = color(schemaContext, 'default', 'l', primitive('black', 'v1'), 100, 0);
+const shadowBlack = (alpha: number) =>
+  color(schemaContext, 'default', 'l', primitive('black', 'v1'), 100, alpha * 100);
 const fluentShadow = (
   ambientBlur: number,
   ambientAlpha: number,
@@ -87,11 +89,11 @@ export const schema: Schema<Segments> = {
             activationFeedback: {
               tone: {
                 subtle: {
-                  color: '#242424',
+                  color: c('default', 'l', 'neutral', 85),
                   opacity: 0.12
                 },
                 vivid: {
-                  color: '#ffffff',
+                  color: c('default', 'l', 'neutral', 0),
                   opacity: 0.2
                 }
               }
@@ -103,113 +105,7 @@ export const schema: Schema<Segments> = {
   },
   components: {
     slider: createFluent2MicrosoftSliderSchema(),
-    button: {
-      elements: {
-        e1: {
-          name: 'button',
-          decorations: {
-            borderStyle: 'none'
-          },
-          scales: {
-            paddingTop: {
-              's:sm:1': 2,
-              's:md:1': 6,
-              's:lg:1': 8
-            },
-            paddingBottom: {
-              's:sm:1': 2,
-              's:md:1': 6,
-              's:lg:1': 8
-            },
-            paddingLeft: {
-              's:sm:1': 8,
-              's:md:1': 12,
-              's:lg:1': 16
-            },
-            paddingRight: {
-              's:sm:1': 8,
-              's:md:1': 12,
-              's:lg:1': 16
-            },
-            borderRadius: {
-              rounded: 4,
-              pill: 4,
-              square: 0
-            }
-          },
-          palettes: {
-            default: {
-              light: {
-                boxColor: {
-                  primary: {
-                    high: {
-                      rest: color(schemaContext, 'default', 'l', 'button.primary', 60),
-                      hover: color(schemaContext, 'default', 'l', 'button.primary', 70),
-                      focus: color(schemaContext, 'default', 'l', 'button.primary', 60),
-                      pressed: color(schemaContext, 'default', 'l', 'button.primary', 90),
-                      disabled: color(schemaContext, 'default', 'l', 'button.neutral', 6),
-                      selected: {
-                        rest: color(schemaContext, 'default', 'l', 'button.primary', 80),
-                        hover: color(schemaContext, 'default', 'l', 'button.primary', 70),
-                        pressed: color(schemaContext, 'default', 'l', 'button.primary', 90)
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          effects: {
-            shadow: {
-              x: { rest: 0, hover: 0, pressed: 0, focus: 0, disabled: 0 },
-              y: { rest: 2, hover: 4, pressed: 0, focus: 4, disabled: 0 },
-              blur: { rest: 6, hover: 10, pressed: 0, focus: 10, disabled: 0 },
-              color: {
-                rest: withAlpha('#000000', 28),
-                hover: withAlpha('#000000', 35),
-                pressed: withAlpha('#000000', 32),
-                focus: withAlpha('#000000', 35),
-                disabled: withAlpha('#000000', 0)
-              }
-            }
-          }
-        },
-        e2: {
-          name: 'button-text',
-          decorations: {
-            textWeight: 'medium'
-          },
-          palettes: {
-            default: {
-              light: {
-                textColor: {
-                  primary: {
-                    high: {
-                      rest: color(schemaContext, 'default', 'l', 'button.neutral', 0),
-                      disabled: {
-                        ref: color(schemaContext, 'default', 'l', 'button.neutral', 26)
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          scales: {
-            textSize: {
-              's:sm:1': 12,
-              's:md:1': 14,
-              's:lg:1': 16
-            },
-            textHeight: {
-              's:sm:1': 16,
-              's:md:1': 20,
-              's:lg:1': 22
-            }
-          }
-        }
-      }
-    },
+    button: createFluent2MicrosoftButtonSchema({ c, shadowBlack }),
     card: createFluent2MicrosoftCardSchema({
       segmentNames,
       transparent

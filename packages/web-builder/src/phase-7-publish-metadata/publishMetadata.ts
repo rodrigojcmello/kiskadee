@@ -12,11 +12,7 @@ import type {
   SchemaFonts,
   ThemeMode
 } from '@kiskadee/core';
-import {
-  assertKiskadeeCssScale,
-  assertKiskadeeHexScale,
-  normalizeHexColor
-} from '@kiskadee/core';
+import { assertKiskadeeCssScale, assertKiskadeeHexScale, normalizeHexColor } from '@kiskadee/core';
 import {
   getComponentCoreClassMapArtifactPath,
   getComponentPaletteClassMapArtifactPath
@@ -399,6 +395,28 @@ function addComponentClassMapArtifactsToManifest(
 
 type PublishedScale = KiskadeeHexScale | KiskadeeCssScale;
 
+function validatePublishedPrimitiveAsset(value: unknown): boolean {
+  if (!isRecord(value)) return false;
+  const kind = value.kind;
+  if (kind !== 'static' && kind !== 'dynamic') return false;
+  if (!isRecord(value.scales)) {
+    throw new Error('Invalid primitive asset module: missing scales.');
+  }
+
+  for (const [theme, scale] of Object.entries(value.scales)) {
+    if (theme !== 'light' && theme !== 'dark') {
+      throw new Error(`Invalid primitive asset module theme: ${theme}.`);
+    }
+    if (kind === 'static') {
+      assertKiskadeeHexScale(scale, theme);
+    } else {
+      assertKiskadeeCssScale(scale);
+    }
+  }
+
+  return true;
+}
+
 function normalizeScaleToJson(scale: PublishedScale): Record<string, string> {
   return Object.fromEntries(
     Object.entries(scale).map(([tone, value]) => {
@@ -668,7 +686,8 @@ export async function publishMetadata(params: {
   // Contract:
   // - `schema.json` must NOT embed `colors`.
   // - `colors.json` is the single source of truth for Layer 1/2/3.
-  // - Primitive solid scales (Layer 1) are referenced only by file name
+  // - A source module may export one primitive scale or a complete primitive asset.
+  // - Published primitive scales (Layer 1) are referenced only by file name
   //   (e.g. "purple.light.json"), implicitly living under `colors/`.
 
   const scaleFileNameByRef = new WeakMap<object, string>();
@@ -693,10 +712,10 @@ export async function publishMetadata(params: {
         const colorScale = mod.default;
 
         if (!colorScale) continue;
-        const sourceTheme = file.match(/\.(light|dark)\.ts$/)?.[1] as
-          | 'light'
-          | 'dark'
-          | undefined;
+        // Complete tonal assets are validated here and emitted per theme from the schema references
+        // below, preserving the existing published `colors.json` contract.
+        if (validatePublishedPrimitiveAsset(colorScale)) continue;
+        const sourceTheme = file.match(/\.(light|dark)\.ts$/)?.[1] as 'light' | 'dark' | undefined;
         assertKiskadeeHexScale(colorScale, sourceTheme);
 
         // Make this scale discoverable for `colors.json` references.
