@@ -63,7 +63,7 @@ export function createFluent2MicrosoftButtonSchema({
         hover: c('default', theme, role, mediumHover),
         focus: c('default', theme, role, mediumRest),
         pressed: c('default', theme, role, mediumPressed),
-        disabled: transparent,
+        disabled: c('default', theme, 'button.neutral', 3),
         selected: {
           rest: c('default', theme, role, mediumRest)
         }
@@ -88,7 +88,6 @@ export function createFluent2MicrosoftButtonSchema({
   ) => {
     const isLight = theme === 'l';
     const transparent = isLight ? lightTransparent : darkTransparent;
-    const disabledTone = isLight ? 16 : 35;
 
     return {
       medium: {
@@ -110,7 +109,7 @@ export function createFluent2MicrosoftButtonSchema({
         hover: c('default', theme, role, restTone, 50),
         focus: c('default', theme, role, restTone, 50),
         pressed: c('default', theme, role, restTone, 50),
-        disabled: c('default', theme, 'button.neutral', disabledTone),
+        disabled: transparent,
         selected: {
           rest: c('default', theme, role, restTone, 50)
         }
@@ -229,7 +228,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'l', 'button.primary', 6),
                     focus: c('default', 'l', 'button.primary', 4),
                     pressed: c('default', 'l', 'button.primary', 8),
-                    disabled: lightTransparent,
+                    disabled: c('default', 'l', 'button.neutral', 3),
                     selected: {
                       rest: c('default', 'l', 'button.primary', 4)
                     }
@@ -328,7 +327,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'l', 'button.primary', 50, 50),
                     focus: c('default', 'l', 'button.primary', 50, 50),
                     pressed: c('default', 'l', 'button.primary', 50, 50),
-                    disabled: c('default', 'l', 'button.neutral', 16),
+                    disabled: lightTransparent,
                     selected: {
                       rest: c('default', 'l', 'button.primary', 50, 50)
                     }
@@ -354,7 +353,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'l', 'button.neutral', 12),
                     focus: c('default', 'l', 'button.neutral', 10),
                     pressed: c('default', 'l', 'button.neutral', 18),
-                    disabled: c('default', 'l', 'button.neutral', 7),
+                    disabled: lightTransparent,
                     selected: {
                       rest: c('default', 'l', 'button.neutral', 16)
                     }
@@ -406,7 +405,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'd', 'button.primary', 8),
                     focus: c('default', 'd', 'button.primary', 10),
                     pressed: c('default', 'd', 'button.primary', 14),
-                    disabled: darkTransparent,
+                    disabled: c('default', 'd', 'button.neutral', 3),
                     selected: {
                       rest: c('default', 'd', 'button.primary', 10)
                     }
@@ -503,7 +502,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'd', 'button.primary', 35, 50),
                     focus: c('default', 'd', 'button.primary', 35, 50),
                     pressed: c('default', 'd', 'button.primary', 35, 50),
-                    disabled: c('default', 'd', 'button.neutral', 35),
+                    disabled: darkTransparent,
                     selected: {
                       rest: c('default', 'd', 'button.primary', 35, 50)
                     }
@@ -529,7 +528,175 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'd', 'button.neutral', 50),
                     focus: c('default', 'd', 'button.neutral', 45),
                     pressed: c('default', 'd', 'button.neutral', 45),
-                    disabled: c('default', 'd', 'button.neutral', 22),
+                    disabled: darkTransparent,
+                    selected: {
+                      rest: c('default', 'd', 'button.neutral', 50)
+                    }
+                  },
+                  lowest: {
+                    rest: darkTransparent,
+                    hover: darkTransparent,
+                    focus: darkTransparent,
+                    pressed: darkTransparent,
+                    disabled: darkTransparent
+                  },
+                  high: {
+                    rest: darkTransparent,
+                    hover: darkTransparent,
+                    focus: darkTransparent,
+                    pressed: darkTransparent,
+                    disabled: darkTransparent
+                  }
+                },
+                destructive: createChromaticBorderIntent('d', 'button.destructive', 65),
+                positive: createChromaticBorderIntent('d', 'button.positive', 75)
+              }
+            },
+            // Kiskadee extension: Dark copied with a one-slot darker High-emphasis progression.
+            darker: {
+              boxColor: {
+                primary: {
+                  medium: {
+                    rest: c('default', 'd', 'button.primary', 10),
+                    hover: c('default', 'd', 'button.primary', 8),
+                    focus: c('default', 'd', 'button.primary', 10),
+                    pressed: c('default', 'd', 'button.primary', 14),
+                    disabled: c('default', 'd', 'button.neutral', 3)
+                  },
+                  high: {
+                    rest: c('default', 'd', 'button.primary', 30),
+                    hover: c('default', 'd', 'button.primary', 35),
+                    focus: c('default', 'd', 'button.primary', 30),
+                    pressed: c('default', 'd', 'button.primary', 12),
+                    disabled: c('default', 'd', 'button.neutral', 3),
+                    selected: {
+                      rest: c('default', 'd', 'button.primary', 26)
+                    }
+                  },
+                  low: {
+                    rest: darkTransparent,
+                    hover: c('default', 'd', 'button.primary', 8),
+                    focus: c('default', 'd', 'button.primary', 10),
+                    pressed: c('default', 'd', 'button.primary', 14),
+                    disabled: c('default', 'd', 'button.neutral', 3),
+                    selected: {
+                      rest: c('default', 'd', 'button.primary', 10)
+                    }
+                  },
+                  lowest: {
+                    rest: darkTransparent,
+                    hover: c('default', 'd', 'button.primary', 8),
+                    focus: c('default', 'd', 'button.primary', 10),
+                    pressed: c('default', 'd', 'button.primary', 14),
+                    disabled: darkTransparent,
+                    selected: {
+                      rest: c('default', 'd', 'button.primary', 10)
+                    }
+                  }
+                },
+                neutral: {
+                  medium: {
+                    rest: c('default', 'd', 'button.neutral', 16),
+                    hover: c('default', 'd', 'button.neutral', 20),
+                    focus: c('default', 'd', 'button.neutral', 16),
+                    pressed: c('default', 'd', 'button.neutral', 10),
+                    disabled: c('default', 'd', 'button.neutral', 3),
+                    selected: {
+                      rest: c('default', 'd', 'button.neutral', 22)
+                    }
+                  },
+                  low: {
+                    rest: c('default', 'd', 'button.neutral', 9),
+                    hover: c('default', 'd', 'button.neutral', 20),
+                    focus: c('default', 'd', 'button.neutral', 9),
+                    pressed: c('default', 'd', 'button.neutral', 6),
+                    disabled: c('default', 'd', 'button.neutral', 3),
+                    selected: {
+                      rest: c('default', 'd', 'button.neutral', 16)
+                    }
+                  },
+                  lowest: {
+                    rest: darkTransparent,
+                    hover: c('default', 'd', 'button.neutral', 16),
+                    focus: darkTransparent,
+                    pressed: c('default', 'd', 'button.neutral', 10),
+                    disabled: darkTransparent,
+                    selected: {
+                      rest: c('default', 'd', 'button.neutral', 12)
+                    }
+                  },
+                  high: {
+                    rest: c('default', 'd', 'button.neutral', 80),
+                    hover: c('default', 'd', 'button.neutral', 85),
+                    focus: c('default', 'd', 'button.neutral', 80),
+                    pressed: c('default', 'd', 'button.neutral', 70),
+                    disabled: c('default', 'd', 'button.neutral', 3),
+                    selected: {
+                      rest: c('default', 'd', 'button.neutral', 75)
+                    }
+                  }
+                },
+                destructive: createChromaticBoxIntent('d', 'button.destructive', {
+                  rest: 60,
+                  hover: 65,
+                  pressed: 40,
+                  selected: 55
+                }),
+                positive: createChromaticBoxIntent('d', 'button.positive', {
+                  rest: 70,
+                  hover: 75,
+                  pressed: 50,
+                  selected: 65
+                })
+              },
+              borderColor: {
+                primary: {
+                  medium: {
+                    rest: darkTransparent,
+                    hover: darkTransparent,
+                    focus: darkTransparent,
+                    pressed: darkTransparent,
+                    disabled: darkTransparent
+                  },
+                  high: {
+                    rest: darkTransparent,
+                    hover: darkTransparent,
+                    focus: darkTransparent,
+                    pressed: darkTransparent,
+                    disabled: darkTransparent
+                  },
+                  low: {
+                    rest: c('default', 'd', 'button.primary', 35, 50),
+                    hover: c('default', 'd', 'button.primary', 35, 50),
+                    focus: c('default', 'd', 'button.primary', 35, 50),
+                    pressed: c('default', 'd', 'button.primary', 35, 50),
+                    disabled: darkTransparent,
+                    selected: {
+                      rest: c('default', 'd', 'button.primary', 35, 50)
+                    }
+                  },
+                  lowest: {
+                    rest: darkTransparent,
+                    hover: darkTransparent,
+                    focus: darkTransparent,
+                    pressed: darkTransparent,
+                    disabled: darkTransparent
+                  }
+                },
+                neutral: {
+                  medium: {
+                    rest: darkTransparent,
+                    hover: darkTransparent,
+                    focus: darkTransparent,
+                    pressed: darkTransparent,
+                    disabled: darkTransparent
+                  },
+                  low: {
+                    rest: c('default', 'd', 'button.neutral', 45),
+                    hover: c('default', 'd', 'button.neutral', 50),
+                    focus: c('default', 'd', 'button.neutral', 45),
+                    pressed: c('default', 'd', 'button.neutral', 45),
+                    disabled: darkTransparent,
                     selected: {
                       rest: c('default', 'd', 'button.neutral', 50)
                     }
@@ -636,6 +803,64 @@ export function createFluent2MicrosoftButtonSchema({
               }
             },
             dark: {
+              textColor: {
+                primary: {
+                  medium: {
+                    rest: c('default', 'd', 'button.primary', 75),
+                    disabled: {
+                      ref: c('default', 'd', 'button.neutral', 35)
+                    }
+                  },
+                  high: {
+                    rest: c('default', 'd', 'button.neutral', 100),
+                    disabled: {
+                      ref: c('default', 'd', 'button.neutral', 35)
+                    }
+                  },
+                  low: {
+                    rest: c('default', 'd', 'button.primary', 75),
+                    disabled: {
+                      ref: c('default', 'd', 'button.neutral', 35)
+                    }
+                  },
+                  lowest: {
+                    rest: c('default', 'd', 'button.primary', 75),
+                    disabled: {
+                      ref: c('default', 'd', 'button.neutral', 35)
+                    }
+                  }
+                },
+                neutral: {
+                  high: {
+                    rest: c('default', 'd', 'button.neutral', 0),
+                    disabled: {
+                      ref: c('default', 'd', 'button.neutral', 35)
+                    }
+                  },
+                  medium: {
+                    rest: c('default', 'd', 'button.neutral', 100),
+                    disabled: {
+                      ref: c('default', 'd', 'button.neutral', 35)
+                    }
+                  },
+                  low: {
+                    rest: c('default', 'd', 'button.neutral', 100),
+                    disabled: {
+                      ref: c('default', 'd', 'button.neutral', 35)
+                    }
+                  },
+                  lowest: {
+                    rest: c('default', 'd', 'button.neutral', 100),
+                    disabled: {
+                      ref: c('default', 'd', 'button.neutral', 35)
+                    }
+                  }
+                },
+                destructive: createChromaticTextIntent('d', 'button.destructive'),
+                positive: createChromaticTextIntent('d', 'button.positive')
+              }
+            },
+            darker: {
               textColor: {
                 primary: {
                   medium: {

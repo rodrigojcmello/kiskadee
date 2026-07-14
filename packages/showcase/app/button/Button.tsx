@@ -22,19 +22,17 @@ import s from './Button.module.scss';
 import ButtonStateSection from './components/ButtonStateSection';
 
 export function Button() {
-  const { designSystem, theme } = useKiskadee();
+  const { designSystem } = useKiskadee();
   const { fontName, manifest } = useShowcase();
   const backgroundTones = useBackgroundTones();
 
   const [isSelected, setIsSelected] = React.useState(false);
   const [isSelectedVivid, setIsSelectedVivid] = React.useState(false);
-  const [surface, setSurface] = React.useState<BackgroundToneKey>(() =>
-    theme === 'dark' ? 'dark-gray' : 'white'
-  );
+  const [surface, setSurface] = React.useState<BackgroundToneKey>(backgroundTones.defaultToneKey);
 
   React.useEffect(() => {
-    setSurface(theme === 'dark' ? 'dark-gray' : 'white');
-  }, [theme]);
+    setSurface(backgroundTones.defaultToneKey);
+  }, [backgroundTones.defaultToneKey]);
 
   const selectedSurface = React.useMemo(
     () => backgroundTones.tones.find((tone) => tone.key === surface),

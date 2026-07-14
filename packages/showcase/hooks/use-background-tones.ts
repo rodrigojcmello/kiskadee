@@ -99,7 +99,8 @@ export function useBackgroundTones() {
     [tones]
   );
 
-  const defaultToneKey: BackgroundToneKey = theme === 'light' ? 'white' : 'dark-gray';
+  const defaultToneKey: BackgroundToneKey =
+    theme === 'darker' ? 'black' : theme === 'dark' ? 'dark-gray' : 'white';
 
   return {
     defaultToneKey,
