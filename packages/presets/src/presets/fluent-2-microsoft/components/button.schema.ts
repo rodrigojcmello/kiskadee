@@ -52,6 +52,15 @@ export function createFluent2MicrosoftButtonSchema({
             light: {
               boxColor: {
                 primary: {
+                  // Kiskadee extension: Fluent does not provide a Primary medium-emphasis Button.
+                  // See the component evidence before changing these tonal positions.
+                  medium: {
+                    rest: c('default', 'l', 'button.primary', 4),
+                    hover: c('default', 'l', 'button.primary', 6),
+                    focus: c('default', 'l', 'button.primary', 4),
+                    pressed: c('default', 'l', 'button.primary', 8),
+                    disabled: c('default', 'l', 'button.neutral', 3)
+                  },
                   high: {
                     rest: c('default', 'l', 'button.primary', 50),
                     hover: c('default', 'l', 'button.primary', 55),
@@ -68,6 +77,14 @@ export function createFluent2MicrosoftButtonSchema({
             dark: {
               boxColor: {
                 primary: {
+                  // Kiskadee extension: theme-appropriate tinted surface, not an upstream Fluent variant.
+                  medium: {
+                    rest: c('default', 'd', 'button.primary', 10),
+                    hover: c('default', 'd', 'button.primary', 8),
+                    focus: c('default', 'd', 'button.primary', 10),
+                    pressed: c('default', 'd', 'button.primary', 14),
+                    disabled: c('default', 'd', 'button.neutral', 3)
+                  },
                   high: {
                     rest: c('default', 'd', 'button.primary', 35),
                     hover: c('default', 'd', 'button.primary', 40),
@@ -108,6 +125,12 @@ export function createFluent2MicrosoftButtonSchema({
             light: {
               textColor: {
                 primary: {
+                  medium: {
+                    rest: c('default', 'l', 'button.primary', 65),
+                    disabled: {
+                      ref: c('default', 'l', 'button.neutral', 16)
+                    }
+                  },
                   high: {
                     rest: c('default', 'l', 'button.neutral', 0),
                     disabled: {
@@ -120,6 +143,12 @@ export function createFluent2MicrosoftButtonSchema({
             dark: {
               textColor: {
                 primary: {
+                  medium: {
+                    rest: c('default', 'd', 'button.primary', 75),
+                    disabled: {
+                      ref: c('default', 'd', 'button.neutral', 35)
+                    }
+                  },
                   high: {
                     rest: c('default', 'd', 'button.neutral', 100),
                     disabled: {

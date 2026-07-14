@@ -26,8 +26,37 @@ This file records source evidence and color decisions for the Button currently a
 - Content: text only.
 - Size: medium, 32 px high.
 - States: Rest, Hover, Pressed, Selected, Focus, and Disabled.
-- Kiskadee surface: `primary.high`. Other emphases, intents, and Fluent appearances remain out of
-  scope for this migration.
+- Kiskadee surface: `primary.high` for the official Fluent mapping.
+
+## Kiskadee Extension: Primary Medium
+
+Fluent 2 does not define a Primary Button equivalent to Kiskadee's `primary.medium` emphasis.
+Kiskadee still provides this emphasis because a tonal, lower-prominence primary action is common
+across the design systems supported by the framework. This is an intentional framework extension,
+not a claim of upstream Fluent fidelity. Consumers that need maximum fidelity to Fluent should use
+the documented `primary.high` Button and omit `primary.medium`.
+
+The extension uses the approved Blue primitive through `button.primary`. Light uses pale Blue
+surfaces with a dark Blue foreground. Dark uses a low-lightness Blue-tinted surface with a lighter
+Blue foreground; using a physically light filled surface in Dark would compete visually with the
+official high-emphasis action. Its state rhythm follows the `primary.medium` pattern already
+exercised by the Kiskadee Material 3 preset, recalibrated against the Fluent Blue scale.
+
+| Theme/state | Kiskadee role/tone | Generated HEX |
+| --- | --- | --- |
+| Light Rest | `button.primary` L4 | `#e1efff` |
+| Light Hover | `button.primary` L6 | `#d3e7ff` |
+| Light Focus | `button.primary` L4 | `#e1efff` |
+| Light Pressed | `button.primary` L8 | `#c1deff` |
+| Light enabled foreground | `button.primary` L65 | `#0d477e` |
+| Dark Rest | `button.primary` D10 | `#142d48` |
+| Dark Hover | `button.primary` D8 | `#13273e` |
+| Dark Focus | `button.primary` D10 | `#142d48` |
+| Dark Pressed | `button.primary` D14 | `#14375b` |
+| Dark enabled foreground | `button.primary` D75 | `#61a7f3` |
+
+Disabled continues to use the official neutral mappings already shared by `primary.high`: L3/L16
+for Light background/foreground and D3/D35 for Dark background/foreground.
 
 ## Background De-para
 
@@ -80,6 +109,8 @@ changing the asset scales.
 
 ## Schema Mapping
 
+- `e1.boxColor.primary.medium` and `e2.textColor.primary.medium` implement the documented
+  Kiskadee-only extension in both themes.
 - `e1.boxColor.primary.high` owns the Primary Button background in both themes.
 - `e2.textColor.primary.high` owns enabled and disabled foreground colors in both themes.
 - Focus reuses Rest because that is the value authored by Fluent for this variant.
