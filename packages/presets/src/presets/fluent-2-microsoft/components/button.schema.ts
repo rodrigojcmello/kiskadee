@@ -78,6 +78,29 @@ export function createFluent2MicrosoftButtonSchema({
                     selected: {
                       rest: c('default', 'l', 'button.primary', 60)
                     }
+                  },
+                  // Kiskadee extension: outlined Primary action with the same Blue foreground
+                  // and interaction rhythm as Primary medium.
+                  low: {
+                    rest: lightTransparent,
+                    hover: c('default', 'l', 'button.primary', 6),
+                    focus: c('default', 'l', 'button.primary', 4),
+                    pressed: c('default', 'l', 'button.primary', 8),
+                    disabled: lightTransparent,
+                    selected: {
+                      rest: c('default', 'l', 'button.primary', 4)
+                    }
+                  },
+                  // Kiskadee extension: borderless Primary action.
+                  lowest: {
+                    rest: lightTransparent,
+                    hover: c('default', 'l', 'button.primary', 6),
+                    focus: c('default', 'l', 'button.primary', 4),
+                    pressed: c('default', 'l', 'button.primary', 8),
+                    disabled: lightTransparent,
+                    selected: {
+                      rest: c('default', 'l', 'button.primary', 4)
+                    }
                   }
                 },
                 neutral: {
@@ -144,6 +167,23 @@ export function createFluent2MicrosoftButtonSchema({
                     focus: lightTransparent,
                     pressed: lightTransparent,
                     disabled: lightTransparent
+                  },
+                  low: {
+                    rest: c('default', 'l', 'button.primary', 50, 50),
+                    hover: c('default', 'l', 'button.primary', 50, 50),
+                    focus: c('default', 'l', 'button.primary', 50, 50),
+                    pressed: c('default', 'l', 'button.primary', 50, 50),
+                    disabled: c('default', 'l', 'button.neutral', 16),
+                    selected: {
+                      rest: c('default', 'l', 'button.primary', 50, 50)
+                    }
+                  },
+                  lowest: {
+                    rest: lightTransparent,
+                    hover: lightTransparent,
+                    focus: lightTransparent,
+                    pressed: lightTransparent,
+                    disabled: lightTransparent
                   }
                 },
                 neutral: {
@@ -200,6 +240,29 @@ export function createFluent2MicrosoftButtonSchema({
                     disabled: c('default', 'd', 'button.neutral', 3),
                     selected: {
                       rest: c('default', 'd', 'button.primary', 28)
+                    }
+                  },
+                  // Kiskadee extension: outlined Primary action with the same Blue foreground
+                  // and interaction rhythm as Primary medium.
+                  low: {
+                    rest: darkTransparent,
+                    hover: c('default', 'd', 'button.primary', 8),
+                    focus: c('default', 'd', 'button.primary', 10),
+                    pressed: c('default', 'd', 'button.primary', 14),
+                    disabled: darkTransparent,
+                    selected: {
+                      rest: c('default', 'd', 'button.primary', 10)
+                    }
+                  },
+                  // Kiskadee extension: borderless Primary action.
+                  lowest: {
+                    rest: darkTransparent,
+                    hover: c('default', 'd', 'button.primary', 8),
+                    focus: c('default', 'd', 'button.primary', 10),
+                    pressed: c('default', 'd', 'button.primary', 14),
+                    disabled: darkTransparent,
+                    selected: {
+                      rest: c('default', 'd', 'button.primary', 10)
                     }
                   }
                 },
@@ -260,6 +323,23 @@ export function createFluent2MicrosoftButtonSchema({
                     disabled: darkTransparent
                   },
                   high: {
+                    rest: darkTransparent,
+                    hover: darkTransparent,
+                    focus: darkTransparent,
+                    pressed: darkTransparent,
+                    disabled: darkTransparent
+                  },
+                  low: {
+                    rest: c('default', 'd', 'button.primary', 35, 50),
+                    hover: c('default', 'd', 'button.primary', 35, 50),
+                    focus: c('default', 'd', 'button.primary', 35, 50),
+                    pressed: c('default', 'd', 'button.primary', 35, 50),
+                    disabled: c('default', 'd', 'button.neutral', 35),
+                    selected: {
+                      rest: c('default', 'd', 'button.primary', 35, 50)
+                    }
+                  },
+                  lowest: {
                     rest: darkTransparent,
                     hover: darkTransparent,
                     focus: darkTransparent,
@@ -340,6 +420,18 @@ export function createFluent2MicrosoftButtonSchema({
                     disabled: {
                       ref: c('default', 'l', 'button.neutral', 16)
                     }
+                  },
+                  low: {
+                    rest: c('default', 'l', 'button.primary', 65),
+                    disabled: {
+                      ref: c('default', 'l', 'button.neutral', 16)
+                    }
+                  },
+                  lowest: {
+                    rest: c('default', 'l', 'button.primary', 65),
+                    disabled: {
+                      ref: c('default', 'l', 'button.neutral', 16)
+                    }
                   }
                 },
                 neutral: {
@@ -381,6 +473,18 @@ export function createFluent2MicrosoftButtonSchema({
                   },
                   high: {
                     rest: c('default', 'd', 'button.neutral', 100),
+                    disabled: {
+                      ref: c('default', 'd', 'button.neutral', 35)
+                    }
+                  },
+                  low: {
+                    rest: c('default', 'd', 'button.primary', 75),
+                    disabled: {
+                      ref: c('default', 'd', 'button.neutral', 35)
+                    }
+                  },
+                  lowest: {
+                    rest: c('default', 'd', 'button.primary', 75),
                     disabled: {
                       ref: c('default', 'd', 'button.neutral', 35)
                     }

@@ -36,13 +36,14 @@ This file records source evidence and color decisions for the Button currently a
 - States: Rest, Hover, Pressed, Selected, Focus, and Disabled.
 - Kiskadee surface: `primary.high` for the official Fluent mapping.
 
-## Kiskadee Extension: Primary Medium
+## Kiskadee Extensions: Primary Medium, Low, And Lowest
 
-Fluent 2 does not define a Primary Button equivalent to Kiskadee's `primary.medium` emphasis.
-Kiskadee still provides this emphasis because a tonal, lower-prominence primary action is common
-across the design systems supported by the framework. This is an intentional framework extension,
-not a claim of upstream Fluent fidelity. Consumers that need maximum fidelity to Fluent should use
-the documented `primary.high` Button and omit `primary.medium`.
+Fluent 2 does not define Primary Button equivalents for Kiskadee's `primary.medium`, `primary.low`,
+or `primary.lowest` emphases. Kiskadee still provides them because tonal, outlined, and borderless
+primary actions are common across the design systems supported by the framework. These are
+intentional framework extensions, not claims of upstream Fluent fidelity. Consumers that need
+maximum fidelity to Fluent should use the documented `primary.high` Button and omit the three
+extension emphases.
 
 The extension uses the approved Blue primitive through `button.primary`. Light uses pale Blue
 surfaces with a dark Blue foreground. Dark uses a low-lightness Blue-tinted surface with a lighter
@@ -65,6 +66,30 @@ exercised by the Kiskadee Material 3 preset, recalibrated against the Fluent Blu
 
 Disabled continues to use the official neutral mappings already shared by `primary.high`: L3/L16
 for Light background/foreground and D3/D35 for Dark background/foreground.
+
+`primary.low` and `primary.lowest` reuse the Medium foreground and interaction rhythm instead of
+introducing another Blue state rule. Both are transparent at Rest, while Hover, Focus, Pressed, and
+Selected use the same pale or dark Blue surface positions already established by Medium. Low adds
+a one-pixel Blue border; Lowest keeps every border state transparent.
+
+| Theme/state | Low and Lowest background | Low border | Enabled foreground |
+| --- | --- | --- | --- |
+| Light Rest | transparent | L50 at 50% `#0064b480` | L65 `#0d477e` |
+| Light Hover | L6 `#d3e7ff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
+| Light Focus and Selected | L4 `#e1efff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
+| Light Pressed | L8 `#c1deff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
+| Dark Rest | transparent | D35 at 50% `#005ba480` | D75 `#61a7f3` |
+| Dark Hover | D8 `#13273e` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
+| Dark Focus and Selected | D10 `#142d48` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
+| Dark Pressed | D14 `#14375b` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
+
+Disabled Low and Lowest backgrounds are transparent. Their foregrounds use neutral L16/D35, and
+Low uses those same neutral positions for its disabled border. Lowest never emits a visible border.
+The enabled Low border uses the component Primary Rest color with 50% opacity: L50 in Light and D35
+in Dark. This keeps the exact Primary identity while allowing the surface beneath it to soften the
+outline. Two opaque alternatives were explicitly rejected: matching the foreground at L65/D75 was
+too dominant, while moving to L14/D50 made the border too light. The 50% alpha is an experimental
+Kiskadee value pending visual approval; it is not an upstream Fluent token.
 
 ## Neutral Emphasis Contract
 
@@ -170,8 +195,8 @@ changing the asset scales.
 
 ## Schema Mapping
 
-- `e1.boxColor.primary.medium` and `e2.textColor.primary.medium` implement the documented
-  Kiskadee-only extension in both themes.
+- `e1.boxColor.primary.medium`, `primary.low`, and `primary.lowest`, together with their text and
+  border mappings, implement the documented Kiskadee-only extensions in both themes.
 - `e1.boxColor.primary.high` owns the Primary Button background in both themes.
 - `e2.textColor.primary.high` owns enabled and disabled foreground colors in both themes.
 - `e1.boxColor.neutral` and `e2.textColor.neutral` expose High, Medium, Low, and Lowest in both
@@ -191,6 +216,8 @@ changing the asset scales.
   imply Dark support for the preset's other components.
 - The neutral High and Medium appearances are Kiskadee extensions. Consumers that require strict
   upstream Fluent fidelity should use `neutral.low` or the documented `neutral.lowest` adaptation.
+- Primary Medium, Low, and Lowest are Kiskadee extensions. Only Primary High maps to an official
+  Fluent Primary Button appearance.
 
 ## Open Gaps
 
