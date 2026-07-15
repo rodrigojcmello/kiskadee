@@ -23,7 +23,10 @@ export function createFluent2MicrosoftButtonSchema({
   shadowBlack
 }: CreateFluent2MicrosoftButtonSchemaArgs): ButtonComponent {
   const lightTransparent = c('default', 'l', 'button.neutral', 0, 0);
+  const lightAdaptiveDisabled = c('default', 'l', 'button.neutral', 100, 5);
+  const lightAdaptiveDisabledText = c('default', 'l', 'button.neutral', 20, 82);
   const darkTransparent = c('default', 'd', 'button.neutral', 0, 0);
+  const darkAdaptiveDisabled = c('default', 'd', 'button.neutral', 100, 5);
 
   const createChromaticBoxIntent = (
     theme: ThemeShortcut,
@@ -32,6 +35,7 @@ export function createFluent2MicrosoftButtonSchema({
   ) => {
     const isLight = theme === 'l';
     const transparent = isLight ? lightTransparent : darkTransparent;
+    const adaptiveDisabled = isLight ? lightAdaptiveDisabled : darkAdaptiveDisabled;
     const mediumRest = isLight ? 4 : 10;
     const mediumHover = isLight ? 6 : 8;
     const mediumPressed = isLight ? 8 : 14;
@@ -43,7 +47,7 @@ export function createFluent2MicrosoftButtonSchema({
         hover: c('default', theme, role, mediumHover),
         focus: c('default', theme, role, mediumRest),
         pressed: c('default', theme, role, mediumPressed),
-        disabled: c('default', theme, 'button.neutral', 3),
+        disabled: adaptiveDisabled,
         selected: {
           rest: c('default', theme, role, mediumRest)
         }
@@ -53,7 +57,7 @@ export function createFluent2MicrosoftButtonSchema({
         hover: c('default', theme, role, high.hover),
         focus: c('default', theme, role, high.rest),
         pressed: c('default', theme, role, high.pressed),
-        disabled: c('default', theme, 'button.neutral', 3),
+        disabled: adaptiveDisabled,
         selected: {
           rest: c('default', theme, role, high.selected)
         }
@@ -63,7 +67,7 @@ export function createFluent2MicrosoftButtonSchema({
         hover: c('default', theme, role, mediumHover),
         focus: c('default', theme, role, mediumRest),
         pressed: c('default', theme, role, mediumPressed),
-        disabled: c('default', theme, 'button.neutral', 3),
+        disabled: adaptiveDisabled,
         selected: {
           rest: c('default', theme, role, mediumRest)
         }
@@ -129,30 +133,32 @@ export function createFluent2MicrosoftButtonSchema({
     const foregroundTone = isLight ? 65 : 75;
     const disabledTone = isLight ? 16 : 35;
     const highForegroundTone = 0;
+    const disabledForeground = c('default', theme, 'button.neutral', disabledTone);
+    const filledDisabledForeground = isLight ? lightAdaptiveDisabledText : disabledForeground;
 
     return {
       medium: {
         rest: c('default', theme, role, foregroundTone),
         disabled: {
-          ref: c('default', theme, 'button.neutral', disabledTone)
+          ref: filledDisabledForeground
         }
       },
       high: {
         rest: c('default', theme, 'button.neutral', highForegroundTone),
         disabled: {
-          ref: c('default', theme, 'button.neutral', disabledTone)
+          ref: filledDisabledForeground
         }
       },
       low: {
         rest: c('default', theme, role, foregroundTone),
         disabled: {
-          ref: c('default', theme, 'button.neutral', disabledTone)
+          ref: filledDisabledForeground
         }
       },
       lowest: {
         rest: c('default', theme, role, foregroundTone),
         disabled: {
-          ref: c('default', theme, 'button.neutral', disabledTone)
+          ref: disabledForeground
         }
       }
     };
@@ -209,7 +215,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'l', 'button.primary', 6),
                     focus: c('default', 'l', 'button.primary', 4),
                     pressed: c('default', 'l', 'button.primary', 8),
-                    disabled: c('default', 'l', 'button.neutral', 3),
+                    disabled: lightAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'l', 'button.primary', 4)
                     }
@@ -219,7 +225,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'l', 'button.primary', 55),
                     focus: c('default', 'l', 'button.primary', 50),
                     pressed: c('default', 'l', 'button.primary', 75),
-                    disabled: c('default', 'l', 'button.neutral', 3),
+                    disabled: lightAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'l', 'button.primary', 60)
                     }
@@ -231,7 +237,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'l', 'button.primary', 2),
                     focus: c('default', 'l', 'button.primary', 1),
                     pressed: c('default', 'l', 'button.primary', 4),
-                    disabled: c('default', 'l', 'button.neutral', 3),
+                    disabled: lightAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'l', 'button.primary', 1)
                     }
@@ -256,7 +262,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'l', 'button.neutral', 7),
                     focus: c('default', 'l', 'button.neutral', 5),
                     pressed: c('default', 'l', 'button.neutral', 10),
-                    disabled: c('default', 'l', 'button.neutral', 3),
+                    disabled: lightAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'l', 'button.neutral', 12)
                     }
@@ -267,7 +273,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'l', 'button.neutral', 2),
                     focus: c('default', 'l', 'button.neutral', 0),
                     pressed: c('default', 'l', 'button.neutral', 7),
-                    disabled: c('default', 'l', 'button.neutral', 3),
+                    disabled: lightAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'l', 'button.neutral', 5)
                     }
@@ -290,7 +296,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'l', 'button.neutral', 90),
                     focus: c('default', 'l', 'button.neutral', 85),
                     pressed: c('default', 'l', 'button.neutral', 95),
-                    disabled: c('default', 'l', 'button.neutral', 3),
+                    disabled: lightAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'l', 'button.neutral', 80)
                     }
@@ -389,7 +395,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'd', 'button.primary', 8),
                     focus: c('default', 'd', 'button.primary', 10),
                     pressed: c('default', 'd', 'button.primary', 14),
-                    disabled: c('default', 'd', 'button.neutral', 3),
+                    disabled: darkAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'd', 'button.primary', 10)
                     }
@@ -399,7 +405,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'd', 'button.primary', 40),
                     focus: c('default', 'd', 'button.primary', 35),
                     pressed: c('default', 'd', 'button.primary', 14),
-                    disabled: c('default', 'd', 'button.neutral', 3),
+                    disabled: darkAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'd', 'button.primary', 28)
                     }
@@ -411,7 +417,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'd', 'button.primary', 14),
                     focus: c('default', 'd', 'button.primary', 18),
                     pressed: c('default', 'd', 'button.primary', 22),
-                    disabled: c('default', 'd', 'button.neutral', 3),
+                    disabled: darkAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'd', 'button.primary', 18)
                     }
@@ -435,7 +441,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'd', 'button.neutral', 20),
                     focus: c('default', 'd', 'button.neutral', 16),
                     pressed: c('default', 'd', 'button.neutral', 10),
-                    disabled: c('default', 'd', 'button.neutral', 3),
+                    disabled: darkAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'd', 'button.neutral', 22)
                     }
@@ -446,7 +452,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'd', 'button.neutral', 20),
                     focus: c('default', 'd', 'button.neutral', 9),
                     pressed: c('default', 'd', 'button.neutral', 6),
-                    disabled: c('default', 'd', 'button.neutral', 3),
+                    disabled: darkAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'd', 'button.neutral', 16)
                     }
@@ -468,7 +474,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'd', 'button.neutral', 90),
                     focus: c('default', 'd', 'button.neutral', 85),
                     pressed: c('default', 'd', 'button.neutral', 75),
-                    disabled: c('default', 'd', 'button.neutral', 3),
+                    disabled: darkAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'd', 'button.neutral', 80)
                     }
@@ -567,7 +573,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'd', 'button.primary', 8),
                     focus: c('default', 'd', 'button.primary', 10),
                     pressed: c('default', 'd', 'button.primary', 14),
-                    disabled: c('default', 'd', 'button.neutral', 3),
+                    disabled: darkAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'd', 'button.primary', 10)
                     }
@@ -577,7 +583,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'd', 'button.primary', 35),
                     focus: c('default', 'd', 'button.primary', 30),
                     pressed: c('default', 'd', 'button.primary', 12),
-                    disabled: c('default', 'd', 'button.neutral', 3),
+                    disabled: darkAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'd', 'button.primary', 26)
                     }
@@ -587,7 +593,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'd', 'button.primary', 14),
                     focus: c('default', 'd', 'button.primary', 18),
                     pressed: c('default', 'd', 'button.primary', 22),
-                    disabled: c('default', 'd', 'button.neutral', 3),
+                    disabled: darkAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'd', 'button.primary', 18)
                     }
@@ -609,7 +615,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'd', 'button.neutral', 20),
                     focus: c('default', 'd', 'button.neutral', 16),
                     pressed: c('default', 'd', 'button.neutral', 10),
-                    disabled: c('default', 'd', 'button.neutral', 3),
+                    disabled: darkAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'd', 'button.neutral', 22)
                     }
@@ -619,7 +625,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'd', 'button.neutral', 20),
                     focus: c('default', 'd', 'button.neutral', 9),
                     pressed: c('default', 'd', 'button.neutral', 6),
-                    disabled: c('default', 'd', 'button.neutral', 3),
+                    disabled: darkAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'd', 'button.neutral', 16)
                     }
@@ -639,7 +645,7 @@ export function createFluent2MicrosoftButtonSchema({
                     hover: c('default', 'd', 'button.neutral', 85),
                     focus: c('default', 'd', 'button.neutral', 80),
                     pressed: c('default', 'd', 'button.neutral', 70),
-                    disabled: c('default', 'd', 'button.neutral', 3),
+                    disabled: darkAdaptiveDisabled,
                     selected: {
                       rest: c('default', 'd', 'button.neutral', 75)
                     }
@@ -759,19 +765,19 @@ export function createFluent2MicrosoftButtonSchema({
                   medium: {
                     rest: c('default', 'l', 'button.primary', 65),
                     disabled: {
-                      ref: c('default', 'l', 'button.neutral', 16)
+                      ref: lightAdaptiveDisabledText
                     }
                   },
                   high: {
                     rest: c('default', 'l', 'button.neutral', 0),
                     disabled: {
-                      ref: c('default', 'l', 'button.neutral', 16)
+                      ref: lightAdaptiveDisabledText
                     }
                   },
                   low: {
                     rest: c('default', 'l', 'button.primary', 65),
                     disabled: {
-                      ref: c('default', 'l', 'button.neutral', 16)
+                      ref: lightAdaptiveDisabledText
                     }
                   },
                   lowest: {
@@ -785,19 +791,19 @@ export function createFluent2MicrosoftButtonSchema({
                   high: {
                     rest: c('default', 'l', 'button.neutral', 0),
                     disabled: {
-                      ref: c('default', 'l', 'button.neutral', 16)
+                      ref: lightAdaptiveDisabledText
                     }
                   },
                   medium: {
                     rest: c('default', 'l', 'button.neutral', 85),
                     disabled: {
-                      ref: c('default', 'l', 'button.neutral', 16)
+                      ref: lightAdaptiveDisabledText
                     }
                   },
                   low: {
                     rest: c('default', 'l', 'button.neutral', 85),
                     disabled: {
-                      ref: c('default', 'l', 'button.neutral', 16)
+                      ref: lightAdaptiveDisabledText
                     }
                   },
                   lowest: {

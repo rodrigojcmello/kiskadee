@@ -69,10 +69,36 @@ exercised by the Kiskadee Material 3 preset, recalibrated against the Fluent Blu
 | Dark Pressed | `button.primary` D14 | `#14375b` |
 | Dark enabled foreground | `button.primary` D75 | `#61a7f3` |
 
-Disabled continues to use the official neutral mappings already shared by `primary.high`: L3/L16
-for Light background/foreground and D3/D35 for Dark background/foreground.
+### Adaptive Disabled Policy
+
+Fluent supplies opaque disabled background tokens, mapped by Kiskadee to L3 in Light and D3 in
+Dark. Kiskadee intentionally replaces those opaque fills with a surface-relative overlay across
+the Button matrix:
+
+- Light uses the `button.neutral` L100 absolute-black cap at 5% opacity;
+- Dark and Darker use the `button.neutral` D100 absolute-white cap at 5% opacity;
+- High, Medium, and Low use the overlay because their disabled states retain a visible fill;
+- in Light, those three emphases use neutral L20 (`#a7abb6`) at 82% for the foreground;
+- in Dark and Darker, those three emphases retain the solid neutral D35 foreground;
+- Lowest remains fully transparent and keeps the solid L16/D35 foreground because its disabled
+  state intentionally has no fill.
+
+Over white, the Light overlay composes to approximately `#f2f2f2`, retaining the appearance of the
+opaque L3 `#f0f2f7`. Over the Light neutral L3 surface, it composes to approximately `#e4e6eb`
+instead of disappearing into the background. The inverse Dark overlay follows the same
+surface-relative principle on dark and absolute-black surfaces. After the adaptive Button
+background is composed, the Light foreground resolves to approximately `#b5b8c1` on white,
+`#b2b6c0` on Light neutral L3, and `#aeb4c1` on Light primary. Disabled borders remain transparent.
+
+This policy is a Kiskadee extension, not an official Fluent behavior. It was adopted after visual
+comparison against the opaque mapping on white, neutral, and Primary surfaces: the opaque fill was
+acceptable on white but either disappeared into a matching neutral surface or looked detached on a
+colored surface. The translucent overlay preserved the disabled shape while allowing the surface
+color to influence it.
+
 Primary Medium now exposes Selected explicitly in every theme. Selected reuses the Medium Rest
-surface: L4 in Light and D10 in Dark/Darker.
+surface: L4 in Light and D10 in Dark/Darker. Its disabled state follows the same adaptive
+background and foreground policy as High and Low.
 
 `primary.low` and `primary.lowest` reuse the Medium foreground but use a deliberately light
 interaction rhythm. The states move toward the physically lighter end of each theme scale. In
@@ -91,9 +117,9 @@ border state transparent.
 | Dark/Darker Focus and Selected | D18 `#133d68` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
 | Dark/Darker Pressed | D22 `#104375` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
 
-Disabled Low uses the same neutral L3/D3 background and L16/D35 foreground as Medium and High,
-without a visible border. Lowest remains fully transparent and borderless when disabled, preserving
-its intentionally minimal appearance.
+Disabled Low uses the same adaptive 5% neutral overlay and Light L20-at-82%/Dark D35 foreground as
+Medium and High, without a visible border. Lowest remains fully transparent and borderless when
+disabled, preserving its intentionally minimal appearance.
 The enabled Low border uses the component Primary Rest color with 50% opacity: L50 in Light and D35
 in Dark. This keeps the exact Primary identity while allowing the surface beneath it to soften the
 outline. Two opaque alternatives were explicitly rejected: matching the foreground at L65/D75 was
@@ -126,7 +152,7 @@ Light mappings:
 | Hover | `#f0f5ff` / `#c3c7d3` / `#21242d` | L2 / L12 / L85 |
 | Pressed | `#dbe0ec` / `#afb3bf` / `#21242d` | L7 / L18 / L85 |
 | Selected | `#e6ebf7` / `#b9bdc9` / `#21242d` | L5 / L16 / L85 |
-| Disabled | `#ebf0fc` / `#dbe0ec` / `#b9bdc9` | L3 / L7 / L16 |
+| Disabled | `#ebf0fc` / `#dbe0ec` / `#b9bdc9` | L100 at 5% / transparent / L20 at 82% |
 
 Dark mappings:
 
@@ -136,7 +162,7 @@ Dark mappings:
 | Hover | `#393d47` / `#717580` / `#ffffff` | D20 / D50 / D100 |
 | Pressed | `#1c1f28` / `#676b76` / `#ffffff` | D6 / D45 / D100 |
 | Selected | `#343842` / `#6c707b` / `#ffffff` | D16 / D50 / D100 |
-| Disabled | `#11141c` / `#3e424c` / `#585c66` | D3 / D22 / D35 |
+| Disabled | `#11141c` / `#3e424c` / `#585c66` | D100 at 5% / transparent / D35 |
 
 ### Neutral Lowest: Borderless Collapse
 
@@ -177,8 +203,9 @@ Medium, Low, and Lowest reuse the approved Primary extension rhythm because they
 emphasis, not a Fluent-authored component variant. Light interaction fills use L4/L6/L4/L8 and
 Dark uses D10/D8/D10/D14 for Rest/Hover/Focus/Pressed. Low and Lowest remain transparent at Rest;
 Low uses its own High Rest color at 50% opacity for the border, while Lowest remains borderless.
-Enabled Medium/Low/Lowest foregrounds use L65 in Light and D75 in Dark. All disabled surfaces,
-and foregrounds continue to resolve through `button.neutral`; Low removes its border when disabled.
+Enabled Medium/Low/Lowest foregrounds use L65 in Light and D75 in Dark. Filled disabled surfaces
+use the shared adaptive 5% overlay. Their Light foreground uses neutral L20 at 82%, while Dark and
+Darker use solid neutral D35; Low removes its border when disabled.
 
 ## Kiskadee Darker Theme
 
@@ -218,6 +245,12 @@ are resolved independently rather than mirroring the numeric positions.
 | Dark Focus | `BrandBackground.Rest` / Brand-70 | `#0055a4` | `button.primary` D35 | `#005ba4` | `0.017032` |
 | Dark Disabled | unbound Figma instance color | `#141414` | `button.neutral` D3 | `#131416` | `0.004340` |
 
+The Disabled rows preserve the official Fluent sources and their nearest opaque Kiskadee tonal
+matches. The active Button schema intentionally substitutes the adaptive policy documented above:
+L100 absolute black at 5% in Light and D100 absolute white at 5% in Dark/Darker for High, Medium,
+and Low. This component-level exception must not be interpreted as a revised preset-wide mapping
+for `NeutralBackgroundDisabled.Rest`.
+
 ## Foreground De-para
 
 | Theme/state | Fluent source | Source HEX | Kiskadee role/tone | Generated HEX | Delta E OK |
@@ -230,6 +263,14 @@ are resolved independently rather than mirroring the numeric positions.
 The Dark disabled instance exposes fixed colors rather than local variable aliases. Those two
 values are preserved here as component evidence and mapped with the same Delta E OK method used by
 the preset-wide primitive de-para.
+
+All Light High, Medium, and Low disabled Buttons use a surface-relative foreground. Neutral L20
+(`#a7abb6`) at 82% replaces the solid L16 foreground for these filled states. After the adaptive 5%
+black Button background is composed, the text resolves to approximately `#b5b8c1` on white, close
+to the official solid L16 reference `#b6bac5`, while preserving 18% surface influence. It resolves
+to approximately `#b2b6c0` on Light neutral L3 and `#aeb4c1` on Light primary. This avoids the
+excessive darkening produced by low-opacity absolute black on colored surfaces. Lowest keeps solid
+L16 because it has no disabled fill, and all Dark/Darker disabled foregrounds remain solid D35.
 
 ## Three-Layer Mapping
 
@@ -259,7 +300,12 @@ changing the asset scales.
   border mappings, implement the documented Kiskadee-only extensions in Light, Dark, and Darker.
 - `e1.boxColor.primary.medium.selected` explicitly reuses Medium Rest in all three themes.
 - `e1.boxColor.primary.high` owns the Primary Button background in all three themes.
-- `e2.textColor.primary.high` owns enabled and disabled foreground colors in all three themes.
+- Filled `e1.boxColor.*.*.disabled` surfaces use the adaptive neutral overlay: L100 absolute black
+  at 5% in Light and D100 absolute white at 5% in Dark/Darker. High, Medium, and Low use this
+  treatment; Lowest remains transparent. This is an explicit Kiskadee extension; the official
+  opaque mappings remain documented above.
+- Filled `e2.textColor.*.*.disabled` foregrounds use neutral L20 at 82% in Light and solid D35 in
+  Dark/Darker. Lowest keeps the official solid L16/D35 mapping because it has no disabled fill.
 - `e1.boxColor.neutral` and `e2.textColor.neutral` expose High, Medium, Low, and Lowest in both
   themes.
 - `e1.boxColor.destructive`/`positive`, their text colors, and their borders expose all four

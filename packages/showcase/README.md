@@ -178,6 +178,8 @@ Shared utilities for Showcase.
 ## Important conventions
 
 - Showcase is an artifact consumer: if something is “missing”, run `web-builder build-sync-generate`.
+- Initial and fallback theme selection prefers `light` whenever the active preset exposes it. A
+  valid theme explicitly persisted by the user still takes precedence.
 - Generated registries are outputs: do not edit files under `registry/generated/` manually.
 - For deployment builds (for example on Vercel), `pnpm build` inside `packages/showcase`
   already runs `@kiskadee/web-builder` `build-sync-generate` before `next build`.

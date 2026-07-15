@@ -49,7 +49,7 @@ export function useBackgroundTones() {
     designSystemKey,
     theme: 'light',
     selection: 'semantic:neutral',
-    tones: ['0', '5'],
+    tones: ['0', '3'],
     enabled: canLoadPrimary
   });
 
@@ -64,7 +64,7 @@ export function useBackgroundTones() {
   const tones = useMemo<ResolvedBackgroundTone[]>(() => {
     const resolvedByKey: Record<BackgroundToneKey, string | undefined> = {
       white: lightNeutral.picked['0'],
-      gray: lightNeutral.picked['5'],
+      gray: lightNeutral.picked['3'],
       'light-primary': lightPrimary.picked['5'],
       primary: lightPrimary.picked['50'],
       'dark-primary': darkPrimary.picked['10'],

@@ -3,6 +3,15 @@ import { type coreMaps, paletteIndex } from './design-systems.registry';
 
 export type DesignSystemKey = keyof typeof coreMaps;
 
+export function getPreferredTheme(themes: readonly ThemeMode[]): ThemeMode {
+  const preferredTheme = themes.includes('light') ? 'light' : themes[0];
+  if (!preferredTheme) {
+    throw new Error('Cannot select a preferred theme from an empty theme list.');
+  }
+
+  return preferredTheme;
+}
+
 export function getDefaultSegmentAndThemeForDesignSystem(key: DesignSystemKey): {
   segment: string;
   theme: ThemeMode;
@@ -27,6 +36,6 @@ export function getDefaultSegmentAndThemeForDesignSystem(key: DesignSystemKey): 
     );
   }
 
-  const theme = themes[0] as ThemeMode;
+  const theme = getPreferredTheme(themes);
   return { segment, theme };
 }

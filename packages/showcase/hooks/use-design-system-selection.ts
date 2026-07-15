@@ -3,7 +3,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { coreMaps, designSystemList, paletteIndex } from '@/registry/design-systems.registry';
 import {
   type DesignSystemKey,
-  getDefaultSegmentAndThemeForDesignSystem
+  getDefaultSegmentAndThemeForDesignSystem,
+  getPreferredTheme
 } from '@/registry/registry-utils';
 
 const STORAGE_KEYS = {
@@ -45,7 +46,7 @@ function readPersistedSelection(): {
     const theme =
       storedTheme && (availableThemes as readonly string[]).includes(storedTheme)
         ? storedTheme
-        : (availableThemes[0] as ThemeMode);
+        : getPreferredTheme(availableThemes);
 
     return { designSystem, segment, theme };
   } catch {
@@ -120,7 +121,7 @@ export function useDesignSystemSelection() {
       const segments = getSegments(key);
       const nextSeg = segments.includes(seg) ? seg : segments[0];
       const themes = getThemes(key, nextSeg);
-      const nextTh = themes.includes(th) ? th : themes[0];
+      const nextTh = themes.includes(th) ? th : getPreferredTheme(themes);
       return { seg: nextSeg, th: nextTh } as const;
     },
     [getSegments, getThemes]
