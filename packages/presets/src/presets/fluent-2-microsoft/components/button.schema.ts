@@ -227,7 +227,6 @@ export function createFluent2MicrosoftButtonSchema({
                   low: {
                     rest: lightTransparent,
                     hover: c('default', 'l', 'button.primary', 2),
-                    focus: c('default', 'l', 'button.primary', 1),
                     pressed: c('default', 'l', 'button.primary', 4),
                     disabled: lightAdaptiveDisabled,
                     selected: {
@@ -238,7 +237,6 @@ export function createFluent2MicrosoftButtonSchema({
                   lowest: {
                     rest: lightTransparent,
                     hover: c('default', 'l', 'button.primary', 2),
-                    focus: c('default', 'l', 'button.primary', 1),
                     pressed: c('default', 'l', 'button.primary', 4),
                     disabled: lightTransparent,
                     selected: {
@@ -393,7 +391,6 @@ export function createFluent2MicrosoftButtonSchema({
                   low: {
                     rest: darkTransparent,
                     hover: c('default', 'd', 'button.primary', 14),
-                    focus: c('default', 'd', 'button.primary', 18),
                     pressed: c('default', 'd', 'button.primary', 22),
                     disabled: darkAdaptiveDisabled,
                     selected: {
@@ -404,7 +401,6 @@ export function createFluent2MicrosoftButtonSchema({
                   lowest: {
                     rest: darkTransparent,
                     hover: c('default', 'd', 'button.primary', 14),
-                    focus: c('default', 'd', 'button.primary', 18),
                     pressed: c('default', 'd', 'button.primary', 22),
                     disabled: darkTransparent,
                     selected: {
@@ -555,7 +551,6 @@ export function createFluent2MicrosoftButtonSchema({
                   low: {
                     rest: darkTransparent,
                     hover: c('default', 'd', 'button.primary', 14),
-                    focus: c('default', 'd', 'button.primary', 18),
                     pressed: c('default', 'd', 'button.primary', 22),
                     disabled: darkAdaptiveDisabled,
                     selected: {
@@ -565,7 +560,6 @@ export function createFluent2MicrosoftButtonSchema({
                   lowest: {
                     rest: darkTransparent,
                     hover: c('default', 'd', 'button.primary', 14),
-                    focus: c('default', 'd', 'button.primary', 18),
                     pressed: c('default', 'd', 'button.primary', 22),
                     disabled: darkTransparent,
                     selected: {

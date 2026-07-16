@@ -60,12 +60,12 @@ exercised by the Kiskadee Material 3 preset, recalibrated against the Fluent Blu
 | --- | --- | --- |
 | Light Rest | `button.primary` L4 | `#e1efff` |
 | Light Hover | `button.primary` L6 | `#d3e7ff` |
-| Light Focus | `button.primary` L4 | `#e1efff` |
+| Light Focus | Inherits Light Rest | `#e1efff` |
 | Light Pressed | `button.primary` L8 | `#c1deff` |
 | Light enabled foreground | `button.primary` L65 | `#0d477e` |
 | Dark Rest | `button.primary` D10 | `#142d48` |
 | Dark Hover | `button.primary` D8 | `#13273e` |
-| Dark Focus | `button.primary` D10 | `#142d48` |
+| Dark Focus | Inherits Dark Rest | `#142d48` |
 | Dark Pressed | `button.primary` D14 | `#14375b` |
 | Dark enabled foreground | `button.primary` D75 | `#61a7f3` |
 
@@ -101,20 +101,20 @@ surface: L4 in Light and D10 in Dark/Darker. Its disabled state follows the same
 background and foreground policy as High and Low.
 
 `primary.low` and `primary.lowest` reuse the Medium foreground but use a deliberately light
-interaction rhythm. The states move toward the physically lighter end of each theme scale. In
-Light, Focus and Selected stop at L1 instead of the absolute-white L0 cap so they remain visible on
-white surfaces. Both are transparent at Rest. Low adds a one-pixel Blue border; Lowest keeps every
-border state transparent.
+interaction rhythm. The states move toward the physically lighter end of each theme scale. Both
+are transparent at Rest, and Focus inherits that transparent Rest surface; the external focus ring
+remains the focus affordance. Selected uses L1 in Light and D18 in Dark/Darker. Low adds a one-pixel
+Blue border; Lowest keeps every border state transparent.
 
 | Theme/state | Low and Lowest background | Low border | Enabled foreground |
 | --- | --- | --- | --- |
-| Light Rest | transparent | L50 at 50% `#0064b480` | L65 `#0d477e` |
+| Light Rest and Focus | transparent | L50 at 50% `#0064b480` | L65 `#0d477e` |
 | Light Hover | L2 `#f1f7ff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
-| Light Focus and Selected | L1 `#f8fbff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
+| Light Selected | L1 `#f8fbff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
 | Light Pressed | L4 `#e1efff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
-| Dark/Darker Rest | transparent | D35 at 50% `#005ba480` | D75 `#61a7f3` |
+| Dark/Darker Rest and Focus | transparent | D35 at 50% `#005ba480` | D75 `#61a7f3` |
 | Dark/Darker Hover | D14 `#14375b` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
-| Dark/Darker Focus and Selected | D18 `#133d68` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
+| Dark/Darker Selected | D18 `#133d68` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
 | Dark/Darker Pressed | D22 `#104375` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
 
 Disabled Low uses the same adaptive 5% neutral overlay and Light L20-at-82%/Dark D35 foreground as
@@ -317,9 +317,9 @@ changing the asset scales.
   generating a duplicate surface rule.
 - When Hover and focus-visible coexist, the omitted surface override preserves Hover and adds the
   focus ring. An explicit `focus` value is reserved for a documented component-owned visual delta.
-- Kiskadee-only Primary Low and Lowest keep their explicit focus fills because those surfaces
-  intentionally change from transparent Rest. The optional Button shadow also keeps its authored
-  focus delta.
+- Every Primary emphasis omits component-owned Focus palette deltas, including the Kiskadee-only
+  Low and Lowest surfaces. The optional Button shadow remains a separate global effect with its
+  authored focus delta.
 - Only the documented Selected rest color is emitted. Selected hover and pressed are not inferred.
 - Existing Kiskadee Button shadow behavior is retained, but its black color now resolves from the
   `primitive.black.v1` absolute cap instead of a schema HEX literal.
