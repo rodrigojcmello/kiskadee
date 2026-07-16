@@ -24,6 +24,9 @@ Read before editing:
 - Treat Rest as the base visual rule carried by the element.
 - Treat omitted states as no visual delta for that property. The Web Builder skips undefined state
   values and the Rest CSS remains active.
+- Do not equate an omitted visual delta with an unavailable interaction. In Button Showcase
+  capability views, only `hover`, `pressed`, and `selected` may show the unavailable-state
+  indicator; Rest-derived or required states such as `focus` and `disabled` still render.
 - Do not write `focus: restValue`, `hover: restValue`, or another duplicate merely to complete a
   state matrix.
 - Keep an explicit state when its resolved value differs from Rest.

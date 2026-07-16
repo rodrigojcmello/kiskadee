@@ -20,6 +20,7 @@ import { type BackgroundToneKey, useBackgroundTones } from '@/hooks/use-backgrou
 import { SwatchRadioGroup } from '@/k-components';
 import s from './Button.module.scss';
 import ButtonStateSection from './components/ButtonStateSection';
+import { shouldCheckButtonStateAvailability } from './components/buttonStateAvailability';
 
 export function Button() {
   const { designSystem } = useKiskadee();
@@ -106,10 +107,9 @@ export function Button() {
     </ShowcaseControlPanel>
   );
 
-  // Manifest-driven capabilities for the current design system.
-  // If the manifest is missing, we fall back to rendering all states
-  // (current behavior), preserving compatibility with older builds or
-  // environments without metadata.
+  // Only optional interaction capabilities use the manifest to show an unavailable indicator.
+  // Rest, Focus, and Disabled always render: an omitted visual state can inherit Rest, and these
+  // states remain part of the expected Button contract.
   const buttonMeta = manifest?.components?.button;
 
   const renderState = (
@@ -118,6 +118,10 @@ export function Button() {
     state: string,
     children: React.ReactNode
   ) => {
+    if (!shouldCheckButtonStateAvailability(state)) {
+      return children;
+    }
+
     const isSupported = (() => {
       if (!buttonMeta?.state) return true;
       const group = buttonMeta.state[semantic]?.[emphasis];

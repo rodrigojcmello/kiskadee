@@ -6,6 +6,7 @@ import type { ManifestComponent } from '@kiskadee/web-builder/types';
 import { Fragment, type ReactNode, useState } from 'react';
 import { Icon } from '@/components/Icon/Icon';
 import s from '../Button.module.scss';
+import { shouldCheckButtonStateAvailability } from './buttonStateAvailability';
 
 type ButtonStateSectionProps = {
   intent: ButtonIntent;
@@ -46,6 +47,10 @@ export function ButtonStateSection({
   };
 
   const renderState = (emphasis: Emphasis, state: InteractionState, children: ReactNode) => {
+    if (!shouldCheckButtonStateAvailability(state)) {
+      return children;
+    }
+
     const isSupported = (() => {
       if (!buttonMeta?.state) return true;
       const group = buttonMeta.state[intent]?.[emphasis];
