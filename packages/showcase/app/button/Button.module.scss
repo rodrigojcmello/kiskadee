@@ -35,6 +35,10 @@ $height: 64px;
   }
 }
 
+.focusRingHidden {
+  --k-focus-width: 0;
+}
+
 .missingState {
   display: flex;
   justify-content: center;

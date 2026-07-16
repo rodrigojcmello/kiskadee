@@ -13,6 +13,7 @@ import {
   ShowcaseControlField,
   ShowcaseControlGroup,
   ShowcaseControlPanel,
+  ShowcaseControlStack,
   ShowcaseRouteControls
 } from '@/components/ShowcaseControls';
 import { type BackgroundToneKey, useBackgroundTones } from '@/hooks/use-background-tones';
@@ -28,6 +29,7 @@ export function Button() {
   const [isSelected, setIsSelected] = React.useState(false);
   const [isSelectedVivid, setIsSelectedVivid] = React.useState(false);
   const [isSimplified, setIsSimplified] = React.useState(false);
+  const [showFocusRing, setShowFocusRing] = React.useState(true);
   const [surface, setSurface] = React.useState<BackgroundToneKey>(backgroundTones.defaultToneKey);
 
   React.useEffect(() => {
@@ -68,14 +70,27 @@ export function Button() {
 
   const isCarbon = designSystem === 'carbon-1-ibm';
   const alignment = isCarbon ? 'left' : 'center';
+  const routeClassName = [
+    isDarkSurface ? s.darkSurface : undefined,
+    showFocusRing ? undefined : s.focusRingHidden
+  ]
+    .filter(Boolean)
+    .join(' ');
   const buttonControls = (
     <ShowcaseControlPanel>
       <ShowcaseControlGroup title="Visualização">
-        <ShowcaseBooleanControl
-          label="Simplificada"
-          checked={isSimplified}
-          onCheckedChange={setIsSimplified}
-        />
+        <ShowcaseControlStack>
+          <ShowcaseBooleanControl
+            label="Simplificada"
+            checked={isSimplified}
+            onCheckedChange={setIsSimplified}
+          />
+          <ShowcaseBooleanControl
+            label="Focus ring"
+            checked={showFocusRing}
+            onCheckedChange={setShowFocusRing}
+          />
+        </ShowcaseControlStack>
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Surface">
         <ShowcaseControlField fullWidth>
@@ -139,7 +154,7 @@ export function Button() {
   };
 
   return (
-    <section className={isDarkSurface ? s.darkSurface : undefined}>
+    <section className={routeClassName || undefined}>
       <h2>Button</h2>
       <ShowcaseRouteControls id="button" eyebrow="Button" title="Controls">
         {buttonControls}
