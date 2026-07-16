@@ -13,7 +13,6 @@ import {
   ShowcaseControlField,
   ShowcaseControlGroup,
   ShowcaseControlPanel,
-  ShowcaseControlStack,
   ShowcaseRouteControls
 } from '@/components/ShowcaseControls';
 import { type BackgroundToneKey, useBackgroundTones } from '@/hooks/use-background-tones';
@@ -28,6 +27,7 @@ export function Button() {
 
   const [isSelected, setIsSelected] = React.useState(false);
   const [isSelectedVivid, setIsSelectedVivid] = React.useState(false);
+  const [isSimplified, setIsSimplified] = React.useState(false);
   const [surface, setSurface] = React.useState<BackgroundToneKey>(backgroundTones.defaultToneKey);
 
   React.useEffect(() => {
@@ -70,19 +70,12 @@ export function Button() {
   const alignment = isCarbon ? 'left' : 'center';
   const buttonControls = (
     <ShowcaseControlPanel>
-      <ShowcaseControlGroup title="Selected Examples">
-        <ShowcaseControlStack>
-          <ShowcaseBooleanControl
-            label="Primary medium"
-            checked={isSelected}
-            onCheckedChange={setIsSelected}
-          />
-          <ShowcaseBooleanControl
-            label="Primary high"
-            checked={isSelectedVivid}
-            onCheckedChange={setIsSelectedVivid}
-          />
-        </ShowcaseControlStack>
+      <ShowcaseControlGroup title="Visualização">
+        <ShowcaseBooleanControl
+          label="Simplificada"
+          checked={isSimplified}
+          onCheckedChange={setIsSimplified}
+        />
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Surface">
         <ShowcaseControlField fullWidth>
@@ -169,6 +162,7 @@ export function Button() {
           fontName={fontName}
           align={alignment}
           buttonMeta={buttonMeta}
+          simplified={isSimplified}
         />
 
         <ButtonStateSection
@@ -177,6 +171,7 @@ export function Button() {
           fontName={fontName}
           align={alignment}
           buttonMeta={buttonMeta}
+          simplified={isSimplified}
         />
 
         <ButtonStateSection
@@ -185,6 +180,7 @@ export function Button() {
           fontName={fontName}
           align={alignment}
           buttonMeta={buttonMeta}
+          simplified={isSimplified}
         />
 
         <ButtonStateSection
@@ -193,6 +189,7 @@ export function Button() {
           fontName={fontName}
           align={alignment}
           buttonMeta={buttonMeta}
+          simplified={isSimplified}
         />
 
         {/* [ACTIVATION FEEDBACK] START: Showcase examples for profile/origin overrides. */}

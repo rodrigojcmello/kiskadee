@@ -3,7 +3,7 @@
 import type { ButtonIntent, InteractionState } from '@kiskadee/core';
 import { Button as KButton, SmoothText } from '@kiskadee/react-components';
 import type { ManifestComponent } from '@kiskadee/web-builder/types';
-import { type ReactNode, useState } from 'react';
+import { Fragment, type ReactNode, useState } from 'react';
 import { Icon } from '@/components/Icon/Icon';
 import s from '../Button.module.scss';
 
@@ -13,6 +13,7 @@ type ButtonStateSectionProps = {
   fontName: string;
   align?: 'left' | 'center';
   buttonMeta?: ManifestComponent;
+  simplified?: boolean;
 };
 
 const EMPHASIS_ORDER = ['high', 'medium', 'low', 'lowest'] as const;
@@ -29,7 +30,8 @@ export function ButtonStateSection({
   title,
   fontName,
   align,
-  buttonMeta
+  buttonMeta,
+  simplified = false
 }: ButtonStateSectionProps) {
   const [selectedMap, setSelectedMap] = useState<Record<Emphasis, boolean>>(() => {
     const initial = {} as Record<Emphasis, boolean>;
@@ -65,88 +67,112 @@ export function ButtonStateSection({
   return (
     <div className={s['state-section']}>
       <h3 className={s['state-title']}>{title}</h3>
-      {EMPHASIS_ORDER.map((emphasis) => (
-        <div key={emphasis} className={s['interaction-state']}>
-          <h4 className={s['emphasis-title']}>
-            <span>{EMPHASIS_LABELS[emphasis]} emphasis</span>
-            <span className={s['emphasis-divider']} aria-hidden="true" />
-          </h4>
-          <div className={`${s['example-states']} k-root`}>
-            {renderState(
-              emphasis,
-              'rest',
-              <KButton emphasis={emphasis} intent={intent}>
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={align}>
-                    Rest
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-            )}
-            {renderState(
-              emphasis,
-              'hover',
-              <KButton emphasis={emphasis} intent={intent} status="hover">
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={align}>
-                    Hover
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-            )}
-            {renderState(
-              emphasis,
-              'focus',
-              <KButton emphasis={emphasis} intent={intent} status="focus">
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={align}>
-                    Focus
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-            )}
-            {renderState(
-              emphasis,
-              'pressed',
-              <KButton emphasis={emphasis} intent={intent} status="pressed">
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={align}>
-                    Pressed
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-            )}
-            {renderState(
-              emphasis,
-              selectedMap[emphasis] ? 'selected' : 'rest',
-              <KButton
-                emphasis={emphasis}
-                intent={intent}
-                controlState={selectedMap[emphasis]}
-                radiusEffect={intent === 'primary'}
-                onClick={() => toggleSelected(emphasis)}
-              >
-                <KButton.Label>
-                  <SmoothText fontName={fontName} speed="fast" align={align}>
-                    {selectedMap[emphasis] ? 'Selected' : 'Select'}
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-            )}
-            {renderState(
-              emphasis,
-              'disabled',
-              <KButton emphasis={emphasis} intent={intent} status="disabled">
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={align}>
-                    Disabled
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-            )}
-          </div>
+      {simplified ? (
+        <div className={`${s['simplified-states']} k-root`}>
+          {EMPHASIS_ORDER.map((emphasis) => (
+            <Fragment key={emphasis}>
+              {renderState(
+                emphasis,
+                'rest',
+                <KButton
+                  emphasis={emphasis}
+                  intent={intent}
+                  aria-label={`${title} ${EMPHASIS_LABELS[emphasis]} emphasis Rest`}
+                >
+                  <KButton.Label>
+                    <SmoothText fontName={fontName} align={align}>
+                      {EMPHASIS_LABELS[emphasis]}
+                    </SmoothText>
+                  </KButton.Label>
+                </KButton>
+              )}
+            </Fragment>
+          ))}
         </div>
-      ))}
+      ) : (
+        EMPHASIS_ORDER.map((emphasis) => (
+          <div key={emphasis} className={s['interaction-state']}>
+            <h4 className={s['emphasis-title']}>
+              <span>{EMPHASIS_LABELS[emphasis]} emphasis</span>
+              <span className={s['emphasis-divider']} aria-hidden="true" />
+            </h4>
+            <div className={`${s['example-states']} k-root`}>
+              {renderState(
+                emphasis,
+                'rest',
+                <KButton emphasis={emphasis} intent={intent}>
+                  <KButton.Label>
+                    <SmoothText fontName={fontName} align={align}>
+                      Rest
+                    </SmoothText>
+                  </KButton.Label>
+                </KButton>
+              )}
+              {renderState(
+                emphasis,
+                'hover',
+                <KButton emphasis={emphasis} intent={intent} status="hover">
+                  <KButton.Label>
+                    <SmoothText fontName={fontName} align={align}>
+                      Hover
+                    </SmoothText>
+                  </KButton.Label>
+                </KButton>
+              )}
+              {renderState(
+                emphasis,
+                'focus',
+                <KButton emphasis={emphasis} intent={intent} status="focus">
+                  <KButton.Label>
+                    <SmoothText fontName={fontName} align={align}>
+                      Focus
+                    </SmoothText>
+                  </KButton.Label>
+                </KButton>
+              )}
+              {renderState(
+                emphasis,
+                'pressed',
+                <KButton emphasis={emphasis} intent={intent} status="pressed">
+                  <KButton.Label>
+                    <SmoothText fontName={fontName} align={align}>
+                      Pressed
+                    </SmoothText>
+                  </KButton.Label>
+                </KButton>
+              )}
+              {renderState(
+                emphasis,
+                selectedMap[emphasis] ? 'selected' : 'rest',
+                <KButton
+                  emphasis={emphasis}
+                  intent={intent}
+                  controlState={selectedMap[emphasis]}
+                  radiusEffect={intent === 'primary'}
+                  onClick={() => toggleSelected(emphasis)}
+                >
+                  <KButton.Label>
+                    <SmoothText fontName={fontName} speed="fast" align={align}>
+                      {selectedMap[emphasis] ? 'Selected' : 'Select'}
+                    </SmoothText>
+                  </KButton.Label>
+                </KButton>
+              )}
+              {renderState(
+                emphasis,
+                'disabled',
+                <KButton emphasis={emphasis} intent={intent} status="disabled">
+                  <KButton.Label>
+                    <SmoothText fontName={fontName} align={align}>
+                      Disabled
+                    </SmoothText>
+                  </KButton.Label>
+                </KButton>
+              )}
+            </div>
+          </div>
+        ))
+      )}
       <div className={s['section-divider']} />
     </div>
   );

@@ -24,6 +24,17 @@ $height: 64px;
   }
 }
 
+.simplified-states {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+
+  :global(.k-btn) {
+    width: 100%;
+  }
+}
+
 .missingState {
   display: flex;
   justify-content: center;
