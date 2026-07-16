@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kiskadee Interaction States"
+  short_description: "Author component states without redundant overrides"
+  default_prompt: "Use $kiskadee-author-interaction-states to review and author component interaction states without duplicating Rest."

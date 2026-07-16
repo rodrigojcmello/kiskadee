@@ -312,7 +312,14 @@ changing the asset scales.
   Kiskadee emphasis levels in both themes.
 - `e1.borderColor.neutral.low` is the only visible neutral Button border while enabled; every Low
   disabled border and all Lowest borders are transparent.
-- Focus reuses Rest because that is the value authored by Fluent for this variant.
+- Official Fluent Button surfaces omit `focus` when Focus is visually identical to Rest. The base
+  Rest class remains active and the global focus ring provides the focus affordance without
+  generating a duplicate surface rule.
+- When Hover and focus-visible coexist, the omitted surface override preserves Hover and adds the
+  focus ring. An explicit `focus` value is reserved for a documented component-owned visual delta.
+- Kiskadee-only Primary Low and Lowest keep their explicit focus fills because those surfaces
+  intentionally change from transparent Rest. The optional Button shadow also keeps its authored
+  focus delta.
 - Only the documented Selected rest color is emitted. Selected hover and pressed are not inferred.
 - Existing Kiskadee Button shadow behavior is retained, but its black color now resolves from the
   `primitive.black.v1` absolute cap instead of a schema HEX literal.
