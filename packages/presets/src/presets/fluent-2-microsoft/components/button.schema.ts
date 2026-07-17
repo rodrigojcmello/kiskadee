@@ -4,19 +4,76 @@ import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 type ButtonComponent = NonNullable<Schema<never>['components']['button']>;
 type Fluent2MicrosoftSegmentName = 'default';
 type ThemeShortcut = 'l' | 'd';
-type ChromaticButtonRole = 'button.destructive' | 'button.positive';
+type ButtonRecipeTheme = 'light' | 'dark' | 'darker';
+type ButtonColorRole =
+  | 'button.primary'
+  | 'button.neutral'
+  | 'button.destructive'
+  | 'button.positive';
 
-type ChromaticHighTones = {
+type StatefulTones = {
   rest: KiskadeeTone;
   hover: KiskadeeTone;
   pressed: KiskadeeTone;
   selected: KiskadeeTone;
 };
 
+type ButtonThemeRecipe = {
+  scale: ThemeShortcut;
+  medium: StatefulTones;
+  high: StatefulTones;
+  low: {
+    hover: KiskadeeTone;
+    pressed: KiskadeeTone;
+    selected: KiskadeeTone;
+    border: KiskadeeTone;
+  };
+  foreground: KiskadeeTone;
+  highForeground: KiskadeeTone;
+  lowestDisabledForeground: KiskadeeTone;
+};
+
 type CreateFluent2MicrosoftButtonSchemaArgs = {
   c: PresetColorGetter<Fluent2MicrosoftSegmentName>;
   shadowBlack: (alpha: number) => SolidColor;
 };
+
+/**
+ * Canonical Kiskadee Button recipe for Fluent 2 Microsoft.
+ *
+ * The recipe is intentionally role-agnostic: intents change only the color
+ * family. Keeping the tonal positions identical makes recipe and palette gaps
+ * visible when the preset is exercised with other segments.
+ */
+const BUTTON_TONAL_RECIPE = {
+  light: {
+    scale: 'l',
+    medium: { rest: 4, hover: 6, pressed: 8, selected: 4 },
+    high: { rest: 50, hover: 55, pressed: 75, selected: 60 },
+    low: { hover: 2, pressed: 4, selected: 1, border: 50 },
+    foreground: 65,
+    highForeground: 0,
+    lowestDisabledForeground: 16
+  },
+  dark: {
+    scale: 'd',
+    medium: { rest: 10, hover: 8, pressed: 14, selected: 10 },
+    high: { rest: 35, hover: 40, pressed: 14, selected: 28 },
+    low: { hover: 14, pressed: 22, selected: 18, border: 35 },
+    foreground: 75,
+    highForeground: 100,
+    lowestDisabledForeground: 35
+  },
+  darker: {
+    scale: 'd',
+    medium: { rest: 10, hover: 8, pressed: 14, selected: 10 },
+    high: { rest: 30, hover: 35, pressed: 12, selected: 26 },
+    low: { hover: 14, pressed: 22, selected: 18, border: 35 },
+    foreground: 75,
+    highForeground: 100,
+    lowestDisabledForeground: 35
+  }
+} as const satisfies Record<ButtonRecipeTheme, ButtonThemeRecipe>;
 
 export function createFluent2MicrosoftButtonSchema({
   c,
@@ -28,134 +85,123 @@ export function createFluent2MicrosoftButtonSchema({
   const darkTransparent = c('default', 'd', 'button.neutral', 0, 0);
   const darkAdaptiveDisabled = c('default', 'd', 'button.neutral', 100, 5);
 
-  const createChromaticBoxIntent = (
-    theme: ThemeShortcut,
-    role: ChromaticButtonRole,
-    high: ChromaticHighTones
-  ) => {
-    const isLight = theme === 'l';
+  const createButtonIntent = (theme: ButtonRecipeTheme, role: ButtonColorRole) => {
+    const recipe = BUTTON_TONAL_RECIPE[theme];
+    const isLight = recipe.scale === 'l';
     const transparent = isLight ? lightTransparent : darkTransparent;
     const adaptiveDisabled = isLight ? lightAdaptiveDisabled : darkAdaptiveDisabled;
-    const mediumRest = isLight ? 4 : 10;
-    const mediumHover = isLight ? 6 : 8;
-    const mediumPressed = isLight ? 8 : 14;
-
-    return {
-      // Kiskadee extension: Fluent has no complete semantic Button emphasis family.
-      medium: {
-        rest: c('default', theme, role, mediumRest),
-        hover: c('default', theme, role, mediumHover),
-        pressed: c('default', theme, role, mediumPressed),
-        disabled: adaptiveDisabled,
-        selected: {
-          rest: c('default', theme, role, mediumRest)
-        }
-      },
-      high: {
-        rest: c('default', theme, role, high.rest),
-        hover: c('default', theme, role, high.hover),
-        pressed: c('default', theme, role, high.pressed),
-        disabled: adaptiveDisabled,
-        selected: {
-          rest: c('default', theme, role, high.selected)
-        }
-      },
-      low: {
-        rest: transparent,
-        hover: c('default', theme, role, mediumHover),
-        focus: c('default', theme, role, mediumRest),
-        pressed: c('default', theme, role, mediumPressed),
-        disabled: adaptiveDisabled,
-        selected: {
-          rest: c('default', theme, role, mediumRest)
-        }
-      },
-      lowest: {
-        rest: transparent,
-        hover: c('default', theme, role, mediumHover),
-        focus: c('default', theme, role, mediumRest),
-        pressed: c('default', theme, role, mediumPressed),
-        disabled: transparent,
-        selected: {
-          rest: c('default', theme, role, mediumRest)
-        }
-      }
-    };
-  };
-
-  const createChromaticBorderIntent = (
-    theme: ThemeShortcut,
-    role: ChromaticButtonRole,
-    restTone: KiskadeeTone
-  ) => {
-    const isLight = theme === 'l';
-    const transparent = isLight ? lightTransparent : darkTransparent;
-
-    return {
-      medium: {
-        rest: transparent,
-        hover: transparent,
-        pressed: transparent,
-        disabled: transparent
-      },
-      high: {
-        rest: transparent,
-        hover: transparent,
-        pressed: transparent,
-        disabled: transparent
-      },
-      low: {
-        rest: c('default', theme, role, restTone, 50),
-        hover: c('default', theme, role, restTone, 50),
-        pressed: c('default', theme, role, restTone, 50),
-        disabled: transparent,
-        selected: {
-          rest: c('default', theme, role, restTone, 50)
-        }
-      },
-      lowest: {
-        rest: transparent,
-        hover: transparent,
-        pressed: transparent,
-        disabled: transparent
-      }
-    };
-  };
-
-  const createChromaticTextIntent = (theme: ThemeShortcut, role: ChromaticButtonRole) => {
-    const isLight = theme === 'l';
-    const foregroundTone = isLight ? 65 : 75;
-    const disabledTone = isLight ? 16 : 35;
-    const highForegroundTone = 0;
-    const disabledForeground = c('default', theme, 'button.neutral', disabledTone);
+    const disabledForeground = c(
+      'default',
+      recipe.scale,
+      'button.neutral',
+      recipe.lowestDisabledForeground
+    );
     const filledDisabledForeground = isLight ? lightAdaptiveDisabledText : disabledForeground;
+    const roleColor = (tone: KiskadeeTone, alpha?: number) =>
+      c('default', recipe.scale, role, tone, alpha);
 
     return {
-      medium: {
-        rest: c('default', theme, role, foregroundTone),
-        disabled: {
-          ref: filledDisabledForeground
+      boxColor: {
+        medium: {
+          rest: roleColor(recipe.medium.rest),
+          hover: roleColor(recipe.medium.hover),
+          pressed: roleColor(recipe.medium.pressed),
+          disabled: adaptiveDisabled,
+          selected: {
+            // Explicitly declares Selected support even when it reuses Rest.
+            rest: roleColor(recipe.medium.selected)
+          }
+        },
+        high: {
+          rest: roleColor(recipe.high.rest),
+          hover: roleColor(recipe.high.hover),
+          pressed: roleColor(recipe.high.pressed),
+          disabled: adaptiveDisabled,
+          selected: {
+            rest: roleColor(recipe.high.selected)
+          }
+        },
+        low: {
+          rest: transparent,
+          hover: roleColor(recipe.low.hover),
+          pressed: roleColor(recipe.low.pressed),
+          disabled: adaptiveDisabled,
+          selected: {
+            rest: roleColor(recipe.low.selected)
+          }
+        },
+        lowest: {
+          rest: transparent,
+          hover: roleColor(recipe.low.hover),
+          pressed: roleColor(recipe.low.pressed),
+          selected: {
+            rest: roleColor(recipe.low.selected)
+          }
         }
       },
-      high: {
-        rest: c('default', theme, 'button.neutral', highForegroundTone),
-        disabled: {
-          ref: filledDisabledForeground
+      borderColor: {
+        medium: {
+          rest: transparent
+        },
+        high: {
+          rest: transparent
+        },
+        low: {
+          rest: roleColor(recipe.low.border, 50),
+          disabled: transparent
+        },
+        lowest: {
+          rest: transparent
         }
       },
-      low: {
-        rest: c('default', theme, role, foregroundTone),
-        disabled: {
-          ref: filledDisabledForeground
-        }
-      },
-      lowest: {
-        rest: c('default', theme, role, foregroundTone),
-        disabled: {
-          ref: disabledForeground
+      textColor: {
+        medium: {
+          rest: roleColor(recipe.foreground),
+          disabled: {
+            ref: filledDisabledForeground
+          }
+        },
+        high: {
+          rest: c('default', recipe.scale, 'button.neutral', recipe.highForeground),
+          disabled: {
+            ref: filledDisabledForeground
+          }
+        },
+        low: {
+          rest: roleColor(recipe.foreground),
+          disabled: {
+            ref: filledDisabledForeground
+          }
+        },
+        lowest: {
+          rest: roleColor(recipe.foreground),
+          disabled: {
+            ref: disabledForeground
+          }
         }
       }
     };
+  };
+
+  const buttonIntentPalettes = {
+    light: {
+      primary: createButtonIntent('light', 'button.primary'),
+      neutral: createButtonIntent('light', 'button.neutral'),
+      destructive: createButtonIntent('light', 'button.destructive'),
+      positive: createButtonIntent('light', 'button.positive')
+    },
+    dark: {
+      primary: createButtonIntent('dark', 'button.primary'),
+      neutral: createButtonIntent('dark', 'button.neutral'),
+      destructive: createButtonIntent('dark', 'button.destructive'),
+      positive: createButtonIntent('dark', 'button.positive')
+    },
+    darker: {
+      primary: createButtonIntent('darker', 'button.primary'),
+      neutral: createButtonIntent('darker', 'button.neutral'),
+      destructive: createButtonIntent('darker', 'button.destructive'),
+      positive: createButtonIntent('darker', 'button.positive')
+    }
   };
 
   return {
@@ -201,484 +247,44 @@ export function createFluent2MicrosoftButtonSchema({
           default: {
             light: {
               boxColor: {
-                primary: {
-                  // Kiskadee extension: Fluent does not provide a Primary medium-emphasis Button.
-                  // See the component evidence before changing these tonal positions.
-                  medium: {
-                    rest: c('default', 'l', 'button.primary', 4),
-                    hover: c('default', 'l', 'button.primary', 6),
-                    pressed: c('default', 'l', 'button.primary', 8),
-                    disabled: lightAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'l', 'button.primary', 4)
-                    }
-                  },
-                  high: {
-                    rest: c('default', 'l', 'button.primary', 50),
-                    hover: c('default', 'l', 'button.primary', 55),
-                    pressed: c('default', 'l', 'button.primary', 75),
-                    disabled: lightAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'l', 'button.primary', 60)
-                    }
-                  },
-                  // Kiskadee extension: outlined Primary action with the same Blue foreground
-                  // and interaction rhythm as Primary medium.
-                  low: {
-                    rest: lightTransparent,
-                    hover: c('default', 'l', 'button.primary', 2),
-                    pressed: c('default', 'l', 'button.primary', 4),
-                    disabled: lightAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'l', 'button.primary', 1)
-                    }
-                  },
-                  // Kiskadee extension: borderless Primary action.
-                  lowest: {
-                    rest: lightTransparent,
-                    hover: c('default', 'l', 'button.primary', 2),
-                    pressed: c('default', 'l', 'button.primary', 4),
-                    disabled: lightTransparent,
-                    selected: {
-                      rest: c('default', 'l', 'button.primary', 1)
-                    }
-                  }
-                },
-                neutral: {
-                  // Kiskadee extension: a light neutral fill between Fluent Secondary and the
-                  // black-like high-emphasis action.
-                  medium: {
-                    rest: c('default', 'l', 'button.neutral', 5),
-                    hover: c('default', 'l', 'button.neutral', 7),
-                    pressed: c('default', 'l', 'button.neutral', 10),
-                    disabled: lightAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'l', 'button.neutral', 12)
-                    }
-                  },
-                  // Kiskadee adaptation of Fluent Secondary (default).
-                  low: {
-                    rest: c('default', 'l', 'button.neutral', 0),
-                    hover: c('default', 'l', 'button.neutral', 2),
-                    pressed: c('default', 'l', 'button.neutral', 7),
-                    disabled: lightAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'l', 'button.neutral', 5)
-                    }
-                  },
-                  // Kiskadee temporarily collapses Fluent Outline, Subtle, and Transparent into
-                  // one borderless neutral-lowest behavior, using Subtle interaction fills.
-                  lowest: {
-                    rest: lightTransparent,
-                    hover: c('default', 'l', 'button.neutral', 2),
-                    pressed: c('default', 'l', 'button.neutral', 7),
-                    disabled: lightTransparent,
-                    selected: {
-                      rest: c('default', 'l', 'button.neutral', 5)
-                    }
-                  },
-                  // Kiskadee extension: Fluent has no equivalent black neutral Button appearance.
-                  high: {
-                    rest: c('default', 'l', 'button.neutral', 85),
-                    hover: c('default', 'l', 'button.neutral', 90),
-                    pressed: c('default', 'l', 'button.neutral', 95),
-                    disabled: lightAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'l', 'button.neutral', 80)
-                    }
-                  }
-                },
-                destructive: createChromaticBoxIntent('l', 'button.destructive', {
-                  rest: 45,
-                  hover: 50,
-                  pressed: 65,
-                  selected: 55
-                }),
-                positive: createChromaticBoxIntent('l', 'button.positive', {
-                  rest: 45,
-                  hover: 50,
-                  pressed: 65,
-                  selected: 55
-                })
+                primary: buttonIntentPalettes.light.primary.boxColor,
+                neutral: buttonIntentPalettes.light.neutral.boxColor,
+                destructive: buttonIntentPalettes.light.destructive.boxColor,
+                positive: buttonIntentPalettes.light.positive.boxColor
               },
               borderColor: {
-                primary: {
-                  medium: {
-                    rest: lightTransparent,
-                    hover: lightTransparent,
-                    pressed: lightTransparent,
-                    disabled: lightTransparent
-                  },
-                  high: {
-                    rest: lightTransparent,
-                    hover: lightTransparent,
-                    pressed: lightTransparent,
-                    disabled: lightTransparent
-                  },
-                  low: {
-                    rest: c('default', 'l', 'button.primary', 50, 50),
-                    hover: c('default', 'l', 'button.primary', 50, 50),
-                    pressed: c('default', 'l', 'button.primary', 50, 50),
-                    disabled: lightTransparent,
-                    selected: {
-                      rest: c('default', 'l', 'button.primary', 50, 50)
-                    }
-                  },
-                  lowest: {
-                    rest: lightTransparent,
-                    hover: lightTransparent,
-                    pressed: lightTransparent,
-                    disabled: lightTransparent
-                  }
-                },
-                neutral: {
-                  medium: {
-                    rest: lightTransparent,
-                    hover: lightTransparent,
-                    pressed: lightTransparent,
-                    disabled: lightTransparent
-                  },
-                  low: {
-                    rest: c('default', 'l', 'button.neutral', 10),
-                    hover: c('default', 'l', 'button.neutral', 12),
-                    pressed: c('default', 'l', 'button.neutral', 18),
-                    disabled: lightTransparent,
-                    selected: {
-                      rest: c('default', 'l', 'button.neutral', 16)
-                    }
-                  },
-                  lowest: {
-                    rest: lightTransparent,
-                    hover: lightTransparent,
-                    pressed: lightTransparent,
-                    disabled: lightTransparent
-                  },
-                  high: {
-                    rest: lightTransparent,
-                    hover: lightTransparent,
-                    pressed: lightTransparent,
-                    disabled: lightTransparent
-                  }
-                },
-                destructive: createChromaticBorderIntent('l', 'button.destructive', 45),
-                positive: createChromaticBorderIntent('l', 'button.positive', 45)
+                primary: buttonIntentPalettes.light.primary.borderColor,
+                neutral: buttonIntentPalettes.light.neutral.borderColor,
+                destructive: buttonIntentPalettes.light.destructive.borderColor,
+                positive: buttonIntentPalettes.light.positive.borderColor
               }
             },
             dark: {
               boxColor: {
-                primary: {
-                  // Kiskadee extension: theme-appropriate tinted surface, not an upstream Fluent variant.
-                  medium: {
-                    rest: c('default', 'd', 'button.primary', 10),
-                    hover: c('default', 'd', 'button.primary', 8),
-                    pressed: c('default', 'd', 'button.primary', 14),
-                    disabled: darkAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'd', 'button.primary', 10)
-                    }
-                  },
-                  high: {
-                    rest: c('default', 'd', 'button.primary', 35),
-                    hover: c('default', 'd', 'button.primary', 40),
-                    pressed: c('default', 'd', 'button.primary', 14),
-                    disabled: darkAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'd', 'button.primary', 28)
-                    }
-                  },
-                  // Kiskadee extension: outlined Primary action with the same Blue foreground
-                  // and interaction rhythm as Primary medium.
-                  low: {
-                    rest: darkTransparent,
-                    hover: c('default', 'd', 'button.primary', 14),
-                    pressed: c('default', 'd', 'button.primary', 22),
-                    disabled: darkAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'd', 'button.primary', 18)
-                    }
-                  },
-                  // Kiskadee extension: borderless Primary action.
-                  lowest: {
-                    rest: darkTransparent,
-                    hover: c('default', 'd', 'button.primary', 14),
-                    pressed: c('default', 'd', 'button.primary', 22),
-                    disabled: darkTransparent,
-                    selected: {
-                      rest: c('default', 'd', 'button.primary', 18)
-                    }
-                  }
-                },
-                neutral: {
-                  // Kiskadee extension: theme-appropriate neutral fill.
-                  medium: {
-                    rest: c('default', 'd', 'button.neutral', 16),
-                    hover: c('default', 'd', 'button.neutral', 20),
-                    pressed: c('default', 'd', 'button.neutral', 10),
-                    disabled: darkAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'd', 'button.neutral', 22)
-                    }
-                  },
-                  // Kiskadee adaptation of Fluent Secondary (default).
-                  low: {
-                    rest: c('default', 'd', 'button.neutral', 9),
-                    hover: c('default', 'd', 'button.neutral', 20),
-                    pressed: c('default', 'd', 'button.neutral', 6),
-                    disabled: darkAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'd', 'button.neutral', 16)
-                    }
-                  },
-                  // Uses Fluent Subtle interaction fills while remaining borderless.
-                  lowest: {
-                    rest: darkTransparent,
-                    hover: c('default', 'd', 'button.neutral', 16),
-                    pressed: c('default', 'd', 'button.neutral', 10),
-                    disabled: darkTransparent,
-                    selected: {
-                      rest: c('default', 'd', 'button.neutral', 12)
-                    }
-                  },
-                  // High emphasis is physically inverted in Dark so it remains prominent.
-                  high: {
-                    rest: c('default', 'd', 'button.neutral', 85),
-                    hover: c('default', 'd', 'button.neutral', 90),
-                    pressed: c('default', 'd', 'button.neutral', 75),
-                    disabled: darkAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'd', 'button.neutral', 80)
-                    }
-                  }
-                },
-                destructive: createChromaticBoxIntent('d', 'button.destructive', {
-                  rest: 65,
-                  hover: 70,
-                  pressed: 45,
-                  selected: 60
-                }),
-                positive: createChromaticBoxIntent('d', 'button.positive', {
-                  rest: 75,
-                  hover: 80,
-                  pressed: 55,
-                  selected: 70
-                })
+                primary: buttonIntentPalettes.dark.primary.boxColor,
+                neutral: buttonIntentPalettes.dark.neutral.boxColor,
+                destructive: buttonIntentPalettes.dark.destructive.boxColor,
+                positive: buttonIntentPalettes.dark.positive.boxColor
               },
               borderColor: {
-                primary: {
-                  medium: {
-                    rest: darkTransparent,
-                    hover: darkTransparent,
-                    pressed: darkTransparent,
-                    disabled: darkTransparent
-                  },
-                  high: {
-                    rest: darkTransparent,
-                    hover: darkTransparent,
-                    pressed: darkTransparent,
-                    disabled: darkTransparent
-                  },
-                  low: {
-                    rest: c('default', 'd', 'button.primary', 35, 50),
-                    hover: c('default', 'd', 'button.primary', 35, 50),
-                    pressed: c('default', 'd', 'button.primary', 35, 50),
-                    disabled: darkTransparent,
-                    selected: {
-                      rest: c('default', 'd', 'button.primary', 35, 50)
-                    }
-                  },
-                  lowest: {
-                    rest: darkTransparent,
-                    hover: darkTransparent,
-                    pressed: darkTransparent,
-                    disabled: darkTransparent
-                  }
-                },
-                neutral: {
-                  medium: {
-                    rest: darkTransparent,
-                    hover: darkTransparent,
-                    pressed: darkTransparent,
-                    disabled: darkTransparent
-                  },
-                  low: {
-                    rest: c('default', 'd', 'button.neutral', 45),
-                    hover: c('default', 'd', 'button.neutral', 50),
-                    pressed: c('default', 'd', 'button.neutral', 45),
-                    disabled: darkTransparent,
-                    selected: {
-                      rest: c('default', 'd', 'button.neutral', 50)
-                    }
-                  },
-                  lowest: {
-                    rest: darkTransparent,
-                    hover: darkTransparent,
-                    pressed: darkTransparent,
-                    disabled: darkTransparent
-                  },
-                  high: {
-                    rest: darkTransparent,
-                    hover: darkTransparent,
-                    pressed: darkTransparent,
-                    disabled: darkTransparent
-                  }
-                },
-                destructive: createChromaticBorderIntent('d', 'button.destructive', 65),
-                positive: createChromaticBorderIntent('d', 'button.positive', 75)
+                primary: buttonIntentPalettes.dark.primary.borderColor,
+                neutral: buttonIntentPalettes.dark.neutral.borderColor,
+                destructive: buttonIntentPalettes.dark.destructive.borderColor,
+                positive: buttonIntentPalettes.dark.positive.borderColor
               }
             },
-            // Kiskadee extension: Dark copied with a one-slot darker High-emphasis progression.
             darker: {
               boxColor: {
-                primary: {
-                  medium: {
-                    rest: c('default', 'd', 'button.primary', 10),
-                    hover: c('default', 'd', 'button.primary', 8),
-                    pressed: c('default', 'd', 'button.primary', 14),
-                    disabled: darkAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'd', 'button.primary', 10)
-                    }
-                  },
-                  high: {
-                    rest: c('default', 'd', 'button.primary', 30),
-                    hover: c('default', 'd', 'button.primary', 35),
-                    pressed: c('default', 'd', 'button.primary', 12),
-                    disabled: darkAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'd', 'button.primary', 26)
-                    }
-                  },
-                  low: {
-                    rest: darkTransparent,
-                    hover: c('default', 'd', 'button.primary', 14),
-                    pressed: c('default', 'd', 'button.primary', 22),
-                    disabled: darkAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'd', 'button.primary', 18)
-                    }
-                  },
-                  lowest: {
-                    rest: darkTransparent,
-                    hover: c('default', 'd', 'button.primary', 14),
-                    pressed: c('default', 'd', 'button.primary', 22),
-                    disabled: darkTransparent,
-                    selected: {
-                      rest: c('default', 'd', 'button.primary', 18)
-                    }
-                  }
-                },
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'button.neutral', 16),
-                    hover: c('default', 'd', 'button.neutral', 20),
-                    pressed: c('default', 'd', 'button.neutral', 10),
-                    disabled: darkAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'd', 'button.neutral', 22)
-                    }
-                  },
-                  low: {
-                    rest: c('default', 'd', 'button.neutral', 9),
-                    hover: c('default', 'd', 'button.neutral', 20),
-                    pressed: c('default', 'd', 'button.neutral', 6),
-                    disabled: darkAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'd', 'button.neutral', 16)
-                    }
-                  },
-                  lowest: {
-                    rest: darkTransparent,
-                    hover: c('default', 'd', 'button.neutral', 16),
-                    pressed: c('default', 'd', 'button.neutral', 10),
-                    disabled: darkTransparent,
-                    selected: {
-                      rest: c('default', 'd', 'button.neutral', 12)
-                    }
-                  },
-                  high: {
-                    rest: c('default', 'd', 'button.neutral', 80),
-                    hover: c('default', 'd', 'button.neutral', 85),
-                    pressed: c('default', 'd', 'button.neutral', 70),
-                    disabled: darkAdaptiveDisabled,
-                    selected: {
-                      rest: c('default', 'd', 'button.neutral', 75)
-                    }
-                  }
-                },
-                destructive: createChromaticBoxIntent('d', 'button.destructive', {
-                  rest: 60,
-                  hover: 65,
-                  pressed: 40,
-                  selected: 55
-                }),
-                positive: createChromaticBoxIntent('d', 'button.positive', {
-                  rest: 70,
-                  hover: 75,
-                  pressed: 50,
-                  selected: 65
-                })
+                primary: buttonIntentPalettes.darker.primary.boxColor,
+                neutral: buttonIntentPalettes.darker.neutral.boxColor,
+                destructive: buttonIntentPalettes.darker.destructive.boxColor,
+                positive: buttonIntentPalettes.darker.positive.boxColor
               },
               borderColor: {
-                primary: {
-                  medium: {
-                    rest: darkTransparent,
-                    hover: darkTransparent,
-                    pressed: darkTransparent,
-                    disabled: darkTransparent
-                  },
-                  high: {
-                    rest: darkTransparent,
-                    hover: darkTransparent,
-                    pressed: darkTransparent,
-                    disabled: darkTransparent
-                  },
-                  low: {
-                    rest: c('default', 'd', 'button.primary', 35, 50),
-                    hover: c('default', 'd', 'button.primary', 35, 50),
-                    pressed: c('default', 'd', 'button.primary', 35, 50),
-                    disabled: darkTransparent,
-                    selected: {
-                      rest: c('default', 'd', 'button.primary', 35, 50)
-                    }
-                  },
-                  lowest: {
-                    rest: darkTransparent,
-                    hover: darkTransparent,
-                    pressed: darkTransparent,
-                    disabled: darkTransparent
-                  }
-                },
-                neutral: {
-                  medium: {
-                    rest: darkTransparent,
-                    hover: darkTransparent,
-                    pressed: darkTransparent,
-                    disabled: darkTransparent
-                  },
-                  low: {
-                    rest: c('default', 'd', 'button.neutral', 45),
-                    hover: c('default', 'd', 'button.neutral', 50),
-                    pressed: c('default', 'd', 'button.neutral', 45),
-                    disabled: darkTransparent,
-                    selected: {
-                      rest: c('default', 'd', 'button.neutral', 50)
-                    }
-                  },
-                  lowest: {
-                    rest: darkTransparent,
-                    hover: darkTransparent,
-                    pressed: darkTransparent,
-                    disabled: darkTransparent
-                  },
-                  high: {
-                    rest: darkTransparent,
-                    hover: darkTransparent,
-                    pressed: darkTransparent,
-                    disabled: darkTransparent
-                  }
-                },
-                destructive: createChromaticBorderIntent('d', 'button.destructive', 65),
-                positive: createChromaticBorderIntent('d', 'button.positive', 75)
+                primary: buttonIntentPalettes.darker.primary.borderColor,
+                neutral: buttonIntentPalettes.darker.neutral.borderColor,
+                destructive: buttonIntentPalettes.darker.destructive.borderColor,
+                positive: buttonIntentPalettes.darker.positive.borderColor
               }
             }
           }
@@ -707,176 +313,26 @@ export function createFluent2MicrosoftButtonSchema({
           default: {
             light: {
               textColor: {
-                primary: {
-                  medium: {
-                    rest: c('default', 'l', 'button.primary', 65),
-                    disabled: {
-                      ref: lightAdaptiveDisabledText
-                    }
-                  },
-                  high: {
-                    rest: c('default', 'l', 'button.neutral', 0),
-                    disabled: {
-                      ref: lightAdaptiveDisabledText
-                    }
-                  },
-                  low: {
-                    rest: c('default', 'l', 'button.primary', 65),
-                    disabled: {
-                      ref: lightAdaptiveDisabledText
-                    }
-                  },
-                  lowest: {
-                    rest: c('default', 'l', 'button.primary', 65),
-                    disabled: {
-                      ref: c('default', 'l', 'button.neutral', 16)
-                    }
-                  }
-                },
-                neutral: {
-                  high: {
-                    rest: c('default', 'l', 'button.neutral', 0),
-                    disabled: {
-                      ref: lightAdaptiveDisabledText
-                    }
-                  },
-                  medium: {
-                    rest: c('default', 'l', 'button.neutral', 85),
-                    disabled: {
-                      ref: lightAdaptiveDisabledText
-                    }
-                  },
-                  low: {
-                    rest: c('default', 'l', 'button.neutral', 85),
-                    disabled: {
-                      ref: lightAdaptiveDisabledText
-                    }
-                  },
-                  lowest: {
-                    rest: c('default', 'l', 'button.neutral', 85),
-                    disabled: {
-                      ref: c('default', 'l', 'button.neutral', 16)
-                    }
-                  }
-                },
-                destructive: createChromaticTextIntent('l', 'button.destructive'),
-                positive: createChromaticTextIntent('l', 'button.positive')
+                primary: buttonIntentPalettes.light.primary.textColor,
+                neutral: buttonIntentPalettes.light.neutral.textColor,
+                destructive: buttonIntentPalettes.light.destructive.textColor,
+                positive: buttonIntentPalettes.light.positive.textColor
               }
             },
             dark: {
               textColor: {
-                primary: {
-                  medium: {
-                    rest: c('default', 'd', 'button.primary', 75),
-                    disabled: {
-                      ref: c('default', 'd', 'button.neutral', 35)
-                    }
-                  },
-                  high: {
-                    rest: c('default', 'd', 'button.neutral', 100),
-                    disabled: {
-                      ref: c('default', 'd', 'button.neutral', 35)
-                    }
-                  },
-                  low: {
-                    rest: c('default', 'd', 'button.primary', 75),
-                    disabled: {
-                      ref: c('default', 'd', 'button.neutral', 35)
-                    }
-                  },
-                  lowest: {
-                    rest: c('default', 'd', 'button.primary', 75),
-                    disabled: {
-                      ref: c('default', 'd', 'button.neutral', 35)
-                    }
-                  }
-                },
-                neutral: {
-                  high: {
-                    rest: c('default', 'd', 'button.neutral', 0),
-                    disabled: {
-                      ref: c('default', 'd', 'button.neutral', 35)
-                    }
-                  },
-                  medium: {
-                    rest: c('default', 'd', 'button.neutral', 100),
-                    disabled: {
-                      ref: c('default', 'd', 'button.neutral', 35)
-                    }
-                  },
-                  low: {
-                    rest: c('default', 'd', 'button.neutral', 100),
-                    disabled: {
-                      ref: c('default', 'd', 'button.neutral', 35)
-                    }
-                  },
-                  lowest: {
-                    rest: c('default', 'd', 'button.neutral', 100),
-                    disabled: {
-                      ref: c('default', 'd', 'button.neutral', 35)
-                    }
-                  }
-                },
-                destructive: createChromaticTextIntent('d', 'button.destructive'),
-                positive: createChromaticTextIntent('d', 'button.positive')
+                primary: buttonIntentPalettes.dark.primary.textColor,
+                neutral: buttonIntentPalettes.dark.neutral.textColor,
+                destructive: buttonIntentPalettes.dark.destructive.textColor,
+                positive: buttonIntentPalettes.dark.positive.textColor
               }
             },
             darker: {
               textColor: {
-                primary: {
-                  medium: {
-                    rest: c('default', 'd', 'button.primary', 75),
-                    disabled: {
-                      ref: c('default', 'd', 'button.neutral', 35)
-                    }
-                  },
-                  high: {
-                    rest: c('default', 'd', 'button.neutral', 100),
-                    disabled: {
-                      ref: c('default', 'd', 'button.neutral', 35)
-                    }
-                  },
-                  low: {
-                    rest: c('default', 'd', 'button.primary', 75),
-                    disabled: {
-                      ref: c('default', 'd', 'button.neutral', 35)
-                    }
-                  },
-                  lowest: {
-                    rest: c('default', 'd', 'button.primary', 75),
-                    disabled: {
-                      ref: c('default', 'd', 'button.neutral', 35)
-                    }
-                  }
-                },
-                neutral: {
-                  high: {
-                    rest: c('default', 'd', 'button.neutral', 0),
-                    disabled: {
-                      ref: c('default', 'd', 'button.neutral', 35)
-                    }
-                  },
-                  medium: {
-                    rest: c('default', 'd', 'button.neutral', 100),
-                    disabled: {
-                      ref: c('default', 'd', 'button.neutral', 35)
-                    }
-                  },
-                  low: {
-                    rest: c('default', 'd', 'button.neutral', 100),
-                    disabled: {
-                      ref: c('default', 'd', 'button.neutral', 35)
-                    }
-                  },
-                  lowest: {
-                    rest: c('default', 'd', 'button.neutral', 100),
-                    disabled: {
-                      ref: c('default', 'd', 'button.neutral', 35)
-                    }
-                  }
-                },
-                destructive: createChromaticTextIntent('d', 'button.destructive'),
-                positive: createChromaticTextIntent('d', 'button.positive')
+                primary: buttonIntentPalettes.darker.primary.textColor,
+                neutral: buttonIntentPalettes.darker.neutral.textColor,
+                destructive: buttonIntentPalettes.darker.destructive.textColor,
+                positive: buttonIntentPalettes.darker.positive.textColor
               }
             }
           }

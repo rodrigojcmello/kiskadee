@@ -152,15 +152,16 @@ different primitive color identities.
 
 ## Integration Status
 
-The first integration is the Fluent Primary Button documented in
-[`../components/button.md`](../components/button.md). It promotes the Blue and
-Black generated scales and maps the official Light/Dark Button states to exact
-L/D positions.
+The first integration is the Fluent Button documented in
+[`../components/button.md`](../components/button.md). It promotes the Blue,
+Black, Cranberry, and Green generated scales. Primary High anchors the shared
+tonal recipe to the official Light/Dark Button states; Primary, Neutral,
+Destructive, and Positive then reuse that recipe without intent-specific tonal
+compensation.
 
 The preset-wide color foundation also promotes the other five explicitly
 authored Fluent families at Layer 1. Layer 2 maps Blue to `primary`, Black to
 `neutral`, Cranberry to `redLike`, Green to `greenLike`, Marigold to
 `yellowLike.v1`, and Orange to `yellowLike.v2`. Berry remains available as the
 Purple primitive because its official role is Out of office, not a generic
-Kiskadee `secondary` semantic. Other components and Button appearances remain
-deferred.
+Kiskadee `secondary` semantic. Other components remain deferred.

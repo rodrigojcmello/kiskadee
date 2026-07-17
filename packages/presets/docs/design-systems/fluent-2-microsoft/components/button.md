@@ -96,15 +96,15 @@ acceptable on white but either disappeared into a matching neutral surface or lo
 colored surface. The translucent overlay preserved the disabled shape while allowing the surface
 color to influence it.
 
-Primary Medium now exposes Selected explicitly in every theme. Selected reuses the Medium Rest
-surface: L4 in Light and D10 in Dark/Darker. Its disabled state follows the same adaptive
+Medium exposes Selected explicitly in every theme for every intent. Selected reuses the Medium
+Rest surface: L4 in Light and D10 in Dark/Darker. Its disabled state follows the same adaptive
 background and foreground policy as High and Low.
 
-`primary.low` and `primary.lowest` reuse the Medium foreground but use a deliberately light
-interaction rhythm. The states move toward the physically lighter end of each theme scale. Both
-are transparent at Rest, and Focus inherits that transparent Rest surface; the external focus ring
-remains the focus affordance. Selected uses L1 in Light and D18 in Dark/Darker. Low adds a one-pixel
-Blue border; Lowest keeps every border state transparent.
+Low and Lowest reuse the Medium foreground but use a deliberately light interaction rhythm. The
+states move toward the physically lighter end of each theme scale. Both are transparent at Rest,
+and Focus inherits that transparent Rest surface; the external focus ring remains the focus
+affordance. Selected uses L1 in Light and D18 in Dark/Darker. Low adds a one-pixel role-colored
+border; Lowest keeps every border state transparent.
 
 | Theme/state | Low and Lowest background | Low border | Enabled foreground |
 | --- | --- | --- | --- |
@@ -120,27 +120,61 @@ Blue border; Lowest keeps every border state transparent.
 Disabled Low uses the same adaptive 5% neutral overlay and Light L20-at-82%/Dark D35 foreground as
 Medium and High, without a visible border. Lowest remains fully transparent and borderless when
 disabled, preserving its intentionally minimal appearance.
-The enabled Low border uses the component Primary Rest color with 50% opacity: L50 in Light and D35
-in Dark. This keeps the exact Primary identity while allowing the surface beneath it to soften the
-outline. Two opaque alternatives were explicitly rejected: matching the foreground at L65/D75 was
-too dominant, while moving to L14/D50 made the border too light. The 50% alpha is an experimental
-Kiskadee value pending visual approval; it is not an upstream Fluent token.
+The enabled Low border uses the current intent family at the component Primary Rest position with
+50% opacity: L50 in Light and D35 in Dark/Darker. This keeps the intent identity while allowing the
+surface beneath it to soften the outline. Two opaque alternatives were explicitly rejected:
+matching the foreground at L65/D75 was too dominant, while moving to L14/D50 made the border too
+light. The 50% alpha is an experimental Kiskadee value pending visual approval; it is not an
+upstream Fluent token.
 
-## Neutral Emphasis Contract
+## Canonical Kiskadee Intent Recipe
 
-Kiskadee maps the Fluent appearances into its emphasis model as follows:
+The active schema generates `primary`, `neutral`, `destructive`, and `positive` from one tonal
+recipe. The intent changes only the Layer 3 color role; theme, emphasis, state positions, disabled
+policy, and border policy remain identical. This is deliberate diagnostic infrastructure: when a
+new segment replaces the primitive scales, visual differences reveal the behavior of the recipe or
+the tonal family without hidden per-intent compensation.
+
+The canonical positions are explicit slots in the irregular Kiskadee grid, not arithmetic offsets:
+
+| Theme/emphasis | Rest | Hover | Pressed | Selected |
+| --- | --- | --- | --- | --- |
+| Light Medium | L4 | L6 | L8 | L4 |
+| Light High | L50 | L55 | L75 | L60 |
+| Light Low/Lowest | transparent | L2 | L4 | L1 |
+| Dark Medium | D10 | D8 | D14 | D10 |
+| Dark High | D35 | D40 | D14 | D28 |
+| Dark Low/Lowest | transparent | D14 | D22 | D18 |
+| Darker Medium | D10 | D8 | D14 | D10 |
+| Darker High | D30 | D35 | D12 | D26 |
+| Darker Low/Lowest | transparent | D14 | D22 | D18 |
+
+Medium, Low, and Lowest foregrounds use the intent role at L65 in Light and D75 in Dark/Darker.
+High uses the white neutral cap, L0 or D100. Low uses the intent role at L50 in Light and D35 in
+Dark/Darker with 50% opacity for its border. Lowest is borderless. Focus is intentionally absent
+from every palette map, so it inherits Rest while the global focus ring remains the accessibility
+affordance. Selected stays explicit even when it equals Rest because the schema must declare that
+the component supports the Selected state.
+
+The recipe is currently canonical for this preset, but it is not claimed as an official Fluent
+cross-intent formula. Primary High is the upstream-calibrated reference; all other intent/emphasis
+combinations are Kiskadee extensions used to evaluate the reusable contract.
+
+## Fluent Neutral Source Evidence
+
+The following relationship records how Fluent's neutral appearances relate to Kiskadee's emphasis
+vocabulary. It is preserved as upstream evidence and does not override the active shared recipe.
 
 | Kiskadee emphasis | Fluent relationship | Decision |
 | --- | --- | --- |
-| `neutral.high` | No direct equivalent | Kiskadee extension: black-like action in Light and a physically inverted high-emphasis neutral action in Dark. |
-| `neutral.medium` | No direct equivalent | Kiskadee extension: filled light-gray action, adapted to a dark-gray surface in Dark. |
-| `neutral.low` | `Secondary (default)` | Official surface, border, foreground, and state tokens mapped to the generated neutral scale. |
-| `neutral.lowest` | `Outline`, `Subtle`, and `Transparent` | Temporary Kiskadee collapse: borderless, neutral foreground, and the `Subtle` interaction fills. |
+| `neutral.high` | No direct equivalent | Kiskadee extension. |
+| `neutral.medium` | No direct equivalent | Kiskadee extension. |
+| `neutral.low` | `Secondary (default)` | Closest official Fluent relationship. |
+| `neutral.lowest` | `Outline`, `Subtle`, and `Transparent` | Closest structural relationship pending separate appearance capabilities. |
 
-The `lowest` collapse is intentional. Fluent differentiates the three upstream appearances through
-border presence and foreground/state behavior, while the current Kiskadee Button emphasis contract
-has one neutral slot for this prominence. Until that contract is revisited, only `neutral.low` owns
-a visible border.
+Fluent differentiates the three low-prominence appearances through border presence and
+foreground/state behavior. The current Kiskadee contract does not claim that one shared emphasis
+can reproduce all three exactly.
 
 ### Neutral Low: Fluent Secondary
 
@@ -171,13 +205,13 @@ background is transparent at Rest and Focus. Hover, Pressed, and Selected reuse 
 `SubtleBackground` sequence: L2/L7/L5 in Light and D16/D10/D12 in Dark. Disabled is fully
 transparent with L16/D35 foreground. Every border state is transparent.
 
-### Kiskadee Neutral Extensions
+### Retired Intent-Specific Neutral Mapping
 
-`neutral.medium` uses a visibly filled neutral rhythm: L5/L7/L10 for Light Rest/Hover/Pressed and
-D16/D20/D10 for Dark. `neutral.high` uses the exact Fluent neutral seed `#21242d` at L85 as its
-Light Rest surface, progressing to L90/L95 for Hover/Pressed. In Dark, D85 is used as Rest with a
-D0 foreground; this physical inversion is required for the action to retain high emphasis against
-a dark interface instead of disappearing into the page background.
+An earlier implementation tuned Neutral independently: Medium used L5/L7/L10 and D16/D20/D10;
+High used L85/L90/L95 and D85/D90/D75; Low and Lowest followed the Secondary/Subtle source tables
+above. That approach was retired because it hid whether visual differences came from the Button
+contract or the neutral tonal scale. The active schema now applies the canonical recipe unchanged
+to `button.neutral`. These historical positions remain here only to preserve the design evidence.
 
 ## Kiskadee Extensions: Destructive And Positive
 
@@ -189,23 +223,16 @@ presented as upstream Fluent Button variants.
 
 The extensions preserve the approved official families rather than deriving new component colors:
 
-| Intent | Fluent semantic source | Approved primitive | Light High Rest | Dark High Rest |
-| --- | --- | --- | --- | --- |
-| `destructive` | Cranberry Primary `#c50f1f` | `r.red.v1` through `button.destructive` | L45 `#c50f1f` | D65 `#ee4f4b` |
-| `positive` | Green Primary `#107c10` | `g.green.v1` through `button.positive` | L45 `#107c10` | D75 `#67b661` |
+| Intent | Fluent semantic source | Approved primitive |
+| --- | --- | --- |
+| `destructive` | Cranberry Primary `#c50f1f` | `r.red.v1` through `button.destructive` |
+| `positive` | Green Primary `#107c10` | `g.green.v1` through `button.positive` |
 
-Light High follows Rest/Hover/Focus/Pressed/Selected at L45/L50/L45/L65/L55 for both intents.
-Dark resolves each semantic independently: Destructive uses D65/D70/D65/D45/D60, while Positive
-uses D75/D80/D75/D55/D70. High foregrounds use the physical neutral cap: L0 white in Light and D0
-black in Dark.
-
-Medium, Low, and Lowest reuse the approved Primary extension rhythm because they describe
-emphasis, not a Fluent-authored component variant. Light interaction fills use L4/L6/L4/L8 and
-Dark uses D10/D8/D10/D14 for Rest/Hover/Focus/Pressed. Low and Lowest remain transparent at Rest;
-Low uses its own High Rest color at 50% opacity for the border, while Lowest remains borderless.
-Enabled Medium/Low/Lowest foregrounds use L65 in Light and D75 in Dark. Filled disabled surfaces
-use the shared adaptive 5% overlay. Their Light foreground uses neutral L20 at 82%, while Dark and
-Darker use solid neutral D35; Low removes its border when disabled.
+Both intents use the canonical recipe without semantic-specific tonal compensation. Their Light
+High sequence is L50/L55/L75/L60 for Rest/Hover/Pressed/Selected; Dark is
+D35/D40/D14/D28; Darker is D30/D35/D12/D26. Focus inherits Rest. High uses the white neutral cap
+in every theme. Medium, Low, Lowest, borders, and disabled states follow the same recipe as Primary
+and Neutral.
 
 ## Kiskadee Darker Theme
 
@@ -215,12 +242,9 @@ It copies the complete Dark Button contract and moves only High-emphasis enabled
 tonal slot toward the physically darker end of each approved scale. Medium, Low, Lowest, text,
 borders, and the shared disabled mapping remain identical to Dark.
 
-| Intent | Dark High Rest/Hover/Focus/Pressed/Selected | Darker High Rest/Hover/Focus/Pressed/Selected |
+| Applies to | Dark High Rest/Hover/Focus/Pressed/Selected | Darker High Rest/Hover/Focus/Pressed/Selected |
 | --- | --- | --- |
-| Primary | D35 / D40 / D35 / D14 / D28 | D30 / D35 / D30 / D12 / D26 |
-| Neutral | D85 / D90 / D85 / D75 / D80 | D80 / D85 / D80 / D70 / D75 |
-| Destructive | D65 / D70 / D65 / D45 / D60 | D60 / D65 / D60 / D40 / D55 |
-| Positive | D75 / D80 / D75 / D55 / D70 | D70 / D75 / D70 / D50 / D65 |
+| Every intent | D35 / D40 / inherited Rest / D14 / D28 | D30 / D35 / inherited Rest / D12 / D26 |
 
 The one-slot rule is relative to the canonical Kiskadee grid, not a fixed numeric subtraction.
 This keeps the state rhythm intact when neighboring public tones use different numeric intervals.
@@ -296,30 +320,26 @@ changing the asset scales.
 
 ## Schema Mapping
 
-- `e1.boxColor.primary.medium`, `primary.low`, and `primary.lowest`, together with their text and
-  border mappings, implement the documented Kiskadee-only extensions in Light, Dark, and Darker.
-- `e1.boxColor.primary.medium.selected` explicitly reuses Medium Rest in all three themes.
-- `e1.boxColor.primary.high` owns the Primary Button background in all three themes.
+- `BUTTON_TONAL_RECIPE` is the single source of tonal positions for every Button intent.
+- `createButtonIntent()` applies that recipe to `button.primary`, `button.neutral`,
+  `button.destructive`, or `button.positive`; it does not contain intent-specific positions.
+- `e1.boxColor.*.medium.selected` explicitly reuses Medium Rest in all three themes.
 - Filled `e1.boxColor.*.*.disabled` surfaces use the adaptive neutral overlay: L100 absolute black
   at 5% in Light and D100 absolute white at 5% in Dark/Darker. High, Medium, and Low use this
   treatment; Lowest remains transparent. This is an explicit Kiskadee extension; the official
   opaque mappings remain documented above.
 - Filled `e2.textColor.*.*.disabled` foregrounds use neutral L20 at 82% in Light and solid D35 in
   Dark/Darker. Lowest keeps the official solid L16/D35 mapping because it has no disabled fill.
-- `e1.boxColor.neutral` and `e2.textColor.neutral` expose High, Medium, Low, and Lowest in both
-  themes.
-- `e1.boxColor.destructive`/`positive`, their text colors, and their borders expose all four
-  Kiskadee emphasis levels in both themes.
-- `e1.borderColor.neutral.low` is the only visible neutral Button border while enabled; every Low
-  disabled border and all Lowest borders are transparent.
+- Every intent exposes High, Medium, Low, and Lowest in Light, Dark, and Darker.
+- `e1.borderColor.*.low` is the only visible border while enabled; every Low disabled border and
+  all Lowest borders are transparent.
 - Official Fluent Button surfaces omit `focus` when Focus is visually identical to Rest. The base
   Rest class remains active and the global focus ring provides the focus affordance without
   generating a duplicate surface rule.
 - When Hover and focus-visible coexist, the omitted surface override preserves Hover and adds the
   focus ring. An explicit `focus` value is reserved for a documented component-owned visual delta.
-- Every Primary emphasis omits component-owned Focus palette deltas, including the Kiskadee-only
-  Low and Lowest surfaces. The optional Button shadow remains a separate global effect with its
-  authored focus delta.
+- Every emphasis and intent omits component-owned Focus palette deltas. The optional Button shadow
+  remains a separate global effect with its authored focus delta.
 - Only the documented Selected rest color is emitted. Selected hover and pressed are not inferred.
 - Existing Kiskadee Button shadow behavior is retained, but its black color now resolves from the
   `primitive.black.v1` absolute cap instead of a schema HEX literal.
@@ -331,8 +351,9 @@ changing the asset scales.
 - Dark support in this schema covers Primary, Neutral, Destructive, and Positive Button intents.
   It does not imply Dark support for the preset's other components.
 - Darker is a Kiskadee-only Button theme derived from Dark; it is not an upstream Fluent mode.
-- The neutral High and Medium appearances are Kiskadee extensions. Consumers that require strict
-  upstream Fluent fidelity should use `neutral.low` or the documented `neutral.lowest` adaptation.
+- Every Neutral appearance in the active schema is a Kiskadee extension using the shared recipe.
+  The official Secondary, Outline, Subtle, and Transparent values remain documented as source
+  evidence rather than active intent-specific tuning.
 - Primary Medium, Low, and Lowest are Kiskadee extensions. Only Primary High maps to an official
   Fluent Primary Button appearance.
 - Destructive and Positive use official Fluent semantic color families, but all four Button
@@ -342,3 +363,5 @@ changing the asset scales.
 
 - Revisit whether Outline, Subtle, and Transparent need separate structural capabilities instead
   of sharing `neutral.lowest`.
+- Exercise the shared recipe with additional segments before introducing any intent-specific tonal
+  exception. A mismatch must first be classified as a recipe defect or a tonal-scale defect.
